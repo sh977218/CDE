@@ -7,6 +7,7 @@ const _ = require('lodash');
 const passport = require('passport');
 const path = require('path');
 const useragent = require('useragent');
+const util = require('util');
 const authorization = require('./authorization');
 const authorizationShared = require('esm')(module)("../../shared/system/authorizationShared");
 const mongo_cde = require('../cde/mongo-cde');
@@ -105,7 +106,7 @@ exports.init = function (app) {
                     'archived': false,
                     'registrationState.registrationStatus': 'Qualified'
                 };
-                mongo_cde.DataElement.count(cond, (err, totalCount) => {
+                mongo_cde.DataElement.countDocuments(cond, (err, totalCount) => {
                     if (err) {
                         res.status(500).send("ERROR - Static Html Error, /cde/search");
                         logging.errorLogger.error("Error: Static Html Error", {
@@ -169,7 +170,7 @@ exports.init = function (app) {
                     'archived': false,
                     'registrationState.registrationStatus': 'Qualified'
                 };
-                mongo_form.Form.count(cond, (err, totalCount) => {
+                mongo_form.Form.countDocuments(cond, (err, totalCount) => {
                     if (err) {
                         res.status(500).send("ERROR - Static Html Error, /form/search");
                         logging.errorLogger.error("Error: Static Html Error", {
@@ -226,36 +227,36 @@ exports.init = function (app) {
     // every sunday at 4:07 AM
     new CronJob('* 7 4 * * 6', () => {
         dbLogger.consoleLog("Creating sitemap");
-        let wstream = fs.createWriteStream('./dist/app/sitemap.txt');
-        let cond = {
-            'archived': false,
-            'registrationState.registrationStatus': 'Qualified'
-        };
-        async.series([
-            cb => {
-                let stream = mongo_cde.DataElement.find(cond, "tinyId").stream();
-                let formatter = doc => config.publicUrl + "/deView?tinyId=" + doc.tinyId + "\n";
-                stream.on('data', doc => wstream.write(formatter(doc)));
-                stream.on('err', err => cb(err));
-                stream.on('end', cb);
-            },
-            cb => {
-                let stream = mongo_form.Form.find(cond, "tinyId").stream();
-                let formatter = doc => config.publicUrl + "/formView?tinyId=" + doc.tinyId + "\n";
-                stream.on('data', doc => wstream.write(formatter(doc)));
-                stream.on('err', err => cb(err));
-                stream.on('end', cb);
-            }
-        ], err => {
-            if (err) {
-                logging.errorLogger.error("Error generating sitemap", {
-                    stack: err.stack,
-                    origin: req.url
+        util.promisify(fs.access)('dist/app', 'r')
+            .catch(() => util.promisify(fs.mkdir)('dist/app', {recursive: true}))
+            .then(() => {
+                let wstream = fs.createWriteStream('./dist/app/sitemap.txt');
+                let cond = {
+                    'archived': false,
+                    'registrationState.registrationStatus': 'Qualified'
+                };
+                function handleStream(stream, formatter, cb) {
+                    stream.on('data', doc => wstream.write(formatter(doc)));
+                    stream.on('err', cb);
+                    stream.on('end', cb);
+                }
+                return util.promisify(async.series)([
+                    cb => handleStream(
+                        mongo_cde.DataElement.find(cond, 'tinyId').cursor(),
+                        doc => config.publicUrl + '/deView?tinyId=' + doc.tinyId + '\n',
+                        cb
+                    ),
+                    cb => handleStream(
+                        mongo_form.Form.find(cond, 'tinyId').cursor(),
+                        doc => config.publicUrl + '/formView?tinyId=' + doc.tinyId + '\n',
+                        cb
+                    )
+                ]).then(() => {
+                    dbLogger.consoleLog('done with sitemap');
+                    wstream.end();
                 });
-            }
-            dbLogger.consoleLog("done with sitemap");
-            wstream.end();
-        });
+            })
+            .catch(err => dbLogger.consoleLog('Cron Sunday 4:07 AM did not complete due to error:', err));
     }, null, true, 'America/New_York', this, true);
 
     ["/help/:title", "/createForm", "/createCde", "/boardList",

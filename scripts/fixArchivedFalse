@@ -1,2 +1,2 @@
-db.getCollection('dataelements').update({"archived" : null},{$set:{archived:false}},{"multi" : true  });
-db.getCollection('forms').update({"archived" : null},{$set:{archived:false}},{"multi" : true  });
+db.getCollection('dataelements').updateMany({"archived" : null},{$set:{archived:false}});
+db.getCollection('forms').updateMany({"archived" : null},{$set:{archived:false}});
