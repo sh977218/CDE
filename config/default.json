@@ -84,7 +84,9 @@
       "username": "cdeuser",
       "password": "password",
       "options": {
-        "ssl": false
+        "ssl": false,
+        "useCreateIndex": true,
+        "useNewUrlParser": true
       }
     },
     "log": {
@@ -92,7 +94,9 @@
       "username": "cdeuser",
       "password": "password",
       "options": {
-        "ssl": false
+        "ssl": false,
+        "useCreateIndex": true,
+        "useNewUrlParser": true
       },
       "cappedCollectionSizeMB": 262144000
     },
@@ -101,7 +105,9 @@
       "username": "miguser",
       "password": "password",
       "options": {
-        "ssl": false
+        "ssl": false,
+        "useCreateIndex": true,
+        "useNewUrlParser": true
       }
     }
   },

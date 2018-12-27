@@ -43,7 +43,7 @@ function runComment() {
                 console.log(wrongTinyId);
                 process.exit(1);
             }
-            let num_updated = await Comment.update({
+            let num_updated = await Comment.updateMany({
                 'element.eltType': 'form',
                 'element.eltId': wrongTinyId
             }, {
@@ -51,7 +51,7 @@ function runComment() {
                     'eltType': 'form',
                     'eltId': rightTinyId
                 }
-            }, {multi: true});
+            });
             console.log(num_updated.nModified + ' ' + wrongTinyId + ' updated to ' + rightTinyId);
         }
     })

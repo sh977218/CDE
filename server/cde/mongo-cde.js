@@ -131,9 +131,7 @@ exports.getStream = function (condition) {
 };
 
 exports.count = function (condition, callback) {
-    DataElement.count(condition).count().exec(function (err, count) {
-        callback(err, count);
-    });
+    DataElement.countDocuments(condition, callback);
 };
 
 exports.desByConcept = function (concept, callback) {
@@ -205,7 +203,7 @@ exports.inCdeView = function (cde) {
     viewedCdes[cde._id]++;
     if (viewedCdes[cde._id] >= threshold && cde && cde._id) {
         viewedCdes[cde._id] = 0;
-        DataElement.update({_id: cde._id}, {$inc: {views: threshold}}).exec();
+        DataElement.updateOne({_id: cde._id}, {$inc: {views: threshold}}).exec();
     }
 };
 
@@ -357,7 +355,7 @@ exports.query = function (query, callback) {
 };
 
 exports.transferSteward = function (from, to, callback) {
-    DataElement.update({'stewardOrg.name': from}, {$set: {'stewardOrg.name': to}}, {multi: true}).exec(function (err, result) {
+    DataElement.updateMany({'stewardOrg.name': from}, {$set: {'stewardOrg.name': to}}).exec(function (err, result) {
         callback(err, result.nModified);
     });
 };

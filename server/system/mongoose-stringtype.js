@@ -13,6 +13,7 @@ module.exports = function(mongoose) {
     SchemaString.schemaName = 'StringType';
     SchemaString.prototype = Object.create( Schema.Types.String.prototype );
     SchemaString.prototype.constructor = SchemaString;
+    SchemaString.prototype.cast = value => '' + value;
 
     Schema.Types.StringType = SchemaString;
     mongoose.Types.StringType = mongoose.mongo.StringType;
