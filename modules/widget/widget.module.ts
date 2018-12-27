@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CKEditorModule } from 'ng2-ckeditor';
 
 import { CoreModule } from 'core/core.module';
@@ -12,16 +12,24 @@ import { InlineSelectEditComponent } from 'widget/inlineEdit/inlineSelectEdit.co
 import { PlaceHoldEmptyPipe } from 'widget/pipes/placeHoldEmpty.pipe';
 import { SortableArrayComponent } from 'widget/sortableArray/sortableArray.component';
 import { TextTruncateComponent } from 'widget/text/textTruncate.component';
-import { MatIconModule } from '@angular/material';
+import {
+    MatInputModule, MatIconModule, MatChipsModule, MatAutocompleteModule
+} from '@angular/material';
+import { TagComponent } from 'widget/tag/tag.component';
 
 @NgModule({
     imports: [
         CKEditorModule,
         CommonModule,
         FormsModule,
+        ReactiveFormsModule,
         NgbModule.forRoot(),
         CoreModule,
         MatIconModule,
+        MatInputModule,
+        MatIconModule,
+        MatChipsModule,
+        MatAutocompleteModule
     ],
     declarations: [
         DeleteWithConfirmComponent,
@@ -31,6 +39,7 @@ import { MatIconModule } from '@angular/material';
         PlaceHoldEmptyPipe,
         TextTruncateComponent,
         SortableArrayComponent,
+        TagComponent
     ],
     exports: [
         DeleteWithConfirmComponent,
@@ -39,9 +48,9 @@ import { MatIconModule } from '@angular/material';
         InlineSelectEditComponent,
         PlaceHoldEmptyPipe,
         SortableArrayComponent,
+        TagComponent
     ],
-    providers: [
-    ],
+    providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 

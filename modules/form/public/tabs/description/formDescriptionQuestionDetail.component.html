@@ -66,15 +66,19 @@
             <div *ngIf="question.question.defaultAnswer"
                  class="defaultAnswer">
                 <span class="formViewQuestionLabel">Default Answer:</span>
-                <span class="badge badge-secondary formViewSummaryLabel" style="background-color: #666">{{question.question.defaultAnswer}}</span>
+                <span class="badge badge-secondary formViewSummaryLabel"
+                      style="background-color: #666">{{question.question.defaultAnswer}}</span>
             </div>
             <div *ngIf="question.question.unitsOfMeasure.length > 0" class="questionUom">
                 <span class="formViewQuestionLabel">Units of Measure:</span>
                 <span *ngFor="let u of question.question.unitsOfMeasure; let index = index"
                       class="badge badge-info formViewSummaryLabel"
                       [ngClass]="{'badge-danger': (question.question.uomsValid && question.question.uomsValid[index])}">
-                    <ng-container *ngIf="u.system">{{u.system}}/</ng-container>{{u.code}}<ng-container
-                        *ngIf="question.question.uomsValid && question.question.uomsValid[index]">&nbsp;(Error: {{question.question.uomsValid[index]}})</ng-container>
+                    <ng-container *ngIf="u.system">{{u.system}}/</ng-container>
+                    {{u.code}}
+                    <ng-container
+                            *ngIf="question.question.uomsValid && question.question.uomsValid[index]">&nbsp;(Error: {{question.question.uomsValid[index]}}
+                        )</ng-container>
                 </span>
             </div>
         </div>
@@ -86,7 +90,8 @@
         <dt class="col-2">Label:</dt>
         <dd class="col-10">
             <mat-icon class="changeQuestionLabelIcon hand-cursor mr-1" title="Change question label"
-               (click)="openNameSelect(question, parent)">edit</mat-icon>
+                      (click)="openNameSelect(question, parent)">edit
+            </mat-icon>
             <span *ngIf="!question.hideLabel">{{question.label}}</span>
             <span *ngIf="question.hideLabel">(No label)</span>
         </dd>
@@ -144,8 +149,9 @@
                     <span *ngFor="let u of question.question.unitsOfMeasure;let i = index;"
                           class="badge badge-info formViewSummaryLabel">
                         <mat-icon class="hand-cursor dark-icon pl-1" style="font-size: 14px; height: 14px"
-                           (click)="removeUomByIndex(i)">cancel</mat-icon>
-                        <ng-container *ngIf="u.system">{{u.system}}/</ng-container>{{u.code}}
+                                  (click)="removeUomByIndex(i)">cancel</mat-icon>
+                        <ng-container *ngIf="u.system">{{u.system}}/</ng-container>
+                        {{u.code}}
                     </span>
                     <ng-template #rt let-r="result" let-t="term">
                         <dl class="row" *ngIf="r.name">
@@ -159,7 +165,8 @@
                             <dd class="col-10 mb-0">{{r.code}}</dd>
                         </dl>
                         <span *ngIf="!r.name">
-                            <mat-icon>warning</mat-icon> {{r.code}} is not a valid UCUM Unit
+                            <mat-icon>warning</mat-icon>
+                            {{r.code}} is not a valid UCUM Unit
                         </span>
                     </ng-template>
                     <div class="p-1">
@@ -178,7 +185,9 @@
                         <ng-template #manualUom>
                             <input class="form-control d-inline-block" style="max-width: 200px" [(ngModel)]="newUom"/>
                             <button mat-raised-button style="vertical-align: baseline"
-                                    (click)="uomAddNew()"><mat-icon>add</mat-icon></button>
+                                    (click)="uomAddNew()">
+                                <mat-icon>add</mat-icon>
+                            </button>
                         </ng-template>
                         <ng-container *ngFor="let e of question.question.uomsValid; index as i">
                             <div *ngIf="e" style="color: red">
@@ -201,24 +210,24 @@
             <ng-container *ngIf="question.question.cde.tinyId">
                 <dt class="col-2 answerListLabel">Answer List
                     <mat-icon *ngIf="question.question.answers.length > 0" class="hand-cursor"
-                       (click)="openEditAnswerModal(question)">edit</mat-icon>:
+                              (click)="openEditAnswerModal(question)">edit
+                    </mat-icon>
+                    :
                 </dt>
                 <dd class="col-10 answerList">
-                    <ng-select [(ngModel)]="question.question.answers" [items]="answerListItems"
-                               [multiple]="true" bindLabel="valueMeaningName" placeholder="Select Answer"
-                               appendTo="body" [hideSelected]="true" (add)="onAnswerListAdd();"
-                               (remove)="onAnswerListRemove($event)" (clear)="onEltChange.emit();">
-                    </ng-select>
+                    <cde-tag [tags]="questionAnswers"
+                                    [allTags]="answerListItems"
+                                    [placeHolder]="'Select Answer'" [canEdit]="true"
+                                    (change)="onAnswerListChanged()"></cde-tag>
                 </dd>
             </ng-container>
         </ng-container>
         <dt class="col-2">Default Answer:</dt>
         <dd class="col-10 defaultAnswer">
             <ng-container *ngIf="question.question.datatype === 'Value List'">
-                <ng-select [(ngModel)]="question.question.defaultAnswer" [(items)]="defaultAnswerListItems"
-                           bindLabel="valueMeaningName" bindValue="valueMeaningName" placeholder="Select Default Answer"
-                           appendTo="body" [hideSelected]="true" (change)="onEltChange.emit()">
-                </ng-select>
+                <cde-tag [tags]="question.question.defaultAnswer" [allTags]="defaultAnswerListItems"
+                                [placeHolder]="'Select Default Answer'" [canEdit]="true"
+                                (change)="onEltChange.emit()"></cde-tag>
             </ng-container>
             <ng-container *ngIf="question.question.datatype !== 'Value List'">
                 <cde-inline-edit [(model)]="question.question.defaultAnswer" [isAllowed]="true"

@@ -19,21 +19,7 @@ import { FormElement, FormQuestion, SkipLogic } from 'shared/form/form.model';
 
 @Component({
     selector: 'cde-form-description-question-detail',
-    templateUrl: 'formDescriptionQuestionDetail.component.html',
-    styles: [`
-        mat-form-field {
-            margin-left: 1px;
-            margin-right: 1px;
-        }
-
-        .green {
-            color: green
-        }
-
-        .blue {
-            color: blue
-        }
-    `]
+    templateUrl: 'formDescriptionQuestionDetail.component.html'
 })
 export class FormDescriptionQuestionDetailComponent implements OnInit {
     @Input() canEdit: boolean = false;
@@ -54,12 +40,16 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         if (this.question.question.unitsOfMeasure) {
             this.ucumService.validateUoms(this.question.question);
         }
+        this.questionAnswers = this.question.question.answers.map(p => p.valueMeaningName);
     }
 
     @Output() onEltChange: EventEmitter<void> = new EventEmitter<void>();
     @ViewChild('formDescriptionQuestionTmpl') formDescriptionQuestionTmpl!: TemplateRef<any>;
     @ViewChild('formDescriptionQuestionEditTmpl') formDescriptionQuestionEditTmpl!: TemplateRef<any>;
     @ViewChild('slInput') slInput: ElementRef;
+
+    questionAnswers = [];
+
     answerListItems = [];
     dataTypeList = [];
     defaultAnswerListItems = [];
@@ -109,32 +99,23 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         return formElt.question.cde.derivationRules && formElt.question.cde.derivationRules.length > 0;
     }
 
-    onAnswerListAdd() {
-        this.syncDefaultAnswerListItems();
-        this.onEltChange.emit();
-    }
-
-    onAnswerListRemove(removedAnswer) {
-        if (removedAnswer && removedAnswer.value.valueMeaningName === this.question.question.defaultAnswer) {
-            this.question.question.defaultAnswer = '';
-        }
+    onAnswerListChanged() {
+        this.question.question.answers = this.questionAnswers.filter(p => this.questionAnswers.indexOf(p.valueMeaningName) >= 0);
         this.syncDefaultAnswerListItems();
         this.onEltChange.emit();
     }
 
     openEditAnswerModal(q) {
-        if (q.question.answers.length > 0) {
-            const modalRef = this.dialog.open(QuestionAnswerEditContentComponent, {data: {answers: q.question.answers}})
-                .afterClosed().subscribe(response => {
-                    if (response === "clear") {
-                        q.question.answers = [];
-                        this.onAnswerListRemove(this.question.question.defaultAnswer || undefined);
-                    } else if (response) {
-                        q.question.answers = _clone(response);
-                        this.onEltChange.emit();
-                    }
-                });
-        }
+        this.dialog.open(QuestionAnswerEditContentComponent, {data: {answers: q.question.answers}})
+            .afterClosed().subscribe(response => {
+            if (response === "clear") {
+                q.question.answers = [];
+                this.onAnswerListChanged();
+            } else if (response) {
+                q.question.answers = _clone(response);
+                this.onEltChange.emit();
+            }
+        });
     }
 
     openNameSelect(question, parent) {
@@ -246,12 +227,12 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     }
 
     private syncAnswerListItems() {
-        this.answerListItems = this.question.question.cde.permissibleValues.concat([]);
+        this.answerListItems = this.question.question.cde.permissibleValues.map(p => p.valueMeaningName);
         this.syncDefaultAnswerListItems();
     }
 
     private syncDefaultAnswerListItems() {
-        this.defaultAnswerListItems = this.question.question.answers.concat([]);
+        this.defaultAnswerListItems = this.question.question.answers.map(p => p.valueMeaningName);
     }
 
     typeaheadSkipLogic(parent, fe, event) {

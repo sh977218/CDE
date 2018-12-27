@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, Output, ViewChild, EventEmitter, ElementRef } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent, MatChipInputEvent, MatAutocomplete } from '@angular/material';
 import { Observable } from 'rxjs';
@@ -7,14 +7,17 @@ import { OrgHelperService } from 'core/orgHelper.service';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 
 @Component({
-    selector: 'cde-naming-tag',
-    templateUrl: './namingTag.component.html'
+    selector: 'cde-tag',
+    templateUrl: './tag.component.html'
 })
-export class NamingTagComponent implements OnInit {
+export class TagComponent implements OnInit {
     @Input() tags;
     @Input() canEdit;
     @Input() stewardOrgName;
-    @Input() allTags?;
+    @Input() allTags?: any = [];
+    @Input() placeHolder?: string = 'New tag...';
+
+    @Output() change = new EventEmitter();
 
     tagCtrl = new FormControl();
     filteredTags: Observable<string[]>;
@@ -25,9 +28,6 @@ export class NamingTagComponent implements OnInit {
     @ViewChild('auto') matAutocomplete: MatAutocomplete;
 
     constructor(private orgHelperService: OrgHelperService) {
-        this.filteredTags = this.tagCtrl.valueChanges.pipe(
-            startWith(null),
-            map((t: string | null) => t ? this._filter(t) : this.allTags.slice()));
     }
 
     ngOnInit() {
@@ -38,6 +38,10 @@ export class NamingTagComponent implements OnInit {
             }, () => {
             });
         }
+        this.filteredTags = this.tagCtrl.valueChanges.pipe(
+            startWith(null),
+            map((t: string | null) => t ? this._filter(t) : this.allTags.slice()));
+
     }
 
 
@@ -57,6 +61,7 @@ export class NamingTagComponent implements OnInit {
 
             this.tagCtrl.setValue(null);
         }
+        this.change.emit();
     }
 
     remove(tag: string): void {
@@ -65,6 +70,7 @@ export class NamingTagComponent implements OnInit {
         if (index >= 0) {
             this.tags.splice(index, 1);
         }
+        this.change.emit();
     }
 
     selected(event: MatAutocompleteSelectedEvent): void {

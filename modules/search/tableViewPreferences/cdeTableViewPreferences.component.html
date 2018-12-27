@@ -106,8 +106,8 @@
             </mat-list>
         </mat-grid-tile>
     </mat-grid-list>
-    <cde-naming-tag [tags]="searchSettings.tableViewFields.identifiers"
-                    [canEdit]="searchSettings.tableViewFields.ids" (changed)="onChanged.emit()"></cde-naming-tag>
+    <cde-tag [tags]="searchSettings.tableViewFields.identifiers"
+                    [canEdit]="searchSettings.tableViewFields.ids" (changed)="onChanged.emit()"></cde-tag>
 </mat-dialog-content>
 <mat-dialog-actions>
     <button mat-raised-button (click)="loadDefault()" id="loadDefaultTableViewSettingsBtn">Load Default</button>

@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { FormsModule } from "@angular/forms";
 import { RouterModule } from '@angular/router';
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { TreeModule } from "angular-tree-component";
@@ -18,7 +18,6 @@ import { HistoryComponent } from "./components/history.component";
 import { ClassifyItemModalComponent } from "./components/classification/classifyItemModal.component";
 import { IdentifiersComponent } from "./components/identifiers.component";
 import { NamingComponent } from "./components/naming/naming.component";
-import { NamingTagComponent } from 'adminItem/public/components/naming/tag/namingTag.component';
 import { PropertiesComponent } from "./components/properties/properties.component";
 import { ReferenceDocumentComponent } from "./components/referenceDocument.component";
 import { SourcesComponent } from "./components/sources/sources.component";
@@ -31,7 +30,7 @@ import { DeleteModalComponent } from 'adminItem/public/components/deleteModal/de
 import { NewDesignationComponent } from 'adminItem/public/components/naming/designation/newDesignation.component';
 import { NewDefinitionComponent } from 'adminItem/public/components/naming/definition/newDefinition.component';
 import {
-    MatInputModule, MatButtonModule, MatDialogModule, MatIconModule, MatChipsModule, MatAutocompleteModule
+    MatInputModule, MatButtonModule, MatDialogModule, MatIconModule
 } from "@angular/material";
 
 @NgModule({
@@ -39,7 +38,6 @@ import {
         CommonModule,
         CKEditorModule,
         FormsModule,
-        ReactiveFormsModule,
         NgbModule,
         NgSelectModule,
         RouterModule,
@@ -53,8 +51,6 @@ import {
         MatButtonModule,
         MatDialogModule,
         MatIconModule,
-        MatChipsModule,
-        MatAutocompleteModule
     ],
     declarations: [
         AttachmentsComponent,
@@ -68,7 +64,6 @@ import {
         LinkedFormsComponent,
         HistoryComponent,
         NamingComponent,
-        NamingTagComponent,
         PropertiesComponent,
         ReferenceDocumentComponent,
         RegistrationComponent,
@@ -90,7 +85,6 @@ import {
         LinkedFormsComponent,
         HistoryComponent,
         NamingComponent,
-        NamingTagComponent,
         PropertiesComponent,
         ReferenceDocumentComponent,
         RegistrationComponent,
