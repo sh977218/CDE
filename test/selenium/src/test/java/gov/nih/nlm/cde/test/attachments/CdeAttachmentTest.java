@@ -23,7 +23,13 @@ public class CdeAttachmentTest extends BaseAttachmentTest {
         textPresent("cannot be downloaded");
 
         logout();
-        reviewAttachment("glass.jpg");
+        mustBeLoggedInAs(attachmentReviewer_username, password);
+
+        goToCdeByName(cdeName);
+        goToAttachments();
+        findElement(By.linkText("glass.jpg"));
+        clickElement(By.id("notifications"));
+        clickElement(By.xpath("//div[contains(@class, 'taskItem')][*//div[contains(text(),'glass.jpg ')]]//button[*[contains(text(),'Approve')]]"));
 
         logout();
         mustBeLoggedInAs(ninds_username, password);

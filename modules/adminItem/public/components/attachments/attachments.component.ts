@@ -1,4 +1,6 @@
 import { Component, Input, EventEmitter, Output } from '@angular/core';
+import { hasRole } from 'shared/system/authorizationShared';
+import { UserService } from '_app/user.service';
 
 @Component({
     selector: 'cde-attachments',
@@ -10,6 +12,8 @@ export class AttachmentsComponent {
     @Output() removeAttachment = new EventEmitter();
     @Output() setDefault = new EventEmitter();
     @Output() upload = new EventEmitter();
+
+    constructor(private userService: UserService) {}
 
     copyUrl(attachment) {
         let url = (window as any).publicUrl + '/data/' + attachment.fileid;
@@ -30,4 +34,9 @@ export class AttachmentsComponent {
     openFileDialog() {
         document.getElementById("fileToUpload").click();
     }
+
+    canReviewAttachment() {
+        return hasRole(this.userService.user, 'AttachmentReviewer');
+    }
+
 }
