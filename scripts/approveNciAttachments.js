@@ -19,7 +19,7 @@ async function run() {
                 (!elts[0].updatedBy.username && elts[0].createdBy.username === 'batchloader')) {
                 attachmentsApproved++;
 
-                Files.update({_id: oneFile._id}, {"metadata.status": "approved"}, err => {
+                Files.updateOne({_id: oneFile._id}, {"metadata.status": "approved"}, err => {
                     if (err) {
                         console.log(err);
                         process.exit(1);

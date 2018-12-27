@@ -26,7 +26,7 @@ Form.find({}).exec(function (err, forms) {
         var id = form.get('_id');
         var formObj = form.toObject();
         loopFormElements(formObj);
-        Form.update({_id: id}, {$set: {formElements: formObj.formElements}}, function () {
+        Form.updateOne({_id: id}, {$set: {formElements: formObj.formElements}}, function () {
             counter++;
             console.log('form' + counter + ' form id: ' + form.tinyId);
             doneOneForm();

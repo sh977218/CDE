@@ -24,5 +24,5 @@ exports.fs_files.set('collection', 'fs.files');
 exports.Fs_files = conn.model('fs_files', exports.fs_files);
 
 exports.alterAttachmentStatus = function (id, status, callback) {
-    exports.Fs_files.update({_id: id}, {$set: {'metadata.status': status}}, callback);
+    exports.Fs_files.updateOne({_id: id}, {$set: {'metadata.status': status}}, callback);
 };

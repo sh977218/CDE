@@ -150,7 +150,7 @@ function streamOnClose() {
     FormModel.where({
         imported: {$ne: importDate},
         'stewardOrg.name': source
-    }).update({
+    }).updateMany({
         "registrationState.registrationStatus": "Retired",
         "registrationState.administrativeNote": "Not present in import from " + importDate
     });
