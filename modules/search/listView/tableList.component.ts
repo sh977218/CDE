@@ -1,11 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { ElasticService } from '_app/elastic.service';
+import { SearchSettings } from 'search/search.model';
 import { CdeTableViewPreferencesComponent } from 'search/tableViewPreferences/cdeTableViewPreferencesComponent';
 import { FormTableViewPreferencesComponent } from 'search/tableViewPreferences/formTableViewPreferencesComponent';
+import { ElasticQueryResponse, UserSearchSettings } from 'shared/models.model';
 
 @Component({
-    selector: 'cde-table-list',
     templateUrl: './tableList.component.html',
     styles: [`
         :host >>> ul {
@@ -18,18 +19,14 @@ export class TableListComponent implements OnInit {
         this._elts = elts;
         this.render();
     }
-
     get elts() {
         return this._elts;
     }
-
     @Input() module: string;
-
     private _elts: any[];
     headings: string[];
     rows: any[];
-
-    searchSettings;
+    searchSettings: UserSearchSettings;
 
     constructor(public dialog: MatDialog,
                 public esService: ElasticService) {
@@ -61,8 +58,11 @@ export class TableListComponent implements OnInit {
         if (tableSetup.registrationStatus) this.headings.push('Registration Status');
         if (tableSetup.administrativeStatus) this.headings.push('Admin Status');
         if (tableSetup.ids) {
-            if (tableSetup.identifiers.length > 0) tableSetup.identifiers.forEach(i => this.headings.push(i));
-            else this.headings.push('Identifiers');
+            if (Array.isArray(tableSetup.identifiers) && tableSetup.identifiers.length > 0) {
+                tableSetup.identifiers.forEach(i => this.headings.push(i));
+            } else {
+                this.headings.push('Identifiers');
+            }
         }
         if (tableSetup.source) this.headings.push('Source');
         if (tableSetup.updated) this.headings.push('Updated');
@@ -179,16 +179,10 @@ export class TableListComponent implements OnInit {
                 });
             }
             if (tableSetup.linkedForms) {
-                let lfSettings = this.esService.buildElasticQuerySettings({
-                    q: e.tinyId
-                    , page: 1
-                    , classification: []
-                    , classificationAlt: []
-                    , regStatuses: []
-                });
+                let lfSettings = this.esService.buildElasticQuerySettings(new SearchSettings(e.tinyId));
 
                 let values = [];
-                this.esService.generalSearchQuery(lfSettings, 'form', (err, result) => {
+                this.esService.generalSearchQuery(lfSettings, 'form', (err?: string, result?: ElasticQueryResponse) => {
                     if (result.forms) {
                         if (result.forms.length > 5) result.forms.length = 5;
                         result.forms.forEach(crf => values.push({name: crf.primaryNameCopy, tinyId: crf.tinyId}));

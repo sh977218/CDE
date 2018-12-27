@@ -30,7 +30,6 @@ export class CdeForm extends Elt implements FormElementsContainer {
     isCopyrighted?: boolean;
     mapTo?: ExternalMappings; // calculated, used by: FHIR
     noRenderAllowed?: boolean;
-    numQuestions?: number; // volatile, Elastic
     outdated?: boolean; // volatile, server calculated
 
     static getEltUrl(elt: Elt) {
@@ -80,7 +79,14 @@ export class CdeForm extends Elt implements FormElementsContainer {
     }
 }
 
-export class CdeFormElastic extends CdeForm {
+export class CdeFormElastic extends CdeForm { // all volatile
+    [key: string]: any; // used for highlighting
+    highlight?: any;
+    numQuestions?: number;
+    primaryDefinitionCopy?: string;
+    primaryNameCopy?: string;
+    primaryNameSuggest?: string;
+    score!: number;
 }
 
 export class FhirProcedureMapping {

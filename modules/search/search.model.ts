@@ -9,12 +9,17 @@ export class SearchSettings {
     excludeOrgs?: string[] = [];
     meshTree?: string = '';
     page?: number = 1;
-    q?: string;
+    q?: string = '';
     regStatuses: CurationStatus[] = [];
     resultPerPage?: number = 20;
     searchTerm?: string;
-    selectedOrg?: string;
+    selectedOrg?: string = '';
     selectedOrgAlt?: string;
+
+    constructor(q = '', resultsPerPage = 20) {
+        this.q = q;
+        this.resultPerPage = resultsPerPage;
+    }
 }
 
 export class SearchSettingsElastic {
@@ -22,7 +27,7 @@ export class SearchSettingsElastic {
     excludeOrgs: string[] = [];
     fullRecord?: boolean;
     includeAggregations?: boolean;
-    meshTree: string = '';
+    meshTree?: string = '';
     page?: number = 1;
     q?: string;
     resultPerPage?: number = 20;
@@ -35,5 +40,10 @@ export class SearchSettingsElastic {
     selectedOrgAlt?: string;
     selectedStatuses: CurationStatus[] = [];
     visibleStatuses?: CurationStatus[];
+
+    constructor(selectedStatuses: CurationStatus[] = [], resultPerPage = 20) {
+        this.resultPerPage = resultPerPage;
+        this.selectedStatuses = selectedStatuses;
+    }
 }
 
