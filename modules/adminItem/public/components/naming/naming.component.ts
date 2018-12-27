@@ -18,11 +18,9 @@ export class NamingComponent implements OnInit {
 
     constructor(private orgHelperService: OrgHelperService,
                 public dialog: MatDialog) {
-        console.log('naming constructor ');
     }
 
     ngOnInit() {
-        console.log('naming Init ');
         let stewardOrgName = this.elt.stewardOrg.name;
         this.orgHelperService.then(orgsDetailedInfo => {
             let namingTags = orgsDetailedInfo[stewardOrgName].nameTags;

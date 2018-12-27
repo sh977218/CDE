@@ -22,9 +22,7 @@
         <div class="form-group">
             <label for="newDefinitionTags">Tags</label>
             <div id="newDefinitionTags">
-                <ng-select [(ngModel)]="newDefinition.tags" [items]="tags" [hideSelected]="true" [hideSelected]="true"
-                           [placeholder]="noTagFoundMessage" appendTo="body" multiple="true" name="newTags">
-                </ng-select>
+                <cde-naming-tag [tags]="newDefinition.tags" [allTags]="tags" [canEdit]="true"></cde-naming-tag>
             </div>
         </div>
         <div class="alert alert-info">
@@ -33,8 +31,10 @@
     </div>
     <div mat-dialog-actions>
         <button [mat-dialog-close] id="cancelNewDefinitionBtn" type="button"
-            mat-raised-button color="warn">Cancel</button>
+                mat-raised-button color="warn">Cancel
+        </button>
         <button mat-raised-button color="primary" [disabled]="!newDefinitionForm.form.valid"
-                id="createNewDefinitionBtn" type="button" [mat-dialog-close]="newDefinition">Save</button>
+                id="createNewDefinitionBtn" type="button" [mat-dialog-close]="newDefinition">Save
+        </button>
     </div>
 </form>
