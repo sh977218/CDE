@@ -128,7 +128,7 @@ exports.updateUser = (user, fields, callback) => {
     }
     if (fields.searchSettings) update.searchSettings = fields.searchSettings;
     if (fields.publishedForms) update.publishedForms = fields.publishedForms;
-    User.update({_id: user._id}, {$set: update}, callback);
+    User.updateOne({_id: user._id}, {$set: update}, callback);
 };
 exports.avatarByUsername = (username, callback) => {
     User.findOne({'username': new RegExp('^' + username + '$', "i")}, {avatarUrl: 1}, callback);

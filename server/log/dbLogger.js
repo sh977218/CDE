@@ -209,7 +209,7 @@ exports.httpLogs = function (body, callback) {
     let modal = LogModel.find(query);
     if (body.fromDate) modal.where("date").gte(moment(body.fromDate));
     if (body.toDate) modal.where("date").lte(moment(body.toDate));
-    LogModel.count({}, (err, count) => {
+    LogModel.countDocuments({}, (err, count) => {
         modal.sort(sort).limit(itemsPerPage).skip(skip).exec((err, logs) => {
             let result = {itemsPerPage: itemsPerPage, logs: logs, sort: sort};
             if (!body.totalItems) result.totalItems = count;
@@ -227,7 +227,7 @@ exports.appLogs = function (body, callback) {
     let modal = consoleLogModel.find();
     if (body.fromDate) modal.where("date").gte(moment(body.fromDate));
     if (body.toDate) modal.where("date").lte(moment(body.toDate));
-    consoleLogModel.count({}, function (err, count) {
+    consoleLogModel.countDocuments({}, (err, count) => {
         modal.sort({date: -1}).limit(itemsPerPage).skip(skip).exec(function (err, logs) {
             let result = {itemsPerPage: itemsPerPage, logs: logs};
             if (!body.totalItems) result.totalItems = count;

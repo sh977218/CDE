@@ -102,7 +102,7 @@ exports.unapproved = cb => {
 };
 
 exports.numberUnapprovedMessageByUsername = (username, cb = _.noop()) => {
-    return Comment.count({
+    return Comment.countDocuments({
         $or: [{'user.username': username, pendingApproval: true},
             {'replies.user.username': username, 'replies.pendingApproval': true}]
     }, cb);
