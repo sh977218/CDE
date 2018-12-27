@@ -45,9 +45,9 @@ export const checkPvUnicity = function (valueDomain) {
             return result;
         }
         if (pv.permissibleValue) allPvs[pv.permissibleValue] = 1;
-        if (pv.valueMeaningName && pv.valueMeaningName.length > 0)
+        if (pv.valueMeaningName && pv.valueMeaningName.length > 0 && pv.valueMeaningName.indexOf("Login to see the value") === -1)
             allVms[pv.valueMeaningName] = 1;
-        if (pv.valueMeaningCode && pv.valueMeaningCode.length > 0)
+        if (pv.valueMeaningCode && pv.valueMeaningCode.length > 0 && pv.valueMeaningCode.indexOf("Login to see the value") === -1)
             allCodes[pv.valueMeaningCode] = 1;
         delete pv.notValid;
     });

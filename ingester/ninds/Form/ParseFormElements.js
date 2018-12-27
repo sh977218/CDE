@@ -55,7 +55,7 @@ doOneNindsCde = async cdeId => {
             console.log('comment saved on new CDE ' + newCde.tinyId);
         }
         await newCde.save();
-    } else if (updatedByNonLoader(existingCde) && existingCde.updated > yesterday) {
+    } else if (updatedByNonLoader(existingCde) || existingCde.updated > yesterday) {
     } else {
         existingCde.imported = new Date().toJSON();
         existingCde.markModified('imported');
@@ -98,7 +98,7 @@ exports.parseFormElements = async nindsForms => {
         })
     });
 
-    let _nindsQuestionList = _.unionWith(nindsQuestionList, _.isEqual);
+    let _nindsQuestionList = _.unionWith(nindsQuestionList, (a, b) => _.isEqual(a, b));
     let _nindsCdeIdList = _.uniq(nindsCdeIdList);
 
     if (_nindsQuestionList.length === 0) return formElements;
