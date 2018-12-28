@@ -13,7 +13,11 @@ export class AttachmentsComponent {
     @Output() setDefault = new EventEmitter();
     @Output() upload = new EventEmitter();
 
-    constructor(private userService: UserService) {}
+    canReviewAttachment: boolean;
+
+    constructor(private userService: UserService) {
+        this.canReviewAttachment = hasRole(this.userService.user, 'AttachmentReviewer');
+    }
 
     copyUrl(attachment) {
         let url = (window as any).publicUrl + '/data/' + attachment.fileid;
@@ -33,10 +37,6 @@ export class AttachmentsComponent {
 
     openFileDialog() {
         document.getElementById("fileToUpload").click();
-    }
-
-    canReviewAttachment() {
-        return hasRole(this.userService.user, 'AttachmentReviewer');
     }
 
 }

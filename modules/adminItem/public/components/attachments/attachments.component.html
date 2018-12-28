@@ -8,7 +8,7 @@
             <dl id="attachment_{{i}}" class="row">
                 <dt class="col-3 text-right">Filename:</dt>
                 <dd class="col-9">
-                    <div *ngIf="!attachment.pendingApproval || canReviewAttachment(); else pendingApprovalTpl">
+                    <div *ngIf="!attachment.pendingApproval || canReviewAttachment; else pendingApprovalTpl">
                         <a id="attachment_file_url_{{i}}" class="mr-1"
                            href="/data/{{attachment.fileid}}"
                            target="_blank">{{attachment.filename}}</a>
