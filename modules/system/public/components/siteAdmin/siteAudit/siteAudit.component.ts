@@ -18,10 +18,6 @@ export class SiteAuditComponent implements OnInit {
     @ViewChild('serverErrorTab') serverErrorTab: MatTab;
     @ViewChild('clientErrorTab') clientErrorTab: MatTab;
 
-    tabs = [
-        {label: "tab1", content: "<cde-feedback-issues></cde-feedback-issues>"}
-    ];
-
     constructor(public userService: UserService,
                 private route: ActivatedRoute) {
         this.userService.then(user => this.isAdmin = isSiteAdmin(user), _noop);

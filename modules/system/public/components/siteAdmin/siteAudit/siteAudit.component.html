@@ -19,7 +19,7 @@
         <cde-classification-audit-log></cde-classification-audit-log>
     </mat-tab>
 
-    <mat-tab label="Active Bans">
+    <mat-tab label="Active Bans" *ngIf="isAdmin">
         <cde-active-bans></cde-active-bans>
     </mat-tab>
 
@@ -33,10 +33,6 @@
 
     <mat-tab label="Client Errors" *ngIf="isAdmin" #clientErrorTab>
         <cde-client-errors></cde-client-errors>
-    </mat-tab>
-
-    <mat-tab *ngFor="let tab of tabs" [label]="tab.label" [innerHtml]="tab.content">
-
     </mat-tab>
 
 </mat-tab-group>
