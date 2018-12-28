@@ -25,6 +25,7 @@ public class LogClientErrors extends NlmCdeBaseTest {
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Audit"));
 
+        hangon(1);
         clickElement(By.cssSelector(".mat-tab-header-pagination-after"));
         clickElement(By.xpath("//div[. = 'Client Errors']"));
         textPresent("An exception has been thrown");
