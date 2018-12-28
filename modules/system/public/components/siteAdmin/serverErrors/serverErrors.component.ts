@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { AlertService } from 'alert/alert.service';
+import { PageEvent } from '@angular/material';
 
 type ServerErrorRecord = any;
 
@@ -16,18 +17,15 @@ type ServerErrorRecord = any;
         `
     ]
 })
-export class ServerErrorsComponent implements OnInit {
+export class ServerErrorsComponent {
     currentPage: number = 1;
     excludeFilters: string[] = [];
     excludeFilterToAdd = '';
     records: ServerErrorRecord[] = [];
 
-    ngOnInit() {
-        this.gotoPage();
-    }
-
     constructor(private http: HttpClient,
                 private alert: AlertService) {
+        this.gotoPage();
     }
 
     addExcludeFilter(toAdd: string) {
@@ -37,7 +35,11 @@ export class ServerErrorsComponent implements OnInit {
         }
     }
 
-    gotoPage() {
+    gotoPage(event?: PageEvent) {
+        if (event) {
+            this.currentPage = event.pageIndex;
+        }
+
         this.http.post('/server/user/updateNotificationDate', {serverLogDate: new Date()})
             .subscribe(() => {
                 this.http.post<ServerErrorRecord[]>('/server/log/serverErrors', {

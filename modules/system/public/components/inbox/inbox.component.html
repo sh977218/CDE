@@ -19,38 +19,34 @@
 </div>
 
 <ng-template #mailTemplate let-type="type">
-    <ngb-accordion [closeOthers]="true">
-        <ng-container *ngFor="let message of mail[type] | slice:0:20">
-            <div *ngIf="message.type === 'BoardApproval'">
-                <ngb-panel>
-                    <ng-template ngbPanelTitle>
-                        {{message.date | date : medium}} |
-                        {{message.humanType}} |
-                        {{message.author.name}}
-                    </ng-template>
-                    <ng-template ngbPanelContent>
-                        <div class="card-body">
-                            <h4>{{message.humanType}}</h4>
-                            <dl class="row">
-                                <dt class="col-3 text-right">User</dt>
-                                <dd class="col-9">{{message.author.name}}</dd>
-                            </dl>
-                            <dl class="row">
-                                <dt class="col-3 text-right">Element</dt>
-                                <dd class="col-9">
-                                    <a target="_blank" class="linkToElt"
-                                       id="board_{{message.typeBoardApproval.element.name}}"
-                                       href="/board/{{message.typeBoardApproval.element.eltId}}">{{message.typeBoardApproval.element.name}}</a>
-                                </dd>
-                            </dl>
-                            <button *ngIf="type === 'received'" class="approveComment btn btn-outline-dark"
-                                    (click)="closeMessage(message)"
-                                    [ngClass]="{disabled: message.states[0].action === 'Approved'}">Archive
-                            </button>
-                        </div>
-                    </ng-template>
-                </ngb-panel>
-            </div>
-        </ng-container>
-    </ngb-accordion>
+    <mat-accordion>
+        <mat-expansion-panel *ngFor="let message of mail[type] | slice:0:20">
+            <ng-container *ngIf="message.type === 'BoardApproval'">
+                <mat-panel-title>
+                    {{message.date | date : medium}} |
+                    {{message.humanType}} |
+                    {{message.author.name}}
+                </mat-panel-title>
+                <div class="card-body">
+                    <h4>{{message.humanType}}</h4>
+                    <dl class="row">
+                        <dt class="col-3 text-right">User</dt>
+                        <dd class="col-9">{{message.author.name}}</dd>
+                    </dl>
+                    <dl class="row">
+                        <dt class="col-3 text-right">Element</dt>
+                        <dd class="col-9">
+                            <a target="_blank" class="linkToElt"
+                               id="board_{{message.typeBoardApproval.element.name}}"
+                               href="/board/{{message.typeBoardApproval.element.eltId}}">{{message.typeBoardApproval.element.name}}</a>
+                        </dd>
+                    </dl>
+                    <button *ngIf="type === 'received'" class="approveComment btn btn-outline-dark"
+                            (click)="closeMessage(message)"
+                            [ngClass]="{disabled: message.states[0].action === 'Approved'}">Archive
+                    </button>
+                </div>
+            </ng-container>
+        </mat-expansion-panel>
+    </mat-accordion>
 </ng-template>
