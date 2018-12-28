@@ -14,24 +14,25 @@ Org.find({}, async (err, orgs) => {
             console.log('Old nameTags: ' + org.nameTags);
             console.log('');
             console.log('Old propertyKeys: ' + org.propertyKeys);
-            let deDesignationsTags = await DataElement.distinct('designations.tags');
-            let deDefinitionsTags = await DataElement.distinct('definitions.tags');
-            let formDesignationsTags = await Form.distinct('designations.tags');
-            let formDefinitionsTags = await Form.distinct('definitions.tags');
-            let dePropertyKeys = await DataElement.distinct('properties.key');
-            let formPropertyKeys = await Form.distinct('properties.key');
+            let query = {'stewardOrg.name': org.name};
+            let deDesignationsTags = await DataElement.distinct('designations.tags', query);
+            let deDefinitionsTags = await DataElement.distinct('definitions.tags', query);
+            let formDesignationsTags = await Form.distinct('designations.tags', query);
+            let formDefinitionsTags = await Form.distinct('definitions.tags', query);
+            let dePropertyKeys = await DataElement.distinct('properties.key', query);
+            let formPropertyKeys = await Form.distinct('properties.key', query);
 
-            let deNamingTags = _.uniq(deDesignationsTags.concat(deDefinitionsTags))
-            let formNamingTags = _.uniq(formDesignationsTags.concat(formDefinitionsTags))
+            let deNamingTags = _.uniq(deDesignationsTags.concat(deDefinitionsTags));
+            let formNamingTags = _.uniq(formDesignationsTags.concat(formDefinitionsTags));
             let namingTags = _.uniq(deNamingTags.concat(formNamingTags));
             let propertiesKeys = _.uniq(dePropertyKeys.concat(formPropertyKeys));
-            org.nameTags = namingTags;
-            org.propertyKeys = propertiesKeys;
+            org.nameTags = namingTags.filter(n => !_.isEmpty(n));
+            org.propertyKeys = propertiesKeys.filter(p => !_.isEmpty(p));
             let newOrg = await org.save();
-            console.log('Finished Updating ' + org.name);
             console.log('New nameTags: ' + newOrg.nameTags);
             console.log('');
             console.log('New propertyKeys: ' + newOrg.propertyKeys);
+            console.log('Finished Updating ' + org.name);
             console.log('----------------------------------------------------------')
         }
         console.log('Finihsed All Orgs.');

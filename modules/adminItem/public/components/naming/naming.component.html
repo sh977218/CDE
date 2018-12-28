@@ -24,8 +24,8 @@
             </dd>
             <dt class="col-3 text-right">Tags:</dt>
             <dd id="designationTags_{{i}}" class="col-9">
-                <cde-tag [tags]="designation.tags" [stewardOrgName]="elt.stewardOrg.name"
-                                [canEdit]="canEdit" (changed)="onEltChange.emit();"></cde-tag>
+                <cde-tag [tags]="designation.tags" [allTags]="allTags"
+                         [canEdit]="canEdit" (changed)="onEltChange.emit();"></cde-tag>
             </dd>
         </dl>
         <hr>
@@ -54,8 +54,8 @@
             </dd>
             <dt class="col-3 text-right">Tags:</dt>
             <dd id="definitionTags_{{i}}" class="col-9">
-                <cde-tag [tags]="definition.tags" [stewardOrgName]="elt.stewardOrg.name"
-                                [canEdit]="canEdit" (changed)="onEltChange.emit();"></cde-tag>
+                <cde-tag [tags]="definition.tags" [allTags]="allTags"
+                         [canEdit]="canEdit" (changed)="onEltChange.emit();"></cde-tag>
             </dd>
         </dl>
         <hr>

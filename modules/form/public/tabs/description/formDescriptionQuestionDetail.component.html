@@ -218,7 +218,7 @@
                     <cde-tag [tags]="questionAnswers"
                              [allTags]="answerListItems"
                              [placeHolder]="'Select Answer'" [canEdit]="true"
-                             (change)="onAnswerListChanged()"></cde-tag>
+                             (changed)="onAnswerListChanged()"></cde-tag>
                 </dd>
             </ng-container>
         </ng-container>
@@ -227,7 +227,7 @@
             <ng-container *ngIf="question.question.datatype === 'Value List'">
                 <cde-tag [tags]="question.question.defaultAnswer" [allTags]="defaultAnswerListItems"
                          [placeHolder]="'Select Default Answer'" [canEdit]="true"
-                         (change)="onEltChange.emit()"></cde-tag>
+                         (changed)="onEltChange.emit()"></cde-tag>
             </ng-container>
             <ng-container *ngIf="question.question.datatype !== 'Value List'">
                 <cde-inline-edit [(model)]="question.question.defaultAnswer" [isAllowed]="true"

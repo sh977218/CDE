@@ -1,5 +1,5 @@
 <mat-form-field style="width: 100%;">
-    <mat-chip-list #chipList>
+    <mat-chip-list #chipList (change)="changed.emit()">
         <mat-chip *ngFor="let tag of tags" [selectable]="true" [removable]="canEdit" (removed)="remove(tag)">
             {{tag}}
             <mat-icon matChipRemove *ngIf="canEdit">cancel</mat-icon>

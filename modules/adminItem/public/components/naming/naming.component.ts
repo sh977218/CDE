@@ -14,7 +14,7 @@ export class NamingComponent implements OnInit {
     @Input() elt: any;
     @Input() canEdit: boolean = false;
     @Output() onEltChange = new EventEmitter();
-    tags = [];
+    allTags = [];
 
     constructor(private orgHelperService: OrgHelperService,
                 public dialog: MatDialog) {
@@ -26,7 +26,7 @@ export class NamingComponent implements OnInit {
             let namingTags = orgsDetailedInfo[stewardOrgName].nameTags;
             let allNamingTags = this.elt.designations.reduce(
                 (accumulator, currentValue) => accumulator.concat(currentValue.tags), namingTags);
-            this.tags = _uniq(allNamingTags);
+            this.allTags = _uniq(allNamingTags);
         }, _noop);
     }
 
@@ -41,20 +41,24 @@ export class NamingComponent implements OnInit {
     }
 
     openNewDesignationModal() {
-        this.dialog.open(NewDesignationComponent, {data: {tags: this.tags}}).afterClosed().subscribe(newDesignation => {
-            if (newDesignation) {
-                this.elt.designations.push(newDesignation);
-                this.onEltChange.emit();
-            }
-        });
+        this.dialog.open(NewDesignationComponent, {data: {tags: this.allTags}})
+            .afterClosed()
+            .subscribe(newDesignation => {
+                if (newDesignation) {
+                    this.elt.designations.push(newDesignation);
+                    this.onEltChange.emit();
+                }
+            });
     }
 
     openNewDefinitionModal() {
-        this.dialog.open(NewDefinitionComponent, {data: {tags: this.tags}}).afterClosed().subscribe(newDefinition => {
-            if (newDefinition) {
-                this.elt.definitions.push(newDefinition);
-                this.onEltChange.emit();
-            }
-        });
+        this.dialog.open(NewDefinitionComponent, {data: {tags: this.allTags}})
+            .afterClosed()
+            .subscribe(newDefinition => {
+                if (newDefinition) {
+                    this.elt.definitions.push(newDefinition);
+                    this.onEltChange.emit();
+                }
+            });
     }
 }
