@@ -1,5 +1,5 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Component, Injectable, Injector } from '@angular/core';
+import { Component, Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { PushNotificationSubscriptionService } from '_app/pushNotificationSubscriptionService';
 import _noop from 'lodash/noop';
@@ -10,7 +10,7 @@ import { catchError, debounceTime, distinctUntilChanged, map, switchMap } from '
 import { uriView } from 'shared/item';
 import { Cb, CbErr, CbErrObj, Comment, User } from 'shared/models.model';
 import { hasRole, isOrgAdmin, isOrgCurator } from 'shared/system/authorizationShared';
-import { newNotificationSettings, newNotificationSettingsMedia, newNotificationSettingsMediaDrawer } from 'shared/user';
+import { newNotificationSettings, newNotificationSettingsMediaDrawer } from 'shared/user';
 
 @Injectable()
 export class UserService {
@@ -33,8 +33,7 @@ export class UserService {
     logoutTimeout?: number;
 
     constructor(private dialog: MatDialog,
-                private http: HttpClient,
-                private injector: Injector) {
+                private http: HttpClient) {
         this.reload();
         this.resetInactivityTimeout();
         document.body.addEventListener('click', () => this.resetInactivityTimeout());
