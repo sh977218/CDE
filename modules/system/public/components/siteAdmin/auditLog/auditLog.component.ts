@@ -25,7 +25,7 @@ export class AuditLogComponent {
         }
 
         this.http.post<AuditLogRecord[]>('/getCdeAuditLog', {
-            skip: (this.currentPage - 1) * 50,
+            skip: this.currentPage * 50,
             limit: 50
         }).subscribe(response => {
             this.records = response;

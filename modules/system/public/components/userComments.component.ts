@@ -33,7 +33,7 @@ export class UserCommentsComponent {
             .subscribe(comments => {
                 this.comments.latestComments = comments;
                 let len = this.comments.latestComments.length;
-                this.comments.totalItems = (this.page) * 30 + len + (len === 30 ? 1 : 0);
+                this.comments.totalItems = this.page * 30 + len + (len === 30 ? 1 : 0);
             }, () => {
             });
     }

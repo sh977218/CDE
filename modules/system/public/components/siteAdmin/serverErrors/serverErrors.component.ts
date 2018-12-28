@@ -43,7 +43,7 @@ export class ServerErrorsComponent {
         this.http.post('/server/user/updateNotificationDate', {serverLogDate: new Date()})
             .subscribe(() => {
                 this.http.post<ServerErrorRecord[]>('/server/log/serverErrors', {
-                    skip: (this.currentPage - 1) * 50,
+                    skip: this.currentPage * 50,
                     limit: 50
                 }).subscribe(response => {
                     this.records = response;

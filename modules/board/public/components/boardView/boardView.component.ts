@@ -168,7 +168,7 @@ export class BoardViewComponent implements OnInit {
     }
 
     reload() {
-        this.http.get<any>('/server/board/' + this.boardId + '/' + ((this.currentPage - 1) * 20)).subscribe(response => {
+        this.http.get<any>('/server/board/' + this.boardId + '/' + ((this.currentPage) * 20)).subscribe(response => {
             if (response.board) {
                 this.board = response.board;
                 this.elts = response.elts;

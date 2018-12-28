@@ -26,7 +26,7 @@ export class FeedbackIssuesComponent {
             this.currentPage = event.pageIndex;
         }
         this.http.post<FeedbackErrorRecord[]>('/server/log/feedbackIssues', {
-            skip: (this.currentPage - 1) * 5,
+            skip: this.currentPage * 5,
             limit: 5
         }).subscribe(response => this.records = response);
     }
