@@ -6,7 +6,7 @@ const navigationSteps: Array<any> = [
     {
         title: "Welcome",
         orphan: true,
-        content: "Welcome to the NIH CDE Repository. This tour will guide you through the application. If you close this tour, you can restart it here."
+        content: "Welcome to the NIH CDE Repository. This tour will guide you through the application. If you close this tour, you can restart it here. Tip: You can navigate this tour with keyboard arrows."
     },
     {
         title: "CDEs",
@@ -65,6 +65,16 @@ const searchResultSteps: Array<any> = [
         element: "#classificationListHolder",
         content: "We can continue browsing inside the NLM classification here.",
         placement: "top"
+    },
+    {
+        title: "Advanced Classification Filter",
+        element: "#excludeFilterModeToggle",
+        content: "These 2 small icons will let us find content that belongs to any 2 classifications, or even find content that is not under a particular classification."
+    },
+    {
+        title: "Remove Filters",
+        element: "#removeClassifications",
+        content: "Click here to remove a filter"
     },
     {
         title: "Registration Status",
