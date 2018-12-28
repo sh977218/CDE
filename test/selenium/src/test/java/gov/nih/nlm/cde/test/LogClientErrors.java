@@ -7,14 +7,15 @@ import org.testng.annotations.Test;
 
 public class LogClientErrors extends NlmCdeBaseTest {
 
-    @Test
-    @SelectBrowser()
+//    @Test
+//    @SelectBrowser()
     public void createIEError() {
         driver.get(baseUrl + "/searchPreferences?triggerClientError=1&fullPath=true&inIE=true");
         textPresent("By default, I want to see results as");
     }
 
-    @Test(dependsOnMethods = {"createIEError"})
+    @Test
+//    @Test(dependsOnMethods = {"createIEError"})
     public void logClientErrors() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         driver.get(baseUrl + "/searchPreferences?triggerClientError=1&fullPath=true");
@@ -25,7 +26,8 @@ public class LogClientErrors extends NlmCdeBaseTest {
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Audit"));
 
-        hangon(1);
+        clickElement(By.cssSelector(".mat-tab-header-pagination-after"));
+        clickElement(By.cssSelector(".mat-tab-header-pagination-after"));
         clickElement(By.cssSelector(".mat-tab-header-pagination-after"));
         clickElement(By.xpath("//div[. = 'Client Errors']"));
         textPresent("An exception has been thrown");
