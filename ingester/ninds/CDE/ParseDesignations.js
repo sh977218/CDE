@@ -28,7 +28,7 @@ exports.parseDesignations = nindsForms => {
             let existingDesignation = false;
             designations.forEach(d => {
                 if (d.designation === n) {
-                    d.designation.tags.push('Question Text');
+                    d.tags.push('Question Text');
                     existingDesignation = true;
                 }
             });
