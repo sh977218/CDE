@@ -22,7 +22,7 @@ mergeReferenceDocuments = (newReferenceDocuments, existingReferenceDocuments) =>
 };
 
 mergeIds = (newIds, existingIds) => {
-    let otherSources = existingIds.filter(s => s.source !== 'NINDS' && s.source !== 'NINDS Variable Name');
+    let otherSources = existingIds.filter(s => s.source !== 'NINDS' && s.source !== 'NINDS Variable Name' && s.source !== 'NINDS caDSR');
     let result = newIds.concat(otherSources);
     return result;
 };

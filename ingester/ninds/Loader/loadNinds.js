@@ -89,6 +89,11 @@ doOneNindsFormById = async formIdString => {
     });
     if (!existingForm) {
         let savedForm = await newForm.save();
+        for (let comment of newFormObj.comments) {
+            comment.element.eltId = savedForm.tinyId;
+            await new Comment(comment).save();
+            console.log('comment saved on new Form ' + newForm.tinyId);
+        }
         createdForm++;
         console.log('createdForm: ' + createdForm + ' ' + savedForm.tinyId);
     } else if (updatedByNonLoader(existingForm) ||
@@ -99,6 +104,11 @@ doOneNindsFormById = async formIdString => {
         existingForm.imported = new Date().toJSON();
         existingForm.markModified('imported');
         let diff = CompareForm.compareForm(newForm, existingForm);
+        for (let comment of newFormObj.comments) {
+            comment.element.eltId = existingForm.tinyId;
+            await new Comment(comment).save();
+            console.log('comment saved on existing Form ' + existingForm.tinyId);
+        }
         if (_.isEmpty(diff)) {
             await existingForm.save();
             sameForm++;
@@ -114,7 +124,7 @@ doOneNindsFormById = async formIdString => {
 
 run = async () => {
     let formIdList = await NindsModel.distinct('formId');
-//    let formIdList = ['formF2032'];
+//    let formIdList = ['formF0374'];
     for (let formId of formIdList) {
         await doOneNindsFormById(formId);
         await NindsModel.remove({formId: formId});

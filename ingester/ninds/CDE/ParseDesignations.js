@@ -24,11 +24,21 @@ exports.parseDesignations = nindsForms => {
         })
     });
     _questionTextArray.forEach(n => {
-        if (n !== 'N/A')
-            designations.push({
-                designation: trimWhite(n),
-                tags: ['Question Text']
+        if (n !== 'N/A') {
+            let existingDesignation = false;
+            designations.forEach(d => {
+                if (d.designation === n) {
+                    d.designation.tags.push('Question Text');
+                    existingDesignation = true;
+                }
             });
+            if (!existingDesignation) {
+                designations.push({
+                    designation: trimWhite(n),
+                    tags: ['Question Text']
+                });
+            }
+        }
     });
     return designations;
 };

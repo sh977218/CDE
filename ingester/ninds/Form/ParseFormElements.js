@@ -15,6 +15,12 @@ const Comment = require('../../../server/discuss/discussDb').Comment;
 const updatedByNonLoader = require('../../shared/updatedByNonLoader').updatedByNonLoader;
 const batchloader = require('../../shared/updatedByNonLoader').batchloader;
 
+let createdCDE = 0;
+let sameCDE = 0;
+let changeCDE = 0;
+let skipCDE = 0;
+
+
 doOneNindsCde = async cdeId => {
     let newCdeObj = await CreateCDE.createCde(cdeId);
     let cdeError = deValidator.checkPvUnicity(newCdeObj.valueDomain);
@@ -54,10 +60,15 @@ doOneNindsCde = async cdeId => {
             await new Comment(comment).save();
             console.log('comment saved on new CDE ' + newCde.tinyId);
         }
-        await newCde.save();
+        let savedCDE = await newCde.save();
+        createdCDE++;
+        console.log('createdCDE: ' + createdCDE + ' ' + savedCDE.tinyId);
+
     } else if (updatedByNonLoader(existingCde) ||
         existingCde.updated > yesterday ||
         existingCde.registrationState.registrationStatus === 'Standard') {
+        skipCDE++;
+        console.log('skipCDE: ' + skipCDE + ' ' + existingCde.tinyId);
     } else {
         existingCde.imported = new Date().toJSON();
         existingCde.markModified('imported');
@@ -69,9 +80,13 @@ doOneNindsCde = async cdeId => {
         }
         if (_.isEmpty(diff)) {
             await existingCde.save();
+            sameCDE++;
+            console.log('sameCDE: ' + sameCDE + ' ' + existingCde.tinyId);
         } else {
             await MergeCDE.mergeCde(existingCde, newCde);
             await mongo_cde.updatePromise(existingCde, batchloader);
+            changeCDE++;
+            console.log('changeCDE: ' + changeCDE + ' ' + existingCde.tinyId);
         }
     }
 };
