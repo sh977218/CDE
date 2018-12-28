@@ -41,7 +41,8 @@ exports.createForm = async nindsForms => {
         ids,
         classification: [],
         properties,
-        formElements
+        formElements,
+        comments: []
     };
 
     parseClassification(nindsForms, newForm);
