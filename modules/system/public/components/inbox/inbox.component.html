@@ -13,7 +13,7 @@
     </div>
 
     <div *ngIf="mail.archived.length > 0">
-        <h3>Sent</h3>
+        <h3>Archived</h3>
         <ng-container *ngTemplateOutlet="mailTemplate; context: {type: 'archived'}"></ng-container>
     </div>
 </div>

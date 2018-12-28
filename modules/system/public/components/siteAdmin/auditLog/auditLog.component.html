@@ -1,48 +1,48 @@
-<ngb-accordion>
-    <ng-container *ngFor="let edit of records">
-        <ngb-panel>
-            <ng-template ngbPanelTitle>
+<mat-accordion>
+    <mat-expansion-panel *ngFor="let edit of records">
+        <mat-expansion-panel-header>
+            <mat-panel-title>
                 {{edit.adminItem.name}}
+            </mat-panel-title>
+            <mat-panel-description>
                 <span class="matched-by">{{edit.date | date : 'MMM d, y, h:mm a' }}</span>
-            </ng-template>
-            <ng-template ngbPanelContent>
-                <dl class="row">
-                    <dt class="col-sm-3">User:</dt>
-                    <dd class="col-sm-9">{{edit.user.username}}</dd>
-                    <dt class="col-sm-3">Date:</dt>
-                    <dd class="col-sm-9">{{edit.date | date : 'MMM d, y, h:mm a'}}</dd>
-                    <dt class="col-sm-3">CDE - New Version:</dt>
-                    <dd class="col-sm-9">
-                        <a target="_blank" href="/deView?cdeId={{edit.adminItem._id}}">{{edit.adminItem.name}}</a>
-                    </dd>
-                    <ng-container *ngIf="edit.previousItem">
-                        <dt class="col-sm-3">CDE - Previous Version:</dt>
-                        <dd class="col-sm-9">
-                            <a target="_blank" href="/deView?cdeId={{edit.previousItem._id}}">{{edit.previousItem.name}}</a>
-                        </dd>
-                    </ng-container>
-                </dl>
-                <table *ngIf="edit.diff" id="modificationsList" class="table">
-                    <caption>List of Modifications</caption>
-                    <thead>
-                    <tr>
-                        <th>Field</th>
-                        <th>Type of Modification</th>
-                        <th>New Value</th>
-                        <th>Previous Value</th>
-                    </tr>
-                    </thead>
-                    <tr *ngFor="let d of edit.diff">
-                        <td class="fieldName">{{d.fieldName}}</td>
-                        <td>{{d.modificationType}}</td>
-                        <td class="newValue">{{d.newValue}}</td>
-                        <td class="previousValue">{{d.previousValue}}</td>
-                    </tr>
-                </table>
-            </ng-template>
-        </ngb-panel>
-    </ng-container>
-</ngb-accordion>
+            </mat-panel-description>
+        </mat-expansion-panel-header>
+        <dl class="row">
+            <dt class="col-sm-3">User:</dt>
+            <dd class="col-sm-9">{{edit.user.username}}</dd>
+            <dt class="col-sm-3">Date:</dt>
+            <dd class="col-sm-9">{{edit.date | date : 'MMM d, y, h:mm a'}}</dd>
+            <dt class="col-sm-3">CDE - New Version:</dt>
+            <dd class="col-sm-9">
+                <a target="_blank" href="/deView?cdeId={{edit.adminItem._id}}">{{edit.adminItem.name}}</a>
+            </dd>
+            <ng-container *ngIf="edit.previousItem">
+                <dt class="col-sm-3">CDE - Previous Version:</dt>
+                <dd class="col-sm-9">
+                    <a target="_blank" href="/deView?cdeId={{edit.previousItem._id}}">{{edit.previousItem.name}}</a>
+                </dd>
+            </ng-container>
+        </dl>
+        <table *ngIf="edit.diff" id="modificationsList" class="table">
+            <caption>List of Modifications</caption>
+            <thead>
+            <tr>
+                <th>Field</th>
+                <th>Type of Modification</th>
+                <th>New Value</th>
+                <th>Previous Value</th>
+            </tr>
+            </thead>
+            <tr *ngFor="let d of edit.diff">
+                <td class="fieldName">{{d.fieldName}}</td>
+                <td>{{d.modificationType}}</td>
+                <td class="newValue">{{d.newValue}}</td>
+                <td class="previousValue">{{d.previousValue}}</td>
+            </tr>
+        </table>
+    </mat-expansion-panel>
+</mat-accordion>
 
 <ngb-pagination [collectionSize]="1000" [(page)]="currentPage" (pageChange)="gotoPageLocal()" [maxSize]="10">
 </ngb-pagination>
