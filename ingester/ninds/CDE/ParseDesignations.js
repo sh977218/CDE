@@ -23,21 +23,15 @@ exports.parseDesignations = nindsForms => {
             tags: []
         })
     });
+    let existingDesignation = false;
     _questionTextArray.forEach(n => {
         if (n !== 'N/A') {
-            let existingDesignation = false;
             designations.forEach(d => {
                 if (d.designation === n) {
                     d.tags.push('Question Text');
                     existingDesignation = true;
                 }
             });
-            if (!existingDesignation) {
-                designations.push({
-                    designation: trimWhite(n),
-                    tags: ['Question Text']
-                });
-            }
         }
     });
     return designations;
