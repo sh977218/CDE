@@ -1,4 +1,4 @@
-import { CdeFormElastic } from 'shared/form/form.model';
+import { CdeForm, CdeFormElastic } from 'shared/form/form.model';
 import { DataElement, DataElementElastic } from 'shared/de/dataElement.model';
 
 export function assertThrow(): never {
@@ -57,7 +57,7 @@ export class CdeId {
 }
 
 export class Classification {
-    elements: ClassficationElements[] = [];
+    elements: ClassficationElement[] = [];
     stewardOrg: {
         name: string
     } = {name};
@@ -69,8 +69,8 @@ export class ClassificationClassified {
     selectedOrg?: string;
 }
 
-class ClassficationElements {
-    elements: any[] = [];
+export class ClassficationElement {
+    elements: ClassficationElement[] = [];
     name?: string;
 }
 
@@ -198,7 +198,6 @@ export abstract class Elt {
     createdBy?: UserReference;
     definitions: Definition[] = [];
     designations: Designation[] = [];
-    highlight?: any; // volatile, Elastic
     history: ObjectId[] = [];
     ids: CdeId[] = [];
     imported?: Date;
@@ -206,16 +205,12 @@ export abstract class Elt {
     isDraft?: boolean; // optional, draft only
     lastMigrationScript?: string;
     origin?: string;
-    primaryDefinitionCopy?: string; // volatile, Elastic
-    primaryNameCopy?: string; // volatile, Elastic
-    primaryNameSuggest?: string; // volatile, Elastic
     properties: Property[] = []; // mutable
     referenceDocuments: ReferenceDocument[] = []; // mutable
     registrationState: RegistrationState = new RegistrationState();
     stewardOrg: {
         name?: string,
     } = {};
-    score?: number; // volatile, Elastic _score
     source?: string; // obsolete
     sources: DataSource[] = [];
     tinyId!: string; // server generated
@@ -231,7 +226,7 @@ export abstract class Elt {
     static getEltUrl: (elt: Elt) => string;
 
     static getLabel(elt: Elt) {
-        return elt.primaryNameCopy || elt.designations[0].designation;
+        return (elt as any).primaryNameCopy || elt.designations[0].designation;
     }
 
     static trackByElt(index: number, elt: Elt): string {
@@ -252,6 +247,60 @@ export class EltRef {
     tinyId!: string;
     version?: string;
 }
+
+export type Embed = {
+    _id?: ObjectId,
+    cde?: EmbedItem,
+    form?: EmbedItem
+    height: number,
+    name?: string,
+    org: string,
+    width: number,
+};
+
+export type EmbedItem = {
+    cdes?: boolean; // form only
+    classifications?: {
+        label: string,
+        startsWith: string,
+        exclude: string,
+        selectedOnly?: boolean
+    }[],
+    ids?: {
+        idLabel: string,
+        source: string,
+        version?: boolean,
+        versionLabel: string
+    }[]
+    linkedForms?: { // cde only
+        label?: string,
+        show?: boolean,
+    },
+    lowestRegistrationStatus: CurationStatus,
+    nameLabel?: string,
+    nbOfQuestions?: boolean; // form only
+    otherNames?: {
+        label: string,
+        contextName: string
+    }[],
+    pageSize?: number,
+    permissibleValues?: boolean; // cde only
+    primaryDefinition?: {
+        label?: string,
+        show?: boolean,
+        style?: string
+    },
+    properties?: {
+        label: string,
+        limit: number
+        key: string,
+    }[],
+    registrationStatus?: {
+        show?: boolean,
+        label?: string
+    },
+    sdcLink?: boolean; // form only
+};
 
 export class FormattedValue {
     value: string;
@@ -294,24 +343,21 @@ export class DerivationRule {
 
 type DerivationRuleFormula = 'sumAll' | 'mean' | 'bmi';
 type DerivationRuleType = 'score' | 'panel';
-
-export type Item = DataElementElastic | CdeFormElastic;
-
+export type Item = DataElement | CdeForm;
+export type ItemElastic = DataElementElastic | CdeFormElastic;
+export type ListTypes = 'accordion' | 'table' | 'summary';
 export type NotificationSettingsMediaType = 'drawer' | 'push';
-
 export type NotificationSettingsMedia = {
     [key in NotificationSettingsMediaType]?: boolean;
 };
-
 export type NotificationSettingsType = 'approvalAttachment' | 'approvalComment' | 'comment';
-
 export type NotificationSettings = {
     [key in NotificationSettingsType]?: NotificationSettingsMedia;
 };
 
 export class Organization {
     cdeStatusValidationRules?: StatusValidationRules[];
-    classifications?: ClassficationElements[];
+    classifications?: ClassficationElement[];
     count?: number; // calculated, from elastic
     emailAddress?: string;
     extraInfo?: string;
@@ -399,13 +445,16 @@ export type StatusValidationRulesOrgs = {[org: string]: StatusValidationRules[]}
 
 export type TableViewFields = {
     administrativeStatus?: boolean,
+    customFields?: {key: string, label?: string, style?: string}[];
     ids?: boolean,
     identifiers?: string[],
+    linkedForms?: boolean, // cde only
     name?: boolean,
     naming?: boolean,
     nbOfPVs?: boolean,
     numQuestions?: boolean,
     permissibleValues?: boolean,
+    pvCodeNames?: boolean,
     questionTexts?: boolean,
     registrationStatus?: boolean,
     source?: boolean,
@@ -449,12 +498,7 @@ export class User {
     quota?: number;
     refreshToken?: string;
     roles?: string[];
-    searchSettings?: {
-        defaultSearchView?: string,
-        lowestRegistrationStatus?: string,
-        tableViewFields?: TableViewFields,
-        version?: number,
-    };
+    searchSettings?: UserSearchSettings;
     siteAdmin?: boolean;
     tasks?: Task[];
     tester?: boolean;
@@ -476,6 +520,14 @@ export interface UserReferenceSecondary {
     _id: ObjectId;
     username?: string;
 }
+
+export type UserSearchSettings = {
+    defaultSearchView: ListTypes,
+    includeRetired?: boolean
+    lowestRegistrationStatus: CurationStatus,
+    tableViewFields: TableViewFields,
+    version?: number,
+};
 
 export interface UsersOrgQuery {
     name: string;

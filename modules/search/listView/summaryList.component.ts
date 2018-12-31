@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { ItemElastic } from 'shared/models.model';
 
 @Component({
     selector: 'cde-summary-list',
@@ -14,7 +15,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 })
 export class SummaryListComponent {
     @Input() contentComponent: any;
-    @Input() elts: any[];
+    @Input() elts: ItemElastic[];
     @Output() select = new EventEmitter<string>();
 
     constructor() {}

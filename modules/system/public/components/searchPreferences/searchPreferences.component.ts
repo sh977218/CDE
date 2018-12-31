@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-
-import { AlertService } from 'alert/alert.service';
-import { ElasticService } from '_app/elastic.service';
 import { ActivatedRoute } from '@angular/router';
+import { ElasticService } from '_app/elastic.service';
+import { AlertService } from 'alert/alert.service';
+import { UserSearchSettings } from 'shared/models.model';
 
 @Component({
     selector: 'cde-search-preferences',
     templateUrl: 'searchPreferences.component.html'
 })
 export class SearchPreferencesComponent implements OnInit {
-    searchSettings: any;
+    searchSettings: UserSearchSettings;
 
     constructor(private alert: AlertService,
                 public esService: ElasticService,
@@ -19,7 +19,7 @@ export class SearchPreferencesComponent implements OnInit {
 
     ngOnInit() {
         if (this.route.snapshot.queryParams['triggerClientError']) {
-            throw new Error("An exception has been thrown");
+            throw new Error('An exception has been thrown');
         }
     }
 
@@ -29,10 +29,7 @@ export class SearchPreferencesComponent implements OnInit {
     }
 
     loadDefault() {
-        let defaultSettings: any = this.esService.getDefault();
-        Object.keys(defaultSettings).forEach(key => {
-            this.searchSettings[key] = defaultSettings[key];
-        });
+        Object.assign(this.searchSettings, ElasticService.getDefault());
         this.alert.addAlert('info', 'Default settings loaded. Press Save to persist them.');
     }
 

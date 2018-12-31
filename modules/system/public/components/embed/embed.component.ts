@@ -1,30 +1,22 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import _noop from 'lodash/noop';
-
-import { AlertService } from 'alert/alert.service';
 import { UserService } from '_app/user.service';
-import { ObjectId } from 'shared/models.model';
+import { AlertService } from 'alert/alert.service';
+import _noop from 'lodash/noop';
+import { Embed, EmbedItem } from 'shared/models.model';
 
-type Embed = {
-    _id?: ObjectId,
-    org: string,
-    width: number,
-    height: number,
-    cde: any,
-    form: any
-};
-
-const defaultCommon = JSON.stringify({
-    lowestRegistrationStatus: 'Qualified',
-    linkedForms: {},
-    pageSize: 5,
-    registrationStatus: {},
-    primaryDefinition: {},
-    otherNames: [],
-    ids: []
-});
+function addEmbedItem(): EmbedItem {
+    return {
+        lowestRegistrationStatus: 'Qualified',
+        linkedForms: {},
+        pageSize: 5,
+        registrationStatus: {},
+        primaryDefinition: {},
+        otherNames: [],
+        ids: []
+    };
+}
 
 
 @Component({
@@ -32,9 +24,9 @@ const defaultCommon = JSON.stringify({
     templateUrl: 'embed.component.html'
 })
 export class EmbedComponent implements OnInit {
-    embeds: Embed[][] = [];
+    embeds: {[org: string]: Embed[]} = {};
     previewOn?: boolean;
-    selection: Embed;
+    selection?: Embed;
     showDelete?: boolean;
     previewSrc?: SafeResourceUrl;
 
@@ -50,18 +42,18 @@ export class EmbedComponent implements OnInit {
     ) {}
 
     addCdeClassification() {
-        if (!this.selection.cde.classifications) this.selection.cde.classifications = [];
-        this.selection.cde.classifications.push({under: ''});
+        if (!this.selection!.cde!.classifications) this.selection!.cde!.classifications = [];
+        this.selection!.cde!.classifications!.push({exclude: '', label: '', startsWith: ''});
     }
 
     addCdeId() {
-        if (!this.selection.cde.ids) this.selection.cde.ids = [];
-        this.selection.cde.ids.push({source: '', idLabel: 'Id', versionLabel: ''});
+        if (!this.selection!.cde!.ids) this.selection!.cde!.ids = [];
+        this.selection!.cde!.ids!.push({source: '', idLabel: 'Id', versionLabel: ''});
     }
 
     addCdeName() {
-        if (!this.selection.cde.otherNames) this.selection.cde.otherNames = [];
-        this.selection.cde.otherNames.push({contextName: '', label: ''});
+        if (!this.selection!.cde!.otherNames) this.selection!.cde!.otherNames = [];
+        this.selection!.cde!.otherNames!.push({contextName: '', label: ''});
     }
 
     addEmbed(org: string) {
@@ -71,8 +63,8 @@ export class EmbedComponent implements OnInit {
             org: org,
             width: 1000,
             height: 900,
-            cde: JSON.parse(defaultCommon),
-            form: JSON.parse(defaultCommon)
+            cde: addEmbedItem(),
+            form: addEmbedItem(),
         };
         this.embeds[org].push(embed);
         this.selection = embed;
@@ -84,16 +76,16 @@ export class EmbedComponent implements OnInit {
 
     enableCde(b: boolean) {
         if (b) {
-            this.selection.cde = {lowestRegistrationStatus: 'Qualified'};
+            this.selection!.cde = {lowestRegistrationStatus: 'Qualified'};
         } else {
-            this.selection.cde = null;
+            this.selection!.cde = undefined;
         }
     }
 
     enablePreview(b: boolean) {
         this.previewOn = b;
         if (b) {
-            this.previewSrc = this.sanitizer.bypassSecurityTrustResourceUrl('/embedded/public/html/index.html?id=' + this.selection._id);
+            this.previewSrc = this.sanitizer.bypassSecurityTrustResourceUrl('/embedded/public/html/index.html?id=' + this.selection!._id);
         }
     }
 
@@ -119,9 +111,9 @@ export class EmbedComponent implements OnInit {
     }
 
     save() {
-        this.http.post<any>('/embed', this.selection).subscribe(response => {
-            if (!this.selection._id) this.selection._id = response._id;
-            this.selection = null;
+        this.http.post<Embed>('/embed', this.selection).subscribe(response => {
+            if (!this.selection!._id) this.selection!._id = response._id;
+            this.selection = undefined;
             this.previewOn = false;
             this.alert.addAlert('success', 'Saved.');
             this.reloadEmbeds();

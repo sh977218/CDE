@@ -1,9 +1,12 @@
+import '../../node_modules/feedback/stable/2.0/html2canvas.js';
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
-import '../../node_modules/feedback/stable/2.0/html2canvas.js';
-
 import { ElasticService } from '_app/elastic.service';
+import { SearchSettings } from 'search/search.model';
 import { orderedList } from 'shared/system/regStatusShared';
+import {
+    ClassficationElement, ElasticQueryResponse, Embed, ItemElastic, UserSearchSettings
+} from 'shared/models.model';
 
 
 @Component({
@@ -12,55 +15,45 @@ import { orderedList } from 'shared/system/regStatusShared';
 })
 export class EmbedAppComponent  {
     aggregations: any = {};
-    cutoffIndex: number;
-    elts: any = [];
-    embed: any;
-    lastQueryTimeStamp: number;
+    cutoffIndex?: number;
+    elts: ItemElastic[] = [];
+    embed!: Embed;
+    lastQueryTimeStamp?: number;
     name = 'Embedded NIH CDE Repository';
-    numPages: number;
-    resultPerPage: number;
     searchStarted: boolean = false;
-    searchSettings = {
-        q: ''
-        , page: 1
-        , classification: []
-        , classificationAlt: []
-        , regStatuses: []
-        , resultPerPage: 5
-        , selectedOrg: ''
-    };
+    searchSettings: SearchSettings = new SearchSettings('', 5);
     searchType: 'cde'|'form' = 'cde';
-    searchViewSettings: any;
+    searchViewSettings: UserSearchSettings;
     selectedClassif: string = '';
-    took: number;
-    totalItems: number;
+    took?: number;
+    totalItems?: number;
 
     constructor(
         private http: HttpClient,
         private elasticSvc: ElasticService,
     ) {
-        let args = {};
+        let args: any = {};
         let args1 = window.location.search.substr(1).split('&');
         args1.forEach(arg => {
             let argArr = arg.split('=');
             args[argArr[0]] = argArr[1];
         });
 
-        this.http.get<any>('/embed/' + args['id']).subscribe(response => {
+        this.http.get<Embed>('/embed/' + args['id']).subscribe(response => {
             this.embed = response;
             this.searchViewSettings.tableViewFields.customFields = [];
 
-            let embed4Type = {...this.embed[this.searchType]};
+            let embed4Type = Object.assign({}, this.embed[this.searchType]);
 
-            embed4Type.ids.forEach(eId => {
-                this.searchViewSettings.tableViewFields.customFields.push({key: eId.idLabel, label: eId.idLabel});
+            embed4Type.ids && embed4Type.ids.forEach(eId => {
+                this.searchViewSettings.tableViewFields.customFields!.push({key: eId.idLabel, label: eId.idLabel});
                 if (eId.version) {
-                    this.searchViewSettings.tableViewFields.customFields.push({key: eId.idLabel + '_version', label: eId.versionLabel});
+                    this.searchViewSettings.tableViewFields.customFields!.push({key: eId.idLabel + '_version', label: eId.versionLabel});
                 }
             });
 
-            embed4Type.otherNames.forEach(eName => {
-                this.searchViewSettings.tableViewFields.customFields.push({key: eName.label, label: eName.label});
+            embed4Type.otherNames && embed4Type.otherNames.forEach(eName => {
+                this.searchViewSettings.tableViewFields.customFields!.push({key: eName.label, label: eName.label});
             });
 
             if (embed4Type.primaryDefinition && embed4Type.primaryDefinition.show) {
@@ -77,15 +70,15 @@ export class EmbedAppComponent  {
             this.search();
         });
 
-        this.searchViewSettings = elasticSvc.getDefault();
+        this.searchViewSettings = ElasticService.getDefault();
     }
 
-    crumbSelect (i) {
+    crumbSelect(i: number) {
         this.searchSettings.classification.length = i + 1;
         this.search();
     }
 
-    doClassif(currentString, classif, result) {
+    doClassif(currentString: string, classif: ClassficationElement, result: string[]) {
         if (currentString.length > 0) {
             currentString = currentString + ';';
         }
@@ -99,8 +92,8 @@ export class EmbedAppComponent  {
         }
     }
 
-    flattenClassification(elt) {
-        let result = [];
+    flattenClassification(elt: ItemElastic) {
+        let result: string[] = [];
         if (elt.classification) {
             elt.classification.forEach(cl => {
                 if (cl.elements) {
@@ -122,15 +115,15 @@ export class EmbedAppComponent  {
     }
 
     search() {
-        this.searchSettings.resultPerPage = this.embed[this.searchType].pageSize;
-        let embed4Type = {...this.embed[this.searchType]};
+        this.searchSettings.resultPerPage = this.embed[this.searchType]!.pageSize;
+        let embed4Type = Object.assign({}, this.embed[this.searchType]);
 
         let timestamp = new Date().getTime();
         this.lastQueryTimeStamp = timestamp;
 
         for (let i = 0; i < orderedList.length; i++) {
             this.searchSettings.regStatuses.push(orderedList[i]);
-            if (orderedList[i] === embed4Type.minStatus) {
+            if (orderedList[i] === embed4Type.lowestRegistrationStatus) {
                 i = orderedList.length;
             }
         }
@@ -138,15 +131,14 @@ export class EmbedAppComponent  {
         let settings = this.elasticSvc.buildElasticQuerySettings(this.searchSettings);
         settings.fullRecord = true;
 
-        this.elasticSvc.generalSearchQuery(settings, this.searchType, (err, result) => {
-            if (err) {
+        this.elasticSvc.generalSearchQuery(settings, this.searchType, (err?: string, result?: ElasticQueryResponse) => {
+            if (err || !result) {
                 this.elts = [];
                 return;
             }
-            if (timestamp < this.lastQueryTimeStamp) return;
-            this.numPages = Math.ceil(result.totalNumber / this.resultPerPage);
+            if (timestamp < this.lastQueryTimeStamp!) return;
             this.totalItems = result.totalNumber;
-            this.elts = result[this.searchType + 's'];
+            this.elts = this.searchType === 'cde' ? result.cdes! : result.forms!;
             this.took = result.took;
 
             if (this.searchSettings.page === 1 && result.totalNumber > 0) {
@@ -245,16 +237,14 @@ export class EmbedAppComponent  {
                 if (embed4Type.linkedForms && embed4Type.linkedForms.show) {
                     c.embed.linkedForms = [];
 
-                    let lfSettings = this.elasticSvc.buildElasticQuerySettings({
-                        selectedOrg: this.embed.org
-                        , q: c.tinyId
-                        , page: 1
-                        , classification: []
-                        , classificationAlt: []
-                        , regStatuses: []
-                    });
+                    let searchSettings = new SearchSettings(c.tinyId);
+                    searchSettings.selectedOrg = this.embed.org;
+                    let lfSettings = this.elasticSvc.buildElasticQuerySettings(searchSettings);
 
-                    this.elasticSvc.generalSearchQuery(lfSettings, 'form', (err, result) => {
+                    this.elasticSvc.generalSearchQuery(lfSettings, 'form', (err?: string, result?: ElasticQueryResponse) => {
+                        if (err || !result) {
+                            return;
+                        }
                         if (result.forms) {
                             result.forms.forEach(crf => c.embed.linkedForms.push({name: crf.primaryNameCopy}));
                         }
