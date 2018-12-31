@@ -32,6 +32,9 @@ export class TagComponent implements OnInit {
 
     }
 
+    compareWith = function (option, selection) {
+        return option !== selection;
+    };
 
     add(event: MatChipInputEvent): void {
         if (!this.matAutocomplete.isOpen) {
