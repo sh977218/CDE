@@ -260,7 +260,7 @@ exports.listOrgsLongName = callback => {
 };
 
 exports.listOrgsDetailedInfo = callback => {
-    Org.find({}, orgDetailProject, callback);
+    Org.find({}, orgDetailProject).sort({name: 1}).exec(callback);
 };
 
 exports.managedOrgs = function (callback) {

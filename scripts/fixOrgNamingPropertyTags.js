@@ -12,7 +12,6 @@ Org.find({}, async (err, orgs) => {
         for (let org of orgs) {
             console.log('Start updating ' + org.name);
             console.log('Old nameTags: ' + org.nameTags);
-            console.log('');
             console.log('Old propertyKeys: ' + org.propertyKeys);
             let query = {'stewardOrg.name': org.name};
             let deDesignationsTags = await DataElement.distinct('designations.tags', query);
@@ -30,12 +29,11 @@ Org.find({}, async (err, orgs) => {
             org.propertyKeys = propertiesKeys.filter(p => !_.isEmpty(p));
             let newOrg = await org.save();
             console.log('New nameTags: ' + newOrg.nameTags);
-            console.log('');
             console.log('New propertyKeys: ' + newOrg.propertyKeys);
             console.log('Finished Updating ' + org.name);
             console.log('----------------------------------------------------------')
         }
-        console.log('Finihsed All Orgs.');
+        console.log('Finished All Orgs.');
         process.exit(1);
     }
 });
