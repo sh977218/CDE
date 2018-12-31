@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 import { UserService } from '_app/user.service';
 import { Comment, DiscussionComments, User } from 'shared/models.model';
@@ -9,18 +9,21 @@ import { PageEvent } from '@angular/material';
     selector: 'cde-user-comments',
     templateUrl: './userComments.component.html'
 })
-export class UserCommentsComponent {
+export class UserCommentsComponent implements OnInit {
     @Input() user!: User;
     comments: DiscussionComments;
     getEltLink = UserService.getEltLink;
     pageSize: number = 30;
-    page: number = 0;
+    page: number = 1;
+
+    ngOnInit() {
+        this.getComments();
+    }
 
     constructor(
         private http: HttpClient
     ) {
         this.comments = {currentCommentsPage: 1, totalItems: 10000, latestComments: []};
-        this.getComments();
     }
 
     getComments(event?: PageEvent) {

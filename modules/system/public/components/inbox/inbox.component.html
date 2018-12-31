@@ -22,12 +22,14 @@
     <mat-accordion>
         <mat-expansion-panel *ngFor="let message of mail[type] | slice:0:20">
             <ng-container *ngIf="message.type === 'BoardApproval'">
-                <mat-panel-title>
-                    {{message.date | date : medium}} |
-                    {{message.humanType}} |
-                    {{message.author.name}}
-                </mat-panel-title>
-                <div class="card-body">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        {{message.date | date : medium}} |
+                        {{message.humanType}} |
+                        {{message.author.name}}
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div>
                     <h4>{{message.humanType}}</h4>
                     <dl class="row">
                         <dt class="col-3 text-right">User</dt>
