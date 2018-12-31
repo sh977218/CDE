@@ -7,10 +7,12 @@
     <tr *ngFor="let o of orgs" id="orgListName-{{o.name}}">
         <td>{{o.name}}</td>
         <td>
-            <cde-one-list-management [allKeys]="allPropertyKeys" [keys]="o.propertyKeys" (save)="saveOrg(o)"></cde-one-list-management>
+            <cde-one-list-management [allKeys]="allPropertyKeys" [keys]="o.propertyKeys"
+                                     (save)="saveOrg(o)"></cde-one-list-management>
         </td>
         <td>
-            <cde-one-list-management [allKeys]="allTags" [keys]="o.nameTags" (save)="saveOrg(o)"></cde-one-list-management>
+            <cde-one-list-management [allKeys]="allTags" [keys]="o.nameTags" [placeHolder]="'Naming Tags'"
+                                     (save)="saveOrg(o)"></cde-one-list-management>
         </td>
     </tr>
 </table>
