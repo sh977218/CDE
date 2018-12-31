@@ -5,7 +5,6 @@ import { PageEvent } from '@angular/material';
 
 type ClassificationAuditLogRecord = any;
 
-
 @Component({
     selector: 'cde-classification-audit-log',
     templateUrl: './classificationAuditLog.component.html'

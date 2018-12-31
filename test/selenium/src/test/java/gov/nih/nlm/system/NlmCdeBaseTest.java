@@ -907,14 +907,14 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
             hangon(1);
             try {
                 wait.until(ExpectedConditions.textToBePresentInElementLocated(
-                        By.cssSelector("ngb-accordion"), cdeName));
+                        By.cssSelector("mat-accordion"), cdeName));
                 break;
             } catch (Exception e) {
-                clickElement(By.linkText("Next"));
+                clickElement(By.cssSelector(".mat-paginator-navigation-next"));
             }
 
         }
-        clickElement(By.xpath("//ngb-accordion//button[contains (., '" + cdeName + "')]"));
+        clickElement(By.xpath("//mat-accordion//button[contains (., '" + cdeName + "')]"));
     }
 
     protected void setVisibleStatus(String id) {

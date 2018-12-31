@@ -6,7 +6,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { InboxComponent } from 'system/public/components/inbox/inbox.component';
 import { WidgetModule } from 'widget/widget.module';
-import { MatButtonModule, MatDialogModule } from '@angular/material';
+import { MatButtonModule, MatDialogModule, MatExpansionModule } from '@angular/material';
 
 
 const appRoutes: Routes = [
@@ -21,6 +21,7 @@ const appRoutes: Routes = [
         RouterModule.forChild(appRoutes),
         MatDialogModule,
         MatButtonModule,
+        MatExpansionModule,
         WidgetModule,
         // internal
     ],

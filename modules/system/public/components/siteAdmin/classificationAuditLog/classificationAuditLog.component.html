@@ -1,14 +1,16 @@
 <mat-accordion>
     <mat-expansion-panel *ngFor="let edit of records">
-        <mat-panel-title>
-            <span *ngIf="edit.elements.length === 1">{{edit.elements[0].name}} </span>
-            <span *ngIf="edit.elements.length === 10">10+ elements </span>
-            <span *ngIf="edit.elements.length > 1 && edit.elements.length < 10">{{edit.elements.length}} elements </span>
-            <span class="text-info">{{edit.path.join(" > ")}}</span>
-        </mat-panel-title>
-        <mat-panel-description>
-            <span class="matched-by">{{edit.date | date : 'MMM d, y, h:mm a' }}</span>
-        </mat-panel-description>
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                <span *ngIf="edit.elements.length === 1">{{edit.elements[0].name}}&nbsp;</span>
+                <span *ngIf="edit.elements.length === 10">10+ elements&nbsp;</span>
+                <span *ngIf="edit.elements.length > 1 && edit.elements.length < 10">{{edit.elements.length}} elements&nbsp;</span>
+                <span class="text-info">{{edit.path.join(" > ")}}</span>
+            </mat-panel-title>
+            <mat-panel-description>
+                <span class="matched-by">{{edit.date | date : 'MMM d, y, h:mm a' }}</span>
+            </mat-panel-description>
+        </mat-expansion-panel-header>
         <dl class="row">
             <dt class="col-sm-3">User:</dt>
             <dd class="col-sm-9">{{edit.user.username}}</dd>
