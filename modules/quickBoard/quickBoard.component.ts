@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { ExportService } from 'core/export.service';
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { LocalStorageService } from 'angular-2-local-storage';
+import { ExportService } from 'core/export.service';
 
 @Component({
     selector: 'cde-quick-board',
-    templateUrl: './quickBoard.component.html'
+    templateUrl: './quickBoard.component.html',
 })
 export class QuickBoardComponent implements OnInit {
     defaultQuickBoard: string = 'dataElementQuickBoard';
@@ -15,7 +15,7 @@ export class QuickBoardComponent implements OnInit {
                 public exportService: ExportService,
                 public quickBoardService: QuickBoardListService) {
         let defaultQb = <string>  this.localStorageService.get('defaultQuickBoard');
-        if (defaultQb === "form") {
+        if (defaultQb === 'form') {
             this.defaultQuickBoard = "formQuickBoard";
         }
     }
