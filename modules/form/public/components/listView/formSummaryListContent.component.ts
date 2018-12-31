@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 import { SummaryComponent } from 'search/listView/summaryListItem.component';
 import { Attachment } from 'shared/models.model';
-import { CdeForm } from 'shared/form/form.model';
+import { CdeFormElastic } from 'shared/form/form.model';
 
 
 @Component({
@@ -10,7 +10,7 @@ import { CdeForm } from 'shared/form/form.model';
     templateUrl: './formSummaryListContent.component.html',
 })
 export class FormSummaryListContentComponent implements SummaryComponent {
-    @Input() elt: CdeForm;
+    @Input() elt: CdeFormElastic;
     @Input() eltIndex: number;
     @Output() select = new EventEmitter<string>();
 
