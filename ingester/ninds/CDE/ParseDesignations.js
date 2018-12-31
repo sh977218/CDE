@@ -8,7 +8,7 @@ exports.parseDesignations = nindsForms => {
         nindsForm.cdes.forEach(nindsCde => {
             if (nindsCde['CDE Name'])
                 cdeNameArray.push(nindsCde['CDE Name']);
-            if (nindsCde['Question Text'])
+            if (nindsCde['Question Text'] && nindsCde['Question Text'] !== 'N/A')
                 questionTextArray.push(nindsCde['Question Text']);
         })
     });
@@ -23,16 +23,18 @@ exports.parseDesignations = nindsForms => {
             tags: []
         })
     });
-    let existingDesignation = false;
-    _questionTextArray.forEach(n => {
-        if (n !== 'N/A') {
-            designations.forEach(d => {
-                if (d.designation === n) {
-                    d.tags.push('Question Text');
-                    existingDesignation = true;
-                }
-            });
+
+    _questionTextArray.forEach(questionText => {
+        let designationIndex = _.indexOf(designations, d => d.designation === questionText);
+        if (designationIndex !== -1) {
+            designations[designationIndex].tags.push('Question Text');
+        } else {
+            designations.push({designation: questionText, tags: ['Question Text']});
         }
+    });
+
+
+    designations.forEach(designation => {
     });
     return designations;
 };

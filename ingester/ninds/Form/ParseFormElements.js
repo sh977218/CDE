@@ -127,6 +127,11 @@ exports.parseFormElements = async nindsForms => {
         formElements: []
     });
     for (let nindsCdeId of _nindsCdeIdList) {
+        /*
+                if (nindsCdeId === 'C00020') {
+                    console.log('a');
+                }
+        */
         await doOneNindsCde(nindsCdeId);
     }
     for (let nindsQuestion of _nindsQuestionList[0]) {
