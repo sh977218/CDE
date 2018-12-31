@@ -1,12 +1,12 @@
 import {
-    Component, ComponentFactoryResolver, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, Type,
+    Component, ComponentFactoryResolver, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges,
     ViewChild, ViewContainerRef
 } from '@angular/core';
 import { BoardCdeSummaryListComponent } from 'cde/public/components/listView/boardCdeSummaryList.component';
 import { BoardFormSummaryListComponent } from 'form/public/components/listView/boardFormSummaryList.component';
 import { CdeAccordionListComponent } from 'cde/public/components/listView/cdeAccordionList.component';
 import { ElasticService } from '_app/elastic.service';
-import { Elt } from 'shared/models.model';
+import { Elt, Item, ListTypes } from 'shared/models.model';
 import { CdeSummaryListContentComponent } from 'cde/public/components/listView/cdeSummaryListContent.component';
 import { FormAccordionListComponent } from 'form/public/components/listView/formAccordionList.component';
 import { FormSummaryListContentComponent } from 'form/public/components/listView/formSummaryListContent.component';
@@ -20,20 +20,19 @@ import { TableListComponent } from 'search/listView/tableList.component';
     templateUrl: './listView.component.html'
 })
 export class ListViewComponent implements OnChanges, OnInit {
-    @Input() board: any = null;
-    @Input() currentPage = 0;
-    @Input() location: string = null;
-    @Input() elts: Elt[];
-    @Input() embedded = false;
-    @Input() listView: string;
-    @Input() module: string;
-    @Input() totalItems: number = 0;
-    @Output() add = new EventEmitter<any>();
+    @Input() board?: any = null;
+    @Input() currentPage?: number = 0;
+    @Input() location?: string = undefined;
+    @Input() elts!: Elt[];
+    @Input() embedded?: boolean = false;
+    @Input() listView!: ListTypes;
+    @Input() module!: string;
+    @Input() totalItems?: number = 0;
+    @Output() add = new EventEmitter<Item>();
     @Output() listViewChange = new EventEmitter<string>();
-    @ViewChild('viewContainer', {read: ViewContainerRef}) viewContainer: ViewContainerRef;
-
-    private _listView: string;
-    viewsMap: Map<string, any>;
+    @ViewChild('viewContainer', {read: ViewContainerRef}) viewContainer!: ViewContainerRef;
+    private _listView?: ListTypes;
+    viewsMap!: Map<string, any>;
     viewComponentRef: any;
     static readonly RESULTVIEWS = ['accordion', 'summary', 'table'];
 
@@ -96,7 +95,7 @@ export class ListViewComponent implements OnChanges, OnInit {
 
     render() {
         if (this.embedded) this._listView = 'accordion';
-        let view = this.viewsMap.get(this._listView);
+        let view = this.viewsMap.get(this._listView as string);
         let viewFactory = this._componentFactoryResolver.resolveComponentFactory(view);
         this.viewContainer.clear();
         this.viewComponentRef = this.viewContainer.createComponent(viewFactory);
@@ -105,7 +104,7 @@ export class ListViewComponent implements OnChanges, OnInit {
             this.viewComponentRef.instance.location = this.location;
             this.viewComponentRef.instance.openInNewTab = true;
             if (this.embedded) this.viewComponentRef.instance.addMode = 0;
-            this.viewComponentRef.instance.add.subscribe(elt => this.add.emit(elt));
+            this.viewComponentRef.instance.add.subscribe((elt: Item) => this.add.emit(elt));
         } else if (this.location === 'board' && this._listView !== 'table') {
             this.viewComponentRef.instance.board = this.board;
             this.viewComponentRef.instance.currentPage = this.currentPage;
@@ -117,7 +116,7 @@ export class ListViewComponent implements OnChanges, OnInit {
         }
     }
 
-    setListView(viewType) {
+    setListView(viewType: ListTypes) {
         if (viewType && viewType !== this._listView && ListViewComponent.RESULTVIEWS.indexOf(viewType) > -1) {
             this._listView = viewType;
             if (this._listView === 'summary' || this._listView === 'table') {

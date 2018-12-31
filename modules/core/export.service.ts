@@ -9,7 +9,8 @@ import * as JSZip from 'jszip';
 import * as JXON from 'jxon';
 import _intersectionWith from 'lodash/intersectionWith';
 import _noop from 'lodash/noop';
-import { DataElement, DataElementElastic } from 'shared/de/dataElement.model';
+import { SearchSettings } from 'search/search.model';
+import { DataElement } from 'shared/de/dataElement.model';
 import { getFormOdm } from 'shared/form/form';
 import { CdeForm } from 'shared/form/form.model';
 import { getFormQuestionsAsQuestionCde } from 'shared/form/fe';
@@ -32,13 +33,7 @@ export class ExportService {
                 for (let r of result) {
                     if (r !== undefined) {
                         let forms = await new Promise<Array<CdeForm>>(resolve => {
-                            let lfSettings = this.elasticService.buildElasticQuerySettings({
-                                q: r.tinyId,
-                                page: 1,
-                                classification: [],
-                                classificationAlt: [],
-                                regStatuses: [],
-                            });
+                            let lfSettings = this.elasticService.buildElasticQuerySettings(new SearchSettings(r.tinyId));
                             this.elasticService.generalSearchQuery(lfSettings, 'form',
                                 (err?: string, esRes?: ElasticQueryResponse) => resolve(esRes.forms));
                         });
@@ -46,12 +41,7 @@ export class ExportService {
                     }
                 }
             } else {
-                let lfSettings = this.elasticService.buildElasticQuerySettings({
-                    page: 1
-                    , classification: []
-                    , classificationAlt: []
-                    , regStatuses: []
-                });
+                let lfSettings = this.elasticService.buildElasticQuerySettings(new SearchSettings());
                 let esResp = await this.http.post('/scrollExport/form', lfSettings).toPromise();
                 let totalNbOfForms = 0;
                 let formCounter = 0;
