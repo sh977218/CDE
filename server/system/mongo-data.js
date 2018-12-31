@@ -260,11 +260,11 @@ exports.listOrgsLongName = callback => {
 };
 
 exports.listOrgsDetailedInfo = callback => {
-    Org.find({}, orgDetailProject).sort({name: 1}).exec(callback);
+    Org.find({}, orgDetailProject, callback);
 };
 
 exports.managedOrgs = function (callback) {
-    Org.find({}, callback);
+    Org.find({}).sort({name: 1}).exec(callback);
 };
 
 exports.findOrCreateOrg = function (newOrg, cb) {
