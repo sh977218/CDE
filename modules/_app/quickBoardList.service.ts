@@ -6,14 +6,9 @@ import _find from 'lodash/find';
 import _isEmpty from 'lodash/isEmpty';
 import _remove from 'lodash/remove';
 import { DataElement } from 'shared/de/dataElement.model';
-<<<<<<< HEAD
-import { CdeForm } from 'shared/form/form.model';
 import { MatTabChangeEvent } from '@angular/material';
-=======
 import { CdeFormElastic } from 'shared/form/form.model';
 import { iterateFesSync } from 'shared/form/fe';
->>>>>>> 4bb596d0d821ca1e0477ea26116fb742f6582251
-
 
 @Injectable()
 export class QuickBoardListService {
