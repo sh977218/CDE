@@ -1,15 +1,18 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { AlertService } from 'alert/alert.service';
 import { LocalStorageService } from 'angular-2-local-storage';
 import _find from 'lodash/find';
 import _isEmpty from 'lodash/isEmpty';
 import _remove from 'lodash/remove';
-
-import { AlertService } from 'alert/alert.service';
-import { iterateFesSync } from 'shared/form/fe';
 import { DataElement } from 'shared/de/dataElement.model';
+<<<<<<< HEAD
 import { CdeForm } from 'shared/form/form.model';
 import { MatTabChangeEvent } from '@angular/material';
+=======
+import { CdeFormElastic } from 'shared/form/form.model';
+import { iterateFesSync } from 'shared/form/fe';
+>>>>>>> 4bb596d0d821ca1e0477ea26116fb742f6582251
 
 
 @Injectable()
@@ -20,7 +23,7 @@ export class QuickBoardListService {
     number_forms: number = 0;
 
     dataElements: DataElement[] = [];
-    forms: CdeForm[] = [];
+    forms: CdeFormElastic[] = [];
 
 
     constructor(private alert: AlertService,
@@ -79,13 +82,14 @@ export class QuickBoardListService {
         if (formLocalStorage) {
             let l = formLocalStorage.map(d => d.tinyId);
             if (!_isEmpty(l)) {
-                this.http.get<CdeForm[]>('/formList/' + l)
+                this.http.get<CdeFormElastic[]>('/formList/' + l)
                     .subscribe(res => {
                         if (res) {
                             this.forms = res;
                             this.forms.forEach(f => {
                                 f.numQuestions = 0;
                                 iterateFesSync(f.formElements, undefined, undefined, () => f.numQuestions++);
+                                f.score = NaN;
                             });
                             this.number_forms = this.forms.length;
                         }

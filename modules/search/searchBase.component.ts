@@ -27,7 +27,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { SearchSettings } from 'search/search.model';
 import {
     CbErr,
-    CurationStatus, ElasticQueryResponse, ElasticQueryResponseAggregationBucket, ElasticQueryResponseHit, Elt,
+    CurationStatus, ElasticQueryResponse, ElasticQueryResponseAggregationBucket, ElasticQueryResponseHit, ItemElastic,
     Organization
 } from 'shared/models.model';
 import { DataType } from 'shared/de/dataElement.model';
@@ -157,7 +157,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     excludeOrgFilterMode?: boolean;
     autocompleteSuggestions?: string[];
     cutoffIndex: any;
-    elts?: Elt[];
+    elts?: ItemElastic[];
     embedded = false;
     exporters: { [format: string]: { id: string, display: string } } = {
         json: {id: 'jsonExport', display: 'JSON Export'},
@@ -167,7 +167,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     lastQueryTimeStamp?: number;
     private lastTypeahead: { [term: string]: string } = {};
     module!: 'cde' | 'form';
-    numPages: any;
+    numPages?: number;
     orgs?: Organization[];
     orgHtmlOverview?: string;
     pinComponent!: Type<PinBoardModalComponent>;
@@ -622,7 +622,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         this.lastQueryTimeStamp = timestamp;
         if (this.searchSettingsInput) Object.assign(this.searchSettings, this.searchSettingsInput);
         let settings = this.elasticService.buildElasticQuerySettings(this.searchSettings);
-        this.elasticService.generalSearchQuery(settings, this.module, (err: string, result: ElasticQueryResponse, corrected: boolean) => {
+        this.elasticService.generalSearchQuery(settings, this.module, (err?: string, result?: ElasticQueryResponse, corrected?: boolean) => {
             this.searchedTerm = this.searchSettings.q;
             if (corrected && this.searchedTerm) {
                 this.searchedTerm = this.searchedTerm.replace(/[^\w\s]/gi, '');

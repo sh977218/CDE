@@ -1,8 +1,10 @@
 import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
-import { CdeForm } from 'shared/form/form.model';
+import { MatDialog, MatDialogRef } from '@angular/material';
 import { ElasticService } from '_app/elastic.service';
 import { FormSummaryListContentComponent } from 'form/public/components/listView/formSummaryListContent.component';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { CdeForm } from 'shared/form/form.model';
+import { ElasticQueryResponse } from 'shared/models.model';
+import { SearchSettings } from 'search/search.model';
 
 @Component({
     selector: 'cde-linked-forms',
@@ -36,9 +38,9 @@ export class LinkedFormsComponent {
     }
 
     openLinkedFormsModal() {
-        let searchSettings = this.elasticService.defaultSearchSettings;
+        let searchSettings = new SearchSettings();
         searchSettings.q = '"' + this.elt.tinyId + '"';
-        this.elasticService.generalSearchQuery(this.elasticService.buildElasticQuerySettings(searchSettings), 'form', (err, result) => {
+        this.elasticService.generalSearchQuery(this.elasticService.buildElasticQuerySettings(searchSettings), 'form', (err?: string, result?: ElasticQueryResponse) => {
             if (err) return;
             this.forms = result.forms.filter(f => f.tinyId !== this.elt.tinyId);
             this.dialogRef = this.dialog.open(this.linkedFormsContent);

@@ -6,7 +6,7 @@ import { MatTabChangeEvent } from '@angular/material';
 
 @Component({
     selector: 'cde-quick-board',
-    templateUrl: './quickBoard.component.html'
+    templateUrl: './quickBoard.component.html',
 })
 export class QuickBoardComponent {
     defaultQuickBoard: string = 'dataElementQuickBoard';
@@ -15,7 +15,7 @@ export class QuickBoardComponent {
                 public exportService: ExportService,
                 public quickBoardService: QuickBoardListService) {
         let defaultQb = <string>  this.localStorageService.get('defaultQuickBoard');
-        if (defaultQb === "form") {
+        if (defaultQb === 'form') {
             this.defaultQuickBoard = "formQuickBoard";
         }
         this.quickBoardService.loadElements();

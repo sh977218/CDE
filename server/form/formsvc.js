@@ -103,14 +103,14 @@ function doSection(sFormElement) {
     let formElements = [];
     for (let fe of sFormElement.formElements) {
         if (fe.elementType === 'question') {
-            formElements.push(fe)
+            formElements.push(fe);
         } else {
             let questions = doSection(fe);
             formElements = formElements.concat(questions);
         }
     }
     return formElements;
-};
+}
 
 /*
 |---------------|           |---------------|
@@ -335,16 +335,17 @@ exports.byTinyIdList = (req, res) => {
     let tinyIdList = req.params.tinyIdList;
     if (!tinyIdList) return res.status(400).send();
     tinyIdList = tinyIdList.split(",");
-    mongo_form.byTinyIdList(tinyIdList, handleError({
-        req,
-        res
-    }, forms => res.send(forms.map(mongo_data.formatElt))));
+    mongo_form.byTinyIdList(tinyIdList, handleError({req, res}, forms => {
+        res.send(forms.map(mongo_data.formatElt));
+    }));
 };
 
 exports.latestVersionByTinyId = (req, res) => {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
-    mongo_form.latestVersionByTinyId(tinyId, handleError({req, res}, latestVersion => res.send(latestVersion)));
+    mongo_form.latestVersionByTinyId(tinyId, handleError({req, res}, latestVersion => {
+        res.send(latestVersion);
+    }));
 };
 
 exports.publishForm = (req, res) => {

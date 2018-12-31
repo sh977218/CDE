@@ -6,6 +6,7 @@ import _uniqWith from 'lodash/uniqWith';
 
 import { AlertService } from 'alert/alert.service';
 import { ElasticService } from '_app/elastic.service';
+import { SearchSettingsElastic } from 'search/search.model';
 import { httpErrorMessage } from 'widget/angularHelper';
 
 
@@ -105,12 +106,7 @@ export class ClassificationService {
     }
 
     removeOrgClassification(deleteClassification, cb) {
-        let settings = {
-            resultPerPage: 10000,
-            searchTerm: '',
-            page: 1,
-            selectedStatuses: this.esService.getUserDefaultStatuses()
-        };
+        let settings = new SearchSettingsElastic(this.esService.getUserDefaultStatuses(), 10000);
         let ro = {
             deleteClassification: deleteClassification,
             settings: settings,
@@ -121,12 +117,7 @@ export class ClassificationService {
     }
 
     reclassifyOrgClassification(oldClassification, newClassification, cb) {
-        let settings = {
-            resultPerPage: 10000,
-            searchTerm: '',
-            page: 1,
-            selectedStatuses: this.esService.getUserDefaultStatuses()
-        };
+        let settings = new SearchSettingsElastic(this.esService.getUserDefaultStatuses(), 10000);
         let postBody = {
             settings: settings,
             oldClassification: oldClassification,
@@ -138,12 +129,7 @@ export class ClassificationService {
     }
 
     renameOrgClassification(newClassification, cb) {
-        let settings = {
-            resultPerPage: 10000,
-            searchTerm: '',
-            page: 1,
-            selectedStatuses: this.esService.getUserDefaultStatuses()
-        };
+        let settings = new SearchSettingsElastic(this.esService.getUserDefaultStatuses(), 10000);
         let postBody = {
             settings: settings,
             newClassification: newClassification
