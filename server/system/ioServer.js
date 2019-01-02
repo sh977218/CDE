@@ -3,7 +3,7 @@ const config = require('../system/parseConfig');
 
 exports.startServer = function (server, expressSettings) {
     let ioServer = require('socket.io')(server);
-    let mongoAdapter = require('socket.io-adapter-mongo');
+    let mongoAdapter = require('socket.io-adapter-mongo'); // TODO: update to new version when available for mongodb 3 used by mongoose
     if (config.database.appData.options) {
         ioServer.adapter(mongoAdapter(config.database.appData.uri, config.database.appData.options));
     } else ioServer.adapter(mongoAdapter(config.database.appData.uri));

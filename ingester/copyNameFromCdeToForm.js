@@ -14,7 +14,7 @@ var formCounter = 0;
 
 var myStream = Form.find({
     archived: false
-}).stream();
+}).cursor();
 
 myStream.on('data', function (form) {
     myStream.pause();

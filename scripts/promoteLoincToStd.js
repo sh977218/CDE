@@ -9,7 +9,7 @@ async function run() {
         'registrationState.registrationStatus': {$ne: 'Retired'},
         'lastMigrationScript': {$ne: 'promoteLoincToStd'}
     };
-    let total = await mongo_cde.DataElement.find(query).count();
+    let total = await mongo_cde.DataElement.countDocuments(query);
     let done = 0;
 
     console.log("need to do: " + total);

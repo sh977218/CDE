@@ -7,7 +7,7 @@ const Files = mongo_system.mongoose_connection.model('fs.files',{ filename: Stri
 
 async function run() {
 
-    let total = await Files.find({}).count();
+    let total = await Files.countDocuments({});
     let done = 0;
     let attachmentUsed = 0;
     let attachmentRemoved = 0;
