@@ -91,7 +91,7 @@ retireCde = () => {
 };
 
 async function run() {
-    totalNinds = await NindsCdeModel.count();
+    totalNinds = await NindsCdeModel.countDocuments({});
     NindsCdeModel.find({}).cursor().eachAsync(async ninds => {
         let nindsObj = ninds.toObject();
         let nindsCde = CreateCDE.createCde(nindsObj);

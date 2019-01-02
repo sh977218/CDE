@@ -287,7 +287,7 @@ function run() {
             });
         },
         function (cb) {
-            var stream = MigrationNCIModel.find({}).stream();
+            var stream = MigrationNCIModel.find({}).cursor();
             stream.on('data', function (nci) {
                 stream.pause();
                 var nciObj;
