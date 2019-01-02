@@ -261,7 +261,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     protected void addOrg(String orgName, String orgLongName, String orgWGOf) {
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Org Management"));
-        clickElement(By.linkText("Organizations"));
+        clickElement(By.xpath("//div[. = 'Organizations']"));
         findElement(By.name("newOrgName")).sendKeys(orgName);
 
         if (orgLongName != null) {
@@ -315,7 +315,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void goToListManagement() {
-        clickElement(By.linkText("List Management"));
+        clickElement(By.xpath("//div[. = 'List Management']"));
     }
 
     protected int getNumberOfResults() {
@@ -762,11 +762,11 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     public void goToQuickBoardByModule(String module) {
         clickElement(By.id("menu_qb_link"));
         if (module.equals("cde")) {
-            clickElement(By.id("dataElementQuickBoard"));
+            clickElement(By.xpath("//div[contains(., 'CDE QuickBoard') and contains(@class, 'mat-tab-label-content')]"));
             textPresent("CDE QuickBoard (");
         }
         if (module.equals("form")) {
-            clickElement(By.id("formQuickBoard"));
+            clickElement(By.xpath("//div[contains(., 'Form QuickBoard') and contains(@class, 'mat-tab-label-content')]"));
             textPresent("Form QuickBoard (");
         }
     }
@@ -786,7 +786,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         textPresent("QUICK BOARD (1)");
         addCdeToQuickBoard(cdeName2);
         clickElement(By.linkText("QUICK BOARD (2)"));
-        clickElement(By.id("dataElementQuickBoard"));
+        clickElement(By.xpath("//div[contains(., 'CDE QuickBoard') and contains(@class, 'mat-tab-label-content')]"));
         textPresent(cdeName1);
         textPresent(cdeName2);
         clickElement(By.id("qb_elt_compare_0"));
@@ -902,7 +902,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         mustBeLoggedInAs(nlm_username, nlm_password);
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Audit"));
-        clickElement(By.linkText("CDE Audit Log"));
+        clickElement(By.xpath("//div[. = 'CDE Audit Log']"));
         for (Integer i = 0; i < 10; i++) {
             hangon(1);
             try {
@@ -1105,7 +1105,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         mustBeLoggedInAs(nlm_username, nlm_password);
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Audit"));
-        clickElement(By.linkText("Classification Audit Log"));
+        clickElement(By.xpath("//div[. = 'Classification Audit Log']"));
         clickElement(By.xpath("(//span[text()='" + name + "' and contains(@class,'text-info')])[1]"));
     }
 
@@ -1213,7 +1213,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     protected void checkRecentlyUsedClassifications(String org, String[] classificationArray) {
         clickElement(By.id("openClassificationModalBtn"));
         textPresent("By recently added");
-        clickElement(By.id("recentlyAddViewTab"));
+        clickElement(By.xpath("//div[. = 'By recently added']"));
         String recentlyClassificationString = org;
         for (int i = 0; i < classificationArray.length; i++)
             recentlyClassificationString = recentlyClassificationString + " / " + classificationArray[i];

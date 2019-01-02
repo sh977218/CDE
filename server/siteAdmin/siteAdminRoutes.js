@@ -18,13 +18,14 @@ exports.module = function () {
             user.save(handleError({req, res}, () => res.send("User Added")));
         }));
     });
+
     router.post('/removeSiteAdmin', (req, res) => {
         let username = req.body.username;
         if (!username) return res.status(400).send();
         userDb.userByUsername(username, handleError({req, res}, user => {
             if (!user) return res.send("Unknown Username");
             user.siteAdmin = false;
-            user.save(handleError({req, res}, () => res.send("Site Administrator Removed")));
+            user.save(handleError({req, res}, () => res.send()));
         }));
     });
 

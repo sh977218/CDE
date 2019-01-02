@@ -12,7 +12,7 @@ public class OrgAdminTasks extends BaseClassificationTest {
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Account Management")).click();
         hangon(1);
-        findElement(By.linkText("Organizations Curators")).click();       
+        clickElement(By.xpath("//div[. = 'Organizations Curators']"));
         new Select(findElement(By.name("newOrgCuratorOrgName"))).selectByVisibleText("caBIG");
         clickElement(By.name("newOrgCuratorUsername"));
         findElement(By.name("newOrgCuratorUsername")).sendKeys("userToPromote");
@@ -37,7 +37,7 @@ public class OrgAdminTasks extends BaseClassificationTest {
         checkAlert("Removed");
         textNotPresent("userToPromote");
 
-        findElement(By.linkText("Organizations Admins")).click();
+        clickElement(By.xpath("//div[. = 'Organizations Admins']"));
         new Select(findElement(By.id("newOrgAdminOrgName"))).selectByVisibleText("caBIG");
         findElement(By.id("newOrgAdminUsername")).sendKeys("userToPromote");
         findElement(By.id("newOrgAdminSubmit")).click();
