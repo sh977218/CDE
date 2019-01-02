@@ -5,9 +5,182 @@ let driver = new webdriver.Builder().forBrowser('chrome').build();
 let NindsModel = require('../../createMigrationConnection').NindsModel;
 
 const doOnePage = require('./ParseNindsCdes').doOnePage;
-const parseDiseases = require('./ParseDiseases').parseDisease;
 
 let formCounter = 0;
+
+let URL_PREFIX = 'https://www.commondataelements.ninds.nih.gov/';
+let DEFAULT_XPATH = "//*[@id='Data_Standards']/a/following-sibling::table/tbody/tr//td";
+
+const DISEASE_MAP = [
+    {
+        name: 'General',
+        url: URL_PREFIX + 'General.aspx',
+        xpath: DEFAULT_XPATH,
+        count: 92,
+        domainCount: 9
+    },
+    {
+        name: 'Amyotrophic Lateral Sclerosis',
+        url: URL_PREFIX + 'ALS.aspx',
+        xpath: DEFAULT_XPATH,
+        count: 98,
+        domainCount: 9
+    },
+    {
+        name: 'Cerebral Palsy',
+        url: URL_PREFIX + 'CP.aspx',
+        xpath: "//*[@id='Data_Standards']/b/b/a/following-sibling::table/tbody/tr//td",
+        count: 158,
+        domainCount: 10
+    },
+    {
+        name: 'Chiari I Malformation',
+        url: URL_PREFIX + 'CM.aspx',
+        xpath: DEFAULT_XPATH,
+        count: 71,
+        domainCount: 10
+    },
+    {
+        name: 'Epilepsy',
+        url: URL_PREFIX + 'Epilepsy.aspx',
+        xpath: DEFAULT_XPATH,
+        count: 104,
+        domainCount: 9
+    },
+    {
+        name: "Friedreich's Ataxia",
+        url: URL_PREFIX + 'FA.aspx',
+        xpath: DEFAULT_XPATH,
+        count: 53,
+        domainCount: 9
+    },
+    {
+        name: 'Headache',
+        url: URL_PREFIX + 'Headache.aspx',
+        xpath: DEFAULT_XPATH,
+        count: 74,
+        domainCount: 9
+    },
+    {
+        name: "Huntington’s Disease",
+        url: URL_PREFIX + 'HD.aspx',
+        xpath: DEFAULT_XPATH,
+        count: 86,
+        domainCount: 9
+    },
+    {
+        name: 'Mitochondrial Disease',
+        url: URL_PREFIX + 'MD.aspx',
+        xpath: DEFAULT_XPATH,
+        count: 132,
+        domainCount: 9
+    },
+    {
+        name: 'Multiple Sclerosis',
+        url: URL_PREFIX + 'MS.aspx',
+        xpath: DEFAULT_XPATH,
+        count: 105,
+        domainCount: 9
+    },
+    {
+        name: 'Myalgic Encephalomyelitis/Chronic Fatigue Syndrome',
+        url: URL_PREFIX + 'MECFS.aspx',
+        xpath: DEFAULT_XPATH,
+        count: 136,
+        domainCount: 10
+    },
+    {
+        name: 'Neuromuscular Diseases',
+        url: URL_PREFIX + 'NMD.aspx',
+        xpath: DEFAULT_XPATH,
+        count: 80,
+        domainCount: 9
+    },
+    {
+        name: 'Congenital Muscular Dystrophy',
+        url: URL_PREFIX + 'CMD.aspx',
+        xpath: DEFAULT_XPATH,
+        count: 61,
+        domainCount: 9
+    },
+    {
+        name: 'Duchenne/Becker Muscular Dystrophy',
+        url: URL_PREFIX + 'DMD.aspx',
+        xpath: DEFAULT_XPATH,
+        count: 50,
+        domainCount: 6
+    },
+    {
+        name: 'Facioscapulohumeral muscular dystrophy (FSHD)',
+        url: URL_PREFIX + 'FSHD.aspx',
+        xpath: DEFAULT_XPATH,
+        count: 41,
+        domainCount: 9
+    },
+    {
+        name: 'Myasthenia Gravis',
+        url: URL_PREFIX + 'MG.aspx',
+        xpath: DEFAULT_XPATH,
+        count: 54,
+        domainCount: 9
+    },
+    {
+        name: 'Myotonic Dystrophy',
+        url: URL_PREFIX + 'MMD.aspx',
+        xpath: DEFAULT_XPATH,
+        count: 51,
+        domainCount: 9
+    },
+    {
+        name: 'Spinal Muscular Atrophy',
+        url: URL_PREFIX + 'SMA.aspx',
+        xpath: DEFAULT_XPATH,
+        count: 62,
+        domainCount: 9
+    },
+    {
+        name: "Parkinson's Disease",
+        url: URL_PREFIX + 'PD.aspx',
+        xpath: DEFAULT_XPATH,
+        count: 140,
+        domainCount: 9
+    },
+    {
+        name: 'Spinal Cord Injury',
+        url: URL_PREFIX + 'SCI.aspx',
+        xpath: DEFAULT_XPATH,
+        count: 196,
+        domainCount: 11
+    },
+    {
+        name: 'Stroke',
+        url: URL_PREFIX + 'Stroke.aspx',
+        xpath: DEFAULT_XPATH,
+        count: 82,
+        domainCount: 9
+    },
+    {
+        name: 'Unruptured Cerebral Aneurysms and Subarachnoid Hemorrhage',
+        url: URL_PREFIX + 'SAH.aspx',
+        xpath: DEFAULT_XPATH,
+        count: 130,
+        domainCount: 8
+    },
+    {
+        name: 'Traumatic Brain Injury',
+        url: URL_PREFIX + 'TBI.aspx',
+        xpath: DEFAULT_XPATH,
+        count: 261,
+        domainCount: 9
+    },
+    {
+        name: 'Sport-Related Concussion',
+        url: URL_PREFIX + 'SRC.aspx',
+        xpath: DEFAULT_XPATH,
+        count: 186,
+        domainCount: 8
+    }
+];
 
 getFormInfo = async trElement => {
     let thElements = await trElement.findElements(By.xpath('th'));
@@ -101,8 +274,8 @@ doDomain = async (driver, disease, domainElement) => {
         } else {
             let cond = await getFormInfo(trElement);
             cond.url = disease.url;
-            if (domain) cond.domain = domain;
-            if (disease && disease.name) cond.disease = disease.name;
+            cond.domain = domain;
+            cond.disease = disease.name;
             let existingNinds = await NindsModel.findOne(cond);
             if (!existingNinds) {
                 let formObj = await doTrElement(trElement);
@@ -123,36 +296,33 @@ doDomain = async (driver, disease, domainElement) => {
 
 async function doDisease(disease) {
     await driver.get(disease.url);
-    let titleElement = await driver.findElement(By.xpath("//*[@id='bcrumbTab']//following-sibling::h2"));
-    let titleText = await titleElement.getText();
-    let title = titleText.trim();
-    disease.title = title;
-
-    let existingDbCount = await NindsModel.count({url: disease.url, disease: disease.name});
-    let existingWebElements = await driver.findElements(By.xpath("//*[@id='Data_Standards']/a/following-sibling::table/tbody/tr//td"));
-    let existingWebCount = existingWebElements.length;
-    if (existingDbCount >= existingWebCount) {
-        console.log("***********************************************************************");
-        console.log("Previously Finished Disease " + disease.name + " on page " + disease.url);
-        console.log("***********************************************************************");
-        return;
-    }
-    console.log('existingDbCount: ' + existingDbCount);
-    console.log('existingWebCount: ' + existingWebCount);
-
     let domainElements = await driver.findElements(By.xpath("//*[@class='cdetable']/preceding-sibling::a"));
+    if (domainElements.length !== disease.domainCount) {
+        console.log(disease.name + ' domain count: ' + domainElements.length + '. Web: ' + disease.domainCount);
+        process.exit(1);
+    }
     for (let domainElement of domainElements) {
         await doDomain(driver, disease, domainElement);
     }
 };
 
 async function run() {
-    let diseases = await parseDiseases();
-    for (let i = 0; i < diseases.length; i++) {
-        let disease = diseases[i];
-        await doDisease(disease);
+    for (let disease of DISEASE_MAP) {
+        let existingDbCount = await NindsModel.count({disease: disease.name});
+        if (existingDbCount >= disease.count) {
+            console.log("***********************************************************************");
+            console.log("Previously Finished Disease " + disease.name + " on page " + disease.url);
+            console.log("***********************************************************************");
+        } else {
+            await doDisease(disease);
+            let savedCount = await NindsModel.count({disease: disease.name});
+            if (savedCount !== disease.count) {
+                console.log(disease.name + ' savedCount: ' + savedCount + '. Web: ' + disease.count);
+                process.exit(1);
+            }
+        }
     }
 }
 
-run().then(async () => {
+run().then(() => {
 }, error => console.log(error));
