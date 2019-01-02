@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const shortId = require('shortid');
 const Grid = require('gridfs-stream');
-const MongoStore = require('connect-mongo')(session);
+const MongoStore = require('connect-mongo')(session); // TODO: update to new version when available for mongodb 3 used by mongoose
 
 const eltShared = require('esm')(module)('../../shared/elt');
 const authorizationShared = require('esm')(module)('../../shared/system/authorizationShared');
@@ -160,7 +160,7 @@ exports.pushByIds = (endpoint, userId, callback) => {
 };
 
 exports.pushByIdsCount = (endpoint, userId, callback) => {
-    PushRegistration.count({'subscription.endpoint': endpoint, userId: userId}, callback);
+    PushRegistration.countDocuments({'subscription.endpoint': endpoint, userId: userId}, callback);
 };
 
 exports.pushByPublicKey = (publicKey, callback) => {

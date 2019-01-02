@@ -4,6 +4,7 @@ const config = require('../system/parseConfig');
 const schemas = require('./schemas');
 const mongo_data = require('../system/mongo-data');
 const connHelper = require('../system/connections');
+const mongooseHelper = require('../system/mongooseHelper');
 const logging = require('../system/logging');
 const elastic = require('./elastic');
 const isOrgCurator = require('../../shared/system/authorizationShared').isOrgCurator;
@@ -124,9 +125,7 @@ exports.getStream = function (condition) {
 };
 
 exports.count = function (condition, callback) {
-    Form.count(condition).exec(function (err, count) {
-        callback(err, count);
-    });
+    Form.countDocuments(condition, callback);
 };
 
 exports.update = function (elt, user, callback, special) {
@@ -173,7 +172,7 @@ exports.update = function (elt, user, callback, special) {
                             });
                     }
                     callback(err, savedForm);
-                })
+                });
             }
         });
     });
@@ -231,12 +230,10 @@ exports.byTinyIdListInOrder = function (idList, callback) {
     });
 };
 
-exports.exists = function (condition, callback) {
-    Form.count(condition, function (err, result) {
-        callback(err, result > 0);
-    });
+// cb(err, bool)
+exports.exists = (condition, cb) => {
+    mongooseHelper.exists(Form, condition, cb);
 };
-
 
 exports.checkOwnership = function (req, id, cb) {
     if (!req.isAuthenticated()) return cb("You are not authorized.", null);

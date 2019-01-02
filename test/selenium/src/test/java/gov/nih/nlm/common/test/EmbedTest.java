@@ -15,7 +15,7 @@ public class EmbedTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ninds_username, password);
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Account Management"));
-        clickElement(By.id("embeddingTab"));
+        clickElement(By.xpath("//div[. = 'Embedding']"));
         clickElement(By.id("NINDS_addEmbed"));
 
         findElement(By.id("embedName")).sendKeys("Main NINDS Embed");
@@ -110,8 +110,8 @@ public class EmbedTest extends NlmCdeBaseTest {
         findElement(By.id("username_link")).click();
         findElement(By.linkText("Account Management")).click();
         hangon(1);
-        findElement(By.id("embeddingTab")).click();
-        findElement(By.id("removeEmbed-0")).click();
+        clickElement(By.xpath("//div[. = 'Embedding']"));
+        clickElement(By.id("removeEmbed-0"));
         findElement(By.id("confirmRemoveEmbed-0")).click();
         textPresent("Removed");
 

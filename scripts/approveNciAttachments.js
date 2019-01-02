@@ -6,7 +6,7 @@ const Files = mongo_system.mongoose_connection.model('fs.files',
 
 async function run() {
 
-    let total = await Files.find({"metadata.status": "uploaded"}).count();
+    let total = await Files.countDocuments({"metadata.status": "uploaded"});
     let scanned = 0;
     let attachmentsApproved = 0;
 

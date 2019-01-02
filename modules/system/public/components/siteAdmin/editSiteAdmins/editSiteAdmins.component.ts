@@ -4,7 +4,6 @@ import { Component, OnInit } from '@angular/core';
 import { AlertService } from 'alert/alert.service';
 import { UserService } from '_app/user.service';
 
-
 @Component({
     selector: 'cde-edit-site-admins',
     templateUrl: './editSiteAdmins.component.html'
@@ -25,12 +24,12 @@ export class EditSiteAdminsComponent implements OnInit {
     }
 
     addSiteAdmin() {
-        this.http.post('/server/siteAdmin/addSiteAdmin', {username: this.newAdmin.username}, {responseType: 'text'}).subscribe(() => {
+        this.http.post('/server/siteAdmin/addSiteAdmin', {username: this.newAdmin}, {responseType: 'text'}).subscribe(() => {
                 this.Alert.addAlert('success', 'Saved');
                 this.getSiteAdmins();
             }, () => this.Alert.addAlert('danger', 'There was an issue adding this administrator.')
         );
-        this.newAdmin.username = '';
+        this.newAdmin = '';
     }
 
     getSiteAdmins() {
@@ -41,8 +40,8 @@ export class EditSiteAdminsComponent implements OnInit {
         this.http.get('/server/siteAdmin/orgAuthorities').subscribe(response => this.orgAuthorities = response, () => {});
     }
 
-    removeSiteAdmin(byId: string) {
-        this.http.post('/server/siteAdmin/removeSiteAdmin', {id: byId}).subscribe(() => {
+    removeSiteAdmin(name: string) {
+        this.http.post('/server/siteAdmin/removeSiteAdmin', {username: name}).subscribe(() => {
                 this.Alert.addAlert('success', 'Removed');
                 this.getSiteAdmins();
             }, () => {
