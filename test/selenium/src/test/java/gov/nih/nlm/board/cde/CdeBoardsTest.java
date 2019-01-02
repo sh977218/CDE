@@ -36,7 +36,7 @@ public class CdeBoardsTest extends BoardTest {
     public void pagination() {
         mustBeLoggedInAs(ninds_username, password);
         goToBoard("Large Board");
-        clickElement(By.cssSelector(".mat-paginator-navigation-next"));
+        for(int i = 0; i< 9; i++) clickElement(By.cssSelector(".mat-paginator-navigation-next"));
         textPresent("The indicator whether participant/subject worked in landscaping/gardening/groundskeeping from age 36 to 45 as part of the Risk Factor Questionnaire (RFQ-U) for Pesticide (Work).");
     }
 

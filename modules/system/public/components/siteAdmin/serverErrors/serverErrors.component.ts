@@ -18,21 +18,12 @@ type ServerErrorRecord = any;
     ]
 })
 export class ServerErrorsComponent {
-    currentPage: number = 1;
-    excludeFilters: string[] = [];
-    excludeFilterToAdd = '';
+    currentPage: number = 0;
     records: ServerErrorRecord[] = [];
 
     constructor(private http: HttpClient,
                 private alert: AlertService) {
         this.gotoPage();
-    }
-
-    addExcludeFilter(toAdd: string) {
-        if (toAdd.length > 0 && this.excludeFilters.indexOf(toAdd) === -1) {
-            this.excludeFilters.push(toAdd.trim());
-            this.gotoPage();
-        }
     }
 
     gotoPage(event?: PageEvent) {

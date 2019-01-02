@@ -7,7 +7,6 @@ import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operato
 
 import { CodeAndSystem } from 'shared/models.model';
 
-
 @Injectable()
 export class UcumService {
     search = ((text$: Observable<string>) => text$.pipe(
@@ -27,9 +26,7 @@ export class UcumService {
     ));
     uomUnitMap = new Map<string, string[]>();
 
-    constructor(private http: HttpClient) {
-    }
-
+    constructor(private http: HttpClient) {}
 
     // cb(names)
     getUnitNames(uom: string, cb) {

@@ -14,7 +14,7 @@ export class UserCommentsComponent implements OnInit {
     comments: DiscussionComments;
     getEltLink = UserService.getEltLink;
     pageSize: number = 30;
-    page: number = 1;
+    page: number = 0;
 
     ngOnInit() {
         this.getComments();
@@ -32,7 +32,7 @@ export class UserCommentsComponent implements OnInit {
         }
 
         //noinspection TypeScriptValidateTypes
-        this.http.get<Comment[]>('/server/discuss/commentsFor/' + this.user.username + '/' + (this.page) * 30 + '/30')
+        this.http.get<Comment[]>('/server/discuss/commentsFor/' + this.user.username + '/' + this.page * 30 + '/30')
             .subscribe(comments => {
                 this.comments.latestComments = comments;
                 let len = this.comments.latestComments.length;
