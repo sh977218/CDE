@@ -170,7 +170,8 @@ exports.handleError = function (options, cb) {
     };
 };
 
-// @TODO: Combine with logError() which publishes notifications
+// TODO: Combine with logError() which publishes notifications
+// TODO: tee to console.log
 exports.respondError = function (err, options) {
     if (!options) options = {};
     if (options.res) {

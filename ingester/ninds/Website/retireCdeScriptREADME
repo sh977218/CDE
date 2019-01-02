@@ -14,7 +14,7 @@ db.dataelements.updateMany({
 	}
 });
 
-db.dataelements.count({
+db.dataelements.countDocuments({
 	"source" : "NINDS",	archived : false,"registrationState.registrationStatus" : "Qualified",imported : {$lt : new ISODate($loadDay)	}
 });
 

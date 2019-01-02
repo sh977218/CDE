@@ -22,7 +22,7 @@ report:
 
 4. remote log into mongodb by history   !998
 use nlmcde;
-db.dataelements.count({
+db.dataelements.countDocuments({
 	"source" : "NINDS",
 	archived : false,
 	"registrationState.registrationStatus" : "Qualified",
