@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const webdriver = require('selenium-webdriver');
 const By = webdriver.By;
 let driver = new webdriver.Builder().forBrowser('chrome').build();
@@ -260,35 +261,63 @@ doDomain = async (driver, disease, domainElement) => {
     let domainText = await domainElement.getText();
     let domain = domainText.trim();
 
+    /*
+    html could be:
+    <a>
+    <table>
+    -----------
+    <a>
+    <p>
+    <table>
+    -----------
+    <a>
+    <p>
+    (missing table)
+    <a>
+    <p>
+    <table>
+     */
     let id = await domainElement.getAttribute('id');
-    let cdeTableElement = await driver.findElement(By.xpath("//*[@id='" + id + "']/following-sibling::table"));
+    let followingElements = await driver.findElements(By.xpath("//*[@id='" + id + "']/following-sibling::*"));
+    let followingElementTags = [];
+    for (let followingElement of followingElements) {
+        let nextElementTags = await followingElement.getTagName();
+        followingElementTags.push(nextElementTags);
+    }
+    let cdeTableElement;
 
-    let trElements = await cdeTableElement.findElements(By.xpath('tbody/tr'));
-    for (let trElement of trElements) {
-        let subDomain = '';
-        let thElements = await trElement.findElements(By.xpath('th'));
-        let tdElements = await trElement.findElements(By.xpath('td'));
-        if (tdElements.length === 0) {
-            let subDomainText = await thElements[0].getText();
-            subDomain = subDomainText.trim();
-        } else {
-            let cond = await getFormInfo(trElement);
-            cond.url = disease.url;
-            cond.domain = domain;
-            cond.disease = disease.name;
-            let existingNinds = await NindsModel.findOne(cond);
-            if (!existingNinds) {
-                let formObj = await doTrElement(trElement);
-                formObj.subDomain = subDomain;
-                formObj.domain = domain;
-                formObj.disease = disease.name;
-                formObj.url = disease.url;
-                await new NindsModel(formObj).save();
-                formCounter++;
-                console.log('formCounter: ' + formCounter);
+    let tableIndex = followingElementTags.indexOf('table');
+    if (tableIndex === 0) cdeTableElement = followingElements[0];
+    else if (tableIndex === 1) cdeTableElement = followingElementTags[1];
+    else console.log(domain + ' has no table.');
+    if (cdeTableElement) {
+        let trElements = await cdeTableElement.findElements(By.xpath('tbody/tr'));
+        for (let trElement of trElements) {
+            let subDomain = '';
+            let thElements = await trElement.findElements(By.xpath('th'));
+            let tdElements = await trElement.findElements(By.xpath('td'));
+            if (tdElements.length === 0) {
+                let subDomainText = await thElements[0].getText();
+                subDomain = subDomainText.trim();
             } else {
-                formCounter++;
-                console.log('formCounter: ' + formCounter + ' skipped.');
+                let cond = await getFormInfo(trElement);
+                cond.url = disease.url;
+                cond.domain = domain;
+                cond.disease = disease.name;
+                let existingNinds = await NindsModel.findOne(cond);
+                if (!existingNinds) {
+                    let formObj = await doTrElement(trElement);
+                    formObj.subDomain = subDomain;
+                    formObj.domain = domain;
+                    formObj.disease = disease.name;
+                    formObj.url = disease.url;
+                    await new NindsModel(formObj).save();
+                    formCounter++;
+                    console.log('formCounter: ' + formCounter);
+                } else {
+                    formCounter++;
+                    console.log('formCounter: ' + formCounter + ' skipped.');
+                }
             }
         }
     }
