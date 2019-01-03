@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import {
     MatButtonModule, MatCardModule, MatCheckboxModule, MatChipsModule, MatDialogModule, MatExpansionModule,
     MatGridListModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule, MatSliderModule, MatTabsModule,
-    MatTooltipModule
+    MatTooltipModule, MatAutocompleteModule
 } from "@angular/material";
 import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -61,6 +61,7 @@ const appRoutes: Routes = [
         MatSelectModule,
         MatSliderModule,
         MatTabsModule,
+        MatAutocompleteModule,
         MatTooltipModule,
         NgbModule,
         NgSelectModule,

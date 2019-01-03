@@ -1,6 +1,7 @@
 import { ENTER } from '@angular/cdk/keycodes';
 import { HttpClient } from '@angular/common/http';
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { MatChipInputEvent, MatDialog } from '@angular/material';
 import { AlertService } from 'alert/alert.service';
 import { TreeNode } from 'angular-tree-component';
@@ -13,7 +14,8 @@ import { SelectQuestionLabelComponent } from 'form/public/tabs/description/selec
 import _clone from 'lodash/clone';
 import _noop from 'lodash/noop';
 import { Observable } from 'rxjs/Observable';
-import { debounceTime, map } from 'rxjs/operators';
+import { map, switchMap, debounceTime, distinctUntilChanged } from 'rxjs/operators';
+
 import { CodeAndSystem, FormattedValue } from 'shared/models.model';
 import { FormElement, FormQuestion, SkipLogic } from 'shared/form/form.model';
 
@@ -75,12 +77,16 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     tag = [];
     readonly separatorKeysCodes: number[] = [ENTER];
 
+
+    uomControl = new FormControl();
+    filteredUoms = [];
+
     constructor(private alert: AlertService,
                 private http: HttpClient,
                 public dialog: MatDialog,
                 private orgHelperService: OrgHelperService,
                 public skipLogicValidateService: SkipLogicValidateService,
-                private ucumService: UcumService) {
+                public ucumService: UcumService) {
         this.dataTypeList = DataTypeService.dataElementDataType;
     }
 
@@ -91,6 +97,13 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         this.orgHelperService.then(orgsDetailedInfo => {
             this.tag = orgsDetailedInfo[stewardOrgName].nameTags;
         }, _noop);
+        this.uomControl.valueChanges
+            .pipe(
+                debounceTime(300),
+                distinctUntilChanged(),
+                switchMap(value => value.length < 3 ? [] : this.ucumService.searchUcum(value)
+                )
+            ).subscribe(uoms => this.filteredUoms = uoms);
     }
 
     getRepeatLabel(fe) {
