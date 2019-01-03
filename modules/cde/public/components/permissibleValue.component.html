@@ -223,16 +223,17 @@
         <div *ngIf="userService.loggedIn()">
             <div>{{vsacError}}</div>
             <div *ngIf="!editMode">
-                <a *ngIf="canEdit" class="btn btn-outline-dark"
-                   id="updateOIDBtn" (click)="editMode=true">Update O.I.D</a>
-                <a *ngIf="canEdit && vsacMappingExists()" class="btn btn-outline-dark"
-                   id="removeVSButton" (click)="removeVSMapping()">Remove Mapping</a>
+                <button *ngIf="canEdit" mat-raised-button id="updateOIDBtn" (click)="editMode=true">Update O.I.D</button>
+                <button *ngIf="canEdit && vsacMappingExists()" mat-raised-button
+                   id="removeVSButton" (click)="removeVSMapping()">Remove Mapping</button>
             </div>
             <div *ngIf="editMode">
-                <input name="vsacId" type="text" [(ngModel)]="elt.dataElementConcept.conceptualDomain.vsac.id"
-                       placeholder="VSAC O.I.D"/>
-                <mat-icon id="vsacIdCheck" (click)="checkVsacId(elt)">check</mat-icon>
-                <mat-icon (click)="editMode = false">cancel</mat-icon>
+                <mat-form-field>
+                    <input name="vsacId" [(ngModel)]="elt.dataElementConcept.conceptualDomain.vsac.id" matInput
+                           placeholder="VSAC O.I.D"/>
+                    <mat-icon matSuffix id="vsacIdCheck" (click)="checkVsacId(elt)">check</mat-icon>
+                    <mat-icon matSuffix (click)="editMode = false">cancel</mat-icon>
+                </mat-form-field>
             </div>
         </div>
         <hr/>

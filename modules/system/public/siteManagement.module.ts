@@ -5,7 +5,7 @@ import {
     MatButtonModule,
     MatDialogModule,
     MatIconModule,
-    MatInputModule,
+    MatInputModule, MatProgressBarModule,
     MatSelectModule,
     MatTabsModule
 } from '@angular/material';
@@ -40,6 +40,7 @@ const appRoutes: Routes = [
         MatInputModule,
         MatButtonModule,
         MatDialogModule,
+        MatProgressBarModule,
         MatSelectModule,
         MatTabsModule,
         NgbModule,

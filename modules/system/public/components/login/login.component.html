@@ -13,9 +13,8 @@
                    placeholder="Password" autocomplete="false" [(ngModel)]="password" required/>
             <input type="hidden" name="_csrf" [(ngModel)]="csrf">
         </div>
-        <button [disabled]="!loginForm.valid || !csrf" class="btn   btn-primary btn-block" (click)="login()"
-                id="login_button">Log In
-        </button>
+        <button [disabled]="!loginForm.valid || !csrf" mat-raised-button color="link" (click)="login()"
+                id="login_button" style="width: 300px">Log In</button>
         <p>Forgot your <a href="https://uts.nlm.nih.gov/license.html#emailUsername" class="vsloginLink" target="_blank">
             <span>username</span></a> or <a href="https://uts.nlm.nih.gov/license.html#emailTemporaryPassword"
                                             target="_blank">

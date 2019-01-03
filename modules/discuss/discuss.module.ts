@@ -1,18 +1,17 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MatIconModule, MatDialogModule, MatPaginatorModule } from '@angular/material';
-
+import { MatIconModule, MatDialogModule, MatPaginatorModule, MatButtonModule } from '@angular/material';
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
 import { LatestCommentsComponent } from 'discuss/components/latestComments/latestComments.component';
 import { WidgetModule } from 'widget/widget.module';
 import { CommentsComponent } from 'discuss/components/comments/comments.component';
 
-
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
+        MatButtonModule,
         MatIconModule,
         MatDialogModule,
         MatPaginatorModule,
