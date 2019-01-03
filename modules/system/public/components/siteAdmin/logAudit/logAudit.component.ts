@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
+import { PageEvent } from '@angular/material';
 
 
 @Component({
@@ -12,7 +13,7 @@ import { Component } from '@angular/core';
     `]
 })
 export class LogAuditComponent {
-    currentPage: number = 1;
+    currentPage: number = 0;
     gridLogEvents: any[] = [];
     ipAddress: any;
     itemsPerPage?: number;
@@ -50,10 +51,13 @@ export class LogAuditComponent {
 
     constructor(
         private http: HttpClient
-    ) {
-    }
+    ) {}
 
-    searchLogs() {
+    searchLogs(event?: PageEvent) {
+        if (event) {
+            this.currentPage = event.pageIndex;
+        }
+
         let postBody = {
             currentPage: this.currentPage,
             ipAddress: this.ipAddress,

@@ -1,12 +1,3 @@
-<form class="form-search">
-    <input placeholder="loggerToExclude" title="loggerToExclude" name="exclude" [(ngModel)]="excludeFilterToAdd"
-           size="80"/>
-    <button class="btn btn-outline-dark fa fa-plus" (click)="addExcludeFilter(excludeFilterToAdd)"> Add Exclude Filter
-    </button>
-</form>
-
-Excluding: {{excludeFilters}}
-
 <table class="table table-responsive">
     <thead>
     <tr>
@@ -36,5 +27,7 @@ Excluding: {{excludeFilters}}
     </tbody>
 </table>
 
-<ngb-pagination [collectionSize]="1000" [(page)]="currentPage" (pageChange)="gotoPage()" [maxSize]="10">
-</ngb-pagination>
+<mat-paginator (page)="gotoPage($event)" [length]="1000"
+               [pageIndex]="currentPage"
+               [pageSize]="10" [hidePageSize]="true" style="font-size: 1.4em">
+</mat-paginator>

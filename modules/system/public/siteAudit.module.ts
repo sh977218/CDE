@@ -17,7 +17,13 @@ import { ServerErrorsComponent } from 'system/public/components/siteAdmin/server
 import { SiteAuditComponent } from 'system/public/components/siteAdmin/siteAudit/siteAudit.component';
 import { WidgetModule } from 'widget/widget.module';
 import { ActiveBansComponent } from "./components/siteAdmin/activeBans/activeBans.component";
-import { MatButtonModule, MatIconModule, MatExpansionModule, MatTabsModule } from '@angular/material';
+import {
+    MatButtonModule,
+    MatIconModule,
+    MatExpansionModule,
+    MatPaginatorModule,
+    MatTabsModule
+} from '@angular/material';
 
 const appRoutes: Routes = [
     {path: '', component: SiteAuditComponent},
@@ -34,6 +40,7 @@ const appRoutes: Routes = [
         MatButtonModule,
         MatIconModule,
         MatExpansionModule,
+        MatPaginatorModule,
         MatTabsModule,
         // internal
     ],

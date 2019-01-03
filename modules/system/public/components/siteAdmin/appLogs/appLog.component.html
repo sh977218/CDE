@@ -21,7 +21,11 @@
                 <td>{{log.message}}</td>
             </tr>
         </table>
-        <ngb-pagination [collectionSize]="totalItems" [(page)]="currentPage" (pageChange)="searchLogs()"
-                        [pageSize]="itemsPerPage" [maxSize]="10"></ngb-pagination>
+
+        <mat-paginator (page)="searchLogs($event)" [length]="totalItems"
+                       [pageIndex]="currentPage"
+                       [pageSize]="itemsPerPage" [hidePageSize]="true" style="font-size: 1.4em">
+        </mat-paginator>
+
     </div>
 </div>
