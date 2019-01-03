@@ -14,7 +14,7 @@ import { WidgetModule } from 'widget/widget.module';
 import {
     MatAutocompleteModule, MatButtonModule,
     MatChipsModule, MatDialogModule,
-    MatIconModule, MatInputModule
+    MatIconModule, MatInputModule, MatTabsModule
 } from '@angular/material';
 import { OneListMgtComponent } from 'system/public/components/siteAdmin/listManagement/oneListMgt.component';
 
@@ -39,6 +39,7 @@ const appRoutes: Routes = [
         MatDialogModule,
         MatIconModule,
         MatInputModule,
+        MatTabsModule,
         ReactiveFormsModule,
     ],
     declarations: [

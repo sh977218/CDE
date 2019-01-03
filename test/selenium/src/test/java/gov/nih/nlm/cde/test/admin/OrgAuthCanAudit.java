@@ -12,15 +12,15 @@ public class OrgAuthCanAudit extends NlmCdeBaseTest {
         clickElement(By.id("username_link"));
         clickElement(By.id("user_audit"));
 
-        clickElement(By.partialLinkText("CDE Audit Log"));
+        clickElement(By.xpath("//div[. = 'CDE Audit Log']"));
         clickElement(By.cssSelector("mat-panel-title"));
         findElement(By.xpath("//dt[. = 'User:']"));
 
-        clickElement(By.partialLinkText("Classification Audit Log"));
+        clickElement(By.xpath("//div[. = 'Classification Audit Log']"));
         clickElement(By.cssSelector("mat-panel-title"));
         findElement(By.xpath("//dt[. = 'User:']"));
 
-        clickElement(By.partialLinkText("Reported Issues"));
+        clickElement(By.xpath("//div[. = 'Reported Issues']"));
         textPresent("Screenshot");
     }
 

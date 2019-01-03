@@ -1,55 +1,38 @@
-<ngb-tabset class="container-fluid" #tabs>
-    <ngb-tab title="Logs" id="log" *ngIf="isAdmin">
-        <ng-template ngbTabContent>
-            <cde-log-audit></cde-log-audit>
-        </ng-template>
-    </ngb-tab>
+<mat-tab-group [selectedIndex]="selectedTab.value">
+    <mat-tab label="Logs" *ngIf="isAdmin">
+        <cde-log-audit></cde-log-audit>
+    </mat-tab>
 
-    <ngb-tab title="App Logs" id="appLog" *ngIf="isAdmin">
-        <ng-template ngbTabContent>
-            <cde-app-log></cde-app-log>
-        </ng-template>
-    </ngb-tab>
+    <mat-tab label="App Logs" *ngIf="isAdmin">
+        <cde-app-log></cde-app-log>
+    </mat-tab>
 
-    <ngb-tab title="Usage" id="usage" *ngIf="isAdmin">
-        <ng-template ngbTabContent>
-            <cde-daily-usage></cde-daily-usage>
-        </ng-template>
-    </ngb-tab>
+    <mat-tab label="Usage" *ngIf="isAdmin">
+        <cde-daily-usage></cde-daily-usage>
+    </mat-tab>
 
-    <ngb-tab title="CDE Audit Log" id="cdeAuditLog">
-        <ng-template ngbTabContent>
-            <cde-audit-log></cde-audit-log>
-        </ng-template>
-    </ngb-tab>
+    <mat-tab label="CDE Audit Log" id="cdeAuditLog">
+        <cde-audit-log></cde-audit-log>
+    </mat-tab>
 
-    <ngb-tab title="Classification Audit Log" id="classificationAuditLog">
-        <ng-template ngbTabContent>
-            <cde-classification-audit-log></cde-classification-audit-log>
-        </ng-template>
-    </ngb-tab>
+    <mat-tab label="Classification Audit Log">
+        <cde-classification-audit-log></cde-classification-audit-log>
+    </mat-tab>
 
-    <ngb-tab title="Active Bans" id="activeBan">
-        <ng-template ngbTabContent>
-            <cde-active-bans></cde-active-bans>
-        </ng-template>
-    </ngb-tab>
+    <mat-tab label="Active Bans" *ngIf="isAdmin">
+        <cde-active-bans></cde-active-bans>
+    </mat-tab>
 
-    <ngb-tab title="Reported Issues" id="reportedIssue">
-        <ng-template ngbTabContent>
-            <cde-feedback-issues></cde-feedback-issues>
-        </ng-template>
-    </ngb-tab>
+    <mat-tab label="Reported Issues">
+        <cde-feedback-issues></cde-feedback-issues>
+    </mat-tab>
 
-    <ngb-tab title="Server Errors" id="serverError" *ngIf="isAdmin">
-        <ng-template ngbTabContent>
-            <cde-server-errors></cde-server-errors>
-        </ng-template>
-    </ngb-tab>
+    <mat-tab label="Server Errors" *ngIf="isAdmin" #serverErrorTab>
+        <cde-server-errors></cde-server-errors>
+    </mat-tab>
 
-    <ngb-tab title="Client Errors" id="clientError" *ngIf="isAdmin">
-        <ng-template ngbTabContent>
-            <cde-client-errors></cde-client-errors>
-        </ng-template>
-    </ngb-tab>
-</ngb-tabset>
+    <mat-tab label="Client Errors" *ngIf="isAdmin" #clientErrorTab>
+        <cde-client-errors></cde-client-errors>
+    </mat-tab>
+
+</mat-tab-group>
