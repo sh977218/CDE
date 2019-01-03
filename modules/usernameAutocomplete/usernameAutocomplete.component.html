@@ -1,0 +1,13 @@
+<mat-form-field>
+    <input type="text" placeholder="{{placeHolder}}" matInput [formControl]="usernameControl" [matAutocomplete]="auto">
+    <mat-autocomplete #auto="matAutocomplete">
+        <mat-option *ngIf="isLoading" class="is-loading">
+            <mat-spinner diameter="50"></mat-spinner>
+        </mat-option>
+        <ng-container *ngIf="!isLoading">
+            <mat-option *ngFor="let username of filteredUsernames" [value]="username" (click)="onSelect.emit(username)">
+                {{username}}
+            </mat-option>
+        </ng-container>
+    </mat-autocomplete>
+</mat-form-field>

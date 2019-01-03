@@ -15,13 +15,15 @@ export class OrgAdminComponent {
     newAdmin: any = {orgName: '', username: ''};
     orgAdmins: any[] = [{name: 'Loading...'}];
 
-    constructor(
-        private alert: AlertService,
-        private http: HttpClient,
-        public isAllowedModel: IsAllowedService,
-        public userService: UserService,
-    ) {
+    constructor(private alert: AlertService,
+                private http: HttpClient,
+                public isAllowedModel: IsAllowedService,
+                public userService: UserService) {
         this.getAdmins();
+    }
+
+    selectUsername(event) {
+        this.newAdmin.username = event;
     }
 
     addOrgAdmin() {

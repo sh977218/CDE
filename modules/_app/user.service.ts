@@ -24,10 +24,10 @@ export class UserService {
             switchMap(term => term.length < 3 || !isOrgAdmin(this.user!) ? [] :
                 this.http.get<User[]>('/server/user/searchUsers/' + term).pipe(
                     map(r => r.map(u => u.username),
-                    catchError(() => EmptyObservable.create<string[]>())
+                        catchError(() => EmptyObservable.create<string[]>())
+                    )
                 )
-            )
-        )));
+            )));
     user?: User;
     userOrgs: string[] = [];
     logoutTimeout?: number;
@@ -37,6 +37,10 @@ export class UserService {
         this.reload();
         this.resetInactivityTimeout();
         document.body.addEventListener('click', () => this.resetInactivityTimeout());
+    }
+
+    searchUsernames(username) {
+        return this.http.get<User[]>('/server/user/usernames/' + username);
     }
 
     catch(cb: CbErrObj<HttpErrorResponse>): Promise<any> {
@@ -58,7 +62,7 @@ export class UserService {
         return !!this.user;
     }
 
-    isOrgCurator () {
+    isOrgCurator() {
         return this.user && isOrgCurator(this.user);
     }
 
@@ -99,7 +103,7 @@ export class UserService {
         this.listeners.push(cb);
     }
 
-    resetInactivityTimeout () {
+    resetInactivityTimeout() {
         clearTimeout(this.logoutTimeout);
         if (this.loggedIn()) {
             this.logoutTimeout = window.setTimeout(() => {
@@ -144,4 +148,5 @@ export class UserService {
         </div>
     `,
 })
-export class InactivityLoggedOutComponent {}
+export class InactivityLoggedOutComponent {
+}

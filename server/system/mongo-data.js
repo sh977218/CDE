@@ -238,7 +238,7 @@ exports.addUser = (user, callback) => {
 };
 
 exports.orgAdmins = callback => {
-    User.find({orgAdmin: {$not: {$size: 0}}}, callback);
+    User.find({orgAdmin: {$not: {$size: 0}}}).sort({username: 1}).exec(callback);
 };
 
 exports.orgCurators = (orgs, callback) => {

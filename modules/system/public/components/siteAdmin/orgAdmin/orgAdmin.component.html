@@ -1,11 +1,5 @@
 <form class="form-inline pt40 pb40" #adminForm="ngForm" role="form" id="newOrgAdminForm" novalidate>
-    Make
-    <div class="form-group mx-1">
-        <input id="newOrgAdminUsername" name="newOrgAdminUsername" type="text" class="form-control"
-               placeholder="enter user name" [(ngModel)]="newAdmin.username"
-               [ngbTypeahead]="userService.searchTypeahead"
-               required>
-    </div>
+    <cde-username-autocomplete [placeHolder]="'Make the user '"(onSelect)="selectUsername($event);"></cde-username-autocomplete>
     an administrator for
     <div class="form-group mx-1">
         <select id="newOrgAdminOrgName" name="newOrgAdminOrgName" class="form-control"
@@ -29,9 +23,12 @@
         </td>
         <td>
             <div *ngFor="let user of orgAdmin.users; let uIndex = index">
-                <span id="existingOrgAdminUsername-{{admIndex}}-{{uIndex}}" style="vertical-align: super">{{user.username}}
-                </span> <mat-icon (click)="removeOrgAdmin(orgAdmin.name, user._id)"
-                                  id="removeOrgAdminUsername-{{admIndex}}-{{uIndex}}">delete_outline</mat-icon>
+                <span id="existingOrgAdminUsername-{{admIndex}}-{{uIndex}}"
+                      style="vertical-align: super">{{user.username}}
+                </span>
+                <mat-icon (click)="removeOrgAdmin(orgAdmin.name, user._id)"
+                          id="removeOrgAdminUsername-{{admIndex}}-{{uIndex}}">delete_outline
+                </mat-icon>
             </div>
         </td>
     </tr>

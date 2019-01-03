@@ -42,6 +42,11 @@ exports.module = function (roleConfig) {
             res.send(avatar);
         }));
     });
+    router.get('/usernames/:username', (req, res) => {
+        userDb.usersByUsername(req.params.username, handle404({req, res}, users => {
+            res.send(users.map(u => u.username));
+        }));
+    });
 
     router.get('/mailStatus', [loggedInMiddleware], (req, res) => {
         mongo_data.mailStatus(req.user, handle404({req, res}, mails => {
