@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, TemplateRef, ViewChild } from '@angular/core';
 import { AlertService } from 'alert/alert.service';
-import { MatDialog } from '@angular/material';
+import { MatDialog, PageEvent } from '@angular/material';
 
 type ClientErrorRecord = any;
 
@@ -9,9 +9,9 @@ type ClientErrorRecord = any;
     selector: 'cde-client-errors',
     templateUrl: './clientErrors.component.html'
 })
-export class ClientErrorsComponent implements OnInit {
+export class ClientErrorsComponent {
     @ViewChild('errorDetailModal') errorDetailModal!: TemplateRef<any>;
-    currentPage: number = 1;
+    currentPage: number = 0;
     records: ClientErrorRecord[] = [];
     filteredRecords: ClientErrorRecord[] = [];
     error?: ClientErrorRecord;
@@ -22,20 +22,21 @@ export class ClientErrorsComponent implements OnInit {
         edge: true
     };
 
-    ngOnInit() {
-        this.gotoPage();
-    }
-
     constructor(private http: HttpClient,
                 public dialog: MatDialog,
                 private alert: AlertService) {
+        this.gotoPage();
     }
 
-    gotoPage() {
+    gotoPage(event?: PageEvent) {
+        if (event) {
+            this.currentPage = event.pageIndex;
+        }
+
         this.http.post('/server/user/updateNotificationDate', {clientLogDate: new Date()})
             .subscribe(() => {
                 this.http.post<ClientErrorRecord[]>('/server/log/clientErrors', {
-                    skip: (this.currentPage - 1) * 50,
+                    skip: this.currentPage * 50,
                     limit: 50
                 }).subscribe(response => {
                     this.records = response;

@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { MatDialog } from '@angular/material';
 import { AlertService } from 'alert/alert.service';
 import _noop from 'lodash/noop';
 import { decamelize } from 'shared/system/util';
@@ -12,7 +11,6 @@ type InboxMessage = any;
     templateUrl: 'inbox.component.html'
 })
 export class InboxComponent {
-    currentMessage: any;
     mail: any = {received: [], sent: [], archived: []};
 
     constructor(private alert: AlertService,

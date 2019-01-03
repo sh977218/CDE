@@ -1,29 +1,30 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import _noop from 'lodash/noop';
+import { PageEvent } from '@angular/material';
 
 type ClassificationAuditLogRecord = any;
-
 
 @Component({
     selector: 'cde-classification-audit-log',
     templateUrl: './classificationAuditLog.component.html'
 })
-export class ClassificationAuditLogComponent implements OnInit {
-    currentPage: number = 1;
+export class ClassificationAuditLogComponent {
+    currentPage: number = 0;
     records: ClassificationAuditLogRecord[] = [];
-
-    ngOnInit () {
-        this.gotoPage();
-    }
 
     constructor(
         private http: HttpClient
-    ) {}
+    ) {
+        this.gotoPage();
+    }
 
-    gotoPage () {
+    gotoPage (event?: PageEvent) {
+        if (event) {
+            this.currentPage = event.pageIndex;
+        }
         this.http.post<ClassificationAuditLogRecord[]>('/getClassificationAuditLog', {
-            skip: (this.currentPage - 1) * 50,
+            skip: this.currentPage * 50,
             limit: 50
         }).subscribe(response => {
             this.records = response;

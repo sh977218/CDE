@@ -62,14 +62,12 @@
                 *ngIf="searchType === 'cde'"
                 [elts]="elts"
                 [searchViewSettings]="searchViewSettings"
-                [embed]="embed"
-        ></cde-embedded-cde-search-result>
+                [embed]="embed"></cde-embedded-cde-search-result>
         <cde-embedded-form-search-result
                 *ngIf="searchType === 'form'"
                 [elts]="elts"
                 [embed]="embed"
-                [searchViewSettings]="searchViewSettings"
-        ></cde-embedded-form-search-result>
+                [searchViewSettings]="searchViewSettings"></cde-embedded-form-search-result>
 
         <ngb-pagination [collectionSize]="totalItems" [(page)]="searchSettings.page"
                         [maxSize]="10" (pageChange)="search()"></ngb-pagination>
