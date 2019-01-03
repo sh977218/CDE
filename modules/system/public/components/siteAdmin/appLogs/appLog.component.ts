@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
+import { PageEvent } from '@angular/material';
 
 type AppLogEntry = any;
 
@@ -8,7 +9,7 @@ type AppLogEntry = any;
     templateUrl: './appLog.component.html',
 })
 export class AppLogComponent {
-    currentPage: number = 1;
+    currentPage: number = 0;
     fromDate: any;
     gridLogEvents: any[] = [];
     itemsPerPage?: number;
@@ -19,7 +20,11 @@ export class AppLogComponent {
         private http: HttpClient
     ) {}
 
-    searchLogs() {
+    searchLogs(event?: PageEvent) {
+        if (event) {
+            this.currentPage = event.pageIndex;
+        }
+
         let postBody = {
             currentPage: this.currentPage,
             itemsPerPage: this.itemsPerPage,

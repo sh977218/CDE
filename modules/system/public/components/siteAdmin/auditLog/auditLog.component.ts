@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 
 import { CdeDiffPopulateService } from 'system/public/components/siteAdmin/auditLog/cdeDiffPopulate.service';
+import { PageEvent } from '@angular/material';
 
 type AuditLogRecord = any;
 
@@ -11,16 +12,20 @@ type AuditLogRecord = any;
 })
 export class AuditLogComponent {
     records: AuditLogRecord[] = [];
-    currentPage: number = 1;
+    currentPage: number = 0;
 
     constructor(private http: HttpClient,
                 private cdeDiff: CdeDiffPopulateService) {
         this.gotoPageLocal();
     }
 
-    gotoPageLocal() {
+    gotoPageLocal(event?: PageEvent) {
+        if (event) {
+            this.currentPage = event.pageIndex;
+        }
+
         this.http.post<AuditLogRecord[]>('/getCdeAuditLog', {
-            skip: (this.currentPage - 1) * 50,
+            skip: this.currentPage * 50,
             limit: 50
         }).subscribe(response => {
             this.records = response;
