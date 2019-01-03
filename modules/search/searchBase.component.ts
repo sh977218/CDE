@@ -10,24 +10,24 @@ import {
     ViewContainerRef
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { MatAutocompleteTrigger, MatDialog, MatPaginator } from '@angular/material';
-import { NavigationStart } from '@angular/router';
+import { MatAutocompleteTrigger, MatDialog, MatPaginator, PageEvent } from '@angular/material';
+import { MatAutocompleteSelectedEvent } from '@angular/material/typings/esm5/autocomplete';
+import { Event, NavigationStart, Params } from '@angular/router';
+import { BackForwardService } from '_app/backForward.service';
+import { ElasticService } from '_app/elastic.service';
+import { UserService } from '_app/user.service';
+import { AlertService } from 'alert/alert.service';
+import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
+import { ExportService } from 'core/export.service';
+import { OrgHelperService } from 'core/orgHelper.service';
 import _noop from 'lodash/noop';
 import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
 import { debounceTime, map } from 'rxjs/operators';
 import { Subscription } from 'rxjs/Subscription';
-
-import { AlertService } from 'alert/alert.service';
-import { BackForwardService } from '_app/backForward.service';
-import { ElasticService } from '_app/elastic.service';
-import { UserService } from '_app/user.service';
-import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
-import { ExportService } from 'core/export.service';
-import { OrgHelperService } from 'core/orgHelper.service';
 import { SearchSettings } from 'search/search.model';
 import {
     CbErr,
-    CurationStatus, ElasticQueryResponse, ElasticQueryResponseAggregationBucket, ElasticQueryResponseHit, Elt,
+    CurationStatus, ElasticQueryResponse, ElasticQueryResponseAggregationBucket, ElasticQueryResponseHit, ItemElastic,
     Organization
 } from 'shared/models.model';
 import { DataType } from 'shared/de/dataElement.model';
@@ -157,7 +157,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     excludeOrgFilterMode?: boolean;
     autocompleteSuggestions?: string[];
     cutoffIndex: any;
-    elts?: Elt[];
+    elts?: ItemElastic[];
     embedded = false;
     exporters: { [format: string]: { id: string, display: string } } = {
         json: {id: 'jsonExport', display: 'JSON Export'},
@@ -167,7 +167,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     lastQueryTimeStamp?: number;
     private lastTypeahead: { [term: string]: string } = {};
     module!: 'cde' | 'form';
-    numPages: any;
+    numPages?: number;
     orgs?: Organization[];
     orgHtmlOverview?: string;
     pinComponent!: Type<PinBoardModalComponent>;
@@ -202,14 +202,14 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                 protected dialog: MatDialog) {
         this.searchSettings.page = 1;
 
-        this.routerSubscription = this.router.events.subscribe(e => {
+        this.routerSubscription = this.router.events.subscribe((e: Event) => {
             if (this.previousUrl && e instanceof NavigationStart) {
                 if (/^\/(cde|form)\/search/.exec(this.previousUrl)) this.scrollHistorySave();
                 this.previousUrl = '';
             }
         });
 
-        this.filterMode = $(window).width() >= 768;
+        this.filterMode = window.innerWidth >= 768;
     }
 
     ngOnDestroy() {
@@ -463,7 +463,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     static getRegStatusIndex(rg: ElasticQueryResponseAggregationBucket) {
-        return orderedList.indexOf(rg.key);
+        return orderedList.indexOf(rg.key as any);
     }
 
     // Create string representation of what filters are selected. Use the hasSelected...() first.
@@ -575,7 +575,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
     goToPage = 1;
 
-    pageChange(newPage) {
+    pageChange(newPage: PageEvent) {
         this.goToPage = newPage.pageIndex + 1;
         if (this.goToPage !== 0) {
             if (this.goToPage < 1 || this.goToPage > this.numPages) {
@@ -622,7 +622,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         this.lastQueryTimeStamp = timestamp;
         if (this.searchSettingsInput) Object.assign(this.searchSettings, this.searchSettingsInput);
         let settings = this.elasticService.buildElasticQuerySettings(this.searchSettings);
-        this.elasticService.generalSearchQuery(settings, this.module, (err: string, result: ElasticQueryResponse, corrected: boolean) => {
+        this.elasticService.generalSearchQuery(settings, this.module, (err?: string, result?: ElasticQueryResponse, corrected?: boolean) => {
             this.searchedTerm = this.searchSettings.q;
             if (corrected && this.searchedTerm) {
                 this.searchedTerm = this.searchedTerm.replace(/[^\w\s]/gi, '');
@@ -786,7 +786,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     search() {
-        this.route.queryParams.subscribe(params => {
+        this.route.queryParams.subscribe((params: Params) => {
             if (params['q']) this.searchSettings.q = params['q'];
             else this.searchTermFC.reset();
             this.searchSettings.page = parseInt(params['page']);
@@ -886,7 +886,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         }, 0);
     }
 
-    typeaheadSelect(item) {
+    typeaheadSelect(item: MatAutocompleteSelectedEvent) {
         if (!this.embedded) {
             this.router.navigate([this.module === 'form' ? 'formView' : 'deView'],
                 {queryParams: {tinyId: this.lastTypeahead[item.option.value]}});

@@ -9,6 +9,7 @@ const notificationSvc = require('../notification/notificationSvc');
 const userDb = require('../user/userDb');
 const handleError = dbLogger.handleError;
 const mongo_data = require('./mongo-data');
+const mongooseHelper = require('./mongooseHelper');
 const pushNotification = require('./pushNotification');
 // const deValidator = require('esm')(module)('../../shared/de/deValidator');
 
@@ -78,24 +79,24 @@ const pushNotification = require('./pushNotification');
 // };
 
 exports.attachmentApproved = (collection, id, cb) => {
-    collection.update(
+    collection.updateMany(
         {'attachments.fileid': id},
         {
             $unset: {
                 'attachments.$.pendingApproval': ''
             }
         },
-        {multi: true}, cb);
+        cb
+    );
 };
 
 exports.attachmentRemove = (collection, id, cb) => {
-    collection.update({'attachments.fileid': id}, {$pull: {'attachments': {'fileid': id}}}, cb);
+    collection.updateMany({'attachments.fileid': id}, {$pull: {'attachments': {'fileid': id}}}, cb);
 };
 
+// cb(err, bool)
 exports.fileUsed = (collection, id, cb) => {
-    collection.find({'attachments.fileid': id}).count({}, (err, count) => {
-        cb(err, count > 0);
-    });
+    mongooseHelper.exists(collection, {'attachments.fileid': id}, cb);
 };
 
 exports.createTask = function (user, role, type, eltModule, eltTinyId, item) {

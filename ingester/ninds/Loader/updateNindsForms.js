@@ -72,14 +72,14 @@ retireForm = () => {
             'registrationState.registrationStatus': 'Retired',
             'registrationState.administrativeNote': 'Not present in import at ' + new Date().toJSON()
         };
-        let retires = await Form.update(cond, update, {multi: true});
+        let retires = await Form.updateMany(cond, update);
         console.log(retires.nModified + ' forms retired');
         resolve();
     })
 };
 
 async function run() {
-    totalNinds = await NindsFormModel.count({});
+    totalNinds = await NindsFormModel.countDocuments({});
     NindsFormModel.find({}).cursor().eachAsync(ninds => {
         return new Promise(async (resolve, reject) => {
             let nindsObj = ninds.toObject();

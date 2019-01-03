@@ -22,7 +22,7 @@ report:
 
 4. remote log into mongodb by history   !998
 use nlmcde;
-db.dataelements.count({
+db.dataelements.countDocuments({
 	"source" : "NINDS",
 	archived : false,
 	"registrationState.registrationStatus" : "Qualified",
@@ -33,7 +33,7 @@ db.dataelements.count({
 
 5. remote log into mongodb by history   !998
 use nlmcde
-db.dataelements.update({
+db.dataelements.updateMany({
 	"source" : "NINDS",
 	archived : false,
 	"registrationState.registrationStatus" : "Qualified",
@@ -44,18 +44,15 @@ db.dataelements.update({
 	$set : {
 		"registrationState.registrationStatus" : "Retired"
 	}
-}, {
-	multi : true
 });
 
 6. remove suggested question text from properties
 use nlmcde
-db.dataelements.update(
+db.dataelements.updateMany(
 {source: "NINDS", archived: false},
 {$pull: {properties:
 {key: "NINDS Suggested Question"}
-}},
-{multi: true}
+}}
 )
 
 result: WriteResult({ "nMatched" : 11215, "nUpserted" : 0, "nModified" : 9722 })

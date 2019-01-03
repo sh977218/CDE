@@ -1,6 +1,6 @@
 import {
-    CodeAndSystem,
-    DerivationRule,
+    CodeAndSystem, Definition,
+    DerivationRule, Designation,
     Elt,
     EltRef,
     FormattedValue,
@@ -17,7 +17,6 @@ import {
 import { iterateFeSync } from 'shared/form/fe';
 import { supportedFhirResources } from 'shared/mapping/fhir/fhirResource.model';
 
-
 export class CdeForm extends Elt implements FormElementsContainer {
     copyright?: { // mutable
         authority?: string,
@@ -31,7 +30,6 @@ export class CdeForm extends Elt implements FormElementsContainer {
     isCopyrighted?: boolean;
     mapTo?: ExternalMappings; // calculated, used by: FHIR
     noRenderAllowed?: boolean;
-    numQuestions?: number; // volatile, Elastic
     outdated?: boolean; // volatile, server calculated
 
     static getEltUrl(elt: Elt) {
@@ -81,7 +79,14 @@ export class CdeForm extends Elt implements FormElementsContainer {
     }
 }
 
-export class CdeFormElastic extends CdeForm {
+export class CdeFormElastic extends CdeForm { // all volatile
+    [key: string]: any; // used for highlighting
+    highlight?: any;
+    numQuestions?: number;
+    primaryDefinitionCopy?: string;
+    primaryNameCopy?: string;
+    primaryNameSuggest?: string;
+    score!: number;
 }
 
 export class FhirProcedureMapping {
@@ -107,19 +112,21 @@ export class DisplayProfile {
     displayInstructions = true;
     displayInvisible = false;
     displayNumbering = true;
-    displayType: 'Follow-up'|'Dynamic' = 'Follow-up';
+    displayType: DisplayType = 'Follow-up';
     displayValues = false;
     metadata: {device?: boolean} = {};
     name: String;
     numberOfColumns = 4;
     repeatFormat = '#.';
     sectionsAsMatrix = true;
-    unitsOfMeasureAlias: {alias?: string, unitOfMeasure?: CodeAndSystem}[] = [];
+    unitsOfMeasureAlias: {alias: string, unitOfMeasure: CodeAndSystem}[] = [];
     fhirProcedureMapping?: FhirProcedureMapping;
     constructor(name = '') {
         this.name = name;
     }
 }
+
+export type DisplayType = 'Follow-up' | 'Dynamic';
 
 export class ExternalMappings {
     fhir?: {
@@ -144,7 +151,7 @@ export class FhirObservationInfo {
 
 export interface FormElementsContainer {
     expanded?: boolean; // calculated, formDescription view model
-    formElements?: FormElement[];
+    formElements: FormElement[];
 }
 
 interface FormElementPart extends FormElementsContainer {
@@ -176,14 +183,14 @@ export class FormSection implements FormSectionOrFormPart {
     formElements: FormElement[] = [];
     hover?: boolean; // calculated, formDescription view model
     instructions?: Instruction;
-    label = '';
+    label?: string = '';
     mapTo?: ExternalMappings;
     metadataTags?: MetadataTag[];
     repeat?: string;
     repeatNumber?: number; // calculated, formDescription view model
     repeatOption?: string; // calculated, formDescription view model
     section = new Section();
-    skipLogic = new SkipLogic();
+    skipLogic?: SkipLogic = new SkipLogic();
     updatedSkipLogic?: boolean; // calculated, formDescription view model
 }
 
@@ -198,13 +205,13 @@ export class FormInForm implements FormSectionOrFormPart {
     hover?: boolean; // calculated, formDescription view model
     instructions?: Instruction;
     inForm = new InForm();
-    label = '';
+    label?: string = '';
     mapTo?: ExternalMappings;
     metadataTags?: MetadataTag[];
     repeat?: string;
     repeatNumber?: number; // calculated, formDescription view model
     repeatOption?: string; // calculated, formDescription view model
-    skipLogic = new SkipLogic();
+    skipLogic?: SkipLogic = new SkipLogic();
     updatedSkipLogic?: boolean; // calculated, formDescription view model
 }
 
@@ -219,12 +226,12 @@ export class FormQuestion implements FormElementPart {
     hover?: boolean = false; // calculated, formDescription view model
     incompleteRule?: boolean;
     instructions?: Instruction;
-    label = '';
+    label?: string = '';
     mapTo?: ExternalMappings;
     metadataTags?: MetadataTag[];
     question = new Question();
     repeat?: string;
-    skipLogic = new SkipLogic();
+    skipLogic?: SkipLogic = new SkipLogic();
     updatedSkipLogic?: boolean; // calculated, formDescription view model
 
     static datePrecisionToType = {
@@ -291,9 +298,9 @@ export class Question extends DatatypeContainer {
 
 export class QuestionCde extends EltRef { // copied from original data element, not configurable
     datatype?: string; // volatile, use by save new cde
-    definitions = [];
+    definitions: Definition[] = [];
     derivationRules: DerivationRule[] = [];
-    designations = [];
+    designations: Designation[] = [];
     naming = [];
     permissibleValues: PermissibleValue[] = [];
 }

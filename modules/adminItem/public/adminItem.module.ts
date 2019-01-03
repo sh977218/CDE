@@ -3,7 +3,7 @@ import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { RouterModule } from '@angular/router';
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
-import { TreeModule } from "angular-tree-component/dist/angular-tree-component";
+import { TreeModule } from "angular-tree-component";
 import "angular-tree-component/dist/angular-tree-component.css";
 import { CKEditorModule } from 'ng2-ckeditor';
 import { NgSelectModule } from '@ng-select/ng-select';
@@ -29,7 +29,7 @@ import { SaveModalComponent } from "./components/saveModal/saveModal.component";
 import { DeleteModalComponent } from 'adminItem/public/components/deleteModal/deleteModal.component';
 import { NewDesignationComponent } from 'adminItem/public/components/naming/designation/newDesignation.component';
 import { NewDefinitionComponent } from 'adminItem/public/components/naming/definition/newDefinition.component';
-import { MatButtonModule, MatDialogModule, MatIconModule } from "@angular/material";
+import { MatButtonModule, MatDialogModule, MatIconModule, MatTabsModule } from "@angular/material";
 
 @NgModule({
     imports: [
@@ -39,7 +39,7 @@ import { MatButtonModule, MatDialogModule, MatIconModule } from "@angular/materi
         NgbModule,
         NgSelectModule,
         RouterModule,
-        TreeModule,
+        TreeModule.forRoot(),
         // core
         WidgetModule,
         // internal
@@ -47,7 +47,8 @@ import { MatButtonModule, MatDialogModule, MatIconModule } from "@angular/materi
         SearchModule,
         MatButtonModule,
         MatDialogModule,
-        MatIconModule
+        MatIconModule,
+        MatTabsModule
     ],
     declarations: [
         AttachmentsComponent,

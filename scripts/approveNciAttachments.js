@@ -6,7 +6,7 @@ const Files = mongo_system.mongoose_connection.model('fs.files',
 
 async function run() {
 
-    let total = await Files.find({"metadata.status": "uploaded"}).count();
+    let total = await Files.countDocuments({"metadata.status": "uploaded"});
     let scanned = 0;
     let attachmentsApproved = 0;
 
@@ -19,7 +19,7 @@ async function run() {
                 (!elts[0].updatedBy.username && elts[0].createdBy.username === 'batchloader')) {
                 attachmentsApproved++;
 
-                Files.update({_id: oneFile._id}, {"metadata.status": "approved"}, err => {
+                Files.updateOne({_id: oneFile._id}, {"metadata.status": "approved"}, err => {
                     if (err) {
                         console.log(err);
                         process.exit(1);

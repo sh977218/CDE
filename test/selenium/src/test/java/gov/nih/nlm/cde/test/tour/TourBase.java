@@ -20,6 +20,8 @@ public class TourBase extends NlmCdeBaseTest {
             "These boxes represent classifications. Clicking NLM will browse all CDEs classified by NLM.",
             "Browsing can return hundreds of elements sorted by relevance.",
             "We can continue browsing inside the NLM classification here.",
+            "These 2 small icons will let us find content that belongs to any 2 classifications, or even",
+            "Click here to remove a filter",
             "By default, only Qualified and above statuses will be returned. This can be changed in your preferences (the wheel in the upper right corner).",
             "Finally, we can narrow our results down by datatype. For example, only see CDEs that represent a number.",
             "The tour will now take us to an individual record by clicking its name.",

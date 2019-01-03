@@ -1,7 +1,7 @@
 $loadDay format: 2015-09-16
 
 
-db.dataelements.update({
+db.dataelements.updateMany({
 	"source" : "NINDS",
 	archived : false,
 	"registrationState.registrationStatus" : "Qualified",
@@ -12,11 +12,9 @@ db.dataelements.update({
 	$set : {
 		"registrationState.registrationStatus" : "Retired"
 	}
-}, {
-	multi : true
 });
 
-db.dataelements.count({
+db.dataelements.countDocuments({
 	"source" : "NINDS",	archived : false,"registrationState.registrationStatus" : "Qualified",imported : {$lt : new ISODate($loadDay)	}
 });
 

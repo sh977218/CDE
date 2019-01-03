@@ -23,8 +23,10 @@
     </tbody>
 </table>
 
-<ngb-pagination [collectionSize]="1000" [(page)]="currentPage" (pageChange)="gotoPage()" [maxSize]="10">
-</ngb-pagination>
+<mat-paginator (page)="gotoPage($event)" [length]="1000"
+               [pageIndex]="currentPage"
+               [pageSize]="10" [hidePageSize]="true" style="font-size: 1.4em">
+</mat-paginator>
 
 <ng-template #screenshotModal>
     <div mat-dialog-content>

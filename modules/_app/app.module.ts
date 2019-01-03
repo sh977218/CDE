@@ -10,7 +10,7 @@ import {
 } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
-import { NG_SELECT_DEFAULT_CONFIG } from '@ng-select/ng-select';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { BackForwardService } from '_app/backForward.service';
 import { CdeAppRoutingModule } from '_app/app-routing.module';
 import { CdeAppComponent } from '_app/app.component';
@@ -26,9 +26,9 @@ import { QuickBoardListService } from '_app/quickBoardList.service';
 import { TruncateLongNamePipe } from '_app/truncateLongName.pipe';
 import { InactivityLoggedOutComponent, UserService } from '_app/user.service';
 import { CommonAppModule } from '_commonApp/commonApp.module';
+import { AlertModule } from 'alert/alert.module';
 import { LocalStorageModule } from 'angular-2-local-storage';
 import { OrgHelperService } from 'core/orgHelper.service';
-import { AlertModule } from 'alert/alert.module';
 
 @NgModule({
     imports: [
@@ -46,6 +46,7 @@ import { AlertModule } from 'alert/alert.module';
         MatIconModule,
         MatMenuModule,
         MatSnackBarModule,
+        NgSelectModule,
         // internal
         CdeAppRoutingModule,
         CommonAppModule,
@@ -67,12 +68,6 @@ import { AlertModule } from 'alert/alert.module';
         NotificationDrawerPaneComponent
     ],
     providers: [
-        {
-            provide: NG_SELECT_DEFAULT_CONFIG,
-            useValue: {
-                appendTo: 'body'
-            }
-        },
         ApprovalService,
         BackForwardService,
         ElasticService, // TODO: create shared CoreModule loaded async and provide to all lazy routes

@@ -2,7 +2,6 @@ import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NgbTabset } from '@ng-bootstrap/ng-bootstrap';
 import { AlertService } from 'alert/alert.service';
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { UserService } from '_app/user.service';
@@ -36,7 +35,6 @@ export class DataElementViewComponent implements OnInit {
     @ViewChild('commentAreaComponent') commentAreaComponent: DiscussAreaComponent;
     @ViewChild('copyDataElementContent') copyDataElementContent: TemplateRef<any>;
     @ViewChild('saveModal') saveModal!: SaveModalComponent;
-    @ViewChild('tabSet') tabSet: NgbTabset;
     commentMode;
     currentTab = 'general_tab';
     deId;

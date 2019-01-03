@@ -150,7 +150,7 @@ function streamOnClose() {
     FormModel.where({
         imported: {$ne: importDate},
         'stewardOrg.name': source
-    }).update({
+    }).updateMany({
         "registrationState.registrationStatus": "Retired",
         "registrationState.administrativeNote": "Not present in import from " + importDate
     });
@@ -181,7 +181,7 @@ function streamOnClose() {
 
 
 function run() {
-    var migStream = MigrationFormModel.find().stream();
+    var migStream = MigrationFormModel.find().cursor();
     migStream.on('data', function (migrationForm) {
         migStream.pause();
         classificationShared.sortClassification(migrationForm);

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import {
-    MatButtonModule, MatIconModule, MatSelectModule, MatSlideToggleModule, MatTooltipModule
+    MatButtonModule, MatIconModule, MatPaginatorModule, MatSelectModule, MatSlideToggleModule, MatTooltipModule
 } from '@angular/material';
 import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -23,6 +23,7 @@ const appRoutes: Routes = [
         CommonModule,
         MatIconModule,
         MatButtonModule,
+        MatPaginatorModule,
         MatSelectModule,
         MatSlideToggleModule,
         MatTooltipModule,

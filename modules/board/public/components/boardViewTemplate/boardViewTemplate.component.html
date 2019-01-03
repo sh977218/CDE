@@ -48,7 +48,7 @@
                 </mat-button-toggle>
             </mat-button-toggle-group>
             <ng-select id="boardTag" name="boardTag" [ngModel]="board.tags" [items]="board.tags" [addTag]="true"
-                       multiple="true"></ng-select>
+                       appendTo="body" multiple="true"></ng-select>
         </div>
         <div mat-dialog-actions>
             <button mat-raised-button [mat-dialog-close] id="cancelEditBoardBtn" color="warn">Cancel</button>

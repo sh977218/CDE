@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
 
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
-import { CodeAndSystem } from 'shared/models.model';
+import { CbErr, CodeAndSystem } from 'shared/models.model';
 import { questionMulti } from 'shared/form/fe';
 import { FormQuestion } from 'shared/form/form.model';
 import { ScoreService } from 'nativeRender/score.service';
@@ -13,14 +13,15 @@ import { AlertService } from 'alert/alert.service';
     templateUrl: './nativeQuestion.component.html',
 })
 export class NativeQuestionComponent implements OnInit {
-    @Input() formElement: FormQuestion;
-    @Input() numSubQuestions: number;
-    @Input() parentValue: string;
+    @Input() formElement!: FormQuestion;
+    @Input() numSubQuestions!: number;
+    @Input() parentValue!: string;
     NRS = NativeRenderService;
     datePrecisionToType = FormQuestion.datePrecisionToType;
     datePrecisionToStep = FormQuestion.datePrecisionToStep;
-    metadataTagsNew: string;
-    previousUom: CodeAndSystem;
+    locationDenied = false;
+    metadataTagsNew?: string;
+    previousUom?: CodeAndSystem;
 
     questionMulti = questionMulti;
 
@@ -34,7 +35,7 @@ export class NativeQuestionComponent implements OnInit {
                 public nrs: NativeRenderService) {
     }
 
-    classColumns(pvIndex, index) {
+    classColumns(pvIndex: number, index: number) {
         let result = "";
 
         if (pvIndex !== -1 && this.nrs.profile && this.nrs.profile.numberOfColumns) {
@@ -63,14 +64,14 @@ export class NativeQuestionComponent implements OnInit {
     }
 
     convert() {
-        if (this.previousUom && this.formElement.question.answer != null) {
+        let unit = this.formElement.question.answerUom;
+        if (this.previousUom && unit && this.formElement.question.answer != null) {
             let value: number;
             if (typeof(this.formElement.question.answer) === 'string') value = parseFloat(this.formElement.question.answer);
             else value = this.formElement.question.answer;
 
             if (typeof(value) === 'number' && !isNaN(value)) {
-                let unit = this.formElement.question.answerUom;
-                this.convertUnits(value, this.previousUom, this.formElement.question.answerUom, (error, result) => {
+                this.convertUnits(value, this.previousUom, unit, (error?: string, result?: number) => {
                     if (!error && result !== undefined && !isNaN(result) && unit === this.formElement.question.answerUom) {
                         this.formElement.question.answer = result;
                         this.scoreSvc.triggerCalculateScore(this.formElement);
@@ -81,37 +82,16 @@ export class NativeQuestionComponent implements OnInit {
         this.previousUom = this.formElement.question.answerUom;
     }
 
-    // cb(error, number)
-    convertUnits(value: number, fromUnit: CodeAndSystem, toUnit: CodeAndSystem, cb) {
+    convertUnits(value: number, fromUnit: CodeAndSystem, toUnit: CodeAndSystem, cb: CbErr<number>) {
         if (fromUnit.system === 'UCUM' && toUnit.system === 'UCUM') {
-            this.http.get('/ucumConvert?value=' + value + '&from=' + encodeURIComponent(fromUnit.code) + '&to='
-                + encodeURIComponent(toUnit.code)).subscribe(v => cb(undefined, v), e => cb(e));
+            this.http.get<string>('/ucumConvert?value=' + value + '&from=' + encodeURIComponent(fromUnit.code) + '&to='
+                + encodeURIComponent(toUnit.code)).subscribe(value => cb(undefined, parseFloat(value)), cb);
         } else {
             cb(undefined, value); // no conversion for other systems
         }
     }
 
-    hasHeading(q: FormQuestion): boolean {
-        return this.hasLabel(q) || q.instructions && !!q.instructions.value;
-    }
-
-    hasLabel(q: FormQuestion): boolean {
-        return q.label && !q.hideLabel;
-    }
-
-    isFirstInRow(index: number): boolean {
-        if (this.nrs.profile && this.nrs.profile.numberOfColumns > 0) return index % this.nrs.profile.numberOfColumns === 0;
-        else return index % 4 === 0;
-    }
-
-    isOneLiner(q: FormQuestion, numSubQuestions: number): boolean {
-        return numSubQuestions && !this.hasHeading(q) && (!q.instructions || !q.instructions.value)
-            && q.elementType === 'question' && q.question.datatype !== 'Value List';
-    }
-
-    locationDenied = false;
-
-    getCurrentGeoLocation(formElement) {
+    getCurrentGeoLocation(formElement: FormQuestion) {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 position => {
@@ -123,8 +103,26 @@ export class NativeQuestionComponent implements OnInit {
                 });
         }
     }
+
+    hasHeading(q: FormQuestion): boolean {
+        return this.hasLabel(q) || !!q.instructions && !!q.instructions.value;
+    }
+
+    hasLabel(q: FormQuestion): boolean {
+        return !!q.label && !q.hideLabel;
+    }
+
+    isFirstInRow(index: number): boolean {
+        if (this.nrs.profile && this.nrs.profile.numberOfColumns > 0) return index % this.nrs.profile.numberOfColumns === 0;
+        else return index % 4 === 0;
+    }
+
+    isOneLiner(q: FormQuestion, numSubQuestions: number): boolean {
+        return !!numSubQuestions && !this.hasHeading(q) && (!q.instructions || !q.instructions.value)
+            && q.elementType === 'question' && q.question.datatype !== 'Value List';
+    }
+
     locationDeniedMessage () {
         this.alert.addAlert("info", "Please enable location for this site.");
     }
-
 }

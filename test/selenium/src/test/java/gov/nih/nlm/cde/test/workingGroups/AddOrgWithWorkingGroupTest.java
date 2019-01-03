@@ -10,6 +10,7 @@ public class AddOrgWithWorkingGroupTest extends BaseClassificationTest {
     @Test
     public void addOrgWithWorkingGroupOf() {
         String orgWG = "Test Working Group 2";
+
         // Create some classifications for working group
         String classification = "DISEASE";
         String subClassification = "Phase II Lung Cancer";

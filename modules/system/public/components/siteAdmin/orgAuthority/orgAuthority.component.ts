@@ -6,4 +6,7 @@ import { Component } from '@angular/core';
     templateUrl: 'orgAuthority.component.html'
 })
 export class OrgAuthorityComponent {
+
+    selectedTabIndex = 0;
+
 }

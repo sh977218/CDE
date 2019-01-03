@@ -4,14 +4,46 @@ import { DataType } from 'shared/de/dataElement.model';
 export class SearchSettings {
     classification: string[] = [];
     classificationAlt: string[] = [];
-    datatypes: DataType[] = [];
-    meshTree: string = '';
+    datatypes?: DataType[] = [];
+    excludeAllOrgs?: boolean;
+    excludeOrgs?: string[] = [];
+    meshTree?: string = '';
     page?: number = 1;
-    q?: string;
+    q?: string = '';
     regStatuses: CurationStatus[] = [];
     resultPerPage?: number = 20;
+    searchTerm?: string;
+    selectedOrg?: string = '';
+    selectedOrgAlt?: string;
+
+    constructor(q = '', resultsPerPage = 20) {
+        this.q = q;
+        this.resultPerPage = resultsPerPage;
+    }
+}
+
+export class SearchSettingsElastic {
+    excludeAllOrgs?: boolean;
+    excludeOrgs: string[] = [];
+    fullRecord?: boolean;
+    includeAggregations?: boolean;
+    meshTree?: string = '';
+    page?: number = 1;
+    q?: string;
+    resultPerPage?: number = 20;
+    searchTerm?: string;
+    searchToken?: string;
+    selectedDatatypes: DataType[] = [];
+    selectedElements: string[] = [];
+    selectedElementsAlt: string[] = [];
     selectedOrg?: string;
     selectedOrgAlt?: string;
-    excludeOrgs: string[] = [];
-    excludeAllOrgs: boolean;
+    selectedStatuses: CurationStatus[] = [];
+    visibleStatuses?: CurationStatus[];
+
+    constructor(selectedStatuses: CurationStatus[] = [], resultPerPage = 20) {
+        this.resultPerPage = resultPerPage;
+        this.selectedStatuses = selectedStatuses;
+    }
 }
+

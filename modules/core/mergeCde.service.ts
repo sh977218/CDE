@@ -1,11 +1,12 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from "@angular/core";
-import { forkJoin } from 'rxjs/observable/forkJoin';
-
+import { Injectable } from '@angular/core';
 import { ElasticService } from '_app/elastic.service';
 import { AlertService } from 'alert/alert.service';
+import { MergeShareService } from 'core/mergeShare.service';
+import { SearchSettings } from 'search/search.model';
+import { forkJoin } from 'rxjs/observable/forkJoin';
 import { DataElement } from 'shared/de/dataElement.model';
-import { MergeShareService } from "core/mergeShare.service";
+import { ElasticQueryResponse } from 'shared/models.model';
 
 
 @Injectable()
@@ -36,9 +37,9 @@ export class MergeCdeService {
                 if (fields.sources) this.mergeShareService.mergeArrayByProperty(cdeFrom, cdeTo, "sources");
                 if (fields.classifications) this.mergeShareService.mergeClassifications(cdeFrom, cdeTo);
                 if (fields.retireCde) {
-                    let searchSettings = this.elasticService.defaultSearchSettings;
+                    let searchSettings = new SearchSettings();
                     searchSettings.q = '"' + cdeFrom.tinyId + '"';
-                    this.elasticService.generalSearchQuery(this.elasticService.buildElasticQuerySettings(searchSettings), 'form', (err, result) => {
+                    this.elasticService.generalSearchQuery(this.elasticService.buildElasticQuerySettings(searchSettings), 'form', (err?: string, result?: ElasticQueryResponse) => {
                         if (err) return this.alert.addAlert("danger", err);
                         if (!result || !result.forms || result.forms.length < 2) {
                             cdeFrom.changeNote = "Merged to tinyId " + cdeTo.tinyId;

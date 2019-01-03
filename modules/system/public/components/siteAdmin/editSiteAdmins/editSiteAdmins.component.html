@@ -17,7 +17,7 @@
     <tr *ngFor="let user of siteAdmins">
         <td>
             <span class="mr-1" id="existingSiteAdmin-{{index}}">{{user.username}}</span>
-            <mat-icon (click)="removeSiteAdmin(user._id)" id="removeSiteAdmin-{{index}}">delete</mat-icon>
+            <mat-icon (click)="removeSiteAdmin(user.username)" id="removeSiteAdmin-{{index}}">delete</mat-icon>
         </td>
     </tr>
 </table>

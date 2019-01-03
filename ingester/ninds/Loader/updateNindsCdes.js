@@ -84,14 +84,14 @@ retireCde = () => {
             'registrationState.registrationStatus': 'Retired',
             'registrationState.administrativeNote': 'Not present in import at ' + new Date().toJSON()
         };
-        let retires = await DataElement.update(cond, update, {multi: true});
+        let retires = await DataElement.updateMany(cond, update);
         console.log(retires.nModified + ' cdes retired');
         resolve();
     })
 };
 
 async function run() {
-    totalNinds = await NindsCdeModel.count();
+    totalNinds = await NindsCdeModel.countDocuments({});
     NindsCdeModel.find({}).cursor().eachAsync(async ninds => {
         let nindsObj = ninds.toObject();
         let nindsCde = CreateCDE.createCde(nindsObj);

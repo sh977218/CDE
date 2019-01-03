@@ -58,7 +58,13 @@ export class DataElement extends Elt {
     }
 }
 
-export class DataElementElastic extends DataElement {
+export class DataElementElastic extends DataElement { // all volatile
+    [key: string]: any; // used for highlighting
+    highlight?: any;
+    primaryDefinitionCopy?: string;
+    primaryNameCopy?: string;
+    primaryNameSuggest?: string;
+    score!: number;
 }
 
 export class QuestionTypeDate {

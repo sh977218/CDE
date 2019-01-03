@@ -46,7 +46,7 @@
             <div class="col-3 text-right"><strong>Roles: </strong></div>
             <div class="col-9" id="user_roles_{{$index}}">
                 <ng-select [(ngModel)]="u.roles" [items]="rolesEnum" [multiple]="true"
-                           [appendTo]="'body'" [hideSelected]="true" (change)="updateRoles(u)">
+                           appendTo="body" [hideSelected]="true" (change)="updateRoles(u)">
                 </ng-select>
             </div>
         </div>

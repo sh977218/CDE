@@ -2,9 +2,9 @@
     <thead>
     <tr>
         <th>Name</th>
-        <th *ngIf="searchViewSettings.tableViewFields.questions">Questions</th>
-        <th *ngIf="embed.form.nbOfQuestions">Questions</th>
-        <th *ngIf="embed.form.cdes">CDEs</th>
+        <th *ngIf="searchViewSettings.tableViewFields.name">Questions</th>
+        <th *ngIf="embed.form!.nbOfQuestions">Questions</th>
+        <th *ngIf="embed.form!.cdes">CDEs</th>
     </tr>
     </thead>
     <tbody>

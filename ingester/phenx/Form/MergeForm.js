@@ -19,7 +19,7 @@ exports.mergeForm = async (existingForm, newForm) => {
     if (existingForm.registrationState.registrationStatus !== 'Qualified')
         existingForm.formElements = newForm.formElements;
     classificationShared.transferClassifications(newForm, existingForm);
-    await Comment.update({'element.eltId': newForm.tinyId}, {
+    await Comment.updateMany({'element.eltId': newForm.tinyId}, {
         element: {
             eltType: 'form',
             eltId: existingForm.tinyId
