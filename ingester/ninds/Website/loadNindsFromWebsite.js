@@ -308,14 +308,14 @@ async function doDisease(disease) {
 
 async function run() {
     for (let disease of DISEASE_MAP) {
-        let existingDbCount = await NindsModel.count({disease: disease.name});
+        let existingDbCount = await NindsModel.countDocuments({disease: disease.name});
         if (existingDbCount >= disease.count) {
             console.log("***********************************************************************");
             console.log("Previously Finished Disease " + disease.name + " on page " + disease.url);
             console.log("***********************************************************************");
         } else {
             await doDisease(disease);
-            let savedCount = await NindsModel.count({disease: disease.name});
+            let savedCount = await NindsModel.countDocuments({disease: disease.name});
             if (savedCount !== disease.count) {
                 console.log(disease.name + ' savedCount: ' + savedCount + '. Web: ' + disease.count);
                 process.exit(1);
