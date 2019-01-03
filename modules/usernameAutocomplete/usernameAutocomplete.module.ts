@@ -3,9 +3,7 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 import { CoreModule } from 'core/core.module';
-import {
-    MatInputModule, MatAutocompleteModule, MatFormFieldModule, MatButtonModule, MatIconModule, MatProgressSpinnerModule
-} from '@angular/material';
+import { MatInputModule, MatAutocompleteModule } from '@angular/material';
 import { UsernameAutocompleteComponent } from 'usernameAutocomplete/usernameAutocomplete.component';
 import { UserService } from '_app/user.service';
 
@@ -15,12 +13,8 @@ import { UserService } from '_app/user.service';
         ReactiveFormsModule,
         FormsModule,
         CoreModule,
-        MatIconModule,
         MatInputModule,
-        MatAutocompleteModule,
-        MatFormFieldModule,
-        MatButtonModule,
-        MatProgressSpinnerModule
+        MatAutocompleteModule
     ],
     declarations: [
         UsernameAutocompleteComponent

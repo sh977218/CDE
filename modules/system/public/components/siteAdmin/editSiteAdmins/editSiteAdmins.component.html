@@ -1,11 +1,6 @@
 <form name="form" class="form-inline pt40 pb40" novalidate>
-    <span class="mr-2">Make</span>
-    <mat-form-field>
-        <input matInput name="message" [(ngModel)]="newAdmin"
-               placeholder="Username" autocomplete="off"
-               [ngbTypeahead]="userService.searchTypeahead"
-               required/>
-    </mat-form-field>
+    <cde-username-autocomplete [placeHolder]="'Make the user '"
+                               (onSelect)="selectUser($event);"></cde-username-autocomplete>
     <span class="mx-2">a site admin</span>
     <button mat-raised-button (click)="addSiteAdmin()" id="saveMessage">Make Admin</button>
 </form>

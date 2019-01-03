@@ -264,7 +264,7 @@ exports.listOrgsDetailedInfo = callback => {
 };
 
 exports.managedOrgs = function (callback) {
-    Org.find({}, callback);
+    Org.find({}).sort({name: 1}).exec(callback);
 };
 
 exports.findOrCreateOrg = function (newOrg, cb) {

@@ -6,25 +6,26 @@ import { UserService } from '_app/user.service';
 import { ObjectId } from 'shared/models.model';
 import { stringCompare } from 'shared/system/util';
 
-type OrgUsers = {org: string, users: {_id: ObjectId, username: string}[]};
+type OrgUsers = { org: string, users: { _id: ObjectId, username: string }[] };
 
 @Component({
     selector: 'cde-org-account-management',
     templateUrl: './orgAccountManagement.component.html',
 })
-export class OrgAccountManagementComponent implements OnInit {
+export class OrgAccountManagementComponent {
     newUsername!: string;
     newOrgName!: string;
     orgCurators?: OrgUsers[];
     transferStewardObj = {};
 
-    ngOnInit() {
-        this.getOrgCurators();
-    }
-
     constructor(private http: HttpClient,
                 private alert: AlertService,
                 public userService: UserService) {
+        this.getOrgCurators();
+    }
+
+    selectUser(event) {
+        this.newUsername = event;
     }
 
     addOrgCurator() {
@@ -61,7 +62,7 @@ export class OrgAccountManagementComponent implements OnInit {
             this.alert.addAlert('success', r);
             this.transferStewardObj = {};
         }, () => {
-            this.alert.addAlert('danger', 'An error occured.');
+            this.alert.addAlert('danger', 'An error occurred.');
             this.transferStewardObj = {};
         });
     }

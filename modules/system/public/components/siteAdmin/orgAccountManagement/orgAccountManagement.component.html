@@ -5,11 +5,10 @@
         </mat-tab>
         <mat-tab label="Organizations Curators">
             <form class="form-inline pt40 pb40" #newCuratorForm="ngForm" id="newOrgCuratorForm" novalidate>
-                <span class="mr-2">Make</span>
+                <span class="mr-2"></span>
                 <div class="form-group">
-                    <input id="newOrgCuratorUsername" name="newOrgCuratorUsername" type="text" class="form-control"
-                           placeholder="enter user name" [(ngModel)]="newUsername" autocomplete="off"
-                           [ngbTypeahead]="userService.searchTypeahead" required>
+                    <cde-username-autocomplete [placeHolder]="'enter username'"
+                                               (onSelect)="selectUser($event);"></cde-username-autocomplete>
                 </div>
                 <span class="mx-2">a curator for</span>
                 <div *ngIf="userService.user" class="form-group">
@@ -35,7 +34,8 @@
                         <div *ngFor="let user of orgCurator.users; let $index = index">
                             <span id="existingOrgCuratorUsername-{{$pindex}}-{{$index}}">{{user.username}}</span>
                             <mat-icon (click)="removeOrgCurator(orgCurator.name, user._id)"
-                               id="removeOrgCuratorUsername-{{$pindex}}-{{$index}}">delete_outline</mat-icon>
+                                      id="removeOrgCuratorUsername-{{$pindex}}-{{$index}}">delete_outline
+                            </mat-icon>
                         </div>
                     </td>
                 </tr>

@@ -19,6 +19,7 @@ export class OneListMgtComponent implements OnInit {
 
     @Input() keys: string[];
     @Input() allKeys: string[];
+    @Input() placeHolder: string = 'Property Keys';
     @Output() save: EventEmitter<any> = new EventEmitter();
 
     @ViewChild('keyInput') keyInput: ElementRef<HTMLInputElement>;
@@ -38,12 +39,12 @@ export class OneListMgtComponent implements OnInit {
     }
 
 
-    _filter (options: string[], value: string): string[] {
+    _filter(options: string[], value: string): string[] {
         if (!value) return [];
         return options.filter(option => option.toLowerCase().includes(value.toLowerCase()));
     }
 
-    removeKey (key: string) {
+    removeKey(key: string) {
         this.keys.splice(this.keys.indexOf(key), 1);
         this.save.emit();
     }

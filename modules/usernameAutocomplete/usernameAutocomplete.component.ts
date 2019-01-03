@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { finalize, switchMap, debounceTime, tap, distinctUntilChanged } from 'rxjs/operators';
+import { switchMap, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { UserService } from '_app/user.service';
 
 @Component({
@@ -8,11 +8,9 @@ import { UserService } from '_app/user.service';
     templateUrl: './usernameAutocomplete.component.html'
 })
 export class UsernameAutocompleteComponent {
-    @Input() placeHolder: string = 'Choose a user';
+    @Input() placeHolder: string = 'Make the user';
     usernameControl = new FormControl();
     filteredUsernames = [];
-    isLoading = true;
-
     @Output() onSelect = new EventEmitter<any>();
 
     constructor(userService: UserService) {
@@ -20,11 +18,7 @@ export class UsernameAutocompleteComponent {
             .pipe(
                 debounceTime(300),
                 distinctUntilChanged(),
-                tap(() => this.isLoading = true),
                 switchMap(value => value.length < 3 ? [] : userService.searchUsernames(value)
-                    .pipe(
-                        finalize(() => this.isLoading = false),
-                    )
                 )
             ).subscribe(usernames => this.filteredUsernames = usernames);
     }
