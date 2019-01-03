@@ -60,7 +60,7 @@
                            [name]="ni + q.name"
                            [attr.name]="ni + q.name"
                            [checked]="nrs.checkboxIsChecked(nrs.elt.formInput[ni + q.name], a.permissibleValue, ni)"
-                           (change)="nrs.checkboxOnChange($event, nrs.elt.formInput[ni + q.name], a.permissibleValue, ni,q)"
+                           (change)="nrs.checkboxOnChange($event.target.checked, nrs.elt.formInput[ni + q.name], a.permissibleValue, q)"
                            [value]="a.permissibleValue"
                            [attr.value]="a.permissibleValue"
                            [required]="q.question.required"
