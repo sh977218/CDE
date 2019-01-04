@@ -290,11 +290,11 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         this.newUom = '';
     }
 
-    uomAddSelected(event) {
-        if (event && event.item && event.item.code && event.item.code !== '') {
-            this.newUom = event.item.code;
+    uomAddSelected(uom) {
+        if (uom && uom.code) {
+            this.newUom = uom.code;
             this.uomAddNew();
-            setTimeout(() => this.newUom = '', 0); // the type-ahead seems to fill in the value asynchronously
+            this.newUom = '';
             this.ucumService.validateUoms(this.question.question);
         }
     }
