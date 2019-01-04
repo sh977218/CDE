@@ -19,7 +19,7 @@ const DISEASE_MAP = [
         xpath: DEFAULT_XPATH,
         count: 92,
         domainCount: 9
-    },
+    }/*,
     {
         name: 'Amyotrophic Lateral Sclerosis',
         url: URL_PREFIX + 'ALS.aspx',
@@ -30,7 +30,7 @@ const DISEASE_MAP = [
     {
         name: 'Cerebral Palsy',
         url: URL_PREFIX + 'CP.aspx',
-        xpath: "//*[@id='Data_Standards']/b/b/a/following-sibling::table/tbody/tr//td",
+        xpath: "//!*[@id='Data_Standards']/b/b/a/following-sibling::table/tbody/tr//td",
         count: 158,
         domainCount: 10
     },
@@ -180,7 +180,7 @@ const DISEASE_MAP = [
         xpath: DEFAULT_XPATH,
         count: 186,
         domainCount: 8
-    }
+    }*/
 ];
 
 getFormInfo = async trElement => {
@@ -288,7 +288,7 @@ doDomain = async (driver, disease, domainElement) => {
 
     let tableIndex = followingElementTags.indexOf('table');
     if (tableIndex === 0) cdeTableElement = followingElements[0];
-    else if (tableIndex === 1) cdeTableElement = followingElementTags[1];
+    else if (tableIndex === 1) cdeTableElement = followingElements[1];
     else console.log(domain + ' has no table.');
     if (cdeTableElement) {
         let trElements = await cdeTableElement.findElements(By.xpath('tbody/tr'));
