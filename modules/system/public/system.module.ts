@@ -1,6 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { FormsModule } from "@angular/forms";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { NgSelectModule } from '@ng-select/ng-select';
 
@@ -17,7 +17,6 @@ import {
     imports: [
         CommonModule,
         FormsModule,
-        ReactiveFormsModule,
         NgbModule,
         NgSelectModule,
         WidgetModule,
