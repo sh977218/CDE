@@ -24,15 +24,14 @@
                     <span class="align-middle">
                         {{subscriptionStatusServer || (subscriptionStatusClient()?'Subscribed':'Not Subscribed')}}
                     </span>
-                <button mat-raised-button
-                        (click)="checkSubscriptionServerStatus()">Check Server
+                <button mat-raised-button (click)="checkSubscriptionServerStatus()">Check Server
                     <mat-icon *ngIf="subscriptionStatusServer">check_box</mat-icon>
                 </button>
                 <button *ngIf="subscriptionStatusServer === 'Not Subscribed'"
-                        class="btn btn-outline-dark" (click)="pushSubscribe()">Subscribe
+                        mat-raised-button (click)="pushSubscribe()">Subscribe
                 </button>
                 <button *ngIf="subscriptionStatusServer === 'Subscribed'"
-                        class="btn btn-outline-dark" (click)="pushUnsubscribe()">Unsubscribe
+                        mat-raised-button (click)="pushUnsubscribe()">Unsubscribe
                 </button>
             </dd>
         </dl>
