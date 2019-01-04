@@ -127,9 +127,8 @@
     </div>
     <div mat-dialog-actions>
         <div *ngIf="showProgressBar" style="width:100%">
-            <ngb-progressbar type="success" [value]="numMergedQuestions">
-                {{numMergedQuestions}}/{{maxNumberQuestions}}
-            </ngb-progressbar>
+            <mat-progress-bar [value]="numMergedQuestions / maxNumberQuestions">
+=            </mat-progress-bar>
         </div>
         <button mat-raised-button id="cancelMergeFormBtn" [mat-dialog-close] type="button">
             {{doneMerge?'Close':'Cancel'}}

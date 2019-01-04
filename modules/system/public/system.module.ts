@@ -7,7 +7,11 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { OrgAdminComponent } from 'system/public/components/siteAdmin/orgAdmin/orgAdmin.component';
 import { UsersMgtComponent } from 'system/public/components/siteAdmin/usersMgt/usersMgt.component';
 import { WidgetModule } from 'widget/widget.module';
-import { MatButtonModule, MatDialogModule, MatIconModule } from '@angular/material';
+import {
+    MatButtonModule,
+    MatDialogModule,
+    MatIconModule,
+} from '@angular/material';
 
 @NgModule({
     imports: [
