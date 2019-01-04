@@ -18,11 +18,6 @@ public class AddOrgWithWorkingGroupTest extends BaseClassificationTest {
         gotoClassificationMgt();
         new Select(driver.findElement(By.name("orgToManage"))).selectByVisibleText(orgWG);
 
-        // Verify that Acrin Tree was duplicated
-        findElement(By.linkText("Imaging Modality"));
-        findElement(By.linkText("Magnetic Resonance Imaging (MRI)"));
-        findElement(By.linkText("Under Review"));
-        findElement(By.linkText("6701"));
         createOrgClassification(orgWG, new String[]{classification, subClassification});
         modalGone();
 
