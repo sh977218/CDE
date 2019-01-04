@@ -3,12 +3,13 @@ import {
     Component, ElementRef, EventEmitter, Host, Input, OnInit, Output, TemplateRef,
     ViewChild
 } from "@angular/core";
+import { FormControl } from '@angular/forms';
 import { TreeNode } from "angular-tree-component";
 import { LocalStorageService } from 'angular-2-local-storage';
 import _isEqual from 'lodash/isEqual';
 import _noop from 'lodash/noop';
 import { Observable } from "rxjs/Observable";
-import { debounceTime, map } from 'rxjs/operators';
+import { switchMap, distinctUntilChanged, debounceTime, map } from 'rxjs/operators';
 
 import { AlertService } from 'alert/alert.service';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
@@ -43,11 +44,6 @@ export class FormDescriptionSectionComponent implements OnInit {
     @ViewChild("formDescriptionFormTmpl") formDescriptionFormTmpl: TemplateRef<any>;
     @ViewChild("slInput") slInput: ElementRef;
     @ViewChild('updateFormVersionTmpl') updateFormVersionTmpl: TemplateRef<any>;
-    getSkipLogicOptions = ((text$: Observable<string>) =>
-        text$.pipe(
-            debounceTime(300),
-            map(term => this.skipLogicValidateService.getTypeaheadOptions(term, this.parent, this.section)),
-        ));
     static inputEvent = new Event('input');
     isMappedTo = isMappedTo;
     isSubForm = false;
@@ -58,8 +54,11 @@ export class FormDescriptionSectionComponent implements OnInit {
         {label: "Set Number of Times", value: "N"},
         {label: "Over first question", value: "F"}
     ];
-    section: FormSection|FormInForm;
+    section: FormSection | FormInForm;
     updateFormVersion: any;
+
+    slControl = new FormControl();
+    filteredSkipLogics = [];
 
     constructor(private alert: AlertService,
                 @Host() public formDescriptionComponent: FormDescriptionComponent,
@@ -68,6 +67,14 @@ export class FormDescriptionSectionComponent implements OnInit {
                 private localStorageService: LocalStorageService,
                 public dialog: MatDialog,
                 public skipLogicValidateService: SkipLogicValidateService) {
+        this.slControl.valueChanges
+            .pipe(
+                debounceTime(300),
+                distinctUntilChanged(),
+                switchMap(value => value.length < 3 ? [] : this.skipLogicValidateService.getTypeaheadOptions(value, this.parent, this.section)
+                )
+            ).subscribe(skipLogic => this.filteredSkipLogics = [skipLogic]);
+
     }
 
     ngOnInit() {
@@ -181,7 +188,7 @@ export class FormDescriptionSectionComponent implements OnInit {
         modal.bForm = true;
         modal.bLabel = !_isEqual(newForm.designations, oldForm.designations);
 
-        this.updateFormVersion =  modal;
+        this.updateFormVersion = modal;
         this.dialog.open(this.updateFormVersionTmpl, {width: '1000px'}).afterClosed().subscribe((res) => {
             if (res) {
                 currentSection.inForm = newSection.inForm;
@@ -206,8 +213,7 @@ export class FormDescriptionSectionComponent implements OnInit {
         } else if (section.repeatOption === "N") {
             section.repeat = (section.repeatNumber && section.repeatNumber > 1 ? section.repeatNumber.toString() : undefined);
             if (section.repeat > 0) this.onEltChange.emit();
-        }
-        else {
+        } else {
             section.repeat = undefined;
         }
 

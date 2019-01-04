@@ -3,13 +3,18 @@
          [ngClass]="{'outdated-bg': formSection?.inForm?.form?.outdated && !section.hover,'hover-bg':section.hover}">
         <div *ngIf="!isSubForm && canEdit" class="float-left">
             <mat-icon class="question-move-handle ml-1"
-               [treeDrag]="node" [treeDragEnabled]="node.allowDrag()">drag_handle</mat-icon>
+                      [treeDrag]="node" [treeDragEnabled]="node.allowDrag()">drag_handle
+            </mat-icon>
             <mat-icon *ngIf="section.skipLogic?.condition?.length > 0 && section.elementType === 'section'"
-               [ngClass]="{'spin': section.updatedSkipLogic}"
-               title="{{section.updatedSkipLogic?'Section has updated show if rule':'Section has show if rule'}}">settings</mat-icon>
+                      [ngClass]="{'spin': section.updatedSkipLogic}"
+                      title="{{section.updatedSkipLogic?'Section has updated show if rule':'Section has show if rule'}}">
+                settings
+            </mat-icon>
             <mat-icon *ngIf="section.skipLogic?.condition?.length > 0 && section.elementType === 'form'"
                       [ngClass]="{'spin': section.updatedSkipLogic}"
-               title="{{section.updatedSkipLogic?'Embedded form has updated show if rule':'Embedded form has show if rule'}}">settings</mat-icon>
+                      title="{{section.updatedSkipLogic?'Embedded form has updated show if rule':'Embedded form has show if rule'}}">
+                settings
+            </mat-icon>
         </div>
         <div id="innerForm_label_edit_icon_{{section.label}}"
              class="font-weight-bold float-left hand-cursor sectionLabel ml-1"
@@ -31,11 +36,13 @@
                title="{{section.inForm.form.name}}"
                [routerLink]="'/formView'"
                [queryParams]="{tinyId: section.inForm.form.tinyId, version: section.inForm.form.version}">
-                <mat-icon>visibility</mat-icon> View Form
+                <mat-icon>visibility</mat-icon>
+                View Form
             </a>
             <ng-container *ngIf="!isSubForm && canEdit">
                 <mat-icon *ngIf="section.elementType === 'section'" title="Copy section"
-                          (click)="copySection(section)">content_copy</mat-icon>
+                          (click)="copySection(section)">content_copy
+                </mat-icon>
                 <cde-delete-with-confirm (deleted)="removeNode(node)"></cde-delete-with-confirm>
             </ng-container>
         </div>
@@ -84,23 +91,25 @@
                        [(ngModel)]="section.repeatNumber"
                        (change)="setRepeat(section);"/>
             </div>
-            <div class="font-weight-bold">Show if:
-                <span id="dd_s_skipLogic_{{$index}}" [ngClass]="{'has-error':section.skipLogic?.skipLogicError}">
-                        <input #slInput [disabled]="!(parent.formElements.length > 1 && canEditSection())"
-                               type="text" title="Show If"
-                               (focus)="slOptionsRetrigger()"
-                               [ngModel]="section.skipLogic.condition"
-                               (ngModelChange)="typeaheadSkipLogic(parent, section, $event)"
-                               class="form-control skipLogicCondition"
-                               placeholder="Start typing a question name to find options"
-                               [ngbTypeahead]="getSkipLogicOptions"
-                               (selectItem)="onSelectItem(parent, section, $event,slInput);"/>
-                        {{section.skipLogic?.validationError}}
-                    </span>
+            <div id="dd_s_skipLogic_{{$index}}" [ngClass]="{'has-error':section.skipLogic?.skipLogicError}">Show if:
+                <mat-form-field>
+                    <input #slInput type="text" placeholder="Start typing a question name to find options"
+                           matInput [formControl]="slControl"
+                           (ngModelChange)="typeaheadSkipLogic(parent, section, $event)"
+                           (focus)="slOptionsRetrigger()" [matAutocomplete]="slAuto">
+                    {{section.skipLogic?.validationError}}
+                    <mat-autocomplete #slAuto="matAutocomplete">
+                        <mat-option *ngFor="let option of filteredSkipLogics" [value]="option"
+                                    (click)="onSelectItem(parent, section, $event,slInput);">
+                            {{option}}
+                        </mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>
             </div>
         </div>
         <div *ngIf="!isSubForm && canEdit && section?.formElements?.length === 0" class="mt-1">
-            <mat-icon>warning</mat-icon>To add questions, drag them here.
+            <mat-icon>warning</mat-icon>
+            To add questions, drag them here.
         </div>
     </div>
 </ng-template>
@@ -113,7 +122,8 @@
                 Repeats: {{getRepeatLabel(section)}}
             </span>
             <span *ngIf="isMappedTo(section, 'fhir')" class="badge badge-primary formViewSummaryLabel">
-                FHIR <ng-container *ngIf="section.mapTo.fhir.resourceType">Resource: {{section.mapTo.fhir.resourceType}}</ng-container>
+                FHIR <ng-container
+                    *ngIf="section.mapTo.fhir.resourceType">Resource: {{section.mapTo.fhir.resourceType}}</ng-container>
             </span>
             <span *ngIf="section.skipLogic?.condition" class="badge badge-warning formViewSummaryLabel">
                 Show if: {{section.skipLogic.condition}}
@@ -176,7 +186,8 @@
                 <div class="col-sm-2 font-weight-bold">Label:</div>
                 <div class="col-sm-8" id="mdd_section_title">
                     <span [ngClass]="{mark: updateFormVersion.bLabel}">{{updateFormVersion.newSection.label | cdePlaceholder}}</span>
-                    <span *ngIf="updateFormVersion.bLabel" class="text-danger">( was {{ updateFormVersion.currentSection.label }} )</span>
+                    <span *ngIf="updateFormVersion.bLabel"
+                          class="text-danger">( was {{ updateFormVersion.currentSection.label }} )</span>
                 </div>
             </div>
             <div class="row">
@@ -184,7 +195,8 @@
                 <div class="col-sm-8" id="mdd_d_form">
                     <a [ngClass]="{mark: updateFormVersion.bForm}"
                        href="/deView?tinyId={{updateFormVersion.newSection.inForm.form.tinyId}}&version={{updateFormVersion.newSection.inForm.form.version}}"
-                       target="_blank"><mat-icon>visibility</mat-icon>
+                       target="_blank">
+                        <mat-icon>visibility</mat-icon>
                         <span id="mdd_question_cde_name">{{updateFormVersion.newSection.inForm.form.name}}</span>
                     </a>
                     <span *ngIf="updateFormVersion.bForm" class="text-danger">( was
