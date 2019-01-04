@@ -155,19 +155,22 @@
                     </span>
                     <div class="p-1">
                         Add
-                        <select class="form-control d-inline-block" style="max-width: 100px"
+                        <select class="form-control d-inline-block col-2"
                                 [(ngModel)]="newUomSystem" title="New Unit of Measure System">
                             <option value="UCUM">UCUM</option>
                             <option value="">Other</option>
                         </select>
                         <ng-container *ngIf="newUomSystem === 'UCUM'; else manualUom">
-                            <mat-form-field style="max-width: 200px" class="form-control d-inline-block">
-                                <input type="text" placeholder="'New Unit of Measure Code'" matInput
+                            <mat-form-field class="d-inline-block col-9">
+                                <input type="text" placeholder="New Unit of Measure Code" matInput
                                        [formControl]="uomControl" [matAutocomplete]="auto">
-                                <mat-autocomplete #auto="matAutocomplete">
+                                <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
                                     <mat-option *ngFor="let uom of filteredUoms" [value]="uom"
-                                                (click)="newUom = $event">
-                                        {{uom}}
+                                                (click)="uomAddSelected($event);">
+                                        <mat-chip [color]="'primary'" [selectable]="false">{{uom.name}}</mat-chip>
+                                        <mat-chip [color]="'accent'" [selectable]="false">{{uom.code}}</mat-chip>
+                                        <mat-chip [color]="'primary'" [selectable]="false"
+                                                  *ngFor="let s of uom.synonyms">{{s}} </mat-chip>
                                     </mat-option>
                                 </mat-autocomplete>
                             </mat-form-field>

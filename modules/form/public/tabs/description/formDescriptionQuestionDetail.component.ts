@@ -298,4 +298,8 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
             this.ucumService.validateUoms(this.question.question);
         }
     }
+
+    displayFn(uom) {
+        return uom ? uom.name : '';
+    }
 }
