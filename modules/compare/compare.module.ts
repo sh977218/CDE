@@ -13,7 +13,7 @@ import { MergeDataElementComponent } from 'compare/mergeDataElement/mergeDataEle
 import { MergeFormComponent } from 'compare/mergeForm/mergeForm.component';
 import { WidgetModule } from 'widget/widget.module';
 import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHistoryContent.component';
-import { MatButtonModule, MatDialogModule, MatIconModule } from '@angular/material';
+import { MatButtonModule, MatDialogModule, MatIconModule, MatProgressBarModule } from '@angular/material';
 
 @NgModule({
     imports: [
@@ -25,6 +25,7 @@ import { MatButtonModule, MatDialogModule, MatIconModule } from '@angular/materi
         MatButtonModule,
         MatDialogModule,
         MatIconModule,
+        MatProgressBarModule,
         // core
         WidgetModule,
     ],

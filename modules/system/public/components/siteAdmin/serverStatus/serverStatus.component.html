@@ -7,18 +7,14 @@
                 <button (click)="reIndex($index)" mat-raised-button>
                     <mat-icon>refresh</mat-icon> Re-index: <b>{{i.name}}</b> / {{i.indexName}}
                 </button>
-                <ngb-progressbar *ngIf="i.totalCount > 0 && i.count > 0" [striped]="true"
-                                 [max]="i.totalCount" [value]="i.count" type="success">
-                    {{i.count}} / {{i.totalCount}}
-                </ngb-progressbar>
+                <mat-progress-bar *ngIf="i.totalCount > 0 && i.count > 0" [value]="i.count * 100 / i.totalCount">
+\                </mat-progress-bar>
             </div>
             <button mat-raised-button (click)="syncMesh()" id="syncWithMeshButton">Sync with MeSH</button>
             <div *ngFor="let meshSync of meshSyncs">
-                <ngb-progressbar *ngIf="meshSync.total > 0 && meshSync.done > 0"
-                                 [striped]="true" [max]="meshSync.total" [value]="meshSync.done"
-                                 type="success">
-                    {{meshSync.done}} / {{meshSync.total}}
-                </ngb-progressbar>
+                <mat-progress-bar *ngIf="meshSync.total > 0 && meshSync.done > 0"
+                                 [max]="meshSync.total" [value]="meshSync.done * 100 / meshSync.total">
+                </mat-progress-bar>
             </div>
         </div>
     </div>

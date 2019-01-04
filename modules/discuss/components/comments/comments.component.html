@@ -73,14 +73,14 @@
                 <form #newReplyForm="ngForm" name="newReplyForm_{{i}}" id="newReplyForm_{{i}}" novalidate
                       (ngSubmit)="replyToComment(comment);">
                     <input [(ngModel)]="comment.newReply.text" (ngModelChange)="changeOnReply(comment)"
-                           class="form-control"
+                           class="form-control" style="margin-bottom: 5px"
                            id="newReplyTextArea_{{i}}" name="newReplyTextArea" placeholder="Reply to this comment"
                            required/>
                     <ng-container *ngIf="comment.newReply.text">
-                        <button class="btn btn-outline-dark" id="replyBtn_{{i}}" name="replyBtn_{{i}}"
+                        <button mat-raised-button id="replyBtn_{{i}}" name="replyBtn_{{i}}"
                                 type="submit" [disabled]="!newReplyForm.form.valid">Reply
                         </button>
-                        <button class="btn btn-outline-dark" (click)="cancelReply(comment);">Cancel</button>
+                        <button mat-raised-button (click)="cancelReply(comment)">Cancel</button>
                     </ng-container>
                 </form>
             </div>
