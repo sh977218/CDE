@@ -19,7 +19,7 @@ const DISEASE_MAP = [
         xpath: DEFAULT_XPATH,
         count: 92,
         domainCount: 9
-    }/*,
+    },
     {
         name: 'Amyotrophic Lateral Sclerosis',
         url: URL_PREFIX + 'ALS.aspx',
@@ -180,7 +180,7 @@ const DISEASE_MAP = [
         xpath: DEFAULT_XPATH,
         count: 186,
         domainCount: 8
-    }*/
+    }
 ];
 
 getFormInfo = async trElement => {
