@@ -2,6 +2,7 @@ package gov.nih.nlm.common.test;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -112,7 +113,18 @@ public class EmbedTest extends NlmCdeBaseTest {
         hangon(1);
         clickElement(By.xpath("//div[. = 'Embedding']"));
         clickElement(By.id("removeEmbed-0"));
-        findElement(By.id("confirmRemoveEmbed-0")).click();
+        try {
+            findElement(By.id("confirmRemoveEmbed-0")).click();
+        } catch (TimeoutException e) {
+            driver.switchTo().defaultContent();
+            goHome();
+            findElement(By.id("username_link")).click();
+            findElement(By.linkText("Account Management")).click();
+            hangon(1);
+            clickElement(By.xpath("//div[. = 'Embedding']"));
+            clickElement(By.id("removeEmbed-0"));
+            findElement(By.id("confirmRemoveEmbed-0")).click();
+        }
         textPresent("Removed");
 
     }
