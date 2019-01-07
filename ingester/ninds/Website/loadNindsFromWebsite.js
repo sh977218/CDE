@@ -69,13 +69,14 @@ const DISEASE_MAP = [
         count: 86,
         domainCount: 9
     },
-    {
+/*    {
         name: 'Mitochondrial Disease',
-        url: URL_PREFIX + 'MD.aspx',
+        url: URL_PREFIX + 'MITO.aspx',
         xpath: DEFAULT_XPATH,
         count: 132,
         domainCount: 9
     },
+*/
     {
         name: 'Multiple Sclerosis',
         url: URL_PREFIX + 'MS.aspx',
