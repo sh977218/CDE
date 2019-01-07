@@ -69,14 +69,13 @@ const DISEASE_MAP = [
         count: 86,
         domainCount: 9
     },
-/*    {
+    {
         name: 'Mitochondrial Disease',
         url: URL_PREFIX + 'MITO.aspx',
         xpath: DEFAULT_XPATH,
         count: 132,
         domainCount: 9
     },
-*/
     {
         name: 'Multiple Sclerosis',
         url: URL_PREFIX + 'MS.aspx',
@@ -293,8 +292,8 @@ doDomain = async (driver, disease, domainElement) => {
     else console.log(domain + ' has no table.');
     if (cdeTableElement) {
         let trElements = await cdeTableElement.findElements(By.xpath('tbody/tr'));
+        let subDomain = '';
         for (let trElement of trElements) {
-            let subDomain = '';
             let thElements = await trElement.findElements(By.xpath('th'));
             let tdElements = await trElement.findElements(By.xpath('td'));
             if (tdElements.length === 0) {
