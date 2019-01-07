@@ -17,7 +17,9 @@
     "postinstall": "npm run moveMaterialCss",
     "start": "node app.js",
     "buildAppStats": "cross-env node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js --config ./modules/_app/webpack.prod.js --profile --json > compilation-stats.json",
-    "bundle-report": "webpack-bundle-analyzer compilation-stats.json"
+    "buildAppStatsNative": "cross-env node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js --config ./modules/_nativeRenderApp/webpackNative.prod.js --profile --json > compilation-stats-native.json",
+    "bundle-report": "webpack-bundle-analyzer compilation-stats.json",
+    "bundle-report-native": "webpack-bundle-analyzer compilation-stats-native.json"
   },
   "engines": {
     "node": "0.12.x",
@@ -191,7 +193,7 @@
     "url-loader": "0.6.2",
     "web-animations-js": "2.3.1",
     "webpack": "^4.27.1",
-    "webpack-bundle-analyzer": "^2.13.1",
+    "webpack-bundle-analyzer": "^3.0.3",
     "webpack-cli": "^3.1.2",
     "webpack-merge": "^4.1.4",
     "zone.js": "^0.8.26"

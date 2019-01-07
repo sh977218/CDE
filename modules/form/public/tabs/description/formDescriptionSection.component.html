@@ -87,8 +87,7 @@
             <div class="font-weight-bold">Show if:
                 <span id="dd_s_skipLogic_{{$index}}" [ngClass]="{'has-error':section.skipLogic?.skipLogicError}">
                         <input #slInput [disabled]="!(parent.formElements.length > 1 && canEditSection())"
-                               type="text" title="Show If"
-                               (focus)="slOptionsRetrigger()"
+                               title="Show If" (focus)="slOptionsRetrigger()"
                                [ngModel]="section.skipLogic.condition"
                                (ngModelChange)="typeaheadSkipLogic(parent, section, $event)"
                                class="form-control skipLogicCondition"
