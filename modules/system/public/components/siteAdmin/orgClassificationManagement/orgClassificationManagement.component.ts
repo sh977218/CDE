@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { IActionMapping, TreeComponent, TreeNode } from 'angular-tree-component';
-import _noop from 'lodash/noop';
 import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
 import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 import { Subject } from 'rxjs/Subject';
@@ -12,7 +11,6 @@ import { ClassificationService } from 'core/classification.service';
 import { Cb, ClassificationClassified, ElasticQueryResponse, Organization } from 'shared/models.model';
 import { isOrgAdmin } from 'shared/system/authorizationShared';
 import { MatDialog, MatDialogRef } from '@angular/material';
-
 
 const actionMapping: IActionMapping = {
     mouse: {
@@ -64,16 +62,24 @@ export class OrgClassificationManagementComponent implements OnInit {
     selectedOrg?: Organization;
     userTyped = '';
 
-    ngOnInit(): void {
-        this.userService.then(() => {
+    constructor(
+        private alert: AlertService,
+        private classificationSvc: ClassificationService,
+        private http: HttpClient,
+        public dialog: MatDialog,
+        private userService: UserService,
+    ) {
+        this.userService.reload(() => {
             if (this.userService.userOrgs.length > 0) {
                 this.orgToManage = this.userService.userOrgs[0];
                 this.onChangeOrg(this.orgToManage, () => {
                     this.onInitDone = true;
                 });
             } else this.onInitDone = true;
-        }, _noop);
+        });
+    }
 
+    ngOnInit(): void {
         this.searchTerms.pipe(
             debounceTime(300),
             distinctUntilChanged(),
@@ -99,16 +105,6 @@ export class OrgClassificationManagementComponent implements OnInit {
             this.descriptorID = '';
             this.alert.addAlert('danger', err);
         });
-
-    }
-
-    constructor(
-        private alert: AlertService,
-        private classificationSvc: ClassificationService,
-        private http: HttpClient,
-        public dialog: MatDialog,
-        private userService: UserService,
-    ) {
     }
 
     addChildClassification(node: TreeNode) {
