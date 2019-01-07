@@ -84,7 +84,7 @@ exports.ticketValidate = function (tkt, cb) {
     req.end();
 };
 
-exports.updateUserAfterLogin = function (user, ip) {
+exports.updateUserAfterLogin = function (user, ip, cb) {
     if (!user.knownIPs) {
         user.knownIPs = [];
     }
@@ -97,8 +97,10 @@ exports.updateUserAfterLogin = function (user, ip) {
         }
     }
 
-    user.lockCounter = 0;
-    user.lastLogin = Date.now();
+    if (user._id) {
+        mongo_data_system.User.findByIdAndUpdate(user._id, {lockCounter: 0, lastLogin: Date.now(), knownIPs: user.knownIPs}, cb);
+    }
+
 };
 
 exports.umlsAuth = function (user, password, cb) {
@@ -148,8 +150,7 @@ exports.authBeforeVsac = function (req, username, password, done) {
                     });
                 } else {
                     // Update user info in datastore
-                    auth.updateUserAfterLogin(user, req.ip);
-                    return user.save(done);
+                    return auth.updateUserAfterLogin(user, req.ip, done);
                 }
             }
         });
@@ -171,15 +172,12 @@ exports.findAddUserLocally = function (profile, cb) {
                     accessToken: profile.accessToken,
                     refreshToken: profile.refreshToken
                 },  (err, newUser) => {
-                    auth.updateUserAfterLogin(newUser, profile.ip);
-                    cb(newUser);
+                    auth.updateUserAfterLogin(newUser, profile.ip, (err, newUser) => cb(newUser));
                 });
         } else {
-            auth.updateUserAfterLogin(user, profile.ip);
-            user.accessToken = profile.accessToken;
-            user.refreshToken = profile.refreshToken;
-            return user.save(function (err, user) {
-                cb(user);
+            auth.updateUserAfterLogin(user, profile.ip, () => {
+                mongo_data_system.User.findByIdAndUpdate(user._id,
+                    {accessToken: profile.accessToken, refreshToken: profile.refreshToken}, (err, user) => cb(user));
             });
         }
     });

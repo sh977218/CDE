@@ -1,8 +1,9 @@
 <mat-dialog-title>Select a question label from a CDE Name</mat-dialog-title>
 <mat-dialog-content>
-    <ngb-alert>
+
+    <div class="alert alert-warning mt20" role="alert">
         There is skip logic using this label. It will be updated.
-    </ngb-alert>
+    </div>
 
     <div *ngFor="let designation of cde.designations; let i = index" class="row"
          id="q_select_name_{{i}}">
