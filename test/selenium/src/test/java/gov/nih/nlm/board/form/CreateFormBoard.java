@@ -52,15 +52,9 @@ public class CreateFormBoard extends BoardTest {
         textPresent(formName2);
         textPresent(formName3);
 
-
-        // counteract save summary/table view
-        try {
-            clickElement(By.id("unpin_1"));
-        } catch (Exception e) {
-            if (driver.findElements(By.id("list_summaryView")).size() > 0)
-                clickElement(By.id("list_summaryView"));
-            clickElement(By.id("unpin_1"));
-        }
+        if (driver.findElements(By.id("list_summaryView")).size() > 0)
+            clickElement(By.id("list_summaryView"));
+        clickElement(By.id("unpin_1"));
         checkAlert("Unpinned.");
         textNotPresent(formName2);
     }
