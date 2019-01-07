@@ -1,4 +1,4 @@
-<a id="notifications" class="mdl-navigation__link mdl-typography--text-uppercase navigationLink"
+<a data-id="notifications" class="mdl-navigation__link mdl-typography--text-uppercase navigationLink"
    (click)="notificationService.drawerToggle(); interruptEvent($event)">
     <mat-icon [matBadge]="notificationService.getBadge()" matBadgeColor="warn" matBadgeSize="small"
               [matBadgeHidden]="!notificationService.getBadge()"
