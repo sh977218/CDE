@@ -9,7 +9,7 @@ import { TreeNode } from "angular-tree-component";
 import { LocalStorageService } from 'angular-2-local-storage';
 import _isEqual from 'lodash/isEqual';
 import _noop from 'lodash/noop';
-import { switchMap, distinctUntilChanged, debounceTime, startWith } from 'rxjs/operators';
+import { switchMap, distinctUntilChanged, debounceTime, map } from 'rxjs/operators';
 
 import { AlertService } from 'alert/alert.service';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
@@ -21,6 +21,7 @@ import { convertFormToSection } from 'shared/form/form';
 import { CdeForm, FormElement, FormInForm, FormSection, SkipLogic } from 'shared/form/form.model';
 import { isMappedTo } from 'shared/form/formAndFe';
 import { MatDialog } from '@angular/material';
+import { Observable } from "rxjs/Observable";
 
 
 export class SkipLogicErrorStateMatcher implements ErrorStateMatcher {
@@ -73,7 +74,6 @@ export class FormDescriptionSectionComponent implements OnInit {
     updateFormVersion: any;
 
     slErrorStateMatcher;
-    slControl = new FormControl();
     filteredSkipLogics = [];
 
     constructor(private alert: AlertService,
@@ -83,15 +83,18 @@ export class FormDescriptionSectionComponent implements OnInit {
                 private localStorageService: LocalStorageService,
                 public dialog: MatDialog,
                 public skipLogicValidateService: SkipLogicValidateService) {
-        this.slControl.valueChanges
-            .pipe(
-                startWith(''),
-                debounceTime(300),
-                distinctUntilChanged(),
-                switchMap(value => this.skipLogicValidateService.getTypeaheadOptions(value, this.parent, this.section)
-                )
-            ).subscribe(skipLogic => this.filteredSkipLogics = [skipLogic]);
 
+    }
+
+    getTypeaheadOptions(event) {
+        console.log(event);
+        this.filteredSkipLogics = this.skipLogicValidateService.getTypeaheadOptions(event, this.parent, this.section);
+    }
+
+    onSelectItem(parent, question, $event, slInput) {
+        this.typeaheadSkipLogic(parent, question, $event.option.value);
+        slInput.focus();
+        this.slOptionsRetrigger();
     }
 
     ngOnInit() {
@@ -234,7 +237,8 @@ export class FormDescriptionSectionComponent implements OnInit {
     slOptionsRetrigger() {
         if (this.slInput) {
             setTimeout(() => {
-                this.slInput.nativeElement.dispatchEvent(FormDescriptionSectionComponent.inputEvent);
+                this.getTypeaheadOptions(this.section.skipLogic.condition);
+                // this.slInput.nativeElement.dispatchEvent(FormDescriptionSectionComponent.inputEvent);
             }, 0);
         }
     }
@@ -245,9 +249,5 @@ export class FormDescriptionSectionComponent implements OnInit {
             this.onEltChange.emit();
         }
     }
-
-    displayFn(s, value) {
-        if (!s.skipLogic.condition) s.skipLogic.condition = '';
-        return value ? s.skipLogic.condition + value : s.skipLogic.condition;
-    }
+    
 }

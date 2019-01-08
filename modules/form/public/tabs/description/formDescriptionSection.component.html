@@ -94,18 +94,25 @@
             <div class="font-weight-bold" id="dd_s_skipLogic_{{$index}}"
                  [ngClass]="{'has-error':section.skipLogic?.skipLogicError}">Show if:
                 <mat-form-field style="width:80%;">
-                    <input #slInput type="text" placeholder="Start typing a question name to find options"
-                           matInput [formControl]="slControl" [errorStateMatcher]="slErrorStateMatcher"
-                           (focus)="slOptionsRetrigger()" [matAutocomplete]="slAuto">
+                    <input #slInput
+                           [disabled]="!(parent.formElements.length > 1 && canEditSection())"
+                           title="Show If" (focus)="slOptionsRetrigger()"
+                           matInput
+                           [ngModel]="section.skipLogic.condition"
+                           (ngModelChange)="getTypeaheadOptions($event); typeaheadSkipLogic(parent, section, $event)"
+                           placeholder="Start typing a question name to find options"
+                           [matAutocomplete]="slAuto"
+                    >
                     <mat-error>
                         {{section.skipLogic?.validationError}}
                     </mat-error>
-                    <mat-autocomplete #slAuto="matAutocomplete" [displayWith]="displayFn.bind(this,section)">
-                        <mat-option *ngFor="let option of filteredSkipLogics" [value]="option"
-                                    (click)="section.skipLogic.condition = option">
+                    <mat-autocomplete #slAuto="matAutocomplete"
+                          (optionSelected)="onSelectItem(parent, section, $event,slInput)">
+                        <mat-option *ngFor="let option of filteredSkipLogics" [value]="section.skipLogic.condition + option" >
                             {{option}}
                         </mat-option>
                     </mat-autocomplete>
+                    {{section.skipLogic?.validationError}}
                 </mat-form-field>
             </div>
         </div>
