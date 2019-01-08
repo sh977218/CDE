@@ -3,13 +3,12 @@ import {
     Component, ElementRef, EventEmitter, Host, Input, OnInit, Output, TemplateRef,
     ViewChild
 } from "@angular/core";
-import { FormControl, FormGroupDirective, NgForm } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { TreeNode } from "angular-tree-component";
 import { LocalStorageService } from 'angular-2-local-storage';
 import _isEqual from 'lodash/isEqual';
 import _noop from 'lodash/noop';
-import { switchMap, distinctUntilChanged, debounceTime, map } from 'rxjs/operators';
 
 import { AlertService } from 'alert/alert.service';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
@@ -20,8 +19,7 @@ import { FormattedValue } from 'shared/models.model';
 import { convertFormToSection } from 'shared/form/form';
 import { CdeForm, FormElement, FormInForm, FormSection, SkipLogic } from 'shared/form/form.model';
 import { isMappedTo } from 'shared/form/formAndFe';
-import { MatDialog } from '@angular/material';
-import { Observable } from "rxjs/Observable";
+import { MatAutocompleteTrigger, MatDialog } from '@angular/material';
 
 
 export class SkipLogicErrorStateMatcher implements ErrorStateMatcher {
@@ -59,6 +57,7 @@ export class FormDescriptionSectionComponent implements OnInit {
     @ViewChild("formDescriptionSectionTmpl") formDescriptionSectionTmpl: TemplateRef<any>;
     @ViewChild("formDescriptionFormTmpl") formDescriptionFormTmpl: TemplateRef<any>;
     @ViewChild("slInput") slInput: ElementRef;
+    @ViewChild("slTrigger") slTrigger: MatAutocompleteTrigger;
     @ViewChild('updateFormVersionTmpl') updateFormVersionTmpl: TemplateRef<any>;
     static inputEvent = new Event('input');
     isMappedTo = isMappedTo;
@@ -73,7 +72,6 @@ export class FormDescriptionSectionComponent implements OnInit {
     section: FormSection | FormInForm;
     updateFormVersion: any;
 
-    slErrorStateMatcher;
     filteredSkipLogics = [];
 
     constructor(private alert: AlertService,
@@ -92,7 +90,7 @@ export class FormDescriptionSectionComponent implements OnInit {
     }
 
     onSelectItem(parent, question, $event, slInput) {
-        this.typeaheadSkipLogic(parent, question, $event.option.value);
+        this.validateSkipLogic(parent, question, $event.option.value);
         slInput.focus();
         this.slOptionsRetrigger();
     }
@@ -113,7 +111,7 @@ export class FormDescriptionSectionComponent implements OnInit {
         }
 
         this.checkRepeatOptions();
-        this.slErrorStateMatcher = new SkipLogicErrorStateMatcher(this.section);
+        // this.slErrorStateMatcher = new SkipLogicErrorStateMatcher(this.section);
     }
 
 
@@ -237,17 +235,18 @@ export class FormDescriptionSectionComponent implements OnInit {
     slOptionsRetrigger() {
         if (this.slInput) {
             setTimeout(() => {
+                console.log("i get options with " + this.section.skipLogic.condition);
                 this.getTypeaheadOptions(this.section.skipLogic.condition);
-                // this.slInput.nativeElement.dispatchEvent(FormDescriptionSectionComponent.inputEvent);
+                this.slTrigger.openPanel();
             }, 0);
         }
     }
 
-    typeaheadSkipLogic(parent, fe, event) {
+    validateSkipLogic(parent, fe, event) {
         if (fe.skipLogic && fe.skipLogic.condition !== event) {
             this.skipLogicValidateService.typeaheadSkipLogic(parent, fe, event);
             this.onEltChange.emit();
         }
     }
-    
+
 }

@@ -97,13 +97,13 @@
                     <input #slInput
                            [disabled]="!(parent.formElements.length > 1 && canEditSection())"
                            title="Show If" (focus)="slOptionsRetrigger()"
-                           matInput
+                           matInput #slTrigger="matAutocompleteTrigger"
                            [ngModel]="section.skipLogic.condition"
-                           (ngModelChange)="getTypeaheadOptions($event); typeaheadSkipLogic(parent, section, $event)"
+                           (ngModelChange)="getTypeaheadOptions($event); validateSkipLogic(parent, section, $event)"
                            placeholder="Start typing a question name to find options"
                            [matAutocomplete]="slAuto"
                     >
-                    <mat-error>
+                    <mat-error *ngIf="section.skipLogic?.validationError">
                         {{section.skipLogic?.validationError}}
                     </mat-error>
                     <mat-autocomplete #slAuto="matAutocomplete"
@@ -112,7 +112,6 @@
                             {{option}}
                         </mat-option>
                     </mat-autocomplete>
-                    {{section.skipLogic?.validationError}}
                 </mat-form-field>
             </div>
         </div>
