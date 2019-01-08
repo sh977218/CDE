@@ -18,7 +18,6 @@ export class CreateFormFromBoardComponent {
     modalRef: MatDialogRef<TemplateRef<any>>;
 
     constructor(private alert: AlertService,
-                private formService: FormService,
                 private http: HttpClient,
                 public dialog: MatDialog) {}
 
@@ -31,7 +30,7 @@ export class CreateFormFromBoardComponent {
                     this.elt.definitions.push(new Definition());
                     this.elt.formElements.push(new FormSection());
                     res.elts.forEach(p => {
-                        this.formService.convertCdeToQuestion(p, q => {
+                        FormService.convertCdeToQuestion(p, q => {
                             this.elt.formElements[0].formElements.push(q);
                         });
                     });

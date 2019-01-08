@@ -76,6 +76,9 @@ exports.log = function (message, callback) { // express only, all others dbLogge
 exports.logError = function (message, callback) { // all server errors, express and not
     message.date = new Date();
     let description = (message.message || message.publicMessage || '').substr(0, 30);
+    if (process.env.NODE_ENV !== 'production') {
+        console.log('---Server Error---', message);
+    }
     new LogErrorModel(message).save(err => {
         if (err) noDbLogger.noDbLogger.info("ERROR: " + err);
 

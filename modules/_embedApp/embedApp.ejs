@@ -10,14 +10,17 @@
     <link href="/embed/embed.css" rel="stylesheet" type="text/css" media="all"/>
     <!-- endbuild -->
 
-    <!-- Polyfills for legacy browsers -->
-    <!-- build:poly /embed/polyfill.js -->
-    <script type="text/javascript" src="/common/core.min.js"></script>
-    <script type="text/javascript" src="/common/Intl.min.js"></script>
-    <script type="text/javascript" src="/common/en.js"></script>
-    <script type="text/javascript" src="/common/classList.min.js"></script>
-    <script type="text/javascript" src="/common/web-animations.min.js"></script>
-    <!-- endbuild -->
+    <% if (isLegacy) { %>
+        <!-- Polyfills for legacy browsers -->
+        <!-- build:poly /embed/polyfill.js -->
+        <script type="text/javascript" src="/common/core.min.js"></script>
+        <script type="text/javascript" src="/common/fetch.umd.js"></script>
+        <script type="text/javascript" src="/common/Intl.min.js"></script>
+        <script type="text/javascript" src="/common/en.js"></script>
+        <script type="text/javascript" src="/common/classList.min.js"></script>
+        <script type="text/javascript" src="/common/web-animations.min.js"></script>
+        <!-- endbuild -->
+    <% } %>
 
     <style>
         body {
@@ -65,13 +68,15 @@
     <script src="/embed/embed.js"></script>
     <!-- endbuild -->
 
-    <!--[if IE]>
-    <script type="text/javascript">
-        window.location = "/supportedBrowsers";
-        document.createElement("inline-edit");
-        document.createElement("inline-area-edit");
-    </script>
-    <![endif]-->
+    <% if (isLegacy) { %>
+        <!--[if IE]>
+        <script type="text/javascript">
+            window.location = "/supportedBrowsers";
+            document.createElement("inline-edit");
+            document.createElement("inline-area-edit");
+        </script>
+        <![endif]-->
+    <% } %>
 </body>
 
 </html>

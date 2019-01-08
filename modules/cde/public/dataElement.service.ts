@@ -1,22 +1,8 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-
 import { DataElement } from 'shared/de/dataElement.model';
 
-@Injectable()
 export class DataElementService {
-    constructor(
-        private http: HttpClient
-    ) {
-    }
-
-    fetchDe(tinyId: string, version?: string): Promise<DataElement> {
-        return new Promise<DataElement>((resolve, reject) => {
-            if (version || version === '') {
-                this.http.get<DataElement>('/de/' + tinyId + '/version/' + version).subscribe(resolve, reject);
-            } else {
-                this.http.get<DataElement>('/de/' + tinyId).subscribe(resolve, reject);
-            }
-        });
+    static fetchDe(tinyId: string, version?: string): Promise<DataElement> {
+        return fetch('/de/' + tinyId + (version || version === '' ? '/version/' + version : ''))
+            .then(res => res.json());
     }
 }
