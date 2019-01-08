@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-
+import { ScoreService } from 'nativeRender/score.service';
 import { SkipLogicService } from 'nativeRender/skipLogic.service';
 import { assertUnreachable, CdeId, CodeAndSystem } from 'shared/models.model';
 import { pvGetDisplayValue, pvGetLabel } from 'shared/de/deShared';
@@ -10,7 +10,6 @@ import {
 } from 'shared/form/form.model';
 import { addFormIds, isQuestion, iterateFeSync, questionMulti } from 'shared/form/fe';
 import { getShowIfQ } from 'shared/form/skipLogic';
-import { ScoreService } from 'nativeRender/score.service';
 
 type SkipLogicOperators = '=' | '!=' | '>' | '<' | '>=' | '<=';
 
@@ -172,10 +171,10 @@ export class NativeRenderService {
         return this.errors;
     }
 
-    checkboxOnChange($event: any, model: Question, value: any) {
+    checkboxOnChange(checked: boolean, model: Question, value: any, q: FormQuestion) {
         if (!Array.isArray(model.answer)) model.answer = [];
         let index = model.answer.indexOf(value);
-        if ($event.target.checked) {
+        if (checked) {
             if (index === -1) {
                 model.answer.push(value);
             }
@@ -184,6 +183,7 @@ export class NativeRenderService {
                 model.answer.splice(model.answer.indexOf(value), 1);
             }
         }
+        this.scoreSvc.triggerCalculateScore(q);
     }
 
     checkboxIsChecked(model: Question, value: any) {
@@ -204,8 +204,9 @@ export class NativeRenderService {
         }
     }
 
-    selectModelChange($event: any, q: FormQuestion) {
-        q.question.answer = q.question.multiselect ? $event : $event[0];
+    selectModelChange(value: any, q: FormQuestion) {
+        q.question.answer = q.question.multiselect ? value : value[0];
+        this.scoreSvc.triggerCalculateScore(q);
     }
 
     static cloneForm(form: CdeForm): CdeForm {
