@@ -91,28 +91,9 @@
                        [(ngModel)]="section.repeatNumber"
                        (change)="setRepeat(section);"/>
             </div>
-            <div class="font-weight-bold" id="dd_s_skipLogic_{{$index}}"
-                 [ngClass]="{'has-error':section.skipLogic?.skipLogicError}">Show if:
-                <mat-form-field style="width:80%;">
-                    <input #slInput
-                           [disabled]="!(parent.formElements.length > 1 && canEditSection())"
-                           title="Show If" (focus)="slOptionsRetrigger()"
-                           matInput #slTrigger="matAutocompleteTrigger"
-                           [ngModel]="section.skipLogic.condition"
-                           (ngModelChange)="getTypeaheadOptions($event); validateSkipLogic(parent, section, $event)"
-                           placeholder="Start typing a question name to find options"
-                           [matAutocomplete]="slAuto"
-                    >
-                    <mat-error *ngIf="section.skipLogic?.validationError">
-                        {{section.skipLogic?.validationError}}
-                    </mat-error>
-                    <mat-autocomplete #slAuto="matAutocomplete"
-                          (optionSelected)="onSelectItem(parent, section, $event,slInput)">
-                        <mat-option *ngFor="let option of filteredSkipLogics" [value]="section.skipLogic.condition + option" >
-                            {{option}}
-                        </mat-option>
-                    </mat-autocomplete>
-                </mat-form-field>
+            <div class="font-weight-bold" id="dd_s_skipLogic_{{$index}}">Show if:
+                <cde-skip-logic-autocomplete [section]="section" [parent]="parent" [canEdit]="canEditSection()"
+                                             (onChanged)="onEltChange.emit();"></cde-skip-logic-autocomplete>
             </div>
         </div>
         <div *ngIf="!isSubForm && canEdit && section?.formElements?.length === 0" class="mt-1">
@@ -168,17 +149,9 @@
                        (change)="setRepeat(section);onEltChange.emit()"/>
             </div>
             <div class="font-weight-bold">Show if:
-                <span id="dd_s_skipLogic_{{$index}}" [ngClass]="{'has-error':section.skipLogic?.skipLogicError}">
-                    <input #slInput [disabled]="!(parent.formElements.length > 1 && canEditSection())"
-                           type="text" title="Show If"
-                           (focus)="slOptionsRetrigger()"
-                           [ngModel]="section.skipLogic.condition"
-                           (ngModelChange)="typeaheadSkipLogic(parent, section, $event)"
-                           class="form-control skipLogicCondition"
-                           placeholder="Start typing a question name to find options"
-                           [ngbTypeahead]="getSkipLogicOptions"
-                           (selectItem)="typeaheadSkipLogic(parent, section, $event);$event.preventDefault();slInput.focus();slOptionsRetrigger()"/>
-                    {{section.skipLogic?.validationError}}
+                <span id="dd_s_skipLogic_{{$index}}">
+                    <cde-skip-logic-autocomplete [section]="section" [parent]="parent" [canEdit]="canEditSection()"
+                                                 (onChanged)="onEltChange.emit();"></cde-skip-logic-autocomplete>
                 </span>
             </div>
         </div>

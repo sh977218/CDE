@@ -4,8 +4,8 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 import { CoreModule } from 'core/core.module';
 import { MatInputModule, MatAutocompleteModule } from '@angular/material';
-import { UsernameAutocompleteComponent } from 'usernameAutocomplete/usernameAutocomplete.component';
-import { UserService } from '_app/user.service';
+import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
+import { SkipLogicAutocompleteComponent } from 'skipLogicAutocomplete/skipLogicAutocomplete.component';
 
 @NgModule({
     imports: [
@@ -16,12 +16,10 @@ import { UserService } from '_app/user.service';
         MatInputModule,
         MatAutocompleteModule
     ],
-    declarations: [
-        UsernameAutocompleteComponent
+    declarations: [SkipLogicAutocompleteComponent],
+    exports: [SkipLogicAutocompleteComponent
     ],
-    exports: [UsernameAutocompleteComponent
-    ],
-    providers: [UserService],
+    providers: [SkipLogicValidateService],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 

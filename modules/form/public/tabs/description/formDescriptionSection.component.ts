@@ -1,17 +1,11 @@
 import { HttpClient } from '@angular/common/http';
-import {
-    Component, ElementRef, EventEmitter, Host, Input, OnInit, Output, TemplateRef,
-    ViewChild
-} from "@angular/core";
-import { FormControl } from '@angular/forms';
-import { ErrorStateMatcher } from '@angular/material/core';
+import { Component, EventEmitter, Host, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
 import { TreeNode } from "angular-tree-component";
 import { LocalStorageService } from 'angular-2-local-storage';
 import _isEqual from 'lodash/isEqual';
 import _noop from 'lodash/noop';
 
 import { AlertService } from 'alert/alert.service';
-import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
 import { FormDescriptionComponent } from 'form/public/tabs/description/formDescription.component';
 import { FormService } from 'nativeRender/form.service';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
@@ -19,23 +13,7 @@ import { FormattedValue } from 'shared/models.model';
 import { convertFormToSection } from 'shared/form/form';
 import { CdeForm, FormElement, FormInForm, FormSection, SkipLogic } from 'shared/form/form.model';
 import { isMappedTo } from 'shared/form/formAndFe';
-import { MatAutocompleteTrigger, MatDialog } from '@angular/material';
-
-
-export class SkipLogicErrorStateMatcher implements ErrorStateMatcher {
-    section;
-
-    constructor(_section) {
-        this.section = _section;
-    }
-
-    isErrorState(control: FormControl | null): boolean {
-        let slError = false;
-        let slErrorMsg = this.section.skipLogic.validationError;
-        if (slErrorMsg) slError = true;
-        return (control.invalid && (control.dirty || control.touched || slError));
-    }
-}
+import { MatDialog } from '@angular/material';
 
 @Component({
     selector: "cde-form-description-section",
@@ -56,8 +34,6 @@ export class FormDescriptionSectionComponent implements OnInit {
     @Output() onEltChange: EventEmitter<void> = new EventEmitter<void>();
     @ViewChild("formDescriptionSectionTmpl") formDescriptionSectionTmpl: TemplateRef<any>;
     @ViewChild("formDescriptionFormTmpl") formDescriptionFormTmpl: TemplateRef<any>;
-    @ViewChild("slInput") slInput: ElementRef;
-    @ViewChild("slTrigger") slTrigger: MatAutocompleteTrigger;
     @ViewChild('updateFormVersionTmpl') updateFormVersionTmpl: TemplateRef<any>;
     static inputEvent = new Event('input');
     isMappedTo = isMappedTo;
@@ -72,27 +48,14 @@ export class FormDescriptionSectionComponent implements OnInit {
     section: FormSection | FormInForm;
     updateFormVersion: any;
 
-    filteredSkipLogics = [];
 
     constructor(private alert: AlertService,
                 @Host() public formDescriptionComponent: FormDescriptionComponent,
                 private formService: FormService,
                 private http: HttpClient,
                 private localStorageService: LocalStorageService,
-                public dialog: MatDialog,
-                public skipLogicValidateService: SkipLogicValidateService) {
+                public dialog: MatDialog) {
 
-    }
-
-    getTypeaheadOptions(event) {
-        console.log(event);
-        this.filteredSkipLogics = this.skipLogicValidateService.getTypeaheadOptions(event, this.parent, this.section);
-    }
-
-    onSelectItem(parent, question, $event, slInput) {
-        this.validateSkipLogic(parent, question, $event.option.value);
-        slInput.focus();
-        this.slOptionsRetrigger();
     }
 
     ngOnInit() {
@@ -230,23 +193,6 @@ export class FormDescriptionSectionComponent implements OnInit {
         }
 
         this.checkRepeatOptions();
-    }
-
-    slOptionsRetrigger() {
-        if (this.slInput) {
-            setTimeout(() => {
-                console.log("i get options with " + this.section.skipLogic.condition);
-                this.getTypeaheadOptions(this.section.skipLogic.condition);
-                this.slTrigger.openPanel();
-            }, 0);
-        }
-    }
-
-    validateSkipLogic(parent, fe, event) {
-        if (fe.skipLogic && fe.skipLogic.condition !== event) {
-            this.skipLogicValidateService.typeaheadSkipLogic(parent, fe, event);
-            this.onEltChange.emit();
-        }
     }
 
 }

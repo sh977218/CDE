@@ -1,8 +1,18 @@
-<mat-form-field>
-    <input type="text" placeholder="{{placeHolder}}" matInput [formControl]="usernameControl" [matAutocomplete]="auto">
-    <mat-autocomplete #auto="matAutocomplete">
-        <mat-option *ngFor="let username of filteredUsernames" [value]="username" (click)="onSelect.emit(username)">
-            {{username}}
+<mat-form-field style="width:90%;">
+    <input #slInput
+           [disabled]="!(parent.formElements.length > 1 && canEdit)"
+           title="Show If" (focus)="slOptionsReTrigger()"
+           matInput #slTrigger="matAutocompleteTrigger"
+           [ngModel]="section.skipLogic.condition"
+           (ngModelChange)="getTypeaheadOptions($event); validateSkipLogic(parent, section, $event)"
+           placeholder="Start typing a question name to find options"
+           [matAutocomplete]="slAuto">
+    <mat-autocomplete #slAuto="matAutocomplete"
+                      (optionSelected)="onSelectItem(parent, section, $event)">
+        <mat-option *ngFor="let option of filteredSkipLogics"
+                    [value]="section.skipLogic.condition + option">
+            {{option}}
         </mat-option>
     </mat-autocomplete>
 </mat-form-field>
+{{section.skipLogic?.validationError}}

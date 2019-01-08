@@ -1,25 +1,53 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { switchMap, debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { UserService } from '_app/user.service';
+import { Component, Input, Output, EventEmitter, ElementRef, ViewChild } from '@angular/core';
+import { MatAutocompleteTrigger } from '@angular/material';
+import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
 
 @Component({
-    selector: 'cde-username-autocomplete',
-    templateUrl: './usernameAutocomplete.component.html'
+    selector: 'cde-skip-logic-autocomplete',
+    templateUrl: './skipLogicAutocomplete.component.html'
 })
-export class UsernameAutocompleteComponent {
-    @Input() placeHolder: string = 'Make the user';
-    usernameControl = new FormControl();
-    filteredUsernames = [];
-    @Output() onSelect = new EventEmitter<any>();
+export class SkipLogicAutocompleteComponent {
+    @ViewChild("slInput") slInput: ElementRef;
+    @ViewChild("slTrigger") slTrigger: MatAutocompleteTrigger;
 
-    constructor(userService: UserService) {
-        this.usernameControl.valueChanges
-            .pipe(
-                debounceTime(300),
-                distinctUntilChanged(),
-                switchMap(value => value.length < 3 ? [] : userService.searchUsernames(value)
-                )
-            ).subscribe(usernames => this.filteredUsernames = usernames);
+    @Input() canEdit;
+    @Input() section;
+    @Input() parent;
+    @Output() onChanged = new EventEmitter();
+
+    filteredSkipLogics = [];
+
+    constructor(public skipLogicValidateService: SkipLogicValidateService) {
     }
+
+    getTypeaheadOptions(event) {
+        console.log(event);
+        this.filteredSkipLogics = this.skipLogicValidateService.getTypeaheadOptions(event, this.parent, this.section);
+    }
+
+    onSelectItem(parent, question, $event) {
+        this.validateSkipLogic(parent, question, $event.option.value);
+        this.slInput.nativeElement.focus();
+        this.slOptionsReTrigger();
+    }
+
+
+    slOptionsReTrigger() {
+        if (this.slInput) {
+            setTimeout(() => {
+                console.log("i get options with " + this.section.skipLogic.condition);
+                this.getTypeaheadOptions(this.section.skipLogic.condition);
+                this.slTrigger.openPanel();
+            }, 0);
+        }
+    }
+
+    validateSkipLogic(parent, fe, event) {
+        if (fe.skipLogic && fe.skipLogic.condition !== event) {
+            this.skipLogicValidateService.typeaheadSkipLogic(parent, fe, event);
+            this.onChanged.emit();
+        }
+    }
+
+
 }
