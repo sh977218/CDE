@@ -1,5 +1,6 @@
-package gov.nih.nlm.cde.test;
+package gov.nih.nlm.cde.test.workingGroups;
 
+import gov.nih.nlm.cde.test.BaseClassificationTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
