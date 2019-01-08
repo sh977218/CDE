@@ -175,13 +175,6 @@ export class FormDescriptionSectionComponent implements OnInit {
         }
     }
 
-    onSelectItem(parent, question, $event, slInput) {
-        this.typeaheadSkipLogic(parent, question, $event);
-        $event.preventDefault();
-        slInput.focus();
-        this.slOptionsRetrigger();
-    }
-
     openUpdateFormVersion(formSection: FormInForm) {
         this.formService.fetchForm(formSection.inForm.form.tinyId).then(newForm => {
             let oldVersion = formSection.inForm.form.version ? formSection.inForm.form.version : '';
@@ -254,9 +247,7 @@ export class FormDescriptionSectionComponent implements OnInit {
     }
 
     displayFn(s, value) {
-        // this.typeaheadSkipLogic(this.parent, this.section, null);
         if (!s.skipLogic.condition) s.skipLogic.condition = '';
-        if (value) s.skipLogic.condition = s.skipLogic.condition + value;
-        return s.skipLogic.condition;
+        return value ? s.skipLogic.condition + value : s.skipLogic.condition;
     }
 }

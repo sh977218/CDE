@@ -101,7 +101,8 @@
                         {{section.skipLogic?.validationError}}
                     </mat-error>
                     <mat-autocomplete #slAuto="matAutocomplete" [displayWith]="displayFn.bind(this,section)">
-                        <mat-option *ngFor="let option of filteredSkipLogics" [value]="option">
+                        <mat-option *ngFor="let option of filteredSkipLogics" [value]="option"
+                                    (click)="section.skipLogic.condition = option">
                             {{option}}
                         </mat-option>
                     </mat-autocomplete>
