@@ -46,7 +46,7 @@ export function evaluateSkipLogic(condition, parent, fe, addError) {
                 if (realAnswer === '' || ('' + realAnswer).trim().length === 0) return true;
             }
         }
-        if (typeof(realAnswer) === 'undefined') return false;
+        if (typeof (realAnswer) === 'undefined') return false;
         switch (realAnswerObj.question.datatype) {
             case 'Date':
                 // format HTML5 standard YYYY-MM-DD to American DD/MM/YYYY
@@ -152,7 +152,7 @@ export function tokenSplitter(str) {
     let tokens = [];
     tokens.unmatched = '';
     if (!str) return tokens;
-    str = str.trim();
+    if (str.trim) str = str.trim();
     if (!str) return tokens;
 
     let res = str.match(/^"[^"]+"/);

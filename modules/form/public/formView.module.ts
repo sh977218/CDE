@@ -2,9 +2,9 @@ import { CommonModule } from '@angular/common';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import {
-    MatButtonModule, MatCardModule, MatCheckboxModule, MatChipsModule, MatDialogModule, MatExpansionModule,
-    MatGridListModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule, MatSliderModule, MatTabsModule,
-    MatTooltipModule, MatAutocompleteModule
+    MatButtonModule, MatCardModule, MatCheckboxModule, MatChipsModule, MatDialogModule,
+    MatExpansionModule, MatGridListModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule,
+    MatSliderModule, MatTabsModule, MatTooltipModule, MatAutocompleteModule
 } from "@angular/material";
 import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';

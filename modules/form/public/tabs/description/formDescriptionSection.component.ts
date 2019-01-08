@@ -3,13 +3,13 @@ import {
     Component, ElementRef, EventEmitter, Host, Input, OnInit, Output, TemplateRef,
     ViewChild
 } from "@angular/core";
-import { FormControl } from '@angular/forms';
+import { FormControl, FormGroupDirective, NgForm } from '@angular/forms';
+import { ErrorStateMatcher } from '@angular/material/core';
 import { TreeNode } from "angular-tree-component";
 import { LocalStorageService } from 'angular-2-local-storage';
 import _isEqual from 'lodash/isEqual';
 import _noop from 'lodash/noop';
-import { Observable } from "rxjs/Observable";
-import { switchMap, distinctUntilChanged, debounceTime, map } from 'rxjs/operators';
+import { switchMap, distinctUntilChanged, debounceTime, startWith } from 'rxjs/operators';
 
 import { AlertService } from 'alert/alert.service';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
@@ -22,6 +22,21 @@ import { CdeForm, FormElement, FormInForm, FormSection, SkipLogic } from 'shared
 import { isMappedTo } from 'shared/form/formAndFe';
 import { MatDialog } from '@angular/material';
 
+
+export class SkipLogicErrorStateMatcher implements ErrorStateMatcher {
+    section;
+
+    constructor(_section) {
+        this.section = _section;
+    }
+
+    isErrorState(control: FormControl | null): boolean {
+        let slError = false;
+        let slErrorMsg = this.section.skipLogic.validationError;
+        if (slErrorMsg) slError = true;
+        return (control.invalid && (control.dirty || control.touched || slError));
+    }
+}
 
 @Component({
     selector: "cde-form-description-section",
@@ -57,6 +72,7 @@ export class FormDescriptionSectionComponent implements OnInit {
     section: FormSection | FormInForm;
     updateFormVersion: any;
 
+    slErrorStateMatcher;
     slControl = new FormControl();
     filteredSkipLogics = [];
 
@@ -69,9 +85,10 @@ export class FormDescriptionSectionComponent implements OnInit {
                 public skipLogicValidateService: SkipLogicValidateService) {
         this.slControl.valueChanges
             .pipe(
+                startWith(''),
                 debounceTime(300),
                 distinctUntilChanged(),
-                switchMap(value => value.length < 3 ? [] : this.skipLogicValidateService.getTypeaheadOptions(value, this.parent, this.section)
+                switchMap(value => this.skipLogicValidateService.getTypeaheadOptions(value, this.parent, this.section)
                 )
             ).subscribe(skipLogic => this.filteredSkipLogics = [skipLogic]);
 
@@ -93,6 +110,7 @@ export class FormDescriptionSectionComponent implements OnInit {
         }
 
         this.checkRepeatOptions();
+        this.slErrorStateMatcher = new SkipLogicErrorStateMatcher(this.section);
     }
 
 
@@ -233,5 +251,12 @@ export class FormDescriptionSectionComponent implements OnInit {
             this.skipLogicValidateService.typeaheadSkipLogic(parent, fe, event);
             this.onEltChange.emit();
         }
+    }
+
+    displayFn(s, value) {
+        // this.typeaheadSkipLogic(this.parent, this.section, null);
+        if (!s.skipLogic.condition) s.skipLogic.condition = '';
+        if (value) s.skipLogic.condition = s.skipLogic.condition + value;
+        return s.skipLogic.condition;
     }
 }

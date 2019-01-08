@@ -92,15 +92,15 @@
                        (change)="setRepeat(section);"/>
             </div>
             <div id="dd_s_skipLogic_{{$index}}" [ngClass]="{'has-error':section.skipLogic?.skipLogicError}">Show if:
-                <mat-form-field>
+                <mat-form-field style="width:80%;">
                     <input #slInput type="text" placeholder="Start typing a question name to find options"
-                           matInput [formControl]="slControl"
-                           (ngModelChange)="typeaheadSkipLogic(parent, section, $event)"
+                           matInput [formControl]="slControl" [errorStateMatcher]="slErrorStateMatcher"
                            (focus)="slOptionsRetrigger()" [matAutocomplete]="slAuto">
-                    {{section.skipLogic?.validationError}}
-                    <mat-autocomplete #slAuto="matAutocomplete">
-                        <mat-option *ngFor="let option of filteredSkipLogics" [value]="option"
-                                    (click)="onSelectItem(parent, section, $event,slInput);">
+                    <mat-error>
+                        {{section.skipLogic?.validationError}}
+                    </mat-error>
+                    <mat-autocomplete #slAuto="matAutocomplete" [displayWith]="displayFn.bind(this,section)">
+                        <mat-option *ngFor="let option of filteredSkipLogics" [value]="option">
                             {{option}}
                         </mat-option>
                     </mat-autocomplete>
