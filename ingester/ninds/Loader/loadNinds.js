@@ -96,28 +96,33 @@ doOneNindsFormById = async formIdString => {
         }
         createdForm++;
         console.log('createdForm: ' + createdForm + ' ' + savedForm.tinyId);
-    } else if (updatedByNonLoader(existingForm) ||
-        existingForm.registrationState.registrationStatus === 'Standard') {
-        skipForm++;
-        console.log('skipForm: ' + skipForm + ' ' + existingForm.tinyId);
     } else {
-        existingForm.imported = new Date().toJSON();
-        existingForm.markModified('imported');
-        let diff = CompareForm.compareForm(newForm, existingForm);
-        for (let comment of newFormObj.comments) {
-            comment.element.eltId = existingForm.tinyId;
-            await new Comment(comment).save();
-            console.log('comment saved on existing Form ' + existingForm.tinyId);
-        }
-        if (_.isEmpty(diff)) {
+        let otherClassifications = existingForm.classification.filter(c => c.stewardOrg.name !== 'NINDS');
+        existingForm.classification = otherClassifications.concat(newFormObj.classification);
+        if (updatedByNonLoader(existingForm) ||
+            existingForm.registrationState.registrationStatus === 'Standard') {
             await existingForm.save();
-            sameForm++;
-            console.log('sameForm: ' + sameForm + ' ' + existingForm.tinyId);
+            skipForm++;
+            console.log('skipForm: ' + skipForm + ' ' + existingForm.tinyId);
         } else {
-            await MergeForm.mergeForm(existingForm, newForm);
-            await mongo_form.updatePromise(existingForm, batchloader);
-            changeForm++;
-            console.log('changeForm: ' + changeForm + ' ' + existingForm.tinyId);
+            existingForm.imported = new Date().toJSON();
+            existingForm.markModified('imported');
+            let diff = CompareForm.compareForm(newForm, existingForm);
+            for (let comment of newFormObj.comments) {
+                comment.element.eltId = existingForm.tinyId;
+                await new Comment(comment).save();
+                console.log('comment saved on existing Form ' + existingForm.tinyId);
+            }
+            if (_.isEmpty(diff)) {
+                await existingForm.save();
+                sameForm++;
+                console.log('sameForm: ' + sameForm + ' ' + existingForm.tinyId);
+            } else {
+                await MergeForm.mergeForm(existingForm, newForm);
+                await mongo_form.updatePromise(existingForm, batchloader);
+                changeForm++;
+                console.log('changeForm: ' + changeForm + ' ' + existingForm.tinyId);
+            }
         }
     }
 };

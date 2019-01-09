@@ -35,5 +35,4 @@ exports.mergeForm = (existingForm, newForm) => {
     existingForm.referenceDocuments = mergeReferenceDocuments(newForm.referenceDocuments, existingForm.referenceDocuments);
     existingForm.sources = mergeSources(newForm.sources, existingForm.sources);
     existingForm.formElements = newForm.formElements;
-    classificationShared.transferClassifications(newForm, existingForm);
 };

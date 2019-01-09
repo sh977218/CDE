@@ -14,7 +14,7 @@ let DEFAULT_XPATH = "//*[@id='Data_Standards']/a/following-sibling::table/tbody/
 
 const DISEASE_MAP = [
     {
-        name: 'General',
+        name: 'General (For all diseases)',
         url: URL_PREFIX + 'General.aspx',
         xpath: DEFAULT_XPATH,
         count: 92,
@@ -298,13 +298,19 @@ doDomain = async (driver, disease, domainElement) => {
             let tdElements = await trElement.findElements(By.xpath('td'));
             if (tdElements.length === 0) {
                 let subDomainText = await thElements[0].getText();
-                subDomain = subDomainText.trim();
+                let divElements = await thElements[0].findElements(By.xpath('div'));
+                if (divElements.length > 0) {
+                    let _subDomainText = await divElements[0].getText();
+                    subDomain = subDomainText.replace(_subDomainText, '').trim();
+                } else {
+                    subDomain = subDomainText.trim();
+                }
             } else {
                 let cond = await getFormInfo(trElement);
                 cond.url = disease.url;
                 cond.domain = domain;
                 cond.disease = disease.name;
-		cond.subDomain = subDomain;
+                cond.subDomain = subDomain;
                 let existingNinds = await NindsModel.findOne(cond);
                 if (!existingNinds) {
                     let formObj = await doTrElement(trElement);

@@ -35,5 +35,4 @@ exports.mergeCde = (existingCde, newCde) => {
     existingCde.referenceDocuments = mergeReferenceDocuments(newCde.referenceDocuments, existingCde.referenceDocuments);
     existingCde.sources = mergeSources(newCde.sources, existingCde.sources);
     existingCde.valueDomain = newCde.valueDomain;
-    classificationShared.transferClassifications(newCde, existingCde);
 };

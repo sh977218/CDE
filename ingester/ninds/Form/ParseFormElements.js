@@ -64,30 +64,36 @@ doOneNindsCde = async cdeId => {
         createdCDE++;
         console.log('createdCDE: ' + createdCDE + ' ' + savedCDE.tinyId);
 
-    } else if (updatedByNonLoader(existingCde) ||
-        existingCde.updated > yesterday ||
-        existingCde.registrationState.registrationStatus === 'Standard') {
-        skipCDE++;
-        console.log('skipCDE: ' + skipCDE + ' ' + existingCde.tinyId);
     } else {
-        existingCde.imported = new Date().toJSON();
-        existingCde.markModified('imported');
-        let diff = CompareCDE.compareCde(newCde, existingCde);
-        for (let comment of newCdeObj.comments) {
-            comment.element.eltId = existingCde.tinyId;
-            await new Comment(comment).save();
-            console.log('comment saved on existing CDE ' + existingCde.tinyId);
-        }
-        if (_.isEmpty(diff)) {
+        let otherClassifications = existingCde.classification.filter(c => c.stewardOrg.name !== 'NINDS');
+        existingCde.classification = otherClassifications.concat(newCdeObj.classification);
+        if (updatedByNonLoader(existingCde) ||
+            existingCde.updated > yesterday ||
+            existingCde.registrationState.registrationStatus === 'Standard') {
             await existingCde.save();
-            sameCDE++;
-            console.log('sameCDE: ' + sameCDE + ' ' + existingCde.tinyId);
+            skipCDE++;
+            console.log('skipCDE: ' + skipCDE + ' ' + existingCde.tinyId);
         } else {
-            await MergeCDE.mergeCde(existingCde, newCde);
-            await mongo_cde.updatePromise(existingCde, batchloader);
-            changeCDE++;
-            console.log('changeCDE: ' + changeCDE + ' ' + existingCde.tinyId);
+            existingCde.imported = new Date().toJSON();
+            existingCde.markModified('imported');
+            let diff = CompareCDE.compareCde(newCde, existingCde);
+            for (let comment of newCdeObj.comments) {
+                comment.element.eltId = existingCde.tinyId;
+                await new Comment(comment).save();
+                console.log('comment saved on existing CDE ' + existingCde.tinyId);
+            }
+            if (_.isEmpty(diff)) {
+                await existingCde.save();
+                sameCDE++;
+                console.log('sameCDE: ' + sameCDE + ' ' + existingCde.tinyId);
+            } else {
+                await MergeCDE.mergeCde(existingCde, newCde);
+                await mongo_cde.updatePromise(existingCde, batchloader);
+                changeCDE++;
+                console.log('changeCDE: ' + changeCDE + ' ' + existingCde.tinyId);
+            }
         }
+
     }
 };
 
