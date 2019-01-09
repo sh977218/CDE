@@ -32,7 +32,6 @@ import { DiscussModule } from 'discuss/discuss.module';
 import { FormSearchModule } from 'form/public/formSearch.module';
 import { WidgetModule } from 'widget/widget.module';
 
-
 const appRoutes: Routes = [
     {path: '', component: DataElementViewComponent},
 ];

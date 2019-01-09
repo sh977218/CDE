@@ -12,6 +12,7 @@ import {
     MatDialogModule,
     MatIconModule,
 } from '@angular/material';
+import { TagModule } from 'tag/tag.module';
 
 @NgModule({
     imports: [
@@ -24,6 +25,7 @@ import {
         MatIconModule,
         MatDialogModule,
         // internal
+        TagModule
     ],
     declarations: [
         OrgAdminComponent,

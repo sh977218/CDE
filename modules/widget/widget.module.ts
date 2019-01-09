@@ -12,11 +12,7 @@ import { InlineSelectEditComponent } from 'widget/inlineEdit/inlineSelectEdit.co
 import { PlaceHoldEmptyPipe } from 'widget/pipes/placeHoldEmpty.pipe';
 import { SortableArrayComponent } from 'widget/sortableArray/sortableArray.component';
 import { TextTruncateComponent } from 'widget/text/textTruncate.component';
-import {
-    MatInputModule, MatIconModule, MatChipsModule, MatAutocompleteModule
-} from '@angular/material';
-import { TagComponent } from 'widget/tag/tag.component';
-
+import { MatInputModule, MatIconModule, MatChipsModule, MatAutocompleteModule } from '@angular/material';
 @NgModule({
     imports: [
         CKEditorModule,
@@ -38,8 +34,7 @@ import { TagComponent } from 'widget/tag/tag.component';
         InlineSelectEditComponent,
         PlaceHoldEmptyPipe,
         TextTruncateComponent,
-        SortableArrayComponent,
-        TagComponent
+        SortableArrayComponent
     ],
     exports: [
         DeleteWithConfirmComponent,
@@ -47,8 +42,7 @@ import { TagComponent } from 'widget/tag/tag.component';
         InlineEditComponent,
         InlineSelectEditComponent,
         PlaceHoldEmptyPipe,
-        SortableArrayComponent,
-        TagComponent
+        SortableArrayComponent
     ],
     providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
