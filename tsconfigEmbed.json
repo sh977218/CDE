@@ -48,6 +48,8 @@
     "modules/system",
     "modules/swagger",
     "modules/widget",
+    "modules/skipLogicAutocomplete",
+    "modules/usernameAutocomplete",
     "node_modules",
     "protractor",
     "scripts",
