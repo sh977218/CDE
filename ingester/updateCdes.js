@@ -271,7 +271,7 @@ function streamOnClose() {
     }, 5000);
 }
 function doStream() {
-    migStream = MigrationDataElement.find().stream();
+    migStream = MigrationDataElement.find().cursor();
     migStream.on('data', streamOnData);
     migStream.on('error', function () {
         console.log("!!!!!!!!!!!!!!!!!! Unable to read from Stream !!!!!!!!!!!!!!");

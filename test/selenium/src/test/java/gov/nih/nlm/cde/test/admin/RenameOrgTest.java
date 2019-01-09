@@ -9,7 +9,7 @@ public class RenameOrgTest extends NlmCdeBaseTest {
     private void refreshOrganizationsTabScreen() {
         driver.navigate().refresh();
         scrollToTop();
-        clickElement(By.linkText("Organizations"));
+        clickElement(By.xpath("//div[. = 'Organizations']"));
     }
 
     @Test

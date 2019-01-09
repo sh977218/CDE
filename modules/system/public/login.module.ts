@@ -6,6 +6,7 @@ import { WidgetModule } from 'widget/widget.module';
 
 import { LoginComponent } from "./components/login/login.component";
 import { RouterModule, Routes } from "@angular/router";
+import { MatButtonModule } from '@angular/material';
 
 const appRoutes: Routes = [
     {path: '', component: LoginComponent},
@@ -15,6 +16,7 @@ const appRoutes: Routes = [
     imports: [
         CommonModule,
         FormsModule,
+        MatButtonModule,
         RecaptchaModule.forRoot(),
         RouterModule.forChild(appRoutes),
         // core

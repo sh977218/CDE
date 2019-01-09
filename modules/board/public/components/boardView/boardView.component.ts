@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef, PageEvent } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
 import { ElasticService } from '_app/elastic.service';
 import { UserService } from '_app/user.service';
@@ -35,7 +35,7 @@ export class BoardViewComponent implements OnInit {
     canReview: boolean;
     classifyCdesRefModal: MatDialogRef<TemplateRef<any>>;
     commentMode: boolean;
-    currentPage: number = 1;
+    currentPage: number = 0;
     elts: any[] = [];
     feedbackClass: string[] = [''];
     hasComments: boolean;
@@ -168,7 +168,7 @@ export class BoardViewComponent implements OnInit {
     }
 
     reload() {
-        this.http.get<any>('/server/board/' + this.boardId + '/' + ((this.currentPage - 1) * 20)).subscribe(response => {
+        this.http.get<any>('/server/board/' + this.boardId + '/' + (this.currentPage) * 20).subscribe(response => {
             if (response.board) {
                 this.board = response.board;
                 this.elts = response.elts;
@@ -207,9 +207,10 @@ export class BoardViewComponent implements OnInit {
         }, () => this.alert.addAlert('danger', 'Board not found'));
     }
 
-    setPage(newPage) {
-        if (this.currentPage !== newPage) {
-            this.currentPage = newPage;
+    setPage(newPage: PageEvent) {
+        let goToPage = newPage.pageIndex;
+        if (this.currentPage !== goToPage) {
+            this.currentPage = goToPage;
             this.reload();
         }
     }

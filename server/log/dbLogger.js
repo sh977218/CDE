@@ -170,7 +170,8 @@ exports.handleError = function (options, cb) {
     };
 };
 
-// @TODO: Combine with logError() which publishes notifications
+// TODO: Combine with logError() which publishes notifications
+// TODO: tee to console.log
 exports.respondError = function (err, options) {
     if (!options) options = {};
     if (options.res) {
@@ -199,11 +200,11 @@ exports.respondError = function (err, options) {
 exports.httpLogs = function (body, callback) {
     let sort = {"date": "desc"};
     if (body.sort) sort = body.sort;
-    let currentPage = 1;
+    let currentPage = 0;
     if (body.currentPage) currentPage = Number.parseInt(body.currentPage);
     let itemsPerPage = 500;
     if (body.itemsPerPage) itemsPerPage = Number.parseInt(body.itemsPerPage);
-    let skip = (currentPage - 1) * itemsPerPage;
+    let skip = currentPage * itemsPerPage;
     let query = {};
     if (body.ipAddress) query = {remoteAddr: body.ipAddress};
     let modal = LogModel.find(query);
@@ -219,11 +220,11 @@ exports.httpLogs = function (body, callback) {
 };
 
 exports.appLogs = function (body, callback) {
-    let currentPage = 1;
+    let currentPage = 0;
     if (body.currentPage) currentPage = Number.parseInt(body.currentPage);
     let itemsPerPage = 500;
     if (body.itemsPerPage) itemsPerPage = Number.parseInt(body.itemsPerPage);
-    let skip = (currentPage - 1) * itemsPerPage;
+    let skip = currentPage * itemsPerPage;
     let modal = consoleLogModel.find();
     if (body.fromDate) modal.where("date").gte(moment(body.fromDate));
     if (body.toDate) modal.where("date").lte(moment(body.toDate));

@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Input, ViewChild, Output, EventEmitter, TemplateRef } from '@angular/core';
-import { NgbTabChangeEvent } from '@ng-bootstrap/ng-bootstrap/tabset/tabset';
 import { LocalStorageService } from 'angular-2-local-storage/dist';
 import { TreeNode } from 'angular-tree-component/dist/models/tree-node.model';
 import { IActionMapping } from 'angular-tree-component/dist/models/tree-options.model';
@@ -9,7 +8,7 @@ import _noop from 'lodash/noop';
 import { UserService } from '_app/user.service';
 import { ClassificationService } from 'core/classification.service';
 import { ClassificationClassified, ClassificationHistory } from 'shared/models.model';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatTabChangeEvent } from '@angular/material';
 
 const actionMapping: IActionMapping = {
     mouse: {
@@ -75,8 +74,8 @@ export class ClassifyItemModalComponent {
         });
     }
 
-    onChangeClassifyView(event: NgbTabChangeEvent) {
-        if (event.nextId === 'recentlyAddViewTab') {
+    onChangeClassifyView(event: MatTabChangeEvent) {
+        if (event.tab.textLabel === 'By recently added') {
             this.orgClassificationsRecentlyAddView = this.localStorageService.get('classificationHistory');
         } else {
             this.orgClassificationsTreeView = null;

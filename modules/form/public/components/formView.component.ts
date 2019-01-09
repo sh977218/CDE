@@ -97,8 +97,7 @@ export class FormViewComponent implements OnInit {
                 private router: Router,
                 private ucumService: UcumService,
                 private dialog: MatDialog
-    ) {
-    }
+    ) {}
 
     canEdit() {
         return canEditCuratedItem(this.userService.user, this.elt);

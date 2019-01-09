@@ -6,9 +6,9 @@ import _find from 'lodash/find';
 import _isEmpty from 'lodash/isEmpty';
 import _remove from 'lodash/remove';
 import { DataElement } from 'shared/de/dataElement.model';
+import { MatTabChangeEvent } from '@angular/material';
 import { CdeFormElastic } from 'shared/form/form.model';
 import { iterateFesSync } from 'shared/form/fe';
-
 
 @Injectable()
 export class QuickBoardListService {
@@ -117,10 +117,10 @@ export class QuickBoardListService {
         this.number_forms = this.forms.length;
     }
 
-    setDefaultQuickBoard(tab) {
+    setDefaultQuickBoard(event: MatTabChangeEvent) {
         let type;
-        if (tab.nextId === 'formQuickBoard') type = 'form';
-        if (tab.nextId === 'dataElementQuickBoard') type = 'cde';
+        if (event.tab.textLabel.startsWith("Form")) type = 'form';
+        if (event.tab.textLabel.startsWith("CDE")) type = 'cde';
         this.module = type;
         this.localStorageService.set('defaultQuickBoard', type);
     }

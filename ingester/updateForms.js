@@ -165,7 +165,7 @@ function streamOnClose() {
 
 
 function run() {
-    var migStream = MigrationFormModel.find().stream();
+    var migStream = MigrationFormModel.find().cursor();
     migStream.on('data', function (migrationForm) {
         migStream.pause();
         classificationShared.sortClassification(migrationForm);

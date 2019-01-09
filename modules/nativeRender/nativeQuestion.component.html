@@ -63,7 +63,7 @@
                                                        [name]="formElement.feId"
                                                        [attr.name]="formElement.feId"
                                                        [checked]="nrs.checkboxIsChecked(formElement.question, pv.permissibleValue)"
-                                                       (change)="nrs.checkboxOnChange($event, formElement.question, pv.permissibleValue)"
+                                                       (change)="nrs.checkboxOnChange($event.target.checked, formElement.question, pv.permissibleValue, formElement)"
                                                        [value]="pv.permissibleValue"
                                                        [attr.value]="pv.permissibleValue"
                                                        [required]="formElement.question.required"
@@ -102,6 +102,7 @@
                                     [multiple]="formElement.question.multiselect"
                                     [ngModel]="nrs.selectModel(formElement)"
                                     (ngModelChange)="nrs.selectModelChange($event, formElement)">
+                                <option value=""></option>
                                 <option *ngFor="let pv of formElement.question.answers"
                                         [value]="pv.permissibleValue"
                                         [attr.value]="pv.permissibleValue">{{NRS.getPvLabel(pv)}}

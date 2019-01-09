@@ -17,7 +17,9 @@
     "postinstall": "npm run moveMaterialCss",
     "start": "node app.js",
     "buildAppStats": "cross-env node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js --config ./modules/_app/webpack.prod.js --profile --json > compilation-stats.json",
-    "bundle-report": "webpack-bundle-analyzer compilation-stats.json"
+    "buildAppStatsNative": "cross-env node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js --config ./modules/_nativeRenderApp/webpackNative.prod.js --profile --json > compilation-stats-native.json",
+    "bundle-report": "webpack-bundle-analyzer compilation-stats.json",
+    "bundle-report-native": "webpack-bundle-analyzer compilation-stats-native.json"
   },
   "engines": {
     "node": "0.12.x",
@@ -28,14 +30,12 @@
   },
   "dependencies": {
     "@types/express": "^4.16.0",
-    "JSONStream": "0.10.0",
     "adm-zip": "^0.4.11",
     "ajv": "^6.5.0",
     "archiver": "^3.0.0",
     "async": "2.6.1",
     "body-parser": "^1.18.3",
     "byline": "4.2.1",
-    "chalk": "*",
     "clamav.js": "^0.12.0",
     "compression": "^1.7.2",
     "config": "*",
@@ -45,7 +45,6 @@
     "cron": "^1.5.0",
     "csurf": "1.9.0",
     "csv": "^4.0.0",
-    "csv-parser": "^2.1.0",
     "deep-copy": "^1.4.2",
     "deep-diff": "^1.0.2",
     "ejs": "2.6.1",
@@ -194,7 +193,7 @@
     "url-loader": "0.6.2",
     "web-animations-js": "2.3.1",
     "webpack": "^4.27.1",
-    "webpack-bundle-analyzer": "^2.13.1",
+    "webpack-bundle-analyzer": "^3.0.3",
     "webpack-cli": "^3.1.2",
     "webpack-merge": "^4.1.4",
     "zone.js": "^0.8.26"

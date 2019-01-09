@@ -29,9 +29,7 @@ import { SaveModalComponent } from "./components/saveModal/saveModal.component";
 import { DeleteModalComponent } from 'adminItem/public/components/deleteModal/deleteModal.component';
 import { NewDesignationComponent } from 'adminItem/public/components/naming/designation/newDesignation.component';
 import { NewDefinitionComponent } from 'adminItem/public/components/naming/definition/newDefinition.component';
-import {
-    MatInputModule, MatButtonModule, MatDialogModule, MatIconModule
-} from "@angular/material";
+import { MatButtonModule, MatDialogModule, MatIconModule, MatInputModule, MatTabsModule } from "@angular/material";
 
 @NgModule({
     imports: [
@@ -51,6 +49,7 @@ import {
         MatButtonModule,
         MatDialogModule,
         MatIconModule,
+        MatTabsModule
     ],
     declarations: [
         AttachmentsComponent,
