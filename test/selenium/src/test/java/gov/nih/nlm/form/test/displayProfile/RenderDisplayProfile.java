@@ -15,7 +15,7 @@ public class RenderDisplayProfile extends BaseFormTest {
         String baseXpath = "//*[@id='profile_3']//*[contains(@class,'displayProfileRenderDiv')]//*[*[normalize-space()='Education level USA type']]//";
         goToFormByName(formName);
         textPresent("In the past 7 days");
-        Assert.assertEquals(driver.findElements(By.cssSelector(".fa.fa-plus.iconButton")).size(), 0);
+        textNotPresent("Display Profile:");
         textPresent("I felt annoyed");
         textPresent("1", By.xpath("//*[@id='formRenderSection_In the past 7 days']//table/tbody/tr[1]/td[2]"));
         textPresent("5", By.xpath("//*[@id='formRenderSection_In the past 7 days']//table/tbody/tr[1]/td[6]"));
