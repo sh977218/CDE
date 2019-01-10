@@ -18,7 +18,7 @@ public class FormDragQuestionDropTest extends QuestionTest {
         addQuestionToSection(cdeName, 0);
         textPresent("Disinhibition subscale T score", By.id("question_0-0"));
 
-        WebElement sourceElt = findElement(By.xpath("//*[@id='section_2']//mat-icon[. = 'drag_handle']"));
+        WebElement sourceElt = findElement(By.xpath("//*[@id='section_2']//mat-icon[normalize-space() = 'drag_handle']"));
         WebElement targetElt = findElement(By.xpath("//*[@id='section_1']//*[contains(@class,'node-content-wrapper')]"));
         (new Actions(driver)).moveToElement(targetElt).perform(); // scroll into view
         dragAndDrop(sourceElt, targetElt);
