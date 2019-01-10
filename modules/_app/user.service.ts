@@ -25,7 +25,7 @@ export class UserService {
         document.body.addEventListener('click', () => this.resetInactivityTimeout());
     }
 
-    searchUsernames(username) {
+    searchUsernames(username: string) {
         return this.http.get<User[]>('/server/user/usernames/' + username);
     }
 

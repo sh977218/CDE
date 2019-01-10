@@ -20,10 +20,6 @@ export class EditSiteAdminsComponent {
         this.getOrgAuthorities();
     }
 
-    selectUser(event) {
-        this.newAdmin = event;
-    }
-
     addSiteAdmin() {
         this.http.post('/server/siteAdmin/addSiteAdmin', {username: this.newAdmin}, {responseType: 'text'}).subscribe(() => {
                 this.Alert.addAlert('success', 'Saved');

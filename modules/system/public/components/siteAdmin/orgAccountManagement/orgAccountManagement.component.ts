@@ -24,10 +24,6 @@ export class OrgAccountManagementComponent {
         this.getOrgCurators();
     }
 
-    selectUser(event) {
-        this.newUsername = event;
-    }
-
     addOrgCurator() {
         this.http.post('/addOrgCurator', {
             username: this.newUsername,

@@ -24,10 +24,6 @@ export class UsersMgtComponent {
                 public userService: UserService) {
     }
 
-    selectUser(event) {
-        this.search.username = event;
-    }
-
     openNewUserModal() {
         this.dialog.open(this.newUserContent, {width: '800px'}).afterClosed().subscribe(res => {
             if (res) {

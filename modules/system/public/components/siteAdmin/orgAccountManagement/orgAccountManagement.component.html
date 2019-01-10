@@ -8,7 +8,7 @@
                 <span class="mr-2"></span>
                 <div class="form-group">
                     <cde-username-autocomplete [placeHolder]="'enter username'"
-                                               (onSelect)="selectUser($event);"></cde-username-autocomplete>
+                                               (onSelect)="newUsername = $event"></cde-username-autocomplete>
                 </div>
                 <span class="mx-2">a curator for</span>
                 <div *ngIf="userService.user" class="form-group">

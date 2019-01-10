@@ -22,10 +22,6 @@ export class OrgAdminComponent {
         this.getAdmins();
     }
 
-    selectUsername(event) {
-        this.newAdmin.username = event;
-    }
-
     addOrgAdmin() {
         this.http.post('/addOrgAdmin', {
             username: this.newAdmin.username,
