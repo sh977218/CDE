@@ -7,7 +7,7 @@
             {{tag}}
             <mat-icon matChipRemove>cancel</mat-icon>
         </mat-chip>
-        <input matInput placeholder="{{placeHolder}}" #tagInput [formControl]="tagCtrl"
+        <input matInput #tagInput placeholder="{{placeHolder}}" [formControl]="tagCtrl"
                [matAutocomplete]="tagAuto" [matChipInputFor]="chipList"
                [matChipInputAddOnBlur]="true" (matChipInputTokenEnd)="add($event)">
         <mat-autocomplete #tagAuto="matAutocomplete" (optionSelected)="selected($event)">
