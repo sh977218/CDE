@@ -1632,8 +1632,8 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
 
     protected void approveComment(String adminUsername, String adminPassword, String username, String message) {
         mustBeLoggedInAs(adminUsername, adminPassword);
-        findElement(By.cssSelector("#notifications .mat-badge-content"));
-        clickElement(By.id("notifications"));
+        findElement(By.cssSelector("[data-id = 'notifications'] .mat-badge-content"));
+        clickElement(By.cssSelector("[data-id = 'notifications']"));
         if (message.length() >= 60) message = message.substring(0, 59).trim();
         clickElement(By.xpath("//*[contains(@class,'taskItem') and contains(.,'" + message
                 + "')]//button[contains(@class,'mat-primary')]"));
@@ -1642,8 +1642,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
 
     protected void declineComment(String adminUsername, String adminPassword, String username, String message) {
         mustBeLoggedInAs(adminUsername, adminPassword);
-        findElement(By.cssSelector("#notifications .mat-badge-content"));
-        clickElement(By.id("notifications"));
+        clickElement(By.cssSelector("[data-id = 'notifications']"));
         if (message.length() >= 60) message = message.substring(0, 59).trim();
         clickElement(By.xpath("//*[contains(@class,'taskItem') and contains(.,'" + message
                 + "')]//button[contains(@class,'mat-warn')]"));
