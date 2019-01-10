@@ -28,7 +28,7 @@ public class CdeAttachmentTest extends BaseAttachmentTest {
         goToCdeByName(cdeName);
         goToAttachments();
         findElement(By.linkText("glass.jpg"));
-        clickElement(By.id("notifications"));
+        clickElement(By.cssSelector("[data-id = 'notifications']"));
         clickElement(By.xpath("//div[contains(@class, 'taskItem')][*//div[contains(text(),'glass.jpg')]]//button[*[contains(text(),'Approve')]]"));
 
         logout();

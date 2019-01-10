@@ -32,14 +32,14 @@ public class BaseAttachmentTest extends NlmCdeBaseTest {
 
     protected void reviewAttachment(String fileName) {
         mustBeLoggedInAs(attachmentReviewer_username, password);
-        clickElement(By.id("notifications"));
+        clickElement(By.cssSelector("[data-id = 'notifications']"));
         clickElement(By.xpath("//div[contains(@class, 'taskItem')][*//div[contains(text(),'" + fileName
                 + "')]]//button[*[contains(text(),'Approve')]]"));
     }
 
     protected void declineAttachment(String fileName) {
         mustBeLoggedInAs(attachmentReviewer_username, password);
-        clickElement(By.id("notifications"));
+        clickElement(By.cssSelector("[data-id = 'notifications']"));
         clickElement(By.xpath("//div[contains(@class, 'taskItem')][*//div[contains(text(),'" + fileName
                 + "')]]//button[*[contains(text(),'Reject')]]"));
     }

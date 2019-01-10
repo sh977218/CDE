@@ -14,11 +14,11 @@ public class NewSiteVersion extends NlmCdeBaseTest {
         goToSearch("cde");
         goHome();
         ExpectedConditions.not(ExpectedConditions.visibilityOfElementLocated
-                (By.id("notifications")));
+                (By.cssSelector("[data-id = 'notifications']")));
 
         post(baseUrl + "/server/user/site-version");
         goToFormSearch();
-        clickElement(By.id("notifications"));
+        clickElement(By.cssSelector("[data-id = 'notifications']"));
         textPresent("A new version of this site is available");
     }
 
