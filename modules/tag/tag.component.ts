@@ -1,7 +1,8 @@
 import { Component, Input, Output, ViewChild, EventEmitter, ElementRef } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent, MatChipInputEvent, MatAutocomplete } from '@angular/material';
-import { distinctUntilChanged, debounceTime, switchMap } from 'rxjs/operators';
+import { startWith, distinctUntilChanged, debounceTime, map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Component({
     selector: 'cde-tag',
@@ -16,20 +17,25 @@ export class TagComponent {
     @Output() changed = new EventEmitter();
 
     tagCtrl = new FormControl();
-    filteredTags: string[] = [];
+    filteredTags: Observable<string[]>;
     @ViewChild('tagInput') tagInput: ElementRef;
     @ViewChild('tagAuto') matAutocomplete: MatAutocomplete;
 
     constructor() {
-        this.tagCtrl.valueChanges
+        this.filteredTags = this.tagCtrl.valueChanges
             .pipe(
+                startWith(''),
                 debounceTime(300),
                 distinctUntilChanged(),
-                switchMap(value => {
-                    let filterValue = value.toLowerCase();
-                    return this.allTags.filter(t => t.toLowerCase().includes(filterValue));
+                map(value => {
+                    if (!value) return [];
+                    else {
+                        let filterValue = value.toLowerCase();
+                        let temp = this.allTags.filter(t => t.toLowerCase().indexOf(filterValue) > -1);
+                        return temp;
+                    }
                 })
-            ).subscribe(t => this.filteredTags = t);
+            );
     }
 
     add(event: MatChipInputEvent): void {
@@ -39,13 +45,13 @@ export class TagComponent {
 
             if ((value || '').trim()) {
                 this.tags.push(value.trim());
+                this.changed.emit();
             }
 
             if (input) input.value = '';
 
             this.tagCtrl.setValue(null);
         }
-        this.changed.emit();
     }
 
     remove(tag: string): void {

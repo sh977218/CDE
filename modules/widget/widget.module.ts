@@ -12,20 +12,16 @@ import { InlineSelectEditComponent } from 'widget/inlineEdit/inlineSelectEdit.co
 import { PlaceHoldEmptyPipe } from 'widget/pipes/placeHoldEmpty.pipe';
 import { SortableArrayComponent } from 'widget/sortableArray/sortableArray.component';
 import { TextTruncateComponent } from 'widget/text/textTruncate.component';
-import { MatInputModule, MatIconModule, MatChipsModule, MatAutocompleteModule } from '@angular/material';
+import { MatIconModule } from '@angular/material';
+
 @NgModule({
     imports: [
         CKEditorModule,
         CommonModule,
         FormsModule,
-        ReactiveFormsModule,
         NgbModule.forRoot(),
         CoreModule,
         MatIconModule,
-        MatInputModule,
-        MatIconModule,
-        MatChipsModule,
-        MatAutocompleteModule
     ],
     declarations: [
         DeleteWithConfirmComponent,
