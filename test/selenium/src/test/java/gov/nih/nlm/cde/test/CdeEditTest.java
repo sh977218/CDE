@@ -21,9 +21,9 @@ public class CdeEditTest extends NlmCdeBaseTest {
         editDefinitionByIndex(0, cdeDefinitionChange, false);
 
         goToPermissibleValues();
-        clickElement(By.xpath("//*[@id = 'uom']//mat-icon[. = 'edit']"));
+        clickElement(By.xpath("//*[@id = 'uom']//mat-icon[normalize-space() = 'edit']"));
         findElement(By.xpath("//*[@id = 'uom']//input")).sendKeys("myUom");
-        clickElement(By.xpath("//*[@id = 'uom']//button/mat-icon[. = 'check']"));
+        clickElement(By.xpath("//*[@id = 'uom']//button/mat-icon[normalize-space() = 'check']"));
         textPresent("myUom", By.id("uom"));
 
         newCdeVersion("Change note for change number 1");
@@ -48,7 +48,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         clickElement(By.id("closeHistoryCompareModal"));
 
         // View Prior Version
-        clickElement(By.xpath("//*[@id='prior-1']//mat-icon[. = 'visibility']"));
+        clickElement(By.xpath("//*[@id='prior-1']//mat-icon[normalize-space() = 'visibility']"));
         switchTab(1);
         textPresent("Warning: this data element is archived.");
         clickElement(By.linkText("view the current version here"));

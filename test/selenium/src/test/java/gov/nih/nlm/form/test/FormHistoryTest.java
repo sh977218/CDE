@@ -31,7 +31,7 @@ public class FormHistoryTest extends NlmCdeBaseTest {
         textPresent(newFormDef, By.xpath("//*[@id='Definition']//div[contains(@class,'arrayObjAdd')]"));
         clickElement(By.id("closeHistoryCompareModal"));
 
-        clickElement(By.xpath("//*[@id='prior-1']//mat-icon[. = 'visibility']"));
+        clickElement(By.xpath("//*[@id='prior-1']//mat-icon[normalize-space() = 'visibility']"));
         switchTab(1);
         textPresent("Warning: this form is archived");
         clickElement(By.id("viewCurrentEltLink"));

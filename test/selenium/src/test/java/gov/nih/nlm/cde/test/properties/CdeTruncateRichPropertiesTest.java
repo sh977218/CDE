@@ -14,10 +14,10 @@ public class CdeTruncateRichPropertiesTest extends NlmCdeBaseTest {
         goToCdeByName(cdeName);
         goToProperties();
 
-        clickElement(By.xpath("//*[@id='value_2']//mat-icon[. = 'edit']"));
+        clickElement(By.xpath("//*[@id='value_2']//mat-icon[normalize-space() = 'edit']"));
         clickElement(By.xpath("//*[@id='value_2']//button[. = 'Rich Text']"));
         hangon(2);
-        clickElement(By.xpath("//*[@id='value_2']//mat-icon[. = 'check']"));
+        clickElement(By.xpath("//*[@id='value_2']//mat-icon[normalize-space() = 'check']"));
         textNotPresent("Confirm");
 
         scrollToViewById("openNewPropertyModalBtn");

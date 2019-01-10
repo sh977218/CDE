@@ -80,11 +80,11 @@ public class BaseFormTest extends NlmCdeBaseTest {
     }
 
     public void editSectionTitle(String sectionId, String title) {
-        clickElement(By.xpath("//div[@id='" + sectionId + "']//*[contains(@class,'section_label')]//mat-icon[. = 'edit']"));
+        clickElement(By.xpath("//div[@id='" + sectionId + "']//*[contains(@class,'section_label')]//mat-icon[normalize-space() = 'edit']"));
         String sectionInput = "//div[@id='" + sectionId + "']//*[contains(@class,'section_label')]//input";
         findElement(By.xpath(sectionInput)).clear();
         findElement(By.xpath(sectionInput)).sendKeys(title);
-        clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_label')]//button/mat-icon[. = 'check']"));
+        clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_label')]//button/mat-icon[normalize-space() = 'check']"));
     }
 
     public void questionEditAddUom(String id, String type, String text) {
@@ -97,7 +97,7 @@ public class BaseFormTest extends NlmCdeBaseTest {
             hangon(3);
             findElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'questionUom')]//input")).sendKeys(Keys.ENTER);
         } else {
-            clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'questionUom')]//mat-icon[. = 'add']"));
+            clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'questionUom')]//mat-icon[normalize-space() = 'add']"));
         }
     }
 
@@ -202,10 +202,10 @@ public class BaseFormTest extends NlmCdeBaseTest {
         textPresent("Add Profile");
         clickElement(By.id("addDisplayProfile"));
         clickElement(By.cssSelector("#profile_" + index + " mat-panel-title h3"));
-        clickElement(By.xpath("//*[@id='profileNameEdit_" + index + "']//mat-icon[. = 'edit']"));
+        clickElement(By.xpath("//*[@id='profileNameEdit_" + index + "']//mat-icon[normalize-space() = 'edit']"));
         findElement(By.xpath("//*[@id='profileNameEdit_" + index + "']//input[@type='text']")).clear();
         findElement(By.xpath("//*[@id='profileNameEdit_" + index + "']//input[@type='text']")).sendKeys(name);
-        clickElement(By.xpath("//*[@id='profileNameEdit_" + index + "']//button/mat-icon[. = 'check']"));
+        clickElement(By.xpath("//*[@id='profileNameEdit_" + index + "']//button/mat-icon[normalize-space() = 'check']"));
         if (!matrix) clickElement(By.id("displayAsMatrix_" + index));
         if (displayValues) clickElement(By.id("displayValues_" + index));
         if (!instructions) clickElement(By.id("displayInstructions_" + index));
