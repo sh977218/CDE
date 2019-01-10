@@ -65,7 +65,8 @@ doOneNindsCde = async cdeId => {
         console.log('createdCDE: ' + createdCDE + ' ' + savedCDE.tinyId);
 
     } else {
-        let otherClassifications = existingCde.classification.filter(c => c.stewardOrg.name !== 'NINDS');
+        let existingCdeObj = existingCde.toObject();
+        let otherClassifications = existingCdeObj.classification.filter(c => c.stewardOrg.name !== 'NINDS');
         existingCde.classification = otherClassifications.concat(newCdeObj.classification);
         if (updatedByNonLoader(existingCde) ||
             existingCde.updated > yesterday ||

@@ -97,7 +97,8 @@ doOneNindsFormById = async formIdString => {
         createdForm++;
         console.log('createdForm: ' + createdForm + ' ' + savedForm.tinyId);
     } else {
-        let otherClassifications = existingForm.classification.filter(c => c.stewardOrg.name !== 'NINDS');
+        let existingFormObj = existingForm.toObject();
+        let otherClassifications = existingFormObj.classification.filter(c => c.stewardOrg.name !== 'NINDS');
         existingForm.classification = otherClassifications.concat(newFormObj.classification);
         if (updatedByNonLoader(existingForm) ||
             existingForm.registrationState.registrationStatus === 'Standard') {

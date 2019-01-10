@@ -7,6 +7,7 @@ const parseDefinitions = require('./ParseDefinitions').parseDefinitions;
 const parseSources = require('./ParseSources').parseSources;
 const parseIds = require('./ParseIds').parseIds;
 const parseProperties = require('./ParseProperties').parseProperties;
+const parseClassification = require('../Shared/ParseClassification').parseClassification;
 const parseReferenceDocuments = require('./ParseReferenceDocuments').parseReferenceDocuments;
 const parseValueDomain = require('./ParseValueDomain').parseValueDomain;
 
@@ -15,8 +16,10 @@ const batchloader = require('../../shared/updatedByNonLoader').batchloader;
 
 exports.createCde = async cdeId => {
     let nindsForms = await NindsModel.find({'cdes.CDE ID': cdeId}, {
-        diseaseName: 1,
-        subDiseaseName: 1,
+        disease: 1,
+        subDisease: 1,
+        domain: 1,
+        subDomain: 1,
         formId: 1,
         cdes: {$elemMatch: {'CDE ID': cdeId}}
     }).lean();
@@ -47,6 +50,8 @@ exports.createCde = async cdeId => {
         registrationState: {registrationStatus: "Qualified"},
         comments: []
     };
+
+    parseClassification(nindsForms, cde);
 
     return cde;
 };
