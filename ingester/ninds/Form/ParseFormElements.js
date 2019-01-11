@@ -31,7 +31,7 @@ doOneNindsCde = async cdeId => {
                 user: batchloader,
                 created: new Date(),
                 pendingApproval: false,
-                linkedTab: 'description',
+                linkedTab: 'pvs',
                 status: 'active',
                 replies: [],
                 element: {
@@ -39,7 +39,8 @@ doOneNindsCde = async cdeId => {
                 }
             };
             newCdeObj.comments.push(slComment);
-            newCdeObj.valueDomain.permissibleValues = [{permissibleValue: '0'}];
+            newCdeObj.valueDomain.datatype = 'Text';
+            newCdeObj.valueDomain.permissibleValues = [];
         } else {
             console.log(newCdeObj.ids[0].id + ' has some other error. ' + JSON.stringify(cdeError));
             process.exit(1);
