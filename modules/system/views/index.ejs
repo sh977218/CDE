@@ -21,138 +21,173 @@
 
     <link rel="manifest" href="app/manifest.webmanifest">
 
+    <% if (isLegacy) { %>
+        <!-- build:poly /app/vendor.js -->
+        <!-- Polyfills for legacy browsers -->
+        <script type="text/javascript" src="/common/core.min.js"></script>
+        <script type="text/javascript" src="/common/fetch.umd.js"></script>
+        <script type="text/javascript" src="/common/Intl.min.js"></script>
+        <script type="text/javascript" src="/common/en.js"></script>
+        <script type="text/javascript" src="/common/classList.min.js"></script>
+        <script type="text/javascript" src="/common/web-animations.min.js"></script>
+        <!-- endbuild -->
+    <% } %>
+
     <%- include config.html %>
 </head>
 
 <body role="main" id="top">
 
-<style>
-    #spinner {
-        width: 100px;
-        height: 100px;
-        border-radius: 50%;
-        background-color: transparent;
-        margin: 20% auto;
-        border: 8px solid transparent;
-        border-top: 8px solid rgb(0, 27, 192);
-        border-left: 8px solid rgba(238, 238, 238, 0.4);
-        border-bottom: 8px solid rgb(0, 27, 192);
-        border-right: 8px solid rgba(238, 238, 238, 0.4);
-        animation: shadowspin .6s linear infinite;
-        -webkit-animation: shadowspin .6s linear infinite;
-    }
-
-    @keyframes spin {
-        from {
-            transform: rotate(0deg);
-        }
-        to {
-            transform: rotate(360deg);
-        }
-    }
-
-    @-moz-keyframes spin {
-        from {
-            -moz-transform: rotate(0deg);
-        }
-        to {
-            -moz-transform: rotate(360deg);
-        }
-    }
-
-    @-webkit-keyframes spin {
-        from {
-            -webkit-transform: rotate(0deg);
-        }
-        to {
-            -webkit-transform: rotate(360deg);
-        }
-    }
-
-    @keyframes shadowspin {
-        0% {
-            transform: rotate(0deg);
-            box-shadow: inset 0 0 15px rgb(0, 27, 192);
-        }
-        55% {
-            box-shadow: inset 0 0 35px rgba(238, 238, 238, 0.4);
+<% if (!isLegacy) { %>
+    <style>
+        #spinner {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: transparent;
+            margin: 20% auto;
+            border: 8px solid transparent;
+            border-top: 8px solid rgb(0, 27, 192);
+            border-left: 8px solid rgba(238, 238, 238, 0.4);
+            border-bottom: 8px solid rgb(0, 27, 192);
+            border-right: 8px solid rgba(238, 238, 238, 0.4);
+            animation: shadowspin .6s linear infinite;
+            -webkit-animation: shadowspin .6s linear infinite;
         }
 
-        100% {
-            transform: rotate(360deg);
-            box-shadow: inset 0 0 15px rgb(0, 27, 192);
-        }
-    }
-
-    @-moz-keyframes shadowspin {
-        0% {
-            -moz-transform: rotate(0deg);
-            box-shadow: inset 0 0 15px rgb(0, 27, 192);
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
-        55% {
-            box-shadow: inset 0 0 35px rgba(238, 238, 238, 0.4);
+        @-moz-keyframes spin {
+            from {
+                -moz-transform: rotate(0deg);
+            }
+            to {
+                -moz-transform: rotate(360deg);
+            }
         }
 
-        100% {
-            -moz-transform: rotate(360deg);
-            box-shadow: inset 0 0 15px rgb(0, 27, 192);
-        }
-    }
-
-    @-webkit-keyframes shadowspin {
-        0% {
-            -webkit-transform: rotate(0deg);
-            box-shadow: inset 0 0 25px rgb(0, 27, 192);
+        @-webkit-keyframes spin {
+            from {
+                -webkit-transform: rotate(0deg);
+            }
+            to {
+                -webkit-transform: rotate(360deg);
+            }
         }
 
-        55% {
-            box-shadow: inset 0 0 5px rgba(238, 238, 238, 0.4);
+        @keyframes shadowspin {
+            0% {
+                transform: rotate(0deg);
+                box-shadow: inset 0 0 15px rgb(0, 27, 192);
+            }
+            55% {
+                box-shadow: inset 0 0 35px rgba(238, 238, 238, 0.4);
+            }
+
+            100% {
+                transform: rotate(360deg);
+                box-shadow: inset 0 0 15px rgb(0, 27, 192);
+            }
         }
 
-        100% {
-            -webkit-transform: rotate(360deg);
-            box-shadow: inset 0 0 25px rgb(0, 27, 192);
+        @-moz-keyframes shadowspin {
+            0% {
+                -moz-transform: rotate(0deg);
+                box-shadow: inset 0 0 15px rgb(0, 27, 192);
+            }
+
+            55% {
+                box-shadow: inset 0 0 35px rgba(238, 238, 238, 0.4);
+            }
+
+            100% {
+                -moz-transform: rotate(360deg);
+                box-shadow: inset 0 0 15px rgb(0, 27, 192);
+            }
         }
-    }
-</style>
+
+        @-webkit-keyframes shadowspin {
+            0% {
+                -webkit-transform: rotate(0deg);
+                box-shadow: inset 0 0 25px rgb(0, 27, 192);
+            }
+
+            55% {
+                box-shadow: inset 0 0 5px rgba(238, 238, 238, 0.4);
+            }
+
+            100% {
+                -webkit-transform: rotate(360deg);
+                box-shadow: inset 0 0 25px rgb(0, 27, 192);
+            }
+        }
+    </style>
+<% } %>
+
 <div itemscope>
 
     <%- include googleAnalytics.html %>
     <nih-cde></nih-cde>
 
-    <div class="loading" id="spinner"></div>
+    <% if (isLegacy) { %>
+        <div class="loading">
+            <br><br><br><br><br><br>
+            <h2 class="text-center">Loading...</h2>
+            <br><br><br><br><br><br>
+        </div>
+    <% } else { %>
+        <div class="loading" id="spinner"></div>
+    <% } %>
 
     <%- include footer.html %>
 
 </div>
 
-<!-- Polyfills for legacy browsers -->
-<!-- Apply to all IE -->
-<script type="text/javascript">
-    (function () {
-        function CustomEvent(event, params) {
-            params = params || {bubbles: false, cancelable: false, detail: undefined};
-            var evt = document.createEvent('CustomEvent');
-            evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
-            return evt;
-        }
-
-        CustomEvent.prototype = window.Event.prototype;
-        if (typeof(window.Event) !== 'function')
-            window.Event = CustomEvent;
-    })();
-</script>
-
 <!-- build:webp /app/cde.js -->
 <script src="/app/cde.js"></script>
 <!-- endbuild -->
 
-<!--[if IE]>
+<% if (isLegacy) { %>
+    <!-- Polyfills for legacy browsers -->
+    <!-- Apply to all IE -->
+    <script type="text/javascript">
+        (function () {
+            function CustomEvent(event, params) {
+                params = params || {bubbles: false, cancelable: false, detail: undefined};
+                var evt = document.createEvent('CustomEvent');
+                evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
+                return evt;
+            }
+
+            CustomEvent.prototype = window.Event.prototype;
+            if (typeof (window.Event) !== 'function')
+                window.Event = CustomEvent;
+        })();
+    </script>
+
+    <!--[if IE]>
+    <script type="text/javascript">
+        window.location = "/supportedBrowsers";
+    </script>
+    <![endif]-->
+<% } %>
+
+<%#
 <script type="text/javascript">
-    window.location = "/supportedBrowsers";
+    if ((window.location.protocol === 'https:' || window.location.hostname === 'localhost') && 'serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+            navigator.serviceWorker.register('/sw.js').then(function(registration) {}, function(err) {});
+        });
+    }
 </script>
-<![endif]-->
+#%>
 
 <script type="application/ld+json">
         {

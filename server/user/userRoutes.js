@@ -280,13 +280,42 @@ exports.module = function (roleConfig) {
 
     router.post('/updateNotificationDate', roleConfig.notificationDate, (req, res) => {
         let notificationDate = req.body;
-        userDb.byId(req.user._id, handle404({req, res}, user => {
-            if (user) {
-                if (notificationDate.clientLogDate) user.notificationDate.clientLogDate = notificationDate.clientLogDate;
-                if (notificationDate.serverLogDate) user.notificationDate.serverLogDate = notificationDate.serverLogDate;
-            }
-            user.save(handleError({req, res}, () => res.send()));
-        }));
+        withRetry(handleConflict => {
+            userDb.byId(req.user._id, handle404({req, res}, user => {
+                if (user) {
+                    let changed = false;
+                    if (notificationDate.clientLogDate) {
+                        user.notificationDate.clientLogDate = notificationDate.clientLogDate;
+                        changed = true;
+                    }
+                    if (notificationDate.serverLogDate) {
+                        user.notificationDate.serverLogDate = notificationDate.serverLogDate;
+                        changed = true;
+                    }
+                    if (changed) {
+                        user.save(handleConflict({req, res}, () => res.send()));
+                    }
+                }
+            }));
+        });
     });
     return router;
 };
+
+function withRetry(tryCb, retries = 1) {
+    function handleConflict(options, cb) {
+        return function errorHandler(err, ...args) {
+            if (err) {
+                if (retries > 0) {
+                    retries--;
+                    tryCb(handleConflict);
+                } else {
+                    exports.respondError(err, options);
+                }
+                return;
+            }
+            cb(...args);
+        };
+    }
+    tryCb(handleConflict);
+}

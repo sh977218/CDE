@@ -10,7 +10,6 @@ import 'angular-tree-component/dist/angular-tree-component.css';
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
 import { BoardModule } from 'board/public/board.module';
 import { DeCompletionComponent } from 'cde/public/components/completion/deCompletion.component';
-import { DataElementService } from 'cde/public/dataElement.service';
 import { CreateDataElementComponent } from 'cde/public/components/createDataElement.component';
 import { CdeAccordionListComponent } from 'cde/public/components/listView/cdeAccordionList.component';
 import { CdeGeneralDetailsComponent } from 'cde/public/components/summary/cdeGeneralDetails.component';
@@ -56,7 +55,6 @@ import { MatButtonModule, MatDialogModule, MatIconModule } from '@angular/materi
         ValueDomainSummaryComponent,
     ],
     providers: [
-        DataElementService,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

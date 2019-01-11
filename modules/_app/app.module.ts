@@ -8,8 +8,8 @@ import {
     MatMenuModule,
     MatSnackBarModule
 } from '@angular/material';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { BackForwardService } from '_app/backForward.service';
 import { CdeAppRoutingModule } from '_app/app-routing.module';
@@ -32,8 +32,8 @@ import { OrgHelperService } from 'core/orgHelper.service';
 
 @NgModule({
     imports: [
-        BrowserModule,
         BrowserAnimationsModule,
+        BrowserModule,
         HttpClientModule,
         LocalStorageModule.withConfig({
             prefix: 'nlmcde',

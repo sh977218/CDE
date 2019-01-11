@@ -1,3 +1,4 @@
+const ejs = require('ejs');
 let fs = require("fs");
 let Readable = require('stream').Readable;
 let md5_file = require("md5-file");
@@ -28,7 +29,7 @@ function storeHtmlInDb(req, res, form, fileStr) {
 }
 
 exports.getFormForPublishing = function (form, req, res) {
-    fs.readFile("modules/_nativeRenderApp/nativeRenderApp.html", "UTF-8", function (err, fileStr) {
+    ejs.renderFile('modules/_nativeRenderApp/nativeRenderApp.ejs', {isLegacy: true, version: 'version'}, (err, fileStr) => {
         let lines = fileStr.split("\n");
         let cssFileName = null, jsHash = null;
         lines.forEach(l => {

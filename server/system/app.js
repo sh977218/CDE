@@ -9,7 +9,7 @@ const path = require('path');
 const useragent = require('useragent');
 const util = require('util');
 const authorization = require('./authorization');
-const authorizationShared = require('esm')(module)("../../shared/system/authorizationShared");
+const authorizationShared = require('esm')(module)('../../shared/system/authorizationShared');
 const mongo_cde = require('../cde/mongo-cde');
 const mongo_form = require('../form/mongo-form');
 const mongo_data = require('./mongo-data');
@@ -37,22 +37,70 @@ exports.init = function (app) {
         if (req.ip) return req.ip;
     };
 
-    let version = "local-dev";
+    let version = 'local-dev';
     try {
         version = require('./version.js').version;
     } catch (e) {
     }
 
-    let indexHtml = "";
-    ejs.renderFile('modules/system/views/index.ejs', {config: config, version: version}, (err, str) => {
+    let embedHtml = '';
+    ejs.renderFile('modules/_embedApp/embedApp.ejs', {isLegacy: false}, (err, str) => {
+        embedHtml = str;
+    });
+
+    let embedLegacyHtml = '';
+    ejs.renderFile('modules/_embedApp/embedApp.ejs', {isLegacy: true}, (err, str) => {
+        embedLegacyHtml = str;
+        if (embedLegacyHtml) {
+            util.promisify(fs.access)('modules/_embedApp/public/html', 'r')
+                .catch(() => util.promisify(fs.mkdir)('modules/_embedApp/public/html', {recursive: true}))
+                .then(() => {
+                    fs.writeFile('modules/_embedApp/public/html/index.html', embedLegacyHtml, err => {
+                        if (err) {
+                            console.log('ERROR generating /modules/_embedApp/public/html/index.html: ' + err);
+                        }
+                    });
+                })
+                .catch(err => dbLogger.consoleLog('Error getting folder modules/_embedApp/public: ', err));
+        }
+    });
+
+    let fhirHtml = '';
+    ejs.renderFile('modules/_fhirApp/fhirApp.ejs', {isLegacy: false, version: version}, (err, str) => {
+        fhirHtml = str;
+    });
+
+    let fhirLegacyHtml = '';
+    ejs.renderFile('modules/_fhirApp/fhirApp.ejs', {isLegacy: true, version: version}, (err, str) => {
+        fhirLegacyHtml = str;
+    });
+
+    let indexHtml = '';
+    ejs.renderFile('modules/system/views/index.ejs', {config: config, isLegacy: false, version: version}, (err, str) => {
         indexHtml = str;
     });
 
-    let homeHtml = "";
+    let indexLegacyHtml = '';
+    ejs.renderFile('modules/system/views/index.ejs', {config: config, isLegacy: true, version: version}, (err, str) => {
+        indexLegacyHtml = str;
+    });
+
+    let homeHtml = '';
     ejs.renderFile('modules/system/views/home-launch.ejs', {config: config, version: version}, (err, str) => {
         homeHtml = str;
     });
 
+    let nativeRenderHtml = '';
+    ejs.renderFile('modules/_nativeRenderApp/nativeRenderApp.ejs', {isLegacy: false, version: version}, (err, str) => {
+        nativeRenderHtml = str;
+    });
+
+    let nativeRenderLegacyHtml = '';
+    ejs.renderFile('modules/_nativeRenderApp/nativeRenderApp.ejs', {isLegacy: true, version: version}, (err, str) => {
+        nativeRenderLegacyHtml = str;
+    });
+
+    /* for IE Opera Safari, emit polyfill.js */
     function isModernBrowser(req) {
         let ua = useragent.is(req.headers['user-agent']);
         return ua.chrome || ua.firefox || ua.edge;
@@ -64,18 +112,16 @@ exports.init = function (app) {
         return userAgent && userAgent.match(/bot|crawler|spider|crawling/gi);
     }
 
-    /* for IE Opera Safari, emit vendor.js */
-    let indexLegacyHtml = "";
-    ejs.renderFile('modules/system/views/index-legacy.ejs', {config: config, version: version}, (err, str) => {
-        indexLegacyHtml = str;
-    });
+    const respondHomeFull = exports.respondHomeFull = function getIndexHtml(req, res) {
+        res.send(isModernBrowser(req) ? indexHtml : indexLegacyHtml);
+    };
 
-    app.get(["/", "/home"], function (req, res) {
+    app.get(['/', '/home'], function (req, res) {
         if (isSearchEngine(req)) {
             res.render('bot/home', 'system');
         } else if (req.user || req.query.tour || req.query.notifications !== undefined
             || req.headers.referer && req.headers.referer.endsWith('/sw.js')) {
-            res.send(isModernBrowser(req) ? indexHtml : indexLegacyHtml);
+            respondHomeFull(req, res);
         } else {
             res.send(homeHtml);
         }
@@ -87,17 +133,16 @@ exports.init = function (app) {
 
     if (!config.proxy) {
         app.post('/site-version', (req, res) => {
-            version = version + ".";
+            version = version + '.';
             res.send();
         });
     }
 
-    app.get("/cde/search", (req, res) => {
+    app.get('/cde/search', (req, res) => {
         let selectedOrg = req.query.selectedOrg;
         let pageString = req.query.page;// starting from 1
-        if (!pageString) pageString = "1";
-        let isSEO = isSearchEngine(req);
-        if (isSEO) {
+        if (!pageString) pageString = '1';
+        if (isSearchEngine(req)) {
             if (selectedOrg) {
                 let pageNum = _.toInteger(pageString);
                 let pageSize = 20;
@@ -108,8 +153,8 @@ exports.init = function (app) {
                 };
                 mongo_cde.DataElement.countDocuments(cond, (err, totalCount) => {
                     if (err) {
-                        res.status(500).send("ERROR - Static Html Error, /cde/search");
-                        logging.errorLogger.error("Error: Static Html Error", {
+                        res.status(500).send('ERROR - Static Html Error, /cde/search');
+                        logging.errorLogger.error('Error: Static Html Error', {
                             stack: err.stack,
                             origin: req.url
                         });
@@ -119,8 +164,8 @@ exports.init = function (app) {
                             limit: pageSize
                         }, (err, cdes) => {
                             if (err) {
-                                res.status(500).send("ERROR - Static Html Error, /cde/search");
-                                logging.errorLogger.error("Error: Static Html Error", {
+                                res.status(500).send('ERROR - Static Html Error, /cde/search');
+                                logging.errorLogger.error('Error: Static Html Error', {
                                     stack: err.stack,
                                     origin: req.url
                                 });
@@ -135,33 +180,40 @@ exports.init = function (app) {
                             }
                         });
                 });
-            } else res.render('bot/cdeSearch', 'system');
-        } else res.send(isModernBrowser(req) ? indexHtml : indexLegacyHtml);
+            } else {
+                res.render('bot/cdeSearch', 'system');
+            }
+        } else {
+            respondHomeFull(req, res);
+        }
     });
-    app.get("/deView", function (req, res) {
+
+    app.get('/deView', function (req, res) {
         let tinyId = req.query.tinyId;
         let version = req.query.version;
         mongo_cde.byTinyIdVersion(tinyId, version, (err, cde) => {
             if (err) {
-                res.status(500).send("ERROR - Static Html Error, /deView");
-                logging.errorLogger.error("Error: Static Html Error", {
+                res.status(500).send('ERROR - Static Html Error, /deView');
+                logging.errorLogger.error('Error: Static Html Error', {
                     stack: err.stack,
                     origin: req.url
                 });
             } else {
-                let isSEO = isSearchEngine(req);
-                if (isSEO) res.render('bot/deView', 'system', {elt: cde});
-                else res.send(isModernBrowser(req) ? indexHtml : indexLegacyHtml);
+                if (isSearchEngine(req)) {
+                    res.render('bot/deView', 'system', {elt: cde});
+                }
+                else {
+                    respondHomeFull(req, res);
+                }
             }
         });
     });
 
-    app.get("/form/search", function (req, res) {
+    app.get('/form/search', function (req, res) {
         let selectedOrg = req.query.selectedOrg;
         let pageString = req.query.page;// starting from 1
-        if (!pageString) pageString = "1";
-        let isSEO = isSearchEngine(req);
-        if (isSEO) {
+        if (!pageString) pageString = '1';
+        if (isSearchEngine(req)) {
             if (selectedOrg) {
                 let pageNum = _.toInteger(pageString);
                 let pageSize = 20;
@@ -172,8 +224,8 @@ exports.init = function (app) {
                 };
                 mongo_form.Form.countDocuments(cond, (err, totalCount) => {
                     if (err) {
-                        res.status(500).send("ERROR - Static Html Error, /form/search");
-                        logging.errorLogger.error("Error: Static Html Error", {
+                        res.status(500).send('ERROR - Static Html Error, /form/search');
+                        logging.errorLogger.error('Error: Static Html Error', {
                             stack: err.stack,
                             origin: req.url
                         });
@@ -183,8 +235,8 @@ exports.init = function (app) {
                             limit: pageSize
                         }, (err, forms) => {
                             if (err) {
-                                res.status(500).send("ERROR - Static Html Error, /form/search");
-                                logging.errorLogger.error("Error: Static Html Error", {
+                                res.status(500).send('ERROR - Static Html Error, /form/search');
+                                logging.errorLogger.error('Error: Static Html Error', {
                                     stack: err.stack,
                                     origin: req.url
                                 });
@@ -199,24 +251,30 @@ exports.init = function (app) {
                             }
                         });
                 });
-            } else res.render('bot/formSearch', 'system');
-        } else res.send(isModernBrowser(req) ? indexHtml : indexLegacyHtml);
+            } else {
+                res.render('bot/formSearch', 'system');
+            }
+        } else {
+            respondHomeFull(req, res);
+        }
     });
 
-    app.get("/formView", function (req, res) {
+    app.get('/formView', function (req, res) {
         let tinyId = req.query.tinyId;
         let version = req.query.version;
         mongo_form.byTinyIdVersion(tinyId, version, (err, cde) => {
             if (err) {
-                res.status(500).send("ERROR - Static Html Error, /formView");
-                logging.errorLogger.error("Error: Static Html Error", {
+                res.status(500).send('ERROR - Static Html Error, /formView');
+                logging.errorLogger.error('Error: Static Html Error', {
                     stack: err.stack,
                     origin: req.url
                 });
             } else {
-                let isSEO = isSearchEngine(req);
-                if (isSEO) res.render('bot/formView', 'system', {elt: cde});
-                else res.send(isModernBrowser(req) ? indexHtml : indexLegacyHtml);
+                if (isSearchEngine(req)) {
+                    res.render('bot/formView', 'system', {elt: cde});
+                } else {
+                    respondHomeFull(req, res);
+                }
             }
         });
     });
@@ -226,7 +284,7 @@ exports.init = function (app) {
 
     // every sunday at 4:07 AM
     new CronJob('* 7 4 * * 6', () => {
-        dbLogger.consoleLog("Creating sitemap");
+        dbLogger.consoleLog('Creating sitemap');
         util.promisify(fs.access)('dist/app', 'r')
             .catch(() => util.promisify(fs.mkdir)('dist/app', {recursive: true}))
             .then(() => {
@@ -259,21 +317,23 @@ exports.init = function (app) {
             .catch(err => dbLogger.consoleLog('Cron Sunday 4:07 AM did not complete due to error:', err));
     }, null, true, 'America/New_York', this, true);
 
-    ["/help/:title", "/createForm", "/createCde", "/boardList",
-        "/board/:id", "/myboards", "/cdeStatusReport", "/api", "/sdcview", "/404", "/whatsNew", "/contactUs",
-        "/quickBoard", "/searchPreferences", "/siteAudit", "/siteaccountmanagement", "/orgaccountmanagement",
-        "/classificationmanagement", "/inbox", "/profile", "/login", "/orgAuthority", '/orgComments'].forEach(path => {
-        app.get(path, (req, res) => res.send(isModernBrowser(req) ? indexHtml : indexLegacyHtml));
+    app.get(['/help/:title', '/createForm', '/createCde', '/boardList',
+        '/board/:id', '/myboards', '/cdeStatusReport', '/api', '/sdcview', '/404', '/whatsNew', '/contactUs',
+        '/quickBoard', '/searchPreferences', '/siteAudit', '/siteaccountmanagement', '/orgaccountmanagement',
+        '/classificationmanagement', '/inbox', '/profile', '/login', '/orgAuthority', '/orgComments'],
+        respondHomeFull
+    );
+
+    app.get('/embedSearch', (req, res) => {
+        res.send(isModernBrowser(req) ? embedHtml : embedLegacyHtml);
+    });
+
+    app.get('/fhir/form/:param', (req, res) => {
+        res.send(isModernBrowser(req) ? fhirHtml : fhirLegacyHtml);
     });
 
     app.get('/fhir/launch/:param', (req, res) => {
         res.sendFile(path.join(__dirname, '../../modules/_fhirApp', 'fhirAppLaunch.html'), undefined, err => {
-            if (err) res.sendStatus(404);
-        });
-    });
-
-    app.get('/fhir/form/:param', (req, res) => {
-        res.sendFile(path.join(__dirname, '../../modules/_fhirApp', 'fhirApp.html'), undefined, err => {
             if (err) res.sendStatus(404);
         });
     });
@@ -287,9 +347,7 @@ exports.init = function (app) {
     });
 
     app.get('/nativeRender', (req, res) => {
-        res.sendFile(path.join(__dirname, '../../modules/_nativeRenderApp', 'nativeRenderApp.html'), undefined, err => {
-            if (err) res.sendStatus(404);
-        });
+        res.send(isModernBrowser(req) ? nativeRenderHtml : nativeRenderLegacyHtml);
     });
 
     app.get('/sw.js', function (req, res) {
@@ -308,21 +366,21 @@ exports.init = function (app) {
         let jobType = req.params.type;
         if (!jobType) return res.status(400).end();
         mongo_data.jobStatus(jobType, (err, j) => {
-            if (err) return res.status(409).send("Error - job status " + jobType);
+            if (err) return res.status(409).send('Error - job status ' + jobType);
             if (j) return res.send({done: false});
             res.send({done: true});
         });
     });
     app.get('/identifierSources/cde', (req, res) => {
-        cdeElastic.DataElementDistinct("ids.source", result => res.send(result));
+        cdeElastic.DataElementDistinct('ids.source', result => res.send(result));
     });
     app.get('/identifierSources/form', (req, res) => {
-        formElastic.FormDistinct("ids.source", result => res.send(result));
+        formElastic.FormDistinct('ids.source', result => res.send(result));
     });
 
     app.get('/identifierSources/', (req, res) => {
-        cdeElastic.DataElementDistinct("ids.source", result1 =>
-            formElastic.FormDistinct("ids.source", result2 => res.send(_.union(result1, result2))));
+        cdeElastic.DataElementDistinct('ids.source', result1 =>
+            formElastic.FormDistinct('ids.source', result2 => res.send(_.union(result1, result2))));
     });
 
     /* ---------- PUT NEW REST API above ---------- */
@@ -365,7 +423,7 @@ exports.init = function (app) {
         });
     });
 
-    app.get('/loginText', csrf(), (req, res) => res.render("loginText", "system", {csrftoken: req.csrfToken()}));
+    app.get('/loginText', csrf(), (req, res) => res.render('loginText', 'system', {csrftoken: req.csrfToken()}));
 
     let failedIps = [];
 
@@ -390,17 +448,17 @@ exports.init = function (app) {
 
     function checkLoginReq(req, res, next) {
         if (Object.keys(req.body).filter(k => validLoginBody.indexOf(k) === -1).length) {
-            traffic.banIp(getRealIp(req), "Invalid Login body");
+            traffic.banIp(getRealIp(req), 'Invalid Login body');
             return res.status(401).send();
         }
         if (Object.keys(req.query).length) {
-            traffic.banIp(getRealIp(req), "Passing params to /login");
+            traffic.banIp(getRealIp(req), 'Passing params to /login');
             return res.status(401).send();
         }
         return next();
     }
 
-    const validLoginBody = ["username", "password", "_csrf", "recaptcha"];
+    const validLoginBody = ['username', 'password', '_csrf', 'recaptcha'];
 
     app.post('/login', [checkLoginReq, myCsrf], (req, res, next) => {
         let failedIp = findFailedIp(getRealIp(req));
@@ -436,7 +494,7 @@ exports.init = function (app) {
                                 return res.status(403).send();
                             }
                             req.session.passport = {user: req.user._id};
-                            return res.send("OK");
+                            return res.send('OK');
                         });
                     })(req, res, next);
                 });
@@ -492,7 +550,7 @@ exports.init = function (app) {
 
     app.post('/mail/messages/new', [authorization.loggedInMiddleware], (req, res) => {
         let message = req.body;
-        if (message.author.authorType === "user") {
+        if (message.author.authorType === 'user') {
             message.author.name = req.user.username;
         }
         message.date = new Date();
@@ -502,7 +560,7 @@ exports.init = function (app) {
     app.post('/mail/messages/update', [authorization.loggedInMiddleware], (req, res) => {
         mongo_data.updateMessage(req.body, err => {
             if (err) {
-                res.status(404).send("Error while updating the message");
+                res.status(404).send('Error while updating the message');
                 return;
             }
             res.send();
@@ -546,7 +604,7 @@ exports.init = function (app) {
         const handlerOptions = {req, res, publicMessage: 'There was an error removing this embed.'};
         mongo_data.embeds.find({_id: req.params.id}, handleError(handlerOptions, embeds => {
             if (embeds.length !== 1) {
-                res.status.send("Expectation not met: one document.");
+                res.status.send('Expectation not met: one document.');
                 return;
             }
             if (!req.isAuthenticated() || !authorizationShared.isOrgAdmin(req.user, embeds[0].org)) {
@@ -560,7 +618,7 @@ exports.init = function (app) {
     app.get('/embed/:id', (req, res) => {
         mongo_data.embeds.find({_id: req.params.id}, handleError({req, res}, embeds => {
             if (embeds.length !== 1) {
-                res.status.send("Expectation not met: one document.");
+                res.status.send('Expectation not met: one document.');
                 return;
             }
             res.send(embeds[0]);
@@ -580,7 +638,7 @@ exports.init = function (app) {
     app.delete('/fhirApp/:id', [authorization.isSiteAdminMiddleware], (req, res) => fhirApps.delete(res, req.params.id, () => res.send()));
 
     app.post('/disableRule', (req, res) => {
-        if (!authorizationShared.isOrgAuthority(req.user)) return res.status(403).send("Not Authorized");
+        if (!authorizationShared.isOrgAuthority(req.user)) return res.status(403).send('Not Authorized');
         mongo_data.disableRule(req.body, function (err, org) {
             if (err) return res.status(500).send(org);
             res.send(org);
@@ -588,7 +646,7 @@ exports.init = function (app) {
     });
 
     app.post('/enableRule', (req, res) => {
-        if (!authorizationShared.isOrgAuthority(req.user)) return res.status(403).send("Not Authorized");
+        if (!authorizationShared.isOrgAuthority(req.user)) return res.status(403).send('Not Authorized');
         mongo_data.enableRule(req.body, (err, org) => {
             if (err) return res.status(500).send(org);
             res.send(org);
@@ -616,9 +674,9 @@ exports.init = function (app) {
     app.get('/allDrafts', (req, res) => {
         if (req.user && req.user.siteAdmin) {
             mongo_cde.draftsList({}, (err, draftCdes) => {
-                if (err) return res.status(500).send("Error Retrieving Draft CDEs");
+                if (err) return res.status(500).send('Error Retrieving Draft CDEs');
                 mongo_form.draftsList({}, (err, draftForms) => {
-                    if (err) return res.status(500).send("Error Retrieving Draft Forms");
+                    if (err) return res.status(500).send('Error Retrieving Draft Forms');
                     res.send({draftCdes: draftCdes, draftForms: draftForms});
                 });
             });
@@ -627,10 +685,10 @@ exports.init = function (app) {
 
     app.get('/orgDrafts', (req, res) => {
         if (authorizationShared.isOrgCurator(req.user)) {
-            mongo_cde.draftsList({"stewardOrg.name": {$in: usersrvc.myOrgs(req.user)}}, (err, draftCdes) => {
-                if (err) return res.status(500).send("Error Retrieving Draft CDEs");
-                mongo_form.draftsList({"stewardOrg.name": {$in: usersrvc.myOrgs(req.user)}}, (err, draftForms) => {
-                    if (err) return res.status(500).send("Error Retrieving Draft Forms");
+            mongo_cde.draftsList({'stewardOrg.name': {$in: usersrvc.myOrgs(req.user)}}, (err, draftCdes) => {
+                if (err) return res.status(500).send('Error Retrieving Draft CDEs');
+                mongo_form.draftsList({'stewardOrg.name': {$in: usersrvc.myOrgs(req.user)}}, (err, draftForms) => {
+                    if (err) return res.status(500).send('Error Retrieving Draft Forms');
                     return res.send({draftCdes: draftCdes, draftForms: draftForms});
                 });
             });
@@ -639,10 +697,10 @@ exports.init = function (app) {
 
     app.get('/myDrafts', (req, res) => {
         if (authorizationShared.isOrgCurator(req.user)) {
-            mongo_cde.draftsList({"updatedBy.username": req.user.username}, (err, draftCdes) => {
-                if (err) return res.status(500).send("Error Retrieving Draft CDEs");
-                mongo_form.draftsList({"updatedBy.username": req.user.username}, (err, draftForms) => {
-                    if (err) return res.status(500).send("Error Retrieving Draft Forms");
+            mongo_cde.draftsList({'updatedBy.username': req.user.username}, (err, draftCdes) => {
+                if (err) return res.status(500).send('Error Retrieving Draft CDEs');
+                mongo_form.draftsList({'updatedBy.username': req.user.username}, (err, draftForms) => {
+                    if (err) return res.status(500).send('Error Retrieving Draft Forms');
                     res.send({draftCdes: draftCdes, draftForms: draftForms});
                 });
             });
