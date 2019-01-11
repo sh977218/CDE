@@ -19,7 +19,7 @@ schemas.dataElementSchema.post('remove', function (doc, next) {
     });
 });
 schemas.dataElementSchema.pre('save', function (next) {
-    var self = this;
+    let self = this;
     if (this.archived) return next();
     let cdeError = deValidator.checkPvUnicity(self.valueDomain);
     if (!cdeError) {
@@ -309,29 +309,8 @@ exports.update = function (elt, user, callback, special) {
 };
 
 exports.updatePromise = function (elt, user) {
-    return new Promise(async (resolve, reject) => {
-        let id = elt._id;
-        if (elt.toObject) elt = elt.toObject();
-        let dataElement = await DataElement.findById(id);
-        delete elt._id;
-        if (!elt.history) elt.history = [];
-        elt.history.push(dataElement._id);
-        elt.updated = new Date().toJSON();
-        elt.updatedBy = user;
-        elt.sources = dataElement.sources;
-        elt.comments = dataElement.comments;
-        let newDe = new DataElement(elt);
-        if (!newDe.designations || newDe.designations.length === 0) {
-            logging.errorLogger.error("Error: Cannot save CDE without names", {
-                origin: "cde.mongo-cde.update.1",
-                stack: new Error().stack,
-                details: "elt " + JSON.stringify(elt)
-            });
-        }
-        await newDe.save();
-        dataElement.archived = true;
-        await dataElement.save();
-        resolve();
+    return new Promise((resolve, reject) => {
+        exports.update(elt, user, resolve);
     })
 };
 

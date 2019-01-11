@@ -20,6 +20,7 @@ export class OneListMgtComponent implements OnInit {
     @Input() keys: string[];
     @Input() allKeys: string[];
     @Input() placeHolder: string = 'Property Keys';
+
     @Output() save: EventEmitter<any> = new EventEmitter();
 
     @ViewChild('keyInput') keyInput: ElementRef<HTMLInputElement>;

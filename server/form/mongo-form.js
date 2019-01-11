@@ -178,29 +178,8 @@ exports.update = function (elt, user, callback, special) {
     });
 };
 exports.updatePromise = function (elt, user) {
-    return new Promise(async (resolve, reject) => {
-        let id = elt._id;
-        if (elt.toObject) elt = elt.toObject();
-        let form = await Form.findById(id);
-        delete elt._id;
-        if (!elt.history) elt.history = [];
-        elt.history.push(form._id);
-        elt.updated = new Date().toJSON();
-        elt.updatedBy = user;
-        elt.sources = form.sources;
-        elt.comments = form.comments;
-        let newForm = new Form(elt);
-        if (!newForm.designations || newForm.designations.length === 0) {
-            logging.errorLogger.error("Error: Cannot save Form without names", {
-                origin: "cde.mongo-form.update.1",
-                stack: new Error().stack,
-                details: "elt " + JSON.stringify(elt)
-            });
-        }
-        await newForm.save();
-        form.archived = true;
-        await form.save();
-        resolve();
+    return new Promise((resolve, reject) => {
+        exports.update(elt, user, resolve);
     })
 };
 
