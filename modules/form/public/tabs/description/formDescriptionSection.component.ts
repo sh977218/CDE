@@ -63,7 +63,6 @@ export class FormDescriptionSectionComponent implements OnInit {
 
     constructor(private alert: AlertService,
                 @Host() public formDescriptionComponent: FormDescriptionComponent,
-                private formService: FormService,
                 private http: HttpClient,
                 private localStorageService: LocalStorageService,
                 public dialog: MatDialog,
@@ -158,9 +157,9 @@ export class FormDescriptionSectionComponent implements OnInit {
     }
 
     openUpdateFormVersion(formSection: FormInForm) {
-        this.formService.fetchForm(formSection.inForm.form.tinyId).then(newForm => {
+        FormService.fetchForm(formSection.inForm.form.tinyId).then(newForm => {
             let oldVersion = formSection.inForm.form.version ? formSection.inForm.form.version : '';
-            this.formService.fetchForm(formSection.inForm.form.tinyId, oldVersion).then(oldForm => {
+            FormService.fetchForm(formSection.inForm.form.tinyId, oldVersion).then(oldForm => {
                 this.openUpdateFormVersionMerge(convertFormToSection(newForm), formSection, newForm, oldForm);
             });
         });

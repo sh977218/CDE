@@ -1,7 +1,5 @@
-import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
-
 import './metadata-item.scss';
+import { Component } from '@angular/core';
 import { NativeQuestionComponent } from 'nativeRender/nativeQuestion.component';
 import { textTruncate } from 'widget/browser';
 
@@ -21,32 +19,36 @@ export class NativeMetadataComponent {
     textTruncate = textTruncate;
     watchNewState?: string;
 
-    constructor(public nativeFe: NativeQuestionComponent, private http: HttpClient) {}
+    constructor(public nativeFe: NativeQuestionComponent) {}
 
     accessGUDIdSearch() {
         if (typeof(this.metadataSearch) === 'string') this.metadataSearch = this.metadataSearch.trim();
         if (!this.metadataSearch) return;
-        this.http.get<any>(ACCESSGUDID_LOOKUP + (this.nativeFe.metadataTagsNew === 'UDI' ? '?udi=' : '?di=')
-            + encodeURIComponent(this.metadataSearch)).subscribe((device: AccessGUDIDDevice) => {
-            if (device.error) {
-                return this.metadataSearchResult = null;
-            }
-            this.metadataSearchResult = device;
-            this.addDevice(device);
-        }, () => this.metadataSearchResult = null);
+        fetch(ACCESSGUDID_LOOKUP
+            + (this.nativeFe.metadataTagsNew === 'UDI' ? '?udi=' : '?di=')
+            + encodeURIComponent(this.metadataSearch))
+            .then(res => res.json())
+            .then((device: AccessGUDIDDevice) => {
+                if (device.error) {
+                    return this.metadataSearchResult = null;
+                }
+                this.metadataSearchResult = device;
+                this.addDevice(device);
+            }, () => this.metadataSearchResult = null);
     }
 
     addDevice(accessgudid: AccessGUDIDDevice) {
         let addDI = () => this.nativeFe.formElement.metadataTags!.push({key: 'device', value: accessgudid});
         if (!this.nativeFe.formElement.metadataTags) this.nativeFe.formElement.metadataTags = [];
         if (this.nativeFe.metadataTagsNew === 'UDI') {
-            this.http.get<any>(ACCESSGUDID_PARSEUDI + encodeURIComponent(this.metadataSearch!.trim())).subscribe(udi => {
-                if (udi.error) {
-                    return addDI();
-                }
-                accessgudid.udi = udi;
-                addDI();
-            }, addDI);
+            fetch(ACCESSGUDID_PARSEUDI + encodeURIComponent(this.metadataSearch!.trim()))
+                .then(res => res.json())
+                .then(udi => {
+                    if (!udi.error) {
+                        accessgudid.udi = udi;
+                    }
+                })
+                .finally(addDI);
         } else {
             addDI();
         }

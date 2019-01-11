@@ -1,6 +1,5 @@
-import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
-
+import { FormService } from 'nativeRender/form.service';
 import { CdeForm, DisplayProfile } from 'shared/form/form.model';
 import { CbErr } from 'shared/models.model';
 
@@ -39,7 +38,7 @@ export class NativeRenderAppComponent {
     summary = false;
     submitForm: boolean;
 
-    constructor(private http: HttpClient) {
+    constructor() {
         let args: any = NativeRenderAppComponent.searchParamsGet();
         this.selectedProfileName = args.selectedProfile;
         this.submitForm = args.submit !== undefined;
@@ -56,7 +55,7 @@ export class NativeRenderAppComponent {
     }
 
     getForm(tinyId: string, cb: CbErr<CdeForm>) {
-        this.http.get<CdeForm>('/form/' + tinyId).subscribe(elt => {
+        FormService.fetchForm(tinyId).then(elt => {
             CdeForm.validate(elt);
             cb(undefined, elt);
         }, err => cb(err.statusText));
@@ -85,5 +84,4 @@ export class NativeRenderAppComponent {
         });
         return params;
     }
-
 }
