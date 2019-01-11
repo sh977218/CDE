@@ -1,3 +1,5 @@
+const Comment = require('../../server/discuss/discussDb').Comment;
+
 exports.wipeUseless = function (toWipeCde) {
     delete toWipeCde._id;
     delete toWipeCde.history;
@@ -16,4 +18,43 @@ exports.wipeUseless = function (toWipeCde) {
             delete toWipeCde[key];
         }
     });
+};
+
+exports.trimWhite = function (text) {
+    if (!text) return '';
+    return text.trim().replace(/\s+/g, ' ');
+};
+
+exports.checkNullComments = () => {
+    return Comment.aggregate([
+        {
+            $lookup: {
+                from: 'dataelements',
+                localField: 'element.eltId',
+                foreignField: 'tinyId',
+                as: 'cdes'
+            }
+        },
+        {
+            $lookup: {
+                from: 'forms',
+                localField: 'element.eltId',
+                foreignField: 'tinyId',
+                as: 'forms'
+            }
+        },
+        /*  mongo db current does not support yet. 4.0 will support
+              {
+                    $lookup: {
+                        from: 'pinningBoards',
+                        localField: 'element.eltId',
+                        foreignField: '_id.str',
+                        as: 'boards'
+                    }
+                },
+        */
+        {
+            $match: {'cdes.0': {$exists: false}, 'forms.0': {$exists: false}, 'element.eltType': {$ne: 'board'}}
+        }
+    ]).exec();
 };
