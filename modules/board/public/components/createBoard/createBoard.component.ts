@@ -14,6 +14,8 @@ export class CreateBoardComponent {
         if (this.newBoard) this.newBoard.type = module;
     }
 
+    @Input() elts = [];
+
     @ViewChild('createBoardModal') createBoardModal: TemplateRef<any>;
     _module = undefined;
     dialogRef: MatDialogRef<TemplateRef<any>>;
@@ -37,7 +39,14 @@ export class CreateBoardComponent {
 
     openNewBoard() {
         this.newBoard = {
-            type: this._module || 'cde'
+            type: this._module || 'cde',
+            pins: this.elts.map(e => {
+                return {
+                    tinyId: e.tinyId,
+                    name: e.designations[0].desgiantion,
+                    type: this._module
+                };
+            })
         };
         this.dialogRef = this.dialog.open(this.createBoardModal, {width: '800px'});
     }
