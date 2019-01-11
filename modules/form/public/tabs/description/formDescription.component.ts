@@ -237,7 +237,6 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
 
     constructor(
         public deCompletionService: DeCompletionService,
-        private formService: FormService,
         private _hotkeysService: HotkeysService,
         private http: HttpClient,
         private localStorageService: LocalStorageService,
@@ -292,7 +291,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     }
 
     addQuestionFromSearch(de: DataElement) {
-        this.formService.convertCdeToQuestion(de, question => {
+        FormService.convertCdeToQuestion(de, question => {
             question.formElements = [];
             question.expanded = true;
             question.edit = true;

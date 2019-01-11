@@ -28,6 +28,7 @@ import { OrgHelperService } from 'core/orgHelper.service';
         UserService,
     ],
     imports: [
+        BrowserAnimationsModule,
         BrowserModule,
         CommonModule,
         LocalStorageModule.withConfig({
@@ -36,7 +37,6 @@ import { OrgHelperService } from 'core/orgHelper.service';
         }),
         FormsModule,
         HttpClientModule,
-        BrowserAnimationsModule,
         NgbModule.forRoot(),
         CommonAppModule,
         MatButtonModule,
