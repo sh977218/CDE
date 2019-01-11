@@ -8,11 +8,7 @@ module.exports = function timestamped(model, noPost) {
             model.remove({_id: id}, handleError({res, origin: 'timestamped delete ' + model}, cb));
         },
         find: (res, crit, cb) => {
-            if (crit._id && !mongoose.Types.ObjectId.isValid(crit._id)) {
-                callback(undefined, undefined);
-            } else {
-                model.find(crit, handleError({res, origin: 'timestamped find ' + model}, cb));
-            }
+            model.find(crit, handleError({res, origin: 'timestamped find ' + model}, cb));
         },
         get: (res, id, cb) => {
             model.findOne({_id: id}, handleError({res, origin: 'timestamped get ' + model}, cb));

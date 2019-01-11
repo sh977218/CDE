@@ -175,6 +175,10 @@ exports.handleError = function (options, cb) {
 exports.respondError = function (err, options) {
     if (!options) options = {};
     if (options.res) {
+        if (err.name === 'CastError' && err.kind === 'ObjectId') {
+            options.res.status(400).send("Invalid id");
+            return;
+        }
         let message = options.publicMessage || "Generic Server Failure. Please submit an issue.";
         options.res.status(500).send('Error: ' + message);
     }
