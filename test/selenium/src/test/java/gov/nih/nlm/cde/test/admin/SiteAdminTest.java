@@ -29,7 +29,7 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         clickElement(By.linkText("Org Management"));
         clickElement(By.xpath("//div[. = 'Org Admins']"));
         new Select(driver.findElement(By.id("newOrgAdminOrgName"))).selectByVisibleText(testOrg);
-        findElement(By.name("searchUsersInput")).sendKeys(test_username);
+        searchUsername(test_username);
         clickElement(By.id("newOrgAdminSubmit"));
         logout();
 

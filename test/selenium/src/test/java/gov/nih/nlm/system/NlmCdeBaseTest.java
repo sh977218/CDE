@@ -1736,4 +1736,11 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         clickElement(By.id("selectQuestionNoLabel"));
     }
 
+    protected void searchUsername(String username) {
+        clickElement(By.name("searchUsersInput"));
+        findElement(By.name("searchUsersInput")).clear();
+        findElement(By.name("searchUsersInput")).sendKeys(username);
+        clickElement(By.xpath("//*[contains(@id,'mat-autocomplete-')]//mat-option[contains(.,'" + username + "')]"));
+    }
+
 }
