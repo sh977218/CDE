@@ -42,6 +42,9 @@ exports.compareForm = function (newForm, existingForm) {
         delete obj.archived;
         delete obj.views;
 
+        //@TODO this is a temporarily, see README
+        delete obj.definitions;
+
         delete obj.naming;
         delete obj.classification;
         delete obj.attachments;

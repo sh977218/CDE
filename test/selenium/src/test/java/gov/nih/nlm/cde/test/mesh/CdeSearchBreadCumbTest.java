@@ -34,6 +34,7 @@ public class CdeSearchBreadCumbTest extends NlmCdeBaseTest {
         clickElement(By.id("altClassificationFilterModeToggle"));
         clickElement(By.id("classif-NINDS"));
         clickElement(By.partialLinkText("Disease"));
+        textPresent("NINDS > Disease");
         clickElement(By.id("topic-Public Health"));
         textPresent("Health Care > Environment and Public Health > Pub...");
         clickElement(By.id("regstatus-Qualified"));

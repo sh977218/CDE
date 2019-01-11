@@ -1,20 +1,11 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-
 import { DataElementService } from 'cde/public/dataElement.service';
 import { CodeAndSystem, ObjectId } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm, FormQuestion } from 'shared/form/form.model';
 
-@Injectable()
 export class FormService {
-    constructor(
-        private dataElementService: DataElementService,
-        private http: HttpClient,
-    ) {}
-
     // TODO: use Mongo cde and move to shared, currently open to using Elastic cde
-    convertCdeToQuestion(de: DataElement, cb: (q?: FormQuestion) => void): void {
+    static convertCdeToQuestion(de: DataElement, cb: (q?: FormQuestion) => void): void {
         if (!de || de.valueDomain === undefined) {
             throw new Error('Cde ' + de.tinyId + ' is not valid');
         }
@@ -61,7 +52,7 @@ export class FormService {
         if (de.valueDomain.permissibleValues.length > 0) {
             // elastic only store 10 pv, retrieve pv when have more than 9 pv.
             if (de.valueDomain.permissibleValues.length > 9) {
-                this.dataElementService.fetchDe(de.tinyId, de.version || '').then(de => {
+                DataElementService.fetchDe(de.tinyId, de.version || '').then(de => {
                     convertPv(q, de);
                     cb(q);
                 }, cb);
@@ -74,19 +65,19 @@ export class FormService {
         }
     }
 
-    fetchForm(tinyId: string, version?: string): Promise<CdeForm> {
-        return new Promise<CdeForm>((resolve, reject) => {
-            if (version || version === '') {
-                this.http.get<CdeForm>('/form/' + tinyId + '/version/' + version).subscribe(resolve, reject);
-            } else {
-                this.http.get<CdeForm>('/form/' + tinyId).subscribe(resolve, reject);
-            }
-        });
+    static convertUnits(value: number, from: string, to: string): Promise<number> {
+        return fetch('/ucumConvert?value=' + value + '&from=' + from + '&to=' + to)
+            .then(res => res.text())
+            .then(value => parseFloat(value));
     }
 
-    fetchFormById(id: ObjectId): Promise<CdeForm> {
-        return new Promise<CdeForm>((resolve, reject) => {
-            this.http.get<CdeForm>('/formById/' + id).subscribe(resolve, reject);
-        });
+    static fetchForm(tinyId: string, version?: string): Promise<CdeForm> {
+        return fetch('/form/' + tinyId + (version || version === '' ? '/version/' + version : ''))
+            .then(res => res.json());
+    }
+
+    static fetchFormById(id: ObjectId): Promise<CdeForm> {
+        return fetch('/formById/' + id)
+            .then(res => res.json());
     }
 }

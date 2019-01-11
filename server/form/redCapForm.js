@@ -33,6 +33,7 @@ function formatSkipLogic(skipLogicString, map) {
 }
 
 function getRedCap(form) {
+    let variableCounter = 1;
     let sectionsAsMatrix = form.displayProfiles && form.displayProfiles[0] && form.displayProfiles[0].sectionsAsMatrix;
     let doSection = (formElement, i) => {
         let sectionHeader = formElement.label ? formElement.label : '';
@@ -70,7 +71,8 @@ function getRedCap(form) {
         let questionSkipLogic = formElement.skipLogic ? formElement.skipLogic.condition : '';
         if (questionSkipLogic) _questionSkipLogic = formatSkipLogic(questionSkipLogic, label_variables_map);
         if (!q.cde.tinyId) q.cde.tinyId = 'missing question cde';
-        let variableName = 'nlmcde_' + form.tinyId.toLowerCase() + '_' + q.cde.tinyId.toLowerCase();
+        let variableName = 'nlmcde_' + form.tinyId.toLowerCase() + '_' +
+            variableCounter++ + "_" + q.cde.tinyId.toLowerCase();
         if (existingVariables[variableName]) {
             let index = existingVariables[variableName];
             let newVariableName = variableName + '_' + index;
