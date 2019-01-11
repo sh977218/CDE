@@ -40,16 +40,13 @@ export class PushNotificationSubscriptionService {
     }
 
     static async getEndpoint(): Promise<void> {
-        if (this.lastEndpoint) {
-            return Promise.resolve();
-        } else {
+        if (!this.lastEndpoint) {
             try {
                 // generate new endpoint
                 let registration = await this.registration;
                 let pushSubscription: PushSubscription | null = await registration.pushManager.getSubscription();
                 if (pushSubscription && pushSubscription.endpoint) {
                     this.lastEndpoint = pushSubscription.endpoint;
-                    return Promise.resolve();
                 } else {
                     return Promise.reject('No subscription.');
                 }
@@ -59,13 +56,13 @@ export class PushNotificationSubscriptionService {
         }
     }
 
-    static fetchError(error: Error) {
+    static fetchError(error: Error): Promise<any> {
         PushNotificationSubscriptionService.handleError(error);
         if (error instanceof Error
             && (error.message === 'Failed to fetch' || error.message === 'Unexpected token < in JSON at position 0')) {
-            return Promise.reject('Server is not available or you are offline.');
+            throw 'Server is not available or you are offline.';
         }
-        return Promise.reject(error);
+        throw error;
     }
 
     static handleError(error: Error) {
@@ -109,7 +106,7 @@ export class PushNotificationSubscriptionService {
                 return this.fetchError(e);
             }
         } else {
-            return Promise.reject('Not Subscribed');
+            throw 'Not Subscribed';
         }
     }
 
@@ -185,50 +182,48 @@ export class PushNotificationSubscriptionService {
     }
 
     static async subscriptionServerUpdate(userId: string): Promise<void> {
-        if (this.lastEndpoint) {
-            try {
-                let response: Response = await fetch('./pushRegistrationUpdate', {
-                    method: 'post',
-                    headers: {
-                        'Content-type': 'application/json'
-                    },
-                    credentials: 'include',
-                    body: JSON.stringify({
-                        endpoint: this.lastEndpoint,
-                        features: ['all']
-                    }),
-                });
-                let body = await response.json();
-                if (body && body.exists === false) {
-                    this.lastEndpoint = '';
-                    this.lastUser = '';
-                    return Promise.reject('This subscription does not exist.');
-                } else if (body && body.status === true) {
-                    this.lastUser = userId;
-                    return Promise.resolve();
-                } else if (body && body.status === false) {
-                    this.lastUser = '';
-                    return Promise.reject('This subscription does not exist.');
-                } else {
-                    return Promise.reject('Network Error');
-                }
-            } catch (e) {
-                if (e === 'Not Found.') {
-                    this.lastEndpoint = '';
-                    this.lastUser = '';
-                }
-                return Promise.reject('Network Error');
-            }
+        if (!this.lastEndpoint) {
+            throw 'Not Subscribed.';
+        }
+        let response: Response;
+        try {
+            response = await fetch('./pushRegistrationUpdate', {
+                method: 'post',
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                credentials: 'include',
+                body: JSON.stringify({
+                    endpoint: this.lastEndpoint,
+                    features: ['all']
+                }),
+            });
+        } catch (e) {
+            throw 'Network Error';
+        }
+        let body = await response.json();
+        if (body && body.exists === false) {
+            this.lastEndpoint = '';
+            this.lastUser = '';
+            throw 'This subscription does not exist.';
+        } else if (body && body.status === false) {
+            this.lastUser = '';
+            throw 'This subscription does not exist.';
+        } else if (body && body.status === true) {
+            this.lastUser = userId;
+            return Promise.resolve();
         } else {
-            return Promise.reject('Not Subscribed.');
+            throw 'Network Error';
         }
     }
 
-    static async updateExisting(userId: string) {
+    static async updateExisting(userId?: string) {
         try {
             let registration = await navigator.serviceWorker.register('/sw.js');
             this.registrationResolve(registration);
-            this.subscriptionServerUpdate(userId).catch(_noop);
+            if (userId) {
+                this.subscriptionServerUpdate(userId).catch(_noop);
+            }
         } catch (err) {
             this.registrationReject();
         }

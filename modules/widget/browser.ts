@@ -1,4 +1,10 @@
-import { Cb, CbRet } from 'shared/models.model';
+import { Cb, CbErr, CbRet } from 'shared/models.model';
+
+export function callbackify<T>(asyncFn: Promise<T>): (a: CbErr<T>) => void {
+    return function (cb) {
+        asyncFn.then(value => cb(undefined, value), cb);
+    };
+}
 
 export function interruptEvent(event?: Event) {
     if (event) {

@@ -15,7 +15,7 @@ public class RenderDisplayProfile extends BaseFormTest {
         String baseXpath = "//*[@id='profile_3']//*[contains(@class,'displayProfileRenderDiv')]//*[*[normalize-space()='Education level USA type']]//";
         goToFormByName(formName);
         textPresent("In the past 7 days");
-        Assert.assertEquals(driver.findElements(By.cssSelector(".fa.fa-plus.iconButton")).size(), 0);
+        Assert.assertEquals(driver.findElements(By.cssSelector("i.iconButton")).size(), 0);
         textPresent("I felt annoyed");
         textPresent("1", By.xpath("//*[@id='formRenderSection_In the past 7 days']//table/tbody/tr[1]/td[2]"));
         textPresent("5", By.xpath("//*[@id='formRenderSection_In the past 7 days']//table/tbody/tr[1]/td[6]"));
@@ -37,7 +37,7 @@ public class RenderDisplayProfile extends BaseFormTest {
         Assert.assertTrue(findElement(By.xpath("//div[@id='I was irritated more than people knew_0-0']//" + byValueListValueXPath("Never"))).getLocation().y + 8 <
                 findElement(By.xpath("//div[@id='I was irritated more than people knew_0-0']//" + byValueListValueXPath("Rarely"))).getLocation().y
         );
-        clickElement(By.cssSelector("mat-icon.iconButton"));
+        clickElement(By.cssSelector("i.iconButton"));
         clickElement(By.xpath("//a[text()='Add Device by UDI']"));
         findElement(By.xpath("//input[@id='deviceSearchInput']")).clear();
         findElement(By.xpath("//input[@id='deviceSearchInput']")).sendKeys("=/08717648200274=,000025=A99971312345600=>014032=}013032&,1000000000000XYZ123");
