@@ -6,9 +6,11 @@ let cde_schemas = require('../server/cde/schemas');
 let form_schemas = require('../server/form/schemas');
 let sharedSchemas = require('../server/system/schemas.js');
 
-let migrationConn = mongoose.createConnection(config.database.migration.uri);
+let migrationConfig = config.database.migration;
+
+let migrationConn = mongoose.createConnection(migrationConfig.uri, migrationConfig.options);
 migrationConn.once('open', function callback() {
-    console.log('mongodb ' + config.database.migration.db + ' connection open');
+    console.log('mongodb ' + migrationConfig.db + ' connection open');
 });
 
 // LOINC
@@ -30,7 +32,7 @@ exports.MigrationLoincScaleMappingModel = migrationConn.model('MigrationLoincSca
 
 
 // NINDS
-exports.MigrationNindsModel = migrationConn.model('MigrationNINDS', new Schema({}, {
+exports.NindsModel = migrationConn.model('NINDS', new Schema({}, {
     strict: false,
     collection: 'ninds',
     usePushEach: true
