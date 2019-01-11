@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import { ErrorHandler, Injectable } from '@angular/core';
 
 type AngularError = any;
@@ -9,7 +8,6 @@ export class FrontExceptionHandler implements ErrorHandler {
     previousException: AngularError;
 
     constructor(
-        private http: HttpClient
     ) {}
 
     handleError (error: AngularError) {
@@ -19,16 +17,24 @@ export class FrontExceptionHandler implements ErrorHandler {
         try {
             if (!this.lock) {
                 this.lock = true;
-                this.http.post('/server/log/clientExceptionLogs', {
-                    stack: error.stack,
-                    message: error.message,
-                    name: error.name,
-                    url: window.location.href
-                }).subscribe(() => {
-                    setTimeout(() => {
-                        this.lock = false;
-                    }, 5000);
-                });
+                fetch('/server/log/clientExceptionLogs', {
+                    method: 'post',
+                    headers: {
+                        'Content-type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        stack: error.stack,
+                        message: error.message,
+                        name: error.name,
+                        url: window.location.href
+                    }),
+                })
+                    .finally(() => {
+                        setTimeout(() => {
+                            this.lock = false;
+                        }, 5000);
+                    });
             }
         } catch (e) {
         }

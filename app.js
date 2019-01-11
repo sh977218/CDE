@@ -165,6 +165,17 @@ let getS3Link = function (subpath) {
             proxyReqOpts.rejectUnauthorized = false;
             return proxyReqOpts;
         },
+        proxyReqPathResolver: req => '/' + config.s3.path + subpath + req.url
+    };
+};
+
+let getS3LinkFhir = function (subpath) {
+    return {
+        https: true,
+        proxyReqOptDecorator: proxyReqOpts => {
+            proxyReqOpts.rejectUnauthorized = false;
+            return proxyReqOpts;
+        },
         filter: req => !req.url.startsWith('/launch/') && !req.url.startsWith('/form/'),
         proxyReqPathResolver: req => '/' + config.s3.path + subpath + req.url
     };
@@ -174,16 +185,16 @@ if (config.s3) {
     app.use("/app", httpProxy(config.s3.host, getS3Link("/app")));
     app.use("/common", httpProxy(config.s3.host, getS3Link("/common")));
     app.use("/embed", httpProxy(config.s3.host, getS3Link("/embed")));
+    app.use("/fhir", httpProxy(config.s3.host, getS3LinkFhir("/fhir")));
     app.use("/launch", httpProxy(config.s3.host, getS3Link("/launch")));
     app.use("/native", httpProxy(config.s3.host, getS3Link("/native")));
-    app.use("/fhir", httpProxy(config.s3.host, getS3Link("/fhir")));
 } else {
     app.use("/app", express.static(path.join(__dirname, '/dist/app')));
     app.use("/common", express.static(path.join(__dirname, '/dist/common')));
     app.use("/embed", express.static(path.join(__dirname, '/dist/embed')));
+    app.use("/fhir", express.static(path.join(__dirname, '/dist/fhir')));
     app.use("/launch", express.static(path.join(__dirname, '/dist/launch')));
     app.use("/native", express.static(path.join(__dirname, '/dist/native')));
-    app.use("/fhir", express.static(path.join(__dirname, '/dist/fhir')));
 }
 
 ["/embedded/public", "/_embedApp/public"].forEach(p => {
@@ -326,11 +337,11 @@ app.use('/robots.txt', express.static(path.join(__dirname, '/modules/system/publ
 
 // final route -> 404
 app.use((req, res, next) => {
-    // swagger does something i don't get. This will let swagger work
-    if (req.originalUrl === "/docs" || req.originalUrl === "/api-docs" || req.originalUrl.indexOf("/docs/") === 0) {
+    // swagger is the real final route
+    if (req.originalUrl === '/docs' || req.originalUrl === '/api-docs' || req.originalUrl.indexOf('/docs/') === 0) {
         return next();
     }
-    res.render('index', 'system', {config: config, version: 'version'});
+    require('./server/system/app').respondHomeFull(req, res);
 });
 
 

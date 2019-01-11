@@ -1,12 +1,11 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
-
+import { FormService } from 'nativeRender/form.service';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
+import { ScoreService } from 'nativeRender/score.service';
 import { CbErr, CodeAndSystem } from 'shared/models.model';
 import { questionMulti } from 'shared/form/fe';
 import { FormQuestion } from 'shared/form/form.model';
-import { ScoreService } from 'nativeRender/score.service';
-import { AlertService } from 'alert/alert.service';
+import { callbackify } from 'widget/browser';
 
 @Component({
     selector: 'cde-native-question',
@@ -29,10 +28,8 @@ export class NativeQuestionComponent implements OnInit {
         this.previousUom = this.formElement.question.answerUom;
     }
 
-    constructor(private http: HttpClient,
-                public scoreSvc: ScoreService,
-                private alert: AlertService,
-                public nrs: NativeRenderService) {
+    constructor(public nrs: NativeRenderService,
+                public scoreSvc: ScoreService) {
     }
 
     classColumns(pvIndex: number, index: number) {
@@ -71,7 +68,7 @@ export class NativeQuestionComponent implements OnInit {
             else value = this.formElement.question.answer;
 
             if (typeof(value) === 'number' && !isNaN(value)) {
-                this.convertUnits(value, this.previousUom, unit, (error?: string, result?: number) => {
+                NativeQuestionComponent.convertUnits(value, this.previousUom, unit, (error?: string, result?: number) => {
                     if (!error && result !== undefined && !isNaN(result) && unit === this.formElement.question.answerUom) {
                         this.formElement.question.answer = result;
                         this.scoreSvc.triggerCalculateScore(this.formElement);
@@ -82,10 +79,11 @@ export class NativeQuestionComponent implements OnInit {
         this.previousUom = this.formElement.question.answerUom;
     }
 
-    convertUnits(value: number, fromUnit: CodeAndSystem, toUnit: CodeAndSystem, cb: CbErr<number>) {
+    static convertUnits(value: number, fromUnit: CodeAndSystem, toUnit: CodeAndSystem, cb: CbErr<number>) {
         if (fromUnit.system === 'UCUM' && toUnit.system === 'UCUM') {
-            this.http.get<string>('/ucumConvert?value=' + value + '&from=' + encodeURIComponent(fromUnit.code) + '&to='
-                + encodeURIComponent(toUnit.code)).subscribe(value => cb(undefined, parseFloat(value)), cb);
+            callbackify(
+                FormService.convertUnits(value, encodeURIComponent(fromUnit.code), encodeURIComponent(toUnit.code))
+            )(cb);
         } else {
             cb(undefined, value); // no conversion for other systems
         }
@@ -95,12 +93,13 @@ export class NativeQuestionComponent implements OnInit {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 position => {
+                    this.locationDenied = false;
                     if (formElement) formElement.question.answer = position.coords;
                 },
                 err => {
-                    this.locationDeniedMessage();
                     this.locationDenied = err.code === err.PERMISSION_DENIED;
-                });
+                }
+            );
         }
     }
 
@@ -120,9 +119,5 @@ export class NativeQuestionComponent implements OnInit {
     isOneLiner(q: FormQuestion, numSubQuestions: number): boolean {
         return !!numSubQuestions && !this.hasHeading(q) && (!q.instructions || !q.instructions.value)
             && q.elementType === 'question' && q.question.datatype !== 'Value List';
-    }
-
-    locationDeniedMessage () {
-        this.alert.addAlert("info", "Please enable location for this site.");
     }
 }

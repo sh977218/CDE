@@ -81,9 +81,10 @@ export class CdeAppComponent implements OnInit {
 
         window.addEventListener('load', () => {
             if ((window.location.protocol === 'https:' || window.location.hostname === 'localhost') && 'serviceWorker' in navigator) {
-                this.userService.then(user => {
-                    PushNotificationSubscriptionService.updateExisting(user._id);
-                }, _noop);
+                this.userService.then(
+                    user => PushNotificationSubscriptionService.updateExisting(user._id),
+                    () => PushNotificationSubscriptionService.updateExisting()
+                );
             }
         });
     }

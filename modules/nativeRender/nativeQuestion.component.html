@@ -131,22 +131,26 @@
                             <input type="text" class="form-control" [disabled]="locationDenied"
                                    [id]="formElement.feId+'_latitude'"
                                    value="{{formElement.question.answer?.latitude}}">
-                            <div class="input-group-prepend">
+                            <div class="input-group-prepend input-group-append">
                                 <span class="input-group-text">,</span>
                             </div>
                             <input type="text" class="form-control" [disabled]="locationDenied"
                                    [id]="formElement.feId+'_longitude'"
                                    value="{{formElement.question.answer?.longitude}}">
-                            <button *ngIf="!locationDenied" class="btn btn-primary"
-                                    [id]="formElement.feId+'_location'">
-                                <mat-icon (click)="getCurrentGeoLocation(formElement);">
-                                    location_searching
-                                </mat-icon>
-                            </button>
-                            <button *ngIf="locationDenied" class="btn btn-disabled" (click)="locationDeniedMessage()">
-                                <mat-icon>location_disabled</mat-icon>
-                            </button>
+                            <div class="input-group-append">
+                                <button *ngIf="locationDenied; else templateLocation" class="btn btn-disabled"
+                                        (click)="getCurrentGeoLocation(formElement)">
+                                    <i class="material-icons iconFit">location_disabled</i>
+                                </button>
+                                <ng-template #templateLocation>
+                                    <button [id]="formElement.feId+'_location'" class="btn btn-primary">
+                                        <i class="material-icons iconFit"
+                                           (click)="getCurrentGeoLocation(formElement)">location_searching</i>
+                                    </button>
+                                </ng-template>
+                            </div>
                         </div>
+                        <div *ngIf="locationDenied"><code>Please enable location for this site.</code></div>
                     </ng-container>
                     <ng-container *ngSwitchCase="'Number'">
                         <div [ngClass]="{'input-group': formElement.question.uomsAlias.length > 0}">
@@ -180,7 +184,7 @@
                     </ng-container>
                     <ng-container *ngSwitchDefault>
                         <div [ngClass]="{'input-group': formElement.question.uomsAlias.length > 0}">
-                            <input type="text" class="form-control"
+                            <input #inputText type="text" class="form-control"
                                    [title]="formElement.label"
                                    attr.id="{{formElement.label}}_{{formElement.feId}}_box"
                                    [name]="formElement.feId"
@@ -204,6 +208,7 @@
                                            [disabled]="!formElement.question.editable"/>{{uom}}</label>
                             </div>
                         </div>
+                        <div *ngIf="inputText.validationMessage"><code>{{inputText.validationMessage}}</code></div>
                     </ng-container>
                 </ng-container>
             </ng-container>
@@ -242,7 +247,8 @@
 
 <ng-template #metadataAddButton>
     <span class="dropdown noPrint">
-        <mat-icon class="iconButton" data-toggle="dropdown">add</mat-icon>
+        <i class="material-icons iconButton" data-toggle="dropdown"
+           style="font-size: 20px; height: 20px; width: 20px">add</i>
         <div class="dropdown-menu" style="font-size: .8rem; font-weight: initial">
             <a class="dropdown-item" (click)="metadataTagsNew = 'UDI'">Add Device by UDI</a>
             <a class="dropdown-item" (click)="metadataTagsNew = 'DI'">Add Device by DI</a>
