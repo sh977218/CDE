@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { findQuestionByTinyId, getFormScoreQuestions } from 'shared/form/fe';
 import { CdeForm, FormQuestion } from 'shared/form/form.model';
-import { HttpClient } from '@angular/common/http';
 import { CbErr } from 'shared/models.model';
 
 type ErrorOrScore = {error?: string, sum?: number};
@@ -10,9 +9,6 @@ type ErrorOrScore = {error?: string, sum?: number};
 export class ScoreService {
     INPUT_SCORE_MAP!: Map<string, FormQuestion[]>;
     elt!: CdeForm;
-
-    constructor(private http: HttpClient) {
-    }
 
     register(elt: CdeForm) {
         // register all scores used by one question tinyId
@@ -32,11 +28,11 @@ export class ScoreService {
     triggerCalculateScore(question: FormQuestion) {
         let scoreQuestions: FormQuestion[] | undefined = this.INPUT_SCORE_MAP.get(question.question.cde.tinyId);
         if (!!scoreQuestions) {
-            scoreQuestions.forEach(scoreQuestion => this.scoreSet(scoreQuestion, this.elt));
+            scoreQuestions.forEach(scoreQuestion => ScoreService.scoreSet(scoreQuestion, this.elt));
         }
     }
 
-    calculateScore(question: FormQuestion, elt: CdeForm, cb: CbErr<number>) {
+    static calculateScore(question: FormQuestion, elt: CdeForm, cb: CbErr<number>) {
         if (!question.question.isScore) {
             return;
         }
@@ -78,11 +74,11 @@ export class ScoreService {
                         return cb('Select unit of measurement for height');
                     }
 
-                    let aPromise = this.ucumConverter(aAnswer, aQuestion.question.answerUom.code, 'kg');
-                    let bPromise = this.ucumConverter(bAnswer, bQuestion.question.answerUom.code, 'm');
-                    Promise.all([aPromise, bPromise]).then(values => {
-                        aAnswer = values[0];
-                        bAnswer = values[1];
+                    Promise.all([
+                        ScoreService.ucumConverter(aAnswer, aQuestion.question.answerUom.code, 'kg'),
+                        ScoreService.ucumConverter(bAnswer, bQuestion.question.answerUom.code, 'm')
+                    ]).then(values => {
+                        [aAnswer, bAnswer] = values;
                         cb(undefined, aAnswer / (bAnswer * bAnswer));
                     });
                 }
@@ -90,8 +86,8 @@ export class ScoreService {
         });
     }
 
-    scoreSet(question: FormQuestion, elt: CdeForm) {
-        this.calculateScore(question, elt, (err?: string, sum?: number) => {
+    static scoreSet(question: FormQuestion, elt: CdeForm) {
+        ScoreService.calculateScore(question, elt, (err?: string, sum?: number) => {
             if (err) {
                 question.question.scoreError = err;
             } else {
@@ -118,7 +114,8 @@ export class ScoreService {
         return {error, sum};
     }
 
-    ucumConverter(value: number, from?: string, to?: string) {
-        return this.http.get<number>('/ucumConvert?value=' + value + '&from=' + from + '&to=' + to).toPromise();
+    static ucumConverter(value: number, from?: string, to?: string) {
+        return fetch('/ucumConvert?value=' + value + '&from=' + from + '&to=' + to)
+            .then(res => res.json());
     }
 }

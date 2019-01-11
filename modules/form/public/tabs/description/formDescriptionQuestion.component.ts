@@ -41,9 +41,7 @@ export class FormDescriptionQuestionComponent implements OnInit {
     }
 
     constructor(
-        private dataElementService: DataElementService,
         @Host() public formDescriptionComponent: FormDescriptionComponent,
-        public formService: FormService,
         public dialog: MatDialog
     ) {
     }
@@ -84,10 +82,10 @@ export class FormDescriptionQuestionComponent implements OnInit {
     }
 
     openUpdateCdeVersion(question: FormQuestion) {
-        this.dataElementService.fetchDe(question.question.cde.tinyId).then(newCde => {
+        DataElementService.fetchDe(question.question.cde.tinyId).then(newCde => {
             let oldVersion = question.question.cde.version ? question.question.cde.version : '';
-            this.dataElementService.fetchDe(question.question.cde.tinyId, oldVersion).then(oldCde => {
-                this.formService.convertCdeToQuestion(newCde, newQuestion => {
+            DataElementService.fetchDe(question.question.cde.tinyId, oldVersion).then(oldCde => {
+                FormService.convertCdeToQuestion(newCde, newQuestion => {
                     this.openUpdateCdeVersionMerge(newQuestion, question, newCde, oldCde);
                 });
             });

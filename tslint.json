@@ -75,7 +75,7 @@
             "check-open-brace",
             "check-whitespace"
         ],
-        "pipe-naming": [true, "camelCase", "cde"],
+//        "pipe-naming": [true, "camelCase", "cde"],
         "semicolon": [
             true,
             "always"

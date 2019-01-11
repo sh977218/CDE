@@ -2,7 +2,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { BrowserModule } from '@angular/platform-browser';
 import {
     MatButtonModule,
     MatDialogModule,
@@ -11,9 +10,9 @@ import {
     MatProgressSpinnerModule, MatSelectModule,
     MatSnackBarModule,
 } from '@angular/material';
+import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Routes } from '@angular/router';
-
 import { CdeFhirService, SelectOneDialogComponent } from '_fhirApp/cdeFhir.service';
 import { FhirAppComponent, FhirStandaloneComponent, ViewFhirEncounterDialogComponent } from '_fhirApp/fhirApp.component';
 import { FhirSmartService } from '_fhirApp/fhirSmart.service';
