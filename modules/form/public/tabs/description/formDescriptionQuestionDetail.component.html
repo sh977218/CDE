@@ -155,7 +155,7 @@
                         </select>
                         <ng-container *ngIf="newUomSystem === 'UCUM'; else manualUom">
                             <mat-form-field class="d-inline-block col-9">
-                                <input type="text" placeholder="New Unit of Measure Code" matInput
+                                <input type="text" placeholder="New Unit of Measure Code" matInput name="searchUomInput"
                                        [formControl]="uomControl" [matAutocomplete]="auto">
                                 <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
                                     <mat-option *ngFor="let uom of filteredUoms" [value]="uom"

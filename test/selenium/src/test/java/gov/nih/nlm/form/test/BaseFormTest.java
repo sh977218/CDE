@@ -2,7 +2,6 @@ package gov.nih.nlm.form.test;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.*;
-import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
@@ -76,7 +75,7 @@ public class BaseFormTest extends NlmCdeBaseTest {
     }
 
     public String byValueListValueXPath(String value) {
-        return"label[contains(.,'" + value + "')]";
+        return "label[contains(.,'" + value + "')]";
     }
 
     public void editSectionTitle(String sectionId, String title) {
@@ -94,8 +93,10 @@ public class BaseFormTest extends NlmCdeBaseTest {
         findElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'questionUom')]//input")).sendKeys(text);
 
         if ("UCUM".equals(type)) {
-            hangon(3);
-            findElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'questionUom')]//input")).sendKeys(Keys.ENTER);
+            clickElement(By.name("searchUomInput"));
+            findElement(By.name("searchUomInput")).clear();
+            findElement(By.name("searchUomInput")).sendKeys(text);
+            clickElement(By.xpath("//*[contains(@id,'mat-autocomplete-')]//mat-option[contains(.,'" + text + "')]"));
         } else {
             clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'questionUom')]//mat-icon[normalize-space() = 'add']"));
         }
@@ -166,6 +167,13 @@ public class BaseFormTest extends NlmCdeBaseTest {
 
     public void editSkipLogic(String inputXpath, String textToBePresent, int expectedNumSuggested, int clickNth,
                               boolean displayError, String errorMessage) {
+/*
+        clickElement(By.xpath(inputXpath));
+        findElement(By.xpath(inputXpath)).clear();
+        findElement(By.xpath(inputXpath)).sendKeys(textToBePresent);
+        clickElement(By.xpath("//*[contains(@id,'mat-autocomplete-')]//mat-option["+clickNth+"]"));
+*/
+
         findElement(By.xpath(inputXpath)).sendKeys(Keys.SPACE);
         findElement(By.xpath("(//*[contains(@id,'ngb-typeahead-') and string-length(@id)>16])[" + clickNth + "]/*[contains(.,'" + textToBePresent + "')]"));
         int actualNumSuggested = findElements(By.xpath("(//*[contains(@id,'ngb-typeahead-') and string-length(@id)>16])")).size();
