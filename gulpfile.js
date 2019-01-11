@@ -44,6 +44,7 @@ gulp.task('thirdParty', gulp.series('npmRebuildNodeSass', function _thirdParty()
     streamArr.push(gulp.src([
         './node_modules/classlist.js/classList.min.js',
         './node_modules/intl/locale-data/jsonp/en.js',
+        './node_modules/whatwg-fetch/dist/fetch.umd.js'
     ]).pipe(gulp.dest('./dist/common/')));
 
     return merge(streamArr);
@@ -158,10 +159,9 @@ gulp.task('usemin', gulp.series('copyDist', function _usemin() {
     let streamArray = [];
     [
         {folder: './modules/system/views/', filename: 'index.ejs'},
-        {folder: './modules/system/views/', filename: 'index-legacy.ejs'},
-        {folder: './modules/_embedApp/public/html/', filename: 'index.html'},
-        {folder: './modules/_fhirApp/', filename: 'fhirApp.html'},
-        {folder: './modules/_nativeRenderApp/', filename: 'nativeRenderApp.html'},
+        {folder: './modules/_embedApp/', filename: 'embedApp.ejs'},
+        {folder: './modules/_fhirApp/', filename: 'fhirApp.ejs'},
+        {folder: './modules/_nativeRenderApp/', filename: 'nativeRenderApp.ejs'},
     ].forEach(item => {
         let useminOutputs = [];
 
@@ -181,13 +181,9 @@ gulp.task('usemin', gulp.series('copyDist', function _usemin() {
                 },
                 assetsDir: './dist/',
                 webpcss: ['concat', rev(), data(outputFile)],
-                webpcssLegacy: ['concat', rev()],
                 // css: [minifyCss({target: './dist/app', rebase: true}), 'concat', rev(), data(outputFile)],
-                cssLegacy: [minifyCss({target: './dist/app', rebase: true}), 'concat', rev()],
                 poly: [uglify({mangle: false}), 'concat', rev()],
-                polyLegacy: [uglify({mangle: false}), 'concat', rev()],
                 webp: ['concat', rev(), data(outputFile)],
-                webpLegacy: ['concat', rev()]
             }))
             .pipe(gulp.dest(config.node.buildDir + '/dist/'));
         streamArray.push(useminTask);
@@ -213,10 +209,9 @@ gulp.task('copyUsemin', gulp.series('usemin', function _usemin() {
     [
         {folder: './modules/system/views/bot/', filename: '*.ejs'},
         {folder: './modules/system/views/', filename: 'index.ejs'},
-        {folder: './modules/system/views/', filename: 'index-legacy.ejs'},
-        {folder: './modules/_embedApp/public/html/', filename: 'index.html'},
-        {folder: './modules/_nativeRenderApp/', filename: 'nativeRenderApp.html'},
-        {folder: './modules/_fhirApp/', filename: 'fhirApp.html'}
+        {folder: './modules/_embedApp/', filename: 'embedApp.ejs'},
+        {folder: './modules/_nativeRenderApp/', filename: 'nativeRenderApp.ejs'},
+        {folder: './modules/_fhirApp/', filename: 'fhirApp.ejs'}
     ].forEach(item => {
         streamArray.push(gulp.src(config.node.buildDir + '/dist/' + item.filename)
             .pipe(gulp.dest(config.node.buildDir + '/' + item.folder)));
