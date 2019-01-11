@@ -133,7 +133,7 @@ run = async () => {
 //    let formIdList = ['formF1807'];
     for (let formId of formIdList) {
         await doOneNindsFormById(formId);
-        await NindsModel.remove({formId: formId});
+//        await NindsModel.remove({formId: formId});
     }
     let nullComments = await checkNullComments();
     for (let nullComment of nullComments) {
