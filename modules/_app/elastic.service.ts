@@ -4,7 +4,7 @@ import { UserService } from '_app/user.service';
 import { LocalStorageService } from 'angular-2-local-storage';
 import { SearchSettings, SearchSettingsElastic } from 'search/search.model';
 import {
-    CbErr, CbRequired, CurationStatus, ElasticQueryResponse, ItemElastic, UserSearchSettings
+    CbErr, Cb1, CurationStatus, ElasticQueryResponse, ItemElastic, UserSearchSettings
 } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm } from 'shared/form/form.model';
@@ -43,7 +43,7 @@ export class ElasticService {
     }
 
     generalSearchQuery(settings: SearchSettingsElastic, type: 'cde' | 'form', cb: CbErr<ElasticQueryResponse, boolean>) {
-        let search = (good: CbRequired<ElasticQueryResponse>, bad: CbErr) => {
+        let search = (good: Cb1<ElasticQueryResponse>, bad: CbErr) => {
             this.http.post<ElasticQueryResponse>('/elasticSearch/' + type, settings).subscribe(good, bad);
         };
 

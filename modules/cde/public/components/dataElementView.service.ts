@@ -13,14 +13,14 @@ export class DataElementViewService {
     }
 
     fetchEltForEditing(queryParams: Params): Promise<DataElement> {
-        if (!queryParams['tinyId']) {
+        if (!queryParams.tinyId) {
             return this.fetchPublished(queryParams);
         }
         return this.userService.then(user => {
             if (!isOrgCurator(user)) {
                 return this.fetchPublished(queryParams);
             }
-            return this.http.get<DataElement>(ITEM_MAP.cde.apiDraft + queryParams['tinyId']).toPromise()
+            return this.http.get<DataElement>(ITEM_MAP.cde.apiDraft + queryParams.tinyId).toPromise()
                 .catch((err: HttpErrorResponse) => {
                     if (err.status === 403) {
                         return this.fetchPublished(queryParams);
@@ -32,12 +32,12 @@ export class DataElementViewService {
 
     fetchPublished(queryParams: Params): Promise<DataElement> {
         let url;
-        if (queryParams['cdeId']) {
-            url = ITEM_MAP.cde.apiById + queryParams['cdeId'];
+        if (queryParams.cdeId) {
+            url = ITEM_MAP.cde.apiById + queryParams.cdeId;
         } else {
-            url = ITEM_MAP.cde.api + queryParams['tinyId'];
-            if (queryParams['version']) {
-                url = url + '/version/' + queryParams['version'];
+            url = ITEM_MAP.cde.api + queryParams.tinyId;
+            if (queryParams.version) {
+                url = url + '/version/' + queryParams.version;
             }
         }
         return this.http.get<DataElement>(url).toPromise();
