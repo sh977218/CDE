@@ -1,7 +1,7 @@
 <ng-template #classifyItemContent>
     <h4 mat-dialog-title [innerHtml]="modalTitle"></h4>
     <div mat-dialog-content>
-        <mat-tab-group (selectedTabChange)="onChangeClassifyView($event)">
+        <mat-tab-group>
             <mat-tab id="treeViewTab" label="By Classification tree">
                 <select class="form-control" id="selectClassificationOrg" name="selectClassifyItemOrg"
                         (change)="onChangeOrg($event.target.value)" [ngModel]="selectedOrg" required>
