@@ -12,7 +12,7 @@ public class CanEditInCompareTest extends NlmCdeBaseTest {
         addToCompare("Person Birth Date", "Patient Ethnic Group Category");
         shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("editStatus")));
         shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("openNewDesignationModalBtn")));
-        shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//mat-icon[contains(., 'delete')]")));
-        shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//mat-icon[. = 'edit']")));
+        shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//mat-dialog-container//mat-icon[contains(., 'delete')]")));
+        shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//mat-dialog-container//mat-icon[. = 'edit']")));
     }
 }
