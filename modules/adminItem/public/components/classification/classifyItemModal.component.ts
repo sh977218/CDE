@@ -74,13 +74,6 @@ export class ClassifyItemModalComponent {
         });
     }
 
-    onChangeClassifyView(event: MatTabChangeEvent) {
-        if (event.tab.textLabel === 'By recently added') {
-            this.orgClassificationsRecentlyAddView = this.localStorageService.get('classificationHistory');
-        } else {
-            this.orgClassificationsTreeView = null;
-        }
-    }
 
     onChangeOrg(value: string) {
         if (value) {
@@ -99,6 +92,7 @@ export class ClassifyItemModalComponent {
     openModal() {
         this.orgClassificationsTreeView = null;
         this.orgClassificationsRecentlyAddView = undefined;
+        this.orgClassificationsRecentlyAddView = this.localStorageService.get('classificationHistory');
         if (this.selectedOrg) {
             this.onChangeOrg(this.selectedOrg);
         } else {
