@@ -173,7 +173,7 @@ public class BaseFormTest extends NlmCdeBaseTest {
         Assert.assertEquals(actualNumSuggested, expectedNumSuggested);
         clickElement(By.xpath("//*[contains(@id,'mat-autocomplete-')]//mat-option[" + clickNth + "]"));
 
-        String actualText = findElement(By.xpath("//*[contains(@id,'mat-autocomplete-')]//mat-option[" + clickNth + "]")).getText();
+        String actualText = findElement(By.xpath(inputXpath)).getText();
         Assert.assertEquals(actualText, textToBePresent);
         if (displayError) textPresent(errorMessage);
         else textNotPresent(errorMessage);
