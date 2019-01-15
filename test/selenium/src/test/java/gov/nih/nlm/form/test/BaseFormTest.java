@@ -167,6 +167,7 @@ public class BaseFormTest extends NlmCdeBaseTest {
 
     public void editSkipLogic(String inputXpath, int clickNth, boolean displayError, String errorMessage) {
         clickElement(By.xpath(inputXpath));
+        findElement(By.xpath(inputXpath)).sendKeys(Keys.SPACE);
         clickElement(By.xpath("//*[contains(@id,'mat-autocomplete-')]//mat-option[" + clickNth + "]"));
         if (displayError) textPresent(errorMessage);
         else textNotPresent(errorMessage);
