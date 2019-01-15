@@ -18,22 +18,25 @@ public class RemoveExistingSkipLogicTest extends BaseFormTest {
 
         textPresent(skipLogic);
 
+        String xpath1 = "//*[@id='question_0-1']//*[contains(@class,'skipLogicCondition')]//input";
         startEditQuestionById("question_0-1");
-        findElement(By.cssSelector("#question_0-1 input.skipLogicCondition")).clear();
-        findElement(By.cssSelector("#question_0-1 input.skipLogicCondition")).sendKeys(Keys.SPACE);
-        findElement(By.cssSelector("#question_0-1 input.skipLogicCondition")).sendKeys(Keys.BACK_SPACE);
+        findElement(By.xpath(xpath1)).clear();
+        findElement(By.xpath(xpath1)).sendKeys(Keys.SPACE);
+        findElement(By.xpath(xpath1)).sendKeys(Keys.BACK_SPACE);
         saveEditQuestionById("question_0-1");
 
+        String xpath2 = "//*[@id='section_0-2']//*[contains(@class,'skipLogicCondition')]//input";
         startEditSectionById("section_0-2");
-        findElement(By.cssSelector("#section_0-2 input.skipLogicCondition")).clear();
-        findElement(By.cssSelector("#section_0-2 input.skipLogicCondition")).sendKeys(Keys.SPACE);
-        findElement(By.cssSelector("#section_0-2 input.skipLogicCondition")).sendKeys(Keys.BACK_SPACE);
+        findElement(By.xpath(xpath2)).clear();
+        findElement(By.xpath(xpath2)).sendKeys(Keys.SPACE);
+        findElement(By.xpath(xpath2)).sendKeys(Keys.BACK_SPACE);
         saveEditSectionById("section_0-2");
 
+        String xpath3 = "//*[@id='form_0-3']//*[contains(@class,'skipLogicCondition')]//input";
         startEditSectionById("form_0-3");
-        findElement(By.cssSelector("#form_0-3 input.skipLogicCondition")).clear();
-        findElement(By.cssSelector("#form_0-3 input.skipLogicCondition")).sendKeys(Keys.SPACE);
-        findElement(By.cssSelector("#form_0-3 input.skipLogicCondition")).sendKeys(Keys.BACK_SPACE);
+        findElement(By.xpath(xpath3)).clear();
+        findElement(By.xpath(xpath3)).sendKeys(Keys.SPACE);
+        findElement(By.xpath(xpath3)).sendKeys(Keys.BACK_SPACE);
         saveEditSectionById("form_0-3");
         newFormVersion();
 
