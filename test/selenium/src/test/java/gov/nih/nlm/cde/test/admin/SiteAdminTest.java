@@ -23,6 +23,8 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         mustBeLoggedInAs("theOrgAuth", password);
         String testOrg = "Promote Org Test";
 
+        addOrg(testOrg, null, null);
+
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Org Management"));
         clickElement(By.xpath("//div[. = 'Org Admins']"));

@@ -18,9 +18,9 @@ public class SkipLogicDateTest extends BaseFormTest {
         startEditQuestionById("question_0-2");
         String inputXpath1 = locateSkipLogicEditTextareaXpathByQuestionId("question_0-2");
 
-        editSkipLogic(inputXpath1, "\"Indicate date of reference scan\"", 2, 2, true, "Unexpected number of tokens in expression 1");
-        editSkipLogic(inputXpath1, "=", 6, 1, true, "Unexpected number of tokens in expression 2");
-        editSkipLogic(inputXpath1, "\"{{MM/DD/YYYY}}\"", 1, 1, true, "\"{{MM/DD/YYYY}}\" is not a valid date for \"Indicate date of reference scan\".");
+        editSkipLogic(inputXpath1, 2, true, "Unexpected number of tokens in expression 1");
+        editSkipLogic(inputXpath1, 1, true, "Unexpected number of tokens in expression 2");
+        editSkipLogic(inputXpath1, 1, true, "\"{{MM/DD/YYYY}}\" is not a valid date for \"Indicate date of reference scan\".");
 
         String correctSkipLogicString = "\"Indicate date of reference scan\"=\"10/11/2016\"";
 

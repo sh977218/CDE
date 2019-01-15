@@ -165,16 +165,9 @@ public class BaseFormTest extends NlmCdeBaseTest {
     }
 
 
-    public void editSkipLogic(String inputXpath, String textToBePresent, int expectedNumSuggested, int clickNth,
-                              boolean displayError, String errorMessage) {
+    public void editSkipLogic(String inputXpath, int clickNth, boolean displayError, String errorMessage) {
         clickElement(By.xpath(inputXpath));
-
-        int actualNumSuggested = findElements(By.xpath("//*[contains(@id,'mat-autocomplete-')]//mat-option")).size();
-        Assert.assertEquals(actualNumSuggested, expectedNumSuggested);
         clickElement(By.xpath("//*[contains(@id,'mat-autocomplete-')]//mat-option[" + clickNth + "]"));
-
-        String actualText = findElement(By.xpath(inputXpath)).getText();
-        Assert.assertEquals(actualText, textToBePresent);
         if (displayError) textPresent(errorMessage);
         else textNotPresent(errorMessage);
     }
