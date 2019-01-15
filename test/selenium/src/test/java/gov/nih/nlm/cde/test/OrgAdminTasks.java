@@ -37,7 +37,7 @@ public class OrgAdminTasks extends BaseClassificationTest {
 
         clickElement(By.xpath("//div[. = 'Organizations Admins']"));
         new Select(findElement(By.id("newOrgAdminOrgName"))).selectByVisibleText("caBIG");
-        findElement(By.name("searchUsersInput")).sendKeys("userToPromote");
+        searchUsername("userToPromote");
         clickElement(By.id("newOrgAdminSubmit"));
         checkAlert("Saved");
         textPresent("userToPromote");
