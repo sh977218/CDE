@@ -44,7 +44,7 @@ exports.module = function (roleConfig) {
     });
     router.get('/usernames/:username', (req, res) => {
         userDb.usersByUsername(req.params.username, handle404({req, res}, users => {
-            res.send(users.map(u => u.username));
+            res.send(users.map(u => u.username.toLowerCase()));
         }));
     });
 
@@ -322,5 +322,6 @@ function withRetry(tryCb, retries = 1) {
             cb(...args);
         };
     }
+
     tryCb(handleConflict);
 }
