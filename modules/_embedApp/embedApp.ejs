@@ -4,12 +4,6 @@
     <meta charset="UTF-8">
     <title>CDE Embedded Search</title>
 
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
-    <!-- build:webpcss /embed/embed.css -->
-    <link href="/embed/embed.css" rel="stylesheet" type="text/css" media="all"/>
-    <!-- endbuild -->
-
     <% if (isLegacy) { %>
         <!-- Polyfills for legacy browsers -->
         <!-- build:poly /embed/polyfill.js -->
@@ -54,19 +48,43 @@
             margin-top: 90px;
         }
     </style>
+
+    <%# Defer CSS #%>
+    <script type="text/javascript">
+        var d = document.createElement('link');
+        d.href = '/embed/embed.css';
+        d.rel = 'stylesheet';
+        d.type = 'text/css';
+        var l = document.getElementsByTagName('meta')[0];
+        l.parentNode.insertBefore(d, l);
+
+        d = document.createElement('link');
+        d.href = 'https://fonts.googleapis.com/icon?family=Material+Icons';
+        d.rel = 'stylesheet';
+        d.type = 'text/css';
+        l = document.getElementsByTagName('meta')[0];
+        l.parentNode.insertBefore(d, l);
+    </script>
+    <noscript>
+        <!-- build:css /embed/embed.css -->
+        <link rel="stylesheet" type="text/css" href="/embed/embed.css" media="all"/>
+        <!-- endbuild -->
+
+        <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    </noscript>
 </head>
 <body>
     <cde-embed></cde-embed>
+
+    <!-- build:js /embed/embed.js -->
+    <script src="/embed/embed.js"></script>
+    <!-- endbuild -->
 
     <div class="loading">
         <br><br><br><br><br><br>
         <h2 class="text-center">Loading...</h2>
         <br><br><br><br><br><br>
     </div>
-
-    <!-- build:webp /embed/embed.js -->
-    <script src="/embed/embed.js"></script>
-    <!-- endbuild -->
 
     <% if (isLegacy) { %>
         <!--[if IE]>

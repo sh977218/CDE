@@ -13,12 +13,6 @@
     <meta name="google-site-verification" content="hgnYTGxY1q6mEcYD8VptKKAQCnwoWzfySPSGQWRgdyk">
     <meta name="theme-color" content="#004496">
 
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
-    <!-- build:webpcss /app/cde.css -->
-    <link href="/app/cde.css" rel="stylesheet" type="text/css" media="all"/>
-    <!-- endbuild -->
-
     <link rel="manifest" href="app/manifest.webmanifest">
 
     <% if (isLegacy) { %>
@@ -34,9 +28,54 @@
     <% } %>
 
     <%- include config.html %>
+
+    <%# Defer CSS #%>
+    <script type="text/javascript">
+        var d = document.createElement('link');
+        d.href = '/app/cde.css';
+        d.rel = 'stylesheet';
+        d.type = 'text/css';
+        var l = document.getElementsByTagName('meta')[0];
+        l.parentNode.insertBefore(d, l);
+
+        d = document.createElement('link');
+        d.href = 'https://fonts.googleapis.com/icon?family=Material+Icons';
+        d.rel = 'stylesheet';
+        d.type = 'text/css';
+        l = document.getElementsByTagName('meta')[0];
+        l.parentNode.insertBefore(d, l);
+    </script>
+    <noscript>
+        <!-- build:css /app/cde.css -->
+        <link rel="stylesheet" type="text/css" href="/app/cde.css" media="all"/>
+        <!-- endbuild -->
+
+        <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    </noscript>
 </head>
 
 <body role="main" id="top">
+
+<div itemscope>
+    <nih-cde></nih-cde>
+
+    <!-- build:js /app/cde.js -->
+    <script src="/app/cde.js"></script>
+    <!-- endbuild -->
+
+    <% if (isLegacy) { %>
+        <div class="loading">
+            <br><br><br><br><br><br>
+            <h2 class="text-center">Loading...</h2>
+            <br><br><br><br><br><br>
+        </div>
+    <% } else { %>
+        <div class="loading" id="spinner"></div>
+    <% } %>
+
+    <%- include googleAnalytics.html %>
+    <%- include footer.html %>
+</div>
 
 <% if (!isLegacy) { %>
     <style>
@@ -130,29 +169,6 @@
         }
     </style>
 <% } %>
-
-<div itemscope>
-
-    <%- include googleAnalytics.html %>
-    <nih-cde></nih-cde>
-
-    <% if (isLegacy) { %>
-        <div class="loading">
-            <br><br><br><br><br><br>
-            <h2 class="text-center">Loading...</h2>
-            <br><br><br><br><br><br>
-        </div>
-    <% } else { %>
-        <div class="loading" id="spinner"></div>
-    <% } %>
-
-    <%- include footer.html %>
-
-</div>
-
-<!-- build:webp /app/cde.js -->
-<script src="/app/cde.js"></script>
-<!-- endbuild -->
 
 <% if (isLegacy) { %>
     <!-- Polyfills for legacy browsers -->

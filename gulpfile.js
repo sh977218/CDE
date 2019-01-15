@@ -147,10 +147,10 @@ gulp.task('copyDist', gulp.series('createDist',
         buildNative = () => run('npm run buildNative').exec(),
         buildEmbed = () => run('npm run buildEmbed').exec(),
         buildFhir = () => run('npm run buildFhir').exec())
-    , copyApp = () => gulp.src('./dist/app/**/*').pipe(gulp.dest(config.node.buildDir + '/dist/app'))
-    , copyEmbed = () => gulp.src('./dist/embed/**/*').pipe(gulp.dest(config.node.buildDir + '/dist/embed'))
-    , copyFhir = () => gulp.src('./dist/fhir/*').pipe(gulp.dest(config.node.buildDir + '/dist/fhir'))
-    , copyNative = () => gulp.src('./dist/native/**/*').pipe(gulp.dest(config.node.buildDir + '/dist/native'))
+    , copyApp = () => gulp.src(['./dist/app/**/*', '!./dist/app/cde.css']).pipe(gulp.dest(config.node.buildDir + '/dist/app'))
+    , copyEmbed = () => gulp.src(['./dist/embed/**/*', '!./dist/embed/embed.css']).pipe(gulp.dest(config.node.buildDir + '/dist/embed'))
+    , copyFhir = () => gulp.src(['./dist/fhir/*', '!./dist/fhir/fhir.css']).pipe(gulp.dest(config.node.buildDir + '/dist/fhir'))
+    , copyNative = () => gulp.src(['./dist/native/**/*', '!./dist/native/native.css']).pipe(gulp.dest(config.node.buildDir + '/dist/native'))
     , copyHome = () => gulp.src('./modules/system/views/home-launch.ejs').pipe(gulp.dest(config.node.buildDir + '/modules/system/views'))
     , copyLaunch = () => gulp.src('./dist/launch/*').pipe(gulp.dest(config.node.buildDir + '/dist/launch'))
 ));
@@ -166,25 +166,38 @@ gulp.task('usemin', gulp.series('copyDist', function _usemin() {
         let useminOutputs = [];
 
         function outputFile(file) {
-            let index = file.path.indexOf('/app/'); // linux
-            if (index === -1) {
-                index = file.path.indexOf('\\app\\'); // windows
-            }
-            useminOutputs.push('/app/' + file.path.substring(index + 5));
+            useminOutputs.push(file.path.match(/(\\|\/)(app|embed|fhir|native)(\\|\/).*$/)[0].replace(/\\/g, '/'));
             return file;
+        }
+
+        function getCssLink(/*file*/) {
+            return  '"' + useminOutputs.filter(f => f.endsWith('.css'))[0] + '"';
         }
 
         let useminTask = gulp.src(item.folder + item.filename)
             .pipe(usemin({
-                jsAttributes: {
-                    defer: false
-                },
+                jsAttributes: {defer: false},
                 assetsDir: './dist/',
-                webpcss: ['concat', rev(), data(outputFile)],
-                // css: [minifyCss({target: './dist/app', rebase: true}), 'concat', rev(), data(outputFile)],
+                css: [minifyCss(), 'concat', rev(), data(outputFile)],
+                html: [ htmlmin({
+                    collapseInlineTagWhitespace: true,
+                    collapseWhitespace: true,
+                    conservativeCollapse: true,
+                    minifyJS: true,
+                    minifyCSS: true,
+                    processScripts: ['application/ld+json'],
+                    processConditionalComments: true,
+                    removeComments: true,
+                    removeScriptTypeAttributes: true,
+                    removeStyleLinkTypeAttributes: true,
+                }) ],
+                js: ['concat', rev(), data(outputFile)],
                 poly: [uglify({mangle: false}), 'concat', rev()],
-                webp: ['concat', rev(), data(outputFile)],
             }))
+            .pipe(replace('"/app/cde.css"', getCssLink))
+            .pipe(replace('"/embed/embed.css"', getCssLink))
+            .pipe(replace('"/fhir/fhir.css"', getCssLink))
+            .pipe(replace('"/native/native.css"', getCssLink))
             .pipe(gulp.dest(config.node.buildDir + '/dist/'));
         streamArray.push(useminTask);
         useminTask.on('end', function () {

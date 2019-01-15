@@ -12,12 +12,6 @@
     <meta name=viewport content="width=device-width, initial-scale=1">
     <meta name="google-site-verification" content="hgnYTGxY1q6mEcYD8VptKKAQCnwoWzfySPSGQWRgdyk">
 
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
-    <!-- build:webpcss /fhir/fhir.css -->
-    <link href="/fhir/fhir.css" rel="stylesheet" type="text/css" media="all"/>
-    <!-- endbuild -->
-
     <% if (isLegacy) { %>
         <!-- Polyfills for legacy browsers -->
         <!-- build:poly /fhir/polyfill.js -->
@@ -30,6 +24,30 @@
         <!-- endbuild -->
     <% } %>
 
+    <%# Defer CSS #%>
+    <script type="text/javascript">
+        var d = document.createElement('link');
+        d.href = '/fhir/fhir.css';
+        d.rel = 'stylesheet';
+        d.type = 'text/css';
+        var l = document.getElementsByTagName('meta')[0];
+        l.parentNode.insertBefore(d, l);
+
+        d = document.createElement('link');
+        d.href = 'https://fonts.googleapis.com/icon?family=Material+Icons';
+        d.rel = 'stylesheet';
+        d.type = 'text/css';
+        l = document.getElementsByTagName('meta')[0];
+        l.parentNode.insertBefore(d, l);
+    </script>
+    <noscript>
+        <!-- build:css /fhir/fhir.css -->
+        <link rel="stylesheet" type="text/css" href="/fhir/fhir.css" media="all"/>
+        <!-- endbuild -->
+
+        <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    </noscript>
+
     <!-- IFH -->
 </head>
 
@@ -37,7 +55,7 @@
 
 <cde-fhir-standalone></cde-fhir-standalone>
 
-<!-- build:webp /fhir/fhir.js -->
+<!-- build:js /fhir/fhir.js -->
 <script src="/fhir/fhir.js" defer></script>
 <!-- endbuild -->
 
