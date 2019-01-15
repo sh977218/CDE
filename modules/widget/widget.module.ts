@@ -11,8 +11,8 @@ import { InlineEditComponent } from 'widget/inlineEdit/inlineEdit.component';
 import { InlineSelectEditComponent } from 'widget/inlineEdit/inlineSelectEdit.component';
 import { PlaceHoldEmptyPipe } from 'widget/pipes/placeHoldEmpty.pipe';
 import { SortableArrayComponent } from 'widget/sortableArray/sortableArray.component';
-import { TextTruncateComponent } from 'widget/text/textTruncate.component';
 import { MatIconModule } from '@angular/material';
+import { TextTruncateModule } from 'textTruncate/textTruncate.module';
 
 @NgModule({
     imports: [
@@ -22,6 +22,7 @@ import { MatIconModule } from '@angular/material';
         NgbModule.forRoot(),
         CoreModule,
         MatIconModule,
+        TextTruncateModule,
     ],
     declarations: [
         DeleteWithConfirmComponent,
@@ -29,7 +30,6 @@ import { MatIconModule } from '@angular/material';
         InlineEditComponent,
         InlineSelectEditComponent,
         PlaceHoldEmptyPipe,
-        TextTruncateComponent,
         SortableArrayComponent,
     ],
     exports: [
@@ -40,8 +40,7 @@ import { MatIconModule } from '@angular/material';
         PlaceHoldEmptyPipe,
         SortableArrayComponent,
     ],
-    providers: [
-    ],
+    providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 
