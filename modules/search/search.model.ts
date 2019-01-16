@@ -4,14 +4,14 @@ import { DataType } from 'shared/de/dataElement.model';
 export class SearchSettings {
     classification: string[] = [];
     classificationAlt: string[] = [];
-    datatypes?: DataType[] = [];
+    datatypes: DataType[] = [];
     excludeAllOrgs?: boolean;
-    excludeOrgs?: string[] = [];
-    meshTree?: string = '';
+    excludeOrgs: string[] = [];
+    meshTree: string = '';
     page?: number = 1;
     q?: string = '';
     regStatuses: CurationStatus[] = [];
-    resultPerPage?: number = 20;
+    resultPerPage: number = 20;
     searchTerm?: string;
     selectedOrg?: string = '';
     selectedOrgAlt?: string;

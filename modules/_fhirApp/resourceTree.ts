@@ -41,7 +41,7 @@ export type ResourceTreeAttribute = {
     resource?: any,
     root: ResourceTreeResource,
 };
-export type ResourceTree = ResourceTreeResource|ResourceTreeIntermediate|ResourceTreeAttribute;
+export type ResourceTree = ResourceTreeResource | ResourceTreeIntermediate | ResourceTreeAttribute;
 
 export class ResourceTreeUtil {
     static createAttritube(parent: ResourceTreeResource|ResourceTreeIntermediate, parentAttribute: string, fe?: CdeForm|FormElement, resource?: FhirDomainResource): ResourceTreeAttribute {
@@ -58,7 +58,8 @@ export class ResourceTreeUtil {
         return node;
     }
 
-    static createResource(resourceType: supportedFhirResources, fe?: CdeForm|FormElement, resource?: FhirDomainResource): ResourceTreeResource {
+    static createResource(resourceType: supportedFhirResources|undefined, fe?: CdeForm|FormElement,
+                          resource?: FhirDomainResource): ResourceTreeResource {
         let partial: any = {children: [], resourceType};
         partial.root = partial;
         let node: ResourceTreeResource = partial;
@@ -67,7 +68,7 @@ export class ResourceTreeUtil {
         return node;
     }
 
-    static createRoot(fe: CdeForm|FormElement, parent?: ResourceTreeRoot) {
+    static createRoot(fe: CdeForm|FormElement, parent?: ResourceTreeRoot): ResourceTreeRoot {
         return {children: [], crossReference: fe, parent};
     }
 
@@ -92,7 +93,7 @@ export class ResourceTreeUtil {
     }
 
     static isAttribute(node: ResourceTree): node is ResourceTreeAttribute {
-        return !!node['parentAttribute'];
+        return node.hasOwnProperty('parentAttribute');
     }
 
     static recurse(node: ResourceTree, parent: ResourceTree, action: Function) {

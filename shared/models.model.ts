@@ -38,10 +38,15 @@ export class Attachment {
 }
 
 export type Cb<T = never, U = never, V = never> = (t?: T, u?: U, v?: V) => void;
+export type Cb1<T = never, U = never, V = never> = (t: T, u?: U, v?: V) => void;
+export type Cb2<T = never, U = never, V = never> = (t: T, u: U, v?: V) => void;
+export type Cb3<T = never, U = never, V = never> = (t: T, u: U, v: V) => void;
 export type CbErr<T = never, U = never, V = never> = (error?: string, t?: T, u?: U, v?: V) => void;
 export type CbErrObj<E = string, T = never, U = never, V = never> = (error?: E, t?: T, u?: U, v?: V) => void;
-export type CbRequired<T = never> = (t: T) => void;
 export type CbRet<R = never, T = never, U = never, V = never> = (t?: T, u?: U, v?: V) => R;
+export type CbRet1<R = never, T = never, U = never, V = never> = (t: T, u?: U, v?: V) => R;
+export type CbRet2<R = never, T = never, U = never, V = never> = (t: T, u: U, v?: V) => R;
+export type CbRet3<R = never, T = never, U = never, V = never> = (t: T, u: U, v: V) => R;
 
 export class CdeId {
     [key: string]: string|undefined;
@@ -170,7 +175,10 @@ export interface ElasticQueryResponse {
 }
 
 export interface ElasticQueryResponseAggregation {
-    [key: string]: { buckets: ElasticQueryResponseAggregationBucket[] };
+    [key: string]: { // 1 or 2 levels of keys...
+        [key: string]: { buckets: ElasticQueryResponseAggregationBucket[] } & ElasticQueryResponseAggregationBucket[],
+        buckets: { buckets: ElasticQueryResponseAggregationBucket[] } & ElasticQueryResponseAggregationBucket[]
+    };
 }
 
 export interface ElasticQueryResponseAggregationBucket {
@@ -283,7 +291,7 @@ export type EmbedItem = {
         label: string,
         contextName: string
     }[],
-    pageSize?: number,
+    pageSize: number,
     permissibleValues?: boolean; // cde only
     primaryDefinition?: {
         label?: string,
@@ -384,6 +392,7 @@ export class Organization {
 export type ObjectId = string;
 
 export class PermissibleValue {
+    [key: string]: any;
     codeSystemName?: string;
     codeSystemVersion?: string;
     permissibleValue!: string;
