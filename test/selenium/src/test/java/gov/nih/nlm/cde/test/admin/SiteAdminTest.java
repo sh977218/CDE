@@ -44,8 +44,7 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Org Management"));
         clickElement(By.xpath("//div[. = 'Org Admins']"));
-        scrollToViewById("existingOrgAdminOrgName-" + testOrg);
-        clickElement(By.xpath("//span[contains(text(),'" + test_username + "')]/..//mat-icon[normalize-space() = 'delete_outline']"));
+        clickElement(By.xpath("//tr/td[contains(text(),'" + test_username + "')]/..//mat-icon[normalize-space() = 'delete_outline']"));
         textNotPresent(test_username);
     }
 
