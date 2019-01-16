@@ -1,12 +1,15 @@
-import { Component, Input, Output, EventEmitter, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ElementRef, ViewChild } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { MatAutocompleteTrigger } from '@angular/material';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
+import { Observable } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
 
 @Component({
     selector: 'cde-skip-logic-autocomplete',
     templateUrl: './skipLogicAutocomplete.component.html'
 })
-export class SkipLogicAutocompleteComponent {
+export class SkipLogicAutocompleteComponent implements OnInit {
     @ViewChild("slInput") slInput: ElementRef;
     @ViewChild("slTrigger") slTrigger: MatAutocompleteTrigger;
 
@@ -16,9 +19,12 @@ export class SkipLogicAutocompleteComponent {
     @Output() onChanged = new EventEmitter();
 
     filteredSkipLogics = [];
-    powerEdit: boolean;
 
-    constructor(public skipLogicValidateService: SkipLogicValidateService) {}
+    constructor(public skipLogicValidateService: SkipLogicValidateService) {
+    }
+
+    ngOnInit() {
+    }
 
     getTypeaheadOptions(event) {
         this.filteredSkipLogics = this.skipLogicValidateService.getTypeaheadOptions(event, this.parent, this.section);

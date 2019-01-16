@@ -815,9 +815,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
 
     protected void scrollToView(By by) {
         JavascriptExecutor je = (JavascriptExecutor) driver;
-        je.executeScript(
-                "window.scrollTo(0, arguments[0].getBoundingClientRect().top + window.pageYOffset - (window.innerHeight / 2));",
-                findElement(by));
+        je.executeScript("window.scrollTo(0, arguments[0].getBoundingClientRect().top + window.pageYOffset - (window.innerHeight / 2));", findElement(by));
     }
 
     protected void scrollToViewById(String id) {

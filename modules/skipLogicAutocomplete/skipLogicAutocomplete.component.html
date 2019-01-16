@@ -1,18 +1,9 @@
-<mat-form-field style="width:90%;" class="skipLogicCondition">
-    <input #slInput
-           [disabled]="!(parent.formElements.length > 1 && canEdit)"
-           title="Show If" (focus)="slOptionsReTrigger()"
-           matInput #slTrigger="matAutocompleteTrigger"
-           [ngModel]="section.skipLogic.condition"
-           (ngModelChange)="getTypeaheadOptions($event); validateSkipLogic(parent, section, $event)"
-           placeholder="Start typing a question name to find options"
-           [matAutocomplete]="slAuto">
-    <mat-autocomplete #slAuto="matAutocomplete"
-                      (optionSelected)="onSelectItem(parent, section, $event)">
-        <mat-option *ngFor="let option of filteredSkipLogics"
-                    [value]="section.skipLogic.condition + option">
-            {{option}}
-        </mat-option>
-    </mat-autocomplete>
-</mat-form-field>
+<div>
+    <cde-question-autocomplete></cde-question-autocomplete>
+    <cde-operator-autocomplete></cde-operator-autocomplete>
+    <cde-answer-autocomplete></cde-answer-autocomplete>
+    <cde-logic-autocomplete></cde-logic-autocomplete>
+    <mat-icon>Add</mat-icon>
+    <mat-icon>Remove</mat-icon>
+</div>
 {{section.skipLogic?.validationError}}
