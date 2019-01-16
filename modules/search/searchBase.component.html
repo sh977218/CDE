@@ -306,7 +306,7 @@
                     </div>
                 </div>
                 <!-- TOPIC AGGREGATIONS -->
-                <div *ngIf="searchSettings.meshTree || aggregations.topics.length" id="meshTreesListHolder"
+                <div *ngIf="searchSettings.meshTree || aggregationsTopics.length" id="meshTreesListHolder"
                      class="my-3">
                     <span class="treeTitle">Topics</span>
                     <div *ngFor="let e of getCurrentSelectedTopic(); index as i; last as isLast"
@@ -321,7 +321,7 @@
                             </div>
                         </ng-template>
                     </div>
-                    <div *ngFor="let b of aggregations.topics; trackBy: trackByName"
+                    <div *ngFor="let b of aggregationsTopics; trackBy: trackByName"
                          id="topic-{{b.name}}" class="treeChild hand-cursor"
                          [class.treeItem]="getCurrentSelectedTopic().length > 1"
                          (click)="selectTopic(b.name)" role="link">
@@ -387,7 +387,7 @@
                         </mat-form-field>
                         <mat-paginator class="float-left" (page)="pageChange($event)" [length]="totalItemsLimited"
                                        [pageIndex]="searchSettings.page - 1"
-                                       [pageSize]="resultPerPage" [hidePageSize]="true" style="font-size: 1.4em">
+                                       [pageSize]="searchSettings.resultPerPage" [hidePageSize]="true" style="font-size: 1.4em">
                         </mat-paginator>
                         <a [hidden]="true" href="{{fakeNextPageLink()}}" rel="next">Next Page</a>
                     </div>

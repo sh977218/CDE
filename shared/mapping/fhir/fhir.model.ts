@@ -1,11 +1,16 @@
 import { FhirOrganization } from 'shared/mapping/fhir/fhirResource.model';
 
-export class FhirElement {
+export interface FhirElement {
     extension?: FhirExtension[];
     id?: string;
 }
 
-export class FhirAddress extends FhirElement {
+export class FhirElementBase implements FhirElement {
+    extension?: FhirExtension[];
+    id?: string;
+}
+
+export class FhirAddress extends FhirElementBase {
     city?: string;
     country?: string;
     district?: string;
@@ -18,19 +23,19 @@ export class FhirAddress extends FhirElement {
     use?: FhirCode;
 }
 
-export class FhirBackboneElement extends FhirElement {
+export class FhirBackboneElement extends FhirElementBase {
     modifierExtension?: FhirExtension[];
 }
 
 export type FhirBase64Binary = string[];
 export type FhirCode<T = string> = T;
 
-export class FhirCodeableConcept extends FhirElement {
+export class FhirCodeableConcept extends FhirElementBase {
     coding?: FhirCoding[];
     text?: string;
 }
 
-export class FhirCoding extends FhirElement {
+export class FhirCoding extends FhirElementBase {
     code?: string;
     display?: string;
     system?: FhirUri;
@@ -48,7 +53,7 @@ export interface FhirEffective {
     effectivePeriod?: FhirPeriod;
 }
 
-export class FhirExtension extends FhirElement implements FhirValue {
+export class FhirExtension extends FhirElementBase implements FhirValue {
     url!: FhirUri;
     valueAddress?: FhirAddress;
     valueAttachment?: any;
@@ -77,7 +82,7 @@ export class FhirExtension extends FhirElement implements FhirValue {
     valueUri?: FhirUri;
 }
 
-export class FhirHumanName extends FhirElement {
+export class FhirHumanName extends FhirElementBase {
     family?: string;
     given?: string[];
     period?: FhirPeriod;
@@ -89,7 +94,7 @@ export class FhirHumanName extends FhirElement {
 
 export type FhirInstant = any; // datetime specific to atleast seconds with timezone
 
-export class FhirIdentifier extends FhirElement {
+export class FhirIdentifier extends FhirElementBase {
     assigner?: FhirReference<FhirOrganization>;
     period?: FhirPeriod;
     type?: FhirCodeableConcept;
@@ -102,12 +107,12 @@ export type FhirMarkdown = string;
 export type FhirMeta = any;
 export type FhirNarrative = any;
 
-export class FhirPeriod extends FhirElement {
+export class FhirPeriod extends FhirElementBase {
     start?: FhirDateTime;
     end?: FhirDateTime;
 }
 
-export class FhirSimpleQuantity extends FhirElement {
+export class FhirSimpleQuantity extends FhirElementBase {
     code?: string;
     unit?: string;
     system?: string;
@@ -117,12 +122,12 @@ export class FhirQuantity extends FhirSimpleQuantity {
     comparator?: string;
 }
 
-export class FhirRange extends FhirElement {
+export class FhirRange extends FhirElementBase {
     low?: FhirSimpleQuantity;
     high?: FhirSimpleQuantity;
 }
 
-export class FhirRatio extends FhirElement {
+export class FhirRatio extends FhirElementBase {
     denominator?: FhirQuantity;
     numerator?: FhirQuantity;
 }
@@ -133,7 +138,7 @@ export class FhirReference<T> {
     reference?: string;
 }
 
-export class FhirSampledData extends FhirElement {
+export class FhirSampledData extends FhirElementBase {
     data!: string;
     dimensions: number = NaN; // unsigned int >0
     factor?: number;
@@ -147,7 +152,7 @@ export type FhirSchedule = any;
 export type FhirTime = string;
 export type FhirUri = string;
 
-export interface FhirValue {
+export interface FhirValue extends FhirElement {
     valueAddress?: FhirAddress;
     valueAttachment?: any;
     valueBase64Binary?: FhirBase64Binary;
