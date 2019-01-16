@@ -34,6 +34,7 @@ export class OrgAdminComponent {
     }
 
     getAdmins() {
+        console.log(this.userService.user);
         if (this.isAllowedModel.hasRole('OrgAuthority')) {
             return this.http.get<UsersOrgQuery[]>('/orgAdmins').subscribe(r => this.setOrgs(r));
         } else {

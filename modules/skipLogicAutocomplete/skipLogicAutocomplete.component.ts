@@ -16,12 +16,11 @@ export class SkipLogicAutocompleteComponent {
     @Output() onChanged = new EventEmitter();
 
     filteredSkipLogics = [];
+    powerEdit: boolean;
 
-    constructor(public skipLogicValidateService: SkipLogicValidateService) {
-    }
+    constructor(public skipLogicValidateService: SkipLogicValidateService) {}
 
     getTypeaheadOptions(event) {
-        console.log(event);
         this.filteredSkipLogics = this.skipLogicValidateService.getTypeaheadOptions(event, this.parent, this.section);
     }
 
@@ -35,7 +34,6 @@ export class SkipLogicAutocompleteComponent {
     slOptionsReTrigger() {
         if (this.slInput) {
             setTimeout(() => {
-                console.log("i get options with " + this.section.skipLogic.condition);
                 this.getTypeaheadOptions(this.section.skipLogic.condition);
                 this.slTrigger.openPanel();
             }, 0);
