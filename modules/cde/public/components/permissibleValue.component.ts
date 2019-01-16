@@ -64,10 +64,11 @@ export class PermissibleValueComponent {
         classification: [],
         classificationAlt: [],
         datatypes: ['Value List'],
+        excludeOrgs: [],
+        excludeAllOrgs: false,
         meshTree: '',
         regStatuses: [],
-        excludeOrgs: [],
-        excludeAllOrgs: false
+        resultPerPage: 20,
     };
     private searchTerms = new Subject<string>();
     vsacValueSet = [];

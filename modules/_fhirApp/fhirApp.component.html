@@ -79,7 +79,7 @@
                     <cde-fhir-browser-encounter *ngIf="browseEncounters"
                                                 [encounters]="browseEncounters"></cde-fhir-browser-encounter>
                 </div>
-                <ng-container *ngIf="mode === 'form' && cdeFhir.renderedResourceTree.crossReference">
+                <ng-container *ngIf="mode === 'form' && cdeFhir.renderedResourceTree?.crossReference">
                     <cde-native-render [elt]="cdeFhir.renderedResourceTree.crossReference" [submitForm]="true"
                                        [profile]="selectedProfile"
                                        nativeRenderType="default">
