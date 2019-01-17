@@ -30,6 +30,7 @@ import { DeleteModalComponent } from 'adminItem/public/components/deleteModal/de
 import { NewDesignationComponent } from 'adminItem/public/components/naming/designation/newDesignation.component';
 import { NewDefinitionComponent } from 'adminItem/public/components/naming/definition/newDefinition.component';
 import { MatButtonModule, MatDialogModule, MatIconModule, MatTabsModule } from "@angular/material";
+import { CoreModule } from 'core/core.module';
 
 @NgModule({
     imports: [
@@ -41,6 +42,7 @@ import { MatButtonModule, MatDialogModule, MatIconModule, MatTabsModule } from "
         RouterModule,
         TreeModule.forRoot(),
         // core
+        CoreModule,
 
         // internal
         CompareModule,

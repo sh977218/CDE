@@ -8,8 +8,6 @@ import { NativeRenderModule } from 'nativeRender/nativeRender.module';
     imports: [
         BrowserModule,
         CommonModule,
-        // core
-        // no
         // internal
         NativeRenderModule,
     ],

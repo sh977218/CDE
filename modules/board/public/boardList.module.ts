@@ -7,6 +7,7 @@ import { BoardModule } from 'board/public/board.module';
 import { PublicBoardsComponent } from 'board/public/components/publicBoards/publicBoards.component';
 
 import { MatIconModule, MatInputModule } from "@angular/material";
+import { CoreModule } from 'core/core.module';
 
 const boardRoutes: Routes = [
     {path: '', component: PublicBoardsComponent},
@@ -18,6 +19,7 @@ const boardRoutes: Routes = [
         FormsModule,
         RouterModule.forChild(boardRoutes),
         // core
+        CoreModule,
 
         // internal
         BoardModule,
@@ -27,12 +29,9 @@ const boardRoutes: Routes = [
     declarations: [
         PublicBoardsComponent,
     ],
-    entryComponents: [
-    ],
-    providers: [
-    ],
-    exports: [
-    ],
+    entryComponents: [],
+    providers: [],
+    exports: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 

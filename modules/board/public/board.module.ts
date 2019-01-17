@@ -23,6 +23,7 @@ import { PinBoardComponent } from "./components/pins/pinBoard.component";
 import { PinBoardModalComponent } from "./components/pins/pinBoardModal.component";
 import { PinQuickboardComponent } from "./components/pins/pinQuickboard.component";
 import { UnpinBoardComponent } from "./components/listView/unpinBoard.component";
+import { CoreModule } from 'core/core.module';
 
 @NgModule({
     imports: [
@@ -38,6 +39,7 @@ import { UnpinBoardComponent } from "./components/listView/unpinBoard.component"
         MatInputModule,
         RouterModule,
         // core
+        CoreModule,
 
         // internal
         AdminItemModule,
