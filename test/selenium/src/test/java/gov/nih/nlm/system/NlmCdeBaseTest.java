@@ -1117,15 +1117,14 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         } else {
             gotoMyBoards();
             textPresent(boardName);
-            clickElement(By.xpath("//*[@id='viewBoard_" + boardName + "']//a"));
-            switchTab(1);
+            clickElement(By.xpath("//*[@id='viewBoard_" + boardName + "']"));
             textPresent(boardName, By.xpath("//h3[@id='board_name_" + boardName + "']"));
         }
     }
 
     protected void gotoMyBoards() {
         clickElement(By.id("boardsMenu"));
-        textPresent("MY BOARDS");
+        textPresent("My Boards");
         clickElement(By.id("myBoardsLink"));
         textPresent("Add Board");
         hangon(2);
@@ -1734,6 +1733,18 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         clickElement(By.xpath("//*[@id='" + questionId + "']//mat-icon[contains(@class,'changeQuestionLabelIcon')]"));
         textPresent("Select a question label from a CDE Name");
         clickElement(By.id("selectQuestionNoLabel"));
+    }
+
+    protected void createBoardFromQuickBoard(String boardName, String boardDescription) {
+        clickElement(By.id("addBoard"));
+        if (boardName != null) {
+            findElement(By.id("new-board-name")).sendKeys(boardName);
+        }
+        if (boardDescription != null) {
+            findElement(By.id("new-board-description")).sendKeys(boardDescription);
+        }
+        clickElement(By.id("createBoard"));
+        checkAlert("Board created");
     }
 
 }

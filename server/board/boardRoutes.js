@@ -230,6 +230,7 @@ exports.module = function (roleConfig) {
                 userId: req.user._id,
                 username: req.user.username
             };
+            board.pins.forEach(p => p.pinnedDate = new Date());
             if (authorization.unauthorizedPublishing(req.user, req.body)) {
                 return res.status(403).send("You don't have permission to make boards public!");
             }

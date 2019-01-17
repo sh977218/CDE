@@ -13,6 +13,7 @@ import { SearchModule } from 'search/search.module';
 import { WidgetModule } from 'widget/widget.module';
 import { FormSearchModule } from 'form/public/formSearch.module';
 import { MatButtonModule, MatIconModule, MatTabsModule } from '@angular/material';
+import { BoardModule } from 'board/public/board.module';
 
 const qbRoutes: Routes = [
     {path: '', component: QuickBoardComponent},
@@ -29,6 +30,7 @@ const qbRoutes: Routes = [
         // core
         WidgetModule,
         // internal
+        BoardModule,
         CdeSearchModule,
         FormSearchModule,
         MatIconModule,
