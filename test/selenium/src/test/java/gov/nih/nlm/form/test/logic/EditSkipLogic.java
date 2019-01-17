@@ -35,21 +35,24 @@ public class EditSkipLogic extends BaseFormTest {
         (new Actions(driver)).moveToElement(findElement(By.id("question_3-2"))).perform(); // scroll into view
         String inputXpath = locateSkipLogicEditTextareaXpathByQuestionId("question_3-2");
 
-        editSkipLogic(inputXpath, 1, true, "Unexpected number of tokens in expression 1");
-        editSkipLogic(inputXpath, 1, true, "Unexpected number of tokens in expression 2");
-        editSkipLogic(inputXpath, 1, false, "Unexpected number of tokens in expression 2");
+        editSkipLogic(inputXpath, "\"How much were you bothered by your fatigue on average?\"", 2, 1, true,
+                "Unexpected number of tokens in expression 1");
+        editSkipLogic(inputXpath, "=", 6, 1, true, "Unexpected number of tokens in expression 2");
+        editSkipLogic(inputXpath, "\"1\" - Not at all", 5, 1, false, "Unexpected number of tokens in expression 2");
 
-        editSkipLogic(inputXpath, 1, true, "Unexpected number of tokens in expression 4");
+        editSkipLogic(inputXpath, "AND", 2, 1, true, "Unexpected number of tokens in expression 4");
 
-        editSkipLogic(inputXpath, 2, true, "Unexpected number of tokens in expression 5");
-        editSkipLogic(inputXpath, 1, true, "Unexpected number of tokens in expression 6");
-        editSkipLogic(inputXpath, 2, false, "Unexpected number of tokens in expression 6");
+        editSkipLogic(inputXpath, "\"To what degree did your fatigue interfere with your physical functioning?\"", 2, 2,
+                true, "Unexpected number of tokens in expression 5");
+        editSkipLogic(inputXpath, "=", 6, 1, true, "Unexpected number of tokens in expression 6");
+        editSkipLogic(inputXpath, "\"2\" - A little bit", 5, 2, false, "Unexpected number of tokens in expression 6");
 
-        editSkipLogic(inputXpath, 2, true, "Unexpected number of tokens in expression 8");
+        editSkipLogic(inputXpath, "OR", 2, 2, true, "Unexpected number of tokens in expression 8");
 
-        editSkipLogic(inputXpath, 2, true, "Unexpected number of tokens in expression 9");
-        editSkipLogic(inputXpath, 1, true, "Unexpected number of tokens in expression 10");
-        editSkipLogic(inputXpath, 3, false, "Unexpected number of tokens in expression 10");
+        editSkipLogic(inputXpath, "\"To what degree did your fatigue interfere with your physical functioning?\"", 2, 2,
+                true, "Unexpected number of tokens in expression 9");
+        editSkipLogic(inputXpath, "=", 6, 1, true, "Unexpected number of tokens in expression 10");
+        editSkipLogic(inputXpath, "\"3\" - Somewhat", 5, 3, false, "Unexpected number of tokens in expression 10");
 
         saveEditQuestionById("question_3-2");
         newFormVersion();

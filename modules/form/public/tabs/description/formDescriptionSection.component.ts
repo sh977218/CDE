@@ -1,11 +1,17 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, EventEmitter, Host, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
+import {
+    Component, ElementRef, EventEmitter, Host, Input, OnInit, Output, TemplateRef,
+    ViewChild
+} from "@angular/core";
 import { TreeNode } from "angular-tree-component";
 import { LocalStorageService } from 'angular-2-local-storage';
 import _isEqual from 'lodash/isEqual';
 import _noop from 'lodash/noop';
+import { Observable } from "rxjs/Observable";
+import { debounceTime, map } from 'rxjs/operators';
 
 import { AlertService } from 'alert/alert.service';
+import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
 import { FormDescriptionComponent } from 'form/public/tabs/description/formDescription.component';
 import { FormService } from 'nativeRender/form.service';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
@@ -14,6 +20,7 @@ import { convertFormToSection } from 'shared/form/form';
 import { CdeForm, FormElement, FormInForm, FormSection, SkipLogic } from 'shared/form/form.model';
 import { isMappedTo } from 'shared/form/formAndFe';
 import { MatDialog } from '@angular/material';
+
 
 @Component({
     selector: "cde-form-description-section",
@@ -34,7 +41,13 @@ export class FormDescriptionSectionComponent implements OnInit {
     @Output() onEltChange: EventEmitter<void> = new EventEmitter<void>();
     @ViewChild("formDescriptionSectionTmpl") formDescriptionSectionTmpl: TemplateRef<any>;
     @ViewChild("formDescriptionFormTmpl") formDescriptionFormTmpl: TemplateRef<any>;
+    @ViewChild("slInput") slInput: ElementRef;
     @ViewChild('updateFormVersionTmpl') updateFormVersionTmpl: TemplateRef<any>;
+    getSkipLogicOptions = ((text$: Observable<string>) =>
+        text$.pipe(
+            debounceTime(300),
+            map(term => this.skipLogicValidateService.getTypeaheadOptions(term, this.parent, this.section)),
+        ));
     static inputEvent = new Event('input');
     isMappedTo = isMappedTo;
     isSubForm = false;
@@ -45,16 +58,15 @@ export class FormDescriptionSectionComponent implements OnInit {
         {label: "Set Number of Times", value: "N"},
         {label: "Over first question", value: "F"}
     ];
-    section: FormSection | FormInForm;
+    section: FormSection|FormInForm;
     updateFormVersion: any;
-
 
     constructor(private alert: AlertService,
                 @Host() public formDescriptionComponent: FormDescriptionComponent,
                 private http: HttpClient,
                 private localStorageService: LocalStorageService,
-                public dialog: MatDialog) {
-
+                public dialog: MatDialog,
+                public skipLogicValidateService: SkipLogicValidateService) {
     }
 
     ngOnInit() {
@@ -73,7 +85,6 @@ export class FormDescriptionSectionComponent implements OnInit {
         }
 
         this.checkRepeatOptions();
-        // this.slErrorStateMatcher = new SkipLogicErrorStateMatcher(this.section);
     }
 
 
@@ -138,6 +149,13 @@ export class FormDescriptionSectionComponent implements OnInit {
         }
     }
 
+    onSelectItem(parent, question, $event, slInput) {
+        this.typeaheadSkipLogic(parent, question, $event);
+        $event.preventDefault();
+        slInput.focus();
+        this.slOptionsRetrigger();
+    }
+
     openUpdateFormVersion(formSection: FormInForm) {
         FormService.fetchForm(formSection.inForm.form.tinyId).then(newForm => {
             let oldVersion = formSection.inForm.form.version ? formSection.inForm.form.version : '';
@@ -162,7 +180,7 @@ export class FormDescriptionSectionComponent implements OnInit {
         modal.bForm = true;
         modal.bLabel = !_isEqual(newForm.designations, oldForm.designations);
 
-        this.updateFormVersion = modal;
+        this.updateFormVersion =  modal;
         this.dialog.open(this.updateFormVersionTmpl, {width: '1000px'}).afterClosed().subscribe((res) => {
             if (res) {
                 currentSection.inForm = newSection.inForm;
@@ -187,11 +205,26 @@ export class FormDescriptionSectionComponent implements OnInit {
         } else if (section.repeatOption === "N") {
             section.repeat = (section.repeatNumber && section.repeatNumber > 1 ? section.repeatNumber.toString() : undefined);
             if (section.repeat > 0) this.onEltChange.emit();
-        } else {
+        }
+        else {
             section.repeat = undefined;
         }
 
         this.checkRepeatOptions();
     }
 
+    slOptionsRetrigger() {
+        if (this.slInput) {
+            setTimeout(() => {
+                this.slInput.nativeElement.dispatchEvent(FormDescriptionSectionComponent.inputEvent);
+            }, 0);
+        }
+    }
+
+    typeaheadSkipLogic(parent, fe, event) {
+        if (fe.skipLogic && fe.skipLogic.condition !== event) {
+            this.skipLogicValidateService.typeaheadSkipLogic(parent, fe, event);
+            this.onEltChange.emit();
+        }
+    }
 }

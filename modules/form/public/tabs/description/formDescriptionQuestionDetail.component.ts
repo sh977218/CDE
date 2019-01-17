@@ -16,6 +16,7 @@ import _noop from 'lodash/noop';
 import { Observable } from 'rxjs/Observable';
 import { map, switchMap, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
+
 import { CodeAndSystem, FormattedValue } from 'shared/models.model';
 import { FormElement, FormQuestion, SkipLogic } from 'shared/form/form.model';
 
@@ -65,6 +66,10 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     answerListItems = [];
     dataTypeList = [];
     defaultAnswerListItems = [];
+    getSkipLogicOptions = ((text$: Observable<string>) => text$.pipe(
+        debounceTime(300),
+        map(term => this.skipLogicValidateService.getTypeaheadOptions(term, this.parent, this.question))
+    ));
     static inputEvent = new Event('input');
     newUom = '';
     newUomSystem = 'UCUM';
@@ -261,6 +266,20 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
 
     private syncDefaultAnswerListItems() {
         this.defaultAnswerListItems = this.question.question.answers.concat([]);
+    }
+
+    typeaheadSkipLogic(parent, fe, event) {
+        if (fe.skipLogic && fe.skipLogic.condition !== event) {
+            this.skipLogicValidateService.typeaheadSkipLogic(parent, fe, event);
+            this.onEltChange.emit();
+        }
+    }
+
+    onSelectItem(parent, question, $event, slInput) {
+        this.typeaheadSkipLogic(parent, question, $event);
+        $event.preventDefault();
+        slInput.focus();
+        this.slOptionsRetrigger();
     }
 
     uomAddNew() {

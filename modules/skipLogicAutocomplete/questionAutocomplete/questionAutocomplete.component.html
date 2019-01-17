@@ -1,9 +1,0 @@
-<mat-form-field>
-    <input type="text" placeholder="Pick Question" matInput [formControl]="questionControl"
-           [matAutocomplete]="questionAuto">
-    <mat-autocomplete #questionAuto="matAutocomplete">
-        <mat-option *ngFor="let option of filteredQuestionOptions | async" [value]="option">
-            {{option}}
-        </mat-option>
-    </mat-autocomplete>
-</mat-form-field>
