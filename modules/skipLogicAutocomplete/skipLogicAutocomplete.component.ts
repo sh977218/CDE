@@ -1,9 +1,13 @@
 import { Component, OnInit, Input, Output, EventEmitter, ElementRef, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
 import { MatAutocompleteTrigger } from '@angular/material';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
-import { Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+
+class Token {
+    questionLabel: string;
+    operator: string;
+    answer: string;
+    logic?: string;
+}
 
 @Component({
     selector: 'cde-skip-logic-autocomplete',
@@ -18,14 +22,19 @@ export class SkipLogicAutocompleteComponent implements OnInit {
     @Input() parent;
     @Output() onChanged = new EventEmitter();
 
-    tokens = [];
+    tokens: Token[] = [];
 
     constructor(public skipLogicValidateService: SkipLogicValidateService) {
     }
 
     ngOnInit() {
-        this.tokens = this.section.skipLogic.condition.match(/ and | or /ig);
+        let temp = this.section.skipLogic.condition.match(/ and | or /ig);
+        if (temp) this.tokens = temp;
         console.log('a');
+    }
+
+    addToken() {
+        this.tokens.push(new Token);
     }
 
 }
