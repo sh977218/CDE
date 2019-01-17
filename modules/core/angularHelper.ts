@@ -1,4 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
+import { Params } from '@angular/router';
 
 export function httpErrorMessage(err: any) {
     if (!err) {
@@ -14,6 +15,14 @@ export function httpErrorMessage(err: any) {
         }
         return err.message;
     }
+}
+
+export function paramsToQueryString(params: Params) {
+    let query = Object.keys(params)
+        .filter(k => params.hasOwnProperty(k))
+        .map(k => k + '=' + params[k])
+        .join(';');
+    return query ? '?' + query : '';
 }
 
 export function trackByKey(index: number, item: any): string {

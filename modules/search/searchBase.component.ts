@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import {
+    ComponentFactoryResolver, ComponentRef,
     EventEmitter,
     HostListener,
     Input,
@@ -12,7 +13,7 @@ import {
 import { FormControl } from '@angular/forms';
 import { MatAutocompleteTrigger, MatDialog, MatPaginator, PageEvent } from '@angular/material';
 import { MatAutocompleteSelectedEvent } from '@angular/material/typings/esm5/autocomplete';
-import { Event, NavigationStart, Params } from '@angular/router';
+import { ActivatedRoute, Event, NavigationStart, Params, Router } from '@angular/router';
 import { BackForwardService } from '_app/backForward.service';
 import { ElasticService } from '_app/elastic.service';
 import { UserService } from '_app/user.service';
@@ -27,14 +28,17 @@ import { Subscription } from 'rxjs/Subscription';
 import { SearchSettings } from 'search/search.model';
 import {
     CbErr,
-    CurationStatus, ElasticQueryResponse, ElasticQueryResponseAggregationBucket, ElasticQueryResponseHit, ItemElastic,
+    CurationStatus, ElasticQueryResponse, ElasticQueryResponseAggregation, ElasticQueryResponseAggregationBucket,
+    ElasticQueryResponseHit, ItemElastic,
     Organization
 } from 'shared/models.model';
 import { DataType } from 'shared/de/dataElement.model';
 import { hasRole, isSiteAdmin } from 'shared/system/authorizationShared';
 import { orderedList, statusList } from 'shared/system/regStatusShared';
-import { trackByKey, trackByName } from 'core/angularHelper';
+import { paramsToQueryString, trackByKey, trackByName } from 'core/angularHelper';
 import { scrollTo } from 'core/browser';
+
+type NamedCounts = {name: string, count: number}[];
 
 export const searchStyles: string = `
     #searchResultInfoBar {
@@ -152,11 +156,15 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     @ViewChild(MatPaginator) paginator!: MatPaginator;
     add = new EventEmitter<any>();
     addMode?: string;
-    aggregations: any;
+    aggregations?: ElasticQueryResponseAggregation;
+    aggregationsFlatClassifications?: NamedCounts;
+    aggregationsFlatClassificationsAlt?: NamedCounts;
+    aggregationsExcludeClassification?: NamedCounts;
+    aggregationsTopics?: NamedCounts;
     altClassificationFilterMode?: boolean;
     excludeOrgFilterMode?: boolean;
     autocompleteSuggestions?: string[];
-    cutoffIndex: any;
+    cutoffIndex?: number;
     elts?: ItemElastic[];
     embedded = false;
     exporters: { [format: string]: { id: string, display: string } } = {
@@ -171,33 +179,32 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     orgs?: Organization[];
     orgHtmlOverview?: string;
     pinComponent!: Type<PinBoardModalComponent>;
-    pinModalComponent: any;
+    pinModalComponent?: ComponentRef<PinBoardModalComponent>;
     previousUrl?: string;
     resultsView = '';
-    resultPerPage = 20;
     routerSubscription: Subscription;
     searchSettings: SearchSettings = new SearchSettings;
     searchedTerm?: string;
     searchTermFC: FormControl = new FormControl();
-    took: any;
-    topics: any;
+    took?: number;
+    topics?: {[topic: string]: NamedCounts};
     topicsKeys: string[] = [];
-    totalItems: any;
-    totalItemsLimited: any;
+    totalItems?: number;
+    totalItemsLimited?: number;
     trackByKey = trackByKey;
     trackByName = trackByName;
     validRulesStatus?: CurationStatus;
     view?: 'welcome' | 'results';
 
-    constructor(protected _componentFactoryResolver: any,
+    constructor(protected _componentFactoryResolver: ComponentFactoryResolver,
                 protected alert: AlertService,
                 protected backForwardService: BackForwardService,
                 protected elasticService: ElasticService,
                 protected exportService: ExportService,
                 protected http: HttpClient,
                 protected orgHelperService: OrgHelperService,
-                protected route: any,
-                protected router: any,
+                protected route: ActivatedRoute,
+                protected router: Router,
                 protected userService: UserService,
                 protected dialog: MatDialog) {
         this.searchSettings.page = 1;
@@ -277,7 +284,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
             else if (this.excludeOrgFilterMode) this.searchSettings.excludeOrgs.push(orgName);
             else this.searchSettings.classification.length = 0;
         }
-        delete this.aggregations.groups;
+        delete this.aggregations!.groups;
         if (this.isSearched()) {
             this.doSearch();
             if (!this.embedded) SearchBaseComponent.focusClassification();
@@ -352,7 +359,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         this.doSearch();
     }
 
-    static compareObjName(a: any, b: any): number {
+    static compareObjName(a: {name: string}, b: {name: string}): number {
         return SearchBaseComponent.compareString(a.name, b.name);
     }
 
@@ -375,9 +382,11 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     doSearch() {
         if (!this.embedded) {
             this.searchSettings.page = 1;
-            let url = this.generateSearchForTerm();
-            this.redirect(url);
-        } else this.reload();
+            let query = this.generateSearchForTerm();
+            this.redirect(query);
+        } else {
+            this.reload();
+        }
     }
 
     doSearchWithPage() {
@@ -385,16 +394,16 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         else this.reload();
     }
 
-    fakeNextPageLink() {
-        let p = (this.totalItemsLimited / this.resultPerPage > 1)
+    fakeNextPageLink(): string {
+        let p = (this.totalItemsLimited! / this.searchSettings.resultPerPage > 1)
             ? (this.searchSettings.page ? this.searchSettings.page : 1) + 1 : 1;
-        return this.generateSearchForTerm(p);
+        return paramsToQueryString(this.generateSearchForTerm(p));
     }
 
     private filterOutWorkingGroups(cb: CbErr) {
         this.userService.catch(_noop).then(user => {
             this.orgHelperService.then(() => {
-                this.aggregations.orgs.buckets = this.aggregations.orgs.orgs.buckets.filter((bucket: ElasticQueryResponseAggregationBucket) =>
+                (this.aggregations!.orgs.buckets as any) = this.aggregations!.orgs.orgs.buckets.filter((bucket: ElasticQueryResponseAggregationBucket) =>
                     this.orgHelperService.showWorkingGroup(bucket.key) || isSiteAdmin(user)
                 );
                 cb();
@@ -410,9 +419,9 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         document.getElementById('meshTreesListHolder')!.focus();
     }
 
-    generateSearchForTerm(pageNumber = 0) {
+    generateSearchForTerm(pageNumber = 0): Params {
         // TODO: replace with router
-        let searchTerms: any = {};
+        let searchTerms: Params = {};
         if (this.searchSettings.q) searchTerms.q = this.searchSettings.q;
         if (this.searchSettings.regStatuses && this.searchSettings.regStatuses.length > 0) {
             searchTerms.regStatuses = this.searchSettings.regStatuses.join(';');
@@ -492,9 +501,9 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     getClassificationSelectedOrg() {
-        if (this.altClassificationFilterMode) return this.aggregations.flatClassificationsAlt;
-        else if (this.excludeOrgFilterMode) return this.aggregations.excludeClassification;
-        else return this.aggregations.flatClassifications;
+        if (this.altClassificationFilterMode) return this.aggregationsFlatClassificationsAlt;
+        else if (this.excludeOrgFilterMode) return this.aggregationsExcludeClassification;
+        else return this.aggregationsFlatClassifications;
     }
 
     getSelectedDatatypes() {
@@ -544,8 +553,8 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         return this.searchSettings.q || this.searchSettings.selectedOrg || this.searchSettings.meshTree;
     }
 
-    keys(obj: Object) {
-        return Object.keys(obj);
+    keys(obj: Object): string[] {
+        return Object.keys(obj).filter(k => obj.hasOwnProperty(k));
     }
 
     openOrgDetails(org: Organization) {
@@ -554,7 +563,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     openPinModal() {
-        this.pinAll(this.pinModalComponent.instance.open());
+        this.pinAll(this.pinModalComponent!.instance.open());
     }
 
     openValidRulesModal() {
@@ -578,7 +587,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     pageChange(newPage: PageEvent) {
         this.goToPage = newPage.pageIndex + 1;
         if (this.goToPage !== 0) {
-            if (this.goToPage < 1 || this.goToPage > this.numPages) {
+            if (this.goToPage < 1 || this.goToPage > this.numPages!) {
                 this.alert.addAlert('danger', 'Invalid page: ' + this.goToPage);
             } else {
                 this.searchSettings.page = this.goToPage;
@@ -613,7 +622,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         });
     }
 
-    redirect(params: string[]) {
+    redirect(params: Params) {
         this.router.navigate(['/' + this.module + '/search'], {queryParams: params});
     }
 
@@ -627,18 +636,18 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
             if (corrected && this.searchedTerm) {
                 this.searchedTerm = this.searchedTerm.replace(/[^\w\s]/gi, '');
             }
-            if (err) {
+            if (err || !result) {
                 this.alert.addAlert('danger', 'There was a problem with your query');
                 this.elts = [];
                 return;
             }
             if (timestamp < this.lastQueryTimeStamp!) return;
-            this.numPages = Math.ceil(result.totalNumber / this.resultPerPage);
+            this.numPages = Math.ceil(result.totalNumber / this.searchSettings.resultPerPage);
             this.took = result.took;
             this.totalItems = result.totalNumber;
             this.totalItemsLimited = this.totalItems <= 10000 ? this.totalItems : 10000;
 
-            this.elts = result[this.module + 's'];
+            this.elts = this.module === 'form' ? result.forms : result.cdes;
 
             if (this.searchSettings.page === 1 && result.totalNumber > 0) {
                 let maxJump = 0;
@@ -664,38 +673,38 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                 });
             }, _noop);
 
-            this.aggregations = result.aggregations;
+            this.aggregations = result.aggregations!;
 
             if (result.aggregations !== undefined) {
                 if (result.aggregations.flatClassifications !== undefined) {
-                    this.aggregations.flatClassifications = result.aggregations.flatClassifications.flatClassifications.buckets.map((c: ElasticQueryResponseAggregationBucket) => {
-                        return {name: c.key.split(';').pop(), count: c.doc_count};
-                    });
+                    this.aggregationsFlatClassifications = result.aggregations.flatClassifications.flatClassifications.buckets.map(
+                        (c: ElasticQueryResponseAggregationBucket) => ({name: c.key.split(';').pop()!, count: c.doc_count})
+                    );
                 } else {
-                    this.aggregations.flatClassifications = [];
+                    this.aggregationsFlatClassifications = [];
                 }
 
                 if (result.aggregations.flatClassificationsAlt !== undefined) {
-                    this.aggregations.flatClassificationsAlt = result.aggregations.flatClassificationsAlt.flatClassificationsAlt.buckets.map((c: ElasticQueryResponseAggregationBucket) => {
-                        return {name: c.key.split(';').pop(), count: c.doc_count};
-                    });
+                    this.aggregationsFlatClassificationsAlt = result.aggregations.flatClassificationsAlt.flatClassificationsAlt.buckets.map(
+                        (c: ElasticQueryResponseAggregationBucket) => ({name: c.key.split(';').pop()!, count: c.doc_count})
+                    );
                 } else {
-                    this.aggregations.flatClassificationsAlt = [];
-                    this.aggregations.excludeClassification = [];
+                    this.aggregationsFlatClassificationsAlt = [];
+                    this.aggregationsExcludeClassification = [];
                 }
 
                 if (result.aggregations.meshTrees !== undefined) {
                     if (this.searchSettings.meshTree) {
-                        this.aggregations.topics = result.aggregations.meshTrees.meshTrees.buckets.map((c: ElasticQueryResponseAggregationBucket) => {
-                            return {name: c.key.split(';').pop(), count: c.doc_count};
-                        });
+                        this.aggregationsTopics = result.aggregations.meshTrees.meshTrees.buckets.map(
+                            (c: ElasticQueryResponseAggregationBucket) => ({name: c.key.split(';').pop()!, count: c.doc_count})
+                        );
                     } else {
-                        this.aggregations.topics = result.aggregations.meshTrees.meshTrees.buckets.map((c: ElasticQueryResponseAggregationBucket) => {
-                            return {name: c.key.split(';')[0], count: c.doc_count};
-                        });
+                        this.aggregationsTopics = result.aggregations.meshTrees.meshTrees.buckets.map(
+                            (c: ElasticQueryResponseAggregationBucket) => ({name: c.key.split(';')[0], count: c.doc_count})
+                        );
                     }
                 } else {
-                    this.aggregations.topics = [];
+                    this.aggregationsTopics = [];
                 }
 
             }
@@ -703,9 +712,9 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
             let orgsCreatedPromise = new Promise(resolve => {
                 this.filterOutWorkingGroups(() => {
                     this.orgHelperService.then(() => {
-                        this.orgHelperService.addLongNameToOrgs(this.aggregations.orgs.buckets);
+                        this.orgHelperService.addLongNameToOrgs(this.aggregations!.orgs.buckets);
                     }, _noop);
-                    this.aggregations.orgs.buckets.sort((a: ElasticQueryResponseAggregationBucket, b: ElasticQueryResponseAggregationBucket) => {
+                    this.aggregations!.orgs.buckets.sort((a: ElasticQueryResponseAggregationBucket, b: ElasticQueryResponseAggregationBucket) => {
                         let A = a.key.toLowerCase();
                         let B = b.key.toLowerCase();
                         if (B > A) return -1;
@@ -716,12 +725,12 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                 });
             });
 
-            this.aggregations.flatClassifications.sort(SearchBaseComponent.compareObjName);
-            this.aggregations.flatClassificationsAlt.sort(SearchBaseComponent.compareObjName);
+            this.aggregationsFlatClassifications!.sort(SearchBaseComponent.compareObjName);
+            this.aggregationsFlatClassificationsAlt!.sort(SearchBaseComponent.compareObjName);
             this.aggregations.statuses.statuses.buckets.sort(function (a: ElasticQueryResponseAggregationBucket, b: ElasticQueryResponseAggregationBucket) {
                 return SearchBaseComponent.getRegStatusIndex(a) - SearchBaseComponent.getRegStatusIndex(b);
             });
-            this.aggregations.topics.sort(SearchBaseComponent.compareObjName);
+            this.aggregationsTopics!.sort(SearchBaseComponent.compareObjName);
 
             this.switchView(this.isSearched() ? 'results' : 'welcome');
             if (this.view === 'welcome') {
@@ -730,7 +739,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                 if (this.aggregations) {
                     orgsCreatedPromise.then(() => {
                         this.orgHelperService.then(orgsDetailedInfo => {
-                            this.aggregations.orgs.buckets.forEach((org_t: ElasticQueryResponseAggregationBucket) => {
+                            this.aggregations!.orgs.buckets.forEach((org_t: ElasticQueryResponseAggregationBucket) => {
                                 if (orgsDetailedInfo[org_t.key]) {
                                     this.orgs!.push({
                                         name: org_t.key,
@@ -751,16 +760,16 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                 this.topicsKeys.length = 0;
                 if (this.aggregations) {
                     this.aggregations.twoLevelMesh.twoLevelMesh.buckets.forEach((term: ElasticQueryResponseAggregationBucket) => {
-                        let spli = term.key.split(';');
-                        if (!this.topics[spli[0]]) {
-                            this.topics[spli[0]] = [];
+                        let spli: string[] = term.key.split(';');
+                        if (!this.topics![spli[0]]) {
+                            this.topics![spli[0]] = [];
                         }
-                        this.topics[spli[0]].push({name: spli[1], count: term.doc_count});
+                        this.topics![spli[0]].push({name: spli[1], count: term.doc_count});
                     });
                     for (let prop in this.topics) {
                         if (this.topics.hasOwnProperty(prop)) this.topicsKeys.push(prop);
                     }
-                    this.topicsKeys.sort(SearchBaseComponent.compareObjName);
+                    this.topicsKeys.sort();
                 }
             }
             this.scrollHistoryLoad();
@@ -769,12 +778,12 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
     reset() {
         this.initSearch();
-        this.aggregations = null;
+        this.aggregations = undefined;
         this.doSearch();
     }
 
     scrollHistoryLoad() {
-        if (this.backForwardService.isBackForward || this.router.navigationId === 1) {
+        if (this.backForwardService.isBackForward || (this.router as any).navigationId === 1) {
             let previousSpot = window.sessionStorage['nlmcde.scroll.' + location.pathname + location.search];
             if (previousSpot != null) SearchBaseComponent.waitScroll(2, previousSpot);
         }

@@ -76,7 +76,7 @@ export class EmbedComponent implements OnInit {
 
     enableCde(b: boolean) {
         if (b) {
-            this.selection!.cde = {lowestRegistrationStatus: 'Qualified'};
+            this.selection!.cde = {lowestRegistrationStatus: 'Qualified', pageSize: 20};
         } else {
             this.selection!.cde = undefined;
         }
