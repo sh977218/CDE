@@ -18,40 +18,14 @@ export class SkipLogicAutocompleteComponent implements OnInit {
     @Input() parent;
     @Output() onChanged = new EventEmitter();
 
-    filteredSkipLogics = [];
+    tokens = [];
 
     constructor(public skipLogicValidateService: SkipLogicValidateService) {
     }
 
     ngOnInit() {
+        this.tokens = this.section.skipLogic.condition.match(/ and | or /ig);
+        console.log('a');
     }
-
-    getTypeaheadOptions(event) {
-        this.filteredSkipLogics = this.skipLogicValidateService.getTypeaheadOptions(event, this.parent, this.section);
-    }
-
-    onSelectItem(parent, question, $event) {
-        this.validateSkipLogic(parent, question, $event.option.value);
-        this.slInput.nativeElement.focus();
-        this.slOptionsReTrigger();
-    }
-
-
-    slOptionsReTrigger() {
-        if (this.slInput) {
-            setTimeout(() => {
-                this.getTypeaheadOptions(this.section.skipLogic.condition);
-                this.slTrigger.openPanel();
-            }, 0);
-        }
-    }
-
-    validateSkipLogic(parent, fe, event) {
-        if (fe.skipLogic && fe.skipLogic.condition !== event) {
-            this.skipLogicValidateService.typeaheadSkipLogic(parent, fe, event);
-            this.onChanged.emit();
-        }
-    }
-
 
 }

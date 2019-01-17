@@ -1,9 +1,10 @@
-<div>
+<div>{{section.skipLogic.condition}}</div>
+<div *ngFor="let token of tokens">
     <cde-question-autocomplete></cde-question-autocomplete>
     <cde-operator-autocomplete></cde-operator-autocomplete>
     <cde-answer-autocomplete></cde-answer-autocomplete>
     <cde-logic-autocomplete></cde-logic-autocomplete>
-    <mat-icon>Add</mat-icon>
-    <mat-icon>Remove</mat-icon>
+    <mat-icon>add</mat-icon>
+    <mat-icon>remove</mat-icon>
 </div>
 {{section.skipLogic?.validationError}}
