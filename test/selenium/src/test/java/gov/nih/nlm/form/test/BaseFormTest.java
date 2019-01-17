@@ -164,15 +164,16 @@ public class BaseFormTest extends NlmCdeBaseTest {
         return "//*[@id='" + questionId + "']//*[contains(@class,'skipLogicEditTextarea')]//input";
     }
 
-
-    public void editSkipLogic(String inputXpath, int clickNth, boolean displayError, String errorMessage) {
-        clickElement(By.xpath(inputXpath));
+    public void editSkipLogic(String inputXpath, String textToBePresent, int expectedNumSuggested, int clickNth,
+                              boolean displayError, String errorMessage) {
         findElement(By.xpath(inputXpath)).sendKeys(Keys.SPACE);
-        clickElement(By.xpath("//*[contains(@id,'mat-autocomplete-')]//mat-option[" + clickNth + "]"));
+        findElement(By.xpath("(//*[contains(@id,'ngb-typeahead-') and string-length(@id)>16])[" + clickNth + "]/*[contains(.,'" + textToBePresent + "')]"));
+        int actualNumSuggested = findElements(By.xpath("(//*[contains(@id,'ngb-typeahead-') and string-length(@id)>16])")).size();
+        Assert.assertEquals(actualNumSuggested, expectedNumSuggested);
+        clickElement(By.xpath("(//*[contains(@id,'ngb-typeahead-') and string-length(@id)>16])[" + clickNth + "]"));
         if (displayError) textPresent(errorMessage);
         else textNotPresent(errorMessage);
     }
-
 
     protected void scrollToInfiniteById(String id) {
         JavascriptExecutor je = (JavascriptExecutor) driver;
