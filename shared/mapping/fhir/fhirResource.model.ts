@@ -1,7 +1,7 @@
 import {
     FhirAddress, FhirBackboneElement, FhirBase64Binary, FhirCode,
     FhirCodeableConcept, FhirCoding,
-    FhirContactPoint, FhirDate, FhirDateTime, FhirDuration, FhirEffective, FhirElement, FhirExtension,
+    FhirContactPoint, FhirDate, FhirDateTime, FhirDuration, FhirEffective, FhirElement, FhirElementBase, FhirExtension,
     FhirHumanName,
     FhirIdentifier, FhirInstant, FhirMarkdown, FhirMeta, FhirNarrative, FhirPeriod, FhirQuantity, FhirRange, FhirRatio,
     FhirReference, FhirSampledData, FhirTime, FhirUri, FhirValue
@@ -18,7 +18,7 @@ export type supportedFhirResources = 'Observation'|'Procedure'|'QuestionnaireRes
 export const supportedFhirResourcesArray = ['Observation', 'Procedure', 'QuestionnaireResponse'];
 export type supportedFhirResourcesExt = FhirObservation|FhirProcedure|FhirQuestionnaireResponse|FhirQuestionnaire;
 
-export class FhirDomainResource extends FhirResource {
+export class FhirDomainResource extends FhirResource implements FhirElement {
     contained?: FhirResource[];
     extension?: FhirExtension[];
     modifierExtension?: FhirExtension[];
@@ -34,7 +34,7 @@ export interface FhirIdentifiableResource {
 
 export type FhirAccount = any;
 
-export class FhirAnnotation extends FhirElement {
+export class FhirAnnotation extends FhirElementBase {
     authorReference?: FhirReference<FhirPractitioner|FhirPatient|FhirRelatedPerson>;
     authorString?: string;
     time?: FhirDateTime;
