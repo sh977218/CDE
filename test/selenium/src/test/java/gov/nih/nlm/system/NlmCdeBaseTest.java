@@ -1125,7 +1125,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
 
     protected void gotoMyBoards() {
         clickElement(By.id("boardsMenu"));
-        textPresent("MY BOARDS");
+        textPresent("My Boards");
         clickElement(By.id("myBoardsLink"));
         textPresent("Add Board");
         hangon(2);
