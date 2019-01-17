@@ -72,14 +72,14 @@ exports.isElasticUp = function (cb) {
 exports.getStatus = getStatusDone => {
     exports.isElasticUp(() => {
         if (exports.statusReport.elastic.up) {
-            exports.statusReport.elastic.indices = [];
+            let tempIndices = [];
             let condition = {archived: false};
             async.series([
                 done => {
                     mongo_cde.count(condition, (err, deCount) => {
                         esInit.indices[0].totalCount = deCount;
                         exports.checkElasticCount(deCount, config.elastic.index.name, 'dataelement', (up, message) => {
-                            exports.statusReport.elastic.indices.push({
+                            tempIndices.push({
                                 name: config.elastic.index.name,
                                 up: up,
                                 message: message
@@ -92,7 +92,7 @@ exports.getStatus = getStatusDone => {
                     mongo_form.count(condition, (err, formCount) => {
                         esInit.indices[1].totalCount = formCount;
                         exports.checkElasticCount(formCount, config.elastic.formIndex.name, 'form', (up, message) => {
-                            exports.statusReport.elastic.indices.push({
+                            tempIndices.push({
                                 name: config.elastic.formIndex.name,
                                 up: up,
                                 message: message
@@ -105,7 +105,7 @@ exports.getStatus = getStatusDone => {
                     boardDb.count({}, function (err, boardCount) {
                         esInit.indices[2].totalCount = boardCount;
                         exports.checkElasticCount(boardCount, config.elastic.boardIndex.name, 'board', (up, message) => {
-                            exports.statusReport.elastic.indices.push({
+                            tempIndices.push({
                                 name: config.elastic.boardIndex.name,
                                 up: up,
                                 message: message
@@ -114,7 +114,10 @@ exports.getStatus = getStatusDone => {
                         });
                     });
                 }
-            ], getStatusDone);
+            ], () => {
+                exports.statusReport.elastic.indices = tempIndices;
+                getStatusDone();
+            });
         }
     });
 };
