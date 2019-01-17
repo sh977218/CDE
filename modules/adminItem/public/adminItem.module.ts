@@ -31,6 +31,9 @@ import { NewDesignationComponent } from 'adminItem/public/components/naming/desi
 import { NewDefinitionComponent } from 'adminItem/public/components/naming/definition/newDefinition.component';
 import { MatButtonModule, MatDialogModule, MatIconModule, MatTabsModule } from "@angular/material";
 import { CoreModule } from 'core/core.module';
+import { InlineAreaEditModule } from 'inlineAreaEdit/inlineAreaEdit.module';
+import { InlineEditModule } from 'inlineEdit/inlineEdit.module';
+import { SortableArrayModule } from 'sortableArray/sortableArray.module';
 
 @NgModule({
     imports: [
@@ -47,6 +50,9 @@ import { CoreModule } from 'core/core.module';
         // internal
         CompareModule,
         SearchModule,
+        SortableArrayModule,
+        InlineEditModule,
+        InlineAreaEditModule,
         MatButtonModule,
         MatDialogModule,
         MatIconModule,
