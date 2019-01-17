@@ -312,7 +312,7 @@ export class NativeRenderService {
             case '<=':
                 return NativeRenderService.max(values) + ' or less';
             default:
-                return assertUnreachable(oper);
+                throw assertUnreachable(oper);
         }
     }
 
@@ -345,7 +345,7 @@ export class NativeRenderService {
                     }
                     break;
                 default:
-                    return assertUnreachable(fe);
+                    throw assertUnreachable(fe);
             }
         });
     }
@@ -436,7 +436,7 @@ export class NativeRenderService {
                 case 'question':
                     return flattenFormQuestion(fe, sectionHeading, namePrefix, repeatNum);
                 default:
-                    return assertUnreachable(fe);
+                    throw assertUnreachable(fe);
             }
         }
     }

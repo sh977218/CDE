@@ -12,8 +12,10 @@ import { codeSystemOut } from 'shared/mapping/fhir';
 import { FhirCoding } from 'shared/mapping/fhir/fhir.model';
 import { supportedFhirResources } from 'shared/mapping/fhir/fhirResource.model';
 
-export function addEmptyNode(fe: FormElement | CdeForm, cb: CbErr<ResourceTree>, parent: ResourceTreeRoot|ResourceTreeResource|ResourceTreeIntermediate) {
-    let self;
+export function addEmptyNode(fe: FormElement | CdeForm, cb: CbErr<ResourceTreeRoot|ResourceTree>,
+                             parent: ResourceTreeRoot|ResourceTreeResource|ResourceTreeIntermediate
+): ResourceTreeRoot | ResourceTree | undefined {
+    let self: ResourceTreeRoot | ResourceTree | undefined;
     if (isUndefined(parent) || ResourceTreeUtil.isRoot(parent)) {
         self = addRootNode(fe, parent, undefined,
             parent && ResourceTreeUtil.isNotRoot(parent) && ResourceTreeUtil.isResource(parent) ? parent.childResourceType : undefined);
@@ -24,9 +26,10 @@ export function addEmptyNode(fe: FormElement | CdeForm, cb: CbErr<ResourceTree>,
     return self;
 }
 
-export function addRootNode(fe: FormElement|CdeForm, parent?: ResourceTreeRoot|ResourceTreeResource, resource?: any, resourceType?: supportedFhirResources) {
+export function addRootNode(fe: FormElement|CdeForm, parent?: ResourceTreeRoot|ResourceTreeResource, resource?: any,
+                            resourceType?: supportedFhirResources): ResourceTreeRoot|ResourceTreeResource {
     if (isUndefined(parent) || ResourceTreeUtil.isRoot(parent)) {
-        let node;
+        let node: ResourceTreeRoot|ResourceTree;
         if (resource) {
             node = ResourceTreeUtil.createResource(resource.resourceType, fe, resource);
         } else if (getMapToFhirResource(fe)) {
@@ -38,14 +41,12 @@ export function addRootNode(fe: FormElement|CdeForm, parent?: ResourceTreeRoot|R
         } else {
             node = ResourceTreeUtil.createRoot(fe, parent);
         }
-        if (node) {
-            if (parent) {
-                parent.children.push(node);
-            }
-            return node;
+        if (parent) {
+            parent.children.push(node);
         }
+        return node;
     } else {
-        assertThrow();
+        throw assertThrow();
     }
 }
 

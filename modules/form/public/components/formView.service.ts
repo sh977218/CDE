@@ -13,14 +13,14 @@ export class FormViewService {
     }
 
     fetchEltForEditing(queryParams: Params): Promise<CdeForm> {
-        if (!queryParams['tinyId']) {
+        if (!queryParams.tinyId) {
             return this.fetchPublished(queryParams);
         }
         return this.userService.then(user => {
             if (!isOrgCurator(user)) {
                 return this.fetchPublished(queryParams);
             }
-            return this.http.get<CdeForm>(ITEM_MAP.form.apiDraft + queryParams['tinyId']).toPromise()
+            return this.http.get<CdeForm>(ITEM_MAP.form.apiDraft + queryParams.tinyId).toPromise()
                 .catch((err: HttpErrorResponse) => {
                     if (err.status === 403) {
                         return this.fetchPublished(queryParams);
@@ -32,12 +32,12 @@ export class FormViewService {
 
     fetchPublished(queryParams: Params): Promise<CdeForm> {
         let url;
-        if (queryParams['formId']) {
-            url = ITEM_MAP.form.apiById + queryParams['formId'];
+        if (queryParams.formId) {
+            url = ITEM_MAP.form.apiById + queryParams.formId;
         } else {
-            url = ITEM_MAP.form.api + queryParams['tinyId'];
-            if (queryParams['version']) {
-                url = url + '/version/' + queryParams['version'];
+            url = ITEM_MAP.form.api + queryParams.tinyId;
+            if (queryParams.version) {
+                url = url + '/version/' + queryParams.version;
             }
         }
         return this.http.get<CdeForm>(url).toPromise();
