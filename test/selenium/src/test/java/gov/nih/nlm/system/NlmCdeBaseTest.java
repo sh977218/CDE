@@ -1118,7 +1118,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
             gotoMyBoards();
             textPresent(boardName);
             clickElement(By.xpath("//*[@id='viewBoard_" + boardName + "']"));
-            switchTab(1);
             textPresent(boardName, By.xpath("//h3[@id='board_name_" + boardName + "']"));
         }
     }
