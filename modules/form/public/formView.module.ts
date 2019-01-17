@@ -37,6 +37,7 @@ import { QuestionAnswerEditContentComponent } from 'form/public/tabs/description
 import { SelectQuestionLabelComponent } from 'form/public/tabs/description/selectQuestionLabel.component';
 import { NativeRenderFullComponent } from 'form/public/tabs/general/nativeRenderFull.component';
 import { NativeRenderModule } from 'nativeRender/nativeRender.module';
+import { CoreModule } from 'core/core.module';
 
 
 const appRoutes: Routes = [
@@ -67,6 +68,7 @@ const appRoutes: Routes = [
         RouterModule.forChild(appRoutes),
         TreeModule.forRoot(),
         // core
+        CoreModule,
 
         // internal
         AdminItemModule,
