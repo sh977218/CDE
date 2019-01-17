@@ -1,6 +1,5 @@
-<mat-form-field>
-    <input type="text" placeholder="Pick Operator" matInput [formControl]="operatorControl"
-           [matAutocomplete]="operatorAuto">
+<mat-form-field class="w-100">
+    <input type="text" matInput [formControl]="operatorControl" [matAutocomplete]="operatorAuto">
     <mat-autocomplete #operatorAuto="matAutocomplete">
         <mat-option *ngFor="let option of filteredOperatorOptions | async" [value]="option">
             {{option}}

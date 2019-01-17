@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
@@ -12,7 +12,7 @@ export class LogicAutocompleteComponent implements OnInit {
 
     logicOptions = ['AND', 'OR'];
     filteredLogicOptions: Observable<string[]>;
-    logicControl = new FormControl();
+    logicControl = new FormControl('AND');
 
     ngOnInit() {
         this.filteredLogicOptions = this.logicControl.valueChanges

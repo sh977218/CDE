@@ -15,7 +15,7 @@ export class OperatorAutocompleteComponent implements OnInit {
 
     operatorOptions = ['=', '>', '<', '>=', '<='];
     filteredOperatorOptions: Observable<string[]>;
-    operatorControl = new FormControl();
+    operatorControl = new FormControl('=');
 
     ngOnInit() {
         this.filteredOperatorOptions = this.operatorControl.valueChanges
