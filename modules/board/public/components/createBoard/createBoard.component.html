@@ -1,6 +1,6 @@
 <button mat-raised-button value="add" (click)="openNewBoard()" id="addBoard" style="margin-bottom: 10px;">
     <mat-icon>add</mat-icon>
-    Add Board
+    {{buttonName}}
 </button>
 
 <ng-template #createBoardModal id="newBoardModal">
@@ -31,9 +31,6 @@
                 <textarea id="new-board-description" class="form-control" name="description"
                           [(ngModel)]="newBoard.description"
                           placeholder="Optional Board Description"></textarea>
-            </div>
-            <div class="form-group">
-                <cde-list-view [elts]="elts" [module]="_module"></cde-list-view>
             </div>
         </div>
         <div mat-dialog-actions>

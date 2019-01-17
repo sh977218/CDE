@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, TemplateRef, ViewChild } from '@angular/core';
+import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AlertService } from 'alert/alert.service';
 import { MyBoardsService } from 'board/public/myBoards.service';
@@ -9,6 +9,8 @@ import { MatDialog, MatDialogRef } from '@angular/material';
     templateUrl: './createBoard.component.html',
 })
 export class CreateBoardComponent {
+    @Input() buttonName?: string = 'Add Board';
+
     @Input() set module(module) {
         this._module = module;
         if (this.newBoard) this.newBoard.type = module;
@@ -16,7 +18,6 @@ export class CreateBoardComponent {
 
     @Input() elts = [];
     @ViewChild('createBoardModal') createBoardModal: TemplateRef<any>;
-    @Output() afterCreated = new EventEmitter();
 
     _module = undefined;
     dialogRef: MatDialogRef<TemplateRef<any>>;

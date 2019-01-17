@@ -1736,4 +1736,16 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         clickElement(By.id("selectQuestionNoLabel"));
     }
 
+    protected void createBoardFromQuickBoard(String boardName, String boardDescription) {
+        clickElement(By.id("addBoard"));
+        if (boardName != null) {
+            findElement(By.id("new-board-name")).sendKeys(boardName);
+        }
+        if (boardDescription != null) {
+            findElement(By.id("new-board-description")).sendKeys(boardDescription);
+        }
+        clickElement(By.id("createBoard"));
+        checkAlert("Board created");
+    }
+
 }

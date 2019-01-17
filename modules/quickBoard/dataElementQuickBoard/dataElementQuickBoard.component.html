@@ -18,7 +18,8 @@
             <mat-icon>play_for_work</mat-icon>
             Export Quick Board
         </button>
-        <cde-create-board [module]="'cde'" [elts]="quickBoardService.dataElements"></cde-create-board>
+        <cde-create-board [module]="'cde'" [elts]="quickBoardService.dataElements"
+                          [buttonName]="'Create Board'"></cde-create-board>
         <hr>
         <cde-list-view *ngIf="quickBoardService.number_dataElements > 0" location="quickBoard"
                        [elts]="quickBoardService.dataElements" [(listView)]="listViews"
