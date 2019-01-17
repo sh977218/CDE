@@ -12,7 +12,7 @@ import { SummaryHeadingComponent } from 'search/listView/summaryHeading.componen
 import { SummaryListComponent } from 'search/listView/summaryList.component';
 import { SummaryListItemComponent, SummaryPlaceholderDirective } from 'search/listView/summaryListItem.component';
 import { TableListComponent } from 'search/listView/tableList.component';
-import { WidgetModule } from 'widget/widget.module';
+
 import { MatButtonModule, MatIconModule, MatMenuModule, MatTabsModule } from "@angular/material";
 
 @NgModule({
@@ -22,7 +22,7 @@ import { MatButtonModule, MatIconModule, MatMenuModule, MatTabsModule } from "@a
         NgbModule,
         RouterModule.forChild([]),
         // core
-        WidgetModule,
+
         MatIconModule,
         MatButtonModule,
         MatIconModule,

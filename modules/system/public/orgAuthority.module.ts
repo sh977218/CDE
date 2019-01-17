@@ -10,7 +10,7 @@ import { OrgAuthorityComponent } from 'system/public/components/siteAdmin/orgAut
 import { OrgsEditComponent } from 'system/public/components/siteAdmin/orgsEdit/orgsEdit.component';
 import { DiscussModule } from 'discuss/discuss.module';
 import { SystemModule } from 'system/public/system.module';
-import { WidgetModule } from 'widget/widget.module';
+
 import {
     MatAutocompleteModule, MatButtonModule,
     MatChipsModule, MatDialogModule,
@@ -29,7 +29,7 @@ const appRoutes: Routes = [
         NgbModule,
         RouterModule.forChild(appRoutes),
         // core
-        WidgetModule,
+
         // internal
         DiscussModule,
         SystemModule,

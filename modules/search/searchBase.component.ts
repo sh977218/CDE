@@ -33,8 +33,8 @@ import {
 import { DataType } from 'shared/de/dataElement.model';
 import { hasRole, isSiteAdmin } from 'shared/system/authorizationShared';
 import { orderedList, statusList } from 'shared/system/regStatusShared';
-import { trackByKey, trackByName } from 'widget/angularHelper';
-import { scrollTo } from 'widget/browser';
+import { trackByKey, trackByName } from 'core/angularHelper';
+import { scrollTo } from 'core/browser';
 
 export const searchStyles: string = `
     #searchResultInfoBar {

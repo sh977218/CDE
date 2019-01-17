@@ -10,7 +10,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 
 import { CompareModule } from 'compare/compare.module';
 import { SearchModule } from 'search/search.module';
-import { WidgetModule } from 'widget/widget.module';
+
 
 import { AttachmentsComponent } from "./components/attachments/attachments.component";
 import { DraftSliderComponent } from 'adminItem/public/components/draftSlider.component';
@@ -41,7 +41,7 @@ import { MatButtonModule, MatDialogModule, MatIconModule, MatTabsModule } from "
         RouterModule,
         TreeModule.forRoot(),
         // core
-        WidgetModule,
+
         // internal
         CompareModule,
         SearchModule,

@@ -5,7 +5,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { BoardModule } from 'board/public/board.module';
 import { PublicBoardsComponent } from 'board/public/components/publicBoards/publicBoards.component';
-import { WidgetModule } from 'widget/widget.module';
+
 import { MatIconModule, MatInputModule } from "@angular/material";
 
 const boardRoutes: Routes = [
@@ -18,7 +18,7 @@ const boardRoutes: Routes = [
         FormsModule,
         RouterModule.forChild(boardRoutes),
         // core
-        WidgetModule,
+
         // internal
         BoardModule,
         MatIconModule,

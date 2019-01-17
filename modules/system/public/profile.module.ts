@@ -12,7 +12,7 @@ import { SearchModule } from 'search/search.module';
 import { DraftsListMyComponent } from 'system/public/components/draftsList/draftsListMy.component';
 import { ProfileComponent } from 'system/public/components/profile.component';
 import { UserCommentsComponent } from 'system/public/components/userComments.component';
-import { WidgetModule } from 'widget/widget.module';
+
 
 const appRoutes: Routes = [
     {path: '', component: ProfileComponent},
@@ -30,7 +30,7 @@ const appRoutes: Routes = [
         NgbModule,
         RouterModule.forChild(appRoutes),
         // core
-        WidgetModule,
+
         // internal
         BoardModule,
         CdeSearchModule,

@@ -1,7 +1,7 @@
 import './metadata-item.scss';
 import { Component } from '@angular/core';
 import { NativeQuestionComponent } from 'nativeRender/nativeQuestion.component';
-import { textTruncate } from 'widget/browser';
+import { textTruncate } from 'core/browser';
 
 const ACCESSGUDID_LOOKUP = 'https://accessgudid.nlm.nih.gov/api/v1/devices/lookup.json';
 const ACCESSGUDID_PARSEUDI = 'https://accessgudid.nlm.nih.gov/api/v1/parse_udi.json?udi=';

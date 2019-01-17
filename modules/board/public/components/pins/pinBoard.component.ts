@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 
 import { Elt } from 'shared/models.model';
-import { interruptEvent } from 'widget/browser';
+import { interruptEvent } from 'core/browser';
 
 @Component({
     selector: 'cde-pin-board',

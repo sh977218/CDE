@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule, MatIconModule, MatTabsModule } from '@angular/material';
 import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { WidgetModule } from 'widget/widget.module';
+
 
 import { EmbedComponent } from 'system/public/components/embed/embed.component';
 import { OrgAccountManagementComponent } from 'system/public/components/siteAdmin/orgAccountManagement/orgAccountManagement.component';
@@ -25,7 +25,7 @@ const appRoutes: Routes = [
         NgbModule,
         RouterModule.forChild(appRoutes),
         // core
-        WidgetModule,
+
         // internal
         SystemModule,
     ],

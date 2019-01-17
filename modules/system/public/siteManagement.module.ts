@@ -21,7 +21,7 @@ import { DraftsListAdminComponent } from 'system/public/components/draftsList/dr
 import { EditSiteAdminsComponent } from 'system/public/components/siteAdmin/editSiteAdmins/editSiteAdmins.component';
 import { ServerStatusComponent } from 'system/public/components/siteAdmin/serverStatus/serverStatus.component';
 import { SiteManagementComponent } from 'system/public/components/siteAdmin/siteManagement/siteManagement.component';
-import { WidgetModule } from 'widget/widget.module';
+
 import { ArticleAdminComponent } from 'system/public/components/siteAdmin/article/articleAdmin.component';
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
 import { ResourcesAdminComponent } from 'system/public/components/siteAdmin/resources/resourcesAdmin.component';
@@ -46,7 +46,7 @@ const appRoutes: Routes = [
         NgbModule,
         RouterModule.forChild(appRoutes),
         // core
-        WidgetModule,
+
         // internal
         CommonAppModule,
         DiscussModule,

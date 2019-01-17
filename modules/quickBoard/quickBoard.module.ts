@@ -10,7 +10,7 @@ import { DataElementQuickBoardComponent } from 'quickBoard/dataElementQuickBoard
 import { FormQuickBoardComponent } from 'quickBoard/formQuickBoard/formQuickBoard.component';
 import { QuickBoardComponent } from 'quickBoard/quickBoard.component';
 import { SearchModule } from 'search/search.module';
-import { WidgetModule } from 'widget/widget.module';
+
 import { FormSearchModule } from 'form/public/formSearch.module';
 import { MatButtonModule, MatIconModule, MatTabsModule } from '@angular/material';
 
@@ -27,7 +27,7 @@ const qbRoutes: Routes = [
         CompareModule,
         RouterModule.forChild(qbRoutes),
         // core
-        WidgetModule,
+
         // internal
         CdeSearchModule,
         FormSearchModule,

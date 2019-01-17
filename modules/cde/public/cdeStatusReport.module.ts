@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { WidgetModule } from 'widget/widget.module';
+
 
 import { CdeStatusReportComponent } from 'cde/public/components/statusReport/cdeStatusReport.component';
 import { MatIconModule } from '@angular/material';
@@ -16,7 +16,7 @@ const appRoutes: Routes = [
         CommonModule,
         RouterModule.forChild(appRoutes),
         // core
-        WidgetModule,
+
         // internal
         MatIconModule,
     ],

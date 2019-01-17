@@ -9,7 +9,7 @@ import { NativeRenderModule } from 'nativeRender/nativeRender.module';
         BrowserModule,
         CommonModule,
         // core
-        // no WidgetModule,
+        // no
         // internal
         NativeRenderModule,
     ],

@@ -30,7 +30,7 @@ import { ValidRulesComponent } from 'cde/public/components/validationRules/valid
 import { CompareModule } from 'compare/compare.module';
 import { DiscussModule } from 'discuss/discuss.module';
 import { FormSearchModule } from 'form/public/formSearch.module';
-import { WidgetModule } from 'widget/widget.module';
+
 
 
 const appRoutes: Routes = [
@@ -54,7 +54,7 @@ const appRoutes: Routes = [
         TreeModule.forRoot(),
         NgSelectModule,
         // core
-        WidgetModule,
+
         // internal
         AdminItemModule,
         BoardModule,
