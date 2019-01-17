@@ -1,9 +1,11 @@
 <div>{{section.skipLogic.condition}}</div>
-<div *ngFor="let token of tokens">
+<div *ngFor="let token of tokens; let i = index;">
+    <div *ngIf="i > 0" style="width:5%;">
+        <cde-logic-autocomplete></cde-logic-autocomplete>
+    </div>
     <cde-question-autocomplete></cde-question-autocomplete>
     <cde-operator-autocomplete></cde-operator-autocomplete>
     <cde-answer-autocomplete></cde-answer-autocomplete>
-    <cde-logic-autocomplete></cde-logic-autocomplete>
 </div>
 <mat-icon (click)="addToken()">add</mat-icon>
 <mat-icon (click)="tokens.pop()">remove</mat-icon>

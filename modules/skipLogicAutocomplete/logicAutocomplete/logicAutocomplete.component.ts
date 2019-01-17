@@ -8,9 +8,6 @@ import { map, startWith } from 'rxjs/operators';
     templateUrl: './logicAutocomplete.component.html'
 })
 export class LogicAutocompleteComponent implements OnInit {
-    @Input() canEdit;
-    @Input() section;
-    @Input() parent;
     @Output() onChanged = new EventEmitter();
 
     logicOptions = ['AND', 'OR'];

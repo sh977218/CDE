@@ -1,7 +1,7 @@
 <mat-form-field>
     <input type="text" placeholder="Pick Logic Operator" matInput [formControl]="logicControl"
            [matAutocomplete]="logicAuto">
-    <mat-autocomplete #logicAuto="matAutocomplete">
+    <mat-autocomplete #logicAuto="matAutocomplete" (optionSelected)="onChanged.emit(logicControl.value);">
         <mat-option *ngFor="let option of filteredLogicOptions | async" [value]="option">
             {{option}}
         </mat-option>
