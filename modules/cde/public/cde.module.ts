@@ -16,7 +16,7 @@ import { CdeGeneralDetailsComponent } from 'cde/public/components/summary/cdeGen
 import { ValueDomainSummaryComponent } from 'cde/public/components/summary/valueDomainSummary.component';
 import { DiscussModule } from 'discuss/discuss.module';
 import { SearchModule } from 'search/search.module';
-import { WidgetModule } from 'widget/widget.module';
+
 import { MatButtonModule, MatDialogModule, MatIconModule } from '@angular/material';
 
 @NgModule({
@@ -28,7 +28,7 @@ import { MatButtonModule, MatDialogModule, MatIconModule } from '@angular/materi
         RouterModule,
         TreeModule.forRoot(),
         // core
-        WidgetModule,
+
         // internal
         AdminItemModule,
         BoardModule,

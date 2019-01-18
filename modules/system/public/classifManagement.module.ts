@@ -7,7 +7,7 @@ import "angular-tree-component/dist/angular-tree-component.css";
 
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
 import { OrgClassificationManagementComponent } from 'system/public/components/siteAdmin/orgClassificationManagement/orgClassificationManagement.component';
-import { WidgetModule } from 'widget/widget.module';
+
 import { MatButtonModule, MatDialogModule, MatIconModule, MatInputModule } from '@angular/material';
 
 const appRoutes: Routes = [
@@ -21,7 +21,7 @@ const appRoutes: Routes = [
         RouterModule.forChild(appRoutes),
         TreeModule.forRoot(),
         // core
-        WidgetModule,
+
         // internal
         AdminItemModule,
         MatButtonModule,

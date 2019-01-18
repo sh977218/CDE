@@ -15,7 +15,7 @@ import { ScoreService } from 'nativeRender/score.service';
         CommonModule,
         FormsModule,
         // core
-        // no WidgetModule,
+        // no
         // internal
     ],
     declarations: [

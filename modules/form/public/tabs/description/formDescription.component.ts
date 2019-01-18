@@ -25,7 +25,7 @@ import { DataElement } from 'shared/de/dataElement.model';
 import { convertFormToSection } from 'shared/form/form';
 import { CdeForm, FormElement, FormElementsContainer, FormInForm, FormSection } from 'shared/form/form.model';
 import { addFormIds, iterateFeSync } from 'shared/form/fe';
-import { scrollTo, waitRendered } from 'widget/browser';
+import { scrollTo, waitRendered } from 'core/browser';
 
 @Component({
     selector: 'cde-form-description',
