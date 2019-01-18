@@ -8,12 +8,7 @@ import { map, startWith } from 'rxjs/operators';
     templateUrl: './answerAutocomplete.component.html'
 })
 export class AnswerAutocompleteComponent implements OnInit {
-    private _question;
-    @Input() set question(q) {
-        this._question = q;
-    }
-
-    @Output() onChanged = new EventEmitter();
+    @Input() token;
 
     filteredAnswerOptions: Observable<string[]>;
     answerControl = new FormControl();
@@ -28,11 +23,11 @@ export class AnswerAutocompleteComponent implements OnInit {
 
     private _filterOperator(value: string): string[] {
         const filterValue = value.toLowerCase();
-        return this._question.answers.filter(option => option.toLowerCase().includes(filterValue));
+        return this.token.question.answers.filter(option => option.toLowerCase().includes(filterValue));
     }
 
     selectAnswer(event) {
-        this.onChanged.emit(event.option.value);
+        this.token.answer = event.option.value.permissibleValue;
     }
 
     displayFn(answer) {

@@ -1,21 +1,30 @@
-<div>{{section.skipLogic.condition}}</div>
-<div *ngFor="let token of tokens; let i = index;" class="row">
-    <div class="mr-1 col-1">
-        <cde-logic-autocomplete *ngIf="i > 0"></cde-logic-autocomplete>
+<div *ngIf="!canEdit">{{formElement.skipLogic.condition}}</div>
+<div *ngIf="canEdit">
+    <div>
+        <mat-icon (click)="editMode = !editMode">edit</mat-icon>
+        <mat-icon (click)="saveSkipLogic()">save</mat-icon>
     </div>
-    <div class="mr-1 col-4">
-        <cde-question-autocomplete [priorQuestions]="priorQuestions"
-                                   (onChanged)="selectQuestion($event);"></cde-question-autocomplete>
-    </div>
-    <div class="mr-1 col-1">
-        <cde-operator-autocomplete></cde-operator-autocomplete>
-    </div>
-    <div class="mr-1 col-4">
-        <cde-answer-autocomplete [(question)]="selectedQuestion"></cde-answer-autocomplete>
-    </div>
-    <div class="col-1">
-        <mat-icon (click)="tokens.pop()">remove</mat-icon>
+    <div *ngIf="editMode">
+        <div *ngFor="let token of tokens; let i = index;" class="row">
+            <div class="mr-1 col-1">
+                <cde-logic-autocomplete *ngIf="i > 0" [(token)]="token"></cde-logic-autocomplete>
+            </div>
+            <div class="mr-1 col-4">
+                <cde-question-autocomplete [formElement]="formElement" [parent]="parent"
+                                           [(token)]="token"></cde-question-autocomplete>
+            </div>
+            <div class="mr-1 col-1">
+                <cde-operator-autocomplete [(token)]="token"></cde-operator-autocomplete>
+            </div>
+            <div class="mr-1 col-4">
+                <cde-answer-autocomplete [(token)]="token"></cde-answer-autocomplete>
+            </div>
+            <div class="col-1">
+                <mat-icon (click)="tokens.pop()">remove</mat-icon>
+            </div>
+            {{token.label + ' ' + token.operator + ' ' + token.answer + ' ' + token.logic}}
+        </div>
+        <mat-icon (click)="addToken()">add</mat-icon>
     </div>
 </div>
-<mat-icon (click)="addToken()">add</mat-icon>
-{{section.skipLogic?.validationError}}
+{{formElement.skipLogic?.validationError}}

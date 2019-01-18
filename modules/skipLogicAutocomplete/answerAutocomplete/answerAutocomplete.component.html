@@ -1,13 +1,13 @@
 <mat-form-field class="w-100">
-    <ng-container *ngIf="_question?.question.datatype!=='Value List'">
-        <input matInput (change)="onChanged.emit($event)">
+    <ng-container *ngIf="token?.formElement?.question.datatype!=='Value List'">
+        <input matInput>
     </ng-container>
-    <ng-container *ngIf="_question?.question.datatype==='Value List'">
+    <ng-container *ngIf="token?.formElement?.question.datatype==='Value List'">
         <input type="text" placeholder="Answer" matInput [formControl]="answerControl"
                [matAutocomplete]="answerAuto">
         <mat-autocomplete #answerAuto="matAutocomplete" (optionSelected)="selectAnswer($event)"
                           [displayWith]="displayFn">
-            <mat-option *ngFor="let answer of _question.question.answers " [value]="answer">
+            <mat-option *ngFor="let answer of token.formElement.question.answers " [value]="answer">
                 {{answer.permissibleValue}}
             </mat-option>
         </mat-autocomplete>
