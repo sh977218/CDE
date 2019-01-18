@@ -24,25 +24,21 @@
         <!-- endbuild -->
     <% } %>
 
-    <%# Defer CSS #%>
     <script type="text/javascript">
-        var d = document.createElement('link');
-        d.href = '/fhir/fhir.css';
-        d.rel = 'stylesheet';
-        d.type = 'text/css';
-        var l = document.getElementsByTagName('meta')[0];
-        l.parentNode.insertBefore(d, l);
-
-        d = document.createElement('link');
-        d.href = 'https://fonts.googleapis.com/icon?family=Material+Icons';
-        d.rel = 'stylesheet';
-        d.type = 'text/css';
-        l = document.getElementsByTagName('meta')[0];
-        l.parentNode.insertBefore(d, l);
+        function deferCss(url) {
+            var d = document.createElement('link');
+            d.href = url;
+            d.rel = 'stylesheet';
+            d.type = 'text/css';
+            var l = document.getElementsByTagName('meta')[0];
+            l.parentNode.insertBefore(d, l);
+        }
+        deferCss('/fhir/fhir.css');
+        deferCss('https://fonts.googleapis.com/icon?family=Material+Icons');
     </script>
     <noscript>
         <!-- build:css /fhir/fhir.css -->
-        <link rel="stylesheet" type="text/css" href="/fhir/fhir.css" media="all"/>
+        <link rel="stylesheet" type="text/css" href="/fhir/fhir.css"/>
         <!-- endbuild -->
 
         <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/icon?family=Material+Icons">

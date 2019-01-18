@@ -180,7 +180,7 @@ gulp.task('usemin', gulp.series('copyDist', function _usemin() {
 
         let useminTask = gulp.src(item.folder + item.filename)
             .pipe(usemin({
-                jsAttributes: {defer: false},
+                jsAttributes: {async: true},
                 assetsDir: './dist/',
                 css: [minifyCss(), 'concat', rev(), data(outputFile)],
                 html: [ htmlmin({

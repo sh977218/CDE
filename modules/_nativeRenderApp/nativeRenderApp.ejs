@@ -1,7 +1,6 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <link rel="preload" as="script" href="/native/native.js"/>
     <title>NIH Common Data Elements (CDE) Repository</title>
     <meta name="site-version" content="<%= version %>">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -11,6 +10,23 @@
           content="cde, common data element, form, protocol, protocol form, crf, case report form, promis, neuro-qol, phenx, ahrq, ninds, value set, repository, nih, nlm, national institutes of health, national library of medicine">
     <meta name=viewport content="width=device-width, initial-scale=1">
     <meta name="google-site-verification" content="hgnYTGxY1q6mEcYD8VptKKAQCnwoWzfySPSGQWRgdyk">
+
+    <script type="text/javascript">
+        if (!window.formElt && location.search) {
+            var t = (function () {
+                var params = {};
+                location.search.substr(1).split('&').forEach(function (e) {
+                    var p = e.split('=');
+                    if (p.length === 2) params[p[0]] = decodeURI(p[1]);
+                    else params[p[0]] = null;
+                });
+                return params;
+            })().tinyId;
+            t && fetch('/form/' + t)
+                .then(function (res) {return res.json();})
+                .then(function (elt) {window.formElt = elt;});
+        }
+    </script>
 
     <% if (isLegacy) { %>
         <!-- Polyfills for legacy browsers -->
@@ -24,25 +40,21 @@
         <!-- endbuild -->
     <% } %>
 
-    <%# Defer CSS #%>
     <script type="text/javascript">
-        var d = document.createElement('link');
-        d.href = '/native/native.css';
-        d.rel = 'stylesheet';
-        d.type = 'text/css';
-        var l = document.getElementsByTagName('meta')[0];
-        l.parentNode.insertBefore(d, l);
-
-        d = document.createElement('link');
-        d.href = 'https://fonts.googleapis.com/icon?family=Material+Icons';
-        d.rel = 'stylesheet';
-        d.type = 'text/css';
-        l = document.getElementsByTagName('meta')[0];
-        l.parentNode.insertBefore(d, l);
+        function deferCss(url) {
+            var d = document.createElement('link');
+            d.href = url;
+            d.rel = 'stylesheet';
+            d.type = 'text/css';
+            var l = document.getElementsByTagName('meta')[0];
+            l.parentNode.insertBefore(d, l);
+        }
+        deferCss('/native/native.css');
+        deferCss('https://fonts.googleapis.com/icon?family=Material+Icons');
     </script>
     <noscript>
         <!-- build:css /native/native.css -->
-        <link rel="stylesheet" type="text/css" href="/native/native.css" media="all"/>
+        <link rel="stylesheet" type="text/css" href="/native/native.css"/>
         <!-- endbuild -->
 
         <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/icon?family=Material+Icons">
