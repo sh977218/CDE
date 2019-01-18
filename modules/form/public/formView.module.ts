@@ -41,6 +41,7 @@ import { CoreModule } from 'core/core.module';
 import { InlineEditModule } from 'inlineEdit/inlineEdit.module';
 import { InlineAreaEditModule } from 'inlineAreaEdit/inlineAreaEdit.module';
 import { InlineSelectEditModule } from 'inlineSelectEdit/inlineSelectEdit.module';
+import { SortableArrayModule } from 'sortableArray/sortableArray.module';
 
 
 const appRoutes: Routes = [
@@ -80,6 +81,7 @@ const appRoutes: Routes = [
         InlineAreaEditModule,
         InlineEditModule,
         InlineSelectEditModule,
+        SortableArrayModule,
         BoardModule,
         CdeModule,
         CdeSearchModule,

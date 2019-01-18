@@ -34,6 +34,8 @@ import { CoreModule } from 'core/core.module';
 import { InlineAreaEditModule } from 'inlineAreaEdit/inlineAreaEdit.module';
 import { InlineEditModule } from 'inlineEdit/inlineEdit.module';
 import { SortableArrayModule } from 'sortableArray/sortableArray.module';
+import { InlineSelectEditModule } from 'inlineSelectEdit/inlineSelectEdit.module';
+import { DeleteWithConfirmModule } from 'deleteWithConfirm/deleteWithConfirm.module';
 
 @NgModule({
     imports: [
@@ -51,8 +53,10 @@ import { SortableArrayModule } from 'sortableArray/sortableArray.module';
         CompareModule,
         SearchModule,
         SortableArrayModule,
+        DeleteWithConfirmModule,
         InlineEditModule,
         InlineAreaEditModule,
+        InlineSelectEditModule,
         MatButtonModule,
         MatDialogModule,
         MatIconModule,

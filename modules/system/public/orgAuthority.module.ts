@@ -17,6 +17,10 @@ import {
     MatIconModule, MatInputModule, MatTabsModule
 } from '@angular/material';
 import { OneListMgtComponent } from 'system/public/components/siteAdmin/listManagement/oneListMgt.component';
+import { CoreModule } from 'core/core.module';
+import { InlineAreaEditModule } from 'inlineAreaEdit/inlineAreaEdit.module';
+import { InlineEditModule } from 'inlineEdit/inlineEdit.module';
+import { InlineSelectEditModule } from 'inlineSelectEdit/inlineSelectEdit.module';
 
 const appRoutes: Routes = [
     {path: '', component: OrgAuthorityComponent},
@@ -29,8 +33,11 @@ const appRoutes: Routes = [
         NgbModule,
         RouterModule.forChild(appRoutes),
         // core
+        CoreModule,
 
         // internal
+        InlineAreaEditModule,
+        InlineEditModule,
         DiscussModule,
         SystemModule,
         MatAutocompleteModule,
