@@ -152,7 +152,7 @@ export function tokenSplitter(str) {
     let tokens = [];
     tokens.unmatched = '';
     if (!str) return tokens;
-    if (str.trim) str = str.trim();
+    str = str.trim();
     if (!str) return tokens;
 
     let res = str.match(/^"[^"]+"/);

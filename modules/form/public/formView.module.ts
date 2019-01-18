@@ -38,7 +38,6 @@ import { SelectQuestionLabelComponent } from 'form/public/tabs/description/selec
 import { NativeRenderFullComponent } from 'form/public/tabs/general/nativeRenderFull.component';
 import { NativeRenderModule } from 'nativeRender/nativeRender.module';
 import { WidgetModule } from 'widget/widget.module';
-import { SkipLogicAutocompleteModule } from 'skipLogicAutocomplete/skipLogicAutocomplete.module';
 
 const appRoutes: Routes = [
     {path: '', component: FormViewComponent},
@@ -72,7 +71,6 @@ const appRoutes: Routes = [
         // core
         WidgetModule,
         // internal
-        SkipLogicAutocompleteModule,
         AdminItemModule,
         BoardModule,
         CdeModule,

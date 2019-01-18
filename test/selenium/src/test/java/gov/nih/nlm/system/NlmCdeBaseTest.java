@@ -1752,5 +1752,4 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         clickElement(By.id("createBoard"));
         checkAlert("Board created");
     }
-
 }
