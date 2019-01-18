@@ -387,7 +387,8 @@
                         </mat-form-field>
                         <mat-paginator class="float-left" (page)="pageChange($event)" [length]="totalItemsLimited"
                                        [pageIndex]="searchSettings.page - 1"
-                                       [pageSize]="searchSettings.resultPerPage" [hidePageSize]="true" style="font-size: 1.4em">
+                                       [pageSize]="searchSettings.resultPerPage" [hidePageSize]="true"
+                                       style="font-size: 1.4em">
                         </mat-paginator>
                         <a [hidden]="true" href="{{fakeNextPageLink()}}" rel="next">Next Page</a>
                     </div>
@@ -406,12 +407,12 @@
         <p>The export will list the CDE(s) that fail registration status rules for the selected status.</p>
         <mat-form-field>
             <mat-select id="selectStatus" placeholder="Registration Status" [(ngModel)]="validRulesStatus">
-                <mat-option>Incomplete</mat-option>
-                <mat-option>Candidate</mat-option>
-                <mat-option id="recorded">Recorded</mat-option>
-                <mat-option>Qualified</mat-option>
-                <mat-option>Standard</mat-option>
-                <mat-option>Preferred Standard</mat-option>
+                <mat-option [value]="'Incomplete'">Incomplete</mat-option>
+                <mat-option [value]="'Candidate'">Candidate</mat-option>
+                <mat-option id="recorded" [value]="'Recorded'">Recorded</mat-option>
+                <mat-option [value]="'Qualified'">Qualified</mat-option>
+                <mat-option [value]="'Standard'">Standard</mat-option>
+                <mat-option [value]="'Preferred Standard'">Preferred Standard</mat-option>
             </mat-select>
         </mat-form-field>
     </div>

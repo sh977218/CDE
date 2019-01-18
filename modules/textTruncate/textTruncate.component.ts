@@ -23,10 +23,10 @@ export class TextTruncateComponent {
     @Input() threshold: number = 500;
     @Input() customMoreLabel!: string;
     @Input() customLessLabel!: string;
-    _class = 'collapseText';
-    open = false;
+    _class: string = 'collapseText';
+    open: boolean = false;
 
-    toggleShow () {
+    toggleShow(): void {
         this.open = !this.open;
         this._class = (this._class === 'collapseText') ? 'expandText' : 'collapseText';
     }

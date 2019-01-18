@@ -5,7 +5,7 @@ import { ScoreService } from 'nativeRender/score.service';
 import { CbErr, CodeAndSystem } from 'shared/models.model';
 import { questionMulti } from 'shared/form/fe';
 import { FormQuestion } from 'shared/form/form.model';
-import { callbackify } from 'widget/browser';
+import { callbackify } from 'core/browser';
 
 @Component({
     selector: 'cde-native-question',

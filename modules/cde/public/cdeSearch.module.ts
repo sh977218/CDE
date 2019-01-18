@@ -27,7 +27,7 @@ import { QuickBoardCdeSummaryListContentComponent } from 'cde/public/components/
 import { CdeSearchComponent } from 'cde/public/components/search/cdeSearch.component';
 import { SearchModule } from 'search/search.module';
 import { CdeTableViewPreferencesComponent } from "search/tableViewPreferences/cdeTableViewPreferencesComponent";
-import { WidgetModule } from 'widget/widget.module';
+
 
 
 @NgModule({
@@ -53,7 +53,7 @@ import { WidgetModule } from 'widget/widget.module';
         ReactiveFormsModule,
         RouterModule,
         // core
-        WidgetModule,
+
         // internal
         BoardModule,
         CdeModule,

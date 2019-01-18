@@ -8,9 +8,11 @@ import { MergeShareService } from 'core/mergeShare.service';
 import { CompareService } from 'core/compare.service';
 import { IsAllowedService } from 'core/isAllowed.service';
 import { RegistrationValidatorService } from 'core/registrationValidator.service';
+import { PlaceHoldEmptyPipe } from 'core/pipes/placeHoldEmpty.pipe';
 
 @NgModule({
     imports: [],
+    declarations: [PlaceHoldEmptyPipe],
     providers: [
         ClassificationService,
         CompareService,
@@ -19,9 +21,9 @@ import { RegistrationValidatorService } from 'core/registrationValidator.service
         MergeCdeService,
         MergeFormService,
         MergeShareService,
-        RegistrationValidatorService,
+        RegistrationValidatorService
     ],
-    exports: []
+    exports: [PlaceHoldEmptyPipe]
 })
 export class CoreModule {
 }

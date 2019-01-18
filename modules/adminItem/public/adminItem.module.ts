@@ -10,7 +10,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 
 import { CompareModule } from 'compare/compare.module';
 import { SearchModule } from 'search/search.module';
-import { WidgetModule } from 'widget/widget.module';
+
 
 import { AttachmentsComponent } from "./components/attachments/attachments.component";
 import { DraftSliderComponent } from 'adminItem/public/components/draftSlider.component';
@@ -29,7 +29,14 @@ import { SaveModalComponent } from "./components/saveModal/saveModal.component";
 import { DeleteModalComponent } from 'adminItem/public/components/deleteModal/deleteModal.component';
 import { NewDesignationComponent } from 'adminItem/public/components/naming/designation/newDesignation.component';
 import { NewDefinitionComponent } from 'adminItem/public/components/naming/definition/newDefinition.component';
-import { MatButtonModule, MatDialogModule, MatIconModule, MatInputModule, MatTabsModule } from "@angular/material";
+import { MatButtonModule, MatDialogModule, MatIconModule, MatTabsModule } from "@angular/material";
+
+import { CoreModule } from 'core/core.module';
+import { InlineAreaEditModule } from 'inlineAreaEdit/inlineAreaEdit.module';
+import { InlineEditModule } from 'inlineEdit/inlineEdit.module';
+import { SortableArrayModule } from 'sortableArray/sortableArray.module';
+import { InlineSelectEditModule } from 'inlineSelectEdit/inlineSelectEdit.module';
+import { DeleteWithConfirmModule } from 'deleteWithConfirm/deleteWithConfirm.module';
 import { TagModule } from 'tag/tag.module';
 
 @NgModule({
@@ -42,12 +49,17 @@ import { TagModule } from 'tag/tag.module';
         RouterModule,
         TreeModule.forRoot(),
         // core
-        WidgetModule,
-        TagModule,
+        CoreModule,
+
         // internal
         CompareModule,
         SearchModule,
-        MatInputModule,
+        SortableArrayModule,
+        DeleteWithConfirmModule,
+        InlineEditModule,
+        InlineAreaEditModule,
+        InlineSelectEditModule,
+        TagModule,
         MatButtonModule,
         MatDialogModule,
         MatIconModule,

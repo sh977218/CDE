@@ -12,7 +12,9 @@ import { SearchModule } from 'search/search.module';
 import { DraftsListMyComponent } from 'system/public/components/draftsList/draftsListMy.component';
 import { ProfileComponent } from 'system/public/components/profile.component';
 import { UserCommentsComponent } from 'system/public/components/userComments.component';
-import { WidgetModule } from 'widget/widget.module';
+import { CoreModule } from 'core/core.module';
+import { InlineEditModule } from 'inlineEdit/inlineEdit.module';
+
 
 const appRoutes: Routes = [
     {path: '', component: ProfileComponent},
@@ -30,8 +32,10 @@ const appRoutes: Routes = [
         NgbModule,
         RouterModule.forChild(appRoutes),
         // core
-        WidgetModule,
+        CoreModule,
+
         // internal
+        InlineEditModule,
         BoardModule,
         CdeSearchModule,
         FormSearchModule,/system.module.ts

@@ -7,7 +7,6 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { OrgAdminComponent } from 'system/public/components/siteAdmin/orgAdmin/orgAdmin.component';
 import { UsersMgtComponent } from 'system/public/components/siteAdmin/usersMgt/usersMgt.component';
 import { MatButtonModule, MatDialogModule, MatIconModule } from '@angular/material';
-import { WidgetModule } from 'widget/widget.module';
 import { TagModule } from 'tag/tag.module';
 
 import { UsernameAutocompleteModule } from 'usernameAutocomplete/usernameAutocomplete.module';
@@ -19,7 +18,6 @@ import { UsernameAutocompleteModule } from 'usernameAutocomplete/usernameAutocom
         FormsModule,
         NgbModule,
         NgSelectModule,
-        WidgetModule,
         MatButtonModule,
         MatIconModule,
         MatDialogModule,

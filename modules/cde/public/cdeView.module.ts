@@ -30,7 +30,11 @@ import { ValidRulesComponent } from 'cde/public/components/validationRules/valid
 import { CompareModule } from 'compare/compare.module';
 import { DiscussModule } from 'discuss/discuss.module';
 import { FormSearchModule } from 'form/public/formSearch.module';
-import { WidgetModule } from 'widget/widget.module';
+import { CoreModule } from 'core/core.module';
+import { InlineEditModule } from 'inlineEdit/inlineEdit.module';
+import { InlineSelectEditModule } from 'inlineSelectEdit/inlineSelectEdit.module';
+import { InlineAreaEditModule } from 'inlineAreaEdit/inlineAreaEdit.module';
+import { SortableArrayModule } from 'sortableArray/sortableArray.module';
 
 const appRoutes: Routes = [
     {path: '', component: DataElementViewComponent},
@@ -53,8 +57,13 @@ const appRoutes: Routes = [
         TreeModule.forRoot(),
         NgSelectModule,
         // core
-        WidgetModule,
+        CoreModule,
+
         // internal
+        InlineAreaEditModule,
+        InlineEditModule,
+        InlineSelectEditModule,
+        SortableArrayModule,
         AdminItemModule,
         BoardModule,
         CdeModule,

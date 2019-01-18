@@ -10,13 +10,17 @@ import { OrgAuthorityComponent } from 'system/public/components/siteAdmin/orgAut
 import { OrgsEditComponent } from 'system/public/components/siteAdmin/orgsEdit/orgsEdit.component';
 import { DiscussModule } from 'discuss/discuss.module';
 import { SystemModule } from 'system/public/system.module';
-import { WidgetModule } from 'widget/widget.module';
+
 import {
     MatAutocompleteModule, MatButtonModule,
     MatChipsModule, MatDialogModule,
     MatIconModule, MatInputModule, MatTabsModule
 } from '@angular/material';
 import { OneListMgtComponent } from 'system/public/components/siteAdmin/listManagement/oneListMgt.component';
+import { CoreModule } from 'core/core.module';
+import { InlineAreaEditModule } from 'inlineAreaEdit/inlineAreaEdit.module';
+import { InlineEditModule } from 'inlineEdit/inlineEdit.module';
+import { InlineSelectEditModule } from 'inlineSelectEdit/inlineSelectEdit.module';
 
 const appRoutes: Routes = [
     {path: '', component: OrgAuthorityComponent},
@@ -29,8 +33,11 @@ const appRoutes: Routes = [
         NgbModule,
         RouterModule.forChild(appRoutes),
         // core
-        WidgetModule,
+        CoreModule,
+
         // internal
+        InlineAreaEditModule,
+        InlineEditModule,
         DiscussModule,
         SystemModule,
         MatAutocompleteModule,
