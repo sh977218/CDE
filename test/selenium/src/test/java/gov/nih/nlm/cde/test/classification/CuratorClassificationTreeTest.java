@@ -16,10 +16,10 @@ public class CuratorClassificationTreeTest extends NlmCdeBaseTest {
 
         textPresent("CRF_TTU");
 
-        Assert.assertEquals(0, driver.findElements(By.xpath("//mat-icon[. = 'subdirectory_arrow_left']")).size());
-        Assert.assertEquals(0, driver.findElements(By.xpath("//mat-icon[. = 'edit']")).size());
-        Assert.assertEquals(0, driver.findElements(By.xpath("//mat-icon[. = 'delete_outline']")).size());
-        Assert.assertEquals(0, driver.findElements(By.xpath("//mat-icon[. = 'transform']")).size());
+        Assert.assertEquals(0, driver.findElements(By.xpath("//mat-icon[normalize-space() = 'subdirectory_arrow_left']")).size());
+        Assert.assertEquals(0, driver.findElements(By.xpath("//mat-icon[normalize-space() = 'edit']")).size());
+        Assert.assertEquals(0, driver.findElements(By.xpath("//mat-icon[normalize-space() = 'delete_outline']")).size());
+        Assert.assertEquals(0, driver.findElements(By.xpath("//mat-icon[normalize-space() = 'transform']")).size());
 
     }
 

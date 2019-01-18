@@ -3,13 +3,10 @@ import { Component, Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { PushNotificationSubscriptionService } from '_app/pushNotificationSubscriptionService';
 import _noop from 'lodash/noop';
-import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
-import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
-import { catchError, debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import { uriView } from 'shared/item';
 import { Cb, CbErr, CbErrObj, Comment, User } from 'shared/models.model';
-import { hasRole, isOrgAdmin, isOrgCurator } from 'shared/system/authorizationShared';
+import { hasRole, isOrgCurator } from 'shared/system/authorizationShared';
 import { newNotificationSettings, newNotificationSettingsMediaDrawer } from 'shared/user';
 
 @Injectable()
@@ -17,17 +14,6 @@ export class UserService {
     private listeners: Cb[] = [];
     private mailSubscription?: Subscription;
     private promise!: Promise<User>;
-    searchTypeahead = ((text$: Observable<string>) =>
-        text$.pipe(
-            debounceTime(300),
-            distinctUntilChanged(),
-            switchMap(term => term.length < 3 || !isOrgAdmin(this.user!) ? [] :
-                this.http.get<User[]>('/server/user/searchUsers/' + term).pipe(
-                    map(r => r.map(u => u.username),
-                    catchError(() => EmptyObservable.create<string[]>())
-                )
-            )
-        )));
     user?: User;
     userOrgs: string[] = [];
     logoutTimeout?: number;
@@ -37,6 +23,10 @@ export class UserService {
         this.reload();
         this.resetInactivityTimeout();
         document.body.addEventListener('click', () => this.resetInactivityTimeout());
+    }
+
+    searchUsernames(username: string) {
+        return this.http.get<User[]>('/server/user/usernames/' + username);
     }
 
     catch(cb: CbErrObj<HttpErrorResponse>): Promise<any> {
@@ -58,7 +48,7 @@ export class UserService {
         return !!this.user;
     }
 
-    isOrgCurator () {
+    isOrgCurator() {
         return this.user && isOrgCurator(this.user);
     }
 
@@ -99,7 +89,7 @@ export class UserService {
         this.listeners.push(cb);
     }
 
-    resetInactivityTimeout () {
+    resetInactivityTimeout() {
         clearTimeout(this.logoutTimeout);
         if (this.loggedIn()) {
             this.logoutTimeout = window.setTimeout(() => {
@@ -144,4 +134,5 @@ export class UserService {
         </div>
     `,
 })
-export class InactivityLoggedOutComponent {}
+export class InactivityLoggedOutComponent {
+}

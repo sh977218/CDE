@@ -15,7 +15,7 @@ public class WhatsNew extends NlmCdeBaseTest {
         clickElement(By.cssSelector("mat-select"));
         selectMatSelectDropdownByText("whatsNew");
 
-        clickElement(By.xpath("//mat-icon[. = 'edit']"));
+        clickElement(By.xpath("//mat-icon[normalize-space() = 'edit']"));
         hangon(5);
         clickElement(By.xpath("//button[. = 'Plain Text']"));
         hangon(5);
@@ -65,7 +65,7 @@ public class WhatsNew extends NlmCdeBaseTest {
         clickElement(By.xpath("//button[text() = 'Rich Text']"));
 
         hangon(5);
-        clickElement(By.xpath("//mat-icon[. = 'check']"));
+        clickElement(By.xpath("//mat-icon[normalize-space() = 'check']"));
         checkAlert("Saved");
         logout();
         clickElement(By.id("helpLink"));

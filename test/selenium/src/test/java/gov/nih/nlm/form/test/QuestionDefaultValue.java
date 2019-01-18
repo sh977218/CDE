@@ -19,7 +19,7 @@ public class QuestionDefaultValue extends NlmCdeBaseTest {
         saveEditQuestionById("question_0-0");
 
         startEditQuestionById("question_0-1");
-        clickElement(By.xpath("//*[@id='question_0-1']//*[contains(@class,'defaultAnswer')]//mat-icon[. = 'edit']"));
+        clickElement(By.xpath("//*[@id='question_0-1']//*[contains(@class,'defaultAnswer')]//mat-icon[normalize-space() = 'edit']"));
         findElement(By.xpath("//*[@id='question_0-1']//*[contains(@class,'defaultAnswer')]//input")).sendKeys("A default answer!");
         clickElement(By.xpath("//*[@id='question_0-1']//*[contains(@class,'defaultAnswer')]//button[contains(text(),'Confirm')]"));
         saveEditQuestionById("question_0-1");

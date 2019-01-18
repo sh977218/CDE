@@ -11,16 +11,16 @@ public class StatusValidationRenderTest extends BaseClassificationTest {
         goToCdeByName("Reg Status Lift");
 
         clickElement(By.id("rules_tab"));
-        findElement(By.xpath("//div[@id='rule_Candidate_0']/mat-icon[. = 'check']"));
+        findElement(By.xpath("//div[@id='rule_Candidate_0']/mat-icon[normalize-space() = 'check']"));
 
-        findElement(By.xpath("//div[@id='rule_Recorded_0']/mat-icon[. = 'cancel']"));
-        findElement(By.xpath("//div[@id='rule_Recorded_1']/mat-icon[. = 'cancel']"));
-        findElement(By.xpath("//div[@id='rule_Recorded_2']/mat-icon[. = 'check']"));
-        findElement(By.xpath("//div[@id='rule_Recorded_3']/mat-icon[. = 'cancel']"));
+        findElement(By.xpath("//div[@id='rule_Recorded_0']/mat-icon[normalize-space() = 'cancel']"));
+        findElement(By.xpath("//div[@id='rule_Recorded_1']/mat-icon[normalize-space() = 'cancel']"));
+        findElement(By.xpath("//div[@id='rule_Recorded_2']/mat-icon[normalize-space() = 'check']"));
+        findElement(By.xpath("//div[@id='rule_Recorded_3']/mat-icon[normalize-space() = 'cancel']"));
 
 
-        findElement(By.xpath("//div[@id='rule_Qualified_0']/mat-icon[. = 'check']"));
-        findElement(By.xpath("//div[@id='rule_Qualified_1']/mat-icon[. = 'check']"));
-        findElement(By.xpath("//div[@id='rule_Qualified_2']/mat-icon[. = 'cancel']"));
+        findElement(By.xpath("//div[@id='rule_Qualified_0']/mat-icon[normalize-space() = 'check']"));
+        findElement(By.xpath("//div[@id='rule_Qualified_1']/mat-icon[normalize-space() = 'check']"));
+        findElement(By.xpath("//div[@id='rule_Qualified_2']/mat-icon[normalize-space() = 'cancel']"));
     }
 }

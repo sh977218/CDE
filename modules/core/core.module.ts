@@ -1,7 +1,5 @@
 import { NgModule } from '@angular/core';
-import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 
-import { CdeAmericanDateParserFormatter } from 'core/americanDateParserFormatter';
 import { ClassificationService } from './classification.service';
 import { ExportService } from 'core/export.service';
 import { MergeCdeService } from 'core/mergeCde.service';

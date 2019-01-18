@@ -53,6 +53,7 @@
     "modules/deleteWithConfirm",
     "modules/sortableArray",
     "modules/textTruncate",
+    "modules/usernameAutocomplete",
     "node_modules",
     "protractor",
     "scripts",
