@@ -38,6 +38,8 @@ import { SelectQuestionLabelComponent } from 'form/public/tabs/description/selec
 import { NativeRenderFullComponent } from 'form/public/tabs/general/nativeRenderFull.component';
 import { NativeRenderModule } from 'nativeRender/nativeRender.module';
 import { CoreModule } from 'core/core.module';
+import { InlineEditModule } from 'inlineEdit/inlineEdit.module';
+import { InlineAreaEditModule } from 'inlineAreaEdit/inlineAreaEdit.module';
 
 
 const appRoutes: Routes = [
@@ -74,6 +76,8 @@ const appRoutes: Routes = [
 
         // internal
         AdminItemModule,
+        InlineEditModule,
+        InlineAreaEditModule,
         BoardModule,
         CdeModule,
         CdeSearchModule,

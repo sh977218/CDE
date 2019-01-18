@@ -30,7 +30,8 @@ import { ValidRulesComponent } from 'cde/public/components/validationRules/valid
 import { CompareModule } from 'compare/compare.module';
 import { DiscussModule } from 'discuss/discuss.module';
 import { FormSearchModule } from 'form/public/formSearch.module';
-
+import { CoreModule } from 'core/core.module';
+import { InlineEditModule } from 'inlineEdit/inlineEdit.module';
 
 
 const appRoutes: Routes = [
@@ -54,8 +55,10 @@ const appRoutes: Routes = [
         TreeModule.forRoot(),
         NgSelectModule,
         // core
+        CoreModule,
 
         // internal
+        InlineEditModule,
         AdminItemModule,
         BoardModule,
         CdeModule,

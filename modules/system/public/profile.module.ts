@@ -13,6 +13,7 @@ import { DraftsListMyComponent } from 'system/public/components/draftsList/draft
 import { ProfileComponent } from 'system/public/components/profile.component';
 import { UserCommentsComponent } from 'system/public/components/userComments.component';
 import { CoreModule } from 'core/core.module';
+import { InlineEditModule } from 'inlineEdit/inlineEdit.module';
 
 
 const appRoutes: Routes = [
@@ -34,6 +35,7 @@ const appRoutes: Routes = [
         CoreModule,
 
         // internal
+        InlineEditModule,
         BoardModule,
         CdeSearchModule,
         FormSearchModule,
