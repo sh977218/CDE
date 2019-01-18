@@ -43,6 +43,7 @@ import { InlineAreaEditModule } from 'inlineAreaEdit/inlineAreaEdit.module';
 import { InlineSelectEditModule } from 'inlineSelectEdit/inlineSelectEdit.module';
 import { SortableArrayModule } from 'sortableArray/sortableArray.module';
 import { DeleteWithConfirmModule } from 'deleteWithConfirm/deleteWithConfirm.module';
+import { SkipLogicAutocompleteModule } from 'skipLogicAutocomplete/skipLogicAutocomplete.module';
 
 
 const appRoutes: Routes = [
@@ -90,7 +91,8 @@ const appRoutes: Routes = [
         CompareModule,
         DiscussModule,
         FormSearchModule,
-        NativeRenderModule
+        NativeRenderModule,
+        SkipLogicAutocompleteModule,
     ],
     declarations: [
         ArrayListPipe,

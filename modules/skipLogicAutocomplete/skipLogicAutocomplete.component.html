@@ -3,16 +3,19 @@
     <div class="mr-1 col-1">
         <cde-logic-autocomplete *ngIf="i > 0"></cde-logic-autocomplete>
     </div>
-    <div class="mr-1 col-5">
-        <cde-question-autocomplete></cde-question-autocomplete>
+    <div class="mr-1 col-4">
+        <cde-question-autocomplete [priorQuestions]="priorQuestions"
+                                   (onChanged)="selectQuestion($event);"></cde-question-autocomplete>
     </div>
     <div class="mr-1 col-1">
         <cde-operator-autocomplete></cde-operator-autocomplete>
     </div>
     <div class="mr-1 col-4">
-        <cde-answer-autocomplete></cde-answer-autocomplete>
+        <cde-answer-autocomplete [(question)]="selectedQuestion"></cde-answer-autocomplete>
     </div>
-    <mat-icon class="float-left" (click)="tokens.pop()">remove</mat-icon>
+    <div class="col-1">
+        <mat-icon (click)="tokens.pop()">remove</mat-icon>
+    </div>
 </div>
 <mat-icon (click)="addToken()">add</mat-icon>
 {{section.skipLogic?.validationError}}

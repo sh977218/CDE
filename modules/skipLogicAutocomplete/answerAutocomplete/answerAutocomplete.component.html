@@ -1,9 +1,15 @@
 <mat-form-field class="w-100">
-    <input type="text" placeholder="Pick Operator" matInput [formControl]="answerControl"
-           [matAutocomplete]="answerAuto">
-    <mat-autocomplete #answerAuto="matAutocomplete">
-        <mat-option *ngFor="let option of filteredAnswerOptions | async" [value]="option">
-            {{option}}
-        </mat-option>
-    </mat-autocomplete>
+    <ng-container *ngIf="_question?.question.datatype!=='Value List'">
+        <input matInput (change)="onChanged.emit($event)">
+    </ng-container>
+    <ng-container *ngIf="_question?.question.datatype==='Value List'">
+        <input type="text" placeholder="Answer" matInput [formControl]="answerControl"
+               [matAutocomplete]="answerAuto">
+        <mat-autocomplete #answerAuto="matAutocomplete" (optionSelected)="selectAnswer($event)"
+                          [displayWith]="displayFn">
+            <mat-option *ngFor="let answer of _question.question.answers " [value]="answer">
+                {{answer.permissibleValue}}
+            </mat-option>
+        </mat-autocomplete>
+    </ng-container>
 </mat-form-field>

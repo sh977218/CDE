@@ -1,9 +1,10 @@
 <mat-form-field class="w-100">
     <input type="text" placeholder="Question Label" matInput [formControl]="questionControl"
            [matAutocomplete]="questionAuto">
-    <mat-autocomplete #questionAuto="matAutocomplete">
-        <mat-option *ngFor="let option of filteredQuestionOptions | async" [value]="option">
-            {{option}}
+    <mat-autocomplete #questionAuto="matAutocomplete" (optionSelected)="selectQuestion($event)"
+                      [displayWith]="displayFn">
+        <mat-option *ngFor="let priorQuestion of priorQuestions" [value]="priorQuestion">
+            {{priorQuestion.label}}
         </mat-option>
     </mat-autocomplete>
 </mat-form-field>
