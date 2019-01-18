@@ -20,12 +20,12 @@ public class CopyrightTest extends BaseFormTest {
         clickElement(By.id("isCopyrighted"));
         textPresent("Statement");
         textPresent("Authority");
-        clickElement(By.xpath("//*[@id='formCopyrightText']//mat-icon[. = 'edit']"));
+        clickElement(By.xpath("//*[@id='formCopyrightText']//mat-icon[normalize-space() = 'edit']"));
         findElement(By.cssSelector("#formCopyrightText input")).sendKeys(statement);
-        clickElement(By.xpath("//*[@id='formCopyrightText']//mat-icon[. = 'check']"));
-        clickElement(By.xpath("//*[@id='formCopyrightAuthority']//mat-icon[. = 'edit']"));
+        clickElement(By.xpath("//*[@id='formCopyrightText']//mat-icon[normalize-space() = 'check']"));
+        clickElement(By.xpath("//*[@id='formCopyrightAuthority']//mat-icon[normalize-space() = 'edit']"));
         findElement(By.cssSelector("#formCopyrightAuthority input")).sendKeys(authority);
-        clickElement(By.xpath("//*[@id='formCopyrightAuthority']//mat-icon[. = 'check']"));
+        clickElement(By.xpath("//*[@id='formCopyrightAuthority']//mat-icon[normalize-space() = 'check']"));
         newFormVersion();
 
         logout();

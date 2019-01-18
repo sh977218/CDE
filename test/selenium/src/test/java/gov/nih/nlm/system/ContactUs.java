@@ -15,7 +15,7 @@ public class ContactUs extends NlmCdeBaseTest {
         clickElement(By.cssSelector("mat-select"));
         selectMatSelectDropdownByText("contactUs");
 
-        clickElement(By.xpath("//mat-icon[. = 'edit']"));
+        clickElement(By.xpath("//mat-icon[normalize-space() = 'edit']"));
         hangon(2);
         clickElement(By.xpath("//button[. = 'Plain Text']"));
         hangon(2);
@@ -30,7 +30,7 @@ public class ContactUs extends NlmCdeBaseTest {
         clickElement(By.xpath("//button[text() = 'Rich Text']"));
 
         hangon(2);
-        clickElement(By.xpath("//mat-icon[. = 'check']"));
+        clickElement(By.xpath("//mat-icon[normalize-space() = 'check']"));
         checkAlert("Saved");
         logout();
         clickElement(By.id("helpLink"));

@@ -13,7 +13,7 @@ public class UserEmailTest extends NlmCdeBaseTest {
         clickElement(By.linkText("Profile"));
         textPresent("test@example.com");
         Assert.assertEquals(findElement(By.xpath("//*[@id='emailEdit']/span/span/span")).getText(), "test@example.com");
-        clickElement(By.xpath("//*[@id='emailEdit']//mat-icon[. = 'edit']"));
+        clickElement(By.xpath("//*[@id='emailEdit']//mat-icon[normalize-space() = 'edit']"));
         findElement(By.xpath("//*[@id='emailEdit']//input")).clear();
         findElement(By.xpath("//*[@id='emailEdit']//input")).sendKeys("me@");
         Assert.assertFalse(findElement(By.xpath("//cde-inline-edit[@id='emailEdit']//button[contains(text(),'Confirm')]")).isEnabled());

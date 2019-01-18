@@ -10,6 +10,7 @@ import { EmbedComponent } from 'system/public/components/embed/embed.component';
 import { OrgAccountManagementComponent } from 'system/public/components/siteAdmin/orgAccountManagement/orgAccountManagement.component';
 import { SystemModule } from 'system/public/system.module';
 import { DraftsListOrgComponent } from "system/public/components/draftsList/draftsListOrg.component";
+import { UsernameAutocompleteModule } from 'usernameAutocomplete/usernameAutocomplete.module';
 
 const appRoutes: Routes = [
     {path: '', component: OrgAccountManagementComponent},
@@ -26,6 +27,7 @@ const appRoutes: Routes = [
         RouterModule.forChild(appRoutes),
         // core
         WidgetModule,
+        UsernameAutocompleteModule,
         // internal
         SystemModule,
     ],
@@ -34,12 +36,9 @@ const appRoutes: Routes = [
         OrgAccountManagementComponent,
         DraftsListOrgComponent,
     ],
-    entryComponents: [
-    ],
-    exports: [
-    ],
-    providers: [
-    ],
+    entryComponents: [],
+    exports: [],
+    providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class OrgManagementModule {
