@@ -20,7 +20,7 @@ public class CreateWorkingGroup extends NlmCdeBaseTest {
         clickElement(By.linkText("Org Management"));
         clickElement(By.xpath("//div[. = 'Org Admins']"));
         new Select(driver.findElement(By.name("newOrgAdminOrgName"))).selectByVisibleText(orgWG);
-        findElement(By.id("newOrgAdminUsername")).sendKeys(nlm_username);
+        searchUsername(nlm_username);
         clickElement(By.id("newOrgAdminSubmit"));
         checkAlert("Saved");
 

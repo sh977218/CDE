@@ -9,7 +9,7 @@ import { getMapToFhirResource } from 'shared/form/formAndFe';
 import { findQuestionByTinyId, getFormQuestions, iterateFeSync } from 'shared/form/fe';
 import { CodeAndSystem } from 'shared/models.model';
 import { deepCopy } from 'shared/system/util';
-import { interruptEvent } from 'widget/browser';
+import { interruptEvent } from 'core/browser';
 
 type DisplayProfileVM = {
     aliases: {

@@ -18,20 +18,20 @@ public class FindByNestedIdTest extends NlmCdeBaseTest {
 
         goToCdeSearch();
         findElement(By.id("ftsearch-input")).sendKeys("ids.id:C18059");
-        clickElement(By.xpath("//mat-icon[. = 'search']"));
+        clickElement(By.xpath("//mat-icon[normalize-space() = 'search']"));
 
         try {
             textPresent("2 results for");
         } catch (Exception e) {
             goToCdeSearch();
             findElement(By.id("ftsearch-input")).sendKeys("ids.id:C18059");
-            clickElement(By.xpath("//mat-icon[. = 'search']"));
+            clickElement(By.xpath("//mat-icon[normalize-space() = 'search']"));
         }
         textPresent("2 results for");
 
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("flatIds:\"FAKE C18059\"");
-        clickElement(By.xpath("//mat-icon[. = 'search']"));
+        clickElement(By.xpath("//mat-icon[normalize-space() = 'search']"));
         textPresent("1 results for");
 
     }

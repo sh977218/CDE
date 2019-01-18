@@ -7,7 +7,7 @@ import _uniqWith from 'lodash/uniqWith';
 import { AlertService } from 'alert/alert.service';
 import { ElasticService } from '_app/elastic.service';
 import { SearchSettingsElastic } from 'search/search.model';
-import { httpErrorMessage } from 'widget/angularHelper';
+import { httpErrorMessage } from 'core/angularHelper';
 
 
 @Injectable()

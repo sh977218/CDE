@@ -13,10 +13,11 @@ public class AllRulesPass extends NlmCdeBaseTest {
         clickElement(By.id("browseOrg-caBIG"));
         findElement(By.id("pinAll"));
         clickElement(By.id("export"));
-        findElement(By.id("exportValidRule")).click();
+        clickElement(By.id("exportValidRule"));
         findElement(By.id("selectStatus")).click();
-        findElement(By.xpath("//span[. = 'Recorded']")).click();
-        findElement(By.id("exportVR")).click();
+        clickElement(By.xpath("//span[. = 'Recorded']"));
+        textPresent("Recorded");
+        clickElement(By.id("exportVR"));
         textPresent("All CDEs pass validation rules.");
     }
 

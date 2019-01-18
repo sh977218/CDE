@@ -30,16 +30,16 @@ exports.status = function (req, res) {
 
 exports.checkElasticCount = function (count, index, type, cb) {
     elastic.esClient.count({index: index, type: type}, (err, response) => {
-            if (err) {
-                cb(false, 'Error retrieving index count: ' + err);
+        if (err) {
+            cb(false, 'Error retrieving index count: ' + err);
+        } else {
+            if (!(response.count >= count - 5 && response.count <= count + 5)) {
+                cb(false, 'Count mismatch because db count = ' + count + ' and esCount = ' + response.count);
             } else {
-                if (!(response.count >= count - 5 && response.count <= count + 5)) {
-                    cb(false, 'Count mismatch because db count = ' + count + ' and esCount = ' + response.count);
-                } else {
-                    cb(true);
-                }
+                cb(true);
             }
-        });
+        }
+    });
 };
 
 exports.isElasticUp = function (cb) {

@@ -15,7 +15,7 @@ import { FeedbackIssuesComponent } from 'system/public/components/siteAdmin/feed
 import { LogAuditComponent } from 'system/public/components/siteAdmin/logAudit/logAudit.component';
 import { ServerErrorsComponent } from 'system/public/components/siteAdmin/serverErrors/serverErrors.component';
 import { SiteAuditComponent } from 'system/public/components/siteAdmin/siteAudit/siteAudit.component';
-import { WidgetModule } from 'widget/widget.module';
+
 import { ActiveBansComponent } from "./components/siteAdmin/activeBans/activeBans.component";
 import {
     MatButtonModule,
@@ -36,7 +36,7 @@ const appRoutes: Routes = [
         NgbModule,
         RouterModule.forChild(appRoutes),
         // core
-        WidgetModule,
+
         MatButtonModule,
         MatIconModule,
         MatExpansionModule,

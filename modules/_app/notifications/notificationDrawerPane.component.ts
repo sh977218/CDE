@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { NotificationService } from '_app/notifications/notification.service';
 import '_app/notifications/notificationDrawer.scss';
-import { interruptEvent } from 'widget/browser';
+import { interruptEvent } from 'core/browser';
 
 @Component({
     templateUrl: './notificationDrawerPane.component.html',

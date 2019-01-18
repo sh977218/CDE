@@ -6,7 +6,7 @@ import { MatCardModule, MatButtonModule, MatIconModule, MatListModule } from '@a
 
 import { ResourcesComponent } from 'system/public/components/resources/resources.component';
 import { SafeHtmlPipe } from '_app/safeHtml.pipe';
-import { WidgetModule } from 'widget/widget.module';
+
 import { ResourcesRssComponent } from 'system/public/components/resources/resourcesRss.component';
 
 const appRoutes: Routes = [
@@ -17,7 +17,7 @@ const appRoutes: Routes = [
     imports: [
         CommonModule,
         RouterModule.forChild(appRoutes),
-        WidgetModule,
+
         MatCardModule,
         MatButtonModule,
         MatIconModule,
