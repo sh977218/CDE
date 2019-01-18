@@ -37,7 +37,13 @@ import { QuestionAnswerEditContentComponent } from 'form/public/tabs/description
 import { SelectQuestionLabelComponent } from 'form/public/tabs/description/selectQuestionLabel.component';
 import { NativeRenderFullComponent } from 'form/public/tabs/general/nativeRenderFull.component';
 import { NativeRenderModule } from 'nativeRender/nativeRender.module';
-import { WidgetModule } from 'widget/widget.module';
+import { CoreModule } from 'core/core.module';
+import { InlineEditModule } from 'inlineEdit/inlineEdit.module';
+import { InlineAreaEditModule } from 'inlineAreaEdit/inlineAreaEdit.module';
+import { InlineSelectEditModule } from 'inlineSelectEdit/inlineSelectEdit.module';
+import { SortableArrayModule } from 'sortableArray/sortableArray.module';
+import { DeleteWithConfirmModule } from 'deleteWithConfirm/deleteWithConfirm.module';
+
 
 const appRoutes: Routes = [
     {path: '', component: FormViewComponent},
@@ -69,9 +75,15 @@ const appRoutes: Routes = [
         RouterModule.forChild(appRoutes),
         TreeModule.forRoot(),
         // core
-        WidgetModule,
+        CoreModule,
+
         // internal
         AdminItemModule,
+        DeleteWithConfirmModule,
+        InlineAreaEditModule,
+        InlineEditModule,
+        InlineSelectEditModule,
+        SortableArrayModule,
         BoardModule,
         CdeModule,
         CdeSearchModule,

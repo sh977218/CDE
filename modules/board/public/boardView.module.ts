@@ -13,7 +13,7 @@ import { DiscussModule } from 'discuss/discuss.module';
 import { FormSearchModule } from 'form/public/formSearch.module';
 import { NativeRenderModule } from 'nativeRender/nativeRender.module';
 import { SearchModule } from 'search/search.module';
-import { WidgetModule } from 'widget/widget.module';
+
 
 const boardRoutes: Routes = [
     {path: '', component: BoardViewComponent},
@@ -26,7 +26,7 @@ const boardRoutes: Routes = [
         NgbModule,
         RouterModule.forChild(boardRoutes),
         // core
-        WidgetModule,
+
         // internal
         AdminItemModule,
         BoardModule,

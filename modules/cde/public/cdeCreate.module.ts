@@ -6,7 +6,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
 import { CdeModule } from 'cde/public/cde.module';
 import { CreateDataElementComponent } from 'cde/public/components/createDataElement.component';
-import { WidgetModule } from 'widget/widget.module';
+
 import { MatButtonModule, MatIconModule } from '@angular/material';
 import { LoggedInGuard } from '_app/routerGuard/loggedInGuard';
 
@@ -20,7 +20,7 @@ const appRoutes: Routes = [
         FormsModule,
         RouterModule.forChild(appRoutes),
         // core
-        WidgetModule,
+
         // internal
         AdminItemModule,
         CdeModule,
