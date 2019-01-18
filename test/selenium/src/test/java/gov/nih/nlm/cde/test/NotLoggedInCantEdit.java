@@ -12,10 +12,10 @@ public class NotLoggedInCantEdit extends NlmCdeBaseTest {
         goToCdeByName("ALS Depression Inventory-12 (ADI-12) - lost abandoned scale");
 
         goToNaming();
-        Assert.assertEquals(driver.findElements(By.cssSelector(".fa-angle-double-up")).size(), 0);
+        Assert.assertEquals(driver.findElements(By.xpath("//mat-icon[contains(., 'arrow_upward')]")).size(), 0);
 
         goToProperties();
-        Assert.assertEquals(driver.findElements(By.cssSelector(".fa-angle-double-up")).size(), 0);
+        Assert.assertEquals(driver.findElements(By.xpath("//mat-icon[contains(., 'arrow_upward')]")).size(), 0);
     }
 
 }

@@ -57,7 +57,6 @@ public class DisplayProfilesTest extends BaseFormTest {
         newFormVersion();
         goToPreview();
         textNotPresent("Display Profile:");
-        Assert.assertEquals(driver.findElements(By.cssSelector("i.iconButton")).size(), 0);
     }
 
 }
