@@ -26,8 +26,8 @@ import {
     addFormIds, areDerivationRulesSatisfied, getLabel, iterateFe, iterateFes, iterateFeSync, noopSkipIterCb
 } from 'shared/form/fe';
 import { canEditCuratedItem, isOrgCurator } from 'shared/system/authorizationShared';
-import { httpErrorMessage } from 'widget/angularHelper';
-import { isIe, scrollTo } from 'widget/browser';
+import { httpErrorMessage } from 'core/angularHelper';
+import { isIe, scrollTo } from 'core/browser';
 
 class LocatableError {
     id: string;

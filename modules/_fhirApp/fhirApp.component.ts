@@ -9,7 +9,7 @@ import { FhirEncounter, FhirObservation } from 'shared/mapping/fhir/fhirResource
 import { codingArrayPreview, getDateString, valuePreview } from 'shared/mapping/fhir/fhirDatatypes';
 import { getText, getTextFromArray } from 'shared/mapping/fhir/datatype/fhirCodeableConcept';
 import { getPatientName } from 'shared/mapping/fhir/resource/fhirPatient';
-import { interruptEvent } from 'widget/browser';
+import { interruptEvent } from 'core/browser';
 
 function getObservationViewCode(observation: FhirObservation): string {
     return observation.code ? codingArrayPreview(observation.code.coding) : '';

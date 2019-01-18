@@ -35,8 +35,8 @@ import {
 import { DataType } from 'shared/de/dataElement.model';
 import { hasRole, isSiteAdmin } from 'shared/system/authorizationShared';
 import { orderedList, statusList } from 'shared/system/regStatusShared';
-import { paramsToQueryString, trackByKey, trackByName } from 'widget/angularHelper';
-import { scrollTo } from 'widget/browser';
+import { paramsToQueryString, trackByKey, trackByName } from 'core/angularHelper';
+import { scrollTo } from 'core/browser';
 
 type NamedCounts = {name: string, count: number}[];
 

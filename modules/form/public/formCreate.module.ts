@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
 import { CreateFormComponent } from 'adminItem/public/components/createForm.component';
-import { WidgetModule } from 'widget/widget.module';
+
 import { LoggedInGuard } from '_app/routerGuard/loggedInGuard';
 
 const appRoutes: Routes = [
@@ -14,7 +14,7 @@ const appRoutes: Routes = [
     imports: [
         RouterModule.forChild(appRoutes),
         // core
-        WidgetModule,
+
         // internal
         AdminItemModule,
     ],
