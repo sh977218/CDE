@@ -1,7 +1,7 @@
 package gov.nih.nlm.form.test;
 
-import org.testng.Assert;
 import org.openqa.selenium.By;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class DragHandleVisibility extends BaseFormTest {
@@ -16,10 +16,8 @@ public class DragHandleVisibility extends BaseFormTest {
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName(formName);
         clickElement(By.linkText("Form Description"));
-        Assert.assertTrue(findElement(By.xpath(
-                "//*[@id='section_0']//div[contains(@class,'sectionTitle')]//mat-icon[. = 'drag_handle']"
-        )).isDisplayed());
-        Assert.assertTrue(findElement(By.xpath("//*[@id = 'question_0-0']//mat-icon[. = 'drag_handle']")).isDisplayed());
+        Assert.assertTrue(findElement(By.xpath("//*[@id='section_0']//div[contains(@class,'sectionTitle')]//mat-icon[normalize-space() = 'drag_handle']")).isDisplayed());
+        Assert.assertTrue(findElement(By.xpath("//*[@id = 'question_0-0']//mat-icon[normalize-space() = 'drag_handle']")).isDisplayed());
     }
 
 }

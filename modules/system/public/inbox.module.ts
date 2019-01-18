@@ -5,7 +5,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { InboxComponent } from 'system/public/components/inbox/inbox.component';
-import { WidgetModule } from 'widget/widget.module';
+
 import { MatButtonModule, MatDialogModule, MatExpansionModule } from '@angular/material';
 
 
@@ -22,7 +22,7 @@ const appRoutes: Routes = [
         MatDialogModule,
         MatButtonModule,
         MatExpansionModule,
-        WidgetModule,
+
         // internal
     ],
     declarations: [

@@ -5,7 +5,7 @@ import { RouterModule, Routes } from "@angular/router";
 import { NgSelectModule } from '@ng-select/ng-select';
 
 import { SearchPreferencesComponent } from "./components/searchPreferences/searchPreferences.component";
-import { WidgetModule } from 'widget/widget.module';
+
 import { MatButtonModule, MatIconModule } from '@angular/material';
 
 const appRoutes: Routes = [
@@ -18,7 +18,7 @@ const appRoutes: Routes = [
         FormsModule,
         NgSelectModule,
         RouterModule.forChild(appRoutes),
-        WidgetModule,
+
         MatButtonModule,
         MatIconModule,
     ],

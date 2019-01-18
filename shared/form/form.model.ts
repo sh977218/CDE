@@ -43,11 +43,13 @@ export class CdeForm extends Elt implements FormElementsContainer {
             if (!dp.metadata) dp.metadata = {};
             if (!dp.unitsOfMeasureAlias) dp.unitsOfMeasureAlias = [];
         });
+
         function feValid(fe: FormElement) {
             if (!Array.isArray(fe.formElements)) fe.formElements = [];
             if (!fe.instructions) fe.instructions = new FormattedValue();
             if (!fe.skipLogic) fe.skipLogic = new SkipLogic();
         }
+
         iterateFeSync(elt,
             form => {
                 feValid(form);
@@ -91,6 +93,7 @@ export class CdeFormElastic extends CdeForm { // all volatile
 
 export class FhirProcedureMapping {
     [key: string]: any;
+
     statusQuestionID?: string;
     statusStatic?: string;
     performedDate?: string;
@@ -114,13 +117,14 @@ export class DisplayProfile {
     displayNumbering = true;
     displayType: DisplayType = 'Follow-up';
     displayValues = false;
-    metadata: {device?: boolean} = {};
+    metadata: { device?: boolean } = {};
     name: String;
     numberOfColumns = 4;
     repeatFormat = '#.';
     sectionsAsMatrix = true;
-    unitsOfMeasureAlias: {alias: string, unitOfMeasure: CodeAndSystem}[] = [];
+    unitsOfMeasureAlias: { alias: string, unitOfMeasure: CodeAndSystem }[] = [];
     fhirProcedureMapping?: FhirProcedureMapping;
+
     constructor(name = '') {
         this.name = name;
     }
@@ -138,8 +142,8 @@ export class FhirApp {
     _id!: ObjectId;
     clientId = '';
     dataEndpointUrl = '';
-    forms: {tinyId?: string}[] = [];
-    mapping: {cdeSystem?: string, cdeCode?: string, fhirSystem?: string, fhirCode?: string}[] = [];
+    forms: { tinyId?: string }[] = [];
+    mapping: { cdeSystem?: string, cdeCode?: string, fhirSystem?: string, fhirCode?: string }[] = [];
     timestamp?: Date;
 }
 
@@ -156,7 +160,7 @@ export interface FormElementsContainer {
 
 interface FormElementPart extends FormElementsContainer {
     _id?: ObjectId; // TODO: remove
-    readonly elementType: 'section'|'form'|'question';
+    readonly elementType: 'section' | 'form' | 'question';
     expanded?: boolean; // calculated, formDescription view model
     feId?: string; // calculated, nativeRender and formView view model
     formElements: FormElement[];
@@ -310,6 +314,6 @@ class Section {
 
 export class SkipLogic {
     action?: string;
-    condition?: string;
+    condition: string = '';
     validationError?: string;
 }

@@ -1,5 +1,5 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { AlertService } from 'alert/alert.service';
 import { MyBoardsService } from 'board/public/myBoards.service';
 import { MatDialog, MatDialogRef } from '@angular/material';
@@ -9,12 +9,16 @@ import { MatDialog, MatDialogRef } from '@angular/material';
     templateUrl: './createBoard.component.html',
 })
 export class CreateBoardComponent {
+    @Input() buttonName?: string = 'Add Board';
+
     @Input() set module(module) {
         this._module = module;
         if (this.newBoard) this.newBoard.type = module;
     }
 
+    @Input() elts = [];
     @ViewChild('createBoardModal') createBoardModal: TemplateRef<any>;
+
     _module = undefined;
     dialogRef: MatDialogRef<TemplateRef<any>>;
     newBoard: any;
@@ -37,7 +41,14 @@ export class CreateBoardComponent {
 
     openNewBoard() {
         this.newBoard = {
-            type: this._module || 'cde'
+            type: this._module || 'cde',
+            pins: this.elts.map(e => {
+                return {
+                    tinyId: e.tinyId,
+                    name: e.designations[0].desgiantion,
+                    type: this._module
+                };
+            })
         };
         this.dialogRef = this.dialog.open(this.createBoardModal, {width: '800px'});
     }

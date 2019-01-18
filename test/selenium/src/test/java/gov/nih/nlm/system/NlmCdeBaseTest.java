@@ -282,8 +282,8 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void deleteWithConfirm(String xpath) {
-        clickElement(By.xpath(xpath + "//mat-icon[. = 'delete_outline']"));
-        clickElement(By.xpath(xpath + "//mat-icon[. = 'check']"));
+        clickElement(By.xpath(xpath + "//mat-icon[normalize-space() = 'delete_outline']"));
+        clickElement(By.xpath(xpath + "//mat-icon[normalize-space() = 'check']"));
     }
 
     protected void gotoClassificationMgt() {
@@ -486,7 +486,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         clickElement(By.linkText("FORMS"));
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
-        clickElement(By.xpath("//mat-icon[. = 'search']"));
+        clickElement(By.xpath("//mat-icon[normalize-space() = 'search']"));
         textPresent("1 results for");
         textPresent(name, By.id("searchResult_0"));
     }
@@ -815,13 +815,11 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
 
     protected void scrollToView(By by) {
         JavascriptExecutor je = (JavascriptExecutor) driver;
-        je.executeScript(
-                "window.scrollTo(0, arguments[0].getBoundingClientRect().top + window.pageYOffset - (window.innerHeight / 2));",
-                findElement(by));
+        je.executeScript("window.scrollTo(0, arguments[0].getBoundingClientRect().top + window.pageYOffset - (window.innerHeight / 2));", findElement(by));
     }
 
     protected void scrollToViewById(String id) {
-        scrollToView(By.id(id));
+        scrollToView(By.xpath("//*[@id='" + id + "']"));
     }
 
     protected int getCurrentYOffset() {
@@ -946,9 +944,9 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void editDesignationByIndex(int index, String newDesignation, String[] tags) {
-        String designationEditIconXpath = "//*[@id='designation_" + index + "']//mat-icon[. = 'edit']";
+        String designationEditIconXpath = "//*[@id='designation_" + index + "']//mat-icon[normalize-space() = 'edit']";
         String designationInputXpath = "//*[@id='designation_" + index + "']//input";
-        String designationConfirmBtnXpath = "//*[@id='designation_" + index + "']//mat-icon[. = 'check']";
+        String designationConfirmBtnXpath = "//*[@id='designation_" + index + "']//mat-icon[normalize-space() = 'check']";
         if (newDesignation != null) {
             clickElement(By.xpath(designationEditIconXpath));
             hangon(1);
@@ -968,10 +966,10 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void editDefinitionByIndex(int index, String newDefinition, boolean html) {
-        String definitionEditIconXpath = "//*[@id='definition_" + index + "']//mat-icon[. = 'edit']";
+        String definitionEditIconXpath = "//*[@id='definition_" + index + "']//mat-icon[normalize-space() = 'edit']";
         String richTextBtnXpath = "//*[@id='definition_" + index + "']//button[. = 'Rich Text']";
         String definitionTextareaXpath = "//*[@id='definition_" + index + "']//textarea";
-        String definitionConfirmBtnXpath = "//*[@id='definition_" + index + "']//mat-icon[. = 'check']";
+        String definitionConfirmBtnXpath = "//*[@id='definition_" + index + "']//mat-icon[normalize-space() = 'check']";
         clickElement(By.xpath(definitionEditIconXpath));
         if (html) {
             clickElement(By.xpath(richTextBtnXpath));
@@ -983,10 +981,10 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void editPropertyValueByIndex(int index, String newValue, boolean html) {
-        String valueEditIconXpath = "//*[@id='value_" + index + "']//mat-icon[. = 'edit']";
+        String valueEditIconXpath = "//*[@id='value_" + index + "']//mat-icon[normalize-space() = 'edit']";
         String richTextBtnXpath = "//*[@id='value_" + index + "']//button[. = 'Rich Text']";
         String valueTextareaXpath = "//*[@id='value_" + index + "']//textarea";
-        String valueConfirmBtnXpath = "//*[@id='value_" + index + "']//mat-icon[. = 'check']";
+        String valueConfirmBtnXpath = "//*[@id='value_" + index + "']//mat-icon[normalize-space() = 'check']";
         clickElement(By.xpath(valueEditIconXpath));
         if (html) {
             clickElement(By.xpath(richTextBtnXpath));
@@ -1117,15 +1115,14 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         } else {
             gotoMyBoards();
             textPresent(boardName);
-            clickElement(By.xpath("//*[@id='viewBoard_" + boardName + "']//a"));
-            switchTab(1);
+            clickElement(By.xpath("//*[@id='viewBoard_" + boardName + "']"));
             textPresent(boardName, By.xpath("//h3[@id='board_name_" + boardName + "']"));
         }
     }
 
     protected void gotoMyBoards() {
         clickElement(By.id("boardsMenu"));
-        textPresent("MY BOARDS");
+        textPresent("My Boards");
         clickElement(By.id("myBoardsLink"));
         textPresent("Add Board");
         hangon(2);
@@ -1325,14 +1322,14 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
      */
     protected void editSection(String sectionId, String newSectionName, String newSectionInstruction, boolean isInstructionHtml, String newSectionCardinalityType, String newSectionCardinality) {
         startEditSectionById(sectionId);
-        clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_label')]//mat-icon[. = 'edit']"));
+        clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_label')]//mat-icon[normalize-space() = 'edit']"));
         findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_label')]//input")).clear();
         findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_label')]//input")).sendKeys(newSectionName);
         clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_label')]//button[contains(text(),'Confirm')]"));
         textNotPresent("Confirm");
         textPresent(newSectionName, By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_label')]"));
 
-        clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_instruction')]//mat-icon[. = 'edit']"));
+        clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_instruction')]//mat-icon[normalize-space() = 'edit']"));
         textPresent("Plain Text");
         textPresent("Rich Text");
         textPresent("Confirm");
@@ -1374,7 +1371,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     public String getOrgClassificationIconXpath(String type, String[] categories) {
         String id = String.join(",", categories);
         String icon = PREDEFINED_ORG_CLASSIFICATION_ICON.get(type.toLowerCase());
-        return "//*[@id='" + id + "']/following-sibling::a/mat-icon[. = '" + icon + "']";
+        return "//*[@id='" + id + "']/following-sibling::a/mat-icon[normalize-space() = '" + icon + "']";
     }
 
     protected void searchNestedClassifiedCdes() {
@@ -1543,7 +1540,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void editOrigin(String origin, boolean append) {
-        clickElement(By.xpath("//*[@id='origin']//mat-icon[. = 'edit']"));
+        clickElement(By.xpath("//*[@id='origin']//mat-icon[normalize-space() = 'edit']"));
         if (!append) {
             findElement(By.xpath("//*[@id='origin']//input")).clear();
             hangon(2);
@@ -1736,4 +1733,23 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         clickElement(By.id("selectQuestionNoLabel"));
     }
 
+    protected void searchUsername(String username) {
+        clickElement(By.name("searchUsersInput"));
+        findElement(By.name("searchUsersInput")).clear();
+        findElement(By.name("searchUsersInput")).sendKeys(username);
+        findElements(By.xpath("//*[contains(@id,'mat-autocomplete-')]//mat-option[contains(.,'" + username.toLowerCase() + "')]"));
+        clickElement(By.xpath("//*[contains(@id,'mat-autocomplete-')]//mat-option[contains(.,'" + username.toLowerCase() + "')]"));
+    }
+
+    protected void createBoardFromQuickBoard(String boardName, String boardDescription) {
+        clickElement(By.id("addBoard"));
+        if (boardName != null) {
+            findElement(By.id("new-board-name")).sendKeys(boardName);
+        }
+        if (boardDescription != null) {
+            findElement(By.id("new-board-description")).sendKeys(boardDescription);
+        }
+        clickElement(By.id("createBoard"));
+        checkAlert("Board created");
+    }
 }

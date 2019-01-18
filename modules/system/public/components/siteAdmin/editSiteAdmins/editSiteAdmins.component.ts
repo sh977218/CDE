@@ -8,19 +8,16 @@ import { UserService } from '_app/user.service';
     selector: 'cde-edit-site-admins',
     templateUrl: './editSiteAdmins.component.html'
 })
-export class EditSiteAdminsComponent implements OnInit {
+export class EditSiteAdminsComponent {
     newAdmin: any;
     siteAdmins: any = [];
     orgAuthorities: any = [];
 
-    ngOnInit() {
-        this.getSiteAdmins();
-        this.getOrgAuthorities();
-    }
-
     constructor(private Alert: AlertService,
                 private http: HttpClient,
                 public userService: UserService) {
+        this.getSiteAdmins();
+        this.getOrgAuthorities();
     }
 
     addSiteAdmin() {
@@ -33,11 +30,15 @@ export class EditSiteAdminsComponent implements OnInit {
     }
 
     getSiteAdmins() {
-        this.http.get('/server/siteAdmin/siteAdmins').subscribe(response => this.siteAdmins = response, () => {});
+        this.http.get('/server/siteAdmin/siteAdmins')
+            .subscribe(response => this.siteAdmins = response, () => {
+            });
     }
 
     getOrgAuthorities() {
-        this.http.get('/server/siteAdmin/orgAuthorities').subscribe(response => this.orgAuthorities = response, () => {});
+        this.http.get('/server/siteAdmin/orgAuthorities')
+            .subscribe(response => this.orgAuthorities = response, () => {
+            });
     }
 
     removeSiteAdmin(name: string) {

@@ -1,5 +1,6 @@
 <button mat-raised-button value="add" (click)="openNewBoard()" id="addBoard" style="margin-bottom: 10px;">
-        <mat-icon>add</mat-icon> Add Board
+    <mat-icon>add</mat-icon>
+    {{buttonName}}
 </button>
 
 <ng-template #createBoardModal id="newBoardModal">
@@ -9,10 +10,11 @@
             <div class="form-group">
                 <label for="new-board-type">Type of element the board will contain</label>
                 <ng-container [ngSwitch]="_module">
-                    <ng-container *ngSwitchCase="'cde'"><strong>CDEs</strong>.</ng-container>
-                    <ng-container *ngSwitchCase="'form'"><strong>Forms</strong>.</ng-container>
+                    <ng-container *ngSwitchCase="'cde'"><strong> CDEs</strong>.</ng-container>
+                    <ng-container *ngSwitchCase="'form'"><strong> Forms</strong>.</ng-container>
                     <ng-container *ngSwitchDefault>
-                        <select id="new-board-type" class="form-control" name="type" [(ngModel)]="newBoard.type" required>
+                        <select id="new-board-type" class="form-control" name="type" [(ngModel)]="newBoard.type"
+                                required>
                             <option value="cde">CDEs</option>
                             <option value="form">Forms</option>
                         </select>

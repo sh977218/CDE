@@ -11,7 +11,7 @@ import { CompareObjectComponent } from 'compare/compareObject/compareObject.comp
 import { CompareSideBySideComponent } from 'compare/compareSideBySide/compareSideBySide.component';
 import { MergeDataElementComponent } from 'compare/mergeDataElement/mergeDataElement.component';
 import { MergeFormComponent } from 'compare/mergeForm/mergeForm.component';
-import { WidgetModule } from 'widget/widget.module';
+
 import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHistoryContent.component';
 import { MatButtonModule, MatDialogModule, MatIconModule, MatProgressBarModule } from '@angular/material';
 
@@ -27,7 +27,7 @@ import { MatButtonModule, MatDialogModule, MatIconModule, MatProgressBarModule }
         MatIconModule,
         MatProgressBarModule,
         // core
-        WidgetModule,
+
     ],
     declarations: [
         CdeSortableComponent,
