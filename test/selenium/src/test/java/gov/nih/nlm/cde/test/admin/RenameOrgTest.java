@@ -29,27 +29,27 @@ public class RenameOrgTest extends NlmCdeBaseTest {
         addOrg(testOrg, null, null);
         closeAlert();
 
-        clickElement(By.xpath("//*[@id = 'orgLongName-" + testOrg + "']//mat-icon[. = 'edit']"));
+        clickElement(By.xpath("//*[@id = 'orgLongName-" + testOrg + "']//mat-icon[normalize-space() = 'edit']"));
         findElement(By.xpath("//*[@id = 'orgLongName-" + testOrg + "']//input")).sendKeys(testOrgRenamed);
         clickElement(By.xpath("//*[@id = 'orgLongName-" + testOrg + "']//button[contains(text(),'Confirm')]"));
         closeAlert();
 
-        clickElement(By.xpath("//*[@id = 'orgMailAddress-" + testOrg + "']//mat-icon[. = 'edit']"));
+        clickElement(By.xpath("//*[@id = 'orgMailAddress-" + testOrg + "']//mat-icon[normalize-space() = 'edit']"));
         findElement(By.xpath("//*[@id = 'orgMailAddress-" + testOrg + "']//input")).sendKeys(testOrgMailingAddress);
         clickElement(By.xpath("//*[@id = 'orgMailAddress-" + testOrg + "']//button[contains(text(),'Confirm')]"));
         closeAlert();
 
-        clickElement(By.xpath("//*[@id = 'orgEmailAddress-" + testOrg + "']//mat-icon[. = 'edit']"));
+        clickElement(By.xpath("//*[@id = 'orgEmailAddress-" + testOrg + "']//mat-icon[normalize-space() = 'edit']"));
         findElement(By.xpath("//*[@id = 'orgEmailAddress-" + testOrg + "']//input")).sendKeys(testOrgEmailingAddress);
         clickElement(By.xpath("//*[@id = 'orgEmailAddress-" + testOrg + "']//button[contains(text(),'Confirm')]"));
         closeAlert();
 
-        clickElement(By.xpath("//*[@id = 'orgPhoneNumber-" + testOrg + "']//mat-icon[. = 'edit']"));
+        clickElement(By.xpath("//*[@id = 'orgPhoneNumber-" + testOrg + "']//mat-icon[normalize-space() = 'edit']"));
         findElement(By.xpath("//*[@id = 'orgPhoneNumber-" + testOrg + "']//input")).sendKeys(testOrgPhoneNumber);
         clickElement(By.xpath("//*[@id = 'orgPhoneNumber-" + testOrg + "']//button[contains(text(),'Confirm')]"));
         closeAlert();
 
-        clickElement(By.xpath("//*[@id = 'orgUri-" + testOrg + "']//mat-icon[. = 'edit']"));
+        clickElement(By.xpath("//*[@id = 'orgUri-" + testOrg + "']//mat-icon[normalize-space() = 'edit']"));
         findElement(By.xpath("//*[@id = 'orgUri-" + testOrg + "']//input")).sendKeys(testOrgUri);
         clickElement(By.xpath("//*[@id = 'orgUri-" + testOrg + "']//button[contains(text(),'Confirm')]"));
         closeAlert();
@@ -61,23 +61,23 @@ public class RenameOrgTest extends NlmCdeBaseTest {
         textPresent(testOrgPhoneNumber);
         textPresent(testOrgUri);
 
-        clickElement(By.xpath("//*[@id = 'orgLongName-" + testOrg + "']//mat-icon[. = 'edit']"));
+        clickElement(By.xpath("//*[@id = 'orgLongName-" + testOrg + "']//mat-icon[normalize-space() = 'edit']"));
         findElement(By.xpath("//*[@id = 'orgLongName-" + testOrg + "']//input")).sendKeys(testOrgNotRenamed);
         clickElement(By.xpath("//*[@id = 'orgLongName-" + testOrg + "']//button[text() = 'Discard']"));
 
-        clickElement(By.xpath("//*[@id = 'orgMailAddress-" + testOrg + "']//mat-icon[. = 'edit']"));
+        clickElement(By.xpath("//*[@id = 'orgMailAddress-" + testOrg + "']//mat-icon[normalize-space() = 'edit']"));
         findElement(By.xpath("//*[@id = 'orgMailAddress-" + testOrg + "']//input")).sendKeys(testOrgMailingAddressNotRenamed);
         clickElement(By.xpath("//*[@id = 'orgMailAddress-" + testOrg + "']//button[text() = 'Discard']"));
 
-        clickElement(By.xpath("//*[@id = 'orgEmailAddress-" + testOrg + "']//mat-icon[. = 'edit']"));
+        clickElement(By.xpath("//*[@id = 'orgEmailAddress-" + testOrg + "']//mat-icon[normalize-space() = 'edit']"));
         findElement(By.xpath("//*[@id = 'orgEmailAddress-" + testOrg + "']//input")).sendKeys(testOrgEmailingAddressNotRenamed);
         clickElement(By.xpath("//*[@id = 'orgEmailAddress-" + testOrg + "']//button[text() = 'Discard']"));
 
-        clickElement(By.xpath("//*[@id = 'orgPhoneNumber-" + testOrg + "']//mat-icon[. = 'edit']"));
+        clickElement(By.xpath("//*[@id = 'orgPhoneNumber-" + testOrg + "']//mat-icon[normalize-space() = 'edit']"));
         findElement(By.xpath("//*[@id = 'orgPhoneNumber-" + testOrg + "']//input")).sendKeys(testOrgPhoneNumberNotRenamed);
         clickElement(By.xpath("//*[@id = 'orgPhoneNumber-" + testOrg + "']//button[text() = 'Discard']"));
 
-        clickElement(By.xpath("//*[@id = 'orgUri-" + testOrg + "']//mat-icon[. = 'edit']"));
+        clickElement(By.xpath("//*[@id = 'orgUri-" + testOrg + "']//mat-icon[normalize-space() = 'edit']"));
         findElement(By.xpath("//*[@id = 'orgUri-" + testOrg + "']//input")).sendKeys(testOrgUriNotRenamed);
         clickElement(By.xpath("//*[@id = 'orgUri-" + testOrg + "']//button[text() = 'Discard']"));
 

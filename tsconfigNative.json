@@ -48,6 +48,7 @@
     "modules/system",
     "modules/swagger",
     "modules/widget",
+    "modules/usernameAutocomplete",
     "node_modules",
     "protractor",
     "scripts",

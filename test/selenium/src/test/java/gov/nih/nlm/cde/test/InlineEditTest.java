@@ -38,7 +38,7 @@ public class InlineEditTest extends BaseAttachmentTest {
         goToAttachments();
         String url = findElement(By.id("attachment_file_url_0")).getAttribute("href");
         goToProperties();
-        clickElement(By.xpath("//*[@id='value_0']//mat-icon[. = 'edit']"));
+        clickElement(By.xpath("//*[@id='value_0']//mat-icon[normalize-space() = 'edit']"));
         textPresent("Rich Text");
         clickElement(By.xpath("//*[@id='value_0']//button[. = 'Rich Text']"));
 
@@ -53,9 +53,9 @@ public class InlineEditTest extends BaseAttachmentTest {
         Alert errorAlert = driver.switchTo().alert();
         Assert.assertTrue(errorAlert.getText().contains("Error. Img src may only be a relative url starting with /data"));
         errorAlert.accept();
-        clickElement(By.xpath("//button/mat-icon[. = 'cancel']"));
+        clickElement(By.xpath("//button/mat-icon[normalize-space() = 'cancel']"));
 
-        clickElement(By.xpath("//*[@id='value_0']//mat-icon[. = 'edit']"));
+        clickElement(By.xpath("//*[@id='value_0']//mat-icon[normalize-space() = 'edit']"));
         textPresent("Rich Text");
         clickElement(By.xpath("//*[@id='value_0']//button[. = 'Rich Text']"));
         clickElement(By.cssSelector(".cke_button__source"));
@@ -65,7 +65,7 @@ public class InlineEditTest extends BaseAttachmentTest {
         findElement(By.xpath("//div[label[. = 'URL']]//input")).sendKeys(url);
         clickElement(By.linkText("OK"));
 
-        clickElement(By.xpath("//button//mat-icon[. = 'check']"));
+        clickElement(By.xpath("//button//mat-icon[normalize-space() = 'check']"));
         textPresent("validate image url");
         Assert.assertTrue(findElement(By.xpath("//*[@id='value_0']//img")).getAttribute("src").contains("cde"));
     }

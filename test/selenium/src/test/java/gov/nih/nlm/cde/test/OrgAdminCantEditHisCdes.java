@@ -11,9 +11,9 @@ public class OrgAdminCantEditHisCdes extends NlmCdeBaseTest {
         mustBeLoggedInAs(cabigAdmin_username, password);
         goToCdeByName("Cervical Tumor Clinical T Stage");
         textPresent("as defined by the AJCC Cancer Staging Manual, 6th Ed.");
-        shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//mat-icon[. = 'edit']")));
+        shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//mat-icon[normalize-space() = 'edit']")));
         goToCdeByName("Communication Contact Email Address java.lang.String");
         textPresent("A modern Internet e-mail address (using SMTP)");
-        shortWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//mat-icon[. = 'edit']")));
+        shortWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//mat-icon[normalize-space() = 'edit']")));
     }
 }

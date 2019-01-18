@@ -24,6 +24,7 @@ import { PinBoardModalComponent } from "./components/pins/pinBoardModal.componen
 import { PinQuickboardComponent } from "./components/pins/pinQuickboard.component";
 import { UnpinBoardComponent } from "./components/listView/unpinBoard.component";
 import { WidgetModule } from "widget/widget.module";
+import { SearchModule } from 'search/search.module';
 
 @NgModule({
     imports: [
@@ -40,6 +41,7 @@ import { WidgetModule } from "widget/widget.module";
         RouterModule,
         // core
         WidgetModule,
+        SearchModule,
         // internal
         AdminItemModule,
     ],
