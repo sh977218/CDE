@@ -202,13 +202,15 @@ exports.orgSchema.set('collection', 'orgs');
 
 exports.designationSchema = new Schema({
     designation: StringType,
-    tags: [StringType]
+    tags: [StringType],
+    sources: [StringType]
 }, {_id: false});
 
 exports.definitionSchema = new Schema({
     definition: {type: String, required: true, minlength: 1},
     definitionFormat: StringType,
-    tags: [StringType]
+    tags: [StringType],
+    sources: [StringType]
 }, {_id: false});
 
 let attachmentSchema = {
@@ -241,13 +243,6 @@ exports.registrationStateSchema = {
 exports.propertySchema = {key: StringType, value: StringType, source: StringType, valueFormat: StringType, _id: false};
 
 exports.idSchema = {source: StringType, id: StringType, version: StringType, _id: false};
-
-exports.helpItemSchema = new Schema({
-    permalink: StringType,
-    title: StringType,
-    tags: [StringType]
-});
-
 
 let requestSchema = {
     source: {tinyId: StringType, id: StringType},

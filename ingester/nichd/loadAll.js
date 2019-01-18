@@ -1,8 +1,15 @@
 const fs = require('fs');
 const parse = require('csv-parse/lib/sync');
 let mongo_data = require('../../server/system/mongo-data');
-const DataElement = require('../../server/cde/mongo-cde').DataElement;
+let mongo_cde = require('../../server/cde/mongo-cde');
+const DataElement = mongo_cde.DataElement;
 const Form = require('../../server/form/mongo-form').Form;
+const _ = require('lodash');
+
+// mdbrest --gzip --db test --collection dataelements --drop ~/Downloads/mongodump-20190118/nlmcde/dataelements.bson.gz
+// mdbrest --gzip --db test --collection forms --drop ~/Downloads/mongodump-20190118/nlmcde/forms.bson.gz
+// mdbrest --gzip --db test --collection orgs --drop ~/Downloads/mongodump-20190118/nlmcde/orgs.bson.gz
+
 
 const inputFile = 'S:/MLB/CDE/NICHD/CoreCDE_03172016.csv';
 const CSV_COND = {
@@ -18,6 +25,41 @@ let allRows = parse(fs.readFileSync(inputFile), CSV_COND);
 
 let forms = {};
 
+let cdeSaved = 0;
+let formSaved = 0;
+let cdeUpdated = 0;
+
+const updateCde = async function(row, classification = "Core") {
+    let existingCde = await mongo_cde.byTinyId(row.NLM_ID);
+
+    let foundClassif = existingCde.classification.find(c => c.stewardOrg === 'NICHD');
+    if (!foundClassif) {
+        existingCde.classification.push({
+            stewardOrg: {
+                name: 'NICHD',
+            },
+            elements: [{name: classification, elements: []}]
+        });
+    }
+
+    let foundDesignation = existingCde.designations.find(d => d.designation === row.Question);
+    if (foundDesignation) {
+        foundDesignation.tags = _.union(foundDesignation.tags, ["Question Text"]);
+    } else {
+        existingCde.designations.push({designation: row.Question, tags: ["Question Text"]});
+    }
+
+    if (row['Question Definition']) {
+        let foundDefinition = existingCde.definitions.find(d => d.definition === row["Question Definition"]);
+        if (!foundDefinition) {
+            existingCde.definitions.push({definition: row['Question Definition'], tags: []});
+        }
+    }
+
+    cdeUpdated++;
+    await mongo_cde.updatePromise(existingCde, {username: "batchloader"});
+    return existingCde;
+};
 
 const createCde = function(row, classification = "Core") {
     let cde = {
@@ -59,17 +101,17 @@ const createCde = function(row, classification = "Core") {
         cde.valueDomain.datatype = 'Text';
     } else console.log('unmapped type: ' + type);
 
-    return cde;
-
+    cdeSaved++;
+    return new DataElement(cde).save();
 };
-
-let cdeSaved = 0;
-let formSaved = 0;
 
 async function loadCdes (done) {
     for (let row of allRows) {
 
-        let cde = createCde(row);
+        let cde = row.NLM_ID ? await updateCde(row) : await createCde(row);
+
+        console.log("tinyId: " + cde.tinyId);
+
 
         if (!forms[row.Form]) {
             forms[row.Form] = {
@@ -109,10 +151,6 @@ async function loadCdes (done) {
                 answers: cde.valueDomain.permissibleValues
             }
         });
-
-
-        await new DataElement(cde).save();
-        cdeSaved++;
     }
     done();
 }
@@ -126,6 +164,8 @@ loadCdes(async () => {
     console.log("DONE");
     console.log(formSaved + " forms created");
     console.log(cdeSaved + " CDEs created");
+    console.log(cdeUpdated + " CDEs updated");
 
+    process.exit();
 });
 
