@@ -27,8 +27,8 @@ public class UomValidation extends BaseFormTest {
         questionEditRemoveUom("question_0-3", "inches");
         saveEditQuestionById("question_0-3");
         textNotPresent("inches");
-        findElement(By.xpath("//*[@id='question_0-3']//*[contains(@class,'questionUom')]//*[text()='UCUM/' and text()='kg']"));
-        findElement(By.xpath("//*[@id='question_0-3']//*[contains(@class,'questionUom')]//*[text()='Kilo']"));
+        findElement(By.xpath("//*[@id='question_0-3']//*[contains(@class,'questionUom')]//*[normalize-space()='UCUM/ kg']"));
+        findElement(By.xpath("//*[@id='question_0-3']//*[contains(@class,'questionUom')]//*[normalize-space()='Kilo']"));
 
         goToPreview();
         hangon(1);

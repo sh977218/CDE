@@ -7,9 +7,8 @@
             </button>
         </div>
         <div class="form-group">
-            <input class="form-control" id="searchUsersInput" name="searchUsersInput" type="text"
-                   placeholder="enter username" autocomplete="off" [(ngModel)]="search.username"
-                   [ngbTypeahead]="userService.searchTypeahead" required>
+            <cde-username-autocomplete [placeHolder]="'enter username'"
+                                       (onSelect)="search.username = $event"></cde-username-autocomplete>
         </div>
         <button type="submit" mat-raised-button color="primary" id="searchUsersSubmit" (click)="searchUsers()">
             Search

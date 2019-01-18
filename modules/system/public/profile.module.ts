@@ -34,7 +34,7 @@ const appRoutes: Routes = [
         // internal
         BoardModule,
         CdeSearchModule,
-        FormSearchModule,
+        FormSearchModule,/system.module.ts
         SearchModule,
     ],
     declarations: [

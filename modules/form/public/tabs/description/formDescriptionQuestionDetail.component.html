@@ -153,34 +153,32 @@
                         <ng-container *ngIf="u.system">{{u.system}}/</ng-container>
                         {{u.code}}
                     </span>
-                    <ng-template #rt let-r="result" let-t="term">
-                        <dl class="row" *ngIf="r.name">
-                            <dt class="col-2">synonyms:</dt>
-                            <dd class="col-10 mb-0">
-                                <span *ngFor="let s of r.synonyms">{{s}} </span>
-                            </dd>
-                            <dt class="col-2">name:</dt>
-                            <dd class="col-10 mb-0">{{ r.name}}</dd>
-                            <dt class="col-2">code:</dt>
-                            <dd class="col-10 mb-0">{{r.code}}</dd>
-                        </dl>
-                        <span *ngIf="!r.name">
-                            <mat-icon>warning</mat-icon>
-                            {{r.code}} is not a valid UCUM Unit
-                        </span>
-                    </ng-template>
                     <div class="p-1">
                         Add
-                        <select class="form-control d-inline-block" style="max-width: 100px"
+                        <select class="form-control d-inline-block col-2"
                                 [(ngModel)]="newUomSystem" title="New Unit of Measure System">
                             <option value="UCUM">UCUM</option>
                             <option value="">Other</option>
                         </select>
                         <ng-container *ngIf="newUomSystem === 'UCUM'; else manualUom">
-                            <input class="form-control d-inline-block" style="max-width: 200px"
-                                   [ngbTypeahead]="ucumService.search" title="New Unit of Measure Code"
-                                   [resultTemplate]="rt" [(ngModel)]="newUom" [container]="'body'"
-                                   (selectItem)="uomAddSelected($event);"/>
+                            <mat-form-field class="d-inline-block col-9">
+                                <input type="text" placeholder="New Unit of Measure Code" matInput name="searchUomInput"
+                                       [formControl]="uomControl" [matAutocomplete]="auto">
+                                <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                                    <mat-option *ngFor="let uom of filteredUoms" [value]="uom"
+                                                (click)="uomAddSelected(uom);">
+                                        <ng-container *ngIf="uom.name">
+                                            {{uom.code}}:{{uom.name}} (
+                                            <ng-container *ngFor="let s of uom.synonyms">{{s}} </ng-container>
+                                            )
+                                        </ng-container>
+                                        <ng-container *ngIf="!uom.name">
+                                            <mat-icon>warning</mat-icon>
+                                            {{uom.code}} is not a valid UCUM Unit
+                                        </ng-container>
+                                    </mat-option>
+                                </mat-autocomplete>
+                            </mat-form-field>
                         </ng-container>
                         <ng-template #manualUom>
                             <input class="form-control d-inline-block" style="max-width: 200px" [(ngModel)]="newUom"/>

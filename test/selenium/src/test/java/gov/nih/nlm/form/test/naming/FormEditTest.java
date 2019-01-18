@@ -24,7 +24,7 @@ public class FormEditTest extends BaseFormTest {
         selectQuestionLabelByIndex("question_0-0", 1);
 
         String newQuestionInstruction = "New Question Instruction";
-        clickElement(By.xpath("//*[@id='question_0-0']//*[contains(@class,'editQuestionInstruction')]//mat-icon[. = 'edit']"));
+        clickElement(By.xpath("//*[@id='question_0-0']//*[contains(@class,'editQuestionInstruction')]//mat-icon[normalize-space() = 'edit']"));
         textPresent("Plain Text");
         textPresent("Rich Text");
         textPresent("Confirm");

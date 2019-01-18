@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import {
-    MatButtonModule, MatCardModule, MatCheckboxModule, MatChipsModule, MatDialogModule, MatExpansionModule,
-    MatGridListModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule, MatSliderModule, MatTabsModule,
-    MatTooltipModule
+    MatButtonModule, MatCardModule, MatCheckboxModule, MatChipsModule, MatDialogModule,
+    MatExpansionModule, MatGridListModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule,
+    MatSliderModule, MatTabsModule, MatTooltipModule, MatAutocompleteModule
 } from "@angular/material";
 import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -46,6 +46,7 @@ const appRoutes: Routes = [
 @NgModule({
     imports: [
         CommonModule,
+        ReactiveFormsModule,
         FormsModule,
         HotkeyModule.forRoot(),
         MatButtonModule,
@@ -61,6 +62,7 @@ const appRoutes: Routes = [
         MatSelectModule,
         MatSliderModule,
         MatTabsModule,
+        MatAutocompleteModule,
         MatTooltipModule,
         NgbModule,
         NgSelectModule,

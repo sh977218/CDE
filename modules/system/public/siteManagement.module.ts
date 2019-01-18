@@ -25,6 +25,7 @@ import { WidgetModule } from 'widget/widget.module';
 import { ArticleAdminComponent } from 'system/public/components/siteAdmin/article/articleAdmin.component';
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
 import { ResourcesAdminComponent } from 'system/public/components/siteAdmin/resources/resourcesAdmin.component';
+import { UsernameAutocompleteModule } from 'usernameAutocomplete/usernameAutocomplete.module';
 
 
 const appRoutes: Routes = [
@@ -51,7 +52,8 @@ const appRoutes: Routes = [
         CommonAppModule,
         DiscussModule,
         SystemModule,
-        AdminItemModule
+        AdminItemModule,
+        UsernameAutocompleteModule
     ],
     declarations: [
         EditSiteAdminsComponent,
