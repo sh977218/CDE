@@ -28,7 +28,7 @@ export class SkipLogicAutocompleteComponent implements OnInit {
     }
 
     ngOnInit() {
-        let temp = this.section.skipLogic.condition.match(/ and | or /ig);
+        let temp = this.section.skipLogic.condition.split(/( (?:and|or) )/i);
         if (temp) this.tokens = temp;
         console.log('a');
     }
