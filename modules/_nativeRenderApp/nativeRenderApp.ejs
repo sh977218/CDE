@@ -11,11 +11,22 @@
     <meta name=viewport content="width=device-width, initial-scale=1">
     <meta name="google-site-verification" content="hgnYTGxY1q6mEcYD8VptKKAQCnwoWzfySPSGQWRgdyk">
 
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
-    <!-- build:webpcss /native/native.css -->
-    <link href="/native/native.css" rel="stylesheet" type="text/css" media="all"/>
-    <!-- endbuild -->
+    <script type="text/javascript">
+        if (!window.formElt && location.search) {
+            var t = (function () {
+                var params = {};
+                location.search.substr(1).split('&').forEach(function (e) {
+                    var p = e.split('=');
+                    if (p.length === 2) params[p[0]] = decodeURI(p[1]);
+                    else params[p[0]] = null;
+                });
+                return params;
+            })().tinyId;
+            t && fetch('/form/' + t)
+                .then(function (res) {return res.json();})
+                .then(function (elt) {window.formElt = elt;});
+        }
+    </script>
 
     <% if (isLegacy) { %>
         <!-- Polyfills for legacy browsers -->
@@ -29,13 +40,33 @@
         <!-- endbuild -->
     <% } %>
 
-	<!-- IFH -->
+    <script type="text/javascript">
+        function deferCss(url) {
+            var d = document.createElement('link');
+            d.href = url;
+            d.rel = 'stylesheet';
+            d.type = 'text/css';
+            var l = document.getElementsByTagName('meta')[0];
+            l.parentNode.insertBefore(d, l);
+        }
+        deferCss('/native/native.css');
+        deferCss('https://fonts.googleapis.com/icon?family=Material+Icons');
+    </script>
+    <noscript>
+        <!-- build:css /native/native.css -->
+        <link rel="stylesheet" type="text/css" href="/native/native.css"/>
+        <!-- endbuild -->
+
+        <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    </noscript>
+
+    <%-'<!-- IFH -->'%>
 </head>
 
 <body role="application" id="top">
     <cde-native-render-standalone></cde-native-render-standalone>
 
-    <!-- build:webp /native/native.js -->
+    <!-- build:js /native/native.js -->
     <script src="/native/native.js" defer></script>
     <!-- endbuild -->
 
@@ -94,7 +125,7 @@
             }
     </script>
 
-	<!-- ICSSH -->
-	<!-- IJSH -->
+    <%-'<!-- ICSSH -->'%>
+    <%-'<!-- IJSH -->'%>
 </body>
 </html>

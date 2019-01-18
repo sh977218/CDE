@@ -56,7 +56,6 @@ export class NativeRenderAppComponent {
 
     getForm(tinyId: string, cb: CbErr<CdeForm>) {
         FormService.fetchForm(tinyId).then(elt => {
-            CdeForm.validate(elt);
             cb(undefined, elt);
         }, err => cb(err.statusText));
     }
@@ -65,6 +64,7 @@ export class NativeRenderAppComponent {
         if (err || !elt) {
             return this.errorMessage = 'Sorry, we are unable to retrieve this element.';
         }
+        CdeForm.validate(elt);
         this.elt = elt;
         if (!this.selectedProfileName) {
             this.selectedProfile = this.elt.displayProfiles[0];

@@ -14,7 +14,7 @@ export class SkipLogicService {
             return evaluateSkipLogic(fe.skipLogic ? fe.skipLogic.condition : undefined, parent, fe, nrs.addError.bind(nrs));
         } catch (error) {
             this.errorHandler.handleError({
-                name: 'Skip Logic Evaluation Error',
+                name: 'Skip Logic Evaluation Error: ' + (fe.skipLogic && fe.skipLogic.condition),
                 message: error.message,
                 stack: error.stack
             });
