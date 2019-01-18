@@ -7,15 +7,15 @@ import org.testng.Assert;
 
 public class CdeStandardStatusTest extends NlmCdeBaseTest {
 
-    protected void adminCantEditStandardCde(String cdeName) {
+    void adminCantEditStandardCde(String cdeName) {
         mustBeLoggedInAs(cabigAdmin_username, password);
         goToCdeByName(cdeName);
         // CDE is Standard.
 
         // Can't edit name, def or status
-        assertNoElt(By.xpath("//dd[@id='dd_general_name']//i[@class='fa fa-edit']"));
-        assertNoElt(By.xpath("//dd[@id='dd_def']//i[@class='fa fa-edit']"));
-        assertNoElt(By.xpath("//dd[@id='dd_status']//i[@class='fa fa-edit']"));
+        shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("editStatus")));
+        goToNaming();
+        shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//mat-icon[. = 'edit']")));
 
         // Can't edit Value Type or add / remove pv
         goToPermissibleValues();
@@ -25,15 +25,15 @@ public class CdeStandardStatusTest extends NlmCdeBaseTest {
 
         Assert.assertTrue(findElements(By.xpath("//td[contains(@id, 'pvAction') and not(*)]")).size() > 0);
 
-        findElement(By.xpath("//*[@id='pvValue_1'][not(//i[contains(@class, 'fa-edit')])]"));
+        findElement(By.xpath("//*[@id='pvValue_1'][not(//mat-icon[contains(., 'edit')])]"));
 
         findElement(By.xpath("//div[not(//button[@id = 'openAddPermissibleValueModelBtn'])]"));
         findElement(By.xpath("//div[not(//a[@id = 'updateOIDBtn'])]"));
 
         // Can't edit naming
         goToNaming();
-        findElement(By.xpath("//*[@id='designation_0' and not(//i[contains(@class, 'fa-edit')])]"));
-        findElement(By.xpath("//*[@id='definition_0' and not(//i[contains(@class, 'fa-edit')])]"));
+        findElement(By.xpath("//*[@id='designation_0' and not(//mat-icon[contains(., 'edit')])]"));
+        findElement(By.xpath("//*[@id='definition_0' and not(//mat-icon[contains(., 'edit')])]"));
         checkElementDoesNotExistByLocator(By.xpath("//*[@id='tags_0']//input"));
 
         // Can edit classifications
@@ -47,7 +47,7 @@ public class CdeStandardStatusTest extends NlmCdeBaseTest {
 
         // Can't add Attachments
         goToAttachments();
-        assertNoElt(By.cssSelector("i.fa-upload"));
+        assertNoElt(By.xpath("mat-icon[contains(., 'cloud_upload')]"));
     }
 
 
