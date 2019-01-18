@@ -32,6 +32,8 @@ import { DiscussModule } from 'discuss/discuss.module';
 import { FormSearchModule } from 'form/public/formSearch.module';
 import { CoreModule } from 'core/core.module';
 import { InlineEditModule } from 'inlineEdit/inlineEdit.module';
+import { InlineSelectEditModule } from 'inlineSelectEdit/inlineSelectEdit.module';
+import { InlineAreaEditModule } from 'inlineAreaEdit/inlineAreaEdit.module';
 
 
 const appRoutes: Routes = [
@@ -58,7 +60,9 @@ const appRoutes: Routes = [
         CoreModule,
 
         // internal
+        InlineAreaEditModule,
         InlineEditModule,
+        InlineSelectEditModule,
         AdminItemModule,
         BoardModule,
         CdeModule,

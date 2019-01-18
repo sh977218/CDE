@@ -40,6 +40,7 @@ import { NativeRenderModule } from 'nativeRender/nativeRender.module';
 import { CoreModule } from 'core/core.module';
 import { InlineEditModule } from 'inlineEdit/inlineEdit.module';
 import { InlineAreaEditModule } from 'inlineAreaEdit/inlineAreaEdit.module';
+import { InlineSelectEditModule } from 'inlineSelectEdit/inlineSelectEdit.module';
 
 
 const appRoutes: Routes = [
@@ -76,8 +77,9 @@ const appRoutes: Routes = [
 
         // internal
         AdminItemModule,
-        InlineEditModule,
         InlineAreaEditModule,
+        InlineEditModule,
+        InlineSelectEditModule,
         BoardModule,
         CdeModule,
         CdeSearchModule,

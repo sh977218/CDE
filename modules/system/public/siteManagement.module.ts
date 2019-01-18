@@ -26,6 +26,8 @@ import { ArticleAdminComponent } from 'system/public/components/siteAdmin/articl
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
 import { ResourcesAdminComponent } from 'system/public/components/siteAdmin/resources/resourcesAdmin.component';
 import { UsernameAutocompleteModule } from 'usernameAutocomplete/usernameAutocomplete.module';
+import { CoreModule } from 'core/core.module';
+import { InlineAreaEditModule } from 'inlineAreaEdit/inlineAreaEdit.module';
 
 
 const appRoutes: Routes = [
@@ -47,12 +49,14 @@ const appRoutes: Routes = [
         NgbModule,
         RouterModule.forChild(appRoutes),
         // core
+        CoreModule,
 
         // internal
+        AdminItemModule,
+        InlineAreaEditModule,
         CommonAppModule,
         DiscussModule,
         SystemModule,
-        AdminItemModule,
         UsernameAutocompleteModule
     ],
     declarations: [
