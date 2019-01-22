@@ -203,14 +203,14 @@ exports.orgSchema.set('collection', 'orgs');
 exports.designationSchema = new Schema({
     designation: StringType,
     tags: [StringType],
-    sources: [StringType]
+    sources: {type: [StringType], default: undefined}
 }, {_id: false});
 
 exports.definitionSchema = new Schema({
     definition: {type: String, required: true, minlength: 1},
     definitionFormat: StringType,
     tags: [StringType],
-    sources: [StringType]
+    sources: {type: [StringType], default: undefined}
 }, {_id: false});
 
 let attachmentSchema = {

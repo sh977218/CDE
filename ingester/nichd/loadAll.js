@@ -46,13 +46,13 @@ const updateCde = async function(row, classification = "Core") {
     if (foundDesignation) {
         foundDesignation.tags = _.union(foundDesignation.tags, ["Question Text"]);
     } else {
-        existingCde.designations.push({designation: row.Question, tags: ["Question Text"]});
+        existingCde.designations.push({designation: row.Question, tags: ["Question Text"], sources: ["NICHD"]});
     }
 
     if (row['Question Definition']) {
         let foundDefinition = existingCde.definitions.find(d => d.definition === row["Question Definition"]);
         if (!foundDefinition) {
-            existingCde.definitions.push({definition: row['Question Definition'], tags: []});
+            existingCde.definitions.push({definition: row['Question Definition'], tags: [], sources: ["NICHD"]});
         }
     }
 
