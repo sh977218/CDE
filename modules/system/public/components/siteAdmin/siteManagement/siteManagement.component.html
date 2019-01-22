@@ -6,10 +6,14 @@
         <cde-users-mgt></cde-users-mgt>
     </mat-tab>
     <mat-tab label="Comments">
-        <cde-latest-comments></cde-latest-comments>
+        <ng-template matTabContent>
+            <cde-latest-comments></cde-latest-comments>
+        </ng-template>
     </mat-tab>
     <mat-tab label="Drafts" id="draftsTab">
-        <cde-drafts-admin-list></cde-drafts-admin-list>
+        <ng-template matTabContent>
+            <cde-drafts-admin-list></cde-drafts-admin-list>
+        </ng-template>
     </mat-tab>
     <mat-tab label="Server Statuses">
         <cde-server-status></cde-server-status>
@@ -21,6 +25,8 @@
         <cde-resources-admin></cde-resources-admin>
     </mat-tab>
     <mat-tab label="Fhir Apps">
-        <cde-fhir-apps></cde-fhir-apps>
+        <ng-template matTabContent>
+            <cde-fhir-apps></cde-fhir-apps>
+        </ng-template>
     </mat-tab>
 </mat-tab-group>
