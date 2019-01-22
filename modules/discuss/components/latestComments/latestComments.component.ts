@@ -23,7 +23,7 @@ export class LatestCommentsComponent {
         if (!commentsUrl) commentsUrl = '/server/discuss/allComments';
         this.http.get<Comment[]>(commentsUrl + '/' + (page - 1) * 30 + '/31').subscribe(comments => {
             if (comments.length < 31) {
-
+                this.comments.totalItems = (page - 1) * 30 + comments.length;
             }
             this.comments.latestComments = comments;
         });
