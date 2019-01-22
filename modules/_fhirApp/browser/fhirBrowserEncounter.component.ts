@@ -11,14 +11,14 @@ import { asRefString } from 'shared/mapping/fhir/datatype/fhirReference';
     templateUrl: './fhirBrowserEncounter.component.html',
 })
 export class FhirBrowserEncounterComponent {
-    @Input() encounters: FhirEncounter[];
+    @Input() encounters!: FhirEncounter[];
     getDateString = getDateString;
-    newEncounter: boolean;
-    newEncounterDate: string = new Date().toISOString().slice(0, 16);
-    newEncounterErrorMessage: string;
-    newEncounterReason: string;
-    newEncounterType: string = 'Outpatient Encounter';
-    newEncounterValid: boolean;
+    newEncounter?: boolean;
+    newEncounterDate?: string = new Date().toISOString().slice(0, 16);
+    newEncounterErrorMessage?: string;
+    newEncounterReason?: string;
+    newEncounterType?: string = 'Outpatient Encounter';
+    newEncounterValid?: boolean;
     selectedEncounter?: FhirEncounter;
 
     constructor(private fhirData: FhirSmartService) {}
@@ -33,7 +33,7 @@ export class FhirBrowserEncounterComponent {
                 this.fhirData.patient.managingOrganization
                     ? asRefString(this.fhirData.patient.managingOrganization) : undefined
             ))
-        }).then(response => {
+        }).then((response: any) => {
             let encounter: FhirEncounter = response.data;
             this.reset();
         });
@@ -41,9 +41,9 @@ export class FhirBrowserEncounterComponent {
 
     reset() {
         this.newEncounter = false;
-        this.newEncounterDate = null;
-        this.newEncounterErrorMessage = null;
-        this.newEncounterReason = null;
+        this.newEncounterDate = undefined;
+        this.newEncounterErrorMessage = undefined;
+        this.newEncounterReason = undefined;
         this.newEncounterType = 'Outpatient Encounter';
         this.newEncounterValid = false;
     }

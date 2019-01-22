@@ -12,10 +12,9 @@
     ],
     "module": "ES2015",
     "moduleResolution": "Node",
-    "noImplicitAny": false,
     "pretty": false,
     "sourceMap": false,
-    "suppressImplicitAnyIndexErrors": true,
+    "strict": true,
     "target": "ES5",
     "typeRoots": [
       "node_modules/@types"
@@ -49,6 +48,7 @@
     "modules/system",
     "modules/swagger",
     "modules/widget",
+    "modules/usernameAutocomplete",
     "node_modules",
     "protractor",
     "scripts",

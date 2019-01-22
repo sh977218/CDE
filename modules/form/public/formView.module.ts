@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import {
-    MatButtonModule, MatCardModule, MatCheckboxModule, MatChipsModule, MatDialogModule, MatExpansionModule,
-    MatGridListModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule, MatSliderModule, MatTabsModule,
-    MatTooltipModule
+    MatButtonModule, MatCardModule, MatCheckboxModule, MatChipsModule, MatDialogModule,
+    MatExpansionModule, MatGridListModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule,
+    MatSliderModule, MatTabsModule, MatTooltipModule, MatAutocompleteModule
 } from "@angular/material";
 import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -37,7 +37,13 @@ import { QuestionAnswerEditContentComponent } from 'form/public/tabs/description
 import { SelectQuestionLabelComponent } from 'form/public/tabs/description/selectQuestionLabel.component';
 import { NativeRenderFullComponent } from 'form/public/tabs/general/nativeRenderFull.component';
 import { NativeRenderModule } from 'nativeRender/nativeRender.module';
-import { WidgetModule } from 'widget/widget.module';
+import { CoreModule } from 'core/core.module';
+import { InlineEditModule } from 'inlineEdit/inlineEdit.module';
+import { InlineAreaEditModule } from 'inlineAreaEdit/inlineAreaEdit.module';
+import { InlineSelectEditModule } from 'inlineSelectEdit/inlineSelectEdit.module';
+import { SortableArrayModule } from 'sortableArray/sortableArray.module';
+import { DeleteWithConfirmModule } from 'deleteWithConfirm/deleteWithConfirm.module';
+
 
 const appRoutes: Routes = [
     {path: '', component: FormViewComponent},
@@ -46,6 +52,7 @@ const appRoutes: Routes = [
 @NgModule({
     imports: [
         CommonModule,
+        ReactiveFormsModule,
         FormsModule,
         HotkeyModule.forRoot(),
         MatButtonModule,
@@ -61,15 +68,22 @@ const appRoutes: Routes = [
         MatSelectModule,
         MatSliderModule,
         MatTabsModule,
+        MatAutocompleteModule,
         MatTooltipModule,
         NgbModule,
         NgSelectModule,
         RouterModule.forChild(appRoutes),
         TreeModule.forRoot(),
         // core
-        WidgetModule,
+        CoreModule,
+
         // internal
         AdminItemModule,
+        DeleteWithConfirmModule,
+        InlineAreaEditModule,
+        InlineEditModule,
+        InlineSelectEditModule,
+        SortableArrayModule,
         BoardModule,
         CdeModule,
         CdeSearchModule,

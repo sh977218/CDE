@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MatSnackBar, MatSnackBarRef, SimpleSnackBar } from '@angular/material';
 
-import { httpErrorMessage } from 'widget/angularHelper';
+import { httpErrorMessage } from 'core/angularHelper';
 
 export class Alert {
     id: number;

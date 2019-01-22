@@ -6,7 +6,7 @@ import { NgbCarouselModule } from '@ng-bootstrap/ng-bootstrap';
 import { HomeComponent } from 'home/home.component';
 import { HomeRoutingModule } from 'home/home-routing.module';
 import { NativeRenderModule } from 'nativeRender/nativeRender.module';
-import { WidgetModule } from 'widget/widget.module';
+
 import { MatIconModule } from '@angular/material';
 
 @NgModule({
@@ -15,7 +15,7 @@ import { MatIconModule } from '@angular/material';
         FormsModule,
         NgbCarouselModule,
         // core
-        WidgetModule,
+
         // internal
         HomeRoutingModule,
         NativeRenderModule,

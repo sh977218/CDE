@@ -1,8 +1,19 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Inject, Injectable } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material';
-import { ActivatedRouteSnapshot } from '@angular/router/src/router_state';
-import async_apply from 'async/apply';
+import { ActivatedRouteSnapshot } from '@angular/router';
+import { FhirAppViewModes } from '_fhirApp/fhirApp.component';
+import { propertyToQuestion, questionToProperty, staticToProperty } from '_fhirApp/properties';
+import {
+    contextTypesArray,
+    ResourceTree, ResourceTreeAttribute, ResourceTreeIntermediate, ResourceTreeResource, ResourceTreeRoot,
+    ResourceTreeUtil
+} from '_fhirApp/resourceTree';
+import {
+    addEmptyNode, addRootNode, compareCodingId, resourceMap, setResourceAndUpdateParentResource
+} from '_fhirApp/resources';
+import { FhirSmartService } from '_fhirApp/fhirSmart.service';
+import { valueSets } from '_fhirApp/valueSets';
 import async_forEach from 'async/forEach';
 import async_memoize from 'async/memoize';
 import async_series from 'async/series';
@@ -11,28 +22,16 @@ import diff from 'deep-diff';
 import _intersectionWith from 'lodash/intersectionWith';
 import _noop from 'lodash/noop';
 import _uniq from 'lodash/uniq';
-import { isArray } from 'util';
-
-import { FhirAppViewModes } from '_fhirApp/fhirApp.component';
-import { propertyToQuestion, questionToProperty, staticToProperty } from '_fhirApp/properties';
 import {
-    contextTypesArray,
-    ResourceTree, ResourceTreeAttribute, ResourceTreeIntermediate, ResourceTreeResource, ResourceTreeRoot,
-    ResourceTreeUtil
-} from '_fhirApp/resourceTree';
-import { addEmptyNode, compareCodingId, resourceMap, setResourceAndUpdateParentResource } from '_fhirApp/resources';
-import { FhirSmartService } from '_fhirApp/fhirSmart.service';
-import { valueSets } from '_fhirApp/valueSets';
-import {
-    assertThrow, assertTrue, assertUnreachable, Cb, CbErr, CbRet, CdeId, PermissibleValue
+    assertThrow, assertTrue, assertUnreachable, Cb, CbErr, CbRet, CbRet1, CdeId, PermissibleValue
 } from 'shared/models.model';
-import { CdeForm, FhirApp, FormQuestion, Question } from 'shared/form/form.model';
+import { CdeForm, FhirApp, FormQuestion } from 'shared/form/form.model';
 import { getIds, getTinyId, getVersion } from 'shared/form/formAndFe';
 import {
     iterateFe, iterateFeSync, questionAnswered, findQuestionByTinyId, isQuestion, questionMulti
 } from 'shared/form/fe';
 import { codeSystemOut } from 'shared/mapping/fhir';
-import { FhirCodeableConcept } from 'shared/mapping/fhir/fhir.model';
+import { FhirCodeableConcept, FhirValue } from 'shared/mapping/fhir/fhir.model';
 import {
     FhirDomainResource, FhirEncounter, FhirObservation, FhirObservationComponent, FhirProcedure, FhirQuestionnaire,
     FhirQuestionnaireResponse, FhirQuestionnaireResponseItem, supportedFhirResourcesArray
@@ -52,6 +51,7 @@ import {
 } from 'shared/mapping/fhir/to/datatypeToItemType';
 import { formToQuestionnaire } from 'shared/mapping/fhir/to/toQuestionnaire';
 import { deepCopy, reduceOptionalArray } from 'shared/system/util';
+import { isArray } from 'util';
 
 function isFhirObservation(resource: FhirDomainResource): resource is FhirObservation {
     return resource.resourceType === 'Observation';
@@ -91,7 +91,7 @@ function applyCodeMapping(fhirApp: FhirApp, ids: (CdeId|PermissibleValue)[], sys
     });
 }
 
-function isSupportedResourceRelationship(self: ResourceTreeResource, parent: ResourceTreeResource) {
+function isSupportedResourceRelationship(self: ResourceTreeResource, parent?: ResourceTreeResource) {
     switch (self.resourceType) {
         case 'Observation':
         case 'Procedure':
@@ -129,10 +129,10 @@ export type PatientForm = {
 
 @Injectable()
 export class CdeFhirService {
-    cleanupPatient: Cb;
+    cleanupPatient!: Cb;
     getDisplayFunc = this.getDisplay.bind(this);
     lookupObservationCategories: (code: string, cb: CbErr) => void = async_memoize((code: string, done: CbErr<string>) => {
-        this.http.get('/fhirObservationInfo?id=' + code).subscribe((r: {categories: 'social-history'|'vital-signs'|'imaging'|'laboratory'|'procedure'|'survey'|'exam'|'therapy'}) => {
+        this.http.get<{categories: 'social-history'|'vital-signs'|'imaging'|'laboratory'|'procedure'|'survey'|'exam'|'therapy'}>('/fhirObservationInfo?id=' + code).subscribe(r => {
             done(undefined, r ? r.categories : undefined);
         }, done);
     });
@@ -175,7 +175,7 @@ export class CdeFhirService {
                 default:
                     assertUnreachable(self.root.resourceType);
             }
-            ResourceTreeUtil.setResource(self, null, resource);
+            ResourceTreeUtil.setResource(self, null, resource!);
         } else {
             return this.createParents(self.parent).then(async () => {
                 await self.parent.resource;
@@ -280,9 +280,9 @@ export class CdeFhirService {
     // cb()
     loadFormData(patientForm: PatientForm, cb = _noop) {
         this.renderedPatientForm = patientForm;
-        this.renderedResourceTree = addEmptyNode(deepCopy(patientForm.form), _noop, undefined);
-        this.read(this.renderedResourceTree)
-            .then(() => this.updateProgress(this.renderedPatientForm!, this.renderedResourceTree))
+        this.renderedResourceTree = addRootNode(deepCopy(patientForm.form), undefined, undefined, undefined);
+        this.read(this.renderedResourceTree!)
+            .then(() => this.updateProgress(this.renderedPatientForm!, this.renderedResourceTree!))
             .then(cb);
     }
 
@@ -354,19 +354,19 @@ export class CdeFhirService {
         });
     }
 
-    async readAgain(self: any, parent?: ResourceTreeRoot|ResourceTreeResource|ResourceTreeIntermediate): Promise<void> {
+    async readAgain(self: ResourceTreeRoot|ResourceTree, parent?: ResourceTreeRoot|ResourceTreeResource|ResourceTreeIntermediate): Promise<void> {
         if (!ResourceTreeUtil.isRoot(self)) {
             if (ResourceTreeUtil.isResource(self) && self.resource && self.resource.resourceType) {
                 await this.readResource(self);
                 if (self.crossReference.elementType === 'question') {
                     CdeFhirService.readQuestion(self);
                 }
-            } else if (ResourceTreeUtil.isAttribute(self) && !ResourceTreeUtil.isRoot(parent)) {
+            } else if (ResourceTreeUtil.isAttribute(self) && parent && !ResourceTreeUtil.isRoot(parent)) {
                 CdeFhirService.readQuestionProperty(self, self.crossReference);
             }
         }
         if (ResourceTreeUtil.isRoot(self) || !ResourceTreeUtil.isAttribute(self)) {
-            return Promise.all(self.children.map(c => this.readAgain(c, self)))
+            return Promise.all((self as ResourceTreeRoot/*workaround*/).children.map(c => this.readAgain(c, self)))
                 .then(_noop);
         }
     }
@@ -421,7 +421,7 @@ export class CdeFhirService {
                         ResourceTreeUtil.setResource(self, found);
                         if (self.resource.answer) {
                             let question = deepCopy(q.question);
-                            let answer = self.resource.answer.map(a => {
+                            let answer = self.resource.answer.map((a: FhirValue) => {
                                 typedValueToValue(question, valuedElementToItemType(a), a);
                                 return questionMulti(q) ? question.answer[0] : question.answer;
                             });
@@ -438,9 +438,9 @@ export class CdeFhirService {
     static readQuestionPropertyMatch(self: ResourceTreeAttribute, resources: any[]): FhirObservationComponent|FhirQuestionnaireResponseItem|undefined {
         switch (self.root.resourceType) {
             case 'Observation':
-                return resourceCodeableConceptMatch(resources, r => [r.code], getIds(self.crossReference));
+                return resourceCodeableConceptMatch(resources, r => [r.code], getIds(self.crossReference)!);
             case 'Procedure':
-                return resourceCodeableConceptMatch(resources, r => r ? [r] : [], getIds(self.crossReference));
+                return resourceCodeableConceptMatch(resources, r => r ? [r] : [], getIds(self.crossReference)!);
             case 'QuestionnaireResponse':
                 return resources.filter((item: FhirQuestionnaireResponseItem) => item.linkId === self.crossReference.feId)[0];
             default:
@@ -471,9 +471,9 @@ export class CdeFhirService {
             case 'Observation':
                 return new Promise<ResourceTree>((resolve, reject) => {
                     let resource: FhirObservation|FhirQuestionnaireResponse;
-                    let codes = getIds(self.crossReference).filter(id => id.source === 'LOINC');
+                    let codes = getIds(self.crossReference)!.filter(id => id.source === 'LOINC');
                     if (codes.length === 0) {
-                        codes = getIds(self.crossReference).filter(id => id.source === 'NLM');
+                        codes = getIds(self.crossReference)!.filter(id => id.source === 'NLM');
                     }
                     async_some(
                         codes,
@@ -546,7 +546,7 @@ export class CdeFhirService {
             case 'QuestionnaireResponse':
                 return Promise.resolve(undefined);
             default:
-                assertUnreachable(self.resourceType);
+                throw assertUnreachable(self.resourceType);
         }
     }
 
@@ -583,7 +583,7 @@ export class CdeFhirService {
         switch (self.resourceType) {
             case 'Observation':
             case 'Procedure':
-                return undefined;
+                return Promise.resolve(undefined);
             case 'QuestionnaireResponse':
                 return this.questionnaireSearch(self.crossReference).then(questionnaire => {
                     if (questionnaire) {
@@ -600,7 +600,7 @@ export class CdeFhirService {
                     }
                 });
             default:
-                assertUnreachable(self.resourceType);
+                throw assertUnreachable(self.resourceType);
         }
     }
 
@@ -721,7 +721,7 @@ export class CdeFhirService {
             });
     }
 
-    selectOne<T>(type: 'filter'|'edit', resources: T[], ...columns: (string|CbRet<any, T>)[]): Promise<T|undefined> {
+    selectOne<T>(type: 'filter'|'edit', resources: T[], ...columns: (string|CbRet1<any, T>)[]): Promise<T|undefined> {
         return new Promise<T>(resolve => {
             const dialogRef = this.dialog.open(SelectOneDialogComponent, {
                 data: {resources, type, columns}
@@ -753,7 +753,7 @@ export class CdeFhirService {
                     return;
                 }
                 this.readAgain(this.renderedResourceTree!)
-                    .then(() => this.updateProgress(this.renderedPatientForm!, this.renderedResourceTree))
+                    .then(() => this.updateProgress(this.renderedPatientForm!, this.renderedResourceTree!))
                     .then(() => cb());
             });
         });
@@ -772,13 +772,13 @@ export class CdeFhirService {
             } else {
                 if (parentResource !== self) {
                     throw new Error('Error: not supported FHIR relationship: parent '
-                        + parentResource && parentResource.resourceType
+                        + parentResource && parentResource!.resourceType
                         + ', child ' + self.resourceType + '.');
                 }
             }
         }
         if (ResourceTreeUtil.isRoot(self) || !ResourceTreeUtil.isAttribute(self)) {
-            return Promise.all(self.children.map(c => this.write(c, parentResource)))
+            return Promise.all(self.children.map((c: ResourceTreeRoot | ResourceTreeResource | ResourceTreeIntermediate) => this.write(c, parentResource)))
                 .then(() => {
                     if (!ResourceTreeUtil.isRoot(self) && ResourceTreeUtil.isResource(self)) {
                         staticToProperty(self);
@@ -809,14 +809,12 @@ export class CdeFhirService {
                     self.resource.answer = [];
                     let answer = questionMulti(q) ? q.question.answer : [q.question.answer];
                     let qType = containerToItemType(q.question);
-                    answer.forEach(a => {
-                        let fhirValue = {};
-                        storeTypedValue(
-                            answer.map(a => valueToTypedValue(q.question, qType, a, undefined,
-                                q.question.answerUom, false))[0],
-                            fhirValue, qType, 'value', false);
-                        self.resource.answer.push(fhirValue);
-                    });
+                    let fhirValue = {};
+                    storeTypedValue(
+                        answer.map((a: any) => valueToTypedValue(q.question, qType, a, undefined,
+                            q.question.answerUom, false))[0],
+                        fhirValue, qType, 'value', false);
+                    self.resource.answer.push(fhirValue);
                 }
                 break;
             default:

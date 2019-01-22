@@ -9,24 +9,14 @@ import { CodeAndSystem } from 'shared/models.model';
 
 @Injectable()
 export class UcumService {
-    search = ((text$: Observable<string>) => text$.pipe(
-        debounceTime(200),
-        distinctUntilChanged(),
-        switchMap(term => {
-            if (term === '') return EmptyObservable.create<string[]>();
-            else {
-                return this.http.get('/ucumNames?uom=' + encodeURIComponent(term)).pipe(
-                    map((r: any[]) => {
-                        if (!r.length) r.push({code: term, warning: "Not a valid UCUM unit"});
-                        return r;
-                    })
-                );
-            }
-        })
-    ));
     uomUnitMap = new Map<string, string[]>();
 
-    constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient) {
+    }
+
+    searchUcum(term) {
+        return this.http.get('/ucumNames?uom=' + encodeURIComponent(term));
+    }
 
     // cb(names)
     getUnitNames(uom: string, cb) {

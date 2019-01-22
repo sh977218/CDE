@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 import { Elt } from 'shared/models.model';
-import { interruptEvent, openUrl } from 'widget/browser';
+import { interruptEvent, openUrl } from 'core/browser';
 
 @Component({
     templateUrl: './accordionListHeading.component.html'

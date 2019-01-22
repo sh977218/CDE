@@ -52,16 +52,10 @@ public class CdeQuickBoardTest2 extends NlmCdeBaseTest {
         goToQuickBoardByModule("cde");
         hangon(.5);
         textPresent(toRemove);
-        List<WebElement> pluses = driver.findElements(By.cssSelector("i.fa-plus"));
-        for (WebElement plus : pluses) {
-            Assert.assertFalse(plus.isDisplayed());
-        }
+        Assert.assertEquals(driver.findElements(By.cssSelector("[title = 'Add to Quick Board'")).size(), 0);
         clickElement(By.id("remove_2"));
         hangon(.5);
-        pluses = driver.findElements(By.cssSelector("i.fa-plus"));
-        for (WebElement plus : pluses) {
-            Assert.assertFalse(plus.isDisplayed());
-        }
+        Assert.assertEquals(driver.findElements(By.cssSelector("[title = 'Add to Quick Board'")).size(), 0);
         textNotPresent(toRemove);
     }
 
