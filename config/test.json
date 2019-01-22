@@ -22,7 +22,8 @@
     "formSuggestIndex": {
       "name": "formsuggesttest"
     },
-    "number_of_replicas": 0
+    "number_of_replicas": 0,
+    "inject_bulk_size": 500
   },
   "versionCheckIntervalInSeconds": 20,
   "siteKey": "6LecRzAUAAAAAOB_LOhlf3itbTn3zOC2jYC6Er6u",

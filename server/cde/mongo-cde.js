@@ -69,7 +69,12 @@ exports.byIdList = function (idList, cb) {
 };
 
 exports.byTinyId = function (tinyId, cb) {
-    DataElement.findOne({'tinyId': tinyId, archived: false}, cb);
+    if (cb) {
+        DataElement.findOne({'tinyId': tinyId, archived: false}, cb);
+    } else {
+        return DataElement.findOne({'tinyId': tinyId, archived: false}).exec();
+    }
+
 };
 
 exports.latestVersionByTinyId = function (tinyId, cb) {
@@ -309,9 +314,7 @@ exports.update = function (elt, user, callback, special) {
 };
 
 exports.updatePromise = function (elt, user) {
-    return new Promise((resolve, reject) => {
-        exports.update(elt, user, resolve);
-    })
+    return new Promise(resolve => exports.update(elt, user, resolve));
 };
 
 exports.archiveCde = function (cde, callback) {
