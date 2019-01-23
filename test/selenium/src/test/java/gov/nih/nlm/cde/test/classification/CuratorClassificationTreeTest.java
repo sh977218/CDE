@@ -12,7 +12,8 @@ public class CuratorClassificationTreeTest extends NlmCdeBaseTest {
     public void curatorCantEditClassificationTree() {
         mustBeLoggedInAs("ctepOnlyCurator", password);
         gotoClassificationMgt();
-        new Select(findElement(By.id("orgToManage"))).selectByVisibleText("CTEP");
+        clickElement(By.cssSelector("mat-select"));
+        selectMatSelectDropdownByText("CTEP");
 
         textPresent("CRF_TTU");
 

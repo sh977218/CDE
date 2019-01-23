@@ -19,13 +19,15 @@ public class CreateWorkingGroup extends NlmCdeBaseTest {
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Org Management"));
         clickElement(By.xpath("//div[. = 'Org Admins']"));
-        new Select(driver.findElement(By.name("newOrgAdminOrgName"))).selectByVisibleText(orgWG);
+        clickElement(By.cssSelector("mat-select"));
+        selectMatSelectDropdownByText(orgWG);
         searchUsername(nlm_username);
         clickElement(By.id("newOrgAdminSubmit"));
         checkAlert("Saved");
 
         gotoClassificationMgt();
-        new Select(driver.findElement(By.name("orgToManage"))).selectByVisibleText(orgWG);
+        clickElement(By.cssSelector("mat-select"));
+        selectMatSelectDropdownByText(orgWG);
 
         // Verify that Acrin Tree was duplicated
         findElement(By.linkText("Imaging Modality"));

@@ -876,7 +876,8 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
 
     protected void deleteOrgClassification(String orgName, String[] categories) {
         String classification = categories[categories.length - 1];
-        new Select(driver.findElement(By.name("orgToManage"))).selectByVisibleText(orgName);
+        clickElement(By.cssSelector("mat-select"));
+        selectMatSelectDropdownByText(orgName);
         clickElement(By.xpath(getOrgClassificationIconXpath("remove", categories)));
         findElement(By.id("removeClassificationUserTyped")).sendKeys(classification);
         clickElement(By.id("confirmDeleteClassificationBtn"));
