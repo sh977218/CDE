@@ -1,13 +1,13 @@
 <div *ngIf="onInitDone" class="container-fluid" id="classMgt">
-    <h1 class="page-header">
-        <label for="orgToManage" id="manageClassificationsLabel">Classifications</label>
-    </h1>
-    <select class="form-control" [(ngModel)]="orgToManage" name="orgToManage" id="orgToManage"
-            (change)="onChangeOrg($event.target.value,null)">
-        <option *ngFor="let o of userService.userOrgs" [value]="o">{{o}}</option>
-    </select>
-    <br/>
-    <div class="boxed-div overflowHidden">
+    <h4 class="page-header">Manage Classifications</h4>
+    <mat-form-field>
+        <mat-select [(ngModel)]="orgToManage" name="orgToManage" id="orgToManage"
+                    placeholder="Select Organization"
+                (selectionChange)="onChangeOrg($event)">
+            <mat-option *ngFor="let o of userService.userOrgs" [value]="o">{{o}}</mat-option>
+        </mat-select>
+    </mat-form-field>
+    <div class="boxed-div overflowHidden" *ngIf="selectedOrg">
         <h4 id="org-{{selectedOrg.name}}">{{selectedOrg.name}}
             <a title="Add Child Classification" (click)="openAddChildClassificationModal(null);">
                 <mat-icon *ngIf="isOrgAdmin()" id="addClassification">subdirectory_arrow_left</mat-icon>
