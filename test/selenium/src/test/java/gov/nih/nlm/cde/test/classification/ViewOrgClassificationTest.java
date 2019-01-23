@@ -11,11 +11,12 @@ public class ViewOrgClassificationTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(classificationMgtUser_username, password);
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Classifications"));
-        hangon(1);
-        new Select(findElement(By.cssSelector("select"))).selectByVisibleText("PS&CC");
+        clickElement(By.cssSelector("mat-select"));
+        selectMatSelectDropdownByText("PS&CC");
         textPresent("edu.fccc.brcf.domain");
         textNotPresent("Magnetic Resonance Imaging (MRI)");
-        new Select(findElement(By.cssSelector("select"))).selectByVisibleText("ACRIN");
+        clickElement(By.cssSelector("mat-select"));
+        selectMatSelectDropdownByText("ACRIN");
         textPresent("Magnetic Resonance Imaging (MRI)");
         textNotPresent("edu.fccc.brcf.domain");
     }

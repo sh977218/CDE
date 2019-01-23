@@ -1387,7 +1387,8 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void createOrgClassification(String org, String[] categories) {
-        new Select(driver.findElement(By.id("orgToManage"))).selectByVisibleText(org);
+        clickElement(By.cssSelector("mat-select"));
+        selectMatSelectDropdownByText(org);
         // create root classification if it doesn't exist
         List<WebElement> rootClassifications = driver.findElements(By.xpath("//*[@id='" + categories[0] + "']"));
         if (rootClassifications.size() == 0) {
