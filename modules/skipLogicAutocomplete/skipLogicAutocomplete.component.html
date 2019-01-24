@@ -1,30 +1,29 @@
-<div *ngIf="!canEdit">{{formElement.skipLogic.condition}}</div>
-<div *ngIf="canEdit">
-    <div>
-        <mat-icon (click)="editMode = !editMode">edit</mat-icon>
-        <mat-icon (click)="saveSkipLogic()">save</mat-icon>
-    </div>
-    <div *ngIf="editMode">
-        <div *ngFor="let token of tokens; let i = index;" class="row">
-            <div class="mr-1 col-1">
-                <cde-logic-autocomplete *ngIf="i > 0" [(token)]="token"></cde-logic-autocomplete>
-            </div>
-            <div class="mr-1 col-4">
-                <cde-question-autocomplete [formElement]="formElement" [parent]="parent"
-                                           [(token)]="token"></cde-question-autocomplete>
-            </div>
-            <div class="mr-1 col-1">
-                <cde-operator-autocomplete [(token)]="token"></cde-operator-autocomplete>
-            </div>
-            <div class="mr-1 col-4">
-                <cde-answer-autocomplete [(token)]="token"></cde-answer-autocomplete>
-            </div>
-            <div class="col-1">
-                <mat-icon (click)="tokens.pop()">remove</mat-icon>
-            </div>
-            {{token.label + ' ' + token.operator + ' ' + token.answer + ' ' + token.logic}}
+{{formElement.skipLogic.condition}}
+<span *ngIf="canEdit">
+    <mat-icon (click)="editMode = true">edit</mat-icon>
+    <mat-icon (click)="saveSkipLogic()">save</mat-icon>
+</span>
+<div *ngIf="editMode">
+    <div *ngFor="let token of tokens; let i = index;" class="row">
+        <div class="mr-1 col-1">
+            <cde-logic-autocomplete *ngIf="i > 0" [(token)]="token"></cde-logic-autocomplete>
         </div>
-        <mat-icon (click)="addToken()">add</mat-icon>
+        <div class="mr-1 col-4">
+            <cde-question-autocomplete [formElement]="formElement" [parent]="parent"
+                                       [(token)]="token"></cde-question-autocomplete>
+        </div>
+        <div class="mr-1 col-1">
+            <cde-operator-autocomplete [(token)]="token"></cde-operator-autocomplete>
+        </div>
+        <div class="mr-1 col-4">
+            <cde-answer-autocomplete [(token)]="token"></cde-answer-autocomplete>
+        </div>
+        <div class="col-1">
+            <mat-icon (click)="tokens.pop()">remove</mat-icon>
+        </div>
     </div>
+    <mat-icon (click)="addToken()">add</mat-icon>
 </div>
+<!--
 {{formElement.skipLogic?.validationError}}
+-->

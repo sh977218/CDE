@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
 
-class Token {
+export class Token {
     formElement;
     label: string;
     operator: string = '=';
@@ -27,8 +27,17 @@ export class SkipLogicAutocompleteComponent implements OnInit {
 
 
     ngOnInit() {
-        let temp = this.formElement.skipLogic.condition.split(/( (?:and|or) )/i);
-        if (temp.trim && temp.trim().length) this.tokens = temp;
+        let equationArray = this.formElement.skipLogic.condition.split(/( (?:and|or) )/i);
+        if (Array.isArray(equationArray)) {
+            equationArray.forEach(equationString => {
+                let tokens = equationString.split(/( (?:>|<|>=|<=|=) )/i);
+                let token = new Token();
+                token.label = tokens[0];
+                token.operator = tokens[1];
+                token.answer = tokens[2];
+                this.tokens.push(token);
+            });
+        }
         console.log('a');
     }
 
@@ -37,6 +46,7 @@ export class SkipLogicAutocompleteComponent implements OnInit {
     }
 
     saveSkipLogic() {
+        this.editMode = false;
         this.onSaved.emit();
     }
 
