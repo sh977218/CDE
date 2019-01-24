@@ -96,7 +96,7 @@ exports.parseValueDomain = nindsForms => {
             if (valueDomain.datatype === 'Date') {
                 valueDomain.datatypeDate = {
                     precision: {
-                        type: 'Second'
+                        type: 'Minute'
                     }
                 };
             }
