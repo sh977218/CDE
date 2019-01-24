@@ -74,7 +74,7 @@ var deJson = {
                 description: 'To indicate a regular expression that someone may want to match on'
             },
             rule: {type: StringType, description: 'Any rule may go here'},
-            showAsTextArea: {type: Boolean, default: false, description: 'multi-line'},
+            showAsTextArea: {type: Boolean, default: false, description: 'Multi-line'},
         },
         datatypeNumber: {
             minValue: Number,
@@ -84,12 +84,18 @@ var deJson = {
                 description: 'Any precision for this number. Typically an integer for a float. Limit to 10^precision'
             },
         },
-        datatypeDate: {},
+        datatypeDate: {
+            precision: {
+                type: StringType,
+                enum: ['Year', 'Month', 'Day', 'Hour', 'Minute', 'Second'],
+                default: 'Day',
+            }
+        },
         datatypeTime: { // time only, periodic?
             format: {type: StringType, description: 'Any format that someone may want to enforce'},
         },
         datatypeExternallyDefined: {
-            link: {type: StringType, description: 'a link to an external source. Typically a URL'},
+            link: {type: StringType, description: 'A link to an external source. Typically a URL'},
             description: StringType,
             descriptionFormat: {type: StringType, description: "if 'html', then parse with HTML"},
         },
