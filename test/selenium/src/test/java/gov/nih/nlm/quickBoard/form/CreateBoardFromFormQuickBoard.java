@@ -11,7 +11,6 @@ public class CreateBoardFromFormQuickBoard extends NlmCdeBaseTest {
         String boardName = "formQuickBoard";
         String formName1 = "King-Devick Concussion Screening Test (K-D Test)";
         String formName2 = "Hamilton Anxiety Rating Scale (HAM-A)";
-        mustBeLoggedOut();
         addFormToQuickBoard(formName1);
         addFormToQuickBoard(formName2);
         goToQuickBoardByModule("form");
