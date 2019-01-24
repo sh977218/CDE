@@ -93,11 +93,18 @@ exports.parseValueDomain = nindsForms => {
                 if (_maxValueArray.length > 0)
                     valueDomain.datatypeNumber.maxValue = Number(_maxValueArray[0]);
             }
+            if (valueDomain.datatype === 'Date') {
+                valueDomain.datatypeDate = {
+                    precision: {
+                        type: 'Second'
+                    }
+                };
+            }
         } else if (['Single Pre-Defined Value Selected', 'Multiple Pre-Defined Values Selected'].indexOf(inputRestrictions) > -1) {
             valueDomain.datatype = 'Value List';
             let datatype = DATA_TYPE_MAP[_dataTypeTypeArray[0]];
             if (!datatype) {
-                console.log(' unknown dataType found:' + datatype);
+                console.log('Unknown dataType found:' + datatype);
                 process.exit(1);
             }
             valueDomain.datatypeValueList = {datatype: datatype};
