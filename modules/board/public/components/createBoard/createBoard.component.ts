@@ -26,7 +26,7 @@ export class CreateBoardComponent {
 
     constructor(private http: HttpClient,
                 public dialog: MatDialog,
-                private userSvc: UserService,
+                public userSvc: UserService,
                 private alert: AlertService,
                 private myBoardsSvc: MyBoardsService) {
     }
