@@ -1,7 +1,6 @@
 package gov.nih.nlm.cde.test;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.support.ui.Select;
 import org.testng.annotations.Test;
 
 public class adminOfMultipleOrgsCanSeeDropdownTest extends BaseClassificationTest {
@@ -13,6 +12,7 @@ public class adminOfMultipleOrgsCanSeeDropdownTest extends BaseClassificationTes
         clickElement(By.cssSelector("mat-select"));
         selectMatSelectDropdownByText("caBIG");
         textPresent("caNanoLab");
+        clickElement(By.xpath("//mat-icon[normalize-space() = 'transform']"));
         clickElement(By.id("cancelNewClassifyItemBtn"));
     }
 

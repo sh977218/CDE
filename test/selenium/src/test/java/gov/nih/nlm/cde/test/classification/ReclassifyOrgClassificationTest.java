@@ -22,8 +22,7 @@ public class ReclassifyOrgClassificationTest extends NlmCdeBaseTest {
 
         clickElement(By.xpath(getOrgClassificationIconXpath("reclassify", new String[]{"OldClassification"})));
         textPresent("Classify CDEs in Bulk");
-        clickElement(By.cssSelector("mat-select"));
-        selectMatSelectDropdownByText("org / or Org");
+        new Select(findElement(By.id("orgToManage"))).selectByVisibleText("org / or Org");
         clickElement(By.id("NewClassification-classifyBtn"));
         clickElement(By.id("cancelNewClassifyItemBtn"));
 
