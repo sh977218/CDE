@@ -93,13 +93,6 @@ exports.parseValueDomain = nindsForms => {
                 if (_maxValueArray.length > 0)
                     valueDomain.datatypeNumber.maxValue = Number(_maxValueArray[0]);
             }
-            if (valueDomain.datatype === 'Date') {
-                valueDomain.datatypeDate = {
-                    precision: {
-                        type: 'Minute'
-                    }
-                };
-            }
         } else if (['Single Pre-Defined Value Selected', 'Multiple Pre-Defined Values Selected'].indexOf(inputRestrictions) > -1) {
             valueDomain.datatype = 'Value List';
             let datatype = DATA_TYPE_MAP[_dataTypeTypeArray[0]];
