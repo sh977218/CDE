@@ -261,7 +261,7 @@ export class CompareSideBySideComponent {
                     property: 'referenceDocuments',
                     data: [
                         {label: 'Title', property: 'title'},
-                        {label: 'URL', property: 'url'},
+                        {label: 'URI', property: 'uri'},
                         {label: 'Document', property: 'document'},
                         {label: 'Provider Org', property: 'providerOrg'},
                         {label: 'Language Code', property: 'languageCode'}
@@ -689,8 +689,7 @@ export class CompareSideBySideComponent {
             else return '';
         } else if (_isArray(value)) {
             return JSON.stringify(value);
-        }
-        else return value;
+        } else return value;
     }
 
     openCompareSideBySideContent() {
