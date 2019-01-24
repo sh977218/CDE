@@ -168,7 +168,9 @@ exports.parseFormElements = async nindsForms => {
         } else if (question.datatype === 'Number') {
             question.datatypeNumber = existingCde.valueDomain.datatypeNumber;
         } else if (question.datatype === 'Date') {
-            question.datatypeDate = existingCde.valueDomain.datatypeDate;
+            question.datatypeDate = {
+                precision: "Minute"
+            }
         } else if (question.datatype === 'File') {
             question.datatypeDate = existingCde.valueDomain.datatypeDate;
         } else {
