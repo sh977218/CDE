@@ -1,4 +1,4 @@
-<button mat-raised-button value="add" (click)="openNewBoard()" id="addBoard" style="margin-bottom: 10px;">
+<button *ngIf="userSvc.user"mat-raised-button value="add" (click)="openNewBoard()" id="addBoard" style="margin-bottom: 10px;">
     <mat-icon>add</mat-icon>
     {{buttonName}}
 </button>

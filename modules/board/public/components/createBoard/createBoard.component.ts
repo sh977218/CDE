@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { AlertService } from 'alert/alert.service';
 import { MyBoardsService } from 'board/public/myBoards.service';
 import { MatDialog, MatDialogRef } from '@angular/material';
+import { UserService } from '_app/user.service';
 
 @Component({
     selector: 'cde-create-board',
@@ -23,9 +24,10 @@ export class CreateBoardComponent {
     dialogRef: MatDialogRef<TemplateRef<any>>;
     newBoard: any;
 
-    constructor(private alert: AlertService,
-                private http: HttpClient,
+    constructor(private http: HttpClient,
                 public dialog: MatDialog,
+                private userSvc: UserService,
+                private alert: AlertService,
                 private myBoardsSvc: MyBoardsService) {
     }
 
