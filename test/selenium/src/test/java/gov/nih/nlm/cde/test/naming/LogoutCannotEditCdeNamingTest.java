@@ -2,8 +2,7 @@ package gov.nih.nlm.cde.test.naming;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-import org.testng.Assert;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.annotations.Test;
 
 public class LogoutCannotEditCdeNamingTest extends NlmCdeBaseTest {
@@ -14,9 +13,7 @@ public class LogoutCannotEditCdeNamingTest extends NlmCdeBaseTest {
         mustBeLoggedOut();
         goToCdeByName(cdeName);
         goToNaming();
-        for (WebElement elt : driver.findElements(By.cssSelector(".fa-trash-o"))) {
-            Assert.assertFalse(elt.isDisplayed());
-        }
+        shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//mat-icon[contains(., 'delete')]")));
     }
 
 }

@@ -34,14 +34,20 @@ export function formToQuestionnaire(form, options, config) {
         form.ids.forEach(id => Q.identifier.push(newIdentifier(codeSystemOut(id.source), id.id, 'usual')));
     }
     if (Array.isArray(form.formElements)) {
-        form.formElements.forEach(fe => Q.item.push(feToQuestionnaireItem(form, fe, options, config)));
+        form.formElements.forEach(fe => Q.item.push(...feToQuestionnaireItem(form, fe, options, config)));
     }
     return Q;
 }
 
 export function feToQuestionnaireItem(form, fe, options, config) {
     let item;
+    let items = [];
     let children = [];
+    function getChildren(fes) {
+        if (Array.isArray(fes)) {
+            fes.forEach(f => children.push(...feToQuestionnaireItem(form, f, options, config)));
+        }
+    }
     if (fe.elementType === 'question') {
         item = {
             definition: config.publicUrl + ITEM_MAP.cde.view + fe.question.cde.tinyId,
@@ -64,45 +70,69 @@ export function feToQuestionnaireItem(form, fe, options, config) {
             item.option = [];
             fe.question.answers.forEach(a => item.option.push({valueCoding: permissibleValueToCoding(a)}));
         }
-        if (fe.skipLogic && fe.skipLogic.condition) {
-            let tokens = tokenSplitter(fe.skipLogic.condition);
-            if (tokens.length >= 3) {
-                item.enableWhen = [];
-                for (let i = 0, size = tokens.length; i + 3 <= size; i+=4) {
-                    let q = getQuestionPriorByLabel(form, fe, tokens[i].substring(1, tokens[i].length - 1));
-                    if (q) {
-                        let when = {
-                            question: q.feId,
-                        };
-                        if (['""', ''].indexOf(tokens[i + 2]) > -1) {
-                            when.hasAnswer = false;
-                        } else {
-                            let qType = containerToItemType(q.question);
-                            when['answer' + capString(itemTypeToItemDatatype(qType))] = valueToTypedValue(q.question,
-                                qType, tokens[i + 2].substring(1, tokens[i + 2].length - 1), tokens[i + 1]);
-                        }
-                        item.enableWhen.push(when);
+        if (fe.instructions && fe.instructions.value) {
+            // instructions before question
+            items.unshift({
+                linkId: fe.feId + '_i',
+                text: fe.instructions.value,
+                type: 'display',
+            });
+        }
+    } else {
+        if (Array.isArray(fe.formElements) && fe.formElements.length !==0) {
+            item = {
+                linkId: fe.feId,
+                repeats: !!fe.repeat || undefined,
+                text: fe.label || undefined,
+                type: 'group',
+            };
+            if (fe.instructions && fe.instructions.value) {
+                // instructions in section
+                children.push({
+                    linkId: fe.feId + '_i',
+                    text: fe.instructions.value,
+                    type: 'display',
+                });
+            }
+        } else {
+            if (fe.instructions && fe.instructions.value) {
+                // section only has instructions
+                item = {
+                    linkId: fe.feId,
+                    text: fe.instructions.value,
+                    type: 'display',
+                };
+            }
+            // else no section
+        }
+    }
+    if (item && fe.skipLogic && fe.skipLogic.condition) {
+        let tokens = tokenSplitter(fe.skipLogic.condition);
+        if (tokens.length >= 3) {
+            item.enableWhen = [];
+            for (let i = 0, size = tokens.length; i + 3 <= size; i+=4) {
+                let q = getQuestionPriorByLabel(form, fe, tokens[i].substring(1, tokens[i].length - 1));
+                if (q) {
+                    let when = {
+                        question: q.feId,
+                    };
+                    if (['""', ''].indexOf(tokens[i + 2]) > -1) {
+                        when.hasAnswer = false;
+                    } else {
+                        let qType = containerToItemType(q.question);
+                        when['answer' + capString(itemTypeToItemDatatype(qType))] = valueToTypedValue(q.question,
+                            qType, tokens[i + 2].substring(1, tokens[i + 2].length - 1), tokens[i + 1]);
                     }
+                    item.enableWhen.push(when);
                 }
             }
         }
-    } else {
-        item = {
-            linkId: fe.feId,
-            text: fe.label || undefined,
-            type: 'group',
-        };
     }
-    if (Array.isArray(fe.formElements)) {
-        fe.formElements.forEach(f => children.push(feToQuestionnaireItem(form, f, options, config)));
-    }
+    getChildren(fe.formElements);
     if (fe.question && Array.isArray(fe.question.answers)) {
-        fe.question.answers.forEach(pv => {
-            if (Array.isArray(pv.formElements)) {
-                pv.formElements.forEach(f => children.push(feToQuestionnaireItem(form, f, options, config)));
-            }
-        });
+        fe.question.answers.forEach(pv => getChildren(pv.formElements));
     }
     if (children.length) item.item = children;
-    return item;
+    if (item) items.push(item);
+    return items;
 }

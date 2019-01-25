@@ -50,7 +50,7 @@ function doSyncWithMesh(allMappings) {
 
     let searches = [_.cloneDeep(searchTemplate.cde), _.cloneDeep(searchTemplate.form)];
     searches.forEach(search => {
-        search.scroll = '1m';
+        search.scroll = '2m';
         search.body = {};
     });
 
@@ -102,7 +102,8 @@ function doSyncWithMesh(allMappings) {
                 exports.meshSyncStatus[s.type].done++;
             });
             if (request.body.length > 0)
-                esClient.bulk(request, err => {
+                esClient.bulk(request, (err, resp) => {
+                    if (resp) console.log(resp);
                     if (err) dbLogger.consoleLog("ERR: " + err, 'error');
                     scrollThrough(newScrollId, s);
                 });

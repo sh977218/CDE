@@ -48,7 +48,7 @@ const questionSchema = new Schema({
             type: StringType,
             enum: ['Year', 'Month', 'Day', 'Hour', 'Minute', 'Second'],
             default: 'Day',
-        },
+        }
     }
     , unitsOfMeasure: [sharedSchemas.codeAndSystemSchema]
     , required: {type: Boolean, default: false}

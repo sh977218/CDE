@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Inject, Injectable } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material';
-import { ActivatedRouteSnapshot } from '@angular/router/src/router_state';
+import { ActivatedRouteSnapshot } from '@angular/router';
 import { FhirAppViewModes } from '_fhirApp/fhirApp.component';
 import { propertyToQuestion, questionToProperty, staticToProperty } from '_fhirApp/properties';
 import {

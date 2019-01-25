@@ -1,6 +1,6 @@
 <mat-tab-group [selectedIndex]="selectedTab.value">
     <mat-tab label="Logs" *ngIf="isAdmin">
-        <cde-log-audit></cde-log-audit>
+        <cde-log-audit id="auditTab"></cde-log-audit>
     </mat-tab>
 
     <mat-tab label="App Logs" *ngIf="isAdmin">
@@ -12,27 +12,39 @@
     </mat-tab>
 
     <mat-tab label="CDE Audit Log" id="cdeAuditLog">
-        <cde-audit-log></cde-audit-log>
+        <ng-template matTabContent>
+            <cde-audit-log></cde-audit-log>
+        </ng-template>
     </mat-tab>
 
     <mat-tab label="Classification Audit Log">
-        <cde-classification-audit-log></cde-classification-audit-log>
+        <ng-template matTabContent>
+            <cde-classification-audit-log></cde-classification-audit-log>
+        </ng-template>
     </mat-tab>
 
     <mat-tab label="Active Bans" *ngIf="isAdmin">
-        <cde-active-bans></cde-active-bans>
+        <ng-template matTabContent>
+            <cde-active-bans></cde-active-bans>
+        </ng-template>
     </mat-tab>
 
     <mat-tab label="Reported Issues">
-        <cde-feedback-issues></cde-feedback-issues>
+        <ng-template matTabContent>
+            <cde-feedback-issues></cde-feedback-issues>
+        </ng-template>
     </mat-tab>
 
     <mat-tab label="Server Errors" *ngIf="isAdmin" #serverErrorTab>
-        <cde-server-errors></cde-server-errors>
+        <ng-template matTabContent>
+            <cde-server-errors></cde-server-errors>
+        </ng-template>
     </mat-tab>
 
     <mat-tab label="Client Errors" *ngIf="isAdmin" #clientErrorTab>
-        <cde-client-errors></cde-client-errors>
+        <ng-template matTabContent>
+            <cde-client-errors></cde-client-errors>
+        </ng-template>
     </mat-tab>
 
 </mat-tab-group>
