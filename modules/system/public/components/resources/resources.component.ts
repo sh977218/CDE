@@ -8,11 +8,9 @@ import {
     Type
 } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-
-import { Article } from 'shared/article/article.model';
-import { AlertService } from 'alert/alert.service';
 import { UserService } from '_app/user.service';
-
+import { AlertService } from 'alert/alert.service';
+import { Article } from 'shared/article/article.model';
 import { hasRole } from 'shared/system/authorizationShared';
 import { ResourcesRssComponent } from 'system/public/components/resources/resourcesRss.component';
 
@@ -22,36 +20,40 @@ import { ResourcesRssComponent } from 'system/public/components/resources/resour
     entryComponents: [ResourcesRssComponent]
 })
 export class ResourcesComponent implements OnDestroy {
-    resource: Article;
     canEdit;
-
     containers: HtmlContainer[] = [];
+    resource: Article;
 
-    constructor(private http: HttpClient,
-                public userService: UserService,
-                private alertSvc: AlertService,
+    constructor(private alert: AlertService,
                 private appRef: ApplicationRef,
                 private componentFactoryResolver: ComponentFactoryResolver,
-                private injector: Injector) {
+                private http: HttpClient,
+                private injector: Injector,
+                public userService: UserService) {
         this.canEdit = hasRole(this.userService.user, 'DocumentationEditor');
 
-        this.http.get<any>('/server/article/resourcesAndFeed')
-            .subscribe(res => {
-                this.resource = res;
-                setTimeout(() => {
-                    this.renderMe();
-                }, 0);
-            },
-            err => this.alertSvc.addAlert('danger', err));
+        this.http.get<any>('/server/article/resourcesAndFeed').subscribe(res => {
+            this.resource = res;
+            this.renderMe();
+        }, err => this.alert.httpErrorMessageAlert(err));
     }
 
     renderMe() {
-        this.resource.rssFeeds.forEach((rssFeed, i) => {
-            let myArea = document.getElementById('rssContent_' + i);
-            let myRow = document.createElement("div");
-            myArea.appendChild(myRow);
-            this.addComponentToRow(ResourcesRssComponent, myRow, rssFeed);
-        });
+        let i = 0;
+        let size = this.resource.rssFeeds.length;
+        let waitUntilBodyHtml = setInterval(() => {
+            for (; i < size; i++) {
+                let rssFeed = this.resource.rssFeeds[i];
+                let myArea = document.getElementById('rssContent_' + i);
+                if (!myArea) {
+                    return;
+                }
+                let myRow = document.createElement('div');
+                myArea.appendChild(myRow);
+                this.addComponentToRow(ResourcesRssComponent, myRow, rssFeed);
+            }
+            clearInterval(waitUntilBodyHtml);
+        }, 0);
     }
 
     addComponentToRow(component: Type<any>, row: HTMLElement, param: string) {
