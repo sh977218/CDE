@@ -216,7 +216,7 @@
                           (click)="clearSelectedStatuses()">cancel</mat-icon>
             </span>
         </span>
-        <span *ngIf="module === 'cde'" id="datatype_crumb">|
+        <span *ngIf="module === 'cde'" id="datatype_crumb">
             <span *ngIf="!hasSelectedDatatypes()" class="badge badge-secondary mx-1">All Datatypes</span>
             <span *ngIf="hasSelectedDatatypes()" class="badge badge-success mx-1">{{getSelectedDatatypes()}}
                 <mat-icon id="removeDatatypes" class="remove-filter hand-cursor dark-icon pl-1"

@@ -1,4 +1,4 @@
-const config = require('config');
+const config = require('../system/parseConfig');
 const mongoose = require('mongoose');
 require('../system/mongoose-stringtype')(mongoose);
 const Schema = mongoose.Schema;
