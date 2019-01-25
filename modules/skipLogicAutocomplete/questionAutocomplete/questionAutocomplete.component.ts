@@ -16,16 +16,15 @@ export class QuestionAutocompleteComponent implements OnInit {
     priorQuestions = [];
 
     filteredQuestionOptions: Observable<string[]>;
-    questionControl = new FormControl('aaaaa');
+    questionControl = new FormControl();
 
     ngOnInit() {
-//        this.questionControl.patchValue(this.token.label);
+        this.questionControl.setValue(this.token);
+        this.priorQuestions = this.getPriorQuestions(this.parent, this.formElement.label);
         this.filteredQuestionOptions = this.questionControl.valueChanges
             .pipe(
-                startWith(''),
                 map(value => this._filterQuestion(value))
             );
-        this.priorQuestions = this.getPriorQuestions(this.parent, this.formElement.label);
     }
 
 
@@ -43,6 +42,13 @@ export class QuestionAutocompleteComponent implements OnInit {
         return questions;
     }
 
+    private getQuestionByLabel(formElement, label) {
+        for (let e of formElement.formElements) {
+            if (e.label === label) return e;
+            else return this.getQuestionByLabel(e, label);
+        }
+    }
+
     private _filterQuestion(value: string): string[] {
         const filterValue = value.toLowerCase();
         return this.priorQuestions.filter(option => option.toLowerCase().includes(filterValue));
@@ -50,6 +56,7 @@ export class QuestionAutocompleteComponent implements OnInit {
 
     selectQuestion(event) {
         this.token.formElement = event.option.value;
+        this.token.question = this.getQuestionByLabel(this.parent, event.option.value);
         this.token.label = event.option.value.label;
     }
 

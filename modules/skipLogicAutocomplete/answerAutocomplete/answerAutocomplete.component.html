@@ -7,7 +7,7 @@
                [matAutocomplete]="answerAuto">
         <mat-autocomplete #answerAuto="matAutocomplete" (optionSelected)="selectAnswer($event)"
                           [displayWith]="displayFn">
-            <mat-option *ngFor="let answer of token.formElement.question.answers " [value]="answer">
+            <mat-option *ngFor="let answer of token.question.question.answers " [value]="answer">
                 {{answer.permissibleValue}}
             </mat-option>
         </mat-autocomplete>

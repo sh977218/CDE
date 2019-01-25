@@ -1,8 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
 
 export class Token {
     formElement;
+    question;
     label: string;
     operator: string = '=';
     answer: string;
@@ -22,23 +22,28 @@ export class SkipLogicAutocompleteComponent implements OnInit {
     editMode: boolean = false;
     tokens: Token[] = [];
 
-    constructor(public skipLogicValidateService: SkipLogicValidateService) {
-    }
-
-
     ngOnInit() {
         let equationArray = this.formElement.skipLogic.condition.split(/( (?:and|or) )/i);
         if (Array.isArray(equationArray)) {
             equationArray.forEach(equationString => {
                 let tokens = equationString.split(/( (?:>|<|>=|<=|=) )/i);
                 let token = new Token();
-                token.label = tokens[0];
-                token.operator = tokens[1];
-                token.answer = tokens[2];
+                let regex = new RegExp("\"", 'g');
+                let labelString = tokens[0];
+                if (labelString) labelString = labelString.replace(regex, '').trim();
+                let operatorString = tokens[1];
+                if (operatorString) operatorString = operatorString.replace(regex, '').trim();
+                let answerString = tokens[2];
+                if (answerString) answerString = answerString.replace(regex, '').trim();
+                token.label = labelString;
+                token.operator = operatorString;
+                token.answer = answerString;
+                if (token.label) {
+                    token.question = this.getQuestionByLabel(this.parent, token.label);
+                }
                 this.tokens.push(token);
             });
         }
-        console.log('a');
     }
 
     addToken() {
@@ -49,5 +54,14 @@ export class SkipLogicAutocompleteComponent implements OnInit {
         this.editMode = false;
         this.onSaved.emit();
     }
+
+    private getQuestionByLabel(formElement, label) {
+        for (let e of formElement.formElements) {
+            let elementType = e.elementType;
+            if (elementType === 'question' && e.label === label) return e;
+            else this.getQuestionByLabel(e, label);
+        }
+    }
+
 
 }

@@ -2,21 +2,22 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
+import { Token } from 'skipLogicAutocomplete/skipLogicAutocomplete.component';
 
 @Component({
     selector: 'cde-answer-autocomplete',
     templateUrl: './answerAutocomplete.component.html'
 })
 export class AnswerAutocompleteComponent implements OnInit {
-    @Input() token;
+    @Input() token?: Token;
 
     filteredAnswerOptions: Observable<string[]>;
     answerControl = new FormControl();
 
     ngOnInit() {
+        if (this.token.answer) this.answerControl.setValue(this.token.answer);
         this.filteredAnswerOptions = this.answerControl.valueChanges
             .pipe(
-                startWith(''),
                 map(value => this._filterOperator(value))
             );
     }
