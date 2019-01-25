@@ -1,5 +1,7 @@
 import { getLabel as getLabelShared, iterateFesSync } from 'shared/form/fe';
 
+export const SkipLogicOperatorsArray = ['=', '!=', '>', '<', '>=', '<='];
+
 export function evaluateSkipLogic(condition, parent, fe, addError) {
     if (!condition) return true;
     let rule = condition.trim();
@@ -136,7 +138,9 @@ export function getShowIfQ(fes, fe) {
                     operator = operatorWithNumber[0];
                     compValue = operatorWithNumber[1];
                 }
-                acc.push([matchQ, strPieces[i], operator, compValue]);
+                if (compValue !== undefined && SkipLogicOperatorsArray.includes(operator)) {
+                    acc.push([matchQ, strPieces[i], operator, compValue]);
+                }
             }
             return acc;
         }, []);
