@@ -1,10 +1,9 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input } from '@angular/core';
 
 @Component({
-    selector: "cde-value-domain-summary",
-    templateUrl: "./valueDomainSummary.component.html"
+    selector: 'cde-value-domain-summary',
+    templateUrl: './valueDomainSummary.component.html'
 })
-
 
 export class ValueDomainSummaryComponent {
     @Input() elt: any;
