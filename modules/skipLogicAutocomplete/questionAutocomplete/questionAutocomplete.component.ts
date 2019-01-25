@@ -9,7 +9,7 @@ import { Token } from 'skipLogicAutocomplete/skipLogicAutocomplete.component';
     templateUrl: './questionAutocomplete.component.html'
 })
 export class QuestionAutocompleteComponent implements OnInit {
-    @Input() token: Token;
+    @Input() token?: Token;
     @Input() formElement;
     @Input() parent;
 
@@ -19,7 +19,7 @@ export class QuestionAutocompleteComponent implements OnInit {
     questionControl = new FormControl('aaaaa');
 
     ngOnInit() {
-        this.questionControl.patchValue(this.token.label);
+//        this.questionControl.patchValue(this.token.label);
         this.filteredQuestionOptions = this.questionControl.valueChanges
             .pipe(
                 startWith(''),
