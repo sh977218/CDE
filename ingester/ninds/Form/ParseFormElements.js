@@ -135,11 +135,6 @@ exports.parseFormElements = async nindsForms => {
         formElements: []
     });
     for (let nindsCdeId of _nindsCdeIdList) {
-        /*
-                if (nindsCdeId === 'C00020') {
-                    console.log('a');
-                }
-        */
         await doOneNindsCde(nindsCdeId);
     }
     for (let nindsQuestion of _nindsQuestionList[0]) {
@@ -173,7 +168,9 @@ exports.parseFormElements = async nindsForms => {
         } else if (question.datatype === 'Number') {
             question.datatypeNumber = existingCde.valueDomain.datatypeNumber;
         } else if (question.datatype === 'Date') {
-            question.datatypeDate = existingCde.valueDomain.datatypeDate;
+            question.datatypeDate = {
+                precision: "Minute"
+            }
         } else if (question.datatype === 'File') {
             question.datatypeDate = existingCde.valueDomain.datatypeDate;
         } else {
