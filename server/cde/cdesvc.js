@@ -94,27 +94,27 @@ exports.byTinyIdAndVersion = (req, res) => {
     }));
 };
 
-exports.draftDataElement = (req, res) => {
+exports.draftDataElement = (req, res) => { // WORKAROUND: sends empty instead of 404 to not cause angular to litter console
     let tinyId = req.params.tinyId;
-    if (!tinyId) return res.status(400).send();
-    if (authorizationShared.isOrgCurator(req.user)) {
-        mongo_cde.byTinyId(req.params.tinyId, handleError({req, res}, dataElement => {
-            if (authorizationShared.canEditCuratedItem(req.user, dataElement)) {
-                mongo_cde.draftDataElement(tinyId, handleError({req, res}, dataElement => {
-                    if (dataElement) {
-                        res.send(dataElement);
-                    } else {
-                        exports.byTinyId(req, res);
-                    }
-                }));
-            } else {
-                exports.byTinyId(req, res);
-            }
-        }));
-    } else {
-        exports.byTinyId(req, res);
+    if (!tinyId) {
+        res.status(400).send();
+        return;
     }
+    if (!authorizationShared.isOrgCurator(req.user)) {
+        res.send();
+        return;
+    }
+    mongo_cde.byTinyId(tinyId, handleError({req, res}, dataElement => {
+        if (!authorizationShared.canEditCuratedItem(req.user, dataElement)) {
+            res.send();
+            return;
+        }
+        mongo_cde.draftDataElement(tinyId, handleError({req, res}, dataElement =>
+            res.send(dataElement)
+        ));
+    }));
 };
+
 exports.draftDataElementById = (req, res) => {
     let id = req.params.id;
     if (!id) return res.status(400).send();
@@ -125,11 +125,12 @@ exports.draftDataElementById = (req, res) => {
 };
 
 exports.saveDraftDataElement = (req, res) => {
-    let tinyId = req.params.tinyId;
-    if (!tinyId) return res.status(400).send();
     let elt = req.body;
-    if (elt.tinyId !== tinyId) return res.status(400).send();
-    if (!elt.designations || !elt.designations.length) return res.status(400).send();
+    let tinyId = req.params.tinyId;
+    if (!elt || !tinyId || elt.tinyId !== tinyId
+        || !elt.designations || !elt.designations.length) {
+        return res.status(400).send();
+    }
     if (req.user && req.user.username) elt.updatedBy.username = req.user.username;
     if (!elt.created) elt.created = new Date();
     elt.updated = new Date();
@@ -169,57 +170,55 @@ exports.latestVersionByTinyId = (req, res) => {
 };
 
 exports.createDataElement = (req, res) => {
-    let id = req.params.id;
-    if (id) return res.status(400).send();
-    if (!req.isAuthenticated()) return res.status(403).send("You are not authorized to do this.");
     let elt = req.body;
     let user = req.user;
-    authorization.allowCreate(user, elt, handleError({req, res}, () => {
-        mongo_cde.create(elt, user, handleError({req, res}, dataElement => res.send(dataElement)));
-    }));
+    if (!elt.stewardOrg || !elt.stewardOrg.name) return res.status(400).send();
+    mongo_cde.create(elt, user, handleError({req, res}, dataElement => res.send(dataElement)));
 };
 
 exports.updateDataElement = (req, res) => {
-    let tinyId = req.params.tinyId;
-    if (!tinyId) return res.status(400).send();
-    if (!req.isAuthenticated()) return res.status(403).send("Not authorized");
     let elt = req.body;
-    authorization.allowUpdate(req.user, elt, handleError({req, res}, () => {
-        deValidator.wipeDatatype(elt);
-        mongo_data.orgByName(elt.stewardOrg.name, handleError({req, res}, org => {
-            let allowedRegStatuses = ['Retired', 'Incomplete', 'Candidate'];
-            if (org && org.workingGroupOf && org.workingGroupOf.length > 0
-                && allowedRegStatuses.indexOf(elt.registrationState.registrationStatus) === -1) {
-                return res.status(403).send("Not authorized");
-            }
-            mongo_cde.update(elt, req.user, handleError({req, res}, response => {
-                mongo_cde.deleteDraftDataElement(elt.tinyId, handleError({req, res}, () => res.send(response)));
-            }));
+    let tinyId = req.params.tinyId;
+    if (!elt || !tinyId || elt.tinyId !== tinyId
+        || !elt.designations || !elt.designations.length) {
+        return res.status(400).send();
+    }
+    deValidator.wipeDatatype(elt);
+    mongo_data.orgByName(elt.stewardOrg.name, handleError({req, res}, org => {
+        let allowedRegStatuses = ['Retired', 'Incomplete', 'Candidate'];
+        if (org && org.workingGroupOf && org.workingGroupOf.length > 0
+            && allowedRegStatuses.indexOf(elt.registrationState.registrationStatus) === -1) {
+            return res.status(403).send();
+        }
+        mongo_cde.update(elt, req.user, handleError({req, res}, response => {
+            mongo_cde.deleteDraftDataElement(elt.tinyId, handleError({req, res}, () => res.send(response)));
         }));
     }));
 };
 
 exports.publishDataElement = (req, res) => {
-    let tinyId = req.params.tinyId;
-    if (!tinyId) return res.status(400).send();
     let elt = req.body;
-    if (!elt.designations || !elt.designations.length) return res.status(400).send();
-    if (!req.isAuthenticated()) return res.status(403).send("Not authorized");
+    let tinyId = req.params.tinyId;
+    if (!elt || !tinyId || elt.tinyId !== tinyId
+        || !elt.designations || !elt.designations.length) {
+        return res.status(400).send();
+    }
     mongo_cde.byTinyId(tinyId, handleError({req, res}, item => {
         if (!item) return res.status(404).send();
-        authorization.allowUpdate(req.user, item, handleError({req, res}, () => {
-            mongo_data.orgByName(item.stewardOrg.name, handleError({req, res}, org => {
-                let allowedRegStatuses = ['Retired', 'Incomplete', 'Candidate'];
-                if (org && org.workingGroupOf && org.workingGroupOf.length > 0
-                    && allowedRegStatuses.indexOf(item.registrationState.registrationStatus) === -1) {
-                    return res.status(403).send("Not authorized");
-                }
-                elt.classification = item.classification;
-                elt.attachments = item.attachments;
-                deValidator.wipeDatatype(elt);
-                mongo_cde.update(elt, req.user, handleError({req, res}, response => {
-                    mongo_cde.deleteDraftDataElement(elt.tinyId, handleError({req, res}, () => res.send(response)));
-                }));
+        if (!authorizationShared.canEditCuratedItem(req.user, item)) {
+            return res.status(403).send();
+        }
+        mongo_data.orgByName(item.stewardOrg.name, handleError({req, res}, org => {
+            let allowedRegStatuses = ['Retired', 'Incomplete', 'Candidate'];
+            if (org && org.workingGroupOf && org.workingGroupOf.length > 0
+                && allowedRegStatuses.indexOf(item.registrationState.registrationStatus) === -1) {
+                return res.status(403).send();
+            }
+            elt.classification = item.classification;
+            elt.attachments = item.attachments;
+            deValidator.wipeDatatype(elt);
+            mongo_cde.update(elt, req.user, handleError({req, res}, response => {
+                mongo_cde.deleteDraftDataElement(elt.tinyId, handleError({req, res}, () => res.send(response)));
             }));
         }));
     }));
@@ -309,27 +308,3 @@ var hideProprietaryCodes = function (cdes, user) {
 };
 
 exports.hideProprietaryCodes = hideProprietaryCodes;
-
-
-exports.checkEligibleToRetire = function (req, res, elt, cb) {
-    if (!req.isAuthenticated()) res.status(403).send("You are not authorized to do this.");
-    if (req.user.orgCurator.indexOf(elt.stewardOrg.name) < 0 && req.user.orgAdmin.indexOf(elt.stewardOrg.name) < 0 && !req.user.siteAdmin) {
-        res.status(403).send("Not authorized");
-    } else {
-        if ((elt.registrationState.registrationStatus === "Standard" ||
-            elt.registrationState.registrationStatus === "Preferred Standard") &&
-            !req.user.siteAdmin) {
-            res.status(403).send("This record is already standard.");
-        } else {
-            if ((elt.registrationState.registrationStatus !== "Standard" &&
-                elt.registrationState.registrationStatus !== " Preferred Standard") && // TODO: what is the space doing there? (many occurrences)
-                (elt.registrationState.registrationStatus === "Standard" ||
-                    elt.registrationState.registrationStatus === "Preferred Standard") &&
-                !req.user.siteAdmin) {
-                res.status(403).send("Not authorized");
-            } else {
-                cb();
-            }
-        }
-    }
-};

@@ -17,9 +17,9 @@ exports.init = function (app, daoManager) {
     app.get("/de/:tinyId", exportShared.nocacheMiddleware, cdesvc.byTinyId);
     app.get("/de/:tinyId/latestVersion/", exportShared.nocacheMiddleware, cdesvc.latestVersionByTinyId);
     app.get("/de/:tinyId/version/:version?", exportShared.nocacheMiddleware, cdesvc.byTinyIdAndVersion);
-    app.post("/de/:id?", cdesvc.createDataElement);
-    app.put("/de/:tinyId", cdesvc.updateDataElement);
-    app.put("/dePublish/:tinyId", cdesvc.publishDataElement);
+    app.post("/de", authorization.canEditMiddleware, cdesvc.createDataElement);
+    app.put("/de/:tinyId", authorization.canEditMiddleware, cdesvc.updateDataElement);
+    app.put("/dePublish/:tinyId", authorization.canEditMiddleware, cdesvc.publishDataElement);
 
     app.get("/deById/:id", exportShared.nocacheMiddleware, cdesvc.byId);
     app.get("/deById/:id/priorDataElements/", exportShared.nocacheMiddleware, cdesvc.priorDataElements);
