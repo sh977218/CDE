@@ -9,10 +9,7 @@ import {
     PermissibleFormValue, Question
 } from 'shared/form/form.model';
 import { addFormIds, isQuestion, iterateFeSync, questionMulti } from 'shared/form/fe';
-import { getShowIfQ } from 'shared/form/skipLogic';
-
-type SkipLogicOperators = '=' | '!=' | '>' | '<' | '>=' | '<=';
-
+import { getShowIfQ, SkipLogicOperators } from 'shared/form/skipLogic';
 
 @Injectable()
 export class NativeRenderService {
@@ -225,7 +222,7 @@ export class NativeRenderService {
     static transformFormToInline(form: FormElementsContainer): boolean {
         let followEligibleQuestions = [];
         let transformed = false;
-        let feSize = (form.formElements ? form.formElements.length : 0);
+        let feSize = Array.isArray(form.formElements) ? form.formElements.length : 0;
         for (let i = 0; i < feSize; i++) {
             let fe = form.formElements[i];
             let qs = getShowIfQ(followEligibleQuestions, fe);
@@ -239,7 +236,7 @@ export class NativeRenderService {
                     }
 
                     if (parentQ.question.datatype === 'Value List') {
-                        if (match[3] === "") {
+                        if (match[3] === "") { // not answered, own line "is none"
                             parentQ.question.answers.push({
                                 permissibleValue: NativeRenderService.createRelativeText([match[3]], match[2], true),
                                 nonValuelist: true,
@@ -251,6 +248,7 @@ export class NativeRenderService {
                                 if (!answer.formElements) answer.formElements = [];
                                 answer.formElements.push(Object.create(fe, {feId: {value: fe.feId + getNotMappedSuffix()}}));
                             }
+                            // else non-existing value is ignored
                         }
                     } else {
                         if (!parentQ.question.answers) parentQ.question.answers = [];

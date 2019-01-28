@@ -2,6 +2,9 @@ import { FormElement, FormElementsContainer, FormQuestion } from 'shared/form/fo
 import { Cb1 } from 'shared/models.model';
 
 type filter = (fe: FormElement) => boolean;
+type SkipLogicOperators = '=' | '!=' | '>' | '<' | '>=' | '<=';
+
+declare const SkipLogicOperatorsArray: string[];
 
 declare function evaluateSkipLogic(condition: string | undefined, parent: FormElement, fe: FormElement, addError: Cb1<string>): boolean;
 declare function getLabel(q: FormQuestion): string;
