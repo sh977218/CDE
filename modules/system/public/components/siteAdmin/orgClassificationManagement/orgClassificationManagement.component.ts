@@ -10,7 +10,7 @@ import { ClassifyItemModalComponent } from 'adminItem/public/components/classifi
 import { ClassificationService } from 'core/classification.service';
 import { Cb, ClassificationClassified, ElasticQueryResponse, Organization } from 'shared/models.model';
 import { isOrgAdmin } from 'shared/system/authorizationShared';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef, MatSelectChange } from '@angular/material';
 
 const actionMapping: IActionMapping = {
     mouse: {
@@ -71,8 +71,10 @@ export class OrgClassificationManagementComponent implements OnInit {
     ) {
         this.userService.reload(() => {
             if (this.userService.userOrgs.length > 0) {
-                this.orgToManage = this.userService.userOrgs[0];
-                this.onChangeOrg(this.orgToManage, () => {
+                if (this.userService.userOrgs.length === 1) {
+                    this.orgToManage = this.userService.userOrgs[0];
+                }
+                this.orgChanged(this.orgToManage, () => {
                     this.onInitDone = true;
                 });
             } else this.onInitDone = true;
@@ -130,7 +132,7 @@ export class OrgClassificationManagementComponent implements OnInit {
             categories: classificationArray
         };
         this.classificationSvc.addChildClassification(newClassification, (message: string) => {
-            this.onChangeOrg(this.selectedOrg!.name, () => {
+            this.orgChanged(this.selectedOrg!.name, () => {
                 this.alert.addAlert('success', message);
                 this.dialogRef!.close();
             });
@@ -154,7 +156,7 @@ export class OrgClassificationManagementComponent implements OnInit {
             this.http.get<any>('/jobStatus/' + type).subscribe(
                 res => {
                     if (res.done === true) {
-                        this.onChangeOrg(this.selectedOrg!.name, () => {
+                        this.orgChanged(this.selectedOrg!.name, () => {
                             this.tree.treeModel.update();
                             clearInterval(indexFn);
                             if (cb) cb();
@@ -168,7 +170,7 @@ export class OrgClassificationManagementComponent implements OnInit {
         return isOrgAdmin(this.userService.user);
     }
 
-    onChangeOrg(value: string, cb: Cb) {
+    orgChanged(value: string, cb: Cb) {
         if (value) {
             let url = '/org/' + encodeURIComponent(value);
             this.http.get<Organization>(url).subscribe(
@@ -180,6 +182,10 @@ export class OrgClassificationManagementComponent implements OnInit {
         } else {
             if (cb) cb();
         }
+    }
+
+    onChangeOrg(event: MatSelectChange) {
+        this.orgChanged(event.value, undefined);
     }
 
     openAddChildClassificationModal(node?: TreeNode) {
