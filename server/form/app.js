@@ -30,12 +30,16 @@ exports.init = function (app, daoManager) {
     app.get("/form/:tinyId", [allowXOrigin, exportShared.nocacheMiddleware], formSvc.byTinyId);
     app.get("/form/:tinyId/latestVersion/", exportShared.nocacheMiddleware, formSvc.latestVersionByTinyId);
     app.get("/form/:tinyId/version/:version?", [allowXOrigin, exportShared.nocacheMiddleware], formSvc.byTinyIdAndVersion);
-    app.post("/form/:id?", formSvc.createForm);
-    app.put("/formPublish/:tinyId", formSvc.publishTheForm);
-    app.put("/form/:tinyId", formSvc.updateForm);
+    app.post("/form", authorization.canEditMiddleware, formSvc.createForm);
+    app.put("/form/:tinyId", authorization.canEditMiddleware, formSvc.updateForm);
+    app.put("/formPublish/:tinyId", authorization.canEditMiddleware, formSvc.publishTheForm);
 
     app.get("/formById/:id", exportShared.nocacheMiddleware, formSvc.byId);
     app.get("/formById/:id/priorForms/", exportShared.nocacheMiddleware, formSvc.priorForms);
+
+    app.get("/formForEdit/:tinyId", exportShared.nocacheMiddleware, formSvc.forEditByTinyId);
+    app.get("/formForEdit/:tinyId/version/:version?", exportShared.nocacheMiddleware, formSvc.forEditByTinyIdAndVersion);
+    app.get("/formForEditById/:id", exportShared.nocacheMiddleware, formSvc.forEditById);
 
     app.get("/formList/:tinyIdList?", exportShared.nocacheMiddleware, formSvc.byTinyIdList);
 

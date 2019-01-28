@@ -109,24 +109,6 @@ exports.checkBoardViewerShip = function (board, user) {
     return viewers.indexOf(user.username.toLowerCase()) > -1 || exports.checkBoardOwnerShip(board, user);
 };
 
-exports.allowCreate = function (user, elt, cb) {
-    if (!elt.stewardOrg.name) return cb("Missing Steward");
-    if (user.orgCurator.indexOf(elt.stewardOrg.name) < 0 &&
-        user.orgAdmin.indexOf(elt.stewardOrg.name) < 0 &&
-        !user.siteAdmin)
-        return cb("Not authorized");
-    if (elt.registrationState && elt.registrationState.registrationStatus &&
-        ((elt.registrationState.registrationStatus === "Standard" ||
-            elt.registrationState.registrationStatus === " Preferred Standard") &&
-            !user.siteAdmin))
-        return cb("Not authorized");
-    cb();
-};
-
-exports.allowUpdate = function (user, item, cb) {
-    return cb(authorizationShared.canEditCuratedItem(user, item) ? undefined : 'Not authorized');
-};
-
 exports.unauthorizedPublishing = function (user, board) {
     return board.shareStatus === "Public" && !authorizationShared.hasRole(user, "BoardPublisher");
 };
