@@ -94,27 +94,27 @@ exports.byTinyIdAndVersion = (req, res) => {
     }));
 };
 
-exports.draftDataElement = (req, res) => {
+exports.draftDataElement = (req, res) => { // WORKAROUND: sends empty instead of 404 to not cause angular to litter console
     let tinyId = req.params.tinyId;
-    if (!tinyId) return res.status(400).send();
-    if (authorizationShared.isOrgCurator(req.user)) {
-        mongo_cde.byTinyId(req.params.tinyId, handleError({req, res}, dataElement => {
-            if (authorizationShared.canEditCuratedItem(req.user, dataElement)) {
-                mongo_cde.draftDataElement(tinyId, handleError({req, res}, dataElement => {
-                    if (dataElement) {
-                        res.send(dataElement);
-                    } else {
-                        exports.byTinyId(req, res);
-                    }
-                }));
-            } else {
-                exports.byTinyId(req, res);
-            }
-        }));
-    } else {
-        exports.byTinyId(req, res);
+    if (!tinyId) {
+        res.status(400).send();
+        return;
     }
+    if (!authorizationShared.isOrgCurator(req.user)) {
+        res.send();
+        return;
+    }
+    mongo_cde.byTinyId(tinyId, handleError({req, res}, dataElement => {
+        if (!authorizationShared.canEditCuratedItem(req.user, dataElement)) {
+            res.send();
+            return;
+        }
+        mongo_cde.draftDataElement(tinyId, handleError({req, res}, dataElement =>
+            res.send(dataElement)
+        ));
+    }));
 };
+
 exports.draftDataElementById = (req, res) => {
     let id = req.params.id;
     if (!id) return res.status(400).send();

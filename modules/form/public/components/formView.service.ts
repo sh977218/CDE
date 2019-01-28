@@ -21,6 +21,12 @@ export class FormViewService {
                 return this.fetchEltPublishedForEditing(queryParams);
             }
             return this.http.get<CdeForm>(ITEM_MAP.form.apiDraft + queryParams.tinyId).toPromise()
+                .then(elt => {
+                    if (!elt) {
+                        return this.fetchEltPublishedForEditing(queryParams);
+                    }
+                    return elt;
+                })
                 .catch((err: HttpErrorResponse) => {
                     if (err.status === 403) {
                         return this.fetchEltPublishedForEditing(queryParams);

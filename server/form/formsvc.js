@@ -91,8 +91,8 @@ function fetchWholeFormOutdated(form, callback) {
     });
 }
 
-function wipeRenderDisallowed(form, req) {
-    if (form && form.noRenderAllowed && !authorization.checkOwnership(form, req.user)) {
+function wipeRenderDisallowed(form, user) {
+    if (form && form.noRenderAllowed && !authorization.checkOwnership(form, user)) {
         form.formElements = [];
     }
 }
@@ -156,7 +156,7 @@ exports.byId = (req, res) => {
     if (!id || id.length !== 24) return res.status(400).send();
     mongo_form.byId(id, handle404({req, res}, form => {
         exports.fetchWholeForm(form.toObject(), handleError({req, res}, wholeForm => {
-            wipeRenderDisallowed(wholeForm, req);
+            wipeRenderDisallowed(wholeForm, req.user);
             if (req.query.type === 'xml') {
                 setResponseXmlHeader(res);
                 if (req.query.subtype === 'odm') {
@@ -221,28 +221,34 @@ exports.priorForms = (req, res) => {
 };
 
 exports.byTinyId = (req, res) => {
+    const handlerOptions = {req, res};
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
-    mongo_form.byTinyId(tinyId, handle404({req, res}, form => {
-        exports.fetchWholeForm(form.toObject(), handleError({req, res}, wholeForm => {
-            wipeRenderDisallowed(wholeForm, req);
+    mongo_form.byTinyId(tinyId, handle404(handlerOptions, form => {
+        exports.fetchWholeForm(form.toObject(), handleError(handlerOptions, wholeForm => {
+            wipeRenderDisallowed(wholeForm, req.user);
             if (req.query.type === 'xml') {
                 setResponseXmlHeader(res);
-                if (req.query.subtype === 'odm')
-                    odm.getFormOdm(wholeForm, handleError({req, res}, xmlForm => {
-                        res.setHeader("Content-Type", "text/xml");
-                        return res.send(xmlForm);
-                    }));
-                else if (req.query.subtype === 'sdc')
-                    sdc.formToSDC({
-                        form: wholeForm,
-                        renderer: req.query.renderer,
-                        validate: req.query.validate
-                    }, (err, sdcForm) => {
-                        if (err) return res.send(err);
-                        return res.send(sdcForm);
-                    });
-                else nih.getFormNih(wholeForm, handleError({req, res}, xmlForm => res.send(xmlForm)));
+                switch (req.query.subtype) {
+                    case 'odm':
+                        odm.getFormOdm(wholeForm, handleError(handlerOptions, xmlForm => {
+                            res.setHeader("Content-Type", "text/xml");
+                            return res.send(xmlForm);
+                        }));
+                        break;
+                    case 'sdc':
+                        sdc.formToSDC({
+                            form: wholeForm,
+                            renderer: req.query.renderer,
+                            validate: req.query.validate
+                        }, (err, sdcForm) => {
+                            if (err) return res.send(err);
+                            return res.send(sdcForm);
+                        });
+                        break;
+                    default:
+                        nih.getFormNih(wholeForm, handleError(handlerOptions, xmlForm => res.send(xmlForm)));
+                }
             } else if (req.query.type && req.query.type.toLowerCase() === 'redcap') {
                 redCap.getZipRedCap(wholeForm, res);
             } else {
@@ -259,7 +265,7 @@ exports.byTinyIdVersion = (req, res) => {
     let version = req.params.version;
     mongo_form.byTinyIdVersion(tinyId, version, handle404({req, res}, form => {
         exports.fetchWholeForm(form.toObject(), handleError({req, res}, wholeForm => {
-            wipeRenderDisallowed(wholeForm, req);
+            wipeRenderDisallowed(wholeForm, req.user);
             res.send(wholeForm);
         }));
     }));
@@ -271,35 +277,38 @@ exports.byTinyIdAndVersion = (req, res) => {
     let version = req.params.version;
     mongo_form.byTinyIdAndVersion(tinyId, version, handle404({req, res}, form => {
         exports.fetchWholeForm(form.toObject(), handleError({req, res}, wholeForm => {
-            wipeRenderDisallowed(wholeForm, req);
+            wipeRenderDisallowed(wholeForm, req.user);
             res.send(wholeForm);
         }));
     }));
 };
 
-exports.draftForm = (req, res) => {
+exports.draftForm = (req, res) => { // WORKAROUND: sends empty instead of 404 to not cause angular to litter console
+    const handlerOptions = {req, res};
     let tinyId = req.params.tinyId;
-    if (!tinyId) return res.status(400).send();
-    if (authorizationShared.isOrgCurator(req.user)) {
-        mongo_form.byTinyId(req.params.tinyId, handleError({req, res}, form => {
-            if (authorizationShared.canEditCuratedItem(req.user, form)) {
-                mongo_form.draftForm(tinyId, handleError({req, res}, form => {
-                    if (form) {
-                        fetchWholeFormOutdated(form.toObject(), handleError({
-                            req,
-                            res
-                        }, wholeForm => res.send(wholeForm)));
-                    } else {
-                        exports.byTinyId(req, res);
-                    }
-                }));
-            } else {
-                exports.byTinyId(req, res);
-            }
-        }));
-    } else {
-        exports.byTinyId(req, res);
+    if (!tinyId) {
+        res.status(400).send();
+        return;
     }
+    if (!authorizationShared.isOrgCurator(req.user)) {
+        res.send();
+        return;
+    }
+    mongo_form.byTinyId(tinyId, handleError(handlerOptions, form => {
+        if (!authorizationShared.canEditCuratedItem(req.user, form)) {
+            res.send();
+            return;
+        }
+        mongo_form.draftForm(tinyId, handleError(handlerOptions, form => {
+            if (!form) {
+                res.send();
+                return;
+            }
+            fetchWholeFormOutdated(form.toObject(), handleError(handlerOptions, wholeForm =>
+                res.send(wholeForm)
+            ));
+        }));
+    }));
 };
 
 exports.draftFormById = (req, res) => {
@@ -316,7 +325,7 @@ exports.forEditById = (req, res) => {
     if (!id || id.length !== 24) return res.status(400).send();
     mongo_form.byId(id, handle404({req, res}, form => {
         fetchWholeFormOutdated(form.toObject(), handleError({req, res}, wholeForm => {
-            wipeRenderDisallowed(wholeForm, req);
+            wipeRenderDisallowed(wholeForm, req.user);
             res.send(wholeForm);
             mongo_data.addFormToViewHistory(wholeForm, req.user);
         }));
@@ -328,7 +337,7 @@ exports.forEditByTinyId = (req, res) => {
     if (!tinyId) return res.status(400).send();
     mongo_form.byTinyId(tinyId, handle404({req, res}, form => {
         fetchWholeFormOutdated(form.toObject(), handleError({req, res}, wholeForm => {
-            wipeRenderDisallowed(wholeForm, req);
+            wipeRenderDisallowed(wholeForm, req.user);
             res.send(wholeForm);
             mongo_data.addFormToViewHistory(wholeForm, req.user);
         }));
@@ -341,7 +350,7 @@ exports.forEditByTinyIdAndVersion = (req, res) => {
     let version = req.params.version;
     mongo_form.byTinyIdAndVersion(tinyId, version, handle404({req, res}, form => {
         fetchWholeFormOutdated(form.toObject(), handleError({req, res}, wholeForm => {
-            wipeRenderDisallowed(wholeForm, req);
+            wipeRenderDisallowed(wholeForm, req.user);
             res.send(wholeForm);
         }));
     }));
