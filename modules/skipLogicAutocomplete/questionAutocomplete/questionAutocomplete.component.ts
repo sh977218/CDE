@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { Token } from 'skipLogicAutocomplete/skipLogicAutocomplete.component';
@@ -16,13 +16,15 @@ export class QuestionAutocompleteComponent implements OnInit {
     priorQuestions = [];
 
     filteredQuestionOptions: Observable<string[]>;
-    questionControl = new FormControl();
+    questionControl = new FormControl('', [Validators.required]);
 
     ngOnInit() {
         this.questionControl.setValue(this.token);
         this.priorQuestions = this.getPriorQuestions(this.parent, this.formElement.label);
         this.filteredQuestionOptions = this.questionControl.valueChanges
             .pipe(
+                startWith(''),
+                map(value => typeof value === 'string' ? value : value.label),
                 map(value => this._filterQuestion(value))
             );
     }
@@ -49,20 +51,28 @@ export class QuestionAutocompleteComponent implements OnInit {
         }
     }
 
-    private _filterQuestion(value: string): string[] {
-        const filterValue = value.toLowerCase();
-        return this.priorQuestions.filter(option => option.toLowerCase().includes(filterValue));
+    private _filterQuestion(questionLabel): string[] {
+        const filterValue = questionLabel.toLowerCase();
+        return this.priorQuestions.filter(option => {
+            return option.label.toLowerCase().includes(filterValue);
+        });
     }
 
     selectQuestion(event) {
         this.token.formElement = event.option.value;
-        this.token.question = this.getQuestionByLabel(this.parent, event.option.value);
+        this.token.question = this.getQuestionByLabel(this.parent, event.option.value.label);
         this.token.label = event.option.value.label;
     }
 
     displayFn(q) {
         if (q) return q.label;
         else return '';
+    }
+
+    getErrorMessage() {
+        return this.questionControl.hasError('required') ? 'Question Label is required' :
+            this.questionControl.hasError('email') ? 'Not a valid email' :
+                '';
     }
 
 }

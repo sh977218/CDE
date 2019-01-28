@@ -1,15 +1,31 @@
-<mat-form-field class="w-100">
-    <ng-container *ngIf="token?.formElement?.question.datatype!=='Value List'">
-        <input matInput>
+<ng-container [ngSwitch]="token?.formElement?.question.datatype">
+    <ng-container *ngSwitchCase="'Number'">
+        <mat-form-field class="w-100">
+            <input matInput type="number" placeholder="Number" value="">
+        </mat-form-field>
     </ng-container>
-    <ng-container *ngIf="token?.formElement?.question.datatype==='Value List'">
-        <input type="text" placeholder="Answer" matInput [formControl]="answerControl"
-               [matAutocomplete]="answerAuto">
-        <mat-autocomplete #answerAuto="matAutocomplete" (optionSelected)="selectAnswer($event)"
-                          [displayWith]="displayFn">
-            <mat-option *ngFor="let answer of token.question.question.answers " [value]="answer">
-                {{answer.permissibleValue}}
-            </mat-option>
-        </mat-autocomplete>
+    <ng-container *ngSwitchCase="'Date'">
+        <mat-form-field class="w-100">
+            <input matInput type="date" [matDatepicker]="picker" placeholder="Date">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
     </ng-container>
-</mat-form-field>
+    <ng-container *ngSwitchCase="'Text'">
+        <mat-form-field class="w-100">
+            <input matInput type="text" placeholder="Text" value="">
+        </mat-form-field>
+    </ng-container>
+    <ng-container *ngSwitchCase="'Value List'">
+        <mat-form-field class="w-100">
+            <input type="text" placeholder="Select Answer" matInput [formControl]="answerControl"
+                   [matAutocomplete]="answerAuto">
+            <mat-autocomplete #answerAuto="matAutocomplete" (optionSelected)="selectAnswer($event)"
+                              [displayWith]="displayFn">
+                <mat-option *ngFor="let answer of token.question.question.answers " [value]="answer">
+                    {{answer.permissibleValue}}
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
+    </ng-container>
+</ng-container>

@@ -3,7 +3,7 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 import { CoreModule } from 'core/core.module';
-import { MatIconModule, MatInputModule, MatAutocompleteModule } from '@angular/material';
+import { MatIconModule, MatInputModule, MatAutocompleteModule, MatDatepickerModule } from '@angular/material';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
 import { SkipLogicAutocompleteComponent } from 'skipLogicAutocomplete/skipLogicAutocomplete.component';
 import { QuestionAutocompleteComponent } from 'skipLogicAutocomplete/questionAutocomplete/questionAutocomplete.component';
@@ -19,6 +19,7 @@ import { LogicAutocompleteComponent } from 'skipLogicAutocomplete/logicAutocompl
         CoreModule,
         MatIconModule,
         MatInputModule,
+        MatDatepickerModule,
         MatAutocompleteModule
     ],
     declarations: [
