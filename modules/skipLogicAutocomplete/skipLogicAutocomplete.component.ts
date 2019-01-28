@@ -3,9 +3,9 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 export class Token {
     formElement;
     question;
-    label: string;
+    label: string = '';
     operator: string = '=';
-    answer: string;
+    answer: string = '';
     logic?: string = 'AND';
 }
 
@@ -30,14 +30,11 @@ export class SkipLogicAutocompleteComponent implements OnInit {
                 let token = new Token();
                 let regex = new RegExp("\"", 'g');
                 let labelString = tokens[0];
-                if (labelString) labelString = labelString.replace(regex, '').trim();
+                if (labelString) token.label = labelString.replace(regex, '').trim();
                 let operatorString = tokens[1];
-                if (operatorString) operatorString = operatorString.replace(regex, '').trim();
+                if (operatorString) token.operator = operatorString.replace(regex, '').trim();
                 let answerString = tokens[2];
-                if (answerString) answerString = answerString.replace(regex, '').trim();
-                token.label = labelString;
-                token.operator = operatorString;
-                token.answer = answerString;
+                if (answerString) token.answer = answerString.replace(regex, '').trim();
                 if (token.label) {
                     token.question = this.getQuestionByLabel(this.parent, token.label);
                 }
@@ -52,6 +49,11 @@ export class SkipLogicAutocompleteComponent implements OnInit {
 
     saveSkipLogic() {
         this.editMode = false;
+        let skipLogic = '';
+        this.tokens.forEach((t, i) => {
+            skipLogic += `"{{t.question}}" + {{t.operator}}+ "{{t.answer}}"`;
+            if (i < this.tokens.length - 1) skipLogic += `{{t.logic}}`;
+        });
         this.onSaved.emit();
     }
 

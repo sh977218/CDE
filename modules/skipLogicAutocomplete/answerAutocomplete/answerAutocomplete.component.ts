@@ -1,5 +1,5 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { Component, OnInit, Input } from '@angular/core';
+import { FormControl, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { Token } from 'skipLogicAutocomplete/skipLogicAutocomplete.component';
@@ -12,12 +12,13 @@ export class AnswerAutocompleteComponent implements OnInit {
     @Input() token?: Token;
 
     filteredAnswerOptions: Observable<string[]>;
-    answerControl = new FormControl();
+    answerControl = new FormControl('', [Validators.required]);
 
     ngOnInit() {
         if (this.token.answer) this.answerControl.setValue(this.token.answer);
         this.filteredAnswerOptions = this.answerControl.valueChanges
             .pipe(
+                startWith(''),
                 map(value => this._filterOperator(value))
             );
     }
@@ -32,8 +33,10 @@ export class AnswerAutocompleteComponent implements OnInit {
     }
 
     displayFn(answer) {
-        if (answer) return answer.permissibleValue;
-        else return '';
+        let display = '';
+        if (answer.permissibleValue) display += answer.permissibleValue;
+        if (answer.valueMeaningName) display += " (" + answer.valueMeaningName + " )";
+        return display;
     }
 
 

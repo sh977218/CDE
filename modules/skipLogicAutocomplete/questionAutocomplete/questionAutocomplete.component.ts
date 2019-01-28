@@ -46,8 +46,9 @@ export class QuestionAutocompleteComponent implements OnInit {
 
     private getQuestionByLabel(formElement, label) {
         for (let e of formElement.formElements) {
-            if (e.label === label) return e;
-            else return this.getQuestionByLabel(e, label);
+            if (e.elementType === 'question') {
+                if (e.label === label) return e;
+            } else return this.getQuestionByLabel(e, label);
         }
     }
 
@@ -70,9 +71,7 @@ export class QuestionAutocompleteComponent implements OnInit {
     }
 
     getErrorMessage() {
-        return this.questionControl.hasError('required') ? 'Question Label is required' :
-            this.questionControl.hasError('email') ? 'Not a valid email' :
-                '';
+        return 'Question Label is required';
     }
 
 }
