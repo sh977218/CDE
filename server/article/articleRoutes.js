@@ -35,9 +35,13 @@ exports.module = function (roleConfig) {
                 let i = 0;
                 async.forEachSeries(matches, (match, doneOneMatch) => {
                     let url = match.replace('&lt;rss-feed&gt;', '').replace('&lt;/rss-feed&gt;', '').trim();
+                    if (!url) {
+                        doneOneMatch();
+                        return;
+                    }
                     parser.parseURL(url, handleError({req, res}, feed => {
                         article.rssFeeds.push(feed);
-                        article.body = article.body.replace(match, "<div id='rssContent_" + i++ + "'></div>");
+                        article.body = article.body.replace(match, '<div id="rssContent_' + i++ + '"></div>');
                         doneOneMatch();
                     }))
                 }, () => {

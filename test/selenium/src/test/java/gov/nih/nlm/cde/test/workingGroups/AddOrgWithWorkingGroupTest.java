@@ -2,7 +2,6 @@ package gov.nih.nlm.cde.test.workingGroups;
 
 import gov.nih.nlm.cde.test.BaseClassificationTest;
 import org.openqa.selenium.By;
-import org.openqa.selenium.support.ui.Select;
 import org.testng.annotations.Test;
 
 public class AddOrgWithWorkingGroupTest extends BaseClassificationTest {
@@ -16,7 +15,8 @@ public class AddOrgWithWorkingGroupTest extends BaseClassificationTest {
         String subClassification = "Phase II Lung Cancer";
         mustBeLoggedInAs(ctepCurator_username, password);
         gotoClassificationMgt();
-        new Select(driver.findElement(By.name("orgToManage"))).selectByVisibleText(orgWG);
+        clickElement(By.cssSelector("mat-select"));
+        selectMatSelectDropdownByText(orgWG);
 
         createOrgClassification(orgWG, new String[]{classification, subClassification});
         modalGone();
