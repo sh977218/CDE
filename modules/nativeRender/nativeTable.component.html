@@ -1,20 +1,19 @@
-<table *ngIf="tableForm && canRender && (nrs.nativeRenderType === NRS.FOLLOW_UP
- || nrs.nativeRenderType === NRS.SHOW_IF)"
+<table *ngIf="tableForm && canRender && (nrs.nativeRenderType === NRS.FOLLOW_UP || nrs.nativeRenderType === NRS.SHOW_IF)"
        class="table">
     <thead>
-    <tr *ngFor="let s of tableForm.s; index as i">
-        <th *ngFor="let q of s.q"
-            [attr.colspan]="q.cspan"
-            [attr.rowspan]="q.rspan"
-            [textContent]="q.label"
-            [style.padding]="i === 0 && !q.label ? 0 : null"
-            [style.font]="q.style.font"
-            [style.color]="q.style.color"
-            [style.backgroundColor]="q.style.backgroundColor"
-            [style.borderColor]="q.style.borderColor"
-            [style.borderStyle]="q.style.borderStyle"
-            [style.borderWidth]="q.style.borderWidth"></th>
-    </tr>
+        <tr *ngFor="let s of tableForm.s; index as i">
+            <th *ngFor="let q of s.q"
+                [attr.colspan]="q.cspan"
+                [attr.rowspan]="q.rspan"
+                [textContent]="q.label"
+                [style.padding]="i === 0 && !q.label ? 0 : null"
+                [style.font]="q.style.font"
+                [style.color]="q.style.color"
+                [style.backgroundColor]="q.style.backgroundColor"
+                [style.borderColor]="q.style.borderColor"
+                [style.borderStyle]="q.style.borderStyle"
+                [style.borderWidth]="q.style.borderWidth"></th>
+        </tr>
     </thead>
     <tbody>
     <tr *ngFor="let n of tableForm.rows; index as ni">
@@ -73,8 +72,8 @@
             <div *ngIf="q.type === 'date'" class="native-table-cell" style="min-width: 135px;">
                 <div class="input-group">
                     <input class="form-control native-table-box"
-                           type="{{datePrecisionToType[formElement.question.datatypeDate.precision]}}"
-                           step="{{datePrecisionToStep[formElement.question.datatypeDate.precision]}}"
+                           type="{{datePrecisionToType[q.question.datatypeDate.precision]}}"
+                           step="{{datePrecisionToStep[q.question.datatypeDate.precision]}}"
                            [title]="n.label"
                            [name]="ni + q.name"
                            [attr.name]="ni + q.name"
