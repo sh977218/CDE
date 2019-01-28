@@ -15,9 +15,13 @@ public class FormSideBySideCompare3 extends NlmCdeBaseTest {
         addFormToQuickBoard(formName2);
         textPresent("QUICK BOARD (2)");
         goToQuickBoardByModule("form");
-        clickElement(By.id("qb_elt_compare_0"));
-        clickElement(By.id("qb_elt_compare_1"));
         clickElement(By.id("qb_compare"));
+
+        textPresent("Id:987654321", By.xpath(getSideBySideXpath("left", "identifiers", "partialMatch", 1)));
+        textPresent("Id:123456789", By.xpath(getSideBySideXpath("right", "identifiers", "partialMatch", 1)));
+
+        textPresent("Document Type:www.google.com", By.xpath(getSideBySideXpath("left", "reference documents", "partialMatch", 1)));
+        textPresent("Document Type:www.reddit.com", By.xpath(getSideBySideXpath("right", "reference documents", "partialMatch", 1)));
 
         textPresent("Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage",
                 By.xpath(getSideBySideXpath("left", "questions", "notmatch", 1)));
