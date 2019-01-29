@@ -23,7 +23,8 @@ export class SkipLogicAutocompleteComponent implements OnInit {
     tokens: Token[] = [];
 
     ngOnInit() {
-        let equationArray = this.formElement.skipLogic.condition.split(/( (?:and|or) )/i);
+        let regex = /( (?:and|or) )/i;
+        let equationArray = this.formElement.skipLogic.condition.split(regex);
         if (Array.isArray(equationArray)) {
             equationArray.forEach(equationString => {
                 let tokens = equationString.split(/( (?:>|<|>=|<=|=) )/i);
@@ -51,9 +52,12 @@ export class SkipLogicAutocompleteComponent implements OnInit {
         this.editMode = false;
         let skipLogic = '';
         this.tokens.forEach((t, i) => {
-            skipLogic += `"{{t.question}}" + {{t.operator}}+ "{{t.answer}}"`;
-            if (i < this.tokens.length - 1) skipLogic += `{{t.logic}}`;
+            if (t.label && t.operator && t.answer) {
+                skipLogic += '"' + t.label + '"' + t.operator + '"' + t.answer + '"';
+                if (i < this.tokens.length - 1) skipLogic += t.logic;
+            }
         });
+        this.formElement.skipLogic.condition = skipLogic;
         this.onSaved.emit();
     }
 

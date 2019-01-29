@@ -11,7 +11,7 @@ import { Token } from 'skipLogicAutocomplete/skipLogicAutocomplete.component';
 export class LogicAutocompleteComponent implements OnInit {
     @Input() token: Token;
 
-    logicOptions = ['AND', 'OR'];
+    logicOptions = [' AND ', ' OR '];
     filteredLogicOptions: Observable<string[]>;
     logicControl = new FormControl();
 

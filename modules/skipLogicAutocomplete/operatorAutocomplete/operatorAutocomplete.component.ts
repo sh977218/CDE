@@ -10,7 +10,7 @@ import { map, startWith } from 'rxjs/operators';
 export class OperatorAutocompleteComponent implements OnInit {
     @Input() token;
 
-    operatorOptions = ['=', '>', '<', '>=', '<='];
+    operatorOptions = [' = ', ' > ', ' < ', ' >= ', ' <= '];
     filteredOperatorOptions: Observable<string[]>;
     operatorControl = new FormControl('=');
 

@@ -131,8 +131,8 @@
         <ng-container *ngIf="parent">
             <dt class="col-2">Show if:</dt>
             <dd class="col-10 skipLogicEditTextarea" [ngClass]="{'has-error':question.skipLogic?.validationError}">
-                <cde-skip-logic-autocomplete [parent]="parent" [formElement]="question" [canEdit]="true"
-                                             (onChanged)="onEltChange.emit();"></cde-skip-logic-autocomplete>
+                <cde-skip-logic-autocomplete [parent]="parent" [formElement]="question" [canEdit]="canEdit"
+                                             (onSaved)="onEltChange.emit();"></cde-skip-logic-autocomplete>
             </dd>
         </ng-container>
         <ng-container *ngIf="question.question.datatype === 'Number' || question.question.datatype === 'Text'">
