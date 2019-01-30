@@ -13,9 +13,14 @@ config.bundlesize.forEach(b => {
         process.exit(1);
     }
     let size = fs.statSync(path.resolve(__dirname, '..', b.path)).size;
-    let requiredSize = parseFloat(b.maxSize) * (b.maxSize.indexOf(' kB') > -1 ? 1024 : (b.maxSize.indexOf(' MB') > -1 ? 1048576 : 1));
-    if (size > requiredSize) {
-        console.log('Error: ' + b.path + ' too big. ' + size + ' > ' + requiredSize);
+    let maxSize = parseFloat(b.maxSize) * (b.maxSize.indexOf(' kB') > -1 ? 1024 : (b.maxSize.indexOf(' MB') > -1 ? 1048576 : 1));
+    let minSize = maxSize * 0.99;
+    if (size > maxSize) {
+        console.log('Error: ' + b.path + ' too big. ' + size + ' > ' + maxSize);
+        process.exit(1);
+    }
+    if (size < requiredSize * 0.99) {
+        console.log('Error: ' + b.path + ' too small. ' + size + ' < ' + minSize);
         process.exit(1);
     }
 });

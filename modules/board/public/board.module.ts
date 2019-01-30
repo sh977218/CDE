@@ -25,6 +25,7 @@ import { UnpinBoardComponent } from "./components/listView/unpinBoard.component"
 
 import { CoreModule } from 'core/core.module';
 import { SearchModule } from 'search/search.module';
+import { TagModule } from 'tag/tag.module';
 
 @NgModule({
     imports: [
@@ -43,6 +44,7 @@ import { SearchModule } from 'search/search.module';
         // internal
         SearchModule,
         AdminItemModule,
+        TagModule
     ],
     declarations: [
         BoardViewTemplateComponent,

@@ -85,7 +85,7 @@ public class AdminAddRemoveTags extends NlmCdeBaseTest {
         clickElement(By.id("openNewPropertyModalBtn"));
         clickElement(By.id("newKey"));
         findElement(By.xpath("//option[@value='doYouSeeThis']"));
-        findElement(By.xpath("//option[@value='propKey0']"));
+        findElement(By.xpath("//option[@value='key 1']"));
 
         clickElement(By.id("cancelNewPropertyBtn"));
 
@@ -101,7 +101,7 @@ public class AdminAddRemoveTags extends NlmCdeBaseTest {
         clickElement(By.id("openNewPropertyModalBtn"));
         clickElement(By.id("newKey"));
 
-        clickElement(By.xpath("//option[@value='propKey0']"));
+        clickElement(By.xpath("//option[@value='key 1']"));
         Assert.assertEquals(driver.findElements(By.xpath("//option[@value='doYouSeeThis']")).size(), 0);
     }
 
