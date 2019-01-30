@@ -5,12 +5,14 @@ const Form = mongo_form.Form;
 
 let formCount = 0;
 
-Form.find({$or: [{'definitions.tags': null}, {'definitions.tags': null}]}, async (err, forms) => {
+let cond = {$or: [{'definitions.tags': null}, {'definitions.tags': null}]};
+Form.find(cond, async (err, forms) => {
     if (err) throw err;
     else {
         console.log('There are ' + forms.length + ' forms have null tags.');
         for (let form of forms) {
             let formObj = form.toObject();
+            console.log('Fixing form: ' + formObj._id);
             let designations = _.forEach(formObj.designations, d => {
                 let filterTags = d.tags.filter(t => t !== 'null' && t !== 'undefined' && !_.isEmpty(t));
                 d.tags = filterTags;
