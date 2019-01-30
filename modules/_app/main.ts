@@ -9,7 +9,6 @@ import '../../node_modules/bootstrap/dist/js/bootstrap.js';
 require('expose-loader?bootstrap!bootstrap');
 
 // import '../../node_modules/material-design-icons/iconfont/material-icons.css';
-import '../../node_modules/@ng-select/ng-select/themes/material.theme.css';
 import '../../node_modules/deeppurple-amber.css';
 
 import { enableProdMode } from '@angular/core';

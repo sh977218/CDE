@@ -18,8 +18,8 @@ export class TagComponent {
 
     tagCtrl = new FormControl();
     filteredTags: Observable<string[]>;
-    @ViewChild('tagInput') tagInput: ElementRef;
-    @ViewChild('tagAuto') matAutocomplete: MatAutocomplete;
+    @ViewChild('tagInput') tagInput!: ElementRef;
+    @ViewChild('tagAuto') matAutocomplete!: MatAutocomplete;
 
     constructor() {
         this.filteredTags = this.tagCtrl.valueChanges

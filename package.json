@@ -112,7 +112,6 @@
     "@babel/core": "^7.2.2",
     "@babel/preset-env": "^7.2.0",
     "@ng-bootstrap/ng-bootstrap": "^4.0.1",
-    "@ng-select/ng-select": "^1.6.3",
     "@ngtools/webpack": "^7.1.3",
     "@types/async": "^2.0.50",
     "@types/deep-diff": "0.0.31",
