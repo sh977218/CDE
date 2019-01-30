@@ -1358,6 +1358,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         if (section.equalsIgnoreCase("status")) section = "Status";
         if (section.equalsIgnoreCase("designation")) section = "Designation";
         if (section.equalsIgnoreCase("definition")) section = "Definition";
+        if (section.equalsIgnoreCase("identifiers")) section = "Identifiers";
         if (section.equalsIgnoreCase("reference documents")) section = "Reference Documents";
         if (section.equalsIgnoreCase("properties")) section = "Properties";
         if (section.equalsIgnoreCase("data element concept")) section = "Data Element Concept";

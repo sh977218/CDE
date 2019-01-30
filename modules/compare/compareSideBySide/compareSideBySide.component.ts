@@ -98,7 +98,8 @@ export class CompareSideBySideComponent {
                 if (typeof r !== 'object') r = [{data: r}];
                 if (!_isArray(r)) r = [r];
                 _intersectionWith(l, r, (a, b) => {
-                    if (option.fullMatchFn(a, b)) {
+                    let fullMatchFnMatchDiff = option.fullMatchFn(a, b);
+                    if (fullMatchFnMatchDiff) {
                         option.displayAs.display = true;
                         option.fullMatches.push({left: a, right: b});
                         return true;
@@ -148,7 +149,7 @@ export class CompareSideBySideComponent {
                     return _isEqual(a, b);
                 },
                 fullMatches: [],
-                partialMatchFn: () => {
+                partialMatchFn: (a, b) => {
                     return [];
                 },
                 partialMatches: [],
@@ -261,8 +262,9 @@ export class CompareSideBySideComponent {
                     property: 'referenceDocuments',
                     data: [
                         {label: 'Title', property: 'title'},
-                        {label: 'URL', property: 'url'},
+                        {label: 'URI', property: 'uri'},
                         {label: 'Document', property: 'document'},
+                        {label: 'Document Type', property: 'docType'},
                         {label: 'Provider Org', property: 'providerOrg'},
                         {label: 'Language Code', property: 'languageCode'}
                     ]
@@ -276,6 +278,7 @@ export class CompareSideBySideComponent {
                     if (!_isEqual(a, b) && _isEqual(a.document, b.document)) {
                         if (!_isEqual(a.title, b.title)) diff.push('title');
                         if (!_isEqual(a.uri, b.uri)) diff.push('uri');
+                        if (!_isEqual(a.docType, b.docType)) diff.push('docType');
                         if (!_isEqual(a.providerOrg, b.providerOrg)) diff.push('providerOrg');
                         if (!_isEqual(a.languageCode, b.languageCode)) diff.push('languageCode');
                     }
@@ -317,29 +320,9 @@ export class CompareSideBySideComponent {
                 },
                 leftNotMatches: [],
                 rightNotMatches: []
-            },
-            {
-                displayAs: {
-                    label: 'Identifier',
-                    property: 'ids', data: [
-                        {label: 'Source', property: 'source'},
-                        {label: 'Id', property: 'id'},
-                        {label: 'Version', property: 'version'}
-                    ]
-                },
-                fullMatchFn: (a, b) => {
-                    return _isEqual(a, b);
-                },
-                fullMatches: [],
-                partialMatchFn: (a, b) => [],
-                partialMatches: [],
-                notMatchFn: (a, b) => {
-                    return _isEqual(a.source, b.source) && _isEqual(a.id, b.id);
-                },
-                leftNotMatches: [],
-                rightNotMatches: []
             }
         ];
+
         let dataElementOption = [
             {
                 displayAs: {
@@ -689,8 +672,7 @@ export class CompareSideBySideComponent {
             else return '';
         } else if (_isArray(value)) {
             return JSON.stringify(value);
-        }
-        else return value;
+        } else return value;
     }
 
     openCompareSideBySideContent() {
