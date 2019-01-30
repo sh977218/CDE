@@ -27,7 +27,7 @@ Form.find(cond, async (err, forms) => {
             formCount++;
             console.log('formCount: ' + formCount);
         }
-        console.log('Finished All Orgs.');
+        console.log('Finished all forms.');
         process.exit(1);
     }
 });
