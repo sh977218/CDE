@@ -58,7 +58,7 @@ public class CdeSearchExportTest extends NlmCdeBaseTest {
         clickElement(By.id("updated"));
         clickElement(By.xpath("//*[@id='identifiers']//input"));
         clickElement(By.xpath("//ng-select[@id='identifiers']//input"));
-        selectNgSelectDropdownByText("NINDS Variable Name");
+        selectMatSelectDropdownByText("NINDS Variable Name");
         closeTableViewPreferenceModal();
 
         try {

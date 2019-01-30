@@ -21,7 +21,7 @@ public class BoardPublisher extends BoardTest {
         searchUsername(newUsername);
         clickElement(By.id("searchUsersSubmit"));
         findElement(By.xpath("//*[@id='user_roles_0']/ng-select//input")).sendKeys("boardp");
-        selectNgSelectDropdownByText("BoardPublisher");
+        selectMatSelectDropdownByText("BoardPublisher");
         checkAlert("Roles saved");
 
         logout();

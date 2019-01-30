@@ -53,7 +53,7 @@ public class FormAnswerListTest extends NlmCdeBaseTest {
         textNotPresent("Female Gender");
         startEditQuestionById("question_0-0");
         clickElement(By.xpath("//*[@id='question_0-0']//*[contains(@class,'answerList')]/ng-select//input"));
-        selectNgSelectDropdownByText("Female Gender");
+        selectMatSelectDropdownByText("Female Gender");
         saveEditQuestionById("question_0-0");
         newFormVersion();
 
