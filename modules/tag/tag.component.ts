@@ -28,30 +28,11 @@ export class TagComponent {
                 debounceTime(300),
                 distinctUntilChanged(),
                 map(value => {
-                    if (!value) return [];
-                    else {
-                        let filterValue = value.toLowerCase();
-                        let temp = this.allTags.filter(t => t.toLowerCase().indexOf(filterValue) > -1);
-                        return temp;
-                    }
+                    let filterValue = value.toLowerCase();
+                    let temp = this.allTags.filter(t => t.toLowerCase().indexOf(filterValue) > -1);
+                    return temp;
                 })
             );
-    }
-
-    add(event: MatChipInputEvent): void {
-        if (!this.matAutocomplete.isOpen) {
-            const input = event.input;
-            const value = event.value;
-
-            if ((value || '').trim()) {
-                this.tags.push(value.trim());
-                this.changed.emit();
-            }
-
-            if (input) input.value = '';
-
-            this.tagCtrl.setValue(null);
-        }
     }
 
     remove(tag: string): void {
@@ -61,9 +42,13 @@ export class TagComponent {
     }
 
     selected(event: MatAutocompleteSelectedEvent): void {
-        this.tags.push(event.option.viewValue);
+        let selectedTag = event.option.viewValue;
+        let tagIndex = this.tags.indexOf(selectedTag);
+        if (tagIndex === -1) this.tags.push(selectedTag);
+        else this.tags.splice(tagIndex, 1);
+        this.changed.emit();
         this.tagInput.nativeElement.value = '';
-        this.tagCtrl.setValue(null);
+        this.tagCtrl.setValue('');
     }
 
 }
