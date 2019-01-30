@@ -8,7 +8,6 @@ import {
 } from "@angular/material";
 import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { NgSelectModule } from '@ng-select/ng-select';
 import { TreeModule } from 'angular-tree-component';
 import 'angular-tree-component/dist/angular-tree-component.css';
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
@@ -71,7 +70,6 @@ const appRoutes: Routes = [
         MatAutocompleteModule,
         MatTooltipModule,
         NgbModule,
-        NgSelectModule,
         RouterModule.forChild(appRoutes),
         TreeModule.forRoot(),
         // core

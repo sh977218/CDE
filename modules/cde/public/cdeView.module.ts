@@ -10,7 +10,6 @@ import {
 } from "@angular/material";
 import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { NgSelectModule } from '@ng-select/ng-select';
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
 import { TreeModule } from 'angular-tree-component';
 import 'angular-tree-component/dist/angular-tree-component.css';
@@ -55,7 +54,6 @@ const appRoutes: Routes = [
         NgbModule,
         RouterModule.forChild(appRoutes),
         TreeModule.forRoot(),
-        NgSelectModule,
         // core
         CoreModule,
 

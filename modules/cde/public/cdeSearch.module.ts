@@ -17,7 +17,6 @@ import {
 } from "@angular/material";
 import { RouterModule } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { NgSelectModule } from '@ng-select/ng-select';
 import { BoardModule } from 'board/public/board.module';
 import { CdeModule } from 'cde/public/cde.module';
 import { BoardCdeSummaryListComponent } from 'cde/public/components/listView/boardCdeSummaryList.component';
@@ -49,7 +48,6 @@ import { CdeTableViewPreferencesComponent } from "search/tableViewPreferences/cd
         MatTabsModule,
         MatTooltipModule,
         NgbModule,
-        NgSelectModule,
         ReactiveFormsModule,
         RouterModule,
         // core

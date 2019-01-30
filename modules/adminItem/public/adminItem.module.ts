@@ -6,7 +6,6 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { TreeModule } from "angular-tree-component";
 import "angular-tree-component/dist/angular-tree-component.css";
 import { CKEditorModule } from 'ng2-ckeditor';
-import { NgSelectModule } from '@ng-select/ng-select';
 
 import { CompareModule } from 'compare/compare.module';
 import { SearchModule } from 'search/search.module';
@@ -45,7 +44,6 @@ import { TagModule } from 'tag/tag.module';
         CKEditorModule,
         FormsModule,
         NgbModule,
-        NgSelectModule,
         RouterModule,
         TreeModule.forRoot(),
         // core

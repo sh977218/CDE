@@ -15,7 +15,6 @@ import {
     MatAutocompleteModule, MatTabsModule, MatTooltipModule
 } from "@angular/material";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
-import { NgSelectModule } from '@ng-select/ng-select';
 import { BoardModule } from 'board/public/board.module';
 import { BoardFormSummaryListComponent } from "form/public/components/listView/boardFormSummaryList.component";
 import { BoardFormSummaryListContentComponent } from "form/public/components/listView/boardFormSummaryListContent.component";
@@ -44,7 +43,6 @@ import { FormTableViewPreferencesComponent } from "search/tableViewPreferences/f
         MatTabsModule,
         MatTooltipModule,
         NgbModule,
-        NgSelectModule,
         // core
 
         // internal

@@ -3,7 +3,6 @@ import { FormsModule } from "@angular/forms";
 import { RouterModule } from '@angular/router';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
-import { NgSelectModule } from '@ng-select/ng-select';
 import {
     MatInputModule,
     MatIconModule,
@@ -32,7 +31,6 @@ import { SearchModule } from 'search/search.module';
         CommonModule,
         FormsModule,
         NgbModule,
-        NgSelectModule,
         RouterModule,
         MatButtonModule,
         MatButtonToggleModule,
