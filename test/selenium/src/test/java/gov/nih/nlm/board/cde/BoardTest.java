@@ -106,8 +106,7 @@ public class BoardTest extends NlmCdeBaseTest {
         if (boardTags != null) {
             for (String tag : boardTags) {
                 clickElement(By.xpath("//*[@id='boardTag']//input"));
-                findElement(By.xpath("//*[@id='boardTag']//input")).sendKeys(tag);
-                selectMatSelectDropdownByText(tag);
+                findElement(By.xpath("//*[@id='boardTag']//input")).sendKeys(tag + ",");
             }
         }
         clickElement(By.id("saveEditBoardBtn"));

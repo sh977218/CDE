@@ -12,17 +12,23 @@ config.bundlesize.forEach(b => {
         console.log('Error: ' + b.path + ' needs "compression: none"');
         process.exit(1);
     }
-    let size = fs.statSync(path.resolve(__dirname, '..', b.path)).size;
-    let maxSize = parseFloat(b.maxSize) * (b.maxSize.indexOf(' kB') > -1 ? 1024 : (b.maxSize.indexOf(' MB') > -1 ? 1048576 : 1));
+    let actualSize = fs.statSync(path.resolve(__dirname, '..', b.path)).size;
+    let isKb = b.maxSize.indexOf('kB') > -1;
+    let isMb = b.maxSize.indexOf('MB') > -1;
+    let ration = 1;
+    if (isKb) ration = 1024;
+    if (isMb) ration = 1048576;
+    let maxSize = parseFloat(b.maxSize) * ration;
     let minSize = maxSize * 0.99;
-    if (size > maxSize) {
-        console.log('Error: ' + b.path + ' too big. ' + size + ' > ' + maxSize);
+    if (actualSize > maxSize) {
+        console.log('Error: ' + b.path + ' too big. ' + actualSize + ' > ' + maxSize);
         process.exit(1);
     }
-    if (size < minSize) {
-        console.log('Error: ' + b.path + ' too small. ' + size + ' < ' + minSize);
+    if (actualSize < minSize) {
+        console.log('Error: ' + b.path + ' too small. ' + actualSize + ' < ' + minSize);
         process.exit(1);
     }
-});
-console.log('PASS');
+})
+;
+console.log('Build Check Size PASSED');
 process.exit(0);

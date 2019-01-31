@@ -1079,7 +1079,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
 
     protected void changeDatatype(String newDatatype) {
         if (PREDEFINED_DATATYPE.contains(newDatatype)) {
-            clickElement(By.xpath("//*[@id='datatypeSelect']//input"));
+            clickElement(By.xpath("//*[@id='datatypeSelect']//mat-select"));
             selectMatSelectDropdownByText(newDatatype);
         } else {
             System.out.println("Invalidate data type: " + newDatatype);

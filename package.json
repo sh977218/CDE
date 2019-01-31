@@ -205,12 +205,12 @@
     {
       "path": "./dist/app/cde.js",
       "compression": "none",
-      "maxSize": "1.61 MB"
+      "maxSize": "1.56 MB"
     },
     {
       "path": "./dist/app/cde.css",
       "compression": "none",
-      "maxSize": "618 kB"
+      "maxSize": "617 kB"
     },
     {
       "path": "./dist/embed/embed.js",
@@ -220,7 +220,7 @@
     {
       "path": "./dist/embed/embed.css",
       "compression": "none",
-      "maxSize": "246 kB"
+      "maxSize": "240 kB"
     },
     {
       "path": "./dist/fhir/fhir.js",
@@ -245,7 +245,7 @@
     {
       "path": "./modules/system/views/home-launch.ejs",
       "compression": "none",
-      "maxSize": "655 kB"
+      "maxSize": "610 kB"
     }
   ]
 }

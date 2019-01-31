@@ -8,7 +8,7 @@
             <mat-icon matChipRemove>cancel</mat-icon>
         </mat-chip>
         <input matInput #tagInput placeholder="{{placeHolder}}" [formControl]="tagCtrl"
-               [matAutocomplete]="tagAuto" [matChipInputFor]="chipList"
+               [matAutocomplete]="tagAuto" [matChipInputFor]="chipList" (matChipInputTokenEnd)="add($event)"
                [matChipInputAddOnBlur]="true">
         <mat-autocomplete #tagAuto="matAutocomplete" (optionSelected)="selected($event)">
             <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">

@@ -51,4 +51,20 @@ export class TagComponent {
         this.tagCtrl.setValue('');
     }
 
+    add(event: MatChipInputEvent): void {
+        if (!this.matAutocomplete.isOpen) {
+            const input = event.input;
+            const value = event.value;
+
+            if ((value || '').trim()) {
+                this.tags.push(value.trim());
+                this.changed.emit();
+            }
+
+            if (input) input.value = '';
+
+            this.tagCtrl.setValue('');
+        }
+    }
+
 }
