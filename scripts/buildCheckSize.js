@@ -19,7 +19,7 @@ config.bundlesize.forEach(b => {
         console.log('Error: ' + b.path + ' too big. ' + size + ' > ' + maxSize);
         process.exit(1);
     }
-    if (size < requiredSize * 0.99) {
+    if (size < minSize) {
         console.log('Error: ' + b.path + ' too small. ' + size + ' < ' + minSize);
         process.exit(1);
     }
