@@ -20,7 +20,7 @@ public class FormAnswerListTest extends NlmCdeBaseTest {
 
         textNotPresent("Multiple Selections:");
         startEditQuestionById("question_0-0");
-        String question_zero_answer_list_xpath = "//mat-option";
+        String question_zero_answer_list_xpath = "//*[@id='question_0-0']//mat-chip";
         List<WebElement> lis = driver.findElements(By.xpath(question_zero_answer_list_xpath));
         Assert.assertEquals(lis.size(), 3);
         Assert.assertEquals(lis.get(0).getText(), "×Female Gender");
