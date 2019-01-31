@@ -15,22 +15,27 @@ public class FormDateRangeSearch extends NlmCdeBaseTest {
 
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("created:<2014");
+        clickElement(By.id("search.submit"));
         textPresent("No results were found.");
 
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("updated:<2015");
+        clickElement(By.id("search.submit"));
         textPresent("No results were found.");
 
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("updated:<2016");
+        clickElement(By.id("search.submit"));
         textPresent("12 results");
 
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("imported:<2015");
+        clickElement(By.id("search.submit"));
         textPresent("No results were found.");
 
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("imported:<2016");
+        clickElement(By.id("search.submit"));
         textPresent("2 results");
     }
 
