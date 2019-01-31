@@ -67,7 +67,8 @@ export class TagComponent {
 
                 this.tagCtrl.setValue('');
             }
-        } else this.tagCtrl.setValue('');
+        } else this.tagInput.nativeElement.value = '';
+
     }
 
 }
