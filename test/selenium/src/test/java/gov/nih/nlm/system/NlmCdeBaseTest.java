@@ -1036,6 +1036,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         clickElement(By.id("openNewPropertyModalBtn"));
         textPresent("Property keys are managed in Org Management > List Management");
         new Select(findElement(By.id("newKey"))).selectByVisibleText(key);
+
         findElement(By.xpath("//*[@id='newValue']//textarea")).sendKeys(value);
         if (isHtml) clickElement(By.xpath("//*[@id='newValue']/button/span[contains(text(),'Rich Text')]"));
         else clickElement(By.xpath("//*[@id='newValue']/button/span[contains(text(),'Plain Text')]"));
