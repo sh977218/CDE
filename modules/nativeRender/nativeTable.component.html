@@ -106,26 +106,40 @@
                            [disabled]="!q.question.editable"/> {{uom}}</label>
             </div>
             <div *ngIf="q.type === 'text'" class="native-table-cell" style="min-width: 80px;">
-                <input type="text"
-                       class="form-control native-table-box"
-                       [title]="n.label"
-                       [name]="ni + q.name"
-                       [attr.name]="ni + q.name"
-                       [(ngModel)]="nrs.elt.formInput[ni + q.name]"
-                       [required]="q.question.required"
-                       [disabled]="!q.question.editable"/>
-                <div *ngIf="q.question.uomsAlias.length > 0">Units of Measure:</div>
-                <label *ngFor="let uom of q.question.uomsAlias; index as i"
-                       [ngClass]="{'nativeRequiredBox': q.question.required}"
-                       style="padding-left: 10px;display: block">
-                    <input type="radio"
-                           [name]="ni + q.name + '_uom_' + i"
-                           [attr.name]="ni + q.name + '_uom_' + i"
-                           [(ngModel)]="nrs.elt.formInput[ni + q.name + '_uom']"
-                           [value]="q.question.unitsOfMeasure[i]"
-                           [attr.value]="q.question.unitsOfMeasure[i]"
-                           [required]="q.question.required || nrs.elt.formInput[ni + q.name]"
-                           [disabled]="!q.question.editable"/> {{uom}}</label>
+                <ng-container [ngSwitch]="q.question.datatypeText?.showAsTextArea">
+                    <ng-container *ngSwitchCase="false">
+                        <input type="text"
+                               class="form-control native-table-box"
+                               [title]="n.label"
+                               [name]="ni + q.name"
+                               [attr.name]="ni + q.name"
+                               [(ngModel)]="nrs.elt.formInput[ni + q.name]"
+                               [required]="q.question.required"
+                               [disabled]="!q.question.editable"/>
+                        <div *ngIf="q.question.uomsAlias.length > 0">Units of Measure:</div>
+                        <label *ngFor="let uom of q.question.uomsAlias; index as i"
+                               [ngClass]="{'nativeRequiredBox': q.question.required}"
+                               style="padding-left: 10px;display: block">
+                            <input type="radio"
+                                   [name]="ni + q.name + '_uom_' + i"
+                                   [attr.name]="ni + q.name + '_uom_' + i"
+                                   [(ngModel)]="nrs.elt.formInput[ni + q.name + '_uom']"
+                                   [value]="q.question.unitsOfMeasure[i]"
+                                   [attr.value]="q.question.unitsOfMeasure[i]"
+                                   [required]="q.question.required || nrs.elt.formInput[ni + q.name]"
+                                   [disabled]="!q.question.editable"/> {{uom}}</label>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="true">
+                        <textarea
+                               class="form-control native-table-box"
+                               [title]="n.label"
+                               [name]="ni + q.name"
+                               [attr.name]="ni + q.name"
+                               [(ngModel)]="nrs.elt.formInput[ni + q.name]"
+                               [required]="q.question.required"
+                               [disabled]="!q.question.editable"></textarea>
+                    </ng-container>
+                </ng-container>
             </div>
         </td>
     </tr>
