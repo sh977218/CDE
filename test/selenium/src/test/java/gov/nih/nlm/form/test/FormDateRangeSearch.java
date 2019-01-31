@@ -8,7 +8,7 @@ public class FormDateRangeSearch extends NlmCdeBaseTest {
 
     @Test
     public void formDateRangeSearch() {
-        goToCdeSearch();
+        goToFormSearch();
         findElement(By.id("ftsearch-input")).sendKeys("created:<2015");
         clickElement(By.id("search.submit"));
         textPresent("1 results");

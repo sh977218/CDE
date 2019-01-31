@@ -2,6 +2,7 @@ package gov.nih.nlm.cde.test;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class CDEDateRangeSearch extends NlmCdeBaseTest {
@@ -11,7 +12,7 @@ public class CDEDateRangeSearch extends NlmCdeBaseTest {
         goToCdeSearch();
         findElement(By.id("ftsearch-input")).sendKeys("created:<2015-05-14");
         clickElement(By.id("search.submit"));
-        textPresent("853 results");
+        Assert.assertTrue(getNumberOfResults() > 850);
 
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("created:<2015-05-13");
@@ -26,7 +27,7 @@ public class CDEDateRangeSearch extends NlmCdeBaseTest {
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("updated:<2015-09-22");
         clickElement(By.id("search.submit"));
-        textPresent("9880 results");
+        Assert.assertTrue(getNumberOfResults() > 9800);
 
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("imported:<2014-12-10");
@@ -36,7 +37,7 @@ public class CDEDateRangeSearch extends NlmCdeBaseTest {
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("imported:<2014-12-11");
         clickElement(By.id("search.submit"));
-        textPresent("458 results");
+        Assert.assertTrue(getNumberOfResults() > 450);
     }
 
 }
