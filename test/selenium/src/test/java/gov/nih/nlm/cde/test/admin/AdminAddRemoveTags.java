@@ -85,7 +85,7 @@ public class AdminAddRemoveTags extends NlmCdeBaseTest {
         goToProperties();
         clickElement(By.id("openNewPropertyModalBtn"));
         clickElement(By.id("newKey"));
-        new Select(findElement(By.id("newKey"))).selectByVisibleText("newKey");
+        new Select(findElement(By.id("newKey"))).selectByVisibleText(propertyKey);
 
         clickElement(By.id("cancelNewPropertyBtn"));
 

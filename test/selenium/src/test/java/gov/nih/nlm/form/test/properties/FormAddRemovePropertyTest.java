@@ -9,12 +9,12 @@ public class FormAddRemovePropertyTest extends NlmCdeBaseTest {
     @Test
     public void formAddRemoveProperty() {
         String formName = "Form Property Test";
-        String key0 = "propKey0";
-        String value0 = "MyValue0";
-        String key1 = "propKey1";
-        String value1 = "MyValue1";
-        String key2 = "propKey2";
-        String value2 = "MyValue2";
+        String key0 = "pk1";
+        String value0 = "MyValue1";
+        String key1 = "pk2";
+        String value1 = "MyValue2";
+        String key2 = "pk3";
+        String value2 = "MyValue3";
 
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName(formName);

@@ -8,7 +8,7 @@ public class CdeAddPropertyRichValueTest extends NlmCdeBaseTest {
     @Test
     public void cdeAddPropertyRichValue() {
         String cdeName = "Vision (aura) typical symptom type";
-        String key = "Great CTX";
+        String key = "pk1";
         String value = "New <b>Value</b>";
 
         mustBeLoggedInAs(nlm_username, nlm_password);
