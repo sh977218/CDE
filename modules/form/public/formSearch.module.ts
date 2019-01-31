@@ -24,6 +24,7 @@ import { QuickBoardFormSummaryListContentComponent } from 'form/public/component
 import { FormSearchComponent } from "form/public/components/search/formSearch.component";
 import { SearchModule } from "search/search.module";
 import { FormTableViewPreferencesComponent } from "search/tableViewPreferences/formTableViewPreferencesComponent";
+import { TagModule } from 'tag/tag.module';
 
 @NgModule({
     imports: [
@@ -46,6 +47,7 @@ import { FormTableViewPreferencesComponent } from "search/tableViewPreferences/f
         // core
 
         // internal
+        TagModule,
         BoardModule,
         ReactiveFormsModule,
         SearchModule,

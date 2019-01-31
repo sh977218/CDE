@@ -77,8 +77,7 @@
         </mat-grid-tile>
     </mat-grid-list>
     <cde-tag id="identifiers" name="identifiers" [tags]="searchSettings.tableViewFields.identifiers"
-             [allTags]="identifierSources" [placeHolder]="placeHolder"
-             [canEdit]="searchSettings.tableViewFields.ids"
+             [allTags]="identifierSources" [placeHolder]="placeHolder" [canEdit]="searchSettings.tableViewFields.ids"
              (changed)="onChanged.emit();"></cde-tag>
 </mat-dialog-content>
 <mat-dialog-actions>

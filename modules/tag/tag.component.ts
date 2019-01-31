@@ -13,6 +13,7 @@ export class TagComponent {
     @Input() canEdit: boolean = false;
     @Input() allTags: string[] = [];
     @Input() placeHolder: string = 'New tag...';
+    @Input() allowFreeType: boolean = false;
 
     @Output() changed = new EventEmitter();
 
@@ -52,19 +53,21 @@ export class TagComponent {
     }
 
     add(event: MatChipInputEvent): void {
-        if (!this.matAutocomplete.isOpen) {
-            const input = event.input;
-            const value = event.value;
+        if (this.allowFreeType) {
+            if (!this.matAutocomplete.isOpen) {
+                const input = event.input;
+                const value = event.value;
 
-            if ((value || '').trim()) {
-                this.tags.push(value.trim());
-                this.changed.emit();
+                if ((value || '').trim()) {
+                    this.tags.push(value.trim());
+                    this.changed.emit();
+                }
+
+                if (input) input.value = '';
+
+                this.tagCtrl.setValue('');
             }
-
-            if (input) input.value = '';
-
-            this.tagCtrl.setValue('');
-        }
+        } else this.tagCtrl.setValue('');
     }
 
 }
