@@ -224,7 +224,7 @@ let attachmentSchema = {
     },
     filesize: Number,
     isDefault: Boolean,
-    pendingApproval: Boolean,
+    pendingApproval: {type: Boolean, index: true},
     scanned: Boolean
 };
 

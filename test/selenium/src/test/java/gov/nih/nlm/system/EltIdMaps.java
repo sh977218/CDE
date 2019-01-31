@@ -159,6 +159,7 @@ public class EltIdMaps {
         eltMap.put("Study Discontinuation/Completion", "myWQUJrHFg");
         eltMap.put("Study Drug Compliance", "71zmIkrBtl");
         eltMap.put("Surgical and Procedural Interventions", "myoQ8JBHFe");
+        eltMap.put("TextAreaForm", "QJFFX4ERL");
         eltMap.put("Traumatic Brain Injury - Adverse Events", "sdsflijkfsd");
         eltMap.put("Type, Place, Cause and Mechanism of Injury", "XyqIIyrBtx");
         eltMap.put("Two Dimensional Speckle Tracking Echocardiography Imaging", "7kKLUkHBtl");
