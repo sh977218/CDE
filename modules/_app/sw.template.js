@@ -33,9 +33,14 @@ self.addEventListener('fetch', function (event) {
             }
             return resp;
         }).catch(function (err) {
-            var path = event.request.url.indexOf(self.location.origin) === 0
-                ? event.request.url.substr(self.location.origin.length)
-                : event.request.url;
+            var path = event.request.url;
+            if (path.indexOf(self.location.origin) === 0) {
+                path = path.substr(self.location.origin.length);
+            }
+            var index = path.indexOf('?');
+            if (index > -1) {
+                path = path.substr(0, index);
+            }
             return htmlServedUri.indexOf(path) > -1
                 ? caches.match('/app/offline/offline.html')
                 : caches.match(event.request);
