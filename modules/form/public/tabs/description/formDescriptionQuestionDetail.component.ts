@@ -114,7 +114,8 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     }
 
     onAnswerListChanged() {
-        this.question.question.answers = this.questionAnswers.filter(p => this.questionAnswers.indexOf(p.valueMeaningName) >= 0);
+        let answers = this.question.question.answers.filter(ans => this.questionAnswers.indexOf(ans.valueMeaningName) >= 0);
+        this.question.question.answers = answers;
         this.syncDefaultAnswerListItems();
         this.onEltChange.emit();
     }
