@@ -127,6 +127,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
                 this.onAnswerListChanged();
             } else if (response) {
                 q.question.answers = _clone(response);
+                this.questionAnswers = this.question.question.answers.map(p => p.valueMeaningName);
                 this.onEltChange.emit();
             }
         });
