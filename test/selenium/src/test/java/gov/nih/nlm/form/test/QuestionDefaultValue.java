@@ -14,7 +14,7 @@ public class QuestionDefaultValue extends NlmCdeBaseTest {
         goToFormByName(formName);
         goToFormDescription();
         startEditQuestionById("question_0-0");
-        clickElement(By.xpath("//*[@id='question_0-0']//*[contains(@class,'defaultAnswer')]/ng-select//input"));
+        clickElement(By.xpath("//*[@id='question_0-0']//*[contains(@class,'defaultAnswer')]//input"));
         selectMatSelectDropdownByText("Brother");
         saveEditQuestionById("question_0-0");
 

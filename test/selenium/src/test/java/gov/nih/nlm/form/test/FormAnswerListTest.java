@@ -20,7 +20,7 @@ public class FormAnswerListTest extends NlmCdeBaseTest {
 
         textNotPresent("Multiple Selections:");
         startEditQuestionById("question_0-0");
-        String question_zero_answer_list_xpath = "//*[@id='question_0-0']//*[contains(@class,'ng-value ng-star-inserted')]";
+        String question_zero_answer_list_xpath = "//mat-option";
         List<WebElement> lis = driver.findElements(By.xpath(question_zero_answer_list_xpath));
         Assert.assertEquals(lis.size(), 3);
         Assert.assertEquals(lis.get(0).getText(), "×Female Gender");
@@ -52,7 +52,7 @@ public class FormAnswerListTest extends NlmCdeBaseTest {
         goToFormDescription();
         textNotPresent("Female Gender");
         startEditQuestionById("question_0-0");
-        clickElement(By.xpath("//*[@id='question_0-0']//*[contains(@class,'answerList')]/ng-select//input"));
+        clickElement(By.xpath("//*[@id='question_0-0']//*[contains(@class,'answerList')]//input"));
         selectMatSelectDropdownByText("Female Gender");
         saveEditQuestionById("question_0-0");
         newFormVersion();

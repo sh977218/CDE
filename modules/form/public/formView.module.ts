@@ -42,6 +42,7 @@ import { InlineAreaEditModule } from 'inlineAreaEdit/inlineAreaEdit.module';
 import { InlineSelectEditModule } from 'inlineSelectEdit/inlineSelectEdit.module';
 import { SortableArrayModule } from 'sortableArray/sortableArray.module';
 import { DeleteWithConfirmModule } from 'deleteWithConfirm/deleteWithConfirm.module';
+import { TagModule } from 'tag/tag.module';
 
 
 const appRoutes: Routes = [
@@ -76,6 +77,7 @@ const appRoutes: Routes = [
         CoreModule,
 
         // internal
+        TagModule,
         AdminItemModule,
         DeleteWithConfirmModule,
         InlineAreaEditModule,

@@ -21,7 +21,7 @@ public class CdeStandardStatusTest extends NlmCdeBaseTest {
         goToPermissibleValues();
         textPresent("Values Allowed");
 
-        checkElementDoesNotExistByLocator(By.xpath("//*[@id='datatypeSelect']//ng-select//input[not(@disabled)]"));
+        checkElementDoesNotExistByLocator(By.xpath("//*[@id='datatypeSelect']//input[not(@disabled)]"));
 
         Assert.assertTrue(findElements(By.xpath("//td[contains(@id, 'pvAction') and not(*)]")).size() > 0);
 
