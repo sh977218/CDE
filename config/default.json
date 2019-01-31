@@ -86,7 +86,8 @@
       "options": {
         "ssl": false,
         "useCreateIndex": true,
-        "useNewUrlParser": true
+        "useNewUrlParser": true,
+        "poolSize": 20
       }
     },
     "log": {
@@ -96,7 +97,8 @@
       "options": {
         "ssl": false,
         "useCreateIndex": true,
-        "useNewUrlParser": true
+        "useNewUrlParser": true,
+        "poolSize": 20
       },
       "cappedCollectionSizeMB": 262144000
     },

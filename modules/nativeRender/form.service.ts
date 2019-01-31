@@ -22,7 +22,7 @@ export class FormService {
         q.question.datatypeDate = de.valueDomain.datatypeDate;
         if (!q.question.datatypeDate) q.question.datatypeDate = {};
         q.question.datatypeNumber = de.valueDomain.datatypeNumber;
-        q.question.datatypeText = de.valueDomain.datatypeText;
+        q.question.datatypeText = de.valueDomain.datatypeText || {};
         if (de.ids) {
             q.question.cde.ids = de.ids;
         }

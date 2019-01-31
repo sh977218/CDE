@@ -115,7 +115,14 @@
                     <option>Minute</option>
                     <option>Second</option>
                 </select>
-
+            </dd>
+        </ng-container>
+        <ng-container *ngIf="question.question.datatype === 'Text'">
+            <dt class="col-2 font-weight-bold">Show as Text Area:</dt>
+            <dd class="col-10">
+                <input type="checkbox" title="Show as Text Area"
+                       [(ngModel)]="question.question.datatypeText.showAsTextArea"
+                       (change)="onEltChange.emit()">
             </dd>
         </ng-container>
         <dt class="col-2">Required:</dt>
@@ -135,7 +142,7 @@
                                              (onSaved)="onEltChange.emit();"></cde-skip-logic-autocomplete>
             </dd>
         </ng-container>
-        <ng-container *ngIf="question.question.datatype === 'Number' || question.question.datatype === 'Text'">
+        <ng-container *ngIf="question.question.datatype === 'Number' || (question.question.datatype === 'Text' && !question.question.datatypeText.showAsTextArea)">
             <dt class="col-2">Units of Measure:</dt>
             <dd class="col-10 questionUom">
                 <div class="border rounded p-1">

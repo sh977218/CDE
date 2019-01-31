@@ -369,7 +369,8 @@
                 </div>
             </div>
             <!-- SEARCH RESULTS -->
-            <div id="resultList" [ngClass]="filterMode?'col-12 col-sm-10':'col-12'" class="px-1">
+            <div id="resultList" class="px-1"
+                 [ngClass]="filterMode?'col-12 col-sm-10':'col-12'" [style.display]="searching ? 'none' : 'block'">
                 <div id="resultListTour"></div>
                 <span [hidden]="elts.length >= 0" class="h1 pl130">
                     <mat-icon class="spin">auto_renew</mat-icon>Searching...</span>
