@@ -114,7 +114,11 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     }
 
     onAnswerListChanged() {
-        let answers = this.question.question.answers.filter(ans => this.questionAnswers.indexOf(ans.valueMeaningName) >= 0);
+        let answers = this.question.question.answers.filter(ans => {
+            let value = ans.valueMeaningName;
+            if (!value) value = ans.permissibleValue;
+            this.questionAnswers.indexOf(value) >= 0;
+        });
         this.question.question.answers = answers;
         this.syncDefaultAnswerListItems();
         this.onEltChange.emit();
@@ -125,10 +129,15 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
             .afterClosed().subscribe(response => {
             if (response === "clear") {
                 q.question.answers = [];
+                this.questionAnswers = [];
                 this.onAnswerListChanged();
             } else if (response) {
                 q.question.answers = _clone(response);
-                this.questionAnswers = this.question.question.answers.map(p => p.valueMeaningName);
+                this.questionAnswers = this.question.question.answers.map(p => {
+                    let value = p.valueMeaningName;
+                    if (!value) value = p.permissibleValue;
+                    return value;
+                });
                 this.onEltChange.emit();
             }
         });
@@ -243,12 +252,20 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     }
 
     private syncAnswerListItems() {
-        this.answerListItems = this.question.question.cde.permissibleValues.map(p => p.valueMeaningName);
+        this.answerListItems = this.question.question.cde.permissibleValues.map(p => {
+            let value = p.valueMeaningName;
+            if (!value) value = p.permissibleValue;
+            return value;
+        });
         this.syncDefaultAnswerListItems();
     }
 
     private syncDefaultAnswerListItems() {
-        this.defaultAnswerListItems = this.question.question.answers.map(p => p.valueMeaningName);
+        this.defaultAnswerListItems = this.question.question.answers.map(p => {
+            let value = p.valueMeaningName;
+            if (!value) value = p.permissibleValue;
+            return value;
+        });
     }
 
     typeaheadSkipLogic(parent, fe, event) {
