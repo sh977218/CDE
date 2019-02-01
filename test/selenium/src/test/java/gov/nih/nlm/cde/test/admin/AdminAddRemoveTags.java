@@ -4,6 +4,7 @@ import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -50,7 +51,7 @@ public class AdminAddRemoveTags extends NlmCdeBaseTest {
         clickElement(By.id("openNewDesignationModalBtn"));
         textPresent("Tags are managed in Org Management > List Management");
         clickElement(By.xpath("//*[@id='newDesignationTags']//input"));
-        selectNgSelectDropdownByText("canYouSeeThis");
+        selectMatSelectDropdownByText("canYouSeeThis");
         clickElement(By.id("cancelNewDesignationBtn"));
 
         openUserMenu();
@@ -84,8 +85,7 @@ public class AdminAddRemoveTags extends NlmCdeBaseTest {
         goToProperties();
         clickElement(By.id("openNewPropertyModalBtn"));
         clickElement(By.id("newKey"));
-        findElement(By.xpath("//option[@value='doYouSeeThis']"));
-        findElement(By.xpath("//option[@value='propKey0']"));
+        new Select(findElement(By.id("newKey"))).selectByVisibleText(propertyKey);
 
         clickElement(By.id("cancelNewPropertyBtn"));
 
@@ -101,8 +101,8 @@ public class AdminAddRemoveTags extends NlmCdeBaseTest {
         clickElement(By.id("openNewPropertyModalBtn"));
         clickElement(By.id("newKey"));
 
-        clickElement(By.xpath("//option[@value='propKey0']"));
-        Assert.assertEquals(driver.findElements(By.xpath("//option[@value='doYouSeeThis']")).size(), 0);
+        clickElement(By.id("newKey"));
+        Assert.assertEquals(driver.findElements(By.xpath("//*[@id='newKey']//option[@value='doYouSeeThis']")).size(), 0);
     }
 
 }

@@ -8,7 +8,6 @@ import { MAT_DIALOG_DATA } from '@angular/material';
     templateUrl: './newDefinition.component.html'
 })
 export class NewDefinitionComponent {
-    noTagFoundMessage = 'No Tags found, Tags are managed in Org Management > List Management';
     @Input() tags = [];
     newDefinition: Definition = new Definition;
 

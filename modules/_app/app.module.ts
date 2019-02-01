@@ -10,7 +10,6 @@ import {
 } from '@angular/material';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgSelectModule } from '@ng-select/ng-select';
 import { BackForwardService } from '_app/backForward.service';
 import { CdeAppRoutingModule } from '_app/app-routing.module';
 import { CdeAppComponent } from '_app/app.component';
@@ -46,7 +45,6 @@ import { OrgHelperService } from 'core/orgHelper.service';
         MatIconModule,
         MatMenuModule,
         MatSnackBarModule,
-        NgSelectModule,
         // internal
         CdeAppRoutingModule,
         CommonAppModule,

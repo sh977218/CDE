@@ -10,7 +10,7 @@
         </div>
     </div>
     <div class="card-body">
-        <span class="card-text numElement">{{board.pins.length + ' '}}</span>{{board.type === 'form' ? 'Form(s)' : 'CDE(s)'}}
+        <span class="card-text numElement">{{board.pins.length + ' '}}</span>{{boardTitle}}
         <p class="card-text">{{board.description}}</p>
         <p class="card-text">
             <small class="text-muted">
@@ -47,8 +47,8 @@
                     Private
                 </mat-button-toggle>
             </mat-button-toggle-group>
-            <ng-select id="boardTag" name="boardTag" [ngModel]="board.tags" [items]="board.tags" [addTag]="true"
-                       appendTo="body" multiple="true"></ng-select>
+            <cde-tag id="boardTag" name="boardTag" [tags]="board.tags" [allTags]="board.tags"
+                     [canEdit]="true" [allowFreeType]="true"></cde-tag>
         </div>
         <div mat-dialog-actions>
             <button mat-raised-button [mat-dialog-close] id="cancelEditBoardBtn" color="warn">Cancel</button>

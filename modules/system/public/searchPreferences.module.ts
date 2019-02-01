@@ -2,7 +2,6 @@ import { CommonModule } from "@angular/common";
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { RouterModule, Routes } from "@angular/router";
-import { NgSelectModule } from '@ng-select/ng-select';
 
 import { SearchPreferencesComponent } from "./components/searchPreferences/searchPreferences.component";
 
@@ -16,7 +15,6 @@ const appRoutes: Routes = [
     imports: [
         CommonModule,
         FormsModule,
-        NgSelectModule,
         RouterModule.forChild(appRoutes),
 
         MatButtonModule,

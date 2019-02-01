@@ -76,12 +76,9 @@
             </mat-list>
         </mat-grid-tile>
     </mat-grid-list>
-    <ng-select id="identifiers" name="identifiers" (change)="onChanged.emit()"
-               ngDefaultControl [(ngModel)]="searchSettings.tableViewFields.identifiers"
-               [placeholder]="placeHolder" appendTo="body" [multiple]="true"
-               [items]="identifierSources" [hideSelected]="true"
-               [disabled]="!searchSettings.tableViewFields.ids">
-    </ng-select>
+    <cde-tag id="identifiers" name="identifiers" [tags]="searchSettings.tableViewFields.identifiers"
+             [allTags]="identifierSources" [placeHolder]="placeHolder" [canEdit]="searchSettings.tableViewFields.ids"
+             (changed)="onChanged.emit();"></cde-tag>
 </mat-dialog-content>
 <mat-dialog-actions>
     <button mat-raised-button (click)="loadDefault()" id="loadDefaultTableViewSettingsBtn">Load Default</button>

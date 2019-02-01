@@ -1,16 +1,18 @@
-import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from "@angular/core";
+import { Component, OnInit, EventEmitter, Input, Output, TemplateRef, ViewChild } from "@angular/core";
 import { MatDialog, MatDialogRef } from '@angular/material';
 
 @Component({
     selector: 'cde-board-view-template',
     templateUrl: './boardViewTemplate.component.html'
 })
-export class BoardViewTemplateComponent {
+export class BoardViewTemplateComponent implements OnInit {
     @ViewChild('editBoardContent') editBoardContent: TemplateRef<any>;
     @ViewChild('deleteBoardContent') deleteBoardContent: TemplateRef<any>;
     @Input() board: any;
     @Input() canEdit: boolean;
     @Input() headerLink: boolean = true;
+
+    boardTitle: string = 'CDE(s)';
 
     @Output() onSave = new EventEmitter();
     @Output() onDelete = new EventEmitter();
@@ -18,6 +20,10 @@ export class BoardViewTemplateComponent {
     dialogRef: MatDialogRef<TemplateRef<any>>;
 
     constructor(public dialog: MatDialog) {
+    }
+
+    ngOnInit(): void {
+        this.boardTitle = this.board.type === 'form' ? 'Form(s)' : 'CDE(s)';
     }
 
     openEditBoardModal() {
@@ -45,4 +51,5 @@ export class BoardViewTemplateComponent {
     onBoardShareStatusChange($event) {
         this.board.shareStatus = $event.value;
     }
+
 }

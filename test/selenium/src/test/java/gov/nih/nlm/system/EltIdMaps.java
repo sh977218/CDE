@@ -89,6 +89,7 @@ public class EltIdMaps {
         eltMap.put("Activities of Daily Living and Gait", "QyVcb1Srtg");
         eltMap.put("Adverse Event Tracking Log ", "m1_5_1HBYl");
         eltMap.put("AED Resistance Log", "7yxcZJrrte");
+        eltMap.put("Acute Admission/Discharge", "XkS5WJHrtg");
         eltMap.put("ALS Depression Inventory (ADI-12)", "QJW5Z1BrYl");
         eltMap.put("Antithrombotics and Risk Factor Controlling Medications", "XJfnZyHrYg");
         eltMap.put("Body Mass Index", "XyZ43DXGU");

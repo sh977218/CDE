@@ -960,7 +960,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
             String tagsInputXpath = "//*[@id='designationTags_" + index + "']//input";
             for (String tag : tags) {
                 clickElement(By.xpath(tagsInputXpath));
-                selectNgSelectDropdownByText(tag);
+                selectMatSelectDropdownByText(tag);
                 textPresent(tag);
             }
         }
@@ -1006,7 +1006,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
             String tagsInputXpath = "//*[@id='newDesignationTags']//input";
             for (String tag : tags) {
                 clickElement(By.xpath(tagsInputXpath));
-                selectNgSelectDropdownByText(tag);
+                selectMatSelectDropdownByText(tag);
                 textPresent(tag);
             }
         }
@@ -1025,7 +1025,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
             String tagsInputXpath = "//*[@id='newDefinitionTags']//input";
             for (String tag : tags) {
                 clickElement(By.xpath(tagsInputXpath));
-                selectNgSelectDropdownByText(tag);
+                selectMatSelectDropdownByText(tag);
                 textPresent(tag);
             }
         }
@@ -1036,6 +1036,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         clickElement(By.id("openNewPropertyModalBtn"));
         textPresent("Property keys are managed in Org Management > List Management");
         new Select(findElement(By.id("newKey"))).selectByVisibleText(key);
+
         findElement(By.xpath("//*[@id='newValue']//textarea")).sendKeys(value);
         if (isHtml) clickElement(By.xpath("//*[@id='newValue']/button/span[contains(text(),'Rich Text')]"));
         else clickElement(By.xpath("//*[@id='newValue']/button/span[contains(text(),'Plain Text')]"));
@@ -1079,8 +1080,8 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
 
     protected void changeDatatype(String newDatatype) {
         if (PREDEFINED_DATATYPE.contains(newDatatype)) {
-            clickElement(By.xpath("//*[@id='datatypeSelect']/ng-select//input"));
-            selectNgSelectDropdownByText(newDatatype);
+            clickElement(By.xpath("//*[@id='datatypeSelect']//mat-select"));
+            selectMatSelectDropdownByText(newDatatype);
         } else {
             System.out.println("Invalidate data type: " + newDatatype);
         }
@@ -1570,12 +1571,8 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         textNotPresent("Delete Draft?");
     }
 
-    protected void selectNgSelectDropdownByText(String text) {
-        clickElement(By.xpath("//ng-dropdown-panel//div[contains(@class,'ng-option') and contains(., '" + text + "')]"));
-    }
-
     protected void selectMatSelectDropdownByText(String text) {
-        clickElement(By.xpath("//mat-option/span[. = '" + text + "']"));
+        clickElement(By.xpath("//mat-option/span[normalize-space() = '" + text + "']"));
     }
 
     protected void openTableViewPreferenceModal() {
