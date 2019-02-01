@@ -85,7 +85,7 @@ export class PermissibleValueComponent {
                 private dialog: MatDialog,
                 public userService: UserService,
                 private Alert: AlertService) {
-        this.dataTypeList = DataTypeService.getDataTypeItemList();
+        this.dataTypeList = DataTypeService.getDataType();
     }
 
     addAllVsac() {

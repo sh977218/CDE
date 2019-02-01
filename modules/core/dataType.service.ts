@@ -7,12 +7,6 @@ export class DataTypeService {
     public static getDataType() {
         return this.dataElementDataType;
     }
-
-    public static getDataTypeItemList() {
-        return this.dataElementDataType.map(d => {
-            return {label: d, value: d};
-        });
-    }
 }
 
 

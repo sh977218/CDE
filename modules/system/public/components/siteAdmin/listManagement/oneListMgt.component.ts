@@ -1,9 +1,5 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 
-import { AlertService } from 'alert/alert.service';
-import { OrgHelperService } from 'core/orgHelper.service';
-import { Organization } from 'shared/models.model';
 import { ENTER } from '@angular/cdk/keycodes';
 import { MatAutocompleteSelectedEvent, MatChipInputEvent } from '@angular/material';
 import { FormControl } from '@angular/forms';

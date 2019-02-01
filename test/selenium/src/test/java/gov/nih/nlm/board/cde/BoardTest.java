@@ -5,7 +5,6 @@ import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
-import org.testng.Assert;
 
 public class BoardTest extends NlmCdeBaseTest {
     protected void makePrivate(String boardName) {
@@ -103,12 +102,11 @@ public class BoardTest extends NlmCdeBaseTest {
         if (boardNameChange != null) findElement(By.id("boardName")).sendKeys(boardNameChange);
         if (boardDescriptionChange != null) findElement(By.id("boardDescription")).sendKeys(boardDescriptionChange);
         if (isPublic) clickElement(By.id("makePublicBtn"));
-        else if (isPublic == false) clickElement(By.id("makePrivateBtn"));
+        else clickElement(By.id("makePrivateBtn"));
         if (boardTags != null) {
             for (String tag : boardTags) {
                 clickElement(By.xpath("//*[@id='boardTag']//input"));
-                findElement(By.xpath("//*[@id='boardTag']//input")).sendKeys(tag);
-                selectNgSelectDropdownByText(tag);
+                findElement(By.xpath("//*[@id='boardTag']//input")).sendKeys(tag + ",");
             }
         }
         clickElement(By.id("saveEditBoardBtn"));

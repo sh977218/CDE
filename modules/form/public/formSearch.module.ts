@@ -15,7 +15,6 @@ import {
     MatAutocompleteModule, MatTabsModule, MatTooltipModule
 } from "@angular/material";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
-import { NgSelectModule } from '@ng-select/ng-select';
 import { BoardModule } from 'board/public/board.module';
 import { BoardFormSummaryListComponent } from "form/public/components/listView/boardFormSummaryList.component";
 import { BoardFormSummaryListContentComponent } from "form/public/components/listView/boardFormSummaryListContent.component";
@@ -25,6 +24,7 @@ import { QuickBoardFormSummaryListContentComponent } from 'form/public/component
 import { FormSearchComponent } from "form/public/components/search/formSearch.component";
 import { SearchModule } from "search/search.module";
 import { FormTableViewPreferencesComponent } from "search/tableViewPreferences/formTableViewPreferencesComponent";
+import { TagModule } from 'tag/tag.module';
 
 @NgModule({
     imports: [
@@ -44,10 +44,10 @@ import { FormTableViewPreferencesComponent } from "search/tableViewPreferences/f
         MatTabsModule,
         MatTooltipModule,
         NgbModule,
-        NgSelectModule,
         // core
 
         // internal
+        TagModule,
         BoardModule,
         ReactiveFormsModule,
         SearchModule,

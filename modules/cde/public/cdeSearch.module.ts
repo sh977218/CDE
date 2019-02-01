@@ -17,7 +17,6 @@ import {
 } from "@angular/material";
 import { RouterModule } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { NgSelectModule } from '@ng-select/ng-select';
 import { BoardModule } from 'board/public/board.module';
 import { CdeModule } from 'cde/public/cde.module';
 import { BoardCdeSummaryListComponent } from 'cde/public/components/listView/boardCdeSummaryList.component';
@@ -27,8 +26,7 @@ import { QuickBoardCdeSummaryListContentComponent } from 'cde/public/components/
 import { CdeSearchComponent } from 'cde/public/components/search/cdeSearch.component';
 import { SearchModule } from 'search/search.module';
 import { CdeTableViewPreferencesComponent } from "search/tableViewPreferences/cdeTableViewPreferencesComponent";
-
-
+import { TagModule } from 'tag/tag.module';
 
 @NgModule({
     imports: [
@@ -49,12 +47,12 @@ import { CdeTableViewPreferencesComponent } from "search/tableViewPreferences/cd
         MatTabsModule,
         MatTooltipModule,
         NgbModule,
-        NgSelectModule,
         ReactiveFormsModule,
         RouterModule,
         // core
 
         // internal
+        TagModule,
         BoardModule,
         CdeModule,
         SearchModule,

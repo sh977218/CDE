@@ -6,7 +6,6 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { TreeModule } from "angular-tree-component";
 import "angular-tree-component/dist/angular-tree-component.css";
 import { CKEditorModule } from 'ng2-ckeditor';
-import { NgSelectModule } from '@ng-select/ng-select';
 
 import { CompareModule } from 'compare/compare.module';
 import { SearchModule } from 'search/search.module';
@@ -30,12 +29,14 @@ import { DeleteModalComponent } from 'adminItem/public/components/deleteModal/de
 import { NewDesignationComponent } from 'adminItem/public/components/naming/designation/newDesignation.component';
 import { NewDefinitionComponent } from 'adminItem/public/components/naming/definition/newDefinition.component';
 import { MatButtonModule, MatDialogModule, MatIconModule, MatTabsModule } from "@angular/material";
+
 import { CoreModule } from 'core/core.module';
 import { InlineAreaEditModule } from 'inlineAreaEdit/inlineAreaEdit.module';
 import { InlineEditModule } from 'inlineEdit/inlineEdit.module';
 import { SortableArrayModule } from 'sortableArray/sortableArray.module';
 import { InlineSelectEditModule } from 'inlineSelectEdit/inlineSelectEdit.module';
 import { DeleteWithConfirmModule } from 'deleteWithConfirm/deleteWithConfirm.module';
+import { TagModule } from 'tag/tag.module';
 
 @NgModule({
     imports: [
@@ -43,7 +44,6 @@ import { DeleteWithConfirmModule } from 'deleteWithConfirm/deleteWithConfirm.mod
         CKEditorModule,
         FormsModule,
         NgbModule,
-        NgSelectModule,
         RouterModule,
         TreeModule.forRoot(),
         // core
@@ -57,6 +57,7 @@ import { DeleteWithConfirmModule } from 'deleteWithConfirm/deleteWithConfirm.mod
         InlineEditModule,
         InlineAreaEditModule,
         InlineSelectEditModule,
+        TagModule,
         MatButtonModule,
         MatDialogModule,
         MatIconModule,

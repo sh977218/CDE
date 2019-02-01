@@ -3,7 +3,6 @@ import { FormsModule } from "@angular/forms";
 import { RouterModule } from '@angular/router';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
-import { NgSelectModule } from '@ng-select/ng-select';
 import {
     MatInputModule,
     MatIconModule,
@@ -26,13 +25,13 @@ import { UnpinBoardComponent } from "./components/listView/unpinBoard.component"
 
 import { CoreModule } from 'core/core.module';
 import { SearchModule } from 'search/search.module';
+import { TagModule } from 'tag/tag.module';
 
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
         NgbModule,
-        NgSelectModule,
         RouterModule,
         MatButtonModule,
         MatButtonToggleModule,
@@ -45,6 +44,7 @@ import { SearchModule } from 'search/search.module';
         // internal
         SearchModule,
         AdminItemModule,
+        TagModule
     ],
     declarations: [
         BoardViewTemplateComponent,

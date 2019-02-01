@@ -11,22 +11,19 @@ import _uniq from 'lodash/uniq';
     templateUrl: './naming.component.html'
 })
 export class NamingComponent implements OnInit {
-    @Input() canEdit: boolean = false;
     @Input() elt: any;
+    @Input() canEdit: boolean = false;
     @Output() onEltChange = new EventEmitter();
-    tags = [];
+    allTags = [];
 
-    constructor(public dialog: MatDialog,
-                private orgHelperService: OrgHelperService) {
+    constructor(private orgHelperService: OrgHelperService,
+                public dialog: MatDialog) {
     }
 
     ngOnInit() {
         let stewardOrgName = this.elt.stewardOrg.name;
         this.orgHelperService.then(orgsDetailedInfo => {
-            let namingTags = orgsDetailedInfo[stewardOrgName].nameTags;
-            let allNamingTags = this.elt.designations.reduce(
-                (accumulator, currentValue) => accumulator.concat(currentValue.tags), namingTags);
-            this.tags = _uniq(allNamingTags);
+            this.allTags = orgsDetailedInfo[stewardOrgName].nameTags;
         }, _noop);
     }
 
@@ -41,20 +38,24 @@ export class NamingComponent implements OnInit {
     }
 
     openNewDesignationModal() {
-        this.dialog.open(NewDesignationComponent, {data: {tags: this.tags}}).afterClosed().subscribe(newDesignation => {
-            if (newDesignation) {
-                this.elt.designations.push(newDesignation);
-                this.onEltChange.emit();
-            }
-        });
+        this.dialog.open(NewDesignationComponent, {data: {tags: this.allTags}})
+            .afterClosed()
+            .subscribe(newDesignation => {
+                if (newDesignation) {
+                    this.elt.designations.push(newDesignation);
+                    this.onEltChange.emit();
+                }
+            });
     }
 
     openNewDefinitionModal() {
-        this.dialog.open(NewDefinitionComponent, {data: {tags: this.tags}}).afterClosed().subscribe(newDefinition => {
-            if (newDefinition) {
-                this.elt.definitions.push(newDefinition);
-                this.onEltChange.emit();
-            }
-        });
+        this.dialog.open(NewDefinitionComponent, {data: {tags: this.allTags}})
+            .afterClosed()
+            .subscribe(newDefinition => {
+                if (newDefinition) {
+                    this.elt.definitions.push(newDefinition);
+                    this.onEltChange.emit();
+                }
+            });
     }
 }
