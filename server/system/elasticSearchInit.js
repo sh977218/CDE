@@ -120,7 +120,9 @@ exports.createIndexJson = {
                     }
                 }
                 , "tinyId": {"type": "keyword"}
-                , "updated": {"enabled": false}
+                , "created": {"type": "date"}
+                , "updated": {"type": "date"}
+                , "imported": {"type": "date"}
                 , "updatedBy": {properties: {"username": {"type": "text"}}}
                 , "changeNote": {"enabled": false}
                 , "attachments": {
@@ -130,7 +132,6 @@ exports.createIndexJson = {
                     }
                 }
                 , "history": {"enabled": false}
-                , "imported": {"type": "date"}
                 , "version": {"type": "keyword"}
                 , "views": {type: "integer"}
             }
@@ -201,8 +202,11 @@ exports.createFormIndexJson = {
                         "id": {"type": "text"},
                         "version": {"type": "text"}
                     }
-                }, "views": {"type": "integer"}
-                , "numQuestions": {"type": "integer"}
+                }, "views": {"type": "integer"},
+                "created": {"type": "date"},
+                "updated": {"type": "date"},
+                "imported": {"type": "date"},
+                "numQuestions": {"type": "integer"}
             }
         }
     }, settings: {
