@@ -15,10 +15,11 @@ export class AnswerAutocompleteComponent implements OnInit {
     answerControl = new FormControl('', [Validators.required]);
 
     ngOnInit() {
-        if (this.token.answer) this.answerControl.setValue(this.token.answer);
+        if (this.token.answer) this.answerControl.setValue(this.token);
         this.filteredAnswerOptions = this.answerControl.valueChanges
             .pipe(
                 startWith(''),
+                map(value => typeof value === 'string' ? value : value.answer),
                 map(value => this._filterOperator(value))
             );
     }

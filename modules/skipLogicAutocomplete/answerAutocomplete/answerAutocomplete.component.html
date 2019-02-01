@@ -1,4 +1,4 @@
-<ng-container [ngSwitch]="token?.formElement?.question.datatype">
+<ng-container [ngSwitch]="token?.question?.question.datatype">
     <ng-container *ngSwitchCase="'Number'">
         <mat-form-field class="w-100">
             <input matInput type="number" placeholder="Number" value="">
