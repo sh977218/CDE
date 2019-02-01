@@ -24,25 +24,15 @@
             <dd id="source_{{i}}" class="col-9">{{id.source}}</dd>
             <dt class="col-3 text-right">Id:</dt>
             <dd id="id_{{i}}" class="col-9">
-                <ng-container [ngSwitch]="id.source">
-                    <a *ngSwitchCase="'LOINC'"
-                       href="http://s.details.loinc.org/LOINC/{{id.id}}.html?sections=Comprehensive"
-                       target="_blank">{{id.id}}</a>
-                    <a *ngSwitchCase="'PhenX'"
-                       href="https://www.phenxtoolkit.org/protocols/view/{{id.id}}"
-                       target="_blank">{{id.id}}</a>
-                    <a *ngSwitchCase="'caDSR'"
-                       href="https://cdebrowser.nci.nih.gov/cdebrowserClient/cdeBrowser.html#/search?publicId={{id.id}}&version={{id.version}}"
-                       target="_blank">{{id.id}}</a>
-                    <span *ngSwitchDefault>{{id.id}}</span>
-                </ng-container>
+                <a *ngIf="idsLinks[i]; else noLink" [href]="idsLinks[i]" target="_blank">{{id.id}}</a>
+                <ng-template #noLink>{{id.id}}</ng-template>
             </dd>
             <dt class="col-3 text-right">Version:</dt>
             <dd id="version_{{i}}" class="col-9">{{id.version}}</dd>
         </dl>
         <hr>
     </ng-container>
-    <button *ngIf="canEdit" id="openNewIdentifierModalBtn" mat-raised-button (click)="openNewIdentifierModal();">
+    <button *ngIf="canEdit" id="openNewIdentifierModalBtn" class="m-3" mat-raised-button (click)="openNewIdentifierModal()">
         <mat-icon>add</mat-icon> Add Identifier
     </button>
 </div>
@@ -53,8 +43,10 @@
         <div mat-dialog-content>
             <div class="form-group">
                 <label for="newSource">Source</label>
-                <input class="form-control" name="source"
-                       Placeholder="Id Source" required id="newSource" [(ngModel)]="newIdentifier.source"/>
+                <select id="newSource" class="form-control" name="source" required [(ngModel)]="newIdentifier.source">
+                    <option *ngIf="!newIdentifier.source"></option>
+                    <option *ngFor="let s of getIdSources() | async">{{s._id}}</option>
+                </select>
             </div>
             <div class="form-group">
                 <label for="newId">Identifier</label>
