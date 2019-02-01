@@ -26,9 +26,9 @@
             </span>
             <span *ngIf="formSection?.inForm?.form?.outdated" class="mx-1">(Outdated)</span>
         </div>
-        <ng-container *ngIf="formSection?.inForm?.form?.outdated">
+        <ng-container *ngIf="canEdit && formSection?.inForm?.form?.outdated">
             <button class="btn btn-outline-dark btn-sm updateQuestionBtn d-inline-block"
-                    (click)="openUpdateFormVersion(section);" [disabled]="!canEdit">Update
+                    (click)="openUpdateFormVersion(section);">Update
             </button>
         </ng-container>
         <div class="float-right">

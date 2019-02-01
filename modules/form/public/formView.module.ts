@@ -1,12 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { RouterModule, Routes } from '@angular/router';
 import {
     MatButtonModule, MatCardModule, MatCheckboxModule, MatChipsModule, MatDialogModule,
     MatExpansionModule, MatGridListModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule,
     MatSliderModule, MatTabsModule, MatTooltipModule, MatAutocompleteModule
 } from "@angular/material";
-import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { TreeModule } from 'angular-tree-component';
 import 'angular-tree-component/dist/angular-tree-component.css';

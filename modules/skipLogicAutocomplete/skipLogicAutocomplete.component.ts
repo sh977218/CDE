@@ -23,11 +23,12 @@ export class SkipLogicAutocompleteComponent implements OnInit {
     tokens: Token[] = [];
 
     ngOnInit() {
-        let regex = /( (?:and|or) )/i;
+//        let regex = /( (?:and|or) )/i;
+        let regex = /((?=(?:(?:[^"]*"){2})*[^"]*$)(?:and|or))/;
         let equationArray = this.formElement.skipLogic.condition.split(regex);
         if (Array.isArray(equationArray)) {
             equationArray.forEach(equationString => {
-                let tokens = equationString.split(/( (?:>|<|>=|<=|=) )/i);
+                let tokens = equationString.split(/((?:>|<|>=|<=|=))/i);
                 let token = new Token();
                 let regex = new RegExp("\"", 'g');
                 let labelString = tokens[0];
