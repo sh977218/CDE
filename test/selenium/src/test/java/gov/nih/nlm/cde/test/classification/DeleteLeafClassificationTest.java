@@ -18,7 +18,7 @@ public class DeleteLeafClassificationTest extends NlmCdeBaseTest {
         findElement(By.xpath("//*[@id='Domain,Assessments and Examinations']"));
         removeClassificationMethod(new String[]{"Disease", "Myasthenia Gravis"});
         textNotPresent("Myasthenia Gravis");
-        openClassificationAudit("NINDS > Disease > Myasthenia Gravis");
+        openAuditClassification("NINDS > Disease > Myasthenia Gravis");
         textPresent("classMgtUser");
         textPresent("delete NINDS > Disease > Myasthenia Gravis");
     }

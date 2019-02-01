@@ -1,3 +1,4 @@
+import { Observable } from 'rxjs';
 import { CdeForm, CdeFormElastic } from 'shared/form/form.model';
 import { DataElement, DataElementElastic } from 'shared/de/dataElement.model';
 
@@ -132,6 +133,10 @@ export type CurationStatus = 'Incomplete'|'Recorded'|'Candidate'|'Qualified'|'St
 
 export enum CurationStatusEnum {
     'Preferred Standard', 'Standard', 'Qualified', 'Recorded', 'Candidate', 'Incomplete', 'Retired'
+}
+
+export abstract class DataService {
+    abstract getDrafts(): Observable<Drafts>;
 }
 
 export class DataSource {
@@ -351,6 +356,7 @@ export class DerivationRule {
 
 type DerivationRuleFormula = 'sumAll' | 'mean' | 'bmi';
 type DerivationRuleType = 'score' | 'panel';
+export type Drafts = {draftCdes: DataElement[], draftForms: CdeForm[]};
 export type Item = DataElement | CdeForm;
 export type ItemElastic = DataElementElastic | CdeFormElastic;
 export type ListTypes = 'accordion' | 'table' | 'summary';

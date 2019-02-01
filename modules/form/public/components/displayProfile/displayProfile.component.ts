@@ -308,10 +308,6 @@ export class DisplayProfileComponent {
                                         ],
                                         "tinyId": "",
                                     }
-                                },
-                                "cardinality": {
-                                    "min": 1,
-                                    "max": 1
                                 }
                             },
                             {

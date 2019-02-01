@@ -1,22 +1,20 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import _noop from 'lodash/noop';
-
-import { UserService } from '_app/user.service';
-import { isSiteAdmin } from 'shared/system/authorizationShared';
 import { FormControl } from '@angular/forms';
 import { MatTab } from '@angular/material';
+import { ActivatedRoute } from '@angular/router';
+import { UserService } from '_app/user.service';
+import _noop from 'lodash/noop';
+import { isSiteAdmin } from 'shared/system/authorizationShared';
 
 @Component({
     selector: 'cde-site-audit',
     templateUrl: './siteAudit.component.html'
 })
 export class SiteAuditComponent implements OnInit {
-    isAdmin = false;
-    selectedTab = new FormControl(0);
-
     @ViewChild('serverErrorTab') serverErrorTab: MatTab;
     @ViewChild('clientErrorTab') clientErrorTab: MatTab;
+    isAdmin = false;
+    selectedTab = new FormControl(0);
 
     constructor(public userService: UserService,
                 private route: ActivatedRoute) {

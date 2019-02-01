@@ -1,0 +1,56 @@
+<div class="p-3">
+    <mat-checkbox [(ngModel)]="includeBatch" (ngModelChange)="gotoPageLocal()">
+        Include Batchloader changes
+    </mat-checkbox>
+</div>
+<mat-accordion>
+    <mat-expansion-panel *ngFor="let edit of records">
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                {{edit.adminItem.name}}
+            </mat-panel-title>
+            <mat-panel-description>
+                <span class="matched-by">{{edit.date | date : 'MMM d, y, h:mm a' }}</span>
+            </mat-panel-description>
+        </mat-expansion-panel-header>
+        <dl class="row">
+            <dt class="col-sm-3">User:</dt>
+            <dd class="col-sm-9">{{edit.user.username}}</dd>
+            <dt class="col-sm-3">Date:</dt>
+            <dd class="col-sm-9">{{edit.date | date : 'MMM d, y, h:mm a'}}</dd>
+            <dt class="col-sm-3">CDE - New Version:</dt>
+            <dd class="col-sm-9">
+                <a target="_blank" href="/deView?cdeId={{edit.adminItem._id}}">{{edit.adminItem.name}}</a>
+            </dd>
+            <ng-container *ngIf="edit.previousItem">
+                <dt class="col-sm-3">CDE - Previous Version:</dt>
+                <dd class="col-sm-9">
+                    <a target="_blank" href="/deView?cdeId={{edit.previousItem._id}}">{{edit.previousItem.name}}</a>
+                </dd>
+            </ng-container>
+        </dl>
+        <table *ngIf="edit.diff" id="modificationsList" class="table">
+            <caption>List of Modifications</caption>
+            <thead>
+            <tr>
+                <th>Field</th>
+                <th>Type of Modification</th>
+                <th>Change</th>
+            </tr>
+            </thead>
+            <ng-container *ngFor="let d of edit.diff">
+                <tr *ngIf="!ignoredDiff(d)">
+                    <td>{{d.fieldName}}</td>
+                    <td>{{d.modificationType}}</td>
+                    <td><pre lineDiff style="margin-bottom: 0; white-space: initial"
+                             [left]="d.previousValue || ''" [right]="d.newValue || ''"></pre>
+                    </td>
+                </tr>
+            </ng-container>
+        </table>
+    </mat-expansion-panel>
+</mat-accordion>
+
+<mat-paginator style="font-size: 1.4em" (page)="gotoPageLocal($event)" [length]="1000"
+               [pageIndex]="currentPage" [pageSize]="pageSize" [hidePageSize]="true" >
+</mat-paginator>

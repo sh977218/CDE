@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
-
 import { UserService } from '_app/user.service';
 import { canEditCuratedItem, isOrgCurator, isSiteAdmin, hasRole } from 'shared/system/authorizationShared';
-
 
 @Injectable()
 export class IsAllowedService {

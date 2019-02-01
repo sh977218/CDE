@@ -65,7 +65,7 @@ public class EditConceptsTest extends NlmCdeBaseTest {
         clickElement(By.id("closeHistoryCompareModal"));
 
         logout();
-        openCdeAudit(cdeName);
+        openAuditDataElement(cdeName);
         textPresent(newDataElementConceptId);
         textPresent(newObjectClassConceptId);
         textPresent(newPropertyConceptId);
