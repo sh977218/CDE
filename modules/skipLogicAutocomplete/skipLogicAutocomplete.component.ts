@@ -7,6 +7,7 @@ export class Token {
     operator: string = '=';
     answer: string = '';
     logic?: string = 'AND';
+    error?: string = '';
 }
 
 @Component({
@@ -28,6 +29,7 @@ export class SkipLogicAutocompleteComponent implements OnInit {
             if (token.label) {
                 let question = this.getQuestionByLabel(this.parent, token.label);
                 token.question = question;
+                if (!question) token.error = "Can not find question.";
             }
         });
     }

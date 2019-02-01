@@ -1,7 +1,7 @@
 <mat-form-field class="w-100">
     <input type="text" placeholder="Question Label" matInput [formControl]="questionControl"
            [matAutocomplete]="questionAuto">
-    <mat-error *ngIf="questionControl.invalid">{{getErrorMessage()}}</mat-error>
+    <mat-error *ngIf="token.error">{{token.error}}</mat-error>
     <mat-autocomplete #questionAuto="matAutocomplete" (optionSelected)="selectQuestion($event)"
                       [displayWith]="displayFn">
         <mat-option *ngFor="let priorQuestion of filteredQuestionOptions | async " [value]="priorQuestion">

@@ -54,6 +54,7 @@
     "modules/sortableArray",
     "modules/textTruncate",
     "modules/usernameAutocomplete",
+    "modules/skipLogicAutocomplete",
     "node_modules",
     "protractor",
     "scripts",

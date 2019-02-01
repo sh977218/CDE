@@ -70,8 +70,4 @@ export class QuestionAutocompleteComponent implements OnInit {
         else return '';
     }
 
-    getErrorMessage() {
-        return 'Question Label is required';
-    }
-
 }
