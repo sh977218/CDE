@@ -22,21 +22,7 @@ import { FormElement, FormQuestion, SkipLogic } from 'shared/form/form.model';
 
 @Component({
     selector: 'cde-form-description-question-detail',
-    templateUrl: 'formDescriptionQuestionDetail.component.html',
-    styles: [`
-        mat-form-field {
-            margin-left: 1px;
-            margin-right: 1px;
-        }
-
-        .green {
-            color: green
-        }
-
-        .blue {
-            color: blue
-        }
-    `]
+    templateUrl: 'formDescriptionQuestionDetail.component.html'
 })
 export class FormDescriptionQuestionDetailComponent implements OnInit {
     @Input() canEdit: boolean = false;
@@ -57,12 +43,16 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         if (this.question.question.unitsOfMeasure) {
             this.ucumService.validateUoms(this.question.question);
         }
+        this.questionAnswers = this.question.question.answers.map(p => p.valueMeaningName);
     }
 
     @Output() onEltChange: EventEmitter<void> = new EventEmitter<void>();
     @ViewChild('formDescriptionQuestionTmpl') formDescriptionQuestionTmpl!: TemplateRef<any>;
     @ViewChild('formDescriptionQuestionEditTmpl') formDescriptionQuestionEditTmpl!: TemplateRef<any>;
     @ViewChild('slInput') slInput: ElementRef;
+
+    questionAnswers = [];
+
     answerListItems = [];
     dataTypeList = [];
     defaultAnswerListItems = [];
@@ -123,32 +113,34 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         return formElt.question.cde.derivationRules && formElt.question.cde.derivationRules.length > 0;
     }
 
-    onAnswerListAdd() {
-        this.syncDefaultAnswerListItems();
-        this.onEltChange.emit();
-    }
-
-    onAnswerListRemove(removedAnswer) {
-        if (removedAnswer && removedAnswer.value.valueMeaningName === this.question.question.defaultAnswer) {
-            this.question.question.defaultAnswer = '';
-        }
+    onAnswerListChanged() {
+        let answers = this.question.question.answers.filter(ans => {
+            let value = ans.valueMeaningName;
+            if (!value) value = ans.permissibleValue;
+            this.questionAnswers.indexOf(value) >= 0;
+        });
+        this.question.question.answers = answers;
         this.syncDefaultAnswerListItems();
         this.onEltChange.emit();
     }
 
     openEditAnswerModal(q) {
-        if (q.question.answers.length > 0) {
-            const modalRef = this.dialog.open(QuestionAnswerEditContentComponent, {data: {answers: q.question.answers}})
-                .afterClosed().subscribe(response => {
-                    if (response === "clear") {
-                        q.question.answers = [];
-                        this.onAnswerListRemove(this.question.question.defaultAnswer || undefined);
-                    } else if (response) {
-                        q.question.answers = _clone(response);
-                        this.onEltChange.emit();
-                    }
+        this.dialog.open(QuestionAnswerEditContentComponent, {data: {answers: q.question.answers}})
+            .afterClosed().subscribe(response => {
+            if (response === "clear") {
+                q.question.answers = [];
+                this.questionAnswers = [];
+                this.onAnswerListChanged();
+            } else if (response) {
+                q.question.answers = _clone(response);
+                this.questionAnswers = this.question.question.answers.map(p => {
+                    let value = p.valueMeaningName;
+                    if (!value) value = p.permissibleValue;
+                    return value;
                 });
-        }
+                this.onEltChange.emit();
+            }
+        });
     }
 
     openNameSelect(question, parent) {
@@ -260,12 +252,20 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     }
 
     private syncAnswerListItems() {
-        this.answerListItems = this.question.question.cde.permissibleValues.concat([]);
+        this.answerListItems = this.question.question.cde.permissibleValues.map(p => {
+            let value = p.valueMeaningName;
+            if (!value) value = p.permissibleValue;
+            return value;
+        });
         this.syncDefaultAnswerListItems();
     }
 
     private syncDefaultAnswerListItems() {
-        this.defaultAnswerListItems = this.question.question.answers.concat([]);
+        this.defaultAnswerListItems = this.question.question.answers.map(p => {
+            let value = p.valueMeaningName;
+            if (!value) value = p.permissibleValue;
+            return value;
+        });
     }
 
     typeaheadSkipLogic(parent, fe, event) {

@@ -8,7 +8,6 @@ import {
 } from "@angular/material";
 import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { NgSelectModule } from '@ng-select/ng-select';
 import { TreeModule } from 'angular-tree-component';
 import 'angular-tree-component/dist/angular-tree-component.css';
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
@@ -43,6 +42,7 @@ import { InlineAreaEditModule } from 'inlineAreaEdit/inlineAreaEdit.module';
 import { InlineSelectEditModule } from 'inlineSelectEdit/inlineSelectEdit.module';
 import { SortableArrayModule } from 'sortableArray/sortableArray.module';
 import { DeleteWithConfirmModule } from 'deleteWithConfirm/deleteWithConfirm.module';
+import { TagModule } from 'tag/tag.module';
 
 
 const appRoutes: Routes = [
@@ -71,13 +71,13 @@ const appRoutes: Routes = [
         MatAutocompleteModule,
         MatTooltipModule,
         NgbModule,
-        NgSelectModule,
         RouterModule.forChild(appRoutes),
         TreeModule.forRoot(),
         // core
         CoreModule,
 
         // internal
+        TagModule,
         AdminItemModule,
         DeleteWithConfirmModule,
         InlineAreaEditModule,

@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { NgSelectModule } from '@ng-select/ng-select';
 import { RouterModule } from '@angular/router';
 import { TreeModule } from 'angular-tree-component';
 import 'angular-tree-component/dist/angular-tree-component.css';
@@ -24,7 +23,6 @@ import { MatButtonModule, MatDialogModule, MatIconModule } from '@angular/materi
         CommonModule,
         FormsModule,
         NgbModule,
-        NgSelectModule,
         RouterModule,
         TreeModule.forRoot(),
         // core

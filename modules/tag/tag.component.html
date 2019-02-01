@@ -1,0 +1,19 @@
+<mat-chip-list *ngIf="!canEdit">
+    <mat-chip *ngFor="let tag of tags">{{tag}}</mat-chip>
+</mat-chip-list>
+<mat-form-field *ngIf="canEdit" class="w-100">
+    <mat-chip-list #chipList>
+        <mat-chip *ngFor="let tag of tags" [selectable]="false" [removable]="true" (removed)="remove(tag)">
+            {{tag}}
+            <mat-icon matChipRemove>cancel</mat-icon>
+        </mat-chip>
+        <input matInput #tagInput placeholder="{{placeHolder}}" [formControl]="tagCtrl"
+               [matAutocomplete]="tagAuto" [matChipInputFor]="chipList" (matChipInputTokenEnd)="add($event)"
+               [matChipInputAddOnBlur]="true">
+        <mat-autocomplete #tagAuto="matAutocomplete" (optionSelected)="selected($event)">
+            <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
+                {{tag}}
+            </mat-option>
+        </mat-autocomplete>
+    </mat-chip-list>
+</mat-form-field>

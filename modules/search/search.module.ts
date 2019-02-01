@@ -22,7 +22,6 @@ import { MatButtonModule, MatIconModule, MatMenuModule, MatTabsModule } from "@a
         NgbModule,
         RouterModule.forChild([]),
         // core
-
         MatIconModule,
         MatButtonModule,
         MatIconModule,

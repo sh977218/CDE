@@ -2,7 +2,6 @@ package gov.nih.nlm.form.test;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
-import org.openqa.selenium.support.ui.Select;
 import org.testng.annotations.Test;
 
 public class QuestionDefaultValue extends NlmCdeBaseTest {
@@ -14,8 +13,8 @@ public class QuestionDefaultValue extends NlmCdeBaseTest {
         goToFormByName(formName);
         goToFormDescription();
         startEditQuestionById("question_0-0");
-        clickElement(By.xpath("//*[@id='question_0-0']//*[contains(@class,'defaultAnswer')]/ng-select//input"));
-        selectNgSelectDropdownByText("Brother");
+        clickElement(By.xpath("//*[@id='question_0-0']//mat-select"));
+        selectMatSelectDropdownByText("Brother");
         saveEditQuestionById("question_0-0");
 
         startEditQuestionById("question_0-1");

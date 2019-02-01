@@ -10,9 +10,7 @@
         <div class="form-group">
             <label for="newDesignationTags">Tags</label>
             <div id="newDesignationTags">
-                <ng-select [(ngModel)]="newDesignation.tags" [items]="tags" [hideSelected]="true" [hideSelected]="true"
-                           [placeholder]="noTagFoundMessage" appendTo="body" multiple="true" name="newTags">
-                </ng-select>
+                <cde-tag [tags]="newDesignation.tags" [allTags]="tags" [canEdit]="true"></cde-tag>
             </div>
         </div>
         <div class="alert alert-info">
