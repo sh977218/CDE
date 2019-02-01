@@ -37,7 +37,7 @@ public class CDEDateRangeSearch extends NlmCdeBaseTest {
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("imported:<2014-12-11");
         clickElement(By.id("search.submit"));
-        Assert.assertTrue(getNumberOfResults() > 450);
+        Assert.assertTrue(getNumberOfResults() > 330);
     }
 
 }
