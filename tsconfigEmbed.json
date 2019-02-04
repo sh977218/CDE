@@ -49,7 +49,7 @@
     "modules/swagger",
     "modules/widget",
     "modules/usernameAutocomplete",
-    "modules/skipLogicAutocomplete",
+    "modules/skipLogic",
     "node_modules",
     "protractor",
     "scripts",
