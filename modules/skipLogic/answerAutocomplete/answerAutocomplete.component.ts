@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
-import { Token } from 'skipLogicAutocomplete/skipLogicAutocomplete.component';
+import { Token } from 'skipLogic/skipLogicAutocomplete/skipLogicAutocomplete.component';
 
 @Component({
     selector: 'cde-answer-autocomplete',
@@ -26,18 +26,19 @@ export class AnswerAutocompleteComponent implements OnInit {
 
     private _filterOperator(value: string): string[] {
         const filterValue = value.toLowerCase();
-        return this.token.question.answers.filter(option => option.toLowerCase().includes(filterValue));
+        return this.token.selectedQuestion.answers.filter(option => option.toLowerCase().includes(filterValue));
     }
 
     selectAnswer(event) {
         this.token.answer = event.option.value.permissibleValue;
     }
 
-    displayFn(answer) {
+    displayFn(token) {
         let display = '';
-        if (answer.permissibleValue) display += answer.permissibleValue;
-        if (answer.valueMeaningName) display += " (" + answer.valueMeaningName + " )";
-        return display;
+        if (token.permissibleValue) display += token.permissibleValue;
+        if (token.valueMeaningName) display += " (" + token.valueMeaningName + " )";
+        if (display) return display;
+        else return token.answer;
     }
 
 

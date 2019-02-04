@@ -1,8 +1,10 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Inject } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef, MatDialog } from '@angular/material';
+import { SkipLogicComponent } from 'skipLogic/skipLogic.component';
 
 export class Token {
     formElement;
-    question;
+    selectedQuestion;
     label: string = '';
     operator: string = '=';
     answer: string = '';
@@ -14,22 +16,19 @@ export class Token {
     selector: 'cde-skip-logic-autocomplete',
     templateUrl: './skipLogicAutocomplete.component.html'
 })
-export class SkipLogicAutocompleteComponent implements OnInit {
-    @Input() formElement;
-    @Input() parent;
-    @Input() canEdit;
-    @Output() onSaved = new EventEmitter();
-
-    editMode: boolean = false;
+export class SkipLogicAutocompleteComponent {
     tokens: Token[] = [];
 
-    ngOnInit() {
-        this.tokens = this.getTokens(this.formElement.skipLogic.condition);
+    constructor(protected dialog: MatDialog,
+                public dialogRef: MatDialogRef<SkipLogicComponent>,
+                @Inject(MAT_DIALOG_DATA) public data) {
+        this.tokens = this.getTokens(data.formElement.skipLogic.condition);
         this.tokens.forEach(token => {
             if (token.label) {
-                let question = this.getQuestionByLabel(this.parent, token.label);
-                token.question = question;
+                let question = this.getQuestionByLabel(data.parent, token.label);
+                token.selectedQuestion = question;
                 if (!question) token.error = "Can not find question.";
+                else token.error = '';
             }
         });
     }
@@ -38,17 +37,8 @@ export class SkipLogicAutocompleteComponent implements OnInit {
         this.tokens.push(new Token);
     }
 
-    saveSkipLogic() {
-        this.editMode = false;
-        let skipLogic = '';
-        this.tokens.forEach((t, i) => {
-            if (t.label && t.operator && t.answer) {
-                skipLogic += '"' + t.label + '"' + t.operator + '"' + t.answer + '"';
-                if (i < this.tokens.length - 1) skipLogic += t.logic;
-            }
-        });
-        this.formElement.skipLogic.condition = skipLogic;
-        this.onSaved.emit();
+    deleteToken(i) {
+        this.tokens.splice(i, 1);
     }
 
     private getQuestionByLabel(formElement, label) {
@@ -93,5 +83,7 @@ export class SkipLogicAutocompleteComponent implements OnInit {
         return [token].concat(otherTokens);
     }
 
-
+    onNoClick() {
+        this.dialogRef.close();
+    }
 }

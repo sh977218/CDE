@@ -1,4 +1,4 @@
-<ng-container [ngSwitch]="token?.question?.question.datatype">
+<ng-container [ngSwitch]="token?.selectedQuestion?.question.datatype">
     <ng-container *ngSwitchCase="'Number'">
         <mat-form-field class="w-100">
             <input matInput type="number" placeholder="Number" value="">
@@ -23,7 +23,7 @@
             <mat-error *ngIf="token.error">{{token.error}}</mat-error>
             <mat-autocomplete #answerAuto="matAutocomplete" (optionSelected)="selectAnswer($event)"
                               [displayWith]="displayFn">
-                <mat-option *ngFor="let answer of token.question.question.answers " [value]="answer">
+                <mat-option *ngFor="let answer of token.selectedQuestion.question.answers " [value]="answer">
                     {{answer.permissibleValue}}
                 </mat-option>
             </mat-autocomplete>

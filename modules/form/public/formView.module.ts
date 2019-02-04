@@ -42,8 +42,8 @@ import { InlineAreaEditModule } from 'inlineAreaEdit/inlineAreaEdit.module';
 import { InlineSelectEditModule } from 'inlineSelectEdit/inlineSelectEdit.module';
 import { SortableArrayModule } from 'sortableArray/sortableArray.module';
 import { DeleteWithConfirmModule } from 'deleteWithConfirm/deleteWithConfirm.module';
-import { SkipLogicAutocompleteModule } from 'skipLogicAutocomplete/skipLogicAutocomplete.module';
 import { TagModule } from 'tag/tag.module';
+import { SkipLogicModule } from 'skipLogic/skipLogic.module';
 
 const appRoutes: Routes = [
     {path: '', component: FormViewComponent},
@@ -91,7 +91,7 @@ const appRoutes: Routes = [
         DiscussModule,
         FormSearchModule,
         NativeRenderModule,
-        SkipLogicAutocompleteModule,
+        SkipLogicModule,
     ],
     declarations: [
         ArrayListPipe,

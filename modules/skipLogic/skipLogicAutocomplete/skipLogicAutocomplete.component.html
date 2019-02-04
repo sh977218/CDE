@@ -1,0 +1,24 @@
+<div *ngFor="let token of tokens; let i = index;" class="row">
+    <div class="col-1">
+        <cde-logic-autocomplete *ngIf="i > 0" [(token)]="token"></cde-logic-autocomplete>
+    </div>
+    <div class="col-4">
+        <cde-question-autocomplete [formElement]="data.formElement" [parent]="data.parent"
+                                   [(token)]="token"></cde-question-autocomplete>
+    </div>
+    <div class="col-2">
+        <cde-operator-autocomplete [(token)]="token"></cde-operator-autocomplete>
+    </div>
+    <div class="col-4">
+        <cde-answer-autocomplete [(token)]="token"></cde-answer-autocomplete>
+    </div>
+    <div class="col-1">
+        <mat-icon (click)="deleteToken(i);">delete</mat-icon>
+    </div>
+</div>
+<button mat-raised-button (click)="addToken()">
+    <mat-icon>add</mat-icon>
+    Add A New Condition
+</button>
+<button mat-raised-button [mat-dialog-close]="tokens">Save</button>
+<button mat-raised-button (click)="onNoClick()">Cancel</button>

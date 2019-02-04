@@ -2,13 +2,14 @@ import { Component, OnInit, Input } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
+import { Token } from 'skipLogic/skipLogicAutocomplete/skipLogicAutocomplete.component';
 
 @Component({
     selector: 'cde-operator-autocomplete',
     templateUrl: './operatorAutocomplete.component.html'
 })
 export class OperatorAutocompleteComponent implements OnInit {
-    @Input() token;
+    @Input() token: Token;
 
     operatorOptions = [' = ', ' > ', ' < ', ' >= ', ' <= '];
     filteredOperatorOptions: Observable<string[]>;

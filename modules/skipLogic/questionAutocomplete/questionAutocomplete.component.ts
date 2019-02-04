@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
-import { Token } from 'skipLogicAutocomplete/skipLogicAutocomplete.component';
+import { Token } from 'skipLogic/skipLogicAutocomplete/skipLogicAutocomplete.component';
 
 @Component({
     selector: 'cde-question-autocomplete',
@@ -61,12 +61,12 @@ export class QuestionAutocompleteComponent implements OnInit {
 
     selectQuestion(event) {
         this.token.formElement = event.option.value;
-        this.token.question = this.getQuestionByLabel(this.parent, event.option.value.label);
+        this.token.selectedQuestion = this.getQuestionByLabel(this.parent, event.option.value.label);
         this.token.label = event.option.value.label;
     }
 
-    displayFn(q) {
-        if (q) return q.label;
+    displayFn(token) {
+        if (token) return token.label;
         else return '';
     }
 

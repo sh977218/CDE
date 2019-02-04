@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
-import { Token } from 'skipLogicAutocomplete/skipLogicAutocomplete.component';
+import { Token } from 'skipLogic/skipLogicAutocomplete/skipLogicAutocomplete.component';
 
 @Component({
     selector: 'cde-logic-autocomplete',
