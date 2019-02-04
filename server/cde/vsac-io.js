@@ -49,13 +49,11 @@ exports.getTGT = function (retries, cb) {
         }
         dbLogger.consoleLog('getTgt: ERROR TIMEDOUT: check credentials');
     }
-    let req = https.request(tgtOptions, function (res) {
+    let req = https.request(tgtOptions, res => {
         let output = '';
         res.setEncoding('utf8');
-        res.on('data', function (chunk) {
-            output += chunk;
-        });
-        res.on('end', function () {
+        res.on('data', chunk => output += chunk);
+        res.on('end', () => {
             if (!output) {
                 dbLogger.consoleLog('getTgt: ERROR no TGT: check credentials');
                 retry(retries, cb);
@@ -71,7 +69,7 @@ exports.getTGT = function (retries, cb) {
         });
     });
 
-    req.on('error', function (e) {
+    req.on('error', e => {
         dbLogger.consoleLog('getTgt: ERROR with request: ' + e, 'error');
         retry(retries, cb);
     });

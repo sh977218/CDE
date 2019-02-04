@@ -22,7 +22,7 @@ export class PermissibleValueComponent {
         this._elt = v;
         fixDatatype(this.elt);
         this.elt.allValid = true;
-        this.loadValueSet();
+        if (this.userService.loggedIn()) this.loadValueSet();
         this.initSrcOptions();
         this.canLinkPvFunc();
         if (!this.elt.dataElementConcept.conceptualDomain) {
