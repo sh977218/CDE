@@ -1,19 +1,19 @@
 <ng-container [ngSwitch]="token?.selectedQuestion?.question.datatype">
     <ng-container *ngSwitchCase="'Number'">
         <mat-form-field class="w-100">
-            <input matInput type="number" placeholder="Number" value="">
+            <input matInput type="number" placeholder="Number" [formControl]="numberAnswerControl">
         </mat-form-field>
     </ng-container>
     <ng-container *ngSwitchCase="'Date'">
         <mat-form-field class="w-100">
-            <input matInput type="date" [matDatepicker]="picker" placeholder="Date">
+            <input matInput [matDatepicker]="picker" placeholder="Choose a date" (dateChange)="selectDate($event);">
             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
     </ng-container>
     <ng-container *ngSwitchCase="'Text'">
         <mat-form-field class="w-100">
-            <input matInput type="text" placeholder="Text" value="">
+            <input matInput type="text" placeholder="Text" [formControl]="textAnswerControl">
         </mat-form-field>
     </ng-container>
     <ng-container *ngSwitchCase="'Value List'">
@@ -21,7 +21,7 @@
             <input type="text" placeholder="Select Answer" matInput [formControl]="answerControl"
                    [matAutocomplete]="answerAuto">
             <mat-error *ngIf="token.error">{{token.error}}</mat-error>
-            <mat-autocomplete #answerAuto="matAutocomplete" (optionSelected)="selectAnswer($event)"
+            <mat-autocomplete #answerAuto="matAutocomplete" (optionSelected)="selectValueList($event)"
                               [displayWith]="displayFn">
                 <mat-option *ngFor="let answer of token.selectedQuestion.question.answers " [value]="answer">
                     {{answer.permissibleValue}}

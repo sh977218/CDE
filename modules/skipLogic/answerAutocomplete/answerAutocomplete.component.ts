@@ -3,6 +3,10 @@ import { FormControl, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { Token } from 'skipLogic/skipLogicAutocomplete/skipLogicAutocomplete.component';
+import * as _moment from 'moment';
+import { default as _rollupMoment } from 'moment';
+
+const moment = _rollupMoment || _moment;
 
 @Component({
     selector: 'cde-answer-autocomplete',
@@ -13,9 +17,16 @@ export class AnswerAutocompleteComponent implements OnInit {
 
     filteredAnswerOptions: Observable<string[]>;
     answerControl = new FormControl('', [Validators.required]);
+    numberAnswerControl = new FormControl('', [Validators.required]);
+    textAnswerControl = new FormControl('', [Validators.required]);
 
     ngOnInit() {
-        if (this.token.answer) this.answerControl.setValue(this.token);
+        if (this.token.answer) {
+            this.answerControl.setValue(this.token);
+            this.numberAnswerControl.setValue(this.token);
+        }
+        this.numberAnswerControl.valueChanges.subscribe(v => this.token.answer = v);
+        this.textAnswerControl.valueChanges.subscribe(v => this.token.answer = v);
         this.filteredAnswerOptions = this.answerControl.valueChanges
             .pipe(
                 startWith(''),
@@ -29,8 +40,15 @@ export class AnswerAutocompleteComponent implements OnInit {
         return this.token.selectedQuestion.answers.filter(option => option.toLowerCase().includes(filterValue));
     }
 
-    selectAnswer(event) {
+    selectValueList(event) {
         this.token.answer = event.option.value.permissibleValue;
+    }
+
+    selectDate(event) {
+        if (event) {
+            let date = moment(event.value).format('MM/DD/YYYY');
+            this.token.answer = date;
+        }
     }
 
     displayFn(token) {

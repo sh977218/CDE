@@ -34,12 +34,14 @@ export class SkipLogicComponent {
 
     tokensToSkipLogc(tokens) {
         let skipLogic = '';
-        tokens.forEach((t, i) => {
-            if (t.label && t.operator && t.answer) {
-                skipLogic += '"' + t.label + '"' + t.operator + '"' + t.answer + '"';
-                if (i < tokens.length - 1) skipLogic += t.logic;
-            }
-        });
+        if (tokens) {
+            tokens.forEach((t, i) => {
+                if (t.label && t.operator && t.answer) {
+                    skipLogic += '"' + t.label + '"' + t.operator + '"' + t.answer + '"';
+                    if (i < tokens.length - 1) skipLogic += t.logic;
+                }
+            });
+        }
         return skipLogic;
     }
 }

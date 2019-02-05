@@ -226,4 +226,31 @@ public class BaseFormTest extends NlmCdeBaseTest {
         }
     }
 
+    protected void deleteSkipLogicById(String id) {
+        clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'skipLogicEditTextarea')]//mat-icon[.='delete']"));
+    }
+
+    protected void addSkipLogicById(String id, String label, String operator, String answer, String answerType, String logic) {
+        clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'skipLogicEditTextarea')]//mat-icon[.='edit']"));
+        clickElement(By.id("addNewSkipLogicButton"));
+        if (label != null && label.length() > 0) {
+            clickElement(By.xpath("//cde-question-autocomplete[last()]"));
+            selectMatSelectDropdownByText(label);
+        }
+        if (operator != null && operator.length() > 0) {
+            clickElement(By.xpath("//cde-operator-autocomplete[last()]"));
+            selectMatSelectDropdownByText(label);
+        }
+        if (answer != null && answer.length() > 0) {
+            if (answerType == "date" || answerType == "number" || answerType == "text") {
+                findElement(By.xpath("//cde-answer-autocomplete[last()]//input")).sendKeys(answer);
+            }
+        }
+        if (logic != null && logic.length() > 0) {
+            clickElement(By.xpath("//cde-logic-autocomplete[last()]"));
+            selectMatSelectDropdownByText(label);
+        }
+        clickElement(By.id("saveNewSkipLogicButton"));
+
+    }
 }

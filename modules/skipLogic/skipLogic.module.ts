@@ -4,7 +4,8 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 import { CoreModule } from 'core/core.module';
 import {
-    MatIconModule, MatInputModule, MatButtonModule, MatAutocompleteModule, MatDatepickerModule, MatDialogModule
+    MatIconModule, MatInputModule, MatButtonModule, MatAutocompleteModule, MatDatepickerModule, MatNativeDateModule,
+    MatDialogModule
 } from '@angular/material';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
 import { SkipLogicAutocompleteComponent } from 'skipLogic/skipLogicAutocomplete/skipLogicAutocomplete.component';
@@ -24,18 +25,26 @@ import { SkipLogicComponent } from 'skipLogic/skipLogic.component';
         MatInputModule,
         MatButtonModule,
         MatDatepickerModule,
+        MatNativeDateModule,
         MatDialogModule,
         MatAutocompleteModule
     ],
     declarations: [
+        SkipLogicAutocompleteComponent,
         QuestionAutocompleteComponent,
         OperatorAutocompleteComponent,
         AnswerAutocompleteComponent,
         LogicAutocompleteComponent,
-        SkipLogicAutocompleteComponent,
         SkipLogicComponent
     ],
-    entryComponents: [SkipLogicAutocompleteComponent],
+    entryComponents: [
+        SkipLogicAutocompleteComponent,
+        QuestionAutocompleteComponent,
+        OperatorAutocompleteComponent,
+        AnswerAutocompleteComponent,
+        LogicAutocompleteComponent,
+        SkipLogicComponent
+    ],
     exports: [SkipLogicComponent],
     providers: [SkipLogicValidateService],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]

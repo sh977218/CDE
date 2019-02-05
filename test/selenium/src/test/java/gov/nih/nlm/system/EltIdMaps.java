@@ -155,6 +155,7 @@ public class EltIdMaps {
         eltMap.put("Section Test Form3", "mkmn3Bcz8");
         eltMap.put("Section Test Form4", "71WanHqGU");
         eltMap.put("Socioeconomic Status", "XyMzLyBHYl");
+        eltMap.put("Skip Logic Date Test Form", "71t5G120U");
         eltMap.put("Stroke Symptoms/Comorbid Events", "7kqGIJBBKg");
         eltMap.put("Stroke Types and Subtypes", "QkX81HrFx");
         eltMap.put("Study Discontinuation/Completion", "myWQUJrHFg");
