@@ -19,8 +19,8 @@
     </ng-container>
     <ng-container *ngSwitchCase="'Value List'">
         <mat-form-field class="w-100">
-            <input matInput autocomplete="false" type="text" placeholder="Select Answer" [formControl]="answerControl"
-                   [matAutocomplete]="answerAuto">
+            <input matInput autocomplete="false" type="text" placeholder="Select Answer"
+                   [formControl]="valueListAnswerControl" [matAutocomplete]="answerAuto">
             <mat-error *ngIf="token.error">{{token.error}}</mat-error>
             <mat-autocomplete #answerAuto="matAutocomplete" (optionSelected)="selectValueList($event)"
                               [displayWith]="displayFn">

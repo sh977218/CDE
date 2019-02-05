@@ -16,18 +16,18 @@ export class AnswerAutocompleteComponent implements OnInit {
     @Input() token?: Token;
 
     filteredAnswerOptions: Observable<string[]>;
-    answerControl = new FormControl('', [Validators.required]);
+    valueListAnswerControl = new FormControl('', [Validators.required]);
     numberAnswerControl = new FormControl('', [Validators.required]);
     textAnswerControl = new FormControl('', [Validators.required]);
 
     ngOnInit() {
         if (this.token.answer) {
-            this.answerControl.setValue(this.token);
+            this.valueListAnswerControl.setValue(this.token);
             this.numberAnswerControl.setValue(this.token);
         }
         this.numberAnswerControl.valueChanges.subscribe(v => this.token.answer = v);
         this.textAnswerControl.valueChanges.subscribe(v => this.token.answer = v);
-        this.filteredAnswerOptions = this.answerControl.valueChanges
+        this.filteredAnswerOptions = this.valueListAnswerControl.valueChanges
             .pipe(
                 startWith(''),
                 map(value => typeof value === 'string' ? value : value.answer),
