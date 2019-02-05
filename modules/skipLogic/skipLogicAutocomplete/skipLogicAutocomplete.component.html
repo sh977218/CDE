@@ -20,10 +20,13 @@
     </div>
     <button mat-raised-button (click)="addToken()" id="addNewSkipLogicButton">
         <mat-icon>add</mat-icon>
-        Add A New Condition
+        Add A Condition
+    </button>
+    <button mat-raised-button (click)="deleteSkipLogic()" id="deleteSkipLogicButton">
+        <mat-icon>delete</mat-icon>
     </button>
 </div>
 <div mat-dialog-actions>
-    <button mat-raised-button [mat-dialog-close]="tokens" id="saveNewSkipLogicButton">Save</button>
-    <button mat-raised-button (click)="onNoClick()">Cancel</button>
+    <button mat-raised-button (click)="onNoClick()" color="warn">Cancel</button>
+    <button mat-raised-button [mat-dialog-close]="tokens" id="saveNewSkipLogicButton" color="primary">Save</button>
 </div>

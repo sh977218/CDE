@@ -37,6 +37,10 @@ export class SkipLogicAutocompleteComponent {
         this.tokens.push(new Token);
     }
 
+    deleteSkipLogic() {
+        this.tokens = [];
+    }
+
     deleteToken(i) {
         this.tokens.splice(i, 1);
     }

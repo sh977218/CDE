@@ -27,11 +27,6 @@ export class SkipLogicComponent {
         });
     }
 
-    deleteSkipLogic() {
-        this.formElement.skipLogic.condition = '';
-        this.onSaved.emit();
-    }
-
     tokensToSkipLogc(tokens) {
         let skipLogic = '';
         if (tokens) {
