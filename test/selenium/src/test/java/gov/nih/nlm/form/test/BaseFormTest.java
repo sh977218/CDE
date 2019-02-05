@@ -245,6 +245,10 @@ public class BaseFormTest extends NlmCdeBaseTest {
             if (answerType == "date" || answerType == "number" || answerType == "text") {
                 findElement(By.xpath("//cde-answer-autocomplete[last()]//input")).sendKeys(answer);
             }
+            if (answerType == "value list") {
+                clickElement(By.xpath("//cde-answer-autocomplete[last()]"));
+                selectMatSelectDropdownByText(label);
+            }
         }
         if (logic != null && logic.length() > 0) {
             clickElement(By.xpath("//cde-logic-autocomplete[last()]"));
