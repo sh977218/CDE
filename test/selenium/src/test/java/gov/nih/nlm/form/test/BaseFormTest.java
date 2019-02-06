@@ -227,7 +227,10 @@ public class BaseFormTest extends NlmCdeBaseTest {
     }
 
     protected void deleteSkipLogicById(String id) {
-        clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'skipLogicEditTextarea')]//mat-icon[.='delete']"));
+        clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'skipLogicEditTextarea')]//mat-icon[.='edit']"));
+        clickElement(By.xpath("//mat-dialog-title"));
+        clickElement(By.id("deleteSkipLogicButton"));
+        clickElement(By.id("saveNewSkipLogicButton"));
     }
 
     protected void addSkipLogicById(String id, String label, String operator, String answer, String answerType, String logic) {

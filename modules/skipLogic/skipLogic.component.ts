@@ -22,8 +22,10 @@ export class SkipLogicComponent {
         };
         this.dialog.open(SkipLogicAutocompleteComponent, {width: '800px', data: data})
             .afterClosed().subscribe(tokens => {
-            this.formElement.skipLogic.condition = this.tokensToSkipLogc(tokens);
-            this.onSaved.emit();
+            if (tokens) {
+                this.formElement.skipLogic.condition = this.tokensToSkipLogc(tokens);
+                this.onSaved.emit();
+            }
         });
     }
 

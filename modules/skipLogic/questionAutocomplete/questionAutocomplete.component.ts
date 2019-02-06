@@ -20,7 +20,8 @@ export class QuestionAutocompleteComponent implements OnInit {
 
     ngOnInit() {
         this.questionControl.setValue(this.token);
-        this.priorQuestions = this.getPriorQuestions(this.parent, this.formElement.label);
+        let realLabel = this.formElement.label ? this.formElement.label : this.formElement.question.cde.name;
+        this.priorQuestions = this.getPriorQuestions(this.parent, realLabel);
         this.filteredQuestionOptions = this.questionControl.valueChanges
             .pipe(
                 startWith(''),
@@ -32,7 +33,8 @@ export class QuestionAutocompleteComponent implements OnInit {
 
     private loopFormElements(fe, label, questions) {
         for (let e of fe.formElements) {
-            if (e.label === label) return;
+            let realLabel = e.label ? e.label : e.question.cde.name;
+            if (realLabel === label) return;
             else if (e.elementType === 'question') questions.push(e);
             else this.loopFormElements(e, label, questions);
         }
@@ -47,27 +49,30 @@ export class QuestionAutocompleteComponent implements OnInit {
     private getQuestionByLabel(formElement, label) {
         for (let e of formElement.formElements) {
             if (e.elementType === 'question') {
-                if (e.label === label) return e;
+                let realLabel = e.label ? e.label : e.question.cde.name;
+                if (realLabel === label) return e;
             } else return this.getQuestionByLabel(e, label);
         }
     }
 
     private _filterQuestion(questionLabel): string[] {
         const filterValue = questionLabel.toLowerCase();
-        return this.priorQuestions.filter(option => {
-            return option.label.toLowerCase().includes(filterValue);
+        return this.priorQuestions.filter(priorQuestion => {
+            let realLabel = priorQuestion.label ? priorQuestion.label : priorQuestion.question.cde.name;
+            return realLabel.toLowerCase().includes(filterValue);
         });
     }
 
     selectQuestion(event) {
         this.token.formElement = event.option.value;
         this.token.selectedQuestion = this.getQuestionByLabel(this.parent, event.option.value.label);
-        this.token.label = event.option.value.label;
+        this.token.label = event.option.value.label ? event.option.value.label : event.option.value.question.cde.name;
     }
 
     displayFn(token) {
-        if (token) return token.label;
-        else return '';
+        if (token) {
+            return token.label ? token.label : token.question.cde.name;
+        } else return '';
     }
 
 }
