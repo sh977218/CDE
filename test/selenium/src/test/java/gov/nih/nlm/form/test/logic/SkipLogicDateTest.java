@@ -16,7 +16,7 @@ public class SkipLogicDateTest extends BaseFormTest {
         goToPreview();
         togglePrintableLogic();
         textNotPresent(cdeName);
-        findElement(By.xpath("//*[@id='Person Birth Date_0-0']")).sendKeys("02/04/2019");
+        findElement(By.xpath("//*[@id='Person Birth Date_0-0_box']")).sendKeys("02/04/2019");
         textPresent(cdeName);
 
         goToFormDescription();
@@ -27,7 +27,7 @@ public class SkipLogicDateTest extends BaseFormTest {
         goToPreview();
         togglePrintableLogic();
         textPresent(cdeName);
-        findElement(By.xpath("//*[@id='Person Birth Date_0-0']")).sendKeys("02/04/2019");
+        findElement(By.xpath("//*[@id='Person Birth Date_0-0_box']")).sendKeys("02/04/2019");
         textPresent(cdeName);
 
     }
