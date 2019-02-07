@@ -71,7 +71,9 @@ export class QuestionAutocompleteComponent implements OnInit {
 
     displayFn(token) {
         if (token) {
-            return token.label ? token.label : token.question.cde.name;
+            if (token.label) return token.label;
+            else if (token.question && token.question.cde) return token.question.cde.name;
+            else return '';
         } else return '';
     }
 

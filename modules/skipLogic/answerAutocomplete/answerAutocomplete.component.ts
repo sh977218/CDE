@@ -18,15 +18,19 @@ export class AnswerAutocompleteComponent implements OnInit {
     filteredAnswerOptions: Observable<string[]>;
     valueListAnswerControl = new FormControl('', [Validators.required]);
     numberAnswerControl = new FormControl('', [Validators.required]);
+    dateAnswerControl = new FormControl('', [Validators.required]);
     textAnswerControl = new FormControl('', [Validators.required]);
 
     ngOnInit() {
         if (this.token.answer) {
             this.valueListAnswerControl.setValue(this.token);
             this.numberAnswerControl.setValue(this.token);
+            this.textAnswerControl.setValue(this.token);
+            this.dateAnswerControl.setValue(this.token);
         }
         this.numberAnswerControl.valueChanges.subscribe(v => this.token.answer = v);
         this.textAnswerControl.valueChanges.subscribe(v => this.token.answer = v);
+        this.dateAnswerControl.valueChanges.subscribe(v => this.token.answer = v);
         this.filteredAnswerOptions = this.valueListAnswerControl.valueChanges
             .pipe(
                 startWith(''),

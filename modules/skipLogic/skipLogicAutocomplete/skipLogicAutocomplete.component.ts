@@ -90,4 +90,8 @@ export class SkipLogicAutocompleteComponent {
     onNoClick() {
         this.dialogRef.close();
     }
+
+    hasError() {
+        this.tokens.filter(t => t.error).length > 0;
+    }
 }
