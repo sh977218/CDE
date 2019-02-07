@@ -64,10 +64,6 @@ export class FormDescriptionQuestionComponent implements OnInit {
         }
     }
 
-    getDisplayLabel(question) {
-        return question.label || question.question.cde.name;
-    }
-
     getDatatypeLabel(question) {
         let datatype = question.question.datatype;
         if (!datatype) return '';
