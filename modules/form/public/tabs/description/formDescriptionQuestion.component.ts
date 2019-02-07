@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Host, Input, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
 import { TreeNode } from 'angular-tree-component';
 import _isEqual from 'lodash/isEqual';
@@ -63,6 +62,10 @@ export class FormDescriptionQuestionComponent implements OnInit {
         if (!this.isSubForm && this.canEdit) {
             question.hover = false;
         }
+    }
+
+    getDisplayLabel(question) {
+        return question.label || question.question.cde.name;
     }
 
     getDatatypeLabel(question) {

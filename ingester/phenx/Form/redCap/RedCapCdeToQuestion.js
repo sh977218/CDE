@@ -54,7 +54,6 @@ exports.convert = async (redCapCde, redCapCdes, cde, newForm) => {
     let question = {
         elementType: "question",
         label: fieldLabel,
-        hideLabel: fieldLabel.length === 0 ? true : false,
         cardinality: {min: 1, max: 1},
         skipLogic: {
             condition: skipLogicCondition

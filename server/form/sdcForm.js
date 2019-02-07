@@ -6,7 +6,7 @@ function addQuestion(parent, question) {
     let newQuestion = {
         "@ID": question.question.cde.tinyId || "N/A"
     };
-    if (question.label !== undefined && !question.hideLabel) {
+    if (!!question.label) {
         newQuestion["@title"] = question.label;
     }
     if (question.instructions && question.instructions.value) {
@@ -81,7 +81,7 @@ function doQuestion(parent, question) {
                                 if (!liChildItems) liChildItems = li.ele({ChildItems: {}});
                                 addQuestion(liChildItems, question);
                             } else {
-                                if (question.label === "" || question.hideLabel) {
+                                if (!question.label) {
                                     li.ele({ListItemResponseField: {Response: {string: ""}}});
                                 } else {
                                     let liChildItems2 = li.children.filter(c => c.name === 'ChildItems')[0];
