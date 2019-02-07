@@ -92,6 +92,7 @@ export class SkipLogicAutocompleteComponent {
     }
 
     hasError() {
-        this.tokens.filter(t => t.error).length > 0;
+        let temp = this.tokens.filter(t => t.error);
+        return temp.length > 0;
     }
 }
