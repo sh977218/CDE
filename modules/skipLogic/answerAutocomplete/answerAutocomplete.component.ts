@@ -26,7 +26,7 @@ export class AnswerAutocompleteComponent implements OnInit {
             this.valueListAnswerControl.setValue(this.token);
             this.numberAnswerControl.setValue(this.token);
             this.textAnswerControl.setValue(this.token);
-            this.dateAnswerControl.setValue(this.token);
+            this.dateAnswerControl.setValue(new Date(this.token.answer));
         }
         this.numberAnswerControl.valueChanges.subscribe(v => this.token.answer = v);
         this.textAnswerControl.valueChanges.subscribe(v => this.token.answer = v);
