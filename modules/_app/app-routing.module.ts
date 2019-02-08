@@ -11,60 +11,38 @@ import { IdentifierSourcesResolve } from 'system/public/components/searchPrefere
 import { IEGuard } from '_app/routerGuard/ieGuard';
 
 const appRoutes: Routes = [
-    {path: 'api', loadChildren: 'system/public/documentApi.module#DocumentApiModule'},
-    {path: 'boardList', loadChildren: 'board/public/boardList.module#BoardListModule'},
-    {path: 'board/:boardId', loadChildren: 'board/public/boardView.module#BoardViewModule'},
+    {path: 'api', loadChildren: 'system/public/documentApi.module#DocumentApiModule', data: {title: 'API Documentation'}},
+    {path: 'boardList', loadChildren: 'board/public/boardList.module#BoardListModule', data: {title: 'Public Boards'}},
+    {path: 'board/:boardId', loadChildren: 'board/public/boardView.module#BoardViewModule', data: {title: 'Board View'}},
     {path: 'home', loadChildren: 'home/home.module#HomeModule'},
-    {path: 'cde/search', loadChildren: 'cde/public/cdeSearchEntry.module#CdeSearchEntryModule'},
-    {path: 'cdeStatusReport', loadChildren: 'cde/public/cdeStatusReport.module#CdeStatusReportModule'},
+    {path: 'cde/search', loadChildren: 'cde/public/cdeSearchEntry.module#CdeSearchEntryModule', data: {title: 'Data Element Search'}},
+    {path: 'cdeStatusReport', loadChildren: 'cde/public/cdeStatusReport.module#CdeStatusReportModule', data: {title: 'Data Element Status Report'}},
     {path: 'cde', redirectTo: '/cde/search', pathMatch: 'full'},
-    {
-        path: 'classificationmanagement',
-        loadChildren: 'system/public/classifManagement.module#ClassifManagementModule',
-        canLoad: [OrgCuratorGuard]
-    },
-    {path: 'createCde', loadChildren: 'cde/public/cdeCreate.module#CdeCreateModule'},
-    {path: 'createForm', loadChildren: 'form/public/formCreate.module#FormCreateModule'},
-    {path: 'deView', loadChildren: 'cde/public/cdeView.module#CdeViewModule'},
-    {path: 'form/search', loadChildren: 'form/public/formSearchEntry.module#FormSearchEntryModule'},
-    {path: 'formView', loadChildren: 'form/public/formView.module#FormViewModule'},
+    {path: 'classificationmanagement', loadChildren: 'system/public/classifManagement.module#ClassifManagementModule', canLoad: [OrgCuratorGuard], data: {title: 'Manage Classification'}},
+    {path: 'createCde', loadChildren: 'cde/public/cdeCreate.module#CdeCreateModule', data: {title: 'Create Data Element'}},
+    {path: 'createForm', loadChildren: 'form/public/formCreate.module#FormCreateModule', data: {title: 'Create Form'}},
+    {path: 'deView', loadChildren: 'cde/public/cdeView.module#CdeViewModule', data: {title: 'Data Element View'}},
+    {path: 'form/search', loadChildren: 'form/public/formSearchEntry.module#FormSearchEntryModule', data: {title: 'Form Search'}},
+    {path: 'formView', loadChildren: 'form/public/formView.module#FormViewModule', data: {title: 'Form View'}},
     {path: 'form', redirectTo: '/form/search', pathMatch: 'full'},
-    {path: 'inbox', loadChildren: 'system/public/inbox.module#InboxModule', canLoad: [LoggedInGuard]},
-    {path: 'login', loadChildren: 'system/public/login.module#LoginModule', canLoad: [IEGuard]},
-    {path: 'ieDiscontinued', loadChildren: 'system/public/ieDiscontinued.module#IeDiscontinuedModule'},
-    {path: 'myboards', loadChildren: 'board/public/myBoards.module#MyBoardsModule'},
-    {path: 'offline', component: OfflineComponent},
-    {
-        path: 'orgaccountmanagement',
-        loadChildren: 'system/public/orgManagement.module#OrgManagementModule',
-        canLoad: [OrgAdminGuard]
-    },
-    {
-        path: 'orgAuthority',
-        loadChildren: 'system/public/orgAuthority.module#OrgAuthorityModule',
-        canLoad: [OrgAuthorityGuard]
-    },
-    {path: 'orgComments', loadChildren: 'discuss/discussEntry.module#DiscussEntryModule', canLoad: [OrgCuratorGuard]},
-    {path: 'quickBoard', loadChildren: 'quickBoard/quickBoard.module#QuickBoardModule'},
-    {path: 'resources', loadChildren: 'system/public/resources.module#ResourcesModule'},
-    {path: 'profile', loadChildren: 'system/public/profile.module#ProfileModule', canLoad: [LoggedInGuard]},
-    {path: 'whatsNew', loadChildren: 'system/public/whatsNew.module#WhatsNewModule'},
-    {path: 'contactUs', loadChildren: 'system/public/contactUs.module#ContactUsModule'},
-    {
-        path: 'searchPreferences',
-        resolve: {
-            identifier: IdentifierSourcesResolve
-        },
-        loadChildren: 'system/public/searchPreferences.module#SearchPreferencesModule'
-    },
-    {
-        path: 'siteaccountmanagement',
-        loadChildren: 'system/public/siteManagement.module#SiteManagementModule',
-        canLoad: [SiteAdminGuard]
-    },
-    {path: 'siteAudit', loadChildren: 'system/public/siteAudit.module#SiteAuditModule', canLoad: [OrgAuthorityGuard]},
+    {path: 'inbox', loadChildren: 'system/public/inbox.module#InboxModule', canLoad: [LoggedInGuard], data: {title: 'Inbox'}},
+    {path: 'login', loadChildren: 'system/public/login.module#LoginModule', canLoad: [IEGuard], data: {title: 'Login'}},
+    {path: 'ieDiscontinued', loadChildren: 'system/public/ieDiscontinued.module#IeDiscontinuedModule', data: {title: 'Upgrade Browser'}},
+    {path: 'myboards', loadChildren: 'board/public/myBoards.module#MyBoardsModule', data: {title: 'My Boards'}},
+    {path: 'offline', component: OfflineComponent, data: {title: 'Offline'}},
+    {path: 'orgaccountmanagement', loadChildren: 'system/public/orgManagement.module#OrgManagementModule', canLoad: [OrgAdminGuard], data: {title: 'Manage Organization'}},
+    {path: 'orgAuthority', loadChildren: 'system/public/orgAuthority.module#OrgAuthorityModule', canLoad: [OrgAuthorityGuard], data: {title: 'Manage Organizations'}},
+    {path: 'orgComments', loadChildren: 'discuss/discussEntry.module#DiscussEntryModule', canLoad: [OrgCuratorGuard], data: {title: 'Comments'}},
+    {path: 'quickBoard', loadChildren: 'quickBoard/quickBoard.module#QuickBoardModule', data: {title: 'Quick Board'}},
+    {path: 'resources', loadChildren: 'system/public/resources.module#ResourcesModule', data: {title: 'Resources'}},
+    {path: 'profile', loadChildren: 'system/public/profile.module#ProfileModule', canLoad: [LoggedInGuard], data: {title: 'Profile'}},
+    {path: 'whatsNew', loadChildren: 'system/public/whatsNew.module#WhatsNewModule', data: {title: `What's New`}},
+    {path: 'contactUs', loadChildren: 'system/public/contactUs.module#ContactUsModule', data: {title: 'Contact Us'}},
+    {path: 'searchPreferences', resolve: {identifier: IdentifierSourcesResolve}, loadChildren: 'system/public/searchPreferences.module#SearchPreferencesModule', data: {title: 'Search Preferences'}},
+    {path: 'siteaccountmanagement', loadChildren: 'system/public/siteManagement.module#SiteManagementModule', canLoad: [SiteAdminGuard], data: {title: 'Manage Site'}},
+    {path: 'siteAudit', loadChildren: 'system/public/siteAudit.module#SiteAuditModule', canLoad: [OrgAuthorityGuard], data: {title: 'Audit'}},
     {path: '', redirectTo: '/home', pathMatch: 'full'},
-    {path: '**', component: PageNotFoundComponent}
+    {path: '**', component: PageNotFoundComponent, data: {title: 'Page Not Found'}}
 ];
 
 @NgModule({
