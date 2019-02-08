@@ -1,9 +1,0 @@
-<mat-form-field class="w-100">
-    <input matInput type="text" autofocus="false" autocomplete="false" [formControl]="logicControl"
-           [matAutocomplete]="logicAuto">
-    <mat-autocomplete #logicAuto="matAutocomplete" (optionSelected)="token.logic = logicControl.value">
-        <mat-option *ngFor="let option of filteredLogicOptions | async" [value]="option">
-            {{option}}
-        </mat-option>
-    </mat-autocomplete>
-</mat-form-field>

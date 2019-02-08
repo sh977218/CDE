@@ -4,15 +4,12 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 import { CoreModule } from 'core/core.module';
 import {
-    MatIconModule, MatInputModule, MatButtonModule, MatAutocompleteModule, MatDatepickerModule, MatNativeDateModule,
-    MatDialogModule
+    MatIconModule, MatInputModule, MatSelectModule, MatButtonModule, MatAutocompleteModule, MatDatepickerModule,
+    MatNativeDateModule, MatDialogModule
 } from '@angular/material';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
 import { SkipLogicAutocompleteComponent } from 'skipLogic/skipLogicAutocomplete/skipLogicAutocomplete.component';
-import { QuestionAutocompleteComponent } from 'skipLogic/questionAutocomplete/questionAutocomplete.component';
-import { OperatorAutocompleteComponent } from 'skipLogic/operatorAutocomplete/operatorAutocomplete.component';
 import { AnswerAutocompleteComponent } from 'skipLogic/answerAutocomplete/answerAutocomplete.component';
-import { LogicAutocompleteComponent } from 'skipLogic/logicAutocomplete/logicAutocomplete.component';
 import { SkipLogicComponent } from 'skipLogic/skipLogic.component';
 
 @NgModule({
@@ -23,6 +20,7 @@ import { SkipLogicComponent } from 'skipLogic/skipLogic.component';
         CoreModule,
         MatIconModule,
         MatInputModule,
+        MatSelectModule,
         MatButtonModule,
         MatDatepickerModule,
         MatNativeDateModule,
@@ -31,18 +29,12 @@ import { SkipLogicComponent } from 'skipLogic/skipLogic.component';
     ],
     declarations: [
         SkipLogicAutocompleteComponent,
-        QuestionAutocompleteComponent,
-        OperatorAutocompleteComponent,
         AnswerAutocompleteComponent,
-        LogicAutocompleteComponent,
         SkipLogicComponent
     ],
     entryComponents: [
         SkipLogicAutocompleteComponent,
-        QuestionAutocompleteComponent,
-        OperatorAutocompleteComponent,
         AnswerAutocompleteComponent,
-        LogicAutocompleteComponent,
         SkipLogicComponent
     ],
     exports: [SkipLogicComponent],
