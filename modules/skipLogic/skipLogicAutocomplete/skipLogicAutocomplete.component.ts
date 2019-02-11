@@ -62,8 +62,11 @@ export class SkipLogicAutocompleteComponent implements OnInit {
     }
 
     deleteSkipLogic(i) {
-        if (i > -1) this.items.removeAt(i);
-        else this.items = this.formBuilder.array([]);
+        this.items.removeAt(i);
+    }
+
+    deleteAllSkipLogic() {
+        this.items = this.formBuilder.array([]);
     }
 
     private getQuestionByLabel(label) {
@@ -125,9 +128,15 @@ export class SkipLogicAutocompleteComponent implements OnInit {
         }
     }
 
-    selectQuestion(item) {
-        let token = item.value;
+    selectQuestion(i) {
+        let token = i.value;
         token.selectedQuestion = this.getQuestionByLabel(token.label);
+        console.log('a');
+    }
+
+    getAnswerOptions(i) {
+        console.log(this);
+        console.log('a');
     }
 
 }

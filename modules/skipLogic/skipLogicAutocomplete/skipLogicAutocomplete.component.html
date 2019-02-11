@@ -2,8 +2,8 @@
     <h1 mat-dialog-title>Edit Skip Logic:</h1>
     <div mat-dialog-content>
         <div formArrayName="items"
-             *ngFor="let item of skipLogicForm.get('items').controls let i = index;">
-            <div [formGroupName]="i" class="row">
+             *ngFor="let item of skipLogicForm.get('items')['controls'] let i = index;">
+            <div class="row">
                 <div class="col-1">
                     <mat-form-field class="w-100" *ngIf="i > 0">
                         <select matNativeControl formControlName="logic" placeholder="Logic">
@@ -33,11 +33,13 @@
                 </div>
                 <div class="col-4">
                     <mat-form-field class="w-100">
-                        <select matNativeControl formControlName="answer" placeholder="Answer">
-                            <option *ngFor="let answer of item.value.selectedQuestion?.question?.answers"
-                                    [value]="answer.permissibleValue">{{answer.permissibleValue}}
-                            </option>
-                        </select>
+                        <div>
+                            answer:{{answer | json}}
+                            <select matNativeControl formControlName="answer" placeholder="Answer">
+                                <option *ngFor="let a of getAnswerOptions(item)" value="a">a
+                                </option>
+                            </select>
+                        </div>
                     </mat-form-field>
                 </div>
                 <div class="col-1">
@@ -49,7 +51,7 @@
             <mat-icon>add</mat-icon>
             Add A Condition
         </button>
-        <button mat-raised-button (click)="deleteSkipLogic()" id="deleteSkipLogicButton">
+        <button mat-raised-button (click)="deleteAllSkipLogic()" id="deleteSkipLogicButton">
             <mat-icon>delete</mat-icon>
             Delete All Conditions
         </button>
