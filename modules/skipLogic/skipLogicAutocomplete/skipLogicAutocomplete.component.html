@@ -3,7 +3,7 @@
     <div mat-dialog-content>
         <div formArrayName="items"
              *ngFor="let item of skipLogicForm.get('items')['controls'] let i = index;">
-            <div class="row">
+            <div [formGroupName]="i" class="row">
                 <div class="col-1">
                     <mat-form-field class="w-100" *ngIf="i > 0">
                         <select matNativeControl formControlName="logic" placeholder="Logic">
@@ -14,9 +14,8 @@
                 </div>
                 <div class="col-4">
                     <mat-form-field class="w-100">
-                        <select matNativeControl formControlName="label" placeholder="Label"
-                                (change)="selectQuestion(item)">
-                            <option *ngFor="let priorQuestion of priorQuestions"
+                        <select matNativeControl formControlName="label" placeholder="Label">
+                            <option *ngFor="let priorQuestion of data.priorQuestions"
                                     [value]="priorQuestion.label ? priorQuestion.label : priorQuestion.question.cde.name">
                                 {{priorQuestion.label ? priorQuestion.label : priorQuestion.question.cde.name}}
                             </option>
@@ -33,13 +32,10 @@
                 </div>
                 <div class="col-4">
                     <mat-form-field class="w-100">
-                        <div>
-                            answer:{{answer | json}}
-                            <select matNativeControl formControlName="answer" placeholder="Answer">
-                                <option *ngFor="let a of getAnswerOptions(item)" value="a">a
-                                </option>
-                            </select>
-                        </div>
+                        <select matNativeControl formControlName="answer" placeholder="Answer">
+                            <option *ngFor="let ans of getAnswers(item)"
+                                    value="ans.permissibleValue">{{ans.permissibleValue}}</option>
+                        </select>
                     </mat-form-field>
                 </div>
                 <div class="col-1">
@@ -58,42 +54,8 @@
     </div>
     <div mat-dialog-actions>
         <button mat-raised-button [mat-dialog-close] id="cancelNewSkipLogicButton" color="warn">Cancel</button>
-        <button mat-raised-button [mat-dialog-close]="tokens" id="saveNewSkipLogicButton" color="primary"
+        <button mat-raised-button (click)="saveSkipLogic()" id="saveNewSkipLogicButton" color="primary"
                 [disabled]="false">Save
         </button>
     </div>
 </form>
-
-<!--
-<h1 mat-dialog-title>Edit Skip Logic:</h1>
-<div mat-dialog-content>
-    <mat-form-field class="w-100">
-        <div *ngFor="let token of tokens; let i = index;" class="row">
-            <div class="col-4">
-                <cde-question-autocomplete [formElement]="data.formElement" [parent]="data.parent"
-                                           [(token)]="token"></cde-question-autocomplete>
-            </div>
-            <div class="col-4">
-                <cde-answer-autocomplete [(token)]="token"></cde-answer-autocomplete>
-            </div>
-            <div class="col-1">
-                <mat-icon (click)="deleteToken(i);">delete</mat-icon>
-            </div>
-        </div>
-        <button mat-raised-button (click)="addToken()" id="addNewSkipLogicButton">
-            <mat-icon>add</mat-icon>
-            Add A Condition
-        </button>
-        <button mat-raised-button (click)="deleteSkipLogic()" id="deleteSkipLogicButton">
-            <mat-icon>delete</mat-icon>
-            Delete All Conditions
-        </button>
-    </mat-form-field>
-</div>
-<div mat-dialog-actions>
-    <button mat-raised-button (click)="onNoClick()" id="cancelNewSkipLogicButton" color="warn">Cancel</button>
-    <button mat-raised-button [mat-dialog-close]="tokens" id="saveNewSkipLogicButton" color="primary"
-            [disabled]="hasError()">Save
-    </button>
-</div>
--->

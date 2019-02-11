@@ -18,59 +18,61 @@ export class Token {
     templateUrl: './skipLogicAutocomplete.component.html'
 })
 export class SkipLogicAutocompleteComponent implements OnInit {
-    logicOptions = [' AND ', ' OR '];
-    operatorOptions = [' = ', ' > ', ' < ', ' >= ', ' <= '];
-
+    logicOptions = ['AND', 'OR'];
+    operatorOptions = ['=', '>', '<', '>=', '<='];
     skipLogicForm: FormGroup;
-    items: FormArray;
-
-    tokens: Token[] = [];
-    priorQuestions = [];
 
     constructor(private formBuilder: FormBuilder,
                 protected dialog: MatDialog,
                 public dialogRef: MatDialogRef<SkipLogicComponent>,
                 @Inject(MAT_DIALOG_DATA) public data) {
-        let realLabel = data.formElement.label ? data.formElement.label : data.formElement.question.cde.name;
-        this.priorQuestions = this.getPriorQuestions(data.parent, realLabel);
+        let items = this.formBuilder.array([]);
 
-        this.tokens = this.getTokens(data.formElement.skipLogic.condition);
-        this.tokens.forEach(token => {
+        let tokens = this.getTokens(data.formElement.skipLogic.condition);
+        tokens.forEach(token => {
             if (token.label) {
                 let question = this.getQuestionByLabel(token.label);
                 token.selectedQuestion = question;
                 if (!question) token.error = "Can not find question.";
                 else token.error = '';
             }
+            items.push(this.formBuilder.group(token));
         });
+
+        this.skipLogicForm = this.formBuilder.group({items});
     }
 
 
     ngOnInit(): void {
-        this.skipLogicForm = this.formBuilder.group({
-            items: this.formBuilder.array([this.createItem()])
+        this.skipLogicForm.valueChanges.subscribe(newValue => {
+            if (newValue.items) {
+                newValue.items.forEach(item => {
+                    if (item.label) {
+                        let q = this.getQuestionByLabel(item.label);
+                        if (q) item.selectedQuestion = q;
+                        else item.errror = 'No Question Label Found.';
+                    }
+                });
+            }
         });
     }
 
     addToken(): void {
-        this.items = this.skipLogicForm.get('items') as FormArray;
-        this.items.push(this.createItem());
-    }
-
-    createItem(): FormGroup {
-        return this.formBuilder.group(new Token());
+        let items = this.skipLogicForm.get('items') as FormArray;
+        items.push(this.formBuilder.group(new Token()));
     }
 
     deleteSkipLogic(i) {
-        this.items.removeAt(i);
+        let control = <FormArray>this.skipLogicForm.controls['items'];
+        control.removeAt(i);
     }
 
     deleteAllSkipLogic() {
-        this.items = this.formBuilder.array([]);
+        this.skipLogicForm = this.formBuilder.group({items: this.formBuilder.array([])});
     }
 
     private getQuestionByLabel(label) {
-        let temp = this.priorQuestions.filter(q => {
+        let temp = this.data.priorQuestions.filter(q => {
             let realLabel = q.label ? q.label : q.question.cde.name;
             return realLabel === label;
         });
@@ -112,31 +114,15 @@ export class SkipLogicAutocompleteComponent implements OnInit {
         return [token].concat(otherTokens);
     }
 
-
-    private getPriorQuestions(parent, label) {
-        let questions = [];
-        this.loopFormElements(parent, label, questions);
-        return questions;
+    getAnswers(item) {
+        let token = item.value;
+        if (token.selectedQuestion) return token.selectedQuestion.question.answers;
+        else return [];
     }
 
-    private loopFormElements(fe, label, questions) {
-        for (let e of fe.formElements) {
-            let realLabel = e.label ? e.label : e.question.cde.name;
-            if (realLabel === label) return;
-            else if (e.elementType === 'question') questions.push(e);
-            else this.loopFormElements(e, label, questions);
-        }
-    }
-
-    selectQuestion(i) {
-        let token = i.value;
-        token.selectedQuestion = this.getQuestionByLabel(token.label);
-        console.log('a');
-    }
-
-    getAnswerOptions(i) {
-        console.log(this);
-        console.log('a');
+    saveSkipLogic() {
+        let value = this.skipLogicForm.getRawValue();
+        this.dialogRef.close(value.items);
     }
 
 }

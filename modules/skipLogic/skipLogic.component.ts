@@ -16,9 +16,14 @@ export class SkipLogicComponent {
     }
 
     editSkipLogic() {
+        let realLabel = this.formElement.label;
+        if (!realLabel && this.formElement.question) realLabel = this.formElement.question.cde.name;
+
+        let priorQuestions = this.getPriorQuestions(this.parent, realLabel);
         let data = {
             formElement: this.formElement,
-            parent: this.parent
+            parent: this.parent,
+            priorQuestions: priorQuestions
         };
         this.dialog.open(SkipLogicAutocompleteComponent, {width: '800px', data: data})
             .afterClosed().subscribe(tokens => {
@@ -28,6 +33,22 @@ export class SkipLogicComponent {
             }
         });
     }
+
+    private getPriorQuestions(parent, label) {
+        let questions = [];
+        this.loopFormElements(parent, label, questions);
+        return questions;
+    }
+
+    private loopFormElements(fe, label, questions) {
+        for (let e of fe.formElements) {
+            let realLabel = e.label ? e.label : e.question.cde.name;
+            if (realLabel === label) return;
+            else if (e.elementType === 'question') questions.push(e);
+            else this.loopFormElements(e, label, questions);
+        }
+    }
+
 
     tokensToSkipLogc(tokens) {
         let skipLogic = '';
