@@ -18,7 +18,7 @@
                           matTooltipClass="cdeTooltip" matTooltipPosition="right">help</mat-icon>
                 ( {{question.label || question.question.cde.name}} )
             </ng-container>
-            <strong *ngIf="question.label" [textContent]="question.label"></strong>
+            <strong *ngIf="question.label" [textContent]="question.label"> </strong>
             <small *ngIf="question.question.partOf" class="text-info">(part of {{question.question.partOf}})</small>
         </span>
         <span *ngIf="question.incompleteRule" class="mx-1">(Incomplete Rule)</span>
