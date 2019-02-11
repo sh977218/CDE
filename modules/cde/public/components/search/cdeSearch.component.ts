@@ -1,16 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, ComponentFactoryResolver, EventEmitter, Input, Output } from '@angular/core';
+import { MatDialog } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
-
-import { AlertService } from 'alert/alert.service';
 import { BackForwardService } from '_app/backForward.service';
 import { ElasticService } from '_app/elastic.service';
-import { UserService } from "_app/user.service";
+import { UserService } from '_app/user.service';
+import { AlertService } from 'alert/alert.service';
 import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
 import { ExportService } from 'core/export.service';
 import { OrgHelperService } from 'core/orgHelper.service';
 import { SearchBaseComponent, searchStyles } from 'search/searchBase.component';
-import { MatDialog } from '@angular/material';
+import { DataElement } from 'shared/de/dataElement.model';
 
 @Component({
     selector: 'cde-cde-search',
@@ -20,7 +20,7 @@ import { MatDialog } from '@angular/material';
 export class CdeSearchComponent extends SearchBaseComponent {
     @Input() addMode?: string;
     @Input() embedded = false;
-    @Output() add = new EventEmitter<any>();
+    @Output() add = new EventEmitter<DataElement>();
     module: 'cde'|'form' = 'cde';
     pinComponent = PinBoardModalComponent;
 
