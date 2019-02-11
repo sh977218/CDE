@@ -366,8 +366,6 @@ definitions:
             elementType:
               type: "string"
               example: "section"
-            hideLabel:
-              type: "boolean"
             instructions:
               $ref: "#/definitions/Instructions"
             inForm:
