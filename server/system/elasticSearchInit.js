@@ -134,6 +134,10 @@ exports.createIndexJson = {
                 , "history": {"enabled": false}
                 , "version": {"type": "keyword"}
                 , "views": {type: "integer"}
+                , "linkedForms": {"properties": {
+                    "tinyId": "keyword",
+                    "registrationStatus": "keyword"
+                }}
             }
         }
     }, settings: {
@@ -206,7 +210,8 @@ exports.createFormIndexJson = {
                 "created": {"type": "date"},
                 "updated": {"type": "date"},
                 "imported": {"type": "date"},
-                "numQuestions": {"type": "integer"}
+                "numQuestions": {"type": "integer"},
+                "cdeTinyIds": {"type": "keyword"}
             }
         }
     }, settings: {
@@ -273,18 +278,21 @@ exports.riverFunction = function (_elt, cb) {
             }
         }
 
-        function findFormQuestionNr(fe) {
-            let n = 0;
+        const formQuestions = [];
+
+        function findFormQuestions(fe) {
             if (fe.formElements) {
                 fe.formElements.forEach(fee => {
-                    if (fee.elementType === 'question') n++;
-                    else n = n + findFormQuestionNr(fee);
+                    if (fee.elementType === 'question') formQuestions.push(fee);
+                    else findFormQuestions(fee);
                 });
             }
-            return n;
         }
 
-        elt.numQuestions = findFormQuestionNr(elt);
+        findFormQuestions(elt);
+
+        elt.numQuestions = formQuestions.length;
+        elt.cdeTinyIds = formQuestions.map(q => q.question.cde.tinyId);
 
         flattenClassification(elt);
         if (elt.valueDomain && elt.valueDomain.permissibleValues) {
