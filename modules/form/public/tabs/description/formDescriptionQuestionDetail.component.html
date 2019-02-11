@@ -92,8 +92,7 @@
             <mat-icon class="changeQuestionLabelIcon hand-cursor mr-1" title="Change question label"
                       (click)="openNameSelect(question, parent)">edit
             </mat-icon>
-            <span *ngIf="!question.hideLabel">{{question.label}}</span>
-            <span *ngIf="question.hideLabel">(No label)</span>
+            {{question.label || "(No Label)"}}
         </dd>
         <dt class="col-2">Instructions:</dt>
         <dd class="col-10 editQuestionInstruction">

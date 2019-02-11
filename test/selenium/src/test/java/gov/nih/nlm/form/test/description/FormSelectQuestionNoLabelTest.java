@@ -14,6 +14,6 @@ public class FormSelectQuestionNoLabelTest extends NlmCdeBaseTest {
         String questionId = "question_0-0";
         startEditQuestionById(questionId);
         selectQuestionNoLabel(questionId);
-        textPresent("(No label)", By.id(questionId));
+        textPresent("(No Label)", By.id(questionId));
     }
 }
