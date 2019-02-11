@@ -47,15 +47,14 @@ import { TagModule } from 'tag/tag.module';
         MatTabsModule,
         MatTooltipModule,
         NgbModule,
-        ReactiveFormsModule,
         RouterModule,
         // core
 
         // internal
-        TagModule,
         BoardModule,
         CdeModule,
         SearchModule,
+        TagModule,
     ],
     declarations: [
         BoardCdeSummaryListComponent,
