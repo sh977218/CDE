@@ -38,7 +38,6 @@ export class FormService {
         if (!q.label) {
             q.label = de.designations[0].designation;
         }
-        if (!q.label) q.hideLabel = true;
 
         function convertPv(q: FormQuestion, cde: DataElement) {
             cde.valueDomain.permissibleValues.forEach(pv => {

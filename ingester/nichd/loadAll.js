@@ -137,9 +137,9 @@ async function loadCdes (done) {
 
         let multiselect = row['Question Type'] === 'checkbox';
 
-        forms[row.Form].formElements[0].formElements.push({
+        let question = {
             elementType: "question",
-            label: cde.designations[0].designation,
+            label: row.Question,
             question: {
                 datatype: cde.valueDomain.datatype,
                 multiselect: multiselect,
@@ -150,7 +150,11 @@ async function loadCdes (done) {
                 },
                 answers: cde.valueDomain.permissibleValues
             }
-        });
+        };
+
+        if (row['Question Type'] === 'notes') question.question.datatypeText = {showAsTextArea: true};
+
+        forms[row.Form].formElements[0].formElements.push(question);
     }
     done();
 }

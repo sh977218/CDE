@@ -2,7 +2,6 @@ package gov.nih.nlm.cde.test;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -13,6 +12,7 @@ public class CDEDateRangeSearch extends NlmCdeBaseTest {
         goToCdeSearch();
         findElement(By.id("ftsearch-input")).sendKeys("created:<2015-05-14");
         clickElement(By.id("search.submit"));
+        textPresent("created:<2015-05-14", By.id("searchResultInfoBar"));
         Assert.assertTrue(getNumberOfResults() > 850);
 
         findElement(By.id("ftsearch-input")).clear();
@@ -28,6 +28,7 @@ public class CDEDateRangeSearch extends NlmCdeBaseTest {
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("updated:<2015-09-22");
         clickElement(By.id("search.submit"));
+        textPresent("updated:<2015-09-22", By.id("searchResultInfoBar"));
         Assert.assertTrue(getNumberOfResults() > 9800);
 
         findElement(By.id("ftsearch-input")).clear();
@@ -38,7 +39,7 @@ public class CDEDateRangeSearch extends NlmCdeBaseTest {
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("imported:<2014-12-11");
         clickElement(By.id("search.submit"));
-        textPresent("imported:<2014-12-11");
+        textPresent("imported:<2014-12-11", By.id("searchResultInfoBar"));
         Assert.assertTrue(getNumberOfResults() > 330);
     }
 

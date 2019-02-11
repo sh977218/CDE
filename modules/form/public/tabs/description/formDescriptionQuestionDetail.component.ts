@@ -154,11 +154,9 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         dialogRef.componentInstance.onSelect.subscribe(designation => {
             if (!designation || !designation.designation) {
                 question.label = '';
-                question.hideLabel = true;
             } else {
                 SkipLogicValidateService.checkAndUpdateLabel(parent, question.label, designation.designation);
                 question.label = designation.designation;
-                question.hideLabel = false;
             }
             dialogRef.close();
             this.onEltChange.emit();

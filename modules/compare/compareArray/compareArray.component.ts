@@ -389,7 +389,6 @@ export class CompareArrayComponent implements OnInit {
                 if (e.elementType && e.elementType === 'question') {
                     let questionCopy = _cloneDeep(e);
                     this.fixFormElement(questionCopy);
-                    if (questionCopy.hideLabel) questionCopy.label = "";
                     questions.push(questionCopy);
                 } else if (e.elementType && e.elementType === 'form') {
                     let formCopy = _cloneDeep(e);

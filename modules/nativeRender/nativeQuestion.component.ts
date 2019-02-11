@@ -108,7 +108,7 @@ export class NativeQuestionComponent implements OnInit {
     }
 
     hasLabel(q: FormQuestion): boolean {
-        return !!q.label && !q.hideLabel;
+        return !!q.label;
     }
 
     isFirstInRow(index: number): boolean {
