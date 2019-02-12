@@ -1,6 +1,7 @@
 package gov.nih.nlm.board.cde;
 
 import org.openqa.selenium.By;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class BoardViewTest extends BoardTest {
@@ -10,6 +11,7 @@ public class BoardViewTest extends BoardTest {
         mustBeLoggedInAs(ninds_username, password);
         goToBoard("Large Board");
         textPresent("Ventilator assistance utilization indicator");
+        Assert.assertEquals(driver.getTitle(), "Board: Large Board");
         clickElement(By.id("list_gridView"));
         textPresent("VentilatorAssistanceUtilznInd");
         textPresent("HMQMstFreqHlthProfCareTyp");

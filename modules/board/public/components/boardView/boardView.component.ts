@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef, PageEvent } from '@angular/material';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { ElasticService } from '_app/elastic.service';
 import { UserService } from '_app/user.service';
@@ -50,11 +51,12 @@ export class BoardViewComponent implements OnInit {
     users: any[] = [];
 
     constructor(private alert: AlertService,
+                private dialog: MatDialog,
                 public esService: ElasticService,
                 private http: HttpClient,
                 private orgHelperService: OrgHelperService,
                 private route: ActivatedRoute,
-                private dialog: MatDialog,
+                private title: Title,
                 protected userService: UserService) {
     }
 
@@ -173,6 +175,7 @@ export class BoardViewComponent implements OnInit {
                 this.board = response.board;
                 this.elts = response.elts;
                 this.totalItems = response.totalItems;
+                this.title.setTitle('Board: ' + this.board.name);
                 this.modalTitle = 'Classify ' + (this.board.type === 'form' ? 'Form' : 'CDE') + 's in this Board';
                 this.userService.then(user => {
                     this.board.users.forEach(u => {
