@@ -17,6 +17,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         String cdeDefinitionChange = "[definition change number 1]";
         goToCdeByName(cdeName);
         goToNaming();
+        Assert.assertEquals(driver.getTitle(), "Data Element: " + cdeName);
         editDesignationByIndex(0, cdeDesignationChange,null);
         editDefinitionByIndex(0, cdeDefinitionChange, false);
 

@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertService } from 'alert/alert.service';
 import { QuickBoardListService } from '_app/quickBoardList.service';
@@ -19,7 +20,7 @@ import _cloneDeep from 'lodash/cloneDeep';
 import _noop from 'lodash/noop';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
-import { Cb, Comment, ObjectId } from 'shared/models.model';
+import { Cb, Comment, Elt, ObjectId } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm, FormElement, FormElementsContainer, FormInForm, QuestionCde } from 'shared/form/form.model';
 import {
@@ -85,18 +86,19 @@ export class FormViewComponent implements OnInit {
         });
     }
 
-    constructor(private http: HttpClient,
-                private ref: ChangeDetectorRef,
+    constructor(private alert: AlertService,
+                private dialog: MatDialog,
+                public exportService: ExportService,
                 private formViewService: FormViewService,
+                private http: HttpClient,
                 private orgHelperService: OrgHelperService,
                 public quickBoardService: QuickBoardListService,
-                private alert: AlertService,
-                public userService: UserService,
-                public exportService: ExportService,
+                private ref: ChangeDetectorRef,
                 private route: ActivatedRoute,
                 private router: Router,
+                private title: Title,
                 private ucumService: UcumService,
-                private dialog: MatDialog
+                public userService: UserService
     ) {}
 
     canEdit() {
@@ -171,6 +173,7 @@ export class FormViewComponent implements OnInit {
             if (elt.isDraft) this.hasDrafts = true;
             CdeForm.validate(elt);
             this.elt = elt;
+            this.title.setTitle('Form: ' + Elt.getLabel(this.elt));
             this.validate();
             this.loadComments(this.elt);
             this.formId = this.elt._id;

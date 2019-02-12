@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertService } from 'alert/alert.service';
 import { QuickBoardListService } from '_app/quickBoardList.service';
@@ -13,7 +14,7 @@ import _cloneDeep from 'lodash/cloneDeep';
 import _noop from 'lodash/noop';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
-import { Comment } from 'shared/models.model';
+import { Comment, Elt } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { checkPvUnicity, checkDefinitions } from 'shared/de/deValidator';
 import { canEditCuratedItem, isOrgCurator } from 'shared/system/authorizationShared';
@@ -64,15 +65,16 @@ export class DataElementViewComponent implements OnInit {
         }, _noop);
     }
 
-    constructor(private deViewService: DataElementViewService,
-                private http: HttpClient,
-                private route: ActivatedRoute,
-                private router: Router,
-                private ref: ChangeDetectorRef,
+    constructor(private alert: AlertService,
+                private deViewService: DataElementViewService,
                 private dialog: MatDialog,
+                private http: HttpClient,
                 private orgHelperService: OrgHelperService,
                 public quickBoardService: QuickBoardListService,
-                private alert: AlertService,
+                private ref: ChangeDetectorRef,
+                private route: ActivatedRoute,
+                private router: Router,
+                private title: Title,
                 public userService: UserService) {
     }
 
@@ -101,6 +103,7 @@ export class DataElementViewComponent implements OnInit {
             if (elt.isDraft) this.hasDrafts = true;
             DataElement.validate(elt);
             this.elt = elt;
+            this.title.setTitle('Data Element: ' + Elt.getLabel(this.elt));
             this.validate();
             this.loadComments(this.elt);
             this.deId = this.elt._id;

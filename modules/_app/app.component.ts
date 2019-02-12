@@ -1,8 +1,8 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { MatIconRegistry } from '@angular/material';
-import { DomSanitizer } from '@angular/platform-browser';
-import { NavigationEnd, Router } from '@angular/router';
+import { DomSanitizer, Title } from '@angular/platform-browser';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { NotificationService } from '_app/notifications/notification.service';
 import { BackForwardService } from '_app/backForward.service';
 import { PushNotificationSubscriptionService } from '_app/pushNotificationSubscriptionService';
@@ -10,7 +10,6 @@ import { UserService } from '_app/user.service';
 import 'feedback/stable/2.0/html2canvas.js';
 import 'feedback/stable/2.0/feedback.js';
 import 'feedback/stable/2.0/feedback.min.css';
-import _noop from 'lodash/noop';
 
 @Component({
     selector: 'nih-cde',
@@ -91,7 +90,9 @@ export class CdeAppComponent implements OnInit {
 
     constructor(backForwardService: BackForwardService,
                 private notificationService: NotificationService,
+                protected route: ActivatedRoute,
                 private router: Router,
+                private title: Title,
                 private userService: UserService,
                 iconReg: MatIconRegistry,
                 sanitizer: DomSanitizer) {
@@ -113,8 +114,17 @@ export class CdeAppComponent implements OnInit {
             });
         }
         this.router.events.subscribe(event => {
-            if (event instanceof NavigationEnd && this.userService.loggedIn()) {
-                this.notificationService.reload();
+            if (event instanceof NavigationEnd) {
+                let r = this.route;
+                while (r.firstChild) r = r.firstChild;
+                if (r.outlet === 'primary') {
+                    r.data.subscribe((event) =>
+                        this.title.setTitle(event['title'] || 'NIH Common Data Elements (CDE) Repository'));
+                }
+
+                if (this.userService.loggedIn()) {
+                    this.notificationService.reload();
+                }
             }
         });
 
