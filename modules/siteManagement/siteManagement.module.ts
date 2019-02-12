@@ -11,24 +11,23 @@ import {
 } from '@angular/material';
 import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { CKEditorModule } from 'ng2-ckeditor';
-
 import { CommonAppModule } from '_commonApp/commonApp.module';
-import { DiscussModule } from 'discuss/discuss.module';
-import { SystemModule } from 'system/public/system.module';
-import { FhirAppsComponent } from 'system/public/components/siteAdmin/fhirApps/fhirApps.component';
-import { DraftsListAdminComponent } from 'system/public/components/draftsList/draftsListAdmin.component';
-import { EditSiteAdminsComponent } from 'system/public/components/siteAdmin/editSiteAdmins/editSiteAdmins.component';
-import { ServerStatusComponent } from 'system/public/components/siteAdmin/serverStatus/serverStatus.component';
-import { SiteManagementComponent } from 'system/public/components/siteAdmin/siteManagement/siteManagement.component';
-
-import { ArticleAdminComponent } from 'system/public/components/siteAdmin/article/articleAdmin.component';
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
-import { ResourcesAdminComponent } from 'system/public/components/siteAdmin/resources/resourcesAdmin.component';
-import { UsernameAutocompleteModule } from 'usernameAutocomplete/usernameAutocomplete.module';
 import { CoreModule } from 'core/core.module';
+import { DiscussModule } from 'discuss/discuss.module';
+import { DraftsListModule } from 'draftsList/draftsList.module';
 import { InlineAreaEditModule } from 'inlineAreaEdit/inlineAreaEdit.module';
-
+import { CKEditorModule } from 'ng2-ckeditor';
+import { DataService } from 'shared/models.model';
+import { SiteDataService } from 'siteManagement/siteData.service';
+import { ArticleAdminComponent } from 'siteManagement/article/articleAdmin.component';
+import { EditSiteAdminsComponent } from 'siteManagement/editSiteAdmins/editSiteAdmins.component';
+import { FhirAppsComponent } from 'siteManagement/fhirApps/fhirApps.component';
+import { ResourcesAdminComponent } from 'siteManagement/resources/resourcesAdmin.component';
+import { ServerStatusComponent } from 'siteManagement/serverStatus/serverStatus.component';
+import { SiteManagementComponent } from 'siteManagement/siteManagement.component';
+import { SystemModule } from 'system/public/system.module';
+import { UsernameAutocompleteModule } from 'usernameAutocomplete/usernameAutocomplete.module';
 
 const appRoutes: Routes = [
     {path: '', component: SiteManagementComponent},
@@ -50,9 +49,9 @@ const appRoutes: Routes = [
         RouterModule.forChild(appRoutes),
         // core
         CoreModule,
-
         // internal
         AdminItemModule,
+        DraftsListModule,
         InlineAreaEditModule,
         CommonAppModule,
         DiscussModule,
@@ -62,7 +61,6 @@ const appRoutes: Routes = [
     declarations: [
         EditSiteAdminsComponent,
         FhirAppsComponent,
-        DraftsListAdminComponent,
         ServerStatusComponent,
         SiteManagementComponent,
         ArticleAdminComponent,
@@ -70,7 +68,9 @@ const appRoutes: Routes = [
     ],
     entryComponents: [],
     exports: [],
-    providers: [],
+    providers: [
+        {provide: DataService, useClass: SiteDataService},
+    ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class SiteManagementModule {

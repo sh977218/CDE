@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const config = require('../system/parseConfig');
 const connHelper = require('../system/connections');
 const mongo_data = require('../system/mongo-data');
@@ -147,7 +148,7 @@ exports.logClientError = function (req, callback) {
     });
 };
 
-exports.handle404 = function handle404(options, cb) { // Not Found
+exports.handle404 = function handle404(options, cb = _.noop) { // Not Found
     return function errorHandler(err, arg, ...args) {
         if (err) {
             exports.respondError(err, options);
@@ -163,7 +164,7 @@ exports.handle404 = function handle404(options, cb) { // Not Found
     };
 };
 
-exports.handleError = function (options, cb) {
+exports.handleError = function (options, cb = _.noop) {
     return function errorHandler(err, ...args) {
         if (err) {
             exports.respondError(err, options);

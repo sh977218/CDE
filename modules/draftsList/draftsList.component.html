@@ -1,4 +1,4 @@
-<ng-container *ngIf="drafts.draftCdes?.length">
+<ng-container *ngIf="drafts?.draftCdes?.length">
     <h3>CDEs</h3>
     <table class="table table-responsive">
         <tr *ngFor="let draftCde of drafts.draftCdes">
@@ -13,7 +13,7 @@
     </table>
 </ng-container>
 
-<ng-container *ngIf="drafts.draftForms?.length">
+<ng-container *ngIf="drafts?.draftForms?.length">
     <h3>Forms</h3>
     <table class="table table-responsive">
         <tr *ngFor="let draftForm of drafts.draftForms">
@@ -27,4 +27,3 @@
         </tr>
     </table>
 </ng-container>
-

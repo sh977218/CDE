@@ -107,6 +107,12 @@ exports.init = function (app, daoManager) {
         });
     });
 
+    app.post('/getFormAuditLog', authorization.isOrgAuthorityMiddleware, (req, res) => {
+        mongo_form.getAuditLog(req.body, (err, result) => {
+            res.send(result);
+        });
+    });
+
     app.post('/elasticSearchExport/form', (req, res) => {
         let query = sharedElastic.buildElasticSearchQuery(req.user, req.body);
         let exporters = {

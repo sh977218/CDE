@@ -1,10 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import async_forEachSeries from 'async/forEachSeries';
-
 import { IsAllowedService } from 'core/isAllowed.service';
 import { MergeCdeService } from 'core/mergeCde.service';
-import { MergeShareService } from 'core/mergeShare.service';
+import { mergeArrayByProperty, transferClassifications } from 'shared/system/classificationShared';
 
 
 @Injectable()
@@ -19,7 +18,6 @@ export class MergeFormService {
         private http: HttpClient,
         public isAllowedModel: IsAllowedService,
         private mergeCdeService: MergeCdeService,
-        private mergeShareService: MergeShareService,
     ) {
     }
 
@@ -67,22 +65,22 @@ export class MergeFormService {
             cb({error: 'number of question on left is not same on right.'});
         } else {
             if (fields.designations) {
-                this.mergeShareService.mergeArrayByProperty(mergeFrom, mergeTo, 'designations');
+                mergeArrayByProperty(mergeFrom, mergeTo, 'designations');
             }
             if (fields.definitions) {
-                this.mergeShareService.mergeArrayByProperty(mergeFrom, mergeTo, 'definitions');
+                mergeArrayByProperty(mergeFrom, mergeTo, 'definitions');
             }
             if (fields.referenceDocuments) {
-                this.mergeShareService.mergeArrayByProperty(mergeFrom, mergeTo, 'referenceDocuments');
+                mergeArrayByProperty(mergeFrom, mergeTo, 'referenceDocuments');
             }
             if (fields.properties) {
-                this.mergeShareService.mergeArrayByProperty(mergeFrom, mergeTo, 'properties');
+                mergeArrayByProperty(mergeFrom, mergeTo, 'properties');
             }
             if (fields.ids) {
-                this.mergeShareService.mergeArrayByProperty(mergeFrom, mergeTo, 'ids');
+                mergeArrayByProperty(mergeFrom, mergeTo, 'ids');
             }
             if (fields.classifications) {
-                this.mergeShareService.mergeClassifications(mergeFrom, mergeTo);
+                transferClassifications(mergeFrom, mergeTo);
             }
             if (fields.questions) {
                 this.mergeQuestions(mergeFrom.questions, mergeTo.questions, fields.cde, (index, next) => {
