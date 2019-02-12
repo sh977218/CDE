@@ -98,7 +98,6 @@ export class FormViewComponent implements OnInit {
                 private router: Router,
                 private title: Title,
                 private ucumService: UcumService,
-                private dialog: MatDialog,
                 public userService: UserService
     ) {}
 
