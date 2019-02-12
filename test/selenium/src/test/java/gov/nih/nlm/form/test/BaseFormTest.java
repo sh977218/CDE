@@ -236,27 +236,24 @@ public class BaseFormTest extends NlmCdeBaseTest {
     protected void addSkipLogicById(String id, String label, String operator, String answer, String answerType, String logic) {
         clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'skipLogicEditTextarea')]//mat-icon[.='edit']"));
         clickElement(By.id("addNewSkipLogicButton"));
-        clickElement(By.xpath(" //h1[@class='mat-dialog-title']"));
         if (label != null && label.length() > 0) {
-            clickElement(By.xpath("//cde-question-autocomplete[last()]"));
-            selectMatSelectDropdownByText(label);
+            new Select(findElement(By.id("skipLogicLabelSelection_0"))).selectByVisibleText(label);
         }
         if (operator != null && operator.length() > 0) {
-            clickElement(By.xpath("//cde-operator-autocomplete[last()]"));
-            selectMatSelectDropdownByText(operator);
+            new Select(findElement(By.id("skipLogicOperatorSelection_0"))).selectByVisibleText(operator);
         }
         if (answer != null && answer.length() > 0) {
             if (answerType == "date" || answerType == "number" || answerType == "text") {
-                findElement(By.xpath("//cde-answer-autocomplete[last()]//input")).sendKeys(answer);
+                findElement(By.id("skipLogicAnswer_0")).sendKeys(answer);
             }
             if (answerType == "value list") {
-                clickElement(By.xpath("//cde-answer-autocomplete[last()]"));
-                selectMatSelectDropdownByText(answer);
+                new Select(findElement(By.id("skipLogicAnswerSelection_0"))).selectByVisibleText(answer);
+
             }
         }
         if (logic != null && logic.length() > 0) {
-            clickElement(By.xpath("//cde-logic-autocomplete[last()]"));
-            selectMatSelectDropdownByText(logic);
+            new Select(findElement(By.id("skipLogicLogicSelection_0"))).selectByVisibleText(logic);
+
         }
         clickElement(By.id("saveNewSkipLogicButton"));
 

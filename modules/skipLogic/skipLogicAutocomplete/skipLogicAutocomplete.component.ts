@@ -2,10 +2,11 @@ import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialog } from '@angular/material';
 import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { SkipLogicComponent } from 'skipLogic/skipLogic.component';
+import { FormQuestion } from 'shared/form/form.model';
 
 export class Token {
     formElement;
-    selectedQuestion;
+    selectedQuestion: FormQuestion = new FormQuestion();
     label: string = '';
     operator: string = '=';
     answer: string = '';
@@ -46,21 +47,15 @@ export class SkipLogicAutocompleteComponent {
         });
 
         this.skipLogicForm = this.formBuilder.group({items});
-        const itemsControl = this.skipLogicForm.get('items');
         this.skipLogicForm.valueChanges.subscribe(newValue => {
             if (newValue.items) {
                 newValue.items.forEach(item => {
                     if (item.label) {
                         let q = this.getQuestionByLabel(item.label);
-                        if (q) {
-                            console.log('selected question: ' + q.label);
-                            item.selectedQuestion = q;
-                        } else {
-                            console.log(item.label + '   not found.');
-                        }
+                        if (q) item.selectedQuestion = q;
                     }
                 });
-                itemsControl.updateValueAndValidity();
+                this.skipLogicForm.setValue({items: newValue.items}, {emitEvent: false});
             }
         });
     }
