@@ -14,6 +14,7 @@ const dbLogger = require('../log/dbLogger');
 const consoleLog = dbLogger.consoleLog;
 const handleError = dbLogger.handleError;
 const logger = require('./noDbLogger');
+const cdediff = require("../cde/cdediff");
 const notificationSvc = require('../notification/notificationSvc');
 const logging = require('./logging.js');
 const daoManager = require('./moduleDaoManager');
@@ -123,6 +124,43 @@ exports.addFormToViewHistory = (elt, user) => {
             details: {"cde": elt, user: user}
         });
     });
+};
+
+// WARNING: destroys oldItem and newItem by calling cdediff
+exports.auditModifications = (auditDb, user, oldItem, newItem) => {
+    let message = {
+        adminItem: {
+            _id: newItem._id,
+            name: newItem.designations[0].designation,
+            tinyId: newItem.tinyId,
+            version: newItem.version,
+        },
+        date: new Date(),
+        user: {
+            username: user.username,
+        },
+    };
+
+    if (oldItem) {
+        message.previousItem = {
+            _id: oldItem._id,
+            name: oldItem.designations[0].designation,
+            tinyId: oldItem.tinyId,
+            version: oldItem.version,
+        };
+        message.diff = cdediff.diff(newItem, oldItem);
+    }
+
+    auditDb(message).save(handleError());
+};
+
+// cb(err, logs)
+exports.auditGetLog = (auditDb, params, callback) => {
+    auditDb.find(params.includeBatch ? undefined : {"user.username": {$ne: 'batchloader'}})
+        .sort('-date')
+        .skip(params.skip)
+        .limit(params.limit)
+        .exec(callback);
 };
 
 exports.embeds = {

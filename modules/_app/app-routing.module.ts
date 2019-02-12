@@ -1,14 +1,14 @@
-import { NgModule } from "@angular/core";
-import { RouterModule, Routes } from "@angular/router";
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
 import { OfflineComponent } from '_app/routing/offline.component';
 import { PageNotFoundComponent } from '_app/routing/pageNotFound.component';
+import { IEGuard } from '_app/routerGuard/ieGuard';
 import { LoggedInGuard } from '_app/routerGuard/loggedInGuard';
 import { OrgAdminGuard } from '_app/routerGuard/orgAdminGuard';
 import { OrgAuthorityGuard } from '_app/routerGuard/orgAuthorityGuard';
 import { OrgCuratorGuard } from '_app/routerGuard/orgCuratorGuard';
 import { SiteAdminGuard } from '_app/routerGuard/siteAdminGuard';
 import { IdentifierSourcesResolve } from 'system/public/components/searchPreferences/identifier-source.resolve.service';
-import { IEGuard } from '_app/routerGuard/ieGuard';
 
 const appRoutes: Routes = [
     {path: 'api', loadChildren: 'system/public/documentApi.module#DocumentApiModule', data: {title: 'API Documentation'}},
@@ -39,8 +39,8 @@ const appRoutes: Routes = [
     {path: 'whatsNew', loadChildren: 'system/public/whatsNew.module#WhatsNewModule', data: {title: `What's New`}},
     {path: 'contactUs', loadChildren: 'system/public/contactUs.module#ContactUsModule', data: {title: 'Contact Us'}},
     {path: 'searchPreferences', resolve: {identifier: IdentifierSourcesResolve}, loadChildren: 'system/public/searchPreferences.module#SearchPreferencesModule', data: {title: 'Search Preferences'}},
-    {path: 'siteaccountmanagement', loadChildren: 'system/public/siteManagement.module#SiteManagementModule', canLoad: [SiteAdminGuard], data: {title: 'Manage Site'}},
-    {path: 'siteAudit', loadChildren: 'system/public/siteAudit.module#SiteAuditModule', canLoad: [OrgAuthorityGuard], data: {title: 'Audit'}},
+    {path: 'siteaccountmanagement', loadChildren: 'siteManagement/siteManagement.module#SiteManagementModule', canLoad: [SiteAdminGuard], data: {title: 'Manage Site'}},
+    {path: 'siteAudit', loadChildren: 'siteAudit/siteAudit.module#SiteAuditModule', canLoad: [OrgAuthorityGuard], data: {title: 'Audit'}},
     {path: '', redirectTo: '/home', pathMatch: 'full'},
     {path: '**', component: PageNotFoundComponent, data: {title: 'Page Not Found'}}
 ];

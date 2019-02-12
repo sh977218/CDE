@@ -22,7 +22,7 @@ public class RemoveOrgClassificationTest extends NlmCdeBaseTest {
         searchNestedClassifiedForms();
         hangon(1);
         textNotPresent("NINDS (34");
-        openClassificationAudit("NINDS > Domain > Participant/Subject Characteristics");
+        openAuditClassification("NINDS > Domain > Participant/Subject Characteristics");
         String body = findElement(By.cssSelector("body")).getText();
         Assert.assertTrue(body.contains("10+ elements") || body.contains("942 elements"));
         textPresent("delete NINDS > Domain > Participant/Subject Characteristics");

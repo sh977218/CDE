@@ -1,19 +1,18 @@
-import { CommonModule } from "@angular/common";
-import { NgModule } from "@angular/core";
-import { FormsModule } from "@angular/forms";
-import { SortableModule } from 'ngx-bootstrap';
-import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
-import { DiffMatchPatchModule } from "ng-diff-match-patch";
-
+import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule, MatDialogModule, MatIconModule, MatProgressBarModule } from '@angular/material';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CdeSortableComponent } from 'compare/cdeSortable/cdeSortable.component';
-import { CompareArrayComponent } from 'compare/compareArray/compareArray.component';
-import { CompareObjectComponent } from 'compare/compareObject/compareObject.component';
+import { CompareItemArrayComponent } from 'compare/compareItem/compareItemArray.component';
+import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHistoryContent.component';
+import { CompareItemComponent } from 'compare/compareItem/compareItem.component';
 import { CompareSideBySideComponent } from 'compare/compareSideBySide/compareSideBySide.component';
 import { MergeDataElementComponent } from 'compare/mergeDataElement/mergeDataElement.component';
 import { MergeFormComponent } from 'compare/mergeForm/mergeForm.component';
-
-import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHistoryContent.component';
-import { MatButtonModule, MatDialogModule, MatIconModule, MatProgressBarModule } from '@angular/material';
+import { CoreModule } from 'core/core.module';
+import { SortableModule } from 'ngx-bootstrap';
+import { DiffMatchPatchModule } from 'ng-diff-match-patch';
 
 @NgModule({
     imports: [
@@ -27,28 +26,28 @@ import { MatButtonModule, MatDialogModule, MatIconModule, MatProgressBarModule }
         MatIconModule,
         MatProgressBarModule,
         // core
-
+        CoreModule
     ],
     declarations: [
         CdeSortableComponent,
         CompareSideBySideComponent,
-        CompareArrayComponent,
+        CompareItemArrayComponent,
         CompareHistoryContentComponent,
-        CompareObjectComponent,
+        CompareItemComponent,
         MergeDataElementComponent,
         MergeFormComponent,
     ],
     entryComponents: [
-        CompareArrayComponent,
-        CompareObjectComponent,
+        CompareItemArrayComponent,
+        CompareItemComponent,
         CompareHistoryContentComponent
     ],
     providers: [],
     exports: [
         CompareSideBySideComponent,
-        CompareArrayComponent,
+        CompareItemArrayComponent,
         CompareHistoryContentComponent,
-        CompareObjectComponent,
+        CompareItemComponent,
     ],
     schemas: []
 })

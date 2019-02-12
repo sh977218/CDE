@@ -7,81 +7,66 @@ export class RegistrationValidatorService {
     constructor(private orgHelperService: OrgHelperService) {
     }
 
-    evalCde(cde, orgName: string, status: CurationStatus, cdeOrgRules) {
-        let orgRules = cdeOrgRules[orgName];
-        let rules = orgRules.filter(r => {
-            let s = r.targetStatus;
-            if (status === 'Incomplete') return s === 'Incomplete';
-            if (status === 'Candidate') return s === 'Incomplete' || s === 'Candidate';
-            if (status === 'Recorded') return s === 'Incomplete' || s === 'Candidate' || s === 'Recorded';
-            if (status === 'Qualified') return s === 'Incomplete' || s === 'Candidate' || s === 'Recorded' || s === 'Qualified';
-            if (status === 'Standard') return s === 'Incomplete' || s === 'Candidate' || s === 'Recorded' || s === 'Qualified' || s === 'Standard';
-            return true;
-        });
-        if (rules.length === 0) return [];
-        return rules.map(r => {
-            return {ruleName: r.ruleName, cdePassingRule: this.cdePassingRule(cde, r)};
-        });
-    }
-
-    conditionsMetForStatusWithinOrg(cde, orgName, status, cdeOrgRules) {
-        if (!cdeOrgRules[orgName]) return true;
-        let results = this.evalCde(cde, orgName, status, cdeOrgRules);
-        return results.every(x => x.passing);
-    }
-
-    cdePassingRule(cde, rule) {
-        function lookForPropertyInNestedObject(object, rule, level) {
-            let key = rule.field.split(".")[level];
-            if (!object[key]) return false;
-            if (level === rule.field.split(".").length - 1) return new RegExp(rule.rule.regex).test(object[key]);
-            if (!Array.isArray(object[key])) return lookForPropertyInNestedObject(object[key], rule, level + 1);
-            if (Array.isArray(object[key])) {
-                let result;
-                if (rule.occurence === "atLeastOne") {
-                    result = false;
-                    object[key].forEach(function (subTree) {
-                        result = result || lookForPropertyInNestedObject(subTree, rule, level + 1);
-                    });
-                    return result;
-                }
-                if (rule.occurence === "all") {
-                    result = true;
-                    object[key].forEach(function (subTree) {
-                        result = result && lookForPropertyInNestedObject(subTree, rule, level + 1);
-                    });
-                    return result;
-                }
-            }
-        }
-
-        return lookForPropertyInNestedObject(cde, rule, 0);
-    }
-
     getOrgRulesForCde(cde): StatusValidationRulesOrgs {
-        let result: StatusValidationRulesOrgs = {};
-        cde.classification.forEach(c =>
-            result[c.stewardOrg.name] = this.orgHelperService.getStatusValidationRules(c.stewardOrg.name));
-        return result;
-    }
-
-    getStatusRules(cdeOrgRules) {
-        let cdeStatusRules = {
-            "Incomplete": {},
-            "Candidate": {},
-            "Recorded": {},
-            "Qualified": {},
-            "Standard": {},
-            "Preferred Standard": {}
-        };
-
-        Object.keys(cdeOrgRules).forEach(orgName => {
-            cdeOrgRules[orgName].forEach(rule => {
-                if (!cdeStatusRules[rule.targetStatus][orgName]) cdeStatusRules[rule.targetStatus][orgName] = [];
-                cdeStatusRules[rule.targetStatus][orgName].push(rule);
-            });
+        let rulesOrgs: StatusValidationRulesOrgs = {};
+        cde.classification.forEach(c => {
+            rulesOrgs[c.stewardOrg.name] = this.orgHelperService.getStatusValidationRules(c.stewardOrg.name);
         });
-
-        return cdeStatusRules;
+        return rulesOrgs;
     }
+}
+
+const statuses = ['Standard', 'Qualified', 'Recorded', 'Candidate', 'Incomplete'];
+
+export function evalCde(cde, orgName: string, status: CurationStatus, cdeOrgRules) {
+    const statusesIndex = statuses.indexOf(status);
+    return cdeOrgRules[orgName]
+        .filter(r => statusesIndex > -1 ? statuses.slice(statusesIndex).includes(r.targetStatus) : true)
+        .map(r => ({ruleName: r.ruleName, cdePassingRule: cdePassingRule(cde, r)}));
+}
+
+export function conditionsMetForStatusWithinOrg(cde, orgName, status, cdeOrgRules) {
+    return cdeOrgRules[orgName] ? evalCde(cde, orgName, status, cdeOrgRules).every(x => x.passing) : true;
+}
+
+export function cdePassingRule(cde, rule) {
+    function lookForPropertyInNestedObject(object, rule, level) {
+        let key = rule.field.split(".")[level];
+        if (!object[key]) return false;
+        if (level === rule.field.split(".").length - 1) return new RegExp(rule.rule.regex).test(object[key]);
+        if (!Array.isArray(object[key])) return lookForPropertyInNestedObject(object[key], rule, level + 1);
+
+        switch (rule.occurence) {
+            case 'atLeastOne':
+                return object[key].reduce(
+                    (acc, subTree) => acc || lookForPropertyInNestedObject(subTree, rule, level + 1), false);
+            case 'all':
+                return object[key].reduce(
+                    (acc, subTree) => acc && lookForPropertyInNestedObject(subTree, rule, level + 1), true);
+        }
+    }
+
+    return lookForPropertyInNestedObject(cde, rule, 0);
+}
+
+export function getStatusRules(cdeOrgRules) {
+    let cdeStatusRules = {
+        "Incomplete": {},
+        "Candidate": {},
+        "Recorded": {},
+        "Qualified": {},
+        "Standard": {},
+        "Preferred Standard": {}
+    };
+
+    Object.keys(cdeOrgRules).forEach(orgName => {
+        cdeOrgRules[orgName].forEach(rule => {
+            if (!cdeStatusRules[rule.targetStatus][orgName]) {
+                cdeStatusRules[rule.targetStatus][orgName] = [];
+            }
+            cdeStatusRules[rule.targetStatus][orgName].push(rule);
+        });
+    });
+
+    return cdeStatusRules;
 }

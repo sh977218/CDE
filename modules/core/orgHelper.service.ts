@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import _noop from 'lodash/noop';
 
 import { UserService } from '_app/user.service';
-import { CbErr, Elt, Organization } from 'shared/models.model';
+import { CbErr, Elt, Organization, StatusValidationRules } from 'shared/models.model';
 import { isOrgCurator } from 'shared/system/authorizationShared';
 
 type OrgDetailedInfo = {[org: string]: Organization};
@@ -50,9 +50,8 @@ export class OrgHelperService {
         return '';
     }
 
-    getStatusValidationRules(orgName: string) {
-        if (this.orgsDetailedInfo[orgName]) return this.orgsDetailedInfo[orgName].cdeStatusValidationRules;
-        else return [];
+    getStatusValidationRules(orgName: string): StatusValidationRules[] {
+        return this.orgsDetailedInfo[orgName] ? this.orgsDetailedInfo[orgName].cdeStatusValidationRules || [] : [];
     }
 
     getUsedBy(elt: Elt) {

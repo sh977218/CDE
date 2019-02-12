@@ -59,7 +59,8 @@ public class CdeEditTest extends NlmCdeBaseTest {
         goToPermissibleValues();
         textPresent("myUom");
 
-        openCdeAudit(cdeName);
+        // CDE Audit
+        openAuditDataElement(cdeName);
         textPresent(cdeName + cdeDesignationChange);
         textPresent("the free text field to specify the other type of mediastinal lymph node dissection." + cdeDefinitionChange);
 

@@ -21,11 +21,8 @@
     </div>
 </div>
 <div mat-dialog-content *ngIf="newer && older">
-    <cde-compare-object [newer]="newer" [older]="older"></cde-compare-object>
-    <cde-compare-array [newer]="newer" [older]="older"
-                       [(filter)]="filter"></cde-compare-array>
+    <cde-compare-item [newer]="newer" [older]="older" [(filter)]="filter"></cde-compare-item>
 </div>
-
 <div mat-dialog-actions>
     <button mat-raised-button id="closeHistoryCompareModal" [mat-dialog-close]>Close
     </button>

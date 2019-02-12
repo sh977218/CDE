@@ -1,4 +1,6 @@
-import { Elt } from 'shared/models.model';
+import { Elt, Item } from 'shared/models.model';
+import { DataElement } from '../shared/de/dataElement.model';
+import { CdeForm } from '../shared/form/form.model';
 
 type itemActionsApi = {
     api: string,
@@ -27,5 +29,7 @@ declare const ITEM_MAP: {
     form: itemActionsApi
 };
 
+declare function isCdeForm(item: Item): item is CdeForm;
+declare function isDataElement(item: Item): item is DataElement;
 declare function uriView(module: string, tinyId: string): string|undefined;
 declare function uriViewBase(module: string): string|undefined;
