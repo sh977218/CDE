@@ -4,12 +4,10 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 import { CoreModule } from 'core/core.module';
 import {
-    MatIconModule, MatInputModule, MatSelectModule, MatButtonModule, MatAutocompleteModule, MatDatepickerModule,
-    MatNativeDateModule, MatDialogModule
+    MatIconModule, MatInputModule, MatSelectModule, MatButtonModule, MatAutocompleteModule, MatDialogModule
 } from '@angular/material';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
 import { SkipLogicAutocompleteComponent } from 'skipLogic/skipLogicAutocomplete/skipLogicAutocomplete.component';
-import { AnswerAutocompleteComponent } from 'skipLogic/answerAutocomplete/answerAutocomplete.component';
 import { SkipLogicComponent } from 'skipLogic/skipLogic.component';
 
 @NgModule({
@@ -22,19 +20,15 @@ import { SkipLogicComponent } from 'skipLogic/skipLogic.component';
         MatInputModule,
         MatSelectModule,
         MatButtonModule,
-        MatDatepickerModule,
-        MatNativeDateModule,
         MatDialogModule,
         MatAutocompleteModule
     ],
     declarations: [
         SkipLogicAutocompleteComponent,
-        AnswerAutocompleteComponent,
         SkipLogicComponent
     ],
     entryComponents: [
         SkipLogicAutocompleteComponent,
-        AnswerAutocompleteComponent,
         SkipLogicComponent
     ],
     exports: [SkipLogicComponent],

@@ -3,43 +3,65 @@
     <div mat-dialog-content>
         <div formArrayName="items"
              *ngFor="let item of skipLogicForm.get('items')['controls'] let i = index;">
-            <div [formGroupName]="i" class="row">
-                <div class="col-1">
-                    <mat-form-field class="w-100" *ngIf="i > 0">
-                        <select matNativeControl formControlName="logic" placeholder="Logic">
-                            <option *ngFor="let logicOption of logicOptions"
-                                    [value]="logicOption">{{logicOption}}</option>
-                        </select>
-                    </mat-form-field>
+            <div [formGroup]="item" class="row">
+                <div class="col-2">
+                    <ng-container *ngIf="i > 0">
+                        <mat-form-field class="w-100">
+                            <select matNativeControl formControlName="logic" placeholder="Logic" required>
+                                <option *ngFor="let logicOption of logicOptions"
+                                        [value]="logicOption">{{logicOption}}</option>
+                            </select>
+                        </mat-form-field>
+                    </ng-container>
                 </div>
                 <div class="col-4">
                     <mat-form-field class="w-100">
-                        <select matNativeControl formControlName="label" placeholder="Label">
-                            <option *ngFor="let priorQuestion of data.priorQuestions"
-                                    [value]="priorQuestion.label ? priorQuestion.label : priorQuestion.question.cde.name">
-                                {{priorQuestion.label ? priorQuestion.label : priorQuestion.question.cde.name}}
+                        <select matNativeControl formControlName="label" placeholder="Label" required>
+                            <option *ngFor="let labelOption of labelOptions"
+                                    [value]="labelOption">
+                                {{labelOption}}
                             </option>
                         </select>
                     </mat-form-field>
                 </div>
                 <div class="col-2">
                     <mat-form-field class="w-100">
-                        <select matNativeControl formControlName="operator" placeholder="Operator">
+                        <select matNativeControl formControlName="operator" placeholder="Operator" required>
                             <option *ngFor="let operatorOption of operatorOptions"
                                     [value]="operatorOption">{{operatorOption}}</option>
                         </select>
                     </mat-form-field>
                 </div>
-                <div class="col-4">
-                    <mat-form-field class="w-100">
-                        <select matNativeControl formControlName="answer" placeholder="Answer">
-                            <option *ngFor="let ans of getAnswers(item)"
-                                    value="ans.permissibleValue">{{ans.permissibleValue}}</option>
-                        </select>
-                    </mat-form-field>
+                <div class="col-3">
+                    <ng-container *ngIf="item.value?.selectedQuestion?.question?.datatype === 'Text'">
+                        <mat-form-field class="w-100">
+                            <input matInput type="Text" autocomplete="false" placeholder="Choose a Text"
+                                   formControlName="answer" required>
+                        </mat-form-field>
+                    </ng-container>
+                    <ng-container *ngIf="item.value?.selectedQuestion?.question?.datatype === 'Number'">
+                        <mat-form-field class="w-100">
+                            <input matInput type="number" autocomplete="false" placeholder="Choose a Number"
+                                   formControlName="answer" required>
+                        </mat-form-field>
+                    </ng-container>
+                    <ng-container *ngIf="item.value?.selectedQuestion?.question?.datatype === 'Date'">
+                        <mat-form-field class="w-100">
+                            <input matInput type="date" autocomplete="false" placeholder="Choose a Date"
+                                   formControlName="answer" required>
+                        </mat-form-field>
+                    </ng-container>
+                    <ng-container *ngIf="item.value?.selectedQuestion?.question?.datatype === 'Value List'">
+                        <mat-form-field class="w-100">
+                            <select matNativeControl formControlName="answer" placeholder="Choose a Answer">
+                                <option *ngFor="let ans of item.value?.selectedQuestion?.question?.answers"
+                                        value="ans.permissibleValue">{{ans.permissibleValue}}</option>
+                            </select>
+                        </mat-form-field>
+                    </ng-container>
                 </div>
                 <div class="col-1">
-                    <mat-icon (click)="deleteSkipLogic(i);">delete</mat-icon>
+                    <mat-icon (click)="skipLogicForm.get('items').removeAt(i)">delete</mat-icon>
                 </div>
             </div>
         </div>
@@ -55,7 +77,7 @@
     <div mat-dialog-actions>
         <button mat-raised-button [mat-dialog-close] id="cancelNewSkipLogicButton" color="warn">Cancel</button>
         <button mat-raised-button (click)="saveSkipLogic()" id="saveNewSkipLogicButton" color="primary"
-                [disabled]="false">Save
+                [disabled]="">Save
         </button>
     </div>
 </form>

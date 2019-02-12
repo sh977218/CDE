@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialog } from '@angular/material';
 import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { SkipLogicComponent } from 'skipLogic/skipLogic.component';
@@ -10,15 +10,15 @@ export class Token {
     operator: string = '=';
     answer: string = '';
     logic?: string = 'AND';
-    error?: string = '';
 }
 
 @Component({
     selector: 'cde-skip-logic-autocomplete',
     templateUrl: './skipLogicAutocomplete.component.html'
 })
-export class SkipLogicAutocompleteComponent implements OnInit {
+export class SkipLogicAutocompleteComponent {
     logicOptions = ['AND', 'OR'];
+    labelOptions = [];
     operatorOptions = ['=', '>', '<', '>=', '<='];
     skipLogicForm: FormGroup;
 
@@ -26,6 +26,12 @@ export class SkipLogicAutocompleteComponent implements OnInit {
                 protected dialog: MatDialog,
                 public dialogRef: MatDialogRef<SkipLogicComponent>,
                 @Inject(MAT_DIALOG_DATA) public data) {
+        this.labelOptions = data.priorQuestions.map(q => {
+            let realLabel = q.label;
+            if (!realLabel) realLabel = q.question.cde.name;
+            return realLabel;
+        });
+
         let items = this.formBuilder.array([]);
 
         let tokens = this.getTokens(data.formElement.skipLogic.condition);
@@ -40,19 +46,21 @@ export class SkipLogicAutocompleteComponent implements OnInit {
         });
 
         this.skipLogicForm = this.formBuilder.group({items});
-    }
-
-
-    ngOnInit(): void {
+        const itemsControl = this.skipLogicForm.get('items');
         this.skipLogicForm.valueChanges.subscribe(newValue => {
             if (newValue.items) {
                 newValue.items.forEach(item => {
                     if (item.label) {
                         let q = this.getQuestionByLabel(item.label);
-                        if (q) item.selectedQuestion = q;
-                        else item.errror = 'No Question Label Found.';
+                        if (q) {
+                            console.log('selected question: ' + q.label);
+                            item.selectedQuestion = q;
+                        } else {
+                            console.log(item.label + '   not found.');
+                        }
                     }
                 });
+                itemsControl.updateValueAndValidity();
             }
         });
     }
@@ -60,11 +68,6 @@ export class SkipLogicAutocompleteComponent implements OnInit {
     addToken(): void {
         let items = this.skipLogicForm.get('items') as FormArray;
         items.push(this.formBuilder.group(new Token()));
-    }
-
-    deleteSkipLogic(i) {
-        let control = <FormArray>this.skipLogicForm.controls['items'];
-        control.removeAt(i);
     }
 
     deleteAllSkipLogic() {
@@ -112,12 +115,6 @@ export class SkipLogicAutocompleteComponent implements OnInit {
         let otherTokens = this.getTokens(str);
 
         return [token].concat(otherTokens);
-    }
-
-    getAnswers(item) {
-        let token = item.value;
-        if (token.selectedQuestion) return token.selectedQuestion.question.answers;
-        else return [];
     }
 
     saveSkipLogic() {
