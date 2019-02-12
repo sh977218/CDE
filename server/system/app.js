@@ -707,4 +707,35 @@ exports.init = function (app) {
         } else res.status(401).send();
     });
 
+    let syncLinkedFormsProgress = {done: 0, todo: 0};
+    // TODO secure this
+    app.get('/syncLinkedForms', async function (req, res) {
+        res.send("");
+        syncLinkedFormsProgress = {done: 0, todo: 0};
+        const cdeCursor = mongo_cde.getStream({archived: false});
+        syncLinkedFormsProgress.todo = 10000;
+        for (let cde = await cdeCursor.next(); cde != null; cde = await cdeCursor.next()) {
+            let linkedForms = [];
+            let esResult = await elastic.esClient.search({
+                index: config.elastic.formIndex.name,
+                q: cde.tinyId,
+                size: 100
+            });
+
+            esResult.hits.hits.map(h => {
+                return {tinyId: h._source.tinyId, registrationStatus: h._source.registrationState.registrationStatus};
+            });
+
+            await elastic.esClient.update({
+                index: config.elastic.index.name,
+                type: "dataelement",
+                id: cde.tinyId,
+                body: {doc: {linkedForms: linkedForms}}
+            });
+            syncLinkedFormsProgress.done++;
+        }
+    });
+
+    app.get('/syncLinkedFormsStatus', (req, res) => res.send(syncLinkedFormsProgress));
+
 };
