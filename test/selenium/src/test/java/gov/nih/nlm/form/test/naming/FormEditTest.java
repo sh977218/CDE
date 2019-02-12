@@ -3,6 +3,7 @@ package gov.nih.nlm.form.test.naming;
 import gov.nih.nlm.form.test.BaseFormTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class FormEditTest extends BaseFormTest {
@@ -13,6 +14,7 @@ public class FormEditTest extends BaseFormTest {
         mustBeLoggedInAs(testAdmin_username, password);
         goToFormByName(formName);
         goToFormDescription();
+        Assert.assertEquals(driver.getTitle(), "Form: " + formName);
         editQuestion();
         newFormVersion();
         goHome();
