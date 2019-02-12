@@ -102,7 +102,7 @@ const createCde = function(row, classification = "Core") {
 
     cdeSaved++;
     return new Promise(resolve => {
-        mongo_cde.create(cde, {username: 'batchloader'}, resolve);
+        mongo_cde.create(cde, {username: 'batchloader'}, (err, newElt) => resolve(newElt));
     });
 };
 
@@ -112,7 +112,6 @@ async function loadCdes (done) {
         let cde = row.NLM_ID ? await updateCde(row) : await createCde(row);
 
         console.log("tinyId: " + cde.tinyId);
-
 
         if (!forms[row.Form]) {
             forms[row.Form] = {
@@ -162,7 +161,7 @@ async function loadCdes (done) {
 
 loadCdes(async () => {
     for (let formName of Object.keys(forms)) {
-        await new Promise(resolve => mongo_form.create(forms[formName], {username: batchloader}, resolve));
+        await new Promise(resolve => mongo_form.create(forms[formName], {username: "batchloader"}, resolve));
         formSaved++;
     }
 
