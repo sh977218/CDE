@@ -72,9 +72,6 @@ export class HistoryComponent implements OnInit {
         }
     }
 
-    newer;
-    older;
-
     openHistoryCompareModal() {
         Promise.all(this.priorElements.filter(pe => pe.selected && !pe.tinyId).map(priorElt => {
             let url = ITEM_MAP[priorElt.elementType][priorElt.isDraft ? 'apiDraftById' : 'apiById'] + priorElt._id;
@@ -84,12 +81,12 @@ export class HistoryComponent implements OnInit {
                 this.priorElements[this.priorElements.indexOf(priorElt)] = res;
             });
         })).then(() => {
+            const twoSelected = this.priorElements.filter(p => p.selected);
             let data = {
-                newer: this.priorElements.filter(p => p.selected)[0],
-                older: this.priorElements.filter(p => p.selected)[1]
+                newer: twoSelected[0],
+                older: twoSelected[1]
             };
             this.dialog.open(CompareHistoryContentComponent, {width: '800px', data: data});
         }, err => this.alert.addAlert('danger', 'Error open history compare modal.' + err));
     }
-
 }

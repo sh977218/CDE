@@ -4,14 +4,14 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule, MatIconModule, MatTabsModule } from '@angular/material';
 import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-
-
+import { CoreModule } from 'core/core.module';
+import { DraftsListModule } from 'draftsList/draftsList.module';
+import { DataService } from 'shared/models.model';
 import { EmbedComponent } from 'system/public/components/embed/embed.component';
+import { OrgDataService } from 'system/public/components/orgManagement/orgData.service';
 import { OrgAccountManagementComponent } from 'system/public/components/siteAdmin/orgAccountManagement/orgAccountManagement.component';
 import { SystemModule } from 'system/public/system.module';
-import { DraftsListOrgComponent } from "system/public/components/draftsList/draftsListOrg.component";
 import { UsernameAutocompleteModule } from 'usernameAutocomplete/usernameAutocomplete.module';
-import { CoreModule } from 'core/core.module';
 
 const appRoutes: Routes = [
     {path: '', component: OrgAccountManagementComponent},
@@ -28,19 +28,20 @@ const appRoutes: Routes = [
         RouterModule.forChild(appRoutes),
         // core
         CoreModule,
-
-        UsernameAutocompleteModule,
         // internal
+        DraftsListModule,
         SystemModule,
+        UsernameAutocompleteModule,
     ],
     declarations: [
         EmbedComponent,
         OrgAccountManagementComponent,
-        DraftsListOrgComponent,
     ],
     entryComponents: [],
     exports: [],
-    providers: [],
+    providers: [
+        {provide: DataService, useClass: OrgDataService},
+    ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class OrgManagementModule {

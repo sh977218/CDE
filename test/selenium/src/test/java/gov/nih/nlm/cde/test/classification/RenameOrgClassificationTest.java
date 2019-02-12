@@ -41,7 +41,7 @@ public class RenameOrgClassificationTest extends NlmCdeBaseTest {
         textPresent("Protocol Experiencies");
         switchTabAndClose(0);
 
-        openClassificationAudit("NINDS > Domain > Protocol Experience");
+        openAuditClassification("NINDS > Domain > Protocol Experience");
         textPresent("rename NINDS > Domain > Protocol Experience to Protocol Experiencies");
         String body = findElement(By.cssSelector("body")).getText();
         Assert.assertTrue(body.contains("10+ elements") || body.contains("1281 elements"));

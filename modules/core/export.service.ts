@@ -3,7 +3,9 @@ import { Injectable } from '@angular/core';
 import { ElasticService } from '_app/elastic.service';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
-import { RegistrationValidatorService } from 'core/registrationValidator.service';
+import {
+    conditionsMetForStatusWithinOrg, evalCde, RegistrationValidatorService
+} from 'core/registrationValidator.service';
 import { saveAs } from 'file-saver';
 import * as JSZip from 'jszip';
 import * as JXON from 'jxon';
@@ -146,11 +148,11 @@ export class ExportService {
                         result.forEach((oneElt) => {
                             let cdeOrgRules = this.registrationValidatorService.getOrgRulesForCde(oneElt);
 
-                            if (!this.registrationValidatorService.conditionsMetForStatusWithinOrg(oneElt, orgName, status, cdeOrgRules)) {
+                            if (!conditionsMetForStatusWithinOrg(oneElt, orgName, status, cdeOrgRules)) {
                                 let record = {
                                     tinyId: oneElt.tinyId,
                                     cdeName: oneElt.designations[0].designation,
-                                    validationRules: this.registrationValidatorService.evalCde(oneElt, orgName, status, cdeOrgRules),
+                                    validationRules: evalCde(oneElt, orgName, status, cdeOrgRules),
                                 };
                                 if (!record.validationRules.every(function (x) {
                                         return x.cdePassingRule;

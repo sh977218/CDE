@@ -1,7 +1,7 @@
 <div id="validRulesDiv">
     <h4 id="regStatusValidationRules">Validation Rules</h4>
 
-    <div *ngIf="hasRules()">
+    <div *ngIf="hasRules(); else noRules">
         The <b>Registration Status</b> of this CDE is <b>{{elt.registrationState.registrationStatus}}</b>.<br>
         This CDE is used by the following <b>Stewards</b>: {{elt.usedBy?.join(', ')}}<br>
         In order to promote this CDE to a different registration status, it must obey the following validation rules:
@@ -22,7 +22,7 @@
             </div>
         </div>
     </div>
-    <div *ngIf="!hasRules()">
+    <ng-template #noRules>
         There are no validation rules for this CDE.
-    </div>
+    </ng-template>
 </div>

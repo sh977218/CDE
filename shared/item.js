@@ -1,5 +1,3 @@
-import { capString } from 'shared/system/util';
-
 export const ITEM_MAP = {
     board: {
         view: '/board/',
@@ -33,6 +31,14 @@ export const ITEM_MAP = {
         viewById: '/formView?formId=',
     }
 };
+
+export function isCdeForm(item) {
+    return item.elementType === 'form';
+}
+
+export function isDataElement(item) {
+    return item.elementType === 'cde';
+}
 
 export function uriView(module, tinyId) {
     let mod = ITEM_MAP[module];

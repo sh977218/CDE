@@ -1,5 +1,6 @@
 import _find from 'lodash/find';
 import _findIndex from 'lodash/findIndex';
+import _noop from 'lodash/noop';
 import _slice from 'lodash/slice';
 
 export const actions = {
@@ -96,7 +97,7 @@ export function unclassifyElt(item, orgName, categories) {
             if (item.markModified) item.markModified('classification');
         }
     }
-};
+}
 
 export function renameClassifyElt(item, orgName, categories, newName) {
     let classification = _find(item.classification, function (o) {
@@ -114,13 +115,30 @@ export function renameClassifyElt(item, orgName, categories, newName) {
 }
 
 // PUT NEW API ABOVE
+// ---------------------------------------------------
+export function addCategory(tree, fields, cb = _noop) {
+    let lastLevel = fetchLevel(tree, fields);
+    if (isDuplicate(lastLevel.elements, fields[fields.length - 1])) {
+        return cb('Classification Already Exists');
+    } else {
+        lastLevel.elements.push({name: fields[fields.length - 1], elements: []});
+        return cb();
+    }
+}
 
-export function findSteward(de, orgName) {
-    if (!de) return null;
-    for (let i = 0; i < de.classification.length; i++) {
-        if (de.classification[i].stewardOrg.name === orgName) {
-            return {index: i, object: de.classification[i]};
-        }
+export function classifyItem(item, orgName, classifPath) {
+    let steward = findSteward(item, orgName);
+    if (!steward) {
+        item.classification.push({
+            stewardOrg: {
+                name: orgName
+            },
+            elements: []
+        });
+        steward = findSteward(item, orgName);
+    }
+    for (let i = 1; i <= classifPath.length; i++) {
+        addCategory(steward.object, classifPath.slice(0, i));
     }
 }
 
@@ -133,6 +151,115 @@ export function deleteCategory(tree, fields) {
         }
         if (lastLevel.elements[i].name === fields[fields.length - 1]) {
             lastLevel.elements.splice(i, 1);
+            break;
+        }
+    }
+}
+
+export function fetchLevel(tree, fields) {
+    function findCategory(subTree, name) {
+        for (let i = 0; i < subTree.elements.length; i++) {
+            if (subTree.elements[i].name === name) {
+                if (!subTree.elements[i].elements) subTree.elements[i].elements = [];
+                return subTree.elements[i];
+            }
+        }
+        subTree.elements.push({name: name, elements: []});
+        return subTree.elements[subTree.elements.length - 1];
+    }
+    let tempTree = tree;
+    for (let j = 0; j < fields.length - 1; j++) {
+        if (tempTree) {
+            tempTree = findCategory(tempTree, fields[j]);
+        }
+    }
+    return tempTree;
+}
+
+
+export function findSteward(de, orgName) {
+    if (!de) return null;
+    for (let i = 0; i < de.classification.length; i++) {
+        if (de.classification[i].stewardOrg.name === orgName) {
+            return {index: i, object: de.classification[i]};
+        }
+    }
+}
+
+export function flattenClassification(elt) {
+    function doClassif(currentString, classif, result) {
+        if (currentString.length > 0) {
+            currentString = currentString + ' | ';
+        }
+        currentString = currentString + classif.name;
+        if (classif.elements && classif.elements.length > 0) {
+            classif.elements.forEach((cl) => {
+                doClassif(currentString, cl, result);
+            });
+        } else {
+            result.push(currentString);
+        }
+    }
+
+    let result = [];
+    if (elt.classification) {
+        elt.classification.forEach(cl => {
+            if (cl.elements) {
+                cl.elements.forEach(subCl => doClassif(cl.stewardOrg.name, subCl, result));
+            }
+        });
+    }
+    return result;
+}
+
+export function isDuplicate(elements, name) {
+    return elements.some(element => element.name === name);
+}
+
+export function mergeArrayByProperty(arrayFrom, arrayTo, property) {
+    arrayFrom[property].forEach((objFrom) => {
+        let exist = arrayTo[property].filter((objTo) => JSON.stringify(objTo) === JSON.stringify(objFrom)).length > 0;
+        if (!exist) arrayTo[property].push(objFrom);
+    });
+}
+
+export function modifyCategory(tree, fields, action, cb) {
+    let lastLevel = fetchLevel(tree, fields);
+    for (let i = 0; i < lastLevel.elements.length; i++) {
+        if (lastLevel.elements[i] === null) {
+            lastLevel.elements.splice(i, 1);
+            i = i - 1;
+        }
+        if (lastLevel.elements[i].name === fields[fields.length - 1]) {
+            if (action.type === actions.delete)
+                lastLevel.elements.splice(i, 1);
+            if (action.type === actions.rename)
+                lastLevel.elements[i].name = action.newname;
+            break;
+        }
+    }
+    cb();
+}
+
+export function removeCategory(tree, fields, cb) {
+    let lastLevel = fetchLevel(tree, fields);
+    for (let i = 0; i < lastLevel.elements.length; i++) {
+        if (lastLevel.elements[i] === null) {
+            lastLevel.elements.splice(i, 1);
+            i = i - 1;
+        }
+        if (lastLevel.elements[i].name === fields[fields.length - 1]) {
+            lastLevel.elements.splice(i, 1);
+            return cb();
+        }
+    }
+    return cb('Did not find match classifications.');
+}
+
+export function removeClassification(elt, orgName) {
+    for (let i = 0; i < elt.classification.length; i++) {
+        if (elt.classification[i].stewardOrg.name === orgName) {
+            elt.classification.splice(i, 1);
             break;
         }
     }
@@ -152,85 +279,38 @@ export function renameCategory(tree, fields, newName) {
     }
 }
 
-export function modifyCategory(tree, fields, action, cb) {
-    let lastLevel = fetchLevel(tree, fields);
-    for (let i = 0; i < lastLevel.elements.length; i++) {
-        if (lastLevel.elements[i] === null) {
-            lastLevel.elements.splice(i, 1);
-            i = i - 1;
-        }
-        if (lastLevel.elements[i].name === fields[fields.length - 1]) {
-            if (action.type === actions.delete)
-                lastLevel.elements.splice(i, 1);
-            if (action.type === actions.rename)
-                lastLevel.elements[i].name = action.newname;
-            break;
+export function sortClassification(item) {
+    function sortSubClassif(classif) {
+        if (classif.elements) {
+            classif.elements = classif.elements.sort((c1, c2) =>
+                c1.name.localeCompare(c2.name)
+            );
         }
     }
-    if (cb) {
-        cb();
+    function doRecurse(classif) {
+        sortSubClassif(classif);
+        if (classif.elements) classif.elements.forEach(doRecurse);
     }
+    item.classification = item.classification.sort((c1, c2) => c1.stewardOrg.name.localeCompare(c2.stewardOrg.name));
+    item.classification.forEach(doRecurse);
+    return item;
 }
 
-export function removeCategory(tree, fields, cb) {
-    let lastLevel = fetchLevel(tree, fields);
-    for (let i = 0; i < lastLevel.elements.length; i++) {
-        if (lastLevel.elements[i] === null) {
-            lastLevel.elements.splice(i, 1);
-            i = i - 1;
+export function transferClassifications(source, destination) {
+    source.classification.forEach(stewardOrgSource => {
+        let st = findSteward(destination, stewardOrgSource.stewardOrg.name);
+        let stewardOrgDestination;
+        if (st) {
+            stewardOrgDestination = st.object;
+        } else {
+            destination.classification.push({stewardOrg: {name: stewardOrgSource.stewardOrg.name}, elements: []});
+            stewardOrgDestination = destination.classification[destination.classification.length - 1];
         }
-        if (lastLevel.elements[i].name === fields[fields.length - 1]) {
-            lastLevel.elements.splice(i, 1);
-            return cb();
-        }
-    }
-    return cb('Did not find match classifications.');
-}
-
-export function classifyItem(item, orgName, classifPath) {
-    let steward = findSteward(item, orgName);
-    if (!steward) {
-        item.classification.push({
-            stewardOrg: {
-                name: orgName
-            },
-            elements: []
+        stewardOrgDestination.name = stewardOrgDestination.stewardOrg.name;
+        treeChildren(stewardOrgSource, [], path => {
+            addCategory(stewardOrgDestination, path);
         });
-        steward = findSteward(item, orgName);
-    }
-    for (let i = 1; i <= classifPath.length; i++) {
-        addCategory(steward.object, classifPath.slice(0, i));
-    }
-}
-
-export function addCategory(tree, fields, cb) {
-    let lastLevel = fetchLevel(tree, fields);
-    if (isDuplicate(lastLevel.elements, fields[fields.length - 1])) {
-        if (cb) return cb('Classification Already Exists');
-    } else {
-        lastLevel.elements.push({name: fields[fields.length - 1], elements: []});
-        if (cb) return cb();
-    }
-}
-
-export function fetchLevel(tree, fields) {
-    let tempTree = tree;
-    function findCategory(subTree, name) {
-        for (let i = 0; i < subTree.elements.length; i++) {
-            if (subTree.elements[i].name === name) {
-                if (!subTree.elements[i].elements) subTree.elements[i].elements = [];
-                return subTree.elements[i];
-            }
-        }
-        subTree.elements.push({name: name, elements: []});
-        return subTree.elements[subTree.elements.length - 1];
-    }
-    for (let j = 0; j < fields.length - 1; j++) {
-        if (tempTree) {
-            tempTree = findCategory(tempTree, fields[j]);
-        }
-    }
-    return tempTree;
+    });
 }
 
 export function treeChildren(tree, path, cb) {
@@ -242,79 +322,5 @@ export function treeChildren(tree, path, cb) {
         } else {
             cb(newpath);
         }
-    });
-}
-
-export function transferClassifications(source, destination) {
-    source.classification.forEach(function (stewardOrgSource) {
-        let st = findSteward(destination, stewardOrgSource.stewardOrg.name);
-        let stewardOrgDestination;
-        if (st) {
-            stewardOrgDestination = st.object;
-        } else {
-            destination.classification.push({stewardOrg: {name: stewardOrgSource.stewardOrg.name}, elements: []});
-            stewardOrgDestination = destination.classification[destination.classification.length - 1];
-        }
-        stewardOrgDestination.name = stewardOrgDestination.stewardOrg.name;
-        treeChildren(stewardOrgSource, [], function (path) {
-            addCategory(stewardOrgDestination, path, function () {
-            });
-        });
-    });
-}
-
-/**
- * Delete data element classification given an organization name.
- *
- * @param {type} elt - data element or form
- * @param {type} orgName - organization name
- * @returns none
- */
-export function removeClassification(elt, orgName) {
-    for (let i = 0; i < elt.classification.length; i++) {
-        if (elt.classification[i].stewardOrg.name === orgName) {
-            elt.classification.splice(i, 1);
-            break;
-        }
-    }
-}
-
-/**
- * Traverse array for duplicates.
- * @param {type} elements - Array of elements to traverse.
- * @param {type} name - Name of duplicate.
- * @returns {Boolean} - True if duplicate found, false otherwise.
- */
-export function isDuplicate(elements, name) {
-    for (let i = 0; i < elements.length; i++) {
-        if (elements[i].name === name) {
-            return true;
-        }
-    }
-    return false;
-}
-
-
-export function sortClassification(elt) {
-    elt.classification = elt.classification.sort(function (c1, c2) {
-        return c1.stewardOrg.name.localeCompare(c2.stewardOrg.name);
-    });
-    let sortSubClassif = function (classif) {
-        if (classif.elements) {
-            classif.elements = classif.elements.sort(function (c1, c2) {
-                return c1.name.localeCompare(c2.name);
-            });
-        }
-    };
-    let doRecurse = function (classif) {
-        sortSubClassif(classif);
-        if (classif.elements) {
-            classif.elements.forEach(function (subElt) {
-                doRecurse(subElt);
-            });
-        }
-    };
-    elt.classification.forEach(function (classif) {
-        doRecurse(classif);
     });
 }

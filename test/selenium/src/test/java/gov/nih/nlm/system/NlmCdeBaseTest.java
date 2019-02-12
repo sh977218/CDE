@@ -897,23 +897,35 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         clickElement(By.id("historyCompareBtn"));
     }
 
-    protected void openCdeAudit(String cdeName) {
+    private void openAudit(String type, String name) {
         mustBeLoggedInAs(nlm_username, nlm_password);
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Audit"));
-        clickElement(By.xpath("//div[. = 'CDE Audit Log']"));
+        clickElement(By.xpath("//div[. = '" + type + " Audit Log']"));
         for (Integer i = 0; i < 10; i++) {
             hangon(1);
             try {
                 wait.until(ExpectedConditions.textToBePresentInElementLocated(
-                        By.cssSelector("mat-accordion"), cdeName));
+                        By.cssSelector("mat-accordion"), name));
                 break;
             } catch (Exception e) {
                 clickElement(By.cssSelector(".mat-paginator-navigation-next"));
             }
 
         }
-        clickElement(By.xpath("//mat-accordion//mat-panel-title[contains (., '" + cdeName + "')]"));
+        clickElement(By.xpath("//mat-accordion//mat-panel-title[contains (., '" + name + "')]"));
+    }
+
+    protected void openAuditClassification(String name) {
+        openAudit("Classification", name);
+    }
+
+    protected void openAuditDataElement(String name) {
+        openAudit("CDE", name);
+    }
+
+    protected void openAuditForm(String name) {
+        openAudit("Form", name);
     }
 
     protected void setVisibleStatus(String id) {
@@ -1099,14 +1111,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         clickElement(By.id("confirmDeleteClassificationBtn"));
         closeAlert();
         checkElementDoesNotExistByLocator(By.xpath("//*[@id='" + selector + "']"));
-    }
-
-    protected void openClassificationAudit(String name) {
-        mustBeLoggedInAs(nlm_username, nlm_password);
-        clickElement(By.id("username_link"));
-        clickElement(By.linkText("Audit"));
-        clickElement(By.xpath("//div[. = 'Classification Audit Log']"));
-        clickElement(By.xpath("(//span[text()='" + name + "' and contains(@class,'text-info')])[1]"));
     }
 
     protected void goToBoard(String boardName) {

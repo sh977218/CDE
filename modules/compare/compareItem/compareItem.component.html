@@ -1,0 +1,15 @@
+<ng-container *ngFor="let property of compareObjectProperties">
+    <div *ngIf="!property.match" id="{{property.label}}">
+        <strong>{{property.label}}:</strong>
+        <div *ngFor="let p of property.data">
+            <strong>{{p.label}}:</strong>
+            <pre id="{{p.label}}" lineDiff [left]="p.newer" [right]="p.older"></pre>
+        </div>
+        <div *ngIf="!property.data"><pre lineDiff [left]="property.newer" [right]="property.older"></pre></div>
+    </div>
+</ng-container>
+<div *ngIf="newerFlatClassifications !== olderFlatClassifications" id="Classification">
+    <strong>Classification:</strong>
+    <div><pre semanticDiff [left]="olderFlatClassifications" [right]="newerFlatClassifications"></pre></div>
+</div>
+<cde-compare-item-array [newer]="newer" [older]="older" [(filter)]="filter"></cde-compare-item-array>

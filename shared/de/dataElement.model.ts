@@ -1,13 +1,13 @@
 import { CdeId, DerivationRule, Elt, PermissibleValue } from 'shared/models.model';
 import { fixDatatype } from 'shared/de/deValidator';
 
-class Concept {
+export class Concept {
     name?: string;
     origin?: string;
     originId?: string;
 }
 
-class Concepts {
+export class Concepts {
     concepts: Concept[] = [];
 }
 
@@ -60,6 +60,7 @@ export class DataElement extends Elt {
 
 export class DataElementElastic extends DataElement { // all volatile
     [key: string]: any; // used for highlighting
+    flatClassifications?: string[];
     highlight?: any;
     primaryDefinitionCopy?: string;
     primaryNameCopy?: string;

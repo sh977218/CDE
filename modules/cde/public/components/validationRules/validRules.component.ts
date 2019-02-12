@@ -1,24 +1,22 @@
-import { Component, Input, OnInit } from "@angular/core";
-import { RegistrationValidatorService } from "core/registrationValidator.service";
+import { Component, Input, OnInit } from '@angular/core';
+import { cdePassingRule, getStatusRules, RegistrationValidatorService } from 'core/registrationValidator.service';
+import { DataElement } from 'shared/de/dataElement.model';
 
 @Component({
-    selector: "cde-valid-rules",
-    templateUrl: "./validRules.component.html"
+    selector: 'cde-valid-rules',
+    templateUrl: './validRules.component.html'
 })
 export class ValidRulesComponent implements OnInit {
-    @Input() elt: any;
-
-    cdeStatusRules: any;
-    cdePassingRule: any;
+    @Input() elt: DataElement;
+    cdeStatusRules;
+    cdePassingRule = cdePassingRule;
     keys = Object.keys;
 
     constructor(private registrationValidatorService: RegistrationValidatorService) {
     }
 
     ngOnInit() {
-        let cdeOrgRules = this.registrationValidatorService.getOrgRulesForCde(this.elt);
-        this.cdeStatusRules = this.registrationValidatorService.getStatusRules(cdeOrgRules);
-        this.cdePassingRule = this.registrationValidatorService.cdePassingRule;
+        this.cdeStatusRules = getStatusRules(this.registrationValidatorService.getOrgRulesForCde(this.elt));
     }
 
     hasRules() {
