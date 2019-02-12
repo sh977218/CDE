@@ -18,7 +18,6 @@ public class FindRetired extends NlmCdeBaseTest {
         checkSearchResultInfo(null, null, null, "All Topics", "Retired", null);
         findElement(By.id("ftsearch-input")).sendKeys("Height");
         clickElement(By.id("search.submit"));
-        clickElement(By.id("regstatus-Retired"));
         textPresent("Height or length alternative measurement");
         driver.get(driver.getCurrentUrl());
         textPresent("Retired", By.id("status_crumb"));
