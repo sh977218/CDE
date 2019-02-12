@@ -1,43 +1,39 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material';
+import { Item } from 'shared/models.model';
 
 @Component({
-    selector: "cde-compare-history",
-    templateUrl: "./compareHistoryContent.component.html",
+    templateUrl: './compareHistoryContent.component.html',
     styles: [`
         caption {
             caption-side: top;
         }
-
-        .color-box {
-            width: 10px;
-            height: 10px;
-        }
-
-        .isSelected {
-            background-color: #f5f5f5;
-        }
-
-        #reorderIcon{
-            background-color: #fad000;
-        }
         #addIcon{
             background-color: #008000;
+        }
+        #editIcon{
+            background-color: #0000ff;
         }
         #removeIcon{
             background-color: #a94442;
         }
-        #editIcon{
-            background-color: #0000ff;
+        #reorderIcon{
+            background-color: #fad000;
+        }
+        .color-box {
+            width: 10px;
+            height: 10px;
+        }
+        .isSelected {
+            background-color: #f5f5f5;
         }
     `],
     providers: []
 })
 export class CompareHistoryContentComponent {
-    newer;
-    older;
-
-    public filter = {
+    newer: Item;
+    older: Item;
+    filter = {
         reorder: {
             select: true
         },

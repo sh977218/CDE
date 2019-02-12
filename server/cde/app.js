@@ -138,7 +138,7 @@ exports.init = function (app, daoManager) {
     });
 
     app.post('/getCdeAuditLog', authorization.isOrgAuthorityMiddleware, (req, res) => {
-        mongo_cde.getCdeAuditLog(req.body, (err, result) => {
+        mongo_cde.getAuditLog(req.body, (err, result) => {
             res.send(result);
         });
     });

@@ -12,13 +12,12 @@
          (mouseover)="hoverInQuestion(question)" (mouseout)="hoverOutQuestion(question)">
         <span *ngIf="question.question.isScore">Score:</span>
         <span class="questionLabel ml-1" title="{{question.label}}">
-            <ng-container *ngIf="!question.label">
-                <mat-icon
-                          aria-label="This question has no label" matTooltip="This question has no label"
+            <strong *ngIf="question.label; else labelHidden">{{question.label}} </strong>
+            <ng-template #labelHidden>
+                <mat-icon aria-label="This question has no label" matTooltip="This question has no label"
                           matTooltipClass="cdeTooltip" matTooltipPosition="right">help</mat-icon>
                 ( {{question.label || question.question.cde.name}} )
-            </ng-container>
-            <strong *ngIf="question.label" [textContent]="question.label"> </strong>
+            </ng-template>
             <small *ngIf="question.question.partOf" class="text-info"> (part of {{question.question.partOf}})</small>
         </span>
         <span *ngIf="question.incompleteRule" class="mx-1">(Incomplete Rule)</span>

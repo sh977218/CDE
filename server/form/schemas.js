@@ -177,8 +177,8 @@ exports.formJson = {
     }]
     , referenceDocuments: [sharedSchemas.referenceDocumentSchema]
 };
-
 exports.formSchema = new Schema(exports.formJson, {usePushEach: true});
+
 exports.draftSchema = new Schema(exports.formJson, {
     sePushEach: true,
     toObject: {
@@ -193,4 +193,8 @@ exports.draftSchema.virtual('isDraft').get(function () {
 });
 exports.formSchema.set('collection', 'forms');
 exports.draftSchema.set('collection', 'formdrafts');
+
+exports.auditSchema = new Schema(sharedSchemas.itemLogSchema, {strict: false});
+exports.auditSchema.set('collection', 'formAudit');
+
 
