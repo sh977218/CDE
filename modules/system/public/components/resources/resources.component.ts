@@ -32,10 +32,12 @@ export class ResourcesComponent implements OnDestroy {
                 public userService: UserService) {
         this.canEdit = hasRole(this.userService.user, 'DocumentationEditor');
 
-        this.http.get<any>('/server/article/resourcesAndFeed').subscribe(res => {
-            this.resource = res;
-            this.renderMe();
-        }, err => this.alert.httpErrorMessageAlert(err));
+        if (!this.resource) {
+            this.http.get<any>('/server/article/resourcesAndFeed').subscribe(res => {
+                this.resource = res;
+                this.renderMe();
+            }, err => this.alert.httpErrorMessageAlert(err));
+        }
     }
 
     renderMe() {
