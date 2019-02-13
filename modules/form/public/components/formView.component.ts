@@ -123,7 +123,8 @@ export class FormViewComponent implements OnInit {
                 permissibleValues: newCde.permissibleValues
             },
             classification: this.elt.classification,
-            ids: newCde.ids
+            ids: newCde.ids,
+            registrationState: {registrationStatus: 'Incomplete'}
         };
         this.http.post<DataElement>('/de', dataElement)
             .subscribe(res => {
