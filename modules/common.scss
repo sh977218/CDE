@@ -4,10 +4,12 @@
 .cdeTooltip {
   background-color: $navBackgroundColor;
 }
+
 .cdeTooltipMultiline {
   background-color: $navBackgroundColor;
   white-space: pre-line;
 }
+
 /* END Theme */
 
 
@@ -43,6 +45,7 @@
 .rotate270 {
   transform: rotate(270deg);
 }
+
 /* END shortcuts */
 
 
@@ -50,6 +53,7 @@
 a {
   color: #337ab7; /* to pass chrome audit low contrast ratio */
 }
+
 /* END browser */
 
 
@@ -61,6 +65,7 @@ a {
 nih-cde:empty + .loading {
   display: block;
 }
+
 /* END loading */
 
 
@@ -81,6 +86,7 @@ nih-cde:empty + .loading {
   max-width: 100%;
   max-height: 200px;
 }
+
 /* END item views */
 
 
@@ -88,9 +94,11 @@ nih-cde:empty + .loading {
 .mdl-layout__header { /* fix navbar height so form description toolbar can float consistently */
   min-height: 56px;
 }
+
 .mdl-layout__header-row, .mdl-layout__header-row .mdl-navigation { /* fix navbar height so form description toolbar can float consistently */
   height: 56px;
 }
+
 /* END Material overrides */
 
 
@@ -102,6 +110,7 @@ nih-cde:empty + .loading {
 div.mat-tab-body-content {
   overflow: hidden;
 }
+
 /* END ? */
 
 
@@ -113,12 +122,15 @@ div.mat-tab-body-content {
   top: 50% !important;
   transform: translate(-50%, -50%) !important;
 }
+
 .popover h3 {
   margin-top: 2px;
 }
+
 .popover {
   border: 3px solid rgb(167, 158, 45);
 }
+
 /* END Bootstrap Popover these 3 styles */
 
 
@@ -134,9 +146,11 @@ button.flush {
 .displayProfileRenderDiv > * {
   font-size: 60%;
 }
+
 .displayProfileRenderDiv input {
   transform: scale(0.8);
 }
+
 /* END ? */
 
 
@@ -167,6 +181,7 @@ a:not([href]):not([tabindex]).fake-link:hover {
 .modal {
   overflow-y: scroll !important;
 }
+
 /* END Bootstrap overrides */
 
 
@@ -199,6 +214,7 @@ a:not([href]):not([tabindex]).fake-link:hover {
   cursor: move;
   height: 574px !important;
 }
+
 /* END Feedback */
 
 
@@ -397,10 +413,12 @@ a:not([href]):not([tabindex]).fake-link:hover {
   -webkit-animation: spin 2s infinite linear;
   animation: spin 2s infinite linear;
 }
+
 .pulse {
   -webkit-animation: spin 1s infinite steps(8);
   animation: spin 1s infinite steps(8);
 }
+
 @-webkit-keyframes spin {
   0% {
     -webkit-transform: rotate(0deg);
@@ -411,6 +429,7 @@ a:not([href]):not([tabindex]).fake-link:hover {
     transform: rotate(359deg);
   }
 }
+
 @keyframes spin {
   0% {
     -webkit-transform: rotate(0deg);
@@ -421,6 +440,7 @@ a:not([href]):not([tabindex]).fake-link:hover {
     transform: rotate(359deg);
   }
 }
+
 /* END Font Awesome */
 
 
@@ -449,6 +469,7 @@ a:not([href]):not([tabindex]).fake-link:hover {
     display: none !important;
   }
 }
+
 /* END MEDIA */
 
 
@@ -457,13 +478,14 @@ input.ng-invalid:not([matInput]) {
   border-left: 5px solid #a94442 !important;
 }
 
-.ng-valid[required]:not(mat-form-field):not([matInput]):not(mat-select), .ng-valid.required {
+.ng-valid[required]:not(mat-form-field):not([matInput]):not(mat-select):not([matNativeControl]), .ng-valid.required {
   border-left: 5px solid #42A948; /* green */
 }
 
-.ng-invalid:not(form):not(mat-form-field):not([matInput]):not(mat-select) {
+.ng-invalid:not(form):not(mat-form-field):not([matInput]):not([matNativeControl]):not(mat-select) {
   border-left: 5px solid #a94442; /* red */
 }
+
 /* END validation error */
 
 
@@ -493,6 +515,7 @@ input.ng-invalid:not([matInput]) {
   background-color: white;
   font-size: 21px;
 }
+
 /* END cdeFieldset */
 
 
@@ -514,6 +537,7 @@ input.ng-invalid:not([matInput]) {
 .cdeTable td {
   padding: 0
 }
+
 /* END cdeTable */
 
 
@@ -521,6 +545,7 @@ input.ng-invalid:not([matInput]) {
 .homeDescriptionLink {
   color: $linkColor;
 }
+
 /* END HomeComponent */
 
 
@@ -528,4 +553,5 @@ input.ng-invalid:not([matInput]) {
 .navigationLink {
   cursor: pointer;
 }
+
 /* END NavigationDrawer */

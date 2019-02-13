@@ -28,7 +28,7 @@ export class SkipLogicComponent {
         this.dialog.open(SkipLogicAutocompleteComponent, {width: '800px', data: data})
             .afterClosed().subscribe(tokens => {
             if (tokens) {
-                this.formElement.skipLogic.condition = this.tokensToSkipLogc(tokens);
+                this.formElement.skipLogic.condition = this.tokensToSkipLogic(tokens);
                 this.onSaved.emit();
             }
         });
@@ -50,16 +50,14 @@ export class SkipLogicComponent {
     }
 
 
-    tokensToSkipLogc(tokens) {
+    tokensToSkipLogic(tokens) {
         let skipLogic = '';
-        if (tokens) {
-            tokens.forEach((t, i) => {
-                if (t.label && t.operator && t.answer) {
-                    skipLogic += '"' + t.label + '"' + t.operator + '"' + t.answer + '"';
-                    if (i < tokens.length - 1) skipLogic += t.logic;
-                }
-            });
-        }
+        tokens.forEach((t, i) => {
+            if (t.label && t.operator && t.answer) {
+                skipLogic += '"' + t.label + '" ' + t.operator + ' "' + t.answer + '"';
+                if (i < tokens.length - 1) skipLogic += " " + t.logic + " ";
+            }
+        });
         return skipLogic;
     }
 }

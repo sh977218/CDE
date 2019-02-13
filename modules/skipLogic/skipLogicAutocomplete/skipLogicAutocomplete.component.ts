@@ -21,7 +21,9 @@ export class SkipLogicAutocompleteComponent {
     logicOptions = ['AND', 'OR'];
     labelOptions = [];
     operatorOptions = ['=', '>', '<', '>=', '<='];
-    skipLogicForm: FormGroup;
+    skipLogicForm: FormGroup = this.formBuilder.group({
+        items: this.formBuilder.array([])
+    });
 
     constructor(private formBuilder: FormBuilder,
                 protected dialog: MatDialog,
@@ -33,40 +35,43 @@ export class SkipLogicAutocompleteComponent {
             return realLabel;
         });
 
-        let items = this.formBuilder.array([]);
-
         let tokens = this.getTokens(data.formElement.skipLogic.condition);
         tokens.forEach(token => {
             if (token.label) {
                 let question = this.getQuestionByLabel(token.label);
                 token.selectedQuestion = question;
-                if (!question) token.error = "Can not find question.";
+                if (!question) token.error = "Can't find question.";
                 else token.error = '';
             }
-            items.push(this.formBuilder.group(token));
+            this.items.push(this.createItem(token));
         });
 
-        this.skipLogicForm = this.formBuilder.group({items});
-        this.skipLogicForm.valueChanges.subscribe(newValue => {
-            if (newValue.items) {
-                newValue.items.forEach(item => {
-                    if (item.label) {
-                        let q = this.getQuestionByLabel(item.label);
-                        if (q) item.selectedQuestion = q;
-                    }
-                });
-                this.skipLogicForm.setValue({items: newValue.items}, {emitEvent: false});
+        for (let item of this.items.controls) {
+            this.labelOnChange(item);
+        }
+    }
+
+    labelOnChange(control) {
+        control.valueChanges.subscribe(newToken => {
+            if (newToken.label) {
+                let q = this.getQuestionByLabel(newToken.label);
+                if (q) newToken.selectedQuestion = q;
             }
         });
     }
 
-    addToken(): void {
-        let items = this.skipLogicForm.get('items') as FormArray;
-        items.push(this.formBuilder.group(new Token()));
+    get items(): FormArray {
+        return this.skipLogicForm.get('items') as FormArray;
     }
 
-    deleteAllSkipLogic() {
-        this.skipLogicForm = this.formBuilder.group({items: this.formBuilder.array([])});
+    createItem(token = new Token()) {
+        return this.formBuilder.group(token);
+    }
+
+    addToken() {
+        let newToken = this.createItem();
+        this.labelOnChange(newToken);
+        this.items.push(newToken);
     }
 
     private getQuestionByLabel(label) {
@@ -110,11 +115,6 @@ export class SkipLogicAutocompleteComponent {
         let otherTokens = this.getTokens(str);
 
         return [token].concat(otherTokens);
-    }
-
-    saveSkipLogic() {
-        let value = this.skipLogicForm.getRawValue();
-        this.dialogRef.close(value.items);
     }
 
 }
