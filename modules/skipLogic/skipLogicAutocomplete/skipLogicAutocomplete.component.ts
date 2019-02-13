@@ -55,7 +55,9 @@ export class SkipLogicAutocompleteComponent {
         control.valueChanges.subscribe(newToken => {
             if (newToken.label) {
                 let q = this.getQuestionByLabel(newToken.label);
-                if (q) newToken.selectedQuestion = q;
+                if (q) {
+                    newToken.selectedQuestion = q;
+                }
             }
         });
     }
