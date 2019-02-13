@@ -32,7 +32,7 @@ public class AddDeleteOrgClassificationTest extends NlmCdeBaseTest {
         addExistingClassification("NINDS", classificationArray5);
         addExistingClassification("NINDS", classificationArray1);
 
-        openClassificationAudit("NINDS > Disease > Myasthenia Gravis > Classification > Supplemental");
+        openAuditClassification("NINDS > Disease > Myasthenia Gravis > Classification > Supplemental");
         textPresent("classMgtUser");
         textPresent("Surgical Procedure Other Anatomic Site Performed Indicator");
         textPresent("add NINDS > Disease > Myasthenia Gravis > Classification > Supplemental");

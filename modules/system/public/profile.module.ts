@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA, ErrorHandler } from '@angular/core';
 import {
     MatButtonModule, MatIconModule, MatPaginatorModule, MatSelectModule, MatSlideToggleModule, MatTooltipModule
 } from '@angular/material';
@@ -7,14 +7,15 @@ import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BoardModule } from 'board/public/board.module';
 import { CdeSearchModule } from 'cde/public/cdeSearch.module';
-import { FormSearchModule } from 'form/public/formSearch.module';
-import { SearchModule } from 'search/search.module';
-import { DraftsListMyComponent } from 'system/public/components/draftsList/draftsListMy.component';
-import { ProfileComponent } from 'system/public/components/profile.component';
-import { UserCommentsComponent } from 'system/public/components/userComments.component';
 import { CoreModule } from 'core/core.module';
+import { DraftsListModule } from 'draftsList/draftsList.module';
+import { FormSearchModule } from 'form/public/formSearch.module';
 import { InlineEditModule } from 'inlineEdit/inlineEdit.module';
-
+import { SearchModule } from 'search/search.module';
+import { DataService } from 'shared/models.model';
+import { ProfileComponent } from 'system/public/components/profile.component';
+import { UserDataService } from 'system/public/components/profile/userData.service';
+import { UserCommentsComponent } from 'system/public/components/userComments.component';
 
 const appRoutes: Routes = [
     {path: '', component: ProfileComponent},
@@ -33,8 +34,8 @@ const appRoutes: Routes = [
         RouterModule.forChild(appRoutes),
         // core
         CoreModule,
-
         // internal
+        DraftsListModule,
         InlineEditModule,
         BoardModule,
         CdeSearchModule,
@@ -43,12 +44,13 @@ const appRoutes: Routes = [
     ],
     declarations: [
         ProfileComponent,
-        UserCommentsComponent,
-        DraftsListMyComponent,
+        UserCommentsComponent
     ],
     entryComponents: [],
     exports: [],
-    providers: [],
+    providers: [
+        {provide: DataService, useClass: UserDataService},
+    ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class ProfileModule {

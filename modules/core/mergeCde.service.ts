@@ -2,11 +2,11 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ElasticService } from '_app/elastic.service';
 import { AlertService } from 'alert/alert.service';
-import { MergeShareService } from 'core/mergeShare.service';
 import { SearchSettings } from 'search/search.model';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import { DataElement } from 'shared/de/dataElement.model';
 import { ElasticQueryResponse } from 'shared/models.model';
+import { mergeArrayByProperty, transferClassifications } from 'shared/system/classificationShared';
 
 
 @Injectable()
@@ -14,8 +14,7 @@ export class MergeCdeService {
     constructor(
         private alert: AlertService,
         private elasticService: ElasticService,
-        private http: HttpClient,
-        private mergeShareService: MergeShareService) {
+        private http: HttpClient) {
     }
 
 
@@ -26,16 +25,16 @@ export class MergeCdeService {
         forkJoin([getDeFromObservable, getDeToObservable]).subscribe(results => {
                 let cdeFrom = results[0];
                 let cdeTo = results[1];
-                if (fields.designations) this.mergeShareService.mergeArrayByProperty(cdeFrom, cdeTo, "designations");
-                if (fields.definitions) this.mergeShareService.mergeArrayByProperty(cdeFrom, cdeTo, "definitions");
-                if (fields.referenceDocuments) this.mergeShareService.mergeArrayByProperty(cdeFrom, cdeTo, "referenceDocuments");
-                if (fields.properties) this.mergeShareService.mergeArrayByProperty(cdeFrom, cdeTo, "properties");
-                if (fields.ids) this.mergeShareService.mergeArrayByProperty(cdeFrom, cdeTo, "ids");
-                if (fields.attachments) this.mergeShareService.mergeArrayByProperty(cdeFrom, cdeTo, "attachments");
-                if (fields.dataSets) this.mergeShareService.mergeArrayByProperty(cdeFrom, cdeTo, "dataSets");
-                if (fields.derivationRules) this.mergeShareService.mergeArrayByProperty(cdeFrom, cdeTo, "derivationRules");
-                if (fields.sources) this.mergeShareService.mergeArrayByProperty(cdeFrom, cdeTo, "sources");
-                if (fields.classifications) this.mergeShareService.mergeClassifications(cdeFrom, cdeTo);
+                if (fields.designations) mergeArrayByProperty(cdeFrom, cdeTo, "designations");
+                if (fields.definitions) mergeArrayByProperty(cdeFrom, cdeTo, "definitions");
+                if (fields.referenceDocuments) mergeArrayByProperty(cdeFrom, cdeTo, "referenceDocuments");
+                if (fields.properties) mergeArrayByProperty(cdeFrom, cdeTo, "properties");
+                if (fields.ids) mergeArrayByProperty(cdeFrom, cdeTo, "ids");
+                if (fields.attachments) mergeArrayByProperty(cdeFrom, cdeTo, "attachments");
+                if (fields.dataSets) mergeArrayByProperty(cdeFrom, cdeTo, "dataSets");
+                if (fields.derivationRules) mergeArrayByProperty(cdeFrom, cdeTo, "derivationRules");
+                if (fields.sources) mergeArrayByProperty(cdeFrom, cdeTo, "sources");
+                if (fields.classifications) transferClassifications(cdeFrom, cdeTo);
                 if (fields.retireCde) {
                     let searchSettings = new SearchSettings();
                     searchSettings.q = '"' + cdeFrom.tinyId + '"';

@@ -133,7 +133,6 @@ var deJson = {
     },
     derivationRules: [sharedSchemas.derivationRuleSchema]
 };
-
 exports.deJson = deJson;
 exports.dataElementSchema = new Schema(deJson, {
     usePushEach: true,
@@ -147,30 +146,8 @@ exports.dataElementSchema = new Schema(deJson, {
         }
     }
 });
-
 exports.dataElementSchema.set('collection', 'dataelements');
 
-exports.cdeAuditSchema = new Schema({
-    date: {type: Date, default: Date.now, index: true},
-    user: {
-        username: StringType
-    },
-    adminItem: {
-        tinyId: StringType,
-        version: StringType,
-        _id: Schema.Types.ObjectId,
-        name: StringType
-    },
-    previousItem: {
-        tinyId: StringType,
-        version: StringType,
-        _id: Schema.Types.ObjectId,
-        name: StringType
-    },
-    diff: Object
-}, {strict: false});
-
-exports.cdeAuditSchema.set('collection', 'cdeAudit');
 exports.draftSchema = new Schema(deJson, {
     usePushEach: true,
     toObject: {
@@ -182,3 +159,6 @@ exports.draftSchema = new Schema(deJson, {
 });
 exports.draftSchema.virtual('isDraft').get(() => true);
 exports.draftSchema.set('collection', 'dataelementdrafts');
+
+exports.auditSchema = new Schema(sharedSchemas.itemLogSchema, {strict: false});
+exports.auditSchema.set('collection', 'cdeAudit');

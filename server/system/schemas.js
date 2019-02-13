@@ -257,6 +257,26 @@ let requestSchema = {
     }
 };
 
+exports.itemLogSchema = {
+    date: {type: Date, default: Date.now, index: true},
+    user: {
+        username: StringType
+    },
+    adminItem: {
+        tinyId: StringType,
+        version: StringType,
+        _id: Schema.Types.ObjectId,
+        name: StringType
+    },
+    previousItem: {
+        tinyId: StringType,
+        version: StringType,
+        _id: Schema.Types.ObjectId,
+        name: StringType
+    },
+    diff: Object
+};
+
 let elementRefSchema = {
     eltId: StringType,
     eltType: {type: StringType, enum: ['board', 'cde', 'form']},

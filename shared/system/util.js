@@ -1,8 +1,12 @@
 import _find from 'lodash/find';
 
+export function capCase(str) {
+    return str.split(' ').map(capString).join(' ');
+}
+
 // capitalize first letter only
-export function capString(s) {
-    return s.charAt(0).toUpperCase() + s.slice(1);
+export function capString(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 export function decamelize(str) {
@@ -10,7 +14,7 @@ export function decamelize(str) {
         .replace(/([a-z\d])([A-Z])/g, '$1 $2')
         .replace(/([A-Z]+)([A-Z][a-z\d]+)/g, '$1 $2')
         .toLowerCase();
-    return result.charAt(0).toUpperCase() + result.slice(1);
+    return capString(result);
 }
 
 export function deepCopy(obj) {

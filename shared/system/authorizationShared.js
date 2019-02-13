@@ -6,11 +6,8 @@ export function canComment(user) {
 }
 
 export function canEditCuratedItem(user, item) {
-    if (!item) return false;
-    if (item.archived) return false;
-    if (isSiteAdmin(user)) {
-        return true;
-    }
+    if (!item || item.archived || !item.registrationState) return false;
+    if (isSiteAdmin(user)) return true;
     if (item.registrationState.registrationStatus === 'Standard' ||
         item.registrationState.registrationStatus === 'Preferred Standard') {
         return false;
