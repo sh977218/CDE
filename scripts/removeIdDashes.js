@@ -1,5 +1,6 @@
 const mongo_cde = require('../server/cde/mongo-cde');
 const mongo_form = require('../server/form/mongo-form');
+const mongo_board = require('../server/board/boardDb');
 
 
 let done = 0;
@@ -40,6 +41,16 @@ let run = async function() {
     }
 
     console.log("fixed " + done + " forms");
+
+    done = 0;
+    let boardCursor = mongo_board.getStream({});
+    for (let board = await boardCursor.next(); board != null; board = await boardCursor.next()) {
+        board.pins.forEach(p => p.tinyId = p.tinyId.replace(/-/g, "_"));
+        await board.save();
+        done++;
+    }
+    console.log("fixed " + done + " boards");
+
     process.exit(0);
 
 };
