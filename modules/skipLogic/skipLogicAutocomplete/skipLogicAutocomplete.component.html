@@ -59,7 +59,7 @@
                                 <select matNativeControl formControlName="answer" placeholder="Choose a Answer"
                                         [id]="'skipLogicAnswerSelection_'+i" required>
                                     <option *ngFor="let ans of item.value?.selectedQuestion?.question?.answers"
-                                            value="ans.permissibleValue">{{ans.permissibleValue}}</option>
+                                            [value]="ans.permissibleValue">{{ans.permissibleValue}}</option>
                                 </select>
                             </mat-form-field>
                         </ng-container>
