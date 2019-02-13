@@ -10,6 +10,7 @@ import org.testng.annotations.Test;
 import java.util.List;
 
 public class SkipLogicNoLabelTest extends BaseFormTest {
+    String[] expectedOptions = new String[]{"Ethnic Group Category Text", "Noncompliant Reason Text", "Person Birth Date", "Gender type", "Walking speed value"};
 
     @Test
     public void selectNoLabelQuestionTest() {
@@ -22,13 +23,12 @@ public class SkipLogicNoLabelTest extends BaseFormTest {
         clickElement(By.xpath("//*[@id='question_0-5']//*[contains(@class,'skipLogicEditTextarea')]//mat-icon[.='edit']"));
         clickElement(By.id("addNewSkipLogicButton"));
         clickElement(By.xpath(" //h1[@class='mat-dialog-title']"));
-        clickElement(By.xpath("//cde-question-autocomplete[last()]"));
-        List<WebElement> matOptions = findElements(By.xpath("//mat-option/span"));
-        Assert.assertEquals("Ethnic Group Category Text", matOptions.get(0).getText());
-        Assert.assertEquals("Noncompliant Reason Text", matOptions.get(1).getText());
-        Assert.assertEquals("Person Birth Date", matOptions.get(2).getText());
-        Assert.assertEquals("Gender type", matOptions.get(3).getText());
-        Assert.assertEquals("Walking speed value", matOptions.get(4).getText());
+        clickElement(By.id("skipLogicLabelSelection_0"));
+        List<WebElement> options = findElements(By.xpath("//*[@id='skipLogicLabelSelection_0']/option"));
+        for (int i = 0; i < expectedOptions.length; i++) {
+            String expectedOption = expectedOptions[i];
+            Assert.assertEquals(expectedOption, options.get(i).getText().trim());
+        }
         clickElement(By.xpath(" //h1[@class='mat-dialog-title']"));
         clickElement(By.id("cancelNewSkipLogicButton"));
         saveEditQuestionById("question_0-5");
