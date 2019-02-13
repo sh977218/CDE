@@ -33,8 +33,10 @@ exports.module = function (roleConfig) {
                 if (!article) return res.status(404).send();
                 let regex = /&lt;rss-feed&gt;.+&lt;\/rss-feed&gt;/gm;
                 let matches = article.body.match(regex);
-                if (rssFeeds) article.rssFeeds = rssFeeds;
-                else {
+                if (rssFeeds.length) {
+                    article.rssFeeds = rssFeeds;
+                    res.send(article);
+                } else {
                     article.rssFeeds = [];
                     let i = 0;
                     async.forEachSeries(matches, (match, doneOneMatch) => {
