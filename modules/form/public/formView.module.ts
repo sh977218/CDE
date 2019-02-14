@@ -1,12 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { RouterModule, Routes } from '@angular/router';
 import {
     MatButtonModule, MatCardModule, MatCheckboxModule, MatChipsModule, MatDialogModule,
     MatExpansionModule, MatGridListModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule,
     MatSliderModule, MatTabsModule, MatTooltipModule, MatAutocompleteModule
 } from "@angular/material";
-import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { TreeModule } from 'angular-tree-component';
 import 'angular-tree-component/dist/angular-tree-component.css';
@@ -43,7 +43,7 @@ import { InlineSelectEditModule } from 'inlineSelectEdit/inlineSelectEdit.module
 import { SortableArrayModule } from 'sortableArray/sortableArray.module';
 import { DeleteWithConfirmModule } from 'deleteWithConfirm/deleteWithConfirm.module';
 import { TagModule } from 'tag/tag.module';
-
+import { SkipLogicModule } from 'skipLogic/skipLogic.module';
 
 const appRoutes: Routes = [
     {path: '', component: FormViewComponent},
@@ -90,7 +90,8 @@ const appRoutes: Routes = [
         CompareModule,
         DiscussModule,
         FormSearchModule,
-        NativeRenderModule
+        NativeRenderModule,
+        SkipLogicModule,
     ],
     declarations: [
         ArrayListPipe,
