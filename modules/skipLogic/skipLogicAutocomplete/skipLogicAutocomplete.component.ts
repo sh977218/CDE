@@ -20,7 +20,8 @@ export class Token {
 export class SkipLogicAutocompleteComponent {
     logicOptions = ['AND', 'OR'];
     labelOptions = [];
-    operatorOptions = ['=', '>', '<', '>=', '<='];
+    operatorOptions = ['=', '>', '<', '>='
+        , '<='];
     skipLogicForm: FormGroup = this.formBuilder.group({
         items: this.formBuilder.array([])
     });
@@ -93,7 +94,7 @@ export class SkipLogicAutocompleteComponent {
         let token: Token = new Token();
         let labelMatch = str.match(/^"[^"]+"/);
         if (labelMatch && labelMatch.length > 0) {
-            token.label = labelMatch[0].replace(/\"/g, '');
+            token.label = labelMatch[0].replace(/"/g, '');
             str = str.substring(labelMatch[0].length).trim();
         }
 
@@ -105,7 +106,7 @@ export class SkipLogicAutocompleteComponent {
 
         let answerMatch = str.match(/(^"[^"]+")|(^[^"]+)|("")/);
         if (answerMatch && answerMatch.length > 0) {
-            token.answer = answerMatch[0].replace(/\"/g, '');
+            token.answer = answerMatch[0].replace(/"/g, '');
             str = str.substr(answerMatch[0].length).trim();
         }
 
