@@ -51,7 +51,7 @@
     "modules/system",
     "modules/swagger",
     "modules/usernameAutocomplete",
-    "modules/widget",
+    "modules/skipLogic",
     "node_modules",
     "protractor",
     "scripts",

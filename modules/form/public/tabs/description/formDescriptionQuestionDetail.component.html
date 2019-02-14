@@ -137,15 +137,8 @@
         <ng-container *ngIf="parent">
             <dt class="col-2">Show if:</dt>
             <dd class="col-10 skipLogicEditTextarea" [ngClass]="{'has-error':question.skipLogic?.validationError}">
-                <input #slInput type="text" title="Show if"
-                       (focus)="slOptionsRetrigger()"
-                       [ngModel]="question.skipLogic.condition"
-                       (ngModelChange)="typeaheadSkipLogic(parent, question, $event);"
-                       class="form-control skipLogicCondition"
-                       placeholder="Start typing a question name to find options"
-                       [ngbTypeahead]="getSkipLogicOptions"
-                       (selectItem)="onSelectItem(parent, question, $event,slInput);"/>
-                <span style="color: red">{{question.skipLogic?.validationError}}</span>
+                <cde-skip-logic [parent]="parent" [formElement]="question" [canEdit]="canEdit"
+                                             (onSaved)="onEltChange.emit();"></cde-skip-logic>
             </dd>
         </ng-container>
         <ng-container

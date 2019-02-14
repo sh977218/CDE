@@ -124,7 +124,6 @@ public class EltIdMaps {
         eltMap.put("MultiSelect Logic", "mJSv499pz");
         eltMap.put("Multi SubQuestion", "mk4r3nH77");
         eltMap.put("Neurological Assessment: TBI Symptoms and Signs", "mkqnEJHrtl");
-        eltMap.put("No Label Logic", "myMbx38V7");
         eltMap.put("Non Editable Questions", "m16LQuUCG");
         eltMap.put("Non-Pathology Findings", "mJQiShWEW");
         eltMap.put("Not Equals Test", "QJBWLKc47");
@@ -155,6 +154,11 @@ public class EltIdMaps {
         eltMap.put("Section Test Form3", "mkmn3Bcz8");
         eltMap.put("Section Test Form4", "71WanHqGU");
         eltMap.put("Socioeconomic Status", "XyMzLyBHYl");
+        eltMap.put("Skip Logic Number Test Form", "7ycTkMnAI");
+        eltMap.put("Skip Logic Text Test Form", "mJjMCG30U");
+        eltMap.put("Skip Logic Date Test Form", "71t5G120U");
+        eltMap.put("Skip Logic Value List Test Form", "mJVPzQ2C8");
+        eltMap.put("Skip Logic No Label Form", "myMbx38V7");
         eltMap.put("Stroke Symptoms/Comorbid Events", "7kqGIJBBKg");
         eltMap.put("Stroke Types and Subtypes", "QkX81HrFx");
         eltMap.put("Study Discontinuation/Completion", "myWQUJrHFg");
