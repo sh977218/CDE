@@ -8,7 +8,7 @@ public class FormViewingHistory extends NlmCdeBaseTest {
 
     @Test
     public void viewingHistory() {
-        String formName = "No Label Logic";
+        String formName = "Skip Logic No Label Form";
         mustBeLoggedInAs(history_username, password);
 
         goToFormByName(formName);
@@ -18,10 +18,10 @@ public class FormViewingHistory extends NlmCdeBaseTest {
             clickElement(By.id("username_link"));
             clickElement(By.linkText("Profile"));
             textPresent("User Profile");
-            textPresent("No Label Logic");
+            textPresent("Skip Logic No Label Form");
         } catch (TimeoutException e) {
             driver.navigate().refresh();
-            textPresent("No Label Logic");
+            textPresent("Skip Logic No Label Form");
         }
 
     }

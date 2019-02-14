@@ -8,6 +8,7 @@ import org.testng.Assert;
 
 import java.io.*;
 import java.nio.charset.Charset;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class BaseFormTest extends NlmCdeBaseTest {
@@ -226,4 +227,38 @@ public class BaseFormTest extends NlmCdeBaseTest {
         }
     }
 
+    protected void deleteSkipLogicById(String id) {
+        clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'skipLogicEditTextarea')]//mat-icon[.='edit']"));
+        List<WebElement> deleteButtons = findElements(By.xpath("//*[contains(@id,'skipLogicDelete_')]"));
+        for (WebElement deleteButton : deleteButtons) {
+            deleteButton.click();
+        }
+        clickElement(By.id("saveNewSkipLogicButton"));
+    }
+
+    protected void addSkipLogicById(String id, String label, String operator, String answer, String answerType, String logic) {
+        clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'skipLogicEditTextarea')]//mat-icon[.='edit']"));
+        clickElement(By.id("addNewSkipLogicButton"));
+        if (label != null && label.length() > 0) {
+            new Select(findElement(By.id("skipLogicLabelSelection_0"))).selectByVisibleText(label);
+        }
+        if (operator != null && operator.length() > 0) {
+            new Select(findElement(By.id("skipLogicOperatorSelection_0"))).selectByVisibleText(operator);
+        }
+        if (answer != null && answer.length() > 0) {
+            if (answerType == "date" || answerType == "number" || answerType == "text") {
+                findElement(By.id("skipLogicAnswer_0")).sendKeys(answer);
+            }
+            if (answerType == "value list") {
+                new Select(findElement(By.id("skipLogicAnswerSelection_0"))).selectByVisibleText(answer);
+
+            }
+        }
+        if (logic != null && logic.length() > 0) {
+            new Select(findElement(By.id("skipLogicLogicSelection_0"))).selectByVisibleText(logic);
+
+        }
+        clickElement(By.id("saveNewSkipLogicButton"));
+
+    }
 }

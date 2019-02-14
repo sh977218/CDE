@@ -1,2 +1,0 @@
-db.getCollection('dataelements').updateMany({"archived" : null},{$set:{archived:false}});
-db.getCollection('forms').updateMany({"archived" : null},{$set:{archived:false}});
