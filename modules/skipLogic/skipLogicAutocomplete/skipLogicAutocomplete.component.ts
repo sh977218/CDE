@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ChangeDetectorRef } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialog } from '@angular/material';
 import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { SkipLogicComponent } from 'skipLogic/skipLogic.component';
@@ -25,7 +25,8 @@ export class SkipLogicAutocompleteComponent {
         items: this.formBuilder.array([])
     });
 
-    constructor(private formBuilder: FormBuilder,
+    constructor(private cdr: ChangeDetectorRef,
+                private formBuilder: FormBuilder,
                 protected dialog: MatDialog,
                 public dialogRef: MatDialogRef<SkipLogicComponent>,
                 @Inject(MAT_DIALOG_DATA) public data) {
@@ -45,21 +46,20 @@ export class SkipLogicAutocompleteComponent {
             }
             this.items.push(this.createItem(token));
         });
+        this.labelOnChange();
 
-        for (let item of this.items.controls) {
-            this.labelOnChange(item);
-        }
     }
 
-    labelOnChange(control) {
-        control.valueChanges.subscribe(newToken => {
-            if (newToken.label) {
-                let q = this.getQuestionByLabel(newToken.label);
-                if (q) {
-                    newToken.selectedQuestion = q;
-                }
-            }
-        });
+    labelOnChange() {
+        for (let item of this.items.controls) {
+            let labelControl = item.get('label');
+            let selectedQuestionControl = item.get('selectedQuestion');
+            labelControl.valueChanges.subscribe(newLabel => {
+                let q = this.getQuestionByLabel(newLabel);
+                if (q) selectedQuestionControl.setValue(q);
+                this.cdr.detectChanges();
+            });
+        }
     }
 
     get items(): FormArray {
@@ -72,8 +72,9 @@ export class SkipLogicAutocompleteComponent {
 
     addToken() {
         let newToken = this.createItem();
-        this.labelOnChange(newToken);
         this.items.push(newToken);
+        this.labelOnChange();
+        this.cdr.detectChanges();
     }
 
     private getQuestionByLabel(label) {

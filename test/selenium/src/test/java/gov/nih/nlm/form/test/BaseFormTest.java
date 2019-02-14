@@ -8,6 +8,7 @@ import org.testng.Assert;
 
 import java.io.*;
 import java.nio.charset.Charset;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class BaseFormTest extends NlmCdeBaseTest {
@@ -228,8 +229,10 @@ public class BaseFormTest extends NlmCdeBaseTest {
 
     protected void deleteSkipLogicById(String id) {
         clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'skipLogicEditTextarea')]//mat-icon[.='edit']"));
-        clickElement(By.xpath(" //h1[@class='mat-dialog-title']"));
-        clickElement(By.id("deleteSkipLogicButton"));
+        List<WebElement> deleteButtons = findElements(By.xpath("//*[contains(@id,'skipLogicDelete_')]"));
+        for (WebElement deleteButton : deleteButtons) {
+            deleteButton.click();
+        }
         clickElement(By.id("saveNewSkipLogicButton"));
     }
 
