@@ -31,13 +31,10 @@ export class ResourcesComponent implements OnDestroy {
                 private injector: Injector,
                 public userService: UserService) {
         this.canEdit = hasRole(this.userService.user, 'DocumentationEditor');
-
-        if (!this.resource) {
-            this.http.get<any>('/server/article/resourcesAndFeed').subscribe(res => {
-                this.resource = res;
-                this.renderMe();
-            }, err => this.alert.httpErrorMessageAlert(err));
-        }
+        this.http.get<any>('/server/article/resourcesAndFeed').subscribe(res => {
+            this.resource = res;
+            this.renderMe();
+        }, err => this.alert.httpErrorMessageAlert(err));
     }
 
     renderMe() {
