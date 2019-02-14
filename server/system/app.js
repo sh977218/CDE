@@ -715,14 +715,13 @@ exports.init = function (app) {
         const cdeCursor = mongo_cde.getStream({archived: false});
         syncLinkedFormsProgress.todo = 10000;
         for (let cde = await cdeCursor.next(); cde != null; cde = await cdeCursor.next()) {
-            let linkedForms = [];
             let esResult = await elastic.esClient.search({
                 index: config.elastic.formIndex.name,
                 q: cde.tinyId,
                 size: 100
             });
 
-            esResult.hits.hits.map(h => {
+            let linkedForms = esResult.hits.hits.map(h => {
                 return {tinyId: h._source.tinyId, registrationStatus: h._source.registrationState.registrationStatus};
             });
 

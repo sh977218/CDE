@@ -133,10 +133,31 @@ exports.createIndexJson = {
                 }
                 , "history": {"enabled": false}
                 , "version": {"type": "keyword"}
-                , "views": {type: "integer"}
+                , "views": {"type": "integer"}
+                , linkedForms: {
+                    properties: {
+                        "Retired": {"type": "number"},
+                        "Incomplete": {"type": "number"},
+                        "Candidate": {"type": "number"},
+                        "Recorded": {"type": "number"},
+                        "Qualified": {"type": "number"},
+
+                    }
+                }
                 , "linkedForms": {"properties": {
-                    "tinyId": "keyword",
-                    "registrationStatus": "keyword"
+                        "tinyId": "keyword",
+                        "registrationStatus": "keyword"
+                    // "forms": {
+                    //     "properties": {
+                    //         "tinyId": "keyword",
+                    //         "registrationStatus": "keyword"
+                    //     }
+                    // },
+                    // "retired": {"type": "number"},
+                    // "incomplete": {"type": "number"},
+                    // "candidate": {"type": "number"},
+                    // "recorded": {"type": "number"},
+                    // "recorded": {"type": "number"},
                 }}
             }
         }
