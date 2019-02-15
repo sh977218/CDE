@@ -31,7 +31,6 @@ export class ResourcesComponent implements OnDestroy {
                 private injector: Injector,
                 public userService: UserService) {
         this.canEdit = hasRole(this.userService.user, 'DocumentationEditor');
-
         this.http.get<any>('/server/article/resourcesAndFeed').subscribe(res => {
             this.resource = res;
             this.renderMe();
