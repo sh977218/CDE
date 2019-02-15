@@ -42,10 +42,11 @@ export class SkipLogicComponent {
 
     private loopFormElements(fe, label, questions) {
         for (let e of fe.formElements) {
-            let realLabel = e.label ? e.label : e.question.cde.name;
-            if (realLabel === label) return;
-            else if (e.elementType === 'question') questions.push(e);
-            else this.loopFormElements(e, label, questions);
+            if (e.elementType === 'question') {
+                let realLabel = e.label ? e.label : e.question.cde.name;
+                if (realLabel === label) return;
+                questions.push(e);
+            } else this.loopFormElements(e, label, questions);
         }
     }
 
