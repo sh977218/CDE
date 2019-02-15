@@ -12,7 +12,7 @@ public class SkipLogicSectionNoLabelTest extends BaseFormTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName(formName);
         goToFormDescription();
-        startEditSectionById("");
+        startEditSectionById("section_1");
         clickElement(By.xpath("//*[@id='section_1']//*[contains(@class,'skipLogicEditTextarea')]//mat-icon[.='edit']"));
         textPresent("Add Condition");
     }
