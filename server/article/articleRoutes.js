@@ -24,6 +24,8 @@ exports.module = function (roleConfig) {
             article => res.send(article)));
     });
 
+    let rssFeeds = [];
+
     router.get('/resourcesAndFeed', (req, res) => {
         db.byKey('resources', handleError({res: res, origin: "GET /article/resourcesAndFeed"},
             article => {
@@ -31,23 +33,28 @@ exports.module = function (roleConfig) {
                 if (!article) return res.status(404).send();
                 let regex = /&lt;rss-feed&gt;.+&lt;\/rss-feed&gt;/gm;
                 let matches = article.body.match(regex);
-                article.rssFeeds = [];
-                let i = 0;
-                async.forEachSeries(matches, (match, doneOneMatch) => {
-                    let url = match.replace('&lt;rss-feed&gt;', '').replace('&lt;/rss-feed&gt;', '').trim();
-                    if (!url) {
-                        doneOneMatch();
-                        return;
-                    }
-                    parser.parseURL(url, handleError({req, res}, feed => {
-                        article.rssFeeds.push(feed);
-                        article.body = article.body.replace(match, '<div id="rssContent_' + i++ + '"></div>');
-                        doneOneMatch();
-                    }))
-                }, () => {
+                if (rssFeeds.length) {
+                    article.rssFeeds = rssFeeds;
                     res.send(article);
-                })
-
+                } else {
+                    article.rssFeeds = [];
+                    let i = 0;
+                    async.forEachSeries(matches, (match, doneOneMatch) => {
+                        let url = match.replace('&lt;rss-feed&gt;', '').replace('&lt;/rss-feed&gt;', '').trim();
+                        if (!url) {
+                            doneOneMatch();
+                            return;
+                        }
+                        parser.parseURL(url, handleError({req, res}, feed => {
+                            article.rssFeeds.push(feed);
+                            article.body = article.body.replace(match, '<div id="rssContent_' + i++ + '"></div>');
+                            doneOneMatch();
+                        }))
+                    }, () => {
+                        res.send(article);
+                        setTimeout(() => rssFeeds = [], 5 * 60 * 1000);
+                    })
+                }
             }));
     });
 
