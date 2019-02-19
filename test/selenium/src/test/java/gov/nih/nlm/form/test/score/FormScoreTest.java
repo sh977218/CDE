@@ -17,7 +17,7 @@ public class FormScoreTest extends QuestionTest {
         addQuestionToSection("ALS Severity Score (ALSSS) - total score value", 0);
 
         textPresent("The following CDEs are part of a score but are missing from this form:");
-        textPresent("id: cu-0EyndDn2");
+        textPresent("id: cu_0EyndDn2");
         textPresent("id: 5h29ApPjjzE");
         textPresent("id: h7pThcFJv2r");
         textPresent("(Incomplete Rule)", By.id("question_0-0"));
@@ -31,7 +31,7 @@ public class FormScoreTest extends QuestionTest {
         addQuestionToSection("ALS Severity Score (ALSSS) - lower extremity walk score", 0);
         addQuestionToSection("ALS Severity Score (ALSSS) - swallow score", 0);
 
-        textNotPresent("id: cu-0EyndDn2");
+        textNotPresent("id: cu_0EyndDn2");
         textNotPresent("id: 5h29ApPjjzE");
         textNotPresent("id: h7pThcFJv2r");
         textNotPresent("Incomplete Rule", By.id("question_0-2"));
