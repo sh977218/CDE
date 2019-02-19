@@ -2,8 +2,7 @@ const fs = require('fs');
 const parse = require('csv-parse/lib/sync');
 let mongo_data = require('../../server/system/mongo-data');
 let mongo_cde = require('../../server/cde/mongo-cde');
-const DataElement = mongo_cde.DataElement;
-const Form = require('../../server/form/mongo-form').Form;
+let mongo_form = require('../../server/form/mongo-form');
 const _ = require('lodash');
 
 // mdbrest --gzip --db test --collection dataelements --drop ~/Downloads/mongodump-20190118/nlmcde/dataelements.bson.gz
@@ -102,7 +101,9 @@ const createCde = function(row, classification = "Core") {
     } else console.log('unmapped type: ' + type);
 
     cdeSaved++;
-    return new DataElement(cde).save();
+    return new Promise(resolve => {
+        mongo_cde.create(cde, {username: 'batchloader'}, (err, newElt) => resolve(newElt));
+    });
 };
 
 async function loadCdes (done) {
@@ -111,7 +112,6 @@ async function loadCdes (done) {
         let cde = row.NLM_ID ? await updateCde(row) : await createCde(row);
 
         console.log("tinyId: " + cde.tinyId);
-
 
         if (!forms[row.Form]) {
             forms[row.Form] = {
@@ -161,7 +161,7 @@ async function loadCdes (done) {
 
 loadCdes(async () => {
     for (let formName of Object.keys(forms)) {
-        await new Form(forms[formName]).save();
+        await new Promise(resolve => mongo_form.create(forms[formName], {username: "batchloader"}, resolve));
         formSaved++;
     }
 
