@@ -183,7 +183,7 @@ export function tokenSplitter(str) {
     tokens.push(res[0]);
     str = str.substr(res[0].length).trim();
 
-    res = str.match(/^((\bAND\b)|(\bOR\b))/);
+    res = str.match(/^((\bAND\b)|(\bOR\b))/i);
     if (!res) {
         tokens.unmatched = str;
         return tokens;
