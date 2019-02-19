@@ -91,9 +91,9 @@
                        [(ngModel)]="section.repeatNumber"
                        (change)="setRepeat(section);"/>
             </div>
-            <div class="font-weight-bold">Show if:
+            <div class="font-weight-bold skipLogicEditTextarea">Show if:
                 <span id="dd_s_skipLogic_{{$index}}" [ngClass]="{'has-error':section.skipLogic?.skipLogicError}">
-                        <cde-skip-logic [formElement]="section" [parent]="parent" [canEdit]="canEditSection()"
+                        <cde-skip-logic [parent]="parent" [formElement]="section" [canEdit]="canEditSection()"
                                         (onSaved)="onEltChange.emit();"></cde-skip-logic>
                 </span>
             </div>
