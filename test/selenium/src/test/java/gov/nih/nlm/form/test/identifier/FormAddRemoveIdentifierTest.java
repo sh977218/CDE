@@ -8,28 +8,44 @@ public class FormAddRemoveIdentifierTest extends NlmCdeBaseTest {
     @Test
     void formAddRemoveIdentifier() {
         String formName = "Vision Deficit Report";
+        mustBeLoggedInAs(nlm_username, nlm_password);
+
+        openUserMenu();
+        goToSiteManagement();
+        clickElement(By.cssSelector(".mat-tab-header-pagination-after"));
+        clickElement(By.cssSelector(".mat-tab-header-pagination-after"));
+        clickElement(By.xpath("//div[. = 'Id Sources']"));
+
+        addIdSource("test2",
+                "http://cde.nlm.nih.gov/deView?tinyId={{id}}&version={{version}}",
+                "http://cde.nlm.nih.gov/formView?tinyId={{id}}&version={{version}}");
+
+        logout();
         mustBeLoggedInAs(ctepCurator_username, password);
+
         goToFormByName(formName);
         goToIdentifiers();
 
-        addNewIdentifier("MyOrigin1", "MyId1", "MyVersion1");
-        addNewIdentifier("MyOrigin2", "MyId2", null);
-        addNewIdentifier("MyOrigin3", "MyId3", "MyVersion3");
+        addNewIdentifier("PhenX", "MyId1", "MyVersion1");
+        addNewIdentifier("caDSR", "MyId2");
+        addNewIdentifier("test2", "MyId3", "MyVersion3");
 
-        //remove MyOrigin2
+        // remove MyId2
         clickElement(By.id("removeIdentifier-1"));
         clickElement(By.id("confirmRemoveIdentifier-1"));
 
         goToFormByName(formName);
 
-         goToIdentifiers();
-        textPresent("MyOrigin1");
+        goToIdentifiers();
         textPresent("MyId1");
+        textPresent("PhenX");
         textPresent("MyVersion1");
-        textPresent("MyOrigin3");
+
         textPresent("MyId3");
+        textPresent("test2");
         textPresent("MyVersion3");
-        textNotPresent("MyOrigin2");
+
         textNotPresent("MyId2");
+        textNotPresent("caDSR");
     }
 }

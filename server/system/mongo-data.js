@@ -20,11 +20,13 @@ const logging = require('./logging.js');
 const daoManager = require('./moduleDaoManager');
 const config = require('./parseConfig');
 const schemas = require('./schemas');
+const writableCollection = require('./writableCollection');
 
 const conn = connHelper.establishConnection(config.database.appData);
 const Embeds = conn.model('Embed', schemas.embedSchema);
 const FhirApps = conn.model('FhirApp', schemas.fhirAppSchema);
 const FhirObservationInfo = conn.model('FhirObservationInfo', schemas.fhirObservationInformationSchema);
+const IdSource = conn.model('IdSource', schemas.idSourceSchema);
 const JobQueue = conn.model('JobQueue', schemas.jobQueue);
 const Message = conn.model('Message', schemas.message);
 const Org = conn.model('Org', schemas.orgSchema);
@@ -73,6 +75,7 @@ exports.mongoose_connection = conn;
 exports.sessionStore = sessionStore;
 exports.FhirApps = FhirApps;
 exports.FhirObservationInfo = FhirObservationInfo;
+exports.IdSource = IdSource;
 exports.Org = Org;
 exports.User = User;
 exports.JobQueue = JobQueue;
@@ -89,6 +92,8 @@ exports.removeJobStatus = (type, callback) => {
     JobQueue.remove({type: type}, callback);
 };
 
+// _id is own string
+exports.idSource = writableCollection(exports.IdSource, undefined);
 
 exports.addCdeToViewHistory = (elt, user) => {
     if (!elt || !user) return;

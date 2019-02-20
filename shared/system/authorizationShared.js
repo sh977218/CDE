@@ -37,19 +37,13 @@ export function hasRole(user, role) {
 export function isOrgCurator(user, org = undefined) {
     if (!user) return false;
     if (isOrgAdmin(user, org)) return true;
-    return user.orgCurator && (org
-            ? user.orgCurator.indexOf(org) > -1
-            : user.orgCurator.length > 0
-    );
+    return user.orgCurator && (org ? user.orgCurator.indexOf(org) > -1 : user.orgCurator.length > 0);
 }
 
 export function isOrgAdmin(user, org = undefined) {
     if (!user) return false;
     if (isOrgAuthority(user)) return true;
-    return user.orgAdmin && (org
-            ? user.orgAdmin.indexOf(org) > -1
-            : user.orgAdmin.length > 0
-    );
+    return user.orgAdmin && (org ? user.orgAdmin.indexOf(org) > -1 : user.orgAdmin.length > 0);
 }
 
 export function isSiteAdmin(user) {
