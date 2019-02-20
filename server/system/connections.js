@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 const logger = require('./noDbLogger');
 
 let establishedConns = {};
-
 exports.establishConnection = function (dbConfig) {
     let uri = dbConfig.uri;
 
