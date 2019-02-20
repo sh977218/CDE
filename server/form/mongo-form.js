@@ -14,7 +14,7 @@ exports.name = "forms";
 
 let conn = connHelper.establishConnection(config.database.appData);
 
-schemas.formSchema.pre('save', function (next) {
+schemas.formSchema.pre('save', next => {
     let self = this;
     try {
         elastic.updateOrInsert(self);
@@ -132,6 +132,10 @@ exports.count = function (condition, callback) {
 exports.update = function (elt, user, callback, special) {
     if (elt.toObject) elt = elt.toObject();
     return Form.findById(elt._id, (err, form) => {
+        if (elt.archived) {
+            callback("You are trying to edit an archived elements");
+            return;
+        }
         delete elt._id;
         if (!elt.history) elt.history = [];
         elt.history.push(form._id);
@@ -156,30 +160,30 @@ exports.update = function (elt, user, callback, special) {
             callback("Cannot save without names");
         }
 
-        newForm.save(function (err, savedForm) {
+        form.archived = true;
+        Form.findOneAndUpdate({_id: form._id}, form, err => {
             if (err) {
-                logging.errorLogger.error("Cannot save new form",
+                logging.errorLogger.error(
+                    "Transaction failed. Cannot save archived form: " + newForm.tinyId,
                     {
                         stack: new Error().stack,
                         details: "err " + err
-                    });
-                callback(err);
-            } else {
-                form.archived = true;
-                Form.findOneAndUpdate({_id: form._id}, form, err => {
-                    if (err) {
-                        logging.errorLogger.error(
-                            "Transaction failed. Cannot save archived form. Possible duplicated tinyId: " + newForm.tinyId,
-                            {
-                                stack: new Error().stack,
-                                details: "err " + err
-                            }
-                        );
                     }
+                );
+            }
+            newForm.save((err, savedForm) => {
+                if (err) {
+                    logging.errorLogger.error("Cannot save new form: " + newForm.tinyId,
+                        {
+                            stack: new Error().stack,
+                            details: "err " + err
+                        });
+                    callback(err);
+                } else {
                     callback(err, savedForm);
                     auditModifications(user, form, savedForm);
-                });
-            }
+                }
+            });
         });
     });
 };
