@@ -48,8 +48,8 @@ public class CdeLiveComment extends NlmCdeBaseTest {
         mustBeLoggedInAs(nindsCurator_username, password);
         clickElement(By.cssSelector("[data-id = 'notifications']"));
         textPresent("3 comments",
-                By.xpath("//div[contains(@class, 'taskItem')][*//mat-chip[contains(text(), 'gPY57SQ7-ZF')]]"));
+                By.xpath("//div[contains(@class, 'taskItem')][*//mat-chip[contains(text(), 'gPY57SQ7_ZF')]]"));
         textPresent(reply,
-                By.xpath("//div[contains(@class, 'taskItem')][*//mat-chip[contains(text(), 'gPY57SQ7-ZF')]]"));
+                By.xpath("//div[contains(@class, 'taskItem')][*//mat-chip[contains(text(), 'gPY57SQ7_ZF')]]"));
     }
 }

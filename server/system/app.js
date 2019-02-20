@@ -318,9 +318,9 @@ exports.init = function (app) {
     }, null, true, 'America/New_York', this, true);
 
     app.get(['/help/:title', '/createForm', '/createCde', '/boardList',
-        '/board/:id', '/myboards', '/cdeStatusReport', '/api', '/sdcview', '/404', '/whatsNew', '/contactUs',
-        '/quickBoard', '/searchPreferences', '/siteAudit', '/siteaccountmanagement', '/orgaccountmanagement',
-        '/classificationmanagement', '/inbox', '/profile', '/login', '/orgAuthority', '/orgComments'],
+        '/board/:id', '/myBoards', '/cdeStatusReport', '/api', '/sdcview', '/404', '/whatsNew', '/contactUs',
+        '/quickBoard', '/searchPreferences', '/siteAudit', '/siteAccountManagement', '/orgAccountManagement',
+        '/classificationManagement', '/inbox', '/profile', '/login', '/orgAuthority', '/orgComments'],
         respondHomeFull
     );
 
