@@ -44,7 +44,6 @@ var deJson = {
         userId: Schema.Types.ObjectId,
         username: StringType
     },
-    // tinyId: {type: StringType, index: {unique: true, partialFilterExpression: {archived: false}}, description: 'Internal CDE identifier'},
     tinyId: {type: StringType, index: true, description: 'Internal CDE identifier'},
     version: StringType,
     dataElementConcept: {
