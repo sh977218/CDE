@@ -8,7 +8,7 @@ export const htmlServedUri = [
     '/boardList',
     '/cde/search',
     '/cdeStatusReport',
-    '/classificationmanagement',
+    '/classificationManagement',
     '/contactUs',
     '/createCde',
     '/createForm',
@@ -19,8 +19,8 @@ export const htmlServedUri = [
     '/home',
     '/inbox',
     '/login',
-    '/myboards',
-    '/orgaccountmanagement',
+    '/myBoards',
+    '/orgAccountManagement',
     '/orgAuthority',
     '/orgComments',
     '/profile',
@@ -28,6 +28,6 @@ export const htmlServedUri = [
     '/sdcview',
     '/searchPreferences',
     '/siteAudit',
-    '/siteaccountmanagement',
+    '/siteAccountManagement',
     '/whatsNew'
 ];
