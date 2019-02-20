@@ -12,8 +12,8 @@ public class FindByNestedIdTest extends NlmCdeBaseTest {
         goToCdeByName(cdeName);
 
         // same ID as "more injuries loss of consciousness number"
-         goToIdentifiers();
-        addNewIdentifier("FAKE", "C18059", "3");
+        goToIdentifiers();
+        addNewIdentifier("caDSR", "C18059", "3");
         newCdeVersion();
 
         goToCdeSearch();
@@ -30,7 +30,7 @@ public class FindByNestedIdTest extends NlmCdeBaseTest {
         textPresent("2 results for");
 
         findElement(By.id("ftsearch-input")).clear();
-        findElement(By.id("ftsearch-input")).sendKeys("flatIds:\"FAKE C18059\"");
+        findElement(By.id("ftsearch-input")).sendKeys("flatIds:\"caDSR C18059\"");
         clickElement(By.xpath("//mat-icon[normalize-space() = 'search']"));
         textPresent("1 results for");
 

@@ -1,5 +1,7 @@
 const mongo_data = require('./mongo-data');
-const timestamped = require('./timestamped');
+const writableCollection = require('./writableCollection');
 
-exports.fhirApps = timestamped(mongo_data.FhirApps);
-exports.fhirObservationInfo = timestamped(mongo_data.FhirObservationInfo, true);
+exports.fhirApps = writableCollection(mongo_data.FhirApps);
+
+// _id is own string
+exports.fhirObservationInfo = writableCollection(mongo_data.FhirObservationInfo, undefined);

@@ -258,6 +258,26 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         goToCdeSearch();
     }
 
+    protected void addIdSource(String source, String deLink, String formLink) {
+        findElement(By.xpath("//input[@placeholder = 'New Id:']")).sendKeys(source);
+        clickElement(By.xpath("//button[contains(., 'Add')]"));
+        findElement(By.xpath("//tr[td[contains(., '" + source + "')]]//input[contains(@placeholder, 'Data Element Link')]")).sendKeys(deLink);
+        clickElement(By.xpath("//tr[td[contains(., '" + source + "')]]//input[contains(@placeholder, 'Form Link')]")); // save
+        hangon(2); // wait for save refresh
+        findElement(By.xpath("//tr[td[contains(., '" + source + "')]]//input[contains(@placeholder, 'Form Link')]")).sendKeys(formLink);
+        clickElement(By.xpath("//tr[td[contains(., '" + source + "')]]//input[contains(@placeholder, 'Version')]")); // save
+        hangon(2); // wait for save refresh
+        textPresent(source);
+        Assert.assertEquals(
+                findElement(By.xpath("//tr[td[contains(., '" + source + "')]]//input[contains(@placeholder, 'Data Element Link')]")).getAttribute("value"),
+                deLink
+        );
+        Assert.assertEquals(
+                findElement(By.xpath("//tr[td[contains(., '" + source + "')]]//input[contains(@placeholder, 'Form Link')]")).getAttribute("value"),
+                formLink
+        );
+    }
+
     protected void addOrg(String orgName, String orgLongName, String orgWGOf) {
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Org Management"));
@@ -1080,14 +1100,19 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         modalGone();
     }
 
+    protected void addNewIdentifier(String source, String id) {
+        addNewIdentifier(source, id, null);
+    }
+
     protected void addNewIdentifier(String source, String id, String version) {
         clickElement(By.id("openNewIdentifierModalBtn"));
         hangon(1);
-        findElement(By.id("newSource")).sendKeys(source);
-        findElement(By.id("newId")).sendKeys(id);
+        new Select(findElement(By.name("source"))).selectByVisibleText(source);
+        findElement(By.name("id")).sendKeys(id);
         if (version != null)
             findElement(By.name("version")).sendKeys(version);
         clickElement(By.id("createNewIdentifierBtn"));
+        modalGone();
     }
 
     protected void changeDatatype(String newDatatype) {

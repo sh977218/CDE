@@ -10,11 +10,7 @@ public class LoincLinkTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName("Ethnicity USA maternal category");
         goToIdentifiers();
-        clickElement(By.id("openNewIdentifierModalBtn"));
-        hangon(1);
-        findElement(By.name("source")).sendKeys("LOINC");
-        findElement(By.name("id")).sendKeys("59362-4");
-        clickElement(By.id("createNewIdentifierBtn"));
+        addNewIdentifier("LOINC", "59362-4");
         findElement(By.linkText("59362-4"));
     }
 }
