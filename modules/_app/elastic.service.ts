@@ -147,7 +147,9 @@ export class ElasticService {
                     .substr(0, 50) === cde[field].substr(0, 50)) {
                     cde[field] = cde.highlight[field][0];
                 } else {
-                    cde[field] = cde[field].substr(0, 50) + ' [...] ' + cde.highlight[field][0];
+                    if (cde[field].length > 50) {
+                        cde[field] = cde[field].substr(0, 50) + ' [...] ' + cde.highlight[field][0];
+                    }
                 }
             } else cde[field.replace(/\..+$/, "")][field.replace(/^.+\./, "")] = cde.highlight[field][0];
         } else {
