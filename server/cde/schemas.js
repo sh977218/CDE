@@ -44,6 +44,7 @@ var deJson = {
         userId: Schema.Types.ObjectId,
         username: StringType
     },
+    // tinyId: {type: StringType, index: {unique: true, partialFilterExpression: {archived: false}}, description: 'Internal CDE identifier'},
     tinyId: {type: StringType, index: true, description: 'Internal CDE identifier'},
     version: StringType,
     dataElementConcept: {
@@ -153,6 +154,7 @@ exports.dataElementSchema = new Schema(deJson, {
     }
 });
 exports.dataElementSchema.set('collection', 'dataelements');
+exports.dataElementSchema.index({tinyId: 1, archived: 1}, {unique: true, name: "liveTinyId", partialFilterExpression: {archived: false}});
 
 exports.draftSchema = new Schema(deJson, {
     usePushEach: true,
