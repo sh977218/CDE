@@ -93,6 +93,11 @@ exports.orgComments = (myOrgs, from, size, cb) => {
                     {'embeddedForm.classification.stewardOrg.name': {$in: myOrgs}}
                 ]
             }
+        }, {
+            $project: {
+                'embeddedCde': 0,
+                'embeddedForm': 0
+            }
         }, {$sort: {created: -1}}, {$skip: from}, {$limit: size}], cb);
 };
 
