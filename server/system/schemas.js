@@ -128,7 +128,6 @@ exports.fhirAppSchema = new Schema({
         }, {_id: false}),
         default: []
     }],
-    timestamp: Date,
 }, {collection: 'fhirapps'});
 
 exports.fhirObservationInformationSchema = new Schema({
@@ -137,8 +136,14 @@ exports.fhirObservationInformationSchema = new Schema({
         type: String,
         enum: ['social-history', 'vital-signs', 'imaging', 'laboratory', 'procedure', 'survey', 'exam', 'therapy']
     }],
-    timestamp: Date
 }, {collection: 'fhirObservationInfo'});
+
+exports.idSourceSchema = new Schema({
+    _id: String,
+    linkTemplateDe: {type: StringType, default: ''},
+    linkTemplateForm: {type: StringType, default: ''},
+    version: StringType,
+}, {collection: 'idSource'});
 
 exports.statusValidationRuleSchema = new Schema({
     field: StringType,

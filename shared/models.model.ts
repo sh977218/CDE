@@ -445,6 +445,17 @@ export class RegistrationState {
     untilDate?: Date;
 }
 
+export class Source {
+    _id?: string;
+    linkTemplateDe: string = '';
+    linkTemplateForm: string = '';
+    version?: string;
+
+    constructor(id: string) {
+        this._id = id;
+    }
+}
+
 export class StatusValidationRules {
     id!: number;
     field?: string;
