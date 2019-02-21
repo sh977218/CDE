@@ -90,7 +90,7 @@ export class PermissibleValueComponent {
 
     addAllVsac() {
         this.removeSourceSelection();
-        this.vsacValueSet.forEach(v => this.addVsacValue(v));
+        this.vsacValueSet.forEach(v => this.addVsacValue(v, false));
         this.onEltChange.emit();
     }
 
@@ -109,7 +109,7 @@ export class PermissibleValueComponent {
         return allVsacMatch;
     }
 
-    addVsacValue(vsacValue) {
+    addVsacValue(vsacValue, emit = true) {
         if (this.isVsInPv(vsacValue)) return;
         else {
             this.elt.valueDomain.permissibleValues.push({
@@ -121,6 +121,7 @@ export class PermissibleValueComponent {
             });
         }
         this.runManualValidation();
+        if (emit) this.onEltChange.emit();
     }
 
     canLinkPvFunc() {
@@ -198,8 +199,8 @@ export class PermissibleValueComponent {
 
     loadValueSet() {
         let dec = this.elt.dataElementConcept;
+        this.vsacValueSet = [];
         if (dec && dec.conceptualDomain && dec.conceptualDomain.vsac && dec.conceptualDomain.vsac.id) {
-            this.vsacValueSet = [];
             this.pVTypeheadVsacNameList = [];
             this.http.get('/vsacBridge/' + dec.conceptualDomain.vsac.id).subscribe(
                 res => {
