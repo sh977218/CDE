@@ -91,6 +91,7 @@ export class PermissibleValueComponent {
     addAllVsac() {
         this.removeSourceSelection();
         this.vsacValueSet.forEach(v => this.addVsacValue(v));
+        this.onEltChange.emit();
     }
 
     addNewPermissibleValue() {
