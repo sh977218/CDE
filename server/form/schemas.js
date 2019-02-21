@@ -192,6 +192,8 @@ exports.draftSchema.virtual('isDraft').get(function () {
     return true;
 });
 exports.formSchema.set('collection', 'forms');
+exports.formSchema.index({tinyId: 1, archived: 1}, {unique: true, name: "formLiveTinyId", partialFilterExpression: {archived: false}});
+
 exports.draftSchema.set('collection', 'formdrafts');
 
 exports.formSourceSchema = new Schema(exports.formJson, {usePushEach: true});

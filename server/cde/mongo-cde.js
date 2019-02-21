@@ -13,12 +13,10 @@ const isOrgCurator = require('../../shared/system/authorizationShared').isOrgCur
 exports.type = "cde";
 exports.name = "CDEs";
 
-schemas.dataElementSchema.post('remove', function (doc, next) {
-    elastic.dataElementDelete(doc, function (err) {
-        next(err);
-    });
+schemas.dataElementSchema.post('remove', (doc, next) => {
+    elastic.dataElementDelete(doc, next);
 });
-schemas.dataElementSchema.pre('save', function (next) {
+schemas.dataElementSchema.pre('save', function(next) {
     let self = this;
     if (this.archived) return next();
     let cdeError = deValidator.checkPvUnicity(self.valueDomain);
@@ -223,13 +221,15 @@ exports.fork = function (elt, user, callback) {
     });
 };
 
-exports.newObject = function (obj) {
-    return new DataElement(obj);
-};
+exports.newObject = obj => new DataElement(obj);
 
 exports.update = function (elt, user, callback, special) {
     if (elt.toObject) elt = elt.toObject();
     return DataElement.findById(elt._id, (err, dataElement) => {
+        if (dataElement.archived) {
+            callback("You are trying to edit an archived elements");
+            return;
+        }
         delete elt._id;
         if (!elt.history) elt.history = [];
         elt.history.push(dataElement._id);
@@ -254,30 +254,30 @@ exports.update = function (elt, user, callback, special) {
             callback("Cannot save without names");
         }
 
-        newDe.save(function (err, savedDe) {
+        dataElement.archived = true;
+        DataElement.findOneAndUpdate({_id: dataElement._id}, dataElement, err => {
             if (err) {
-                logging.errorLogger.error("Cannot save new CDE",
+                logging.errorLogger.error(
+                    "Transaction failed. Cannot save archived CDE: " + newDe.tinyId,
                     {
                         stack: new Error().stack,
                         details: "err " + err
-                    });
-                callback(err);
-            } else {
-                dataElement.archived = true;
-                DataElement.findOneAndUpdate({_id: dataElement._id}, dataElement, err => {
-                    if (err) {
-                        logging.errorLogger.error(
-                            "Transaction failed. Cannot save archived CDE.Possible duplicated tinyId: " + newDe.tinyId,
-                            {
-                                stack: new Error().stack,
-                                details: "err " + err
-                            }
-                        );
                     }
+                );
+            }
+            newDe.save((err, savedDe) => {
+                if (err) {
+                    logging.errorLogger.error("Cannot save new CDE: " + newDe.tinyId,
+                        {
+                            stack: new Error().stack,
+                            details: "err " + err
+                        });
+                    callback(err);
+                } else {
                     callback(err, savedDe);
                     auditModifications(user, dataElement, newDe);
-                });
-            }
+                }
+            });
         });
     });
 };

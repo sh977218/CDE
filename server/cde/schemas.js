@@ -153,6 +153,7 @@ exports.dataElementSchema = new Schema(deJson, {
     }
 });
 exports.dataElementSchema.set('collection', 'dataelements');
+exports.dataElementSchema.index({tinyId: 1, archived: 1}, {unique: true, name: "liveTinyId", partialFilterExpression: {archived: false}});
 
 exports.draftSchema = new Schema(deJson, {
     usePushEach: true,
