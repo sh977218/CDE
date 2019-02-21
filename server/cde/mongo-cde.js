@@ -15,7 +15,7 @@ exports.name = "CDEs";
 schemas.dataElementSchema.post('remove', (doc, next) => {
     elastic.dataElementDelete(doc, next);
 });
-schemas.dataElementSchema.pre('save', next => {
+schemas.dataElementSchema.pre('save', function(next) {
     let self = this;
     if (this.archived) return next();
     let cdeError = deValidator.checkPvUnicity(self.valueDomain);
@@ -223,7 +223,7 @@ exports.newObject = obj => new DataElement(obj);
 exports.update = function (elt, user, callback, special) {
     if (elt.toObject) elt = elt.toObject();
     return DataElement.findById(elt._id, (err, dataElement) => {
-        if (elt.archived) {
+        if (dataElement.archived) {
             callback("You are trying to edit an archived elements");
             return;
         }

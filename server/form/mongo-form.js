@@ -14,7 +14,7 @@ exports.name = "forms";
 
 let conn = connHelper.establishConnection(config.database.appData);
 
-schemas.formSchema.pre('save', next => {
+schemas.formSchema.pre('save', function(next) {
     let self = this;
     try {
         elastic.updateOrInsert(self);
@@ -132,7 +132,7 @@ exports.count = function (condition, callback) {
 exports.update = function (elt, user, callback, special) {
     if (elt.toObject) elt = elt.toObject();
     return Form.findById(elt._id, (err, form) => {
-        if (elt.archived) {
+        if (form.archived) {
             callback("You are trying to edit an archived elements");
             return;
         }
