@@ -2,6 +2,7 @@ const _ = require('lodash');
 
 const mongo_cde = require('../../../server/cde/mongo-cde');
 const DataElement = mongo_cde.DataElement;
+const DataElementSource = mongo_cde.DataElementSource;
 
 const parseAnswers = require('../Form/ParseAnswers').parseAnswers;
 
@@ -49,6 +50,8 @@ doOneNindsCde = async cdeId => {
 
     let newCde = new DataElement(newCdeObj);
 
+    newCde.source = 'NINDS';
+    await new DataElementSource(newCde).save();
     let existingCde = await DataElement.findOne({
         archived: false,
         'registrationState.registrationStatus': {$ne: 'Retired'},

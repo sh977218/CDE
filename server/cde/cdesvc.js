@@ -161,7 +161,7 @@ exports.byTinyIdList = (req, res) => {
                 if (c) result.push(c);
             });
             res.send(result);
-    }));
+        }));
 };
 
 exports.latestVersionByTinyId = (req, res) => {
@@ -247,6 +247,16 @@ exports.viewHistory = (req, res) => {
         dataElements.forEach(de => hideProprietaryCodes(de, req.user));
         return res.send(dataElements);
     }));
+};
+
+exports.originalSourceByTinyIdSourceName = (req, res) => {
+    let tinyId = req.params.tinyId;
+    let sourceName = req.params.sourceName;
+    mongo_cde.originalSourceByTinyIdSourceName(tinyId, sourceName,
+        handleError({req, res}, originalSource => {
+            res.send(originalSource);
+        })
+    )
 };
 
 /* ---------- PUT NEW REST API Implementation above  ---------- */

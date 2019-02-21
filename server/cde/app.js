@@ -26,6 +26,8 @@ exports.init = function (app, daoManager) {
 
     app.get("/deList/:tinyIdList?", exportShared.nocacheMiddleware, cdesvc.byTinyIdList);
 
+    app.get('/originalSource/:sourceName/:tinyId',cdesvc.originalSourceByTinyIdSourceName)
+
     const canEditItemByIdMiddleware = [authorization.isOrgCuratorMiddleware, (req, res, next) => {
         mongo_cde.byTinyId(req.params.tinyId, handleError({req, res}, dataElement => {
             if (!authorizationShared.canEditCuratedItem(req.user, dataElement)) {

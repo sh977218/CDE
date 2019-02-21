@@ -27,9 +27,11 @@ schemas.formSchema.pre('save', function (next) {
 let Form = conn.model('Form', schemas.formSchema);
 let FormAudit = conn.model('FormAudit', schemas.auditSchema);
 let FormDraft = conn.model('Draft', schemas.draftSchema);
+let FormSource = conn.model('formsources', schemas.formSourceSchema);
 
 exports.Form = exports.dao = Form;
 exports.FormDraft = exports.daoDraft = FormDraft;
+exports.FormSource = FormSource;
 
 mongo_data.attachables.push(exports.Form);
 

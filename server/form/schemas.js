@@ -194,6 +194,9 @@ exports.draftSchema.virtual('isDraft').get(function () {
 exports.formSchema.set('collection', 'forms');
 exports.draftSchema.set('collection', 'formdrafts');
 
+exports.formSourceSchema = new Schema(exports.formJson, {usePushEach: true});
+exports.formSourceSchema.set('collection', 'formsources');
+
 exports.auditSchema = new Schema(sharedSchemas.itemLogSchema, {strict: false});
 exports.auditSchema.set('collection', 'formAudit');
 

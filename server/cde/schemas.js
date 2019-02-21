@@ -166,5 +166,10 @@ exports.draftSchema = new Schema(deJson, {
 exports.draftSchema.virtual('isDraft').get(() => true);
 exports.draftSchema.set('collection', 'dataelementdrafts');
 
+exports.dataElementSourceSchema = new Schema(deJson, {
+    usePushEach: true
+});
+exports.dataElementSourceSchema.set('collection', 'dataelementSources');
+
 exports.auditSchema = new Schema(sharedSchemas.itemLogSchema, {strict: false});
 exports.auditSchema.set('collection', 'cdeAudit');
