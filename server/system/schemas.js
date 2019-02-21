@@ -35,7 +35,7 @@ exports.permissibleValueSchema = new Schema({
 
 exports.derivationRuleSchema = new Schema({
     name: StringType,
-    inputs: {type: [StringType], index: true, description: 'Information operated on by rule'},
+    inputs: {type: [StringType], description: 'Information operated on by rule'},
     outputs: {type: [StringType], description: 'Information produced by rule'},
     ruleType: {type: StringType, enum: ['score', 'panel']},
     formula: {type: StringType, enum: ['sumAll', 'mean', 'bmi']},

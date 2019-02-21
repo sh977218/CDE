@@ -92,10 +92,10 @@ exports.addClassification = function (body, dao, cb) {
             });
             steward = classificationShared.findSteward(elt, body.orgName);
         }
-        classificationShared.addCategory(steward.object, body.categories, function (result) {
+        classificationShared.addCategory(steward.object, body.categories, result => {
             elt.updated = new Date();
             elt.markModified("classification");
-            elt.save(function (err) {
+            elt.save(err => {
                 if (err) cb(err);
                 else cb(null, result);
             });
@@ -113,8 +113,8 @@ exports.removeClassification = function (body, dao, cb) {
         if (err) return cb(err);
         if (!elt) return cb("Can not find elt with _id: " + body.eltId);
         let steward = classificationShared.findSteward(elt, body.orgName);
-        classificationShared.removeCategory(steward.object, body.categories, function (e) {
-            if (e) return cb(e);
+        classificationShared.removeCategory(steward.object, body.categories, err => {
+            if (err) return cb(err);
             for (var i = elt.classification.length - 1; i >= 0; i--) {
                 if (elt.classification[i].elements.length === 0) {
                     elt.classification.splice(i, 1);
@@ -122,9 +122,7 @@ exports.removeClassification = function (body, dao, cb) {
             }
             elt.updated = new Date();
             elt.markModified("classification");
-            elt.save(function (err, o) {
-                cb(err, o);
-            });
+            elt.save(cb);
         });
     });
 };
