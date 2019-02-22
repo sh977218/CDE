@@ -127,6 +127,8 @@ run = async () => {
     for (let formId of formIdList) {
         let form = await doOneNindsFormById(formId);
         form.source = 'NINDS';
+        let existingSource = await DataElementSource.findOne({tinyId: form.tinyId, source: 'NINDS'});
+        if (!existingSource) await new FormSource(form).save();
         await new FormSource(form).save();
     }
     let nullComments = await checkNullComments();

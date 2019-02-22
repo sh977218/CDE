@@ -201,7 +201,7 @@ exports.formSchema.index({tinyId: 1, archived: 1}, {
 exports.draftSchema.set('collection', 'formdrafts');
 
 exports.formSourceSchema = new Schema(exports.formJson, {usePushEach: true});
-exports.formSourceSchema.index({tinyId: 1, elementType: 1, source: 1}, {unique: true});
+exports.formSourceSchema.index({tinyId: 1, source: 1}, {unique: true});
 exports.formSourceSchema.set('collection', 'formsources');
 
 exports.auditSchema = new Schema(sharedSchemas.itemLogSchema, {strict: false});

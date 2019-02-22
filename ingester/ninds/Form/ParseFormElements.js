@@ -13,14 +13,11 @@ const MergeCDE = require('../CDE/MergeCDE');
 const deValidator = require('esm')(module)('../../../shared/de/deValidator');
 const Comment = require('../../../server/discuss/discussDb').Comment;
 
-const updatedByNonLoader = require('../../shared/updatedByNonLoader').updatedByNonLoader;
 const batchloader = require('../../shared/updatedByNonLoader').batchloader;
 
 let createdCDE = 0;
 let sameCDE = 0;
 let changeCDE = 0;
-let skipCDE = 0;
-
 
 doOneNindsCde = async cdeId => {
     let newCdeObj = await CreateCDE.createCde(cdeId);
@@ -88,7 +85,8 @@ doOneNindsCde = async cdeId => {
             console.log('changeCDE: ' + changeCDE + ' ' + existingCde.tinyId);
         }
         existingCdeObj.source = 'NINDS';
-        await new DataElementSource(existingCdeObj).save();
+        let existingSource = await DataElementSource.findOne({tinyId: existingCdeObj.tinyId, source: 'NINDS'});
+        if (!existingSource) await new DataElementSource(existingCdeObj).save();
     }
 };
 

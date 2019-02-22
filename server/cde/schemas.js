@@ -174,7 +174,7 @@ exports.draftSchema.set('collection', 'dataelementdrafts');
 exports.dataElementSourceSchema = new Schema(deJson, {
     usePushEach: true
 });
-exports.dataElementSourceSchema.index({tinyId: 1, elementType: 1, source: 1}, {unique: true});
+exports.dataElementSourceSchema.index({tinyId: 1, source: 1}, {unique: true});
 
 exports.dataElementSourceSchema.set('collection', 'dataelementsources');
 
