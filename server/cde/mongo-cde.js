@@ -16,7 +16,7 @@ exports.name = "CDEs";
 schemas.dataElementSchema.post('remove', (doc, next) => {
     elastic.dataElementDelete(doc, next);
 });
-schemas.dataElementSchema.pre('save', function(next) {
+schemas.dataElementSchema.pre('save', function (next) {
     let self = this;
     if (this.archived) return next();
     let cdeError = deValidator.checkPvUnicity(self.valueDomain);
@@ -391,5 +391,5 @@ exports.checkOwnership = function (req, id, cb) {
 };
 
 exports.originalSourceByTinyIdSourceName = function (tinyId, sourceName, cb) {
-    DataElementSource.findOne({tinyId: tinyId, source: sourceName}, cb);
+    DataElementSource.findOne({tinyId: tinyId, source: sourceName, elementType: 'cde'}, cb);
 };

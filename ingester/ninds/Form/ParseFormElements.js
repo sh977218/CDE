@@ -49,15 +49,11 @@ doOneNindsCde = async cdeId => {
     }
 
     let newCde = new DataElement(newCdeObj);
-
-    newCde.source = 'NINDS';
-    await new DataElementSource(newCde).save();
     let existingCde = await DataElement.findOne({
         archived: false,
         'registrationState.registrationStatus': {$ne: 'Retired'},
         'ids.id': cdeId
     });
-    let yesterday = new Date().setDate(new Date().getDate() - 1);
     if (!existingCde) {
         for (let comment of newCdeObj.comments) {
             comment.element.eltId = newCde.tinyId;
@@ -67,38 +63,32 @@ doOneNindsCde = async cdeId => {
         let savedCDE = await newCde.save();
         createdCDE++;
         console.log('createdCDE: ' + createdCDE + ' ' + savedCDE.tinyId);
-
+        newCde.source = 'NINDS';
+        await new DataElementSource(newCde).save();
     } else {
         let existingCdeObj = existingCde.toObject();
         let otherClassifications = existingCdeObj.classification.filter(c => c.stewardOrg.name !== 'NINDS');
         existingCde.classification = otherClassifications.concat(newCdeObj.classification);
-        if (updatedByNonLoader(existingCde) ||
-            existingCde.updated > yesterday ||
-            existingCde.registrationState.registrationStatus === 'Standard') {
-            await existingCde.save();
-            skipCDE++;
-            console.log('skipCDE: ' + skipCDE + ' ' + existingCde.tinyId);
-        } else {
-            existingCde.imported = new Date().toJSON();
-            existingCde.markModified('imported');
-            let diff = CompareCDE.compareCde(newCde, existingCde);
-            for (let comment of newCdeObj.comments) {
-                comment.element.eltId = existingCde.tinyId;
-                await new Comment(comment).save();
-                console.log('comment saved on existing CDE ' + existingCde.tinyId);
-            }
-            if (_.isEmpty(diff)) {
-                await existingCde.save();
-                sameCDE++;
-                console.log('sameCDE: ' + sameCDE + ' ' + existingCde.tinyId);
-            } else {
-                await MergeCDE.mergeCde(existingCde, newCde);
-                await mongo_cde.updatePromise(existingCde, batchloader);
-                changeCDE++;
-                console.log('changeCDE: ' + changeCDE + ' ' + existingCde.tinyId);
-            }
+        existingCde.imported = new Date().toJSON();
+        existingCde.markModified('imported');
+        let diff = CompareCDE.compareCde(newCde, existingCde);
+        for (let comment of newCdeObj.comments) {
+            comment.element.eltId = existingCde.tinyId;
+            await new Comment(comment).save();
+            console.log('comment saved on existing CDE ' + existingCde.tinyId);
         }
-
+        if (_.isEmpty(diff)) {
+            await existingCde.save();
+            sameCDE++;
+            console.log('sameCDE: ' + sameCDE + ' ' + existingCde.tinyId);
+        } else {
+            await MergeCDE.mergeCde(existingCde, newCde);
+            await mongo_cde.updatePromise(existingCde, batchloader);
+            changeCDE++;
+            console.log('changeCDE: ' + changeCDE + ' ' + existingCde.tinyId);
+        }
+        existingCdeObj.source = 'NINDS';
+        await new DataElementSource(existingCdeObj).save();
     }
 };
 

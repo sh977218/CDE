@@ -3,6 +3,7 @@ const NindsModel = require('../../createMigrationConnection').NindsModel;
 
 const mongo_form = require('../../../server/form/mongo-form');
 const Form = mongo_form.Form;
+const FormSource = mongo_form.FormSource;
 const mongo_cde = require('../../../server/cde/mongo-cde');
 const DataElement = mongo_cde.DataElement;
 
@@ -10,7 +11,6 @@ const CreateForm = require('../Form/CreateForm');
 const CompareForm = require('../Form/CompareForm');
 const MergeForm = require('../Form/MergeForm');
 
-const updatedByNonLoader = require('../../shared/updatedByNonLoader').updatedByNonLoader;
 const batchloader = require('../../shared/updatedByNonLoader').batchloader;
 
 const checkNullComments = require('../../shared/utility').checkNullComments;
@@ -18,7 +18,6 @@ const checkNullComments = require('../../shared/utility').checkNullComments;
 let createdForm = 0;
 let sameForm = 0;
 let changeForm = 0;
-let skipForm = 0;
 
 let retiredCDE = 0;
 let retiredForm = 0;
@@ -96,44 +95,39 @@ doOneNindsFormById = async formIdString => {
         }
         createdForm++;
         console.log('createdForm: ' + createdForm + ' ' + savedForm.tinyId);
+        return savedForm.toObject();
     } else {
         let existingFormObj = existingForm.toObject();
         let otherClassifications = existingFormObj.classification.filter(c => c.stewardOrg.name !== 'NINDS');
         existingForm.classification = otherClassifications.concat(newFormObj.classification);
-        if (updatedByNonLoader(existingForm) ||
-            existingForm.registrationState.registrationStatus === 'Standard') {
-            await existingForm.save();
-            skipForm++;
-            console.log('skipForm: ' + skipForm + ' ' + existingForm.tinyId);
-        } else {
-            existingForm.imported = new Date().toJSON();
-            existingForm.markModified('imported');
-            let diff = CompareForm.compareForm(newForm, existingForm);
-            for (let comment of newFormObj.comments) {
-                comment.element.eltId = existingForm.tinyId;
-                await new Comment(comment).save();
-                console.log('comment saved on existing Form ' + existingForm.tinyId);
-            }
-            if (_.isEmpty(diff)) {
-                await existingForm.save();
-                sameForm++;
-                console.log('sameForm: ' + sameForm + ' ' + existingForm.tinyId);
-            } else {
-                await MergeForm.mergeForm(existingForm, newForm);
-                await mongo_form.updatePromise(existingForm, batchloader);
-                changeForm++;
-                console.log('changeForm: ' + changeForm + ' ' + existingForm.tinyId);
-            }
+        existingForm.imported = new Date().toJSON();
+        existingForm.markModified('imported');
+        let diff = CompareForm.compareForm(newForm, existingForm);
+        for (let comment of newFormObj.comments) {
+            comment.element.eltId = existingForm.tinyId;
+            await new Comment(comment).save();
+            console.log('comment saved on existing Form ' + existingForm.tinyId);
         }
+        if (_.isEmpty(diff)) {
+            await existingForm.save();
+            sameForm++;
+            console.log('sameForm: ' + sameForm + ' ' + existingForm.tinyId);
+        } else {
+            await MergeForm.mergeForm(existingForm, newForm);
+            await mongo_form.updatePromise(existingForm, batchloader);
+            changeForm++;
+            console.log('changeForm: ' + changeForm + ' ' + existingForm.tinyId);
+        }
+        return existingFormObj;
     }
 };
 
 run = async () => {
     let formIdList = await NindsModel.distinct('formId');
-//    let formIdList = ['formF1807'];
     for (let formId of formIdList) {
-        await doOneNindsFormById(formId);
-//        await NindsModel.remove({formId: formId});
+        let form = await doOneNindsFormById(formId);
+        form.source = 'NINDS';
+        await new FormSource(form).save();
     }
     let nullComments = await checkNullComments();
     for (let nullComment of nullComments) {

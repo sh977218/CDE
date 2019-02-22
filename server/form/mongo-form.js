@@ -14,7 +14,7 @@ exports.name = "forms";
 
 let conn = connHelper.establishConnection(config.database.appData);
 
-schemas.formSchema.pre('save', function(next) {
+schemas.formSchema.pre('save', function (next) {
     let self = this;
     try {
         elastic.updateOrInsert(self);
@@ -259,4 +259,9 @@ exports.checkOwnership = function (req, id, cb) {
             return cb("You do not own this element.", null);
         cb(null, elt);
     });
+};
+
+
+exports.originalSourceByTinyIdSourceName = function (tinyId, sourceName, cb) {
+    FormSource.findOne({tinyId: tinyId, source: sourceName, elementType: 'form'}, cb);
 };

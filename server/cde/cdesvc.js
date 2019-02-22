@@ -254,7 +254,8 @@ exports.originalSourceByTinyIdSourceName = (req, res) => {
     let sourceName = req.params.sourceName;
     mongo_cde.originalSourceByTinyIdSourceName(tinyId, sourceName,
         handleError({req, res}, originalSource => {
-            res.send(originalSource);
+            if (originalSource) res.send(originalSource);
+            else res.status(404).send('No ' + sourceName + ' source file found for ' + tinyId);
         })
     )
 };
