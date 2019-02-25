@@ -7,6 +7,7 @@ const logging = require('../system/logging');
 const elastic = require('./elastic');
 const deValidator = require('esm')(module)('../../shared/de/deValidator');
 const draftSchema = require('./schemas').draftSchema;
+const dataElementSourceSchema = require('./schemas').dataElementSourceSchema;
 const isOrgCurator = require('../../shared/system/authorizationShared').isOrgCurator;
 
 exports.type = "cde";
@@ -15,7 +16,7 @@ exports.name = "CDEs";
 schemas.dataElementSchema.post('remove', (doc, next) => {
     elastic.dataElementDelete(doc, next);
 });
-schemas.dataElementSchema.pre('save', function(next) {
+schemas.dataElementSchema.pre('save', function (next) {
     let self = this;
     if (this.archived) return next();
     let cdeError = deValidator.checkPvUnicity(self.valueDomain);
@@ -43,11 +44,13 @@ let conn = connHelper.establishConnection(config.database.appData);
 let CdeAudit = conn.model('CdeAudit', schemas.auditSchema);
 let DataElement = conn.model('DataElement', schemas.dataElementSchema);
 let DataElementDraft = conn.model('DataElementDraft', draftSchema);
+let DataElementSource = conn.model('DataElementSource', dataElementSourceSchema);
 let User = require('../user/userDb').User;
 
 exports.elastic = elastic;
 exports.DataElement = exports.dao = DataElement;
 exports.DataElementDraft = exports.daoDraft = DataElementDraft;
+exports.DataElementSource = DataElementSource;
 exports.User = User;
 
 mongo_data.attachables.push(exports.DataElement);
@@ -385,4 +388,8 @@ exports.checkOwnership = function (req, id, cb) {
             return cb("You do not own this element.", null);
         cb(null, elt);
     });
+};
+
+exports.originalSourceByTinyIdSourceName = function (tinyId, sourceName, cb) {
+    DataElementSource.findOne({tinyId: tinyId, source: sourceName, elementType: 'cde'}, cb);
 };

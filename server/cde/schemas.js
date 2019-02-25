@@ -153,7 +153,11 @@ exports.dataElementSchema = new Schema(deJson, {
     }
 });
 exports.dataElementSchema.set('collection', 'dataelements');
-exports.dataElementSchema.index({tinyId: 1, archived: 1}, {unique: true, name: "liveTinyId", partialFilterExpression: {archived: false}});
+exports.dataElementSchema.index({tinyId: 1, archived: 1}, {
+    unique: true,
+    name: "liveTinyId",
+    partialFilterExpression: {archived: false}
+});
 
 exports.draftSchema = new Schema(deJson, {
     usePushEach: true,
@@ -166,6 +170,13 @@ exports.draftSchema = new Schema(deJson, {
 });
 exports.draftSchema.virtual('isDraft').get(() => true);
 exports.draftSchema.set('collection', 'dataelementdrafts');
+
+exports.dataElementSourceSchema = new Schema(deJson, {
+    usePushEach: true
+});
+exports.dataElementSourceSchema.index({tinyId: 1, source: 1}, {unique: true});
+
+exports.dataElementSourceSchema.set('collection', 'dataelementsources');
 
 exports.auditSchema = new Schema(sharedSchemas.itemLogSchema, {strict: false});
 exports.auditSchema.set('collection', 'cdeAudit');

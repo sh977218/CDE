@@ -26,6 +26,8 @@ exports.init = function (app, daoManager) {
 
     app.get("/deList/:tinyIdList?", exportShared.nocacheMiddleware, cdesvc.byTinyIdList);
 
+    app.get('/originalSource/cde/:sourceName/:tinyId', cdesvc.originalSourceByTinyIdSourceName);
+
     const canEditItemByIdMiddleware = [authorization.isOrgCuratorMiddleware, (req, res, next) => {
         mongo_cde.byTinyId(req.params.tinyId, handleError({req, res}, dataElement => {
             if (!authorizationShared.canEditCuratedItem(req.user, dataElement)) {
@@ -94,6 +96,7 @@ exports.init = function (app, daoManager) {
         vsac.getTGT(300); // retry for half hour every 6 seconds
         elastic.fetchPVCodeSystemList();
     }
+
     fetchRemoteData();
     setInterval(fetchRemoteData, 1000 * 60 * 60);
 
@@ -116,7 +119,10 @@ exports.init = function (app, daoManager) {
     app.get('/crossWalkingVocabularies/:source/:code/:targetSource/', (req, res) => {
         if (!req.params.source || !req.params.code || !req.params.targetSource)
             return res.status(401).send();
-        vsac.getCrossWalkingVocabularies(req.params.source, req.params.code, req.params.targetSource, handleError({req, res}, result => {
+        vsac.getCrossWalkingVocabularies(req.params.source, req.params.code, req.params.targetSource, handleError({
+            req,
+            res
+        }, result => {
             if (result.statusCode === 200)
                 return res.send({result: JSON.parse(result.body).result});
             return res.send({result: []});

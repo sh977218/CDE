@@ -46,7 +46,10 @@ exports.sourceSchema = new Schema({
     sourceName: StringType,
     created: {type: Date, description: 'Date created in source'},
     updated: {type: Date, description: 'Date updated in source'},
-    registrationStatus: {type: StringType, description: "Relative standing of official record status in steward's workflow"},
+    registrationStatus: {
+        type: StringType,
+        description: "Relative standing of official record status in steward's workflow"
+    },
     datatype: {type: StringType, description: 'May contain the source datatype'},
     copyright: {
         value: {type: StringType, description: 'Content of a copyright statement or terms of use'},
@@ -148,7 +151,10 @@ exports.idSourceSchema = new Schema({
 exports.statusValidationRuleSchema = new Schema({
     field: StringType,
     id: Number,
-    targetStatus: {type: StringType, enum: ["Incomplete", "Recorded", "Candidate", "Qualified", "Standard", "Preferred Standard"]},
+    targetStatus: {
+        type: StringType,
+        enum: ["Incomplete", "Recorded", "Candidate", "Qualified", "Standard", "Preferred Standard"]
+    },
     ruleName: StringType,
     rule: {
         regex: StringType
@@ -241,13 +247,21 @@ exports.registrationStateSchema = {
     untilDate: Date,
     administrativeNote: StringType,
     unresolvedIssue: StringType,
-    administrativeStatus: {type: StringType, description: 'Relative standing of CDE as it relates to steward\'s administrative workflow'},
+    administrativeStatus: {
+        type: StringType,
+        description: 'Relative standing of CDE as it relates to steward\'s administrative workflow'
+    },
     replacedBy: {tinyId: {type: StringType, description: 'tinyId of replacement CDE'}},
 };
 
-exports.propertySchema = {key: StringType, value: StringType, source: StringType, valueFormat: StringType, _id: false};
+exports.propertySchema = new Schema({
+    key: StringType,
+    value: StringType,
+    source: StringType,
+    valueFormat: StringType
+}, {_id: false});
 
-exports.idSchema = {source: StringType, id: StringType, version: StringType, _id: false};
+exports.idSchema = new Schema({source: StringType, id: StringType, version: StringType}, {_id: false});
 
 let requestSchema = {
     source: {tinyId: StringType, id: StringType},
@@ -322,26 +336,13 @@ exports.message = new Schema({
 
 exports.message.set('collection', 'messages');
 
-// let taskActor = {
-//     org: StringType,
-//     type: {type: StringType, enum: ['role']},
-//     typeId: StringType
-// };
-//
-// exports.task = new Schema({
-//     from: [taskActor],
-//     to: taskActor,
-//     type: {type: StringType, enum: ['approve']},
-//     typeInfo: commentApprovalSchema,
-// });
-
 exports.jobQueue = Schema({
     type: StringType,
     status: {type: StringType, enum: ["Running"]},
     error: StringType
 }, {usePushEach: true});
 
-exports.referenceDocumentSchema = {
+exports.referenceDocumentSchema = new Schema({
     docType: StringType,
     document: StringType,
     referenceDocumentId: StringType,
@@ -350,15 +351,14 @@ exports.referenceDocumentSchema = {
     providerOrg: StringType,
     title: StringType,
     languageCode: StringType,
-    source: StringType,
-    _id: false
-};
-exports.dataSetSchema = {
+    source: StringType
+}, {_id: false});
+exports.dataSetSchema = new Schema({
     source: StringType,
     id: StringType,
     studyUri: StringType,
     notes: StringType
-};
+}, {_id: false});
 exports.classificationAudit = new Schema({
     date: {type: Date, default: Date.now, index: true}, user: {
         username: StringType
@@ -378,11 +378,12 @@ exports.classificationAudit = new Schema({
 exports.classificationAudit.set('collection', 'classificationAudit');
 
 exports.trafficFilterSchema = new Schema({
-    ipList: [{
-        ip: String,
-        date: {type: Date, default: Date.now()},
-        reason: String,
-        strikes: {type: Number, default: 1},
-        _id: false
-    }]
+    ipList: [
+        new Schema({
+            ip: String,
+            date: {type: Date, default: Date.now()},
+            reason: String,
+            strikes: {type: Number, default: 1}
+        }, {_id: false})
+    ]
 }, {usePushEach: true});

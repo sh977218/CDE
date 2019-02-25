@@ -14,7 +14,7 @@ exports.name = "forms";
 
 let conn = connHelper.establishConnection(config.database.appData);
 
-schemas.formSchema.pre('save', function(next) {
+schemas.formSchema.pre('save', function (next) {
     let self = this;
     try {
         elastic.updateOrInsert(self);
@@ -27,9 +27,11 @@ schemas.formSchema.pre('save', function(next) {
 let Form = conn.model('Form', schemas.formSchema);
 let FormAudit = conn.model('FormAudit', schemas.auditSchema);
 let FormDraft = conn.model('Draft', schemas.draftSchema);
+let FormSource = conn.model('formsources', schemas.formSourceSchema);
 
 exports.Form = exports.dao = Form;
 exports.FormDraft = exports.daoDraft = FormDraft;
+exports.FormSource = FormSource;
 
 mongo_data.attachables.push(exports.Form);
 
@@ -257,4 +259,9 @@ exports.checkOwnership = function (req, id, cb) {
             return cb("You do not own this element.", null);
         cb(null, elt);
     });
+};
+
+
+exports.originalSourceByTinyIdSourceName = function (tinyId, sourceName, cb) {
+    FormSource.findOne({tinyId: tinyId, source: sourceName, elementType: 'form'}, cb);
 };
