@@ -60,8 +60,6 @@ doOneNindsCde = async cdeId => {
         let savedCDE = await newCde.save();
         createdCDE++;
         console.log('createdCDE: ' + createdCDE + ' ' + savedCDE.tinyId);
-        newCde.source = 'NINDS';
-        await new DataElementSource(newCde).save();
     } else {
         let existingCdeObj = existingCde.toObject();
         let otherClassifications = existingCdeObj.classification.filter(c => c.stewardOrg.name !== 'NINDS');
@@ -84,10 +82,9 @@ doOneNindsCde = async cdeId => {
             changeCDE++;
             console.log('changeCDE: ' + changeCDE + ' ' + existingCde.tinyId);
         }
-        existingCdeObj.source = 'NINDS';
-        let existingSource = await DataElementSource.findOne({tinyId: existingCdeObj.tinyId, source: 'NINDS'});
-        if (!existingSource) await new DataElementSource(existingCdeObj).save();
     }
+    newCde.source = 'NINDS';
+    await new DataElementSource(newCdeObj).save();
 };
 
 exports.parseFormElements = async nindsForms => {

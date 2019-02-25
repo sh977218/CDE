@@ -130,11 +130,12 @@ run = async () => {
         let existingSource = await FormSource.findOne({tinyId: form.tinyId, source: 'NINDS'});
         if (!existingSource) await new FormSource(form).save();
     }
-    let nullComments = await checkNullComments();
-    for (let nullComment of nullComments) {
-        console.log(nullComment.element.eltType + ' has null comment ' + nullComment._id);
-    }
-
+    /*
+        let nullComments = await checkNullComments();
+        for (let nullComment of nullComments) {
+            console.log(nullComment.element.eltType + ' has null comment ' + nullComment._id);
+        }
+    */
 };
 
 
