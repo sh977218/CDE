@@ -95,7 +95,8 @@ doOneNindsFormById = async formIdString => {
         }
         createdForm++;
         console.log('createdForm: ' + createdForm + ' ' + savedForm.tinyId);
-        return savedForm.toObject();
+        newFormObj.source = 'NINDS';
+        await new FormSource(newFormObj).save();
     } else {
         let existingFormObj = existingForm.toObject();
         let otherClassifications = existingFormObj.classification.filter(c => c.stewardOrg.name !== 'NINDS');
@@ -118,17 +119,13 @@ doOneNindsFormById = async formIdString => {
             changeForm++;
             console.log('changeForm: ' + changeForm + ' ' + existingForm.tinyId);
         }
-        return existingFormObj;
     }
 };
 
 run = async () => {
     let formIdList = await NindsModel.distinct('formId');
     for (let formId of formIdList) {
-        let form = await doOneNindsFormById(formId);
-        form.source = 'NINDS';
-        let existingSource = await FormSource.findOne({tinyId: form.tinyId, source: 'NINDS'});
-        if (!existingSource) await new FormSource(form).save();
+        await doOneNindsFormById(formId);
     }
     /*
         let nullComments = await checkNullComments();
