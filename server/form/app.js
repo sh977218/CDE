@@ -42,6 +42,7 @@ exports.init = function (app, daoManager) {
     app.get("/formForEditById/:id", exportShared.nocacheMiddleware, formSvc.forEditById);
 
     app.get("/formList/:tinyIdList?", exportShared.nocacheMiddleware, formSvc.byTinyIdList);
+    app.get('/originalSource/form/:sourceName/:tinyId', formSvc.originalSourceByTinyIdSourceName);
 
     const canEditItemByIdMiddleware = [authorization.isOrgCuratorMiddleware, (req, res, next) => {
         mongo_form.byTinyId(req.params.tinyId, handleError({req, res}, form => {

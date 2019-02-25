@@ -7,4 +7,6 @@ import { Component, Input } from '@angular/core';
 })
 export class SourcesComponent {
     @Input() elt: any;
+
+    allowSources = [];
 }

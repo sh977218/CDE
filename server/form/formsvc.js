@@ -457,3 +457,14 @@ exports.publishTheForm = (req, res) => {
         }));
     }));
 };
+
+exports.originalSourceByTinyIdSourceName = (req, res) => {
+    let tinyId = req.params.tinyId;
+    let sourceName = req.params.sourceName;
+    mongo_form.originalSourceByTinyIdSourceName(tinyId, sourceName,
+        handleError({req, res}, originalSource => {
+            if (originalSource) res.send(originalSource);
+            else res.status(404).send('No ' + sourceName + ' source file found for ' + tinyId);
+        })
+    )
+};
