@@ -209,6 +209,7 @@ export class DisplayProfileComponent {
 
     static sampleElt = {
         "_id": "",
+        "__v": 0,
         "archived": false,
         "attachments": [],
         "classification": [],

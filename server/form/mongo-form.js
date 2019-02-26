@@ -37,6 +37,11 @@ mongo_data.attachables.push(exports.Form);
 
 exports.elastic = elastic;
 
+// cb(err, elt)
+exports.byExisting = (elt, cb) => {
+    Form.findOne({_id: elt._id, tinyId: elt.tinyId}, cb);
+};
+
 exports.byId = function (id, cb) {
     Form.findById(id, cb);
 };
@@ -97,9 +102,25 @@ exports.draftFormById = function (id, cb) {
     FormDraft.findOne(cond, cb);
 };
 
-exports.saveDraftForm = function (elt, cb) {
-    delete elt.__v;
-    FormDraft.findOneAndUpdate({_id: elt._id}, elt, {upsert: true, new: true}, cb);
+// cb(err, newDoc)
+exports.saveDraft = function (elt, cb) {
+    FormDraft.findById(elt._id, (err, doc) => {
+        if (err) {
+            cb(err);
+            return;
+        }
+        if (!doc) {
+            new FormDraft(elt).save(cb);
+            return;
+        }
+        if (doc.__v !== elt.__v) {
+            cb();
+            return;
+        }
+        const version = elt.__v;
+        elt.__v++;
+        FormDraft.findOneAndUpdate({_id: elt._id, __v: version}, elt, {new: true}, cb);
+    });
 };
 
 exports.deleteDraftForm = function (tinyId, cb) {

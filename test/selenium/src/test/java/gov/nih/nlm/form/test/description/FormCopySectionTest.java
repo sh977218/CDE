@@ -16,8 +16,7 @@ public class FormCopySectionTest extends BaseFormTest {
         goToFormByName(form1);
         goToFormDescription();
         clickElement(By.xpath("//*[@id='section_1']//mat-icon[normalize-space() = 'content_copy']"));
-        ((JavascriptExecutor) driver).executeScript("window.open()");
-        hangon(5);
+        newTab();
         switchTabAndClose(1);
         goToFormByName(form2);
         goToFormDescription();

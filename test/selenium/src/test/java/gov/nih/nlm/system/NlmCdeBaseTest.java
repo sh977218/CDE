@@ -511,6 +511,11 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         textPresent(name, By.id("searchResult_0"));
     }
 
+    protected void newTab() {
+        ((JavascriptExecutor) driver).executeScript("window.open()");
+        hangon(5);
+    }
+
     protected void checkTooltipText(By by, String text) {
         try {
             hoverOverElement(findElement(by));
@@ -812,6 +817,11 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         clickElement(By.id("qb_elt_compare_0"));
         clickElement(By.id("qb_elt_compare_1"));
         clickElement(By.id("qb_compare"));
+    }
+
+    protected void refresh() {
+        driver.navigate().refresh();
+        hangon(2);
     }
 
     public void scrollToTop() {
