@@ -32,7 +32,7 @@ export class CdeClassificationComponent {
             '/server/classification/addCdeClassification/', err => {
                 this.classifyItemModalRef.close();
                 if (err) {
-                    this.alert.addAlert('danger', err);
+                    this.alert.addAlert('danger', "Unexpected error adding classification");
                 } else {
                     this.reloadElt(() => this.alert.addAlert('success', 'Classification added.'));
                 }
@@ -57,7 +57,7 @@ export class CdeClassificationComponent {
         this.classificationSvc.removeClassification(this.elt, event.deleteOrgName,
             event.deleteClassificationArray, '/server/classification/removeCdeClassification/', err => {
                 if (err) {
-                    this.alert.addAlert('danger', err);
+                    this.alert.addAlert('danger', "Unexpected error removing classification");
                 } else {
                     this.reloadElt(() => this.alert.addAlert('success', 'Classification removed.'));
                 }

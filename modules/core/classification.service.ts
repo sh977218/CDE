@@ -69,7 +69,7 @@ export class ClassificationService {
         };
         this.http.post('/server/classification/deleteOrgClassification/', ro, {responseType: 'text'}).subscribe(
             res => cb(res),
-            err => this.alert.addAlert('danger', err));
+            err => this.alert.addAlert('danger', "Unexpected error removing classification"));
     }
 
     reclassifyOrgClassification(oldClassification, newClassification, cb) {
@@ -81,7 +81,7 @@ export class ClassificationService {
         };
         this.http.post('/server/classification/reclassifyOrgClassification/', postBody, {responseType: 'text'}).subscribe(
             res => cb(res),
-            err => this.alert.addAlert('danger', err));
+            err => this.alert.addAlert('danger', "Unexpected error reclassifying"));
     }
 
     renameOrgClassification(newClassification, cb) {
@@ -92,7 +92,7 @@ export class ClassificationService {
         };
         this.http.post('/server/classification/renameOrgClassification', postBody, {responseType: 'text'}).subscribe(
             res => cb(res),
-            err => this.alert.addAlert('danger', err));
+            err => this.alert.addAlert('danger', "Unexpected error renaming classification"));
     }
 
     addChildClassification(newClassification, cb) {
@@ -101,6 +101,6 @@ export class ClassificationService {
         };
         this.http.put('/server/classification/addOrgClassification/', putBody, {responseType: 'text'}).subscribe(
             res => cb(res),
-            err => this.alert.addAlert('danger', err));
+            err => this.alert.addAlert('danger', "Unexpected error adding classification"));
     }
 }

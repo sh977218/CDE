@@ -86,7 +86,7 @@ export class CreateFormComponent implements OnInit {
     confirmDelete(event) {
         let steward = findSteward(this.elt, event.deleteOrgName);
         removeCategory(steward.object, event.deleteClassificationArray, err => {
-            if (err) this.alert.addAlert('danger', err);
+            if (err) this.alert.addAlert('danger', "Unexpected error removing classification");
             else this.alert.addAlert('success', 'Classification removed.');
         });
     }

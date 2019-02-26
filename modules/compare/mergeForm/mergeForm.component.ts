@@ -77,7 +77,7 @@ export class MergeFormComponent {
             this.numMergedQuestions = index;
             next();
         }, err => {
-            if (err) return this.alert.addAlert('danger', err);
+            if (err) return this.alert.addAlert('danger', "Unexpected error merging forms");
             else {
                 if (this.mergeFormService.error.ownSourceForm) {
                     this.left.changeNote = 'Merge to tinyId ' + this.right.tinyId;
