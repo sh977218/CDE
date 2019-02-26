@@ -1,5 +1,10 @@
 const Comment = require('../../server/discuss/discussDb').Comment;
 
+exports.removeWhite = function (text) {
+    if (!text) return '';
+    return text.replace(/\s+/g, ' ');
+};
+
 exports.wipeUseless = function (toWipeCde) {
     delete toWipeCde._id;
     delete toWipeCde.history;

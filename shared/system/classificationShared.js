@@ -167,6 +167,7 @@ export function fetchLevel(tree, fields) {
         subTree.elements.push({name: name, elements: []});
         return subTree.elements[subTree.elements.length - 1];
     }
+
     let tempTree = tree;
     for (let j = 0; j < fields.length - 1; j++) {
         if (tempTree) {
@@ -280,47 +281,24 @@ export function renameCategory(tree, fields, newName) {
 }
 
 export function sortClassification(item) {
-    function sortSubClassif(classif) {
-        if (classif.elements) {
-            classif.elements = classif.elements.sort((c1, c2) =>
-                c1.name.localeCompare(c2.name)
-            );
-        }
+    function sortElements(elements) {
+        elements.sort((c1, c2) => c1.name.localeCompare(c2.name));
+        elements.forEach(e => sortElements(e.elements));
     }
-    function doRecurse(classif) {
-        sortSubClassif(classif);
-        if (classif.elements) classif.elements.forEach(doRecurse);
-    }
-    item.classification = item.classification.sort((c1, c2) => c1.stewardOrg.name.localeCompare(c2.stewardOrg.name));
-    item.classification.forEach(doRecurse);
-    return item;
-}
 
-export function transferClassifications(source, destination) {
-    source.classification.forEach(stewardOrgSource => {
-        let st = findSteward(destination, stewardOrgSource.stewardOrg.name);
-        let stewardOrgDestination;
-        if (st) {
-            stewardOrgDestination = st.object;
-        } else {
-            destination.classification.push({stewardOrg: {name: stewardOrgSource.stewardOrg.name}, elements: []});
-            stewardOrgDestination = destination.classification[destination.classification.length - 1];
-        }
-        stewardOrgDestination.name = stewardOrgDestination.stewardOrg.name;
-        treeChildren(stewardOrgSource, [], path => {
-            addCategory(stewardOrgDestination, path);
-        });
-    });
+    item.classification.sort((c1, c2) => c1.stewardOrg.name.localeCompare(c2.stewardOrg.name));
+    item.classification.forEach(c => sortElements(c.elements));
+    return item;
 }
 
 export function treeChildren(tree, path, cb) {
     tree.elements.forEach(function (element) {
-        let newpath = path.slice(0);
-        newpath.push(element.name);
+        let newPath = path.slice(0);
+        newPath.push(element.name);
         if (element.elements && element.elements.length > 0) {
-            treeChildren(element, newpath, cb);
+            treeChildren(element, newPath, cb);
         } else {
-            cb(newpath);
+            cb(newPath);
         }
     });
 }

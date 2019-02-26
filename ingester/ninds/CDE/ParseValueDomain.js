@@ -44,6 +44,7 @@ exports.parseValueDomain = nindsForms => {
     });
 
     let valueDomain = {
+        uom: "",
         permissibleValues: []
     };
 
