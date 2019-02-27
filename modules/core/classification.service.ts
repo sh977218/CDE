@@ -3,12 +3,9 @@ import { Injectable } from '@angular/core';
 import { LocalStorageService } from 'angular-2-local-storage';
 import _isEqual from 'lodash/isEqual';
 import _uniqWith from 'lodash/uniqWith';
-
 import { AlertService } from 'alert/alert.service';
 import { ElasticService } from '_app/elastic.service';
 import { SearchSettingsElastic } from 'search/search.model';
-import { httpErrorMessage } from 'core/angularHelper';
-
 
 @Injectable()
 export class ClassificationService {
@@ -49,7 +46,7 @@ export class ClassificationService {
             () => {
                 this.updateClassificationLocalStorage(postBody);
                 cb();
-            }, err => cb(httpErrorMessage(err)));
+            }, cb);
     }
 
     removeClassification(elt, org, classifArray, endPoint, cb) {
@@ -58,7 +55,7 @@ export class ClassificationService {
             eltId: elt._id,
             orgName: org
         };
-        this.http.post(endPoint, deleteBody).subscribe(res => cb(), err => cb(err));
+        this.http.post(endPoint, deleteBody).subscribe(() => cb(), cb);
     }
 
     removeOrgClassification(deleteClassification, cb) {
@@ -69,7 +66,7 @@ export class ClassificationService {
         };
         this.http.post('/server/classification/deleteOrgClassification/', ro, {responseType: 'text'}).subscribe(
             res => cb(res),
-            err => this.alert.addAlert('danger', "Unexpected error removing classification"));
+            () => this.alert.addAlert('danger', "Unexpected error removing classification"));
     }
 
     reclassifyOrgClassification(oldClassification, newClassification, cb) {
@@ -81,7 +78,7 @@ export class ClassificationService {
         };
         this.http.post('/server/classification/reclassifyOrgClassification/', postBody, {responseType: 'text'}).subscribe(
             res => cb(res),
-            err => this.alert.addAlert('danger', "Unexpected error reclassifying"));
+            () => this.alert.addAlert('danger', "Unexpected error reclassifying"));
     }
 
     renameOrgClassification(newClassification, cb) {
@@ -92,7 +89,7 @@ export class ClassificationService {
         };
         this.http.post('/server/classification/renameOrgClassification', postBody, {responseType: 'text'}).subscribe(
             res => cb(res),
-            err => this.alert.addAlert('danger', "Unexpected error renaming classification"));
+            () => this.alert.addAlert('danger', "Unexpected error renaming classification"));
     }
 
     addChildClassification(newClassification, cb) {
@@ -101,6 +98,6 @@ export class ClassificationService {
         };
         this.http.put('/server/classification/addOrgClassification/', putBody, {responseType: 'text'}).subscribe(
             res => cb(res),
-            err => this.alert.addAlert('danger', "Unexpected error adding classification"));
+            () => this.alert.addAlert('danger', "Unexpected error adding classification"));
     }
 }
