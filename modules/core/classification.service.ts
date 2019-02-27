@@ -98,6 +98,9 @@ export class ClassificationService {
         };
         this.http.put('/server/classification/addOrgClassification/', putBody, {responseType: 'text'}).subscribe(
             res => cb(res),
-            () => this.alert.addAlert('danger', "Unexpected error adding classification"));
+            (err) => {
+                if (err.status === '409') this.alert.addAlert('danger', "Classification Already Exists");
+                this.alert.addAlert('danger', "Unexpected error adding classification: " + err.status);
+            });
     }
 }
