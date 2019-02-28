@@ -32,7 +32,7 @@ export class CdeClassificationComponent {
             '/server/classification/addCdeClassification/', err => {
                 this.classifyItemModalRef.close();
                 if (err) {
-                    if (err.status === '409') this.alert.addAlert('danger', "Classification Already Exists");
+                    if (err.status === 409) this.alert.addAlert('danger', "Classification Already Exists");
                     else this.alert.addAlert('danger', "Unexpected error adding classification");
                 } else {
                     this.reloadElt(() => this.alert.addAlert('success', 'Classification added.'));
