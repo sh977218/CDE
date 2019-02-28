@@ -200,6 +200,7 @@ export interface ElasticQueryResponseHit {
 }
 
 export abstract class Elt {
+    __v!: number;
     _id!: ObjectId;
     archived: boolean = false;
     attachments: Attachment[] = [];

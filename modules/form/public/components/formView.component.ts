@@ -62,7 +62,6 @@ export class FormViewComponent implements OnInit {
     draftSubscription: Subscription;
     elt: CdeForm;
     eltCopy?: CdeForm;
-    formId?: ObjectId;
     formInput;
     hasComments;
     hasDrafts = false;
@@ -72,6 +71,7 @@ export class FormViewComponent implements OnInit {
     missingCdes: string[] = [];
     savingText: string = '';
     tabsCommented: string[] = [];
+    unsaved = false;
     validationErrors: { message: string, id: string }[] = [];
 
     ngOnInit() {
@@ -175,7 +175,6 @@ export class FormViewComponent implements OnInit {
             this.title.setTitle('Form: ' + Elt.getLabel(this.elt));
             this.validate();
             this.loadComments(this.elt);
-            this.formId = this.elt._id;
             this.missingCdes = areDerivationRulesSatisfied(this.elt);
             addFormIds(this.elt);
             cb();
@@ -282,30 +281,31 @@ export class FormViewComponent implements OnInit {
     }
 
     saveDraft() {
-        let username = this.userService.user.username;
-        this.elt._id = this.formId;
-        if (!this.elt.createdBy) {
-            this.elt.createdBy = {userId: undefined, username: username};
-        }
-        this.elt.updated = new Date();
-        if (!this.elt.updatedBy) {
-            this.elt.updatedBy = {userId: undefined, username: username};
-        }
-        this.elt.updatedBy.username = username;
-
         this.elt.isDraft = true;
         this.hasDrafts = true;
         this.savingText = 'Saving ...';
-        if (this.draftSubscription) this.draftSubscription.unsubscribe();
-        this.draftSubscription = this.http.post<CdeForm>('/draftForm/' + this.elt.tinyId, this.elt).subscribe(() => {
+        if (this.draftSubscription) {
+            this.unsaved = true;
+            return;
+        }
+        this.draftSubscription = this.http.put<CdeForm>('/draftForm/' + this.elt.tinyId, this.elt).subscribe(newElt => {
             this.draftSubscription = undefined;
+            this.elt.__v = newElt.__v;
+            this.missingCdes = areDerivationRulesSatisfied(this.elt);
+            this.validate();
+            if (this.unsaved) {
+                this.unsaved = false;
+                this.saveDraft();
+            }
             this.savingText = 'Saved';
             setTimeout(() => {
                 this.savingText = '';
             }, 3000);
-            this.missingCdes = areDerivationRulesSatisfied(this.elt);
-            this.validate();
-        }, err => this.alert.httpErrorMessageAlert(err));
+        }, err => {
+            this.draftSubscription = undefined;
+            this.savingText = 'Cannot save this old version. Reload and redo.';
+            this.alert.httpErrorMessageAlert(err);
+        });
     }
 
     saveForm() {
@@ -318,7 +318,7 @@ export class FormViewComponent implements OnInit {
             async_forEach(newCdes, (newCde, doneOneCde) => {
                 this.createDataElement(newCde, doneOneCde);
             }, () => {
-                this.http.put('/formPublish/' + this.elt.tinyId, this.elt).subscribe(res => {
+                this.http.put('/formPublish', this.elt).subscribe(res => {
                     if (res) {
                         this.hasDrafts = false;
                         this.loadElt(() => this.alert.addAlert('success', 'Form saved.'));
