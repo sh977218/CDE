@@ -55,6 +55,11 @@ exports.User = User;
 
 mongo_data.attachables.push(exports.DataElement);
 
+// cb(err, elt)
+exports.byExisting = (elt, cb) => {
+    DataElement.findOne({_id: elt._id, tinyId: elt.tinyId}, cb);
+};
+
 exports.byId = function (id, cb) {
     DataElement.findOne({'_id': id}, cb);
 };
@@ -106,9 +111,24 @@ exports.draftDataElementById = function (id, cb) {
     };
     DataElementDraft.findOne(cond, cb);
 };
-exports.saveDraftDataElement = function (elt, cb) {
-    delete elt.__v;
-    DataElementDraft.findOneAndUpdate({_id: elt._id}, elt, {upsert: true, new: true}, cb);
+exports.saveDraft = function (elt, cb) {
+    DataElementDraft.findById(elt._id, (err, doc) => {
+        if (err) {
+            cb(err);
+            return;
+        }
+        if (!doc) {
+            new DataElementDraft(elt).save(cb);
+            return;
+        }
+        if (doc.__v !== elt.__v) {
+            cb();
+            return;
+        }
+        const version = elt.__v;
+        elt.__v++;
+        DataElementDraft.findOneAndUpdate({_id: elt._id, __v: version}, elt, {new: true}, cb);
+    });
 };
 
 exports.deleteDraftDataElement = function (tinyId, cb) {

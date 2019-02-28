@@ -25,7 +25,7 @@ public class BaseFormTest extends NlmCdeBaseTest {
     }
 
     public void addSectionBottom(String title, String repeat) {
-        hangon(2);
+        hangon(1);
         String searchString;
         if (driver.findElements(By.xpath("//tree-viewport/div/div/tree-node-drop-slot")).size() > 0)
             searchString = "//tree-viewport/div/div/tree-node-drop-slot/*[@class='node-drop-slot']";
@@ -38,8 +38,7 @@ public class BaseFormTest extends NlmCdeBaseTest {
 
     public void addSection(String title, String repeat, Integer sectionNumber) {
         String sectionId = "section_" + sectionNumber;
-
-        hangon(2);
+        hangon(1);
 
         // drag and drop selenium is buggy, try 5 times.
         for (int i = 0; i < 5; i++) {

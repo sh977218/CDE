@@ -1,5 +1,4 @@
 const authorization = require('../system/authorization');
-const authorizationShared = require('esm')(module)("../../shared/system/authorizationShared");
 const cdesvc = require('./cdesvc');
 const mongo_cde = require('./mongo-cde');
 const vsac = require('./vsac-io');
@@ -11,37 +10,32 @@ const elastic_system = require('../system/elastic');
 const exportShared = require('esm')(module)('../../shared/system/exportShared');
 const handleError = require('../log/dbLogger').handleError;
 
+const canCreateMiddleware = authorization.canCreateMiddleware;
+const canEditMiddleware = authorization.canEditMiddleware(mongo_cde);
+const canEditByIdMiddleware = authorization.canEditByIdMiddleware(mongo_cde);
+
 exports.init = function (app, daoManager) {
     daoManager.registerDao(mongo_cde);
 
-    app.get("/de/:tinyId", exportShared.nocacheMiddleware, cdesvc.byTinyId);
-    app.get("/de/:tinyId/latestVersion/", exportShared.nocacheMiddleware, cdesvc.latestVersionByTinyId);
-    app.get("/de/:tinyId/version/:version?", exportShared.nocacheMiddleware, cdesvc.byTinyIdAndVersion);
-    app.post("/de", authorization.canEditMiddleware, cdesvc.createDataElement);
-    app.put("/de/:tinyId", authorization.canEditMiddleware, cdesvc.updateDataElement);
-    app.put("/dePublish/:tinyId", authorization.canEditMiddleware, cdesvc.publishDataElement);
+    app.get('/de/:tinyId', exportShared.nocacheMiddleware, cdesvc.byTinyId);
+    app.get('/de/:tinyId/latestVersion/', exportShared.nocacheMiddleware, cdesvc.latestVersionByTinyId);
+    app.get('/de/:tinyId/version/:version?', exportShared.nocacheMiddleware, cdesvc.byTinyIdAndVersion);
+    app.post('/de', canCreateMiddleware, cdesvc.createDataElement);
+    app.put('/de/:tinyId', canEditMiddleware, cdesvc.updateDataElement);
+    app.put('/dePublish', canEditMiddleware, cdesvc.publishDataElement);
 
-    app.get("/deById/:id", exportShared.nocacheMiddleware, cdesvc.byId);
-    app.get("/deById/:id/priorDataElements/", exportShared.nocacheMiddleware, cdesvc.priorDataElements);
+    app.get('/deById/:id', exportShared.nocacheMiddleware, cdesvc.byId);
+    app.get('/deById/:id/priorDataElements/', exportShared.nocacheMiddleware, cdesvc.priorDataElements);
 
-    app.get("/deList/:tinyIdList?", exportShared.nocacheMiddleware, cdesvc.byTinyIdList);
+    app.get('/deList/:tinyIdList?', exportShared.nocacheMiddleware, cdesvc.byTinyIdList);
 
     app.get('/originalSource/cde/:sourceName/:tinyId', cdesvc.originalSourceByTinyIdSourceName);
 
-    const canEditItemByIdMiddleware = [authorization.isOrgCuratorMiddleware, (req, res, next) => {
-        mongo_cde.byTinyId(req.params.tinyId, handleError({req, res}, dataElement => {
-            if (!authorizationShared.canEditCuratedItem(req.user, dataElement)) {
-                return res.status(403).send();
-            }
-            next();
-        }));
-    }];
+    app.get('/draftDataElement/:tinyId', cdesvc.draftDataElement);
+    app.put('/draftDataElement/:tinyId', canEditMiddleware, cdesvc.saveDraft);
+    app.delete('/draftDataElement/:tinyId', canEditByIdMiddleware, cdesvc.deleteDraftDataElement);
 
-    app.get("/draftDataElement/:tinyId", cdesvc.draftDataElement);
-    app.post("/draftDataElement/:tinyId", authorization.canEditMiddleware, cdesvc.saveDraftDataElement);
-    app.delete("/draftDataElement/:tinyId", canEditItemByIdMiddleware, cdesvc.deleteDraftDataElement);
-
-    app.get("/draftDataElementById/:id", cdesvc.draftDataElementById);
+    app.get('/draftDataElementById/:id', cdesvc.draftDataElementById);
 
     app.get('/vsacBridge/:vsacId', exportShared.nocacheMiddleware, cdesvc.vsacId);
 
@@ -55,7 +49,7 @@ exports.init = function (app, daoManager) {
 
     app.post('/elasticSearch/cde', (req, res) => {
         elastic.elasticsearch(req.user, req.body, function (err, result) {
-            if (err) return res.status(400).send("invalid query");
+            if (err) return res.status(400).send('invalid query');
             cdesvc.hideProprietaryCodes(result.cdes, req.user);
             res.send(result);
         });
@@ -72,7 +66,7 @@ exports.init = function (app, daoManager) {
         });
     });
 
-    app.get("/cde/derivationOutputs/:inputCdeTinyId", (req, res) => {
+    app.get('/cde/derivationOutputs/:inputCdeTinyId', (req, res) => {
         mongo_cde.derivationOutputs(req.params.inputCdeTinyId, handleError({req, res}, cdes => {
             res.send(cdes);
         }));
@@ -103,14 +97,14 @@ exports.init = function (app, daoManager) {
     // from others to UMLS
     app.get('/umlsCuiFromSrc/:id/:src', (req, res) => {
         if (!config.umls.sourceOptions[req.params.src])
-            return res.send("Source cannot be looked up, use UTS Instead.");
+            return res.send('Source cannot be looked up, use UTS Instead.');
         vsac.umlsCuiFromSrc(req.params.id, req.params.src, res);
     });
 
     // from UMLS to others
     app.get('/umlsAtomsBridge/:id/:src', (req, res) => {
         if (!config.umls.sourceOptions[req.params.src])
-            return res.send("Source cannot be looked up, use UTS Instead.");
+            return res.send('Source cannot be looked up, use UTS Instead.');
         if (config.umls.sourceOptions[req.params.src].requiresLogin && !req.user)
             return res.status(403).send();
         vsac.getAtomsFromUMLS(req.params.id, req.params.src, res);
@@ -159,11 +153,11 @@ exports.init = function (app, daoManager) {
                     elastic_system.elasticSearchExport((err, elt) => {
                         if (err) {
                             if (!typeSent) res.status(403);
-                            return res.send("ERROR with es search export");
+                            return res.send('ERROR with es search export');
                         }
                         if (!typeSent) {
                             res.type('application/json');
-                            res.write("[");
+                            res.write('[');
                             typeSent = true;
                         }
                         if (elt) {
@@ -173,7 +167,7 @@ exports.init = function (app, daoManager) {
                             res.write(JSON.stringify(elt));
                             firstElt = false;
                         } else {
-                            res.write("]");
+                            res.write(']');
                             res.send();
                         }
                     }, query, 'cde');
@@ -195,14 +189,14 @@ exports.init = function (app, daoManager) {
         let dstring = req.query.from;
 
         function badDate() {
-            res.status(300).send("Invalid date format, please provide as: /api/cde/modifiedElements?from=2015-12-24");
+            res.status(300).send('Invalid date format, please provide as: /api/cde/modifiedElements?from=2015-12-24');
         }
 
         if (!dstring) return badDate();
         if (dstring[4] !== '-' || dstring[7] !== '-') return badDate();
         if (dstring.indexOf('20') !== 0) return badDate();
-        if (dstring[5] !== "0" && dstring[5] !== "1") return badDate();
-        if (dstring[8] !== "0" && dstring[8] !== "1" && dstring[8] !== "2" && dstring[8] !== "3") return badDate();
+        if (dstring[5] !== '0' && dstring[5] !== '1') return badDate();
+        if (dstring[8] !== '0' && dstring[8] !== '1' && dstring[8] !== '2' && dstring[8] !== '3') return badDate();
 
         let date = new Date(dstring);
         mongo_cde.findModifiedElementsSince(date, function (err, elts) {

@@ -13,6 +13,7 @@ let expectedContent = {
     checkDuplicatesClassification: 'the server responded with a status of 409',
     embedNinds: '*',
     emptyAnswers: 'the server responded with a status of 500',
+    formDraftConcurrentWrite: 'Failed to load resource: the server responded with a status of 409 (Conflict)',
     formFiveUnapprovedMessagesPerUserComment: 'Failed to load resource: the server responded with a status of 403 (Forbidden)',
     formOneUnapprovedReplyPerUser: 'Failed to load resource: the server responded with a status of 403 (Forbidden)',
     formTinyIdSwaggerApi: 'docs/swagger-ui-bundle.js 51:49866 "Could not find component"',
