@@ -1,4 +1,6 @@
 const authorizationShared = require('esm')(module)('../../shared/system/authorizationShared');
+const dbLogger = require('../log/dbLogger');
+const handle404 = dbLogger.handle404;
 
 // --------------------------------------------------
 // Middleware
@@ -14,7 +16,7 @@ exports.nocacheMiddleware = function (req, res, next) {
     next();
 };
 
-exports.canEditMiddleware = function (req, res, next) {
+exports.canCreateMiddleware = (req, res, next) => {
     exports.loggedInMiddleware(req, res, () => {
         if (!authorizationShared.canEditCuratedItem(req.user, req.body)) {
             // TODO: consider ban
@@ -22,6 +24,32 @@ exports.canEditMiddleware = function (req, res, next) {
             return;
         }
         next();
+    });
+};
+
+exports.canEditMiddleware = db => (req, res, next) => {
+    exports.loggedInMiddleware(req, res, () => {
+        db.byExisting(req.body, handle404({req, res}, item => {
+            if (!authorizationShared.canEditCuratedItem(req.user, item)) {
+                // TODO: consider ban
+                res.status(403).send();
+                return;
+            }
+            req.item = item;
+            next();
+        }));
+    });
+};
+
+exports.canEditByIdMiddleware = db => (req, res, next) => {
+    exports.isOrgCuratorMiddleware(req, res, () => {
+        db.byTinyId(req.params.tinyId, handle404({req, res}, item => {
+            if (!authorizationShared.canEditCuratedItem(req.user, item)) {
+                return res.status(403).send();
+            }
+            req.item = item;
+            next();
+        }));
     });
 };
 
