@@ -6,7 +6,6 @@ const DataElementSource = mongo_cde.DataElementSource;
 
 const classificationShared = require('esm')(module)('../shared/system/classificationShared');
 
-
 DataElement.find({}, async (err, cdes) => {
     if (err) {
         console.log(err);
