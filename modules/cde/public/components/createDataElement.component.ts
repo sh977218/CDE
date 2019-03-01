@@ -71,7 +71,7 @@ export class CreateDataElementComponent implements OnInit {
         let eltCopy = _cloneDeep(this.elt);
         let steward = findSteward(eltCopy, event.deleteOrgName);
         removeCategory(steward.object, event.deleteClassificationArray, err => {
-            if (err) this.alert.addAlert('danger', err);
+            if (err) this.alert.addAlert('danger', "Unexpected error removing classification");
             else {
                 for (let i = eltCopy.classification.length - 1; i >= 0; i--) {
                     if (eltCopy.classification[i].elements.length === 0) {
@@ -89,7 +89,7 @@ export class CreateDataElementComponent implements OnInit {
             .subscribe(res => {
                 this.close.emit();
                 this.router.navigate(['/deView'], {queryParams: {tinyId: res.tinyId}});
-            }, err => this.alert.addAlert('danger', err));
+            }, err => this.alert.addAlert('danger', "Unexpected error creating CDE"));
     }
 
     openClassifyItemModal() {

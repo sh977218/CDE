@@ -398,7 +398,7 @@ exports.init = function (app) {
                 index.totalCount = 0;
             }, 5000);
         });
-        return res.send('Re-index request sent.');
+        return res.send();
     });
 
 

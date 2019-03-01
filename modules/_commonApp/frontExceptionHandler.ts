@@ -14,6 +14,11 @@ export class FrontExceptionHandler implements ErrorHandler {
         if (this.previousException && error.toString() === this.previousException.toString()) return;
         this.previousException = error;
         console.error(error);
+        if (typeof error.message === "object") {
+            try {
+                error.message = JSON.stringify(error.message).substr(0, 500);
+            } catch (e) {}
+        }
         try {
             if (!this.lock) {
                 this.lock = true;

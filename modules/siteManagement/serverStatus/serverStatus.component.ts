@@ -72,7 +72,7 @@ export class ServerStatusComponent {
                     this.Alert.addAlert('success', 'Done syncing');
                     this.meshSyncs = null;
                 }
-            }, err => this.Alert.addAlert('danger', err));
+            }, err => this.Alert.addAlert('danger', "Unexpected error syncing"));
         }, 1000);
     }
 }
