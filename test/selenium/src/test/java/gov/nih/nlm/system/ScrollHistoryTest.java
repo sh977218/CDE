@@ -8,12 +8,10 @@ import org.testng.annotations.Test;
 public class ScrollHistoryTest extends NlmCdeBaseTest {
 
     private void checkScroll(int value) {
-        hangon(4);
         String scrollLocation = (((JavascriptExecutor) driver)
                 .executeScript("return window.pageYOffset", "")).toString();
         if (Math.abs(Double.valueOf(scrollLocation).intValue() - value) > 10)
             Assert.fail("Assert failed. Expected: " + value + " Actual value: " + scrollLocation);
-        hangon(4);
     }
 
     @Test
@@ -42,16 +40,19 @@ public class ScrollHistoryTest extends NlmCdeBaseTest {
         hangon(1);
         int painOffset = getCurrentYOffset();
         driver.navigate().refresh();
+        findElement(By.id("linkToElt_0"));
         checkScroll(painOffset);
 
         driver.navigate().back();
         driver.navigate().back();
         driver.navigate().back();
+        findElement(By.id("linkToElt_0"));
         checkScroll(patientOffset);
 
         driver.navigate().back();
         driver.navigate().back();
         driver.navigate().back();
+        findElement(By.id("linkToElt_0"));
         checkScroll(appleOffset);
     }
 }
