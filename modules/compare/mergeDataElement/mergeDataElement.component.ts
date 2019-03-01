@@ -71,7 +71,7 @@ export class MergeDataElementComponent {
         let tinyIdFrom = this.source.tinyId;
         let tinyIdTo = this.destination.tinyId;
         this.mergeCdeService.doMerge(tinyIdFrom, tinyIdTo, this.mergeFields, (err, results) => {
-            if (err) return this.alert.addAlert('danger', err);
+            if (err) return this.alert.addAlert('danger', "Unexpected error merging CDEs");
             else {
                 this.alert.addAlert('success', 'Finished merging');
                 this.doneMerge.emit({left: results[0], right: results[1]});
