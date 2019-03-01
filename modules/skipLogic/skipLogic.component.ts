@@ -54,7 +54,7 @@ export class SkipLogicComponent {
     tokensToSkipLogic(tokens) {
         let skipLogic = '';
         tokens.forEach((t, i) => {
-            if (t.label && t.operator && t.answer) {
+            if (t.label && t.operator) {
                 skipLogic += '"' + t.label + '" ' + t.operator + ' "' + t.answer + '"';
                 if (i < tokens.length - 1) skipLogic += " " + t.logic + " ";
             }

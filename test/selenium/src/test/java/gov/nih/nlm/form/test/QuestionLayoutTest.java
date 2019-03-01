@@ -14,7 +14,7 @@ public class QuestionLayoutTest extends QuestionTest {
         String sec2 = "second section";
 
         goToFormDescription();
-        addSectionTop(sec1, null);
+        addSectionTop(sec1);
         addSectionBottom(sec2, null);
 
         addQuestionDialog(0);

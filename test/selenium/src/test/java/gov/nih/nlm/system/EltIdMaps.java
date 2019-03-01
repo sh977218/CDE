@@ -92,6 +92,7 @@ public class EltIdMaps {
         eltMap.put("Acute Admission/Discharge", "XkS5WJHrtg");
         eltMap.put("ALS Depression Inventory (ADI-12)", "QJW5Z1BrYl");
         eltMap.put("Antithrombotics and Risk Factor Controlling Medications", "XJfnZyHrYg");
+        eltMap.put("Behavioral History", "mJCZyrSte");
         eltMap.put("Body Mass Index", "XyZ43DXGU");
         eltMap.put("Brain Motor Control Assessment", "XJJzyBSKe");
         eltMap.put("DNA Elements - Information from the Laboratory", "X1x4z1BrYx");
