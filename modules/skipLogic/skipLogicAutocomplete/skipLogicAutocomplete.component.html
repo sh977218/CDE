@@ -11,7 +11,7 @@
                     </select>
                 </mat-form-field>
                 <mat-form-field class="col-4" [ngClass]="i === 0?'offset-2':''">
-                    <select matNativeControl formControlName="label" placeholder="Label"
+                    <select matNativeControl formControlName="label" placeholder="Question Label"
                             [id]="'skipLogicLabelSelection_'+i" required>
                         <option *ngFor="let labelOption of labelOptions"
                                 [value]="labelOption">
@@ -29,26 +29,26 @@
                 <ng-container [ngSwitch]="item.value?.selectedQuestion?.question?.datatype">
                     <ng-container *ngSwitchDefault>
                         <mat-form-field class="col-3">
-                            <input matInput type="Text" autocomplete="false" placeholder="Choose a Text"
-                                   [id]="'skipLogicAnswer_'+i" formControlName="answer" required>
+                            <input matInput type="Text" autocomplete="false" placeholder="Text Answer"
+                                   [id]="'skipLogicAnswer_'+i" formControlName="answer">
                         </mat-form-field>
                     </ng-container>
                     <ng-container *ngSwitchCase="'Number'">
                         <mat-form-field class="col-3">
-                            <input matInput type="number" autocomplete="false" placeholder="Choose a Number"
-                                   [id]="'skipLogicAnswer_'+i" formControlName="answer" required>
+                            <input matInput type="number" autocomplete="false" placeholder="Number Value"
+                                   [id]="'skipLogicAnswer_'+i" formControlName="answer">
                         </mat-form-field>
                     </ng-container>
                     <ng-container *ngSwitchCase="'Date'">
                         <mat-form-field class="col-3">
-                            <input matInput type="date" autocomplete="false" placeholder="Choose a Date"
-                                   [id]="'skipLogicAnswer_'+i" formControlName="answer" required>
+                            <input matInput type="date" autocomplete="false" placeholder="Date"
+                                   [id]="'skipLogicAnswer_'+i" formControlName="answer">
                         </mat-form-field>
                     </ng-container>
                     <ng-container *ngSwitchCase="'Value List'">
                         <mat-form-field class="col-3">
-                            <select matNativeControl formControlName="answer" placeholder="Choose a Answer"
-                                    [id]="'skipLogicAnswerSelection_'+i" required>
+                            <select matNativeControl formControlName="answer" placeholder="Answer"
+                                    [id]="'skipLogicAnswerSelection_'+i">
                                 <option *ngFor="let ans of item.value?.selectedQuestion?.question?.answers"
                                         [value]="ans.permissibleValue">{{ans.permissibleValue}}</option>
                             </select>
@@ -58,7 +58,7 @@
                 <mat-icon (click)="items.removeAt(i)" [id]="'skipLogicDelete_'+i" style="vertical-align: middle">delete</mat-icon>
             </ng-container>
         </ng-container>
-        <button mat-raised-button (click)="addToken();" id="addNewSkipLogicButton">
+        <button mat-raised-button (click)="addToken()" id="addNewSkipLogicButton">
             <mat-icon>add</mat-icon>
             Add Condition
         </button>
@@ -66,7 +66,7 @@
     <div mat-dialog-actions>
         <button mat-raised-button id="cancelNewSkipLogicButton" color="warn" [mat-dialog-close]>Cancel</button>
         <button mat-raised-button id="saveNewSkipLogicButton" color="primary"
-                [mat-dialog-close]="(skipLogicForm.getRawValue()).items" [disabled]="skipLogicForm.invalid">Save
+                [mat-dialog-close]="skipLogicForm.getRawValue().items" [disabled]="skipLogicForm.invalid">Save
         </button>
     </div>
 </form>

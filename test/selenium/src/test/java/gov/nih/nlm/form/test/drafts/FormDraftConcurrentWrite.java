@@ -21,7 +21,7 @@ public class FormDraftConcurrentWrite extends BaseFormTest {
         String change1 = "Section Top";
         String change2 = "Section Bottom";
         switchTab(0);
-        addSectionTop(change1, null);
+        addSectionTop(change1);
         switchTab(1);
         addSectionBottom(change2, null);
         textPresent("Cannot save this old version. Reload and redo.");
