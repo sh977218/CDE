@@ -12,7 +12,7 @@ let formCounter = 0;
 let URL_PREFIX = 'https://www.commondataelements.ninds.nih.gov/';
 let DEFAULT_XPATH = "//*[@id='Data_Standards']/a/following-sibling::table/tbody/tr//td";
 
-const DISEASE_MAP = [/*
+const DISEASE_MAP = [
     {
         name: 'General (For all diseases)',
         url: URL_PREFIX + 'General.aspx',
@@ -166,7 +166,7 @@ const DISEASE_MAP = [/*
         xpath: DEFAULT_XPATH,
         count: 130,
         domainCount: 8
-    },*/
+    },
     {
         name: 'Traumatic Brain Injury',
         url: URL_PREFIX + 'TBI.aspx',
