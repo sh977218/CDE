@@ -694,14 +694,14 @@ exports.elasticSearchExport = function (dataCb, query, type) {
         }
     }
 
-    esClient.search(search, function (err, response) {
+    esClient.search(search, (err, response) => {
         if (err) {
             lock = false;
             logging.errorLogger.error("Error: Elastic Search Scroll Query Error",
                 {
                     origin: "system.elastic.elasticsearch",
                     stack: new Error().stack,
-                    details: ", query: " + query
+                    details: query
                 });
             dataCb("ES Error");
         } else {

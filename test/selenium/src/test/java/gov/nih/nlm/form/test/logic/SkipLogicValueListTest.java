@@ -47,7 +47,7 @@ public class SkipLogicValueListTest extends BaseFormTest {
 
         goToFormDescription();
         startEditQuestionById(questionId);
-        addSkipLogicById(questionId, "Adrenal Gland Received", "=", "Fresh", "value list", null);
+        addSkipLogicById(questionId, "Adrenal Gland Received", "=", "Fresh", "value list");
         saveEditQuestionById(questionId);
 
         goToPreview();

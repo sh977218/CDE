@@ -47,7 +47,7 @@ public class SkipLogicDateTest extends BaseFormTest {
 
         goToFormDescription();
         startEditQuestionById(questionId);
-        addSkipLogicById(questionId, "Axillary Surgery Dissection Date", "<", "02/05/2019", "date", null);
+        addSkipLogicById(questionId, "Axillary Surgery Dissection Date", "<", "02/05/2019", "date");
         saveEditQuestionById(questionId);
 
         goToPreview();

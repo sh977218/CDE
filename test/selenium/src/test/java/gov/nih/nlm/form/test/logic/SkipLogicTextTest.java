@@ -47,7 +47,7 @@ public class SkipLogicTextTest extends BaseFormTest {
 
         goToFormDescription();
         startEditQuestionById(questionId);
-        addSkipLogicById(questionId, "AIS grade", "=", "show question 4", "text", null);
+        addSkipLogicById(questionId, "AIS grade", "=", "show question 4", "text");
         saveEditQuestionById(questionId);
 
         goToPreview();

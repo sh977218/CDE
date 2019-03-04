@@ -18,6 +18,7 @@ const userAgent = require('useragent');
 
 exports.LogErrorModel = LogErrorModel;
 exports.ClientErrorModel = ClientErrorModel;
+exports.StoredQueryModel = StoredQueryModel;
 
 exports.consoleLog = function (message, level) { // no express errors see dbLogger.log(message)
     new consoleLogModel({message: message, level: level}).save(err => {

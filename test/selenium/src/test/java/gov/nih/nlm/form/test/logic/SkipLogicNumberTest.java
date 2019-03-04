@@ -47,7 +47,7 @@ public class SkipLogicNumberTest extends BaseFormTest {
 
         goToFormDescription();
         startEditQuestionById(questionId);
-        addSkipLogicById(questionId, "Additional Dimension", "<", "3", "number", null);
+        addSkipLogicById(questionId, "Additional Dimension", "<", "3", "number");
         saveEditQuestionById(questionId);
 
         goToPreview();
