@@ -12,7 +12,7 @@ let formCounter = 0;
 let URL_PREFIX = 'https://www.commondataelements.ninds.nih.gov/';
 let DEFAULT_XPATH = "//*[@id='Data_Standards']/a/following-sibling::table/tbody/tr//td";
 
-const DISEASE_MAP = [
+const DISEASE_MAP = [/*
     {
         name: 'General (For all diseases)',
         url: URL_PREFIX + 'General.aspx',
@@ -166,7 +166,7 @@ const DISEASE_MAP = [
         xpath: DEFAULT_XPATH,
         count: 130,
         domainCount: 8
-    },
+    },*/
     {
         name: 'Traumatic Brain Injury',
         url: URL_PREFIX + 'TBI.aspx',
@@ -257,7 +257,7 @@ doTrElement = async trElement => {
     return form;
 };
 
-doDomain = async (driver, disease, domainElement) => {
+doDomain = async (driver, disease, subDisease, domainElement) => {
     let domainText = await domainElement.getText();
     let domain = domainText.trim();
 
@@ -311,12 +311,14 @@ doDomain = async (driver, disease, domainElement) => {
                 cond.domain = domain;
                 cond.disease = disease.name;
                 cond.subDomain = subDomain;
+                cond.subDisease = subDisease;
                 let existingNinds = await NindsModel.findOne(cond);
                 if (!existingNinds) {
                     let formObj = await doTrElement(trElement);
                     formObj.subDomain = subDomain;
                     formObj.domain = domain;
                     formObj.disease = disease.name;
+                    formObj.subDisease = subDisease;
                     formObj.url = disease.url;
                     await new NindsModel(formObj).save();
                     formCounter++;
@@ -337,9 +339,24 @@ async function doDisease(disease) {
         console.log(disease.name + ' domain count: ' + domainElements.length + '. Web: ' + disease.domainCount);
         process.exit(1);
     }
-    for (let domainElement of domainElements) {
-        await doDomain(driver, disease, domainElement);
-    }
+    let subDiseaseElements = await driver.findElements(By.id("ddlSubDisease"));
+    if (subDiseaseElements.length === 0) {
+        for (let domainElement of domainElements) {
+            await doDomain(driver, disease, '', domainElement);
+        }
+    } else if (subDiseaseElements.length === 1) {
+        let subDiseaseSelectElement = subDiseaseElements[0];
+        let subDiseaseOptionElements = await subDiseaseSelectElement.findElements(By.xpath("option"));
+        for (let subDiseaseOptionElement of subDiseaseOptionElements) {
+            await subDiseaseSelectElement.click();
+            await subDiseaseOptionElement.click();
+            let subDiseaseText = await subDiseaseOptionElement.getText();
+            let subDisease = subDiseaseText.trim();
+            for (let domainElement of domainElements) {
+                await doDomain(driver, disease, subDisease, domainElement);
+            }
+        }
+    } else throw subDiseaseElements.length + "sub diseases found " + disease;
 };
 
 async function run() {
