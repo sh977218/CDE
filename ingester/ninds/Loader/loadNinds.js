@@ -11,6 +11,7 @@ const CreateForm = require('../Form/CreateForm');
 const CompareForm = require('../Form/CompareForm');
 const MergeForm = require('../Form/MergeForm');
 
+const updatedByNonLoader = require('../../shared/updatedByNonLoader').updatedByNonLoader;
 const batchloader = require('../../shared/updatedByNonLoader').batchloader;
 
 const checkNullComments = require('../../shared/utility').checkNullComments;
@@ -18,6 +19,7 @@ const checkNullComments = require('../../shared/utility').checkNullComments;
 let createdForm = 0;
 let sameForm = 0;
 let changeForm = 0;
+let skipForm = 0;
 
 let retiredCDE = 0;
 let retiredForm = 0;
@@ -75,11 +77,11 @@ async function retiredForms() {
     }
 }
 
-
 doOneNindsFormById = async formIdString => {
     let formId = formIdString.replace('form', '').trim();
     let nindsForms = await NindsModel.find({formId: formIdString}).lean();
     let newFormObj = await CreateForm.createForm(nindsForms);
+
     let newForm = new Form(newFormObj);
     let existingForm = await Form.findOne({
         archived: false,
@@ -95,29 +97,35 @@ doOneNindsFormById = async formIdString => {
         }
         createdForm++;
         console.log('createdForm: ' + createdForm + ' ' + savedForm.tinyId);
-        newFormObj.source = 'NINDS';
         await new FormSource(newFormObj).save();
     } else {
         let existingFormObj = existingForm.toObject();
         let otherClassifications = existingFormObj.classification.filter(c => c.stewardOrg.name !== 'NINDS');
         existingForm.classification = otherClassifications.concat(newFormObj.classification);
-        existingForm.imported = new Date().toJSON();
-        existingForm.markModified('imported');
-        let diff = CompareForm.compareForm(newForm, existingForm);
-        for (let comment of newFormObj.comments) {
-            comment.element.eltId = existingForm.tinyId;
-            await new Comment(comment).save();
-            console.log('comment saved on existing Form ' + existingForm.tinyId);
-        }
-        if (_.isEmpty(diff)) {
+        if (updatedByNonLoader(existingForm) ||
+            existingForm.registrationState.registrationStatus === 'Standard') {
             await existingForm.save();
-            sameForm++;
-            console.log('sameForm: ' + sameForm + ' ' + existingForm.tinyId);
+            skipForm++;
+            console.log('skipForm: ' + skipForm + ' ' + existingForm.tinyId);
         } else {
-            await MergeForm.mergeForm(existingForm, newForm);
-            await mongo_form.updatePromise(existingForm, batchloader);
-            changeForm++;
-            console.log('changeForm: ' + changeForm + ' ' + existingForm.tinyId);
+            existingForm.markModified('imported');
+            existingForm.imported = new Date().toJSON();
+            let diff = CompareForm.compareForm(newForm, existingForm);
+            for (let comment of newFormObj.comments) {
+                comment.element.eltId = existingForm.tinyId;
+                await new Comment(comment).save();
+                console.log('comment saved on existing Form ' + existingForm.tinyId);
+            }
+            if (_.isEmpty(diff)) {
+                await existingForm.save();
+                sameForm++;
+                console.log('sameForm: ' + sameForm + ' ' + existingForm.tinyId);
+            } else {
+                await MergeForm.mergeForm(existingForm, newForm);
+                await mongo_form.updatePromise(existingForm, batchloader);
+                changeForm++;
+                console.log('changeForm: ' + changeForm + ' ' + existingForm.tinyId);
+            }
         }
     }
 };
@@ -127,12 +135,10 @@ run = async () => {
     for (let formId of formIdList) {
         await doOneNindsFormById(formId);
     }
-    /*
-        let nullComments = await checkNullComments();
-        for (let nullComment of nullComments) {
-            console.log(nullComment.element.eltType + ' has null comment ' + nullComment._id);
-        }
-    */
+    let nullComments = await checkNullComments();
+    for (let nullComment of nullComments) {
+        console.log(nullComment.element.eltType + ' has null comment ' + nullComment._id);
+    }
 };
 
 

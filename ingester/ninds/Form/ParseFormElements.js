@@ -13,11 +13,13 @@ const MergeCDE = require('../CDE/MergeCDE');
 const deValidator = require('esm')(module)('../../../shared/de/deValidator');
 const Comment = require('../../../server/discuss/discussDb').Comment;
 
+const updatedByNonLoader = require('../../shared/updatedByNonLoader').updatedByNonLoader;
 const batchloader = require('../../shared/updatedByNonLoader').batchloader;
 
 let createdCDE = 0;
 let sameCDE = 0;
 let changeCDE = 0;
+let skipCDE = 0;
 
 doOneNindsCde = async cdeId => {
     let newCdeObj = await CreateCDE.createCde(cdeId);
@@ -66,23 +68,32 @@ doOneNindsCde = async cdeId => {
         let existingCdeObj = existingCde.toObject();
         let otherClassifications = existingCdeObj.classification.filter(c => c.stewardOrg.name !== 'NINDS');
         existingCde.classification = otherClassifications.concat(newCdeObj.classification);
-        existingCde.imported = new Date().toJSON();
-        existingCde.markModified('imported');
-        let diff = CompareCDE.compareCde(newCde, existingCde);
-        for (let comment of newCdeObj.comments) {
-            comment.element.eltId = existingCde.tinyId;
-            await new Comment(comment).save();
-            console.log('comment saved on existing CDE ' + existingCde.tinyId);
-        }
-        if (_.isEmpty(diff)) {
+        let yesterday = new Date().setDate(new Date().getDate() - 1);
+        if (updatedByNonLoader(existingCde) ||
+            existingCde.updated > yesterday ||
+            existingCde.registrationState.registrationStatus === 'Standard') {
             await existingCde.save();
-            sameCDE++;
-            console.log('sameCDE: ' + sameCDE + ' ' + existingCde.tinyId);
+            skipCDE++;
+            console.log('skipCDE: ' + skipCDE + ' ' + existingCde.tinyId);
         } else {
-            await MergeCDE.mergeCde(existingCde, newCde);
-            await mongo_cde.updatePromise(existingCde, batchloader);
-            changeCDE++;
-            console.log('changeCDE: ' + changeCDE + ' ' + existingCde.tinyId);
+            existingCde.imported = new Date().toJSON();
+            existingCde.markModified('imported');
+            let diff = CompareCDE.compareCde(newCde, existingCde);
+            for (let comment of newCdeObj.comments) {
+                comment.element.eltId = existingCde.tinyId;
+                await new Comment(comment).save();
+                console.log('comment saved on existing CDE ' + existingCde.tinyId);
+            }
+            if (_.isEmpty(diff)) {
+                await existingCde.save();
+                sameCDE++;
+                console.log('sameCDE: ' + sameCDE + ' ' + existingCde.tinyId);
+            } else {
+                await MergeCDE.mergeCde(existingCde, newCde);
+                await mongo_cde.updatePromise(existingCde, batchloader);
+                changeCDE++;
+                console.log('changeCDE: ' + changeCDE + ' ' + existingCde.tinyId);
+            }
         }
     }
 };
