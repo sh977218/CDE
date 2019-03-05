@@ -29,6 +29,12 @@ import { SaveModalComponent } from 'adminItem/public/components/saveModal/saveMo
                 font-size: 20px;
             }
         }
+        .menuActionIcon {
+            margin: 0 0 0 8px;
+        }
+        .menuActionIcon:hover {
+            font-weight: bold;
+        }
     `],
     providers: []
 })

@@ -146,13 +146,16 @@ gulp.task('copyDist', gulp.series('createDist',
         buildApp = () => run('npm run buildApp').exec(),
         buildNative = () => run('npm run buildNative').exec(),
         buildEmbed = () => run('npm run buildEmbed').exec(),
-        buildFhir = () => run('npm run buildFhir').exec())
+        buildFhir = () => run('npm run buildFhir').exec(),
+        buildLambdaValidateSDC = () => run('npm run buildFnAwsJava').exec(),
+    )
     , copyApp = () => gulp.src(['./dist/app/**/*', '!./dist/app/cde.css', '!./dist/app/cde.js']).pipe(gulp.dest(config.node.buildDir + '/dist/app'))
     , copyEmbed = () => gulp.src(['./dist/embed/**/*', '!./dist/embed/embed.css', '!./dist/embed/embed.js']).pipe(gulp.dest(config.node.buildDir + '/dist/embed'))
     , copyFhir = () => gulp.src(['./dist/fhir/*', '!./dist/fhir/fhir.css', '!./dist/fhir/fhir.js']).pipe(gulp.dest(config.node.buildDir + '/dist/fhir'))
     , copyNative = () => gulp.src(['./dist/native/**/*', '!./dist/native/native.css', '!./dist/native/native.js']).pipe(gulp.dest(config.node.buildDir + '/dist/native'))
     , copyHome = () => gulp.src('./modules/system/views/home-launch.ejs').pipe(gulp.dest(config.node.buildDir + '/modules/system/views'))
     , copyLaunch = () => gulp.src('./dist/launch/*').pipe(gulp.dest(config.node.buildDir + '/dist/launch'))
+    , copyServerless = () => gulp.src('./serverless-aws-java/**/*').pipe(gulp.dest(config.node.buildDir + '/serverless-aws-java'))
 ));
 
 gulp.task('usemin', gulp.series('copyDist', function _usemin() {
