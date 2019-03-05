@@ -23,6 +23,19 @@ public class SdcExport extends NlmCdeBaseTest {
     }
 
     @Test
+    public void sdcXmlValidation() {
+        String url = baseUrl + "/form/XySUBn_NZ?type=xml&subtype=sdc&validate=true";
+        String response = get(url).asString();
+        Assert.assertFalse(response.contains("<!-- Validation Error: Error:"), "response: " + response);
+        Assert.assertTrue(response.contains("<FormDesign xmlns=\"urn:ihe:qrph:sdc:2016\""), "response: " + response);
+        Assert.assertTrue(response.contains("<Section ID"), "response: " + response);
+        Assert.assertTrue(response.contains("title=\"CLINICAL\">"), "response: " + response);
+        Assert.assertTrue(response.contains("<ListItem ID="), "response: " + response);
+        Assert.assertTrue(response.contains("title=\"Intact\"/>"), "response: " + response);
+        Assert.assertTrue(response.contains("<Question ID=\"XyEbt94V_\" title=\"Additional Dimension\">"), "response: " + response);
+    }
+
+    @Test
     public void sdcXmlExportLoinc() {
         String response = get(baseUrl + "/form/Xyo4O4BIM?type=xml&subtype=sdc").asString();
         Assert.assertTrue(response.contains("<CodedValue><Code val=\"LA15255-5\"/><CodeSystem><CodeSystemName val=\"LOINC\"/>"));
