@@ -62,10 +62,9 @@ doOneNindsCde = async cdeId => {
         let savedCDE = await newCde.save();
         createdCDE++;
         console.log('createdCDE: ' + createdCDE + ' ' + savedCDE.tinyId);
-        newCde.source = 'NINDS';
-        await new DataElementSource(newCdeObj).save();
     } else {
         let existingCdeObj = existingCde.toObject();
+        newCdeObj.tinyId = existingCdeObj.tinyId;
         let otherClassifications = existingCdeObj.classification.filter(c => c.stewardOrg.name !== 'NINDS');
         existingCde.classification = otherClassifications.concat(newCdeObj.classification);
         let yesterday = new Date().setDate(new Date().getDate() - 1);
@@ -96,6 +95,7 @@ doOneNindsCde = async cdeId => {
             }
         }
     }
+    await DataElementSource.update({tinyId: newCdeObj.tinyId}, newCdeObj, {upsert: true});
 };
 
 exports.parseFormElements = async nindsForms => {
