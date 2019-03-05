@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const webdriver = require('selenium-webdriver');
 const By = webdriver.By;
+const Until = webdriver.Until;
 let driver = new webdriver.Builder().forBrowser('chrome').build();
 
 let NindsModel = require('../../createMigrationConnection').NindsModel;
@@ -169,6 +170,13 @@ const DISEASE_MAP = [
     },
     {
         name: 'Traumatic Brain Injury',
+        subDiseases: [
+            'Comprehensive',
+            'Acute Hospitalized',
+            'Concussion/Mild TBI',
+            'Moderate/Severe TBI: Rehabilitation',
+            'Epidemiology'
+        ],
         url: URL_PREFIX + 'TBI.aspx',
         xpath: DEFAULT_XPATH,
         count: 261,
@@ -176,6 +184,12 @@ const DISEASE_MAP = [
     },
     {
         name: 'Sport-Related Concussion',
+        subDiseases: [
+            'Comprehensive',
+            'Acute',
+            'Subacute',
+            'Persistent/Chronic'
+        ],
         url: URL_PREFIX + 'SRC.aspx',
         xpath: DEFAULT_XPATH,
         count: 186,
@@ -257,7 +271,7 @@ doTrElement = async trElement => {
     return form;
 };
 
-doDomain = async (driver, disease, subDisease, domainElement) => {
+doDomain = async (driver, disease, domainElement) => {
     let domainText = await domainElement.getText();
     let domain = domainText.trim();
 
@@ -311,14 +325,14 @@ doDomain = async (driver, disease, subDisease, domainElement) => {
                 cond.domain = domain;
                 cond.disease = disease.name;
                 cond.subDomain = subDomain;
-                cond.subDisease = subDisease;
+                cond.subDisease = disease.subDisease;
                 let existingNinds = await NindsModel.findOne(cond);
                 if (!existingNinds) {
                     let formObj = await doTrElement(trElement);
                     formObj.subDomain = subDomain;
                     formObj.domain = domain;
                     formObj.disease = disease.name;
-                    formObj.subDisease = subDisease;
+                    formObj.subDisease = disease.subDisease;
                     formObj.url = disease.url;
                     await new NindsModel(formObj).save();
                     formCounter++;
@@ -333,30 +347,14 @@ doDomain = async (driver, disease, subDisease, domainElement) => {
 };
 
 async function doDisease(disease) {
-    await driver.get(disease.url);
     let domainElements = await driver.findElements(By.xpath("//*[@class='cdetable']/preceding-sibling::a"));
     if (domainElements.length !== disease.domainCount) {
         console.log(disease.name + ' domain count: ' + domainElements.length + '. Web: ' + disease.domainCount);
         process.exit(1);
     }
-    let subDiseaseElements = await driver.findElements(By.id("ddlSubDisease"));
-    if (subDiseaseElements.length === 0) {
-        for (let domainElement of domainElements) {
-            await doDomain(driver, disease, '', domainElement);
-        }
-    } else if (subDiseaseElements.length === 1) {
-        let subDiseaseSelectElement = subDiseaseElements[0];
-        let subDiseaseOptionElements = await subDiseaseSelectElement.findElements(By.xpath("option"));
-        for (let subDiseaseOptionElement of subDiseaseOptionElements) {
-            await subDiseaseSelectElement.click();
-            await subDiseaseOptionElement.click();
-            let subDiseaseText = await subDiseaseOptionElement.getText();
-            let subDisease = subDiseaseText.trim();
-            for (let domainElement of domainElements) {
-                await doDomain(driver, disease, subDisease, domainElement);
-            }
-        }
-    } else throw subDiseaseElements.length + "sub diseases found " + disease;
+    for (let domainElement of domainElements) {
+        await doDomain(driver, disease, domainElement);
+    }
 };
 
 async function run() {
@@ -367,7 +365,20 @@ async function run() {
             console.log("Previously Finished Disease " + disease.name + " on page " + disease.url);
             console.log("***********************************************************************");
         } else {
-            await doDisease(disease);
+            await driver.get(disease.url);
+            if (disease.subDiseases) {
+                for (let subDisease of disease.subDiseases.splice(2, 3)) {
+                    disease.subDisease = subDisease;
+                    await driver.findElement(By.id("ddlSubDisease")).click();
+                    await driver.findElement(By.xpath("//*[@id='ddlSubDisease']//option[normalize-space(text())='" + subDisease + "']"));
+                    setTimeout(() => {
+                    }, 20 * 1000);
+                    await doDisease(disease);
+                }
+            } else {
+                disease.subDisease = '';
+                await doDisease(disease);
+            }
             let savedCount = await NindsModel.countDocuments({disease: disease.name});
             if (savedCount !== disease.count) {
                 console.log(disease.name + ' savedCount: ' + savedCount + '. Web: ' + disease.count);

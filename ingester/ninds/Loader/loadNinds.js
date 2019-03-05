@@ -77,6 +77,10 @@ async function retiredForms() {
     }
 }
 
+async function saveFormSource(form) {
+
+}
+
 doOneNindsFormById = async formIdString => {
     let formId = formIdString.replace('form', '').trim();
     let nindsForms = await NindsModel.find({formId: formIdString}).lean();
@@ -97,7 +101,6 @@ doOneNindsFormById = async formIdString => {
         }
         createdForm++;
         console.log('createdForm: ' + createdForm + ' ' + savedForm.tinyId);
-        await new FormSource(newFormObj).save();
     } else {
         let existingFormObj = existingForm.toObject();
         let otherClassifications = existingFormObj.classification.filter(c => c.stewardOrg.name !== 'NINDS');
@@ -127,6 +130,7 @@ doOneNindsFormById = async formIdString => {
                 console.log('changeForm: ' + changeForm + ' ' + existingForm.tinyId);
             }
         }
+        await saveFormSource(newFormObj);
     }
 };
 
