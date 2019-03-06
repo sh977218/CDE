@@ -11,8 +11,10 @@ const CreateForm = require('../Form/CreateForm');
 const CompareForm = require('../Form/CompareForm');
 const MergeForm = require('../Form/MergeForm');
 
-const updatedByNonLoader = require('../../shared/updatedByNonLoader').updatedByNonLoader;
-const batchloader = require('../../shared/updatedByNonLoader').batchloader;
+const updatedByNonLoaderShared = require('../../shared/updatedByNonLoader');
+const updatedByNonLoader = updatedByNonLoaderShared.updatedByNonLoader;
+const batchloader = updatedByNonLoaderShared.batchloader;
+const batchloaderUsername = updatedByNonLoaderShared.BATCHLOADER_USERNAME;
 
 const checkNullComments = require('../../shared/utility').checkNullComments;
 
@@ -32,7 +34,7 @@ async function retireCdes() {
         "imported": {$lt: new Date().setHours(new Date().getHours() - 8)},
         $where: 'this.classification.length < 2',
         $or: [
-            {"updatedBy.username": "batchloader"},
+            {"updatedBy.username": batchloaderUsername},
             {
                 $and: [
                     {"updatedBy.username": {$exists: false}},
@@ -58,7 +60,7 @@ async function retiredForms() {
         "registrationState.registrationStatus": {$ne: "Retired"},
         "imported": {$lt: new Date().setHours(new Date().getHours() - 8)},
         $or: [
-            {"updatedBy.username": "batchloader"},
+            {"updatedBy.username": batchloaderUsername},
             {
                 $and: [
                     {"updatedBy.username": {$exists: false}},

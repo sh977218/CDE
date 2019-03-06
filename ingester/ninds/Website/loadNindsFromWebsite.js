@@ -179,7 +179,7 @@ const DISEASE_MAP = [
         ],
         url: URL_PREFIX + 'TBI.aspx',
         xpath: DEFAULT_XPATH,
-        count: 261,
+        count: 261 + 250 + 249 + 247 + 247,
         domainCount: 9
     },
     {
@@ -192,7 +192,7 @@ const DISEASE_MAP = [
         ],
         url: URL_PREFIX + 'SRC.aspx',
         xpath: DEFAULT_XPATH,
-        count: 186,
+        count: 186 + 119 + 178 + 178,
         domainCount: 8
     }
 ];
