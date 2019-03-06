@@ -395,7 +395,7 @@ async function run() {
                     } else {
                         disease.subDisease = subDisease.name;
                         await driver.findElement(By.id("ddlSubDisease")).click();
-                        await driver.findElement(By.xpath("//*[@id='ddlSubDisease']//option[normalize-space(text())='" + subDisease + "']"));
+                        await driver.findElement(By.xpath("//*[@id='ddlSubDisease']//option[normalize-space(text())='" + subDisease.name + "']"));
                         setTimeout(() => {
                         }, 20 * 1000);
                         await doDisease(disease);
