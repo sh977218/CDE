@@ -130,7 +130,7 @@ export function getShowIfQ(fes, fe) {
         if (strPieces[strPieces.length - 1] === '') strPieces.pop();
         return strPieces.reduce((acc, e, i, strPieces) => {
             let matchQ = getQuestionPriorByLabel({formElements: fes}, fe, strPieces[i]);
-            if (matchQ) {
+            if (matchQ && strPieces[i + 1]) {
                 let operator = strPieces[i + 1].trim();
                 let compValue = strPieces[i + 2];
                 let operatorWithNumber = operator.split(' ');
