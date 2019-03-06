@@ -38,4 +38,11 @@ public class LogClientErrors extends NlmCdeBaseTest {
         textPresent("inIE=true");
     }
 
+    @Test
+    public void goToClientErrorsTab() {
+        driver.get(baseUrl + "/siteAudit?tab=clientErrors");
+        textPresent("Agent");
+        textPresent("URL");
+    }
+
 }
