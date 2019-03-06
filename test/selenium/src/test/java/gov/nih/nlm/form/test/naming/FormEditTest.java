@@ -3,6 +3,7 @@ package gov.nih.nlm.form.test.naming;
 import gov.nih.nlm.form.test.BaseFormTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class FormEditTest extends BaseFormTest {
@@ -13,28 +14,34 @@ public class FormEditTest extends BaseFormTest {
         mustBeLoggedInAs(testAdmin_username, password);
         goToFormByName(formName);
         goToFormDescription();
-        editQuestion();
+        Assert.assertEquals(driver.getTitle(), "Form: " + formName);
+        String newQuestionInstruction = "New Question Instruction";
+        editQuestion(newQuestionInstruction);
         newFormVersion();
         goHome();
+
+        // Form Audit
+        openAuditForm(formName);
+        textPresent(newQuestionInstruction);
     }
 
-    private void editQuestion() {
+    private void editQuestion(String text) {
         scrollToViewById("question_0-0");
         startEditQuestionById("question_0-0");
         selectQuestionLabelByIndex("question_0-0", 1);
 
-        String newQuestionInstruction = "New Question Instruction";
+
         clickElement(By.xpath("//*[@id='question_0-0']//*[contains(@class,'editQuestionInstruction')]//mat-icon[normalize-space() = 'edit']"));
         textPresent("Plain Text");
         textPresent("Rich Text");
         textPresent("Confirm");
         findElement(By.xpath("//*[@id='question_0-0']//*[contains(@class,'editQuestionInstruction')]//textarea")).clear();
-        findElement(By.xpath("//*[@id='question_0-0']//*[contains(@class,'editQuestionInstruction')]//textarea")).sendKeys(newQuestionInstruction);
+        findElement(By.xpath("//*[@id='question_0-0']//*[contains(@class,'editQuestionInstruction')]//textarea")).sendKeys(text);
         clickElement(By.xpath("//*[@id='question_0-0']//*[contains(@class,'editQuestionInstruction')]//button[contains(text(),'Confirm')]"));
         textNotPresent("Confirm");
 
         saveEditQuestionById("question_0-0");
         textPresent("Data unknown text", By.xpath("//*[@id='question_0-0']//*[contains(@class,'questionLabel')]"));
-        textPresent(newQuestionInstruction, By.xpath("//*[@id='question_0-0']//*[contains(@class,'questionInstruction')]"));
+        textPresent(text, By.xpath("//*[@id='question_0-0']//*[contains(@class,'questionInstruction')]"));
     }
 }

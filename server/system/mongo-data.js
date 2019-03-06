@@ -14,16 +14,19 @@ const dbLogger = require('../log/dbLogger');
 const consoleLog = dbLogger.consoleLog;
 const handleError = dbLogger.handleError;
 const logger = require('./noDbLogger');
+const cdediff = require("../cde/cdediff");
 const notificationSvc = require('../notification/notificationSvc');
 const logging = require('./logging.js');
 const daoManager = require('./moduleDaoManager');
 const config = require('./parseConfig');
 const schemas = require('./schemas');
+const writableCollection = require('./writableCollection');
 
 const conn = connHelper.establishConnection(config.database.appData);
 const Embeds = conn.model('Embed', schemas.embedSchema);
 const FhirApps = conn.model('FhirApp', schemas.fhirAppSchema);
 const FhirObservationInfo = conn.model('FhirObservationInfo', schemas.fhirObservationInformationSchema);
+const IdSource = conn.model('IdSource', schemas.idSourceSchema);
 const JobQueue = conn.model('JobQueue', schemas.jobQueue);
 const Message = conn.model('Message', schemas.message);
 const Org = conn.model('Org', schemas.orgSchema);
@@ -72,6 +75,7 @@ exports.mongoose_connection = conn;
 exports.sessionStore = sessionStore;
 exports.FhirApps = FhirApps;
 exports.FhirObservationInfo = FhirObservationInfo;
+exports.IdSource = IdSource;
 exports.Org = Org;
 exports.User = User;
 exports.JobQueue = JobQueue;
@@ -88,6 +92,8 @@ exports.removeJobStatus = (type, callback) => {
     JobQueue.remove({type: type}, callback);
 };
 
+// _id is own string
+exports.idSource = writableCollection(exports.IdSource, undefined);
 
 exports.addCdeToViewHistory = (elt, user) => {
     if (!elt || !user) return;
@@ -123,6 +129,43 @@ exports.addFormToViewHistory = (elt, user) => {
             details: {"cde": elt, user: user}
         });
     });
+};
+
+// WARNING: destroys oldItem and newItem by calling cdediff
+exports.auditModifications = (auditDb, user, oldItem, newItem) => {
+    let message = {
+        adminItem: {
+            _id: newItem._id,
+            name: newItem.designations[0].designation,
+            tinyId: newItem.tinyId,
+            version: newItem.version,
+        },
+        date: new Date(),
+        user: {
+            username: user.username,
+        },
+    };
+
+    if (oldItem) {
+        message.previousItem = {
+            _id: oldItem._id,
+            name: oldItem.designations[0].designation,
+            tinyId: oldItem.tinyId,
+            version: oldItem.version,
+        };
+        message.diff = cdediff.diff(newItem, oldItem);
+    }
+
+    auditDb(message).save(handleError());
+};
+
+// cb(err, logs)
+exports.auditGetLog = (auditDb, params, callback) => {
+    auditDb.find(params.includeBatch ? undefined : {"user.username": {$ne: 'batchloader'}})
+        .sort('-date')
+        .skip(params.skip)
+        .limit(params.limit)
+        .exec(callback);
 };
 
 exports.embeds = {

@@ -7,7 +7,6 @@ const handleError = dbLogger.handleError;
 const handle404 = dbLogger.handle404;
 const discussDb = require('./discussDb');
 const daoManager = require('../system/moduleDaoManager');
-const eltShared = require('esm')(module)('../../shared/elt');
 const ioServer = require('../system/ioServer');
 const userDb = require('../user/userDb');
 const userService = require('../system/usersrvc');

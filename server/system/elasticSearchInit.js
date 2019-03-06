@@ -141,12 +141,18 @@ exports.createIndexJson = {
                         "Candidate": {"type": "number"},
                         "Recorded": {"type": "number"},
                         "Qualified": {"type": "number"},
+                        "forms": {
+                            "properties": {
+                                "tinyId": "keyword",
+                                "registrationStatus": "keyword"
+                            }
+                        }
 
                     }
                 }
-                , "linkedForms": {"properties": {
-                        "tinyId": "keyword",
-                        "registrationStatus": "keyword"
+                // , "linkedForms": {"properties": {
+                //         "tinyId": "keyword",
+                //         "registrationStatus": "keyword"
                     // "forms": {
                     //     "properties": {
                     //         "tinyId": "keyword",
@@ -158,7 +164,7 @@ exports.createIndexJson = {
                     // "candidate": {"type": "number"},
                     // "recorded": {"type": "number"},
                     // "recorded": {"type": "number"},
-                }}
+                // }}
             }
         }
     }, settings: {

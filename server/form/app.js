@@ -2,7 +2,6 @@ const _ = require('lodash');
 const dns = require('dns');
 const os = require('os');
 const authorization = require('../system/authorization');
-const authorizationShared = require('esm')(module)('../../shared/system/authorizationShared');
 const config = require('../system/parseConfig');
 const formSvc = require('./formsvc');
 const mongo_form = require('./mongo-form');
@@ -10,6 +9,10 @@ const elastic_system = require('../system/elastic');
 const handleError = require('../log/dbLogger').handleError;
 const sharedElastic = require('../system/elastic.js');
 const exportShared = require('esm')(module)('../../shared/system/exportShared');
+
+const canCreateMiddleware = authorization.canCreateMiddleware;
+const canEditMiddleware = authorization.canEditMiddleware(mongo_form);
+const canEditByIdMiddleware = authorization.canEditByIdMiddleware(mongo_form);
 
 // ucum from lhc uses IndexDB
 global.location = {origin: 'localhost'};
@@ -19,50 +22,42 @@ setGlobalVars();
 const ucum = require('ucum').UcumLhcUtils.getInstance();
 
 function allowXOrigin(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'X-Requested-With');
     next();
 }
 
 exports.init = function (app, daoManager) {
     daoManager.registerDao(mongo_form);
 
-    app.get("/form/:tinyId", [allowXOrigin, exportShared.nocacheMiddleware], formSvc.byTinyId);
-    app.get("/form/:tinyId/latestVersion/", exportShared.nocacheMiddleware, formSvc.latestVersionByTinyId);
-    app.get("/form/:tinyId/version/:version?", [allowXOrigin, exportShared.nocacheMiddleware], formSvc.byTinyIdAndVersion);
-    app.post("/form", authorization.canEditMiddleware, formSvc.createForm);
-    app.put("/form/:tinyId", authorization.canEditMiddleware, formSvc.updateForm);
-    app.put("/formPublish/:tinyId", authorization.canEditMiddleware, formSvc.publishTheForm);
+    app.get('/form/:tinyId', [allowXOrigin, exportShared.nocacheMiddleware], formSvc.byTinyId);
+    app.get('/form/:tinyId/latestVersion/', exportShared.nocacheMiddleware, formSvc.latestVersionByTinyId);
+    app.get('/form/:tinyId/version/:version?', [allowXOrigin, exportShared.nocacheMiddleware], formSvc.byTinyIdAndVersion);
+    app.post('/form', canCreateMiddleware, formSvc.createForm);
+    app.put('/form/:tinyId', canEditMiddleware, formSvc.updateForm);
+    app.put('/formPublish', canEditMiddleware, formSvc.publishTheForm);
 
-    app.get("/formById/:id", exportShared.nocacheMiddleware, formSvc.byId);
-    app.get("/formById/:id/priorForms/", exportShared.nocacheMiddleware, formSvc.priorForms);
+    app.get('/formById/:id', exportShared.nocacheMiddleware, formSvc.byId);
+    app.get('/formById/:id/priorForms/', exportShared.nocacheMiddleware, formSvc.priorForms);
 
-    app.get("/formForEdit/:tinyId", exportShared.nocacheMiddleware, formSvc.forEditByTinyId);
-    app.get("/formForEdit/:tinyId/version/:version?", exportShared.nocacheMiddleware, formSvc.forEditByTinyIdAndVersion);
-    app.get("/formForEditById/:id", exportShared.nocacheMiddleware, formSvc.forEditById);
+    app.get('/formForEdit/:tinyId', exportShared.nocacheMiddleware, formSvc.forEditByTinyId);
+    app.get('/formForEdit/:tinyId/version/:version?', exportShared.nocacheMiddleware, formSvc.forEditByTinyIdAndVersion);
+    app.get('/formForEditById/:id', exportShared.nocacheMiddleware, formSvc.forEditById);
 
-    app.get("/formList/:tinyIdList?", exportShared.nocacheMiddleware, formSvc.byTinyIdList);
+    app.get('/formList/:tinyIdList?', exportShared.nocacheMiddleware, formSvc.byTinyIdList);
+    app.get('/originalSource/form/:sourceName/:tinyId', formSvc.originalSourceByTinyIdSourceName);
 
-    const canEditItemByIdMiddleware = [authorization.isOrgCuratorMiddleware, (req, res, next) => {
-        mongo_form.byTinyId(req.params.tinyId, handleError({req, res}, form => {
-            if (!authorizationShared.canEditCuratedItem(req.user, form)) {
-                return res.status(403).send();
-            }
-            next();
-        }));
-    }];
+    app.get('/draftForm/:tinyId', formSvc.draftForm);
+    app.put('/draftForm/:tinyId', canEditMiddleware, formSvc.saveDraft);
+    app.delete('/draftForm/:tinyId', canEditByIdMiddleware, formSvc.deleteDraftForm);
 
-    app.get("/draftForm/:tinyId", formSvc.draftForm);
-    app.post("/draftForm/:tinyId", authorization.canEditMiddleware, formSvc.saveDraftForm);
-    app.delete("/draftForm/:tinyId", canEditItemByIdMiddleware, formSvc.deleteDraftForm);
-
-    app.get("/draftFormById/:id",formSvc.draftFormById);
+    app.get('/draftFormById/:id',formSvc.draftFormById);
 
     app.post('/form/publish/:id', authorization.loggedInMiddleware, formSvc.publishForm);
 
     app.get('/viewingHistory/form', exportShared.nocacheMiddleware, function (req, res) {
         if (!req.user) {
-            res.send("You must be logged in to do that");
+            res.send('You must be logged in to do that');
         } else {
             let splicedArray = req.user.formViewHistory.splice(0, 10);
             let idList = [];
@@ -84,17 +79,17 @@ exports.init = function (app, daoManager) {
         if (query.size > 100) return res.status(400).send();
         if ((query.from + query.size) > 10000) return res.status(400).send();
         if (!req.body.fullRecord) {
-            query._source = {excludes: ["flatProperties", "properties", "classification.elements", "formElements"]};
+            query._source = {excludes: ['flatProperties', 'properties', 'classification.elements', 'formElements']};
         }
         sharedElastic.elasticsearch('form', query, req.body, function (err, result) {
-            if (err) return res.status(400).send("invalid query");
+            if (err) return res.status(400).send('invalid query');
             res.send(result);
         });
     });
 
     app.post('/scrollExport/form', (req, res) => {
         let query = sharedElastic.buildElasticSearchQuery(req.user, req.body);
-        elastic_system.scrollExport(query, "form", (err, response) => {
+        elastic_system.scrollExport(query, 'form', (err, response) => {
             if (err) res.status(400).send();
             else res.send(response);
         });
@@ -107,6 +102,12 @@ exports.init = function (app, daoManager) {
         });
     });
 
+    app.post('/getFormAuditLog', authorization.isOrgAuthorityMiddleware, (req, res) => {
+        mongo_form.getAuditLog(req.body, (err, result) => {
+            res.send(result);
+        });
+    });
+
     app.post('/elasticSearchExport/form', (req, res) => {
         let query = sharedElastic.buildElasticSearchQuery(req.user, req.body);
         let exporters = {
@@ -114,7 +115,7 @@ exports.init = function (app, daoManager) {
                 export: function (res) {
                     let firstElt = true;
                     res.type('application/json');
-                    res.write("[");
+                    res.write('[');
                     elastic_system.elasticSearchExport(handleError({req, res}, elt => {
                         if (elt) {
                             if (!firstElt) res.write(',');
@@ -123,7 +124,7 @@ exports.init = function (app, daoManager) {
                             res.write(JSON.stringify(elt));
                             firstElt = false;
                         } else {
-                            res.write("]");
+                            res.write(']');
                             res.send();
                         }
                     }), query, 'form');
@@ -144,33 +145,33 @@ exports.init = function (app, daoManager) {
     // This is for tests only
     app.post('/sendMockFormData', function (req, res) {
         let mapping = JSON.parse(req.body.mapping);
-        if (req.body["0-0"] === "1" && req.body["0-1"] === "2"
-            && req.body["0-2"] === "Lab Name"
-            && req.body["0-3"] === "FEMALE"
-            && mapping.sections[0].questions[0].question === "Number of CAG repeats on a larger allele"
-            && mapping.sections[0].questions[0].name === "0-0"
-            && mapping.sections[0].questions[0].ids[0].source === "NINDS"
-            && mapping.sections[0].questions[0].ids[0].id === "C14936"
-            && mapping.sections[0].questions[0].ids[0].version === "3"
-            && mapping.sections[0].questions[0].ids[1].source === "NINDS Variable Name"
-            && mapping.sections[0].questions[0].ids[1].id === "CAGRepeatsLargerAlleleNum"
-            && mapping.sections[0].questions[0].tinyId === "VTO0Feb6NSC"
-            && mapping.sections[0].questions[1].tinyId === "uw_koHkZ_JT"
-            && mapping.sections[0].questions[2].question === "Name of laboratory that performed this molecular study"
-            && mapping.sections[0].questions[2].name === "0-2"
-            && mapping.sections[0].questions[2].tinyId === "EdUB2kWmV61"
-            && mapping.sections[0].questions[3].name === "0-3"
-            && mapping.sections[0].questions[3].tinyId === "JWWpC2baVwK"
+        if (req.body['0-0'] === '1' && req.body['0-1'] === '2'
+            && req.body['0-2'] === 'Lab Name'
+            && req.body['0-3'] === 'FEMALE'
+            && mapping.sections[0].questions[0].question === 'Number of CAG repeats on a larger allele'
+            && mapping.sections[0].questions[0].name === '0-0'
+            && mapping.sections[0].questions[0].ids[0].source === 'NINDS'
+            && mapping.sections[0].questions[0].ids[0].id === 'C14936'
+            && mapping.sections[0].questions[0].ids[0].version === '3'
+            && mapping.sections[0].questions[0].ids[1].source === 'NINDS Variable Name'
+            && mapping.sections[0].questions[0].ids[1].id === 'CAGRepeatsLargerAlleleNum'
+            && mapping.sections[0].questions[0].tinyId === 'VTO0Feb6NSC'
+            && mapping.sections[0].questions[1].tinyId === 'uw_koHkZ_JT'
+            && mapping.sections[0].questions[2].question === 'Name of laboratory that performed this molecular study'
+            && mapping.sections[0].questions[2].name === '0-2'
+            && mapping.sections[0].questions[2].tinyId === 'EdUB2kWmV61'
+            && mapping.sections[0].questions[3].name === '0-3'
+            && mapping.sections[0].questions[3].tinyId === 'JWWpC2baVwK'
         ) {
-            if (req.body.formUrl.indexOf(config.publicUrl + "/data") === 0) res.send('<html lang="en"><body>Form Submitted</body></html>'); else if (config.publicUrl.indexOf('localhost') === -1) {
+            if (req.body.formUrl.indexOf(config.publicUrl + '/data') === 0) res.send('<html lang="en"><body>Form Submitted</body></html>'); else if (config.publicUrl.indexOf('localhost') === -1) {
                 dns.lookup(/\/\/.*:/.exec(req.body.formUrl), (err, result) => {
-                    if (!err && req.body.formUrl.indexOf(result + "/data") === 0) res.send('<html lang="en"><body>Form Submitted</body></html>"); else res.status(401).send("<html lang="en"><body>Not the right input</body></html>');
+                    if (!err && req.body.formUrl.indexOf(result + '/data') === 0) res.send('<html lang="en"><body>Form Submitted</body></html>'); else res.status(401).send('<html lang="en"><body>Not the right input</body></html>');
                 });
             } else {
                 let ifaces = os.networkInterfaces();
                 if (Object.keys(ifaces).some(ifname => {
                         return ifaces[ifname].filter(iface => {
-                            return req.body.formUrl.indexOf(iface.address + "/data") !== 1;
+                            return req.body.formUrl.indexOf(iface.address + '/data') !== 1;
                         }).length > 0;
                     })) res.send('<html lang="en"><body>Form Submitted</body></html>');
                 else {

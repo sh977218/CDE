@@ -48,7 +48,7 @@ exports.nbOfForms = function (cb) {
 function EsInjector(esClient, indexName, documentType) {
     let _esInjector = this;
     this.buffer = [];
-    this.injectThreshold = config.elastic.inject_bulk_size || 50;
+    this.injectThreshold = config.elastic.inject_bulk_size || 200;
     this.documentType = documentType;
     this.indexName = indexName;
     this.queueDocument = function (doc, cb) {
@@ -694,14 +694,14 @@ exports.elasticSearchExport = function (dataCb, query, type) {
         }
     }
 
-    esClient.search(search, function (err, response) {
+    esClient.search(search, (err, response) => {
         if (err) {
             lock = false;
             logging.errorLogger.error("Error: Elastic Search Scroll Query Error",
                 {
                     origin: "system.elastic.elasticsearch",
                     stack: new Error().stack,
-                    details: ", query: " + query
+                    details: query
                 });
             dataCb("ES Error");
         } else {

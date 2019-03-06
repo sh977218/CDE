@@ -85,7 +85,6 @@ _.extend(LForms.LFormsConverter.prototype, {
         'comments': oboe.drop,
         'created': oboe.drop,
         'createdBy': oboe.drop,
-        'hideLabel': oboe.drop,
         'history': oboe.drop,
         'isCopyrighted': oboe.drop,
         'properties': oboe.drop,

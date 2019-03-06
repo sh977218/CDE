@@ -1,22 +1,20 @@
 const _ = require("lodash");
 const config = require('../system/parseConfig');
 const schemas = require('./schemas');
-const mongo_data_system = require('../system/mongo-data');
+const mongo_data = require('../system/mongo-data');
 const connHelper = require('../system/connections');
 const logging = require('../system/logging');
-const cdediff = require("./cdediff");
 const elastic = require('./elastic');
 const deValidator = require('esm')(module)('../../shared/de/deValidator');
 const draftSchema = require('./schemas').draftSchema;
+const dataElementSourceSchema = require('./schemas').dataElementSourceSchema;
 const isOrgCurator = require('../../shared/system/authorizationShared').isOrgCurator;
 
 exports.type = "cde";
 exports.name = "CDEs";
 
-schemas.dataElementSchema.post('remove', function (doc, next) {
-    elastic.dataElementDelete(doc, function (err) {
-        next(err);
-    });
+schemas.dataElementSchema.post('remove', (doc, next) => {
+    elastic.dataElementDelete(doc, next);
 });
 schemas.dataElementSchema.pre('save', function (next) {
     let self = this;
@@ -42,23 +40,25 @@ schemas.dataElementSchema.pre('save', function (next) {
     }
 });
 
+let conn = connHelper.establishConnection(config.database.appData);
+let CdeAudit = conn.model('CdeAudit', schemas.auditSchema);
+let DataElement = conn.model('DataElement', schemas.dataElementSchema);
+let DataElementDraft = conn.model('DataElementDraft', draftSchema);
+let DataElementSource = conn.model('DataElementSource', dataElementSourceSchema);
+let User = require('../user/userDb').User;
 
-var conn = connHelper.establishConnection(config.database.appData);
-
-var User = require('../user/userDb').User;
-var CdeAudit = conn.model('CdeAudit', schemas.cdeAuditSchema);
-
-exports.User = User;
 exports.elastic = elastic;
-
-var mongo_data = this;
-
-var DataElement = conn.model('DataElement', schemas.dataElementSchema);
-var DataElementDraft = conn.model('DataElementDraft', draftSchema);
 exports.DataElement = exports.dao = DataElement;
 exports.DataElementDraft = exports.daoDraft = DataElementDraft;
+exports.DataElementSource = DataElementSource;
+exports.User = User;
 
-mongo_data_system.attachables.push(exports.DataElement);
+mongo_data.attachables.push(exports.DataElement);
+
+// cb(err, elt)
+exports.byExisting = (elt, cb) => {
+    DataElement.findOne({_id: elt._id, tinyId: elt.tinyId}, cb);
+};
 
 exports.byId = function (id, cb) {
     DataElement.findOne({'_id': id}, cb);
@@ -89,7 +89,7 @@ exports.byTinyIdList = function (tinyIdList, callback) {
         .slice('valueDomain.permissibleValues', 10)
         .exec((err, cdes) => {
             let result = [];
-            cdes.forEach(mongo_data_system.formatElt);
+            cdes.forEach(mongo_data.formatElt);
             _.forEach(tinyIdList, t => {
                 let c = _.find(cdes, cde => cde.tinyId === t);
                 if (c) result.push(c);
@@ -111,9 +111,24 @@ exports.draftDataElementById = function (id, cb) {
     };
     DataElementDraft.findOne(cond, cb);
 };
-exports.saveDraftDataElement = function (elt, cb) {
-    delete elt.__v;
-    DataElementDraft.findOneAndUpdate({_id: elt._id}, elt, {upsert: true, new: true}, cb);
+exports.saveDraft = function (elt, cb) {
+    DataElementDraft.findById(elt._id, (err, doc) => {
+        if (err) {
+            cb(err);
+            return;
+        }
+        if (!doc) {
+            new DataElementDraft(elt).save(cb);
+            return;
+        }
+        if (doc.__v !== elt.__v) {
+            cb();
+            return;
+        }
+        const version = elt.__v;
+        elt.__v++;
+        DataElementDraft.findOneAndUpdate({_id: elt._id, __v: version}, elt, {new: true}, cb);
+    });
 };
 
 exports.deleteDraftDataElement = function (tinyId, cb) {
@@ -180,27 +195,6 @@ exports.eltByTinyId = function (tinyId, callback) {
     });
 };
 
-exports.cdesByIdList = function (idList, callback) {
-    DataElement.find().where('_id')
-        .in(idList)
-        .slice('valueDomain.permissibleValues', 10)
-        .exec(function (err, cdes) {
-            cdes.forEach(mongo_data.formatCde);
-            callback(err, cdes);
-        });
-};
-
-exports.cdesByTinyIdListInOrder = function (idList, callback) {
-    exports.byTinyIdList(idList, function (err, cdes) {
-        var reorderedCdes = idList.map(function (id) {
-            for (var i = 0; i < cdes.length; i++) {
-                if (id === cdes[i].tinyId) return cdes[i];
-            }
-        });
-        callback(err, reorderedCdes);
-    });
-};
-
 var viewedCdes = {};
 var threshold = config.viewsIncrementThreshold || 50;
 exports.inCdeView = function (cde) {
@@ -220,26 +214,21 @@ exports.save = function (mongooseObject, callback) {
 };
 
 exports.create = function (cde, user, callback) {
-    let newDe = new DataElement(cde);
-    if (!newDe.registrationState || !newDe.registrationState.registrationStatus) {
-        newDe.registrationState = {
+    let newItem = new DataElement(cde);
+    if (!newItem.registrationState || !newItem.registrationState.registrationStatus) {
+        newItem.registrationState = {
             registrationStatus: "Incomplete"
         };
     }
-    newDe.created = Date.now();
-    newDe.createdBy.userId = user._id;
-    newDe.createdBy.username = user.username;
-    newDe.tinyId = mongo_data_system.generateTinyId();
-    newDe.save((err, newElt) => {
-        if (err) {
-            logging.errorLogger.error("Error: Cannot create CDE", {
-                origin: "cde.mongo-cde.create.1",
-                stack: new Error().stack,
-                details: "elt " + JSON.stringify(newElt)
-            });
-        }
+    newItem.created = Date.now();
+    newItem.createdBy = {
+        userId: user._id,
+        username: user.username
+    };
+    newItem.tinyId = mongo_data.generateTinyId();
+    newItem.save((err, newElt) => {
         callback(err, newElt);
-        auditModifications(null, newElt, user);
+        auditModifications(user, null, newElt);
     });
 };
 
@@ -247,19 +236,20 @@ exports.fork = function (elt, user, callback) {
     exports.update(elt, user, callback, function (newDe, dataElement) {
         newDe.forkOf = dataElement.tinyId;
         newDe.registrationState.registrationStatus = "Incomplete";
-        newDe.tinyId = mongo_data_system.generateTinyId();
+        newDe.tinyId = mongo_data.generateTinyId();
         dataElement.archived = false;
     });
 };
 
-exports.newObject = function (obj) {
-    return new DataElement(obj);
-};
+exports.newObject = obj => new DataElement(obj);
 
 exports.update = function (elt, user, callback, special) {
-    let id = elt._id;
     if (elt.toObject) elt = elt.toObject();
-    return DataElement.findById(id, function (err, dataElement) {
+    return DataElement.findById(elt._id, (err, dataElement) => {
+        if (dataElement.archived) {
+            callback("You are trying to edit an archived elements");
+            return;
+        }
         delete elt._id;
         if (!elt.history) elt.history = [];
         elt.history.push(dataElement._id);
@@ -278,37 +268,36 @@ exports.update = function (elt, user, callback, special) {
 
         if (!newDe.designations || newDe.designations.length === 0) {
             logging.errorLogger.error("Error: Cannot save CDE without names", {
-                origin: "cde.mongo-cde.update.1",
                 stack: new Error().stack,
                 details: "elt " + JSON.stringify(elt)
             });
             callback("Cannot save without names");
         }
 
-        newDe.save(function (err) {
+        dataElement.archived = true;
+        DataElement.findOneAndUpdate({_id: dataElement._id}, dataElement, err => {
             if (err) {
-                logging.errorLogger.error("Cannot save new CDE",
+                logging.errorLogger.error(
+                    "Transaction failed. Cannot save archived CDE: " + newDe.tinyId,
                     {
-                        origin: "cde.mongo-cde.update.2",
                         stack: new Error().stack,
                         details: "err " + err
-                    });
-                callback(err);
-            } else {
-                dataElement.archived = true;
-                DataElement.findOneAndUpdate({_id: dataElement._id}, dataElement, function (err) {
-                    if (err) {
-                        logging.errorLogger.error("Transaction failed. Cannot save archived CDE.Possible duplicated tinyId: " + newDe.tinyId,
-                            {
-                                origin: "cde.mongo-cde.update.3",
-                                stack: new Error().stack,
-                                details: "err " + err
-                            });
                     }
-                    callback(err, newDe);
-                    auditModifications(dataElement, newDe, user);
-                });
+                );
             }
+            newDe.save((err, savedDe) => {
+                if (err) {
+                    logging.errorLogger.error("Cannot save new CDE: " + newDe.tinyId,
+                        {
+                            stack: new Error().stack,
+                            details: "err " + err
+                        });
+                    callback(err);
+                } else {
+                    callback(err, savedDe);
+                    auditModifications(user, dataElement, newDe);
+                }
+            });
         });
     });
 };
@@ -342,50 +331,8 @@ exports.transferSteward = function (from, to, callback) {
     });
 };
 
-let auditModifications = function (oldDe, newDe, user) {
-    let message = {
-        date: new Date()
-        , user: {
-            username: user.username
-        }
-        , adminItem: {
-            tinyId: newDe.tinyId
-            , version: newDe.version
-            , _id: newDe._id
-            , name: newDe.designations[0].designation
-        }
-    };
-
-    if (oldDe) {
-        message.previousItem = {
-            tinyId: oldDe.tinyId
-            , version: oldDe.version
-            , _id: oldDe._id
-            , name: oldDe.designations[0].designation
-        };
-        message.diff = cdediff.diff(newDe, oldDe);
-    }
-
-    CdeAudit(message).save(err => {
-        if (err) {
-            logging.errorLogger.error("Error: Cannot add to CDE Audit. newDe.tinyId: " + newDe.tinyId, {
-                origin: "cde.mongo-cde.auditModifications",
-                stack: new Error().stack,
-                details: "err " + err
-            });
-        }
-    });
-};
-
-exports.getCdeAuditLog = function (params, callback) {
-    CdeAudit.find()
-        .sort('-date')
-        .skip(params.skip)
-        .limit(params.limit)
-        .exec(function (err, logs) {
-            callback(err, logs);
-        });
-};
+let auditModifications = mongo_data.auditModifications.bind(undefined, CdeAudit);
+exports.getAuditLog = mongo_data.auditGetLog.bind(undefined, CdeAudit);
 
 exports.byOtherId = function (source, id, cb) {
     DataElement.find({archived: false}).elemMatch("ids", {source: source, id: id}).exec(function (err, cdes) {
@@ -461,4 +408,8 @@ exports.checkOwnership = function (req, id, cb) {
             return cb("You do not own this element.", null);
         cb(null, elt);
     });
+};
+
+exports.originalSourceByTinyIdSourceName = function (tinyId, sourceName, cb) {
+    DataElementSource.findOne({tinyId: tinyId, source: sourceName, elementType: 'cde'}, cb);
 };

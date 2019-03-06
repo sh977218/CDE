@@ -5,7 +5,7 @@ const schemas = require('./schemas');
 const mongo_data = require('../system/mongo-data');
 const connHelper = require('../system/connections');
 const mongooseHelper = require('../system/mongooseHelper');
-const logging = require('../system/logging');
+const logging = require('../system/logging'); // TODO: remove logging, error is passed out of this layer, handleError should fail-back and tee to no-db logger
 const elastic = require('./elastic');
 const isOrgCurator = require('../../shared/system/authorizationShared').isOrgCurator;
 
@@ -25,14 +25,22 @@ schemas.formSchema.pre('save', function (next) {
 });
 
 let Form = conn.model('Form', schemas.formSchema);
+let FormAudit = conn.model('FormAudit', schemas.auditSchema);
 let FormDraft = conn.model('Draft', schemas.draftSchema);
+let FormSource = conn.model('formsources', schemas.formSourceSchema);
 
 exports.Form = exports.dao = Form;
 exports.FormDraft = exports.daoDraft = FormDraft;
+exports.FormSource = FormSource;
 
 mongo_data.attachables.push(exports.Form);
 
 exports.elastic = elastic;
+
+// cb(err, elt)
+exports.byExisting = (elt, cb) => {
+    Form.findOne({_id: elt._id, tinyId: elt.tinyId}, cb);
+};
 
 exports.byId = function (id, cb) {
     Form.findById(id, cb);
@@ -94,9 +102,25 @@ exports.draftFormById = function (id, cb) {
     FormDraft.findOne(cond, cb);
 };
 
-exports.saveDraftForm = function (elt, cb) {
-    delete elt.__v;
-    FormDraft.findOneAndUpdate({_id: elt._id}, elt, {upsert: true, new: true}, cb);
+// cb(err, newDoc)
+exports.saveDraft = function (elt, cb) {
+    FormDraft.findById(elt._id, (err, doc) => {
+        if (err) {
+            cb(err);
+            return;
+        }
+        if (!doc) {
+            new FormDraft(elt).save(cb);
+            return;
+        }
+        if (doc.__v !== elt.__v) {
+            cb();
+            return;
+        }
+        const version = elt.__v;
+        elt.__v++;
+        FormDraft.findOneAndUpdate({_id: elt._id, __v: version}, elt, {new: true}, cb);
+    });
 };
 
 exports.deleteDraftForm = function (tinyId, cb) {
@@ -130,7 +154,11 @@ exports.count = function (condition, callback) {
 
 exports.update = function (elt, user, callback, special) {
     if (elt.toObject) elt = elt.toObject();
-    return Form.findOne({_id: elt._id}).exec(function (err, form) {
+    return Form.findById(elt._id, (err, form) => {
+        if (form.archived) {
+            callback("You are trying to edit an archived elements");
+            return;
+        }
         delete elt._id;
         if (!elt.history) elt.history = [];
         elt.history.push(form._id);
@@ -141,65 +169,74 @@ exports.update = function (elt, user, callback, special) {
         };
         elt.sources = form.sources;
         elt.comments = form.comments;
-        if (special) special(elt, form);
-
         let newForm = new Form(elt);
-        if (newForm.designations.length < 1) {
+
+        if (special) {
+            special(newForm, form);
+        }
+
+        if (!newForm.designations || newForm.designations.length === 0) {
             logging.errorLogger.error("Error: Cannot save form without names", {
-                origin: "cde.mongo-form.update.1",
                 stack: new Error().stack,
                 details: "elt " + JSON.stringify(elt)
             });
-            callback("Cannot save form without names");
+            callback("Cannot save without names");
         }
 
-        newForm.save(function (err, savedForm) {
+        form.archived = true;
+        Form.findOneAndUpdate({_id: form._id}, form, err => {
             if (err) {
-                logging.errorLogger.error("Cannot save new form",
+                logging.errorLogger.error(
+                    "Transaction failed. Cannot save archived form: " + newForm.tinyId,
                     {
                         stack: new Error().stack,
                         details: "err " + err
-                    });
-                callback(err);
-            } else {
-                form.archived = true;
-                Form.findOneAndUpdate({_id: form._id}, form, function (err) {
-                    if (err) {
-                        logging.errorLogger.error("Transaction failed. Cannot save archived form. Possible duplicated tinyId: " + newForm.tinyId,
-                            {
-                                stack: new Error().stack,
-                                details: "err " + err
-                            });
                     }
-                    callback(err, savedForm);
-                });
+                );
             }
+            newForm.save((err, savedForm) => {
+                if (err) {
+                    logging.errorLogger.error("Cannot save new form: " + newForm.tinyId,
+                        {
+                            stack: new Error().stack,
+                            details: "err " + err
+                        });
+                    callback(err);
+                } else {
+                    callback(err, savedForm);
+                    auditModifications(user, form, savedForm);
+                }
+            });
         });
     });
 };
 exports.updatePromise = function (elt, user) {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
         exports.update(elt, user, resolve);
-    })
+    });
 };
 
 exports.create = function (form, user, callback) {
-    let newForm = new Form(form);
-    if (!form.registrationState) {
-        newForm.registrationState = {
+    let newItem = new Form(form);
+    if (!newItem.registrationState || !newItem.registrationState.registrationStatus) {
+        newItem.registrationState = {
             registrationStatus: "Incomplete"
         };
     }
-    newForm.created = Date.now();
-    newForm.tinyId = mongo_data.generateTinyId();
-    newForm.createdBy = {
-        userId: user._id
-        , username: user.username
+    newItem.created = Date.now();
+    newItem.createdBy = {
+        userId: user._id,
+        username: user.username
     };
-    newForm.save(err => {
-        callback(err, newForm);
+    newItem.tinyId = mongo_data.generateTinyId();
+    newItem.save((err, newElt) => {
+        callback(err, newElt);
+        auditModifications(user, null, newElt);
     });
 };
+
+let auditModifications = mongo_data.auditModifications.bind(undefined, FormAudit);
+exports.getAuditLog = mongo_data.auditGetLog.bind(undefined, FormAudit);
 
 exports.byOtherId = function (source, id, cb) {
     Form.find({archived: false}).elemMatch("ids", {source: source, id: id}).exec(function (err, forms) {
@@ -243,4 +280,9 @@ exports.checkOwnership = function (req, id, cb) {
             return cb("You do not own this element.", null);
         cb(null, elt);
     });
+};
+
+
+exports.originalSourceByTinyIdSourceName = function (tinyId, sourceName, cb) {
+    FormSource.findOne({tinyId: tinyId, source: sourceName, elementType: 'form'}, cb);
 };

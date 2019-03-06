@@ -105,7 +105,7 @@ export class OrgClassificationManagementComponent implements OnInit {
             this.searching = false;
             this.descriptorName = '';
             this.descriptorID = '';
-            this.alert.addAlert('danger', err);
+            this.alert.addAlert('danger', "Unexpected error getting classification");
         });
     }
 

@@ -11,6 +11,7 @@ public class CdeSearchBreadCumbTest extends NlmCdeBaseTest {
     public void cdeSearchBreadcrumb() {
         mustBeLoggedOut();
         goToCdeSearch();
+        Assert.assertEquals(driver.getTitle(), "Data Element Search");
         clickElement(By.xpath("//div[. = 'Browse by Topic']"));
         clickElement(By.xpath("//span[contains(normalize-space(text()),'Environment and Public Health')]"));
         textPresent("results for", By.id("searchResultInfoBar"));

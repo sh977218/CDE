@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertService } from 'alert/alert.service';
 import { QuickBoardListService } from '_app/quickBoardList.service';
@@ -19,14 +20,13 @@ import _cloneDeep from 'lodash/cloneDeep';
 import _noop from 'lodash/noop';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
-import { Cb, Comment, ObjectId } from 'shared/models.model';
+import { Cb, Comment, Elt, ObjectId } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm, FormElement, FormElementsContainer, FormInForm, QuestionCde } from 'shared/form/form.model';
 import {
     addFormIds, areDerivationRulesSatisfied, getLabel, iterateFe, iterateFes, iterateFeSync, noopSkipIterCb
 } from 'shared/form/fe';
 import { canEditCuratedItem, isOrgCurator } from 'shared/system/authorizationShared';
-import { httpErrorMessage } from 'core/angularHelper';
 import { isIe, scrollTo } from 'core/browser';
 
 class LocatableError {
@@ -62,7 +62,6 @@ export class FormViewComponent implements OnInit {
     draftSubscription: Subscription;
     elt: CdeForm;
     eltCopy?: CdeForm;
-    formId?: ObjectId;
     formInput;
     hasComments;
     hasDrafts = false;
@@ -72,6 +71,7 @@ export class FormViewComponent implements OnInit {
     missingCdes: string[] = [];
     savingText: string = '';
     tabsCommented: string[] = [];
+    unsaved = false;
     validationErrors: { message: string, id: string }[] = [];
 
     ngOnInit() {
@@ -85,18 +85,19 @@ export class FormViewComponent implements OnInit {
         });
     }
 
-    constructor(private http: HttpClient,
-                private ref: ChangeDetectorRef,
+    constructor(private alert: AlertService,
+                private dialog: MatDialog,
+                public exportService: ExportService,
                 private formViewService: FormViewService,
+                private http: HttpClient,
                 private orgHelperService: OrgHelperService,
                 public quickBoardService: QuickBoardListService,
-                private alert: AlertService,
-                public userService: UserService,
-                public exportService: ExportService,
+                private ref: ChangeDetectorRef,
                 private route: ActivatedRoute,
                 private router: Router,
+                private title: Title,
                 private ucumService: UcumService,
-                private dialog: MatDialog
+                public userService: UserService
     ) {}
 
     canEdit() {
@@ -121,7 +122,8 @@ export class FormViewComponent implements OnInit {
                 permissibleValues: newCde.permissibleValues
             },
             classification: this.elt.classification,
-            ids: newCde.ids
+            ids: newCde.ids,
+            registrationState: {registrationStatus: 'Incomplete'}
         };
         this.http.post<DataElement>('/de', dataElement)
             .subscribe(res => {
@@ -129,7 +131,6 @@ export class FormViewComponent implements OnInit {
                 if (res.version) newCde.version = res.version;
                 if (cb) cb();
             }, err => {
-                newCde.error = httpErrorMessage(err);
                 this.alert.httpErrorMessageAlert(err);
             });
     }
@@ -171,9 +172,9 @@ export class FormViewComponent implements OnInit {
             if (elt.isDraft) this.hasDrafts = true;
             CdeForm.validate(elt);
             this.elt = elt;
+            this.title.setTitle('Form: ' + Elt.getLabel(this.elt));
             this.validate();
             this.loadComments(this.elt);
-            this.formId = this.elt._id;
             this.missingCdes = areDerivationRulesSatisfied(this.elt);
             addFormIds(this.elt);
             cb();
@@ -280,30 +281,31 @@ export class FormViewComponent implements OnInit {
     }
 
     saveDraft() {
-        let username = this.userService.user.username;
-        this.elt._id = this.formId;
-        if (!this.elt.createdBy) {
-            this.elt.createdBy = {userId: undefined, username: username};
-        }
-        this.elt.updated = new Date();
-        if (!this.elt.updatedBy) {
-            this.elt.updatedBy = {userId: undefined, username: username};
-        }
-        this.elt.updatedBy.username = username;
-
         this.elt.isDraft = true;
         this.hasDrafts = true;
         this.savingText = 'Saving ...';
-        if (this.draftSubscription) this.draftSubscription.unsubscribe();
-        this.draftSubscription = this.http.post<CdeForm>('/draftForm/' + this.elt.tinyId, this.elt).subscribe(() => {
+        if (this.draftSubscription) {
+            this.unsaved = true;
+            return;
+        }
+        this.draftSubscription = this.http.put<CdeForm>('/draftForm/' + this.elt.tinyId, this.elt).subscribe(newElt => {
             this.draftSubscription = undefined;
+            this.elt.__v = newElt.__v;
+            this.missingCdes = areDerivationRulesSatisfied(this.elt);
+            this.validate();
+            if (this.unsaved) {
+                this.unsaved = false;
+                this.saveDraft();
+            }
             this.savingText = 'Saved';
             setTimeout(() => {
                 this.savingText = '';
             }, 3000);
-            this.missingCdes = areDerivationRulesSatisfied(this.elt);
-            this.validate();
-        }, err => this.alert.httpErrorMessageAlert(err));
+        }, err => {
+            this.draftSubscription = undefined;
+            this.savingText = 'Cannot save this old version. Reload and redo.';
+            this.alert.httpErrorMessageAlert(err);
+        });
     }
 
     saveForm() {
@@ -316,7 +318,7 @@ export class FormViewComponent implements OnInit {
             async_forEach(newCdes, (newCde, doneOneCde) => {
                 this.createDataElement(newCde, doneOneCde);
             }, () => {
-                this.http.put('/formPublish/' + this.elt.tinyId, this.elt).subscribe(res => {
+                this.http.put('/formPublish', this.elt).subscribe(res => {
                     if (res) {
                         this.hasDrafts = false;
                         this.loadElt(() => this.alert.addAlert('success', 'Form saved.'));

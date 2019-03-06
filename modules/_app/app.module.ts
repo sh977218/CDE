@@ -68,7 +68,7 @@ import { OrgHelperService } from 'core/orgHelper.service';
     providers: [
         ApprovalService,
         BackForwardService,
-        ElasticService, // TODO: create shared CoreModule loaded async and provide to all lazy routes
+        ElasticService,
         LoginService,
         NotificationService,
         QuickBoardListService,

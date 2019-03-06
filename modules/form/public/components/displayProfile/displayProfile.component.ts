@@ -209,6 +209,7 @@ export class DisplayProfileComponent {
 
     static sampleElt = {
         "_id": "",
+        "__v": 0,
         "archived": false,
         "attachments": [],
         "classification": [],
@@ -308,12 +309,7 @@ export class DisplayProfileComponent {
                                         ],
                                         "tinyId": "",
                                     }
-                                },
-                                "cardinality": {
-                                    "min": 1,
-                                    "max": 1
-                                },
-                                "hideLabel": false
+                                }
                             },
                             {
                                 "elementType": "question",
@@ -382,8 +378,7 @@ export class DisplayProfileComponent {
                                         ],
                                         "tinyId": "",
                                     }
-                                },
-                                "hideLabel": false
+                                }
                             }
                         ],
                         "question": {
@@ -402,8 +397,7 @@ export class DisplayProfileComponent {
                                 "naming": [],
                                 "tinyId": "",
                             }
-                        },
-                        "hideLabel": false
+                        }
                     },
                     {
                         "elementType": "question",
@@ -529,8 +523,7 @@ export class DisplayProfileComponent {
                                 ],
                                 "tinyId": "",
                             }
-                        },
-                        "hideLabel": false
+                        }
                     },
                     {
                         "elementType": "question",
@@ -559,8 +552,7 @@ export class DisplayProfileComponent {
                         },
                         "instructions": {
                             "value": "Include year and month but no day."
-                        },
-                        "hideLabel": false
+                        }
                     }
                 ],
                 "question": {

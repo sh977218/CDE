@@ -2,37 +2,41 @@
      [ngClass]="{'outdated-bg': question.question.cde.outdated && !question.hover,'hover-bg': question.hover}">
     <div *ngIf="!isSubForm && canEdit" class="d-inline-block">
         <mat-icon class="question-move-handle ui-sortable-handle"
-           [treeDrag]="node" [treeDragEnabled]="node.allowDrag()">drag_handle</mat-icon>
+                  [treeDrag]="node" [treeDragEnabled]="node.allowDrag()">drag_handle
+        </mat-icon>
         <mat-icon *ngIf="question.skipLogic?.condition?.length > 0" class="updatedSkipLogicIcon"
-           [ngClass]="{'fa-spin': question.updatedSkipLogic}"
-           title="{{question.updatedSkipLogic?'Question has updated show if rule':'Question has show if rule'}}">settings</mat-icon>
+                  [ngClass]="{'fa-spin': question.updatedSkipLogic}"
+                  title="{{question.updatedSkipLogic?'Question has updated show if rule':'Question has show if rule'}}">
+            settings
+        </mat-icon>
     </div>
     <div class="font-weight-bold d-inline-block" (click)="editQuestion(question);"
          [ngClass]="{'hand-cursor':!isSubForm && canEdit}"
          (mouseover)="hoverInQuestion(question)" (mouseout)="hoverOutQuestion(question)">
         <span *ngIf="question.question.isScore">Score:</span>
         <span class="questionLabel ml-1" title="{{question.label}}">
-            <ng-container *ngIf="question.hideLabel">
+            <strong *ngIf="question.label; else labelHidden">{{question.label}} </strong>
+            <ng-template #labelHidden>
                 <mat-icon aria-label="This question has no label" matTooltip="This question has no label"
                           matTooltipClass="cdeTooltip" matTooltipPosition="right">help</mat-icon>
-                <strong [textContent]="question.question.cde.name"></strong>
-            </ng-container>
-            <strong *ngIf="!question.hideLabel">{{question.label | cdePlaceholder}} </strong>
-            <small *ngIf="question.question.partOf" class="text-info">(part of {{question.question.partOf}})</small>
+                ( {{question.label || question.question.cde.name}} )
+            </ng-template>
+            <small *ngIf="question.question.partOf" class="text-info"> (part of {{question.question.partOf}})</small>
         </span>
         <span *ngIf="question.incompleteRule" class="mx-1">(Incomplete Rule)</span>
         <span *ngIf="question.question.cde.outdated" class="mx-1">(Outdated)</span>
     </div>
-    <ng-container *ngIf="question.question.cde.outdated">
+    <ng-container *ngIf="canEdit && question.question.cde.outdated">
         <button class="btn btn-outline-dark btn-sm updateQuestionBtn d-inline-block"
-                (click)="openUpdateCdeVersion(question);" [disabled]="!canEdit">Update
+                (click)="openUpdateCdeVersion(question);">Update
         </button>
     </ng-container>
     <div class="d-inline-block questionDataType mx-1">{{getDatatypeLabel(question)}}</div>
     <div class="float-right">
         <a *ngIf="question.question.cde.tinyId" target="_blank" title="{{question.question.cde.name}}"
            href="/deView?tinyId={{question.question.cde.tinyId}}&version={{question.question.cde.version}}">
-            <mat-icon>visibility</mat-icon> View CDE
+            <mat-icon>visibility</mat-icon>
+            View CDE
         </a>
         <span *ngIf="!question.question.cde.tinyId" class="text-danger">(This is a new CDE)</span>
         <cde-delete-with-confirm *ngIf="!isSubForm && canEdit" (deleted)="removeNode(node)"></cde-delete-with-confirm>
@@ -47,7 +51,8 @@
                 <div class="col-sm-2 font-weight-bold">Label:</div>
                 <div class="col-sm-8" id="mdd_question_title">
                     <span [ngClass]="{mark: updateCdeVersion.bLabel}">{{updateCdeVersion.newQuestion.label | cdePlaceholder}}</span>
-                    <span *ngIf="updateCdeVersion.bLabel" class="text-danger">( was {{ updateCdeVersion.currentQuestion.label }} )</span>
+                    <span *ngIf="updateCdeVersion.bLabel"
+                          class="text-danger">( was {{ updateCdeVersion.currentQuestion.label }} )</span>
                 </div>
             </div>
             <div class="row">
@@ -103,7 +108,8 @@
                           *ngIf="updateCdeVersion.newQuestion.question.unitsOfMeasure.length > 0">
                         <span *ngFor="let u of updateCdeVersion.newQuestion.question.unitsOfMeasure; let i = index"
                               id="mq_uom_list_{{i}}">
-                              <ng-container *ngIf="u.system">{{u.system}}/</ng-container>{{u.code}}
+                              <ng-container *ngIf="u.system">{{u.system}}/</ng-container>
+                            {{u.code}}
                         </span>
                     </span>
                     <span [ngClass]="{mark: updateCdeVersion.bUom}"
@@ -113,10 +119,12 @@
                         <ng-container *ngIf="updateCdeVersion.currentQuestion.question.unitsOfMeasure.length > 0">
                             <span *ngFor="let u of updateCdeVersion.currentQuestion.question.unitsOfMeasure; let i = index"
                                   id="mq_old_uom_list_{{i}}">
-                                <ng-container *ngIf="u.system">{{u.system}}/</ng-container>{{u.code}}
+                                <ng-container *ngIf="u.system">{{u.system}}/</ng-container>
+                                {{u.code}}
                             </span>
                         </ng-container>
-                        <ng-container *ngIf="updateCdeVersion.currentQuestion.question.unitsOfMeasure.length <= 0">N/A</ng-container>
+                        <ng-container
+                                *ngIf="updateCdeVersion.currentQuestion.question.unitsOfMeasure.length <= 0">N/A</ng-container>
                         )
                     </span>
                 </div>
@@ -159,7 +167,8 @@
                 <div class="col-sm-8" id="mdd_d_cde">
                     <a [ngClass]="{mark: updateCdeVersion.bCde}"
                        href="/deView?tinyId={{updateCdeVersion.newQuestion.question.cde.tinyId}}&version={{updateCdeVersion.newQuestion.question.cde.version}}"
-                       target="_blank"><mat-icon>visibility</mat-icon>
+                       target="_blank">
+                        <mat-icon>visibility</mat-icon>
                         <span id="mdd_question_cde_name">{{updateCdeVersion.newQuestion.question.cde.name}}</span>
                     </a>
                     <span *ngIf="updateCdeVersion.bCde" class="text-danger">( was

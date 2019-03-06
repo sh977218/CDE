@@ -83,6 +83,7 @@ export class CdeForm extends Elt implements FormElementsContainer {
 
 export class CdeFormElastic extends CdeForm { // all volatile
     [key: string]: any; // used for highlighting
+    flatClassifications?: string[];
     highlight?: any;
     numQuestions?: number;
     primaryDefinitionCopy?: string;
@@ -226,7 +227,6 @@ export class FormQuestion implements FormElementPart {
     expanded?: boolean = true; // calculated, formDescription view model
     feId?: string; // calculated, nativeRender and formView view model
     formElements: FormElement[] = [];
-    hideLabel?: boolean; // calculated, formView view model
     hover?: boolean = false; // calculated, formDescription view model
     incompleteRule?: boolean;
     instructions?: Instruction;

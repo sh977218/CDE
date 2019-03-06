@@ -24,7 +24,8 @@ public class UomValidation extends BaseFormTest {
         startEditQuestionById("question_0-3");
         questionEditAddUom("question_0-3", "UCUM", "kilogram");
         questionEditAddUom("question_0-3", "Other", "Kilo");
-        questionEditRemoveUom("question_0-3", "inches");
+        clickElement(By.xpath("//*[@id='question_0-3']//*[contains(@class,'questionUom')]//" +
+                "span[contains(@class,'badge badge-info') and contains(normalize-space(.),'inches')]/mat-icon"));
         saveEditQuestionById("question_0-3");
         textNotPresent("inches");
         findElement(By.xpath("//*[@id='question_0-3']//*[contains(@class,'questionUom')]//*[normalize-space()='UCUM/ kg']"));

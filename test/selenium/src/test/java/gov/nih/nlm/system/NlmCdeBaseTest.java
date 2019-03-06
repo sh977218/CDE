@@ -258,6 +258,26 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         goToCdeSearch();
     }
 
+    protected void addIdSource(String source, String deLink, String formLink) {
+        findElement(By.xpath("//input[@placeholder = 'New Id:']")).sendKeys(source);
+        clickElement(By.xpath("//button[contains(., 'Add')]"));
+        findElement(By.xpath("//tr[td[contains(., '" + source + "')]]//input[contains(@placeholder, 'Data Element Link')]")).sendKeys(deLink);
+        clickElement(By.xpath("//tr[td[contains(., '" + source + "')]]//input[contains(@placeholder, 'Form Link')]")); // save
+        hangon(2); // wait for save refresh
+        findElement(By.xpath("//tr[td[contains(., '" + source + "')]]//input[contains(@placeholder, 'Form Link')]")).sendKeys(formLink);
+        clickElement(By.xpath("//tr[td[contains(., '" + source + "')]]//input[contains(@placeholder, 'Version')]")); // save
+        hangon(2); // wait for save refresh
+        textPresent(source);
+        Assert.assertEquals(
+                findElement(By.xpath("//tr[td[contains(., '" + source + "')]]//input[contains(@placeholder, 'Data Element Link')]")).getAttribute("value"),
+                deLink
+        );
+        Assert.assertEquals(
+                findElement(By.xpath("//tr[td[contains(., '" + source + "')]]//input[contains(@placeholder, 'Form Link')]")).getAttribute("value"),
+                formLink
+        );
+    }
+
     protected void addOrg(String orgName, String orgLongName, String orgWGOf) {
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Org Management"));
@@ -489,6 +509,11 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         clickElement(By.xpath("//mat-icon[normalize-space() = 'search']"));
         textPresent("1 results for");
         textPresent(name, By.id("searchResult_0"));
+    }
+
+    protected void newTab() {
+        ((JavascriptExecutor) driver).executeScript("window.open()");
+        hangon(5);
     }
 
     protected void checkTooltipText(By by, String text) {
@@ -794,6 +819,11 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         clickElement(By.id("qb_compare"));
     }
 
+    protected void refresh() {
+        driver.navigate().refresh();
+        hangon(2);
+    }
+
     public void scrollToTop() {
         scrollTo(0);
     }
@@ -897,23 +927,35 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         clickElement(By.id("historyCompareBtn"));
     }
 
-    protected void openCdeAudit(String cdeName) {
+    private void openAudit(String type, String name) {
         mustBeLoggedInAs(nlm_username, nlm_password);
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Audit"));
-        clickElement(By.xpath("//div[. = 'CDE Audit Log']"));
+        clickElement(By.xpath("//div[. = '" + type + " Audit Log']"));
         for (Integer i = 0; i < 10; i++) {
             hangon(1);
             try {
                 wait.until(ExpectedConditions.textToBePresentInElementLocated(
-                        By.cssSelector("mat-accordion"), cdeName));
+                        By.cssSelector("mat-accordion"), name));
                 break;
             } catch (Exception e) {
                 clickElement(By.cssSelector(".mat-paginator-navigation-next"));
             }
 
         }
-        clickElement(By.xpath("//mat-accordion//mat-panel-title[contains (., '" + cdeName + "')]"));
+        clickElement(By.xpath("//mat-accordion//mat-panel-title[contains (., '" + name + "')]"));
+    }
+
+    protected void openAuditClassification(String name) {
+        openAudit("Classification", name);
+    }
+
+    protected void openAuditDataElement(String name) {
+        openAudit("CDE", name);
+    }
+
+    protected void openAuditForm(String name) {
+        openAudit("Form", name);
     }
 
     protected void setVisibleStatus(String id) {
@@ -1068,14 +1110,19 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         modalGone();
     }
 
+    protected void addNewIdentifier(String source, String id) {
+        addNewIdentifier(source, id, null);
+    }
+
     protected void addNewIdentifier(String source, String id, String version) {
         clickElement(By.id("openNewIdentifierModalBtn"));
         hangon(1);
-        findElement(By.id("newSource")).sendKeys(source);
-        findElement(By.id("newId")).sendKeys(id);
+        new Select(findElement(By.name("source"))).selectByVisibleText(source);
+        findElement(By.name("id")).sendKeys(id);
         if (version != null)
             findElement(By.name("version")).sendKeys(version);
         clickElement(By.id("createNewIdentifierBtn"));
+        modalGone();
     }
 
     protected void changeDatatype(String newDatatype) {
@@ -1099,14 +1146,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         clickElement(By.id("confirmDeleteClassificationBtn"));
         closeAlert();
         checkElementDoesNotExistByLocator(By.xpath("//*[@id='" + selector + "']"));
-    }
-
-    protected void openClassificationAudit(String name) {
-        mustBeLoggedInAs(nlm_username, nlm_password);
-        clickElement(By.id("username_link"));
-        clickElement(By.linkText("Audit"));
-        clickElement(By.xpath("//div[. = 'Classification Audit Log']"));
-        clickElement(By.xpath("(//span[text()='" + name + "' and contains(@class,'text-info')])[1]"));
     }
 
     protected void goToBoard(String boardName) {

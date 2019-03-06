@@ -122,17 +122,33 @@ exports.draftDataElementById = (req, res) => {
     }));
 };
 
-exports.saveDraftDataElement = (req, res) => {
+exports.saveDraft = (req, res) => {
     let elt = req.body;
     let tinyId = req.params.tinyId;
+    let user = req.user;
     if (!elt || !tinyId || elt.tinyId !== tinyId
         || !elt.designations || !elt.designations.length) {
         return res.status(400).send();
     }
-    if (req.user && req.user.username) elt.updatedBy.username = req.user.username;
     if (!elt.created) elt.created = new Date();
+    if (!elt.createdBy) {
+        elt.createdBy = {
+            userId: user._id,
+            username: user.username
+        };
+    }
     elt.updated = new Date();
-    mongo_cde.saveDraftDataElement(elt, handleError({req, res}, dataElement => res.send(dataElement)));
+    elt.updatedBy = {
+        userId: user._id,
+        username: user.username
+    };
+    mongo_cde.saveDraft(elt, handleError({req, res}, elt => {
+        if (!elt) {
+            res.status(409).send('Edited by someone else. Please refresh and redo.');
+            return;
+        }
+        res.send(elt);
+    }));
 };
 
 exports.deleteDraftDataElement = (req, res) => {
@@ -159,7 +175,7 @@ exports.byTinyIdList = (req, res) => {
                 if (c) result.push(c);
             });
             res.send(result);
-    }));
+        }));
 };
 
 exports.latestVersionByTinyId = (req, res) => {
@@ -196,28 +212,21 @@ exports.updateDataElement = (req, res) => {
 
 exports.publishDataElement = (req, res) => {
     let elt = req.body;
-    let tinyId = req.params.tinyId;
-    if (!elt || !tinyId || elt.tinyId !== tinyId
-        || !elt.designations || !elt.designations.length) {
+    if (!elt || !elt.designations || !elt.designations.length) {
         return res.status(400).send();
     }
-    mongo_cde.byTinyId(tinyId, handleError({req, res}, item => {
-        if (!item) return res.status(404).send();
-        if (!authorizationShared.canEditCuratedItem(req.user, item)) {
+    const item = req.item;
+    mongo_data.orgByName(item.stewardOrg.name, handleError({req, res}, org => {
+        let allowedRegStatuses = ['Retired', 'Incomplete', 'Candidate'];
+        if (org && org.workingGroupOf && org.workingGroupOf.length > 0
+            && allowedRegStatuses.indexOf(item.registrationState.registrationStatus) === -1) {
             return res.status(403).send();
         }
-        mongo_data.orgByName(item.stewardOrg.name, handleError({req, res}, org => {
-            let allowedRegStatuses = ['Retired', 'Incomplete', 'Candidate'];
-            if (org && org.workingGroupOf && org.workingGroupOf.length > 0
-                && allowedRegStatuses.indexOf(item.registrationState.registrationStatus) === -1) {
-                return res.status(403).send();
-            }
-            elt.classification = item.classification;
-            elt.attachments = item.attachments;
-            deValidator.wipeDatatype(elt);
-            mongo_cde.update(elt, req.user, handleError({req, res}, response => {
-                mongo_cde.deleteDraftDataElement(elt.tinyId, handleError({req, res}, () => res.send(response)));
-            }));
+        elt.classification = item.classification;
+        elt.attachments = item.attachments;
+        deValidator.wipeDatatype(elt);
+        mongo_cde.update(elt, req.user, handleError({req, res}, response => {
+            mongo_cde.deleteDraftDataElement(elt.tinyId, handleError({req, res}, () => res.send(response)));
         }));
     }));
 };
@@ -245,6 +254,17 @@ exports.viewHistory = (req, res) => {
         dataElements.forEach(de => hideProprietaryCodes(de, req.user));
         return res.send(dataElements);
     }));
+};
+
+exports.originalSourceByTinyIdSourceName = (req, res) => {
+    let tinyId = req.params.tinyId;
+    let sourceName = req.params.sourceName;
+    mongo_cde.originalSourceByTinyIdSourceName(tinyId, sourceName,
+        handleError({req, res}, originalSource => {
+            if (originalSource) res.send(originalSource);
+            else res.status(404).send('No ' + sourceName + ' source file found for ' + tinyId);
+        })
+    )
 };
 
 /* ---------- PUT NEW REST API Implementation above  ---------- */

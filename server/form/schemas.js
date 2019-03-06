@@ -177,8 +177,8 @@ exports.formJson = {
     }]
     , referenceDocuments: [sharedSchemas.referenceDocumentSchema]
 };
-
 exports.formSchema = new Schema(exports.formJson, {usePushEach: true});
+
 exports.draftSchema = new Schema(exports.formJson, {
     sePushEach: true,
     toObject: {
@@ -192,5 +192,19 @@ exports.draftSchema.virtual('isDraft').get(function () {
     return true;
 });
 exports.formSchema.set('collection', 'forms');
+exports.formSchema.index({tinyId: 1, archived: 1}, {
+    unique: true,
+    name: "formLiveTinyId",
+    partialFilterExpression: {archived: false}
+});
+
 exports.draftSchema.set('collection', 'formdrafts');
+
+exports.formSourceSchema = new Schema(exports.formJson, {usePushEach: true});
+exports.formSourceSchema.index({tinyId: 1, source: 1}, {unique: true});
+exports.formSourceSchema.set('collection', 'formsources');
+
+exports.auditSchema = new Schema(sharedSchemas.itemLogSchema, {strict: false});
+exports.auditSchema.set('collection', 'formAudit');
+
 

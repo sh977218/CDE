@@ -1,3 +1,4 @@
+import { Observable } from 'rxjs';
 import { CdeForm, CdeFormElastic } from 'shared/form/form.model';
 import { DataElement, DataElementElastic } from 'shared/de/dataElement.model';
 
@@ -134,6 +135,10 @@ export enum CurationStatusEnum {
     'Preferred Standard', 'Standard', 'Qualified', 'Recorded', 'Candidate', 'Incomplete', 'Retired'
 }
 
+export abstract class DataService {
+    abstract getDrafts(): Observable<Drafts>;
+}
+
 export class DataSource {
     copyright?: FormattedValue;
     created?: Date;
@@ -195,6 +200,7 @@ export interface ElasticQueryResponseHit {
 }
 
 export abstract class Elt {
+    __v!: number;
     _id!: ObjectId;
     archived: boolean = false;
     attachments: Attachment[] = [];
@@ -351,6 +357,7 @@ export class DerivationRule {
 
 type DerivationRuleFormula = 'sumAll' | 'mean' | 'bmi';
 type DerivationRuleType = 'score' | 'panel';
+export type Drafts = {draftCdes: DataElement[], draftForms: CdeForm[]};
 export type Item = DataElement | CdeForm;
 export type ItemElastic = DataElementElastic | CdeFormElastic;
 export type ListTypes = 'accordion' | 'table' | 'summary';
@@ -437,6 +444,17 @@ export class RegistrationState {
     };
     unresolvedIssue?: string;
     untilDate?: Date;
+}
+
+export class Source {
+    _id?: string;
+    linkTemplateDe: string = '';
+    linkTemplateForm: string = '';
+    version?: string;
+
+    constructor(id: string) {
+        this._id = id;
+    }
 }
 
 export class StatusValidationRules {

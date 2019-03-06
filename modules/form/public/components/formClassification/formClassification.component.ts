@@ -63,18 +63,18 @@ export class FormClassificationComponent {
                                                 clearInterval(fn);
                                                 this.classifyCdesModalRef.close('success');
                                             }, err => {
-                                                this.alert.addAlert('danger', err);
+                                                this.alert.addAlert('danger', "Unexpected error classifying");
                                             });
                                     }
                                 },
                                 err => {
-                                    this.alert.addAlert('danger', err);
+                                    this.alert.addAlert('danger', "Unexpected error classifying");
                                     this.classifyCdesModalRef.close('error');
                                 });
                     }, 5000);
                 }
             }, err => {
-                this.alert.addAlert('danger', err);
+                this.alert.addAlert('danger', "Unexpected error classifying");
             });
     }
 
@@ -82,7 +82,7 @@ export class FormClassificationComponent {
         this.classificationSvc.classifyItem(this.elt, event.selectedOrg, event.classificationArray,
             '/server/classification/addFormClassification/', (err) => {
                 this.classifyItemModalRef.close();
-                if (err) this.alert.addAlert('danger', err);
+                if (err) this.alert.addAlert('danger', "Unexpected error classifying");
                 else this.reloadElt(() => this.alert.addAlert('success', 'Classification added.'));
             });
     }
@@ -124,7 +124,7 @@ export class FormClassificationComponent {
         this.classificationSvc.removeClassification(this.elt, event.deleteOrgName,
             event.deleteClassificationArray, '/server/classification/removeFormClassification/', err => {
                 if (err) {
-                    this.alert.addAlert('danger', err);
+                    this.alert.addAlert('danger', "Unexpected error removing classification");
                 } else {
                     this.reloadElt(() => this.alert.addAlert('success', 'Classification removed.'));
                 }

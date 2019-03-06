@@ -3,7 +3,7 @@
     Map supported procedure properties to questions in this form.
 </p>
 <div>
-    <mat-form-field>
+    <mat-form-field class="w-100">
         <mat-select required placeholder="Performed Date" [(ngModel)]="mapping.performedDate">
             <mat-option *ngFor="let q of dateQuestions" [value]="q.question.cde.tinyId">
                     <small>{{q.question.cde.tinyId}}</small> - {{q.label}}
@@ -14,7 +14,7 @@
 </div>
 
 <div>
-    <mat-form-field>
+    <mat-form-field class="w-100">
         <mat-select required placeholder="Procedure Type Code" [(ngModel)]="mapping.procedureQuestionID">
             <mat-option [value]="'static'">Static Value</mat-option>
             <mat-option *ngFor="let q of valueListQuestions" [value]="q.question.cde.tinyId">
@@ -30,7 +30,7 @@
 </div>
 
 <div>
-    <mat-form-field>
+    <mat-form-field class="w-100">
         <mat-select required placeholder="Status" [(ngModel)]="mapping.statusQuestionID">
             <mat-option [value]="'static'">Static Value</mat-option>
             <mat-option *ngFor="let q of valueListQuestions" [value]="q.question.cde.tinyId">
@@ -53,7 +53,7 @@
          class="alert alert-warning" role="alert">
         Warning: The selected question is single-select while used to edit a multi-select field. The answers will only be used to append values.
     </div>
-    <mat-form-field>
+    <mat-form-field class="w-100">
         <mat-select placeholder="Body Site" [(ngModel)]="mapping.bodySiteQuestionID">
             <mat-option>[Empty]</mat-option>
             <mat-option [value]="'static'">Static Value</mat-option>
@@ -74,7 +74,7 @@
          class="alert alert-warning" role="alert">
         Warning: The selected question is single-select while used to edit a multi-select field. The answers will only be used to append values.
     </div>
-    <mat-form-field>
+    <mat-form-field class="w-100">
         <mat-select placeholder="Used Reference" [(ngModel)]="usedRefs" (ngModelChange)="initRefMaps($event)">
             <mat-option>None</mat-option>
             <mat-option *ngFor="let q of valueListQuestions" [value]="q">
@@ -96,7 +96,7 @@
          class="alert alert-warning" role="alert">
         Warning: The selected question is single-select while used to edit a multi-select field. The answers will only be used to append values.
     </div>
-    <mat-form-field>
+    <mat-form-field class="w-100">
         <mat-select placeholder="Complication" [(ngModel)]="mapping.complications">
             <mat-option>None</mat-option>
             <mat-option *ngFor="let q of valueListQuestions" [value]="q.question.cde.tinyId">

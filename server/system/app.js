@@ -76,7 +76,11 @@ exports.init = function (app) {
     });
 
     let indexHtml = '';
-    ejs.renderFile('modules/system/views/index.ejs', {config: config, isLegacy: false, version: version}, (err, str) => {
+    ejs.renderFile('modules/system/views/index.ejs', {
+        config: config,
+        isLegacy: false,
+        version: version
+    }, (err, str) => {
         indexHtml = str;
     });
 
@@ -293,11 +297,13 @@ exports.init = function (app) {
                     'archived': false,
                     'registrationState.registrationStatus': 'Qualified'
                 };
+
                 function handleStream(stream, formatter, cb) {
                     stream.on('data', doc => wstream.write(formatter(doc)));
                     stream.on('err', cb);
                     stream.on('end', cb);
                 }
+
                 return util.promisify(async.series)([
                     cb => handleStream(
                         mongo_cde.DataElement.find(cond, 'tinyId').cursor(),
@@ -318,9 +324,9 @@ exports.init = function (app) {
     }, null, true, 'America/New_York', this, true);
 
     app.get(['/help/:title', '/createForm', '/createCde', '/boardList',
-        '/board/:id', '/myboards', '/cdeStatusReport', '/api', '/sdcview', '/404', '/whatsNew', '/contactUs',
-        '/quickBoard', '/searchPreferences', '/siteAudit', '/siteaccountmanagement', '/orgaccountmanagement',
-        '/classificationmanagement', '/inbox', '/profile', '/login', '/orgAuthority', '/orgComments'],
+            '/board/:id', '/myBoards', '/cdeStatusReport', '/api', '/sdcview', '/404', '/whatsNew', '/contactUs',
+            '/quickBoard', '/searchPreferences', '/siteAudit', '/siteAccountManagement', '/orgAccountManagement',
+            '/classificationManagement', '/inbox', '/profile', '/login', '/orgAuthority', '/orgComments'],
         respondHomeFull
     );
 
@@ -398,9 +404,8 @@ exports.init = function (app) {
                 index.totalCount = 0;
             }, 5000);
         });
-        return res.send('Re-index request sent.');
+        return res.send();
     });
-
 
 
     app.get('/supportedBrowsers', (req, res) => res.render('supportedBrowsers', 'system'));
@@ -633,78 +638,68 @@ exports.init = function (app) {
     });
 
     app.get('/fhirApps', (req, res) => fhirApps.find(res, {}, apps => res.send(apps)));
-    app.get('/fhirApp/:id', (req, res) => fhirApps.find(res, {_id: req.params.id}, apps => res.send(apps[0])));
-    app.post('/fhirApp', [authorization.isSiteAdminMiddleware], (req, res) => fhirApps.put(res, req.body, app => res.send(app)));
-    app.delete('/fhirApp/:id', [authorization.isSiteAdminMiddleware], (req, res) => fhirApps.delete(res, req.params.id, () => res.send()));
+    app.get('/fhirApp/:id', (req, res) => fhirApps.get(res, req.params.id, app => res.send(app)));
+    app.post('/fhirApp', authorization.isSiteAdminMiddleware,
+        (req, res) => fhirApps.save(res, req.body, app => res.send(app)));
+    app.delete('/fhirApp/:id', authorization.isSiteAdminMiddleware,
+        (req, res) => fhirApps.delete(res, req.params.id, () => res.send()));
 
-    app.post('/disableRule', (req, res) => {
-        if (!authorizationShared.isOrgAuthority(req.user)) return res.status(403).send('Not Authorized');
-        mongo_data.disableRule(req.body, function (err, org) {
-            if (err) return res.status(500).send(org);
+    app.post('/disableRule', authorization.isOrgAuthorityMiddleware, (req, res) => {
+        mongo_data.disableRule(req.body, handleError({req, res}, org => {
             res.send(org);
+        }));
+    });
+
+    app.post('/enableRule', authorization.isOrgAuthorityMiddleware, (req, res) => {
+        mongo_data.enableRule(req.body, handleError({req, res}, org => {
+            res.send(org);
+        }));
+    });
+
+    app.get('/activeBans', authorization.isSiteAdminMiddleware, (req, res) => {
+        traffic.getTrafficFilter(list => res.send(list));
+    });
+
+    app.post('/removeBan', authorization.isSiteAdminMiddleware, (req, res) => {
+        traffic.getTrafficFilter(elt => {
+            let foundIndex = elt.ipList.findIndex(r => r.ip === req.body.ip);
+            if (foundIndex > -1) {
+                elt.ipList.splice(foundIndex, 1);
+                elt.save(() => res.send());
+            } else {
+                res.send();
+            }
         });
     });
 
-    app.post('/enableRule', (req, res) => {
-        if (!authorizationShared.isOrgAuthority(req.user)) return res.status(403).send('Not Authorized');
-        mongo_data.enableRule(req.body, (err, org) => {
-            if (err) return res.status(500).send(org);
-            res.send(org);
-        });
+    app.get('/allDrafts', authorization.isSiteAdminMiddleware, (req, res) => {
+        mongo_cde.draftsList({}, handleError({req, res}, draftCdes => {
+            mongo_form.draftsList({}, handleError({req, res}, draftForms => {
+                res.send({draftCdes: draftCdes, draftForms: draftForms});
+            }));
+        }));
     });
 
-    app.get('/activeBans', (req, res) => {
-        if (req.isAuthenticated() && req.user.siteAdmin) {
-            traffic.getTrafficFilter(list => res.send(list));
-        } else res.status(401).send();
+    app.get('/orgDrafts', authorization.isOrgCuratorMiddleware, (req, res) => {
+        mongo_cde.draftsList({'stewardOrg.name': {$in: usersrvc.myOrgs(req.user)}}, handleError({
+            req,
+            res
+        }, draftCdes => {
+            mongo_form.draftsList({'stewardOrg.name': {$in: usersrvc.myOrgs(req.user)}}, handleError({
+                req,
+                res
+            }, draftForms => {
+                return res.send({draftCdes: draftCdes, draftForms: draftForms});
+            }));
+        }));
     });
 
-    app.post('/removeBan', (req, res) => {
-        if (req.isAuthenticated() && req.user.siteAdmin) {
-            traffic.getTrafficFilter(elt => {
-                let foundIndex = elt.ipList.findIndex(r => r.ip === req.body.ip);
-                if (foundIndex > -1) {
-                    elt.ipList.splice(foundIndex, 1);
-                    elt.save(() => res.send());
-                } else res.send();
-            });
-        } else res.status(401).send();
-    });
-
-    app.get('/allDrafts', (req, res) => {
-        if (req.user && req.user.siteAdmin) {
-            mongo_cde.draftsList({}, (err, draftCdes) => {
-                if (err) return res.status(500).send('Error Retrieving Draft CDEs');
-                mongo_form.draftsList({}, (err, draftForms) => {
-                    if (err) return res.status(500).send('Error Retrieving Draft Forms');
-                    res.send({draftCdes: draftCdes, draftForms: draftForms});
-                });
-            });
-        } else res.status(401).send();
-    });
-
-    app.get('/orgDrafts', (req, res) => {
-        if (authorizationShared.isOrgCurator(req.user)) {
-            mongo_cde.draftsList({'stewardOrg.name': {$in: usersrvc.myOrgs(req.user)}}, (err, draftCdes) => {
-                if (err) return res.status(500).send('Error Retrieving Draft CDEs');
-                mongo_form.draftsList({'stewardOrg.name': {$in: usersrvc.myOrgs(req.user)}}, (err, draftForms) => {
-                    if (err) return res.status(500).send('Error Retrieving Draft Forms');
-                    return res.send({draftCdes: draftCdes, draftForms: draftForms});
-                });
-            });
-        } else res.status(401).send();
-    });
-
-    app.get('/myDrafts', (req, res) => {
-        if (authorizationShared.isOrgCurator(req.user)) {
-            mongo_cde.draftsList({'updatedBy.username': req.user.username}, (err, draftCdes) => {
-                if (err) return res.status(500).send('Error Retrieving Draft CDEs');
-                mongo_form.draftsList({'updatedBy.username': req.user.username}, (err, draftForms) => {
-                    if (err) return res.status(500).send('Error Retrieving Draft Forms');
-                    res.send({draftCdes: draftCdes, draftForms: draftForms});
-                });
-            });
-        } else res.status(401).send();
+    app.get('/myDrafts', authorization.isOrgCuratorMiddleware, (req, res) => {
+        mongo_cde.draftsList({'updatedBy.username': req.user.username}, handleError({req, res}, draftCdes => {
+            mongo_form.draftsList({'updatedBy.username': req.user.username}, handleError({req, res}, draftForms => {
+                res.send({draftCdes: draftCdes, draftForms: draftForms});
+            }));
+        }));
     });
 
     let syncLinkedFormsProgress = {done: 0, todo: 0};
@@ -725,6 +720,8 @@ exports.init = function (app) {
                 return {tinyId: h._source.tinyId, registrationStatus: h._source.registrationState.registrationStatus};
             });
 
+
+
             await elastic.esClient.update({
                 index: config.elastic.index.name,
                 type: "dataelement",
@@ -736,5 +733,12 @@ exports.init = function (app) {
     });
 
     app.get('/syncLinkedFormsStatus', (req, res) => res.send(syncLinkedFormsProgress));
+
+    app.get('/idSources', (req, res) => mongo_data.idSource.find(res, {}, rs => res.send(rs)));
+    app.get('/idSource/:id', (req, res) => mongo_data.idSource.get(res, req.params.id, r => res.send(r)));
+    app.put('/idSource', authorization.isSiteAdminMiddleware,
+        (req, res) => mongo_data.idSource.save(res, req.body, r => res.send(r)));
+    app.delete('/idSource/:id', authorization.isSiteAdminMiddleware,
+        (req, res) => mongo_data.idSource.delete(res, req.params.id, () => res.send()));
 
 };

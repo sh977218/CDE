@@ -356,17 +356,33 @@ exports.forEditByTinyIdAndVersion = (req, res) => {
     }));
 };
 
-exports.saveDraftForm = (req, res) => {
+exports.saveDraft = (req, res) => {
     let elt = req.body;
     let tinyId = req.params.tinyId;
+    let user = req.user;
     if (!elt || !tinyId || elt.tinyId !== tinyId
         || !elt.designations || !elt.designations.length) {
         return res.status(400).send();
     }
-    if (req.user && req.user.username) elt.createdBy.username = req.user.username;
     if (!elt.created) elt.created = new Date();
+    if (!elt.createdBy) {
+        elt.createdBy = {
+            userId: user._id,
+            username: user.username
+        };
+    }
     elt.updated = new Date();
-    mongo_form.saveDraftForm(elt, handleError({req, res}, form => res.send(form)));
+    elt.updatedBy = {
+        userId: user._id,
+        username: user.username
+    };
+    mongo_form.saveDraft(elt, handleError({req, res}, elt => {
+        if (!elt) {
+            res.status(409).send('Edited by someone else. Please refresh and redo.');
+            return;
+        }
+        res.send(elt);
+    }));
 };
 
 exports.deleteDraftForm = (req, res) => {
@@ -394,8 +410,7 @@ exports.latestVersionByTinyId = (req, res) => {
 
 exports.publishForm = (req, res) => {
     if (!req.params.id || req.params.id.length !== 24) return res.status(400).send();
-    mongo_form.byId(req.params.id, handleError({req, res}, form => {
-        if (!form) return res.status(400).send('form not found');
+    mongo_form.byId(req.params.id, handle404({req, res}, form => {
         exports.fetchWholeForm(form.toObject(), handleError({
             req, res, message: 'Fetch whole for publish'
         }, wholeForm => {
@@ -433,27 +448,29 @@ exports.updateForm = (req, res) => {
 
 exports.publishTheForm = (req, res) => {
     let elt = req.body;
-    let tinyId = req.params.tinyId;
-    if (!elt || !tinyId || elt.tinyId !== tinyId
-        || !elt.designations || !elt.designations.length) {
+    if (!elt || !elt.designations || !elt.designations.length) {
         return res.status(400).send();
     }
-    mongo_form.byTinyId(tinyId, handle404({req, res}, item => {
-        if (!authorizationShared.canEditCuratedItem(req.user, item)) {
+    const item = req.item;
+    mongo_data.orgByName(item.stewardOrg.name, handleError({req, res}, org => {
+        let allowedRegStatuses = ["Retired", "Incomplete", "Candidate"];
+        if (org && org.workingGroupOf && org.workingGroupOf.length > 0
+            && allowedRegStatuses.indexOf(item.registrationState.registrationStatus) === -1) {
             return res.status(403).send();
         }
-        mongo_data.orgByName(item.stewardOrg.name, handleError({req, res}, org => {
-            let allowedRegStatuses = ["Retired", "Incomplete", "Candidate"];
-            if (org && org.workingGroupOf && org.workingGroupOf.length > 0
-                && allowedRegStatuses.indexOf(item.registrationState.registrationStatus) === -1) {
-                return res.status(403).send();
-            }
-            elt.classification = item.classification;
-            elt.attachments = item.attachments;
-            formShared.trimWholeForm(elt);
-            mongo_form.update(elt, req.user, handleError({req, res}, response => {
-                mongo_form.deleteDraftForm(elt.tinyId, handleError({req, res}, () => res.send(response)));
-            }));
+        elt.classification = item.classification;
+        elt.attachments = item.attachments;
+        formShared.trimWholeForm(elt);
+        mongo_form.update(elt, req.user, handleError({req, res}, response => {
+            mongo_form.deleteDraftForm(elt.tinyId, handleError({req, res}, () => res.send(response)));
         }));
+    }));
+};
+
+exports.originalSourceByTinyIdSourceName = (req, res) => {
+    let tinyId = req.params.tinyId;
+    let sourceName = req.params.sourceName;
+    mongo_form.originalSourceByTinyIdSourceName(tinyId, sourceName, handle404({req, res}, originalSource => {
+        res.send(originalSource);
     }));
 };

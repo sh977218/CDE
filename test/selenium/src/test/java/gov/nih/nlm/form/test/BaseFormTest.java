@@ -8,7 +8,7 @@ import org.testng.Assert;
 
 import java.io.*;
 import java.nio.charset.Charset;
-import java.util.concurrent.TimeUnit;
+import java.util.List;
 
 public class BaseFormTest extends NlmCdeBaseTest {
 
@@ -19,12 +19,12 @@ public class BaseFormTest extends NlmCdeBaseTest {
         showSearchFilters();
     }
 
-    public void addSectionTop(String title, String repeat) {
-        addSection(title, repeat, 0);
+    protected void addSectionTop(String title) {
+        addSection(title, null, 0);
     }
 
-    public void addSectionBottom(String title, String repeat) {
-        hangon(2);
+    protected void addSectionBottom(String title, String repeat) {
+        hangon(1);
         String searchString;
         if (driver.findElements(By.xpath("//tree-viewport/div/div/tree-node-drop-slot")).size() > 0)
             searchString = "//tree-viewport/div/div/tree-node-drop-slot/*[@class='node-drop-slot']";
@@ -35,10 +35,9 @@ public class BaseFormTest extends NlmCdeBaseTest {
         addSection(title, repeat, nbOfSections - 1);
     }
 
-    public void addSection(String title, String repeat, Integer sectionNumber) {
+    protected void addSection(String title, String repeat, Integer sectionNumber) {
         String sectionId = "section_" + sectionNumber;
-
-        hangon(2);
+        hangon(1);
 
         // drag and drop selenium is buggy, try 5 times.
         for (int i = 0; i < 5; i++) {
@@ -74,11 +73,11 @@ public class BaseFormTest extends NlmCdeBaseTest {
         textPresent(title, By.id(sectionId));
     }
 
-    public String byValueListValueXPath(String value) {
+    protected String byValueListValueXPath(String value) {
         return "label[contains(.,'" + value + "')]";
     }
 
-    public void editSectionTitle(String sectionId, String title) {
+    private void editSectionTitle(String sectionId, String title) {
         clickElement(By.xpath("//div[@id='" + sectionId + "']//*[contains(@class,'section_label')]//mat-icon[normalize-space() = 'edit']"));
         String sectionInput = "//div[@id='" + sectionId + "']//*[contains(@class,'section_label')]//input";
         findElement(By.xpath(sectionInput)).clear();
@@ -86,7 +85,7 @@ public class BaseFormTest extends NlmCdeBaseTest {
         clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_label')]//button/mat-icon[normalize-space() = 'check']"));
     }
 
-    public void questionEditAddUom(String id, String type, String text) {
+    void questionEditAddUom(String id, String type, String text) {
         clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'questionUom')]//input"));
         new Select(findElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'questionUom')]//select"))).selectByVisibleText(type);
         textPresent(type, By.xpath("//*[@id='" + id + "']//*[contains(@class,'questionUom')]//select"));
@@ -102,11 +101,7 @@ public class BaseFormTest extends NlmCdeBaseTest {
         }
     }
 
-    public void questionEditRemoveUom(String id, String uom) {
-        clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'questionUom')]//span[contains(@class,'badge badge-info') and contains(normalize-space(.),'" + uom + "')]/mat-icon"));
-    }
-
-    public void setRepeat(String sectionId, String repeat) {
+    void setRepeat(String sectionId, String repeat) {
         if (repeat != null) {
             if (repeat.charAt(0) == 'F')
                 new Select(findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/select"))).selectByVisibleText("Over first question");
@@ -122,7 +117,7 @@ public class BaseFormTest extends NlmCdeBaseTest {
         clickElement(By.id("printableLogicCb"));
     }
 
-    public void dragAndDrop(WebElement source, WebElement target) {
+    protected void dragAndDrop(WebElement source, WebElement target) {
         String basePath = new File("").getAbsolutePath();
 
         // drag and drop selenium is buggy, try 5 times.
@@ -160,42 +155,6 @@ public class BaseFormTest extends NlmCdeBaseTest {
         return builder.toString();
     }
 
-    public String locateSkipLogicEditTextareaXpathByQuestionId(String questionId) {
-        return "//*[@id='" + questionId + "']//*[contains(@class,'skipLogicEditTextarea')]//input";
-    }
-
-    public void editSkipLogic(String inputXpath, String textToBePresent, int expectedNumSuggested, int clickNth,
-                              boolean displayError, String errorMessage) {
-        findElement(By.xpath(inputXpath)).sendKeys(Keys.SPACE);
-        findElement(By.xpath("(//*[contains(@id,'ngb-typeahead-') and string-length(@id)>16])[" + clickNth + "]/*[contains(.,'" + textToBePresent + "')]"));
-        int actualNumSuggested = findElements(By.xpath("(//*[contains(@id,'ngb-typeahead-') and string-length(@id)>16])")).size();
-        Assert.assertEquals(actualNumSuggested, expectedNumSuggested);
-        clickElement(By.xpath("(//*[contains(@id,'ngb-typeahead-') and string-length(@id)>16])[" + clickNth + "]"));
-        if (displayError) textPresent(errorMessage);
-        else textNotPresent(errorMessage);
-    }
-
-    protected void scrollToInfiniteById(String id) {
-        JavascriptExecutor je = (JavascriptExecutor) driver;
-        for (int i = 0; i < 100; i++) {
-            try {
-                driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
-                driver.findElement(By.id(id));
-                driver.manage().timeouts().implicitlyWait(Integer.parseInt(System.getProperty("timeout")), TimeUnit.SECONDS);
-                break;
-            } catch (org.openqa.selenium.NoSuchElementException e) {
-            }
-            try {
-                driver.findElement(By.id("scrollMore"));
-                je.executeScript("document.getElementById('scrollMore').scrollIntoView(true);");
-            } catch (org.openqa.selenium.NoSuchElementException e) {
-                break;
-            }
-        }
-        scrollToViewById(id);
-    }
-
-
     protected void createDisplayProfile(int index, String name, boolean matrix, boolean displayValues, boolean instructions,
                                         boolean numbering, String displayType, int numberOfColumns, boolean displayInvisible, int answerDropdownLimit) {
         textPresent("Add Profile");
@@ -226,4 +185,34 @@ public class BaseFormTest extends NlmCdeBaseTest {
         }
     }
 
+    protected void deleteSkipLogicById(String id) {
+        clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'skipLogicEditTextarea')]//mat-icon[.='edit']"));
+        List<WebElement> deleteButtons = findElements(By.xpath("//*[contains(@id,'skipLogicDelete_')]"));
+        for (WebElement deleteButton : deleteButtons) {
+            deleteButton.click();
+        }
+        clickElement(By.id("saveNewSkipLogicButton"));
+    }
+
+    protected void addSkipLogicById(String id, String label, String operator, String answer, String answerType) {
+        clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'skipLogicEditTextarea')]//mat-icon[.='edit']"));
+        clickElement(By.id("addNewSkipLogicButton"));
+        if (label != null && label.length() > 0) {
+            new Select(findElement(By.id("skipLogicLabelSelection_0"))).selectByVisibleText(label);
+        }
+        if (operator != null && operator.length() > 0) {
+            new Select(findElement(By.id("skipLogicOperatorSelection_0"))).selectByVisibleText(operator);
+        }
+        if (answer != null && answer.length() > 0) {
+            if (answerType.equals("date") || answerType.equals("number") || answerType.equals("text")) {
+                findElement(By.id("skipLogicAnswer_0")).sendKeys(answer);
+            }
+            if (answerType.equals("value list")) {
+                new Select(findElement(By.id("skipLogicAnswerSelection_0"))).selectByVisibleText(answer);
+
+            }
+        }
+        clickElement(By.id("saveNewSkipLogicButton"));
+
+    }
 }

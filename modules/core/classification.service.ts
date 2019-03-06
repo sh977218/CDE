@@ -3,12 +3,9 @@ import { Injectable } from '@angular/core';
 import { LocalStorageService } from 'angular-2-local-storage';
 import _isEqual from 'lodash/isEqual';
 import _uniqWith from 'lodash/uniqWith';
-
 import { AlertService } from 'alert/alert.service';
 import { ElasticService } from '_app/elastic.service';
 import { SearchSettingsElastic } from 'search/search.model';
-import { httpErrorMessage } from 'core/angularHelper';
-
 
 @Injectable()
 export class ClassificationService {
@@ -49,7 +46,7 @@ export class ClassificationService {
             () => {
                 this.updateClassificationLocalStorage(postBody);
                 cb();
-            }, err => cb(httpErrorMessage(err)));
+            }, cb);
     }
 
     removeClassification(elt, org, classifArray, endPoint, cb) {
@@ -58,51 +55,7 @@ export class ClassificationService {
             eltId: elt._id,
             orgName: org
         };
-        this.http.post(endPoint, deleteBody).subscribe(res => cb(), err => cb(err));
-    }
-
-    sortClassification(elt) {
-        elt.classification = elt.classification.sort((c1, c2) =>
-            c1.stewardOrg.name.localeCompare(c2.stewardOrg.name)
-        );
-        let sortSubClassif = function (classif) {
-            if (classif.elements) {
-                classif.elements = classif.elements.sort((c1, c2) =>
-                    c1.name.localeCompare(c2.name)
-                );
-            }
-        };
-        let doRecurse = function (classif) {
-            sortSubClassif(classif);
-            if (classif.elements) classif.elements.forEach(doRecurse);
-        };
-        elt.classification.forEach(doRecurse);
-    }
-
-    doClassif(currentString, classif, result) {
-        if (currentString.length > 0) {
-            currentString = currentString + ' | ';
-        }
-        currentString = currentString + classif.name;
-        if (classif.elements && classif.elements.length > 0) {
-            classif.elements.forEach((cl) => {
-                this.doClassif(currentString, cl, result);
-            });
-        } else {
-            result.push(currentString);
-        }
-    }
-
-    flattenClassification(elt) {
-        let result = [];
-        if (elt.classification) {
-            elt.classification.forEach(cl => {
-                if (cl.elements) {
-                    cl.elements.forEach(subCl => this.doClassif(cl.stewardOrg.name, subCl, result));
-                }
-            });
-        }
-        return result;
+        this.http.post(endPoint, deleteBody).subscribe(() => cb(), cb);
     }
 
     removeOrgClassification(deleteClassification, cb) {
@@ -113,7 +66,7 @@ export class ClassificationService {
         };
         this.http.post('/server/classification/deleteOrgClassification/', ro, {responseType: 'text'}).subscribe(
             res => cb(res),
-            err => this.alert.addAlert('danger', err));
+            () => this.alert.addAlert('danger', "Unexpected error removing classification"));
     }
 
     reclassifyOrgClassification(oldClassification, newClassification, cb) {
@@ -125,7 +78,7 @@ export class ClassificationService {
         };
         this.http.post('/server/classification/reclassifyOrgClassification/', postBody, {responseType: 'text'}).subscribe(
             res => cb(res),
-            err => this.alert.addAlert('danger', err));
+            () => this.alert.addAlert('danger', "Unexpected error reclassifying"));
     }
 
     renameOrgClassification(newClassification, cb) {
@@ -136,7 +89,7 @@ export class ClassificationService {
         };
         this.http.post('/server/classification/renameOrgClassification', postBody, {responseType: 'text'}).subscribe(
             res => cb(res),
-            err => this.alert.addAlert('danger', err));
+            () => this.alert.addAlert('danger', "Unexpected error renaming classification"));
     }
 
     addChildClassification(newClassification, cb) {
@@ -145,6 +98,9 @@ export class ClassificationService {
         };
         this.http.put('/server/classification/addOrgClassification/', putBody, {responseType: 'text'}).subscribe(
             res => cb(res),
-            err => this.alert.addAlert('danger', err));
+            (err) => {
+                if (err.status === 409) this.alert.addAlert('danger', "Classification Already Exists");
+                this.alert.addAlert('danger', "Unexpected error adding classification: " + err.status);
+            });
     }
 }

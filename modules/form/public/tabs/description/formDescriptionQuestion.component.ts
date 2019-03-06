@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Host, Input, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
 import { TreeNode } from 'angular-tree-component';
 import _isEqual from 'lodash/isEqual';

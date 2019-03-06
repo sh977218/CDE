@@ -17,6 +17,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         String cdeDefinitionChange = "[definition change number 1]";
         goToCdeByName(cdeName);
         goToNaming();
+        Assert.assertEquals(driver.getTitle(), "Data Element: " + cdeName);
         editDesignationByIndex(0, cdeDesignationChange,null);
         editDefinitionByIndex(0, cdeDefinitionChange, false);
 
@@ -58,7 +59,8 @@ public class CdeEditTest extends NlmCdeBaseTest {
         goToPermissibleValues();
         textPresent("myUom");
 
-        openCdeAudit(cdeName);
+        // CDE Audit
+        openAuditDataElement(cdeName);
         textPresent(cdeName + cdeDesignationChange);
         textPresent("the free text field to specify the other type of mediastinal lymph node dissection." + cdeDefinitionChange);
 

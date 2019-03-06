@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const config = require('../system/parseConfig');
 const connHelper = require('../system/connections');
 const mongo_data = require('../system/mongo-data');
@@ -17,6 +18,7 @@ const userAgent = require('useragent');
 
 exports.LogErrorModel = LogErrorModel;
 exports.ClientErrorModel = ClientErrorModel;
+exports.StoredQueryModel = StoredQueryModel;
 
 exports.consoleLog = function (message, level) { // no express errors see dbLogger.log(message)
     new consoleLogModel({message: message, level: level}).save(err => {
@@ -147,7 +149,7 @@ exports.logClientError = function (req, callback) {
     });
 };
 
-exports.handle404 = function handle404(options, cb) { // Not Found
+exports.handle404 = function handle404(options, cb = _.noop) { // Not Found
     return function errorHandler(err, arg, ...args) {
         if (err) {
             exports.respondError(err, options);
@@ -163,7 +165,7 @@ exports.handle404 = function handle404(options, cb) { // Not Found
     };
 };
 
-exports.handleError = function (options, cb) {
+exports.handleError = function (options, cb = _.noop) {
     return function errorHandler(err, ...args) {
         if (err) {
             exports.respondError(err, options);

@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertService } from 'alert/alert.service';
 import { QuickBoardListService } from '_app/quickBoardList.service';
@@ -13,7 +14,7 @@ import _cloneDeep from 'lodash/cloneDeep';
 import _noop from 'lodash/noop';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
-import { Comment } from 'shared/models.model';
+import { Comment, Elt } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { checkPvUnicity, checkDefinitions } from 'shared/de/deValidator';
 import { canEditCuratedItem, isOrgCurator } from 'shared/system/authorizationShared';
@@ -37,7 +38,6 @@ export class DataElementViewComponent implements OnInit {
     @ViewChild('saveModal') saveModal!: SaveModalComponent;
     commentMode;
     currentTab = 'general_tab';
-    deId;
     displayStatusWarning;
     draftSubscription: Subscription;
     elt: DataElement;
@@ -50,6 +50,7 @@ export class DataElementViewComponent implements OnInit {
     tabsCommented = [];
     savingText: String;
     tinyId;
+    unsaved = false;
     url;
     validationErrors: { message: string }[] = [];
 
@@ -64,15 +65,16 @@ export class DataElementViewComponent implements OnInit {
         }, _noop);
     }
 
-    constructor(private deViewService: DataElementViewService,
-                private http: HttpClient,
-                private route: ActivatedRoute,
-                private router: Router,
-                private ref: ChangeDetectorRef,
+    constructor(private alert: AlertService,
+                private deViewService: DataElementViewService,
                 private dialog: MatDialog,
+                private http: HttpClient,
                 private orgHelperService: OrgHelperService,
                 public quickBoardService: QuickBoardListService,
-                private alert: AlertService,
+                private ref: ChangeDetectorRef,
+                private route: ActivatedRoute,
+                private router: Router,
+                private title: Title,
                 public userService: UserService) {
     }
 
@@ -101,9 +103,9 @@ export class DataElementViewComponent implements OnInit {
             if (elt.isDraft) this.hasDrafts = true;
             DataElement.validate(elt);
             this.elt = elt;
+            this.title.setTitle('Data Element: ' + Elt.getLabel(this.elt));
             this.validate();
             this.loadComments(this.elt);
-            this.deId = this.elt._id;
             if (this.userService.user) {
                 checkPvUnicity(this.elt.valueDomain);
             }
@@ -237,33 +239,34 @@ export class DataElementViewComponent implements OnInit {
     }
 
     saveDraft() {
-        let username = this.userService.user.username;
-        this.elt._id = this.deId;
-        if (!this.elt.createdBy) {
-            this.elt.createdBy = {username: username, userId: undefined};
-        }
-        this.elt.updated = new Date();
-        if (!this.elt.updatedBy) {
-            this.elt.updatedBy = {username: username, userId: undefined};
-        }
-        this.elt.updatedBy.username = username;
-
         this.elt.isDraft = true;
         this.hasDrafts = true;
         this.savingText = 'Saving ...';
-        if (this.draftSubscription) this.draftSubscription.unsubscribe();
-        this.draftSubscription = this.http.post('/draftDataElement/' + this.elt.tinyId, this.elt).subscribe(() => {
+        if (this.draftSubscription) {
+            this.unsaved = true;
+            return;
+        }
+        this.draftSubscription = this.http.put<DataElement>('/draftDataElement/' + this.elt.tinyId, this.elt).subscribe(newElt => {
             this.draftSubscription = undefined;
+            this.elt.__v = newElt.__v;
+            this.validate();
+            if (this.unsaved) {
+                this.unsaved = false;
+                this.saveDraft();
+            }
             this.savingText = 'Saved';
             setTimeout(() => {
                 this.savingText = '';
             }, 3000);
-            this.validate();
-        }, err => this.alert.httpErrorMessageAlert(err));
+        }, err => {
+            this.draftSubscription = undefined;
+            this.savingText = 'Cannot save this old version. Reload and redo.';
+            this.alert.httpErrorMessageAlert(err);
+        });
     }
 
     saveDataElement() {
-        this.http.put('/dePublish/' + this.elt.tinyId, this.elt).subscribe(res => {
+        this.http.put('/dePublish', this.elt).subscribe(res => {
             if (res) {
                 this.hasDrafts = false;
                 this.loadElt(() => this.alert.addAlert('success', 'Data Element saved.'));
