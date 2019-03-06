@@ -170,13 +170,22 @@ const DISEASE_MAP = [
     },
     {
         name: 'Traumatic Brain Injury',
-        subDiseases: [
-            'Comprehensive',
-            'Acute Hospitalized',
-            'Concussion/Mild TBI',
-            'Moderate/Severe TBI: Rehabilitation',
-            'Epidemiology'
-        ],
+        subDiseases: [{
+            name: 'Comprehensive',
+            count: 261
+        }, {
+            name: 'Acute Hospitalized',
+            count: 250
+        }, {
+            name: 'Concussion/Mild TBI',
+            count: 249
+        }, {
+            name: 'Moderate/Severe TBI: Rehabilitation',
+            count: 247
+        }, {
+            name: 'Epidemiology',
+            count: 247
+        }],
         url: URL_PREFIX + 'TBI.aspx',
         xpath: DEFAULT_XPATH,
         count: 261 + 250 + 249 + 247 + 247,
@@ -184,12 +193,19 @@ const DISEASE_MAP = [
     },
     {
         name: 'Sport-Related Concussion',
-        subDiseases: [
-            'Comprehensive',
-            'Acute',
-            'Subacute',
-            'Persistent/Chronic'
-        ],
+        subDiseases: [{
+            name: 'Comprehensive',
+            count: 186
+        }, {
+            name: 'Acute',
+            count: 119
+        }, {
+            name: 'Subacute',
+            count: 178
+        }, {
+            name: 'Persistent/Chronic',
+            count: 178
+        }],
         url: URL_PREFIX + 'SRC.aspx',
         xpath: DEFAULT_XPATH,
         count: 186 + 119 + 178 + 178,
@@ -367,13 +383,23 @@ async function run() {
         } else {
             await driver.get(disease.url);
             if (disease.subDiseases) {
-                for (let subDisease of disease.subDiseases.splice(2, 3)) {
-                    disease.subDisease = subDisease;
-                    await driver.findElement(By.id("ddlSubDisease")).click();
-                    await driver.findElement(By.xpath("//*[@id='ddlSubDisease']//option[normalize-space(text())='" + subDisease + "']"));
-                    setTimeout(() => {
-                    }, 20 * 1000);
-                    await doDisease(disease);
+                for (let subDisease of disease.subDiseases) {
+                    let _existingDbCount = await NindsModel.countDocuments({
+                        disease: disease.name,
+                        subDisease: subDisease.name
+                    });
+                    if (_existingDbCount >= subDisease.count) {
+                        console.log("***********************************************************************");
+                        console.log("Previously Finished Disease " + disease.name + " SubDisease " + subDisease + " on page " + disease.url);
+                        console.log("***********************************************************************");
+                    } else {
+                        disease.subDisease = subDisease.name;
+                        await driver.findElement(By.id("ddlSubDisease")).click();
+                        await driver.findElement(By.xpath("//*[@id='ddlSubDisease']//option[normalize-space(text())='" + subDisease + "']"));
+                        setTimeout(() => {
+                        }, 20 * 1000);
+                        await doDisease(disease);
+                    }
                 }
             } else {
                 disease.subDisease = '';
