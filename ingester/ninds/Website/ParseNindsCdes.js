@@ -2,6 +2,7 @@ const webdriver = require('selenium-webdriver');
 const By = webdriver.By;
 
 let driver = new webdriver.Builder().forBrowser('chrome').build();
+driver.manage().window().maximize();
 
 doCde = async (trElement, map) => {
     let cde = {};

@@ -1,8 +1,7 @@
-const _ = require('lodash');
 const webdriver = require('selenium-webdriver');
 const By = webdriver.By;
-const Until = webdriver.Until;
 let driver = new webdriver.Builder().forBrowser('chrome').build();
+driver.manage().window().maximize();
 
 let NindsModel = require('../../createMigrationConnection').NindsModel;
 
