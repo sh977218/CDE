@@ -260,22 +260,16 @@ exports.update = function (elt, user, callback, special) {
         };
         elt.sources = dataElement.sources;
         elt.comments = dataElement.comments;
-        var newDe = new DataElement(elt);
+        let newDe = new DataElement(elt);
 
         if (special) {
             special(newDe, dataElement);
         }
 
-        if (!newDe.designations || newDe.designations.length === 0) {
-            logging.errorLogger.error("Error: Cannot save CDE without names", {
-                stack: new Error().stack,
-                details: "elt " + JSON.stringify(elt)
-            });
-            callback("Cannot save without names");
-        }
+        let valErr = newDe.validateSync();
+        if (valErr) return callback("Doc does not pass validation: " + valErr.message);
 
-        dataElement.archived = true;
-        DataElement.findOneAndUpdate({_id: dataElement._id}, dataElement, err => {
+        DataElement.findOneAndUpdate({_id: dataElement._id}, {$set: {archived: true}}, err => {
             if (err) {
                 logging.errorLogger.error(
                     "Transaction failed. Cannot save archived CDE: " + newDe.tinyId,
@@ -292,6 +286,16 @@ exports.update = function (elt, user, callback, special) {
                             stack: new Error().stack,
                             details: "err " + err
                         });
+                    DataElement.findOneAndUpdate({_id: dataElement._id}, {$set: {archived: false}}, err => {
+                        if (err) {
+                            logging.errorLogger.error(
+                                "Transaction failed. Unable to unarchive CDE. fix data manually: " + newDe.tinyId,
+                                {
+                                    stack: new Error().stack,
+                                    details: "err " + err
+                                });
+                        }
+                    });
                     callback(err);
                 } else {
                     callback(err, savedDe);
@@ -307,18 +311,14 @@ exports.updatePromise = function (elt, user) {
 };
 
 exports.archiveCde = function (cde, callback) {
-    DataElement.findOne({'_id': cde._id}, function (err, cde) {
+    DataElement.findOne({'_id': cde._id}, (err, cde) => {
         cde.archived = true;
-        cde.save(function () {
-            callback("", cde);
-        });
+        cde.save(() => callback("", cde));
     });
 };
 
 exports.getDistinct = function (what, callback) {
-    DataElement.distinct(what).exec(function (err, result) {
-        callback(err, result);
-    });
+    DataElement.distinct(what).exec(callback);
 };
 
 exports.query = function (query, callback) {
