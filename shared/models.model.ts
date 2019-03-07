@@ -209,7 +209,7 @@ export abstract class Elt {
     classification: Classification[] = []; // mutable
     comments: Comment[] = []; // mutable
     created?: Date;
-    createdBy?: UserReference;
+    createdBy?: UserRefSecondary;
     definitions: Definition[] = [];
     designations: Designation[] = [];
     history: ObjectId[] = [];
@@ -229,7 +229,7 @@ export abstract class Elt {
     sources: DataSource[] = [];
     tinyId!: string; // server generated
     updated?: Date;
-    updatedBy?: UserReference;
+    updatedBy?: UserRefSecondary;
     usedBy?: string[]; // volatile, Classification stewardOrg names
     version?: string; // ??? elastic(version) or mongo(__v)
 
@@ -254,12 +254,41 @@ export abstract class Elt {
 
 }
 
+export declare type EltLog = {
+    date: Date;
+    user: {
+        username: string  // not UserRef!?
+    };
+    adminItem: EltLogEltRef;
+    previousItem: EltLogEltRef;
+    diff: EltLogDiff[];
+};
+
+export declare type EltLogDiff = {
+    fieldName?: string; // calculated makeHumanReadable
+    item?: {
+        kind: 'D' | 'N';
+        lhs?: string;
+        rhs?: string;
+    };
+    kind: 'A' | 'D' | 'E' | 'N';
+    lhs?: string;
+    modificationType?: string; // calculated makeHumanReadable
+    newValue?: string; // calculated makeHumanReadable
+    path: (string | number)[];
+    previousValue?: string; // calculated makeHumanReadable
+    rhs?: string;
+};
+
 export class EltRef {
-    ids: CdeId[] = [];
     name?: string;
     outdated?: boolean; // calculated, by server for client
     tinyId!: string;
     version?: string;
+}
+
+export class EltLogEltRef extends EltRef {
+    _id!: ObjectId;
 }
 
 export type Embed = {
@@ -538,14 +567,9 @@ export interface UserRef {
     username?: string;
 }
 
-export interface UserReference {
+export interface UserRefSecondary {
     userId: ObjectId;
     username: string;
-}
-
-export interface UserReferenceSecondary {
-    _id: ObjectId;
-    username?: string;
 }
 
 export type UserSearchSettings = {
@@ -558,5 +582,5 @@ export type UserSearchSettings = {
 
 export interface UsersOrgQuery {
     name: string;
-    users: UserReferenceSecondary[];
+    users: UserRef[];
 }

@@ -9,7 +9,7 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, '../../dist/native'), // TODO: temporary until gulp stops packaging vendor.js, then use /dist
         publicPath: '/native/',
-        filename: '[name].js'
+        filename: '[name]-esm.js'
     },
     plugins: [
         new CleanWebpackPlugin(['dist/native'], {root: process.cwd()}),

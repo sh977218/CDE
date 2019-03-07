@@ -276,7 +276,7 @@ let requestSchema = {
     }
 };
 
-exports.itemLogSchema = {
+exports.eltLogSchema = {
     date: {type: Date, default: Date.now, index: true},
     user: {
         username: StringType

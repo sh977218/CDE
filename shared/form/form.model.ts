@@ -1,4 +1,5 @@
 import {
+    CdeId,
     CodeAndSystem, Definition,
     DerivationRule, Designation,
     Elt,
@@ -134,6 +135,10 @@ export class DisplayProfile {
 
 export type DisplayType = 'Follow-up' | 'Dynamic';
 
+class EltRefCaching extends EltRef {
+    ids!: CdeId[];
+}
+
 export class ExternalMappings {
     fhir?: {
         resourceType?: supportedFhirResources,
@@ -262,7 +267,7 @@ export type FormElement = FormInForm | FormSection | FormQuestion;
 export type FormOrElement = CdeForm | FormElement;
 
 class InForm {
-    form: EltRef = new EltRef();
+    form!: EltRefCaching;
 }
 
 export class MetadataTag {
@@ -301,7 +306,7 @@ export class Question extends DatatypeContainer {
     uomsValid: string[] = []; // volatile, FormDescription
 }
 
-export class QuestionCde extends EltRef { // copied from original data element, not configurable
+export class QuestionCde extends EltRefCaching { // copied from original data element, not configurable
     datatype?: string; // volatile, use by save new cde
     definitions: Definition[] = [];
     derivationRules: DerivationRule[] = [];

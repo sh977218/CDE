@@ -132,7 +132,7 @@ exports.addFormToViewHistory = (elt, user) => {
 };
 
 // WARNING: destroys oldItem and newItem by calling cdediff
-exports.auditModifications = (auditDb, user, oldItem, newItem) => {
+exports.auditModifications = auditDb => (user, oldItem, newItem) => {
     let message = {
         adminItem: {
             _id: newItem._id,
@@ -160,7 +160,7 @@ exports.auditModifications = (auditDb, user, oldItem, newItem) => {
 };
 
 // cb(err, logs)
-exports.auditGetLog = (auditDb, params, callback) => {
+exports.auditGetLog = auditDb => (params, callback) => {
     auditDb.find(params.includeBatch ? undefined : {"user.username": {$ne: 'batchloader'}})
         .sort('-date')
         .skip(params.skip)
