@@ -21,8 +21,9 @@ mergeReferenceDocuments = (newReferenceDocuments, existingReferenceDocuments) =>
     return result;
 };
 
+let idKeys = ['NINDS', 'NINDS Variable Name', 'NINDS caDSR', 'csDSR'];
 mergeIds = (newIds, existingIds) => {
-    let otherSources = existingIds.filter(s => s.source !== 'NINDS' && s.source !== 'NINDS Variable Name' && s.source !== 'NINDS caDSR');
+    let otherSources = existingIds.filter(s => idKeys.indexOf(s.source) == -1);
     let result = newIds.concat(otherSources);
     return result;
 };
