@@ -128,6 +128,7 @@ export class DisplayProfile {
 
     constructor(name = '') {
         this.name = name;
+        this.fhirProcedureMapping = [];
     }
 }
 
