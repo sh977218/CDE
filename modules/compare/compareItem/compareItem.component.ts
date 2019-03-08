@@ -14,6 +14,7 @@ import { Item } from 'shared/models.model';
             color: black;
             background: #bbffbb;
         }
+
         :host >>> del {
             color: black;
             background: #ffbbbb;
@@ -30,6 +31,8 @@ export class CompareItemComponent implements OnInit {
         'Text': 'valueDomain.datatypeText'
     };
     compareObjectProperties = [
+        {label: 'isCopyrighted', match: false, property: 'isCopyrighted'},
+        {label: 'noRenderAllowed', match: false, property: 'noRenderAllowed'},
         {label: 'Steward Org', match: false, property: 'stewardOrg.name'},
         {label: 'Version', match: false, property: 'version'},
         {label: 'Status', match: false, property: 'registrationState.registrationStatus'},

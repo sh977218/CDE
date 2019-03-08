@@ -291,6 +291,23 @@ export function sortClassification(item) {
     return item;
 }
 
+export function transferClassifications(source, destination) {
+    source.classification.forEach(stewardOrgSource => {
+        let st = findSteward(destination, stewardOrgSource.stewardOrg.name);
+        let stewardOrgDestination;
+        if (st) {
+            stewardOrgDestination = st.object;
+        } else {
+            destination.classification.push({stewardOrg: {name: stewardOrgSource.stewardOrg.name}, elements: []});
+            stewardOrgDestination = destination.classification[destination.classification.length - 1];
+        }
+        stewardOrgDestination.name = stewardOrgDestination.stewardOrg.name;
+        treeChildren(stewardOrgSource, [], path => {
+            addCategory(stewardOrgDestination, path);
+        });
+    });
+}
+
 export function treeChildren(tree, path, cb) {
     tree.elements.forEach(function (element) {
         let newPath = path.slice(0);
