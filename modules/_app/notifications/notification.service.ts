@@ -265,7 +265,6 @@ export class NotificationService {
             default:
                 assertUnreachable(source);
         }
-        this.drawerClose();
     }
 
     reload() {
