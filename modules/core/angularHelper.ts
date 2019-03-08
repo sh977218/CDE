@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Params } from '@angular/router';
 
-export function httpErrorMessage(err: any) {
+export function httpErrorMessage(err: any): string {
     if (!err) {
         return '';
     }
@@ -9,11 +9,13 @@ export function httpErrorMessage(err: any) {
         return err.error.message;
     } else if (typeof(err.error) === 'string') { // server-side
         return err.error;
-    } else if (err instanceof HttpErrorResponse) {
+    } else if (err instanceof HttpErrorResponse) { // angular
         if (err.message === 'Http failure response for (unknown url): 0 Unknown Error') {
             return 'Server is not available or you are offline.';
         }
         return err.message;
+    } else {
+        return 'Unknown Error';
     }
 }
 

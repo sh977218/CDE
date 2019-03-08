@@ -1,6 +1,8 @@
 const _ = require('lodash');
 const dns = require('dns');
 const os = require('os');
+const exportShared = require('esm')(module)('../../shared/system/exportShared');
+const envShared = require('esm')(module)('../../shared/env');
 const authorization = require('../system/authorization');
 const config = require('../system/parseConfig');
 const formSvc = require('./formsvc');
@@ -8,7 +10,6 @@ const mongo_form = require('./mongo-form');
 const elastic_system = require('../system/elastic');
 const handleError = require('../log/dbLogger').handleError;
 const sharedElastic = require('../system/elastic.js');
-const exportShared = require('esm')(module)('../../shared/system/exportShared');
 
 const canCreateMiddleware = authorization.canCreateMiddleware;
 const canEditMiddleware = authorization.canEditMiddleware(mongo_form);
@@ -27,17 +28,26 @@ function allowXOrigin(req, res, next) {
     next();
 }
 
+function allRequestsProcessing(req, res, next) {
+    // update green/blue env GLOBAL
+    const env = envShared.getEnvironmentHost(config, req.headers.host);
+    if (env) {
+        global.CURRENT_SERVER_ENV = env;
+    }
+    next();
+}
+
 exports.init = function (app, daoManager) {
     daoManager.registerDao(mongo_form);
 
-    app.get('/form/:tinyId', [allowXOrigin, exportShared.nocacheMiddleware], formSvc.byTinyId);
+    app.get('/form/:tinyId', allowXOrigin, exportShared.nocacheMiddleware, allRequestsProcessing, formSvc.byTinyId);
     app.get('/form/:tinyId/latestVersion/', exportShared.nocacheMiddleware, formSvc.latestVersionByTinyId);
     app.get('/form/:tinyId/version/:version?', [allowXOrigin, exportShared.nocacheMiddleware], formSvc.byTinyIdAndVersion);
     app.post('/form', canCreateMiddleware, formSvc.createForm);
     app.put('/form/:tinyId', canEditMiddleware, formSvc.updateForm);
     app.put('/formPublish', canEditMiddleware, formSvc.publishTheForm);
 
-    app.get('/formById/:id', exportShared.nocacheMiddleware, formSvc.byId);
+    app.get('/formById/:id', exportShared.nocacheMiddleware, allRequestsProcessing, formSvc.byId);
     app.get('/formById/:id/priorForms/', exportShared.nocacheMiddleware, formSvc.priorForms);
 
     app.get('/formForEdit/:tinyId', exportShared.nocacheMiddleware, formSvc.forEditByTinyId);

@@ -1,0 +1,14 @@
+service: cde-aws-java
+provider:
+  name: aws
+  role: arn:aws:iam::491634416615:role/nlm_basic_lambda_role
+  runtime: java8
+  timeout: 60
+  versionFunctions: false
+package:
+  artifact: build/distributions/cde-fn-sdcValidate.zip
+functions:
+  cde-fn-sdcValidate:
+    handler: gov.nih.nlm.cde.sdcValidate.Handler
+    name: cde-fn-sdcValidate-${opt:stage, 'dev'}
+    timeout: 300
