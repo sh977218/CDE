@@ -1,7 +1,7 @@
 service: cde-aws-java
 provider:
   name: aws
-  role: arn:aws:iam::491634416615:role/nlm_basic_lambda_role
+  role: ${self:custom.role.${opt:stage}}
   runtime: java8
   timeout: 60
   versionFunctions: false
@@ -12,3 +12,9 @@ functions:
     handler: gov.nih.nlm.cde.sdcValidate.Handler
     name: cde-fn-sdcValidate-${opt:stage, 'dev'}
     timeout: 300
+custom:
+  role:
+    green: arn:aws:iam::070163433501:role/nlm_basic_lambda_role
+    blue: arn:aws:iam::070163433501:role/nlm_basic_lambda_role
+    qa-green: arn:aws:iam::491634416615:role/nlm_basic_lambda_role
+    qa-blue: arn:aws:iam::491634416615:role/nlm_basic_lambda_role
