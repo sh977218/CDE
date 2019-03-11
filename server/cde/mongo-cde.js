@@ -411,5 +411,5 @@ exports.checkOwnership = function (req, id, cb) {
 };
 
 exports.originalSourceByTinyIdSourceName = function (tinyId, sourceName, cb) {
-    DataElementSource.findOne({tinyId: tinyId, source: sourceName, elementType: 'cde'}, cb);
+    DataElementSource.findOne({tinyId: tinyId, source: sourceName}, cb);
 };

@@ -284,5 +284,5 @@ exports.checkOwnership = function (req, id, cb) {
 
 
 exports.originalSourceByTinyIdSourceName = function (tinyId, sourceName, cb) {
-    FormSource.findOne({tinyId: tinyId, source: sourceName, elementType: 'form'}, cb);
+    FormSource.findOne({tinyId: tinyId, source: sourceName}, cb);
 };

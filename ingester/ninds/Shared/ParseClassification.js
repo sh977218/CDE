@@ -2,7 +2,7 @@ const _ = require('lodash');
 
 const classificationShared = require('esm')(module)('../../../shared/system/classificationShared');
 
-exports.parseClassification = (nindsForms, newForm) => {
+exports.parseClassification = (nindsForms, item) => {
     let classificationArray = [];
     nindsForms.forEach(nindsForm => {
         let temp = {};
@@ -14,6 +14,8 @@ exports.parseClassification = (nindsForms, newForm) => {
             temp.domain = nindsForm.domain;
         if (nindsForm.subDomain)
             temp.subDomain = nindsForm.subDomain;
+        if (nindsForm.cdes.length)
+            temp.population = nindsForm.cdes[0]['Population'];
         classificationArray.push(temp);
     });
 
@@ -48,10 +50,25 @@ exports.parseClassification = (nindsForms, newForm) => {
             }
         }
 
-        classificationShared.classifyItem(newForm, "NINDS", diseaseToAdd);
-        classificationShared.classifyItem(newForm, "NINDS", domainToAdd);
-        classificationShared.classifyItem(newForm, "NINDS", subDomainToAdd);
-        classificationShared.classifyItem(newForm, "NINDS", classificationToAdd);
+        classificationShared.classifyItem(item, "NINDS", diseaseToAdd);
+        classificationShared.classifyItem(item, "NINDS", domainToAdd);
+        classificationShared.classifyItem(item, "NINDS", subDomainToAdd);
+        classificationShared.classifyItem(item, "NINDS", classificationToAdd);
+
+        if (c.population) {
+            let populationArray = c.population.split(';');
+            populationArray.forEach(p => {
+                if (p && p.trim()) {
+                    let populationToAdd = [];
+                    populationToAdd.push('Population');
+                    populationToAdd.push(p);
+                    classificationShared.classifyItem(item, "NINDS", populationToAdd);
+                }
+            })
+        }
+
+        classificationShared.sortClassification(item);
+
     });
 
 };

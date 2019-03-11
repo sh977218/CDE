@@ -11,13 +11,17 @@ const CreateForm = require('../Form/CreateForm');
 const CompareForm = require('../Form/CompareForm');
 const MergeForm = require('../Form/MergeForm');
 
-const batchloader = require('../../shared/updatedByNonLoader').batchloader;
+const updatedByNonLoaderShared = require('../../shared/updatedByNonLoader');
+const updatedByNonLoader = updatedByNonLoaderShared.updatedByNonLoader;
+const batchloader = updatedByNonLoaderShared.batchloader;
+const batchloaderUsername = updatedByNonLoaderShared.BATCHLOADER_USERNAME;
 
 const checkNullComments = require('../../shared/utility').checkNullComments;
 
 let createdForm = 0;
 let sameForm = 0;
 let changeForm = 0;
+let skipForm = 0;
 
 let retiredCDE = 0;
 let retiredForm = 0;
@@ -30,7 +34,7 @@ async function retireCdes() {
         "imported": {$lt: new Date().setHours(new Date().getHours() - 8)},
         $where: 'this.classification.length < 2',
         $or: [
-            {"updatedBy.username": "batchloader"},
+            {"updatedBy.username": batchloaderUsername},
             {
                 $and: [
                     {"updatedBy.username": {$exists: false}},
@@ -56,7 +60,7 @@ async function retiredForms() {
         "registrationState.registrationStatus": {$ne: "Retired"},
         "imported": {$lt: new Date().setHours(new Date().getHours() - 8)},
         $or: [
-            {"updatedBy.username": "batchloader"},
+            {"updatedBy.username": batchloaderUsername},
             {
                 $and: [
                     {"updatedBy.username": {$exists: false}},
@@ -74,7 +78,6 @@ async function retiredForms() {
         retiredForm++;
     }
 }
-
 
 doOneNindsFormById = async formIdString => {
     let formId = formIdString.replace('form', '').trim();
@@ -95,46 +98,50 @@ doOneNindsFormById = async formIdString => {
         }
         createdForm++;
         console.log('createdForm: ' + createdForm + ' ' + savedForm.tinyId);
-        return savedForm.toObject();
     } else {
         let existingFormObj = existingForm.toObject();
+        newFormObj.tinyId = existingFormObj.tinyId;
         let otherClassifications = existingFormObj.classification.filter(c => c.stewardOrg.name !== 'NINDS');
         existingForm.classification = otherClassifications.concat(newFormObj.classification);
-        existingForm.imported = new Date().toJSON();
-        existingForm.markModified('imported');
-        let diff = CompareForm.compareForm(newForm, existingForm);
-        for (let comment of newFormObj.comments) {
-            comment.element.eltId = existingForm.tinyId;
-            await new Comment(comment).save();
-            console.log('comment saved on existing Form ' + existingForm.tinyId);
-        }
-        if (_.isEmpty(diff)) {
+        if (updatedByNonLoader(existingForm) ||
+            existingForm.registrationState.registrationStatus === 'Standard') {
             await existingForm.save();
-            sameForm++;
-            console.log('sameForm: ' + sameForm + ' ' + existingForm.tinyId);
+            skipForm++;
+            console.log('skipForm: ' + skipForm + ' ' + existingForm.tinyId);
         } else {
-            await MergeForm.mergeForm(existingForm, newForm);
-            await mongo_form.updatePromise(existingForm, batchloader);
-            changeForm++;
-            console.log('changeForm: ' + changeForm + ' ' + existingForm.tinyId);
+            existingForm.markModified('imported');
+            existingForm.imported = new Date().toJSON();
+            let diff = CompareForm.compareForm(newForm, existingForm);
+            for (let comment of newFormObj.comments) {
+                comment.element.eltId = existingForm.tinyId;
+                await new Comment(comment).save();
+                console.log('comment saved on existing Form ' + existingForm.tinyId);
+            }
+            if (_.isEmpty(diff)) {
+                await existingForm.save();
+                sameForm++;
+                console.log('sameForm: ' + sameForm + ' ' + existingForm.tinyId);
+            } else {
+                await MergeForm.mergeForm(existingForm, newForm);
+                await mongo_form.updatePromise(existingForm, batchloader);
+                changeForm++;
+                console.log('changeForm: ' + changeForm + ' ' + existingForm.tinyId);
+            }
         }
-        return existingFormObj;
     }
+    await FormSource.update({tinyId: newFormObj.tinyId}, newFormObj, {upsert: true});
 };
 
 run = async () => {
     let formIdList = await NindsModel.distinct('formId');
+//    let formIdList = ['formF2662'];
     for (let formId of formIdList) {
-        let form = await doOneNindsFormById(formId);
-        form.source = 'NINDS';
-        let existingSource = await FormSource.findOne({tinyId: form.tinyId, source: 'NINDS'});
-        if (!existingSource) await new FormSource(form).save();
+        await doOneNindsFormById(formId);
     }
     let nullComments = await checkNullComments();
     for (let nullComment of nullComments) {
         console.log(nullComment.element.eltType + ' has null comment ' + nullComment._id);
     }
-
 };
 
 

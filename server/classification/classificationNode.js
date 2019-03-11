@@ -115,7 +115,7 @@ exports.removeClassification = function (body, dao, cb) {
         let steward = classificationShared.findSteward(elt, body.orgName);
         classificationShared.removeCategory(steward.object, body.categories, err => {
             if (err) return cb(err);
-            for (var i = elt.classification.length - 1; i >= 0; i--) {
+            for (let i = elt.classification.length - 1; i >= 0; i--) {
                 if (elt.classification[i].elements.length === 0) {
                     elt.classification.splice(i, 1);
                 }

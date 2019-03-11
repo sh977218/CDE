@@ -2,6 +2,7 @@ const webdriver = require('selenium-webdriver');
 const By = webdriver.By;
 
 let driver = new webdriver.Builder().forBrowser('chrome').build();
+driver.manage().window().maximize();
 
 doCde = async (trElement, map) => {
     let cde = {};
@@ -69,6 +70,8 @@ exports.doOnePage = async href => {
         cdes = cdes.concat(_cdes);
         if (i < cdesTotalPage) {
             await driver.findElement(By.xpath("//*[ @id='viewer_ctl01_ctl01_ctl05_ctl00']/tbody/tr/td/input")).click();
+            setTimeout(() => {
+            }, 5000);
         }
     }
 
