@@ -702,58 +702,15 @@ exports.init = function (app) {
         }));
     });
 
-    let syncLinkedFormsProgress = {done: 0, todo: 0};
-    // TODO secure this
-    app.get('/syncLinkedForms', authorization.isSiteAdminMiddleware, async function (req, res) {
+    app.get('/syncLinkedForms', authorization.isSiteAdminMiddleware, function (req, res) {
         res.send("");
-        syncLinkedFormsProgress = {done: 0, todo: 0};
-        const cdeCursor = mongo_cde.getStream({archived: false});
-        syncLinkedFormsProgress.todo = await mongo_cde.count({archived: false});
-        for (let cde = await cdeCursor.next(); cde != null; cde = await cdeCursor.next()) {
-            let esResult = await elastic.esClient.search({
-                index: config.elastic.formIndex.name,
-                q: cde.tinyId,
-                size: 100
-            });
-
-            const linkedForms = {
-                "Retired": 0,
-                "Incomplete": 0,
-                "Candidate": 0,
-                "Recorded": 0,
-                "Qualified": 0,
-                "Standard": 0,
-                "Preferred Standard": 0,
-                "forms": []
-            };
-
-            esResult.hits.hits.forEach(h => {
-                linkedForms.forms.push({
-                    tinyId: h._source.tinyId,
-                    registrationStatus: h._source.registrationState.registrationStatus,
-                    primaryName: h._source.primaryNameCopy
-                });
-                linkedForms[h._source.registrationState.registrationStatus]++;
-            });
-
-            linkedForms.Standard += linkedForms["Preferred Standard"];
-            linkedForms.Qualified += linkedForms.Standard;
-            linkedForms.Recorded += linkedForms.Qualified;
-            linkedForms.Candidate += linkedForms.Recorded;
-            linkedForms.Incomplete += linkedForms.Candidate;
-            linkedForms.Retired += linkedForms.Incomplete;
-
-            await elastic.esClient.update({
-                index: config.elastic.index.name,
-                type: "dataelement",
-                id: cde.tinyId,
-                body: {doc: {linkedForms: linkedForms}}
-            });
-            syncLinkedFormsProgress.done++;
-        }
+        formElastic.syncLinkedForms();
     });
 
-    app.get('/syncLinkedFormsStatus', (req, res) => res.send(syncLinkedFormsProgress));
+    app.get('/syncLinkedFormsStatus', authorization.isSiteAdminMiddleware,
+        (req, res) => res.send(formElastic.syncLinkedFormsProgress));
+
+    new CronJob('00 30 4 * * *', () => formElastic.syncLinkedForms(), null, true, 'America/New_York');
 
     app.get('/idSources', (req, res) => mongo_data.idSource.find(res, {}, rs => res.send(rs)));
     app.get('/idSource/:id', (req, res) => mongo_data.idSource.get(res, req.params.id, r => res.send(r)));

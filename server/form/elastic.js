@@ -98,3 +98,56 @@ exports.FormDistinct = function (field, cb) {
         }
     });
 };
+
+exports.syncLinkedFormsProgress = {done: 0, todo: 0};
+
+async function syncLinkedForms () {
+    exports.syncLinkedFormsProgress = {done: 0, todo: 0};
+    const cdeCursor = mongo_cde.getStream({archived: false});
+    exports.syncLinkedFormsProgress.todo = await mongo_cde.count({archived: false});
+    for (let cde = await cdeCursor.next(); cde != null; cde = await cdeCursor.next()) {
+        let esResult = await elastic.esClient.search({
+            index: config.elastic.formIndex.name,
+            q: cde.tinyId,
+            size: 200
+        });
+
+        const linkedForms = {
+            "Retired": 0,
+            "Incomplete": 0,
+            "Candidate": 0,
+            "Recorded": 0,
+            "Qualified": 0,
+            "Standard": 0,
+            "Preferred Standard": 0,
+            "forms": []
+        };
+
+        esResult.hits.hits.forEach(h => {
+            linkedForms.forms.push({
+                tinyId: h._source.tinyId,
+                registrationStatus: h._source.registrationState.registrationStatus,
+                primaryName: h._source.primaryNameCopy
+            });
+            linkedForms[h._source.registrationState.registrationStatus]++;
+        });
+
+        linkedForms.Standard += linkedForms["Preferred Standard"];
+        linkedForms.Qualified += linkedForms.Standard;
+        linkedForms.Recorded += linkedForms.Qualified;
+        linkedForms.Candidate += linkedForms.Recorded;
+        linkedForms.Incomplete += linkedForms.Candidate;
+        linkedForms.Retired += linkedForms.Incomplete;
+
+        await elastic.esClient.update({
+            index: config.elastic.index.name,
+            type: "dataelement",
+            id: cde.tinyId,
+            body: {doc: {linkedForms: linkedForms}}
+        });
+        exports.syncLinkedFormsProgress.done++;
+    }
+}
+
+exports.syncLinkedForms = syncLinkedForms;
+
