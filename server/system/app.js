@@ -704,11 +704,11 @@ exports.init = function (app) {
 
     let syncLinkedFormsProgress = {done: 0, todo: 0};
     // TODO secure this
-    app.get('/syncLinkedForms', async function (req, res) {
+    app.get('/syncLinkedForms', authorization.isSiteAdminMiddleware, async function (req, res) {
         res.send("");
         syncLinkedFormsProgress = {done: 0, todo: 0};
         const cdeCursor = mongo_cde.getStream({archived: false});
-        syncLinkedFormsProgress.todo = 10000;
+        syncLinkedFormsProgress.todo = await mongo_cde.count({archived: false});
         for (let cde = await cdeCursor.next(); cde != null; cde = await cdeCursor.next()) {
             let esResult = await elastic.esClient.search({
                 index: config.elastic.formIndex.name,
@@ -716,11 +716,32 @@ exports.init = function (app) {
                 size: 100
             });
 
-            let linkedForms = esResult.hits.hits.map(h => {
-                return {tinyId: h._source.tinyId, registrationStatus: h._source.registrationState.registrationStatus};
+            const linkedForms = {
+                "Retired": 0,
+                "Incomplete": 0,
+                "Candidate": 0,
+                "Recorded": 0,
+                "Qualified": 0,
+                "Standard": 0,
+                "Preferred Standard": 0,
+                "forms": []
+            };
+
+            esResult.hits.hits.forEach(h => {
+                linkedForms.forms.push({
+                    tinyId: h._source.tinyId,
+                    registrationStatus: h._source.registrationState.registrationStatus,
+                    primaryName: h._source.primaryNameCopy
+                });
+                linkedForms[h._source.registrationState.registrationStatus]++;
             });
 
-
+            linkedForms.Standard += linkedForms["Preferred Standard"];
+            linkedForms.Qualified += linkedForms.Standard;
+            linkedForms.Recorded += linkedForms.Qualified;
+            linkedForms.Candidate += linkedForms.Recorded;
+            linkedForms.Incomplete += linkedForms.Candidate;
+            linkedForms.Retired += linkedForms.Incomplete;
 
             await elastic.esClient.update({
                 index: config.elastic.index.name,

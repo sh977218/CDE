@@ -136,35 +136,23 @@ exports.createIndexJson = {
                 , "views": {"type": "integer"}
                 , linkedForms: {
                     properties: {
-                        "Retired": {"type": "number"},
-                        "Incomplete": {"type": "number"},
-                        "Candidate": {"type": "number"},
-                        "Recorded": {"type": "number"},
-                        "Qualified": {"type": "number"},
+                        "Retired": {"type": "integer"},
+                        "Incomplete": {"type": "integer"},
+                        "Candidate": {"type": "integer"},
+                        "Recorded": {"type": "integer"},
+                        "Qualified": {"type": "integer"},
+                        "Standard": {"type": "integer"},
+                        "Preferred Standard": {"type": "integer"},
                         "forms": {
                             "properties": {
-                                "tinyId": "keyword",
-                                "registrationStatus": "keyword"
+                                "primaryName": {"type": "text"},
+                                "tinyId": {"type": "keyword"},
+                                "registrationStatus": {"type": "keyword"}
                             }
                         }
 
                     }
                 }
-                // , "linkedForms": {"properties": {
-                //         "tinyId": "keyword",
-                //         "registrationStatus": "keyword"
-                    // "forms": {
-                    //     "properties": {
-                    //         "tinyId": "keyword",
-                    //         "registrationStatus": "keyword"
-                    //     }
-                    // },
-                    // "retired": {"type": "number"},
-                    // "incomplete": {"type": "number"},
-                    // "candidate": {"type": "number"},
-                    // "recorded": {"type": "number"},
-                    // "recorded": {"type": "number"},
-                // }}
             }
         }
     }, settings: {

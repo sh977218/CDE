@@ -151,7 +151,8 @@ exports.getStream = function (condition) {
 };
 
 exports.count = function (condition, callback) {
-    DataElement.countDocuments(condition, callback);
+    if (callback) DataElement.countDocuments(condition, callback);
+    else return DataElement.count(condition).exec();
 };
 
 exports.desByConcept = function (concept, callback) {
