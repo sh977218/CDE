@@ -160,7 +160,7 @@ exports.module = function (roleConfig) {
                         name: client + ' New Client Errors',
                         source: 'calculated',
                         type: 'message',
-                        url: '/siteAudit?tab=clientError',
+                        url: '/siteAudit?tab=clientErrors',
                     });
                 }
                 if (server > 0) {
@@ -170,7 +170,7 @@ exports.module = function (roleConfig) {
                         name: server + ' New Server Errors',
                         source: 'calculated',
                         type: 'message',
-                        url: '/siteAudit?tab=serverError',
+                        url: '/siteAudit?tab=serverErrors',
                     });
                 }
                 if (Array.isArray(attachmentElts)) {

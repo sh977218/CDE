@@ -124,6 +124,7 @@ export class CdeAppComponent implements OnInit {
 
                 if (this.userService.loggedIn()) {
                     this.notificationService.reload();
+                    this.notificationService.drawerClose();
                 }
             }
         });
