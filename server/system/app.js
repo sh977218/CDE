@@ -702,16 +702,6 @@ exports.init = function (app) {
         }));
     });
 
-    app.get('/syncLinkedForms', authorization.isSiteAdminMiddleware, function (req, res) {
-        res.send("");
-        formElastic.syncLinkedForms();
-    });
-
-    app.get('/syncLinkedFormsStatus', authorization.isSiteAdminMiddleware,
-        (req, res) => res.send(formElastic.syncLinkedFormsProgress));
-
-    new CronJob('00 30 4 * * *', () => formElastic.syncLinkedForms(), null, true, 'America/New_York');
-
     app.get('/idSources', (req, res) => mongo_data.idSource.find(res, {}, rs => res.send(rs)));
     app.get('/idSource/:id', (req, res) => mongo_data.idSource.get(res, req.params.id, r => res.send(r)));
     app.put('/idSource', authorization.isSiteAdminMiddleware,

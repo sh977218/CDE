@@ -19,6 +19,7 @@ const dbLogger = require('../log/dbLogger');
 const handle404 = dbLogger.handle404;
 const handleError = dbLogger.handleError;
 const respondError = dbLogger.respondError;
+const elastic = require('../system/elastic.js');
 
 const ajv = new Ajv({schemaId: 'auto'}); // current FHIR schema uses legacy JSON Schema version 4
 ajv.addMetaSchema(require('ajv/lib/refs/json-schema-draft-04.json'));
@@ -474,3 +475,56 @@ exports.originalSourceByTinyIdSourceName = (req, res) => {
         res.send(originalSource);
     }));
 };
+
+exports.syncLinkedFormsProgress = {done: 0, total: 0};
+
+async function syncLinkedForms () {
+    exports.syncLinkedFormsProgress = {done: 0, total: 0};
+    const cdeCursor = mongo_cde.getStream({archived: false});
+    exports.syncLinkedFormsProgress.total = await mongo_cde.count({archived: false});
+    for (let cde = await cdeCursor.next(); cde != null; cde = await cdeCursor.next()) {
+        let esResult = await elastic.esClient.search({
+            index: config.elastic.formIndex.name,
+            q: cde.tinyId,
+            size: 200
+        });
+
+        const linkedForms = {
+            "Retired": 0,
+            "Incomplete": 0,
+            "Candidate": 0,
+            "Recorded": 0,
+            "Qualified": 0,
+            "Standard": 0,
+            "Preferred Standard": 0,
+            "forms": []
+        };
+
+        esResult.hits.hits.forEach(h => {
+            linkedForms.forms.push({
+                tinyId: h._source.tinyId,
+                registrationStatus: h._source.registrationState.registrationStatus,
+                primaryName: h._source.primaryNameCopy
+            });
+            linkedForms[h._source.registrationState.registrationStatus]++;
+        });
+
+        linkedForms.Standard += linkedForms["Preferred Standard"];
+        linkedForms.Qualified += linkedForms.Standard;
+        linkedForms.Recorded += linkedForms.Qualified;
+        linkedForms.Candidate += linkedForms.Recorded;
+        linkedForms.Incomplete += linkedForms.Candidate;
+        linkedForms.Retired += linkedForms.Incomplete;
+
+        await elastic.esClient.update({
+            index: config.elastic.index.name,
+            type: "dataelement",
+            id: cde.tinyId,
+            body: {doc: {linkedForms: linkedForms}}
+        });
+        exports.syncLinkedFormsProgress.done++;
+    }
+}
+
+exports.syncLinkedForms = syncLinkedForms;
+
