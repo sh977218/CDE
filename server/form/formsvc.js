@@ -479,6 +479,7 @@ exports.originalSourceByTinyIdSourceName = (req, res) => {
 exports.syncLinkedFormsProgress = {done: 0, total: 0};
 
 async function syncLinkedForms () {
+    let t0 = Date.now();
     exports.syncLinkedFormsProgress = {done: 0, total: 0};
     const cdeCursor = mongo_cde.getStream({archived: false});
     exports.syncLinkedFormsProgress.total = await mongo_cde.count({archived: false});
@@ -516,7 +517,7 @@ async function syncLinkedForms () {
         linkedForms.Incomplete += linkedForms.Candidate;
         linkedForms.Retired += linkedForms.Incomplete;
 
-        await elastic.esClient.update({
+        elastic.esClient.update({
             index: config.elastic.index.name,
             type: "dataelement",
             id: cde.tinyId,
@@ -524,6 +525,7 @@ async function syncLinkedForms () {
         });
         exports.syncLinkedFormsProgress.done++;
     }
+    exports.syncLinkedFormsProgress.timeTaken = Date.now() - t0;
 }
 
 exports.syncLinkedForms = syncLinkedForms;

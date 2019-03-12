@@ -87,7 +87,7 @@ export class ServerStatusComponent {
         let indexFn = setInterval(() => {
             this.http.get<any>('/syncLinkedForms').subscribe(res => {
                 this.linkedForms = res;
-                if (res.done === res.todo) {
+                if (res.done === res.total) {
                     clearInterval(indexFn);
                     this.Alert.addAlert('success', 'Done syncing');
                 }

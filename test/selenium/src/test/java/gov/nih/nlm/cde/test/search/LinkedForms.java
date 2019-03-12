@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 public class LinkedForms extends NlmCdeBaseTest {
 
     @Test
-    public void linkedFormx() {
+    public void linkedForms() {
         goToCdeSearch();
         clickElement(By.id("browseOrg-PROMIS / Neuro-QOL"));
         findElement(By.id("ftsearch-input")).sendKeys("linkedForms.Retired:>0");
@@ -16,18 +16,22 @@ public class LinkedForms extends NlmCdeBaseTest {
 
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("linkedForms.Qualified:>1");
+        clickElement(By.id("search.submit"));
         textPresent("7 results for");
 
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("linkedForms.Qualified:>2");
+        clickElement(By.id("search.submit"));
         textPresent("0 results for");
 
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("linkedForms.Standard:>0");
+        clickElement(By.id("search.submit"));
         textPresent("0 results for");
 
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("linkedForms.Standard:0");
+        clickElement(By.id("search.submit"));
         textPresent("7 results for");
     }
 
