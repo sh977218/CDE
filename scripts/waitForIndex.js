@@ -14,14 +14,15 @@ let indexInt = setInterval(() => {
                 Promise.all([
                    new Promise(resolve => {
                         request.post('http://localhost:3001/server/mesh/syncWithMesh', {}, () => {
-                            setInterval(() => {
+                            let meshInterval = setInterval(() => {
                                 request.get('http://localhost:3001/server/mesh/syncWithMesh', (err, res, body) => {
                                     body = JSON.parse(body);
                                     console.log(body);
                                     if (body.dataelement.done === body.dataelement.total &&
                                         body.form.done === body.form.total
                                     ) {
-                                        console.log('Done indexing');
+                                        console.log('Done indexing mesh');
+                                        clearInterval(meshInterval);
                                         resolve();
                                     } else {
                                         console.log('Waiting for Mesh Sync');
@@ -32,12 +33,13 @@ let indexInt = setInterval(() => {
                    }),
                    new Promise(resolve => {
                        request.post('http://localhost:3001/syncLinkedForms', {}, () => {
-                           setInterval(() => {
+                           let lfInterval = setInterval(() => {
                                request.get('http://localhost:3001/syncLinkedForms', (err, res, body) => {
                                    body = JSON.parse(body);
                                    console.log(body);
                                    if (body.done === body.total) {
-                                       console.log('Done indexing');
+                                       console.log('Done indexing linkedForms');
+                                       clearInterval(lfInterval);
                                        resolve();
                                    } else {
                                        console.log('Waiting for Linked Form sync');
@@ -47,7 +49,7 @@ let indexInt = setInterval(() => {
                        });
 
                    })
-                ], done => process.exit(0));
+                ]).then(() => process.exit(0));
             }
         }
     });
