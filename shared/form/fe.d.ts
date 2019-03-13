@@ -53,4 +53,3 @@ declare function questionAnswered(q: FormQuestion): boolean;
 declare function questionMulti(q: FormQuestion): boolean;
 declare function questionQuestionMulti(question: Question): boolean;
 declare function trimWholeForm(elt: FormElementsContainer): void;
-

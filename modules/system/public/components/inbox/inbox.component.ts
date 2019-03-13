@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { AlertService } from 'alert/alert.service';
 import _noop from 'lodash/noop';
-import { decamelize } from 'shared/system/util';
+import { capString, decamelize } from 'shared/system/util';
 
 type InboxMessage = any;
 
@@ -40,7 +40,7 @@ export class InboxComponent {
         // TODO make sure it's ordered by date
         this.http.post<any[]>('/mail/messages/' + type, {}).subscribe(mail => {
             this.mail[type] = mail;
-            mail.forEach(msg => msg.humanType = decamelize(msg.type));
+            mail.forEach(msg => msg.humanType = capString(decamelize(msg.type)));
         }, _noop);
     }
 }
