@@ -47,6 +47,8 @@ let DataElementDraft = conn.model('DataElementDraft', draftSchema);
 let DataElementSource = conn.model('DataElementSource', dataElementSourceSchema);
 let User = require('../user/userDb').User;
 
+let auditModifications = mongo_data.auditModifications(CdeAudit);
+exports.getAuditLog = mongo_data.auditGetLog(CdeAudit);
 exports.elastic = elastic;
 exports.DataElement = exports.dao = DataElement;
 exports.DataElementDraft = exports.daoDraft = DataElementDraft;
@@ -332,9 +334,6 @@ exports.transferSteward = function (from, to, callback) {
     });
 };
 
-let auditModifications = mongo_data.auditModifications.bind(undefined, CdeAudit);
-exports.getAuditLog = mongo_data.auditGetLog.bind(undefined, CdeAudit);
-
 exports.byOtherId = function (source, id, cb) {
     DataElement.find({archived: false}).elemMatch("ids", {source: source, id: id}).exec(function (err, cdes) {
         if (cdes.length > 1)
@@ -412,5 +411,5 @@ exports.checkOwnership = function (req, id, cb) {
 };
 
 exports.originalSourceByTinyIdSourceName = function (tinyId, sourceName, cb) {
-    DataElementSource.findOne({tinyId: tinyId, source: sourceName, elementType: 'cde'}, cb);
+    DataElementSource.findOne({tinyId: tinyId, source: sourceName}, cb);
 };

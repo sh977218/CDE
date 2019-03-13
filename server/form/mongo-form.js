@@ -29,6 +29,8 @@ let FormAudit = conn.model('FormAudit', schemas.auditSchema);
 let FormDraft = conn.model('Draft', schemas.draftSchema);
 let FormSource = conn.model('formsources', schemas.formSourceSchema);
 
+let auditModifications = mongo_data.auditModifications(FormAudit);
+exports.getAuditLog = mongo_data.auditGetLog(FormAudit);
 exports.Form = exports.dao = Form;
 exports.FormDraft = exports.daoDraft = FormDraft;
 exports.FormSource = FormSource;
@@ -235,9 +237,6 @@ exports.create = function (form, user, callback) {
     });
 };
 
-let auditModifications = mongo_data.auditModifications.bind(undefined, FormAudit);
-exports.getAuditLog = mongo_data.auditGetLog.bind(undefined, FormAudit);
-
 exports.byOtherId = function (source, id, cb) {
     Form.find({archived: false}).elemMatch("ids", {source: source, id: id}).exec(function (err, forms) {
         if (forms.length > 1)
@@ -284,5 +283,5 @@ exports.checkOwnership = function (req, id, cb) {
 
 
 exports.originalSourceByTinyIdSourceName = function (tinyId, sourceName, cb) {
-    FormSource.findOne({tinyId: tinyId, source: sourceName, elementType: 'form'}, cb);
+    FormSource.findOne({tinyId: tinyId, source: sourceName}, cb);
 };

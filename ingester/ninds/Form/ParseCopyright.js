@@ -1,17 +1,18 @@
 const _ = require('lodash');
 
 exports.parseCopyright = nindsForms => {
-    let copyrightArray = [];
+    let formNameArray = [];
     nindsForms.forEach(nindsForm => {
-        copyrightArray.push(nindsForm.copyright);
+        if (nindsForm.formName)
+            formNameArray.push(nindsForm.formName);
     });
 
-    let copyright = _.uniq(copyrightArray);
-    if (copyright.length !== 1) {
-        console.log(nindsForms[0].formId + ' copyright not good');
+    let _formNameArray = _.uniq(formNameArray);
+    if (_formNameArray.length !== 1) {
+        console.log(nindsForms[0].formId + ' _formNameArray not good');
         process.exit(1);
     }
-
-    return copyright[0];
+    let copyright = _formNameArray[0].indexOf('©') !== -1;
+    return copyright;
 
 };

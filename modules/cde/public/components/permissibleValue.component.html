@@ -3,7 +3,7 @@
     <dl class="row">
         <dt class="col-3 text-right">Value Type:</dt>
         <dd id="datatypeSelect" class="col-9">
-            <mat-form-field>
+            <mat-form-field class="w-100">
                 <mat-select [(value)]="elt.valueDomain.datatype" [disabled]="!canEdit"
                             (selectionChange)="onDataTypeChange();" placeholder="Select data type">
                     <mat-option *ngFor="let dataType of dataTypeList" [value]="dataType">{{dataType}}</mat-option>
@@ -222,9 +222,11 @@
         <div *ngIf="userService.loggedIn()">
             <div>{{vsacError}}</div>
             <div *ngIf="!editMode">
-                <button *ngIf="canEdit" mat-raised-button id="updateOIDBtn" (click)="editMode=true">Update O.I.D</button>
+                <button *ngIf="canEdit" mat-raised-button id="updateOIDBtn" (click)="editMode=true">Update O.I.D
+                </button>
                 <button *ngIf="canEdit && vsacMappingExists()" mat-raised-button
-                   id="removeVSButton" (click)="removeVSMapping()">Remove Mapping</button>
+                        id="removeVSButton" (click)="removeVSMapping()">Remove Mapping
+                </button>
             </div>
             <div *ngIf="editMode">
                 <mat-form-field>

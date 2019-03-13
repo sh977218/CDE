@@ -9,12 +9,12 @@ export function capString(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-export function decamelize(str) {
-    let result = str
-        .replace(/([a-z\d])([A-Z])/g, '$1 $2')
-        .replace(/([A-Z]+)([A-Z][a-z\d]+)/g, '$1 $2')
+export function decamelize(str, sep = ' ') {
+    const outFormat = '$1' + sep + '$2';
+    return str
+        .replace(/([a-z\d])([A-Z])/g, outFormat)
+        .replace(/([A-Z]+)([A-Z][a-z\d]+)/g, outFormat)
         .toLowerCase();
-    return capString(result);
 }
 
 export function deepCopy(obj) {

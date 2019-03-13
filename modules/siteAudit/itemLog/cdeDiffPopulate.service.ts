@@ -5,10 +5,26 @@
 //   <td class="newValue">{{d.newValue}}</td>
 //   <td class="previousValue">{{d.previousValue}}</td>
 // </tr>
+import _isEmpty from 'lodash/isEmpty';
 import { capCase, decamelize } from 'shared/system/util';
+import { EltLogDiff } from 'shared/models.model';
+
+export function ignoredDiff(d: EltLogDiff): boolean {
+    switch (d.kind) {
+        case 'D':
+            return !d.previousValue;
+        case 'E':
+            return !d.previousValue && !d.newValue;
+        case 'N':
+            return !d.newValue || typeof d.newValue === 'object' && _isEmpty(d.newValue);
+        default:
+            return false;
+    }
+}
+
 
 // prettify audit.diff format
-export function makeHumanReadable(change: any): void {
+export function makeHumanReadable(change: EltLogDiff): void {
     if (!change) {
         return;
     }
@@ -39,6 +55,9 @@ export function makeHumanReadable(change: any): void {
             change.newValue = stringify(change.rhs);
             break;
     }
+    if (change.path.length === 0) {
+        return;
+    }
     if (change.path[0] === 'classification') {
         change.fieldName = 'Classification';
         if (change.item) {
@@ -49,18 +68,20 @@ export function makeHumanReadable(change: any): void {
     }
     let paths = pathFieldMap[change.path.length] && pathFieldMap[change.path.length]
         .filter(pathPair => comparePaths(pathPair.path, change.path)) || [];
-    change.fieldName = paths.length ? paths[0].fieldName : capCase(decamelize(change.path[change.path.length - 1]));
+    change.fieldName = paths.length
+        ? paths[0].fieldName
+        : capCase(decamelize(change.path[change.path.length - 1] as string));
 }
 
 function comparePaths(patternPath: (string | number)[], realPath: (string | number)[]) {
     return !patternPath || !patternPath.some((el, i) => !(typeof el === 'number' && el === -1) && el !== realPath[i]);
 }
 
-function stringify(obj: any) {
+function stringify(obj: any): string {
     switch (typeof obj) {
         case 'number':
         case 'string':
-            return obj;
+            return obj as string;
         case 'object':
             return Object.keys(obj).map(f => f + ': ' + obj[f]).join(', ');
         default:

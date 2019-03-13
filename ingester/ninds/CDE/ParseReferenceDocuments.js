@@ -1,11 +1,14 @@
 const _ = require('lodash');
+const utility = require('../../shared/utility');
 
 exports.parseReferenceDocuments = nindsForms => {
     let referenceArray = [];
     nindsForms.forEach(nindsForm => {
         nindsForm.cdes.forEach(nindsCde => {
-            if (nindsCde['References'])
-                referenceArray.push(nindsCde['References']);
+            if (nindsCde['References']) {
+                let r = utility.removeWhite(nindsCde['References'])
+                referenceArray.push(r);
+            }
         })
     });
 
@@ -13,9 +16,8 @@ exports.parseReferenceDocuments = nindsForms => {
     let referenceDocuments = [];
     _referenceArray.forEach(r => {
         if (!_.isEmpty(r) && r !== 'No references available') {
-            let refWords = _.words(r);
             let referenceDocument = {
-                document: refWords.join(" "),
+                document: r,
                 source: 'NINDS'
             };
             referenceDocuments.push(referenceDocument);

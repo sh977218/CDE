@@ -1,10 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { PageEvent } from '@angular/material';
-import _isEmpty from 'lodash/isEmpty';
-import { makeHumanReadable } from 'siteAudit/itemLog/cdeDiffPopulate.service';
-
-type DataElementLogRecord = any;
+import { ignoredDiff, makeHumanReadable } from 'siteAudit/itemLog/cdeDiffPopulate.service';
+import { EltLog } from 'shared/models.model';
 
 @Component({
     selector: 'cde-de-log',
@@ -24,8 +22,9 @@ type DataElementLogRecord = any;
     `]
 })
 export class DataElementLogComponent {
-    records: DataElementLogRecord[] = [];
+    records: EltLog[] = [];
     currentPage: number = 0;
+    ignoredDiff = ignoredDiff;
     includeBatch = true;
     readonly pageSize = 50;
 
@@ -38,7 +37,7 @@ export class DataElementLogComponent {
             this.currentPage = event.pageIndex;
         }
 
-        this.http.post<DataElementLogRecord[]>('/getCdeAuditLog', {
+        this.http.post<EltLog[]>('/getCdeAuditLog', {
             includeBatch: this.includeBatch,
             skip: this.currentPage * this.pageSize,
             limit: this.pageSize
@@ -48,18 +47,5 @@ export class DataElementLogComponent {
                 if (rec.diff) rec.diff.forEach(d => makeHumanReadable(d));
             });
         });
-    }
-
-    ignoredDiff(d) {
-        switch (d.kind) {
-            case 'E':
-                return !d.previousValue && !d.newValue;
-            case 'D':
-                return !d.previousValue;
-            case 'N':
-                return !d.newValue || typeof d.newValue === 'object' && _isEmpty(d.newValue);
-            default:
-                return false;
-        }
     }
 }
