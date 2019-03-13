@@ -128,8 +128,10 @@ export class ExportService {
                     'xml': result => {
                         let zip = new JSZip();
                         result.forEach(oneElt => {
-                            oneElt.linkedForms.Preferred_Standard = oneElt.linkedForms['Preferred Standard'];
-                            delete oneElt.linkedForms['Preferred Standard'];
+                            if (oneElt.linkedForms) {
+                                oneElt.linkedForms.Preferred_Standard = oneElt.linkedForms['Preferred Standard'];
+                                delete oneElt.linkedForms['Preferred Standard'];
+                            }
                             zip.file(oneElt.tinyId + '.xml', JXON.jsToString({element: oneElt}));
                         });
                         zip.generateAsync({type: 'blob'}).then(content => saveAs(content, 'SearchExport_XML.zip'));
