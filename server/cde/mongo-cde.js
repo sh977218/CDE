@@ -152,6 +152,11 @@ exports.getStream = function (condition) {
     return DataElement.find(condition).sort({_id: -1}).cursor();
 };
 
+exports.count = function (condition, callback) {
+    if (callback) DataElement.countDocuments(condition, callback);
+    else return DataElement.countDocuments(condition).exec();
+};
+
 exports.desByConcept = function (concept, callback) {
     DataElement.find(
         {

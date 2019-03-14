@@ -155,7 +155,7 @@ exports.init = function (app) {
                     'archived': false,
                     'registrationState.registrationStatus': 'Qualified'
                 };
-                mongo_cde.DataElement.countDocuments(cond, (err, totalCount) => {
+                mongo_cde.count(cond, (err, totalCount) => {
                     if (err) {
                         res.status(500).send('ERROR - Static Html Error, /cde/search');
                         logging.errorLogger.error('Error: Static Html Error', {

@@ -80,7 +80,7 @@ exports.init = function (app, daoManager) {
     });
 
     app.get('/deCount', (req, res) => {
-        mongo_cde.DataElement.countDocuments({archived: false}, (err, result) => {
+        mongo_cde.count({archived: false}, (err, result) => {
             res.send({count: result});
         });
     });

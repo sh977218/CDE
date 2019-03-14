@@ -482,7 +482,7 @@ async function syncLinkedForms () {
     let t0 = Date.now();
     exports.syncLinkedFormsProgress = {done: 0, total: 0};
     const cdeCursor = mongo_cde.getStream({archived: false});
-    exports.syncLinkedFormsProgress.total = await mongo_cde.DataElement.countDocuments({archived: false}).exec();
+    exports.syncLinkedFormsProgress.total = await mongo_cde.count({archived: false}).exec();
     for (let cde = await cdeCursor.next(); cde != null; cde = await cdeCursor.next()) {
         let esResult = await elastic.esClient.search({
             index: config.elastic.formIndex.name,

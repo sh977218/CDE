@@ -76,7 +76,7 @@ exports.getStatus = getStatusDone => {
             let condition = {archived: false};
             async.series([
                 done => {
-                    mongo_cde.DataElement.countDocuments(condition, (err, deCount) => {
+                    mongo_cde.count(condition, (err, deCount) => {
                         esInit.indices[0].totalCount = deCount;
                         exports.checkElasticCount(deCount, config.elastic.index.name, 'dataelement', (up, message) => {
                             tempIndices.push({
