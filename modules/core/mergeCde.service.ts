@@ -25,47 +25,47 @@ export class MergeCdeService {
         forkJoin([getDeFromObservable, getDeToObservable]).subscribe(results => {
                 let cdeFrom = results[0];
                 let cdeTo = results[1];
-                if (fields.designations) mergeArrayByProperty(cdeFrom, cdeTo, "designations");
-                if (fields.definitions) mergeArrayByProperty(cdeFrom, cdeTo, "definitions");
-                if (fields.referenceDocuments) mergeArrayByProperty(cdeFrom, cdeTo, "referenceDocuments");
-                if (fields.properties) mergeArrayByProperty(cdeFrom, cdeTo, "properties");
-                if (fields.ids) mergeArrayByProperty(cdeFrom, cdeTo, "ids");
-                if (fields.attachments) mergeArrayByProperty(cdeFrom, cdeTo, "attachments");
-                if (fields.dataSets) mergeArrayByProperty(cdeFrom, cdeTo, "dataSets");
-                if (fields.derivationRules) mergeArrayByProperty(cdeFrom, cdeTo, "derivationRules");
-                if (fields.sources) mergeArrayByProperty(cdeFrom, cdeTo, "sources");
+                if (fields.designations) mergeArrayByProperty(cdeFrom, cdeTo, 'designations');
+                if (fields.definitions) mergeArrayByProperty(cdeFrom, cdeTo, 'definitions');
+                if (fields.referenceDocuments) mergeArrayByProperty(cdeFrom, cdeTo, 'referenceDocuments');
+                if (fields.properties) mergeArrayByProperty(cdeFrom, cdeTo, 'properties');
+                if (fields.ids) mergeArrayByProperty(cdeFrom, cdeTo, 'ids');
+                if (fields.attachments) mergeArrayByProperty(cdeFrom, cdeTo, 'attachments');
+                if (fields.dataSets) mergeArrayByProperty(cdeFrom, cdeTo, 'dataSets');
+                if (fields.derivationRules) mergeArrayByProperty(cdeFrom, cdeTo, 'derivationRules');
+                if (fields.sources) mergeArrayByProperty(cdeFrom, cdeTo, 'sources');
                 if (fields.classifications) transferClassifications(cdeFrom, cdeTo);
                 if (fields.retireCde) {
                     let searchSettings = new SearchSettings();
                     searchSettings.q = '"' + cdeFrom.tinyId + '"';
                     this.elasticService.generalSearchQuery(this.elasticService.buildElasticQuerySettings(searchSettings), 'form', (err?: string, result?: ElasticQueryResponse) => {
-                        if (err) return this.alert.addAlert("danger", err);
+                        if (err) return this.alert.addAlert('danger', err);
                         if (!result || !result.forms || result.forms.length < 2) {
-                            cdeFrom.changeNote = "Merged to tinyId " + cdeTo.tinyId;
-                            cdeFrom.registrationState.registrationStatus = "Retired";
+                            cdeFrom.changeNote = 'Merged to tinyId ' + cdeTo.tinyId;
+                            cdeFrom.registrationState.registrationStatus = 'Retired';
                         }
-                        cdeTo.changeNote = "Merged from tinyId " + cdeFrom.tinyId;
+                        cdeTo.changeNote = 'Merged from tinyId ' + cdeFrom.tinyId;
                         let putDeFromObservable = this.putDeByTinyId(cdeFrom);
                         let putDeToObservable = this.putDeByTinyId(cdeTo);
                         forkJoin([putDeFromObservable, putDeToObservable]).subscribe(results => {
                             cb(null, results);
-                        }, err => cb("Unable to mergeCde " + tinyIdFrom + ". Err:" + err));
+                        }, err => cb('Unable to mergeCde ' + tinyIdFrom + '. Err:' + err));
                     });
                 }
-            }, err => cb("unable to get cde " + err)
+            }, err => cb('unable to get cde ' + err)
         );
     }
 
     getCdeByTinyId(tinyId) {
-        return this.http.get<DataElement>("/de/" + tinyId);
+        return this.http.get<DataElement>('/de/' + tinyId);
     }
 
     putDeByTinyId(elt) {
-        return this.http.put("/de/" + elt.tinyId, elt);
+        return this.http.post('/dePublishExternal', elt);
     }
 
     retireSource(source, destination, cb) {
-        this.http.post("/retireCde", {cde: source, merge: destination}).subscribe(response => {
+        this.http.post('/retireCde', {cde: source, merge: destination}).subscribe(response => {
             if (cb) cb(response);
         });
     }

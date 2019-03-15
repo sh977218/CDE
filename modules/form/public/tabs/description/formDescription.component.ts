@@ -157,17 +157,14 @@ import { scrollTo, waitRendered } from 'core/browser';
 export class FormDescriptionComponent implements OnInit, AfterViewInit {
     private _elt?: CdeForm;
     @Input() canEdit: boolean = false;
-
     @Input() set elt(form: CdeForm) {
         this._elt = form;
         this.addExpanded(form);
         addFormIds(form);
     }
-
     get elt() {
         return this._elt;
     }
-
     @Output() onEltChange = new EventEmitter();
     @ViewChild(TreeComponent) tree: TreeComponent;
     @ViewChild('formSearchTmpl') formSearchTmpl: TemplateRef<any>;

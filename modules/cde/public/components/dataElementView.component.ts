@@ -245,6 +245,7 @@ export class DataElementViewComponent implements OnInit {
     }
 
     saveDraft() {
+        if (!this.elt.isDraft) this.elt.changeNote = '';
         this.elt.isDraft = true;
         this.hasDrafts = true;
         this.savingText = 'Saving ...';
@@ -272,12 +273,13 @@ export class DataElementViewComponent implements OnInit {
     }
 
     saveDataElement() {
-        this.http.put('/dePublish', this.elt).subscribe(res => {
+        const publishData = {_id: this.elt._id, tinyId: this.elt.tinyId, __v: this.elt.__v};
+        this.http.post('/dePublish', publishData).subscribe(res => {
             if (res) {
                 this.hasDrafts = false;
                 this.loadElt(() => this.alert.addAlert('success', 'Data Element saved.'));
             }
-        }, () => this.alert.addAlert('danger', 'Sorry, we are unable to retrieve this data element.'));
+        }, err => this.alert.httpErrorMessageAlert(err, 'Error publishing'));
     }
 
     validate() {

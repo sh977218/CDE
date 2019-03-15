@@ -287,6 +287,7 @@ export class FormViewComponent implements OnInit {
     }
 
     saveDraft() {
+        if (!this.elt.isDraft) this.elt.changeNote = '';
         this.elt.isDraft = true;
         this.hasDrafts = true;
         this.savingText = 'Saving ...';
@@ -324,12 +325,23 @@ export class FormViewComponent implements OnInit {
             async_forEach(newCdes, (newCde, doneOneCde) => {
                 this.createDataElement(newCde, doneOneCde);
             }, () => {
-                this.http.put('/formPublish', this.elt).subscribe(res => {
-                    if (res) {
-                        this.hasDrafts = false;
-                        this.loadElt(() => this.alert.addAlert('success', 'Form saved.'));
-                    }
-                }, () => this.alert.addAlert('danger', 'Error saving form.'));
+                let publish = () => {
+                    const publishData = {_id: this.elt._id, tinyId: this.elt.tinyId, __v: this.elt.__v};
+                    this.http.post('/formPublish', publishData).subscribe(res => {
+                        if (res) {
+                            this.hasDrafts = false;
+                            this.loadElt(() => this.alert.addAlert('success', 'Form saved.'));
+                        }
+                    }, err => this.alert.httpErrorMessageAlert(err, 'Error publishing'));
+                };
+                if (newCdes.length) {
+                    this.http.put<CdeForm>('/draftForm/' + this.elt.tinyId, this.elt).subscribe(newElt => {
+                        this.elt.__v = newElt.__v;
+                        publish();
+                    }, err => this.alert.httpErrorMessageAlert(err, 'Error saving form'));
+                } else {
+                    publish();
+                }
             });
         });
 

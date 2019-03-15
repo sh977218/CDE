@@ -9,8 +9,11 @@
     </span>
     <form *ngIf="editMode" #inlineForm="ngForm">
         <ng-container *ngIf="INPUT_TYPE_ARRAY.indexOf(inputType.toLowerCase()) > -1">
-            <input class="form-control" name="inlineInput" type="{{inputType.toLowerCase()}}" autocomplete="off"
+            <input class="form-control" name="inlineInput" [type]="inputType.toLowerCase()" autocomplete="off"
                    [(ngModel)]="value" [email]="value && inputType.toLowerCase() === 'email' || null"/>
+        </ng-container>
+        <ng-container *ngIf="inputType.toLowerCase() === 'number'">
+            <input class="form-control" name="inlineInput" type="number" autocomplete="off" [(ngModel)]="value"/>
         </ng-container>
         <ng-container *ngIf="inputType.toLowerCase() === 'select'">
             <select class="form-control" [(ngModel)]="value" name="inlineSelect">
