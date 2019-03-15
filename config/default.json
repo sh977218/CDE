@@ -6,6 +6,11 @@
       "name": "cde-fn-sdcValidate",
       "artifact": "serverless-aws-java/build/distributions/cde-fn-sdcValidate.zip",
       "handler": "gov.nih.nlm.cde.sdcValidate.Handler::handleRequest"
+    },
+    "zipExport": {
+      "name": "cde-zip-export",
+      "artifact": "serverless-aws-java/build/distributions/cde-zip-export.zip",
+      "handler": "gov.nih.nlm.cde.zipExport.Handler::handleRequest"
     }
   },
   "provider": {

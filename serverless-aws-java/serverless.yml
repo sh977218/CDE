@@ -12,6 +12,10 @@ functions:
     handler: gov.nih.nlm.cde.sdcValidate.Handler
     name: cde-fn-sdcValidate-${opt:stage, 'dev'}
     timeout: 300
+  cde-zip-export:
+    handler: gov.nih.nlm.cde.zipExport.Handler
+    name: cde-zip-export-${opt:stage, 'dev'}
+    timeout: 300
 custom:
   role:
     green: arn:aws:iam::070163433501:role/nlm_basic_lambda_role
