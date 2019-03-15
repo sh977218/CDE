@@ -153,7 +153,7 @@ function addCde(elem, form, study, cb) {
             {"ids.source": "dbGaP"}
         ]
     };
-    mongo_cde.count(condition, (err, count) => {
+    mongo_cde.DataElement.countDocuments(condition, (err, count) => {
         if (count === 1) {
             let stream = mongo_cde.getStream(condition);
             stream.on('data', function (cde) {

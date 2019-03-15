@@ -133,7 +133,26 @@ exports.createIndexJson = {
                 }
                 , "history": {"enabled": false}
                 , "version": {"type": "keyword"}
-                , "views": {type: "integer"}
+                , "views": {"type": "integer"}
+                , linkedForms: {
+                    properties: {
+                        "Retired": {"type": "integer"},
+                        "Incomplete": {"type": "integer"},
+                        "Candidate": {"type": "integer"},
+                        "Recorded": {"type": "integer"},
+                        "Qualified": {"type": "integer"},
+                        "Standard": {"type": "integer"},
+                        "Preferred Standard": {"type": "integer"},
+                        "forms": {
+                            "properties": {
+                                "primaryName": {"type": "text"},
+                                "tinyId": {"type": "keyword"},
+                                "registrationStatus": {"type": "keyword"}
+                            }
+                        }
+
+                    }
+                }
             }
         }
     }, settings: {
@@ -206,7 +225,8 @@ exports.createFormIndexJson = {
                 "created": {"type": "date"},
                 "updated": {"type": "date"},
                 "imported": {"type": "date"},
-                "numQuestions": {"type": "integer"}
+                "numQuestions": {"type": "integer"},
+                "cdeTinyIds": {"type": "keyword"}
             }
         }
     }, settings: {
@@ -249,7 +269,7 @@ exports.riverFunction = function (_elt, cb) {
     getElt(_elt, function (err, elt) {
         function escapeHTML(s) {
             if (!s) return '';
-            return s.replace(/&/g, '&amp;').replace(/\"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            return s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         }
 
         let flatArray = [];
@@ -273,18 +293,21 @@ exports.riverFunction = function (_elt, cb) {
             }
         }
 
-        function findFormQuestionNr(fe) {
-            let n = 0;
+        const formQuestions = [];
+
+        function findFormQuestions(fe) {
             if (fe.formElements) {
                 fe.formElements.forEach(fee => {
-                    if (fee.elementType === 'question') n++;
-                    else n = n + findFormQuestionNr(fee);
+                    if (fee.elementType === 'question') formQuestions.push(fee);
+                    else findFormQuestions(fee);
                 });
             }
-            return n;
         }
 
-        elt.numQuestions = findFormQuestionNr(elt);
+        findFormQuestions(elt);
+
+        elt.numQuestions = formQuestions.length;
+        elt.cdeTinyIds = formQuestions.map(q => q.question.cde.tinyId);
 
         flattenClassification(elt);
         if (elt.valueDomain && elt.valueDomain.permissibleValues) {

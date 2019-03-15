@@ -8,7 +8,7 @@ let esClient = new elasticsearch.Client({
 });
 
 exports.updateOrInsert = function (elt) {
-    esInit.riverFunction(elt.toObject(), function (doc) {
+    esInit.riverFunction(elt.toObject(), doc => {
         if (doc) {
             delete doc._id;
             esClient.index({
@@ -16,7 +16,7 @@ exports.updateOrInsert = function (elt) {
                 type: "form",
                 id: doc.tinyId,
                 body: doc
-            }, function (err) {
+            }, err => {
                 if (err) {
                     dbLogger.logError({
                         message: "Unable to Re-Index document: " + doc.tinyId,
@@ -70,9 +70,8 @@ exports.byTinyIdList = function (idList, size, cb) {
     });
 };
 
-
 exports.FormDistinct = function (field, cb) {
-    var distinctQuery = {
+    let distinctQuery = {
         "size": 0,
         "aggs": {
             "aggregationsName": {
@@ -95,10 +94,7 @@ exports.FormDistinct = function (field, cb) {
                 details: "query " + JSON.stringify(distinctQuery) + "error " + error + "response" + JSON.stringify(response)
             });
         } else {
-            let list = response.aggregations.aggregationsName.buckets.map(function (b) {
-                return b.key;
-            });
-            cb(list);
+            cb(response.aggregations.aggregationsName.buckets.map(b => b.key));
         }
     });
 };

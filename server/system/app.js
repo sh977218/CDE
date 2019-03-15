@@ -76,7 +76,11 @@ exports.init = function (app) {
     });
 
     let indexHtml = '';
-    ejs.renderFile('modules/system/views/index.ejs', {config: config, isLegacy: false, version: version}, (err, str) => {
+    ejs.renderFile('modules/system/views/index.ejs', {
+        config: config,
+        isLegacy: false,
+        version: version
+    }, (err, str) => {
         indexHtml = str;
     });
 
@@ -151,7 +155,7 @@ exports.init = function (app) {
                     'archived': false,
                     'registrationState.registrationStatus': 'Qualified'
                 };
-                mongo_cde.DataElement.countDocuments(cond, (err, totalCount) => {
+                mongo_cde.count(cond, (err, totalCount) => {
                     if (err) {
                         res.status(500).send('ERROR - Static Html Error, /cde/search');
                         logging.errorLogger.error('Error: Static Html Error', {
@@ -293,11 +297,13 @@ exports.init = function (app) {
                     'archived': false,
                     'registrationState.registrationStatus': 'Qualified'
                 };
+
                 function handleStream(stream, formatter, cb) {
                     stream.on('data', doc => wstream.write(formatter(doc)));
                     stream.on('err', cb);
                     stream.on('end', cb);
                 }
+
                 return util.promisify(async.series)([
                     cb => handleStream(
                         mongo_cde.DataElement.find(cond, 'tinyId').cursor(),
@@ -318,9 +324,9 @@ exports.init = function (app) {
     }, null, true, 'America/New_York', this, true);
 
     app.get(['/help/:title', '/createForm', '/createCde', '/boardList',
-        '/board/:id', '/myBoards', '/cdeStatusReport', '/api', '/sdcview', '/404', '/whatsNew', '/contactUs',
-        '/quickBoard', '/searchPreferences', '/siteAudit', '/siteAccountManagement', '/orgAccountManagement',
-        '/classificationManagement', '/inbox', '/profile', '/login', '/orgAuthority', '/orgComments'],
+            '/board/:id', '/myBoards', '/cdeStatusReport', '/api', '/sdcview', '/404', '/whatsNew', '/contactUs',
+            '/quickBoard', '/searchPreferences', '/siteAudit', '/siteAccountManagement', '/orgAccountManagement',
+            '/classificationManagement', '/inbox', '/profile', '/login', '/orgAuthority', '/orgComments'],
         respondHomeFull
     );
 
@@ -400,7 +406,6 @@ exports.init = function (app) {
         });
         return res.send();
     });
-
 
 
     app.get('/supportedBrowsers', (req, res) => res.render('supportedBrowsers', 'system'));
@@ -634,8 +639,10 @@ exports.init = function (app) {
 
     app.get('/fhirApps', (req, res) => fhirApps.find(res, {}, apps => res.send(apps)));
     app.get('/fhirApp/:id', (req, res) => fhirApps.get(res, req.params.id, app => res.send(app)));
-    app.post('/fhirApp', authorization.isSiteAdminMiddleware, (req, res) => fhirApps.save(res, req.body, app => res.send(app)));
-    app.delete('/fhirApp/:id', authorization.isSiteAdminMiddleware, (req, res) => fhirApps.delete(res, req.params.id, () => res.send()));
+    app.post('/fhirApp', authorization.isSiteAdminMiddleware,
+        (req, res) => fhirApps.save(res, req.body, app => res.send(app)));
+    app.delete('/fhirApp/:id', authorization.isSiteAdminMiddleware,
+        (req, res) => fhirApps.delete(res, req.params.id, () => res.send()));
 
     app.post('/disableRule', authorization.isOrgAuthorityMiddleware, (req, res) => {
         mongo_data.disableRule(req.body, handleError({req, res}, org => {
@@ -674,8 +681,14 @@ exports.init = function (app) {
     });
 
     app.get('/orgDrafts', authorization.isOrgCuratorMiddleware, (req, res) => {
-        mongo_cde.draftsList({'stewardOrg.name': {$in: usersrvc.myOrgs(req.user)}}, handleError({req, res}, draftCdes => {
-            mongo_form.draftsList({'stewardOrg.name': {$in: usersrvc.myOrgs(req.user)}}, handleError({req, res}, draftForms => {
+        mongo_cde.draftsList({'stewardOrg.name': {$in: usersrvc.myOrgs(req.user)}}, handleError({
+            req,
+            res
+        }, draftCdes => {
+            mongo_form.draftsList({'stewardOrg.name': {$in: usersrvc.myOrgs(req.user)}}, handleError({
+                req,
+                res
+            }, draftForms => {
                 return res.send({draftCdes: draftCdes, draftForms: draftForms});
             }));
         }));
@@ -691,6 +704,9 @@ exports.init = function (app) {
 
     app.get('/idSources', (req, res) => mongo_data.idSource.find(res, {}, rs => res.send(rs)));
     app.get('/idSource/:id', (req, res) => mongo_data.idSource.get(res, req.params.id, r => res.send(r)));
-    app.put('/idSource', authorization.isSiteAdminMiddleware, (req, res) => mongo_data.idSource.save(res, req.body, r => res.send(r)));
-    app.delete('/idSource/:id', authorization.isSiteAdminMiddleware, (req, res) => mongo_data.idSource.delete(res, req.params.id, () => res.send()));
+    app.put('/idSource', authorization.isSiteAdminMiddleware,
+        (req, res) => mongo_data.idSource.save(res, req.body, r => res.send(r)));
+    app.delete('/idSource/:id', authorization.isSiteAdminMiddleware,
+        (req, res) => mongo_data.idSource.delete(res, req.params.id, () => res.send()));
+
 };

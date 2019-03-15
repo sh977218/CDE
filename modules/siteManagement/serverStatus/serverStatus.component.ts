@@ -5,7 +5,12 @@ import { MatDialog } from '@angular/material';
 
 @Component({
     selector: 'cde-server-status',
-    templateUrl: './serverStatus.component.html'
+    templateUrl: './serverStatus.component.html',
+    styles: [
+        `button {
+            margin-top: 10px;
+        }`
+    ]
 })
 export class ServerStatusComponent {
     @ViewChild('confirmReindex') confirmReindex!: TemplateRef<any>;
@@ -13,6 +18,7 @@ export class ServerStatusComponent {
     indexToReindex?: number;
     isDone: boolean = false;
     meshSyncs: any;
+    linkedForms: {total?: number, done?: number} = {};
     statuses: any[] = [];
 
     constructor(
@@ -72,7 +78,21 @@ export class ServerStatusComponent {
                     this.Alert.addAlert('success', 'Done syncing');
                     this.meshSyncs = null;
                 }
-            }, err => this.Alert.addAlert('danger', "Unexpected error syncing"));
+            }, () => this.Alert.addAlert('danger', "Unexpected error syncing"));
         }, 1000);
     }
+
+    syncLinkedForms() {
+        this.http.post('/syncLinkedForms', {}).subscribe();
+        let indexFn = setInterval(() => {
+            this.http.get<any>('/syncLinkedForms').subscribe(res => {
+                this.linkedForms = res;
+                if (res.done === res.total) {
+                    clearInterval(indexFn);
+                    this.Alert.addAlert('success', 'Done syncing');
+                }
+            }, () => this.Alert.addAlert('danger', "Unexpected error syncing"));
+        }, 1000);
+    }
+
 }

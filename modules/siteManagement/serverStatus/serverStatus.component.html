@@ -16,6 +16,12 @@
                                  [max]="meshSync.total" [value]="meshSync.done * 100 / meshSync.total">
                 </mat-progress-bar>
             </div>
+
+            <button mat-raised-button (click)="syncLinkedForms()" id="syncLinkedFormsButton">Sync Linked Forms</button>
+            <mat-progress-bar *ngIf="linkedForms.total > 0 && linkedForms.done > 0"
+                      [max]="linkedForms.total" [value]="linkedForms.done * 100 / linkedForms.total">
+            </mat-progress-bar>
+
         </div>
     </div>
 </div>

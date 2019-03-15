@@ -10,6 +10,7 @@ const mongo_form = require('./mongo-form');
 const elastic_system = require('../system/elastic');
 const handleError = require('../log/dbLogger').handleError;
 const sharedElastic = require('../system/elastic.js');
+const CronJob = require('cron').CronJob;
 
 const canCreateMiddleware = authorization.canCreateMiddleware;
 const canEditMiddleware = authorization.canEditMiddleware(mongo_form);
@@ -293,4 +294,17 @@ exports.init = function (app, daoManager) {
         });
         res.send({errors: errors, units: units});
     });
+
+    app.post('/syncLinkedForms', (req, res) => {
+        if (!config.autoSyncMesh && !authorizationShared.isOrgAuthority(req.user)) {
+            return res.status(401).send();
+        }
+        res.send("");
+        formSvc.syncLinkedForms();
+    });
+
+    app.get('/syncLinkedForms', (req, res) => res.send(formSvc.syncLinkedFormsProgress));
+
+    new CronJob('00 30 4 * * *', () => formElastic.syncLinkedForms(), null, true, 'America/New_York');
+
 };
