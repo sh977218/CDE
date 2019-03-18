@@ -88,7 +88,6 @@ exports.init = function (app, daoManager) {
     // run every 1 hour
     function fetchRemoteData() {
         vsac.getTGT(300); // retry for half hour every 6 seconds
-        elastic.fetchPVCodeSystemList();
     }
 
     fetchRemoteData();
@@ -125,10 +124,6 @@ exports.init = function (app, daoManager) {
 
     app.get('/searchUmls', [authorization.loggedInMiddleware], (req, res) => {
         vsac.searchUmls(req.query.searchTerm, res);
-    });
-
-    app.get('/permissibleValueCodeSystemList', exportShared.nocacheMiddleware, (req, res) => {
-        res.send(elastic.pVCodeSystemList);
     });
 
     app.get('/status/cde', appStatus.status);

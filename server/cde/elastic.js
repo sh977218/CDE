@@ -200,24 +200,18 @@ exports.DataElementDistinct = function (field, cb) {
         index: config.elastic.index.name,
         type: "dataelement",
         body: distinctQuery
-    }, function (error, response) {
+    }, (error, response) => {
         if (error) {
             logging.errorLogger.error("Error DataElementDistinct", {
                 origin: "cde.elastic.DataElementDistinct",
                 stack: new Error().stack,
-                details: "query " + JSON.stringify(distinctQuery) + "error " + error + "response" + JSON.stringify(response)
+                details: "Query: " + JSON.stringify(distinctQuery) + "error " + error + " -- Response: " + JSON.stringify(response)
             });
         } else {
             let list = response.aggregations.aggregationsName.buckets.map(b => b.key);
             cb(list);
         }
     });
-};
-
-exports.pVCodeSystemList = [];
-
-exports.fetchPVCodeSystemList = function () {
-    this.DataElementDistinct("valueDomain.permissibleValues.codeSystemName", result => this.pVCodeSystemList = result);
 };
 
 exports.get = function (id, cb) {

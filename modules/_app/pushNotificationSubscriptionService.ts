@@ -201,7 +201,12 @@ export class PushNotificationSubscriptionService {
         } catch (e) {
             throw 'Network Error';
         }
-        let body = await response.json();
+        let body;
+        try {
+            body = await response.json();
+        } catch (e) {
+            throw 'Network Error - not json';
+        }
         if (body && body.exists === false) {
             this.lastEndpoint = '';
             this.lastUser = '';
@@ -219,7 +224,7 @@ export class PushNotificationSubscriptionService {
 
     static async updateExisting(userId?: string) {
         try {
-            let registration = await navigator.serviceWorker.register('/sw.js');
+            let registration = await navigator.serviceWorker.register('/sw.js').catch();
             this.registrationResolve(registration);
             if (userId) {
                 this.subscriptionServerUpdate(userId).catch(_noop);
