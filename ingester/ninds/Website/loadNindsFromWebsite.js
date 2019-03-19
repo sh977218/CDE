@@ -171,27 +171,27 @@ const DISEASE_MAP = [
         name: 'Traumatic Brain Injury',
         subDiseases: [{
             name: 'Comprehensive',
-            existingFormXpath: "//th[a[span[normalize-space(text())='Demographics']]]/@id",
+            existingFormXpath: "//th[a[span[normalize-space(text())='Demographics']]]",
             existingText: 'formF0300',
             count: 261
         }, {
             name: 'Acute Hospitalized',
-            existingFormXpath: "//th[a[span[normalize-space(text())='Demographics']]]/@id",
+            existingFormXpath: "//th[a[span[normalize-space(text())='Demographics']]]",
             existingText: 'formF1534',
             count: 250
         }, {
             name: 'Concussion/Mild TBI',
-            existingXpath: "//th[a[span[normalize-space(text())='Demographics']]]/@id",
+            existingXpath: "//th[a[span[normalize-space(text())='Demographics']]]",
             existingText: 'formF1535',
             count: 249
         }, {
             name: 'Moderate/Severe TBI: Rehabilitation',
-            existingXpath: "//th[a[span[normalize-space(text())='Demographics']]]/@id",
+            existingXpath: "//th[a[span[normalize-space(text())='Demographics']]]",
             existingText: 'formF1536',
             count: 247
         }, {
             name: 'Epidemiology',
-            existingXpath: "//th[a[span[normalize-space(text())='Demographics']]]/@id",
+            existingXpath: "//th[a[span[normalize-space(text())='Demographics']]]",
             existingText: 'formF1537',
             count: 247
         }],
@@ -401,7 +401,7 @@ async function run() {
                 });
                 if (_existingSubDiseasesCount === subDisease.count) {
                     console.log("***********************************************************************");
-                    console.log("Previously Finished Disease " + disease.name + " SubDisease " + subDisease + " on page " + disease.url);
+                    console.log("Previously Finished Disease " + disease.name + " SubDisease " + subDisease.name + " on page " + disease.url);
                     console.log("***********************************************************************");
                 } else {
                     await driver.get(disease.url);
@@ -411,7 +411,12 @@ async function run() {
                     if (subDisease.existingXpath) {
                         let timeout = setInterval(async () => {
                             let existingElement = await driver.findElement(By.xpath(subDisease.existingXpath));
-                            let existingElementText = await existingElement.getText();
+                            let existingElementText = '';
+                            if (disease.name === 'Traumatic Brain Injury') {
+                                existingElementText = await existingElement.getAttribute('id');
+                            } else {
+                                existingElementText = await existingElement.getText();
+                            }
                             if (existingElementText.trim() === subDisease.existingText) clearInterval(timeout);
                         }, 20 * 1000);
                     }
