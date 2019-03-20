@@ -103,6 +103,14 @@ doOneNindsFormById = async formIdString => {
         newFormObj.tinyId = existingFormObj.tinyId;
         let otherClassifications = existingFormObj.classification.filter(c => c.stewardOrg.name !== 'NINDS');
         existingForm.classification = otherClassifications.concat(newFormObj.classification);
+
+        //@TODO remove after this load.
+        existingForm.classification.forEach(c => {
+            if (c.stewardOrg.name === 'NINDS') {
+                c.elements = c.elements.filter(e => e.name !== 'Population');
+            }
+        });
+
         if (updatedByNonLoader(existingForm) ||
             existingForm.registrationState.registrationStatus === 'Standard') {
             await existingForm.save();
