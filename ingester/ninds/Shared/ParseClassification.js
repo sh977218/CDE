@@ -3,6 +3,7 @@ const _ = require('lodash');
 const classificationShared = require('esm')(module)('../../../shared/system/classificationShared');
 
 exports.parseClassification = (nindsForms, item) => {
+    let type = item.elementType;
     let classificationArray = [];
     nindsForms.forEach(nindsForm => {
         let temp = {};
@@ -14,8 +15,10 @@ exports.parseClassification = (nindsForms, item) => {
             temp.domain = nindsForm.domain;
         if (nindsForm.subDomain)
             temp.subDomain = nindsForm.subDomain;
-        if (nindsForm.cdes.length)
+        if (nindsForm.cdes.length && type === 'cde') {
             temp.population = nindsForm.cdes[0]['Population'];
+            temp.classification = nindsForm.cdes[0]['Classification'];
+        }
         classificationArray.push(temp);
     });
 
@@ -33,7 +36,7 @@ exports.parseClassification = (nindsForms, item) => {
             subDomainToAdd.push(c.subDisease);
         }
 
-        if (c.classification) {
+        if (c.classification && type === 'cde') {
             classificationToAdd.push('Classification');
             classificationToAdd.push(c.classification);
         }
@@ -53,9 +56,12 @@ exports.parseClassification = (nindsForms, item) => {
         classificationShared.classifyItem(item, "NINDS", diseaseToAdd);
         classificationShared.classifyItem(item, "NINDS", domainToAdd);
         classificationShared.classifyItem(item, "NINDS", subDomainToAdd);
-        classificationShared.classifyItem(item, "NINDS", classificationToAdd);
 
-        if (c.population) {
+        if (type === 'cde') {
+            classificationShared.classifyItem(item, "NINDS", classificationToAdd);
+        }
+
+        if (c.population && type === 'cde') {
             let populationArray = c.population.split(';');
             populationArray.forEach(p => {
                 if (p && p.trim()) {
