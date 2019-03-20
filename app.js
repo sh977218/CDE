@@ -14,8 +14,6 @@ const auth = require('./server/system/authentication');
 const logging = require('./server/system/logging.js');
 const daoManager = require('./server/system/moduleDaoManager.js');
 const domain = require('domain').create();
-const ipFilter = require('express-ipfilter').IpFilter;
-const IpDeniedError = require('express-ipfilter').IpDeniedError;
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const methodOverride = require('method-override');
@@ -94,7 +92,11 @@ let getRealIp = function (req) {
 };
 
 let blackIps = [];
-app.use(ipFilter(() => blackIps, {errorMessage: ""}));
+app.use((req, res, next) => {
+   if (blackIps.indexOf(getRealIp(req)) !== -1) {
+       res.status(403).send("Access is temporarily disabled. If you think you received this response in error, please contact support. Otherwise, please try again in an hour.");
+   } else next();
+});
 const banEndsWith = config.banEndsWith || [];
 const banStartsWith = config.banStartsWith || [];
 
