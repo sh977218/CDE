@@ -26,6 +26,7 @@ exports.createForm = async nindsForms => {
     let isCopyrighted = parseCopyright(nindsForms);
 
     let newForm = {
+        elementType: 'form',
         source: 'NINDS',
         tinyId: generateTinyId(),
         sources,

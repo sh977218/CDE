@@ -28,20 +28,22 @@ exports.parseClassification = (nindsForms, item) => {
         let diseaseToAdd = ['Disease', c.disease];
         let domainToAdd = ['Domain', c.domain];
         let subDomainToAdd = ['Disease', c.disease];
+        // CDE only
         let classificationToAdd = ['Disease', c.disease];
 
-        if (c.subDisease) {
+        if (!_.isEmpty(c.subDisease)) {
             diseaseToAdd.push(c.subDisease);
             classificationToAdd.push(c.subDisease);
             subDomainToAdd.push(c.subDisease);
         }
 
-        if (c.classification && type === 'cde') {
+        if (!_.isEmpty(c.classification) && type === 'cde') {
             classificationToAdd.push('Classification');
             classificationToAdd.push(c.classification);
+            classificationShared.classifyItem(item, "NINDS", classificationToAdd);
         }
 
-        if (c.domain) {
+        if (!_.isEmpty(c.domain)) {
             diseaseToAdd.push('Domain');
             subDomainToAdd.push('Domain');
             diseaseToAdd.push(c.domain);
@@ -57,11 +59,8 @@ exports.parseClassification = (nindsForms, item) => {
         classificationShared.classifyItem(item, "NINDS", domainToAdd);
         classificationShared.classifyItem(item, "NINDS", subDomainToAdd);
 
-        if (type === 'cde') {
-            classificationShared.classifyItem(item, "NINDS", classificationToAdd);
-        }
 
-        if (c.population && type === 'cde') {
+        if (!_.isEmpty(c.population) && type === 'cde') {
             let populationArray = c.population.split(';');
             populationArray.forEach(p => {
                 if (p && p.trim()) {

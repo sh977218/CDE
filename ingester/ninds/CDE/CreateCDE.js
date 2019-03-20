@@ -34,6 +34,7 @@ exports.createCde = async cdeId => {
     let valueDomain = parseValueDomain(nindsForms);
 
     let cde = {
+        elementType: 'cde',
         source: 'NINDS',
         tinyId: generateTinyId(),
         sources,
