@@ -209,7 +209,7 @@
     {
       "path": "./dist/app/cde.js",
       "compression": "none",
-      "maxSize": "1.56 MB"
+      "maxSize": "1.58 MB"
     },
     {
       "path": "./dist/app/cde.css",
@@ -219,7 +219,7 @@
     {
       "path": "./dist/embed/embed.js",
       "compression": "none",
-      "maxSize": "1.39 MB"
+      "maxSize": "1.40 MB"
     },
     {
       "path": "./dist/embed/embed.css",
@@ -229,7 +229,7 @@
     {
       "path": "./dist/fhir/fhir.js",
       "compression": "none",
-      "maxSize": "1.57 MB"
+      "maxSize": "1.58 MB"
     },
     {
       "path": "./dist/fhir/fhir.css",
@@ -239,7 +239,7 @@
     {
       "path": "./dist/native/native.js",
       "compression": "none",
-      "maxSize": "570 kB"
+      "maxSize": "575 kB"
     },
     {
       "path": "./dist/native/native.css",
