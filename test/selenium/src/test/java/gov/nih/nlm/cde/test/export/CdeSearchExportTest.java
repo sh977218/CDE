@@ -57,7 +57,7 @@ public class CdeSearchExportTest extends NlmCdeBaseTest {
         clickElement(By.id("source"));
         clickElement(By.id("updated"));
         clickElement(By.xpath("//*[@id='identifiers']//input"));
-        selectMatSelectDropdownByText("NINDS Variable Name");
+        selectMatSelectDropdownByText("LOINC");
         closeTableViewPreferenceModal();
 
         try {
