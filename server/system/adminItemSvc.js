@@ -153,8 +153,8 @@ exports.createTask = function (user, role, type, eltModule, eltTinyId, item) {
 };
 
 exports.bulkAction = function (ids, action, cb) {
-    var eltsTotal = ids.length;
-    var eltsProcessed = 0;
+    let eltsTotal = ids.length;
+    let eltsProcessed = 0;
     async.each(ids, function (id, doneOne) {
             action(id, function () {
                 eltsProcessed++;
@@ -170,10 +170,10 @@ exports.bulkAction = function (ids, action, cb) {
 
 exports.hideProprietaryIds = function (elt) {
     if (elt && elt.ids) {
-        var blackList = [
+        let blackList = [
             'LOINC'
         ];
-        elt.ids.forEach(function (id) {
+        elt.ids.forEach(id => {
             if (blackList.indexOf(id.source) > -1) {
                 id.id = 'Login to see value.';
                 id.source = '(' + id.source + ')';
@@ -188,7 +188,10 @@ exports.notifyForComment = (handlerOptions, commentOrReply, eltModule, eltTinyId
             .reduce((acc, c) => acc.concat(c.user._id, c.replies.map(r => r.user._id)), users)
             .filter(u => !!u && !u.equals(commentOrReply.user._id))
         ));
-        userDb.find(notificationSvc.typeToCriteria('comment', {users: userList, org: eltStewardOrg}), handleError(handlerOptions, users => {
+        userDb.find(notificationSvc.typeToCriteria('comment', {
+            users: userList,
+            org: eltStewardOrg
+        }), handleError(handlerOptions, users => {
             users = users.filter(u => !u.equals(commentOrReply.user._id));
 
             // drawer
