@@ -347,7 +347,7 @@ app.use((req, res, next) => {
 });
 
 
-app.use((err, req, res) => {
+app.use((err, req, res, next) => {
 
     if (err.code === 'EBADCSRFTOKEN') {
         return res.status(401).send('CSRF Error');
