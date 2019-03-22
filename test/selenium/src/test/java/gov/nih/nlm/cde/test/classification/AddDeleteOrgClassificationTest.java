@@ -37,13 +37,4 @@ public class AddDeleteOrgClassificationTest extends NlmCdeBaseTest {
         textPresent("Surgical Procedure Other Anatomic Site Performed Indicator");
         textPresent("add NINDS > Disease > Myasthenia Gravis > Classification > Supplemental");
     }
-
-
-    @Test(dependsOnMethods = {"cdeAddClassification"})
-    public void modifiedSinceAPI() {
-        String response = get(baseUrl + "/api/cde/modifiedElements?from=2016-01-01").asString();
-        Assert.assertFalse(response.contains("Invalid"), "Actual: " + response);
-        Assert.assertTrue(response.contains("cGx6UmQnY8G"), "Actual: " + response);
-    }
-
 }
