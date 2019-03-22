@@ -93,7 +93,6 @@ exports.addClassification = function (body, dao, cb) {
             steward = classificationShared.findSteward(elt, body.orgName);
         }
         classificationShared.addCategory(steward.object, body.categories, result => {
-            elt.updated = new Date();
             elt.markModified("classification");
             elt.save(err => {
                 if (err) cb(err);
@@ -120,7 +119,6 @@ exports.removeClassification = function (body, dao, cb) {
                     elt.classification.splice(i, 1);
                 }
             }
-            elt.updated = new Date();
             elt.markModified("classification");
             elt.save(cb);
         });

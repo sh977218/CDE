@@ -81,7 +81,6 @@ export function classifyElt(item, orgName, categories) {
     }
     addCategoriesToTree(classification, categories);
     arrangeClassification(item, orgName);
-    item.updated = new Date();
     if (item.markModified) item.markModified('classification');
 }
 
@@ -93,7 +92,6 @@ export function unclassifyElt(item, orgName, categories) {
         let leaf = findLeaf(classification, categories);
         if (leaf) {
             leaf.parent.elements.splice(leaf.index, 1);
-            item.updated = new Date();
             if (item.markModified) item.markModified('classification');
         }
     }
@@ -107,7 +105,6 @@ export function renameClassifyElt(item, orgName, categories, newName) {
         let leaf = findLeaf(classification, categories);
         if (leaf) {
             leaf.leaf.name = newName;
-            item.updated = new Date();
             arrangeClassification(item, orgName);
             if (item.markModified) item.markModified('classification');
         }
