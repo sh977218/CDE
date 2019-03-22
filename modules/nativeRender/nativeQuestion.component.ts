@@ -1,7 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormService } from 'nativeRender/form.service';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
-import { ScoreService } from 'nativeRender/score.service';
 import { CbErr, CodeAndSystem } from 'shared/models.model';
 import { questionMulti } from 'shared/form/fe';
 import { FormQuestion } from 'shared/form/form.model';
@@ -18,18 +17,14 @@ export class NativeQuestionComponent implements OnInit {
     NRS = NativeRenderService;
     datePrecisionToType = FormQuestion.datePrecisionToType;
     datePrecisionToStep = FormQuestion.datePrecisionToStep;
-    locationDenied = false;
     metadataTagsNew?: string;
-    previousUom?: CodeAndSystem;
-
     questionMulti = questionMulti;
 
     ngOnInit() {
-        this.previousUom = this.formElement.question.answerUom;
+        this.formElement.question.previousUom = this.formElement.question.answerUom;
     }
 
-    constructor(public nrs: NativeRenderService,
-                public scoreSvc: ScoreService) {
+    constructor(public nrs: NativeRenderService) {
     }
 
     classColumns(pvIndex: number, index: number) {
@@ -58,49 +53,6 @@ export class NativeQuestionComponent implements OnInit {
 
         if (this.isFirstInRow(pvIndex !== undefined ? pvIndex : index)) result += ' clear';
         return result;
-    }
-
-    convert() {
-        let unit = this.formElement.question.answerUom;
-        if (this.previousUom && unit && this.formElement.question.answer != null) {
-            let value: number;
-            if (typeof(this.formElement.question.answer) === 'string') value = parseFloat(this.formElement.question.answer);
-            else value = this.formElement.question.answer;
-
-            if (typeof(value) === 'number' && !isNaN(value)) {
-                NativeQuestionComponent.convertUnits(value, this.previousUom, unit, (error?: string, result?: number) => {
-                    if (!error && result !== undefined && !isNaN(result) && unit === this.formElement.question.answerUom) {
-                        this.formElement.question.answer = result;
-                        this.scoreSvc.triggerCalculateScore(this.formElement);
-                    }
-                });
-            }
-        }
-        this.previousUom = this.formElement.question.answerUom;
-    }
-
-    static convertUnits(value: number, fromUnit: CodeAndSystem, toUnit: CodeAndSystem, cb: CbErr<number>) {
-        if (fromUnit.system === 'UCUM' && toUnit.system === 'UCUM') {
-            callbackify(
-                FormService.convertUnits(value, encodeURIComponent(fromUnit.code), encodeURIComponent(toUnit.code))
-            )(cb);
-        } else {
-            cb(undefined, value); // no conversion for other systems
-        }
-    }
-
-    getCurrentGeoLocation(formElement: FormQuestion) {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                position => {
-                    this.locationDenied = false;
-                    if (formElement) formElement.question.answer = position.coords;
-                },
-                err => {
-                    this.locationDenied = err.code === err.PERMISSION_DENIED;
-                }
-            );
-        }
     }
 
     hasHeading(q: FormQuestion): boolean {

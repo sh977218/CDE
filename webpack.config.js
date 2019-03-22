@@ -1,18 +1,18 @@
 const config = require('config');
 const webpack = require('webpack');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
     context: __dirname,
     module: {
         rules: [
-            {test: /\.ts$/, enforce: "pre", exclude: /node_modules/, use: ['tslint-loader']},
+            {test: /\.ts$/, enforce: 'pre', exclude: /node_modules/, use: ['tslint-loader']},
             {
                 test: /\.js$/,
                 exclude: [/node_modules/, /\.module\.ngfactory\.js$/],
                 loader: 'babel-loader',
                 query: {
-                    presets: ["@babel/preset-env"]
+                    presets: ['@babel/preset-env']
                 }
             },
             {
@@ -62,8 +62,8 @@ module.exports = {
     performance: { hints: false },
     resolve: {
         unsafeCache: false,
-        extensions: [".ts", ".tsx", ".js", ".json", ".html", ".css"],
-        modules: ["modules", "node_modules", "modules/components"]
+        extensions: ['.ts', '.tsx', '.js', '.json', '.html', '.css'],
+        modules: ['modules', 'node_modules', 'modules/components']
     },
     externals: {
         angular: true

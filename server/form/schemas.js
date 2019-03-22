@@ -194,7 +194,7 @@ exports.draftSchema.virtual('isDraft').get(function () {
 exports.formSchema.set('collection', 'forms');
 exports.formSchema.index({tinyId: 1, archived: 1}, {
     unique: true,
-    name: "formLiveTinyId",
+    name: 'formLiveTinyId',
     partialFilterExpression: {archived: false}
 });
 

@@ -119,7 +119,7 @@
                                [name]="formElement.feId"
                                [attr.name]="formElement.feId"
                                [(ngModel)]="formElement.question.answer"
-                               (change)="scoreSvc.triggerCalculateScore(formElement);"
+                               (change)="nrs.emit(formElement)"
                                [required]="formElement.question.required"
                                [disabled]="!formElement.question.editable"/>
                     </ng-container>
@@ -128,29 +128,29 @@
                             <div class="input-group-prepend d-none d-sm-flex">
                                 <span class="input-group-text">Coordinates:</span>
                             </div>
-                            <input type="text" class="form-control" [disabled]="locationDenied"
+                            <input type="text" class="form-control" [disabled]="nrs.locationDenied"
                                    [id]="formElement.feId+'_latitude'"
                                    value="{{formElement.question.answer?.latitude}}">
                             <div class="input-group-prepend input-group-append">
                                 <span class="input-group-text">,</span>
                             </div>
-                            <input type="text" class="form-control" [disabled]="locationDenied"
+                            <input type="text" class="form-control" [disabled]="nrs.locationDenied"
                                    [id]="formElement.feId+'_longitude'"
                                    value="{{formElement.question.answer?.longitude}}">
                             <div class="input-group-append">
-                                <button *ngIf="locationDenied; else templateLocation" class="btn btn-disabled"
-                                        (click)="getCurrentGeoLocation(formElement)">
+                                <button *ngIf="nrs.locationDenied; else templateLocation" class="btn btn-disabled"
+                                        (click)="nrs.getCurrentGeoLocation(formElement)">
                                     <i class="material-icons iconFit">location_disabled</i>
                                 </button>
                                 <ng-template #templateLocation>
                                     <button [id]="formElement.feId+'_location'" class="btn btn-primary">
                                         <i class="material-icons iconFit"
-                                           (click)="getCurrentGeoLocation(formElement)">location_searching</i>
+                                           (click)="nrs.getCurrentGeoLocation(formElement)">location_searching</i>
                                     </button>
                                 </ng-template>
                             </div>
                         </div>
-                        <div *ngIf="locationDenied"><code>Please enable location for this site.</code></div>
+                        <div *ngIf="nrs.locationDenied"><code>Please enable location for this site.</code></div>
                     </ng-container>
                     <ng-container *ngSwitchCase="'Number'">
                         <div [ngClass]="{'input-group': formElement.question.uomsAlias.length > 0}">
@@ -160,7 +160,7 @@
                                    [name]="formElement.feId"
                                    [attr.name]="formElement.feId"
                                    [(ngModel)]="formElement.question.answer"
-                                   (change)="scoreSvc.triggerCalculateScore(formElement);"
+                                   (change)="nrs.emit(formElement)"
                                    [attr.min]="formElement.question.datatypeNumber ? formElement.question.datatypeNumber.minValue : null"
                                    [attr.max]="formElement.question.datatypeNumber ? formElement.question.datatypeNumber.maxValue : null"
                                    [required]="formElement.question.required"
@@ -174,7 +174,7 @@
                                            [attr.name]="formElement.feId + '_uom_' + i"
                                            class="mr-1"
                                            [(ngModel)]="formElement.question.answerUom"
-                                           (change)="convert()"
+                                           (change)="nrs.convert(formElement)"
                                            [value]="formElement.question.unitsOfMeasure[i]"
                                            [attr.value]="formElement.question.unitsOfMeasure[i]"
                                            [required]="formElement.question.required || formElement.question.answer"
@@ -191,7 +191,7 @@
                                        [name]="formElement.feId"
                                        [attr.name]="formElement.feId"
                                        [(ngModel)]="formElement.question.answer"
-                                       (change)="scoreSvc.triggerCalculateScore(formElement);"
+                                       (change)="nrs.emit(formElement)"
                                        [required]="formElement.question.required"
                                        [disabled]="!formElement.question.editable"/>
                                 <div *ngIf="formElement.question.uomsAlias.length" class="input-group-append">
@@ -202,7 +202,7 @@
                                                [name]="formElement.feId + '_uom_' + i"
                                                [attr.name]="formElement.feId + '_uom_' + i"
                                                [(ngModel)]="formElement.question.answerUom"
-                                               (change)="convert()"
+                                               (change)="nrs.convert(formElement)"
                                                [value]="formElement.question.unitsOfMeasure[i]"
                                                [attr.value]="formElement.question.unitsOfMeasure[i]"
                                                [required]="formElement.question.required || formElement.question.answer"
@@ -213,12 +213,13 @@
                         </ng-container>
                         <ng-container *ngSwitchCase="true">
                             <textarea class="form-control" #inputTextArea
-                                   attr.id="{{formElement.label}}_{{formElement.feId}}_box"
-                                   [name]="formElement.feId"
-                                   [attr.name]="formElement.feId"
-                                   [(ngModel)]="formElement.question.answer"
-                                   [required]="formElement.question.required"
-                                   [disabled]="!formElement.question.editable">
+                                      attr.id="{{formElement.label}}_{{formElement.feId}}_box"
+                                      [name]="formElement.feId"
+                                      [attr.name]="formElement.feId"
+                                      [(ngModel)]="formElement.question.answer"
+                                      (change)="nrs.emit(formElement)"
+                                      [required]="formElement.question.required"
+                                      [disabled]="!formElement.question.editable">
                             </textarea>
                             <div *ngIf="inputTextArea.validationMessage"><code>{{inputTextArea.validationMessage}}</code></div>
                         </ng-container>

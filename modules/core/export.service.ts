@@ -114,18 +114,18 @@ export class ExportService {
                 }
 
                 let exporters = {
-                    'csv': async (result: Item[]) => {
+                    csv: async (result: Item[]) => {
                         let csv = await this.resultToCsv(result);
                         let blob = new Blob([csv], {type: 'text/csv'});
                         saveAs(blob, 'SearchExport.csv');
                         this.alertService.addAlert("", 'Export downloaded.');
                     },
-                    'json': result => {
+                    json: result => {
                         let blob = new Blob([JSON.stringify(result)], {type: 'application/json'});
                         saveAs(blob, 'SearchExport.json');
                         this.alertService.addAlert("", 'Export downloaded.');
                     },
-                    'xml': result => {
+                    xml: result => {
                         let zip = new JSZip();
                         result.forEach(oneElt => {
                             if (oneElt.linkedForms) {
@@ -137,7 +137,7 @@ export class ExportService {
                         zip.generateAsync({type: 'blob'}).then(content => saveAs(content, 'SearchExport_XML.zip'));
                         this.alertService.addAlert('success', 'Export downloaded.');
                     },
-                    'odm': result => {
+                    odm: result => {
                         let zip = new JSZip();
                         result.forEach(oneElt => {
                             getFormOdm(oneElt, (err, odmElt) => {
@@ -147,7 +147,7 @@ export class ExportService {
                         zip.generateAsync({type: 'blob'}).then(content => saveAs(content, 'SearchExport_ODM.zip'));
                         this.alertService.addAlert('success', 'Export downloaded.');
                     },
-                    'validationRules': (result) => {
+                    validationRules: (result) => {
                         let orgName = exportSettings.searchSettings.selectedOrg;
                         let status = exportSettings.status;
                         let cdes = [];

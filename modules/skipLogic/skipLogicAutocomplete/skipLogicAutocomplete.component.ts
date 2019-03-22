@@ -31,11 +31,7 @@ export class SkipLogicAutocompleteComponent {
                 protected dialog: MatDialog,
                 public dialogRef: MatDialogRef<SkipLogicComponent>,
                 @Inject(MAT_DIALOG_DATA) public data) {
-        this.labelOptions = data.priorQuestions.map(q => {
-            let realLabel = q.label;
-            if (!realLabel) realLabel = q.question.cde.name;
-            return realLabel;
-        });
+        this.labelOptions = data.priorQuestions.map(q => q.label || q.question.cde.name);
 
         let tokens = this.getTokens(data.formElement.skipLogic.condition);
         tokens.forEach(token => {

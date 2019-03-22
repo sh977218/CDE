@@ -52,4 +52,8 @@ declare function noopSync(_: FormElement, pass: any): any;
 declare function questionAnswered(q: FormQuestion): boolean;
 declare function questionMulti(q: FormQuestion): boolean;
 declare function questionQuestionMulti(question: Question): boolean;
+declare function repeatFe(fe: FormElement): '' | '=' | 'F' | 'N';
+declare function repeatFeLabel(fe: FormElement): string;
+declare function repeatFeNumber(fe: FormElement): number;
+declare function repeatFeQuestion(fe: FormElement): string;
 declare function trimWholeForm(elt: FormElementsContainer): void;
