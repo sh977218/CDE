@@ -9,7 +9,8 @@ public class FormClassificationLinkTest extends BaseFormTest {
 
     @Test
     public void formClassificationLink() {
-        goToFormByName("Skin Cancer Patient");
+        String formName = "Skin Cancer Patient";
+        goToFormByName(formName);
         goToClassification();
         textPresent("Disease");
         textPresent("Headache");

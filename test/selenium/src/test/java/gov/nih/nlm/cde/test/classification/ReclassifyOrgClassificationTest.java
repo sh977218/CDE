@@ -38,10 +38,4 @@ public class ReclassifyOrgClassificationTest extends NlmCdeBaseTest {
         textPresent("org / or Org > NewClassification");
     }
 
-    @Test(dependsOnMethods = {"reclassifyOrgClassification"})
-    public void modifiedSinceAPI() {
-        String response = get(baseUrl + "/api/cde/modifiedElements?from=2017-01-01").asString();
-        Assert.assertFalse(response.contains("Invalid"), "Actual: " + response);
-        Assert.assertTrue(response.contains("HyQz9G0oYaE"), "Actual: " + response);
-    }
 }
