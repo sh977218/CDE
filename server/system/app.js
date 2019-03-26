@@ -377,17 +377,6 @@ exports.init = function (app) {
             res.send({done: true});
         });
     });
-    app.get('/identifierSources/cde', (req, res) => {
-        cdeElastic.DataElementDistinct('ids.source', result => res.send(result));
-    });
-    app.get('/identifierSources/form', (req, res) => {
-        formElastic.FormDistinct('ids.source', result => res.send(result));
-    });
-
-    app.get('/identifierSources/', (req, res) => {
-        cdeElastic.DataElementDistinct('ids.source', result1 =>
-            formElastic.FormDistinct('ids.source', result2 => res.send(_.union(result1, result2))));
-    });
 
     /* ---------- PUT NEW REST API above ---------- */
 
