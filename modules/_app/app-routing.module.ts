@@ -8,7 +8,6 @@ import { OrgAdminGuard } from '_app/routerGuard/orgAdminGuard';
 import { OrgAuthorityGuard } from '_app/routerGuard/orgAuthorityGuard';
 import { OrgCuratorGuard } from '_app/routerGuard/orgCuratorGuard';
 import { SiteAdminGuard } from '_app/routerGuard/siteAdminGuard';
-import { IdentifierSourcesResolve } from 'system/public/components/searchPreferences/identifier-source.resolve.service';
 
 const appRoutes: Routes = [
     {path: 'api', loadChildren: 'system/public/documentApi.module#DocumentApiModule', data: {title: 'API Documentation'}},
@@ -38,7 +37,7 @@ const appRoutes: Routes = [
     {path: 'profile', loadChildren: 'system/public/profile.module#ProfileModule', canLoad: [LoggedInGuard], data: {title: 'Profile'}},
     {path: 'whatsNew', loadChildren: 'system/public/whatsNew.module#WhatsNewModule', data: {title: `What's New`}},
     {path: 'contactUs', loadChildren: 'system/public/contactUs.module#ContactUsModule', data: {title: 'Contact Us'}},
-    {path: 'searchPreferences', resolve: {identifier: IdentifierSourcesResolve}, loadChildren: 'system/public/searchPreferences.module#SearchPreferencesModule', data: {title: 'Search Preferences'}},
+    {path: 'searchPreferences', loadChildren: 'system/public/searchPreferences.module#SearchPreferencesModule', data: {title: 'Search Preferences'}},
     {path: 'siteAccountManagement', loadChildren: 'siteManagement/siteManagement.module#SiteManagementModule', canLoad: [SiteAdminGuard], data: {title: 'Manage Site'}},
     {path: 'siteAudit', loadChildren: 'siteAudit/siteAudit.module#SiteAuditModule', canLoad: [OrgAuthorityGuard], data: {title: 'Audit'}},
     {path: '', redirectTo: '/home', pathMatch: 'full'},
@@ -59,7 +58,6 @@ const appRoutes: Routes = [
         PageNotFoundComponent,
     ],
     providers: [
-        IdentifierSourcesResolve,
         IEGuard,
         LoggedInGuard,
         OrgAdminGuard,

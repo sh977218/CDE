@@ -22,6 +22,5 @@ public class CdeSourcesTest extends NlmCdeBaseTest {
         textPresent("Number");
         textPresent("Copyright:");
         findElement(By.linkText("Terms of Use"));
-
     }
 }
