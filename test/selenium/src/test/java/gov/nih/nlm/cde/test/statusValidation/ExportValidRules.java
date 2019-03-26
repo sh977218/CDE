@@ -2,6 +2,7 @@ package gov.nih.nlm.cde.test.statusValidation;
 
 import gov.nih.nlm.cde.test.BaseClassificationTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.interactions.Actions;
 import org.testng.annotations.Test;
 
 public class ExportValidRules extends BaseClassificationTest {
@@ -11,7 +12,11 @@ public class ExportValidRules extends BaseClassificationTest {
         findElement(By.id("browseOrg-TEST")).click();
         textPresent("Incomplete");
         findElement(By.id("export")).click();
-        findElement(By.id("exportValidRule")).click();
+
+        // this ugly hack because cdk overlay prevents click()
+        Actions builder = new Actions(driver);
+        builder.moveToElement(findElement(By.id("exportValidRule")), 5, 5).click().perform();
+
         findElement(By.id("selectStatus")).click();
         findElement(By.xpath("//span[. = 'Recorded']")).click();
         findElement(By.id("exportVR")).click();
