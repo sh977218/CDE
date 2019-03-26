@@ -102,8 +102,7 @@ function doSyncWithMesh(allMappings) {
                 exports.meshSyncStatus[s.type].done++;
             });
             if (request.body.length > 0)
-                esClient.bulk(request, (err, resp) => {
-                    if (resp) console.log(resp);
+                esClient.bulk(request, err => {
                     if (err) dbLogger.consoleLog("ERR: " + err, 'error');
                     scrollThrough(newScrollId, s);
                 });
