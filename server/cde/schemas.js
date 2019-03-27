@@ -160,6 +160,12 @@ exports.dataElementSchema.index({tinyId: 1, archived: 1}, {
 });
 exports.dataElementSchema.path("designations")
     .validate(v => v.length > 0, "Must have at least one designation");
+
+let hasDupsClassifStewardOrg = function(array) {
+    return array.map(value => value.stewardOrg.name)
+        .some((value, index, array) => array.indexOf(value) !== array.lastIndexOf(value));
+};
+
 exports.dataElementSchema.path("classification").validate(v => {
     let result = true;
     v.forEach(classif => {
@@ -167,6 +173,11 @@ exports.dataElementSchema.path("classification").validate(v => {
     });
     return result;
 }, "Classification cannot be empty");
+
+exports.dataElementSchema.path("classification").validate(v => {
+    return !v.map(value => value.stewardOrg.name)
+        .some((value, index, array) => array.indexOf(value) !== array.lastIndexOf(value));
+}, "Duplicate Steward Classification");
 
 exports.draftSchema = new Schema(deJson, {
     usePushEach: true,

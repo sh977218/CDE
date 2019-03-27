@@ -277,7 +277,12 @@ export class DataElementViewComponent implements OnInit {
                 this.hasDrafts = false;
                 this.loadElt(() => this.alert.addAlert('success', 'Data Element saved.'));
             }
-        }, () => this.alert.addAlert('danger', 'Sorry, we are unable to retrieve this data element.'));
+        }, err => {
+            if (err) {
+                console.log(err);
+            }
+            this.alert.addAlert('danger', 'Sorry, we are unable to publish this data element.')
+        });
     }
 
     validate() {

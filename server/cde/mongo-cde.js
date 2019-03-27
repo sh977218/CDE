@@ -270,7 +270,7 @@ exports.update = function (elt, user, callback, special) {
         }
 
         let valErr = newDe.validateSync();
-        if (valErr) return callback("Doc does not pass validation: " + valErr.message);
+        if (valErr) return callback(valErr);
 
         DataElement.findOneAndUpdate({_id: dataElement._id}, {$set: {archived: true}}, err => {
             if (err) {
