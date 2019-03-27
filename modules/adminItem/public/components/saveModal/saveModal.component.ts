@@ -43,7 +43,6 @@ export class SaveModalComponent {
     openSaveModal() {
         this.newCdes = [];
         this.newVersionVersionUnicity();
-        if (this.elt) this.elt.changeNote = '';
         if (this.elt.elementType === 'form' && this.elt.isDraft) {
             iterateFormElements(this.elt, {
                 async: true,

@@ -276,8 +276,8 @@
                               [eltName]="elt.designations[0].designation"></cde-discuss-area>
         </div>
     </div>
-    <cde-save-modal #saveModal [elt]="elt" (save)="saveForm()" (onEltChange)="saveDraft();"></cde-save-modal>
-    <cde-delete-modal #deleteModal (confirm)="removeDraft();"></cde-delete-modal>
+    <cde-save-modal #saveModal [elt]="elt" (save)="saveForm()" (onEltChange)="saveDraft()"></cde-save-modal>
+    <cde-delete-modal #deleteModal (confirm)="removeDraft()"></cde-delete-modal>
 </div>
 
 <ng-template #copyFormContent id="copyFormModal">

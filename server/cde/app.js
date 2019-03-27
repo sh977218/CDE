@@ -12,7 +12,7 @@ const handleError = require('../log/dbLogger').handleError;
 
 const canCreateMiddleware = authorization.canCreateMiddleware;
 const canEditMiddleware = authorization.canEditMiddleware(mongo_cde);
-const canEditByIdMiddleware = authorization.canEditByIdMiddleware(mongo_cde);
+const canEditByTinyIdMiddleware = authorization.canEditByTinyIdMiddleware(mongo_cde);
 
 exports.init = function (app, daoManager) {
     daoManager.registerDao(mongo_cde);
@@ -20,9 +20,9 @@ exports.init = function (app, daoManager) {
     app.get('/de/:tinyId', exportShared.nocacheMiddleware, cdesvc.byTinyId);
     app.get('/de/:tinyId/latestVersion/', exportShared.nocacheMiddleware, cdesvc.latestVersionByTinyId);
     app.get('/de/:tinyId/version/:version?', exportShared.nocacheMiddleware, cdesvc.byTinyIdAndVersion);
-    app.post('/de', canCreateMiddleware, cdesvc.createDataElement);
-    app.put('/de/:tinyId', canEditMiddleware, cdesvc.updateDataElement);
-    app.put('/dePublish', canEditMiddleware, cdesvc.publishDataElement);
+    app.post('/de', canCreateMiddleware, cdesvc.create);
+    app.post('/dePublish', canEditMiddleware, cdesvc.publishFromDraft);
+    app.post('/dePublishExternal', canEditMiddleware, cdesvc.publishExternal);
 
     app.get('/deById/:id', exportShared.nocacheMiddleware, cdesvc.byId);
     app.get('/deById/:id/priorDataElements/', exportShared.nocacheMiddleware, cdesvc.priorDataElements);
@@ -31,11 +31,11 @@ exports.init = function (app, daoManager) {
 
     app.get('/originalSource/cde/:sourceName/:tinyId', cdesvc.originalSourceByTinyIdSourceName);
 
-    app.get('/draftDataElement/:tinyId', cdesvc.draftDataElement);
-    app.put('/draftDataElement/:tinyId', canEditMiddleware, cdesvc.saveDraft);
-    app.delete('/draftDataElement/:tinyId', canEditByIdMiddleware, cdesvc.deleteDraftDataElement);
+    app.get('/draftDataElement/:tinyId', authorization.isOrgCuratorMiddleware, cdesvc.draftForEditByTinyId);
+    app.put('/draftDataElement/:tinyId', canEditMiddleware, cdesvc.draftSave);
+    app.delete('/draftDataElement/:tinyId', canEditByTinyIdMiddleware, cdesvc.draftDelete);
 
-    app.get('/draftDataElementById/:id', cdesvc.draftDataElementById);
+    app.get('/draftDataElementById/:id', cdesvc.draftById);
 
     app.get('/vsacBridge/:vsacId', exportShared.nocacheMiddleware, cdesvc.vsacId);
 

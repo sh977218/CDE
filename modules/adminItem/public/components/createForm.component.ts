@@ -86,7 +86,7 @@ export class CreateFormComponent implements OnInit {
     confirmDelete(event) {
         let steward = findSteward(this.elt, event.deleteOrgName);
         removeCategory(steward.object, event.deleteClassificationArray, err => {
-            if (err) this.alert.addAlert('danger', "Unexpected error removing classification");
+            if (err) this.alert.addAlert('danger', 'Unexpected error removing classification');
             else this.alert.addAlert('success', 'Classification removed.');
         });
     }
@@ -106,27 +106,28 @@ export class CreateFormComponent implements OnInit {
         this.localStorageService.set('classificationHistory', recentlyClassification);
     }
 
-    validationErrors(elt) {
+    validationErrors(elt): string {
         if (!elt.designations[0].designation) {
             return 'Please enter a name for the new Form';
-        } else if (!elt.definitions[0].definition) {
+        }
+        if (!elt.definitions[0].definition) {
             return 'Please enter a definition for the new Form';
-        } else if (!elt.stewardOrg.name) {
+        }
+        if (!elt.stewardOrg.name) {
             return 'Please select a steward for the new Form';
         }
         if (elt.classification.length === 0) {
             return 'Please select at least one classification';
-        } else {
-            let found = false;
-            for (let i = 0; i < elt.classification.length; i++) {
-                if (elt.classification[i].stewardOrg.name === elt.stewardOrg.name) {
-                    found = true;
-                }
-            }
-            if (!found) {
-                return 'Please select at least one classification owned by ' + elt.stewardOrg.name;
+        }
+        let found = false;
+        for (let i = 0; i < elt.classification.length; i++) {
+            if (elt.classification[i].stewardOrg.name === elt.stewardOrg.name) {
+                found = true;
             }
         }
-        return null;
+        if (!found) {
+            return 'Please select at least one classification owned by ' + elt.stewardOrg.name;
+        }
+        return;
     }
 }

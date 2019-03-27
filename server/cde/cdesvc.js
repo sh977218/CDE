@@ -1,13 +1,15 @@
-const xml2js = require('xml2js');
+const _ = require('lodash');
 const js2xml = require('js2xmlparser');
-const _ = require("lodash");
+const xml2js = require('xml2js');
 const authorizationShared = require('esm')(module)('../../shared/system/authorizationShared');
-const adminSvc = require('../system/adminItemSvc.js');
-const deValidator = require('esm')(module)('../../shared/de/deValidator');
 const exportShared = require('esm')(module)('../../shared/system/exportShared');
-const handleError = require('../log/dbLogger').handleError;
-const mongo_cde = require('./mongo-cde');
+const dbLogger = require('../log/dbLogger');
+const handle404 = dbLogger.handle404;
+const handleError = dbLogger.handleError;
+const respondError = dbLogger.respondError;
+const adminItemSvc = require('../system/adminItemSvc.js');
 const mongo_data = require('../system/mongo-data');
+const mongo_cde = require('./mongo-cde');
 const vsac = require('./vsac-io');
 
 exports.byId = (req, res) => {
@@ -17,11 +19,11 @@ exports.byId = (req, res) => {
         if (!dataElement) return res.status(404).send();
         if (!req.user) hideProprietaryCodes(dataElement);
         if (req.query.type === 'xml') {
-            res.header("Access-Control-Allow-Origin", "*");
-            res.header("Access-Control-Allow-Headers", "X-Requested-With");
-            res.setHeader("Content-Type", "application/xml");
+            res.header('Access-Control-Allow-Origin', '*');
+            res.header('Access-Control-Allow-Headers', 'X-Requested-With');
+            res.setHeader('Content-Type', 'application/xml');
             let cde = dataElement.toObject();
-            return res.send(js2xml("dataElement", exportShared.stripBsonIds(cde)));
+            return res.send(js2xml('dataElement', exportShared.stripBsonIds(cde)));
         }
         if (!req.user) hideProprietaryCodes(dataElement);
         res.send(dataElement);
@@ -37,13 +39,13 @@ exports.priorDataElements = (req, res) => {
         if (!dataElement) return res.status(404).send();
         let history = dataElement.history.concat([dataElement._id]).reverse();
         mongo_cde.DataElement.find({}, {
-            "updatedBy.username": 1,
+            'updatedBy.username': 1,
             updated: 1,
-            "changeNote": 1,
+            'changeNote': 1,
             version: 1,
             elementType: 1
-        }).where("_id").in(history).exec((err, priorDataElements) => {
-            if (err) return res.status(500).send("ERROR - Cannot get prior DE list");
+        }).where('_id').in(history).exec((err, priorDataElements) => {
+            if (err) return res.status(500).send('ERROR - Cannot get prior DE list');
             mongo_data.sortArrayByArray(priorDataElements, history);
             res.send(priorDataElements);
         });
@@ -57,11 +59,11 @@ exports.byTinyId = (req, res) => {
         if (!dataElement) return res.status(404).send();
         if (!req.user) hideProprietaryCodes(dataElement);
         if (req.query.type === 'xml') {
-            res.header("Access-Control-Allow-Origin", "*");
-            res.header("Access-Control-Allow-Headers", "X-Requested-With");
-            res.setHeader("Content-Type", "application/xml");
+            res.header('Access-Control-Allow-Origin', '*');
+            res.header('Access-Control-Allow-Headers', 'X-Requested-With');
+            res.setHeader('Content-Type', 'application/xml');
             let cde = dataElement.toObject();
-            return res.send(js2xml("dataElement", exportShared.stripBsonIds(cde)));
+            return res.send(js2xml('dataElement', exportShared.stripBsonIds(cde)));
         }
         if (!req.user) hideProprietaryCodes(dataElement);
         res.send(dataElement);
@@ -92,57 +94,46 @@ exports.byTinyIdAndVersion = (req, res) => {
     }));
 };
 
-exports.draftDataElement = (req, res) => { // WORKAROUND: sends empty instead of 404 to not cause angular to litter console
+exports.draftForEditByTinyId = (req, res) => { // WORKAROUND: sends empty instead of 404 to not cause angular to litter console
+    const handlerOptions = {req, res};
     let tinyId = req.params.tinyId;
-    if (!tinyId) {
-        res.status(400).send();
-        return;
-    }
-    if (!authorizationShared.isOrgCurator(req.user)) {
-        res.send();
-        return;
-    }
-    mongo_cde.byTinyId(tinyId, handleError({req, res}, dataElement => {
-        if (!authorizationShared.canEditCuratedItem(req.user, dataElement)) {
+    if (!tinyId) return res.status(400).send();
+    mongo_cde.byTinyId(tinyId, handleError(handlerOptions, elt => {
+        if (!authorizationShared.canEditCuratedItem(req.user, elt)) {
             res.send();
             return;
         }
-        mongo_cde.draftDataElement(tinyId, handleError({req, res}, dataElement =>
-            res.send(dataElement)
-        ));
+        (function getDraft() {
+            mongo_cde.draftByTinyId(tinyId, handleError(handlerOptions, draft => {
+                if (draft && elt._id.toString() !== draft._id.toString()) {
+                    mongo_cde.draftDelete(tinyId, handleError(handlerOptions, () =>
+                        getDraft()
+                    ));
+                    respondError(new Error('Concurrency Error: Draft of prior elt should not exist'));
+                    return;
+                }
+                res.send(draft);
+            }));
+        })();
     }));
 };
 
-exports.draftDataElementById = (req, res) => {
+exports.draftById = (req, res) => {
     let id = req.params.id;
-    if (!id) return res.status(400).send();
-    mongo_cde.draftDataElementById(id, handleError({req, res}, dataElement => {
-        if (!req.user) hideProprietaryCodes(dataElement);
-        res.send(dataElement);
+    if (!id || id.length !== 24) return res.status(400).send();
+    mongo_cde.draftById(id, handleError({req, res}, draft => {
+        if (!req.user) hideProprietaryCodes(draft);
+        res.send(draft);
     }));
 };
 
-exports.saveDraft = (req, res) => {
+exports.draftSave = (req, res) => {
     let elt = req.body;
     let tinyId = req.params.tinyId;
-    let user = req.user;
-    if (!elt || !tinyId || elt.tinyId !== tinyId
-        || !elt.designations || !elt.designations.length) {
+    if (!elt || !tinyId || elt.tinyId !== tinyId || elt._id !== req.item._id.toString()) {
         return res.status(400).send();
     }
-    if (!elt.created) elt.created = new Date();
-    if (!elt.createdBy) {
-        elt.createdBy = {
-            userId: user._id,
-            username: user.username
-        };
-    }
-    elt.updated = new Date();
-    elt.updatedBy = {
-        userId: user._id,
-        username: user.username
-    };
-    mongo_cde.saveDraft(elt, handleError({req, res}, elt => {
+    mongo_cde.draftSave(elt, req.user, handleError({req, res}, elt => {
         if (!elt) {
             res.status(409).send('Edited by someone else. Please refresh and redo.');
             return;
@@ -151,16 +142,16 @@ exports.saveDraft = (req, res) => {
     }));
 };
 
-exports.deleteDraftDataElement = (req, res) => {
+exports.draftDelete = (req, res) => {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
-    mongo_cde.deleteDraftDataElement(tinyId, handleError({req, res}, () => res.send()));
+    mongo_cde.draftDelete(tinyId, handleError({req, res}, () => res.send()));
 };
 
 exports.byTinyIdList = (req, res) => {
     let tinyIdList = req.params.tinyIdList;
     if (!tinyIdList) return res.status(400).send();
-    tinyIdList = tinyIdList.split(",");
+    tinyIdList = tinyIdList.split(',');
     mongo_cde.DataElement.find({'archived': false}).where('tinyId')
         .in(tinyIdList)
         .exec(handleError({req, res}, dataElements => {
@@ -183,57 +174,56 @@ exports.latestVersionByTinyId = (req, res) => {
     mongo_cde.latestVersionByTinyId(tinyId, handleError({req, res}, latestVersion => res.send(latestVersion)));
 };
 
-exports.createDataElement = (req, res) => {
+exports.create = (req, res) => {
     let elt = req.body;
     let user = req.user;
-    if (!elt.stewardOrg || !elt.stewardOrg.name) return res.status(400).send();
+    if (!elt.stewardOrg || !elt.stewardOrg.name) return res.status(400).send(); // validation???
     mongo_cde.create(elt, user, handleError({req, res}, dataElement => res.send(dataElement)));
 };
 
-exports.updateDataElement = (req, res) => {
-    let elt = req.body;
-    let tinyId = req.params.tinyId;
-    if (!elt || !tinyId || elt.tinyId !== tinyId
-        || !elt.designations || !elt.designations.length) {
+function publish(req, res, draft, special = _.noop, next = _.noop) {
+    const handlerOptions = {req, res};
+    if (!draft) {
         return res.status(400).send();
     }
-    deValidator.wipeDatatype(elt);
-    mongo_data.orgByName(elt.stewardOrg.name, handleError({req, res}, org => {
-        let allowedRegStatuses = ['Retired', 'Incomplete', 'Candidate'];
-        if (org && org.workingGroupOf && org.workingGroupOf.length > 0
-            && allowedRegStatuses.indexOf(elt.registrationState.registrationStatus) === -1) {
+    const eltToArchive = req.item;
+    mongo_data.orgByName(eltToArchive.stewardOrg.name, handleError(handlerOptions, org => {
+        if (adminItemSvc.badWorkingGroupStatus(eltToArchive, org)) {
             return res.status(403).send();
         }
-        mongo_cde.update(elt, req.user, handleError({req, res}, response => {
-            mongo_cde.deleteDraftDataElement(elt.tinyId, handleError({req, res}, () => res.send(response)));
-        }));
+
+        mongo_cde.update(draft, req.user, handleError(handlerOptions, doc => {
+            mongo_cde.draftDelete(draft.tinyId, handleError(handlerOptions, () => res.send(doc)));
+            next(doc);
+        }), special);
+    }));
+
+}
+
+exports.publishFromDraft = (req, res) => {
+    mongo_cde.draftById(req.body._id, handle404({req, res}, draft => {
+        if (draft.__v !== req.body.__v) {
+            return res.status(400).send('Cannot publish this old version. Reload and redo.');
+        }
+        publish(req, res, draft.toObject(), (newElt, oldElt) => {
+            newElt.attachments = oldElt.attachments;
+            newElt.classification = oldElt.classification;
+        });
     }));
 };
 
-exports.publishDataElement = (req, res) => {
-    let elt = req.body;
-    if (!elt || !elt.designations || !elt.designations.length) {
-        return res.status(400).send();
-    }
-    const item = req.item;
-    mongo_data.orgByName(item.stewardOrg.name, handleError({req, res}, org => {
-        let allowedRegStatuses = ['Retired', 'Incomplete', 'Candidate'];
-        if (org && org.workingGroupOf && org.workingGroupOf.length > 0
-            && allowedRegStatuses.indexOf(item.registrationState.registrationStatus) === -1) {
-            return res.status(403).send();
+exports.publishExternal = (req, res) => {
+    mongo_cde.draftById(req.body._id, handleError({req, res}, draft => {
+        if (draft) {
+            return res.status(400).send('Publishing would override an existing draft. Address the draft first.');
         }
-        elt.classification = item.classification;
-        elt.attachments = item.attachments;
-        deValidator.wipeDatatype(elt);
-        mongo_cde.update(elt, req.user, handleError({req, res}, response => {
-            mongo_cde.deleteDraftDataElement(elt.tinyId, handleError({req, res}, () => res.send(response)));
-        }));
+        publish(req, res, req.body);
     }));
 };
 
 let parser = new xml2js.Parser();
 exports.vsacId = (req, res) => {
-    if (!req.user) return res.status(202).send({error: {message: "Please login to see VSAC mapping."}});
+    if (!req.user) return res.status(202).send({error: {message: 'Please login to see VSAC mapping.'}});
     vsac.getValueSet(req.params.vsacId, handleError({req, res, message: 'Error retrieving from VSAC'}, result => {
         if (result.statusCode === 404 || result === 400) return res.status(404).send();
         parser.parseString(result.body, handleError({req, res, message: 'Error parsing from VSAC'}, jsonResult => {
@@ -243,7 +233,7 @@ exports.vsacId = (req, res) => {
 };
 
 exports.viewHistory = (req, res) => {
-    if (!req.user) return res.send("You must be logged in to do that");
+    if (!req.user) return res.send('You must be logged in to do that');
     let splicedArray = req.user.viewHistory.splice(0, 10);
     let tinyIdList = [];
     for (let i = 0; i < splicedArray.length; i++) {
@@ -264,14 +254,14 @@ exports.originalSourceByTinyIdSourceName = (req, res) => {
             if (originalSource) res.send(originalSource);
             else res.status(404).send('No ' + sourceName + ' source file found for ' + tinyId);
         })
-    )
+    );
 };
 
 /* ---------- PUT NEW REST API Implementation above  ---------- */
 
 exports.show = function (req, res, cb) {
     let cdeId = req.params.id;
-    if (!cdeId) return res.send("No Data Element Id");
+    if (!cdeId) return res.send('No Data Element Id');
     mongo_cde.byId(cdeId, handleError({req, res}, cde => {
         cb(cde);
         // Following have no callback because it's no big deal if it fails.
@@ -285,12 +275,12 @@ exports.show = function (req, res, cb) {
 };
 
 // exports.save = (req, res) => {
-//     adminSvc.save(req, res, mongo_cde, elastic.fetchPVCodeSystemList());
+//     adminItemSvc.save(req, res, mongo_cde, elastic.fetchPVCodeSystemList());
 // };
 
 var hideProprietaryCodes = function (cdes, user) {
     let hiddenFieldMessage = 'Login to see the value.';
-    this.systemWhitelist = ["RXNORM", "HSLOC", "CDCREC", "SOP", "AHRQ", "HL7", "CDC Race and Ethnicity", "NCI", "UMLS"];
+    this.systemWhitelist = ['RXNORM', 'HSLOC', 'CDCREC', 'SOP', 'AHRQ', 'HL7', 'CDC Race and Ethnicity', 'NCI', 'UMLS'];
     this.censorPv = function (pvSet) {
         var toBeCensored = true;
         this.systemWhitelist.forEach(function (system) {
@@ -305,8 +295,8 @@ var hideProprietaryCodes = function (cdes, user) {
         }
     };
     this.checkCde = function (cde) {
-        adminSvc.hideProprietaryIds(cde);
-        if (cde.valueDomain.datatype !== "Value List") return cde;
+        adminItemSvc.hideProprietaryIds(cde);
+        if (cde.valueDomain.datatype !== 'Value List') return cde;
         var self = this;
         cde.valueDomain.permissibleValues.forEach(function (pvSet) {
             self.censorPv(pvSet);

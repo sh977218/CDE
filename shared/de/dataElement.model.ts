@@ -118,6 +118,7 @@ export class DatatypeContainer {
 }
 
 export class ValueDomain extends DatatypeContainer {
+    definition?: string;
     identifiers: CdeId[] = [];
     ids: CdeId[] = [];
     permissibleValues: PermissibleValue[] = [];

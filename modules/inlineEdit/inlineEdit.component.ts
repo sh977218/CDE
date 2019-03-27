@@ -44,7 +44,7 @@ export class InlineEditComponent {
     @Input() isAllowed = false;
     @Input() linkSource!: string;
     @Output() modelChange = new EventEmitter<string>();
-    INPUT_TYPE_ARRAY = ['text', 'email', 'number'];
+    INPUT_TYPE_ARRAY = ['text', 'email'];
     editMode = false;
     value!: string;
 
