@@ -4,6 +4,7 @@ import gov.nih.nlm.form.test.QuestionTest;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.interactions.Actions;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class FormAddCdeTest extends QuestionTest {
@@ -17,7 +18,16 @@ public class FormAddCdeTest extends QuestionTest {
         goToFormDescription();
         addCdeByNameBeforeId(cdeName1, "question_0-0", false);
         addCdesByNames(cdeNames);
+        startEditQuestionById("question_0-1");
+        Assert.assertEquals(
+                driver.findElements(By.xpath("//*[@id='question_0-1']//mat-card//mat-chip-list//mat-chip/mat-icon")).size(),
+                0
+        );
         addCdeDesignationById("question_0-1", "newCde2 second name");
+        Assert.assertEquals(
+                driver.findElements(By.xpath("//*[@id='question_0-1']//mat-card//mat-chip-list//mat-chip/mat-icon")).size(),
+                2
+        );
         addCdeIdentifierById("question_0-1", "newCde2Source", "newCde2Id");
         editCdeDataTypeById("question_0-1", "Date");
 

@@ -125,11 +125,10 @@ export class DisplayProfile {
     repeatFormat = '#.';
     sectionsAsMatrix = true;
     unitsOfMeasureAlias: { alias: string, unitOfMeasure: CodeAndSystem }[] = [];
-    fhirProcedureMapping?: FhirProcedureMapping;
+    fhirProcedureMapping?: FhirProcedureMapping = {};
 
     constructor(name = '') {
         this.name = name;
-        this.fhirProcedureMapping = [];
     }
 }
 

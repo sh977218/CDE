@@ -60,16 +60,15 @@ const pushNotification = require('./pushNotification');
 //                         res.status(403).send('Not authorized');
 //                     } else {
 //                         mongo_data.orgByName(item.stewardOrg.name, function (err, org) {
-//                             var allowedRegStatuses = ['Retired', 'Incomplete', 'Candidate'];
-//                             if (org && org.workingGroupOf && org.workingGroupOf.length > 0 && allowedRegStatuses.indexOf(elt.registrationState.registrationStatus) === -1) {
+//                             if (exports.badWorkingGroupStatus(elt, org)) {
 //                                 res.status(403).send('Not authorized');
-//                             } else {
-//                                 return dao.update(elt, req.user, function (err, response) {
-//                                     if (err) res.status(400).send();
-//                                     res.send(response);
-//                                     if (cb) cb();
-//                                 });
+//                                 return;
 //                             }
+//                             return dao.update(elt, req.user, function (err, response) {
+//                                 if (err) res.status(400).send();
+//                                 res.send(response);
+//                                 if (cb) cb();
+//                             });
 //                         });
 //                     }
 //                 }
@@ -92,6 +91,11 @@ exports.attachmentApproved = (collection, id, cb) => {
 
 exports.attachmentRemove = (collection, id, cb) => {
     collection.updateMany({'attachments.fileid': id}, {$pull: {'attachments': {'fileid': id}}}, cb);
+};
+
+const allowedRegStatuses = ['Retired', 'Incomplete', 'Candidate'];
+exports.badWorkingGroupStatus = (elt, org) => {
+    return org && org.workingGroupOf && org.workingGroupOf.length > 0 && allowedRegStatuses.indexOf(elt.registrationState.registrationStatus) === -1;
 };
 
 // cb(err, bool)

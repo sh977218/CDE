@@ -1,22 +1,20 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Params } from '@angular/router';
 
-export function httpErrorMessage(err: any): string {
-    if (!err) {
-        return '';
-    }
-    if (err.error instanceof Error) { // client-side
-        return err.error.message;
-    } else if (typeof(err.error) === 'string') { // server-side
+export function httpErrorMessage(err: HttpErrorResponse): string {
+    if (typeof (err.error) === 'string') { // response body
         return err.error;
-    } else if (err instanceof HttpErrorResponse) { // angular
-        if (err.message === 'Http failure response for (unknown url): 0 Unknown Error') {
-            return 'Server is not available or you are offline.';
-        }
-        return err.message;
-    } else {
-        return 'Unknown Error';
     }
+    if (err.error instanceof Error) { // legacy server error objects
+        return err.error.message;
+    }
+    if (err.message === 'Http failure response for (unknown url): 0 Unknown Error') {
+        return 'Server is not available or you are offline.';
+    }
+    if (err.statusText) { // general status codes
+        return err.statusText;
+    }
+    return err.message; // fallback to full angular http description
 }
 
 export function paramsToQueryString(params: Params) {

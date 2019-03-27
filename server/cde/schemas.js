@@ -158,14 +158,6 @@ exports.dataElementSchema.index({tinyId: 1, archived: 1}, {
     name: "liveTinyId",
     partialFilterExpression: {archived: false}
 });
-exports.dataElementSchema.path("designations")
-    .validate(v => v.length > 0, "Must have at least one designation");
-
-let hasDupsClassifStewardOrg = function(array) {
-    return array.map(value => value.stewardOrg.name)
-        .some((value, index, array) => array.indexOf(value) !== array.lastIndexOf(value));
-};
-
 exports.dataElementSchema.path("classification").validate(v => {
     let result = true;
     v.forEach(classif => {

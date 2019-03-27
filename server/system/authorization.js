@@ -41,7 +41,11 @@ exports.canEditMiddleware = db => (req, res, next) => {
     });
 };
 
-exports.canEditByIdMiddleware = db => (req, res, next) => {
+exports.canEditByTinyIdMiddleware = db => (req, res, next) => {
+    if (!req.params.tinyId) {
+        res.status(400).send();
+        return;
+    }
     exports.isOrgCuratorMiddleware(req, res, () => {
         db.byTinyId(req.params.tinyId, handle404({req, res}, item => {
             if (!authorizationShared.canEditCuratedItem(req.user, item)) {

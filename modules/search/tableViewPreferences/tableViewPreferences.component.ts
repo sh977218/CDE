@@ -1,9 +1,9 @@
-import { Component, EventEmitter, Output, Inject } from '@angular/core';
+import { EventEmitter, Output, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MAT_DIALOG_DATA } from '@angular/material';
 import { ElasticService } from '_app/elastic.service';
 import { AlertService } from 'alert/alert.service';
-import { UserSearchSettings } from 'shared/models.model';
+import { Source, UserSearchSettings } from 'shared/models.model';
 
 export class TableViewPreferencesComponent {
     @Output() onChanged = new EventEmitter();
@@ -15,7 +15,7 @@ export class TableViewPreferencesComponent {
     constructor(@Inject(MAT_DIALOG_DATA) data: {searchSettings: UserSearchSettings},
                 private alert: AlertService,
                 private http: HttpClient) {
-        this.http.get<string[]>('/identifierSources').subscribe(idSources => this.identifierSources = idSources);
+        this.http.get<Source[]>('/idSources').subscribe(idSources => this.identifierSources = idSources.map(x => x._id));
         this.searchSettings = data.searchSettings;
     }
 

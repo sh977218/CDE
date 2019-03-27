@@ -250,10 +250,12 @@
         <mat-card-content>
             <mat-form-field class="w-50 newCdeDesignations">
                 <mat-chip-list #designationChipList>
-                    <mat-chip *ngFor="let designation of question.question.cde.designations;let i =index;"
-                              [selectable]="true" [removable]="true" (removed)="removeCdeDesignation(i)">
+                    <mat-chip *ngFor="let designation of question.question.cde.designations; index as i"
+                              [selectable]="true"
+                              [removable]="question.question.cde.designations.length > 1"
+                              (removed)="removeCdeDesignation(i)">
                         {{designation.designation}}
-                        <mat-icon matChipRemove>cancel</mat-icon>
+                        <mat-icon matChipRemove *ngIf="question.question.cde.designations.length > 1">cancel</mat-icon>
                     </mat-chip>
                     <input placeholder="New Name..."
                            [matChipInputFor]="designationChipList"

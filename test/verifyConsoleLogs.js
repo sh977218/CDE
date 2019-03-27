@@ -5,7 +5,10 @@ let expectedContent = {
     assignVsacId: 'the server responded with a status of 404',
     badQuery: 'elasticSearch/cde - Failed to load resource: the server responded with a status of 400 (Bad Request)',
     boardFiveUnapprovedMessagesPerUserReply: 'the server responded with a status of 403 (Forbidden)',
-    boardPublisher: 'the server responded with a status of 403 (Forbidden)',
+    boardPublisher: [
+        'the server responded with a status of 403 (Forbidden)',
+        'You don\'t have permission to make boards public!'
+    ],
     cdeAddClassification: 'addCdeClassification/ - Failed to load resource: the server responded with a status of 409 (Conflict)',
     cdeLiveCommentTest: '*',
     cdeTinyIdSwaggerApi: 'docs/swagger-ui-bundle.js 51:49866 "Could not find component"',
@@ -13,19 +16,31 @@ let expectedContent = {
     checkDuplicatesClassification: 'the server responded with a status of 409',
     embedNinds: '*',
     emptyAnswers: 'the server responded with a status of 500',
-    formDraftConcurrentWrite: 'Failed to load resource: the server responded with a status of 409 (Conflict)',
+    formDraftConcurrentWrite: [
+        'Failed to load resource: the server responded with a status of 409 (Conflict)',
+        'Edited by someone else. Please refresh and redo.'
+    ],
     formFiveUnapprovedMessagesPerUserComment: 'Failed to load resource: the server responded with a status of 403 (Forbidden)',
     formOneUnapprovedReplyPerUser: 'Failed to load resource: the server responded with a status of 403 (Forbidden)',
     formTinyIdSwaggerApi: 'docs/swagger-ui-bundle.js 51:49866 "Could not find component"',
     formTinyIdVersionSwaggerApi: 'docs/swagger-ui-bundle.js 51:49866 "Could not find component"',
     logClientErrors: '*',
     meshTopics: 'classificationmanagement - Form submission canceled because the form is not connected',
-    noDoublePin: 'Failed to load resource: the server responded with a status of 409 (Conflict)',
+    noDoublePin: [
+        'Failed to load resource: the server responded with a status of 409 (Conflict)',
+        'Already added'
+    ],
     pageNotFound: 'Failed to load resource: the server responded with a status of 404 (Not Found)',
-    publicVsPrivateBoards: 'Failed to load resource: the server responded with a status of',
+    publicVsPrivateBoards: [
+        'Failed to load resource: the server responded with a status of',
+        'Board Not Found'
+    ],
     report: 'cde/search 0:0 Uncaught SyntaxError: Unexpected token <',
     searchPageSize: 'the server responded with a status of 400 (Bad Request)',
-    tooManyBoards: 'board - Failed to load resource: the server responded with a status of 403 (Forbidden)',
+    tooManyBoards: [
+        'board - Failed to load resource: the server responded with a status of 403 (Forbidden)',
+        'You have too many boards!'
+    ],
     wrongLogin: 'login - Failed to load resource: the server responded with a status of 403'
 };
 

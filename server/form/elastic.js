@@ -52,9 +52,9 @@ exports.byTinyIdList = function (idList, size, cb) {
             },
             "size": size
         }
-    }, function (error, response) {
+    }, (error, response) => {
         if (error) {
-            dbLogger.errorLogger.error("Error FormDistinct", {
+            dbLogger.errorLogger.error("Error Form.byTinyIdList", {
                 origin: "form.elastic.byTinyIdList",
                 stack: new Error().stack,
                 details: "Error " + error + "response" + JSON.stringify(response)
@@ -66,35 +66,6 @@ exports.byTinyIdList = function (idList, size, cb) {
                 return idList.indexOf(a._id) - idList.indexOf(b._id);
             });
             cb(null, response.hits.hits.map(h => h._source));
-        }
-    });
-};
-
-exports.FormDistinct = function (field, cb) {
-    let distinctQuery = {
-        "size": 0,
-        "aggs": {
-            "aggregationsName": {
-                "terms": {
-                    "field": field,
-                    "size": 1000
-                }
-            }
-        }
-    };
-    esClient.search({
-        index: config.elastic.index.name,
-        type: "form",
-        body: distinctQuery
-    }, function (error, response) {
-        if (error) {
-            dbLogger.errorLogger.error("Error FormDistinct", {
-                origin: "cde.elastic.FormDistinct",
-                stack: new Error().stack,
-                details: "query " + JSON.stringify(distinctQuery) + "error " + error + "response" + JSON.stringify(response)
-            });
-        } else {
-            cb(response.aggregations.aggregationsName.buckets.map(b => b.key));
         }
     });
 };
