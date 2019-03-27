@@ -8,6 +8,7 @@ public class EltIdMaps {
     public static Map<String, String> eltMap = new HashMap<>();
 
     static {
+        eltMap.put("Additional Dimension", "XyEbt94V_");
         eltMap.put("Adrenal Gland Received Other Specify", "Q1AVwqNVb");
         eltMap.put("Alcohol use started age value", "FtNNFMKHCM4");
         eltMap.put("Atherosclerosis Risk in Communities transient ischemic attack/stroke form (ARIC TIA) - speech loss slurred symptom indicator", "0gqqG2jShnS");
