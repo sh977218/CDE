@@ -207,7 +207,7 @@ export class BoardViewComponent implements OnInit {
                     () => this.alert.addAlert('danger', 'Error on loading comments. ')
                 );
             }
-        }, () => this.alert.addAlert('danger', 'Board not found'));
+        }, err => this.alert.httpErrorMessageAlert(err, 'Board'));
     }
 
     setPage(newPage: PageEvent) {

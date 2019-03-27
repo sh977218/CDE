@@ -30,7 +30,7 @@ export class MyBoardsComponent {
             this.myBoardsSvc.waitAndReload(() => {
                 this.alert.addAlert('success', 'Deleted.');
             });
-        }, err => this.alert.httpErrorMessageAlert('danger', err));
+        }, err => this.alert.httpErrorMessageAlert(err));
     }
 
 

@@ -23,7 +23,7 @@ export class MergeFormService {
 
     saveForm(form, cb) {
         //noinspection TypeScriptValidateTypes
-        this.http.put('/form/' + form.tinyId, form).subscribe(
+        this.http.post('/formPublishExternal', form).subscribe(
             data => {
                 cb(null, data);
             },

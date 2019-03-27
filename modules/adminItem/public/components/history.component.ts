@@ -1,12 +1,12 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
-
+import { Component, Input } from '@angular/core';
+import { MatDialog } from '@angular/material';
 import { AlertService } from 'alert/alert.service';
-import { ITEM_MAP } from 'shared/item';
+import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHistoryContent.component';
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm } from 'shared/form/form.model';
-import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHistoryContent.component';
-import { MatDialog } from '@angular/material';
+import { ITEM_MAP } from 'shared/item';
+import { Item } from 'shared/models.model';
 
 class HistoryDe extends DataElement {
     promise?: Promise<History>;
@@ -32,19 +32,11 @@ function createHistory(elt: DataElement | CdeForm): History {
     selector: 'cde-history',
     templateUrl: './history.component.html'
 })
-export class HistoryComponent implements OnInit {
-    @Input() elt: DataElement|CdeForm;
-    @Input() canEdit = false;
-    showVersioned: boolean = false;
-    priorElements: History[];
-    numberSelected: number = 0;
-
-    constructor(private dialog: MatDialog,
-                private alert: AlertService,
-                private http: HttpClient) {
-    }
-
-    ngOnInit(): void {
+export class HistoryComponent {
+    private _elt?: Item;
+    @Input() canEdit: boolean = false;
+    @Input() set elt(elt: Item) {
+        this._elt = elt;
         let url = ITEM_MAP[this.elt.elementType].apiById + this.elt._id + ITEM_MAP[this.elt.elementType].apiById_prior;
         this.http.get<History[]>(url).subscribe(res => {
             this.priorElements = res;
@@ -56,6 +48,17 @@ export class HistoryComponent implements OnInit {
                 this.priorElements[0].selected = false;
             }
         }, err => this.alert.httpErrorMessageAlert(err, 'Error retrieving history:'));
+    }
+    get elt() {
+        return this._elt;
+    }
+    showVersioned: boolean = false;
+    priorElements: History[];
+    numberSelected: number = 0;
+
+    constructor(private dialog: MatDialog,
+                private alert: AlertService,
+                private http: HttpClient) {
     }
 
     selectRow(index) {
