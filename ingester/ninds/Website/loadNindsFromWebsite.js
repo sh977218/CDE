@@ -171,18 +171,28 @@ const DISEASE_MAP = [
         name: 'Traumatic Brain Injury',
         subDiseases: [{
             name: 'Comprehensive',
+            existingFormXpath: "//th[a[span[normalize-space(text())='Demographics']]]",
+            existingText: 'formF0300',
             count: 261
         }, {
             name: 'Acute Hospitalized',
+            existingFormXpath: "//th[a[span[normalize-space(text())='Demographics']]]",
+            existingText: 'formF1534',
             count: 250
         }, {
             name: 'Concussion/Mild TBI',
+            existingXpath: "//th[a[span[normalize-space(text())='Demographics']]]",
+            existingText: 'formF1535',
             count: 249
         }, {
             name: 'Moderate/Severe TBI: Rehabilitation',
+            existingXpath: "//th[a[span[normalize-space(text())='Demographics']]]",
+            existingText: 'formF1536',
             count: 247
         }, {
             name: 'Epidemiology',
+            existingXpath: "//th[a[span[normalize-space(text())='Demographics']]]",
+            existingText: 'formF1537',
             count: 247
         }],
         url: URL_PREFIX + 'TBI.aspx',
@@ -192,17 +202,26 @@ const DISEASE_MAP = [
     },
     {
         name: 'Sport-Related Concussion',
+        demographicsXpath: "//th[a[span[normalize-space(text())='Demographics Form']]]",
         subDiseases: [{
             name: 'Comprehensive',
+            existingXpath: "//*[@id='ContentPlaceHolder1_DataStandards_lbDownload']",
+            existingText: 'Download Comprehensive CDE Recommendations',
             count: 186
         }, {
             name: 'Acute',
+            existingXpath: "//*[@id='ContentPlaceHolder1_DataStandards_lbDownload']",
+            existingText: 'Download Acute CDE Recommendations',
             count: 119
         }, {
             name: 'Subacute',
+            existingXpath: "//*[@id='ContentPlaceHolder1_DataStandards_lbDownload']",
+            existingText: 'Download Subacute CDE Recommendations',
             count: 178
         }, {
             name: 'Persistent/Chronic',
+            existingXpath: "//*[@id='ContentPlaceHolder1_DataStandards_lbDownload']",
+            existingText: 'Download Persistent/Chronic CDE Recommendations',
             count: 178
         }],
         url: URL_PREFIX + 'SRC.aspx',
@@ -374,41 +393,46 @@ async function doDisease(disease) {
 
 async function run() {
     for (let disease of DISEASE_MAP) {
-        let existingDbCount = await NindsModel.countDocuments({disease: disease.name});
-        if (existingDbCount >= disease.count) {
+        if (disease.subDiseases) {
+            for (let subDisease of disease.subDiseases) {
+                let _existingSubDiseasesCount = await NindsModel.countDocuments({
+                    disease: disease.name,
+                    subDisease: subDisease.name
+                });
+                if (_existingSubDiseasesCount === subDisease.count) {
+                    console.log("***********************************************************************");
+                    console.log("Previously Finished Disease " + disease.name + " SubDisease " + subDisease.name + " on page " + disease.url);
+                    console.log("***********************************************************************");
+                } else {
+                    await driver.get(disease.url);
+                    disease.subDisease = subDisease.name;
+                    await driver.findElement(By.id("ddlSubDisease")).click();
+                    await driver.findElement(By.xpath("//*[@id='ddlSubDisease']//option[normalize-space(text())='" + subDisease.name + "']")).click();
+                    if (subDisease.existingXpath) {
+                        let timeout = setInterval(async () => {
+                            let existingElement = await driver.findElement(By.xpath(subDisease.existingXpath));
+                            let existingElementText = '';
+                            if (disease.name === 'Traumatic Brain Injury') {
+                                existingElementText = await existingElement.getAttribute('id');
+                            } else {
+                                existingElementText = await existingElement.getText();
+                            }
+                            if (existingElementText.trim() === subDisease.existingText) clearInterval(timeout);
+                        }, 20 * 1000);
+                    }
+                    await doDisease(disease);
+                }
+            }
+        }
+        let existingDiseaseCount = await NindsModel.countDocuments({disease: disease.name});
+        if (existingDiseaseCount === disease.count) {
             console.log("***********************************************************************");
             console.log("Previously Finished Disease " + disease.name + " on page " + disease.url);
             console.log("***********************************************************************");
         } else {
             await driver.get(disease.url);
-            if (disease.subDiseases) {
-                for (let subDisease of disease.subDiseases) {
-                    let _existingDbCount = await NindsModel.countDocuments({
-                        disease: disease.name,
-                        subDisease: subDisease.name
-                    });
-                    if (_existingDbCount >= subDisease.count) {
-                        console.log("***********************************************************************");
-                        console.log("Previously Finished Disease " + disease.name + " SubDisease " + subDisease + " on page " + disease.url);
-                        console.log("***********************************************************************");
-                    } else {
-                        disease.subDisease = subDisease.name;
-                        await driver.findElement(By.id("ddlSubDisease")).click();
-                        await driver.findElement(By.xpath("//*[@id='ddlSubDisease']//option[normalize-space(text())='" + subDisease.name + "']"));
-                        setTimeout(() => {
-                        }, 20 * 1000);
-                        await doDisease(disease);
-                    }
-                }
-            } else {
-                disease.subDisease = '';
-                await doDisease(disease);
-            }
-            let savedCount = await NindsModel.countDocuments({disease: disease.name});
-            if (savedCount !== disease.count) {
-                console.log(disease.name + ' savedCount: ' + savedCount + '. Web: ' + disease.count);
-                process.exit(1);
-            }
+            disease.subDisease = '';
+            await doDisease(disease);
         }
     }
 }
