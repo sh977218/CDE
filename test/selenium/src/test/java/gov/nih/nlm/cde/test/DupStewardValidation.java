@@ -9,7 +9,7 @@ public class DupStewardValidation extends NlmCdeBaseTest {
     @Test
     public void dupStewardValidation() {
         mustBeLoggedInAs(nlm_username, nlm_password);
-        goToCdeByName("Addition Dimension");
+        goToCdeByName("Additional Dimension");
         goToNaming();
         clickElement(By.cssSelector(".mat-chip-remove"));
         clickElement(By.id("openSave"));
