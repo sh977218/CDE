@@ -18,6 +18,8 @@ const batchloaderUsername = updatedByNonLoaderShared.BATCHLOADER_USERNAME;
 
 const checkNullComments = require('../../shared/utility').checkNullComments;
 
+const classificationShared = require('esm')(module)('../../../shared/system/classificationShared');
+
 let createdForm = 0;
 let sameForm = 0;
 let changeForm = 0;
@@ -45,10 +47,10 @@ async function retireCdes() {
     };
     let cdes = await DataElement.find(cond);
     for (let cde of cdes) {
-        cde.registrationState.registrationStatus = 'Retired';
-        cde.registrationState.administrativeNote = 'Not present in import at ' + new Date().toJSON();
-        cde.markModified('registrationState');
-        await DataElement.findOneAndUpdate({_id: cde._id}, cde).exec();
+        let cdeObj = cde.toObject();
+        cdeObj.registrationState.registrationStatus = 'Retired';
+        cdeObj.registrationState.administrativeNote = 'Not present in import at ' + new Date().toJSON();
+        await mongo_cde.updatePromise(cdeObj, batchloader);
         retiredCDE++;
     }
 }
@@ -71,10 +73,10 @@ async function retiredForms() {
     };
     let forms = await Form.find(cond);
     for (let form of forms) {
-        form.registrationState.registrationStatus = 'Retired';
-        form.registrationState.administrativeNote = 'Not present in import at ' + new Date().toJSON();
-        form.markModified('registrationState');
-        await form.save();
+        let formObj = form.toObject();
+        formObj.registrationState.registrationStatus = 'Retired';
+        formObj.registrationState.administrativeNote = 'Not present in import at ' + new Date().toJSON();
+        await mongo_form.updatePromise(formObj, batchloader);
         retiredForm++;
     }
 }
@@ -101,8 +103,20 @@ doOneNindsFormById = async formIdString => {
     } else {
         let existingFormObj = existingForm.toObject();
         newFormObj.tinyId = existingFormObj.tinyId;
-        let otherClassifications = existingFormObj.classification.filter(c => c.stewardOrg.name !== 'NINDS');
-        existingForm.classification = otherClassifications.concat(newFormObj.classification);
+
+        if (existingForm.tinyId === 'mJsGoMU1m') {
+            classificationShared.transferClassifications(newFormObj, existingForm);
+        } else {
+            let otherClassifications = existingFormObj.classification.filter(c => c.stewardOrg.name !== 'NINDS');
+            existingForm.classification = otherClassifications.concat(newFormObj.classification);
+        }
+        //@TODO remove after this load.
+        existingForm.classification.forEach(c => {
+            if (c.stewardOrg.name === 'NINDS') {
+                c.elements = c.elements.filter(e => e.name !== 'Population');
+            }
+        });
+
         if (updatedByNonLoader(existingForm) ||
             existingForm.registrationState.registrationStatus === 'Standard') {
             await existingForm.save();
@@ -134,7 +148,7 @@ doOneNindsFormById = async formIdString => {
 
 run = async () => {
     let formIdList = await NindsModel.distinct('formId');
-//    let formIdList = ['formF2662'];
+//    let formIdList = ['formF0374', 'formF2032'];
     for (let formId of formIdList) {
         await doOneNindsFormById(formId);
     }

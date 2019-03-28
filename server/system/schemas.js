@@ -41,9 +41,9 @@ exports.derivationRuleSchema = new Schema({
     formula: {type: StringType, enum: ['sumAll', 'mean', 'bmi']},
 }, {_id: true});
 
-
 exports.sourceSchema = new Schema({
     sourceName: StringType,
+    imported: {type: Date, description: 'Date imported from source'},
     created: {type: Date, description: 'Date created in source'},
     updated: {type: Date, description: 'Date updated in source'},
     registrationStatus: {
