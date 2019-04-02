@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const dns = require('dns');
 const os = require('os');
+const authorizationShared = require('esm')(module)('../../shared/system/authorizationShared');
 const exportShared = require('esm')(module)('../../shared/system/exportShared');
 const envShared = require('esm')(module)('../../shared/env');
 const authorization = require('../system/authorization');
