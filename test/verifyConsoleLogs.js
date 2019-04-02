@@ -14,7 +14,10 @@ let expectedContent = {
     cdeTinyIdSwaggerApi: 'docs/swagger-ui-bundle.js 51:49866 "Could not find component"',
     cdeTinyIdVersionSwaggerApi: 'docs/swagger-ui-bundle.js 51:49866 "Could not find component"',
     checkDuplicatesClassification: 'the server responded with a status of 409',
-    dupStewardValidation: "Error publishing DataElement validation failed",
+    dupStewardValidation: [
+        "Error publishing DataElement validation failed",
+        "422 (Unprocessable Entity)"
+        ],
     embedNinds: '*',
     emptyAnswers: 'the server responded with a status of 500',
     formDraftConcurrentWrite: [
