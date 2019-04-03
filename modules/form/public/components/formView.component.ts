@@ -18,16 +18,19 @@ import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service'
 import { UcumService } from 'form/public/ucum.service';
 import _cloneDeep from 'lodash/cloneDeep';
 import _noop from 'lodash/noop';
+import { NativeRenderService } from 'nativeRender/nativeRender.service';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
-import { Cb, Comment, Elt, ObjectId } from 'shared/models.model';
+import { assertUnreachable, Cb, Comment, Elt } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm, FormElement, FormElementsContainer, FormInForm, QuestionCde } from 'shared/form/form.model';
 import {
-    addFormIds, areDerivationRulesSatisfied, getLabel, iterateFe, iterateFes, iterateFeSync, noopSkipIterCb
+    addFormIds, areDerivationRulesSatisfied, getLabel, iterateFe, iterateFes, iterateFeSync, noopSkipIterCb, repeatFe,
+    repeatFeQuestion
 } from 'shared/form/fe';
 import { canEditCuratedItem, isOrgCurator } from 'shared/system/authorizationShared';
 import { isIe, scrollTo } from 'core/browser';
+import { getQuestionPriorByLabel } from 'shared/form/skipLogic';
 
 class LocatableError {
     id: string;
@@ -179,10 +182,10 @@ export class FormViewComponent implements OnInit {
             CdeForm.validate(elt);
             this.elt = elt;
             this.title.setTitle('Form: ' + Elt.getLabel(this.elt));
-            this.validate();
             this.loadComments(this.elt);
             this.missingCdes = areDerivationRulesSatisfied(this.elt);
             addFormIds(this.elt);
+            this.validate();
             cb();
         }
     }
@@ -389,6 +392,7 @@ export class FormViewComponent implements OnInit {
     validate(cb: Cb = _noop): void {
         this.validationErrors.length = 0;
         this.validateNoFeCycle();
+        this.validateRepeat();
         this.validateSkipLogic();
         this.validateDefinitions();
         this.validateUoms(cb);
@@ -411,6 +415,53 @@ export class FormViewComponent implements OnInit {
             }
             return tinyId;
         }, undefined, undefined, this.elt.tinyId);
+    }
+
+    validateRepeat() {
+        let validationErrors = this.validationErrors;
+
+        const findExistingErrors = (parent: FormElementsContainer, fe: FormElement) => {
+            if (fe.repeat) {
+                const repeat = repeatFe(fe);
+                switch (repeat) {
+                    case '=':
+                        if (!getQuestionPriorByLabel(fe, fe, repeatFeQuestion(fe), this.elt)) {
+                            validationErrors.push(new LocatableError(
+                                'Repeat Prior Question does not exist: "' + getLabel(fe) + '".', fe.elementType + '_' + fe.feId));
+                        }
+                        break;
+                    case 'F':
+                        const refQuestion = NativeRenderService.getFirstQuestion(fe);
+                        if (!refQuestion) {
+                            validationErrors.push(new LocatableError(
+                                'Repeat First Question does not exist: "' + getLabel(fe) + '".', fe.elementType + '_' + fe.feId));
+                            break;
+                        }
+                        if (refQuestion.question.cde.datatype !== 'Value List') {
+                            validationErrors.push(new LocatableError(
+                                'Repeat First Question does not a Value List: "' + getLabel(fe) + '".', fe.elementType + '_' + fe.feId));
+                        }
+                        break;
+                    case 'N':
+                        if (parseInt(fe.repeat) < 1) {
+                            validationErrors.push(new LocatableError(
+                                'Repeat Number is below 1: "' + getLabel(fe) + '".', fe.elementType + '_' + fe.feId));
+                        }
+                        break;
+                    case '':
+                        validationErrors.push(new LocatableError(
+                            'Bad Repeat Type "' + getLabel(fe) + '".', fe.elementType + '_' + fe.feId));
+                        break;
+                    default:
+                        throw assertUnreachable(repeat);
+                }
+            }
+            if (Array.isArray(fe.formElements)) {
+                fe.formElements.forEach(f => findExistingErrors(fe, f));
+            }
+        };
+
+        this.elt.formElements.forEach(fe => findExistingErrors(this.elt, fe));
     }
 
     validateSkipLogic() {

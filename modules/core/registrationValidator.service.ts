@@ -51,11 +51,11 @@ export function cdePassingRule(cde, rule) {
 
 export function getStatusRules(cdeOrgRules) {
     let cdeStatusRules = {
-        "Incomplete": {},
-        "Candidate": {},
-        "Recorded": {},
-        "Qualified": {},
-        "Standard": {},
+        Incomplete: {},
+        Candidate: {},
+        Recorded: {},
+        Qualified: {},
+        Standard: {},
         "Preferred Standard": {}
     };
 
