@@ -14,8 +14,8 @@ import _isEqual from 'lodash/isEqual';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 
 const URL_MAP = {
-    'cde': '/de/',
-    'form': '/form/'
+    cde: '/de/',
+    form: '/form/'
 };
 
 @Component({

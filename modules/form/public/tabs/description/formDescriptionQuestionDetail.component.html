@@ -20,8 +20,8 @@
         <span *ngIf="question.question?.datatypeDate?.format" class="badge badge-success formViewSummaryLabel">
             Format: {{question.question?.datatypeDate?.format}}
         </span>
-        <span *ngIf="getRepeatLabel(question)" class="badge badge-primary formViewSummaryLabel">
-            Repeats: {{getRepeatLabel(question)}} times
+        <span *ngIf="repeatFeLabel(question)" class="badge badge-primary formViewSummaryLabel">
+            Repeats: {{repeatFeLabel(question)}} times
         </span>
         <span *ngIf="isScore(question)" class="badge badge-primary formViewSummaryLabel">
             Score: <span [textContent]="question.question.scoreFormula"></span>
@@ -281,7 +281,7 @@
             <mat-form-field class="w-50 newCdeDataType">
                 <mat-select placeholder="CDE Data Type" [(ngModel)]="question.question.datatype"
                             (selectionChange)="onEltChange.emit();">
-                    <mat-option *ngFor="let dataType of dataTypeList" [value]="dataType">{{dataType}}</mat-option>
+                    <mat-option *ngFor="let dataType of DataTypeArray" [value]="dataType">{{dataType}}</mat-option>
                 </mat-select>
             </mat-form-field>
             <mat-form-field class="w-50 newCdePvs" *ngIf="question.question.datatype==='Value List'">

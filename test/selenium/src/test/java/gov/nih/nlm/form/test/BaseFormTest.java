@@ -101,14 +101,16 @@ public class BaseFormTest extends NlmCdeBaseTest {
         }
     }
 
-    void setRepeat(String sectionId, String repeat) {
-        if (repeat != null) {
-            if (repeat.charAt(0) == 'F')
-                new Select(findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/select"))).selectByVisibleText("Over first question");
-            else {
-                new Select(findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/select"))).selectByVisibleText("Set Number of Times");
-                findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/input")).sendKeys(repeat);
-            }
+    protected void setRepeat(String sectionId, String repeat) {
+        if (repeat == null || repeat == "") {
+            new Select(findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/select"))).selectByVisibleText("");
+        } else if (repeat.charAt(0) == 'F') {
+            new Select(findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/select"))).selectByVisibleText("Over first question");
+        } else if (repeat.charAt(0) == '=') {
+            new Select(findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/select"))).selectByVisibleText("Over answer of specified question");
+        } else {
+            new Select(findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/select"))).selectByVisibleText("Set Number of Times");
+            findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/input")).sendKeys(repeat);
         }
     }
 

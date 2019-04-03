@@ -7,7 +7,7 @@ export function addFormIds(parent, parentId = '') {
         fe.feId = parentId + i;
         return fe.feId + '-';
     }
-    iterateFeSync(parent, addFeId, addFeId, addFeId, parentId ? parentId + '-': '');
+    iterateFeSync(parent, addFeId, addFeId, addFeId, parentId ? parentId + '-' : '');
 }
 
 export function areDerivationRulesSatisfied(elt) {
@@ -291,6 +291,34 @@ export function iterateFormElements(fe = {}, option = {}, cb = undefined) {
         });
         if (cb) cb();
     }
+}
+
+export function repeatFe(fe) {
+    if (!fe.repeat) return '';
+    if (fe.repeat[0] === 'F') return 'F';
+    if (fe.repeat.startsWith('="') && fe.repeat.length >= 3 && fe.repeat.endsWith('"')) return '=';
+    return 'N';
+}
+
+export function repeatFeLabel(fe) {
+    switch (repeatFe(fe)) {
+        case '=':
+            return 'over Question Answer ' + fe.repeat.substr(1);
+        case 'F':
+            return 'over First Question';
+        case 'N':
+            return repeatFeNumber(fe) + ' times';
+        default:
+            return '';
+    }
+}
+
+export function repeatFeNumber(fe) {
+    return parseInt(fe.repeat);
+}
+
+export function repeatFeQuestion(fe) {
+    return fe.repeat && fe.repeat[0] === '=' ? fe.repeat.substring(2, fe.repeat.length - 1) : '';
 }
 
 export function trimWholeForm(elt) {

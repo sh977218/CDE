@@ -127,7 +127,7 @@ exports.logClientError = function (req, callback) {
             let msg = JSON.stringify({
                 title: 'Client Side Error',
                 options: {
-                    body: exc.message.substr(0, 30),
+                    body: (exc.message || '').substr(0, 30),
                     icon: '/cde/public/assets/img/NIH-CDE-FHIR.png',
                     badge: '/cde/public/assets/img/nih-cde-logo-simple.png',
                     tag: 'cde-client-side',

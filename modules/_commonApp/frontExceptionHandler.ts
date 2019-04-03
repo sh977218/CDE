@@ -30,7 +30,7 @@ export class FrontExceptionHandler implements ErrorHandler {
                     credentials: 'include',
                     body: JSON.stringify({
                         stack: error.stack,
-                        message: error.message,
+                        message: typeof error !== 'string' ? error.message : 'bad throw and error: ' + error, // TODO: remove, possibly never a string
                         name: error.name,
                         url: window.location.href
                     }),

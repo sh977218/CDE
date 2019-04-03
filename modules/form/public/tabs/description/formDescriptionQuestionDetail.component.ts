@@ -5,7 +5,6 @@ import { FormControl } from '@angular/forms';
 import { MatChipInputEvent, MatDialog } from '@angular/material';
 import { AlertService } from 'alert/alert.service';
 import { TreeNode } from 'angular-tree-component';
-import { DataTypeService } from 'core/dataType.service';
 import { OrgHelperService } from 'core/orgHelper.service';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
 import { UcumService } from 'form/public/ucum.service';
@@ -15,10 +14,11 @@ import _clone from 'lodash/clone';
 import _noop from 'lodash/noop';
 import { Observable } from 'rxjs/Observable';
 import { map, switchMap, debounceTime, distinctUntilChanged } from 'rxjs/operators';
-
-
-import { CodeAndSystem, FormattedValue } from 'shared/models.model';
+import { DataTypeArray } from 'shared/de/dataElement.model';
+import { pvGetLabel } from 'shared/de/deShared';
+import { iterateFeSync, repeatFe, repeatFeLabel, repeatFeQuestion } from 'shared/form/fe';
 import { FormElement, FormQuestion, SkipLogic } from 'shared/form/form.model';
+import { CodeAndSystem, FormattedValue } from 'shared/models.model';
 
 @Component({
     selector: 'cde-form-description-question-detail',
@@ -27,7 +27,6 @@ import { FormElement, FormQuestion, SkipLogic } from 'shared/form/form.model';
 export class FormDescriptionQuestionDetailComponent implements OnInit {
     @Input() canEdit: boolean = false;
     @Input() elt;
-
     @Input() set node(node: TreeNode) {
         this.question = node.data;
         this.parent = node.parent.data;
@@ -43,30 +42,24 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         if (this.question.question.unitsOfMeasure) {
             this.ucumService.validateUoms(this.question.question);
         }
-        this.questionAnswers = this.question.question.answers.map(p => p.valueMeaningName);
+        this.questionAnswers = this.question.question.answers.map(pvGetLabel);
     }
-
     @Output() onEltChange: EventEmitter<void> = new EventEmitter<void>();
     @ViewChild('formDescriptionQuestionTmpl') formDescriptionQuestionTmpl!: TemplateRef<any>;
     @ViewChild('formDescriptionQuestionEditTmpl') formDescriptionQuestionEditTmpl!: TemplateRef<any>;
-    @ViewChild('slInput') slInput: ElementRef;
-
-    questionAnswers = [];
-
-    answerListItems = [];
-    dataTypeList = [];
-    defaultAnswerListItems = [];
-    getSkipLogicOptions = ((text$: Observable<string>) => text$.pipe(
-        debounceTime(300),
-        map(term => this.skipLogicValidateService.getTypeaheadOptions(term, this.parent, this.question))
-    ));
+    @ViewChild('slInput') slInput!: ElementRef;
+    readonly DataTypeArray = DataTypeArray;
+    answerListItems: string[] = [];
+    defaultAnswerListItems: string[] = [];
     static inputEvent = new Event('input');
     newUom = '';
     newUomSystem = 'UCUM';
-    question: FormQuestion;
-    parent: FormElement;
-    tag = [];
+    parent!: FormElement;
+    question!: FormQuestion;
+    questionAnswers: string[] = [];
+    repeatFeLabel = repeatFeLabel;
     readonly separatorKeysCodes: number[] = [ENTER];
+    tag = [];
 
 
     uomControl = new FormControl();
@@ -78,7 +71,6 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
                 private orgHelperService: OrgHelperService,
                 public skipLogicValidateService: SkipLogicValidateService,
                 public ucumService: UcumService) {
-        this.dataTypeList = DataTypeService.dataElementDataType;
     }
 
     ngOnInit() {
@@ -97,12 +89,6 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
             ).subscribe(uoms => this.filteredUoms = uoms);
     }
 
-    getRepeatLabel(fe) {
-        if (!fe.repeat) return '';
-        if (fe.repeat[0] === 'F') return 'over First Question';
-        return parseInt(fe.repeat) + ' times';
-    }
-
     getTemplate() {
         return (this.canEdit && this.question.edit
             ? this.formDescriptionQuestionEditTmpl
@@ -114,12 +100,8 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     }
 
     onAnswerListChanged() {
-        let answers = this.question.question.answers.filter(ans => {
-            let value = ans.valueMeaningName;
-            if (!value) value = ans.permissibleValue;
-            this.questionAnswers.indexOf(value) >= 0;
-        });
-        this.question.question.answers = answers;
+        this.question.question.answers = this.question.question.answers.filter(ans =>
+            this.questionAnswers.indexOf(ans.valueMeaningName || ans.permissibleValue) >= 0);
         this.syncDefaultAnswerListItems();
         this.onEltChange.emit();
     }
@@ -133,11 +115,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
                 this.onAnswerListChanged();
             } else if (response) {
                 q.question.answers = _clone(response);
-                this.questionAnswers = this.question.question.answers.map(p => {
-                    let value = p.valueMeaningName;
-                    if (!value) value = p.permissibleValue;
-                    return value;
-                });
+                this.questionAnswers = this.question.question.answers.map(pvGetLabel);
                 this.onEltChange.emit();
             }
         });
@@ -152,16 +130,16 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
             }
         });
         dialogRef.componentInstance.onSelect.subscribe(designation => {
-            if (!designation || !designation.designation) {
-                question.label = '';
-            } else {
+            if (designation && designation.designation) {
                 SkipLogicValidateService.checkAndUpdateLabel(parent, question.label, designation.designation);
+                FormDescriptionQuestionDetailComponent.updateRepeatQuestions(this.elt, question.label, designation.designation);
                 question.label = designation.designation;
+            } else {
+                question.label = '';
             }
             dialogRef.close();
             this.onEltChange.emit();
         });
-        dialogRef.componentInstance.onClosed.subscribe(() => dialogRef.close());
         dialogRef.componentInstance.onClosed.subscribe(() => dialogRef.close());
     }
 
@@ -296,6 +274,15 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
             this.newUom = '';
             this.ucumService.validateUoms(this.question.question);
         }
+    }
+
+    static updateRepeatQuestions(elt, oldLabel: string, newLabel: string) {
+        const modifyRepeat = (fe) => {
+            if (repeatFe(fe) === '=' && repeatFeQuestion(fe) === oldLabel) {
+                fe.repeat = '="' + newLabel + '"';
+            }
+        };
+        iterateFeSync(elt, modifyRepeat, modifyRepeat, modifyRepeat);
     }
 
     displayFn(uom) {

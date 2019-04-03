@@ -6,5 +6,6 @@ declare function decamelize(str: string, sep?: string): string;
 declare function deepCopy<T>(obj: T): T;
 declare function partition<T>(array: T[], callback: CbRet<boolean, T, number, T[]>): [T[], T[]];
 declare function push2<T>(array: T[], element: T): T[];
+declare function range(num: number): number[]; // 0..num-1
 declare function reduceOptionalArray<T, U>(arr: U[], cb: (a: T, c: U) => T, initialValue: T): T;
 declare function stringCompare(a: string, b: string): number;

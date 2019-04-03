@@ -36,6 +36,10 @@ export function push2(arr, e) {
     return arr;
 }
 
+export function range(num) {
+    return Array.apply(null, Array(num)).map((_, i) => i);
+}
+
 export function reduceOptionalArray(arr, cb, initialValue) {
     return Array.isArray(arr) ? arr.reduce(cb, initialValue) : initialValue;
 }

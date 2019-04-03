@@ -1,15 +1,17 @@
 import { Injectable } from '@angular/core';
+import { callbackify } from 'core/browser';
+import { FormService } from 'nativeRender/form.service';
 import { ScoreService } from 'nativeRender/score.service';
 import { SkipLogicService } from 'nativeRender/skipLogic.service';
-import { assertUnreachable, CdeId, CodeAndSystem } from 'shared/models.model';
+import { assertUnreachable, Cb1, CbErr, CdeId, CodeAndSystem } from 'shared/models.model';
 import { pvGetDisplayValue, pvGetLabel } from 'shared/de/deShared';
 import {
     CdeForm, DisplayProfile, DisplayType, FormElement, FormElementsContainer, FormOrElement, FormQuestion, FormSection,
     FormSectionOrForm,
     PermissibleFormValue, Question
 } from 'shared/form/form.model';
-import { addFormIds, isQuestion, iterateFeSync, questionMulti } from 'shared/form/fe';
-import { getShowIfQ, SkipLogicOperators } from 'shared/form/skipLogic';
+import { addFormIds, isQuestion, iterateFeSync, questionMulti, repeatFe, repeatFeQuestion } from 'shared/form/fe';
+import { getQuestionPriorByLabel, getShowIfQ, SkipLogicOperators } from 'shared/form/skipLogic';
 
 @Injectable()
 export class NativeRenderService {
@@ -22,7 +24,9 @@ export class NativeRenderService {
     private errors: string[] = [];
     followForm?: CdeForm;
     flatMapping: any;
+    locationDenied = false;
     profile!: DisplayProfile;
+    questionChangeListeners: Cb1<FormQuestion>[] = [];
     questionMulti = questionMulti;
     submitForm?: boolean;
     vm!: CdeForm;
@@ -31,11 +35,45 @@ export class NativeRenderService {
                 public skipLogicService: SkipLogicService) {
     }
 
+    addListener(cb: Cb1<FormQuestion>) {
+        this.questionChangeListeners.push(cb); // no need to cleanup because the whole nrs goes out of scope
+    }
+
+    convert(formElement: FormQuestion) {
+        let unit = formElement.question.answerUom;
+        if (formElement.question.previousUom && unit && formElement.question.answer != null) {
+            let value: number;
+            if (typeof(formElement.question.answer) === 'string') value = parseFloat(formElement.question.answer);
+            else value = formElement.question.answer;
+
+            if (typeof(value) === 'number' && !isNaN(value)) {
+                NativeRenderService.convertUnits(value, formElement.question.previousUom, unit, (error?: string, result?: number) => {
+                    if (!error && result !== undefined && !isNaN(result) && unit === formElement.question.answerUom) {
+                        formElement.question.answer = result;
+                        this.emit(formElement);
+                    }
+                });
+            }
+        }
+        formElement.question.previousUom = formElement.question.answerUom;
+    }
+
+    static convertUnits(value: number, fromUnit: CodeAndSystem, toUnit: CodeAndSystem, cb: CbErr<number>) {
+        if (fromUnit.system === 'UCUM' && toUnit.system === 'UCUM') {
+            callbackify(
+                FormService.convertUnits(value, encodeURIComponent(fromUnit.code), encodeURIComponent(toUnit.code))
+            )(cb);
+        } else {
+            cb(undefined, value); // no conversion for other systems
+        }
+    }
+
     eltSet(elt: CdeForm) {
         if (elt !== this.elt) {
             this.elt = elt;
             this.followForm = undefined;
             this.scoreSvc.register(this.elt);
+            this.questionChangeListeners.length = 0;
             if (!this.elt.formInput) {
                 this.elt.formInput = [];
             }
@@ -47,6 +85,11 @@ export class NativeRenderService {
         if (this.submitForm && !this.flatMapping) {
             this.flatMapping = JSON.stringify({sections: NativeRenderService.flattenForm(this.elt)});
         }
+    }
+
+    emit(fe: FormQuestion) {
+        this.scoreSvc.triggerCalculateScore(fe);
+        this.questionChangeListeners.forEach(cb => cb(fe));
     }
 
     getAliases(f: FormQuestion) {
@@ -62,6 +105,23 @@ export class NativeRenderService {
             });
         } else {
             f.question.uomsAlias = f.question.unitsOfMeasure.map(u => u.code);
+        }
+    }
+
+    getCurrentGeoLocation(formElement: FormQuestion) {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                position => {
+                    this.locationDenied = false;
+                    if (formElement) {
+                        formElement.question.answer = position.coords;
+                        this.emit(formElement);
+                    }
+                },
+                err => {
+                    this.locationDenied = err.code === err.PERMISSION_DENIED;
+                }
+            );
         }
     }
 
@@ -112,7 +172,7 @@ export class NativeRenderService {
         } else {
             q.question.answer = undefined;
         }
-        this.scoreSvc.triggerCalculateScore(q);
+        this.emit(q);
     }
 
     render(renderType: DisplayType) {
@@ -180,7 +240,7 @@ export class NativeRenderService {
                 model.answer.splice(model.answer.indexOf(value), 1);
             }
         }
-        this.scoreSvc.triggerCalculateScore(q);
+        this.emit(q);
     }
 
     checkboxIsChecked(model: Question, value: any) {
@@ -203,7 +263,7 @@ export class NativeRenderService {
 
     selectModelChange(value: any, q: FormQuestion) {
         q.question.answer = q.question.multiselect ? value : value[0];
-        this.scoreSvc.triggerCalculateScore(q);
+        this.emit(q);
     }
 
     static cloneForm(form: CdeForm): CdeForm {
@@ -220,7 +280,7 @@ export class NativeRenderService {
     }
 
     static transformFormToInline(form: FormElementsContainer): boolean {
-        let followEligibleQuestions = [];
+        let followEligibleQuestions: FormElement[] = [];
         let transformed = false;
         let feSize = Array.isArray(form.formElements) ? form.formElements.length : 0;
         for (let i = 0; i < feSize; i++) {
@@ -461,13 +521,22 @@ export class NativeRenderService {
             return 1;
         }
         if (fe.repeat) {
-            if (fe.repeat[0] === 'F') {
-                let firstQ = NativeRenderService.getFirstQuestion(fe);
-                if (firstQ && firstQ.question.answers) return firstQ.question.answers.length;
-                return 0;
-            } else {
-                let maxValue = parseInt(fe.repeat);
-                return (maxValue >= 0 ? maxValue : 10);
+            const repeat = repeatFe(fe);
+            switch (repeat) {
+                case '=':
+                    // not statically analyzable
+                    return 10;
+                case 'F':
+                    let firstQ = NativeRenderService.getFirstQuestion(fe);
+                    if (firstQ && firstQ.question.answers) return firstQ.question.answers.length;
+                    return 1;
+                case 'N':
+                    const repeatNumber = parseInt(fe.repeat!);
+                    return repeatNumber >= 0 ? repeatNumber : 10;
+                case '':
+                    return 1;
+                default:
+                    throw assertUnreachable(repeat);
             }
         }
         return 1;

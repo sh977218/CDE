@@ -18,9 +18,9 @@ export class FhirSmartService {
 
     static authorize(clientId: string, config: string) {
         (<any>window).FHIR.oauth2.authorize({
-            'client_id': clientId,
-            'redirect_uri': '/' + config,
-            'scope': SCOPE,
+            client_id: clientId,
+            redirect_uri: '/' + config,
+            scope: SCOPE,
         });
     }
 

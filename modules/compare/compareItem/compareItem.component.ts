@@ -28,7 +28,7 @@ export class CompareItemComponent implements OnInit {
     newerFlatClassifications: string;
     olderFlatClassifications: string;
     map = {
-        'Text': 'valueDomain.datatypeText'
+        Text: 'valueDomain.datatypeText'
     };
     compareObjectProperties = [
         {label: 'isCopyrighted', match: false, property: 'isCopyrighted'},

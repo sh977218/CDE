@@ -22,6 +22,10 @@ let expectedContent = {
     ],
     formFiveUnapprovedMessagesPerUserComment: 'Failed to load resource: the server responded with a status of 403 (Forbidden)',
     formOneUnapprovedReplyPerUser: 'Failed to load resource: the server responded with a status of 403 (Forbidden)',
+    formReorderProperties: [
+        'Failed to load resource: the server responded with a status of 409 (Conflict)',
+        'Edited by someone else. Please refresh and redo.'
+    ],
     formTinyIdSwaggerApi: 'docs/swagger-ui-bundle.js 51:49866 "Could not find component"',
     formTinyIdVersionSwaggerApi: 'docs/swagger-ui-bundle.js 51:49866 "Could not find component"',
     logClientErrors: '*',
