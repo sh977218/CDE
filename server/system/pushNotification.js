@@ -109,6 +109,7 @@ exports.subscribe = (req, res) => {
 
 exports.triggerPushMsg = (push, dataToSend) => {
     if (!push.subscription) return;
+    if (['green', 'qa-green'].includes(global.CURRENT_SERVER_ENV)) return;
 
     webpush.setVapidDetails(
         'https://cde.nlm.nih.gov',
