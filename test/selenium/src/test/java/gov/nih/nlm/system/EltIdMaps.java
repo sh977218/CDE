@@ -100,6 +100,7 @@ public class EltIdMaps {
         eltMap.put("Copy Section Form Test", "Xy7W4MKNV");
         eltMap.put("DNA Elements - Participant/Subject Information", "m1fVM1SSFx");
         eltMap.put("DateTypeTest", "7y_PFN4Zr");
+        eltMap.put("Double Classif Form", "QJgAXYdXv");
         eltMap.put("Draft Form Test", "QyT6ElYKLl");
         eltMap.put("Drag Question Test", "7kL4X8sMU");
         eltMap.put("Empty Logic", "7kAx6i5af");
