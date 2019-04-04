@@ -306,6 +306,6 @@ exports.init = function (app, daoManager) {
 
     app.get('/syncLinkedForms', (req, res) => res.send(formSvc.syncLinkedFormsProgress));
 
-    new CronJob('00 30 4 * * *', () => formElastic.syncLinkedForms(), null, true, 'America/New_York');
+    new CronJob('00 30 4 * * *', () => formSvc.syncLinkedForms(), null, true, 'America/New_York');
 
 };
