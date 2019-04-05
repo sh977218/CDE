@@ -34,13 +34,13 @@ function runOneOrg(org) {
                     if (!existingCde) {
                         let savedCde = await newCde.save();
                         createdCDE++;
-                        console.log('createdForm: ' + createdCDE + ' ' + savedCde.tinyId);
+                        console.log('createdCDE: ' + createdCDE + ' ' + savedCde.tinyId);
                     } else {
-
+                        console.log('found ' + nciId);
+                        process.exit(1);
                     }
-
-                    await DataElementSource.update({tinyId: newCdeObj.tinyId}, newCdeObj, {upsert: true});
-                    resove();
+                    await DataElementSource.updateOne({tinyId: newCdeObj.tinyId}, newCdeObj, {upsert: true});
+                    resolve();
                 }
             });
         });

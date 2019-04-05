@@ -50,7 +50,7 @@ exports.createCde = async (nciCde, orgInfo) => {
         valueDomain: valueDomain,
         stewardOrg: {name: orgInfo['stewardOrgName']},
         ids: ids,
-        attachments: [],
+        attachments: attachments,
         properties: properties,
         referenceDocuments: referenceDocuments,
         objectClass: objectClass,

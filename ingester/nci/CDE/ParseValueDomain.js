@@ -5,6 +5,7 @@ const datatypeMapping = {
     'NUMBER': 'Number',
     'TIME': 'Time',
     'DATE': 'Date',
+    'SAS Date': 'Date',
     'DATETIME': 'Date/Time'
 };
 
