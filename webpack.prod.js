@@ -2,7 +2,7 @@ const webpack = require('webpack');
 const merge = require('webpack-merge');
 const baseConfig = require('./webpack.config.js');
 
-module.exports = module.exports = merge(baseConfig,{
+module.exports = module.exports = merge(baseConfig, {
     mode: 'production',
     context: __dirname,
     module: {
@@ -13,10 +13,9 @@ module.exports = module.exports = merge(baseConfig,{
             },
         ]
     },
-    plugins:
-        [
-            new webpack.DefinePlugin({
-                PRODUCTION: JSON.stringify(true),
-            }),
-        ],
+    plugins: [
+        new webpack.DefinePlugin({
+            PRODUCTION: JSON.stringify(true),
+        }),
+    ]
 });
