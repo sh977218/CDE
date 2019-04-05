@@ -22,14 +22,18 @@ import java.util.Date;
 import static gov.nih.nlm.system.NlmCdeBaseTest.driver;
 
 public class ScreenShotListener extends TestListenerAdapter {
-    SimpleDateFormat formater = new SimpleDateFormat("dd_MM_yyyy_hh_mm_ss");
-    Calendar calendar = Calendar.getInstance();
+    private SimpleDateFormat formater = new SimpleDateFormat("dd_MM_yyyy_hh_mm_ss");
+    private Calendar calendar = Calendar.getInstance();
 
     public void onTestFailure(ITestResult itr) {
         String methodName = itr.getName();
         System.out.println("Test Fail: " + methodName);
         if (!itr.isSuccess()) {
             try {
+                FileUtils.writeStringToFile(new File("build/htmlSnapshots/" + methodName +
+                                "_HTML_" + formater.format(calendar.getTime())+ ".html"),
+                        driver.getPageSource(), "UTF-8");
+
                 File srcFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
                 FileUtils.copyFile(srcFile,
                         new File("build/screenshots/" + methodName + "_" + formater.format(calendar.getTime()) + ".png"));
@@ -84,7 +88,8 @@ public class ScreenShotListener extends TestListenerAdapter {
         if (sb.length() > 0) {
             try {
                 FileUtils.writeStringToFile(
-                        new File("build/consolelogs/" + methodName + "_" + formater.format(calendar.getTime()) + ".txt"), sb.toString());
+                        new File("build/consolelogs/" + methodName + "_" + formater.format(calendar.getTime()) + ".txt"),
+                        sb.toString(), "UTF-8");
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
