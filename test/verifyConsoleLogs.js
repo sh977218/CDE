@@ -30,6 +30,10 @@ let expectedContent = {
         'Failed to load resource: the server responded with a status of 409 (Conflict)',
         'Edited by someone else. Please refresh and redo.'
     ],
+    formDupStewardValidation: [
+        "Error publishing Form validation failed",
+        "422 (Unprocessable Entity)"
+    ],
     formTinyIdSwaggerApi: 'docs/swagger-ui-bundle.js 51:49866 "Could not find component"',
     formTinyIdVersionSwaggerApi: 'docs/swagger-ui-bundle.js 51:49866 "Could not find component"',
     logClientErrors: '*',
