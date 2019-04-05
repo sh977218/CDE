@@ -66,6 +66,50 @@ exports.map = {
             "Standard": "Standard",
             "default": "Qualified"
         }
+    },
+    'NCI-CDMH-PCORNet': {
+        'xml': 'S:/MLB/CDE/NCI/CdmhPcoriCdm/PCORNetFinalCDEBrowser_SearchResults.xml',
+        'stewardOrgName': 'NCI',
+        'classificationOrgName': 'NCI',
+        'classificationMap': {'PCORI CDM': 'PCORNet'},
+        statusMapping: {
+            "Preferred Standard": "Standard",
+            "Standard": "Standard",
+            "default": "Qualified"
+        }
+    },
+    'NCI-CDMH-OMOP': {
+        'xml': 'S:/MLB/CDE/NCI/CdmhPcoriCdm/OMOPFINALCDEBrowser_SearchResults.xml',
+        'stewardOrgName': 'NCI',
+        'classificationOrgName': 'NCI',
+        'classificationMap': {'PCORI CDM': 'OMOP'},
+        statusMapping: {
+            "Preferred Standard": "Standard",
+            "Standard": "Standard",
+            "default": "Qualified"
+        }
+    },
+    'NCI-CDMH-ACT': {
+        'xml': 'S:/MLB/CDE/NCI/CdmhPcoriCdm/ACTFINALCDEBrowser_SearchResults.xml',
+        'stewardOrgName': 'NCI',
+        'classificationOrgName': 'NCI',
+        'classificationMap': {'PCORI CDM': 'ACT'},
+        statusMapping: {
+            "Preferred Standard": "Standard",
+            "Standard": "Standard",
+            "default": "Qualified"
+        }
+    },
+    'NCI-CDMH-Sentinel': {
+        'xml': 'S:/MLB/CDE/NCI/CdmhPcoriCdm/SentinelFinalCDEBrowser_SearchResults.xml',
+        'stewardOrgName': 'NCI',
+        'classificationOrgName': 'NCI',
+        'classificationMap': {'PCORI CDM': 'Sentinel'},
+        statusMapping: {
+            "Preferred Standard": "Standard",
+            "Standard": "Standard",
+            "default": "Qualified"
+        }
     }
 };
 
