@@ -30,7 +30,8 @@ public class ScreenShotListener extends TestListenerAdapter {
         System.out.println("Test Fail: " + methodName);
         if (!itr.isSuccess()) {
             try {
-                FileUtils.writeStringToFile(new File("build/consolelogs/" + methodName + "HTML_" + formater.format(calendar.getTime())+ ".txt"),
+                FileUtils.writeStringToFile(new File("build/htmlSnapshots/" + methodName +
+                                "_HTML_" + formater.format(calendar.getTime())+ ".html"),
                         driver.getPageSource(), "UTF-8");
 
                 File srcFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
