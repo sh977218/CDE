@@ -307,7 +307,7 @@ exports.update = function (elt, user, callback, special) {
             }
             newElt.save((err, savedElt) => {
                 if (err) {
-                    DataElement.findOneAndUpdate({_id: dataElement._id}, {$set: {archived: false}}, callback);
+                    DataElement.findOneAndUpdate({_id: dataElement._id}, {$set: {archived: false}}, () => callback(err));
                 } else {
                     callback(undefined, savedElt);
                     auditModifications(user, dataElement, savedElt);

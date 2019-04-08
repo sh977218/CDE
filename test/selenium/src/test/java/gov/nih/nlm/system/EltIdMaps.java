@@ -8,6 +8,7 @@ public class EltIdMaps {
     public static Map<String, String> eltMap = new HashMap<>();
 
     static {
+        eltMap.put("Additional Dimension", "XyEbt94V_");
         eltMap.put("Adrenal Gland Received Other Specify", "Q1AVwqNVb");
         eltMap.put("Alcohol use started age value", "FtNNFMKHCM4");
         eltMap.put("Atherosclerosis Risk in Communities transient ischemic attack/stroke form (ARIC TIA) - speech loss slurred symptom indicator", "0gqqG2jShnS");
@@ -99,6 +100,7 @@ public class EltIdMaps {
         eltMap.put("Copy Section Form Test", "Xy7W4MKNV");
         eltMap.put("DNA Elements - Participant/Subject Information", "m1fVM1SSFx");
         eltMap.put("DateTypeTest", "7y_PFN4Zr");
+        eltMap.put("Double Classif Form", "QJgAXYdXv");
         eltMap.put("Draft Form Test", "QyT6ElYKLl");
         eltMap.put("Drag Question Test", "7kL4X8sMU");
         eltMap.put("Empty Logic", "7kAx6i5af");
