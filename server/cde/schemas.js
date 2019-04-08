@@ -166,6 +166,11 @@ exports.dataElementSchema.path("classification").validate(v => {
     return result;
 }, "Classification cannot be empty");
 
+exports.dataElementSchema.path("classification").validate(v => {
+    return !v.map(value => value.stewardOrg.name)
+        .some((value, index, array) => array.indexOf(value) !== array.lastIndexOf(value));
+}, "Duplicate Steward Classification");
+
 exports.draftSchema = new Schema(deJson, {
     usePushEach: true,
     toObject: {
