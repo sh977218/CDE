@@ -4,20 +4,20 @@ import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
-public class FormNamingReorder extends NlmCdeBaseTest {
+public class FormDefinitionReorder extends NlmCdeBaseTest {
 
     @Test
-    public void formReorderNamingTest() {
-        String formName = "form for test cde reorder detail tabs";
+    public void formReorderDefinitionTest() {
+        String formName = "Reorder definition form";
         mustBeLoggedInAs(testAdmin_username, password);
         goToFormByName(formName);
         goToNaming();
         textPresent("Definition:");
         clickElement(By.id("moveDown-0"));
-        textPresent("form for test cde reorder detail tabs", By.id("designation_1"));
+        textPresent("This form is created for testing reorder definitions", By.id("definition_1"));
         clickElement(By.id("moveUp-2"));
-        textPresent("form for test cde reorder detail tabs 3", By.id("designation_1"));
+        textPresent("Another definition.", By.id("definition_1"));
         clickElement(By.id("moveTop-2"));
-        textPresent("form for test cde reorder detail tabs", By.id("designation_0"));
+        textPresent("This form is created for testing reorder definitions", By.id("definition_0"));
     }
 }
