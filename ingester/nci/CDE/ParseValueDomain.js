@@ -1,11 +1,13 @@
 const datatypeMapping = {
     'ALPHANUMERIC': 'Text',
+    'varchar': 'Text',
     'CHARACTER': 'Text',
     'Integer': 'Number',
     'NUMBER': 'Number',
     'TIME': 'Time',
     'DATE': 'Date',
     'SAS Date': 'Date',
+    'SAS Time': 'Time',
     'DATETIME': 'Date/Time'
 };
 

@@ -1,3 +1,5 @@
+const _ = require('lodash');
+
 const generateTinyId = require('../../../server/system/mongo-data').generateTinyId;
 
 const ParseDesignations = require('../Shared/ParseDesignations');
@@ -17,6 +19,9 @@ const ParseObjectClass = require('./ParseObjectClass');
 const ParseProperty = require('./ParseProperty');
 
 const today = new Date().toJSON();
+const batchloader = require('../../shared/updatedByLoader').batchloader;
+
+const deValidator = require('esm')(module)('../../../shared/de/deValidator');
 
 exports.createCde = async (nciCde, orgInfo) => {
     let designations = ParseDesignations.parseDesignations(nciCde);
@@ -28,7 +33,6 @@ exports.createCde = async (nciCde, orgInfo) => {
     let properties = ParseProperties.parseProperties(nciCde);
     let attachments = await ParseAttachments.parseAttachments(nciCde);
     let referenceDocuments = ParseReferenceDocuments.parseReferenceDocuments(nciCde);
-    let classification = ParseClassification.parseClassification(nciCde, orgInfo);
 
     let valueDomain = ParseValueDomain.parseValueDomain(nciCde);
     let objectClass = ParseObjectClass.parseObjectClass(nciCde);
@@ -56,7 +60,50 @@ exports.createCde = async (nciCde, orgInfo) => {
         objectClass: objectClass,
         property: property,
         dataElementConcept: dataElementConcept,
-        classification: classification
+        classification: [],
+        comments:[]
     };
+
+    ParseClassification.parseClassification(nciCde,cde, orgInfo);
+
+    let cdeError = deValidator.checkPvUnicity(cde.valueDomain);
+    if(cdeError && !cdeError.allValid){
+        if(cdeError.pvNotValidMsg.indexOf('Duplicate Code Name:') !== -1){
+            let uniqPvs = _.uniqBy(cde.valueDomain.permissibleValues,'valueMeaningName');
+            cde.valueDomain.permissibleValues = uniqPvs;
+            let comment  = {
+                text: cdeError.pvNotValidMsg +'. See attachment for original xml.',
+                user: batchloader,
+                created: new Date(),
+                pendingApproval: false,
+                linkedTab: 'pvs',
+                status: 'active',
+                replies: [],
+                element: {
+                    eltType: 'cde',
+                }
+            };
+            cde.comments.push(comment);
+        }else if(cdeError.pvNotValidMsg.indexOf('Duplicate Code:') !== -1){
+            let uniqPvs = _.uniqBy(cde.valueDomain.permissibleValues,'valueMeaningCode');
+            cde.valueDomain.permissibleValues = uniqPvs;
+            let comment  = {
+                text: cdeError.pvNotValidMsg +'. See attachment for original xml.',
+                user: batchloader,
+                created: new Date(),
+                pendingApproval: false,
+                linkedTab: 'pvs',
+                status: 'active',
+                replies: [],
+                element: {
+                    eltType: 'cde',
+                }
+            };
+            cde.comments.push(comment);
+        }else{
+            console.log('some other cde error.');
+            process.exit(1);
+        }
+    }
     return cde;
 };

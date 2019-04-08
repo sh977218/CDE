@@ -4,8 +4,7 @@
         <ng-container *ngIf="allowSources.indexOf(eltSource.sourceName) > -1">
             <dt class="col-3 text-right" matTooltip="Original Data in NLM CDE format">Raw Artifact:</dt>
             <dd class="col-9">
-                <a [href]="'/originalSource/'+elt.elementType+'/'+eltSource.sourceName+'/'+elt.tinyId" target="_blank">Source
-                    File</a>
+                <a [href]="'/originalSource/'+elt.elementType+'/'+eltSource.sourceName+'/'+elt.tinyId" target="_blank">Raw Artifact</a>
             </dd>
         </ng-container>
         <ng-container *ngIf="eltSource.sourceName">

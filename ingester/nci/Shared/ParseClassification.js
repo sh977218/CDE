@@ -1,31 +1,12 @@
-const classificationMapping = require('../classificationMapping/caDSRClassificationMapping.json');
+const classificationShared = require('esm')(module)('../../../shared/system/classificationShared');
 
-function getStringVersion(shortVersion) {
-    if (shortVersion.indexOf(".") === -1)
-        return shortVersion + ".0";
-    return shortVersion;
-};
-
-exports.parseClassification = (nciCde, orgInfo) => {
-    let classification = [];
+exports.parseClassification = (nciCde, cde, orgInfo) => {
     if (nciCde.CLASSIFICATIONSLIST[0].CLASSIFICATIONSLIST_ITEM) {
         nciCde.CLASSIFICATIONSLIST[0].CLASSIFICATIONSLIST_ITEM.forEach(csi => {
             let contextName = csi.ClassificationScheme[0].ContextName[0];
             let preferredName = csi.ClassificationScheme[0].PreferredName[0];
-            classification.push({
-                stewardOrg: {
-                    name: orgInfo.classificationOrgName
-                },
-                elements: [{
-                    name: contextName,
-                    elements: [{
-                        name: preferredName,
-                        elements: []
-                    }]
-                }]
-            })
+            let classificationArray =[contextName,preferredName];
+            classificationShared.classifyItem(cde,orgInfo.classificationOrgName, classificationArray);
         });
     }
-
-    return classification;
 };

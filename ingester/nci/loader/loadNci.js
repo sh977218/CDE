@@ -5,15 +5,13 @@ const fs = require('fs');
 const mongo_cde = require('../../../server/cde/mongo-cde');
 const DataElement = mongo_cde.DataElement;
 const DataElementSource = mongo_cde.DataElementSource;
-
 const CreateCDE = require('../CDE/CreateCDE');
+
+const Comment = require('../../../server/discuss/discussDb').Comment;
 
 const ORG_INFO_MAP = require('../Shared/ORG_INFO_MAP').map;
 
 let createdCDE = 0;
-let sameCDE = 0;
-let changeCDE = 0;
-let skipCDE = 0;
 
 function runOneOrg(org) {
     let orgInfo = ORG_INFO_MAP[org];
@@ -24,9 +22,6 @@ function runOneOrg(org) {
                 if (err) reject(err);
                 for (let nciCde of nciXml.DataElementsList.DataElement) {
                     let nciId = nciCde.PUBLICID[0];
-                    if (nciId === '6365381') {
-                        console.log('something wrong.');
-                    }
                     let newCdeObj = await CreateCDE.createCde(nciCde, orgInfo);
                     let newCde = new DataElement(newCdeObj);
                     let existingCde = await DataElement.findOne({
@@ -35,12 +30,20 @@ function runOneOrg(org) {
                         'ids.id': nciId
                     });
                     if (!existingCde) {
-                        let savedCde = await newCde.save();
+                        existingCde = await newCde.save().catch(e=>{
+                            console.log(newCdeObj);
+                            console.log(e);
+                        });
                         createdCDE++;
-                        console.log('createdCDE: ' + createdCDE + ' ' + savedCde.tinyId);
+                        console.log('createdCDE: ' + createdCDE + ' ' + existingCde.tinyId);
                     } else {
                         console.log('found ' + nciId);
 //                        process.exit(1);
+                    }
+                    for (let comment of newCdeObj.comments) {
+                        comment.element.eltId = existingCde.tinyId;
+                        await new Comment(comment).save();
+                        console.log('comment saved on '+existingCde.tinyId);
                     }
                     await DataElementSource.updateOne({tinyId: newCdeObj.tinyId}, newCdeObj, {upsert: true});
                     resolve();
@@ -52,13 +55,14 @@ function runOneOrg(org) {
 
 async function runOrgs(orgs) {
     for (let org of orgs) {
-        await runOneOrg(org)
+        await runOneOrg(org);
+        console.log('Finished org: '+org);
     }
 }
 
 exports.run = function (orgs) {
     runOrgs(orgs).then((err, result) => {
         if (err) console.log(err);
-        else console.log(result);
+        else console.log('Finished all orgs.');
     });
 };
