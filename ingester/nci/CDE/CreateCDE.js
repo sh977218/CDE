@@ -26,7 +26,7 @@ exports.createCde = async (nciCde, orgInfo) => {
     let origin = ParseOrigin.parseOrigin(nciCde);
     let ids = ParseIds.parseIds(nciCde);
     let properties = ParseProperties.parseProperties(nciCde);
-    let attachments = ParseAttachments.parseAttachments(nciCde);
+    let attachments = await ParseAttachments.parseAttachments(nciCde);
     let referenceDocuments = ParseReferenceDocuments.parseReferenceDocuments(nciCde);
     let classification = ParseClassification.parseClassification(nciCde, orgInfo);
 

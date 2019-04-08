@@ -24,6 +24,9 @@ function runOneOrg(org) {
                 if (err) reject(err);
                 for (let nciCde of nciXml.DataElementsList.DataElement) {
                     let nciId = nciCde.PUBLICID[0];
+                    if (nciId === '6365381') {
+                        console.log('something wrong.');
+                    }
                     let newCdeObj = await CreateCDE.createCde(nciCde, orgInfo);
                     let newCde = new DataElement(newCdeObj);
                     let existingCde = await DataElement.findOne({
@@ -37,7 +40,7 @@ function runOneOrg(org) {
                         console.log('createdCDE: ' + createdCDE + ' ' + savedCde.tinyId);
                     } else {
                         console.log('found ' + nciId);
-                        process.exit(1);
+//                        process.exit(1);
                     }
                     await DataElementSource.updateOne({tinyId: newCdeObj.tinyId}, newCdeObj, {upsert: true});
                     resolve();
