@@ -1,6 +1,7 @@
 const datatypeMapping = {
     'ALPHANUMERIC': 'Text',
     'varchar': 'Text',
+    'CLOB': 'Text',
     'CHARACTER': 'Text',
     'Integer': 'Number',
     'NUMBER': 'Number',
