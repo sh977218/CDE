@@ -8,8 +8,9 @@ public class FormNamingReorder extends NlmCdeBaseTest {
 
     @Test
     public void formReorderNamingTest() {
+        String formName = "form for test cde reorder detail tabs";
         mustBeLoggedInAs(testAdmin_username, password);
-        goToFormByName("form for test cde reorder detail tabs");
+        goToFormByName(formName);
         goToNaming();
         textPresent("Definition:");
         clickElement(By.id("moveDown-0"));

@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 public class FormReorderReferenceDocumentsTest extends NlmCdeBaseTest {
     @Test
     public void formReorderReferenceDocuments() {
-        String formName = "form for test cde reorder detail tabs";
+        String formName = "Reorder reference document form";
 
         mustBeLoggedInAs(testAdmin_username, password);
         goToFormByName(formName);
