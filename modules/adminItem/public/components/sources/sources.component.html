@@ -15,6 +15,10 @@
             <dt class="col-3 text-right">Created:</dt>
             <dd class="col-9">{{eltSource.created | date: 'MM/dd/yyyy @ h:mma'}}</dd>
         </ng-container>
+        <ng-container *ngIf="eltSource.imported">
+            <dt class="col-3 text-right">Imported:</dt>
+            <dd class="col-9">{{eltSource.imported | date: 'MM/dd/yyyy @ h:mma'}}</dd>
+        </ng-container>
         <ng-container *ngIf="eltSource.updated">
             <dt class="col-3 text-right">Updated:</dt>
             <dd class="col-9">{{eltSource.updated | date: 'MM/dd/yyyy @ h:mma'}}</dd>
