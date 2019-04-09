@@ -30,6 +30,7 @@ exports.parseAttachments = nciCde => {
             filesize: origXml.length,
             filetype: "application/xml",
             uploadedBy: batchloader,
+            pendingApproval: false,
             uploadDate: Date.now(),
         };
         let streamDescription = {
