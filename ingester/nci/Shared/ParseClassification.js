@@ -7,7 +7,7 @@ exports.parseClassification = (nciCde, cde, orgInfo) => {
             if (contextName === 'PCORTF CDM') contextName = 'PCORI CDM';
             let preferredName = csi.ClassificationScheme[0].PreferredName[0];
             let classificationArray = [contextName, preferredName];
-            if (contextName !== 'TEXT') {
+            if (contextName !== 'TEST') {
                 classificationShared.classifyItem(cde, orgInfo.classificationOrgName, classificationArray);
             }
         });

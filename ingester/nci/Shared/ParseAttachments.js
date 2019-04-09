@@ -30,7 +30,6 @@ exports.parseAttachments = nciCde => {
             filesize: origXml.length,
             filetype: "application/xml",
             uploadedBy: batchloader,
-            pendingApproval: false,
             uploadDate: Date.now(),
         };
         let streamDescription = {
@@ -38,7 +37,7 @@ exports.parseAttachments = nciCde => {
             mode: 'w',
             content_type: attachment.filetype,
             metadata: {
-                status: 'scanned'
+                status: 'approved'
             }
         };
         mongo_data.addFile(file, (err, newFile) => {
