@@ -14,6 +14,10 @@ let expectedContent = {
     cdeTinyIdSwaggerApi: 'docs/swagger-ui-bundle.js 51:49866 "Could not find component"',
     cdeTinyIdVersionSwaggerApi: 'docs/swagger-ui-bundle.js 51:49866 "Could not find component"',
     checkDuplicatesClassification: 'the server responded with a status of 409',
+    dupStewardValidation: [
+        "Error publishing DataElement validation failed",
+        "422 (Unprocessable Entity)"
+        ],
     embedNinds: '*',
     emptyAnswers: 'the server responded with a status of 500',
     formDraftConcurrentWrite: [
@@ -25,6 +29,10 @@ let expectedContent = {
     formReorderProperties: [
         'Failed to load resource: the server responded with a status of 409 (Conflict)',
         'Edited by someone else. Please refresh and redo.'
+    ],
+    formDupStewardValidation: [
+        "Error publishing Form validation failed",
+        "422 (Unprocessable Entity)"
     ],
     formTinyIdSwaggerApi: 'docs/swagger-ui-bundle.js 51:49866 "Could not find component"',
     formTinyIdVersionSwaggerApi: 'docs/swagger-ui-bundle.js 51:49866 "Could not find component"',

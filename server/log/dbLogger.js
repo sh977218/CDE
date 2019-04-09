@@ -184,6 +184,9 @@ exports.respondError = function (err, options) {
         if (err.name === 'CastError' && err.kind === 'ObjectId') {
             options.res.status(400).send("Invalid id");
             return;
+        } else if (err.name === "ValidationError") {
+            options.res.status(422).send(err.message);
+            return;
         }
         let message = options.publicMessage || "Generic Server Failure. Please submit an issue.";
         options.res.status(500).send('Error: ' + message);

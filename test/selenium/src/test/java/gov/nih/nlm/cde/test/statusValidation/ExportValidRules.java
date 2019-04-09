@@ -12,10 +12,8 @@ public class ExportValidRules extends BaseClassificationTest {
         findElement(By.id("browseOrg-TEST")).click();
         textPresent("Incomplete");
         findElement(By.id("export")).click();
-
-        // this ugly hack because cdk overlay prevents click()
-        Actions builder = new Actions(driver);
-        builder.moveToElement(findElement(By.id("exportValidRule")), 5, 5).click().perform();
+        hangon(1);
+        clickElement(By.id("exportValidRule"));
 
         findElement(By.id("selectStatus")).click();
         findElement(By.xpath("//span[. = 'Recorded']")).click();

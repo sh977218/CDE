@@ -222,7 +222,7 @@ exports.update = function (elt, user, callback, special) {
             }
             newElt.save((err, savedElt) => {
                 if (err) {
-                    Form.findOneAndUpdate({_id: form._id}, {$set: {archived: false}}, callback);
+                    Form.findOneAndUpdate({_id: form._id}, {$set: {archived: false}}, () => callback(err));
                 } else {
                     callback(undefined, savedElt);
                     auditModifications(user, form, savedElt);
