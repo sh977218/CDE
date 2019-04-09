@@ -8,15 +8,15 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const FileListPlugin = require('file-list-plugin');
 const serverConstants = require('esm')(module)('../../shared/serverConstants');
 
-const assets = serverConstants.htmlServedUri.concat([
-    '/cde/public/assets/img/min/NIH-CDE.png',
-    '/cde/public/assets/img/min/NIH-CDE-FHIR.png',
-    '/cde/public/assets/img/min/nih-cde-logo-simple.png',
-    '/cde/public/assets/img/min/nih-cde-logo.png',
-    '/cde/public/assets/img/min/usagov_logo.png',
-    '/cde/public/assets/img/min/NLM-logo.png',
+const assets = [
+    '/app/assets/img/min/NIH-CDE.png',
+    '/app/assets/img/min/NIH-CDE-FHIR.png',
+    '/app/assets/img/min/nih-cde-logo-simple.png',
+    '/app/assets/img/min/nih-cde-logo.png',
+    '/app/assets/img/min/usagov_logo.png',
+    '/app/assets/img/min/NLM-logo.png',
     '/system/public/img/doctor-404.png'
-]);
+];
 
 module.exports = {
     entry: {
@@ -40,13 +40,13 @@ module.exports = {
         }),
         new FileListPlugin({
             fileName: 'sw.js',
-            itemsFromCompilation: function defaultItemsFromCompilation(compilation){
+            itemsFromCompilation: function defaultItemsFromCompilation(compilation) {
                 return _.keys(compilation.assets);
             },
-            format: function defaultFormat(listItems){
+            format: function defaultFormat(listItems) {
                 let sw = fs.readFileSync('modules/_app/sw.template.js', {encoding: 'utf8'});
                 let filesInsert = listItems.map(e => '/app/' + e).concat(assets).map(e => '"' + e + '"').join(',');
-                let version = crypto.createHash('md5').update(filesInsert).digest('hex').substr(0,4);
+                let version = crypto.createHash('md5').update(filesInsert).digest('hex').substr(0, 4);
                 sw = sw.replace('{#}', version);
                 sw = sw.replace('{#}', version);
                 sw = sw.replace('{htmlServedUri}', serverConstants.htmlServedUri.join('", "'));
