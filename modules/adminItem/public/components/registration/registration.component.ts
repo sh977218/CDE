@@ -39,19 +39,25 @@ export class RegistrationComponent implements OnInit {
                 this.alert.addAlert('info', 'Info: There are unresolved comments. ');
             }
 
-            this.validRegStatuses = ['Retired', 'Incomplete', 'Candidate'];
+            this.validRegStatuses = ['Retired', 'Incomplete'];
+            if (this.elt.classification.some(cl => cl.stewardOrg.name !== 'TEST')) {
+                this.validRegStatuses.push('Candidate');
 
-            this.http.get<any>('/org/' + encodeURIComponent(this.elt.stewardOrg.name)).subscribe(res => {
-                this.userService.catch(_noop).then(user => {
-                    if (!res.workingGroupOf || res.workingGroupOf.length < 1) {
-                        this.validRegStatuses = this.validRegStatuses.concat(['Recorded', 'Qualified']);
-                        if (user && user.siteAdmin) {
-                            this.validRegStatuses = this.validRegStatuses.concat(['Standard', 'Preferred Standard']);
+                this.http.get<any>('/org/' + encodeURIComponent(this.elt.stewardOrg.name)).subscribe(res => {
+                    this.userService.catch(_noop).then(user => {
+                        if (!res.workingGroupOf || res.workingGroupOf.length < 1) {
+                            this.validRegStatuses = this.validRegStatuses.concat(['Recorded', 'Qualified']);
+                            if (user && user.siteAdmin) {
+                                this.validRegStatuses = this.validRegStatuses.concat(['Standard', 'Preferred Standard']);
+                            }
                         }
-                    }
-                    this.validRegStatuses.reverse();
+                        this.validRegStatuses.reverse();
+                    });
                 });
-            });
+            } else {
+                this.helpMessage = "Elements that are not classified (or only classified by TEST " +
+                    "can only have Incomplete or Retired status";
+            }
 
             this.dialog.open(this.regStatusEditModal, {width: '1000px'}).afterClosed().subscribe(res => {
                 if (res) {
