@@ -25,23 +25,23 @@ const mapToSchema = new Schema({
 
 const questionSchema = new Schema({
     cde: {
-        tinyId: StringType
-        , name: StringType
-        , designations: [sharedSchemas.designationSchema]
-        , definitions: [sharedSchemas.definitionSchema]
-        , version: StringType
-        , permissibleValues: [sharedSchemas.permissibleValueSchema]
-        , ids: [sharedSchemas.idSchema]
-        , derivationRules: [sharedSchemas.derivationRuleSchema]
-    }
-    , datatype: StringType
-    , datatypeNumber: datatypeNumberSchema
-    , datatypeText: {
-        minLength: Number
-        , maxLength: Number
-        , regex: StringType
-        , rule: StringType
-        , showAsTextArea: {type: Boolean, default: false}
+        tinyId: StringType,
+        name: StringType,
+        designations: [sharedSchemas.designationSchema],
+        definitions: [sharedSchemas.definitionSchema],
+        version: StringType,
+        permissibleValues: [sharedSchemas.permissibleValueSchema],
+        ids: [sharedSchemas.idSchema],
+        derivationRules: [sharedSchemas.derivationRuleSchema]
+    },
+    datatype: StringType,
+    datatypeNumber: datatypeNumberSchema,
+    datatypeText: {
+        minLength: Number,
+        maxLength: Number,
+        regex: StringType,
+        rule: StringType,
+        showAsTextArea: {type: Boolean, default: false}
     },
     datatypeDate: {
         precision: {
@@ -49,14 +49,14 @@ const questionSchema = new Schema({
             enum: ['Year', 'Month', 'Day', 'Hour', 'Minute', 'Second'],
             default: 'Day',
         }
-    }
-    , unitsOfMeasure: [sharedSchemas.codeAndSystemSchema]
-    , required: {type: Boolean, default: false}
-    , invisible: {type: Boolean, default: false}
-    , editable: {type: Boolean, default: true}
-    , multiselect: Boolean
-    , answers: [sharedSchemas.permissibleValueSchema]
-    , defaultAnswer: StringType
+    },
+    unitsOfMeasure: [sharedSchemas.codeAndSystemSchema],
+    required: {type: Boolean, default: false},
+    invisible: {type: Boolean, default: false},
+    editable: {type: Boolean, default: true},
+    multiselect: Boolean,
+    answers: [sharedSchemas.permissibleValueSchema],
+    defaultAnswer: StringType
 }, {_id: false});
 
 let inFormSchema = new Schema({
@@ -99,67 +99,67 @@ for (let i = 0; i < config.modules.forms.sectionLevels; i++) {
 }
 
 exports.formJson = {
-    elementType: {type: StringType, default: 'form', enum: ['form']}
-    , tinyId: {type: StringType, index: true}
-    , designations: [sharedSchemas.designationSchema]
-    , definitions: [sharedSchemas.definitionSchema]
-    , mapTo: {type: mapToSchema, default: undefined}
-    , stewardOrg: {
+    elementType: {type: StringType, default: 'form', enum: ['form']},
+    tinyId: {type: StringType, index: true},
+    designations: [sharedSchemas.designationSchema],
+    definitions: [sharedSchemas.definitionSchema],
+    mapTo: {type: mapToSchema, default: undefined},
+    stewardOrg: {
         name: StringType
-    }
-    , source: StringType
-    , sources: [sharedSchemas.sourceSchema]
-    , version: StringType
-    , registrationState: sharedSchemas.registrationStateSchema
-    , properties: [sharedSchemas.propertySchema]
-    , ids: [
+    },
+    source: StringType,
+    sources: [sharedSchemas.sourceSchema],
+    version: StringType,
+    registrationState: sharedSchemas.registrationStateSchema,
+    properties: [sharedSchemas.propertySchema],
+    ids: [
         {source: StringType, id: StringType, version: StringType, _id: false}
-    ]
-    , isCopyrighted: {type: Boolean}
-    , noRenderAllowed: {type: Boolean}
-    , copyright: {
+    ],
+    isCopyrighted: {type: Boolean},
+    noRenderAllowed: {type: Boolean},
+    copyright: {
         type: {
-            authority: StringType
-            , text: StringType
+            authority: StringType,
+            text: StringType
         },
         default: {text: null}
-    }
-    , origin: StringType
-    , attachments: [sharedSchemas.attachmentSchema]
-    , history: [Schema.Types.ObjectId]
-    , changeNote: StringType
-    , lastMigrationScript: StringType
-    , created: Date
-    , updated: Date
-    , imported: Date
-    , createdBy: {
-        userId: Schema.Types.ObjectId
-        , username: StringType
-    }
-    , updatedBy: {
-        userId: Schema.Types.ObjectId
-        , username: StringType
-    }
-    , formElements: [innerFormEltSchema]
-    , archived: {type: Boolean, default: false, index: true}
-    , classification: [sharedSchemas.classificationSchema]
-    , displayProfiles: [{
-        name: StringType
-        , sectionsAsMatrix: {type: Boolean}
-        , displayCopyright: {type: Boolean}
-        , displayValues: {type: Boolean}
-        , displayInstructions: {type: Boolean}
-        , displayNumbering: {type: Boolean}
-        , displayType: {type: StringType, enum: ['Dynamic', 'Follow-up'], default: 'Dynamic'}
-        , metadata: {
+    },
+    origin: StringType,
+    attachments: [sharedSchemas.attachmentSchema],
+    history: [Schema.Types.ObjectId],
+    changeNote: StringType,
+    lastMigrationScript: StringType,
+    created: Date,
+    updated: Date,
+    imported: Date,
+    createdBy: {
+        userId: Schema.Types.ObjectId,
+        username: StringType
+    },
+    updatedBy: {
+        userId: Schema.Types.ObjectId,
+        username: StringType
+    },
+    formElements: [innerFormEltSchema],
+    archived: {type: Boolean, default: false, index: true},
+    classification: [sharedSchemas.classificationSchema],
+    displayProfiles: [{
+        name: StringType,
+        sectionsAsMatrix: {type: Boolean},
+        displayCopyright: {type: Boolean},
+        displayValues: {type: Boolean},
+        displayInstructions: {type: Boolean},
+        displayNumbering: {type: Boolean},
+        displayType: {type: StringType, enum: ['Dynamic', 'Follow-up'], default: 'Dynamic'},
+        metadata: {
             device: Boolean,
-        }
-        , numberOfColumns: {type: Number, min: 1, max: 6}
-        , displayInvisible: {type: Boolean}
-        , repeatFormat: {type: StringType, default: ''}
-        , answerDropdownLimit: {type: Number, min: 0}
-        , unitsOfMeasureAlias: [{unitOfMeasure: sharedSchemas.codeAndSystemSchema, alias: StringType}]
-        , fhirProcedureMapping: {
+        },
+        numberOfColumns: {type: Number, min: 1, max: 6},
+        displayInvisible: {type: Boolean},
+        repeatFormat: {type: StringType, default: ''},
+        answerDropdownLimit: {type: Number, min: 0},
+        unitsOfMeasureAlias: [{unitOfMeasure: sharedSchemas.codeAndSystemSchema, alias: StringType}],
+        fhirProcedureMapping: {
             statusQuestionID: String,
             statusStatic: String,
             performedDate: String,
@@ -172,10 +172,10 @@ exports.formJson = {
             usedReferences: String,
             usedReferencesMaps: [String],
             complications: String,
-        }
-        , _id: false
-    }]
-    , referenceDocuments: [sharedSchemas.referenceDocumentSchema]
+        },
+        _id: false
+    }],
+    referenceDocuments: [sharedSchemas.referenceDocumentSchema]
 };
 exports.formSchema = new Schema(exports.formJson, {usePushEach: true});
 
