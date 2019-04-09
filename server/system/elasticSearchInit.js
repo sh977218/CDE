@@ -363,19 +363,19 @@ let shortHash = function (content) {
 };
 
 if (config.elastic.index.name === "auto") {
-    config.elastic.index.name = "cde_v3_" + shortHash(exports.createIndexJson);
+    config.elastic.index.name = "cde_v4_" + shortHash(exports.createIndexJson);
 }
 if (config.elastic.formIndex.name === "auto") {
-    config.elastic.formIndex.name = "form_v3_" + shortHash(exports.createFormIndexJson);
+    config.elastic.formIndex.name = "form_v4_" + shortHash(exports.createFormIndexJson);
 }
 if (config.elastic.boardIndex.name === "auto") {
     config.elastic.boardIndex.name = "board_" + shortHash(boardElasticSearchMapping.createIndexJson);
 }
 if (config.elastic.cdeSuggestIndex.name === "auto") {
-    config.elastic.cdeSuggestIndex.name = "cdesuggest_" + shortHash(exports.createSuggestIndexJson);
+    config.elastic.cdeSuggestIndex.name = "cdesuggest_v4_" + shortHash(exports.createSuggestIndexJson);
 }
 if (config.elastic.formSuggestIndex.name === "auto") {
-    config.elastic.formSuggestIndex.name = "formsuggest_" + shortHash(exports.createSuggestIndexJson);
+    config.elastic.formSuggestIndex.name = "formsuggest_v4_" + shortHash(exports.createSuggestIndexJson);
 }
 
 exports.indices = [

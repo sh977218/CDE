@@ -1,4 +1,5 @@
 import { getLabel as getLabelShared, iterateFesSync } from 'shared/form/fe';
+import { range } from 'shared/system/util';
 
 export const SkipLogicOperatorsArray = ['=', '!=', '>', '<', '>=', '<='];
 
@@ -109,16 +110,44 @@ export function getQuestions(fes, filter = undefined) {
     return matchedQuestions;
 }
 
-export function getQuestionsPrior(parent, fe, filter = undefined) {
-    let index = -1;
-    if (fe) index = parent.formElements.indexOf(fe);
+export function getQuestionsPrior(parent, fe, filter = undefined, topFe = undefined) {
+    function questions(parent, index) {
+        return getQuestions(parent.formElements.slice(0, index > 0 ? index : 0), filter);
+    }
+    const index = parent.formElements.indexOf(fe);
 
-    return getQuestions(index > -1 ? parent.formElements.slice(0, index) : parent.formElements, filter);
+    if (!topFe || topFe === parent) {
+        return questions(parent, index);
+    }
+
+    // breadth-first search with "path" traversal top-down
+    const queue = [range(topFe.formElements.length).map(i => ({parent: topFe, index: i}))];
+    let path = [];
+    while (queue.length) {
+        const input = queue.shift();
+        const self = input[input.length - 1].parent.formElements[input[input.length - 1].index];
+        const index = self.formElements.indexOf(parent);
+        if (index > -1) {
+            path = input.concat({parent: self, index: index});
+            break;
+        }
+        /*jshint loopfunc: true */
+        self.formElements.forEach((f, i) => queue.push(input.concat({parent: self, index: i})));
+    }
+    path.push({parent, index});
+    return path.reduce((acc, p) => acc.concat(questions(p.parent, p.index)), []);
 }
 
-export function getQuestionPriorByLabel(parent, fe, label) {
+export function getQuestionByLabel(fes, label) {
     label = label.trim();
-    let matchedQuestions = getQuestionsPrior(parent, fe, fe => getLabel(fe) === label);
+    let matchedQuestions = getQuestions(fes, fe => getLabel(fe) === label);
+    if (matchedQuestions.length <= 0) return null;
+    return matchedQuestions[matchedQuestions.length - 1];
+}
+
+export function getQuestionPriorByLabel(parent, fe, label, topFe = undefined) {
+    label = label.trim();
+    let matchedQuestions = getQuestionsPrior(parent, fe, fe => getLabel(fe) === label, topFe);
     if (matchedQuestions.length <= 0) return null;
     return matchedQuestions[matchedQuestions.length - 1];
 }
@@ -129,7 +158,7 @@ export function getShowIfQ(fes, fe) {
         if (strPieces[0] === '') strPieces.shift();
         if (strPieces[strPieces.length - 1] === '') strPieces.pop();
         return strPieces.reduce((acc, e, i, strPieces) => {
-            let matchQ = getQuestionPriorByLabel({formElements: fes}, fe, strPieces[i]);
+            let matchQ = getQuestionByLabel(fes, strPieces[i]);
             if (matchQ && strPieces[i + 1]) {
                 let operator = strPieces[i + 1].trim();
                 let compValue = strPieces[i + 2];
@@ -149,7 +178,7 @@ export function getShowIfQ(fes, fe) {
 }
 
 export function tokenSanitizer(label) {
-    return label.replace(/"/g, "'").trim();
+    return label.replace(/"/g, '\'').trim();
 }
 
 export function tokenSplitter(str) {

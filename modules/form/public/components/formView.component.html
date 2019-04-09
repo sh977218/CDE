@@ -141,7 +141,7 @@
                     (click)="deleteModal.openDeleteModal()">
                 <mat-icon>delete</mat-icon><span class="d-none d-sm-inline-block ml-1">Delete Draft</span>
             </button>
-            <button id="openSave" mat-raised-button color="primary" (click)="publish()">
+            <button id="openSave" mat-raised-button color="primary" (click)="publish()" [disabled]="savingText === 'Saving...'">
                 <mat-icon>publish</mat-icon><span class="d-none d-sm-inline-block ml-1">Publish</span>
             </button>
         </ng-container>
@@ -232,7 +232,7 @@
                         <cde-form-term-mapping [elt]="elt"></cde-form-term-mapping>
                     </ng-container>
                     <ng-container *ngIf="currentTab=== 'description_tab'">
-                        <cde-form-description [cache]="cache" [(elt)]="elt" [canEdit]="canEdit()"
+                        <cde-form-description [(elt)]="elt" [canEdit]="canEdit()"
                                               (onEltChange)="saveDraft()"></cde-form-description>
                     </ng-container>
                     <ng-container *ngIf="currentTab=== 'naming_tab'">
@@ -276,8 +276,8 @@
                               [eltName]="elt.designations[0].designation"></cde-discuss-area>
         </div>
     </div>
-    <cde-save-modal #saveModal [elt]="elt" (save)="saveForm()" (onEltChange)="saveDraft();"></cde-save-modal>
-    <cde-delete-modal #deleteModal (confirm)="removeDraft();"></cde-delete-modal>
+    <cde-save-modal #saveModal [elt]="elt" (save)="saveForm()" (onEltChange)="saveDraft()"></cde-save-modal>
+    <cde-delete-modal #deleteModal (confirm)="removeDraft()"></cde-delete-modal>
 </div>
 
 <ng-template #copyFormContent id="copyFormModal">
@@ -317,7 +317,7 @@
         </div>
         <div mat-dialog-actions>
             <button mat-raised-button color="accent" [mat-dialog-close] id="cancelExport">Cancel</button>
-            <button mat-raised-button color="primary" (click)="exportPublishForm(formInput)" id="goExport"
+            <button mat-raised-button color="primary" (click)="exportPublishForm()" id="goExport"
                     [disabled]="!createPublishedForm.form.valid">Publish my form.
             </button>
         </div>

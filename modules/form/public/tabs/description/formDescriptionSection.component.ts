@@ -2,29 +2,30 @@ import { HttpClient } from '@angular/common/http';
 import {
     Component, ElementRef, EventEmitter, Host, Input, OnInit, Output, TemplateRef,
     ViewChild
-} from "@angular/core";
-import { TreeNode } from "angular-tree-component";
+} from '@angular/core';
+import { MatDialog } from '@angular/material';
+import { TreeNode } from 'angular-tree-component';
 import { LocalStorageService } from 'angular-2-local-storage';
-import _isEqual from 'lodash/isEqual';
-import _noop from 'lodash/noop';
-import { Observable } from "rxjs/Observable";
-import { debounceTime, map } from 'rxjs/operators';
-
 import { AlertService } from 'alert/alert.service';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
 import { FormDescriptionComponent } from 'form/public/tabs/description/formDescription.component';
+import _isEqual from 'lodash/isEqual';
+import _noop from 'lodash/noop';
 import { FormService } from 'nativeRender/form.service';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
+import { Observable } from 'rxjs/Observable';
+import { debounceTime, map } from 'rxjs/operators';
 import { FormattedValue } from 'shared/models.model';
+import { getLabel, repeatFe, repeatFeLabel, repeatFeNumber, repeatFeQuestion } from 'shared/form/fe';
 import { convertFormToSection } from 'shared/form/form';
-import { CdeForm, FormElement, FormInForm, FormSection, SkipLogic } from 'shared/form/form.model';
+import { CdeForm, FormElement, FormInForm, FormSectionOrForm, SkipLogic } from 'shared/form/form.model';
 import { isMappedTo } from 'shared/form/formAndFe';
-import { MatDialog } from '@angular/material';
+import { getQuestionsPrior } from 'shared/form/skipLogic';
 
 
 @Component({
-    selector: "cde-form-description-section",
-    templateUrl: "formDescriptionSection.component.html",
+    selector: 'cde-form-description-section',
+    templateUrl: 'formDescriptionSection.component.html',
     styles: [`
         .outdated-bg {
             background-color: #ffecc5;
@@ -34,31 +35,29 @@ import { MatDialog } from '@angular/material';
     `]
 })
 export class FormDescriptionSectionComponent implements OnInit {
-    @Input() elt: any;
+    @Input() elt!: CdeForm;
     @Input() canEdit: boolean = false;
     @Input() index;
-    @Input() node: TreeNode;
+    @Input() node!: TreeNode;
     @Output() onEltChange: EventEmitter<void> = new EventEmitter<void>();
-    @ViewChild("formDescriptionSectionTmpl") formDescriptionSectionTmpl: TemplateRef<any>;
-    @ViewChild("formDescriptionFormTmpl") formDescriptionFormTmpl: TemplateRef<any>;
-    @ViewChild("slInput") slInput: ElementRef;
-    @ViewChild('updateFormVersionTmpl') updateFormVersionTmpl: TemplateRef<any>;
-    getSkipLogicOptions = ((text$: Observable<string>) =>
-        text$.pipe(
-            debounceTime(300),
-            map(term => this.skipLogicValidateService.getTypeaheadOptions(term, this.parent, this.section)),
-        ));
+    @ViewChild('formDescriptionSectionTmpl') formDescriptionSectionTmpl!: TemplateRef<any>;
+    @ViewChild('formDescriptionFormTmpl') formDescriptionFormTmpl!: TemplateRef<any>;
+    @ViewChild('slInput') slInput!: ElementRef;
+    @ViewChild('updateFormVersionTmpl') updateFormVersionTmpl!: TemplateRef<any>;
     static inputEvent = new Event('input');
     isMappedTo = isMappedTo;
     isSubForm = false;
-    formSection: FormInForm;
-    parent: FormElement;
+    formSection?: FormInForm;
+    parent!: FormElement;
+    repeatFeLabel = repeatFeLabel;
     repeatOptions = [
         {label: "", value: ""},
-        {label: "Set Number of Times", value: "N"},
-        {label: "Over first question", value: "F"}
+        {label: 'Set Number of Times', value: 'N'},
+        {label: 'Over answer of specified question', value: '='},
+        {label: 'Over first question', value: 'F'}
     ];
-    section: FormSection|FormInForm;
+    repeatQuestions?: string[];
+    section!: FormSectionOrForm;
     updateFormVersion: any;
 
     constructor(private alert: AlertService,
@@ -71,14 +70,16 @@ export class FormDescriptionSectionComponent implements OnInit {
 
     ngOnInit() {
         this.section = this.node.data;
-        this.formSection = this.section && this.section.elementType === 'form' ? this.section as FormInForm : null;
+        this.formSection = this.section && this.section.elementType === 'form' ? this.section as FormInForm : undefined;
         this.parent = this.node.parent.data;
-        this.section.repeatOption = FormDescriptionSectionComponent.getRepeatOption(this.section);
-        this.section.repeatNumber = FormDescriptionSectionComponent.getRepeatNumber(this.section);
+        this.repeatQuestions = getQuestionsPrior(this.parent, this.section, undefined, this.elt).map(getLabel);
+        this.section.repeatOption = repeatFe(this.section);
+        this.section.repeatNumber = repeatFeNumber(this.section);
+        this.section.repeatQuestion = repeatFeQuestion(this.section);
         if (!this.section.instructions) this.section.instructions = new FormattedValue;
         if (!this.section.skipLogic) this.section.skipLogic = new SkipLogic;
 
-        if (this.node.data.elementType === "form") {
+        if (this.node.data.elementType === 'form') {
             if (FormDescriptionComponent.isSubForm(this.node.parent)) this.isSubForm = FormDescriptionComponent.isSubForm(this.node);
         } else {
             if (FormDescriptionComponent.isSubForm(this.node)) this.isSubForm = FormDescriptionComponent.isSubForm(this.node);
@@ -93,18 +94,18 @@ export class FormDescriptionSectionComponent implements OnInit {
     }
 
     checkRepeatOptions() {
-        if (this.section.repeat && this.section.repeat[0] === "F" && !NativeRenderService.getFirstQuestion(this.section)) {
+        if (this.section.repeat && this.section.repeat[0] === 'F' && !NativeRenderService.getFirstQuestion(this.section)) {
             this.alert.addAlert('danger',
-                this.section.label + " Repeat on First Question: Value List is not available.");
+                this.section.label + ' Repeat on First Question: Value List is not available.');
         }
     }
 
-    copySection(section) {
-        this.localStorageService.set("sectionCopied", section);
-        section.isCopied = "copied";
-        this.elt.isCopied = "copied";
+    copySection(section: FormSectionOrForm) {
+        this.localStorageService.set('sectionCopied', section);
+        section.isCopied = 'copied';
+        this.elt.isCopied = 'copied';
         setTimeout(() => {
-            section.isCopied = "clear";
+            section.isCopied = 'clear';
             delete this.elt.isCopied;
         }, 3000);
     }
@@ -116,25 +117,8 @@ export class FormDescriptionSectionComponent implements OnInit {
         }
     }
 
-    getRepeatLabel(section) {
-        if (!section.repeat) return "";
-        if (section.repeat[0] === "F") return "over First Question";
-
-        return parseInt(section.repeat) + " times";
-    }
-
-    static getRepeatOption(section) {
-        if (!section.repeat) return "";
-        if (section.repeat[0] === "F") return "F";
-        else return "N";
-    }
-
-    static getRepeatNumber(section) {
-        return parseInt(section.repeat);
-    }
-
     getTemplate() {
-        return (this.section.elementType === "section" ? this.formDescriptionSectionTmpl : this.formDescriptionFormTmpl);
+        return (this.section.elementType === 'section' ? this.formDescriptionSectionTmpl : this.formDescriptionFormTmpl);
     }
 
     hoverInSection(section) {
@@ -198,19 +182,21 @@ export class FormDescriptionSectionComponent implements OnInit {
         // this.onEltChange.emit(); treeEvent will handle, this one works
     }
 
-    setRepeat(section) {
-        if (section.repeatOption === "F") {
-            section.repeat = "First Question";
+    repeatChange(section) {
+        if (section.repeatOption === 'F') {
+            section.repeat = 'First Question';
             this.onEltChange.emit();
-        } else if (section.repeatOption === "N") {
+        } else if (section.repeatOption === '=') {
+            section.repeat = '="' + section.repeatQuestion + '"';
+        } else if (section.repeatOption === 'N') {
             section.repeat = (section.repeatNumber && section.repeatNumber > 1 ? section.repeatNumber.toString() : undefined);
             if (section.repeat > 0) this.onEltChange.emit();
-        }
-        else {
+        } else {
             section.repeat = undefined;
         }
 
         this.checkRepeatOptions();
+        this.onEltChange.emit();
     }
 
     slOptionsRetrigger() {

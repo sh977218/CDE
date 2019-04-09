@@ -184,42 +184,6 @@ exports.morelike = function (id, callback) {
     });
 };
 
-exports.DataElementDistinct = function (field, cb) {
-    let distinctQuery = {
-        "size": 0,
-        "aggs": {
-            "aggregationsName": {
-                "terms": {
-                    "field": field,
-                    "size": 1000
-                }
-            }
-        }
-    };
-    esClient.search({
-        index: config.elastic.index.name,
-        type: "dataelement",
-        body: distinctQuery
-    }, function (error, response) {
-        if (error) {
-            logging.errorLogger.error("Error DataElementDistinct", {
-                origin: "cde.elastic.DataElementDistinct",
-                stack: new Error().stack,
-                details: "query " + JSON.stringify(distinctQuery) + "error " + error + "response" + JSON.stringify(response)
-            });
-        } else {
-            let list = response.aggregations.aggregationsName.buckets.map(b => b.key);
-            cb(list);
-        }
-    });
-};
-
-exports.pVCodeSystemList = [];
-
-exports.fetchPVCodeSystemList = function () {
-    this.DataElementDistinct("valueDomain.permissibleValues.codeSystemName", result => this.pVCodeSystemList = result);
-};
-
 exports.get = function (id, cb) {
     esClient.get({
         index: config.elastic.index.name,

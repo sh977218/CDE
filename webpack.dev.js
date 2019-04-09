@@ -5,18 +5,17 @@ const path = require('path');
 
 module.exports = merge(baseConfig, {
     mode: 'development',
-    plugins:
-        [
-            new webpack.ContextReplacementPlugin( // fix "WARNING Critical dependency: the request of a dependency is an expression"
-                /@angular(\\|\/)core(\\|\/)esm5/,
-                path.resolve(__dirname, '../src')
-            ),
-            new webpack.DefinePlugin({
-                PRODUCTION: JSON.stringify(false),
-            }),
-            new webpack.LoaderOptionsPlugin({debug: true}), // enable debug
-            new webpack.ProgressPlugin() // show progress in ConEmu window
-        ],
+    plugins: [
+        new webpack.ContextReplacementPlugin( // fix "WARNING Critical dependency: the request of a dependency is an expression"
+            /@angular(\\|\/)core(\\|\/)esm5/,
+            path.resolve(__dirname, '../src')
+        ),
+        new webpack.DefinePlugin({
+            PRODUCTION: JSON.stringify(false),
+        }),
+        new webpack.LoaderOptionsPlugin({debug: true}), // enable debug
+        new webpack.ProgressPlugin() // show progress in ConEmu window
+    ],
     devtool: '#eval-source-map',
     watch: true,
     watchOptions: {
@@ -25,9 +24,10 @@ module.exports = merge(baseConfig, {
     },
     devServer: {
         contentBase: __dirname,
-        colors: true,
+        host: 'localhost',
         hot: true,
         inline: true,
+        port: 8080,
         progress: true
     },
 });

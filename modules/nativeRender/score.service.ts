@@ -27,7 +27,7 @@ export class ScoreService {
 
     triggerCalculateScore(question: FormQuestion) {
         let scoreQuestions: FormQuestion[] | undefined = this.INPUT_SCORE_MAP.get(question.question.cde.tinyId);
-        if (!!scoreQuestions) {
+        if (scoreQuestions) {
             scoreQuestions.forEach(scoreQuestion => ScoreService.scoreSet(scoreQuestion, this.elt));
         }
     }

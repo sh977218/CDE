@@ -60,16 +60,15 @@ const pushNotification = require('./pushNotification');
 //                         res.status(403).send('Not authorized');
 //                     } else {
 //                         mongo_data.orgByName(item.stewardOrg.name, function (err, org) {
-//                             var allowedRegStatuses = ['Retired', 'Incomplete', 'Candidate'];
-//                             if (org && org.workingGroupOf && org.workingGroupOf.length > 0 && allowedRegStatuses.indexOf(elt.registrationState.registrationStatus) === -1) {
+//                             if (exports.badWorkingGroupStatus(elt, org)) {
 //                                 res.status(403).send('Not authorized');
-//                             } else {
-//                                 return dao.update(elt, req.user, function (err, response) {
-//                                     if (err) res.status(400).send();
-//                                     res.send(response);
-//                                     if (cb) cb();
-//                                 });
+//                                 return;
 //                             }
+//                             return dao.update(elt, req.user, function (err, response) {
+//                                 if (err) res.status(400).send();
+//                                 res.send(response);
+//                                 if (cb) cb();
+//                             });
 //                         });
 //                     }
 //                 }
@@ -92,6 +91,11 @@ exports.attachmentApproved = (collection, id, cb) => {
 
 exports.attachmentRemove = (collection, id, cb) => {
     collection.updateMany({'attachments.fileid': id}, {$pull: {'attachments': {'fileid': id}}}, cb);
+};
+
+const allowedRegStatuses = ['Retired', 'Incomplete', 'Candidate'];
+exports.badWorkingGroupStatus = (elt, org) => {
+    return org && org.workingGroupOf && org.workingGroupOf.length > 0 && allowedRegStatuses.indexOf(elt.registrationState.registrationStatus) === -1;
 };
 
 // cb(err, bool)
@@ -153,8 +157,8 @@ exports.createTask = function (user, role, type, eltModule, eltTinyId, item) {
 };
 
 exports.bulkAction = function (ids, action, cb) {
-    var eltsTotal = ids.length;
-    var eltsProcessed = 0;
+    let eltsTotal = ids.length;
+    let eltsProcessed = 0;
     async.each(ids, function (id, doneOne) {
             action(id, function () {
                 eltsProcessed++;
@@ -170,10 +174,10 @@ exports.bulkAction = function (ids, action, cb) {
 
 exports.hideProprietaryIds = function (elt) {
     if (elt && elt.ids) {
-        var blackList = [
+        let blackList = [
             'LOINC'
         ];
-        elt.ids.forEach(function (id) {
+        elt.ids.forEach(id => {
             if (blackList.indexOf(id.source) > -1) {
                 id.id = 'Login to see value.';
                 id.source = '(' + id.source + ')';
@@ -188,7 +192,10 @@ exports.notifyForComment = (handlerOptions, commentOrReply, eltModule, eltTinyId
             .reduce((acc, c) => acc.concat(c.user._id, c.replies.map(r => r.user._id)), users)
             .filter(u => !!u && !u.equals(commentOrReply.user._id))
         ));
-        userDb.find(notificationSvc.typeToCriteria('comment', {users: userList, org: eltStewardOrg}), handleError(handlerOptions, users => {
+        userDb.find(notificationSvc.typeToCriteria('comment', {
+            users: userList,
+            org: eltStewardOrg
+        }), handleError(handlerOptions, users => {
             users = users.filter(u => !u.equals(commentOrReply.user._id));
 
             // drawer

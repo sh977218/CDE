@@ -22,7 +22,8 @@
             "check-whitespace"
         ],
         "quotemark": [
-            true
+            true,
+            "single"
         ],
         "semicolon": [
             true,
@@ -70,6 +71,10 @@
         "no-trailing-whitespace": true,
         "no-unsafe-finally": true,
         "no-var-keyword": true,
+        "object-literal-key-quotes": [
+            true,
+            "as-needed"
+        ],
         "one-line": [
             true,
             "check-open-brace",

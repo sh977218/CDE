@@ -11,11 +11,16 @@ public class FormRemoveClassificationTest extends NlmCdeBaseTest {
         String formName = "PROMIS Bank v1.0 - Anxiety";
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName(formName);
+        goToGeneralDetail();
+        textNotPresent("Updated:", By.id("generalDiv"));
         goToClassification();
         clickElement(By.xpath("//mat-icon[@id = 'PROMIS Instruments,Adult Item Banks,Mental Health-unclassifyBtn']"));
         clickElement(By.id("confirmDeleteClassificationBtn"));
         checkAlert("Classification removed.");
         textNotPresent("Mental Health");
+
+        goToGeneralDetail();
+        textNotPresent("Updated:", By.id("generalDiv"));
     }
 
 

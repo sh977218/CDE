@@ -2,6 +2,7 @@ package gov.nih.nlm.cde.test.statusValidation;
 
 import gov.nih.nlm.cde.test.BaseClassificationTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.interactions.Actions;
 import org.testng.annotations.Test;
 
 public class ExportValidRules extends BaseClassificationTest {
@@ -11,7 +12,9 @@ public class ExportValidRules extends BaseClassificationTest {
         findElement(By.id("browseOrg-TEST")).click();
         textPresent("Incomplete");
         findElement(By.id("export")).click();
-        findElement(By.id("exportValidRule")).click();
+        hangon(1);
+        clickElement(By.id("exportValidRule"));
+
         findElement(By.id("selectStatus")).click();
         findElement(By.xpath("//span[. = 'Recorded']")).click();
         findElement(By.id("exportVR")).click();

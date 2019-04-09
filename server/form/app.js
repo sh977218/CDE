@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const dns = require('dns');
 const os = require('os');
+const authorizationShared = require('esm')(module)('../../shared/system/authorizationShared');
 const exportShared = require('esm')(module)('../../shared/system/exportShared');
 const envShared = require('esm')(module)('../../shared/env');
 const authorization = require('../system/authorization');
@@ -14,7 +15,7 @@ const CronJob = require('cron').CronJob;
 
 const canCreateMiddleware = authorization.canCreateMiddleware;
 const canEditMiddleware = authorization.canEditMiddleware(mongo_form);
-const canEditByIdMiddleware = authorization.canEditByIdMiddleware(mongo_form);
+const canEditByTinyIdMiddleware = authorization.canEditByTinyIdMiddleware(mongo_form);
 
 // ucum from lhc uses IndexDB
 global.location = {origin: 'localhost'};
@@ -44,9 +45,9 @@ exports.init = function (app, daoManager) {
     app.get('/form/:tinyId', allowXOrigin, exportShared.nocacheMiddleware, allRequestsProcessing, formSvc.byTinyId);
     app.get('/form/:tinyId/latestVersion/', exportShared.nocacheMiddleware, formSvc.latestVersionByTinyId);
     app.get('/form/:tinyId/version/:version?', [allowXOrigin, exportShared.nocacheMiddleware], formSvc.byTinyIdAndVersion);
-    app.post('/form', canCreateMiddleware, formSvc.createForm);
-    app.put('/form/:tinyId', canEditMiddleware, formSvc.updateForm);
-    app.put('/formPublish', canEditMiddleware, formSvc.publishTheForm);
+    app.post('/form', canCreateMiddleware, formSvc.create);
+    app.post('/formPublish', canEditMiddleware, formSvc.publishFromDraft);
+    app.post('/formPublishExternal', canEditMiddleware, formSvc.publishExternal);
 
     app.get('/formById/:id', exportShared.nocacheMiddleware, allRequestsProcessing, formSvc.byId);
     app.get('/formById/:id/priorForms/', exportShared.nocacheMiddleware, formSvc.priorForms);
@@ -58,13 +59,13 @@ exports.init = function (app, daoManager) {
     app.get('/formList/:tinyIdList?', exportShared.nocacheMiddleware, formSvc.byTinyIdList);
     app.get('/originalSource/form/:sourceName/:tinyId', formSvc.originalSourceByTinyIdSourceName);
 
-    app.get('/draftForm/:tinyId', formSvc.draftForm);
-    app.put('/draftForm/:tinyId', canEditMiddleware, formSvc.saveDraft);
-    app.delete('/draftForm/:tinyId', canEditByIdMiddleware, formSvc.deleteDraftForm);
+    app.get('/draftForm/:tinyId', authorization.isOrgCuratorMiddleware, formSvc.draftForEditByTinyId);
+    app.put('/draftForm/:tinyId', canEditMiddleware, formSvc.draftSave);
+    app.delete('/draftForm/:tinyId', canEditByTinyIdMiddleware, formSvc.draftDelete);
 
-    app.get('/draftFormById/:id',formSvc.draftFormById);
+    app.get('/draftFormById/:id', formSvc.draftForEditById);
 
-    app.post('/form/publish/:id', authorization.loggedInMiddleware, formSvc.publishForm);
+    app.post('/form/publish/:id', authorization.loggedInMiddleware, formSvc.publishFormToHtml);
 
     app.get('/viewingHistory/form', exportShared.nocacheMiddleware, function (req, res) {
         if (!req.user) {
@@ -305,6 +306,6 @@ exports.init = function (app, daoManager) {
 
     app.get('/syncLinkedForms', (req, res) => res.send(formSvc.syncLinkedFormsProgress));
 
-    new CronJob('00 30 4 * * *', () => formElastic.syncLinkedForms(), null, true, 'America/New_York');
+    new CronJob('00 30 4 * * *', () => formSvc.syncLinkedForms(), null, true, 'America/New_York');
 
 };

@@ -2,15 +2,14 @@ package gov.nih.nlm.system;
 
 import org.junit.Assert;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.testng.annotations.Test;
 
 public class ScrollHistoryTest extends NlmCdeBaseTest {
 
     private void checkScroll(int value) {
-        String scrollLocation = (((JavascriptExecutor) driver)
-                .executeScript("return window.pageYOffset", "")).toString();
-        if (Math.abs(Double.valueOf(scrollLocation).intValue() - value) > 10)
+        hangon(1);
+        int scrollLocation = getCurrentYOffset();
+        if (Math.abs(scrollLocation - value) > 10)
             Assert.fail("Assert failed. Expected: " + value + " Actual value: " + scrollLocation);
     }
 

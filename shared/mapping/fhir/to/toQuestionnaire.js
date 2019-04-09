@@ -79,7 +79,7 @@ export function feToQuestionnaireItem(form, fe, options, config) {
             });
         }
     } else {
-        if (Array.isArray(fe.formElements) && fe.formElements.length !==0) {
+        if (Array.isArray(fe.formElements) && fe.formElements.length !== 0) {
             item = {
                 linkId: fe.feId,
                 repeats: !!fe.repeat || undefined,
@@ -110,8 +110,8 @@ export function feToQuestionnaireItem(form, fe, options, config) {
         let tokens = tokenSplitter(fe.skipLogic.condition);
         if (tokens.length >= 3) {
             item.enableWhen = [];
-            for (let i = 0, size = tokens.length; i + 3 <= size; i+=4) {
-                let q = getQuestionPriorByLabel(form, fe, tokens[i].substring(1, tokens[i].length - 1));
+            for (let i = 0, size = tokens.length; i + 3 <= size; i += 4) {
+                let q = getQuestionPriorByLabel(fe, fe, tokens[i].substring(1, tokens[i].length - 1), form);
                 if (q) {
                     let when = {
                         question: q.feId,

@@ -1,15 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material';
+import { UserService } from '_app/user.service';
+import { AlertService } from 'alert/alert.service';
 import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
 import { catchError, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Subject } from 'rxjs/Subject';
-
-import { UserService } from '_app/user.service';
-import { AlertService } from 'alert/alert.service';
-import { DataTypeService } from 'core/dataType.service';
 import { SearchSettings } from 'search/search.model';
+import { DataElement, DataTypeArray } from 'shared/de/dataElement.model';
 import { fixDatatype } from 'shared/de/deValidator';
-import { MatDialog, MatDialogRef } from '@angular/material';
 
 @Component({
     selector: 'cde-permissible-value',
@@ -17,14 +16,12 @@ import { MatDialog, MatDialogRef } from '@angular/material';
 })
 export class PermissibleValueComponent {
     @Input() canEdit;
-    _elt: any;
-    @Input() set elt(v: any) {
+    _elt: DataElement;
+    @Input() set elt(v: DataElement) {
         this._elt = v;
         fixDatatype(this.elt);
-        this.elt.allValid = true;
         if (this.userService.loggedIn()) this.loadValueSet();
         this.initSrcOptions();
-        this.canLinkPvFunc();
         if (!this.elt.dataElementConcept.conceptualDomain) {
             this.elt.dataElementConcept.conceptualDomain = {vsac: {}};
         }
@@ -44,17 +41,15 @@ export class PermissibleValueComponent {
             } else this.umlsTerms = [];
         });
     }
-
-    get elt(): any {
+    get elt(): DataElement {
         return this._elt;
     }
-
     @Output() onEltChange = new EventEmitter();
     @ViewChild('newPermissibleValueContent') public newPermissibleValueContent: TemplateRef<any>;
     @ViewChild('importPermissibleValueContent') public importPermissibleValueContent: TemplateRef<any>;
+    readonly DataTypeArray = DataTypeArray;
     canLinkPv = false;
     containsKnownSystem: boolean = false;
-    dataTypeList = [];
     editMode;
     keys = Object.keys;
     newPermissibleValue: any = {};
@@ -76,8 +71,8 @@ export class PermissibleValueComponent {
     umlsTerms = [];
     SOURCES = {
         'NCI Thesaurus': {source: 'NCI', termType: 'PT', codes: {}, selected: false, disabled: false},
-        'UMLS': {source: 'UMLS', termType: 'PT', codes: {}, selected: false, disabled: false},
-        'LOINC': {source: 'LNC', termType: 'LA', codes: {}, selected: false, disabled: true},
+        UMLS: {source: 'UMLS', termType: 'PT', codes: {}, selected: false, disabled: false},
+        LOINC: {source: 'LNC', termType: 'LA', codes: {}, selected: false, disabled: true},
         'SNOMEDCT US': {source: 'SNOMEDCT_US', termType: 'PT', codes: {}, selected: false, disabled: true}
     };
 
@@ -85,7 +80,6 @@ export class PermissibleValueComponent {
                 private dialog: MatDialog,
                 public userService: UserService,
                 private Alert: AlertService) {
-        this.dataTypeList = DataTypeService.getDataType();
     }
 
     addAllVsac() {
@@ -113,20 +107,15 @@ export class PermissibleValueComponent {
         if (this.isVsInPv(vsacValue)) return;
         else {
             this.elt.valueDomain.permissibleValues.push({
-                'permissibleValue': vsacValue.displayName,
-                'valueMeaningName': vsacValue.displayName,
-                'valueMeaningCode': vsacValue.code,
-                'codeSystemName': vsacValue.codeSystemName,
-                'codeSystemVersion': vsacValue.codeSystemVersion
+                permissibleValue: vsacValue.displayName,
+                valueMeaningName: vsacValue.displayName,
+                valueMeaningCode: vsacValue.code,
+                codeSystemName: vsacValue.codeSystemName,
+                codeSystemVersion: vsacValue.codeSystemVersion
             });
         }
         this.runManualValidation();
         if (emit) this.onEltChange.emit();
-    }
-
-    canLinkPvFunc() {
-        let dec = this.elt.dataElementConcept;
-        this.canLinkPv = (this.canEdit && dec && dec.conceptualDomain && dec.conceptualDomain.vsac && dec.conceptualDomain.vsac.id);
     }
 
     checkVsacId() {
@@ -222,7 +211,6 @@ export class PermissibleValueComponent {
                     }
                 }, () => this.Alert.addAlert('danger', 'Error querying VSAC'));
         }
-        this.canLinkPvFunc();
     }
 
     lookupAsSource(src) {

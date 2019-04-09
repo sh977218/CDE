@@ -1,5 +1,7 @@
+const Ajv = require('ajv');
+const fs = require('fs');
 const _ = require('lodash');
-
+const path = require('path');
 const config = require('../system/parseConfig');
 const schemas = require('./schemas');
 const mongo_data = require('../system/mongo-data');
@@ -14,13 +16,29 @@ exports.name = "forms";
 
 let conn = connHelper.establishConnection(config.database.appData);
 
+const ajvElt = new Ajv();
+let validateSchema;
+fs.readFile(path.resolve(__dirname, '../../shared/form/assets/form.schema.json'), (err, file) => {
+    if (!file) {
+        console.log('Error: form.schema.json missing. ' + err);
+        process.exit(1);
+    }
+    validateSchema = ajvElt.compile(JSON.parse(file.toString()));
+});
+
 schemas.formSchema.pre('save', function (next) {
-    let self = this;
+    let elt = this;
+
+    if (!validateSchema(elt)) {
+        return next(validateSchema.errors.map(e => e.dataPath + ': ' + e.message).join(', '));
+    }
+
     try {
-        elastic.updateOrInsert(self);
+        elastic.updateOrInsert(elt);
     } catch (exception) {
         logging.errorLogger.error("Error Indexing Form", {details: exception, stack: new Error().stack});
     }
+
     next();
 });
 
@@ -38,6 +56,28 @@ exports.FormSource = FormSource;
 mongo_data.attachables.push(exports.Form);
 
 exports.elastic = elastic;
+
+function defaultElt(elt) {
+    if (!elt.registrationState || !elt.registrationState.registrationStatus) {
+        elt.registrationState = {registrationStatus: 'Incomplete'};
+    }
+}
+
+function updateUser(elt, user) {
+    defaultElt(elt);
+    if (!elt.created) elt.created = new Date();
+    if (!elt.createdBy) {
+        elt.createdBy = {
+            userId: user._id,
+            username: user.username
+        };
+    }
+    elt.updated = new Date();
+    elt.updatedBy = {
+        userId: user._id,
+        username: user.username
+    };
+}
 
 // cb(err, elt)
 exports.byExisting = (elt, cb) => {
@@ -68,7 +108,7 @@ exports.byTinyIdList = function (tinyIdList, callback) {
 };
 
 exports.byTinyId = function (tinyId, cb) {
-    Form.findOne({'tinyId': tinyId, archived: false}, cb);
+    return Form.findOne({'tinyId': tinyId, archived: false}, cb);
 };
 
 exports.byTinyIdVersion = function (tinyId, version, cb) {
@@ -87,7 +127,7 @@ exports.byTinyIdAndVersion = function (tinyId, version, callback) {
     });
 };
 
-exports.draftForm = function (tinyId, cb) {
+exports.draftByTinyId = function (tinyId, cb) {
     let cond = {
         tinyId: tinyId,
         archived: false,
@@ -96,7 +136,7 @@ exports.draftForm = function (tinyId, cb) {
     FormDraft.findOne(cond, cb);
 };
 
-exports.draftFormById = function (id, cb) {
+exports.draftById = function (id, cb) {
     let cond = {
         _id: id,
         elementType: 'form'
@@ -105,7 +145,8 @@ exports.draftFormById = function (id, cb) {
 };
 
 // cb(err, newDoc)
-exports.saveDraft = function (elt, cb) {
+exports.draftSave = function (elt, user, cb) {
+    updateUser(elt, user);
     FormDraft.findById(elt._id, (err, doc) => {
         if (err) {
             cb(err);
@@ -125,7 +166,7 @@ exports.saveDraft = function (elt, cb) {
     });
 };
 
-exports.deleteDraftForm = function (tinyId, cb) {
+exports.draftDelete = function (tinyId, cb) {
     FormDraft.remove({tinyId: tinyId}, cb);
 };
 
@@ -151,7 +192,7 @@ exports.getStream = function (condition) {
 };
 
 exports.count = function (condition, callback) {
-    Form.countDocuments(condition, callback);
+    return Form.countDocuments(condition, callback);
 };
 
 exports.update = function (elt, user, callback, special) {
@@ -164,76 +205,51 @@ exports.update = function (elt, user, callback, special) {
         delete elt._id;
         if (!elt.history) elt.history = [];
         elt.history.push(form._id);
-        elt.updated = new Date().toJSON();
-        elt.updatedBy = {
-            userId: user._id,
-            username: user.username
-        };
+        updateUser(elt, user);
         elt.sources = form.sources;
         elt.comments = form.comments;
-        let newForm = new Form(elt);
+        let newElt = new Form(elt);
 
         if (special) {
-            special(newForm, form);
+            special(newElt, form);
         }
 
-        if (!newForm.designations || newForm.designations.length === 0) {
-            logging.errorLogger.error("Error: Cannot save form without names", {
-                stack: new Error().stack,
-                details: "elt " + JSON.stringify(elt)
-            });
-            callback("Cannot save without names");
-        }
-
-        form.archived = true;
-        Form.findOneAndUpdate({_id: form._id}, form, err => {
-            if (err) {
-                logging.errorLogger.error(
-                    "Transaction failed. Cannot save archived form: " + newForm.tinyId,
-                    {
-                        stack: new Error().stack,
-                        details: "err " + err
-                    }
-                );
+        // archive form and replace it with newElt
+        Form.findOneAndUpdate({_id: form._id, archived: false}, {$set: {archived: true}}, (err, doc) => {
+            if (err || !doc) {
+                callback(err, doc);
+                return;
             }
-            newForm.save((err, savedForm) => {
+            newElt.save((err, savedElt) => {
                 if (err) {
-                    logging.errorLogger.error("Cannot save new form: " + newForm.tinyId,
-                        {
-                            stack: new Error().stack,
-                            details: "err " + err
-                        });
-                    callback(err);
+                    Form.findOneAndUpdate({_id: form._id}, {$set: {archived: false}}, () => callback(err));
                 } else {
-                    callback(err, savedForm);
-                    auditModifications(user, form, savedForm);
+                    callback(undefined, savedElt);
+                    auditModifications(user, form, savedElt);
                 }
             });
         });
     });
 };
+
 exports.updatePromise = function (elt, user) {
     return new Promise(resolve => {
         exports.update(elt, user, resolve);
     });
 };
 
-exports.create = function (form, user, callback) {
-    let newItem = new Form(form);
-    if (!newItem.registrationState || !newItem.registrationState.registrationStatus) {
-        newItem.registrationState = {
-            registrationStatus: "Incomplete"
-        };
-    }
-    newItem.created = Date.now();
-    newItem.createdBy = {
+exports.create = function (elt, user, callback) {
+    defaultElt(elt);
+    elt.created = Date.now();
+    elt.createdBy = {
         userId: user._id,
         username: user.username
     };
+    let newItem = new Form(elt);
     newItem.tinyId = mongo_data.generateTinyId();
     newItem.save((err, newElt) => {
         callback(err, newElt);
-        auditModifications(user, null, newElt);
+        if (!err) auditModifications(user, null, newElt);
     });
 };
 

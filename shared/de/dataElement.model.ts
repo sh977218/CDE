@@ -106,7 +106,8 @@ export class DataSet {
     studyUri?: string;
 }
 
-export type DataType = 'Value List' | 'Date' | 'Number' | 'Text' | 'Externally Defined';
+export type DataType = 'Value List' | 'Date' | 'Time' | 'File' | 'Geo Location' | 'Number' | 'Text' | 'Externally Defined';
+export const DataTypeArray = ['Value List', 'Date', 'Time', 'File', 'Geo Location', 'Number', 'Text', 'Externally Defined'];
 
 export class DatatypeContainer {
     datatype: DataType = 'Text';
@@ -118,6 +119,7 @@ export class DatatypeContainer {
 }
 
 export class ValueDomain extends DatatypeContainer {
+    definition?: string;
     identifiers: CdeId[] = [];
     ids: CdeId[] = [];
     permissibleValues: PermissibleValue[] = [];

@@ -18,6 +18,8 @@ import {
 import { iterateFeSync } from 'shared/form/fe';
 import { supportedFhirResources } from 'shared/mapping/fhir/fhirResource.model';
 
+export type QuestionValue = any;
+
 export class CdeForm extends Elt implements FormElementsContainer {
     copyright?: { // mutable
         authority?: string,
@@ -26,8 +28,9 @@ export class CdeForm extends Elt implements FormElementsContainer {
     displayProfiles: DisplayProfile[] = []; // mutable
     elementType?: string = 'form';
     expanded?: boolean; // calculated, formDescription view model
-    formInput?: any; // volatile, nativeRender and export
+    formInput?: {[key: string]: QuestionValue}; // volatile, nativeRender and export
     formElements: FormElement[] = []; // mutable
+    isCopied?: 'copied' | 'clear'; // volatile, form description
     isCopyrighted?: boolean;
     mapTo?: ExternalMappings; // calculated, used by: FHIR
     noRenderAllowed?: boolean;
@@ -125,11 +128,10 @@ export class DisplayProfile {
     repeatFormat = '#.';
     sectionsAsMatrix = true;
     unitsOfMeasureAlias: { alias: string, unitOfMeasure: CodeAndSystem }[] = [];
-    fhirProcedureMapping?: FhirProcedureMapping;
+    fhirProcedureMapping?: FhirProcedureMapping = {};
 
     constructor(name = '') {
         this.name = name;
-        this.fhirProcedureMapping = [];
     }
 }
 
@@ -182,6 +184,7 @@ interface FormElementPart extends FormElementsContainer {
 
 export interface FormSectionOrFormPart extends FormElementPart {
     forbidMatrix?: boolean; // Calculated, used for Follow View Model
+    isCopied?: 'copied' | 'clear'; // volatile, form description
 }
 
 export class FormSection implements FormSectionOrFormPart {
@@ -194,12 +197,14 @@ export class FormSection implements FormSectionOrFormPart {
     formElements: FormElement[] = [];
     hover?: boolean; // calculated, formDescription view model
     instructions?: Instruction;
+    isCopied?: 'copied' | 'clear'; // volatile, form description
     label?: string = '';
     mapTo?: ExternalMappings;
     metadataTags?: MetadataTag[];
     repeat?: string;
     repeatNumber?: number; // calculated, formDescription view model
     repeatOption?: string; // calculated, formDescription view model
+    repeatQuestion?: string; // calculated, formDescription view model
     section = new Section();
     skipLogic?: SkipLogic = new SkipLogic();
     updatedSkipLogic?: boolean; // calculated, formDescription view model
@@ -216,12 +221,14 @@ export class FormInForm implements FormSectionOrFormPart {
     hover?: boolean; // calculated, formDescription view model
     instructions?: Instruction;
     inForm = new InForm();
+    isCopied?: 'copied' | 'clear'; // volatile, form description
     label?: string = '';
     mapTo?: ExternalMappings;
     metadataTags?: MetadataTag[];
     repeat?: string;
     repeatNumber?: number; // calculated, formDescription view model
     repeatOption?: string; // calculated, formDescription view model
+    repeatQuestion?: string; // calculated, formDescription view model
     skipLogic?: SkipLogic = new SkipLogic();
     updatedSkipLogic?: boolean; // calculated, formDescription view model
 }
@@ -286,7 +293,7 @@ export class PermissibleFormValue extends PermissibleValue implements FormElemen
 }
 
 export class Question extends DatatypeContainer {
-    answer?: any; // volatile, input value
+    answer?: QuestionValue; // volatile, input value
     answerVM?: any[]; // volatile, input value for select
     answerUom?: CodeAndSystem; // volatile, input uom value
     answerDate?: any; // volatile, working storage for date part
@@ -301,6 +308,7 @@ export class Question extends DatatypeContainer {
     multiselect?: boolean;
     partOf?: string; // volatile, display '(part of ...)' in Form Description
     required?: boolean;
+    previousUom?: CodeAndSystem; // volatile, native render question renderer
     unitsOfMeasure: CodeAndSystem[] = [];
     uomsAlias: string[] = []; // volatile, NativeRenderService
     uomsValid: string[] = []; // volatile, FormDescription

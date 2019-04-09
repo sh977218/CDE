@@ -1,5 +1,5 @@
 const baseConfig = require('../../webpack.prod');
-const appConfig = require('./webpack');
+const appConfig = require('./webpackApp');
 const merge = require('webpack-merge');
 const path = require('path');
 const AotPlugin = require('@ngtools/webpack');

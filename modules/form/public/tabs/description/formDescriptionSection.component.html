@@ -56,7 +56,7 @@
         <div *ngIf="!canEditSection()">
             <span *ngIf="section.repeatOption && (section.repeatOption !== 'N' || section.repeatNumber !== 1)"
                   class="badge badge-primary formViewSummaryLabel">
-                Repeats: {{getRepeatLabel(section)}}
+                Repeats: {{repeatFeLabel(section)}}
             </span>
             <span *ngIf="section.skipLogic?.condition" class="badge badge-warning formViewSummaryLabel">
                     Show if: {{section.skipLogic.condition}}
@@ -81,7 +81,7 @@
             </div>
             <div class="font-weight-bold section_cardinality">Repeats:
                 <select class="form-control" title="Repeats" [(ngModel)]="section.repeatOption"
-                        (change)="setRepeat(section);">
+                        (change)="repeatChange(section)">
                     <option *ngFor="let item of repeatOptions" [value]="item.value">{{item.label}}</option>
                 </select>
             </div>
@@ -89,12 +89,23 @@
                  class="font-weight-bold section_cardinality">Repeat Maximum Times:
                 <input type="number" title="Repeat Maximum Times" class="form-control"
                        [(ngModel)]="section.repeatNumber"
-                       (change)="setRepeat(section);"/>
+                       (change)="repeatChange(section)"/>
+            </div>
+            <div *ngIf="section.repeatOption === '='"
+                 class="font-weight-bold section_cardinality">Repeat by Answer of Question:
+                <mat-form-field>
+                    <select matNativeControl required
+                            title="Repeats by Answer of Question" placeholder="Question Label"
+                            [(ngModel)]="section.repeatQuestion"
+                            (change)="repeatChange(section)">
+                        <option *ngFor="let option of repeatQuestions" [value]="option">{{option}}</option>
+                    </select>
+                </mat-form-field>
             </div>
             <div class="font-weight-bold skipLogicEditTextarea">Show if:
                 <span id="dd_s_skipLogic_{{$index}}" [ngClass]="{'has-error':section.skipLogic?.skipLogicError}">
-                        <cde-skip-logic [parent]="parent" [formElement]="section" [canEdit]="canEditSection()"
-                                        (onSaved)="onEltChange.emit();"></cde-skip-logic>
+                    <cde-skip-logic [parent]="parent" [formElement]="section" [canEdit]="canEditSection()"
+                                    (onSaved)="onEltChange.emit();"></cde-skip-logic>
                 </span>
             </div>
         </div>
@@ -110,7 +121,7 @@
         <div *ngIf="!canEditSection()">
             <span *ngIf="section.repeatOption && (section.repeatOption !== 'N' || section.repeatNumber !== 1)"
                   class="badge badge-primary formViewSummaryLabel">
-                Repeats: {{getRepeatLabel(section)}}
+                Repeats: {{repeatFeLabel(section)}}
             </span>
             <span *ngIf="isMappedTo(section, 'fhir')" class="badge badge-primary formViewSummaryLabel">
                 FHIR <ng-container
@@ -140,7 +151,7 @@
             </div>
             <div class="font-weight-bold section_cardinality">Repeats:
                 <select class="form-control" title="Repeats" [(ngModel)]="section.repeatOption"
-                        (change)="setRepeat(section);onEltChange.emit()">
+                        (change)="repeatChange(section)">
                     <option *ngFor="let item of repeatOptions" [value]="item.value">{{item.label}}</option>
                 </select>
             </div>
@@ -148,20 +159,23 @@
                  class="font-weight-bold section_cardinality">Repeat Maximum Times:
                 <input type="number" title="Repeats Maximum Times" class="form-control"
                        [(ngModel)]="section.repeatNumber"
-                       (change)="setRepeat(section);onEltChange.emit()"/>
+                       (change)="repeatChange(section)"/>
+            </div>
+            <div *ngIf="section.repeatOption === '='"
+                 class="font-weight-bold section_cardinality">Repeat by Answer of Question:
+                <mat-form-field>
+                    <select matNativeControl required
+                            title="Repeats by Answer of Question" placeholder="Question Label"
+                            [(ngModel)]="section.repeatQuestion"
+                            (change)="repeatChange(section)">
+                        <option *ngFor="let option of repeatQuestions" [value]="option">{{option}}</option>
+                    </select>
+                </mat-form-field>
             </div>
             <div class="font-weight-bold">Show if:
                 <span id="dd_s_skipLogic_{{$index}}" [ngClass]="{'has-error':section.skipLogic?.skipLogicError}">
-                    <input #slInput [disabled]="!(parent.formElements.length > 1 && canEditSection())"
-                           type="text" title="Show If"
-                           (focus)="slOptionsRetrigger()"
-                           [ngModel]="section.skipLogic.condition"
-                           (ngModelChange)="typeaheadSkipLogic(parent, section, $event)"
-                           class="form-control skipLogicCondition"
-                           placeholder="Start typing a question name to find options"
-                           [ngbTypeahead]="getSkipLogicOptions"
-                           (selectItem)="typeaheadSkipLogic(parent, section, $event);$event.preventDefault();slInput.focus();slOptionsRetrigger()"/>
-                    {{section.skipLogic?.validationError}}
+                    <cde-skip-logic [parent]="parent" [formElement]="section" [canEdit]="canEditSection()"
+                                    (onSaved)="onEltChange.emit();"></cde-skip-logic>
                 </span>
             </div>
         </div>

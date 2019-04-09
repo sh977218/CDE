@@ -14,8 +14,6 @@ const auth = require('./server/system/authentication');
 const logging = require('./server/system/logging.js');
 const daoManager = require('./server/system/moduleDaoManager.js');
 const domain = require('domain').create();
-const ipFilter = require('express-ipfilter').IpFilter;
-const IpDeniedError = require('express-ipfilter').IpDeniedError;
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const methodOverride = require('method-override');
@@ -39,14 +37,14 @@ app.use(helmet());
 app.use(helmet.contentSecurityPolicy({
     directives: {
         defaultSrc: ["'self'", 'fonts.gstatic.com'],
-        fontSrc: ["'self'", 'fonts.gstatic.com', "*.nih.gov"],
-        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "cdn.ckeditor.com", "cdn.jsdelivr.net",
-            "cdnjs.cloudflare.com", "*.nih.gov", "ajax.googleapis.com", "www.googletagmanager.com", "www.google-analytics.com"],
+        fontSrc: ["'self'", 'fonts.gstatic.com', '*.nih.gov'],
+        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", 'cdn.ckeditor.com', 'cdn.jsdelivr.net',
+            'cdnjs.cloudflare.com', '*.nih.gov', 'ajax.googleapis.com', 'www.googletagmanager.com', 'www.google-analytics.com'],
         styleSrc: ["'self'", 'maxcdn.bootstrapcdn.com', 'fonts.googleapis.com', 'fonts.gstatic.com',
-            "'unsafe-inline'", "*.nih.gov", "cdn.ckeditor.com"],
-        imgSrc: ["'self'", 'data:', "cdn.ckeditor.com", "*.nih.gov", "www.google-analytics.com"],
+            "'unsafe-inline'", '*.nih.gov', 'cdn.ckeditor.com'],
+        imgSrc: ["'self'", 'data:', 'cdn.ckeditor.com', '*.nih.gov', 'www.google-analytics.com'],
         connectSrc: ['*'],
-        reportUri: "https://nlmoccs.report-uri.com/r/d/csp/reportOnly",
+        reportUri: 'https://nlmoccs.report-uri.com/r/d/csp/reportOnly',
         workerSrc: ['*']
     }
 }));
@@ -57,15 +55,15 @@ app.use(compress());
 app.use(require('hsts')({maxAge: 31536000000}));
 
 process.on('uncaughtException', function (err) {
-    console.log("Error: Process Uncaught Exception");
+    console.log('Error: Process Uncaught Exception');
     console.log(err.stack);
-    logging.errorLogger.error("Error: Uncaught Exception", {stack: err.stack, origin: "app.process.uncaughtException"});
+    logging.errorLogger.error('Error: Uncaught Exception', {stack: err.stack, origin: 'app.process.uncaughtException'});
 });
 
 domain.on('error', function (err) {
-    console.log("Error: Domain Error");
+    console.log('Error: Domain Error');
     console.log(err.stack);
-    logging.errorLogger.error("Error: Domain Error", {stack: err.stack, origin: "app.domain.error"});
+    logging.errorLogger.error('Error: Domain Error', {stack: err.stack, origin: 'app.domain.error'});
 });
 
 // all environments
@@ -73,10 +71,10 @@ app.set('port', config.port || 3000);
 app.set('view engine', 'ejs');
 app.set('trust proxy', true);
 
-app.use(favicon(path.join(__dirname, './modules/cde/public/assets/img/favicon.ico')));//TODO: MOVE TO SYSTEM
+app.use(favicon(path.join(__dirname, './modules/cde/public/assets/img/favicon.ico'))); // TODO: MOVE TO SYSTEM
 
-app.use(bodyParser.urlencoded({extended: false, limit: "5mb"}));
-app.use(bodyParser.json({limit: "16mb"}));
+app.use(bodyParser.urlencoded({extended: false, limit: '5mb'}));
+app.use(bodyParser.json({limit: '16mb'}));
 app.use(methodOverride());
 app.use(cookieParser());
 const expressSettings = {
@@ -94,7 +92,11 @@ let getRealIp = function (req) {
 };
 
 let blackIps = [];
-app.use(ipFilter(() => blackIps, {errorMessage: ""}));
+app.use((req, res, next) => {
+   if (blackIps.indexOf(getRealIp(req)) !== -1) {
+       res.status(403).send('Access is temporarily disabled. If you think you received this response in error, please contact support. Otherwise, please try again in an hour.');
+   } else next();
+});
 const banEndsWith = config.banEndsWith || [];
 const banStartsWith = config.banStartsWith || [];
 
@@ -114,11 +116,11 @@ setInterval(() => {
 
 // check https
 app.use((req, res, next) => {
-    if (config.proxy && req.originalUrl !== "/status/cde") {
+    if (config.proxy && req.originalUrl !== '/status/cde') {
         if (req.protocol !== 'https') {
-            if (req.query.gotohttps === "1")
-                res.send("Missing X-Forward-Proto Header");
-            else res.redirect(config.publicUrl + "?gotohttps=1");
+            if (req.query.gotohttps === '1')
+                res.send('Missing X-Forward-Proto Header');
+            else res.redirect(config.publicUrl + '?gotohttps=1');
         } else next();
     } else next();
 });
@@ -143,20 +145,20 @@ app.use(function banHackers(req, res, next) {
 
 app.use(function preventSessionCreation(req, res, next) {
     this.isFile = function (req) {
-        if (req.originalUrl.substr(req.originalUrl.length - 3, 3) === ".js") return true;
-        if (req.originalUrl.substr(req.originalUrl.length - 4, 4) === ".css") return true;
-        return req.originalUrl.substr(req.originalUrl.length - 4, 4) === ".gif";
+        if (req.originalUrl.substr(req.originalUrl.length - 3, 3) === '.js') return true;
+        if (req.originalUrl.substr(req.originalUrl.length - 4, 4) === '.css') return true;
+        return req.originalUrl.substr(req.originalUrl.length - 4, 4) === '.gif';
     };
-    if ((req.cookies['connect.sid'] || req.originalUrl === "/login" || req.originalUrl === "/csrf") && !this.isFile(req)) {
+    if ((req.cookies['connect.sid'] || req.originalUrl === '/login' || req.originalUrl === '/csrf') && !this.isFile(req)) {
         session(expressSettings)(req, res, next);
     } else next();
 
 });
 
-app.use("/cde/public", express.static(path.join(__dirname, '/modules/cde/public')));
-app.use("/system/public", express.static(path.join(__dirname, '/modules/system/public')));
-app.use("/swagger/public", express.static(path.join(__dirname, '/modules/swagger/public')));
-app.use("/form/public", express.static(path.join(__dirname, '/modules/form/public')));
+app.use('/cde/public', express.static(path.join(__dirname, '/modules/cde/public')));
+app.use('/system/public', express.static(path.join(__dirname, '/modules/system/public')));
+app.use('/swagger/public', express.static(path.join(__dirname, '/modules/swagger/public')));
+app.use('/form/public', express.static(path.join(__dirname, '/modules/form/public')));
 
 let getS3Link = function (subpath) {
     return {
@@ -182,24 +184,24 @@ let getS3LinkFhir = function (subpath) {
 };
 
 if (config.s3) {
-    app.use("/app", httpProxy(config.s3.host, getS3Link("/app")));
-    app.use("/common", httpProxy(config.s3.host, getS3Link("/common")));
-    app.use("/embed", httpProxy(config.s3.host, getS3Link("/embed")));
-    app.use("/fhir", httpProxy(config.s3.host, getS3LinkFhir("/fhir")));
-    app.use("/launch", httpProxy(config.s3.host, getS3Link("/launch")));
-    app.use("/native", httpProxy(config.s3.host, getS3Link("/native")));
+    app.use('/app', httpProxy(config.s3.host, getS3Link('/app')));
+    app.use('/common', httpProxy(config.s3.host, getS3Link('/common')));
+    app.use('/embed', httpProxy(config.s3.host, getS3Link('/embed')));
+    app.use('/fhir', httpProxy(config.s3.host, getS3LinkFhir('/fhir')));
+    app.use('/launch', httpProxy(config.s3.host, getS3Link('/launch')));
+    app.use('/native', httpProxy(config.s3.host, getS3Link('/native')));
 } else {
-    app.use("/app", express.static(path.join(__dirname, '/dist/app')));
-    app.use("/common", express.static(path.join(__dirname, '/dist/common')));
-    app.use("/embed", express.static(path.join(__dirname, '/dist/embed')));
-    app.use("/fhir", express.static(path.join(__dirname, '/dist/fhir')));
-    app.use("/launch", express.static(path.join(__dirname, '/dist/launch')));
-    app.use("/native", express.static(path.join(__dirname, '/dist/native')));
+    app.use('/app', express.static(path.join(__dirname, '/dist/app'), {setHeaders: res => res.header('Access-Control-Allow-Origin', '*')}));
+    app.use('/common', express.static(path.join(__dirname, '/dist/common')));
+    app.use('/embed', express.static(path.join(__dirname, '/dist/embed')));
+    app.use('/fhir', express.static(path.join(__dirname, '/dist/fhir')));
+    app.use('/launch', express.static(path.join(__dirname, '/dist/launch')));
+    app.use('/native', express.static(path.join(__dirname, '/dist/native')));
 }
 
-["/embedded/public", "/_embedApp/public"].forEach(p => {
+['/embedded/public', '/_embedApp/public'].forEach(p => {
     app.use(p, (req, res, next) => {
-            res.removeHeader("x-frame-options");
+            res.removeHeader('x-frame-options');
             next();
         },
         express.static(path.join(__dirname, '/modules/_embedApp/public'))
@@ -210,13 +212,13 @@ app.use(flash());
 auth.init(app);
 
 const logFormat = {
-    remoteAddr: ":real-remote-addr",
-    url: ":url",
-    method: ":method",
-    httpStatus: ":status",
-    date: ":date",
-    referrer: ":referrer",
-    responseTime: ":response-time"
+    remoteAddr: ':real-remote-addr',
+    url: ':url',
+    method: ':method',
+    httpStatus: ':status',
+    date: ':date',
+    referrer: ':referrer',
+    responseTime: ':response-time'
 };
 
 morganLogger.token('real-remote-addr', function (req) {
@@ -260,8 +262,8 @@ app.set('views', path.join(__dirname, './modules'));
 
 let originalRender = express.response.render;
 express.response.render = function (view, module, msg) {
-    if (!module) module = "cde";
-    originalRender.call(this, path.join(__dirname, '/modules/' + module + "/views/" + view), msg);
+    if (!module) module = 'cde';
+    originalRender.call(this, path.join(__dirname, '/modules/' + module + '/views/' + view), msg);
 };
 
 try {
@@ -273,24 +275,24 @@ try {
         {module: 'article', db: articleDb, crudPermission: authorization.isDocumentationEditor}
     ]));
 
-    let discussModule = require("./server/discuss/discussRoutes").module({
+    let discussModule = require('./server/discuss/discussRoutes').module({
         allComments: [authorization.isOrgAuthorityMiddleware],
         manageComment: [authorization.canApproveCommentMiddleware]
     });
     app.use('/server/discuss', discussModule);
 
-    let logModule = require("./server/log/logRoutes").module({
+    let logModule = require('./server/log/logRoutes').module({
         feedbackLog: [authorization.isOrgAuthorityMiddleware],
         superLog: [authorization.isSiteAdminMiddleware]
     });
     app.use('/server/log', logModule);
 
-    let classificationModule = require("./server/classification/classificationRoutes").module({
+    let classificationModule = require('./server/classification/classificationRoutes').module({
         allowClassify: (user, org) => authorizationShared.isOrgCurator(user, org)
     });
     app.use('/server/classification', classificationModule);
 
-    let meshModule = require("./server/mesh/meshRoutes").module({
+    let meshModule = require('./server/mesh/meshRoutes').module({
         allowSyncMesh: (req, res, next) => {
             if (!config.autoSyncMesh && !authorizationShared.isOrgAuthority(req.user))
                 return res.status(401).send();
@@ -305,25 +307,25 @@ try {
 
     require(path.join(__dirname, './server/form/app.js')).init(app, daoManager);
 
-    let boardModule = require("./server/board/boardRoutes").module({});
+    let boardModule = require('./server/board/boardRoutes').module({});
     app.use('/server/board', boardModule);
 
     require(path.join(__dirname, './modules/swagger/index.js')).init(app);
 
-    let userModule = require("./server/user/userRoutes").module({
+    let userModule = require('./server/user/userRoutes').module({
         search: [authorization.isOrgAdminMiddleware],
         manage: [authorization.isOrgAuthorityMiddleware],
         notificationDate: [authorization.isSiteAdminMiddleware]
     });
     app.use('/server/user', userModule);
 
-    let siteAdminModule = require("./server/siteAdmin/siteAdminRoutes").module({});
+    let siteAdminModule = require('./server/siteAdmin/siteAdminRoutes').module({});
     app.use('/server/siteAdmin', authorization.isSiteAdminMiddleware, siteAdminModule);
 
-    let notificationModule = require("./server/notification/notificationRoutes").module({});
+    let notificationModule = require('./server/notification/notificationRoutes').module({});
     app.use('/server/notification', authorization.loggedInMiddleware, notificationModule);
 
-    let articleModule = require("./server/article/articleRoutes").module({
+    let articleModule = require('./server/article/articleRoutes').module({
         update: [authorization.isSiteAdminMiddleware],
     });
     app.use('/server/article', articleModule);
@@ -347,21 +349,17 @@ app.use((req, res, next) => {
 
 app.use((err, req, res, next) => {
 
-    // Do Not Log Errors
-    if (err instanceof IpDeniedError) {
-        return res.status(403).send("You are not authorized. Please contact support if you believe you should not see this error.");
-    }
     if (err.code === 'EBADCSRFTOKEN') {
         return res.status(401).send('CSRF Error');
     }
 
     // Do Log Errors
-    console.log("ERROR3: " + err);
+    console.log('ERROR3: ' + err);
     console.log(err.stack);
-    if (req && req.body && req.body.password) req.body.password = "";
+    if (req && req.body && req.body.password) req.body.password = '';
     let meta = {
         stack: err.stack,
-        origin: "app.express.error",
+        origin: 'app.express.error',
         request: {
             username: req.user ? req.user.username : null,
             method: req.method,
@@ -372,7 +370,7 @@ app.use((err, req, res, next) => {
             headers: {'user-agent': req.headers['user-agent']}
         }
     };
-    logging.errorLogger.error('error', "Error: Express Default Error Handler", meta);
+    logging.errorLogger.error('error', 'Error: Express Default Error Handler', meta);
     res.status(500).send('Something broke!');
 });
 
@@ -384,5 +382,3 @@ domain.run(() => {
     });
     ioServer.startServer(server, expressSettings);
 });
-
-

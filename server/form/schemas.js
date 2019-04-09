@@ -188,13 +188,19 @@ exports.draftSchema = new Schema(exports.formJson, {
         virtuals: true
     }
 });
+
+exports.formSchema.path("classification").validate(v => {
+    return !v.map(value => value.stewardOrg.name)
+        .some((value, index, array) => array.indexOf(value) !== array.lastIndexOf(value));
+}, "Duplicate Steward Classification");
+
 exports.draftSchema.virtual('isDraft').get(function () {
     return true;
 });
 exports.formSchema.set('collection', 'forms');
 exports.formSchema.index({tinyId: 1, archived: 1}, {
     unique: true,
-    name: "formLiveTinyId",
+    name: 'formLiveTinyId',
     partialFilterExpression: {archived: false}
 });
 

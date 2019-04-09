@@ -11,25 +11,24 @@ export class SkipLogicValidateService {
     optionsMap: Map<string, string> = new Map;
 
     static checkAndUpdateLabel(section, oldLabel, newLabel = undefined) {
-        let result = false;
-        section.formElements.forEach((fe) => {
+        if (!newLabel) {
+            return false;
+        }
+        return section.formElements.some((fe) => {
             if (fe.skipLogic && fe.skipLogic.condition) {
-                let updateSkipLogic = false;
-                let tokens = tokenSplitter(fe.skipLogic.condition);
-                tokens.forEach((token, i) => {
+                let tokens = tokenSplitter(fe.skipLogic.condition).map((token, i) => {
                     if (i % 4 === 0 && token === '"' + oldLabel + '"') {
-                        updateSkipLogic = true;
-                        result = true;
-                        if (newLabel) tokens[i] = '"' + newLabel + '"';
+                        fe.updatedSkipLogic = true;
+                        return '"' + newLabel + '"';
                     }
+                    return token;
                 });
-                if (newLabel && updateSkipLogic) {
+                if (fe.updatedSkipLogic) {
                     fe.skipLogic.condition = tokens.join(' ');
-                    fe.updatedSkipLogic = true;
+                    return true;
                 }
             }
         });
-        return result;
     }
 
     getTypeaheadOptions(currentContent, parent: FormElementsContainer, fe: FormElement): string[] {

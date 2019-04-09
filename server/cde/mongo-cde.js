@@ -1,27 +1,39 @@
-const _ = require("lodash");
+const Ajv = require('ajv');
+const fs = require('fs');
+const _ = require('lodash');
+const path = require('path');
+const deValidator = require('esm')(module)('../../shared/de/deValidator');
+const isOrgCurator = require('../../shared/system/authorizationShared').isOrgCurator;
 const config = require('../system/parseConfig');
-const schemas = require('./schemas');
-const mongo_data = require('../system/mongo-data');
 const connHelper = require('../system/connections');
+const mongo_data = require('../system/mongo-data');
 const logging = require('../system/logging');
 const elastic = require('./elastic');
-const deValidator = require('esm')(module)('../../shared/de/deValidator');
-const draftSchema = require('./schemas').draftSchema;
-const dataElementSourceSchema = require('./schemas').dataElementSourceSchema;
-const isOrgCurator = require('../../shared/system/authorizationShared').isOrgCurator;
+const schemas = require('./schemas');
 
 exports.type = "cde";
 exports.name = "CDEs";
+
+const ajvElt = new Ajv();
+let validateSchema;
+fs.readFile(path.resolve(__dirname, '../../shared/de/assets/dataElement.schema.json'), (err, file) => {
+    if (!file) {
+        console.log('Error: dataElement.schema.json missing. ' + err);
+        process.exit(1);
+    }
+    validateSchema = ajvElt.compile(JSON.parse(file.toString()));
+});
 
 schemas.dataElementSchema.post('remove', (doc, next) => {
     elastic.dataElementDelete(doc, next);
 });
 schemas.dataElementSchema.pre('save', function (next) {
-    let self = this;
+    let elt = this;
+
     if (this.archived) return next();
-    let cdeError = deValidator.checkPvUnicity(self.valueDomain);
+    let cdeError = deValidator.checkPvUnicity(elt.valueDomain);
     if (!cdeError) {
-        cdeError = deValidator.checkDefinitions(self);
+        cdeError = deValidator.checkDefinitions(elt);
     }
     if (cdeError && !cdeError.allValid) {
         cdeError.tinyId = this.tinyId;
@@ -29,22 +41,31 @@ schemas.dataElementSchema.pre('save', function (next) {
             stack: new Error().stack,
             details: JSON.stringify(cdeError)
         });
-        next(new Error(JSON.stringify(cdeError)));
-    } else {
-        try {
-            elastic.updateOrInsert(self);
-        } catch (exception) {
-            logging.errorLogger.error("Error Indexing CDE", {details: exception, stack: new Error().stack});
-        }
-        next();
+        return next(new Error(JSON.stringify(cdeError)));
     }
+
+    // validate
+    if (!validateSchema(elt)) {
+        return next(validateSchema.errors.map(e => e.dataPath + ': ' + e.message).join(', '));
+    }
+    let valErr = elt.validateSync();
+    if (valErr) {
+        return next('Doc does not pass validation: ' + valErr.message);
+    }
+
+    try {
+        elastic.updateOrInsert(elt);
+    } catch (exception) {
+        logging.errorLogger.error("Error Indexing CDE", {details: exception, stack: new Error().stack});
+    }
+    next();
 });
 
 let conn = connHelper.establishConnection(config.database.appData);
 let CdeAudit = conn.model('CdeAudit', schemas.auditSchema);
 let DataElement = conn.model('DataElement', schemas.dataElementSchema);
-let DataElementDraft = conn.model('DataElementDraft', draftSchema);
-let DataElementSource = conn.model('DataElementSource', dataElementSourceSchema);
+let DataElementDraft = conn.model('DataElementDraft', schemas.draftSchema);
+let DataElementSource = conn.model('DataElementSource', schemas.dataElementSourceSchema);
 let User = require('../user/userDb').User;
 
 let auditModifications = mongo_data.auditModifications(CdeAudit);
@@ -56,6 +77,29 @@ exports.DataElementSource = DataElementSource;
 exports.User = User;
 
 mongo_data.attachables.push(exports.DataElement);
+
+function defaultElt(elt) {
+    deValidator.wipeDatatype(elt);
+    if (!elt.registrationState || !elt.registrationState.registrationStatus) {
+        elt.registrationState = {registrationStatus: 'Incomplete'};
+    }
+}
+
+function updateUser(elt, user) {
+    defaultElt(elt);
+    if (!elt.created) elt.created = new Date();
+    if (!elt.createdBy) {
+        elt.createdBy = {
+            userId: user._id,
+            username: user.username
+        };
+    }
+    elt.updated = new Date();
+    elt.updatedBy = {
+        userId: user._id,
+        username: user.username
+    };
+}
 
 // cb(err, elt)
 exports.byExisting = (elt, cb) => {
@@ -71,12 +115,7 @@ exports.byIdList = function (idList, cb) {
 };
 
 exports.byTinyId = function (tinyId, cb) {
-    if (cb) {
-        DataElement.findOne({'tinyId': tinyId, archived: false}, cb);
-    } else {
-        return DataElement.findOne({'tinyId': tinyId, archived: false}).exec();
-    }
-
+    return DataElement.findOne({'tinyId': tinyId, archived: false}, cb);
 };
 
 exports.latestVersionByTinyId = function (tinyId, cb) {
@@ -100,20 +139,21 @@ exports.byTinyIdList = function (tinyIdList, callback) {
         });
 };
 
-exports.draftDataElement = function (tinyId, cb) {
+exports.draftByTinyId = function (tinyId, cb) {
     let cond = {
         tinyId: tinyId,
         archived: false
     };
     DataElementDraft.findOne(cond, cb);
 };
-exports.draftDataElementById = function (id, cb) {
+exports.draftById = function (id, cb) {
     let cond = {
         _id: id
     };
     DataElementDraft.findOne(cond, cb);
 };
-exports.saveDraft = function (elt, cb) {
+exports.draftSave = function (elt, user, cb) {
+    updateUser(elt, user);
     DataElementDraft.findById(elt._id, (err, doc) => {
         if (err) {
             cb(err);
@@ -133,7 +173,7 @@ exports.saveDraft = function (elt, cb) {
     });
 };
 
-exports.deleteDraftDataElement = function (tinyId, cb) {
+exports.draftDelete = function (tinyId, cb) {
     DataElementDraft.remove({tinyId: tinyId}, cb);
 };
 
@@ -153,8 +193,7 @@ exports.getStream = function (condition) {
 };
 
 exports.count = function (condition, callback) {
-    if (callback) DataElement.countDocuments(condition, callback);
-    else return DataElement.countDocuments(condition).exec();
+    return DataElement.countDocuments(condition, callback);
 };
 
 exports.desByConcept = function (concept, callback) {
@@ -216,22 +255,18 @@ exports.save = function (mongooseObject, callback) {
     });
 };
 
-exports.create = function (cde, user, callback) {
-    let newItem = new DataElement(cde);
-    if (!newItem.registrationState || !newItem.registrationState.registrationStatus) {
-        newItem.registrationState = {
-            registrationStatus: "Incomplete"
-        };
-    }
-    newItem.created = Date.now();
-    newItem.createdBy = {
+exports.create = function (elt, user, callback) {
+    defaultElt(elt);
+    elt.created = Date.now();
+    elt.createdBy = {
         userId: user._id,
         username: user.username
     };
+    let newItem = new DataElement(elt);
     newItem.tinyId = mongo_data.generateTinyId();
     newItem.save((err, newElt) => {
         callback(err, newElt);
-        auditModifications(user, null, newElt);
+        if (!err) auditModifications(user, null, newElt);
     });
 };
 
@@ -244,8 +279,6 @@ exports.fork = function (elt, user, callback) {
     });
 };
 
-exports.newObject = obj => new DataElement(obj);
-
 exports.update = function (elt, user, callback, special) {
     if (elt.toObject) elt = elt.toObject();
     return DataElement.findById(elt._id, (err, dataElement) => {
@@ -256,53 +289,27 @@ exports.update = function (elt, user, callback, special) {
         delete elt._id;
         if (!elt.history) elt.history = [];
         elt.history.push(dataElement._id);
-        elt.updated = new Date().toJSON();
-        elt.updatedBy = {
-            userId: user._id,
-            username: user.username
-        };
+        updateUser(elt, user);
         elt.sources = dataElement.sources;
         elt.comments = dataElement.comments;
-        let newDe = new DataElement(elt);
+        let newElt = new DataElement(elt);
 
         if (special) {
-            special(newDe, dataElement);
+            special(newElt, dataElement);
         }
 
-        let valErr = newDe.validateSync();
-        if (valErr) return callback("Doc does not pass validation: " + valErr.message);
-
-        DataElement.findOneAndUpdate({_id: dataElement._id}, {$set: {archived: true}}, err => {
-            if (err) {
-                logging.errorLogger.error(
-                    "Transaction failed. Cannot save archived CDE: " + newDe.tinyId,
-                    {
-                        stack: new Error().stack,
-                        details: "err " + err
-                    }
-                );
+        // archive dataElement and replace it with newElt
+        DataElement.findOneAndUpdate({_id: dataElement._id, archived: false}, {$set: {archived: true}}, (err, doc) => {
+            if (err || !doc) {
+                callback(err, doc);
+                return;
             }
-            newDe.save((err, savedDe) => {
+            newElt.save((err, savedElt) => {
                 if (err) {
-                    logging.errorLogger.error("Cannot save new CDE: " + newDe.tinyId,
-                        {
-                            stack: new Error().stack,
-                            details: "err " + err
-                        });
-                    DataElement.findOneAndUpdate({_id: dataElement._id}, {$set: {archived: false}}, err => {
-                        if (err) {
-                            logging.errorLogger.error(
-                                "Transaction failed. Unable to unarchive CDE. fix data manually: " + newDe.tinyId,
-                                {
-                                    stack: new Error().stack,
-                                    details: "err " + err
-                                });
-                        }
-                    });
-                    callback(err);
+                    DataElement.findOneAndUpdate({_id: dataElement._id}, {$set: {archived: false}}, () => callback(err));
                 } else {
-                    callback(err, savedDe);
-                    auditModifications(user, dataElement, newDe);
+                    callback(undefined, savedElt);
+                    auditModifications(user, dataElement, savedElt);
                 }
             });
         });
