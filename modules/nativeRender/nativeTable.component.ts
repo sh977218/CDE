@@ -118,7 +118,7 @@ export class NativeTableComponent {
         const numberList = (repeatNumber: number = 1) => {
             return repeatNumber > 1
                 ? range(repeatNumber).map(i => this.repeatFormat().replace(/#/, (i + 1).toString()))
-                : new Array(repeatNumber).fill('');
+                : new Array(repeatNumber || 0).fill('');
         };
 
         if (level === 0) {
