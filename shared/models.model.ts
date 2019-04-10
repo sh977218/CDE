@@ -143,6 +143,7 @@ export class DataSource {
     copyright?: FormattedValue;
     created?: Date;
     datatype?: string;
+    imported?: Date;
     registrationStatus?: string;
     sourceName?: string;
     updated?: Date;

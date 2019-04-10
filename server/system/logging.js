@@ -24,51 +24,59 @@ MongoLogger.prototype.log = function (level, msg, meta, callback) {
         var logEvent = JSON.parse(msg);
         logEvent.level = level;
         dbLogger.log(logEvent, function (err) {
-            if (err) noDbLogger.noDbLogger.error("Cannot log to DB: " + err);
-            callback(null, true);    
+            if (err) noDbLogger.noDbLogger.error('Cannot log to DB: ' + err);
+            callback(null, true);
         });
     } catch (e) {
-        noDbLogger.noDbLogger.error("Cannot log to DB: " + e);
+        noDbLogger.noDbLogger.error('Cannot log to DB: ' + e);
     }
 };
-  
+
 exports.MongoLogger = MongoLogger;
 
 MongoErrorLogger.prototype.log = function (level, msg, meta) {
     if (!meta) meta = {};
-    let processDetails = function(details){
-        if (!details) return "No details provided.";
-        if (typeof details === "string") return details;
-        if (typeof details !== "object") return "No details provided.";
+    function processDetails(details) {
+        if (!details) {
+            return 'No details provided.';
+        }
+        if (typeof details === 'string') {
+            return details;
+        }
+        if (typeof details !== 'object') {
+            return 'No details provided.';
+        }
         Object.keys(details).map(name => {
             let value = details[name];
-            if (typeof value === "string") return name + "=" + value;
-            else if (typeof value === "object" && typeof value.toString === "function") return name + "=" + value.toString();
-            else if (typeof value === "object" && typeof value.name !== "undefined") return name + "=" + value.name;
-            else {
-                try {
-                    var valueStr = JSON.stringify(value);
-                    return name + "=" + valueStr;
-                } catch(e){
-                    return "Error in logger: Cannot process details. Cannot parse JSON.";
-                }
+            if (typeof value === 'string') {
+                return name + '=' + value;
+            }
+            if (typeof value === 'object' && typeof value.toString === 'function') {
+                return name + '=' + value.toString();
+            }
+            if (typeof value === 'object' && typeof value.name !== 'undefined') {
+                return name + '=' + value.name;
+            }
+            try {
+                return name + '=' + JSON.stringify(value);
+            } catch (e) {
+                return 'Error in logger: Cannot process details. Cannot parse JSON.';
             }
         });
-        
-    };
+    }
     try {
         let message = {
-            message: msg
-            , origin: meta.origin
-            , stack: meta.stack || new Error().stack  
-            , details: processDetails(meta.details)
+            message: msg,
+            origin: meta.origin,
+            stack: meta.stack || new Error().stack,
+            details: processDetails(meta.details),
         };
         if (meta.request) message.request = exports.generateErrorLogRequest(meta.request);
         dbLogger.logError(message, err => {
-            if (err) noDbLogger.noDbLogger.error("Cannot log to DB: " + msg)
+            if (err) noDbLogger.noDbLogger.error('Cannot log to DB: ' + msg);
         });
     } catch (e) {
-        noDbLogger.noDbLogger.error("Cannot log to DB: " + e);
+        noDbLogger.noDbLogger.error('Cannot log to DB: ' + e);
     }
 };
 
@@ -76,8 +84,8 @@ exports.MongoErrorLogger = MongoErrorLogger;
 
 let expressLoggerCnf = {
   transports: [ new winston.transports.MongoLogger({
-        json: true
-    })]
+      json: true
+  })]
 };
 
 
@@ -110,9 +118,7 @@ exports.generateErrorLogRequest = function (req) {
         method = req.method;
         body = JSON.stringify(req.body);
         if (req.user) username = req.user.username;
-    } catch (e){
-        
-    }
+    } catch (e) {}
     return {
         url: url
         , method: method

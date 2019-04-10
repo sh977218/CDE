@@ -1,0 +1,694 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://cde.nlm.nih.gov/json-schema/AdminItem",
+  "$ref": "#/definitions/adminItem",
+  "definitions": {
+    "adminItem": {
+      "title": "DataElement",
+      "type": "object",
+      "properties": {
+        "__v": {
+          "type": "number"
+        },
+        "_id": {
+          "$ref": "#/definitions/objectId"
+        },
+        "archived": {
+          "type": "boolean",
+          "default": false,
+          "description": "Indication of historical record. True for previous versions."
+        },
+        "attachments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "fileid": {
+                "type": "string"
+              },
+              "filename": {
+                "type": "string"
+              },
+              "filetype": {
+                "type": "string"
+              },
+              "uploadDate": {
+                "$ref": "#/definitions/date"
+              },
+              "comment": {
+                "type": "string"
+              },
+              "uploadedBy": {
+                "title": "uploadedBy",
+                "type": "object",
+                "properties": {
+                  "userId": {
+                    "$ref": "#/definitions/objectId"
+                  },
+                  "username": {
+                    "type": "string"
+                  }
+                }
+              },
+              "filesize": {
+                "type": "number"
+              },
+              "isDefault": {
+                "type": "boolean"
+              },
+              "pendingApproval": {
+                "type": "boolean"
+              },
+              "scanned": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "changeNote": {
+          "description": "Description of last modification",
+          "anyOf": [
+            {"type": "string"},
+            {"type": "null"}
+          ]
+        },
+        "classification": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "stewardOrg": {
+                "title": "stewardOrg",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              },
+              "workingGroup": {
+                "type": "boolean"
+              },
+              "elements": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "$ref": "#/definitions/classificationElement"
+                }
+              }
+            },
+            "required": [
+              "elements",
+              "stewardOrg"
+            ]
+          },
+          "description": "Organization or categorization by Steward Organization"
+        },
+        "created": {
+          "$ref": "#/definitions/date"
+        },
+        "createdBy": {
+          "title": "createdBy",
+          "type": "object",
+          "properties": {
+            "userId": {
+              "$ref": "#/definitions/objectId"
+            },
+            "username": {
+              "type": "string"
+            }
+          }
+        },
+        "elementType": {
+          "type": "string",
+          "enum": [
+            "cde",
+            "form"
+          ]
+        },
+        "definitions": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/definition" }
+        },
+        "designations": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/definitions/designation" },
+          "description": "Any string used by which Item is known, addressed or referred to"
+        },
+        "forkOf": {
+          "type": "string",
+          "description": "May point to a tinyID if the Item is a fork"
+        },
+        "history": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/objectId"
+          }
+        },
+        "ids": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/identifier" },
+          "description": "Identifier used to establish or indicate what Item is within a specific context"
+        },
+        "imported": {
+          "description": "Date last imported from source",
+          "$ref": "#/definitions/date"
+        },
+        "lastMigrationScript": {
+          "type": "string",
+          "description": "Internal use only"
+        },
+        "origin": {
+          "type": "string",
+          "description": "Name of system where Item is derived"
+        },
+        "properties": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "key": {
+                "type": "string",
+                "minLength": 1
+              },
+              "value": {
+                "type": "string",
+                "minLength": 1
+              },
+              "source": {
+                "type": "string"
+              },
+              "valueFormat": {
+                "type": "string",
+                "enum": [
+                  "html",
+                  ""
+                ]
+              }
+            },
+            "required": [
+              "key",
+              "value"
+            ]
+          },
+          "description": "Attribute not otherwise documented by structured Item record"
+        },
+        "referenceDocuments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "docType": {
+                "type": "string"
+              },
+              "document": {
+                "type": "string"
+              },
+              "referenceDocumentId": {
+                "type": "string"
+              },
+              "text": {
+                "type": "string"
+              },
+              "uri": {
+                "type": "string"
+              },
+              "providerOrg": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "languageCode": {
+                "type": "string"
+              },
+              "source": {
+                "type": "string"
+              }
+            }
+          },
+          "description": "Any written, printed or electronic matter used as a source of information. Used to provide information or evidence of authoritative or official record."
+        },
+        "registrationState": {
+          "title": "registrationState",
+          "type": "object",
+          "properties": {
+            "registrationStatus": {
+              "type": "string",
+              "enum": [
+                "Preferred Standard",
+                "Standard",
+                "Qualified",
+                "Recorded",
+                "Candidate",
+                "Incomplete",
+                "Retired"
+              ]
+            },
+            "effectiveDate": {
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/date"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "untilDate": {
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/date"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "administrativeNote": {
+              "type": "string"
+            },
+            "unresolvedIssue": {
+              "type": "string"
+            },
+            "administrativeStatus": {
+              "type": "string",
+              "description": "Relative standing of Item as it relates to steward's administrative workflow"
+            },
+            "replacedBy": {
+              "title": "replacedBy",
+              "type": "object",
+              "properties": {
+                "tinyId": {
+                  "type": "string",
+                  "description": "tinyId of replacement Item"
+                }
+              }
+            }
+          },
+          "required": [
+            "registrationStatus"
+          ]
+        },
+        "source": {
+          "type": "string",
+          "description": "This field is replaced with sources"
+        },
+        "sources": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/source" },
+          "description": "Name of system from which Item was imported or obtained from"
+        },
+        "stewardOrg": {
+          "title": "stewardOrg",
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "Name of organization or entity responsible for supervising content and administration of Item",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "name"
+          ]
+        },
+        "tinyId": {
+          "type": "string",
+          "description": "CDE Repository Identifier"
+        },
+        "updated": {
+          "$ref": "#/definitions/date"
+        },
+        "updatedBy": {
+          "title": "updatedBy",
+          "type": "object",
+          "properties": {
+            "userId": {
+              "$ref": "#/definitions/objectId"
+            },
+            "username": {
+              "type": "string"
+            }
+          }
+        },
+        "version": {
+          "type": "string"
+        },
+        "views": {
+          "type": "number",
+          "default": 0
+        }
+      },
+      "required": [
+        "registrationState",
+        "stewardOrg"
+      ]
+    },
+    "classificationElement": {
+      "type": "object",
+      "properties": {
+        "elements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/classificationElement"
+          }
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "dataSet": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "studyUri": {
+          "type": "string"
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "date": {
+      "anyOf": [
+        {
+          "type": "string",
+          "format": "date-time"
+        },
+        {
+          "type": "string",
+          "format": "date"
+        },
+        {
+          "type": "object"
+        }
+      ]
+    },
+    "datatypeContainer": {
+      "type": "object",
+      "properties": {
+        "datatype": {
+          "type": "string",
+          "description": "Expected type of data"
+        },
+        "datatypeNumber": {
+          "title": "datatypeNumber",
+          "type": "object",
+          "properties": {
+            "minValue": {
+              "type": "number"
+            },
+            "maxValue": {
+              "type": "number"
+            },
+            "precision": {
+              "type": "number",
+              "description": "Any precision for this number. Typically an integer for a float. Limit to 10^precision"
+            }
+          }
+        },
+        "datatypeText": {
+          "title": "datatypeText",
+          "type": "object",
+          "properties": {
+            "minLength": {
+              "type": "number",
+              "description": "To indicate limits on length"
+            },
+            "maxLength": {
+              "type": "number",
+              "description": "To indicate limits on length"
+            },
+            "regex": {
+              "type": "string",
+              "description": "To indicate a regular expression that someone may want to match on"
+            },
+            "rule": {
+              "type": "string",
+              "description": "Any rule may go here"
+            },
+            "showAsTextArea": {
+              "type": "boolean",
+              "default": false,
+              "description": "Multi-line"
+            }
+          }
+        },
+        "datatypeDate": {
+          "title": "datatypeDate",
+          "type": "object",
+          "properties": {
+            "precision": {
+              "type": "string",
+              "enum": [
+                "Year",
+                "Month",
+                "Day",
+                "Hour",
+                "Minute",
+                "Second"
+              ],
+              "default": "Day"
+            }
+          }
+        },
+        "datatypeTime": {
+          "title": "datatypeTime",
+          "type": "object",
+          "properties": {
+            "format": {
+              "type": "string",
+              "description": "Any format that someone may want to enforce"
+            }
+          }
+        },
+        "datatypeExternallyDefined": {
+          "title": "datatypeExternallyDefined",
+          "type": "object",
+          "properties": {
+            "link": {
+              "type": "string",
+              "description": "A link to an external source. Typically a URL"
+            },
+            "description": {
+              "type": "string"
+            },
+            "descriptionFormat": {
+              "type": "string",
+              "description": "if 'html', then parse with HTML"
+            }
+          }
+        },
+        "datatypeValueList": {
+          "title": "datatypeValueList",
+          "type": "object",
+          "properties": {
+            "datatype": {
+              "type": "string",
+              "description": "Value list format"
+            }
+          }
+        }
+      }
+    },
+    "definition": {
+      "type": "object",
+      "properties": {
+        "definition": {
+          "type": "string"
+        },
+        "definitionFormat": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "definition"
+      ]
+    },
+    "derivationRule": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "inputs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Information operated on by rule"
+        },
+        "outputs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Information produced by rule"
+        },
+        "ruleType": {
+          "type": "string",
+          "enum": [
+            "score",
+            "panel"
+          ]
+        },
+        "formula": {
+          "type": "string",
+          "enum": [
+            "sumAll",
+            "mean",
+            "bmi"
+          ]
+        },
+        "_id": {
+          "$ref": "#/definitions/objectId"
+        }
+      }
+    },
+    "designation": {
+      "type": "object",
+      "properties": {
+        "designation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "identifier": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "type": "string",
+          "minLength": 1
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "source"
+      ]
+    },
+    "objectId": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{24}$"
+        },
+        {
+          "type": "object"
+        }
+      ]
+    },
+    "permissibleValue": {
+      "type": "object",
+      "properties": {
+        "permissibleValue": {
+          "type": "string"
+        },
+        "valueMeaningName": {
+          "type": "string"
+        },
+        "valueMeaningCode": {
+          "type": "string"
+        },
+        "valueMeaningDefinition": {
+          "type": "string"
+        },
+        "codeSystemName": {
+          "type": "string"
+        },
+        "codeSystemVersion": {
+          "type": "string"
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "properties": {
+        "copyright": {
+          "title": "copyright",
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string",
+              "description": "Content of a copyright statement or terms of use"
+            },
+            "valueFormat": {
+              "type": "string",
+              "description": "If 'html', interpret as HTML"
+            }
+          }
+        },
+        "created": {
+          "description": "Date created in source",
+          "$ref": "#/definitions/date"
+        },
+        "datatype": {
+          "type": "string",
+          "description": "May contain the source datatype"
+        },
+        "imported": {
+          "description": "Date updated in source",
+          "$ref": "#/definitions/date"
+        },
+        "registrationStatus": {
+          "type": "string",
+          "description": "Relative standing of official record status in steward's workflow"
+        },
+        "sourceName": {
+          "type": "string",
+          "minLength": 1
+        },
+        "updated": {
+          "description": "Date updated in source",
+          "$ref": "#/definitions/date"
+        }
+      },
+      "required": [
+        "sourceName"
+      ]
+    }
+  }
+}

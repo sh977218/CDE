@@ -95,6 +95,10 @@ export class QuestionTypeText {
     showAsTextArea?: boolean;
 }
 
+export class QuestionTypeTime { // mutable, time only, periodic?
+    format?: string;
+}
+
 export class QuestionTypeValueList {
     datatype?: string;
 }
@@ -115,6 +119,7 @@ export class DatatypeContainer {
     datatypeExternallyDefined?: QuestionTypeExternallyDefined; // mutable
     datatypeNumber?: QuestionTypeNumber; // mutable
     datatypeText?: QuestionTypeText; // mutable
+    datatypeTime?: QuestionTypeTime;
     datatypeValueList?: QuestionTypeValueList; // mutable, unused, along with 2 more such objects
 }
 
