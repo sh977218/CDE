@@ -17,6 +17,8 @@ public class Handler implements RequestHandler<Map<String, Object>, ApiGatewayRe
     public ApiGatewayResponse handleRequest(Map<String, Object> input, Context context) {
         LOG.info("received: " + input);
 
+        System.out.println("input: " + input.toString());
+        System.out.println("context: " + context.toString());
         Response responseBody = new Response("", input);
         return ApiGatewayResponse.builder()
                 .setStatusCode(200)
