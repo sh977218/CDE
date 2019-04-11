@@ -35,7 +35,19 @@ task buildSdcValidateZip(type: Zip) {
     }
 }
 
+// Task for building the zip file for upload
+task buildZipExportZip(type: Zip) {
+    // set the base name of the zip file
+    baseName = "cde-zip-export"
+    from compileJava
+    from processResources
+    into('lib') {
+        from configurations.runtime
+    }
+}
+
 build.dependsOn buildSdcValidateZip
+build.dependsOn buildZipExportZip
 
 task wrapper(type: Wrapper) {
     gradleVersion = '3.5'
