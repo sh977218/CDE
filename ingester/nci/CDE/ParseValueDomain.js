@@ -9,7 +9,7 @@ const datatypeMapping = {
     'DATE': 'Date',
     'SAS Date': 'Date',
     'SAS Time': 'Time',
-    'DATETIME': 'Date/Time'
+    'DATETIME': 'Date'
 };
 
 exports.parseValueDomain = nciCde => {
