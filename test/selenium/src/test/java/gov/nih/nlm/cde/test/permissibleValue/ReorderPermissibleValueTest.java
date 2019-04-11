@@ -8,7 +8,7 @@ public class ReorderPermissibleValueTest extends NlmCdeBaseTest {
 
     @Test
     public void reorderPermissibleValue() {
-        String cdeName = "cde for test cde reorder detail tabs";
+        String cdeName = "Reorder permissible values cde";
         mustBeLoggedInAs(testAdmin_username, password);
         goToCdeByName(cdeName);
         goToPermissibleValues();

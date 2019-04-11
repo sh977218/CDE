@@ -5,13 +5,13 @@ const StringType = Schema.Types.StringType;
 
 const sharedSchemas = require('../system/schemas.js');
 
-var conceptSchema = new Schema({
+let conceptSchema = new Schema({
     name: StringType,
     origin: {type: StringType, description: 'Source of concept'},
     originId: {type: StringType, description: 'Identifier of concept from source'},
 }, {_id: false});
 
-var deJson = {
+let deJson = {
     elementType: {type: StringType, default: 'cde', enum: ['cde']},
     designations: {
         type: [sharedSchemas.designationSchema],
