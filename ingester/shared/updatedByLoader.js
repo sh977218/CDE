@@ -8,5 +8,6 @@ exports.updatedByLoader = elt => {
 };
 
 exports.batchloader = {
-    username: BATCHLOADER_USERNAME
+    username: BATCHLOADER_USERNAME,
+    roles: ['AttachmentReviewer']
 };

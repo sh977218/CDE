@@ -4,7 +4,7 @@ const parseString = new xml2js.Parser({attrkey: 'attribute'}).parseString;
 
 exports.parseSources = nciCde => {
     return new Promise((resolve, reject) => {
-        let source = {sourceName: 'caDSR'};
+        let source = {sourceName: 'caDSR',imported:new Date()};
         if (nciCde.VALUEDOMAIN[0].Datatype[0])
             source['datatype'] = nciCde.VALUEDOMAIN[0].Datatype[0];
         if (nciCde.REGISTRATIONSTATUS[0] && nciCde.REGISTRATIONSTATUS[0].length > 0) {
