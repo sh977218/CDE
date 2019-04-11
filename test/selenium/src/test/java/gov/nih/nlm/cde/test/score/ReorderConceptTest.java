@@ -8,7 +8,7 @@ import org.testng.annotations.Test;
 public class ReorderConceptTest extends NlmCdeBaseTest {
     @Test
     public void reorderConceptTest() {
-        String cdeName = "cde for test cde reorder detail tabs";
+        String cdeName = "Reorder concept cde";
         mustBeLoggedInAs(testAdmin_username, password);
         goToCdeByName(cdeName);
         goToConcepts();
