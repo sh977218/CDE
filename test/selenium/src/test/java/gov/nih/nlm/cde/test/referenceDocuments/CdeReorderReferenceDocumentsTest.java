@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 public class CdeReorderReferenceDocumentsTest extends NlmCdeBaseTest {
     @Test
     public void cdeReorderReferenceDocuments() {
-        String cdeName = "cde for test cde reorder detail tabs";
+        String cdeName = "Reorder reference document cde";
 
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName(cdeName);

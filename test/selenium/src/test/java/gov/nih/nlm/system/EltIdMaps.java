@@ -65,6 +65,11 @@ public class EltIdMaps {
         eltMap.put("Pulmonary function lung function measurement", "CC09PXVh8dF");
         eltMap.put("PvValidatorCde", "7Jn4ByTd_");
         eltMap.put("Revised Childrens Anxiety and Depression Scale (RCADS) - School attendance trouble nervous afraid scale", "7k_flGOZ_3de");
+        eltMap.put("Reorder reference document cde", "QJE9qwgEP");
+        eltMap.put("Reorder properties cde", "mkgGjDg4D");
+        eltMap.put("Reorder concept cde", "71EPiweND");
+        eltMap.put("Reorder permissible values cde", "QkOasvgNP");
+        eltMap.put("Reorder designations cde", "71Cz2vxNv");
         eltMap.put("Sarcoma Dominant Histology Type", "KHj2gnZqxZW");
         eltMap.put("Scale for Outcomes in PD Autonomic (SCOPA-AUT) - urinate night indicator", "NuQwuCAZrz5");
         eltMap.put("SDC Adrenal", "XySUBn_NZ");
@@ -151,6 +156,8 @@ public class EltIdMaps {
         eltMap.put("Question Repeat", "XkCtybYXB");
         eltMap.put("Recursive Form", "mkMUtAXlI");
         eltMap.put("Remove SkipLogic Form", "X1s87bif7");
+        eltMap.put("Reorder reference document form", "7yxjmyAQP");
+        eltMap.put("Reorder definition form", "myYlSJAQD");
         eltMap.put("Section in Section Form", "Q11QuVmN_");
         eltMap.put("Section Inside Section Form", "71AKDVQhW");
         eltMap.put("Section Test Form", "XJFylVmN_");

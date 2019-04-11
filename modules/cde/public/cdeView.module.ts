@@ -22,7 +22,6 @@ import { DatasetsComponent } from 'cde/public/components/datasets/datasets.compo
 import { DataElementViewComponent } from 'cde/public/components/dataElementView.component';
 import { DerivationRulesComponent } from 'cde/public/components/derivationRules.component';
 import { MoreLikeThisComponent } from 'cde/public/components/mlt/moreLikeThis.component';
-import { PermissibleValueComponent } from 'cde/public/components/permissibleValue.component';
 import { CdeClassificationComponent } from 'cde/public/components/cdeClassification/cdeClassification.component';
 import { DeGeneralDetailsComponent } from 'cde/public/components/deGeneralDetails/deGeneralDetails.component';
 import { ValidRulesComponent } from 'cde/public/components/validationRules/validRules.component';
@@ -34,6 +33,7 @@ import { InlineEditModule } from 'inlineEdit/inlineEdit.module';
 import { InlineSelectEditModule } from 'inlineSelectEdit/inlineSelectEdit.module';
 import { InlineAreaEditModule } from 'inlineAreaEdit/inlineAreaEdit.module';
 import { SortableArrayModule } from 'sortableArray/sortableArray.module';
+import { PermissibleValueComponent } from 'cde/public/components/permissibleValue/permissibleValue.component';
 
 const appRoutes: Routes = [
     {path: '', component: DataElementViewComponent},
