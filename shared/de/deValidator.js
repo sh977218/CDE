@@ -16,19 +16,19 @@ export const checkPvUnicity = function (valueDomain) {
             return result;
         }
         if (allPvs[pv.permissibleValue]) {
-            pv.notValid = 'Duplicate Permissible Value: ' + allPvs[pv.permissibleValue];
+            pv.notValid = 'Duplicate Permissible Value: ' + pv.permissibleValue;
             result.pvNotValidMsg = pv.notValid;
             result.allValid = false;
             return result;
         }
         if (allVms[pv.valueMeaningName]) {
-            pv.notValid = 'Duplicate Code Name: ' + allVms[pv.valueMeaningName];
+            pv.notValid = 'Duplicate Code Name: ' + pv.valueMeaningName;
             result.pvNotValidMsg = pv.notValid;
             result.allValid = false;
             return result;
         }
         if (allCodes[pv.valueMeaningCode]) {
-            pv.notValid = 'Duplicate Code: ' + allCodes[pv.valueMeaningCode];
+            pv.notValid = 'Duplicate Code: ' + pv.valueMeaningCode;
             result.pvNotValidMsg = pv.notValid;
             result.allValid = false;
             return result;
