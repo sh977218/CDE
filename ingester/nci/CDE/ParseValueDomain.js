@@ -1,22 +1,42 @@
 const datatypeMapping = {
+    "CHARACTER": 'Text',
+    "character": 'Text',
+    "java.lang.String": 'Text',
+    "java.lang.string": 'Text',
     'ALPHANUMERIC': 'Text',
+    'alphanumberic': 'Text',
     'varchar': 'Text',
     'CLOB': 'Text',
-    'CHARACTER': 'Text',
+    'clob': 'Text',
+
     'Integer': 'Number',
+    'integer': 'Number',
+    "Integer": 'Number',
     'NUMBER': 'Number',
+    'number': 'Number',
+
     'TIME': 'Time',
-    'DATE': 'Date',
-    'SAS Date': 'Date',
+    'time': 'Time',
     'SAS Time': 'Time',
-    'DATETIME': 'Date'
+    'sas time': 'Time',
+
+    'DATE': 'Date',
+    'date': 'Date',
+    'SAS Date': 'Date',
+    'sas date': 'Date',
+    "DATE/TIME": 'Date',
+    "Date/Time": 'Date',
+    "date/time": 'Date',
+    "DATETIME": 'Date',
+    'datetime': 'Date'
 };
 
 exports.parseValueDomain = nciCde => {
     let valueDomain = {
         permissibleValues: []
     };
-    let nciDataType = nciCde.VALUEDOMAIN[0].Datatype[0];
+    let nciDataTypeString = nciCde.VALUEDOMAIN[0].Datatype[0];
+    let nciDataType = nciDataTypeString.trim().toLowerCase();
     if (!datatypeMapping[nciDataType]) throw 'No Mapping in ParseValueDomain ' + nciDataType;
     valueDomain.datatype = datatypeMapping[nciDataType];
 
