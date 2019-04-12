@@ -7,6 +7,7 @@ public class PublicBoardsTest extends BoardTest {
 
     @Test
     public void searchPublicBoard() {
+        goHome();
         clickElement(By.id("boardsMenu"));
         findElement(By.name("search")).sendKeys("board");
         clickElement(By.id("search.submit"));
@@ -25,6 +26,7 @@ public class PublicBoardsTest extends BoardTest {
 
     @Test
     public void searchPublicBoardNoResult() {
+        goHome();
         clickElement(By.id("boardsMenu"));
         textPresent("Cerebral Palsy");
         textPresent("Public Smoking Board");
