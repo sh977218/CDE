@@ -4,13 +4,16 @@
         <ng-container *ngIf="allowSources.indexOf(eltSource.sourceName) > -1">
             <dt class="col-3 text-right" matTooltip="Original Data in NLM CDE format">Raw Artifact:</dt>
             <dd class="col-9">
-                <a [href]="'/originalSource/'+elt.elementType+'/'+eltSource.sourceName+'/'+elt.tinyId" target="_blank">Source
-                    File</a>
+                <a [href]="'/originalSource/'+elt.elementType+'/'+eltSource.sourceName+'/'+elt.tinyId" target="_blank">Raw Artifact</a>
             </dd>
         </ng-container>
         <ng-container *ngIf="eltSource.sourceName">
             <dt class="col-3 text-right">Name:</dt>
             <dd class="col-9">{{eltSource.sourceName}}</dd>
+        </ng-container>
+        <ng-container *ngIf="eltSource.imported">
+            <dt class="col-3 text-right">Imported:</dt>
+            <dd class="col-9">{{eltSource.imported | date: 'MM/dd/yyyy @ h:mma'}}</dd>
         </ng-container>
         <ng-container *ngIf="eltSource.created">
             <dt class="col-3 text-right">Created:</dt>
