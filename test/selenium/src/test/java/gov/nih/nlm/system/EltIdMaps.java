@@ -87,6 +87,7 @@ public class EltIdMaps {
         eltMap.put("Temperature maximum daily measurement", "hO8j7EqG61K");
         eltMap.put("Treatment Text Other Text", "3XoxhY_Xv8x");
         eltMap.put("Trouble falling or staying asleep, or sleeping too much in last 2 weeks [Reported.PHQ]", "m1xj2YMI1X");
+        eltMap.put("UnclassifiedCDE", "mkH_UGXEw");
         eltMap.put("Urinary tract surgical procedure indicator", "9h_xBFxdO4e");
         eltMap.put("Urinary tract drug type last year type", "c56fasYoV1T");
         eltMap.put("Vision (aura) typical symptom type", "rRqc8KG1RNO");
@@ -179,6 +180,7 @@ public class EltIdMaps {
         eltMap.put("Traumatic Brain Injury - Adverse Events", "sdsflijkfsd");
         eltMap.put("Type, Place, Cause and Mechanism of Injury", "XyqIIyrBtx");
         eltMap.put("Two Dimensional Speckle Tracking Echocardiography Imaging", "7kKLUkHBtl");
+        eltMap.put("UnclassifiedForm", "71m0HfXEv");
         eltMap.put("Written Verbal Fluency Test", "QklqIkSrKx");
         eltMap.put("Vessel Imaging Angiography", "XJDPIySHtx");
         eltMap.put("Vital Signs and Tests", "XyWYLJSBKx");
