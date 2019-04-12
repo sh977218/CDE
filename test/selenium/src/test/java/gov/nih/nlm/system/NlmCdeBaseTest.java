@@ -2,16 +2,6 @@ package gov.nih.nlm.system;
 
 import com.paulhammant.ngwebdriver.NgWebDriver;
 import org.apache.commons.io.FileUtils;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.CookieStore;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.protocol.HttpClientContext;
-import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
-import org.apache.http.message.BasicNameValuePair;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
@@ -134,7 +124,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         }
 
         System.out.println("baseUrl: " + baseUrl);
-        driver.get(baseUrl);
+//        driver.get(baseUrl);
         driver.manage().timeouts().implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
 
         wait = new WebDriverWait(driver, defaultTimeout, 600);
@@ -253,59 +243,22 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void doLogin(String username, String password) {
-        List<WebElement> loginLinkList = driver.findElements(By.xpath("//*[@id='login_link']"));
-        if (loginLinkList.size() > 0) {
-            loginAs(username, password);
-        } else {
-            if (!isUsernameMatch(username)) {
-                logout();
+//        driver.get(baseUrl + "/login");
+//        List<WebElement> loginLinkList = driver.findElements(By.xpath("//*[@id='login_link']"));
+//        if (loginLinkList.size() > 0) {
+//            loginAs(username, password);
+//        } else {
+//            if (!isUsernameMatch(username)) {
+//                logout();
                 loginAs(username, password);
-            }
-        }
+//            }
+//        }
     }
 
     protected void mustBeLoggedInAs(String username, String password) {
-//        doLogin(username, password);
+        doLogin(username, password);
 
-        CloseableHttpAsyncClient httpclient = HttpAsyncClients.createDefault();
-
-
-        HttpClientContext localContext = HttpClientContext.create();
-        CookieStore cookieStore = new BasicCookieStore();
-
-        HttpGet httpget = new HttpGet("https://www.hepsiburada.com/ayagina-gelsin/giris");
-        System.out.println("Executing request " + httpget.getRequestLine());
-
-        httpclient.start();
-
-        // Pass local context as a parameter
-        Future<HttpResponse> future = httpclient.execute(httpget, localContext, null);
-
-        // Please note that it may be unsafe to access HttpContext instance
-        // while the request is still being executed
-
-        System.out.println("Shutting down");
-
-        HttpPost httpPost = new HttpPost("https://www.hepsiburada.com/ayagina-gelsin/Customer/Login");
-        List<NameValuePair> params = new ArrayList<NameValuePair>();
-        params.add(new BasicNameValuePair("em", "swtestacademy@mailinator.com"));
-        params.add(new BasicNameValuePair("p", "Qwerty_123"));
-        httpPost.setEntity(new UrlEncodedFormEntity(params));
-        future = httpclient.execute(httpPost,localContext,null);
-        HttpResponse response = future.get();
-        System.out.println("Response: " + response.getStatusLine());
-        List<Cookie> cookies = cookieStore.getCookies();
-        cookies = cookieStore.getCookies();
-
-        org.openqa.selenium.Cookie c;
-        for (int i = 0; i < cookies.size(); i++) {
-            System.out.println("Local cookie: " + cookies.get(i));
-            c = new org.openqa.selenium.Cookie(cookies.get(i).getName(),cookies.get(i).getValue());
-            driver.manage().addCookie(c);
-        }
-
-
-        goToCdeSearch();
+//        goToCdeSearch();
     }
 
     protected void addIdSource(String source, String deLink, String formLink) {
@@ -786,15 +739,16 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void loginAs(String username, String password) {
-        clickElement(By.id("login_link"));
-        textPresent("Please Log In");
+        driver.get(baseUrl + "/login");
+        //        clickElement(By.id("login_link"));
+//        textPresent("Please Log In");
         String usernameStr = username;
         if (username.length() > 17) {
             usernameStr = usernameStr.substring(0, 17) + "...";
         }
 
-        findElement(By.id("uname")).clear();
-        findElement(By.id("passwd")).clear();
+//        findElement(By.id("uname")).clear();
+//        findElement(By.id("passwd")).clear();
         findElement(By.id("uname")).sendKeys(username);
         findElement(By.id("passwd")).sendKeys(password);
         clickElement(By.id("login_button"));
