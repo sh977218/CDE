@@ -243,16 +243,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void doLogin(String username, String password) {
-//        driver.get(baseUrl + "/login");
-//        List<WebElement> loginLinkList = driver.findElements(By.xpath("//*[@id='login_link']"));
-//        if (loginLinkList.size() > 0) {
-//            loginAs(username, password);
-//        } else {
-//            if (!isUsernameMatch(username)) {
-//                logout();
-                loginAs(username, password);
-//            }
-//        }
+        loginAs(username, password);
     }
 
     protected void mustBeLoggedInAs(String username, String password) {
@@ -729,15 +720,11 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
 
     protected void loginAs(String username, String password) {
         driver.get(baseUrl + "/login");
-        //        clickElement(By.id("login_link"));
-//        textPresent("Please Log In");
         String usernameStr = username;
         if (username.length() > 17) {
             usernameStr = usernameStr.substring(0, 17) + "...";
         }
 
-//        findElement(By.id("uname")).clear();
-//        findElement(By.id("passwd")).clear();
         findElement(By.id("uname")).sendKeys(username);
         findElement(By.id("passwd")).sendKeys(password);
         clickElement(By.id("login_button"));
