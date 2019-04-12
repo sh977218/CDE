@@ -697,18 +697,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void goHome() {
-        clickElement(By.id("homeLink"));
-        isHome();
-    }
-
-    protected void isHome() {
-        textPresent("has been designed to provide access", By.id("introduction"));
-        findElement(By.cssSelector(".carousel-indicators"));
-    }
-
-    protected void goHomeStatic() {
-        mustBeLoggedOut();
-        driver.get(baseUrl + "/home");
+        driver.get(baseUrl);
         textPresent("has been designed to provide access", By.id("introduction"));
         findElement(By.cssSelector(".carousel-indicators"));
     }
@@ -1516,6 +1505,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
 
 
     protected void swaggerApi(String api, String text, String tinyId, String version) {
+        goHome();
         clickElement(By.id("helpLink"));
         clickElement(By.id("apiDocumentationLink"));
         hangon(1);

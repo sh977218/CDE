@@ -4,25 +4,19 @@ import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.junit.Assert;
 import org.testng.annotations.Test;
 
-public class CdePVLoincTest extends NlmCdeBaseTest {
-    static String[] urls = new String[]{
-            "/de/mkmhYJOnk7l",
-            "/de/mkmhYJOnk7l/version/",
-            "/deById/5b55fc19c805703830125b6a/",
-            "/deList/mkmhYJOnk7l"
-    };
+public class NotLoggedInCannotSeeLoinc extends NlmCdeBaseTest {
 
     @Test
-    public void cdeNotLoginCannotSeeLoinc() {
-        for (String url : urls) {
+    public void cdeLoginCanSeeLoinc() {
+        mustBeLoggedInAs(nlm_username, nlm_password);
+        for (String url : CdePVLoincTest.urls) {
             driver.get(baseUrl + url);
             String source = driver.getPageSource();
             boolean isContains = source.contains("LA6270-8");
-            Assert.assertFalse(url + " failed.\n" +
+            Assert.assertTrue(url + " failed.\n" +
                             "<source>" + source + "</source>\n" +
                             "<isContains>" + isContains + "</isContains>\n"
                     , isContains);
         }
     }
-
 }

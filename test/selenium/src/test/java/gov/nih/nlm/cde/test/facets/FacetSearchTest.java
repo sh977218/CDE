@@ -9,7 +9,6 @@ public class FacetSearchTest extends NlmCdeBaseTest {
 
     @Test
     public void stewardFacets() {
-        mustBeLoggedOut();
         goToCdeSearch();
         clickElement(By.id("browseOrg-caBIG"));
         String numOfElts = findElement(By.xpath("//*[@id='nbOfClassifElts-All Candidates']")).getText();
@@ -58,7 +57,6 @@ public class FacetSearchTest extends NlmCdeBaseTest {
 
     @Test
     public void regStatusFacets() {
-        mustBeLoggedOut();
         setLowStatusesVisible();
         clickElement(By.id("browseOrg-caBIG"));
         clickElement(By.id("classif-ASCO"));

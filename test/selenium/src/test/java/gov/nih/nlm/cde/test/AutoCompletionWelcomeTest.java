@@ -9,7 +9,6 @@ public class AutoCompletionWelcomeTest extends NlmCdeBaseTest {
 
     @Test
     public void AutoCompletionWelcome() {
-        mustBeLoggedOut();
         goToCdeSearch();
         findElement(By.id("ftsearch-input")).sendKeys("specimen lat");
         textNotPresent("Specimen Laterality");
@@ -27,7 +26,6 @@ public class AutoCompletionWelcomeTest extends NlmCdeBaseTest {
 
     @Test
     public void AutoCompletionWelcomeForm() {
-        mustBeLoggedOut();
         goToSearch("form");
         findElement(By.id("ftsearch-input")).sendKeys("multi");
         textNotPresent("MultiSelect");

@@ -8,12 +8,11 @@ public class MyOrgIncomplete extends NlmCdeBaseTest {
 
     @Test
     public void myOrgIncompleteFacet() {
-        mustBeLoggedOut();
         goToCdeSearch();
         clickElement(By.id("browseOrg-ONC"));
         textNotPresent("Incomplete (");
 
-        loginAs("testAdmin", password);
+        mustBeLoggedInAs("testAdmin", password);
         goToCdeSearch();
         clickElement(By.id("browseOrg-ONC"));
         textPresent("Incomplete (");

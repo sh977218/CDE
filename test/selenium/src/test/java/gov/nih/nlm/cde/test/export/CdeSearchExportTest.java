@@ -16,7 +16,6 @@ public class CdeSearchExportTest extends NlmCdeBaseTest {
 
     @Test
     public void cdeSearchExport() {
-        mustBeLoggedOut();
         goToCdeSearch();
         clickElement(By.id("browseOrg-NINDS"));
         loadDefaultTableViewSettings();
