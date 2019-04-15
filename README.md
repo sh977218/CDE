@@ -187,3 +187,32 @@ We have include a script, start-test-instance.sh, that, in addition to running a
 
 
 If, for some reason, you don't want to use it (for example, if you just want to run one test), you will need to run the app before you can run any tests
+
+## Development
+
+### Server Development
+1. Node without server development
+   * ```node app.js```
+1. Node with auto restart
+   * ```node dev-app.js ```
+1. Node with auto restart and hot module replacement
+   * ```node devHmr-app.js```
+1. Node with no restart and hot module replacement
+   * ```node devHmr-app.js prod```
+1. Hot module replacement only, start node in debugger
+   * ```node devHmr-app.js none```
+
+### Angular Client Development
+#### Main App
+1. Angular build without development
+   * ```npm run buildApp```
+1. Angular build with development and watch
+   * ```npm run devApp```
+1. Angular build with hot-module replacement.
+   * ```node devHmr-app.js```
+
+#### Native Render App (Fhir and Embed Apps are similar)
+1. Angular build without development
+   * ```npm run buildNative```
+1. Angular build with development and watch
+   * ```npm run devNative```

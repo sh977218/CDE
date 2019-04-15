@@ -1,36 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://cde.nlm.nih.gov/json-schema/Form",
   "definitions": {
-    "classificationElement": {
-      "title": "itemOf_elements",
-      "type": "object",
-      "properties": {
-        "elements": {
-          "type": "array",
-          "items": { "$ref": "#/definitions/classificationElement" }
-        },
-        "name": {
-          "type": "string"
-        }
-      }
-    },
-    "date": {
-      "anyOf": [
-        {
-          "type": "string",
-          "format": "date-time"
-        },
-        {
-          "type": "string",
-          "format": "date"
-        },
-        {
-          "type": "object"
-        }
-      ]
-    },
     "formElement": {
-      "title": "itemOf_formElements",
       "type": "object",
       "properties": {
         "elementType": {
@@ -61,32 +33,20 @@
               "title": "form",
               "type": "object",
               "properties": {
+                "ids": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "AdminItem#/definitions/identifier"
+                  }
+                },
+                "name": {
+                  "type": "string"
+                },
                 "tinyId": {
                   "type": "string"
                 },
                 "version": {
                   "type": "string"
-                },
-                "name": {
-                  "type": "string"
-                },
-                "ids": {
-                  "type": "array",
-                  "items": {
-                    "title": "itemOf_ids",
-                    "type": "object",
-                    "properties": {
-                      "source": {
-                        "type": "string"
-                      },
-                      "id": {
-                        "type": "string"
-                      },
-                      "version": {
-                        "type": "string"
-                      }
-                    }
-                  }
                 }
               }
             }
@@ -111,286 +71,102 @@
           }
         },
         "question": {
-          "title": "question",
-          "type": "object",
-          "properties": {
-            "cde": {
-              "title": "cde",
+          "allOf": [
+            {
+              "$ref": "AdminItem#/definitions/datatypeContainer"
+            },
+            {
+              "title": "question",
               "type": "object",
               "properties": {
-                "tinyId": {
-                  "type": "string"
-                },
-                "name": {
-                  "type": "string"
-                },
-                "designations": {
+                "answers": {
                   "type": "array",
                   "items": {
-                    "title": "itemOf_designations",
-                    "type": "object",
-                    "properties": {
-                      "designation": {
-                        "type": "string"
-                      },
-                      "tags": {
-                        "type": "array",
-                        "items": {
-                          "type": "string"
-                        }
-                      },
-                      "sources": {
-                        "type": "array",
-                        "items": {
-                          "type": "string"
-                        }
-                      }
-                    }
+                    "$ref": "AdminItem#/definitions/permissibleValue"
                   }
                 },
-                "definitions": {
-                  "type": "array",
-                  "items": {
-                    "title": "itemOf_definitions",
-                    "type": "object",
-                    "properties": {
-                      "definition": {
-                        "type": "string"
-                      },
-                      "definitionFormat": {
-                        "type": "string"
-                      },
-                      "tags": {
-                        "type": "array",
-                        "items": {
-                          "type": "string"
-                        }
-                      },
-                      "sources": {
-                        "type": "array",
-                        "items": {
-                          "type": "string"
-                        }
+                "cde": {
+                  "title": "cde",
+                  "type": "object",
+                  "properties": {
+                    "definitions": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "AdminItem#/definitions/definition"
                       }
                     },
-                    "required": [
-                      "definition"
-                    ]
-                  }
+                    "derivationRules": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "AdminItem#/definitions/derivationRule"
+                      }
+                    },
+                    "designations": {
+                      "type": "array",
+                      "items": { "$ref": "AdminItem#/definitions/designation" },
+                      "description": "Any string used by which Item is known, addressed or referred to"
+                    },
+                    "ids": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "AdminItem#/definitions/identifier"
+                      }
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "permissibleValues": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "AdminItem#/definitions/permissibleValue"
+                      }
+                    },
+                    "tinyId": {
+                      "type": "string"
+                    },
+                    "version": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "designations"
+                  ]
                 },
-                "version": {
+                "defaultAnswer": {
                   "type": "string"
                 },
-                "permissibleValues": {
-                  "type": "array",
-                  "items": {
-                    "title": "itemOf_permissibleValues",
-                    "type": "object",
-                    "properties": {
-                      "permissibleValue": {
-                        "type": "string"
-                      },
-                      "valueMeaningName": {
-                        "type": "string"
-                      },
-                      "valueMeaningCode": {
-                        "type": "string"
-                      },
-                      "valueMeaningDefinition": {
-                        "type": "string"
-                      },
-                      "codeSystemName": {
-                        "type": "string"
-                      },
-                      "codeSystemVersion": {
-                        "type": "string"
-                      }
-                    }
-                  }
+                "editable": {
+                  "type": "boolean",
+                  "default": true
                 },
-                "ids": {
-                  "type": "array",
-                  "items": {
-                    "title": "itemOf_ids",
-                    "type": "object",
-                    "properties": {
-                      "source": {
-                        "type": "string"
-                      },
-                      "id": {
-                        "type": "string"
-                      },
-                      "version": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                },
-                "derivationRules": {
-                  "type": "array",
-                  "items": {
-                    "title": "itemOf_derivationRules",
-                    "type": "object",
-                    "properties": {
-                      "name": {
-                        "type": "string"
-                      },
-                      "inputs": {
-                        "type": "array",
-                        "items": {
-                          "type": "string"
-                        },
-                        "description": "Information operated on by rule"
-                      },
-                      "outputs": {
-                        "type": "array",
-                        "items": {
-                          "type": "string"
-                        },
-                        "description": "Information produced by rule"
-                      },
-                      "ruleType": {
-                        "type": "string",
-                        "enum": [
-                          "score",
-                          "panel"
-                        ]
-                      },
-                      "formula": {
-                        "type": "string",
-                        "enum": [
-                          "sumAll",
-                          "mean",
-                          "bmi"
-                        ]
-                      },
-                      "_id": {
-                        "$ref": "#/definitions/objectId"
-                      }
-                    }
-                  }
-                }
-              }
-            },
-            "datatype": {
-              "type": "string"
-            },
-            "datatypeNumber": {
-              "title": "datatypeNumber",
-              "type": "object",
-              "properties": {
-                "minValue": {
-                  "type": "number"
-                },
-                "maxValue": {
-                  "type": "number"
-                },
-                "precision": {
-                  "type": "number"
-                }
-              }
-            },
-            "datatypeText": {
-              "title": "datatypeText",
-              "type": "object",
-              "properties": {
-                "minLength": {
-                  "type": "number"
-                },
-                "maxLength": {
-                  "type": "number"
-                },
-                "regex": {
-                  "type": "string"
-                },
-                "rule": {
-                  "type": "string"
-                },
-                "showAsTextArea": {
+                "invisible": {
                   "type": "boolean",
                   "default": false
-                }
-              }
-            },
-            "datatypeDate": {
-              "title": "datatypeDate",
-              "type": "object",
-              "properties": {
-                "precision": {
-                  "type": "string",
-                  "enum": [
-                    "Year",
-                    "Month",
-                    "Day",
-                    "Hour",
-                    "Minute",
-                    "Second"
-                  ],
-                  "default": "Day"
-                }
-              }
-            },
-            "unitsOfMeasure": {
-              "type": "array",
-              "items": {
-                "title": "itemOf_unitsOfMeasure",
-                "type": "object",
-                "properties": {
-                  "code": {
-                    "type": "string"
-                  },
-                  "system": {
-                    "type": "string"
+                },
+                "multiselect": {
+                  "type": "boolean"
+                },
+                "required": {
+                  "type": "boolean",
+                  "default": false
+                },
+                "unitsOfMeasure": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "code": {
+                        "type": "string"
+                      },
+                      "system": {
+                        "type": "string"
+                      }
+                    }
                   }
                 }
               }
-            },
-            "required": {
-              "type": "boolean",
-              "default": false
-            },
-            "invisible": {
-              "type": "boolean",
-              "default": false
-            },
-            "editable": {
-              "type": "boolean",
-              "default": true
-            },
-            "multiselect": {
-              "type": "boolean"
-            },
-            "answers": {
-              "type": "array",
-              "items": {
-                "title": "itemOf_answers",
-                "type": "object",
-                "properties": {
-                  "permissibleValue": {
-                    "type": "string"
-                  },
-                  "valueMeaningName": {
-                    "type": "string"
-                  },
-                  "valueMeaningCode": {
-                    "type": "string"
-                  },
-                  "valueMeaningDefinition": {
-                    "type": "string"
-                  },
-                  "codeSystemName": {
-                    "type": "string"
-                  },
-                  "codeSystemVersion": {
-                    "type": "string"
-                  }
-                }
-              }
-            },
-            "defaultAnswer": {
-              "type": "string"
             }
-          }
+          ]
         },
         "repeat": {
           "type": "string"
@@ -401,9 +177,7 @@
         "section": {
           "title": "section",
           "type": "object",
-          "properties": {
-
-          }
+          "properties": {}
         },
         "showIfExpression": {
           "type": "string"
@@ -426,644 +200,213 @@
         },
         "formElements": {
           "type": "array",
-          "items": { "$ref": "#/definitions/formElement" }
+          "items": {
+            "$ref": "#/definitions/formElement"
+          }
         }
       }
-    },
-    "objectId": {
-      "anyOf": [
-        {
-          "type": "string",
-          "pattern": "^[0-9a-fA-F]{24}$"
-        },
-        {
-          "type": "object"
-        }
-      ]
     }
   },
   "title": "Form",
-  "type": "object",
-  "properties": {
-    "elementType": {
-      "type": "string",
-      "enum": [
-        "form"
-      ],
-      "default": "form"
+  "allOf": [
+    {
+      "$ref": "AdminItem#/definitions/adminItem"
     },
-    "tinyId": {
-      "type": "string"
-    },
-    "designations": {
-      "type": "array",
-      "minItems": 1,
-      "items": {
-        "title": "itemOf_designations",
-        "type": "object",
-        "properties": {
-          "designation": {
-            "type": "string",
-            "minLength": 1
-          },
-          "tags": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "sources": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        }
-      }
-    },
-    "definitions": {
-      "type": "array",
-      "items": {
-        "title": "itemOf_definitions",
-        "type": "object",
-        "properties": {
-          "definition": {
-            "type": "string"
-          },
-          "definitionFormat": {
-            "type": "string"
-          },
-          "tags": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "sources": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        },
-        "required": [
-          "definition"
-        ]
-      }
-    },
-    "mapTo": {
-      "title": "mapTo",
+    {
       "type": "object",
       "properties": {
-        "fhir": {
-          "title": "fhir",
+        "copyright": {
           "type": "object",
           "properties": {
-            "resourceType": {
+            "authority": {
               "type": "string"
-            }
-          }
-        }
-      }
-    },
-    "stewardOrg": {
-      "title": "stewardOrg",
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "description": "Name of organization or entity responsible for supervising content and administration of CDE",
-          "minLength": 1
-        }
-      },
-      "required": [
-        "name"
-      ]
-    },
-    "source": {
-      "type": "string"
-    },
-    "sources": {
-      "type": "array",
-      "items": {
-        "title": "itemOf_sources",
-        "type": "object",
-        "properties": {
-          "sourceName": {
-            "type": "string",
-            "minLength": 1
-          },
-          "created": {
-            "description": "Date created in source",
-            "$ref": "#/definitions/date"
-          },
-          "updated": {
-            "description": "Date updated in source",
-            "$ref": "#/definitions/date"
-          },
-          "registrationStatus": {
-            "type": "string",
-            "description": "Relative standing of official record status in steward's workflow"
-          },
-          "datatype": {
-            "type": "string",
-            "description": "May contain the source datatype"
-          },
-          "copyright": {
-            "title": "copyright",
-            "type": "object",
-            "properties": {
-              "value": {
-                "type": "string",
-                "description": "Content of a copyright statement or terms of use"
-              },
-              "valueFormat": {
-                "type": "string",
-                "description": "If 'html', interpret as HTML"
-              }
-            }
-          }
-        },
-        "required": [
-          "sourceName"
-        ]
-      }
-    },
-    "version": {
-      "type": "string"
-    },
-    "registrationState": {
-      "title": "registrationState",
-      "type": "object",
-      "properties": {
-        "registrationStatus": {
-          "type": "string",
-          "enum": [
-            "Preferred Standard",
-            "Standard",
-            "Qualified",
-            "Recorded",
-            "Candidate",
-            "Incomplete",
-            "Retired"
-          ]
-        },
-        "effectiveDate": {
-          "anyOf": [
-            {
-              "$ref": "#/definitions/date"
             },
-            {
-              "type": "null"
-            }
-          ]
-        },
-        "untilDate": {
-          "anyOf": [
-            {
-              "$ref": "#/definitions/date"
-            },
-            {
-              "type": "null"
-            }
-          ]
-        },
-        "administrativeNote": {
-          "type": "string"
-        },
-        "unresolvedIssue": {
-          "type": "string"
-        },
-        "administrativeStatus": {
-          "type": "string",
-          "description": "Relative standing of CDE as it relates to steward's administrative workflow"
-        },
-        "replacedBy": {
-          "title": "replacedBy",
-          "type": "object",
-          "properties": {
-            "tinyId": {
-              "type": "string",
-              "description": "tinyId of replacement CDE"
-            }
-          }
-        }
-      },
-      "required": [
-        "registrationStatus"
-      ]
-    },
-    "properties": {
-      "type": "array",
-      "items": {
-        "title": "itemOf_properties",
-        "type": "object",
-        "properties": {
-          "key": {
-            "type": "string",
-            "minLength": 1
-          },
-          "value": {
-            "type": "string",
-            "minLength": 1
-          },
-          "source": {
-            "type": "string"
-          },
-          "valueFormat": {
-            "type": "string",
-            "enum": [
-              "html",
-              ""
-            ]
-          }
-        },
-        "required": [
-          "key",
-          "value"
-        ]
-      }
-    },
-    "ids": {
-      "type": "array",
-      "items": {
-        "title": "itemOf_ids",
-        "type": "object",
-        "properties": {
-          "source": {
-            "type": "string",
-            "minLength": 1
-          },
-          "id": {
-            "type": "string",
-            "minLength": 1
-          },
-          "version": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "id",
-          "source"
-        ]
-      }
-    },
-    "isCopyrighted": {
-      "type": "boolean"
-    },
-    "noRenderAllowed": {
-      "type": "boolean"
-    },
-    "copyright": {
-      "type": "object",
-      "properties": {
-        "authority": {
-          "type": "string"
-        },
-        "text": {
-          "type": ["string", "null"]
-        }
-      },
-      "title": "copyright",
-      "default": {
-        "text": null
-      }
-    },
-    "origin": {
-      "type": "string"
-    },
-    "attachments": {
-      "type": "array",
-      "items": {
-        "title": "itemOf_attachments",
-        "type": "object",
-        "properties": {
-          "fileid": {
-            "type": "string"
-          },
-          "filename": {
-            "type": "string"
-          },
-          "filetype": {
-            "type": "string"
-          },
-          "uploadDate": {
-            "$ref": "#/definitions/date"
-          },
-          "comment": {
-            "type": "string"
-          },
-          "uploadedBy": {
-            "title": "uploadedBy",
-            "type": "object",
-            "properties": {
-              "userId": {
-                "$ref": "#/definitions/objectId"
-              },
-              "username": {
-                "type": "string"
-              }
+            "text": {
+              "type": ["string", "null"]
             }
           },
-          "filesize": {
-            "type": "number"
-          },
-          "isDefault": {
-            "type": "boolean"
-          },
-          "pendingApproval": {
-            "type": "boolean"
-          },
-          "scanned": {
-            "type": "boolean"
+          "title": "copyright",
+          "default": {
+            "text": null
           }
-        }
-      }
-    },
-    "history": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/objectId"
-      }
-    },
-    "changeNote": {
-      "description": "Description of last modification",
-      "anyOf": [
-        {"type": "string"},
-        {"type": "null"}
-      ]
-    },
-    "lastMigrationScript": {
-      "type": "string"
-    },
-    "created": {
-      "$ref": "#/definitions/date"
-    },
-    "updated": {
-      "$ref": "#/definitions/date"
-    },
-    "imported": {
-      "$ref": "#/definitions/date"
-    },
-    "createdBy": {
-      "title": "createdBy",
-      "type": "object",
-      "properties": {
-        "userId": {
-          "$ref": "#/definitions/objectId"
         },
-        "username": {
-          "type": "string"
-        }
-      }
-    },
-    "updatedBy": {
-      "title": "updatedBy",
-      "type": "object",
-      "properties": {
-        "userId": {
-          "$ref": "#/definitions/objectId"
-        },
-        "username": {
-          "type": "string"
-        }
-      }
-    },
-    "formElements": {
-      "type": "array",
-      "items": { "$ref": "#/definitions/formElement" }
-    },
-    "archived": {
-      "type": "boolean",
-      "default": false
-    },
-    "classification": {
-      "type": "array",
-      "items": {
-        "title": "itemOf_classification",
-        "type": "object",
-        "properties": {
-          "stewardOrg": {
-            "title": "stewardOrg",
+        "displayProfiles": {
+          "type": "array",
+          "items": {
             "type": "object",
             "properties": {
               "name": {
+                "type": "string"
+              },
+              "sectionsAsMatrix": {
+                "type": "boolean"
+              },
+              "displayCopyright": {
+                "type": "boolean"
+              },
+              "displayValues": {
+                "type": "boolean"
+              },
+              "displayInstructions": {
+                "type": "boolean"
+              },
+              "displayNumbering": {
+                "type": "boolean"
+              },
+              "displayType": {
                 "type": "string",
-                "minLength": 1
+                "enum": [
+                  "Dynamic",
+                  "Follow-up"
+                ],
+                "default": "Dynamic"
+              },
+              "metadata": {
+                "title": "metadata",
+                "type": "object",
+                "properties": {
+                  "device": {
+                    "type": "boolean"
+                  }
+                }
+              },
+              "numberOfColumns": {
+                "type": "number",
+                "minimum": 1,
+                "maximum": 6
+              },
+              "displayInvisible": {
+                "type": "boolean"
+              },
+              "repeatFormat": {
+                "type": "string",
+                "default": ""
+              },
+              "answerDropdownLimit": {
+                "type": "number",
+                "minimum": 0
+              },
+              "unitsOfMeasureAlias": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "unitOfMeasure": {
+                      "title": "unitOfMeasure",
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string"
+                        },
+                        "system": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "alias": {
+                      "type": "string"
+                    },
+                    "_id": {
+                      "$ref": "AdminItem#/definitions/objectId"
+                    }
+                  }
+                }
+              },
+              "fhirProcedureMapping": {
+                "title": "fhirProcedureMapping",
+                "anyOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "statusQuestionID": {
+                        "type": ["string", "null"]
+                      },
+                      "statusStatic": {
+                        "type": ["string", "null"]
+                      },
+                      "performedDate": {
+                        "type": ["string", "null"]
+                      },
+                      "procedureQuestionID": {
+                        "type": ["string", "null"]
+                      },
+                      "procedureCode": {
+                        "type": ["string", "null"]
+                      },
+                      "procedureCodeSystem": {
+                        "type": ["string", "null"]
+                      },
+                      "bodySiteQuestionID": {
+                        "type": ["string", "null"]
+                      },
+                      "bodySiteCode": {
+                        "type": ["string", "null"]
+                      },
+                      "bodySiteCodeSystem": {
+                        "type": ["string", "null"]
+                      },
+                      "usedReferences": {
+                        "type": ["string", "null"]
+                      },
+                      "usedReferencesMaps": {
+                        "anyOf": [
+                          {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "complications": {
+                        "type": ["string", "null"]
+                      }
+                    }
+                  }
+                ]
               }
-            },
-            "required": [
-              "name"
-            ]
-          },
-          "workingGroup": {
-            "type": "boolean"
-          },
-          "elements": {
-            "type": "array",
-            "minItems": 1,
-            "items": {
-              "$ref": "#/definitions/classificationElement"
             }
           }
         },
-        "required": [
-          "elements",
-          "stewardOrg"
-        ]
-      }
-    },
-    "displayProfiles": {
-      "type": "array",
-      "items": {
-        "title": "itemOf_displayProfiles",
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "sectionsAsMatrix": {
-            "type": "boolean"
-          },
-          "displayCopyright": {
-            "type": "boolean"
-          },
-          "displayValues": {
-            "type": "boolean"
-          },
-          "displayInstructions": {
-            "type": "boolean"
-          },
-          "displayNumbering": {
-            "type": "boolean"
-          },
-          "displayType": {
-            "type": "string",
-            "enum": [
-              "Dynamic",
-              "Follow-up"
-            ],
-            "default": "Dynamic"
-          },
-          "metadata": {
-            "title": "metadata",
-            "type": "object",
-            "properties": {
-              "device": {
-                "type": "boolean"
-              }
-            }
-          },
-          "numberOfColumns": {
-            "type": "number",
-            "minimum": 1,
-            "maximum": 6
-          },
-          "displayInvisible": {
-            "type": "boolean"
-          },
-          "repeatFormat": {
-            "type": "string",
-            "default": ""
-          },
-          "answerDropdownLimit": {
-            "type": "number",
-            "minimum": 0
-          },
-          "unitsOfMeasureAlias": {
-            "type": "array",
-            "items": {
-              "title": "itemOf_unitsOfMeasureAlias",
+        "elementType": {
+          "default": "form"
+        },
+        "formElements": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/formElement" }
+        },
+        "isCopyrighted": {
+          "type": "boolean"
+        },
+        "mapTo": {
+          "title": "mapTo",
+          "type": "object",
+          "properties": {
+            "fhir": {
+              "title": "fhir",
               "type": "object",
               "properties": {
-                "unitOfMeasure": {
-                  "title": "unitOfMeasure",
-                  "type": "object",
-                  "properties": {
-                    "code": {
-                      "type": "string"
-                    },
-                    "system": {
-                      "type": "string"
-                    }
-                  }
-                },
-                "alias": {
+                "resourceType": {
                   "type": "string"
-                },
-                "_id": {
-                  "$ref": "#/definitions/objectId"
                 }
               }
             }
-          },
-          "fhirProcedureMapping": {
-            "title": "fhirProcedureMapping",
-            "anyOf": [
-              {
-                "type": "null"
-              },
-              {
-                "type": "object",
-                "properties": {
-                  "statusQuestionID": {
-                    "type": ["string", "null"]
-                  },
-                  "statusStatic": {
-                    "type": ["string", "null"]
-                  },
-                  "performedDate": {
-                    "type": ["string", "null"]
-                  },
-                  "procedureQuestionID": {
-                    "type": ["string", "null"]
-                  },
-                  "procedureCode": {
-                    "type": ["string", "null"]
-                  },
-                  "procedureCodeSystem": {
-                    "type": ["string", "null"]
-                  },
-                  "bodySiteQuestionID": {
-                    "type": ["string", "null"]
-                  },
-                  "bodySiteCode": {
-                    "type": ["string", "null"]
-                  },
-                  "bodySiteCodeSystem": {
-                    "type": ["string", "null"]
-                  },
-                  "usedReferences": {
-                    "type": ["string", "null"]
-                  },
-                  "usedReferencesMaps": {
-                    "anyOf": [
-                      {
-                        "type": "array",
-                        "items": {
-                          "type": "string"
-                        }
-                      },
-                      {
-                        "type": "null"
-                      }
-                    ]
-                  },
-                  "complications": {
-                    "type": ["string", "null"]
-                  }
-                }
-              }
-            ]
           }
+        },
+        "noRenderAllowed": {
+          "type": "boolean"
         }
-      }
-    },
-    "referenceDocuments": {
-      "type": "array",
-      "items": {
-        "title": "itemOf_referenceDocuments",
-        "type": "object",
-        "properties": {
-          "docType": {
-            "type": "string"
-          },
-          "document": {
-            "type": "string"
-          },
-          "referenceDocumentId": {
-            "type": "string"
-          },
-          "text": {
-            "type": "string"
-          },
-          "uri": {
-            "type": "string"
-          },
-          "providerOrg": {
-            "type": "string"
-          },
-          "title": {
-            "type": "string"
-          },
-          "languageCode": {
-            "type": "string"
-          },
-          "source": {
-            "type": "string"
-          }
-        }
-      }
-    },
-    "_id": {
-      "$ref": "#/definitions/objectId"
-    },
-    "__v": {
-      "type": "number"
+      },
+      "required": [
+        "registrationState",
+        "stewardOrg"
+      ]
     }
-  },
-  "required": [
-    "registrationState",
-    "stewardOrg"
   ]
 }

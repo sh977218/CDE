@@ -22,13 +22,13 @@ exports.StoredQueryModel = StoredQueryModel;
 
 exports.consoleLog = function (message, level) { // no express errors see dbLogger.log(message)
     new consoleLogModel({message: message, level: level}).save(err => {
-        if (err) noDbLogger.noDbLogger.error("Cannot log to DB: " + err);
+        if (err) noDbLogger.noDbLogger.error('Cannot log to DB: ' + err);
     });
 };
 
 exports.storeQuery = function (settings, callback) {
     const storedQuery = {
-        searchTerm: settings.searchTerm ? settings.searchTerm : ""
+        searchTerm: settings.searchTerm ? settings.searchTerm : ''
         , date: new Date()
         , regStatuses: settings.selectedStatuses
         , datatypes: settings.selectedDatatypes
@@ -42,7 +42,7 @@ exports.storeQuery = function (settings, callback) {
     if (settings.selectedOrgAlt) storedQuery.selectedOrg2 = settings.selectedOrgAlt;
     if (settings.searchToken) storedQuery.searchToken = settings.searchToken;
 
-    if (!(!storedQuery.selectedOrg1 && storedQuery.searchTerm === "")) {
+    if (!(!storedQuery.selectedOrg1 && storedQuery.searchTerm === '')) {
         StoredQueryModel.findOne({date: {$gt: new Date().getTime() - 30000}, searchToken: storedQuery.searchToken},
             function (err, theOne) {
                 if (theOne) {
@@ -67,9 +67,9 @@ exports.storeQuery = function (settings, callback) {
 exports.log = function (message, callback) { // express only, all others dbLogger.consoleLog(message);
     if (isNaN(message.responseTime)) delete message.responseTime;
 
-    if (message.httpStatus !== "304") {
+    if (message.httpStatus !== '304') {
         new LogModel(message).save(err => {
-            if (err) noDbLogger.noDbLogger.info("ERROR: " + err);
+            if (err) noDbLogger.noDbLogger.info('ERROR: ' + err);
             callback(err);
         });
     }
@@ -83,9 +83,9 @@ exports.logError = function (message, callback) { // all server errors, express 
         console.log('---Server Error---', message);
     }
     new LogErrorModel(message).save(err => {
-        if (err) noDbLogger.noDbLogger.info("ERROR: " + err);
+        if (err) noDbLogger.noDbLogger.info('ERROR: ' + err);
 
-        if (message.origin && message.origin.indexOf("pushGetAdministratorRegistrations") === -1) {
+        if (message.origin && message.origin.indexOf('pushGetAdministratorRegistrations') === -1) {
             let msg = JSON.stringify({
                 title: 'Server Side Error',
                 options: {
@@ -121,7 +121,7 @@ exports.logClientError = function (req, callback) {
     exc.ip = getRealIp(req);
     if (req.user) exc.username = req.user.username;
     new ClientErrorModel(exc).save(err => {
-        if (err) noDbLogger.noDbLogger.info("ERROR: " + err);
+        if (err) noDbLogger.noDbLogger.info('ERROR: ' + err);
 
         let ua = userAgent.is(req.headers['user-agent']);
         if (ua.chrome || ua.firefox || ua.edge) {
@@ -182,18 +182,18 @@ exports.respondError = function (err, options) {
     if (!options) options = {};
     if (options.res) {
         if (err.name === 'CastError' && err.kind === 'ObjectId') {
-            options.res.status(400).send("Invalid id");
+            options.res.status(400).send('Invalid id');
             return;
-        } else if (err.name === "ValidationError") {
+        } else if (err.name === 'ValidationError') {
             options.res.status(422).send(err.message);
             return;
         }
-        let message = options.publicMessage || "Generic Server Failure. Please submit an issue.";
+        let message = options.publicMessage || 'Generic Server Failure. Please submit an issue.';
         options.res.status(500).send('Error: ' + message);
     }
 
     const log = {
-        message: options.message || err.message,
+        message: options.message || err.message || err,
         origin: options.origin,
         stack: err.stack || new Error().stack,
         details: options.details
@@ -211,7 +211,7 @@ exports.respondError = function (err, options) {
 };
 
 exports.httpLogs = function (body, callback) {
-    let sort = {"date": "desc"};
+    let sort = {'date': 'desc'};
     if (body.sort) sort = body.sort;
     let currentPage = 0;
     if (body.currentPage) currentPage = Number.parseInt(body.currentPage);
@@ -221,8 +221,8 @@ exports.httpLogs = function (body, callback) {
     let query = {};
     if (body.ipAddress) query = {remoteAddr: body.ipAddress};
     let modal = LogModel.find(query);
-    if (body.fromDate) modal.where("date").gte(moment(body.fromDate));
-    if (body.toDate) modal.where("date").lte(moment(body.toDate));
+    if (body.fromDate) modal.where('date').gte(moment(body.fromDate));
+    if (body.toDate) modal.where('date').lte(moment(body.toDate));
     LogModel.countDocuments({}, (err, count) => {
         modal.sort(sort).limit(itemsPerPage).skip(skip).exec((err, logs) => {
             let result = {itemsPerPage: itemsPerPage, logs: logs, sort: sort};
@@ -239,8 +239,8 @@ exports.appLogs = function (body, callback) {
     if (body.itemsPerPage) itemsPerPage = Number.parseInt(body.itemsPerPage);
     let skip = currentPage * itemsPerPage;
     let modal = consoleLogModel.find();
-    if (body.fromDate) modal.where("date").gte(moment(body.fromDate));
-    if (body.toDate) modal.where("date").lte(moment(body.toDate));
+    if (body.fromDate) modal.where('date').gte(moment(body.fromDate));
+    if (body.toDate) modal.where('date').lte(moment(body.toDate));
     consoleLogModel.countDocuments({}, (err, count) => {
         modal.sort({date: -1}).limit(itemsPerPage).skip(skip).exec(function (err, logs) {
             let result = {itemsPerPage: itemsPerPage, logs: logs};
@@ -287,11 +287,11 @@ exports.usageByDay = function (callback) {
         {
             $group: {
                 _id: {
-                    ip: "$remoteAddr",
-                    year: {$year: "$date"},
-                    month: {$month: "$date"},
-                    dayOfMonth: {$dayOfMonth: "$date"}
-                }, number: {$sum: 1}, latest: {$max: "$date"}
+                    ip: '$remoteAddr',
+                    year: {$year: '$date'},
+                    month: {$month: '$date'},
+                    dayOfMonth: {$dayOfMonth: '$date'}
+                }, number: {$sum: 1}, latest: {$max: '$date'}
             }
         }], callback);
 };
