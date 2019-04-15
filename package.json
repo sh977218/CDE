@@ -1,6 +1,7 @@
 {
   "name": "ludetc-cdes",
   "version": "0.0.1",
+  "main": "app.js",
   "scripts": {
     "build": "bash paral 'npm run buildApp' 'npm run buildEmbed' 'npm run buildFhir' 'npm run buildNative'",
     "buildApp": "cross-env node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js --config ./modules/_app/webpackApp.prod.js",
@@ -180,6 +181,7 @@
     "ng2-ckeditor": "^1.2.1",
     "ngx-bootstrap": "^3.1.2",
     "node-sass": "^4.9.4",
+    "nodemon": "^1.18.11",
     "optimize-js-plugin": "0.0.4",
     "raw-loader": "^0.5.1",
     "reflect-metadata": "0.1.12",

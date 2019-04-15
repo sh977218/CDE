@@ -56,14 +56,14 @@ app.use(require('hsts')({maxAge: 31536000000}));
 
 process.on('uncaughtException', function (err) {
     console.log('Error: Process Uncaught Exception');
-    console.log(err.stack);
-    logging.errorLogger.error('Error: Uncaught Exception', {stack: err.stack, origin: 'app.process.uncaughtException'});
+    console.log(err.stack || err);
+    logging.errorLogger.error('Error: Uncaught Exception', {stack: err.stack || err, origin: 'app.process.uncaughtException'});
 });
 
 domain.on('error', function (err) {
     console.log('Error: Domain Error');
-    console.log(err.stack);
-    logging.errorLogger.error('Error: Domain Error', {stack: err.stack, origin: 'app.domain.error'});
+    console.log(err.stack || err);
+    logging.errorLogger.error('Error: Domain Error', {stack: err.stack || err, origin: 'app.domain.error'});
 });
 
 // all environments
