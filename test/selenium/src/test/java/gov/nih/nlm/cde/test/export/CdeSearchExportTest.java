@@ -25,7 +25,7 @@ public class CdeSearchExportTest extends NlmCdeBaseTest {
         clickElement(By.id("export"));
         clickElement(By.id("csvExport"));
 
-        String snackTxt = findElement(By.name("simple-snack-bar")).getText();
+        String snackTxt = findElement(By.cssSelector(".mat-simple-snackbar")).getText();
         if (snackTxt.contains("busy processing similar request")) {
             hangon(60);
             clickElement(By.id("export"));

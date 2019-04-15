@@ -4,7 +4,7 @@ import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.junit.Assert;
 import org.testng.annotations.Test;
 
-public class NotLoggedInCannotSeeLoinc extends NlmCdeBaseTest {
+public class CDELoggedInCanSeeLoinc extends NlmCdeBaseTest {
 
     @Test
     public void cdeLoginCanSeeLoinc() {
