@@ -21,6 +21,7 @@
         </td>
         <td class="error_cell">{{err.stack | slice:0:500 }}</td>
         <td class="error_cell">
+            <span *ngIf="err.message"><b>Message: </b>{{err.message | slice:0:500}}</span>
             <span *ngIf="err.details"><b>Details: </b>{{err.details | slice:0:500}}</span>
         </td>
     </tr>

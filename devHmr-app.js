@@ -1,4 +1,18 @@
-require('./app');
+switch (process.argv[2]) {
+    case 'prod':
+        console.log('Starting app.js');
+        require('./app');
+        break;
+    case 'none':
+        console.log('Not starting app.js to allow debug');
+        break;
+    case 'dev':
+        /* falls through */
+    default:
+        console.log('Starting app.js with nodemon');
+        require('./dev-app');
+        break;
+}
 
 const webpack = require('webpack');
 const webpackDevServer = require('webpack-dev-server');
