@@ -11,19 +11,30 @@ const logging = require('../system/logging'); // TODO: remove logging, error is 
 const elastic = require('./elastic');
 const isOrgCurator = require('../../shared/system/authorizationShared').isOrgCurator;
 
-exports.type = "form";
-exports.name = "forms";
+exports.type = 'form';
+exports.name = 'forms';
 
 let conn = connHelper.establishConnection(config.database.appData);
 
 const ajvElt = new Ajv();
+fs.readdirSync(path.resolve(__dirname, '../../shared/de/assets/')).forEach(file => {
+    if (file.indexOf('.schema.json') > -1) {
+        ajvElt.addSchema(require('../../shared/de/assets/' + file));
+    }
+});
 let validateSchema;
 fs.readFile(path.resolve(__dirname, '../../shared/form/assets/form.schema.json'), (err, file) => {
     if (!file) {
         console.log('Error: form.schema.json missing. ' + err);
         process.exit(1);
     }
-    validateSchema = ajvElt.compile(JSON.parse(file.toString()));
+    const str = file.toString();
+    try {
+        validateSchema = ajvElt.compile(JSON.parse(str));
+    } catch (err) {
+        console.log('Error: form.schema.json does not compile. ' + err);
+        process.exit(1);
+    }
 });
 
 schemas.formSchema.pre('save', function (next) {
@@ -36,7 +47,7 @@ schemas.formSchema.pre('save', function (next) {
     try {
         elastic.updateOrInsert(elt);
     } catch (exception) {
-        logging.errorLogger.error("Error Indexing Form", {details: exception, stack: new Error().stack});
+        logging.errorLogger.error('Error Indexing Form', {details: exception, stack: new Error().stack});
     }
 
     next();
@@ -89,7 +100,7 @@ exports.byId = function (id, cb) {
 };
 
 exports.byIdList = function (idList, cb) {
-    Form.find({}).where("_id").in(idList).exec(cb);
+    Form.find({}).where('_id').in(idList).exec(cb);
 };
 
 exports.byTinyIdList = function (tinyIdList, callback) {
@@ -122,8 +133,8 @@ exports.byTinyIdAndVersion = function (tinyId, version, callback) {
     else query.$or = [{version: null}, {version: ''}];
     Form.find(query).sort({'updated': -1}).limit(1).exec(function (err, elts) {
         if (err) callback(err);
-        else if (elts.length) callback("", elts[0]);
-        else callback("", null);
+        else if (elts.length) callback('', elts[0]);
+        else callback('', null);
     });
 };
 
@@ -171,8 +182,8 @@ exports.draftDelete = function (tinyId, cb) {
 };
 
 exports.draftsList = (criteria, cb) => {
-    FormDraft.find(criteria, {"updatedBy.username": 1, "updated": 1, "designations.designation": 1, tinyId: 1})
-        .sort({"updated": -1}).exec(cb);
+    FormDraft.find(criteria, {'updatedBy.username': 1, 'updated': 1, 'designations.designation': 1, tinyId: 1})
+        .sort({'updated': -1}).exec(cb);
 };
 
 exports.latestVersionByTinyId = function (tinyId, cb) {
@@ -199,7 +210,7 @@ exports.update = function (elt, user, callback, special) {
     if (elt.toObject) elt = elt.toObject();
     return Form.findById(elt._id, (err, form) => {
         if (form.archived) {
-            callback("You are trying to edit an archived elements");
+            callback('You are trying to edit an archived elements');
             return;
         }
         delete elt._id;
@@ -254,9 +265,9 @@ exports.create = function (elt, user, callback) {
 };
 
 exports.byOtherId = function (source, id, cb) {
-    Form.find({archived: false}).elemMatch("ids", {source: source, id: id}).exec(function (err, forms) {
+    Form.find({archived: false}).elemMatch('ids', {source: source, id: id}).exec(function (err, forms) {
         if (forms.length > 1)
-            cb("Multiple results, returning first", forms[0]);
+            cb('Multiple results, returning first', forms[0]);
         else cb(err, forms[0]);
     });
 };
@@ -288,11 +299,11 @@ exports.exists = (condition, cb) => {
 };
 
 exports.checkOwnership = function (req, id, cb) {
-    if (!req.isAuthenticated()) return cb("You are not authorized.", null);
+    if (!req.isAuthenticated()) return cb('You are not authorized.', null);
     exports.byId(id, function (err, elt) {
-        if (err || !elt) return cb("Element does not exist.", null);
+        if (err || !elt) return cb('Element does not exist.', null);
         if (!isOrgCurator(req.user, elt.stewardOrg.name))
-            return cb("You do not own this element.", null);
+            return cb('You do not own this element.', null);
         cb(null, elt);
     });
 };

@@ -75,7 +75,7 @@
                                                 (onEltChange)="onEltChange.emit()"></cde-form-description-section>
                                         <cde-form-description-question
                                                 *ngIf="node.data.elementType === 'question'"
-                                                [elt]="elt" [canEdit]="canEdit" [node]="node" [index]="index"
+                                                [canEdit]="canEdit" [node]="node" [index]="index"
                                                 (stageElt)="onEltChange.emit()"></cde-form-description-question>
                                     </div>
                                 </div>

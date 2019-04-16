@@ -12,17 +12,23 @@ const logging = require('../system/logging');
 const elastic = require('./elastic');
 const schemas = require('./schemas');
 
-exports.type = "cde";
-exports.name = "CDEs";
+exports.type = 'cde';
+exports.name = 'CDEs';
 
 const ajvElt = new Ajv();
+ajvElt.addSchema(require('../../shared/de/assets/adminItem.schema'));
 let validateSchema;
 fs.readFile(path.resolve(__dirname, '../../shared/de/assets/dataElement.schema.json'), (err, file) => {
     if (!file) {
         console.log('Error: dataElement.schema.json missing. ' + err);
         process.exit(1);
     }
-    validateSchema = ajvElt.compile(JSON.parse(file.toString()));
+    try {
+        validateSchema = ajvElt.compile(JSON.parse(file.toString()));
+    } catch (err) {
+        console.log('Error: dataElement.schema.json does not compile. ' + err);
+        process.exit(1);
+    }
 });
 
 schemas.dataElementSchema.post('remove', (doc, next) => {
@@ -57,7 +63,7 @@ schemas.dataElementSchema.pre('save', function (next) {
     try {
         elastic.updateOrInsert(elt);
     } catch (exception) {
-        logging.errorLogger.error("Error Indexing CDE", {details: exception, stack: new Error().stack});
+        logging.errorLogger.error('Error Indexing CDE', {details: exception, stack: new Error().stack});
     }
     next();
 });
@@ -112,7 +118,7 @@ exports.byId = function (id, cb) {
 };
 
 exports.byIdList = function (idList, cb) {
-    DataElement.find({}).where("_id").in(idList).exec(cb);
+    DataElement.find({}).where('_id').in(idList).exec(cb);
 };
 
 exports.byTinyId = function (tinyId, cb) {
@@ -179,8 +185,8 @@ exports.draftDelete = function (tinyId, cb) {
 };
 
 exports.draftsList = (criteria, cb) => {
-    DataElementDraft.find(criteria, {"updatedBy.username": 1, "updated": 1, "designations.designation": 1, tinyId: 1})
-        .sort({"updated": -1}).exec(cb);
+    DataElementDraft.find(criteria, {'updatedBy.username': 1, 'updated': 1, 'designations.designation': 1, tinyId: 1})
+        .sort({'updated': -1}).exec(cb);
 };
 
 /* ---------- PUT NEW REST API Implementation above  ---------- */
@@ -204,9 +210,9 @@ exports.desByConcept = function (concept, callback) {
                 {'property.concepts.originId': concept.originId},
                 {'dataElementConcept.concepts.originId': concept.originId}]
         },
-        "designations source registrationState stewardOrg updated updatedBy createdBy tinyId version views")
+        'designations source registrationState stewardOrg updated updatedBy createdBy tinyId version views')
         .limit(20)
-        .where("archived").equals(false)
+        .where('archived').equals(false)
         .exec(function (err, cdes) {
             callback(cdes);
         });
@@ -223,16 +229,16 @@ exports.byTinyIdAndVersion = function (tinyId, version, callback) {
     else query.$or = [{version: null}, {version: ''}];
     DataElement.find(query).sort({'updated': -1}).limit(1).exec(function (err, elts) {
         if (err) callback(err);
-        else if (elts.length) callback("", elts[0]);
-        else callback("", null);
+        else if (elts.length) callback('', elts[0]);
+        else callback('', null);
     });
 };
 
 exports.eltByTinyId = function (tinyId, callback) {
-    if (!tinyId) callback("tinyId is undefined!", null);
+    if (!tinyId) callback('tinyId is undefined!', null);
     DataElement.findOne({
         'tinyId': tinyId,
-        "archived": false
+        'archived': false
     }).exec(function (err, de) {
         callback(err, de);
     });
@@ -274,7 +280,7 @@ exports.create = function (elt, user, callback) {
 exports.fork = function (elt, user, callback) {
     exports.update(elt, user, callback, function (newDe, dataElement) {
         newDe.forkOf = dataElement.tinyId;
-        newDe.registrationState.registrationStatus = "Incomplete";
+        newDe.registrationState.registrationStatus = 'Incomplete';
         newDe.tinyId = mongo_data.generateTinyId();
         dataElement.archived = false;
     });
@@ -284,7 +290,7 @@ exports.update = function (elt, user, callback, special) {
     if (elt.toObject) elt = elt.toObject();
     return DataElement.findById(elt._id, (err, dataElement) => {
         if (dataElement.archived) {
-            callback("You are trying to edit an archived elements");
+            callback('You are trying to edit an archived elements');
             return;
         }
         delete elt._id;
@@ -324,7 +330,7 @@ exports.updatePromise = function (elt, user) {
 exports.archiveCde = function (cde, callback) {
     DataElement.findOne({'_id': cde._id}, (err, cde) => {
         cde.archived = true;
-        cde.save(() => callback("", cde));
+        cde.save(() => callback('', cde));
     });
 };
 
@@ -343,9 +349,9 @@ exports.transferSteward = function (from, to, callback) {
 };
 
 exports.byOtherId = function (source, id, cb) {
-    DataElement.find({archived: false}).elemMatch("ids", {source: source, id: id}).exec(function (err, cdes) {
+    DataElement.find({archived: false}).elemMatch('ids', {source: source, id: id}).exec(function (err, cdes) {
         if (cdes.length > 1)
-            cb("Multiple results, returning first", cdes[0]);
+            cb('Multiple results, returning first', cdes[0]);
         else cb(err, cdes[0]);
     });
 };
@@ -353,22 +359,22 @@ exports.byOtherId = function (source, id, cb) {
 exports.byOtherIdAndNotRetired = function (source, id, cb) {
     DataElement.find({
         archived: false,
-        "registrationState.registrationStatus": {$ne: "Retired"}
-    }).elemMatch("ids", {source: source, id: id}).exec(function (err, cdes) {
+        'registrationState.registrationStatus': {$ne: 'Retired'}
+    }).elemMatch('ids', {source: source, id: id}).exec(function (err, cdes) {
         if (err) cb(err, null);
         else if (cdes.length > 1)
-            cb("Multiple results, returning first. source: " + source + " id: " + id, cdes[0]);
+            cb('Multiple results, returning first. source: ' + source + ' id: ' + id, cdes[0]);
         else if (cdes.length === 0) {
-            cb("No results", null);
+            cb('No results', null);
         } else cb(err, cdes[0]);
     });
 };
 
 exports.bySourceIdVersion = function (source, id, version, cb) {
-    DataElement.find({archived: false}).elemMatch("ids", {
+    DataElement.find({archived: false}).elemMatch('ids', {
         source: source, id: id, version: version
     }).exec(function (err, cdes) {
-        if (cdes.length > 1) cb("Multiple results, returning first", cdes[0]);
+        if (cdes.length > 1) cb('Multiple results, returning first', cdes[0]);
         else cb(err, cdes[0]);
     });
 };
@@ -376,9 +382,9 @@ exports.bySourceIdVersion = function (source, id, version, cb) {
 exports.bySourceIdVersionAndNotRetiredNotArchived = function (source, id, version, cb) {
     //noinspection JSUnresolvedFunction
     DataElement.find({
-        "archived": false,
-        "registrationState.registrationStatus": {$ne: "Retired"}
-    }).elemMatch("ids", {
+        'archived': false,
+        'registrationState.registrationStatus': {$ne: 'Retired'}
+    }).elemMatch('ids', {
         source: source, id: id, version: version
     }).exec(function (err, cdes) {
         cb(err, cdes);
@@ -386,11 +392,11 @@ exports.bySourceIdVersionAndNotRetiredNotArchived = function (source, id, versio
 };
 
 exports.findCurrCdesInFormElement = function (allCdes, cb) {
-    DataElement.find({archived: false}, "tinyId version derivationRules").where("tinyId").in(allCdes).exec(cb);
+    DataElement.find({archived: false}, 'tinyId version derivationRules').where('tinyId').in(allCdes).exec(cb);
 };
 
 exports.derivationOutputs = function (inputTinyId, cb) {
-    DataElement.find({archived: false, "derivationRules.inputs": inputTinyId}).exec(cb);
+    DataElement.find({archived: false, 'derivationRules.inputs': inputTinyId}).exec(cb);
 };
 
 exports.findModifiedElementsSince = function (date, cb) {
@@ -403,17 +409,17 @@ exports.findModifiedElementsSince = function (date, cb) {
         },
         {$limit: 2000},
         {$sort: {updated: -1}},
-        {$group: {"_id": "$tinyId"}}
+        {$group: {'_id': '$tinyId'}}
     ]).exec(cb);
 
 };
 
 exports.checkOwnership = function (req, id, cb) {
-    if (!req.isAuthenticated()) return cb("You are not authorized.", null);
+    if (!req.isAuthenticated()) return cb('You are not authorized.', null);
     exports.byId(id, function (err, elt) {
-        if (err || !elt) return cb("Element does not exist.", null);
+        if (err || !elt) return cb('Element does not exist.', null);
         if (!isOrgCurator(req.user, elt.stewardOrg.name))
-            return cb("You do not own this element.", null);
+            return cb('You do not own this element.', null);
         cb(null, elt);
     });
 };

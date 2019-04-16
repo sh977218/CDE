@@ -239,7 +239,7 @@
                         <cde-naming [elt]="elt" [canEdit]="canEdit()" (onEltChange)="saveDraft();"></cde-naming>
                     </ng-container>
                     <ng-container *ngIf="currentTab=== 'classification_tab'">
-                        <cde-form-classification [elt]="elt"></cde-form-classification>
+                        <cde-form-classification [elt]="elt" (onEltChange)="eltLoaded($event)"></cde-form-classification>
                     </ng-container>
                     <ng-container *ngIf="currentTab=== 'referenceDocuments_tab'">
                         <cde-reference-document [elt]="elt" [canEdit]="canEdit()" (onEltChange)="saveDraft();">
