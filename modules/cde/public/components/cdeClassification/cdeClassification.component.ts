@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
 
 import { AlertService } from 'alert/alert.service';
 import { UserService } from '_app/user.service';
@@ -15,6 +15,7 @@ import { MatDialogRef } from '@angular/material';
 })
 export class CdeClassificationComponent {
     @Input() elt: any;
+    @Output() onEltChange = new EventEmitter();
     @ViewChild('classifyItemComponent') classifyItemComponent: ClassifyItemModalComponent;
     classifyItemModalRef: MatDialogRef<TemplateRef<any>>;
 
@@ -47,6 +48,7 @@ export class CdeClassificationComponent {
     reloadElt (cb) {
         this.http.get('de/' + this.elt.tinyId).subscribe(res => {
             this.elt = res;
+            this.onEltChange.emit(this.elt);
             if (cb) cb();
         }, err => {
             if (err) this.alert.addAlert('danger', 'Error retrieving. ' + err);

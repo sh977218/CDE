@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
 import { AlertService } from 'alert/alert.service';
 import { UserService } from '_app/user.service';
 import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
@@ -15,6 +15,7 @@ import { MatDialogRef } from '@angular/material';
 })
 export class FormClassificationComponent {
     @Input() elt: CdeForm;
+    @Output() onEltChange = new EventEmitter();
     @ViewChild('classifyCdesComponent') public classifyCdesComponent: ClassifyItemModalComponent;
     @ViewChild('classifyItemComponent') public classifyItemComponent: ClassifyItemModalComponent;
     classifyCdesModalRef: MatDialogRef<TemplateRef<any>>;
@@ -113,6 +114,7 @@ export class FormClassificationComponent {
     reloadElt(cb) {
         this.http.get<CdeForm>('form/' + this.elt.tinyId).subscribe(res => {
             this.elt = res;
+            this.onEltChange.emit(this.elt);
             if (cb) cb();
         }, err => {
             if (err) this.alert.addAlert('danger', 'Error retrieving. ' + err);
