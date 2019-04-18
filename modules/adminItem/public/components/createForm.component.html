@@ -41,7 +41,7 @@
         </div>
         <div class="clearfix"></div>
         <div class="form-group">
-            <button (click)="cancelCreateForm()" mat-raised-button color="accent"> Cancel</button>
+            <button (click)="cancelCreateForm()" mat-raised-button color="warn"> Cancel</button>
             <button id="submit" type="submit" (click)="createForm()" mat-raised-button color="primary"
                     [disabled]="!dataElementForm.form.valid || validationErrors(elt)"> Submit
             </button>
