@@ -11,8 +11,6 @@ public class LogoutCannotEditFormNamingTest extends NlmCdeBaseTest {
     @Test
     public void logoutCannotEditNaming() {
         String formName = "Study Drug Compliance";
-
-        mustBeLoggedOut();
         goToFormByName(formName);
         goToNaming();
         for (WebElement elt : driver.findElements(By.xpath("//mat-icon[normalize-space() = 'delete_outline']"))) {

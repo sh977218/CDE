@@ -10,7 +10,6 @@ public class LogoutCannotEditCdeNamingTest extends NlmCdeBaseTest {
     @Test
     public void logoutCannotEditCdeNaming() {
         String cdeName = "cde for test cde reorder detail tabs";
-        mustBeLoggedOut();
         goToCdeByName(cdeName);
         goToNaming();
         shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//mat-icon[contains(., 'delete')]")));

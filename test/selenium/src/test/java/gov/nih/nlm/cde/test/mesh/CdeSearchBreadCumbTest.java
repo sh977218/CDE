@@ -9,7 +9,6 @@ public class CdeSearchBreadCumbTest extends NlmCdeBaseTest {
 
     @Test
     public void cdeSearchBreadcrumb() {
-        mustBeLoggedOut();
         goToCdeSearch();
         Assert.assertEquals(driver.getTitle(), "Data Element Search");
         clickElement(By.xpath("//div[. = 'Browse by Topic']"));

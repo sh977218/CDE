@@ -42,11 +42,13 @@ public class AddOrgWithWorkingGroupTest extends BaseClassificationTest {
         // Make sure nlm users can see it
         logout();
         mustBeLoggedInAs(nlm_username, nlm_password);
+        goToCdeSearch();
         findElement(By.xpath("//*[@id='browseOrg-" + orgWG + "']"));
 
         // Make sure cabigAdmin can't
         logout();
         mustBeLoggedInAs(cabigAdmin_username, password);
+        goToCdeSearch();
         textNotPresent(orgWG);
 
     }
