@@ -45,7 +45,7 @@ export class DataElementViewComponent implements OnInit {
     commentMode;
     currentTab = 'general_tab';
     displayStatusWarning;
-    draftSubscription: Subscription;
+    draftSaving: Promise<DataElement>;
     elt: DataElement;
     eltCopy = {};
     hasComments;
@@ -244,32 +244,38 @@ export class DataElementViewComponent implements OnInit {
         );
     }
 
-    saveDraft() {
+    saveDraft(): Promise<any> {
         if (!this.elt.isDraft) this.elt.changeNote = '';
         this.elt.isDraft = true;
         this.hasDrafts = true;
         this.savingText = 'Saving ...';
-        if (this.draftSubscription) {
+        if (this.draftSaving) {
             this.unsaved = true;
-            return;
+            return this.draftSaving;
         }
-        this.draftSubscription = this.http.put<DataElement>('/draftDataElement/' + this.elt.tinyId, this.elt).subscribe(newElt => {
-            this.draftSubscription = undefined;
+        this.draftSaving = this.http.put<DataElement>('/draftDataElement/' + this.elt.tinyId, this.elt).toPromise();
+        return this.draftSaving.then(newElt => {
+            this.draftSaving = undefined;
             this.elt.__v = newElt.__v;
             this.validate();
             if (this.unsaved) {
                 this.unsaved = false;
-                this.saveDraft();
+                return this.saveDraft();
             }
             this.savingText = 'Saved';
             setTimeout(() => {
                 this.savingText = '';
             }, 3000);
         }, err => {
-            this.draftSubscription = undefined;
+            this.draftSaving = undefined;
             this.savingText = 'Cannot save this old version. Reload and redo.';
             this.alert.httpErrorMessageAlert(err);
+            throw err;
         });
+    }
+
+    saveDraftVoid(): void {
+        this.saveDraft().catch(_noop);
     }
 
     saveDataElement() {
