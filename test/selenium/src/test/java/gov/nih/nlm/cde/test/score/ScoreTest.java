@@ -8,15 +8,6 @@ import org.testng.annotations.Test;
 public class ScoreTest extends NlmCdeBaseTest {
 
     @Test
-    public void cannotScoreAsAnonymous() {
-        mustBeLoggedOut();
-        goToCdeByName("Head and Neck Lymph Node Left Removed Type");
-
-        goToScoreDerivations();
-        textNotPresent("Add Score");
-    }
-
-    @Test
     public void cannotCreateWithZeroCdes() {
         mustBeLoggedInAs(ctepCurator_username, password);
         emptyQuickBoardByModule("cde");

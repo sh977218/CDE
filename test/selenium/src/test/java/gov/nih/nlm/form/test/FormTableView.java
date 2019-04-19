@@ -7,6 +7,7 @@ public class FormTableView extends BaseFormTest {
 
     @Test
     public void seeFormSource() {
+        goHome();
         clickElement(By.id("menu_forms_link"));
         clickElement(By.id("browseOrg-TEST"));
         clickElement(By.id("list_gridView"));
