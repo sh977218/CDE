@@ -16,6 +16,8 @@ public class LaunchFhirApp extends NlmCdeBaseTest {
         clickElement(By.xpath("//button/div/div/span[. = 'LogIn']"));
         textPresent("My Sandboxes");
 
+        hangon(5);
+
         driver.get("https://sandbox.hspconsortium.org/CDECI1/apps");
         Actions action = new Actions(driver);
         action.moveToElement(findElement(By.cssSelector("div[title='CDE Forms']"))).build().perform();
