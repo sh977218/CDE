@@ -10,6 +10,7 @@ public class IECannotLogin extends NlmCdeBaseTest {
     @SelectBrowser
     @Test
     public void ieCannotLogin() {
+        goHome();
         clickElement(By.id("login_link"));
         textPresent("Internet Explorer is no longer supported to");
 

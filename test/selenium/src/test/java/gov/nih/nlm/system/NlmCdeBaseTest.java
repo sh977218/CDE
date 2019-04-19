@@ -30,6 +30,7 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermission;
 import java.util.*;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -123,7 +124,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         }
 
         System.out.println("baseUrl: " + baseUrl);
-        driver.get(baseUrl);
+//        driver.get(baseUrl);
         driver.manage().timeouts().implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
 
         wait = new WebDriverWait(driver, defaultTimeout, 600);
@@ -242,20 +243,13 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void doLogin(String username, String password) {
-        List<WebElement> loginLinkList = driver.findElements(By.xpath("//*[@id='login_link']"));
-        if (loginLinkList.size() > 0) {
-            loginAs(username, password);
-        } else {
-            if (!isUsernameMatch(username)) {
-                logout();
-                loginAs(username, password);
-            }
-        }
+        loginAs(username, password);
     }
 
     protected void mustBeLoggedInAs(String username, String password) {
         doLogin(username, password);
-        goToCdeSearch();
+
+//        goToCdeSearch();
     }
 
     protected void addIdSource(String source, String deLink, String formLink) {
@@ -694,18 +688,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void goHome() {
-        clickElement(By.id("homeLink"));
-        isHome();
-    }
-
-    protected void isHome() {
-        textPresent("has been designed to provide access", By.id("introduction"));
-        findElement(By.cssSelector(".carousel-indicators"));
-    }
-
-    protected void goHomeStatic() {
-        mustBeLoggedOut();
-        driver.get(baseUrl + "/home");
+        driver.get(baseUrl);
         textPresent("has been designed to provide access", By.id("introduction"));
         findElement(By.cssSelector(".carousel-indicators"));
     }
@@ -736,15 +719,12 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void loginAs(String username, String password) {
-        clickElement(By.id("login_link"));
-        textPresent("Please Log In");
+        driver.get(baseUrl + "/login");
         String usernameStr = username;
         if (username.length() > 17) {
             usernameStr = usernameStr.substring(0, 17) + "...";
         }
 
-        findElement(By.id("uname")).clear();
-        findElement(By.id("passwd")).clear();
         findElement(By.id("uname")).sendKeys(username);
         findElement(By.id("passwd")).sendKeys(password);
         clickElement(By.id("login_button"));
@@ -1512,6 +1492,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
 
 
     protected void swaggerApi(String api, String text, String tinyId, String version) {
+        goHome();
         clickElement(By.id("helpLink"));
         clickElement(By.id("apiDocumentationLink"));
         hangon(1);

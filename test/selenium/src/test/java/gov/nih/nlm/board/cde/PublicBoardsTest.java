@@ -7,7 +7,7 @@ public class PublicBoardsTest extends BoardTest {
 
     @Test
     public void searchPublicBoard() {
-        mustBeLoggedOut();
+        goHome();
         clickElement(By.id("boardsMenu"));
         findElement(By.name("search")).sendKeys("board");
         clickElement(By.id("search.submit"));
@@ -26,7 +26,7 @@ public class PublicBoardsTest extends BoardTest {
 
     @Test
     public void searchPublicBoardNoResult() {
-        mustBeLoggedOut();
+        goHome();
         clickElement(By.id("boardsMenu"));
         textPresent("Cerebral Palsy");
         textPresent("Public Smoking Board");
