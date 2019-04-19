@@ -253,25 +253,25 @@ export class DataElementViewComponent implements OnInit {
             this.unsaved = true;
             return this.draftSaving;
         }
-        this.draftSaving = this.http.put<DataElement>('/draftDataElement/' + this.elt.tinyId, this.elt).toPromise();
-        return this.draftSaving.then(newElt => {
-            this.draftSaving = undefined;
-            this.elt.__v = newElt.__v;
-            this.validate();
-            if (this.unsaved) {
-                this.unsaved = false;
-                return this.saveDraft();
-            }
-            this.savingText = 'Saved';
-            setTimeout(() => {
-                this.savingText = '';
-            }, 3000);
-        }, err => {
-            this.draftSaving = undefined;
-            this.savingText = 'Cannot save this old version. Reload and redo.';
-            this.alert.httpErrorMessageAlert(err);
-            throw err;
-        });
+        this.draftSaving = this.http.put<DataElement>('/draftDataElement/' + this.elt.tinyId, this.elt)
+            .toPromise().then(newElt => {
+                this.draftSaving = undefined;
+                this.elt.__v = newElt.__v;
+                this.validate();
+                if (this.unsaved) {
+                    this.unsaved = false;
+                    return this.saveDraft();
+                }
+                this.savingText = 'Saved';
+                setTimeout(() => {
+                    this.savingText = '';
+                }, 3000);
+            }, err => {
+                this.draftSaving = undefined;
+                this.savingText = 'Cannot save this old version. Reload and redo.';
+                this.alert.httpErrorMessageAlert(err);
+                throw err;
+            });
     }
 
     saveDraftVoid(): void {
@@ -279,13 +279,21 @@ export class DataElementViewComponent implements OnInit {
     }
 
     saveDataElement() {
-        const publishData = {_id: this.elt._id, tinyId: this.elt.tinyId, __v: this.elt.__v};
-        this.http.post('/dePublish', publishData).subscribe(res => {
-            if (res) {
-                this.hasDrafts = false;
-                this.loadElt(() => this.alert.addAlert('success', 'Data Element saved.'));
-            }
-        }, err => this.alert.httpErrorMessageAlert(err, 'Error publishing'));
+        const saveImpl = () => {
+            const publishData = {_id: this.elt._id, tinyId: this.elt.tinyId, __v: this.elt.__v};
+            this.http.post('/dePublish', publishData).subscribe(res => {
+                if (res) {
+                    this.hasDrafts = false;
+                    this.loadElt(() => this.alert.addAlert('success', 'Data Element saved.'));
+                }
+            }, err => this.alert.httpErrorMessageAlert(err, 'Error publishing'));
+        };
+
+        if (this.draftSaving) {
+            this.draftSaving.then(saveImpl, _noop);
+        } else {
+            saveImpl();
+        }
     }
 
     validate() {
