@@ -8,8 +8,8 @@ public class FormLinkedFormsTest extends BaseFormTest {
     @Test
     public void formLinkedForms() {
         String formName = "Neurological Assessment: TBI Symptoms and Signs";
-        textPresent("QUICK BOARD (0)");
         goToFormByName(formName);
+        textPresent("QUICK BOARD (0)");
         goToGeneralDetail();
         clickElement(By.id("openLinkedFormsModalBtn"));
         textPresent("There is 1 form that uses this form");

@@ -44,7 +44,6 @@ public class FacetSearch3 extends NlmCdeBaseTest {
 
     @Test
     public void twoClassificationSearch() {
-        mustBeLoggedOut();
         goToCdeSearch();
         clickElement(By.id("browseOrg-NINDS"));
         clickElement(By.id("classif-Disease"));

@@ -16,7 +16,6 @@ public class BoardExportTest extends BoardTest {
 
     @Test
     public void boardExport() {
-        mustBeLoggedOut();
         String board_name = "Board Export Test";
         goToBoard(board_name);
         loadDefaultTableViewSettings();

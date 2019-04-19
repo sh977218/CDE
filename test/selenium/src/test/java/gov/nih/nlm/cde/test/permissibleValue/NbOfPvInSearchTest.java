@@ -10,7 +10,6 @@ public class NbOfPvInSearchTest extends NlmCdeBaseTest {
 
     @Test
     public void nbOfPVsInSearch() {
-        mustBeLoggedOut();
         openCdeInList("country ISO");
         textPresent("(249 total)");
         clickElement(By.id("list_gridView"));

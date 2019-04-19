@@ -8,7 +8,6 @@ public class PinWhenNotLoggedIn extends NlmCdeBaseTest {
 
     @Test
     public void pinWhenNotLoggedIn() {
-        mustBeLoggedOut();
         goToCdeSearch();
         clickElement(By.id("browseOrg-NINDS"));
         textPresent("results for All Terms");
