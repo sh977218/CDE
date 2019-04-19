@@ -13,6 +13,10 @@ public class AddToBoardFromView extends BoardTest{
         clickElement(By.id("addToBoard"));
         textPresent("TestQuickboard");
         clickElement(By.id("cancelSelect"));
+
+        clickElement(By.id("addToBoard"));
+        clickElement(By.id("AddFormBoard"));
+
     }
 
 }
