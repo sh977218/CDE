@@ -8,6 +8,7 @@ public class QuickboardButtons extends NlmCdeBaseTest{
 
     @Test
     public void quickBoardButtons() {
+        goHome();
         textPresent("QUICK BOARD (0)");
         goToQuickBoardByModule("cde");
         textNotPresent("Side by Side View");

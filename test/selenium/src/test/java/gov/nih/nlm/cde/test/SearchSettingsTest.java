@@ -43,7 +43,6 @@ public class SearchSettingsTest extends NlmCdeBaseTest {
 
     @Test
     void unloggedUserSetsFields() {
-        mustBeLoggedOut();
         goToCdeSearch();
         setAndCheckFields();
 
@@ -61,20 +60,4 @@ public class SearchSettingsTest extends NlmCdeBaseTest {
         textPresent("Identifiers");
     }
 
-    @Test
-    void loggedUserSetsFields() {
-        mustBeLoggedInAs(tableViewUser_username, password);
-        goToCdeSearch();
-        setAndCheckFields();
-        clearStorage();
-        goToCdeSearch();
-        clickElement(By.id("browseOrg-NINDS"));
-        clickElement(By.id("list_gridView"));
-        textPresent("Other Names");
-        textPresent("Permissible Values");
-        textPresent("Steward");
-        textPresent("Used by");
-        textNotPresent("Registration Status", By.id("gridList"));
-        textPresent("Identifiers");
-    }
 }

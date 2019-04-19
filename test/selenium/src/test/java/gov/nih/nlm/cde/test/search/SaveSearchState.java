@@ -8,7 +8,6 @@ public class SaveSearchState extends NlmCdeBaseTest {
 
     @Test
     public void saveSearchState() {
-        mustBeLoggedOut();
         setLowStatusesVisible();
         goToCdeSearch();
         clickElement(By.id("browseOrg-CTEP"));
