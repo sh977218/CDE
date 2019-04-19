@@ -640,7 +640,8 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         findElement(By.id("changeNote")).sendKeys(changeNote);
         findElement(By.name("newVersion")).sendKeys(".1");
         textNotPresent("has already been used");
-        hangon(1);
+        // TODO remove when 'reload and redo is fixed"
+        hangon(2);
         clickElement(By.id("confirmSaveBtn"));
     }
 
