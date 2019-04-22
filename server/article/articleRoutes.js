@@ -20,8 +20,11 @@ exports.module = function (roleConfig) {
 
     router.post('/:key', roleConfig.update, (req, res) => {
         if (req.body.key !== req.params.key) return res.status(400).send();
-        db.update(req.body, handleError({res: res, origin: "POST /article/:key"},
-            article => res.send(article)));
+        db.update(req.body, handleError({res: res, origin: "POST /article/:key"}, () => {
+            db.byKey(req.params.key, (err, art) => res.send(art))
+        }));
+
+
     });
 
     let rssFeeds = [];
@@ -48,11 +51,12 @@ exports.module = function (roleConfig) {
                         parser.parseURL(url, handleError({req, res}, feed => {
                             article.rssFeeds.push(feed);
                             article.body = article.body.replace(match, '<div id="rssContent_' + i++ + '"></div>');
+                            rssFeeds = article.rssFeeds;
                             doneOneMatch();
                         }))
                     }, () => {
                         res.send(article);
-                        setTimeout(() => rssFeeds = [], 5 * 60 * 1000);
+                        setTimeout(() => rssFeeds = [], 1 * 60 * 1000);
                     })
                 }
             }));

@@ -12,15 +12,31 @@ public class ResourcesPage extends NlmCdeBaseTest {
         openUserMenu();
         goToSiteManagement();
         clickElement(By.xpath("//div[. = 'Resources']"));
-        hangon(1);
+        // wait for ckeditor <script> to resolve.
+        hangon(2);
         clickElement(By.cssSelector("mat-icon[title='Edit']"));
+        textPresent("Rich Text");
         clickElement(By.cssSelector(".cke_button__source"));
         findElement(By.cssSelector("textarea.cke_source")).sendKeys(resourceText);
+        findElement(By.cssSelector("textarea.cke_source")).sendKeys("\n<p>&lt;rss-feed&gt;https://twitrss.me/twitter_search_to_rss/?term=nlm&lt;/rss-feed&gt;</p>\n");
+
+        // one with no URL
+        findElement(By.cssSelector("textarea.cke_source")).sendKeys("\n<p>&lt;rss-feed&gt;&lt;/rss-feed&gt;</p>\n");
+
+        clickElement(By.cssSelector(".cke_button__source"));
         clickElement(By.xpath("//mat-icon[. = 'check']"));
         checkAlert("Saved");
-        hangon(1);
+        textPresent(resourceText);
         clickElement(By.id("resourcesLink"));
         textPresent(resourceText);
+        textPresent("RSS Feeds Result:");
+
+        // again for coverage of rss cache
+        goHome();
+        clickElement(By.id("resourcesLink"));
+        textPresent(resourceText);
+        textPresent("RSS Feeds Result");
+
     }
 
 }
