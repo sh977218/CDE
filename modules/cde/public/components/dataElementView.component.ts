@@ -274,6 +274,10 @@ export class DataElementViewComponent implements OnInit {
             });
     }
 
+    saveDraftVoid(): void {
+        this.saveDraft().catch(_noop);
+    }
+
     saveDataElement() {
         const saveImpl = () => {
             const publishData = {_id: this.elt._id, tinyId: this.elt.tinyId, __v: this.elt.__v};
