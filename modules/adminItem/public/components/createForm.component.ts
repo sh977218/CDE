@@ -22,6 +22,7 @@ import { Definition, Designation } from 'shared/models.model';
 import { CdeForm } from 'shared/form/form.model';
 import { classifyItem, findSteward, removeCategory } from 'shared/system/classificationShared';
 import { MatDialogRef } from '@angular/material';
+import { Location } from '@angular/common';
 
 @Component({
     selector: 'cde-create-form',
@@ -52,6 +53,7 @@ export class CreateFormComponent implements OnInit {
                 private http: HttpClient,
                 public isAllowedModel: IsAllowedService,
                 private localStorageService: LocalStorageService,
+                private location: Location,
                 private router: Router, public userService: UserService) {
     }
 
@@ -67,10 +69,10 @@ export class CreateFormComponent implements OnInit {
     }
 
     cancelCreateForm() {
-        if (this.done) {
+        if (this.done.observers.length > 0) {
             this.done.emit();
         } else {
-            this.router.navigate(['/']);
+            this.location.back();
         }
     }
 
