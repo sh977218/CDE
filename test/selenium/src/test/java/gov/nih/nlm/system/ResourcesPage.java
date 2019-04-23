@@ -18,7 +18,8 @@ public class ResourcesPage extends NlmCdeBaseTest {
         textPresent("Rich Text");
         clickElement(By.cssSelector(".cke_button__source"));
         findElement(By.cssSelector("textarea.cke_source")).sendKeys(resourceText);
-        findElement(By.cssSelector("textarea.cke_source")).sendKeys("\n<p>&lt;rss-feed&gt;https://twitrss.me/twitter_search_to_rss/?term=nlm&lt;/rss-feed&gt;</p>\n");
+        findElement(By.cssSelector("textarea.cke_source")).sendKeys("\n<p>&lt;rss-feed&gt;" +
+                "https://www.feedforall.com/sample.xml" + "&lt;/rss-feed&gt;</p>\n");
 
         // one with no URL
         findElement(By.cssSelector("textarea.cke_source")).sendKeys("\n<p>&lt;rss-feed&gt;&lt;/rss-feed&gt;</p>\n");
@@ -31,7 +32,7 @@ public class ResourcesPage extends NlmCdeBaseTest {
         textPresent(resourceText);
         textPresent("RSS Feeds Result:");
 
-        // again for coverage of rss cache
+        // again for coverage of rss cachere
         goHome();
         clickElement(By.id("resourcesLink"));
         textPresent(resourceText);
