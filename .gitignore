@@ -55,6 +55,8 @@ expressErrorLog*
 logs
 
 ## Tests
+.nyc_output/
+coverage/
 *.iml
 .gradle/
 chromedriver.exe
