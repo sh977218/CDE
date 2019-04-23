@@ -182,6 +182,7 @@
     "ngx-bootstrap": "^3.1.2",
     "node-sass": "^4.9.4",
     "nodemon": "^1.18.11",
+    "nyc": "^13.3.0",
     "optimize-js-plugin": "0.0.4",
     "raw-loader": "^0.5.1",
     "reflect-metadata": "0.1.12",
