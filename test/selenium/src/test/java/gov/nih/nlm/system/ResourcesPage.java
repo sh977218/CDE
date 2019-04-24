@@ -11,6 +11,8 @@ public class ResourcesPage extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         openUserMenu();
         goToSiteManagement();
+        clickElement(By.cssSelector(".mat-tab-header-pagination-after"));
+        clickElement(By.cssSelector(".mat-tab-header-pagination-after"));
         clickElement(By.xpath("//div[. = 'Resources']"));
         // wait for ckeditor <script> to resolve.
         hangon(2);

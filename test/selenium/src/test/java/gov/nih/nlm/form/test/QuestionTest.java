@@ -42,7 +42,7 @@ public class QuestionTest extends BaseFormTest {
         if (driver.findElements(By.id("addNewCdeBtn")).size() > 0) clickElement(By.id("addNewCdeBtn"));
         textPresent("Create Data Element");
 
-        new Actions(driver).sendKeys(cdeName).build().perform();
+        findElement(By.id("ftsearch-input")).sendKeys(cdeName);
         if (!isSuggested) clickElement(By.id("createNewDataElement"));
         else clickElement(By.xpath("(//*[@id='accordionList']//div[@class='card-header']//button)[1]"));
     }
