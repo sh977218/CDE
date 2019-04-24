@@ -8,6 +8,7 @@ public class CdeLiveComment extends NlmCdeBaseTest {
 
     @Test
     public void cdeLiveCommentTest() {
+        goHome();
         clickElement(By.linkText("NIH CDE Resource Portal"));
         switchTab(0);
 

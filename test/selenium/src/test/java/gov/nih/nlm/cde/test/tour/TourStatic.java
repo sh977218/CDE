@@ -7,7 +7,7 @@ public class TourStatic extends TourBase {
 
     @Test
     public void takeStaticTour() {
-        goHomeStatic();
+        goHome();
         clickElement(By.id("takeATourBtn"));
         textPresent("This tour will guide you through");
     }
