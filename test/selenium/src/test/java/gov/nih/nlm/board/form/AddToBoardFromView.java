@@ -15,7 +15,7 @@ public class AddToBoardFromView extends BoardTest{
         clickElement(By.id("cancelSelect"));
 
         clickElement(By.id("addToBoard"));
-        clickElement(By.id("AddFormBoard"));
+        clickElement(By.cssSelector("#AddFormBoard .card-header"));
         checkAlert("Added to Board");
 
         gotoMyBoards();
