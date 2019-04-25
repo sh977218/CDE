@@ -35,21 +35,32 @@ exports.storeQuery = function (settings, callback) {
         , selectedElements1: settings.selectedElements.slice(0)
         , selectedElements2: settings.selectedElementsAlt.slice(0)
     };
+    if (settings.username) storedQuery.username = settings.username;
+    if (settings.remoteAddr) storedQuery.remoteAddr = settings.remoteAddr;
+    if (settings.isSiteAdmin) storedQuery.isSiteAdmin = settings.isSiteAdmin;
     if (settings.selectedOrg) storedQuery.selectedOrg1 = settings.selectedOrg;
     if (settings.selectedOrgAlt) storedQuery.selectedOrg2 = settings.selectedOrgAlt;
     if (settings.searchToken) storedQuery.searchToken = settings.searchToken;
 
     if (!(!storedQuery.selectedOrg1 && storedQuery.searchTerm === '')) {
         StoredQueryModel.findOne({date: {$gt: new Date().getTime() - 30000}, searchToken: storedQuery.searchToken},
-            (err, theOne) => {
+            function (err, theOne) {
                 if (theOne) {
                     StoredQueryModel.findOneAndUpdate(
                         {date: {$gt: new Date().getTime() - 30000}, searchToken: storedQuery.searchToken},
-                        storedQuery, exports.handleError({}, () => {}));
+                        storedQuery,
+                        err => {
+                            if (err) noDbLogger.noDbLogger.info(err);
+                            if (callback) callback(err);
+                        }
+                    );
                 } else {
                     new StoredQueryModel(storedQuery).save(callback);
                 }
             });
+
+
+        //
     }
 };
 
@@ -57,9 +68,11 @@ exports.log = function (message, callback) { // express only, all others dbLogge
     if (isNaN(message.responseTime)) delete message.responseTime;
 
     if (message.httpStatus !== '304') {
-        new LogModel(message).save(exports.handleError({}, callback));
+        new LogModel(message).save(err => {
+            if (err) noDbLogger.noDbLogger.info('ERROR: ' + err);
+            callback(err);
+        });
     }
-
 };
 
 exports.logError = function (message, callback) { // all server errors, express and not
@@ -69,7 +82,9 @@ exports.logError = function (message, callback) { // all server errors, express 
     if (config.logToConsoleForServerError) {
         console.log('---Server Error---', message);
     }
-    new LogErrorModel(message).save(exports.handleError({}, () => {
+    new LogErrorModel(message).save(err => {
+        if (err) noDbLogger.noDbLogger.info('ERROR: ' + err);
+
         if (message.origin && message.origin.indexOf('pushGetAdministratorRegistrations') === -1) {
             let msg = JSON.stringify({
                 title: 'Server Side Error',
@@ -92,16 +107,22 @@ exports.logError = function (message, callback) { // all server errors, express 
             });
         }
         if (callback) callback(err);
-    }));
+    });
 };
 
 exports.logClientError = function (req, callback) {
+    let getRealIp = function (req) {
+        if (req._remoteAddress) return req._remoteAddress;
+        if (req.ip) return req.ip;
+    };
     let exc = req.body;
     exc.userAgent = req.headers['user-agent'];
     exc.date = new Date();
-    exc.ip = req._remoteAddress;
+    exc.ip = getRealIp(req);
     if (req.user) exc.username = req.user.username;
-    new ClientErrorModel(exc).save(exports.handleError({}, () => {
+    new ClientErrorModel(exc).save(err => {
+        if (err) noDbLogger.noDbLogger.info('ERROR: ' + err);
+
         let ua = userAgent.is(req.headers['user-agent']);
         if (ua.chrome || ua.firefox || ua.edge) {
             let msg = JSON.stringify({
@@ -126,7 +147,7 @@ exports.logClientError = function (req, callback) {
         }
 
         callback(err);
-    }));
+    });
 };
 
 exports.handle404 = function handle404(options, cb = _.noop) { // Not Found
