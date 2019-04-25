@@ -30,6 +30,16 @@
   "napa": {
     "feedback": "https://github.com/ivoviz/feedback.git#master"
   },
+  "nyc": {
+    "check-coverage": true,
+    "include": [
+      "**/server/article/*.js"
+    ],
+    "lines": "85",
+    "branches": "75",
+    "functions": "90",
+    "reporter": "html"
+  },
   "dependencies": {
     "@types/express": "^4.16.0",
     "adm-zip": "^0.4.11",
