@@ -49,7 +49,7 @@ export class IdentifiersComponent {
     }
 
     addLink(source: Source, id: CdeId) {
-        this.idsLinks.push(IdentifiersComponent.linkWithId(
+        this.idsLinks.push(this.linkWithId(
             source && (isCdeForm(this.elt) ? source.linkTemplateForm : source.linkTemplateDe),
             id
         ));
@@ -70,7 +70,8 @@ export class IdentifiersComponent {
         }
     }
 
-    static linkWithId(link = '', id) {
+    linkWithId(link = '', id) {
+        if (!link) link = '';
         return link
             .replace('{{id}}', id.id)
             .replace('{{version}}', id.version);
