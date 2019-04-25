@@ -9,7 +9,11 @@ public class LaunchFhirApp extends NlmCdeBaseTest {
 
     @Test
     public void launchFhirApp() {
-        driver.get("https://sandbox.hspconsortium.org/CDECI1/apps");
+        String appUrl = baseUrl.contains("dev-2")?"https://sandbox.hspconsortium.org/CDECI2/apps"
+                :"https://sandbox.hspconsortium.org/CDECI1/apps";
+
+
+        driver.get(appUrl);
 
         findElement(By.cssSelector("input[name='email']")).sendKeys("giyucado@web2mailco.com");
         findElement(By.cssSelector("input[name='password']")).sendKeys("koko123!");
@@ -18,7 +22,7 @@ public class LaunchFhirApp extends NlmCdeBaseTest {
 
         hangon(5);
 
-        driver.get("https://sandbox.hspconsortium.org/CDECI1/apps");
+        driver.get(appUrl);
         Actions action = new Actions(driver);
         action.moveToElement(findElement(By.cssSelector("div[title='CDE Forms']"))).build().perform();
 
