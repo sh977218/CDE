@@ -8,7 +8,8 @@ exports.module = function () {
     const router = require('express').Router();
 
     router.get('/searchValueSet/:vsacId', [nocacheMiddleware], async (req, res) => {
-        let body = await utsSvc.searchValueSet(req.params.vsacId, req.query.term, req.query.page);
+        const {vsacId, term, page} = req.params;
+        let body = await utsSvc.searchValueSet(vsacId, term, page);
         res.send(body);
     });
 
@@ -24,9 +25,7 @@ exports.module = function () {
     });
 
     router.get('/crossWalkingVocabularies/:source/:code/:targetSource/', async (req, res) => {
-        let source = req.params.source;
-        let code = req.params.code;
-        let targetSource = req.params.targetSource;
+        const {source, code, targetSource} = req.params;
         let body = await utsSvc.getCrossWalkingVocabularies(source, code, targetSource);
         res.send(body);
     });

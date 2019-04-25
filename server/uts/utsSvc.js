@@ -1,42 +1,36 @@
+const util = require('util');
 const querystring = require('querystring');
 const request = require('request').defaults({jar: true});
 const config = require('config');
 
 const dbLogger = require('../log/dbLogger.js');
 
-setInterval(() => {
-    getTGT();
+HandleUtsError = function (options, cb = _.noop) {
+    return function errorHandler(err, ...args) {
+        if (err) {
+            dbLogger.appLogs(options.message + error);
+            options.reject();
+            return;
+        }
+        cb(...args);
+    };
+};
+
+function handleReject(message) {
+    return err => {
+        dbLogger.appLogs(message + error);
+        throw err;
+    };
+}
+
+setInterval(async () => {
+    await getTGT().catch(() => TGT = '');
     getVsacCookies();
 }, 60 * 60 * 6 * 1000);
 
 TGT = '';
 
 exports.vsacCookies = [];
-
-function getVsacCookies() {
-    let options = {
-        uri: 'https://vsac.nlm.nih.gov/vsac/login',
-        body: querystring.stringify({
-            username: config.vsac.username,
-            password: config.vsac.password
-        }),
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        }
-    };
-    return new Promise((resolve, reject) => {
-        request.post(options, function (error, response, body) {
-            if (error) {
-                dbLogger.appLogs('get vsac cookies ERROR: ' + error);
-                reject(error);
-            } else {
-                let setCookie = response.headers['set-cookie'];
-                exports.vsacCookies = setCookie;
-                resolve();
-            }
-        })
-    })
-}
 
 function getTGT() {
     let tgtOptions = {
@@ -51,21 +45,34 @@ function getTGT() {
         }
     };
     return new Promise((resolve, reject) => {
-        request(tgtOptions, function (error, response, body) {
-            if (error) {
-                TGT = '';
-                dbLogger.appLogs('get TGT ERROR: ' + error);
-                reject(error);
-            } else {
+        request(tgtOptions, HandleUtsError({message: 'get TGT ERROR: ', reject},
+            (response, body) => {
                 TGT = body;
                 resolve();
-            }
-        })
+            }));
     })
 };
 
+function getVsacCookies() {
+    let options = {
+        uri: 'https://vsac.nlm.nih.gov/vsac/login',
+        body: querystring.stringify({
+            username: config.vsac.username,
+            password: config.vsac.password
+        }),
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+    };
+    return util.promisify(request.post)(options).then(response => {
+        let setCookie = response.headers['set-cookie'];
+        exports.vsacCookies = setCookie;
+    }, handleReject('get vsac cookies ERROR'));
+}
+
+
 async function getTicket() {
-    if (!TGT.length) await getTGT();
+    if (!TGT.length) await getTGT().catch(() => TGT = '');
     const ticketOptions = {
         uri: config.vsac.tgtUrl + '/' + TGT,
         method: 'POST',
@@ -77,14 +84,9 @@ async function getTicket() {
         }
     };
     return new Promise((resolve, reject) => {
-        request(ticketOptions, function (error, response, body) {
-            if (error) {
-                dbLogger.appLogs('get ticket ERROR: ' + error);
-                reject(error);
-            } else {
-                resolve(body);
-            }
-        })
+        request(ticketOptions, HandleUtsError({message: 'get ticket ERROR: ', reject}, (response, body) => {
+            resolve(body);
+        }));
     })
 }
 
@@ -123,18 +125,14 @@ exports.searchValueSet = async function (oid, term = '', page = 1) {
                         'Content-Type': 'application/x-www-form-urlencoded'
                     }
                 };
-                request(searchOptions, function (error, response, body) {
-                    if (error) {
-                        dbLogger.appLogs('search value set ERROR: ' + error);
-                        reject(error);
-                    } else {
-                        resolve(body);
-                    }
-                })
+                request(searchOptions, HandleUtsError({message: "my message", reject}, (response, body) => {
+                    resolve(body);
+                }));
             }
         })
     });
 };
+
 exports.getValueSet = function (oid) {
     return new Promise(async (resolve, reject) => {
         let ticket = await getTicket();
@@ -148,12 +146,12 @@ exports.getValueSet = function (oid) {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
         };
-        request.get(valueSetOptions, function (error, response, body) {
+        request.get(valueSetOptions, function (error, response) {
             if (error) {
                 dbLogger.appLogs('get value set ERROR: ' + error);
                 reject(error);
             } else {
-                resolve(body);
+                resolve(response.body);
             }
         });
     })
@@ -207,7 +205,7 @@ exports.getAtomsFromUMLS = function (cui, source) {
     })
 };
 
-exports.umlsCuiFromSrc = function (id, src, res) {
+exports.umlsCuiFromSrc = function (id, src) {
     return new Promise(async (resolve, reject) => {
         let ticket = await getTicket();
         let url = config.umls.wsHost + "/rest/search/current?string=" + id +

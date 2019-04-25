@@ -3,6 +3,7 @@ package gov.nih.nlm.form.test.datatype;
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.junit.Assert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.annotations.Test;
 
 public class DynamicCodeListForm extends NlmCdeBaseTest {
@@ -11,7 +12,7 @@ public class DynamicCodeListForm extends NlmCdeBaseTest {
     public void dynamicCodeListFormTest() {
         String formName = "Dynamic Code List Form";
         goToFormByName(formName);
-        hangon(10);
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id='Long Dynamic Code List_0-0']")));
         String options1 = driver.findElement(By.xpath("//*[@id='Long Dynamic Code List_0-0']")).getAttribute("outerHTML");
         Assert.assertTrue(options1.contains("HIV 2 gp125"));
 
