@@ -53,10 +53,10 @@ exports.map = {
     'NCI-CDMH': {
         'stewardOrgName': 'NCI',
         'classificationOrgName': 'NCI',
-        'classificationMap': {'NCI-CDMH': 'CDMH'},
+        'classificationMap': {'PCORTF CDMH': 'CDMH'},
         filter: function (contextName, b) {
             let allowBBRB = contextName === 'BBRB';
-            let allowPCORI = contextName === 'PCORI CDM';
+            let allowPCORI = contextName === 'PCORTF CDMH';
             let allowGTEx = b === 'GTEx - Postmortem Biospecimen Acquisition';
             let allowBPV = b === 'BPV - Tumor Biospecimen Acquisition';
             return (allowBBRB || allowPCORI) && (allowBPV || allowGTEx);
@@ -71,7 +71,7 @@ exports.map = {
         'xml': 'S:/MLB/CDE/NCI/CdmhPcoriCdm/PCORNetFinalCDEBrowser_SearchResults.xml',
         'stewardOrgName': 'NCI',
         'classificationOrgName': 'NCI',
-        'classificationMap': {'PCORI CDM': 'PCORNet'},
+        'classificationMap': {'PCORTF CDMH': 'PCORNet'},
         statusMapping: {
             "Preferred Standard": "Standard",
             "Standard": "Standard",
@@ -82,7 +82,7 @@ exports.map = {
         'xml': 'S:/MLB/CDE/NCI/CdmhPcoriCdm/OMOPFINALCDEBrowser_SearchResults.xml',
         'stewardOrgName': 'NCI',
         'classificationOrgName': 'NCI',
-        'classificationMap': {'PCORI CDM': 'OMOP'},
+        'classificationMap': {'PCORTF CDMH': 'OMOP'},
         statusMapping: {
             "Preferred Standard": "Standard",
             "Standard": "Standard",
@@ -93,7 +93,7 @@ exports.map = {
         'xml': 'S:/MLB/CDE/NCI/CdmhPcoriCdm/ACTFINALCDEBrowser_SearchResults.xml',
         'stewardOrgName': 'NCI',
         'classificationOrgName': 'NCI',
-        'classificationMap': {'PCORI CDM': 'ACT'},
+        'classificationMap': {'PCORTF CDMH': 'ACT'},
         statusMapping: {
             "Preferred Standard": "Standard",
             "Standard": "Standard",
@@ -104,7 +104,7 @@ exports.map = {
         'xml': 'S:/MLB/CDE/NCI/CdmhPcoriCdm/SentinelFinalCDEBrowser_SearchResults.xml',
         'stewardOrgName': 'NCI',
         'classificationOrgName': 'NCI',
-        'classificationMap': {'PCORI CDM': 'Sentinel'},
+        'classificationMap': {'PCORTF CDMH': 'Sentinel'},
         statusMapping: {
             "Preferred Standard": "Standard",
             "Standard": "Standard",

@@ -247,6 +247,7 @@ gulp.task('es', function _es() {
         hosts: config.elastic.hosts
     });
     let allIndex = esInit.indices.map(i => i.indexName);
+    console.log('allIndex ' + allIndex);
     return new Promise(function (resolve) {
         esClient.indices.delete({index: allIndex, timeout: '6s'}, () => {
             resolve();

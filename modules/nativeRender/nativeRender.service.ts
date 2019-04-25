@@ -188,8 +188,7 @@ export class NativeRenderService {
                     let answer = f.question.answers[i];
                     if (!f.question.cde.permissibleValues.some(p => p.permissibleValue === answer.permissibleValue)) {
                         f.question.answers.splice(i--, 1);
-                    }
-                    else {
+                    } else {
                         if (answer.formElements) answer.formElements = [];
                         if (answer.index) answer.index = undefined;
                     }
@@ -395,8 +394,7 @@ export class NativeRenderService {
                             if (NativeRenderService.hasOwnRow(pv) || index === -1 && (i + 1 < a.length
                                 && NativeRenderService.hasOwnRow(a[i + 1]) || i + 1 === a.length)) {
                                 pv.index = index = -1;
-                            }
-                            else pv.index = ++index;
+                            } else pv.index = ++index;
 
                             if (pv.formElements) NativeRenderService.assignValueListRows(pv.formElements);
                         });
@@ -478,7 +476,8 @@ export class NativeRenderService {
                 }
                 questions.push(q);
             }
-            fe.question.answers && fe.question.answers.forEach(a => {
+            if (!fe.question.answers) fe.question.answers = [];
+            fe.question.answers.forEach(a => {
                 a.formElements && a.formElements.forEach(sq => {
                     questions = questions.concat(flattenFormFe(sq, sectionHeading, namePrefix, repeatNum) as QuestionStruct[]);
                 });

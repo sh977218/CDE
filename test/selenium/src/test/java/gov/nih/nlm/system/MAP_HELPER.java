@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public interface MAP_HELPER {
-    ArrayList<String> PREDEFINED_DATATYPE = new ArrayList<String>(Arrays.asList("Value List", "Text", "Date", "Time", "Number", "Externally Defined", "File"));
+    ArrayList<String> PREDEFINED_DATATYPE = new ArrayList<String>(Arrays.asList("Value List", "Text", "Date", "Time", "Number", "Dynamic Code List", "Externally Defined", "File"));
     Map<String, String> PREDEFINED_ORG_CLASSIFICATION_ICON = new HashMap<String, String>() {
         {
             put("rename", "edit");

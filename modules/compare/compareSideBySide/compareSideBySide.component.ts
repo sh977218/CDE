@@ -144,17 +144,11 @@ export class CompareSideBySideComponent {
                     property: 'stewardOrg.name',
                     data: [{label: '', property: 'data'}]
                 },
-                fullMatchFn: (a, b) => {
-                    return _isEqual(a, b);
-                },
+                fullMatchFn: _isEqual,
                 fullMatches: [],
-                partialMatchFn: (a, b) => {
-                    return [];
-                },
+                partialMatchFn: () => [],
                 partialMatches: [],
-                notMatchFn: (a, b) => {
-                    return _isEqual(a, b);
-                },
+                notMatchFn: _isEqual,
                 leftNotMatches: [],
                 rightNotMatches: []
             },
@@ -164,13 +158,11 @@ export class CompareSideBySideComponent {
                     property: 'registrationState.registrationStatus',
                     data: [{label: '', property: 'data'}]
                 },
-                fullMatchFn: (a, b) => {
-                    return _isEqual(a, b);
-                },
+                fullMatchFn: _isEqual,
                 fullMatches: [],
-                partialMatchFn: (a, b) => [],
+                partialMatchFn: () => [],
                 partialMatches: [],
-                notMatchFn: (a, b) => _isEqual(a, b),
+                notMatchFn: _isEqual,
                 leftNotMatches: [],
                 rightNotMatches: []
             },
@@ -268,9 +260,7 @@ export class CompareSideBySideComponent {
                         {label: 'Language Code', property: 'languageCode'}
                     ]
                 },
-                fullMatchFn: (a, b) => {
-                    return _isEqual(a, b);
-                },
+                fullMatchFn: _isEqual,
                 fullMatches: [],
                 partialMatchFn: (a, b) => {
                     let diff = [];
@@ -301,9 +291,7 @@ export class CompareSideBySideComponent {
                         {label: 'Value Format', property: 'valueFormat'}
                     ]
                 },
-                fullMatchFn: (a, b) => {
-                    return _isEqual(a, b);
-                },
+                fullMatchFn: _isEqual,
                 fullMatches: [],
                 partialMatchFn: (a, b) => {
                     let diff = [];
@@ -333,17 +321,13 @@ export class CompareSideBySideComponent {
                         {label: 'Origin Id', property: 'originId'}
                     ]
                 },
-                fullMatchFn: (a, b) => {
-                    return _isEqual(a, b);
-                },
+                fullMatchFn: _isEqual,
                 fullMatches: [],
                 partialMatchFn: () => {
                     return [];
                 },
                 partialMatches: [],
-                notMatchFn: (a, b) => {
-                    return _isEqual(a, b);
-                },
+                notMatchFn: _isEqual,
                 leftNotMatches: [],
                 rightNotMatches: []
             },
@@ -356,17 +340,13 @@ export class CompareSideBySideComponent {
                         {label: 'Origin Id', property: 'originId'}
                     ]
                 },
-                fullMatchFn: (a, b) => {
-                    return _isEqual(a, b);
-                },
+                fullMatchFn: _isEqual,
                 fullMatches: [],
                 partialMatchFn: () => {
                     return [];
                 },
                 partialMatches: [],
-                notMatchFn: (a, b) => {
-                    return _isEqual(a, b);
-                },
+                notMatchFn: _isEqual,
                 leftNotMatches: [],
                 rightNotMatches: []
             },
@@ -379,17 +359,13 @@ export class CompareSideBySideComponent {
                         {label: 'Origin Id', property: 'originId'}
                     ]
                 },
-                fullMatchFn: (a, b) => {
-                    return _isEqual(a, b);
-                },
+                fullMatchFn: _isEqual,
                 fullMatches: [],
                 partialMatchFn: () => {
                     return [];
                 },
                 partialMatches: [],
-                notMatchFn: (a, b) => {
-                    return _isEqual(a, b);
-                },
+                notMatchFn: _isEqual,
                 leftNotMatches: [],
                 rightNotMatches: []
             },
@@ -401,17 +377,13 @@ export class CompareSideBySideComponent {
                         {label: '', property: 'data'},
                     ]
                 },
-                fullMatchFn: (a, b) => {
-                    return _isEqual(a, b);
-                },
+                fullMatchFn: _isEqual,
                 fullMatches: [],
                 partialMatchFn: () => {
                     return [];
                 },
                 partialMatches: [],
-                notMatchFn: (a, b) => {
-                    return _isEqual(a, b);
-                },
+                notMatchFn: _isEqual,
                 leftNotMatches: [],
                 rightNotMatches: []
             },
@@ -423,17 +395,13 @@ export class CompareSideBySideComponent {
                         {label: '', property: 'data'},
                     ]
                 },
-                fullMatchFn: (a, b) => {
-                    return _isEqual(a, b);
-                },
+                fullMatchFn: _isEqual,
                 fullMatches: [],
                 partialMatchFn: () => {
                     return [];
                 },
                 partialMatches: [],
-                notMatchFn: (a, b) => {
-                    return _isEqual(a, b);
-                },
+                notMatchFn: _isEqual,
                 leftNotMatches: [],
                 rightNotMatches: []
             },
@@ -445,17 +413,13 @@ export class CompareSideBySideComponent {
                         {label: 'Data Type', property: 'datatype'}
                     ]
                 },
-                fullMatchFn: (a, b) => {
-                    return _isEqual(a, b);
-                },
+                fullMatchFn: _isEqual,
                 fullMatches: [],
                 partialMatchFn: () => {
                     return [];
                 },
                 partialMatches: [],
-                notMatchFn: (a, b) => {
-                    return _isEqual(a, b);
-                },
+                notMatchFn: _isEqual,
                 leftNotMatches: [],
                 rightNotMatches: []
             },
@@ -470,17 +434,13 @@ export class CompareSideBySideComponent {
                         {label: 'Code System', property: 'codeSystemName'}
                     ]
                 },
-                fullMatchFn: (a, b) => {
-                    return _isEqual(a, b);
-                },
+                fullMatchFn: _isEqual,
                 fullMatches: [],
                 partialMatchFn: () => {
                     return [];
                 },
                 partialMatches: [],
-                notMatchFn: (a, b) => {
-                    return _isEqual(a, b);
-                },
+                notMatchFn: _isEqual,
                 leftNotMatches: [],
                 rightNotMatches: []
             },
@@ -494,17 +454,13 @@ export class CompareSideBySideComponent {
                         {label: 'Precision', property: 'precision'}
                     ]
                 },
-                fullMatchFn: (a, b) => {
-                    return _isEqual(a, b);
-                },
+                fullMatchFn: _isEqual,
                 fullMatches: [],
                 partialMatchFn: () => {
                     return [];
                 },
                 partialMatches: [],
-                notMatchFn: (a, b) => {
-                    return _isEqual(a, b);
-                },
+                notMatchFn: _isEqual,
                 leftNotMatches: [],
                 rightNotMatches: []
             },
@@ -519,17 +475,13 @@ export class CompareSideBySideComponent {
                         {label: 'Rule', property: 'rule'}
                     ]
                 },
-                fullMatchFn: (a, b) => {
-                    return _isEqual(a, b);
-                },
+                fullMatchFn: _isEqual,
                 fullMatches: [],
                 partialMatchFn: () => {
                     return [];
                 },
                 partialMatches: [],
-                notMatchFn: (a, b) => {
-                    return _isEqual(a, b);
-                },
+                notMatchFn: _isEqual,
                 leftNotMatches: [],
                 rightNotMatches: []
             },
@@ -541,17 +493,31 @@ export class CompareSideBySideComponent {
                         {label: 'Format', property: 'format'}
                     ]
                 },
-                fullMatchFn: (a, b) => {
-                    return _isEqual(a, b);
-                },
+                fullMatchFn: _isEqual,
                 fullMatches: [],
                 partialMatchFn: () => {
                     return [];
                 },
                 partialMatches: [],
-                notMatchFn: (a, b) => {
-                    return _isEqual(a, b);
+                notMatchFn: _isEqual,
+                leftNotMatches: [],
+                rightNotMatches: []
+            },
+            {
+                displayAs: {
+                    label: 'Data Type Code',
+                    property: 'valueDomain.datatypeDynamicCodeList',
+                    data: [
+                        {label: 'System', property: 'system'}
+                    ]
                 },
+                fullMatchFn: _isEqual,
+                fullMatches: [],
+                partialMatchFn: () => {
+                    return [];
+                },
+                partialMatches: [],
+                notMatchFn: _isEqual,
                 leftNotMatches: [],
                 rightNotMatches: []
             },
@@ -563,17 +529,13 @@ export class CompareSideBySideComponent {
                         {label: 'Format', property: 'format'}
                     ]
                 },
-                fullMatchFn: (a, b) => {
-                    return _isEqual(a, b);
-                },
+                fullMatchFn: _isEqual,
                 fullMatches: [],
                 partialMatchFn: () => {
                     return [];
                 },
                 partialMatches: [],
-                notMatchFn: (a, b) => {
-                    return _isEqual(a, b);
-                },
+                notMatchFn: _isEqual,
                 leftNotMatches: [],
                 rightNotMatches: []
             },
@@ -587,17 +549,13 @@ export class CompareSideBySideComponent {
                         {label: 'Description Format', property: 'descriptionFormat'}
                     ]
                 },
-                fullMatchFn: (a, b) => {
-                    return _isEqual(a, b);
-                },
+                fullMatchFn: _isEqual,
                 fullMatches: [],
                 partialMatchFn: () => {
                     return [];
                 },
                 partialMatches: [],
-                notMatchFn: (a, b) => {
-                    return _isEqual(a, b);
-                },
+                notMatchFn: _isEqual,
                 leftNotMatches: [],
                 rightNotMatches: []
             }
@@ -619,9 +577,7 @@ export class CompareSideBySideComponent {
                         }
                     ]
                 },
-                fullMatchFn: (a, b) => {
-                    return _isEqual(a, b);
-                },
+                fullMatchFn: _isEqual,
                 fullMatches: [],
                 partialMatchFn: (a, b) => {
                     let diff = [];
@@ -634,9 +590,7 @@ export class CompareSideBySideComponent {
                     return diff;
                 },
                 partialMatches: [],
-                notMatchFn: (a, b) => {
-                    return _isEqual(a.question.cde.tinyId, b.question.cde.tinyId);
-                },
+                notMatchFn: _isEqual,
                 leftNotMatches: [],
                 rightNotMatches: []
             }

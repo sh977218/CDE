@@ -1,6 +1,5 @@
 const _ = require('lodash');
 const js2xml = require('js2xmlparser');
-const xml2js = require('xml2js');
 const authorizationShared = require('esm')(module)('../../shared/system/authorizationShared');
 const exportShared = require('esm')(module)('../../shared/system/exportShared');
 const dbLogger = require('../log/dbLogger');
@@ -10,7 +9,6 @@ const respondError = dbLogger.respondError;
 const adminItemSvc = require('../system/adminItemSvc.js');
 const mongo_data = require('../system/mongo-data');
 const mongo_cde = require('./mongo-cde');
-const vsac = require('./vsac-io');
 
 exports.byId = (req, res) => {
     let id = req.params.id;
@@ -221,17 +219,6 @@ exports.publishExternal = (req, res) => {
     }));
 };
 
-let parser = new xml2js.Parser();
-exports.vsacId = (req, res) => {
-    if (!req.user) return res.status(202).send({error: {message: 'Please login to see VSAC mapping.'}});
-    vsac.getValueSet(req.params.vsacId, handleError({req, res, message: 'Error retrieving from VSAC'}, result => {
-        if (result.statusCode === 404 || result === 400) return res.status(404).send();
-        parser.parseString(result.body, handleError({req, res, message: 'Error parsing from VSAC'}, jsonResult => {
-            res.send(jsonResult);
-        }));
-    }));
-};
-
 exports.viewHistory = (req, res) => {
     if (!req.user) return res.send('You must be logged in to do that');
     let splicedArray = req.user.viewHistory.splice(0, 10);
@@ -274,44 +261,37 @@ exports.show = function (req, res, cb) {
     }));
 };
 
-// exports.save = (req, res) => {
-//     adminItemSvc.save(req, res, mongo_cde, elastic.fetchPVCodeSystemList());
-// };
+let systemWhitelist = ['RXNORM', 'HSLOC', 'CDCREC', 'SOP', 'AHRQ', 'HL7', 'CDC Race and Ethnicity', 'NCI', 'UMLS'];
 
-var hideProprietaryCodes = function (cdes, user) {
+function censorPv(pvSet) {
     let hiddenFieldMessage = 'Login to see the value.';
-    this.systemWhitelist = ['RXNORM', 'HSLOC', 'CDCREC', 'SOP', 'AHRQ', 'HL7', 'CDC Race and Ethnicity', 'NCI', 'UMLS'];
-    this.censorPv = function (pvSet) {
-        var toBeCensored = true;
-        this.systemWhitelist.forEach(function (system) {
-            if (!pvSet.codeSystemName || pvSet.codeSystemName.indexOf(system) >= 0)
-                toBeCensored = false;
-        });
-        if (toBeCensored) {
-            pvSet.valueMeaningName = hiddenFieldMessage;
-            pvSet.valueMeaningCode = hiddenFieldMessage;
-            pvSet.codeSystemName = hiddenFieldMessage;
-            pvSet.codeSystemVersion = hiddenFieldMessage;
-        }
-    };
-    this.checkCde = function (cde) {
-        adminItemSvc.hideProprietaryIds(cde);
-        if (cde.valueDomain.datatype !== 'Value List') return cde;
-        var self = this;
-        cde.valueDomain.permissibleValues.forEach(function (pvSet) {
-            self.censorPv(pvSet);
-        });
-        return cde;
-    };
+    let toBeCensored = true;
+    systemWhitelist.forEach(system => {
+        if (!pvSet.codeSystemName || pvSet.codeSystemName.indexOf(system) >= 0)
+            toBeCensored = false;
+    });
+    if (toBeCensored) {
+        pvSet.valueMeaningName = hiddenFieldMessage;
+        pvSet.valueMeaningCode = hiddenFieldMessage;
+        pvSet.codeSystemName = hiddenFieldMessage;
+        pvSet.codeSystemVersion = hiddenFieldMessage;
+    }
+};
+
+function checkCde(cde) {
+    adminItemSvc.hideProprietaryIds(cde);
+    if (cde.valueDomain.datatype !== 'Value List') return cde;
+    cde.valueDomain.permissibleValues.forEach(pvSet => {
+        censorPv(pvSet);
+    });
+    return cde;
+};
+
+let hideProprietaryCodes = function (cdes, user) {
     if (!cdes) return cdes;
     if (user) return cdes;
-    if (!Array.isArray(cdes)) {
-        return this.checkCde(cdes);
-    }
-    var self = this;
-    cdes.forEach(function (cde) {
-        self.checkCde(cde);
-    });
+    if (!Array.isArray(cdes)) return checkCde(cdes);
+    cdes.forEach(cde => checkCde(cde));
     return cdes;
 };
 

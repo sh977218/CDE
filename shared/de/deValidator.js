@@ -55,6 +55,7 @@ export const checkDefinitions = function (elt) {
 };
 
 export const fixDatatype = function (elt) {
+    if (!elt.valueDomain) elt.valueDomain = {};
     if (!elt.valueDomain.datatype) {
         elt.valueDomain.datatype = 'Text';
     }
@@ -69,6 +70,9 @@ export const fixDatatype = function (elt) {
     }
     if (elt.valueDomain.datatype === 'Date' && !elt.valueDomain.datatypeDate) {
         elt.valueDomain.datatypeDate = {};
+    }
+    if (elt.valueDomain.datatype === 'Dynamic Code List' && !elt.valueDomain.datatypeDynamicCodeList) {
+        elt.valueDomain.datatypeDynamicCodeList = {};
     }
     if (elt.valueDomain.datatype === 'Externally Defined' && !elt.valueDomain.datatypeExternallyDefined) {
         elt.valueDomain.datatypeExternallyDefined = {};
@@ -99,6 +103,9 @@ export const wipeDatatype = function (elt) {
     } else if (elt.valueDomain.datatype === 'Date') {
         valueDomain.datatype = 'Date';
         valueDomain.datatypeDate = elt.valueDomain.datatypeDate;
+    } else if (elt.valueDomain.datatype === 'Dynamic Code List') {
+        valueDomain.datatype = 'Dynamic Code List';
+        valueDomain.datatypeDynamicCodeList = elt.valueDomain.datatypeDynamicCodeList;
     } else if (elt.valueDomain.datatype === 'Externally Defined') {
         valueDomain.datatype = 'Externally Defined';
         valueDomain.datatypeExternallyDefined = elt.valueDomain.datatypeExternallyDefined;

@@ -123,6 +123,14 @@
                                [required]="formElement.question.required"
                                [disabled]="!formElement.question.editable"/>
                     </ng-container>
+                    <ng-container *ngSwitchCase="'Dynamic Code List'">
+                        <input list="dynamicCodeListDropDown" id="dynamicCodeListInput"
+                               [formControl]='vsacControl' class="form-control">
+                        <datalist id="dynamicCodeListDropDown" class="w-100 dynamicCodeListDropDown">
+                            <option *ngFor="let vsacCode of vsacCodes"
+                                    [value]="vsacCode.code">{{vsacCode.displayname}}</option>
+                        </datalist>
+                    </ng-container>
                     <ng-container *ngSwitchCase="'Geo Location'">
                         <div class="input-group">
                             <div class="input-group-prepend d-none d-sm-flex">
@@ -221,7 +229,8 @@
                                       [required]="formElement.question.required"
                                       [disabled]="!formElement.question.editable">
                             </textarea>
-                            <div *ngIf="inputTextArea.validationMessage"><code>{{inputTextArea.validationMessage}}</code></div>
+                            <div *ngIf="inputTextArea.validationMessage">
+                                <code>{{inputTextArea.validationMessage}}</code></div>
                         </ng-container>
                     </ng-container>
                 </ng-container>

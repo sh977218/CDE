@@ -21,11 +21,11 @@ config.bundlesize.forEach(b => {
     let maxSize = parseFloat(b.maxSize) * ratio;
     let minSize = maxSize * 0.99;
     if (actualSize > maxSize) {
-        console.log('Error: ' + b.path + ' too big. ' + actualSize + ' > ' + maxSize);
+        console.log('Error: ' + b.path + ' too big. actualSize: ' + actualSize + ' > maxSize: ' + maxSize);
         process.exit(1);
     }
     if (actualSize < minSize) {
-        console.log('Error: ' + b.path + ' too small. ' + actualSize + ' < ' + minSize);
+        console.log('Error: ' + b.path + ' too small. actualSize: ' + actualSize + ' < minSize: ' + minSize);
         process.exit(1);
     }
 })
