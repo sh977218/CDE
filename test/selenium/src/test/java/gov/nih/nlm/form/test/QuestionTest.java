@@ -42,7 +42,8 @@ public class QuestionTest extends BaseFormTest {
         if (driver.findElements(By.id("addNewCdeBtn")).size() > 0) clickElement(By.id("addNewCdeBtn"));
         textPresent("Create Data Element");
 
-        findElement(By.id("ftsearch-input")).sendKeys(cdeName);
+        // test autofocus in create mode
+        new Actions(driver).sendKeys(cdeName).build().perform();
         if (!isSuggested) clickElement(By.id("createNewDataElement"));
         else clickElement(By.xpath("(//*[@id='accordionList']//div[@class='card-header']//button)[1]"));
     }
