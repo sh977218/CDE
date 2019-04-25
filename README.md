@@ -185,8 +185,10 @@ We have include a script, start-test-instance.sh, that, in addition to running a
 
 (Don’t forget to have elastic and mongo running while you run the app, even if you are running it throught he start-test-instance script)
 
-
 If, for some reason, you don't want to use it (for example, if you just want to run one test), you will need to run the app before you can run any tests
+
+## Code Coverage
+Run in Bamboo and override variable "browser" with value "coverage"
 
 ## Development
 

@@ -298,26 +298,26 @@ export class FormViewComponent implements OnInit {
             this.unsaved = true;
             return this.draftSaving;
         }
-        this.draftSaving = this.http.put<CdeForm>('/draftForm/' + this.elt.tinyId, this.elt).toPromise();
-        return this.draftSaving.then(newElt => {
-            this.draftSaving = undefined;
-            this.elt.__v = newElt.__v;
-            this.missingCdes = areDerivationRulesSatisfied(this.elt);
-            this.validate();
-            if (this.unsaved) {
-                this.unsaved = false;
-                return this.saveDraft();
-            }
-            this.savingText = 'Saved';
-            setTimeout(() => {
-                this.savingText = '';
-            }, 3000);
-        }, err => {
-            this.draftSaving = undefined;
-            this.savingText = 'Cannot save this old version. Reload and redo.';
-            this.alert.httpErrorMessageAlert(err);
-            throw err;
-        });
+        return this.draftSaving = this.http.put<CdeForm>('/draftForm/' + this.elt.tinyId, this.elt)
+            .toPromise().then(newElt => {
+                this.draftSaving = undefined;
+                this.elt.__v = newElt.__v;
+                this.missingCdes = areDerivationRulesSatisfied(this.elt);
+                this.validate();
+                if (this.unsaved) {
+                    this.unsaved = false;
+                    return this.saveDraft();
+                }
+                this.savingText = 'Saved';
+                setTimeout(() => {
+                    this.savingText = '';
+                }, 3000);
+            }, err => {
+                this.draftSaving = undefined;
+                this.savingText = 'Cannot save this old version. Reload and redo.';
+                this.alert.httpErrorMessageAlert(err);
+                throw err;
+            });
     }
 
     saveDraftVoid(): void {
@@ -325,34 +325,41 @@ export class FormViewComponent implements OnInit {
     }
 
     saveForm() {
-        let newCdes: QuestionCde[] = [];
-        iterateFes(this.elt.formElements, undefined, undefined, (fe, cb) => {
-            fe.question.cde.datatype = fe.question.datatype;
-            if (!fe.question.cde.tinyId) newCdes.push(fe.question.cde);
-            cb();
-        }, () => {
-            async_forEach(newCdes, (newCde, doneOneCde) => {
-                this.createDataElement(newCde, doneOneCde);
+        const saveFormImpl = () => {
+            let newCdes: QuestionCde[] = [];
+            iterateFes(this.elt.formElements, undefined, undefined, (fe, cb) => {
+                fe.question.cde.datatype = fe.question.datatype;
+                if (!fe.question.cde.tinyId) newCdes.push(fe.question.cde);
+                cb();
             }, () => {
-                let publish = () => {
-                    const publishData = {_id: this.elt._id, tinyId: this.elt.tinyId, __v: this.elt.__v};
-                    this.http.post('/formPublish', publishData).subscribe(res => {
-                        if (res) {
-                            this.hasDrafts = false;
-                            this.loadElt(() => this.alert.addAlert('success', 'Form saved.'));
-                        }
-                    }, err => this.alert.httpErrorMessageAlert(err, 'Error publishing'));
-                };
-                if (newCdes.length) {
-                    this.saveDraft().then(() => {
+                async_forEach(newCdes, (newCde, doneOneCde) => {
+                    this.createDataElement(newCde, doneOneCde);
+                }, () => {
+                    let publish = () => {
+                        const publishData = {_id: this.elt._id, tinyId: this.elt.tinyId, __v: this.elt.__v};
+                        this.http.post('/formPublish', publishData).subscribe(res => {
+                            if (res) {
+                                this.hasDrafts = false;
+                                this.loadElt(() => this.alert.addAlert('success', 'Form saved.'));
+                            }
+                        }, err => this.alert.httpErrorMessageAlert(err, 'Error publishing'));
+                    };
+                    if (newCdes.length) {
+                        this.saveDraft().then(() => {
+                            publish();
+                        }, err => this.alert.httpErrorMessageAlert(err, 'Error saving form'));
+                    } else {
                         publish();
-                    }, err => this.alert.httpErrorMessageAlert(err, 'Error saving form'));
-                } else {
-                    publish();
-                }
+                    }
+                });
             });
-        });
+        };
 
+        if (this.draftSaving) {
+            this.draftSaving.then(saveFormImpl, _noop);
+        } else {
+            saveFormImpl();
+        }
     }
 
     scrollToDescriptionId(id: string) {
