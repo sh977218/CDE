@@ -35,16 +35,13 @@ exports.storeQuery = function (settings, callback) {
         , selectedElements1: settings.selectedElements.slice(0)
         , selectedElements2: settings.selectedElementsAlt.slice(0)
     };
-    if (settings.username) storedQuery.username = settings.username;
-    if (settings.remoteAddr) storedQuery.remoteAddr = settings.remoteAddr;
-    if (settings.isSiteAdmin) storedQuery.isSiteAdmin = settings.isSiteAdmin;
     if (settings.selectedOrg) storedQuery.selectedOrg1 = settings.selectedOrg;
     if (settings.selectedOrgAlt) storedQuery.selectedOrg2 = settings.selectedOrgAlt;
     if (settings.searchToken) storedQuery.searchToken = settings.searchToken;
 
     if (!(!storedQuery.selectedOrg1 && storedQuery.searchTerm === '')) {
         StoredQueryModel.findOne({date: {$gt: new Date().getTime() - 30000}, searchToken: storedQuery.searchToken},
-            function (err, theOne) {
+            (err, theOne) => {
                 if (theOne) {
                     StoredQueryModel.findOneAndUpdate(
                         {date: {$gt: new Date().getTime() - 30000}, searchToken: storedQuery.searchToken},
