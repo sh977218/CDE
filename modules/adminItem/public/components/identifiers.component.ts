@@ -11,16 +11,23 @@ import { CdeId, Item, Source } from 'shared/models.model';
 })
 export class IdentifiersComponent {
     @Input() canEdit: boolean = false;
+
     @Input() set elt(e) {
         this._elt = e;
         this.idsLinks.length = 0;
         this._elt && this._elt.ids.forEach(id => {
-            this.getIdSource(id).then(source => this.addLink(source, id));
+            this.getIdSource(id).then(source => {
+                if (source) {
+                    this.addLink(source, id)
+                }
+            });
         });
     }
+
     get elt() {
         return this._elt;
     }
+
     @Output() onEltChange = new EventEmitter();
     @ViewChild('newIdentifierContent') newIdentifierContent: TemplateRef<any>;
     _elt: Item;
