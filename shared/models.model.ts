@@ -50,7 +50,8 @@ export type CbRet2<R = never, T = never, U = never, V = never> = (t: T, u: U, v?
 export type CbRet3<R = never, T = never, U = never, V = never> = (t: T, u: U, v: V) => R;
 
 export class CdeId {
-    [key: string]: string|undefined;
+    [key: string]: string | undefined;
+
     _id?: ObjectId;
     id?: string;
     source?: string;
@@ -129,7 +130,14 @@ export class Comment extends CommentReply {
     replies?: CommentReply[];
 }
 
-export type CurationStatus = 'Incomplete'|'Recorded'|'Candidate'|'Qualified'|'Standard'|'Preferred Standard'|'Retired';
+export type CurationStatus =
+    'Incomplete'
+    | 'Recorded'
+    | 'Candidate'
+    | 'Qualified'
+    | 'Standard'
+    | 'Preferred Standard'
+    | 'Retired';
 
 export enum CurationStatusEnum {
     'Preferred Standard', 'Standard', 'Qualified', 'Recorded', 'Candidate', 'Incomplete', 'Retired'
@@ -166,7 +174,7 @@ export interface ElasticQueryParams {
 
 export interface ElasticQueryResponse {
     _shards?: any;
-    aggregations?: ElasticQueryResponseAggregation&{[key: string]: ElasticQueryResponseAggregation}; // Elastic aggregated grouping
+    aggregations?: ElasticQueryResponseAggregation & { [key: string]: ElasticQueryResponseAggregation }; // Elastic aggregated grouping
     cdes?: DataElementElastic[];
     forms?: CdeFormElastic[];
     hits: {
@@ -348,7 +356,7 @@ export type EmbedItem = {
 
 export class FormattedValue {
     value: string;
-    valueFormat?: 'html'|undefined;
+    valueFormat?: 'html' | undefined;
 
     constructor(value = '') {
         this.value = value;
@@ -368,7 +376,7 @@ export class Designation {
 
 export class Definition {
     definition: string;
-    definitionFormat?: 'html'|undefined; // TODO: change to use FormattedValue
+    definitionFormat?: 'html' | undefined; // TODO: change to use FormattedValue
     tags: string[] = [];
 
     constructor(definition = '') {
@@ -387,7 +395,7 @@ export class DerivationRule {
 
 type DerivationRuleFormula = 'sumAll' | 'mean' | 'bmi';
 type DerivationRuleType = 'score' | 'panel';
-export type Drafts = {draftCdes: DataElement[], draftForms: CdeForm[]};
+export type Drafts = { draftCdes: DataElement[], draftForms: CdeForm[] };
 export type Item = DataElement | CdeForm;
 export type ItemElastic = DataElementElastic | CdeFormElastic;
 export type ListTypes = 'accordion' | 'table' | 'summary';
@@ -430,6 +438,7 @@ export type ObjectId = string;
 
 export class PermissibleValue {
     [key: string]: any;
+
     codeSystemName?: string;
     codeSystemVersion?: string;
     permissibleValue!: string;
@@ -480,6 +489,7 @@ export class Source {
     _id?: string;
     linkTemplateDe: string = '';
     linkTemplateForm: string = '';
+    save: string = '';
     version?: string;
 
     constructor(id: string) {
@@ -490,7 +500,7 @@ export class Source {
 export class StatusValidationRules {
     id!: number;
     field?: string;
-    occurence?: 'exactlyOne'|'atLeastOne'|'all';
+    occurence?: 'exactlyOne' | 'atLeastOne' | 'all';
     rule: {
         regex?: string
     } = {};
@@ -498,11 +508,11 @@ export class StatusValidationRules {
     targetStatus?: CurationStatus;
 }
 
-export type StatusValidationRulesOrgs = {[org: string]: StatusValidationRules[]};
+export type StatusValidationRulesOrgs = { [org: string]: StatusValidationRules[] };
 
 export type TableViewFields = {
     administrativeStatus?: boolean,
-    customFields?: {key: string, label?: string, style?: string}[];
+    customFields?: { key: string, label?: string, style?: string }[];
     ids?: boolean,
     identifiers?: string[],
     linkedForms?: boolean, // cde only
@@ -527,7 +537,7 @@ export type Task = {
     id: string,
     idType: TaskIdType,
     name: string,
-    properties: {key: string, value?: string}[],
+    properties: { key: string, value?: string }[],
     source: TaskSource,
     state?: number,
     text?: string,
@@ -535,7 +545,15 @@ export type Task = {
     url: string,
 };
 
-export type TaskIdType = 'attachment' | 'cde' | 'clientError' | 'comment' | 'commentReply' | 'form' | 'serverError' | 'versionUpdate';
+export type TaskIdType =
+    'attachment'
+    | 'cde'
+    | 'clientError'
+    | 'comment'
+    | 'commentReply'
+    | 'form'
+    | 'serverError'
+    | 'versionUpdate';
 export type TaskType = 'approve' | 'comment' | 'error' | 'message' | 'vote';
 export type TaskSource = 'calculated' | 'user';
 export const TaskStateUnread = 1;

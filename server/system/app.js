@@ -27,8 +27,6 @@ const elastic = require('./elastic.js');
 const meshElastic = require('../mesh/elastic');
 const fhirApps = require('./fhir').fhirApps;
 const fhirObservationInfo = require('./fhir').fhirObservationInfo;
-const cdeElastic = require('../cde/elastic.js');
-const formElastic = require('../form/elastic.js');
 const traffic = require('./traffic');
 
 exports.init = function (app) {
@@ -691,15 +689,32 @@ exports.init = function (app) {
     });
 
     app.get('/idSources', (req, res) => {
-        mongo_data.idSource.find(res, {}, rs => {
-            res.send(rs);
-        });
+        mongo_data.IdSource.find({}, handleError({req, res}, sources => res.send(sources)))
     });
-    app.get('/idSource/:id', (req, res) => mongo_data.idSource.get(res, req.params.id, r => res.send(r)));
-    app.put('/idSource', authorization.isSiteAdminMiddleware, (req, res) => {
-        mongo_data.idSource.save(res, req.body, r => {
-            res.send(r);
-        });
+    app.get('/idSource/:id', (req, res) => {
+        mongo_data.IdSource.findOneById(req.params.id, handleError({req, res}, source => res.send(source)))
+    });
+    app.post('/idSource/:id', authorization.isSiteAdminMiddleware, (req, res) => {
+        mongo_data.IdSource.findById(req.params.id, handleError({req, res}, doc => {
+            if (doc) return res.status(409).send(req.params.id + " already exists.");
+            else {
+                let idSource = {
+                    _id: req.params.id,
+                    linkTemplateDe: req.body.linkTemplateDe,
+                    linkTemplateForm: req.body.linkTemplateForm,
+                    version: req.body.version,
+                };
+                new mongo_data.IdSource(idSource).save(handleError({req, res}, source => res.send(source)));
+            }
+        }))
+    });
+    app.put('/idSource/:id', authorization.isSiteAdminMiddleware, (req, res) => {
+        mongo_data.IdSource.findById(req.body._id, handleError({req, res}, doc => {
+            doc.linkTemplateDe = req.body.linkTemplateDe;
+            doc.linkTemplateForm = req.body.linkTemplateForm;
+            doc.version = req.body.version;
+            doc.save(handleError(source => res.send(source)))
+        }))
     });
     app.delete('/idSource/:id', authorization.isSiteAdminMiddleware,
         (req, res) => mongo_data.idSource.delete(res, req.params.id, () => res.send()));
