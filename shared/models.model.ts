@@ -131,13 +131,13 @@ export class Comment extends CommentReply {
 }
 
 export type CurationStatus =
-    'Incomplete'
-    | 'Recorded'
-    | 'Candidate'
-    | 'Qualified'
-    | 'Standard'
-    | 'Preferred Standard'
-    | 'Retired';
+    'Incomplete' |
+    'Recorded' |
+    'Candidate' |
+    'Qualified' |
+    'Standard' |
+    'Preferred Standard' |
+    'Retired';
 
 export enum CurationStatusEnum {
     'Preferred Standard', 'Standard', 'Qualified', 'Recorded', 'Candidate', 'Incomplete', 'Retired'
@@ -489,7 +489,6 @@ export class Source {
     _id?: string;
     linkTemplateDe: string = '';
     linkTemplateForm: string = '';
-    save: string = '';
     version?: string;
 
     constructor(id: string) {
@@ -546,14 +545,14 @@ export type Task = {
 };
 
 export type TaskIdType =
-    'attachment'
-    | 'cde'
-    | 'clientError'
-    | 'comment'
-    | 'commentReply'
-    | 'form'
-    | 'serverError'
-    | 'versionUpdate';
+    'attachment' |
+    'cde' |
+    'clientError' |
+    'comment' |
+    'commentReply' |
+    'form' |
+    'serverError' |
+    'versionUpdate';
 export type TaskType = 'approve' | 'comment' | 'error' | 'message' | 'vote';
 export type TaskSource = 'calculated' | 'user';
 export const TaskStateUnread = 1;
