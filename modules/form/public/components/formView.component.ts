@@ -210,6 +210,18 @@ export class FormViewComponent implements OnInit {
         this.eltLoad(this.formViewService.fetchPublished(this.route.snapshot.queryParams), cb);
     }
 
+    hasDraftsAndLoggedIn() {
+        if (!this.userService.loggedIn()) {
+            if (this.hasDrafts) {
+                this.hasDrafts = false;
+            }
+            if (this.elt.isDraft) {
+                this.loadPublished();
+            }
+        }
+        return this.hasDrafts;
+    }
+
     openCopyElementModal() {
         this.eltCopy = _cloneDeep(this.elt);
         this.eltCopy['classification'] = this.elt.classification.filter(c => {
