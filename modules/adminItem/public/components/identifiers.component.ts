@@ -11,23 +11,16 @@ import { CdeId, Item, Source } from 'shared/models.model';
 })
 export class IdentifiersComponent {
     @Input() canEdit: boolean = false;
-
     @Input() set elt(e) {
         this._elt = e;
         this.idsLinks.length = 0;
         this._elt && this._elt.ids.forEach(id => {
-            this.getIdSource(id).then(source => {
-                if (source) {
-                    this.addLink(source, id)
-                }
-            });
+            this.getIdSource(id).then(source => this.addLink(source, id));
         });
     }
-
     get elt() {
         return this._elt;
     }
-
     @Output() onEltChange = new EventEmitter();
     @ViewChild('newIdentifierContent') newIdentifierContent: TemplateRef<any>;
     _elt: Item;
@@ -49,7 +42,7 @@ export class IdentifiersComponent {
     }
 
     addLink(source: Source, id: CdeId) {
-        this.idsLinks.push(this.linkWithId(
+        this.idsLinks.push(IdentifiersComponent.linkWithId(
             source && (isCdeForm(this.elt) ? source.linkTemplateForm : source.linkTemplateDe),
             id
         ));
@@ -70,8 +63,7 @@ export class IdentifiersComponent {
         }
     }
 
-    linkWithId(link = '', id) {
-        if (!link) link = '';
+    static linkWithId(link = '', id) {
         return link
             .replace('{{id}}', id.id)
             .replace('{{version}}', id.version);
