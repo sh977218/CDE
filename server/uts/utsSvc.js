@@ -5,17 +5,6 @@ const config = require('config');
 
 const dbLogger = require('../log/dbLogger.js');
 
-HandleUtsError = function (options, cb = _.noop) {
-    return function errorHandler(err, ...args) {
-        if (err) {
-            dbLogger.appLogs(options.message + error);
-            options.reject();
-            return;
-        }
-        cb(...args);
-    };
-};
-
 function handleReject(message) {
     return err => {
         dbLogger.appLogs(message + error);
@@ -44,13 +33,9 @@ function getTGT() {
             'Content-Type': 'application/x-www-form-urlencoded'
         }
     };
-    return new Promise((resolve, reject) => {
-        request(tgtOptions, HandleUtsError({message: 'get TGT ERROR: ', reject},
-            (response, body) => {
-                TGT = body;
-                resolve();
-            }));
-    })
+    return util.promisify(request.post)(tgtOptions).then(response => {
+        TGT = response.body;
+    }, handleReject('get TGT ERROR'));
 };
 
 function getVsacCookies() {
