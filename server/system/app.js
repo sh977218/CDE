@@ -205,8 +205,7 @@ exports.init = function (app) {
             } else {
                 if (isSearchEngine(req)) {
                     res.render('bot/deView', 'system', {elt: cde});
-                }
-                else {
+                } else {
                     respondHomeFull(req, res);
                 }
             }
@@ -691,10 +690,17 @@ exports.init = function (app) {
         }));
     });
 
-    app.get('/idSources', (req, res) => mongo_data.idSource.find(res, {}, rs => res.send(rs)));
+    app.get('/idSources', (req, res) => {
+        mongo_data.idSource.find(res, {}, rs => {
+            res.send(rs);
+        });
+    });
     app.get('/idSource/:id', (req, res) => mongo_data.idSource.get(res, req.params.id, r => res.send(r)));
-    app.put('/idSource', authorization.isSiteAdminMiddleware,
-        (req, res) => mongo_data.idSource.save(res, req.body, r => res.send(r)));
+    app.put('/idSource', authorization.isSiteAdminMiddleware, (req, res) => {
+        mongo_data.idSource.save(res, req.body, r => {
+            res.send(r);
+        });
+    });
     app.delete('/idSource/:id', authorization.isSiteAdminMiddleware,
         (req, res) => mongo_data.idSource.delete(res, req.params.id, () => res.send()));
 

@@ -44,13 +44,16 @@ module.exports = function writableCollection(model, postCheckFn = (data, cb) => 
                 return;
             }
             oldInfo._doc = data;
-            oldInfo.save(handleError(errorOptions, doc => {
-                if (!doc) {
-                    res.status(409).send('Edited by someone else. Please refresh and redo.');
-                    return;
-                }
-                cb(doc);
-            }));
+            oldInfo.validate(e => {
+                console.log('e' + e);
+                model.findOneAndUpdate(query, oldInfo, {new: true}, handleError(errorOptions, doc => {
+                    if (!doc) {
+                        res.status(409).send('Edited by someone else. Please refresh and redo.');
+                        return;
+                    }
+                    cb(doc);
+                }));
+            });
         }));
     }
 
