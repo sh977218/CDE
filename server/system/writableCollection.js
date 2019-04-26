@@ -2,16 +2,6 @@ const dbLogger = require('../log/dbLogger');
 const handleError = dbLogger.handleError;
 const respondError = dbLogger.respondError;
 
-// sample: postCheckFn for custom unique id
-// (data, cb) => {
-//     model.findOne({ownId: data.ownId}, (err, exists) => {
-//         if (err) {
-//             cb(err);
-//             return;
-//         }
-//         cb(undefined, !exists);
-//     });
-// }
 module.exports = function writableCollection(model, postCheckFn = (data, cb) => cb(undefined, true), versionKey = '__v') {
     function post(res, data, cb) {
         const errorOptions = {res, origin: 'writableCollection post ' + model};
@@ -31,6 +21,7 @@ module.exports = function writableCollection(model, postCheckFn = (data, cb) => 
             new model(data).save(handleError(errorOptions, cb));
         });
     }
+
     function put(res, data, cb) {
         const errorOptions = {res, origin: 'writableCollection put ' + model};
         if (typeof data[versionKey] !== 'number') {
@@ -54,7 +45,7 @@ module.exports = function writableCollection(model, postCheckFn = (data, cb) => 
             }
             data[versionKey]++;
             oldInfo._doc = data;
-            model.findOneAndUpdate(query, oldInfo, {new: true}, handleError(errorOptions, doc => {
+            oldInfo.save(handleError(errorOptions, doc => {
                 if (!doc) {
                     res.status(409).send('Edited by someone else. Please refresh and redo.');
                     return;
@@ -63,6 +54,7 @@ module.exports = function writableCollection(model, postCheckFn = (data, cb) => 
             }));
         }));
     }
+
     return {
         delete: (res, id, cb) => {
             model.remove({_id: id}, handleError({res, origin: 'writableCollection delete ' + model}, cb));
