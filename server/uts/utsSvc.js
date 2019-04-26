@@ -22,7 +22,7 @@ TGT = '';
 exports.vsacCookies = [];
 
 function getTGT() {
-    let tgtOptions = {
+    let options = {
         uri: config.vsac.tgtUrl,
         method: 'POST',
         qs: {
@@ -33,10 +33,11 @@ function getTGT() {
             'Content-Type': 'application/x-www-form-urlencoded'
         }
     };
-    return util.promisify(request.post)(tgtOptions).then(response => {
-        TGT = response.body;
-    }, handleReject('get TGT ERROR'));
-};
+    return util.promisify(request.post)(options)
+        .then(response => {
+            TGT = response.body;
+        }, handleReject('get TGT ERROR'));
+}
 
 function getVsacCookies() {
     let options = {
@@ -49,18 +50,19 @@ function getVsacCookies() {
             'Content-Type': 'application/x-www-form-urlencoded'
         }
     };
-    return util.promisify(request.post)(options).then(response => {
-        let setCookie = response.headers['set-cookie'];
-        exports.vsacCookies = setCookie;
-    }, handleReject('get vsac cookies ERROR'));
+    return util.promisify(request.post)(options)
+        .then(response => {
+                exports.vsacCookies = response.headers['set-cookie']
+            },
+            handleReject('get vsac cookies ERROR')
+        );
 }
 
 
 async function getTicket() {
     if (!TGT.length) await getTGT().catch(() => TGT = '');
-    const ticketOptions = {
+    const options = {
         uri: config.vsac.tgtUrl + '/' + TGT,
-        method: 'POST',
         qs: {
             service: config.uts.service
         },
@@ -68,141 +70,117 @@ async function getTicket() {
             'Content-Type': 'application/x-www-form-urlencoded'
         }
     };
-    return new Promise((resolve, reject) => {
-        request(ticketOptions, HandleUtsError({message: 'get ticket ERROR: ', reject}, (response, body) => {
-            resolve(body);
-        }));
-    })
+    return util.promisify(request.post)(options)
+        .then(response => response.body,
+            handleReject('get ticket ERROR')
+        );
+
 }
 
-exports.searchValueSet = async function (oid, term = '', page = 1) {
+async function getRevision(oid, j) {
+    let revisionOptions = {
+        url: 'https://vsac.nlm.nih.gov/vsac/pc/vs/valueset/' + oid + '/detail?label=Latest',
+        jar: j,
+        method: 'GET'
+    };
+    return util.promisify(request.get)(revisionOptions)
+        .then(response => {
+                let result = JSON.parse(response.body);
+                return result.revision;
+            },
+            handleReject('get revision ERROR')
+        );
+
+}
+
+exports.searchValueSet = async function (oid, term = '', page = '1') {
     let url = 'https://vsac.nlm.nih.gov/vsac/pc/code/codes';
     if (!exports.vsacCookies.length) await getVsacCookies();
     const j = request.jar();
-    exports.vsacCookies.forEach(cookie => {
-        j.setCookie(request.cookie(cookie), url);
-    });
+    exports.vsacCookies.forEach(cookie => j.setCookie(request.cookie(cookie), url));
+
+    let revision = await getRevision(oid, j);
 
     let queryTemplate = '{"_search":false,"rows":"120","page":"$page","sortName":"code","sortOrder":"asc","oid":"$oid","revision":"$revision","expRevision":null,"label":"Latest","effDate":null,"filters":"{\\"groupOp\\":\\"AND\\",\\"rules\\":[]}","filterFields":{"groupOp":"AND","rules":[]}}:';
     if (term) {
         queryTemplate = '{"_search":true,"rows":"120","page":"$page","sortName":"code","sortOrder":"asc","oid":"$oid","revision":"$revision","expRevision":null,"label":"Latest","effDate":null,"filters":"{\\"groupOp\\":\\"AND\\",\\"rules\\":[{\\"field\\":\\"displayname\\",\\"op\\":\\"cn\\",\\"data\\":\\"$term\\"}]}","filterFields":{"groupOp":"AND","rules":[{"field":"displayname","op":"cn","data":"$term"}]}}: ';
     }
-    return new Promise((resolve, reject) => {
-        let revisionOptions = {
-            url: 'https://vsac.nlm.nih.gov/vsac/pc/vs/valueset/' + oid + '/detail?label=Latest',
-            jar: j,
-            method: 'GET'
-        };
-        request(revisionOptions, function (error, response, body) {
-            if (error) {
-                dbLogger.appLogs('get revision ERROR: ' + error);
-                reject(error);
-            } else {
-                let result = JSON.parse(body);
-                let revision = result.revision;
-                let query = queryTemplate.replace('$oid', oid).replace('$page', page).replace('$revision', revision).replace(/\$term/g, term);
-                let searchOptions = {
-                    url: url,
-                    jar: j,
-                    method: 'POST',
-                    body: query,
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    }
-                };
-                request(searchOptions, HandleUtsError({message: "my message", reject}, (response, body) => {
-                    resolve(body);
-                }));
-            }
-        })
-    });
+    let query = queryTemplate.replace('$oid', oid)
+        .replace('$page', page)
+        .replace('$revision', revision)
+        .replace(/\$term/g, term);
+    let searchOptions = {
+        url: url,
+        jar: jar,
+        body: query,
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+    };
+    return util.promisify(request.post)(searchOptions)
+        .then(response => response.body,
+            handleReject('get revision ERROR'))
 };
 
-exports.getValueSet = function (oid) {
-    return new Promise(async (resolve, reject) => {
-        let ticket = await getTicket();
-        let valueSetOptions = {
-            uri: 'https://vsac.nlm.nih.gov/vsac/svs/RetrieveValueSet',
-            qs: {
-                id: oid,
-                ticket: ticket
-            },
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            }
-        };
-        request.get(valueSetOptions, function (error, response) {
-            if (error) {
-                dbLogger.appLogs('get value set ERROR: ' + error);
-                reject(error);
-            } else {
-                resolve(response.body);
-            }
-        });
-    })
+exports.getValueSet = async function (oid) {
+    let ticket = await getTicket();
+    let options = {
+        uri: 'https://vsac.nlm.nih.gov/vsac/svs/RetrieveValueSet',
+        qs: {
+            id: oid,
+            ticket: ticket
+        },
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+    };
+    return util.promisify(request.get)(options)
+        .then(response => response.body,
+            handleReject('get vsac set ERROR')
+        );
 };
 
-exports.searchUmls = function (term) {
-    return new Promise(async (resolve, reject) => {
-        let ticket = await getTicket();
-        let url = config.umls.wsHost + "/rest/search/current?ticket=" + ticket + "&string=" + term;
-        request.get({url: url, strictSSL: false}, function (error, response, body) {
-            if (error) {
-                dbLogger.appLogs('search umls ERROR: ' + error);
-                reject(error);
-            } else {
-                resolve(body);
-            }
-        });
-    })
+exports.searchUmls = async function (term) {
+    let ticket = await getTicket();
+    let url = config.umls.wsHost + "/rest/search/current?ticket=" + ticket + "&string=" + term;
+    let options = {url: url, strictSSL: false};
+    return util.promisify(request.get)(options)
+        .then(response => response.body,
+            handleReject('get umls ERROR')
+        );
 };
 
-exports.getCrossWalkingVocabularies = function (source, code, targetSource) {
-    return new Promise(async (resolve, reject) => {
-        let ticket = await getTicket();
-        let url = config.umls.wsHost + "/rest/crosswalk/current/source/"
-            + source + "/" + code + "?targetSource=" + targetSource
-            + "&ticket=" + ticket;
-        request({url: url, strictSSL: false}, function (error, response, body) {
-            if (error) {
-                dbLogger.appLogs('get cross walking vocabularies ERROR: ' + error);
-                reject(error);
-            } else {
-                resolve(body);
-            }
-        });
-    })
+exports.getCrossWalkingVocabularies = async function (source, code, targetSource) {
+    let ticket = await getTicket();
+    let url = config.umls.wsHost + "/rest/crosswalk/current/source/"
+        + source + "/" + code + "?targetSource=" + targetSource
+        + "&ticket=" + ticket;
+    let options = {url: url, strictSSL: false};
+    return util.promisify(request.get)(options)
+        .then(response => response.body,
+            handleReject('get cross walking vocabularies ERROR')
+        );
 };
 
-exports.getAtomsFromUMLS = function (cui, source) {
-    return new Promise(async (resolve, reject) => {
-        let ticket = await getTicket();
-        let url = config.umls.wsHost + "/rest/content/current/CUI/" + cui + "/atoms?sabs=" + source +
-            "&pageSize=500&ticket=" + ticket;
-        request({url: url, strictSSL: false}, function (err, response, body) {
-            if (err) {
-                dbLogger.appLogs('get atoms from umls ERROR: ' + error);
-                reject(error);
-            } else {
-                resolve(body);
-            }
-        });
-    })
+exports.getAtomsFromUMLS = async function (cui, source) {
+    let ticket = await getTicket();
+    let url = config.umls.wsHost + "/rest/content/current/CUI/" + cui + "/atoms?sabs=" + source +
+        "&pageSize=500&ticket=" + ticket;
+    let options = {url: url, strictSSL: false};
+    return util.promisify(request.get)(options)
+        .then(response => response.body,
+            handleReject('get atoms from umls ERROR')
+        );
 };
 
-exports.umlsCuiFromSrc = function (id, src) {
-    return new Promise(async (resolve, reject) => {
-        let ticket = await getTicket();
-        let url = config.umls.wsHost + "/rest/search/current?string=" + id +
-            "&searchType=exact&inputType=sourceUi&sabs=" + src +
-            "&includeObsolete=true&includeSuppressible=true&ticket=" + ticket;
-        request({url: url, strictSSL: false}, function (err, response, body) {
-            if (err) {
-                dbLogger.appLogs('umls cui from src ERROR: ' + err);
-                reject(err);
-            } else {
-                resolve(body);
-            }
-        });
-    })
+exports.umlsCuiFromSrc = async function (id, src) {
+    let ticket = await getTicket();
+    let url = config.umls.wsHost + "/rest/search/current?string=" + id +
+        "&searchType=exact&inputType=sourceUi&sabs=" + src +
+        "&includeObsolete=true&includeSuppressible=true&ticket=" + ticket;
+    let options = {url: url, strictSSL: false};
+    return util.promisify(request.get)(options)
+        .then(response => response.body,
+            handleReject('get cui from src ERROR')
+        );
 };
