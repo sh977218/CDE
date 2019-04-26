@@ -43,7 +43,6 @@ module.exports = function writableCollection(model, postCheckFn = (data, cb) => 
                 res.status(409).send('Edited by someone else. Please refresh and redo.');
                 return;
             }
-            data[versionKey]++;
             oldInfo._doc = data;
             oldInfo.save(handleError(errorOptions, doc => {
                 if (!doc) {
