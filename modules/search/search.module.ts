@@ -21,7 +21,7 @@ import { MatButtonModule, MatIconModule, MatMenuModule, MatTabsModule } from "@a
         FormsModule,
         NgbModule,
         RouterModule.forChild([]),
-        // core
+        // non-core
         MatIconModule,
         MatButtonModule,
         MatIconModule,

@@ -6,7 +6,7 @@ import { Subject } from 'rxjs/Subject';
 
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
-import { IsAllowedService } from 'core/isAllowed.service';
+import { IsAllowedService } from 'non-core/isAllowed.service';
 import { ElasticQueryResponse } from 'shared/models.model';
 import { MatDialog } from '@angular/material';
 

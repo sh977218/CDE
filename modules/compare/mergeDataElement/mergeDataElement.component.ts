@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
 import { AlertService } from 'alert/alert.service';
-import { IsAllowedService } from 'core/isAllowed.service';
-import { MergeCdeService } from 'core/mergeCde.service';
+import { IsAllowedService } from 'non-core/isAllowed.service';
+import { MergeCdeService } from 'non-core/mergeCde.service';
 import { MatDialog, MatDialogRef } from '@angular/material';
 
 @Component({

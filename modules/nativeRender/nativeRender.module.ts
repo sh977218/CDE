@@ -14,8 +14,8 @@ import { ScoreService } from 'nativeRender/score.service';
     imports: [
         CommonModule,
         FormsModule,
-        // core no internal
         ReactiveFormsModule
+        // non-core no internal
     ],
     declarations: [
         NativeMetadataComponent,

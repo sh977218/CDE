@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
-import { httpErrorMessage } from 'core/angularHelper';
+import { httpErrorMessage } from 'non-core/angularHelper';
 
 export class Alert {
     id: number;

@@ -8,12 +8,11 @@ import { QuickBoardListService } from '_app/quickBoardList.service';
 import { UserService } from '_app/user.service';
 import { DataElementViewService } from 'cde/public/components/dataElementView.service';
 import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHistoryContent.component';
-import { OrgHelperService } from 'core/orgHelper.service';
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
 import _cloneDeep from 'lodash/cloneDeep';
 import _noop from 'lodash/noop';
+import { OrgHelperService } from 'non-core/orgHelper.service';
 import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
 import { Comment, Elt } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { checkPvUnicity, checkDefinitions } from 'shared/de/deValidator';
@@ -298,10 +297,10 @@ export class DataElementViewComponent implements OnInit {
 
     validate() {
         this.validationErrors.length = 0;
-        let defError = checkDefinitions(this.elt);
+        const defError = checkDefinitions(this.elt);
         if (!defError.allValid) this.validationErrors.push({message: defError.message});
-        let pvErrors = checkPvUnicity(this.elt.valueDomain);
-        if (!pvErrors.allValid) this.validationErrors.push({message: pvErrors.pvNotValidMsg});
+        const pvErrors = checkPvUnicity(this.elt.valueDomain);
+        if (!pvErrors.allValid) this.validationErrors.push({message: pvErrors.message});
     }
 
     viewChanges() {

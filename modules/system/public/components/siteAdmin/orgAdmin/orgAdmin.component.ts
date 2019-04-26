@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 
 import { AlertService } from 'alert/alert.service';
 import { UserService } from '_app/user.service';
-import { IsAllowedService } from 'core/isAllowed.service';
+import { IsAllowedService } from 'non-core/isAllowed.service';
 import { UsersOrgQuery } from 'shared/models.model';
 
 

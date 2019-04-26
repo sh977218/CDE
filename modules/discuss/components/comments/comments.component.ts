@@ -9,7 +9,7 @@ import * as io from 'socket.io-client';
 
 import { AlertService } from 'alert/alert.service';
 import { UserService } from '_app/user.service';
-import { IsAllowedService } from 'core/isAllowed.service';
+import { IsAllowedService } from 'non-core/isAllowed.service';
 import { CommentReply } from 'shared/models.model';
 
 
