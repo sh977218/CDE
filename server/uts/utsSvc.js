@@ -6,9 +6,9 @@ const config = require('config');
 const dbLogger = require('../log/dbLogger.js');
 
 function handleReject(message) {
-    return err => {
+    return error => {
         dbLogger.appLogs(message + error);
-        throw err;
+        throw error;
     };
 }
 
