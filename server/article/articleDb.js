@@ -6,8 +6,6 @@ const sharedSchemas = require('../system/schemas.js');
 
 const mongo_data = require('../system/mongo-data');
 
-const isOrgAdmin = require('../../shared/system/authorizationShared').isOrgAdmin;
-
 let articleSchema = new Schema({
     key: {type: String, index: true},
     body: String,
@@ -21,24 +19,10 @@ let Article = conn.model('article', articleSchema);
 
 mongo_data.attachables.push(Article);
 
-exports.byId = function (id, cb) {
-    Article.findById(id, cb);
-};
-
 exports.byKey = function (key, cb) {
     Article.findOne({key: key}, cb);
 };
 
 exports.update = function (art, cb) {
     Article.findOneAndUpdate({key: art.key}, {$set: {body: art.body, updated: Date.now()}}, {upsert: true}, cb);
-};
-
-exports.checkOwnership = function (req, id, cb) {
-    if (!req.isAuthenticated()) return cb("You are not authorized.", null);
-    exports.byId(id, function (err, elt) {
-        if (err || !elt) return cb("Element does not exist.", null);
-        if (!isOrgAdmin(req.user))
-            return cb("You do not own this element.", null);
-        cb(null, elt);
-    });
 };
