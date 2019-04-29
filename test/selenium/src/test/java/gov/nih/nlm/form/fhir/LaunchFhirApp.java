@@ -32,7 +32,7 @@ public class LaunchFhirApp extends NlmCdeBaseTest {
         clickElement(By.xpath("//button[. = 'Launch without a patient']"));
 
         switchTab(1);
-
+        clickElement(By.xpath("//button[contains(., 'Authorize')]"));
         clickElement(By.xpath("//button[contains(., 'Vital Signs')]"));
         textPresent("Body Height");
         textPresent("Body Weight");
