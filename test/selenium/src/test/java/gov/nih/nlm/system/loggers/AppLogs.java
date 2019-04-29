@@ -12,8 +12,8 @@ public class AppLogs extends NlmCdeBaseTest {
         openUserMenu();
         clickElement(By.linkText("Audit"));
         clickElement(By.xpath("//div[. = 'App Logs']"));
-        findElement(By.id("fromDate")).sendKeys("01012000101P");
-        findElement(By.id("toDate")).sendKeys("01012030101P");
+        findElement(By.id("appFromDate")).sendKeys("01012000101P");
+        findElement(By.id("appToDate")).sendKeys("01012030101P");
         clickElement(By.id("searchBtn"));
         textPresent("done with sitemap");
     }

@@ -54,7 +54,8 @@ module.exports = function writableCollection(model, postCheckFn = (data, cb) => 
             }
             data[versionKey]++;
             oldInfo._doc = data;
-            model.findOneAndUpdate(query, oldInfo, {new: true}, handleError(errorOptions, doc => {
+            new model(data).save()
+            model.save(query, oldInfo, {new: true}, handleError(errorOptions, doc => {
                 if (!doc) {
                     res.status(409).send('Edited by someone else. Please refresh and redo.');
                     return;

@@ -3,7 +3,7 @@ package gov.nih.nlm.system;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.annotations.Test;
-import static com.jayway.restassured.RestAssured.post;
+import static io.restassured.RestAssured.post;
 
 
 public class NewSiteVersion extends NlmCdeBaseTest {
