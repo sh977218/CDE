@@ -26,6 +26,23 @@ exports.consoleLog = function (message, level) { // no express errors see dbLogg
     });
 };
 
+exports.handleConsoleError = function (options, cb = _.noop) {
+    return function errorHandler(err, ...args) {
+        if (err) noDbLogger.noDbLogger.info('ERROR: ' + err);
+        cb(...args);
+    }
+};
+
+exports.handleError = function (options, cb = _.noop) {
+    return function errorHandler(err, ...args) {
+        if (err) {
+            exports.respondError(err, options);
+            return;
+        }
+        cb(...args);
+    };
+};
+
 exports.storeQuery = function (settings, callback) {
     const storedQuery = {
         searchTerm: settings.searchTerm ? settings.searchTerm : ''
@@ -46,18 +63,12 @@ exports.storeQuery = function (settings, callback) {
                     StoredQueryModel.findOneAndUpdate(
                         {date: {$gt: new Date().getTime() - 30000}, searchToken: storedQuery.searchToken},
                         storedQuery,
-                        err => {
-                            if (err) noDbLogger.noDbLogger.info(err);
-                            if (callback) callback(err);
-                        }
+                        exports.handleError({}, () => {})
                     );
                 } else {
                     new StoredQueryModel(storedQuery).save(callback);
                 }
             });
-
-
-        //
     }
 };
 
@@ -79,9 +90,7 @@ exports.logError = function (message, callback) { // all server errors, express 
     if (config.logToConsoleForServerError) {
         console.log('---Server Error---', message);
     }
-    new LogErrorModel(message).save(err => {
-        if (err) noDbLogger.noDbLogger.info('ERROR: ' + err);
-
+    new LogErrorModel(message).save(exports.handleConsoleError({}, () => {
         if (message.origin && message.origin.indexOf('pushGetAdministratorRegistrations') === -1) {
             let msg = JSON.stringify({
                 title: 'Server Side Error',
@@ -104,22 +113,17 @@ exports.logError = function (message, callback) { // all server errors, express 
             });
         }
         if (callback) callback(err);
-    });
+    }));
 };
 
 exports.logClientError = function (req, callback) {
-    let getRealIp = function (req) {
-        if (req._remoteAddress) return req._remoteAddress;
-        if (req.ip) return req.ip;
-    };
+    let getRealIp =  req => req._remoteAddress;
     let exc = req.body;
     exc.userAgent = req.headers['user-agent'];
     exc.date = new Date();
     exc.ip = getRealIp(req);
     if (req.user) exc.username = req.user.username;
-    new ClientErrorModel(exc).save(err => {
-        if (err) noDbLogger.noDbLogger.info('ERROR: ' + err);
-
+    new ClientErrorModel(exc).save(exports.handleConsoleError({}, () => {
         let ua = userAgent.is(req.headers['user-agent']);
         if (ua.chrome || ua.firefox || ua.edge) {
             let msg = JSON.stringify({
@@ -144,10 +148,10 @@ exports.logClientError = function (req, callback) {
         }
 
         callback(err);
-    });
+    }));
 };
 
-exports.handle404 = function handle404(options, cb = _.noop) { // Not Found
+exports.handle404 = function handle404(options, cb) { // Not Found
     return function errorHandler(err, arg, ...args) {
         if (err) {
             exports.respondError(err, options);
@@ -163,15 +167,7 @@ exports.handle404 = function handle404(options, cb = _.noop) { // Not Found
     };
 };
 
-exports.handleError = function (options, cb = _.noop) {
-    return function errorHandler(err, ...args) {
-        if (err) {
-            exports.respondError(err, options);
-            return;
-        }
-        cb(...args);
-    };
-};
+
 
 // TODO: Combine with logError() which publishes notifications
 // TODO: tee to console.log

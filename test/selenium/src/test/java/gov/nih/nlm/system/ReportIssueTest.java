@@ -27,9 +27,7 @@ public class ReportIssueTest extends NlmCdeBaseTest {
         textPresent("I don't like this website.");
     }
 
-    // this will get yourself blocked from submitting feedback so depend on the good test first
-//    @Test(dependsOnMethods = {"report"})
-    @Test
+    @Test(dependsOnMethods = {"report"})
     public void get509 () {
 
         given().body("{}").post(baseUrl + "/server/log/feedback/report").asString();
