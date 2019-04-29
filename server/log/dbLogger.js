@@ -303,8 +303,6 @@ exports.saveFeedback = function (req, cb) {
         , screenshot: {content: report.img}
         , browser: report.browser.userAgent
     });
-    issue.save(err => {
-        if (cb) cb(err);
-    });
+    issue.save(cb);
 };
 

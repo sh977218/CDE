@@ -353,6 +353,9 @@ app.use((err, req, res, next) => {
         return res.status(401).send('CSRF Error');
     }
 
+    // to test => restassured with simple post
+    if (err.type === 'charset.unsupported') return res.status(400).send("Unsupported charset");
+
     // Do Log Errors
     console.log('ERROR3: ' + err);
     console.log(err.stack);
