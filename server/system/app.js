@@ -9,10 +9,12 @@ const path = require('path');
 const useragent = require('useragent');
 const util = require('util');
 const authorization = require('./authorization');
+const isSiteAdminMiddleware = authorization.isSiteAdminMiddleware;
 const authorizationShared = require('esm')(module)('../../shared/system/authorizationShared');
 const mongo_cde = require('../cde/mongo-cde');
 const mongo_form = require('../form/mongo-form');
 const mongo_data = require('./mongo-data');
+const IdSource = mongo_data.IdSource;
 const config = require('./parseConfig');
 const dbLogger = require('../log/dbLogger');
 const handleError = dbLogger.handleError;
@@ -27,8 +29,6 @@ const elastic = require('./elastic.js');
 const meshElastic = require('../mesh/elastic');
 const fhirApps = require('./fhir').fhirApps;
 const fhirObservationInfo = require('./fhir').fhirObservationInfo;
-const cdeElastic = require('../cde/elastic.js');
-const formElastic = require('../form/elastic.js');
 const traffic = require('./traffic');
 
 exports.init = function (app) {
@@ -205,8 +205,7 @@ exports.init = function (app) {
             } else {
                 if (isSearchEngine(req)) {
                     res.render('bot/deView', 'system', {elt: cde});
-                }
-                else {
+                } else {
                     respondHomeFull(req, res);
                 }
             }
@@ -380,12 +379,12 @@ exports.init = function (app) {
 
     /* ---------- PUT NEW REST API above ---------- */
 
-    app.get('/indexCurrentNumDoc/:indexPosition', [authorization.isSiteAdminMiddleware], (req, res) => {
+    app.get('/indexCurrentNumDoc/:indexPosition', [isSiteAdminMiddleware], (req, res) => {
         let index = esInit.indices[req.params.indexPosition];
         return res.send({count: index.count, totalCount: index.totalCount});
     });
 
-    app.post('/reindex/:indexPosition', [authorization.isSiteAdminMiddleware], (req, res) => {
+    app.post('/reindex/:indexPosition', [isSiteAdminMiddleware], (req, res) => {
         let index = esInit.indices[req.params.indexPosition];
         elastic.reIndex(index, () => {
             setTimeout(() => {
@@ -628,9 +627,9 @@ exports.init = function (app) {
 
     app.get('/fhirApps', (req, res) => fhirApps.find(res, {}, apps => res.send(apps)));
     app.get('/fhirApp/:id', (req, res) => fhirApps.get(res, req.params.id, app => res.send(app)));
-    app.post('/fhirApp', authorization.isSiteAdminMiddleware,
+    app.post('/fhirApp', isSiteAdminMiddleware,
         (req, res) => fhirApps.save(res, req.body, app => res.send(app)));
-    app.delete('/fhirApp/:id', authorization.isSiteAdminMiddleware,
+    app.delete('/fhirApp/:id', isSiteAdminMiddleware,
         (req, res) => fhirApps.delete(res, req.params.id, () => res.send()));
 
     app.post('/disableRule', authorization.isOrgAuthorityMiddleware, (req, res) => {
@@ -645,11 +644,11 @@ exports.init = function (app) {
         }));
     });
 
-    app.get('/activeBans', authorization.isSiteAdminMiddleware, (req, res) => {
+    app.get('/activeBans', isSiteAdminMiddleware, (req, res) => {
         traffic.getTrafficFilter(list => res.send(list));
     });
 
-    app.post('/removeBan', authorization.isSiteAdminMiddleware, (req, res) => {
+    app.post('/removeBan', isSiteAdminMiddleware, (req, res) => {
         traffic.getTrafficFilter(elt => {
             let foundIndex = elt.ipList.findIndex(r => r.ip === req.body.ip);
             if (foundIndex > -1) {
@@ -661,7 +660,7 @@ exports.init = function (app) {
         });
     });
 
-    app.get('/allDrafts', authorization.isSiteAdminMiddleware, (req, res) => {
+    app.get('/allDrafts', isSiteAdminMiddleware, (req, res) => {
         mongo_cde.draftsList({}, handleError({req, res}, draftCdes => {
             mongo_form.draftsList({}, handleError({req, res}, draftForms => {
                 res.send({draftCdes: draftCdes, draftForms: draftForms});
@@ -691,11 +690,35 @@ exports.init = function (app) {
         }));
     });
 
-    app.get('/idSources', (req, res) => mongo_data.idSource.find(res, {}, rs => res.send(rs)));
-    app.get('/idSource/:id', (req, res) => mongo_data.idSource.get(res, req.params.id, r => res.send(r)));
-    app.put('/idSource', authorization.isSiteAdminMiddleware,
-        (req, res) => mongo_data.idSource.save(res, req.body, r => res.send(r)));
-    app.delete('/idSource/:id', authorization.isSiteAdminMiddleware,
-        (req, res) => mongo_data.idSource.delete(res, req.params.id, () => res.send()));
-
+    app.get('/idSources', (req, res) =>
+        IdSource.find({}, handleError({req, res}, sources => res.send(sources))));
+    app.get('/idSource/:id', (req, res) =>
+        IdSource.findOneById(req.params.id, handleError({req, res}, source => res.send(source))));
+    app.post('/idSource/:id', isSiteAdminMiddleware, (req, res) => {
+        IdSource.findById(req.params.id, handleError({req, res}, doc => {
+            if (doc) return res.status(409).send(req.params.id + " already exists.");
+            else {
+                let idSource = {
+                    _id: req.params.id,
+                    linkTemplateDe: req.body.linkTemplateDe,
+                    linkTemplateForm: req.body.linkTemplateForm,
+                    version: req.body.version,
+                };
+                new IdSource(idSource).save(handleError({req, res}, source => res.send(source)));
+            }
+        }))
+    });
+    app.put('/idSource/:id', isSiteAdminMiddleware, (req, res) => {
+        IdSource.findById(req.body._id, handleError({req, res}, doc => {
+            if (!doc) return res.status(404).send(req.params.id + " does not exist.");
+            else {
+                doc.linkTemplateDe = req.body.linkTemplateDe;
+                doc.linkTemplateForm = req.body.linkTemplateForm;
+                doc.version = req.body.version;
+                doc.save(handleError(source => res.send(source)))
+            }
+        }))
+    });
+    app.delete('/idSource/:id', isSiteAdminMiddleware, (req, res) =>
+        IdSource.delete(res, req.params.id, handleError({req, res}, () => res.send())));
 };
