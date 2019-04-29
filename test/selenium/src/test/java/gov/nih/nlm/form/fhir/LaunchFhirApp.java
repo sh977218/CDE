@@ -32,7 +32,12 @@ public class LaunchFhirApp extends NlmCdeBaseTest {
         clickElement(By.xpath("//button[. = 'Launch without a patient']"));
 
         switchTab(1);
-        clickElement(By.cssSelector("input.btn-success"));
+
+        try {
+            clickElement(By.cssSelector("input.btn-success"));
+        } catch (Exception e) {
+            // swallow because hspc auth seems to be hit or miss
+        }
         clickElement(By.xpath("//button[contains(., 'Vital Signs')]"));
         textPresent("Body Height");
         textPresent("Body Weight");
