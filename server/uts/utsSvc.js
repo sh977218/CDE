@@ -111,7 +111,7 @@ exports.searchValueSet = async function (oid, term = '', page = '1') {
         .replace(/\$term/g, term);
     let searchOptions = {
         url: url,
-        jar: jar,
+        jar: j,
         body: query,
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
