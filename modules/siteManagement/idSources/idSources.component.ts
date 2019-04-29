@@ -19,31 +19,31 @@ export class IdSourcesComponent {
     sources: Source[];
 
     constructor(private alert: AlertService, private http: HttpClient) {
-        this.load();
+        this.http.get<Source[]>('/idSources')
+            .subscribe(res => this.sources = res,
+                err => this.alert.httpErrorMessageAlert(err)
+            );
     }
 
     add() {
-        this.save(new Source(this.newId));
+        this.http.post<Source>('/idSource/' + this.newId, {})
+            .subscribe(res => this.sources.push(res),
+                err => this.alert.httpErrorMessageAlert(err)
+            );
         this.newId = undefined;
     }
 
-    delete(source: Source) {
-        this.http.delete('/idSource/' + source._id).subscribe(() => this.load());
+    delete(source: Source, i) {
+        this.http.delete('/idSource/' + source._id)
+            .subscribe(() => this.sources.splice(i, 0),
+                err => this.alert.httpErrorMessageAlert(err)
+            );
     }
 
-    update(event: any, app: Source) {
-        //
-        this.save(app);
-    }
-
-    load() {
-        this.http.get<Source[]>('/idSources').subscribe(res => this.sources = res);
-    }
-
-    save(source: Source) {
-        this.http.put('/idSource', source).subscribe(
-            () => this.load(),
-            err => this.alert.httpErrorMessageAlert(err)
-        );
+    update(source: Source) {
+        this.http.put<Source>('/idSource/' + source._id, source)
+            .subscribe(res => source = res,
+                err => this.alert.httpErrorMessageAlert(err)
+            );
     }
 }

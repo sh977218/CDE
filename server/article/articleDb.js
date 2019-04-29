@@ -6,8 +6,6 @@ const sharedSchemas = require('../system/schemas.js');
 
 const mongo_data = require('../system/mongo-data');
 
-const isOrgAdmin = require('../../shared/system/authorizationShared').isOrgAdmin;
-
 let articleSchema = new Schema({
     key: {type: String, index: true},
     body: String,
