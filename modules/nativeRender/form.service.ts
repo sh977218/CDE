@@ -19,10 +19,10 @@ export class FormService {
         q.question.cde.tinyId = de.tinyId;
         q.question.cde.version = de.version;
         q.question.datatype = de.valueDomain.datatype;
-        q.question.datatypeDate = de.valueDomain.datatypeDate;
-        if (!q.question.datatypeDate) q.question.datatypeDate = {};
-        q.question.datatypeNumber = de.valueDomain.datatypeNumber;
+        q.question.datatypeDate = de.valueDomain.datatypeDate || {};
+        q.question.datatypeNumber = de.valueDomain.datatypeNumber || {};
         q.question.datatypeText = de.valueDomain.datatypeText || {};
+        q.question.datatypeDynamicCodeList = de.valueDomain.datatypeDynamicCodeList || {};
         if (de.ids) {
             q.question.cde.ids = de.ids;
         }
@@ -48,6 +48,7 @@ export class FormService {
                 q.question.cde.permissibleValues.push(pv);
             });
         }
+
         if (de.valueDomain.permissibleValues.length > 0) {
             // elastic only store 10 pv, retrieve pv when have more than 9 pv.
             if (de.valueDomain.permissibleValues.length > 9) {

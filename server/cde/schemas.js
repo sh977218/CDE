@@ -102,6 +102,10 @@ let deJson = {
         datatypeValueList: {
             datatype: {type: StringType, description: "Value list format"}
         },
+        datatypeDynamicCodeList: {
+            system: {type: StringType},
+            code: {type: StringType}
+        },
         permissibleValues: [sharedSchemas.permissibleValueSchema]
     },
     history: [Schema.Types.ObjectId],
@@ -158,6 +162,12 @@ exports.dataElementSchema.index({tinyId: 1, archived: 1}, {
     name: "liveTinyId",
     partialFilterExpression: {archived: false}
 });
+/*
+exports.dataElementSchema.path("valueDomain").validate(v => {
+    if (v.datatype === 'Dynamic Code List') return !!v.datatypeDynamicCodeList;
+    return true;
+}, "Code is required for CodeList Datatype");
+*/
 exports.dataElementSchema.path("classification").validate(v => {
     let result = true;
     v.forEach(classif => {
@@ -165,7 +175,6 @@ exports.dataElementSchema.path("classification").validate(v => {
     });
     return result;
 }, "Classification cannot be empty");
-
 exports.dataElementSchema.path("classification").validate(v => {
     return !v.map(value => value.stewardOrg.name)
         .some((value, index, array) => array.indexOf(value) !== array.lastIndexOf(value));

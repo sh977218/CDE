@@ -12,7 +12,6 @@ import { TagComponent } from 'tag/tag.component';
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
-        MatIconModule,
         MatInputModule,
         MatIconModule,
         MatChipsModule,

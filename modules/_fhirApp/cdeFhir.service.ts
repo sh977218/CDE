@@ -137,7 +137,7 @@ export class CdeFhirService {
         }, done);
     });
     lookupLoincName: (code: string, cb: CbErr) => void = async_memoize((code: string, done: CbErr<string[]>) => {
-        this.http.get('/umlsCuiFromSrc/' + code + '/LNC').subscribe((r: any) => {
+        this.http.get('/server/uts/umlsCuiFromSrc/' + code + '/LNC').subscribe((r: any) => {
             if (r && r.result && r.result.results.length) {
                 done(undefined, r.result.results[0].name.split(':')[0]);
             }
