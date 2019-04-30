@@ -10,6 +10,8 @@ import { SearchSettings } from 'search/search.model';
 import { DataElement, DataTypeArray } from 'shared/de/dataElement.model';
 import { fixDatatype } from 'shared/de/deValidator';
 
+import xml2js from 'xml2js';
+
 @Component({
     selector: 'cde-permissible-value',
     templateUrl: 'permissibleValue.component.html'
@@ -30,7 +32,7 @@ export class PermissibleValueComponent {
             debounceTime(300),
             distinctUntilChanged(),
             switchMap(term => term
-                ? this.http.get('/searchUmls?searchTerm=' + term).pipe(
+                ? this.http.get('/server/uts/searchUmls?searchTerm=' + term).pipe(
                     catchError(() => EmptyObservable.create<string[]>())
                 )
                 : EmptyObservable.create<string[]>()
@@ -41,9 +43,11 @@ export class PermissibleValueComponent {
             } else this.umlsTerms = [];
         });
     }
+
     get elt(): DataElement {
         return this._elt;
     }
+
     @Output() onEltChange = new EventEmitter();
     @ViewChild('newPermissibleValueContent') public newPermissibleValueContent: TemplateRef<any>;
     @ViewChild('importPermissibleValueContent') public importPermissibleValueContent: TemplateRef<any>;
@@ -191,25 +195,31 @@ export class PermissibleValueComponent {
         this.vsacValueSet = [];
         if (dec && dec.conceptualDomain && dec.conceptualDomain.vsac && dec.conceptualDomain.vsac.id) {
             this.pVTypeheadVsacNameList = [];
-            this.http.get('/vsacBridge/' + dec.conceptualDomain.vsac.id).subscribe(
+            this.http.get('/server/uts/vsacBridge/' + dec.conceptualDomain.vsac.id, {responseType: 'text'}).subscribe(
                 res => {
-                    if (!res || !res['ns0:RetrieveValueSetResponse']) {
-                        this.Alert.addAlert('danger', 'Error: No data retrieved from VSAC for ' + dec.conceptualDomain.vsac.id);
-                    } else {
-                        let data = res['ns0:RetrieveValueSetResponse'];
-                        if (data) {
-                            this.elt.dataElementConcept.conceptualDomain.vsac.name = data['ns0:ValueSet'][0]['$'].displayName;
-                            this.elt.dataElementConcept.conceptualDomain.vsac.version = data['ns0:ValueSet'][0]['$'].version;
-                            for (let i = 0; i < data['ns0:ValueSet'][0]['ns0:ConceptList'][0]['ns0:Concept'].length; i++) {
-                                let vsac = data['ns0:ValueSet'][0]['ns0:ConceptList'][0]['ns0:Concept'][i]['$'];
-                                this.vsacValueSet.push(vsac);
-                                this.pVTypeheadVsacNameList.push(vsac.displayName);
+                    xml2js.parseString(res, (err, data) => {
+                        if (err) {
+                            this.Alert.addAlert('danger', 'Error parsing xml to json.');
+                        } else if (!data) {
+                            this.Alert.addAlert('danger', 'Error: No data retrieved from VSAC for ' + dec.conceptualDomain.vsac.id);
+                        } else {
+                            let vsacJson = data['ns0:RetrieveValueSetResponse'];
+                            if (vsacJson) {
+                                this.elt.dataElementConcept.conceptualDomain.vsac.name = vsacJson['ns0:ValueSet'][0]['$'].displayName;
+                                this.elt.dataElementConcept.conceptualDomain.vsac.version = vsacJson['ns0:ValueSet'][0]['$'].version;
+                                for (let i = 0; i < vsacJson['ns0:ValueSet'][0]['ns0:ConceptList'][0]['ns0:Concept'].length; i++) {
+                                    let vsac = vsacJson['ns0:ValueSet'][0]['ns0:ConceptList'][0]['ns0:Concept'][i]['$'];
+                                    this.vsacValueSet.push(vsac);
+                                    this.pVTypeheadVsacNameList.push(vsac.displayName);
+                                }
+                                this.validateVsacWithPv();
+                                this.validatePvWithVsac();
                             }
-                            this.validateVsacWithPv();
-                            this.validatePvWithVsac();
                         }
-                    }
-                }, () => this.Alert.addAlert('danger', 'Error querying VSAC'));
+                    });
+                }, error => {
+                    this.Alert.addAlert('danger', 'Error querying VSAC' + error);
+                });
         }
     }
 
@@ -233,7 +243,7 @@ export class PermissibleValueComponent {
                         meaning: pv.valueMeaningName
                     };
                 } else if (src === 'UMLS') {
-                    this.http.get<any>('/umlsCuiFromSrc/' + code + '/' + source)
+                    this.http.get<any>('/server/uts/umlsCuiFromSrc/' + code + '/' + source)
                         .subscribe(
                             res => {
                                 if (res.result.length > 0) {
@@ -244,7 +254,7 @@ export class PermissibleValueComponent {
                             }, () => this.Alert.addAlert('danger', "Error query UMLS."));
 
                 } else if (source === 'UMLS') {
-                    this.http.get<any>('/umlsAtomsBridge/' + code + '/' + targetSource)
+                    this.http.get<any>('/server/uts/umlsAtomsBridge/' + code + '/' + targetSource)
                         .subscribe(
                             res => {
                                 let l = [];
@@ -257,7 +267,7 @@ export class PermissibleValueComponent {
                                 } else this.SOURCES[src].codes[pv.valueMeaningCode] = {code: 'N/A', meaning: 'N/A'};
                             }, () => this.Alert.addAlert('danger', "Error query UMLS."));
                 } else {
-                    this.http.get<any>('/crossWalkingVocabularies/' + source + '/' + code + '/' + targetSource)
+                    this.http.get<any>('/server/uts/crossWalkingVocabularies/' + source + '/' + code + '/' + targetSource)
                         .subscribe(res => {
                             if (res.result.length > 0) {
                                 res.result.forEach((r) => {

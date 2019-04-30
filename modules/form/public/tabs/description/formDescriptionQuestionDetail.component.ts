@@ -1,6 +1,6 @@
 import { ENTER } from '@angular/cdk/keycodes';
 import { HttpClient } from '@angular/common/http';
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatChipInputEvent, MatDialog } from '@angular/material';
 import { AlertService } from 'alert/alert.service';
@@ -12,13 +12,16 @@ import { QuestionAnswerEditContentComponent } from 'form/public/tabs/description
 import { SelectQuestionLabelComponent } from 'form/public/tabs/description/selectQuestionLabel.component';
 import _clone from 'lodash/clone';
 import _noop from 'lodash/noop';
-import { Observable } from 'rxjs/Observable';
-import { map, switchMap, debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { switchMap, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { DataTypeArray } from 'shared/de/dataElement.model';
 import { pvGetLabel } from 'shared/de/deShared';
 import { iterateFeSync, repeatFe, repeatFeLabel, repeatFeQuestion } from 'shared/form/fe';
 import { FormElement, FormQuestion, SkipLogic } from 'shared/form/form.model';
 import { CodeAndSystem, FormattedValue } from 'shared/models.model';
+import { fixDatatype } from 'shared/de/deValidator';
+
+const ignoreDatatypeArray = ['Dynamic Code List', 'Externally Defined'];
+const dataTypeArray = DataTypeArray.filter(d => ignoreDatatypeArray.indexOf(d) === -1);
 
 @Component({
     selector: 'cde-form-description-question-detail',
@@ -27,6 +30,7 @@ import { CodeAndSystem, FormattedValue } from 'shared/models.model';
 export class FormDescriptionQuestionDetailComponent implements OnInit {
     @Input() canEdit: boolean = false;
     @Input() elt;
+
     @Input() set node(node: TreeNode) {
         this.question = node.data;
         this.parent = node.parent.data;
@@ -44,14 +48,13 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         }
         this.questionAnswers = this.question.question.answers.map(pvGetLabel);
     }
+
     @Output() onEltChange: EventEmitter<void> = new EventEmitter<void>();
     @ViewChild('formDescriptionQuestionTmpl') formDescriptionQuestionTmpl!: TemplateRef<any>;
     @ViewChild('formDescriptionQuestionEditTmpl') formDescriptionQuestionEditTmpl!: TemplateRef<any>;
-    @ViewChild('slInput') slInput!: ElementRef;
-    readonly DataTypeArray = DataTypeArray;
+    readonly DataTypeArray = dataTypeArray;
     answerListItems: string[] = [];
     defaultAnswerListItems: string[] = [];
-    static inputEvent = new Event('input');
     newUom = '';
     newUomSystem = 'UCUM';
     parent!: FormElement;
@@ -61,7 +64,6 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     readonly separatorKeysCodes: number[] = [ENTER];
     tag = [];
 
-
     uomControl = new FormControl();
     filteredUoms = [];
 
@@ -69,7 +71,6 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
                 private http: HttpClient,
                 public dialog: MatDialog,
                 private orgHelperService: OrgHelperService,
-                public skipLogicValidateService: SkipLogicValidateService,
                 public ucumService: UcumService) {
     }
 
@@ -219,14 +220,6 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         this.onEltChange.emit();
     }
 
-    slOptionsRetrigger() {
-        if (this.slInput) {
-            setTimeout(() => {
-                this.slInput.nativeElement.dispatchEvent(FormDescriptionQuestionDetailComponent.inputEvent);
-            }, 0);
-        }
-    }
-
     private syncAnswerListItems() {
         this.answerListItems = this.question.question.cde.permissibleValues.map(p => {
             let value = p.valueMeaningName;
@@ -244,18 +237,10 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         });
     }
 
-    typeaheadSkipLogic(parent, fe, event) {
-        if (fe.skipLogic && fe.skipLogic.condition !== event) {
-            this.skipLogicValidateService.typeaheadSkipLogic(parent, fe, event);
-            this.onEltChange.emit();
-        }
-    }
-
-    onSelectItem(parent, question, $event, slInput) {
-        this.typeaheadSkipLogic(parent, question, $event);
-        $event.preventDefault();
-        slInput.focus();
-        this.slOptionsRetrigger();
+    onDatatypeChange(question, event) {
+        question.datatype = event.value;
+        fixDatatype(this.elt);
+        this.onEltChange.emit();
     }
 
     uomAddNew() {

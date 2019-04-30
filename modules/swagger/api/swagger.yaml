@@ -215,6 +215,13 @@ definitions:
               format:
                 type: "string"
                 example: "YY-MM-DD"
+          datatypeDynamicCodeList:
+            type: "object"
+            description: "object appearing only on Code datatypes"
+            properties:
+              system:
+                type: "string"
+                example: "SNOMED"
           datatypeExternallyDefined:
             type: "object"
             description: "object appearing only on Other datatypes"
@@ -417,6 +424,13 @@ definitions:
                     format:
                       type: "string"
                       example: "YY-MM-DD"
+                datatypeDynamicCodeList:
+                  type: "object"
+                  description: "object appearing only on Code datatypes"
+                  properties:
+                    system:
+                      type: "string"
+                      example: "SNOMED"
                 datatypeNumber:
                   type: "object"
                   description: "object appearing only on Number datatypes"

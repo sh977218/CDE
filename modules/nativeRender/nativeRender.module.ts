@@ -1,6 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
-import { FormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { NativeMetadataComponent } from 'nativeRender/nativeMetadata.component';
 import { NativeRenderComponent } from 'nativeRender/nativeRender.component';
 import { NativeSectionComponent } from 'nativeRender/nativeSection.component';
@@ -14,9 +14,8 @@ import { ScoreService } from 'nativeRender/score.service';
     imports: [
         CommonModule,
         FormsModule,
-        // core
-        // no
-        // internal
+        // core no internal
+        ReactiveFormsModule
     ],
     declarations: [
         NativeMetadataComponent,

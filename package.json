@@ -132,6 +132,7 @@
     "@types/jquery": "^3.3.22",
     "@types/lodash": "^4.14.116",
     "@types/node": "9.3.0",
+    "@types/xml2js": "^0.4.4",
     "angular-2-local-storage": "^2.0.0",
     "angular-router-loader": "0.6.0",
     "angular-tree-component": "^8.0.2",
@@ -245,7 +246,7 @@
     {
       "path": "./dist/fhir/fhir.js",
       "compression": "none",
-      "maxSize": "1.58 MB"
+      "maxSize": "1.59 MB"
     },
     {
       "path": "./dist/fhir/fhir.css",
@@ -255,7 +256,7 @@
     {
       "path": "./dist/native/native.js",
       "compression": "none",
-      "maxSize": "580 kB"
+      "maxSize": "590 kB"
     },
     {
       "path": "./dist/native/native.css",

@@ -73,6 +73,8 @@ export class FormDescriptionQuestionComponent implements OnInit {
             return '(Date)';
         } else if (datatype === 'Geo Location') {
             return '(Geo Location)';
+        } else if (datatype === 'Dynamic Code List') {
+            return '(Dynamic Code List)';
         } else return '';
     }
 
@@ -128,7 +130,7 @@ export class FormDescriptionQuestionComponent implements OnInit {
                     if (!modal.bValuelist) newQuestion.question.answers = currentQuestion.question.answers;
 
                     if (currentQuestion.question.defaultAnswer && newQuestion.question.answers.filter(
-                            a => a.permissibleValue === currentQuestion.question.defaultAnswer).length > 0) {
+                        a => a.permissibleValue === currentQuestion.question.defaultAnswer).length > 0) {
                         newQuestion.question.defaultAnswer = currentQuestion.question.defaultAnswer;
                     }
                 } else {
@@ -148,7 +150,7 @@ export class FormDescriptionQuestionComponent implements OnInit {
                 break;
         }
 
-        this.updateCdeVersion =  modal;
+        this.updateCdeVersion = modal;
         this.dialog.open(this.updateCdeVersionTmpl, {width: '1000px'}).afterClosed().subscribe((res) => {
             if (res) {
                 currentQuestion.question = newQuestion.question;
