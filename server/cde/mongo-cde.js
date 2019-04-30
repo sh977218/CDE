@@ -38,7 +38,10 @@ schemas.dataElementSchema.pre('save', function (next) {
     let elt = this;
 
     if (this.archived) return next();
-    let cdeError = deValidator.checkPvUnicity(elt.valueDomain) || deValidator.checkDefinitions(elt);
+    let cdeError = deValidator.checkPvUnicity(elt.valueDomain);
+    if (cdeError.allValid) {
+        cdeError = deValidator.checkDefinitions(elt);
+    }
     if (cdeError && !cdeError.allValid) {
         cdeError.tinyId = this.tinyId;
         logging.errorLogger.error(cdeError, {
