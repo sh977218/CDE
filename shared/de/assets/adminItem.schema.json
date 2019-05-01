@@ -347,7 +347,9 @@
       },
       "required": [
         "registrationState",
-        "stewardOrg"
+        "stewardOrg",
+        "created",
+        "createdBy"
       ]
     },
     "classificationElement": {
