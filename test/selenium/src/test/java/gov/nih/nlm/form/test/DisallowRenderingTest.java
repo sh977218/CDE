@@ -20,6 +20,8 @@ public class DisallowRenderingTest extends NlmCdeBaseTest {
         textPresent("In general, would you say");
         goToGeneralDetail();
         clickElement(By.id("disallowRendering"));
+        // TODO - remove after "reload and redo" bug is resolved
+        hangon(1);
         newFormVersion();
 
         logout();
