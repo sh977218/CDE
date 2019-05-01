@@ -27,7 +27,7 @@ import { InactivityLoggedOutComponent, UserService } from '_app/user.service';
 import { CommonAppModule } from '_commonApp/commonApp.module';
 import { AlertModule } from 'alert/alert.module';
 import { LocalStorageModule } from 'angular-2-local-storage';
-import { OrgHelperService } from 'core/orgHelper.service';
+import { OrgHelperService } from 'non-core/orgHelper.service';
 
 @NgModule({
     imports: [

@@ -25,7 +25,7 @@ const boardRoutes: Routes = [
         FormsModule,
         NgbModule,
         RouterModule.forChild(boardRoutes),
-        // core
+        // non-core
 
         // internal
         AdminItemModule,

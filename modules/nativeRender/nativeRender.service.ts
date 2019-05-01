@@ -1,17 +1,19 @@
 import { Injectable } from '@angular/core';
-import { callbackify } from 'core/browser';
+import { isQuestion, repeatFe } from 'core/form/fe';
+import { getShowIfQ } from 'core/form/skipLogic';
+import { callbackify } from 'non-core/browser';
 import { FormService } from 'nativeRender/form.service';
 import { ScoreService } from 'nativeRender/score.service';
 import { SkipLogicService } from 'nativeRender/skipLogic.service';
 import { assertUnreachable, Cb1, CbErr, CdeId, CodeAndSystem } from 'shared/models.model';
-import { pvGetDisplayValue, pvGetLabel } from 'shared/de/deShared';
+import { pvGetDisplayValue, pvGetLabel } from 'core/de/deShared';
 import {
     CdeForm, DisplayProfile, DisplayType, FormElement, FormElementsContainer, FormOrElement, FormQuestion, FormSection,
     FormSectionOrForm,
     PermissibleFormValue, Question
 } from 'shared/form/form.model';
-import { addFormIds, isQuestion, iterateFeSync, questionMulti, repeatFe, repeatFeQuestion } from 'shared/form/fe';
-import { getQuestionPriorByLabel, getShowIfQ, SkipLogicOperators } from 'shared/form/skipLogic';
+import { addFormIds, iterateFeSync, questionMulti } from 'shared/form/fe';
+import { SkipLogicOperators } from 'shared/form/skipLogic';
 
 @Injectable()
 export class NativeRenderService {

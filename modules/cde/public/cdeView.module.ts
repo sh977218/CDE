@@ -28,7 +28,7 @@ import { ValidRulesComponent } from 'cde/public/components/validationRules/valid
 import { CompareModule } from 'compare/compare.module';
 import { DiscussModule } from 'discuss/discuss.module';
 import { FormSearchModule } from 'form/public/formSearch.module';
-import { CoreModule } from 'core/core.module';
+import { NonCoreModule } from 'non-core/noncore.module';
 import { InlineEditModule } from 'inlineEdit/inlineEdit.module';
 import { InlineSelectEditModule } from 'inlineSelectEdit/inlineSelectEdit.module';
 import { InlineAreaEditModule } from 'inlineAreaEdit/inlineAreaEdit.module';
@@ -54,8 +54,8 @@ const appRoutes: Routes = [
         NgbModule,
         RouterModule.forChild(appRoutes),
         TreeModule.forRoot(),
-        // core
-        CoreModule,
+        // non-core
+        NonCoreModule,
 
         // internal
         InlineAreaEditModule,

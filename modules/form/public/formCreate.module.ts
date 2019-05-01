@@ -13,7 +13,7 @@ const appRoutes: Routes = [
 @NgModule({
     imports: [
         RouterModule.forChild(appRoutes),
-        // core
+        // non-core
 
         // internal
         AdminItemModule,

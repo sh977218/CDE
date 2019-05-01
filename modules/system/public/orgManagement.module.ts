@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule, MatIconModule, MatTabsModule } from '@angular/material';
 import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { CoreModule } from 'core/core.module';
+import { NonCoreModule } from 'non-core/noncore.module';
 import { DraftsListModule } from 'draftsList/draftsList.module';
 import { DataService } from 'shared/models.model';
 import { EmbedComponent } from 'system/public/components/embed/embed.component';
@@ -26,8 +26,8 @@ const appRoutes: Routes = [
         MatTabsModule,
         NgbModule,
         RouterModule.forChild(appRoutes),
-        // core
-        CoreModule,
+        // non-core
+        NonCoreModule,
         // internal
         DraftsListModule,
         SystemModule,

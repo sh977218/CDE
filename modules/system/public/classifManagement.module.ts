@@ -20,7 +20,7 @@ const appRoutes: Routes = [
         FormsModule,
         RouterModule.forChild(appRoutes),
         TreeModule.forRoot(),
-        // core
+        // non-core
 
         // internal
         AdminItemModule,

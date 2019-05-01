@@ -10,8 +10,7 @@ import { SaveModalComponent } from 'adminItem/public/components/saveModal/saveMo
 import async_forEach from 'async/forEach';
 import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
 import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHistoryContent.component';
-import { ExportService } from 'core/export.service';
-import { OrgHelperService } from 'core/orgHelper.service';
+import { areDerivationRulesSatisfied, repeatFeQuestion, repeatFe } from 'core/form/fe';
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
 import { FormViewService } from 'form/public/components/formView.service';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
@@ -19,17 +18,15 @@ import { UcumService } from 'form/public/ucum.service';
 import _cloneDeep from 'lodash/cloneDeep';
 import _noop from 'lodash/noop';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
+import { ExportService } from 'non-core/export.service';
+import { OrgHelperService } from 'non-core/orgHelper.service';
 import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
 import { assertUnreachable, Cb, Comment, Elt } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm, FormElement, FormElementsContainer, FormInForm, QuestionCde } from 'shared/form/form.model';
-import {
-    addFormIds, areDerivationRulesSatisfied, getLabel, iterateFe, iterateFes, iterateFeSync, noopSkipIterCb, repeatFe,
-    repeatFeQuestion
-} from 'shared/form/fe';
+import { addFormIds, getLabel, iterateFe, iterateFes, iterateFeSync, noopSkipIterCb } from 'shared/form/fe';
 import { canEditCuratedItem, isOrgCurator } from 'shared/system/authorizationShared';
-import { isIe, scrollTo } from 'core/browser';
+import { isIe, scrollTo } from 'non-core/browser';
 import { getQuestionPriorByLabel } from 'shared/form/skipLogic';
 
 class LocatableError {

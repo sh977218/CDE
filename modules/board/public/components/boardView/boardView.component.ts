@@ -7,7 +7,7 @@ import { ElasticService } from '_app/elastic.service';
 import { UserService } from '_app/user.service';
 import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
 import { AlertService } from 'alert/alert.service';
-import { OrgHelperService } from 'core/orgHelper.service';
+import { OrgHelperService } from 'non-core/orgHelper.service';
 import { saveAs } from 'file-saver';
 import _noop from 'lodash/noop';
 import { Comment } from 'shared/models.model';

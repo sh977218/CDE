@@ -2,8 +2,8 @@ import { Component, ViewChild, Input, Output, EventEmitter, TemplateRef } from "
 import { IActionMapping } from "angular-tree-component/dist/models/tree-options.model";
 import _noop from 'lodash/noop';
 import { UserService } from '_app/user.service';
-import { IsAllowedService } from 'core/isAllowed.service';
-import { OrgHelperService } from 'core/orgHelper.service';
+import { IsAllowedService } from 'non-core/isAllowed.service';
+import { OrgHelperService } from 'non-core/orgHelper.service';
 import { isSiteAdmin } from 'shared/system/authorizationShared';
 import { MatDialog } from '@angular/material';
 

@@ -7,19 +7,18 @@ import { MatDialog } from '@angular/material';
 import { TreeNode } from 'angular-tree-component';
 import { LocalStorageService } from 'angular-2-local-storage';
 import { AlertService } from 'alert/alert.service';
+import { repeatFe, repeatFeLabel, repeatFeNumber, repeatFeQuestion } from 'core/form/fe';
+import { convertFormToSection } from 'core/form/form';
+import { isMappedTo } from 'core/form/formAndFe';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
 import { FormDescriptionComponent } from 'form/public/tabs/description/formDescription.component';
 import _isEqual from 'lodash/isEqual';
 import _noop from 'lodash/noop';
 import { FormService } from 'nativeRender/form.service';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
-import { Observable } from 'rxjs/Observable';
-import { debounceTime, map } from 'rxjs/operators';
 import { FormattedValue } from 'shared/models.model';
-import { getLabel, repeatFe, repeatFeLabel, repeatFeNumber, repeatFeQuestion } from 'shared/form/fe';
-import { convertFormToSection } from 'shared/form/form';
+import { getLabel } from 'shared/form/fe';
 import { CdeForm, FormElement, FormInForm, FormSectionOrForm, SkipLogic } from 'shared/form/form.model';
-import { isMappedTo } from 'shared/form/formAndFe';
 import { getQuestionsPrior } from 'shared/form/skipLogic';
 
 

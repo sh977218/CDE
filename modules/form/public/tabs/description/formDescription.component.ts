@@ -11,10 +11,11 @@ import {
     TemplateRef,
     ViewChild
 } from '@angular/core';
-import { MatDialog, MatDialogRef } from "@angular/material";
+import { MatDialog, MatDialogRef } from '@angular/material';
 import { TREE_ACTIONS, TreeComponent, TreeNode } from 'angular-tree-component';
 import { LocalStorageService } from 'angular-2-local-storage';
-import { Hotkey, HotkeysService } from "angular2-hotkeys";
+import { Hotkey, HotkeysService } from 'angular2-hotkeys';
+import { convertFormToSection } from 'core/form/form';
 import _isEmpty from 'lodash/isEmpty';
 import _noop from 'lodash/noop';
 import { DeCompletionService } from 'cde/public/components/completion/deCompletion.service';
@@ -22,10 +23,9 @@ import { copySectionAnimation } from 'form/public/tabs/description/copySectionAn
 import { FormService } from 'nativeRender/form.service';
 import { Cb } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
-import { convertFormToSection } from 'shared/form/form';
 import { CdeForm, FormElement, FormElementsContainer, FormInForm, FormSection } from 'shared/form/form.model';
 import { addFormIds, iterateFeSync } from 'shared/form/fe';
-import { scrollTo, waitRendered } from 'core/browser';
+import { scrollTo, waitRendered } from 'non-core/browser';
 
 @Component({
     selector: 'cde-form-description',
@@ -343,7 +343,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         this.addQuestionDialogRef.afterClosed().subscribe(() => this.isModalOpen = false);
 
         setTimeout(() => {
-            if (this.questionModelMode === 'add') document.getElementById("newDEName")!.focus();
+            if (this.questionModelMode === 'add') document.getElementById('newDEName')!.focus();
         }, 0);
     }
 

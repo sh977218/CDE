@@ -18,6 +18,8 @@ import async_forEach from 'async/forEach';
 import async_memoize from 'async/memoize';
 import async_series from 'async/series';
 import async_some from 'async/some';
+import { questionAnswered, findQuestionByTinyId, isQuestion } from 'core/form/fe';
+import { getIds, getTinyId, getVersion } from 'core/form/formAndFe';
 import diff from 'deep-diff';
 import _intersectionWith from 'lodash/intersectionWith';
 import _noop from 'lodash/noop';
@@ -26,10 +28,7 @@ import {
     assertThrow, assertTrue, assertUnreachable, Cb, CbErr, CbRet, CbRet1, CdeId, PermissibleValue
 } from 'shared/models.model';
 import { CdeForm, FhirApp, FormQuestion } from 'shared/form/form.model';
-import { getIds, getTinyId, getVersion } from 'shared/form/formAndFe';
-import {
-    iterateFe, iterateFeSync, questionAnswered, findQuestionByTinyId, isQuestion, questionMulti
-} from 'shared/form/fe';
+import { iterateFe, iterateFeSync, questionMulti } from 'shared/form/fe';
 import { codeSystemOut } from 'shared/mapping/fhir';
 import { FhirCodeableConcept, FhirValue } from 'shared/mapping/fhir/fhir.model';
 import {

@@ -1,15 +1,15 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatDialog } from '@angular/material';
-
+import { getMapToFhirResource } from 'core/form/formAndFe';
+import { findQuestionByTinyId, getFormQuestions } from 'core/form/fe';
 import { UcumService } from 'form/public/ucum.service';
 import { FormViewComponent } from 'form/public/components/formView.component';
 import { FhirProcedureMappingComponent } from 'form/public/components/fhir/fhirProcedureMapping.component';
-import { CdeForm, DisplayProfile, FormElement } from 'shared/form/form.model';
-import { getMapToFhirResource } from 'shared/form/formAndFe';
-import { findQuestionByTinyId, getFormQuestions, iterateFeSync } from 'shared/form/fe';
+import { CdeForm, DisplayProfile } from 'shared/form/form.model';
+import { iterateFeSync } from 'shared/form/fe';
 import { CodeAndSystem } from 'shared/models.model';
 import { deepCopy } from 'shared/system/util';
-import { interruptEvent } from 'core/browser';
+import { interruptEvent } from 'non-core/browser';
 
 type DisplayProfileVM = {
     aliases: {

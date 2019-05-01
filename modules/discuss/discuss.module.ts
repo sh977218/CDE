@@ -15,7 +15,7 @@ import { CommentsComponent } from 'discuss/components/comments/comments.componen
         MatIconModule,
         MatDialogModule,
         MatPaginatorModule,
-        // core
+        // non-core
 
         // internal
     ],

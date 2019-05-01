@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { CdeForm, CdeFormElastic } from 'shared/form/form.model';
+import { CdeForm, CdeFormElastic } from '../shared/form/form.model';
 import { DataElement, DataElementElastic } from 'shared/de/dataElement.model';
 
 export function assertThrow(): never {
