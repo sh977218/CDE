@@ -1,5 +1,5 @@
-import { Injectable } from "@angular/core";
-import { OrgHelperService } from "core/orgHelper.service";
+import { Injectable } from '@angular/core';
+import { OrgHelperService } from 'non-core/orgHelper.service';
 import { CurationStatus, StatusValidationRulesOrgs } from 'shared/models.model';
 
 @Injectable()
@@ -31,9 +31,9 @@ export function conditionsMetForStatusWithinOrg(cde, orgName, status, cdeOrgRule
 
 export function cdePassingRule(cde, rule) {
     function lookForPropertyInNestedObject(object, rule, level) {
-        let key = rule.field.split(".")[level];
+        let key = rule.field.split('.')[level];
         if (!object[key]) return false;
-        if (level === rule.field.split(".").length - 1) return new RegExp(rule.rule.regex).test(object[key]);
+        if (level === rule.field.split('.').length - 1) return new RegExp(rule.rule.regex).test(object[key]);
         if (!Array.isArray(object[key])) return lookForPropertyInNestedObject(object[key], rule, level + 1);
 
         switch (rule.occurence) {
@@ -56,7 +56,7 @@ export function getStatusRules(cdeOrgRules) {
         Recorded: {},
         Qualified: {},
         Standard: {},
-        "Preferred Standard": {}
+        'Preferred Standard': {}
     };
 
     Object.keys(cdeOrgRules).forEach(orgName => {

@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { cdePassingRule, getStatusRules, RegistrationValidatorService } from 'core/registrationValidator.service';
+import { cdePassingRule, getStatusRules, RegistrationValidatorService } from 'non-core/registrationValidator.service';
 import { DataElement } from 'shared/de/dataElement.model';
 
 @Component({

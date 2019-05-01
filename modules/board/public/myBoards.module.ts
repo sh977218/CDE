@@ -17,7 +17,7 @@ const boardRoutes: Routes = [
         CommonModule,
         FormsModule,
         RouterModule.forChild(boardRoutes),
-        // core
+        // non-core
 
         // internal
         BoardModule,

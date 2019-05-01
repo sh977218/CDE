@@ -17,7 +17,7 @@ const appRoutes: Routes = [
         FormsModule,
         RecaptchaModule.forRoot(),
         RouterModule.forChild(appRoutes),
-        // core
+        // non-core
 
         // internal
     ],

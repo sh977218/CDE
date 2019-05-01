@@ -10,47 +10,6 @@ export function addFormIds(parent, parentId = '') {
     iterateFeSync(parent, addFeId, addFeId, addFeId, parentId ? parentId + '-' : '');
 }
 
-export function areDerivationRulesSatisfied(elt) {
-    let missingCdeTinyIds = [];
-    let allCdes = {};
-    let allQuestions = [];
-    iterateFeSync(elt, undefined, undefined, (q) => {
-        if (q.question.datatype === 'Number') {
-            q.question.answer = Number.parseFloat(q.question.defaultAnswer);
-        } else {
-            q.question.answer = q.question.defaultAnswer;
-        }
-        allCdes[q.question.cde.tinyId] = q.question;
-        allQuestions.push(q);
-    });
-    allQuestions.forEach(quest => {
-        if (quest.question.cde.derivationRules)
-            quest.question.cde.derivationRules.forEach(derRule => {
-                delete quest.incompleteRule;
-                if (derRule.ruleType === 'score') {
-                    quest.question.isScore = true;
-                    quest.question.scoreFormula = derRule.formula;
-                }
-                derRule.inputs.forEach(input => {
-                    if (allCdes[input]) {
-                        allCdes[input].partOf = 'score';
-                    } else {
-                        missingCdeTinyIds.push(input);
-                        quest.incompleteRule = true;
-                    }
-                });
-            });
-    });
-    return missingCdeTinyIds;
-}
-
-// excludes subForms
-export function findQuestionByTinyId(tinyId, elt) {
-    let question;
-    iterateFeSyncOptions(elt, noopSkipSync, undefined, q => q.question.cde.tinyId === tinyId && (question = q));
-    return question;
-}
-
 export function flattenFormElement(fe) {
     function pushLeaf(fe) {
         if (!fe.formElements || fe.formElements.length === 0) {
@@ -63,50 +22,10 @@ export function flattenFormElement(fe) {
     return result;
 }
 
-export function getFormQuestions(form) {
-    let questions = [];
-    iterateFeSync(form, undefined, undefined, q => questions.push(q));
-    return questions;
-}
-
-export function getFormScoreQuestions(form) {
-    let questions = [];
-    iterateFeSync(form, undefined, undefined, q => q.question.isScore && questions.push(q));
-    return questions;
-}
-
-export function getFormSkipLogicQuestions(form) {
-    let questions = [];
-    iterateFeSync(form, undefined, undefined, q => q.skipLogic.condition.length > 0 && questions.push(q));
-    return questions;
-}
-
-export function getFormQuestionsAsQuestion(form) {
-    return getFormQuestions(form).map(q => q.question);
-}
-
-export function getFormQuestionsAsQuestionCde(form) {
-    return getFormQuestions(form).map(q => q.question.cde);
-}
-
 export function getLabel(fe) {
     if (fe.label)
         return fe.label;
-    if (fe.question && fe.question.cde)
-        return fe.question.cde.name;
-    return '';
-}
-
-export function isInForm(fe) {
-    return fe && fe.elementType === 'form';
-}
-
-export function isQuestion(fe) {
-    return fe && fe.elementType === 'question';
-}
-
-export function isSection(fe) {
-    return fe && fe.elementType === 'section';
+    return fe.question && fe.question.cde ? fe.question.cde.name : '';
 }
 
 // implemented options: return, skip
@@ -116,6 +35,8 @@ export function isSection(fe) {
 export function iterateFe(fe, formCb = undefined, sectionCb = undefined, questionCb = undefined, callback = undefined, options = undefined) {
     if (fe) {
         iterateFes(fe.formElements, formCb, sectionCb, questionCb, callback, options);
+    } else {
+        callback();
     }
 }
 
@@ -141,7 +62,7 @@ export function iterateFeSyncOptions(fe, formCb = undefined, sectionCb = undefin
 // callback(error)
 export function iterateFes(fes, formCb = noopIterCb, sectionCb = noopIterCb, questionCb = noopIterCb, callback = _noop, options = undefined) {
     if (!Array.isArray(fes)) {
-        return;
+        return callback();
     }
     async_forEachOf(fes, (fe, i, cb) => {
         switch (fe.elementType) {
@@ -172,10 +93,8 @@ export function iterateFes(fes, formCb = noopIterCb, sectionCb = noopIterCb, que
 
 // feCb(fe, pass): return
 export function iterateFesSync(fes, formCb = noopSync, sectionCb = noopSync, questionCb = noopSync, pass = undefined) {
-    if (!Array.isArray(fes)) {
-        return;
-    }
-    fes.forEach((fe, i) => {
+    /* jshint -W030 */
+    Array.isArray(fes) && fes.forEach((fe, i) => {
         switch (fe.elementType) {
             case 'form':
                 iterateFeSync(fe, formCb, sectionCb, questionCb, formCb(fe, pass, i));
@@ -195,10 +114,8 @@ export function iterateFesSync(fes, formCb = noopSync, sectionCb = noopSync, que
 // feCb(fe, pass, options): return
 //   skip: noopSkipSync
 export function iterateFesSyncOptions(fes, formCb = noopSync, sectionCb = noopSync, questionCb = noopSync, pass = undefined) {
-    if (!Array.isArray(fes)) {
-        return;
-    }
-    fes.forEach((fe, i) => {
+    /* jshint -W030 */
+    Array.isArray(fes) && fes.forEach((fe, i) => {
         let options = {};
         let ret;
         switch (fe.elementType) {
@@ -237,19 +154,6 @@ export function noopSkipSync(dummy, pass, options) {
 
 export function noopSync(dummy, pass) {
     return pass;
-}
-
-export function questionAnswered(q) {
-    return typeof(q.question.answer) !== 'undefined'
-        && !(Array.isArray(q.question.answer) && q.question.answer.length === 0);
-}
-
-export function questionMulti(q) {
-    return questionQuestionMulti(q.question);
-}
-
-export function questionQuestionMulti(question) {
-    return question.multiselect || question.answers.filter(a => !a.nonValuelist).length === 1 && !question.required;
 }
 
 export function iterateFormElements(fe = {}, option = {}, cb = undefined) {
@@ -293,65 +197,44 @@ export function iterateFormElements(fe = {}, option = {}, cb = undefined) {
     }
 }
 
-export function repeatFe(fe) {
-    if (!fe.repeat) return '';
-    if (fe.repeat[0] === 'F') return 'F';
-    if (fe.repeat.startsWith('="') && fe.repeat.length >= 3 && fe.repeat.endsWith('"')) return '=';
-    return 'N';
+export function questionMulti(q) {
+    return questionQuestionMulti(q.question);
 }
 
-export function repeatFeLabel(fe) {
-    switch (repeatFe(fe)) {
-        case '=':
-            return 'over Question Answer ' + fe.repeat.substr(1);
-        case 'F':
-            return 'over First Question';
-        case 'N':
-            return repeatFeNumber(fe) + ' times';
-        default:
-            return '';
-    }
-}
-
-export function repeatFeNumber(fe) {
-    return parseInt(fe.repeat);
-}
-
-export function repeatFeQuestion(fe) {
-    return fe.repeat && fe.repeat[0] === '=' ? fe.repeat.substring(2, fe.repeat.length - 1) : '';
+export function questionQuestionMulti(question) {
+    return question.multiselect || question.answers.filter(a => !a.nonValuelist).length === 1 && !question.required;
 }
 
 export function trimWholeForm(elt) {
     iterateFeSync(elt, f => {
         f.formElements = []; // remove subForm content
     }, undefined, q => {
-        if (!q.question) return;
         switch (q.question.datatype) {
             case 'Value List':
-                if (q.question.datatypeDate) q.question.datatypeDate = undefined;
-                if (q.question.datatypeNumber) q.question.datatypeNumber = undefined;
-                if (q.question.datatypeText) q.question.datatypeText = undefined;
-                if (q.question.datatypeExternallyDefined) q.question.datatypeExternallyDefined = undefined;
+                q.question.datatypeDate = undefined;
+                q.question.datatypeNumber = undefined;
+                q.question.datatypeText = undefined;
+                q.question.datatypeExternallyDefined = undefined;
                 break;
             case 'Date':
-                if (q.question.datatypeValueList) q.question.datatypeValueList = undefined;
-                if (q.question.datatypeNumber) q.question.datatypeNumber = undefined;
-                if (q.question.datatypeText) q.question.datatypeText = undefined;
-                if (q.question.datatypeExternallyDefined) q.question.datatypeExternallyDefined = undefined;
+                q.question.datatypeValueList = undefined;
+                q.question.datatypeNumber = undefined;
+                q.question.datatypeText = undefined;
+                q.question.datatypeExternallyDefined = undefined;
                 break;
             case 'Number':
-                if (q.question.datatypeValueList) q.question.datatypeValueList = undefined;
-                if (q.question.datatypeDate) q.question.datatypeDate = undefined;
-                if (q.question.datatypeText) q.question.datatypeText = undefined;
-                if (q.question.datatypeExternallyDefined) q.question.datatypeExternallyDefined = undefined;
+                q.question.datatypeValueList = undefined;
+                q.question.datatypeDate = undefined;
+                q.question.datatypeText = undefined;
+                q.question.datatypeExternallyDefined = undefined;
                 break;
             case 'Text':
             /* falls through */
             default:
-                if (q.question.datatypeValueList) q.question.datatypeValueList = undefined;
-                if (q.question.datatypeDate) q.question.datatypeDate = undefined;
-                if (q.question.datatypeNumber) q.question.datatypeNumber = undefined;
-                if (q.question.datatypeExternallyDefined) q.question.datatypeExternallyDefined = undefined;
+                q.question.datatypeValueList = undefined;
+                q.question.datatypeDate = undefined;
+                q.question.datatypeNumber = undefined;
+                q.question.datatypeExternallyDefined = undefined;
         }
     });
 }

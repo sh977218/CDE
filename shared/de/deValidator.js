@@ -1,37 +1,29 @@
+function resultInvalid(message) {
+    return {
+        allValid: false,
+        message
+    };
+}
+
 export const checkPvUnicity = function (valueDomain) {
-    let result = {allValid: true};
     if (valueDomain.datatype === 'Value List' && valueDomain.permissibleValues.length === 0) {
-        result.pvNotValidMsg = 'Value List must contain at least one Permissible Value';
-        result.allValid = false;
-        return result;
+        return resultInvalid('Value List must contain at least one Permissible Value');
     }
     let allPvs = {}, allCodes = {}, allVms = {};
-    valueDomain.permissibleValues.forEach(function (pv) {
+    return valueDomain.permissibleValues.reduce((acc, pv) => {
         let pvCode = pv.valueMeaningCode ? pv.valueMeaningCode : '';
         let pvCodeSystem = pv.codeSystemName ? pv.codeSystemName : '';
         if (pvCode.length > 0 && pvCodeSystem.length === 0) {
-            pv.notValid = 'pvCode is not empty, pvCodeSystem is empty';
-            result.pvNotValidMsg = pv.notValid;
-            result.allValid = false;
-            return result;
+            return resultInvalid(pv.notValid = 'pvCode is not empty, pvCodeSystem is empty');
         }
         if (allPvs[pv.permissibleValue]) {
-            pv.notValid = 'Duplicate Permissible Value: ' + pv.permissibleValue;
-            result.pvNotValidMsg = pv.notValid;
-            result.allValid = false;
-            return result;
+            return resultInvalid(pv.notValid = 'Duplicate Permissible Value: ' + pv.permissibleValue);
         }
         if (allVms[pv.valueMeaningName]) {
-            pv.notValid = 'Duplicate Code Name: ' + pv.valueMeaningName;
-            result.pvNotValidMsg = pv.notValid;
-            result.allValid = false;
-            return result;
+            return resultInvalid(pv.notValid = 'Duplicate Code Name: ' + pv.valueMeaningName);
         }
         if (allCodes[pv.valueMeaningCode]) {
-            pv.notValid = 'Duplicate Code: ' + pv.valueMeaningCode;
-            result.pvNotValidMsg = pv.notValid;
-            result.allValid = false;
-            return result;
+            return resultInvalid(pv.notValid = 'Duplicate Code: ' + pv.valueMeaningCode);
         }
         if (pv.permissibleValue) allPvs[pv.permissibleValue] = 1;
         if (pv.valueMeaningName && pv.valueMeaningName.length > 0 && pv.valueMeaningName.indexOf('Login to see the value') === -1)
@@ -39,22 +31,22 @@ export const checkPvUnicity = function (valueDomain) {
         if (pv.valueMeaningCode && pv.valueMeaningCode.length > 0 && pv.valueMeaningCode.indexOf('Login to see the value') === -1)
             allCodes[pv.valueMeaningCode] = 1;
         delete pv.notValid;
-    });
-    return result;
+        return acc;
+    }, {allValid: true});
 };
 
 export const checkDefinitions = function (elt) {
     let result = {allValid: true};
     elt.definitions.forEach(def => {
         if (!def.definition || !def.definition.length) {
-            result.message = 'Definition may not be empty.';
-            result.allValid = false;
+            result = resultInvalid('Definition may not be empty.');
         }
     });
     return result;
 };
 
 export const fixDatatype = function (elt) {
+    if (!elt.valueDomain) elt.valueDomain = {};
     if (!elt.valueDomain.datatype) {
         elt.valueDomain.datatype = 'Text';
     }
@@ -69,6 +61,9 @@ export const fixDatatype = function (elt) {
     }
     if (elt.valueDomain.datatype === 'Date' && !elt.valueDomain.datatypeDate) {
         elt.valueDomain.datatypeDate = {};
+    }
+    if (elt.valueDomain.datatype === 'Dynamic Code List' && !elt.valueDomain.datatypeDynamicCodeList) {
+        elt.valueDomain.datatypeDynamicCodeList = {};
     }
     if (elt.valueDomain.datatype === 'Externally Defined' && !elt.valueDomain.datatypeExternallyDefined) {
         elt.valueDomain.datatypeExternallyDefined = {};
@@ -99,6 +94,9 @@ export const wipeDatatype = function (elt) {
     } else if (elt.valueDomain.datatype === 'Date') {
         valueDomain.datatype = 'Date';
         valueDomain.datatypeDate = elt.valueDomain.datatypeDate;
+    } else if (elt.valueDomain.datatype === 'Dynamic Code List') {
+        valueDomain.datatype = 'Dynamic Code List';
+        valueDomain.datatypeDynamicCodeList = elt.valueDomain.datatypeDynamicCodeList;
     } else if (elt.valueDomain.datatype === 'Externally Defined') {
         valueDomain.datatype = 'Externally Defined';
         valueDomain.datatypeExternallyDefined = elt.valueDomain.datatypeExternallyDefined;

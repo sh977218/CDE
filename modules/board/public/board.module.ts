@@ -23,7 +23,7 @@ import { PinBoardModalComponent } from "./components/pins/pinBoardModal.componen
 import { PinQuickboardComponent } from "./components/pins/pinQuickboard.component";
 import { UnpinBoardComponent } from "./components/listView/unpinBoard.component";
 
-import { CoreModule } from 'core/core.module';
+import { NonCoreModule } from 'non-core/noncore.module';
 import { SearchModule } from 'search/search.module';
 import { TagModule } from 'tag/tag.module';
 
@@ -39,8 +39,8 @@ import { TagModule } from 'tag/tag.module';
         MatIconModule,
         MatInputModule,
         RouterModule,
-        // core
-        CoreModule,
+        // non-core
+        NonCoreModule,
         // internal
         SearchModule,
         AdminItemModule,

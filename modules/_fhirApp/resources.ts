@@ -4,10 +4,10 @@ import {
     ResourceTree, ResourceTreeAttribute, ResourceTreeIntermediate, ResourceTreeResource, ResourceTreeRoot,
     ResourceTreeUtil
 } from '_fhirApp/resourceTree';
+import { isQuestion } from 'core/form/fe';
+import { getMapToFhirResource, isForm } from 'core/form/formAndFe';
 import { assertThrow, assertUnreachable, CbErr, CdeId } from 'shared/models.model';
-import { isQuestion } from 'shared/form/fe';
 import { CdeForm, FhirProcedureMapping, FormElement } from 'shared/form/form.model';
-import { getMapToFhirResource, isForm } from 'shared/form/formAndFe';
 import { codeSystemOut } from 'shared/mapping/fhir';
 import { FhirCoding } from 'shared/mapping/fhir/fhir.model';
 import { supportedFhirResources } from 'shared/mapping/fhir/fhirResource.model';

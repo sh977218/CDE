@@ -93,9 +93,9 @@ let getRealIp = function (req) {
 
 let blackIps = [];
 app.use((req, res, next) => {
-   if (blackIps.indexOf(getRealIp(req)) !== -1) {
-       res.status(403).send('Access is temporarily disabled. If you think you received this response in error, please contact support. Otherwise, please try again in an hour.');
-   } else next();
+    if (blackIps.indexOf(getRealIp(req)) !== -1) {
+        res.status(403).send('Access is temporarily disabled. If you think you received this response in error, please contact support. Otherwise, please try again in an hour.');
+    } else next();
 });
 const banEndsWith = config.banEndsWith || [];
 const banStartsWith = config.banStartsWith || [];
@@ -286,6 +286,9 @@ try {
         superLog: [authorization.isSiteAdminMiddleware]
     });
     app.use('/server/log', logModule);
+
+    let utsModule = require('./server/uts/utsRoutes').module();
+    app.use('/server/uts', utsModule);
 
     let classificationModule = require('./server/classification/classificationRoutes').module({
         allowClassify: (user, org) => authorizationShared.isOrgCurator(user, org)

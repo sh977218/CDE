@@ -5,7 +5,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { CdeStatusReportComponent } from 'cde/public/components/statusReport/cdeStatusReport.component';
 import { MatIconModule } from '@angular/material';
-import { CoreModule } from 'core/core.module';
+import { NonCoreModule } from 'non-core/noncore.module';
 
 const appRoutes: Routes = [
     {path: '', component: CdeStatusReportComponent},
@@ -15,8 +15,8 @@ const appRoutes: Routes = [
     imports: [
         CommonModule,
         RouterModule.forChild(appRoutes),
-        // core
-        CoreModule,
+        // non-core
+        NonCoreModule,
 
         // internal
         MatIconModule,

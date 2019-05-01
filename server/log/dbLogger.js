@@ -85,7 +85,7 @@ exports.log = function (message, callback) { // express only, all others dbLogge
 
 exports.logError = function (message, callback) { // all server errors, express and not
     message.date = new Date();
-    if (message.stack) message.stack = message.stack.substr(0, 1000);
+    if (message.stack && message.stack.substr) message.stack = message.stack.substr(0, 1000);
     let description = (message.message || message.publicMessage || '').substr(0, 30);
     if (config.logToConsoleForServerError) {
         console.log('---Server Error---', message);

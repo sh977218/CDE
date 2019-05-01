@@ -13,7 +13,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CommonAppModule } from '_commonApp/commonApp.module';
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
-import { CoreModule } from 'core/core.module';
+import { NonCoreModule } from 'non-core/noncore.module';
 import { DiscussModule } from 'discuss/discuss.module';
 import { DraftsListModule } from 'draftsList/draftsList.module';
 import { InlineAreaEditModule } from 'inlineAreaEdit/inlineAreaEdit.module';
@@ -48,8 +48,8 @@ const appRoutes: Routes = [
         MatTabsModule,
         NgbModule,
         RouterModule.forChild(appRoutes),
-        // core
-        CoreModule,
+        // non-core
+        NonCoreModule,
         // internal
         AdminItemModule,
         DraftsListModule,

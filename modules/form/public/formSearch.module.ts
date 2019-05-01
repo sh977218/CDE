@@ -44,7 +44,7 @@ import { TagModule } from 'tag/tag.module';
         MatTabsModule,
         MatTooltipModule,
         NgbModule,
-        // core
+        // non-core
 
         // internal
         BoardModule,

@@ -1,7 +1,7 @@
 import { newCodeableConcept } from 'shared/mapping/fhir/datatype/fhirCodeableConcept';
 import { newCoding } from 'shared/mapping/fhir/datatype/fhirCoding';
 import { toRef } from 'shared/mapping/fhir/datatype/fhirReference';
-import { getIds } from 'shared/form/formAndFe';
+import { getIds } from 'core/form/formAndFe';
 
 /* Limitations:
  *  * only transfer the first LOINC code to FHIR, no other codes

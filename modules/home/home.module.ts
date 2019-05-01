@@ -14,7 +14,7 @@ import { MatIconModule } from '@angular/material';
         CommonModule,
         FormsModule,
         NgbCarouselModule,
-        // core
+        // non-core
 
         // internal
         HomeRoutingModule,

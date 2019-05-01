@@ -1,7 +1,6 @@
 const authorization = require('../system/authorization');
 const cdesvc = require('./cdesvc');
 const mongo_cde = require('./mongo-cde');
-const vsac = require('./vsac-io');
 const config = require('../system/parseConfig');
 const elastic = require('./elastic');
 const adminItemSvc = require('../system/adminItemSvc.js');
@@ -36,8 +35,6 @@ exports.init = function (app, daoManager) {
     app.delete('/draftDataElement/:tinyId', canEditByTinyIdMiddleware, cdesvc.draftDelete);
 
     app.get('/draftDataElementById/:id', cdesvc.draftById);
-
-    app.get('/vsacBridge/:vsacId', exportShared.nocacheMiddleware, cdesvc.vsacId);
 
     app.get('/viewingHistory/dataElement', exportShared.nocacheMiddleware, cdesvc.viewHistory);
 
@@ -83,47 +80,6 @@ exports.init = function (app, daoManager) {
         mongo_cde.count({archived: false}, (err, result) => {
             res.send({count: result});
         });
-    });
-
-    // run every 1 hour
-    function fetchRemoteData() {
-        vsac.getTGT(300); // retry for half hour every 6 seconds
-    }
-
-    fetchRemoteData();
-    setInterval(fetchRemoteData, 1000 * 60 * 60);
-
-    // from others to UMLS
-    app.get('/umlsCuiFromSrc/:id/:src', (req, res) => {
-        if (!config.umls.sourceOptions[req.params.src])
-            return res.send('Source cannot be looked up, use UTS Instead.');
-        vsac.umlsCuiFromSrc(req.params.id, req.params.src, res);
-    });
-
-    // from UMLS to others
-    app.get('/umlsAtomsBridge/:id/:src', (req, res) => {
-        if (!config.umls.sourceOptions[req.params.src])
-            return res.send('Source cannot be looked up, use UTS Instead.');
-        if (config.umls.sourceOptions[req.params.src].requiresLogin && !req.user)
-            return res.status(403).send();
-        vsac.getAtomsFromUMLS(req.params.id, req.params.src, res);
-    });
-
-    app.get('/crossWalkingVocabularies/:source/:code/:targetSource/', (req, res) => {
-        if (!req.params.source || !req.params.code || !req.params.targetSource)
-            return res.status(401).send();
-        vsac.getCrossWalkingVocabularies(req.params.source, req.params.code, req.params.targetSource, handleError({
-            req,
-            res
-        }, result => {
-            if (result.statusCode === 200)
-                return res.send({result: JSON.parse(result.body).result});
-            return res.send({result: []});
-        }));
-    });
-
-    app.get('/searchUmls', [authorization.loggedInMiddleware], (req, res) => {
-        vsac.searchUmls(req.query.searchTerm, res);
     });
 
     app.get('/status/cde', appStatus.status);

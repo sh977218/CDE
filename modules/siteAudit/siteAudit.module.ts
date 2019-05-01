@@ -13,7 +13,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CompareModule } from 'compare/compare.module';
 import { DiffMatchPatchModule } from 'ng-diff-match-patch';
-import { CamelCaseToHumanPipe } from 'core/camelCaseToHuman.pipe';
+import { CamelCaseToHumanPipe } from 'non-core/camelCaseToHuman.pipe';
 import { ActiveBansComponent } from 'siteAudit/activeBans/activeBans.component';
 import { AppLogComponent } from 'siteAudit/appLogs/appLog.component';
 import { ClassificationAuditLogComponent } from 'siteAudit/classificationAuditLog/classificationAuditLog.component';
@@ -43,7 +43,7 @@ const appRoutes: Routes = [
         MatIconModule,
         MatPaginatorModule,
         MatTabsModule,
-        // core
+        // non-core
         // internal
         CompareModule
     ],

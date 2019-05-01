@@ -7,7 +7,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BoardModule } from 'board/public/board.module';
 import { CdeSearchModule } from 'cde/public/cdeSearch.module';
-import { CoreModule } from 'core/core.module';
+import { NonCoreModule } from 'non-core/noncore.module';
 import { DraftsListModule } from 'draftsList/draftsList.module';
 import { FormSearchModule } from 'form/public/formSearch.module';
 import { InlineEditModule } from 'inlineEdit/inlineEdit.module';
@@ -32,8 +32,8 @@ const appRoutes: Routes = [
         MatTooltipModule,
         NgbModule,
         RouterModule.forChild(appRoutes),
-        // core
-        CoreModule,
+        // non-core
+        NonCoreModule,
         // internal
         DraftsListModule,
         InlineEditModule,

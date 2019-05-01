@@ -3,8 +3,8 @@ import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '
 import { AlertService } from 'alert/alert.service';
 import { UserService } from '_app/user.service';
 import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
-import { ClassificationService } from 'core/classification.service';
-import { IsAllowedService } from 'core/isAllowed.service';
+import { ClassificationService } from 'non-core/classification.service';
+import { IsAllowedService } from 'non-core/isAllowed.service';
 import { CdeForm } from 'shared/form/form.model';
 import { MatDialogRef } from '@angular/material';
 
