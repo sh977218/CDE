@@ -2,6 +2,7 @@ package gov.nih.nlm.system.loggers;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.testng.annotations.Test;
 
 public class AppLogs extends NlmCdeBaseTest {
@@ -12,9 +13,20 @@ public class AppLogs extends NlmCdeBaseTest {
         openUserMenu();
         clickElement(By.linkText("Audit"));
         clickElement(By.xpath("//div[. = 'App Logs']"));
-        findElement(By.id("appFromDate")).sendKeys("01012000101P");
-        findElement(By.id("appToDate")).sendKeys("01012030101P");
+
         clickElement(By.id("searchBtn"));
         textPresent("done with sitemap");
+
+        findElement(By.id("appFromDate")).sendKeys("01012000");
+        findElement(By.id("appFromDate")).sendKeys(Keys.TAB);
+        findElement(By.id("appFromDate")).sendKeys("0101P");
+
+        findElement(By.id("appToDate")).sendKeys("01012030");
+        findElement(By.id("appToDate")).sendKeys(Keys.TAB);
+        findElement(By.id("appToDate")).sendKeys("0101P");
+
+        clickElement(By.id("searchBtn"));
+        textPresent("done with sitemap");
+        clickElement(By.cssSelector(".mat-paginator-navigation-next"));
     }
 }

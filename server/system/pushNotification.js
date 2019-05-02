@@ -7,7 +7,8 @@ const errorHandler = require('../errorHandler/errHandler');
 const handleError = errorHandler.handleError;
 
 exports.checkDatabase = (callback = _.noop) => {
-    mongo_data.pushById('000000000000000000000000', handleError({}, push => {
+    // errorHandler.handleError because of circular dependency.
+    mongo_data.pushById('000000000000000000000000', errorHandler.handleError({}, push => {
         function createDbTag() {
             mongo_data.pushCreate(
                 {_id: mongo_data.ObjectId('000000000000000000000000'), userId: config.publicUrl},

@@ -139,8 +139,7 @@ exports.httpLogs = function (body, callback) {
     if (body.sort) sort = body.sort;
     let currentPage = 0;
     if (body.currentPage) currentPage = Number.parseInt(body.currentPage);
-    let itemsPerPage = 500;
-    if (body.itemsPerPage) itemsPerPage = Number.parseInt(body.itemsPerPage);
+    let itemsPerPage = 200;
     let skip = currentPage * itemsPerPage;
     let query = {};
     if (body.ipAddress) query = {remoteAddr: body.ipAddress};
@@ -149,7 +148,7 @@ exports.httpLogs = function (body, callback) {
     if (body.toDate) modal.where('date').lte(moment(body.toDate));
     LogModel.countDocuments({}, (err, count) => {
         modal.sort(sort).limit(itemsPerPage).skip(skip).exec((err, logs) => {
-            let result = {itemsPerPage: itemsPerPage, logs: logs, sort: sort};
+            let result = {logs: logs, sort: sort};
             if (!body.totalItems) result.totalItems = count;
             callback(err, result);
         });
@@ -159,16 +158,15 @@ exports.httpLogs = function (body, callback) {
 exports.appLogs = function (body, callback) {
     let currentPage = 0;
     if (body.currentPage) currentPage = Number.parseInt(body.currentPage);
-    let itemsPerPage = 500;
-    if (body.itemsPerPage) itemsPerPage = Number.parseInt(body.itemsPerPage);
+    let itemsPerPage = 50;
     let skip = currentPage * itemsPerPage;
     let modal = consoleLogModel.find();
     if (body.fromDate) modal.where('date').gte(moment(body.fromDate));
     if (body.toDate) modal.where('date').lte(moment(body.toDate));
     consoleLogModel.countDocuments({}, (err, count) => {
         modal.sort({date: -1}).limit(itemsPerPage).skip(skip).exec(function (err, logs) {
-            let result = {itemsPerPage: itemsPerPage, logs: logs};
-            if (!body.totalItems) result.totalItems = count;
+            let result = {logs: logs};
+            result.totalItems = count;
             callback(err, result);
         });
     });

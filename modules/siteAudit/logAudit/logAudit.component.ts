@@ -16,7 +16,6 @@ export class LogAuditComponent {
     currentPage: number = 0;
     gridLogEvents: any[] = [];
     ipAddress: any;
-    itemsPerPage?: number;
     fromDate: any;
     totalItems?: number;
     toDate: any;
@@ -62,7 +61,6 @@ export class LogAuditComponent {
             currentPage: this.currentPage,
             ipAddress: this.ipAddress,
             totalItems: this.totalItems,
-            itemsPerPage: this.itemsPerPage,
             fromDate: this.fromDate,
             toDate: this.toDate,
             sort: this.sortingBy
@@ -70,7 +68,6 @@ export class LogAuditComponent {
         this.http.post<any>('/server/log/httpLogs', postBody)
             .subscribe(res => {
                 if (res.totalItems) this.totalItems = res.totalItems;
-                if (res.itemsPerPage) this.itemsPerPage = res.itemsPerPage;
                 this.gridLogEvents = res.logs.map((log: any) => {
                     return {
                         date: new Date(log.date).toLocaleString(),
