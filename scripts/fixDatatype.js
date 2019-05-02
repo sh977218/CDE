@@ -88,6 +88,12 @@ function removeValueList(container) {
     }
 }
 
+function removeDynamicCodeList(container) {
+    if (container.datatypeDynamicCodeList) {
+        delete container.datatypeDynamicCodeList;
+    }
+}
+
 function removeDate(container) {
     if (container.datatypeDate) {
         delete container.datatypeDate;
@@ -116,24 +122,35 @@ function removeDatatype(container) {
     switch (container.datatype) {
         case 'Value List':
             removeDate(container);
+            removeDynamicCodeList(container);
             removeNumber(container);
             removeText(container);
             removeExternal(container);
             break;
         case 'Date':
             removeValueList(container);
+            removeDynamicCodeList(container);
+            removeNumber(container);
+            removeText(container);
+            removeExternal(container);
+            break;
+        case 'Dynamic Code List':
+            removeValueList(container);
+            removeDate(container);
             removeNumber(container);
             removeText(container);
             removeExternal(container);
             break;
         case 'Number':
             removeValueList(container);
+            removeDynamicCodeList(container);
             removeDate(container);
             removeText(container);
             removeExternal(container);
             break;
         case 'Externally Defined':
             removeValueList(container);
+            removeDynamicCodeList(container);
             removeDate(container);
             removeText(container);
         case 'Text':
@@ -141,6 +158,7 @@ function removeDatatype(container) {
         default:
             removeValueList(container);
             removeDate(container);
+            removeDynamicCodeList(container);
             removeNumber(container);
             removeExternal(container);
     }

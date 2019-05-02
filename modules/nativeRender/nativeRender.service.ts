@@ -1,17 +1,19 @@
 import { Injectable } from '@angular/core';
-import { callbackify } from 'core/browser';
+import { isQuestion, repeatFe } from 'core/form/fe';
+import { getShowIfQ } from 'core/form/skipLogic';
+import { callbackify } from 'non-core/browser';
 import { FormService } from 'nativeRender/form.service';
 import { ScoreService } from 'nativeRender/score.service';
 import { SkipLogicService } from 'nativeRender/skipLogic.service';
 import { assertUnreachable, Cb1, CbErr, CdeId, CodeAndSystem } from 'shared/models.model';
-import { pvGetDisplayValue, pvGetLabel } from 'shared/de/deShared';
+import { pvGetDisplayValue, pvGetLabel } from 'core/de/deShared';
 import {
     CdeForm, DisplayProfile, DisplayType, FormElement, FormElementsContainer, FormOrElement, FormQuestion, FormSection,
     FormSectionOrForm,
     PermissibleFormValue, Question
 } from 'shared/form/form.model';
-import { addFormIds, isQuestion, iterateFeSync, questionMulti, repeatFe, repeatFeQuestion } from 'shared/form/fe';
-import { getQuestionPriorByLabel, getShowIfQ, SkipLogicOperators } from 'shared/form/skipLogic';
+import { addFormIds, iterateFeSync, questionMulti } from 'shared/form/fe';
+import { SkipLogicOperators } from 'shared/form/skipLogic';
 
 @Injectable()
 export class NativeRenderService {
@@ -188,8 +190,7 @@ export class NativeRenderService {
                     let answer = f.question.answers[i];
                     if (!f.question.cde.permissibleValues.some(p => p.permissibleValue === answer.permissibleValue)) {
                         f.question.answers.splice(i--, 1);
-                    }
-                    else {
+                    } else {
                         if (answer.formElements) answer.formElements = [];
                         if (answer.index) answer.index = undefined;
                     }
@@ -395,8 +396,7 @@ export class NativeRenderService {
                             if (NativeRenderService.hasOwnRow(pv) || index === -1 && (i + 1 < a.length
                                 && NativeRenderService.hasOwnRow(a[i + 1]) || i + 1 === a.length)) {
                                 pv.index = index = -1;
-                            }
-                            else pv.index = ++index;
+                            } else pv.index = ++index;
 
                             if (pv.formElements) NativeRenderService.assignValueListRows(pv.formElements);
                         });
@@ -478,7 +478,8 @@ export class NativeRenderService {
                 }
                 questions.push(q);
             }
-            fe.question.answers && fe.question.answers.forEach(a => {
+            if (!fe.question.answers) fe.question.answers = [];
+            fe.question.answers.forEach(a => {
                 a.formElements && a.formElements.forEach(sq => {
                     questions = questions.concat(flattenFormFe(sq, sectionHeading, namePrefix, repeatNum) as QuestionStruct[]);
                 });

@@ -79,6 +79,7 @@ public class EltIdMaps {
         eltMap.put("Specimen Array", "vdw_hgaMyxc");
         eltMap.put("Sensory system abnormality stocking glove present text", "gPY57SQ7_ZF");
         eltMap.put("Spectroscopy geometry location not applicable indicator", "soCkdnmqN8H");
+        eltMap.put("Surgical Procedure Hand Laparoscopic Port Anatomic Site", "ymKeneM5_DB");
         eltMap.put("Target Lesion Sum Short Longest Dimension Measurement", "_6G_NPfQK0G");
         eltMap.put("Tissue Donor Genetic Testing Other Disease or Disorder Specify", "nsMXB5NdFBA");
         eltMap.put("Temperature mean daily measurement", "rErbwwAasvz");
@@ -109,6 +110,7 @@ public class EltIdMaps {
         eltMap.put("Double Classif Form", "QJgAXYdXv");
         eltMap.put("Draft Form Test", "QyT6ElYKLl");
         eltMap.put("Drag Question Test", "7kL4X8sMU");
+        eltMap.put("Dynamic Code List Form", "XkY_oO2zv");
         eltMap.put("Empty Logic", "7kAx6i5af");
         eltMap.put("Empty Section Form", "Q1CSvNQhW");
         eltMap.put("Frontal Behavioral Inventory (FBI)", "XJbbmJSrFe");

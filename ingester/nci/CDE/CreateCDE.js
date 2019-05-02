@@ -67,12 +67,12 @@ exports.createCde = async (nciCde, orgInfo) => {
     ParseClassification.parseClassification(nciCde,cde, orgInfo);
 
     let cdeError = deValidator.checkPvUnicity(cde.valueDomain);
-    if(cdeError && !cdeError.allValid){
-        if(cdeError.pvNotValidMsg.indexOf('Duplicate Code Name:') !== -1){
+    if (cdeError && !cdeError.allValid) {
+        if (cdeError.message.indexOf('Duplicate Code Name:') !== -1){
             let uniqPvs = _.uniqBy(cde.valueDomain.permissibleValues,'valueMeaningName');
             cde.valueDomain.permissibleValues = uniqPvs;
             let comment  = {
-                text: cdeError.pvNotValidMsg +'. See attachment for original xml.',
+                text: cdeError.message +'. See attachment for original xml.',
                 user: batchloader,
                 created: new Date(),
                 pendingApproval: false,
@@ -84,11 +84,11 @@ exports.createCde = async (nciCde, orgInfo) => {
                 }
             };
             cde.comments.push(comment);
-        }else if(cdeError.pvNotValidMsg.indexOf('Duplicate Code:') !== -1){
+        } else if (cdeError.message.indexOf('Duplicate Code:') !== -1){
             let uniqPvs = _.uniqBy(cde.valueDomain.permissibleValues,'valueMeaningCode');
             cde.valueDomain.permissibleValues = uniqPvs;
-            let comment  = {
-                text: cdeError.pvNotValidMsg +'. See attachment for original xml.',
+            let comment = {
+                text: cdeError.message +'. See attachment for original xml.',
                 user: batchloader,
                 created: new Date(),
                 pendingApproval: false,
@@ -100,7 +100,7 @@ exports.createCde = async (nciCde, orgInfo) => {
                 }
             };
             cde.comments.push(comment);
-        }else{
+        } else {
             console.log('some other cde error.');
             process.exit(1);
         }

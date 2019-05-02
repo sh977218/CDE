@@ -25,7 +25,7 @@ doOneNindsCde = async cdeId => {
     let newCdeObj = await CreateCDE.createCde(cdeId);
     let cdeError = deValidator.checkPvUnicity(newCdeObj.valueDomain);
     if (cdeError && !cdeError.allValid) {
-        if (cdeError.pvNotValidMsg === 'Value List must contain at least one Permissible Value') {
+        if (cdeError.message === 'Value List must contain at least one Permissible Value') {
             let slComment = {
                 text: 'NINDS Batch loader was not able to find PV Value List on ' + cdeId,
                 user: batchloader,

@@ -1,10 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormService } from 'nativeRender/form.service';
+import { FormControl } from '@angular/forms';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
-import { CbErr, CodeAndSystem } from 'shared/models.model';
+import { distinctUntilChanged, debounceTime } from 'rxjs/operators';
 import { questionMulti } from 'shared/form/fe';
 import { FormQuestion } from 'shared/form/form.model';
-import { callbackify } from 'core/browser';
 
 @Component({
     selector: 'cde-native-question',
@@ -20,11 +19,35 @@ export class NativeQuestionComponent implements OnInit {
     metadataTagsNew?: string;
     questionMulti = questionMulti;
 
+    vsacControl = new FormControl();
+    vsacCodes: string[] = [];
+
+    constructor(public nrs: NativeRenderService) {
+    }
+
     ngOnInit() {
+        if (this.formElement.question.datatype === 'Dynamic Code List') {
+            let q = this.formElement.question;
+            this.loadVsacCode((q.datatypeDynamicCodeList!.code || ''), '');
+            this.vsacControl.valueChanges
+                .pipe(
+                    debounceTime(400),
+                    distinctUntilChanged()
+                )
+                .subscribe(value => {
+                    this.loadVsacCode((q.datatypeDynamicCodeList!.code || ''), value);
+                });
+        }
         this.formElement.question.previousUom = this.formElement.question.answerUom;
     }
 
-    constructor(public nrs: NativeRenderService) {
+    loadVsacCode(code = '', term = '') {
+        fetch('/server/uts/searchValueSet/' + code + '?term=' + term)
+            .then(response => response.json())
+            .then(data => {
+                this.vsacCodes = data.rows;
+            })
+            .catch(error => console.error(error));
     }
 
     classColumns(pvIndex: number, index: number) {

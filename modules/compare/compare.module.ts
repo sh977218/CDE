@@ -10,7 +10,7 @@ import { CompareItemComponent } from 'compare/compareItem/compareItem.component'
 import { CompareSideBySideComponent } from 'compare/compareSideBySide/compareSideBySide.component';
 import { MergeDataElementComponent } from 'compare/mergeDataElement/mergeDataElement.component';
 import { MergeFormComponent } from 'compare/mergeForm/mergeForm.component';
-import { CoreModule } from 'core/core.module';
+import { NonCoreModule } from 'non-core/noncore.module';
 import { SortableModule } from 'ngx-bootstrap';
 import { DiffMatchPatchModule } from 'ng-diff-match-patch';
 
@@ -25,8 +25,8 @@ import { DiffMatchPatchModule } from 'ng-diff-match-patch';
         MatDialogModule,
         MatIconModule,
         MatProgressBarModule,
-        // core
-        CoreModule
+        // non-core
+        NonCoreModule
     ],
     declarations: [
         CdeSortableComponent,

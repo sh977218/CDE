@@ -54,6 +54,7 @@
   "vsac": {
     "username": "",
     "password": "",
+    "tgtUrl": "https://vsac.nlm.nih.gov:443/vsac/ws/Ticket",
     "host": "vsac.nlm.nih.gov",
     "ticket": {
       "path": "/vsac/ws/Ticket"

@@ -18,6 +18,8 @@ import async_forEach from 'async/forEach';
 import async_memoize from 'async/memoize';
 import async_series from 'async/series';
 import async_some from 'async/some';
+import { questionAnswered, findQuestionByTinyId, isQuestion } from 'core/form/fe';
+import { getIds, getTinyId, getVersion } from 'core/form/formAndFe';
 import diff from 'deep-diff';
 import _intersectionWith from 'lodash/intersectionWith';
 import _noop from 'lodash/noop';
@@ -26,10 +28,7 @@ import {
     assertThrow, assertTrue, assertUnreachable, Cb, CbErr, CbRet, CbRet1, CdeId, PermissibleValue
 } from 'shared/models.model';
 import { CdeForm, FhirApp, FormQuestion } from 'shared/form/form.model';
-import { getIds, getTinyId, getVersion } from 'shared/form/formAndFe';
-import {
-    iterateFe, iterateFeSync, questionAnswered, findQuestionByTinyId, isQuestion, questionMulti
-} from 'shared/form/fe';
+import { iterateFe, iterateFeSync, questionMulti } from 'shared/form/fe';
 import { codeSystemOut } from 'shared/mapping/fhir';
 import { FhirCodeableConcept, FhirValue } from 'shared/mapping/fhir/fhir.model';
 import {
@@ -137,7 +136,7 @@ export class CdeFhirService {
         }, done);
     });
     lookupLoincName: (code: string, cb: CbErr) => void = async_memoize((code: string, done: CbErr<string[]>) => {
-        this.http.get('/umlsCuiFromSrc/' + code + '/LNC').subscribe((r: any) => {
+        this.http.get('/server/uts/umlsCuiFromSrc/' + code + '/LNC').subscribe((r: any) => {
             if (r && r.result && r.result.results.length) {
                 done(undefined, r.result.results[0].name.split(':')[0]);
             }

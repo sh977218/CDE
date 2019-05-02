@@ -27,7 +27,7 @@ const qbRoutes: Routes = [
         SearchModule,
         CompareModule,
         RouterModule.forChild(qbRoutes),
-        // core
+        // non-core
 
         // internal
         BoardModule,

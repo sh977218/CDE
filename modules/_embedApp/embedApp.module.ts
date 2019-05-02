@@ -13,7 +13,7 @@ import { EmbedAppComponent } from '_embedApp/embedApp.component';
 import { EmbeddedCdeSearchResultComponent } from '_embedApp/searchResults/embeddedCdeSearchResult.component';
 import { EmbeddedFormSearchResultComponent } from '_embedApp/searchResults/embeddedFormSearchResult.component';
 import { LocalStorageModule } from 'angular-2-local-storage';
-import { OrgHelperService } from 'core/orgHelper.service';
+import { OrgHelperService } from 'non-core/orgHelper.service';
 
 @NgModule({
     declarations: [

@@ -1,6 +1,6 @@
 import { Component, Input, ViewChild } from "@angular/core";
 import { SortableComponent } from "ngx-bootstrap/sortable";
-import { MergeFormService } from 'core/mergeForm.service';
+import { MergeFormService } from 'non-core/mergeForm.service';
 
 @Component({
     selector: "cde-sortable",

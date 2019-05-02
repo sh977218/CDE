@@ -30,7 +30,7 @@ import { NewDesignationComponent } from 'adminItem/public/components/naming/desi
 import { NewDefinitionComponent } from 'adminItem/public/components/naming/definition/newDefinition.component';
 import { MatButtonModule, MatDialogModule, MatIconModule, MatTabsModule } from "@angular/material";
 
-import { CoreModule } from 'core/core.module';
+import { NonCoreModule } from 'non-core/noncore.module';
 import { InlineAreaEditModule } from 'inlineAreaEdit/inlineAreaEdit.module';
 import { InlineEditModule } from 'inlineEdit/inlineEdit.module';
 import { SortableArrayModule } from 'sortableArray/sortableArray.module';
@@ -46,8 +46,8 @@ import { TagModule } from 'tag/tag.module';
         NgbModule,
         RouterModule,
         TreeModule.forRoot(),
-        // core
-        CoreModule,
+        // non-core
+        NonCoreModule,
 
         // internal
         CompareModule,

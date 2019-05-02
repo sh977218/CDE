@@ -19,6 +19,8 @@ public class DraftsViewCde extends NlmCdeBaseTest {
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Profile"));
         textNotPresent("Person Elevated Uring");
+
+        hangon(1);
         clickElement(By.id("username_link"));
         clickElement(By.id("user_account_management"));
         clickElement(By.xpath("//div[. = 'Drafts']"));

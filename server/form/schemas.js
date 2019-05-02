@@ -50,6 +50,10 @@ const questionSchema = new Schema({
             default: 'Day',
         }
     },
+    datatypeDynamicCodeList: {
+        system: {type: StringType},
+        code: {type: StringType}
+    },
     unitsOfMeasure: [sharedSchemas.codeAndSystemSchema],
     required: {type: Boolean, default: false},
     invisible: {type: Boolean, default: false},

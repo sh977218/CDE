@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
+import { tokenSanitizer } from 'core/form/skipLogic';
 import _trim from 'lodash/trim';
 import { FormElement, FormElementsContainer, SkipLogic } from 'shared/form/form.model';
-import {
-    getLabel, getQuestionPriorByLabel, getQuestionsPrior, tokenSanitizer, tokenSplitter
-} from 'shared/form/skipLogic';
+import { getLabel, getQuestionPriorByLabel, getQuestionsPrior, tokenSplitter } from 'shared/form/skipLogic';
 
 @Injectable()
 export class SkipLogicValidateService {

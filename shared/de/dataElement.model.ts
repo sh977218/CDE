@@ -70,9 +70,15 @@ export class DataElementElastic extends DataElement { // all volatile
 
 export class QuestionTypeDate {
     precision?: string = 'Day';
+    format?: string;
 
     static PrecisionEnum = ['Year', 'Month', 'Day', 'Hour', 'Minute', 'Second'];
     static PrecisionDefault = 'Day';
+}
+
+export class QuestionTypeDynamicCodeList {
+    system?: string = '';
+    code?: string = '';
 }
 
 export class QuestionTypeExternallyDefined {
@@ -110,12 +116,22 @@ export class DataSet {
     studyUri?: string;
 }
 
-export type DataType = 'Value List' | 'Date' | 'Time' | 'File' | 'Geo Location' | 'Number' | 'Text' | 'Externally Defined';
-export const DataTypeArray = ['Value List', 'Date', 'Time', 'File', 'Geo Location', 'Number', 'Text', 'Externally Defined'];
+export type DataType =
+    'Value List'
+    | 'Date'
+    | 'Time'
+    | 'File'
+    | 'Geo Location'
+    | 'Number'
+    | 'Text'
+    | 'Dynamic Code List'
+    | 'Externally Defined';
+export const DataTypeArray = ['Value List', 'Date', 'Time', 'File', 'Geo Location', 'Number', 'Text', 'Dynamic Code List', 'Externally Defined'];
 
 export class DatatypeContainer {
-    datatype: DataType = 'Text';
+    datatype: DataType = 'Text';  // require
     datatypeDate?: QuestionTypeDate; // mutable
+    datatypeDynamicCodeList?: QuestionTypeDynamicCodeList; // mutable
     datatypeExternallyDefined?: QuestionTypeExternallyDefined; // mutable
     datatypeNumber?: QuestionTypeNumber; // mutable
     datatypeText?: QuestionTypeText; // mutable

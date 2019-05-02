@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 
 import { AlertService } from 'alert/alert.service';
-import { OrgHelperService } from 'core/orgHelper.service';
+import { OrgHelperService } from 'non-core/orgHelper.service';
 import { Cb, Organization } from 'shared/models.model';
 import { stringCompare } from 'shared/system/util';
 

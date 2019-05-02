@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { Article } from 'shared/article/article.model';
 import { AlertService } from 'alert/alert.service';
+import { Article } from 'core/article/article.model';
 
 @Component({
     selector: 'cde-resources-admin',
@@ -14,13 +14,13 @@ export class ResourcesAdminComponent {
                 private alertSvc: AlertService) {
         this.http.get<Article>("/server/article/resources")
             .subscribe(resource => this.resource = resource ? resource : {key: "resources", body: ""},
-                err => this.alertSvc.addAlert('danger', "Unexpected error loading article"));
+                () => this.alertSvc.addAlert('danger', "Unexpected error loading article"));
     }
 
     save() {
         this.http.post("/server/article/resources", this.resource)
             .subscribe(() => this.alertSvc.addAlert("info", "Saved"),
-                err => this.alertSvc.addAlert('danger', "Unexpected error saving classification"));
+                () => this.alertSvc.addAlert('danger', "Unexpected error saving classification"));
     }
 
     upload(event) {
@@ -33,7 +33,7 @@ export class ResourcesAdminComponent {
             formData.append('id', this.resource._id);
             this.http.post<Article>('/server/attachment/article/add', formData).subscribe(
                 res => this.resource = res,
-                err => this.alertSvc.addAlert('danger', "Unexpected error attaching"));
+                () => this.alertSvc.addAlert('danger', "Unexpected error attaching"));
         }
     }
 

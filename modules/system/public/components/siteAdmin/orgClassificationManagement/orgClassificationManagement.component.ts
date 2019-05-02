@@ -7,7 +7,7 @@ import { Subject } from 'rxjs/Subject';
 import { AlertService } from 'alert/alert.service';
 import { UserService } from '_app/user.service';
 import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
-import { ClassificationService } from 'core/classification.service';
+import { ClassificationService } from 'non-core/classification.service';
 import { Cb, ClassificationClassified, ElasticQueryResponse, Organization } from 'shared/models.model';
 import { isOrgAdmin } from 'shared/system/authorizationShared';
 import { MatDialog, MatDialogRef, MatSelectChange } from '@angular/material';

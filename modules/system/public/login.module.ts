@@ -19,7 +19,7 @@ const appRoutes: Routes = [
         MatButtonModule,
         RecaptchaModule.forRoot(),
         RouterModule.forChild(appRoutes),
-        // core
+        // non-core
 
         // internal
     ],

@@ -134,11 +134,17 @@
             <input type="checkbox" title="Invisible" [(ngModel)]="question.question.invisible"
                    (change)="onEltChange.emit()">
         </dd>
+        <ng-container *ngIf="question.question.datatype === 'Dynamic Code List'">
+            <dt class="col-2">System:</dt>
+            <dd class="col-10">{{question.question.datatypeDynamicCodeList.system}}</dd>
+            <dt class="col-2">Code:</dt>
+            <dd class="col-10">{{question.question.datatypeDynamicCodeList.code}}</dd>
+        </ng-container>
         <ng-container *ngIf="parent">
             <dt class="col-2">Show if:</dt>
             <dd class="col-10 skipLogicEditTextarea" [ngClass]="{'has-error':question.skipLogic?.validationError}">
                 <cde-skip-logic [parent]="parent" [formElement]="question" [canEdit]="canEdit"
-                                             (onSaved)="onEltChange.emit();"></cde-skip-logic>
+                                (onSaved)="onEltChange.emit();"></cde-skip-logic>
             </dd>
         </ng-container>
         <ng-container
@@ -279,8 +285,8 @@
                 </mat-chip-list>
             </mat-form-field>
             <mat-form-field class="w-50 newCdeDataType">
-                <mat-select placeholder="CDE Data Type" [(ngModel)]="question.question.datatype"
-                            (selectionChange)="onEltChange.emit();">
+                <mat-select placeholder="CDE Data Type" [ngModel]="question.question.datatype"
+                            (selectionChange)="onDatatypeChange(question.question, $event)">
                     <mat-option *ngFor="let dataType of DataTypeArray" [value]="dataType">{{dataType}}</mat-option>
                 </mat-select>
             </mat-form-field>
