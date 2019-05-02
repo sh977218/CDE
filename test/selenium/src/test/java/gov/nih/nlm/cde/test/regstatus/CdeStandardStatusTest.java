@@ -12,7 +12,7 @@ public class CdeStandardStatusTest extends NlmCdeBaseTest {
         goToCdeByName(cdeName);
         // CDE is Standard.
 
-        // Can't edit name, def or status
+        // Can't edit name, sdef or status
         shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("editStatus")));
         goToNaming();
         shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//mat-icon[. = 'edit']")));
