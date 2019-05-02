@@ -1,7 +1,7 @@
 const async = require('async');
 const request = require('request');
 
-const handleError = require('../log/dbLogger').handleError;
+const handleError = require('../errorHandler/errHandler').handleError;
 
 const config = require('../system/parseConfig');
 const elastic = require('./elastic');

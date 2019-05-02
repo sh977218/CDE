@@ -1,4 +1,3 @@
-const _ = require('lodash');
 const config = require('../system/parseConfig');
 const connHelper = require('../system/connections');
 const mongo_data = require('../system/mongo-data');
@@ -8,6 +7,7 @@ const moment = require('moment');
 const noDbLogger = require('../system/noDbLogger');
 const pushNotification = require('../system/pushNotification');
 const conn = connHelper.establishConnection(config.database.log);
+const errorHandler = require('../errorHandler/errHandler');
 const LogModel = conn.model('DbLogger', schemas.logSchema);
 const LogErrorModel = conn.model('DbErrorLogger', schemas.logErrorSchema);
 const ClientErrorModel = conn.model('DbClientErrorLogger', schemas.clientErrorSchema);
@@ -24,23 +24,6 @@ exports.consoleLog = function (message, level) { // no express errors see dbLogg
     new consoleLogModel({message: message, level: level}).save(err => {
         if (err) noDbLogger.noDbLogger.error('Cannot log to DB: ' + err);
     });
-};
-
-exports.handleConsoleError = function (options, cb = _.noop) {
-    return function errorHandler(err, ...args) {
-        if (err) noDbLogger.noDbLogger.info('ERROR: ' + err);
-        cb(...args);
-    }
-};
-
-exports.handleError = function (options, cb = _.noop) {
-    return function errorHandler(err, ...args) {
-        if (err) {
-            exports.respondError(err, options);
-            return;
-        }
-        cb(...args);
-    };
 };
 
 exports.storeQuery = function (settings, callback) {
@@ -63,7 +46,7 @@ exports.storeQuery = function (settings, callback) {
                     StoredQueryModel.findOneAndUpdate(
                         {date: {$gt: new Date().getTime() - 30000}, searchToken: storedQuery.searchToken},
                         storedQuery,
-                        exports.handleError({}, () => {})
+                        errorHandler.handleError({}, () => {})
                     );
                 } else {
                     new StoredQueryModel(storedQuery).save(callback);
@@ -90,7 +73,7 @@ exports.logError = function (message, callback) { // all server errors, express 
     if (config.logToConsoleForServerError) {
         console.log('---Server Error---', message);
     }
-    new LogErrorModel(message).save(exports.handleConsoleError({}, () => {
+    new LogErrorModel(message).save(errorHandler.handleConsoleError({}, () => {
         if (message.origin && message.origin.indexOf('pushGetAdministratorRegistrations') === -1) {
             let msg = JSON.stringify({
                 title: 'Server Side Error',
@@ -112,7 +95,7 @@ exports.logError = function (message, callback) { // all server errors, express 
                 registrations.forEach(r => pushNotification.triggerPushMsg(r, msg));
             });
         }
-        if (callback) callback(err);
+        if (callback) callback();
     }));
 };
 
@@ -123,7 +106,7 @@ exports.logClientError = function (req, callback) {
     exc.date = new Date();
     exc.ip = getRealIp(req);
     if (req.user) exc.username = req.user.username;
-    new ClientErrorModel(exc).save(exports.handleConsoleError({}, () => {
+    new ClientErrorModel(exc).save(errorHandler.handleConsoleError({}, () => {
         let ua = userAgent.is(req.headers['user-agent']);
         if (ua.chrome || ua.firefox || ua.edge) {
             let msg = JSON.stringify({
@@ -149,58 +132,6 @@ exports.logClientError = function (req, callback) {
 
         callback(err);
     }));
-};
-
-exports.handle404 = function handle404(options, cb) { // Not Found
-    return function errorHandler(err, arg, ...args) {
-        if (err) {
-            exports.respondError(err, options);
-            return;
-        }
-        if (!arg) {
-            if (options && options.res) {
-                options.res.status(404).send();
-            }
-            return;
-        }
-        cb(arg, ...args);
-    };
-};
-
-
-
-// TODO: Combine with logError() which publishes notifications
-// TODO: tee to console.log
-exports.respondError = function (err, options) {
-    if (!options) options = {};
-    if (options.res) {
-        if (err.name === 'CastError' && err.kind === 'ObjectId') {
-            options.res.status(400).send('Invalid id');
-            return;
-        } else if (err.name === 'ValidationError') {
-            options.res.status(422).send(err.message);
-            return;
-        }
-        let message = options.publicMessage || 'Generic Server Failure. Please submit an issue.';
-        options.res.status(500).send('Error: ' + message);
-    }
-
-    const log = {
-        message: options.message || err.message || err,
-        origin: options.origin,
-        stack: err.stack || new Error().stack,
-        details: options.details
-    };
-    if (options.req) {
-        log.request = {
-            url: options.req.url,
-            params: JSON.stringify(options.req.params),
-            body: JSON.stringify(options.req.body),
-            username: options.req.username,
-            ip: options.req.ip
-        };
-    }
-    exports.logError(log);
 };
 
 exports.httpLogs = function (body, callback) {

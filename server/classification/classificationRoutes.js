@@ -1,6 +1,6 @@
 const async = require('async');
 
-const handleError = require('../log/dbLogger').handleError;
+const handleError = require('../errorHandler/errHandler').handleError;
 
 const mongo_cde = require('../cde/mongo-cde');
 const mongo_form = require('../form/mongo-form');

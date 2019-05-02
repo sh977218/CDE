@@ -17,11 +17,11 @@ const mongo_data = require('./mongo-data');
 const IdSource = mongo_data.IdSource;
 const config = require('./parseConfig');
 const dbLogger = require('../log/dbLogger');
-const handleError = dbLogger.handleError;
-const respondError = dbLogger.respondError;
+const errorHandler = require("../errorHandler/errHandler");
+const handleError = errorHandler.handleError;
+const respondError = errorHandler.respondError;
 const logging = require('./logging.js');
 const orgsvc = require('./orgsvc');
-const pushNotification = require('./pushNotification');
 const usersrvc = require('./usersrvc');
 const exportShared = require('esm')(module)('../../shared/system/exportShared');
 const esInit = require('./elasticSearchInit');
@@ -30,6 +30,7 @@ const meshElastic = require('../mesh/elastic');
 const fhirApps = require('./fhir').fhirApps;
 const fhirObservationInfo = require('./fhir').fhirObservationInfo;
 const traffic = require('./traffic');
+const pushNotification = require('./pushNotification');
 
 exports.init = function (app) {
     let getRealIp = function (req) {
@@ -361,7 +362,7 @@ exports.init = function (app) {
         });
     });
 
-    pushNotification.checkDatabase();
+    setTimeout(pushNotification.checkDatabase, 5000);
     app.post('/pushRegistration', [authorization.loggedInMiddleware], pushNotification.create);
     app.delete('/pushRegistration', [authorization.loggedInMiddleware], pushNotification.delete);
     app.post('/pushRegistrationSubscribe', [authorization.loggedInMiddleware], pushNotification.subscribe);

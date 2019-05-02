@@ -10,7 +10,7 @@ const mongo_cde = require("../cde/mongo-cde");
 const mongo_form = require("../form/mongo-form");
 const boardDb = require("../board/boardDb");
 const noDbLogger = require("./noDbLogger");
-const handleError = require('../log/dbLogger').handleError;
+const handleError = require('../errorHandler/errHandler').handleError;
 
 
 let esClient = new elasticsearch.Client({

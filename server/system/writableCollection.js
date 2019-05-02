@@ -1,6 +1,6 @@
-const dbLogger = require('../log/dbLogger');
-const handleError = dbLogger.handleError;
-const respondError = dbLogger.respondError;
+const errorHandler = require("../errorHandler/errHandler");
+const handle404 = errorHandler.handle404;
+const handleError = errorHandler.handleError;
 
 // sample: postCheckFn for custom unique id
 // (data, cb) => {
