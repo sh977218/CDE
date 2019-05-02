@@ -3,7 +3,7 @@ import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { AlertService } from 'alert/alert.service';
-import { IsAllowedService } from 'core/isAllowed.service';
+import { IsAllowedService } from 'non-core/isAllowed.service';
 import _cloneDeep from 'lodash/cloneDeep';
 import _differenceWith from 'lodash/differenceWith';
 import _get from 'lodash/get';

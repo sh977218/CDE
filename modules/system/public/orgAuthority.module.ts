@@ -17,7 +17,7 @@ import {
     MatIconModule, MatInputModule, MatTabsModule
 } from '@angular/material';
 import { OneListMgtComponent } from 'system/public/components/siteAdmin/listManagement/oneListMgt.component';
-import { CoreModule } from 'core/core.module';
+import { NonCoreModule } from 'non-core/noncore.module';
 import { InlineAreaEditModule } from 'inlineAreaEdit/inlineAreaEdit.module';
 import { InlineEditModule } from 'inlineEdit/inlineEdit.module';
 import { InlineSelectEditModule } from 'inlineSelectEdit/inlineSelectEdit.module';
@@ -32,8 +32,8 @@ const appRoutes: Routes = [
         FormsModule,
         NgbModule,
         RouterModule.forChild(appRoutes),
-        // core
-        CoreModule,
+        // non-core
+        NonCoreModule,
 
         // internal
         InlineAreaEditModule,

@@ -1,15 +1,14 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialog, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
-
 import { CdeFhirService, PatientForm } from '_fhirApp/cdeFhir.service';
+import { getMapToFhirResource } from 'core/form/formAndFe';
+import { interruptEvent } from 'non-core/browser';
 import { CdeForm } from 'shared/form/form.model';
-import { getMapToFhirResource } from 'shared/form/formAndFe';
 import { FhirEncounter, FhirObservation } from 'shared/mapping/fhir/fhirResource.model';
 import { codingArrayPreview, getDateString, valuePreview } from 'shared/mapping/fhir/fhirDatatypes';
 import { getText, getTextFromArray } from 'shared/mapping/fhir/datatype/fhirCodeableConcept';
 import { getPatientName } from 'shared/mapping/fhir/resource/fhirPatient';
-import { interruptEvent } from 'core/browser';
 
 function getObservationViewCode(observation: FhirObservation): string {
     return observation.code ? codingArrayPreview(observation.code.coding) : '';

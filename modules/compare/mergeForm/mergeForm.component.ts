@@ -1,9 +1,8 @@
 import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
-
-import { AlertService } from 'alert/alert.service';
-import { IsAllowedService } from 'core/isAllowed.service';
-import { MergeFormService } from 'core/mergeForm.service';
 import { MatDialog } from '@angular/material';
+import { AlertService } from 'alert/alert.service';
+import { IsAllowedService } from 'non-core/isAllowed.service';
+import { MergeFormService } from 'non-core/mergeForm.service';
 
 @Component({
     selector: 'cde-merge-form',

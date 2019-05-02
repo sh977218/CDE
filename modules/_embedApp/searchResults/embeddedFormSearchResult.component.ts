@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { getFormQuestionsAsQuestionCde } from 'shared/form/fe';
+import { getFormQuestionsAsQuestionCde } from 'core/form/fe';
 import { CdeFormElastic } from 'shared/form/form.model';
 import { Embed, UserSearchSettings } from 'shared/models.model';
 

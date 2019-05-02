@@ -1,6 +1,6 @@
 import { CbErr } from 'shared/models.model';
 import {
-    FormElement, FormElementsContainer, FormInForm, FormQuestion, FormSection, Question, QuestionCde
+    FormElement, FormElementsContainer, FormInForm, FormQuestion, FormSection, Question,
 } from 'shared/form/form.model';
 
 // async callbacks
@@ -26,18 +26,8 @@ type quesOptionsCbSync = (fe: FormQuestion, pass?: any, options?: IterateOptions
 type sectionOptionsCbSync = (fe: FormSection, pass?: any, options?: IterateOptionsSync, key?: any) => any;
 
 declare function addFormIds(parent: FormElementsContainer, parentId?: string): void;
-declare function areDerivationRulesSatisfied(elt: FormElementsContainer): string[];
-declare function findQuestionByTinyId(tinyId: string, elt: FormElementsContainer): FormQuestion;
 declare function flattenFormElement(fe: FormElementsContainer): FormElement[];
-declare function getFormQuestions(form: FormElementsContainer): FormQuestion[];
-declare function getFormScoreQuestions(form: FormElementsContainer): FormQuestion[];
-declare function getFormSkipLogicQuestions(form: FormElementsContainer): FormQuestion[];
-declare function getFormQuestionsAsQuestion(form: FormElementsContainer): Question[];
-declare function getFormQuestionsAsQuestionCde(form: FormElementsContainer): QuestionCde[];
 declare function getLabel(fe: FormElement): string;
-declare function isInForm(fe: FormElement): fe is FormInForm;
-declare function isQuestion(fe: FormElement): fe is FormQuestion;
-declare function isSection(fe: FormElement): fe is FormSection;
 declare function iterateFe(fe: FormElementsContainer, formCb?: informCb, sectionCb?: sectionCb, questionCb?: quesCb, callback?: CbErr, options?: IterateOptions): void;
 declare function iterateFeSync(fe: FormElementsContainer, formCb?: informCbSync, sectionCb?: sectionCbSync, questionCb?: quesCbSync, pass?: any): any;
 declare function iterateFeSyncOptions(fe: FormElementsContainer, formCb?: informOptionsCbSync, sectionCb?: sectionOptionsCbSync, questionCb?: quesOptionsCbSync, pass?: any): any;
@@ -49,11 +39,6 @@ declare function noopIterCb(fe: FormElement, continueCb: continueCb, options?: I
 declare function noopSkipIterCb(_: FormElement, cb: continueCb): void;
 declare function noopSkipSync(_: FormElement, pass?: any, options?: IterateOptionsSync): any;
 declare function noopSync(_: FormElement, pass: any): any;
-declare function questionAnswered(q: FormQuestion): boolean;
 declare function questionMulti(q: FormQuestion): boolean;
 declare function questionQuestionMulti(question: Question): boolean;
-declare function repeatFe(fe: FormElement): '' | '=' | 'F' | 'N';
-declare function repeatFeLabel(fe: FormElement): string;
-declare function repeatFeNumber(fe: FormElement): number;
-declare function repeatFeQuestion(fe: FormElement): string;
 declare function trimWholeForm(elt: FormElementsContainer): void;

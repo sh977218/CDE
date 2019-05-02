@@ -6,7 +6,7 @@ import { IActionMapping } from 'angular-tree-component/dist/models/tree-options.
 import _noop from 'lodash/noop';
 
 import { UserService } from '_app/user.service';
-import { ClassificationService } from 'core/classification.service';
+import { ClassificationService } from 'non-core/classification.service';
 import { ClassificationClassified, ClassificationHistory } from 'shared/models.model';
 import { MatDialog, MatTabChangeEvent } from '@angular/material';
 

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ExportService } from 'core/export.service';
+import { ExportService } from 'non-core/export.service';
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { LocalStorageService } from 'angular-2-local-storage';
 import { MatTabChangeEvent } from '@angular/material';

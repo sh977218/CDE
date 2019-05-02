@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 import { UserService } from '_app/user.service';
-import { IsAllowedService } from 'core/isAllowed.service';
+import { IsAllowedService } from 'non-core/isAllowed.service';
 import { Comment } from 'shared/models.model';
 import { AlertService } from 'alert/alert.service';
 

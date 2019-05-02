@@ -25,7 +25,7 @@ import { MatButtonModule, MatDialogModule, MatIconModule } from '@angular/materi
         NgbModule,
         RouterModule,
         TreeModule.forRoot(),
-        // core
+        // non-core
 
         // internal
         AdminItemModule,

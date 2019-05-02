@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
-import { ExportService } from "core/export.service";
-import { OrgHelperService } from "core/orgHelper.service";
+import { ExportService } from "non-core/export.service";
+import { OrgHelperService } from "non-core/orgHelper.service";
 import { UserService } from "_app/user.service";
 import { ActivatedRoute } from '@angular/router';
 

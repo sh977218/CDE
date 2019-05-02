@@ -36,7 +36,7 @@ import { QuestionAnswerEditContentComponent } from 'form/public/tabs/description
 import { SelectQuestionLabelComponent } from 'form/public/tabs/description/selectQuestionLabel.component';
 import { NativeRenderFullComponent } from 'form/public/tabs/general/nativeRenderFull.component';
 import { NativeRenderModule } from 'nativeRender/nativeRender.module';
-import { CoreModule } from 'core/core.module';
+import { NonCoreModule } from 'non-core/noncore.module';
 import { InlineEditModule } from 'inlineEdit/inlineEdit.module';
 import { InlineAreaEditModule } from 'inlineAreaEdit/inlineAreaEdit.module';
 import { InlineSelectEditModule } from 'inlineSelectEdit/inlineSelectEdit.module';
@@ -73,8 +73,8 @@ const appRoutes: Routes = [
         NgbModule,
         RouterModule.forChild(appRoutes),
         TreeModule.forRoot(),
-        // core
-        CoreModule,
+        // non-core
+        NonCoreModule,
 
         // internal
         TagModule,
