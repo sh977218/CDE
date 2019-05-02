@@ -37,11 +37,6 @@ exports.module = function (roleConfig) {
         }));
     });
 
-    router.get('/avatar/:username', (req, res) => {
-        userDb.avatarByUsername(req.params.username, handle404({req, res}, avatar => {
-            res.send(avatar);
-        }));
-    });
     router.get('/usernames/:username', (req, res) => {
         userDb.usersByUsername(req.params.username, handle404({req, res}, users => {
             res.send(users.map(u => u.username.toLowerCase()));

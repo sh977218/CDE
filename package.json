@@ -33,7 +33,8 @@
   "nyc": {
     "check-coverage": true,
     "include": [
-      "**/server/article/*.js"
+      "**/server/article/*.js",
+      "**/server/user/*.js"
     ],
     "lines": "85",
     "branches": "75",
