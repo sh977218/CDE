@@ -362,7 +362,7 @@ exports.init = function (app) {
         });
     });
 
-    setTimeout(pushNotification.checkDatabase, 5000);
+    pushNotification.checkDatabase;
     app.post('/pushRegistration', [authorization.loggedInMiddleware], pushNotification.create);
     app.delete('/pushRegistration', [authorization.loggedInMiddleware], pushNotification.delete);
     app.post('/pushRegistrationSubscribe', [authorization.loggedInMiddleware], pushNotification.subscribe);
