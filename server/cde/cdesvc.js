@@ -280,8 +280,8 @@ function censorPv(pvSet) {
 
 function checkCde(cde) {
     adminItemSvc.hideProprietaryIds(cde);
-    if (cde.valueDomain.datatype !== 'Value List') return cde;
-    cde.valueDomain.permissibleValues.forEach(pvSet => {
+    if (cde.valueDomain && cde.valueDomain.datatype !== 'Value List') return cde;
+    cde.valueDomain && cde.valueDomain.permissibleValues.forEach(pvSet => {
         censorPv(pvSet);
     });
     return cde;
