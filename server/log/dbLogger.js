@@ -179,6 +179,9 @@ exports.handleError = function (options, cb = _.noop) {
 // TODO: Combine with logError() which publishes notifications
 // TODO: tee to console.log
 exports.respondError = function (err, options) {
+    if (!(err instanceof Error)) {
+        err = new Error(err);
+    }
     if (!options) options = {};
     if (options.res) {
         if (err.name === 'CastError' && err.kind === 'ObjectId') {
