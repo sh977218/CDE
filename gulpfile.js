@@ -248,10 +248,8 @@ gulp.task('es', function _es() {
     });
     let allIndex = esInit.indices.map(i => i.indexName);
     console.log('allIndex ' + allIndex);
-    return new Promise(function (resolve) {
-        esClient.indices.delete({index: allIndex, timeout: '6s'}, () => {
-            resolve();
-        });
+    return new Promise((resolve, reject) => {
+        esClient.indices.delete({index: allIndex, timeout: '6s'}, err => err ? reject(err) : resolve());
     });
 });
 
