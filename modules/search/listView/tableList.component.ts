@@ -315,6 +315,7 @@ export class TableListComponent implements OnInit {
     }
 
     static truncatedList(list, f) {
+        if (!Array.isArray(list)) list = [];
         const size = list.length;
         let result = [];
         for (let i = 0; i < size; i++) {

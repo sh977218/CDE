@@ -44,6 +44,7 @@ export class CreateFormComponent implements OnInit {
     ngOnInit() {
         if (!this.elt) {
             this.elt = new CdeForm();
+            this.elt.classification = [];
             this.elt.designations.push(new Designation());
             this.elt.definitions.push(new Definition());
         }

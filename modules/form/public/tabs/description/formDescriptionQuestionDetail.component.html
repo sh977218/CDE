@@ -57,11 +57,11 @@
                 <span *ngFor="let pv of question.question.answers" class="badge badge-secondary formViewSummaryLabel"
                       style="background-color: #666" [textContent]="pv?.valueMeaningName"></span>
             </div>
-            <div *ngIf="question.question.datatype === 'Date' && question.question.datatypeDate.precision !== 'Day'"
+            <div *ngIf="question.question.datatype === 'Date' && question.question.datatypeDate?.precision !== 'Day'"
                  class="defaultAnswer">
                 <span class="formViewQuestionLabel">Precision:</span>
                 <span class="badge badge-secondary formViewSummaryLabel"
-                      style="background-color: #666">{{question.question.datatypeDate.precision}}</span>
+                      style="background-color: #666">{{question.question.datatypeDate?.precision}}</span>
             </div>
             <div *ngIf="question.question.defaultAnswer"
                  class="defaultAnswer">

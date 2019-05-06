@@ -14,8 +14,6 @@ const isOrgCurator = require('../../shared/system/authorizationShared').isOrgCur
 exports.type = 'form';
 exports.name = 'forms';
 
-let conn = connHelper.establishConnection(config.database.appData);
-
 const ajvElt = new Ajv();
 fs.readdirSync(path.resolve(__dirname, '../../shared/de/assets/')).forEach(file => {
     if (file.indexOf('.schema.json') > -1) {
@@ -28,9 +26,10 @@ fs.readFile(path.resolve(__dirname, '../../shared/form/assets/form.schema.json')
         console.log('Error: form.schema.json missing. ' + err);
         process.exit(1);
     }
-    const str = file.toString();
     try {
-        validateSchema = ajvElt.compile(JSON.parse(str));
+        const schema = JSON.parse(file.toString());
+        schema.$async = true;
+        exports.validateSchema = validateSchema = ajvElt.compile(schema);
     } catch (err) {
         console.log('Error: form.schema.json does not compile. ' + err);
         process.exit(1);
@@ -40,19 +39,23 @@ fs.readFile(path.resolve(__dirname, '../../shared/form/assets/form.schema.json')
 schemas.formSchema.pre('save', function (next) {
     let elt = this;
 
-    if (!validateSchema(elt)) {
-        return next(validateSchema.errors.map(e => e.dataPath + ': ' + e.message).join(', '));
-    }
+    validateSchema(elt)
+        .catch(err => next(err instanceof Ajv.ValidationError
+            ? 'errors:' + err.errors.map(e => e.dataPath + ': ' + e.message).join(', ')
+            : err
+        ))
+        .then(() => {
+            try {
+                elastic.updateOrInsert(elt);
+            } catch (exception) {
+                logging.errorLogger.error('Error Indexing Form', {details: exception, stack: new Error().stack});
+            }
 
-    try {
-        elastic.updateOrInsert(elt);
-    } catch (exception) {
-        logging.errorLogger.error('Error Indexing Form', {details: exception, stack: new Error().stack});
-    }
-
-    next();
+            next();
+        });
 });
 
+let conn = connHelper.establishConnection(config.database.appData);
 let Form = conn.model('Form', schemas.formSchema);
 let FormAudit = conn.model('FormAudit', schemas.auditSchema);
 let FormDraft = conn.model('Draft', schemas.draftSchema);
@@ -77,11 +80,9 @@ function defaultElt(elt) {
 function updateUser(elt, user) {
     defaultElt(elt);
     if (!elt.created) elt.created = new Date();
-    if (!elt.createdBy) {
-        elt.createdBy = {
-            userId: user._id,
-            username: user.username
-        };
+    if (!elt.createdBy.userId && !elt.createdBy.username) { // mongoose creates "createdBy"
+        elt.createdBy.userId = user._id;
+        elt.createdBy.username = user.username;
     }
     elt.updated = new Date();
     elt.updatedBy = {

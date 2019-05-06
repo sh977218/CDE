@@ -188,9 +188,9 @@
               },
               "valueFormat": {
                 "type": "string",
+                "description": "If 'html', interpret as HTML",
                 "enum": [
-                  "html",
-                  ""
+                  "html"
                 ]
               }
             },
@@ -349,6 +349,8 @@
         }
       },
       "required": [
+        "classification",
+        "designations",
         "registrationState",
         "stewardOrg",
         "created",
@@ -492,7 +494,10 @@
             },
             "descriptionFormat": {
               "type": "string",
-              "description": "if 'html', then parse with HTML"
+              "description": "if 'html', then parse with HTML",
+              "enum": [
+                "html"
+              ]
             }
           }
         },
@@ -512,7 +517,8 @@
       "type": "object",
       "properties": {
         "definition": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1
         },
         "definitionFormat": {
           "type": "string"
@@ -593,7 +599,10 @@
             "type": "string"
           }
         }
-      }
+      },
+      "required": [
+        "designation"
+      ]
     },
     "identifier": {
       "type": "object",
@@ -629,11 +638,15 @@
     "permissibleValue": {
       "type": "object",
       "properties": {
-        "permissibleValue": {
+        "codeSystemName": {
           "type": "string"
         },
-        "valueMeaningName": {
+        "codeSystemVersion": {
           "type": "string"
+        },
+        "permissibleValue": {
+          "type": "string",
+          "minLength": 1
         },
         "valueMeaningCode": {
           "type": "string"
@@ -641,13 +654,13 @@
         "valueMeaningDefinition": {
           "type": "string"
         },
-        "codeSystemName": {
-          "type": "string"
-        },
-        "codeSystemVersion": {
+        "valueMeaningName": {
           "type": "string"
         }
-      }
+      },
+      "required": [
+        "permissibleValue"
+      ]
     },
     "source": {
       "type": "object",
@@ -662,7 +675,10 @@
             },
             "valueFormat": {
               "type": "string",
-              "description": "If 'html', interpret as HTML"
+              "description": "If 'html', interpret as HTML",
+              "enum": [
+                "html"
+              ]
             }
           }
         },

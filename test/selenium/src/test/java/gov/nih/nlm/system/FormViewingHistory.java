@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 public class FormViewingHistory extends NlmCdeBaseTest {
 
     @Test
-    public void viewingHistory() {
+    public void formViewingHistory() {
         String formName = "Skip Logic No Label Form";
         mustBeLoggedInAs(history_username, password);
 

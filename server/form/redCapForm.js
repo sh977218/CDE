@@ -92,7 +92,7 @@ function getRedCap(form) {
             'Section Header': '',
             'Field Type': field_type_map[q.datatype],
             'Field Label': fieldLabel,
-            'Choices, Calculations, OR Slider Labels': q.answers.map(a => a.permissibleValue + ',' + a.valueMeaningName).join('|'),
+            'Choices, Calculations, OR Slider Labels': (q.answers || []).map(a => a.permissibleValue + ',' + a.valueMeaningName).join('|'),
             'Field Note': '',
             'Text Validation Type OR Show Slider Number': text_validation_type_map[q.datatype],
             'Text Validation Min': q.datatypeNumber ? q.datatypeNumber.minValue : '',

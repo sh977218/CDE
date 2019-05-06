@@ -6,31 +6,34 @@ const StringType = Schema.Types.StringType;
 
 const sharedSchemas = require('../system/schemas.js');
 
-const instructionSchema = new Schema({
+const instructionSchema = {
     value: StringType,
     valueFormat: StringType
-}, {_id: false});
+};
 
-const datatypeNumberSchema = new Schema({
+const datatypeNumberSchema = {
     minValue: Number
     , maxValue: Number
     , precision: Number
-}, {_id: false});
+};
 
-const mapToSchema = new Schema({
+const mapToSchema = {
     fhir: {
         resourceType: StringType,
     },
-}, {_id: false});
+};
 
-const questionSchema = new Schema({
+const questionSchema = {
     cde: {
         tinyId: StringType,
         name: StringType,
         designations: [sharedSchemas.designationSchema],
         definitions: [sharedSchemas.definitionSchema],
         version: StringType,
-        permissibleValues: [sharedSchemas.permissibleValueSchema],
+        permissibleValues: {
+            type: [sharedSchemas.permissibleValueSchema], // required to make optional
+            default: undefined,
+        },
         ids: [sharedSchemas.idSchema],
         derivationRules: [sharedSchemas.derivationRuleSchema]
     },
@@ -59,22 +62,24 @@ const questionSchema = new Schema({
     invisible: {type: Boolean, default: false},
     editable: {type: Boolean, default: true},
     multiselect: Boolean,
-    answers: [sharedSchemas.permissibleValueSchema],
+    answers: {
+        type: [sharedSchemas.permissibleValueSchema], // required to make optional
+        default: undefined,
+    },
     defaultAnswer: StringType
-}, {_id: false});
+};
 
-let inFormSchema = new Schema({
+let inFormSchema = {
     form: {
         tinyId: StringType,
         version: StringType,
         name: StringType,
         ids: [sharedSchemas.idSchema]
     }
-}, {_id: false});
+};
 
 function getFormElementJson() {
     return {
-        _id: false,
         elementType: {type: StringType, enum: ['section', 'question', 'form']},
         instructions: instructionSchema,
         inForm: {type: inFormSchema, default: undefined},
@@ -83,7 +88,7 @@ function getFormElementJson() {
         question: {type: questionSchema, default: undefined},
         repeat: StringType,
         repeatsFor: StringType,
-        section: {type: new Schema({}, {_id: false}), default: undefined},
+        section: {},
         showIfExpression: StringType,
         skipLogic: {
             action: {type: StringType, enum: ['show', 'enable']},
@@ -92,14 +97,12 @@ function getFormElementJson() {
     };
 }
 
-let innerFormEltJson = getFormElementJson();
-innerFormEltJson.formElements = [new Schema({}, {strict: false})];
-let innerFormEltSchema = new Schema(innerFormEltJson, {_id: false});
-
+let innerFormEltSchema = getFormElementJson();
+innerFormEltSchema.formElements = [];
 for (let i = 0; i < config.modules.forms.sectionLevels; i++) {
-    innerFormEltJson = getFormElementJson();
+    let innerFormEltJson = getFormElementJson();
     innerFormEltJson.formElements = [innerFormEltSchema];
-    innerFormEltSchema = new Schema(innerFormEltJson, {_id: false});
+    innerFormEltSchema = innerFormEltJson;
 }
 
 exports.formJson = {
@@ -116,9 +119,11 @@ exports.formJson = {
     version: StringType,
     registrationState: sharedSchemas.registrationStateSchema,
     properties: [sharedSchemas.propertySchema],
-    ids: [
-        {source: StringType, id: StringType, version: StringType, _id: false}
-    ],
+    ids: [{
+        source: StringType,
+        id: StringType,
+        version: StringType,
+    }],
     isCopyrighted: {type: Boolean},
     noRenderAllowed: {type: Boolean},
     copyright: {
@@ -176,8 +181,7 @@ exports.formJson = {
             usedReferences: String,
             usedReferencesMaps: [String],
             complications: String,
-        },
-        _id: false
+        }
     }],
     referenceDocuments: [sharedSchemas.referenceDocumentSchema]
 };
