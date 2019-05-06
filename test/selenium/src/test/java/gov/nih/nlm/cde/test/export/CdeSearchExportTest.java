@@ -2,6 +2,7 @@ package gov.nih.nlm.cde.test.export;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -25,7 +26,15 @@ public class CdeSearchExportTest extends NlmCdeBaseTest {
         clickElement(By.id("export"));
         clickElement(By.id("csvExport"));
 
-        String snackTxt = findElement(By.cssSelector(".mat-simple-snackbar")).getText();
+        String snackTxt;
+
+        try {
+            // sometimes, the snack goes from processing to done and selenium will mark as stale
+            snackTxt = findElement(By.cssSelector(".mat-simple-snackbar")).getText();
+        } catch (StaleElementReferenceException e) {
+            snackTxt = findElement(By.cssSelector(".mat-simple-snackbar")).getText();
+        }
+
         if (snackTxt.contains("busy processing similar request")) {
             hangon(60);
             clickElement(By.id("export"));

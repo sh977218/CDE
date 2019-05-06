@@ -30,6 +30,7 @@ require('./server/system/elastic').initEs();
 
 require('log-buffer')(config.logBufferSize || 4096);
 console.log('Node ' + process.versions.node);
+console.log('Node Environment ' + process.env.NODE_ENV);
 
 let app = express();
 
