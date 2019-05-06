@@ -23,7 +23,6 @@ public class HttpLogSearch extends NlmCdeBaseTest {
         clickElement(By.id("user_audit"));
         clickElement(By.id("searchBtn"));
 
-        findElement(By.name("ip")).sendKeys(ipTerm);
 
         findElement(By.id("fromDate")).sendKeys("01012000");
         findElement(By.id("fromDate")).sendKeys(Keys.TAB);
@@ -34,13 +33,16 @@ public class HttpLogSearch extends NlmCdeBaseTest {
         findElement(By.id("toDate")).sendKeys("0101P");
         clickElement(By.id("searchBtn"));
 
+        clickElement(By.cssSelector(".mat-paginator-navigation-next"));
+        clickElement(By.xpath("//th[. = 'Method']"));
+        textPresent("200");
+
+        findElement(By.name("ip")).sendKeys(ipTerm);
+        clickElement(By.id("searchBtn"));
         List<WebElement> ips = driver.findElements(By.cssSelector(".ip"));
         for (WebElement ip : ips) {
             Assert.assertTrue(ip.getText().trim().equals(ipTerm));
         }
-        clickElement(By.cssSelector(".mat-paginator-navigation-next"));
-        clickElement(By.xpath("//th[. = 'Method']"));
-        textPresent("200");
     }
 
 }

@@ -15,7 +15,7 @@ public class AppLogs extends NlmCdeBaseTest {
         clickElement(By.xpath("//div[. = 'App Logs']"));
 
         clickElement(By.id("searchBtn"));
-        textPresent("done with sitemap");
+        textPresent("info");
 
         findElement(By.id("appFromDate")).sendKeys("01012000");
         findElement(By.id("appFromDate")).sendKeys(Keys.TAB);
@@ -26,7 +26,7 @@ public class AppLogs extends NlmCdeBaseTest {
         findElement(By.id("appToDate")).sendKeys("0101P");
 
         clickElement(By.id("searchBtn"));
-        textPresent("done with sitemap");
+        textPresent("info");
         clickElement(By.cssSelector(".mat-paginator-navigation-next"));
     }
 }
