@@ -1,6 +1,5 @@
 const config = require('./server/system/parseConfig');
 const data = require('gulp-data');
-const del = require('del');
 const esInit = require('./server/system/elasticSearchInit');
 const fs = require('fs');
 const git = require('gulp-git');
