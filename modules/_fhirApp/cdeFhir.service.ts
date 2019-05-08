@@ -19,6 +19,7 @@ import async_memoize from 'async/memoize';
 import async_series from 'async/series';
 import async_some from 'async/some';
 import { questionAnswered, findQuestionByTinyId, isQuestion } from 'core/form/fe';
+import { questionToFhirValue, storeTypedValue } from 'core/mapping/fhir/to/datatypeToItemType';
 import { getIds, getTinyId, getVersion } from 'core/form/formAndFe';
 import diff from 'deep-diff';
 import _intersectionWith from 'lodash/intersectionWith';
@@ -44,10 +45,7 @@ import { newProcedure } from 'shared/mapping/fhir/resource/fhirProcedure';
 import {
     newQuestionnaireResponse, newQuestionnaireResponseItem
 } from 'shared/mapping/fhir/resource/fhirQuestionnaireResponse';
-import {
-    containerToItemType,
-    questionToFhirValue, storeTypedValue, valueToTypedValue
-} from 'shared/mapping/fhir/to/datatypeToItemType';
+import { containerToItemType, valueToTypedValue } from 'shared/mapping/fhir/to/datatypeToItemType';
 import { formToQuestionnaire } from 'shared/mapping/fhir/to/toQuestionnaire';
 import { deepCopy, reduceOptionalArray } from 'shared/system/util';
 import { isArray } from 'util';

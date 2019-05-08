@@ -1,9 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { flattenClassification } from 'core/adminItem/classification';
 import _cloneDeep from 'lodash/cloneDeep';
 import _forEach from 'lodash/forEach';
 import _get from 'lodash/get';
 import _isEqual from 'lodash/isEqual';
-import { flattenClassification, sortClassification } from 'shared/system/classificationShared';
+import { sortClassification } from 'shared/system/classificationShared';
 import { Item } from 'shared/models.model';
 
 @Component({

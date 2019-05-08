@@ -16,17 +16,17 @@ const canEditByTinyIdMiddleware = authorization.canEditByTinyIdMiddleware(mongo_
 exports.init = function (app, daoManager) {
     daoManager.registerDao(mongo_cde);
 
-    app.get('/de/:tinyId', exportShared.nocacheMiddleware, cdesvc.byTinyId);
-    app.get('/de/:tinyId/latestVersion/', exportShared.nocacheMiddleware, cdesvc.latestVersionByTinyId);
-    app.get('/de/:tinyId/version/:version?', exportShared.nocacheMiddleware, cdesvc.byTinyIdAndVersion);
+    app.get('/de/:tinyId', authorization.nocacheMiddleware, cdesvc.byTinyId);
+    app.get('/de/:tinyId/latestVersion/', authorization.nocacheMiddleware, cdesvc.latestVersionByTinyId);
+    app.get('/de/:tinyId/version/:version?', authorization.nocacheMiddleware, cdesvc.byTinyIdAndVersion);
     app.post('/de', canCreateMiddleware, cdesvc.create);
     app.post('/dePublish', canEditMiddleware, cdesvc.publishFromDraft);
     app.post('/dePublishExternal', canEditMiddleware, cdesvc.publishExternal);
 
-    app.get('/deById/:id', exportShared.nocacheMiddleware, cdesvc.byId);
-    app.get('/deById/:id/priorDataElements/', exportShared.nocacheMiddleware, cdesvc.priorDataElements);
+    app.get('/deById/:id', authorization.nocacheMiddleware, cdesvc.byId);
+    app.get('/deById/:id/priorDataElements/', authorization.nocacheMiddleware, cdesvc.priorDataElements);
 
-    app.get('/deList/:tinyIdList?', exportShared.nocacheMiddleware, cdesvc.byTinyIdList);
+    app.get('/deList/:tinyIdList?', authorization.nocacheMiddleware, cdesvc.byTinyIdList);
 
     app.get('/originalSource/cde/:sourceName/:tinyId', cdesvc.originalSourceByTinyIdSourceName);
 
@@ -36,7 +36,7 @@ exports.init = function (app, daoManager) {
 
     app.get('/draftDataElementById/:id', cdesvc.draftById);
 
-    app.get('/viewingHistory/dataElement', exportShared.nocacheMiddleware, cdesvc.viewHistory);
+    app.get('/viewingHistory/dataElement', authorization.nocacheMiddleware, cdesvc.viewHistory);
 
     /* ---------- PUT NEW REST API above ---------- */
 
@@ -56,7 +56,7 @@ exports.init = function (app, daoManager) {
         elastic_system.nbOfCdes((err, result) => res.send("" + result));
     });
 
-    app.get('/moreLikeCde/:tinyId', exportShared.nocacheMiddleware, (req, res) => {
+    app.get('/moreLikeCde/:tinyId', authorization.nocacheMiddleware, (req, res) => {
         elastic.morelike(req.params.tinyId, result => {
             cdesvc.hideProprietaryCodes(result.cdes, req.user);
             res.send(result);
@@ -84,7 +84,7 @@ exports.init = function (app, daoManager) {
 
     app.get('/status/cde', appStatus.status);
 
-    app.get('/cde/properties/keys', exportShared.nocacheMiddleware, (req, res) => {
+    app.get('/cde/properties/keys', authorization.nocacheMiddleware, (req, res) => {
         adminItemSvc.allPropertiesKeys(req, res, mongo_cde);
     });
 
@@ -128,7 +128,7 @@ exports.init = function (app, daoManager) {
         exporters.json.export(res);
     });
 
-    app.post('/cdeCompletion/:term', exportShared.nocacheMiddleware, (req, res) => {
+    app.post('/cdeCompletion/:term', authorization.nocacheMiddleware, (req, res) => {
         let term = req.params.term;
         elastic_system.completionSuggest(term, req.user, req.body, config.elastic.cdeSuggestIndex.name, resp => {
             resp.hits.hits.forEach(r => r._index = undefined);
