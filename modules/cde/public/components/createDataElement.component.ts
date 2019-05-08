@@ -1,19 +1,19 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
+import { MatDialogRef } from '@angular/material';
 import { Router } from '@angular/router';
+import { UserService } from '_app/user.service';
+import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
+import { AlertService } from 'alert/alert.service';
 import { LocalStorageService } from 'angular-2-local-storage/dist';
+import { DeCompletionService } from 'cde/public/components/completion/deCompletion.service';
+import { classifyItem } from 'core/adminItem/classification';
 import _cloneDeep from 'lodash/cloneDeep';
 import _isEqual from 'lodash/isEqual';
-
-import { UserService } from '_app/user.service';
-import { AlertService } from 'alert/alert.service';
-import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
-import { DeCompletionService } from 'cde/public/components/completion/deCompletion.service';
 import { IsAllowedService } from 'non-core/isAllowed.service';
 import { Definition, Designation } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
-import { classifyItem, findSteward, removeCategory } from 'shared/system/classificationShared';
-import { MatDialogRef } from '@angular/material';
+import { findSteward, removeCategory } from 'shared/system/classificationShared';
 
 @Component({
     selector: 'cde-create-data-element',

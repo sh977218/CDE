@@ -1,8 +1,6 @@
 import { codeSystemOut } from 'shared/mapping/fhir';
 import { newCodeableConcept } from 'shared/mapping/fhir/datatype/fhirCodeableConcept';
 import { newCoding } from 'shared/mapping/fhir/datatype/fhirCoding';
-import { capString } from 'shared/system/util';
-import { questionMulti } from 'shared/form/fe';
 
 export function containerToItemType(container) { // http://hl7.org/fhir/item-type
     // NOT IMPLEMENTED: boolean, time, url, open-choice(choice+string), attachment, reference
@@ -49,25 +47,6 @@ export function itemTypeToItemDatatype(type, hasCodeableConcept = false) {
 export function permissibleValueToCoding(pv) {
     return newCoding(pv.codeSystemName, pv.permissibleValue, pv.codeSystemVersion,
         pv.valueMeaningName && pv.valueMeaningName !== pv.permissibleValue ? pv.valueMeaningName : undefined);
-}
-
-export function questionToFhirValue(q, fhirObj, fhirMulti = false, prefix = undefined, hasCodeableConcept = false) {
-    let qType = containerToItemType(q.question);
-    if (fhirMulti) {
-        let answer = questionMulti(q) ? q.question.answer : [q.question.answer];
-        storeTypedValue(
-            answer.map(a => valueToTypedValue(q.question, qType, a, undefined, q.question.answerUom, hasCodeableConcept)),
-            fhirObj, qType, prefix, hasCodeableConcept);
-    } else {
-        let answer = questionMulti(q) ? q.question.answer[0] : q.question.answer;
-        storeTypedValue(
-            valueToTypedValue(q.question, qType, answer, undefined, q.question.answerUom, hasCodeableConcept),
-            fhirObj, qType, prefix, hasCodeableConcept);
-    }
-}
-
-export function storeTypedValue(value, obj, qType, prefix = 'value', hasCodeableConcept = false) {
-    obj[prefix + capString(itemTypeToItemDatatype(qType, hasCodeableConcept))] = value;
 }
 
 export function valueToQuantity(container, value, comparator, valueUom) {

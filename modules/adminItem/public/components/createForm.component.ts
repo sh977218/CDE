@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import {
     Component,
@@ -9,20 +10,19 @@ import {
     ViewChildren,
     EventEmitter, TemplateRef
 } from '@angular/core';
+import { MatDialogRef } from '@angular/material';
 import { Router } from '@angular/router';
-import { LocalStorageService } from 'angular-2-local-storage/dist';
-import { TreeComponent } from 'angular-tree-component';
-import _isEqual from 'lodash/isEqual';
-
-import { AlertService } from 'alert/alert.service';
 import { UserService } from '_app/user.service';
 import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
+import { AlertService } from 'alert/alert.service';
+import { LocalStorageService } from 'angular-2-local-storage/dist';
+import { TreeComponent } from 'angular-tree-component';
+import { classifyItem } from 'core/adminItem/classification';
+import _isEqual from 'lodash/isEqual';
 import { IsAllowedService } from 'non-core/isAllowed.service';
 import { Definition, Designation } from 'shared/models.model';
 import { CdeForm } from 'shared/form/form.model';
-import { classifyItem, findSteward, removeCategory } from 'shared/system/classificationShared';
-import { MatDialogRef } from '@angular/material';
-import { Location } from '@angular/common';
+import { findSteward, removeCategory } from 'shared/system/classificationShared';
 
 @Component({
     selector: 'cde-create-form',
