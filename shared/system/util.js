@@ -31,8 +31,8 @@ export function partition(arr, condition) {
     }, [[], []]);
 }
 
-export function push2(arr, e) {
-    arr.push(e);
+export function push2(arr, ...e) {
+    arr.push(...e);
     return arr;
 }
 

@@ -16,7 +16,7 @@ import { Observable } from 'rxjs/Observable';
 import { Comment, Elt } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { checkPvUnicity, checkDefinitions } from 'shared/de/deValidator';
-import { canEditCuratedItem, isOrgCurator } from 'shared/system/authorizationShared';
+import { canEditCuratedItem, isOrgCurator, isOrgAuthority } from 'shared/system/authorizationShared';
 import { SaveModalComponent } from 'adminItem/public/components/saveModal/saveModal.component';
 
 @Component({
@@ -115,7 +115,7 @@ export class DataElementViewComponent implements OnInit {
                 checkPvUnicity(this.elt.valueDomain);
             }
             this.displayStatusWarning = (() => {
-                if (!this.elt || this.elt.archived || this.userService.user && this.userService.user.siteAdmin) {
+                if (!this.elt || this.elt.archived || this.userService.user && isOrgAuthority(this.userService.user)) {
                     return false;
                 }
                 return isOrgCurator(this.userService.user, this.elt.stewardOrg.name) &&
