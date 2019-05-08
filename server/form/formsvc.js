@@ -253,31 +253,7 @@ exports.byTinyId = (req, res) => {
                 }
             } else if (req.query.type && req.query.type.toLowerCase() === 'redcap') {
                 dbLogger.consoleLog('faas: ' + config.provider.faas, global.CURRENT_SERVER_ENV);
-                switch (config.provider.faas) {
-                    case 'AWS':
-                        const AWS = require('aws-sdk');
-                        if (!global.CURRENT_SERVER_ENV) {
-                            throw new Error('ENV not ready');
-                        }
-                        // test error: xmlStr = xmlStr.replace(/<List>.*<\/List>/g, '');
-                        let jsonPayload = {
-                            input: wholeForm
-                        };
-                        let params = {
-                            FunctionName: config.cloudFunction.zipExport.name + '-' + global.CURRENT_SERVER_ENV,
-                            Payload: JSON.stringify(jsonPayload)
-                        };
 
-                        new AWS.Lambda({region: 'us-east-1'}).invoke(params, (err, result) => {
-
-                        });
-                        break;
-                    case 'ON_PREM':
-                        redCap.getZipRedCap(wholeForm, res);
-                        break;
-                    default:
-                        throw new Error('not supported');
-                }
             } else {
                 res.send(wholeForm);
             }

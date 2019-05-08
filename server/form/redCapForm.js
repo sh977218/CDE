@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const archiver = require('archiver');
 const Json2csvParser = require('json2csv').parse;
+const config = require('../system/parseConfig');
 const field_type_map = {
     'Text': 'text',
     'Value List': 'radio',
@@ -122,6 +123,34 @@ function getRedCap(form) {
 }
 
 exports.getZipRedCap = function (form, res) {
+    switch (config.provider.faas) {
+        case 'AWS':
+            const AWS = require('aws-sdk');
+            if (!global.CURRENT_SERVER_ENV) {
+                throw new Error('ENV not ready');
+            }
+            // test error: xmlStr = xmlStr.replace(/<List>.*<\/List>/g, '');
+            let jsonPayload = {
+                input: form
+            };
+            let params = {
+                FunctionName: config.cloudFunction.zipExport.name + '-' + global.CURRENT_SERVER_ENV,
+                Payload: JSON.stringify(jsonPayload)
+            };
+
+            new AWS.Lambda({region: 'us-east-1'}).invoke(params, (err, result) => {
+
+            });
+            break;
+        case 'ON_PREM':
+            exports.getOnPremZipRedCap(form, res);
+            break;
+        default:
+            throw new Error('not supported');
+    }
+};
+
+exports.getOnPremZipRedCap = function (form, res) {
     res.writeHead(200, {
         'Content-Type': 'application/zip',
         'Content-disposition': 'attachment; filename=' + form.designations[0].designation + '.zip'
