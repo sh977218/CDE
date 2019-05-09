@@ -102,7 +102,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     }
 
     onAnswerListChanged() {
-        this.question.question.answers = this.question.question.answers.filter(ans =>
+        this.question.question.answers = this.question.question.cde.permissibleValues.filter(ans =>
             this.questionAnswers.indexOf(ans.valueMeaningName || ans.permissibleValue) >= 0);
         this.syncDefaultAnswerListItems();
         this.onEltChange.emit();
