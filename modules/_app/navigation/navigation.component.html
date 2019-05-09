@@ -15,10 +15,6 @@
                *ngIf="isOrgCurator(userService.user)">Classifications</a>
             <a routerLink="/orgAuthority" id="user_org_authority" mat-menu-item
                *ngIf="isOrgAuthority(userService.user)">Org Management</a>
-            <a routerLink="/orgAccountManagement" id="user_account_management" mat-menu-item
-               *ngIf="isOrgAdmin(userService.user)">Account Management</a>
-            <a routerLink="/siteAccountManagement" id="user_site_management" mat-menu-item
-               *ngIf="isSiteAdmin(userService.user)">Site Management</a>
             <a routerLink="/siteAudit" id="user_audit" mat-menu-item
                *ngIf="isOrgAuthority(userService.user)">Audit</a>
             <a (click)="loginSvc.logout()" target="_self" id="user_logout" mat-menu-item>Log Out</a>
