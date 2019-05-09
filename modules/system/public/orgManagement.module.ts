@@ -7,7 +7,6 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NonCoreModule } from 'non-core/noncore.module';
 import { DraftsListModule } from 'draftsList/draftsList.module';
 import { DataService } from 'shared/models.model';
-import { EmbedComponent } from 'system/public/components/embed/embed.component';
 import { OrgDataService } from 'system/public/components/orgManagement/orgData.service';
 import { OrgAccountManagementComponent } from 'system/public/components/siteAdmin/orgAccountManagement/orgAccountManagement.component';
 import { SystemModule } from 'system/public/system.module';
@@ -34,7 +33,6 @@ const appRoutes: Routes = [
         UsernameAutocompleteModule,
     ],
     declarations: [
-        EmbedComponent,
         OrgAccountManagementComponent,
     ],
     entryComponents: [],
