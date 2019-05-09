@@ -34,7 +34,7 @@ const appRoutes: Routes = [
     {path: 'orgComments', loadChildren: 'discuss/discussEntry.module#DiscussEntryModule', canLoad: [OrgCuratorGuard], data: {title: 'Comments'}},
     {path: 'quickBoard', loadChildren: 'quickBoard/quickBoard.module#QuickBoardModule', data: {title: 'Quick Board'}},
     {path: 'resources', loadChildren: 'system/public/resources.module#ResourcesModule', data: {title: 'Resources'}},
-    {path: 'profile', loadChildren: 'system/public/profile.module#ProfileModule', canLoad: [LoggedInGuard], data: {title: 'Profile'}},
+    {path: 'settings', loadChildren: 'settings/settings.module#SettingsModule', canLoad: [LoggedInGuard], data: {title: 'Settings'}},
     {path: 'whatsNew', loadChildren: 'system/public/whatsNew.module#WhatsNewModule', data: {title: `What's New`}},
     {path: 'contactUs', loadChildren: 'system/public/contactUs.module#ContactUsModule', data: {title: 'Contact Us'}},
     {path: 'searchPreferences', loadChildren: 'system/public/searchPreferences.module#SearchPreferencesModule', data: {title: 'Search Preferences'}},

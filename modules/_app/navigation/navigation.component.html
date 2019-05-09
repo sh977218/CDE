@@ -7,7 +7,7 @@
         <a id="{{prefix}}username_link" class="mdl-navigation__link mdl-typography--text-uppercase"
            [matMenuTriggerFor]="loginMenu">{{userService.user.username | cdeTruncateLongName}}&nbsp;▼</a>
         <mat-menu #loginMenu="matMenu">
-            <a routerLink="/profile" id="user_profile" mat-menu-item>Profile</a>
+            <a routerLink="/settings/profile" id="user_settings" mat-menu-item>Settings</a>
             <a routerLink="/inbox" id="user_inbox" mat-menu-item>Inbox</a>
             <a routerLink="/orgComments" id="org_comments" mat-menu-item
                *ngIf="isOrgCurator(userService.user)">Org Comments</a>
