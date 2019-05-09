@@ -3,7 +3,6 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { ReactiveFormsModule, FormsModule } from "@angular/forms";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 
-import { OrgAdminComponent } from 'system/public/components/siteAdmin/orgAdmin/orgAdmin.component';
 import { UsersMgtComponent } from 'system/public/components/siteAdmin/usersMgt/usersMgt.component';
 import { MatButtonModule, MatDialogModule, MatIconModule } from '@angular/material';
 import { TagModule } from 'tag/tag.module';
@@ -24,12 +23,10 @@ import { UsernameAutocompleteModule } from 'usernameAutocomplete/usernameAutocom
         TagModule
     ],
     declarations: [
-        OrgAdminComponent,
         UsersMgtComponent,
     ],
     entryComponents: [],
     exports: [
-        OrgAdminComponent,
         UsersMgtComponent,
     ],
     providers: [],
