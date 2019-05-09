@@ -17,7 +17,7 @@ import { SearchSettings } from 'search/search.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm } from 'shared/form/form.model';
 import { ElasticQueryResponse, Item } from 'shared/models.model';
-import { convertToCsv, getCdeCsvHeader, projectCdeForExport } from 'shared/system/exportShared';
+import { convertToCsv, getCdeCsvHeader, projectCdeForExport } from 'core/system/export';
 
 @Injectable()
 export class ExportService {
