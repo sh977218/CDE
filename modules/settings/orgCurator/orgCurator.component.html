@@ -1,0 +1,35 @@
+<form class="form-inline pt40 pb40" #newCuratorForm="ngForm" id="newOrgCuratorForm" novalidate>
+    <span class="mr-2"></span>
+    <div class="form-group">
+        <cde-username-autocomplete (onSelect)="newUsername = $event"></cde-username-autocomplete>
+    </div>
+    <span class="mx-2">a curator for</span>
+    <div *ngIf="userService.user" class="form-group">
+        <select id="newOrgCuratorOrgName" name="newOrgCuratorOrgName" class="form-control"
+                [(ngModel)]="newOrgName" required>
+            <option value="">select organization</option>
+            <option *ngFor="let myOrg of userService.user.orgAdmin">{{myOrg}}</option>
+        </select>
+    </div>
+    <button type="submit" id="newOrgCuratorSubmit" (click)="addOrgCurator()"
+            [disabled]="!newCuratorForm.valid" mat-raised-button color="primary">
+        Make Curator
+    </button>
+</form>
+<table class="table table-border">
+    <tr>
+        <th>Organization Name:</th>
+        <th>Curators for this Organization:</th>
+    </tr>
+    <tr *ngFor="let orgCurator of orgCurators; let $pindex = index">
+        <td id="existingOrgCuratorOrgName-{{orgCurator.name}}">{{orgCurator.name}}</td>
+        <td>
+            <div *ngFor="let user of orgCurator.users; let $index = index">
+                <span id="existingOrgCuratorUsername-{{$pindex}}-{{$index}}">{{user.username}}</span>
+                <mat-icon (click)="removeOrgCurator(orgCurator.name, user._id)"
+                          id="removeOrgCuratorUsername-{{$pindex}}-{{$index}}">delete_outline
+                </mat-icon>
+            </div>
+        </td>
+    </tr>
+</table>
