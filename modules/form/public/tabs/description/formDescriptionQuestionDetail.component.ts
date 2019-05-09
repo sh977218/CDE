@@ -17,7 +17,7 @@ import { switchMap, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { DataTypeArray } from 'shared/de/dataElement.model';
 import { pvGetLabel } from 'core/de/deShared';
 import { iterateFeSync } from 'shared/form/fe';
-import { FormElement, FormQuestion, SkipLogic } from 'shared/form/form.model';
+import { FormElement, FormQuestion, PermissibleFormValue, SkipLogic } from 'shared/form/form.model';
 import { CodeAndSystem, FormattedValue } from 'shared/models.model';
 import { fixDatatype } from 'shared/de/deValidator';
 
@@ -102,7 +102,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     }
 
     onAnswerListChanged() {
-        this.question.question.answers = this.question.question.cde.permissibleValues.filter(ans =>
+        this.question.question.answers = (this.question.question.cde.permissibleValues as PermissibleFormValue[]).filter(ans =>
             this.questionAnswers.indexOf(ans.valueMeaningName || ans.permissibleValue) >= 0);
         this.syncDefaultAnswerListItems();
         this.onEltChange.emit();
