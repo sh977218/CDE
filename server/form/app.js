@@ -42,21 +42,21 @@ function allRequestsProcessing(req, res, next) {
 exports.init = function (app, daoManager) {
     daoManager.registerDao(mongo_form);
 
-    app.get('/form/:tinyId', allowXOrigin, exportShared.nocacheMiddleware, allRequestsProcessing, formSvc.byTinyId);
-    app.get('/form/:tinyId/latestVersion/', exportShared.nocacheMiddleware, formSvc.latestVersionByTinyId);
-    app.get('/form/:tinyId/version/:version?', [allowXOrigin, exportShared.nocacheMiddleware], formSvc.byTinyIdAndVersion);
+    app.get('/form/:tinyId', allowXOrigin, authorization.nocacheMiddleware, allRequestsProcessing, formSvc.byTinyId);
+    app.get('/form/:tinyId/latestVersion/', authorization.nocacheMiddleware, formSvc.latestVersionByTinyId);
+    app.get('/form/:tinyId/version/:version?', [allowXOrigin, authorization.nocacheMiddleware], formSvc.byTinyIdAndVersion);
     app.post('/form', canCreateMiddleware, formSvc.create);
     app.post('/formPublish', canEditMiddleware, formSvc.publishFromDraft);
     app.post('/formPublishExternal', canEditMiddleware, formSvc.publishExternal);
 
-    app.get('/formById/:id', exportShared.nocacheMiddleware, allRequestsProcessing, formSvc.byId);
-    app.get('/formById/:id/priorForms/', exportShared.nocacheMiddleware, formSvc.priorForms);
+    app.get('/formById/:id', authorization.nocacheMiddleware, allRequestsProcessing, formSvc.byId);
+    app.get('/formById/:id/priorForms/', authorization.nocacheMiddleware, formSvc.priorForms);
 
-    app.get('/formForEdit/:tinyId', exportShared.nocacheMiddleware, formSvc.forEditByTinyId);
-    app.get('/formForEdit/:tinyId/version/:version?', exportShared.nocacheMiddleware, formSvc.forEditByTinyIdAndVersion);
-    app.get('/formForEditById/:id', exportShared.nocacheMiddleware, formSvc.forEditById);
+    app.get('/formForEdit/:tinyId', authorization.nocacheMiddleware, formSvc.forEditByTinyId);
+    app.get('/formForEdit/:tinyId/version/:version?', authorization.nocacheMiddleware, formSvc.forEditByTinyIdAndVersion);
+    app.get('/formForEditById/:id', authorization.nocacheMiddleware, formSvc.forEditById);
 
-    app.get('/formList/:tinyIdList?', exportShared.nocacheMiddleware, formSvc.byTinyIdList);
+    app.get('/formList/:tinyIdList?', authorization.nocacheMiddleware, formSvc.byTinyIdList);
     app.get('/originalSource/form/:sourceName/:tinyId', formSvc.originalSourceByTinyIdSourceName);
 
     app.get('/draftForm/:tinyId', authorization.isOrgCuratorMiddleware, formSvc.draftForEditByTinyId);
@@ -67,7 +67,7 @@ exports.init = function (app, daoManager) {
 
     app.post('/form/publish/:id', authorization.loggedInMiddleware, formSvc.publishFormToHtml);
 
-    app.get('/viewingHistory/form', exportShared.nocacheMiddleware, function (req, res) {
+    app.get('/viewingHistory/form', authorization.nocacheMiddleware, function (req, res) {
         if (!req.user) {
             res.send('You must be logged in to do that');
         } else {
@@ -146,7 +146,7 @@ exports.init = function (app, daoManager) {
         exporters.json.export(res);
     });
 
-    app.post('/formCompletion/:term', exportShared.nocacheMiddleware, (req, res) => {
+    app.post('/formCompletion/:term', authorization.nocacheMiddleware, (req, res) => {
         let term = req.params.term;
         elastic_system.completionSuggest(term, req.user, req.body, config.elastic.formSuggestIndex.name, resp => {
             resp.hits.hits.forEach(r => r._index = undefined);

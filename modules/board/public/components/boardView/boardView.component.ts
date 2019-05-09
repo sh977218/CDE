@@ -11,7 +11,7 @@ import { OrgHelperService } from 'non-core/orgHelper.service';
 import { saveAs } from 'file-saver';
 import _noop from 'lodash/noop';
 import { Comment } from 'shared/models.model';
-import { convertToCsv, getCdeCsvHeader, projectCdeForExport } from 'shared/system/exportShared';
+import { convertToCsv, getCdeCsvHeader, projectCdeForExport } from 'core/system/export';
 
 
 @Component({

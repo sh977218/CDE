@@ -23,7 +23,6 @@ const respondError = errorHandler.respondError;
 const logging = require('./logging.js');
 const orgsvc = require('./orgsvc');
 const usersrvc = require('./usersrvc');
-const exportShared = require('esm')(module)('../../shared/system/exportShared');
 const esInit = require('./elasticSearchInit');
 const elastic = require('./elastic.js');
 const meshElastic = require('../mesh/elastic');
@@ -399,14 +398,14 @@ exports.init = function (app) {
 
     app.get('/supportedBrowsers', (req, res) => res.render('supportedBrowsers', 'system'));
 
-    app.get('/listOrgs', exportShared.nocacheMiddleware, (req, res) => {
+    app.get('/listOrgs', authorization.nocacheMiddleware, (req, res) => {
         mongo_data.listOrgs(function (err, orgs) {
             if (err) return res.status(500).send('ERROR - unable to list orgs');
             res.send(orgs);
         });
     });
 
-    app.get('/listOrgsDetailedInfo', exportShared.nocacheMiddleware, (req, res) => {
+    app.get('/listOrgsDetailedInfo', authorization.nocacheMiddleware, (req, res) => {
         mongo_data.listOrgsDetailedInfo(function (err, orgs) {
             if (err) {
                 logging.errorLogger.error(JSON.stringify({msg: 'Failed to get list of orgs detailed info.'}),
@@ -421,8 +420,7 @@ exports.init = function (app) {
 
     let failedIps = [];
 
-    app.get('/csrf', csrf(), (req, res) => {
-        exportShared.nocacheMiddleware(req, res);
+    app.get('/csrf', csrf(), authorization.nocacheMiddleware, (req, res) => {
         let resp = {csrf: req.csrfToken()};
         let failedIp = findFailedIp(getRealIp(req));
         if ((failedIp && failedIp.nb > 2)) {
@@ -504,7 +502,7 @@ exports.init = function (app) {
         });
     });
 
-    app.get('/org/:name', exportShared.nocacheMiddleware, (req, res) => {
+    app.get('/org/:name', authorization.nocacheMiddleware, (req, res) => {
         return mongo_data.orgByName(req.params.name, (err, result) => res.send(result));
     });
 
@@ -513,7 +511,7 @@ exports.init = function (app) {
     app.post('/addOrg', [authorization.isOrgAuthorityMiddleware], orgsvc.addOrg);
     app.post('/updateOrg', [authorization.isOrgAuthorityMiddleware], (req, res) => mongo_data.updateOrg(req.body, res));
 
-    app.get('/user/:search', [exportShared.nocacheMiddleware, authorization.loggedInMiddleware], (req, res) => {
+    app.get('/user/:search', [authorization.nocacheMiddleware, authorization.loggedInMiddleware], (req, res) => {
         if (!req.params.search) {
             return res.send({});
         } else if (req.params.search === 'me') {
@@ -523,13 +521,13 @@ exports.init = function (app) {
         }
     });
 
-    app.get('/myOrgsAdmins', [exportShared.nocacheMiddleware, authorization.loggedInMiddleware], usersrvc.myOrgsAdmins);
+    app.get('/myOrgsAdmins', [authorization.nocacheMiddleware, authorization.loggedInMiddleware], usersrvc.myOrgsAdmins);
 
-    app.get('/orgAdmins', [exportShared.nocacheMiddleware, authorization.isOrgAuthorityMiddleware], usersrvc.orgAdmins);
+    app.get('/orgAdmins', [authorization.nocacheMiddleware, authorization.isOrgAuthorityMiddleware], usersrvc.orgAdmins);
     app.post('/addOrgAdmin', [authorization.isOrgAdminMiddleware], usersrvc.addOrgAdmin);
     app.post('/removeOrgAdmin', [authorization.isOrgAdminMiddleware], usersrvc.removeOrgAdmin);
 
-    app.get('/orgCurators', [exportShared.nocacheMiddleware, authorization.isOrgAdminMiddleware], usersrvc.orgCurators);
+    app.get('/orgCurators', [authorization.nocacheMiddleware, authorization.isOrgAdminMiddleware], usersrvc.orgCurators);
     app.post('/addOrgCurator', [authorization.isOrgAdminMiddleware], usersrvc.addOrgCurator);
     app.post('/removeOrgCurator', [authorization.isOrgAdminMiddleware], usersrvc.removeOrgCurator);
 
