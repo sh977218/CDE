@@ -48,6 +48,7 @@ import { StatusValidationRulesComponent } from 'settings/statusValidationRules/s
 import { OrgsEditComponent } from 'settings/orgsEdit/orgsEdit.component';
 import { ListManagementComponent } from 'settings/listManagement/listManagement.component';
 import { OneListMgtComponent } from 'settings/listManagement/oneListMgt.component';
+import { MyPublishedFormsComponent } from 'settings/myPublishedForms/myPublishedForms.component';
 
 const appRoutes: Routes = [
     {
@@ -67,6 +68,12 @@ const appRoutes: Routes = [
                 component: ViewHistoryComponent,
                 canLoad: [LoggedInGuard],
                 data: {title: 'View History'}
+            },
+            {
+                path: 'publishedForms',
+                component: MyPublishedFormsComponent,
+                canLoad: [LoggedInGuard],
+                data: {title: 'My Published Forms'}
             },
             {
                 path: 'myDrafts',
@@ -243,6 +250,7 @@ const appRoutes: Routes = [
 
         ProfileComponent,
         ViewHistoryComponent,
+        MyPublishedFormsComponent,
         MyDraftsComponent,
         MyCommentsComponent,
 

@@ -9,12 +9,30 @@
                 <mat-list-item [routerLinkActive]="['is-active']" routerLink="viewHistory">
                     View History
                 </mat-list-item>
+                <mat-list-item [routerLinkActive]="['is-active']" routerLink="publishedForms">
+                    My Published Forms
+                </mat-list-item>
                 <mat-list-item [routerLinkActive]="['is-active']" routerLink="myDrafts">
                     My Drafts
                 </mat-list-item>
                 <mat-list-item [routerLinkActive]="['is-active']" routerLink="myComments">
                     My Comments
                 </mat-list-item>
+
+                Org Management
+                <mat-divider></mat-divider>
+                <mat-list-item [routerLinkActive]="['is-active']" routerLink="orgsEdit">
+                    Organizations
+                </mat-list-item>
+                <mat-list-item [routerLinkActive]="['is-active']" routerLink="listManagement">
+                    List Management
+                </mat-list-item>
+                <mat-list-item [routerLinkActive]="['is-active']" routerLink="statusValidationRules">
+                    Status Validation Rules
+                </mat-list-item>
+
+
+                Account Management
                 <mat-divider></mat-divider>
                 <mat-list-item [routerLinkActive]="['is-active']" routerLink="orgAdmin">
                     Organizations Admins
@@ -31,23 +49,11 @@
                 <mat-list-item [routerLinkActive]="['is-active']" routerLink="myOrgComments">
                     My Organizations' Comments
                 </mat-list-item>
-
-                Org Authority
-                <mat-divider></mat-divider>
                 <mat-list-item [routerLinkActive]="['is-active']" routerLink="embedding">
                     Embedding
                 </mat-list-item>
-                <mat-list-item [routerLinkActive]="['is-active']" routerLink="listManagement">
-                    List Management
-                </mat-list-item>
-                <mat-list-item [routerLinkActive]="['is-active']" routerLink="orgsEdit">
-                    Organizations
-                </mat-list-item>
-                <mat-list-item [routerLinkActive]="['is-active']" routerLink="statusValidationRules">
-                    Status Validation Rules
-                </mat-list-item>
 
-                Site Admin
+                Site Management
                 <mat-divider></mat-divider>
                 <mat-list-item [routerLinkActive]="['is-active']" routerLink="siteAdmins">
                     Site Admins

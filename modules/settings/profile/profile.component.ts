@@ -96,11 +96,6 @@ export class ProfileComponent {
         }, _noop);
     }
 
-    removePublishedForm(pf: PublishedForm) {
-        this.user!.publishedForms = this.user!.publishedForms ? this.user!.publishedForms!.filter( p =>
-            p._id !== pf._id) : [];
-        this.saveProfile();
-    }
 
     saveProfile() {
         this.http.post('/server/user/', this.user).subscribe(
