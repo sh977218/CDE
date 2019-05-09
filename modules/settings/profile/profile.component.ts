@@ -29,8 +29,6 @@ import { hasRole, isSiteAdmin } from 'shared/system/authorizationShared';
 })
 export class ProfileComponent {
     readonly booleanSettingOptions = ['Disabled', 'Enabled'];
-    cdes: DataElement[] = [];
-    forms: CdeForm[] = [];
     hasQuota: any;
     hasRole = hasRole;
     isSiteAdmin = isSiteAdmin;
@@ -43,14 +41,6 @@ export class ProfileComponent {
     constructor(private alert: AlertService,
                 private http: HttpClient,
                 public userService: UserService) {
-        this.http.get<DataElement[]>('/viewingHistory/dataElement').subscribe(
-            response => this.cdes = Array.isArray(response) ? response : [],
-            err => this.alert.httpErrorMessageAlert(err, 'Error, unable to retrieve data element view history.')
-        );
-        this.http.get<CdeForm[]>('/viewingHistory/form').subscribe(
-            response => this.forms = Array.isArray(response) ? response : [],
-            err => this.alert.httpErrorMessageAlert(err, 'Error, unable to retrieve form view history.')
-        );
         this.reloadUser();
     }
 

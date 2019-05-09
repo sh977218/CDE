@@ -29,7 +29,6 @@ const appRoutes: Routes = [
     {path: 'ieDiscontinued', loadChildren: 'system/public/ieDiscontinued.module#IeDiscontinuedModule', data: {title: 'Upgrade Browser'}},
     {path: 'myBoards', loadChildren: 'board/public/myBoards.module#MyBoardsModule', data: {title: 'My Boards'}},
     {path: 'offline', component: OfflineComponent, data: {title: 'Offline'}},
-    {path: 'orgAuthority', loadChildren: 'system/public/orgAuthority.module#OrgAuthorityModule', canLoad: [OrgAuthorityGuard], data: {title: 'Manage Organizations'}},
     {path: 'quickBoard', loadChildren: 'quickBoard/quickBoard.module#QuickBoardModule', data: {title: 'Quick Board'}},
     {path: 'resources', loadChildren: 'system/public/resources.module#ResourcesModule', data: {title: 'Resources'}},
     {path: 'settings', loadChildren: 'settings/settings.module#SettingsModule', canLoad: [LoggedInGuard], data: {title: 'Settings'}},

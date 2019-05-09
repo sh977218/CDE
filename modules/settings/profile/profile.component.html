@@ -22,7 +22,7 @@
             <dt class="col-sm-3">Server Event Subscription Status:</dt>
             <dd class="col-sm-9">
                     <span class="align-middle">
-                        {{subscriptionStatusServer || (subscriptionStatusClient()?'Subscribed':'Not Subscribed')}}
+                        {{subscriptionStatusServer || (subscriptionStatusClient() ? 'Subscribed' : 'Not Subscribed')}}
                     </span>
                 <button mat-raised-button (click)="checkSubscriptionServerStatus()">Check Server
                     <mat-icon *ngIf="subscriptionStatusServer">check_box</mat-icon>
@@ -88,7 +88,8 @@
                     <mat-icon class="infoIcon"
                               aria-label="At this time emails are not supported."
                               matTooltip="At this time emails are not supported."
-                              matTooltipClass="cdeTooltip" matTooltipPosition="above">add_box</mat-icon>
+                              matTooltipClass="cdeTooltip" matTooltipPosition="above">add_box
+                    </mat-icon>
                 </td>
             </tr>
             <tr *ngIf="hasRole(user, 'AttachmentReviewer')">
@@ -201,7 +202,7 @@
         </table>
     </div>
 
-    <div *ngIf="user.publishedForms.length > 0" >
+    <div *ngIf="user.publishedForms.length > 0">
         <h2>Your Published Forms</h2>
         <ul class="list-group">
             <li class="list-group-item" *ngFor="let pf of user.publishedForms">
@@ -210,108 +211,5 @@
                 <mat-icon title="Remove" (click)="removePublishedForm(pf)">delete_outline</mat-icon>
             </li>
         </ul>
-    </div>
-
-    <div id="accordionList">
-        <h2>CDE Viewing History</h2>
-        <div class="card" *ngFor="let cde of cdes;let index = index;">
-            <div class="card-header">
-                <span class="hand-cursor" (click)="cde.isCollapsed = !cde.isCollapsed">
-                    {{cde.designations[0].designation}}
-                </span>
-                <a routerLink="/deView" [queryParams]="{tinyId: cde.tinyId}">
-                    <mat-icon>visibility</mat-icon></a>
-                <cde-pin-board [elt]="cde" [eltIndex]="index" [module]="'cde'"></cde-pin-board>
-                <cde-pin-quickboard [elt]="cde" [eltIndex]="index"></cde-pin-quickboard>
-            </div>
-            <div class="card-body" [ngbCollapse]="!cde.isCollapsed">
-                <div class="row">
-                    <div class="col-4">
-                        <dl class="row">
-                            <dt class="col-sm-3">Steward:</dt>
-                            <dd class="col-sm-9">{{cde.stewardOrg.name}}</dd>
-                            <dt class="col-sm-3">Source:</dt>
-                            <dd class="col-sm-9">{{cde.source}}</dd>
-                        </dl>
-                    </div>
-                    <div class="col-4" *ngIf="cde.valueDomain.permissibleValues.length > 0">
-                        <table class="table-bordered">
-                            <tr>
-                                <th>Value</th>
-                                <th>Code Name</th>
-                                <th>Code</th>
-                            </tr>
-                            <tr *ngFor="let pv of cde.valueDomain.permissibleValues">
-                                <td>{{pv.permissibleValue}}</td>
-                                <td>{{pv.valueMeaningName}}
-                                <td>{{pv.valueMeaningCode}}</td>
-                            </tr>
-                        </table>
-                    </div>
-                    <div class="col-4" *ngIf="cde.ids.length > 0">
-                        <table class="table-bordered">
-                            <tr>
-                                <th>Id</th>
-                                <th>Version</th>
-                                <th>Source</th>
-                            </tr>
-                            <tr *ngFor="let id of cde.ids">
-                                <td>{{id.id}}</td>
-                                <td>{{id.version}}
-                                <td>{{id.source}}</td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="formAccordionList">
-        <h2>Form Viewing History</h2>
-        <div class="card" *ngFor="let form of forms;let index = index;">
-            <div class="card-header">
-                <span class="hand-cursor" (click)="form.isCollapsed = !form.isCollapsed">
-                    {{form.designations[0].designation}}
-                </span>
-                <a routerLink="/formView" [queryParams]="{tinyId: form.tinyId}">
-                    <mat-icon>visibility</mat-icon></a>
-                <cde-pin-board [elt]="form" [eltIndex]="index" [module]="'form'"></cde-pin-board>
-                <cde-pin-quickboard [elt]="form" [eltIndex]="index"></cde-pin-quickboard>
-            </div>
-            <div class="card-body" [ngbCollapse]="!form.isCollapsed">
-                <div class="row">
-                    <div class="col-4">
-                        <dl class="row">
-                            <dt class="col-sm-3">Steward:</dt>
-                            <dd class="col-sm-9">{{form.stewardOrg.name}}</dd>
-                            <dt class="col-sm-3">Source:</dt>
-                            <dd class="col-sm-9">{{form.source}}</dd>
-                        </dl>
-                    </div>
-                    <div class="col-4" *ngIf="form.ids.length > 0">
-                        <table class="table-bordered">
-                            <tr>
-                                <th>Id</th>
-                                <th>Version</th>
-                                <th>Source</th>
-                            </tr>
-                            <tr *ngFor="let id of form.ids">
-                                <td>{{id.id}}</td>
-                                <td>{{id.version}}
-                                <td>{{id.source}}</td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <cde-user-comments [user]="user"></cde-user-comments>
-
-    <div *ngIf="userService.isOrgCurator()">
-        <h2>My Drafts</h2>
-        <cde-drafts-list></cde-drafts-list>
     </div>
 </div>

@@ -19,7 +19,6 @@ import { CdeSearchModule } from 'cde/public/cdeSearch.module';
 import { FormSearchModule } from 'form/public/formSearch.module';
 import { SearchModule } from 'search/search.module';
 import { UserDataService } from 'system/public/components/profile/userData.service';
-import { UserCommentsComponent } from 'system/public/components/userComments.component';
 import { DataService } from 'shared/models.model';
 import { NonCoreModule } from 'non-core/noncore.module';
 import { SettingsResolve } from 'settings/settings.resolve';
@@ -28,7 +27,6 @@ import { OrgCuratorComponent } from 'settings/orgCurator/orgCurator.component';
 import { OrgAuthorityGuard } from '_app/routerGuard/orgAuthorityGuard';
 import { UsernameAutocompleteModule } from 'usernameAutocomplete/usernameAutocomplete.module';
 import { StewardOrgTransferComponent } from 'settings/stewardOrgTransfer/stewardOrgTransfer.component';
-import { DraftsListComponent } from 'draftsList/draftsList.component';
 import { EmbedComponent } from 'settings/embed/embed.component';
 import { EditSiteAdminsComponent } from 'settings/editSiteAdmins/editSiteAdmins.component';
 import { SiteAdminGuard } from '_app/routerGuard/siteAdminGuard';
@@ -39,6 +37,17 @@ import { ArticleAdminComponent } from 'settings/article/articleAdmin.component';
 import { ResourcesAdminComponent } from 'settings/resources/resourcesAdmin.component';
 import { FhirAppsComponent } from 'settings/fhirApps/fhirApps.component';
 import { IdSourcesComponent } from 'settings/idSources/idSources.component';
+import { MyDraftsComponent } from 'settings/myDrafts/myDrafts.component';
+import { MyCommentsComponent } from 'settings/myComments/myComments.component';
+import { ViewHistoryComponent } from 'settings/viewHistory/viewHistory.component';
+import { MyOrgDraftsComponent } from 'settings/myOrgDrafts/myOrgDrafts.component';
+import { AllDraftsComponent } from 'settings/allDrafts/allDrafts.component';
+import { MyOrgCommentsComponent } from 'settings/myOrgComments/myOrgComments.component';
+import { AllCommentsComponent } from 'settings/allComments/allComments.component';
+import { StatusValidationRulesComponent } from 'settings/statusValidationRules/statusValidationRules.component';
+import { OrgsEditComponent } from 'settings/orgsEdit/orgsEdit.component';
+import { ListManagementComponent } from 'settings/listManagement/listManagement.component';
+import { OneListMgtComponent } from 'settings/listManagement/oneListMgt.component';
 
 const appRoutes: Routes = [
     {
@@ -52,6 +61,24 @@ const appRoutes: Routes = [
                 component: ProfileComponent,
                 canLoad: [LoggedInGuard],
                 data: {title: 'Profile'}
+            },
+            {
+                path: 'viewHistory',
+                component: ViewHistoryComponent,
+                canLoad: [LoggedInGuard],
+                data: {title: 'View History'}
+            },
+            {
+                path: 'myDrafts',
+                component: MyDraftsComponent,
+                canLoad: [LoggedInGuard],
+                data: {title: 'My Drafts'}
+            },
+            {
+                path: 'myComments',
+                component: MyCommentsComponent,
+                canLoad: [LoggedInGuard],
+                data: {title: 'My Comments'}
             },
             // Org Authority Can Access
             {
@@ -73,10 +100,16 @@ const appRoutes: Routes = [
                 data: {title: 'Steward Org Transfer'}
             },
             {
-                path: 'drafts',
-                component: DraftsListComponent,
+                path: 'myOrgDrafts',
+                component: MyOrgDraftsComponent,
                 canLoad: [OrgAuthorityGuard],
-                data: {title: 'Drafts'}
+                data: {title: "My Organizations' Drafts"}
+            },
+            {
+                path: 'myOrgComments',
+                component: MyOrgCommentsComponent,
+                canLoad: [OrgAuthorityGuard],
+                data: {title: "My Organizations' Comments"}
             },
             {
                 path: 'embedding',
@@ -84,6 +117,27 @@ const appRoutes: Routes = [
                 canLoad: [OrgAuthorityGuard],
                 data: {title: 'Embedding'}
             },
+
+            {
+                path: 'statusValidationRules',
+                component: StatusValidationRulesComponent,
+                canLoad: [OrgAuthorityGuard],
+                data: {title: 'Status Validation Rules'}
+            },
+            {
+                path: 'listManagement',
+                component: ListManagementComponent,
+                canLoad: [OrgAuthorityGuard],
+                data: {title: 'List Management'}
+            },
+            {
+                path: 'orgsEdit',
+                component: OrgsEditComponent,
+                canLoad: [OrgAuthorityGuard],
+                data: {title: 'Organizations'}
+            },
+
+
             // Site Admin Can Access
             {
                 path: 'siteAdmins',
@@ -98,16 +152,16 @@ const appRoutes: Routes = [
                 data: {title: 'Users'}
             },
             {
-                path: 'comments',
-                component: LatestCommentsComponent,
+                path: 'allComments',
+                component: AllCommentsComponent,
                 canLoad: [SiteAdminGuard],
-                data: {title: 'Comments'}
+                data: {title: 'All Comments'}
             },
             {
-                path: 'drafts',
-                component: DraftsListComponent,
+                path: 'allDrafts',
+                component: AllDraftsComponent,
                 canLoad: [SiteAdminGuard],
-                data: {title: 'Drafts'}
+                data: {title: 'All Drafts'}
             },
             {
                 path: 'serverStatus',
@@ -188,14 +242,24 @@ const appRoutes: Routes = [
         SettingsComponent,
 
         ProfileComponent,
-        UserCommentsComponent,
+        ViewHistoryComponent,
+        MyDraftsComponent,
+        MyCommentsComponent,
 
+        MyOrgDraftsComponent,
+        MyOrgCommentsComponent,
 
+        OneListMgtComponent,
+        ListManagementComponent,
+        OrgsEditComponent,
         OrgAdminComponent,
         OrgCuratorComponent,
         StewardOrgTransferComponent,
         EmbedComponent,
+        StatusValidationRulesComponent,
 
+        AllDraftsComponent,
+        AllCommentsComponent,
         EditSiteAdminsComponent,
         UsersMgtComponent,
         LatestCommentsComponent,
