@@ -39,7 +39,6 @@
     "modules/compare",
     "modules/deleteWithConfirm",
     "modules/discuss",
-    "modules/draftsList",
     "modules/embedded",
     "modules/form",
     "modules/home",

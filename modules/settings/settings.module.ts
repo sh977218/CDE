@@ -12,7 +12,6 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { SettingsComponent } from 'settings/settings.component';
 import { LoggedInGuard } from '_app/routerGuard/loggedInGuard';
 import { ProfileComponent } from 'settings/profile/profile.component';
-import { DraftsListModule } from 'draftsList/draftsList.module';
 import { InlineEditModule } from 'inlineEdit/inlineEdit.module';
 import { BoardModule } from 'board/public/board.module';
 import { CdeSearchModule } from 'cde/public/cdeSearch.module';
@@ -236,7 +235,6 @@ const appRoutes: Routes = [
         MatTooltipModule,
 
         NonCoreModule,
-        DraftsListModule,
         InlineEditModule,
         InlineAreaEditModule,
         InlineSelectEditModule,
