@@ -121,7 +121,10 @@
             "username": {
               "type": "string"
             }
-          }
+          },
+          "required": [
+            "username"
+          ]
         },
         "elementType": {
           "type": "string",
@@ -347,7 +350,9 @@
       },
       "required": [
         "registrationState",
-        "stewardOrg"
+        "stewardOrg",
+        "created",
+        "createdBy"
       ]
     },
     "classificationElement": {
