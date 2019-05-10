@@ -71,8 +71,8 @@
             <div *ngIf="q.type === 'date'" class="native-table-cell" style="min-width: 135px;">
                 <div class="input-group">
                     <input class="form-control native-table-box"
-                           type="{{datePrecisionToType[q.fe.question.datatypeDate.precision]}}"
-                           step="{{datePrecisionToStep[q.fe.question.datatypeDate.precision]}}"
+                           type="{{datePrecisionToType[q.fe.question.datatypeDate?.precision]}}"
+                           step="{{datePrecisionToStep[q.fe.question.datatypeDate?.precision]}}"
                            [title]="n.label"
                            [name]="ni + q.name"
                            [attr.name]="ni + q.name"

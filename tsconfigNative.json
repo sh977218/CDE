@@ -56,6 +56,7 @@
     "modules/sortableArray",
     "modules/system",
     "modules/swagger",
+    "modules/tag",
     "modules/textTruncate",
     "modules/usernameAutocomplete",
     "node_modules",

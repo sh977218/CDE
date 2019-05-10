@@ -1,5 +1,5 @@
 import { CdeId, DerivationRule, Elt, PermissibleValue } from 'shared/models.model';
-import { fixDatatype } from 'shared/de/deValidator';
+import { fixDataElement } from 'shared/de/deValidator';
 
 export class Concept {
     name?: string;
@@ -37,7 +37,7 @@ export class DataElement extends Elt {
     views?: number;
 
     static getEltUrl(elt: Elt) {
-        return "/deView?tinyId=" + elt.tinyId;
+        return '/deView?tinyId=' + elt.tinyId;
     }
 
     static validate(de: DataElement) {
@@ -47,7 +47,7 @@ export class DataElement extends Elt {
             de.derivationRules = [];
         }
         if (!de.valueDomain) de.valueDomain = new ValueDomain();
-        fixDatatype(de);
+        fixDataElement(de);
         if (de.valueDomain.datatype === 'Date') {
             if (!de.valueDomain.datatypeDate) de.valueDomain.datatypeDate = new QuestionTypeDate();
             if (!de.valueDomain.datatypeDate.precision
@@ -69,7 +69,7 @@ export class DataElementElastic extends DataElement { // all volatile
 }
 
 export class QuestionTypeDate {
-    precision?: string = 'Day';
+    precision?: string = QuestionTypeDate.PrecisionDefault;
     format?: string;
 
     static PrecisionEnum = ['Year', 'Month', 'Day', 'Hour', 'Minute', 'Second'];
@@ -143,7 +143,7 @@ export class ValueDomain extends DatatypeContainer {
     definition?: string;
     identifiers: CdeId[] = [];
     ids: CdeId[] = [];
-    permissibleValues: PermissibleValue[] = [];
+    permissibleValues?: PermissibleValue[];
     uom?: string;
     vsacOid?: string;
 }

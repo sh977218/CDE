@@ -9,7 +9,7 @@ export function containerToItemType(container) { // http://hl7.org/fhir/item-typ
         case 'Value List':
             return 'choice';
         case 'Date':
-            return ['Hour', 'Minute', 'Second'].indexOf(container.datatypeDate.precision) > -1 ? 'dateTime' : 'date';
+            return ['Hour', 'Minute', 'Second'].indexOf(container.datatypeDate && container.datatypeDate.precision) > -1 ? 'dateTime' : 'date';
         case 'Number':
             if (Array.isArray(container.unitsOfMeasure) && container.unitsOfMeasure.length || container.uom) {
                 return 'quantity';
