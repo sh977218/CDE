@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { isOrgAdmin, isOrgAuthority, isOrgCurator } from 'shared/system/authorizationShared';
+import { UserService } from '_app/user.service';
 
 @Component({
     templateUrl: './settings.component.html',
@@ -29,22 +29,11 @@ import { isOrgAdmin, isOrgAuthority, isOrgCurator } from 'shared/system/authoriz
     `]
 })
 export class SettingsComponent {
-    isDocumentationEditor: boolean;
-    isOrgAdmin: boolean;
-    isOrgAuthority: boolean;
-    isOrgCurator: boolean;
-    isSiteAdmin: boolean;
+    constructor(private route: ActivatedRoute,
+                public userSvc: UserService) {}
 
-    constructor(private route: ActivatedRoute) {
-        let user = this.route.snapshot.data.user;
-
-        if (user.siteAdmin) {
-            this.isSiteAdmin = true;
-            this.isDocumentationEditor = true;
-        }
-        if (user.roles.indexOf("DocumentationEditor") > -1) this.isDocumentationEditor = true;
-        if (isOrgAdmin(user)) this.isOrgAdmin = true;
-        if (isOrgAuthority(user)) this.isOrgAuthority = true;
-        if (isOrgCurator(user)) this.isOrgCurator = true;
+    scrollTop() {
+        window.scrollTo(0, 0);
     }
+
 }

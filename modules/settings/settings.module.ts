@@ -48,6 +48,8 @@ import { OrgsEditComponent } from 'settings/orgsEdit/orgsEdit.component';
 import { ListManagementComponent } from 'settings/listManagement/listManagement.component';
 import { OneListMgtComponent } from 'settings/listManagement/oneListMgt.component';
 import { MyPublishedFormsComponent } from 'settings/myPublishedForms/myPublishedForms.component';
+import { InlineAreaEditModule } from 'inlineAreaEdit/inlineAreaEdit.module';
+import { InlineSelectEditModule } from 'inlineSelectEdit/inlineSelectEdit.module';
 
 const appRoutes: Routes = [
     {
@@ -238,6 +240,8 @@ const appRoutes: Routes = [
         NonCoreModule,
         DraftsListModule,
         InlineEditModule,
+        InlineAreaEditModule,
+        InlineSelectEditModule,
         BoardModule,
         CdeSearchModule,
         FormSearchModule,

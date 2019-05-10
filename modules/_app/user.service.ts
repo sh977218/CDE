@@ -6,7 +6,7 @@ import _noop from 'lodash/noop';
 import { Subscription } from 'rxjs/Subscription';
 import { uriView } from 'shared/item';
 import { Cb, CbErr, CbErrObj, Comment, User } from 'shared/models.model';
-import { hasRole, isOrgCurator } from 'shared/system/authorizationShared';
+import { hasRole, isOrgCurator, isOrgAdmin, isOrgAuthority } from 'shared/system/authorizationShared';
 import { newNotificationSettings, newNotificationSettingsMediaDrawer } from 'shared/user';
 
 @Injectable()
@@ -48,9 +48,9 @@ export class UserService {
         return !!this.user;
     }
 
-    isOrgCurator() {
-        return this.user && isOrgCurator(this.user);
-    }
+    isOrgCurator = () => isOrgCurator(this.user);
+    isOrgAdmin = () => isOrgAdmin(this.user);
+    isOrgAuthority = () => isOrgAuthority(this.user);
 
     reload(cb = _noop) {
         this.clear();

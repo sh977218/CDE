@@ -330,7 +330,7 @@ try {
     app.use('/server/notification', authorization.loggedInMiddleware, notificationModule);
 
     let articleModule = require('./server/article/articleRoutes').module({
-        update: [authorization.isSiteAdminMiddleware],
+        update: [authorization.isOrgAuthorityMiddleware],
     });
     app.use('/server/article', articleModule);
 

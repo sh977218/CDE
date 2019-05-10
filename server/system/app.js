@@ -10,6 +10,7 @@ const useragent = require('useragent');
 const util = require('util');
 const authorization = require('./authorization');
 const isSiteAdminMiddleware = authorization.isSiteAdminMiddleware;
+const isOrgAuthorityMiddleware = authorization.isOrgAdminMiddleware;
 const authorizationShared = require('esm')(module)('../../shared/system/authorizationShared');
 const mongo_cde = require('../cde/mongo-cde');
 const mongo_form = require('../form/mongo-form');
@@ -658,7 +659,7 @@ exports.init = function (app) {
         });
     });
 
-    app.get('/allDrafts', isSiteAdminMiddleware, (req, res) => {
+    app.get('/allDrafts', isOrgAuthorityMiddleware, (req, res) => {
         mongo_cde.draftsList({}, handleError({req, res}, draftCdes => {
             mongo_form.draftsList({}, handleError({req, res}, draftForms => {
                 res.send({draftCdes: draftCdes, draftForms: draftForms});
