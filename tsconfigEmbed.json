@@ -47,7 +47,7 @@
     "modules/quickBoard",
     "modules/search",
     "modules/siteAudit",
-    "modules/siteManagement",
+    "modules/settings",
     "modules/skipLogic",
     "modules/system",
     "modules/swagger",
