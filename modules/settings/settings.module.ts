@@ -21,7 +21,6 @@ import { SearchModule } from 'search/search.module';
 import { UserDataService } from 'system/public/components/profile/userData.service';
 import { DataService } from 'shared/models.model';
 import { NonCoreModule } from 'non-core/noncore.module';
-import { SettingsResolve } from 'settings/settings.resolve';
 import { OrgAdminComponent } from 'settings/orgAdmin/orgAdmin.component';
 import { OrgCuratorComponent } from 'settings/orgCurator/orgCurator.component';
 import { OrgAuthorityGuard } from '_app/routerGuard/orgAuthorityGuard';
@@ -54,7 +53,6 @@ import { InlineSelectEditModule } from 'inlineSelectEdit/inlineSelectEdit.module
 const appRoutes: Routes = [
     {
         path: '', component: SettingsComponent,
-        resolve: {user: SettingsResolve},
         canLoad: [LoggedInGuard],
         children: [
             // All User Can Access
@@ -282,7 +280,6 @@ const appRoutes: Routes = [
     entryComponents: [],
     exports: [],
     providers: [
-        SettingsResolve,
         {provide: DataService, useClass: UserDataService},
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
