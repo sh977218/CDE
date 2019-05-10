@@ -31,7 +31,6 @@ import { EmbedComponent } from 'settings/embed/embed.component';
 import { EditSiteAdminsComponent } from 'settings/editSiteAdmins/editSiteAdmins.component';
 import { SiteAdminGuard } from '_app/routerGuard/siteAdminGuard';
 import { UsersMgtComponent } from 'settings/usersMgt/usersMgt.component';
-import { LatestCommentsComponent } from 'settings/latestComments/latestComments.component';
 import { ServerStatusComponent } from 'settings/serverStatus/serverStatus.component';
 import { ArticleAdminComponent } from 'settings/article/articleAdmin.component';
 import { ResourcesAdminComponent } from 'settings/resources/resourcesAdmin.component';
@@ -270,7 +269,6 @@ const appRoutes: Routes = [
         AllCommentsComponent,
         EditSiteAdminsComponent,
         UsersMgtComponent,
-        LatestCommentsComponent,
         ServerStatusComponent,
         ArticleAdminComponent,
         ResourcesAdminComponent,
