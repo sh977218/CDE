@@ -14,9 +14,7 @@ public class EmbedTest extends NlmCdeBaseTest {
     @Test
     public void embedNinds() {
         mustBeLoggedInAs(ninds_username, password);
-        clickElement(By.id("username_link"));
-        clickElement(By.linkText("Account Management"));
-        clickElement(By.xpath("//div[. = 'Embedding']"));
+        goToEmbedding();
         clickElement(By.id("NINDS_addEmbed"));
 
         findElement(By.id("embedName")).sendKeys("Main NINDS Embed");
@@ -108,20 +106,14 @@ public class EmbedTest extends NlmCdeBaseTest {
 
         driver.switchTo().defaultContent();
         goHome();
-        findElement(By.id("username_link")).click();
-        findElement(By.linkText("Account Management")).click();
-        hangon(1);
-        clickElement(By.xpath("//div[. = 'Embedding']"));
+        goToEmbedding();
         clickElement(By.id("removeEmbed-0"));
         try {
             findElement(By.id("confirmRemoveEmbed-0")).click();
         } catch (TimeoutException e) {
             driver.switchTo().defaultContent();
             goHome();
-            findElement(By.id("username_link")).click();
-            findElement(By.linkText("Account Management")).click();
-            hangon(1);
-            clickElement(By.xpath("//div[. = 'Embedding']"));
+            goToEmbedding();
             clickElement(By.id("removeEmbed-0"));
             findElement(By.id("confirmRemoveEmbed-0")).click();
         }

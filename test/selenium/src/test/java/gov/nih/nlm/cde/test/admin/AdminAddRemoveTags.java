@@ -40,8 +40,6 @@ public class AdminAddRemoveTags extends NlmCdeBaseTest {
         String tag = "canYouSeeThis";
         String cdeName = "Distance from Closest Margin Value";
         mustBeLoggedInAs(nlm_username, nlm_password);
-        openUserMenu();
-        goToOrgManagement();
         goToListManagement();
         addTagByOrg(orgName, tag);
         findElement(By.xpath("//tr[@id='orgListName-TEST']//mat-chip[contains(. , 'canYouSeeThis')]"));
@@ -54,8 +52,6 @@ public class AdminAddRemoveTags extends NlmCdeBaseTest {
         selectMatSelectDropdownByText("canYouSeeThis");
         clickElement(By.id("cancelNewDesignationBtn"));
 
-        openUserMenu();
-        goToOrgManagement();
         goToListManagement();
 
         removeTagByOrg(orgName, tag);
@@ -89,8 +85,6 @@ public class AdminAddRemoveTags extends NlmCdeBaseTest {
 
         clickElement(By.id("cancelNewPropertyBtn"));
 
-        openUserMenu();
-        goToOrgManagement();
         goToListManagement();
 
         removePropertyKeyByOrg(orgName, propertyKey);

@@ -9,16 +9,13 @@ public class DraftsViewForm extends NlmCdeBaseTest {
     @Test
     public void draftsViewForm() {
         mustBeLoggedInAs("nindsCurator", password);
-
-        clickElement(By.id("username_link"));
-        clickElement(By.linkText("Profile"));
+        goToMyDrafts();
         findElement(By.linkText("Center for Neurologic Study - Lability Scale for pseudobulbar affect (PBA)"));
         textPresent("Q1MfMySSFe");
 
         logout();
         mustBeLoggedInAs(ninds_username, password);
-        clickElement(By.id("username_link"));
-        clickElement(By.linkText("Profile"));
+        goToMyDrafts();
         textNotPresent("Center for Neurologic Study - Lability Scale for pseudobulbar affect (PBA)");
 
         clickElement(By.id("username_link"));
@@ -29,10 +26,9 @@ public class DraftsViewForm extends NlmCdeBaseTest {
 
         logout();
         mustBeLoggedInAs(nlm_username, nlm_password);
-        clickElement(By.id("username_link"));
-        clickElement(By.linkText("Profile"));
+        goToMyDrafts();
         textNotPresent("Center for Neurologic Study - Lability Scale for pseudobulbar affect (PBA)");
-        
+
         hangon(1);
         clickElement(By.id("username_link"));
         clickElement(By.id("user_site_management"));

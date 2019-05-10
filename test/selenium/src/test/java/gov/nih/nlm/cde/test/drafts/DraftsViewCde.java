@@ -9,15 +9,13 @@ public class DraftsViewCde extends NlmCdeBaseTest {
     @Test
     public void draftsViewCde() {
         mustBeLoggedInAs("ctepOnlyCurator", password);
-        clickElement(By.id("username_link"));
-        clickElement(By.linkText("Profile"));
+        goToMyDrafts();
         findElement(By.linkText("Person Elevated Urine Protein Measurement Clinical Trial Eligibility Criteria Yes No Indicator"));
         textPresent("HrVtaZ7EtxQ");
         logout();
 
         mustBeLoggedInAs("ctepAdmin", password);
-        clickElement(By.id("username_link"));
-        clickElement(By.linkText("Profile"));
+        goToMyDrafts();
         textNotPresent("Person Elevated Uring");
 
         hangon(1);
@@ -29,9 +27,7 @@ public class DraftsViewCde extends NlmCdeBaseTest {
         logout();
 
         mustBeLoggedInAs(nlm_username, nlm_password);
-        clickElement(By.id("username_link"));
-        clickElement(By.linkText("Profile"));
-        hangon(1);
+        goToMyDrafts();
         textNotPresent("Person Elevated Uring");
         clickElement(By.id("username_link"));
         clickElement(By.id("user_site_management"));

@@ -10,8 +10,7 @@ public class OrgAdmin2Test extends BaseClassificationTest {
     @Test
     public void adminProfile() {
         mustBeLoggedInAs(cabigAdmin_username, password);
-        clickElement(By.id("username_link"));
-        clickElement(By.linkText("Profile"));
+        goToProfile();
         Assert.assertEquals("cabigAdmin", findElement(By.id("username")).getText());
         textPresent("1,024.00", By.id("quota"));
         Assert.assertEquals("", findElement(By.id("curatorFor")).getText());
@@ -24,9 +23,7 @@ public class OrgAdmin2Test extends BaseClassificationTest {
 
         String org1 = "PS&CC";
 
-        //
-        clickElement(By.id("username_link"));
-        clickElement(By.linkText("Account Management"));
+        goToStewardTransfer();
         clickElement(By.xpath("//div[. = 'CDE & Form Management']"));
         scrollToTop();
 
@@ -56,11 +53,9 @@ public class OrgAdmin2Test extends BaseClassificationTest {
     public void noTabIfSingleOrg() {
         mustBeLoggedInAs(cabigAdmin_username, password);
 
-        clickElement(By.id("username_link"));
-        clickElement(By.linkText("Account Management"));
-
+        goToSettings();
         textPresent("Organizations Admins");
-        textNotPresent("CDE & Form Management");
+        textNotPresent("Steward Transfer");
 
     }
 

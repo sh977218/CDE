@@ -319,16 +319,89 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         clickElement(By.id("username_link"));
     }
 
-    protected void goToOrgManagement() {
-        clickElement(By.linkText("Org Management"));
+    protected void goToSettings() {
+        openUserMenu();
+        clickElement(By.id("user_settings"));
     }
 
-    protected void goToSiteManagement() {
-        clickElement(By.linkText("Site Management"));
+    protected void goToStewardTransfer() {
+        goToSettings();
+        clickElement(By.id("stewardTransfer"));
     }
 
     protected void goToListManagement() {
-        clickElement(By.xpath("//div[. = 'List Management']"));
+        goToSettings();
+        clickElement(By.id("listManagement"));
+    }
+
+    protected void goToIdSources() {
+        goToSettings();
+        clickElement(By.id("idSources"));
+    }
+
+    protected void goToUsers() {
+        goToSettings();
+        clickElement(By.id("users"));
+    }
+
+    protected void goToResources() {
+        goToSettings();
+        clickElement(By.id("resources"));
+    }
+
+    protected void goToCurators() {
+        goToSettings();
+        clickElement(By.id("curators"));
+    }
+
+    protected void goToEmbedding() {
+        goToSettings();
+        clickElement(By.id("embedding"));
+    }
+
+    protected void goToSiteAdmins() {
+        goToSettings();
+        clickElement(By.id("siteAdmins"));
+    }
+
+    protected void goToMyPublishedForms() {
+        goToSettings();
+        clickElement(By.id("myPublishedForms"));
+    }
+
+    protected void goToViewHistory() {
+        goToSettings();
+        clickElement(By.id("viewHistory"));
+    }
+
+    protected void goToMyDrafts() {
+        goToSettings();
+        clickElement(By.id("myDrafts"));
+    }
+
+    protected void goToMyComments() {
+        goToSettings();
+        clickElement(By.id("myComments"));
+    }
+
+    protected void goToAllComments() {
+        goToSettings();
+        clickElement(By.id("allComments"));
+    }
+
+    protected void goToServerStatus() {
+        goToSettings();
+        clickElement(By.id("serverStatus"));
+    }
+
+    protected void goToArticles() {
+        goToSettings();
+        clickElement(By.id("articles"));
+    }
+
+    protected void goToProfile() {
+        goToSettings();
+        clickElement(By.id("profile"));
     }
 
     protected int getNumberOfResults() {

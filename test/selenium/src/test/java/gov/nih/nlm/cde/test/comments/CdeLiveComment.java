@@ -13,8 +13,7 @@ public class CdeLiveComment extends NlmCdeBaseTest {
         switchTab(0);
 
         mustBeLoggedInAs(nindsCurator_username, password);
-        clickElement(By.id("username_link"));
-        clickElement(By.linkText("Profile"));
+        goToProfile();
         textPresent("Enabled", By.xpath("//tbody/tr//mat-slide-toggle"));
         logout();
 

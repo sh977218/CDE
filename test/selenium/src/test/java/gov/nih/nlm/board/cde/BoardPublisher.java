@@ -14,10 +14,7 @@ public class BoardPublisher extends BoardTest {
 
         logout();
         mustBeLoggedInAs(nlm_username, nlm_password);
-        openUserMenu();
-        goToSiteManagement();
-        clickElement(By.xpath("//div[. = 'Users']"));
-
+        goToUsers();
         searchUsername(newUsername);
         clickElement(By.id("searchUsersSubmit"));
         findElement(By.xpath("//*[@id='user_roles_0']//input")).sendKeys("boardp");

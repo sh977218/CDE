@@ -11,8 +11,7 @@ public class CdeLatestCommentsInProfile extends NlmCdeBaseTest {
         String nindsComment = "comment to FAD score";
         String caBIGComment = "comment to Sarcoman";
         mustBeLoggedInAs(commentEditor_username, password);
-        clickElement(By.id("username_link"));
-        clickElement(By.linkText("Profile"));
+        goToMyComments();
         textPresent(nindsComment);
         textPresent(caBIGComment);
     }

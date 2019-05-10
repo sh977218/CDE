@@ -18,9 +18,7 @@ public class PublishForm extends BaseFormTest {
         findElement(By.name("publishedFormName")).sendKeys("My Published Form");
         clickElement(By.id("goExport"));
         checkAlert("Done. Go to your profile to see all your published forms");
-        clickElement(By.id("username_link"));
-        clickElement(By.linkText("Profile"));
-        clickElement(By.linkText("My Published Form"));
+        goToMyPublishedForms();
         switchTab(1);
         findElement(By.name("0-0")).sendKeys("1");
         findElement(By.name("0-1")).sendKeys("2");
@@ -30,8 +28,7 @@ public class PublishForm extends BaseFormTest {
         textPresent("Form Submitted");
         switchTabAndClose(0);
         goHome();
-        clickElement(By.id("username_link"));
-        clickElement(By.linkText("Profile"));
+        goToMyPublishedForms();
         clickElement(By.xpath("//*[a[normalize-space(.) ='My Published Form']]/mat-icon[normalize-space() = 'delete_outline']"));
         checkAlert("Saved");
         textNotPresent("My Published Form");

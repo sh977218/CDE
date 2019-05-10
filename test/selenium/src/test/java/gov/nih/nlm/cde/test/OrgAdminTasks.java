@@ -9,10 +9,7 @@ public class OrgAdminTasks extends BaseClassificationTest {
     @Test
     public void orgAdminTasks() {
         mustBeLoggedInAs(cabigAdmin_username, password);
-        clickElement(By.id("username_link"));
-        clickElement(By.linkText("Account Management"));
-        hangon(1);
-        clickElement(By.xpath("//div[. = 'Organizations Curators']"));
+        goToCurators();
         new Select(findElement(By.name("newOrgCuratorOrgName"))).selectByVisibleText("caBIG");
         searchUsername("userToPromote");
         clickElement(By.id("newOrgCuratorSubmit"));

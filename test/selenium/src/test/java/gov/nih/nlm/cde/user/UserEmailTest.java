@@ -9,8 +9,7 @@ public class UserEmailTest extends NlmCdeBaseTest {
     @Test
     public void userEmail() {
         mustBeLoggedInAs(test_username, password);
-        clickElement(By.id("username_link"));
-        clickElement(By.linkText("Profile"));
+        goToProfile();
         textPresent("test@example.com");
         Assert.assertEquals(findElement(By.xpath("//*[@id='emailEdit']/span/span/span")).getText(), "test@example.com");
         clickElement(By.xpath("//*[@id='emailEdit']//mat-icon[normalize-space() = 'edit']"));
