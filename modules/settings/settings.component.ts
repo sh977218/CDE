@@ -29,22 +29,22 @@ import { isOrgAdmin, isOrgAuthority, isOrgCurator } from 'shared/system/authoriz
     `]
 })
 export class SettingsComponent {
-    documentationEditor: boolean;
-    orgAdmin: boolean;
-    orgAuthority: boolean;
-    orgCurator: boolean;
-    siteAdmin: boolean;
+    isDocumentationEditor: boolean;
+    isOrgAdmin: boolean;
+    isOrgAuthority: boolean;
+    isOrgCurator: boolean;
+    isSiteAdmin: boolean;
 
     constructor(private route: ActivatedRoute) {
         let user = this.route.snapshot.data.user;
 
         if (user.siteAdmin) {
-            this.siteAdmin = true;
-            this.documentationEditor = true;
+            this.isSiteAdmin = true;
+            this.isDocumentationEditor = true;
         }
-        if (user.roles.indexOf("DocumentationEditor") > -1) this.documentationEditor = true;
-        if (isOrgAdmin(user)) this.orgAdmin = true;
-        if (isOrgAuthority(user)) this.orgAuthority = true;
-        if (isOrgCurator(user)) this.orgCurator = true;
+        if (user.roles.indexOf("DocumentationEditor") > -1) this.isDocumentationEditor = true;
+        if (isOrgAdmin(user)) this.isOrgAdmin = true;
+        if (isOrgAuthority(user)) this.isOrgAuthority = true;
+        if (isOrgCurator(user)) this.isOrgCurator = true;
     }
 }

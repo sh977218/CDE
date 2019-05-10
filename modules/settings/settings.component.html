@@ -2,7 +2,6 @@
     <div class="row mt-5">
         <div class="col-3">
             <mat-list>
-                Regular User
                 <mat-list-item [routerLinkActive]="['is-active']" routerLink="profile">
                     Profile
                 </mat-list-item>
@@ -19,69 +18,71 @@
                     My Comments
                 </mat-list-item>
 
-                Org Management
-                <mat-divider></mat-divider>
-                <mat-list-item [routerLinkActive]="['is-active']" routerLink="orgsEdit">
-                    Organizations
-                </mat-list-item>
-                <mat-list-item [routerLinkActive]="['is-active']" routerLink="listManagement">
-                    List Management
-                </mat-list-item>
-                <mat-list-item [routerLinkActive]="['is-active']" routerLink="statusValidationRules">
-                    Status Validation Rules
-                </mat-list-item>
+                <ng-container *ngIf="isOrgAuthority">
+                    <mat-divider></mat-divider>
+                    <mat-list-item [routerLinkActive]="['is-active']" routerLink="orgsEdit">
+                        Organizations
+                    </mat-list-item>
+                    <mat-list-item [routerLinkActive]="['is-active']" routerLink="listManagement">
+                        List Management
+                    </mat-list-item>
+                    <mat-list-item [routerLinkActive]="['is-active']" routerLink="statusValidationRules">
+                        Status Validation Rules
+                    </mat-list-item>
+                </ng-container>
 
+                <ng-container *ngIf="isOrgAdmin">
+                    <mat-divider></mat-divider>
+                    <mat-list-item [routerLinkActive]="['is-active']" routerLink="orgAdmin">
+                        Organizations Admins
+                    </mat-list-item>
+                    <mat-list-item [routerLinkActive]="['is-active']" routerLink="orgCurator">
+                        Organizations Curators
+                    </mat-list-item>
+                    <mat-list-item [routerLinkActive]="['is-active']" routerLink="stewardOrgTransfer">
+                        CDE & Form Management
+                    </mat-list-item>
+                    <mat-list-item [routerLinkActive]="['is-active']" routerLink="myOrgDrafts">
+                        My Organizations' Drafts
+                    </mat-list-item>
+                    <mat-list-item [routerLinkActive]="['is-active']" routerLink="myOrgComments">
+                        My Organizations' Comments
+                    </mat-list-item>
+                    <mat-list-item [routerLinkActive]="['is-active']" routerLink="embedding">
+                        Embedding
+                    </mat-list-item>
+                </ng-container>
 
-                Account Management
-                <mat-divider></mat-divider>
-                <mat-list-item [routerLinkActive]="['is-active']" routerLink="orgAdmin">
-                    Organizations Admins
-                </mat-list-item>
-                <mat-list-item [routerLinkActive]="['is-active']" routerLink="orgCurator">
-                    Organizations Curators
-                </mat-list-item>
-                <mat-list-item [routerLinkActive]="['is-active']" routerLink="stewardOrgTransfer">
-                    CDE & Form Management
-                </mat-list-item>
-                <mat-list-item [routerLinkActive]="['is-active']" routerLink="myOrgDrafts">
-                    My Organizations' Drafts
-                </mat-list-item>
-                <mat-list-item [routerLinkActive]="['is-active']" routerLink="myOrgComments">
-                    My Organizations' Comments
-                </mat-list-item>
-                <mat-list-item [routerLinkActive]="['is-active']" routerLink="embedding">
-                    Embedding
-                </mat-list-item>
-
-                Site Management
-                <mat-divider></mat-divider>
-                <mat-list-item [routerLinkActive]="['is-active']" routerLink="siteAdmins">
-                    Site Admins
-                </mat-list-item>
-                <mat-list-item [routerLinkActive]="['is-active']" routerLink="users">
-                    Users
-                </mat-list-item>
-                <mat-list-item [routerLinkActive]="['is-active']" routerLink="allComments">
-                    All Comments
-                </mat-list-item>
-                <mat-list-item [routerLinkActive]="['is-active']" routerLink="allDrafts">
-                    All Drafts
-                </mat-list-item>
-                <mat-list-item [routerLinkActive]="['is-active']" routerLink="serverStatus">
-                    Server Status
-                </mat-list-item>
-                <mat-list-item [routerLinkActive]="['is-active']" routerLink="articles">
-                    Articles
-                </mat-list-item>
-                <mat-list-item [routerLinkActive]="['is-active']" routerLink="resources">
-                    Resources
-                </mat-list-item>
-                <mat-list-item [routerLinkActive]="['is-active']" routerLink="fhirApps">
-                    Fhir Apps
-                </mat-list-item>
-                <mat-list-item [routerLinkActive]="['is-active']" routerLink="idSources">
-                    Id Sources
-                </mat-list-item>
+                <ng-container *ngIf="isSiteAdmin">
+                    <mat-divider></mat-divider>
+                    <mat-list-item [routerLinkActive]="['is-active']" routerLink="siteAdmins">
+                        Site Admins
+                    </mat-list-item>
+                    <mat-list-item [routerLinkActive]="['is-active']" routerLink="users">
+                        Users
+                    </mat-list-item>
+                    <mat-list-item [routerLinkActive]="['is-active']" routerLink="allComments">
+                        All Comments
+                    </mat-list-item>
+                    <mat-list-item [routerLinkActive]="['is-active']" routerLink="allDrafts">
+                        All Drafts
+                    </mat-list-item>
+                    <mat-list-item [routerLinkActive]="['is-active']" routerLink="serverStatus">
+                        Server Status
+                    </mat-list-item>
+                    <mat-list-item [routerLinkActive]="['is-active']" routerLink="articles">
+                        Articles
+                    </mat-list-item>
+                    <mat-list-item [routerLinkActive]="['is-active']" routerLink="resources">
+                        Resources
+                    </mat-list-item>
+                    <mat-list-item [routerLinkActive]="['is-active']" routerLink="fhirApps">
+                        Fhir Apps
+                    </mat-list-item>
+                    <mat-list-item [routerLinkActive]="['is-active']" routerLink="idSources">
+                        Id Sources
+                    </mat-list-item>
+                </ng-container>
             </mat-list>
         </div>
         <div class="col-9 settingsContent">
