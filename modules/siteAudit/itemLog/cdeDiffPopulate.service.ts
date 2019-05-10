@@ -83,7 +83,7 @@ function stringify(obj: any): string {
         case 'string':
             return obj as string;
         case 'object':
-            return Object.keys(obj).map(f => f + ': ' + obj[f]).join(', ');
+            return obj !== null ? Object.keys(obj).map(f => f + ': ' + obj[f]).join(', ') : '';
         default:
             return '';
     }

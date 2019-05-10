@@ -12,7 +12,7 @@ export class EmbeddedCdeSearchResultComponent {
     @Input() searchViewSettings!: UserSearchSettings;
 
     concatenatePVs(elt: DataElementElastic) {
-        return elt.valueDomain.permissibleValues.map(a => a.permissibleValue).join(',');
+        return (elt.valueDomain.permissibleValues || []).map(a => a.permissibleValue).join(',');
     }
 
     lfLimit = 3;

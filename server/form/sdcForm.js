@@ -1,6 +1,4 @@
-const path = require('path');
 const builder = require('xmlbuilder');
-
 const dbLogger = require('../log/dbLogger.js');
 const config = require('../system/parseConfig');
 
@@ -129,7 +127,7 @@ exports.formToSDC = function ({form, renderer, validate}, cb) {
             "@xmlns": "urn:ihe:qrph:sdc:2016",
             "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
             "@xsi:schemaLocation": "http://healthIT.gov/sdc SDCFormDesign.xsd",
-            "@ID": form.tinyId + "v" + form.version,
+            "@ID": form.tinyId + (form.version ? "v" + form.version : ''),
             "Header": {
                 "@ID": "S1",
                 "@title": form.designations[0].designation,

@@ -36,6 +36,7 @@ export class CreateDataElementComponent implements OnInit {
     ngOnInit() {
         if (!this.elt) {
             this.elt = new DataElement();
+            this.elt.classification = [];
             this.elt.designations.push(new Designation());
             this.elt.definitions.push(new Definition());
         }

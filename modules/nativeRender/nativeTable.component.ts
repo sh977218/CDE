@@ -137,13 +137,14 @@ export class NativeTableComponent {
                 if (!firstQ) {
                     return ['']; // bad state, treat as no repeat
                 }
-                const hasIndex = firstQ.question.answers.length > 1;
-                firstQ.question.answers.forEach((a, i) => {
+                const answers = firstQ.question.answers || [];
+                const hasIndex = answers.length > 1;
+                answers.forEach((a, i) => {
                     this.tableForm.rows.forEach((r, ri) => {
                         this.nrs.elt.formInput![ri + name + (hasIndex ? '_' + i : '') + '_' + firstQ!.feId] = a.permissibleValue;
                     });
                 });
-                return firstQ.question.answers.map(pvGetLabel);
+                return answers.map(pvGetLabel);
             case 'N':
                 return numberList(parseInt(f.repeat!));
             case '':
@@ -178,7 +179,7 @@ export class NativeTableComponent {
                 head.label = this.firstQuestion.label;
                 body.name = '_' + this.firstQuestion.feId;
                 body.fe = this.firstQuestion;
-                return this.firstQuestion.question.answers.map((a, i) => {
+                return (this.firstQuestion.question.answers || []).map((a, i) => {
                     this.nrs.elt.formInput![i + '_' + this.firstQuestion!.feId] = a.permissibleValue;
                     return NativeRenderService.getPvLabel(a);
                 });
@@ -247,7 +248,7 @@ export class NativeTableComponent {
                 if (f.question.datatype === 'Value List' && NativeRenderService.isPreselectedRadio(f)) {
                     this.tableForm.rows.forEach((r, i) => {
                         const location = i + questionName;
-                        this.nrs.elt.formInput![location] = f.question.answers[0].permissibleValue;
+                        this.nrs.elt.formInput![location] = f.question.answers![0].permissibleValue;
                     });
                 }
                 if (f.question.unitsOfMeasure && f.question.unitsOfMeasure.length === 1) {
@@ -258,7 +259,7 @@ export class NativeTableComponent {
                 }
 
                 // iterate
-                f.question.answers.forEach(a => {
+                (f.question.answers || []).forEach(a => {
                     a.formElements && a.formElements.forEach(sf => {
                         [r, c] = this.renderFormElement(sf, level, r, c, sectionStyle, name + (list.length > 1 ? '_' + i : ''));
                     });

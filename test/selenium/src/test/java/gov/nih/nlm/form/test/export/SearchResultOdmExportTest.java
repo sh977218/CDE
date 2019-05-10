@@ -16,16 +16,16 @@ public class SearchResultOdmExportTest extends NlmCdeBaseTest {
         hangon(1);
         clickElement(By.id("export"));
         clickElement(By.id("odmExport"));
+        final long ACTUAL_SIZE = 8310;
         long zipSize = 0;
         for (int i = 0; i < 30; i++) {
             zipSize = new File(downloadFolder + "/SearchExport_ODM.zip").length();
             System.out.println("Wait for zip file to appear: " + i);
-            if (zipSize == 9070) {
-                i = 30;
-            } else {
-                hangon(5);
+            if (zipSize == ACTUAL_SIZE) {
+                break;
             }
+            hangon(5);
         }
-        Assert.assertEquals(zipSize, 8910);
+        Assert.assertEquals(zipSize, ACTUAL_SIZE);
     }
 }

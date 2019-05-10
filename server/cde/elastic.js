@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const config = require('../system/parseConfig');
 const sharedElastic = require('../system/elastic.js');
 const dbLogger = require('../log/dbLogger.js');
@@ -11,34 +12,44 @@ const esClient = new elasticsearch.Client({
 
 exports.esClient = esClient;
 
-exports.updateOrInsert = function (elt, cb) {
+exports.updateOrInsert = function (elt, cb = _.noop) {
     esInit.riverFunction(elt.toObject(), doc => {
         if (doc) {
-            delete doc._id;
-            esClient.index({
-                index: config.elastic.index.name,
-                type: "dataelement",
-                id: doc.tinyId,
-                body: doc
-            }, err => {
+            let doneCount = 0;
+            let doneError;
+            const done = err => {
                 if (err) {
                     dbLogger.logError({
-                        message: "Unable to Index document: " + doc.tinyId,
-                        origin: "cde.elastic.updateOrInsert",
+                        message: 'Unable to Index document: ' + doc.tinyId,
+                        origin: 'cde.elastic.updateOrInsert',
                         stack: err,
                         details: ""
                     });
                 }
-                if (cb) cb(err);
-            });
+                if (doneCount >= 1) {
+                    cb(err || doneError);
+                    return;
+                }
+                doneCount++;
+                doneError = err;
+            };
+            delete doc._id;
+            esClient.index({
+                index: config.elastic.index.name,
+                type: 'dataelement',
+                id: doc.tinyId,
+                body: doc
+            }, done);
             esInit.suggestRiverFunction(elt, sugDoc => {
                 esClient.index({
                     index: config.elastic.cdeSuggestIndex.name,
-                    type: "suggest",
+                    type: 'suggest',
                     id: doc.tinyId,
                     body: sugDoc
-                })
+                }, done);
             });
+        } else {
+            cb();
         }
     });
 };
@@ -47,13 +58,13 @@ exports.dataElementDelete = function (elt, cb) {
     if (elt) {
         esClient.delete({
             index: config.elastic.index.name,
-            type: "dataelement",
+            type: 'dataelement',
             id: elt.tinyId
         }, function (err) {
             if (err) {
                 dbLogger.logError({
-                    message: "Unable to delete dataelement: " + elt.tinyId,
-                    origin: "cde.elastic.dataElementDelete",
+                    message: 'Unable to delete dataelement: ' + elt.tinyId,
+                    origin: 'cde.elastic.dataElementDelete',
                     stack: err,
                     details: ""
                 });
@@ -65,25 +76,25 @@ exports.dataElementDelete = function (elt, cb) {
 
 exports.elasticsearch = function (user, settings, cb) {
     const query = sharedElastic.buildElasticSearchQuery(user, settings);
-    if (query.size > 100) return cb("size exceeded");
-    if ((query.from + query.size) > 10000) return cb("page size exceeded");
+    if (query.size > 100) return cb('size exceeded');
+    if ((query.from + query.size) > 10000) return cb('page size exceeded');
     if (!config.modules.cde.highlight) {
         Object.keys(query.highlight.fields).forEach(field => {
-            if (!(field === "primaryNameCopy" || field === "primaryDefinitionCopy")) {
+            if (!(field === 'primaryNameCopy' || field === 'primaryDefinitionCopy')) {
                 delete query.highlight.fields[field];
             }
         });
     }
     if (settings.includeAggregations)
         query.aggregations.datatype = {
-            "filter": settings.filterDatatype,
-            "aggs": {
-                "datatype": {
-                    "terms": {
-                        "field": "valueDomain.datatype",
-                        "size": 500,
-                        "order": {
-                            "_term": "desc"
+            filter: settings.filterDatatype,
+            aggs: {
+                datatype: {
+                    terms: {
+                        field: 'valueDomain.datatype',
+                        size: 500,
+                        order: {
+                            _term: 'desc'
                         }
                     }
                 }
@@ -91,7 +102,7 @@ exports.elasticsearch = function (user, settings, cb) {
         };
 
     if (!settings.fullRecord) {
-        query._source = {excludes: ["flatProperties", "properties", "classification.elements", "formElements"]};
+        query._source = {excludes: ['flatProperties', 'properties', 'classification.elements', 'formElements']};
     }
 
     sharedElastic.elasticsearch('cde', query, settings, (err, result) => {
@@ -103,13 +114,13 @@ exports.elasticsearch = function (user, settings, cb) {
 };
 
 const mltConf = {
-    "mlt_fields": [
-        "designations.designation",
-        "definitions.definition",
-        "valueDomain.permissibleValues.permissibleValue",
-        "valueDomain.permissibleValues.valueMeaningName",
-        "valueDomain.permissibleValues.valueMeaningCode",
-        "property.concepts.name"
+    mlt_fields: [
+        'designations.designation',
+        'definitions.definition',
+        'valueDomain.permissibleValues.permissibleValue',
+        'valueDomain.permissibleValues.valueMeaningName',
+        'valueDomain.permissibleValues.valueMeaningCode',
+        'property.concepts.name'
     ]
 };
 
@@ -117,32 +128,32 @@ exports.morelike = function (id, callback) {
     var from = 0;
     var limit = 20;
     var mltPost = {
-        "query": {
-            "bool": {
-                "must": {
-                    "more_like_this": {
-                        "fields": mltConf.mlt_fields,
-                        "like": [
+        query: {
+            bool: {
+                must: {
+                    more_like_this: {
+                        fields: mltConf.mlt_fields,
+                        like: [
                             {
-                                "_id": id
+                                _id: id
                             }
                         ],
-                        "min_term_freq": 1,
-                        "min_doc_freq": 1,
-                        "min_word_length": 2
+                        min_term_freq: 1,
+                        min_doc_freq: 1,
+                        min_word_length: 2
                     }
                 },
-                "filter": {
+                filter: {
                     bool: {
                         must_not: [
                             {
                                 term: {
-                                    "registrationState.registrationStatus": "Retired"
+                                    'registrationState.registrationStatus': 'Retired'
                                 }
                             },
                             {
                                 term: {
-                                    "isFork": "true"
+                                    isFork: 'true'
                                 }
                             }
                         ]
@@ -154,17 +165,17 @@ exports.morelike = function (id, callback) {
 
     esClient.search({
         index: config.elastic.index.name,
-        type: "dataelement",
+        type: 'dataelement',
         body: mltPost
     }, function (error, response) {
         if (error) {
-            logging.errorLogger.error("Error: More Like This",
+            logging.errorLogger.error('Error: More Like This',
                 {
-                    origin: "cde.elastic.morelike",
+                    origin: 'cde.elastic.morelike',
                     stack: new Error().stack,
-                    details: "Error: " + error + ", response: " + JSON.stringify(response)
+                    details: 'Error: ' + error + ', response: ' + JSON.stringify(response)
                 });
-            callback("Error");
+            callback('Error');
         } else {
             var result = {
                 cdes: []
@@ -174,7 +185,7 @@ exports.morelike = function (id, callback) {
             };
             for (var i = 0; i < response.hits.hits.length; i++) {
                 var thisCde = response.hits.hits[i]._source;
-                if (thisCde.valueDomain.permissibleValues.length > 10) {
+                if (thisCde.valueDomain && thisCde.valueDomain.permissibleValues && thisCde.valueDomain.permissibleValues.length > 10) {
                     thisCde.valueDomain.permissibleValues = thisCde.valueDomain.permissibleValues.slice(0, 10);
                 }
                 result.cdes.push(thisCde);
@@ -187,7 +198,7 @@ exports.morelike = function (id, callback) {
 exports.get = function (id, cb) {
     esClient.get({
         index: config.elastic.index.name,
-        type: "dataelement",
+        type: 'dataelement',
         id: id
     }, cb);
 };
@@ -197,21 +208,21 @@ exports.byTinyIdList = function (idList, size, cb) {
     idList = idList.filter(id => !!id);
     esClient.search({
         index: config.elastic.index.name,
-        type: "dataelement",
+        type: 'dataelement',
         body: {
-            "query": {
-                "ids": {
-                    "values": idList
+            query: {
+                ids: {
+                    values: idList
                 }
             },
-            "size": size
+            size: size
         }
     }, (error, response) => {
         if (error) {
-            logging.errorLogger.error("Error getByTinyIdList", {
-                origin: "cde.elastic.byTinyIdList",
+            logging.errorLogger.error('Error getByTinyIdList', {
+                origin: 'cde.elastic.byTinyIdList',
                 stack: new Error().stack,
-                details: "Error " + error + "response" + JSON.stringify(response)
+                details: 'Error ' + error + 'response' + JSON.stringify(response)
             });
             cb(error);
         } else {
