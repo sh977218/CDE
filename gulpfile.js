@@ -284,9 +284,10 @@ gulp.task('buildHome', function _buildHome() {
 });
 gulp.task('checkDbConnection', function _buildHome() {
     return new Promise(function (resolve, reject) {
-        let isRequireDbConnection = !!require.cache[require.resolve('./server/system/connections')];
-        if (isRequireDbConnection) reject('DB connection cannot be included in gulp.');
-        else resolve();
+        resolve();
+        // let isRequireDbConnection = !!require.cache[require.resolve('./server/system/connections')];
+        // if (isRequireDbConnection) reject('DB connection cannot be included in gulp.');
+        // else resolve();
     });
 });
 
