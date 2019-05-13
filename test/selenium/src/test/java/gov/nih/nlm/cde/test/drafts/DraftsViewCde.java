@@ -18,10 +18,7 @@ public class DraftsViewCde extends NlmCdeBaseTest {
         goToMyDrafts();
         textNotPresent("Person Elevated Uring");
 
-        hangon(1);
-        clickElement(By.id("username_link"));
-        clickElement(By.id("user_account_management"));
-        clickElement(By.xpath("//div[. = 'Drafts']"));
+        goToMyOrgDrafts();
         findElement(By.linkText("Person Elevated Urine Protein Measurement Clinical Trial Eligibility Criteria Yes No Indicator"));
         textPresent("ctepOnlyCurator");
         logout();
@@ -29,9 +26,7 @@ public class DraftsViewCde extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToMyDrafts();
         textNotPresent("Person Elevated Uring");
-        clickElement(By.id("username_link"));
-        clickElement(By.id("user_site_management"));
-        clickElement(By.xpath("//div[. = 'Drafts']"));
+        goToAllDrafts();
         findElement(By.linkText("Person Elevated Urine Protein Measurement Clinical Trial Eligibility Criteria Yes No Indicator"));
         textPresent("ctepOnlyCurator");
     }

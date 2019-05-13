@@ -272,9 +272,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void addOrg(String orgName, String orgLongName, String orgWGOf) {
-        clickElement(By.id("username_link"));
-        clickElement(By.linkText("Org Management"));
-        clickElement(By.xpath("//div[. = 'Organizations']"));
+        goToOrganizations();
         findElement(By.name("newOrgName")).sendKeys(orgName);
 
         if (orgLongName != null) {
@@ -336,6 +334,11 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         clickElement(By.id("idSources"));
     }
 
+    protected void goToOrganizations() {
+        goToSettings();
+        clickElement(By.id("organizations"));
+    }
+
     protected void goToUsers() {
         goToSettings();
         clickElement(By.id("users"));
@@ -379,14 +382,37 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         clickElement(By.id("myDrafts"));
     }
 
+    protected void goToMyOrgDrafts() {
+        goToSettings();
+        clickElement(By.id("myOrgDrafts"));
+        textPresent("My Organization Drafts");
+    }
+
+    protected void goToAllDrafts() {
+        goToSettings();
+        clickElement(By.id("allDrafts"));
+        textPresent("All Drafts");
+    }
+
     protected void goToMyComments() {
         goToSettings();
         clickElement(By.id("myComments"));
     }
 
+    protected void goToMyOrgComments() {
+        goToSettings();
+        clickElement(By.id("myOrgComments"));
+    }
+
     protected void goToAllComments() {
         goToSettings();
         clickElement(By.id("allComments"));
+    }
+
+    protected void goToValidationRules() {
+        goToSettings();
+        clickElement(By.id("validationRules"));
+        textPresent("Add New Rule");
     }
 
     protected void goToServerStatus() {

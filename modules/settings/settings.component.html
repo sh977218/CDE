@@ -20,11 +20,11 @@
                         <mat-list-item id="myDrafts" [routerLinkActive]="['is-active']" routerLink="myDrafts">
                             My Drafts
                         </mat-list-item>
-                        <mat-list-item *ngIf="userSvc.isOrgAdmin()"
+                        <mat-list-item id="myOrgDrafts" *ngIf="userSvc.isOrgAdmin()"
                                        [routerLinkActive]="['is-active']" routerLink="myOrgDrafts">
                             My Organizations' Drafts
                         </mat-list-item>
-                        <mat-list-item *ngIf="userSvc.isOrgAuthority()"
+                        <mat-list-item id="allDrafts" *ngIf="userSvc.isOrgAuthority()"
                                        [routerLinkActive]="['is-active']" routerLink="allDrafts">
                             All Drafts
                         </mat-list-item>
@@ -39,7 +39,7 @@
                     <mat-list-item id="myComments" [routerLinkActive]="['is-active']" routerLink="myComments">
                         My Comments
                     </mat-list-item>
-                    <mat-list-item *ngIf="userSvc.isOrgAdmin()"
+                    <mat-list-item id="myOrgComments" *ngIf="userSvc.isOrgAdmin()"
                                    [routerLinkActive]="['is-active']" routerLink="myOrgComments">
                         My Organizations' Comments
                     </mat-list-item>
@@ -61,7 +61,7 @@
                         <mat-list-item id="curators" [routerLinkActive]="['is-active']" routerLink="orgCurator">
                             Curators
                         </mat-list-item>
-                        <mat-list-item *ngIf="userSvc.isOrgAuthority()"
+                        <mat-list-item id="organizations" *ngIf="userSvc.isOrgAuthority()"
                                        [routerLinkActive]="['is-active']" routerLink="orgsEdit">
                             Manage
                         </mat-list-item>
@@ -69,7 +69,7 @@
                                        [routerLinkActive]="['is-active']" routerLink="listManagement">
                             List Management
                         </mat-list-item>
-                        <mat-list-item *ngIf="userSvc.isOrgAuthority()"
+                        <mat-list-item id="validationRules" *ngIf="userSvc.isOrgAuthority()"
                                        [routerLinkActive]="['is-active']" routerLink="statusValidationRules">
                             Validation Rules
                         </mat-list-item>
