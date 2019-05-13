@@ -48,6 +48,7 @@ import { OneListMgtComponent } from 'settings/listManagement/oneListMgt.componen
 import { MyPublishedFormsComponent } from 'settings/myPublishedForms/myPublishedForms.component';
 import { InlineAreaEditModule } from 'inlineAreaEdit/inlineAreaEdit.module';
 import { InlineSelectEditModule } from 'inlineSelectEdit/inlineSelectEdit.module';
+import { TagModule } from 'tag/tag.module';
 
 const appRoutes: Routes = [
     {
@@ -238,6 +239,7 @@ const appRoutes: Routes = [
         InlineEditModule,
         InlineAreaEditModule,
         InlineSelectEditModule,
+        TagModule,
         BoardModule,
         CdeSearchModule,
         FormSearchModule,
