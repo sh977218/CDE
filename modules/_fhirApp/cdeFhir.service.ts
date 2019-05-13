@@ -19,6 +19,7 @@ import async_memoize from 'async/memoize';
 import async_series from 'async/series';
 import async_some from 'async/some';
 import { questionAnswered, findQuestionByTinyId, isQuestion } from 'core/form/fe';
+import { questionToFhirValue, storeTypedValue } from 'core/mapping/fhir/to/datatypeToItemType';
 import { getIds, getTinyId, getVersion } from 'core/form/formAndFe';
 import diff from 'deep-diff';
 import _intersectionWith from 'lodash/intersectionWith';
@@ -44,10 +45,7 @@ import { newProcedure } from 'shared/mapping/fhir/resource/fhirProcedure';
 import {
     newQuestionnaireResponse, newQuestionnaireResponseItem
 } from 'shared/mapping/fhir/resource/fhirQuestionnaireResponse';
-import {
-    containerToItemType,
-    questionToFhirValue, storeTypedValue, valueToTypedValue
-} from 'shared/mapping/fhir/to/datatypeToItemType';
+import { containerToItemType, valueToTypedValue } from 'shared/mapping/fhir/to/datatypeToItemType';
 import { formToQuestionnaire } from 'shared/mapping/fhir/to/toQuestionnaire';
 import { deepCopy, reduceOptionalArray } from 'shared/system/util';
 import { isArray } from 'util';
@@ -102,7 +100,7 @@ function isSupportedResourceRelationship(self: ResourceTreeResource, parent?: Re
 }
 
 function resourceCodeableConceptMatch(resources: FhirDomainResource[], transform: CbRet<FhirCodeableConcept[], any>, ids: CdeId[]) {
-    let found = undefined;
+    let found: FhirDomainResource | undefined = undefined;
     resources.some(r => {
         if (codeableConceptMatch(transform(r), ids)) {
             found = r;
@@ -264,9 +262,9 @@ export class CdeFhirService {
                             q.question.cde.ids.forEach(id => {
                                 this.getDisplay(id.source, id.id);
                             });
-                            applyCodeMapping(fhirApp, q.question.answers, 'codeSystemName',
+                            applyCodeMapping(fhirApp, q.question.answers || [], 'codeSystemName',
                                 'permissibleValue');
-                            applyCodeMapping(fhirApp, q.question.cde.permissibleValues, 'codeSystemName',
+                            applyCodeMapping(fhirApp, q.question.cde.permissibleValues || [], 'codeSystemName',
                                 'permissibleValue');
                         }
                     );
@@ -519,12 +517,12 @@ export class CdeFhirService {
                     } else {
                         if (procedureMapping.procedureQuestionID) {
                             let q = findQuestionByTinyId(procedureMapping.procedureQuestionID, self.crossReference);
-                            if (q && q.question.answers.length) {
+                            if (q && q.question.answers!.length) {
                                 let procedures: FhirProcedure[] = [];
                                 let subtype = self.map!.questionProperties
                                     .filter(p => p.property === 'code')
                                     .map((p: any) => p.subTypes[0])[0];
-                                return Promise.all(q.question.answers.map(a => {
+                                return Promise.all(q.question.answers!.map(a => {
                                     return this.fhirData.search<FhirProcedure>('Procedure',
                                         {code: codeSystemOut(a.codeSystemName || subtype || 'SNOMED') + '|' + a.permissibleValue})
                                         .then(r => {

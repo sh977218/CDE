@@ -46,8 +46,7 @@ setTimeout(function() {
             uri: String,
             providerOrg: String,
             title: String,
-            languageCode: String,
-            _id: false
+            languageCode: String
         });
 
         if (nidaForm.version) newCdeForm.version = nidaForm.version;

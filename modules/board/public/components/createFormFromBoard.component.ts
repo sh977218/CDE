@@ -26,6 +26,7 @@ export class CreateFormFromBoardComponent {
             res => {
                 if (res.elts.length > 0) {
                     this.elt = new CdeForm();
+                    this.elt.classification = [];
                     this.elt.designations.push(new Designation(this.board.name));
                     this.elt.definitions.push(new Definition());
                     this.elt.formElements.push(new FormSection());

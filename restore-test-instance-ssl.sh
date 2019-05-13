@@ -26,7 +26,7 @@ mongorestore -u $db_user -p $db_password --ssl --sslCAFile ./ssl/mongodb.pem --s
 mongorestore -u $db_user -p $db_password --ssl --sslCAFile ./ssl/mongodb.pem --sslAllowInvalidCertificates --drop -d cde-logs-test test/data/cde-logs-test/
 
 echo "deleting es index."
-gulp es
+npx gulp es
 
 
 

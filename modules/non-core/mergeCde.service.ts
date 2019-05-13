@@ -2,11 +2,12 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ElasticService } from '_app/elastic.service';
 import { AlertService } from 'alert/alert.service';
+import { mergeArrayByProperty } from 'core/adminItem/classification';
 import { SearchSettings } from 'search/search.model';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import { DataElement } from 'shared/de/dataElement.model';
 import { ElasticQueryResponse } from 'shared/models.model';
-import { mergeArrayByProperty, transferClassifications } from 'shared/system/classificationShared';
+import { transferClassifications } from 'shared/system/classificationShared';
 
 
 @Injectable()

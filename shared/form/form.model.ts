@@ -70,16 +70,32 @@ export class CdeForm extends Elt implements FormElementsContainer {
             q => {
                 feValid(q);
                 if (!q.question) q.question = new Question();
-                if (!Array.isArray(q.question.answers)) q.question.answers = [];
                 if (!Array.isArray(q.question.unitsOfMeasure)) q.question.unitsOfMeasure = [];
                 if (!q.question.cde) q.question.cde = new QuestionCde();
-                if (!Array.isArray(q.question.cde.permissibleValues)) q.question.cde.permissibleValues = [];
                 if (!Array.isArray(q.question.cde.derivationRules)) q.question.cde.derivationRules = [];
-                if (!q.question.datatypeDate) q.question.datatypeDate = new QuestionTypeDate();
-                if (!q.question.datatypeNumber) q.question.datatypeNumber = new QuestionTypeNumber();
-                if (!q.question.datatypeText) q.question.datatypeText = new QuestionTypeText();
                 if (!Array.isArray(q.question.uomsAlias)) q.question.uomsAlias = [];
                 if (!Array.isArray(q.question.uomsValid)) q.question.uomsValid = [];
+                switch (q.question.datatype) {
+                    case 'Value List':
+                        if (!Array.isArray(q.question.answers)) q.question.answers = [];
+                        if (!Array.isArray(q.question.cde.permissibleValues)) q.question.cde.permissibleValues = [];
+                        break;
+                    case 'Date':
+                        if (!q.question.datatypeDate) q.question.datatypeDate = new QuestionTypeDate();
+                        break;
+                    case 'Geo Location':
+                    case 'Time':
+                    case 'Externally Defined':
+                    case 'File':
+                        break;
+                    case 'Number':
+                        if (!q.question.datatypeNumber) q.question.datatypeNumber = new QuestionTypeNumber();
+                        break;
+                    case 'Text':
+                    default:
+                        if (!q.question.datatypeText) q.question.datatypeText = new QuestionTypeText();
+                        break;
+                }
             }
         );
     }
@@ -298,7 +314,7 @@ export class Question extends DatatypeContainer {
     answerUom?: CodeAndSystem; // volatile, input uom value
     answerDate?: any; // volatile, working storage for date part
     answerTime?: any; // volatile, working storage for time part
-    answers: PermissibleFormValue[] = []; // mutable
+    answers?: PermissibleFormValue[]; // mutable
     cde: QuestionCde = new QuestionCde();
     defaultAnswer?: string; // all datatypes, defaulted by areDerivationRulesSatisfied
     editable?: boolean = true;
@@ -321,7 +337,7 @@ export class QuestionCde extends EltRefCaching { // copied from original data el
     derivationRules: DerivationRule[] = [];
     designations: Designation[] = [];
     naming = [];
-    permissibleValues: PermissibleValue[] = [];
+    permissibleValues?: PermissibleValue[];
 }
 
 class Section {
