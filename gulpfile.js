@@ -2,6 +2,7 @@ const data = require('gulp-data');
 const fs = require('fs');
 const git = require('gulp-git');
 const gulp = require('gulp');
+const exec = require('gulp-exec');
 const htmlmin = require('gulp-htmlmin');
 const install = require('gulp-install');
 const merge = require('merge-stream');
@@ -291,9 +292,15 @@ gulp.task('checkDbConnection', function _buildHome() {
     });
 });
 
-gulp.task('mongorestore',function _mongorestore(){
-
+gulp.task('mongoRestore', function _mongoRestore(cb) {
+    let appData = config.database.appData;
+    let command = 'mongorestore -u ' + appData.username + ' -p ' + appData.password + ' --authenticationDatabase admin -h dvlbmongodb01:27017 -d ' + config.hostname + '-test-ci --drop test/data/test/';
+    exec(command, function (err, stdout, stderr) {
+        console.log('mongoRestore Result: ' + stdout);
+        console.log('mongoRestore stderr+ ' + stderr);
+        cb(err);
+    });
 });
-gulp.task('default', gulp.series('copyNpmDeps', 'prepareVersion', 'copyUsemin', 'checkDbConnection'));
+gulp.task('default', gulp.series('mongoRestore', 'copyNpmDeps', 'prepareVersion', 'copyUsemin', 'checkDbConnection'));
 
 
