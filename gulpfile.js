@@ -289,6 +289,10 @@ gulp.task('checkDbConnection', function _buildHome() {
         else resolve();
     });
 });
+
+gulp.task('mongorestore',function _mongorestore(){
+
+});
 gulp.task('default', gulp.series('copyNpmDeps', 'prepareVersion', 'copyUsemin', 'checkDbConnection'));
 
 
