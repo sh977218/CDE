@@ -17,7 +17,7 @@ import { switchMap, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { DataTypeArray, QuestionTypeDate, QuestionTypeNumber, QuestionTypeText } from 'shared/de/dataElement.model';
 import { pvGetLabel } from 'core/de/deShared';
 import { iterateFeSync } from 'shared/form/fe';
-import { FormElement, FormQuestion, PermissibleFormValue, SkipLogic } from 'shared/form/form.model';
+import { FormElement, FormQuestion, PermissibleFormValue, Question, SkipLogic } from 'shared/form/form.model';
 import { CodeAndSystem, FormattedValue } from 'shared/models.model';
 import { fixDatatype } from 'shared/de/deValidator';
 
