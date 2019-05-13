@@ -21,7 +21,8 @@ public class NewSiteVersion extends NlmCdeBaseTest {
 
         given().body("{}").post(baseUrl + "/site-version");
 
-        goToFormSearch();
+        clickElement(By.id("menu_forms_link"));
+
         clickElement(By.cssSelector("[data-id = 'notifications']"));
         textPresent("A new version of this site is available");
     }
