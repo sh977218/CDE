@@ -1,6 +1,4 @@
-const config = require('./server/system/parseConfig');
 const data = require('gulp-data');
-const esInit = require('./server/system/elasticSearchInit');
 const fs = require('fs');
 const git = require('gulp-git');
 const gulp = require('gulp');
@@ -14,6 +12,9 @@ const rev = require('gulp-rev');
 const run = require('gulp-run');
 const uglify = require('gulp-uglify');
 const usemin = require('gulp-usemin');
+
+const config = require('./server/system/parseConfig');
+const esInit = require('./server/system/elasticSearchInit');
 
 require('es6-promise').polyfill();
 
@@ -147,14 +148,14 @@ gulp.task('copyDist', gulp.series('createDist',
         buildEmbed = () => run('npm run buildEmbed').exec(),
         buildFhir = () => run('npm run buildFhir').exec(),
         buildLambdaValidateSDC = () => run('npm run buildFnAwsJava').exec(),
-    )
-    , copyApp = () => gulp.src(['./dist/app/**/*', '!./dist/app/cde.css', '!./dist/app/cde.js']).pipe(gulp.dest(config.node.buildDir + '/dist/app'))
-    , copyEmbed = () => gulp.src(['./dist/embed/**/*', '!./dist/embed/embed.css', '!./dist/embed/embed.js']).pipe(gulp.dest(config.node.buildDir + '/dist/embed'))
-    , copyFhir = () => gulp.src(['./dist/fhir/*', '!./dist/fhir/fhir.css', '!./dist/fhir/fhir.js']).pipe(gulp.dest(config.node.buildDir + '/dist/fhir'))
-    , copyNative = () => gulp.src(['./dist/native/**/*', '!./dist/native/native.css', '!./dist/native/native.js']).pipe(gulp.dest(config.node.buildDir + '/dist/native'))
-    , copyHome = () => gulp.src('./modules/system/views/home-launch.ejs').pipe(gulp.dest(config.node.buildDir + '/modules/system/views'))
-    , copyLaunch = () => gulp.src('./dist/launch/*').pipe(gulp.dest(config.node.buildDir + '/dist/launch'))
-    , copyServerless = () => gulp.src('./serverless-aws-java/**/*').pipe(gulp.dest(config.node.buildDir + '/serverless-aws-java'))
+    ),
+    copyApp = () => gulp.src(['./dist/app/**/*', '!./dist/app/cde.css', '!./dist/app/cde.js']).pipe(gulp.dest(config.node.buildDir + '/dist/app')),
+    copyEmbed = () => gulp.src(['./dist/embed/**/*', '!./dist/embed/embed.css', '!./dist/embed/embed.js']).pipe(gulp.dest(config.node.buildDir + '/dist/embed')),
+    copyFhir = () => gulp.src(['./dist/fhir/*', '!./dist/fhir/fhir.css', '!./dist/fhir/fhir.js']).pipe(gulp.dest(config.node.buildDir + '/dist/fhir')),
+    copyNative = () => gulp.src(['./dist/native/**/*', '!./dist/native/native.css', '!./dist/native/native.js']).pipe(gulp.dest(config.node.buildDir + '/dist/native')),
+    copyHome = () => gulp.src('./modules/system/views/home-launch.ejs').pipe(gulp.dest(config.node.buildDir + '/modules/system/views')),
+    copyLaunch = () => gulp.src('./dist/launch/*').pipe(gulp.dest(config.node.buildDir + '/dist/launch')),
+    copyServerless = () => gulp.src('./serverless-aws-java/**/*').pipe(gulp.dest(config.node.buildDir + '/serverless-aws-java'))
 ));
 
 gulp.task('usemin', gulp.series('copyDist', function _usemin() {
@@ -173,11 +174,11 @@ gulp.task('usemin', gulp.series('copyDist', function _usemin() {
         }
 
         function getCssLink(/*file*/) {
-            return  '"' + useminOutputs.filter(f => f.endsWith('.css'))[0] + '"';
+            return '"' + useminOutputs.filter(f => f.endsWith('.css'))[0] + '"';
         }
 
         function getJsLink(/*file*/) {
-            return  '"' + useminOutputs.filter(f => f.endsWith('.js'))[0] + '"';
+            return '"' + useminOutputs.filter(f => f.endsWith('.js'))[0] + '"';
         }
 
         let useminTask = gulp.src(item.folder + item.filename)
@@ -185,7 +186,7 @@ gulp.task('usemin', gulp.series('copyDist', function _usemin() {
                 jsAttributes: {async: true},
                 assetsDir: './dist/',
                 css: [minifyCss(), 'concat', rev(), data(outputFile)],
-                html: [ htmlmin({
+                html: [htmlmin({
                     collapseInlineTagWhitespace: true,
                     collapseWhitespace: true,
                     conservativeCollapse: true,
@@ -196,7 +197,7 @@ gulp.task('usemin', gulp.series('copyDist', function _usemin() {
                     removeComments: true,
                     removeScriptTypeAttributes: true,
                     removeStyleLinkTypeAttributes: true,
-                }) ],
+                })],
                 js: ['concat', rev(), data(outputFile)],
                 poly: [uglify({mangle: false}), 'concat', rev()],
             }))
@@ -246,10 +247,9 @@ gulp.task('es', function _es() {
         hosts: config.elastic.hosts
     });
     let allIndex = esInit.indices.map(i => i.indexName);
-    return new Promise(function (resolve) {
-        esClient.indices.delete({index: allIndex, timeout: '6s'}, () => {
-            resolve();
-        });
+    console.log('allIndex ' + allIndex);
+    return new Promise((resolve, reject) => {
+        esClient.indices.delete({index: allIndex, timeout: '6s'}, err => err ? reject(err) : resolve());
     });
 });
 
