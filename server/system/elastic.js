@@ -668,7 +668,7 @@ exports.elasticsearch = function (type, query, settings, cb) {
             for (let i = 0; i < response.hits.hits.length; i++) {
                 let thisCde = response.hits.hits[i]._source;
                 thisCde.score = response.hits.hits[i]._score;
-                if (thisCde.valueDomain && thisCde.valueDomain.permissibleValues.length > 10) {
+                if (thisCde.valueDomain && thisCde.valueDomain.permissibleValues && thisCde.valueDomain.permissibleValues.length > 10) {
                     thisCde.valueDomain.permissibleValues = thisCde.valueDomain.permissibleValues.slice(0, 10);
                 }
                 thisCde.properties = [];

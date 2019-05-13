@@ -128,7 +128,7 @@ export class NativeRenderService {
     }
 
     static isPreselectedRadio(fe: FormQuestion) {
-        return !fe.question.multiselect && fe.question.answers.length === 1 && fe.question.required;
+        return !fe.question.multiselect && (fe.question.answers || []).length === 1 && fe.question.required;
     }
 
     get nativeRenderType(): DisplayType {
@@ -188,7 +188,7 @@ export class NativeRenderService {
             if (Array.isArray(f.question.answers)) {
                 for (let i = 0; i < f.question.answers.length; i++) {
                     let answer = f.question.answers[i];
-                    if (!f.question.cde.permissibleValues.some(p => p.permissibleValue === answer.permissibleValue)) {
+                    if (f.question.cde.permissibleValues && !f.question.cde.permissibleValues.some(p => p.permissibleValue === answer.permissibleValue)) {
                         f.question.answers.splice(i--, 1);
                     } else {
                         if (answer.formElements) answer.formElements = [];
@@ -203,8 +203,8 @@ export class NativeRenderService {
             if (f.question.unitsOfMeasure && f.question.unitsOfMeasure.length === 1) {
                 f.question.answerUom = f.question.unitsOfMeasure[0];
             }
-            if (NativeRenderService.isPreselectedRadio(f)) {
-                f.question.answer = f.question.answers[0].permissibleValue;
+            if (f.question.datatype === 'Value List' && NativeRenderService.isPreselectedRadio(f)) {
+                f.question.answer = f.question.answers![0].permissibleValue;
             }
         });
 
@@ -298,13 +298,13 @@ export class NativeRenderService {
 
                     if (parentQ.question.datatype === 'Value List') {
                         if (match[3] === "") { // not answered, own line "is none"
-                            parentQ.question.answers.push({
+                            parentQ.question.answers!.push({
                                 permissibleValue: NativeRenderService.createRelativeText([match[3]], match[2], true),
                                 nonValuelist: true,
                                 formElements: [Object.create(fe, {feId: {value: fe.feId + getNotMappedSuffix()}})]
                             });
                         } else {
-                            let answer = parentQ.question.answers.filter(a => a.permissibleValue === match[3])[0];
+                            let answer = parentQ.question.answers!.filter(a => a.permissibleValue === match[3])[0];
                             if (answer) {
                                 if (!answer.formElements) answer.formElements = [];
                                 answer.formElements.push(Object.create(fe, {feId: {value: fe.feId + getNotMappedSuffix()}}));
@@ -392,7 +392,7 @@ export class NativeRenderService {
                 case 'question':
                     if ((fe as FormQuestion).question && (fe as FormQuestion).question.answers) {
                         let index = -1;
-                        (fe as FormQuestion).question.answers.forEach((pv: PermissibleFormValue, i, a) => {
+                        ((fe as FormQuestion).question.answers || []).forEach((pv: PermissibleFormValue, i, a) => {
                             if (NativeRenderService.hasOwnRow(pv) || index === -1 && (i + 1 < a.length
                                 && NativeRenderService.hasOwnRow(a[i + 1]) || i + 1 === a.length)) {
                                 pv.index = index = -1;

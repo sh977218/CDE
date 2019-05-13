@@ -51,6 +51,7 @@
     "modules/skipLogic",
     "modules/system",
     "modules/swagger",
+    "modules/tag",
     "modules/usernameAutocomplete",
     "node_modules",
     "protractor",

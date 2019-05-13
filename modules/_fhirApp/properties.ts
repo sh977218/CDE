@@ -64,8 +64,8 @@ export function propertyToQuestion(q: FormQuestion, parent: ResourceTreeResource
             if (name === 'usedReference' && map && map.mapping && Array.isArray(map.mapping.usedReferencesMaps)) {
                 value = value.map((a: string) => {
                     let i = map!.mapping.usedReferencesMaps!.indexOf(a);
-                    if (i > -1 && q.question.answers[i] && q.question.answers[i].permissibleValue) {
-                        return q.question.answers[i].permissibleValue;
+                    if (i > -1 && q.question.answers![i] && q.question.answers![i].permissibleValue) {
+                        return q.question.answers![i].permissibleValue;
                     }
                     return a;
                 });
@@ -113,9 +113,9 @@ export function questionToProperty(q: FormQuestion, parent: ResourceTreeResource
         default:
             if (name === 'usedReference' && map && map.mapping && Array.isArray(map.mapping.usedReferencesMaps)) {
                 value = value.map((a: string) => {
-                    let match = q.question.answers.filter(pv => pv.permissibleValue === a)[0];
+                    let match = q.question.answers!.filter(pv => pv.permissibleValue === a)[0];
                     if (match) {
-                        let staticValue = map!.mapping.usedReferencesMaps![q.question.answers.indexOf(match)];
+                        let staticValue = map!.mapping.usedReferencesMaps![q.question.answers!.indexOf(match)];
                         if (staticValue) {
                             return staticValue;
                         }

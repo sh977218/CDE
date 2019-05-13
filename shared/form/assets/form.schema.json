@@ -21,7 +21,11 @@
               "type": "string"
             },
             "valueFormat": {
-              "type": "string"
+              "type": "string",
+              "description": "If 'html', interpret as HTML",
+              "enum": [
+                "html"
+              ]
             }
           }
         },
@@ -103,6 +107,7 @@
                     },
                     "designations": {
                       "type": "array",
+                      "minItems": 1,
                       "items": { "$ref": "AdminItem#/definitions/designation" },
                       "description": "Any string used by which Item is known, addressed or referred to"
                     },

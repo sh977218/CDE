@@ -2,7 +2,7 @@ import { ENTER } from '@angular/cdk/keycodes';
 import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { MatChipInputEvent, MatDialog } from '@angular/material';
+import { MatChipInputEvent, MatDialog, MatSelectChange } from '@angular/material';
 import { AlertService } from 'alert/alert.service';
 import { TreeNode } from 'angular-tree-component';
 import { repeatFe, repeatFeLabel, repeatFeQuestion } from 'core/form/fe';
@@ -14,7 +14,7 @@ import _clone from 'lodash/clone';
 import _noop from 'lodash/noop';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { switchMap, debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { DataTypeArray } from 'shared/de/dataElement.model';
+import { DataTypeArray, QuestionTypeDate, QuestionTypeNumber, QuestionTypeText } from 'shared/de/dataElement.model';
 import { pvGetLabel } from 'core/de/deShared';
 import { iterateFeSync } from 'shared/form/fe';
 import { FormElement, FormQuestion, PermissibleFormValue, SkipLogic } from 'shared/form/form.model';
@@ -47,7 +47,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         if (this.question.question.unitsOfMeasure) {
             this.ucumService.validateUoms(this.question.question);
         }
-        this.questionAnswers = this.question.question.answers.map(pvGetLabel);
+        this.questionAnswers = (this.question.question.answers || []).map(pvGetLabel);
     }
 
     @Output() onEltChange: EventEmitter<void> = new EventEmitter<void>();
@@ -89,6 +89,35 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
                 switchMap(value => value.length < 3 ? [] : this.ucumService.searchUcum(value)
                 )
             ).subscribe(uoms => this.filteredUoms = uoms);
+    }
+
+    datatypeChange(q) {
+        q.question.answers = undefined;
+        q.question.cde.permissibleValues = undefined;
+        q.question.datatypeDate = undefined;
+        q.question.datatypeNumber = undefined;
+        q.question.datatypeText = undefined;
+        switch (q.question.datatype) {
+            case 'Value List':
+                q.question.answers = [];
+                q.question.cde.permissibleValues = [];
+                break;
+            case 'Date':
+                q.question.datatypeDate = new QuestionTypeDate();
+                break;
+            case 'Geo Location':
+            case 'Time':
+            case 'Externally Defined':
+            case 'File':
+                break;
+            case 'Number':
+                q.question.datatypeNumber = new QuestionTypeNumber();
+                break;
+            case 'Text':
+            default:
+                q.question.datatypeText = new QuestionTypeText();
+                break;
+        }
     }
 
     getTemplate() {
@@ -154,7 +183,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
             if (idArray.length !== 2) {
                 return this.alert.addAlert("danger", "Incorrect Identifier Format");
             }
-            this.question.question.cde.ids.push(<any>{
+            this.question.question.cde.ids.push({
                 source: idArray[0].trim(),
                 id: idArray[1].trim()
             });
@@ -175,7 +204,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         const value = event.value;
 
         if ((value || '').trim()) {
-            this.question.question.cde.designations.push(<any>{
+            this.question.question.cde.designations.push({
                 designation: value.trim()
             });
         }
@@ -195,7 +224,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         const value = event.value;
 
         if ((value || '').trim()) {
-            this.question.question.cde.permissibleValues.push(<any>{
+            this.question.question.cde.permissibleValues.push({
                 permissibleValue: value.trim(),
                 valueMeaningName: value.trim()
             });
@@ -222,7 +251,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     }
 
     private syncAnswerListItems() {
-        this.answerListItems = this.question.question.cde.permissibleValues.map(p => {
+        this.answerListItems = (this.question.question.cde.permissibleValues || []).map(p => {
             let value = p.valueMeaningName;
             if (!value) value = p.permissibleValue;
             return value;
@@ -231,16 +260,20 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     }
 
     private syncDefaultAnswerListItems() {
-        this.defaultAnswerListItems = this.question.question.answers.map(p => {
+        this.defaultAnswerListItems = (this.question.question.answers || []).map(p => {
             let value = p.valueMeaningName;
             if (!value) value = p.permissibleValue;
             return value;
         });
     }
 
-    onDatatypeChange(question, event) {
+    onDatatypeChange(question: Question, event: MatSelectChange) {
         question.datatype = event.value;
-        fixDatatype(this.elt);
+        fixDatatype(question);
+        if (question.datatype === 'Value List') {
+            question.answers = [];
+            question.cde.permissibleValues = [];
+        }
         this.onEltChange.emit();
     }
 
