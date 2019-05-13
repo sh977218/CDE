@@ -2,18 +2,20 @@ const ClientErrorModel = require('../log/dbLogger').ClientErrorModel;
 const LogErrorModel = require('../log/dbLogger').LogErrorModel;
 
 exports.getNumberServerError = (user, callback) => {
-    LogErrorModel.countDocuments(
+    let promise = LogErrorModel.countDocuments(
         user.notificationDate.serverLogDate
             ? {date: {$gt: user.notificationDate.serverLogDate}}
-            : {},
-        callback
-    );
+            : {}
+    ).exec();
+    if (callback) promise.then(callback);
+    else return promise;
 };
 exports.getNumberClientError = (user, callback) => {
-    ClientErrorModel.countDocuments(
+    let promise = ClientErrorModel.countDocuments(
         user.notificationDate.clientLogDate
             ? {date: {$gt: user.notificationDate.clientLogDate}}
-            : {},
-        callback
-    );
+            : {}
+    ).exec();
+    if (callback) promise.then(callback);
+    else return promise;
 };

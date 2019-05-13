@@ -1,13 +1,10 @@
 package gov.nih.nlm.system;
 
-import io.restassured.response.Response;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.annotations.Test;
 
 import static io.restassured.RestAssured.given;
-//import static io.restassured.RestAssured.post;
-
 
 public class NewSiteVersion extends NlmCdeBaseTest {
 
@@ -19,7 +16,7 @@ public class NewSiteVersion extends NlmCdeBaseTest {
         ExpectedConditions.not(ExpectedConditions.visibilityOfElementLocated
                 (By.cssSelector("[data-id = 'notifications']")));
 
-        given().body("{}").post(baseUrl + "/site-version");
+        given().body("{}").post(baseUrl + "/server/user/site-version");
 
         clickElement(By.id("menu_forms_link"));
 

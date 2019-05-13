@@ -172,6 +172,6 @@ exports.unapproved = cb => {
     async.map(
         daoManager.getDaoList(),
         (dao, done) => dao.type !== 'board' ? dao.dao.find({'attachments.pendingApproval': true}, done) : done(undefined, []),
-        (err, results) => err ? cb(err) : cb(undefined, [].concat.apply([], results))
+        (err, results) => cb(err, [].concat.apply([], results))
     );
 };

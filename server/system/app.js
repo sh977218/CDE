@@ -135,13 +135,6 @@ exports.init = function (app) {
 
     app.get('/site-version', (req, res) => res.send(version));
 
-    if (!config.proxy) {
-        app.post('/site-version', (req, res) => {
-            version = version + '.';
-            res.send();
-        });
-    }
-
     app.get('/cde/search', (req, res) => {
         let selectedOrg = req.query.selectedOrg;
         let pageString = req.query.page;// starting from 1
