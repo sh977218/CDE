@@ -317,8 +317,8 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
 
     protected void goToSettings() {
         clickElement(By.id("username_link"));
-        clickElement(By.id("user_settings"));
         textPresent("Settings");
+        clickElement(By.id("user_settings"));
     }
 
     protected void goToStewardTransfer() {
