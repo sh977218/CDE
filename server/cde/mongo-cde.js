@@ -24,7 +24,9 @@ fs.readFile(path.resolve(__dirname, '../../shared/de/assets/dataElement.schema.j
         process.exit(1);
     }
     try {
-        validateSchema = ajvElt.compile(JSON.parse(file.toString()));
+        const schema = JSON.parse(file.toString());
+        schema.$async = true;
+        exports.validateSchema = validateSchema = ajvElt.compile(schema);
     } catch (err) {
         console.log('Error: dataElement.schema.json does not compile. ' + err);
         process.exit(1);

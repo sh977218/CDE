@@ -105,13 +105,13 @@ export function projectCdeForExport(ele, settings) {
         cde.valueDomainType = ele.valueDomain.datatype;
     }
     if (settings.permissibleValues) {
-        cde.permissibleValues = ele.valueDomain.permissibleValues.slice(0, 50).map(pv => pv.permissibleValue);
+        cde.permissibleValues = (ele.valueDomain.permissibleValues || []).slice(0, 50).map(pv => pv.permissibleValue);
     }
     if (settings.pvCodeNames) {
-        cde.pvCodeNames = ele.valueDomain.permissibleValues.slice(0, 50).map(pv => pv.valueMeaningName);
+        cde.pvCodeNames = (ele.valueDomain.permissibleValues || []).slice(0, 50).map(pv => pv.valueMeaningName);
     }
     if (settings.nbOfPVs) {
-        if (ele.valueDomain.permissibleValues) cde.nbOfPVs = ele.valueDomain.permissibleValues.length | 0;  // jshint ignore:line
+        cde.nbOfPVs = ele.valueDomain.permissibleValues && ele.valueDomain.permissibleValues.length || 0;  // jshint ignore:line
     }
     if (settings.uom) {
         cde.uom = ele.valueDomain.uom;

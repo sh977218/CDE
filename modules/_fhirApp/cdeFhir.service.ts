@@ -100,7 +100,7 @@ function isSupportedResourceRelationship(self: ResourceTreeResource, parent?: Re
 }
 
 function resourceCodeableConceptMatch(resources: FhirDomainResource[], transform: CbRet<FhirCodeableConcept[], any>, ids: CdeId[]) {
-    let found = undefined;
+    let found: FhirDomainResource | undefined = undefined;
     resources.some(r => {
         if (codeableConceptMatch(transform(r), ids)) {
             found = r;
@@ -262,9 +262,9 @@ export class CdeFhirService {
                             q.question.cde.ids.forEach(id => {
                                 this.getDisplay(id.source, id.id);
                             });
-                            applyCodeMapping(fhirApp, q.question.answers, 'codeSystemName',
+                            applyCodeMapping(fhirApp, q.question.answers || [], 'codeSystemName',
                                 'permissibleValue');
-                            applyCodeMapping(fhirApp, q.question.cde.permissibleValues, 'codeSystemName',
+                            applyCodeMapping(fhirApp, q.question.cde.permissibleValues || [], 'codeSystemName',
                                 'permissibleValue');
                         }
                     );
@@ -517,12 +517,12 @@ export class CdeFhirService {
                     } else {
                         if (procedureMapping.procedureQuestionID) {
                             let q = findQuestionByTinyId(procedureMapping.procedureQuestionID, self.crossReference);
-                            if (q && q.question.answers.length) {
+                            if (q && q.question.answers!.length) {
                                 let procedures: FhirProcedure[] = [];
                                 let subtype = self.map!.questionProperties
                                     .filter(p => p.property === 'code')
                                     .map((p: any) => p.subTypes[0])[0];
-                                return Promise.all(q.question.answers.map(a => {
+                                return Promise.all(q.question.answers!.map(a => {
                                     return this.fhirData.search<FhirProcedure>('Procedure',
                                         {code: codeSystemOut(a.codeSystemName || subtype || 'SNOMED') + '|' + a.permissibleValue})
                                         .then(r => {
