@@ -3,34 +3,34 @@ require('./mongoose-stringtype')(mongoose);
 const Schema = mongoose.Schema;
 const StringType = Schema.Types.StringType;
 
-const regStatusShared = require('esm')(module)("../../shared/system/regStatusShared");
+const regStatusShared = require('esm')(module)('../../shared/system/regStatusShared');
 
-let csEltSchema = new Schema({
+let csEltSchema = {
     elements: [],
     name: {type: StringType, index: true}
-}, {_id: false});
+};
 
-exports.classificationSchema = new Schema({
+exports.classificationSchema = {
     stewardOrg: {
         name: {type: StringType, index: true}
     },
     workingGroup: Boolean,
     elements: [csEltSchema]
-}, {_id: false});
+};
 
-exports.codeAndSystemSchema = new Schema({
+exports.codeAndSystemSchema = {
     code: StringType,
     system: StringType,
-}, {_id: false});
+};
 
-exports.permissibleValueSchema = new Schema({
+exports.permissibleValueSchema = {
     permissibleValue: StringType,
     valueMeaningName: StringType,
     valueMeaningCode: StringType,
     valueMeaningDefinition: StringType,
     codeSystemName: StringType,
     codeSystemVersion: StringType
-}, {_id: false});
+};
 
 
 exports.derivationRuleSchema = new Schema({
@@ -41,21 +41,21 @@ exports.derivationRuleSchema = new Schema({
     formula: {type: StringType, enum: ['sumAll', 'mean', 'bmi']},
 }, {_id: true});
 
-exports.sourceSchema = new Schema({
+exports.sourceSchema = {
     sourceName: StringType,
     imported: {type: Date, description: 'Date imported from source'},
     created: {type: Date, description: 'Date created in source'},
     updated: {type: Date, description: 'Date updated in source'},
     registrationStatus: {
         type: StringType,
-        description: "Relative standing of official record status in steward's workflow"
+        description: 'Relative standing of official record status in steward\'s workflow'
     },
     datatype: {type: StringType, description: 'May contain the source datatype'},
     copyright: {
         value: {type: StringType, description: 'Content of a copyright statement or terms of use'},
-        valueFormat: {type: StringType, description: "If 'html', interpret as HTML"},
+        valueFormat: {type: StringType, description: 'If "html", interpret as HTML'},
     }
-}, {_id: false});
+};
 
 let commonEmbedSchema = {
     nameLabel: StringType,
@@ -120,16 +120,13 @@ exports.fhirAppSchema = new Schema({
     clientId: String,
     dataEndpointUrl: String,
     forms: [
-        {tinyId: String, _id: false}
+        {tinyId: String}
     ],
     mapping: [{
-        type: new Schema({
-            cdeSystem: StringType,
-            cdeCode: StringType,
-            fhirSystem: StringType,
-            fhirCode: StringType,
-        }, {_id: false}),
-        default: []
+        cdeSystem: StringType,
+        cdeCode: StringType,
+        fhirSystem: StringType,
+        fhirCode: StringType,
     }],
 }, {collection: 'fhirapps'});
 
@@ -153,13 +150,13 @@ exports.statusValidationRuleSchema = new Schema({
     id: Number,
     targetStatus: {
         type: StringType,
-        enum: ["Incomplete", "Recorded", "Candidate", "Qualified", "Standard", "Preferred Standard"]
+        enum: ['Incomplete', 'Recorded', 'Candidate', 'Qualified', 'Standard', 'Preferred Standard']
     },
     ruleName: StringType,
     rule: {
         regex: StringType
     },
-    occurence: {type: StringType, enum: ["exactlyOne", "atLeastOne", "all"]},
+    occurence: {type: StringType, enum: ['exactlyOne', 'atLeastOne', 'all']},
 });
 
 let orgJson = {
@@ -211,20 +208,20 @@ exports.pushRegistration = new Schema({
 
 exports.orgSchema.set('collection', 'orgs');
 
-exports.designationSchema = new Schema({
+exports.designationSchema = {
     designation: StringType,
     tags: [StringType],
     sources: {type: [StringType], default: undefined}
-}, {_id: false});
+};
 
-exports.definitionSchema = new Schema({
+exports.definitionSchema = {
     definition: {type: String, required: true, minlength: 1},
     definitionFormat: StringType,
     tags: [StringType],
     sources: {type: [StringType], default: undefined}
-}, {_id: false});
+};
 
-let attachmentSchema = {
+exports.attachmentSchema = {
     fileid: {type: StringType, index: true},
     filename: StringType,
     filetype: StringType,
@@ -239,8 +236,6 @@ let attachmentSchema = {
     scanned: Boolean
 };
 
-exports.attachmentSchema = new Schema(attachmentSchema, {_id: false});
-
 exports.registrationStateSchema = {
     registrationStatus: {type: StringType, enum: regStatusShared.orderedList},
     effectiveDate: Date,
@@ -254,14 +249,14 @@ exports.registrationStateSchema = {
     replacedBy: {tinyId: {type: StringType, description: 'tinyId of replacement CDE'}},
 };
 
-exports.propertySchema = new Schema({
+exports.propertySchema = {
     key: StringType,
     value: StringType,
     source: StringType,
     valueFormat: StringType
-}, {_id: false});
+};
 
-exports.idSchema = new Schema({source: StringType, id: StringType, version: StringType}, {_id: false});
+exports.idSchema = {source: StringType, id: StringType, version: StringType};
 
 let requestSchema = {
     source: {tinyId: StringType, id: StringType},
@@ -317,18 +312,18 @@ let boardApprovalSchema = {
 exports.message = new Schema({
     recipient: {
         name: StringType,
-        recipientType: {type: StringType, enum: ["user", "stewardOrg", "role"]},
+        recipientType: {type: StringType, enum: ['user', 'stewardOrg', 'role']},
     },
     author: {authorType: StringType, name: StringType},
     date: Date,
-    type: {type: StringType, enum: ["AttachmentApproval", "CommentReply", "BoardApproval"]},
+    type: {type: StringType, enum: ['AttachmentApproval', 'CommentReply', 'BoardApproval']},
     typeRequest: requestSchema,
     typeCommentApproval: commentApprovalSchema,
-    typeAttachmentApproval: attachmentSchema,
+    typeAttachmentApproval: exports.attachmentSchema,
     typeCommentReply: commentApprovalSchema,
     typeBoardApproval: boardApprovalSchema,
     states: [{
-        action: {type: StringType, enum: ["Approved", "Filed"]},
+        action: {type: StringType, enum: ['Approved', 'Filed']},
         comment: StringType,
         date: Date,
     }]
@@ -338,11 +333,11 @@ exports.message.set('collection', 'messages');
 
 exports.jobQueue = Schema({
     type: StringType,
-    status: {type: StringType, enum: ["Running"]},
+    status: {type: StringType, enum: ['Running']},
     error: StringType
 }, {usePushEach: true});
 
-exports.referenceDocumentSchema = new Schema({
+exports.referenceDocumentSchema = {
     docType: StringType,
     document: StringType,
     referenceDocumentId: StringType,
@@ -352,13 +347,15 @@ exports.referenceDocumentSchema = new Schema({
     title: StringType,
     languageCode: StringType,
     source: StringType
-}, {_id: false});
-exports.dataSetSchema = new Schema({
+};
+
+exports.dataSetSchema = {
     source: StringType,
     id: StringType,
     studyUri: StringType,
     notes: StringType
-}, {_id: false});
+};
+
 exports.classificationAudit = new Schema({
     date: {type: Date, default: Date.now, index: true}, user: {
         username: StringType
@@ -369,21 +366,21 @@ exports.classificationAudit = new Schema({
         _id: Schema.Types.ObjectId,
         name: StringType,
         status: {type: StringType, enum: regStatusShared.orderedList},
-        eltType: {type: StringType, enum: ["cde", "form"]},
+        eltType: {type: StringType, enum: ['cde', 'form']},
     }],
     newname: StringType,
-    action: {type: StringType, enum: ["add", "delete", "rename", "reclassify"]},
+    action: {type: StringType, enum: ['add', 'delete', 'rename', 'reclassify']},
     path: [StringType]
 });
 exports.classificationAudit.set('collection', 'classificationAudit');
 
 exports.trafficFilterSchema = new Schema({
     ipList: [
-        new Schema({
+        {
             ip: String,
             date: {type: Date, default: Date.now()},
             reason: String,
             strikes: {type: Number, default: 1}
-        }, {_id: false})
+        }
     ]
 }, {usePushEach: true});

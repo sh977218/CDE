@@ -8,7 +8,7 @@ import { catchError, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/
 import { Subject } from 'rxjs/Subject';
 import { SearchSettings } from 'search/search.model';
 import { DataElement, DataTypeArray } from 'shared/de/dataElement.model';
-import { fixDatatype } from 'shared/de/deValidator';
+import { fixDataElement, fixDatatype } from 'shared/de/deValidator';
 
 import xml2js from 'xml2js';
 
@@ -21,7 +21,7 @@ export class PermissibleValueComponent {
     _elt: DataElement;
     @Input() set elt(v: DataElement) {
         this._elt = v;
-        fixDatatype(this.elt);
+        fixDataElement(this.elt);
         if (this.userService.loggedIn()) this.loadValueSet();
         this.initSrcOptions();
         if (!this.elt.dataElementConcept.conceptualDomain) {
@@ -151,7 +151,7 @@ export class PermissibleValueComponent {
     }
 
     initSrcOptions() {
-        this.containsKnownSystem = this.elt.valueDomain.permissibleValues
+        this.containsKnownSystem = (this.elt.valueDomain.permissibleValues || [])
             .filter(pv => this.SOURCES[pv.codeSystemName]).length > 0;
     }
 
@@ -352,7 +352,7 @@ export class PermissibleValueComponent {
     }
 
     onDataTypeChange() {
-        fixDatatype(this.elt);
+        fixDatatype(this.elt.valueDomain);
         this.runManualValidation();
         this.onEltChange.emit();
     }

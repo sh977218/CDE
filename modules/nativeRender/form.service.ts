@@ -15,14 +15,35 @@ export class FormService {
         q.question.cde.name = de.designations[0] ? de.designations[0].designation : '';
         q.question.cde.designations = de.designations;
         q.question.cde.definitions = de.definitions;
-        q.question.cde.permissibleValues = [];
         q.question.cde.tinyId = de.tinyId;
         q.question.cde.version = de.version;
         q.question.datatype = de.valueDomain.datatype;
-        q.question.datatypeDate = de.valueDomain.datatypeDate || {};
-        q.question.datatypeNumber = de.valueDomain.datatypeNumber || {};
-        q.question.datatypeText = de.valueDomain.datatypeText || {};
-        q.question.datatypeDynamicCodeList = de.valueDomain.datatypeDynamicCodeList || {};
+
+        switch (de.valueDomain.datatype) {
+            case 'Value List':
+                q.question.answers = [];
+                q.question.cde.permissibleValues = [];
+                break;
+            case 'Date':
+                q.question.datatypeDate = de.valueDomain.datatypeDate || {};
+                break;
+            case 'Dynamic Code List':
+                q.question.datatypeDynamicCodeList = de.valueDomain.datatypeDynamicCodeList || {};
+                break;
+            case 'Geo Location':
+            case 'Time':
+            case 'Externally Defined':
+            case 'File':
+                break;
+            case 'Number':
+                q.question.datatypeNumber = de.valueDomain.datatypeNumber || {};
+                break;
+            case 'Text':
+            default:
+                q.question.datatypeText = de.valueDomain.datatypeText || {};
+                break;
+        }
+
         if (de.ids) {
             q.question.cde.ids = de.ids;
         }
@@ -40,16 +61,15 @@ export class FormService {
         }
 
         function convertPv(q: FormQuestion, cde: DataElement) {
-            cde.valueDomain.permissibleValues.forEach(pv => {
+            cde.valueDomain.permissibleValues!.forEach(pv => {
                 if (!pv.valueMeaningName || pv.valueMeaningName.trim().length === 0) {
                     pv.valueMeaningName = pv.permissibleValue;
                 }
-                q.question.answers.push(Object.assign({formElements: []}, pv));
-                q.question.cde.permissibleValues.push(pv);
+                q.question.answers!.push(Object.assign({formElements: []}, pv));
+                q.question.cde.permissibleValues!.push(pv);
             });
         }
-
-        if (de.valueDomain.permissibleValues.length > 0) {
+        if (de.valueDomain.permissibleValues && de.valueDomain.permissibleValues.length > 0) {
             // elastic only store 10 pv, retrieve pv when have more than 9 pv.
             if (de.valueDomain.permissibleValues.length > 9) {
                 DataElementService.fetchDe(de.tinyId, de.version || '').then(de => {

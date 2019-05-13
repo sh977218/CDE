@@ -16,7 +16,6 @@ let notificationTypesSchema = {
 let userSchema = new Schema({
     username: {type: StringType, unique: true},
     commentNotifications: [{
-        _id: false,
         date: Date,
         eltModule: {type: StringType, enum: ['board', 'cde', 'form']},
         eltTinyId: StringType,

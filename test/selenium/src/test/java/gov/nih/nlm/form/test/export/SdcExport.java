@@ -18,7 +18,7 @@ public class SdcExport extends NlmCdeBaseTest {
         Assert.assertTrue(response.contains("<Section ID"), "response: " + response);
         Assert.assertTrue(response.contains("title=\"CLINICAL\">"), "response: " + response);
         Assert.assertTrue(response.contains("<ListItem ID="), "response: " + response);
-        Assert.assertTrue(response.contains("title=\"Intact\"/>"), "response: " + response);
+        Assert.assertTrue(response.contains("title=\"Intact\""), "response: " + response);
         Assert.assertTrue(response.contains("<Question ID=\"XyEbt94V_\" title=\"Additional Dimension\">"), "response: " + response);
     }
 
@@ -31,7 +31,7 @@ public class SdcExport extends NlmCdeBaseTest {
         Assert.assertTrue(response.contains("<Section ID"), "response: " + response);
         Assert.assertTrue(response.contains("title=\"CLINICAL\">"), "response: " + response);
         Assert.assertTrue(response.contains("<ListItem ID="), "response: " + response);
-        Assert.assertTrue(response.contains("title=\"Intact\"/>"), "response: " + response);
+        Assert.assertTrue(response.contains("title=\"Intact\">"), "response: " + response);
         Assert.assertTrue(response.contains("<Question ID=\"XyEbt94V_\" title=\"Additional Dimension\">"), "response: " + response);
     }
 

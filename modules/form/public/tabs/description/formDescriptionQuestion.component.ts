@@ -95,7 +95,6 @@ export class FormDescriptionQuestionComponent implements OnInit {
 
     openUpdateCdeVersionMerge(newQuestion: FormQuestion, currentQuestion: FormQuestion, newCde: DataElement, oldCde: DataElement) {
         newQuestion.instructions = currentQuestion.instructions;
-        newQuestion.question.datatypeDate.precision = currentQuestion.question.datatypeDate.precision;
         newQuestion.question.editable = currentQuestion.question.editable;
         newQuestion.question.invisible = currentQuestion.question.invisible;
         newQuestion.question.multiselect = currentQuestion.question.multiselect;
@@ -135,6 +134,12 @@ export class FormDescriptionQuestionComponent implements OnInit {
                     }
                 } else {
                     modal.bValuelist = true;
+                }
+                break;
+            case 'Date':
+                if (currentQuestion.question.datatype === 'Date' && currentQuestion.question.datatypeDate) {
+                    if (!newQuestion.question.datatypeDate) newQuestion.question.datatypeDate = {};
+                    newQuestion.question.datatypeDate.precision = currentQuestion.question.datatypeDate.precision;
                 }
                 break;
             case 'Number':
