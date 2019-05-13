@@ -1,5 +1,5 @@
-<div *ngIf="user.publishedForms.length > 0">
-    <h2>Your Published Forms</h2>
+<h2>Your Published Forms</h2>
+<div>
     <ul class="list-group">
         <li class="list-group-item" *ngFor="let pf of user.publishedForms">
             <a href="/data/{{pf.id}}?submit" target="_blank">{{pf.name}}</a>

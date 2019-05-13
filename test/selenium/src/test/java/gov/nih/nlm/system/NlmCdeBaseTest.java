@@ -315,13 +315,10 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         findElement(By.id("login_link"));
     }
 
-    protected void openUserMenu() {
-        clickElement(By.id("username_link"));
-    }
-
     protected void goToSettings() {
-        openUserMenu();
+        clickElement(By.id("username_link"));
         clickElement(By.id("user_settings"));
+        textPresent("Settings");
     }
 
     protected void goToStewardTransfer() {
@@ -342,6 +339,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     protected void goToUsers() {
         goToSettings();
         clickElement(By.id("users"));
+        textPresent("Create User");
     }
 
     protected void goToResources() {
@@ -367,11 +365,13 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     protected void goToMyPublishedForms() {
         goToSettings();
         clickElement(By.id("myPublishedForms"));
+        textPresent("Your Published Forms");
     }
 
     protected void goToViewHistory() {
         goToSettings();
         clickElement(By.id("viewHistory"));
+        textPresent("Viewing History");
     }
 
     protected void goToMyDrafts() {
@@ -402,6 +402,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     protected void goToProfile() {
         goToSettings();
         clickElement(By.id("profile"));
+        textPresent("User Profile");
     }
 
     protected int getNumberOfResults() {
