@@ -16,7 +16,7 @@ public class CDEDateRangeSearch extends NlmCdeBaseTest {
         Assert.assertTrue(getNumberOfResults() > 850);
 
         findElement(By.id("ftsearch-input")).clear();
-        findElement(By.id("ftsearch-input")).sendKeys("created:<2015-05-13");
+        findElement(By.id("ftsearch-input")).sendKeys("created:<1960-05-13");
         clickElement(By.id("search.submit"));
         textPresent("No results were found.");
 

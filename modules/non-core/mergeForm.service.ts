@@ -1,9 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import async_forEachSeries from 'async/forEachSeries';
+import { mergeArrayByProperty } from 'core/adminItem/classification';
 import { IsAllowedService } from 'non-core/isAllowed.service';
 import { MergeCdeService } from 'non-core/mergeCde.service';
-import { mergeArrayByProperty, transferClassifications } from 'shared/system/classificationShared';
+import { transferClassifications } from 'shared/system/classificationShared';
 
 
 @Injectable()

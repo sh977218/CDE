@@ -162,9 +162,8 @@ export class EmbedAppComponent  {
             this.aggregations = result.aggregations;
 
             if (result.aggregations !== undefined && result.aggregations.flatClassifications !== undefined) {
-                this.aggregations.flatClassifications = result.aggregations.flatClassifications.flatClassifications.buckets.map(c => {
-                    return {name: c.key.split(';').pop(), count: c.doc_count};
-                });
+                this.aggregations.flatClassifications = result.aggregations.flatClassifications.flatClassifications.buckets
+                    .map(c => ({name: c.key.split(';').pop(), count: c.doc_count}));
             } else {
                 this.aggregations.flatClassifications = [];
             }
@@ -201,9 +200,9 @@ export class EmbedAppComponent  {
 
                 if (embed4Type.otherNames) {
                     embed4Type.otherNames.forEach(eName => {
-                        let name = c.designations.filter(n => {
-                            return n.tags.filter(t => t.indexOf('Question Text') > -1).length > 0;
-                        })[0];
+                        let name = c.designations.filter(
+                            n => (n.tags || []).filter(t => t.indexOf('Question Text') > -1).length > 0
+                        )[0];
                         if (name) {
                             c.embed[eName.label] = name.designation;
                         }

@@ -112,8 +112,8 @@
                     </ng-container>
                     <ng-container *ngSwitchCase="'Date'">
                         <input class="form-control"
-                               type="{{datePrecisionToType[formElement.question.datatypeDate.precision]}}"
-                               step="{{datePrecisionToStep[formElement.question.datatypeDate.precision]}}"
+                               type="{{datePrecisionToType[formElement.question.datatypeDate?.precision]}}"
+                               step="{{datePrecisionToStep[formElement.question.datatypeDate?.precision]}}"
                                [title]="formElement.label"
                                attr.id="{{formElement.label}}_{{formElement.feId}}_box"
                                [name]="formElement.feId"
@@ -191,7 +191,7 @@
                         </div>
                     </ng-container>
                     <ng-container *ngSwitchDefault [ngSwitch]="formElement.question.datatypeText?.showAsTextArea">
-                        <ng-container *ngSwitchCase="false">
+                        <ng-container *ngSwitchDefault>
                             <div [ngClass]="{'input-group': formElement.question.uomsAlias.length > 0}">
                                 <input #inputText type="text" class="form-control"
                                        [title]="formElement.label"

@@ -120,15 +120,11 @@ exports.getFormOdm = function (form, cb) {
                 '$Name': _.escape(q1.label ? q1.label : ''),
                 '$OID': oid
             };
-            if (q1.question.answers) {
+
                 let codeListAlreadyPresent = false;
                 codeLists.forEach(function (cl) {
-                    let codeListInHouse = cl.CodeListItem.map(function (i) {
-                        return i.Decode.TranslatedText._;
-                    }).sort();
-                    let codeListToAdd = q1.question.answers.map(function (a) {
-                        return a.valueMeaningName;
-                    }).sort();
+                    let codeListInHouse = cl.CodeListItem.map(i => i.Decode.TranslatedText._).sort();
+                    let codeListToAdd = (q1.question.answers || []).map(a => a.valueMeaningName).sort();
                     if (JSON.stringify(codeListInHouse) === JSON.stringify(codeListToAdd)) {
                         odmQuestion.CodeListRef = {'$CodeListOID': cl['$OID']};
                         questions.push(odmQuestion);
@@ -138,30 +134,28 @@ exports.getFormOdm = function (form, cb) {
                 if (!codeListAlreadyPresent) {
                     odmQuestion.CodeListRef = {'$CodeListOID': 'CL_' + oid};
                     questions.push(odmQuestion);
-                    let codeList = {
+                    codeLists.push({
+                        CodeListItem: (q1.question.answers || []).map(function (pv) {
+                            let cl = {
+                                '$CodedValue': pv.permissibleValue,
+                                Decode: {
+                                    TranslatedText: {
+                                        '$xml:lang': 'en',
+                                        '_': pv.valueMeaningName
+                                    }
+                                }
+                            };
+                            if (pv.valueMeaningCode && pv.codeSystemName) cl.Alias = {
+                                '$Context': pv.codeSystemName,
+                                '$Name': pv.valueMeaningCode
+                            };
+                            return cl;
+                        }),
                         '$DataType': omdDatatype,
                         '$OID': 'CL_' + oid,
                         '$Name': q1.label ? q1.label : ''
-                    };
-                    codeList.CodeListItem = q1.question.answers.map(function (pv) {
-                        let cl = {
-                            '$CodedValue': pv.permissibleValue,
-                            Decode: {
-                                TranslatedText: {
-                                    '$xml:lang': 'en',
-                                    '_': pv.valueMeaningName
-                                }
-                            }
-                        };
-                        if (pv.valueMeaningCode && pv.codeSystemName) cl.Alias = {
-                            '$Context': pv.codeSystemName,
-                            '$Name': pv.valueMeaningCode
-                        };
-                        return cl;
                     });
-                    codeLists.push(codeList);
                 }
-            }
         });
         let oid = _crypto.createHash('md5').update(s1.label ? s1.label : '').digest('hex');
         odmJsonForm.Study.MetaDataVersion.FormDef.ItemGroupRef.push({
@@ -169,7 +163,6 @@ exports.getFormOdm = function (form, cb) {
             '$Mandatory': 'Yes',
             '$OrderNumber': 1
         });
-
         sections.push({
             '$Name': s1.label ? s1.label : '',
             '$OID': oid,
@@ -180,23 +173,15 @@ exports.getFormOdm = function (form, cb) {
                     '_': s1.label ? s1.label : ''
                 }
             },
-            ItemRef: childrenOids.map(function (oid, i) {
-                return {
-                    '$ItemOID': oid,
-                    '$Mandatory': 'Yes',
-                    '$OrderNumber': i
-                };
-            })
+            ItemRef: childrenOids.map((oid, i) => ({
+                '$ItemOID': oid,
+                '$Mandatory': 'Yes',
+                '$OrderNumber': i
+            }))
         });
     });
-    sections.forEach(function (s) {
-        odmJsonForm.Study.MetaDataVersion.ItemGroupDef.push(s);
-    });
-    questions.forEach(function (s) {
-        odmJsonForm.Study.MetaDataVersion.ItemDef.push(s);
-    });
-    codeLists.forEach(function (cl) {
-        odmJsonForm.Study.MetaDataVersion.CodeList.push(cl);
-    });
+    sections.forEach(s => odmJsonForm.Study.MetaDataVersion.ItemGroupDef.push(s));
+    questions.forEach(q => odmJsonForm.Study.MetaDataVersion.ItemDef.push(q));
+    codeLists.forEach(cl => odmJsonForm.Study.MetaDataVersion.CodeList.push(cl));
     cb(null, JXON.jsToString({element: odmJsonForm}));
 };

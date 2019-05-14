@@ -215,7 +215,7 @@ export abstract class Elt {
     attachments: Attachment[] = [];
     changeNote?: string;
     checked?: boolean; // volatile, used by quickboard
-    classification: Classification[] = []; // mutable
+    classification?: Classification[]; // mutable
     comments: Comment[] = []; // mutable
     created?: Date;
     createdBy?: UserRefSecondary;
@@ -367,7 +367,7 @@ export type Instruction = FormattedValue;
 
 export class Designation {
     designation: string;
-    tags: string[] = [];
+    tags?: string[];
 
     constructor(designation = '') {
         this.designation = designation;
@@ -586,7 +586,7 @@ export interface UserRef {
 }
 
 export interface UserRefSecondary {
-    userId: ObjectId;
+    userId?: ObjectId;
     username: string;
 }
 

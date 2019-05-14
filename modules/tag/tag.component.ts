@@ -9,7 +9,13 @@ import { Observable } from 'rxjs';
     templateUrl: './tag.component.html'
 })
 export class TagComponent {
-    @Input() tags: string[] = [];
+    private _tags: string[];
+    @Input() set tags(tags: string[] | undefined) {
+        this._tags = tags || [];
+    }
+    get tags(): string[] {
+        return this._tags;
+    }
     @Input() canEdit: boolean = false;
     @Input() allTags: string[] = [];
     @Input() placeHolder: string = 'New tag...';

@@ -13,11 +13,11 @@ const dbLogger = require('../log/dbLogger.js');
 // for DAO manager
 exports.type = 'board';
 
-let pinSchema = new Schema({
+let pinSchema = {
     tinyId: StringType,
     type: {type: StringType, default: 'cde', enum: ['cde', 'form']},
     pinnedDate: Date,
-}, {_id: false});
+};
 
 let pinningBoardSchema = new Schema({
     name: StringType,

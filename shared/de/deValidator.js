@@ -6,6 +6,9 @@ function resultInvalid(message) {
 }
 
 export const checkPvUnicity = function (valueDomain) {
+    if (valueDomain.datatype !== 'Value List') {
+        return {allValid: true};
+    }
     if (valueDomain.datatype === 'Value List' && valueDomain.permissibleValues.length === 0) {
         return resultInvalid('Value List must contain at least one Permissible Value');
     }
@@ -45,34 +48,38 @@ export const checkDefinitions = function (elt) {
     return result;
 };
 
-export const fixDatatype = function (elt) {
+export const fixDatatype = function fixDatatype(dc) {
+    if (!dc.datatype) {
+        dc.datatype = 'Text';
+    }
+    if (dc.datatype === 'Value List' && !dc.datatypeValueList) {
+        dc.datatypeValueList = {};
+    }
+    if (dc.datatype === 'Number' && !dc.datatypeNumber) {
+        dc.datatypeNumber = {};
+    }
+    if (dc.datatype === 'Text' && !dc.datatypeText) {
+        dc.datatypeText = {};
+    }
+    if (dc.datatype === 'Date' && !dc.datatypeDate) {
+        dc.datatypeDate = {};
+    }
+    if (dc.datatype === 'Dynamic Code List' && !dc.datatypeDynamicCodeList) {
+        dc.datatypeDynamicCodeList = {};
+    }
+    if (dc.datatype === 'Externally Defined' && !dc.datatypeExternallyDefined) {
+        dc.datatypeExternallyDefined = {};
+    }
+};
+
+export const fixDataElement = function fixDataElement(elt) {
     if (!elt.valueDomain) elt.valueDomain = {};
-    if (!elt.valueDomain.datatype) {
-        elt.valueDomain.datatype = 'Text';
-    }
-    if (elt.valueDomain.datatype === 'Value List' && !elt.valueDomain.datatypeValueList) {
-        elt.valueDomain.datatypeValueList = {};
-    }
-    if (elt.valueDomain.datatype === 'Number' && !elt.valueDomain.datatypeNumber) {
-        elt.valueDomain.datatypeNumber = {};
-    }
-    if (elt.valueDomain.datatype === 'Text' && !elt.valueDomain.datatypeText) {
-        elt.valueDomain.datatypeText = {};
-    }
-    if (elt.valueDomain.datatype === 'Date' && !elt.valueDomain.datatypeDate) {
-        elt.valueDomain.datatypeDate = {};
-    }
-    if (elt.valueDomain.datatype === 'Dynamic Code List' && !elt.valueDomain.datatypeDynamicCodeList) {
-        elt.valueDomain.datatypeDynamicCodeList = {};
-    }
-    if (elt.valueDomain.datatype === 'Externally Defined' && !elt.valueDomain.datatypeExternallyDefined) {
-        elt.valueDomain.datatypeExternallyDefined = {};
-    }
+    fixDatatype(elt.valueDomain);
 };
 
 export const wipeDatatype = function (elt) {
     if (elt.elementType !== 'cde') return;
-    fixDatatype(elt);
+    fixDataElement(elt);
     let valueDomain = {
         name: elt.valueDomain.name,
         ids: elt.valueDomain.ids,

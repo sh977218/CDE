@@ -123,22 +123,6 @@ export function addCategory(tree, fields, cb = _noop) {
     }
 }
 
-export function classifyItem(item, orgName, classifPath) {
-    let steward = findSteward(item, orgName);
-    if (!steward) {
-        item.classification.push({
-            stewardOrg: {
-                name: orgName
-            },
-            elements: []
-        });
-        steward = findSteward(item, orgName);
-    }
-    for (let i = 1; i <= classifPath.length; i++) {
-        addCategory(steward.object, classifPath.slice(0, i));
-    }
-}
-
 export function deleteCategory(tree, fields) {
     let lastLevel = fetchLevel(tree, fields);
     for (let i = 0; i < lastLevel.elements.length; i++) {
@@ -184,41 +168,8 @@ export function findSteward(de, orgName) {
     }
 }
 
-export function flattenClassification(elt) {
-    function doClassif(currentString, classif, result) {
-        if (currentString.length > 0) {
-            currentString = currentString + ' | ';
-        }
-        currentString = currentString + classif.name;
-        if (classif.elements && classif.elements.length > 0) {
-            classif.elements.forEach((cl) => {
-                doClassif(currentString, cl, result);
-            });
-        } else {
-            result.push(currentString);
-        }
-    }
-
-    let result = [];
-    if (elt.classification) {
-        elt.classification.forEach(cl => {
-            if (cl.elements) {
-                cl.elements.forEach(subCl => doClassif(cl.stewardOrg.name, subCl, result));
-            }
-        });
-    }
-    return result;
-}
-
 export function isDuplicate(elements, name) {
     return elements.some(element => element.name === name);
-}
-
-export function mergeArrayByProperty(arrayFrom, arrayTo, property) {
-    arrayFrom[property].forEach((objFrom) => {
-        let exist = arrayTo[property].filter((objTo) => JSON.stringify(objTo) === JSON.stringify(objFrom)).length > 0;
-        if (!exist) arrayTo[property].push(objFrom);
-    });
 }
 
 export function modifyCategory(tree, fields, action, cb) {
@@ -252,15 +203,6 @@ export function removeCategory(tree, fields, cb) {
         }
     }
     return cb('Did not find match classifications.');
-}
-
-export function removeClassification(elt, orgName) {
-    for (let i = 0; i < elt.classification.length; i++) {
-        if (elt.classification[i].stewardOrg.name === orgName) {
-            elt.classification.splice(i, 1);
-            break;
-        }
-    }
 }
 
 export function renameCategory(tree, fields, newName) {
@@ -305,7 +247,7 @@ export function transferClassifications(source, destination) {
     });
 }
 
-export function treeChildren(tree, path, cb) {
+function treeChildren(tree, path, cb) {
     tree.elements.forEach(function (element) {
         let newPath = path.slice(0);
         newPath.push(element.name);
