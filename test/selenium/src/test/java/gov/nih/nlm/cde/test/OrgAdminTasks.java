@@ -32,7 +32,7 @@ public class OrgAdminTasks extends BaseClassificationTest {
         checkAlert("Removed");
         textNotPresent("userToPromote");
 
-        clickElement(By.xpath("//div[. = 'Organizations Admins']"));
+        goToAdmins();
         new Select(findElement(By.id("newOrgAdminOrgName"))).selectByVisibleText("caBIG");
         searchUsername("userToPromote");
         clickElement(By.id("newOrgAdminSubmit"));

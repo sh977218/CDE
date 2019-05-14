@@ -376,6 +376,11 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         clickElement(By.id("viewHistory"));
         textPresent("Viewing History");
     }
+    protected void goToAdmins() {
+        goToSettings();
+        clickElement(By.id("admins"));
+        textPresent("Admins for this Organization:");
+    }
 
     protected void goToMyDrafts() {
         goToSettings();

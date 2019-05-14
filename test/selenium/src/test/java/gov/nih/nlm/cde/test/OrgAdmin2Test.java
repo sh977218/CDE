@@ -24,8 +24,6 @@ public class OrgAdmin2Test extends BaseClassificationTest {
         String org1 = "PS&CC";
 
         goToStewardTransfer();
-        clickElement(By.xpath("//div[. = 'CDE & Form Management']"));
-        scrollToTop();
 
         new Select(findElement(By.name("transferSteward_from"))).selectByVisibleText(org1);
         new Select(findElement(By.name("transferSteward_to"))).selectByVisibleText("LCC");

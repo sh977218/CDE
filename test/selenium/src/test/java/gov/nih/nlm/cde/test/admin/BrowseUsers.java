@@ -10,10 +10,7 @@ public class BrowseUsers extends NlmCdeBaseTest {
     @Test
     public void browseUsers() {
         mustBeLoggedInAs("theOrgAuth", password);
-        clickElement(By.id("username_link"));
-        clickElement(By.linkText("Org Management"));
-        clickElement(By.xpath("//div[. = 'Users']"));
-
+        goToUsers();
         searchUsername("cabig");
         clickElement(By.id("searchUsersSubmit"));
 

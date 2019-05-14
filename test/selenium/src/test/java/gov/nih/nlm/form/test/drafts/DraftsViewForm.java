@@ -18,9 +18,7 @@ public class DraftsViewForm extends NlmCdeBaseTest {
         goToMyDrafts();
         textNotPresent("Center for Neurologic Study - Lability Scale for pseudobulbar affect (PBA)");
 
-        clickElement(By.id("username_link"));
-        clickElement(By.id("user_account_management"));
-        clickElement(By.xpath("//div[. = 'Drafts']"));
+        goToMyOrgDrafts();
         findElement(By.linkText("Center for Neurologic Study - Lability Scale for pseudobulbar affect (PBA)"));
         textPresent("nindsCurator");
 
@@ -29,10 +27,7 @@ public class DraftsViewForm extends NlmCdeBaseTest {
         goToMyDrafts();
         textNotPresent("Center for Neurologic Study - Lability Scale for pseudobulbar affect (PBA)");
 
-        hangon(1);
-        clickElement(By.id("username_link"));
-        clickElement(By.id("user_site_management"));
-        clickElement(By.xpath("//div[. = 'Drafts']"));
+        goToAllDrafts();
         findElement(By.linkText("Center for Neurologic Study - Lability Scale for pseudobulbar affect (PBA)"));
         textPresent("nindsCurator");
     }
