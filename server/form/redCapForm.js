@@ -139,7 +139,7 @@ exports.getZipRedCap = function (form, res) {
             };
 
             new AWS.Lambda({region: 'us-east-1'}).invoke(params, (err, result) => {
-
+                res.send(result);
             });
             break;
         case 'ON_PREM':
