@@ -16,7 +16,6 @@ const mongo_form = require('../form/mongo-form');
 const boardDb = require('../board/boardDb');
 const noDbLogger = require('./noDbLogger');
 
-
 let esClient = new elasticsearch.Client({
     hosts: config.elastic.hosts
 });
