@@ -142,7 +142,7 @@ gulp.task('prepareVersion', gulp.series('copyCode', function _prepareVersion() {
 }));
 
 gulp.task('copyDist', gulp.series('createDist',
-    gulp.parallel(
+    gulp.series(
         buildApp = () => run('npm run buildApp').exec(),
         buildNative = () => run('npm run buildNative').exec(),
         buildEmbed = () => run('npm run buildEmbed').exec(),
