@@ -8,7 +8,7 @@ import { UserService } from '_app/user.service';
 
 @Component({
     selector: 'cde-my-Org-comments',
-    templateUrl: './myOrgComments.component.html'
+    templateUrl: '../comments.component.html'
 })
 export class MyOrgCommentsComponent implements OnInit {
     user: User;
@@ -16,6 +16,7 @@ export class MyOrgCommentsComponent implements OnInit {
     getEltLink = UserService.getEltLink;
     pageSize: number = 30;
     page: number = 0;
+    title: string = 'My Organization';
 
     constructor(private http: HttpClient,
                 private userService: UserService,

@@ -39,9 +39,7 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         logout();
 
         mustBeLoggedInAs(nlm_username, nlm_password);
-        clickElement(By.id("username_link"));
-        clickElement(By.linkText("Org Management"));
-        clickElement(By.xpath("//div[. = 'Org Admins']"));
+        goToAdmins();
         clickElement(By.xpath("//*[contains(text(),'" + test_username + "')]/..//mat-icon[normalize-space() = 'delete_outline']"));
         textNotPresent(test_username);
     }

@@ -52,7 +52,7 @@ public class OrgAdmin2Test extends BaseClassificationTest {
         mustBeLoggedInAs(cabigAdmin_username, password);
 
         goToSettings();
-        textPresent("Organizations Admins");
+        textPresent("Admins");
         textNotPresent("Steward Transfer");
 
     }

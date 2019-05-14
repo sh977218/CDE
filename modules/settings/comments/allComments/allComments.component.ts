@@ -8,7 +8,7 @@ import { UserService } from '_app/user.service';
 
 @Component({
     selector: 'cde-all-comments',
-    templateUrl: './allComments.component.html'
+    templateUrl: '../comments.component.html'
 })
 export class AllCommentsComponent implements OnInit {
     user: User;
@@ -16,6 +16,7 @@ export class AllCommentsComponent implements OnInit {
     getEltLink = UserService.getEltLink;
     pageSize: number = 30;
     page: number = 0;
+    title: string = 'All';
 
     constructor(private http: HttpClient,
                 private userService: UserService,

@@ -34,13 +34,7 @@ import { ArticleAdminComponent } from 'settings/article/articleAdmin.component';
 import { ResourcesAdminComponent } from 'settings/resources/resourcesAdmin.component';
 import { FhirAppsComponent } from 'settings/fhirApps/fhirApps.component';
 import { IdSourcesComponent } from 'settings/idSources/idSources.component';
-import { MyDraftsComponent } from 'settings/myDrafts/myDrafts.component';
-import { MyCommentsComponent } from 'settings/myComments/myComments.component';
 import { ViewHistoryComponent } from 'settings/viewHistory/viewHistory.component';
-import { MyOrgDraftsComponent } from 'settings/myOrgDrafts/myOrgDrafts.component';
-import { AllDraftsComponent } from 'settings/allDrafts/allDrafts.component';
-import { MyOrgCommentsComponent } from 'settings/myOrgComments/myOrgComments.component';
-import { AllCommentsComponent } from 'settings/allComments/allComments.component';
 import { StatusValidationRulesComponent } from 'settings/statusValidationRules/statusValidationRules.component';
 import { OrgsEditComponent } from 'settings/orgsEdit/orgsEdit.component';
 import { ListManagementComponent } from 'settings/listManagement/listManagement.component';
@@ -49,6 +43,12 @@ import { MyPublishedFormsComponent } from 'settings/myPublishedForms/myPublished
 import { InlineAreaEditModule } from 'inlineAreaEdit/inlineAreaEdit.module';
 import { InlineSelectEditModule } from 'inlineSelectEdit/inlineSelectEdit.module';
 import { TagModule } from 'tag/tag.module';
+import { MyOrgCommentsComponent } from 'settings/comments/myOrgComments/myOrgComments.component';
+import { AllCommentsComponent } from 'settings/comments/allComments/allComments.component';
+import { MyCommentsComponent } from 'settings/comments/myComments/myComments.component';
+import { MyOrgDraftsComponent } from 'settings/drafts/myOrgDrafts/myOrgDrafts.component';
+import { MyDraftsComponent } from 'settings/drafts/myDrafts/myDrafts.component';
+import { AllDraftsComponent } from 'settings/drafts/allDrafts/allDrafts.component';
 
 const appRoutes: Routes = [
     {

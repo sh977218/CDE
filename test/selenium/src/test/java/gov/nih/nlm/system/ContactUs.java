@@ -8,7 +8,6 @@ public class ContactUs extends NlmCdeBaseTest {
     @Test
     public void contactUs() {
         mustBeLoggedInAs(nlm_username, nlm_password);
-        clickElement(By.id("username_link"));
         goToArticles();
 
         clickElement(By.cssSelector("mat-select"));
