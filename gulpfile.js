@@ -149,7 +149,7 @@ task('prepareVersion', series('copyCode', function _prepareVersion() {
 }));
 
 task('copyDist', series('createDist',
-    build = () => run('npm run build').exec(),
+    build = () => run('npm run buildApp').exec(),
     copyApp = () => src(['./dist/app/**/*', '!./dist/app/cde.css', '!./dist/app/cde.js']).pipe(dest(config.node.buildDir + '/dist/app')),
     copyEmbed = () => src(['./dist/embed/**/*', '!./dist/embed/embed.css', '!./dist/embed/embed.js']).pipe(dest(config.node.buildDir + '/dist/embed')),
     copyFhir = () => src(['./dist/fhir/*', '!./dist/fhir/fhir.css', '!./dist/fhir/fhir.js']).pipe(dest(config.node.buildDir + '/dist/fhir')),
@@ -300,7 +300,7 @@ task('mongoRestore', function _mongoRestore(cb) {
 });
 
 task('reindex', function _mongoRestore(cb) {
-    const elastic = require('/server/system/elastic');
+    const elastic = require('./server/system/elastic');
     let allReindex = esInit.indices.map(i =>
         new Promise(resolve =>
             elastic.reIndex(i.indexName, resolve)
@@ -308,6 +308,8 @@ task('reindex', function _mongoRestore(cb) {
     );
     Promise.all(allReindex, cb);
 });
-task('default', series('mongoRestore', 'copyNpmDeps', 'prepareVersion', 'copyUsemin', 'checkDbConnection'));
+task('step1', series('es', 'mongoRestore', 'reindex'));
+task('step2', series('copyNpmDeps', 'prepareVersion', 'copyUsemin', 'checkDbConnection'));
+task('default', parallel('step1', 'step2'));
 
 
