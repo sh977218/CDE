@@ -68,7 +68,6 @@ export class LogAuditComponent {
         this.http.post<any>('/server/log/httpLogs', postBody)
             .subscribe(res => {
                 if (res.totalItems) this.totalItems = res.totalItems;
-                console.log("totalItems: " + this.totalItems);
                 this.gridLogEvents = res.logs.map((log: any) => {
                     return {
                         date: new Date(log.date).toLocaleString(),
