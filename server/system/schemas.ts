@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
 import { addStringtype } from '../system/mongoose-stringtype';
-import { orderedList } from '../../shared/system/regStatusShared';
+import { orderedList } from 'shared/system/regStatusShared';
 
 addStringtype(mongoose);
 const Schema = mongoose.Schema;
@@ -158,6 +158,7 @@ export const statusValidationRuleSchema = new Schema({
     },
     ruleName: StringType,
     rule: {
+        customValidations: [StringType],
         regex: StringType
     },
     occurence: {type: StringType, enum: ['exactlyOne', 'atLeastOne', 'all']},

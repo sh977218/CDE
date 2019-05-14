@@ -1,8 +1,8 @@
 import {
     addCategoriesToOrg, addCategoriesToTree, classifyItem, deleteCategory, renameCategory, renameClassifyElt,
     unclassifyElt
-} from '../../shared/system/classificationShared';
-import { handleError } from '../errorHandler/errHandler';
+} from 'shared/system/classificationShared';
+import { handleError } from '../errorHandler/errorHandler';
 
 const async = require('async');
 const mongo_cde = require('../cde/mongo-cde');

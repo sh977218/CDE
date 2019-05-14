@@ -6,7 +6,7 @@ import { readFileSync } from 'fs';
 import { keys } from 'lodash';
 import { resolve } from 'path';
 import { DefinePlugin } from 'webpack';
-import { htmlServedUri } from './shared/serverConstants';
+import { htmlServedUri } from 'shared/serverConstants';
 
 const APP_DIR = __dirname;
 

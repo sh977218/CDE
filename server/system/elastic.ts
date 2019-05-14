@@ -1,17 +1,17 @@
 import { eachOf, filter, forEach } from 'async';
 import { Client, SearchResponse } from 'elasticsearch';
 import { Document } from 'mongoose';
-import { handleError, respondError } from '../errorHandler/errHandler';
+import { handleError, respondError } from '../errorHandler/errorHandler';
 import { config } from '../system/parseConfig';
-import { DataElementElastic } from '../../shared/de/dataElement.model';
+import { DataElementElastic } from 'shared/de/dataElement.model';
 import {
     Cb, Cb1, CbErr, CbError, CbError1, ElasticQueryResponse, ItemElastic, ModuleItem, User
-} from '../../shared/models.model';
+} from 'shared/models.model';
 import { ElasticIndex } from '../system/elasticSearchInit';
 import { Cursor } from 'mongodb';
 import { SearchSettingsElastic } from 'search/search.model';
-import { orderedList } from '../../shared/system/regStatusShared';
-import { arrayFill } from '../../shared/system/util';
+import { orderedList } from 'shared/system/regStatusShared';
+import { arrayFill } from 'shared/system/util';
 
 const _ = require('lodash');
 const request = require('request');

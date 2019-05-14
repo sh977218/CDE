@@ -4,13 +4,13 @@ import * as Config from 'config';
 import { createWriteStream } from 'fs';
 import * as md5 from 'md5-file';
 import { createReadStream } from 'streamifier';
-import { hasRole } from '../../shared/system/authorizationShared';
-import { handleError } from '../errorHandler/errHandler';
+import { hasRole } from 'shared/system/authorizationShared';
+import { handleError } from '../errorHandler/errorHandler';
 import { attachmentApproved, attachmentRemove, createTask, fileUsed } from '../system/adminItemSvc';
 import { getDaoList } from '../system/moduleDaoManager';
 import { addFile, deleteFileById, userTotalSpace } from '../system/mongo-data';
 import { alterAttachmentStatus } from '../attachment/attachmentDb';
-import { CbError, Item } from '../../shared/models.model';
+import { CbError, Item } from 'shared/models.model';
 
 const config = Config as any;
 

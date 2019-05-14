@@ -1,7 +1,7 @@
-import { toRef } from '../../../../shared/mapping/fhir/datatype/fhirReference';
+import { toRef } from 'shared/mapping/fhir/datatype/fhirReference';
 import {
     FhirEncounter, FhirPatient, FhirQuestionnaire, FhirQuestionnaireResponse, FhirQuestionnaireResponseItem
-} from '../../../../shared/mapping/fhir/fhirResource.model';
+} from 'shared/mapping/fhir/fhirResource.model';
 
 export function newQuestionnaireResponse(patient?: FhirPatient, encounter?: FhirEncounter, questionnaire?: FhirQuestionnaire): FhirQuestionnaireResponse {
     return {

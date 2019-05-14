@@ -1,7 +1,7 @@
 import {
     canComment, canEditCuratedItem, hasRole, isOrgAdmin, isOrgAuthority, isOrgCurator, isSiteAdmin
-} from '../../shared/system/authorizationShared';
-import { handle404 } from '../errorHandler/errHandler';
+} from 'shared/system/authorizationShared';
+import { handle404 } from '../errorHandler/errorHandler';
 
 // --------------------------------------------------
 // Middleware

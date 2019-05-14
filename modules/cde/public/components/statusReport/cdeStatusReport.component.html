@@ -1,28 +1,21 @@
-<div>
-    <div *ngIf="cdes?.length > 0">
-        <table class="table">
-            <thead>
-            <tr>
-                <th *ngFor="let field of gridOptionsReport.columnDefs">{{field.displayName}}</th>
-            </tr>
-            </thead>
-            <tr *ngFor="let cde of cdes">
-                <td>
-                    <a href="/deView?tinyId={{cde.tinyId}}" target="_blank">{{cde.cdeName}}</a>
-                </td>
-                <td>{{cde.tinyId}}</td>
-                <td *ngFor="let key of cde.keys">{{cde[key]}}</td>
-            </tr>
-        </table>
-    </div>
-    <div *ngIf="cdes?.length === 0">
-        <br><br><br>
-        <h3 class="text-center">All CDEs pass validation rules.</h3>
-        <br><br>
-    </div>
-    <div *ngIf="!cdes">
-        <br><br><br>
-        <h3 class="text-center"><mat-icon class="spin">toys</mat-icon> Retrieving report...</h3>
-        <br><br>
-    </div>
-</div>
+<ng-container [ngSwitch]="state">
+    <h3 *ngSwitchCase="'processing'" class="m-4 text-center">
+        <mat-icon class="spin">toys</mat-icon>
+        Retrieving report...
+    </h3>
+    <h3 *ngSwitchCase="'message'" class="m-4 text-center">{{message}}</h3>
+    <table *ngSwitchCase="'fail'" class="table">
+        <thead>
+        <tr>
+            <th *ngFor="let field of gridOptionsReport.columnDefs">{{field.displayName}}</th>
+        </tr>
+        </thead>
+        <tr *ngFor="let r of results">
+            <td>
+                <a href="/deView?tinyId={{r.tinyId}}" target="_blank">{{r.cdeName}}</a>
+            </td>
+            <td>{{r.tinyId}}</td>
+            <td *ngFor="let result of r.results">{{result}}</td>
+        </tr>
+    </table>
+</ng-container>

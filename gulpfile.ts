@@ -1,4 +1,4 @@
-import { exec } from 'child_process';
+import { exec, ExecOptions } from 'child_process';
 import * as elasticsearch from 'elasticsearch';
 import { readFileSync, writeFile } from 'fs';
 import * as gulp from 'gulp';
@@ -13,12 +13,15 @@ import * as uglify from 'gulp-uglify';
 import * as usemin from 'gulp-usemin';
 import * as merge from 'merge-stream';
 import { resolve } from 'path';
-import { promisify } from 'util';
-import { indices } from './server/system/elasticSearchInit';
-import { config } from './server/system/parseConfig';
-
+import * as File from 'vinyl';
+import { ElasticIndex, indices } from 'server/system/elasticSearchInit';
+import { config } from 'server/system/parseConfig';
 
 require('es6-promise').polyfill();
+
+interface StatusCodeError extends Error {
+    status: number;
+}
 
 const APP_DIR = __dirname;
 const BUILD_DIR = appDir(config.node.buildDir);
@@ -32,11 +35,14 @@ function buildDir(path) {
     return resolve(BUILD_DIR, path);
 }
 
-function run(command, options?: any) {
-    return promisify(exec)(command, options).then(({stdout, stderr}) => {
-        console.log(stdout);
-        console.error(stderr);
-    });
+function run(command, options?: ExecOptions): Promise<void> {
+    return new Promise(((resolve, reject) => {
+        exec(command, options, (err, stdout, stderr) => {
+            stdout && console.log(stdout);
+            stderr && console.error(stderr);
+            err ? reject(err) : resolve()
+        });
+    }));
 }
 
 gulp.task('npm', function npm() {
@@ -52,7 +58,7 @@ gulp.task('npmRebuildNodeSass', ['npm'], function npmRebuildNodeSass() {
 });
 
 gulp.task('copyThirdParty', ['npmRebuildNodeSass'], function copyThirdParty() {
-    let streamArr = [];
+    let streamArr: NodeJS.ReadWriteStream[] = [];
 
     streamArr.push(gulp.src(appDir('./node_modules/core-js/client/core.min.js'))
         .pipe(replace('//# sourceMappingURL=core.min.js.map', ''))
@@ -81,7 +87,7 @@ gulp.task('createDist', ['copyThirdParty'], function createDist() {
 });
 
 gulp.task('copyCode', function copyCode() {
-    let streamArray: any[] = [];
+    let streamArray: NodeJS.ReadWriteStream[] = [];
 
     streamArray.push(gulp.src(appDir('./modules/_fhirApp/fhirAppLaunch.html'))
         .pipe(gulp.dest(BUILD_DIR + '/modules/_fhirApp/')));
@@ -158,9 +164,9 @@ gulp.task('copyNpmDeps', ['copyCode', 'npmRebuildNodeSass'], function copyNpmDep
 });
 
 gulp.task('prepareVersion', ['copyCode'], function prepareVersion() {
-    return revParse({args: '--short HEAD'}, function (err: any, hash: string) {
+    return revParse({args: '--short HEAD'}, function (err: NodeJS.ErrnoException, hash: string) {
         writeFile(BUILD_DIR + '/server/system/version.js', 'exports.version = "' + hash + '";',
-            function (err: any) {
+            function (err: NodeJS.ErrnoException) {
                 if (err) console.log('ERROR generating version.html: ' + err);
                 else console.log('generated ' + BUILD_DIR + '/server/system/version.js');
             });
@@ -190,7 +196,7 @@ gulp.task('copyDist', ['buildDist'], function copyDist() {
 });
 
 gulp.task('usemin', ['copyDist'], function useminTask() {
-    let streamArray: any[] = [];
+    let streamArray: NodeJS.ReadWriteStream[] = [];
     [
         {folder: './modules/system/views/', filename: 'index.ejs'},
         {folder: './modules/_embedApp/', filename: 'embedApp.ejs'},
@@ -199,8 +205,8 @@ gulp.task('usemin', ['copyDist'], function useminTask() {
     ].forEach(item => {
         let useminOutputs: string[] = [];
 
-        function outputFile(file: any) {
-            useminOutputs.push(file.path.match(/(\\|\/)(app|embed|fhir|native)(\\|\/).*$/)[0].replace(/\\/g, '/'));
+        function outputFile(file: File) {
+            useminOutputs.push(file.path.match(/(\\|\/)(app|embed|fhir|native)(\\|\/).*$/)![0].replace(/\\/g, '/'));
             return file;
         }
 
@@ -257,7 +263,7 @@ gulp.task('usemin', ['copyDist'], function useminTask() {
 });
 
 gulp.task('copyUsemin', ['usemin'], function usemin() {
-    let streamArray: any[] = [];
+    let streamArray: NodeJS.ReadWriteStream[] = [];
     [
         {folder: './modules/system/views/bot/', filename: '*.ejs'},
         {folder: './modules/system/views/', filename: 'index.ejs'},
@@ -275,14 +281,14 @@ gulp.task('es', function es() {
     let esClient = new elasticsearch.Client({
         hosts: config.elastic.hosts
     });
-    let allIndex = indices.map(i => i.indexName);
-    console.log('Deleting es index: ' + allIndex);
-    return new Promise((resolve, reject) => {
-        esClient.indices.delete({index: allIndex, timeout: '6s'}, err => {
-            if (err && err.status !== 404) reject();
-            else resolve();
-        });
-    });
+    return Promise.all(
+        indices.map((index: ElasticIndex) => new Promise((resolve, reject) => {
+            console.log('Deleting es index: ' + index.indexName);
+            esClient.indices.delete({index: index.indexName, timeout: '6s'}, (err?: StatusCodeError) => {
+                err && err.status !== 404 ? reject(err) : resolve();
+            });
+        }))
+    );
 });
 
 // Procedure calling task in README

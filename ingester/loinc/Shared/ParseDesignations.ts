@@ -1,4 +1,4 @@
-import { trimWhite } from '../../shared/utility';
+import { trimWhite } from 'shared/utility';
 
 function isDesignationsExisted(designations, designation) {
     let temp = designations.filter(n => n.designation === designation.designation);

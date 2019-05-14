@@ -4,13 +4,13 @@ import * as merge from 'webpack-merge';
 import baseConfig from './webpack.dev';
 import appConfig from './webpackApp';
 
-function digest(str) {
+function digest(str: string): string {
     return createHash('md5')
         .update(str)
         .digest('hex');
 }
 
-function cacheKey(options, request) {
+function cacheKey(options: never, request: string) {
     return `build:cache:${digest(request)}`;
 }
 

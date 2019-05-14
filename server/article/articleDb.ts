@@ -1,5 +1,5 @@
 import { Schema } from 'mongoose';
-import { establishConnection } from '../system/connections';
+import { establishConnection } from 'server/system/connections';
 import { attachables } from '../system/mongo-data';
 import { config } from '../system/parseConfig';
 import { attachmentSchema } from '../system/schemas';

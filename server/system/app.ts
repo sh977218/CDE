@@ -3,8 +3,8 @@ import {
     isOrgAdminMiddleware,
     isOrgAuthorityMiddleware, isOrgCuratorMiddleware, isSiteAdminMiddleware, loggedInMiddleware, nocacheMiddleware
 } from '../system/authorization';
-import { isOrgAdmin } from '../../shared/system/authorizationShared';
-import { handleError, respondError } from '../errorHandler/errHandler';
+import { isOrgAdmin } from 'shared/system/authorizationShared';
+import { handleError, respondError } from '../errorHandler/errorHandler';
 import { config } from '../system/parseConfig';
 
 const async = require('async');
@@ -319,7 +319,7 @@ export function init(app) {
                 });
             })
             .catch(err => dbLogger.consoleLog('Cron Sunday 4:07 AM did not complete due to error:', err));
-    }, null, true, 'America/New_York', this, true);
+    }, null, true, 'America/New_York', undefined, true);
 
     app.get(['/help/:title', '/createForm', '/createCde', '/boardList',
             '/board/:id', '/myBoards', '/cdeStatusReport', '/api', '/sdcview', '/404', '/whatsNew', '/contactUs',
@@ -355,7 +355,7 @@ export function init(app) {
     });
 
     app.get('/sw.js', function (req, res) {
-        res.sendFile(path.join(__dirname, '../../dist/app', 'sw.js'), undefined, err => {
+        res.sendFile((global as any).appDir('dist/app', 'sw.js'), undefined, err => {
             if (err) res.sendStatus(404);
         });
     });

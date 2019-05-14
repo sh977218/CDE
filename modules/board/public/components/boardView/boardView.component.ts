@@ -10,7 +10,7 @@ import { AlertService } from 'alert/alert.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { saveAs } from 'file-saver';
 import { Comment } from 'shared/models.model';
-import { convertToCsv, getCdeCsvHeader, projectCdeForExport } from 'core/system/export';
+import { convertToCsv, getCdeCsvHeader, projectItemForExport } from 'core/system/export';
 
 @Component({
     selector: 'cde-board-view',
@@ -98,7 +98,7 @@ export class BoardViewComponent implements OnInit {
             let settings = this.esService.searchSettings;
             let csv = getCdeCsvHeader(settings.tableViewFields);
             response.elts.forEach(ele => {
-                csv += convertToCsv(projectCdeForExport(ele, settings.tableViewFields));
+                csv += convertToCsv(projectItemForExport(ele, settings.tableViewFields));
             });
             if (csv) {
                 let blob = new Blob([csv], {

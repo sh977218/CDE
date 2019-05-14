@@ -61,7 +61,7 @@ export class OrgHelperService {
         } else return [];
     }
 
-    reload() {
+    reload(): Promise<OrgDetailedInfo> {
         return this.promise = new Promise<OrgDetailedInfo>((resolve, reject) => {
             let userPromise = this.userService.catch(_noop);
             this.http.get<Organization[]>('/listOrgsDetailedInfo').subscribe(response => {

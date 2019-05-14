@@ -1,5 +1,5 @@
-import { FhirPatient } from '../../../../shared/mapping/fhir/fhirResource.model';
-import { FhirHumanName } from '../../../../shared/mapping/fhir/fhir.model';
+import { FhirPatient } from 'shared/mapping/fhir/fhirResource.model';
+import { FhirHumanName } from 'shared/mapping/fhir/fhir.model';
 
 export function getPatientName(patient: FhirPatient): string {
     if (!patient) {

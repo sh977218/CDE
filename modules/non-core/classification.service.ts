@@ -6,6 +6,7 @@ import _uniqWith from 'lodash/uniqWith';
 import { AlertService } from 'alert/alert.service';
 import { ElasticService } from '_app/elastic.service';
 import { SearchSettingsElastic } from 'search/search.model';
+import { ClassificationHistory } from 'shared/models.model';
 
 @Injectable()
 export class ClassificationService {
@@ -17,11 +18,11 @@ export class ClassificationService {
     ) {
     }
 
-    updateClassificationLocalStorage(item) {
-        let allPossibleCategories = [];
-        let accumulateCategories = [];
-        item.categories.forEach(i => {
-            allPossibleCategories.push(accumulateCategories.concat([i]));
+    updateClassificationLocalStorage(item: ClassificationHistory) {
+        let allPossibleCategories: string[][] = [];
+        let accumulateCategories: string[] = [];
+        (item.categories || []).forEach((i: string) => {
+            allPossibleCategories.push(accumulateCategories.concat(i));
             accumulateCategories.push(i);
         });
         let recentlyClassification = <Array<any>>this.localStorageService.get('classificationHistory');
