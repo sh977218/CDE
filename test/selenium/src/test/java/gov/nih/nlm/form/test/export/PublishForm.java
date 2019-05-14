@@ -1,7 +1,6 @@
 package gov.nih.nlm.form.test.export;
 
 import gov.nih.nlm.form.test.BaseFormTest;
-import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
@@ -15,10 +14,11 @@ public class PublishForm extends BaseFormTest {
         clickElement(By.id("export"));
         clickElement(By.id("formPublishExport"));
         findElement(By.name("publishedFormUrl")).sendKeys(baseUrl + "/sendMockFormData");
-        findElement(By.name("publishedFormName")).sendKeys("My Published Form");
+        findElement(By.name("publishedFormName")).sendKeys("My Published Form Demo");
         clickElement(By.id("goExport"));
         checkAlert("Done. Go to your profile to see all your published forms");
         goToMyPublishedForms();
+        clickElement(By.linkText("My Published Form Demo"));
         switchTab(1);
         findElement(By.name("0-0")).sendKeys("1");
         findElement(By.name("0-1")).sendKeys("2");
@@ -31,6 +31,6 @@ public class PublishForm extends BaseFormTest {
         goToMyPublishedForms();
         clickElement(By.xpath("//*[a[normalize-space(.) ='My Published Form']]/mat-icon[normalize-space() = 'delete_outline']"));
         checkAlert("Saved");
-        textNotPresent("My Published Form");
+        textNotPresent("My Published Form Demo");
     }
 }
