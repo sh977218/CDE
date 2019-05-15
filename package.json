@@ -34,6 +34,7 @@
     "check-coverage": true,
     "include": [
       "**/server/article/*.js",
+      "**/server/log/*.js",
       "**/server/user/*.js"
     ],
     "lines": "85",

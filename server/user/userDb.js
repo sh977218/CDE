@@ -100,7 +100,9 @@ exports.User = User;
 const userProject = {password: 0};
 
 exports.byId = (id, callback) => {
-    User.findById(id, userProject, callback);
+    let query = User.findById(id, userProject);
+    if (callback) query.exec(callback);
+    else return query.exec();
 };
 
 exports.find = (crit, cb) => {

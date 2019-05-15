@@ -5,7 +5,7 @@ const fs = require('fs');
 const md5 = require('md5-file');
 const streamifier = require('streamifier');
 const authorizationShared = require('esm')(module)('../../shared/system/authorizationShared');
-const handleError = require('../log/dbLogger').handleError;
+const handleError = require('../errorHandler/errHandler').handleError;
 const adminItemSvc = require('../system/adminItemSvc');
 const daoManager = require('../system/moduleDaoManager');
 const mongo_data = require('../system/mongo-data');
@@ -172,6 +172,6 @@ exports.unapproved = cb => {
     async.map(
         daoManager.getDaoList(),
         (dao, done) => dao.type !== 'board' ? dao.dao.find({'attachments.pendingApproval': true}, done) : done(undefined, []),
-        (err, results) => err ? cb(err) : cb(undefined, [].concat.apply([], results))
+        (err, results) => cb(err, [].concat.apply([], results))
     );
 };

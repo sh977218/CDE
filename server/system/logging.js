@@ -24,11 +24,11 @@ MongoLogger.prototype.log = function (level, msg, meta, callback) {
         var logEvent = JSON.parse(msg);
         logEvent.level = level;
         dbLogger.log(logEvent, function (err) {
-            if (err) noDbLogger.noDbLogger.error('Cannot log to DB: ' + err);
+            if (err) noDbLogger.noDbLogger.error('Cannot log to DB (1): ' + err);
             callback(null, true);
         });
     } catch (e) {
-        noDbLogger.noDbLogger.error('Cannot log to DB: ' + e);
+        noDbLogger.noDbLogger.error('Cannot log to DB (2): ' + e);
     }
 };
 
@@ -73,10 +73,10 @@ MongoErrorLogger.prototype.log = function (level, msg, meta) {
         };
         if (meta.request) message.request = exports.generateErrorLogRequest(meta.request);
         dbLogger.logError(message, err => {
-            if (err) noDbLogger.noDbLogger.error('Cannot log to DB: ' + msg);
+            if (err) noDbLogger.noDbLogger.error('Cannot log to DB (3): ' + msg);
         });
     } catch (e) {
-        noDbLogger.noDbLogger.error('Cannot log to DB: ' + e);
+        noDbLogger.noDbLogger.error('Cannot log to DB (4): ' + e);
     }
 };
 

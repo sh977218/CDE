@@ -1,4 +1,4 @@
-const config = require('config');
+const config = require('../system/parseConfig');
 const mongoose = require('mongoose');
 require('../system/mongoose-stringtype')(mongoose);
 const Schema = mongoose.Schema;
@@ -6,11 +6,13 @@ const StringType = mongoose.Schema.Types.StringType;
 
 let schemas = {};
 
+const cappedSize = config.database.log.cappedCollectionSizeMB;
+
 schemas.consoleLogSchema = new Schema({ // everything server except express
     date: {type: Date, index: true, default: Date.now()},
     message: StringType,
     level: {type: StringType, enum: ['debug', 'info', 'warning', 'error'], default: 'info'},
-}, {w: 0, capped: config.database.log.cappedCollectionSizeMB || 1024 * 1024 * 250});
+}, {w: 0, capped: cappedSize});
 
 schemas.logSchema = new Schema({ // express
     level: StringType,
@@ -21,7 +23,7 @@ schemas.logSchema = new Schema({ // express
     date: {type: Date, index: true},
     referrer: StringType,
     responseTime: {type: Number, index: true}
-}, {w: 0, capped: config.database.log.cappedCollectionSizeMB || 1024 * 1024 * 250});
+}, {w: 0, capped: cappedSize});
 
 schemas.logErrorSchema = new Schema({ // server
     message: StringType,
@@ -38,7 +40,7 @@ schemas.logErrorSchema = new Schema({ // server
         userAgent: StringType,
         ip: StringType
     }
-}, {w: 0, capped: config.database.log.cappedCollectionSizeMB || 1024 * 1024 * 250});
+}, {w: 0, capped: cappedSize});
 
 schemas.clientErrorSchema = new Schema({
     message: StringType,
@@ -50,7 +52,7 @@ schemas.clientErrorSchema = new Schema({
     url: StringType,
     username: StringType,
     ip: StringType
-}, {w: 0, capped: config.database.log.cappedCollectionSizeMB || 1024 * 1024 * 250});
+}, {w: 0, capped: cappedSize});
 
 schemas.storedQuerySchema = new Schema({
     searchTerm: {type: StringType, lowercase: true, trim: true},

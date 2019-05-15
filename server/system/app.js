@@ -17,11 +17,11 @@ const mongo_data = require('./mongo-data');
 const IdSource = mongo_data.IdSource;
 const config = require('./parseConfig');
 const dbLogger = require('../log/dbLogger');
-const handleError = dbLogger.handleError;
-const respondError = dbLogger.respondError;
+const errorHandler = require("../errorHandler/errHandler");
+const handleError = errorHandler.handleError;
+const respondError = errorHandler.respondError;
 const logging = require('./logging.js');
 const orgsvc = require('./orgsvc');
-const pushNotification = require('./pushNotification');
 const usersrvc = require('./usersrvc');
 const esInit = require('./elasticSearchInit');
 const elastic = require('./elastic.js');
@@ -29,6 +29,7 @@ const meshElastic = require('../mesh/elastic');
 const fhirApps = require('./fhir').fhirApps;
 const fhirObservationInfo = require('./fhir').fhirObservationInfo;
 const traffic = require('./traffic');
+const pushNotification = require('./pushNotification');
 
 exports.init = function (app) {
     let getRealIp = function (req) {
@@ -133,13 +134,6 @@ exports.init = function (app) {
     app.get('/tour', (req, res) => res.redirect('/home?tour=yes'));
 
     app.get('/site-version', (req, res) => res.send(version));
-
-    if (!config.proxy) {
-        app.post('/site-version', (req, res) => {
-            version = version + '.';
-            res.send();
-        });
-    }
 
     app.get('/cde/search', (req, res) => {
         let selectedOrg = req.query.selectedOrg;

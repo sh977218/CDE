@@ -1,4 +1,4 @@
-const handleError = require('../log/dbLogger').handleError;
+const handleError = require('../errorHandler/errHandler').handleError;
 const notificationDb = require('./notificationDb');
 const authorization = require('../system/authorization');
 

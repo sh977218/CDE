@@ -1,8 +1,8 @@
 const mongo_data = require('./mongo-data');
 const authorizationShared = require('esm')(module)('../../shared/system/authorizationShared');
-const dbLogger = require('../log/dbLogger');
-const handle404 = dbLogger.handle404;
-const handleError = dbLogger.handleError;
+const errorHandler = require("../errorHandler/errHandler");
+const handle404 = errorHandler.handle404;
+const handleError = errorHandler.handleError;
 
 exports.myOrgs = function(user) {
     if (!user) return [];

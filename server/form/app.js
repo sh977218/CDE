@@ -9,7 +9,7 @@ const config = require('../system/parseConfig');
 const formSvc = require('./formsvc');
 const mongo_form = require('./mongo-form');
 const elastic_system = require('../system/elastic');
-const handleError = require('../log/dbLogger').handleError;
+const handleError = require('../errorHandler/errHandler').handleError;
 const sharedElastic = require('../system/elastic.js');
 const CronJob = require('cron').CronJob;
 

@@ -2,7 +2,7 @@ const async = require('async');
 let Parser = require('rss-parser');
 let parser = new Parser();
 
-const handleError = require('../log/dbLogger').handleError;
+const handleError = require('../errorHandler/errHandler').handleError;
 const db = require('./articleDb');
 
 exports.module = function (roleConfig) {

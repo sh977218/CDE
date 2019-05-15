@@ -5,9 +5,9 @@ const authorizationShared = require('esm')(module)('../../shared/system/authoriz
 const utilShared = require('esm')(module)('../../shared/system/util');
 const attachment = require('../attachment/attachmentSvc');
 const discussDb = require('../discuss/discussDb');
-const dbLogger = require('../log/dbLogger');
-const handle404 = dbLogger.handle404;
-const handleError = dbLogger.handleError;
+const errorHandler = require("../errorHandler/errHandler");
+const handle404 = errorHandler.handle404;
+const handleError = errorHandler.handleError;
 const notificationDb = require('../notification/notificationDb');
 const authorization = require('../system/authorization');
 const nocacheMiddleware = authorization.nocacheMiddleware;
@@ -55,163 +55,97 @@ exports.module = function (roleConfig) {
         }));
     });
 
-    function taskAggregator(req, res) {
+    async function taskAggregator(req, res) {
         const handlerOptions = {req, res};
-        const errorHandler = handleError.bind(undefined, handlerOptions);
-        if (req.user) {
-            userDb.byId(req.user._id, errorHandler(taskAggregate)); // get user this request for real-time user.commentNotifications
-        } else {
-            taskAggregate(undefined);
+
+        function createTaskFromCommentNotification(c) {
+            return {
+                date: c.date,
+                id: c.eltTinyId,
+                idType: c.eltModule,
+                name: c.username + ' commented',
+                properties: [{
+                    key: utilShared.capString(c.eltModule),
+                    value: c.eltTinyId,
+                }],
+                source: 'user',
+                state: !c.read && 1 || 0,
+                text: c.text,
+                type: 'comment',
+                url: itemShared.uriView(c.eltModule, c.eltTinyId),
+            };
         }
 
-        function taskAggregate(user) {
-            let tasks = user ? user.commentNotifications.map(createTaskFromCommentNotification) : [];
+        function pending(comment) {
+            let pending = [];
+            if (comment.pendingApproval) {
+                pending.push(comment);
+            }
+            if (Array.isArray(comment.replies)) {
+                pending = pending.concat(comment.replies.filter(r => r.pendingApproval));
+            }
+            return pending;
+        }
 
-            let client = -1;
-            let server = -1;
-            let attachmentElts;
-            let comments;
-            if (authorizationShared.isSiteAdmin(user)) {
-                notificationDb.getNumberClientError(user, errorHandler(clientErrorCount => {
-                    client = clientErrorCount;
-                    tasksDone();
-                }));
-                notificationDb.getNumberServerError(user, errorHandler(serverErrorCount => {
-                    server = serverErrorCount;
-                    tasksDone();
-                }));
-            } else {
-                client = 0;
-                server = 0;
-                tasksDone();
-            }
-            // TODO: implement org boundaries
-            if (authorizationShared.hasRole(user, 'AttachmentReviewer')) { // required, req.user.notificationSettings.approvalAttachment.drawer not used
-                attachment.unapproved(errorHandler(a => {
-                    attachmentElts = a;
-                    tasksDone();
-                }));
-            } else {
-                attachmentElts = [];
-                tasksDone();
-            }
-            if (authorizationShared.hasRole(user, 'CommentReviewer')) { // required, req.user.notificationSettings.approvalComment.drawer not used
-                discussDb.unapproved(errorHandler(c => {
-                    comments = c;
-                    tasksDone();
-                }));
-            } else {
-                comments = [];
-                tasksDone();
+        let user = req.user;
+        let tasks = user ? user.commentNotifications.map(createTaskFromCommentNotification) : [];
+
+        if (authorizationShared.isSiteAdmin(user)) {
+            let clientErrorCount = await notificationDb.getNumberClientError(user);
+            if (clientErrorCount > 0) {
+                tasks.push({
+                    id: clientErrorCount,
+                    idType: 'clientError',
+                    name: clientErrorCount + ' New Client Errors',
+                    source: 'calculated',
+                    type: 'message',
+                    url: '/siteAudit?tab=clientErrors',
+                });
             }
 
-            function createTaskFromCommentNotification(c) {
-                return {
-                    date: c.date,
-                    id: c.eltTinyId,
-                    idType: c.eltModule,
-                    name: c.username + ' commented',
-                    properties: [{
-                        key: utilShared.capString(c.eltModule),
-                        value: c.eltTinyId,
-                    }],
-                    source: 'user',
-                    state: !c.read && 1 || 0,
-                    text: c.text,
-                    type: 'comment',
-                    url: itemShared.uriView(c.eltModule, c.eltTinyId),
-                };
+            let serverErrorCount = notificationDb.getNumberServerError(user);
+            if (serverErrorCount > 0) {
+                tasks.push({
+                    id: serverErrorCount,
+                    idType: 'serverError',
+                    name: serverErrorCount + ' New Server Errors',
+                    source: 'calculated',
+                    type: 'message',
+                    url: '/siteAudit?tab=serverErrors',
+                });
             }
+        }
 
-            function pending(comment) {
-                let pending = [];
-                if (comment.pendingApproval) {
-                    pending.push(comment);
-                }
-                if (Array.isArray(comment.replies)) {
-                    pending = pending.concat(comment.replies.filter(r => r.pendingApproval));
-                }
-                return pending;
-            }
+        if (req.params.clientVersion && version !== req.params.clientVersion) {
+            tasks.push({
+                id: version,
+                idType: 'versionUpdate',
+                name: 'Website Updated',
+                source: 'calculated',
+                text: 'A new version of this site is available. To enjoy the new features, please close all CDE tabs then load again.',
+                type: 'error',
+            });
+        }
 
-            function tasksDone() {
-                if (client === -1 || server === -1 || !attachmentElts || !comments) {
-                    return;
-                }
-                if (req.params.clientVersion && version !== req.params.clientVersion) {
-                    tasks.push({
-                        id: version,
-                        idType: 'versionUpdate',
-                        name: 'Website Updated',
-                        source: 'calculated',
-                        text: 'A new version of this site is available. To enjoy the new features, please close all CDE tabs then load again.',
-                        type: 'error',
-                    });
-                }
-                if (client > 0) {
-                    tasks.push({
-                        id: client,
-                        idType: 'clientError',
-                        name: client + ' New Client Errors',
-                        source: 'calculated',
-                        type: 'message',
-                        url: '/siteAudit?tab=clientErrors',
-                    });
-                }
-                if (server > 0) {
-                    tasks.push({
-                        id: server,
-                        idType: 'serverError',
-                        name: server + ' New Server Errors',
-                        source: 'calculated',
-                        type: 'message',
-                        url: '/siteAudit?tab=serverErrors',
-                    });
-                }
-                if (Array.isArray(attachmentElts)) {
-                    attachmentElts.forEach(elt => {
-                        const eltModule = eltShared.getModule(elt);
-                        const eltTinyId = elt.tinyId;
-                        elt.attachments
-                            .filter(a => !!a.pendingApproval)
-                            .forEach(a => {
-                                let task = {
-                                    id: a.fileid,
-                                    idType: 'attachment',
-                                    properties: [
-                                        {
-                                            key: utilShared.capString(eltModule),
-                                            value: eltTinyId,
-                                        }
-                                    ],
-                                    source: 'calculated',
-                                    text: a.filetype + '\n' + a.filename + '\n' + a.comment,
-                                    type: 'approve',
-                                    url: itemShared.uriView(eltModule, eltTinyId)
-                                };
-                                if (a.uploadedBy && a.uploadedBy.username) {
-                                    task.properties.unshift({
-                                        key: 'User',
-                                        value: a.uploadedBy.username
-                                    });
-                                }
-                                if (!a.scanned) {
-                                    task.properties.push({
-                                        key: 'NOT VIRUS SCANNED'
-                                    });
-                                }
-                                tasks.push(task);
-                            });
-                    });
-                }
-                if (Array.isArray(comments)) {
-                    comments.forEach(c => {
-                        const eltModule = c.element && c.element.eltType;
-                        const eltTinyId = c.element && c.element.eltId;
-                        pending(c).forEach(p => {
+        // TODO: implement org boundaries
+        if (authorizationShared.hasRole(user, 'AttachmentReviewer')) { // required, req.user.notificationSettings.approvalAttachment.drawer not used
+            let attachmentElts = await new Promise((resolve, reject) => {
+                attachment.unapproved((err, results) => {
+                    if (err) return reject (err);
+                    resolve(results);
+                });
+            });
+
+            if (Array.isArray(attachmentElts)) {
+                attachmentElts.forEach(elt => {
+                    const eltModule = eltShared.getModule(elt);
+                    const eltTinyId = elt.tinyId;
+                    elt.attachments
+                        .filter(a => !!a.pendingApproval)
+                        .forEach(a => {
                             let task = {
-                                id: p._id,
-                                idType: p === c ? 'comment' : 'commentReply',
+                                id: a.fileid,
+                                idType: 'attachment',
                                 properties: [
                                     {
                                         key: utilShared.capString(eltModule),
@@ -219,24 +153,66 @@ exports.module = function (roleConfig) {
                                     }
                                 ],
                                 source: 'calculated',
-                                text: p.text,
+                                text: a.filetype + '\n' + a.filename + '\n' + a.comment,
                                 type: 'approve',
-                                url: itemShared.uriView(eltModule, eltTinyId),
+                                url: itemShared.uriView(eltModule, eltTinyId)
                             };
-                            let username = p.user && p.user.username || c.user && c.user.username;
-                            if (username) {
+                            if (a.uploadedBy && a.uploadedBy.username) {
                                 task.properties.unshift({
                                     key: 'User',
-                                    value: username
+                                    value: a.uploadedBy.username
+                                });
+                            }
+                            if (!a.scanned) {
+                                task.properties.push({
+                                    key: 'NOT VIRUS SCANNED'
                                 });
                             }
                             tasks.push(task);
                         });
+                });
+            }
+
+            // attachment.unapproved(errorHandler(a => {
+            //     attachmentElts = a;
+            //     tasksDone();
+            // }));
+        }
+        if (authorizationShared.hasRole(user, 'CommentReviewer')) { // required, req.user.notificationSettings.approvalComment.drawer not used
+            let comments = await discussDb.unapproved();
+            if (Array.isArray(comments)) {
+                comments.forEach(c => {
+                    const eltModule = c.element && c.element.eltType;
+                    const eltTinyId = c.element && c.element.eltId;
+                    pending(c).forEach(p => {
+                        let task = {
+                            id: p._id,
+                            idType: p === c ? 'comment' : 'commentReply',
+                            properties: [
+                                {
+                                    key: utilShared.capString(eltModule),
+                                    value: eltTinyId,
+                                }
+                            ],
+                            source: 'calculated',
+                            text: p.text,
+                            type: 'approve',
+                            url: itemShared.uriView(eltModule, eltTinyId),
+                        };
+                        let username = p.user && p.user.username || c.user && c.user.username;
+                        if (username) {
+                            task.properties.unshift({
+                                key: 'User',
+                                value: username
+                            });
+                        }
+                        tasks.push(task);
                     });
-                }
-                res.send(tasks);
+                });
             }
         }
+
+        res.send(tasks);
     }
 
     if (!config.proxy) {

@@ -6,10 +6,10 @@ const formShared = require('esm')(module)('../../shared/form/fe');
 const toQuestionnaire = require('esm')(module)('../../shared/mapping/fhir/to/toQuestionnaire');
 const authorizationShared = require('esm')(module)('../../shared/system/authorizationShared');
 const mongo_cde = require('../cde/mongo-cde');
-const dbLogger = require('../log/dbLogger');
-const handle404 = dbLogger.handle404;
-const handleError = dbLogger.handleError;
-const respondError = dbLogger.respondError;
+const errorHandler = require('../errorHandler/errHandler');
+const handle404 = errorHandler.handle404;
+const handleError = errorHandler.handleError;
+const respondError = errorHandler.respondError;
 const adminItemSvc = require('../system/adminItemSvc.js');
 const authorization = require('../system/authorization');
 const mongo_data = require('../system/mongo-data');
@@ -145,8 +145,7 @@ function oneLayerForm(form) {
                     formElements: []
                 };
             }
-            let questions = doSection(formElement);
-            formElement.formElements = questions;
+            formElement.formElements = doSection(formElement);
             formElements.push(formElement);
         }
     }

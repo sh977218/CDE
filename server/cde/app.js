@@ -7,7 +7,7 @@ const adminItemSvc = require('../system/adminItemSvc.js');
 const appStatus = require('../siteAdmin/status');
 const elastic_system = require('../system/elastic');
 const exportShared = require('esm')(module)('../../shared/system/exportShared');
-const handleError = require('../log/dbLogger').handleError;
+const handleError = require('../errorHandler/errHandler').handleError;
 
 const canCreateMiddleware = authorization.canCreateMiddleware;
 const canEditMiddleware = authorization.canEditMiddleware(mongo_cde);
