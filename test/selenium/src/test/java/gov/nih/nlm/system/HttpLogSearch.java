@@ -39,9 +39,10 @@ public class HttpLogSearch extends NlmCdeBaseTest {
 
         findElement(By.name("ip")).sendKeys(ipTerm);
         clickElement(By.id("searchBtn"));
+        hangon(1);
         List<WebElement> ips = driver.findElements(By.cssSelector(".ip"));
         for (WebElement ip : ips) {
-            Assert.assertTrue(ip.getText().trim().equals(ipTerm));
+            Assert.assertEquals(ip.getText().trim(), ipTerm);
         }
     }
 
