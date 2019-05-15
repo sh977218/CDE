@@ -103,7 +103,9 @@ exports.orgComments = (myOrgs, from, size, cb) => {
 
 // cb(err comments)
 exports.unapproved = cb => {
-    Comment.find({$or: [{pendingApproval: true}, {'replies.pendingApproval': true}]}, cb);
+    let query = Comment.find({$or: [{pendingApproval: true}, {'replies.pendingApproval': true}]});
+    if (cb) query.exec(cb);
+    else return query.exec();
 };
 
 exports.numberUnapprovedMessageByUsername = (username, cb = _.noop()) => {

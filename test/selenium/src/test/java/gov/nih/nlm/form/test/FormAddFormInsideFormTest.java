@@ -4,7 +4,7 @@ import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import static com.jayway.restassured.RestAssured.get;
+import static io.restassured.RestAssured.get;
 
 public class FormAddFormInsideFormTest extends QuestionTest {
     @Test
@@ -41,11 +41,11 @@ public class FormAddFormInsideFormTest extends QuestionTest {
         switchTabAndClose(0);
 
         String odmResponse = get(baseUrl + "/form/71zmIkrBtl?type=xml&subtype=odm").asString();
-        Assert.assertEquals(odmResponse.contains("Symptomology"), true, "Actual: " + odmResponse);
+        Assert.assertTrue(odmResponse.contains("Symptomology"), "Actual: " + odmResponse);
 
         String sdcResponse = get(baseUrl + "/form/71zmIkrBtl?type=xml&subtype=sdc").asString();
-        Assert.assertEquals(sdcResponse.contains(newFormLabel), true, "Actual: " + sdcResponse);
-        Assert.assertEquals(sdcResponse.contains("Symptomology"), true, "Actual: " + sdcResponse);
+        Assert.assertTrue(sdcResponse.contains(newFormLabel), "Actual: " + sdcResponse);
+        Assert.assertTrue(sdcResponse.contains("Symptomology"), "Actual: " + sdcResponse);
     }
 
 }

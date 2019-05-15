@@ -1,6 +1,6 @@
 const authorizationShared = require('esm')(module)('../../shared/system/authorizationShared');
-const dbLogger = require('../log/dbLogger');
-const handle404 = dbLogger.handle404;
+const errorHandler = require('../errorHandler/errHandler');
+const handle404 = errorHandler.handle404;
 
 // --------------------------------------------------
 // Middleware
@@ -122,13 +122,10 @@ exports.loggedInMiddleware = function (req, res, next) {
 // Permission Helpers with Request/Response
 // --------------------------------------------------
 
-exports.isDocumentationEditor = function (elt, user) {
-    return authorizationShared.hasRole(user, 'DocumentationEditor');
-};
+exports.isDocumentationEditor = (elt, user) => authorizationShared.hasRole(user, 'DocumentationEditor');
 
-exports.checkOwnership = function (elt, user) {
-    return authorizationShared.isOrgCurator(user, elt.stewardOrg.name);
-};
+exports.checkOwnership = (elt, user) => authorizationShared.isOrgCurator(user, elt.stewardOrg.name);
+
 exports.checkBoardOwnerShip = function (board, user) {
     if (!user || !board) return false;
     return board.owner.userId.equals(user._id);

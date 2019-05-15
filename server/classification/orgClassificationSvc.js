@@ -4,7 +4,7 @@ const mongo_form = require('../form/mongo-form');
 const mongo_data = require('../system/mongo-data');
 const classificationShared = require('esm')(module)('../../shared/system/classificationShared');
 const elastic = require('../system/elastic');
-const handleError = require('../log/dbLogger').handleError;
+const handleError = require('../errorHandler/errHandler').handleError;
 
 exports.deleteOrgClassification = (user, deleteClassification, settings, callback) => {
     if (!(deleteClassification.categories instanceof Array))

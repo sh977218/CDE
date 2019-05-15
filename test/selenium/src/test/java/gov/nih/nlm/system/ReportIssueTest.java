@@ -3,6 +3,8 @@ package gov.nih.nlm.system;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
+import static io.restassured.RestAssured.*;
+
 public class ReportIssueTest extends NlmCdeBaseTest {
 
     @Test
@@ -24,4 +26,15 @@ public class ReportIssueTest extends NlmCdeBaseTest {
         clickElement(By.xpath("//div[. = 'Reported Issues']"));
         textPresent("I don't like this website.");
     }
+
+    @Test(dependsOnMethods = {"report"})
+    public void get509 () {
+
+        given().body("{}").post(baseUrl + "/server/log/feedback/report").asString();
+
+        // second time 509
+        given().body("{}").post(baseUrl + "/server/log/feedback/report").then().statusCode(509);
+
+    }
+
 }

@@ -1,4 +1,3 @@
-const _ = require('lodash');
 const config = require('../system/parseConfig');
 const connHelper = require('../system/connections');
 const mongo_data = require('../system/mongo-data');
@@ -8,6 +7,7 @@ const moment = require('moment');
 const noDbLogger = require('../system/noDbLogger');
 const pushNotification = require('../system/pushNotification');
 const conn = connHelper.establishConnection(config.database.log);
+const errorHandler = require('../errorHandler/errHandler');
 const LogModel = conn.model('DbLogger', schemas.logSchema);
 const LogErrorModel = conn.model('DbErrorLogger', schemas.logErrorSchema);
 const ClientErrorModel = conn.model('DbClientErrorLogger', schemas.clientErrorSchema);
@@ -35,32 +35,23 @@ exports.storeQuery = function (settings, callback) {
         , selectedElements1: settings.selectedElements.slice(0)
         , selectedElements2: settings.selectedElementsAlt.slice(0)
     };
-    if (settings.username) storedQuery.username = settings.username;
-    if (settings.remoteAddr) storedQuery.remoteAddr = settings.remoteAddr;
-    if (settings.isSiteAdmin) storedQuery.isSiteAdmin = settings.isSiteAdmin;
     if (settings.selectedOrg) storedQuery.selectedOrg1 = settings.selectedOrg;
     if (settings.selectedOrgAlt) storedQuery.selectedOrg2 = settings.selectedOrgAlt;
     if (settings.searchToken) storedQuery.searchToken = settings.searchToken;
 
     if (!(!storedQuery.selectedOrg1 && storedQuery.searchTerm === '')) {
         StoredQueryModel.findOne({date: {$gt: new Date().getTime() - 30000}, searchToken: storedQuery.searchToken},
-            function (err, theOne) {
+            (err, theOne) => {
                 if (theOne) {
                     StoredQueryModel.findOneAndUpdate(
                         {date: {$gt: new Date().getTime() - 30000}, searchToken: storedQuery.searchToken},
                         storedQuery,
-                        err => {
-                            if (err) noDbLogger.noDbLogger.info(err);
-                            if (callback) callback(err);
-                        }
+                        errorHandler.handleError({}, () => {})
                     );
                 } else {
                     new StoredQueryModel(storedQuery).save(callback);
                 }
             });
-
-
-        //
     }
 };
 
@@ -84,9 +75,7 @@ exports.logError = function (message, callback) { // all server errors, express 
         console.log(message);
         console.log('--- END Server Error---');
     }
-    new LogErrorModel(message).save(err => {
-        if (err) noDbLogger.noDbLogger.info('ERROR: ' + err);
-
+    new LogErrorModel(message).save(errorHandler.handleConsoleError({}, () => {
         if (message.origin && message.origin.indexOf('pushGetAdministratorRegistrations') === -1) {
             let msg = JSON.stringify({
                 title: 'Server Side Error',
@@ -108,23 +97,18 @@ exports.logError = function (message, callback) { // all server errors, express 
                 registrations.forEach(r => pushNotification.triggerPushMsg(r, msg));
             });
         }
-        if (callback) callback(err);
-    });
+        if (callback) callback();
+    }));
 };
 
 exports.logClientError = function (req, callback) {
-    let getRealIp = function (req) {
-        if (req._remoteAddress) return req._remoteAddress;
-        if (req.ip) return req.ip;
-    };
+    let getRealIp =  req => req._remoteAddress;
     let exc = req.body;
     exc.userAgent = req.headers['user-agent'];
     exc.date = new Date();
     exc.ip = getRealIp(req);
     if (req.user) exc.username = req.user.username;
-    new ClientErrorModel(exc).save(err => {
-        if (err) noDbLogger.noDbLogger.info('ERROR: ' + err);
-
+    new ClientErrorModel(exc).save(errorHandler.handleConsoleError({}, () => {
         let ua = userAgent.is(req.headers['user-agent']);
         if (ua.chrome || ua.firefox || ua.edge) {
             let msg = JSON.stringify({
@@ -149,70 +133,7 @@ exports.logClientError = function (req, callback) {
         }
 
         callback(err);
-    });
-};
-
-exports.handle404 = function handle404(options, cb = _.noop) { // Not Found
-    return function errorHandler(err, arg, ...args) {
-        if (err) {
-            exports.respondError(err, options);
-            return;
-        }
-        if (!arg) {
-            if (options && options.res) {
-                options.res.status(404).send();
-            }
-            return;
-        }
-        cb(arg, ...args);
-    };
-};
-
-exports.handleError = function (options, cb = _.noop) {
-    return function errorHandler(err, ...args) {
-        if (err) {
-            exports.respondError(err, options);
-            return;
-        }
-        cb(...args);
-    };
-};
-
-// TODO: Combine with logError() which publishes notifications
-// TODO: tee to console.log
-exports.respondError = function (err, options) {
-    if (!(err instanceof Error)) {
-        err = new Error(err);
-    }
-    if (!options) options = {};
-    if (options.res) {
-        if (err.name === 'CastError' && err.kind === 'ObjectId') {
-            options.res.status(400).send('Invalid id');
-            return;
-        } else if (err.name === 'ValidationError') {
-            options.res.status(422).send(err.message);
-            return;
-        }
-        let message = options.publicMessage || 'Generic Server Failure. Please submit an issue.';
-        options.res.status(500).send('Error: ' + message);
-    }
-
-    const log = {
-        message: options.message || err.message || err,
-        origin: options.origin,
-        stack: err.stack || new Error().stack,
-        details: options.details
-    };
-    if (options.req) {
-        log.request = {
-            url: options.req.url,
-            params: JSON.stringify(options.req.params),
-            body: JSON.stringify(options.req.body),
-            username: options.req.username,
-            ip: options.req.ip
-        };
-    }
-    exports.logError(log);
+    }));
 };
 
 exports.httpLogs = function (body, callback) {
@@ -220,8 +141,7 @@ exports.httpLogs = function (body, callback) {
     if (body.sort) sort = body.sort;
     let currentPage = 0;
     if (body.currentPage) currentPage = Number.parseInt(body.currentPage);
-    let itemsPerPage = 500;
-    if (body.itemsPerPage) itemsPerPage = Number.parseInt(body.itemsPerPage);
+    let itemsPerPage = 200;
     let skip = currentPage * itemsPerPage;
     let query = {};
     if (body.ipAddress) query = {remoteAddr: body.ipAddress};
@@ -230,7 +150,7 @@ exports.httpLogs = function (body, callback) {
     if (body.toDate) modal.where('date').lte(moment(body.toDate));
     LogModel.countDocuments({}, (err, count) => {
         modal.sort(sort).limit(itemsPerPage).skip(skip).exec((err, logs) => {
-            let result = {itemsPerPage: itemsPerPage, logs: logs, sort: sort};
+            let result = {logs: logs, sort: sort};
             if (!body.totalItems) result.totalItems = count;
             callback(err, result);
         });
@@ -240,16 +160,15 @@ exports.httpLogs = function (body, callback) {
 exports.appLogs = function (body, callback) {
     let currentPage = 0;
     if (body.currentPage) currentPage = Number.parseInt(body.currentPage);
-    let itemsPerPage = 500;
-    if (body.itemsPerPage) itemsPerPage = Number.parseInt(body.itemsPerPage);
+    let itemsPerPage = 50;
     let skip = currentPage * itemsPerPage;
     let modal = consoleLogModel.find();
     if (body.fromDate) modal.where('date').gte(moment(body.fromDate));
     if (body.toDate) modal.where('date').lte(moment(body.toDate));
     consoleLogModel.countDocuments({}, (err, count) => {
         modal.sort({date: -1}).limit(itemsPerPage).skip(skip).exec(function (err, logs) {
-            let result = {itemsPerPage: itemsPerPage, logs: logs};
-            if (!body.totalItems) result.totalItems = count;
+            let result = {logs: logs};
+            result.totalItems = count;
             callback(err, result);
         });
     });
@@ -311,8 +230,6 @@ exports.saveFeedback = function (req, cb) {
         , screenshot: {content: report.img}
         , browser: report.browser.userAgent
     });
-    issue.save(err => {
-        if (cb) cb(err);
-    });
+    issue.save(cb);
 };
 
