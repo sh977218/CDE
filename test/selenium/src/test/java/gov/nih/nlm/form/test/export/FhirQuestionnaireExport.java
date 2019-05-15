@@ -4,7 +4,7 @@ import gov.nih.nlm.form.test.BaseFormTest;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import static com.jayway.restassured.RestAssured.get;
+import static io.restassured.RestAssured.get;
 
 public class FhirQuestionnaireExport extends BaseFormTest {
     @Test
