@@ -1,12 +1,14 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { UserService } from '_app/user.service';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
     templateUrl: './settings.component.html',
     styles: [`
         mat-list-item {
             cursor: pointer;
+            height: 20px !important;
+            font-size: 12px !important;
         }
 
         mat-list-item:hover {
@@ -29,8 +31,19 @@ import { UserService } from '_app/user.service';
     `]
 })
 export class SettingsComponent {
-    constructor(private route: ActivatedRoute,
-                public userSvc: UserService) {}
+    options: FormGroup;
+    opened: boolean = true;
+
+    constructor(fb: FormBuilder,
+                public userSvc: UserService) {
+        this.options = fb.group({
+            bottom: 0,
+            fixed: false,
+            top: 0
+        });
+    }
+
+    showFiller = false;
 
     scrollTop() {
         window.scrollTo(0, 0);
