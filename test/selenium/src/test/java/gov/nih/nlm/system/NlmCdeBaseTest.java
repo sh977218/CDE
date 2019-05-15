@@ -304,15 +304,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         textPresent("Classifications");
     }
 
-    protected void mustBeLoggedOut() {
-        List<WebElement> loginLinkList = driver.findElements(By.xpath("//*[@id='login_link']"));
-        if (loginLinkList.size() == 0) {
-            logout();
-        }
-        textNotPresent("", By.id("username_link"));
-        findElement(By.id("login_link"));
-    }
-
     protected void goToSettings() {
         clickElement(By.id("username_link"));
         textPresent("Settings");
