@@ -129,7 +129,6 @@ exports.getZipRedCap = function (form, res) {
             if (!global.CURRENT_SERVER_ENV) {
                 throw new Error('ENV not ready');
             }
-            // test error: xmlStr = xmlStr.replace(/<List>.*<\/List>/g, '');
             let jsonPayload = {
                 input: form
             };
@@ -158,17 +157,18 @@ exports.getOnPremZipRedCap = function (form, res) {
 
     let instrumentResult = getRedCap(form);
     let zip = archiver('zip', {});
-    zip.on('error', function (err) {
-        res.status(500).send({error: err.message});
-    });
+    let hasError = false;
+    zip.on('error', err => res.status(500).send({error: err.message}));
 
     //on stream closed we can end the request
     zip.on('end', function () {
     });
-    zip.pipe(res);
-    zip.append('NLM', {name: 'AuthorID.txt'})
-        .append(form.tinyId, {name: 'InstrumentID.txt'})
-        .append(instrumentResult, {name: 'instrument.csv'})
-        .finalize();
+    if (!hasError) {
+        zip.pipe(res);
+        zip.append('NLM', {name: 'AuthorID.txt'})
+            .append(form.tinyId, {name: 'InstrumentID.txt'})
+            .append(instrumentResult, {name: 'instrument.csv'})
+            .finalize();
+    }
 };
 
