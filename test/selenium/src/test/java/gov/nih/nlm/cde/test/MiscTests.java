@@ -1,14 +1,13 @@
 package gov.nih.nlm.cde.test;
 
-import com.jayway.restassured.RestAssured;
-import com.jayway.restassured.response.Header;
-import com.jayway.restassured.response.Response;
+import static io.restassured.RestAssured.get;
 import gov.nih.nlm.system.NlmCdeBaseTest;
+import io.restassured.RestAssured;
+import io.restassured.http.Header;
+import io.restassured.response.Response;
 import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-
-import static com.jayway.restassured.RestAssured.get;
 
 public class MiscTests extends NlmCdeBaseTest {
 

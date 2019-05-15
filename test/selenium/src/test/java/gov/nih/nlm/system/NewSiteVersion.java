@@ -3,8 +3,8 @@ package gov.nih.nlm.system;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.annotations.Test;
-import static com.jayway.restassured.RestAssured.post;
 
+import static io.restassured.RestAssured.given;
 
 public class NewSiteVersion extends NlmCdeBaseTest {
 
@@ -16,8 +16,10 @@ public class NewSiteVersion extends NlmCdeBaseTest {
         ExpectedConditions.not(ExpectedConditions.visibilityOfElementLocated
                 (By.cssSelector("[data-id = 'notifications']")));
 
-        post(baseUrl + "/server/user/site-version");
-        goToFormSearch();
+        given().body("{}").post(baseUrl + "/server/user/site-version");
+
+        clickElement(By.id("menu_forms_link"));
+
         clickElement(By.cssSelector("[data-id = 'notifications']"));
         textPresent("A new version of this site is available");
     }

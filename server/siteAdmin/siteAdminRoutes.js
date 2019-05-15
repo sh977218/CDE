@@ -1,6 +1,6 @@
 const app_status = require("./status.js");
 
-const handleError = require('../log/dbLogger').handleError;
+const handleError = require('../errorHandler/errHandler').handleError;
 
 const userDb = require('../user/userDb');
 const clusterStatusDb = require('./clusterStatusDb');

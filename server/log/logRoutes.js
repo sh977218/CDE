@@ -1,7 +1,7 @@
 const userAgent = require('useragent');
 
 const dbLogger = require('./dbLogger');
-const handleError = require('./dbLogger').handleError;
+const handleError = require('../errorHandler/errHandler').handleError;
 const mongo_data = require('../system/mongo-data');
 const pushNotification = require('../system/pushNotification');
 
@@ -67,33 +67,35 @@ exports.module = function (roleConfig) {
 
     router.post('/feedback/report', (req, res) => {
         if (!canSubmitFeedback(req.ip)) return res.status(509).send();
-        dbLogger.saveFeedback(req, () => {
-            let msg = JSON.stringify({
-                title: 'New Feedback Message',
-                options: {
-                    body: req.body.feedback ? JSON.parse(req.body.feedback).note : '',
-                    icon: '/cde/public/assets/img/min/NIH-CDE-FHIR.png',
-                    badge: '/cde/public/assets/img/min/nih-cde-logo-simple.png',
-                    tag: 'cde-feedback',
-                    actions: [
-                        {
-                            action: 'audit-action',
-                            title: 'View',
-                            icon: '/cde/public/assets/img/min/nih-cde-logo-simple.png'
-                        },
-                        {
-                            action: 'profile-action',
-                            title: 'Edit Subscription',
-                            icon: '/cde/public/assets/img/min/portrait.png'
-                        }
-                    ]
-                }
+        if (req.body.feedback) {
+            dbLogger.saveFeedback(req, () => {
+                let msg = JSON.stringify({
+                    title: 'New Feedback Message',
+                    options: {
+                        body: req.body.feedback ? JSON.parse(req.body.feedback).note : '',
+                        icon: '/cde/public/assets/img/min/NIH-CDE-FHIR.png',
+                        badge: '/cde/public/assets/img/min/nih-cde-logo-simple.png',
+                        tag: 'cde-feedback',
+                        actions: [
+                            {
+                                action: 'audit-action',
+                                title: 'View',
+                                icon: '/cde/public/assets/img/min/nih-cde-logo-simple.png'
+                            },
+                            {
+                                action: 'profile-action',
+                                title: 'Edit Subscription',
+                                icon: '/cde/public/assets/img/min/portrait.png'
+                            }
+                        ]
+                    }
+                });
+                mongo_data.pushGetAdministratorRegistrations(registrations => {
+                    registrations.forEach(r => pushNotification.triggerPushMsg(r, msg));
+                });
+                res.send({});
             });
-            mongo_data.pushGetAdministratorRegistrations(registrations => {
-                registrations.forEach(r => pushNotification.triggerPushMsg(r, msg));
-            });
-            res.send({});
-        });
+        } else res.status(400).send();
     });
 
     return router;

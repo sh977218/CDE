@@ -1,20 +1,16 @@
 const async = require('async');
-const _ = require('lodash');
-const request = require('request');
 const config = require('./parseConfig');
 const logging = require('./logging');
 const regStatusShared = require('esm')(module)('../../shared/system/regStatusShared'); //jshint ignore:line
-const utilShared = require('esm')(module)('../../shared/system/util'); //jshint ignore:line
-const usersvc = require('./usersrvc');
+const usersvc = require("./usersrvc");
 const elasticsearch = require('elasticsearch');
 const esInit = require('./elasticSearchInit');
 const dbLogger = require('../log/dbLogger.js');
-const handleError = dbLogger.handleError;
-const respondError = dbLogger.respondError;
-const mongo_cde = require('../cde/mongo-cde');
-const mongo_form = require('../form/mongo-form');
-const boardDb = require('../board/boardDb');
-const noDbLogger = require('./noDbLogger');
+const mongo_cde = require("../cde/mongo-cde");
+const mongo_form = require("../form/mongo-form");
+const boardDb = require("../board/boardDb");
+const noDbLogger = require("./noDbLogger");
+const handleError = require('../errorHandler/errHandler').handleError;
 
 let esClient = new elasticsearch.Client({
     hosts: config.elastic.hosts
@@ -48,189 +44,160 @@ exports.nbOfForms = function (cb) {
     esClient.count({index: config.elastic.formIndex.name}, (err, result) => cb(err, result.count));
 };
 
-const queryDe = {
-    condition: {archived: false},
-    dao: mongo_cde
-};
-const queryForm = {
-    condition: {archived: false},
-    dao: mongo_form
-};
+function EsInjector(esClient, indexName, documentType) {
+    let _esInjector = this;
+    this.buffer = [];
+    this.injectThreshold = config.elastic.inject_bulk_size || 200;
+    this.documentType = documentType;
+    this.indexName = indexName;
+    this.queueDocument = function (doc, cb) {
+        if (!doc) return;
+        _esInjector.buffer.push(doc);
+        if (_esInjector.buffer.length >= _esInjector.injectThreshold)
+            _esInjector.inject(cb);
+        else cb();
+    };
+    this.inject = function (cb) {
+        if (!cb)
+            cb = function () {
+            };
+        let request = {
+            body: []
+        };
+        _esInjector.buffer.forEach(function (elt) {
+            request.body.push({
+                index: {
+                    _index: _esInjector.indexName,
+                    _type: _esInjector.documentType,
+                    _id: elt.tinyId ? elt.tinyId : elt._id
+                }
+            });
+            delete elt._id;
+            request.body.push(elt);
+        });
+        _esInjector.buffer = [];
+        esClient.bulk(request, function (err) {
+            if (err) {
+                // a few random fails, pause 2 seconds and try again.
+                setTimeout(function () {
+                    esClient.bulk(request, function (err) {
+                        if (err) {
+                            dbLogger.logError({
+                                message: "Unable to Index in bulk",
+                                origin: "system.elastic.inject",
+                                stack: err,
+                                details: ""
+                            });
+                            cb();
+                        } else {
+                            dbLogger.consoleLog("ingested: " + request.body.length / 2);
+                            cb();
+                        }
+                    });
+                }, 2000);
+            } else {
+                dbLogger.consoleLog("ingested: " + request.body.length / 2);
+                cb();
+            }
+        });
+    };
+}
+
 exports.daoMap = {
-    cde: queryDe,
-    form: queryForm,
-    board: {
+    "cde": {
+        condition: {archived: false},
+        dao: mongo_cde
+    },
+    "form": {
+        condition: {archived: false},
+        dao: mongo_form
+    },
+    "board": {
         condition: {},
         dao: boardDb
     },
-    cdeSuggest: queryDe,
-    formSuggest: queryForm
+    "cdeSuggest": {
+        condition: {archived: false},
+        dao: mongo_cde
+    },
+    "formSuggest": {
+        condition: {archived: false},
+        dao: mongo_form
+    }
 };
 
-exports.reIndex = function reIndex(index, cb) {
-    exports.reIndexStream({query: exports.daoMap[index.name], indexes: [index]}, cb);
-};
 
-const BUFFER_MAX_SIZE = 10000000; // ~10MB
-const DOC_MAX_SIZE = BUFFER_MAX_SIZE;
-exports.reIndexStream = function reIndexStream(dbStream, cb) {
-    createIndex(dbStream, handleError({}, () => {
-        let riverFunctions = dbStream.indexes.map(index => index.filter || ((elt, cb) => cb(elt)));
-        let buffers = [...new Array(dbStream.indexes.length)].map(() => Buffer.alloc(BUFFER_MAX_SIZE));
-        let bufferOffsets = new Array(dbStream.indexes.length).fill(0);
-        let nextCommandBuffer = Buffer.alloc(DOC_MAX_SIZE);
-        let nextCommandOffset = 0;
+exports.reIndex = function (index, cb) {
+    createIndex(index, handleError({}, () => {
+        let riverFunction = index.filter;
+        if (!riverFunction) {
+            riverFunction = (elt, cb) => cb(elt);
+        }
         let startTime = new Date().getTime();
-        let indexTypes = dbStream.indexes.map(index => Object.keys(index.indexJson.mappings)[0]);
-
-        dbStream.indexes.forEach(index => {
-            index.count = 0;
-        });
-
-        const inject = (i, cb = _.noop) => {
-            (function bulkIndex(req, cb, retries = 1) {
-                request.post(config.elastic.hosts + '/_bulk', {
-                    headers: {'Content-Type': 'application/x-ndjson'},
-                    body: req
-                }, err => {
-                    if (err) {
-                        if (retries) {
-                            setTimeout(function () {
-                                bulkIndex(req, cb, --retries);
-                            }, 2000);
-                        } else {
-                            dbLogger.logError({
-                                message: 'Unable to Index in bulk',
-                                origin: 'system.elastic.inject',
-                                stack: err,
-                                details: ''
-                            });
-                            cb();
-                        }
-                    } else {
-                        dbLogger.consoleLog('ingested: ' + dbStream.indexes[i].count);
-                        cb();
-                    }
-                });
-            })(buffers[i].toString(undefined, 0, bufferOffsets[i]), cb);
-            // reset
-            bufferOffsets[i] = 0;
-        };
-
-        dbStream.query.dao.count(dbStream.query.condition, (err, totalCount) => {
-            if (err) dbLogger.consoleLog('Error getting count: ' + err, 'error');
-            dbLogger.consoleLog('Total count for ' + dbStream.query.dao.name + ' is ' + totalCount);
-            dbStream.indexes.forEach(index => {
-                index.totalCount = totalCount;
-            });
-        });
-        let stream = dbStream.query.dao.getStream(dbStream.query.condition);
-        stream
-            .on('data', doc => {
-                const docObj = doc.toObject();
-                dbStream.indexes.forEach((index, i) => {
-                    riverFunctions[i](docObj, doc => {
-                        if (!doc) {
-                            return;
-                        }
-                        function nextCommand(json) {
-                            nextCommandOffset += nextCommandBuffer.write(JSON.stringify(json) + '\n', nextCommandOffset);
-                        }
-                        nextCommandOffset = 0;
-                        nextCommand({
-                            index: {
-                                _index: index.indexName,
-                                _type: indexTypes[i],
-                                _id: doc.tinyId || doc._id
-                            }
-                        });
-                        delete doc._id;
-                        nextCommand(doc);
-                        if (bufferOffsets[i] + nextCommandOffset > BUFFER_MAX_SIZE) {
-                            inject(i);
-                        }
-                        bufferOffsets[i] += nextCommandBuffer.copy(buffers[i], bufferOffsets[i], 0, nextCommandOffset);
+        let indexType = Object.keys(index.indexJson.mappings)[0];
+        // start re-index all
+        let injector = new EsInjector(esClient, index.indexName, indexType);
+        let condition = exports.daoMap[index.name].condition;
+        index.count = 0;
+        exports.daoMap[index.name].dao.count(condition, (err, totalCount) => {
+            if (err) dbLogger.consoleLog("Error getting count: " + err, 'error');
+            dbLogger.consoleLog("Total count for " + index.name + " is " + totalCount);
+            index.totalCount = totalCount;
+            let stream = exports.daoMap[index.name].dao.getStream(condition);
+            stream.on('data', elt => {
+                stream.pause();
+                riverFunction(elt.toObject(), afterRiverElt => {
+                    injector.queueDocument(afterRiverElt, () => {
                         index.count++;
+                        stream.resume();
                     });
                 });
-            })
-            .on('end', () => {
-                async.eachOf(dbStream.indexes, (index, i, doneOne) => {
-                    inject(i,() => {
-                        let info = 'done ingesting ' + index.name + ' in : ' + (new Date().getTime() - startTime) / 1000 + ' secs. count: ' + index.count;
-                        noDbLogger.noDbLogger.info(info);
-                        dbLogger.consoleLog(info);
-                        doneOne();
-                    });
-                }, () => {
+            });
+            stream.on('end', () => {
+                injector.inject(() => {
+                    let info = "done ingesting " + index.name + " in : " + (new Date().getTime() - startTime) / 1000 + " secs. count: " + index.count;
+                    noDbLogger.noDbLogger.info(info);
+                    dbLogger.consoleLog(info);
                     if (cb) cb();
                 });
-            })
-            .on('error', err => {
-                dbLogger.consoleLog('Error getting stream: ' + err);
             });
+            stream.on('error', err => {
+                dbLogger.consoleLog("Error getting stream: " + err);
+            });
+        });
     }));
 };
 
-function createIndex(dbStream, cb) {
-    async.filter(dbStream.indexes, (index, doneOne) => {
-        esClient.indices.exists({index: index.indexName}, (err, indiceExists) => {
-            if (err) {
-                return doneOne(err);
-            }
-            if (indiceExists) {
-                dbLogger.consoleLog('index already exists.');
-                doneOne(undefined, false);
-            } else {
-                dbLogger.consoleLog('creating index: ' + index.indexName);
-                esClient.indices.create({
-                    index: index.indexName,
-                    timeout: '10s',
-                    body: index.indexJson
-                }, err => {
-                    if (err) {
-                        respondError(err);
-                    } else {
-                        dbLogger.consoleLog('index Created');
-                    }
-                    doneOne(undefined, true);
-                });
-            }
-        });
-    }, (err, matches) => {
-        if (err) {
-            respondError(err);
-        }
-        if (matches && matches.length) {
-            exports.reIndexStream({query: dbStream.query, indexes: matches}, cb);
-        } else {
+function createIndex(index, cb) {
+    let indexName = index.indexName;
+    let indexMapping = index.indexJson;
+    esClient.indices.exists({index: indexName}, handleError({}, indiceExists => {
+        if (indiceExists) {
+            dbLogger.consoleLog("index already exists.");
             cb();
+        } else {
+            dbLogger.consoleLog("creating index: " + indexName);
+            let cond = {index: indexName, timeout: "10s", body: indexMapping};
+            esClient.indices.create(cond, handleError({}, () => {
+                dbLogger.consoleLog("index Created");
+                exports.reIndex(index, cb);
+            }));
         }
-    });
+    }));
 }
 
-exports.initEs = function initEs(cb) {
-    const dbStreams = [];
-    esInit.indices.forEach(index => {
-        const match = dbStreams.filter(s => s.query === exports.daoMap[index.name])[0];
-        if (match) {
-            match.indexes.push(index);
-        } else {
-            dbStreams.push({query: exports.daoMap[index.name], indexes: [index]});
-        }
-    });
-    async.forEach(dbStreams, createIndex, () => {
+exports.initEs = function (cb) {
+    async.forEach(esInit.indices, createIndex, () => {
         if (cb) cb();
     });
-
 };
 
 exports.completionSuggest = function (term, user, settings, indexName, cb) {
     let suggestQuery = {
-        query: {
-            match: {
-                nameSuggest: {
-                    query: term
+        "query": {
+            "match": {
+                "nameSuggest": {
+                    "query": term
                 }
             }
         },
@@ -260,17 +227,17 @@ exports.regStatusFilter = function (user, settings) {
     // Filter by selected Statuses
     if (settings.selectedStatuses.length > 0) {
         return settings.selectedStatuses.map(regStatus => {
-            return {term: {'registrationState.registrationStatus': regStatus}};
+            return {"term": {"registrationState.registrationStatus": regStatus}};
         });
     } else {
         let filterRegStatusTerms = settings.visibleStatuses.map(regStatus => {
-            return {term: {'registrationState.registrationStatus': regStatus}};
+            return {"term": {"registrationState.registrationStatus": regStatus}};
         });
         // Filter by Steward
         if (user) {
             let curatorOf = [].concat(user.orgAdmin).concat(user.orgCurator);
             filterRegStatusTerms = filterRegStatusTerms.concat(curatorOf.map(o => {
-                return {term: {'stewardOrg.name': o}};
+                return {"term": {"stewardOrg.name": o}};
             }));
         }
         return filterRegStatusTerms;
@@ -279,7 +246,7 @@ exports.regStatusFilter = function (user, settings) {
 
 exports.buildElasticSearchQuery = function (user, settings) {
     function escapeRegExp(str) {
-        return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&').replace('<', "");
+        return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&").replace("<", "");
     }
 
     // Increase ranking score for high registration status
@@ -296,7 +263,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
 
     // Filter by selected Datatypes
     let filterDatatypeTerms = settings.selectedDatatypes && settings.selectedDatatypes.map(datatype => {
-        return {term: {'valueDomain.datatype': datatype}};
+        return {"term": {"valueDomain.datatype": datatype}};
     });
 
     settings.filter = {
@@ -312,9 +279,9 @@ exports.buildElasticSearchQuery = function (user, settings) {
     }
 
     if (settings.visibleStatuses
-        && settings.visibleStatuses.indexOf('Retired') === -1
-        && settings.selectedStatuses.indexOf('Retired') === -1) {
-        settings.filter.bool.filter.push({bool: {must_not: {term: {'registrationState.registrationStatus': 'Retired'}}}});
+        && settings.visibleStatuses.indexOf("Retired") === -1
+        && settings.selectedStatuses.indexOf("Retired") === -1) {
+        settings.filter.bool.filter.push({bool: {must_not: {"term": {"registrationState.registrationStatus": "Retired"}}}});
     }
 
     settings.filterDatatype = {
@@ -352,10 +319,10 @@ exports.buildElasticSearchQuery = function (user, settings) {
     if (hasSearchTerm) {
         queryStuff.query.bool.must[0].dis_max.queries.push({
             function_score: {
-                boost: '2.5',
+                boost: "2.5",
                 query: { // Boost rank if matches are on designation or definition
                     query_string: {
-                        fields: ['primaryNameCopy^5', 'primaryDefinitionCopy^2'],
+                        fields: ["primaryNameCopy^5", "primaryDefinitionCopy^2"],
                         analyze_wildcard: true,
                         query: settings.searchTerm
                     }
@@ -365,16 +332,16 @@ exports.buildElasticSearchQuery = function (user, settings) {
         });
 
         // Boost rank if we find exact string match, or if terms are in a less than 4 terms apart.
-        if (settings.searchTerm.indexOf('"') < 0) {
-            queryStuff.query.bool.must[0].dis_max.queries[1].function_score.boost = '2';
+        if (settings.searchTerm.indexOf("\"") < 0) {
+            queryStuff.query.bool.must[0].dis_max.queries[1].function_score.boost = "2";
             queryStuff.query.bool.must[0].dis_max.queries.push({
                 function_score: {
                     boost: 4,
                     query: {
-                        query_string: {
-                            fields: ['primaryNameCopy^5', 'primaryDefinitionCopy^2'],
-                            analyze_wildcard: true,
-                            query: '"' + settings.searchTerm + '"~4'
+                        "query_string": {
+                            "fields": ["primaryNameCopy^5", "primaryDefinitionCopy^2"],
+                            "analyze_wildcard": true,
+                            "query": "\"" + settings.searchTerm + "\"~4"
                         }
                     },
                     script_score: {script: script}
@@ -385,17 +352,17 @@ exports.buildElasticSearchQuery = function (user, settings) {
 
     // Filter by selected org
     if (settings.selectedOrg) {
-        queryStuff.query.bool.must.push({term: {'classification.stewardOrg.name': settings.selectedOrg}});
+        queryStuff.query.bool.must.push({term: {"classification.stewardOrg.name": settings.selectedOrg}});
     }
     if (settings.selectedOrgAlt) {
-        queryStuff.query.bool.must.push({term: {'classification.stewardOrg.name': settings.selectedOrgAlt}});
+        queryStuff.query.bool.must.push({term: {"classification.stewardOrg.name": settings.selectedOrgAlt}});
     }
     if (settings.excludeAllOrgs) {
-        queryStuff.query.bool.must.push({term: {'classificationSize': 1}});
+        queryStuff.query.bool.must.push({term: {"classificationSize": 1}});
     } else {
         if (settings.excludeOrgs && settings.excludeOrgs.length > 0) {
             settings.excludeOrgs.forEach(o => {
-                queryStuff.query.bool.must_not = {term: {'classification.stewardOrg.name': o}};
+                queryStuff.query.bool.must_not = {"term": {"classification.stewardOrg.name": o}};
             });
         }
     }
@@ -418,7 +385,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
         queryStuff.query.bool.must.push({term: {flatMeshTrees: settings.meshTree}});
     }
 
-    let flatSelection = settings.selectedElements ? settings.selectedElements.join(';') : "";
+    let flatSelection = settings.selectedElements ? settings.selectedElements.join(";") : "";
     if (settings.selectedOrg && flatSelection !== "") {
         sort = false;
         // boost for those elts classified fewer times
@@ -433,12 +400,12 @@ exports.buildElasticSearchQuery = function (user, settings) {
                 }]
             }
         });
-        queryStuff.query.bool.must.push({term: {flatClassifications: settings.selectedOrg + ';' + flatSelection}});
+        queryStuff.query.bool.must.push({term: {flatClassifications: settings.selectedOrg + ";" + flatSelection}});
     }
 
-    let flatSelectionAlt = settings.selectedElementsAlt ? settings.selectedElementsAlt.join(';') : "";
+    let flatSelectionAlt = settings.selectedElementsAlt ? settings.selectedElementsAlt.join(";") : "";
     if (settings.selectedOrgAlt && flatSelectionAlt !== "") {
-        queryStuff.query.bool.must.push({term: {flatClassifications: settings.selectedOrgAlt + ';' + flatSelectionAlt}});
+        queryStuff.query.bool.must.push({term: {flatClassifications: settings.selectedOrgAlt + ";" + flatSelectionAlt}});
     }
 
     if (!settings.visibleStatuses || settings.visibleStatuses.length === 0)
@@ -446,12 +413,12 @@ exports.buildElasticSearchQuery = function (user, settings) {
 
     // show statuses that either you selected, or it's your org and it's not retired.
     let regStatusAggFilter = {
-        bool: {
-            filter: [
+        "bool": {
+            "filter": [
                 {
-                    bool: {
-                        should: settings.visibleStatuses.concat(settings.selectedStatuses).map(regStatus => {
-                            return {term: {'registrationState.registrationStatus': regStatus}};
+                    "bool": {
+                        "should": settings.visibleStatuses.concat(settings.selectedStatuses).map(regStatus => {
+                            return {"term": {"registrationState.registrationStatus": regStatus}};
                         })
                     }
                 }
@@ -460,44 +427,44 @@ exports.buildElasticSearchQuery = function (user, settings) {
     };
     if (usersvc.myOrgs(user).length > 0)
         usersvc.myOrgs(user).map(org => {
-            regStatusAggFilter.bool.filter[0].bool.should.push({term: {'stewardOrg.name': org}});
+            regStatusAggFilter.bool.filter[0].bool.should.push({"term": {"stewardOrg.name": org}})
         });
 
-    if (settings.visibleStatuses.indexOf('Retired') === -1 && settings.selectedStatuses.indexOf('Retired') === -1) {
-        regStatusAggFilter.bool.filter.push({bool: {must_not: {term: {'registrationState.registrationStatus': 'Retired'}}}});
+    if (settings.visibleStatuses.indexOf("Retired") === -1 && settings.selectedStatuses.indexOf("Retired") === -1) {
+        regStatusAggFilter.bool.filter.push({bool: {must_not: {"term": {"registrationState.registrationStatus": "Retired"}}}});
     }
 
     if (sort) {
         queryStuff.sort = {
-            'registrationState.registrationStatusSortOrder': 'asc',
-            classificationBoost: 'desc',
-            'primaryNameCopy.raw': 'asc'
+            "registrationState.registrationStatusSortOrder": "asc",
+            "classificationBoost": "desc",
+            "primaryNameCopy.raw": "asc"
         };
     }
 
     // Get aggregations on classifications and statuses
     if (settings.includeAggregations) {
         queryStuff.aggregations = {
-            orgs: {
-                filter: settings.filter,
-                aggs: {
-                    orgs: {
-                        terms: {
-                            field: 'classification.stewardOrg.name',
-                            size: 500,
-                            order: {
-                                _term: 'desc'
+            "orgs": {
+                "filter": settings.filter,
+                "aggs": {
+                    "orgs": {
+                        "terms": {
+                            "field": "classification.stewardOrg.name",
+                            "size": 500,
+                            "order": {
+                                "_term": "desc"
                             }
                         }
                     }
                 }
             },
-            statuses: {
-                filter: regStatusAggFilter,
-                aggs: {
-                    statuses: {
-                        terms: {
-                            field: 'registrationState.registrationStatus'
+            "statuses": {
+                "filter": regStatusAggFilter,
+                "aggs": {
+                    "statuses": {
+                        "terms": {
+                            "field": "registrationState.registrationStatus"
                         }
                     }
                 }
@@ -506,19 +473,19 @@ exports.buildElasticSearchQuery = function (user, settings) {
 
         let flattenClassificationAggregations = function (variableName, orgVariableName, selectionString) {
             let flatClassifications = {
-                terms: {
-                    size: 500,
-                    field: 'flatClassifications'
+                "terms": {
+                    "size": 500,
+                    "field": "flatClassifications"
                 }
             };
             if (selectionString === "") {
-                flatClassifications.terms.include = escapeRegExp(settings[orgVariableName]) + ';[^;]+';
+                flatClassifications.terms.include = escapeRegExp(settings[orgVariableName]) + ";[^;]+";
             } else {
-                flatClassifications.terms.include = escapeRegExp(settings[orgVariableName]) + ';' + escapeRegExp(selectionString) + ';[^;]+';
+                flatClassifications.terms.include = escapeRegExp(settings[orgVariableName]) + ';' + escapeRegExp(selectionString) + ";[^;]+";
             }
             queryStuff.aggregations[variableName] = {
-                filter: settings.filter,
-                aggs: {}
+                "filter": settings.filter,
+                "aggs": {}
             };
             queryStuff.aggregations[variableName].aggs[variableName] = flatClassifications;
         };
@@ -530,31 +497,31 @@ exports.buildElasticSearchQuery = function (user, settings) {
         }
 
         queryStuff.aggregations.meshTrees = {
-            filter: settings.filter,
+            "filter": settings.filter,
             aggs: {
-                meshTrees: {
+                "meshTrees": {
                     terms: {
                         size: 50,
-                        field: 'flatMeshTrees',
-                        include: '[^;]+'
+                        field: "flatMeshTrees",
+                        include: "[^;]+"
                     }
                 }
             }
         };
 
         if (settings.meshTree && settings.meshTree.length > 0) {
-            queryStuff.aggregations.meshTrees.aggs.meshTrees.terms.include = escapeRegExp(settings.meshTree) + ';[^;]+';
+            queryStuff.aggregations.meshTrees.aggs.meshTrees.terms.include = escapeRegExp(settings.meshTree) + ";[^;]+";
         }
 
         queryStuff.aggregations.twoLevelMesh = {
-            filter: settings.filter,
+            "filter": settings.filter,
             aggs: {
                 twoLevelMesh: {
                     terms: {
                         size: 500,
-                        field: 'flatMeshTrees',
-                        //include: '[^;]+'
-                        include: '[^;]+;[^;]+'
+                        field: "flatMeshTrees",
+                        //include: "[^;]+"
+                        include: "[^;]+;[^;]+"
                     }
                 }
             }
@@ -572,37 +539,37 @@ exports.buildElasticSearchQuery = function (user, settings) {
 
     // highlight search results if part of the following fields.
     queryStuff.highlight = {
-        require_field_match: false,
-        fragment_size: 150,
-        order: 'score',
-        pre_tags: ['<strong>'],
-        post_tags: ['</strong>'],
-        fields: {
-            'stewardOrgCopy.name': {},
-            primaryNameCopy: {},
-            primaryDefinitionCopy: {'number_of_fragments': 1},
-            'designations.designation': {},
-            'definitions.definition': {},
-            'dataElementConcept.concepts.name': {},
-            'dataElementConcept.concepts.origin': {},
-            'dataElementConcept.concepts.originId': {},
-            'property.concepts.name': {},
-            'property.concepts.origin': {},
-            'property.concepts.originId': {},
-            'objectClass.concepts.name': {},
-            'objectClass.concepts.origin': {},
-            'objectClass.concepts.originId': {},
-            'valueDomain.datatype': {},
-            'valueDomain.permissibleValues.permissibleValue': {},
-            'valueDomain.permissibleValues.valueMeaningName': {},
-            'valueDomain.permissibleValues.valueMeaningCode': {},
-            flatProperties: {},
-            flatIds: {},
-            'classification.stewardOrg.name': {},
-            'classification.elements.name': {},
-            'classification.elements.elements.name': {},
-            'classification.elements.elements.elements.name': {},
-        },
+        "require_field_match": false,
+        "fragment_size": 150,
+        "order": "score"
+        , "pre_tags": ["<strong>"]
+        , "post_tags": ["</strong>"]
+        , "fields": {
+            "stewardOrgCopy.name": {}
+            , "primaryNameCopy": {}
+            , "primaryDefinitionCopy": {"number_of_fragments": 1}
+            , "designations.designation": {}
+            , "definitions.definition": {}
+            , "dataElementConcept.concepts.name": {}
+            , "dataElementConcept.concepts.origin": {}
+            , "dataElementConcept.concepts.originId": {}
+            , "property.concepts.name": {}
+            , "property.concepts.origin": {}
+            , "property.concepts.originId": {}
+            , "objectClass.concepts.name": {}
+            , "objectClass.concepts.origin": {}
+            , "objectClass.concepts.originId": {}
+            , "valueDomain.datatype": {}
+            , "valueDomain.permissibleValues.permissibleValue": {}
+            , "valueDomain.permissibleValues.valueMeaningName": {}
+            , "valueDomain.permissibleValues.valueMeaningCode": {}
+            , "flatProperties": {}
+            , "flatIds": {}
+            , "classification.stewardOrg.name": {}
+            , "classification.elements.name": {}
+            , "classification.elements.elements.name": {}
+            , "classification.elements.elements.elements.name": {}
+        }
     };
     return queryStuff;
 };
@@ -614,48 +581,48 @@ exports.isSearch = function (settings) {
 let searchTemplate = {
     cde: {
         index: config.elastic.index.name,
-        type: 'dataelement'
+        type: "dataelement"
     },
     form: {
         index: config.elastic.formIndex.name,
-        type: 'form'
+        type: "form"
     }
 };
 
 
 exports.elasticsearch = function (type, query, settings, cb) {
     let search = searchTemplate[type];
-    if (!search) return cb('Invalid query');
+    if (!search) return cb("Invalid query");
     search.body = query;
     esClient.search(search, (error, response) => {
         if (error) {
             if (response && response.status === 400) {
                 if (response.error.type !== 'search_phase_execution_exception') {
-                    logging.errorLogger.error('Error: ElasticSearch Error',
+                    logging.errorLogger.error("Error: ElasticSearch Error",
                         {
-                            origin: 'system.elastic.elasticsearch',
+                            origin: "system.elastic.elasticsearch",
                             stack: error.stack,
                             details: JSON.stringify(query)
                         });
                 }
-                cb('Invalid Query');
+                cb("Invalid Query");
             } else {
-                let querystr = 'cannot stringify query';
+                let querystr = "cannot stringify query";
                 try {
                     querystr = JSON.stringify(query);
                 } catch (e) {
                 }
-                logging.errorLogger.error('Error: ElasticSearch Error',
+                logging.errorLogger.error("Error: ElasticSearch Error",
                     {
-                        origin: 'system.elastic.elasticsearch',
+                        origin: "system.elastic.elasticsearch",
                         stack: error.stack,
-                        details: 'query ' + querystr
+                        details: "query " + querystr
                     });
-                cb('Server Error');
+                cb("Server Error");
             }
         } else {
-            if (response.hits.total === 0 && config.name.indexOf('Prod') === -1) {
-                dbLogger.consoleLog('No response. QUERY: ' + JSON.stringify(query), 'debug');
+            if (response.hits.total === 0 && config.name.indexOf("Prod") === -1) {
+                dbLogger.consoleLog("No response. QUERY: " + JSON.stringify(query), 'debug');
             }
 
             let result = {
@@ -684,7 +651,7 @@ exports.elasticsearch = function (type, query, settings, cb) {
 let lock = false;
 
 exports.elasticSearchExport = function (dataCb, query, type) {
-    if (lock) return dataCb('Servers busy');
+    if (lock) return dataCb("Servers busy");
 
     lock = true;
 
@@ -700,12 +667,12 @@ exports.elasticSearchExport = function (dataCb, query, type) {
             function (err, response) {
                 if (err) {
                     lock = false;
-                    logging.errorLogger.error('Error: Elastic Search Scroll Access Error',
+                    logging.errorLogger.error("Error: Elastic Search Scroll Access Error",
                         {
-                            origin: 'system.elastic.elasticsearch',
+                            origin: "system.elastic.elasticsearch",
                             stack: new Error().stack
                         });
-                    dataCb('ES Error');
+                    dataCb("ES Error");
                 } else {
                     processScroll(response);
                 }
@@ -729,13 +696,13 @@ exports.elasticSearchExport = function (dataCb, query, type) {
     esClient.search(search, (err, response) => {
         if (err) {
             lock = false;
-            logging.errorLogger.error('Error: Elastic Search Scroll Query Error',
+            logging.errorLogger.error("Error: Elastic Search Scroll Query Error",
                 {
-                    origin: 'system.elastic.elasticsearch',
+                    origin: "system.elastic.elasticsearch",
                     stack: new Error().stack,
                     details: query
                 });
-            dataCb('ES Error');
+            dataCb("ES Error");
         } else {
             processScroll(response);
         }
@@ -765,8 +732,8 @@ exports.queryMostViewed = {
                 {
                     bool: {
                         should: [
-                            {term: {'registrationState.registrationStatus': 'Standard'}},
-                            {term: {'registrationState.registrationStatus': 'Qualified'}}
+                            {"term": {"registrationState.registrationStatus": "Standard"}},
+                            {"term": {"registrationState.registrationStatus": "Qualified"}}
                         ]
                     }
                 }
@@ -774,7 +741,7 @@ exports.queryMostViewed = {
         }
     },
     sort: {
-        views: 'desc'
+        views: "desc"
     }
 };
 
@@ -786,8 +753,8 @@ exports.queryNewest = {
                 {
                     bool: {
                         should: [
-                            {term: {'registrationState.registrationStatus': 'Standard'}},
-                            {term: {'registrationState.registrationStatus': 'Qualified'}}
+                            {"term": {"registrationState.registrationStatus": "Standard"}},
+                            {"term": {"registrationState.registrationStatus": "Qualified"}}
                         ]
                     }
                 }

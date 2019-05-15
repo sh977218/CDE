@@ -200,6 +200,8 @@ export class PermissibleValueComponent {
                     xml2js.parseString(res, (err, data) => {
                         if (err) {
                             this.Alert.addAlert('danger', 'Error parsing xml to json.');
+                            console.log("Received from VSAC: ");
+                            console.log(res);
                         } else if (!data) {
                             this.Alert.addAlert('danger', 'Error: No data retrieved from VSAC for ' + dec.conceptualDomain.vsac.id);
                         } else {
