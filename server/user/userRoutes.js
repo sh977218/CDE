@@ -103,7 +103,7 @@ exports.module = function (roleConfig) {
                 });
             }
 
-            let serverErrorCount = notificationDb.getNumberServerError(user);
+            let serverErrorCount = await notificationDb.getNumberServerError(user);
             if (serverErrorCount > 0) {
                 tasks.push({
                     id: serverErrorCount,
@@ -172,11 +172,6 @@ exports.module = function (roleConfig) {
                         });
                 });
             }
-
-            // attachment.unapproved(errorHandler(a => {
-            //     attachmentElts = a;
-            //     tasksDone();
-            // }));
         }
         if (authorizationShared.hasRole(user, 'CommentReviewer')) { // required, req.user.notificationSettings.approvalComment.drawer not used
             let comments = await discussDb.unapproved();

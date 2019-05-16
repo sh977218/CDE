@@ -83,16 +83,6 @@ exports.userRefSchema = {
     username: {type: StringType, index: true}
 };
 
-// remove this once all formEditor roles have been removed.
-userSchema.pre('validate', function (next) {
-    let doc = this;
-    let formEditorIndex = doc.roles.indexOf("FormEditor");
-    if (formEditorIndex > -1) {
-        doc.roles.splice(formEditorIndex, 1);
-    }
-    next();
-});
-
 const User = conn.model('User', userSchema);
 
 exports.User = User;
@@ -100,9 +90,7 @@ exports.User = User;
 const userProject = {password: 0};
 
 exports.byId = (id, callback) => {
-    let query = User.findById(id, userProject);
-    if (callback) query.exec(callback);
-    else return query.exec();
+    User.findById(id, userProject).exec(callback);
 };
 
 exports.find = (crit, cb) => {
