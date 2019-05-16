@@ -89,6 +89,10 @@
                     <a href="https://projectredcap.org/" target="_blank" title="Information">
                         <mat-icon class="menuActionIcon">help_outline</mat-icon></a>
                 </span>
+                <span mat-menu-item (click)="exportService.redcapExport(elt)">REDCap
+                    <a href="https://projectredcap.org/" target="_blank" title="Information">
+                        <mat-icon class="menuActionIcon">help_outline</mat-icon></a>
+                </span>
                 <span id='formCdesExport' (click)="exportService.formCdeExport(elt)"
                       mat-menu-item>CDE Dictionary (CSV)</span>
                 <span mat-menu-item>
