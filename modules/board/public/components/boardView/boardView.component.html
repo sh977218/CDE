@@ -6,39 +6,6 @@
                 {{board.name}} <span *ngIf="isModifiedSinceReview">(Board has been modified since last review)</span>
             </h3>
             <div class="ml-auto pull-right">
-                <div *ngIf="reviewers?.length > 0" class="boxed-div p-0 m-0 d-inline-block">
-                    <div class="overflowHidden p-1">
-                        <b *ngIf="!board.review?.startDate && !board.review?.endDate">Not started</b>
-                        <b *ngIf="board.review?.startDate && board.review?.endDate">Ended</b>
-                        <b *ngIf="board.review?.startDate && !board.review?.endDate">In progress</b>
-                        <span *ngIf="board.review?.startDate">{{board.review.startDate | date: 'MM/dd/yyyy'}}</span>
-                        <span *ngIf="board.review?.endDate"> ~ {{board.review.endDate | date: 'MM/dd/yyyy'}}</span>
-                        <span *ngFor="let reviewer of reviewers"
-                              title="{{reviewer.username}} {{reviewer.status.approval}}{{reviewer.lastViewedLocal?'. viewed on '+reviewer.lastViewedLocal :''}}">
-                            <mat-icon class="mr2 ml2">person</mat-icon>
-                            <span class="overlay-lower-right" id="reviewer_{{reviewer.username}}_status">
-                                <mat-icon *ngIf="reviewer.status.approval === 'approved'" class="text-success">check</mat-icon>
-                                <mat-icon *ngIf="reviewer.status.approval === 'disapproved'" class="text-warning">cancel</mat-icon>
-                            </span>
-                        </span>
-                        <button *ngIf="!isReviewActive() && userService.user?.username === board.owner.username "
-                                mat-raised-button id="startReviewBtn" (click)="startReview()"> Start Review
-                        </button>
-                        <button *ngIf="isReviewActive() && userService.user?.username === board.owner.username"
-                                mat-raised-button id="endReviewBtn" (click)="endReview()"> End Review
-                        </button>
-                        <ng-container *ngIf="canReview">
-                            <button mat-raised-button id="approveBoardBtn"
-                                    [ngClass]="{'bg-color-green white-icon':boardStatus==='approved'}"
-                                    (click)="boardApproval('approved')">
-                                <mat-icon>check</mat-icon>Approve</button>
-                            <button mat-raised-button id="disApproveBoardBtn"
-                                    [ngClass]="{'bg-color-red white-icon':boardStatus==='disapproved'}"
-                                    (click)="boardApproval('disapproved')">
-                                <mat-icon>cancel</mat-icon>Disapprove</button>
-                        </ng-container>
-                    </div>
-                </div>
                 <button *ngIf="userService.user?.username === board.owner.username" mat-raised-button
                         id="shareBoardBtn" (click)="shareBoard()">
                     <mat-icon>share</mat-icon>

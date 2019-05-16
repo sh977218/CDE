@@ -133,7 +133,7 @@ exports.checkBoardOwnerShip = function (board, user) {
 
 exports.checkBoardViewerShip = function (board, user) {
     if (!user || !board) return false;
-    let viewers = board.users.filter(u => u.role === 'viewer' || u.role === 'reviewer').map(u => u.username.toLowerCase());
+    let viewers = board.users.filter(u => u.role === 'viewer').map(u => u.username.toLowerCase());
     return viewers.indexOf(user.username.toLowerCase()) > -1 || exports.checkBoardOwnerShip(board, user);
 };
 
