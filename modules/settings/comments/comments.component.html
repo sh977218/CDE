@@ -1,6 +1,6 @@
 <div class="container-fluid">
     <h1>{{title}} Comments</h1>
-    <span ngIf="!comments?.latestComments?.length">You have no comments.</span>
+    <span *ngIf="!comments?.latestComments?.length">You have no comments.</span>
     <div *ngIf="comments?.latestComments?.length">
         <table class="table table-border table-striped table-responsive">
             <tr>
