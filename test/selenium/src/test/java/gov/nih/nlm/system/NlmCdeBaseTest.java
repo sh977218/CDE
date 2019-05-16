@@ -333,7 +333,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     protected void goToUsers() {
         goToSettings();
         clickElement(By.id("users"));
-        textPresent("Create User");
+        textPresent("Create User", By.id("settingsContent"));
     }
 
     protected void goToResources() {
@@ -359,18 +359,19 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     protected void goToMyPublishedForms() {
         goToSettings();
         clickElement(By.id("myPublishedForms"));
-        textPresent("Your Published Forms");
+        textPresent("My Published Forms", By.id("settingsContent"));
     }
 
     protected void goToViewHistory() {
         goToSettings();
-        clickElement(By.id("viewHistory"));
-        textPresent("Viewing History");
+        clickElement(By.id("viewingHistory"));
+        textPresent("Viewing History", By.id("settingsContent"));
     }
+
     protected void goToAdmins() {
         goToSettings();
         clickElement(By.id("admins"));
-        textPresent("Admins for this Organization:");
+        textPresent("Admins for this Organization:", By.id("settingsContent"));
     }
 
     protected void goToMyDrafts() {
@@ -381,13 +382,13 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     protected void goToMyOrgDrafts() {
         goToSettings();
         clickElement(By.id("myOrgDrafts"));
-        textPresent("My Organization Drafts");
+        textPresent("My Organization Drafts", By.id("settingsContent"));
     }
 
     protected void goToAllDrafts() {
         goToSettings();
         clickElement(By.id("allDrafts"));
-        textPresent("All Drafts");
+        textPresent("All Drafts", By.id("settingsContent"));
     }
 
     protected void goToMyComments() {
@@ -408,7 +409,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     protected void goToValidationRules() {
         goToSettings();
         clickElement(By.id("validationRules"));
-        textPresent("Add New Rule");
+        textPresent("Add New Rule", By.id("settingsContent"));
     }
 
     protected void goToServerStatus() {
@@ -424,7 +425,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     protected void goToProfile() {
         goToSettings();
         clickElement(By.id("profile"));
-        textPresent("User Profile");
+        textPresent("Profile", By.id("settingsContent"));
     }
 
     protected int getNumberOfResults() {
