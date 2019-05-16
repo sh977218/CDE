@@ -24,6 +24,8 @@ import { hasRole, isSiteAdmin } from 'shared/system/authorizationShared';
     `]
 })
 export class NotificationComponent {
+    hasRole = hasRole;
+    isSiteAdmin = isSiteAdmin;
     readonly booleanSettingOptions = ['Disabled', 'Enabled'];
     subscriptionStatusClient = PushNotificationSubscriptionService.subscriptionCheckClient;
     subscriptionStatusServer?: string;
@@ -82,6 +84,15 @@ export class NotificationComponent {
         this.userService.then(user => {
             this.user = user;
         }, _noop);
+    }
+
+    saveProfile() {
+        this.http.post('/server/user/', this.user).subscribe(
+            () => {
+                this.reloadUser();
+                this.alert.addAlert('success', 'Saved');
+            }, () => this.alert.addAlert('danger', 'Error, unable to save')
+        );
     }
 
 }
