@@ -241,19 +241,6 @@ task('copyUsemin', series('usemin', function _usemin() {
     return merge(streamArray);
 }));
 
-task('es', function _es() {
-    const elasticsearch = require('elasticsearch');
-
-    let esClient = new elasticsearch.Client({
-        hosts: config.elastic.hosts
-    });
-    let allIndex = esInit.indices.map(i => i.indexName);
-    console.log('allIndex ' + allIndex);
-    return new Promise((resolve, reject) => {
-        esClient.indices.delete({index: allIndex, timeout: '6s'}, err => err ? reject(err) : resolve());
-    });
-});
-
 // Procedure calling task in README
 task('buildHome', function _buildHome() {
     return src('./modules/system/views/home.ejs')
@@ -291,24 +278,47 @@ task('checkDbConnection', function _buildHome() {
     });
 });
 
+task('es', function _es(cb) {
+    const elasticsearch = require('elasticsearch');
+    let esClient = new elasticsearch.Client({
+        hosts: config.elastic.hosts
+    });
+    let allIndex = esInit.indices.map(i => i.indexName).join(',');
+    console.log('All index: ' + allIndex);
+
+    esClient.indices.delete({index: allIndex, timeout: '6s'}, function (err) {
+        if(err && err.status !== 404) throw err;
+        else cb();
+    });
+});
 task('mongoRestore', function _mongoRestore(cb) {
-    exec('restore-test-instance.sh', function (err, stdout, stderr) {
-        console.log('mongoRestore Result: ' + stdout);
-        console.log('mongoRestore stderr+ ' + stderr);
-        cb(err);
+    exec('restore-test-instance.sh', function (err) {
+        if (err) throw err;
+        else cb();
     });
 });
 
-task('reindex', function _mongoRestore(cb) {
+task('injectEs', function _mongoRestore(cb) {
     const elastic = require('./server/system/elastic');
-    let allReindex = esInit.indices.map(i =>
-        new Promise(resolve =>
-            elastic.reIndex(i.indexName, resolve)
-        )
-    );
-    Promise.all(allReindex, cb);
+    let allReindex = esInit.indices.map(i => {
+        console.log('Inject Index: ' + i.indexName);
+        return new Promise((resolve, reject) => {
+            elastic.reIndex(i.indexName, function (err) {
+                if (err) reject();
+                else resolve();
+            })
+        })
+    });
+    Promise.all(allReindex)
+        .then(() => {
+            console.log('Finished inject all index.');
+            cb();
+        })
+        .catch(function (err) {
+            throw err;
+        });
 });
-task('step1', series('es', 'mongoRestore', 'reindex'));
+task('step1', series('es', 'mongoRestore', 'injectEs'));
 task('step2', series('copyNpmDeps', 'prepareVersion', 'copyUsemin', 'checkDbConnection'));
 task('default', parallel('step1', 'step2'));
 

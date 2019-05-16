@@ -62,7 +62,7 @@
     "deep-copy": "^1.4.2",
     "deep-diff": "^1.0.2",
     "ejs": "2.6.1",
-    "elasticsearch": "^15.2.0",
+    "elasticsearch": "^16.0.0",
     "esm": "^3.0.84",
     "event-stream": "3.3.4",
     "express": "^4.16.3",
