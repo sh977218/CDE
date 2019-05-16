@@ -8,7 +8,6 @@
            [matMenuTriggerFor]="loginMenu">{{userService.user.username | cdeTruncateLongName}}&nbsp;▼</a>
         <mat-menu #loginMenu="matMenu">
             <a routerLink="/profile" id="user_profile" mat-menu-item>Profile</a>
-            <a routerLink="/inbox" id="user_inbox" mat-menu-item>Inbox</a>
             <a routerLink="/orgComments" id="org_comments" mat-menu-item
                *ngIf="isOrgCurator(userService.user)">Org Comments</a>
             <a routerLink="/classificationManagement" id="user_classifications" mat-menu-item
@@ -23,11 +22,6 @@
                *ngIf="isOrgAuthority(userService.user)">Audit</a>
             <a (click)="loginSvc.logout()" target="_self" id="user_logout" mat-menu-item>Log Out</a>
         </mat-menu>
-
-        <a routerLink="/inbox" *ngIf="userService.user.hasMail"
-           class="mdl-navigation__link mdl-typography--text-uppercase" title="New Mail">
-            <mat-icon id="incomingMessage" class="text-danger">mail_outline</mat-icon>
-        </a>
     </ng-container>
 </ng-template>
 
