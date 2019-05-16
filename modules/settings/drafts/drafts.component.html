@@ -1,30 +1,28 @@
 <h2>{{title}} Drafts</h2>
-<ng-container *ngIf="drafts?.draftCdes?.length">
-    <h3>CDEs</h3>
-    <table class="table table-responsive">
-        <tr *ngFor="let draftCde of drafts.draftCdes">
-            <td>
-                <a routerLink="/deView" [queryParams]="{tinyId: draftCde.tinyId}">
-                    {{draftCde.designations[0].designation}}</a>
-            </td>
-            <td>{{draftCde.tinyId}}</td>
-            <td>{{draftCde.updatedBy?.username}}</td>
-            <td>{{draftCde.updated | date: 'MM/dd/yyyy @ h:mma'}}</td>
-        </tr>
-    </table>
-</ng-container>
+<h3>CDEs</h3>
+<span *ngIf="!drafts?.draftCdes?.length">There is no CDE drafts.</span>
+<table class="table table-responsive" *ngIf="drafts?.draftCdes?.length">
+    <tr *ngFor="let draftCde of drafts.draftCdes">
+        <td>
+            <a routerLink="/deView" [queryParams]="{tinyId: draftCde.tinyId}">
+                {{draftCde.designations[0].designation}}</a>
+        </td>
+        <td>{{draftCde.tinyId}}</td>
+        <td>{{draftCde.updatedBy?.username}}</td>
+        <td>{{draftCde.updated | date: 'MM/dd/yyyy @ h:mma'}}</td>
+    </tr>
+</table>
 
-<ng-container *ngIf="drafts?.draftForms?.length">
-    <h3>Forms</h3>
-    <table class="table table-responsive">
-        <tr *ngFor="let draftForm of drafts.draftForms">
-            <td>
-                <a routerLink="/formView" [queryParams]="{tinyId: draftForm.tinyId}">
-                    {{draftForm.designations[0].designation}}</a>
-            </td>
-            <td>{{draftForm.tinyId}}</td>
-            <td>{{draftForm.updatedBy?.username}}</td>
-            <td>{{draftForm.updated}}</td>
-        </tr>
-    </table>
-</ng-container>
+<h3>Forms</h3>
+<span *ngIf="!drafts?.draftForms?.length">There is no Form drafts.</span>
+<table class="table table-responsive" *ngIf="drafts?.draftForms?.length">
+    <tr *ngFor="let draftForm of drafts.draftForms">
+        <td>
+            <a routerLink="/formView" [queryParams]="{tinyId: draftForm.tinyId}">
+                {{draftForm.designations[0].designation}}</a>
+        </td>
+        <td>{{draftForm.tinyId}}</td>
+        <td>{{draftForm.updatedBy?.username}}</td>
+        <td>{{draftForm.updated}}</td>
+    </tr>
+</table>

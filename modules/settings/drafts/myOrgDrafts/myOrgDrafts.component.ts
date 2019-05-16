@@ -9,7 +9,7 @@ import { AlertService } from 'alert/alert.service';
 })
 export class MyOrgDraftsComponent {
     drafts?: Drafts;
-    title:string='My Organization';
+    title: string = 'My Organization';
 
     constructor(private http: HttpClient,
                 private alert: AlertService) {

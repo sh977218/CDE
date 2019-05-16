@@ -7,7 +7,7 @@ import { PageEvent } from '@angular/material';
 import { UserService } from '_app/user.service';
 
 @Component({
-    selector: 'cde-my-Org-comments',
+    selector: 'cde-my-org-comments',
     templateUrl: '../comments.component.html'
 })
 export class MyOrgCommentsComponent implements OnInit {

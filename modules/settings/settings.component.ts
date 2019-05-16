@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, HostListener, ViewChild } from '@angular/core';
 import { UserService } from '_app/user.service';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { Router } from "@angular/router";
+import { MatSidenav } from "@angular/material";
 
 @Component({
     templateUrl: './settings.component.html',
@@ -20,31 +21,33 @@ import { FormBuilder, FormGroup } from '@angular/forms';
             list-style: none;
         }
 
-        .is-active {
+        .isActive {
             background-color: #c4d2e7;
         }
-
-        .settingsContent {
-            border-width: 0 0 1px 1px;
-            border-style: solid
+        .settingsContainer{
+            min-height: 700px;
         }
     `]
 })
 export class SettingsComponent {
-    options: FormGroup;
+    @ViewChild('drawer') drawer: MatSidenav;
     opened: boolean = true;
 
-    constructor(fb: FormBuilder,
-                public userSvc: UserService) {
-        this.options = fb.group({
-            bottom: 0,
-            fixed: false,
-            top: 0
-        });
+    isMobile: Boolean = (window.screen.width <= 575);
+
+    @HostListener('window:resize', ['$event'])
+    onResize() {
+        this.isMobile = (window.screen.width <= 575);
     }
 
-    showFiller = false;
-
+    constructor(private router: Router,
+                public userSvc: UserService) {
+        router.events.subscribe(val => {
+            if (this.isMobile) {
+                this.drawer.close();
+            }
+        });
+    }
     scrollTop() {
         window.scrollTo(0, 0);
     }
