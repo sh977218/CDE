@@ -3,7 +3,7 @@ import _isEqual from 'lodash/isEqual';
 import _uniqWith from 'lodash/uniqWith';
 import { saveAs } from 'file-saver';
 import * as JSZip from 'jszip';
-const { Json2csvParser } = require('json2csv');
+import * as Json2csvParser from 'json2csv';
 
 const field_type_map = {
     Text: 'text',
@@ -28,8 +28,8 @@ export class RedcapExport {
 
         let zip = new JSZip();
         zip.file('AuthorID.txt', "NLM");
-        zip.file(form.tinyId, 'InstrumentID.txt');
-        zip.file(instrumentResult, 'instrument.csv');
+        zip.file('InstrumentID.txt', form.tinyId);
+        zip.file('instrument.csv', instrumentResult);
 
         zip.generateAsync({type: 'blob'}).then(content => saveAs(content, 'SearchExport_XML.zip'));
     }
@@ -136,7 +136,7 @@ export class RedcapExport {
                 instrumentJsonRows.push(questionResult);
             }
         }
-        return new Json2csvParser().parse(instrumentJsonRows);
+        return Json2csvParser.parse(instrumentJsonRows);
     }
 
 

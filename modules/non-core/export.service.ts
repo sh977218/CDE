@@ -18,6 +18,7 @@ import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm } from 'shared/form/form.model';
 import { ElasticQueryResponse, Item } from 'shared/models.model';
 import { convertToCsv, getCdeCsvHeader, projectCdeForExport } from 'core/system/export';
+import { RedcapExport } from 'form/public/redcapExport';
 
 @Injectable()
 export class ExportService {
@@ -212,6 +213,8 @@ export class ExportService {
     }
 
     redcapExport(form: CdeForm) {
+        new RedcapExport().getZipRedCap(form);
+        this.alertService.addAlert("", 'Export downloaded.');
     }
 
 
