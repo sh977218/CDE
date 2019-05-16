@@ -3,7 +3,6 @@ const winston = require('winston'),
     Rotate = require('winston-logrotate').Rotate
 ;
 
-
 const noDbLogger = config.logFile ? {
     transports: [
         new Rotate({

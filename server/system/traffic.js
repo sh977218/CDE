@@ -3,7 +3,7 @@ const config = require('../system/parseConfig');
 const connHelper = require('../system/connections');
 const conn = connHelper.establishConnection(config.database.log);
 const TrafficFilterModel = conn.model('trafficFilter', schemas.trafficFilterSchema);
-const handleError = require('../log/dbLogger').handleError;
+const handleError = require('../errorHandler/errHandler').handleError;
 
 let initTrafficFilter = cb => {
     TrafficFilterModel.remove({}, () => new TrafficFilterModel({ipList: []}).save(cb));

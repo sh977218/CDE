@@ -20,3 +20,5 @@ const fs = require('fs');
     }
 });
 Object.keys(config).forEach(key => exports[key] = config[key]);
+
+config.database.log.cappedCollectionSizeMB = config.database.log.cappedCollectionSizeMB || 1024 * 1024 * 250
