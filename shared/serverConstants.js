@@ -17,7 +17,6 @@ export const htmlServedUri = [
     '/formView',
     '/help/:title',
     '/home',
-    '/inbox',
     '/login',
     '/myBoards',
     '/orgAccountManagement',

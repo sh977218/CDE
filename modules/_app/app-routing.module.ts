@@ -24,7 +24,6 @@ const appRoutes: Routes = [
     {path: 'form/search', loadChildren: 'form/public/formSearchEntry.module#FormSearchEntryModule', data: {title: 'Form Search'}},
     {path: 'formView', loadChildren: 'form/public/formView.module#FormViewModule', data: {title: 'Form View'}},
     {path: 'form', redirectTo: '/form/search', pathMatch: 'full'},
-    {path: 'inbox', loadChildren: 'system/public/inbox.module#InboxModule', canLoad: [LoggedInGuard], data: {title: 'Inbox'}},
     {path: 'login', loadChildren: 'system/public/login.module#LoginModule', canLoad: [IEGuard], data: {title: 'Login'}},
     {path: 'ieDiscontinued', loadChildren: 'system/public/ieDiscontinued.module#IeDiscontinuedModule', data: {title: 'Upgrade Browser'}},
     {path: 'myBoards', loadChildren: 'board/public/myBoards.module#MyBoardsModule', data: {title: 'My Boards'}},

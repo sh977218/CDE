@@ -61,11 +61,6 @@ export class UserService {
                 }
                 this.user = UserService.validate(response);
                 this.setOrganizations();
-                this.mailSubscription = this.http.get<{ count: number }>('/server/user/mailStatus').subscribe(response => {
-                    if (this.user) {
-                        this.user.hasMail = response.count > 0;
-                    }
-                }, _noop);
                 resolve(this.user);
             }, reject);
         });
