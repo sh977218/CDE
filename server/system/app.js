@@ -318,7 +318,7 @@ exports.init = function (app) {
     app.get(['/help/:title', '/createForm', '/createCde', '/boardList',
             '/board/:id', '/myBoards', '/cdeStatusReport', '/api', '/sdcview', '/404', '/whatsNew', '/contactUs',
             '/quickBoard', '/searchPreferences', '/siteAudit', '/siteAccountManagement', '/orgAccountManagement',
-            '/classificationManagement', '/inbox', '/profile', '/login', '/orgAuthority', '/orgComments'],
+            '/classificationManagement', '/profile', '/login', '/orgAuthority', '/orgComments'],
         respondHomeFull
     );
 
@@ -532,35 +532,6 @@ exports.init = function (app) {
     });
 
     app.post('/transferSteward', orgsvc.transferSteward);
-
-    app.post('/mail/messages/new', [authorization.loggedInMiddleware], (req, res) => {
-        let message = req.body;
-        if (message.author.authorType === 'user') {
-            message.author.name = req.user.username;
-        }
-        message.date = new Date();
-        mongo_data.createMessage(message, () => res.send());
-    });
-
-    app.post('/mail/messages/update', [authorization.loggedInMiddleware], (req, res) => {
-        mongo_data.updateMessage(req.body, err => {
-            if (err) {
-                res.status(404).send('Error while updating the message');
-                return;
-            }
-            res.send();
-        });
-    });
-
-    app.post('/mail/messages/:type', [authorization.loggedInMiddleware], (req, res) => {
-        mongo_data.getMessages(req, (err, messages) => {
-            if (err) {
-                res.status(404).send(err);
-                return;
-            }
-            res.send(messages);
-        });
-    });
 
     app.post('/addCommentAuthor', [authorization.canApproveCommentMiddleware], (req, res) => {
         mongo_data.addUserRole(req.body.username, 'CommentAuthor', handleError({req, res}, err => {

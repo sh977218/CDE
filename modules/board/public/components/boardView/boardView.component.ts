@@ -9,10 +9,8 @@ import { ClassifyItemModalComponent } from 'adminItem/public/components/classifi
 import { AlertService } from 'alert/alert.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { saveAs } from 'file-saver';
-import _noop from 'lodash/noop';
 import { Comment } from 'shared/models.model';
 import { convertToCsv, getCdeCsvHeader, projectCdeForExport } from 'core/system/export';
-
 
 @Component({
     selector: 'cde-board-view',
@@ -22,29 +20,21 @@ export class BoardViewComponent implements OnInit {
     @ViewChild('shareBoardModal') public shareBoardModal: TemplateRef<any>;
     @ViewChild('classifyCdesModal') public classifyCdesModal: ClassifyItemModalComponent;
     allRoles = [{
-        label: 'can review',
-        name: 'reviewer',
-        icon: 'fa fa-search-plus'
-    }, {
         label: 'can view',
         name: 'viewer',
         icon: 'fa fa-eye'
     }];
     board: any;
     boardId: string;
-    boardStatus: any;
-    canReview: boolean;
     classifyCdesRefModal: MatDialogRef<TemplateRef<any>>;
     commentMode: boolean;
     currentPage: number = 0;
     elts: any[] = [];
     feedbackClass: string[] = [''];
     hasComments: boolean;
-    isModifiedSinceReview: boolean;
     listViews: {};
     modalTitle: string;
     newUser: any = {username: '', role: 'viewer'};
-    reviewers: any[];
     shareDialogRef: MatDialogRef<TemplateRef<any>>;
     totalItems: number;
     url: string;
@@ -92,15 +82,7 @@ export class BoardViewComponent implements OnInit {
         } else {
             this.users.push(newUser);
             this.newUser = {username: '', role: 'viewer'};
-            this.getReviewers();
         }
-    }
-
-    boardApproval(approval) {
-        this.http.post('/server/board/approval', {boardId: this.boardId, approval: approval}, {responseType: 'text'}).subscribe(() => {
-            this.boardStatus = approval;
-            this.reload();
-        });
     }
 
     classifyEltBoard() {
@@ -109,15 +91,6 @@ export class BoardViewComponent implements OnInit {
 
     deleteUser(index) {
         this.users.splice(index, 1);
-    }
-
-    endReview() {
-        this.http.post('/server/board/endReview', {boardId: this.boardId}).subscribe(() => {
-            this.reload();
-        }, err => {
-            this.alert.httpErrorMessageAlert(err);
-            this.reload();
-        });
     }
 
     exportBoard() {
@@ -140,24 +113,6 @@ export class BoardViewComponent implements OnInit {
         });
     }
 
-    getReviewers() {
-        this.reviewers = this.board.users.filter(u => u.role === 'reviewer');
-    }
-
-    isReviewActive() {
-        return this.board.review && this.isReviewStarted() && !this.isReviewEnded();
-    }
-
-    isReviewEnded() {
-        return this.board.review && this.board.review.endDate &&
-            new Date(this.board.review.endDate) < new Date();
-    }
-
-    isReviewStarted() {
-        return this.board.review && this.board.review.startDate &&
-            new Date(this.board.review.startDate) < new Date();
-    }
-
     okShare() {
         this.http.post('/server/board/users', {
             boardId: this.boardId,
@@ -177,30 +132,16 @@ export class BoardViewComponent implements OnInit {
                 this.totalItems = response.totalItems;
                 this.title.setTitle('Board: ' + this.board.name);
                 this.modalTitle = 'Classify ' + (this.board.type === 'form' ? 'Form' : 'CDE') + 's in this Board';
-                this.userService.then(user => {
-                    this.board.users.forEach(u => {
-                        if (u.username === user.username &&
-                            u.role === 'reviewer' && u.status.approval === 'approved' &&
-                            new Date(this.board.updatedDate) >= new Date(u.status.reviewedDate)) {
-                            this.isModifiedSinceReview = true;
-                        }
-                        if (u.lastViewed) u.lastViewedLocal = new Date(u.lastViewed).toLocaleDateString();
-                        if (u.username === user.username) {
-                            this.boardStatus = u.status.approval;
-                        }
-                    });
-                    this.canReview = this.isReviewActive() &&
-                        this.board.users.filter(
-                            u => u.role === 'reviewer' && u.username && u.username.toLowerCase() === user.username.toLowerCase()
-                        ).length > 0;
-                    this.orgHelperService.then(() => {
-                        this.elts.forEach(elt => {
-                            elt.usedBy = this.orgHelperService.getUsedBy(elt);
-                        });
-                    }, _noop);
-                }, _noop);
-
-                this.getReviewers();
+                // this.userService.then(user => {
+                //     this.board.users.forEach(u => {
+                //         if (u.lastViewed) u.lastViewedLocal = new Date(u.lastViewed).toLocaleDateString();
+                //     });
+                //      this.orgHelperService.then(() => {
+                //         this.elts.forEach(elt => {
+                //             elt.usedBy = this.orgHelperService.getUsedBy(elt);
+                //         });
+                //     }, _noop);
+                // }, _noop);
 
                 this.http.get<Comment[]>('/server/discuss/comments/eltId/' + this.boardId).subscribe(
                     res => this.hasComments = res && (res.length > 0),
@@ -224,13 +165,4 @@ export class BoardViewComponent implements OnInit {
         this.shareDialogRef = this.dialog.open(this.shareBoardModal, {width: '800px'});
     }
 
-    startReview() {
-        this.http.post('/server/board/startReview', {boardId: this.boardId}, {responseType: 'text'}).subscribe(() => {
-                this.reload();
-            }, err => {
-                this.alert.httpErrorMessageAlert(err);
-                this.reload();
-            }
-        );
-    }
 }
