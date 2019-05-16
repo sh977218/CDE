@@ -318,7 +318,7 @@ exports.init = function (app) {
     app.get(['/help/:title', '/createForm', '/createCde', '/boardList',
             '/board/:id', '/myBoards', '/cdeStatusReport', '/api', '/sdcview', '/404', '/whatsNew', '/contactUs',
             '/quickBoard', '/searchPreferences', '/siteAudit', '/siteAccountManagement', '/orgAccountManagement',
-            '/classificationManagement', '/inbox', '/profile', '/login', '/orgAuthority', '/orgComments'],
+            '/classificationManagement', '/profile', '/login', '/orgAuthority', '/orgComments'],
         respondHomeFull
     );
 
