@@ -84,12 +84,7 @@
                     XML File, NIH/CDE Schema</a>
                 <a id='formPublishExport' (click)="openExportPublishModal()" mat-menu-item
                    target="_blank">Published Form</a>
-                <span mat-menu-item>
-                    <a id='nihRedCap' href="formById/{{elt._id}}?type=REDCap" target="_blank">REDCap</a>
-                    <a href="https://projectredcap.org/" target="_blank" title="Information">
-                        <mat-icon class="menuActionIcon">help_outline</mat-icon></a>
-                </span>
-                <span mat-menu-item (click)="exportService.redcapExport(elt)">REDCap
+                <span mat-menu-item id='nihRedCap' click)="exportService.redcapExport(elt)">REDCap
                     <a href="https://projectredcap.org/" target="_blank" title="Information">
                         <mat-icon class="menuActionIcon">help_outline</mat-icon></a>
                 </span>
