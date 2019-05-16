@@ -18,7 +18,6 @@ const mongo_form = require('./mongo-form');
 const nih = require('./nihForm');
 const sdc = require('./sdcForm');
 const odm = require('./odmForm');
-const redCap = require('./redCapForm');
 const publishForm = require('./publishForm');
 const elastic = require('../system/elastic.js');
 
@@ -99,59 +98,6 @@ function wipeRenderDisallowed(form, user) {
     }
 }
 
-function doSection(sFormElement) {
-    let formElements = [];
-    for (let fe of sFormElement.formElements) {
-        if (fe.elementType === 'question') {
-            formElements.push(fe);
-        } else {
-            let questions = doSection(fe);
-            formElements = formElements.concat(questions);
-        }
-    }
-    return formElements;
-}
-
-/*
-|---------------|           |---------------|
-|   S1          |           |   S1          |
-|       Q1      |           |       Q1      |
-|       Q11      |          |       Q11     |
-|       S2      |           |   S1-S2       |
-|           Q2  |    ==>    |       Q2      |
-|   Q3          |           |   S3(new)     |
-|               |           |       Q3      |
-|   S4          |           |   S4          |
-|       Q4      |           |       Q4      |
-|---------------|           |---------------|
-*/
-function oneLayerForm(form) {
-    let formElements = [];
-    let newSection = {
-        elementType: 'section',
-        label: '',
-        formElements: []
-    };
-    for (let formElement of form.formElements) {
-        let type = formElement.elementType;
-        if (type === 'question') {
-            newSection.formElements.push(formElement);
-        } else {
-            if (newSection.formElements.length > 0) {
-                formElements.push(newSection);
-                newSection = {
-                    elementType: 'section',
-                    label: '',
-                    formElements: []
-                };
-            }
-            formElement.formElements = doSection(formElement);
-            formElements.push(formElement);
-        }
-    }
-    form.formElements = formElements;
-}
-
 exports.byId = (req, res) => {
     let id = req.params.id;
     if (!id || id.length !== 24) return res.status(400).send();
@@ -177,9 +123,6 @@ exports.byId = (req, res) => {
                 } else {
                     nih.getFormNih(wholeForm, handleError({req, res}, xmlForm => res.send(xmlForm)));
                 }
-            } else if (req.query.type && req.query.type.toLowerCase() === 'redcap') {
-                oneLayerForm(wholeForm, 0);
-                redCap.getZipRedCap(wholeForm, res);
             } else {
                 if (req.query.subtype === 'fhirQuestionnaire') {
                     formShared.addFormIds(wholeForm);
@@ -250,9 +193,6 @@ exports.byTinyId = (req, res) => {
                     default:
                         nih.getFormNih(wholeForm, handleError(handlerOptions, xmlForm => res.send(xmlForm)));
                 }
-            } else if (req.query.type && req.query.type.toLowerCase() === 'redcap') {
-                dbLogger.consoleLog('faas: ' + config.provider.faas, global.CURRENT_SERVER_ENV);
-
             } else {
                 res.send(wholeForm);
             }

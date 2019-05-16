@@ -24,6 +24,8 @@ export class RedcapExport {
     label_variables_map = {};
 
     getZipRedCap(form) {
+        form = this.oneLayerForm(form);
+
         let instrumentResult = this.getRedCap(form);
 
         let zip = new JSZip();
@@ -33,6 +35,61 @@ export class RedcapExport {
 
         zip.generateAsync({type: 'blob'}).then(content => saveAs(content, 'SearchExport_XML.zip'));
     }
+
+    /*
+    |---------------|           |---------------|
+    |   S1          |           |   S1          |
+    |       Q1      |           |       Q1      |
+    |       Q11      |          |       Q11     |
+    |       S2      |           |   S1-S2       |
+    |           Q2  |    ==>    |       Q2      |
+    |   Q3          |           |   S3(new)     |
+    |               |           |       Q3      |
+    |   S4          |           |   S4          |
+    |       Q4      |           |       Q4      |
+    |---------------|           |---------------|
+    */
+    oneLayerForm(form) {
+        function doSection(sFormElement) {
+            let formElements = [];
+            for (let fe of sFormElement.formElements) {
+                if (fe.elementType === 'question') {
+                    formElements.push(fe);
+                } else {
+                    let questions = doSection(fe);
+                    formElements = formElements.concat(questions);
+                }
+            }
+            return formElements;
+        }
+
+
+        let formElements = [];
+        let newSection = {
+            elementType: 'section',
+            label: '',
+            formElements: []
+        };
+        for (let formElement of form.formElements) {
+            let type = formElement.elementType;
+            if (type === 'question') {
+                newSection.formElements.push(formElement);
+            } else {
+                if (newSection.formElements.length > 0) {
+                    formElements.push(newSection);
+                    newSection = {
+                        elementType: 'section',
+                        label: '',
+                        formElements: []
+                    };
+                }
+                formElement.formElements = doSection(formElement);
+                formElements.push(formElement);
+            }
+        }
+        form.formElements = formElements;
+    }
+
 
     formatSkipLogic(skipLogicString, map) {
         let redCapSkipLogic = skipLogicString;
