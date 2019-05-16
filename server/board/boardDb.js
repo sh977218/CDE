@@ -36,19 +36,7 @@ let pinningBoardSchema = new Schema({
         username: StringType,
         role: {type: StringType, default: 'viewer', enum: ['viewer', 'reviewer']},
         lastViewed: Date,
-        status: {
-            approval: {
-                type: StringType,
-                default: 'invited',
-                enum: ['invited', 'approved', 'disapproved'],
-            },
-            reviewedDate: Date
-        }
     }],
-    review: {
-        startDate: Date,
-        endDate: Date
-    }
 }, {
     usePushEach: true, toObject: {
         virtuals: true
@@ -95,13 +83,9 @@ let PinningBoard = conn.model('PinningBoard', pinningBoardSchema);
 exports.PinningBoard = exports.dao = PinningBoard;
 
 
-exports.getPrimaryName = function (elt) {
-    return elt.name;
-};
+exports.getPrimaryName = elt => elt.name;
 
-exports.getStream = function (condition) {
-    return PinningBoard.find(condition).sort({_id: -1}).cursor();
-};
+exports.getStream = condition => PinningBoard.find(condition).sort({_id: -1}).cursor();
 
 exports.count = function (condition, callback) {
     PinningBoard.countDocuments(condition, callback);
