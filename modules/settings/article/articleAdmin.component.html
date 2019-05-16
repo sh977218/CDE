@@ -1,4 +1,3 @@
-
 <mat-form-field>
     <mat-select placeholder="Article Key" [(ngModel)]="selectedKey" (ngModelChange)="keyChanged()">
         <mat-option *ngFor="let key of articles" [value]="key">{{key}}</mat-option>
@@ -6,5 +5,5 @@
 </mat-form-field>
 
 <cde-inline-area-edit *ngIf="article"
-        [(model)]="article.body" [defFormat]="'html'" [isAllowed]="true"
-        (modelChange)="save()"></cde-inline-area-edit>
+                      [(model)]="article.body" [defFormat]="'html'" [isAllowed]="true"
+                      (modelChange)="save()"></cde-inline-area-edit>

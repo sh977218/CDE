@@ -62,12 +62,13 @@
                 <option *ngFor="let o of orgs">{{o.name}}</option>
             </select>
             <mat-icon id="wgEditok"
-               (click)="c.workingGroupOf = editWG[c.name].tempWG; updateOrg(c); editWG[c.name] = null">check</mat-icon>&nbsp;&nbsp;
+                      (click)="c.workingGroupOf = editWG[c.name].tempWG; updateOrg(c); editWG[c.name] = null">check</mat-icon>&nbsp;&nbsp;
             <mat-icon id="egEditCancel" (click)="editWG[c.name] = null">cancel</mat-icon>
         </span>
             <span *ngIf="!editWG[c.name]">
             <mat-icon title="Edit WG" role="link"
-               (click)="editWG[c.name] = {tempWG: c.workingGroupOf}">edit</mat-icon> {{c.workingGroupOf}}
+                      (click)="editWG[c.name] = {tempWG: c.workingGroupOf}">edit</mat-icon>
+                {{c.workingGroupOf}}
         </span>
         </td>
         <td>

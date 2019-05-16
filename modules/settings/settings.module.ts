@@ -65,7 +65,6 @@ import { ArticleAdminComponent } from 'settings/article/articleAdmin.component';
 import { ResourcesAdminComponent } from 'settings/resources/resourcesAdmin.component';
 import { FhirAppsComponent } from 'settings/fhirApps/fhirApps.component';
 import { IdSourcesComponent } from 'settings/idSources/idSources.component';
-import { ViewHistoryComponent } from 'settings/viewHistory/viewHistory.component';
 import { StatusValidationRulesComponent } from 'settings/statusValidationRules/statusValidationRules.component';
 import { OrgsEditComponent } from 'settings/orgsEdit/orgsEdit.component';
 import { ListManagementComponent } from 'settings/listManagement/listManagement.component';
@@ -80,6 +79,8 @@ import { MyCommentsComponent } from 'settings/comments/myComments/myComments.com
 import { MyOrgDraftsComponent } from 'settings/drafts/myOrgDrafts/myOrgDrafts.component';
 import { MyDraftsComponent } from 'settings/drafts/myDrafts/myDrafts.component';
 import { AllDraftsComponent } from 'settings/drafts/allDrafts/allDrafts.component';
+import { ViewingHistoryComponent } from 'settings/viewingHistory/viewingHistory.component';
+import { NotificationComponent } from 'settings/notification/notification.component';
 
 const appRoutes: Routes = [
     {
@@ -94,10 +95,16 @@ const appRoutes: Routes = [
                 data: {title: 'Profile'}
             },
             {
-                path: 'viewHistory',
-                component: ViewHistoryComponent,
+                path: 'notification',
+                component: NotificationComponent,
                 canLoad: [LoggedInGuard],
-                data: {title: 'View History'}
+                data: {title: 'Notification'}
+            },
+            {
+                path: 'viewingHistory',
+                component: ViewingHistoryComponent,
+                canLoad: [LoggedInGuard],
+                data: {title: 'Viewing History'}
             },
             {
                 path: 'publishedForms',
@@ -293,8 +300,10 @@ const appRoutes: Routes = [
         SettingsComponent,
 
         ProfileComponent,
-        ViewHistoryComponent,
+        ViewingHistoryComponent,
+        NotificationComponent,
         MyPublishedFormsComponent,
+
         MyDraftsComponent,
         MyCommentsComponent,
 

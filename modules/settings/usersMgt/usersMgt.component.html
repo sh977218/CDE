@@ -46,7 +46,7 @@
             <div class="col-3 text-right"><strong>Roles: </strong></div>
             <div class="col-9" id="user_roles_{{$index}}">
                 <cde-tag [tags]="u.roles" [allTags]="rolesEnum"
-                                [canEdit]="true" (changed)="updateRoles(u)"></cde-tag>
+                         [canEdit]="true" (changed)="updateRoles(u)"></cde-tag>
             </div>
         </div>
         <div class="row">

@@ -59,7 +59,8 @@ export class StatusValidationRulesComponent implements OnInit {
         private http: HttpClient,
         public dialog: MatDialog,
         private orgHelperService: OrgHelperService,
-    ) {}
+    ) {
+    }
 
     ngOnInit() {
         this.orgHelperService.then(orgsDetailedInfo => {
@@ -73,13 +74,14 @@ export class StatusValidationRulesComponent implements OnInit {
 
     disableRule(orgName: string, rule: StatusValidationRules) {
         // @TODO does not refresh page
-       this.dialog.open(this.removeRuleModal).afterClosed().subscribe(res => {
-           if (res) {
-               this.http.post<Organization>('/disableRule', {orgName: orgName, rule: rule}).subscribe(response => {
-                   this.userOrgs[orgName] = response.cdeStatusValidationRules || [];
-               });
-           }
-       }, () => {});
+        this.dialog.open(this.removeRuleModal).afterClosed().subscribe(res => {
+            if (res) {
+                this.http.post<Organization>('/disableRule', {orgName: orgName, rule: rule}).subscribe(response => {
+                    this.userOrgs[orgName] = response.cdeStatusValidationRules || [];
+                });
+            }
+        }, () => {
+        });
     }
 
     saveRule() {
@@ -88,7 +90,8 @@ export class StatusValidationRulesComponent implements OnInit {
             rule: this.newRule
         }).subscribe(response => {
             this.userOrgs[this.newRuleOrg] = response.cdeStatusValidationRules || [];
-        }, () => {});
+        }, () => {
+        });
         this.dialogRef!.close();
     }
 

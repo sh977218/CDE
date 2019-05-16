@@ -6,7 +6,9 @@
     <table class="table-striped" style="width: -webkit-fill-available">
         <ng-container *ngFor="let app of fhirApps">
             <tr>
-                <td rowspan="2"><mat-icon (click)="deleteApp(app)">delete_outline</mat-icon></td>
+                <td rowspan="2">
+                    <mat-icon (click)="deleteApp(app)">delete_outline</mat-icon>
+                </td>
                 <td rowspan="2">{{app._id}}</td>
                 <td>
                     <mat-form-field>
@@ -26,10 +28,11 @@
                     </mat-form-field>
                 </td>
             </tr>
-            <tr><td colspan="3">
-                Map Codes:
-                <table class="table">
-                    <thead>
+            <tr>
+                <td colspan="3">
+                    Map Codes:
+                    <table class="table">
+                        <thead>
                         <tr>
                             <th></th>
                             <th>CDE System</th>
@@ -37,8 +40,8 @@
                             <th>FHIR System</th>
                             <th>FHIR Code</th>
                         </tr>
-                    </thead>
-                    <tbody>
+                        </thead>
+                        <tbody>
                         <tr *ngFor="let e of app.mapping; index as i">
                             <td>
                                 <button mat-icon-button title="Cancel" style="width: 40px"
@@ -51,20 +54,25 @@
                             <td><input class="form-control" [(ngModel)]="e.fhirSystem" (change)="saveApp(app)"></td>
                             <td><input class="form-control" [(ngModel)]="e.fhirCode" (change)="saveApp(app)"></td>
                         </tr>
-                    </tbody>
-                    <tfoot>
+                        </tbody>
+                        <tfoot>
                         <tr>
                             <td colspan="5">
                                 <button mat-raised-button (click)="app.mapping.push({})">
-                                    <mat-icon>add</mat-icon>Add
+                                    <mat-icon>add</mat-icon>
+                                    Add
                                 </button>
                             </td>
                         </tr>
-                    </tfoot>
-                </table>
-            </td></tr>
+                        </tfoot>
+                    </table>
+                </td>
+            </tr>
         </ng-container>
     </table>
 </div>
 
-<button mat-raised-button (click)="newApp()"><mat-icon>add</mat-icon> Add</button>
+<button mat-raised-button (click)="newApp()">
+    <mat-icon>add</mat-icon>
+    Add
+</button>

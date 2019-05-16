@@ -14,10 +14,10 @@ class FormUI extends CdeForm {
 }
 
 @Component({
-    selector: 'cde-view-history',
-    templateUrl: './viewHistory.component.html'
+    selector: 'cde-viewing-history',
+    templateUrl: './viewingHistory.component.html'
 })
-export class ViewHistoryComponent implements OnInit {
+export class ViewingHistoryComponent implements OnInit {
     cdes: DataElementUI[] = [];
     forms: FormUI[] = [];
 

@@ -16,7 +16,7 @@ export class OrgsEditComponent implements OnInit {
     newOrg: any = {};
     orgs?: Organization[];
 
-    ngOnInit () {
+    ngOnInit() {
         this.getOrgs();
     }
 
@@ -24,9 +24,10 @@ export class OrgsEditComponent implements OnInit {
         private Alert: AlertService,
         private http: HttpClient,
         private orgHelperService: OrgHelperService
-    ) {}
+    ) {
+    }
 
-    addOrg () {
+    addOrg() {
         this.http.post('/addOrg',
             {name: this.newOrg.name, longName: this.newOrg.longName, workingGroupOf: this.newOrg.workingGroupOf},
             {responseType: 'text'})
@@ -40,7 +41,7 @@ export class OrgsEditComponent implements OnInit {
             );
     }
 
-    getOrgs (cb?: Cb) {
+    getOrgs(cb?: Cb) {
         this.http.get<Organization[]>('/managedOrgs')
             .subscribe(orgs => {
                 this.orgs = orgs.sort((a, b) => stringCompare(a.name, b.name));
@@ -48,12 +49,12 @@ export class OrgsEditComponent implements OnInit {
             });
     }
 
-    updateOrg (org: Organization) {
+    updateOrg(org: Organization) {
         this.http.post('/updateOrg', org).subscribe(res => {
-            this.getOrgs(() => {
-                this.orgHelperService.reload().then(() => this.Alert.addAlert('success', 'Saved'));
-            });
-        }, () => this.Alert.addAlert('danger', 'There was an issue updating this org.')
+                this.getOrgs(() => {
+                    this.orgHelperService.reload().then(() => this.Alert.addAlert('success', 'Saved'));
+                });
+            }, () => this.Alert.addAlert('danger', 'There was an issue updating this org.')
         );
     }
 }

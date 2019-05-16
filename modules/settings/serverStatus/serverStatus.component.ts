@@ -18,7 +18,7 @@ export class ServerStatusComponent {
     indexToReindex?: number;
     isDone: boolean = false;
     meshSyncs: any;
-    linkedForms: {total?: number, done?: number} = {};
+    linkedForms: { total?: number, done?: number } = {};
     statuses: any[] = [];
 
     constructor(

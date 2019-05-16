@@ -20,7 +20,9 @@
                 <td>{{rule.field}}</td>
                 <td>{{rule.rule.regex}}</td>
                 <td>{{rule.occurence}}</td>
-                <td><button (click)="disableRule(orgName, rule)" mat-raised-button>Remove</button></td>
+                <td>
+                    <button (click)="disableRule(orgName, rule)" mat-raised-button>Remove</button>
+                </td>
             </tr>
         </table>
     </div>
@@ -66,7 +68,8 @@
             </div>
             <div class="form-group">
                 <label for="targetStatus">Applies to Status (and above)</label>
-                <select id="targetStatus" [(ngModel)]="newRule.targetStatus" name="targetStatus" class="form-control" required>
+                <select id="targetStatus" [(ngModel)]="newRule.targetStatus" name="targetStatus" class="form-control"
+                        required>
                     <option>Incomplete</option>
                     <option>Candidate</option>
                     <option id="recorded">Recorded</option>
@@ -88,7 +91,8 @@
     <div mat-dialog-actions>
         <button [mat-dialog-close] mat-raised-button color="accent" id="cancelNew">Cancel</button>
         <button [disabled]="!newRuleForm.form.valid" mat-raised-button color="primary" (click)="saveRule()"
-                id="saveRule">Save</button>
+                id="saveRule">Save
+        </button>
     </div>
 
 </ng-template>

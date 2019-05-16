@@ -26,11 +26,12 @@ export class StewardOrgTransferComponent {
 
     transferSteward() {
         this.http.post('/transferSteward', this.transferStewardObj, {responseType: 'text'})
-            .subscribe(r => {this.alert.addAlert('success', r);
-            this.transferStewardObj = new TransferSteward();
-        }, () => {
-            this.alert.addAlert('danger', 'An error occurred.');
-            this.transferStewardObj = new TransferSteward();
-        });
+            .subscribe(r => {
+                this.alert.addAlert('success', r);
+                this.transferStewardObj = new TransferSteward();
+            }, () => {
+                this.alert.addAlert('danger', 'An error occurred.');
+                this.transferStewardObj = new TransferSteward();
+            });
     }
 }

@@ -24,7 +24,8 @@ import { MatSidenav } from "@angular/material";
         .isActive {
             background-color: #c4d2e7;
         }
-        .settingsContainer{
+
+        .settingsContainer {
             min-height: 700px;
         }
     `]
@@ -48,6 +49,7 @@ export class SettingsComponent {
             }
         });
     }
+
     scrollTop() {
         window.scrollTo(0, 0);
     }

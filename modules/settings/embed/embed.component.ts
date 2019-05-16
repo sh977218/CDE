@@ -24,7 +24,7 @@ function addEmbedItem(): EmbedItem {
     templateUrl: 'embed.component.html'
 })
 export class EmbedComponent implements OnInit {
-    embeds: {[org: string]: Embed[]} = {};
+    embeds: { [org: string]: Embed[] } = {};
     previewOn?: boolean;
     selection?: Embed;
     showDelete?: boolean;
@@ -39,7 +39,8 @@ export class EmbedComponent implements OnInit {
         private sanitizer: DomSanitizer,
         private http: HttpClient,
         protected userService: UserService,
-    ) {}
+    ) {
+    }
 
     addCdeClassification() {
         if (!this.selection!.cde!.classifications) this.selection!.cde!.classifications = [];
@@ -89,7 +90,7 @@ export class EmbedComponent implements OnInit {
         }
     }
 
-    reloadEmbeds()  {
+    reloadEmbeds() {
         this.userService.then(() => {
             this.userService.userOrgs.forEach(org => this.reloadEmbedsOrg(org));
         }, _noop);

@@ -1,13 +1,16 @@
 <div class="container-fluid">
     <mat-sidenav-container class="settingsContainer">
         <mat-sidenav [opened]="!isMobile" #drawer class="example-sidenav" mode="side"
-                     [fixedInViewport]="false" >
+                     [fixedInViewport]="false">
             <mat-list (click)="scrollTop()">
                 <mat-list-item id="profile" [routerLinkActive]="['isActive']" routerLink="profile">
                     Profile
                 </mat-list-item>
-                <mat-list-item id="viewHistory" [routerLinkActive]="['isActive']" routerLink="viewHistory">
-                    View History
+                <mat-list-item id="notification" [routerLinkActive]="['isActive']" routerLink="notification">
+                    Notification
+                </mat-list-item>
+                <mat-list-item id="viewingHistory" [routerLinkActive]="['isActive']" routerLink="viewingHistory">
+                    Viewing History
                 </mat-list-item>
                 <mat-list-item id="myPublishedForms" [routerLinkActive]="['isActive']" routerLink="publishedForms">
                     My Published Forms
@@ -68,7 +71,7 @@
                         </mat-list-item>
                         <mat-list-item id="listManagement" *ngIf="userSvc.isOrgAuthority()"
                                        [routerLinkActive]="['isActive']" routerLink="listManagement">
-                            List Management
+                            Properties & Tags Management
                         </mat-list-item>
                         <mat-list-item id="validationRules" *ngIf="userSvc.isOrgAuthority()"
                                        [routerLinkActive]="['isActive']" routerLink="statusValidationRules">
