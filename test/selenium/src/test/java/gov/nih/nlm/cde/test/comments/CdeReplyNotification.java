@@ -29,7 +29,7 @@ public class CdeReplyNotification extends NlmCdeBaseTest {
         WebElement taskItem = findElement(By.cssSelector(".notificationDrawerContent div.taskItem"));
         Assert.assertEquals(taskItem.getCssValue("background-color"), "rgba(209, 236, 241, 1)");
 
-        clickElement(By.cssSelector("div.taskItem"));
+        clickElement(By.cssSelector(".notificationDrawerContent div.taskItem"));
         textPresent("Cigarette Average Daily Pack Use Count");
 
         clickElement(By.cssSelector("cde-notifications"));
