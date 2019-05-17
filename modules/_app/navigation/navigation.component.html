@@ -8,8 +8,6 @@
            [matMenuTriggerFor]="loginMenu">{{userService.user.username | cdeTruncateLongName}}&nbsp;▼</a>
         <mat-menu #loginMenu="matMenu">
             <a routerLink="/settings/profile" id="user_settings" mat-menu-item>Settings</a>
-            <a routerLink="/orgComments" id="org_comments" mat-menu-item
-               *ngIf="isOrgCurator(userService.user)">Org Comments</a>
             <a routerLink="/classificationManagement" id="user_classifications" mat-menu-item
                *ngIf="isOrgCurator(userService.user)">Classifications</a>
             <a routerLink="/siteAudit" id="user_audit" mat-menu-item

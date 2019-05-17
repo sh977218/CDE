@@ -3,7 +3,7 @@
 
     <div>
         <h2>CDEs</h2>
-        <span *ngIf="!drafts?.draftCdes?.length">There is no CDE drafts.</span>
+        <span *ngIf="!drafts?.draftCdes?.length">There are no CDE drafts.</span>
         <table class="table table-responsive" *ngIf="drafts?.draftCdes?.length">
             <tr *ngFor="let draftCde of drafts.draftCdes">
                 <td>
@@ -19,7 +19,7 @@
 
     <div>
         <h2>Forms</h2>
-        <span *ngIf="!drafts?.draftForms?.length">There is no Form drafts.</span>
+        <span *ngIf="!drafts?.draftForms?.length">There are no Form drafts.</span>
         <table class="table table-responsive" *ngIf="drafts?.draftForms?.length">
             <tr *ngFor="let draftForm of drafts.draftForms">
                 <td>

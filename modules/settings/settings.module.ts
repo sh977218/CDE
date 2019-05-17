@@ -81,6 +81,7 @@ import { MyDraftsComponent } from 'settings/drafts/myDrafts/myDrafts.component';
 import { AllDraftsComponent } from 'settings/drafts/allDrafts/allDrafts.component';
 import { ViewingHistoryComponent } from 'settings/viewingHistory/viewingHistory.component';
 import { NotificationComponent } from 'settings/notification/notification.component';
+import { AdminItemModule } from 'adminItem/public/adminItem.module';
 
 const appRoutes: Routes = [
     {
@@ -290,6 +291,7 @@ const appRoutes: Routes = [
         InlineAreaEditModule,
         InlineSelectEditModule,
         TagModule,
+        AdminItemModule,
         BoardModule,
         CdeSearchModule,
         FormSearchModule,
