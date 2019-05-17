@@ -427,6 +427,11 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         clickElement(By.id("profile"));
         textPresent("Profile", By.id("settingsContent"));
     }
+    protected void goToNotification() {
+        goToSettings();
+        clickElement(By.id("notification"));
+        textPresent("Notification", By.id("settingsContent"));
+    }
 
     protected int getNumberOfResults() {
         return Integer.parseInt(findElement(By.id("searchResultNum")).getText().trim());
