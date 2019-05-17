@@ -292,7 +292,7 @@ task('es', function _es(cb) {
     });
 });
 task('mongoRestore', function _mongoRestore(cb) {
-    exec('restore-test-instance.sh', function (err) {
+    exec('bash restore-test-instance.sh', function (err) {
         if (err) throw err;
         else cb();
     });
