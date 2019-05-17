@@ -21,21 +21,9 @@
         <table class="table">
             <thead>
             <tr>
-                <th rowspan="2"></th>
-                <th colspan="2">Internal</th>
-                <th>External</th>
-            </tr>
-            <tr>
+                <th></th>
                 <th>Banner Notification</th>
                 <th>Push Notification</th>
-                <th>
-                    Email
-                    <mat-icon class="infoIcon"
-                              aria-label="At this time emails are not supported."
-                              matTooltip="At this time emails are not supported."
-                              matTooltipClass="cdeTooltip" matTooltipPosition="above">add_box
-                    </mat-icon>
-                </th>
             </tr>
             </thead>
             <tbody>
@@ -45,7 +33,7 @@
                     <mat-icon class="infoIcon"
                               aria-label="New comment on an item you are having a comment conversation on or are a curator for."
                               matTooltip="New comment on an item you are having a comment conversation on or are a curator for."
-                              matTooltipClass="cdeTooltip" matTooltipPosition="above">information
+                              matTooltipClass="cdeTooltip" matTooltipPosition="above">help_outline
                     </mat-icon>
                 </td>
                 <td>
@@ -60,16 +48,6 @@
                         {{booleanSettingOptions[user.notificationSettings.comment.push ? 1 : 0]}}
                     </mat-slide-toggle>
                 </td>
-                <td>
-                    <mat-slide-toggle checked="false" disabled>
-                        <span class="disabled">Disabled</span>
-                    </mat-slide-toggle>
-                    <mat-icon class="infoIcon"
-                              aria-label="At this time emails are not supported."
-                              matTooltip="At this time emails are not supported."
-                              matTooltipClass="cdeTooltip" matTooltipPosition="above">add_box
-                    </mat-icon>
-                </td>
             </tr>
             <tr *ngIf="hasRole(user, 'AttachmentReviewer')">
                 <td>
@@ -77,7 +55,7 @@
                     <mat-icon class="infoIcon"
                               aria-label="You have been designated the responsibility to approve attachments for unprivileged users."
                               matTooltip="You have been designated the responsibility to approve attachments for unprivileged users."
-                              matTooltipClass="cdeTooltip" matTooltipPosition="above">information
+                              matTooltipClass="cdeTooltip" matTooltipPosition="above">help_outline
                     </mat-icon>
                 </td>
                 <td>
@@ -87,7 +65,7 @@
                     <mat-icon class="infoIcon"
                               aria-label="Required to complete approvals"
                               matTooltip="Required to complete approvals"
-                              matTooltipClass="cdeTooltip" matTooltipPosition="above">add_box
+                              matTooltipClass="cdeTooltip" matTooltipPosition="above">help_outline
                     </mat-icon>
                 </td>
                 <td>
@@ -96,16 +74,6 @@
                         {{booleanSettingOptions[user.notificationSettings.approvalAttachment.push ? 1 : 0]}}
                     </mat-slide-toggle>
                 </td>
-                <td>
-                    <mat-slide-toggle checked="false" disabled>
-                        <span class="disabled">Disabled</span>
-                    </mat-slide-toggle>
-                    <mat-icon class="infoIcon"
-                              aria-label="At this time emails are not supported."
-                              matTooltip="At this time emails are not supported."
-                              matTooltipClass="cdeTooltip" matTooltipPosition="above">add_box
-                    </mat-icon>
-                </td>
             </tr>
             <tr *ngIf="hasRole(user, 'CommentReviewer')">
                 <td>
@@ -113,7 +81,7 @@
                     <mat-icon class="infoIcon"
                               aria-label="You have been designated the responsibility to approve comments for unprivileged users."
                               matTooltip="You have been designated the responsibility to approve comments for unprivileged users."
-                              matTooltipClass="cdeTooltip" matTooltipPosition="above">information
+                              matTooltipClass="cdeTooltip" matTooltipPosition="above">help_outline
                     </mat-icon>
                 </td>
                 <td>
@@ -123,7 +91,7 @@
                     <mat-icon class="infoIcon"
                               aria-label="Required to complete approvals"
                               matTooltip="Required to complete approvals"
-                              matTooltipClass="cdeTooltip" matTooltipPosition="above">add_box
+                              matTooltipClass="cdeTooltip" matTooltipPosition="above">help_outline
                     </mat-icon>
                 </td>
                 <td>
@@ -131,16 +99,6 @@
                                       (change)="user.notificationSettings.approvalComment.push = $event.checked; saveProfile()">
                         {{booleanSettingOptions[user.notificationSettings.approvalComment.push ? 1 : 0]}}
                     </mat-slide-toggle>
-                </td>
-                <td>
-                    <mat-slide-toggle checked="false" disabled>
-                        <span class="disabled">Disabled</span>
-                    </mat-slide-toggle>
-                    <mat-icon class="infoIcon"
-                              aria-label="At this time emails are not supported."
-                              matTooltip="At this time emails are not supported."
-                              matTooltipClass="cdeTooltip" matTooltipPosition="above">add_box
-                    </mat-icon>
                 </td>
             </tr>
             <tr *ngIf="isSiteAdmin(user)">
@@ -153,7 +111,7 @@
                     <mat-icon class="infoIcon"
                               aria-label="Required across all channels and cannot be unsubscribed"
                               matTooltip="Required across all channels and cannot be unsubscribed"
-                              matTooltipClass="cdeTooltip" matTooltipPosition="above">add_box
+                              matTooltipClass="cdeTooltip" matTooltipPosition="above">help_outline
                     </mat-icon>
                 </td>
                 <td>
@@ -163,17 +121,7 @@
                     <mat-icon class="infoIcon"
                               aria-label="Required across all channels and cannot be unsubscribed"
                               matTooltip="Required across all channels and cannot be unsubscribed"
-                              matTooltipClass="cdeTooltip" matTooltipPosition="above">add_box
-                    </mat-icon>
-                </td>
-                <td>
-                    <mat-slide-toggle checked="false" disabled>
-                        <span class="disabled">Disabled</span>
-                    </mat-slide-toggle>
-                    <mat-icon class="infoIcon"
-                              aria-label="At this time emails are not supported."
-                              matTooltip="At this time emails are not supported."
-                              matTooltipClass="cdeTooltip" matTooltipPosition="above">add_box
+                              matTooltipClass="cdeTooltip" matTooltipPosition="above">help_outline
                     </mat-icon>
                 </td>
             </tr>
