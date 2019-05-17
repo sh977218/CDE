@@ -1,8 +1,8 @@
 <div *ngIf="onInitDone" class="container-fluid" id="classMgt">
     <h4 class="page-header">Manage Classifications</h4>
-    <mat-form-field>
-        <mat-select [(ngModel)]="orgToManage" name="orgToManage" id="orgToManage"
-                    placeholder="Select Organization"
+    <mat-form-field style="width: 300px">
+        <mat-select [(ngModel)]="orgToManage" id="orgToManage"
+                    placeholder="Start by choosing your Organization"
                 (selectionChange)="onChangeOrg($event)">
             <mat-option *ngFor="let o of userService.userOrgs" [value]="o">{{o}}</mat-option>
         </mat-select>
