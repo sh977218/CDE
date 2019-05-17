@@ -287,7 +287,7 @@ task('es', function _es(cb) {
     console.log('All index: ' + allIndex);
 
     esClient.indices.delete({index: allIndex, timeout: '6s'}, function (err) {
-        if(err && err.status !== 404) throw err;
+        if (err && err.status !== 404) throw err;
         else cb();
     });
 });
@@ -309,14 +309,8 @@ task('injectEs', function _mongoRestore(cb) {
             })
         })
     });
-    Promise.all(allReindex)
-        .then(() => {
-            console.log('Finished inject all index.');
-            cb();
-        })
-        .catch(function (err) {
-            throw err;
-        });
+    Promise.all(allReindex);
+    cb();
 });
 task('step1', series('es', 'mongoRestore', 'injectEs'));
 task('step2', series('copyNpmDeps', 'prepareVersion', 'copyUsemin', 'checkDbConnection'));
