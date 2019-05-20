@@ -9,7 +9,7 @@ export class Alert {
     type: string;
     expired = false;
 
-    constructor (_type: string, _message: string) {
+    constructor(_type: string, _message: string) {
         this.type = _type;
         this.message = _message;
         this.id = new Date().getTime();
@@ -30,7 +30,9 @@ export class AlertService {
     }
 
     addAlert(type: string, message: string) {
-        this.snackBar.open(message, 'Dismiss', {duration: this.alertTime});
+        let config = {duration: this.alertTime};
+        if (type === 'danger') config = {duration: 0};
+        this.snackBar.open(message, 'Dismiss', config);
     }
 
     httpErrorMessageAlert(err: HttpErrorResponse, info = '') {
