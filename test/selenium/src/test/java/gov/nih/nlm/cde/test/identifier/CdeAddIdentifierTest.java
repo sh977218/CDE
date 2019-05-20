@@ -10,11 +10,7 @@ public class CdeAddIdentifierTest extends NlmCdeBaseTest {
         String cdeName = "Prostatectomy Performed Date";
         mustBeLoggedInAs(nlm_username, nlm_password);
 
-        openUserMenu();
-        goToSiteManagement();
-        clickElement(By.cssSelector(".mat-tab-header-pagination-after"));
-        clickElement(By.cssSelector(".mat-tab-header-pagination-after"));
-        clickElement(By.xpath("//div[. = 'Id Sources']"));
+        goToIdSources();
 
         addIdSource("test1",
                 "http://cde.nlm.nih.gov/deView?tinyId={{id}}&version={{version}}",

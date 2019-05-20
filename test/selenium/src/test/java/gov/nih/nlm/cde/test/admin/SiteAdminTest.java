@@ -25,9 +25,7 @@ public class SiteAdminTest extends NlmCdeBaseTest {
 
         addOrg(testOrg, null, null);
 
-        clickElement(By.id("username_link"));
-        clickElement(By.linkText("Org Management"));
-        clickElement(By.xpath("//div[. = 'Org Admins']"));
+        goToAdmins();
         new Select(driver.findElement(By.id("newOrgAdminOrgName"))).selectByVisibleText(testOrg);
         searchUsername(test_username);
         clickElement(By.id("newOrgAdminSubmit"));
@@ -41,9 +39,7 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         logout();
 
         mustBeLoggedInAs(nlm_username, nlm_password);
-        clickElement(By.id("username_link"));
-        clickElement(By.linkText("Org Management"));
-        clickElement(By.xpath("//div[. = 'Org Admins']"));
+        goToAdmins();
         clickElement(By.xpath("//*[contains(text(),'" + test_username + "')]/..//mat-icon[normalize-space() = 'delete_outline']"));
         textNotPresent(test_username);
     }
@@ -51,9 +47,7 @@ public class SiteAdminTest extends NlmCdeBaseTest {
     @Test
     public void siteAdminCanOrgAdmin() {
         mustBeLoggedInAs(nlm_username, nlm_password);
-        clickElement(By.id("username_link"));
-        clickElement(By.linkText("Org Management"));
-        clickElement(By.xpath("//div[. = 'Organizations']"));
+        goToOrganizations();
         textPresent("Albert Einstein Cancer Center");
     }
 

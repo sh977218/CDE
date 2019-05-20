@@ -3,9 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule, MatDialogModule, MatPaginatorModule, MatButtonModule } from '@angular/material';
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
-import { LatestCommentsComponent } from 'discuss/components/latestComments/latestComments.component';
-
 import { CommentsComponent } from 'discuss/components/comments/comments.component';
+import { LatestCommentsComponent } from 'discuss/components/latestComments/latestComments.component';
 
 @NgModule({
     imports: [
@@ -22,12 +21,12 @@ import { CommentsComponent } from 'discuss/components/comments/comments.componen
     declarations: [
         DiscussAreaComponent,
         CommentsComponent,
-        LatestCommentsComponent
+        LatestCommentsComponent,
     ],
     entryComponents: [
         DiscussAreaComponent,
         CommentsComponent,
-        LatestCommentsComponent
+        LatestCommentsComponent,
     ],
     exports: [
         DiscussAreaComponent,

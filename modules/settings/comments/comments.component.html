@@ -1,0 +1,24 @@
+<div class="container-fluid">
+    <h1>{{title}} Comments</h1>
+    <span *ngIf="!comments?.latestComments?.length">You have no comments.</span>
+    <div *ngIf="comments?.latestComments?.length">
+        <table class="table table-border table-striped table-responsive">
+            <tr>
+                <th>Date</th>
+                <th>Text</th>
+                <th>Type</th>
+            </tr>
+            <tr *ngFor="let c of comments.latestComments">
+                <td>{{c.created | date:'MM/dd/yyyy @h:mma'}}</td>
+                <td>{{c.text}}</td>
+                <td><a href="{{getEltLink(c)}}" target="_blank">{{c.element.eltType}}</a></td>
+            </tr>
+        </table>
+
+        <mat-paginator (page)="getComments($event)" [length]="comments.totalItems"
+                       [pageIndex]="page"
+                       [pageSize]="pageSize" [hidePageSize]="true" style="font-size: 1.4em">
+        </mat-paginator>
+
+    </div>
+</div>

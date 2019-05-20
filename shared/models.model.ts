@@ -456,6 +456,7 @@ export class Property {
 }
 
 export class PublishedForm {
+    id?: string;
     _id?: ObjectId;
     name?: string;
 }
