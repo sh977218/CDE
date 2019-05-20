@@ -272,9 +272,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void addOrg(String orgName, String orgLongName, String orgWGOf) {
-        clickElement(By.id("username_link"));
-        clickElement(By.linkText("Org Management"));
-        clickElement(By.xpath("//div[. = 'Organizations']"));
+        goToOrganizations();
         findElement(By.name("newOrgName")).sendKeys(orgName);
 
         if (orgLongName != null) {
@@ -306,29 +304,133 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         textPresent("Classifications");
     }
 
-    protected void mustBeLoggedOut() {
-        List<WebElement> loginLinkList = driver.findElements(By.xpath("//*[@id='login_link']"));
-        if (loginLinkList.size() == 0) {
-            logout();
-        }
-        textNotPresent("", By.id("username_link"));
-        findElement(By.id("login_link"));
-    }
-
-    protected void openUserMenu() {
+    protected void goToSettings() {
         clickElement(By.id("username_link"));
+        textPresent("Settings");
+        clickElement(By.id("user_settings"));
     }
 
-    protected void goToOrgManagement() {
-        clickElement(By.linkText("Org Management"));
-    }
-
-    protected void goToSiteManagement() {
-        clickElement(By.linkText("Site Management"));
+    protected void goToStewardTransfer() {
+        goToSettings();
+        clickElement(By.id("stewardTransfer"));
     }
 
     protected void goToListManagement() {
-        clickElement(By.xpath("//div[. = 'List Management']"));
+        goToSettings();
+        clickElement(By.id("listManagement"));
+    }
+
+    protected void goToIdSources() {
+        goToSettings();
+        clickElement(By.id("idSources"));
+    }
+
+    protected void goToOrganizations() {
+        goToSettings();
+        clickElement(By.id("organizations"));
+    }
+
+    protected void goToUsers() {
+        goToSettings();
+        clickElement(By.id("users"));
+        textPresent("Create User", By.id("settingsContent"));
+    }
+
+    protected void goToResources() {
+        goToSettings();
+        clickElement(By.id("resources"));
+    }
+
+    protected void goToCurators() {
+        goToSettings();
+        clickElement(By.id("curators"));
+    }
+
+    protected void goToEmbedding() {
+        goToSettings();
+        clickElement(By.id("embedding"));
+    }
+
+    protected void goToSiteAdmins() {
+        goToSettings();
+        clickElement(By.id("siteAdmins"));
+    }
+
+    protected void goToMyPublishedForms() {
+        goToSettings();
+        clickElement(By.id("myPublishedForms"));
+        textPresent("My Published Forms", By.id("settingsContent"));
+    }
+
+    protected void goToViewHistory() {
+        goToSettings();
+        clickElement(By.id("viewingHistory"));
+        textPresent("Viewing History", By.id("settingsContent"));
+    }
+
+    protected void goToAdmins() {
+        goToSettings();
+        clickElement(By.id("admins"));
+        textPresent("Admins for this Organization:", By.id("settingsContent"));
+    }
+
+    protected void goToMyDrafts() {
+        goToSettings();
+        clickElement(By.id("myDrafts"));
+    }
+
+    protected void goToMyOrgDrafts() {
+        goToSettings();
+        clickElement(By.id("myOrgDrafts"));
+        textPresent("My Organization Drafts", By.id("settingsContent"));
+    }
+
+    protected void goToAllDrafts() {
+        goToSettings();
+        clickElement(By.id("allDrafts"));
+        textPresent("All Drafts", By.id("settingsContent"));
+    }
+
+    protected void goToMyComments() {
+        goToSettings();
+        clickElement(By.id("myComments"));
+    }
+
+    protected void goToMyOrgComments() {
+        goToSettings();
+        clickElement(By.id("myOrgComments"));
+    }
+
+    protected void goToAllComments() {
+        goToSettings();
+        clickElement(By.id("allComments"));
+    }
+
+    protected void goToValidationRules() {
+        goToSettings();
+        clickElement(By.id("validationRules"));
+        textPresent("Add New Rule", By.id("settingsContent"));
+    }
+
+    protected void goToServerStatus() {
+        goToSettings();
+        clickElement(By.id("serverStatus"));
+    }
+
+    protected void goToArticles() {
+        goToSettings();
+        clickElement(By.id("articles"));
+    }
+
+    protected void goToProfile() {
+        goToSettings();
+        clickElement(By.id("profile"));
+        textPresent("Profile", By.id("settingsContent"));
+    }
+    protected void goToNotification() {
+        goToSettings();
+        clickElement(By.id("notification"));
+        textPresent("Notification", By.id("settingsContent"));
     }
 
     protected int getNumberOfResults() {

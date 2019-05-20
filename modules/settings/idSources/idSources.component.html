@@ -1,0 +1,41 @@
+<h1>ID Sources</h1>
+
+<div *ngIf="!sources || !sources.length" class="m-4">
+    No Item Sources
+</div>
+
+<table *ngIf="sources?.length" class="table">
+    <tr *ngFor="let source of sources;let i = index;">
+        <td style="min-width: 30px">
+            <a class="hand-cursor" (click)="delete(source,i)">
+                <mat-icon class="ml-2">delete_outline</mat-icon>
+            </a>
+        </td>
+        <td style="min-width: 50px">
+            {{source._id}}
+        </td>
+        <td style="padding-top: 1.25em">
+            <mat-form-field style="width: 95%;">
+                <input matInput placeholder="Data Element Link URL: (Use {{'{{id}\} and {{version}\}.'}})"
+                       [(ngModel)]="source.linkTemplateDe" (change)="update(source)">
+            </mat-form-field>
+            <mat-form-field style="width: 95%;">
+                <input matInput placeholder="Form Link URL: (Use {{'{{id}\} and {{version}\}.'}})"
+                       [(ngModel)]="source.linkTemplateForm" (change)="update(source)">
+            </mat-form-field>
+        </td>
+        <td style="width: 20%">
+            <mat-form-field style="width: 95%;">
+                <input matInput placeholder="Version:" [(ngModel)]="source.version" (change)="update(source)">
+            </mat-form-field>
+        </td>
+    </tr>
+</table>
+
+<mat-form-field class="m-3">
+    <input matInput placeholder="New Id:" [(ngModel)]="newId">
+</mat-form-field>
+<button mat-raised-button [disabled]="!newId" (click)="add()">
+    <mat-icon>add</mat-icon>
+    Add
+</button>

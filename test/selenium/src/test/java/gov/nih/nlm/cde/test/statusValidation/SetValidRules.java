@@ -9,9 +9,7 @@ public class SetValidRules extends BaseClassificationTest {
     @Test
     public void setValidRules() {
         mustBeLoggedInAs(nlm_username, nlm_password);
-        clickElement(By.id("username_link"));
-        clickElement(By.id("user_org_authority"));
-        clickElement(By.xpath("//div[. = 'Status Validation Rules']"));
+        goToValidationRules();
         clickElement(By.id("addRule"));
         textPresent("Field matches regular expression");
         hangon(1);

@@ -9,9 +9,7 @@ public class CreateUser extends NlmCdeBaseTest {
     public void createUser() {
         String newUsername = "Coco Channel";
         mustBeLoggedInAs(nlm_username, nlm_password);
-        clickElement(By.id("username_link"));
-        clickElement(By.linkText("Site Management"));
-        clickElement(By.xpath("//div[. = 'Users']"));
+        goToUsers();
         clickElement(By.id("opeNewUserModalBtn"));
         findElement(By.id("newUsername")).sendKeys(newUsername);
         hangon(1);

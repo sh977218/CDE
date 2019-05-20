@@ -1,0 +1,28 @@
+<h1>Site Admins</h1>
+<form name="form" class="form-inline pt40 pb40" novalidate>
+    <cde-username-autocomplete [placeHolder]="'Make the user '"
+                               (onSelect)="newAdmin = $event;"></cde-username-autocomplete>
+    <span class="mx-2">a site admin</span>
+    <button mat-raised-button (click)="addSiteAdmin()" id="saveMessage">Make Admin</button>
+</form>
+
+<table class="table table-bordered table-responsive">
+    <tr>
+        <th>Site Admins:</th>
+    </tr>
+    <tr *ngFor="let user of siteAdmins">
+        <td>
+            <span class="mr-1" id="existingSiteAdmin-{{index}}">{{user.username}}</span>
+            <mat-icon (click)="removeSiteAdmin(user.username)" id="removeSiteAdmin-{{index}}">delete</mat-icon>
+        </td>
+    </tr>
+</table>
+
+<table class="table table-bordered table-responsive">
+    <tr>
+        <th>Org Authorities:</th>
+    </tr>
+    <tr *ngFor="let user of orgAuthorities">
+        <td>{{user.username}}</td>
+    </tr>
+</table>

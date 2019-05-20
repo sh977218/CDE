@@ -9,7 +9,7 @@ public class UsageLog extends NlmCdeBaseTest {
     @Test
     public void usageLogs() {
         mustBeLoggedInAs(nlm_username, nlm_password);
-        openUserMenu();
+        clickElement(By.id("username_link"));
         clickElement(By.linkText("Audit"));
         clickElement(By.xpath("//div[. = 'Usage']"));
         clickElement(By.id("search.submit"));

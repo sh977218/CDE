@@ -11,8 +11,7 @@ public class UserTest extends NlmCdeBaseTest {
     @Test
     public void curatorProfile() {
         mustBeLoggedInAs(cabigAdmin_username, password);
-        clickElement(By.id("username_link"));
-        clickElement(By.linkText("Profile"));
+        goToProfile();
         textPresent("cabigAdmin", By.id("username"));
         textPresent("1,024.00", By.id("quota"));
         Assert.assertEquals("", findElement(By.id("curatorFor")).getText());

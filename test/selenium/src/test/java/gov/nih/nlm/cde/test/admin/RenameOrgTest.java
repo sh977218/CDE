@@ -6,12 +6,6 @@ import org.testng.annotations.Test;
 
 public class RenameOrgTest extends NlmCdeBaseTest {
 
-    private void refreshOrganizationsTabScreen() {
-        driver.navigate().refresh();
-        scrollToTop();
-        clickElement(By.xpath("//div[. = 'Organizations']"));
-    }
-
     @Test
     public void renameOrg() {
         mustBeLoggedInAs("theOrgAuth", password);
@@ -54,7 +48,7 @@ public class RenameOrgTest extends NlmCdeBaseTest {
         clickElement(By.xpath("//*[@id = 'orgUri-" + testOrg + "']//button[contains(text(),'Confirm')]"));
         closeAlert();
 
-        refreshOrganizationsTabScreen();
+        driver.navigate().refresh();
         textPresent(testOrgRenamed);
         textPresent(testOrgMailingAddress);
         textPresent(testOrgEmailingAddress);
@@ -87,8 +81,7 @@ public class RenameOrgTest extends NlmCdeBaseTest {
         textNotPresent(testOrgPhoneNumberNotRenamed);
         textNotPresent(testOrgUriNotRenamed);
 
-        refreshOrganizationsTabScreen();
-
+        driver.navigate().refresh();
         textNotPresent(testOrgNotRenamed);
         textNotPresent(testOrgMailingAddressNotRenamed);
         textNotPresent(testOrgEmailingAddressNotRenamed);

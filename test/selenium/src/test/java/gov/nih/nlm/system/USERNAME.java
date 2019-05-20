@@ -39,5 +39,13 @@ public interface USERNAME {
     String boardBot_username = "boardBot";
     String unapprovedMessage_username = "unapprovedmessageuser";
     String oneUnapprovedReply_username = "oneunapprovedreplyuser";
+
+    // One user only has one role, test management page authorization.
+    String documentationEditorUser_username = "documentationEditorUser";
+    String orgAdminUser_username = "orgAdminUser";
+    String orgCuratorUser_username = "orgCuratorUser";
+    String orgAuthorityUser_username = "orgAuthorityUser";
+    String siteAdminUser_username = "siteAdminUser";
+
     String password = "pass";
 }

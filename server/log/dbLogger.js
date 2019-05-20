@@ -132,7 +132,7 @@ exports.logClientError = function (req, callback) {
             });
         }
 
-        callback(err);
+        callback();
     }));
 };
 
