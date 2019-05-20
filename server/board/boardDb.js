@@ -34,7 +34,7 @@ let pinningBoardSchema = new Schema({
     pins: [pinSchema],
     users: [{
         username: StringType,
-        role: {type: StringType, default: 'viewer', enum: ['viewer', 'reviewer']},
+        role: {type: StringType, default: 'viewer', enum: ['viewer']},
         lastViewed: Date,
     }],
 }, {
