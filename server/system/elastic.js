@@ -11,6 +11,7 @@ const mongo_form = require("../form/mongo-form");
 const boardDb = require("../board/boardDb");
 const noDbLogger = require("./noDbLogger");
 const handleError = require('../errorHandler/errHandler').handleError;
+const errorHandler = require("../errorHandler/errHandler");
 
 let esClient = new elasticsearch.Client({
     hosts: config.elastic.hosts
@@ -158,9 +159,7 @@ exports.reIndex = function (index, cb) {
                     let info = "done ingesting " + index.name + " in : " + (new Date().getTime() - startTime) / 1000 + " secs. count: " + index.count;
                     noDbLogger.noDbLogger.info(info);
                     dbLogger.consoleLog(info);
-                    if (cb){
-                        cb();
-                    }
+                    if (cb) cb();
                 });
             });
             stream.on('error', err => {
