@@ -563,8 +563,6 @@ export class User {
     avatarUrl?: string;
     email?: string;
     formViewHistory?: string[];
-    hasMail?: boolean;
-    lastViewNotification?: Date;
     notificationSettings?: NotificationSettings;
     orgAdmin: string[] = [];
     orgCurator: string[] = [];
