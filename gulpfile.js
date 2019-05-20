@@ -312,8 +312,16 @@ task('injectEs', function _mongoRestore(cb) {
     Promise.all(allReindex);
     cb();
 });
+task('checkBundleSize', function _checkBundleSize(cb) {
+    exec('node scripts/buildCheckSize.js', function (err) {
+        if (err) throw err;
+        else cb();
+    });
+});
+
 task('step1', series('es', 'mongoRestore', 'injectEs'));
-task('step2', series('copyNpmDeps', 'prepareVersion', 'copyUsemin', 'checkDbConnection'));
-task('default', parallel('step1', 'step2'));
+task('step2', series('copyNpmDeps', 'prepareVersion', 'copyUsemin', 'checkBundleSize'));
+task('step3', series('checkDbConnection'));
+task('default', parallel('step1', 'step2', 'step3'));
 
 
