@@ -11,7 +11,6 @@ const mongo_form = require("../form/mongo-form");
 const boardDb = require("../board/boardDb");
 const noDbLogger = require("./noDbLogger");
 const handleError = require('../errorHandler/errHandler').handleError;
-const errorHandler = require("../errorHandler/errHandler");
 
 let esClient = new elasticsearch.Client({
     hosts: config.elastic.hosts

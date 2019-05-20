@@ -149,7 +149,7 @@ task('prepareVersion', series('copyCode', function _prepareVersion() {
 }));
 
 task('copyDist', series('createDist',
-    build = () => run('npm run buildApp').exec(),
+    build = () => run('npm run build').exec(),
     copyApp = () => src(['./dist/app/**/*', '!./dist/app/cde.css', '!./dist/app/cde.js']).pipe(dest(config.node.buildDir + '/dist/app')),
     copyEmbed = () => src(['./dist/embed/**/*', '!./dist/embed/embed.css', '!./dist/embed/embed.js']).pipe(dest(config.node.buildDir + '/dist/embed')),
     copyFhir = () => src(['./dist/fhir/*', '!./dist/fhir/fhir.css', '!./dist/fhir/fhir.js']).pipe(dest(config.node.buildDir + '/dist/fhir')),
