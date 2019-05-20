@@ -270,13 +270,6 @@ task('buildHome', function _buildHome() {
         .pipe(rename('home-launch.ejs'))
         .pipe(dest('./modules/system/views'));
 });
-task('checkDbConnection', function _buildHome() {
-    return new Promise(function (resolve, reject) {
-        let isRequireDbConnection = !!require.cache[require.resolve('./server/system/connections')];
-        if (isRequireDbConnection) reject('DB connection cannot be included in gulp.');
-        else resolve();
-    });
-});
 
 task('es', function _es(cb) {
     const elasticsearch = require('elasticsearch');
@@ -321,7 +314,6 @@ task('checkBundleSize', function _checkBundleSize(cb) {
 
 task('step1', series('es', 'mongoRestore', 'injectEs'));
 task('step2', series('copyNpmDeps', 'prepareVersion', 'copyUsemin', 'checkBundleSize'));
-task('step3', series('checkDbConnection'));
-task('default', parallel('step1', 'step2', 'step3'));
+task('default', parallel('step1', 'step2'));
 
 
