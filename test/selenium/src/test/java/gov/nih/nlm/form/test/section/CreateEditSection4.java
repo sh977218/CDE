@@ -1,6 +1,5 @@
 package gov.nih.nlm.form.test.section;
 
-import gov.nih.nlm.form.test.BaseFormTest;
 import gov.nih.nlm.form.test.QuestionTest;
 import org.testng.annotations.Test;
 
@@ -14,6 +13,7 @@ public class CreateEditSection4 extends QuestionTest {
 
         goToFormByName(formName);
         goToFormDescription();
+        closeAlert();
 
         addQuestionToSection(cdeName, 2);
     }
