@@ -24,7 +24,7 @@ export class RedcapExport {
     label_variables_map = {};
 
     getZipRedCap(form) {
-        form = this.oneLayerForm(form);
+        this.oneLayerForm(form);
 
         let instrumentResult = this.getRedCap(form);
 
