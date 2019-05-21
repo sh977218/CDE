@@ -285,26 +285,20 @@ task('es', function _es(cb) {
     });
 });
 task('mongoRestore', function _mongoRestore(cb) {
-    exec('bash restore-test-instance.sh', function (err) {
-        if (err) throw err;
-        else cb();
-    });
+    exec('bash restore-test-instance.sh', cb);
 });
 
-task('injectEs', function _mongoRestore(cb) {
-    exec('node reindexElasticSearch.js', function (err) {
-        if (err) throw err;
-        else cb();
-    });
+task('injectElastic', function _injectElastic(cb) {
+    exec('node scripts/reindexElasticSearch.js',cb);
+});
+task('waitForElastic',function _waitForElastic(cb){
+    exec('node scripts/waitForIndex.js',cb);
 });
 task('checkBundleSize', function _checkBundleSize(cb) {
-    exec('node scripts/buildCheckSize.js', function (err) {
-        if (err) throw err;
-        else cb();
-    });
+    exec('node scripts/buildCheckSize.js', cb);
 });
 
-task('step1', series('mongoRestore', 'injectEs'));
+task('step1', series('mongoRestore', 'injectElastic','waitForElastic'));
 task('step2', series('copyNpmDeps', 'prepareVersion', 'copyUsemin', 'checkBundleSize'));
 task('default', parallel('step1', 'step2'));
 
