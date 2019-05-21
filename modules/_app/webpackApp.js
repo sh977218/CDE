@@ -15,7 +15,6 @@ const assets = [
     '/app/assets/img/min/nih-cde-logo.png',
     '/app/assets/img/min/usagov_logo.png',
     '/app/assets/img/min/NLM-logo.png',
-    '/system/public/img/doctor-404.png'
 ];
 
 module.exports = {
