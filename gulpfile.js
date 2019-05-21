@@ -292,19 +292,10 @@ task('mongoRestore', function _mongoRestore(cb) {
 });
 
 task('injectEs', function _mongoRestore(cb) {
-    const elastic = require('./server/system/elastic');
-
-    let allReindex = esInit.indices.map(i => {
-        console.log('Inject Index: ' + i.indexName);
-        return new Promise((resolve, reject) => {
-            elastic.reIndex(i, function (err) {
-                if (err) reject();
-                else resolve();
-            })
-        })
+    exec('node reindexElasticSearch.js', function (err) {
+        if (err) throw err;
+        else cb();
     });
-
-    return Promise.all(allReindex)
 });
 task('checkBundleSize', function _checkBundleSize(cb) {
     exec('node scripts/buildCheckSize.js', function (err) {
