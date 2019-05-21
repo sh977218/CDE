@@ -304,7 +304,7 @@ task('checkBundleSize', function _checkBundleSize(cb) {
     });
 });
 
-task('step1', series('es', 'mongoRestore', 'injectEs'));
+task('step1', series('mongoRestore', 'injectEs'));
 task('step2', series('copyNpmDeps', 'prepareVersion', 'copyUsemin', 'checkBundleSize'));
 task('default', parallel('step1', 'step2'));
 
