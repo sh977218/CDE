@@ -13,10 +13,10 @@ const elastic = require('./server/system/elastic');
     });
     Promise.all(allReindex)
         .then(() => {
-            console.log('done indexing');
-            process.exit(1);
+            console.log('Reindex Elastic Search Done');
+            process.exit(0);
         })
         .catch(function (e) {
-            process.exit(0);
+            process.exit(1);
         });
 })();
