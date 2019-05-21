@@ -13,7 +13,7 @@ const mongo_cde = require('../cde/mongo-cde');
 const mongo_form = require('../form/mongo-form');
 const boardDb = require('../board/boardDb');
 const noDbLogger = require('./noDbLogger');
-const handleError = require('../errorHandler/errHandler').handleError;
+const errorHandler = require('../errorHandler/errHandler');
 
 
 let esClient = new elasticsearch.Client({
@@ -74,7 +74,7 @@ exports.reIndex = function reIndex(index, cb) {
 const BUFFER_MAX_SIZE = 10000000; // ~10MB
 const DOC_MAX_SIZE = BUFFER_MAX_SIZE;
 exports.reIndexStream = function reIndexStream(dbStream, cb) {
-    createIndex(dbStream, handleError({}, () => {
+    createIndex(dbStream, errorHandler.handleError({}, () => {
         let riverFunctions = dbStream.indexes.map(index => index.filter || ((elt, cb) => cb(elt)));
         let buffers = [...new Array(dbStream.indexes.length)].map(() => Buffer.alloc(BUFFER_MAX_SIZE));
         let bufferOffsets = new Array(dbStream.indexes.length).fill(0);
@@ -124,9 +124,30 @@ exports.reIndexStream = function reIndexStream(dbStream, cb) {
                 index.totalCount = totalCount;
             });
         });
-        let stream = dbStream.query.dao.getStream(dbStream.query.condition);
-        stream
-            .on('data', doc => {
+        let cursor = dbStream.query.dao.getStream(dbStream.query.condition);
+
+        (function processOneDocument(cursor) {
+            cursor.next((err, doc) => {
+                if (err) {
+                    // err
+                    dbLogger.consoleLog('Error getting cursor: ' + err);
+                    return;
+                }
+                if (!doc) {
+                    // end
+                    async.eachOf(dbStream.indexes, (index, i, doneOne) => {
+                        inject(i,() => {
+                            let info = 'done ingesting ' + index.name + ' in : ' + (new Date().getTime() - startTime) / 1000 + ' secs. count: ' + index.count;
+                            noDbLogger.noDbLogger.info(info);
+                            dbLogger.consoleLog(info);
+                            doneOne();
+                        });
+                    }, () => {
+                        if (cb) cb();
+                    });
+                    return;
+                }
+                // data
                 const docObj = doc.toObject();
                 dbStream.indexes.forEach((index, i) => {
                     riverFunctions[i](docObj, doc => {
@@ -153,22 +174,11 @@ exports.reIndexStream = function reIndexStream(dbStream, cb) {
                         index.count++;
                     });
                 });
-            })
-            .on('end', () => {
-                async.eachOf(dbStream.indexes, (index, i, doneOne) => {
-                    inject(i,() => {
-                        let info = 'done ingesting ' + index.name + ' in : ' + (new Date().getTime() - startTime) / 1000 + ' secs. count: ' + index.count;
-                        noDbLogger.noDbLogger.info(info);
-                        dbLogger.consoleLog(info);
-                        doneOne();
-                    });
-                }, () => {
-                    if (cb) cb();
-                });
-            })
-            .on('error', err => {
-                dbLogger.consoleLog('Error getting stream: ' + err);
+                setTimeout(() => {
+                    processOneDocument(cursor);
+                }, 0);
             });
+        })(cursor);
     }));
 };
 
@@ -189,7 +199,7 @@ function createIndex(dbStream, cb) {
                     body: index.indexJson
                 }, err => {
                     if (err) {
-                        respondError(err);
+                        errorHandler.respondError(err);
                     } else {
                         dbLogger.consoleLog('index Created');
                     }
@@ -199,7 +209,7 @@ function createIndex(dbStream, cb) {
         });
     }, (err, matches) => {
         if (err) {
-            respondError(err);
+            errorHandler.respondError(err);
         }
         if (matches && matches.length) {
             exports.reIndexStream({query: dbStream.query, indexes: matches}, cb);
@@ -279,7 +289,7 @@ exports.regStatusFilter = function (user, settings) {
 
 exports.buildElasticSearchQuery = function (user, settings) {
     function escapeRegExp(str) {
-        return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&').replace('<', "");
+        return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&').replace('<', '');
     }
 
     // Increase ranking score for high registration status
@@ -391,7 +401,7 @@ exports.buildElasticSearchQuery = function (user, settings) {
         queryStuff.query.bool.must.push({term: {'classification.stewardOrg.name': settings.selectedOrgAlt}});
     }
     if (settings.excludeAllOrgs) {
-        queryStuff.query.bool.must.push({term: {'classificationSize': 1}});
+        queryStuff.query.bool.must.push({term: {classificationSize: 1}});
     } else {
         if (settings.excludeOrgs && settings.excludeOrgs.length > 0) {
             settings.excludeOrgs.forEach(o => {
