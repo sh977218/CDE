@@ -12,6 +12,7 @@ const boardDb = require("../board/boardDb");
 const noDbLogger = require("./noDbLogger");
 const handleError = require('../errorHandler/errHandler').handleError;
 
+
 let esClient = new elasticsearch.Client({
     hosts: config.elastic.hosts
 });
