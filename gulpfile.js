@@ -8,7 +8,7 @@ const parallel = gulp.parallel;
 const src = gulp.src;
 const dest = gulp.dest;
 
-const exec = require('child_process').exec;
+const {spawn} = require('child_process');
 const htmlmin = require('gulp-htmlmin');
 const install = require('gulp-install');
 const merge = require('merge-stream');
@@ -285,20 +285,22 @@ task('es', function _es(cb) {
     });
 });
 task('mongoRestore', function _mongoRestore(cb) {
-    exec('bash restore-test-instance.sh', cb);
+    spawn('bash', ['restore-test-instance.sh'], {stdio: 'inherit'})
+        .on('exit', cb);
 });
 
 task('injectElastic', function _injectElastic(cb) {
     console.log('Start node app to inject');
-    let p = exec('node app');
-    exec('node scripts/waitForIndex.js', () => {
-        console.log('Done wait for index. Killing process: ' + p.pid);
-        p.kill('SIGTERM');
-        cb();
-    });
+    let p = spawn('node', ['app'], {stdio: 'inherit'});
+    spawn('node', ['scripts/waitForIndex.js'], {stdio: 'inherit'})
+        .on('exit', () => {
+            p.kill();
+            cb();
+        })
 });
 task('checkBundleSize', function _checkBundleSize(cb) {
-    exec('node scripts/buildCheckSize.js', cb);
+    spawn('node', ['scripts/buildCheckSize.js'], {stdio: 'inherit'})
+        .on('exit', cb);
 });
 
 task('step1', series('mongoRestore', 'injectElastic'));
