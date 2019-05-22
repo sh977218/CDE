@@ -299,7 +299,7 @@ task('checkBundleSize', function _checkBundleSize(cb) {
     exec('node scripts/buildCheckSize.js', cb);
 });
 
-task('step1', series('mongoRestore', 'injectElastic', 'waitForElastic'));
+task('step1', series('mongoRestore', 'injectElastic'));
 task('step2', series('copyNpmDeps', 'prepareVersion', 'copyUsemin', 'checkBundleSize'));
 task('default', parallel('step1', 'step2'));
 
