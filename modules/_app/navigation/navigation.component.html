@@ -7,17 +7,9 @@
         <a id="{{prefix}}username_link" class="mdl-navigation__link mdl-typography--text-uppercase"
            [matMenuTriggerFor]="loginMenu">{{userService.user.username | cdeTruncateLongName}}&nbsp;▼</a>
         <mat-menu #loginMenu="matMenu">
-            <a routerLink="/profile" id="user_profile" mat-menu-item>Profile</a>
-            <a routerLink="/orgComments" id="org_comments" mat-menu-item
-               *ngIf="isOrgCurator(userService.user)">Org Comments</a>
+            <a routerLink="/settings/profile" id="user_settings" mat-menu-item>Settings</a>
             <a routerLink="/classificationManagement" id="user_classifications" mat-menu-item
                *ngIf="isOrgCurator(userService.user)">Classifications</a>
-            <a routerLink="/orgAuthority" id="user_org_authority" mat-menu-item
-               *ngIf="isOrgAuthority(userService.user)">Org Management</a>
-            <a routerLink="/orgAccountManagement" id="user_account_management" mat-menu-item
-               *ngIf="isOrgAdmin(userService.user)">Account Management</a>
-            <a routerLink="/siteAccountManagement" id="user_site_management" mat-menu-item
-               *ngIf="isSiteAdmin(userService.user)">Site Management</a>
             <a routerLink="/siteAudit" id="user_audit" mat-menu-item
                *ngIf="isOrgAuthority(userService.user)">Audit</a>
             <a (click)="loginSvc.logout()" target="_self" id="user_logout" mat-menu-item>Log Out</a>

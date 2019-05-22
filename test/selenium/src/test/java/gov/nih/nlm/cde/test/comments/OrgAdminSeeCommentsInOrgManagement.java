@@ -1,7 +1,6 @@
 package gov.nih.nlm.cde.test.comments;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
-import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
 public class OrgAdminSeeCommentsInOrgManagement extends NlmCdeBaseTest {
@@ -12,8 +11,7 @@ public class OrgAdminSeeCommentsInOrgManagement extends NlmCdeBaseTest {
     @Test
     public void orgAdminSeeCommentsInOrgManagementTest() {
         mustBeLoggedInAs(ninds_username, password);
-        clickElement(By.id("username_link"));
-        clickElement(By.linkText("Org Comments"));
+        goToMyOrgComments();
         textPresent(nindsComment);
         textNotPresent(caBIGComment);
     }
@@ -21,8 +19,7 @@ public class OrgAdminSeeCommentsInOrgManagement extends NlmCdeBaseTest {
     @Test
     public void orgAdminCanSeeCommentsInOrgManagementTest2() {
         mustBeLoggedInAs(cabigAdmin_username, password);
-        clickElement(By.id("username_link"));
-        clickElement(By.linkText("Org Comments"));
+        goToMyOrgComments();
         textNotPresent(nindsComment);
         textPresent(caBIGComment);
     }

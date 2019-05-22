@@ -22,10 +22,7 @@ public class ViewingHistory extends NlmCdeBaseTest {
         goToCdeByName("Specimen Block Received Count");
         goToCdeByName("Malignant Neoplasm Metastatic Involvement Anatomic");
 
-        hangon(4);
-        clickElement(By.id("username_link"));
-        clickElement(By.linkText("Profile"));
-        textPresent("User Profile");
+        goToViewHistory();
 
         textPresent("Specimen Inflammation Change Type");
         textPresent("Person Mother Onset Menopause Age Value");

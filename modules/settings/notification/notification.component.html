@@ -1,0 +1,131 @@
+<div class="container-fluid" *ngIf="user">
+    <h1>Notifications</h1>
+    <div>
+        <dl>
+            <dt class="col-sm-3">Server Event Subscription Status:</dt>
+            <dd class="col-sm-9">
+                    <span class="align-middle">
+                        {{subscriptionStatusServer || (subscriptionStatusClient() ? 'Subscribed' : 'Not Subscribed')}}
+                    </span>
+                <button mat-raised-button (click)="checkSubscriptionServerStatus()">Check Server
+                    <mat-icon *ngIf="subscriptionStatusServer">check_box</mat-icon>
+                </button>
+                <button *ngIf="subscriptionStatusServer === 'Not Subscribed'"
+                        mat-raised-button (click)="pushSubscribe()">Subscribe
+                </button>
+                <button *ngIf="subscriptionStatusServer === 'Subscribed'"
+                        mat-raised-button (click)="pushUnsubscribe()">Unsubscribe
+                </button>
+            </dd>
+        </dl>
+        <table class="table">
+            <thead>
+            <tr>
+                <th></th>
+                <th>Banner Notification</th>
+                <th>Push Notification</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>
+                    Relevant Comment
+                    <mat-icon class="infoIcon"
+                              aria-label="New comment on an item you are having a comment conversation on or are a curator for."
+                              matTooltip="New comment on an item you are having a comment conversation on or are a curator for."
+                              matTooltipClass="cdeTooltip" matTooltipPosition="above">help_outline
+                    </mat-icon>
+                </td>
+                <td>
+                    <mat-slide-toggle [checked]="user.notificationSettings.comment.drawer"
+                                      (change)="user.notificationSettings.comment.drawer = $event.checked; saveProfile()">
+                        {{booleanSettingOptions[user.notificationSettings.comment.drawer ? 1 : 0]}}
+                    </mat-slide-toggle>
+                </td>
+                <td>
+                    <mat-slide-toggle [checked]="user.notificationSettings.comment.push"
+                                      (change)="user.notificationSettings.comment.push = $event.checked; saveProfile()">
+                        {{booleanSettingOptions[user.notificationSettings.comment.push ? 1 : 0]}}
+                    </mat-slide-toggle>
+                </td>
+            </tr>
+            <tr *ngIf="hasRole(user, 'AttachmentReviewer')">
+                <td>
+                    Attachment Approval
+                    <mat-icon class="infoIcon"
+                              aria-label="You have been designated the responsibility to approve attachments for unprivileged users."
+                              matTooltip="You have been designated the responsibility to approve attachments for unprivileged users."
+                              matTooltipClass="cdeTooltip" matTooltipPosition="above">help_outline
+                    </mat-icon>
+                </td>
+                <td>
+                    <mat-slide-toggle checked="true" disabled>
+                        <span class="disabled">Enabled</span>
+                    </mat-slide-toggle>
+                    <mat-icon class="infoIcon"
+                              aria-label="Required to complete approvals"
+                              matTooltip="Required to complete approvals"
+                              matTooltipClass="cdeTooltip" matTooltipPosition="above">help_outline
+                    </mat-icon>
+                </td>
+                <td>
+                    <mat-slide-toggle [checked]="user.notificationSettings.approvalAttachment.push"
+                                      (change)="user.notificationSettings.approvalAttachment.push = $event.checked; saveProfile()">
+                        {{booleanSettingOptions[user.notificationSettings.approvalAttachment.push ? 1 : 0]}}
+                    </mat-slide-toggle>
+                </td>
+            </tr>
+            <tr *ngIf="hasRole(user, 'CommentReviewer')">
+                <td>
+                    Comment Approval
+                    <mat-icon class="infoIcon"
+                              aria-label="You have been designated the responsibility to approve comments for unprivileged users."
+                              matTooltip="You have been designated the responsibility to approve comments for unprivileged users."
+                              matTooltipClass="cdeTooltip" matTooltipPosition="above">help_outline
+                    </mat-icon>
+                </td>
+                <td>
+                    <mat-slide-toggle checked="true" disabled>
+                        <span class="disabled">Enabled</span>
+                    </mat-slide-toggle>
+                    <mat-icon class="infoIcon"
+                              aria-label="Required to complete approvals"
+                              matTooltip="Required to complete approvals"
+                              matTooltipClass="cdeTooltip" matTooltipPosition="above">help_outline
+                    </mat-icon>
+                </td>
+                <td>
+                    <mat-slide-toggle [checked]="user.notificationSettings.approvalComment.push"
+                                      (change)="user.notificationSettings.approvalComment.push = $event.checked; saveProfile()">
+                        {{booleanSettingOptions[user.notificationSettings.approvalComment.push ? 1 : 0]}}
+                    </mat-slide-toggle>
+                </td>
+            </tr>
+            <tr *ngIf="isSiteAdmin(user)">
+                <td>Administrative System Events</td>
+                <!--<td colspan="3" style="text-align: center">Required across all channels and cannot be unsubscribed</td>-->
+                <td>
+                    <mat-slide-toggle checked="true" disabled>
+                        <span class="disabled">Enabled</span>
+                    </mat-slide-toggle>
+                    <mat-icon class="infoIcon"
+                              aria-label="Required across all channels and cannot be unsubscribed"
+                              matTooltip="Required across all channels and cannot be unsubscribed"
+                              matTooltipClass="cdeTooltip" matTooltipPosition="above">help_outline
+                    </mat-icon>
+                </td>
+                <td>
+                    <mat-slide-toggle checked="true" disabled>
+                        <span class="disabled">Enabled</span>
+                    </mat-slide-toggle>
+                    <mat-icon class="infoIcon"
+                              aria-label="Required across all channels and cannot be unsubscribed"
+                              matTooltip="Required across all channels and cannot be unsubscribed"
+                              matTooltipClass="cdeTooltip" matTooltipPosition="above">help_outline
+                    </mat-icon>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -15,12 +15,9 @@ const appRoutes: Routes = [
         // internal
         DiscussModule,
     ],
-    declarations: [
-    ],
-    entryComponents: [
-    ],
-    exports: [
-    ],
+    declarations: [],
+    entryComponents: [],
+    exports: [],
     schemas: []
 })
 export class DiscussEntryModule {
