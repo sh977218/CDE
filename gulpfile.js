@@ -289,13 +289,13 @@ task('mongoRestore', function _mongoRestore(cb) {
 });
 
 task('injectElastic', function _injectElastic(cb) {
-    exec('node ./scripts/reindexElasticSearch.js',cb);
+    exec('node ../../scripts/reindexElasticSearch.js',cb);
 });
 task('waitForElastic',function _waitForElastic(cb){
-    exec('node ./scripts/waitForIndex.js',cb);
+    exec('node ../..//scripts/waitForIndex.js',cb);
 });
 task('checkBundleSize', function _checkBundleSize(cb) {
-    exec('node ./scripts/buildCheckSize.js', cb);
+    exec('node ../../scripts/buildCheckSize.js', cb);
 });
 
 task('step1', series('mongoRestore', 'injectElastic','waitForElastic'));
