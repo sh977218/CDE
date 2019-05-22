@@ -33,7 +33,7 @@ export class RedcapExport {
         zip.file('InstrumentID.txt', form.tinyId);
         zip.file('instrument.csv', instrumentResult);
 
-        zip.generateAsync({type: 'blob'}).then(content => saveAs(content, 'SearchExport_XML.zip'));
+        zip.generateAsync({type: 'blob'}).then(content => saveAs(content, form.designations[0].designation + '.zip'));
     }
 
     /*
