@@ -289,7 +289,7 @@ task('mongoRestore', function _mongoRestore(cb) {
         .on('exit', cb);
 });
 
-task('injectElastic', function _injectElastic(cb) {
+task('injectElastic', series('npm', function _injectElastic(cb) {
     console.log('Start node app to inject');
     let p = spawn('node', ['app'], {stdio: 'inherit'});
     spawn('node', ['scripts/waitForIndex.js'], {stdio: 'inherit'})
@@ -297,14 +297,15 @@ task('injectElastic', function _injectElastic(cb) {
             p.kill();
             cb();
         })
-});
+}));
 task('checkBundleSize', function _checkBundleSize(cb) {
     spawn('node', ['scripts/buildCheckSize.js'], {stdio: 'inherit'})
         .on('exit', cb);
 });
 
-task('step1', series('mongoRestore', 'injectElastic'));
-task('step2', series('copyNpmDeps', 'prepareVersion', 'copyUsemin', 'checkBundleSize'));
-task('default', parallel('step1', 'step2'));
+task('inject', series('mongoRestore', 'injectElastic'));
+task('build', series('copyNpmDeps', 'prepareVersion', 'copyUsemin', 'checkBundleSize'));
+
+task('default', parallel('build', 'inject'));
 
 
