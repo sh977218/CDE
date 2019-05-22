@@ -10,12 +10,7 @@ public class FormAddRemoveIdentifierTest extends NlmCdeBaseTest {
         String formName = "Vision Deficit Report";
         mustBeLoggedInAs(nlm_username, nlm_password);
 
-        openUserMenu();
-        goToSiteManagement();
-        clickElement(By.cssSelector(".mat-tab-header-pagination-after"));
-        clickElement(By.cssSelector(".mat-tab-header-pagination-after"));
-        clickElement(By.xpath("//div[. = 'Id Sources']"));
-
+        goToIdSources();
         addIdSource("test2",
                 "http://cde.nlm.nih.gov/deView?tinyId={{id}}&version={{version}}",
                 "http://cde.nlm.nih.gov/formView?tinyId={{id}}&version={{version}}");

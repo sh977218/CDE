@@ -9,11 +9,7 @@ public class ResourcesPage extends NlmCdeBaseTest {
     public void resourcesPage() {
         String resourceText = "This resources page is under construction";
         mustBeLoggedInAs(nlm_username, nlm_password);
-        openUserMenu();
-        goToSiteManagement();
-        clickElement(By.cssSelector(".mat-tab-header-pagination-after"));
-        clickElement(By.cssSelector(".mat-tab-header-pagination-after"));
-        clickElement(By.xpath("//div[. = 'Resources']"));
+        goToResources();
         // wait for ckeditor <script> to resolve.
         hangon(2);
         clickElement(By.cssSelector("mat-icon[title='Edit']"));

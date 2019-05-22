@@ -10,7 +10,7 @@ public class AppLogs extends NlmCdeBaseTest {
     @Test
     public void appLogs() {
         mustBeLoggedInAs(nlm_username, nlm_password);
-        openUserMenu();
+        clickElement(By.id("username_link"));
         clickElement(By.linkText("Audit"));
         clickElement(By.xpath("//div[. = 'App Logs']"));
 

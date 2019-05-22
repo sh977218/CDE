@@ -11,9 +11,7 @@ public class SiteAdminSeeCommentsInSiteManagement extends NlmCdeBaseTest {
         String nindsComment = "comment to FAD score";
         String caBIGComment = "comment to Sarcoman";
         mustBeLoggedInAs(nlm_username, nlm_password);
-        clickElement(By.id("username_link"));
-        clickElement(By.linkText("Site Management"));
-        clickElement(By.xpath("//div[. = 'Comments']"));
+        goToAllComments();
         textPresent(nindsComment);
         textPresent(caBIGComment);
     }
