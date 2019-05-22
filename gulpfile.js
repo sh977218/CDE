@@ -289,16 +289,20 @@ task('mongoRestore', function _mongoRestore(cb) {
 });
 
 task('injectElastic', function _injectElastic(cb) {
-    exec('node ../../scripts/reindexElasticSearch.js',cb);
+    let command = `node ${__dirname}scripts/reindexElasticSearch.js`;
+    exec(command, cb);
+
 });
-task('waitForElastic',function _waitForElastic(cb){
-    exec('node ../..//scripts/waitForIndex.js',cb);
+task('waitForElastic', function _waitForElastic(cb) {
+    let command = `node ${__dirname}scripts/waitForIndex.js`;
+    exec(command, cb);
 });
 task('checkBundleSize', function _checkBundleSize(cb) {
-    exec('node ../../scripts/buildCheckSize.js', cb);
+    let command = `node ${__dirname}scripts/buildCheckSize.js`;
+    exec(command, cb);
 });
 
-task('step1', series('mongoRestore', 'injectElastic','waitForElastic'));
+task('step1', series('mongoRestore', 'injectElastic', 'waitForElastic'));
 task('step2', series('copyNpmDeps', 'prepareVersion', 'copyUsemin', 'checkBundleSize'));
 task('default', parallel('step1', 'step2'));
 
