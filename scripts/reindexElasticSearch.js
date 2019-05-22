@@ -1,5 +1,5 @@
-const esInit = require('./server/system/elasticSearchInit');
-const elastic = require('./server/system/elastic');
+const esInit = require('../server/system/elasticSearchInit');
+const elastic = require('../server/system/elastic');
 (function () {
     let allReindex = esInit.indices.map(i => {
         console.log('Inject Index: ' + i.indexName);

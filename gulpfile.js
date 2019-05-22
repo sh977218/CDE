@@ -289,17 +289,14 @@ task('mongoRestore', function _mongoRestore(cb) {
 });
 
 task('injectElastic', function _injectElastic(cb) {
-    let command = `node reindexElasticSearch.js`;
-    exec(command, cb);
+    exec('node scripts/reindexElasticSearch.js', cb);
 
 });
 task('waitForElastic', function _waitForElastic(cb) {
-    let command = `node waitForIndex.js`;
-    exec(command, cb);
+    exec('node scripts/waitForIndex.js', cb);
 });
 task('checkBundleSize', function _checkBundleSize(cb) {
-    let command = `node buildCheckSize.js`;
-    exec(command, cb);
+    exec('node scripts/buildCheckSize.js', cb);
 });
 
 task('step1', series('mongoRestore', 'injectElastic', 'waitForElastic'));
