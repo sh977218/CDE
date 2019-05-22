@@ -289,11 +289,13 @@ task('mongoRestore', function _mongoRestore(cb) {
 });
 
 task('injectElastic', function _injectElastic(cb) {
-    exec('node scripts/reindexElasticSearch.js', cb);
-
-});
-task('waitForElastic', function _waitForElastic(cb) {
-    exec('node scripts/waitForIndex.js', cb);
+    console.log('Start node app to inject');
+    let p = exec('node app');
+    exec('node scripts/waitForIndex.js', () => {
+        console.log('Done wait for index. Killing process: ' + p.pid);
+        p.kill('SIGTERM');
+        cb();
+    });
 });
 task('checkBundleSize', function _checkBundleSize(cb) {
     exec('node scripts/buildCheckSize.js', cb);
