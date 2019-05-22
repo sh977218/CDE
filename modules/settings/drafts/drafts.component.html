@@ -5,6 +5,12 @@
         <h2>CDEs</h2>
         <span *ngIf="!drafts?.draftCdes?.length">There are no CDE drafts.</span>
         <table class="table table-responsive" *ngIf="drafts?.draftCdes?.length">
+            <tr>
+                <th>CDE</th>
+                <th>CDE ID</th>
+                <th>Updated By</th>
+                <th>Updated Date</th>
+            </tr>
             <tr *ngFor="let draftCde of drafts.draftCdes">
                 <td>
                     <a routerLink="/deView" [queryParams]="{tinyId: draftCde.tinyId}">
@@ -21,6 +27,12 @@
         <h2>Forms</h2>
         <span *ngIf="!drafts?.draftForms?.length">There are no Form drafts.</span>
         <table class="table table-responsive" *ngIf="drafts?.draftForms?.length">
+            <tr>
+                <th>Form</th>
+                <th>Form ID</th>
+                <th>Updated By</th>
+                <th>Updated Date</th>
+            </tr>
             <tr *ngFor="let draftForm of drafts.draftForms">
                 <td>
                     <a routerLink="/formView" [queryParams]="{tinyId: draftForm.tinyId}">
