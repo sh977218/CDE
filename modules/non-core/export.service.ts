@@ -213,7 +213,7 @@ export class ExportService {
     }
 
     redcapExport(form: CdeForm) {
-        new RedcapExport().getZipRedCap(form);
+        RedcapExport.getZipRedCap(form);
         this.alertService.addAlert("", 'Export downloaded.');
     }
 

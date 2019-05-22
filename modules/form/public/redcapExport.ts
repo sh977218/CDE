@@ -20,13 +20,10 @@ const text_validation_type_map = {
 
 export class RedcapExport {
 
-    existingVariables = {};
-    label_variables_map = {};
+    static getZipRedCap(form) {
+        RedcapExport.oneLayerForm(form);
 
-    getZipRedCap(form) {
-        this.oneLayerForm(form);
-
-        let instrumentResult = this.getRedCap(form);
+        let instrumentResult = RedcapExport.getRedCap(form);
 
         let zip = new JSZip();
         zip.file('AuthorID.txt', "NLM");
@@ -49,7 +46,7 @@ export class RedcapExport {
     |       Q4      |           |       Q4      |
     |---------------|           |---------------|
     */
-    oneLayerForm(form) {
+    static oneLayerForm(form) {
         function doSection(sFormElement) {
             let formElements = [];
             for (let fe of sFormElement.formElements) {
@@ -91,7 +88,7 @@ export class RedcapExport {
     }
 
 
-    formatSkipLogic(skipLogicString, map) {
+    static formatSkipLogic(skipLogicString, map) {
         let redCapSkipLogic = skipLogicString;
         let _skipLogicString = skipLogicString.replace(/ AND /g, ' and ').replace(/ OR /g, ' or ');
         let foundEquationArray = _skipLogicString.match(/"([^"])+"/g);
@@ -107,7 +104,9 @@ export class RedcapExport {
     }
 
 
-    getRedCap(form: CdeForm) {
+    static getRedCap(form: CdeForm) {
+        let existingVariables = {};
+        let label_variables_map = {};
         let variableCounter = 1;
         let sectionsAsMatrix = form.displayProfiles && form.displayProfiles[0] && form.displayProfiles[0].sectionsAsMatrix;
         let doSection = (formElement, i) => {
@@ -119,7 +118,7 @@ export class RedcapExport {
             }
             let _sectionSkipLogic = '';
             let sectionSkipLogic = formElement.skipLogic ? formElement.skipLogic.condition : '';
-            if (sectionSkipLogic) _sectionSkipLogic = this.formatSkipLogic(sectionSkipLogic, this.label_variables_map);
+            if (sectionSkipLogic) _sectionSkipLogic = RedcapExport.formatSkipLogic(sectionSkipLogic, label_variables_map);
             return {
                 'Variable / Field Name': 'insect_' + i,
                 'Form Name': form.designations[0].designation,
@@ -144,20 +143,20 @@ export class RedcapExport {
             let q = formElement.question;
             let _questionSkipLogic = '';
             let questionSkipLogic = formElement.skipLogic ? formElement.skipLogic.condition : '';
-            if (questionSkipLogic) _questionSkipLogic = this.formatSkipLogic(questionSkipLogic, this.label_variables_map);
+            if (questionSkipLogic) _questionSkipLogic = this.formatSkipLogic(questionSkipLogic, label_variables_map);
             if (!q.cde.tinyId) q.cde.tinyId = 'missing question cde';
             let variableName = 'nlmcde_' + form.tinyId.toLowerCase() + '_' +
                 variableCounter++ + "_" + q.cde.tinyId.toLowerCase();
-            if (this.existingVariables[variableName]) {
-                let index = this.existingVariables[variableName];
+            if (existingVariables[variableName]) {
+                let index = existingVariables[variableName];
                 let newVariableName = variableName + '_' + index;
-                this.existingVariables[variableName] = index++;
-                this.existingVariables[newVariableName] = 1;
-                this.label_variables_map[formElement.label] = variableName;
+                existingVariables[variableName] = index++;
+                existingVariables[newVariableName] = 1;
+                label_variables_map[formElement.label] = variableName;
                 variableName = newVariableName;
             } else {
-                this.existingVariables[variableName] = 1;
-                this.label_variables_map[formElement.label] = variableName;
+                existingVariables[variableName] = 1;
+                label_variables_map[formElement.label] = variableName;
             }
 
             let fieldLabel = formElement.label;
