@@ -20,6 +20,8 @@ public class NewSiteVersion extends NlmCdeBaseTest {
 
         clickElement(By.id("menu_forms_link"));
 
+        findElement(By.cssSelector("span.mat-badge-active"));
+
         clickElement(By.cssSelector("[data-id = 'notifications']"));
         textPresent("A new version of this site is available");
     }
