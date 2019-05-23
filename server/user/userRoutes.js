@@ -225,7 +225,10 @@ exports.module = function (roleConfig) {
                 return;
             }
             userDb.updateUser(user, {commentNotifications: user.commentNotifications}, handleError({req, res}, () => {
-                taskAggregator(req, res);
+                userDb.byId(req.user._id, handle404({req, res}, user => {
+                    req.user = user;
+                    taskAggregator(req, res);
+                }));
             }));
         }));
     });

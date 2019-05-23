@@ -25,6 +25,7 @@ public class CdeReplyNotification extends NlmCdeBaseTest {
     public void updateNotificationView() {
         mustBeLoggedInAs(reguser_username, password);
 
+        findElement(By.cssSelector("span.mat-badge-active"));
         clickElement(By.cssSelector("cde-notifications"));
         WebElement taskItem = findElement(By.cssSelector(".notificationDrawerContent div.taskItem"));
         Assert.assertEquals(taskItem.getCssValue("background-color"), "rgba(209, 236, 241, 1)");
