@@ -8,10 +8,10 @@ public class PageNotFound extends NlmCdeBaseTest {
     @Test
     public void pageNotFound () {
         driver.get(baseUrl + "/abc");
-        findElement(By.xpath("//img[contains (@title, '404 - We could not')]"));
+        findElement(By.xpath("//h1[contains(., '404 Page Not Found')]"));
 
         driver.get(baseUrl + "/deView?tinyId=abc");
-        findElement(By.xpath("//img[contains (@title, '404 - We could not')]"));
+        findElement(By.xpath("//h1[contains(., '404 Page Not Found')]"));
     }
 
 }
