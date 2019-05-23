@@ -42,10 +42,12 @@ export class DataElementLogComponent {
             skip: this.currentPage * this.pageSize,
             limit: this.pageSize
         }).subscribe(response => {
-            this.records = response;
-            this.records.forEach(rec => {
-                if (rec.diff) rec.diff.forEach(d => makeHumanReadable(d));
-            });
+            if (Array.isArray(response)) {
+                this.records = response;
+                this.records.forEach(rec => {
+                    if (rec.diff) rec.diff.forEach(d => makeHumanReadable(d));
+                });
+            }
         });
     }
 }
