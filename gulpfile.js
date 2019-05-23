@@ -41,16 +41,17 @@ function npmCacheVerify(cb) {
     p.on('exit', cb);
 }
 
-function npmInstall(cb) {
-    let p = exec('npm install');
-    p.stdout.on('data', function (data) {
-        console.log(data.toString());
-    });
+function npmInstall() {
+    /*    let p = exec('npm install');
+        p.stdout.on('data', function (data) {
+            console.log(data.toString());
+        });
 
-    p.stderr.on('data', function (data) {
-        console.log('npmInstall error: ' + data.toString());
-    });
-    p.on('exit', cb);
+        p.stderr.on('data', function (data) {
+            console.log('npmInstall error: ' + data.toString());
+        });
+        p.on('exit', cb);*/
+    return src(['./package.json']).pipe(install());
 }
 
 function npmRebuildNodeSass(cb) {
@@ -360,6 +361,15 @@ function checkBundleSize(cb) {
 }
 
 exports.es = es;
+exports.npmInstall = npmInstall;
+exports.npmRebuildNodeSass = npmRebuildNodeSass;
+exports.thirdParty = thirdParty;
+exports.createDist = createDist;
+exports.copyCode = copyCode;
+exports.copyNpmDeps = copyNpmDeps;
+exports.prepareVersion = prepareVersion;
+
+
 exports.buildHome = series(
     parallel(
         nodeVersion,
