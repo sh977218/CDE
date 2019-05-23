@@ -8,7 +8,6 @@ import { MatDialog, MatDialogRef } from '@angular/material';
 
 
 @Component({
-    selector: 'cde-status-validation-rules',
     templateUrl: './statusValidationRules.component.html'
 })
 export class StatusValidationRulesComponent implements OnInit {
@@ -65,7 +64,7 @@ export class StatusValidationRulesComponent implements OnInit {
     ngOnInit() {
         this.orgHelperService.then(orgsDetailedInfo => {
             this.orgNames = Object.keys(orgsDetailedInfo);
-            Object.keys(orgsDetailedInfo).forEach(orgName => {
+            this.orgNames.forEach(orgName => {
                 this.userOrgs[orgName] = orgsDetailedInfo[orgName].cdeStatusValidationRules || [];
             });
             this.userOrgsArray = Object.keys(this.userOrgs).sort();
