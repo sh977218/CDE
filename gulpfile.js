@@ -3,7 +3,8 @@ const fs = require('fs');
 const git = require('gulp-git');
 const gulp = require('gulp');
 
-const {spawn} = require('child_process');
+const {spawn, exec} = require('child_process');
+const {parallel, series, task} = require('gulp');
 
 const htmlmin = require('gulp-htmlmin');
 const install = require('gulp-install');
@@ -18,23 +19,57 @@ const usemin = require('gulp-usemin');
 
 const config = require('./server/system/parseConfig');
 const esInit = require('./server/system/elasticSearchInit');
+const sass = require('gulp-sass');
+sass.compiler = require('node-sass');
 
 require('es6-promise').polyfill();
 
-gulp.task('npm', function _npm() {
-    run('node --version').exec();
-    run('npm cache verify').exec();
-    return gulp.src(['./package.json'])
-        .pipe(install());
-});
+const buildDir = config.node.buildDir;
 
-gulp.task('npmRebuildNodeSass', gulp.series('npm', function _npmRebuildNodeSass() {
-    return run('npm rebuild node-sass').exec();
-}));
+function nodeVersion(cb) {
+    spawn('node', ['--version'], {stdio: 'inherit'})
+        .on('exit', cb);
+}
 
-gulp.task('thirdParty', gulp.series('npmRebuildNodeSass', function _thirdParty() {
+function npmCacheVerify(cb) {
+    let p = exec('npm cache verify');
+    p.stdout.on('data', function (data) {
+        console.log(data.toString());
+    });
+
+    p.stderr.on('data', function (data) {
+        console.log('cacheVerify error: ' + data.toString());
+    });
+
+    p.on('exit', cb);
+}
+
+function npmInstall(cb) {
+    let p = exec('npm install');
+    p.stdout.on('data', function (data) {
+        console.log(data.toString());
+    });
+
+    p.stderr.on('data', function (data) {
+        console.log('npmInstall error: ' + data.toString());
+    });
+    p.on('exit', cb);
+}
+
+function npmRebuildNodeSass(cb) {
+    let p = exec('npm rebuild node-sass');
+    p.stdout.on('data', function (data) {
+        console.log(data.toString());
+    });
+
+    p.stderr.on('data', function (data) {
+        console.log('npmRebuildNodeSass error: ' + data.toString());
+    });
+    p.on('exit', cb);
+}
+
+function thirdParty() {
     let streamArr = [];
-
     streamArr.push(gulp.src('./node_modules/core-js/client/core.min.js')
         .pipe(replace('//# sourceMappingURL=core.min.js.map', ''))
         .pipe(gulp.dest('./dist/common/')));
@@ -49,119 +84,109 @@ gulp.task('thirdParty', gulp.series('npmRebuildNodeSass', function _thirdParty()
         './node_modules/intl/locale-data/jsonp/en.js',
         './node_modules/whatwg-fetch/dist/fetch.umd.js'
     ]).pipe(gulp.dest('./dist/common/')));
-
     return merge(streamArr);
-}));
+}
 
-gulp.task('createDist', gulp.series('thirdParty', function _createDist() {
-    const sass = require('gulp-sass');
-    sass.compiler = require('node-sass'); // delay using node-sass until npmRebuildNodeSass is done
+function createDist() {
     return gulp.src('./modules/common.scss')
         .pipe(sass().on('error', sass.logError))
         .pipe(gulp.dest('./dist/common'));
-}));
+}
 
-gulp.task('copyCode', function _copyCode() {
+function copyCode() {
     let streamArray = [];
 
     streamArray.push(gulp.src('./modules/_fhirApp/fhirAppLaunch.html')
-        .pipe(gulp.dest(config.node.buildDir + '/modules/_fhirApp/')));
+        .pipe(gulp.dest(buildDir + '/modules/_fhirApp/')));
 
     ['cde', 'form', 'processManager', 'system', 'board'].forEach(module => {
-        streamArray.push(gulp.src('./modules/' + module + '/**/*.png')
-            .pipe(gulp.dest(config.node.buildDir + '/modules/' + module + '/')));
-        streamArray.push(gulp.src('./modules/' + module + '/**/*.ico')
-            .pipe(gulp.dest(config.node.buildDir + '/modules/' + module + '/')));
-        streamArray.push(gulp.src('./modules/' + module + '/**/*.gif')
-            .pipe(gulp.dest(config.node.buildDir + '/modules/' + module + '/')));
-        streamArray.push(gulp.src('./modules/' + module + '/views/**/*.html')
-            .pipe(gulp.dest(config.node.buildDir + '/modules/' + module + '/views/')));
-        streamArray.push(gulp.src('./modules/' + module + '/views/bot/*.ejs')
-            .pipe(gulp.dest(config.node.buildDir + '/modules/' + module + '/views/bot/')));
+        streamArray.push(gulp.src('./modules/' + module + '/!**!/!*.png')
+            .pipe(gulp.dest(buildDir + '/modules/' + module + '/')));
+        streamArray.push(gulp.src('./modules/' + module + '/!**!/!*.ico')
+            .pipe(gulp.dest(buildDir + '/modules/' + module + '/')));
+        streamArray.push(gulp.src('./modules/' + module + '/!**!/!*.gif')
+            .pipe(gulp.dest(buildDir + '/modules/' + module + '/')));
+        streamArray.push(gulp.src('./modules/' + module + '/views/!**!/!*.html')
+            .pipe(gulp.dest(buildDir + '/modules/' + module + '/views/')));
+        streamArray.push(gulp.src('./modules/' + module + '/views/bot/!*.ejs')
+            .pipe(gulp.dest(buildDir + '/modules/' + module + '/views/bot/')));
     });
 
     ['supportedBrowsers.ejs', 'loginText.ejs'].forEach(function (file) {
         streamArray.push(gulp.src('./modules/system/views/' + file)
-            .pipe(gulp.dest(config.node.buildDir + '/modules/system/views/')));
+            .pipe(gulp.dest(buildDir + '/modules/system/views/')));
     });
     streamArray.push(gulp.src('./modules/processManager/pmApp.js')
-        .pipe(gulp.dest(config.node.buildDir + '/modules/processManager/')));
+        .pipe(gulp.dest(buildDir + '/modules/processManager/')));
 
     streamArray.push(gulp.src('./modules/swagger/index.js')
-        .pipe(gulp.dest(config.node.buildDir + '/modules/swagger/')));
+        .pipe(gulp.dest(buildDir + '/modules/swagger/')));
     streamArray.push(gulp.src('./modules/swagger/api/swagger.yaml')
-        .pipe(gulp.dest(config.node.buildDir + '/modules/swagger/api/')));
+        .pipe(gulp.dest(buildDir + '/modules/swagger/api/')));
     streamArray.push(gulp.src('./modules/swagger/public/swagger.css')
-        .pipe(gulp.dest(config.node.buildDir + '/modules/swagger/public')));
+        .pipe(gulp.dest(buildDir + '/modules/swagger/public')));
 
     streamArray.push(gulp.src('./modules/system/public/robots.txt')
-        .pipe(gulp.dest(config.node.buildDir + '/modules/system/public/')));
+        .pipe(gulp.dest(buildDir + '/modules/system/public/')));
 
 
-    streamArray.push(gulp.src('./config/*.json')
-        .pipe(gulp.dest(config.node.buildDir + '/config/')));
+    streamArray.push(gulp.src('./config/!*.json')
+        .pipe(gulp.dest(buildDir + '/config/')));
 
     streamArray.push(gulp.src('./app.js')
-        .pipe(gulp.dest(config.node.buildDir + '/')));
+        .pipe(gulp.dest(buildDir + '/')));
     streamArray.push(gulp.src('./package.json')
-        .pipe(gulp.dest(config.node.buildDir + '/')));
+        .pipe(gulp.dest(buildDir + '/')));
 
-    streamArray.push(gulp.src('./deploy/*')
-        .pipe(gulp.dest(config.node.buildDir + '/deploy/')));
+    streamArray.push(gulp.src('./deploy/!*')
+        .pipe(gulp.dest(buildDir + '/deploy/')));
 
-    streamArray.push(gulp.src('./ingester/**')
-        .pipe(gulp.dest(config.node.buildDir + '/ingester/')));
+    streamArray.push(gulp.src('./ingester/!**')
+        .pipe(gulp.dest(buildDir + '/ingester/')));
 
     streamArray.push(gulp.src('./modules/form/public/html/lformsRender.html')
-        .pipe(gulp.dest(config.node.buildDir + '/modules/form/public/html/')));
+        .pipe(gulp.dest(buildDir + '/modules/form/public/html/')));
 
-    streamArray.push(gulp.src('./modules/form/public/assets/**')
-        .pipe(gulp.dest(config.node.buildDir + '/modules/form/public/assets/')));
+    streamArray.push(gulp.src('./modules/form/public/assets/!**')
+        .pipe(gulp.dest(buildDir + '/modules/form/public/assets/')));
 
-    streamArray.push(gulp.src('./server/**')
-        .pipe(gulp.dest(config.node.buildDir + '/server/')));
+    streamArray.push(gulp.src('./server/!**')
+        .pipe(gulp.dest(buildDir + '/server/')));
 
-    streamArray.push(gulp.src('./shared/**')
-        .pipe(gulp.dest(config.node.buildDir + '/shared/')));
+    streamArray.push(gulp.src('./shared/!**')
+        .pipe(gulp.dest(buildDir + '/shared/')));
 
     return merge(streamArray);
-});
+}
 
-gulp.task('copyNpmDeps', gulp.series('copyCode', 'npmRebuildNodeSass', function _copyNpmDeps() {
-    run('npm -v').exec();
+function copyNpmDeps() {
     return gulp.src('./package.json')
-        .pipe(gulp.dest(config.node.buildDir))
+        .pipe(gulp.dest(buildDir))
         .pipe(install({npm: '--production'}));
-}));
+}
 
-gulp.task('prepareVersion', gulp.series('copyCode', function _prepareVersion() {
+function copyDist() {
+    buildApp = () => run('npm run build').exec(),
+        copyApp = () => gulp.src(['./dist/app/!**!/!*', '!./dist/app/cde.css', '!./dist/app/cde.js']).pipe(gulp.dest(buildDir + '/dist/app')),
+        copyEmbed = () => gulp.src(['./dist/embed/!**!/!*', '!./dist/embed/embed.css', '!./dist/embed/embed.js']).pipe(gulp.dest(buildDir + '/dist/embed')),
+        copyFhir = () => gulp.src(['./dist/fhir/!*', '!./dist/fhir/fhir.css', '!./dist/fhir/fhir.js']).pipe(gulp.dest(buildDir + '/dist/fhir')),
+        copyNative = () => gulp.src(['./dist/native/!**!/!*', '!./dist/native/native.css', '!./dist/native/native.js']).pipe(gulp.dest(buildDir + '/dist/native')),
+        copyHome = () => gulp.src('./modules/system/views/home-launch.ejs').pipe(gulp.dest(buildDir + '/modules/system/views')),
+        copyLaunch = () => gulp.src('./dist/launch/!*').pipe(gulp.dest(buildDir + '/dist/launch')),
+        copyServerless = () => gulp.src('./serverless-aws-java/!**!/!*').pipe(gulp.dest(buildDir + '/serverless-aws-java'))
+}
+
+function prepareVersion() {
     return git.revParse({args: '--short HEAD'}, function (err, hash) {
-        fs.writeFile(config.node.buildDir + '/server/system/version.js', 'exports.version = "' + hash + '";',
+        fs.writeFile(buildDir + '/server/system/version.js', 'exports.version = "' + hash + '";',
             function (err) {
                 if (err) console.log('ERROR generating version.html: ' + err);
-                else console.log('generated ' + config.node.buildDir + '/server/system/version.js');
+                else console.log('generated ' + buildDir + '/server/system/version.js');
             });
     });
-}));
+}
 
-gulp.task('copyDist', gulp.series('createDist',
-    gulp.parallel(
-        buildApp = () => run('npm run buildApp').exec(),
-        buildNative = () => run('npm run buildNative').exec(),
-        buildEmbed = () => run('npm run buildEmbed').exec(),
-        buildFhir = () => run('npm run buildFhir').exec(),
-        buildLambdaValidateSDC = () => run('npm run buildFnAwsJava').exec(),
-    ),
-    copyApp = () => gulp.src(['./dist/app/**/*', '!./dist/app/cde.css', '!./dist/app/cde.js']).pipe(gulp.dest(config.node.buildDir + '/dist/app')),
-    copyEmbed = () => gulp.src(['./dist/embed/**/*', '!./dist/embed/embed.css', '!./dist/embed/embed.js']).pipe(gulp.dest(config.node.buildDir + '/dist/embed')),
-    copyFhir = () => gulp.src(['./dist/fhir/*', '!./dist/fhir/fhir.css', '!./dist/fhir/fhir.js']).pipe(gulp.dest(config.node.buildDir + '/dist/fhir')),
-    copyNative = () => gulp.src(['./dist/native/**/*', '!./dist/native/native.css', '!./dist/native/native.js']).pipe(gulp.dest(config.node.buildDir + '/dist/native')),
-    copyHome = () => gulp.src('./modules/system/views/home-launch.ejs').pipe(gulp.dest(config.node.buildDir + '/modules/system/views')),
-    copyLaunch = () => gulp.src('./dist/launch/*').pipe(gulp.dest(config.node.buildDir + '/dist/launch')),
-    copyServerless = () => gulp.src('./serverless-aws-java/**/*').pipe(gulp.dest(config.node.buildDir + '/serverless-aws-java'))
-));
-
-gulp.task('usemin', gulp.series('copyDist', function _usemin() {
+function _usemin() {
     let streamArray = [];
     [
         {folder: './modules/system/views/', filename: 'index.ejs'},
@@ -209,7 +234,7 @@ gulp.task('usemin', gulp.series('copyDist', function _usemin() {
             .pipe(replace('"/fhir/fhir.css"', getCssLink))
             .pipe(replace('"/native/native.css"', getCssLink))
             .pipe(replace('"/native/native.js"', getJsLink))
-            .pipe(gulp.dest(config.node.buildDir + '/dist/'));
+            .pipe(gulp.dest(buildDir + '/dist/'));
         streamArray.push(useminTask);
         useminTask.on('end', function () {
             if (item.filename === 'index.ejs') {
@@ -217,18 +242,18 @@ gulp.task('usemin', gulp.series('copyDist', function _usemin() {
                     console.log('useminOutputs:' + useminOutputs);
                     throw new Error('service worker creation failed');
                 }
-                gulp.src(config.node.buildDir + '/dist/app/sw.js') // does not preserve order
+                gulp.src(buildDir + '/dist/app/sw.js') // does not preserve order
                     .pipe(replace('"/app/cde.css"', '"' + useminOutputs[0] + '"'))
                     .pipe(replace('"/app/cde.js"', '"' + useminOutputs[1] + '"'))
                     .pipe(replace('cde-cache-', 'cde-cache-v'))
-                    .pipe(gulp.dest(config.node.buildDir + '/dist/app/'));
+                    .pipe(gulp.dest(buildDir + '/dist/app/'));
             }
         });
     });
     return merge(streamArray);
-}));
+}
 
-gulp.task('copyUsemin', gulp.series('usemin', function _usemin() {
+function copyUsemin() {
     let streamArray = [];
     [
         {folder: './modules/system/views/bot/', filename: '*.ejs'},
@@ -237,13 +262,13 @@ gulp.task('copyUsemin', gulp.series('usemin', function _usemin() {
         {folder: './modules/_nativeRenderApp/', filename: 'nativeRenderApp.ejs'},
         {folder: './modules/_fhirApp/', filename: 'fhirApp.ejs'}
     ].forEach(item => {
-        streamArray.push(gulp.src(config.node.buildDir + '/dist/' + item.filename)
-            .pipe(gulp.dest(config.node.buildDir + '/' + item.folder)));
+        streamArray.push(gulp.src(buildDir + '/dist/' + item.filename)
+            .pipe(gulp.dest(buildDir + '/' + item.folder)));
     });
     return merge(streamArray);
-}));
+}
 
-gulp.task('es', function _es() {
+function es() {
     const elasticsearch = require('elasticsearch');
 
     let esClient = new elasticsearch.Client({
@@ -254,10 +279,9 @@ gulp.task('es', function _es() {
     return new Promise((resolve, reject) => {
         esClient.indices.delete({index: allIndex, timeout: '6s'}, err => err ? reject(err) : resolve());
     });
-});
+}
 
-// Procedure calling task in README
-gulp.task('buildHome', function _buildHome() {
+function buildHome() {
     return gulp.src('./modules/system/views/home.ejs')
         .pipe(replace('<NIHCDECONTENT/>', fs.readFileSync('./modules/_app/staticHome/nihcde.html', {encoding: 'utf8'})))
         .pipe(usemin({
@@ -284,22 +308,14 @@ gulp.task('buildHome', function _buildHome() {
         .pipe(gulp.dest('./dist/'))
         .pipe(rename('home-launch.ejs'))
         .pipe(gulp.dest('./modules/system/views'));
-});
-gulp.task('checkDbConnection', function _buildHome() {
-    return new Promise(function (resolve, reject) {
-        let isRequireDbConnection = !!require.cache[require.resolve('./server/system/connections')];
-        if (isRequireDbConnection) reject('DB connection cannot be included in gulp.');
-        else resolve();
-    });
-});
+}
 
-
-gulp.task('mongoRestore', function _mongoRestore(cb) {
+function mongorestore(cb) {
     spawn('bash', ['restore-test-instance.sh'], {stdio: 'inherit'})
         .on('exit', cb);
-});
+}
 
-gulp.task('injectElastic', gulp.series('npm', function _injectElastic(cb) {
+function injectElastic(cb) {
     console.log('Start node app to inject');
     let p = spawn('node', ['app'], {stdio: 'inherit'});
     spawn('node', ['scripts/waitForIndex.js'], {stdio: 'inherit'})
@@ -307,16 +323,29 @@ gulp.task('injectElastic', gulp.series('npm', function _injectElastic(cb) {
             p.kill();
             cb();
         })
-}));
+}
 
-
-gulp.task('checkBundleSize', function _checkBundleSize(cb) {
+function checkBundleSize(cb) {
     spawn('node', ['scripts/buildCheckSize.js'], {stdio: 'inherit'})
         .on('exit', cb);
-});
+}
 
-gulp.task('inject', gulp.series('npm', 'mongoRestore'));
-gulp.task('build', gulp.series('copyNpmDeps', 'prepareVersion', 'copyUsemin', 'checkDbConnection', 'checkBundleSize'));
-gulp.task('default', gulp.parallel('build', 'inject'));
+/*
 
 
+task('inject', series('mongoRestore', 'injectElastic'));
+task('build', series('copyNpmDeps', 'prepareVersion', 'copyUsemin', 'checkDbConnection', 'checkBundleSize'));
+task('default', series(parallel('info', 'install'), parallel('build', 'inject')));
+
+*/
+
+exports.nodeVersion = nodeVersion;
+exports.npmCacheVerify = npmCacheVerify;
+exports.npmInstall = npmInstall;
+exports.npmRebuildNodeSass = npmRebuildNodeSass;
+exports.thirdParty = thirdParty;
+exports.createDist = createDist;
+exports.copyCode = copyCode;
+exports.copyNpmDeps = copyNpmDeps;
+exports.copyDist = copyDist;
+exports.default = series(nodeVersion, npmCacheVerify, npmInstall, npmRebuildNodeSass, thirdParty, createDist, copyCode, copyNpmDeps, copyDist, prepareVersion);
