@@ -398,7 +398,9 @@ exports.default = series(
         series(npmCacheVerify, npmInstall)
     ),
     parallel(
+/*
         series(mongorestore, injectElastic),
+*/
         series(
             copyCode,
             npmRebuildNodeSass,
