@@ -27,9 +27,6 @@
     "node": "0.12.x",
     "npm": "1.2.x"
   },
-  "napa": {
-    "feedback": "https://github.com/ivoviz/feedback.git#master"
-  },
   "nyc": {
     "check-coverage": true,
     "include": [
@@ -157,6 +154,7 @@
     "entities": "1.1.1",
     "es6-promise": "*",
     "expose-loader": "0.7.3",
+    "@ivoviz/feedback.js": "^1.0.0-alpha.1",
     "fhirclient": "0.1.11",
     "file-list-plugin": "^2.0.1",
     "file-loader": "1.1.11",
