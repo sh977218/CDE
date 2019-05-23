@@ -48,8 +48,6 @@ import { BoardModule } from 'board/public/board.module';
 import { CdeSearchModule } from 'cde/public/cdeSearch.module';
 import { FormSearchModule } from 'form/public/formSearch.module';
 import { SearchModule } from 'search/search.module';
-import { UserDataService } from 'system/public/components/profile/userData.service';
-import { DataService } from 'shared/models.model';
 import { NonCoreModule } from 'non-core/noncore.module';
 import { OrgAdminComponent } from 'settings/orgAdmin/orgAdmin.component';
 import { OrgCuratorComponent } from 'settings/orgCurator/orgCurator.component';
@@ -76,12 +74,10 @@ import { TagModule } from 'tag/tag.module';
 import { MyOrgCommentsComponent } from 'settings/comments/myOrgComments/myOrgComments.component';
 import { AllCommentsComponent } from 'settings/comments/allComments/allComments.component';
 import { MyCommentsComponent } from 'settings/comments/myComments/myComments.component';
-import { MyOrgDraftsComponent } from 'settings/drafts/myOrgDrafts/myOrgDrafts.component';
-import { MyDraftsComponent } from 'settings/drafts/myDrafts/myDrafts.component';
-import { AllDraftsComponent } from 'settings/drafts/allDrafts/allDrafts.component';
 import { ViewingHistoryComponent } from 'settings/viewingHistory/viewingHistory.component';
 import { NotificationComponent } from 'settings/notification/notification.component';
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
+import { DraftsComponent } from 'settings/drafts/drafts.component';
 
 const appRoutes: Routes = [
     {
@@ -115,9 +111,9 @@ const appRoutes: Routes = [
             },
             {
                 path: 'myDrafts',
-                component: MyDraftsComponent,
+                component: DraftsComponent,
                 canLoad: [LoggedInGuard],
-                data: {title: 'My Drafts'}
+                data: {title: 'My Drafts', draftsUrl: '/myDrafts'}
             },
             {
                 path: 'myComments',
@@ -146,15 +142,15 @@ const appRoutes: Routes = [
             },
             {
                 path: 'myOrgDrafts',
-                component: MyOrgDraftsComponent,
+                component: DraftsComponent,
                 canLoad: [OrgAuthorityGuard],
-                data: {title: "My Organizations' Drafts"}
+                data: {title: 'My Organizations\' Drafts', draftsUrl: '/orgDrafts'}
             },
             {
                 path: 'myOrgComments',
                 component: MyOrgCommentsComponent,
                 canLoad: [OrgAuthorityGuard],
-                data: {title: "My Organizations' Comments"}
+                data: {title: 'My Organizations\' Comments'}
             },
             {
                 path: 'embedding',
@@ -204,9 +200,9 @@ const appRoutes: Routes = [
             },
             {
                 path: 'allDrafts',
-                component: AllDraftsComponent,
+                component: DraftsComponent,
                 canLoad: [SiteAdminGuard],
-                data: {title: 'All Drafts'}
+                data: {title: 'All Drafts', draftsUrl: '/allDrafts'}
             },
             {
                 path: 'serverStatus',
@@ -249,7 +245,6 @@ const appRoutes: Routes = [
         NgbModule,
         RouterModule.forChild(appRoutes),
         ReactiveFormsModule,
-
         MatAutocompleteModule,
         MatBadgeModule,
         MatBottomSheetModule,
@@ -285,7 +280,7 @@ const appRoutes: Routes = [
         MatToolbarModule,
         MatTooltipModule,
         MatTreeModule,
-
+        // internal
         NonCoreModule,
         InlineEditModule,
         InlineAreaEditModule,
@@ -306,12 +301,6 @@ const appRoutes: Routes = [
         NotificationComponent,
         MyPublishedFormsComponent,
 
-        MyDraftsComponent,
-        MyCommentsComponent,
-
-        MyOrgDraftsComponent,
-        MyOrgCommentsComponent,
-
         OneListMgtComponent,
         ListManagementComponent,
         OrgsEditComponent,
@@ -321,7 +310,9 @@ const appRoutes: Routes = [
         EmbedComponent,
         StatusValidationRulesComponent,
 
-        AllDraftsComponent,
+        DraftsComponent,
+        MyCommentsComponent,
+        MyOrgCommentsComponent,
         AllCommentsComponent,
         EditSiteAdminsComponent,
         UsersMgtComponent,
@@ -334,7 +325,6 @@ const appRoutes: Routes = [
     entryComponents: [],
     exports: [],
     providers: [
-        {provide: DataService, useClass: UserDataService},
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Comment, DataService, DiscussionComments, Drafts, User } from 'shared/models.model';
-import { Observable } from 'rxjs';
+import { Comment, DiscussionComments, User } from 'shared/models.model';
 import { HttpClient } from '@angular/common/http';
 import { AlertService } from 'alert/alert.service';
 import { PageEvent } from '@angular/material';
