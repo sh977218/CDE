@@ -45,7 +45,10 @@ export function itemTypeToItemDatatype(type, hasCodeableConcept = false) {
 }
 
 export function permissibleValueToCoding(pv) {
-    return newCoding(pv.codeSystemName, pv.permissibleValue, pv.codeSystemVersion,
+    return newCoding(
+        pv.codeSystemName,
+        pv.valueMeaningCode ? pv.valueMeaningCode : pv.permissibleValue,
+        pv.codeSystemVersion,
         pv.valueMeaningName && pv.valueMeaningName !== pv.permissibleValue ? pv.valueMeaningName : undefined);
 }
 
