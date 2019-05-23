@@ -293,6 +293,11 @@ gulp.task('checkDbConnection', function _buildHome() {
         else resolve();
     });
 });
+
+gulp.task('npmrebuild', function _mongorestore(cb) {
+    spawn('npm', ['rebuild'], {stdio: 'inherit'})
+        .on('exit', cb);
+});
 gulp.task('mongorestore', function _mongorestore(cb) {
     spawn('bash', ['restore-test-instance.sh'], {stdio: 'inherit'})
         .on('exit', cb);
@@ -314,9 +319,11 @@ gulp.task('checkBundleSize', function _checkBundleSize(cb) {
 gulp.task('default',
     gulp.series(
         'npm',
+        'npmrebuild',
         gulp.parallel(
             gulp.series('mongorestore', 'injectElastic'),
-            gulp.series('copyNpmDeps', 'prepareVersion', 'copyUsemin', 'checkDbConnection', 'checkBundleSize'))
+            gulp.series('copyNpmDeps', 'prepareVersion', 'copyUsemin', 'checkDbConnection', 'checkBundleSize')
+        )
     )
 );
 
