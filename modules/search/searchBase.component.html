@@ -149,7 +149,7 @@
 
             <mat-menu #exportMenu>
                 <ng-container *ngIf="userService.user || module === 'cde'; else exportFormNotAuthorized">
-                    <a *ngFor="let key of keys(exporters)" id="{{exporters[key].id}}" mat-menu-item
+                    <a *ngFor="let key of ownKeys(exporters)" id="{{exporters[key].id}}" mat-menu-item
                        (click)="exportService.exportSearchResults(key, module, {searchSettings: searchSettings})"
                     >{{exporters[key].display}}</a>
                 </ng-container>

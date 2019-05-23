@@ -36,6 +36,7 @@ import {
 } from 'shared/models.model';
 import { hasRole, isSiteAdmin } from 'shared/system/authorizationShared';
 import { orderedList, statusList } from 'shared/system/regStatusShared';
+import { ownKeys } from 'shared/user';
 
 type NamedCounts = {name: string, count: number}[];
 
@@ -178,6 +179,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     numPages?: number;
     orgs?: Organization[];
     orgHtmlOverview?: string;
+    ownKeys = ownKeys;
     pinComponent!: Type<PinBoardModalComponent>;
     pinModalComponent?: ComponentRef<PinBoardModalComponent>;
     previousUrl?: string;
@@ -564,10 +566,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
     isSearched() {
         return this.searchSettings.q || this.searchSettings.selectedOrg || this.searchSettings.meshTree;
-    }
-
-    keys(obj: Object): string[] {
-        return Object.keys(obj).filter(k => obj.hasOwnProperty(k));
     }
 
     openOrgDetails(org: Organization) {
