@@ -250,7 +250,10 @@ gulp.task('es', function _es() {
     let allIndex = esInit.indices.map(i => i.indexName);
     console.log('allIndex ' + allIndex);
     return new Promise((resolve, reject) => {
-        esClient.indices.delete({index: allIndex, timeout: '6s'}, err => err ? reject(err) : resolve());
+        esClient.indices.delete({index: allIndex, timeout: '6s'}, err => {
+            if (err && err.status !== 404) reject();
+            else resolve();
+        });
     });
 });
 
@@ -311,9 +314,9 @@ gulp.task('checkBundleSize', function _checkBundleSize(cb) {
 gulp.task('default',
     gulp.series(
         'npm',
-        gulp.series('mongorestore', 'injectElastic'),
         gulp.parallel(
-            gulp.series('copyNpmDeps', 'prepareVersion', 'copyUsemin', 'checkDbConnection', 'checkBundleSize')),
+            gulp.series('mongorestore', 'injectElastic'),
+            gulp.series('copyNpmDeps', 'prepareVersion', 'copyUsemin', 'checkDbConnection', 'checkBundleSize'))
     )
 );
 
