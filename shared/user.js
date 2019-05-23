@@ -12,6 +12,10 @@ export function newNotificationSettingsMediaDrawer() {
     return {drawer: true, push: undefined};
 }
 
+export function ownKeys(obj) {
+    return obj ? Object.keys(obj).filter(k => obj.hasOwnProperty(k)) : [];
+}
+
 export function usersToNotify(type, media, users) {
     return users.filter(u =>
         u.notificationSettings && u.notificationSettings[type] && u.notificationSettings[type][media] === true

@@ -1,5 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Params } from '@angular/router';
+import { ownKeys } from 'shared/user';
 
 export function httpErrorMessage(err: HttpErrorResponse): string {
     if (typeof (err.error) === 'string') { // response body
@@ -18,8 +19,7 @@ export function httpErrorMessage(err: HttpErrorResponse): string {
 }
 
 export function paramsToQueryString(params: Params) {
-    let query = Object.keys(params)
-        .filter(k => params.hasOwnProperty(k))
+    let query = ownKeys(params)
         .map(k => k + '=' + params[k])
         .join(';');
     return query ? '?' + query : '';
