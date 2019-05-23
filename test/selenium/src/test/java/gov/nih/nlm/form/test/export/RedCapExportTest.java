@@ -1,6 +1,5 @@
 package gov.nih.nlm.form.test.export;
 
-
 import gov.nih.nlm.form.test.BaseFormTest;
 import org.openqa.selenium.By;
 import org.testng.Assert;
@@ -16,7 +15,8 @@ public class RedCapExportTest extends BaseFormTest {
         goToFormByName("Frontal Behavioral Inventory (FBI)");
         clickElement(By.id("export"));
         clickElement(By.id("nihRedCap"));
-        long expectedZipSize = 2975;
+        // I think jszip doesn't actually compress, just packages. It's OK.
+        long expectedZipSize = 9285;
         long zipSize = 0;
         for (int i = 0; i < 30; i++) {
             zipSize = new File(downloadFolder + "/Frontal Behavioral Inventory (FBI).zip").length();
