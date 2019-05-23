@@ -13,12 +13,17 @@ let indexInt = setInterval(() => {
                 clearInterval(indexInt);
 
                 // too slow, dont wait. wait in test.
-                request.post('http://localhost:3001/syncLinkedForms', {}, () => {});
+                request.post('http://localhost:3001/syncLinkedForms', {}, () => {
+                });
                 request.post('http://localhost:3001/server/mesh/syncWithMesh', {}, () => {
                     let meshInterval = setInterval(() => {
                         request.get('http://localhost:3001/server/mesh/syncWithMesh', (err, res, body) => {
-                            body = JSON.parse(body);
-                            console.log(body);
+                            try {
+                                body = JSON.parse(body);
+                            } catch (e) {
+                                console.log(e);
+                                console.log(body);
+                            }
                             if (body.dataelement.done === body.dataelement.total &&
                                 body.form.done === body.form.total
                             ) {
