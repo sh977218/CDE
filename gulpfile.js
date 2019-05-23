@@ -399,26 +399,25 @@ exports.default = series(
     ),
     parallel(
         series(mongorestore, injectElastic),
-        series(copyCode,
-            parallel(prepareVersion,
-                series(
-                    npmRebuildNodeSass,
-                    parallel(copyNpmDeps,
-                        buildHome,
-                        series(thirdParty, createDist,
-                            build,
-                            parallel(
-                                copyApp,
-                                copyNative,
-                                copyEmbed,
-                                copyFhir,
-                                copyHome,
-                                copyLaunch,
-                                copyServerless
-                            ),
-                            _usemin, copyUsemin, checkBundleSize)
-                    ),
-                    prepareVersion)
-            ))
-    ),
+        series(
+            copyCode,
+            npmRebuildNodeSass,
+            copyNpmDeps,
+            buildHome,
+            thirdParty,
+            createDist,
+            build,
+            copyApp,
+            copyNative,
+            copyEmbed,
+            copyFhir,
+            copyHome,
+            copyLaunch,
+            copyServerless,
+            _usemin,
+            copyUsemin,
+            checkBundleSize,
+            prepareVersion
+        )
+    )
 );
