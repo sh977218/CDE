@@ -1,5 +1,5 @@
-import { Component, ViewChild } from '@angular/core';
-import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
+import { Component } from '@angular/core';
+import { MatTableDataSource } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
 import { Drafts } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
@@ -9,57 +9,37 @@ import { CdeForm } from 'shared/form/form.model';
     templateUrl: './drafts.component.html'
 })
 export class DraftsComponent {
-    @ViewChild('deTable', {read: MatSort}) deSort: MatSort;
-    @ViewChild('formTable', {read: MatSort}) formSort: MatSort;
-    @ViewChild('dePage') dePaginator: MatPaginator;
-    @ViewChild('formPage') formPaginator: MatPaginator;
-    deTableData?: MatTableDataSource<DataElement>;
     draftColumns: string[] = ['name', 'id', 'updatedBy', 'updatedDate', 'organization'];
-    formTableData?: MatTableDataSource<CdeForm>;
+    deTableData: MatTableDataSource<DataElement>;
+    formTableData: MatTableDataSource<CdeForm>;
     title: string = 'Drafts';
-    deOrgs?: string[];
-    deFilterOrgs?: string[];
-    formOrgs?: string[];
-    formFilterOrgs?: string[];
+    draftCdes: DataElement[] = [];
+    draftForms: CdeForm[] = [];
+    organizations: string[];
+    selectedOrganization: string = '';
 
     constructor(private route: ActivatedRoute) {
-        let draftCdes = this.route.snapshot.data.drafts.draftCdes;
-        let draftForms = this.route.snapshot.data.drafts.draftForms;
-        this.deTableData = new MatTableDataSource(draftCdes);
-        this.formTableData = new MatTableDataSource();
-        this.deTableData.sort = this.deSort;
-        this.formTableData.sort = this.formSort;
-        this.deTableData.paginator = this.dePaginator;
-        this.formTableData.paginator = this.formPaginator;
+        this.draftCdes = this.route.snapshot.data.drafts.draftCdes;
+        this.draftForms = this.route.snapshot.data.drafts.draftForms;
 
-        this.deTableData.filterPredicate = (data: DataElement, filter: string) =>
-            this.deFilterOrgs.includes(data.stewardOrg ? data.stewardOrg.name : '');
-        const deOrgs = new Set<string>();
-        draftCdes.forEach(elt => deOrgs.add(elt.stewardOrg ? elt.stewardOrg.name : ''));
-        this.deOrgs = Array.from(deOrgs.values());
-        this.deFilterOrgs = this.deOrgs.concat();
+        this.deTableData = new MatTableDataSource(this.draftCdes);
+        this.formTableData = new MatTableDataSource(this.draftForms);
+        const organizationSet = new Set<string>();
 
-        this.formTableData.filterPredicate = (data: CdeForm, filter: string) =>
-            this.formFilterOrgs.includes(data.stewardOrg ? data.stewardOrg.name : '');
-        const formOrgs = new Set<string>();
-        draftForms.forEach(elt => formOrgs.add(elt.stewardOrg ? elt.stewardOrg.name : ''));
-        this.formOrgs = Array.from(formOrgs.values());
-        this.formFilterOrgs = this.formOrgs.concat();
+        this.draftCdes.concat(this.draftForms).forEach(elt => organizationSet.add(elt.stewardOrg ? elt.stewardOrg.name : ''));
+        this.organizations = Array.from(organizationSet.values());
+
     }
 
-    onDeFilter() {
-        this.deTableData.filter = 'filter: ' + this.deFilterOrgs.join();
-
-        if (this.deTableData.paginator) {
-            this.deTableData.paginator.firstPage();
-        }
+    filterByOrganization() {
+        this.deTableData.data = this.draftCdes.filter(d => {
+            if (this.selectedOrganization === 'all organizations') return true;
+            else return d.stewardOrg.name === this.selectedOrganization
+        }).sort((a, b) => a.updated - b.updated);
+        this.formTableData.data = this.draftForms.filter(d => {
+            if (this.selectedOrganization === 'all organizations') return true;
+            else return d.stewardOrg.name === this.selectedOrganization
+        }).sort((a, b) => a.updated - b.updated);
     }
 
-    onFormFilter() {
-        this.formTableData.filter = 'filter: ' + this.formFilterOrgs.join();
-
-        if (this.formTableData.paginator) {
-            this.formTableData.paginator.firstPage();
-        }
-    }
 }
