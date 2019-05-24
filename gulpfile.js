@@ -300,11 +300,11 @@ gulp.task('npmrebuild', function _mongorestore(cb) {
 });
 gulp.task('mongorestoretest', function _mongorestore(cb) {
     console.log('config: ' + JSON.stringify(config) + '\n');
-    let username = config.database.appData.username;
-    let password = config.database.appData.password;
+    let username = 'siteRootAdmin';
+    let password = 'password';
     let hostname = config.database.servers[0].host + ':' + config.database.servers[0].port;
     let db = config.database.appData.db;
-    let args = ['-u', username, '-p', password, '-h', hostname, '-d', db, '--drop', 'test/data/test/'];
+    let args = ['-u', username, '-p', password, '--authenticationDatabase', 'admin', '-h', hostname, '-d', db, '--drop', 'test/data/test/'];
 
     console.log('command: ' + 'mongorestore ' + args.join(' '));
     spawn('mongorestore', args, {stdio: 'inherit'})
