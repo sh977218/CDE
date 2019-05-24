@@ -10,6 +10,7 @@ exports.getNumberServerError = (user, callback) => {
     if (callback) query.exec(callback);
     else return query.exec();
 };
+
 exports.getNumberClientError = (user, callback) => {
     let query = ClientErrorModel.countDocuments(
         user.notificationDate.clientLogDate
@@ -17,5 +18,5 @@ exports.getNumberClientError = (user, callback) => {
             : {}
     );
     if (callback) query.exec(callback);
-    else return query.exec;
+    else return query.exec();
 };

@@ -37,11 +37,6 @@ exports.module = function (roleConfig) {
         }));
     });
 
-    router.get('/avatar/:username', (req, res) => {
-        userDb.avatarByUsername(req.params.username, handle404({req, res}, avatar => {
-            res.send(avatar);
-        }));
-    });
     router.get('/usernames/:username', (req, res) => {
         userDb.usersByUsername(req.params.username, handle404({req, res}, users => {
             res.send(users.map(u => u.username.toLowerCase()));
@@ -102,7 +97,7 @@ exports.module = function (roleConfig) {
                 });
             }
 
-            let serverErrorCount = notificationDb.getNumberServerError(user);
+            let serverErrorCount = await notificationDb.getNumberServerError(user);
             if (serverErrorCount > 0) {
                 tasks.push({
                     id: serverErrorCount,
@@ -230,7 +225,10 @@ exports.module = function (roleConfig) {
                 return;
             }
             userDb.updateUser(user, {commentNotifications: user.commentNotifications}, handleError({req, res}, () => {
-                taskAggregator(req, res);
+                userDb.byId(req.user._id, handle404({req, res}, user => {
+                    req.user = user;
+                    taskAggregator(req, res);
+                }));
             }));
         }));
     });
