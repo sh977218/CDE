@@ -304,7 +304,7 @@ gulp.task('mongorestoretest', function _mongorestore(cb) {
     let password = config.database.appData.password;
     let hostname = config.database.servers[0].host + ':' + config.database.servers[0].port;
     let db = config.database.appData.db;
-    let args = ['-u', username, '-p', password, '--authenticationDatabase', 'admin', '-h', hostname, '-d', db, '--drop', 'test/data/test/'];
+    let args = ['-u', username, '-p', password, '-h', hostname, '-d', db, '--drop', 'test/data/test/'];
 
     console.log('command: ' + 'mongorestore ' + args.join(' '));
     spawn('mongorestore', args, {stdio: 'inherit'})
