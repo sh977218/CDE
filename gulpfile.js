@@ -248,7 +248,7 @@ gulp.task('es', function _es() {
         hosts: config.elastic.hosts
     });
     let allIndex = esInit.indices.map(i => i.indexName);
-    console.log('allIndex ' + allIndex);
+    console.log('Deleting es index: ' + allIndex);
     return new Promise((resolve, reject) => {
         esClient.indices.delete({index: allIndex, timeout: '6s'}, err => {
             if (err && err.status !== 404) reject();
@@ -321,7 +321,7 @@ gulp.task('default',
         'npm',
         'npmrebuild',
         gulp.parallel(
-            gulp.series('mongorestore', 'injectElastic'),
+            gulp.series('mongorestore', 'es', 'injectElastic'),
             gulp.series('copyNpmDeps', 'prepareVersion', 'copyUsemin', 'checkDbConnection', 'checkBundleSize')
         )
     )
