@@ -25,5 +25,6 @@ public class FormLongComment extends NlmCdeBaseTest {
                 textPresent("Reply to very long comment " + k);
             }
         }
+        clickElement(By.id("discussBtn"));
     }
 }
