@@ -26,7 +26,8 @@ export class DraftsComponent {
         this.formTableData = new MatTableDataSource(this.draftForms);
         const organizationSet = new Set<string>();
 
-        this.draftCdes.concat(this.draftForms).forEach(elt => organizationSet.add(elt.stewardOrg ? elt.stewardOrg.name : ''));
+        this.draftCdes.forEach(elt => organizationSet.add(elt.stewardOrg ? elt.stewardOrg.name : ''));
+        this.draftForms.forEach(elt => organizationSet.add(elt.stewardOrg ? elt.stewardOrg.name : ''));
         this.organizations = Array.from(organizationSet.values());
 
     }
@@ -35,11 +36,11 @@ export class DraftsComponent {
         this.deTableData.data = this.draftCdes.filter(d => {
             if (this.selectedOrganization === 'all organizations') return true;
             else return d.stewardOrg.name === this.selectedOrganization
-        }).sort((a, b) => a.updated - b.updated);
+        });
         this.formTableData.data = this.draftForms.filter(d => {
             if (this.selectedOrganization === 'all organizations') return true;
             else return d.stewardOrg.name === this.selectedOrganization
-        }).sort((a, b) => a.updated - b.updated);
+        });
     }
 
 }
