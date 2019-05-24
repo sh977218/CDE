@@ -298,8 +298,15 @@ gulp.task('npmrebuild', function _mongorestore(cb) {
     spawn('npm', ['rebuild'], {stdio: 'inherit'})
         .on('exit', cb);
 });
-gulp.task('mongorestore', function _mongorestore(cb) {
-    spawn('bash', ['restore-test-instance.sh'], {stdio: 'inherit'})
+gulp.task('mongorestoretest', function _mongorestore(cb) {
+    console.log('config: ' + JSON.stringify(config));
+    let username = config.database.appData.username;
+    let password = config.database.appData.password;
+    let hostname = config.database.servers[0].host + ':' + config.database.servers[0].port;
+    let db = config.database.appData.db + '-test-ci';
+    let args = ['-u', username, '-p', password, '--authenticationDatabase', 'admin', '-h', hostname, '-d', db, '--drop', 'test/data/test/'];
+
+    spawn('mongorestore', args, {stdio: 'inherit'})
         .on('exit', cb);
 });
 gulp.task('injectElastic', function _injectElastic(cb) {
@@ -321,7 +328,7 @@ gulp.task('default',
         'npm',
         'npmrebuild',
         gulp.parallel(
-            gulp.series('mongorestore', 'es', 'injectElastic'),
+            gulp.series('es', 'mongorestoretest', 'injectElastic'),
             gulp.series('copyNpmDeps', 'prepareVersion', 'copyUsemin', 'checkDbConnection', 'checkBundleSize')
         )
     )

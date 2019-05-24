@@ -25,5 +25,8 @@ done
 mongorestore -u $db_user -p $db_password --drop -d test test/data/test/
 mongorestore -u $db_user -p $db_password --drop -d cde-logs-test test/data/cde-logs-test/
 
+echo "deleting es index."
+npx gulp es
+
 
 
