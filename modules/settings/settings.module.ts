@@ -3,41 +3,12 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import {
-    MatAutocompleteModule,
-    MatBadgeModule,
-    MatBottomSheetModule,
-    MatButtonModule,
-    MatButtonToggleModule,
-    MatCardModule,
-    MatCheckboxModule,
-    MatChipsModule,
-    MatDatepickerModule,
-    MatDialogModule,
-    MatDividerModule,
-    MatExpansionModule,
-    MatGridListModule,
-    MatIconModule,
-    MatInputModule,
-    MatListModule,
-    MatMenuModule,
-    MatNativeDateModule,
-    MatPaginatorModule,
-    MatProgressBarModule,
-    MatProgressSpinnerModule,
-    MatRadioModule,
-    MatRippleModule,
-    MatSelectModule,
-    MatSidenavModule,
-    MatSliderModule,
-    MatSlideToggleModule,
-    MatSnackBarModule,
-    MatSortModule,
-    MatStepperModule,
-    MatTableModule,
-    MatTabsModule,
-    MatToolbarModule,
-    MatTooltipModule,
-    MatTreeModule,
+    MatAutocompleteModule, MatBadgeModule, MatBottomSheetModule, MatButtonModule, MatButtonToggleModule, MatCardModule,
+    MatCheckboxModule, MatChipsModule, MatDatepickerModule, MatDialogModule, MatDividerModule, MatExpansionModule,
+    MatGridListModule, MatIconModule, MatInputModule, MatListModule, MatMenuModule, MatNativeDateModule,
+    MatPaginatorModule, MatProgressBarModule, MatProgressSpinnerModule, MatRadioModule, MatRippleModule,
+    MatSelectModule, MatSidenavModule, MatSliderModule, MatSlideToggleModule, MatSnackBarModule, MatSortModule,
+    MatStepperModule, MatTableModule, MatTabsModule, MatToolbarModule, MatTooltipModule, MatTreeModule,
 } from '@angular/material';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { SettingsComponent } from 'settings/settings.component';
@@ -78,6 +49,10 @@ import { ViewingHistoryComponent } from 'settings/viewingHistory/viewingHistory.
 import { NotificationComponent } from 'settings/notification/notification.component';
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
 import { DraftsComponent } from 'settings/drafts/drafts.component';
+import { myDraftResolve } from 'settings/drafts/myDraft.resolve';
+import { OrgDraftResolve } from 'settings/drafts/orgDraft.resolve';
+import { AllDraftResolve } from 'settings/drafts/allDraft.resolve';
+import { DraftService } from 'settings/drafts/draft.service';
 
 const appRoutes: Routes = [
     {
@@ -112,8 +87,9 @@ const appRoutes: Routes = [
             {
                 path: 'myDrafts',
                 component: DraftsComponent,
+                resolve: {drafts: myDraftResolve},
                 canLoad: [LoggedInGuard],
-                data: {title: 'My Drafts', draftsUrl: '/myDrafts'}
+                data: {title: 'My Drafts'}
             },
             {
                 path: 'myComments',
@@ -143,8 +119,9 @@ const appRoutes: Routes = [
             {
                 path: 'myOrgDrafts',
                 component: DraftsComponent,
+                resolve: {drafts: OrgDraftResolve},
                 canLoad: [OrgAuthorityGuard],
-                data: {title: 'My Organizations\' Drafts', draftsUrl: '/orgDrafts'}
+                data: {title: 'My Organizations\' Drafts'}
             },
             {
                 path: 'myOrgComments',
@@ -201,8 +178,9 @@ const appRoutes: Routes = [
             {
                 path: 'allDrafts',
                 component: DraftsComponent,
+                resolve: {drafts: AllDraftResolve},
                 canLoad: [SiteAdminGuard],
-                data: {title: 'All Drafts', draftsUrl: '/allDrafts'}
+                data: {title: 'All Drafts'}
             },
             {
                 path: 'serverStatus',
@@ -325,6 +303,10 @@ const appRoutes: Routes = [
     entryComponents: [],
     exports: [],
     providers: [
+        DraftService,
+        myDraftResolve,
+        OrgDraftResolve,
+        AllDraftResolve
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
