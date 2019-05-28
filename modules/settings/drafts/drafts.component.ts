@@ -19,6 +19,7 @@ export class DraftsComponent {
     selectedOrganization: string = '';
 
     constructor(private route: ActivatedRoute) {
+        if (this.draftCdes = this.route.snapshot.data.title) this.title = this.route.snapshot.data.title;
         this.draftCdes = this.route.snapshot.data.drafts.draftCdes;
         this.draftForms = this.route.snapshot.data.drafts.draftForms;
 

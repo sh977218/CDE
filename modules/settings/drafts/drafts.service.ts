@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Article } from 'core/article/article.model';
 
 @Injectable()
-export class DraftService {
+export class DraftsService {
 
     constructor(public http: HttpClient) {
     }
@@ -12,7 +12,7 @@ export class DraftService {
         return this.http.get<Article>('/myDrafts');
     }
 
-    orgDrafts() {
+    myOrgDrafts() {
         return this.http.get<Article>('/orgDrafts');
     }
 

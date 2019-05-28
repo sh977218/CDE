@@ -5,16 +5,16 @@ import { Observable } from 'rxjs/Observable';
 import { Article } from 'core/article/article.model';
 import { catchError } from 'rxjs/operators';
 import { EMPTY } from 'rxjs';
-import { DraftService } from 'settings/drafts/draft.service';
+import { DraftsService } from 'settings/drafts/drafts.service';
 
 @Injectable()
-export class OrgDraftResolve implements Resolve<Observable<Article>> {
+export class AllDraftsResolve implements Resolve<Observable<Article>> {
     constructor(private router: Router,
-                private draftSvc: DraftService) {
+                private draftSvc: DraftsService) {
     }
 
     resolve() {
-        return this.draftSvc.orgDrafts()
+        return this.draftSvc.allDrafts()
             .pipe(catchError(() => {
                 this.router.navigate(["/404"]);
                 return EMPTY;

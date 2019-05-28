@@ -49,10 +49,10 @@ import { ViewingHistoryComponent } from 'settings/viewingHistory/viewingHistory.
 import { NotificationComponent } from 'settings/notification/notification.component';
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
 import { DraftsComponent } from 'settings/drafts/drafts.component';
-import { myDraftResolve } from 'settings/drafts/myDraft.resolve';
-import { OrgDraftResolve } from 'settings/drafts/orgDraft.resolve';
-import { AllDraftResolve } from 'settings/drafts/allDraft.resolve';
-import { DraftService } from 'settings/drafts/draft.service';
+import { AllDraftsResolve } from 'settings/drafts/allDrafts.resolve';
+import { MyOrgDraftsResolve } from 'settings/drafts/myOrgDrafts.resolve';
+import { myDraftsResolve } from 'settings/drafts/myDrafts.resolve';
+import { DraftsService } from 'settings/drafts/drafts.service';
 
 const appRoutes: Routes = [
     {
@@ -87,7 +87,7 @@ const appRoutes: Routes = [
             {
                 path: 'myDrafts',
                 component: DraftsComponent,
-                resolve: {drafts: myDraftResolve},
+                resolve: {drafts: myDraftsResolve, title: 'My Drafts'},
                 canLoad: [LoggedInGuard],
                 data: {title: 'My Drafts'}
             },
@@ -119,7 +119,7 @@ const appRoutes: Routes = [
             {
                 path: 'myOrgDrafts',
                 component: DraftsComponent,
-                resolve: {drafts: OrgDraftResolve},
+                resolve: {drafts: MyOrgDraftsResolve, title: 'My Organizations\' Drafts'},
                 canLoad: [OrgAuthorityGuard],
                 data: {title: 'My Organizations\' Drafts'}
             },
@@ -178,7 +178,7 @@ const appRoutes: Routes = [
             {
                 path: 'allDrafts',
                 component: DraftsComponent,
-                resolve: {drafts: AllDraftResolve},
+                resolve: {drafts: AllDraftsResolve, title: 'All Drafts'},
                 canLoad: [SiteAdminGuard],
                 data: {title: 'All Drafts'}
             },
@@ -303,10 +303,10 @@ const appRoutes: Routes = [
     entryComponents: [],
     exports: [],
     providers: [
-        DraftService,
-        myDraftResolve,
-        OrgDraftResolve,
-        AllDraftResolve
+        DraftsService,
+        myDraftsResolve,
+        MyOrgDraftsResolve,
+        AllDraftsResolve
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
