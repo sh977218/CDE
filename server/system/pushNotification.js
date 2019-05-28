@@ -21,7 +21,7 @@ exports.checkDatabase = (callback = _.noop) => {
             return;
         }
         if (push.userId !== config.publicUrl) {
-            mongo_data.pushClearDb(handleError({publicMessage: 'could not remove'}, createDbTag));
+            mongo_data.pushClearDb(errorHandler.handleError({publicMessage: 'could not remove'}, createDbTag));
             return;
         }
         callback();

@@ -12,6 +12,7 @@ const rev = require('gulp-rev');
 const run = require('gulp-run');
 const uglify = require('gulp-uglify');
 const usemin = require('gulp-usemin');
+const {spawn} = require('child_process');
 
 const config = require('./server/system/parseConfig');
 const esInit = require('./server/system/elasticSearchInit');
@@ -21,13 +22,14 @@ require('es6-promise').polyfill();
 gulp.task('npm', function _npm() {
     run('node --version').exec();
     run('npm cache verify').exec();
+    run('mongo --version').exec();
     return gulp.src(['./package.json'])
         .pipe(install());
 });
 
-gulp.task('npmRebuildNodeSass', gulp.series('npm', function _npmRebuildNodeSass() {
+gulp.task('npmRebuildNodeSass', function _npmRebuildNodeSass() {
     return run('npm rebuild node-sass').exec();
-}));
+});
 
 gulp.task('thirdParty', gulp.series('npmRebuildNodeSass', function _thirdParty() {
     let streamArr = [];
@@ -247,9 +249,12 @@ gulp.task('es', function _es() {
         hosts: config.elastic.hosts
     });
     let allIndex = esInit.indices.map(i => i.indexName);
-    console.log('allIndex ' + allIndex);
+    console.log('Deleting es index: ' + allIndex);
     return new Promise((resolve, reject) => {
-        esClient.indices.delete({index: allIndex, timeout: '6s'}, err => err ? reject(err) : resolve());
+        esClient.indices.delete({index: allIndex, timeout: '6s'}, err => {
+            if (err && err.status !== 404) reject();
+            else resolve();
+        });
     });
 });
 
@@ -289,6 +294,47 @@ gulp.task('checkDbConnection', function _buildHome() {
         else resolve();
     });
 });
-gulp.task('default', gulp.series('copyNpmDeps', 'prepareVersion', 'copyUsemin', 'checkDbConnection'));
+
+gulp.task('npmrebuild', function _mongorestore(cb) {
+    spawn('npm', ['rebuild'], {stdio: 'inherit'})
+        .on('exit', cb);
+});
+gulp.task('mongorestoretest', function _mongorestore(cb) {
+    let username = config.database.appData.username;
+    let password = config.database.appData.password;
+    let hostname = config.database.servers[0].host + ':' + config.database.servers[0].port;
+    let db = config.database.appData.db;
+    let args = ['-u', username, '-p', password, '-h', hostname, '-d', db, '--drop', 'test/data/test/'];
+
+    console.log('command: ' + 'mongorestore ' + args.join(' '));
+    spawn('mongorestore', args, {stdio: 'inherit'})
+        .on('exit', cb);
+});
+gulp.task('injectElastic', function _injectElastic(cb) {
+    console.log('Start node app to inject');
+    let p = spawn('node', ['app'], {stdio: 'inherit'});
+    setTimeout(() => {
+        spawn('node', ['scripts/waitForIndex.js'], {stdio: 'inherit'})
+            .on('exit', () => {
+                p.kill();
+                cb();
+            })
+    }, 10000)
+});
+gulp.task('checkBundleSize', function _checkBundleSize(cb) {
+    spawn('node', ['scripts/buildCheckSize.js'], {stdio: 'inherit'})
+        .on('exit', cb);
+});
+
+gulp.task('default',
+    gulp.series(
+        'npm',
+        'npmrebuild',
+        gulp.parallel(
+            gulp.series('es', 'mongorestoretest', 'injectElastic'),
+            gulp.series('copyNpmDeps', 'prepareVersion', 'copyUsemin', 'checkDbConnection', 'checkBundleSize')
+        )
+    )
+);
 
 
