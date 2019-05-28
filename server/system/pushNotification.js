@@ -12,7 +12,7 @@ exports.checkDatabase = (callback = _.noop) => {
         function createDbTag() {
             mongo_data.pushCreate(
                 {_id: mongo_data.ObjectId('000000000000000000000000'), userId: config.publicUrl},
-                handleError({}, callback)
+                errorHandler.handleError({}, callback)
             );
         }
 
@@ -21,7 +21,7 @@ exports.checkDatabase = (callback = _.noop) => {
             return;
         }
         if (push.userId !== config.publicUrl) {
-            mongo_data.pushClearDb(handleError({publicMessage: 'could not remove'}, createDbTag));
+            mongo_data.pushClearDb(errorHandler.handleError({publicMessage: 'could not remove'}, createDbTag));
             return;
         }
         callback();

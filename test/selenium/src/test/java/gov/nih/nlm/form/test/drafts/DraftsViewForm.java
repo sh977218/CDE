@@ -28,13 +28,12 @@ public class DraftsViewForm extends NlmCdeBaseTest {
         textNotPresent("Center for Neurologic Study - Lability Scale for pseudobulbar affect (PBA)");
 
         goToAllDrafts();
-        textPresent("TEST", By.xpath("//div[h2[contains(.,'Forms')]]//table"));
-        textNotPresent("nindsCurator", By.xpath("//div[h2[contains(.,'Forms')]]//table"));
-        clickElement(By.xpath("//div[h2[contains(.,'Forms')]]//mat-chip[contains(.,'CTEP')]/mat-icon"));
-        clickElement(By.xpath("//div[h2[contains(.,'Forms')]]//mat-chip[contains(.,'PROMIS / Neuro-QOL')]/mat-icon"));
-        clickElement(By.xpath("//div[h2[contains(.,'Forms')]]//mat-chip[contains(.,'TEST')]/mat-icon"));
-        findElement(By.xpath("//div[h2[contains(.,'Forms')]]//mat-chip[contains(.,'NINDS')]"));
-        textNotPresent("TEST", By.xpath("//div[h2[contains(.,'Forms')]]//table"));
+        textPresent("TEST", By.id("settingsContent"));
+        textNotPresent("nindsCurator", By.id("settingsContent"));
+        clickElement(By.id("organizationFilter"));
+        selectMatSelectDropdownByText("CTEP");
+
+        textNotPresent("TEST", By.xpath("NINDS"));
         findElement(By.linkText("Center for Neurologic Study - Lability Scale for pseudobulbar affect (PBA)"));
         textPresent("nindsCurator");
     }
