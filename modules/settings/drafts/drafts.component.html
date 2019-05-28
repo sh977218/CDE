@@ -1,7 +1,7 @@
 <div class="container-fluid">
     <h1>{{title}}</h1>
     <div>
-        <mat-form-field>
+        <mat-form-field class="w-50">
             <mat-label>Filter by Organization</mat-label>
             <mat-select id="organizationFilter" [(ngModel)]="selectedOrganization"
                         (ngModelChange)="filterByOrganization();">
