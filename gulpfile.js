@@ -300,12 +300,11 @@ gulp.task('npmrebuild', function _mongorestore(cb) {
         .on('exit', cb);
 });
 gulp.task('mongorestoretest', function _mongorestore(cb) {
-    console.log('config: ' + JSON.stringify(config) + '\n');
-    let username = 'siteRootAdmin';
-    let password = 'password';
+    let username = config.database.appData.username;
+    let password = config.database.appData.password;
     let hostname = config.database.servers[0].host + ':' + config.database.servers[0].port;
     let db = config.database.appData.db;
-    let args = ['-h', hostname, '-u', username, '-p', password, '--authenticationDatabase', 'admin', '-d', db, '--drop', 'test/data/test/'];
+    let args = ['-u', username, '-p', password, '-h', hostname, '-d', db, '--drop', 'test/data/test/'];
 
     console.log('command: ' + 'mongorestore ' + args.join(' '));
     spawn('mongorestore', args, {stdio: 'inherit'})
@@ -314,11 +313,13 @@ gulp.task('mongorestoretest', function _mongorestore(cb) {
 gulp.task('injectElastic', function _injectElastic(cb) {
     console.log('Start node app to inject');
     let p = spawn('node', ['app'], {stdio: 'inherit'});
-    spawn('node', ['scripts/waitForIndex.js'], {stdio: 'inherit'})
-        .on('exit', () => {
-            p.kill();
-            cb();
-        })
+    setTimeout(() => {
+        spawn('node', ['scripts/waitForIndex.js'], {stdio: 'inherit'})
+            .on('exit', () => {
+                p.kill();
+                cb();
+            })
+    }, 10000)
 });
 gulp.task('checkBundleSize', function _checkBundleSize(cb) {
     spawn('node', ['scripts/buildCheckSize.js'], {stdio: 'inherit'})
