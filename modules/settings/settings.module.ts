@@ -87,7 +87,7 @@ const appRoutes: Routes = [
             {
                 path: 'myDrafts',
                 component: DraftsComponent,
-                resolve: {drafts: myDraftsResolve, title: 'My Drafts'},
+                resolve: {drafts: myDraftsResolve},
                 canLoad: [LoggedInGuard],
                 data: {title: 'My Drafts'}
             },
@@ -119,7 +119,7 @@ const appRoutes: Routes = [
             {
                 path: 'myOrgDrafts',
                 component: DraftsComponent,
-                resolve: {drafts: MyOrgDraftsResolve, title: 'My Organizations\' Drafts'},
+                resolve: {drafts: MyOrgDraftsResolve},
                 canLoad: [OrgAuthorityGuard],
                 data: {title: 'My Organizations\' Drafts'}
             },
@@ -178,7 +178,7 @@ const appRoutes: Routes = [
             {
                 path: 'allDrafts',
                 component: DraftsComponent,
-                resolve: {drafts: AllDraftsResolve, title: 'All Drafts'},
+                resolve: {drafts: AllDraftsResolve},
                 canLoad: [SiteAdminGuard],
                 data: {title: 'All Drafts'}
             },
