@@ -25,7 +25,6 @@ let expectedContent = {
         'Edited by someone else. Please refresh and redo.'
     ],
     formFiveUnapprovedMessagesPerUserComment: 'Failed to load resource: the server responded with a status of 403 (Forbidden)',
-    formLongCommentTest: 'WebSocket is already in CLOSING or CLOSED state.',
     formOneUnapprovedReplyPerUser: 'Failed to load resource: the server responded with a status of 403 (Forbidden)',
     formReorderProperties: [
         'Failed to load resource: the server responded with a status of 409 (Conflict)',
@@ -59,7 +58,7 @@ let expectedContent = {
     wrongLogin: 'login - Failed to load resource: the server responded with a status of 403'
 };
 
-let ignoreErrors = ['Slow network is detected', 'Report Only', 'reportOnly', 'Failed to decode downloaded font'];
+let ignoreErrors = ['Slow network is detected', 'Report Only', 'reportOnly', 'Failed to decode downloaded font', 'WebSocket is already in CLOSING or CLOSED state'];
 
 fs.readdir(logFolder, (err, files) => {
     if (err || !files) {
