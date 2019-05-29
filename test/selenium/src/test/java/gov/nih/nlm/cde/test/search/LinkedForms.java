@@ -24,6 +24,7 @@ public class LinkedForms extends NlmCdeBaseTest {
             } catch (Exception e) {
                 i++;
             }
+            hangon(30);
         }
 
         findElement(By.id("ftsearch-input")).clear();
