@@ -12,7 +12,7 @@ exports.checkDatabase = (callback = _.noop) => {
         function createDbTag() {
             mongo_data.pushCreate(
                 {_id: mongo_data.ObjectId('000000000000000000000000'), userId: config.publicUrl},
-                handleError({}, callback)
+                errorHandler.handleError({}, callback)
             );
         }
 

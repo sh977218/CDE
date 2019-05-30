@@ -8,28 +8,38 @@ public class DraftsViewForm extends NlmCdeBaseTest {
 
     @Test
     public void draftsViewForm() {
-        mustBeLoggedInAs("nindsCurator", password);
-        goToMyDrafts();
-        findElement(By.linkText("Center for Neurologic Study - Lability Scale for pseudobulbar affect (PBA)"));
-        textPresent("Q1MfMySSFe");
+        String nindsDraftName = "Center for Neurologic Study - Lability Scale for pseudobulbar affect (PBA)";
+        String ctepDraftName = "Draft Form Test";
 
-        logout();
         mustBeLoggedInAs(ninds_username, password);
         goToMyDrafts();
-        textNotPresent("Center for Neurologic Study - Lability Scale for pseudobulbar affect (PBA)");
+        textNotPresent(nindsDraftName);
 
-        goToMyOrgDrafts();
-        findElement(By.linkText("Center for Neurologic Study - Lability Scale for pseudobulbar affect (PBA)"));
-        textPresent("nindsCurator");
+        mustBeLoggedInAs(nindsCurator_username, password);
+        goToMyDrafts();
+        findElement(By.linkText(nindsDraftName));
+        textPresent("Q1MfMySSFe");
 
-        logout();
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToMyDrafts();
-        textNotPresent("Center for Neurologic Study - Lability Scale for pseudobulbar affect (PBA)");
+        textNotPresent(nindsDraftName);
 
         goToAllDrafts();
-        findElement(By.linkText("Center for Neurologic Study - Lability Scale for pseudobulbar affect (PBA)"));
-        textPresent("nindsCurator");
+        textPresent(nindsDraftName, By.id("settingsContent"));
+        textPresent(ctepDraftName, By.id("settingsContent"));
+
+        clickElement(By.id("organizationFilter"));
+        selectMatSelectDropdownByText("CTEP");
+        textNotPresent(nindsDraftName, By.id("settingsContent"));
+
+        clickElement(By.id("organizationFilter"));
+        selectMatSelectDropdownByText("NINDS");
+        textNotPresent(ctepDraftName, By.id("settingsContent"));
+
+        clickElement(By.id("organizationFilter"));
+        selectMatSelectDropdownByText("All Organizations");
+        textPresent(ctepDraftName, By.id("settingsContent"));
+        textPresent(nindsDraftName, By.id("settingsContent"));
     }
 
 

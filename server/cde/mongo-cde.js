@@ -187,8 +187,16 @@ exports.draftDelete = function (tinyId, cb) {
 };
 
 exports.draftsList = (criteria, cb) => {
-    DataElementDraft.find(criteria, {'updatedBy.username': 1, 'updated': 1, 'designations.designation': 1, tinyId: 1})
-        .sort({'updated': -1}).exec(cb);
+    return DataElementDraft
+        .find(criteria, {
+            'designations.designation': 1,
+            'stewardOrg.name': 1,
+            tinyId: 1,
+            updated: 1,
+            'updatedBy.username': 1
+        })
+        .sort({'updated': -1})
+        .exec(cb);
 };
 
 /* ---------- PUT NEW REST API Implementation above  ---------- */
