@@ -8,7 +8,7 @@ import { EMPTY } from 'rxjs';
 import { DraftsService } from 'settings/drafts/drafts.service';
 
 @Injectable()
-export class myDraftsResolve implements Resolve<Observable<Article>> {
+export class MyDraftsResolve implements Resolve<Observable<Article>> {
     constructor(private router: Router,
                 private draftSvc: DraftsService) {
     }

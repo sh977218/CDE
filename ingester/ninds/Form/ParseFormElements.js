@@ -10,7 +10,7 @@ const CreateCDE = require('../CDE/CreateCDE');
 const CompareCDE = require('../CDE/CompareCDE');
 const MergeCDE = require('../CDE/MergeCDE');
 
-const deValidator = require('esm')(module)('../../../shared/de/deValidator');
+import { checkPvUnicity } from 'shared/de/deValidator';
 const Comment = require('../../../server/discuss/discussDb').Comment;
 
 const updatedByNonLoader = require('../../shared/updatedByNonLoader').updatedByNonLoader;
@@ -23,7 +23,7 @@ let skipCDE = 0;
 
 doOneNindsCde = async cdeId => {
     let newCdeObj = await CreateCDE.createCde(cdeId);
-    let cdeError = deValidator.checkPvUnicity(newCdeObj.valueDomain);
+    let cdeError = checkPvUnicity(newCdeObj.valueDomain);
     if (cdeError && !cdeError.allValid) {
         if (cdeError.message === 'Value List must contain at least one Permissible Value') {
             let slComment = {
