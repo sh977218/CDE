@@ -624,35 +624,23 @@ exports.init = function (app) {
         });
     });
 
-    app.get('/allDrafts', isOrgAuthorityMiddleware, (req, res) => {
-        mongo_cde.draftsList({}, handleError({req, res}, draftCdes => {
-            mongo_form.draftsList({}, handleError({req, res}, draftForms => {
-                res.send({draftCdes: draftCdes, draftForms: draftForms});
-            }));
-        }));
+    app.get('/allDrafts', authorization.isOrgAuthorityMiddleware, (req, res) => {
+        getDrafts(req, res, {});
     });
 
     app.get('/orgDrafts', authorization.isOrgCuratorMiddleware, (req, res) => {
-        mongo_cde.draftsList({'stewardOrg.name': {$in: usersrvc.myOrgs(req.user)}}, handleError({
-            req,
-            res
-        }, draftCdes => {
-            mongo_form.draftsList({'stewardOrg.name': {$in: usersrvc.myOrgs(req.user)}}, handleError({
-                req,
-                res
-            }, draftForms => {
-                return res.send({draftCdes: draftCdes, draftForms: draftForms});
-            }));
-        }));
+        getDrafts(req, res, {'stewardOrg.name': {$in: usersrvc.myOrgs(req.user)}});
     });
 
     app.get('/myDrafts', authorization.isOrgCuratorMiddleware, (req, res) => {
-        mongo_cde.draftsList({'updatedBy.username': req.user.username}, handleError({req, res}, draftCdes => {
-            mongo_form.draftsList({'updatedBy.username': req.user.username}, handleError({req, res}, draftForms => {
-                res.send({draftCdes: draftCdes, draftForms: draftForms});
-            }));
-        }));
+        getDrafts(req, res, {'updatedBy.username': req.user.username});
     });
+
+    function getDrafts(req, res, criteria) {
+        Promise.all([mongo_cde.draftsList(criteria), mongo_form.draftsList(criteria)])
+            .then(results => res.send({draftCdes: results[0], draftForms: results[1]}))
+            .catch(err => respondError(err, {req, res}));
+    }
 
     app.get('/idSources', (req, res) =>
         IdSource.find({}, handleError({req, res}, sources => res.send(sources))));
