@@ -1,4 +1,4 @@
-import { FhirOrganization } from 'shared/mapping/fhir/fhirResource.model';
+import { FhirOrganization } from '../../../shared/mapping/fhir/fhirResource.model';
 
 export interface FhirElement {
     extension?: FhirExtension[];
@@ -153,6 +153,7 @@ export type FhirTime = string;
 export type FhirUri = string;
 
 export interface FhirValue extends FhirElement {
+    [key: string]: any;
     valueAddress?: FhirAddress;
     valueAttachment?: any;
     valueBase64Binary?: FhirBase64Binary;

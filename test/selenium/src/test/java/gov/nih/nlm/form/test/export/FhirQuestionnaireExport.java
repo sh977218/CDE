@@ -15,8 +15,7 @@ public class FhirQuestionnaireExport extends BaseFormTest {
                 "/deView?tinyId=OtsN78xANu1",
                 "{\"valueCoding\":{\"code\":\"Unknown\",\"userSelected\":false}",
                 "\"linkId\":\"0-2\"",
-                "\"enableWhen\":[",
-                "\"hasAnswer\":false"
+                "\"enableWhen\":["
         };
         for (String expectedResult : expectedResults) {
             Assert.assertTrue(response.contains(expectedResult), "missing: " + expectedResult + "\n Actual: \n " + response);

@@ -13,7 +13,7 @@ const ingesterShared = require('../ingester/shared/updatedByNonLoader');
 const batchloader = ingesterShared.batchloader;
 const batchloaderUsername = ingesterShared.BATCHLOADER_USERNAME;
 
-const classificationShared = require('esm')(module)('../shared/system/classificationShared');
+import { sortClassification } from 'shared/system/classificationShared';
 
 
 const ignoreProperties = ['PublicDomain', 'CopyrightStarted'];
@@ -70,7 +70,7 @@ let cond = {
                         delete o.lastMigrationScript;
                         let nindsClassification = o.classification.filter(c => c.stewardOrg.name === 'NINDS');
                         o.classification = nindsClassification;
-                        classificationShared.sortClassification(o);
+                        sortClassification(o);
 
                         o.designations.forEach(d => d.tags.sort());
                         o.ids.forEach(i => delete i._id);

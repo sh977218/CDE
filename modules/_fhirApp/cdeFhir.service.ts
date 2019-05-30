@@ -164,10 +164,10 @@ export class CdeFhirService {
                     resource = await observationPromise;
                     break;
                 case 'Procedure':
-                    resource = newProcedure(this.fhirData.context, this.fhirData.patient);
+                    resource = newProcedure(this.fhirData.patient, this.fhirData.context);
                     break;
                 case 'QuestionnaireResponse':
-                    resource = newQuestionnaireResponse(this.fhirData.context, this.fhirData.patient, self.lookupResource);
+                    resource = newQuestionnaireResponse(this.fhirData.patient, this.fhirData.context, self.lookupResource);
                     break;
                 default:
                     assertUnreachable(self.root.resourceType);
@@ -477,7 +477,7 @@ export class CdeFhirService {
                         (id: CdeId, done: CbErr<boolean>) => {
                             return this.fhirData.search<FhirObservation | FhirQuestionnaireResponse>(self.resourceType,
                                 {code: (id.source ? codeSystemOut(id.source) + '|' : '') + id.id})
-                                .then(r => r.length > 0 ? this.selectOne('edit', r, 'Last Edit', r => r.meta && new Date(r.meta.lastUpdated) || '') : r[0])
+                                .then(r => r.length > 0 ? this.selectOne('edit', r, 'Last Edit', (r: any) => r.meta && new Date(r.meta.lastUpdated) || '') : r[0])
                                 .then(r => {
                                     if (r) {
                                         resource = r;
