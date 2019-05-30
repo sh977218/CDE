@@ -12,26 +12,26 @@ let indexInt = setInterval(() => {
                 console.log('indexing complete, status returned: ');
                 clearInterval(indexInt);
 
-                request.post('http://localhost:3001/server/mesh/syncWithMesh', {}, err => {
-                    if (err) {
-                        console.log('syncWithMesh err: ' + err);
-                        process.exit(1);
-                    } else {
-                        let meshInterval = setInterval(() => {
-                            request.get('http://localhost:3001/server/mesh/syncWithMesh', (err, res, body) => {
-                                body = JSON.parse(body);
-                                console.log(body);
-                                if (body.dataelement.done === body.dataelement.total
-                                    && body.form.done === body.form.total) {
-                                    console.log('Done indexing mesh');
-                                    clearInterval(meshInterval);
-                                    process.exit(0);
-                                } else {
-                                    console.log('Waiting for Mesh Sync');
-                                }
-                            });
-                        }, 3000);
-                    }
+                // too slow, dont wait. wait in test.
+                request.post('http://localhost:3001/syncLinkedForms', {}, () => {
+                });
+                request.post('http://localhost:3001/server/mesh/syncWithMesh', {}, () => {
+                    let meshInterval = setInterval(() => {
+                        request.get('http://localhost:3001/server/mesh/syncWithMesh', (err, res, body) => {
+                            body = JSON.parse(body);
+                            console.log(body);
+                            if (body && body.dataelement && body.form
+                                && body.dataelement.done === body.dataelement.total
+                                && body.form.done === body.form.total
+                            ) {
+                                console.log('Done indexing mesh');
+                                clearInterval(meshInterval);
+                                process.exit(0);
+                            } else {
+                                console.log('Waiting for Mesh Sync');
+                            }
+                        });
+                    }, 3000);
                 });
             }
         }
