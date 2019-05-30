@@ -143,10 +143,6 @@ export enum CurationStatusEnum {
     'Preferred Standard', 'Standard', 'Qualified', 'Recorded', 'Candidate', 'Incomplete', 'Retired'
 }
 
-export abstract class DataService {
-    abstract getDrafts(): Observable<Drafts>;
-}
-
 export class DataSource {
     copyright?: FormattedValue;
     created?: Date;

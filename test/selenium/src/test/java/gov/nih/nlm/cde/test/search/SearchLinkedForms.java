@@ -5,10 +5,10 @@ import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class LinkedForms extends NlmCdeBaseTest {
+public class SearchLinkedForms extends NlmCdeBaseTest {
 
     @Test
-    public void linkedForms() {
+    public void searchLinkedForms() {
         goToCdeSearch();
         clickElement(By.id("browseOrg-PROMIS / Neuro-QOL"));
 

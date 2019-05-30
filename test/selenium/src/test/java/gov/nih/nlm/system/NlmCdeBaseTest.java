@@ -382,7 +382,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     protected void goToMyOrgDrafts() {
         goToSettings();
         clickElement(By.id("myOrgDrafts"));
-        textPresent("My Organization Drafts", By.id("settingsContent"));
+        textPresent("My Organizations' Drafts", By.id("settingsContent"));
     }
 
     protected void goToAllDrafts() {
