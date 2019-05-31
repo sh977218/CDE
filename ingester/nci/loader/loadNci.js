@@ -6,10 +6,14 @@ const mongo_cde = require('../../../server/cde/mongo-cde');
 const DataElement = mongo_cde.DataElement;
 const DataElementSource = mongo_cde.DataElementSource;
 const CreateCDE = require('../CDE/CreateCDE');
+const CompareCDE = require('../CDE/CompareCDE');
+const MergeCDE = require('../CDE/MergeCDE');
 
 const Comment = require('../../../server/discuss/discussDb').Comment;
 
 const ORG_INFO_MAP = require('../Shared/ORG_INFO_MAP').map;
+
+const batchloader = require('../../shared/updatedByLoader').batchloader;
 
 let createdCDE = 0;
 
@@ -30,7 +34,7 @@ function runOneOrg(org) {
                         'ids.id': nciId
                     });
                     if (!existingCde) {
-                        existingCde = await newCde.save().catch(e=>{
+                        existingCde = await newCde.save().catch(e => {
                             console.log(newCdeObj);
                             console.log(e);
                         });
@@ -38,13 +42,19 @@ function runOneOrg(org) {
                         console.log('createdCDE: ' + createdCDE + ' ' + existingCde.tinyId);
                     } else {
                         console.log('found ' + nciId);
-//                        process.exit(1);
+                        let diff = CompareCDE.compareCde(newCde, existingCde);
+                        if (diff.length) {
+                            MergeCDE.mergeCde(newCde, existingCde);
+                            await mongo_cde.updatePromise(existingCde, batchloader)
+                        }
                     }
+/*
                     for (let comment of newCdeObj.comments) {
                         comment.element.eltId = existingCde.tinyId;
                         await new Comment(comment).save();
-                        console.log('comment saved on '+existingCde.tinyId);
+                        console.log('comment saved on ' + existingCde.tinyId);
                     }
+*/
                     await DataElementSource.updateOne({tinyId: newCdeObj.tinyId}, newCdeObj, {upsert: true});
                     resolve();
                 }
@@ -56,7 +66,7 @@ function runOneOrg(org) {
 async function runOrgs(orgs) {
     for (let org of orgs) {
         await runOneOrg(org);
-        console.log('Finished org: '+org);
+        console.log('Finished org: ' + org);
     }
 }
 
