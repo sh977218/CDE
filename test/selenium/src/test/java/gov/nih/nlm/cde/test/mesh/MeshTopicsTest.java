@@ -2,7 +2,6 @@ package gov.nih.nlm.cde.test.mesh;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -11,11 +10,14 @@ public class MeshTopicsTest extends NlmCdeBaseTest {
     @Test
     public void meshTopics() {
 
+        String[] categories = new String[]{"Disease"};
+
         // add NINDS Mesh term
         mustBeLoggedInAs(ninds_username, password);
         clickElement(By.id("username_link"));
         clickElement(By.id("user_classifications"));
-        clickElement(By.xpath(getOrgClassificationIconXpath("meshMapping", new String[]{"Disease"})));
+        clickMoreVertIcon(categories);
+        clickElement(By.xpath(getOrgClassificationIconXpath("meshMapping", categories)));
         findElement(By.id("mapClassificationMeshInput")).sendKeys("NINDS");
         int j = 20;
         while (j > 0) {

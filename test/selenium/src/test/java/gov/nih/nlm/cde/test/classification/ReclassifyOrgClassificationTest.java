@@ -3,10 +3,7 @@ package gov.nih.nlm.cde.test.classification;
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
-import org.testng.Assert;
 import org.testng.annotations.Test;
-
-import static io.restassured.RestAssured.get;
 
 public class ReclassifyOrgClassificationTest extends NlmCdeBaseTest {
 
@@ -20,7 +17,9 @@ public class ReclassifyOrgClassificationTest extends NlmCdeBaseTest {
         clickElement(By.cssSelector("mat-select"));
         selectMatSelectDropdownByText("org / or Org");
 
-        clickElement(By.xpath(getOrgClassificationIconXpath("reclassify", new String[]{"OldClassification"})));
+        String[] categories = new String[]{"OldClassification"};
+        clickMoreVertIcon(categories);
+        clickElement(By.xpath(getOrgClassificationIconXpath("reclassify", categories)));
         textPresent("Classify CDEs in Bulk");
         new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText("org / or Org");
         clickElement(By.id("NewClassification-classifyBtn"));

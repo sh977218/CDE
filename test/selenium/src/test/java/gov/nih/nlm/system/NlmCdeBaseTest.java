@@ -427,6 +427,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         clickElement(By.id("profile"));
         textPresent("Profile", By.id("settingsContent"));
     }
+
     protected void goToNotification() {
         goToSettings();
         clickElement(By.id("notification"));
@@ -988,6 +989,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         String classification = categories[categories.length - 1];
         clickElement(By.cssSelector("mat-select"));
         selectMatSelectDropdownByText(orgName);
+        clickMoreVertIcon(categories);
         clickElement(By.xpath(getOrgClassificationIconXpath("remove", categories)));
         findElement(By.id("removeClassificationUserTyped")).sendKeys(classification);
         clickElement(By.id("confirmDeleteClassificationBtn"));
@@ -1508,6 +1510,10 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         findElement(By.id("search.submit")).click();
     }
 
+    protected void clickMoreVertIcon(String[] categories) {
+        clickElement(By.xpath("//*[@id='" + String.join(",", categories) + "']/following-sibling::button[normalize-space()='more_vert']"));
+    }
+
     protected void createOrgClassification(String org, String[] categories) {
         clickElement(By.cssSelector("mat-select"));
         selectMatSelectDropdownByText(org);
@@ -1526,6 +1532,8 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
             List<WebElement> nextCategoryList = driver.findElements(By.xpath(xpath));
             if (nextCategoryList.size() == 0) {
                 String[] currentCategories = Arrays.copyOfRange(categories, 0, i);
+
+                clickMoreVertIcon(currentCategories);
                 clickElement(By.xpath(getOrgClassificationIconXpath("addChildClassification", currentCategories)));
                 findElement(By.id("addChildClassifInput")).sendKeys(nextCategories[nextCategories.length - 1]);
                 hangon(2);
