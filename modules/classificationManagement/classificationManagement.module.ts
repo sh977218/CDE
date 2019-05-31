@@ -7,7 +7,9 @@ import "angular-tree-component/dist/angular-tree-component.css";
 
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
 
-import { MatButtonModule, MatDialogModule, MatIconModule, MatInputModule, MatSelectModule } from '@angular/material';
+import {
+    MatButtonModule, MatDialogModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule
+} from '@angular/material';
 import { OrgClassificationManagementComponent } from 'classificationManagement/orgClassificationManagement/orgClassificationManagement.component';
 
 const appRoutes: Routes = [
@@ -29,6 +31,7 @@ const appRoutes: Routes = [
         MatIconModule,
         MatInputModule,
         MatSelectModule,
+        MatMenuModule
     ],
     declarations: [
         OrgClassificationManagementComponent,

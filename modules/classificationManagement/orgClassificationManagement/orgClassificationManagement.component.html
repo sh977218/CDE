@@ -3,7 +3,7 @@
     <mat-form-field style="width: 300px">
         <mat-select [(ngModel)]="orgToManage" id="orgToManage"
                     placeholder="Start by choosing your Organization"
-                (selectionChange)="onChangeOrg($event)">
+                    (selectionChange)="onChangeOrg($event)">
             <mat-option *ngFor="let o of userService.userOrgs" [value]="o">{{o}}</mat-option>
         </mat-select>
     </mat-form-field>
@@ -19,16 +19,36 @@
                     <a [id]="node.path" href="{{searchByClassification(node,selectedOrgIter.name)}}"
                        target="_blank">{{ node.data.name }}</a>
                     <ng-container *ngIf="isOrgAdmin()">
-                        <a title="Edit" (click)="openRenameClassificationModal(node);">
-                            <mat-icon>edit</mat-icon></a>
-                        <a title="Remove" (click)="openDeleteClassificationModal(node);">
-                            <mat-icon>delete_outline</mat-icon></a>
-                        <a title="Reclassify" (click)="openReclassificationModal(node);">
-                            <mat-icon>transform</mat-icon></a>
-                        <a title="Add Child Classification" (click)="openAddChildClassificationModal(node);">
-                            <mat-icon>subdirectory_arrow_left</mat-icon></a>
-                        <a title="Mesh Mapping" (click)="openMapClassificationMeshModal(node);">
-                            <mat-icon>link</mat-icon></a>
+                        <button mat-icon-button [matMenuTriggerFor]="actionMenu" aria-label="actions">
+                            <mat-icon>more_vert</mat-icon>
+                        </button>
+                        <mat-menu #actionMenu="matMenu">
+                            <button mat-menu-item title="Edit"
+                                    (click)="openRenameClassificationModal(node);">
+                                <mat-icon>edit</mat-icon>
+                                Edit
+                            </button>
+                            <button mat-menu-item title="Remove"
+                                    (click)="openDeleteClassificationModal(node);">
+                                <mat-icon>delete_outline</mat-icon>
+                                Remove
+                            </button>
+                            <button mat-menu-item title="Reclassify"
+                                    (click)="openReclassificationModal(node);">
+                                <mat-icon>transform</mat-icon>
+                                Reclassify
+                            </button>
+                            <button mat-menu-item title="Add Child Classification"
+                                    (click)="openAddChildClassificationModal(node);">
+                                <mat-icon>subdirectory_arrow_left</mat-icon>
+                                Add Child Classification
+                            </button>
+                            <button mat-menu-item title="Mesh Mapping"
+                                    (click)="openMapClassificationMeshModal(node);">
+                                <mat-icon>link</mat-icon>
+                                Mesh Mapping
+                            </button>
+                        </mat-menu>
                     </ng-container>
                 </ng-template>
                 <ng-template #treeNodeFullTemplate let-node="node" let-index="index" let-templates="templates">
