@@ -36,6 +36,7 @@
     "modules/adminItem",
     "modules/board",
     "modules/cde",
+    "modules/classificationManagement",
     "modules/compare",
     "modules/deleteWithConfirm",
     "modules/discuss",

@@ -6,9 +6,9 @@ import { TreeModule } from 'angular-tree-component';
 import "angular-tree-component/dist/angular-tree-component.css";
 
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
-import { OrgClassificationManagementComponent } from 'system/public/components/siteAdmin/orgClassificationManagement/orgClassificationManagement.component';
 
 import { MatButtonModule, MatDialogModule, MatIconModule, MatInputModule, MatSelectModule } from '@angular/material';
+import { OrgClassificationManagementComponent } from 'classificationManagement/orgClassificationManagement/orgClassificationManagement.component';
 
 const appRoutes: Routes = [
     {path: '', component: OrgClassificationManagementComponent},
@@ -41,5 +41,5 @@ const appRoutes: Routes = [
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class ClassifManagementModule {
+export class ClassificationManagementModule {
 }
