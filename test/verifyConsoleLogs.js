@@ -17,7 +17,7 @@ let expectedContent = {
     dupStewardValidation: [
         "Error publishing DataElement validation failed",
         "422 (Unprocessable Entity)"
-        ],
+    ],
     embedNinds: '*',
     emptyAnswers: 'the server responded with a status of 500',
     formDraftConcurrentWrite: [
@@ -58,7 +58,7 @@ let expectedContent = {
     wrongLogin: 'login - Failed to load resource: the server responded with a status of 403'
 };
 
-let ignoreErrors = ['Slow network is detected', 'Report Only', 'reportOnly', 'Failed to decode downloaded font'];
+let ignoreErrors = ['Slow network is detected', 'Report Only', 'reportOnly', 'Failed to decode downloaded font', 'WebSocket is already in CLOSING or CLOSED state'];
 
 fs.readdir(logFolder, (err, files) => {
     if (err || !files) {
