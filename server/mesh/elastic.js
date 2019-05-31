@@ -26,6 +26,11 @@ exports.syncWithMesh = function () {
 
 let lock = false;
 
+exports.meshSyncStatus = {
+    dataelement: {done: 0},
+    form: {done: 0}
+};
+
 function doSyncWithMesh(allMappings) {
     exports.meshSyncStatus = {
         dataelement: {done: 0},
