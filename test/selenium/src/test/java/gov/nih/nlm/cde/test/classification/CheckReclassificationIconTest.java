@@ -16,16 +16,15 @@ public class CheckReclassificationIconTest extends NlmCdeBaseTest {
 
         // Check icons appear on classification management page
         gotoClassificationMgt();
-        clickElement(By.xpath("(//mat-icon[normalize-space() = 'more_vert'])[1]"));
 
-        List<WebElement> icons = driver.findElements(By.xpath("//mat-icon[normalize-space() = 'transform']"));
+        List<WebElement> icons = driver.findElements(By.xpath("//mat-icon[normalize-space() = 'more_vert']"));
         Assert.assertTrue(icons.size() > 1);
 
         // Check icons don't appear on CDE detail page
         String cdeName = "Brief Symptom Inventory-18 (BSI18)- Anxiety raw score";
         goToCdeByName(cdeName);
         goToClassification();
-        icons = driver.findElements(By.xpath("//mat-icon[normalize-space() = 'transform']"));
+        icons = driver.findElements(By.xpath("//mat-icon[normalize-space() = 'more_vert']"));
         Assert.assertTrue(icons.isEmpty());
     }
 }

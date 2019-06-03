@@ -997,12 +997,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         Assert.assertEquals(0, driver.findElements(By.xpath("//*[@id='" + String.join(",", categories) + "']")).size());
     }
 
-    protected void gotoInbox() {
-        clickElement(By.id("username_link"));
-        clickElement(By.linkText("Inbox"));
-        hangon(0.5);
-    }
-
     protected void selectHistoryAndCompare(Integer leftIndex, Integer rightIndex) {
         clickElement(By.xpath("//*[@id='historyTable']/tbody/tr[td][" + leftIndex + "]"));
         clickElement(By.xpath("//*[@id='historyTable']/tbody/tr[td][" + rightIndex + "]"));
