@@ -17,7 +17,7 @@ public class MeshTopicsTest extends NlmCdeBaseTest {
         clickElement(By.id("username_link"));
         clickElement(By.id("user_classifications"));
         clickMoreVertIcon(categories);
-        clickElement(By.xpath(getOrgClassificationIconXpath("meshMapping", categories)));
+        clickElement(By.xpath("//button/mat-icon[normalize-space() = 'link']"));
         findElement(By.id("mapClassificationMeshInput")).sendKeys("NINDS");
         int j = 20;
         while (j > 0) {

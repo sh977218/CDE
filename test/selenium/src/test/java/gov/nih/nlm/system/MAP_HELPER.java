@@ -7,15 +7,6 @@ import java.util.Map;
 
 public interface MAP_HELPER {
     ArrayList<String> PREDEFINED_DATATYPE = new ArrayList<String>(Arrays.asList("Value List", "Text", "Date", "Time", "Number", "Dynamic Code List", "Externally Defined", "File"));
-    Map<String, String> PREDEFINED_ORG_CLASSIFICATION_ICON = new HashMap<String, String>() {
-        {
-            put("rename", "edit");
-            put("remove", "delete_outline");
-            put("reclassify", "transform");
-            put("addchildclassification", "subdirectory_arrow_left");
-            put("meshmapping", "link");
-        }
-    };
     Map<String, String> SWAGGER_API_TYPE = new HashMap<String, String>() {
         {
             put("cdeTinyId", "operations-CDE-get_de__tinyId_");

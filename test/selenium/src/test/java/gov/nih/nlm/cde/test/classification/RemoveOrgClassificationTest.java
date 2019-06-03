@@ -16,6 +16,7 @@ public class RemoveOrgClassificationTest extends NlmCdeBaseTest {
         searchNestedClassifiedForms();
         textPresent("NINDS (34");
         gotoClassificationMgt();
+
         clickMoreVertIcon(categories);
         deleteOrgClassification("NINDS", categories);
         searchNestedClassifiedCdes();

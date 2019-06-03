@@ -19,7 +19,7 @@ public class ReclassifyOrgClassificationTest extends NlmCdeBaseTest {
 
         String[] categories = new String[]{"OldClassification"};
         clickMoreVertIcon(categories);
-        clickElement(By.xpath(getOrgClassificationIconXpath("reclassify", categories)));
+        clickElement(By.xpath("//button/mat-icon[normalize-space() = 'transform']"));
         textPresent("Classify CDEs in Bulk");
         new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText("org / or Org");
         clickElement(By.id("NewClassification-classifyBtn"));

@@ -990,7 +990,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         clickElement(By.cssSelector("mat-select"));
         selectMatSelectDropdownByText(orgName);
         clickMoreVertIcon(categories);
-        clickElement(By.xpath(getOrgClassificationIconXpath("remove", categories)));
+        clickElement(By.xpath("//button/mat-icon[normalize-space() = 'delete_outline']"));
         findElement(By.id("removeClassificationUserTyped")).sendKeys(classification);
         clickElement(By.id("confirmDeleteClassificationBtn"));
         checkAlert("Classification Deleted");
@@ -1388,18 +1388,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         }
     }
 
-    protected void addClassificationByRecentlyAdd(String org, String[] classificationArray) {
-        clickElement(By.id("openClassificationModalBtn"));
-        textPresent("By recently added");
-        clickElement(By.id("recentlyAddViewTab"));
-        String recentlyClassificationString = org;
-        for (int i = 0; i < classificationArray.length; i++)
-            recentlyClassificationString = recentlyClassificationString + " / " + classificationArray[i];
-        String classifyBtnXpath = "//*[normalize-space( text() )='" + recentlyClassificationString + "']//button";
-        clickElement(By.xpath(classifyBtnXpath));
-        clickElement(By.id("cancelNewClassifyItemBtn"));
-    }
-
     protected void addExistingClassification(String org, String[] classificationArray) {
         clickElement(By.id("openClassificationModalBtn"));
         textPresent("By recently added");
@@ -1492,12 +1480,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         return "(//*[@id='" + section + "']//*[contains(@class,'no" + side + "Padding')]//*[contains(@class,'" + type + "')])[" + index + "]";
     }
 
-    public String getOrgClassificationIconXpath(String type, String[] categories) {
-        String id = String.join(",", categories);
-        String icon = PREDEFINED_ORG_CLASSIFICATION_ICON.get(type.toLowerCase());
-        return "//*[@id='" + id + "']/following-sibling::a/mat-icon[normalize-space() = '" + icon + "']";
-    }
-
     protected void searchNestedClassifiedCdes() {
         goToCdeSearch();
         findElement(By.name("q")).sendKeys("classification.elements.elements.name:\"Participant/Subject Characteristics\"");
@@ -1534,7 +1516,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
                 String[] currentCategories = Arrays.copyOfRange(categories, 0, i);
 
                 clickMoreVertIcon(currentCategories);
-                clickElement(By.xpath(getOrgClassificationIconXpath("addChildClassification", currentCategories)));
+                clickElement(By.xpath("//button/mat-icon[normalize-space() = 'subdirectory_arrow_left']"));
                 findElement(By.id("addChildClassifInput")).sendKeys(nextCategories[nextCategories.length - 1]);
                 hangon(2);
                 clickElement(By.id("confirmAddChildClassificationBtn"));
