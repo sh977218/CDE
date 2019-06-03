@@ -54,6 +54,7 @@ export const fixDatatype = function fixDatatype(dc) {
     }
     if (dc.datatype === 'Value List' && !dc.datatypeValueList) {
         dc.datatypeValueList = {};
+        dc.permissibleValues = [];
     }
     if (dc.datatype === 'Number' && !dc.datatypeNumber) {
         dc.datatypeNumber = {};
