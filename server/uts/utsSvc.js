@@ -26,8 +26,7 @@ function getTGT() {
         uri: config.vsac.tgtUrl,
         method: 'POST',
         qs: {
-            username: config.vsac.username,
-            password: config.vsac.password
+            apikey: config.umls.apikey
         },
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
@@ -35,7 +34,8 @@ function getTGT() {
     };
     return util.promisify(request.post)(options)
         .then(response => {
-            TGT = response.body;
+            TGT = response.body.substr(response.body.indexOf(config.vsac.tgtUrl), response.body.length);
+            TGT = TGT.substr(0, TGT.indexOf('"'));
         }, handleReject('get TGT ERROR'));
 }
 
@@ -62,7 +62,7 @@ function getVsacCookies() {
 async function getTicket() {
     if (!TGT.length) await getTGT().catch(() => TGT = '');
     const options = {
-        uri: config.vsac.tgtUrl + '/' + TGT,
+        uri: TGT,
         qs: {
             service: config.uts.service
         },
