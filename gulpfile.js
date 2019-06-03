@@ -296,9 +296,9 @@ gulp.task('checkDbConnection', function _buildHome() {
 });
 
 gulp.task('npmrebuild', function _mongorestore(cb) {
-    spawn('npm', ['rebuild'], {stdio: 'inherit'})
-        .on('exit', cb);
+    spawn('npm', ['rebuild'], {stdio: 'inherit'}).on('exit', cb);
 });
+
 gulp.task('mongorestoretest', function _mongorestore(cb) {
     let username = config.database.appData.username;
     let password = config.database.appData.password;
@@ -310,6 +310,7 @@ gulp.task('mongorestoretest', function _mongorestore(cb) {
     spawn('mongorestore', args, {stdio: 'inherit'})
         .on('exit', cb);
 });
+
 gulp.task('injectElastic', function _injectElastic(cb) {
     console.log('Start node app to inject');
     let p = spawn('node', ['app'], {stdio: 'inherit'});
@@ -321,6 +322,7 @@ gulp.task('injectElastic', function _injectElastic(cb) {
             })
     }, 10000)
 });
+
 gulp.task('checkBundleSize', function _checkBundleSize(cb) {
     spawn('node', ['scripts/buildCheckSize.js'], {stdio: 'inherit'})
         .on('exit', cb);
