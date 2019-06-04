@@ -36,7 +36,6 @@ import { FhirAppsComponent } from 'settings/fhirApps/fhirApps.component';
 import { IdSourcesComponent } from 'settings/idSources/idSources.component';
 import { StatusValidationRulesComponent } from 'settings/statusValidationRules/statusValidationRules.component';
 import { OrgsEditComponent } from 'settings/orgsEdit/orgsEdit.component';
-import { ListManagementComponent } from 'settings/listManagement/listManagement.component';
 import { OneListMgtComponent } from 'settings/listManagement/oneListMgt.component';
 import { MyPublishedFormsComponent } from 'settings/myPublishedForms/myPublishedForms.component';
 import { InlineAreaEditModule } from 'inlineAreaEdit/inlineAreaEdit.module';
@@ -53,6 +52,9 @@ import { AllDraftsResolve } from 'settings/drafts/allDrafts.resolve';
 import { MyOrgDraftsResolve } from 'settings/drafts/myOrgDrafts.resolve';
 import { myDraftsResolve } from 'settings/drafts/myDrafts.resolve';
 import { DraftsService } from 'settings/drafts/drafts.service';
+import { ManagedOrgsResolve } from 'settings/ManagedOrgsResolve';
+import { TagsManagementComponent } from 'settings/tagsManagement/tagsManagement.component';
+import { PropertiesManagementComponent } from 'settings/propertiesManagement/propertiesManagement.component';
 
 const appRoutes: Routes = [
     {
@@ -143,10 +145,18 @@ const appRoutes: Routes = [
                 data: {title: 'Status Validation Rules'}
             },
             {
-                path: 'listManagement',
-                component: ListManagementComponent,
+                path: 'tagsManagement',
+                component: TagsManagementComponent,
                 canLoad: [OrgAuthorityGuard],
-                data: {title: 'List Management'}
+                resolve: {managedOrgs: ManagedOrgsResolve},
+                data: {title: 'Tags Management'}
+            },
+            {
+                path: 'propertiesManagement',
+                component: PropertiesManagementComponent,
+                canLoad: [OrgAuthorityGuard],
+                resolve: {managedOrgs: ManagedOrgsResolve},
+                data: {title: 'Properties Management'}
             },
             {
                 path: 'orgsEdit',
@@ -280,13 +290,14 @@ const appRoutes: Routes = [
         MyPublishedFormsComponent,
 
         OneListMgtComponent,
-        ListManagementComponent,
         OrgsEditComponent,
         OrgAdminComponent,
         OrgCuratorComponent,
         StewardOrgTransferComponent,
         EmbedComponent,
         StatusValidationRulesComponent,
+        TagsManagementComponent,
+        PropertiesManagementComponent,
 
         DraftsComponent,
         MyCommentsComponent,
@@ -306,7 +317,8 @@ const appRoutes: Routes = [
         DraftsService,
         myDraftsResolve,
         MyOrgDraftsResolve,
-        AllDraftsResolve
+        AllDraftsResolve,
+        ManagedOrgsResolve
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

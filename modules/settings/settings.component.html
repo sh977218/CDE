@@ -69,9 +69,13 @@
                                        [routerLinkActive]="['isActive']" routerLink="orgsEdit">
                             Manage
                         </mat-list-item>
-                        <mat-list-item id="listManagement" *ngIf="userSvc.isOrgAuthority()"
-                                       [routerLinkActive]="['isActive']" routerLink="listManagement">
-                            Properties & Tags
+                        <mat-list-item id="tagsManagement" *ngIf="userSvc.isOrgAuthority()"
+                                       [routerLinkActive]="['isActive']" routerLink="tagsManagement">
+                            Tags
+                        </mat-list-item>
+                        <mat-list-item id="propertiesManagement" *ngIf="userSvc.isOrgAuthority()"
+                                       [routerLinkActive]="['isActive']" routerLink="propertiesManagement">
+                            Properties
                         </mat-list-item>
                         <mat-list-item id="validationRules" *ngIf="userSvc.isOrgAuthority()"
                                        [routerLinkActive]="['isActive']" routerLink="statusValidationRules">
