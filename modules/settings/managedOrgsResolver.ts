@@ -8,7 +8,7 @@ import { EMPTY } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable()
-export class ManagedOrgsResolve implements Resolve<Observable<Article>> {
+export class ManagedOrgsResolver implements Resolve<Observable<Article>> {
     constructor(private router: Router,
                 private http: HttpClient) {
     }
