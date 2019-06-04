@@ -53,8 +53,7 @@ export const fixDatatype = function fixDatatype(dc) {
         dc.datatype = 'Text';
     }
     if (dc.datatype === 'Value List' && !dc.datatypeValueList) {
-        dc.datatypeValueList = {
-        };
+        dc.datatypeValueList = {};
         dc.permissibleValues = [];
     }
     if (dc.datatype === 'Number' && !dc.datatypeNumber) {
