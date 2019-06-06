@@ -6,6 +6,8 @@ const sharedSchemas = require('../system/schemas.js');
 
 const mongo_data = require('../system/mongo-data');
 
+exports.type = 'articles';
+
 let articleSchema = new Schema({
     key: {type: String, index: true},
     body: String,
@@ -18,6 +20,10 @@ let conn = connHelper.establishConnection(config.database.appData);
 let Article = conn.model('article', articleSchema);
 
 mongo_data.attachables.push(Article);
+
+exports.byId = function (id, cb) {
+    Article.findOne({_id: id}, cb);
+};
 
 exports.byKey = function (key, cb) {
     Article.findOne({key: key}, cb);
