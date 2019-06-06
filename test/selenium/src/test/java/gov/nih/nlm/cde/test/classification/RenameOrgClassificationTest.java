@@ -13,7 +13,10 @@ public class RenameOrgClassificationTest extends NlmCdeBaseTest {
     public void renameOrgClassification() {
         mustBeLoggedInAs(ninds_username, password);
         gotoClassificationMgt();
-        clickElement(By.xpath(getOrgClassificationIconXpath("rename", new String[]{"Domain", "Protocol Experience"})));
+
+        String[] categories = new String[]{"Domain", "Protocol Experience"};
+        clickMoreVertIcon(categories);
+        clickElement(By.xpath("//button/mat-icon[normalize-space() = 'edit']"));
         findElement(By.id("newClassificationName")).clear();
         // .clear doesn't trigger modal changes. this is trick
         findElement(By.id("newClassificationName")).sendKeys("a");
@@ -21,7 +24,8 @@ public class RenameOrgClassificationTest extends NlmCdeBaseTest {
         textPresent("Name is required");
         clickElement(By.id("cancelRenameClassificationBtn"));
         modalGone();
-        clickElement(By.xpath(getOrgClassificationIconXpath("rename", new String[]{"Domain", "Protocol Experience"})));
+        clickMoreVertIcon(categories);
+        clickElement(By.xpath("//button/mat-icon[normalize-space() = 'edit']"));
         findElement(By.id("newClassificationName")).sendKeys(Keys.BACK_SPACE);
         findElement(By.id("newClassificationName")).sendKeys("ies;");
         textPresent("Classification Name cannot contain ;");
