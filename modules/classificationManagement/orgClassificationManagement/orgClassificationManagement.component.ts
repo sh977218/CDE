@@ -35,7 +35,7 @@ export class OrgClassificationManagementComponent implements OnInit {
     childClassificationNode?: TreeNode;
     descriptorID?: string;
     descriptorName?: string;
-    descToName: {[descId: string]: string} = {};
+    descToName: { [descId: string]: string } = {};
     mapping?: {
         flatClassification: string,
         meshDescriptors: string[],
@@ -62,13 +62,11 @@ export class OrgClassificationManagementComponent implements OnInit {
     selectedOrg?: Organization;
     userTyped = '';
 
-    constructor(
-        private alert: AlertService,
-        private classificationSvc: ClassificationService,
-        private http: HttpClient,
-        public dialog: MatDialog,
-        private userService: UserService,
-    ) {
+    constructor(private alert: AlertService,
+                private classificationSvc: ClassificationService,
+                private http: HttpClient,
+                public dialog: MatDialog,
+                private userService: UserService) {
         this.userService.reload(() => {
             if (this.userService.userOrgs.length > 0) {
                 if (this.userService.userOrgs.length === 1) {
@@ -122,8 +120,7 @@ export class OrgClassificationManagementComponent implements OnInit {
             classificationArray.forEach((c, i) => {
                 if (i < classificationArray.length - 1) {
                     this.selectedClassificationArray = this.selectedClassificationArray.concat('<span> ' + c + ' </span> ->');
-                }
-                else this.selectedClassificationArray = this.selectedClassificationArray.concat(' <strong> ' + c + ' </strong>');
+                } else this.selectedClassificationArray = this.selectedClassificationArray.concat(' <strong> ' + c + ' </strong>');
             });
         } else this.selectedClassificationArray = ' <strong> ' + this.selectedOrg!.name + ' </strong>';
         classificationArray.push(this.newClassificationName!);
@@ -208,8 +205,7 @@ export class OrgClassificationManagementComponent implements OnInit {
         classificationArray.forEach((c, i) => {
             if (i < classificationArray.length - 1) {
                 this.selectedClassificationArray = this.selectedClassificationArray.concat('<span> ' + c + ' </span> ->');
-            }
-            else this.selectedClassificationArray = this.selectedClassificationArray.concat(' <strong> ' + c + ' </strong>');
+            } else this.selectedClassificationArray = this.selectedClassificationArray.concat(' <strong> ' + c + ' </strong>');
         });
         this.dialog.open(this.deleteClassificationContent).afterClosed().subscribe(result => {
             if (result) {
@@ -242,8 +238,7 @@ export class OrgClassificationManagementComponent implements OnInit {
         classificationArray.forEach((c, i) => {
             if (i < classificationArray.length - 1) {
                 this.selectedClassificationArray = this.selectedClassificationArray.concat('<span> ' + c + ' </span> ->');
-            }
-            else this.selectedClassificationArray = this.selectedClassificationArray.concat(' <strong> ' + c + ' </strong>');
+            } else this.selectedClassificationArray = this.selectedClassificationArray.concat(' <strong> ' + c + ' </strong>');
         });
         this.dialog.open(this.mapClassificationMeshContent).afterClosed().subscribe(result => {
             if (result) {
@@ -257,7 +252,8 @@ export class OrgClassificationManagementComponent implements OnInit {
                     this.alert.addAlert('success', 'Classification Added');
                 });
             }
-        }, () => {});
+        }, () => {
+        });
     }
 
     openReclassificationModal(node: TreeNode) {
@@ -271,8 +267,7 @@ export class OrgClassificationManagementComponent implements OnInit {
         classificationArray.forEach((c, i) => {
             if (i < classificationArray.length - 1) {
                 this.selectedClassificationArray = this.selectedClassificationArray.concat(c + ' / ');
-            }
-            else this.selectedClassificationArray = this.selectedClassificationArray.concat(c);
+            } else this.selectedClassificationArray = this.selectedClassificationArray.concat(c);
         });
         this.selectedClassificationArray = 'Classify CDEs in Bulk   <p>Classify all CDEs classified by <strong> ' +
             this.selectedClassificationArray + ' </strong> with new classification(s).</p>';

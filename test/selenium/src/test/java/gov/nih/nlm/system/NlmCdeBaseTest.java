@@ -427,6 +427,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         clickElement(By.id("profile"));
         textPresent("Profile", By.id("settingsContent"));
     }
+
     protected void goToNotification() {
         goToSettings();
         clickElement(By.id("notification"));
@@ -988,17 +989,12 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         String classification = categories[categories.length - 1];
         clickElement(By.cssSelector("mat-select"));
         selectMatSelectDropdownByText(orgName);
-        clickElement(By.xpath(getOrgClassificationIconXpath("remove", categories)));
+        clickMoreVertIcon(categories);
+        clickElement(By.xpath("//button/mat-icon[normalize-space() = 'delete_outline']"));
         findElement(By.id("removeClassificationUserTyped")).sendKeys(classification);
         clickElement(By.id("confirmDeleteClassificationBtn"));
         checkAlert("Classification Deleted");
         Assert.assertEquals(0, driver.findElements(By.xpath("//*[@id='" + String.join(",", categories) + "']")).size());
-    }
-
-    protected void gotoInbox() {
-        clickElement(By.id("username_link"));
-        clickElement(By.linkText("Inbox"));
-        hangon(0.5);
     }
 
     protected void selectHistoryAndCompare(Integer leftIndex, Integer rightIndex) {
@@ -1386,18 +1382,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         }
     }
 
-    protected void addClassificationByRecentlyAdd(String org, String[] classificationArray) {
-        clickElement(By.id("openClassificationModalBtn"));
-        textPresent("By recently added");
-        clickElement(By.id("recentlyAddViewTab"));
-        String recentlyClassificationString = org;
-        for (int i = 0; i < classificationArray.length; i++)
-            recentlyClassificationString = recentlyClassificationString + " / " + classificationArray[i];
-        String classifyBtnXpath = "//*[normalize-space( text() )='" + recentlyClassificationString + "']//button";
-        clickElement(By.xpath(classifyBtnXpath));
-        clickElement(By.id("cancelNewClassifyItemBtn"));
-    }
-
     protected void addExistingClassification(String org, String[] classificationArray) {
         clickElement(By.id("openClassificationModalBtn"));
         textPresent("By recently added");
@@ -1490,12 +1474,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         return "(//*[@id='" + section + "']//*[contains(@class,'no" + side + "Padding')]//*[contains(@class,'" + type + "')])[" + index + "]";
     }
 
-    public String getOrgClassificationIconXpath(String type, String[] categories) {
-        String id = String.join(",", categories);
-        String icon = PREDEFINED_ORG_CLASSIFICATION_ICON.get(type.toLowerCase());
-        return "//*[@id='" + id + "']/following-sibling::a/mat-icon[normalize-space() = '" + icon + "']";
-    }
-
     protected void searchNestedClassifiedCdes() {
         goToCdeSearch();
         findElement(By.name("q")).sendKeys("classification.elements.elements.name:\"Participant/Subject Characteristics\"");
@@ -1506,6 +1484,10 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         goToFormSearch();
         findElement(By.name("q")).sendKeys("classification.elements.elements.name:\"Participant/Subject Characteristics\"");
         findElement(By.id("search.submit")).click();
+    }
+
+    protected void clickMoreVertIcon(String[] categories) {
+        clickElement(By.xpath("//*[@id='" + String.join(",", categories) + "']/following-sibling::button[normalize-space()='more_vert']"));
     }
 
     protected void createOrgClassification(String org, String[] categories) {
@@ -1526,7 +1508,9 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
             List<WebElement> nextCategoryList = driver.findElements(By.xpath(xpath));
             if (nextCategoryList.size() == 0) {
                 String[] currentCategories = Arrays.copyOfRange(categories, 0, i);
-                clickElement(By.xpath(getOrgClassificationIconXpath("addChildClassification", currentCategories)));
+
+                clickMoreVertIcon(currentCategories);
+                clickElement(By.xpath("//button/mat-icon[normalize-space() = 'subdirectory_arrow_left']"));
                 findElement(By.id("addChildClassifInput")).sendKeys(nextCategories[nextCategories.length - 1]);
                 hangon(2);
                 clickElement(By.id("confirmAddChildClassificationBtn"));

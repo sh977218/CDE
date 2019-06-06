@@ -17,7 +17,7 @@ const appRoutes: Routes = [
     {path: 'cde/search', loadChildren: 'cde/public/cdeSearchEntry.module#CdeSearchEntryModule', data: {title: 'Data Element Search'}},
     {path: 'cdeStatusReport', loadChildren: 'cde/public/cdeStatusReport.module#CdeStatusReportModule', data: {title: 'Data Element Status Report'}},
     {path: 'cde', redirectTo: '/cde/search', pathMatch: 'full'},
-    {path: 'classificationManagement', loadChildren: 'system/public/classifManagement.module#ClassifManagementModule', canLoad: [OrgCuratorGuard], data: {title: 'Manage Classification'}},
+    {path: 'classificationManagement', loadChildren: 'classificationManagement/classificationManagement.module#ClassificationManagementModule', canLoad: [OrgCuratorGuard], data: {title: 'Manage Classification'}},
     {path: 'createCde', loadChildren: 'cde/public/cdeCreate.module#CdeCreateModule', data: {title: 'Create Data Element'}},
     {path: 'createForm', loadChildren: 'form/public/formCreate.module#FormCreateModule', data: {title: 'Create Form'}},
     {path: 'deView', loadChildren: 'cde/public/cdeView.module#CdeViewModule', data: {title: 'Data Element View'}},
