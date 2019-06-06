@@ -543,6 +543,7 @@ exports.init = function (app) {
             } else if (!file.metadata || file.metadata.status !== "approved") {
                 res.status(403).send("This file has not been approved yet.");
             } else {
+                res.contentType(file.contentType);
                 mongo_data.createReadStream({_id: fileId}).pipe(res);
             }
         }));
