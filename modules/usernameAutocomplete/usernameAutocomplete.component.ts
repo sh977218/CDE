@@ -18,8 +18,11 @@ export class UsernameAutocompleteComponent {
             .pipe(
                 debounceTime(300),
                 distinctUntilChanged(),
-                switchMap(value => value.length < 3 ? [] : userService.searchUsernames(value)
-                )
+                switchMap(value => value.length < 3 ? [] : userService.searchUsernames(value)),
             ).subscribe(usernames => this.filteredUsernames = usernames);
+
+
+        this.usernameControl.valueChanges.subscribe(val => this.onSelect.emit(val));
+
     }
 }
