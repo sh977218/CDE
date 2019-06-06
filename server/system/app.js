@@ -10,7 +10,12 @@ const useragent = require('useragent');
 const util = require('util');
 const authorization = require('./authorization');
 const isSiteAdminMiddleware = authorization.isSiteAdminMiddleware;
-const isOrgAuthorityMiddleware = authorization.isOrgAdminMiddleware;
+const isOrgCuratorMiddleware = authorization.isOrgCuratorMiddleware;
+const isOrgAdminMiddleware = authorization.isOrgAdminMiddleware;
+const isOrgAuthorityMiddleware = authorization.isOrgAuthorityMiddleware;
+const loggedInMiddleware = authorization.loggedInMiddleware;
+const nocacheMiddleware = authorization.nocacheMiddleware;
+const canApproveCommentMiddleware = authorization.canApproveCommentMiddleware;
 const authorizationShared = require('esm')(module)('../../shared/system/authorizationShared');
 const mongo_cde = require('../cde/mongo-cde');
 const mongo_form = require('../form/mongo-form');
@@ -341,7 +346,7 @@ exports.init = function (app) {
         fhirObservationInfo.get(res, req.query.id, info => res.send(info));
     });
 
-    app.put('/fhirObservationInfo', [authorization.loggedInMiddleware], (req, res) => {
+    app.put('/fhirObservationInfo', loggedInMiddleware, (req, res) => {
         fhirObservationInfo.put(res, req.body, info => res.send(info));
     });
 
@@ -356,9 +361,9 @@ exports.init = function (app) {
     });
 
     pushNotification.checkDatabase();
-    app.post('/pushRegistration', [authorization.loggedInMiddleware], pushNotification.create);
-    app.delete('/pushRegistration', [authorization.loggedInMiddleware], pushNotification.delete);
-    app.post('/pushRegistrationSubscribe', [authorization.loggedInMiddleware], pushNotification.subscribe);
+    app.post('/pushRegistration', loggedInMiddleware, pushNotification.create);
+    app.delete('/pushRegistration', loggedInMiddleware, pushNotification.delete);
+    app.post('/pushRegistrationSubscribe', loggedInMiddleware, pushNotification.subscribe);
     app.post('/pushRegistrationUpdate', pushNotification.updateStatus);
 
     app.get('/jobStatus/:type', function (req, res) {
@@ -373,12 +378,12 @@ exports.init = function (app) {
 
     /* ---------- PUT NEW REST API above ---------- */
 
-    app.get('/indexCurrentNumDoc/:indexPosition', [isSiteAdminMiddleware], (req, res) => {
+    app.get('/indexCurrentNumDoc/:indexPosition', isSiteAdminMiddleware, (req, res) => {
         let index = esInit.indices[req.params.indexPosition];
         return res.send({count: index.count, totalCount: index.totalCount});
     });
 
-    app.post('/reindex/:indexPosition', [isSiteAdminMiddleware], (req, res) => {
+    app.post('/reindex/:indexPosition', isSiteAdminMiddleware, (req, res) => {
         let index = esInit.indices[req.params.indexPosition];
         elastic.reIndex(index, () => {
             setTimeout(() => {
@@ -392,14 +397,14 @@ exports.init = function (app) {
 
     app.get('/supportedBrowsers', (req, res) => res.render('supportedBrowsers', 'system'));
 
-    app.get('/listOrgs', authorization.nocacheMiddleware, (req, res) => {
+    app.get('/listOrgs', nocacheMiddleware, (req, res) => {
         mongo_data.listOrgs(function (err, orgs) {
             if (err) return res.status(500).send('ERROR - unable to list orgs');
             res.send(orgs);
         });
     });
 
-    app.get('/listOrgsDetailedInfo', authorization.nocacheMiddleware, (req, res) => {
+    app.get('/listOrgsDetailedInfo', nocacheMiddleware, (req, res) => {
         mongo_data.listOrgsDetailedInfo(function (err, orgs) {
             if (err) {
                 logging.errorLogger.error(JSON.stringify({msg: 'Failed to get list of orgs detailed info.'}),
@@ -414,7 +419,7 @@ exports.init = function (app) {
 
     let failedIps = [];
 
-    app.get('/csrf', csrf(), authorization.nocacheMiddleware, (req, res) => {
+    app.get('/csrf', csrf(), nocacheMiddleware, (req, res) => {
         let resp = {csrf: req.csrfToken()};
         let failedIp = findFailedIp(getRealIp(req));
         if ((failedIp && failedIp.nb > 2)) {
@@ -496,16 +501,16 @@ exports.init = function (app) {
         });
     });
 
-    app.get('/org/:name', authorization.nocacheMiddleware, (req, res) => {
+    app.get('/org/:name', nocacheMiddleware, (req, res) => {
         return mongo_data.orgByName(req.params.name, (err, result) => res.send(result));
     });
 
 
     app.get('/managedOrgs', orgsvc.managedOrgs);
-    app.post('/addOrg', [authorization.isOrgAuthorityMiddleware], orgsvc.addOrg);
-    app.post('/updateOrg', [authorization.isOrgAuthorityMiddleware], (req, res) => mongo_data.updateOrg(req.body, res));
+    app.post('/addOrg', isOrgAuthorityMiddleware, orgsvc.addOrg);
+    app.post('/updateOrg', isOrgAuthorityMiddleware, (req, res) => mongo_data.updateOrg(req.body, res));
 
-    app.get('/user/:search', [authorization.nocacheMiddleware, authorization.loggedInMiddleware], (req, res) => {
+    app.get('/user/:search', [nocacheMiddleware, loggedInMiddleware], (req, res) => {
         if (!req.params.search) {
             return res.send({});
         } else if (req.params.search === 'me') {
@@ -515,26 +520,37 @@ exports.init = function (app) {
         }
     });
 
-    app.get('/myOrgsAdmins', [authorization.nocacheMiddleware, authorization.loggedInMiddleware], usersrvc.myOrgsAdmins);
+    app.get('/myOrgsAdmins', [nocacheMiddleware, loggedInMiddleware], usersrvc.myOrgsAdmins);
 
-    app.get('/orgAdmins', [authorization.nocacheMiddleware, authorization.isOrgAuthorityMiddleware], usersrvc.orgAdmins);
-    app.post('/addOrgAdmin', [authorization.isOrgAdminMiddleware], usersrvc.addOrgAdmin);
-    app.post('/removeOrgAdmin', [authorization.isOrgAdminMiddleware], usersrvc.removeOrgAdmin);
+    app.get('/orgAdmins', [nocacheMiddleware, isOrgAuthorityMiddleware], usersrvc.orgAdmins);
+    app.post('/addOrgAdmin', isOrgAdminMiddleware, usersrvc.addOrgAdmin);
+    app.post('/removeOrgAdmin', isOrgAdminMiddleware, usersrvc.removeOrgAdmin);
 
-    app.get('/orgCurators', [authorization.nocacheMiddleware, authorization.isOrgAdminMiddleware], usersrvc.orgCurators);
-    app.post('/addOrgCurator', [authorization.isOrgAdminMiddleware], usersrvc.addOrgCurator);
-    app.post('/removeOrgCurator', [authorization.isOrgAdminMiddleware], usersrvc.removeOrgCurator);
+    app.get('/orgCurators', [nocacheMiddleware, isOrgAdminMiddleware], usersrvc.orgCurators);
+    app.post('/addOrgCurator', isOrgAdminMiddleware, usersrvc.addOrgCurator);
+    app.post('/removeOrgCurator', isOrgAdminMiddleware, usersrvc.removeOrgCurator);
 
-    app.post('/updateUserRoles', [authorization.isOrgAuthorityMiddleware], usersrvc.updateUserRoles);
-    app.post('/updateUserAvatar', [authorization.isOrgAuthorityMiddleware], usersrvc.updateUserAvatar);
+    app.post('/updateUserRoles', isOrgAuthorityMiddleware, usersrvc.updateUserRoles);
+    app.post('/updateUserAvatar', isOrgAuthorityMiddleware, usersrvc.updateUserAvatar);
 
-    app.get('/data/:imgtag', (req, res) => {
-        mongo_data.getFile(req.user, req.params.imgtag, res);
+    app.get('/data/:id', (req, res) => {
+        let fileId = req.params.id;
+        mongo_data.getFile(fileId, handleError({req, res}, file => {
+            if (!file) {
+                res.status(404).send("File not found.");
+            } else if (!authorizationShared.hasRole(user, "AttachmentReviewer")) {
+                res.status(401).send("Not Authorized.");
+            } else if (!file.metadata || file.metadata.status !== "approved") {
+                res.status(403).send("This file has not been approved yet.");
+            } else {
+                mongo_data.createReadStream({_id: fileId}).pipe(res);
+            }
+        }));
     });
 
     app.post('/transferSteward', orgsvc.transferSteward);
 
-    app.post('/addCommentAuthor', [authorization.canApproveCommentMiddleware], (req, res) => {
+    app.post('/addCommentAuthor', canApproveCommentMiddleware, (req, res) => {
         mongo_data.addUserRole(req.body.username, 'CommentAuthor', handleError({req, res}, err => {
             if (err) {
                 res.status(404).send(err);
@@ -544,20 +560,20 @@ exports.init = function (app) {
         }));
     });
 
-    app.post('/getClassificationAuditLog', [authorization.isOrgAuthorityMiddleware], (req, res) => {
+    app.post('/getClassificationAuditLog', isOrgAuthorityMiddleware, (req, res) => {
         mongo_data.getClassificationAuditLog(req.body, handleError({req, res}, result => {
             res.send(result);
         }));
     });
 
-    app.post('/embed/', [authorization.isOrgAdminMiddleware], (req, res) => {
+    app.post('/embed/', isOrgAdminMiddleware, (req, res) => {
         const handlerOptions = {req, res, publicMessage: 'There was an error saving this embed.'};
         mongo_data.embeds.save(req.body, handleError(handlerOptions, embed => {
             res.send(embed);
         }));
     });
 
-    app.delete('/embed/:id', [authorization.loggedInMiddleware], (req, res) => {
+    app.delete('/embed/:id', loggedInMiddleware, (req, res) => {
         const handlerOptions = {req, res, publicMessage: 'There was an error removing this embed.'};
         mongo_data.embeds.find({_id: req.params.id}, handleError(handlerOptions, embeds => {
             if (embeds.length !== 1) {
@@ -596,13 +612,13 @@ exports.init = function (app) {
     app.delete('/fhirApp/:id', isSiteAdminMiddleware,
         (req, res) => fhirApps.delete(res, req.params.id, () => res.send()));
 
-    app.post('/disableRule', authorization.isOrgAuthorityMiddleware, (req, res) => {
+    app.post('/disableRule', isOrgAuthorityMiddleware, (req, res) => {
         mongo_data.disableRule(req.body, handleError({req, res}, org => {
             res.send(org);
         }));
     });
 
-    app.post('/enableRule', authorization.isOrgAuthorityMiddleware, (req, res) => {
+    app.post('/enableRule', isOrgAuthorityMiddleware, (req, res) => {
         mongo_data.enableRule(req.body, handleError({req, res}, org => {
             res.send(org);
         }));
@@ -624,15 +640,15 @@ exports.init = function (app) {
         });
     });
 
-    app.get('/allDrafts', authorization.isOrgAuthorityMiddleware, (req, res) => {
+    app.get('/allDrafts', isOrgAuthorityMiddleware, (req, res) => {
         getDrafts(req, res, {});
     });
 
-    app.get('/orgDrafts', authorization.isOrgCuratorMiddleware, (req, res) => {
+    app.get('/orgDrafts', isOrgCuratorMiddleware, (req, res) => {
         getDrafts(req, res, {'stewardOrg.name': {$in: usersrvc.myOrgs(req.user)}});
     });
 
-    app.get('/myDrafts', authorization.isOrgCuratorMiddleware, (req, res) => {
+    app.get('/myDrafts', isOrgCuratorMiddleware, (req, res) => {
         getDrafts(req, res, {'updatedBy.username': req.user.username});
     });
 

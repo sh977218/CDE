@@ -38,16 +38,6 @@ exports.fileUsed = (collection, id, cb) => {
 };
 
 exports.createTask = function (user, role, type, eltModule, eltTinyId, item) {
-    // mongo_data.taskCreate({
-    //     from: [{type: 'user', typeId: user.username}],
-    //     to: {type: 'role', typeId: role},
-    //     type: type,
-    //     typeInfo: details,
-    // });
-
-    // drawer - query calculated
-
-    // push
     let name;
     switch (type) {
         case 'approval':
