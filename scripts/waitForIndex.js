@@ -12,9 +12,6 @@ let indexInt = setInterval(() => {
                 console.log('indexing complete, status returned: ');
                 clearInterval(indexInt);
 
-                // too slow, dont wait. wait in test.
-                request.post('http://localhost:3001/syncLinkedForms', {}, () => {
-                });
                 request.post('http://localhost:3001/server/mesh/syncWithMesh', {}, () => {
                     let meshInterval = setInterval(() => {
                         request.get('http://localhost:3001/server/mesh/syncWithMesh', (err, res, body) => {

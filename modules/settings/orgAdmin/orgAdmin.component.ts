@@ -30,7 +30,6 @@ export class OrgAdminComponent {
             this.alert.addAlert('success', 'Saved');
             this.getAdmins();
         }, () => this.alert.addAlert('danger', 'There was an issue adding this administrator.'));
-        this.newAdmin.username = '';
     }
 
     getAdmins() {
