@@ -7,7 +7,7 @@ const dbLogger = require('../log/dbLogger.js');
 
 function handleReject(message) {
     return error => {
-        dbLogger.appLogs(message + error);
+        dbLogger.consoleLog(message + error);
         throw error;
     };
 }
