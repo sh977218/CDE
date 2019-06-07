@@ -249,12 +249,14 @@ exports.registrationStateSchema = {
     replacedBy: {tinyId: {type: StringType, description: 'tinyId of replacement CDE'}},
 };
 
-exports.propertySchema = {
-    key: StringType,
-    value: StringType,
-    source: StringType,
-    valueFormat: StringType
-};
+exports.propertySchema = new Schema({
+        key: StringType,
+        value: StringType,
+        source: StringType,
+        valueFormat: StringType
+    },
+    {_id: false,}
+);
 
 exports.idSchema = {source: StringType, id: StringType, version: StringType};
 
