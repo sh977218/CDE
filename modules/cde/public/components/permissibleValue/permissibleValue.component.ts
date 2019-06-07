@@ -248,8 +248,8 @@ export class PermissibleValueComponent {
                     this.http.get<any>('/server/uts/umlsCuiFromSrc/' + code + '/' + source)
                         .subscribe(
                             res => {
-                                if (res.result.length > 0) {
-                                    res.result.forEach((r) => {
+                                if (res.result.results.length > 0) {
+                                    res.result.results.forEach(r => {
                                         this.SOURCES[src].codes[pv.valueMeaningCode] = {code: r.ui, meaning: r.name};
                                     });
                                 } else this.SOURCES[src].codes[pv.valueMeaningCode] = {code: 'N/A', meaning: 'N/A'};
@@ -277,6 +277,8 @@ export class PermissibleValueComponent {
                                 });
                             } else this.SOURCES[src].codes[pv.valueMeaningCode] = {code: 'N/A', meaning: 'N/A'};
                         }, () => {
+                            // @TODO, this is a bug in UMLS. Sravan will fix. Until then, treat HTML as not found
+                            this.SOURCES[src].codes[pv.valueMeaningCode] = {code: 'N/A', meaning: 'N/A'};
                         });
                 }
             } else this.SOURCES[src].codes[pv.valueMeaningCode] = {code: 'N/A', meaning: 'N/A'};
