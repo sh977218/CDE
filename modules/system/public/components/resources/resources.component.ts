@@ -17,7 +17,7 @@ import { ActivatedRoute } from '@angular/router';
 export class ResourcesComponent implements OnDestroy {
     canEdit;
     containers: HtmlContainer[] = [];
-    resource: Article;
+    resource: Article = new Article();
 
     constructor(private route: ActivatedRoute,
                 private alert: AlertService,
