@@ -8,21 +8,23 @@ const config = require('../system/parseConfig');
 const connHelper = require('../system/connections');
 const conn = connHelper.establishConnection(config.database.appData);
 
-let notificationTypesSchema = {
+let notificationTypesSchema = new Schema({
     drawer: Boolean,
     push: Boolean,
-};
+}, {_id: false});
+
+let CommentNotificationSchema = new Schema({
+    date: Date,
+    eltModule: {type: StringType, enum: ['board', 'cde', 'form']},
+    eltTinyId: StringType,
+    read: Boolean,
+    text: StringType,
+    username: StringType,
+}, {_id: false});
 
 let userSchema = new Schema({
-    username: {type: StringType, unique: true},
-    commentNotifications: [{
-        date: Date,
-        eltModule: {type: StringType, enum: ['board', 'cde', 'form']},
-        eltTinyId: StringType,
-        read: Boolean,
-        text: StringType,
-        username: StringType,
-    }],
+    username: {type: StringType, lowercase: true, trim: true, unique: true},
+    commentNotifications: [CommentNotificationSchema],
     email: StringType,
     password: StringType,
     lastLogin: Date,
@@ -72,10 +74,10 @@ let userSchema = new Schema({
     accessToken: StringType,
     refreshToken: StringType,
     avatarUrl: StringType,
-    publishedForms: [{
+    publishedForms: [new Schema({
         name: StringType,
         id: Schema.Types.ObjectId
-    }]
+    }, {_id: false})]
 }, {usePushEach: true});
 
 exports.userRefSchema = {

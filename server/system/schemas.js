@@ -10,28 +10,27 @@ let csEltSchema = {
     name: {type: StringType, index: true}
 };
 
-exports.classificationSchema = {
+exports.classificationSchema = new Schema({
     stewardOrg: {
         name: {type: StringType, index: true}
     },
     workingGroup: Boolean,
     elements: [csEltSchema]
-};
+}, {_id: false});
 
-exports.codeAndSystemSchema = {
+exports.codeAndSystemSchema = new Schema({
     code: StringType,
     system: StringType,
-};
+}, {_id: false});
 
-exports.permissibleValueSchema = {
+exports.permissibleValueSchema = new Schema({
     permissibleValue: StringType,
     valueMeaningName: StringType,
     valueMeaningCode: StringType,
     valueMeaningDefinition: StringType,
     codeSystemName: StringType,
     codeSystemVersion: StringType
-};
-
+}, {_id: false});
 
 exports.derivationRuleSchema = new Schema({
     name: StringType,
@@ -39,9 +38,9 @@ exports.derivationRuleSchema = new Schema({
     outputs: {type: [StringType], description: 'Information produced by rule'},
     ruleType: {type: StringType, enum: ['score', 'panel']},
     formula: {type: StringType, enum: ['sumAll', 'mean', 'bmi']},
-}, {_id: true});
+}, {_id: false});
 
-exports.sourceSchema = {
+exports.sourceSchema = new Schema({
     sourceName: StringType,
     imported: {type: Date, description: 'Date imported from source'},
     created: {type: Date, description: 'Date created in source'},
@@ -55,7 +54,7 @@ exports.sourceSchema = {
         value: {type: StringType, description: 'Content of a copyright statement or terms of use'},
         valueFormat: {type: StringType, description: 'If "html", interpret as HTML'},
     }
-};
+}, {_id: false});
 
 let commonEmbedSchema = {
     nameLabel: StringType,
@@ -208,20 +207,20 @@ exports.pushRegistration = new Schema({
 
 exports.orgSchema.set('collection', 'orgs');
 
-exports.designationSchema = {
+exports.designationSchema = new Schema({
     designation: StringType,
     tags: [StringType],
     sources: {type: [StringType], default: undefined}
-};
+}, {_id: false});
 
-exports.definitionSchema = {
+exports.definitionSchema = new Schema({
     definition: {type: String, required: true, minlength: 1},
     definitionFormat: StringType,
     tags: [StringType],
     sources: {type: [StringType], default: undefined}
-};
+}, {_id: false});
 
-exports.attachmentSchema = {
+exports.attachmentSchema = new Schema({
     fileid: {type: StringType, index: true},
     filename: StringType,
     filetype: StringType,
@@ -234,9 +233,9 @@ exports.attachmentSchema = {
     isDefault: Boolean,
     pendingApproval: {type: Boolean, index: true},
     scanned: Boolean
-};
+}, {_id: false});
 
-exports.registrationStateSchema = {
+exports.registrationStateSchema = new Schema({
     registrationStatus: {type: StringType, enum: regStatusShared.orderedList},
     effectiveDate: Date,
     untilDate: Date,
@@ -247,18 +246,20 @@ exports.registrationStateSchema = {
         description: 'Relative standing of CDE as it relates to steward\'s administrative workflow'
     },
     replacedBy: {tinyId: {type: StringType, description: 'tinyId of replacement CDE'}},
-};
+}, {_id: false});
 
 exports.propertySchema = new Schema({
-        key: StringType,
-        value: StringType,
-        source: StringType,
-        valueFormat: StringType
-    },
-    {_id: false,}
-);
+    key: StringType,
+    value: StringType,
+    source: StringType,
+    valueFormat: StringType
+}, {_id: false});
 
-exports.idSchema = {source: StringType, id: StringType, version: StringType};
+exports.idSchema = new Schema({
+    source: StringType,
+    id: StringType,
+    version: StringType
+}, {_id: false});
 
 let requestSchema = {
     source: {tinyId: StringType, id: StringType},
@@ -339,7 +340,7 @@ exports.jobQueue = Schema({
     error: StringType
 }, {usePushEach: true});
 
-exports.referenceDocumentSchema = {
+exports.referenceDocumentSchema = new Schema({
     docType: StringType,
     document: StringType,
     referenceDocumentId: StringType,
@@ -349,14 +350,14 @@ exports.referenceDocumentSchema = {
     title: StringType,
     languageCode: StringType,
     source: StringType
-};
+}, {_id: false});
 
-exports.dataSetSchema = {
+exports.dataSetSchema = new Schema({
     source: StringType,
     id: StringType,
     studyUri: StringType,
     notes: StringType
-};
+}, {_id: false});
 
 exports.classificationAudit = new Schema({
     date: {type: Date, default: Date.now, index: true}, user: {

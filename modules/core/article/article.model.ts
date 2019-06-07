@@ -5,5 +5,5 @@ export class Article {
     updated?: Date;
     created?: Date;
     attachments?: any;
-    rssFeeds?: any[];
+    rssFeeds?: any[] = [];
 }

@@ -3,17 +3,18 @@
     <div class="largeLayout notificationDrawerPointer"></div>
     <div class="notificationDrawerBox">
         <div class="taskItem">
-            Notifications are configured on your
-            <a routerLink="/profile" (click)="notificationService.drawerClose()">Profile</a>.
+            Notifications are configured in your
+            <a routerLink="/settings/notification" (click)="notificationService.drawerClose()">Settings</a>.
             <button mat-raised-button (click)="notificationService.reload()"
-                    [disabled]="notificationService.reloading">Refresh</button>
+                    [disabled]="notificationService.reloading">Refresh
+            </button>
         </div>
         <div class="notificationDrawerContent">
             <ng-container *ngFor="let task of notificationService.tasks">
                 <ng-container *ngTemplateOutlet="notificationTask; context: {task: task}"></ng-container>
             </ng-container>
             <div *ngIf="!notificationService.tasks || notificationService.tasks.length === 0"
-                  style="font-weight: 900; padding: 10px; text-align: center; ">
+                 style="font-weight: 900; padding: 10px; text-align: center; ">
                 Empty
             </div>
         </div>
@@ -32,7 +33,8 @@
                 <mat-chip-list style="display: inline-block">
                     <mat-chip *ngFor="let p of task.properties" style="margin: 0 2px; padding: 3px 6px">
                         <mat-icon *ngIf="p.icon" class="inlineIcon">{{p.icon}}</mat-icon>
-                        <span style="font-weight: bolder">{{p.key}}<span *ngIf="p.value" style="margin-right: 2px">:</span></span>
+                        <span style="font-weight: bolder">{{p.key}}<span *ngIf="p.value"
+                                                                         style="margin-right: 2px">:</span></span>
                         {{p.value}}
                     </mat-chip>
                 </mat-chip-list>

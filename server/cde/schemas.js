@@ -5,11 +5,11 @@ const StringType = Schema.Types.StringType;
 
 const sharedSchemas = require('../system/schemas.js');
 
-let conceptSchema = {
+let conceptSchema = new Schema({
     name: StringType,
     origin: {type: StringType, description: 'Source of concept'},
     originId: {type: StringType, description: 'Identifier of concept from source'},
-};
+}, {_id: false});
 
 let deJson = {
     elementType: {type: StringType, default: 'cde', enum: ['cde']},
@@ -162,6 +162,7 @@ let deJson = {
 };
 exports.deJson = deJson;
 exports.dataElementSchema = new Schema(deJson, {
+    collection: 'dataelements',
     usePushEach: true,
     toJSON: {
         transform: function (doc, ret) {
@@ -173,7 +174,6 @@ exports.dataElementSchema = new Schema(deJson, {
         }
     }
 });
-exports.dataElementSchema.set('collection', 'dataelements');
 exports.dataElementSchema.index({tinyId: 1, archived: 1}, {
     unique: true,
     name: "liveTinyId",
@@ -192,12 +192,14 @@ exports.dataElementSchema.path("classification").validate(v => {
     });
     return result;
 }, "Classification cannot be empty");
+
 exports.dataElementSchema.path("classification").validate(v => {
     return !v.map(value => value.stewardOrg.name)
         .some((value, index, array) => array.indexOf(value) !== array.lastIndexOf(value));
 }, "Duplicate Steward Classification");
 
 exports.draftSchema = new Schema(deJson, {
+    collection: 'dataelementdrafts',
     usePushEach: true,
     toObject: {
         virtuals: true
@@ -207,14 +209,11 @@ exports.draftSchema = new Schema(deJson, {
     }
 });
 exports.draftSchema.virtual('isDraft').get(() => true);
-exports.draftSchema.set('collection', 'dataelementdrafts');
 
 exports.dataElementSourceSchema = new Schema(deJson, {
-    usePushEach: true
+    usePushEach: true,
+    collection: 'dataelementsources'
 });
 exports.dataElementSourceSchema.index({tinyId: 1, source: 1}, {unique: true});
 
-exports.dataElementSourceSchema.set('collection', 'dataelementsources');
-
-exports.auditSchema = new Schema(sharedSchemas.eltLogSchema, {strict: false});
-exports.auditSchema.set('collection', 'cdeAudit');
+exports.auditSchema = new Schema(sharedSchemas.eltLogSchema, {collection: 'cdeAudit', strict: false});
