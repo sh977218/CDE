@@ -17,6 +17,7 @@ const loggedInMiddleware = authorization.loggedInMiddleware;
 const nocacheMiddleware = authorization.nocacheMiddleware;
 const canApproveCommentMiddleware = authorization.canApproveCommentMiddleware;
 const authorizationShared = require('esm')(module)('../../shared/system/authorizationShared');
+const hasRole = authorizationShared.hasRole;
 const mongo_cde = require('../cde/mongo-cde');
 const mongo_form = require('../form/mongo-form');
 const mongo_data = require('./mongo-data');
@@ -535,7 +536,19 @@ exports.init = function (app) {
 
     app.get('/data/:id', (req, res) => {
         let fileId = req.params.id;
-        mongo_data.getFile(req.user, fileId, res);
+        mongo_data.getFile(fileId, handleError({req, res}, file => {
+            if (!file) {
+                res.status(404).send("File not found.");
+            } else {
+                res.contentType(file.contentType);
+                if (!file.metadata
+                    || !file.metadata.status
+                    || file.metadata.status === "approved"
+                    || hasRole(req.user, "AttachmentReviewer"))
+                    mongo_data.gfs.createReadStream({_id: fileId}).pipe(res);
+                else res.status(403).send("This file has not been approved yet.");
+            }
+        }));
     });
 
     app.post('/transferSteward', orgsvc.transferSteward);
