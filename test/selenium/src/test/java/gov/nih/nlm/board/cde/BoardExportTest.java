@@ -29,7 +29,7 @@ public class BoardExportTest extends BoardTest {
                 "\"PTSD Checklist Military (PCLM) - Happening again indicator\",\"Suddenly acting or feeling as if the stressful experience were happening again (as if you were reliving it)?\",\"Value List\",\"1; 2; 3; 4; 5\",\"5\",\"NINDS\",\"NINDS\",\"Qualified\",\"NINDS: C07394 v3; NINDS Variable Name: PCLMHappeningAgainInd\"",
                 "\"Parkinson's Disease Quality of Life (PDQUALIF) - away from social scale\",\"My Parkinson�s symptoms cause me to stay away from social gatherings\",\"Value List\",\"Strongly Agree; Somewhat Agree; Agree; Somewhat disagree; Strongly Disagree\",\"5\",\"NINDS\",\"NINDS\",\"Qualified\",\"NINDS: C17382 v3; NINDS Variable Name: PDQUALIFAwyFrmSocScale\""
         };
-
+        
         waitForDownload("BoardExport.csv");
 
         try {

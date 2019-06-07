@@ -1,11 +1,8 @@
 package gov.nih.nlm.cde.test.classification;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
-import org.openqa.selenium.By;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import static io.restassured.RestAssured.get;
 
 public class AddDeleteOrgClassificationTest extends NlmCdeBaseTest {
     @Test

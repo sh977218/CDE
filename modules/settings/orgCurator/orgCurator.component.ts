@@ -43,7 +43,6 @@ export class OrgCuratorComponent {
                 this.getOrgCurators();
             }, () => this.alert.addAlert('danger', 'There was an issue saving.')
         );
-        this.newUsername = '';
         this.newOrgName = '';
     }
 

@@ -12,6 +12,7 @@ public class adminOfMultipleOrgsCanSeeDropdownTest extends BaseClassificationTes
         clickElement(By.cssSelector("mat-select"));
         selectMatSelectDropdownByText("caBIG");
         textPresent("caNanoLab");
+        clickElement(By.xpath("(//mat-icon[normalize-space() = 'more_vert'])[1]"));
         clickElement(By.xpath("//mat-icon[normalize-space() = 'transform']"));
         clickElement(By.id("cancelNewClassifyItemBtn"));
     }

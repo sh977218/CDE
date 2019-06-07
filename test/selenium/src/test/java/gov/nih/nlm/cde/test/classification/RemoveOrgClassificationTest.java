@@ -9,13 +9,15 @@ public class RemoveOrgClassificationTest extends NlmCdeBaseTest {
 
     @Test
     public void removeOrgClassification() {
+        String[] categories = new String[]{"Domain", "Participant/Subject Characteristics"};
         mustBeLoggedInAs(ninds_username, password);
         searchNestedClassifiedCdes();
         textPresent("NINDS (102");
         searchNestedClassifiedForms();
         textPresent("NINDS (34");
         gotoClassificationMgt();
-        deleteOrgClassification("NINDS", new String[]{"Domain", "Participant/Subject Characteristics"});
+
+        deleteOrgClassification("NINDS", categories);
         searchNestedClassifiedCdes();
         hangon(3);
         textNotPresent("NINDS (102");
