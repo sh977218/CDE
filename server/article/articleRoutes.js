@@ -58,6 +58,7 @@ exports.module = function (roleConfig) {
     router.get('/resourcesAndFeed', (req, res) => {
         db.byKey('resources', handleError({res: res, origin: "GET /article/resourcesAndFeed"},
             async article => {
+                article = article.toObject();
                 await replaceRssToken(article).catch(handleError({req, res}));
                 res.send(article);
             }));
