@@ -26,31 +26,41 @@ exports.module = function (roleConfig) {
 
     let rssFeeds = [];
 
-    router.get('/resourcesAndFeed', (req, res) => {
-        db.byKey('resources', handleError({res: res, origin: "GET /article/resourcesAndFeed"},
-            article => {
-                article = article.toObject();
-                let regex = /&lt;rss-feed&gt;.+&lt;\/rss-feed&gt;/gm;
-                let matches = article.body.match(regex);
-                if (rssFeeds.length) {
-                    article.rssFeeds = rssFeeds;
-                } else {
-                    article.rssFeeds = [];
-                }
+    function replaceRssToken(article) {
+        return new Promise((resolve, reject) => {
+            let rssRegex = /&lt;rss-feed&gt;.+&lt;\/rss-feed&gt;/gm;
+            let rssMatches = article.body.match(rssRegex);
+            if (rssFeeds.length) {
+                article.rssFeeds = rssFeeds;
+            } else {
+                article.rssFeeds = [];
+            }
 
-                let i = 0;
-                async.forEachSeries(matches, (match, doneOneMatch) => {
-                    let url = match.replace('&lt;rss-feed&gt;', '').replace('&lt;/rss-feed&gt;', '').trim();
-                    parser.parseURL(url, handleError({req, res}, feed => {
+            let i = 0;
+            async.forEachSeries(rssMatches, (match, doneOneMatch) => {
+                let url = match.replace('&lt;rss-feed&gt;', '').replace('&lt;/rss-feed&gt;', '').trim();
+                parser.parseURL(url, (err, feed) => {
+                    if (err) reject(err);
+                    else {
                         article.rssFeeds.push(feed);
                         rssFeeds.push(feed);
                         article.body = article.body.replace(match, '<div id="rssContent_' + i++ + '"></div>');
                         doneOneMatch();
-                    }))
-                }, () => {
-                    res.send(article);
-                    setTimeout(() => rssFeeds = [], 5 * 60 * 1000);
+                    }
                 })
+            }, err => {
+                if (err) reject(err);
+                else resolve();
+            })
+        })
+    }
+
+    router.get('/resourcesAndFeed', (req, res) => {
+        db.byKey('resources', handleError({res: res, origin: "GET /article/resourcesAndFeed"},
+            async article => {
+                article = article.toObject();
+                await replaceRssToken(article).catch(handleError({req, res}));
+                res.send(article);
             }));
     });
 

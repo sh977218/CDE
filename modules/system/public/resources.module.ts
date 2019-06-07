@@ -8,9 +8,10 @@ import { ResourcesComponent } from 'system/public/components/resources/resources
 import { SafeHtmlPipe } from '_app/safeHtml.pipe';
 
 import { ResourcesRssComponent } from 'system/public/components/resources/resourcesRss.component';
+import { ResourceResolve } from 'system/public/components/resources/resources.resolve';
 
 const appRoutes: Routes = [
-    {path: '', component: ResourcesComponent},
+    {path: '', resolve: {resource: ResourceResolve}, component: ResourcesComponent},
 ];
 
 @NgModule({
@@ -30,7 +31,7 @@ const appRoutes: Routes = [
     ],
     entryComponents: [ResourcesRssComponent],
     exports: [],
-    providers: [],
+    providers: [ResourceResolve],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class ResourcesModule {

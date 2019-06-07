@@ -1,11 +1,5 @@
 import {
-    ApplicationRef,
-    Component,
-    ComponentFactoryResolver,
-    ComponentRef,
-    EmbeddedViewRef,
-    Injector, OnDestroy,
-    Type
+    ApplicationRef, Component, ComponentFactoryResolver, ComponentRef, EmbeddedViewRef, Injector, OnDestroy, Type
 } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { UserService } from '_app/user.service';
@@ -13,6 +7,7 @@ import { AlertService } from 'alert/alert.service';
 import { Article } from 'core/article/article.model';
 import { hasRole } from 'shared/system/authorizationShared';
 import { ResourcesRssComponent } from 'system/public/components/resources/resourcesRss.component';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'cde-resources',
@@ -22,19 +17,18 @@ import { ResourcesRssComponent } from 'system/public/components/resources/resour
 export class ResourcesComponent implements OnDestroy {
     canEdit;
     containers: HtmlContainer[] = [];
-    resource: Article;
+    resource: Article = new Article();
 
-    constructor(private alert: AlertService,
+    constructor(private route: ActivatedRoute,
+                private alert: AlertService,
                 private appRef: ApplicationRef,
                 private componentFactoryResolver: ComponentFactoryResolver,
                 private http: HttpClient,
                 private injector: Injector,
                 public userService: UserService) {
         this.canEdit = hasRole(this.userService.user, 'DocumentationEditor');
-        this.http.get<any>('/server/article/resourcesAndFeed').subscribe(res => {
-            this.resource = res;
-            this.renderMe();
-        }, err => this.alert.httpErrorMessageAlert(err));
+        this.resource = this.route.snapshot.data.resource;
+        this.renderMe();
     }
 
     renderMe() {
@@ -74,11 +68,10 @@ export class HtmlContainer {
 
     private disposeFn: () => void;
 
-    constructor(
-        private hostElement: Element,
-        private appRef: ApplicationRef,
-        private componentFactoryResolver: ComponentFactoryResolver,
-        private injector: Injector) {
+    constructor(private hostElement: Element,
+                private appRef: ApplicationRef,
+                private componentFactoryResolver: ComponentFactoryResolver,
+                private injector: Injector) {
     }
 
     attach(component: Type<any>): ComponentRef<any> {
