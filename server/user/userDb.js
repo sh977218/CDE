@@ -74,10 +74,10 @@ let userSchema = new Schema({
     accessToken: StringType,
     refreshToken: StringType,
     avatarUrl: StringType,
-    publishedForms: [new Schema({
+    publishedForms: [{
         name: StringType,
         id: Schema.Types.ObjectId
-    }, {_id: false})]
+    }]
 }, {usePushEach: true});
 
 exports.userRefSchema = {

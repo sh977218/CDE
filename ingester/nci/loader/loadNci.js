@@ -26,16 +26,22 @@ function runOneOrg(org) {
                 if (err) reject(err);
                 for (let nciCde of nciXml.DataElementsList.DataElement) {
                     let nciId = nciCde.PUBLICID[0];
-                    let newCdeObj = await CreateCDE.createCde(nciCde, orgInfo);
+                    let newCdeObj = await CreateCDE.createCde(nciCde, orgInfo).catch(e => {
+                        console.log('create cde err');
+                        console.log(e);
+                    });
                     let newCde = new DataElement(newCdeObj);
                     let existingCde = await DataElement.findOne({
                         archived: false,
                         'registrationState.registrationStatus': {$ne: 'Retired'},
                         'ids.id': nciId
+                    }).catch(e => {
+                        console.log('cde find one err');
+                        console.log(e);
                     });
                     if (!existingCde) {
                         existingCde = await newCde.save().catch(e => {
-                            console.log(newCdeObj);
+                            console.log('new cde save err');
                             console.log(e);
                         });
                         createdCDE++;
@@ -45,17 +51,24 @@ function runOneOrg(org) {
                         let diff = CompareCDE.compareCde(newCde, existingCde);
                         if (diff.length) {
                             MergeCDE.mergeCde(newCde, existingCde);
-                            await mongo_cde.updatePromise(existingCde, batchloader)
+                            await mongo_cde.updatePromise(existingCde, batchloader).catch(e => {
+                                console.log('mongo cde update promise err');
+                                throw e;
+                            })
                         }
                     }
-/*
-                    for (let comment of newCdeObj.comments) {
-                        comment.element.eltId = existingCde.tinyId;
-                        await new Comment(comment).save();
-                        console.log('comment saved on ' + existingCde.tinyId);
-                    }
-*/
-                    await DataElementSource.updateOne({tinyId: newCdeObj.tinyId}, newCdeObj, {upsert: true});
+                    /*
+                                        for (let comment of newCdeObj.comments) {
+                                            comment.element.eltId = existingCde.tinyId;
+                                            await new Comment(comment).save();
+                                            console.log('comment saved on ' + existingCde.tinyId);
+                                        }
+                    */
+                    let updateResult = await DataElementSource.updateOne({tinyId: existingCde.tinyId}, newCdeObj, {upsert: true}).catch(e => {
+                        console.log('data element source update one err');
+                        throw e;
+                    });
+                    console.log(updateResult.nModified + ' data element source modified: ');
                     resolve();
                 }
             });
