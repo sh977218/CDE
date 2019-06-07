@@ -8,7 +8,7 @@ import { HttpClient } from '@angular/common/http';
 import { Organization } from 'shared/models.model';
 
 @Injectable()
-export class ManagedOrgsResolver implements Resolve<Observable<Organization>> {
+export class ManagedOrgsResolve implements Resolve<Observable<Organization>> {
     constructor(private router: Router,
                 private http: HttpClient) {
     }

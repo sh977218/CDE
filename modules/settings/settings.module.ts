@@ -52,7 +52,7 @@ import { AllDraftsResolve } from 'settings/drafts/allDrafts.resolve';
 import { MyOrgDraftsResolve } from 'settings/drafts/myOrgDrafts.resolve';
 import { myDraftsResolve } from 'settings/drafts/myDrafts.resolve';
 import { DraftsService } from 'settings/drafts/drafts.service';
-import { ManagedOrgsResolver } from 'settings/ManagedOrgsResolver';
+import { ManagedOrgsResolve } from 'settings/managedOrgsResolve';
 import { TagsManagementComponent } from 'settings/tagsManagement/tagsManagement.component';
 import { PropertiesManagementComponent } from 'settings/propertiesManagement/propertiesManagement.component';
 
@@ -148,14 +148,14 @@ const appRoutes: Routes = [
                 path: 'tagsManagement',
                 component: TagsManagementComponent,
                 canLoad: [OrgAuthorityGuard],
-                resolve: {managedOrgs: ManagedOrgsResolver},
+                resolve: {managedOrgs: ManagedOrgsResolve},
                 data: {title: 'Tags Management'}
             },
             {
                 path: 'propertiesManagement',
                 component: PropertiesManagementComponent,
                 canLoad: [OrgAuthorityGuard],
-                resolve: {managedOrgs: ManagedOrgsResolver},
+                resolve: {managedOrgs: ManagedOrgsResolve},
                 data: {title: 'Properties Management'}
             },
             {
@@ -318,7 +318,7 @@ const appRoutes: Routes = [
         myDraftsResolve,
         MyOrgDraftsResolve,
         AllDraftsResolve,
-        ManagedOrgsResolver
+        ManagedOrgsResolve
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
