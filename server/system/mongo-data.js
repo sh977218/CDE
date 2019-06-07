@@ -408,11 +408,19 @@ exports.deleteFileById = (id, callback) => {
     gfs.remove({_id: id}, callback);
 };
 
-exports.getFile = function (id, cb) {
-    gfs.findOne({_id: id}, cb);
-};
-exports.createReadStream = function (id) {
-    return gfs.createReadStream({_id: id});
+exports.getFile = function (user, id, res) {
+    gfs.exist({_id: id}, function (err, found) {
+        if (err || !found) {
+            return res.status(404).send("File not found.");
+        }
+        gfs.findOne({_id: id}, function (err, file) {
+            res.contentType(file.contentType);
+            if (!file.metadata || !file.metadata.status || file.metadata.status === "approved" || authorizationShared.hasRole(user, "AttachmentReviewer"))
+                gfs.createReadStream({_id: id}).pipe(res);
+            else res.status(403).send("This file has not been approved yet.");
+        });
+
+    });
 };
 
 exports.updateOrg = function (org, res) {
