@@ -62,5 +62,6 @@ exports.mergeCde = function (newCde, existingCde) {
     existingCde.properties = mergeWithEqual(existingCde.properties, newCde.properties);
     existingCde.ids = mergeWithEqual(existingCde.ids, newCde.ids);
     existingCde.attachments = newCde.attachments;
+    existingCde.imported = newCde.imported;
     classificationShared.transferClassifications(newCde, existingCde);
 };
