@@ -215,6 +215,10 @@ exports.count = function (condition, callback) {
     return Form.countDocuments(condition, callback);
 };
 
+exports.update = function (elt, user, callback) {
+    exports.update(elt, user, {}, callback);
+};
+
 exports.update = function (elt, user, options, callback) {
     if (elt.toObject) elt = elt.toObject();
     return Form.findById(elt._id, (err, form) => {

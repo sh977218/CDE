@@ -372,7 +372,7 @@ function publish(req, res, draft, special = _.noop, next = _.noop) {
 
         formShared.trimWholeForm(draft);
 
-        mongo_form.update(draft, req.user, {}, handle404(handlerOptions, doc => {
+        mongo_form.update(draft, req.user, handle404(handlerOptions, doc => {
             mongo_form.draftDelete(draft.tinyId, handleError(handlerOptions, () => res.send(doc)));
             next(doc);
         }));
