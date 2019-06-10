@@ -40,7 +40,7 @@ exports.parseClassification = (nindsForms, item) => {
         if (!_.isEmpty(c.classification) && type === 'cde') {
             classificationToAdd.push('Classification');
             classificationToAdd.push(c.classification);
-            classificationShared.classifyItem(item, "NINDS", classificationToAdd);
+            classificationShared.classifyElt(item, "NINDS", classificationToAdd);
         }
 
         if (!_.isEmpty(c.domain)) {
@@ -55,9 +55,9 @@ exports.parseClassification = (nindsForms, item) => {
             }
         }
 
-        classificationShared.classifyItem(item, "NINDS", diseaseToAdd);
-        classificationShared.classifyItem(item, "NINDS", domainToAdd);
-        classificationShared.classifyItem(item, "NINDS", subDomainToAdd);
+        classificationShared.classifyElt(item, "NINDS", diseaseToAdd);
+        classificationShared.classifyElt(item, "NINDS", domainToAdd);
+        classificationShared.classifyElt(item, "NINDS", subDomainToAdd);
 
 
         if (!_.isEmpty(c.population) && type === 'cde') {
@@ -67,7 +67,7 @@ exports.parseClassification = (nindsForms, item) => {
                     let populationToAdd = [];
                     populationToAdd.push('Population');
                     populationToAdd.push(p);
-                    classificationShared.classifyItem(item, "NINDS", populationToAdd);
+                    classificationShared.classifyElt(item, "NINDS", populationToAdd);
                 }
             })
         }

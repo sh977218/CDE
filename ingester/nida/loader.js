@@ -14,7 +14,7 @@ var classifyCde = function(index){
             , classificationArray[index][2]
             , classificationArray[index][3]
         ];
-        classificationShared.classifyItem(cde, "NIDA", classifications);
+        classificationShared.classifyElt(cde, "NIDA", classifications);
         cde.registrationState.registrationStatus = "Qualified";
         cde.save(function(err, cde){
             if (err)  throw "Can't save";

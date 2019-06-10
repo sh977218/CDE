@@ -151,7 +151,7 @@ exports.createCde = async (row, formId, protocol) => {
     };
 
     let classificationToAdd = ['REDCap'].concat(classificationArray);
-    classificationShared.classifyItem(newCde, "PhenX", classificationToAdd);
+    classificationShared.classifyElt(newCde, "PhenX", classificationToAdd);
 
     return newCde;
 };
