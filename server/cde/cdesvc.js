@@ -190,7 +190,7 @@ function publish(req, res, draft, special = _.noop, next = _.noop) {
             return res.status(403).send();
         }
 
-        mongo_cde.update(draft, req.user, handleError(handlerOptions, doc => {
+        mongo_cde.update(draft, req.user, {}, handleError(handlerOptions, doc => {
             mongo_cde.draftDelete(draft.tinyId, handleError(handlerOptions, () => res.send(doc)));
             next(doc);
         }), special);

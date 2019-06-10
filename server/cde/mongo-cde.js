@@ -296,7 +296,7 @@ exports.fork = function (elt, user, callback) {
     });
 };
 
-exports.update = function (elt, user, callback, special) {
+exports.update = function (elt, user, options, callback) {
     if (elt.toObject) elt = elt.toObject();
     return DataElement.findById(elt._id, (err, dataElement) => {
         if (dataElement.archived) {
@@ -307,13 +307,11 @@ exports.update = function (elt, user, callback, special) {
         if (!elt.history) elt.history = [];
         elt.history.push(dataElement._id);
         updateUser(elt, user);
-        elt.sources = dataElement.sources;
+        if (!options.updateSource) {
+            elt.sources = dataElement.sources;
+        }
         elt.comments = dataElement.comments;
         let newElt = new DataElement(elt);
-
-        if (special) {
-            special(newElt, dataElement);
-        }
 
         // archive dataElement and replace it with newElt
         DataElement.findOneAndUpdate({_id: dataElement._id, archived: false}, {$set: {archived: true}}, (err, doc) => {
@@ -333,8 +331,8 @@ exports.update = function (elt, user, callback, special) {
     });
 };
 
-exports.updatePromise = function (elt, user) {
-    return new Promise(resolve => exports.update(elt, user, resolve));
+exports.updatePromise = function (elt, user, options) {
+    return new Promise(resolve => exports.update(elt, user, options, resolve));
 };
 
 exports.archiveCde = function (cde, callback) {
