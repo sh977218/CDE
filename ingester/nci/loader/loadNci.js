@@ -57,13 +57,12 @@ function runOneOrg(org) {
                             })
                         }
                     }
-                    /*
-                                        for (let comment of newCdeObj.comments) {
-                                            comment.element.eltId = existingCde.tinyId;
-                                            await new Comment(comment).save();
-                                            console.log('comment saved on ' + existingCde.tinyId);
-                                        }
-                    */
+                    for (let comment of newCdeObj.comments) {
+                        comment.element.eltId = existingCde.tinyId;
+                        await new Comment(comment).save();
+                        console.log('comment saved on ' + existingCde.tinyId);
+                    }
+                    delete newCdeObj.tinyId;
                     let updateResult = await DataElementSource.updateOne({tinyId: existingCde.tinyId}, newCdeObj, {upsert: true}).catch(e => {
                         console.log('data element source update one err');
                         throw e;
