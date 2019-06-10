@@ -37,13 +37,19 @@ mergeDefinitions = (o1, o2) => {
     });
     return result;
 };
-mergeSources = (o1, o2) => {
-    let result = _.uniqBy(o1.concat(o2), 'sourceName');
-    return result;
-};
-mergeWithEqual = (existingSources, newSources) => {
+mergeSources = (existingSources, newSources) => {
     let otherSources = existingSources.filter(existingSource => existingSource.sourceName !== 'caDSR');
     return newSources.concat(otherSources);
+};
+mergeWithEqual = (o1, o2) => {
+    let result = _.uniqWith(o1.concat(o2), (a, b) => {
+        let aCopy = a;
+        if (a.toObject) aCopy = a.toObject();
+        let bCopy = b;
+        if (b.toObject) bCopy = b.toObject();
+        return _.isEqual(aCopy, bCopy);
+    });
+    return result;
 };
 exports.mergeCde = function (newCde, existingCde) {
     existingCde.designations = mergeDesignations(existingCde.designations, newCde.designations);

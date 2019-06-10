@@ -51,7 +51,7 @@ function runOneOrg(org) {
                         let diff = CompareCDE.compareCde(newCde, existingCde);
                         if (diff.length) {
                             MergeCDE.mergeCde(newCde, existingCde);
-                            await mongo_cde.updatePromise(existingCde, batchloader).catch(e => {
+                            await mongo_cde.updatePromise(existingCde, batchloader, {updateSource: true}).catch(e => {
                                 console.log('mongo cde update promise err');
                                 throw e;
                             })
