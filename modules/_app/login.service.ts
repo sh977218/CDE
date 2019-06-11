@@ -34,9 +34,13 @@ export class LoginService {
     }
 
     logout() {
-        this.http.post('/logout', {}, {responseType: 'text'}).subscribe(() => {
+        const refreshAndLogin = () => {
             this.userService.reload();
             this.router.navigate(['/login']);
-       }, () => this.alert.addAlert("error", "Error logging out. Are you already logged out?"));
+        };
+        this.http.post('/logout', {}, {responseType: 'text'}).subscribe(
+            refreshAndLogin,
+            refreshAndLogin // ignore error in favor of already being logged out
+        );
     }
 }
