@@ -8,6 +8,9 @@ const Grid = require('gridfs-stream');
 const MongoStore = require('connect-mongo')(session); // TODO: update to new version when available for mongodb 3 used by mongoose
 
 const eltShared = require('esm')(module)('../../shared/elt');
+const authorizationShared = require('esm')(module)('../../shared/system/authorizationShared');
+const hasRole = authorizationShared.hasRole;
+
 const connHelper = require('./connections');
 const errorHandler = require("../errorHandler/errHandler");
 const consoleLog = errorHandler.consoleLog;
@@ -407,8 +410,19 @@ exports.deleteFileById = (id, callback) => {
     gfs.remove({_id: id}, callback);
 };
 
-exports.getFile = function ( id,) {
-    gfs.findOne({_id: id}, cb);
+exports.getFile = function (user, id, res) {
+    gfs.exist({_id: id}, function (err, found) {
+        if (err || !found) {
+            return res.status(404).send("File not found.");
+        }
+        gfs.findOne({_id: id}, function (err, file) {
+            res.contentType(file.contentType);
+            if (!file.metadata || !file.metadata.status || file.metadata.status === "approved" || hasRole(user, "AttachmentReviewer"))
+                gfs.createReadStream({_id: id}).pipe(res);
+            else res.status(403).send("This file has not been approved yet.");
+        });
+
+    });
 };
 
 exports.updateOrg = function (org, res) {

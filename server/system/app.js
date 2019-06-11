@@ -536,19 +536,7 @@ exports.init = function (app) {
 
     app.get('/data/:id', (req, res) => {
         let fileId = req.params.id;
-        mongo_data.getFile(fileId, handleError({req, res}, file => {
-            if (!file) {
-                res.status(404).send("File not found.");
-            } else {
-                res.contentType(file.contentType);
-                if (!file.metadata
-                    || !file.metadata.status
-                    || file.metadata.status === "approved"
-                    || hasRole(req.user, "AttachmentReviewer"))
-                    mongo_data.gfs.createReadStream({_id: fileId}).pipe(res);
-                else res.status(403).send("This file has not been approved yet.");
-            }
-        }));
+        mongo_data.getFile(req.user, fileId, res);
     });
 
     app.post('/transferSteward', orgsvc.transferSteward);
