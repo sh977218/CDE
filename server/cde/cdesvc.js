@@ -179,7 +179,7 @@ exports.create = (req, res) => {
     mongo_cde.create(elt, user, handleError({req, res}, dataElement => res.send(dataElement)));
 };
 
-function publish(req, res, draft, options = {}, next = _.noop) {
+function publish(req, res, draft, options = {}) {
     const handlerOptions = {req, res};
     if (!draft) {
         return res.status(400).send();
@@ -192,7 +192,6 @@ function publish(req, res, draft, options = {}, next = _.noop) {
 
         mongo_cde.update(draft, req.user, options, handleError(handlerOptions, doc => {
             mongo_cde.draftDelete(draft.tinyId, handleError(handlerOptions, () => res.send(doc)));
-            next(doc);
         }));
     }));
 
