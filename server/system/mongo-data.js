@@ -413,17 +413,20 @@ exports.deleteFileById = (id, callback) => {
 exports.getFile = function (user, id, res) {
     gfs.exist({_id: id}, function (err, found) {
         if (err || !found) {
-            return res.status(404).send("File not found.");
+            res.status(404).send("File not found.");
+        } else {
+            gfs.findOne({_id: id}, function (err, file) {
+                if (!file.metadata
+                    || !file.metadata.status
+                    || file.metadata.status === "approved"
+                    || hasRole(user, "AttachmentReviewer")) {
+                    res.contentType(file.contentType);
+                    res.header('Accept-Ranges', 'bytes');
+                    res.header("Content-Length", file.length);
+                    gfs.createReadStream({_id: id}).pipe(res);
+                } else res.status(403).send("This file has not been approved yet.");
+            });
         }
-        gfs.findOne({_id: id}, function (err, file) {
-            res.contentType(file.contentType);
-            res.header('Accept-Ranges', 'bytes');
-            res.header("Content-Length", file.length);
-            if (!file.metadata || !file.metadata.status || file.metadata.status === "approved" || hasRole(user, "AttachmentReviewer"))
-                gfs.createReadStream({_id: id}).pipe(res);
-            else res.status(403).send("This file has not been approved yet.");
-        });
-
     });
 };
 

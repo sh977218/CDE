@@ -17,7 +17,6 @@ const loggedInMiddleware = authorization.loggedInMiddleware;
 const nocacheMiddleware = authorization.nocacheMiddleware;
 const canApproveCommentMiddleware = authorization.canApproveCommentMiddleware;
 const authorizationShared = require('esm')(module)('../../shared/system/authorizationShared');
-const hasRole = authorizationShared.hasRole;
 const mongo_cde = require('../cde/mongo-cde');
 const mongo_form = require('../form/mongo-form');
 const mongo_data = require('./mongo-data');
