@@ -216,10 +216,10 @@ exports.count = function (condition, callback) {
 };
 
 exports.update = function (elt, user, callback) {
-    exports.update(elt, user, {}, callback);
+    exports.updateImpl(elt, user, {}, callback);
 };
 
-exports.update = function (elt, user, options, callback) {
+exports.updateImpl = function (elt, user, options, callback) {
     if (elt.toObject) elt = elt.toObject();
     return Form.findById(elt._id, (err, form) => {
         if (form.archived) {
@@ -255,7 +255,7 @@ exports.update = function (elt, user, options, callback) {
 };
 
 exports.updatePromise = function (elt, user, options) {
-    return new Promise(resolve => exports.update(elt, user, options, resolve));
+    return new Promise(resolve => exports.updateImpl(elt, user, options, resolve));
 };
 
 exports.create = function (elt, user, callback) {
