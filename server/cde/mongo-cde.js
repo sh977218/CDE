@@ -297,10 +297,10 @@ exports.fork = function (elt, user, callback) {
 };
 
 exports.update = function (elt, user, callback) {
-    exports.update(elt, user, {}, callback);
+    exports.updateImpl(elt, user, {}, callback);
 };
 
-exports.update = function (elt, user, options, callback) {
+exports.updateImpl = function (elt, user, options, callback) {
     if (elt.toObject) elt = elt.toObject();
     return DataElement.findById(elt._id, (err, dataElement) => {
         if (dataElement.archived) {
@@ -336,7 +336,7 @@ exports.update = function (elt, user, options, callback) {
 };
 
 exports.updatePromise = function (elt, user, options) {
-    return new Promise(resolve => exports.update(elt, user, options, resolve));
+    return new Promise(resolve => exports.updateImpl(elt, user, options, resolve));
 };
 
 exports.archiveCde = function (cde, callback) {
