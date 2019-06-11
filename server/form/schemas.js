@@ -6,16 +6,48 @@ const StringType = Schema.Types.StringType;
 
 const sharedSchemas = require('../system/schemas.js');
 
-const instructionSchema = {
+const DisplayProfileSchema = new Schema({
+    name: StringType,
+    sectionsAsMatrix: {type: Boolean},
+    displayCopyright: {type: Boolean},
+    displayValues: {type: Boolean},
+    displayInstructions: {type: Boolean},
+    displayNumbering: {type: Boolean},
+    displayType: {type: StringType, enum: ['Dynamic', 'Follow-up'], default: 'Dynamic'},
+    metadata: {
+        device: Boolean,
+    },
+    numberOfColumns: {type: Number, min: 1, max: 6},
+    displayInvisible: {type: Boolean},
+    repeatFormat: {type: StringType, default: ''},
+    answerDropdownLimit: {type: Number, min: 0},
+    unitsOfMeasureAlias: [{unitOfMeasure: sharedSchemas.codeAndSystemSchema, alias: StringType}],
+    fhirProcedureMapping: {
+        statusQuestionID: String,
+        statusStatic: String,
+        performedDate: String,
+        procedureQuestionID: String,
+        procedureCode: String,
+        procedureCodeSystem: String,
+        bodySiteQuestionID: String,
+        bodySiteCode: String,
+        bodySiteCodeSystem: String,
+        usedReferences: String,
+        usedReferencesMaps: [String],
+        complications: String,
+    }
+}, {_id: false})
+
+const instructionSchema = new Schema({
     value: StringType,
     valueFormat: StringType
-};
+}, {_id: false});
 
-const datatypeNumberSchema = {
-    minValue: Number
-    , maxValue: Number
-    , precision: Number
-};
+const datatypeNumberSchema = new Schema({
+    minValue: Number,
+    maxValue: Number,
+    precision: Number
+}, {_id: false});
 
 const mapToSchema = {
     fhir: {
@@ -23,7 +55,7 @@ const mapToSchema = {
     },
 };
 
-const questionSchema = {
+const questionSchema = new Schema({
     cde: {
         tinyId: StringType,
         name: StringType,
@@ -67,16 +99,16 @@ const questionSchema = {
         default: undefined,
     },
     defaultAnswer: StringType
-};
+}, {_id: false});
 
-let inFormSchema = {
+let inFormSchema = new Schema({
     form: {
         tinyId: StringType,
         version: StringType,
         name: StringType,
         ids: [sharedSchemas.idSchema]
     }
-};
+}, {_id: false});
 
 function getFormElementJson() {
     return {
@@ -119,11 +151,10 @@ exports.formJson = {
     version: StringType,
     registrationState: sharedSchemas.registrationStateSchema,
     properties: [sharedSchemas.propertySchema],
-    ids: [{
-        source: StringType,
-        id: StringType,
-        version: StringType,
-    }],
+    ids: {
+        type: [sharedSchemas.idSchema],
+        description: 'Identifier used to establish or indicate what CDE is within a specific context',
+    },
     isCopyrighted: {type: Boolean},
     noRenderAllowed: {type: Boolean},
     copyright: {
@@ -152,42 +183,13 @@ exports.formJson = {
     formElements: [innerFormEltSchema],
     archived: {type: Boolean, default: false, index: true},
     classification: [sharedSchemas.classificationSchema],
-    displayProfiles: [{
-        name: StringType,
-        sectionsAsMatrix: {type: Boolean},
-        displayCopyright: {type: Boolean},
-        displayValues: {type: Boolean},
-        displayInstructions: {type: Boolean},
-        displayNumbering: {type: Boolean},
-        displayType: {type: StringType, enum: ['Dynamic', 'Follow-up'], default: 'Dynamic'},
-        metadata: {
-            device: Boolean,
-        },
-        numberOfColumns: {type: Number, min: 1, max: 6},
-        displayInvisible: {type: Boolean},
-        repeatFormat: {type: StringType, default: ''},
-        answerDropdownLimit: {type: Number, min: 0},
-        unitsOfMeasureAlias: [{unitOfMeasure: sharedSchemas.codeAndSystemSchema, alias: StringType}],
-        fhirProcedureMapping: {
-            statusQuestionID: String,
-            statusStatic: String,
-            performedDate: String,
-            procedureQuestionID: String,
-            procedureCode: String,
-            procedureCodeSystem: String,
-            bodySiteQuestionID: String,
-            bodySiteCode: String,
-            bodySiteCodeSystem: String,
-            usedReferences: String,
-            usedReferencesMaps: [String],
-            complications: String,
-        }
-    }],
+    displayProfiles: [DisplayProfileSchema],
     referenceDocuments: [sharedSchemas.referenceDocumentSchema]
 };
-exports.formSchema = new Schema(exports.formJson, {usePushEach: true});
+exports.formSchema = new Schema(exports.formJson, {collection: 'forms', usePushEach: true});
 
 exports.draftSchema = new Schema(exports.formJson, {
+    collection: 'formdrafts',
     sePushEach: true,
     toObject: {
         virtuals: true
@@ -202,23 +204,20 @@ exports.formSchema.path("classification").validate(v => {
         .some((value, index, array) => array.indexOf(value) !== array.lastIndexOf(value));
 }, "Duplicate Steward Classification");
 
-exports.draftSchema.virtual('isDraft').get(function () {
-    return true;
-});
-exports.formSchema.set('collection', 'forms');
 exports.formSchema.index({tinyId: 1, archived: 1}, {
     unique: true,
     name: 'formLiveTinyId',
     partialFilterExpression: {archived: false}
 });
 
-exports.draftSchema.set('collection', 'formdrafts');
+exports.draftSchema.virtual('isDraft').get(function () {
+    return true;
+});
 
 exports.formSourceSchema = new Schema(exports.formJson, {usePushEach: true});
 exports.formSourceSchema.index({tinyId: 1, source: 1}, {unique: true});
 exports.formSourceSchema.set('collection', 'formsources');
 
-exports.auditSchema = new Schema(sharedSchemas.eltLogSchema, {strict: false});
-exports.auditSchema.set('collection', 'formAudit');
+exports.auditSchema = new Schema(sharedSchemas.eltLogSchema, {collection: 'formAudit', strict: false});
 
 

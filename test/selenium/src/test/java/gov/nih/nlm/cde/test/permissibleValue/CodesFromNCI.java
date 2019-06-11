@@ -16,8 +16,8 @@ public class CodesFromNCI extends NlmCdeBaseTest {
         textPresent("Enterovirus", By.id("nameAsNCI_0"));
         textPresent("TCGA", By.id("codeAsNCI_0"));
         clickElement(By.id("displayUMLSCodes"));
-        textPresent("N/A", By.id("nameAsUMLS_0"));
-        textPresent("N/A", By.id("codeAsUMLS_0"));
+        textPresent("American Indian", By.id("nameAsUMLS_0"));
+        textPresent("C1515945", By.id("codeAsUMLS_0"));
         Assert.assertFalse(findElement(By.id("displayLNCCodes")).isEnabled());
         Assert.assertFalse(findElement(By.id("displaySNOMEDCT_USCodes")).isEnabled());
 
