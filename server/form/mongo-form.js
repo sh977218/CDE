@@ -228,18 +228,18 @@ exports.update = function (elt, user,options = {}, callback) {
         updateUser(elt, user);
         // user cannot edit sources.
         if (!options.updateSources) {
-            elt.sources = dataElement.sources;
+            elt.sources = form.sources;
         }
 
         // because it's draft not edit attachment
         if (options.updateAttachments) {
-            elt.attachments = dataElement.attachments;
+            elt.attachments = form.attachments;
         }
         if (options.updateClassification) {
-            elt.classification = dataElement.classification;
+            elt.classification = form.classification;
         }
 
-        let newElt = new DataElement(elt);
+        let newElt = new Form(elt);
 
         // archive form and replace it with newElt
         Form.findOneAndUpdate({_id: form._id, archived: false}, {$set: {archived: true}}, (err, doc) => {
