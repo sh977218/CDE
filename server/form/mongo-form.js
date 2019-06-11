@@ -215,11 +215,7 @@ exports.count = function (condition, callback) {
     return Form.countDocuments(condition, callback);
 };
 
-exports.update = function (elt, user, callback) {
-    exports.updateImpl(elt, user, {}, callback);
-};
-
-exports.updateImpl = function (elt, user, options, callback) {
+exports.update = function (elt, user, callback, special) {
     if (elt.toObject) elt = elt.toObject();
     return Form.findById(elt._id, (err, form) => {
         if (form.archived) {
@@ -230,11 +226,13 @@ exports.updateImpl = function (elt, user, options, callback) {
         if (!elt.history) elt.history = [];
         elt.history.push(form._id);
         updateUser(elt, user);
-        if (!options.updateSource) {
-            elt.sources = form.sources;
-        }
+        elt.sources = form.sources;
         elt.comments = form.comments;
         let newElt = new Form(elt);
+
+        if (special) {
+            special(newElt, form);
+        }
 
         // archive form and replace it with newElt
         Form.findOneAndUpdate({_id: form._id, archived: false}, {$set: {archived: true}}, (err, doc) => {
@@ -254,8 +252,10 @@ exports.updateImpl = function (elt, user, options, callback) {
     });
 };
 
-exports.updatePromise = function (elt, user, options) {
-    return new Promise(resolve => exports.updateImpl(elt, user, options, resolve));
+exports.updatePromise = function (elt, user) {
+    return new Promise(resolve => {
+        exports.update(elt, user, resolve);
+    });
 };
 
 exports.create = function (elt, user, callback) {
