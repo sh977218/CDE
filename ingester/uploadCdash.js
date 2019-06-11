@@ -83,11 +83,11 @@ function doCdes() {
         if (cdashRow['Role'].length > 0) {
             cls.push(cdashRow['Role']);
         }
-        classificationShared.classifyElt(cde, "CDASH", cls);
+        classificationShared.classifyItem(cde, "CDASH", cls);
         classificationShared.addCategory({elements: cdashOrg.classifications}, cls);
 
         var cls2 = ["Classification", cdashRow['Core']];
-        classificationShared.classifyElt(cde, "CDASH", cls2);
+        classificationShared.classifyItem(cde, "CDASH", cls2);
         classificationShared.addCategory({elements: cdashOrg.classifications}, cls2);
 
         var question = {

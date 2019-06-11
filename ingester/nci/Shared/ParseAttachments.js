@@ -10,7 +10,7 @@ const batchloader = require('../../shared/updatedByLoader').batchloader;
 exports.parseAttachments = nciCde => {
     let attachments = [];
     let nciXml = _.cloneDeep(nciCde);
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         let readable = new Readable();
         delete nciXml._id;
         delete nciXml.index;

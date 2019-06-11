@@ -359,7 +359,7 @@ exports.create = (req, res) => {
     mongo_form.create(elt, user, handleError({req, res}, dataElement => res.send(dataElement)));
 };
 
-function publish(req, res, draft, special = _.noop, next = _.noop) {
+function publish(req, res, draft) {
     const handlerOptions = {req, res};
     if (!draft) {
         return res.status(400).send();
