@@ -22,6 +22,11 @@ let CommentNotificationSchema = new Schema({
     username: StringType,
 }, {_id: false});
 
+let publishedFormSchema = new Schema({
+    name: StringType,
+    id: Schema.Types.ObjectId
+}, {_id: false});
+
 let userSchema = new Schema({
     username: {type: StringType, lowercase: true, trim: true, unique: true},
     commentNotifications: [CommentNotificationSchema],
@@ -74,10 +79,7 @@ let userSchema = new Schema({
     accessToken: StringType,
     refreshToken: StringType,
     avatarUrl: StringType,
-    publishedForms: [{
-        name: StringType,
-        id: Schema.Types.ObjectId
-    }]
+    publishedForms: [publishedFormSchema]
 }, {usePushEach: true});
 
 exports.userRefSchema = {

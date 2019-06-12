@@ -296,9 +296,9 @@ exports.fork = function (elt, user, callback) {
     });
 };
 
-exports.update = function (elt, user, options, callback) {
+exports.update = function (elt, user, options = {}, callback) {
     if (elt.toObject) elt = elt.toObject();
-    return DataElement.findById(elt._id, (err, dataElement) => {
+    DataElement.findById(elt._id, (err, dataElement) => {
         if (dataElement.archived) {
             callback('You are trying to edit an archived elements');
             return;
@@ -307,8 +307,20 @@ exports.update = function (elt, user, options, callback) {
         if (!elt.history) elt.history = [];
         elt.history.push(dataElement._id);
         updateUser(elt, user);
-        if (!options.updateSource) elt.sources = dataElement.sources;
-        elt.comments = dataElement.comments;
+
+        // user cannot edit sources.
+        if (!options.updateSources) {
+            elt.sources = dataElement.sources;
+        }
+
+        // because it's draft not edit attachment
+        if (options.updateAttachments) {
+            elt.attachments = dataElement.attachments;
+        }
+        if (options.updateClassification) {
+            elt.classification = dataElement.classification;
+        }
+
         let newElt = new DataElement(elt);
 
         // archive dataElement and replace it with newElt
@@ -329,8 +341,8 @@ exports.update = function (elt, user, options, callback) {
     });
 };
 
-exports.updatePromise = function (elt, user, options) {
-    return new Promise(resolve => exports.update(elt, user, options, resolve));
+exports.updatePromise = function (elt, user) {
+    return new Promise(resolve => exports.update(elt, user, {}, resolve));
 };
 
 exports.archiveCde = function (cde, callback) {

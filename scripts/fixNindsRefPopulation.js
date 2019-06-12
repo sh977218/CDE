@@ -53,7 +53,7 @@ deCursor.eachAsync(function (cde) {
                                 e.elements.forEach(p => {
                                     let populationToAdd = ['Population'];
                                     populationToAdd.push(p.name);
-                                    classificationShared.classifyItem(cde, "NINDS", populationToAdd);
+                                    classificationShared.classifyElt(cde, "NINDS", populationToAdd);
                                 })
                             }
                         })
@@ -106,7 +106,7 @@ formCursor.eachAsync(function (form) {
                                 e.elements.forEach(p => {
                                     let populationToAdd = ['Population'];
                                     populationToAdd.push(p.name);
-                                    classificationShared.classifyItem(form, "NINDS", populationToAdd);
+                                    classificationShared.classifyElt(form, "NINDS", populationToAdd);
                                 })
                             }
                         })
