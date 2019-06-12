@@ -215,9 +215,9 @@ exports.count = function (condition, callback) {
     return Form.countDocuments(condition, callback);
 };
 
-exports.update = function (elt, user, callback, special) {
+exports.update = function (elt, user,options = {}, callback) {
     if (elt.toObject) elt = elt.toObject();
-    return Form.findById(elt._id, (err, form) => {
+    Form.findById(elt._id, (err, form) => {
         if (form.archived) {
             callback('You are trying to edit an archived elements');
             return;
@@ -226,13 +226,20 @@ exports.update = function (elt, user, callback, special) {
         if (!elt.history) elt.history = [];
         elt.history.push(form._id);
         updateUser(elt, user);
-        elt.sources = form.sources;
-        elt.comments = form.comments;
-        let newElt = new Form(elt);
-
-        if (special) {
-            special(newElt, form);
+        // user cannot edit sources.
+        if (!options.updateSources) {
+            elt.sources = form.sources;
         }
+
+        // because it's draft not edit attachment
+        if (options.updateAttachments) {
+            elt.attachments = form.attachments;
+        }
+        if (options.updateClassification) {
+            elt.classification = form.classification;
+        }
+
+        let newElt = new Form(elt);
 
         // archive form and replace it with newElt
         Form.findOneAndUpdate({_id: form._id, archived: false}, {$set: {archived: true}}, (err, doc) => {

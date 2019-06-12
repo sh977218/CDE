@@ -359,7 +359,7 @@ exports.create = (req, res) => {
     mongo_form.create(elt, user, handleError({req, res}, dataElement => res.send(dataElement)));
 };
 
-function publish(req, res, draft, special = _.noop, next = _.noop) {
+function publish(req, res, draft, options = {}) {
     const handlerOptions = {req, res};
     if (!draft) {
         return res.status(400).send();
@@ -372,9 +372,8 @@ function publish(req, res, draft, special = _.noop, next = _.noop) {
 
         formShared.trimWholeForm(draft);
 
-        mongo_form.update(draft, req.user, handle404(handlerOptions, doc => {
+        mongo_form.update(draft, req.user, options, handle404(handlerOptions, doc => {
             mongo_form.draftDelete(draft.tinyId, handleError(handlerOptions, () => res.send(doc)));
-            next(doc);
         }));
     }));
 }
@@ -384,9 +383,9 @@ exports.publishFromDraft = (req, res) => {
         if (draft.__v !== req.body.__v) {
             return res.status(400).send('Cannot publish this old version. Reload and redo.');
         }
-        publish(req, res, draft.toObject(), (newElt, oldElt) => {
-            newElt.attachments = oldElt.attachments;
-            newElt.classification = oldElt.classification;
+        publish(req, res, draft.toObject(), {
+            updateAttachments: true,
+            classification: true
         });
     }));
 };
