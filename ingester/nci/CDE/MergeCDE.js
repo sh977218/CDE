@@ -37,9 +37,9 @@ mergeDefinitions = (o1, o2) => {
     });
     return result;
 };
-mergeSources = (o1, o2) => {
-    let result = _.uniqBy(o1.concat(o2), 'sourceName');
-    return result;
+mergeSources = (existingSources, newSources) => {
+    let otherSources = existingSources.filter(existingSource => existingSource.sourceName !== 'caDSR');
+    return newSources.concat(otherSources);
 };
 mergeWithEqual = (o1, o2) => {
     let result = _.uniqWith(o1.concat(o2), (a, b) => {
@@ -61,5 +61,7 @@ exports.mergeCde = function (newCde, existingCde) {
     existingCde.referenceDocuments = mergeWithEqual(existingCde.referenceDocuments, newCde.referenceDocuments);
     existingCde.properties = mergeWithEqual(existingCde.properties, newCde.properties);
     existingCde.ids = mergeWithEqual(existingCde.ids, newCde.ids);
+    existingCde.attachments = newCde.attachments;
+    existingCde.imported = newCde.imported;
     classificationShared.transferClassifications(newCde, existingCde);
 };
