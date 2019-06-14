@@ -5,7 +5,7 @@ import org.testng.annotations.Test;
 
 public class CdeApproveReply extends NlmCdeBaseTest {
     @Test
-    public void cdeApproveCommentTest() {
+    public void cdeApproveReplyTest() {
         String cdeName = "In the past 7 days, when I was in pain I asked for medicine.";
         String commentText = "This reply about In the past 7 days, when I was in pain I asked for medicine can not be seen unless it is approved.";
         goToCdeByName(cdeName);
