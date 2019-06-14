@@ -89,7 +89,6 @@ exports.module = function (roleConfig) {
             const eltTinyId = comment.element && comment.element.eltId;
             let numberUnapprovedReplies = comment.replies.filter(r => r.pendingApproval && r.user.username === req.user.username).length;
             if (numberUnapprovedReplies > 0) return res.status(403).send('You cannot do this.');
-            if (!comment.replies) comment.replies = [];
             let reply = {
                 user: req.user,
                 created: new Date().toJSON(),
