@@ -2,6 +2,7 @@ const async = require('async');
 const authorization = require('../system/authorization');
 const loggedInMiddleware = authorization.loggedInMiddleware;
 const authorizationShared = require('esm')(module)('../../shared/system/authorizationShared');
+const canRemoveComment = authorizationShared.canRemoveComment;
 const errorHandler = require('../errorHandler/errHandler');
 const handleError = errorHandler.handleError;
 const handle404 = errorHandler.handle404;
@@ -146,7 +147,7 @@ exports.module = function (roleConfig) {
             let idRetrievalFunc = dao.byTinyId ? dao.byTinyId : dao.byId;
             let eltId = comment.element.eltId;
             idRetrievalFunc(eltId, handle404({req, res}, element => {
-                if (!authorizationShared.canRemoveComment(req.user, comment, element)) {
+                if (!canRemoveComment(req.user, comment, element)) {
                     return res.status(403).send('You can only remove ' + element.type + ' you own.');
                 }
                 comment.remove(handleError({req, res}, () => {
@@ -164,7 +165,7 @@ exports.module = function (roleConfig) {
             let idRetrievalFunc = dao.byTinyId ? dao.byTinyId : dao.byId;
             let eltId = comment.element.eltId;
             idRetrievalFunc(eltId, handle404({req, res}, element => {
-                if (!authorizationShared.canRemoveComment(req.user, comment, element)) {
+                if (!canRemoveComment(req.user, comment, element)) {
                     return res.status(403).send('You can only remove ' + element.type + ' you own.');
                 }
                 comment.replies = comment.replies.filter(r => r._id.toString() !== replyId);
