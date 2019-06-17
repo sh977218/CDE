@@ -1,10 +1,11 @@
+import { config } from '../server/system/parseConfig';
+
 let mongoose = require('mongoose');
 let Schema = mongoose.Schema;
 
-let config = require('../server/system/parseConfig');
 let cde_schemas = require('../server/cde/schemas');
 let form_schemas = require('../server/form/schemas');
-let sharedSchemas = require('../server/system/schemas.js');
+let sharedSchemas = require('../server/system/schemas');
 
 let migrationConfig = config.database.migration;
 

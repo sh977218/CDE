@@ -13,6 +13,7 @@
     "module": "ES2015",
     "moduleResolution": "Node",
     "pretty": false,
+    "rootDir": ".",
     "sourceMap": false,
     "strict": true,
     "target": "ES5",
@@ -26,7 +27,9 @@
     "useWebpackText": true
   },
   "exclude": [
+    "app.ts",
     "build",
+    "buildNode",
     "deploy",
     "dist",
     "ingester",
@@ -57,6 +60,7 @@
     "protractor",
     "scripts",
     "server",
-    "test"
+    "test",
+    "webpack*"
   ]
 }

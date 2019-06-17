@@ -1,6 +1,5 @@
 const _ = require('lodash');
-
-const classificationShared = require('esm')(module)('../../../shared/system/classificationShared');
+import { classifyItem, sortClassification } from 'shared/system/classificationShared';
 
 exports.parseClassification = (nindsForms, item) => {
     let type = item.elementType;
@@ -40,7 +39,7 @@ exports.parseClassification = (nindsForms, item) => {
         if (!_.isEmpty(c.classification) && type === 'cde') {
             classificationToAdd.push('Classification');
             classificationToAdd.push(c.classification);
-            classificationShared.classifyItem(item, "NINDS", classificationToAdd);
+            classifyItem(item, "NINDS", classificationToAdd);
         }
 
         if (!_.isEmpty(c.domain)) {
@@ -55,9 +54,9 @@ exports.parseClassification = (nindsForms, item) => {
             }
         }
 
-        classificationShared.classifyItem(item, "NINDS", diseaseToAdd);
-        classificationShared.classifyItem(item, "NINDS", domainToAdd);
-        classificationShared.classifyItem(item, "NINDS", subDomainToAdd);
+        classifyItem(item, "NINDS", diseaseToAdd);
+        classifyItem(item, "NINDS", domainToAdd);
+        classifyItem(item, "NINDS", subDomainToAdd);
 
 
         if (!_.isEmpty(c.population) && type === 'cde') {
@@ -67,12 +66,12 @@ exports.parseClassification = (nindsForms, item) => {
                     let populationToAdd = [];
                     populationToAdd.push('Population');
                     populationToAdd.push(p);
-                    classificationShared.classifyItem(item, "NINDS", populationToAdd);
+                    classifyItem(item, "NINDS", populationToAdd);
                 }
             })
         }
 
-        classificationShared.sortClassification(item);
+        sortClassification(item);
 
     });
 
