@@ -21,6 +21,7 @@ import _cloneDeep from 'lodash/cloneDeep';
             line-height: 1.5;
             border-radius: 3px;
         }
+
         mat-icon {
             font-size: 16px;
             height: 16px;
@@ -40,7 +41,8 @@ export class InlineAreaEditComponent implements OnInit, AfterViewInit {
     value!: string;
     localFormat?: string;
 
-    constructor(private elementRef: ElementRef) {}
+    constructor(private elementRef: ElementRef) {
+    }
 
     ngOnInit(): void {
         this.value = _cloneDeep(this.model);
@@ -75,6 +77,7 @@ export class InlineAreaEditComponent implements OnInit, AfterViewInit {
     }
 
     static isInvalidHtml(html: string) {
+        let allowUrls = [(window as any).publicUrl, (window as any).urlProd];
         let srcs = html.match(/src\s*=\s*["'](.+?)["']/ig);
         if (srcs) {
             for (let i = 0; i < srcs.length; i++) {
@@ -83,9 +86,12 @@ export class InlineAreaEditComponent implements OnInit, AfterViewInit {
                 if (urls) {
                     for (let j = 0; j < urls.length; j++) {
                         let url = urls[j].replace(/["]/g, "").replace(/[']/g, "");
-                        if (url.indexOf('/data/') !== 0 && url.indexOf((window as any).publicUrl + '/data/') !== 0) {
-                            return true;
-                        }
+                        let allow = false;
+                        allowUrls.forEach(allowUrl => {
+                            let index = url.indexOf(allowUrl);
+                            if (index > -1) allow = true;
+                        });
+                        return !allow;
                     }
                 }
             }
