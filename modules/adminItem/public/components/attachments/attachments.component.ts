@@ -1,4 +1,4 @@
-import { Component, Input, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { hasRole } from 'shared/system/authorizationShared';
 import { UserService } from '_app/user.service';
 
@@ -21,6 +21,9 @@ export class AttachmentsComponent {
 
     copyUrl(attachment) {
         let url = (window as any).publicUrl + '/data/' + attachment.fileid;
+        if (attachment.filetype && attachment.filetype.indexOf('video') > -1) {
+            url += '.mp4';
+        }
         let copyElement = document.createElement('input');
         copyElement.setAttribute('type', 'text');
         copyElement.setAttribute('value', url);

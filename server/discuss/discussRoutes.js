@@ -2,6 +2,8 @@ const async = require('async');
 const authorization = require('../system/authorization');
 const loggedInMiddleware = authorization.loggedInMiddleware;
 const authorizationShared = require('esm')(module)('../../shared/system/authorizationShared');
+const canRemoveComment = authorizationShared.canRemoveComment;
+const canComment = authorizationShared.canComment;
 const errorHandler = require('../errorHandler/errHandler');
 const handleError = errorHandler.handleError;
 const handle404 = errorHandler.handle404;
@@ -48,7 +50,7 @@ exports.module = function (roleConfig) {
         }));
     });
 
-    router.post('/postComment', [loggedInMiddleware], async (req, res) => {
+    router.post('/postComment', loggedInMiddleware, async (req, res) => {
         const handlerOptions = {req, res};
         const comment = req.body;
         const eltModule = comment.element && comment.element.eltType;
@@ -59,7 +61,7 @@ exports.module = function (roleConfig) {
         mongo_data.fetchItem(eltModule, eltTinyId, handle404(handlerOptions, elt => {
             comment.user = req.user;
             comment.created = new Date().toJSON();
-            if (!authorizationShared.canComment(req.user)) {
+            if (!canComment(req.user)) {
                 comment.pendingApproval = true;
             }
             discussDb.save(comment, handleError(handlerOptions, savedComment => {
@@ -78,7 +80,7 @@ exports.module = function (roleConfig) {
         }));
     });
 
-    router.post('/replyComment', [loggedInMiddleware], async (req, res) => {
+    router.post('/replyComment', loggedInMiddleware, async (req, res) => {
         const handlerOptions = {req, res};
         let numberUnapprovedMessages = await discussDb.numberUnapprovedMessageByUsername(req.user.username)
             .catch(handleError(handlerOptions));
@@ -94,7 +96,7 @@ exports.module = function (roleConfig) {
                 created: new Date().toJSON(),
                 text: req.body.reply
             };
-            if (!authorizationShared.canComment(req.user)) {
+            if (!canComment(req.user)) {
                 reply.pendingApproval = true;
             }
             comment.replies.push(reply);
@@ -139,14 +141,14 @@ exports.module = function (roleConfig) {
         }));
     });
 
-    router.post('/deleteComment', [loggedInMiddleware], (req, res) => {
+    router.post('/deleteComment', loggedInMiddleware, (req, res) => {
         let commentId = req.body.commentId;
         discussDb.byId(commentId, handle404({req, res}, comment => {
             let dao = daoManager.getDao(comment.element.eltType);
             let idRetrievalFunc = dao.byTinyId ? dao.byTinyId : dao.byId;
             let eltId = comment.element.eltId;
             idRetrievalFunc(eltId, handle404({req, res}, element => {
-                if (!authorizationShared.canRemoveComment(req.user, comment, element)) {
+                if (!canRemoveComment(req.user, comment, element)) {
                     return res.status(403).send('You can only remove ' + element.type + ' you own.');
                 }
                 comment.remove(handleError({req, res}, () => {
@@ -157,14 +159,14 @@ exports.module = function (roleConfig) {
         }));
     });
 
-    router.post('/deleteReply', [loggedInMiddleware], (req, res) => {
+    router.post('/deleteReply', loggedInMiddleware, (req, res) => {
         let replyId = req.body.replyId;
         discussDb.byReplyId(replyId, handle404({req, res}, comment => {
             let dao = daoManager.getDao(comment.element.eltType);
             let idRetrievalFunc = dao.byTinyId ? dao.byTinyId : dao.byId;
             let eltId = comment.element.eltId;
             idRetrievalFunc(eltId, handle404({req, res}, element => {
-                if (!authorizationShared.canRemoveComment(req.user, comment, element)) {
+                if (!canRemoveComment(req.user, comment, element)) {
                     return res.status(403).send('You can only remove ' + element.type + ' you own.');
                 }
                 comment.replies = comment.replies.filter(r => r._id.toString() !== replyId);
@@ -176,7 +178,7 @@ exports.module = function (roleConfig) {
         }));
     });
 
-    router.get('/commentsFor/:username/:from/:size', [loggedInMiddleware], (req, res) => {
+    router.get('/commentsFor/:username/:from/:size', loggedInMiddleware, (req, res) => {
         let from = Number.parseInt(req.params.from);
         let size = Number.parseInt(req.params.size);
         let username = req.params.username;
@@ -236,25 +238,25 @@ exports.module = function (roleConfig) {
         }
     });
 
-    router.post('/resolveComment', [loggedInMiddleware], (req, res) => {
+    router.post('/resolveComment', loggedInMiddleware, (req, res) => {
         discussDb.byId(req.body.commentId, handle404({req, res}, comment => {
             replyTo(req, res, comment, 'resolved');
         }));
     });
 
-    router.post('/reopenComment', [loggedInMiddleware], (req, res) => {
+    router.post('/reopenComment', loggedInMiddleware, (req, res) => {
         discussDb.byId(req.body.commentId, handle404({req, res}, comment => {
             replyTo(req, res, comment, 'active');
         }));
     });
 
-    router.post('/resolveReply', [loggedInMiddleware], (req, res) => {
+    router.post('/resolveReply', loggedInMiddleware, (req, res) => {
         discussDb.byReplyId(req.body.replyId, handle404({req, res}, comment => {
             replyTo(req, res, comment, undefined, 'resolved');
         }));
     });
 
-    router.post('/reopenReply', [loggedInMiddleware], (req, res) => {
+    router.post('/reopenReply', loggedInMiddleware, (req, res) => {
         discussDb.byReplyId(req.body.replyId, handle404({req, res}, comment => {
             replyTo(req, res, comment, undefined, 'active');
         }));

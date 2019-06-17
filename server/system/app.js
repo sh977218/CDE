@@ -535,6 +535,10 @@ exports.init = function (app) {
 
     app.get('/data/:id', (req, res) => {
         let fileId = req.params.id;
+        const i = fileId.indexOf(".");
+        if (i > -1) {
+            fileId = fileId.substr(0, i);
+        }
         mongo_data.getFile(req.user, fileId, res);
     });
 

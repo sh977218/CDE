@@ -58,10 +58,6 @@ exports.save = (comment, cb) => {
     new Comment(comment).save(cb);
 };
 
-exports.removeById = (id, cb) => {
-    Comment.findByIdAndRemove(id, cb);
-};
-
 exports.commentsForUser = (username, from, size, cb) => {
     Comment.find({username: username}).skip(from).limit(size).sort({created: -1}).exec(cb);
 };
