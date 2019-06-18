@@ -38,8 +38,8 @@ import { SaveModalComponent } from 'adminItem/public/components/saveModal/saveMo
     providers: []
 })
 export class DataElementViewComponent implements OnInit {
-    @ViewChild('commentAreaComponent') commentAreaComponent!: DiscussAreaComponent;
-    @ViewChild('copyDataElementContent') copyDataElementContent!: TemplateRef<any>;
+    @ViewChild('commentAreaComponent') commentAreaComponent: DiscussAreaComponent;
+    @ViewChild('copyDataElementContent') copyDataElementContent: TemplateRef<any>;
     @ViewChild('saveModal') saveModal!: SaveModalComponent;
     commentMode;
     currentTab = 'general_tab';

@@ -6,7 +6,7 @@ import { LatestCommentsComponent } from 'discuss/components/latestComments/lates
 
 
 const appRoutes: Routes = [
-    {path: '', component: LatestCommentsComponent, data: {commentsUrl: '../../server/discuss/orgComments'}},
+    {path: '', component: LatestCommentsComponent, data: {commentsUrl: 'server/discuss/orgComments'}},
 ];
 
 @NgModule({

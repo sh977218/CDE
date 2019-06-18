@@ -8,15 +8,15 @@ import {
     Instruction,
     ObjectId,
     PermissibleValue,
-} from '../../shared/models.model';
+} from 'shared/models.model';
 import {
     DatatypeContainer,
     QuestionTypeDate,
     QuestionTypeNumber,
     QuestionTypeText,
-} from '../../shared/de/dataElement.model';
-import { iterateFeSync } from '../../shared/form/fe';
-import { supportedFhirResources } from '../../shared/mapping/fhir/fhirResource.model';
+} from 'shared/de/dataElement.model';
+import { iterateFeSync } from 'shared/form/fe';
+import { supportedFhirResources } from 'shared/mapping/fhir/fhirResource.model';
 
 export type QuestionValue = any;
 
@@ -158,7 +158,6 @@ class EltRefCaching extends EltRef {
 }
 
 export class ExternalMappings {
-    [system: string]: any;
     fhir?: {
         resourceType?: supportedFhirResources,
     };

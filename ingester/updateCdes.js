@@ -1,13 +1,13 @@
 var async = require('async'),
     mongo_cde = require('../server/cde/mongo-cde'),
     cdediff = require('../server/cde/cdediff'),
+    classificationShared = require('esm')(module)('../shared/system/classificationShared'),
     MigrationDataElement = require('./createMigrationConnection').MigrationDataElementModel,
     DataElement = mongo_cde.DataElement,
     MigrationOrg = require('./createMigrationConnection').MigrationOrgModel,
     Org = require('../server/system/mongo-data').Org,
     updateShare = require('./updateShare');
 const adminItemSvc = require('../server/system/adminItemSvc');
-import { sortClassification } from 'shared/system/classificationShared';
 
 var cdeSource = process.argv[3];
 
@@ -76,13 +76,13 @@ function compareCdes(existingCde, newCde) {
         }
     }
     try {
-        if (existingCde.classification.length > 0) sortClassification(existingCde);
+        if (existingCde.classification.length > 0) classificationShared.sortClassification(existingCde);
     } catch (e) {
         console.log(existingCde);
         throw e;
     }
 
-    sortClassification(newCde);
+    classificationShared.sortClassification(newCde);
     newCde = JSON.parse(JSON.stringify(newCde));
     wipeUseless(newCde);
 
@@ -214,7 +214,7 @@ var migStream;
 
 function streamOnData(migrationCde) {
     migStream.pause();
-    sortClassification(migrationCde);
+    classificationShared.sortClassification(migrationCde);
     var source = migrationCde.source;
     var orgName = migrationCde.stewardOrg.name;
     var cdeId = 0;

@@ -1,7 +1,8 @@
-const cdash = require('./cdash1-1');
-const mongo_data_system = require('../server/system/mongo-data');
-const async = require('async');
-import { addCategory, classifyItem } from 'shared/system/classificationShared';
+var cdash = require('./cdash1-1'),
+    mongo_data_system = require('../server/system/mongo-data'),
+    async = require('async'),
+    classificationShared = require('esm')(module)('../shared/system/classificationShared')
+    ;
 
 var cdashOrg;
 var toSave = [];
@@ -82,12 +83,12 @@ function doCdes() {
         if (cdashRow['Role'].length > 0) {
             cls.push(cdashRow['Role']);
         }
-        classifyItem(cde, "CDASH", cls);
-        addCategory({elements: cdashOrg.classifications}, cls);
+        classificationShared.classifyItem(cde, "CDASH", cls);
+        classificationShared.addCategory({elements: cdashOrg.classifications}, cls);
 
         var cls2 = ["Classification", cdashRow['Core']];
-        classifyItem(cde, "CDASH", cls2);
-        addCategory({elements: cdashOrg.classifications}, cls2);
+        classificationShared.classifyItem(cde, "CDASH", cls2);
+        classificationShared.addCategory({elements: cdashOrg.classifications}, cls2);
 
         var question = {
             elementType: "question",

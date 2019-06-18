@@ -4,7 +4,7 @@ let builder = new xml2js.Builder({attrkey: 'attribute'});
 let Readable = require('stream').Readable;
 let attachment = require('../server/attachment/attachmentSvc');
 let cdediff = require('../server/cde/cdediff');
-import { sortClassification } from '../shared/system/classificationShared';
+let classificationShared = require('esm')(module)('../shared/system/classificationShared');
 
 exports.loaderUser = {
     username: 'batchloader'
@@ -75,7 +75,7 @@ exports.compareObjects = function (existingForm, newForm) {
     let newFormCopy = _.cloneDeep(newForm);
     exports.wipeUseless(existingForm);
     exports.wipeUseless(newFormCopy);
-    sortClassification(newFormCopy);
+    classificationShared.sortClassification(newFormCopy);
     if (!existingFormCopy.classification) existingFormCopy.classification = [];
     for (let i = existingFormCopy.classification.length - 1; i > 0; i--) {
         if (existingFormCopy.classification[i].stewardOrg.name !== newFormCopy.source) {
@@ -84,7 +84,7 @@ exports.compareObjects = function (existingForm, newForm) {
     }
     if (_.isEmpty(existingFormCopy.classification)) existingFormCopy.classification = [];
     try {
-        if (existingFormCopy.classification.length > 0) sortClassification(existingForm);
+        if (existingFormCopy.classification.length > 0) classificationShared.sortClassification(existingForm);
     } catch (e) {
         console.log(existingFormCopy);
         throw e;

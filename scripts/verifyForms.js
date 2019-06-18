@@ -1,6 +1,6 @@
 const Ajv = require('ajv');
 const config = require('config');
-import { iterateFeSync } from '../shared/form/fe';
+const formShared = require('esm')(module)('../shared/form/fe');
 const mongo_form = require('../server/form/mongo-form');
 const verifyElt = require('./verifyElt');
 
@@ -46,7 +46,7 @@ function streamElts(badIds) {
                     changed = true;
                 }
             };
-            iterateFeSync(elt, notAQuestion, notAQuestion, q => {
+            formShared.iterateFeSync(elt, notAQuestion, notAQuestion, q => {
                 allFe(q);
                 if (q.question) {
                     const answers = verifyElt.fixPermissibleValues(q.question.answers, q.question.datatype);

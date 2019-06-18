@@ -2,7 +2,7 @@ var async = require('async');
 
 var mongo_cde = require('../../server/cde/mongo-cde');
 var cdeDiff = require('../../server/cde/cdediff');
-import { sortClassification } from 'shared/system/classificationShared';
+var classificationShared = require('esm')(module)('../../shared/system/classificationShared');
 var MigrationDataElement = require('../createMigrationConnection').MigrationDataElementModel;
 var DataElement = mongo_cde.DataElement;
 var MigrationOrg = require('../createMigrationConnection').MigrationOrgModel;
@@ -82,13 +82,13 @@ function compareCdes(existingCde, newCde) {
         }
     }
     try {
-        if (existingCde.classification.length > 0) sortClassification(existingCde);
+        if (existingCde.classification.length > 0) classificationShared.sortClassification(existingCde);
     } catch (e) {
         console.log(existingCde);
         throw e;
     }
 
-    sortClassification(newCde);
+    classificationShared.sortClassification(newCde);
     newCde = JSON.parse(JSON.stringify(newCde));
     wipeUseless(newCde);
 
@@ -223,7 +223,7 @@ var migStream;
 
 function streamOnData(migrationCde) {
     migStream.pause();
-    sortClassification(migrationCde);
+    classificationShared.sortClassification(migrationCde);
     var cdeId = 0;
     var version;
     for (var i = 0; i < migrationCde.ids.length; i++) {

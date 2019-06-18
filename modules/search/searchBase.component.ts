@@ -31,7 +31,7 @@ import { uriViewBase } from 'shared/item';
 import {
     CbErr,
     CurationStatus, ElasticQueryResponse, ElasticQueryResponseAggregation, ElasticQueryResponseAggregationBucket,
-    ElasticQueryResponseHit, Item, ItemElastic, ModuleItem,
+    ElasticQueryResponseHit, Item, ItemElastic,
     Organization
 } from 'shared/models.model';
 import { hasRole, isSiteAdmin } from 'shared/system/authorizationShared';
@@ -175,7 +175,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     goToPage = 1;
     lastQueryTimeStamp?: number;
     private lastTypeahead: { [term: string]: string } = {};
-    module!: ModuleItem;
+    module!: 'cde' | 'form';
     numPages?: number;
     orgs?: Organization[];
     orgHtmlOverview?: string;

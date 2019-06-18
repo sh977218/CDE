@@ -1,5 +1,7 @@
 const _ = require('lodash');
 
+const classificationShared = require('esm')(module)('../../../shared/system/classificationShared');
+
 mergeSources = (newSources, existingSources) => {
     let otherSources = existingSources.filter(s => s.sourceName !== 'NINDS');
     let result = newSources.concat(otherSources);
