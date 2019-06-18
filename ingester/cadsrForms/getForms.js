@@ -35,9 +35,9 @@ var request = require('request')
     , async = require('async')
     , mongo_form = require('../../server/form/mongo-form.js')
     , mongo_cde = require('../../server/cde/mongo-cde.js')
+    , classificationShared = require('esm')(module)('../../shared/system/classificationShared')
     , mongo_data_system = require('../../server/system/mongo-data')
     ;
-import { addCategory} from 'shared/system/classificationShared';
 
 var startTime = new Date().getTime();
 
@@ -257,8 +257,8 @@ var saveForm = function(cadsrForm, cbfc) {
     if (cadsrForm.classification && cadsrForm.classification.length > 0) {
         var cdeClassifTree = cdeForm.classification[0];
         cadsrForm.classification.forEach(function (co) {
-            addCategory(cdeClassifTree, [cadsrForm.contextName, co.scheme, co.item]);
-            addCategory(fakeTree, [cadsrForm.contextName, co.scheme, co.item]);
+            classificationShared.addCategory(cdeClassifTree, [cadsrForm.contextName, co.scheme, co.item]);
+            classificationShared.addCategory(fakeTree, [cadsrForm.contextName, co.scheme, co.item]);
         });
     } else {
         console.log("form has no classifications!");

@@ -1,6 +1,6 @@
 const _ = require('lodash');
 
-import { transferClassifications } from 'shared/system/classificationShared';
+const classificationShared = require('esm')(module)('../../../shared/system/classificationShared');
 
 mergeBySources = (newSources, existingSources) => {
     let otherSources = existingSources.filter(o => ['PhenX', 'PhenX Variable'].indexOf(o.source) == -1);
@@ -16,5 +16,5 @@ exports.mergeCde = (existingCde, newCde) => {
     existingCde.referenceDocuments = mergeBySources(newCde.referenceDocuments, existingCde.referenceDocuments);
     existingCde.sources = mergeBySources(newCde.sources, existingCde.sources);
     existingCde.valueDomain = newCde.valueDomain;
-    transferClassifications(newCde, existingCde);
+    classificationShared.transferClassifications(newCde, existingCde);
 };

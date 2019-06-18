@@ -21,7 +21,7 @@ const ParseProperty = require('./ParseProperty');
 const today = new Date().toJSON();
 const batchloader = require('../../shared/updatedByLoader').batchloader;
 
-import { checkPvUnicity } from 'shared/de/deValidator';
+const deValidator = require('esm')(module)('../../../shared/de/deValidator');
 
 exports.createCde = async (nciCde, orgInfo) => {
     let designations = ParseDesignations.parseDesignations(nciCde);
@@ -66,7 +66,7 @@ exports.createCde = async (nciCde, orgInfo) => {
 
     ParseClassification.parseClassification(nciCde,cde, orgInfo);
 
-    let cdeError = checkPvUnicity(cde.valueDomain);
+    let cdeError = deValidator.checkPvUnicity(cde.valueDomain);
     if (cdeError && !cdeError.allValid) {
         if (cdeError.message.indexOf('Duplicate Code Name:') !== -1){
             let uniqPvs = _.uniqBy(cde.valueDomain.permissibleValues,'valueMeaningName');

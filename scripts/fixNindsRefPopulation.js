@@ -6,7 +6,7 @@ const mongo_form = require('../server/form/mongo-form');
 const Form = mongo_form.Form;
 const FormSource = mongo_form.FormSource;
 
-import { classifyItem } from '../shared/system/classificationShared';
+const classificationShared = require('esm')(module)('../shared/system/classificationShared');
 
 let deCount = 0;
 let formCount = 0;
@@ -53,7 +53,7 @@ deCursor.eachAsync(function (cde) {
                                 e.elements.forEach(p => {
                                     let populationToAdd = ['Population'];
                                     populationToAdd.push(p.name);
-                                    classifyItem(cde, "NINDS", populationToAdd);
+                                    classificationShared.classifyElt(cde, "NINDS", populationToAdd);
                                 })
                             }
                         })
@@ -106,7 +106,7 @@ formCursor.eachAsync(function (form) {
                                 e.elements.forEach(p => {
                                     let populationToAdd = ['Population'];
                                     populationToAdd.push(p.name);
-                                    classifyItem(form, "NINDS", populationToAdd);
+                                    classificationShared.classifyElt(form, "NINDS", populationToAdd);
                                 })
                             }
                         })

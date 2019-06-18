@@ -1,9 +1,8 @@
-import { config } from '../server/system/parseConfig';
-
 // simple script to load forms or CDEs
 
 var mongoose = require('mongoose'),
-    schemas = require('../server/system/schemas'),
+    config = require('../server/system/parseConfig'),
+    schemas = require('../server/system/schemas.js'),
     cde_schemas = require('../server/cde/schemas'),
     form_schemas = require('../server/form/schemas'),
     fs = require('fs'),

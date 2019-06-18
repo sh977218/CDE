@@ -2,7 +2,7 @@ const DataElement = require('../server/cde/mongo-cde').DataElement;
 const DataElementDraft = require('../server/cde/mongo-cde').DataElementDraft;
 const Form = require('../server/form/mongo-form').Form;
 const FormDraft = require('../server/form/mongo-form').FormDraft;
-import { iterateFormElements } from 'shared/form/fe';
+const formShared = require('esm')(module)('../shared/form/fe');
 
 const DATA_TYPE_MAP = {
     "": "Text",
@@ -177,7 +177,7 @@ function doOneCDE(elt, DAO) {
 }
 
 function doOneForm(elt, DAO) {
-    iterateFormElements(elt, {
+    formShared.iterateFormElements(elt, {
         questionCb: (fe) => {
             if (fe) {
                 let dataTypeIncorrect = fe.question.datatype;

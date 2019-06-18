@@ -18,7 +18,7 @@ const batchloaderUsername = updatedByNonLoaderShared.BATCHLOADER_USERNAME;
 
 const checkNullComments = require('../../shared/utility').checkNullComments;
 
-import { transferClassifications } from 'shared/system/classificationShared';
+const classificationShared = require('esm')(module)('../../../shared/system/classificationShared');
 
 let createdForm = 0;
 let sameForm = 0;
@@ -105,7 +105,7 @@ doOneNindsFormById = async formIdString => {
         newFormObj.tinyId = existingFormObj.tinyId;
 
         if (existingForm.tinyId === 'mJsGoMU1m') {
-            transferClassifications(newFormObj, existingForm);
+            classificationShared.transferClassifications(newFormObj, existingForm);
         } else {
             let otherClassifications = existingFormObj.classification.filter(c => c.stewardOrg.name !== 'NINDS');
             existingForm.classification = otherClassifications.concat(newFormObj.classification);
