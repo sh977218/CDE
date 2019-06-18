@@ -5,7 +5,7 @@ import {
     FhirHumanName,
     FhirIdentifier, FhirInstant, FhirMarkdown, FhirMeta, FhirNarrative, FhirPeriod, FhirQuantity, FhirRange, FhirRatio,
     FhirReference, FhirSampledData, FhirTime, FhirUri, FhirValue
-} from '../../../shared/mapping/fhir/fhir.model';
+} from 'shared/mapping/fhir/fhir.model';
 
 export class FhirResource {
     id?: string;
@@ -19,11 +19,10 @@ export const supportedFhirResourcesArray = ['Observation', 'Procedure', 'Questio
 export type supportedFhirResourcesExt = FhirObservation|FhirProcedure|FhirQuestionnaireResponse|FhirQuestionnaire;
 
 export class FhirDomainResource extends FhirResource implements FhirElement {
-    [key: string]: any;
     contained?: FhirResource[];
     extension?: FhirExtension[];
     modifierExtension?: FhirExtension[];
-    resourceType!: supportedFhirResources|'Device'|'Questionnaire'|'Encounter'; // not documented, XML: is the node name
+    resourceType!: supportedFhirResources|'Device'|'Questionnaire'; // not documented, XML: is the node name
     text?: FhirNarrative;
 }
 
@@ -113,12 +112,12 @@ export class FhirDevice extends FhirDomainResource {
     status?: FhirCode;
     type?: FhirCodeableConcept;
     udi?: {
-        carrierAIDC?: FhirBase64Binary,
-        carrierHRF?: string,
+        carrierAIDC: FhirBase64Binary,
+        carrierHRF: string,
         deviceIdentifier?: string,
-        entryType?: FhirCode,
-        issuer?: FhirUri,
-        jurisdiction?: FhirUri,
+        entryType: FhirCode,
+        issuer: FhirUri,
+        jurisdiction: FhirUri,
         name?: string,
     };
     url?: FhirUri;
@@ -128,7 +127,6 @@ export class FhirDevice extends FhirDomainResource {
 export type FhirDeviceMetric = any;
 
 export class FhirEncounter extends FhirDomainResource {
-    resourceType!: 'Encounter';
     account?: FhirReference<FhirAccount>[];
     appointment?: FhirReference<FhirAppointment>;
     class?: FhirCoding;
@@ -187,7 +185,7 @@ export type FhirLocation = any;
 export type FhirMedicalAdministration = any;
 export type FhirMedication = any;
 
-export class FhirObservationComponent extends FhirBackboneElement implements FhirValue {
+export class FhirObservationComponent extends FhirDomainResource implements FhirValue {
     code!: FhirCodeableConcept;
     dataAbsentReason?: FhirCodeableConcept;
     interpretation?: FhirCodeableConcept;
@@ -316,7 +314,6 @@ export class FhirQuestionnaire extends FhirDomainResource {
 }
 
 export class FhirQuestionnaireItem extends FhirBackboneElement {
-    [key: string]: any;
     code?: FhirCoding[];
     definition?: FhirUri;
     enableWhen?: FhirQuestionnaireItemEnableWhen[];
@@ -346,7 +343,6 @@ export class FhirQuestionnaireItem extends FhirBackboneElement {
 }
 
 export class FhirQuestionnaireItemEnableWhen extends FhirBackboneElement {
-    [key: string]: any;
     answerAttachment?: FhirAttachement;
     answerBoolean?: boolean;
     answerCoding?: FhirCoding;
@@ -360,7 +356,6 @@ export class FhirQuestionnaireItemEnableWhen extends FhirBackboneElement {
     answerTime?: FhirTime;
     answerUri?: FhirUri;
     hasAnswer?: boolean;
-    operator!: 'exists' | '=' | '!=' | '>' | '>=' | '<' | '<=';
     question!: string;
 }
 

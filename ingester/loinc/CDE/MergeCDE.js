@@ -1,4 +1,4 @@
-import { transferClassifications } from 'shared/system/classificationShared';
+const classificationShared = require('esm')(module)('../../../shared/system/classificationShared');
 
 const mergeDesignations = require('../Shared/mergeDesignations').mergeDesignations;
 const mergeDefinitions = require('../Shared/mergeDefinitions').mergeDefinitions;
@@ -18,5 +18,5 @@ exports.mergeCde = function (newCde, existingCde) {
     existingCde.property = newCde.property;
     existingCde.valueDomain = newCde.valueDomain;
 
-    transferClassifications(newCde, existingCde);
+    classificationShared.transferClassifications(newCde, existingCde);
 };

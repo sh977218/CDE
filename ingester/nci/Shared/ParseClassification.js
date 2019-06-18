@@ -1,4 +1,4 @@
-import { classifyItem } from 'shared/system/classificationShared';
+const classificationShared = require('esm')(module)('../../../shared/system/classificationShared');
 
 exports.parseClassification = (nciCde, cde, orgInfo) => {
     if (nciCde.CLASSIFICATIONSLIST[0].CLASSIFICATIONSLIST_ITEM) {
@@ -8,7 +8,7 @@ exports.parseClassification = (nciCde, cde, orgInfo) => {
             let preferredName = csi.ClassificationScheme[0].PreferredName[0];
             let classificationArray = [contextName, preferredName];
             if (contextName !== 'TEST') {
-                classifyItem(cde, orgInfo.classificationOrgName, classificationArray);
+                classificationShared.classifyElt(cde, orgInfo.classificationOrgName, classificationArray);
             }
         });
     }

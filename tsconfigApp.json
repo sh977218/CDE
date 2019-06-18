@@ -14,7 +14,6 @@
     "moduleResolution": "Node",
     "noImplicitAny": false,
     "pretty": false,
-    "rootDir": ".",
     "sourceMap": false,
     "suppressImplicitAnyIndexErrors": true,
     "target": "ES5",
@@ -28,9 +27,7 @@
     "useWebpackText": true
   },
   "exclude": [
-    "app.ts",
     "build",
-    "buildNode",
     "deploy",
     "dist",
     "ingester",
@@ -42,7 +39,6 @@
     "protractor",
     "scripts",
     "server",
-    "test",
-    "webpack*"
+    "test"
   ]
 }

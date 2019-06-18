@@ -1,4 +1,4 @@
-import { transferClassifications } from  'shared/system/classificationShared';
+const classificationShared = require('esm')(module)('../../../shared/system/classificationShared');
 
 const mergeDesignations = require('../Shared/mergeDesignations').mergeDesignations;
 const mergeDefinitions = require('../Shared/mergeDefinitions').mergeDefinitions;
@@ -16,5 +16,6 @@ exports.mergeForm = async (newForm, existingForm) => {
     existingForm.ids = mergeBySource(existingForm.ids, newForm.ids);
     existingForm.formElements = newForm.formElements;
 
-    transferClassifications(newForm, existingForm);
+    classificationShared.transferClassifications(newForm, existingForm);
+
 };

@@ -1,7 +1,6 @@
-import { config } from '../server/system/parseConfig';
-
 const StoredQuery = require("../server/log/dbLogger").StoredQueryModel;
 const elasticsearch = require('elasticsearch');
+const config = require('../server/system/parseConfig');
 
 const esClient = new elasticsearch.Client({
     hosts: config.elastic.hosts

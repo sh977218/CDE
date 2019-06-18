@@ -5,7 +5,7 @@ import { ElasticService } from '_app/elastic.service';
 import { SearchSettings } from 'search/search.model';
 import { orderedList } from 'shared/system/regStatusShared';
 import {
-    ClassificationElement, ElasticQueryResponse, Embed, ItemElastic, UserSearchSettings
+    ClassficationElement, ElasticQueryResponse, Embed, ItemElastic, UserSearchSettings
 } from 'shared/models.model';
 
 
@@ -78,7 +78,7 @@ export class EmbedAppComponent  {
         this.search();
     }
 
-    doClassif(currentString: string, classif: ClassificationElement, result: string[]) {
+    doClassif(currentString: string, classif: ClassficationElement, result: string[]) {
         if (currentString.length > 0) {
             currentString = currentString + ';';
         }

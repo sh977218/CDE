@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const generateTinyId = require('../../../../server/system/mongo-data').generateTinyId;
 
-import { classifyItem } from 'shared/system/classificationShared';
+const classificationShared = require('esm')(module)('../../../../shared/system/classificationShared');
 
 const RED_CAP_DATA_TYPE_MAP = require('./REDCAP_DATATYPE_MAP').map;
 
@@ -151,7 +151,7 @@ exports.createCde = async (row, formId, protocol) => {
     };
 
     let classificationToAdd = ['REDCap'].concat(classificationArray);
-    classifyItem(newCde, "PhenX", classificationToAdd);
+    classificationShared.classifyItem(newCde, "PhenX", classificationToAdd);
 
     return newCde;
 };
