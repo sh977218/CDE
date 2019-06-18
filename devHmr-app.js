@@ -16,7 +16,7 @@ switch (process.argv[2]) {
 
 const webpack = require('webpack');
 const webpackDevServer = require('webpack-dev-server');
-const serverConstants = require('esm')(module)('./shared/serverConstants');
+import { htmlServedUri } from './shared/serverConstants';
 
 const cfg = require('./modules/_app/webpackApp.dev.hmr');
 const options = {
@@ -36,7 +36,7 @@ const options = {
     },
     watchContentBase: true,
 };
-serverConstants.htmlServedUri.forEach(uri => options.proxy[uri] = {target: 'http://localhost:3001/', secure: false});
+htmlServedUri.forEach(uri => options.proxy[uri] = {target: 'http://localhost:3001/', secure: false});
 
 webpackDevServer.addDevServerEntrypoints(cfg, options);
 new webpackDevServer(webpack(cfg), options).listen(8080, 'localhost', () => {

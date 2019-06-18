@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const cdediff = require('../../../server/cde/cdediff');
 const wipeUseless = require('../../shared/utility').wipeUseless;
-const classificationShared = require('esm')(module)('../../../shared/system/classificationShared');
+import { transferClassifications } from 'shared/system/classificationShared';
 
 exports.compareCdes = function (newCde, existingCde) {
     let newCdeObj = _.cloneDeep(newCde);
@@ -63,5 +63,5 @@ exports.mergeCde = function (newCde, existingCde) {
     existingCde.ids = mergeWithEqual(existingCde.ids, newCde.ids);
     existingCde.attachments = newCde.attachments;
     existingCde.imported = newCde.imported;
-    classificationShared.transferClassifications(newCde, existingCde);
+    transferClassifications(newCde, existingCde);
 };
