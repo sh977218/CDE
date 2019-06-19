@@ -157,9 +157,7 @@ exports.getCrossWalkingVocabularies = async function (source, code, targetSource
         + "&ticket=" + ticket;
     let options = {url: url, strictSSL: false};
     return util.promisify(request.get)(options)
-        .then(response => response.body,
-            handleReject('get cross walking vocabularies ERROR')
-        );
+        .then(response => response.body, handleReject('get cross walking vocabularies ERROR'));
 };
 
 exports.getAtomsFromUMLS = async function (cui, source) {

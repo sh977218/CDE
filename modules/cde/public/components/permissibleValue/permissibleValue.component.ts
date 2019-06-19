@@ -272,7 +272,7 @@ export class PermissibleValueComponent {
                     this.http.get<any>('/server/uts/crossWalkingVocabularies/' + source + '/' + code + '/' + targetSource)
                         .subscribe(res => {
                             if (res.result.length > 0) {
-                                res.result.forEach((r) => {
+                                res.result.forEach(r => {
                                     this.SOURCES[src].codes[pv.valueMeaningCode] = {code: r.ui, meaning: r.name};
                                 });
                             } else this.SOURCES[src].codes[pv.valueMeaningCode] = {code: 'N/A', meaning: 'N/A'};
