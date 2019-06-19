@@ -1,5 +1,6 @@
+import { config } from '../server/system/parseConfig';
+
 var mongoose = require('mongoose'),
-    config = require('../server/system/parseConfig'),
     cde_schemas = require('../server/cde/schemas'),
     mongo_cde = require('../server/cde/mongo-cde'),
     async = require('async');

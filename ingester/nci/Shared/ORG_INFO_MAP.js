@@ -110,6 +110,17 @@ exports.map = {
             "Standard": "Standard",
             "default": "Qualified"
         }
+    },
+    'caDSR':{
+        'xml': 'S:/MLB/CDE/NCI/caDSR/CDEBrowser_SearchResults (46).xml',
+        'stewardOrgName': 'NCI',
+        'classificationOrgName': 'NCI',
+        'classificationMap': {'PCORTF CDMH': 'PCORNet'},
+        statusMapping: {
+            "Preferred Standard": "Standard",
+            "Standard": "Standard",
+            "default": "Qualified"
+        }
     }
 };
 

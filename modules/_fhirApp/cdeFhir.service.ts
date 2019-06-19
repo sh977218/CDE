@@ -164,10 +164,10 @@ export class CdeFhirService {
                     resource = await observationPromise;
                     break;
                 case 'Procedure':
-                    resource = newProcedure(this.fhirData.context, this.fhirData.patient);
+                    resource = newProcedure(this.fhirData.patient, this.fhirData.context);
                     break;
                 case 'QuestionnaireResponse':
-                    resource = newQuestionnaireResponse(this.fhirData.context, this.fhirData.patient, self.lookupResource);
+                    resource = newQuestionnaireResponse(this.fhirData.patient, this.fhirData.context, self.lookupResource);
                     break;
                 default:
                     assertUnreachable(self.root.resourceType);
@@ -435,9 +435,9 @@ export class CdeFhirService {
     static readQuestionPropertyMatch(self: ResourceTreeAttribute, resources: any[]): FhirObservationComponent|FhirQuestionnaireResponseItem|undefined {
         switch (self.root.resourceType) {
             case 'Observation':
-                return resourceCodeableConceptMatch(resources, r => [r.code], getIds(self.crossReference)!);
+                return resourceCodeableConceptMatch(resources, r => [r.code], getIds(self.crossReference)!) as any;
             case 'Procedure':
-                return resourceCodeableConceptMatch(resources, r => r ? [r] : [], getIds(self.crossReference)!);
+                return resourceCodeableConceptMatch(resources, r => r ? [r] : [], getIds(self.crossReference)!) as any;
             case 'QuestionnaireResponse':
                 return resources.filter((item: FhirQuestionnaireResponseItem) => item.linkId === self.crossReference.feId)[0];
             default:
@@ -477,7 +477,7 @@ export class CdeFhirService {
                         (id: CdeId, done: CbErr<boolean>) => {
                             return this.fhirData.search<FhirObservation | FhirQuestionnaireResponse>(self.resourceType,
                                 {code: (id.source ? codeSystemOut(id.source) + '|' : '') + id.id})
-                                .then(r => r.length > 0 ? this.selectOne('edit', r, 'Last Edit', r => r.meta && new Date(r.meta.lastUpdated) || '') : r[0])
+                                .then(r => r.length > 0 ? this.selectOne('edit', r, 'Last Edit', (r: any) => r.meta && new Date(r.meta.lastUpdated) || '') : r[0])
                                 .then(r => {
                                     if (r) {
                                         resource = r;

@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const cdediff = require('../../../server/cde/cdediff');
 const wipeUseless = require('../../shared/utility').wipeUseless;
-const classificationShared = require('esm')(module)('../../../shared/system/classificationShared');
+import { transferClassifications } from 'shared/system/classificationShared';
 
 exports.compareCdes = function (newCde, existingCde) {
     let newCdeObj = _.cloneDeep(newCde);
@@ -37,9 +37,9 @@ mergeDefinitions = (o1, o2) => {
     });
     return result;
 };
-mergeSources = (o1, o2) => {
-    let result = _.uniqBy(o1.concat(o2), 'sourceName');
-    return result;
+mergeSources = (existingSources, newSources) => {
+    let otherSources = existingSources.filter(existingSource => existingSource.sourceName !== 'caDSR');
+    return newSources.concat(otherSources);
 };
 mergeWithEqual = (o1, o2) => {
     let result = _.uniqWith(o1.concat(o2), (a, b) => {
@@ -61,5 +61,7 @@ exports.mergeCde = function (newCde, existingCde) {
     existingCde.referenceDocuments = mergeWithEqual(existingCde.referenceDocuments, newCde.referenceDocuments);
     existingCde.properties = mergeWithEqual(existingCde.properties, newCde.properties);
     existingCde.ids = mergeWithEqual(existingCde.ids, newCde.ids);
-    classificationShared.transferClassifications(newCde, existingCde);
+    existingCde.attachments = newCde.attachments;
+    existingCde.imported = newCde.imported;
+    transferClassifications(newCde, existingCde);
 };
