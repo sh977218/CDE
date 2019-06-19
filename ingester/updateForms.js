@@ -2,14 +2,13 @@
  TODO
  this script does not update org
  */
-var MigrationFormModel = require('./createMigrationConnection').MigrationFormModel,
-    MigrationOrgModel = require('./createMigrationConnection').MigrationOrgModel,
-    OrgModel = require('../server/system/mongo-data').Org,
-    mongo_form = require('../server/form/mongo-form'),
-    FormModel = mongo_form.Form,
-    classificationShared = require('esm')(module)('../shared/system/classificationShared'),
-    updateShare = require('./updateShare')
-    ;
+var MigrationFormModel = require('./createMigrationConnection').MigrationFormModel;
+    const MigrationOrgModel = require('./createMigrationConnection').MigrationOrgModel;
+    const OrgModel = require('../server/system/mongo-data').Org;
+    const mongo_form = require('../server/form/mongo-form');
+    FormModel = mongo_form.Form;
+    import { sortClassification } from 'shared/system/classificationShared';
+    constupdateShare = require('./updateShare');
 
 var importDate = new Date().toJSON();
 
@@ -168,7 +167,7 @@ function run() {
     var migStream = MigrationFormModel.find().cursor();
     migStream.on('data', function (migrationForm) {
         migStream.pause();
-        classificationShared.sortClassification(migrationForm);
+        sortClassification(migrationForm);
         var orgName = migrationForm.stewardOrg.name;
         var formIdCounter = 0;
         var formId;

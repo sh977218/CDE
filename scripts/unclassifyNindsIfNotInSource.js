@@ -6,8 +6,6 @@ const mongo_form = require('../server/form/mongo-form');
 const Form = mongo_form.Form;
 const FormSource = mongo_form.FormSource;
 
-const classificationShared = require('esm')(module)('../shared/system/classificationShared');
-
 let deCount = 0;
 let formCount = 0;
 

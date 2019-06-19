@@ -2,7 +2,7 @@ let mongo_form = require('../server/form/mongo-form');
 let mongo_cde = require('../server/cde/mongo-cde');
 let adminItemSvc = require("../server/system/adminItemSvc");
 let classificationNode = require('../server/classification/classificationNode');
-let classificationShared = require('esm')(module)('../shared/system/classificationShared.js');
+import { actions } from 'shared/system/classificationShared';
 let request = require('request');
 let async = require('async');
 
@@ -17,7 +17,7 @@ function classifyTinyidList(list, newClassif, cb) {
             , tinyId: elt.id || elt
             , version: elt.version || null
         };
-        classificationNode.eltClassification(classifReq, classificationShared.actions.create, mongo_cde, actionCallback);
+        classificationNode.eltClassification(classifReq, actions.create, mongo_cde, actionCallback);
     };
 
     adminItemSvc.bulkAction(list, action, cb);

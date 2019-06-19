@@ -2,9 +2,10 @@
 *.orig
 *.pem
 *.sqlite
-.esm-cache
 .nide
 bin
+build/
+buildNode/
 dependencies/
 dist/
 !dist/launch/
