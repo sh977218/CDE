@@ -1,4 +1,4 @@
-import merge from 'webpack-merge';
+import * as merge from 'webpack-merge';
 import baseConfig from './webpack.dev';
 import nativeConfig from './webpackNative';
 

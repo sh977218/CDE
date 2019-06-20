@@ -101,7 +101,7 @@ app.set('port', config.port || 3000);
 app.set('view engine', 'ejs');
 app.set('trust proxy', true);
 
-app.use(favicon(path.join(APP_DIR, './modules/cde/public/assets/img/favicon.ico'))); // TODO: MOVE TO SYSTEM
+app.use(favicon(path.join((global as any).APP_DIR, './modules/cde/public/assets/img/favicon.ico'))); // TODO: MOVE TO SYSTEM
 
 app.use(bodyParser.urlencoded({extended: false, limit: '5mb'}));
 app.use(bodyParser.json({limit: '16mb'}));
@@ -185,10 +185,10 @@ app.use(function preventSessionCreation(req, res, next) {
 
 });
 
-app.use('/cde/public', express.static(path.join(APP_DIR, '/modules/cde/public')));
-app.use('/system/public', express.static(path.join(APP_DIR, '/modules/system/public')));
-app.use('/swagger/public', express.static(path.join(APP_DIR, '/modules/swagger/public')));
-app.use('/form/public', express.static(path.join(APP_DIR, '/modules/form/public')));
+app.use('/cde/public', express.static(path.join((global as any).APP_DIR, '/modules/cde/public')));
+app.use('/system/public', express.static(path.join((global as any).APP_DIR, '/modules/system/public')));
+app.use('/swagger/public', express.static(path.join((global as any).APP_DIR, '/modules/swagger/public')));
+app.use('/form/public', express.static(path.join((global as any).APP_DIR, '/modules/form/public')));
 
 let getS3Link = function (subpath) {
     return {
@@ -221,12 +221,12 @@ if (config.s3) {
     app.use('/launch', httpProxy(config.s3.host, getS3Link('/launch')));
     app.use('/native', httpProxy(config.s3.host, getS3Link('/native')));
 } else {
-    app.use('/app', express.static(path.join(APP_DIR, '/dist/app'), {setHeaders: res => res.header('Access-Control-Allow-Origin', '*')}));
-    app.use('/common', express.static(path.join(APP_DIR, '/dist/common')));
-    app.use('/embed', express.static(path.join(APP_DIR, '/dist/embed')));
-    app.use('/fhir', express.static(path.join(APP_DIR, '/dist/fhir')));
-    app.use('/launch', express.static(path.join(APP_DIR, '/dist/launch')));
-    app.use('/native', express.static(path.join(APP_DIR, '/dist/native')));
+    app.use('/app', express.static(path.join((global as any).APP_DIR, '/dist/app'), {setHeaders: res => res.header('Access-Control-Allow-Origin', '*')}));
+    app.use('/common', express.static(path.join((global as any).APP_DIR, '/dist/common')));
+    app.use('/embed', express.static(path.join((global as any).APP_DIR, '/dist/embed')));
+    app.use('/fhir', express.static(path.join((global as any).APP_DIR, '/dist/fhir')));
+    app.use('/launch', express.static(path.join((global as any).APP_DIR, '/dist/launch')));
+    app.use('/native', express.static(path.join((global as any).APP_DIR, '/dist/native')));
 }
 
 ['/embedded/public', '/_embedApp/public'].forEach(p => {

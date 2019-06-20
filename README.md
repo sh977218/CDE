@@ -154,8 +154,9 @@ Run in Bamboo and override variable "browser" with value "coverage"
 1. Node without server development
    * ```npm run buildNode```
    * ```npm start```
+<!--
 1. Node without server development (interpreted)
-   * ```npm run startDev```
+   * ```npm run startTs```
 1. Node with auto restart
    * ```node dev-app.js ```
 1. Node with auto restart and hot module replacement
@@ -164,6 +165,7 @@ Run in Bamboo and override variable "browser" with value "coverage"
    * ```node devHmr-app.js prod```
 1. Hot module replacement only, start node in debugger
    * ```node devHmr-app.js none```
+-->
 
 ### Angular Client Development
 #### Main App

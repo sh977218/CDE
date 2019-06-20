@@ -435,9 +435,9 @@ export class CdeFhirService {
     static readQuestionPropertyMatch(self: ResourceTreeAttribute, resources: any[]): FhirObservationComponent|FhirQuestionnaireResponseItem|undefined {
         switch (self.root.resourceType) {
             case 'Observation':
-                return resourceCodeableConceptMatch(resources, r => [r.code], getIds(self.crossReference)!);
+                return resourceCodeableConceptMatch(resources, r => [r.code], getIds(self.crossReference)!) as any;
             case 'Procedure':
-                return resourceCodeableConceptMatch(resources, r => r ? [r] : [], getIds(self.crossReference)!);
+                return resourceCodeableConceptMatch(resources, r => r ? [r] : [], getIds(self.crossReference)!) as any;
             case 'QuestionnaireResponse':
                 return resources.filter((item: FhirQuestionnaireResponseItem) => item.linkId === self.crossReference.feId)[0];
             default:

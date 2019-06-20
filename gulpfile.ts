@@ -104,7 +104,7 @@ gulp.task('copyCode', function copyCode() {
         .pipe(gulp.dest(BUILD_DIR + '/config/')));
 
     streamArray.push(gulp.src(resolve(APP_DIR, './package.json'))
-        .pipe(replace('"start": "node ./buildNode/app.js",', '"start": "node app.js",'))
+        .pipe(replace('"startJs": "node ./buildNode/app.js",', '"startJs": "node app.js",'))
         .pipe(gulp.dest(BUILD_DIR + '/')));
 
     streamArray.push(gulp.src(resolve(APP_DIR, './deploy/*'))

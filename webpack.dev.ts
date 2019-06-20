@@ -1,14 +1,14 @@
+import { resolve } from 'path';
 import { ContextReplacementPlugin, DefinePlugin, LoaderOptionsPlugin, ProgressPlugin } from 'webpack';
-import merge from 'webpack-merge';
+import * as merge from 'webpack-merge';
 import baseConfig from './webpack.config';
-import path from 'path';
 
 export default merge(baseConfig, {
     mode: 'development',
     plugins: [
         new ContextReplacementPlugin( // fix "WARNING Critical dependency: the request of a dependency is an expression"
             /@angular(\\|\/)core(\\|\/)esm5/,
-            path.resolve(__dirname, '../src')
+            resolve(__dirname, '../src')
         ),
         new DefinePlugin({
             PRODUCTION: JSON.stringify(false),
