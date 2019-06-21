@@ -16,7 +16,7 @@ export default merge(baseConfig, {
         new LoaderOptionsPlugin({debug: true}), // enable debug
         new ProgressPlugin() // show progress in ConEmu window
     ],
-    devtool: '#eval-source-map',
+    devtool: '#source-map',
     watch: true,
     watchOptions: {
         aggregateTimeout: 1000,

@@ -52,7 +52,6 @@ export class PermissibleValueComponent {
     @ViewChild('newPermissibleValueContent') public newPermissibleValueContent: TemplateRef<any>;
     @ViewChild('importPermissibleValueContent') public importPermissibleValueContent: TemplateRef<any>;
     readonly DataTypeArray = DataTypeArray;
-    canLinkPv = false;
     containsKnownSystem: boolean = false;
     editMode;
     keys = Object.keys;
@@ -229,7 +228,7 @@ export class PermissibleValueComponent {
         if (!this.SOURCES[src].selected) this.SOURCES[src].codes = {};
         else this.dupCodesForSameSrc(src);
         let targetSource = this.SOURCES[src].source;
-        this.elt.valueDomain.permissibleValues.forEach(pv => {
+        this.elt.valueDomain.permissibleValues.forEach(async pv => {
             this.SOURCES[src].codes[pv.valueMeaningCode] = {code: '', meaning: 'Retrieving...'};
             let code = pv.valueMeaningCode;
             let source;
@@ -245,18 +244,17 @@ export class PermissibleValueComponent {
                         meaning: pv.valueMeaningName
                     };
                 } else if (src === 'UMLS') {
-                    this.http.get<any>('/server/uts/umlsCuiFromSrc/' + code + '/' + source)
-                        .subscribe(
-                            res => {
-                                if (res.result.results.length > 0) {
-                                    res.result.results.forEach(r => {
-                                        this.SOURCES[src].codes[pv.valueMeaningCode] = {code: r.ui, meaning: r.name};
-                                    });
-                                } else this.SOURCES[src].codes[pv.valueMeaningCode] = {code: 'N/A', meaning: 'N/A'};
-                            }, () => this.Alert.addAlert('danger', "Error query UMLS."));
+                    this.http.get<any>(`/server/uts/umlsCuiFromSrc/${code}/${source}`)
+                        .subscribe(res => {
+                            if (res.result.results.length > 0) {
+                                res.result.results.forEach(r => {
+                                    this.SOURCES[src].codes[pv.valueMeaningCode] = {code: r.ui, meaning: r.name};
+                                });
+                            } else this.SOURCES[src].codes[pv.valueMeaningCode] = {code: 'N/A', meaning: 'N/A'};
+                        }, () => this.Alert.addAlert('danger', "Error query UMLS."));
 
                 } else if (source === 'UMLS') {
-                    this.http.get<any>('/server/uts/umlsAtomsBridge/' + code + '/' + targetSource)
+                    this.http.get<any>(`/server/uts/umlsAtomsBridge/${code}/${targetSource}`)
                         .subscribe(
                             res => {
                                 let l = [];
@@ -269,17 +267,20 @@ export class PermissibleValueComponent {
                                 } else this.SOURCES[src].codes[pv.valueMeaningCode] = {code: 'N/A', meaning: 'N/A'};
                             }, () => this.Alert.addAlert('danger', "Error query UMLS."));
                 } else {
-                    this.http.get<any>('/server/uts/crossWalkingVocabularies/' + source + '/' + code + '/' + targetSource)
-                        .subscribe(res => {
-                            if (res.result.length > 0) {
-                                res.result.forEach(r => {
-                                    this.SOURCES[src].codes[pv.valueMeaningCode] = {code: r.ui, meaning: r.name};
-                                });
-                            } else this.SOURCES[src].codes[pv.valueMeaningCode] = {code: 'N/A', meaning: 'N/A'};
-                        }, () => {
-                            // @TODO, this is a bug in UMLS. Sravan will fix. Until then, treat HTML as not found
-                            this.SOURCES[src].codes[pv.valueMeaningCode] = {code: 'N/A', meaning: 'N/A'};
-                        });
+                    let umlsResult = await this.http.get<any>(`/server/uts/umlsCuiFromSrc/${code}/${source}`).toPromise();
+                    if (umlsResult.result.results.length > 0) {
+                        let umlsCui = umlsResult.result.results[0].ui;
+                        let srcResult = await this.http.get<any>(`/server/uts/umlsPtSource/${umlsCui}/${targetSource}`).toPromise();
+                        if (srcResult.result.length > 0) {
+                            this.SOURCES[src].codes[pv.valueMeaningCode] = {
+                                code: srcResult.result[0].code.substr(srcResult.result[0].code.lastIndexOf("/") + 1),
+                                meaning: srcResult.result[0].name
+                            };
+                        }
+                    }
+                    if (!this.SOURCES[src].codes[pv.valueMeaningCode].code) {
+                        this.SOURCES[src].codes[pv.valueMeaningCode] = {code: 'N/A', meaning: 'N/A'};
+                    }
                 }
             } else this.SOURCES[src].codes[pv.valueMeaningCode] = {code: 'N/A', meaning: 'N/A'};
         });
