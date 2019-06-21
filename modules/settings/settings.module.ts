@@ -51,7 +51,7 @@ import { AdminItemModule } from 'adminItem/public/adminItem.module';
 import { DraftsComponent } from 'settings/drafts/drafts.component';
 import { AllDraftsResolve } from 'settings/drafts/allDrafts.resolve';
 import { MyOrgDraftsResolve } from 'settings/drafts/myOrgDrafts.resolve';
-import { myDraftsResolve } from 'settings/drafts/myDrafts.resolve';
+import { MyDraftsResolve } from 'settings/drafts/myDrafts.resolve';
 import { DraftsService } from 'settings/drafts/drafts.service';
 
 const appRoutes: Routes = [
@@ -87,7 +87,7 @@ const appRoutes: Routes = [
             {
                 path: 'myDrafts',
                 component: DraftsComponent,
-                resolve: {drafts: myDraftsResolve},
+                resolve: {drafts: MyDraftsResolve},
                 canLoad: [LoggedInGuard],
                 data: {title: 'My Drafts'}
             },
@@ -304,7 +304,7 @@ const appRoutes: Routes = [
     exports: [],
     providers: [
         DraftsService,
-        myDraftsResolve,
+        MyDraftsResolve,
         MyOrgDraftsResolve,
         AllDraftsResolve
     ],

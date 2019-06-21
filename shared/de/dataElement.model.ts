@@ -1,5 +1,6 @@
-import { CdeId, DerivationRule, Elt, PermissibleValue } from 'shared/models.model';
-import { fixDataElement } from 'shared/de/deValidator';
+import { Document, MongooseDocument } from 'mongoose';
+import { CdeId, DerivationRule, Elt, MongooseType, PermissibleValue } from '../../shared/models.model';
+import { fixDataElement } from '../../shared/de/deValidator';
 
 export class Concept {
     name?: string;
