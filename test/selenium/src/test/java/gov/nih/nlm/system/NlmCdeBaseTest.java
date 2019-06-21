@@ -1784,12 +1784,24 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         isCommentOrReplyExists(message, true);
         findElement(By.xpath("//div[normalize-space()='" + message + "']/span[contains(@class, 'strike')]"));
     }
+
     protected void resolveComment(String message) {
         goToDiscussArea();
         String xpath = getCommentIconXpath(message, "comment", "resolve");
         clickElement(By.xpath(xpath));
         isCommentOrReplyExists(message, true);
         findElement(By.xpath("//div[normalize-space()='" + message + "']/span[contains(@class, 'strike')]"));
+    }
+
+    protected void isReplyStrike(String message, boolean result) {
+        String replyClass = findElement(By.xpath("//div[@class='replyBody' and normalize-space()='" + message + "']/span")).getAttribute("class");
+        boolean containStrike = replyClass.contains("strike");
+        Assert.assertEquals(containStrike, result);
+    }
+
+    protected void reopenReply(String message) {
+        String xpath = getCommentIconXpath(message, "reply", "reopen");
+        clickElement(By.xpath(xpath));
     }
 
     protected void reopenComment(String message) {
