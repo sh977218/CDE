@@ -8,9 +8,15 @@ public class CdeResolveReply extends NlmCdeBaseTest {
     @Test
     public void cdeResolveReplyTest() {
         String cdeName = "In the past 7 days, when I was in pain I protected the part of my body that hurt";
+        String reply = "This reply will be resolved";
         mustBeLoggedInAs(reguser_username, password);
         goToCdeByName(cdeName);
-        resolveReply("This reply will be resolved");
+        goToDiscussArea();
+        isReplyStrike(reply, false);
+        resolveReply(reply);
+        goToCdeByName(cdeName);
+        goToDiscussArea();
+        isReplyStrike(reply, true);
     }
 
 }

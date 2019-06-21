@@ -1778,11 +1778,8 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void resolveReply(String message) {
-        goToDiscussArea();
         String xpath = getCommentIconXpath(message, "reply", "resolve");
         clickElement(By.xpath(xpath));
-        isCommentOrReplyExists(message, true);
-        findElement(By.xpath("//div[normalize-space()='" + message + "']/span[contains(@class, 'strike')]"));
     }
 
     protected void resolveComment(String message) {
