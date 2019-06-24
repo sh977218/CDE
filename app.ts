@@ -12,7 +12,6 @@ import * as helmet from 'helmet';
 import * as hsts from 'hsts';
 import * as http from 'http';
 import * as methodOverride from 'method-override';
-import * as logBuffer from 'log-buffer';
 import * as morganLogger from 'morgan';
 import * as path from 'path';
 import * as favicon from 'serve-favicon';
@@ -44,7 +43,7 @@ import { sessionStore } from './server/system/mongo-data';
 import { banIp, getTrafficFilter } from './server/system/traffic';
 import { module as userModule } from './server/user/userRoutes';
 import { module as utsModule } from './server/uts/utsRoutes';
-import { isOrgAuthority, isOrgCurator } from './shared/system/authorizationShared'
+import { isOrgAuthority, isOrgCurator } from './shared/system/authorizationShared';
 import { init as swaggerInit } from './modules/swagger/index';
 import * as winston from 'winston';
 import { Rotate } from 'winston-logrotate';
@@ -54,7 +53,6 @@ const domain = Domain.create();
 
 initEs();
 
-logBuffer(config.logBufferSize || 4096);
 console.log('Node ' + process.versions.node);
 console.log('Node Environment ' + process.env.NODE_ENV);
 
@@ -148,8 +146,9 @@ setInterval(() => {
 app.use((req, res, next) => {
     if (config.proxy && req.originalUrl !== '/status/cde') {
         if (req.protocol !== 'https') {
-            if (req.query.gotohttps === '1')
+            if (req.query.gotohttps === '1') {
                 res.send('Missing X-Forward-Proto Header');
+            }
             else res.redirect(config.publicUrl + '?gotohttps=1');
         } else next();
     } else next();
@@ -317,8 +316,7 @@ try {
     }));
     app.use('/server/mesh', meshModule({
         allowSyncMesh: (req, res, next) => {
-            if (!config.autoSyncMesh && !isOrgAuthority(req.user))
-                return res.status(401).send();
+            if (!config.autoSyncMesh && !isOrgAuthority(req.user)) return res.status(401).send();
             next();
         }
     }));

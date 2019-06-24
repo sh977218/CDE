@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { config } from '../../server/system/parseConfig';
+import { config } from '../system/parseConfig';
 import { Cb } from '../../shared/models.model';
 
 const ElasticSearch = require('elasticsearch');
@@ -115,7 +115,9 @@ function doSyncWithMesh(allMappings, callback: Cb = () => {}) {
                     scrollThrough(newScrollId, s, cb);
                 });
             }
-            else scrollThrough(newScrollId, s, cb);
+            else {
+                scrollThrough(newScrollId, s, cb);
+            }
         } else {
             cb();
             dbLogger.consoleLog("done syncing " + s.index + " with MeSH");
@@ -132,6 +134,7 @@ function doSyncWithMesh(allMappings, callback: Cb = () => {}) {
                         stack: new Error().stack,
                         details: ""
                     });
+                oneCb(err);
             } else {
                 processScroll(response._scroll_id, search, response, oneCb);
             }
