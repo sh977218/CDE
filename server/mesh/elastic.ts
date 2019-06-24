@@ -68,6 +68,7 @@ function doSyncWithMesh(allMappings, callback: Cb = () => {}) {
                 lock = false;
                 logging.errorLogger.error("Error: Elastic Search Scroll Access Error",
                     {origin: "system.elastic.syncWithMesh", stack: err.stack});
+                cb(err);
             } else {
                 let newScrollId = response._scroll_id;
                 processScroll(newScrollId, s, response, cb);
@@ -119,8 +120,8 @@ function doSyncWithMesh(allMappings, callback: Cb = () => {}) {
                 scrollThrough(newScrollId, s, cb);
             }
         } else {
-            cb();
             dbLogger.consoleLog("done syncing " + s.index + " with MeSH");
+            cb();
         }
     }
 
