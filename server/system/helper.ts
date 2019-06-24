@@ -1,4 +1,4 @@
-import { config } from '../../server/system/parseConfig';
+import { config } from '../system/parseConfig';
 
 export const GLOBALS = {
     logdir : config.logdir || __dirname,

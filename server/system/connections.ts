@@ -1,4 +1,4 @@
-import { createConnection} from 'mongoose';
+import { createConnection } from 'mongoose';
 import { noDbLogger } from './noDbLogger';
 
 let establishedConns = {};
