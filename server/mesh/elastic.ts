@@ -1,10 +1,12 @@
 import * as _ from 'lodash';
 import { config } from '../../server/system/parseConfig';
+import { Cb } from '../../shared/models.model';
 
 const ElasticSearch = require('elasticsearch');
 const meshDb = require('./meshDb');
 const logging = require('../system/logging');
 const dbLogger = require('../log/dbLogger');
+const async = require('async');
 
 let esClient = new ElasticSearch.Client({
     hosts: config.elastic.hosts
@@ -21,8 +23,8 @@ let searchTemplate = {
     }
 };
 
-export function syncWithMesh() {
-    meshDb.findAll((err, allMappings) => doSyncWithMesh(allMappings));
+export function syncWithMesh(cb?: Cb) {
+    meshDb.findAll((err, allMappings) => doSyncWithMesh(allMappings, cb));
 }
 
 let lock = false;
@@ -32,7 +34,7 @@ export let meshSyncStatus: any = {
     form: {done: 0}
 };
 
-function doSyncWithMesh(allMappings) {
+function doSyncWithMesh(allMappings, callback: Cb = () => {}) {
     meshSyncStatus = {
         dataelement: {done: 0},
         form: {done: 0}
@@ -60,7 +62,7 @@ function doSyncWithMesh(allMappings) {
         search.body = {};
     });
 
-    let scrollThrough = function (scrollId, s) {
+    let scrollThrough = function (scrollId, s, cb) {
         esClient.scroll({scrollId: scrollId, scroll: '1m'}, (err, response) => {
             if (err) {
                 lock = false;
@@ -68,12 +70,12 @@ function doSyncWithMesh(allMappings) {
                     {origin: "system.elastic.syncWithMesh", stack: err.stack});
             } else {
                 let newScrollId = response._scroll_id;
-                processScroll(newScrollId, s, response);
+                processScroll(newScrollId, s, response, cb);
             }
         });
     };
 
-    function processScroll(newScrollId, s, response) {
+    function processScroll(newScrollId, s, response, cb) {
         meshSyncStatus[s.type].total = response.hits.total;
         if (response.hits.hits.length > 0) {
             let request = {body: []};
@@ -107,16 +109,20 @@ function doSyncWithMesh(allMappings) {
                 }
                 meshSyncStatus[s.type].done++;
             });
-            if (request.body.length > 0)
+            if (request.body.length > 0) {
                 esClient.bulk(request, err => {
                     if (err) dbLogger.consoleLog("ERR: " + err, 'error');
-                    scrollThrough(newScrollId, s);
+                    scrollThrough(newScrollId, s, cb);
                 });
-            else scrollThrough(newScrollId, s);
-        } else dbLogger.consoleLog("done syncing " + s.index + " with MeSH");
+            }
+            else scrollThrough(newScrollId, s, cb);
+        } else {
+            cb();
+            dbLogger.consoleLog("done syncing " + s.index + " with MeSH");
+        }
     }
 
-    searches.forEach(search => {
+    async.each(searches, (search, oneCb) => {
         esClient.search(search, (err, response) => {
             if (err) {
                 lock = false;
@@ -127,8 +133,8 @@ function doSyncWithMesh(allMappings) {
                         details: ""
                     });
             } else {
-                processScroll(response._scroll_id, search, response);
+                processScroll(response._scroll_id, search, response, oneCb);
             }
         });
-    });
+    }, callback);
 }
