@@ -190,13 +190,7 @@ export function module(roleConfig) {
     router.get('/orgComments/:from/:size', authorization.loggedInMiddleware, (req, res) => {
         let from = Number.parseInt(req.params.from);
         let size = Number.parseInt(req.params.size);
-        if (from < 0 || size < 0) {
-            return res.status(400).send();
-        }
         let myOrgs = userService.myOrgs(req.user);
-        if (!myOrgs || myOrgs.length === 0) {
-            return res.send([]);
-        }
         discussDb.orgComments(myOrgs, from, size, handleError({req, res}, comments => res.send(comments)));
     });
 
