@@ -62,7 +62,7 @@ export function module(roleConfig) {
                     feedbackIpTrack[k] = undefined;
                 }
             });
-            console.log((Date.now() - v));return (Date.now() - v) > (1000 * 60);
+            return (Date.now() - v) > (1000 * 60);
         }
     };
 
