@@ -47,7 +47,8 @@
     "include": [
       "**/server/article/*.js",
       "**/server/log/*.js",
-      "**/server/user/*.js"
+      "**/server/user/*.js",
+      "**/server/discuss/*.js"
     ],
     "lines": "85",
     "branches": "75",
