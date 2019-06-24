@@ -1,11 +1,11 @@
 package gov.nih.nlm.system;
 
-import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.FluentWait;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.List;
@@ -39,7 +39,7 @@ public class HttpLogSearch extends NlmCdeBaseTest {
 
         findElement(By.name("ip")).sendKeys(ipTerm);
         clickElement(By.id("searchBtn"));
-        hangon(1);
+        textPresent(ipTerm);
         List<WebElement> ips = driver.findElements(By.cssSelector(".ip"));
         for (WebElement ip : ips) {
             Assert.assertEquals(ip.getText().trim(), ipTerm);

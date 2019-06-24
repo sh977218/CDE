@@ -1,9 +1,9 @@
-import { handle404, handleError } from '../../server/errorHandler/errHandler';
-import { config } from '../../server/system/parseConfig';
+import { handle404, handleError } from '../errorHandler/errHandler';
+import { config } from '../system/parseConfig';
 import { stripBsonIds } from '../../shared/system/exportShared';
 import {
     checkBoardOwnerShip, checkBoardViewerShip, loggedInMiddleware, nocacheMiddleware, unauthorizedPublishing
-} from '../../server/system/authorization';
+} from '../system/authorization';
 
 const _ = require('lodash');
 const js2xml = require('js2xmlparser');

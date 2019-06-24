@@ -14,7 +14,7 @@ public class CodesFromNCI extends NlmCdeBaseTest {
         goToPermissibleValues();
         clickElement(By.id("displayNCICodes"));
         textPresent("Alaska Native", By.id("nameAsNCI_0"));
-        textPresent("Alaska Native", By.id("codeAsNCI_0"));
+        textPresent("C41259", By.id("codeAsNCI_0"));
         clickElement(By.id("displayUMLSCodes"));
         textPresent("American Indian", By.id("nameAsUMLS_0"));
         textPresent("C1515945", By.id("codeAsUMLS_0"));

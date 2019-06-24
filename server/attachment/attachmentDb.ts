@@ -1,7 +1,7 @@
 import * as mongoose from 'mongoose';
-import { establishConnection } from '../../server/system/connections';
-import { addStringtype } from '../../server/system/mongoose-stringtype';
-import { config } from '../../server/system/parseConfig';
+import { establishConnection } from '../system/connections';
+import { addStringtype } from '../system/mongoose-stringtype';
+import { config } from '../system/parseConfig';
 import { CbError } from '../../shared/models.model';
 
 addStringtype(mongoose);

@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { config } from '../../server/system/parseConfig';
+import { config } from '../system/parseConfig';
 
 const dbLogger = require('../log/dbLogger');
 const elasticsearch = require('elasticsearch');

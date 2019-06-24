@@ -1,8 +1,8 @@
 import { addFormIds, iterateFe, trimWholeForm } from '../../shared/form/fe';
 import { formToQuestionnaire } from '../../shared/mapping/fhir/to/toQuestionnaire';
 import { canEditCuratedItem } from '../../shared/system/authorizationShared';
-import { handle404, handleError, respondError } from '../../server/errorHandler/errHandler';
-import { config } from '../../server/system/parseConfig';
+import { handle404, handleError, respondError } from '../errorHandler/errHandler';
+import { config } from '../system/parseConfig';
 
 const Ajv = require('ajv');
 const fs = require('fs');
@@ -127,11 +127,13 @@ export function byId(req, res) {
                     if (req.query.hasOwnProperty('validate')) {
                         let p = path.resolve(__dirname, '../../shared/mapping/fhir/assets/schema/Questionnaire.schema.json');
                         fs.readFile(p, (err, data) => {
-                            if (err || !data) return respondError(err, {
-                                res,
-                                publicMessage: 'schema missing',
-                                origin: 'formsvc'
-                            });
+                            if (err || !data) {
+                                return respondError(err, {
+                                    res,
+                                    publicMessage: 'schema missing',
+                                    origin: 'formsvc'
+                                });
+                            }
                             let result = ajv.validate(JSON.parse(data),
                                 formToQuestionnaire(wholeForm, null, config));
                             res.send({valid: result, errors: ajv.errors});
@@ -154,7 +156,7 @@ export function priorForms(req, res) {
     if (!id || id.length !== 24) return res.status(400).send();
     mongo_form.byId(id, handle404({req, res}, form => {
         let history = form.history.concat([form._id]).reverse();
-        mongo_form.Form.find({}, {'updatedBy.username': 1, updated: 1, 'changeNote': 1, version: 1, elementType: 1})
+        mongo_form.Form.find({}, {'updatedBy.username': 1, updated: 1, changeNote: 1, version: 1, elementType: 1})
             .where('_id').in(history).exec((err, priorForms) => {
             mongo_data.sortArrayByArray(priorForms, history);
             res.send(priorForms);
@@ -420,14 +422,14 @@ export async function syncLinkedForms() {
         });
 
         const linkedForms = {
-            "Retired": 0,
-            "Incomplete": 0,
-            "Candidate": 0,
-            "Recorded": 0,
-            "Qualified": 0,
-            "Standard": 0,
+            Retired: 0,
+            Incomplete: 0,
+            Candidate: 0,
+            Recorded: 0,
+            Qualified: 0,
+            Standard: 0,
             "Preferred Standard": 0,
-            "forms": []
+            forms: []
         };
 
         esResult.hits.hits.forEach(h => {

@@ -20,8 +20,9 @@ function storeHtmlInDb(req, res, form, fileStr) {
                 name: req.body.publishedFormName, id: newFile._id
             });
             user.save(function (err) {
-                if (err)
+                if (err) {
                     return res.status(500).send("Unable to save");
+                }
                 res.send(newFile._id);
             });
         });
@@ -57,7 +58,7 @@ export function getFormForPublishing(form, req, res) {
             fileStr = fileStr.replace("<!-- IFH -->", "<script>window.formElt = " + JSON.stringify(form) + ";" + "window.endpointUrl = '" + req.body.endpointUrl + "';</script>");
             storeHtmlInDb(req, res, form, fileStr);
         } else {
-            //Remove all CSS and JS link
+            // Remove all CSS and JS link
             fileStr = lines.filter(l => !l.includes("<link") && !l.includes("<script src=")).join("\n");
 
             fileStr = fileStr.replace("<!-- IFH -->", "<script>window.formElt = " + JSON.stringify(form) + ";" + "window.endpointUrl = '" + req.body.endpointUrl + "';</script>");

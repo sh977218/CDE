@@ -1,11 +1,11 @@
 import { isOrgAuthority } from '../../shared/system/authorizationShared';
 import { stripBsonIds } from '../../shared/system/exportShared';
 import { getEnvironmentHost } from '../../shared/env';
-import { config } from '../../server/system/parseConfig';
+import { config } from '../system/parseConfig';
 import {
     canCreateMiddleware, canEditByTinyIdMiddleware, canEditMiddleware,
     isOrgAuthorityMiddleware, isOrgCuratorMiddleware, loggedInMiddleware, nocacheMiddleware
-} from '../../server/system/authorization';
+} from '../system/authorization';
 
 const _ = require('lodash');
 const dns = require('dns');
@@ -215,14 +215,16 @@ export function init(app, daoManager) {
     function validateUom(uom, cb) {
         let error;
         let validation = ucum.validateUnitString(uom, true);
-        if (validation.status === 'valid')
+        if (validation.status === 'valid') {
             return cb(undefined, uom);
+        }
 
         if (validation.suggestions && validation.suggestions.length) {
             let suggestions = [];
             validation.suggestions.forEach(s => s.units.forEach(u => u.name === uom ? suggestions.push(u.code) : null));
-            if (suggestions.length)
+            if (suggestions.length) {
                 return cb(undefined, suggestions[0]);
+            }
 
             if (validation.suggestions[0].units.length) {
                 let suggestion = validation.suggestions[0].units[0];
@@ -233,31 +235,36 @@ export function init(app, daoManager) {
             let synonyms = ucum.checkSynonyms(uom);
             if (synonyms.status === 'succeeded' && synonyms.units.length) {
                 synonyms.units.forEach(u => u.name === uom ? suggestions.push(u.code) : null);
-                if (suggestions.length)
+                if (suggestions.length) {
                     return cb(undefined, suggestions[0]);
+                }
 
                 error = 'Unit is not found. Did you mean ' + synonyms.units[0].name + '?';
             }
         }
-        if (!error)
-            error = validation.msg.length ? 'Unit is not found. ' + validation.msg[0] : 'Unit is not found.';
+        if (!error) {
+            error = 'Unit is not found. ' + validation.msg.length ? validation.msg[0] : '';
+        }
         cb(error, uom);
     }
 
     app.get('/ucumSynonyms', (req, res) => {
         let uom = req.query.uom;
-        if (!uom || typeof uom !== 'string')
+        if (!uom || typeof uom !== 'string') {
             return res.sendStatus(400);
+        }
 
         let resp = ucum.getSpecifiedUnit(uom, 'validate', 'false');
-        if (!resp || !resp.unit)
+        if (!resp || !resp.unit) {
             return res.send([]);
+        }
 
         let unit = resp.unit;
         let name = unit.name_;
         let synonyms = unit.synonyms_.split('; ');
-        if (synonyms.length && synonyms[synonyms.length - 1] === '')
+        if (synonyms.length && synonyms[synonyms.length - 1] === '') {
             synonyms.length--;
+        }
         res.send([name, ...synonyms]);
     });
 
@@ -278,8 +285,9 @@ export function init(app, daoManager) {
 
     app.get('/ucumValidate', (req, res) => {
         let uoms = JSON.parse(req.query.uoms);
-        if (!Array.isArray(uoms))
+        if (!Array.isArray(uoms)) {
             return res.sendStatus(400);
+        }
 
         let errors = [];
         let units = [];
@@ -287,13 +295,15 @@ export function init(app, daoManager) {
             validateUom(uom, (error, u) => {
                 errors[i] = error;
                 units[i] = u;
-                if (!errors[i] && uom !== units[i])
+                if (!errors[i] && uom !== units[i]) {
                     errors[i] = 'Unit ' + uom + ' found but needs to be replaced with ' + units[i];
+                }
             });
             if (i > 0 && !errors[0] && !errors[i]) {
                 let result = ucum.convertUnitTo(units[i], 1, units[0], true);
-                if (result.status !== 'succeeded')
+                if (result.status !== 'succeeded') {
                     errors[i] = 'Unit not compatible with first unit.' + (result.msg.length ? ' ' + result.msg[0] : '');
+                }
             }
         });
         res.send({errors: errors, units: units});

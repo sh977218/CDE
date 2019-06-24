@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-import { addStringtype } from '../../server/system/mongoose-stringtype';
+import { addStringtype } from '../system/mongoose-stringtype';
 
 addStringtype(mongoose);
 const Schema = mongoose.Schema;
@@ -38,7 +38,7 @@ const DisplayProfileSchema = new Schema({
         usedReferencesMaps: [String],
         complications: String,
     }
-}, {_id: false})
+}, {_id: false});
 
 const instructionSchema = new Schema({
     value: StringType,
