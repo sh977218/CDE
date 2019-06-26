@@ -146,10 +146,11 @@ export function searchUmls(term) {
     });
 }
 
+const ttys = {LNC: 'LA', NCI: "PT", SNOMEDCT_US: "PT"};
+
 export function getSourcePT (cui, src) {
     return getTicket().then(ticket => {
-       let url = `${config.umls.wsHost}/rest/content/current/CUI/${cui}/atoms?sabs=${src}&ttys=PT&ticket=${ticket}`;
-       console.log(url);
+       let url = `${config.umls.wsHost}/rest/content/current/CUI/${cui}/atoms?sabs=${src}&ttys=${ttys[src]}&ticket=${ticket}`;
        return promisify(request.get)({url, strictSSL: false})
             .then(response => response.body, handleReject('get src PT from umls ERROR'));
     });
