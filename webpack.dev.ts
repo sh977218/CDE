@@ -1,9 +1,9 @@
 import { resolve } from 'path';
 import { ContextReplacementPlugin, DefinePlugin, LoaderOptionsPlugin, ProgressPlugin } from 'webpack';
-import * as merge from 'webpack-merge';
+import * as merge2 from 'webpack-merge';
 import baseConfig from './webpack.config';
 
-export default merge(baseConfig, {
+export default merge2(baseConfig, {
     mode: 'development',
     plugins: [
         new ContextReplacementPlugin( // fix "WARNING Critical dependency: the request of a dependency is an expression"

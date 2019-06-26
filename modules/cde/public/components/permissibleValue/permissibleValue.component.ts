@@ -270,12 +270,16 @@ export class PermissibleValueComponent {
                     let umlsResult = await this.http.get<any>(`/server/uts/umlsCuiFromSrc/${code}/${source}`).toPromise();
                     if (umlsResult.result.results.length > 0) {
                         let umlsCui = umlsResult.result.results[0].ui;
-                        let srcResult = await this.http.get<any>(`/server/uts/umlsPtSource/${umlsCui}/${targetSource}`).toPromise();
-                        if (srcResult.result.length > 0) {
-                            this.SOURCES[src].codes[pv.valueMeaningCode] = {
-                                code: srcResult.result[0].code.substr(srcResult.result[0].code.lastIndexOf("/") + 1),
-                                meaning: srcResult.result[0].name
-                            };
+                        try {
+                            let srcResult = await this.http.get<any>(`/server/uts/umlsPtSource/${umlsCui}/${targetSource}`).toPromise();
+                            if (srcResult.result.length > 0) {
+                                this.SOURCES[src].codes[pv.valueMeaningCode] = {
+                                    code: srcResult.result[0].code.substr(srcResult.result[0].code.lastIndexOf("/") + 1),
+                                    meaning: srcResult.result[0].name
+                                };
+                            }
+                        } catch (e) {
+                            // UMLS return html instead of status 404! :)
                         }
                     }
                     if (!this.SOURCES[src].codes[pv.valueMeaningCode].code) {
