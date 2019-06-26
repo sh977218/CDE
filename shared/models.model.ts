@@ -1,6 +1,5 @@
-import { Observable } from 'rxjs';
 import { CdeForm, CdeFormElastic } from '../shared/form/form.model';
-import { DataElement, DataElementElastic } from 'shared/de/dataElement.model';
+import { DataElement, DataElementElastic } from '../shared/de/dataElement.model';
 
 export function assertThrow(): never {
     throw new Error('Please submit a bug report.');
@@ -43,6 +42,8 @@ export type Cb1<T = never, U = never, V = never> = (t: T, u?: U, v?: V) => void;
 export type Cb2<T = never, U = never, V = never> = (t: T, u: U, v?: V) => void;
 export type Cb3<T = never, U = never, V = never> = (t: T, u: U, v: V) => void;
 export type CbErr<T = never, U = never, V = never> = (error?: string, t?: T, u?: U, v?: V) => void;
+export type CbError<T = never, U = never, V = never> = (error?: Error, t?: T, u?: U, v?: V) => void;
+export type CbError1<T = never, U = never, V = never> = (error: Error | undefined, t: T, u?: U, v?: V) => void;
 export type CbErrObj<E = string, T = never, U = never, V = never> = (error?: E, t?: T, u?: U, v?: V) => void;
 export type CbRet<R = never, T = never, U = never, V = never> = (t?: T, u?: U, v?: V) => R;
 export type CbRet1<R = never, T = never, U = never, V = never> = (t: T, u?: U, v?: V) => R;
@@ -63,8 +64,11 @@ export class CdeId {
     }
 }
 
+export type ModuleAll = 'board' | 'cde' | 'form';
+export type ModuleItem = 'cde' | 'form';
+
 export class Classification {
-    elements: ClassficationElement[] = [];
+    elements: ClassificationElement[] = [];
     stewardOrg: {
         name: string
     } = {name};
@@ -76,9 +80,9 @@ export class ClassificationClassified {
     selectedOrg?: string;
 }
 
-export class ClassficationElement {
-    elements: ClassficationElement[] = [];
-    name?: string;
+export class ClassificationElement {
+    elements: ClassificationElement[] = [];
+    name!: string;
 }
 
 export class ClassificationHistory {
@@ -172,6 +176,7 @@ export interface ElasticQueryResponse {
     _shards?: any;
     aggregations?: ElasticQueryResponseAggregation & { [key: string]: ElasticQueryResponseAggregation }; // Elastic aggregated grouping
     cdes?: DataElementElastic[];
+    error?: any;
     forms?: CdeFormElastic[];
     hits: {
         max_score: number,
@@ -179,6 +184,7 @@ export interface ElasticQueryResponse {
         total: number
     };
     maxScore: number; // Elastic highest score on query
+    status: number;
     took: number; // Elastic time to process query in milliseconds
     timed_out?: boolean;
     totalNumber: number; // Elastic number of results
@@ -199,9 +205,10 @@ export interface ElasticQueryResponseAggregationBucket {
 export interface ElasticQueryResponseHit {
     _id: string;
     _index?: string;
-    _score?: number;
+    _score: number;
     _source?: any;
     _type?: string;
+    highlight?: any;
 }
 
 export abstract class Elt {
@@ -392,9 +399,11 @@ export class DerivationRule {
 type DerivationRuleFormula = 'sumAll' | 'mean' | 'bmi';
 type DerivationRuleType = 'score' | 'panel';
 export type Drafts = { draftCdes: DataElement[], draftForms: CdeForm[] };
+export type Board = {owner: {username: string}};
 export type Item = DataElement | CdeForm;
 export type ItemElastic = DataElementElastic | CdeFormElastic;
 export type ListTypes = 'accordion' | 'table' | 'summary';
+export type MongooseType<T> = T & {markModified: (path: string) => void};
 export type NotificationSettingsMediaType = 'drawer' | 'push';
 export type NotificationSettingsMedia = {
     [key in NotificationSettingsMediaType]?: boolean;
@@ -406,7 +415,7 @@ export type NotificationSettings = {
 
 export class Organization {
     cdeStatusValidationRules?: StatusValidationRules[];
-    classifications?: ClassficationElement[];
+    classifications?: ClassificationElement[];
     count?: number; // calculated, from elastic
     emailAddress?: string;
     extraInfo?: string;
@@ -475,6 +484,7 @@ export class RegistrationState {
     administrativeStatus?: string;
     effectiveDate?: Date;
     registrationStatus: CurationStatus = 'Incomplete';
+    registrationStatusSortOrder?: number; // volatile, used by elastic
     replacedBy?: {
         tinyId?: string,
     };

@@ -8,7 +8,6 @@ var fs = require('fs'),
     mongo_cde = require('../../server/cde/mongo-cde'),
     mongo_form = require('../../server/form/mongo-form'),
     config = require('config'),
-    classificationShared = require('esm')(module)('../../shared/system/classificationShared'),
     mongo_data_system = require('../../server/system/mongo-data'),
     async = require ('async'),
     loinc = JSON.parse(fs.readFileSync(promisDir + '/loinc.json')),
@@ -16,6 +15,7 @@ var fs = require('fs'),
     formClassifMap = JSON.parse(fs.readFileSync(promisDir + '/formMap.json')),
     updateShare = require('../updateShare')
     ;
+import { addCategory } from 'shared/system/classificationShared';
 
 var lostForms = [];
 
@@ -124,11 +124,11 @@ var doFile = function(file, cb) {
                         duplicate.classification.push(classif);
                     }
                     if (formClassifMap[form.name]) {
-                        classificationShared.addCategory(classif, [c1].concat(formClassifMap[form.name]).concat(form.name));
-                        classificationShared.addCategory(fakeTree, [c1].concat(formClassifMap[form.name]).concat(form.name));
+                        addCategory(classif, [c1].concat(formClassifMap[form.name]).concat(form.name));
+                        addCategory(fakeTree, [c1].concat(formClassifMap[form.name]).concat(form.name));
                     } else {
-                        classificationShared.addCategory(fakeTree, [c1, l2, form.name]);
-                        classificationShared.addCategory(duplicate.classification[0], [c1, l2, form.name]);
+                        addCategory(fakeTree, [c1, l2, form.name]);
+                        addCategory(duplicate.classification[0], [c1, l2, form.name]);
                     }
                     duplicate.ids = cde.ids;
                     duplicate.naming = cde.naming;
@@ -136,11 +136,11 @@ var doFile = function(file, cb) {
                     mongo_cde.update(duplicate, user, oneDone);
                 } else {
                     if (formClassifMap[form.name]) {
-                        classificationShared.addCategory(cde.classification[0], [c1].concat(formClassifMap[form.name]).concat(form.name));
-                        classificationShared.addCategory(fakeTree, [c1].concat(formClassifMap[form.name]).concat(form.name));
+                        addCategory(cde.classification[0], [c1].concat(formClassifMap[form.name]).concat(form.name));
+                        addCategory(fakeTree, [c1].concat(formClassifMap[form.name]).concat(form.name));
                     } else {
-                        classificationShared.addCategory(fakeTree, [c1, l2, form.name]);
-                        classificationShared.addCategory(cde.classification[0], [c1, l2, form.name]);
+                        addCategory(fakeTree, [c1, l2, form.name]);
+                        addCategory(cde.classification[0], [c1, l2, form.name]);
                     }
                     mongo_cde.create(cde, user, oneDone);
                 }
@@ -164,7 +164,7 @@ var loadForm = function(file, cb) {
             return cb();
         }
 
-        if (formClassifMap[pForm.name]) classificationShared.addCategory(fakeTree, formClassifMap[pForm.name]);
+        if (formClassifMap[pForm.name]) addCategory(fakeTree, formClassifMap[pForm.name]);
 
         var form = {
             stewardOrg: {name: orgName},
@@ -188,7 +188,7 @@ var loadForm = function(file, cb) {
         else if (pForm.name.indexOf("SF") > -1) l2 = "Adult Short Forms";
         else l2 = "Other";
         if (formClassifMap[pForm.name]) {
-            classificationShared.addCategory(form.classification[0], (formClassifMap[pForm.name]).concat(pForm.name));
+            addCategory(form.classification[0], (formClassifMap[pForm.name]).concat(pForm.name));
         } else if (pForm.name.indexOf("PROMIS") > -1) {
             form.classification[0].elements.push(
                     {

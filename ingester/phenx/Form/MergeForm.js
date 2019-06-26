@@ -1,6 +1,6 @@
 const Comment = require('../../../server/discuss/discussDb').Comment;
 
-const classificationShared = require('esm')(module)('../../../shared/system/classificationShared');
+import { transferClassifications } from 'shared/system/classificationShared';
 
 function mergeBySources(newSources, existingSources) {
     let otherSources = existingSources.filter(o => o.source !== 'PhenX');
@@ -18,7 +18,7 @@ exports.mergeForm = async (existingForm, newForm) => {
     existingForm.sources = mergeBySources(newForm.sources, existingForm.sources);
     if (existingForm.registrationState.registrationStatus !== 'Qualified')
         existingForm.formElements = newForm.formElements;
-    classificationShared.transferClassifications(newForm, existingForm);
+    transferClassifications(newForm, existingForm);
     await Comment.updateMany({'element.eltId': newForm.tinyId}, {
         element: {
             eltType: 'form',

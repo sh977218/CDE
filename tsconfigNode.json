@@ -1,0 +1,40 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "allowJs": false,
+    "allowUnreachableCode": true,
+    "baseUrl": "./modules",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "lib": [
+      "ESNext",
+      "DOM"
+    ],
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "outDir": "./buildNode",
+    "pretty": false,
+    "rootDir": ".",
+    "sourceMap": false,
+    "suppressImplicitAnyIndexErrors": true,
+    "target": "ESNext",
+    "typeRoots": [
+      "node_modules/@types"
+    ]
+  },
+  "angularCompilerOptions": {
+  },
+  "awesomeTypescriptLoaderOptions": {
+    "useWebpackText": true
+  },
+  "exclude": [
+    "build",
+    "deploy",
+    "dist",
+    "ingester",
+    "modules",
+    "node_modules",
+    "protractor",
+    "test"
+  ]
+}

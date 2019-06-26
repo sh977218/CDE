@@ -23,8 +23,11 @@ export class SearchSettings {
 }
 
 export class SearchSettingsElastic {
+    [key: string]: any;
     excludeAllOrgs?: boolean;
     excludeOrgs: string[] = [];
+    filter?: any; // server-side, ElasticCondition
+    filterDatatype?: any; // server-side, ElasticCondition
     fullRecord?: boolean;
     includeAggregations?: boolean;
     meshTree?: string = '';
