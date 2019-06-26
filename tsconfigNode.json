@@ -17,7 +17,7 @@
     "rootDir": ".",
     "sourceMap": false,
     "suppressImplicitAnyIndexErrors": true,
-    "target": "ES5",
+    "target": "ESNext",
     "typeRoots": [
       "node_modules/@types"
     ]

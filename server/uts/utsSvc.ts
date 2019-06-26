@@ -149,7 +149,8 @@ export function searchUmls(term) {
 export function getSourcePT (cui, src) {
     return getTicket().then(ticket => {
        let url = `${config.umls.wsHost}/rest/content/current/CUI/${cui}/atoms?sabs=${src}&ttys=PT&ticket=${ticket}`;
-        return promisify(request.get)({url, strictSSL: false})
+       console.log(url);
+       return promisify(request.get)({url, strictSSL: false})
             .then(response => response.body, handleReject('get src PT from umls ERROR'));
     });
 }
