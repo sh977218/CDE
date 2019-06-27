@@ -3,7 +3,29 @@ import _isEqual from 'lodash/isEqual';
 import _uniqWith from 'lodash/uniqWith';
 import { saveAs } from 'file-saver';
 import * as JSZip from 'jszip';
-import * as Json2csvParser from 'json2csv';
+import { Parser } from 'json2csv';
+
+const json2csvParser = new Parser({
+    fields: [
+        'Variable / Field Name',
+        'Form Name',
+        'Section Header',
+        'Field Type',
+        'Field Label',
+        'Choices, Calculations, OR Slider Labels',
+        'Field Note',
+        'Text Validation Type OR Show Slider Number',
+        'Text Validation Min',
+        'Text Validation Max',
+        'Identifier?',
+        'Branching Logic (Show field only if...)',
+        'Required Field?',
+        'Custom Alignment',
+        'Question Number (surveys only)',
+        'Matrix Group Name',
+        'Matrix Ranking?'
+    ]
+});
 
 const field_type_map = {
     Text: 'text',
@@ -185,15 +207,11 @@ export class RedcapExport {
         let sectionIndex = 0;
         for (let formElement of form.formElements) {
             sectionIndex++;
-            let sectionResult = doSection(formElement, sectionIndex);
-            instrumentJsonRows.push(sectionResult);
+            instrumentJsonRows.push(doSection(formElement, sectionIndex));
             for (let fe of formElement.formElements) {
-                let questionResult = doQuestion(fe);
-                instrumentJsonRows.push(questionResult);
+                instrumentJsonRows.push(doQuestion(fe));
             }
         }
-        return Json2csvParser.parse(instrumentJsonRows);
+        return json2csvParser.parse(instrumentJsonRows);
     }
-
-
 }
