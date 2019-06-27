@@ -36,9 +36,10 @@ public class HttpLogSearch extends NlmCdeBaseTest {
         clickElement(By.cssSelector(".mat-paginator-navigation-next"));
         clickElement(By.xpath("//th[. = 'Method']"));
         textPresent("200");
-
+        
         findElement(By.name("ip")).sendKeys(ipTerm);
         clickElement(By.id("searchBtn"));
+        clickElement(By.cssSelector("mat-paginator-navigation-previous"));
         textPresent(ipTerm);
         List<WebElement> ips = driver.findElements(By.cssSelector(".ip"));
         for (WebElement ip : ips) {
