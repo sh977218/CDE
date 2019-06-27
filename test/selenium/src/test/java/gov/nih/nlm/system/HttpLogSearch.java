@@ -17,7 +17,6 @@ public class HttpLogSearch extends NlmCdeBaseTest {
 
     @Test
     public void searchHttpLog() {
-        String ipTerm = "::ffff:127.0.0.1";
         mustBeLoggedInAs(nlm_username, nlm_password);
         clickElement(By.id("username_link"));
         clickElement(By.id("user_audit"));
@@ -32,6 +31,8 @@ public class HttpLogSearch extends NlmCdeBaseTest {
         findElement(By.id("toDate")).sendKeys(Keys.TAB);
         findElement(By.id("toDate")).sendKeys("0101P");
         clickElement(By.id("searchBtn"));
+
+        String ipTerm = findElement(By.cssSelector("td.ip")).getText();
 
         clickElement(By.cssSelector(".mat-paginator-navigation-next"));
         clickElement(By.xpath("//th[. = 'Method']"));

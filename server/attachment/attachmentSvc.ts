@@ -10,7 +10,7 @@ import { attachmentApproved, attachmentRemove, createTask, fileUsed } from '../s
 import { getDaoList } from '../system/moduleDaoManager';
 import { addFile, deleteFileById, userTotalSpace } from '../system/mongo-data';
 import { alterAttachmentStatus } from '../attachment/attachmentDb';
-import { CbErr, CbError, Item } from '../../shared/models.model';
+import { CbError, Item } from '../../shared/models.model';
 
 const config = Config as any;
 
