@@ -1,6 +1,5 @@
 package gov.nih.nlm.cde.test;
 
-import static io.restassured.RestAssured.get;
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import io.restassured.RestAssured;
 import io.restassured.http.Header;
@@ -8,6 +7,9 @@ import io.restassured.response.Response;
 import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import static io.restassured.RestAssured.get;
+import static io.restassured.RestAssured.given;
 
 public class MiscTests extends NlmCdeBaseTest {
 
@@ -88,5 +90,10 @@ public class MiscTests extends NlmCdeBaseTest {
         Assert.assertTrue(get(baseUrl + "/schema/cde").asString().contains("{\"title\":\"DataElement\",\"type\":\"object\",\"properties\":{\"elementType\":{\"type\":\"string\",\"enum\":[\"cde\"],\"default\":\"cde\"},\"designations\":{\"type\":\"array\","));
 
         Assert.assertTrue(get(baseUrl + "/schema/form").asString().contains("{\"title\":\"Form\",\"type\":\"object\",\"properties\":{\"elementType\":{\"type\":\"string\",\"enum\":[\"form\"],\"default\":\"form\"},\"tinyId\":{\"type\":\"string\"},\"designations\":{\"type\":\"array\",\"items\":{\"title\":\"itemOf_designations\",\"type\":\"object\",\"properties\":{\"designation\":"));
+    }
+
+    @Test
+    public void checkArticleWrongKey() {
+        given().body("{key:'notWhatsNew'}").post(baseUrl + "/server/article/whatsNew").then().statusCode(400);
     }
 }
