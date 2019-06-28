@@ -19,6 +19,8 @@ public class FormAttachmentsTest extends BaseAttachmentTest {
         logout();
         mustBeLoggedInAs(ctep_fileCurator_username, password);
         goToFormByName(formName);
+        goToAttachments();
+
         addAttachment("melanoma.jpg");
 
         textPresent("cannot be downloaded");

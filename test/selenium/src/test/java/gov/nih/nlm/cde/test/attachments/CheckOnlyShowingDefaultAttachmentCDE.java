@@ -15,6 +15,8 @@ public class CheckOnlyShowingDefaultAttachmentCDE extends BaseAttachmentTest {
         String cdeName = "Geriatric Depression Scale (GDS) - life satisfaction indicator";
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
+        goToAttachments();
+
         addAttachment("default.jpg");
 
         logout();
@@ -25,6 +27,8 @@ public class CheckOnlyShowingDefaultAttachmentCDE extends BaseAttachmentTest {
         goToCdeByName(cdeName);
         setAttachmentDefault();
         goToCdeByName(cdeName);
+        goToAttachments();
+
         addAttachment("nonDefault.jpg");
         openEltInList(cdeName, "cde");
 
