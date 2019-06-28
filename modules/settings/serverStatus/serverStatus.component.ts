@@ -51,9 +51,11 @@ export class ServerStatusComponent {
         this.http.get<any>('/server/siteAdmin/serverStatuses').subscribe(result => {
             this.statuses = result.statuses;
             this.esIndices = result.esIndices;
-            this.statuses.forEach(s => {
-                s.allUp = s.elastic.up && s.elastic.indices.filter((ind: any) => ind.up).length === s.elastic.indices.length;
-            });
+            if (this.statuses) {
+                this.statuses.forEach(s => {
+                    s.allUp = s.elastic.up && s.elastic.indices.filter((ind: any) => ind.up).length === s.elastic.indices.length;
+                });
+            }
         });
     }
 
