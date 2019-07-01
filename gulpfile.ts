@@ -14,7 +14,7 @@ import * as usemin from 'gulp-usemin';
 import * as merge from 'merge-stream';
 import { resolve } from 'path';
 import { promisify } from 'util';
-import { ElasticIndex, indices } from './server/system/elasticSearchInit';
+import { indices } from './server/system/elasticSearchInit';
 import { config } from './server/system/parseConfig';
 
 
@@ -275,14 +275,14 @@ gulp.task('es', function es() {
     let esClient = new elasticsearch.Client({
         hosts: config.elastic.hosts
     });
-    return Promise.all(
-        indices.map((index: ElasticIndex) => new Promise((resolve, reject) => {
-            console.log('Deleting es index: ' + index.indexName);
-            esClient.indices.delete({index: index.indexName, timeout: '6s'}, (err?: any) => {
-                err && err.status !== 404 ? reject(err) : resolve();
-            });
-        }))
-    );
+    let allIndex = indices.map(i => i.indexName);
+    console.log('Deleting es index: ' + allIndex);
+    return new Promise((resolve, reject) => {
+        esClient.indices.delete({index: allIndex, timeout: '6s'}, err => {
+            if (err && err.status !== 404) reject();
+            else resolve();
+        });
+    });
 });
 
 // Procedure calling task in README
