@@ -15,6 +15,8 @@ export function module(roleConfig) {
     });
 
     router.post('/:key', roleConfig.update, (req, res) => {
+        console.log('req.body.key: ' + req.body.key);
+        console.log('req.params.key: ' + req.params.key);
         if (req.body.key !== req.params.key) return res.status(400).send();
         update(req.body, handleError({res: res, origin: "POST /article/:key"}, () => {
             byKey(req.params.key, (err, art) => res.send(art))

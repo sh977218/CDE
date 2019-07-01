@@ -1,6 +1,7 @@
 package gov.nih.nlm.system;
 
 import com.paulhammant.ngwebdriver.NgWebDriver;
+import io.restassured.http.Cookie;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -1871,5 +1872,17 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         }
         clickElement(By.id("createBoard"));
         checkAlert("Board created");
+    }
+
+    protected Cookie getCurrentCookie() {
+        String connectSid = "";
+        Set<org.openqa.selenium.Cookie> cookies = driver.manage().getCookies();
+        for (org.openqa.selenium.Cookie cookie : cookies) {
+            connectSid =  cookie.getValue();
+            System.out.println("cookie: " + cookie.toString());
+        }
+        Cookie myCookie = new Cookie.Builder("connect.sid", connectSid).build();
+        return myCookie;
+
     }
 }

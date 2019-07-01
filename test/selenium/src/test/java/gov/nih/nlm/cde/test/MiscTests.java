@@ -2,11 +2,14 @@ package gov.nih.nlm.cde.test;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import io.restassured.RestAssured;
+import io.restassured.http.Cookie;
 import io.restassured.http.Header;
 import io.restassured.response.Response;
 import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import java.util.Set;
 
 import static io.restassured.RestAssured.get;
 import static io.restassured.RestAssured.given;
@@ -93,7 +96,9 @@ public class MiscTests extends NlmCdeBaseTest {
     }
 
     @Test
-    public void checkArticleWrongKey() {
-        given().body("{key:'notWhatsNew'}").post(baseUrl + "/server/article/whatsNew").then().statusCode(400);
+    public void whenArticleWrongKey_then400() {
+        mustBeLoggedInAs(nlm_username, nlm_password);
+        Cookie myCookie = getCurrentCookie();
+        given().cookie(myCookie).body("{key:'notWhatsNew'}").post(baseUrl + "/server/article/whatsNew").then().statusCode(400);
     }
 }
