@@ -7,37 +7,37 @@ import { FormElement, FormQuestion } from '../../shared/form/form.model';
 const config = Config as any;
 
 let primaryNameSuggest = {
-    "type": "text",
-    "analyzer": "autocomplete",
-    "search_analyzer": "standard"
+    type: "text",
+    analyzer: "autocomplete",
+    search_analyzer: "standard"
 };
 
 export const createSuggestIndexJson = {
-    "mappings": {
-        "suggest": {
-            "properties": {
-                "nameSuggest": primaryNameSuggest,
-                "stewardOrg": {
-                    "properties": {
-                        "name": {"type": "keyword"}
+    mappings: {
+        suggest: {
+            properties: {
+                nameSuggest: primaryNameSuggest,
+                stewardOrg: {
+                    properties: {
+                        name: {type: "keyword"}
                     }
                 },
-                "registrationState": {
+                registrationState: {
                     properties: {
-                        "registrationStatus": {"type": "keyword"}
+                        registrationStatus: {type: "keyword"}
                     }
                 }
             }
         }
     }, settings: {
         index: {
-            "number_of_replicas": config.elastic.number_of_replicas,
+            number_of_replicas: config.elastic.number_of_replicas,
             analysis: {
-                "filter": {
-                    "autocomplete_filter": {
-                        "type": "edge_ngram",
-                        "min_gram": 1,
-                        "max_gram": 20
+                filter: {
+                    autocomplete_filter: {
+                        type: "edge_ngram",
+                        min_gram: 1,
+                        max_gram: 20
                     }
                 },
                 analyzer: {
@@ -45,10 +45,10 @@ export const createSuggestIndexJson = {
                         type: 'snowball'
                         , language: 'English'
                     },
-                    "autocomplete": {
-                        "type": "custom",
-                        "tokenizer": "standard",
-                        "filter": [
+                    autocomplete: {
+                        type: "custom",
+                        tokenizer: "standard",
+                        filter: [
                             "lowercase",
                             "autocomplete_filter"
                         ]
@@ -60,98 +60,98 @@ export const createSuggestIndexJson = {
 };
 
 export const createIndexJson = {
-    "mappings": {
-        "dataelement": {
-            "date_detection": false,
-            "properties": {
-                "primaryNameCopy": {
-                    "type": "text",
-                    "fields": {
-                        "raw": {
-                            "type": "keyword",
-                            "index": false
+    mappings: {
+        dataelement: {
+            date_detection: false,
+            properties: {
+                primaryNameCopy: {
+                    type: "text",
+                    fields: {
+                        raw: {
+                            type: "keyword",
+                            index: false
                         }
                     }
                 },
-                "stewardOrg": {
-                    "properties": {
-                        "name": {"type": "keyword"}
+                stewardOrg: {
+                    properties: {
+                        name: {type: "keyword"}
                     }
                 }
-                , "flatClassifications": {"type": "keyword"}
-                , "flatMeshTrees": {"type": "keyword"}
-                , "classification": {
+                , flatClassifications: {type: "keyword"}
+                , flatMeshTrees: {type: "keyword"}
+                , classification: {
                     properties: {
-                        "stewardOrg": {
+                        stewardOrg: {
                             properties: {
-                                "name": {"type": "keyword"}
+                                name: {type: "keyword"}
                             }
                         }
                     }
                 }
-                , "classificationSize": {type: "integer"}
-                , "registrationState": {
+                , classificationSize: {type: "integer"}
+                , registrationState: {
                     properties: {
-                        "registrationStatus": {"type": "keyword"}
+                        registrationStatus: {type: "keyword"}
                     }
                 }
-                , "source": {"type": "keyword"}
-                , "origin": {"type": "keyword"}
-                , "valueDomain": {
+                , source: {type: "keyword"}
+                , origin: {type: "keyword"}
+                , valueDomain: {
                     properties: {
-                        "datatype": {"type": "keyword"},
-                        "permissibleValues": {
+                        datatype: {type: "keyword"},
+                        permissibleValues: {
                             properties: {
-                                "codeSystemName": {"type": "keyword"}
+                                codeSystemName: {type: "keyword"}
                             }
                         }
                     }
                 }
-                , "properties": {
-                    "type": "nested",
-                    "include_in_parent": true,
-                    "properties": {
-                        "key": {"type": "text"},
-                        "value": {"type": "text"}
-                    }
-                }, "ids": {
-                    "type": "nested",
-                    "include_in_parent": true,
-                    "properties": {
-                        "source": {"type": "keyword"},
-                        "id": {"type": "text"},
-                        "version": {"type": "text"}
-                    }
-                }
-                , "tinyId": {"type": "keyword"}
-                , "created": {"type": "date"}
-                , "updated": {"type": "date"}
-                , "imported": {"type": "date"}
-                , "updatedBy": {properties: {"username": {"type": "text"}}}
-                , "changeNote": {"enabled": false}
-                , "attachments": {
+                , properties: {
+                    type: "nested",
+                    include_in_parent: true,
                     properties: {
-                        "fileid": {"enabled": false},
-                        "filename": {"enabled": false}
+                        key: {type: "text"},
+                        value: {type: "text"}
+                    }
+                }, ids: {
+                    type: "nested",
+                    include_in_parent: true,
+                    properties: {
+                        source: {type: "keyword"},
+                        id: {type: "text"},
+                        version: {type: "text"}
                     }
                 }
-                , "history": {"enabled": false}
-                , "version": {"type": "keyword"}
-                , "views": {"type": "integer"}
+                , tinyId: {type: "keyword"}
+                , created: {type: "date"}
+                , updated: {type: "date"}
+                , imported: {type: "date"}
+                , updatedBy: {properties: {username: {type: "text"}}}
+                , changeNote: {enabled: false}
+                , attachments: {
+                    properties: {
+                        fileid: {enabled: false},
+                        filename: {enabled: false}
+                    }
+                }
+                , history: {enabled: false}
+                , version: {type: "keyword"}
+                , views: {type: "integer"}
                 , linkedForms: {
                     properties: {
-                        "Retired": {"type": "integer"},
-                        "Incomplete": {"type": "integer"},
-                        "Candidate": {"type": "integer"},
-                        "Recorded": {"type": "integer"},
-                        "Qualified": {"type": "integer"},
-                        "Standard": {"type": "integer"},
-                        "Preferred Standard": {"type": "integer"},
-                        "forms": {
-                            "properties": {
-                                "primaryName": {"type": "text"},
-                                "tinyId": {"type": "keyword"},
-                                "registrationStatus": {"type": "keyword"}
+                        Retired: {type: "integer"},
+                        Incomplete: {type: "integer"},
+                        Candidate: {type: "integer"},
+                        Recorded: {type: "integer"},
+                        Qualified: {type: "integer"},
+                        Standard: {type: "integer"},
+                        'Preferred Standard': {type: "integer"},
+                        forms: {
+                            properties: {
+                                primaryName: {type: "text"},
+                                tinyId: {type: "keyword"},
+                                registrationStatus: {type: "keyword"}
                             }
                         }
 
@@ -161,7 +161,7 @@ export const createIndexJson = {
         }
     }, settings: {
         index: {
-            "number_of_replicas": config.elastic.number_of_replicas
+            number_of_replicas: config.elastic.number_of_replicas
         },
         analysis: {
             analyzer: {
@@ -175,66 +175,66 @@ export const createIndexJson = {
 };
 
 export const createFormIndexJson = {
-    "mappings": {
-        "form": {
-            "date_detection": false,
-            "properties": {
-                "primaryNameCopy": {
-                    "type": "text",
-                    "fields": {
-                        "raw": {
-                            "type": "keyword",
-                            "index": false
+    mappings: {
+        form: {
+            date_detection: false,
+            properties: {
+                primaryNameCopy: {
+                    type: "text",
+                    fields: {
+                        raw: {
+                            type: "keyword",
+                            index: false
                         }
                     }
                 },
-                "stewardOrg": {properties: {"name": {"type": "keyword"}}}
-                , "flatClassifications": {"type": "keyword"}
-                , "flatMeshTrees": {"type": "keyword"}
-                , "classification": {
+                stewardOrg: {properties: {name: {type: "keyword"}}}
+                , flatClassifications: {type: "keyword"}
+                , flatMeshTrees: {type: "keyword"}
+                , classification: {
                     properties: {
-                        "stewardOrg": {
-                            "properties": {
-                                "name": {"type": "keyword"}
+                        stewardOrg: {
+                            properties: {
+                                name: {type: "keyword"}
                             }
                         }
                     }
                 }
-                , "classificationSize": {type: "integer"}
-                , "registrationState": {
+                , classificationSize: {type: "integer"}
+                , registrationState: {
                     properties: {
-                        "registrationStatus": {"type": "keyword"}
+                        registrationStatus: {type: "keyword"}
                     }
                 }
-                , "source": {"type": "keyword"}
-                , "origin": {"type": "keyword"}
-                , "properties": {
-                    "type": "nested",
-                    "include_in_parent": true,
-                    "properties": {
-                        "key": {"type": "text"},
-                        "value": {"type": "text"}
+                , source: {type: "keyword"}
+                , origin: {type: "keyword"}
+                , properties: {
+                    type: "nested",
+                    include_in_parent: true,
+                    properties: {
+                        key: {type: "text"},
+                        value: {type: "text"}
                     }
-                }, "ids": {
-                    "type": "nested",
-                    "include_in_parent": true,
-                    "properties": {
-                        "source": {"type": "keyword"},
-                        "id": {"type": "text"},
-                        "version": {"type": "text"}
+                }, ids: {
+                    type: "nested",
+                    include_in_parent: true,
+                    properties: {
+                        source: {type: "keyword"},
+                        id: {type: "text"},
+                        version: {type: "text"}
                     }
-                }, "views": {"type": "integer"},
-                "created": {"type": "date"},
-                "updated": {"type": "date"},
-                "imported": {"type": "date"},
-                "numQuestions": {"type": "integer"},
-                "cdeTinyIds": {"type": "keyword"}
+                }, views: {type: "integer"},
+                created: {type: "date"},
+                updated: {type: "date"},
+                imported: {type: "date"},
+                numQuestions: {type: "integer"},
+                cdeTinyIds: {type: "keyword"}
             }
         }
     }, settings: {
         "index.mapping.total_fields.limit": 2000,
         index: {
-            "number_of_replicas": config.elastic.number_of_replicas
+            number_of_replicas: config.elastic.number_of_replicas
         },
         analysis: {
             analyzer: {
@@ -255,7 +255,7 @@ export function suggestRiverFunction(_elt: ItemElastic, cb: Cb<any>) {
     toIndex.stewardOrg = _elt.stewardOrg;
     toIndex.tinyId = _elt.tinyId;
 
-    cb(toIndex)
+    cb(toIndex);
     return;
 }
 
@@ -388,7 +388,7 @@ export type ElasticIndex = {
     indexJson: any
     indexName: string,
     name: string,
-}
+};
 
 export const indices: ElasticIndex[] = [
     {

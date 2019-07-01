@@ -26,7 +26,7 @@ export function attachmentApproved(collection, id, cb) {
 }
 
 export function attachmentRemove(collection, id, cb) {
-    collection.updateMany({'attachments.fileid': id}, {$pull: {'attachments': {'fileid': id}}}, cb);
+    collection.updateMany({'attachments.fileid': id}, {$pull: {attachments: {fileid: id}}}, cb);
 }
 
 const allowedRegStatuses = ['Retired', 'Incomplete', 'Candidate'];

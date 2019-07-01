@@ -1,5 +1,5 @@
 import * as async from 'async';
-import { config } from '../../server/system/parseConfig';
+import { config } from '../system/parseConfig';
 
 const mongo_cde = require('../cde/mongo-cde');
 const mongo_form = require('../form/mongo-form');

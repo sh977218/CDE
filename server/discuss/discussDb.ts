@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
-import { addStringtype } from '../../server/system/mongoose-stringtype';
-import { config } from '../../server/system/parseConfig';
+import { addStringtype } from '../system/mongoose-stringtype';
+import { config } from '../system/parseConfig';
 import { CbError } from '../../shared/models.model';
 
 addStringtype(mongoose);
@@ -45,7 +45,7 @@ export function byEltId(id, cb) {
         {
             $lookup: {
                 from: 'users',
-                let: {'username': '$username'},
+                let: {username: '$username'},
                 pipeline: [
                     {$match: {$expr: {$eq: ['$username', '$$username']}}},
                     {$project: {_id: 0, avatarUrl: 1}}
@@ -98,8 +98,8 @@ export function orgComments(myOrgs, from, size, cb) {
             }
         }, {
             $project: {
-                'embeddedCde': 0,
-                'embeddedForm': 0
+                embeddedCde: 0,
+                embeddedForm: 0
             }
         }, {$sort: {created: -1}}, {$skip: from}, {$limit: size}], cb);
 }

@@ -1,4 +1,4 @@
-import { config } from '../../server/system/parseConfig';
+import { config } from '../system/parseConfig';
 
 export const createIndexJson = {
     mappings: {

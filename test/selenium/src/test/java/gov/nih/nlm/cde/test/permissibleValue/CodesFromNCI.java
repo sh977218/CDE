@@ -13,8 +13,8 @@ public class CodesFromNCI extends NlmCdeBaseTest {
         goToCdeByName(cdeName);
         goToPermissibleValues();
         clickElement(By.id("displayNCICodes"));
-        textPresent("Enterovirus", By.id("nameAsNCI_0"));
-        textPresent("TCGA", By.id("codeAsNCI_0"));
+        textPresent("Alaska Native", By.id("nameAsNCI_0"));
+        textPresent("C41259", By.id("codeAsNCI_0"));
         clickElement(By.id("displayUMLSCodes"));
         textPresent("American Indian", By.id("nameAsUMLS_0"));
         textPresent("C1515945", By.id("codeAsUMLS_0"));
@@ -27,7 +27,7 @@ public class CodesFromNCI extends NlmCdeBaseTest {
 
         clickElement(By.id("displayLNCCodes"));
         textPresent("American Indian or Alaska Native", By.id("nameAsLNC_0"));
-        textPresent("LA6155-1", By.id("codeAsLNC_0"));
+        textPresent("LA10608-0", By.id("codeAsLNC_0"));
 
         clickElement(By.id("displaySNOMEDCT_USCodes"));
         textPresent("American Indian or Alaska native", By.id("nameAsSCT_0"));

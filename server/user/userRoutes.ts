@@ -2,8 +2,8 @@ import { uriView } from '../../shared/item';
 import { getModule } from '../../shared/elt';
 import { hasRole, isSiteAdmin } from '../../shared/system/authorizationShared';
 import { capString } from '../../shared/system/util';
-import { loggedInMiddleware, nocacheMiddleware } from '../../server/system/authorization';
-import { respondError } from '../../server/errorHandler/errHandler';
+import { loggedInMiddleware, nocacheMiddleware } from '../system/authorization';
+import { respondError } from '../errorHandler/errHandler';
 
 const config = require('config');
 const attachment = require('../attachment/attachmentSvc');

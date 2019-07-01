@@ -1,7 +1,7 @@
 import * as mongoose from 'mongoose';
-import { config } from '../../server/system/parseConfig';
+import { config } from '../system/parseConfig';
+import { addStringtype } from '../system/mongoose-stringtype';
 import { hasRole, rolesEnum } from '../../shared/system/authorizationShared';
-import { addStringtype } from '../../server/system/mongoose-stringtype';
 import { CbError } from '../../shared/models.model';
 
 addStringtype(mongoose);
@@ -126,11 +126,11 @@ export function updateUser(user, fields, callback: CbError<number, number, numbe
 }
 
 export function usersByUsername(username, callback) {
-    User.find({'username': new RegExp(username, 'i')}, userProject, callback);
+    User.find({username: new RegExp(username, 'i')}, userProject, callback);
 }
 
 export function userByUsername(username, callback) {
-    User.findOne({'username': new RegExp(username, 'i')}, userProject, callback);
+    User.findOne({username: new RegExp(username, 'i')}, userProject, callback);
 }
 
 export function byUsername(username, callback) {
@@ -141,16 +141,15 @@ export function save(user, callback) {
     new User(user).save(callback);
 }
 
-
 // Site Admin
 export function usernamesByIp(ip, callback) {
-    User.find({"knownIPs": {$in: [ip]}}, {username: 1}, callback);
+    User.find({knownIPs: {$in: [ip]}}, {username: 1}, callback);
 }
 
 export function siteAdmins(callback) {
-    User.find({'siteAdmin': true}, 'username email', callback);
+    User.find({siteAdmin: true}, 'username email', callback);
 }
 
 export function orgAuthorities(callback) {
-    User.find({'roles': 'OrgAuthority'}, 'username', callback);
+    User.find({roles: 'OrgAuthority'}, 'username', callback);
 }

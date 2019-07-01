@@ -1,5 +1,5 @@
-import { loggedInMiddleware, nocacheMiddleware } from '../../server/system/authorization';
-import { config } from '../../server/system/parseConfig';
+import { loggedInMiddleware, nocacheMiddleware } from '../system/authorization';
+import { config } from '../system/parseConfig';
 
 const utsSvc = require('./utsSvc');
 
@@ -29,13 +29,24 @@ export function module() {
         res.send(body);
     });
 
+    router.get('/umlsPtSource/:cui/:src', async (req, res) => {
+        let source = req.params.src;
+        if (!config.umls.sourceOptions[source]) {
+            return res.send('Source cannot be looked up, use UTS instead.');
+        }
+        if (config.umls.sourceOptions[source].requiresLogin && !req.user) {
+            return res.status(403).send();
+        }
+        let result = await utsSvc.getSourcePT(req.params.cui, source);
+        res.send(result);
+    });
 
     // from UMLS to others
     router.get('/umlsAtomsBridge/:id/:src', async (req, res) => {
         let source = req.params.src;
         let id = req.params.id;
         if (!config.umls.sourceOptions[source]) {
-            return res.send('Source cannot be looked up, use UTS Instead.');
+            return res.send('Source cannot be looked up, use UTS instead.');
         }
         if (config.umls.sourceOptions[source].requiresLogin && !req.user) {
             return res.status(403).send();
@@ -51,7 +62,7 @@ export function module() {
         let id = req.params.id;
 
         if (!config.umls.sourceOptions[source]) {
-            return res.status(404).send('Source cannot be looked up, use UTS Instead.');
+            return res.status(404).send('Source cannot be looked up, use UTS instead.');
         }
         let result = await utsSvc.umlsCuiFromSrc(id, source);
         res.send(result);

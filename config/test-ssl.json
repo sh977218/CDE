@@ -3,7 +3,6 @@
   "provider": {
     "faas": "ON_PREM"
   },
-  "logBufferSize": 2,
   "publicUrl": "http://localhost:3001",
   "debugEnabled": true,
   "pmRunOnStartup": [],

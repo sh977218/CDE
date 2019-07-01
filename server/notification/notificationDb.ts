@@ -1,4 +1,4 @@
-import { ClientErrorModel, LogErrorModel } from '../../server/log/dbLogger';
+import { ClientErrorModel, LogErrorModel } from '../log/dbLogger';
 
 export function getNumberServerError(user, callback) {
     let query = LogErrorModel.countDocuments(

@@ -1,8 +1,8 @@
 import { Schema } from 'mongoose';
-import { establishConnection } from '../../server/system/connections';
-import { attachables } from '../../server/system/mongo-data';
-import { config } from '../../server/system/parseConfig';
-import { attachmentSchema } from '../../server/system/schemas';
+import { establishConnection } from '../system/connections';
+import { attachables } from '../system/mongo-data';
+import { config } from '../system/parseConfig';
+import { attachmentSchema } from '../system/schemas';
 
 let conn = establishConnection(config.database.appData);
 let Article = conn.model('article', new Schema({

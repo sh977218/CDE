@@ -53,7 +53,7 @@ function getVsacCookies() {
     };
     return promisify(request.post)(options)
         .then(response => {
-                vsacCookies = response.headers['set-cookie']
+                vsacCookies = response.headers['set-cookie'];
             },
             handleReject('get vsac cookies ERROR')
         );
@@ -80,7 +80,7 @@ async function getTicket() {
 
 async function getRevision(oid, j) {
     let revisionOptions = {
-        url: 'https://vsac.nlm.nih.gov/vsac/pc/vs/valueset/' + oid + '/detail?label=Latest',
+        url: `https://vsac.nlm.nih.gov/vsac/pc/vs/valueset/${oid}/detail?label=Latest`,
         jar: j,
         method: 'GET'
     };
@@ -117,9 +117,7 @@ export async function searchValueSet(oid, term = '', page = '1') {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
         };
-        return promisify(request.post)(searchOptions)
-            .then(response => response.body,
-                handleReject('get revision ERROR'))
+        return promisify(request.post)(searchOptions).then(response => response.body, handleReject('get revision ERROR'));
     });
 }
 
@@ -129,64 +127,48 @@ export function getValueSet(oid) {
             uri: 'https://vsac.nlm.nih.gov/vsac/svs/RetrieveValueSet',
             qs: {
                 id: oid,
-                ticket: ticket
+                ticket
             },
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
         };
         return promisify(request.get)(options)
-            .then(response => response.body,
-                handleReject('get vsac set ERROR')
-            );
+            .then(response => response.body, handleReject('get vsac set ERROR'));
     });
 }
 
 export function searchUmls(term) {
     return getTicket().then(ticket => {
-        let url = config.umls.wsHost + "/rest/search/current?ticket=" + ticket + "&string=" + term;
-        let options = {url: url, strictSSL: false};
-        return promisify(request.get)(options)
-            .then(response => response.body,
-                handleReject('get umls ERROR')
-            );
+        let url = `${config.umls.wsHost}/rest/search/current?ticket=${ticket}&string=` + term;
+        return promisify(request.get)({url, strictSSL: false})
+            .then(response => response.body, handleReject('get umls ERROR'));
     });
 }
 
-export function getCrossWalkingVocabularies(source, code, targetSource) {
+const ttys = {LNC: 'LA', NCI: "PT", SNOMEDCT_US: "PT"};
+
+export function getSourcePT (cui, src) {
     return getTicket().then(ticket => {
-        let url = config.umls.wsHost + "/rest/crosswalk/current/source/"
-            + source + "/" + code + "?targetSource=" + targetSource
-            + "&ticket=" + ticket;
-        let options = {url: url, strictSSL: false};
-        return promisify(request.get)(options)
-            .then(response => response.body,
-                handleReject('get cross walking vocabularies ERROR')
-            );
+       let url = `${config.umls.wsHost}/rest/content/current/CUI/${cui}/atoms?sabs=${src}&ttys=${ttys[src]}&ticket=${ticket}`;
+       return promisify(request.get)({url, strictSSL: false})
+            .then(response => response.body, handleReject('get src PT from umls ERROR'));
     });
 }
 
 export function getAtomsFromUMLS(cui, source) {
     return getTicket().then(ticket => {
-        let url = config.umls.wsHost + "/rest/content/current/CUI/" + cui + "/atoms?sabs=" + source +
-            "&pageSize=500&ticket=" + ticket;
-        let options = {url: url, strictSSL: false};
-        return promisify(request.get)(options)
-            .then(response => response.body,
-                handleReject('get atoms from umls ERROR')
-            );
+        let url = `${config.umls.wsHost}/rest/content/current/CUI/${cui}/atoms?sabs=${source}&pageSize=500&ticket=${ticket}`;
+        return promisify(request.get)({url, strictSSL: false})
+            .then(response => response.body, handleReject('get atoms from umls ERROR'));
     });
 }
 
 export function umlsCuiFromSrc(id, src) {
     return getTicket().then(ticket => {
-        let url = config.umls.wsHost + "/rest/search/current?string=" + id +
-            "&searchType=exact&inputType=sourceUi&sabs=" + src +
-            "&includeObsolete=true&includeSuppressible=true&ticket=" + ticket;
-        let options = {url: url, strictSSL: false};
-        return promisify(request.get)(options)
-            .then(response => response.body,
-                handleReject('get cui from src ERROR')
-            );
+        let url = `${config.umls.wsHost}/rest/search/current?string=${id}&searchType=exact&inputType=sourceUi&sabs=${src}`
+            + `&includeObsolete=true&includeSuppressible=true&ticket=${ticket}`;
+        return promisify(request.get)({url, strictSSL: false})
+            .then(response => response.body, handleReject('get cui from src ERROR'));
     });
 }
