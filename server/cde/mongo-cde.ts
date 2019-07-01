@@ -1,4 +1,4 @@
-import { config } from '../../server/system/parseConfig';
+import { config } from '../system/parseConfig';
 import { Cb2, CbError, MongooseType } from '../../shared/models.model';
 import { checkDefinitions, checkPvUnicity, wipeDatatype } from '../../shared/de/deValidator';
 import { isOrgCurator } from '../../shared/system/authorizationShared';
@@ -114,7 +114,7 @@ export function byExisting(elt: DE, cb: CbError<MongooseType<DE>>) {
 }
 
 export function byId(id, cb) {
-    DataElement.findOne({'_id': id}, cb);
+    DataElement.findOne({_id: id}, cb);
 }
 
 export function byIdList(idList, cb) {
@@ -122,7 +122,7 @@ export function byIdList(idList, cb) {
 }
 
 export function byTinyId(tinyId, cb) {
-    return DataElement.findOne({'tinyId': tinyId, archived: false}, cb);
+    return DataElement.findOne({tinyId: tinyId, archived: false}, cb);
 }
 
 export function latestVersionByTinyId(tinyId, cb) {
@@ -132,7 +132,7 @@ export function latestVersionByTinyId(tinyId, cb) {
 }
 
 export function byTinyIdList(tinyIdList, callback) {
-    DataElement.find({'archived': false}).where('tinyId')
+    DataElement.find({archived: false}).where('tinyId')
         .in(tinyIdList)
         .slice('valueDomain.permissibleValues', 10)
         .exec((err, cdes) => {
@@ -195,7 +195,7 @@ export function draftsList(criteria, cb) {
             updated: 1,
             'updatedBy.username': 1
         })
-        .sort({'updated': -1})
+        .sort({updated: -1})
         .exec(cb);
 }
 
@@ -216,7 +216,7 @@ export function count(condition, callback) {
 export function desByConcept(concept, callback) {
     DataElement.find(
         {
-            '$or': [{'objectClass.concepts.originId': concept.originId},
+            $or: [{'objectClass.concepts.originId': concept.originId},
                 {'property.concepts.originId': concept.originId},
                 {'dataElementConcept.concepts.originId': concept.originId}]
         },
@@ -237,7 +237,7 @@ export function byTinyIdAndVersion(tinyId, version, callback) {
     let query: any = {tinyId: tinyId};
     if (version) query.version = version;
     else query.$or = [{version: null}, {version: ''}];
-    DataElement.find(query).sort({'updated': -1}).limit(1).exec(function (err, elts) {
+    DataElement.find(query).sort({updated: -1}).limit(1).exec(function (err, elts) {
         if (err) callback(err);
         else if (elts.length) callback('', elts[0]);
         else callback('', null);
@@ -247,15 +247,15 @@ export function byTinyIdAndVersion(tinyId, version, callback) {
 export function eltByTinyId(tinyId, callback) {
     if (!tinyId) callback('tinyId is undefined!', null);
     DataElement.findOne({
-        'tinyId': tinyId,
-        'archived': false
+        tinyId: tinyId,
+        archived: false
     }).exec(function (err, de) {
         callback(err, de);
     });
 }
 
-var viewedCdes = {};
-var threshold = config.viewsIncrementThreshold || 50;
+let viewedCdes = {};
+let threshold = config.viewsIncrementThreshold || 50;
 export function inCdeView(cde) {
     if (!viewedCdes[cde._id]) viewedCdes[cde._id] = 0;
     viewedCdes[cde._id]++;
@@ -337,7 +337,7 @@ export function updatePromise(elt, user) {
 }
 
 export function archiveCde(cde, callback) {
-    DataElement.findOne({'_id': cde._id}, (err, cde) => {
+    DataElement.findOne({_id: cde._id}, (err, cde) => {
         cde.archived = true;
         cde.save(() => callback('', cde));
     });
@@ -359,8 +359,9 @@ export function transferSteward(from, to, callback) {
 
 export function byOtherId(source, id, cb) {
     DataElement.find({archived: false}).elemMatch('ids', {source: source, id: id}).exec(function (err, cdes) {
-        if (cdes.length > 1)
+        if (cdes.length > 1) {
             cb('Multiple results, returning first', cdes[0]);
+        }
         else cb(err, cdes[0]);
     });
 }
@@ -371,8 +372,9 @@ export function byOtherIdAndNotRetired(source, id, cb) {
         'registrationState.registrationStatus': {$ne: 'Retired'}
     }).elemMatch('ids', {source: source, id: id}).exec(function (err, cdes) {
         if (err) cb(err, null);
-        else if (cdes.length > 1)
+        else if (cdes.length > 1) {
             cb('Multiple results, returning first. source: ' + source + ' id: ' + id, cdes[0]);
+             }
         else if (cdes.length === 0) {
             cb('No results', null);
         } else cb(err, cdes[0]);
@@ -391,7 +393,7 @@ export function bySourceIdVersion(source, id, version, cb) {
 export function bySourceIdVersionAndNotRetiredNotArchived(source, id, version, cb) {
     //noinspection JSUnresolvedFunction
     DataElement.find({
-        'archived': false,
+        archived: false,
         'registrationState.registrationStatus': {$ne: 'Retired'}
     }).elemMatch('ids', {
         source: source, id: id, version: version
@@ -418,7 +420,7 @@ export function findModifiedElementsSince(date, cb) {
         },
         {$limit: 2000},
         {$sort: {updated: -1}},
-        {$group: {'_id': '$tinyId'}}
+        {$group: {_id: '$tinyId'}}
     ]).exec(cb);
 
 }
@@ -427,8 +429,9 @@ export function checkOwnership(req, id, cb) {
     if (!req.isAuthenticated()) return cb('You are not authorized.', null);
     byId(id, function (err, elt) {
         if (err || !elt) return cb('Element does not exist.', null);
-        if (!isOrgCurator(req.user, elt.stewardOrg.name))
+        if (!isOrgCurator(req.user, elt.stewardOrg.name)) {
             return cb('You do not own this element.', null);
+        }
         cb(null, elt);
     });
 }

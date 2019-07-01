@@ -1,5 +1,5 @@
-import { storedQuerySchema } from '../../server/log/schemas';
-import { config } from '../../server/system/parseConfig';
+import { storedQuerySchema } from '../log/schemas';
+import { config } from '../system/parseConfig';
 
 const connHelper = require('../system/connections');
 

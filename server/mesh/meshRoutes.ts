@@ -1,5 +1,5 @@
-import { handleError } from '../../server/errorHandler/errHandler';
-import { config } from '../../server/system/parseConfig';
+import { handleError } from '../errorHandler/errHandler';
+import { config } from '../system/parseConfig';
 
 const async = require('async');
 const request = require('request');
@@ -7,22 +7,22 @@ const elastic = require('./elastic');
 const meshDb = require('./meshDb');
 
 let meshTopTreeMap = {
-    'A': "Anatomy",
-    'B': "Organisms",
-    'C': "Diseases",
-    'D': "Chemicals and Drugs",
-    'E': "Analytical, Diagnostic and Therapeutic Techniques, and Equipment",
-    'F': "Psychiatry and Psychology",
-    'G': "Phenomena and Processes",
-    'H': "Disciplines and Occupations",
-    'I': "Anthropology, Education, Sociology, and Social Phenomena",
-    'J': "Technology, Industry, and Agriculture",
-    'K': "Humanities",
-    'L': "Information Science",
-    'M': "Named Groups",
-    'N': "Health Care",
-    'V': "Publication Characteristics",
-    'Z': "Geographicals"
+    A: "Anatomy",
+    B: "Organisms",
+    C: "Diseases",
+    D: "Chemicals and Drugs",
+    E: "Analytical, Diagnostic and Therapeutic Techniques, and Equipment",
+    F: "Psychiatry and Psychology",
+    G: "Phenomena and Processes",
+    H: "Disciplines and Occupations",
+    I: "Anthropology, Education, Sociology, and Social Phenomena",
+    J: "Technology, Industry, and Agriculture",
+    K: "Humanities",
+    L: "Information Science",
+    M: "Named Groups",
+    N: "Health Care",
+    V: "Publication Characteristics",
+    Z: "Geographicals"
 };
 
 export function module(roleConfig) {
@@ -58,7 +58,7 @@ export function module(roleConfig) {
 
     router.get('/meshClassification', (req, res) => {
         if (!req.query.classification) return res.status(400).send("Missing Classification Parameter");
-        meshDb.byFlatClassification(req.query.classification, handleError({req, res}, mm => res.send(mm[0])))
+        meshDb.byFlatClassification(req.query.classification, handleError({req, res}, mm => res.send(mm[0])));
     });
 
 

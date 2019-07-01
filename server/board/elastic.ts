@@ -1,5 +1,5 @@
 import * as ElasticSearch from 'elasticsearch';
-import { config } from '../../server/system/parseConfig';
+import { config } from '../system/parseConfig';
 
 const boardIndexName = config.elastic.boardIndex.name;
 
@@ -86,13 +86,15 @@ export function myBoards(user, filter, callback) {
     let sort = {};
     if (filter.sortBy) {
         sort[filter.sortBy] = {};
-        if (filter && filter.sortDirection)
+        if (filter && filter.sortDirection) {
             sort[filter.sortBy].order = filter.sortDirection;
-        else
+        }
+        else {
             sort[filter.sortBy].order = "asc";
+        }
     }
     else {
-        sort['updatedDate'] = {"order": "asc"};
+        sort['updatedDate'] = {order: "asc"};
         query.sort.push(sort);
     }
     if (filter.boardName) {

@@ -2,10 +2,10 @@ import {
     canApproveCommentMiddleware,
     isOrgAdminMiddleware,
     isOrgAuthorityMiddleware, isOrgCuratorMiddleware, isSiteAdminMiddleware, loggedInMiddleware, nocacheMiddleware
-} from '../../server/system/authorization';
+} from '../system/authorization';
 import { isOrgAdmin } from '../../shared/system/authorizationShared';
-import { handleError, respondError } from '../../server/errorHandler/errHandler';
-import { config } from '../../server/system/parseConfig';
+import { handleError, respondError } from '../errorHandler/errHandler';
+import { config } from '../system/parseConfig';
 
 const async = require('async');
 const CronJob = require('cron').CronJob;
@@ -141,7 +141,7 @@ export function init(app) {
 
     app.get('/cde/search', (req, res) => {
         let selectedOrg = req.query.selectedOrg;
-        let pageString = req.query.page;// starting from 1
+        let pageString = req.query.page; // starting from 1
         if (!pageString) pageString = '1';
         if (isSearchEngine(req)) {
             if (selectedOrg) {
@@ -149,7 +149,7 @@ export function init(app) {
                 let pageSize = 20;
                 let cond = {
                     'classification.stewardOrg.name': selectedOrg,
-                    'archived': false,
+                    archived: false,
                     'registrationState.registrationStatus': 'Qualified'
                 };
                 mongo_cde.count(cond, (err, totalCount) => {
@@ -159,7 +159,7 @@ export function init(app) {
                             stack: err.stack,
                             origin: req.url
                         });
-                    } else
+                    } else {
                         mongo_cde.DataElement.find(cond, 'tinyId designations', {
                             skip: pageSize * (pageNum - 1),
                             limit: pageSize
@@ -180,6 +180,7 @@ export function init(app) {
                                 });
                             }
                         });
+                    }
                 });
             } else {
                 res.render('bot/cdeSearch', 'system');
@@ -211,7 +212,7 @@ export function init(app) {
 
     app.get('/form/search', function (req, res) {
         let selectedOrg = req.query.selectedOrg;
-        let pageString = req.query.page;// starting from 1
+        let pageString = req.query.page; // starting from 1
         if (!pageString) pageString = '1';
         if (isSearchEngine(req)) {
             if (selectedOrg) {
@@ -219,7 +220,7 @@ export function init(app) {
                 let pageSize = 20;
                 let cond = {
                     'classification.stewardOrg.name': selectedOrg,
-                    'archived': false,
+                    archived: false,
                     'registrationState.registrationStatus': 'Qualified'
                 };
                 mongo_form.Form.countDocuments(cond, (err, totalCount) => {
@@ -229,7 +230,7 @@ export function init(app) {
                             stack: err.stack,
                             origin: req.url
                         });
-                    } else
+                    } else {
                         mongo_form.Form.find(cond, 'tinyId designations', {
                             skip: pageSize * (pageNum - 1),
                             limit: pageSize
@@ -250,6 +251,7 @@ export function init(app) {
                                 });
                             }
                         });
+                    }
                 });
             } else {
                 res.render('bot/formSearch', 'system');
@@ -290,7 +292,7 @@ export function init(app) {
             .then(() => {
                 let wstream = fs.createWriteStream('./dist/app/sitemap.txt');
                 let cond = {
-                    'archived': false,
+                    archived: false,
                     'registrationState.registrationStatus': 'Qualified'
                 };
 
@@ -666,7 +668,7 @@ export function init(app) {
                 };
                 new IdSource(idSource).save(handleError({req, res}, source => res.send(source)));
             }
-        }))
+        }));
     });
     app.put('/idSource/:id', isSiteAdminMiddleware, (req, res) => {
         IdSource.findById(req.body._id, handleError({req, res}, doc => {
@@ -675,9 +677,9 @@ export function init(app) {
                 doc.linkTemplateDe = req.body.linkTemplateDe;
                 doc.linkTemplateForm = req.body.linkTemplateForm;
                 doc.version = req.body.version;
-                doc.save(handleError(source => res.send(source)))
+                doc.save(handleError(source => res.send(source)));
             }
-        }))
+        }));
     });
     app.delete('/idSource/:id', isSiteAdminMiddleware, (req, res) =>
         IdSource.delete(res, req.params.id, handleError({req, res}, () => res.send())));

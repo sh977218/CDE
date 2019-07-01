@@ -1,17 +1,14 @@
-import { errorLogger } from '../../server/system/logging';
-import { config } from '../../server/system/parseConfig';
+import { errorLogger } from '../system/logging';
+import { config } from '../system/parseConfig';
 
-var https = require('https')
-    , xml2js = require('xml2js')
-    , helper = require('./helper')
-    , mongo_data_system = require('./mongo-data')
-    , request = require('request')
-    , passport = require('passport')
-    , LocalStrategy = require('passport-local').Strategy
-    , util = require('util')
-    ;
+const https = require('https');
+const xml2js = require('xml2js');
+const mongo_data_system = require('./mongo-data');
+const request = require('request');
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
 
-var ticketValidationOptions = {
+const ticketValidationOptions = {
     host: config.uts.ticketValidation.host
     , hostname: config.uts.ticketValidation.host
     , port: config.uts.ticketValidation.port
@@ -20,21 +17,16 @@ var ticketValidationOptions = {
     , agent: false
     , requestCert: true
     , rejectUnauthorized: false
-
 };
 
-var parser = new xml2js.Parser();
-var auth = this;
+const parser = new xml2js.Parser();
+const auth = this;
 
 passport.serializeUser(function (user, done) {
     done(null, user._id);
 });
 
-passport.deserializeUser(function (id, done) {
-    mongo_data_system.userById(id, function (err, user) {
-        done(err, user);
-    });
-});
+passport.deserializeUser( mongo_data_system.userById);
 
 export function init(app) {
     app.use(passport.initialize());
@@ -43,8 +35,8 @@ export function init(app) {
 
 export function ticketValidate(tkt, cb) {
     ticketValidationOptions.path = config.uts.ticketValidation.path + '?service=' + config.uts.service + '&ticket=' + tkt;
-    var req = https.request(ticketValidationOptions, function (res) {
-        var output = '';
+    let req = https.request(ticketValidationOptions, function (res) {
+        let output = '';
         res.setEncoding('utf8');
 
         res.on('data', function (chunk) {
@@ -114,7 +106,7 @@ export function umlsAuth(user, password, cb) {
                 , password: password
             }
         }, function (error, response, body) {
-            cb(!error && response.statusCode == 200 ? body : undefined);
+            cb(!error && response.statusCode === 200 ? body : undefined);
         }
     );
 }
@@ -187,14 +179,16 @@ export function findAddUserLocally(profile, cb) {
 export function ticketAuth(req, res, next) {
     if (!req.query.ticket || req.query.ticket.length <= 0) {
         next();
-    } else auth.ticketValidate(req.query.ticket, function (err, username) {
-        if (err) {
-            next();
-        } else {
-            auth.findAddUserLocally({username: username, ip: req.ip}, function (user) {
-                if (user) req.user = user;
+    } else {
+        auth.ticketValidate(req.query.ticket, function (err, username) {
+            if (err) {
                 next();
-            });
-        }
-    });
+            } else {
+                auth.findAddUserLocally({username: username, ip: req.ip}, function (user) {
+                    if (user) req.user = user;
+                    next();
+                });
+            }
+        });
+    }
 }

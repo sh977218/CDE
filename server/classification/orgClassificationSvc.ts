@@ -11,8 +11,9 @@ const mongo_data = require('../system/mongo-data');
 const elastic = require('../system/elastic');
 
 export function deleteOrgClassification(user, deleteClassification, settings, callback) {
-    if (!(deleteClassification.categories instanceof Array))
+    if (!(deleteClassification.categories instanceof Array)) {
         deleteClassification.categories = [deleteClassification.categories];
+    }
     mongo_data.updateJobStatus("deleteClassification", "Running", err => {
         if (err) return callback(err);
         mongo_data.orgByName(deleteClassification.orgName, (err, stewardOrg) => {
@@ -79,8 +80,9 @@ export function deleteOrgClassification(user, deleteClassification, settings, ca
 }
 
 export function renameOrgClassification(user, newClassification, settings, callback) {
-    if (!(newClassification.categories instanceof Array))
+    if (!(newClassification.categories instanceof Array)) {
         newClassification.categories = [newClassification.categories];
+    }
     mongo_data.updateJobStatus("renameClassification", "Running", err => {
         if (err) return callback(err);
         mongo_data.orgByName(newClassification.orgName, (err, stewardOrg) => {
@@ -147,8 +149,9 @@ export function renameOrgClassification(user, newClassification, settings, callb
 }
 
 export function addOrgClassification(newClassification, callback) {
-    if (!(newClassification.categories instanceof Array))
+    if (!(newClassification.categories instanceof Array)) {
         newClassification.categories = [newClassification.categories];
+    }
     mongo_data.orgByName(newClassification.orgName, (err, stewardOrg) => {
         if (err) return callback(err, stewardOrg);
         addCategoriesToOrg(stewardOrg, newClassification.categories);

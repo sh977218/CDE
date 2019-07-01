@@ -1,5 +1,5 @@
 import { create as builderCreate } from 'xmlbuilder';
-import { config } from '../../server/system/parseConfig';
+import { config } from '../system/parseConfig';
 
 const dbLogger = require('../log/dbLogger');
 
@@ -18,14 +18,15 @@ function addQuestion(parent, question) {
         question.question.cde.ids.forEach(function (id) {
             let codedValueEle = questionEle.ele({
                 CodedValue: {
-                    "Code": {"@val": id.id},
-                    "CodeSystem": {
-                        "CodeSystemName": {"@val": id.source || ""}
+                    Code: {"@val": id.id},
+                    CodeSystem: {
+                        CodeSystemName: {"@val": id.source || ""}
                     }
                 }
             });
-            if (id.version)
+            if (id.version) {
                 codedValueEle.children.filter(c => c.name === 'CodeSystem')[0].ele({Version: {"@val": id.version}});
+            }
         });
     }
 
@@ -43,9 +44,9 @@ function addQuestion(parent, question) {
                 };
                 if (answer.valueMeaningCode && answer.codeSystemName) {
                     q["CodedValue"] = {
-                        "Code": {"@val": answer.valueMeaningCode},
-                        "CodeSystem": {
-                            "CodeSystemName": {"@val": answer.codeSystemName}
+                        Code: {"@val": answer.valueMeaningCode},
+                        CodeSystem: {
+                            CodeSystemName: {"@val": answer.codeSystemName}
                         }
                     };
                 }
@@ -54,8 +55,8 @@ function addQuestion(parent, question) {
         }
     } else {
         questionEle.ele("ResponseField").ele("Response").ele("string", {
-            "name": "NA_" + Math.random(),
-            "maxLength": "4000"
+            name: "NA_" + Math.random(),
+            maxLength: "4000"
         });
     }
     idToName[question.question.cde.tinyId] = question.label;
@@ -112,10 +113,12 @@ let doSection = function (parent, section) {
     if (section.formElements && section.formElements.length > 0) {
         let childItems = subSection.ele({ChildItems: {}});
         section.formElements.forEach(function (formElement) {
-            if (formElement.elementType === 'question')
+            if (formElement.elementType === 'question') {
                 doQuestion(childItems, formElement);
-            else if (formElement.elementType === 'section' || formElement.elementType === 'form')
+            }
+            else if (formElement.elementType === 'section' || formElement.elementType === 'form') {
                 doSection(childItems, formElement);
+                 }
         });
     }
 };
@@ -124,12 +127,12 @@ let idToName = {};
 
 export function formToSDC({form, renderer, validate}, cb) {
     let formDesign = builderCreate({
-        "FormDesign": {
+        FormDesign: {
             "@xmlns": "urn:ihe:qrph:sdc:2016",
             "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
             "@xsi:schemaLocation": "http://healthIT.gov/sdc SDCFormDesign.xsd",
             "@ID": form.tinyId + (form.version ? "v" + form.version : ''),
-            "Header": {
+            Header: {
                 "@ID": "S1",
                 "@title": form.designations[0].designation,
                 "@styleClass": "left"
@@ -138,7 +141,7 @@ export function formToSDC({form, renderer, validate}, cb) {
     }, {separateArrayItems: true, headless: true});
 
     let body = formDesign.ele({
-        "Body": {
+        Body: {
             "@ID": "NA_" + Math.random()
         }
     });

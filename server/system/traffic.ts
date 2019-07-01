@@ -1,5 +1,5 @@
-import { handleError } from '../../server/errorHandler/errHandler';
-import { config } from '../../server/system/parseConfig';
+import { handleError } from '../errorHandler/errHandler';
+import { config } from '../system/parseConfig';
 
 const schemas = require('./schemas');
 const connHelper = require('../system/connections');

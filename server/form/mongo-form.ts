@@ -1,17 +1,17 @@
 import * as Ajv from 'ajv';
-import { config } from '../../server/system/parseConfig';
+import { config } from '../system/parseConfig';
 import { CbError, User } from '../../shared/models.model';
 import { CdeForm } from '../../shared/form/form.model';
 
 const fs = require('fs');
 const _ = require('lodash');
 const path = require('path');
-const schemas = require('../../server/form/schemas');
-const mongo_data = require('../../server/system/mongo-data');
-const connHelper = require('../../server/system/connections');
-const mongooseHelper = require('../../server/system/mongooseHelper');
-const logging = require('../../server/system/logging'); // TODO: remove logging, error is passed out of this layer, handleError should fail-back and tee to no-db logger
-export const elastic = require('../../server/form/elastic');
+const schemas = require('./schemas');
+const mongo_data = require('../system/mongo-data');
+const connHelper = require('../system/connections');
+const mongooseHelper = require('../system/mongooseHelper');
+const logging = require('../system/logging'); // TODO: remove logging, error is passed out of this layer, handleError should fail-back and tee to no-db logger
+export const elastic = require('../form/elastic');
 const isOrgCurator = require('../../shared/system/authorizationShared').isOrgCurator;
 
 export const type = 'form';
@@ -104,7 +104,7 @@ export function byIdList(idList, cb) {
 }
 
 export function byTinyIdList(tinyIdList, callback) {
-    Form.find({'archived': false})
+    Form.find({archived: false})
         .where('tinyId')
         .in(tinyIdList)
         .exec((err, forms) => {
@@ -119,7 +119,7 @@ export function byTinyIdList(tinyIdList, callback) {
 }
 
 export function byTinyId(tinyId, cb) {
-    return Form.findOne({'tinyId': tinyId, archived: false}, cb);
+    return Form.findOne({tinyId: tinyId, archived: false}, cb);
 }
 
 export function byTinyIdVersion(tinyId, version, cb) {
@@ -131,7 +131,7 @@ export function byTinyIdAndVersion(tinyId, version, callback) {
     let query: any = {tinyId: tinyId};
     if (version) query.version = version;
     else query.$or = [{version: null}, {version: ''}];
-    Form.find(query).sort({'updated': -1}).limit(1).exec(function (err, elts) {
+    Form.find(query).sort({updated: -1}).limit(1).exec(function (err, elts) {
         if (err) callback(err);
         else if (elts.length) callback('', elts[0]);
         else callback('', null);
@@ -189,7 +189,7 @@ export function draftsList(criteria, cb) {
             updated: 1,
             'updatedBy.username': 1
         })
-        .sort({'updated': -1})
+        .sort({updated: -1})
         .exec(cb);
 }
 
@@ -280,8 +280,9 @@ export function create(elt, user, callback) {
 
 export function byOtherId(source, id, cb) {
     Form.find({archived: false}).elemMatch('ids', {source: source, id: id}).exec(function (err, forms) {
-        if (forms.length > 1)
+        if (forms.length > 1) {
             cb('Multiple results, returning first', forms[0]);
+        }
         else cb(err, forms[0]);
     });
 }
@@ -315,8 +316,9 @@ export function checkOwnership(req, id, cb) {
     if (!req.isAuthenticated()) return cb('You are not authorized.', null);
     byId(id, function (err, elt) {
         if (err || !elt) return cb('Element does not exist.', null);
-        if (!isOrgCurator(req.user, elt.stewardOrg.name))
+        if (!isOrgCurator(req.user, elt.stewardOrg.name)) {
             return cb('You do not own this element.', null);
+        }
         cb(null, elt);
     });
 }

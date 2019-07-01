@@ -16,15 +16,15 @@ if (typeof(window) === "undefined") {
 }
 const ODM_DATATYPE_MAP = {
     "Value List": "text",
-    "Character": "text",
-    "Numeric": "float",
+    Character: "text",
+    Numeric: "float",
     "Date/Time": "datetime",
-    "Number": "float",
-    "Text": "text",
-    "Date": "date",
+    Number: "float",
+    Text: "text",
+    Date: "date",
     "Externally Defined": "text",
     "String\nNumeric": "text",
-    "anyClass": "text",
+    anyClass: "text",
     "java.util.Date": "date",
     "java.lang.String": "text",
     "java.lang.Long": "float",
@@ -33,7 +33,7 @@ const ODM_DATATYPE_MAP = {
     "java.lang.Boolean": "boolean",
     "java.util.Map": "text",
     "java.lang.Float": "float",
-    "Time": "time",
+    Time: "time",
     "xsd:string": "text",
     "java.lang.Character": "text",
     "xsd:boolean": "boolean",
@@ -50,16 +50,16 @@ export function getFormOdm(form, cb) {
         form.formElements = [];
     }
     let odmJsonForm = {
-        '$CreationDateTime': new Date().toISOString(),
-        '$FileOID': form.tinyId,
-        '$FileType': 'Snapshot',
-        '$xmlns': 'http://www.cdisc.org/ns/odm/v1.3',
+        $CreationDateTime: new Date().toISOString(),
+        $FileOID: form.tinyId,
+        $FileType: 'Snapshot',
+        $xmlns: 'http://www.cdisc.org/ns/odm/v1.3',
         '$xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
         '$xsi:noNamespaceSchemaLocation': 'ODM1-3-2.xsd',
-        '$Granularity': 'Metadata',
-        '$ODMVersion': '1.3',
+        $Granularity: 'Metadata',
+        $ODMVersion: '1.3',
         Study: {
-            '$OID': form.tinyId,
+            $OID: form.tinyId,
             GlobalVariables: {
                 StudyName: _.escape(form.designations[0].designation),
                 StudyDescription: _.escape(form.definitions[0].definition),
@@ -67,31 +67,31 @@ export function getFormOdm(form, cb) {
             },
             BasicDefinitions: {},
             MetaDataVersion: {
-                '$Name': _.escape(form.designations[0].designation),
-                '$OID': 'MDV_' + form.tinyId,
+                $Name: _.escape(form.designations[0].designation),
+                $OID: 'MDV_' + form.tinyId,
                 Protocol: {
                     StudyEventRef: {
-                        '$Mandatory': 'Yes',
-                        '$OrderNumber': '1',
-                        '$StudyEventOID': 'SE_' + form.tinyId
+                        $Mandatory: 'Yes',
+                        $OrderNumber: '1',
+                        $StudyEventOID: 'SE_' + form.tinyId
                     }
                 },
                 StudyEventDef: {
-                    '$Name': 'SE',
-                    '$OID': 'SE_' + form.tinyId,
-                    '$Repeating': 'No',
-                    '$Type': 'Unscheduled',
+                    $Name: 'SE',
+                    $OID: 'SE_' + form.tinyId,
+                    $Repeating: 'No',
+                    $Type: 'Unscheduled',
                     FormRef: {
-                        '$FormOID': form.tinyId,
-                        '$Mandatory': 'Yes',
-                        '$OrderNumber': '1'
+                        $FormOID: form.tinyId,
+                        $Mandatory: 'Yes',
+                        $OrderNumber: '1'
                     }
                 },
                 FormDef: {
-                    '$Name': _.escape(form.designations[0].designation),
-                    '$OID': form.tinyId,
-                    '$Repeating': 'No',
-                    'ItemGroupRef': []
+                    $Name: _.escape(form.designations[0].designation),
+                    $OID: form.tinyId,
+                    $Repeating: 'No',
+                    ItemGroupRef: []
                 },
                 ItemGroupDef: [],
                 ItemDef: [],
@@ -113,12 +113,12 @@ export function getFormOdm(form, cb) {
                 Question: {
                     TranslatedText: {
                         '$xml:lang': 'en',
-                        '_': _.escape(q1.label ? q1.label : '')
+                        _: _.escape(q1.label ? q1.label : '')
                     }
                 },
-                '$DataType': omdDatatype,
-                '$Name': _.escape(q1.label ? q1.label : ''),
-                '$OID': oid
+                $DataType: omdDatatype,
+                $Name: _.escape(q1.label ? q1.label : ''),
+                $OID: oid
             };
 
                 let codeListAlreadyPresent = false;
@@ -126,57 +126,58 @@ export function getFormOdm(form, cb) {
                     let codeListInHouse = cl.CodeListItem.map(i => i.Decode.TranslatedText._).sort();
                     let codeListToAdd = (q1.question.answers || []).map(a => a.valueMeaningName).sort();
                     if (JSON.stringify(codeListInHouse) === JSON.stringify(codeListToAdd)) {
-                        odmQuestion.CodeListRef = {'$CodeListOID': cl['$OID']};
+                        odmQuestion.CodeListRef = {$CodeListOID: cl['$OID']};
                         questions.push(odmQuestion);
                         codeListAlreadyPresent = true;
                     }
                 });
                 if (!codeListAlreadyPresent) {
-                    odmQuestion.CodeListRef = {'$CodeListOID': 'CL_' + oid};
+                    odmQuestion.CodeListRef = {$CodeListOID: 'CL_' + oid};
                     questions.push(odmQuestion);
                     codeLists.push({
                         CodeListItem: (q1.question.answers || []).map(function (pv) {
                             let cl: any = {
-                                '$CodedValue': pv.permissibleValue,
+                                $CodedValue: pv.permissibleValue,
                                 Decode: {
                                     TranslatedText: {
                                         '$xml:lang': 'en',
-                                        '_': pv.valueMeaningName
+                                        _: pv.valueMeaningName
                                     }
                                 }
                             };
-                            if (pv.valueMeaningCode && pv.codeSystemName) cl.Alias = {
-                                '$Context': pv.codeSystemName,
-                                '$Name': pv.valueMeaningCode
+                            if (pv.valueMeaningCode && pv.codeSystemName) { cl.Alias = {
+                                $Context: pv.codeSystemName,
+                                $Name: pv.valueMeaningCode
                             };
+                            }
                             return cl;
                         }),
-                        '$DataType': omdDatatype,
-                        '$OID': 'CL_' + oid,
-                        '$Name': q1.label ? q1.label : ''
+                        $DataType: omdDatatype,
+                        $OID: 'CL_' + oid,
+                        $Name: q1.label ? q1.label : ''
                     });
                 }
         });
         let oid = _crypto.createHash('md5').update(s1.label ? s1.label : '').digest('hex');
         odmJsonForm.Study.MetaDataVersion.FormDef.ItemGroupRef.push({
-            '$ItemGroupOID': oid,
-            '$Mandatory': 'Yes',
-            '$OrderNumber': 1
+            $ItemGroupOID: oid,
+            $Mandatory: 'Yes',
+            $OrderNumber: 1
         });
         sections.push({
-            '$Name': s1.label ? s1.label : '',
-            '$OID': oid,
-            '$Repeating': 'No',
+            $Name: s1.label ? s1.label : '',
+            $OID: oid,
+            $Repeating: 'No',
             Description: {
                 TranslatedText: {
                     '$xml:lang': 'en',
-                    '_': s1.label ? s1.label : ''
+                    _: s1.label ? s1.label : ''
                 }
             },
             ItemRef: childrenOids.map((oid, i) => ({
-                '$ItemOID': oid,
-                '$Mandatory': 'Yes',
-                '$OrderNumber': i
+                $ItemOID: oid,
+                $Mandatory: 'Yes',
+                $OrderNumber: i
             }))
         });
     });

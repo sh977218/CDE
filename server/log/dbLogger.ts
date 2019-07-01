@@ -1,5 +1,5 @@
-import { handleConsoleError, handleError } from '../../server/errorHandler/errHandler';
-import { config } from '../../server/system/parseConfig';
+import { handleConsoleError, handleError } from '../errorHandler/errHandler';
+import { config } from '../system/parseConfig';
 
 const connHelper = require('../system/connections');
 const mongo_data = require('../system/mongo-data');
@@ -134,7 +134,7 @@ export function logClientError(req, callback) {
 }
 
 export function httpLogs(body, callback) {
-    let sort = {'date': 'desc'};
+    let sort = {date: 'desc'};
     if (body.sort) sort = body.sort;
     let currentPage = 0;
     if (body.currentPage) currentPage = Number.parseInt(body.currentPage);

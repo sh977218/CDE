@@ -1,6 +1,6 @@
 import * as Config from 'config';
 import * as multer from 'multer';
-import { add, approvalApprove, approvalDecline, remove, setDefault } from '../../server/attachment/attachmentSvc';
+import { add, approvalApprove, approvalDecline, remove, setDefault } from '../attachment/attachmentSvc';
 
 const config = Config as any;
 

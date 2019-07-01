@@ -163,7 +163,7 @@ export function module(roleConfig) {
                     }));
                 res.status(202).send('Reclassifying in progress.');
             })
-        )
+        );
     });
 
 
@@ -174,7 +174,7 @@ export function module(roleConfig) {
             bulkClassifyCdesStatus[user.username + eltId] = {
                 numberProcessed: 0,
                 numberTotal: elements.length
-            }
+            };
         }
         async.forEachSeries(elements, function (element, doneOneElement) {
             let classifReq = {
@@ -189,12 +189,12 @@ export function module(roleConfig) {
             });
         }, function doneAllElement(errs) {
             if (cb) cb(errs);
-        })
-    };
+        });
+    }
 
     function resetBulkClassifyCdesStatus(statusObjId) {
         delete bulkClassifyCdesStatus[statusObjId];
-    };
+    }
 
     // TODO this works only for CDEs. Forms TODO later.
     router.post('/bulk/tinyId', (req, res) => {

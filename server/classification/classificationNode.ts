@@ -9,7 +9,7 @@ const elastic = require('../system/elastic');
 const async = require('async');
 const logging = require('../system/logging');
 
-var classification = this;
+let classification = this;
 
 classification.saveCdeClassif = function (err, elt, cb) {
     if (err) {
@@ -27,7 +27,7 @@ classification.saveCdeClassif = function (err, elt, cb) {
 };
 
 export function eltClassification(body, action, dao, cb) {
-    var classify = function (steward, elt) {
+    const classify = function (steward, elt) {
         if (!(body.categories instanceof Array)) {
             body.categories = [body.categories];
         }
@@ -43,12 +43,12 @@ export function eltClassification(body, action, dao, cb) {
 
     };
 
-    var findElements = function (err, elt) {
+    let findElements = function (err, elt) {
         if (!elt) return cb("can not elt");
-        var steward = findSteward(elt, body.orgName);
+        let steward = findSteward(elt, body.orgName);
         if (!steward) {
             mongo_data_system.orgByName(body.orgName, function (err, stewardOrg) {
-                var classifOrg: Classification = {
+                let classifOrg: Classification = {
                     stewardOrg: {
                         name: body.orgName
                     },
@@ -63,17 +63,21 @@ export function eltClassification(body, action, dao, cb) {
             });
         } else classify(steward, elt);
     };
-    if (body.cdeId && dao.byId)
+    if (body.cdeId && dao.byId) {
         dao.byId(body.cdeId, findElements);
-    if (body.tinyId && (!body.version) && dao.eltByTinyId)
+    }
+    if (body.tinyId && (!body.version) && dao.eltByTinyId) {
         dao.eltByTinyId(body.tinyId, findElements);
-    if (body.tinyId && body.version && dao.byTinyIdAndVersion)
+    }
+    if (body.tinyId && body.version && dao.byTinyIdAndVersion) {
         dao.byTinyIdAndVersion(body.tinyId, body.version, findElements);
+    }
 }
 
 export function isInvalidatedClassificationRequest(req) {
-    if (!req.body || !req.body.eltId || !req.body.categories || !(req.body.categories instanceof Array) || !req.body.orgName)
+    if (!req.body || !req.body.eltId || !req.body.categories || !(req.body.categories instanceof Array) || !req.body.orgName) {
         return "Bad Request";
+    }
     else return false;
 }
 
@@ -132,17 +136,17 @@ export function modifyOrgClassification(request, action, callback) {
         request.categories = [request.categories];
     }
     mongo_data_system.orgByName(request.orgName, function (err, stewardOrg) {
-        var fakeTree = {elements: stewardOrg.classifications, stewardOrg: {name: ''}};
+        let fakeTree = {elements: stewardOrg.classifications, stewardOrg: {name: ''}};
         modifyCategory(fakeTree, request.categories, {
             type: action,
             newname: request.newname
         }, function () {
             stewardOrg.markModified("classifications");
             stewardOrg.save(function (err) {
-                var query = {"classification.stewardOrg.name": request.orgName, archived: false};
-                for (var i = 0; i < request.categories.length; i++) {
-                    var key = "classification";
-                    for (var j = 0; j <= i; j++) key += ".elements";
+                let query = {"classification.stewardOrg.name": request.orgName, archived: false};
+                for (let i = 0; i < request.categories.length; i++) {
+                    let key = "classification";
+                    for (let j = 0; j <= i; j++) key += ".elements";
                     key += ".name";
                     query[key] = request.categories[i];
                 }
@@ -151,7 +155,7 @@ export function modifyOrgClassification(request, action, callback) {
                         dao.query(query, function (err, result) {
                             if (result && result.length > 0) {
                                 async.forEachSeries(result, function (elt, doneOne) {
-                                    var steward = findSteward(elt, request.orgName);
+                                    let steward = findSteward(elt, request.orgName);
                                     modifyCategory(steward.object, request.categories,
                                         {type: action, newname: request.newname}, function () {
                                             classification.saveCdeClassif("", elt, doneOne);
@@ -192,7 +196,7 @@ export function addOrgClassification(body, cb) {
     }
 
     mongo_data_system.orgByName(body.orgName, function (err, stewardOrg) {
-        var fakeTree = {elements: stewardOrg.classifications, stewardOrg: {name: ''}};
+        let fakeTree = {elements: stewardOrg.classifications, stewardOrg: {name: ''}};
         addCategory(fakeTree, body.categories);
         stewardOrg.markModified("classifications");
         stewardOrg.save(cb);

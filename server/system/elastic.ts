@@ -1,13 +1,13 @@
-import { eachOf, filter, forEach } from 'async'
+import { eachOf, filter, forEach } from 'async';
 import { Client, SearchResponse } from 'elasticsearch';
 import { Document } from 'mongoose';
-import { handleError, respondError } from '../../server/errorHandler/errHandler';
-import { config } from '../../server/system/parseConfig';
+import { handleError, respondError } from '../errorHandler/errHandler';
+import { config } from '../system/parseConfig';
 import { DataElementElastic } from '../../shared/de/dataElement.model';
 import {
     Cb, Cb1, CbErr, CbError, CbError1, ElasticQueryResponse, ItemElastic, ModuleItem, User
 } from '../../shared/models.model';
-import { ElasticIndex } from '../../server/system/elasticSearchInit';
+import { ElasticIndex } from '../system/elasticSearchInit';
 import { Cursor } from 'mongodb';
 import { SearchSettingsElastic } from 'search/search.model';
 import { orderedList } from '../../shared/system/regStatusShared';
@@ -37,12 +37,12 @@ type DbItem = {
 type DbQuery = {
     condition: MongoCondition,
     dao: DbItem,
-}
+};
 
 type DbStream = {
     query: DbQuery,
     indexes: ElasticIndex[]
-}
+};
 
 export const esClient = new Client({
     hosts: config.elastic.hosts
@@ -162,7 +162,7 @@ export function reIndexStream(dbStream: DbStream, cb?: Cb) {
                 if (!doc) {
                     // end
                     eachOf(dbStream.indexes, (index: ElasticIndex, i, doneOne) => {
-                        inject(i as number,() => {
+                        inject(i as number, () => {
                             let info = 'done ingesting ' + index.name + ' in : ' + (new Date().getTime() - startTime) / 1000 + ' secs. count: ' + index.count;
                             noDbLogger.noDbLogger.info(info);
                             dbLogger.consoleLog(info);
@@ -494,10 +494,11 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
             ]
         }
     };
-    if (usersvc.myOrgs(user).length > 0)
+    if (usersvc.myOrgs(user).length > 0) {
         usersvc.myOrgs(user).map((org: string) => {
             regStatusAggFilter.bool.filter[0].bool.should.push({term: {'stewardOrg.name': org}});
         });
+    }
 
     if (settings.visibleStatuses!.indexOf('Retired') === -1 && settings.selectedStatuses.indexOf('Retired') === -1) {
         regStatusAggFilter.bool.filter.push({bool: {must_not: {term: {'registrationState.registrationStatus': 'Retired'}}}});
@@ -589,7 +590,7 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
                     terms: {
                         size: 500,
                         field: 'flatMeshTrees',
-                        //include: '[^;]+'
+                        // include: '[^;]+'
                         include: '[^;]+;[^;]+'
                     }
                 }
@@ -603,8 +604,9 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
     }
 
     queryStuff.from = (settings.page! - 1) * settings.resultPerPage!;
-    if (!queryStuff.from || queryStuff.from < 0)
+    if (!queryStuff.from || queryStuff.from < 0) {
         queryStuff.from = 0;
+    }
 
     // highlight search results if part of the following fields.
     queryStuff.highlight = {
@@ -616,7 +618,7 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
         fields: {
             'stewardOrgCopy.name': {},
             primaryNameCopy: {},
-            primaryDefinitionCopy: {'number_of_fragments': 1},
+            primaryDefinitionCopy: {number_of_fragments: 1},
             'designations.designation': {},
             'definitions.definition': {},
             'dataElementConcept.concepts.name': {},

@@ -1,5 +1,3 @@
-import { capString } from '../../shared/system/util';
-
 const daoList: any = [];
 const allDaos: any = {};
 

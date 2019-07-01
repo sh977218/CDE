@@ -1,8 +1,7 @@
-import { handleError } from '../../server/errorHandler/errHandler';
+import { handleError } from '../errorHandler/errHandler';
 
 const app_status = require("./status");
 const userDb = require('../user/userDb');
-const clusterStatusDb = require('./clusterStatusDb');
 const esInit = require('../system/elasticSearchInit');
 
 export function module() {
@@ -35,13 +34,8 @@ export function module() {
         users => res.send(users))));
 
     router.get('/serverStatuses', (req, res) => {
-        app_status.getStatus(() => {
-            clusterStatusDb.getClusterHostStatuses((err, statuses) => {
-                return res.send({esIndices: esInit.indices, statuses: statuses});
-            });
-        });
+        app_status.getStatus(() => res.send({esIndices: esInit.indices}));
     });
-
 
     router.get('/usernamesByIp/:ip', (req, res) => {
         userDb.usernamesByIp(req.params.ip, handleError({req, res}, result => res.send(result)));

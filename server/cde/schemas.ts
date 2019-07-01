@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-import { addStringtype } from '../../server/system/mongoose-stringtype';
+import { addStringtype } from '../system/mongoose-stringtype';
 import {
     attachmentSchema, classificationSchema, dataSetSchema, definitionSchema, derivationRuleSchema, designationSchema,
     eltLogSchema, idSchema, permissibleValueSchema, propertySchema, referenceDocumentSchema, registrationStateSchema,

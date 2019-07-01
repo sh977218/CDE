@@ -1,4 +1,4 @@
-import { handle404, handleError, respondError } from '../../server/errorHandler/errHandler';
+import { handle404, handleError, respondError } from '../errorHandler/errHandler';
 import { User } from '../../shared/models.model';
 import { canEditCuratedItem } from '../../shared/system/authorizationShared';
 import { stripBsonIds } from '../../shared/system/exportShared';
@@ -38,7 +38,7 @@ export function priorDataElements(req, res) {
         mongo_cde.DataElement.find({}, {
             'updatedBy.username': 1,
             updated: 1,
-            'changeNote': 1,
+            changeNote: 1,
             version: 1,
             elementType: 1
         }).where('_id').in(history).exec((err, priorDataElements) => {
@@ -149,7 +149,7 @@ export function byTinyIdList(req, res) {
     let tinyIdList = req.params.tinyIdList;
     if (!tinyIdList) return res.status(400).send();
     tinyIdList = tinyIdList.split(',');
-    mongo_cde.DataElement.find({'archived': false}).where('tinyId')
+    mongo_cde.DataElement.find({archived: false}).where('tinyId')
         .in(tinyIdList)
         .exec(handleError({req, res}, dataElements => {
             let result = [];
@@ -222,8 +222,9 @@ export function viewHistory(req, res) {
     let splicedArray = req.user.viewHistory.splice(0, 10);
     let tinyIdList = [];
     for (let i = 0; i < splicedArray.length; i++) {
-        if (tinyIdList.indexOf(splicedArray[i]) === -1)
+        if (tinyIdList.indexOf(splicedArray[i]) === -1) {
             tinyIdList.push(splicedArray[i]);
+        }
     }
     mongo_cde.byTinyIdList(tinyIdList, handleError({req, res}, dataElements => {
         dataElements.forEach(de => hideProprietaryCodes(de, req.user));
@@ -265,8 +266,9 @@ function censorPv(pvSet) {
     let hiddenFieldMessage = 'Login to see the value.';
     let toBeCensored = true;
     systemWhitelist.forEach(system => {
-        if (!pvSet.codeSystemName || pvSet.codeSystemName.indexOf(system) >= 0)
+        if (!pvSet.codeSystemName || pvSet.codeSystemName.indexOf(system) >= 0) {
             toBeCensored = false;
+        }
     });
     if (toBeCensored) {
         pvSet.valueMeaningName = hiddenFieldMessage;
