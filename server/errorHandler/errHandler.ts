@@ -6,7 +6,7 @@ export function handleConsoleError(options, cb = _.noop) {
     return function errorHandler(err, ...args) {
         if (err) noDbLogger.noDbLogger.info('ERROR: ' + err);
         cb(...args);
-    }
+    };
 }
 
 export function handleError(options?: any, cb = _.noop) {

@@ -15,7 +15,7 @@
     "outDir": "./buildNode",
     "pretty": false,
     "rootDir": ".",
-    "sourceMap": false,
+    "sourceMap": true,
     "suppressImplicitAnyIndexErrors": true,
     "target": "ES5",
     "typeRoots": [

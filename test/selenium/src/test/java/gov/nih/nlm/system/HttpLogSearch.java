@@ -1,11 +1,11 @@
 package gov.nih.nlm.system;
 
-import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.FluentWait;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.List;
@@ -17,7 +17,6 @@ public class HttpLogSearch extends NlmCdeBaseTest {
 
     @Test
     public void searchHttpLog() {
-        String ipTerm = "::ffff:127.0.0.1";
         mustBeLoggedInAs(nlm_username, nlm_password);
         clickElement(By.id("username_link"));
         clickElement(By.id("user_audit"));
@@ -33,13 +32,17 @@ public class HttpLogSearch extends NlmCdeBaseTest {
         findElement(By.id("toDate")).sendKeys("0101P");
         clickElement(By.id("searchBtn"));
 
+        String ipTerm = findElement(By.cssSelector("td.ip")).getText();
+
         clickElement(By.cssSelector(".mat-paginator-navigation-next"));
         clickElement(By.xpath("//th[. = 'Method']"));
         textPresent("200");
-
+        
         findElement(By.name("ip")).sendKeys(ipTerm);
         clickElement(By.id("searchBtn"));
-        hangon(1);
+        clickElement(By.cssSelector(".mat-paginator-navigation-previous"));
+        textPresent(ipTerm);
+        hangon(2);
         List<WebElement> ips = driver.findElements(By.cssSelector(".ip"));
         for (WebElement ip : ips) {
             Assert.assertEquals(ip.getText().trim(), ipTerm);

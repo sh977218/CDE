@@ -1,7 +1,7 @@
-import { handleError } from '../../server/errorHandler/errHandler';
-import { consoleLog } from '../../server/log/dbLogger';
+import { handleError } from '../errorHandler/errHandler';
+import { consoleLog } from '../log/dbLogger';
 import { hasRole } from '../../shared/system/authorizationShared';
-import { config } from '../../server/system/parseConfig';
+import { config } from '../system/parseConfig';
 import * as eltShared from '../../shared/elt';
 
 const _ = require('lodash');
@@ -51,20 +51,20 @@ export const sessionStore = new MongoStore({
 
 const userProject = {password: 0};
 const orgDetailProject = {
-    '_id': 0,
-    'name': 1,
-    'longName': 1,
-    'mailAddress': 1,
-    "emailAddress": 1,
-    "embeds": 1,
-    "phoneNumber": 1,
-    "uri": 1,
-    "workingGroupOf": 1,
-    "extraInfo": 1,
-    "cdeStatusValidationRules": 1,
-    "propertyKeys": 1,
-    "nameTags": 1,
-    "htmlOverview": 1
+    _id: 0,
+    name: 1,
+    longName: 1,
+    mailAddress: 1,
+    emailAddress: 1,
+    embeds: 1,
+    phoneNumber: 1,
+    uri: 1,
+    workingGroupOf: 1,
+    extraInfo: 1,
+    cdeStatusValidationRules: 1,
+    propertyKeys: 1,
+    nameTags: 1,
+    htmlOverview: 1
 };
 
 export const ObjectId = mongoose.Types.ObjectId;
@@ -96,12 +96,14 @@ export function addCdeToViewHistory(elt, user) {
             $slice: 1000
         }
     };
-    User.updateOne({'_id': user._id}, {$push: updStmt}, err => {
-        if (err) logging.errorLogger.error("Error: Cannot update viewing history", {
-            origin: "cde.mongo-cde.addCdeToViewHistory",
-            stack: new Error().stack,
-            details: {"cde": elt, user: user}
-        });
+    User.updateOne({_id: user._id}, {$push: updStmt}, err => {
+        if (err) {
+            logging.errorLogger.error("Error: Cannot update viewing history", {
+                origin: "cde.mongo-cde.addCdeToViewHistory",
+                stack: new Error().stack,
+                details: {cde: elt, user: user}
+            });
+        }
     });
 }
 
@@ -114,12 +116,14 @@ export function addFormToViewHistory(elt, user) {
             $slice: 1000
         }
     };
-    User.updateOne({'_id': user._id}, {$push: updStmt}, err => {
-        if (err) logging.errorLogger.error("Error: Cannot update viewing history", {
-            origin: "cde.mongo-cde.addFormToViewHistory",
-            stack: new Error().stack,
-            details: {"cde": elt, user: user}
-        });
+    User.updateOne({_id: user._id}, {$push: updStmt}, err => {
+        if (err) {
+            logging.errorLogger.error("Error: Cannot update viewing history", {
+                origin: "cde.mongo-cde.addFormToViewHistory",
+                stack: new Error().stack,
+                details: {cde: elt, user: user}
+            });
+        }
     });
 }
 
@@ -257,15 +261,15 @@ export function pushRegistrationSubscribersByUsers(users, cb) {
 }
 
 export function userByName(name, callback) {
-    User.findOne({'username': new RegExp('^' + name + '$', "i")}, callback);
+    User.findOne({username: new RegExp('^' + name + '$', "i")}, callback);
 }
 
 export function usersByName(name, callback) {
-    User.find({'username': new RegExp('^' + name + '$', "i")}, userProject, callback);
+    User.find({username: new RegExp('^' + name + '$', "i")}, userProject, callback);
 }
 
 export function userById(id, callback) {
-    User.findOne({'_id': id}, userProject, callback);
+    User.findOne({_id: id}, userProject, callback);
 }
 
 export function addUser(user, callback) {
@@ -282,7 +286,7 @@ export function orgCurators(orgs, callback) {
 }
 
 export function orgByName(orgName, callback) {
-    Org.findOne({"name": orgName}, callback);
+    Org.findOne({name: orgName}, callback);
 }
 
 export function listOrgs(callback) {
@@ -290,7 +294,7 @@ export function listOrgs(callback) {
 }
 
 export function listOrgsLongName(callback) {
-    Org.find({}, {'_id': 0, 'name': 1, 'longName': 1}, callback);
+    Org.find({}, {_id: 0, name: 1, longName: 1}, callback);
 }
 
 export function listOrgsDetailedInfo(callback) {
@@ -302,7 +306,7 @@ export function managedOrgs(callback) {
 }
 
 export function findOrCreateOrg(newOrg, cb) {
-    Org.findOne({"name": newOrg.name}).exec(function (err, found) {
+    Org.findOne({name: newOrg.name}).exec(function (err, found) {
         if (err) {
             cb(err);
             logging.errorLogger.error("Cannot add org.",
@@ -349,8 +353,9 @@ export function formatElt(elt) {
     elt.stewardOrgCopy = elt.stewardOrg;
     elt.primaryNameCopy = _.escape(elt.designations[0].designation);
     elt.primaryDefinitionCopy = '';
-    if (elt.definitions[0] && elt.definitions[0].definition)
+    if (elt.definitions[0] && elt.definitions[0].definition) {
         elt.primaryDefinitionCopy = _.escape(elt.definitions[0].definition);
+    }
     return elt;
 }
 
@@ -456,9 +461,9 @@ export function updateMessage(msg, callback) {
 // TODO this function name is not good
 export function getMessages(req, callback) {
     let authorRecipient: any = {
-        "$and": [
+        $and: [
             {
-                "$or": [
+                $or: [
                     {
                         "recipient.recipientType": "stewardOrg",
                         "recipient.name": {$in: [].concat(req.user.orgAdmin.concat(req.user.orgCurator))}
@@ -561,10 +566,12 @@ export function addToClassifAudit(msg) {
     };
     daoManager.getDaoList().forEach(function (dao) {
         if (msg.elements[0]) {
-            if (msg.elements[0]._id && dao.byId)
+            if (msg.elements[0]._id && dao.byId) {
                 dao.byId(msg.elements[0]._id, persistClassifRecord);
-            if (msg.elements[0].tinyId && dao.eltByTinyId)
+            }
+            if (msg.elements[0].tinyId && dao.eltByTinyId) {
                 dao.eltByTinyId(msg.elements[0].tinyId, persistClassifRecord);
+            }
         }
     });
 }

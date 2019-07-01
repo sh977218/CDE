@@ -5,12 +5,12 @@ import { createWriteStream } from 'fs';
 import * as md5 from 'md5-file';
 import { createReadStream } from 'streamifier';
 import { hasRole } from '../../shared/system/authorizationShared';
-import { handleError } from '../../server/errorHandler/errHandler';
-import { attachmentApproved, attachmentRemove, createTask, fileUsed } from '../../server/system/adminItemSvc';
-import { getDaoList } from '../../server/system/moduleDaoManager';
-import { addFile, deleteFileById, userTotalSpace } from '../../server/system/mongo-data';
-import { alterAttachmentStatus } from '../../server/attachment/attachmentDb';
-import { CbErr, CbError, Item } from '../../shared/models.model';
+import { handleError } from '../errorHandler/errHandler';
+import { attachmentApproved, attachmentRemove, createTask, fileUsed } from '../system/adminItemSvc';
+import { getDaoList } from '../system/moduleDaoManager';
+import { addFile, deleteFileById, userTotalSpace } from '../system/mongo-data';
+import { alterAttachmentStatus } from '../attachment/attachmentDb';
+import { CbError, Item } from '../../shared/models.model';
 
 const config = Config as any;
 
@@ -36,7 +36,7 @@ export function add(req, res, db, crudPermission) {
                 let file = req.files.uploadedFiles;
                 file.stream = streamFS1;
 
-                //store it to FS here
+                // store it to FS here
                 let writeStream = createWriteStream(file.path);
                 streamFS.pipe(writeStream);
                 writeStream.on('finish', () => {

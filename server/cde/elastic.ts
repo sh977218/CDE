@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { config } from '../../server/system/parseConfig';
+import { config } from '../system/parseConfig';
 
 const sharedElastic = require('../system/elastic');
 const dbLogger = require('../log/dbLogger');
@@ -86,7 +86,7 @@ export function elasticsearch(user, settings, cb) {
             }
         });
     }
-    if (settings.includeAggregations)
+    if (settings.includeAggregations) {
         query.aggregations.datatype = {
             filter: settings.filterDatatype,
             aggs: {
@@ -101,6 +101,7 @@ export function elasticsearch(user, settings, cb) {
                 }
             }
         };
+    }
 
     if (!settings.fullRecord) {
         query._source = {excludes: ['flatProperties', 'properties', 'classification.elements', 'formElements']};
@@ -126,9 +127,9 @@ const mltConf = {
 };
 
 export function morelike(id, callback) {
-    var from = 0;
-    var limit = 20;
-    var mltPost = {
+    let from = 0;
+    let limit = 20;
+    let mltPost = {
         query: {
             bool: {
                 must: {
@@ -178,14 +179,14 @@ export function morelike(id, callback) {
                 });
             callback('Error');
         } else {
-            var result = {
+            let result = {
                 cdes: []
                 , pages: Math.ceil(response.hits.total / limit)
                 , page: Math.ceil(from / limit)
                 , totalNumber: response.hits.total
             };
-            for (var i = 0; i < response.hits.hits.length; i++) {
-                var thisCde = response.hits.hits[i]._source;
+            for (let i = 0; i < response.hits.hits.length; i++) {
+                let thisCde = response.hits.hits[i]._source;
                 if (thisCde.valueDomain && thisCde.valueDomain.permissibleValues && thisCde.valueDomain.permissibleValues.length > 10) {
                     thisCde.valueDomain.permissibleValues = thisCde.valueDomain.permissibleValues.slice(0, 10);
                 }

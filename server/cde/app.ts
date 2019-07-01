@@ -1,10 +1,10 @@
 import { stripBsonIds } from '../../shared/system/exportShared';
-import { handleError } from '../../server/errorHandler/errHandler';
+import { handleError } from '../errorHandler/errHandler';
 import {
     canCreateMiddleware, canEditByTinyIdMiddleware, canEditMiddleware, isOrgAuthorityMiddleware, isOrgCuratorMiddleware,
     nocacheMiddleware
-} from '../../server/system/authorization';
-import { config } from '../../server/system/parseConfig';
+} from '../system/authorization';
+import { config } from '../system/parseConfig';
 
 const cdesvc = require('./cdesvc');
 const mongo_cde = require('./mongo-cde');

@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
-import { addStringtype } from '../../server/system/mongoose-stringtype';
-import { config } from '../../server/system/parseConfig';
+import { addStringtype } from '../system/mongoose-stringtype';
+import { config } from '../system/parseConfig';
 
 addStringtype(mongoose);
 const Schema = mongoose.Schema;
@@ -98,13 +98,13 @@ export function count(condition, callback) {
 }
 
 export function boardsByUserId(userId, callback) {
-    PinningBoard.find({"owner.userId": userId}).sort({"updatedDate": -1}).exec(function (err, result) {
+    PinningBoard.find({"owner.userId": userId}).sort({updatedDate: -1}).exec(function (err, result) {
         callback(result);
     });
 }
 
 export function publicBoardsByPinTinyId(tinyId, callback) {
-    PinningBoard.find({"pins.tinyId": tinyId, "shareStatus": "Public"}, callback);
+    PinningBoard.find({"pins.tinyId": tinyId, shareStatus: "Public"}, callback);
 }
 
 export function nbBoardsByUserId(userId, callback) {

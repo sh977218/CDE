@@ -1,5 +1,5 @@
 import { transports, Logger, Transport } from 'winston';
-import { config } from '../../server/system/parseConfig';
+import { config } from '../system/parseConfig';
 
 const util = require('util');
 const dbLogger = require('../log/dbLogger');
@@ -22,7 +22,7 @@ util.inherits(MongoErrorLogger, Transport);
 
 MongoLogger.prototype.log = function (level, msg, meta, callback) {
     try {
-        var logEvent = JSON.parse(msg);
+        let logEvent = JSON.parse(msg);
         logEvent.level = level;
         dbLogger.log(logEvent, function (err) {
             if (err) noDbLogger.noDbLogger.error('Cannot log to DB (1): ' + err);
@@ -86,7 +86,7 @@ let expressLoggerCnf = {
 };
 
 
-var expressErrorLoggerCnf = {
+const expressErrorLoggerCnf = {
   transports: [
     new transports.MongoErrorLogger({
         json: true
@@ -109,7 +109,7 @@ export const expressLogger = new (Logger)(expressLoggerCnf);
 export const errorLogger = new (Logger)(expressErrorLoggerCnf);
 
 export function generateErrorLogRequest(req) {
-    var url, method, body, username;
+    let url, method, body, username;
     try {
         url = req.url;
         method = req.method;

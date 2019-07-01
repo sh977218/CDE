@@ -171,7 +171,6 @@
   "maxPin": 500,
   "userAlertTime": 5000,
   "expressToStdout": false,
-  "logBufferSize": 1000,
   "viewsIncrementThreshold": 3,
   "antivirus": {
     "ip": "127.0.0.1",
