@@ -15,9 +15,9 @@
     "outDir": "./buildNode",
     "pretty": false,
     "rootDir": ".",
-    "sourceMap": false,
+    "sourceMap": true,
     "suppressImplicitAnyIndexErrors": true,
-    "target": "ESNext",
+    "target": "ES5",
     "typeRoots": [
       "node_modules/@types"
     ]
