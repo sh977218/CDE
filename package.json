@@ -52,7 +52,8 @@
       "**/server/article/*",
       "**/server/log/*",
       "**/server/user/*",
-      "**/server/discuss/*"
+      "**/server/discuss/*",
+      "**/server/board/*"
     ],
     "exclude": [
       "build/**"
