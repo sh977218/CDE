@@ -315,9 +315,14 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         clickElement(By.id("stewardTransfer"));
     }
 
-    protected void goToListManagement() {
+    protected void goToTagsManagement() {
         goToSettings();
-        clickElement(By.id("listManagement"));
+        clickElement(By.id("tagsManagement"));
+    }
+
+    protected void goToPropertyKeysManagement() {
+        goToSettings();
+        clickElement(By.id("propertiesManagement"));
     }
 
     protected void goToIdSources() {
