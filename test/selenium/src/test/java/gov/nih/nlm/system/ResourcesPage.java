@@ -1,17 +1,20 @@
 package gov.nih.nlm.system;
 
+import gov.nih.nlm.common.test.BaseAttachmentTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
-public class ResourcesPage extends NlmCdeBaseTest {
+public class ResourcesPage extends BaseAttachmentTest {
 
     @Test
     public void resourcesPage() {
+        String attachmentName = "painLocationInapr.png";
         String resourceText = "This resources page is under construction";
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToResources();
         // wait for ckeditor <script> to resolve.
         hangon(2);
+        addAttachment(attachmentName);
         clickElement(By.cssSelector("mat-icon[title='Edit']"));
         textPresent("Rich Text");
         clickElement(By.cssSelector(".cke_button__source"));

@@ -51,7 +51,8 @@
     "include": [
       "**/server/article/*",
       "**/server/log/*",
-      "**/server/user/*"
+      "**/server/user/*",
+      "**/server/discuss/*"
     ],
     "exclude": [
       "build/**"

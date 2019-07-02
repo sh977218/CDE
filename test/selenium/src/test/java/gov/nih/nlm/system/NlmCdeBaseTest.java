@@ -1,6 +1,7 @@
 package gov.nih.nlm.system;
 
 import com.paulhammant.ngwebdriver.NgWebDriver;
+import io.restassured.http.Cookie;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -1782,12 +1783,28 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         }
     }
 
+    protected void resolveReply(String message) {
+        String xpath = getCommentIconXpath(message, "reply", "resolve");
+        clickElement(By.xpath(xpath));
+    }
+
     protected void resolveComment(String message) {
         goToDiscussArea();
         String xpath = getCommentIconXpath(message, "comment", "resolve");
         clickElement(By.xpath(xpath));
         isCommentOrReplyExists(message, true);
         findElement(By.xpath("//div[normalize-space()='" + message + "']/span[contains(@class, 'strike')]"));
+    }
+
+    protected void isReplyStrike(String message, boolean result) {
+        String replyClass = findElement(By.xpath("//div[@class='replyBody' and normalize-space()='" + message + "']/span")).getAttribute("class");
+        boolean containStrike = replyClass.contains("strike");
+        Assert.assertEquals(containStrike, result);
+    }
+
+    protected void reopenReply(String message) {
+        String xpath = getCommentIconXpath(message, "reply", "reopen");
+        clickElement(By.xpath(xpath));
     }
 
     protected void reopenComment(String message) {
@@ -1860,5 +1877,17 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         }
         clickElement(By.id("createBoard"));
         checkAlert("Board created");
+    }
+
+    protected Cookie getCurrentCookie() {
+        String connectSid = "";
+        Set<org.openqa.selenium.Cookie> cookies = driver.manage().getCookies();
+        for (org.openqa.selenium.Cookie cookie : cookies) {
+            connectSid =  cookie.getValue();
+            System.out.println("cookie: " + cookie.toString());
+        }
+        Cookie myCookie = new Cookie.Builder("connect.sid", connectSid).build();
+        return myCookie;
+
     }
 }
