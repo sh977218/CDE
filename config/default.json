@@ -19,7 +19,6 @@
   "debugEnabled": false,
   "umls": {
     "licenseCode": "NLM-4110134256",
-    "apikey": "0f244d9e-e108-4317-9a73-eda3433ef209",
     "wsHost": "https://uts-ws.nlm.nih.gov",
     "sourceOptions": {
       "NCI": {},
@@ -50,7 +49,7 @@
   "vsac": {
     "username": "",
     "password": "",
-    "tgtUrl": "https://utslogin.nlm.nih.gov/cas/v1/api-key",
+    "tgtUrl": "https://vsac.nlm.nih.gov:443/vsac/ws/Ticket",
     "host": "vsac.nlm.nih.gov",
     "ticket": {
       "path": "/vsac/ws/Ticket"

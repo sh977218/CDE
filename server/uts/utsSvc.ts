@@ -15,7 +15,7 @@ function handleReject(message) {
 
 setInterval(async () => {
     await getTGT().catch(() => TGT = '');
-    getVsacCookies();
+    getVsacCookies().catch(handleReject('get vsac cookies ERROR'));
 }, 60 * 60 * 6 * 1000);
 
 let TGT = '';
@@ -27,7 +27,8 @@ function getTGT() {
         uri: config.vsac.tgtUrl,
         method: 'POST',
         qs: {
-            apikey: config.umls.apikey
+            username: config.vsac.username,
+            password: config.vsac.password
         },
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
@@ -35,7 +36,7 @@ function getTGT() {
     };
     return promisify(request.post)(options)
         .then(response => {
-            TGT = response.body.substr(response.body.indexOf(config.vsac.tgtUrl), response.body.length);
+            TGT = response.body;
             TGT = TGT.substr(0, TGT.indexOf('"'));
         }, handleReject('get TGT ERROR'));
 }
@@ -63,7 +64,7 @@ async function getTicket() {
     if (!TGT.length) await getTGT();
     if (!TGT.length) throw 'no TGT';
     const options = {
-        uri: TGT,
+        uri: config.vsac.tgtUrl + '/' + TGT,
         qs: {
             service: config.uts.service
         },
@@ -148,10 +149,10 @@ export function searchUmls(term) {
 
 const ttys = {LNC: 'LA', NCI: "PT", SNOMEDCT_US: "PT"};
 
-export function getSourcePT (cui, src) {
+export function getSourcePT(cui, src) {
     return getTicket().then(ticket => {
-       let url = `${config.umls.wsHost}/rest/content/current/CUI/${cui}/atoms?sabs=${src}&ttys=${ttys[src]}&ticket=${ticket}`;
-       return promisify(request.get)({url, strictSSL: false})
+        let url = `${config.umls.wsHost}/rest/content/current/CUI/${cui}/atoms?sabs=${src}&ttys=${ttys[src]}&ticket=${ticket}`;
+        return promisify(request.get)({url, strictSSL: false})
             .then(response => response.body, handleReject('get src PT from umls ERROR'));
     });
 }
