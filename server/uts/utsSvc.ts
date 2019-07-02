@@ -37,7 +37,6 @@ function getTGT() {
     return promisify(request.post)(options)
         .then(response => {
             TGT = response.body;
-            TGT = TGT.substr(0, TGT.indexOf('"'));
         }, handleReject('get TGT ERROR'));
 }
 
