@@ -16,12 +16,14 @@ public class InlineEditTest extends BaseAttachmentTest {
 
         mustBeLoggedInAs(testAdmin_username, password);
         goToCdeByName(cdeName);
+        goToAttachments();
         // probably an issue with the clamAv mock. So we try twice.
         try {
             addAttachment(attachmentName);
             textPresent(attachmentName + " - This attachment cannot");
         } catch (Exception e) {
             goToCdeByName(cdeName);
+            goToAttachments();
 
             addAttachment(attachmentName);
             textPresent(attachmentName + " - This attachment cannot");

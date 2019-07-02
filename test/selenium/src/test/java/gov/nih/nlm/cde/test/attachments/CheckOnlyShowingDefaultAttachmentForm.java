@@ -16,12 +16,16 @@ public class CheckOnlyShowingDefaultAttachmentForm extends BaseAttachmentTest {
         String formName = "Pre-Hospital/Emergency Medical Service (EMS) Course";
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName(formName);
+        goToAttachments();
+
         addAttachment("defaultAttachmentForForm.jpg");
         try {
             textPresent("This attachment cannot be downloaded because it is pending approval.");
         } catch (TimeoutException e) {
             // redo because sometimes mock does not work
             goToFormByName(formName);
+            goToAttachments();
+
             addAttachment("defaultAttachmentForForm.jpg");
             textPresent("This attachment cannot be downloaded because it is pending approval.");
         }
@@ -34,6 +38,8 @@ public class CheckOnlyShowingDefaultAttachmentForm extends BaseAttachmentTest {
         goToFormByName(formName);
         setAttachmentDefault();
         goToFormByName(formName);
+        goToAttachments();
+
         addAttachment("nonDefault.jpg");
         openFormInList(formName);
         List<WebElement> l = driver.findElements(By.cssSelector("cdeAttachmentThumbnail"));

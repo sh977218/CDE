@@ -36,6 +36,9 @@ public class EltIdMaps {
         eltMap.put("Identifier Primary Flag java.lang.Boolean", "JwrG4XOq2jZ");
         eltMap.put("Illicit/non-prescription drug use indicator", "6jfk971GhEu");
         eltMap.put("Immunology Gonorrhea Assay Laboratory Finding Result", "hYUh3yYR0mH");
+        eltMap.put("In the past 7 days, when I was in pain I protected the part of my body that hurt", "Xyl_qyuhJ7e");
+        eltMap.put("In the past 7 days, when I was in pain I moved slower", "QJmc1OnyQe");
+        eltMap.put("In the past 7 days, when I was in pain I asked for medicine", "myg51_nyXg");
         eltMap.put("Investigator Identifier java.lang.Integer", "wT3DsGm_bea");
         eltMap.put("Left Lymph Node Positive Total Count", "xNugcDxoqKW");
         eltMap.put("Lesion Nontarget Location Type", "t1SaH4wGZkJ");

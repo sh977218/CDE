@@ -1,4 +1,3 @@
-import { Observable } from 'rxjs';
 import { CdeForm, CdeFormElastic } from '../shared/form/form.model';
 import { DataElement, DataElementElastic } from '../shared/de/dataElement.model';
 

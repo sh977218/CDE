@@ -87,7 +87,6 @@ export function module(roleConfig) {
             const eltTinyId = comment.element && comment.element.eltId;
             let numberUnapprovedReplies = comment.replies.filter(r => r.pendingApproval && r.user.username === req.user.username).length;
             if (numberUnapprovedReplies > 0) return res.status(403).send('You cannot do this.');
-            if (!comment.replies) comment.replies = [];
             let reply: any = {
                 user: req.user,
                 created: new Date().toJSON(),
@@ -179,31 +178,19 @@ export function module(roleConfig) {
         let from = Number.parseInt(req.params.from);
         let size = Number.parseInt(req.params.size);
         let username = req.params.username;
-        if (!username || from < 0 || size < 0) {
-            return res.status(400).send();
-        }
         discussDb.commentsForUser(username, from, size, handleError({req, res}, comments => res.send(comments)));
     });
 
     router.get('/allComments/:from/:size', roleConfig.allComments, (req, res) => {
         let from = Number.parseInt(req.params.from);
         let size = Number.parseInt(req.params.size);
-        if (from < 0 || size < 0) {
-            return res.status(400).send();
-        }
         discussDb.allComments(from, size, handleError({req, res}, comments => res.send(comments)));
     });
 
     router.get('/orgComments/:from/:size', authorization.loggedInMiddleware, (req, res) => {
         let from = Number.parseInt(req.params.from);
         let size = Number.parseInt(req.params.size);
-        if (from < 0 || size < 0) {
-            return res.status(400).send();
-        }
         let myOrgs = userService.myOrgs(req.user);
-        if (!myOrgs || myOrgs.length === 0) {
-            return res.send([]);
-        }
         discussDb.orgComments(myOrgs, from, size, handleError({req, res}, comments => res.send(comments)));
     });
 

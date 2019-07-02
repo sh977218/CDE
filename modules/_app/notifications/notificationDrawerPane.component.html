@@ -33,8 +33,7 @@
                 <mat-chip-list style="display: inline-block">
                     <mat-chip *ngFor="let p of task.properties" style="margin: 0 2px; padding: 3px 6px">
                         <mat-icon *ngIf="p.icon" class="inlineIcon">{{p.icon}}</mat-icon>
-                        <span style="font-weight: bolder">{{p.key}}<span *ngIf="p.value"
-                                                                         style="margin-right: 2px">:</span></span>
+                        <span style="font-weight: bolder">{{p.key}}<span *ngIf="p.value" style="margin-right: 2px">:</span></span>
                         {{p.value}}
                     </mat-chip>
                 </mat-chip-list>

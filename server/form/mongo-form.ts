@@ -80,9 +80,11 @@ function defaultElt(elt) {
 function updateUser(elt, user) {
     defaultElt(elt);
     if (!elt.created) elt.created = new Date();
-    if (!elt.createdBy.userId && !elt.createdBy.username) { // mongoose creates "createdBy"
-        elt.createdBy.userId = user._id;
-        elt.createdBy.username = user.username;
+    if (!elt.createdBy) {
+        elt.createdBy = {
+            userId: user._id,
+            username: user.username
+        };
     }
     elt.updated = new Date();
     elt.updatedBy = {

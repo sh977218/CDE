@@ -18,6 +18,7 @@ public class CdeAttachmentTest extends BaseAttachmentTest {
         logout();
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
+        goToAttachments();
 
         addAttachment("glass.jpg");
         textPresent("cannot be downloaded");

@@ -11,6 +11,8 @@ public class AttachmentReuseTest extends BaseAttachmentTest {
         String cde2 = "Brief Pain Inventory (BPI) - other pain indicator";
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cde1);
+        goToAttachments();
+
         addAttachment("painLocation.jpg");
         textPresent("cannot be downloaded");
 
@@ -20,6 +22,8 @@ public class AttachmentReuseTest extends BaseAttachmentTest {
         logout();
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cde2);
+        goToAttachments();
+
         addAttachment("painLocation.jpg");
         checkAttachmentReviewed("painLocation.jpg");
 

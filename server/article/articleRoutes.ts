@@ -1,4 +1,3 @@
-import { forEachSeries } from 'async';
 import * as Parser from 'rss-parser';
 import { byKey, update } from '../../server/article/articleDb';
 import { handleError } from '../../server/errorHandler/errHandler';
@@ -26,33 +25,24 @@ export function module(roleConfig) {
 
     let rssFeeds = [];
 
-    function replaceRssToken(article) {
-        return new Promise((resolve, reject) => {
-            let rssRegex = /&lt;rss-feed&gt;.+&lt;\/rss-feed&gt;/gm;
-            let rssMatches = article.body.match(rssRegex);
-            if (rssFeeds.length) {
-                article.rssFeeds = rssFeeds;
-            } else {
-                article.rssFeeds = [];
-            }
+    async function replaceRssToken(article) {
+        let rssRegex = /&lt;rss-feed&gt;.+&lt;\/rss-feed&gt;/gm;
+        let rssMatches = article.body.match(rssRegex);
+        if (rssFeeds.length) {
+            article.rssFeeds = rssFeeds;
+        } else {
+            article.rssFeeds = [];
+        }
 
-            let i = 0;
-            forEachSeries(rssMatches, (match: string, doneOneMatch) => {
-                let url = match.replace('&lt;rss-feed&gt;', '').replace('&lt;/rss-feed&gt;', '').trim();
-                parser.parseURL(url, (err, feed) => {
-                    if (err) reject(err);
-                    else {
-                        article.rssFeeds.push(feed);
-                        rssFeeds.push(feed);
-                        article.body = article.body.replace(match, '<div id="rssContent_' + i++ + '"></div>');
-                        doneOneMatch();
-                    }
-                })
-            }, err => {
-                if (err) reject(err);
-                else resolve();
-            })
-        })
+        for (let i = 0; i < rssMatches.length; i++) {
+            let match = rssMatches[i];
+            let url = match.replace('&lt;rss-feed&gt;', '').replace('&lt;/rss-feed&gt;', '').trim();
+
+            let feed = await parser.parseURL(url);
+            article.rssFeeds.push(feed);
+            rssFeeds.push(feed);
+            article.body = article.body.replace(match, '<div id="rssContent_' + i + '"></div>');
+        }
     }
 
     router.get('/resourcesAndFeed', (req, res) => {
