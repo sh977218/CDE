@@ -1,48 +1,43 @@
-import { capString } from '../../shared/system/util';
-
-export function typeToCriteria(type, {org, users} = {org: undefined, users: undefined}) {
+export function typeToCriteria(type, {org, users} = {org: undefined, users: []}) {
+    let result = {findNone: 1} as any;
     switch (type) {
         case 'approvalAttachmentReviewer':
-            return {
+            result = {
                 $or: [
                     {siteAdmin: true},
                     {roles: 'AttachmentReviewer'}
                 ]
             };
+            break;
         case 'approvalCommentReviewer':
-            return {
+            result = {
                 $or: [
                     {siteAdmin: true},
                     {roles: 'CommentReviewer'}
                 ]
             };
+            break;
         case 'comment':
-            return {
+            result = {
                 $or: [
-                    {_id: {$in: users || []}},
+                    {_id: {$in: users}},
                     {orgAdmin: org},
                     {orgCurator: org}
                 ]
             };
-        default:
-            return {findNone: 1};
     }
+    return result;
 }
 
 export function typeToNotificationSetting(type) {
-    switch (type) {
-        case 'approvalAttachmentReviewer':
-            return 'approvalAttachment';
-        case 'approvalCommentReviewer':
-            return 'approvalComment';
-        case 'comment':
-            return 'comment';
-        default:
-            return 'noMatch';
-    }
+    return {
+        approvalAttachmentReviewer: 'approvalAttachment',
+        approvalCommentReviewer: 'approvalComment',
+        comment: 'comment'
+    }[type] || 'noMatch';
 }
 
-export function criteriaSet(criteria, set, value = true) {
-    criteria[set] = value;
+export function criteriaSet(criteria, set) {
+    criteria[set] = true;
     return criteria;
 }
