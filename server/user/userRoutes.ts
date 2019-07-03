@@ -3,7 +3,6 @@ import { getModule } from '../../shared/elt';
 import { hasRole, isSiteAdmin } from '../../shared/system/authorizationShared';
 import { capString } from '../../shared/system/util';
 import { loggedInMiddleware, nocacheMiddleware } from '../system/authorization';
-import { respondError } from '../errorHandler/errHandler';
 
 const config = require('config');
 const attachment = require('../attachment/attachmentSvc');
@@ -12,7 +11,6 @@ const errorHandler = require("../errorHandler/errHandler");
 const handle404 = errorHandler.handle404;
 const handleError = errorHandler.handleError;
 const notificationDb = require('../notification/notificationDb');
-const mongo_data = require('../system/mongo-data');
 const userDb = require('./userDb');
 
 export function module(roleConfig) {
@@ -246,45 +244,24 @@ export function module(roleConfig) {
         }));
     });
 
-    router.post('/updateNotificationDate', roleConfig.notificationDate, (req, res) => {
+    router.post('/updateNotificationDate', roleConfig.notificationDate, async (req, res) => {
         let notificationDate = req.body;
-        withRetry(handleConflict => {
-            userDb.byId(req.user._id, handle404({req, res}, user => {
-                if (user) {
-                    let changed = false;
-                    if (notificationDate.clientLogDate) {
-                        user.notificationDate.clientLogDate = notificationDate.clientLogDate;
-                        changed = true;
-                    }
-                    if (notificationDate.serverLogDate) {
-                        user.notificationDate.serverLogDate = notificationDate.serverLogDate;
-                        changed = true;
-                    }
-                    if (changed) {
-                        user.save(handleConflict({req, res}, () => res.send()));
-                    }
+        userDb.byId(req.user._id, handle404({req, res}, user => {
+            if (user) {
+                let changed = false;
+                if (notificationDate.clientLogDate) {
+                    user.notificationDate.clientLogDate = notificationDate.clientLogDate;
+                    changed = true;
                 }
-            }));
-        });
+                if (notificationDate.serverLogDate) {
+                    user.notificationDate.serverLogDate = notificationDate.serverLogDate;
+                    changed = true;
+                }
+                if (changed) {
+                    user.save(handleError({req, res}, () => res.send()));
+                }
+            }
+        }));
     });
     return router;
-}
-
-function withRetry(tryCb, retries = 1) {
-    function handleConflict(options, cb) {
-        return function errorHandler(err, ...args) {
-            if (err) {
-                if (retries > 0) {
-                    retries--;
-                    tryCb(handleConflict);
-                } else {
-                    respondError(err, options);
-                }
-                return;
-            }
-            cb(...args);
-        };
-    }
-
-    tryCb(handleConflict);
 }

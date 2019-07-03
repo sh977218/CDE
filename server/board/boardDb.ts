@@ -89,16 +89,7 @@ export function nbBoardsByUserId(userId, callback) {
 }
 
 export function boardById(boardId, callback) {
-    if (!mongoose.Types.ObjectId.isValid(boardId)) {
-        callback(undefined, undefined);
-        return;
-    }
-    PinningBoard.findById(boardId, function (err, b) {
-        if (b && !b.type) {
-            b.type = 'cde';
-        }
-        callback(err, b);
-    });
+    PinningBoard.findById(boardId, callback);
 }
 
 export const byId = boardById;
