@@ -19,48 +19,6 @@ export function module() {
     const router = require('express').Router();
     daoManager.registerDao(boardDb);
 
-    router.put('/id/:id/dataElements/', [nocacheMiddleware, loggedInMiddleware], (req, res) => {
-        let boardId = req.params.id;
-        let cdes = req.body;
-        if (!Array.isArray(cdes)) return res.status(400).send();
-        boardDb.byId(boardId, handle404({req, res}, board => {
-            if (!checkBoardOwnerShip(board, req.user)) {
-                return res.status(401).send();
-            }
-            let cdePins = cdes.forEach(c => {
-                c.pinnedDate = new Date();
-                c.type = 'form';
-            });
-            board.pins = _.uniqWith(board.pins.concat(cdePins), 'tinyId');
-            board.save(handleError({req, res}, () => {
-                let message = 'Added to Board';
-                if (cdes.length > 1) message = 'All elements pinned.';
-                res.send(message);
-            }));
-        }));
-    });
-
-    router.put('/id/:id/forms/', [nocacheMiddleware, loggedInMiddleware], (req, res) => {
-        let boardId = req.param.id;
-        let forms = req.body;
-        if (!Array.isArray(forms)) return res.status(400).send();
-        boardDb.byId(boardId, handle404({req, res}, board => {
-            if (!checkBoardOwnerShip(board, req.user)) {
-                return res.status(401).send();
-            }
-            let formPins = forms.forEach(f => {
-                f.pinnedDate = new Date();
-                f.type = 'form';
-            });
-            board.pins = _.uniqWith(board.pins.concat(formPins), 'tinyId');
-            board.save(handleError({req, res}, () => {
-                let message = 'Added to Board';
-                if (forms.length > 1) message = 'All elements pinned.';
-                res.send(message);
-            }));
-        }));
-    });
-
     router.get('/byPinTinyId/:tinyId', [nocacheMiddleware], (req, res) => {
         boardDb.publicBoardsByPinTinyId(req.params.tinyId, handleError({req, res}, boards => res.send(boards)));
     });
@@ -170,20 +128,6 @@ export function module() {
 
     router.post('/boardSearch', [nocacheMiddleware], (req, res) => {
         elastic.boardSearch(req.body, handleError({req, res}, result => res.send(result)));
-    });
-
-    router.get('/viewBoard/:boardId', [nocacheMiddleware], (req, res) => {
-        let boardId = req.params.boardId;
-        boardDb.byId(boardId, handle404({req, res}, board => {
-            if (board.shareStatus === 'Private') {
-                board.users.forEach(u => {
-                    if (u.username.toLowerCase() === req.user.username.toLowerCase()) {
-                        u.lastViewed = new Date();
-                    }
-                });
-                board.save(handleError({req, res}, () => res.send()));
-            }
-        }));
     });
 
     router.get('/:boardId/:start/:size?/', [nocacheMiddleware], (req, res) => {

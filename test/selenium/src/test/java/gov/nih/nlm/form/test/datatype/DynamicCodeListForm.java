@@ -14,10 +14,11 @@ public class DynamicCodeListForm extends NlmCdeBaseTest {
         goToFormByName(formName);
         wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id='Long Dynamic Code List_0-0']")));
         String options1 = driver.findElement(By.xpath("//*[@id='Long Dynamic Code List_0-0']")).getAttribute("outerHTML");
-        Assert.assertTrue(options1.contains("HIV 2 gp125"));
+        Assert.assertTrue(options1.contains("HIV 2 gp125"), "Actually Contains: " + options1);
 
         String options2 = driver.findElement(By.xpath("//*[@id='Short Dynamic Code List_0-1']")).getAttribute("outerHTML");
-        Assert.assertTrue(options2.contains("Transfusion of Autologous Whole Blood into Peripheral Vein, Open Approach"));
+        Assert.assertTrue(options2.contains("Transfusion of Autologous Whole Blood into Peripheral Vein, Open Approach"),
+                "Actually Contains: " + options2);
     }
 
 }
