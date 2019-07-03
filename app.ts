@@ -27,7 +27,6 @@ import { module as logModule } from './server/log/logRoutes';
 import { init as formInit } from './server/form/app.js';
 import * as mongo_form from './server/form/mongo-form';
 import { module as meshModule } from './server/mesh/meshRoutes';
-import { module as notificationModule } from './server/notification/notificationRoutes';
 import { module as siteAdminModule } from './server/siteAdmin/siteAdminRoutes';
 import { init as systemInit, respondHomeFull } from './server/system/app.js';
 import { init as authInit, ticketAuth } from './server/system/authentication';
@@ -331,7 +330,6 @@ try {
         notificationDate: [isSiteAdminMiddleware]
     }));
     app.use('/server/siteAdmin', isSiteAdminMiddleware, siteAdminModule());
-    app.use('/server/notification', loggedInMiddleware, notificationModule());
     app.use('/server/article', articleModule({
         update: [isOrgAuthorityMiddleware],
     }));

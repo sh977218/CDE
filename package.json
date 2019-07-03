@@ -50,9 +50,10 @@
     "exclude-after-remap": false,
     "include": [
       "**/server/article/*",
+      "**/server/discuss/*",
       "**/server/log/*",
-      "**/server/user/*",
-      "**/server/discuss/*"
+      "**/server/notification",
+      "**/server/user/*"
     ],
     "exclude": [
       "build/**"
