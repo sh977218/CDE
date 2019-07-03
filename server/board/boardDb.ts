@@ -55,14 +55,15 @@ pinningBoardSchema.pre('save', function (next) {
     elastic.updateOrInsertBoardById(id, board, handleError({
         publicMessage: "Unable to index board: " + id,
         origin: "board.elastic.boardUpdateOrInsert",
-    }, next));
+    }, () => next()));
 });
+
 pinningBoardSchema.pre('remove', function (next) {
     let id = this._id.toString();
     elastic.deleteBoardById(id, handleError({
         publicMessage: "Unable to remove board: " + id,
         origin: "board.elastic.deleteBoardById",
-    }, next));
+    }, () => next()));
 });
 
 pinningBoardSchema.virtual('elementType').get(() => 'board');
