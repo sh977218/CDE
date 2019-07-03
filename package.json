@@ -53,6 +53,7 @@
       "**/server/discuss/*",
       "**/server/log/*",
       "**/server/notification",
+      "**/server/siteAdmin",
       "**/server/user/*"
     ],
     "exclude": [
