@@ -10,8 +10,9 @@ public class RemoveSiteAdmin extends NlmCdeBaseTest {
     public void removeSiteAdmin () {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToSiteAdmins();
-        clickElement(By.xpath("//td[span[. = 'promoteSiteAdmin']]/mat-icon"));
 
+
+        clickElement(By.xpath("//td[span[. = 'promoteSiteAdmin']]/mat-icon"));
         checkAlert("Removed");
         textNotPresent("promoteSiteAdmin");
     }

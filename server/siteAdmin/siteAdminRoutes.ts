@@ -11,9 +11,9 @@ export function module() {
         let username = req.body.username;
         if (!username) return res.status(400).send();
         userDb.userByUsername(username, handleError({req, res}, user => {
-            if (!user) return res.send("Unknown Username");
+            if (!user) return res.status(404).send();
             user.siteAdmin = true;
-            user.save(handleError({req, res}, () => res.send("User Added")));
+            user.save(handleError({req, res}, () => res.send()));
         }));
     });
 
