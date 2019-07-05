@@ -35,9 +35,6 @@ fs.readFile(path.resolve(__dirname, '../../shared/de/assets/dataElement.schema.j
     }
 });
 
-schemas.dataElementSchema.post('remove', (doc, next) => {
-    elastic.dataElementDelete(doc, next);
-});
 schemas.dataElementSchema.pre('save', function (next) {
     let elt = this;
 
@@ -115,10 +112,6 @@ export function byExisting(elt: DE, cb: CbError<MongooseType<DE>>) {
 
 export function byId(id, cb) {
     DataElement.findOne({_id: id}, cb);
-}
-
-export function byIdList(idList, cb) {
-    DataElement.find({}).where('_id').in(idList).exec(cb);
 }
 
 export function byTinyId(tinyId, cb) {
@@ -201,31 +194,12 @@ export function draftsList(criteria, cb) {
 
 /* ---------- PUT NEW REST API Implementation above  ---------- */
 
-export function getPrimaryName(elt) {
-    return elt.designations[0].designation;
-}
-
 export function getStream(condition) {
     return DataElement.find(condition).sort({_id: -1}).cursor();
 }
 
 export function count(condition, callback) {
     return DataElement.countDocuments(condition, callback);
-}
-
-export function desByConcept(concept, callback) {
-    DataElement.find(
-        {
-            $or: [{'objectClass.concepts.originId': concept.originId},
-                {'property.concepts.originId': concept.originId},
-                {'dataElementConcept.concepts.originId': concept.originId}]
-        },
-        'designations source registrationState stewardOrg updated updatedBy createdBy tinyId version views')
-        .limit(20)
-        .where('archived').equals(false)
-        .exec(function (err, cdes) {
-            callback(cdes);
-        });
 }
 
 export function byTinyIdVersion(tinyId, version, cb) {
@@ -263,13 +237,6 @@ export function inCdeView(cde) {
         viewedCdes[cde._id] = 0;
         DataElement.updateOne({_id: cde._id}, {$inc: {views: threshold}}).exec();
     }
-}
-
-// TODO this method should be removed.
-export function save(mongooseObject, callback) {
-    mongooseObject.save(function (err) {
-        callback(err, mongooseObject);
-    });
 }
 
 export function create(elt, user, callback) {
@@ -332,24 +299,13 @@ export function update(elt, user, options: any = {}, callback: CbError<DE> = () 
     });
 }
 
-export function updatePromise(elt, user) {
-    return new Promise(resolve => update(elt, user, {}, resolve));
-}
+// export function updatePromise(elt, user) {
+//     return new Promise(resolve => update(elt, user, {}, resolve));
+// }
 
-export function archiveCde(cde, callback) {
-    DataElement.findOne({_id: cde._id}, (err, cde) => {
-        cde.archived = true;
-        cde.save(() => callback('', cde));
-    });
-}
-
-export function getDistinct(what, callback) {
-    DataElement.distinct(what).exec(callback);
-}
-
-export function query(query, callback) {
-    DataElement.find(query, callback);
-}
+// export function query(query, callback) {
+//     DataElement.find(query, callback);
+// }
 
 export function transferSteward(from, to, callback) {
     DataElement.updateMany({'stewardOrg.name': from}, {$set: {'stewardOrg.name': to}}).exec(function (err, result) {
@@ -357,54 +313,14 @@ export function transferSteward(from, to, callback) {
     });
 }
 
-export function byOtherId(source, id, cb) {
-    DataElement.find({archived: false}).elemMatch('ids', {source: source, id: id}).exec(function (err, cdes) {
-        if (cdes.length > 1) {
-            cb('Multiple results, returning first', cdes[0]);
-        }
-        else cb(err, cdes[0]);
-    });
-}
-
-export function byOtherIdAndNotRetired(source, id, cb) {
-    DataElement.find({
-        archived: false,
-        'registrationState.registrationStatus': {$ne: 'Retired'}
-    }).elemMatch('ids', {source: source, id: id}).exec(function (err, cdes) {
-        if (err) cb(err, null);
-        else if (cdes.length > 1) {
-            cb('Multiple results, returning first. source: ' + source + ' id: ' + id, cdes[0]);
-             }
-        else if (cdes.length === 0) {
-            cb('No results', null);
-        } else cb(err, cdes[0]);
-    });
-}
-
-export function bySourceIdVersion(source, id, version, cb) {
-    DataElement.find({archived: false}).elemMatch('ids', {
-        source: source, id: id, version: version
-    }).exec(function (err, cdes) {
-        if (cdes.length > 1) cb('Multiple results, returning first', cdes[0]);
-        else cb(err, cdes[0]);
-    });
-}
-
-export function bySourceIdVersionAndNotRetiredNotArchived(source, id, version, cb) {
-    //noinspection JSUnresolvedFunction
-    DataElement.find({
-        archived: false,
-        'registrationState.registrationStatus': {$ne: 'Retired'}
-    }).elemMatch('ids', {
-        source: source, id: id, version: version
-    }).exec(function (err, cdes) {
-        cb(err, cdes);
-    });
-}
-
-export function findCurrCdesInFormElement(allCdes, cb) {
-    DataElement.find({archived: false}, 'tinyId version derivationRules').where('tinyId').in(allCdes).exec(cb);
-}
+// export function byOtherId(source, id, cb) {
+//     DataElement.find({archived: false}).elemMatch('ids', {source: source, id: id}).exec(function (err, cdes) {
+//         if (cdes.length > 1) {
+//             cb('Multiple results, returning first', cdes[0]);
+//         }
+//         else cb(err, cdes[0]);
+//     });
+// }
 
 export function derivationOutputs(inputTinyId, cb) {
     DataElement.find({archived: false, 'derivationRules.inputs': inputTinyId}).exec(cb);

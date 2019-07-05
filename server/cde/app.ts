@@ -37,8 +37,6 @@ export function init(app, daoManager) {
     app.put('/draftDataElement/:tinyId', canEditMiddlewareDe, cdesvc.draftSave);
     app.delete('/draftDataElement/:tinyId', canEditByTinyIdMiddlewareDe, cdesvc.draftDelete);
 
-    app.get('/draftDataElementById/:id', cdesvc.draftById);
-
     app.get('/viewingHistory/dataElement', nocacheMiddleware, cdesvc.viewHistory);
 
     /* ---------- PUT NEW REST API above ---------- */
@@ -55,10 +53,6 @@ export function init(app, daoManager) {
         });
     });
 
-    app.get('/elasticSearch/count', (req, res) => {
-        elastic_system.nbOfCdes((err, result) => res.send("" + result));
-    });
-
     app.get('/moreLikeCde/:tinyId', nocacheMiddleware, (req, res) => {
         elastic.morelike(req.params.tinyId, result => {
             cdesvc.hideProprietaryCodes(result.cdes, req.user);
@@ -72,24 +66,7 @@ export function init(app, daoManager) {
         }));
     });
 
-    app.post('/desByConcept', (req, res) => {
-        mongo_cde.desByConcept(req.body, result => {
-            cdesvc.hideProprietaryCodes(result, req.user);
-            res.send(result);
-        });
-    });
-
-    app.get('/deCount', (req, res) => {
-        mongo_cde.count({archived: false}, (err, result) => {
-            res.send({count: result});
-        });
-    });
-
     app.get('/status/cde', appStatus.status);
-
-    app.get('/cde/properties/keys', nocacheMiddleware, (req, res) => {
-        adminItemSvc.allPropertiesKeys(req, res, mongo_cde);
-    });
 
     app.post('/getCdeAuditLog', isOrgAuthorityMiddleware, (req, res) => {
         mongo_cde.getAuditLog(req.body, (err, result) => {

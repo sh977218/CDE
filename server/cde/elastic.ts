@@ -53,28 +53,6 @@ export function updateOrInsert(elt, cb = _.noop) {
     });
 }
 
-export function dataElementDelete(elt, cb) {
-    if (elt) {
-        esClient.delete({
-            index: config.elastic.index.name,
-            type: 'dataelement',
-            id: elt.tinyId
-        }, function (err) {
-            if (err) {
-                dbLogger.logError({
-                    message: 'Unable to delete dataelement: ' + elt.tinyId,
-                    origin: 'cde.elastic.dataElementDelete',
-                    stack: err,
-                    details: ""
-                });
-            }
-            cb(err);
-        });
-    } else {
-        cb();
-    }
-}
-
 export function elasticsearch(user, settings, cb) {
     const query = sharedElastic.buildElasticSearchQuery(user, settings);
     if (query.size > 100) return cb('size exceeded');
@@ -196,15 +174,6 @@ export function morelike(id, callback) {
         }
     });
 }
-
-export function get(id, cb) {
-    esClient.get({
-        index: config.elastic.index.name,
-        type: 'dataelement',
-        id: id
-    }, cb);
-}
-
 
 export function byTinyIdList(idList, size, cb) {
     idList = idList.filter(id => !!id);

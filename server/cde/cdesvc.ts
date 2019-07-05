@@ -115,15 +115,6 @@ export function draftForEditByTinyId(req, res) { // WORKAROUND: sends empty inst
     }));
 }
 
-export function draftById(req, res) {
-    let id = req.params.id;
-    if (!id || id.length !== 24) return res.status(400).send();
-    mongo_cde.draftById(id, handleError({req, res}, draft => {
-        if (!req.user) hideProprietaryCodes(draft);
-        res.send(draft);
-    }));
-}
-
 export function draftSave(req, res) {
     let elt = req.body;
     let tinyId = req.params.tinyId;
@@ -244,21 +235,6 @@ export function originalSourceByTinyIdSourceName(req, res) {
 }
 
 /* ---------- PUT NEW REST API Implementation above  ---------- */
-
-export function show(req, res, cb) {
-    let cdeId = req.params.id;
-    if (!cdeId) return res.send('No Data Element Id');
-    mongo_cde.byId(cdeId, handleError({req, res}, cde => {
-        cb(cde);
-        // Following have no callback because it's no big deal if it fails.
-        if (cde) {
-            mongo_cde.inCdeView(cde);
-            if (req.isAuthenticated()) {
-                mongo_cde.addCdeToViewHistory(cde, req.user);
-            }
-        }
-    }));
-}
 
 let systemWhitelist = ['RXNORM', 'HSLOC', 'CDCREC', 'SOP', 'AHRQ', 'HL7', 'CDC Race and Ethnicity', 'NCI', 'UMLS'];
 
