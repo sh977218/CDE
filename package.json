@@ -50,6 +50,7 @@
     "exclude-after-remap": false,
     "include": [
       "**/server/article/*",
+      "**/server/cde/*",
       "**/server/discuss/*",
       "**/server/log/*",
       "**/server/notification",
@@ -59,7 +60,7 @@
       "build/**"
     ],
     "lines": "85",
-    "branches": "75",
+    "branches": "76",
     "functions": "90",
     "reporter": "html"
   },
