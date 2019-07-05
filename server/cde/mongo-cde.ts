@@ -332,10 +332,6 @@ export function update(elt, user, options: any = {}, callback: CbError<DE> = () 
     });
 }
 
-export function updatePromise(elt, user) {
-    return new Promise(resolve => update(elt, user, {}, resolve));
-}
-
 export function archiveCde(cde, callback) {
     DataElement.findOne({_id: cde._id}, (err, cde) => {
         cde.archived = true;
