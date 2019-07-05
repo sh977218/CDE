@@ -1,3 +1,5 @@
+const mongo_cde = require('../../server/cde/mongo-cde')
+const mongo_form = require('../../server/form/mongo-form')
 const Comment = require('../../server/discuss/discussDb').Comment;
 
 exports.removeWhite = function (text) {
@@ -29,6 +31,14 @@ exports.trimWhite = function (text) {
     if (!text) return '';
     return text.trim().replace(/\s+/g, ' ');
 };
+
+exports.updateCde = function (elt, user, options = {}) {
+    return new Promise(resolve => mongo_cde.update(elt, user, options, resolve));
+}
+
+exports.updateForm = function (elt, user, options = {}) {
+    return new Promise(resolve => mongo_form.update(elt, user, {}, resolve));
+}
 
 exports.checkNullComments = () => {
     return Comment.aggregate([

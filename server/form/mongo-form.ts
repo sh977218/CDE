@@ -259,12 +259,6 @@ export function update(elt, user, options: any = {}, callback: CbError<CdeForm> 
     });
 }
 
-export function updatePromise(elt, user) {
-    return new Promise(resolve => {
-        update(elt, user, {}, resolve);
-    });
-}
-
 export function create(elt, user, callback) {
     defaultElt(elt);
     elt.created = Date.now();
