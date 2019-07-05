@@ -57,7 +57,8 @@
       "**/server/user/*"
     ],
     "exclude": [
-      "build/**"
+      "build/**",
+      "**/server/siteAdmin/status*"
     ],
     "lines": "85",
     "branches": "75",
