@@ -93,23 +93,11 @@
                   "title": "cde",
                   "type": "object",
                   "properties": {
-                    "definitions": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "AdminItem#/definitions/definition"
-                      }
-                    },
                     "derivationRules": {
                       "type": "array",
                       "items": {
                         "$ref": "AdminItem#/definitions/derivationRule"
                       }
-                    },
-                    "designations": {
-                      "type": "array",
-                      "minItems": 1,
-                      "items": { "$ref": "AdminItem#/definitions/designation" },
-                      "description": "Any string used by which Item is known, addressed or referred to"
                     },
                     "ids": {
                       "type": "array",
