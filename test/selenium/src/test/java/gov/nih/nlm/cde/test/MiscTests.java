@@ -52,7 +52,7 @@ public class MiscTests extends NlmCdeBaseTest {
 
     @Test
     public void checkTicketValid() {
-        String username = "cdevsac";
+        String username = "cdevsacprod";
         String password = "Aa!!!000";
         String tgtUrl = "https://vsac.nlm.nih.gov:443/vsac/ws/Ticket";
 
