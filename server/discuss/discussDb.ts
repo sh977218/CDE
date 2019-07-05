@@ -105,7 +105,7 @@ export function orgComments(myOrgs, from, size, cb) {
 }
 
 export function unapproved() {
-    Comment.find({$or: [{pendingApproval: true}, {'replies.pendingApproval': true}]}).exec();
+    return Comment.find({$or: [{pendingApproval: true}, {'replies.pendingApproval': true}]}).exec();
 }
 
 export function numberUnapprovedMessageByUsername(username) {
