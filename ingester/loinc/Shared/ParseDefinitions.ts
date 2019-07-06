@@ -1,4 +1,4 @@
-exports.parseDefinitions = function (loinc) {
+export function parseDefinitions(loinc) {
     let definitions = [];
     if (loinc['TERM DEFINITION/DESCRIPTION(S)']) {
         loinc['TERM DEFINITION/DESCRIPTION(S)'].forEach(t => {
@@ -10,4 +10,4 @@ exports.parseDefinitions = function (loinc) {
     }
 
     return definitions;
-};
+}

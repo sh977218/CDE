@@ -1,14 +1,12 @@
-const _ = require('lodash');
+import { uniq, uniqWith } from 'lodash';
 
-exports.mergeDesignations = (existingDesignations, newDesignations) => {
+export function mergeDesignations(existingDesignations, newDesignations) {
     let allDesignations = existingDesignations.concat(newDesignations);
-    let uniqDesignations = _.uniqWith(allDesignations, (a, b) => {
+    return uniqWith(allDesignations, (a: any, b: any) => {
         if (a.designation === b.designation) {
-            a.tags = _.uniq(a.tags.concat(b.tags));
+            a.tags = uniq(a.tags.concat(b.tags));
             return true;
         }
         return false;
     });
-
-    return uniqDesignations;
-};
+}

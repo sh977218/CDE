@@ -1,6 +1,6 @@
-exports.parseSources = function (loinc) {
+export function parseSources(loinc) {
     let sources = [];
-    let source = {source: 'LOINC'};
+    let source: any = {source: 'LOINC'};
     if (loinc['BASIC ATTRIBUTES']) {
         source.created = loinc['BASIC ATTRIBUTES']['Created On'];
         source.registrationStatus = loinc['BASIC ATTRIBUTES']['Status'];
@@ -10,4 +10,4 @@ exports.parseSources = function (loinc) {
     }
     sources.push(source);
     return sources;
-};
+}
