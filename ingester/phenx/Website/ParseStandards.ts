@@ -1,13 +1,12 @@
-const By = require('selenium-webdriver').By;
+import { By } from 'selenium-webdriver';
+import { runOneLoinc } from '../../loinc/Website/LOINCLoader';
 
-const LOINCLoader = require('../../loinc/Website/LOINCLoader');
-
-exports.parseStandards = async element => {
+export async function parseStandards(element) {
     let standards = [];
     let trs = await element.findElements(By.xpath('tbody/tr'));
     trs.shift();
     for (let tr of trs) {
-        let standard = {};
+        let standard: any = {};
         let tds = await tr.findElements(By.xpath('td'));
         let standardString = await tds[0].getText();
         standard['Standard'] = standardString.trim();
@@ -22,9 +21,9 @@ exports.parseStandards = async element => {
         standard['Source'] = sourceString.trim();
 
         if (standard['Source'] === 'LOINC')
-            standard.loinc = await LOINCLoader.runOneLoinc(standard.ID);
+            standard.loinc = await runOneLoinc(standard.ID);
 
         standards.push(standard);
     }
     return standards;
-};
+}

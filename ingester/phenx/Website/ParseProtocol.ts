@@ -1,7 +1,6 @@
-let webdriver = require('selenium-webdriver');
-let By = webdriver.By;
+import { Builder, By } from 'selenium-webdriver';
 
-let driver = new webdriver.Builder().forBrowser('firefox').build();
+let driver = new Builder().forBrowser('firefox').build();
 
 let tasks = [
     {
@@ -124,7 +123,7 @@ async function parseProtocolHtml(element) {
     return html;
 }
 
-exports.parseProtocol = async function (link) {
+export async function parseProtocol(link) {
     driver.get(link);
     let protocol = {classification: []};
     await driver.findElement(By.id('button_showfull')).click();
@@ -142,4 +141,4 @@ exports.parseProtocol = async function (link) {
         protocol.classification.push(text.trim());
     }
     return protocol;
-};
+}

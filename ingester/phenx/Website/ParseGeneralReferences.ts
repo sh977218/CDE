@@ -1,6 +1,6 @@
-const By = require('selenium-webdriver').By;
+import { By } from 'selenium-webdriver';
 
-exports.parseGeneralReferences = async element => {
+export async function parseGeneralReferences(element) {
     let generalReferences = [];
     let pElements = await element.findElements(By.xpath('p'));
     for (let pElement of pElements) {
@@ -9,4 +9,4 @@ exports.parseGeneralReferences = async element => {
         if (p) generalReferences.push(p);
     }
     return generalReferences;
-};
+}
