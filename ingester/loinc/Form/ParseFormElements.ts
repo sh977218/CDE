@@ -1,10 +1,10 @@
-const _ = require('lodash');
+import { map as CARDINALITY_MAP } from '../Mapping/LOINC_CARDINALITY_MAP';
+import { map as MULTISELECT_MAP } from '../Mapping/LOINC_MULTISELECT_MAP';
+import { map as REQUIRED_MAP } from '../Mapping/LOINC_REQUIRED_MAP';
+import { runOneCde } from '../loader/loincCdeLoader';
+import { runOneForm } from '../loader/loincFormLoader';
 
-const REQUIRED_MAP = require('../Mapping/LOINC_REQUIRED_MAP').map;
-const MULTISELECT_MAP = require('../Mapping/LOINC_MULTISELECT_MAP').map;
-const CARDINALITY_MAP = require('../Mapping/LOINC_CARDINALITY_MAP').map;
-
-exports.parseFormElements = async (loinc, orgInfo) => {
+export async function parseFormElements(loinc, orgInfo) {
     if (loinc.loinc) loinc = loinc.loinc;
     let formElements = [];
     if (!loinc['PANEL HIERARCHY']) return formElements;
@@ -28,17 +28,19 @@ exports.parseFormElements = async (loinc, orgInfo) => {
 
     for (let element of elements) {
         let isElementForm = element.elements.length > 0;
-        let f = loadCde;
-        if (isElementForm) f = loadForm;
-        let formElement = await f(element, orgInfo);
-        tempFormElements.push(formElement);
+        if (isElementForm) {
+            let formElement = await loadForm(element, orgInfo);
+            tempFormElements.push(formElement);
+        } else {
+            let formElement = await loadCde(element, orgInfo);
+            tempFormElements.push(formElement);
+        }
     }
     return formElements;
-};
+}
 
-loadCde = async function (element, orgInfo) {
-    const loincLoader = require('../Website/loincLoader');
-    let existingCde = await loincLoader.runOneCde(element, orgInfo);
+async function loadCde(element, orgInfo) {
+    let existingCde = await runOneCde(element, orgInfo);
     let question = {
         instructions: {value: ''},
         cde: {
@@ -64,7 +66,7 @@ loadCde = async function (element, orgInfo) {
     if (element['exUcumUnitsText']) {
         question.unitsOfMeasure.push({system: '', code: element['exUcumUnitsText']});
     }
-    let formElement = {
+    return {
         elementType: 'question',
         instructions: {},
         cardinality: CARDINALITY_MAP[element.cardinality],
@@ -72,12 +74,10 @@ loadCde = async function (element, orgInfo) {
         question: question,
         formElements: []
     };
-    return formElement;
-};
+}
 
-loadForm = async function (element, orgInfo) {
-    const loincLoader = require('../Website/loincLoader');
-    let existingForm = await loincLoader.runOneForm(element, orgInfo);
+async function loadForm(element, orgInfo) {
+    let existingForm = await runOneForm(element, orgInfo);
     if (!existingForm.designations[0])
         debugger;
     let inForm = {
@@ -87,7 +87,7 @@ loadForm = async function (element, orgInfo) {
             name: existingForm.designations[0].designation
         }
     };
-    let formElement = {
+    return {
         elementType: 'form',
         instructions: {value: '', valueFormat: ''},
         cardinality: CARDINALITY_MAP[element.cardinality],
@@ -95,5 +95,4 @@ loadForm = async function (element, orgInfo) {
         inForm: inForm,
         formElements: []
     };
-    return formElement;
-};
+}
