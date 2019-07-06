@@ -1,6 +1,6 @@
-const By = require('selenium-webdriver').By;
+import { By } from 'selenium-webdriver';
 
-exports.parseFullySpecifiedName = function (element) {
+export function parseFullySpecifiedName(element) {
     return new Promise(async (resolve, reject) => {
         let result = {};
         let tds = await element.findElements(By.xpath('td'));
@@ -23,4 +23,4 @@ exports.parseFullySpecifiedName = function (element) {
         }
         resolve(result);
     })
-};
+}

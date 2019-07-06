@@ -1,7 +1,7 @@
-const By = require('selenium-webdriver').By;
-const utility = require('../Utility/utility');
+import { By } from 'selenium-webdriver';
+import { sanitizeText } from '../Utility/utility';
 
-exports.parseHL7AttributesTable = async function (driver, loincId, element, cb) {
+export async function parseHL7AttributesTable(driver, loincId, element, cb) {
     let basicAttributes = {};
     let trs = await element.findElements(By.xpath('tbody/tr'));
     trs.shift();
@@ -16,7 +16,7 @@ exports.parseHL7AttributesTable = async function (driver, loincId, element, cb) 
         let key = await keyTd.getText();
         let valueTd = tds[2];
         let value = await valueTd.getText();
-        basicAttributes[utility.sanitizeText(key.trim())] = utility.sanitizeText(value.trim());
+        basicAttributes[sanitizeText(key.trim())] = sanitizeText(value.trim());
     }
     cb(basicAttributes);
-};
+}

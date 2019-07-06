@@ -1,7 +1,7 @@
-const By = require('selenium-webdriver').By;
+import { By } from 'selenium-webdriver';
 
-exports.parseAnswerListTable = async (driver, loincId, table, cb) => {
-    let answerListObj = {
+export async function parseAnswerListTable(driver, loincId, table, cb) {
+    let answerListObj: any = {
         answerListId: {},
         answerList: []
     };
@@ -24,8 +24,7 @@ exports.parseAnswerListTable = async (driver, loincId, table, cb) => {
             let keyText = await tds[0].getText();
             let key = keyText.replace(/:/g, '').trim();
             let valueText = await tds[1].getText();
-            let value = valueText.trim();
-            answerListObj[key] = value;
+            answerListObj[key] = valueText.trim();
         }
         trs.shift();
     }
@@ -52,12 +51,11 @@ exports.parseAnswerListTable = async (driver, loincId, table, cb) => {
                 if (brs.length > 0) {
                     let index = fullText.indexOf('\n');
                     answerListItem[key] = fullText.substring(0, index).trim();
-                }
-                else answerListItem[key] = fullText.trim();
+                } else answerListItem[key] = fullText.trim();
 
             }
             answerListArray.push(answerListItem);
         }
     }
     cb(answerListObj);
-};
+}
