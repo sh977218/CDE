@@ -1,6 +1,6 @@
-const By = require('selenium-webdriver').By;
+import { By } from 'selenium-webdriver';
 
-exports.parseVariables = async element => {
+export async function parseVariables(element) {
     let variables = [];
     let trs = await element.findElements(By.xpath('tbody/tr'));
     trs.shift();
@@ -25,4 +25,4 @@ exports.parseVariables = async element => {
         variables.push(variable);
     }
     return variables;
-};
+}
