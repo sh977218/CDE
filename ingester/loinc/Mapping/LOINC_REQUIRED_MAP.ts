@@ -1,4 +1,4 @@
-exports.map = {
+export const map = {
     "": false,
     "0..1": false,
     "0..*": false,
