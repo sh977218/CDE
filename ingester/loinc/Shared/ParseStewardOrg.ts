@@ -1,3 +1,3 @@
-exports.parseStewardOrg = function (orgInfo) {
+export function parseStewardOrg(orgInfo) {
     return {name: orgInfo['stewardOrgName']};
-};
+}

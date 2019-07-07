@@ -1,4 +1,4 @@
-exports.parseReferenceDocuments = function (loinc) {
+export function parseReferenceDocuments(loinc) {
     let referenceDocuments = [];
     if (loinc['ARTICLE']) {
         loinc['ARTICLE'].forEach(article => {
@@ -20,4 +20,4 @@ exports.parseReferenceDocuments = function (loinc) {
         })
     }
     return referenceDocuments;
-};
+}

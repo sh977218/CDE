@@ -1,4 +1,4 @@
-exports.map = {
+export const map = {
     "Component": 'objectClass',
     "Fragments for synonyms": 'property',
     "Property": 'property',

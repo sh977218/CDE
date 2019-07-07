@@ -1,9 +1,8 @@
-exports.sanitizeText = function (string) {
+export function sanitizeText(string) {
     return string.replace(/:/g, '').replace(/\./g, '').trim();
-};
+}
 
-
-exports.wipeUseless = function (toWipeCde) {
+export function wipeUseless(toWipeCde) {
     delete toWipeCde._id;
     delete toWipeCde.history;
     delete toWipeCde.imported;
@@ -21,14 +20,13 @@ exports.wipeUseless = function (toWipeCde) {
             delete toWipeCde[key];
         }
     });
-};
+}
 
-
-exports.removeClassificationByOrgName = function (cde, orgName) {
+export function removeClassificationByOrgName(cde, orgName) {
     for (let i = 0; i < cde.classification.length; i++) {
         if (cde.classification[i].stewardOrg.name === orgName) {
             cde.classification.splice(i, 1);
             return;
         }
     }
-};
+}

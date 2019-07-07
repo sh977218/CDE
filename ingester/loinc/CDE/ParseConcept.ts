@@ -1,6 +1,6 @@
-const CONCEPT_TYPE_MAP = require('../Mapping/LOINC_CONCEPT_TYPE_MAP').map;
+import { map as CONCEPT_TYPE_MAP } from '../Mapping/LOINC_CONCEPT_TYPE_MAP';
 
-exports.parseConcepts = function (loinc) {
+export function parseConcepts(loinc) {
     let concepts = {objectClass: [], property: [], dataElementConcept: []};
     if (loinc['PARTS']) {
         loinc['PARTS'].forEach(p => {
@@ -13,4 +13,4 @@ exports.parseConcepts = function (loinc) {
         })
     }
     return concepts;
-};
+}
