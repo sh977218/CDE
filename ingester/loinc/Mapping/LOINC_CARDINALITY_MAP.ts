@@ -1,4 +1,4 @@
-exports.map = {
+export const map = {
     "0..1": {
         min: 0, max: 1
     },

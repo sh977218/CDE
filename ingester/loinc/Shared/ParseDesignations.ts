@@ -1,4 +1,4 @@
-const trimWhite = require('../../shared/utility').trimWhite;
+import { trimWhite } from '../../shared/utility';
 
 function isDesignationsExisted(designations, designation) {
     let temp = designations.filter(n => n.designation === designation.designation);
@@ -14,7 +14,7 @@ function isQuestionTextExist(designations) {
     return temp.length > 0;
 }
 
-exports.parseDesignations = (loinc, element) => {
+export function parseDesignations(loinc, element: any = {}) {
     if (loinc.loinc) loinc = loinc.loinc;
     let designations = [];
     let longCommonNameObj = {};
@@ -71,8 +71,9 @@ exports.parseDesignations = (loinc, element) => {
         };
         let existingDesignation = isDesignationsExisted(designations, loincNameObj);
         if (existingDesignation) {
-            if (isQuestionTextExist(designations))
+            if (isQuestionTextExist(designations)) {
                 existingDesignation.tags.push('Question Text');
+            }
         } else {
             designations.push(loincNameObj);
         }
@@ -84,11 +85,13 @@ exports.parseDesignations = (loinc, element) => {
         };
         let existingDesignation = isDesignationsExisted(designations, loincNameObj);
         if (existingDesignation) {
-            if (isQuestionTextExist(designations))
+            if (isQuestionTextExist(designations)) {
                 existingDesignation.tags.push('Question Text');
+
+            }
         } else {
             designations.push(loincNameObj);
         }
     }
     return designations;
-};
+}

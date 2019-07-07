@@ -1,3 +1,3 @@
-exports.map = {
+export const map = {
     'Active': 'Qualified'
 };

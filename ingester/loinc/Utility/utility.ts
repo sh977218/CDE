@@ -1,5 +1,3 @@
-import { capString } from 'shared/system/util';
-
 export function sanitizeText(string) {
     return string.replace(/:/g, '').replace(/\./g, '').trim();
 }
@@ -22,13 +20,4 @@ export function wipeUseless(toWipeCde) {
             delete toWipeCde[key];
         }
     });
-}
-
-export function removeClassificationByOrgName(cde, orgName) {
-    for (let i = 0; i < cde.classification.length; i++) {
-        if (cde.classification[i].stewardOrg.name === orgName) {
-            cde.classification.splice(i, 1);
-            return;
-        }
-    }
 }

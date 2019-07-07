@@ -1,4 +1,4 @@
-exports.parseProperties = loinc => {
+export function parseProperties(loinc) {
     if (loinc.loinc) loinc = loinc.loinc;
     let properties = [];
     if (loinc['RELATED NAMES']) {
@@ -101,4 +101,4 @@ exports.parseProperties = loinc => {
         })
     }
     return properties;
-};
+}

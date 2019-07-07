@@ -1,7 +1,7 @@
-const uom_datatype_map = require('../Mapping/LOINC_UOM_DATATYPE_MAP').map;
+import { map as uom_datatype_map } from '../Mapping/LOINC_UOM_DATATYPE_MAP';
 
-exports.parseValueDomain = function (loinc) {
-    let valueDomain = {
+export function parseValueDomain(loinc) {
+    let valueDomain: any = {
         datatype: 'Text',
         uom: '',
         permissibleValues: []
@@ -42,14 +42,13 @@ exports.parseValueDomain = function (loinc) {
                 } else {
                     name = a['Answer'];
                 }
-                let pv = {
+                return {
                     permissibleValue: a['Code'] ? a['Code'] : name,
                     valueMeaningName: name,
                     valueMeaningDefinition: description,
                     valueMeaningCode: a['Answer ID'],
                     codeSystemName: 'LOINC'
                 };
-                return pv;
             });
         }
     } else {
@@ -57,8 +56,7 @@ exports.parseValueDomain = function (loinc) {
             loinc['EXAMPLE UNITS'].forEach(exampleUnit => {
                 if (exampleUnit['Source Type'] === 'EXAMPLE UCUM UNITS') {
                     let unit = exampleUnit['Unit'];
-                    let temp = uom_datatype_map[unit];
-                    valueDomain.datatype = temp;
+                    valueDomain.datatype = uom_datatype_map[unit];
                     if (valueDomain.datatype === 'Date') {
                         valueDomain.datatypeDate = {format: unit};
                     }
@@ -68,4 +66,4 @@ exports.parseValueDomain = function (loinc) {
     }
 
     return valueDomain;
-};
+}

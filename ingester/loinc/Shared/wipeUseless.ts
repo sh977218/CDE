@@ -1,4 +1,4 @@
-exports.wipeUseless = elt => {
+export function wipeUseless(elt) {
     delete elt._id;
     delete elt.__v;
     delete elt.version;
@@ -23,4 +23,4 @@ exports.wipeUseless = elt => {
     delete elt.registrationState;
     delete elt.history;
     delete elt.comments;
-};
+}
