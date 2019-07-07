@@ -1,12 +1,12 @@
-const By = require('selenium-webdriver').By;
+import { By } from 'selenium-webdriver';
 
-exports.parseExampleUnitsTable = async function (driver, loincId, element, cb) {
+export async function parseExampleUnitsTable(driver, loincId, element, cb) {
     let exampleUnits = [];
     let trs = await element.findElements(By.xpath('tbody/tr'));
     trs.shift();
     trs.shift();
     for (let tr of trs) {
-        let exampleUnit = {};
+        let exampleUnit: any = {};
         let tds = await tr.findElements(By.xpath('td'));
         let unitText = await tds[1].getText();
         exampleUnit.Unit = unitText.trim();
@@ -15,4 +15,4 @@ exports.parseExampleUnitsTable = async function (driver, loincId, element, cb) {
         exampleUnits.push(exampleUnit);
     }
     cb(exampleUnits);
-};
+}

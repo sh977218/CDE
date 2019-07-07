@@ -1,6 +1,6 @@
-const By = require('selenium-webdriver').By;
+import { By } from 'selenium-webdriver';
 
-exports.parseShortname = function (element) {
+export function parseShortname(element) {
     return new Promise(async (resolve, reject) => {
         let tds = await element.findElements(By.xpath('td'));
         if (tds.length !== 3) reject('Shortname');
@@ -9,4 +9,4 @@ exports.parseShortname = function (element) {
         let result = await tds[2].getText();
         resolve(result.trim());
     })
-};
+}

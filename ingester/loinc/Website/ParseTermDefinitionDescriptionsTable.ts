@@ -1,10 +1,10 @@
-const By = require('selenium-webdriver').By;
+import { By } from 'selenium-webdriver';
 
-exports.parseTermDefinitionDescriptionsTable = async (driver, loincId, element, cb) => {
+export async function parseTermDefinitionDescriptionsTable(driver, loincId, element, cb) {
     let trs = await element.findElements(By.xpath('tbody/tr'));
     trs.shift();
     let definitions = [];
-    let definition = {};
+    let definition: any = {};
     for (let tr of trs) {
         let classes = await tr.getAttribute('class');
         if (classes.indexOf('half_space') === -1) {
@@ -19,4 +19,4 @@ exports.parseTermDefinitionDescriptionsTable = async (driver, loincId, element, 
         }
     }
     cb(definitions);
-};
+}

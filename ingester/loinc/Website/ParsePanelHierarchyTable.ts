@@ -1,9 +1,9 @@
-const By = require('selenium-webdriver').By;
+import { By } from 'selenium-webdriver';
 
-exports.parsePanelHierarchyTable = async (driver, loincId, element, cb) => {
-    const loincLoader = require('./loincLoader');
-
-    let trs = await element.findElements(By.xpath('tbody/tr'));
+export async function parsePanelHierarchyTable(driver, loincId, element) {
+    let trs = await element.findElements(By.xpath('tbody/tr')).catch(e => {
+        throw(e);
+    });
     trs.shift();
     trs.pop();
 
@@ -12,19 +12,35 @@ exports.parsePanelHierarchyTable = async (driver, loincId, element, cb) => {
     let currentLevels = [];
     let currentDepth = 0;
     for (let tr of trs) {
-        let tds = await tr.findElements(By.xpath('td'));
+        let tds = await tr.findElements(By.xpath('td')).catch(e => {
+            throw(e);
+        });
         tds.shift();
-        let row = await parseOneRow(driver, tds);
+        let row = await _parseOneRow(driver, tds).catch(e => {
+            throw(e);
+        });
 
-        row.overrideDisplayNameText = await parseOverrideDisplayName(driver, counter);
+        row.overrideDisplayNameText = await parseOverrideDisplayName(driver, counter).catch(e => {
+            throw(e);
+        });
         row.elements = [];
-        let span = await tds[0].findElement(By.xpath('span'));
-        let spanText = await span.getText();
-        let a = await span.findElement(By.xpath('a'));
-        let aText = await a.getText();
+        let span = await tds[0].findElement(By.xpath('span')).catch(e => {
+            throw(e);
+        });
+        let spanText = await span.getText().catch(e => {
+            throw(e);
+        });
+        let a = await span.findElement(By.xpath('a')).catch(e => {
+            throw(e);
+        });
+        let aText = await a.getText().catch(e => {
+            throw(e);
+        });
         let spaces = spanText.replace(aText, '');
         let depth = spaces.length / 5;
-        if (depth > 0) row.loinc = await loincLoader.runOneLoinc(row.loincId);
+        if (depth > 0) row.loinc = await require('./loincLoader').runOneLoinc(row.loincId).catch(e => {
+            throw(e);
+        });
         if (depth === 0) {
             currentLevels[0] = row;
             currentDepth = 0;
@@ -43,35 +59,49 @@ exports.parsePanelHierarchyTable = async (driver, loincId, element, cb) => {
         }
         counter++;
     }
-    cb(currentLevels[0]);
-};
+    return currentLevels[0];
+}
 
-parseOverrideDisplayName = (driver, index) => {
-    return new Promise(async (resolve, reject) => {
-        let xpath = '(//*[@class="Section1000000F00"])[' + (index + 1) + ']/table';
-        let tables = await driver.findElements(By.xpath(xpath));
-        if (tables && tables[0]) {
-            let trs = await tables[0].findElements(By.xpath('tbody/tr'));
-            let tds = await trs[2].findElements(By.xpath('td'));
-            let overrideDisplayNameText = await tds[2].getText();
-            resolve(overrideDisplayNameText.trim());
-        } else resolve();
-    })
-};
+async function parseOverrideDisplayName (driver, index) {
+    let xpath = '(//*[@class="Section1000000F00"])[' + (index + 1) + ']/table';
+    let tables = await driver.findElements(By.xpath(xpath)).catch(e => {
+        throw(e);
+    });
+    if (tables && tables[0]) {
+        let trs = await tables[0].findElements(By.xpath('tbody/tr')).catch(e => {
+            throw(e);
+        });
+        let tds = await trs[2].findElements(By.xpath('td')).catch(e => {
+            throw(e);
+        });
+        let overrideDisplayNameText = await tds[2].getText().catch(e => {
+            throw e;
+        });
+        return overrideDisplayNameText.trim();
+    }
+}
 
-parseOneRow = (driver, tds) => {
-    return new Promise(async (resolve, reject) => {
-        let result = {};
-        let loincIdText = await tds[0].getText();
-        result.loincId = loincIdText.trim();
-        let LoincNameText = await tds[1].getText();
-        result.loincName = LoincNameText.trim();
-        let rocText = await tds[2].getText();
-        result.roc = rocText.trim();
-        let cardinalityText = await tds[3].getText();
-        result.cardinality = cardinalityText.trim();
-        let exUcumUnitsText = await tds[4].getText();
-        result.exUcumUnitsText = exUcumUnitsText.trim();
-        resolve(result);
-    })
-};
+async function _parseOneRow (driver, tds) {
+    let result: any = {};
+    let loincIdText = await tds[0].getText().catch(e => {
+        throw e;
+    });
+    result.loincId = loincIdText.trim();
+    let LoincNameText = await tds[1].getText().catch(e => {
+        throw e;
+    });
+    result.loincName = LoincNameText.trim();
+    let rocText = await tds[2].getText().catch(e => {
+        throw e;
+    });
+    result.roc = rocText.trim();
+    let cardinalityText = await tds[3].getText().catch(e => {
+        throw e;
+    });
+    result.cardinality = cardinalityText.trim();
+    let exUcumUnitsText = await tds[4].getText().catch(e => {
+        throw e;
+    });
+    result.exUcumUnitsText = exUcumUnitsText.trim();
+    return result;
+}

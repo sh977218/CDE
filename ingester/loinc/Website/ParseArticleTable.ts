@@ -1,6 +1,6 @@
-const By = require('selenium-webdriver').By;
+import { By } from 'selenium-webdriver';
 
-exports.parseArticleTable = async (driver, loincId, element, cb) => {
+export async function parseArticleTable(driver, loincId, element, cb) {
     let trs = await element.findElements(By.xpath('tbody/tr'));
 
     trs.shift();
@@ -17,4 +17,4 @@ exports.parseArticleTable = async (driver, loincId, element, cb) => {
         }
     }
     cb(articles);
-};
+}
