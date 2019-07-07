@@ -21,12 +21,3 @@ export function wipeUseless(toWipeCde) {
         }
     });
 }
-
-export function removeClassificationByOrgName(cde, orgName) {
-    for (let i = 0; i < cde.classification.length; i++) {
-        if (cde.classification[i].stewardOrg.name === orgName) {
-            cde.classification.splice(i, 1);
-            return;
-        }
-    }
-}

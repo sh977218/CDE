@@ -1,7 +1,7 @@
-const By = require('selenium-webdriver').By;
-const utility = require('../Utility/utility');
+import { By } from 'selenium-webdriver';
+import { sanitizeText } from '../Utility/utility';
 
-exports.parseBasicAttributesTable = async (driver, loincId, element, cb) => {
+export async function parseBasicAttributesTable(driver, loincId, element, cb) {
     let result = {};
     let trs = await element.findElements(By.xpath('tbody/tr'));
     trs.shift();
@@ -15,11 +15,10 @@ exports.parseBasicAttributesTable = async (driver, loincId, element, cb) => {
 
         let keyTd = tds[1];
         let keyText = await keyTd.getText();
-        let key = utility.sanitizeText(keyText.trim());
+        let key = sanitizeText(keyText.trim());
         let valueTd = tds[2];
         let valueText = await valueTd.getText();
-        let value = valueText.trim();
-        result[key] = value;
+        result[key] = valueText.trim();
     }
     cb(result);
-};
+}

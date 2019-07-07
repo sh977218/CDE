@@ -1,8 +1,8 @@
-const By = require('selenium-webdriver').By;
+import { By } from 'selenium-webdriver';
 
-exports.parseFormCodingInstructionsTable = async (driver, loincId, element, cb) => {
+export async function parseFormCodingInstructionsTable(driver, loincId, element, cb) {
     let trs = await element.findElements(By.xpath('tbody/tr'));
     trs.shift();
     let FormCodingInstructionsText = await trs[0].getText();
     cb(FormCodingInstructionsText.trim());
-};
+}

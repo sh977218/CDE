@@ -1,6 +1,6 @@
-const By = require('selenium-webdriver').By;
+import { By } from 'selenium-webdriver';
 
-exports.parseLanguageVariantsTable = async function (driver, loincId, table, cb) {
+export async function parseLanguageVariantsTable(driver, loincId, table, cb) {
     let languageVariants = [];
     let trs = await table.findElements(By.xpath('tbody/tr'));
     trs.shift();
@@ -16,5 +16,4 @@ exports.parseLanguageVariantsTable = async function (driver, loincId, table, cb)
         languageVariants.push(languageVariant);
     }
     cb(languageVariants);
-
-};
+}
