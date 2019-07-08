@@ -19,17 +19,17 @@ var jsonObjs = JSON.parse(fs.readFileSync(file, 'utf8'));
 
 if (process.argv.indexOf("--forms") > 0) {
     console.log("loading forms");
-    async.each(jsonObjs, function(form, oneDone) {
+    async.each(jsonObjs, function (form, oneDone) {
         Form(form).save(oneDone);
-    }, function(err) {
+    }, function (err) {
         if (err) console.log(err);
         process.exit(0);
     })
 } else if (process.argv.indexOf("--cdes") > 0) {
     console.log("loading CDEs");
-    async.each(jsonObjs, function(cde, oneDone) {
+    async.each(jsonObjs, function (cde, oneDone) {
         DataElement(cde).save(oneDone);
-    }, function(err) {
+    }, function (err) {
         if (err) console.log(err);
         process.exit(0);
     })

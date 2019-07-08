@@ -137,8 +137,7 @@ function processCde(migrationCde, existingCde, orgName, processCdeCb) {
                     console.log("Cannot save CDE.");
                     console.log(newDe);
                     throw err;
-                }
-                else migrationCde.remove(function (err) {
+                } else migrationCde.remove(function (err) {
                     if (err) console.log("unable to remove " + err);
                     processCdeCb();
                     changed++;
@@ -210,6 +209,7 @@ function findCde(cdeId, migrationCde, source, orgName, idv, findCdeDone) {
         }
     });
 }
+
 var migStream;
 
 function streamOnData(migrationCde) {
@@ -254,7 +254,7 @@ function streamOnClose() {
             if (err) console.log("Error Finding Migration Org " + err);
             orgs.forEach(function (org) {
                 Org.findOne({name: org.name}).exec(function (err, theOrg) {
-                    if (err)  console.log("Error finding existing org " + err);
+                    if (err) console.log("Error finding existing org " + err);
                     theOrg.classifications = org.classifications;
                     theOrg.save(function (err) {
                         if (err) console.log("Error saving Org " + err);
@@ -270,6 +270,7 @@ function streamOnClose() {
         process.exit(0);
     }, 5000);
 }
+
 function doStream() {
     migStream = MigrationDataElement.find().cursor();
     migStream.on('data', streamOnData);

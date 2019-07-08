@@ -1,11 +1,10 @@
-import { update as updateCde } from '../../server/cde/mongo-cde';
-import { update as updateForm } from '../../server/form/mongo-form';
+import * as mongo_cde from '../../server/cde/mongo-cde';
+import * as mongo_form from '../../server/form/mongo-form';
 
 export function removeWhite(text) {
     if (!text) return '';
     return text.replace(/\s+/g, ' ');
-};
-
+}
 export function wipeUseless(toWipeCde) {
     delete toWipeCde._id;
     delete toWipeCde.history;
@@ -44,9 +43,9 @@ export function printUpdateResult(updateResult, type) {
 }
 
 export function updateCde(elt, user, options = {}) {
-    return new Promise(resolve => updateCde(elt, user, options, resolve));
+    return new Promise(resolve => mongo_cde.update(elt, user, options, resolve));
 }
 
 export function updateForm(elt, user, options = {}) {
-    return new Promise(resolve => updateForm(elt, user, {}, resolve));
+    return new Promise(resolve => mongo_form.update(elt, user, options, resolve));
 }

@@ -3,12 +3,13 @@
  this script does not update org
  */
 var MigrationFormModel = require('./createMigrationConnection').MigrationFormModel;
-    const MigrationOrgModel = require('./createMigrationConnection').MigrationOrgModel;
-    const OrgModel = require('../server/system/mongo-data').Org;
-    const mongo_form = require('../server/form/mongo-form');
-    FormModel = mongo_form.Form;
-    import { sortClassification } from 'shared/system/classificationShared';
-    constupdateShare = require('./updateShare');
+const MigrationOrgModel = require('./createMigrationConnection').MigrationOrgModel;
+const OrgModel = require('../server/system/mongo-data').Org;
+const mongo_form = require('../server/form/mongo-form');
+FormModel = mongo_form.Form;
+import { sortClassification } from 'shared/system/classificationShared';
+
+constupdateShare = require('./updateShare');
 
 var importDate = new Date().toJSON();
 
@@ -55,8 +56,7 @@ function processForm(migrationForm, existingForm, orgName, processFormCb) {
                     console.log("Cannot save Form.");
                     console.log(newForm);
                     throw err;
-                }
-                else migrationForm.remove(function (err) {
+                } else migrationForm.remove(function (err) {
                     if (err) console.log("unable to remove " + err);
                     console.log('------------------------------\n');
                     processFormCb();
@@ -145,7 +145,7 @@ function streamOnClose() {
         if (err) console.log("Error Finding Migration Org " + err);
         orgs.forEach(function (org) {
             OrgModel.findOne({name: org.name}).exec(function (err, theOrg) {
-                if (err)  console.log("Error finding existing org " + err);
+                if (err) console.log("Error finding existing org " + err);
                 theOrg.classifications = org.classifications;
                 theOrg.save(function (err) {
                     if (err) console.log("Error saving Org " + err);

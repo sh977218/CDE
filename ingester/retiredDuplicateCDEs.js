@@ -60,8 +60,7 @@ async.series([
                     console.log('duplicated cde id: ' + duplicatedCdeId);
                     cb();
                 });
-            }
-            else {
+            } else {
                 console.log('no duplicate found');
                 cb();
             }

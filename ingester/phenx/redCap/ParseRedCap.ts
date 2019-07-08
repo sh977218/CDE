@@ -1,12 +1,12 @@
 import * as csv from 'csv-parse';
 import { createReadStream, existsSync, readFile } from 'fs';
 import { find, isEmpty } from 'lodash';
-import { DataElement, DataElementSource, updatePromise } from '../../../../server/cde/mongo-cde';
-import { batchloader, updatedByLoader } from '../../../shared/updatedByLoader';
-import { compareCde, mergeCde } from '../../CDE/CompareCDE';
-import { createCde } from './CreateCDE';
+import { DataElement, DataElementSource } from '../../../server/cde/mongo-cde';
+import { batchloader, updatedByLoader } from '../../shared/updatedByLoader';
+import { compareCde, mergeCde } from '../CDE/cde';
+import { createCde } from './cde';
 import { convert } from './RedCapCdeToQuestion';
-import { printUpdateResult } from '../../../shared/utility';
+import { printUpdateResult, updateCde } from '../../shared/utility';
 
 const redCapZipFolder = 's:/MLB/CDE/PhenX/www.phenxtoolkit.org/toolkit_content//redcap_zip/';
 
@@ -89,7 +89,7 @@ async function doQuestion(redCapCde, redCapCdes, formId, protocol, newForm) {
             });
         } else {
             mergeCde(existingCde, newCde);
-            await updatePromise(existingCde, batchloader).catch(e => {
+            await updateCde(existingCde, batchloader).catch(e => {
                 throw "Error await updatePromise(existingCde, batchloader): " + e;
             });
         }

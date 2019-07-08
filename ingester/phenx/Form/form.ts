@@ -59,7 +59,6 @@ export async function createForm(protocol) {
     };
 
     await parseFormElements(protocol, attachments, newForm);
-
     return newForm;
 }
 
@@ -143,8 +142,9 @@ export async function mergeForm(existingForm, newForm) {
     existingForm.referenceDocuments = mergeBySources(newForm.referenceDocuments, existingForm.referenceDocuments);
     existingForm.attachments = newForm.attachments;
     existingForm.sources = mergeBySources(newForm.sources, existingForm.sources);
-    if (existingForm.registrationState.registrationStatus !== 'Qualified')
+    if (existingForm.registrationState.registrationStatus !== 'Qualified') {
         existingForm.formElements = newForm.formElements;
+    }
     transferClassifications(newForm, existingForm);
     await Comment.updateMany({'element.eltId': newForm.tinyId}, {
         element: {

@@ -2,6 +2,7 @@ var async = require('async');
 var mongo_cde = require('../../server/cde/mongo-cde');
 var cdediff = require('../../server/cde/cdediff');
 import { sortClassification } from 'shared/system/classificationShared';
+
 var MigrationDataElement = require('../createMigrationConnection').MigrationDataElementModel;
 var DataElement = mongo_cde.DataElement;
 var MigrationOrg = require('../createMigrationConnection').MigrationOrgModel;
@@ -72,25 +73,25 @@ function compareCdes(existingCde, newCde) {
 
     existingCde = JSON.parse(JSON.stringify(existingCde));
     wipeUseless(existingCde);
-/*
-    if (!existingCde.classification || existingCde.classification === [])
-        existingCde.classification = newCde.classification;
-    else {
-        for (var i = existingCde.classification.length - 1; i > 0; i--) {
-            if (existingCde.classification[i].stewardOrg.name !== newCde.source) {
-                existingCde.classification.splice(i, 1);
+    /*
+        if (!existingCde.classification || existingCde.classification === [])
+            existingCde.classification = newCde.classification;
+        else {
+            for (var i = existingCde.classification.length - 1; i > 0; i--) {
+                if (existingCde.classification[i].stewardOrg.name !== newCde.source) {
+                    existingCde.classification.splice(i, 1);
+                }
             }
         }
-    }
-    try {
-        if (existingCde.classification.length > 0) sortClassification(existingCde);
-    } catch (e) {
-        console.log(existingCde);
-        throw e;
-    }
+        try {
+            if (existingCde.classification.length > 0) sortClassification(existingCde);
+        } catch (e) {
+            console.log(existingCde);
+            throw e;
+        }
 
-    sortClassification(newCde);
-*/
+        sortClassification(newCde);
+    */
 
     newCde = JSON.parse(JSON.stringify(newCde));
     wipeUseless(newCde);
@@ -131,18 +132,18 @@ function processCde(migrationCde, existingCde, processCdeCb) {
         newDe.properties = migrationCde.properties;
 
         removeClassificationTree(newDe);
-/*
-        if (migrationCde.classification[0]) {
-            var indexOfClassZero = null;
-            newDe.classification.forEach(function (c, i) {
-                if (c.stewardOrg.name === migrationCde.classification[0].stewardOrg.name) indexOfClassZero = i;
-            });
-            if (indexOfClassZero) newDe.classification[indexOfClassZero] = migrationCde.classification[0];
-            else {
-                newDe.classification.push(migrationCde.classification[0]);
-            }
-        }
-*/
+        /*
+                if (migrationCde.classification[0]) {
+                    var indexOfClassZero = null;
+                    newDe.classification.forEach(function (c, i) {
+                        if (c.stewardOrg.name === migrationCde.classification[0].stewardOrg.name) indexOfClassZero = i;
+                    });
+                    if (indexOfClassZero) newDe.classification[indexOfClassZero] = migrationCde.classification[0];
+                    else {
+                        newDe.classification.push(migrationCde.classification[0]);
+                    }
+                }
+        */
         newDe._id = existingCde._id;
         try {
             mongo_cde.update(newDe, {username: "batchloader"}, function (err) {
@@ -150,8 +151,7 @@ function processCde(migrationCde, existingCde, processCdeCb) {
                     console.log("Cannot save CDE.");
                     console.log(newDe);
                     throw err;
-                }
-                else migrationCde.remove(function (err) {
+                } else migrationCde.remove(function (err) {
                     if (err) console.log("unable to remove " + err);
                     processCdeCb();
                     changed++;
@@ -224,6 +224,7 @@ function findCde(cdeId, migrationCde, idv, findCdeDone) {
         }
     });
 }
+
 var migStream;
 
 function streamOnData(migrationCde) {

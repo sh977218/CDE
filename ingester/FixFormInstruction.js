@@ -18,9 +18,8 @@ function loopFormElements(fe) {
         }
         loopFormElements(e);
     });
-    return;
-};
 
+}
 Form.find({}).exec(function (err, forms) {
     if (err) throw err;
     async.eachSeries(forms, function (form, doneOneForm) {
