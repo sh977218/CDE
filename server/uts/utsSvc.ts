@@ -61,7 +61,6 @@ function getVsacCookies() {
 
 async function getTicket() {
     if (!TGT.length) await getTGT();
-    if (!TGT.length) throw 'no TGT';
     const options = {
         uri: config.vsac.tgtUrl + '/' + TGT,
         qs: {

@@ -53,7 +53,8 @@
       "**/server/discuss/*",
       "**/server/log/*",
       "**/server/notification",
-      "**/server/user/*"
+      "**/server/user/*",
+      "**/server/uts/*"
     ],
     "exclude": [
       "build/**"
