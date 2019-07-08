@@ -1,23 +1,28 @@
-const _ = require('lodash');
-const fs = require('fs');
+import { existsSync } from 'fs';
+import { find } from 'lodash';
+import { parseFormElements as parseFeLoinc } from '../../loinc/Form/ParseFormElements';
+import { map as orgMapping } from '../../loinc/Mapping/ORG_INFO_MAP';
+import { parseFormElements as parseFeRedcap } from './redCap/ParseRedCap';
 
-const ParseRedCap = require('./redCap/ParseRedCap');
+const zipFolder = 's:/MLB/CDE/PhenX/www.phenxtoolkit.org/toolkit_content/redcap_zip/';
 
-const ParseLOINC = require('../../loinc/Form/ParseFormElements');
-const orgMapping = require('../../loinc/Mapping/ORG_INFO_MAP').map;
-
-const zipFolder = 's:/MLB/CDE/phenx/original-phenxtoolkit.rti.org/toolkit_content/redcap_zip/';
-
-exports.parseFormElements = async (protocol, attachments, newForm) => {
-    let loinc = _.find(protocol.Standards, standard => standard.Source === 'LOINC');
+export async function parseFormElements(protocol, attachments, newForm) {
+    let loinc = find(protocol.standards, standard => standard.Source === 'LOINC');
     if (loinc) {
-        let formElements = await ParseLOINC.parseFormElements(loinc, orgMapping['PhenX']);
+        let formElements = await parseFeLoinc(loinc, orgMapping['PhenX']);
+        formElements.unshift({
+            "elementType": "section",
+            "instructions": {
+                value: protocol.specificInstructions
+            },
+            "formElements": []
+        });
         newForm.formElements = formElements;
     } else {
-        let protocolId = protocol.protocolId;
+        let protocolId = protocol.protocolID;
         let zipFile = zipFolder + 'PX' + protocolId + '.zip';
-        if (fs.existsSync(zipFile)) {
-            await ParseRedCap.parseFormElements(protocol, attachments, newForm);
+        if (existsSync(zipFile)) {
+            await parseFeRedcap(protocol, attachments, newForm);
         }
     }
-};
+}
