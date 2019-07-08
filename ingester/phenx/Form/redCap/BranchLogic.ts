@@ -1,9 +1,8 @@
-const _ = require('lodash');
+import { find, isEqual, words } from 'lodash';
+import { map as SYMBOL_MAP } from './REDCAP_SYMBOL_MAP';
+import { map as CONJUNCTION_MAP } from './REDCAP_CONJUNCTION_MAP';
 
-const SYMBOL_MAP = require('./REDCAP_SYMBOL_MAP').map;
-const CONJUNCTION_MAP = require('./REDCAP_CONJUNCTION_MAP').map;
-
-formatSkipLogic = function (equationText, redCapCdes) {
+function formatSkipLogic(equationText, redCapCdes) {
     let result = '';
     let foundLabelArray = equationText.match(/\[[^\[\]]*\]\s*/);
     if (foundLabelArray && foundLabelArray.length === 1) {
@@ -13,11 +12,11 @@ formatSkipLogic = function (equationText, redCapCdes) {
             process.exit(1);
         }
         let _foundLabel = foundLabel.replace('[', '').replace(']', '').trim();
-        let redCapCde = _.find(redCapCdes, redCapCde => {
+        let redCapCde = find(redCapCdes, redCapCde => {
             let variableFieldName = redCapCde['Variable / Field Name'];
-            let l = _.words(variableFieldName.toUpperCase());
-            let r = _.words(_foundLabel.toUpperCase());
-            return _.isEqual(l, r);
+            let l = words(variableFieldName.toUpperCase());
+            let r = words(_foundLabel.toUpperCase());
+            return isEqual(l, r);
         });
         if (!redCapCde) {
             console.log('Branch Logic not found ' + foundLabel);
@@ -57,9 +56,9 @@ formatSkipLogic = function (equationText, redCapCdes) {
         result += '"' + equationText.trim() + '"';
         return result;
     }
-};
+}
 
-exports.convertSkipLogic = function (skipLogicText, redCapCdes) {
+export function convertSkipLogic(skipLogicText, redCapCdes) {
     let loop_num = 0;
     let result = [];
     while (skipLogicText.trim().length > 0) {
@@ -97,5 +96,4 @@ exports.convertSkipLogic = function (skipLogicText, redCapCdes) {
         }
     }
     return result.join('');
-};
-
+}

@@ -1,81 +1,74 @@
-const _ = require('lodash');
-const fs = require('fs');
-const csvParser = require('csv-parse');
+import * as csv from 'csv-parse';
+import { createReadStream, existsSync, readFile } from 'fs';
+import { find, isEmpty } from 'lodash';
+import { DataElement, DataElementSource, updatePromise } from '../../../../server/cde/mongo-cde';
+import { batchloader, updatedByLoader } from '../../../shared/updatedByLoader';
+import { compareCde, mergeCde } from '../../CDE/CompareCDE';
+import { createCde } from './CreateCDE';
+import { convert } from './RedCapCdeToQuestion';
+import { printUpdateResult } from '../../../shared/utility';
 
-const mongo_cde = require('../../../../server/cde/mongo-cde');
-const DataElement = mongo_cde.DataElement;
+const redCapZipFolder = 's:/MLB/CDE/PhenX/www.phenxtoolkit.org/toolkit_content//redcap_zip/';
 
-const CreateCDE = require('./CreateCDE');
-const CompareCDE = require('../../CDE/CompareCDE');
-const MergeCDE = require('../../CDE/MergeCDE');
-
-const RedCapCdeToQuestion = require('./RedCapCdeToQuestion');
-
-const updatedByLoader = require('../../../shared/updatedByLoader').updatedByLoader;
-const batchloader = require('../../../shared/updatedByLoader').batchloader;
-
-const toolkit_content = 's:/MLB/CDE/phenx/original-phenxtoolkit.rti.org/toolkit_content';
-const redCapZipFolder = toolkit_content + '/redcap_zip/';
-
-doInstrumentID = instrumentIDFilePath => {
+function doInstrumentID(instrumentIDFilePath): Promise<string> {
     return new Promise((resolve, reject) => {
-        fs.readFile(instrumentIDFilePath, 'utf8', (err, data) => {
+        readFile(instrumentIDFilePath, 'utf8', (err, data) => {
             if (err) {
                 console.log('Read instrumentIDFilePath failed. ' + err);
-                process.exit(1);
+                reject(err);
+            } else {
+                resolve(data);
             }
-            resolve(data);
         });
     })
-};
-doAuthorID = authorIDFilePath => {
+}
+
+function doAuthorID(authorIDFilePath): Promise<string> {
     return new Promise((resolve, reject) => {
-        fs.readFile(authorIDFilePath, 'utf8', (err, data) => {
+        readFile(authorIDFilePath, 'utf8', (err, data) => {
             if (err) {
                 console.log('Read authorIDFilePath failed. ' + err);
-                process.exit(1);
+                reject(err);
+            } else {
+                resolve(data);
             }
-            resolve(data);
         });
     })
-};
+}
 
-doInstrument = instrumentFilePath => {
+function doInstrument(instrumentFilePath): Promise<any[]> {
     return new Promise((resolve, reject) => {
-        fs.readFile(instrumentFilePath, 'utf8', (err, data) => {
-            if (err) {
-                console.log('Read instrumentFilePath failed. ' + err);
-                process.exit(1);
-            }
-            let records = [];
-            let options = {
-                trim: true,
-                skip_empty_lines: true,
-                columns: true,
-                relax_column_count: true
-            };
-            csvParser(data, options)
-                .on('readable', async function () {
-                    let record = this.read();
-                    if (record) records.push(record);
-                })
-                .on('end', function () {
-                    resolve(records);
-                })
-        })
+        let results = [];
+        let options = {
+            trim: true,
+            skip_empty_lines: true,
+            columns: true,
+            relax_column_count: true
+        };
+        createReadStream(instrumentFilePath)
+            .pipe(csv(options))
+            .on('data', function (data) {
+                results.push(data);
+            })
+            .on('err', function (err) {
+                reject(err);
+            })
+            .on('end', function () {
+                resolve(results);
+            });
     })
-};
+}
 
 function doDescriptive(sectionFes, redCapCde, attachments) {
     let variableFieldName = redCapCde['Variable / Field Name'];
     let fieldLabel = redCapCde['Field Label'];
-    let foundAttachment = _.find(attachments, a => a.filename === variableFieldName);
+    let foundAttachment = find(attachments, a => a.filename === variableFieldName);
     if (foundAttachment) sectionFes.instructions.value += '\n<figure><figcaption>' + fieldLabel + '</figcaption><img src="/data/' + foundAttachment.fileid + '"/></figure>';
     else sectionFes.instructions.value += '\n' + fieldLabel;
 }
 
 async function doQuestion(redCapCde, redCapCdes, formId, protocol, newForm) {
-    let newCdeObj = await CreateCDE.createCde(redCapCde, formId, protocol);
+    let newCdeObj = await createCde(redCapCde, formId, protocol);
     let newCde = new DataElement(newCdeObj);
     let cdeId = newCdeObj.ids[0].id;
     let existingCde = await DataElement.findOne({
@@ -85,33 +78,42 @@ async function doQuestion(redCapCde, redCapCdes, formId, protocol, newForm) {
     });
     if (!existingCde) {
         existingCde = await newCde.save();
-//        existingCde = await DataElement.findOneAndUpdate({_id: newCde._id}, newCde, {upsert: true, new: true});
     } else if (updatedByLoader(existingCde)) {
     } else {
         existingCde.imported = new Date().toJSON();
         existingCde.markModified('imported');
-        let diff = CompareCDE.compareCde(newCde, existingCde);
-        if (_.isEmpty(diff)) {
-            await existingCde.save();
+        let diff = compareCde(newCde, existingCde);
+        if (isEmpty(diff)) {
+            await existingCde.save().catch(e => {
+                throw "Error await existingCde.save(): " + e;
+            });
         } else {
-            await MergeCDE.mergeCde(existingCde, newCde);
-            await mongo_cde.updatePromise(existingCde, batchloader);
+            mergeCde(existingCde, newCde);
+            await updatePromise(existingCde, batchloader).catch(e => {
+                throw "Error await updatePromise(existingCde, batchloader): " + e;
+            });
         }
     }
-    let question = await RedCapCdeToQuestion.convert(redCapCde, redCapCdes, existingCde, newForm);
+    delete newCdeObj.tinyId;
+    let updateResult = await DataElementSource.updateOne({tinyId: existingCde.tinyId}, newCdeObj, {upsert: true}).catch(e => {
+        throw'Error await DataElementSource.updateOne({tinyId: existingCde.tinyId}: ' + e;
+    });
+    printUpdateResult(updateResult, 'data element');
+
+    let question = await convert(redCapCde, redCapCdes, existingCde, newForm);
     return question;
 }
 
-exports.parseFormElements = async (protocol, attachments, newForm) => {
+export async function parseFormElements(protocol, attachments, newForm) {
     let formElements = [];
-    let protocolId = protocol.protocolId;
+    let protocolId = protocol.protocolID;
 
     let zipFolder = redCapZipFolder + 'PX' + protocolId;
 
     let formId = '';
     let instrumentIDFileName = 'instrumentID.txt';
     let instrumentIDFilePath = zipFolder + '/' + instrumentIDFileName;
-    let instrumentIDFileExist = fs.existsSync(instrumentIDFilePath);
+    let instrumentIDFileExist = existsSync(instrumentIDFilePath);
     if (instrumentIDFileExist) {
         formId = await doInstrumentID(instrumentIDFilePath);
     }
@@ -119,7 +121,7 @@ exports.parseFormElements = async (protocol, attachments, newForm) => {
     let authorId = '';
     let authorIdFileName = 'AuthorID.txt';
     let authorIdFilePath = zipFolder + '/' + authorIdFileName;
-    let authorIdFileExist = fs.existsSync(authorIdFilePath);
+    let authorIdFileExist = existsSync(authorIdFilePath);
     if (authorIdFileExist) {
         authorId = await doAuthorID(authorIdFilePath);
         if (authorId !== 'PhenX') {
@@ -131,12 +133,12 @@ exports.parseFormElements = async (protocol, attachments, newForm) => {
     let redCapCdes = [];
     let instrumentFileName = 'instrument.csv';
     let instrumentFilePath = zipFolder + '/' + instrumentFileName;
-    let instrumentFileExist = fs.existsSync(instrumentFilePath);
+    let instrumentFileExist = existsSync(instrumentFilePath);
     if (instrumentFileExist) {
         redCapCdes = await doInstrument(instrumentFilePath);
     } else {
         let _instrumentFilePath = zipFolder + '/' + 'PX' + protocolId + '/' + instrumentFileName;
-        let _instrumentFileExist = fs.existsSync(_instrumentFilePath);
+        let _instrumentFileExist = existsSync(_instrumentFilePath);
         if (_instrumentFileExist) {
             redCapCdes = await doInstrument(_instrumentFilePath);
         } else {
@@ -188,7 +190,7 @@ exports.parseFormElements = async (protocol, attachments, newForm) => {
                 });
             newSection = true;
             fe = formElements[formElements.length - 1];
-            if (!_.isEmpty(sectionHeader) || !_.isEmpty(fieldLabel)) {
+            if (!isEmpty(sectionHeader) || !isEmpty(fieldLabel)) {
                 let question = await doQuestion(redCapCde, redCapCdes, formId, protocol, newForm);
                 fe.formElements.push(question);
             } else {
@@ -200,4 +202,4 @@ exports.parseFormElements = async (protocol, attachments, newForm) => {
         }
     }
     newForm.formElements = formElements;
-};
+}

@@ -1,12 +1,10 @@
-const capitalize = require('capitalize');
-const BranchLogic = require('./BranchLogic');
+import { words } from 'capitalize';
+import { batchloader } from '../../../shared/updatedByLoader';
+import { convertSkipLogic } from './BranchLogic';
+import { map as REDCAP_MULTISELECT_MAP } from './REDCAP_MULTISELECT_MAP';
 
-const REDCAP_MULTISELECT_MAP = require('./REDCAP_MULTISELECT_MAP').map;
-
-const batchloader = require('../../../shared/updatedByLoader').batchloader;
-
-
-exports.convert = async (redCapCde, redCapCdes, cde, newForm) => {
+export async function convert(redCapCde, redCapCdes, cde, newForm) {
+    if (cde.toObject) cde = cde.toObject();
     let fieldType = redCapCde['Field Type'];
     let validationType = redCapCde['Text Validation Type OR Show Slider Number'];
     let choicesCalculationsORSliderLabels = redCapCde['Choices, Calculations, OR Slider Labels'];
@@ -18,7 +16,7 @@ exports.convert = async (redCapCde, redCapCdes, cde, newForm) => {
     let skipLogicCondition = '';
     if (branchLogic && branchLogic.trim().length > 0) {
         if (branchLogic.indexOf('(') === -1)
-            skipLogicCondition = BranchLogic.convertSkipLogic(branchLogic, redCapCdes);
+            skipLogicCondition = convertSkipLogic(branchLogic, redCapCdes);
         else {
             let skipLogicComment = {
                 text: newForm.ids[0].id + ' Phenx Batch loader was not able to create Skip Logic rule on Question ' + fieldLabel + '. Rules: ' + branchLogic,
@@ -51,7 +49,7 @@ exports.convert = async (redCapCde, redCapCdes, cde, newForm) => {
         };
         newForm.comments.push(scoreComment);
     }
-    let question = {
+    let question: any = {
         elementType: "question",
         label: fieldLabel,
         cardinality: {min: 1, max: 1},
@@ -62,8 +60,9 @@ exports.convert = async (redCapCde, redCapCdes, cde, newForm) => {
             cde: {
                 tinyId: cde.tinyId,
                 version: cde.version,
+                designations: cde.designations,
                 derivationRules: cde.derivationRules,
-                name: fieldLabel.length === 0 ? capitalize.words(variableName.replace(/_/g, ' ')) : fieldLabel,
+                name: fieldLabel.length === 0 ? words(variableName.replace(/_/g, ' ')) : fieldLabel,
                 ids: cde.ids ? cde.ids : [],
                 permissibleValues: cde.valueDomain.permissibleValues
             },
@@ -77,4 +76,4 @@ exports.convert = async (redCapCde, redCapCdes, cde, newForm) => {
     if (validationType.trim() === 'notes')
         question.question.datatypeText.showAsTextArea = true;
     return question;
-};
+}

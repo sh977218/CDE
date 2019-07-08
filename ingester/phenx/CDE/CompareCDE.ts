@@ -1,10 +1,11 @@
-const _ = require('lodash');
-const deepDiff = require('deep-diff');
+import { cloneDeep, isEmpty } from 'lodash';
+import { diff as deepDiff } from 'deep-diff';
+import { transferClassifications } from '../../../shared/system/classificationShared';
 
-exports.compareCde = function (newCde, existingCde) {
-    let newCdeObj = _.cloneDeep(newCde);
+export function compareCde(newCde, existingCde) {
+    let newCdeObj = cloneDeep(newCde);
     if (newCdeObj.toObject) newCdeObj = newCdeObj.toObject();
-    let existingCdeObj = _.cloneDeep(existingCde);
+    let existingCdeObj = cloneDeep(existingCde);
     if (existingCdeObj.toObject) existingCdeObj = existingCdeObj.toObject();
 
     [existingCdeObj, newCdeObj].forEach(obj => {
@@ -42,9 +43,25 @@ exports.compareCde = function (newCde, existingCde) {
 
         obj.referenceDocuments.forEach(a => {
             for (let p in a) {
-                if (_.isEmpty(a[p])) delete a[p];
+                if (isEmpty(a[p])) delete a[p];
             }
         });
     });
-    return deepDiff(existingCdeObj, newCdeObj);
-};
+    let result = deepDiff(existingCdeObj, newCdeObj);
+    return result;
+}
+
+function mergeBySources(newSources, existingSources) {
+    return newSources.concat(existingSources.filter(o => ['PhenX', 'PhenX Variable'].indexOf(o.source) === -1));
+}
+
+export function mergeCde(existingCde, newCde) {
+    existingCde.designations = newCde.designations;
+    existingCde.definitions = newCde.definitions;
+    existingCde.ids = mergeBySources(newCde.ids, existingCde.ids);
+    existingCde.properties = mergeBySources(newCde.properties, existingCde.properties);
+    existingCde.referenceDocuments = mergeBySources(newCde.referenceDocuments, existingCde.referenceDocuments);
+    existingCde.sources = mergeBySources(newCde.sources, existingCde.sources);
+    existingCde.valueDomain = newCde.valueDomain;
+    transferClassifications(newCde, existingCde);
+}

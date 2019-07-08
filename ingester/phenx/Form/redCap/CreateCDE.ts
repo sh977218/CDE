@@ -1,18 +1,17 @@
-const _ = require('lodash');
-const generateTinyId = require('../../../../server/system/mongo-data').generateTinyId;
+import { isEmpty } from 'lodash';
+import { classifyItem } from '../../../../shared/system/classificationShared';
+import { generateTinyId } from '../../../../server/system/mongo-data';
+import { map as RED_CAP_DATA_TYPE_MAP } from './REDCAP_DATATYPE_MAP';
+import { batchloader } from '../../../shared/updatedByLoader';
 
-import { classifyItem } from 'shared/system/classificationShared';
-
-const RED_CAP_DATA_TYPE_MAP = require('./REDCAP_DATATYPE_MAP').map;
-
-parseDesignations = row => {
+function parseDesignations(row) {
     let designations = [];
 
     let sectionHeader = row['Section Header'];
     let fieldLabel = row['Field Label'];
     let fieldLabelDesignation;
     let sectionHeaderDesignation;
-    if (!_.isEmpty(fieldLabel.trim())) {
+    if (!isEmpty(fieldLabel.trim())) {
         fieldLabelDesignation = {
             designation: fieldLabel.trim(),
             source: 'PhenX',
@@ -20,7 +19,7 @@ parseDesignations = row => {
         };
         designations.push(fieldLabelDesignation);
     }
-    if (!_.isEmpty(sectionHeader.trim())) {
+    if (!isEmpty(sectionHeader.trim())) {
         sectionHeaderDesignation = {
             designation: sectionHeader.trim(),
             source: 'PhenX',
@@ -30,10 +29,10 @@ parseDesignations = row => {
     }
 
     return designations;
-};
+}
 
-parseValueDomain = row => {
-    let valueDomain = {};
+function parseValueDomain(row) {
+    let valueDomain: any = {};
 
     let fieldNote = row['Field Note'].trim();
     let uomIndex = fieldNote.indexOf('| |');
@@ -71,7 +70,7 @@ parseValueDomain = row => {
                 valueMeaningName: 'No'
             }];
         } else {
-            if (!_.isEmpty(choicesCalculationsORSliderLabels)) {
+            if (!isEmpty(choicesCalculationsORSliderLabels)) {
                 let permissibleValues = [];
                 let pvArray = choicesCalculationsORSliderLabels.split('|');
                 pvArray.forEach(pvText => {
@@ -100,9 +99,9 @@ parseValueDomain = row => {
         throw 'Unknow datatype: ' + fieldType;
     }
     return valueDomain;
-};
+}
 
-parseIds = (formId, row) => {
+function parseIds(formId, row) {
     let ids = [];
     let variableName = row['Variable / Field Name'];
     if (variableName) variableName = variableName.trim();
@@ -114,8 +113,9 @@ parseIds = (formId, row) => {
     }
 
     return ids;
-};
-parseProperties = row => {
+}
+
+function parseProperties(row) {
     let properties = [];
     let fieldNote = row['Field Note'];
     if (fieldNote) fieldNote = fieldNote.trim();
@@ -128,16 +128,18 @@ parseProperties = row => {
     }
 
     return properties;
-};
+}
 
-exports.createCde = async (row, formId, protocol) => {
+export async function createCde(row, formId, protocol) {
     let classificationArray = protocol['classification'];
     let designations = parseDesignations(row);
     let valueDomain = parseValueDomain(row);
     let ids = parseIds(formId, row);
     let properties = parseProperties(row);
 
-    let newCde = {
+    let newCde: any = {
+        created: new Date(),
+        createdBy: batchloader,
         tinyId: generateTinyId(),
         designations: designations,
         stewardOrg: {name: 'PhenX'},
@@ -154,4 +156,4 @@ exports.createCde = async (row, formId, protocol) => {
     classifyItem(newCde, "PhenX", classificationToAdd);
 
     return newCde;
-};
+}
