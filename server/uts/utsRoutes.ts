@@ -7,7 +7,8 @@ export function module() {
     const router = require('express').Router();
 
     router.get('/searchValueSet/:vsacId', [nocacheMiddleware], async (req, res) => {
-        const {vsacId, term, page} = req.params;
+        const vsacId = req.params.vsacId;
+        const {term, page} = req.query;
         let body = await utsSvc.searchValueSet(vsacId, term, page);
         res.send(body);
     });
@@ -21,12 +22,6 @@ export function module() {
     router.get('/searchUmls', [loggedInMiddleware], async (req, res) => {
         let umls = await utsSvc.searchUmls(req.query.searchTerm);
         res.send(umls);
-    });
-
-    router.get('/crossWalkingVocabularies/:source/:code/:targetSource/', async (req, res) => {
-        const {source, code, targetSource} = req.params;
-        let body = await utsSvc.getCrossWalkingVocabularies(source, code, targetSource);
-        res.send(body);
     });
 
     router.get('/umlsPtSource/:cui/:src', async (req, res) => {
