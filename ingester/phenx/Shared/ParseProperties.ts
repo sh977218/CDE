@@ -1,34 +1,52 @@
-const _ = require('lodash');
+import { capitalize, forEach, forOwn, isEmpty, keys, words } from 'lodash';
 
-exports.parseProperties = (measure, protocol) => {
+export function parseProperties(protocol) {
     let properties = [];
 
-    let protocolHtml = protocol['Protocol'];
-    properties.push({key: 'Protocol', value: protocolHtml, valueFormat: 'html', source: 'PhenX'});
+    let protocolHtml = protocol.protocol;
+    if (protocolHtml) {
+        properties.push({key: 'Protocol', value: protocolHtml, valueFormat: 'html', source: 'PhenX'});
+    }
 
-
-    let prop1 = ['Specific Instructions', 'Protocol Name From Source', 'Selection Rationale', 'Life Stage', 'Language', 'Participant', 'Personnel and Training Required', 'Equipment Needs', 'Mode of Administration', 'Derived Variables', 'Process and Review'];
-    _.forEach(prop1, p => {
+    let prop1 = [
+        'protocolNameFromSource',
+        'selectionRationale',
+        'lifeStage',
+        'language',
+        'participants',
+        'personnelAndTrainingRequired',
+        'equipmentNeeds',
+        'modeOfAdministration',
+        'derivedVariables',
+        'processAndReview',
+        'keywords',
+        'source'
+    ];
+    forEach(prop1, p => {
+        let keyArray = words(p);
+        let key = keyArray.reduce((accumulator, currentValue) => {
+            return accumulator + ' ' + capitalize(currentValue);
+        }, '');
         let value = protocol[p];
         if (value) {
-            properties.push({key: p, value: value.trim(), source: 'PhenX'});
+            properties.push({key: key.trim(), value: value.trim(), source: 'PhenX'});
         }
     });
 
-    let prop2 = ['Variables', 'Requirements'];
-    _.forEach(prop2, p => {
+    let prop2 = ['variables', 'requirements'];
+    forEach(prop2, p => {
         let valueArray = protocol[p];
-        if (!_.isEmpty(valueArray)) {
+        if (!isEmpty(valueArray)) {
             let th = '';
-            _.forEach(_.keys(valueArray[0]), head => {
+            forEach(keys(valueArray[0]), head => {
                 th = th + '<th>' + head.trim() + '</th>';
             });
             let thead = '<tr>' + th + '</tr>';
 
             let tr = '';
-            _.forEach(valueArray, valueObj => {
+            forEach(valueArray, valueObj => {
                 let td = '';
-                _.forOwn(valueObj, value => {
+                forOwn(valueObj, value => {
                     if (!value.trim)
                         debugger;
                     td = td + '<td>' + value.trim() + '</td>';
@@ -37,12 +55,12 @@ exports.parseProperties = (measure, protocol) => {
             });
             let tbody = '<tr>' + tr + '</tr>';
             let table = "<table class='table table-striped'>" + thead + tbody + "</table>";
-            properties.push({key: p.trim(), value: table, valueFormat: "html", source: "PhenX"});
+            properties.push({key: capitalize(p).trim(), value: table, valueFormat: "html", source: "PhenX"});
         }
     });
 
-    let standards = protocol['Standards'];
-    if (!_.isEmpty(standards)) {
+    let standards = protocol.standards;
+    if (!isEmpty(standards)) {
         let tbody = '';
         for (let standard of standards) {
             let tr = '<tr>'
@@ -65,11 +83,5 @@ exports.parseProperties = (measure, protocol) => {
 
     }
 
-    let keywords = measure['Keywords'];
-    if (!_.isEmpty(keywords)) {
-        let value = keywords.map(v => v.trim()).join(",");
-        properties.push({key: 'Keywords', value: value, source: "PhenX"});
-    }
-
     return properties;
-};
+}

@@ -1,9 +1,13 @@
-const trimWhite = require('../../shared/utility').trimWhite;
+import { trimWhite } from '../../shared/utility';
 
-exports.parseDesignations = protocol => {
-    let designations = [{
-        designation: trimWhite(protocol.classification[protocol.classification.length - 1]),
-        tags: []
-    }];
+export function parseDesignations(protocol) {
+    let designations = [];
+    let protocolName = protocol.protocolName.replace('Protocol - ', '');
+    if (protocolName) {
+        designations.push({
+            designation: trimWhite(protocolName),
+            tags: []
+        })
+    }
     return designations;
-};
+}
