@@ -1,3 +1,0 @@
-exports.map = {
-    'Active': 'Qualified'
-};
