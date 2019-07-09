@@ -61,9 +61,9 @@
       "build/**",
       "**/server/siteAdmin/status*"
     ],
-    "lines": "85",
-    "branches": "75",
-    "functions": "90",
+    "lines": "97",
+    "branches": "81",
+    "functions": "97",
     "reporter": "html"
   },
   "dependencies": {

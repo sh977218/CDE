@@ -8,8 +8,8 @@ export function module() {
     const router = require('express').Router();
 
     router.post('/addSiteAdmin', (req, res) => {
-        let username = req.body.username;
-        if (!username) return res.status(400).send();
+        const username = req.body.username;
+        if (!username) return res.status(422).send();
         userDb.userByUsername(username, handleError({req, res}, user => {
             if (!user) return res.status(404).send();
             user.siteAdmin = true;
@@ -19,9 +19,9 @@ export function module() {
 
     router.post('/removeSiteAdmin', (req, res) => {
         let username = req.body.username;
-        if (!username) return res.status(400).send();
+        if (!username) return res.status(422).send();
         userDb.userByUsername(username, handleError({req, res}, user => {
-            if (!user) return res.send("Unknown Username");
+            if (!user) return res.status(404).send("Unknown Username");
             user.siteAdmin = false;
             user.save(handleError({req, res}, () => res.send()));
         }));
