@@ -4,6 +4,8 @@ import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import static io.restassured.RestAssured.get;
+
 public class BoardViewTest extends BoardTest {
 
     @Test
@@ -63,4 +65,10 @@ public class BoardViewTest extends BoardTest {
         clickBoardHeaderByName(boardName);
         textPresent("Added to Board");
     }
+
+    @Test
+    public void pageTooFar() {
+        get("/server/board/abc/0, 1000").then().statusCode(400);
+    }
+
 }

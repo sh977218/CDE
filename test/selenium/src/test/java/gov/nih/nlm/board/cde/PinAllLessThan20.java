@@ -1,8 +1,11 @@
 package gov.nih.nlm.board.cde;
 
+import io.restassured.http.Cookie;
 import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import static io.restassured.RestAssured.given;
 
 public class PinAllLessThan20 extends BoardTest {
 
@@ -30,5 +33,15 @@ public class PinAllLessThan20 extends BoardTest {
         int num_cde_after_pinAll_int = getNumberElementsByBoardName(boardName);
         Assert.assertEquals(searchResultNum_int, num_cde_after_pinAll_int);
     }
+
+    @Test
+    public void unpinPerm() {
+        mustBeLoggedInAs(reguser_username, password);
+        Cookie myCookie = getCurrentCookie();
+        // this board is owned by boardUser
+        given().cookie(myCookie).body("{boardId: '575046ad89949d54384ee60a'}")
+                .post(baseUrl + "/server/board/pinEntireSearchToBoard").then().statusCode(401);
+    }
+
 
 }
