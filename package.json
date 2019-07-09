@@ -54,7 +54,8 @@
       "**/server/log/*",
       "**/server/notification",
       "**/server/siteAdmin",
-      "**/server/user/*"
+      "**/server/user/*",
+      "**/server/uts/*"
     ],
     "exclude": [
       "build/**",
