@@ -5,6 +5,7 @@ export function removeWhite(text) {
     if (!text) return '';
     return text.replace(/\s+/g, ' ');
 }
+
 export function wipeUseless(toWipeCde) {
     delete toWipeCde._id;
     delete toWipeCde.history;
@@ -33,12 +34,12 @@ export function trimWhite(text) {
     }
 }
 
-export function printUpdateResult(updateResult, type) {
+export function printUpdateResult(updateResult, elt) {
     if (updateResult.nModified) {
-        console.log(updateResult.nModified + ' ' + type + ' source modified: ');
+        console.log(`${updateResult.nModified} ${elt.type} source modified: ${elt.tinyId}`);
     }
     if (updateResult.upserted && updateResult.upserted.length) {
-        console.log(updateResult.upserted.length + ' ' + type + ' source inserted: ');
+        console.log(`${updateResult.upserted.length} ${elt.type} source inserted: ${elt.tinyId}`);
     }
 }
 

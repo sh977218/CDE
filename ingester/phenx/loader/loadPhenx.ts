@@ -104,7 +104,7 @@ process.on('unhandledRejection', function (error) {
                 throw'Error await FormSource.updateOne({tinyId: existingForm.tinyId}: ' + e;
             });
 
-            printUpdateResult(updateResult, 'form');
+            printUpdateResult(updateResult, existingForm);
 
             console.log('Finished protocol: ' + protocolId);
         }).then(async () => {

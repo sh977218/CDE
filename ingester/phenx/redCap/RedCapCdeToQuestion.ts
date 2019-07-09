@@ -1,5 +1,5 @@
 import { words } from 'capitalize';
-import { batchloader } from '../../../shared/updatedByLoader';
+import { batchloader } from '../../shared/updatedByLoader';
 import { convertSkipLogic } from './BranchLogic';
 import { map as REDCAP_MULTISELECT_MAP } from './REDCAP_MULTISELECT_MAP';
 

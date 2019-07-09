@@ -1,7 +1,8 @@
 import { isEmpty } from 'lodash';
-import { Form, updatePromise } from '../../../server/form/mongo-form';
+import { Form } from '../../../server/form/mongo-form';
 import { batchloader, updatedByLoader } from '../../shared/updatedByLoader';
 import { compareForm, createForm, mergeForm } from '../Form/form';
+import { updateForm } from '../../shared/utility';
 
 export async function runOneForm(loinc, orgInfo) {
     let formCond = {
@@ -33,7 +34,7 @@ export async function runOneForm(loinc, orgInfo) {
             await mergeForm(newForm, existingForm).catch(e => {
                 throw 'Error MergeForm.mergeForm: ' + e;
             });
-            await updatePromise(existingForm, batchloader).catch(e => {
+            await updateForm(existingForm, batchloader).catch(e => {
                 throw 'Error mongo_form.updatePromise: ' + e;
             });
         }

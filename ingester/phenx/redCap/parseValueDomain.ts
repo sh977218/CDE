@@ -1,4 +1,5 @@
-import { map as RED_CAP_DATA_TYPE_MAP } from 'ingester/phenx/redCap/REDCAP_DATATYPE_MAP';
+import { isEmpty } from 'lodash';
+import { map as RED_CAP_DATA_TYPE_MAP } from './REDCAP_DATATYPE_MAP';
 
 export function parseValueDomain(row) {
     let valueDomain: any = {};

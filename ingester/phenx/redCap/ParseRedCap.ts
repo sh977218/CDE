@@ -98,7 +98,7 @@ async function doQuestion(redCapCde, redCapCdes, formId, protocol, newForm) {
     let updateResult = await DataElementSource.updateOne({tinyId: existingCde.tinyId}, newCdeObj, {upsert: true}).catch(e => {
         throw'Error await DataElementSource.updateOne({tinyId: existingCde.tinyId}: ' + e;
     });
-    printUpdateResult(updateResult, 'data element');
+    printUpdateResult(updateResult, existingCde);
 
     let question = await convert(redCapCde, redCapCdes, existingCde, newForm);
     return question;
