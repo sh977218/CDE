@@ -24,7 +24,7 @@ public class RemoveSiteAdmin extends NlmCdeBaseTest {
     public void removeWrongUser() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         Cookie myCookie = getCurrentCookie();
-        given().cookie(myCookie).post(baseUrl + "/server/siteAdmin/removeSiteAdmin").then().statusCode(422);
+        given().cookie(myCookie).body("{}").post(baseUrl + "/server/siteAdmin/removeSiteAdmin").then().statusCode(422);
     }
 
 }
