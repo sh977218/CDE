@@ -55,7 +55,8 @@ myStream.on('data', function (form) {
                     }
                     areYouDone();
                 });
-            } else {
+            }
+            else {
                 getQuestions(fe.formElements);
             }
         });

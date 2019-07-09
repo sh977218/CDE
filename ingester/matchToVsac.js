@@ -9,9 +9,9 @@ mongoose.connect(mongoUri);
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function callback() {
-    console.log('mongodb connection open');
-});
+db.once('open', function callback () {
+	console.log('mongodb connection open');
+    });
 
 var schemas = require('../node-js/schemas');
 
@@ -21,18 +21,16 @@ var replaceMap = [
     {
         name: "Administrative Sex"
         , match: ['Male', 'Female']
-        , conceptualDomain: {
-            vsac:
-                {
-                    "id": "2.16.840.1.113762.1.4.1",
-                    "name": "ONC Administrative Sex",
-                    "version": "20121025"
-                }
-        }
+        , conceptualDomain: {vsac: 
+            {
+                "id" : "2.16.840.1.113762.1.4.1",
+                "name" : "ONC Administrative Sex",
+                "version" : "20121025"
+            }}  
     }
 ];
 
-for (var m = 0; m < replaceMap.length; m++) {
+for (var m  = 0; m < replaceMap.length; m++) {
     var toDo = replaceMap[m];
     console.log("Matching: " + toDo.name);
     DataElement.find({"valueDomain.permissibleValues.permissibleValue": {"$all": toDo.match}}).where("archived").equals(null).exec(function (err, result) {
@@ -45,15 +43,15 @@ for (var m = 0; m < replaceMap.length; m++) {
             console.log("updating: " + id);
             DataElement.updateOne({'_id': id}, elt, function (err, savedElt) {
                 if (err)
-                    console.log(err);
+                    console.log(err);   
             });
         }
     });
     console.log('Done');
 
     // wait 5 secs for mongoose to do it's thing before closing.  
-    setTimeout((function () {
+    setTimeout((function() {
         process.exit();
     }), 5000);
-
-}
+    
+};
