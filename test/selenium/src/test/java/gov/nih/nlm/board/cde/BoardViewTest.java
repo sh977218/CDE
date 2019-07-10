@@ -68,7 +68,7 @@ public class BoardViewTest extends BoardTest {
 
     @Test
     public void pageTooFar() {
-        get("/server/board/abc/0/1000").then().statusCode(400);
+        get(baseUrl + "/server/board/abc/0/1000").then().statusCode(400);
     }
 
 }

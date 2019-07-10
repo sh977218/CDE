@@ -56,26 +56,26 @@ public class PinReorderingTest extends BoardTest {
         Cookie myCookie = getCurrentCookie();
         // this board is owned by boardUser
         given().cookie(myCookie).body("{boardId: '575046ad89949d54384ee60a'}")
-                .post(baseUrl + "/server/board/pinMoveUp").then().statusCode(401);
+                .post(baseUrl + "/server/board/pinMoveUp").then().statusCode(404);
 
         given().cookie(myCookie).body("{boardId: '575046ad89949d54384ee60a'}")
-                .post(baseUrl + "/server/board/pinMoveDown").then().statusCode(401);
+                .post(baseUrl + "/server/board/pinMoveDown").then().statusCode(404);
 
         given().cookie(myCookie).body("{boardId: '575046ad89949d54384ee60a'}")
-                .post(baseUrl + "/server/board/pinMoveTop").then().statusCode(401);
+                .post(baseUrl + "/server/board/pinMoveTop").then().statusCode(404);
     }
 
     @Test
     public void reorderWrongId() {
         mustBeLoggedInAs(unpinUser, password);
         Cookie myCookie = getCurrentCookie();
-        given().cookie(myCookie).body("{boardId: '57114b5328329938330f5c7f', tinyId: 'Wrong'}")
+        given().cookie(myCookie).body("{'boardId': '57114b5328329938330f5c7f', tinyId: 'Wrong'}")
                 .post(baseUrl + "/server/board/pinMoveUp").then().statusCode(422);
 
-        given().cookie(myCookie).body("{boardId: '57114b5328329938330f5c7f', tinyId: 'Wrong'}")
+        given().cookie(myCookie).body("{'boardId': '57114b5328329938330f5c7f', tinyId: 'Wrong'}")
                 .post(baseUrl + "/server/board/pinMoveDown").then().statusCode(422);
 
-        given().cookie(myCookie).body("{boardId: '57114b5328329938330f5c7f', tinyId: 'Wrong'}")
+        given().cookie(myCookie).body("{'boardId': '57114b5328329938330f5c7f', tinyId: 'Wrong'}")
                 .post(baseUrl + "/server/board/pinMoveTop").then().statusCode(422);
     }
 

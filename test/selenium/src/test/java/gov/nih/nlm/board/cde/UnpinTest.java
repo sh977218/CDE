@@ -25,15 +25,15 @@ public class UnpinTest extends BoardTest {
         Cookie myCookie = getCurrentCookie();
         // this board is owned by boardUser
         given().cookie(myCookie).body("{boardId: '575046ad89949d54384ee60a'}")
-                .post(baseUrl + "/server/board/deletePin").then().statusCode(401);
+                .post(baseUrl + "/server/board/deletePin").then().statusCode(404);
     }
 
     @Test
     public void unpinBadIndex() {
         mustBeLoggedInAs(unpinUser, password);
         Cookie myCookie = getCurrentCookie();
-        given().cookie(myCookie).body("{boardId: '57114b5328329938330f5c7f', tinyId: 'wrong'}")
-                .post(baseUrl + "/server/board/deletePin").then().statusCode(401);
+        given().cookie(myCookie).body("{'boardId': '57114b5328329938330f5c7f', tinyId: 'wrong'}")
+                .post(baseUrl + "/server/board/deletePin").then().statusCode(422);
     }
 
 

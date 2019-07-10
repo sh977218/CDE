@@ -23,7 +23,7 @@ public class RemoveBoardTest extends BoardTest {
         mustBeLoggedInAs(reguser_username, password);
         Cookie myCookie = getCurrentCookie();
         // this board is owned by boardUser
-        given().cookie(myCookie).delete(baseUrl + "/server/board/575046ad89949d54384ee60a").then().statusCode(401);
+        given().cookie(myCookie).delete(baseUrl + "/server/board/575046ad89949d54384ee60a").then().statusCode(404);
     }
 
 }
