@@ -41,7 +41,7 @@ public class PinCdesIntoBoardTest extends BoardTest {
         Cookie myCookie = getCurrentCookie();
         // this board is owned by boardUser
         given().cookie(myCookie).body("{boardId: '575046ad89949d54384ee60a'}")
-                .put(baseUrl + "/server/board/pinToBoard").then().statusCode(401);
+                .put(baseUrl + "/server/board/pinToBoard").then().statusCode(404);
     }
 
 }

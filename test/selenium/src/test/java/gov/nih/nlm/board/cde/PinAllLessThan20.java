@@ -40,7 +40,7 @@ public class PinAllLessThan20 extends BoardTest {
         Cookie myCookie = getCurrentCookie();
         // this board is owned by boardUser
         given().cookie(myCookie).body("{boardId: '575046ad89949d54384ee60a'}")
-                .post(baseUrl + "/server/board/pinEntireSearchToBoard").then().statusCode(401);
+                .post(baseUrl + "/server/board/pinEntireSearchToBoard").then().statusCode(404);
     }
 
 

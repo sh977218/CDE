@@ -11,6 +11,7 @@ const conn = connHelper.establishConnection(config.database.appData);
 
 const elastic = require('./elastic');
 import { handleError } from '../errorHandler/errHandler';
+import { ObjectId } from '../system/mongo-data';
 
 // for DAO manager
 export const type = 'board';
@@ -90,6 +91,10 @@ export function nbBoardsByUserId(userId, callback) {
 
 export function boardById(boardId, callback) {
     PinningBoard.findById(boardId, callback);
+}
+
+export function byIdAndOwner(boardId, ownerId) {
+    return PinningBoard.findOne({_id: ObjectId(boardId), "owner.userId": ownerId}).exec();
 }
 
 export const byId = boardById;
