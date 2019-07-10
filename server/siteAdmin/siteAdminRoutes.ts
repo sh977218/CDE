@@ -10,8 +10,7 @@ export function module() {
     router.post('/addSiteAdmin', (req, res) => {
         const username = req.body.username;
         if (!username) return res.status(422).send();
-        userDb.userByUsername(username, handleError({req, res}, user => {
-            if (!user) return res.status(404).send();
+        userDb.userByUsername(username, handle404({req, res}, user => {
             user.siteAdmin = true;
             user.save(handleError({req, res}, () => res.send()));
         }));
