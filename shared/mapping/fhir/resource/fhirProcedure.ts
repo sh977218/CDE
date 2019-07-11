@@ -1,5 +1,5 @@
-import { toRef } from '../../../../shared/mapping/fhir/datatype/fhirReference';
-import { FhirEncounter, FhirPatient, FhirProcedure } from '../../../../shared/mapping/fhir/fhirResource.model';
+import { toRef } from 'shared/mapping/fhir/datatype/fhirReference';
+import { FhirEncounter, FhirPatient, FhirProcedure } from 'shared/mapping/fhir/fhirResource.model';
 
 export function newProcedure(patient: FhirPatient, encounter?: FhirEncounter): FhirProcedure {
     return {

@@ -1,5 +1,6 @@
-import { CdeForm, CdeFormElastic } from '../shared/form/form.model';
-import { DataElement, DataElementElastic } from '../shared/de/dataElement.model';
+import { CdeForm, CdeFormElastic } from 'shared/form/form.model';
+import { DataElement, DataElementElastic } from 'shared/de/dataElement.model';
+import { Dictionary } from 'async';
 
 export function assertThrow(): never {
     throw new Error('Please submit a bug report.');
@@ -505,16 +506,18 @@ export class Source {
 
 export class StatusValidationRules {
     id!: number;
-    field?: string;
+    field!: string;
     occurence?: 'exactlyOne' | 'atLeastOne' | 'all';
-    rule: {
+    rule!: {
+        customValidations?: 'permissibleValuesUMLS'[],
         regex?: string
-    } = {};
-    ruleName?: string;
-    targetStatus?: CurationStatus;
+    };
+    ruleName!: string;
+    targetStatus!: CurationStatus;
 }
 
-export type StatusValidationRulesOrgs = { [org: string]: StatusValidationRules[] };
+export type StatusValidationRulesByOrg = Dictionary<StatusValidationRules[]>; // by Organization Name
+export type StatusValidationRulesByOrgReg = Dictionary<StatusValidationRulesByOrg>; // by Registration Status
 
 export type TableViewFields = {
     administrativeStatus?: boolean,

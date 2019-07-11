@@ -1,4 +1,4 @@
-import { isOrgAdmin } from '../../shared/system/authorizationShared';
+import { isOrgAdmin } from 'shared/system/authorizationShared';
 
 const mongo_data = require('./mongo-data');
 const daoManager = require('./moduleDaoManager');

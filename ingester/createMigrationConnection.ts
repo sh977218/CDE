@@ -1,8 +1,8 @@
 import { createConnection, Schema } from 'mongoose';
-import { deJson } from '../server/cde/schemas';
-import { formJson } from '../server/form/schemas';
-import { config } from '../server/system/parseConfig';
-import { orgJson } from '../server/system/schemas';
+import { deJson } from 'server/cde/schemas';
+import { formJson } from 'server/form/schemas';
+import { config } from 'server/system/parseConfig';
+import { orgJson } from 'server/system/schemas';
 
 let migrationConfig = config.database.migration;
 

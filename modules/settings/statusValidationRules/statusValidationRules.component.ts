@@ -1,11 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import _noop from 'lodash/noop';
-
-import { OrgHelperService } from 'non-core/orgHelper.service';
-import { Organization, StatusValidationRules, StatusValidationRulesOrgs } from 'shared/models.model';
 import { MatDialog, MatDialogRef } from '@angular/material';
-
+import _noop from 'lodash/noop';
+import { OrgHelperService } from 'non-core/orgHelper.service';
+import { Organization, StatusValidationRules, StatusValidationRulesByOrg } from 'shared/models.model';
+import { updateTag } from 'shared/system/util';
 
 @Component({
     templateUrl: './statusValidationRules.component.html'
@@ -15,56 +14,57 @@ export class StatusValidationRulesComponent implements OnInit {
     @ViewChild('addNewRuleModal') addNewRuleModal!: TemplateRef<any>;
     dialogRef?: MatDialogRef<TemplateRef<any>>;
     fields: string[] = [
-        'stewardOrg.name'
-        , 'properties.key'
-        , 'valueDomain.permissibleValues.codeSystemName'
-        , 'valueDomain.permissibleValues.permissibleValue'
-        , 'valueDomain.permissibleValues.valueMeaningName'
-        , 'valueDomain.permissibleValues.valueMeaningCode'
-        , 'version'
-        , 'ids.version'
-        , 'ids.source'
-        , 'source'
-        , 'origin'
-        , 'objectClass.concepts.name'
-        , 'objectClass.concepts.origin'
-        , 'objectClass.concepts.originId'
-        , 'property.concepts.name'
-        , 'property.concepts.origin'
-        , 'property.concepts.originId'
-        , 'dataElementConcept.concepts.name'
-        , 'dataElementConcept.concepts.origin'
-        , 'dataElementConcept.concepts.originId'
-        , 'dataElementConcept.conceptualDomain.vsac.id'
-        , 'dataElementConcept.conceptualDomain.vsac.name'
-        , 'dataElementConcept.conceptualDomain.vsac.version'
-        , 'valueDomain.datatype'
-        , 'valueDomain.uom'
-        , 'valueDomain.ids.source'
-        , 'valueDomain.ids.id'
-        , 'valueDomain.ids.version'
-        , 'referenceDocuments.referenceDocumentId'
-        , 'referenceDocuments.document'
-        , 'referenceDocuments.uri'
-        , 'referenceDocuments.title'
+        'ids.source',
+        'ids.version',
+        'dataElementConcept.concepts.name',
+        'dataElementConcept.concepts.origin',
+        'dataElementConcept.concepts.originId',
+        'dataElementConcept.conceptualDomain.vsac.id',
+        'dataElementConcept.conceptualDomain.vsac.name',
+        'dataElementConcept.conceptualDomain.vsac.version',
+        'objectClass.concepts.name',
+        'objectClass.concepts.origin',
+        'objectClass.concepts.originId',
+        'origin',
+        'properties.key',
+        'property.concepts.name',
+        'property.concepts.origin',
+        'property.concepts.originId',
+        'referenceDocuments.document',
+        'referenceDocuments.referenceDocumentId',
+        'referenceDocuments.title',
+        'referenceDocuments.uri',
+        'source',
+        'stewardOrg.name',
+        'valueDomain.datatype',
+        'valueDomain.ids.source',
+        'valueDomain.ids.id',
+        'valueDomain.ids.version',
+        'valueDomain.permissibleValues',
+        'valueDomain.permissibleValues.codeSystemName',
+        'valueDomain.permissibleValues.permissibleValue',
+        'valueDomain.permissibleValues.valueMeaningName',
+        'valueDomain.permissibleValues.valueMeaningCode',
+        'valueDomain.uom',
+        'version'
     ];
-    orgNames: string[] = [];
-    newRule: StatusValidationRules = {id: Math.random(), rule: {}};
+    newRule: StatusValidationRules = {field: '', id: Math.random(), rule: {}, ruleName: '', targetStatus: 'Incomplete'};
+    newRuleCustomValidationPvUmls = false;
     newRuleOrg = '';
-    userOrgs: StatusValidationRulesOrgs = {};
+    orgNames: string[] = [];
+    userOrgs: StatusValidationRulesByOrg = {};
     userOrgsArray: string[] = [];
 
     constructor(
         private http: HttpClient,
         public dialog: MatDialog,
         private orgHelperService: OrgHelperService,
-    ) {
-    }
+    ) {}
 
     ngOnInit() {
         this.orgHelperService.then(orgsDetailedInfo => {
             this.orgNames = Object.keys(orgsDetailedInfo);
-            this.orgNames.forEach(orgName => {
+            Object.keys(orgsDetailedInfo).forEach(orgName => {
                 this.userOrgs[orgName] = orgsDetailedInfo[orgName].cdeStatusValidationRules || [];
             });
             this.userOrgsArray = Object.keys(this.userOrgs).sort();
@@ -73,24 +73,26 @@ export class StatusValidationRulesComponent implements OnInit {
 
     disableRule(orgName: string, rule: StatusValidationRules) {
         // @TODO does not refresh page
-        this.dialog.open(this.removeRuleModal).afterClosed().subscribe(res => {
-            if (res) {
-                this.http.post<Organization>('/disableRule', {orgName: orgName, rule: rule}).subscribe(response => {
-                    this.userOrgs[orgName] = response.cdeStatusValidationRules || [];
-                });
-            }
-        }, () => {
-        });
+       this.dialog.open(this.removeRuleModal).afterClosed().subscribe(res => {
+           if (res) {
+               this.http.post<Organization>('/disableRule', {orgName: orgName, rule: rule}).subscribe(response => {
+                   this.userOrgs[orgName] = response.cdeStatusValidationRules || [];
+               });
+           }
+       }, _noop);
     }
 
     saveRule() {
+        if (this.newRule.field === 'valueDomain.permissibleValues') {
+            this.newRule.rule.customValidations = updateTag(this.newRule.rule.customValidations,
+                this.newRuleCustomValidationPvUmls, 'permissibleValuesUMLS');
+        }
         this.http.post<Organization>('/enableRule', {
             orgName: this.newRuleOrg,
             rule: this.newRule
-        }).subscribe(response => {
-            this.userOrgs[this.newRuleOrg] = response.cdeStatusValidationRules || [];
-        }, () => {
-        });
+        }).subscribe(org => {
+            this.userOrgs[this.newRuleOrg] = org.cdeStatusValidationRules || [];
+        }, () => {});
         this.dialogRef!.close();
     }
 

@@ -1,9 +1,11 @@
+import { Elt } from 'shared/models.model';
+
 const Ajv = require('ajv');
 const config = require('config');
 const mongo_cde = require('../server/cde/mongo-cde');
 const verifyElt = require('./verifyElt');
 
-let filter = () => false;
+let filter = (elt: Elt) => false;
 const devBlacklist = ['XyEbt94V_'];
 if (config.publicUrl === 'http://localhost:3001') { // DEV
     filter = elt => devBlacklist.includes(elt.tinyId);

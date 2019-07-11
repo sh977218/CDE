@@ -196,6 +196,8 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     totalItemsLimited?: number;
     trackByKey = trackByKey;
     trackByName = trackByName;
+    validRulesOrg?: string;
+    validRulesOrgs?: string[];
     validRulesStatus?: CurationStatus;
     view?: 'welcome' | 'results';
 
@@ -578,18 +580,25 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     openValidRulesModal() {
-        this.validRulesStatus = 'Incomplete';
-        this.dialog.open(this.validRulesModal).afterClosed().subscribe(report => {
-            if (!report) return;
-            report.searchSettings = this.searchSettings;
-            delete report.searchSettings.resultPerPage;
-            this.router.navigate(['/cdeStatusReport'], {
-                queryParams: {
-                    searchSettings: JSON.stringify(report.searchSettings),
-                    status: report.status
-                }
+        this.orgHelperService.then(orgsDetailedInfo => {
+            this.validRulesOrgs = Object.keys(orgsDetailedInfo).sort();
+            this.validRulesStatus = 'Incomplete';
+            this.validRulesOrg = orgsDetailedInfo[this.searchSettings.selectedOrg]
+                ? this.searchSettings.selectedOrg
+                : this.validRulesOrgs[0];
+            this.dialog.open(this.validRulesModal).afterClosed().subscribe((submitted: boolean) => {
+                if (!submitted) return;
+                const searchSettings = {...this.searchSettings};
+                searchSettings.selectedOrg = this.validRulesOrg;
+                delete searchSettings.resultPerPage;
+                this.router.navigate(['/cdeStatusReport'], {
+                    queryParams: {
+                        searchSettings: JSON.stringify(searchSettings),
+                        status: this.validRulesStatus
+                    }
+                });
+            }, () => {
             });
-        }, () => {
         });
     }
 

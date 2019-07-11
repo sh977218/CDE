@@ -1,10 +1,12 @@
+import { Elt } from 'shared/models.model';
+
 const Ajv = require('ajv');
 const config = require('config');
-import { iterateFeSync } from '../shared/form/fe';
+import { iterateFeSync } from 'shared/form/fe';
 const mongo_form = require('../server/form/mongo-form');
 const verifyElt = require('./verifyElt');
 
-let filter = () => false;
+let filter = (elt: Elt) => false;
 const devBlacklist = ['QJgAXYdXv'];
 if (config.publicUrl === 'http://localhost:3001') { // DEV
     filter = elt => devBlacklist.includes(elt.tinyId);

@@ -1,5 +1,5 @@
-import { FhirReference } from '../../../../shared/mapping/fhir/fhir.model';
-import { FhirDomainResource } from '../../../../shared/mapping/fhir/fhirResource.model';
+import { FhirReference } from 'shared/mapping/fhir/fhir.model';
+import { FhirDomainResource } from 'shared/mapping/fhir/fhirResource.model';
 
 export function asRefString(resource: FhirDomainResource): string {
     return resource.resourceType + '/' + resource.id;

@@ -20,7 +20,6 @@ const ticketValidationOptions = {
 };
 
 const parser = new xml2js.Parser();
-const auth = this;
 
 passport.serializeUser(function (user, done) {
     done(null, user._id);
@@ -124,7 +123,7 @@ export function authBeforeVsac(req, username, password, done) {
                     if (result === undefined) {
                         return done(null, false, {message: 'UMLS UTS login server is not available.'});
                     } else if (result.indexOf("true") > 0) {
-                        auth.findAddUserLocally({username: username, ip: req.ip}, user => {
+                        findAddUserLocally({username: username, ip: req.ip}, user => {
                             return done(null, user);
                         });
                     } else {
@@ -143,14 +142,14 @@ export function authBeforeVsac(req, username, password, done) {
                     });
                 } else {
                     // Update user info in datastore
-                    return auth.updateUserAfterLogin(user, req.ip, done);
+                    return updateUserAfterLogin(user, req.ip, done);
                 }
             }
         });
     });
 }
 
-passport.use(new LocalStrategy({passReqToCallback: true}, this.authBeforeVsac));
+passport.use(new LocalStrategy({passReqToCallback: true}, authBeforeVsac));
 
 export function findAddUserLocally(profile, cb) {
     mongo_data_system.userByName(profile.username, function (err, user) {
@@ -165,10 +164,10 @@ export function findAddUserLocally(profile, cb) {
                     accessToken: profile.accessToken,
                     refreshToken: profile.refreshToken
                 },  (err, newUser) => {
-                    auth.updateUserAfterLogin(newUser, profile.ip, (err, newUser) => cb(newUser));
+                    updateUserAfterLogin(newUser, profile.ip, (err, newUser) => cb(newUser));
                 });
         } else {
-            auth.updateUserAfterLogin(user, profile.ip, () => {
+            updateUserAfterLogin(user, profile.ip, () => {
                 mongo_data_system.User.findByIdAndUpdate(user._id,
                     {accessToken: profile.accessToken, refreshToken: profile.refreshToken}, (err, user) => cb(user));
             });
@@ -180,11 +179,11 @@ export function ticketAuth(req, res, next) {
     if (!req.query.ticket || req.query.ticket.length <= 0) {
         next();
     } else {
-        auth.ticketValidate(req.query.ticket, function (err, username) {
+        ticketValidate(req.query.ticket, function (err, username) {
             if (err) {
                 next();
             } else {
-                auth.findAddUserLocally({username: username, ip: req.ip}, function (user) {
+                findAddUserLocally({username: username, ip: req.ip}, function (user) {
                     if (user) req.user = user;
                     next();
                 });

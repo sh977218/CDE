@@ -1,7 +1,8 @@
-import { loggedInMiddleware, nocacheMiddleware } from '../system/authorization';
-import { config } from '../system/parseConfig';
-
-const utsSvc = require('./utsSvc');
+import { loggedInMiddleware, nocacheMiddleware } from 'server/system/authorization';
+import { config } from 'server/system/parseConfig';
+import {
+    getAtomsFromUMLS, getSourcePT, getValueSet, searchUmls, searchValueSet, umlsCuiFromSrc
+} from 'server/uts/utsSvc';
 
 export function module() {
     const router = require('express').Router();
@@ -9,18 +10,18 @@ export function module() {
     router.get('/searchValueSet/:vsacId', [nocacheMiddleware], async (req, res) => {
         const vsacId = req.params.vsacId;
         const {term, page} = req.query;
-        let body = await utsSvc.searchValueSet(vsacId, term, page);
+        let body = await searchValueSet(vsacId, term, page);
         res.send(body);
     });
 
     router.get('/vsacBridge/:vsacId', [nocacheMiddleware], async (req, res) => {
         let vsacId = req.params.vsacId;
-        let vsacCodeXml = await utsSvc.getValueSet(vsacId, res);
+        let vsacCodeXml = await getValueSet(vsacId);
         res.send(vsacCodeXml);
     });
 
     router.get('/searchUmls', [loggedInMiddleware], async (req, res) => {
-        let umls = await utsSvc.searchUmls(req.query.searchTerm);
+        let umls = await searchUmls(req.query.searchTerm);
         res.send(umls);
     });
 
@@ -32,7 +33,7 @@ export function module() {
         if (config.umls.sourceOptions[source].requiresLogin && !req.user) {
             return res.status(403).send();
         }
-        let result = await utsSvc.getSourcePT(req.params.cui, source);
+        let result = await getSourcePT(req.params.cui, source);
         res.send(result);
     });
 
@@ -46,7 +47,7 @@ export function module() {
         if (config.umls.sourceOptions[source].requiresLogin && !req.user) {
             return res.status(403).send();
         }
-        let result = await utsSvc.getAtomsFromUMLS(id, source);
+        let result = await getAtomsFromUMLS(id, source);
         res.send(result);
     });
 
@@ -59,7 +60,7 @@ export function module() {
         if (!config.umls.sourceOptions[source]) {
             return res.status(404).send('Source cannot be looked up, use UTS instead.');
         }
-        let result = await utsSvc.umlsCuiFromSrc(id, source);
+        let result = await umlsCuiFromSrc(id, source);
         res.send(result);
     });
 

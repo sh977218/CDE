@@ -1,6 +1,6 @@
 import * as Parser from 'rss-parser';
-import { byKey, update } from '../../server/article/articleDb';
-import { handleError } from '../../server/errorHandler/errHandler';
+import { byKey, update } from 'server/article/articleDb';
+import { handleError } from 'server/errorHandler/errorHandler';
 
 const parser = new Parser();
 

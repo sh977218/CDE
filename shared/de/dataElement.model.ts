@@ -1,6 +1,5 @@
-import { Document, MongooseDocument } from 'mongoose';
-import { CdeId, DerivationRule, Elt, MongooseType, PermissibleValue } from '../../shared/models.model';
-import { fixDataElement } from '../../shared/de/deValidator';
+import { CdeId, DerivationRule, Elt, PermissibleValue } from 'shared/models.model';
+import { fixDataElement } from 'shared/de/deValidator';
 
 export class Concept {
     name?: string;
@@ -63,6 +62,7 @@ export class DataElementElastic extends DataElement { // all volatile
     [key: string]: any; // used for highlighting
     flatClassifications?: string[];
     highlight?: any;
+    linkedForms?: string;
     primaryDefinitionCopy?: string;
     primaryNameCopy?: string;
     primaryNameSuggest?: string;
@@ -127,7 +127,18 @@ export type DataType =
     | 'Text'
     | 'Dynamic Code List'
     | 'Externally Defined';
-export const DataTypeArray = ['Value List', 'Date', 'Time', 'File', 'Geo Location', 'Number', 'Text', 'Dynamic Code List', 'Externally Defined'];
+
+export const DataTypeArray = [
+    'Value List',
+    'Date',
+    'Time',
+    'File',
+    'Geo Location',
+    'Number',
+    'Text',
+    'Dynamic Code List',
+    'Externally Defined'
+];
 
 export class DatatypeContainer {
     datatype: DataType = 'Text';  // require
