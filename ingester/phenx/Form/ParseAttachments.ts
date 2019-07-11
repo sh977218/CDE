@@ -2,6 +2,7 @@ import { createReadStream, existsSync, readdirSync, statSync } from 'fs';
 import * as md5File from 'md5-file';
 import { gfs } from '../../../server/system/mongo-data';
 import { batchloader } from '../../shared/updatedByLoader';
+import * as AdmZip from 'adm-zip';
 
 const toolkit_content = 's:/MLB/CDE/PhenX/www.phenxtoolkit.org/toolkit_content';
 const pdfFolder = toolkit_content + '/PDF/';
@@ -90,10 +91,21 @@ async function doImg(imgFolder) {
 }
 
 export async function parseAttachments(protocol) {
-    let attachments = [];
     let protocolId = protocol.protocolID;
-    while (protocol.length < 6) {
-        protocolId = '0' + protocolId;
+    if (protocol.length < 6) {
+        let veryLongProtocolId = '0000000' + protocolId;
+        protocolId = veryLongProtocolId.substr(veryLongProtocolId.length - 5);
+    }
+    let zipFile = zipFolder + 'PX' + protocolId + '.zip';
+    if (existsSync(zipFile)) {
+        let zip = new AdmZip(zipFile);
+        zip.extractAllTo(zipFolder + 'PX' + protocolId, true);
+    }
+
+    let attachments = [];
+    if (protocol.length < 6) {
+        let veryLongProtocolId = '0000000' + protocolId;
+        protocolId = veryLongProtocolId.substr(veryLongProtocolId.length - 5);
     }
 
     let pdfFileName = 'PX' + protocolId + '.pdf';

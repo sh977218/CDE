@@ -1,9 +1,5 @@
 import { cloneDeep, isEmpty } from 'lodash';
 import { diff as deepDiff } from 'deep-diff';
-import * as AdmZip from 'adm-zip';
-import { existsSync } from 'fs';
-import { transferClassifications } from '../../../shared/system/classificationShared';
-import { Comment } from '../../../server/discuss/discussDb';
 import { generateTinyId } from '../../../server/system/mongo-data';
 import { batchloader } from '../../shared/updatedByLoader';
 import { parseDesignations } from '../../phenx/Shared/ParseDesignations';
@@ -20,12 +16,6 @@ const today = new Date().toJSON();
 const zipFolder = 's:/MLB/CDE/PhenX/www.phenxtoolkit.org/toolkit_content/redcap_zip/';
 
 export async function createForm(protocol) {
-    let protocolId = protocol.protocolID;
-    let zipFile = zipFolder + 'PX' + protocolId + '.zip';
-    if (existsSync(zipFile)) {
-        let zip = new AdmZip(zipFile);
-        zip.extractAllTo(zipFolder + 'PX' + protocolId, true);
-    }
     let designations = parseDesignations(protocol);
     let definitions = parseDefinitions(protocol);
     let sources = parseSources(protocol);
@@ -134,7 +124,13 @@ function mergeBySources(newSources, existingSources) {
     return newSources.concat(otherSources);
 }
 
-export async function mergeForm(existingForm, newForm) {
+export function replaceClassificationByOrg(newClassification, existingClassification) {
+    let otherClassifications = existingClassification.filter(c => c.stewardOrg.name !== 'PhenX')
+    return newClassification.concat(otherClassifications);
+}
+
+export function mergeForm(existingForm, newForm) {
+
     existingForm.designations = newForm.designations;
     existingForm.definitions = newForm.definitions;
     existingForm.ids = mergeBySources(newForm.ids, existingForm.ids);
@@ -142,14 +138,10 @@ export async function mergeForm(existingForm, newForm) {
     existingForm.referenceDocuments = mergeBySources(newForm.referenceDocuments, existingForm.referenceDocuments);
     existingForm.attachments = newForm.attachments;
     existingForm.sources = mergeBySources(newForm.sources, existingForm.sources);
+    existingForm.classification = replaceClassificationByOrg(newForm.classification, existingForm.classification);
+    // Liz make those 50 forms qulified, We don't want to modify.
     if (existingForm.registrationState.registrationStatus !== 'Qualified') {
         existingForm.formElements = newForm.formElements;
     }
-    transferClassifications(newForm, existingForm);
-    await Comment.updateMany({'element.eltId': newForm.tinyId}, {
-        element: {
-            eltType: 'form',
-            eltId: existingForm.tinyId
-        }
-    });
+    //todo put comment about not updating form elements for qulifieid forms.
 }

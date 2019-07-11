@@ -36,10 +36,10 @@ export function trimWhite(text) {
 
 export function printUpdateResult(updateResult, elt) {
     if (updateResult.nModified) {
-        console.log(`${updateResult.nModified} ${elt.type} source modified: ${elt.tinyId}`);
+        console.log(`${updateResult.nModified} ${elt.elementType} source modified: ${elt.tinyId}`);
     }
     if (updateResult.upserted && updateResult.upserted.length) {
-        console.log(`${updateResult.upserted.length} ${elt.type} source inserted: ${elt.tinyId}`);
+        console.log(`${updateResult.upserted.length} ${elt.elementType} source inserted: ${elt.tinyId}`);
     }
 }
 

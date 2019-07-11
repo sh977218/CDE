@@ -117,6 +117,9 @@ export function reIndexStream(dbStream: DbStream, cb?: Cb) {
             (function bulkIndex(req, cb, retries = 1) {
                 request.post(config.elastic.hosts + '/_bulk', {
                     headers: {'Content-Type': 'application/x-ndjson'},
+                    agentOptions: {
+                        rejectUnauthorized: false
+                    },
                     body: req
                 }, (err: Error | undefined) => {
                     if (err) {

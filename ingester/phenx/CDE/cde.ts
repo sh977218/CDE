@@ -1,6 +1,7 @@
 import { cloneDeep, isEmpty } from 'lodash';
 import { diff as deepDiff } from 'deep-diff';
 import { transferClassifications } from '../../../shared/system/classificationShared';
+import { replaceClassificationByOrg } from 'ingester/phenx/Form/form';
 
 export function compareCde(newCde, existingCde) {
     let newCdeObj = cloneDeep(newCde);
@@ -52,7 +53,8 @@ export function compareCde(newCde, existingCde) {
 }
 
 function mergeBySources(newSources, existingSources) {
-    return newSources.concat(existingSources.filter(o => ['PhenX', 'PhenX Variable'].indexOf(o.source) === -1));
+    let otherSources = existingSources.filter(o => ['PhenX', 'PhenX Variable'].indexOf(o.source) === -1);
+    return newSources.concat(otherSources);
 }
 
 export function mergeCde(existingCde, newCde) {
@@ -62,6 +64,6 @@ export function mergeCde(existingCde, newCde) {
     existingCde.properties = mergeBySources(newCde.properties, existingCde.properties);
     existingCde.referenceDocuments = mergeBySources(newCde.referenceDocuments, existingCde.referenceDocuments);
     existingCde.sources = mergeBySources(newCde.sources, existingCde.sources);
+    existingCde.classification = replaceClassificationByOrg(newCde.classification, existingCde.classification);
     existingCde.valueDomain = newCde.valueDomain;
-    transferClassifications(newCde, existingCde);
 }

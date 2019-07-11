@@ -19,6 +19,7 @@ export function parseProperties(protocol) {
         'modeOfAdministration',
         'derivedVariables',
         'processAndReview',
+        'purpose',
         'keywords',
         'source'
     ];

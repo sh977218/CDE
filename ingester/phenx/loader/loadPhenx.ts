@@ -30,6 +30,7 @@ async function retireForms() {
     };
     let forms = await Form.find(cond);
     for (let form of forms) {
+        // TODO make history
         form.registrationState.registrationStatus = 'Retired';
         form.registrationState.administrativeNote = 'Not present in import at ' + new Date().toJSON();
         form.markModified('registrationState');
@@ -45,18 +46,15 @@ process.on('unhandledRejection', function (error) {
     console.log(error);
 });
 
-
 (function () {
     let cond = {};
-//   let cond = {protocolID: '661501'};
-    ProtocolModel.find(cond)
-        .cursor({batchSize: 1, useMongooseAggCursor: true})
+//   let cond = {protocolID: '90602'};
+    ProtocolModel.find(cond).cursor()
         .eachAsync(async (protocol: any) => {
             let protocolObj = protocol.toObject();
             protocolCount++;
             let protocolId = protocolObj.protocolID;
             console.log('Starting protocol: ' + protocolId);
-            protocolCount++;
             let newFormObj = await createForm(protocolObj);
             let newForm = new Form(newFormObj);
             let existingForm = await Form.findOne({
@@ -82,19 +80,17 @@ process.on('unhandledRejection', function (error) {
                     sameForm++;
                     console.log('sameForm: ' + sameForm);
                 } else {
-                    await mergeForm(existingForm, newForm).catch(e => {
-                        throw "Error await MergeForm.mergeForm(existingForm, newForm): " + e;
-                    });
+                    mergeForm(existingForm, newForm);
                     existingForm.changeNote = '';
                     await updateForm(existingForm, batchloader, {updateSource: true}).catch(e => {
-                        throw "Error await mongo_form.updatePromise(existingForm, batchloader): " + e;
+                        throw "Error await updateForm(existingForm, batchloader): " + e;
                     });
                     changeForm++;
                     console.log('changeForm: ' + changeForm);
                 }
             }
             for (let comment of newFormObj['comments']) {
-                comment.eltTinyId = existingForm.tinyId;
+                comment.element.eltId = existingForm.tinyId;
                 await new Comment(comment).save().catch(e => {
                     throw "Error await comment.save(): " + e;
                 });
@@ -109,7 +105,7 @@ process.on('unhandledRejection', function (error) {
             console.log('Finished protocol: ' + protocolId);
         }).then(async () => {
         console.log('************************************************');
-        retireForms().catch(e => {
+        await retireForms().catch(e => {
             throw "Error await retireForms(): " + e;
         });
 

@@ -10,13 +10,6 @@ export async function parseFormElements(protocol, attachments, newForm) {
     let loinc = find(protocol.standards, standard => standard.Source === 'LOINC');
     if (loinc) {
         let formElements = await parseLoincFormElements(loinc, orgMapping['PhenX']);
-        formElements.unshift({
-            "elementType": "section",
-            "instructions": {
-                value: protocol.specificInstructions
-            },
-            "formElements": []
-        });
         newForm.formElements = formElements;
     } else {
         let protocolId = protocol.protocolID;
@@ -25,4 +18,13 @@ export async function parseFormElements(protocol, attachments, newForm) {
             await parseRedcapFormElements(protocol, attachments, newForm);
         }
     }
+    newForm.formElements.unshift({
+        "elementType": "section",
+        "instructions": {
+            value: protocol.specificInstructions,
+            valueFormat: "html"
+        },
+        "formElements": []
+    });
+
 }

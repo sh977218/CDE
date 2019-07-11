@@ -90,7 +90,7 @@ async function doQuestion(redCapCde, redCapCdes, formId, protocol, newForm) {
         } else {
             mergeCde(existingCde, newCde);
             await updateCde(existingCde, batchloader).catch(e => {
-                throw "Error await updatePromise(existingCde, batchloader): " + e;
+                throw "Error await updateCde(existingCde, batchloader): " + e;
             });
         }
     }
