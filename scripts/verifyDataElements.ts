@@ -1,79 +1,63 @@
-import { DataElement } from '../server/cde/mongo-cde';
-import { transferClassifications } from '../shared/system/classificationShared';
+const Ajv = require('ajv');
+const config = require('config');
+const mongo_cde = require('../server/cde/mongo-cde');
+const verifyElt = require('./verifyElt');
 
-function fixEmptyClassification(cde) {
-    let cdeObj = cde.toObject();
-    cde.classification = cdeObj.classification.filter(c => c.stewardOrg.name && c.elements.length);
-};
-
-function fixDuplicatedClassification(cde) {
-    let cdeObj = cde.toObject();
-    transferClassifications(cdeObj, cde);
-};
-
-function fixCde(error, cde) {
-    console.log(cde._id + ' has error: ' + error + ' fixing.');
-    let message = error.message;
-    if (message.indexOf('DataElement validation failed: classification:') !== -1) {
-        fixEmptyClassification(cde);
-    } else if (message.indexOf('DataElement validation failed: classification: Duplicate Steward Classification') !== -1) {
-        fixDuplicatedClassification(cde);
-    } else {
-        console.log(error);
-        throw error;
-    }
+let filter = () => false;
+const devBlacklist = ['XyEbt94V_'];
+if (config.publicUrl === 'http://localhost:3001') { // DEV
+    filter = elt => devBlacklist.includes(elt.tinyId);
 }
 
+verifyElt.verifyObjectId(mongo_cde.DataElement, streamElts);
 
-(function () {
-    let count = 0;
-    let cond = {
-        archived: false,
-        /*
-                lastMigrationScript: {$ne: "verifyDataElements"}
-        */
-    };
-    let cursor = DataElement.find(cond).cursor();
+function streamElts(badIds) {
+    badIds.forEach(id => verifyElt.addError(id, '_id has to be ObjectId'));
+    mongo_cde.DataElement.find({}).cursor().eachAsync(elt => {
+        if (filter(elt)) {
+            console.log('skipped filtered tinyId:' + elt.tinyId + ' _id:' + elt._id);
+            return;
+        }
+        verifyElt.count++;
+        if (verifyElt.cleanup) {
+            let changed = false;
 
-    cursor.eachAsync(function (cde) {
-        return new Promise(function (resolve, reject) {
-            cde.save((error1, savedCde) => {
-                if (error1) {
-                    fixCde(error1, cde);
-                    cde.save(error2 => {
-                        if (error2) {
-                            console.log(cde._id + ' still has error2: ' + error2 + ' terminated.');
-                            reject(cde._id + ' ' + error2);
-                        } else {
-                            console.log(cde._id + 'fixed and saved.');
-                            resolve();
-                        }
-                    })
+            // Elt
+            changed = verifyElt.fixElt(elt) || changed;
+
+            // Data Element
+            const changedList = verifyElt.fixDatatypeContainer(elt.valueDomain);
+            changedList.forEach(c => elt.markModified('valueDomain.' + c));
+            if (changedList.length) {
+                changed = true;
+            }
+            changed = verifyElt.fixIds(elt.valueDomain.ids) || changed;
+            const permissibleValues = verifyElt.fixPermissibleValues(elt.valueDomain.permissibleValues, elt.valueDomain.datatype);
+            if (permissibleValues !== null) {
+                changed = true;
+                elt.valueDomain.permissibleValues = permissibleValues;
+            }
+
+            if (changed) {
+                verifyElt.fixed++;
+                if (badIds.includes(elt._id.toString())) {
+                    verifyElt.addError(elt._id, 'cannot save due to bad _id type');
                 } else {
-                    savedCde.lastMigrationScript = "verifyDataElements";
-                    savedCde.save(error => {
-                        if (error) {
-                            reject(error);
-                        } else {
-                            console.log(savedCde._id + " passed validation. saved.")
-                            resolve();
-                        }
-                    });
+                    elt.save().then(validate, err => verifyElt.addError(elt._id, err));
                 }
-            })
-        });
-    }).catch(e => {
-        if (e) {
-            console.log(e);
+            }
+        }
+        return validate(elt);
+    })
+        .then(verifyElt.finished, verifyElt.exitWithError);
+}
+
+function validate(elt) {
+    return mongo_cde.validateSchema(elt).catch(err => {
+        if (err instanceof Ajv.ValidationError) {
+            verifyElt.addError(elt._id, err.errors.map(e => e.dataPath + ': ' + e.message).join(', '));
+        } else {
+            verifyElt.exitWithError(err);
         }
     });
-
-    cursor.on('close', function () {
-        console.log("Finished all. count: " + count);
-    });
-    cursor.on('error', function (err) {
-        console.log("error: " + err);
-        process.exit(1);
-    });
-
-})();
+}

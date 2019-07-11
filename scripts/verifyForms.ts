@@ -1,12 +1,10 @@
-import { Elt } from 'shared/models.model';
-import { iterateFeSync } from '../shared/form/fe';
-
 const Ajv = require('ajv');
 const config = require('config');
+import { iterateFeSync } from '../shared/form/fe';
 const mongo_form = require('../server/form/mongo-form');
 const verifyElt = require('./verifyElt');
 
-let filter = (elt: Elt) => false;
+let filter = () => false;
 const devBlacklist = ['QJgAXYdXv'];
 if (config.publicUrl === 'http://localhost:3001') { // DEV
     filter = elt => devBlacklist.includes(elt.tinyId);
@@ -57,6 +55,11 @@ function streamElts(badIds) {
                         changed = true;
                     }
                     if (q.question.cde) {
+                        const designations = verifyElt.fixDesignations(q.question.cde.designations, q.question.cde.name || q.label);
+                        if (designations) {
+                            q.question.cde.designations = designations;
+                            changed = true;
+                        }
                         changed = verifyElt.fixIds(q.question.cde.ids) || changed;
                         const permissibleValues = verifyElt.fixPermissibleValues(q.question.cde.permissibleValues, q.question.datatype);
                         if (permissibleValues !== null) {
