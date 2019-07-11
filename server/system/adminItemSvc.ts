@@ -1,8 +1,8 @@
-import { uriView } from '../../shared/item';
-import { capString } from '../../shared/system/util';
-import { usersToNotify } from '../../shared/user';
-import { handleError } from '../errorHandler/errHandler';
-import { CbError } from '../../shared/models.model';
+import { uriView } from 'shared/item';
+import { capString } from 'shared/system/util';
+import { usersToNotify } from 'shared/user';
+import { handleError } from '../errorHandler/errorHandler';
+import { CbError } from 'shared/models.model';
 
 const async = require('async');
 const _ = require('lodash');

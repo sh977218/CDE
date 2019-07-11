@@ -8,7 +8,7 @@ export default merge(baseConfig, appConfig, {
     plugins: [
         new AotPlugin.AngularCompilerPlugin({
             tsConfigPath: path.resolve(__dirname, './tsconfigApp.json'),
-            entryModule: path.resolve(__dirname, './modules/_app/app.module') + '#CdeAppModule'
+            entryModule: path.resolve(__dirname, './modules/_app/app.module') + '#CdeAppModule',
         }),
     ],
 });

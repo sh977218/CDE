@@ -1,8 +1,8 @@
 import * as mongoose from 'mongoose';
 import { config } from '../system/parseConfig';
 import { addStringtype } from '../system/mongoose-stringtype';
-import { hasRole, rolesEnum } from '../../shared/system/authorizationShared';
-import { CbError } from '../../shared/models.model';
+import { hasRole, rolesEnum } from 'shared/system/authorizationShared';
+import { CbError } from 'shared/models.model';
 
 addStringtype(mongoose);
 const Schema = mongoose.Schema;

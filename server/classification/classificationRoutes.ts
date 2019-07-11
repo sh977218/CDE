@@ -1,6 +1,6 @@
-import { handleError } from '../errorHandler/errHandler';
-import { actions } from '../../shared/system/classificationShared';
-import { Cb } from '../../shared/models.model';
+import { handleError } from '../errorHandler/errorHandler';
+import { actions } from 'shared/system/classificationShared';
+import { Cb } from 'shared/models.model';
 
 const async = require('async');
 const mongo_cde = require('../cde/mongo-cde');

@@ -2,8 +2,8 @@ import {
     getAllUsernames as userGetAllUsernames, managedOrgs, orgAdmins as userOrgAdmins, orgCurators as userOrgCurators,
     userById, userByName
 } from './mongo-data';
-import { hasRole } from '../../shared/system/authorizationShared';
-import { handle404, handleError } from '../errorHandler/errHandler';
+import { hasRole } from 'shared/system/authorizationShared';
+import { handle404, handleError } from '../errorHandler/errorHandler';
 
 export function myOrgs(user) {
     if (!user) return [];

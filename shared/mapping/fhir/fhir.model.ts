@@ -1,4 +1,4 @@
-import { FhirOrganization } from '../../../shared/mapping/fhir/fhirResource.model';
+import { FhirOrganization } from 'shared/mapping/fhir/fhirResource.model';
 
 export interface FhirElement {
     extension?: FhirExtension[];

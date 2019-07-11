@@ -1,7 +1,7 @@
-import { codeSystemIn } from '../../../shared/mapping/fhir';
-import { FhirCoding, FhirValue } from '../../../shared/mapping/fhir/fhir.model';
-import { getText as conceptGetText } from '../../../shared/mapping/fhir/datatype/fhirCodeableConcept';
-import { FhirDomainResource, FhirObservation } from '../../../shared/mapping/fhir/fhirResource.model';
+import { codeSystemIn } from 'shared/mapping/fhir';
+import { FhirCoding, FhirValue } from 'shared/mapping/fhir/fhir.model';
+import { getText as conceptGetText } from 'shared/mapping/fhir/datatype/fhirCodeableConcept';
+import { FhirDomainResource, FhirObservation } from 'shared/mapping/fhir/fhirResource.model';
 
 // TODO: remove, only get text, not "text system:code"
 export function codingArrayPreview(codings?: FhirCoding[]): string {

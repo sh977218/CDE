@@ -1,4 +1,4 @@
-import { handleError, respondError } from '../errorHandler/errHandler';
+import { handleError, respondError } from '../errorHandler/errorHandler';
 
 // sample: postCheckFn for custom unique id
 // (data, cb) => {

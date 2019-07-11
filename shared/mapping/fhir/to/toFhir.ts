@@ -1,4 +1,4 @@
-import { FhirCode, FhirIdentifier, FhirUri } from '../../../../shared/mapping/fhir/fhir.model';
+import { FhirCode, FhirIdentifier, FhirUri } from 'shared/mapping/fhir/fhir.model';
 
 export function newIdentifier(uri: FhirUri, value: string, use: FhirCode): FhirIdentifier {
     return {

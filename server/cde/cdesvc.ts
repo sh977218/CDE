@@ -1,7 +1,7 @@
-import { handle404, handleError, respondError } from '../errorHandler/errHandler';
-import { User } from '../../shared/models.model';
-import { canEditCuratedItem } from '../../shared/system/authorizationShared';
-import { stripBsonIds } from '../../shared/system/exportShared';
+import { handle404, handleError, respondError } from '../errorHandler/errorHandler';
+import { User } from 'shared/models.model';
+import { canEditCuratedItem } from 'shared/system/authorizationShared';
+import { stripBsonIds } from 'shared/system/exportShared';
 
 const _ = require('lodash');
 const js2xml = require('js2xmlparser');

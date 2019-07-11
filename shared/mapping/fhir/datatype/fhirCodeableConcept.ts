@@ -1,6 +1,6 @@
-import { FhirCodeableConcept, FhirCoding } from '../../../../shared/mapping/fhir/fhir.model';
-import { getTextFromArray as codingGetTextFromArray } from '../../../../shared/mapping/fhir/datatype/fhirCoding';
-import { reduceOptionalArray } from '../../../../shared/system/util';
+import { FhirCodeableConcept, FhirCoding } from 'shared/mapping/fhir/fhir.model';
+import { getTextFromArray as codingGetTextFromArray } from 'shared/mapping/fhir/datatype/fhirCoding';
+import { reduceOptionalArray } from 'shared/system/util';
 
 export function getText(concept?: FhirCodeableConcept): string {
     return concept && (concept.text || codingGetTextFromArray(concept.coding)) || '';

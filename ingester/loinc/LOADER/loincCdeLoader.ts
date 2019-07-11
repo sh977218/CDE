@@ -1,6 +1,6 @@
 import { isEmpty } from 'lodash';
-import { DataElement, DataElementSource, updatePromise } from '../../../server/cde/mongo-cde';
-import { batchloader, updatedByLoader } from '../../shared/updatedByLoader';
+import { DataElement, DataElementSource, updatePromise } from 'server/cde/mongo-cde';
+import { batchloader, updatedByLoader } from 'shared/updatedByLoader';
 import { createCde,compareCde,mergeCde } from '../CDE/cde';
 
 export async function runOneCde(loinc, orgInfo) {

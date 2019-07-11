@@ -1,8 +1,8 @@
 import { config } from '../system/parseConfig';
-import { Cb2, CbError, MongooseType } from '../../shared/models.model';
-import { checkDefinitions, checkPvUnicity, wipeDatatype } from '../../shared/de/deValidator';
-import { isOrgCurator } from '../../shared/system/authorizationShared';
-import { DataElement as DE } from '../../shared/de/dataElement.model';
+import { Cb2, CbError, MongooseType } from 'shared/models.model';
+import { checkDefinitions, checkPvUnicity, wipeDatatype } from 'shared/de/deValidator';
+import { isOrgCurator } from 'shared/system/authorizationShared';
+import { DataElement as DE } from 'shared/de/dataElement.model';
 
 const Ajv = require('ajv');
 const fs = require('fs');

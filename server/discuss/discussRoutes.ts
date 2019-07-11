@@ -1,6 +1,6 @@
-import { Cb } from '../../shared/models.model';
-import { canComment, canRemoveComment } from '../../shared/system/authorizationShared';
-import { handle404, handleError } from '../errorHandler/errHandler';
+import { Cb } from 'shared/models.model';
+import { canComment, canRemoveComment } from 'shared/system/authorizationShared';
+import { handle404, handleError } from '../errorHandler/errorHandler';
 
 const async = require('async');
 const authorization = require('../system/authorization');

@@ -1,16 +1,13 @@
-import { uriView } from '../../shared/item';
-import { getModule } from '../../shared/elt';
-import { hasRole, isSiteAdmin } from '../../shared/system/authorizationShared';
-import { capString } from '../../shared/system/util';
+import { uriView } from 'shared/item';
+import { getModule } from 'shared/elt';
+import { hasRole, isSiteAdmin } from 'shared/system/authorizationShared';
+import { capString } from 'shared/system/util';
 import { loggedInMiddleware, nocacheMiddleware } from '../system/authorization';
-import { respondError } from '../errorHandler/errHandler';
+import { handle404, handleError, respondError } from '../errorHandler/errorHandler';
 
 const config = require('config');
 const attachment = require('../attachment/attachmentSvc');
 const discussDb = require('../discuss/discussDb');
-const errorHandler = require("../errorHandler/errHandler");
-const handle404 = errorHandler.handle404;
-const handleError = errorHandler.handleError;
 const notificationDb = require('../notification/notificationDb');
 const mongo_data = require('../system/mongo-data');
 const userDb = require('./userDb');

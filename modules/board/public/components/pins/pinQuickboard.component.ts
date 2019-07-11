@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 
 import { QuickBoardListService } from '_app/quickBoardList.service';
-import { Elt } from 'shared/models.model';
+import { ItemElastic } from 'shared/models.model';
 import { interruptEvent } from 'non-core/browser';
 
 @Component({
@@ -9,8 +9,8 @@ import { interruptEvent } from 'non-core/browser';
     templateUrl: './pinQuickboard.component.html',
 })
 export class PinQuickboardComponent {
-    @Input() elt: Elt;
-    @Input() eltIndex: number;
+    @Input() elt!: ItemElastic;
+    @Input() eltIndex!: number;
     interruptEvent = interruptEvent;
 
     constructor(public quickBoardService: QuickBoardListService) {}

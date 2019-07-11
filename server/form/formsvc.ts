@@ -1,7 +1,7 @@
-import { addFormIds, iterateFe, trimWholeForm } from '../../shared/form/fe';
-import { formToQuestionnaire } from '../../shared/mapping/fhir/to/toQuestionnaire';
-import { canEditCuratedItem } from '../../shared/system/authorizationShared';
-import { handle404, handleError, respondError } from '../errorHandler/errHandler';
+import { addFormIds, iterateFe, trimWholeForm } from 'shared/form/fe';
+import { formToQuestionnaire } from 'shared/mapping/fhir/to/toQuestionnaire';
+import { canEditCuratedItem } from 'shared/system/authorizationShared';
+import { handle404, handleError, respondError } from '../errorHandler/errorHandler';
 import { config } from '../system/parseConfig';
 
 const Ajv = require('ajv');
@@ -131,7 +131,6 @@ export function byId(req, res) {
                                 return respondError(err, {
                                     res,
                                     publicMessage: 'schema missing',
-                                    origin: 'formsvc'
                                 });
                             }
                             let result = ajv.validate(JSON.parse(data),
@@ -421,7 +420,7 @@ export async function syncLinkedForms() {
             size: 200
         });
 
-        const linkedForms = {
+        const linkedForms: any = {
             Retired: 0,
             Incomplete: 0,
             Candidate: 0,
