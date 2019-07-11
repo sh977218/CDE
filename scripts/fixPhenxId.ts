@@ -1,0 +1,24 @@
+import { Form } from '../server/form/mongo-form';
+
+(function () {
+    let formCount = 0;
+    Form.find({
+        archived: false,
+        'ids.source': 'PhenX'
+    }).cursor().eachAsync(async (form: any) => {
+        form.ids.forEach(id => {
+            if (id.source === 'PhenX') {
+                let idNumber = parseInt(id.id);
+                id.id = idNumber + '';
+                form.markModified('ids');
+            }
+        });
+        await form.save().catch(e => {
+            throw `${form.tinyId} ${e}`;
+        });
+        formCount++;
+        console.log(`formCount: ${formCount}`);
+    }).then(e => {
+        console.log(e);
+    })
+})();
