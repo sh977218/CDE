@@ -1,5 +1,5 @@
-#Shared Between Server(Node) and Clients(Angular)
-##Not Allowed
+# Shared Between Server(Node) and Clients(Angular)
+## Not Allowed Libraries
 * angular
 * async
    * use `async/*`
@@ -9,3 +9,7 @@
 * rxjs
    * use pipe() with `rxjs/operators`
 * webpack
+
+## Other
+* to access **shared** use relative paths, such as:
+   * `import {} from 'shared/item';`

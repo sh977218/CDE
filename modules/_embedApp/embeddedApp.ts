@@ -1,5 +1,4 @@
 import 'zone.js';
-if (!PRODUCTION) require('../../node_modules/zone.js/dist/long-stack-trace-zone.js');
 // reflect-metadata needed before enableProdMode for IE
 import 'reflect-metadata';
 

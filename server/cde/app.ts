@@ -1,10 +1,11 @@
-import { stripBsonIds } from '../../shared/system/exportShared';
-import { handleError } from '../errorHandler/errHandler';
+import { stripBsonIds } from 'shared/system/exportShared';
+import { handleError } from '../errorHandler/errorHandler';
 import {
     canCreateMiddleware, canEditByTinyIdMiddleware, canEditMiddleware, isOrgAuthorityMiddleware, isOrgCuratorMiddleware,
     nocacheMiddleware
 } from '../system/authorization';
 import { config } from '../system/parseConfig';
+import { validatePvs } from '../../server/cde/utsValidate';
 
 const cdesvc = require('./cdesvc');
 const mongo_cde = require('./mongo-cde');
@@ -163,4 +164,11 @@ export function init(app, daoManager) {
     require('mongoose-schema-jsonschema')(require('mongoose'));
 
     app.get('/schema/cde', (req, res) => res.send(mongo_cde.DataElement.jsonSchema()));
+
+    app.post('/umlsDe', (req, res) => {
+        validatePvs(req.body).then(
+            () => res.send(),
+            (err) => res.status(400).send(err)
+        );
+    });
 }

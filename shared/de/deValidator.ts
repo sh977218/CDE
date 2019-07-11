@@ -1,6 +1,6 @@
 import { Dictionary } from 'async';
-import { DataElement, DatatypeContainer, ValueDomain } from '../../shared/de/dataElement.model';
-import { Question } from '../../shared/form/form.model';
+import { DataElement, DatatypeContainer, ValueDomain } from 'shared/de/dataElement.model';
+import { Question } from 'shared/form/form.model';
 
 
 type errorMessage = {allValid: boolean, message?: string};

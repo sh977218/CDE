@@ -1,5 +1,6 @@
-import { handleConsoleError, handleError } from '../errorHandler/errHandler';
-import { config } from '../system/parseConfig';
+import { Cb } from 'shared/models.model';
+import { handleConsoleError, handleError } from 'server/errorHandler/errorHandler';
+import { config } from 'server/system/parseConfig';
 
 const connHelper = require('../system/connections');
 const mongo_data = require('../system/mongo-data');
@@ -63,7 +64,7 @@ export function log(message, callback) { // express only, all others dbLogger.co
     }
 }
 
-export function logError(message, callback) { // all server errors, express and not
+export function logError(message, callback?: Cb) { // all server errors, express and not
     message.date = new Date();
     if (typeof message.stack === 'string') message.stack = message.stack.substr(0, 1000);
     let description = (message.message || message.publicMessage || '').substr(0, 30);

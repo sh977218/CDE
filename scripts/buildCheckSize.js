@@ -9,7 +9,7 @@ if (!Array.isArray(config.bundlesize)) {
 
 config.bundlesize.forEach(b => {
     if (b.compression !== 'none') {
-        console.log('Error: ' + b.path + ' needs "compression: none"');
+        console.error('Error: ' + b.path + ' needs "compression: none"');
         process.exit(1);
     }
     let actualSize = fs.statSync(path.resolve(__dirname, '..', b.path)).size;
@@ -21,11 +21,11 @@ config.bundlesize.forEach(b => {
     let maxSize = parseFloat(b.maxSize) * ratio;
     let minSize = maxSize * 0.99;
     if (actualSize > maxSize) {
-        console.log('Error: ' + b.path + ' too big. actualSize: ' + actualSize + ' > maxSize: ' + maxSize);
+        console.error('Error: ' + b.path + ' too big. actualSize: ' + actualSize + ' > maxSize: ' + maxSize);
         process.exit(1);
     }
     if (actualSize < minSize) {
-        console.log('Error: ' + b.path + ' too small. actualSize: ' + actualSize + ' < minSize: ' + minSize);
+        console.error('Error: ' + b.path + ' too small. actualSize: ' + actualSize + ' < minSize: ' + minSize);
         process.exit(1);
     }
 })

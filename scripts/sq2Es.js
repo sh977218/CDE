@@ -1,4 +1,4 @@
-import { config } from '../server/system/parseConfig';
+import { config } from 'server/system/parseConfig';
 
 const StoredQuery = require("../server/log/dbLogger").StoredQueryModel;
 const elasticsearch = require('elasticsearch');

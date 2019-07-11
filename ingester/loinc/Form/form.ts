@@ -1,4 +1,4 @@
-import { generateTinyId } from '../../../server/system/mongo-data';
+import { generateTinyId } from 'server/system/mongo-data';
 import { parseClassification } from '../Shared/ParseClassification';
 import { parseDefinitions } from '../Shared/ParseDefinitions';
 import { parseDesignations } from '../Shared/ParseDesignations';
@@ -12,7 +12,7 @@ import { parseFormElements } from './ParseFormElements';
 import { diff as deepDiff } from 'deep-diff';
 import { wipeUseless } from '../Shared/wipeUseless';
 
-import { transferClassifications } from '../../../shared/system/classificationShared';
+import { transferClassifications } from 'shared/system/classificationShared';
 import { mergeBySource } from '../Shared/mergeBySource';
 import { mergeBySourceName } from '../Shared/mergeBySourceName';
 import { mergeDefinitions } from '../Shared/mergeDefinitions';

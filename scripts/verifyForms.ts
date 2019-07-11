@@ -1,8 +1,8 @@
 import { Elt } from 'shared/models.model';
-import { iterateFeSync } from '../shared/form/fe';
 
 const Ajv = require('ajv');
 const config = require('config');
+import { iterateFeSync } from 'shared/form/fe';
 const mongo_form = require('../server/form/mongo-form');
 const verifyElt = require('./verifyElt');
 

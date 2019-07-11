@@ -1,6 +1,6 @@
 import { isEmpty } from 'lodash';
-import { Form, updatePromise } from '../../../server/form/mongo-form';
-import { batchloader, updatedByLoader } from '../../shared/updatedByLoader';
+import { Form, updatePromise } from 'server/form/mongo-form';
+import { batchloader, updatedByLoader } from 'shared/updatedByLoader';
 import { compareForm, createForm, mergeForm } from '../Form/form';
 
 export async function runOneForm(loinc, orgInfo) {

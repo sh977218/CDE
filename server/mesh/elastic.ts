@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 import { config } from '../system/parseConfig';
-import { Cb } from '../../shared/models.model';
+import { Cb } from 'shared/models.model';
 
 const ElasticSearch = require('elasticsearch');
 const meshDb = require('./meshDb');

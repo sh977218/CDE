@@ -1,7 +1,7 @@
 import * as Ajv from 'ajv';
 import { config } from '../system/parseConfig';
-import { CbError, User } from '../../shared/models.model';
-import { CdeForm } from '../../shared/form/form.model';
+import { CbError, User } from 'shared/models.model';
+import { CdeForm } from 'shared/form/form.model';
 
 const fs = require('fs');
 const _ = require('lodash');
