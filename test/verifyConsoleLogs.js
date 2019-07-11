@@ -2,6 +2,7 @@ const logFolder = './build/consolelogs';
 const fs = require('fs');
 
 let expectedContent = {
+    addSiteAdmin: ['status of 422', 'status of 404'],
     assignVsacId: 'the server responded with a status of 404',
     badQuery: 'elasticSearch/cde - Failed to load resource: the server responded with a status of 400 (Bad Request)',
     boardFiveUnapprovedMessagesPerUserReply: 'the server responded with a status of 403 (Forbidden)',
