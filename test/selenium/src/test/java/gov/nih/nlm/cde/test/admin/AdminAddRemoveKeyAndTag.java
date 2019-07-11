@@ -22,6 +22,10 @@ public class AdminAddRemoveKeyAndTag extends NlmCdeBaseTest {
         checkAlert("Org Updated");
     }
 
+    /**
+     * Think before splitting this code into 2 classes. Running in parralle will cause trouble
+     * unless you spend the extra 5 minutes and use 2 different stewards.
+     */
     @Test
     public void adminAddRemovePropertyKey() {
         String orgName = "TEST";
