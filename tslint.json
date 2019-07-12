@@ -2,7 +2,6 @@
     "rulesDirectory": [
         "node_modules/codelyzer"
     ],
-    "extends": "tslint:recommended",
     "jsRules": {
         "class-name": true,
         "comment-format": [
@@ -64,6 +63,7 @@
             true,
             "spaces"
         ],
+        "member-access": false,
         "no-attribute-parameter-decorator": true,
         "no-eval": true,
         "no-forward-ref": true,
