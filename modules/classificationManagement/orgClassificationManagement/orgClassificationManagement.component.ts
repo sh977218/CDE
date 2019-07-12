@@ -167,7 +167,7 @@ export class OrgClassificationManagementComponent implements OnInit {
         return isOrgAdmin(this.userService.user);
     }
 
-    orgChanged(value: string, cb: Cb) {
+    orgChanged(value: string, cb?: Cb) {
         if (value) {
             let url = '/org/' + encodeURIComponent(value);
             this.http.get<Organization>(url).subscribe(

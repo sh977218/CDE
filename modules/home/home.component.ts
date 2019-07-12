@@ -12,7 +12,7 @@ export class HomeComponent implements OnInit {
     displayCarousel: Boolean = (window.screen.width > 575);
 
     @HostListener('window:resize', ['$event'])
-    onResize(event) {
+    onResize(event: UIEvent) {
         this.displayCarousel = (window.screen.width > 575);
     }
 
