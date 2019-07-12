@@ -1,7 +1,7 @@
 import * as Ajv from 'ajv';
-import { config } from '../system/parseConfig';
-import { CbError, User } from 'shared/models.model';
+import { config } from 'server/system/parseConfig';
 import { CdeForm } from 'shared/form/form.model';
+import { CbError, User } from 'shared/models.model';
 
 const fs = require('fs');
 const _ = require('lodash');
@@ -16,6 +16,8 @@ const isOrgCurator = require('../../shared/system/authorizationShared').isOrgCur
 
 export const type = 'form';
 export const name = 'forms';
+
+export type CdeFormDraft = CdeForm;
 
 const ajvElt = new Ajv();
 fs.readdirSync(path.resolve(__dirname, '../../shared/de/assets/')).forEach(file => {
@@ -182,7 +184,9 @@ export function draftDelete(tinyId, cb) {
     FormDraft.remove({tinyId: tinyId}, cb);
 }
 
-export function draftsList(criteria, cb) {
+export function draftsList(criteria): Promise<CdeFormDraft[]>;
+export function draftsList(criteria, cb: CbError): void;
+export function draftsList(criteria, cb?: CbError): void | Promise<CdeFormDraft[]> {
     return FormDraft
         .find(criteria, {
             'designations.designation': 1,

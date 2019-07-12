@@ -1,7 +1,6 @@
+import { consoleLog, logError } from 'server/log/dbLogger';
+import { config } from 'server/system/parseConfig';
 import { create as builderCreate } from 'xmlbuilder';
-import { config } from '../system/parseConfig';
-
-const dbLogger = require('../log/dbLogger');
 
 function addQuestion(parent, question) {
     let newQuestion: any = {
@@ -168,7 +167,7 @@ export function formToSDC({form, renderer, validate}, cb) {
     }
 
     if (validate) {
-        dbLogger.consoleLog('faas: ' + config.provider.faas, (global as any).CURRENT_SERVER_ENV);
+        consoleLog('faas: ' + config.provider.faas + ' ' + (global as any).CURRENT_SERVER_ENV);
         switch (config.provider.faas) {
             case 'AWS':
                 const AWS = require('aws-sdk');
@@ -185,7 +184,7 @@ export function formToSDC({form, renderer, validate}, cb) {
                 };
                 let validateCb = (err, data) => {
                     if (err || !data) {
-                        dbLogger.logError({
+                        logError({
                             message: 'SDC Schema validation AWS error: ',
                             stack: err,
                             details: 'formID: ' + form._id
@@ -209,7 +208,7 @@ export function formToSDC({form, renderer, validate}, cb) {
                 const validator = require('xsd-schema-validator');
                 validator.validateXML(xmlStr, './modules/form/public/assets/sdc/SDCFormDesign.xsd', err => {
                     if (err) {
-                        dbLogger.logError({
+                        logError({
                             message: 'SDC Schema validation error: ',
                             stack: err,
                             details: 'formID: ' + form._id
