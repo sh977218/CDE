@@ -1,9 +1,8 @@
-exports.cleanup = process.argv[2] === 'fix';
-exports.errors = [];
-exports.count = 0;
-exports.fixed = 0;
+export const cleanup = process.argv[2] === 'fix';
+export const errors = [];
+export const status = { count: 0, fixed: 0 };
 
-exports.fixElt = function fixElt(elt) {
+export function fixElt(elt) {
     let changed = false;
 
     if (elt.classification) {
@@ -16,11 +15,11 @@ exports.fixElt = function fixElt(elt) {
                 changed = true;
             }
             if (!c.stewardOrg.name) {
-                exports.addError(elt._id, 'classification steward org is missing');
+                addError(elt._id, 'classification steward org is missing');
                 continue;
             }
             if (classificationBySteward[c.stewardOrg.name]) {
-                exports.mergeClassification(classificationBySteward[c.stewardOrg.name], c);
+                mergeClassification(classificationBySteward[c.stewardOrg.name], c);
                 elt.classification.splice(i, 1);
                 i--;
                 changed = true;
@@ -52,12 +51,12 @@ exports.fixElt = function fixElt(elt) {
             }
         }
     }
-    const designations = exports.fixDesignations(elt.designations);
+    const designations = fixDesignations(elt.designations);
     if (designations) {
         elt.designations = designations;
         changed = true;
     }
-    changed = exports.fixIds(elt.ids) || changed;
+    changed = fixIds(elt.ids) || changed;
     if (elt.properties) {
         for (let i = 0; i < elt.properties.length; i++) {
             const property = elt.properties[i];
@@ -67,7 +66,7 @@ exports.fixElt = function fixElt(elt) {
                 changed = true;
                 continue;
             }
-            if (!exports.isValueFormat(property.valueFormat)) {
+            if (!isValueFormat(property.valueFormat)) {
                 property.valueFormat = undefined;
                 changed = true;
             }
@@ -108,9 +107,9 @@ exports.fixElt = function fixElt(elt) {
     }
 
     return changed;
-};
+}
 
-exports.fixDatatypeContainer = function fixDatatypeContainer(dc) {
+export function fixDatatypeContainer(dc) {
     let changed = [];
     if (dc.datatype !== 'Date' && typeof dc.datatypeDate !== 'undefined') {
         dc.datatypeDate = undefined;
@@ -167,25 +166,25 @@ exports.fixDatatypeContainer = function fixDatatypeContainer(dc) {
     }
     if (dc.datatypeNumber) {
         if (!['undefined', 'number'].includes(typeof dc.datatypeNumber.minValue)) {
-            dc.datatypeNumber.minValue = exports.stringToNumber(dc.datatypeNumber.minValue);
+            dc.datatypeNumber.minValue = stringToNumber(dc.datatypeNumber.minValue);
             changed.push('datatypeNumber.minValue');
         }
         if (!['undefined', 'number'].includes(typeof dc.datatypeNumber.maxValue)) {
-            dc.datatypeNumber.maxValue = exports.stringToNumber(dc.datatypeNumber.maxValue);
+            dc.datatypeNumber.maxValue = stringToNumber(dc.datatypeNumber.maxValue);
             changed.push('datatypeNumber.maxValue');
         }
         if (!['undefined', 'number'].includes(typeof dc.datatypeNumber.precision)) {
-            dc.datatypeNumber.precision = exports.stringToNumber(dc.datatypeNumber.precision);
+            dc.datatypeNumber.precision = stringToNumber(dc.datatypeNumber.precision);
             changed.push('datatypeNumber.precision');
         }
     }
     if (dc.datatypeText) {
         if (!['undefined', 'number'].includes(typeof dc.datatypeText.minLength)) {
-            dc.datatypeText.minLength = exports.stringToNumber(dc.datatypeText.minLength);
+            dc.datatypeText.minLength = stringToNumber(dc.datatypeText.minLength);
             changed.push('datatypeText.minLength');
         }
         if (!['undefined', 'number'].includes(typeof dc.datatypeText.maxLength)) {
-            dc.datatypeText.maxLength = exports.stringToNumber(dc.datatypeText.maxLength);
+            dc.datatypeText.maxLength = stringToNumber(dc.datatypeText.maxLength);
             changed.push('datatypeText.maxLength');
         }
         if (!['undefined', 'string'].includes(typeof dc.datatypeText.regex)) {
@@ -202,9 +201,9 @@ exports.fixDatatypeContainer = function fixDatatypeContainer(dc) {
         }
     }
     return changed;
-};
+}
 
-exports.fixDesignations = function fixDesignations(designations, label = undefined) {
+export function fixDesignations(designations, label = undefined) {
     if (!label) label = '(no label)';
     let changed = false;
 
@@ -223,9 +222,9 @@ exports.fixDesignations = function fixDesignations(designations, label = undefin
     }
 
     return changed ? designations : undefined;
-};
+}
 
-exports.fixIds = function fixIds(ids) {
+export function fixIds(ids) {
     let changed = false;
 
     if (ids) {
@@ -240,12 +239,12 @@ exports.fixIds = function fixIds(ids) {
     }
 
     return changed;
-};
+}
 
-exports.fixPermissibleValues = function fixPermissibleValues(permissibleValues, datatype) {
+export function fixPermissibleValues(permissibleValues, datatype) {
     let changed = false;
     if (datatype === 'Value List') {
-        const isDups = [exports.newIsDuplicateAndAdd(), exports.newIsDuplicateAndAdd(), exports.newIsDuplicateAndAdd()];
+        const isDups = [newIsDuplicateAndAdd(), newIsDuplicateAndAdd(), newIsDuplicateAndAdd()];
         const isDupsProperties = ['permissibleValue', 'valueMeaningCode', 'valueMeaningName'];
         if (typeof permissibleValues === 'undefined' || !Array.isArray(permissibleValues)) {
             permissibleValues = [];
@@ -263,7 +262,7 @@ exports.fixPermissibleValues = function fixPermissibleValues(permissibleValues, 
                 pv.permissibleValue = pv.valueMeaningName || pv.valueMeaningCode;
                 changed = true;
             }
-            const duplicates = isDups.map((isDup, i) => isDup(pv[isDupsProperties[i]]));
+            const duplicates: number[] = isDups.map((isDup, i) => isDup(pv[isDupsProperties[i]]) ? 1 : 0);
             const numberOfDuplicates = duplicates.reduce((a, b) => a + b);
             if (numberOfDuplicates === 3) {
                 permissibleValues.splice(i, 1);
@@ -274,7 +273,7 @@ exports.fixPermissibleValues = function fixPermissibleValues(permissibleValues, 
             if (numberOfDuplicates > 0 && numberOfDuplicates < 3) {
                 duplicates.forEach((isDuplicate, i) => {
                     if (isDuplicate) {
-                        pv[isDupsProperties[i]] = exports.newKeyAndAdd(pv[isDupsProperties[i]], isDups[i]);
+                        pv[isDupsProperties[i]] = newKeyAndAdd(pv[isDupsProperties[i]], isDups[i]);
                     }
                 });
                 changed = true;
@@ -294,13 +293,13 @@ exports.fixPermissibleValues = function fixPermissibleValues(permissibleValues, 
     }
 
     return changed ? permissibleValues : null;
-};
+}
 
-exports.isValueFormat = function isValueFormat(valueFormat) {
+export function isValueFormat(valueFormat) {
     return typeof valueFormat === 'undefined' || valueFormat === 'html';
-};
+}
 
-exports.mergeClassification = function mergeClassification(dest, src) {
+export function mergeClassification(dest, src) {
     src.elements && src.elements.forEach(element => {
         const match = dest.elements.filter(e => e.name === element.name)[0];
         if (match) {
@@ -309,9 +308,9 @@ exports.mergeClassification = function mergeClassification(dest, src) {
             dest.elements.push(element);
         }
     });
-};
+}
 
-exports.newIsDuplicateAndAdd = function newIsDuplicateAndAdd() {
+export function newIsDuplicateAndAdd() {
     const keys = new Set();
     return function isDuplicateAndAdd(key) {
         if (!key) {
@@ -323,21 +322,21 @@ exports.newIsDuplicateAndAdd = function newIsDuplicateAndAdd() {
         keys.add(key);
         return false;
     };
-};
+}
 
-exports.newKeyAndAdd = function newKeyAndAdd(key, isDuplicateAndAdd) {
+export function newKeyAndAdd(key, isDuplicateAndAdd) {
     while (isDuplicateAndAdd(key)) {
         key += '-1';
     }
     return key;
-};
+}
 
-exports.stringToNumber = function stringToNumber(str) {
+export function stringToNumber(str) {
     const num = typeof str === 'string' ? parseInt(str) : undefined;
     return Number.isNaN(num) ? undefined : num;
-};
+}
 
-exports.verifyObjectId = function verifyObjectId(model, cb) {
+export function verifyObjectId(model, cb) {
     model.find({_id: {$not: {$type: 'objectId'}}}, {_id: true}).exec((err, idObjs) => {
         if (err) {
             console.log(err);
@@ -345,26 +344,26 @@ exports.verifyObjectId = function verifyObjectId(model, cb) {
         }
         cb(idObjs.map(o => o._id.toString()));
     });
-};
+}
 
-exports.addError = function addError(id, error) {
-    exports.errors.push({id, error});
+export function addError(id, error) {
+    errors.push({id, error});
     console.log(id + ': ' + error);
-};
+}
 
-exports.finished = function finished(err) {
+export function finished(err) {
     console.log(err[0] ? 'ERROR: ' + err[0] : 'Finished!');
-    console.log('Document count: ' + exports.count);
-    if (exports.cleanup) {
-        console.log('Fixed count: ' + exports.fixed);
+    console.log('Document count: ' + status.count);
+    if (cleanup) {
+        console.log('Fixed count: ' + status.fixed);
     }
-    console.log('Validation Errors count: ' + exports.errors.length);
+    console.log('Validation Errors count: ' + errors.length);
     // console.log('Validation Errors:');
     // errors.forEach(error => console.log(error.id + ': ' + error.error));
     process.exit(1);
-};
+}
 
-exports.exitWithError = function exitWithError(err) {
+export function exitWithError(err) {
     console.log('Not Finished! Exit with error: ' + err);
     process.exit(1);
-};
+}
