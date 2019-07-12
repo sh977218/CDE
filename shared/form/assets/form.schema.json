@@ -37,12 +37,6 @@
               "title": "form",
               "type": "object",
               "properties": {
-                "ids": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "AdminItem#/definitions/identifier"
-                  }
-                },
                 "name": {
                   "type": "string"
                 },
@@ -97,12 +91,6 @@
                       "type": "array",
                       "items": {
                         "$ref": "AdminItem#/definitions/derivationRule"
-                      }
-                    },
-                    "ids": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "AdminItem#/definitions/identifier"
                       }
                     },
                     "name": {
