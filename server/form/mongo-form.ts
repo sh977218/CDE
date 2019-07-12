@@ -17,7 +17,7 @@ const isOrgCurator = require('../../shared/system/authorizationShared').isOrgCur
 export const type = 'form';
 export const name = 'forms';
 
-const ajvElt = new Ajv();
+const ajvElt = new Ajv({allErrors: true});
 fs.readdirSync(path.resolve(__dirname, '../../shared/de/assets/')).forEach(file => {
     if (file.indexOf('.schema.json') > -1) {
         ajvElt.addSchema(require('../../shared/de/assets/' + file));
