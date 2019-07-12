@@ -2,6 +2,7 @@
     "rulesDirectory": [
         "node_modules/codelyzer"
     ],
+    "extends": "tslint:recommended",
     "jsRules": {
         "class-name": true,
         "comment-format": [
@@ -80,7 +81,11 @@
             "check-open-brace",
             "check-whitespace"
         ],
-//        "pipe-naming": [true, "camelCase", "cde"],
+        "quotemark": [
+            true,
+            "single"
+        ],
+        //        "pipe-naming": [true, "camelCase", "cde"],
         "semicolon": [
             true,
             "always"
