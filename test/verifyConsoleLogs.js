@@ -12,8 +12,14 @@ let expectedContent = {
     ],
     cdeAddClassification: 'addCdeClassification/ - Failed to load resource: the server responded with a status of 409 (Conflict)',
     cdeLiveCommentTest: '*',
-    cdeTinyIdSwaggerApi: 'docs/swagger-ui-bundle.js 51:49866 "Could not find component"',
-    cdeTinyIdVersionSwaggerApi: 'docs/swagger-ui-bundle.js 51:49866 "Could not find component"',
+    cdeTinyIdSwaggerApi: [
+        'docs/swagger-ui-bundle.js 51:49866 "Could not find component"',
+        'Unable to get the Swagger UI URL from the server'
+    ],
+    cdeTinyIdVersionSwaggerApi: [
+        'docs/swagger-ui-bundle.js 51:49866 "Could not find component"',
+        'Unable to get the Swagger UI URL from the server'
+    ],
     checkDuplicatesClassification: 'the server responded with a status of 409',
     dupStewardValidation: [
         "Error publishing DataElement validation failed",
