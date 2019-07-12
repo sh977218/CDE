@@ -1,8 +1,9 @@
+import { config } from 'server/system/parseConfig';
 import { DataElement as DE } from 'shared/de/dataElement.model';
+import { CbError, MongooseType } from 'shared/models.model';
 import { checkDefinitions, checkPvUnicity, wipeDatatype } from 'shared/de/deValidator';
 import { Cb2, CbError, MongooseType } from 'shared/models.model';
 import { isOrgCurator } from 'shared/system/authorizationShared';
-import { config } from '../system/parseConfig';
 
 const Ajv = require('ajv');
 const fs = require('fs');
@@ -16,6 +17,8 @@ const schemas = require('../../server/cde/schemas');
 
 export const type = 'cde';
 export const name = 'CDEs';
+
+export type DataElementDraft = DE;
 
 const ajvElt = new Ajv();
 ajvElt.addSchema(require('../../shared/de/assets/adminItem.schema'));
@@ -186,7 +189,9 @@ export function draftDelete(tinyId, cb) {
     DataElementDraft.remove({tinyId}, cb);
 }
 
-export function draftsList(criteria, cb) {
+export function draftsList(criteria): Promise<DataElementDraft[]>;
+export function draftsList(criteria, cb: CbError): void;
+export function draftsList(criteria, cb?: CbError): void | Promise<DataElementDraft[]> {
     return DataElementDraft
         .find(criteria, {
             'designations.designation': 1,

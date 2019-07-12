@@ -41,8 +41,14 @@ let expectedContent = {
         "Error publishing Form validation failed",
         "422 (Unprocessable Entity)"
     ],
-    formTinyIdSwaggerApi: 'docs/swagger-ui-bundle.js 51:49866 "Could not find component"',
-    formTinyIdVersionSwaggerApi: 'docs/swagger-ui-bundle.js 51:49866 "Could not find component"',
+    formTinyIdSwaggerApi: [
+        'docs/swagger-ui-bundle.js 51:49866 "Could not find component"',
+        'Unable to get the Swagger UI URL from the server'
+    ],
+    formTinyIdVersionSwaggerApi: [
+        'docs/swagger-ui-bundle.js 51:49866 "Could not find component"',
+        'Unable to get the Swagger UI URL from the server'
+    ],
     launchFhirApp: '*',
     logClientErrors: '*',
     meshTopics: 'classificationmanagement - Form submission canceled because the form is not connected',

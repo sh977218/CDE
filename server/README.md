@@ -10,7 +10,7 @@
 * webpack
 
 ## Other
-* to access **server** use relative paths, such as:
+* no access to **modules**
+* to access **server** or **shared** use absolute paths, such as:
    * `import {} from 'server/cde/mongo-cde';`
-* to access **shared** use relative paths, such as:
    * `import {} from 'shared/item';`
