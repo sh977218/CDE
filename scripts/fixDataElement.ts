@@ -112,10 +112,9 @@ function fixError(cde) {
 (function () {
     let cdeCount = 0;
     let cursor = DataElement.find({
-//        tinyId: 'QyGOTdNnq4X',
         lastMigrationScript: {$ne: 'fixDataElement'},
-        archived: false,
-        'registrationState.registrationStatus': {$ne: "Retired"}
+        'registrationState.registrationStatus': {$ne: "Retired"},
+        archived: false
     }).cursor();
     cursor.eachAsync(async (cde: any) => {
         cde.lastMigrationScript = 'fixDataElement';
