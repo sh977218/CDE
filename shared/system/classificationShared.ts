@@ -1,6 +1,6 @@
 import * as _find from 'lodash/find';
 import * as _slice from 'lodash/slice';
-import { Cb, Cb1, Classification, ClassificationElement, Item, MongooseType, Organization } from '../../shared/models.model';
+import { Cb, Cb1, Classification, ClassificationElement, Item, MongooseType, Organization } from 'shared/models.model';
 
 export const actions: {
     create: string,

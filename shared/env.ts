@@ -1,4 +1,4 @@
-import { Elt } from '../shared/models.model';
+import { Elt } from 'shared/models.model';
 
 export function getEnvironmentHost(config: any, host: string): string | undefined {
     switch (config.publicUrl) {

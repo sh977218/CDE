@@ -1,6 +1,6 @@
 const JXON = require("jxon");
 const _ = require("lodash");
-import { flattenFormElement } from '../../shared/form/fe';
+import { flattenFormElement } from 'shared/form/fe';
 
 let _crypto: any;
 

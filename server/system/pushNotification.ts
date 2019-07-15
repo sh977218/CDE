@@ -1,4 +1,4 @@
-import { handleError } from '../errorHandler/errHandler';
+import { handleError } from '../errorHandler/errorHandler';
 import { config } from '../system/parseConfig';
 
 const _ = require('lodash');

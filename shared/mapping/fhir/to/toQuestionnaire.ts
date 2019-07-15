@@ -1,16 +1,16 @@
-import { getQuestionPriorByLabel, tokenSplitter } from '../../../../shared/form/skipLogic';
-import { CdeForm, FormElement, FormQuestion } from '../../../../shared/form/form.model';
-import { ITEM_MAP } from '../../../../shared/item';
+import { getQuestionPriorByLabel, tokenSplitter } from 'shared/form/skipLogic';
+import { CdeForm, FormElement, FormQuestion } from 'shared/form/form.model';
+import { ITEM_MAP } from 'shared/item';
 import {
     FhirQuestionnaire, FhirQuestionnaireItem, FhirQuestionnaireItemEnableWhen
-} from '../../../../shared/mapping/fhir/fhirResource.model';
-import { codeSystemOut } from '../../../../shared/mapping/fhir/index';
+} from 'shared/mapping/fhir/fhirResource.model';
+import { codeSystemOut } from 'shared/mapping/fhir/index';
 import {
     containerToItemType, itemTypeToItemDatatype, permissibleValueToCoding, valueToTypedValue
-} from '../../../../shared/mapping/fhir/to/datatypeToItemType';
-import { regStatusToPublicationStatus } from '../../../../shared/mapping/fhir/to/enumToValueSet';
-import { newIdentifier } from '../../../../shared/mapping/fhir/to/toFhir';
-import { capString } from '../../../../shared/system/util';
+} from 'shared/mapping/fhir/to/datatypeToItemType';
+import { regStatusToPublicationStatus } from 'shared/mapping/fhir/to/enumToValueSet';
+import { newIdentifier } from 'shared/mapping/fhir/to/toFhir';
+import { capString } from 'shared/system/util';
 
 /*
  * Call as formToQuestionnaire(form, options, window)

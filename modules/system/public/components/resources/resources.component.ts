@@ -15,7 +15,7 @@ import { ActivatedRoute } from '@angular/router';
     entryComponents: [ResourcesRssComponent]
 })
 export class ResourcesComponent implements OnDestroy {
-    canEdit;
+    canEdit: boolean;
     containers: HtmlContainer[] = [];
     resource: Article = new Article();
 
@@ -32,11 +32,10 @@ export class ResourcesComponent implements OnDestroy {
     }
 
     renderMe() {
-        let i = 0;
-        let size = this.resource.rssFeeds.length;
+        let size = this.resource.rssFeeds ? this.resource.rssFeeds.length : 0;
         let waitUntilBodyHtml = setInterval(() => {
-            for (; i < size; i++) {
-                let rssFeed = this.resource.rssFeeds[i];
+            for (let i = 0; i < size; i++) {
+                let rssFeed = this.resource.rssFeeds![i];
                 let myArea = document.getElementById('rssContent_' + i);
                 if (!myArea) {
                     return;
@@ -65,8 +64,7 @@ export class ResourcesComponent implements OnDestroy {
 
 export class HtmlContainer {
     private attached: boolean = false;
-
-    private disposeFn: () => void;
+    private disposeFn!: () => void;
 
     constructor(private hostElement: Element,
                 private appRef: ApplicationRef,

@@ -1,56 +1,94 @@
 import { Injectable } from '@angular/core';
 import { OrgHelperService } from 'non-core/orgHelper.service';
-import { CurationStatus, StatusValidationRulesOrgs } from 'shared/models.model';
+import { umlsPvFilter } from 'shared/de/umls';
+import {
+    CurationStatus, Item, StatusValidationRules, StatusValidationRulesByOrg, StatusValidationRulesByOrgReg
+} from 'shared/models.model';
 
 @Injectable()
 export class RegistrationValidatorService {
     constructor(private orgHelperService: OrgHelperService) {
     }
 
-    getOrgRulesForCde(cde): StatusValidationRulesOrgs {
-        let rulesOrgs: StatusValidationRulesOrgs = {};
-        cde.classification.forEach(c => {
+    getOrgRulesForCde(item: Item): StatusValidationRulesByOrg {
+        let rulesOrgs: StatusValidationRulesByOrg = {};
+        item.classification && item.classification.forEach(c => {
             rulesOrgs[c.stewardOrg.name] = this.orgHelperService.getStatusValidationRules(c.stewardOrg.name);
         });
         return rulesOrgs;
     }
 }
 
-const statuses = ['Standard', 'Qualified', 'Recorded', 'Candidate', 'Incomplete'];
+const statuses: CurationStatus[] = ['Standard', 'Qualified', 'Recorded', 'Candidate', 'Incomplete'];
+export type RuleStatus = {
+    ruleError?: string,
+    ruleName: string,
+    ruleResultPromise: Promise<string>,
+};
 
-export function evalCde(cde, orgName: string, status: CurationStatus, cdeOrgRules) {
-    const statusesIndex = statuses.indexOf(status);
-    return cdeOrgRules[orgName]
-        .filter(r => statusesIndex > -1 ? statuses.slice(statusesIndex).includes(r.targetStatus) : true)
-        .map(r => ({ruleName: r.ruleName, cdePassingRule: cdePassingRule(cde, r)}));
+export function processRules(cde: any, orgName: string, status: CurationStatus|undefined, cdeOrgRules: StatusValidationRulesByOrg): RuleStatus[] | undefined {
+    const statusesIndex = statuses.indexOf(status as CurationStatus);
+    const orgRules = cdeOrgRules[orgName];
+    return !Array.isArray(orgRules) ? undefined : orgRules
+        .filter((r: StatusValidationRules) => statusesIndex > -1 ? statuses.slice(statusesIndex).includes(r.targetStatus) : true)
+        .map((r: StatusValidationRules) => ({ruleName: r.ruleName, ruleResultPromise: cdePassingRule(cde, r)}));
 }
 
-export function conditionsMetForStatusWithinOrg(cde, orgName, status, cdeOrgRules) {
-    return cdeOrgRules[orgName] ? evalCde(cde, orgName, status, cdeOrgRules).every(x => x.passing) : true;
-}
-
-export function cdePassingRule(cde, rule) {
-    function lookForPropertyInNestedObject(object, rule, level) {
-        let key = rule.field.split('.')[level];
-        if (!object[key]) return false;
-        if (level === rule.field.split('.').length - 1) return new RegExp(rule.rule.regex).test(object[key]);
-        if (!Array.isArray(object[key])) return lookForPropertyInNestedObject(object[key], rule, level + 1);
-
-        switch (rule.occurence) {
-            case 'atLeastOne':
-                return object[key].reduce(
-                    (acc, subTree) => acc || lookForPropertyInNestedObject(subTree, rule, level + 1), false);
-            case 'all':
-                return object[key].reduce(
-                    (acc, subTree) => acc && lookForPropertyInNestedObject(subTree, rule, level + 1), true);
+function lookForPropertyInNestedObject(cde: any, rule: StatusValidationRules, obj: any,  fields: string[]): Promise<string> {
+    let key = fields[0];
+    if (!obj[key]) {
+        if (key === 'permissibleValues') {
+            return Promise.resolve('');
         }
+        return Promise.resolve(`key ${key} not found`);
     }
-
-    return lookForPropertyInNestedObject(cde, rule, 0);
+    if (fields.length === 1) {
+        if (rule.rule.regex) {
+            return Promise.resolve(new RegExp(rule.rule.regex).test(obj[key])
+                ? '' : `${rule.rule.regex} not found in ${obj[key]}`);
+        } else if (rule.rule.customValidations) {
+            if (rule.rule.customValidations.includes('permissibleValuesUMLS')) {
+                const pvs = obj[key].filter(umlsPvFilter);
+                if (!pvs.length) {
+                    return Promise.resolve('');
+                }
+                return fetch('/umlsDe', {
+                    method: 'post',
+                    headers: {
+                        'Content-type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(obj[key]),
+                })
+                    .then(res => res.ok ? '' : res.text(), err => err);
+            }
+        }
+        return Promise.resolve('field validation not found');
+    }
+    if (!Array.isArray(obj[key])) {
+        return lookForPropertyInNestedObject(cde, rule, obj[key], fields.slice(1));
+    }
+    switch (rule.occurence) {
+        case 'atLeastOne':
+            return Promise.resolve(obj[key].reduce(
+                (acc: boolean, subTree: any) => acc || lookForPropertyInNestedObject(cde, rule, subTree, fields.slice(1)),
+                false
+            ));
+        case 'all':
+            return Promise.resolve(obj[key].reduce(
+                (acc: boolean, subTree: any) => acc && lookForPropertyInNestedObject(cde, rule, subTree, fields.slice(1)),
+                true
+            ));
+    }
+    return Promise.resolve('validation not found');
 }
 
-export function getStatusRules(cdeOrgRules) {
-    let cdeStatusRules = {
+export function cdePassingRule(cde: any, rule: StatusValidationRules): Promise<string> {
+    return lookForPropertyInNestedObject(cde, rule, cde, rule.field.split('.'));
+}
+
+export function getStatusRules(cdeOrgRules: StatusValidationRulesByOrg): StatusValidationRulesByOrgReg {
+    let cdeStatusRules: StatusValidationRulesByOrgReg = {
         Incomplete: {},
         Candidate: {},
         Recorded: {},

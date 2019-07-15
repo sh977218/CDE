@@ -1,6 +1,4 @@
-import { DataElementElastic } from 'shared/de/dataElement.model';
-import { CdeForm } from 'shared/form/form.model';
-import { TableViewFields } from 'shared/models.model';
+import { ItemElastic, TableViewFields } from 'shared/models.model';
 
 export function getCdeCsvHeader(settings: TableViewFields): string {
     let cdeHeader = "Name";
@@ -61,27 +59,11 @@ export function getCdeCsvHeader(settings: TableViewFields): string {
     return cdeHeader;
 }
 
-export function projectFormForExport(ele: CdeForm): any {
-    const form: any = {
-        name: ele.designations[0].designation
-        , ids: ele.ids.map(function (id) {
-            return id.source + ": " + id.id + (id.version ? " v" + id.version : "");
-        })
-        , stewardOrg: ele.stewardOrg.name
-        , registrationStatus: ele.registrationState.registrationStatus
-        , adminStatus: ele.registrationState.administrativeStatus
-    };
-    if (ele.classification) {
-        form.usedBy = ele.classification.map((c) => c.stewardOrg.name);
-    }
-    return form;
-}
-
-export function projectCdeForExport(ele: DataElementElastic, settings: TableViewFields): Object {
+export function projectItemForExport(ele: ItemElastic, settings?: TableViewFields): any {
     let cde: any = {
         name: ele.designations[0].designation
     };
-    if (settings.questionTexts) {
+    if (settings && settings.questionTexts) {
         cde.questionTexts = ele.designations
             .filter(n => (n.tags || []).filter(
                 t => t.indexOf("Question Text") > -1
@@ -89,7 +71,7 @@ export function projectCdeForExport(ele: DataElementElastic, settings: TableView
             .map(n => n.designation)
             .filter(n => n);
     }
-    if (settings.naming) {
+    if (settings && settings.naming) {
         cde.otherNames = ele.designations
             .filter((n) => (n.tags || []).filter(
                 t => t.indexOf("Question Text") > -1
@@ -97,57 +79,57 @@ export function projectCdeForExport(ele: DataElementElastic, settings: TableView
             .map(n => n.designation)
             .filter(n => n);
     }
-    if (settings.permissibleValues || settings.pvCodeNames) {
+    if (settings && (settings.permissibleValues || settings.pvCodeNames)) {
         cde.valueDomainType = ele.valueDomain.datatype;
     }
-    if (settings.permissibleValues) {
+    if (settings && settings.permissibleValues) {
         cde.permissibleValues = (ele.valueDomain.permissibleValues || []).slice(0, 50).map(pv => pv.permissibleValue);
     }
-    if (settings.pvCodeNames) {
+    if (settings && settings.pvCodeNames) {
         cde.pvCodeNames = (ele.valueDomain.permissibleValues || []).slice(0, 50).map(pv => pv.valueMeaningName);
     }
-    if (settings.nbOfPVs) {
+    if (settings && settings.nbOfPVs) {
         cde.nbOfPVs = ele.valueDomain.permissibleValues && ele.valueDomain.permissibleValues.length || 0;  // jshint ignore:line
     }
-    if (settings.uom) {
+    if (settings && settings.uom) {
         cde.uom = ele.valueDomain.uom;
     }
-    if (settings.stewardOrg) {
+    if (!settings || settings.stewardOrg) {
         cde.stewardOrg = ele.stewardOrg.name;
     }
-    if (settings.usedBy) {
+    if (!settings || settings.usedBy) {
         if (ele.classification) {
-            cde.usedBy = ele.classification.map((c) => c.stewardOrg.name);
+            cde.usedBy = ele.classification.map(c => c.stewardOrg.name);
         }
     }
-    if (settings.registrationStatus) {
+    if (!settings || settings.registrationStatus) {
         cde.registrationStatus = ele.registrationState.registrationStatus;
     }
-    if (settings.administrativeStatus) {
+    if (!settings || settings.administrativeStatus) {
         cde.administrativeStatus = ele.registrationState.administrativeStatus;
     }
-    if (settings.ids) {
-        if (settings.identifiers && settings.identifiers.length > 0) {
+    if (!settings || settings.ids) {
+        if (settings && settings.identifiers && settings.identifiers.length > 0) {
             settings.identifiers.forEach(i => {
-                cde[i] = "";
+                cde[i] = '';
                 ele.ids.forEach(id => {
-                    if (id.source === i) cde[i] = id.id + (id.version ? " v" + id.version : "");
+                    if (id.source === i) cde[i] = id.id + (id.version ? ' v' + id.version : '');
                 });
             });
         } else {
-            cde.ids = ele.ids.map((id) => id.source + ": " + id.id + (id.version ? " v" + id.version : ""));
+            cde.ids = ele.ids.map(id => id.source + ': ' + id.id + (id.version ? ' v' + id.version : ''));
         }
     }
-    if (settings.source) {
+    if (settings && settings.source) {
         cde.source = ele.source;
     }
-    if (settings.updated) {
+    if (settings && settings.updated) {
         cde.updated = ele.updated;
     }
-    if (settings.tinyId) {
+    if (settings && settings.tinyId) {
         cde.tinyId = ele.tinyId;
     }
-    if (settings.linkedForms) {
+    if (settings && settings.linkedForms) {
         cde.linkedForms = ele.linkedForms;
     }
 

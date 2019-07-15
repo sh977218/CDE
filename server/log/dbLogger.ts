@@ -1,5 +1,6 @@
-import { handleConsoleError, handleError } from '../errorHandler/errHandler';
-import { config } from '../system/parseConfig';
+import { Cb } from 'shared/models.model';
+import { handleConsoleError, handleError } from 'server/errorHandler/errorHandler';
+import { config } from 'server/system/parseConfig';
 
 const connHelper = require('../system/connections');
 const mongo_data = require('../system/mongo-data');
@@ -17,7 +18,7 @@ const FeedbackModel = conn.model('FeedbackIssue', schemas.feedbackIssueSchema);
 const consoleLogModel = conn.model('consoleLogs', schemas.consoleLogSchema);
 const userAgent = require('useragent');
 
-export function consoleLog(message, level = 'debug') { // no express errors see dbLogger.log(message)
+export function consoleLog(message, level: 'debug' | 'error' | 'info' | 'warning' = 'debug') { // no express errors see dbLogger.log(message)
     new consoleLogModel({message: message, level: level}).save(err => {
         if (err) noDbLogger.noDbLogger.error('Cannot log to DB: ' + err);
     });
@@ -25,12 +26,12 @@ export function consoleLog(message, level = 'debug') { // no express errors see 
 
 export function storeQuery(settings, callback) {
     const storedQuery: any = {
-        searchTerm: settings.searchTerm ? settings.searchTerm : ''
-        , date: new Date()
-        , regStatuses: settings.selectedStatuses
-        , datatypes: settings.selectedDatatypes
-        , selectedElements1: settings.selectedElements.slice(0)
-        , selectedElements2: settings.selectedElementsAlt.slice(0)
+        datatypes: settings.selectedDatatypes,
+        date: new Date(),
+        regStatuses: settings.selectedStatuses,
+        searchTerm: settings.searchTerm ? settings.searchTerm : '',
+        selectedElements1: settings.selectedElements.slice(0),
+        selectedElements2: settings.selectedElementsAlt.slice(0)
     };
     if (settings.selectedOrg) storedQuery.selectedOrg1 = settings.selectedOrg;
     if (settings.selectedOrgAlt) storedQuery.selectedOrg2 = settings.selectedOrgAlt;
@@ -63,7 +64,7 @@ export function log(message, callback) { // express only, all others dbLogger.co
     }
 }
 
-export function logError(message, callback) { // all server errors, express and not
+export function logError(message, callback?: Cb) { // all server errors, express and not
     message.date = new Date();
     if (typeof message.stack === 'string') message.stack = message.stack.substr(0, 1000);
     let description = (message.message || message.publicMessage || '').substr(0, 30);

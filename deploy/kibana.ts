@@ -1,4 +1,4 @@
-import { config } from '../server/system/parseConfig';
+import { config } from 'server/system/parseConfig';
 
 var _kibana =
     {

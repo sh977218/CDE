@@ -10,7 +10,6 @@ import { AlertService } from 'alert/alert.service';
 import { repeatFe, repeatFeLabel, repeatFeNumber, repeatFeQuestion } from 'core/form/fe';
 import { convertFormToSection } from 'core/form/form';
 import { isMappedTo } from 'core/form/formAndFe';
-import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
 import { FormDescriptionComponent } from 'form/public/tabs/description/formDescription.component';
 import _isEqual from 'lodash/isEqual';
 import _noop from 'lodash/noop';
@@ -36,14 +35,13 @@ import { getQuestionsPrior } from 'shared/form/skipLogic';
 export class FormDescriptionSectionComponent implements OnInit {
     @Input() elt!: CdeForm;
     @Input() canEdit: boolean = false;
-    @Input() index;
+    @Input() index!: number;
     @Input() node!: TreeNode;
     @Output() onEltChange: EventEmitter<void> = new EventEmitter<void>();
     @ViewChild('formDescriptionSectionTmpl') formDescriptionSectionTmpl!: TemplateRef<any>;
     @ViewChild('formDescriptionFormTmpl') formDescriptionFormTmpl!: TemplateRef<any>;
     @ViewChild('slInput') slInput!: ElementRef;
     @ViewChild('updateFormVersionTmpl') updateFormVersionTmpl!: TemplateRef<any>;
-    static inputEvent = new Event('input');
     isMappedTo = isMappedTo;
     isSubForm = false;
     formSection?: FormInForm;
@@ -63,8 +61,7 @@ export class FormDescriptionSectionComponent implements OnInit {
                 @Host() public formDescriptionComponent: FormDescriptionComponent,
                 private http: HttpClient,
                 private localStorageService: LocalStorageService,
-                public dialog: MatDialog,
-                public skipLogicValidateService: SkipLogicValidateService) {
+                public dialog: MatDialog) {
     }
 
     ngOnInit() {
@@ -109,7 +106,7 @@ export class FormDescriptionSectionComponent implements OnInit {
         }, 3000);
     }
 
-    editSection(section) {
+    editSection(section: FormSectionOrForm) {
         if (!this.isSubForm && this.canEdit) {
             section.edit = !section.edit;
             this.formDescriptionComponent.setCurrentEditing(this.parent.formElements, section, this.index);
@@ -120,23 +117,16 @@ export class FormDescriptionSectionComponent implements OnInit {
         return (this.section.elementType === 'section' ? this.formDescriptionSectionTmpl : this.formDescriptionFormTmpl);
     }
 
-    hoverInSection(section) {
+    hoverInSection(section: FormSectionOrForm) {
         if (!this.isSubForm && this.canEdit) {
             section.hover = true;
         }
     }
 
-    hoverOutSection(section) {
+    hoverOutSection(section: FormSectionOrForm) {
         if (!this.isSubForm && this.canEdit) {
             section.hover = false;
         }
-    }
-
-    onSelectItem(parent, question, $event, slInput) {
-        this.typeaheadSkipLogic(parent, question, $event);
-        $event.preventDefault();
-        slInput.focus();
-        this.slOptionsRetrigger();
     }
 
     openUpdateFormVersion(formSection: FormInForm) {
@@ -175,13 +165,13 @@ export class FormDescriptionSectionComponent implements OnInit {
         }, _noop);
     }
 
-    removeNode(node) {
+    removeNode(node: TreeNode) {
         node.parent.data.formElements.splice(node.parent.data.formElements.indexOf(node.data), 1);
         node.treeModel.update();
         // this.onEltChange.emit(); treeEvent will handle, this one works
     }
 
-    repeatChange(section) {
+    repeatChange(section: FormSectionOrForm) {
         if (section.repeatOption === 'F') {
             section.repeat = 'First Question';
             this.onEltChange.emit();
@@ -189,27 +179,12 @@ export class FormDescriptionSectionComponent implements OnInit {
             section.repeat = '="' + section.repeatQuestion + '"';
         } else if (section.repeatOption === 'N') {
             section.repeat = (section.repeatNumber && section.repeatNumber > 1 ? section.repeatNumber.toString() : undefined);
-            if (section.repeat > 0) this.onEltChange.emit();
+            if (parseInt(section.repeat || '') > 0) this.onEltChange.emit();
         } else {
             section.repeat = undefined;
         }
 
         this.checkRepeatOptions();
         this.onEltChange.emit();
-    }
-
-    slOptionsRetrigger() {
-        if (this.slInput) {
-            setTimeout(() => {
-                this.slInput.nativeElement.dispatchEvent(FormDescriptionSectionComponent.inputEvent);
-            }, 0);
-        }
-    }
-
-    typeaheadSkipLogic(parent, fe, event) {
-        if (fe.skipLogic && fe.skipLogic.condition !== event) {
-            this.skipLogicValidateService.typeaheadSkipLogic(parent, fe, event);
-            this.onEltChange.emit();
-        }
     }
 }

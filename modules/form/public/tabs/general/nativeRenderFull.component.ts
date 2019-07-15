@@ -47,10 +47,10 @@ import { CdeForm, DisplayProfile } from 'shared/form/form.model';
     `]
 })
 export class NativeRenderFullComponent implements OnInit {
-    @Input() elt: CdeForm;
-    profile: DisplayProfile;
-    selectedProfileName;
-    selectedProfileNameDecode;
+    @Input() elt!: CdeForm;
+    profile?: DisplayProfile;
+    selectedProfileName?: string;
+    selectedProfileNameDecode?: string;
     overridePrintable: boolean = true;
     NativeRenderService = NativeRenderService;
 
@@ -58,7 +58,7 @@ export class NativeRenderFullComponent implements OnInit {
         if (this.elt.displayProfiles.length) this.selectProfile(0);
     }
 
-    selectProfile(profileIndex) {
+    selectProfile(profileIndex: number) {
         this.profile = this.elt.displayProfiles[profileIndex];
         this.selectedProfileName = this.elt.displayProfiles[profileIndex].name;
         this.selectedProfileNameDecode = decodeURIComponent(this.selectedProfileName);

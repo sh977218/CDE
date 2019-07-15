@@ -1,4 +1,4 @@
-import { Board, Comment, Elt, Item, User } from '../../shared/models.model';
+import { Board, Comment, Elt, Item, User } from 'shared/models.model';
 
 export const rolesEnum: string[] = ['DocumentationEditor', 'BoardPublisher', 'CommentAuthor',
     'CommentReviewer', 'AttachmentReviewer', 'OrgAuthority'];

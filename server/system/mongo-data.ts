@@ -1,8 +1,8 @@
-import { handleError } from '../errorHandler/errHandler';
+import { handleError } from '../errorHandler/errorHandler';
 import { consoleLog } from '../log/dbLogger';
-import { hasRole } from '../../shared/system/authorizationShared';
+import { hasRole } from 'shared/system/authorizationShared';
 import { config } from '../system/parseConfig';
-import * as eltShared from '../../shared/elt';
+import * as eltShared from 'shared/elt';
 
 const _ = require('lodash');
 const async = require('async');
@@ -215,7 +215,7 @@ export function pushCreate(push, callback) {
 }
 
 export function pushDelete(endpoint, userId, callback) {
-    this.pushByIds(endpoint, userId, (err, registration) => {
+    pushByIds(endpoint, userId, (err, registration) => {
         if (err) return callback(err);
         PushRegistration.remove({_id: registration._id}, callback);
     });
@@ -385,7 +385,7 @@ export function userTotalSpace(name, callback) {
     }, () => callback(totalSpace));
 }
 
-export function addFile(file, cb, streamDescription = null) {
+export function addFile(file, cb, streamDescription: any = null) {
     gfs.findOne({md5: file.md5}, (err, f) => {
         if (f) return cb(err, f, false);
         if (!streamDescription) {

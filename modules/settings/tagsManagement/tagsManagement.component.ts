@@ -10,7 +10,7 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class TagsManagementComponent {
     allTags: string[] = [];
-    orgs?: any[];
+    orgs: any[];
 
     constructor(private http: HttpClient,
                 private Alert: AlertService,

@@ -1,25 +1,25 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { hasRole } from 'shared/system/authorizationShared';
 import { UserService } from '_app/user.service';
+import { Attachment, Item } from 'shared/models.model';
+import { hasRole } from 'shared/system/authorizationShared';
 
 @Component({
     selector: 'cde-attachments',
     templateUrl: './attachments.component.html'
 })
 export class AttachmentsComponent {
-    @Input() elt: any;
+    @Input() elt!: Item;
     @Input() canEdit: boolean = false;
-    @Output() removeAttachment = new EventEmitter();
-    @Output() setDefault = new EventEmitter();
-    @Output() upload = new EventEmitter();
-
+    @Output() removeAttachment = new EventEmitter<number>();
+    @Output() setDefault = new EventEmitter<number>();
+    @Output() upload = new EventEmitter<Event>();
     canReviewAttachment: boolean;
 
     constructor(private userService: UserService) {
         this.canReviewAttachment = hasRole(this.userService.user, 'AttachmentReviewer');
     }
 
-    copyUrl(attachment) {
+    copyUrl(attachment: Attachment) {
         let url = (window as any).publicUrl + '/data/' + attachment.fileid;
         if (attachment.filetype && attachment.filetype.indexOf('video') > -1) {
             url += '.mp4';
@@ -39,7 +39,7 @@ export class AttachmentsComponent {
     }
 
     openFileDialog() {
-        document.getElementById("fileToUpload").click();
+        document.getElementById('fileToUpload')!.click();
     }
 
 }

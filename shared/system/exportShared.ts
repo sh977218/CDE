@@ -1,4 +1,4 @@
-import { Item } from '../../shared/models.model';
+import { Item } from 'shared/models.model';
 
 export const exportHeader: {
     cdeHeader: string,
