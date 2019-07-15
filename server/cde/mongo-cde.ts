@@ -1,8 +1,7 @@
-import { config } from 'server/system/parseConfig';
+import { config } from '../system/parseConfig';
 import { DataElement as DE } from 'shared/de/dataElement.model';
-import { CbError, MongooseType } from 'shared/models.model';
 import { checkDefinitions, checkPvUnicity, wipeDatatype } from 'shared/de/deValidator';
-import { Cb2, CbError, MongooseType } from 'shared/models.model';
+import { CbError, MongooseType } from 'shared/models.model';
 import { isOrgCurator } from 'shared/system/authorizationShared';
 
 const Ajv = require('ajv');
@@ -60,7 +59,7 @@ schemas.dataElementSchema.pre('save', function (next) {
 
     // validate
     if (!validateSchema(elt)) {
-        return next(validateSchema.errors.map((e) => e.dataPath + ': ' + e.message).join(', '));
+        return next(validateSchema.errors.map(e => e.dataPath + ': ' + e.message).join(', '));
     }
     const valErr = elt.validateSync();
     if (valErr) {
@@ -317,13 +316,13 @@ export function update(elt, user, options: any = {}, callback: CbError<DE> = () 
         const newElt = new DataElement(elt);
 
         // archive dataElement and replace it with newElt
-        DataElement.findOneAndUpdate({_id: dataElement._id, archived: false}, {$set: {archived: true}}, (err2, doc) => {
-            if (err2 || !doc) {
+        DataElement.findOneAndUpdate({_id: dataElement._id, archived: false}, {$set: {archived: true}}, (err, doc) => {
+            if (err || !doc) {
                 callback(err, doc);
                 return;
             }
-            newElt.save((err3, savedElt) => {
-                if (err3) {
+            newElt.save((err, savedElt) => {
+                if (err) {
                     DataElement.findOneAndUpdate({_id: dataElement._id}, {$set: {archived: false}},
                         () => callback(err));
                 } else {
