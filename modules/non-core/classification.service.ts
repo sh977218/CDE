@@ -1,12 +1,12 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { ElasticService } from '_app/elastic.service';
+import { AlertService } from 'alert/alert.service';
 import { LocalStorageService } from 'angular-2-local-storage';
 import _isEqual from 'lodash/isEqual';
 import _uniqWith from 'lodash/uniqWith';
-import { AlertService } from 'alert/alert.service';
-import { ElasticService } from '_app/elastic.service';
 import { SearchSettingsElastic } from 'search/search.model';
-import { ClassificationHistory } from 'shared/models.model';
+import { CbErr, CbErrObj, ClassificationHistory, Item, ItemClassification } from 'shared/models.model';
 
 @Injectable()
 export class ClassificationService {
@@ -37,8 +37,8 @@ export class ClassificationService {
     }
 
 
-    classifyItem(elt, org, classifArray, endPoint, cb) {
-        let postBody = {
+    classifyItem(elt: Item, org: string | undefined, classifArray: string[] | undefined, endPoint: string, cb: CbErrObj<HttpErrorResponse>) {
+        let postBody: ItemClassification = {
             categories: classifArray,
             eltId: elt._id,
             orgName: org
@@ -50,8 +50,8 @@ export class ClassificationService {
             }, cb);
     }
 
-    removeClassification(elt, org, classifArray, endPoint, cb) {
-        let deleteBody = {
+    removeClassification(elt: Item, org: string, classifArray: string[], endPoint: string, cb: CbErr) {
+        let deleteBody: ItemClassification = {
             categories: classifArray,
             eltId: elt._id,
             orgName: org
@@ -62,8 +62,8 @@ export class ClassificationService {
     removeOrgClassification(deleteClassification, cb) {
         let settings = new SearchSettingsElastic(this.esService.getUserDefaultStatuses(), 10000);
         let ro = {
-            deleteClassification: deleteClassification,
-            settings: settings,
+            deleteClassification,
+            settings,
         };
         this.http.post('/server/classification/deleteOrgClassification/', ro, {responseType: 'text'}).subscribe(
             res => cb(res),
@@ -73,9 +73,9 @@ export class ClassificationService {
     reclassifyOrgClassification(oldClassification, newClassification, cb) {
         let settings = new SearchSettingsElastic(this.esService.getUserDefaultStatuses(), 10000);
         let postBody = {
-            settings: settings,
-            oldClassification: oldClassification,
-            newClassification: newClassification
+            settings,
+            oldClassification,
+            newClassification
         };
         this.http.post('/server/classification/reclassifyOrgClassification/', postBody, {responseType: 'text'}).subscribe(
             res => cb(res),
@@ -85,8 +85,8 @@ export class ClassificationService {
     renameOrgClassification(newClassification, cb) {
         let settings = new SearchSettingsElastic(this.esService.getUserDefaultStatuses(), 10000);
         let postBody = {
-            settings: settings,
-            newClassification: newClassification
+            settings,
+            newClassification
         };
         this.http.post('/server/classification/renameOrgClassification', postBody, {responseType: 'text'}).subscribe(
             res => cb(res),
@@ -95,11 +95,11 @@ export class ClassificationService {
 
     addChildClassification(newClassification, cb) {
         let putBody = {
-            newClassification: newClassification
+            newClassification
         };
         this.http.put('/server/classification/addOrgClassification/', putBody, {responseType: 'text'}).subscribe(
             res => cb(res),
-            (err) => {
+            (err: HttpErrorResponse) => {
                 if (err.status === 409) this.alert.addAlert('danger', "Classification Already Exists");
                 this.alert.addAlert('danger', "Unexpected error adding classification: " + err.status);
             });

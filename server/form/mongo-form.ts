@@ -1,7 +1,7 @@
 import * as Ajv from 'ajv';
-import { config } from '../system/parseConfig';
-import { CbError, User } from 'shared/models.model';
+import { config } from 'server/system/parseConfig';
 import { CdeForm } from 'shared/form/form.model';
+import { CbError, User } from 'shared/models.model';
 
 const fs = require('fs');
 const _ = require('lodash');
@@ -16,6 +16,8 @@ const isOrgCurator = require('../../shared/system/authorizationShared').isOrgCur
 
 export const type = 'form';
 export const name = 'forms';
+
+export type CdeFormDraft = CdeForm;
 
 const ajvElt = new Ajv({allErrors: true});
 fs.readdirSync(path.resolve(__dirname, '../../shared/de/assets/')).forEach(file => {
@@ -41,16 +43,21 @@ fs.readFile(path.resolve(__dirname, '../../shared/form/assets/form.schema.json')
 
 schemas.formSchema.pre('save', function (next) {
     let elt = this;
-    if (elt.archived) return next();
+
     validateSchema(elt)
+        .catch(err => next(err instanceof Ajv.ValidationError
+            ? 'errors:' + err.errors.map(e => e.dataPath + ': ' + e.message).join(', ')
+            : err
+        ))
         .then(() => {
             try {
                 elastic.updateOrInsert(elt);
             } catch (exception) {
                 logging.errorLogger.error('Error Indexing Form', {details: exception, stack: new Error().stack});
             }
+
             next();
-        }, next);
+        });
 });
 
 const conn = connHelper.establishConnection(config.database.appData);
@@ -177,7 +184,9 @@ export function draftDelete(tinyId, cb) {
     FormDraft.remove({tinyId: tinyId}, cb);
 }
 
-export function draftsList(criteria, cb) {
+export function draftsList(criteria): Promise<CdeFormDraft[]>;
+export function draftsList(criteria, cb: CbError): void;
+export function draftsList(criteria, cb?: CbError): void | Promise<CdeFormDraft[]> {
     return FormDraft
         .find(criteria, {
             'designations.designation': 1,
@@ -210,8 +219,7 @@ export function count(condition, callback) {
     return Form.countDocuments(condition, callback);
 }
 
-export function update(elt, user, options: any = {}, callback: CbError<CdeForm> = () => {
-}) {
+export function update(elt, user, options: any = {}, callback: CbError<CdeForm> = () => {}) {
     if (elt.toObject) elt = elt.toObject();
     Form.findById(elt._id, (err, form) => {
         if (form.archived) {
@@ -274,7 +282,8 @@ export function byOtherId(source, id, cb) {
     Form.find({archived: false}).elemMatch('ids', {source: source, id: id}).exec(function (err, forms) {
         if (forms.length > 1) {
             cb('Multiple results, returning first', forms[0]);
-        } else cb(err, forms[0]);
+        }
+        else cb(err, forms[0]);
     });
 }
 

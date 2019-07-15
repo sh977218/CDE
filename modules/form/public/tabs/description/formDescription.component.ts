@@ -12,7 +12,7 @@ import {
     ViewChild
 } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material';
-import { TREE_ACTIONS, TreeComponent, TreeNode } from 'angular-tree-component';
+import { TREE_ACTIONS, TreeComponent, TreeModel, TreeNode } from 'angular-tree-component';
 import { LocalStorageService } from 'angular-2-local-storage';
 import { Hotkey, HotkeysService } from 'angular2-hotkeys';
 import { convertFormToSection } from 'core/form/form';
@@ -38,66 +38,53 @@ import { scrollTo, waitRendered } from 'non-core/browser';
             border: 1px;
             border-radius: 10px;
         }
-
         :host ::ng-deep .badge {
             font-size: 100%;
         }
-
         :host ::ng-deep .panel {
             margin-bottom: 1px;
         }
-
         :host ::ng-deep .tree-children {
             padding-left: 0;
         }
-
         :host ::ng-deep .dragActive {
             background-color: lightblue;
         }
-
         :host ::ng-deep .panel-badge-btn {
             color: white;
             background-color: #333;
         }
-
         :host ::ng-deep .badge.formViewSummaryLabel {
             display: inline-flex;
             margin-left: 4px;
             margin-top: 2px;
             white-space: normal;
         }
-
         :host ::ng-deep .node-content-wrapper:hover {
             background: transparent;
             box-shadow: inset 0 0 0;
         }
-
         :host ::ng-deep .is-dragging-over-disabled {
             border: 1px dashed;
             border-radius: 4px;
             background: lightpink !important;
         }
-
         :host ::ng-deep .is-dragging-over {
             border: 1px dashed;
             border-radius: 4px;
             background-color: lightgreen !important;
         }
-
         :host ::ng-deep .node-drop-slot {
             height: 20px;
             margin-bottom: 10px;
         }
-
         :host ::ng-deep .drag-active .node-drop-slot:not(.is-dragging-over) {
             background-color: lightblue;
         }
-
         .panel-body-form,
         .panel-body-form ::ng-deep .card-body {
             background-color: rgba(0, 0, 0, 0.03);
         }
-
         .descriptionToolbox {
             color: #9d9d9d;
             background-color: #343a40;
@@ -112,40 +99,32 @@ import { scrollTo, waitRendered } from 'non-core/browser';
             background-clip: padding-box;
             z-index: 9;
         }
-
         .descriptionToolbox .btn.formDescriptionTool {
             margin-left: 4px;
             padding: 0;
             touch-action: auto;
             cursor: move;
         }
-
         .descriptionToolbox .btn.formDescriptionTool:hover {
             background-color: #ddffee;
         }
-
         .descriptionToolbox .btn.formDescriptionTool:hover span:before {
             content: ' Drag';
             font-weight: 900;
             line-height: initial;
         }
-
         .toolSection:before {
             content: ' Section';
         }
-
         .toolQuestion:before {
             content: ' Question';
         }
-
         .toolForm:before {
             content: ' Form';
         }
-
         .toolCopySection:before {
             content: ' Paste';
         }
-
         .toolbar-icon {
             font-size: 20px;
             height: 20px;
@@ -155,7 +134,7 @@ import { scrollTo, waitRendered } from 'non-core/browser';
 })
 
 export class FormDescriptionComponent implements OnInit, AfterViewInit {
-    private _elt?: CdeForm;
+    private _elt!: CdeForm;
     @Input() canEdit: boolean = false;
     @Input() set elt(form: CdeForm) {
         this._elt = form;
@@ -166,18 +145,18 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         return this._elt;
     }
     @Output() onEltChange = new EventEmitter();
-    @ViewChild(TreeComponent) tree: TreeComponent;
-    @ViewChild('formSearchTmpl') formSearchTmpl: TemplateRef<any>;
-    @ViewChild('questionSearchTmpl') questionSearchTmpl: TemplateRef<any>;
-    @ViewChild('descToolbox') descToolbox: ElementRef;
-    addQuestionDialogRef: MatDialogRef<any, any>;
-    dragActive: boolean;
+    @ViewChild(TreeComponent) tree!: TreeComponent;
+    @ViewChild('formSearchTmpl') formSearchTmpl!: TemplateRef<any>;
+    @ViewChild('questionSearchTmpl') questionSearchTmpl!: TemplateRef<any>;
+    @ViewChild('descToolbox') descToolbox!: ElementRef;
+    addQuestionDialogRef?: MatDialogRef<any, any>;
+    dragActive = false;
     formElementEditing: any = {};
     isModalOpen: boolean = false;
     newDataElement: DataElement = this.initNewDataElement();
     questionModelMode = 'search';
     treeOptions = {
-        allowDrag: element => !FormDescriptionComponent.isSubForm(element) || element.data.elementType === 'form' && !FormDescriptionComponent.isSubForm(element.parent),
+        allowDrag: (element: TreeNode) => !FormDescriptionComponent.isSubForm(element) || element.data.elementType === 'form' && !FormDescriptionComponent.isSubForm(element.parent),
         allowDrop: (element, {parent, index}) => {
             return element !== parent && parent.data.elementType !== 'question' && (!element
                 || !element.ref && (element.data.elementType !== 'question' || parent.data.elementType === 'section')
@@ -189,7 +168,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
             mouse: {
                 drag: () => this.dragActive = true,
                 dragEnd: () => this.dragActive = false,
-                drop: (tree, node, $event, {from, to}) => {
+                drop: (tree: TreeModel, node: TreeNode, $event: any, {from, to}) => {
                     if (from.ref) {
                         this.formElementEditing = {
                             formElements: to.parent.data.formElements,
@@ -248,7 +227,8 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
                     this.formElementEditing.formElement && this.formElementEditing.formElement.elementType === 'question') {
                     this.formElementEditing.index++;
                     this.openQuestionSearch();
-                } else return false;
+                }
+                return false;
             })
         ]);
     }
@@ -289,6 +269,9 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
 
     addQuestionFromSearch(de: DataElement) {
         FormService.convertCdeToQuestion(de, question => {
+            if (!question) {
+                return;
+            }
             question.formElements = [];
             question.expanded = true;
             question.edit = true;
@@ -349,10 +332,10 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
 
     createNewDataElement(newCde: DataElement = this.newDataElement) {
         this.addQuestionFromSearch(newCde);
-        this.addQuestionDialogRef.close();
+        this.addQuestionDialogRef!.close();
     }
 
-    setCurrentEditing(formElements, formElement, index) {
+    setCurrentEditing(formElements: FormElement[], formElement: FormElement, index: number) {
         if (_isEmpty(this.formElementEditing.formElement)) {
             this.formElementEditing = {
                 formElement: formElement,
@@ -373,7 +356,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         }
     }
 
-    treeEvents(event) {
+    treeEvents(event: any) {
         if (event && event.eventName === 'updateData' && this.updateDataCredit === 0) {
             this.onEltChange.emit();
         }

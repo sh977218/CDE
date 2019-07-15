@@ -1,37 +1,44 @@
+import { series } from 'async';
+import { CronJob } from 'cron';
+import * as csrf from 'csurf';
+import { renderFile } from 'ejs';
+import { access, constants, createWriteStream, mkdir, writeFile } from 'fs';
+import { toInteger } from 'lodash';
+import { join } from 'path';
+import { authenticate } from 'passport';
+import {
+    byTinyIdVersion as deByTinyIdVersion, count as deCount, DataElement, DataElementDraft, draftsList as deDraftsList
+} from 'server/cde/mongo-cde';
+import { handleError, respondError } from 'server/errorHandler/errorHandler';
+import {
+    byTinyIdVersion as formByTinyIdVersion, CdeFormDraft, draftsList as formDraftsList, Form
+} from 'server/form/mongo-form';
+import { consoleLog } from 'server/log/dbLogger';
+import { syncWithMesh } from 'server/mesh/elastic';
 import {
     canApproveCommentMiddleware,
     isOrgAdminMiddleware,
     isOrgAuthorityMiddleware, isOrgCuratorMiddleware, isSiteAdminMiddleware, loggedInMiddleware, nocacheMiddleware
-} from '../system/authorization';
+} from 'server/system/authorization';
+import { reIndex } from 'server/system/elastic';
+import { indices } from 'server/system/elasticSearchInit';
+import { fhirApps, fhirObservationInfo } from 'server/system/fhir';
+import { errorLogger } from 'server/system/logging';
+import {
+    addUserRole, disableRule, embeds, enableRule, getClassificationAuditLog, getFile,
+    IdSource, jobStatus, listOrgs, listOrgsDetailedInfo, orgByName, updateOrg, userById, usersByName
+} from 'server/system/mongo-data';
+import { addOrg, managedOrgs, transferSteward } from 'server/system/orgsvc';
+import { config } from 'server/system/parseConfig';
+import { checkDatabase, create, remove, subscribe, updateStatus } from 'server/system/pushNotification';
+import { banIp, getTrafficFilter } from 'server/system/traffic';
+import {
+    addOrgAdmin, addOrgCurator, myOrgs, myOrgsAdmins, orgAdmins, orgCurators, removeOrgAdmin, removeOrgCurator,
+    updateUserAvatar, updateUserRoles
+} from 'server/system/usersrvc';
 import { isOrgAdmin } from 'shared/system/authorizationShared';
-import { handleError, respondError } from '../errorHandler/errorHandler';
-import { config } from '../system/parseConfig';
-
-const async = require('async');
-const CronJob = require('cron').CronJob;
-const csrf = require('csurf');
-const ejs = require('ejs');
-const fs = require('fs');
-const _ = require('lodash');
-const passport = require('passport');
-const path = require('path');
-const useragent = require('useragent');
-const util = require('util');
-const mongo_cde = require('../cde/mongo-cde');
-const mongo_form = require('../form/mongo-form');
-const mongo_data = require('./mongo-data');
-const IdSource = mongo_data.IdSource;
-const dbLogger = require('../log/dbLogger');
-const logging = require('./logging');
-const orgsvc = require('./orgsvc');
-const usersrvc = require('./usersrvc');
-const esInit = require('./elasticSearchInit');
-const elastic = require('./elastic');
-const meshElastic = require('../mesh/elastic');
-const fhirApps = require('./fhir').fhirApps;
-const fhirObservationInfo = require('./fhir').fhirObservationInfo;
-const traffic = require('./traffic');
-const pushNotification = require('./pushNotification');
+import { is } from 'useragent';
+import { promisify } from 'util';
 
 export let respondHomeFull: Function;
 
@@ -48,39 +55,39 @@ export function init(app) {
     }
 
     let embedHtml = '';
-    ejs.renderFile('modules/_embedApp/embedApp.ejs', {isLegacy: false}, (err, str) => {
+    renderFile('modules/_embedApp/embedApp.ejs', {isLegacy: false}, (err, str) => {
         embedHtml = str;
     });
 
     let embedLegacyHtml = '';
-    ejs.renderFile('modules/_embedApp/embedApp.ejs', {isLegacy: true}, (err, str) => {
+    renderFile('modules/_embedApp/embedApp.ejs', {isLegacy: true}, (err, str) => {
         embedLegacyHtml = str;
         if (embedLegacyHtml) {
-            util.promisify(fs.access)('modules/_embedApp/public/html', 'r')
-                .catch(() => util.promisify(fs.mkdir)('modules/_embedApp/public/html', {recursive: true}))
+            promisify(access)('modules/_embedApp/public/html', constants.R_OK)
+                .catch(() => promisify(mkdir)('modules/_embedApp/public/html', {recursive: true} as any)) // Node 12
                 .then(() => {
-                    fs.writeFile('modules/_embedApp/public/html/index.html', embedLegacyHtml, err => {
+                    writeFile('modules/_embedApp/public/html/index.html', embedLegacyHtml, err => {
                         if (err) {
                             console.log('ERROR generating /modules/_embedApp/public/html/index.html: ' + err);
                         }
                     });
                 })
-                .catch(err => dbLogger.consoleLog('Error getting folder modules/_embedApp/public: ', err));
+                .catch(err => consoleLog('Error getting folder modules/_embedApp/public: ', err));
         }
     });
 
     let fhirHtml = '';
-    ejs.renderFile('modules/_fhirApp/fhirApp.ejs', {isLegacy: false, version: version}, (err, str) => {
+    renderFile('modules/_fhirApp/fhirApp.ejs', {isLegacy: false, version: version}, (err, str) => {
         fhirHtml = str;
     });
 
     let fhirLegacyHtml = '';
-    ejs.renderFile('modules/_fhirApp/fhirApp.ejs', {isLegacy: true, version: version}, (err, str) => {
+    renderFile('modules/_fhirApp/fhirApp.ejs', {isLegacy: true, version: version}, (err, str) => {
         fhirLegacyHtml = str;
     });
 
     let indexHtml = '';
-    ejs.renderFile('modules/system/views/index.ejs', {
+    renderFile('modules/system/views/index.ejs', {
         config: config,
         isLegacy: false,
         version: version
@@ -89,28 +96,28 @@ export function init(app) {
     });
 
     let indexLegacyHtml = '';
-    ejs.renderFile('modules/system/views/index.ejs', {config: config, isLegacy: true, version: version}, (err, str) => {
+    renderFile('modules/system/views/index.ejs', {config: config, isLegacy: true, version: version}, (err, str) => {
         indexLegacyHtml = str;
     });
 
     let homeHtml = '';
-    ejs.renderFile('modules/system/views/home-launch.ejs', {config: config, version: version}, (err, str) => {
+    renderFile('modules/system/views/home-launch.ejs', {config: config, version: version}, (err, str) => {
         homeHtml = str;
     });
 
     let nativeRenderHtml = '';
-    ejs.renderFile('modules/_nativeRenderApp/nativeRenderApp.ejs', {isLegacy: false, version: version}, (err, str) => {
+    renderFile('modules/_nativeRenderApp/nativeRenderApp.ejs', {isLegacy: false, version: version}, (err, str) => {
         nativeRenderHtml = str;
     });
 
     let nativeRenderLegacyHtml = '';
-    ejs.renderFile('modules/_nativeRenderApp/nativeRenderApp.ejs', {isLegacy: true, version: version}, (err, str) => {
+    renderFile('modules/_nativeRenderApp/nativeRenderApp.ejs', {isLegacy: true, version: version}, (err, str) => {
         nativeRenderLegacyHtml = str;
     });
 
     /* for IE Opera Safari, emit polyfill.js */
     function isModernBrowser(req) {
-        let ua = useragent.is(req.headers['user-agent']);
+        let ua = is(req.headers['user-agent']);
         return ua.chrome || ua.firefox || ua.edge;
     }
 
@@ -145,28 +152,28 @@ export function init(app) {
         if (!pageString) pageString = '1';
         if (isSearchEngine(req)) {
             if (selectedOrg) {
-                let pageNum = _.toInteger(pageString);
+                let pageNum = toInteger(pageString);
                 let pageSize = 20;
                 let cond = {
                     'classification.stewardOrg.name': selectedOrg,
                     archived: false,
                     'registrationState.registrationStatus': 'Qualified'
                 };
-                mongo_cde.count(cond, (err, totalCount) => {
+                deCount(cond, (err, totalCount) => {
                     if (err) {
                         res.status(500).send('ERROR - Static Html Error, /cde/search');
-                        logging.errorLogger.error('Error: Static Html Error', {
+                        errorLogger.error('Error: Static Html Error', {
                             stack: err.stack,
                             origin: req.url
                         });
                     } else {
-                        mongo_cde.DataElement.find(cond, 'tinyId designations', {
+                        DataElement.find(cond, 'tinyId designations', {
                             skip: pageSize * (pageNum - 1),
                             limit: pageSize
                         }, (err, cdes) => {
                             if (err) {
                                 res.status(500).send('ERROR - Static Html Error, /cde/search');
-                                logging.errorLogger.error('Error: Static Html Error', {
+                                errorLogger.error('Error: Static Html Error', {
                                     stack: err.stack,
                                     origin: req.url
                                 });
@@ -193,10 +200,10 @@ export function init(app) {
     app.get('/deView', function (req, res) {
         let tinyId = req.query.tinyId;
         let version = req.query.version;
-        mongo_cde.byTinyIdVersion(tinyId, version, (err, cde) => {
+        deByTinyIdVersion(tinyId, version, (err, cde) => {
             if (err) {
                 res.status(500).send('ERROR - Static Html Error, /deView');
-                logging.errorLogger.error('Error: Static Html Error', {
+                errorLogger.error('Error: Static Html Error', {
                     stack: err.stack,
                     origin: req.url
                 });
@@ -216,28 +223,28 @@ export function init(app) {
         if (!pageString) pageString = '1';
         if (isSearchEngine(req)) {
             if (selectedOrg) {
-                let pageNum = _.toInteger(pageString);
+                let pageNum = toInteger(pageString);
                 let pageSize = 20;
                 let cond = {
                     'classification.stewardOrg.name': selectedOrg,
                     archived: false,
                     'registrationState.registrationStatus': 'Qualified'
                 };
-                mongo_form.Form.countDocuments(cond, (err, totalCount) => {
+                Form.countDocuments(cond, (err, totalCount) => {
                     if (err) {
                         res.status(500).send('ERROR - Static Html Error, /form/search');
-                        logging.errorLogger.error('Error: Static Html Error', {
+                        errorLogger.error('Error: Static Html Error', {
                             stack: err.stack,
                             origin: req.url
                         });
                     } else {
-                        mongo_form.Form.find(cond, 'tinyId designations', {
+                        Form.find(cond, 'tinyId designations', {
                             skip: pageSize * (pageNum - 1),
                             limit: pageSize
                         }, (err, forms) => {
                             if (err) {
                                 res.status(500).send('ERROR - Static Html Error, /form/search');
-                                logging.errorLogger.error('Error: Static Html Error', {
+                                errorLogger.error('Error: Static Html Error', {
                                     stack: err.stack,
                                     origin: req.url
                                 });
@@ -264,10 +271,10 @@ export function init(app) {
     app.get('/formView', function (req, res) {
         let tinyId = req.query.tinyId;
         let version = req.query.version;
-        mongo_form.byTinyIdVersion(tinyId, version, (err, cde) => {
+        formByTinyIdVersion(tinyId, version, (err, cde) => {
             if (err) {
                 res.status(500).send('ERROR - Static Html Error, /formView');
-                logging.errorLogger.error('Error: Static Html Error', {
+                errorLogger.error('Error: Static Html Error', {
                     stack: err.stack,
                     origin: req.url
                 });
@@ -282,15 +289,15 @@ export function init(app) {
     });
 
 
-    new CronJob('00 00 4 * * *', () => meshElastic.syncWithMesh(), null, true, 'America/New_York');
+    new CronJob('00 00 4 * * *', () => syncWithMesh(), null, true, 'America/New_York');
 
     // every sunday at 4:07 AM
     new CronJob('* 7 4 * * 6', () => {
-        dbLogger.consoleLog('Creating sitemap');
-        util.promisify(fs.access)('dist/app', 'r')
-            .catch(() => util.promisify(fs.mkdir)('dist/app', {recursive: true}))
+        consoleLog('Creating sitemap');
+        promisify(access)('dist/app', constants.R_OK)
+            .catch(() => promisify(mkdir)('dist/app', {recursive: true} as any)) // Node 12
             .then(() => {
-                let wstream = fs.createWriteStream('./dist/app/sitemap.txt');
+                let wstream = createWriteStream('./dist/app/sitemap.txt');
                 let cond = {
                     archived: false,
                     'registrationState.registrationStatus': 'Qualified'
@@ -302,23 +309,23 @@ export function init(app) {
                     stream.on('end', cb);
                 }
 
-                return util.promisify(async.series)([
+                return promisify(series)([
                     cb => handleStream(
-                        mongo_cde.DataElement.find(cond, 'tinyId').cursor(),
+                        DataElement.find(cond, 'tinyId').cursor(),
                         doc => config.publicUrl + '/deView?tinyId=' + doc.tinyId + '\n',
                         cb
                     ),
                     cb => handleStream(
-                        mongo_form.Form.find(cond, 'tinyId').cursor(),
+                        Form.find(cond, 'tinyId').cursor(),
                         doc => config.publicUrl + '/formView?tinyId=' + doc.tinyId + '\n',
                         cb
                     )
                 ]).then(() => {
-                    dbLogger.consoleLog('done with sitemap');
+                    consoleLog('done with sitemap');
                     wstream.end();
                 });
             })
-            .catch(err => dbLogger.consoleLog('Cron Sunday 4:07 AM did not complete due to error:', err));
+            .catch((err: string) => consoleLog('Cron Sunday 4:07 AM did not complete due to error: ' + err));
     }, null, true, 'America/New_York', undefined, true);
 
     app.get(['/help/:title', '/createForm', '/createCde', '/boardList',
@@ -337,7 +344,7 @@ export function init(app) {
     });
 
     app.get('/fhir/launch/:param', (req, res) => {
-        res.sendFile(path.join(__dirname, '../../modules/_fhirApp', 'fhirAppLaunch.html'), undefined, err => {
+        res.sendFile(join(__dirname, '../../modules/_fhirApp', 'fhirAppLaunch.html'), undefined, err => {
             if (err) res.sendStatus(404);
         });
     });
@@ -360,16 +367,16 @@ export function init(app) {
         });
     });
 
-    pushNotification.checkDatabase();
-    app.post('/pushRegistration', loggedInMiddleware, pushNotification.create);
-    app.delete('/pushRegistration', loggedInMiddleware, pushNotification.remove);
-    app.post('/pushRegistrationSubscribe', loggedInMiddleware, pushNotification.subscribe);
-    app.post('/pushRegistrationUpdate', pushNotification.updateStatus);
+    checkDatabase();
+    app.post('/pushRegistration', loggedInMiddleware, create);
+    app.delete('/pushRegistration', loggedInMiddleware, remove);
+    app.post('/pushRegistrationSubscribe', loggedInMiddleware, subscribe);
+    app.post('/pushRegistrationUpdate', updateStatus);
 
     app.get('/jobStatus/:type', function (req, res) {
         let jobType = req.params.type;
         if (!jobType) return res.status(400).end();
-        mongo_data.jobStatus(jobType, (err, j) => {
+        jobStatus(jobType, (err, j) => {
             if (err) return res.status(409).send('Error - job status ' + jobType);
             if (j) return res.send({done: false});
             res.send({done: true});
@@ -379,13 +386,13 @@ export function init(app) {
     /* ---------- PUT NEW REST API above ---------- */
 
     app.get('/indexCurrentNumDoc/:indexPosition', isSiteAdminMiddleware, (req, res) => {
-        let index = esInit.indices[req.params.indexPosition];
+        let index = indices[req.params.indexPosition];
         return res.send({count: index.count, totalCount: index.totalCount});
     });
 
     app.post('/reindex/:indexPosition', isSiteAdminMiddleware, (req, res) => {
-        let index = esInit.indices[req.params.indexPosition];
-        elastic.reIndex(index, () => {
+        let index = indices[req.params.indexPosition];
+        reIndex(index, () => {
             setTimeout(() => {
                 index.count = 0;
                 index.totalCount = 0;
@@ -398,16 +405,16 @@ export function init(app) {
     app.get('/supportedBrowsers', (req, res) => res.render('supportedBrowsers', 'system'));
 
     app.get('/listOrgs', nocacheMiddleware, (req, res) => {
-        mongo_data.listOrgs(function (err, orgs) {
+        listOrgs(function (err, orgs) {
             if (err) return res.status(500).send('ERROR - unable to list orgs');
             res.send(orgs);
         });
     });
 
     app.get('/listOrgsDetailedInfo', nocacheMiddleware, (req, res) => {
-        mongo_data.listOrgsDetailedInfo(function (err, orgs) {
+        listOrgsDetailedInfo(function (err, orgs) {
             if (err) {
-                logging.errorLogger.error(JSON.stringify({msg: 'Failed to get list of orgs detailed info.'}),
+                errorLogger.error(JSON.stringify({msg: 'Failed to get list of orgs detailed info.'}),
                     {stack: new Error().stack});
                 return res.status(403).send('Failed to get list of orgs detailed info.');
             }
@@ -439,11 +446,11 @@ export function init(app) {
 
     function checkLoginReq(req, res, next) {
         if (Object.keys(req.body).filter(k => validLoginBody.indexOf(k) === -1).length) {
-            traffic.banIp(getRealIp(req), 'Invalid Login body');
+            banIp(getRealIp(req), 'Invalid Login body');
             return res.status(401).send();
         }
         if (Object.keys(req.query).length) {
-            traffic.banIp(getRealIp(req), 'Passing params to /login');
+            banIp(getRealIp(req), 'Passing params to /login');
             return res.status(401).send();
         }
         return next();
@@ -453,7 +460,7 @@ export function init(app) {
 
     app.post('/login', [checkLoginReq, myCsrf], (req, res, next) => {
         let failedIp = findFailedIp(getRealIp(req));
-        async.series([
+        series([
                 function checkCaptcha(captchaDone) {
                     if (failedIp && failedIp.nb > 2) {
                         captchaDone();
@@ -466,7 +473,7 @@ export function init(app) {
                 if (err) return res.status(412).send(err);
                 // Regenerate is used so appscan won't complain
                 req.session.regenerate(() => {
-                    passport.authenticate('local', (err, user, info) => {
+                    authenticate('local', (err, user, info) => {
                         if (err) {
                             respondError(err);
                             return res.status(403).send();
@@ -502,36 +509,36 @@ export function init(app) {
     });
 
     app.get('/org/:name', nocacheMiddleware, (req, res) => {
-        return mongo_data.orgByName(req.params.name, (err, result) => res.send(result));
+        return orgByName(req.params.name, (err, result) => res.send(result));
     });
 
 
-    app.get('/managedOrgs', orgsvc.managedOrgs);
-    app.post('/addOrg', isOrgAuthorityMiddleware, orgsvc.addOrg);
-    app.post('/updateOrg', isOrgAuthorityMiddleware, (req, res) => mongo_data.updateOrg(req.body, res));
+    app.get('/managedOrgs', managedOrgs);
+    app.post('/addOrg', isOrgAuthorityMiddleware, addOrg);
+    app.post('/updateOrg', isOrgAuthorityMiddleware, (req, res) => updateOrg(req.body, res));
 
     app.get('/user/:search', nocacheMiddleware, loggedInMiddleware, (req, res) => {
         if (!req.params.search) {
             return res.send({});
         } else if (req.params.search === 'me') {
-            mongo_data.userById(req.user._id, handleError({req, res}, user => res.send(user)));
+            userById(req.user._id, handleError({req, res}, user => res.send(user)));
         } else {
-            mongo_data.usersByName(req.params.search, handleError({req, res}, users => res.send(users)));
+            usersByName(req.params.search, handleError({req, res}, users => res.send(users)));
         }
     });
 
-    app.get('/myOrgsAdmins', [nocacheMiddleware, loggedInMiddleware], usersrvc.myOrgsAdmins);
+    app.get('/myOrgsAdmins', [nocacheMiddleware, loggedInMiddleware], myOrgsAdmins);
 
-    app.get('/orgAdmins', nocacheMiddleware, isOrgAuthorityMiddleware, usersrvc.orgAdmins);
-    app.post('/addOrgAdmin', isOrgAdminMiddleware, usersrvc.addOrgAdmin);
-    app.post('/removeOrgAdmin', isOrgAdminMiddleware, usersrvc.removeOrgAdmin);
+    app.get('/orgAdmins', nocacheMiddleware, isOrgAuthorityMiddleware, orgAdmins);
+    app.post('/addOrgAdmin', isOrgAdminMiddleware, addOrgAdmin);
+    app.post('/removeOrgAdmin', isOrgAdminMiddleware, removeOrgAdmin);
 
-    app.get('/orgCurators', nocacheMiddleware, isOrgAdminMiddleware, usersrvc.orgCurators);
-    app.post('/addOrgCurator', isOrgAdminMiddleware, usersrvc.addOrgCurator);
-    app.post('/removeOrgCurator', isOrgAdminMiddleware, usersrvc.removeOrgCurator);
+    app.get('/orgCurators', nocacheMiddleware, isOrgAdminMiddleware, orgCurators);
+    app.post('/addOrgCurator', isOrgAdminMiddleware, addOrgCurator);
+    app.post('/removeOrgCurator', isOrgAdminMiddleware, removeOrgCurator);
 
-    app.post('/updateUserRoles', isOrgAuthorityMiddleware, usersrvc.updateUserRoles);
-    app.post('/updateUserAvatar', isOrgAuthorityMiddleware, usersrvc.updateUserAvatar);
+    app.post('/updateUserRoles', isOrgAuthorityMiddleware, updateUserRoles);
+    app.post('/updateUserAvatar', isOrgAuthorityMiddleware, updateUserAvatar);
 
     app.get('/data/:id', (req, res) => {
         let fileId = req.params.id;
@@ -539,13 +546,13 @@ export function init(app) {
         if (i > -1) {
             fileId = fileId.substr(0, i);
         }
-        mongo_data.getFile(req.user, fileId, res);
+        getFile(req.user, fileId, res);
     });
 
-    app.post('/transferSteward', orgsvc.transferSteward);
+    app.post('/transferSteward', transferSteward);
 
     app.post('/addCommentAuthor', canApproveCommentMiddleware, (req, res) => {
-        mongo_data.addUserRole(req.body.username, 'CommentAuthor', handleError({req, res}, err => {
+        addUserRole(req.body.username, 'CommentAuthor', handleError({req, res}, err => {
             if (err) {
                 res.status(404).send(err);
                 return;
@@ -555,47 +562,47 @@ export function init(app) {
     });
 
     app.post('/getClassificationAuditLog', isOrgAuthorityMiddleware, (req, res) => {
-        mongo_data.getClassificationAuditLog(req.body, handleError({req, res}, result => {
+        getClassificationAuditLog(req.body, handleError({req, res}, result => {
             res.send(result);
         }));
     });
 
     app.post('/embed/', isOrgAdminMiddleware, (req, res) => {
         const handlerOptions = {req, res, publicMessage: 'There was an error saving this embed.'};
-        mongo_data.embeds.save(req.body, handleError(handlerOptions, embed => {
+        embeds.save(req.body, handleError(handlerOptions, embed => {
             res.send(embed);
         }));
     });
 
     app.delete('/embed/:id', loggedInMiddleware, (req, res) => {
         const handlerOptions = {req, res, publicMessage: 'There was an error removing this embed.'};
-        mongo_data.embeds.find({_id: req.params.id}, handleError(handlerOptions, embeds => {
-            if (embeds.length !== 1) {
+        embeds.find({_id: req.params.id}, handleError(handlerOptions, embedsData => {
+            if (embedsData.length !== 1) {
                 res.status.send('Expectation not met: one document.');
                 return;
             }
-            if (!req.isAuthenticated() || !isOrgAdmin(req.user, embeds[0].org)) {
+            if (!req.isAuthenticated() || !isOrgAdmin(req.user, embedsData[0].org)) {
                 res.status(403).send();
                 return;
             }
-            mongo_data.embeds.delete(req.params.id, handleError(handlerOptions, () => res.send()));
+            embeds.delete(req.params.id, handleError(handlerOptions, () => res.send()));
         }));
     });
 
     app.get('/embed/:id', (req, res) => {
-        mongo_data.embeds.find({_id: req.params.id}, handleError({req, res}, embeds => {
-            if (embeds.length !== 1) {
+        embeds.find({_id: req.params.id}, handleError({req, res}, embedsData => {
+            if (embedsData.length !== 1) {
                 res.status.send('Expectation not met: one document.');
                 return;
             }
-            res.send(embeds[0]);
+            res.send(embedsData[0]);
         }));
 
     });
 
     app.get('/embeds/:org', (req, res) => {
-        mongo_data.embeds.find({org: req.params.org}, handleError({req, res}, embeds => {
-            res.send(embeds);
+        embeds.find({org: req.params.org}, handleError({req, res}, embedsData => {
+            res.send(embedsData);
         }));
     });
 
@@ -607,23 +614,23 @@ export function init(app) {
         (req, res) => fhirApps.delete(res, req.params.id, () => res.send()));
 
     app.post('/disableRule', isOrgAuthorityMiddleware, (req, res) => {
-        mongo_data.disableRule(req.body, handleError({req, res}, org => {
+        disableRule(req.body, handleError({req, res}, org => {
             res.send(org);
         }));
     });
 
     app.post('/enableRule', isOrgAuthorityMiddleware, (req, res) => {
-        mongo_data.enableRule(req.body, handleError({req, res}, org => {
+        enableRule(req.body, handleError({req, res}, org => {
             res.send(org);
         }));
     });
 
     app.get('/activeBans', isSiteAdminMiddleware, (req, res) => {
-        traffic.getTrafficFilter(list => res.send(list));
+        getTrafficFilter(list => res.send(list));
     });
 
     app.post('/removeBan', isSiteAdminMiddleware, (req, res) => {
-        traffic.getTrafficFilter(elt => {
+        getTrafficFilter(elt => {
             let foundIndex = elt.ipList.findIndex(r => r.ip === req.body.ip);
             if (foundIndex > -1) {
                 elt.ipList.splice(foundIndex, 1);
@@ -639,7 +646,7 @@ export function init(app) {
     });
 
     app.get('/orgDrafts', isOrgCuratorMiddleware, (req, res) => {
-        getDrafts(req, res, {'stewardOrg.name': {$in: usersrvc.myOrgs(req.user)}});
+        getDrafts(req, res, {'stewardOrg.name': {$in: myOrgs(req.user)}});
     });
 
     app.get('/myDrafts', isOrgCuratorMiddleware, (req, res) => {
@@ -647,7 +654,7 @@ export function init(app) {
     });
 
     function getDrafts(req, res, criteria) {
-        Promise.all([mongo_cde.draftsList(criteria), mongo_form.draftsList(criteria)])
+        Promise.all([deDraftsList(criteria), formDraftsList(criteria)])
             .then(results => res.send({draftCdes: results[0], draftForms: results[1]}))
             .catch(err => respondError(err, {req, res}));
     }

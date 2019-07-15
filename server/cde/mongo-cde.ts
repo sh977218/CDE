@@ -1,8 +1,8 @@
-import { config } from '../system/parseConfig';
-import { CbError, MongooseType } from '../../shared/models.model';
-import { wipeDatatype } from '../../shared/de/deValidator';
-import { isOrgCurator } from '../../shared/system/authorizationShared';
-import { DataElement as DE } from '../../shared/de/dataElement.model';
+import { config } from 'server/system/parseConfig';
+import { DataElement as DE } from 'shared/de/dataElement.model';
+import { CbError, MongooseType } from 'shared/models.model';
+import { checkDefinitions, checkPvUnicity, wipeDatatype } from 'shared/de/deValidator';
+import { isOrgCurator } from 'shared/system/authorizationShared';
 
 const Ajv = require('ajv');
 const fs = require('fs');
@@ -16,6 +16,8 @@ const schemas = require('../../server/cde/schemas');
 
 export const type = 'cde';
 export const name = 'CDEs';
+
+export type DataElementDraft = DE;
 
 const ajvElt = new Ajv({allErrors: true});
 ajvElt.addSchema(require('../../shared/de/assets/adminItem.schema'));
@@ -42,15 +44,34 @@ schemas.dataElementSchema.pre('save', function (next) {
     let elt = this;
 
     if (this.archived) return next();
-    validateSchema(elt)
-        .then(() => {
-            try {
-                elastic.updateOrInsert(elt);
-            } catch (exception) {
-                logging.errorLogger.error('Error Indexing Form', {details: exception, stack: new Error().stack});
-            }
-            next();
-        }, next);
+    let cdeError: any = checkPvUnicity(elt.valueDomain);
+    if (cdeError.allValid) {
+        cdeError = checkDefinitions(elt);
+    }
+    if (cdeError && !cdeError.allValid) {
+        cdeError.tinyId = this.tinyId;
+        logging.errorLogger.error(cdeError, {
+            stack: new Error().stack,
+            details: JSON.stringify(cdeError)
+        });
+        return next(new Error(JSON.stringify(cdeError)));
+    }
+
+    // validate
+    if (!validateSchema(elt)) {
+        return next(validateSchema.errors.map(e => e.dataPath + ': ' + e.message).join(', '));
+    }
+    let valErr = elt.validateSync();
+    if (valErr) {
+        return next('Doc does not pass validation: ' + valErr.message);
+    }
+
+    try {
+        elastic.updateOrInsert(elt);
+    } catch (exception) {
+        logging.errorLogger.error('Error Indexing CDE', {details: exception, stack: new Error().stack});
+    }
+    next();
 });
 
 let conn = connHelper.establishConnection(config.database.appData);
@@ -167,7 +188,9 @@ export function draftDelete(tinyId, cb) {
     DataElementDraft.remove({tinyId: tinyId}, cb);
 }
 
-export function draftsList(criteria, cb) {
+export function draftsList(criteria): Promise<DataElementDraft[]>;
+export function draftsList(criteria, cb: CbError): void;
+export function draftsList(criteria, cb?: CbError): void | Promise<DataElementDraft[]> {
     return DataElementDraft
         .find(criteria, {
             'designations.designation': 1,
@@ -237,7 +260,6 @@ export function eltByTinyId(tinyId, callback) {
 
 let viewedCdes = {};
 let threshold = config.viewsIncrementThreshold || 50;
-
 export function inCdeView(cde) {
     if (!viewedCdes[cde._id]) viewedCdes[cde._id] = 0;
     viewedCdes[cde._id]++;
@@ -269,8 +291,7 @@ export function create(elt, user, callback) {
     });
 }
 
-export function update(elt, user, options: any = {}, callback: CbError<DE> = () => {
-}) {
+export function update(elt, user, options: any = {}, callback: CbError<DE> = () => {}) {
     if (elt.toObject) elt = elt.toObject();
     DataElement.findById(elt._id, (err, dataElement) => {
         if (dataElement.archived) {
@@ -340,7 +361,8 @@ export function byOtherId(source, id, cb) {
     DataElement.find({archived: false}).elemMatch('ids', {source: source, id: id}).exec(function (err, cdes) {
         if (cdes.length > 1) {
             cb('Multiple results, returning first', cdes[0]);
-        } else cb(err, cdes[0]);
+        }
+        else cb(err, cdes[0]);
     });
 }
 
@@ -352,7 +374,8 @@ export function byOtherIdAndNotRetired(source, id, cb) {
         if (err) cb(err, null);
         else if (cdes.length > 1) {
             cb('Multiple results, returning first. source: ' + source + ' id: ' + id, cdes[0]);
-        } else if (cdes.length === 0) {
+             }
+        else if (cdes.length === 0) {
             cb('No results', null);
         } else cb(err, cdes[0]);
     });

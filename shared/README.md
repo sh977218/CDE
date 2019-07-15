@@ -11,5 +11,6 @@
 * webpack
 
 ## Other
-* to access **shared** use relative paths, such as:
+* no access to **server** or **modules**
+* to access **shared** use absolute paths, such as:
    * `import {} from 'shared/item';`

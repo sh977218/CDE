@@ -277,14 +277,25 @@ export declare type EltLog = {
     diff: EltLogDiff[];
 };
 
-export declare type EltLogDiff = {
+export type EltLogDiff = EltLogDiffAmend | {
     fieldName?: string; // calculated makeHumanReadable
-    item?: {
+    kind: 'D' | 'E' | 'N';
+    lhs?: string;
+    modificationType?: string; // calculated makeHumanReadable
+    newValue?: string; // calculated makeHumanReadable
+    path: (string | number)[];
+    previousValue?: string; // calculated makeHumanReadable
+    rhs?: string;
+};
+
+export type EltLogDiffAmend = {
+    fieldName?: string; // calculated makeHumanReadable
+    item: {
         kind: 'D' | 'N';
         lhs?: string;
         rhs?: string;
     };
-    kind: 'A' | 'D' | 'E' | 'N';
+    kind: 'A';
     lhs?: string;
     modificationType?: string; // calculated makeHumanReadable
     newValue?: string; // calculated makeHumanReadable
@@ -401,7 +412,21 @@ type DerivationRuleFormula = 'sumAll' | 'mean' | 'bmi';
 type DerivationRuleType = 'score' | 'panel';
 export type Drafts = { draftCdes: DataElement[], draftForms: CdeForm[] };
 export type Board = {owner: {username: string}};
+
+export type IdVersion = {
+    id: string,
+    version?: string
+};
+
 export type Item = DataElement | CdeForm;
+
+export type ItemClassification = {
+    categories?: string[],
+    elements?: IdVersion[],
+    eltId: ObjectId,
+    orgName?: string,
+};
+
 export type ItemElastic = DataElementElastic | CdeFormElastic;
 export type ListTypes = 'accordion' | 'table' | 'summary';
 export type MongooseType<T> = T & {markModified: (path: string) => void};
