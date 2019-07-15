@@ -45,10 +45,6 @@ schemas.formSchema.pre('save', function (next) {
     let elt = this;
 
     validateSchema(elt)
-        .catch(err => next(err instanceof Ajv.ValidationError
-            ? 'errors:' + err.errors.map(e => e.dataPath + ': ' + e.message).join(', ')
-            : err
-        ))
         .then(() => {
             try {
                 elastic.updateOrInsert(elt);
@@ -57,7 +53,7 @@ schemas.formSchema.pre('save', function (next) {
             }
 
             next();
-        });
+        },next);
 });
 
 const conn = connHelper.establishConnection(config.database.appData);

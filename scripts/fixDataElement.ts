@@ -1,57 +1,40 @@
-import { isEmpty } from 'lodash';
 import { DataElement } from '../server/cde/mongo-cde';
-import { ValueDomainNumber } from "shared/de/valueDomain/ValueDomainNumber";
-import { ValueDomainTime } from "shared/de/valueDomain/ValueDomainTime";
-import { ValueDomainDynamicCodeList } from "shared/de/valueDomain/ValueDomainDynamicCodeList";
-import { ValueDomainValueList } from "shared/de/valueDomain/ValueDomainValueList";
-import { DataTypeExternallyDefined } from "shared/de/valueDomain/DataTypeExternallyDefined";
-import { ValueDomainDate } from 'shared/de/valueDomain/ValueDomainDate';
-import { ValueDomainText } from 'shared/de/valueDomain/ValueDomainText';
 
 process.on('unhandledRejection', function (error) {
     console.log(error);
 });
 
 export function fixValueDomain(cde) {
-    let cdeObj = cde;
-    if (cde.toObject) cdeObj = cde.toObject();
-    let datatype = cdeObj.valueDomain.datatype;
-    let valueDomain = cdeObj.valueDomain;
-//    cde.valueDomain = new ValueDomain(valueDomain);
-    if (datatype === 'Text') {
-        cde.valueDomain = new ValueDomainText(valueDomain);
-    } else if (datatype === 'Date') {
-        cde.valueDomain = new ValueDomainDate(valueDomain);
-    } else if (datatype === 'Number') {
-        cde.valueDomain = new ValueDomainNumber(valueDomain);
-    } else if (datatype === 'Time') {
-        cde.valueDomain = new ValueDomainTime(valueDomain);
-    } else if (datatype === 'Dynamic Code List') {
-        cde.valueDomain = new ValueDomainDynamicCodeList(valueDomain);
-    } else if (datatype === 'Externally Defined') {
-        if (!isEmpty(valueDomain.datatypeDate)) {
-            cde.valueDomain.dataTypeExternallyDefined = new DataTypeExternallyDefined(valueDomain.dataTypeExternallyDefined);
+    let cdeObj = cde.toObject();
+    const myProps = [
+        'datatypeText',
+        'datatypeNumber',
+        'datatypeDate',
+        'datatypeTime',
+        'datatypeExternallyDefined',
+        'datatypeValueList',
+        'datatypeDynamicCodeList'
+    ];
+    let checkType = cdeObj.datatype.replace(/\s+/g, ' ');
+    checkType = `datatype${checkType}`;
+
+    myProps.filter(e => e !== checkType).forEach(p => {
+        if (checkType === 'Text') {
+            cdeObj.valueDomain.datatypeText = fixDatatypeText(cdeObj.valueDomain.datatypeText);
         }
-    } else if (datatype === 'Value List') {
-        cde.valueDomain = new ValueDomainValueList(valueDomain);
-    } else if (datatype === 'File') {
-        console.log('define this.');
-        process.exit(1);
-    } else if (datatype === 'Geo Location') {
-        console.log('define this.');
-        process.exit(1);
-    }
+        delete cdeObj.valueDomain[p];
+    });
+    cdeObj.valueDomain[`datatype${checkType}`] = {};
+
+    cde.valueDomain = cdeObj.valueDomain;
 }
 
-function fixDatatypeText(cde) {
-    if (cde.valueDomain.datatype === 'Text') {
-        let cdeObj = cde.toObject();
-        let minLengthString = cdeObj.valueDomain.datatypeText.minLength;
-        let minLength = parseInt(minLengthString);
-        let maxLengthString = cdeObj.valueDomain.datatypeText.maxLength;
-        let maxLength = parseInt(maxLengthString);
-        cde.valueDomain.datatypeText = {minLength, maxLength};
-    }
+function fixDatatypeText(datatypeText) {
+    let minLengthString = datatypeText.minLength;
+    let minLength = parseInt(minLengthString);
+    let maxLengthString = datatypeText.maxLength;
+    let maxLength = parseInt(maxLengthString);
+    return {minLength, maxLength};
 }
 
 function fixSourceName(cde) {
@@ -110,6 +93,7 @@ function fixError(cde) {
     let cursor = DataElement.find({
         lastMigrationScript: {$ne: 'fixDataElement'},
         archived: false,
+        'valueDomain.datatype': 'Text',
         'registrationState.registrationStatus': {$ne: "Retired"}
     }).cursor();
     cursor.eachAsync(async (cde: any) => {
