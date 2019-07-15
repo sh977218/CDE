@@ -3,12 +3,10 @@ import { DataElement } from '../server/cde/mongo-cde';
 import { ValueDomainNumber } from "shared/de/valueDomain/ValueDomainNumber";
 import { ValueDomainTime } from "shared/de/valueDomain/ValueDomainTime";
 import { ValueDomainDynamicCodeList } from "shared/de/valueDomain/ValueDomainDynamicCodeList";
-import { ValueDomainExternallyDefined } from "shared/de/valueDomain/ValueDomainExternallyDefined";
 import { ValueDomainValueList } from "shared/de/valueDomain/ValueDomainValueList";
-import { ValueDomain } from "shared/de/valueDomain/ValueDomain";
-import { DataTypeText } from "shared/de/valueDomain/DataTypeText";
-import { DataTypeDate } from "shared/de/valueDomain/DataTypeDate";
 import { DataTypeExternallyDefined } from "shared/de/valueDomain/DataTypeExternallyDefined";
+import { ValueDomainDate } from 'shared/de/valueDomain/ValueDomainDate';
+import { ValueDomainText } from 'shared/de/valueDomain/ValueDomainText';
 
 process.on('unhandledRejection', function (error) {
     console.log(error);
@@ -19,15 +17,11 @@ export function fixValueDomain(cde) {
     if (cde.toObject) cdeObj = cde.toObject();
     let datatype = cdeObj.valueDomain.datatype;
     let valueDomain = cdeObj.valueDomain;
-    cde.valueDomain = new ValueDomain(valueDomain);
+//    cde.valueDomain = new ValueDomain(valueDomain);
     if (datatype === 'Text') {
-        if (!isEmpty(valueDomain.datatypeText)) {
-            cde.valueDomain.datatypeText = new DataTypeText(valueDomain.datatypeText);
-        }
+        cde.valueDomain = new ValueDomainText(valueDomain);
     } else if (datatype === 'Date') {
-        if (!isEmpty(valueDomain.datatypeDate)) {
-            cde.valueDomain.datatypeDate = new DataTypeDate(valueDomain.datatypeDate);
-        }
+        cde.valueDomain = new ValueDomainDate(valueDomain);
     } else if (datatype === 'Number') {
         cde.valueDomain = new ValueDomainNumber(valueDomain);
     } else if (datatype === 'Time') {
