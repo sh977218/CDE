@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash';
 import { DataElement } from '../server/cde/mongo-cde';
 
 process.on('unhandledRejection', function (error) {
@@ -6,6 +7,10 @@ process.on('unhandledRejection', function (error) {
 
 export function fixValueDomain(cde) {
     let cdeObj = cde.toObject();
+    if (!cdeObj.valueDomain.datatype) {
+        cdeObj.valueDomain.datatype = 'Text';
+    }
+    let datatype = cdeObj.valueDomain.datatype;
     const myProps = [
         'datatypeText',
         'datatypeNumber',
@@ -15,13 +20,18 @@ export function fixValueDomain(cde) {
         'datatypeValueList',
         'datatypeDynamicCodeList'
     ];
-    let checkType = cdeObj.datatype.replace(/\s+/g, ' ');
+    let checkType = datatype.replace(/\s+/g, ' ');
     checkType = `datatype${checkType}`;
 
-    myProps.filter(e => e !== checkType).forEach(p => {
-        if (checkType === 'Text') {
+    if (datatype === 'Text') {
+        if (!isEmpty(cdeObj.valueDomain.datatypeText)) {
             cdeObj.valueDomain.datatypeText = fixDatatypeText(cdeObj.valueDomain.datatypeText);
         }
+    }
+    if (datatype === 'Value List') {
+        cdeObj.valueDomain.permissibleValues = fixEmptyPermissibleValue(cdeObj.valueDomain.permissibleValues);
+    }
+    myProps.filter(e => e !== checkType).forEach(p => {
         delete cdeObj.valueDomain[p];
     });
     cdeObj.valueDomain[`datatype${checkType}`] = {};
@@ -34,7 +44,14 @@ function fixDatatypeText(datatypeText) {
     let minLength = parseInt(minLengthString);
     let maxLengthString = datatypeText.maxLength;
     let maxLength = parseInt(maxLengthString);
-    return {minLength, maxLength};
+    let result: any = {};
+    if (!isNaN(minLength)) {
+        result.minLength = minLength;
+    }
+    if (!isNaN(maxLength)) {
+        result.maxLength = maxLength;
+    }
+    return result;
 }
 
 function fixSourceName(cde) {
@@ -66,14 +83,18 @@ function fixEmptyDesignation(cde) {
     cde.designations = cdeObj.designations.filter(d => d.designation);
 }
 
-function fixEmptyPermissibleValue(cde) {
-    let cdeObj = cde.toObject();
-    cdeObj.valueDomain.permissibleValues.forEach(pv => {
+function fixEmptyPermissibleValue(permissibleValues) {
+    let result = [];
+    permissibleValues.forEach(pv => {
         if (!pv.permissibleValue) {
             pv.permissibleValue = pv.valueMeaningName;
         }
+        if (!pv.valueMeaningName) {
+            pv.valueMeaningName = pv.permissibleValue;
+        }
+        result.push(pv);
     });
-    cde.valueDomain.permissibleValues = cdeObj.valueDomain.permissibleValues.filter(pv => pv.permissibleValue);
+    return result.filter(pv => !isEmpty(pv.permissibleValue));
 }
 
 function fixError(cde) {
@@ -91,9 +112,9 @@ function fixError(cde) {
 (function () {
     let cdeCount = 0;
     let cursor = DataElement.find({
+//        tinyId: 'QyGOTdNnq4X',
         lastMigrationScript: {$ne: 'fixDataElement'},
         archived: false,
-        'valueDomain.datatype': 'Text',
         'registrationState.registrationStatus': {$ne: "Retired"}
     }).cursor();
     cursor.eachAsync(async (cde: any) => {
