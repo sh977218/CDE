@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
 
 import { AlertService } from 'alert/alert.service';
@@ -29,8 +29,12 @@ export class CdeClassificationComponent {
     }
 
     classifyItem(event) {
-        this.classificationSvc.classifyItem(this.elt, event.selectedOrg, event.classificationArray,
-            '/server/classification/addCdeClassification/', err => {
+        this.classificationSvc.classifyItem(
+            this.elt,
+            event.selectedOrg,
+            event.classificationArray,
+            '/server/classification/addCdeClassification/',
+            (err: HttpErrorResponse) => {
                 this.classifyItemModalRef.close();
                 if (err) {
                     if (err.status === 409) this.alert.addAlert('danger', "Classification Already Exists");
@@ -38,7 +42,8 @@ export class CdeClassificationComponent {
                 } else {
                     this.reloadElt(() => this.alert.addAlert('success', 'Classification added.'));
                 }
-            });
+            }
+        );
     }
 
     openClassifyItemModal() {

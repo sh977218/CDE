@@ -7,7 +7,7 @@
 // </tr>
 import _isEmpty from 'lodash/isEmpty';
 import { capCase, decamelize } from 'shared/system/util';
-import { EltLogDiff } from 'shared/models.model';
+import { EltLogDiff, EltLogDiffAmend } from 'shared/models.model';
 
 export function ignoredDiff(d: EltLogDiff): boolean {
     switch (d.kind) {
@@ -60,7 +60,8 @@ export function makeHumanReadable(change: EltLogDiff): void {
     }
     if (change.path[0] === 'classification') {
         change.fieldName = 'Classification';
-        if (change.item) {
+        if ((change as EltLogDiffAmend).item) {
+            change = change as EltLogDiffAmend;
             if (change.item.lhs) change.newValue = stringifyClassif(change.item.lhs);
             if (change.item.rhs) change.newValue = stringifyClassif(change.item.rhs);
         }

@@ -13,21 +13,23 @@ import { supportedFhirResources, supportedFhirResourcesArray } from 'shared/mapp
 export class FormGeneralDetailsComponent {
     @Input() set elt(e: CdeForm) {
         this._elt = e;
-        this.tagFhirResource = isMappedTo(e, 'fhir') ? e.mapTo.fhir.resourceType || 'Default Mapping' : 'Not Mapped';
+        this.tagFhirResource = isMappedTo(e, 'fhir')
+            ? e.mapTo && e.mapTo.fhir && e.mapTo.fhir.resourceType || 'Default Mapping'
+            : 'Not Mapped';
     }
     get elt() {
         return this._elt;
     }
     @Input() canEdit: boolean = false;
     @Output() onEltChange = new EventEmitter();
-    private _elt: CdeForm;
+    private _elt!: CdeForm;
     options = {
         multiple: false,
         tags: true
     };
     supportedFhirResourcesArray = supportedFhirResourcesArray;
-    tagFhirResource: 'Not Mapped'|'Default Mapping'|supportedFhirResources;
-    userOrgs = [];
+    tagFhirResource!: 'Not Mapped'|'Default Mapping'|supportedFhirResources;
+    userOrgs: string[] = [];
 
     constructor(public userService: UserService,
                 public orgHelperService: OrgHelperService) {
@@ -36,7 +38,7 @@ export class FormGeneralDetailsComponent {
         }, _noop);
     }
 
-    changeStewardOrg(event) {
+    changeStewardOrg(event: string) {
         this.elt.stewardOrg.name = event;
         this.onEltChange.emit();
     }

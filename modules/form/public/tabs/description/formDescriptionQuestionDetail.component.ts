@@ -152,7 +152,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         });
     }
 
-    openNameSelect(question, parent) {
+    openNameSelect(question: FormQuestion, parent: FormElement) {
         let dialogRef = this.dialog.open(SelectQuestionLabelComponent, {
             width: '800px',
             data: {
