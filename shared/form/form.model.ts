@@ -139,7 +139,7 @@ export class DisplayProfile {
     displayType: DisplayType = 'Follow-up';
     displayValues = false;
     metadata: { device?: boolean } = {};
-    name: String;
+    name: string;
     numberOfColumns = 4;
     repeatFormat = '#.';
     sectionsAsMatrix = true;

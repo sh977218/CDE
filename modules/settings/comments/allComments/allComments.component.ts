@@ -20,7 +20,7 @@ export class AllCommentsComponent implements OnInit {
     constructor(private http: HttpClient,
                 private userService: UserService,
                 private alert: AlertService) {
-        this.user = this.userService.user;
+        this.user = this.userService.user!;
         this.comments = {currentCommentsPage: 1, totalItems: 10000, latestComments: []};
     }
 

@@ -1,7 +1,8 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { switchMap, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { UserService } from '_app/user.service';
+import { switchMap, debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { User } from 'shared/models.model';
 
 @Component({
     selector: 'cde-username-autocomplete',
@@ -10,7 +11,7 @@ import { UserService } from '_app/user.service';
 export class UsernameAutocompleteComponent {
     @Input() placeHolder: string = 'Make the user';
     usernameControl = new FormControl();
-    filteredUsernames = [];
+    filteredUsernames: User[] = [];
     @Output() onSelect = new EventEmitter<any>();
 
     constructor(userService: UserService) {

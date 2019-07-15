@@ -1,6 +1,7 @@
 import { flattenFormElement } from 'shared/form/fe';
 import { CdeForm, FormInForm } from 'shared/form/form.model';
 
+export function convertFormToSection(form: CdeForm): FormInForm;
 export function convertFormToSection(form: CdeForm): FormInForm | undefined {
     if (!form || !form.formElements) {
         return undefined;
