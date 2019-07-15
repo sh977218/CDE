@@ -1,8 +1,11 @@
 package gov.nih.nlm.board.cde;
 
+import io.restassured.http.Cookie;
 import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import static io.restassured.RestAssured.given;
 
 public class PinCdesIntoBoardTest extends BoardTest {
 
@@ -30,6 +33,15 @@ public class PinCdesIntoBoardTest extends BoardTest {
 
         goToBoard(boardName2);
         textPresent("School special accommodation indicator");
-
     }
+
+    @Test
+    public void pinNoPerm() {
+        mustBeLoggedInAs(reguser_username, password);
+        Cookie myCookie = getCurrentCookie();
+        // this board is owned by boardUser
+        given().cookie(myCookie).body("{boardId: '575046ad89949d54384ee60a'}")
+                .put(baseUrl + "/server/board/pinToBoard").then().statusCode(404);
+    }
+
 }

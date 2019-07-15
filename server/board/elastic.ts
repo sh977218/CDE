@@ -41,20 +41,16 @@ export function boardSearch(filter, callback) {
     if (filter.search && filter.search.length > 0) {
         query.query.bool.must.push({query_string: {query: filter.search}});
     }
-    if (filter.selectedTypes) {
-        filter.selectedTypes.forEach(t => {
-            if (t !== 'All') {
-                query.query.bool.must.push({term: {type: {value: t}}});
-            }
-        });
-    }
-    if (filter.selectedTags) {
-        filter.selectedTags.forEach(t => {
-            if (t !== 'All') {
-                query.query.bool.must.push({term: {tags: {value: t}}});
-            }
-        });
-    }
+    filter.selectedTypes.forEach(t => {
+        if (t !== 'All') {
+            query.query.bool.must.push({term: {type: {value: t}}});
+        }
+    });
+    filter.selectedTags.forEach(t => {
+        if (t !== 'All') {
+            query.query.bool.must.push({term: {tags: {value: t}}});
+        }
+    });
     esClient.search({
         index: boardIndexName,
         type: "board",
@@ -63,14 +59,6 @@ export function boardSearch(filter, callback) {
 }
 
 export function myBoards(user, filter, callback) {
-    if (!filter) {
-        filter = {
-            sortDirection: '',
-            selectedTags: ['All'],
-            selectedTypes: ['All'],
-            selectedShareStatus: ['All']
-        };
-    }
     let query: any = {
         size: 100,
         query: {
@@ -86,41 +74,25 @@ export function myBoards(user, filter, callback) {
     let sort = {};
     if (filter.sortBy) {
         sort[filter.sortBy] = {};
-        if (filter && filter.sortDirection) {
-            sort[filter.sortBy].order = filter.sortDirection;
-        }
-        else {
-            sort[filter.sortBy].order = "asc";
-        }
+        sort[filter.sortBy].order = filter.sortDirection;
     }
     else {
         sort['updatedDate'] = {order: "asc"};
         query.sort.push(sort);
     }
-    if (filter.boardName) {
-        query.query.bool.must.push({
-            query_string: {
-                fields: ["name"],
-                query: filter.booardName
-            }
-        });
-    }
     query.sort.push(sort);
 
-    if (filter.selectedTypes) {
-        filter.selectedTypes.forEach(t => {
-            if (t !== "All") {
-                query.query.bool.must.push({term: {type: {value: t}}});
-            }
-        });
-    }
-    if (filter.selectedTags) {
-        filter.selectedTags.forEach(t => {
-            if (t !== "All") {
-                query.query.bool.must.push({term: {tags: {value: t}}});
-            }
-        });
-    }
+    filter.selectedTypes.forEach(t => {
+        if (t !== "All") {
+            query.query.bool.must.push({term: {type: {value: t}}});
+        }
+    });
+    filter.selectedTags.forEach(t => {
+        if (t !== "All") {
+            query.query.bool.must.push({term: {tags: {value: t}}});
+        }
+    });
+
     if (filter.selectedShareStatus) {
         filter.selectedShareStatus.forEach(ss => {
             if (ss !== 'All') {

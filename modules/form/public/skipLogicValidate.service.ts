@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { tokenSanitizer } from 'core/form/skipLogic';
 import _trim from 'lodash/trim';
-import { FormElement, FormElementsContainer, SkipLogic } from 'shared/form/form.model';
+import { FormElement, FormElementsContainer, FormSectionOrForm, SkipLogic } from 'shared/form/form.model';
 import { getLabel, getQuestionPriorByLabel, getQuestionsPrior, tokenSplitter } from 'shared/form/skipLogic';
 
 @Injectable()
@@ -9,28 +9,30 @@ export class SkipLogicValidateService {
     previousSkipLogicPriorToSelect = '';
     optionsMap: Map<string, string> = new Map;
 
-    static checkAndUpdateLabel(section, oldLabel, newLabel = undefined) {
+    static checkAndUpdateLabel(section: FormElement, oldLabel: string, newLabel = undefined) {
         if (!newLabel) {
             return false;
         }
-        return section.formElements.some((fe) => {
-            if (fe.skipLogic && fe.skipLogic.condition) {
-                let tokens = tokenSplitter(fe.skipLogic.condition).map((token, i) => {
-                    if (i % 4 === 0 && token === '"' + oldLabel + '"') {
-                        fe.updatedSkipLogic = true;
-                        return '"' + newLabel + '"';
-                    }
-                    return token;
-                });
-                if (fe.updatedSkipLogic) {
-                    fe.skipLogic.condition = tokens.join(' ');
-                    return true;
-                }
+        return section.formElements.some(fe => {
+            if (!fe.skipLogic || !fe.skipLogic.condition) {
+                return false;
             }
+            let tokens = tokenSplitter(fe.skipLogic.condition).map((token, i) => {
+                if (i % 4 === 0 && token === '"' + oldLabel + '"') {
+                    fe.updatedSkipLogic = true;
+                    return '"' + newLabel + '"';
+                }
+                return token;
+            });
+            if (fe.updatedSkipLogic) {
+                fe.skipLogic.condition = tokens.join(' ');
+                return true;
+            }
+            return false;
         });
     }
 
-    getTypeaheadOptions(currentContent, parent: FormElementsContainer, fe: FormElement): string[] {
+    getTypeaheadOptions(currentContent: string, parent: FormElementsContainer, fe: FormElement): string[] {
         if (!currentContent) currentContent = '';
         if (!fe.skipLogic) fe.skipLogic = new SkipLogic();
 
@@ -38,7 +40,7 @@ export class SkipLogicValidateService {
         this.previousSkipLogicPriorToSelect = currentContent.substr(0, currentContent.length - tokens.unmatched.length);
 
         this.optionsMap.clear();
-        let options: string[];
+        let options: string[] | undefined;
         if (tokens.length % 4 === 0) {
             options = getQuestionsPrior(parent, fe)
                 .filter(q => q.question.datatype !== 'Value List' || q.question.answers && q.question.answers.length > 0)
@@ -67,7 +69,7 @@ export class SkipLogicValidateService {
                 return q.question.answers.map(a => {
                     let pv = tokenSanitizer(a.permissibleValue);
                     let pvString = `"${pv}" `;
-                    let nameString = a.valueMeaningName !== a.permissibleValue
+                    let nameString = a.valueMeaningName && a.valueMeaningName !== a.permissibleValue
                         ? `"${pv}" - ${tokenSanitizer(a.valueMeaningName)}` : pvString;
                     this.optionsMap.set(nameString, pvString);
                     return nameString;
@@ -81,19 +83,6 @@ export class SkipLogicValidateService {
             return ['"{{MM/DD/YYYY}}"'];
         }
         return [];
-    }
-
-    typeaheadSkipLogic(parent: FormElementsContainer, fe: FormElement, event): boolean {
-        let skipLogic = fe.skipLogic;
-        skipLogic.validationError = undefined;
-        if (event && event.item) {
-            skipLogic.condition = this.previousSkipLogicPriorToSelect
-                + (this.optionsMap.size ? this.optionsMap.get(event.item) : event.item);
-        } else {
-            skipLogic.condition = event;
-        }
-
-        return SkipLogicValidateService.validateSkipLogic(parent, fe);
     }
 
     static validateSkipLogic(parent: FormElementsContainer, fe: FormElement): boolean {
@@ -124,7 +113,7 @@ export class SkipLogicValidateService {
             return tokens[0] + ' is not a valid question label';
         }
 
-        if (filteredAnswer.length === 0) return null;
+        if (filteredAnswer.length === 0) return '';
 
         switch (filteredQuestion.question.datatype) {
             case 'Value List':
@@ -155,6 +144,6 @@ export class SkipLogicValidateService {
                 }
                 break;
         }
-        return null;
+        return '';
     }
 }

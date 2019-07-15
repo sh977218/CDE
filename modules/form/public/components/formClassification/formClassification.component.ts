@@ -1,27 +1,26 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
-import { AlertService } from 'alert/alert.service';
+import { MatDialogRef } from '@angular/material';
 import { UserService } from '_app/user.service';
 import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
+import { AlertService } from 'alert/alert.service';
 import { ClassificationService } from 'non-core/classification.service';
 import { IsAllowedService } from 'non-core/isAllowed.service';
-import { CdeForm } from 'shared/form/form.model';
-import { MatDialogRef } from '@angular/material';
-
+import { CdeForm, FormElement } from 'shared/form/form.model';
+import { Cb, ClassificationClassified, IdVersion, ItemClassification } from 'shared/models.model';
+import { DeletedNodeEvent } from 'adminItem/public/components/classification/classificationView.component';
 
 @Component({
     selector: 'cde-form-classification',
     templateUrl: './formClassification.component.html'
 })
 export class FormClassificationComponent {
-    @Input() elt: CdeForm;
+    @Input() elt!: CdeForm;
     @Output() onEltChange = new EventEmitter();
-    @ViewChild('classifyCdesComponent') public classifyCdesComponent: ClassifyItemModalComponent;
-    @ViewChild('classifyItemComponent') public classifyItemComponent: ClassifyItemModalComponent;
-    classifyCdesModalRef: MatDialogRef<TemplateRef<any>>;
-    classifyItemModalRef: MatDialogRef<TemplateRef<any>>;
-    numberProcessed: number;
-    numberTotal: number;
+    @ViewChild('classifyCdesComponent') public classifyCdesComponent!: ClassifyItemModalComponent;
+    @ViewChild('classifyItemComponent') public classifyItemComponent!: ClassifyItemModalComponent;
+    classifyCdesModalRef?: MatDialogRef<TemplateRef<any>>;
+    classifyItemModalRef?: MatDialogRef<TemplateRef<any>>;
     showProgressBar: boolean = false;
 
     constructor(private alert: AlertService,
@@ -31,11 +30,11 @@ export class FormClassificationComponent {
                 public userService: UserService) {
     }
 
-    classifyAllCdesInForm(event) {
-        let allCdeIds = [];
+    classifyAllCdesInForm(event: ClassificationClassified) {
+        let allCdeIds: IdVersion[] = [];
         this.getChildren(this.elt.formElements, allCdeIds);
 
-        let postBody = {
+        let postBody: ItemClassification = {
             categories: event.classificationArray,
             eltId: this.elt._id,
             orgName: event.selectedOrg,
@@ -45,7 +44,7 @@ export class FormClassificationComponent {
         this.http.post('/server/classification/bulk/tinyId', postBody, {responseType: 'text'})
             .subscribe(res => {
                 if (res === 'Done') {
-                    this.classifyCdesModalRef.close('success');
+                    this.classifyCdesModalRef!.close('success');
                     this.alert.addAlert('success', 'All CDEs Classified.');
                 }
                 else if (res === 'Processing') {
@@ -55,40 +54,38 @@ export class FormClassificationComponent {
                             .subscribe(
                                 res => {
                                     this.showProgressBar = true;
-                                    this.numberProcessed = res.numberProcessed;
-                                    this.numberTotal = res.numberTotal;
-                                    if (this.numberProcessed >= this.numberTotal) {
+                                    if (res.numberProcessed >= res.numberTotal) {
                                         this.http.get('/server/classification/resetBulkClassifyCdesStatus/' + this.elt._id)
                                             .subscribe(() => {
                                                 //noinspection TypeScriptUnresolvedFunction
                                                 clearInterval(fn);
-                                                this.classifyCdesModalRef.close('success');
-                                            }, err => {
-                                                this.alert.addAlert('danger', "Unexpected error classifying");
+                                                this.classifyCdesModalRef!.close('success');
+                                            }, () => {
+                                                this.alert.addAlert('danger', 'Unexpected error classifying');
                                             });
                                     }
                                 },
-                                err => {
-                                    this.alert.addAlert('danger', "Unexpected error classifying");
-                                    this.classifyCdesModalRef.close('error');
+                                () => {
+                                    this.alert.addAlert('danger', 'Unexpected error classifying');
+                                    this.classifyCdesModalRef!.close('error');
                                 });
                     }, 5000);
                 }
-            }, err => {
-                this.alert.addAlert('danger', "Unexpected error classifying");
+            }, () => {
+                this.alert.addAlert('danger', 'Unexpected error classifying');
             });
     }
 
-    classifyItem(event) {
+    classifyItem(event: ClassificationClassified) {
         this.classificationSvc.classifyItem(this.elt, event.selectedOrg, event.classificationArray,
             '/server/classification/addFormClassification/', (err) => {
-                this.classifyItemModalRef.close();
-                if (err) this.alert.addAlert('danger', "Unexpected error classifying");
+                this.classifyItemModalRef!.close();
+                if (err) this.alert.addAlert('danger', 'Unexpected error classifying');
                 else this.reloadElt(() => this.alert.addAlert('success', 'Classification added.'));
             });
     }
 
-    getChildren(formElements, ids) {
+    getChildren(formElements: FormElement[], ids: IdVersion[]) {
         if (formElements) {
             formElements.forEach(formElement => {
                 if (formElement.elementType === 'section' || formElement.elementType === 'form') {
@@ -111,7 +108,7 @@ export class FormClassificationComponent {
         this.classifyCdesModalRef = this.classifyCdesComponent.openModal();
     }
 
-    reloadElt(cb) {
+    reloadElt(cb?: Cb) {
         this.http.get<CdeForm>('form/' + this.elt.tinyId).subscribe(res => {
             this.elt = res;
             this.onEltChange.emit(this.elt);
@@ -122,14 +119,19 @@ export class FormClassificationComponent {
         });
     }
 
-    removeClassif(event) {
-        this.classificationSvc.removeClassification(this.elt, event.deleteOrgName,
-            event.deleteClassificationArray, '/server/classification/removeFormClassification/', err => {
+    removeClassif(event: DeletedNodeEvent) {
+        this.classificationSvc.removeClassification(
+            this.elt,
+            event.deleteOrgName,
+            event.deleteClassificationArray,
+            '/server/classification/removeFormClassification/',
+            err => {
                 if (err) {
-                    this.alert.addAlert('danger', "Unexpected error removing classification");
+                    this.alert.addAlert('danger', 'Unexpected error removing classification');
                 } else {
                     this.reloadElt(() => this.alert.addAlert('success', 'Classification removed.'));
                 }
-            });
+            }
+        );
     }
 }

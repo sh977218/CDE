@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
@@ -99,7 +99,7 @@ export class LoginComponent {
                 this.alert.addAlert('danger', res);
                 this.getCsrf();
             }
-        }, err => {
+        }, (err: HttpErrorResponse) => {
             if (err.status === 412) {
                 this.alert.addAlert('danger', 'Please fill out the Captcha before login in.');
             } else {

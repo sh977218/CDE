@@ -13,7 +13,7 @@ export class CdeAmericanDateParserFormatter extends NgbDateParserFormatter {
                 return {month: toInteger(dateParts[0]), day: toInteger(dateParts[1]), year: toInteger(dateParts[2])};
             }
         }
-        return null;
+        return {year: NaN, month: NaN, day: NaN};
     }
 
     format(date: NgbDateStruct): string {

@@ -1,7 +1,9 @@
-loadPhenxFromWebsite grabs from the legacy website https://original-phenxtoolkit.rti.org/  
-Next time we update the loader, we will need to grab from the current site at: https://www.phenxtoolkit.org/protocols
+loadPhenxFromWebsite grabs from the current site at: https://www.phenxtoolkit.org/protocols
 
 ## Steps
+* get PhenX Forms(pdf, csv,etc).
+    * go to S:\MLB\CDE\PhenX
+    * wget -r -k --no-check-certificate  https://www.phenxtoolkit.org/protocols
 * Run node ingester/phenx/website/loadPhenxFromWebsite.js to grab the raw data from site.
 * PhenX form 030502 has LOINC id 62551-7 in version 23, but does not show LOINC id in version 24. Before loading, manually remove this LOINC id from Measures collection.  
 * PhenX form 190401 has LOINC id 62959-2. LOINC CDE 67183-4 has duplicated Code 12. Before loading, manually fix the Measures collection.
@@ -14,5 +16,4 @@ Next time we update the loader, we will need to grab from the current site at: h
 * LOINC subPanels are not classified with PhenX. These subPanels may have 0 classification. 
 * Most of the time, redCap CSV is in the root of the zip. In form 240301, for some reason, it's under a folder by the same name. 
 * Most of the time, attachments are images under a folder. The name of the image matches the variable name. In one form, the full form is an image and the names don't match. 
-
 

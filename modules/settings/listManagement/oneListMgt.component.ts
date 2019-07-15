@@ -12,17 +12,13 @@ import { map, startWith } from 'rxjs/operators';
     templateUrl: './oneListMgt.component.html'
 })
 export class OneListMgtComponent implements OnInit {
-
-    @Input() keys: string[];
-    @Input() allKeys: string[];
+    @Input() keys!: string[];
+    @Input() allKeys!: string[];
     @Input() placeHolder: string = 'Property Keys';
-
     @Output() save: EventEmitter<any> = new EventEmitter();
-
-    @ViewChild('keyInput') keyInput: ElementRef<HTMLInputElement>;
-
+    @ViewChild('keyInput') keyInput!: ElementRef<HTMLInputElement>;
+    filteredKeys!: Observable<string[]>;
     keyControl = new FormControl();
-    filteredKeys: Observable<string[]>;
 
     readonly separatorKeysCodes: number[] = [ENTER];
 

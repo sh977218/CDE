@@ -1,9 +1,9 @@
-import { ValueDomain } from '../../../../shared/de/dataElement.model';
-import { questionQuestionMulti } from '../../../../shared/form/fe';
-import { Question } from '../../../../shared/form/form.model';
-import { codeSystemOut } from '../../../../shared/mapping/fhir';
-import { FhirCoding, FhirExtension, FhirQuantity, FhirValue } from '../../../../shared/mapping/fhir/fhir.model';
-import { CodeAndSystem } from '../../../../shared/models.model';
+import { ValueDomain } from 'shared/de/dataElement.model';
+import { questionQuestionMulti } from 'shared/form/fe';
+import { Question } from 'shared/form/form.model';
+import { codeSystemOut } from 'shared/mapping/fhir';
+import { FhirCoding, FhirExtension, FhirQuantity, FhirValue } from 'shared/mapping/fhir/fhir.model';
+import { CodeAndSystem } from 'shared/models.model';
 
 export function isCodingToValueList(container: Question | ValueDomain, coding: FhirCoding | FhirCoding[]): boolean {
     function isCodingInContainer(container: Question | ValueDomain, c: FhirCoding) {

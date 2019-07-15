@@ -1,9 +1,10 @@
-import { handle404, handleError } from '../errorHandler/errHandler';
+import { handle404, handleError } from '../errorHandler/errorHandler';
 import { config } from '../system/parseConfig';
-import { stripBsonIds } from '../../shared/system/exportShared';
+import { stripBsonIds } from 'shared/system/exportShared';
 import {
-    checkBoardOwnerShip, checkBoardViewerShip, loggedInMiddleware, nocacheMiddleware, unauthorizedPublishing
+    checkBoardViewerShip, loggedInMiddleware, nocacheMiddleware, unauthorizedPublishing
 } from '../system/authorization';
+import { validateBody } from '../system/bodyValidator';
 
 const _ = require('lodash');
 const js2xml = require('js2xmlparser');
@@ -14,176 +15,106 @@ const daoManager = require('../system/moduleDaoManager');
 const userDb = require('../user/userDb');
 const boardDb = require('./boardDb');
 const elastic = require('./elastic');
+const { check } = require('express-validator');
 
 export function module() {
     const router = require('express').Router();
     daoManager.registerDao(boardDb);
 
-    router.put('/id/:id/dataElements/', [nocacheMiddleware, loggedInMiddleware], (req, res) => {
-        let boardId = req.params.id;
-        let cdes = req.body;
-        if (!Array.isArray(cdes)) return res.status(400).send();
-        boardDb.byId(boardId, handle404({req, res}, board => {
-            if (!checkBoardOwnerShip(board, req.user)) {
-                return res.status(401).send();
-            }
-            let cdePins = cdes.forEach(c => {
-                c.pinnedDate = new Date();
-                c.type = 'form';
-            });
-            board.pins = _.uniqWith(board.pins.concat(cdePins), 'tinyId');
-            board.save(handleError({req, res}, () => {
-                let message = 'Added to Board';
-                if (cdes.length > 1) message = 'All elements pinned.';
-                res.send(message);
-            }));
-        }));
-    });
-
-    router.put('/id/:id/forms/', [nocacheMiddleware, loggedInMiddleware], (req, res) => {
-        let boardId = req.param.id;
-        let forms = req.body;
-        if (!Array.isArray(forms)) return res.status(400).send();
-        boardDb.byId(boardId, handle404({req, res}, board => {
-            if (!checkBoardOwnerShip(board, req.user)) {
-                return res.status(401).send();
-            }
-            let formPins = forms.forEach(f => {
-                f.pinnedDate = new Date();
-                f.type = 'form';
-            });
-            board.pins = _.uniqWith(board.pins.concat(formPins), 'tinyId');
-            board.save(handleError({req, res}, () => {
-                let message = 'Added to Board';
-                if (forms.length > 1) message = 'All elements pinned.';
-                res.send(message);
-            }));
-        }));
-    });
-
     router.get('/byPinTinyId/:tinyId', [nocacheMiddleware], (req, res) => {
         boardDb.publicBoardsByPinTinyId(req.params.tinyId, handleError({req, res}, boards => res.send(boards)));
     });
 
-    router.post('/deletePin/', [loggedInMiddleware], (req, res) => {
-        let boardId = req.body.boardId;
-        let tinyId = req.body.tinyId;
-        boardDb.byId(boardId, handle404({req, res}, board => {
-            if (!checkBoardOwnerShip(board, req.user)) {
-                return res.status(401).send();
-            }
-            let index = board.pins.map(p => p.tinyId).indexOf(tinyId);
-            if (index > -1) board.pins.splice(index, 1);
+    router.post('/deletePin/', [loggedInMiddleware], async (req, res) => {
+        const {boardId, tinyId} = req.body;
+        let board = await boardDb.byIdAndOwner(boardId, req.user._id);
+        if (!board) return res.status(404).send();
+        let index = board.pins.map(p => p.tinyId).indexOf(tinyId);
+        if (index > -1) {
+            board.pins.splice(index, 1);
             board.save(handleError({req, res}, () => res.send('Removed')));
-        }));
+        } else {
+            res.send(422).send();
+        }
     });
 
-    router.put('/pinToBoard/', [loggedInMiddleware], (req, res) => {
-        let boardId = req.body.boardId;
-        let type = req.body.type;
-        let tinyIdList = req.body.tinyIdList;
-        boardDb.byId(boardId, handle404({req, res}, board => {
-            if (!checkBoardOwnerShip(board, req.user)) {
-                return res.status(401).send();
-            }
-            let intersection = _.intersection(board.pins.map(p => p.tinyId), tinyIdList);
-            if (!_.isEmpty(intersection)) {
-                return res.status(409).send('Already added');
-            }
-            daoManager.getDao(type).byTinyIdList(tinyIdList, handleError({req, res}, elts => {
-                let newPins = elts.map(e => ({
-                    pinnedDate: new Date(),
-                    type: type,
-                    name: e.designations[0].designation,
-                    tinyId: e.tinyId
-                }));
-                board.pins = _.uniqWith(board.pins.concat(newPins), 'tinyId');
-                board.save(handleError({req, res}, () => res.send()));
+    router.put('/pinToBoard/', [loggedInMiddleware], async (req, res) => {
+        const {boardId, type, tinyIdList} = req.body;
+        let board = await boardDb.byIdAndOwner(boardId, req.user._id);
+        if (!board) return res.status(404).send();
+
+        let intersection = _.intersection(board.pins.map(p => p.tinyId), tinyIdList);
+        if (!_.isEmpty(intersection)) {
+            return res.status(409).send('Already added');
+        }
+        daoManager.getDao(type).byTinyIdList(tinyIdList, handleError({req, res}, elts => {
+            let newPins = elts.map(e => ({
+                pinnedDate: new Date(),
+                type: type,
+                name: e.designations[0].designation,
+                tinyId: e.tinyId
             }));
+            board.pins = _.uniqWith(board.pins.concat(newPins), 'tinyId');
+            board.save(handleError({req, res}, () => res.send()));
         }));
     });
 
-    router.post('/pinMoveUp', (req, res) => {
-        let boardId = req.body.boardId;
-        let tinyId = req.body.tinyId;
-        boardDb.byId(boardId, handle404({req, res}, board => {
-            if (!checkBoardOwnerShip(board, req.user)) {
-                return res.status(401).send();
-            }
-            let match = board.get('pins').find(p => p.tinyId === tinyId);
-            let index = match ? match.__index : -1;
-            if (index !== -1) {
-                board.pins.splice(index - 1, 0, board.pins.splice(index, 1)[0]);
-                board.save(handleError({req, res}, () => res.send()));
-            } else {
-                res.status(400).send('Nothing to move');
-            }
-        }));
-    });
-    router.post('/pinMoveDown', (req, res) => {
-        let boardId = req.body.boardId;
-        let tinyId = req.body.tinyId;
-        boardDb.byId(boardId, handle404({req, res}, board => {
-            if (!checkBoardOwnerShip(board, req.user)) {
-                return res.status(401).send();
-            }
-            let match = board.get('pins').find(p => p.tinyId === tinyId);
-            let index = match ? match.__index : -1;
-            if (index !== -1) {
-                board.pins.splice(index + 1, 0, board.pins.splice(index, 1)[0]);
-                board.save(handleError({req, res}, () => res.send()));
-            } else {
-                res.status(400).send('Nothing to move');
-            }
-        }));
-    });
-    router.post('/pinMoveTop', (req, res) => {
-        let boardId = req.body.boardId;
-        let tinyId = req.body.tinyId;
-        boardDb.byId(boardId, handle404({req, res}, board => {
-                if (!checkBoardOwnerShip(board, req.user)) {
-                    return res.status(401).send();
-                }
-                let match = board.get('pins').find(p => p.tinyId === tinyId);
-                let index = match ? match.__index : -1;
-                if (index !== -1) {
-                    board.pins.splice(0, 0, board.pins.splice(index, 1)[0]);
-                    board.save(handleError({req, res}, () => res.send()));
-                } else {
-                    res.status(400).send('Nothing to move');
-                }
-            })
-        );
+    router.post('/pinMoveUp', [loggedInMiddleware], async (req, res) => {
+        const {boardId, tinyId} = req.body;
+        let board = await boardDb.byIdAndOwner(boardId, req.user._id);
+        if (!board) return res.status(404).send();
+        let match = board.get('pins').find(p => p.tinyId === tinyId);
+        let index = match ? match.__index : -1;
+        if (index !== -1) {
+            board.pins.splice(index - 1, 0, board.pins.splice(index, 1)[0]);
+            board.save(handleError({req, res}, () => res.send()));
+        } else {
+            res.status(422).send();
+        }
     });
 
-    router.delete('/:boardId', (req, res) => {
+    router.post('/pinMoveDown', async (req, res) => {
+        const {boardId, tinyId} = req.body;
+        let board = await boardDb.byIdAndOwner(boardId, req.user._id);
+        if (!board) return res.status(404).send();
+        let match = board.get('pins').find(p => p.tinyId === tinyId);
+        let index = match ? match.__index : -1;
+        if (index !== -1) {
+            board.pins.splice(index + 1, 0, board.pins.splice(index, 1)[0]);
+            board.save(handleError({req, res}, () => res.send()));
+        } else {
+            res.status(422).send();
+        }
+    });
+    router.post('/pinMoveTop', async (req, res) => {
+        const {boardId, tinyId} = req.body;
+        let board = await boardDb.byIdAndOwner(boardId, req.user._id);
+        if (!board) return res.status(404).send();
+        let match = board.get('pins').find(p => p.tinyId === tinyId);
+        let index = match ? match.__index : -1;
+        if (index !== -1) {
+            board.pins.splice(0, 0, board.pins.splice(index, 1)[0]);
+            board.save(handleError({req, res}, () => res.send()));
+        } else {
+            res.status(422).send('Nothing to move');
+        }
+    });
+
+    router.delete('/:boardId', async (req, res) => {
         let boardId = req.params.boardId;
-        boardDb.byId(boardId, handle404({req, res}, board => {
-            if (!checkBoardOwnerShip(board, req.user)) {
-                return res.status(401).send();
-            }
-            board.remove(handleError({req, res}, () => {
-                elastic.boardRefresh(() => res.send('Board Removed.'));
-            }));
+        let board = await boardDb.byIdAndOwner(boardId, req.user._id);
+        if (!board) return res.status(404).send();
+        board.remove(handleError({req, res}, () => {
+            elastic.boardRefresh(() => res.send('Board Removed.'));
         }));
     });
 
-    router.post('/boardSearch', [nocacheMiddleware], (req, res) => {
+    router.post('/boardSearch', [nocacheMiddleware,
+        check('selectedTypes').isArray(),
+        check('selectedTags').isArray(),
+        validateBody
+    ], (req, res) => {
         elastic.boardSearch(req.body, handleError({req, res}, result => res.send(result)));
-    });
-
-    router.get('/viewBoard/:boardId', [nocacheMiddleware], (req, res) => {
-        let boardId = req.params.boardId;
-        boardDb.byId(boardId, handle404({req, res}, board => {
-            if (board.shareStatus === 'Private') {
-                board.users.forEach(u => {
-                    if (u.username.toLowerCase() === req.user.username.toLowerCase()) {
-                        u.lastViewed = new Date();
-                    }
-                });
-                board.save(handleError({req, res}, () => res.send()));
-            }
-        }));
     });
 
     router.get('/:boardId/:start/:size?/', [nocacheMiddleware], (req, res) => {
@@ -258,42 +189,36 @@ export function module() {
         }
     });
 
-    router.post('/users', [loggedInMiddleware], (req, res) => {
-        let boardId = req.body.boardId;
-        let users = req.body.users;
-        boardDb.byId(boardId, handle404({req, res}, board => {
-            if (!checkBoardOwnerShip(board, req.user)) {
-                return res.status(403).send();
-            }
-            board.users = users;
-            board.save(handleError({req, res}, () => res.send('done')));
-        }));
+    router.post('/users', [loggedInMiddleware], async (req, res) => {
+        const {boardId, users} = req.body;
+        let board = await boardDb.byIdAndOwner(boardId, req.user._id);
+        if (!board) return res.status(404).send();
+        board.users = users;
+        board.save(handleError({req, res}, () => res.send('done')));
     });
 
-    router.post('/myBoards', [nocacheMiddleware, loggedInMiddleware], (req, res) => {
-        elastic.myBoards(req.user, req.body, handleError({req, res}, result => res.send(result)));
+    router.post('/myBoards', [nocacheMiddleware, loggedInMiddleware,
+        check('sortDirection').isIn(['', 'desc', 'asc']), validateBody], (req, res) => {
+            elastic.myBoards(req.user, req.body, handleError({req, res}, result => res.send(result)));
     });
 
-    router.post('/pinEntireSearchToBoard', [loggedInMiddleware], (req, res) => {
-        let boardId = req.body.boardId;
-        boardDb.byId(boardId, handle404({req, res}, board => {
-            if (!checkBoardOwnerShip(board, req.user)) {
-                return res.status(401).send();
-            }
-            let query = elastic_system.buildElasticSearchQuery(req.user, req.body.query);
-            if (query.size > config.maxPin) {
-                return res.status(403).send('Maximum number excesses.');
-            }
-            elastic_system.elasticsearch('cde', query, req.body.query, handleError({req, res}, result => {
-                let eltsPins = result.cdes.map(e => ({
-                    pinnedDate: new Date(),
-                    type: 'cde',
-                    tinyId: e.tinyId,
-                    name: e.designations[0].designation,
-                }));
-                board.pins = _.uniqWith(board.pins.concat(eltsPins), 'tinyId');
-                board.save(handleError({req, res}, () => res.send('Added to Board')));
+    router.post('/pinEntireSearchToBoard', [loggedInMiddleware], async (req, res) => {
+        const boardId = req.body.boardId;
+        let board = await boardDb.byIdAndOwner(boardId, req.user._id);
+        if (!board) return res.status(404).send();
+        let query = elastic_system.buildElasticSearchQuery(req.user, req.body.query);
+        if (query.size > config.maxPin) {
+            return res.status(403).send('Maximum number excesses.');
+        }
+        elastic_system.elasticsearch('cde', query, req.body.query, handleError({req, res}, result => {
+            let eltsPins = result.cdes.map(e => ({
+                pinnedDate: new Date(),
+                type: 'cde',
+                tinyId: e.tinyId,
+                name: e.designations[0].designation,
             }));
+            board.pins = _.uniqWith(board.pins.concat(eltsPins), 'tinyId');
+            board.save(handleError({req, res}, () => res.send('Added to Board')));
         }));
     });
 

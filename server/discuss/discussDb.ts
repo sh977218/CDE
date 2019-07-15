@@ -1,7 +1,7 @@
 import * as mongoose from 'mongoose';
 import { addStringtype } from '../system/mongoose-stringtype';
 import { config } from '../system/parseConfig';
-import { CbError } from '../../shared/models.model';
+import { CbError } from 'shared/models.model';
 
 addStringtype(mongoose);
 const Schema = mongoose.Schema;
@@ -104,15 +104,13 @@ export function orgComments(myOrgs, from, size, cb) {
         }, {$sort: {created: -1}}, {$skip: from}, {$limit: size}], cb);
 }
 
-export function unapproved(cb: CbError<Comment[]>) {
-    let query = Comment.find({$or: [{pendingApproval: true}, {'replies.pendingApproval': true}]});
-    if (cb) query.exec(cb);
-    else return query.exec();
+export function unapproved() {
+    return Comment.find({$or: [{pendingApproval: true}, {'replies.pendingApproval': true}]}).exec();
 }
 
-export function numberUnapprovedMessageByUsername(username, cb = _.noop()) {
+export function numberUnapprovedMessageByUsername(username) {
     return Comment.countDocuments({
         $or: [{'user.username': username, pendingApproval: true},
             {'replies.user.username': username, 'replies.pendingApproval': true}]
-    }, cb);
+    });
 }

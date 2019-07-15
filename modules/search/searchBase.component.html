@@ -407,21 +407,32 @@
         Export CDEs not passing validation rules
     </h3>
     <div mat-dialog-content>
-        <p>The export will list the CDE(s) that fail registration status rules for the selected status.</p>
-        <mat-form-field>
-            <mat-select id="selectStatus" placeholder="Registration Status" [(ngModel)]="validRulesStatus">
-                <mat-option [value]="'Incomplete'">Incomplete</mat-option>
-                <mat-option [value]="'Candidate'">Candidate</mat-option>
-                <mat-option id="recorded" [value]="'Recorded'">Recorded</mat-option>
-                <mat-option [value]="'Qualified'">Qualified</mat-option>
-                <mat-option [value]="'Standard'">Standard</mat-option>
-                <mat-option [value]="'Preferred Standard'">Preferred Standard</mat-option>
-            </mat-select>
-        </mat-form-field>
+        <p>The export will list the CDE(s) that fail registration status rules for:</p>
+        <div>
+            Organization:
+            <mat-form-field>
+                <mat-select id="selectOrg" placeholder="Organization" [(ngModel)]="validRulesOrg">
+                    <mat-option *ngFor="let org of validRulesOrgs" [value]="org">{{org}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div>
+            Status:
+            <mat-form-field>
+                <mat-select id="selectStatus" placeholder="Registration Status" [(ngModel)]="validRulesStatus">
+                    <mat-option [value]="'Incomplete'">Incomplete</mat-option>
+                    <mat-option [value]="'Candidate'">Candidate</mat-option>
+                    <mat-option id="recorded" [value]="'Recorded'">Recorded</mat-option>
+                    <mat-option [value]="'Qualified'">Qualified</mat-option>
+                    <mat-option [value]="'Standard'">Standard</mat-option>
+                    <mat-option [value]="'Preferred Standard'">Preferred Standard</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
     </div>
     <div mat-dialog-actions>
         <button mat-raised-button color="accent" [mat-dialog-close] id="cancelCopy">Cancel</button>
-        <button mat-raised-button color="primary" [mat-dialog-close]="{status: validRulesStatus}" id="exportVR">Export
+        <button mat-raised-button color="primary" [mat-dialog-close]="true" id="exportVR">Export
         </button>
     </div>
 </ng-template>
