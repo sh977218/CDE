@@ -10,7 +10,7 @@ const connHelper = require('../system/connections');
 const conn = connHelper.establishConnection(config.database.appData);
 
 const elastic = require('./elastic');
-import { handleError } from '../errorHandler/errHandler';
+import { handleError } from '../errorHandler/errorHandler';
 import { ObjectId } from '../system/mongo-data';
 
 // for DAO manager
