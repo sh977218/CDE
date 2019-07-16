@@ -1,5 +1,6 @@
 package gov.nih.nlm.board.cde;
 
+import io.restassured.http.ContentType;
 import io.restassured.http.Cookie;
 import org.openqa.selenium.By;
 import org.testng.Assert;
@@ -39,7 +40,7 @@ public class PinAllLessThan20 extends BoardTest {
         mustBeLoggedInAs(reguser_username, password);
         Cookie myCookie = getCurrentCookie();
         // this board is owned by boardUser
-        given().cookie(myCookie).body("{boardId: '575046ad89949d54384ee60a'}")
+        given().contentType(ContentType.JSON).cookie(myCookie).body("{\"boardId\": \"575046ad89949d54384ee60a\"}")
                 .post(baseUrl + "/server/board/pinEntireSearchToBoard").then().statusCode(404);
     }
 

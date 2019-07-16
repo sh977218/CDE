@@ -1,5 +1,6 @@
 package gov.nih.nlm.board.cde;
 
+import io.restassured.http.ContentType;
 import io.restassured.http.Cookie;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
@@ -24,7 +25,8 @@ public class UnpinTest extends BoardTest {
         mustBeLoggedInAs(reguser_username, password);
         Cookie myCookie = getCurrentCookie();
         // this board is owned by boardUser
-        given().cookie(myCookie).body("{'boardId': '575046ad89949d54384ee60a'}")
+        given().contentType(ContentType.JSON).cookie(myCookie)
+                .body("{\"boardId\": \"575046ad89949d54384ee60a\"}")
                 .post(baseUrl + "/server/board/deletePin").then().statusCode(404);
     }
 
@@ -32,7 +34,8 @@ public class UnpinTest extends BoardTest {
     public void unpinBadIndex() {
         mustBeLoggedInAs(unpinUser, password);
         Cookie myCookie = getCurrentCookie();
-        given().cookie(myCookie).body("{'boardId': '57114b5328329938330f5c7f', 'tinyId': 'wrong'}")
+        given().contentType(ContentType.JSON).cookie(myCookie)
+                .body("{\"boardId\": \"57114b5328329938330f5c7f\", \"tinyId\": \"wrong\"}")
                 .post(baseUrl + "/server/board/deletePin").then().statusCode(422);
     }
 
