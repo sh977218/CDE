@@ -1,6 +1,6 @@
-import { DataElement, DataElementDraft } from '../server/cde/mongo-cde';
-import { Form, FormDraft } from '../server/form/mongo-form';
-import { copyDefinition, copyDesignation } from '../server/system/mongo-data';
+import { DataElement, DataElementDraft } from 'server/cde/mongo-cde';
+import { Form, FormDraft } from 'server/form/mongo-form';
+// import { copyDefinition, copyDesignation } from '../server/system/mongo-data';
 
 let DAOs = [
     {
@@ -29,10 +29,10 @@ DAOs.forEach(DAO => {
 
     cursor.eachAsync(elt => {
         return new Promise((resolve, reject) => {
-            let definitions = copyDefinition(elt.naming);
-            let designations = copyDesignation(elt.naming);
-            elt.definitions = definitions;
-            elt.designations = designations;
+            // let definitions = copyDefinition(elt.naming);
+            // let designations = copyDesignation(elt.naming);
+            // elt.definitions = definitions;
+            // elt.designations = designations;
             elt.markModified('definitions');
             elt.markModified('designations');
             elt.save(err => {
