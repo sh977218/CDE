@@ -1,5 +1,5 @@
-import * as _ from 'lodash';
 import { config } from '../system/parseConfig';
+import { handleError } from 'server/errorHandler/errorHandler';
 
 const sharedElastic = require('../system/elastic');
 const dbLogger = require('../log/dbLogger');
@@ -11,7 +11,7 @@ export const esClient = new elastic.Client({
     hosts: config.elastic.hosts
 });
 
-export function updateOrInsert(elt, cb = _.noop) {
+export function updateOrInsert(elt) {
     esInit.riverFunction(elt.toObject(), doc => {
         if (doc) {
             let doneCount = 0;
@@ -26,7 +26,6 @@ export function updateOrInsert(elt, cb = _.noop) {
                     });
                 }
                 if (doneCount >= 1) {
-                    cb(err || doneError);
                     return;
                 }
                 doneCount++;
@@ -47,8 +46,6 @@ export function updateOrInsert(elt, cb = _.noop) {
                     body: sugDoc
                 }, done);
             });
-        } else {
-            cb();
         }
     });
 }
@@ -57,13 +54,11 @@ export function elasticsearch(user, settings, cb) {
     const query = sharedElastic.buildElasticSearchQuery(user, settings);
     if (query.size > 100) return cb('size exceeded');
     if ((query.from + query.size) > 10000) return cb('page size exceeded');
-    if (!config.modules.cde.highlight) {
-        Object.keys(query.highlight.fields).forEach(field => {
-            if (!(field === 'primaryNameCopy' || field === 'primaryDefinitionCopy')) {
-                delete query.highlight.fields[field];
-            }
-        });
-    }
+    Object.keys(query.highlight.fields).forEach(field => {
+        if (!(field === 'primaryNameCopy' || field === 'primaryDefinitionCopy')) {
+            delete query.highlight.fields[field];
+        }
+    });
     if (settings.includeAggregations) {
         query.aggregations.datatype = {
             filter: settings.filterDatatype,
@@ -147,17 +142,8 @@ export function morelike(id, callback) {
         index: config.elastic.index.name,
         type: 'dataelement',
         body: mltPost
-    }, function (error, response) {
-        if (error) {
-            logging.errorLogger.error('Error: More Like This',
-                {
-                    origin: 'cde.elastic.morelike',
-                    stack: new Error().stack,
-                    details: 'Error: ' + error + ', response: ' + JSON.stringify(response)
-                });
-            callback('Error');
-        } else {
-            let result = {
+    }, handleError({}, response => {
+            const result = {
                 cdes: []
                 , pages: Math.ceil(response.hits.total / limit)
                 , page: Math.ceil(from / limit)
@@ -171,8 +157,7 @@ export function morelike(id, callback) {
                 result.cdes.push(thisCde);
             }
             callback(result);
-        }
-    });
+        }));
 }
 
 export function byTinyIdList(idList, size, cb) {
@@ -188,18 +173,9 @@ export function byTinyIdList(idList, size, cb) {
             },
             size: size
         }
-    }, (error, response) => {
-        if (error) {
-            logging.errorLogger.error('Error getByTinyIdList', {
-                origin: 'cde.elastic.byTinyIdList',
-                stack: new Error().stack,
-                details: 'Error ' + error + 'response' + JSON.stringify(response)
-            });
-            cb(error);
-        } else {
-            // @TODO possible to move this sort to elastic search?
-            response.hits.hits.sort((a, b) => idList.indexOf(a._id) - idList.indexOf(b._id));
-            cb(null, response.hits.hits.map(h => h._source));
-        }
-    });
+    }, handleError({}, response => {
+        // @TODO possible to move this sort to elastic search?
+        response.hits.hits.sort((a, b) => idList.indexOf(a._id) - idList.indexOf(b._id));
+        cb(null, response.hits.hits.map(h => h._source));
+    }));
 }

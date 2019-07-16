@@ -5,12 +5,11 @@ import {
     nocacheMiddleware
 } from '../system/authorization';
 import { config } from '../system/parseConfig';
-import { validatePvs } from '../../server/cde/utsValidate';
+import { validatePvs } from '../cde/utsValidate';
 
 const cdesvc = require('./cdesvc');
 const mongo_cde = require('./mongo-cde');
 const elastic = require('./elastic');
-const adminItemSvc = require('../system/adminItemSvc');
 const appStatus = require('../siteAdmin/status');
 const elastic_system = require('../system/elastic');
 
@@ -47,7 +46,7 @@ export function init(app, daoManager) {
     });
 
     app.post('/elasticSearch/cde', (req, res) => {
-        elastic.elasticsearch(req.user, req.body, function (err, result) {
+        elastic.elasticsearch(req.user, req.body, (err, result) => {
             if (err) return res.status(400).send('invalid query');
             cdesvc.hideProprietaryCodes(result.cdes, req.user);
             res.send(result);
