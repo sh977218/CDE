@@ -101,4 +101,10 @@ public class MiscTests extends NlmCdeBaseTest {
         Cookie myCookie = getCurrentCookie();
         given().cookie(myCookie).body("{key:'notWhatsNew'}").post(baseUrl + "/server/article/whatsNew").then().statusCode(400);
     }
+
+    @Test
+    public void siteStatus() {
+        String response = get(baseUrl + "/status/cde").asString();
+        Assert.assertTrue(response.contains("ALL SERVICES UP"));
+    }
 }

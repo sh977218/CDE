@@ -8,8 +8,7 @@ import org.testng.annotations.Test;
 
 public class DynamicCodeListForm extends NlmCdeBaseTest {
 
-    @Test
-    public void dynamicCodeListFormTest() {
+    private void doIt() {
         String formName = "Dynamic Code List Form";
         goToFormByName(formName);
         wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id='Long Dynamic Code List_0-0']")));
@@ -19,6 +18,15 @@ public class DynamicCodeListForm extends NlmCdeBaseTest {
         String options2 = driver.findElement(By.xpath("//*[@id='Short Dynamic Code List_0-1']")).getAttribute("outerHTML");
         Assert.assertTrue(options2.contains("Transfusion of Autologous Whole Blood into Peripheral Vein, Open Approach"),
                 "Actually Contains: " + options2);
+    }
+
+    @Test
+    public void dynamicCodeListFormTest() {
+        try {
+            doIt();
+        } catch (Exception e) {
+            doIt();
+        }
     }
 
 }
