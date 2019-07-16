@@ -1681,6 +1681,11 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         textNotPresent("Delete Draft?");
     }
 
+    protected void matSelectByText(By bySelect, String text) {
+        clickElement(bySelect);
+        selectMatSelectDropdownByText(text);
+    }
+
     protected void selectMatSelectDropdownByText(String text) {
         clickElement(By.xpath("//mat-option/span[normalize-space() = '" + text + "']"));
     }

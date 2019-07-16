@@ -47,6 +47,7 @@
         ]
     },
     "rules": {
+        "arrow-parens": [true, "ban-single-arg-parens"],
         "class-name": true,
         "comment-format": [
             true,
@@ -62,6 +63,7 @@
             true,
             "spaces"
         ],
+        "member-access": false,
         "no-attribute-parameter-decorator": true,
         "no-eval": true,
         "no-forward-ref": true,
@@ -80,7 +82,11 @@
             "check-open-brace",
             "check-whitespace"
         ],
-//        "pipe-naming": [true, "camelCase", "cde"],
+        "quotemark": [
+            true,
+            "single"
+        ],
+        //        "pipe-naming": [true, "camelCase", "cde"],
         "semicolon": [
             true,
             "always"

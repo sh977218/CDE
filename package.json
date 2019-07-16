@@ -55,15 +55,17 @@
       "**/server/discuss/*",
       "**/server/log/*",
       "**/server/notification",
+      "**/server/siteAdmin",
       "**/server/user/*",
       "**/server/uts/*"
     ],
     "exclude": [
-      "build/**"
+      "build/**",
+      "**/server/siteAdmin/status*"
     ],
-    "lines": "85",
-    "branches": "76",
-    "functions": "90",
+    "lines": "95",
+    "branches": "81",
+    "functions": "95",
     "reporter": "html"
   },
   "dependencies": {
@@ -246,7 +248,7 @@
     "time-ago-pipe": "^1.3.2",
     "ts-loader": "4.3.1",
     "ts-node": "^8.3.0",
-    "tslint": "5.10.0",
+    "tslint": "^5.18.0",
     "tslint-loader": "^3.6.0",
     "typescript": "3.1.6",
     "url-loader": "0.6.2",

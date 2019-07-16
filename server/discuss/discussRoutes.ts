@@ -1,3 +1,4 @@
+import { Request, Response } from 'express';
 import { Cb } from 'shared/models.model';
 import { canComment, canRemoveComment } from 'shared/system/authorizationShared';
 import { handle404, handleError } from '../errorHandler/errorHandler';
@@ -174,24 +175,33 @@ export function module(roleConfig) {
         }));
     });
 
-    router.get('/commentsFor/:username/:from/:size', loggedInMiddleware, (req, res) => {
-        let from = Number.parseInt(req.params.from);
-        let size = Number.parseInt(req.params.size);
-        let username = req.params.username;
-        discussDb.commentsForUser(username, from, size, handleError({req, res}, comments => res.send(comments)));
+    function respondCommentOrgsByCriteria(req: Request, res: Response, criteria: any) {
+        const handlerOptions = {req, res};
+        const from = Number.parseInt(req.params.from);
+        const size = Number.parseInt(req.params.size);
+        const orgName: string | string[] = req.params.orgName;
+        discussDb.orgCommentsByCriteria(
+            criteria,
+            orgName ? (Array.isArray(orgName) ? orgName : [orgName]) : undefined,
+            from,
+            size,
+            handleError(handlerOptions, comments => res.send(comments))
+        );
+    }
+
+    router.get('/allComments/:from/:size/:orgName?', roleConfig.allComments, (req: Request, res: Response) => {
+        respondCommentOrgsByCriteria(req, res, {});
     });
 
-    router.get('/allComments/:from/:size', roleConfig.allComments, (req, res) => {
-        let from = Number.parseInt(req.params.from);
-        let size = Number.parseInt(req.params.size);
-        discussDb.allComments(from, size, handleError({req, res}, comments => res.send(comments)));
+    router.get('/myComments/:from/:size/:orgName?', loggedInMiddleware, (req: Request, res: Response) => {
+        respondCommentOrgsByCriteria(req, res, {username: req.user.username});
     });
 
-    router.get('/orgComments/:from/:size', authorization.loggedInMiddleware, (req, res) => {
-        let from = Number.parseInt(req.params.from);
-        let size = Number.parseInt(req.params.size);
-        let myOrgs = userService.myOrgs(req.user);
-        discussDb.orgComments(myOrgs, from, size, handleError({req, res}, comments => res.send(comments)));
+    router.get('/orgComments/:from/:size/:orgName?', loggedInMiddleware, (req: Request, res: Response) => {
+        if (!req.params.orgName) {
+            req.params.orgName = userService.myOrgs(req.user);
+        }
+        respondCommentOrgsByCriteria(req, res, {});
     });
 
     router.post('/approveComment', roleConfig.manageComment, (req, res) => {
