@@ -41,7 +41,6 @@ class LocatableError {
 
 @Component({
     selector: 'cde-form-view',
-    templateUrl: 'formView.component.html',
     styles: [`
         @media (max-width: 767px) {
             .mobileViewH1 {
@@ -54,7 +53,8 @@ class LocatableError {
         .menuActionIcon:hover {
             font-weight: bold;
         }
-    `]
+    `],
+    templateUrl: 'formView.component.html',
 })
 export class FormViewComponent implements OnInit {
     @ViewChild('commentAreaComponent') commentAreaComponent!: DiscussAreaComponent;
