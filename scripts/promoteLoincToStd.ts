@@ -1,4 +1,4 @@
-import { DataElement, updatePromise } from '../server/cde/mongo-cde';
+import { DataElement, update } from 'server/cde/mongo-cde';
 
 async function run() {
     let query = {
@@ -13,19 +13,18 @@ async function run() {
 
     console.log('need to do: ' + total);
 
-    DataElement.find(query).cursor({batchSize: 20}).eachAsync(async oneCde => {
+    DataElement.find(query).cursor({batchSize: 20}).eachAsync(oneCde => {
         oneCde.registrationState.registrationStatus = 'Standard';
         oneCde.changeNote = 'Updated LOINC CDEs to Standard Status';
         oneCde.lastMigrationScript = 'promoteLoincToStd';
 
-        await updatePromise(oneCde, {username: 'batchloader'});
-
-        // console.log('Did: ' + oneCde.tinyId);
-        done++;
-        if (done % 10 === 0) {
-            console.log(done + ' / ' + total);
-        }
-
+        update(oneCde, {username: 'batchloader'}, () => {
+            // console.log('Did: ' + oneCde.tinyId);
+            done++;
+            if (done % 10 === 0) {
+                console.log(done + ' / ' + total);
+            }
+        });
     });
 }
 

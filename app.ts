@@ -25,16 +25,16 @@ import * as articleDb from 'server/article/articleDb';
 import { module as articleModule } from 'server/article/articleRoutes';
 import { module as attachmentModule } from 'server/attachment/attachmentRoutes';
 import { module as boardModule } from 'server/board/boardRoutes';
-import { init as cdeInit } from 'server/cde/app.js';
+import { init as cdeInit } from 'server/cde/app';
 import * as mongo_cde from 'server/cde/mongo-cde';
 import { module as classificationModule } from 'server/classification/classificationRoutes';
 import { module as discussModule } from 'server/discuss/discussRoutes';
 import { module as logModule } from 'server/log/logRoutes';
-import { init as formInit } from 'server/form/app.js';
+import { init as formInit } from 'server/form/app';
 import * as mongo_form from 'server/form/mongo-form';
 import { module as meshModule } from 'server/mesh/meshRoutes';
 import { module as siteAdminModule } from 'server/siteAdmin/siteAdminRoutes';
-import { init as systemInit, respondHomeFull } from 'server/system/app.js';
+import { init as systemInit, respondHomeFull } from 'server/system/app';
 import { init as authInit, ticketAuth } from 'server/system/authentication';
 import {
     canApproveAttachmentMiddleware, canApproveCommentMiddleware, checkOwnership, isDocumentationEditor,
@@ -42,8 +42,8 @@ import {
 } from 'server/system/authorization';
 import { initEs } from 'server/system/elastic';
 import { startServer } from 'server/system/ioServer';
-import { errorLogger, expressLogger } from 'server/system/logging.js';
-import * as daoManager from 'server/system/moduleDaoManager.js';
+import { errorLogger, expressLogger } from 'server/system/logging';
+import * as daoManager from 'server/system/moduleDaoManager';
 import { sessionStore } from 'server/system/mongo-data';
 import { banIp, getTrafficFilter } from 'server/system/traffic';
 import { module as userModule } from 'server/user/userRoutes';
