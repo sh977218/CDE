@@ -14,6 +14,12 @@ public class SiteAdminSeeCommentsInSiteManagement extends NlmCdeBaseTest {
         goToAllComments();
         textPresent(nindsComment);
         textPresent(caBIGComment);
+        matSelectByText(By.id("organizationFilter"), "NINDS");
+        textPresent(nindsComment);
+        textNotPresent(caBIGComment);
+        matSelectByText(By.id("organizationFilter"), "caBIG");
+        textNotPresent(nindsComment);
+        textPresent(caBIGComment);
     }
 
 }
