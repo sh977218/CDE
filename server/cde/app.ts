@@ -6,6 +6,11 @@ import {
 } from '../system/authorization';
 import { config } from '../system/parseConfig';
 import { validatePvs } from '../cde/utsValidate';
+import { byTinyIdVersion as deByTinyIdVersion, count as deCount, DataElement } from './mongo-cde';
+import { errorLogger } from '../system/logging';
+import { respondHomeFull } from '../system/app';
+import { isSearchEngine } from '../system/helper';
+import { toInteger } from '@ng-bootstrap/ng-bootstrap/util/util';
 
 const cdesvc = require('./cdesvc');
 const mongo_cde = require('./mongo-cde');
@@ -107,6 +112,78 @@ export function init(app, daoManager) {
         };
         exporters.json.export(res);
     });
+
+    app.get('/cde/search', (req, res) => {
+        let selectedOrg = req.query.selectedOrg;
+        let pageString = req.query.page; // starting from 1
+        if (!pageString) pageString = '1';
+        if (isSearchEngine(req)) {
+            if (selectedOrg) {
+                let pageNum = toInteger(pageString);
+                let pageSize = 20;
+                let cond = {
+                    'classification.stewardOrg.name': selectedOrg,
+                    archived: false,
+                    'registrationState.registrationStatus': 'Qualified'
+                };
+                deCount(cond, (err, totalCount) => {
+                    if (err) {
+                        res.status(500).send('ERROR - Static Html Error, /cde/search');
+                        errorLogger.error('Error: Static Html Error', {
+                            stack: err.stack,
+                            origin: req.url
+                        });
+                    } else {
+                        DataElement.find(cond, 'tinyId designations', {
+                            skip: pageSize * (pageNum - 1),
+                            limit: pageSize
+                        }, (err, cdes) => {
+                            if (err) {
+                                res.status(500).send('ERROR - Static Html Error, /cde/search');
+                                errorLogger.error('Error: Static Html Error', {
+                                    stack: err.stack,
+                                    origin: req.url
+                                });
+                            } else {
+                                let totalPages = totalCount / pageSize;
+                                if (totalPages % 1 > 0) totalPages = totalPages + 1;
+                                res.render('bot/cdeSearchOrg', 'system', {
+                                    cdes: cdes,
+                                    totalPages: totalPages,
+                                    selectedOrg: selectedOrg
+                                });
+                            }
+                        });
+                    }
+                });
+            } else {
+                res.render('bot/cdeSearch', 'system');
+            }
+        } else {
+            respondHomeFull(req, res);
+        }
+    });
+
+    app.get('/deView', function (req, res) {
+        let tinyId = req.query.tinyId;
+        let version = req.query.version;
+        deByTinyIdVersion(tinyId, version, (err, cde) => {
+            if (err) {
+                res.status(500).send('ERROR - Static Html Error, /deView');
+                errorLogger.error('Error: Static Html Error', {
+                    stack: err.stack,
+                    origin: req.url
+                });
+            } else {
+                if (isSearchEngine(req)) {
+                    res.render('bot/deView', 'system', {elt: cde});
+                } else {
+                    respondHomeFull(req, res);
+                }
+            }
+        });
+    });
+
 
     app.post('/cdeCompletion/:term', nocacheMiddleware, (req, res) => {
         let term = req.params.term;
