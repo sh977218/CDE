@@ -73,7 +73,7 @@ export const deJson = {
             description: 'Name of organization or entity responsible for supervising content and administration of CDE'
         },
     },
-    created: {type: Date},
+    created: Date,
     updated: {type: Date, index: true},
     imported: {type: Date, description: 'Date last imported from source'},
     createdBy: {

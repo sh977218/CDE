@@ -145,7 +145,7 @@ export const formJson = {
     history: [Schema.Types.ObjectId],
     changeNote: StringType,
     lastMigrationScript: StringType,
-    created: {type: Date},
+    created: Date,
     updated: Date,
     imported: {type: Date, description: 'Date last imported from source'},
     createdBy: {
