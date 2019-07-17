@@ -25,13 +25,13 @@ async function fixQuestion(fe, form) {
             invisible: fe.question.invisible,
             editable: fe.question.editable,
             multiselect: !!fe.question.multiselect,
-            answers: fe.question.answers ? '' : fe.question.answers,
+            answers: fe.question.answers,
             defaultAnswer: fe.question.defaultAnswer,
             cde: {
                 tinyId: fe.question.cde.tinyId,
                 name: fe.question.cde.name,
                 version: fe.question.cde.version,
-                ids: fe.question.cde.ids,
+                ids: cde.ids,
                 derivationRules: fe.question.cde.derivationRules
             },
         };
