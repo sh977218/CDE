@@ -1,20 +1,13 @@
 package gov.nih.nlm.cde.test.attachments;
 
 import gov.nih.nlm.common.test.BaseAttachmentTest;
-import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
 public class DeclineCdeAttachment extends BaseAttachmentTest {
 
     @Test
     public void declineCdeAttachment() {
-        String cdeName = "Alcohol Smoking and Substance Use Involvement Screening Test (ASSIST) - Sedative sleep pill frequency";
-        mustBeLoggedInAs(ninds_username, password);
-        goToCdeByName(cdeName);
-
-        goToAttachments();
-
-        logout();
+        String cdeName = "Alcohol use frequency";
         mustBeLoggedInAs(ninds_username, password);
         String attachmentName = "painLocationInapr.png";
         goToCdeByName("Alcohol use frequency");
@@ -27,7 +20,7 @@ public class DeclineCdeAttachment extends BaseAttachmentTest {
         goToCdeByName(cdeName);
 
         goToAttachments();
-        textNotPresent("glass.jpg");
+        textNotPresent("painLocationInapr.png");
     }
 
 }

@@ -1,7 +1,7 @@
-import { config } from 'server/system/parseConfig';
+import { config } from '../system/parseConfig';
 import { DataElement as DE } from 'shared/de/dataElement.model';
-import { CbError, MongooseType } from 'shared/models.model';
 import { wipeDatatype } from 'shared/de/deValidator';
+import { CbError, MongooseType } from 'shared/models.model';
 import { isOrgCurator } from 'shared/system/authorizationShared';
 
 const Ajv = require('ajv');
@@ -41,27 +41,27 @@ schemas.dataElementSchema.post('remove', (doc, next) => {
     elastic.dataElementDelete(doc, next);
 });
 schemas.dataElementSchema.pre('save', function (next) {
-    let elt = this;
+    const elt = this;
+
     if (this.archived) return next();
-    validateSchema(elt)
-        .then(() => {
-            try {
-                elastic.updateOrInsert(elt);
-            } catch (exception) {
-                logging.errorLogger.error('Error Indexing Form', {details: exception, stack: new Error().stack});
-            }
-            next();
-        }, next);
+    validateSchema(elt).then(() => {
+        try {
+            elastic.updateOrInsert(elt);
+        } catch (exception) {
+            logging.errorLogger.error('Error Indexing Form', {details: exception, stack: new Error().stack});
+        }
+        next();
+    }, next);
 });
 
-let conn = connHelper.establishConnection(config.database.appData);
-let CdeAudit = conn.model('CdeAudit', schemas.auditSchema);
+const conn = connHelper.establishConnection(config.database.appData);
+const CdeAudit = conn.model('CdeAudit', schemas.auditSchema);
 export const DataElement = conn.model('DataElement', schemas.dataElementSchema);
 export const DataElementDraft = conn.model('DataElementDraft', schemas.draftSchema);
 export const DataElementSource = conn.model('DataElementSource', schemas.dataElementSourceSchema);
 export const User = require('../user/userDb').User;
 
-let auditModifications = mongo_data.auditModifications(CdeAudit);
+const auditModifications = mongo_data.auditModifications(CdeAudit);
 export const getAuditLog = mongo_data.auditGetLog(CdeAudit);
 export const dao = DataElement;
 export const daoDraft = DataElementDraft;
@@ -81,13 +81,13 @@ function updateUser(elt, user) {
     if (!elt.createdBy) {
         elt.createdBy = {
             userId: user._id,
-            username: user.username
+            username: user.username,
         };
     }
     elt.updated = new Date();
     elt.updatedBy = {
         userId: user._id,
-        username: user.username
+        username: user.username,
     };
 }
 
@@ -104,11 +104,11 @@ export function byIdList(idList, cb) {
 }
 
 export function byTinyId(tinyId, cb) {
-    return DataElement.findOne({tinyId: tinyId, archived: false}, cb);
+    return DataElement.findOne({tinyId, archived: false}, cb);
 }
 
 export function latestVersionByTinyId(tinyId, cb) {
-    DataElement.findOne({tinyId: tinyId, archived: false}, function (err, dataElement) {
+    DataElement.findOne({tinyId, archived: false}, (err, dataElement) => {
         cb(err, dataElement.version);
     });
 }
@@ -118,10 +118,10 @@ export function byTinyIdList(tinyIdList, callback) {
         .in(tinyIdList)
         .slice('valueDomain.permissibleValues', 10)
         .exec((err, cdes) => {
-            let result = [];
+            const result = [];
             cdes.forEach(mongo_data.formatElt);
             _.forEach(tinyIdList, t => {
-                let c = _.find(cdes, cde => cde.tinyId === t);
+                const c = _.find(cdes, cde => cde.tinyId === t);
                 if (c) result.push(c);
             });
             callback(err, result);
@@ -129,16 +129,16 @@ export function byTinyIdList(tinyIdList, callback) {
 }
 
 export function draftByTinyId(tinyId, cb) {
-    let cond = {
-        tinyId: tinyId,
-        archived: false
+    const cond = {
+        archived: false,
+        tinyId,
     };
     DataElementDraft.findOne(cond, cb);
 }
 
 export function draftById(id, cb) {
-    let cond = {
-        _id: id
+    const cond = {
+        _id: id,
     };
     DataElementDraft.findOne(cond, cb);
 }
@@ -165,7 +165,7 @@ export function draftSave(elt, user, cb) {
 }
 
 export function draftDelete(tinyId, cb) {
-    DataElementDraft.remove({tinyId: tinyId}, cb);
+    DataElementDraft.remove({tinyId}, cb);
 }
 
 export function draftsList(criteria): Promise<DataElementDraft[]>;
@@ -177,7 +177,7 @@ export function draftsList(criteria, cb?: CbError): void | Promise<DataElementDr
             'stewardOrg.name': 1,
             tinyId: 1,
             updated: 1,
-            'updatedBy.username': 1
+            'updatedBy.username': 1,
         })
         .sort({updated: -1})
         .exec(cb);
@@ -202,12 +202,12 @@ export function desByConcept(concept, callback) {
         {
             $or: [{'objectClass.concepts.originId': concept.originId},
                 {'property.concepts.originId': concept.originId},
-                {'dataElementConcept.concepts.originId': concept.originId}]
+                {'dataElementConcept.concepts.originId': concept.originId}],
         },
         'designations source registrationState stewardOrg updated updatedBy createdBy tinyId version views')
         .limit(20)
         .where('archived').equals(false)
-        .exec(function (err, cdes) {
+        .exec((err, cdes) => {
             callback(cdes);
         });
 }
@@ -218,28 +218,24 @@ export function byTinyIdVersion(tinyId, version, cb) {
 }
 
 export function byTinyIdAndVersion(tinyId, version, callback) {
-    let query: any = {tinyId: tinyId};
-    if (version) query.version = version;
-    else query.$or = [{version: null}, {version: ''}];
-    DataElement.find(query).sort({updated: -1}).limit(1).exec(function (err, elts) {
-        if (err) callback(err);
-        else if (elts.length) callback('', elts[0]);
-        else callback('', null);
+    const _query: any = {tinyId};
+    if (version) _query.version = version;
+    else _query.$or = [{version: null}, {version: ''}];
+    DataElement.find(_query).sort({updated: -1}).limit(1).exec((err, elts) => {
+        callback(err, elts[0]);
     });
 }
 
 export function eltByTinyId(tinyId, callback) {
     if (!tinyId) callback('tinyId is undefined!', null);
     DataElement.findOne({
-        tinyId: tinyId,
-        archived: false
-    }).exec(function (err, de) {
-        callback(err, de);
-    });
+        archived: false,
+        tinyId,
+    }, callback);
 }
 
-let viewedCdes = {};
-let threshold = config.viewsIncrementThreshold || 50;
+const viewedCdes = {};
+const threshold = config.viewsIncrementThreshold || 50;
 
 export function inCdeView(cde) {
     if (!viewedCdes[cde._id]) viewedCdes[cde._id] = 0;
@@ -252,7 +248,7 @@ export function inCdeView(cde) {
 
 // TODO this method should be removed.
 export function save(mongooseObject, callback) {
-    mongooseObject.save(function (err) {
+    mongooseObject.save(err => {
         callback(err, mongooseObject);
     });
 }
@@ -262,9 +258,9 @@ export function create(elt, user, callback) {
     elt.created = Date.now();
     elt.createdBy = {
         userId: user._id,
-        username: user.username
+        username: user.username,
     };
-    let newItem = new DataElement(elt);
+    const newItem = new DataElement(elt);
     newItem.tinyId = mongo_data.generateTinyId();
     newItem.save((err, newElt) => {
         callback(err, newElt);
@@ -298,7 +294,7 @@ export function update(elt, user, options: any = {}, callback: CbError<DE> = () 
             elt.classification = dataElement.classification;
         }
 
-        let newElt = new DataElement(elt);
+        const newElt = new DataElement(elt);
 
         // archive dataElement and replace it with newElt
         DataElement.findOneAndUpdate({_id: dataElement._id, archived: false}, {$set: {archived: true}}, (err, doc) => {
@@ -308,7 +304,8 @@ export function update(elt, user, options: any = {}, callback: CbError<DE> = () 
             }
             newElt.save((err, savedElt) => {
                 if (err) {
-                    DataElement.findOneAndUpdate({_id: dataElement._id}, {$set: {archived: false}}, () => callback(err));
+                    DataElement.findOneAndUpdate({_id: dataElement._id}, {$set: {archived: false}},
+                        () => callback(err));
                 } else {
                     callback(undefined, savedElt);
                     auditModifications(user, dataElement, savedElt);
@@ -318,29 +315,22 @@ export function update(elt, user, options: any = {}, callback: CbError<DE> = () 
     });
 }
 
-export function archiveCde(cde, callback) {
-    DataElement.findOne({_id: cde._id}, (err, cde) => {
-        cde.archived = true;
-        cde.save(() => callback('', cde));
-    });
-}
-
 export function getDistinct(what, callback) {
     DataElement.distinct(what).exec(callback);
 }
 
-export function query(query, callback) {
-    DataElement.find(query, callback);
+export function query(_query, callback) {
+    DataElement.find(_query, callback);
 }
 
 export function transferSteward(from, to, callback) {
-    DataElement.updateMany({'stewardOrg.name': from}, {$set: {'stewardOrg.name': to}}).exec(function (err, result) {
+    DataElement.updateMany({'stewardOrg.name': from}, {$set: {'stewardOrg.name': to}}).exec((err, result) => {
         callback(err, result.nModified);
     });
 }
 
 export function byOtherId(source, id, cb) {
-    DataElement.find({archived: false}).elemMatch('ids', {source: source, id: id}).exec(function (err, cdes) {
+    DataElement.find({archived: false}).elemMatch('ids', {source, id}).exec((err, cdes) => {
         if (cdes.length > 1) {
             cb('Multiple results, returning first', cdes[0]);
         } else cb(err, cdes[0]);
@@ -350,8 +340,8 @@ export function byOtherId(source, id, cb) {
 export function byOtherIdAndNotRetired(source, id, cb) {
     DataElement.find({
         archived: false,
-        'registrationState.registrationStatus': {$ne: 'Retired'}
-    }).elemMatch('ids', {source: source, id: id}).exec(function (err, cdes) {
+        'registrationState.registrationStatus': {$ne: 'Retired'},
+    }).elemMatch('ids', {source, id}).exec((err, cdes) => {
         if (err) cb(err, null);
         else if (cdes.length > 1) {
             cb('Multiple results, returning first. source: ' + source + ' id: ' + id, cdes[0]);
@@ -363,8 +353,8 @@ export function byOtherIdAndNotRetired(source, id, cb) {
 
 export function bySourceIdVersion(source, id, version, cb) {
     DataElement.find({archived: false}).elemMatch('ids', {
-        source: source, id: id, version: version
-    }).exec(function (err, cdes) {
+        id, source, version,
+    }).exec((err, cdes) => {
         if (cdes.length > 1) cb('Multiple results, returning first', cdes[0]);
         else cb(err, cdes[0]);
     });
@@ -374,12 +364,10 @@ export function bySourceIdVersionAndNotRetiredNotArchived(source, id, version, c
     //noinspection JSUnresolvedFunction
     DataElement.find({
         archived: false,
-        'registrationState.registrationStatus': {$ne: 'Retired'}
+        'registrationState.registrationStatus': {$ne: 'Retired'},
     }).elemMatch('ids', {
-        source: source, id: id, version: version
-    }).exec(function (err, cdes) {
-        cb(err, cdes);
-    });
+        id, source, version,
+    }, cb);
 }
 
 export function findCurrCdesInFormElement(allCdes, cb) {
@@ -395,19 +383,19 @@ export function findModifiedElementsSince(date, cb) {
         {
             $match: {
                 archived: false,
-                updated: {$gte: date}
-            }
+                updated: {$gte: date},
+            },
         },
         {$limit: 2000},
         {$sort: {updated: -1}},
-        {$group: {_id: '$tinyId'}}
+        {$group: {_id: '$tinyId'}},
     ]).exec(cb);
 
 }
 
 export function checkOwnership(req, id, cb) {
     if (!req.isAuthenticated()) return cb('You are not authorized.', null);
-    byId(id, function (err, elt) {
+    byId(id, (err, elt) => {
         if (err || !elt) return cb('Element does not exist.', null);
         if (!isOrgCurator(req.user, elt.stewardOrg.name)) {
             return cb('You do not own this element.', null);
@@ -417,5 +405,5 @@ export function checkOwnership(req, id, cb) {
 }
 
 export function originalSourceByTinyIdSourceName(tinyId, sourceName, cb) {
-    DataElementSource.findOne({tinyId: tinyId, source: sourceName}, cb);
+    DataElementSource.findOne({tinyId, source: sourceName}, cb);
 }

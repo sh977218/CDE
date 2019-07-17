@@ -1,4 +1,4 @@
-import { handleError } from '../errorHandler/errorHandler';
+import { handle404, handleError } from '../errorHandler/errorHandler';
 
 const app_status = require("./status");
 const userDb = require('../user/userDb');
@@ -8,20 +8,18 @@ export function module() {
     const router = require('express').Router();
 
     router.post('/addSiteAdmin', (req, res) => {
-        let username = req.body.username;
-        if (!username) return res.status(400).send();
-        userDb.userByUsername(username, handleError({req, res}, user => {
-            if (!user) return res.send("Unknown Username");
+        const username = req.body.username;
+        if (!username) return res.status(422).send();
+        userDb.userByUsername(username, handle404({req, res}, user => {
             user.siteAdmin = true;
-            user.save(handleError({req, res}, () => res.send("User Added")));
+            user.save(handleError({req, res}, () => res.send()));
         }));
     });
 
     router.post('/removeSiteAdmin', (req, res) => {
-        let username = req.body.username;
-        if (!username) return res.status(400).send();
-        userDb.userByUsername(username, handleError({req, res}, user => {
-            if (!user) return res.send("Unknown Username");
+        const username = req.body.username;
+        if (!username) return res.status(422).send();
+        userDb.userByUsername(username, handle404({req, res}, user => {
             user.siteAdmin = false;
             user.save(handleError({req, res}, () => res.send()));
         }));

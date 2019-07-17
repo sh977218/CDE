@@ -1,7 +1,6 @@
+import { CommonModule } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { RouterModule, Routes } from '@angular/router';
 import {
     MatAutocompleteModule, MatBadgeModule, MatBottomSheetModule, MatButtonModule, MatButtonToggleModule, MatCardModule,
     MatCheckboxModule, MatChipsModule, MatDatepickerModule, MatDialogModule, MatDividerModule, MatExpansionModule,
@@ -10,51 +9,50 @@ import {
     MatSelectModule, MatSidenavModule, MatSliderModule, MatSlideToggleModule, MatSnackBarModule, MatSortModule,
     MatStepperModule, MatTableModule, MatTabsModule, MatToolbarModule, MatTooltipModule, MatTreeModule,
 } from '@angular/material';
+import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { SettingsComponent } from 'settings/settings.component';
 import { LoggedInGuard } from '_app/routerGuard/loggedInGuard';
-import { ProfileComponent } from 'settings/profile/profile.component';
-import { InlineEditModule } from 'inlineEdit/inlineEdit.module';
+import { OrgAuthorityGuard } from '_app/routerGuard/orgAuthorityGuard';
+import { SiteAdminGuard } from '_app/routerGuard/siteAdminGuard';
+import { AdminItemModule } from 'adminItem/public/adminItem.module';
 import { BoardModule } from 'board/public/board.module';
 import { CdeSearchModule } from 'cde/public/cdeSearch.module';
 import { FormSearchModule } from 'form/public/formSearch.module';
-import { SearchModule } from 'search/search.module';
-import { NonCoreModule } from 'non-core/noncore.module';
-import { OrgAdminComponent } from 'settings/orgAdmin/orgAdmin.component';
-import { OrgCuratorComponent } from 'settings/orgCurator/orgCurator.component';
-import { OrgAuthorityGuard } from '_app/routerGuard/orgAuthorityGuard';
-import { UsernameAutocompleteModule } from 'usernameAutocomplete/usernameAutocomplete.module';
-import { StewardOrgTransferComponent } from 'settings/stewardOrgTransfer/stewardOrgTransfer.component';
-import { EmbedComponent } from 'settings/embed/embed.component';
-import { EditSiteAdminsComponent } from 'settings/editSiteAdmins/editSiteAdmins.component';
-import { SiteAdminGuard } from '_app/routerGuard/siteAdminGuard';
-import { UsersMgtComponent } from 'settings/usersMgt/usersMgt.component';
-import { ServerStatusComponent } from 'settings/serverStatus/serverStatus.component';
-import { ArticleAdminComponent } from 'settings/article/articleAdmin.component';
-import { ResourcesAdminComponent } from 'settings/resources/resourcesAdmin.component';
-import { FhirAppsComponent } from 'settings/fhirApps/fhirApps.component';
-import { IdSourcesComponent } from 'settings/idSources/idSources.component';
-import { StatusValidationRulesComponent } from 'settings/statusValidationRules/statusValidationRules.component';
-import { OrgsEditComponent } from 'settings/orgsEdit/orgsEdit.component';
-import { OneListMgtComponent } from 'settings/listManagement/oneListMgt.component';
-import { MyPublishedFormsComponent } from 'settings/myPublishedForms/myPublishedForms.component';
+import { InlineEditModule } from 'inlineEdit/inlineEdit.module';
 import { InlineAreaEditModule } from 'inlineAreaEdit/inlineAreaEdit.module';
 import { InlineSelectEditModule } from 'inlineSelectEdit/inlineSelectEdit.module';
-import { TagModule } from 'tag/tag.module';
-import { MyOrgCommentsComponent } from 'settings/comments/myOrgComments/myOrgComments.component';
-import { AllCommentsComponent } from 'settings/comments/allComments/allComments.component';
-import { MyCommentsComponent } from 'settings/comments/myComments/myComments.component';
-import { ViewingHistoryComponent } from 'settings/viewingHistory/viewingHistory.component';
-import { NotificationComponent } from 'settings/notification/notification.component';
-import { AdminItemModule } from 'adminItem/public/adminItem.module';
+import { NonCoreModule } from 'non-core/noncore.module';
+import { SearchModule } from 'search/search.module';
+import { ArticleAdminComponent } from 'settings/article/articleAdmin.component';
+import { CommentsComponent } from 'settings/comments/comments.component';
 import { DraftsComponent } from 'settings/drafts/drafts.component';
 import { AllDraftsResolve } from 'settings/drafts/allDrafts.resolve';
 import { MyOrgDraftsResolve } from 'settings/drafts/myOrgDrafts.resolve';
 import { MyDraftsResolve } from 'settings/drafts/myDrafts.resolve';
 import { DraftsService } from 'settings/drafts/drafts.service';
+import { EditSiteAdminsComponent } from 'settings/editSiteAdmins/editSiteAdmins.component';
+import { EmbedComponent } from 'settings/embed/embed.component';
+import { FhirAppsComponent } from 'settings/fhirApps/fhirApps.component';
+import { IdSourcesComponent } from 'settings/idSources/idSources.component';
+import { OneListMgtComponent } from 'settings/listManagement/oneListMgt.component';
 import { ManagedOrgsResolve } from 'settings/managedOrgsResolve';
-import { TagsManagementComponent } from 'settings/tagsManagement/tagsManagement.component';
+import { MyPublishedFormsComponent } from 'settings/myPublishedForms/myPublishedForms.component';
+import { NotificationComponent } from 'settings/notification/notification.component';
+import { OrgsEditComponent } from 'settings/orgsEdit/orgsEdit.component';
+import { OrgAdminComponent } from 'settings/orgAdmin/orgAdmin.component';
+import { OrgCuratorComponent } from 'settings/orgCurator/orgCurator.component';
+import { ProfileComponent } from 'settings/profile/profile.component';
 import { PropertiesManagementComponent } from 'settings/propertiesManagement/propertiesManagement.component';
+import { ResourcesAdminComponent } from 'settings/resources/resourcesAdmin.component';
+import { ServerStatusComponent } from 'settings/serverStatus/serverStatus.component';
+import { SettingsComponent } from 'settings/settings.component';
+import { StatusValidationRulesComponent } from 'settings/statusValidationRules/statusValidationRules.component';
+import { StewardOrgTransferComponent } from 'settings/stewardOrgTransfer/stewardOrgTransfer.component';
+import { TagsManagementComponent } from 'settings/tagsManagement/tagsManagement.component';
+import { UsersMgtComponent } from 'settings/usersMgt/usersMgt.component';
+import { ViewingHistoryComponent } from 'settings/viewingHistory/viewingHistory.component';
+import { TagModule } from 'tag/tag.module';
+import { UsernameAutocompleteModule } from 'usernameAutocomplete/usernameAutocomplete.module';
 
 const appRoutes: Routes = [
     {
@@ -95,9 +93,9 @@ const appRoutes: Routes = [
             },
             {
                 path: 'myComments',
-                component: MyCommentsComponent,
+                component: CommentsComponent,
                 canLoad: [LoggedInGuard],
-                data: {title: 'My Comments'}
+                data: {title: 'My Comments', commentsUrl: '/server/discuss/myComments/'}
             },
             // Org Authority Can Access
             {
@@ -127,9 +125,9 @@ const appRoutes: Routes = [
             },
             {
                 path: 'myOrgComments',
-                component: MyOrgCommentsComponent,
+                component: CommentsComponent,
                 canLoad: [OrgAuthorityGuard],
-                data: {title: 'My Organizations\' Comments'}
+                data: {title: 'My Organizations\' Comments', commentsUrl: '/server/discuss/orgComments/'}
             },
             {
                 path: 'embedding',
@@ -181,9 +179,9 @@ const appRoutes: Routes = [
             },
             {
                 path: 'allComments',
-                component: AllCommentsComponent,
+                component: CommentsComponent,
                 canLoad: [SiteAdminGuard],
-                data: {title: 'All Comments'}
+                data: {title: 'All Comments', commentsUrl: '/server/discuss/allComments/'}
             },
             {
                 path: 'allDrafts',
@@ -282,34 +280,29 @@ const appRoutes: Routes = [
         UsernameAutocompleteModule,
     ],
     declarations: [
-        SettingsComponent,
-
-        ProfileComponent,
-        ViewingHistoryComponent,
-        NotificationComponent,
+        ArticleAdminComponent,
+        CommentsComponent,
+        DraftsComponent,
+        EditSiteAdminsComponent,
+        EmbedComponent,
+        FhirAppsComponent,
+        IdSourcesComponent,
         MyPublishedFormsComponent,
-
+        NotificationComponent,
         OneListMgtComponent,
         OrgsEditComponent,
         OrgAdminComponent,
         OrgCuratorComponent,
-        StewardOrgTransferComponent,
-        EmbedComponent,
-        StatusValidationRulesComponent,
-        TagsManagementComponent,
+        ProfileComponent,
         PropertiesManagementComponent,
-
-        DraftsComponent,
-        MyCommentsComponent,
-        MyOrgCommentsComponent,
-        AllCommentsComponent,
-        EditSiteAdminsComponent,
-        UsersMgtComponent,
-        ServerStatusComponent,
-        ArticleAdminComponent,
         ResourcesAdminComponent,
-        FhirAppsComponent,
-        IdSourcesComponent
+        ServerStatusComponent,
+        SettingsComponent,
+        StatusValidationRulesComponent,
+        StewardOrgTransferComponent,
+        TagsManagementComponent,
+        UsersMgtComponent,
+        ViewingHistoryComponent
     ],
     entryComponents: [],
     exports: [],
