@@ -54,16 +54,14 @@ pinningBoardSchema.pre('save', function (next) {
     let board = this.toObject();
     delete board._id;
     elastic.updateOrInsertBoardById(id, board, handleError({
-        publicMessage: "Unable to index board: " + id,
-        origin: "board.elastic.boardUpdateOrInsert",
+        publicMessage: 'Unable to index board: ' + id
     }, () => next()));
 });
 
 pinningBoardSchema.pre('remove', function (next) {
     let id = this._id.toString();
     elastic.deleteBoardById(id, handleError({
-        publicMessage: "Unable to remove board: " + id,
-        origin: "board.elastic.deleteBoardById",
+        publicMessage: 'Unable to remove board: ' + id,
     }, () => next()));
 });
 
@@ -82,11 +80,11 @@ export function count(condition, callback) {
 }
 
 export function publicBoardsByPinTinyId(tinyId, callback) {
-    PinningBoard.find({"pins.tinyId": tinyId, shareStatus: "Public"}, callback);
+    PinningBoard.find({'pins.tinyId': tinyId, shareStatus: 'Public'}, callback);
 }
 
 export function nbBoardsByUserId(userId, callback) {
-    PinningBoard.countDocuments({"owner.userId": userId}, callback);
+    PinningBoard.countDocuments({'owner.userId': userId}, callback);
 }
 
 export function boardById(boardId, callback) {
@@ -94,7 +92,7 @@ export function boardById(boardId, callback) {
 }
 
 export function byIdAndOwner(boardId, ownerId) {
-    return PinningBoard.findOne({_id: ObjectId(boardId), "owner.userId": ownerId}).exec();
+    return PinningBoard.findOne({_id: ObjectId(boardId), 'owner.userId': ownerId}).exec();
 }
 
 export const byId = boardById;

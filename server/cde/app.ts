@@ -117,17 +117,15 @@ export function init(app, daoManager) {
     });
 
     app.get('/api/cde/modifiedElements', (req, res) => {
-        let dstring = req.query.from;
+        const dstring = req.query.from;
+
+        const r = /20[0-2][0-9]-[0-1][0-9]-[0-3][0-9]/;
 
         function badDate() {
             res.status(300).send('Invalid date format, please provide as: /api/cde/modifiedElements?from=2015-12-24');
         }
 
-        if (!dstring) return badDate();
-        if (dstring[4] !== '-' || dstring[7] !== '-') return badDate();
-        if (dstring.indexOf('20') !== 0) return badDate();
-        if (dstring[5] !== '0' && dstring[5] !== '1') return badDate();
-        if (dstring[8] !== '0' && dstring[8] !== '1' && dstring[8] !== '2' && dstring[8] !== '3') return badDate();
+        if (!r.test(dstring)) return badDate();
 
         let date = new Date(dstring);
         mongo_cde.findModifiedElementsSince(date, function (err, elts) {

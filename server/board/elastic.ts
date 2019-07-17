@@ -14,7 +14,7 @@ export function boardRefresh(cb) {
 export function updateOrInsertBoardById(id, board, callback) {
     esClient.index({
         index: config.elastic.boardIndex.name,
-        type: "board",
+        type: 'board',
         id: id,
         body: board
     }, callback);
@@ -23,7 +23,7 @@ export function updateOrInsertBoardById(id, board, callback) {
 export function deleteBoardById(id, callback) {
     esClient.delete({
         index: config.elastic.boardIndex.name,
-        type: "board",
+        type: 'board',
         id: id
     }, callback);
 }
@@ -33,8 +33,8 @@ export function boardSearch(filter, callback) {
         size: 100,
         query: {bool: {must: [{match: {shareStatus: 'Public'}}]}},
         aggs: {
-            tagAgg: {terms: {field: "tags", size: 50}},
-            typeAgg: {terms: {field: "type"}}
+            tagAgg: {terms: {field: 'tags', size: 50}},
+            typeAgg: {terms: {field: 'type'}}
         }
     };
 
@@ -53,7 +53,7 @@ export function boardSearch(filter, callback) {
     });
     esClient.search({
         index: boardIndexName,
-        type: "board",
+        type: 'board',
         body: query
     }, callback);
 }
@@ -62,12 +62,12 @@ export function myBoards(user, filter, callback) {
     let query: any = {
         size: 100,
         query: {
-            bool: {must: [{term: {"owner.username": {value: user.username.toLowerCase()}}}]},
+            bool: {must: [{term: {'owner.username': {value: user.username.toLowerCase()}}}]},
         },
         aggs: {
-            typeAgg: {terms: {field: "type"}},
-            tagAgg: {terms: {field: "tags", size: 50}},
-            ssAgg: {terms: {field: "shareStatus"}}
+            typeAgg: {terms: {field: 'type'}},
+            tagAgg: {terms: {field: 'tags', size: 50}},
+            ssAgg: {terms: {field: 'shareStatus'}}
         },
         sort: []
     };
@@ -77,22 +77,25 @@ export function myBoards(user, filter, callback) {
         sort[filter.sortBy].order = filter.sortDirection;
     }
     else {
-        sort['updatedDate'] = {order: "asc"};
+        sort['updatedDate'] = {order: 'asc'};
         query.sort.push(sort);
     }
     query.sort.push(sort);
 
-    filter.selectedTypes.forEach(t => {
-        if (t !== "All") {
-            query.query.bool.must.push({term: {type: {value: t}}});
-        }
-    });
-    filter.selectedTags.forEach(t => {
-        if (t !== "All") {
-            query.query.bool.must.push({term: {tags: {value: t}}});
-        }
-    });
-
+    if (filter.selectedTypes) {
+        filter.selectedTypes.forEach(t => {
+            if (t !== 'All') {
+                query.query.bool.must.push({term: {type: {value: t}}});
+            }
+        });
+    }
+    if (filter.selectedTags) {
+        filter.selectedTags.forEach(t => {
+            if (t !== 'All') {
+                query.query.bool.must.push({term: {tags: {value: t}}});
+            }
+        });
+    }
     if (filter.selectedShareStatus) {
         filter.selectedShareStatus.forEach(ss => {
             if (ss !== 'All') {
@@ -102,7 +105,7 @@ export function myBoards(user, filter, callback) {
     }
     esClient.search({
         index: boardIndexName,
-        type: "board",
+        type: 'board',
         body: query
     }, callback);
 }
