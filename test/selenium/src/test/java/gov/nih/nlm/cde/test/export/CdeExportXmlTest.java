@@ -24,4 +24,19 @@ public class CdeExportXmlTest extends NlmCdeBaseTest {
         switchTab(1);
         switchTabAndClose(0);
     }
+
+    @Test
+    public void cdeAsXml() {
+        String response = get(baseUrl + "/de/V2kBmnrd9MH?type=xml").asString();
+        Assert.assertTrue(response.contains("<valueMeaningName>Very mild</valueMeaningName>"));
+
+        response = get(baseUrl + "/de/X1mJv5j3jx/version/1").asString();
+        Assert.assertTrue(response.contains("LP19498-2"));
+
+        response = get(baseUrl + "/originalSource/cde/caDSR/m10MsOXkJg").asString();
+        Assert.assertTrue(response.contains("No caDSR source file found for m10MsOXkJg"));
+
+    }
+
+
 }
