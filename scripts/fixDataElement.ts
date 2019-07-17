@@ -5,7 +5,7 @@ process.on('unhandledRejection', function (error) {
     console.log(error);
 });
 
-export function fixValueDomain(cde) {
+function fixValueDomain(cde) {
     let cdeObj = cde.toObject();
     if (!cdeObj.valueDomain.datatype) {
         cdeObj.valueDomain.datatype = 'Text';
@@ -34,7 +34,6 @@ export function fixValueDomain(cde) {
     myProps.filter(e => e !== checkType).forEach(p => {
         delete cdeObj.valueDomain[p];
     });
-    cdeObj.valueDomain[`datatype${checkType}`] = {};
 
     cde.valueDomain = cdeObj.valueDomain;
 }

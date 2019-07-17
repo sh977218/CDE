@@ -1,7 +1,7 @@
 import { config } from 'server/system/parseConfig';
 import { DataElement as DE } from 'shared/de/dataElement.model';
 import { CbError, MongooseType } from 'shared/models.model';
-import { checkDefinitions, checkPvUnicity, wipeDatatype } from 'shared/de/deValidator';
+import { wipeDatatype } from 'shared/de/deValidator';
 import { isOrgCurator } from 'shared/system/authorizationShared';
 
 const Ajv = require('ajv');
@@ -42,7 +42,6 @@ schemas.dataElementSchema.post('remove', (doc, next) => {
 });
 schemas.dataElementSchema.pre('save', function (next) {
     let elt = this;
-
     if (this.archived) return next();
     validateSchema(elt)
         .then(() => {
@@ -241,6 +240,7 @@ export function eltByTinyId(tinyId, callback) {
 
 let viewedCdes = {};
 let threshold = config.viewsIncrementThreshold || 50;
+
 export function inCdeView(cde) {
     if (!viewedCdes[cde._id]) viewedCdes[cde._id] = 0;
     viewedCdes[cde._id]++;
@@ -272,7 +272,8 @@ export function create(elt, user, callback) {
     });
 }
 
-export function update(elt, user, options: any = {}, callback: CbError<DE> = () => {}) {
+export function update(elt, user, options: any = {}, callback: CbError<DE> = () => {
+}) {
     if (elt.toObject) elt = elt.toObject();
     DataElement.findById(elt._id, (err, dataElement) => {
         if (dataElement.archived) {
@@ -342,8 +343,7 @@ export function byOtherId(source, id, cb) {
     DataElement.find({archived: false}).elemMatch('ids', {source: source, id: id}).exec(function (err, cdes) {
         if (cdes.length > 1) {
             cb('Multiple results, returning first', cdes[0]);
-        }
-        else cb(err, cdes[0]);
+        } else cb(err, cdes[0]);
     });
 }
 
@@ -355,8 +355,7 @@ export function byOtherIdAndNotRetired(source, id, cb) {
         if (err) cb(err, null);
         else if (cdes.length > 1) {
             cb('Multiple results, returning first. source: ' + source + ' id: ' + id, cdes[0]);
-             }
-        else if (cdes.length === 0) {
+        } else if (cdes.length === 0) {
             cb('No results', null);
         } else cb(err, cdes[0]);
     });

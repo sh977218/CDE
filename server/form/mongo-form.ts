@@ -43,7 +43,7 @@ fs.readFile(path.resolve(__dirname, '../../shared/form/assets/form.schema.json')
 
 schemas.formSchema.pre('save', function (next) {
     let elt = this;
-
+    if (this.archived) return next();
     validateSchema(elt)
         .then(() => {
             try {
@@ -53,7 +53,7 @@ schemas.formSchema.pre('save', function (next) {
             }
 
             next();
-        },next);
+        }, next);
 });
 
 const conn = connHelper.establishConnection(config.database.appData);
@@ -215,7 +215,8 @@ export function count(condition, callback) {
     return Form.countDocuments(condition, callback);
 }
 
-export function update(elt, user, options: any = {}, callback: CbError<CdeForm> = () => {}) {
+export function update(elt, user, options: any = {}, callback: CbError<CdeForm> = () => {
+}) {
     if (elt.toObject) elt = elt.toObject();
     Form.findById(elt._id, (err, form) => {
         if (form.archived) {
@@ -278,8 +279,7 @@ export function byOtherId(source, id, cb) {
     Form.find({archived: false}).elemMatch('ids', {source: source, id: id}).exec(function (err, forms) {
         if (forms.length > 1) {
             cb('Multiple results, returning first', forms[0]);
-        }
-        else cb(err, forms[0]);
+        } else cb(err, forms[0]);
     });
 }
 
