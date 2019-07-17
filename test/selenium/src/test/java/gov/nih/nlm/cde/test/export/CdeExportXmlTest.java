@@ -25,4 +25,3 @@ public class CdeExportXmlTest extends NlmCdeBaseTest {
         switchTabAndClose(0);
     }
 }
-s
