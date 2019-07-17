@@ -7,6 +7,6 @@ export const GLOBALS = {
 
 /* for search engine and javascript disabled */
 export function isSearchEngine(req) {
-    let userAgent = req.headers['user-agent'];
+    const userAgent = req.headers['user-agent'];
     return userAgent && userAgent.match(/bot|crawler|spider|crawling/gi);
 }

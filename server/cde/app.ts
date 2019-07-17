@@ -1,8 +1,8 @@
 import { stripBsonIds } from 'shared/system/exportShared';
 import { handleError } from '../errorHandler/errorHandler';
 import {
-    canCreateMiddleware, canEditByTinyIdMiddleware, canEditMiddleware, isOrgAuthorityMiddleware, isOrgCuratorMiddleware,
-    nocacheMiddleware
+    canCreateMiddleware, canEditByTinyIdMiddleware, canEditMiddleware,
+    isOrgAuthorityMiddleware, isOrgCuratorMiddleware, nocacheMiddleware
 } from '../system/authorization';
 import { config } from '../system/parseConfig';
 import { validatePvs } from '../cde/utsValidate';
@@ -10,7 +10,7 @@ import { byTinyIdVersion as deByTinyIdVersion, count as deCount, DataElement } f
 import { errorLogger } from '../system/logging';
 import { respondHomeFull } from '../system/app';
 import { isSearchEngine } from '../system/helper';
-import { toInteger } from '@ng-bootstrap/ng-bootstrap/util/util';
+import { toInteger } from 'lodash';
 
 const cdesvc = require('./cdesvc');
 const mongo_cde = require('./mongo-cde');
@@ -219,7 +219,7 @@ export function init(app, daoManager) {
     app.post('/umlsDe', (req, res) => {
         validatePvs(req.body).then(
             () => res.send(),
-            (err) => res.status(400).send(err)
+            err => res.status(400).send(err)
         );
     });
 }

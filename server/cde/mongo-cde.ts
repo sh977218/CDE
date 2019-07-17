@@ -198,10 +198,6 @@ export function draftsList(criteria, cb?: CbError): void | Promise<DataElementDr
 
 /* ---------- PUT NEW REST API Implementation above  ---------- */
 
-export function getStream(condition) {
-    return DataElement.find(condition).sort({_id: -1}).cursor();
-}
-
 export function count(condition, callback) {
     return DataElement.countDocuments(condition, callback);
 }
@@ -229,7 +225,7 @@ export function eltByTinyId(tinyId, callback) {
 }
 
 const viewedCdes = {};
-const threshold = config.viewsIncrementThreshold || 50;
+const threshold = config.viewsIncrementThreshold;
 
 export function inCdeView(cde) {
     if (!viewedCdes[cde._id]) viewedCdes[cde._id] = 0;
