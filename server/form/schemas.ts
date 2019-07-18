@@ -1,9 +1,5 @@
 import * as mongoose from 'mongoose';
 import { addStringtype } from '../system/mongoose-stringtype';
-import {
-    datatypeDateSchema, datatypeDynamicCodeListSchema, datatypeNumberSchema, datatypeTextSchema, datatypeTimeSchema
-} from '../cde/schemas';
-import { DataTypeArray } from 'shared/de/dataElement.model';
 
 addStringtype(mongoose);
 const Schema = mongoose.Schema;
@@ -44,6 +40,17 @@ const DisplayProfileSchema = new Schema({
     }
 }, {_id: false});
 
+const instructionSchema = new Schema({
+    value: StringType,
+    valueFormat: StringType
+}, {_id: false});
+
+const datatypeNumberSchema = new Schema({
+    minValue: Number,
+    maxValue: Number,
+    precision: Number
+}, {_id: false});
+
 const mapToSchema = {
     fhir: {
         resourceType: StringType,
@@ -54,26 +61,45 @@ const questionSchema = new Schema({
     cde: {
         tinyId: StringType,
         name: StringType,
+        designations: [sharedSchemas.designationSchema],
+        definitions: [sharedSchemas.definitionSchema],
         version: StringType,
-        permissibleValues: [sharedSchemas.permissibleValueSchema],
+        permissibleValues: {
+            type: [sharedSchemas.permissibleValueSchema], // required to make optional
+            default: undefined,
+        },
         ids: [sharedSchemas.idSchema],
         derivationRules: [sharedSchemas.derivationRuleSchema]
     },
-    datatype: {
-        type: StringType, enum: DataTypeArray
-    },
-    datatypeText: datatypeTextSchema,
+    datatype: StringType,
     datatypeNumber: datatypeNumberSchema,
-    datatypeDate: datatypeDateSchema,
-    datatypeTime: datatypeTimeSchema,
-    datatypeDynamicCodeList: datatypeDynamicCodeListSchema,
-
+    datatypeText: {
+        minLength: Number,
+        maxLength: Number,
+        regex: StringType,
+        rule: StringType,
+        showAsTextArea: {type: Boolean, default: false}
+    },
+    datatypeDate: {
+        precision: {
+            type: StringType,
+            enum: ['Year', 'Month', 'Day', 'Hour', 'Minute', 'Second'],
+            default: 'Day',
+        }
+    },
+    datatypeDynamicCodeList: {
+        system: {type: StringType},
+        code: {type: StringType}
+    },
     unitsOfMeasure: [sharedSchemas.codeAndSystemSchema],
     required: {type: Boolean, default: false},
     invisible: {type: Boolean, default: false},
     editable: {type: Boolean, default: true},
     multiselect: Boolean,
-    answers: [sharedSchemas.permissibleValueSchema],
+    answers: {
+        type: [sharedSchemas.permissibleValueSchema], // required to make optional
+        default: undefined,
+    },
     defaultAnswer: StringType
 }, {_id: false});
 
@@ -89,17 +115,14 @@ let inFormSchema = new Schema({
 function getFormElementJson() {
     return {
         elementType: {type: StringType, enum: ['section', 'question', 'form']},
-        instructions: {
-            value: StringType,
-            valueFormat: StringType
-        },
-        inForm: {type: inFormSchema},
-        question: {type: questionSchema},
-        section: {},
+        instructions: instructionSchema,
+        inForm: {type: inFormSchema, default: undefined},
         label: StringType,
-        mapTo: {type: mapToSchema},
+        mapTo: {type: mapToSchema, default: undefined},
+        question: {type: questionSchema, default: undefined},
         repeat: StringType,
         repeatsFor: StringType,
+        section: {},
         showIfExpression: StringType,
         skipLogic: {
             action: {type: StringType, enum: ['show', 'enable']},
@@ -117,7 +140,7 @@ for (let i = 0; i < config.modules.forms.sectionLevels; i++) {
 }
 
 export const formJson = {
-    elementType: {type: StringType, default: 'form'},
+    elementType: {type: StringType, default: 'form', enum: ['form']},
     tinyId: {type: StringType, index: true},
     designations: [sharedSchemas.designationSchema],
     definitions: [sharedSchemas.definitionSchema],
@@ -137,8 +160,11 @@ export const formJson = {
     isCopyrighted: {type: Boolean},
     noRenderAllowed: {type: Boolean},
     copyright: {
-        authority: StringType,
-        text: StringType
+        type: {
+            authority: StringType,
+            text: StringType
+        },
+        default: {text: null}
     },
     origin: StringType,
     attachments: [sharedSchemas.attachmentSchema],
@@ -147,11 +173,10 @@ export const formJson = {
     lastMigrationScript: StringType,
     created: Date,
     updated: Date,
-    imported: {type: Date, description: 'Date last imported from source'},
+    imported: Date,
     createdBy: {
         userId: Schema.Types.ObjectId,
-        username: StringType,
-
+        username: StringType
     },
     updatedBy: {
         userId: Schema.Types.ObjectId,

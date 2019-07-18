@@ -1,9 +1,9 @@
 import { Dictionary } from 'async';
-import { DataElement, ValueDomain } from 'shared/de/dataElement.model';
+import { DataElement, DatatypeContainer, ValueDomain } from 'shared/de/dataElement.model';
 import { Question } from 'shared/form/form.model';
 
 
-type errorMessage = { allValid: boolean, message?: string };
+type errorMessage = {allValid: boolean, message?: string};
 
 export function checkPvUnicity(valueDomain: ValueDomain): errorMessage {
     if (valueDomain.datatype !== 'Value List') {
@@ -50,7 +50,7 @@ export function checkDefinitions(elt: DataElement): errorMessage {
     return result;
 }
 
-export function fixDatatype(dc: Question | ValueDomain): void {
+export function fixDatatype(dc: Question | ValueDomain ): void {
     if (!dc.datatype) {
         dc.datatype = 'Text';
     }
@@ -124,4 +124,3 @@ function resultInvalid(message: string): errorMessage {
         message
     };
 }
-

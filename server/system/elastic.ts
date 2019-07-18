@@ -82,7 +82,7 @@ const queryForm = {
     condition: {archived: false},
     dao: mongo_form
 };
-export const daoMap: { [key: string]: DbQuery } = {
+export const daoMap: {[key: string]: DbQuery} = {
     cde: queryDe,
     form: queryForm,
     board: {
@@ -99,7 +99,6 @@ export function reIndex(index: ElasticIndex, cb: CbError) {
 
 const BUFFER_MAX_SIZE = 10000000; // ~10MB
 const DOC_MAX_SIZE = BUFFER_MAX_SIZE;
-
 export function reIndexStream(dbStream: DbStream, cb?: Cb) {
     createIndex(dbStream, handleError({}, () => {
         let riverFunctions = dbStream.indexes.map(index => index.filter || ((elt: ItemElastic, cb: Cb1<ItemElastic>) => cb(elt)));
@@ -118,9 +117,6 @@ export function reIndexStream(dbStream: DbStream, cb?: Cb) {
             (function bulkIndex(req, cb, retries = 1) {
                 request.post(config.elastic.hosts + '/_bulk', {
                     headers: {'Content-Type': 'application/x-ndjson'},
-                    agentOptions: {
-                        rejectUnauthorized: false
-                    },
                     body: req
                 }, (err: Error | undefined) => {
                     if (err) {
@@ -184,11 +180,9 @@ export function reIndexStream(dbStream: DbStream, cb?: Cb) {
                         if (!doc) {
                             return;
                         }
-
                         function nextCommand(json: any) {
                             nextCommandOffset += nextCommandBuffer.write(JSON.stringify(json) + '\n', nextCommandOffset);
                         }
-
                         nextCommandOffset = 0;
                         nextCommand({
                             index: {
@@ -251,8 +245,7 @@ function createIndex(dbStream: DbStream, cb: Cb) {
     });
 }
 
-export function initEs(cb: Cb = () => {
-}) {
+export function initEs(cb: Cb = () => {}) {
     const dbStreams: DbStream[] = [];
     esInit.indices.forEach((index: ElasticIndex) => {
         const match = dbStreams.filter(s => s.query === daoMap[index.name])[0];
@@ -656,7 +649,7 @@ export function isSearch(settings: SearchSettingsElastic) {
     return settings && (settings.searchTerm || settings.selectedOrg || settings.meshTree);
 }
 
-let searchTemplate: { [key: string]: any } = {
+let searchTemplate: {[key: string]: any} = {
     cde: {
         index: config.elastic.index.name,
         type: 'dataelement'

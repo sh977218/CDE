@@ -5,7 +5,6 @@ import {
     eltLogSchema, idSchema, permissibleValueSchema, propertySchema, referenceDocumentSchema, registrationStateSchema,
     sourceSchema
 } from '../system/schemas';
-import { DataTypeArray } from 'shared/de/dataElement.model';
 
 addStringtype(mongoose);
 const Schema = mongoose.Schema;
@@ -17,42 +16,8 @@ let conceptSchema = new Schema({
     originId: {type: StringType, description: 'Identifier of concept from source'},
 }, {_id: false});
 
-export const datatypeTextSchema = new Schema({
-    minLength: {type: Number, description: 'To indicate limits on length'},
-    maxLength: {type: Number, description: 'To indicate limits on length'},
-    regex: {type: StringType, description: 'To indicate a regular expression that someone may want to match on'},
-    rule: {type: StringType, description: 'Any rule may go here'},
-    showAsTextArea: {type: Boolean, description: 'Multi-line'},
-}, {_id: false});
-export const datatypeNumberSchema = new Schema({
-    minValue: Number,
-    maxValue: Number,
-    precision: Number,
-}, {_id: false});
-export const datatypeDateSchema = new Schema({
-    precision: {
-        type: StringType,
-        enum: ['Year', 'Month', 'Day', 'Hour', 'Minute', 'Second']
-    }
-}, {_id: false});
-export const datatypeTimeSchema = new Schema({
-    format: StringType,
-}, {_id: false});
-export const datatypeDynamicCodeListSchema = new Schema({
-    system: StringType,
-    code: StringType
-}, {_id: false});
-export const datatypeValueListSchema = new Schema({
-    datatype: {type: StringType, description: "Value list format"}
-}, {_id: false});
-export const datatypeExternallyDefinedSchema = new Schema({
-    link: {type: StringType, description: 'A link to an external source. Typically a URL'},
-    description: StringType,
-    descriptionFormat: {type: StringType, description: "if 'html', then parse with HTML"},
-}, {_id: false});
-
 export const deJson = {
-    elementType: {type: StringType, default: 'cde'},
+    elementType: {type: StringType, default: 'cde', enum: ['cde']},
     designations: {
         type: [designationSchema],
         description: 'Any string used by which CDE is known, addressed or referred to',
@@ -105,17 +70,65 @@ export const deJson = {
         definition: StringType,
         uom: {type: StringType, description: 'Unit of Measure'},
         vsacOid: StringType,
-        datatype: {
-            type: StringType, description: 'Expected type of data', enum: DataTypeArray
+        datatype: {type: StringType, description: 'Expected type of data'},
+        datatypeText: {
+            type: { // required to make optional
+                minLength: {type: Number, description: 'To indicate limits on length'},
+                maxLength: {type: Number, description: 'To indicate limits on length'},
+                regex: {
+                    type: StringType,
+                    description: 'To indicate a regular expression that someone may want to match on'
+                },
+                rule: {type: StringType, description: 'Any rule may go here'},
+                showAsTextArea: {type: Boolean, default: false, description: 'Multi-line'},
+            }
         },
-        datatypeText: datatypeTextSchema,
-        datatypeNumber: datatypeNumberSchema,
-        datatypeDate: datatypeDateSchema,
-        datatypeTime: datatypeTimeSchema,
-        datatypeDynamicCodeList: datatypeDynamicCodeListSchema,
-        datatypeValueList: datatypeValueListSchema,
-        datatypeExternallyDefined: datatypeExternallyDefinedSchema,
-        permissibleValues: [permissibleValueSchema]
+        datatypeNumber: {
+            type: { // required to make optional
+                minValue: Number,
+                maxValue: Number,
+                precision: {
+                    type: Number,
+                    description: 'Any precision for this number. Typically an integer for a float. Limit to 10^precision'
+                },
+            }
+        },
+        datatypeDate: {
+            type: { // required to make optional
+                precision: {
+                    type: StringType,
+                    enum: ['Year', 'Month', 'Day', 'Hour', 'Minute', 'Second'],
+                    default: 'Day',
+                }
+            }
+        },
+        datatypeTime: { // time only, periodic?
+            type: { // required to make optional
+                format: {type: StringType, description: 'Any format that someone may want to enforce'},
+            }
+        },
+        datatypeExternallyDefined: {
+            type: { // required to make optional
+                link: {type: StringType, description: 'A link to an external source. Typically a URL'},
+                description: StringType,
+                descriptionFormat: {type: StringType, description: "if 'html', then parse with HTML"},
+            }
+        },
+        datatypeValueList: {
+            type: { // required to make optional
+                datatype: {type: StringType, description: "Value list format"}
+            }
+        },
+        datatypeDynamicCodeList: {
+            type: { // required to make optional
+                system: {type: StringType},
+                code: {type: StringType}
+            }
+        },
+        permissibleValues: {
+            type: [permissibleValueSchema], // required to make optional
+            default: undefined,
+        }
     },
     history: [Schema.Types.ObjectId],
     changeNote: {type: StringType, description: 'Description of last modification'},

@@ -120,7 +120,10 @@
                     "version": {
                       "type": "string"
                     }
-                  }
+                  },
+                  "required": [
+                    "designations"
+                  ]
                 },
                 "defaultAnswer": {
                   "type": "string"
@@ -212,10 +215,7 @@
               "type": "string"
             },
             "text": {
-              "type": [
-                "string",
-                "null"
-              ]
+              "type": ["string", "null"]
             }
           },
           "title": "copyright",
@@ -315,64 +315,34 @@
                     "type": "object",
                     "properties": {
                       "statusQuestionID": {
-                        "type": [
-                          "string",
-                          "null"
-                        ]
+                        "type": ["string", "null"]
                       },
                       "statusStatic": {
-                        "type": [
-                          "string",
-                          "null"
-                        ]
+                        "type": ["string", "null"]
                       },
                       "performedDate": {
-                        "type": [
-                          "string",
-                          "null"
-                        ]
+                        "type": ["string", "null"]
                       },
                       "procedureQuestionID": {
-                        "type": [
-                          "string",
-                          "null"
-                        ]
+                        "type": ["string", "null"]
                       },
                       "procedureCode": {
-                        "type": [
-                          "string",
-                          "null"
-                        ]
+                        "type": ["string", "null"]
                       },
                       "procedureCodeSystem": {
-                        "type": [
-                          "string",
-                          "null"
-                        ]
+                        "type": ["string", "null"]
                       },
                       "bodySiteQuestionID": {
-                        "type": [
-                          "string",
-                          "null"
-                        ]
+                        "type": ["string", "null"]
                       },
                       "bodySiteCode": {
-                        "type": [
-                          "string",
-                          "null"
-                        ]
+                        "type": ["string", "null"]
                       },
                       "bodySiteCodeSystem": {
-                        "type": [
-                          "string",
-                          "null"
-                        ]
+                        "type": ["string", "null"]
                       },
                       "usedReferences": {
-                        "type": [
-                          "string",
-                          "null"
-                        ]
+                        "type": ["string", "null"]
                       },
                       "usedReferencesMaps": {
                         "anyOf": [
@@ -388,10 +358,7 @@
                         ]
                       },
                       "complications": {
-                        "type": [
-                          "string",
-                          "null"
-                        ]
+                        "type": ["string", "null"]
                       }
                     }
                   }
@@ -405,9 +372,7 @@
         },
         "formElements": {
           "type": "array",
-          "items": {
-            "$ref": "#/definitions/formElement"
-          }
+          "items": { "$ref": "#/definitions/formElement" }
         },
         "isCopyrighted": {
           "type": "boolean"
