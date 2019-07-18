@@ -54,11 +54,6 @@ export function elasticsearch(user, settings, cb) {
     const query = sharedElastic.buildElasticSearchQuery(user, settings);
     if (query.size > 100) return cb('size exceeded');
     if ((query.from + query.size) > 10000) return cb('page size exceeded');
-    Object.keys(query.highlight.fields).forEach(field => {
-        if (!(field === 'primaryNameCopy' || field === 'primaryDefinitionCopy')) {
-            delete query.highlight.fields[field];
-        }
-    });
     if (settings.includeAggregations) {
         query.aggregations.datatype = {
             filter: settings.filterDatatype,
