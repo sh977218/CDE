@@ -347,24 +347,7 @@ gulp.task('mongorestoretest', function mongorestore() {
 });
 
 gulp.task('injectElastic', ['es', 'mongorestoretest'], function injectElastic() {
-    return new Promise(bigResolve => {
-        initEs(() => {
-            console.log('Done indexing collections');
-            console.log('Syncing with Mesh');
-            Promise.all([
-                new Promise(resolve => {
-                    syncWithMesh(resolve);
-                }),
-                syncLinkedFormsByTinyId('myg51_nyXg'),
-                syncLinkedFormsByTinyId('7J69yuhyme'),
-                syncLinkedFormsByTinyId('QJmc1OnyQe'),
-                syncLinkedFormsByTinyId('QkZ91d2yXx'),
-                syncLinkedFormsByTinyId('QJdxq1unyQl'),
-                syncLinkedFormsByTinyId('mJR9Jd2JQx'),
-                syncLinkedFormsByTinyId('Xyl_qyuhJ7e'),
-            ]).then(bigResolve);
-        });
-    });
+    return run('node scripts/indexDb');
 });
 
 gulp.task('checkBundleSize', ['buildDist'], function checkBundleSize() {
