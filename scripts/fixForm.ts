@@ -31,6 +31,7 @@ async function fixQuestion(fe, form) {
         let error = `${form.tinyId} has ${fe.label} ${fe.question.cde.tinyId} not found. `;
         errors.push(error);
         console.log(error);
+        process.exit(1);
     } else {
         let cdeObj = cde.toObject();
         let question: any = {
@@ -141,11 +142,12 @@ async function fixError(form) {
 (function () {
     //71l8YjHiGf has 10th Cde no tinyId, id no source.
     //mytCSyHBKg has 38th Cde no id.
-    let skipForms = ['71l8YjHiGf', 'XylxFjHsfz', 'X1LKsHiMz', 'mJZIKorizf', 'mytCSyHBKg'];
+    let skipForms = [];
     let formCount = 0;
     let cursor = Form.find({
         tinyId: {$nin: skipForms},
         lastMigrationScript: {$ne: 'fixForm'},
+        'ids.source': 'PhenX',
         archived: false
     }).cursor();
 
