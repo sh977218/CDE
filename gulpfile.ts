@@ -346,7 +346,7 @@ gulp.task('mongorestoretest', function mongorestore() {
     return run('mongorestore ' + args.join(' '), runOptions);
 });
 
-gulp.task('injectElastic', ['es', 'mongorestore'], function injectElastic() {
+gulp.task('injectElastic', ['es', 'mongorestoretest'], function injectElastic() {
     return new Promise(bigResolve => {
         initEs(() => {
             console.log('Done indexing collections');
