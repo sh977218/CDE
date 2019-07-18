@@ -4,6 +4,8 @@ import { checkDefinitions, checkPvUnicity, wipeDatatype } from 'shared/de/deVali
 import { CbError, MongooseType } from 'shared/models.model';
 import { isOrgCurator } from 'shared/system/authorizationShared';
 
+import * as dataElementschema from 'shared/de/assets/dataElement.schema.json';
+
 const Ajv = require('ajv');
 const fs = require('fs');
 const _ = require('lodash');
@@ -22,20 +24,14 @@ export type DataElementDraft = DE;
 const ajvElt = new Ajv();
 ajvElt.addSchema(require('../../shared/de/assets/adminItem.schema'));
 export let validateSchema: any;
-fs.readFile(path.resolve(__dirname, '../../shared/de/assets/dataElement.schema.json'), (err, file) => {
-    if (!file) {
-        console.log('Error: dataElement.schema.json missing. ' + err);
-        process.exit(1);
-    }
-    try {
-        const schema = JSON.parse(file.toString());
-        schema.$async = true;
-        validateSchema = validateSchema = ajvElt.compile(schema);
-    } catch (err) {
-        console.log('Error: dataElement.schema.json does not compile. ' + err);
-        process.exit(1);
-    }
-});
+try {
+    const schema = dataElementschema;
+    (schema as any).$async = true;
+    validateSchema = validateSchema = ajvElt.compile(schema);
+} catch (err) {
+    console.log('Error: dataElement.schema.json does not compile. ' + err);
+    process.exit(1);
+}
 
 schemas.dataElementSchema.pre('save', function (next) {
     const elt = this;
