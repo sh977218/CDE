@@ -19,7 +19,7 @@ export const name = 'CDEs';
 
 export type DataElementDraft = DE;
 
-const ajvElt = new Ajv();
+const ajvElt = new Ajv({allErrors: true});
 ajvElt.addSchema(require('../../shared/de/assets/adminItem.schema'));
 export let validateSchema: any;
 fs.readFile(path.resolve(__dirname, '../../shared/de/assets/dataElement.schema.json'), (err, file) => {
@@ -288,7 +288,8 @@ export function create(elt, user, callback) {
     });
 }
 
-export function update(elt, user, options: any = {}, callback: CbError<DE> = () => {}) {
+export function update(elt, user, options: any = {}, callback: CbError<DE> = () => {
+}) {
     if (elt.toObject) elt = elt.toObject();
     DataElement.findById(elt._id, (err, dataElement) => {
         if (dataElement.archived) {
@@ -352,8 +353,7 @@ export function byOtherId(source, id, cb) {
     DataElement.find({archived: false}).elemMatch('ids', {source, id}).exec((err, cdes) => {
         if (cdes.length > 1) {
             cb('Multiple results, returning first', cdes[0]);
-        }
-        else cb(err, cdes[0]);
+        } else cb(err, cdes[0]);
     });
 }
 
@@ -365,8 +365,7 @@ export function byOtherIdAndNotRetired(source, id, cb) {
         if (err) cb(err, null);
         else if (cdes.length > 1) {
             cb('Multiple results, returning first. source: ' + source + ' id: ' + id, cdes[0]);
-        }
-        else if (cdes.length === 0) {
+        } else if (cdes.length === 0) {
             cb('No results', null);
         } else cb(err, cdes[0]);
     });
