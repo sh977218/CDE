@@ -1,9 +1,10 @@
 import * as mongoose from 'mongoose';
 import { addStringtype } from '../system/mongoose-stringtype';
 import {
-    attachmentSchema, classificationSchema, dataSetSchema, definitionSchema, derivationRuleSchema, designationSchema,
-    eltLogSchema, idSchema, permissibleValueSchema, propertySchema, referenceDocumentSchema, registrationStateSchema,
-    sourceSchema
+    attachmentSchema, classificationSchema, dataSetSchema, datatypeDateSchema, datatypeExternallyDefinedSchema,
+    datatypeNumberSchema, datatypeTextSchema, datatypeTimeSchema, datatypeValueListSchema, definitionSchema,
+    derivationRuleSchema, designationSchema, eltLogSchema, idSchema, permissibleValueSchema, propertySchema,
+    referenceDocumentSchema, registrationStateSchema, sourceSchema
 } from '../system/schemas';
 
 addStringtype(mongoose);
@@ -99,63 +100,15 @@ export const deJson = {
         uom: {type: StringType, description: 'Unit of Measure'},
         vsacOid: StringType,
         datatype: {type: StringType, description: 'Expected type of data'},
-        datatypeText: {
-            type: { // required to make optional
-                minLength: {type: Number, description: 'To indicate limits on length'},
-                maxLength: {type: Number, description: 'To indicate limits on length'},
-                regex: {
-                    type: StringType,
-                    description: 'To indicate a regular expression that someone may want to match on'
-                },
-                rule: {type: StringType, description: 'Any rule may go here'},
-                showAsTextArea: {type: Boolean, default: false, description: 'Multi-line'},
-            }
-        },
-        datatypeNumber: {
-            type: { // required to make optional
-                minValue: Number,
-                maxValue: Number,
-                precision: {
-                    type: Number,
-                    description: 'Any precision for this number. Typically an integer for a float. Limit to 10^precision'
-                },
-            }
-        },
-        datatypeDate: {
-            type: { // required to make optional
-                precision: {
-                    type: StringType,
-                    enum: ['Year', 'Month', 'Day', 'Hour', 'Minute', 'Second'],
-                    default: 'Day',
-                }
-            }
-        },
-        datatypeTime: { // time only, periodic?
-            type: { // required to make optional
-                format: {type: StringType, description: 'Any format that someone may want to enforce'},
-            }
-        },
-        datatypeExternallyDefined: {
-            type: { // required to make optional
-                link: {type: StringType, description: 'A link to an external source. Typically a URL'},
-                description: StringType,
-                descriptionFormat: {type: StringType, description: "if 'html', then parse with HTML"},
-            }
-        },
-        datatypeValueList: {
-            type: { // required to make optional
-                datatype: {type: StringType, description: "Value list format"}
-            }
-        },
-        datatypeDynamicCodeList: {
-            type: { // required to make optional
-                system: {type: StringType},
-                code: {type: StringType}
-            }
-        },
+        datatypeText: datatypeTextSchema,
+        datatypeNumber: datatypeNumberSchema,
+        datatypeDate: datatypeDateSchema,
+        datatypeTime: datatypeTimeSchema,
+        datatypeValueList: datatypeValueListSchema,
+        datatypeDynamicCodeList: datatypeValueListSchema,
+        datatypeExternallyDefined: datatypeExternallyDefinedSchema,
         permissibleValues: {
-            type: [permissibleValueSchema], // required to make optional
-            default: undefined,
+            type: [permissibleValueSchema] // required to make optional
         }
     },
     dataSets: {
