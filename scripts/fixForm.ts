@@ -8,13 +8,27 @@ process.on('unhandledRejection', function (error) {
 
 let errors = [];
 
+function fixEmptyAnswer(answers) {
+    let result = [];
+    answers.forEach(pv => {
+        if (!pv.permissibleValue) {
+            pv.permissibleValue = pv.valueMeaningName;
+        }
+        if (!pv.valueMeaningName) {
+            pv.valueMeaningName = pv.permissibleValue;
+        }
+        result.push(pv);
+    });
+    return result.filter(pv => !isEmpty(pv.permissibleValue));
+}
+
 async function fixQuestion(fe, form) {
     let cond: any = {tinyId: fe.question.cde.tinyId};
     if (fe.question.cde.version) cond.version = fe.question.cde.version;
     else cond.archived = false;
     let cde = await DataElement.findOne(cond);
     if (!cde) {
-        let error = `${form.tinyId} has ${fe.label} ${fe.question.cde.tinyId} not found. `
+        let error = `${form.tinyId} has ${fe.label} ${fe.question.cde.tinyId} not found. `;
         errors.push(error);
         console.log(error);
     } else {
@@ -25,7 +39,7 @@ async function fixQuestion(fe, form) {
             invisible: fe.question.invisible,
             editable: fe.question.editable,
             multiselect: !!fe.question.multiselect,
-            answers: fe.question.answers,
+            answers: fixEmptyAnswer(fe.question.answers),
             defaultAnswer: fe.question.defaultAnswer,
             cde: {
                 tinyId: fe.question.cde.tinyId,
@@ -70,6 +84,12 @@ async function loopFe(formElement, form) {
     }
 }
 
+// Qy4xujzahig no property value.
+function fixProperties(form) {
+    let formObj = form.toObject();
+    form.properties = formObj.properties.filter(p => !isEmpty(p.value));
+}
+
 function fixSources(form) {
     let formObj = form.toObject();
     formObj.sources.forEach(s => {
@@ -104,6 +124,7 @@ async function fixError(form) {
     }
     fixEmptyDesignation(form);
     fixSources(form);
+    fixProperties(form);
 
     let formElements = form.toObject().formElements;
 
@@ -118,7 +139,9 @@ async function fixError(form) {
 }
 
 (function () {
-    let skipForms = [];
+    //71l8YjHiGf has 10th Cde no tinyId, id no source.
+    //mytCSyHBKg has 38th Cde no id.
+    let skipForms = ['71l8YjHiGf', 'XylxFjHsfz', 'X1LKsHiMz', 'mJZIKorizf', 'mytCSyHBKg'];
     let formCount = 0;
     let cursor = Form.find({
         tinyId: {$nin: skipForms},
