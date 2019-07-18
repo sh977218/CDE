@@ -16,6 +16,9 @@ import { resolve } from 'path';
 import * as File from 'vinyl';
 import { ElasticIndex, indices } from 'server/system/elasticSearchInit';
 import { config } from 'server/system/parseConfig';
+import { initEs } from 'server/system/elastic';
+import { syncWithMesh } from 'server/mesh/elastic';
+import { syncLinkedFormsByTinyId } from 'server/form/formsvc';
 
 require('es6-promise').polyfill();
 
@@ -40,7 +43,7 @@ function run(command, options?: ExecOptions): Promise<void> {
         exec(command, options, (err, stdout, stderr) => {
             stdout && console.log(stdout);
             stderr && console.error(stderr);
-            err ? reject(err) : resolve()
+            err ? reject(err) : resolve();
         });
     }));
 }
@@ -344,7 +347,24 @@ gulp.task('mongorestoretest', function mongorestore() {
 });
 
 gulp.task('injectElastic', ['es', 'mongorestoretest'], function injectElastic() {
-    return run('node scripts/indexDb');
+    return new Promise(bigResolve => {
+        initEs(() => {
+            console.log('Done indexing collections');
+            console.log('Syncing with Mesh');
+            Promise.all([
+                new Promise(resolve => {
+                    syncWithMesh(resolve);
+                }),
+                syncLinkedFormsByTinyId('myg51_nyXg'),
+                syncLinkedFormsByTinyId('7J69yuhyme'),
+                syncLinkedFormsByTinyId('QJmc1OnyQe'),
+                syncLinkedFormsByTinyId('QkZ91d2yXx'),
+                syncLinkedFormsByTinyId('QJdxq1unyQl'),
+                syncLinkedFormsByTinyId('mJR9Jd2JQx'),
+                syncLinkedFormsByTinyId('Xyl_qyuhJ7e'),
+            ]).then(bigResolve);
+        });
+    });
 });
 
 gulp.task('checkBundleSize', ['buildDist'], function checkBundleSize() {
