@@ -18,6 +18,7 @@ let conceptSchema = new Schema({
 
 export const deJson = {
     elementType: {type: StringType, default: 'cde', enum: ['cde']},
+    tinyId: {type: StringType, index: true, description: 'Internal CDE identifier'},
     designations: {
         type: [designationSchema],
         description: 'Any string used by which CDE is known, addressed or referred to',
@@ -49,8 +50,36 @@ export const deJson = {
         userId: Schema.Types.ObjectId,
         username: StringType
     },
-    tinyId: {type: StringType, index: true, description: 'Internal CDE identifier'},
     version: StringType,
+    changeNote: {type: StringType, description: 'Description of last modification'},
+    lastMigrationScript: {type: StringType, description: 'Internal use only'},
+    registrationState: registrationStateSchema,
+    classification: {
+        type: [classificationSchema],
+        description: 'Organization or categorization by Steward Organization',
+    },
+    referenceDocuments: {
+        type: [referenceDocumentSchema],
+        description: 'Any written, printed or electronic matter used as a source of information. Used to provide information or evidence of authoritative or official record.',
+    },
+    properties: {
+        type: [propertySchema],
+        description: 'Attribute not otherwise documented by structured CDE record',
+    },
+    ids: {
+        type: [idSchema],
+        description: 'Identifier used to establish or indicate what CDE is within a specific context',
+    },
+    attachments: [attachmentSchema],
+    history: [Schema.Types.ObjectId],
+    archived: {
+        type: Boolean,
+        default: false,
+        index: true,
+        description: 'Indication of historical record. True for previous versions.',
+    },
+
+    property: {concepts: [conceptSchema]},
     dataElementConcept: {
         concepts: [conceptSchema],
         conceptualDomain: {
@@ -62,7 +91,6 @@ export const deJson = {
         }
     },
     objectClass: {concepts: [conceptSchema]},
-    property: {concepts: [conceptSchema]},
     valueDomain: {
         name: StringType,
         identifiers: [idSchema],
@@ -130,39 +158,12 @@ export const deJson = {
             default: undefined,
         }
     },
-    history: [Schema.Types.ObjectId],
-    changeNote: {type: StringType, description: 'Description of last modification'},
-    lastMigrationScript: {type: StringType, description: 'Internal use only'},
-    registrationState: registrationStateSchema,
-    classification: {
-        type: [classificationSchema],
-        description: 'Organization or categorization by Steward Organization',
-    },
-    properties: {
-        type: [propertySchema],
-        description: 'Attribute not otherwise documented by structured CDE record',
-    },
-    ids: {
-        type: [idSchema],
-        description: 'Identifier used to establish or indicate what CDE is within a specific context',
-    },
     dataSets: {
         type: [dataSetSchema],
         description: 'A list of datasets that use this CDE',
     },
-    archived: {
-        type: Boolean,
-        default: false,
-        index: true,
-        description: 'Indication of historical record. True for previous versions.',
-    },
     forkOf: {type: StringType, description: 'May point to a tinyID if the CDE is a fork'},
-    attachments: [attachmentSchema],
     views: {type: Number, default: 0},
-    referenceDocuments: {
-        type: [referenceDocumentSchema],
-        description: 'Any written, printed or electronic matter used as a source of information. Used to provide information or evidence of authoritative or official record.',
-    },
     derivationRules: [derivationRuleSchema]
 };
 export const dataElementSchema = new Schema(deJson, {

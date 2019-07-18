@@ -1,6 +1,6 @@
 import { config } from '../system/parseConfig';
 import { DataElement as DE } from 'shared/de/dataElement.model';
-import { checkDefinitions, checkPvUnicity, wipeDatatype } from 'shared/de/deValidator';
+import { wipeDatatype } from 'shared/de/deValidator';
 import { CbError, MongooseType } from 'shared/models.model';
 import { isOrgCurator } from 'shared/system/authorizationShared';
 
@@ -44,34 +44,17 @@ schemas.dataElementSchema.pre('save', function (next) {
     const elt = this;
 
     if (this.archived) return next();
-    let cdeError: any = checkPvUnicity(elt.valueDomain);
-    if (cdeError.allValid) {
-        cdeError = checkDefinitions(elt);
-    }
-    if (cdeError && !cdeError.allValid) {
-        cdeError.tinyId = this.tinyId;
-        logging.errorLogger.error(cdeError, {
-            details: JSON.stringify(cdeError),
-            stack: new Error().stack,
-        });
-        return next(new Error(JSON.stringify(cdeError)));
-    }
-
-    // validate
-    if (!validateSchema(elt)) {
-        return next(validateSchema.errors.map(e => e.dataPath + ': ' + e.message).join(', '));
-    }
-    const valErr = elt.validateSync();
-    if (valErr) {
-        return next('Doc does not pass validation: ' + valErr.message);
-    }
-
-    try {
-        elastic.updateOrInsert(elt);
-    } catch (exception) {
-        logging.errorLogger.error('Error Indexing CDE', {details: exception, stack: new Error().stack});
-    }
-    next();
+    validateSchema(elt).then(() => {
+        try {
+            elastic.updateOrInsert(elt);
+        } catch (exception) {
+            logging.errorLogger.error(`Error Indexing CDE ${elt.tinyId}`, {
+                details: exception,
+                stack: new Error().stack
+            });
+        }
+        next();
+    }, next);
 });
 
 const conn = connHelper.establishConnection(config.database.appData);

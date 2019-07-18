@@ -1,11 +1,15 @@
 import * as mongoose from 'mongoose';
 import { addStringtype } from '../system/mongoose-stringtype';
+import {
+    attachmentSchema, classificationSchema, codeAndSystemSchema, definitionSchema, derivationRuleSchema,
+    designationSchema, eltLogSchema, idSchema, permissibleValueSchema, propertySchema, referenceDocumentSchema,
+    registrationStateSchema, sourceSchema
+} from 'server/system/schemas';
 
 addStringtype(mongoose);
 const Schema = mongoose.Schema;
 const StringType = (Schema.Types as any).StringType;
 
-const sharedSchemas = require('../system/schemas');
 const config = require('config');
 
 const DisplayProfileSchema = new Schema({
@@ -23,7 +27,7 @@ const DisplayProfileSchema = new Schema({
     displayInvisible: {type: Boolean},
     repeatFormat: {type: StringType, default: ''},
     answerDropdownLimit: {type: Number, min: 0},
-    unitsOfMeasureAlias: [{unitOfMeasure: sharedSchemas.codeAndSystemSchema, alias: StringType}],
+    unitsOfMeasureAlias: [{unitOfMeasure: codeAndSystemSchema, alias: StringType}],
     fhirProcedureMapping: {
         statusQuestionID: String,
         statusStatic: String,
@@ -61,15 +65,14 @@ const questionSchema = new Schema({
     cde: {
         tinyId: StringType,
         name: StringType,
-        designations: [sharedSchemas.designationSchema],
-        definitions: [sharedSchemas.definitionSchema],
+        designations: [designationSchema],
+        definitions: [definitionSchema],
         version: StringType,
         permissibleValues: {
-            type: [sharedSchemas.permissibleValueSchema], // required to make optional
-            default: undefined,
+            type: [permissibleValueSchema] // required to make optional
         },
-        ids: [sharedSchemas.idSchema],
-        derivationRules: [sharedSchemas.derivationRuleSchema]
+        ids: [idSchema],
+        derivationRules: [derivationRuleSchema]
     },
     datatype: StringType,
     datatypeNumber: datatypeNumberSchema,
@@ -78,27 +81,25 @@ const questionSchema = new Schema({
         maxLength: Number,
         regex: StringType,
         rule: StringType,
-        showAsTextArea: {type: Boolean, default: false}
+        showAsTextArea: Boolean
     },
     datatypeDate: {
         precision: {
             type: StringType,
-            enum: ['Year', 'Month', 'Day', 'Hour', 'Minute', 'Second'],
-            default: 'Day',
+            enum: ['Year', 'Month', 'Day', 'Hour', 'Minute', 'Second']
         }
     },
     datatypeDynamicCodeList: {
-        system: {type: StringType},
-        code: {type: StringType}
+        system: StringType,
+        code: StringType
     },
-    unitsOfMeasure: [sharedSchemas.codeAndSystemSchema],
+    unitsOfMeasure: [codeAndSystemSchema],
     required: {type: Boolean, default: false},
     invisible: {type: Boolean, default: false},
     editable: {type: Boolean, default: true},
     multiselect: Boolean,
     answers: {
-        type: [sharedSchemas.permissibleValueSchema], // required to make optional
-        default: undefined,
+        type: [permissibleValueSchema] // required to make optional
     },
     defaultAnswer: StringType
 }, {_id: false});
@@ -108,7 +109,7 @@ let inFormSchema = new Schema({
         tinyId: StringType,
         version: StringType,
         name: StringType,
-        ids: [sharedSchemas.idSchema]
+        ids: [idSchema]
     }
 }, {_id: false});
 
@@ -141,39 +142,30 @@ for (let i = 0; i < config.modules.forms.sectionLevels; i++) {
 
 export const formJson = {
     elementType: {type: StringType, default: 'form', enum: ['form']},
-    tinyId: {type: StringType, index: true},
-    designations: [sharedSchemas.designationSchema],
-    definitions: [sharedSchemas.definitionSchema],
-    mapTo: {type: mapToSchema, default: undefined},
+    tinyId: {type: StringType, index: true, description: 'Internal Form identifier'},
+    designations: {
+        type: [designationSchema],
+        description: 'Any string used by which Form is known, addressed or referred to',
+    },
+    definitions: {
+        type: [definitionSchema],
+        description: 'Description of the Form',
+    },
+    source: {type: StringType, description: 'This field is replaced with sources'},
+    sources: {
+        type: [sourceSchema],
+        description: 'Name of system from which Form was imported or obtained from',
+    },
+    origin: {type: StringType, description: 'Name of system where Form is derived'},
     stewardOrg: {
-        name: StringType
-    },
-    source: StringType,
-    sources: [sharedSchemas.sourceSchema],
-    version: StringType,
-    registrationState: sharedSchemas.registrationStateSchema,
-    properties: [sharedSchemas.propertySchema],
-    ids: {
-        type: [sharedSchemas.idSchema],
-        description: 'Identifier used to establish or indicate what CDE is within a specific context',
-    },
-    isCopyrighted: {type: Boolean},
-    noRenderAllowed: {type: Boolean},
-    copyright: {
-        type: {
-            authority: StringType,
-            text: StringType
+        name: {
+            type: StringType,
+            description: 'Name of organization or entity responsible for supervising content and administration of Form'
         },
-        default: {text: null}
     },
-    origin: StringType,
-    attachments: [sharedSchemas.attachmentSchema],
-    history: [Schema.Types.ObjectId],
-    changeNote: StringType,
-    lastMigrationScript: StringType,
     created: Date,
-    updated: Date,
-    imported: Date,
+    updated: {type: Date, index: true},
+    imported: {type: Date, description: 'Date last imported from source'},
     createdBy: {
         userId: Schema.Types.ObjectId,
         username: StringType
@@ -182,11 +174,44 @@ export const formJson = {
         userId: Schema.Types.ObjectId,
         username: StringType
     },
+    version: StringType,
+    changeNote: {type: StringType, description: 'Description of last modification'},
+    lastMigrationScript: StringType,
+    registrationState: registrationStateSchema,
+    classification: {
+        type: [classificationSchema],
+        description: 'Organization or categorization by Steward Organization',
+    },
+    referenceDocuments: {
+        type: [referenceDocumentSchema],
+        description: 'Any written, printed or electronic matter used as a source of information. Used to provide information or evidence of authoritative or official record.',
+    },
+    properties: {
+        type: [propertySchema],
+        description: 'Attribute not otherwise documented by structured Form record',
+    },
+    ids: {
+        type: [idSchema],
+        description: 'Identifier used to establish or indicate what Form is within a specific context',
+    },
+    attachments: [attachmentSchema],
+    history: [Schema.Types.ObjectId],
+    archived: {
+        type: Boolean,
+        default: false,
+        index: true,
+        description: 'Indication of historical record. True for previous versions.',
+    },
+
+    mapTo: {type: mapToSchema, default: undefined},
+    isCopyrighted: Boolean,
+    noRenderAllowed: Boolean,
+    copyright: {
+        authority: StringType,
+        text: StringType
+    },
     formElements: [innerFormEltSchema],
-    archived: {type: Boolean, default: false, index: true},
-    classification: [sharedSchemas.classificationSchema],
     displayProfiles: [DisplayProfileSchema],
-    referenceDocuments: [sharedSchemas.referenceDocumentSchema]
 };
 export const formSchema = new Schema(formJson, {
     collection: 'forms',
@@ -222,7 +247,7 @@ export const formSourceSchema = new Schema(formJson, {
 });
 formSourceSchema.index({tinyId: 1, source: 1}, {unique: true});
 
-export const auditSchema = new Schema(sharedSchemas.eltLogSchema, {
+export const auditSchema = new Schema(eltLogSchema, {
     collection: 'formAudit',
     strict: false
 });

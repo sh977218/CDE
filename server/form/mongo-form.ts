@@ -44,20 +44,18 @@ fs.readFile(path.resolve(__dirname, '../../shared/form/assets/form.schema.json')
 schemas.formSchema.pre('save', function (next) {
     let elt = this;
 
-    validateSchema(elt)
-        .catch(err => next(err instanceof Ajv.ValidationError
-            ? 'errors:' + err.errors.map(e => e.dataPath + ': ' + e.message).join(', ')
-            : err
-        ))
-        .then(() => {
-            try {
-                elastic.updateOrInsert(elt);
-            } catch (exception) {
-                logging.errorLogger.error('Error Indexing Form', {details: exception, stack: new Error().stack});
-            }
-
-            next();
-        });
+    if (this.archived) return next();
+    validateSchema(elt).then(() => {
+        try {
+            elastic.updateOrInsert(elt);
+        } catch (exception) {
+            logging.errorLogger.error(`Error Indexing Form ${elt.tinyId}`, {
+                details: exception,
+                stack: new Error().stack
+            });
+        }
+        next();
+    }, next);
 });
 
 const conn = connHelper.establishConnection(config.database.appData);
