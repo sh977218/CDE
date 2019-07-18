@@ -449,13 +449,13 @@ async function extractedSyncLinkedForms(cde) {
         body: {doc: {linkedForms: linkedForms}}
     });
     syncLinkedFormsProgress.done++;
+    return new Promise(resolve => resolve());
 }
 
 export function syncLinkedFormsByTinyId(tinyId) {
-    return new Promise( resolve => {
-        mongo_cde.byTinyId(tinyId, async cde => {
-            await extractedSyncLinkedForms(cde);
-            resolve();
+    return new Promise(resolve => {
+        mongo_cde.byTinyId(tinyId, (err, cde) => {
+            extractedSyncLinkedForms(cde).then(resolve);
         });
     });
 }
