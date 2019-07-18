@@ -198,6 +198,10 @@ export function draftsList(criteria, cb?: CbError): void | Promise<DataElementDr
 
 /* ---------- PUT NEW REST API Implementation above  ---------- */
 
+export function getStream(condition) {
+    return DataElement.find(condition).sort({_id: -1}).cursor();
+}
+
 export function count(condition, callback) {
     return DataElement.countDocuments(condition, callback);
 }
