@@ -455,6 +455,7 @@ export function syncLinkedFormsByTinyId(tinyId) {
     return new Promise( resolve => {
         mongo_cde.byTinyId(tinyId, async cde => {
             await extractedSyncLinkedForms(cde);
+            resolve();
         });
     });
 }
