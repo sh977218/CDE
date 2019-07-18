@@ -140,12 +140,8 @@ async function fixError(form) {
 }
 
 (function () {
-    //71l8YjHiGf has 10th Cde no tinyId, id no source.
-    //mytCSyHBKg has 38th Cde no id.
-    let skipForms = [];
     let formCount = 0;
     let cursor = Form.find({
-        tinyId: {$nin: skipForms},
         lastMigrationScript: {$ne: 'fixForm'},
         'ids.source': 'PhenX',
         archived: false
