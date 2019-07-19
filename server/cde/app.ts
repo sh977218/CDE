@@ -165,8 +165,7 @@ export function init(app, daoManager) {
     });
 
     app.get('/deView', function (req, res) {
-        let tinyId = req.query.tinyId;
-        let version = req.query.version;
+        const {tinyId, version} = req.query;
         deByTinyIdVersion(tinyId, version, (err, cde) => {
             if (err) {
                 res.status(500).send('ERROR - Static Html Error, /deView');

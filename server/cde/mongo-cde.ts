@@ -3,8 +3,8 @@ import { DataElement as DE } from 'shared/de/dataElement.model';
 import { checkDefinitions, checkPvUnicity, wipeDatatype } from 'shared/de/deValidator';
 import { CbError, MongooseType } from 'shared/models.model';
 import { isOrgCurator } from 'shared/system/authorizationShared';
-
 import * as dataElementschema from 'shared/de/assets/dataElement.schema.json';
+import { forwardError } from 'server/errorHandler/errorHandler';
 
 const Ajv = require('ajv');
 const fs = require('fs');
@@ -81,22 +81,8 @@ export const daoDraft = DataElementDraft;
 
 mongo_data.attachables.push(DataElement);
 
-function defaultElt(elt) {
-    wipeDatatype(elt);
-    if (!elt.registrationState || !elt.registrationState.registrationStatus) {
-        elt.registrationState = {registrationStatus: 'Incomplete'};
-    }
-}
-
 function updateUser(elt, user) {
-    defaultElt(elt);
-    if (!elt.created) elt.created = new Date();
-    if (!elt.createdBy) {
-        elt.createdBy = {
-            userId: user._id,
-            username: user.username,
-        };
-    }
+    wipeDatatype(elt);
     elt.updated = new Date();
     elt.updatedBy = {
         userId: user._id,
@@ -154,11 +140,7 @@ export function draftById(id, cb) {
 
 export function draftSave(elt, user, cb) {
     updateUser(elt, user);
-    DataElementDraft.findById(elt._id, (err, doc) => {
-        if (err) {
-            cb(err);
-            return;
-        }
+    DataElementDraft.findById(elt._id, forwardError(cb, doc => {
         if (!doc) {
             new DataElementDraft(elt).save(cb);
             return;
@@ -170,7 +152,7 @@ export function draftSave(elt, user, cb) {
         const version = elt.__v;
         elt.__v++;
         DataElementDraft.findOneAndUpdate({_id: elt._id, __v: version}, elt, {new: true}, cb);
-    });
+    }));
 }
 
 export function draftDelete(tinyId, cb) {
@@ -217,7 +199,6 @@ export function byTinyIdAndVersion(tinyId, version, callback) {
 }
 
 export function eltByTinyId(tinyId, callback) {
-    if (!tinyId) callback('tinyId is undefined!', null);
     DataElement.findOne({
         archived: false,
         tinyId,
@@ -237,7 +218,7 @@ export function inCdeView(cde) {
 }
 
 export function create(elt, user, callback) {
-    defaultElt(elt);
+    wipeDatatype(elt);
     elt.created = Date.now();
     elt.createdBy = {
         userId: user._id,

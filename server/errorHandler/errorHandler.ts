@@ -7,6 +7,16 @@ import { AuthenticatedRequest } from 'server/system/authentication';
 
 type HandledError = CastError | Error;
 
+export function forwardError(errCb, cb = _.noop) {
+    return function errorHandler(err?: string, ...args) {
+        if (err) {
+            errCb(err);
+            return;
+        }
+        cb(...args);
+    };
+}
+
 export function handleConsoleError(options, cb = _.noop) {
     return function errorHandler(err?: string, ...args) {
         if (err) noDbLogger.info('ERROR: ' + err);
