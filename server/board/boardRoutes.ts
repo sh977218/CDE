@@ -1,10 +1,10 @@
-import { handle404, handleError } from '../errorHandler/errorHandler';
-import { config } from '../system/parseConfig';
+import { handle404, handleError } from 'server/errorHandler/errorHandler';
+import { config } from 'server/system/parseConfig';
 import { stripBsonIds } from 'shared/system/exportShared';
 import {
     checkBoardViewerShip, loggedInMiddleware, nocacheMiddleware, unauthorizedPublishing
-} from '../system/authorization';
-import { validateBody } from '../system/bodyValidator';
+} from 'server/system/authorization';
+import { validateBody } from 'server/system/bodyValidator';
 
 const _ = require('lodash');
 const js2xml = require('js2xmlparser');

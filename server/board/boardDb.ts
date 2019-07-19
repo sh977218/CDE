@@ -1,6 +1,8 @@
 import * as mongoose from 'mongoose';
-import { addStringtype } from '../system/mongoose-stringtype';
-import { config } from '../system/parseConfig';
+import { addStringtype } from 'server/system/mongoose-stringtype';
+import { config } from 'server/system/parseConfig';
+import { handleError } from 'server/errorHandler/errorHandler';
+import { ObjectId } from 'server/system/mongo-data';
 
 addStringtype(mongoose);
 const Schema = mongoose.Schema;
@@ -10,8 +12,6 @@ const connHelper = require('../system/connections');
 const conn = connHelper.establishConnection(config.database.appData);
 
 const elastic = require('./elastic');
-import { handleError } from '../errorHandler/errorHandler';
-import { ObjectId } from '../system/mongo-data';
 
 // for DAO manager
 export const type = 'board';
