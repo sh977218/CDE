@@ -16,9 +16,6 @@ import { resolve } from 'path';
 import * as File from 'vinyl';
 import { ElasticIndex, indices } from 'server/system/elasticSearchInit';
 import { config } from 'server/system/parseConfig';
-import { initEs } from 'server/system/elastic';
-import { syncWithMesh } from 'server/mesh/elastic';
-import { syncLinkedFormsByTinyId } from 'server/form/formsvc';
 
 require('es6-promise').polyfill();
 
