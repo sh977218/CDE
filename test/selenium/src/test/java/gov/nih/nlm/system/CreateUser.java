@@ -15,6 +15,9 @@ public class CreateUser extends NlmCdeBaseTest {
         hangon(1);
         clickElement(By.id("createNewUserBtn"));
         checkAlert("User created");
+        clickElement(By.id("opeNewUserModalBtn"));
+        clickElement(By.id("createNewUserBtn"));
+        checkAlert("Cannot create user. Does it already exist?");
         searchUsername("Coco Ch");
         clickElement(By.id("searchUsersSubmit"));
         textPresent("coco channel");

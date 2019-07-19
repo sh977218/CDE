@@ -313,7 +313,7 @@ export function init(app, daoManager) {
         if (!config.autoSyncMesh && !isOrgAuthority(req.user)) {
             return res.status(401).send();
         }
-        res.send("");
+        res.send();
         formSvc.syncLinkedForms();
     });
 
