@@ -46,7 +46,7 @@ export type HandlerOptions = {
     publicMessage?: string, // non-revealing usability message to be shown to users
     req?: Request,
     res?: Response,
-}
+};
 
 // TODO: Combine with logError() which publishes notifications
 // TODO: tee to console.log
