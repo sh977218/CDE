@@ -1,4 +1,4 @@
-import { handleError } from '../errorHandler/errHandler';
+import { handleError } from '../errorHandler/errorHandler';
 
 const userAgent = require('useragent');
 const dbLogger = require('./dbLogger');

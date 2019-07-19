@@ -1,5 +1,6 @@
-import { CdeForm, CdeFormElastic } from '../shared/form/form.model';
-import { DataElement, DataElementElastic } from '../shared/de/dataElement.model';
+import { CdeForm, CdeFormElastic } from 'shared/form/form.model';
+import { DataElement, DataElementElastic } from 'shared/de/dataElement.model';
+import { Dictionary } from 'async';
 
 export function assertThrow(): never {
     throw new Error('Please submit a bug report.');
@@ -276,14 +277,25 @@ export declare type EltLog = {
     diff: EltLogDiff[];
 };
 
-export declare type EltLogDiff = {
+export type EltLogDiff = EltLogDiffAmend | {
     fieldName?: string; // calculated makeHumanReadable
-    item?: {
+    kind: 'D' | 'E' | 'N';
+    lhs?: string;
+    modificationType?: string; // calculated makeHumanReadable
+    newValue?: string; // calculated makeHumanReadable
+    path: (string | number)[];
+    previousValue?: string; // calculated makeHumanReadable
+    rhs?: string;
+};
+
+export type EltLogDiffAmend = {
+    fieldName?: string; // calculated makeHumanReadable
+    item: {
         kind: 'D' | 'N';
         lhs?: string;
         rhs?: string;
     };
-    kind: 'A' | 'D' | 'E' | 'N';
+    kind: 'A';
     lhs?: string;
     modificationType?: string; // calculated makeHumanReadable
     newValue?: string; // calculated makeHumanReadable
@@ -400,7 +412,21 @@ type DerivationRuleFormula = 'sumAll' | 'mean' | 'bmi';
 type DerivationRuleType = 'score' | 'panel';
 export type Drafts = { draftCdes: DataElement[], draftForms: CdeForm[] };
 export type Board = {owner: {username: string}};
+
+export type IdVersion = {
+    id: string,
+    version?: string
+};
+
 export type Item = DataElement | CdeForm;
+
+export type ItemClassification = {
+    categories?: string[],
+    elements?: IdVersion[],
+    eltId: ObjectId,
+    orgName?: string,
+};
+
 export type ItemElastic = DataElementElastic | CdeFormElastic;
 export type ListTypes = 'accordion' | 'table' | 'summary';
 export type MongooseType<T> = T & {markModified: (path: string) => void};
@@ -505,16 +531,18 @@ export class Source {
 
 export class StatusValidationRules {
     id!: number;
-    field?: string;
+    field!: string;
     occurence?: 'exactlyOne' | 'atLeastOne' | 'all';
-    rule: {
+    rule!: {
+        customValidations?: 'permissibleValuesUMLS'[],
         regex?: string
-    } = {};
-    ruleName?: string;
-    targetStatus?: CurationStatus;
+    };
+    ruleName!: string;
+    targetStatus!: CurationStatus;
 }
 
-export type StatusValidationRulesOrgs = { [org: string]: StatusValidationRules[] };
+export type StatusValidationRulesByOrg = Dictionary<StatusValidationRules[]>; // by Organization Name
+export type StatusValidationRulesByOrgReg = Dictionary<StatusValidationRulesByOrg>; // by Registration Status
 
 export type TableViewFields = {
     administrativeStatus?: boolean,

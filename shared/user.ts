@@ -1,7 +1,7 @@
 import {
     NotificationSettings,
     NotificationSettingsMedia, NotificationSettingsMediaType, NotificationSettingsType, User
-} from '../shared/models.model';
+} from 'shared/models.model';
 
 export function newNotificationSettings(): NotificationSettings {
     return {comment: newNotificationSettingsMediaDrawer()};

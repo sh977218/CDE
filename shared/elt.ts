@@ -1,5 +1,5 @@
-import { CdeForm } from '../shared/form/form.model';
-import { Item, ItemElastic, ModuleItem } from '../shared/models.model';
+import { CdeForm } from 'shared/form/form.model';
+import { Item, ItemElastic, ModuleItem } from 'shared/models.model';
 
 export function getModule(elt: Item): ModuleItem {
     return !!(elt as CdeForm).formElements ? 'form' : 'cde';

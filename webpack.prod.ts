@@ -16,5 +16,5 @@ export default merge(baseConfig, {
         new DefinePlugin({
             PRODUCTION: JSON.stringify(true),
         }),
-    ]
+    ],
 });

@@ -1,5 +1,5 @@
-import { FhirCoding } from '../../../../shared/mapping/fhir/fhir.model';
-import { codeSystemOut } from '../../../../shared/mapping/fhir';
+import { FhirCoding } from 'shared/mapping/fhir/fhir.model';
+import { codeSystemOut } from 'shared/mapping/fhir';
 
 export function getText(coding?: FhirCoding): string {
     return coding && coding.display ? coding.display : '';

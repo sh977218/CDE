@@ -8,15 +8,15 @@ import {
     Instruction,
     ObjectId,
     PermissibleValue,
-} from '../../shared/models.model';
+} from 'shared/models.model';
 import {
     DatatypeContainer,
     QuestionTypeDate,
     QuestionTypeNumber,
     QuestionTypeText,
-} from '../../shared/de/dataElement.model';
-import { iterateFeSync } from '../../shared/form/fe';
-import { supportedFhirResources } from '../../shared/mapping/fhir/fhirResource.model';
+} from 'shared/de/dataElement.model';
+import { iterateFeSync } from 'shared/form/fe';
+import { supportedFhirResources } from 'shared/mapping/fhir/fhirResource.model';
 
 export type QuestionValue = any;
 
@@ -139,7 +139,7 @@ export class DisplayProfile {
     displayType: DisplayType = 'Follow-up';
     displayValues = false;
     metadata: { device?: boolean } = {};
-    name: String;
+    name: string;
     numberOfColumns = 4;
     repeatFormat = '#.';
     sectionsAsMatrix = true;

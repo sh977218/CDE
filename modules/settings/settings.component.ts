@@ -31,7 +31,7 @@ import { MatSidenav } from "@angular/material";
     `]
 })
 export class SettingsComponent {
-    @ViewChild('drawer') drawer: MatSidenav;
+    @ViewChild('drawer') drawer!: MatSidenav;
     opened: boolean = true;
 
     isMobile: Boolean = (window.screen.width <= 575);

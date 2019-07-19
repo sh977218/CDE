@@ -1,6 +1,6 @@
-import { DataElement } from '../shared/de/dataElement.model';
-import { CdeForm } from '../shared/form/form.model';
-import { Item, ModuleAll } from '../shared/models.model';
+import { DataElement } from 'shared/de/dataElement.model';
+import { CdeForm } from 'shared/form/form.model';
+import { Item, ModuleAll } from 'shared/models.model';
 
 type itemActionsApi = {
     api: string,

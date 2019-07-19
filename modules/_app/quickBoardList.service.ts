@@ -1,14 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { MatTabChangeEvent } from '@angular/material';
 import { AlertService } from 'alert/alert.service';
 import { LocalStorageService } from 'angular-2-local-storage';
 import _find from 'lodash/find';
 import _isEmpty from 'lodash/isEmpty';
 import _remove from 'lodash/remove';
-import { DataElement } from 'shared/de/dataElement.model';
-import { MatTabChangeEvent } from '@angular/material';
+import { DataElement, DataElementElastic } from 'shared/de/dataElement.model';
 import { CdeFormElastic } from 'shared/form/form.model';
 import { iterateFesSync } from 'shared/form/fe';
+import { ItemElastic } from 'shared/models.model';
+import { isCdeForm, isDataElement } from 'shared/item';
 
 @Injectable()
 export class QuickBoardListService {
@@ -17,7 +19,7 @@ export class QuickBoardListService {
     number_dataElements: number = 0;
     number_forms: number = 0;
 
-    dataElements: DataElement[] = [];
+    dataElements: DataElementElastic[] = [];
     forms: CdeFormElastic[] = [];
 
 
@@ -27,24 +29,24 @@ export class QuickBoardListService {
         this.loadElements();
     }
 
-    addToQuickBoard(elt) {
-        if (elt.elementType === 'cde') {
+    addToQuickBoard(elt: ItemElastic) {
+        if (isDataElement(elt)) {
             this.dataElements.push(elt);
             this.saveDataElementQuickBoard();
             this.alert.addAlert('success', 'Added to QuickBoard!');
         }
-        if (elt.elementType === 'form') {
+        if (isCdeForm(elt)) {
             this.forms.push(elt);
             this.saveFormQuickBoard();
             this.alert.addAlert('success', 'Added to QuickBoard!');
         }
     }
 
-    canAddElement(elt) {
-        if (elt.elementType === 'cde') {
+    canAddElement(elt: ItemElastic) {
+        if (isDataElement(elt)) {
             return _isEmpty(_find(this.dataElements, {tinyId: elt.tinyId}));
         }
-        if (elt.elementType === 'form') {
+        if (isCdeForm(elt)) {
             return _isEmpty(_find(this.forms, {tinyId: elt.tinyId}));
         }
     }
@@ -67,7 +69,7 @@ export class QuickBoardListService {
                 this.http.get<DataElement[]>('/deList/' + l)
                     .subscribe(res => {
                         if (res) {
-                            this.dataElements = res;
+                            this.dataElements = res as DataElementElastic[];
                             this.number_dataElements = this.dataElements.length;
                         }
                     }, err => this.alert.httpErrorMessageAlert(err));
@@ -94,13 +96,13 @@ export class QuickBoardListService {
         this.module = <string>this.localStorageService.get('defaultQuickBoard');
     }
 
-    removeElement(elt) {
-        if (elt.elementType === 'cde') {
+    removeElement(elt: ItemElastic) {
+        if (isDataElement(elt)) {
             _remove(this.dataElements, e => e.tinyId === elt.tinyId);
             this.saveDataElementQuickBoard();
             this.alert.addAlert('success', 'Removed from QuickBoard!');
         }
-        if (elt.elementType === 'form') {
+        if (isCdeForm(elt)) {
             _remove(this.forms, e => e.tinyId === elt.tinyId);
             this.saveFormQuickBoard();
             this.alert.addAlert('success', 'Removed from QuickBoard!');

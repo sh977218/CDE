@@ -1,7 +1,7 @@
-import { CbErr } from '../../shared/models.model';
+import { CbErr } from 'shared/models.model';
 import {
     FormElement, FormElementsContainer, FormInForm, FormQuestion, FormSection, Question,
-} from '../../shared/form/form.model';
+} from 'shared/form/form.model';
 import * as async_forEachOf from 'async/forEachOf';
 import * as async_forEachSeries from 'async/forEachSeries';
 

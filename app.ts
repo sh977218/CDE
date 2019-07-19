@@ -1,4 +1,7 @@
 (global as any).APP_DIR = __dirname;
+(global as any).appDir = function addDir(... args: string[]) {
+    return path.resolve((global as any).APP_DIR, ...args);
+};
 import * as bodyParser from 'body-parser';
 import * as compress from 'compression';
 import * as Config from 'config';
@@ -15,40 +18,46 @@ import * as methodOverride from 'method-override';
 import * as morganLogger from 'morgan';
 import * as path from 'path';
 import * as favicon from 'serve-favicon';
-import * as articleDb from './server/article/articleDb';
-import { module as articleModule } from './server/article/articleRoutes';
-import { module as attachmentModule } from './server/attachment/attachmentRoutes';
-import { module as boardModule } from './server/board/boardRoutes';
-import { init as cdeInit } from './server/cde/app.js';
-import * as mongo_cde from './server/cde/mongo-cde';
-import { module as classificationModule } from './server/classification/classificationRoutes';
-import { module as discussModule } from './server/discuss/discussRoutes';
-import { module as logModule } from './server/log/logRoutes';
-import { init as formInit } from './server/form/app.js';
-import * as mongo_form from './server/form/mongo-form';
-import { module as meshModule } from './server/mesh/meshRoutes';
-import { module as siteAdminModule } from './server/siteAdmin/siteAdminRoutes';
-import { init as systemInit, respondHomeFull } from './server/system/app.js';
-import { init as authInit, ticketAuth } from './server/system/authentication';
+import * as winston from 'winston';
+import { Rotate } from 'winston-logrotate';
+import { init as swaggerInit } from './modules/swagger/index';
+import * as articleDb from 'server/article/articleDb';
+import { module as articleModule } from 'server/article/articleRoutes';
+import { module as attachmentModule } from 'server/attachment/attachmentRoutes';
+import { module as boardModule } from 'server/board/boardRoutes';
+import { init as cdeInit } from 'server/cde/app';
+import * as mongo_cde from 'server/cde/mongo-cde';
+import { module as classificationModule } from 'server/classification/classificationRoutes';
+import { module as discussModule } from 'server/discuss/discussRoutes';
+import { module as logModule } from 'server/log/logRoutes';
+import { init as formInit } from 'server/form/app';
+import * as mongo_form from 'server/form/mongo-form';
+import { module as meshModule } from 'server/mesh/meshRoutes';
+import { module as siteAdminModule } from 'server/siteAdmin/siteAdminRoutes';
+import { init as systemInit, respondHomeFull } from 'server/system/app';
+import { init as authInit, ticketAuth } from 'server/system/authentication';
 import {
     canApproveAttachmentMiddleware, canApproveCommentMiddleware, checkOwnership, isDocumentationEditor,
     isOrgAdminMiddleware, isOrgAuthorityMiddleware, isSiteAdminMiddleware, loggedInMiddleware
-} from './server/system/authorization';
-import { initEs } from './server/system/elastic';
-import { startServer } from './server/system/ioServer';
-import { errorLogger, expressLogger } from './server/system/logging.js';
-import * as daoManager from './server/system/moduleDaoManager.js';
-import { sessionStore } from './server/system/mongo-data';
-import { banIp, getTrafficFilter } from './server/system/traffic';
-import { module as userModule } from './server/user/userRoutes';
-import { module as utsModule } from './server/uts/utsRoutes';
-import { isOrgAuthority, isOrgCurator } from './shared/system/authorizationShared';
-import { init as swaggerInit } from './modules/swagger/index';
-import * as winston from 'winston';
-import { Rotate } from 'winston-logrotate';
+} from 'server/system/authorization';
+import { initEs } from 'server/system/elastic';
+import { startServer } from 'server/system/ioServer';
+import { errorLogger, expressLogger } from 'server/system/logging';
+import * as daoManager from 'server/system/moduleDaoManager';
+import { sessionStore } from 'server/system/mongo-data';
+import { banIp, getTrafficFilter } from 'server/system/traffic';
+import { module as userModule } from 'server/user/userRoutes';
+import { module as utsModule } from 'server/uts/utsRoutes';
+import { User } from 'shared/models.model';
+import { isOrgAuthority, isOrgCurator } from 'shared/system/authorizationShared';
 
 const config = Config as any;
 const domain = Domain.create();
+
+export type AuthenticatedRequest = {
+    user: User,
+    username: string,
+} & express.Request;
 
 initEs();
 
@@ -98,7 +107,7 @@ app.set('port', config.port || 3000);
 app.set('view engine', 'ejs');
 app.set('trust proxy', true);
 
-app.use(favicon(path.join((global as any).APP_DIR, './modules/cde/public/assets/img/favicon.ico'))); // TODO: MOVE TO SYSTEM
+app.use(favicon((global as any).appDir('./modules/cde/public/assets/img/favicon.ico'))); // TODO: MOVE TO SYSTEM
 
 app.use(bodyParser.urlencoded({extended: false, limit: '5mb'}));
 app.use(bodyParser.json({limit: '16mb'}));
@@ -118,7 +127,7 @@ let getRealIp = function (req) {
     if (req.ip) return req.ip;
 };
 
-let blackIps = [];
+let blackIps: string[] = [];
 app.use((req, res, next) => {
     if (blackIps.indexOf(getRealIp(req)) !== -1) {
         res.status(403).send('Access is temporarily disabled. If you think you received this response in error, please contact support. Otherwise, please try again in an hour.');
@@ -183,48 +192,44 @@ app.use(function preventSessionCreation(req, res, next) {
 
 });
 
-app.use('/cde/public', express.static(path.join((global as any).APP_DIR, '/modules/cde/public')));
-app.use('/system/public', express.static(path.join((global as any).APP_DIR, '/modules/system/public')));
-app.use('/swagger/public', express.static(path.join((global as any).APP_DIR, '/modules/swagger/public')));
-app.use('/form/public', express.static(path.join((global as any).APP_DIR, '/modules/form/public')));
+app.use('/cde/public', express.static((global as any).appDir('modules/cde/public')));
+app.use('/system/public', express.static((global as any).appDir('modules/system/public')));
+app.use('/swagger/public', express.static((global as any).appDir('modules/swagger/public')));
+app.use('/form/public', express.static((global as any).appDir('modules/form/public')));
 
-let getS3Link = function (subpath) {
+function getS3Link(subpath: string): httpProxy.ProxyOptions {
     return {
         https: true,
         proxyReqOptDecorator: proxyReqOpts => {
-            proxyReqOpts.rejectUnauthorized = false;
+            (proxyReqOpts as any).rejectUnauthorized = false;
             return proxyReqOpts;
         },
-        proxyReqPathResolver: req => '/' + config.s3.path + subpath + req.url
+        proxyReqPathResolver: req => '/' + config.s3.path + '/' + subpath + req.url
     };
-};
+}
 
-let getS3LinkFhir = function (subpath) {
-    return {
-        https: true,
-        proxyReqOptDecorator: proxyReqOpts => {
-            proxyReqOpts.rejectUnauthorized = false;
-            return proxyReqOpts;
-        },
-        filter: req => !req.url.startsWith('/launch/') && !req.url.startsWith('/form/'),
-        proxyReqPathResolver: req => '/' + config.s3.path + subpath + req.url
-    };
-};
+function getS3LinkFhir(subpath: string): httpProxy.ProxyOptions {
+    const link = getS3Link(subpath);
+    link.filter = req => !req.url.startsWith('/launch/') && !req.url.startsWith('/form/');
+    return link;
+}
 
 if (config.s3) {
-    app.use('/app', httpProxy(config.s3.host, getS3Link('/app')));
-    app.use('/common', httpProxy(config.s3.host, getS3Link('/common')));
-    app.use('/embed', httpProxy(config.s3.host, getS3Link('/embed')));
-    app.use('/fhir', httpProxy(config.s3.host, getS3LinkFhir('/fhir')));
-    app.use('/launch', httpProxy(config.s3.host, getS3Link('/launch')));
-    app.use('/native', httpProxy(config.s3.host, getS3Link('/native')));
+    app.use('/app', httpProxy(config.s3.host, getS3Link('app')));
+    app.use('/common', httpProxy(config.s3.host, getS3Link('common')));
+    app.use('/embed', httpProxy(config.s3.host, getS3Link('embed')));
+    app.use('/fhir', httpProxy(config.s3.host, getS3LinkFhir('fhir')));
+    app.use('/launch', httpProxy(config.s3.host, getS3Link('launch')));
+    app.use('/native', httpProxy(config.s3.host, getS3Link('native')));
 } else {
-    app.use('/app', express.static(path.join((global as any).APP_DIR, '/dist/app'), {setHeaders: res => res.header('Access-Control-Allow-Origin', '*')}));
-    app.use('/common', express.static(path.join((global as any).APP_DIR, '/dist/common')));
-    app.use('/embed', express.static(path.join((global as any).APP_DIR, '/dist/embed')));
-    app.use('/fhir', express.static(path.join((global as any).APP_DIR, '/dist/fhir')));
-    app.use('/launch', express.static(path.join((global as any).APP_DIR, '/dist/launch')));
-    app.use('/native', express.static(path.join((global as any).APP_DIR, '/dist/native')));
+    app.use('/app', express.static((global as any).appDir('dist/app'), {
+        setHeaders: res => res.header('Access-Control-Allow-Origin', '*')
+    }));
+    app.use('/common', express.static((global as any).appDir('dist/common')));
+    app.use('/embed', express.static((global as any).appDir('dist/embed')));
+    app.use('/fhir', express.static((global as any).appDir('dist/fhir')));
+    app.use('/launch', express.static((global as any).appDir('dist/launch')));
+    app.use('/native', express.static((global as any).appDir('dist/native')));
 }
 
 ['/embedded/public', '/_embedApp/public'].forEach(p => {

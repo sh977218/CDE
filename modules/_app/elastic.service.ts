@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { UserService } from '_app/user.service';
 import { LocalStorageService } from 'angular-2-local-storage';
@@ -98,7 +98,7 @@ export class ElasticService {
     getExport(query: SearchSettingsElastic, type: 'cde' | 'form', cb: CbErr<ItemElastic[]>) {
         this.http.post<ItemElastic[]>('/elasticSearchExport/' + type, query).subscribe(
             response => cb(undefined, response),
-            err => {
+            (err: HttpErrorResponse) => {
                 if (err.status === 503) cb('The server is busy processing similar request, please try again in a minute.');
                 else cb('An error occured. This issue has been reported.');
             }

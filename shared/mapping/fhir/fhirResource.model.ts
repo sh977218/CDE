@@ -5,7 +5,7 @@ import {
     FhirHumanName,
     FhirIdentifier, FhirInstant, FhirMarkdown, FhirMeta, FhirNarrative, FhirPeriod, FhirQuantity, FhirRange, FhirRatio,
     FhirReference, FhirSampledData, FhirTime, FhirUri, FhirValue
-} from '../../../shared/mapping/fhir/fhir.model';
+} from 'shared/mapping/fhir/fhir.model';
 
 export class FhirResource {
     id?: string;
