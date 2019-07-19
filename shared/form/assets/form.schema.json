@@ -120,10 +120,7 @@
                     "version": {
                       "type": "string"
                     }
-                  },
-                  "required": [
-                    "designations"
-                  ]
+                  }
                 },
                 "defaultAnswer": {
                   "type": "string"
