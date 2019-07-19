@@ -1,6 +1,6 @@
 import { isEmpty } from 'lodash';
-import { Form, FormSource } from '../../../server/form/mongo-form';
-import { Comment } from '../../../server/discuss/discussDb';
+import { Form, FormSource } from 'server/form/mongo-form';
+import { Comment } from 'server/discuss/discussDb';
 import { batchloader } from '../../shared/updatedByLoader';
 import { ProtocolModel } from '../../createMigrationConnection';
 import { compareForm, createForm, mergeForm } from '../Form/form';
@@ -30,14 +30,10 @@ async function retireForms() {
     };
     let forms = await Form.find(cond);
     for (let form of forms) {
-        // TODO make history
-        form.registrationState.registrationStatus = 'Retired';
-        form.registrationState.administrativeNote = 'Not present in import at ' + new Date().toJSON();
-        form.markModified('registrationState');
         let formObj = form.toObject();
-        await form.save().catch(e => {
-            throw `Error await form.save(): ${formObj.tinyId} ${e}`;
-        });
+        formObj.registrationState.registrationStatus = 'Retired';
+        formObj.registrationState.administrativeNote = 'Not present in import at ' + new Date().toJSON();
+        await updateForm(formObj, batchloader);
         retiredForm++;
     }
 }

@@ -29,7 +29,7 @@ export function parseProperties(protocol) {
             return accumulator + ' ' + capitalize(currentValue);
         }, '');
         let value = protocol[p];
-        if (value) {
+        if (!isEmpty(value)) {
             properties.push({key: key.trim(), value: value.trim(), source: 'PhenX'});
         }
     });
