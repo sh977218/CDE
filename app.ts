@@ -48,16 +48,11 @@ import { sessionStore } from 'server/system/mongo-data';
 import { banIp, getTrafficFilter } from 'server/system/traffic';
 import { module as userModule } from 'server/user/userRoutes';
 import { module as utsModule } from 'server/uts/utsRoutes';
-import { User } from 'shared/models.model';
 import { isOrgAuthority, isOrgCurator } from 'shared/system/authorizationShared';
 
 const config = Config as any;
 const domain = Domain.create();
 
-export type AuthenticatedRequest = {
-    user: User,
-    username: string,
-} & express.Request;
 
 initEs();
 
