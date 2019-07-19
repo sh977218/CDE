@@ -1,9 +1,9 @@
 import { Request, Response } from 'express-serve-static-core';
 import * as _ from 'lodash';
 import { CastError } from 'mongoose';
-import { AuthenticatedRequest } from '../../app';
 import { logError } from 'server/log/dbLogger';
 import { noDbLogger } from 'server/system/noDbLogger';
+import { AuthenticatedRequest } from 'server/system/authentication';
 
 type HandledError = CastError | Error;
 
@@ -46,7 +46,7 @@ export type HandlerOptions = {
     publicMessage?: string, // non-revealing usability message to be shown to users
     req?: Request,
     res?: Response,
-}
+};
 
 // TODO: Combine with logError() which publishes notifications
 // TODO: tee to console.log
