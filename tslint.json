@@ -78,6 +78,7 @@
             "check-open-brace",
             "check-whitespace"
         ],
+        "quotemark": [true, "single", "avoid-escape"],
         //        "pipe-naming": [true, "camelCase", "cde"],
         "semicolon": [
             true,
