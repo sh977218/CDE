@@ -15,10 +15,10 @@ public class SearchLinkedForms extends NlmCdeBaseTest {
         int i = 0;
         while (i > -1) {
             Assert.assertTrue(i < 10);
-            findElement(By.id("ftsearch-input")).clear();
-            findElement(By.id("ftsearch-input")).sendKeys("linkedForms.Retired:>0");
-            clickElement(By.id("search.submit"));
             try {
+                findElement(By.id("ftsearch-input")).clear();
+                findElement(By.id("ftsearch-input")).sendKeys("linkedForms.Retired:>0");
+                clickElement(By.id("search.submit"));
                 textPresent("7 results for");
                 i = -1;
             } catch (Exception e) {

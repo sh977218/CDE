@@ -659,10 +659,11 @@ export function init(app) {
             .catch(err => respondError(err, {req, res}));
     }
 
-    app.get('/idSources', (req, res) =>
-        IdSource.find({}, handleError({req, res}, sources => res.send(sources))));
+    app.get('/idSources', (req, res) => IdSource.find({}, handleError({req, res}, sources => res.send(sources))));
+
     app.get('/idSource/:id', (req, res) =>
         IdSource.findOneById(req.params.id, handleError({req, res}, source => res.send(source))));
+
     app.post('/idSource/:id', isSiteAdminMiddleware, (req, res) => {
         IdSource.findById(req.params.id, handleError({req, res}, doc => {
             if (doc) return res.status(409).send(req.params.id + " already exists.");
@@ -677,6 +678,7 @@ export function init(app) {
             }
         }));
     });
+
     app.put('/idSource/:id', isSiteAdminMiddleware, (req, res) => {
         IdSource.findById(req.body._id, handleError({req, res}, doc => {
             if (!doc) return res.status(404).send(req.params.id + " does not exist.");
@@ -688,6 +690,7 @@ export function init(app) {
             }
         }));
     });
+
     app.delete('/idSource/:id', isSiteAdminMiddleware, (req, res) =>
         IdSource.delete(res, req.params.id, handleError({req, res}, () => res.send())));
 }

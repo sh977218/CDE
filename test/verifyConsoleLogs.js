@@ -21,6 +21,7 @@ let expectedContent = {
         'Unable to get the Swagger UI URL from the server'
     ],
     checkDuplicatesClassification: 'the server responded with a status of 409',
+    createUser: 'with a status of 409',
     dupStewardValidation: [
         "Error publishing DataElement validation failed",
         "422 (Unprocessable Entity)"

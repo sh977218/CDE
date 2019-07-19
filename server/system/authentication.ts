@@ -1,5 +1,7 @@
-import { errorLogger } from '../system/logging';
-import { config } from '../system/parseConfig';
+import { errorLogger } from 'server/system/logging';
+import { config } from 'server/system/parseConfig';
+import { User } from 'shared/models.model';
+import * as express from 'express';
 
 const https = require('https');
 const xml2js = require('xml2js');
@@ -7,6 +9,12 @@ const mongo_data_system = require('./mongo-data');
 const request = require('request');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
+
+export type AuthenticatedRequest = {
+    user: User,
+    username: string,
+} & express.Request;
+
 
 const ticketValidationOptions = {
     host: config.uts.ticketValidation.host

@@ -74,4 +74,10 @@ public class CdeEditTest extends NlmCdeBaseTest {
         Assert.assertTrue(response.contains("64YoxVrtASF"));
     }
 
+    @Test
+    public void modifiedSinceAPIWrongFormat() {
+        get(baseUrl + "/api/cde/modifiedElements?from=2016-25-01").then().statusCode(300);
+    }
+
+
 }
