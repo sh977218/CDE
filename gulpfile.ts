@@ -40,7 +40,7 @@ function run(command, options?: ExecOptions): Promise<void> {
         exec(command, options, (err, stdout, stderr) => {
             stdout && console.log(stdout);
             stderr && console.error(stderr);
-            err ? reject(err) : resolve()
+            err ? reject(err) : resolve();
         });
     }));
 }

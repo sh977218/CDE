@@ -139,15 +139,13 @@ export function orgCommentsByCriteria(criteria: any, myOrgs: string[] | undefine
     Comment.aggregate(aggs, cb);
 }
 
-export function unapproved(cb: CbError<Comment[]>) {
-    let query = Comment.find({$or: [{pendingApproval: true}, {'replies.pendingApproval': true}]});
-    if (cb) query.exec(cb);
-    else return query.exec();
+export function unapproved() {
+    return Comment.find({$or: [{pendingApproval: true}, {'replies.pendingApproval': true}]});
 }
 
-export function numberUnapprovedMessageByUsername(username, cb = _.noop()) {
+export function numberUnapprovedMessageByUsername(username) {
     return Comment.countDocuments({
         $or: [{'user.username': username, pendingApproval: true},
             {'replies.user.username': username, 'replies.pendingApproval': true}]
-    }, cb);
+    });
 }
