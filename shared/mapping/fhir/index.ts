@@ -1,5 +1,5 @@
-import { FormElement, FormQuestion } from '../../../shared/form/form.model';
-import { FhirUri } from '../../../shared/mapping/fhir/fhir.model';
+import { FormElement, FormQuestion } from 'shared/form/form.model';
+import { FhirUri } from 'shared/mapping/fhir/fhir.model';
 
 export const externalCodeSystems: {id: string, uri: string}[] = [
     {id: 'Assessment Center', uri: 'http://www.neuroqol.org/ContactUs/Pages/default.aspx'},

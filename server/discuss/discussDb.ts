@@ -1,7 +1,7 @@
 import * as mongoose from 'mongoose';
 import { addStringtype } from '../system/mongoose-stringtype';
 import { config } from '../system/parseConfig';
-import { CbError } from '../../shared/models.model';
+import { CbError } from 'shared/models.model';
 
 addStringtype(mongoose);
 const Schema = mongoose.Schema;
@@ -29,7 +29,8 @@ export const commentSchema = new Schema(Object.assign({
     replies: [replySchema],
 }, replySchema), {usePushEach: true});
 
-export const Comment = conn.model('Comment', commentSchema);
+type CommentDocument = Comment & {organizationName: string} & mongoose.Document
+export const Comment: mongoose.Model<CommentDocument> = conn.model('Comment', commentSchema);
 
 export function byId(id, cb) {
     Comment.findById(id, cb);
@@ -63,16 +64,13 @@ export function save(comment, cb) {
     new Comment(comment).save(cb);
 }
 
-export function commentsForUser(username, from, size, cb) {
-    Comment.find({username: username}).skip(from).limit(size).sort({created: -1}).exec(cb);
-}
+// export function commentsByCriteria(criteria, from, size, cb: CbError<CommentDocument[]>) {
+//     Comment.find(criteria).skip(from).limit(size).sort({created: -1}).exec(cb);
+// }
 
-export function allComments(from, size, cb) {
-    Comment.find().skip(from).limit(size).sort({created: -1}).exec(cb);
-}
-
-export function orgComments(myOrgs, from, size, cb) {
-    Comment.aggregate([
+export function orgCommentsByCriteria(criteria: any, myOrgs: string[] | undefined, from: number, size: number, cb: CbError<CommentDocument[]>) {
+    let aggs: any[] = [
+        {$match: criteria},
         {
             $lookup: {
                 from: 'dataelements',
@@ -80,14 +78,18 @@ export function orgComments(myOrgs, from, size, cb) {
                 foreignField: 'tinyId',
                 as: 'embeddedCde'
             }
-        }, {
+        },
+        {
             $lookup: {
                 from: 'forms',
                 localField: 'element.eltId',
                 foreignField: 'tinyId',
                 as: 'embeddedForm'
             }
-        }, {
+        }
+    ];
+    if (myOrgs) {
+        aggs.push({
             $match: {
                 $or: [
                     {'embeddedCde.stewardOrg.name': {$in: myOrgs}},
@@ -96,12 +98,45 @@ export function orgComments(myOrgs, from, size, cb) {
                     {'embeddedForm.classification.stewardOrg.name': {$in: myOrgs}}
                 ]
             }
-        }, {
+        });
+    }
+    aggs = aggs.concat([
+        {
+            $unwind: {
+                path: '$embeddedCde',
+                preserveNullAndEmptyArrays: true
+            }
+        },
+        {
+            $unwind: {
+                path: '$embeddedForm',
+                preserveNullAndEmptyArrays: true
+            }
+        },
+        {
+            $addFields: {
+                organizationName: {
+                    $cond: {
+                        if: '$embeddedCde.stewardOrg.name',
+                        then: '$embeddedCde.stewardOrg.name',
+                        else: '$embeddedForm.stewardOrg.name'
+                    }
+                },
+            }
+        },
+        {
             $project: {
                 embeddedCde: 0,
-                embeddedForm: 0
+                embeddedForm: 0,
             }
-        }, {$sort: {created: -1}}, {$skip: from}, {$limit: size}], cb);
+        },
+        {$sort: {created: -1}},
+        {$skip: from}
+    ]);
+    if (size > 0) {
+        aggs.push({$limit: size});
+    }
+    Comment.aggregate(aggs, cb);
 }
 
 export function unapproved(cb: CbError<Comment[]>) {

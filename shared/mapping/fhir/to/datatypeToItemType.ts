@@ -1,10 +1,10 @@
-import { codeSystemOut } from '../../../../shared/mapping/fhir';
-import { newCodeableConcept } from '../../../../shared/mapping/fhir/datatype/fhirCodeableConcept';
-import { newCoding } from '../../../../shared/mapping/fhir/datatype/fhirCoding';
-import { CodeAndSystem, PermissibleValue } from '../../../../shared/models.model';
-import { DatatypeContainer, ValueDomain } from '../../../../shared/de/dataElement.model';
-import { FhirCoding, FhirQuantity } from '../../../../shared/mapping/fhir/fhir.model';
-import { Question } from '../../../../shared/form/form.model';
+import { codeSystemOut } from 'shared/mapping/fhir';
+import { newCodeableConcept } from 'shared/mapping/fhir/datatype/fhirCodeableConcept';
+import { newCoding } from 'shared/mapping/fhir/datatype/fhirCoding';
+import { CodeAndSystem, PermissibleValue } from 'shared/models.model';
+import { DatatypeContainer, ValueDomain } from 'shared/de/dataElement.model';
+import { FhirCoding, FhirQuantity } from 'shared/mapping/fhir/fhir.model';
+import { Question } from 'shared/form/form.model';
 
 export function containerToItemType(container: Question | ValueDomain): string { // http://hl7.org/fhir/item-type
     // NOT IMPLEMENTED: boolean, time, url, open-choice(choice+string), attachment, reference

@@ -1,5 +1,5 @@
 import { isEmpty } from 'lodash';
-import { DataElement, DataElementSource } from '../../../server/cde/mongo-cde';
+import { DataElement, DataElementSource } from 'server/cde/mongo-cde';
 import { batchloader, updatedByLoader } from '../../shared/updatedByLoader';
 import { createCde,compareCde,mergeCde } from '../CDE/cde';
 import { updateCde } from '../../shared/utility';

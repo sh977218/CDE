@@ -1,5 +1,5 @@
-import { FhirDevice } from '../../../../shared/mapping/fhir/fhirResource.model';
-import { newIdentifier } from '../../../../shared/mapping/fhir/to/toFhir';
+import { FhirDevice } from 'shared/mapping/fhir/fhirResource.model';
+import { newIdentifier } from 'shared/mapping/fhir/to/toFhir';
 
 export function newDevice(accessGUDId: any, parsedUdi?: any): FhirDevice {
     let di = accessGUDId.gudid.device;

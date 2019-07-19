@@ -1,6 +1,9 @@
 import { Injectable } from "@angular/core";
 import '../../node_modules/bootstrap-tour/build/css/bootstrap-tour.css';
 import * as Tour from 'bootstrap-tour/build/js/bootstrap-tour-standalone.min.js';
+import { Cb } from 'shared/models.model';
+
+type TourStep = any;
 
 const navigationSteps: Array<any> = [
     {
@@ -32,7 +35,7 @@ const navigationSteps: Array<any> = [
         title: "Help",
         element: "#helpLink",
         content: "You can find more help about the site here, or information on our APIs. The tour will now take you to the CDE search page.",
-        onNext: tour => new Promise(resolve => TourService.clickAndGoNext(tour, "#menu_cdes_link", "totalItems", resolve))
+        onNext: (tour: TourStep) => new Promise(resolve => TourService.clickAndGoNext(tour, "#menu_cdes_link", "totalItems", resolve))
     }
 ];
 
@@ -52,7 +55,7 @@ const searchResultSteps: Array<any> = [
         element: "#search_by_classification_NLM",
         content: "These boxes represent classifications. Clicking NLM will browse all CDEs classified by NLM.",
         placement: "left",
-        onNext: tour => new Promise(resolve => TourService.clickAndGoNext(tour, "#browseOrg-NLM", "resultList", resolve))
+        onNext: (tour: TourStep) => new Promise(resolve => TourService.clickAndGoNext(tour, "#browseOrg-NLM", "resultList", resolve))
     },
     {
         title: "Search Result",
@@ -90,7 +93,7 @@ const searchResultSteps: Array<any> = [
         title: "Search Result",
         element: "#linkToElt_0",
         content: "The tour will now take us to an individual record by clicking its name.",
-        onNext: tour => new Promise(resolve => TourService.clickAndGoNext(tour, "#linkToElt_0", "addToQuickBoard", resolve))
+        onNext: (tour: TourStep) => new Promise(resolve => TourService.clickAndGoNext(tour, "#linkToElt_0", "addToQuickBoard", resolve))
     }
 ];
 
@@ -143,49 +146,49 @@ const cdeSteps: Array<any> = [
         element: "#registrationStateDiv",
         content: "The registration status represents the maturity level of an element, with Standard and Preferred Standard being highest. Only qualified and above are retrieved in search results by default. When elements are first created, they get an incomplete status.",
         placement: "top",
-        onNext: tour => new Promise(resolve => TourService.clickAndGoNext(tour, "#pvs_tab", "permissibleValueDiv", resolve))
+        onNext: (tour: TourStep) => new Promise(resolve => TourService.clickAndGoNext(tour, "#pvs_tab", "permissibleValueDiv", resolve))
     },
     {
         title: "Permissible Values",
         element: "#pvs_tab",
         content: "This tab will tell us if a CDE is based on a number, text, value list or other datatype.",
         placement: "bottom",
-        onNext: tour => new Promise(resolve => TourService.clickAndGoNext(tour, "#naming_tab", "namingDiv", resolve))
+        onNext: (tour: TourStep) => new Promise(resolve => TourService.clickAndGoNext(tour, "#naming_tab", "namingDiv", resolve))
     },
     {
         title: "Names",
         element: "#naming_tab",
         content: "Any CDE may have multiple names. Names help identify the CDE and are also used as question labels on forms. A name can have one or more tags to describe the context of this name.",
         placement: "bottom",
-        onNext: tour => new Promise(resolve => TourService.clickAndGoNext(tour, "#classification_tab", "classificationDiv", resolve))
+        onNext: (tour: TourStep) => new Promise(resolve => TourService.clickAndGoNext(tour, "#classification_tab", "classificationDiv", resolve))
     },
     {
         title: "Classifications",
         element: "#classification_tab",
         content: "Classifications describe the way in which an organization may use a CDE or Form. A CDE can have hundreds of classification. Classifications are defined by steward. A steward may decide to reuse a CDE by adding his own classification to it.",
         placement: "bottom",
-        onNext: tour => new Promise(resolve => TourService.clickAndGoNext(tour, "#concepts_tab", "conceptsDiv", resolve))
+        onNext: (tour: TourStep) => new Promise(resolve => TourService.clickAndGoNext(tour, "#concepts_tab", "conceptsDiv", resolve))
     },
     {
         title: "Concepts",
         element: "#concepts_tab",
         content: "CDEs are sometimes described by one or more concepts. These concepts can come from any terminology, for example LOINC.",
         placement: "bottom",
-        onNext: tour => new Promise(resolve => TourService.clickAndGoNext(tour, "#referenceDocuments_tab", "referenceDocumentsDiv", resolve))
+        onNext: (tour: TourStep) => new Promise(resolve => TourService.clickAndGoNext(tour, "#referenceDocuments_tab", "referenceDocumentsDiv", resolve))
     },
     {
         title: "Reference Document",
         element: "#referenceDocuments_tab",
         content: "This section contains reference documents for the CDE.",
         placement: "bottom",
-        onNext: tour => new Promise(resolve => TourService.clickAndGoNext(tour, "#properties_tab", "propertiesDiv", resolve))
+        onNext: (tour: TourStep) => new Promise(resolve => TourService.clickAndGoNext(tour, "#properties_tab", "propertiesDiv", resolve))
     },
     {
         title: "Properties",
         element: "#properties_tab",
         content: "This sections show attributes of the CDE that are not common across CDEs. Steward may choose to store properties that are required for their process.",
         placement: "bottom",
-        onNext: tour => new Promise(resolve => TourService.clickAndGoNext(tour, "#ids_tab", "identifiersDiv", resolve))
+        onNext: (tour: TourStep) => new Promise(resolve => TourService.clickAndGoNext(tour, "#ids_tab", "identifiersDiv", resolve))
 
     },
     {
@@ -193,21 +196,21 @@ const cdeSteps: Array<any> = [
         element: "#ids_tab",
         content: "CDEs and Forms can be identified using multiple identification sources. When a group uses a CDE by a particular unique (scoped) identifier, it may be stored here.",
         placement: "bottom",
-        onNext: tour => new Promise(resolve => TourService.clickAndGoNext(tour, "#attachments_tab", "attachmentsDiv", resolve))
+        onNext: (tour: TourStep) => new Promise(resolve => TourService.clickAndGoNext(tour, "#attachments_tab", "attachmentsDiv", resolve))
     },
     {
         title: "Attachments",
         element: "#attachments_tab",
         content: "If a file is attached to a CDE, it can be viewed or downloaded here.",
         placement: "bottom",
-        onNext: tour => new Promise(resolve => TourService.clickAndGoNext(tour, "#history_tab", "historyDiv", resolve))
+        onNext: (tour: TourStep) => new Promise(resolve => TourService.clickAndGoNext(tour, "#history_tab", "historyDiv", resolve))
     },
     {
         title: "History",
         element: "#history_tab",
         content: "This section shows all prior states of the CDE. Each version can be view as it was at a given date. In addition, differences between versions can be highlighted to easily identify changes over time.",
         placement: "top",
-        onNext: tour => new Promise(resolve => TourService.clickAndGoNext(tour, "#rules_tab", "derivationRulesDiv", resolve))
+        onNext: (tour: TourStep) => new Promise(resolve => TourService.clickAndGoNext(tour, "#rules_tab", "derivationRulesDiv", resolve))
 
     },
     {
@@ -238,7 +241,7 @@ const cdeSteps: Array<any> = [
         title: "Forms",
         orphan: true,
         content: "We will now continue the tour and show Form features.",
-        onNext: tour => new Promise(resolve => TourService.clickAndGoNext(tour, "#menu_forms_link", "totalItems", resolve))
+        onNext: (tour: TourStep) => new Promise(resolve => TourService.clickAndGoNext(tour, "#menu_forms_link", "totalItems", resolve))
     }
 ];
 
@@ -247,21 +250,21 @@ const formSteps = [
         title: "Browse by Classification",
         element: ".mat-tab-label:first-child",
         content: "Forms are also browsed by Classification",
-        onNext: tour => new Promise(resolve => TourService.clickAndGoNext(tour, "#browseOrg-NLM", "resultList", resolve))
+        onNext: (tour: TourStep) => new Promise(resolve => TourService.clickAndGoNext(tour, "#browseOrg-NLM", "resultList", resolve))
     },
     {
         title: "Search Result",
         element: "#resultListTour",
         content: "We will now go into a form.",
         placement: "top",
-        onNext: tour => new Promise(resolve => TourService.clickAndGoNext(tour, "#linkToElt_0", "addToQuickBoard", resolve))
+        onNext: (tour: TourStep) => new Promise(resolve => TourService.clickAndGoNext(tour, "#linkToElt_0", "addToQuickBoard", resolve))
     },
     {
         title: "General Details",
         element: "#general_tab",
         content: "Forms have similar administrative details to CDE. When rendering is allowed, a preview of the form will display in this tab. There are multiple form rending types including: skip logic, printable forms, tables, and hidden questions. More detail about these features can be found on the Display Profiles tab.",
         placement: "bottom",
-        onNext: tour => new Promise(resolve => TourService.clickAndGoNext(tour, "#description_tab", "addToQuickBoard", resolve))
+        onNext: (tour: TourStep) => new Promise(resolve => TourService.clickAndGoNext(tour, "#description_tab", "addToQuickBoard", resolve))
     },
     {
         title: "Form Element",
@@ -287,12 +290,12 @@ const formSteps = [
 export class TourService {
     static steps = navigationSteps.concat(searchResultSteps).concat(cdeSteps).concat(formSteps);
 
-    static clickAndGoNext(tour, clickWhat: string, waitForWhat: string, cb) {
+    static clickAndGoNext(tour: TourStep, clickWhat: string, waitForWhat: string, cb: Cb) {
         (document.querySelector(clickWhat) as any).click();
         TourService.waitForEltId(waitForWhat, cb);
     }
 
-    static waitForEltId(eltId: string, cb) {
+    static waitForEltId(eltId: string, cb: Cb) {
         let checkExist = setInterval(() => {
             if (document.getElementById(eltId)) {
                 cb();

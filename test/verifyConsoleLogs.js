@@ -2,6 +2,7 @@ const logFolder = './build/consolelogs';
 const fs = require('fs');
 
 let expectedContent = {
+    addSiteAdmin: ['status of 422', 'status of 404'],
     assignVsacId: 'the server responded with a status of 404',
     badQuery: 'elasticSearch/cde - Failed to load resource: the server responded with a status of 400 (Bad Request)',
     boardFiveUnapprovedMessagesPerUserReply: 'the server responded with a status of 403 (Forbidden)',
@@ -11,8 +12,14 @@ let expectedContent = {
     ],
     cdeAddClassification: 'addCdeClassification/ - Failed to load resource: the server responded with a status of 409 (Conflict)',
     cdeLiveCommentTest: '*',
-    cdeTinyIdSwaggerApi: 'docs/swagger-ui-bundle.js 51:49866 "Could not find component"',
-    cdeTinyIdVersionSwaggerApi: 'docs/swagger-ui-bundle.js 51:49866 "Could not find component"',
+    cdeTinyIdSwaggerApi: [
+        'docs/swagger-ui-bundle.js 51:49866 "Could not find component"',
+        'Unable to get the Swagger UI URL from the server'
+    ],
+    cdeTinyIdVersionSwaggerApi: [
+        'docs/swagger-ui-bundle.js 51:49866 "Could not find component"',
+        'Unable to get the Swagger UI URL from the server'
+    ],
     checkDuplicatesClassification: 'the server responded with a status of 409',
     dupStewardValidation: [
         "Error publishing DataElement validation failed",
@@ -34,8 +41,14 @@ let expectedContent = {
         "Error publishing Form validation failed",
         "422 (Unprocessable Entity)"
     ],
-    formTinyIdSwaggerApi: 'docs/swagger-ui-bundle.js 51:49866 "Could not find component"',
-    formTinyIdVersionSwaggerApi: 'docs/swagger-ui-bundle.js 51:49866 "Could not find component"',
+    formTinyIdSwaggerApi: [
+        'docs/swagger-ui-bundle.js 51:49866 "Could not find component"',
+        'Unable to get the Swagger UI URL from the server'
+    ],
+    formTinyIdVersionSwaggerApi: [
+        'docs/swagger-ui-bundle.js 51:49866 "Could not find component"',
+        'Unable to get the Swagger UI URL from the server'
+    ],
     launchFhirApp: '*',
     logClientErrors: '*',
     meshTopics: 'classificationmanagement - Form submission canceled because the form is not connected',
@@ -55,6 +68,7 @@ let expectedContent = {
         'board - Failed to load resource: the server responded with a status of 403 (Forbidden)',
         'You have too many boards!'
     ],
+    validRulesPvUmls: 'Failed to load resource: the server responded with a status of 400 (Bad Request)',
     wrongLogin: 'login - Failed to load resource: the server responded with a status of 403'
 };
 

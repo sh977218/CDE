@@ -1,6 +1,6 @@
-import { handle404, handleError } from '../errorHandler/errHandler';
+import { handle404, handleError } from '../errorHandler/errorHandler';
 import { config } from '../system/parseConfig';
-import { stripBsonIds } from '../../shared/system/exportShared';
+import { stripBsonIds } from 'shared/system/exportShared';
 import {
     checkBoardOwnerShip, checkBoardViewerShip, loggedInMiddleware, nocacheMiddleware, unauthorizedPublishing
 } from '../system/authorization';

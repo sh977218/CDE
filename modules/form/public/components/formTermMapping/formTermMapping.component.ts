@@ -1,14 +1,21 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
-import { Subject } from 'rxjs/Subject';
-
+import { MatDialog } from '@angular/material';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
 import { IsAllowedService } from 'non-core/isAllowed.service';
+import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { Subject } from 'rxjs/Subject';
+import { MeshClassification } from 'server/mesh/meshDb';
 import { ElasticQueryResponse } from 'shared/models.model';
-import { MatDialog } from '@angular/material';
+
+type MeshClassification = {
+    flatClassification?: string,
+    eltId?: string,
+    meshDescriptors: string[],
+    flatTrees?: string[]
+};
 
 @Component({
     selector: 'cde-form-term-mapping',
@@ -16,12 +23,12 @@ import { MatDialog } from '@angular/material';
 })
 export class FormTermMappingComponent implements OnInit {
     @Input() elt: any;
-    @ViewChild('newTermMap') public newTermMap: TemplateRef<any>;
-    descriptor: { name: string, id: string };
+    @ViewChild('newTermMap') public newTermMap!: TemplateRef<any>;
+    descriptor!: { name: string, id: string } | null;
     descToName: any = {};
     flatMeshSimpleTrees: any[] = [];
-    mapping: any = {meshDescriptors: []};
-    meshTerm: string;
+    mapping: MeshClassification = {meshDescriptors: []};
+    meshTerm?: string;
     private searchTerms = new Subject<string>();
 
     constructor(private alert: AlertService,
@@ -36,9 +43,9 @@ export class FormTermMappingComponent implements OnInit {
             debounceTime(300),
             distinctUntilChanged(),
             switchMap(term => term
-                ? this.http.get((window as any).meshUrl
+                ? this.http.get<ElasticQueryResponse>((window as any).meshUrl
                     + '/api/search/record?searchInField=termDescriptor&searchType=exactMatch&q=' + term)
-                : EmptyObservable.create<string[]>()
+                : EmptyObservable.create<ElasticQueryResponse>()
             )
         ).subscribe((res: ElasticQueryResponse) => {
             if (res && res.hits && res.hits.hits.length === 1) {
@@ -53,9 +60,9 @@ export class FormTermMappingComponent implements OnInit {
     }
 
     addMeshDescriptor() {
-        this.mapping.meshDescriptors.push(this.descriptor.id);
+        this.mapping.meshDescriptors.push(this.descriptor!.id);
 
-        this.http.post('/server/mesh/meshClassification', this.mapping).subscribe(response => {
+        this.http.post<MeshClassification>('/server/mesh/meshClassification', this.mapping).subscribe(response => {
             this.alert.addAlert('success', 'Saved');
             this.mapping = response;
             this.reloadMeshTerms();
@@ -77,7 +84,7 @@ export class FormTermMappingComponent implements OnInit {
     reloadMeshTerms() {
         this.mapping.eltId = this.elt.tinyId;
         this.flatMeshSimpleTrees = [];
-        this.http.get<any>('/server/mesh/eltId/' + this.elt.tinyId).subscribe(response => {
+        this.http.get<MeshClassification>('/server/mesh/eltId/' + this.elt.tinyId).subscribe(response => {
             if (!response) return this.alert.addAlert('danger', 'There was an issue getting Mesh Terms.');
 
             if (response.eltId) this.mapping = response;
@@ -97,9 +104,9 @@ export class FormTermMappingComponent implements OnInit {
         });
     }
 
-    removeMeshDescriptor(i) {
+    removeMeshDescriptor(i: number) {
         this.mapping.meshDescriptors.splice(i, 1);
-        this.http.post('/server/mesh/meshClassification', this.mapping).subscribe(response => {
+        this.http.post<MeshClassification>('/server/mesh/meshClassification', this.mapping).subscribe(response => {
             this.alert.addAlert('success', 'Saved');
             this.mapping = response;
             this.reloadMeshTerms();

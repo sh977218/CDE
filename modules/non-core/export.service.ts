@@ -10,15 +10,24 @@ import * as JSZip from 'jszip';
 import * as JXON from 'jxon';
 import _intersectionWith from 'lodash/intersectionWith';
 import _noop from 'lodash/noop';
-import {
-    conditionsMetForStatusWithinOrg, evalCde, RegistrationValidatorService
-} from 'non-core/registrationValidator.service';
+import { processRules, RegistrationValidatorService, RuleStatus } from 'non-core/registrationValidator.service';
 import { SearchSettings } from 'search/search.model';
-import { DataElement } from 'shared/de/dataElement.model';
-import { CdeForm } from 'shared/form/form.model';
-import { ElasticQueryResponse, Item } from 'shared/models.model';
-import { convertToCsv, getCdeCsvHeader, projectCdeForExport } from 'core/system/export';
+import { DataElement, DataElementElastic } from 'shared/de/dataElement.model';
+import { CdeForm, CdeFormElastic } from 'shared/form/form.model';
+import { Cb1, CurationStatus, ElasticQueryResponse, Item, ItemElastic } from 'shared/models.model';
+import { convertToCsv, getCdeCsvHeader, projectItemForExport } from 'core/system/export';
 import { RedcapExport } from 'form/public/redcapExport';
+
+export type ExportRecord = {
+    tinyId: string,
+    cdeName: string,
+    validationRules?: RuleStatus[]
+};
+
+export type ExportRecordSettings = {
+    searchSettings: SearchSettings,
+    status?: CurationStatus,
+};
 
 @Injectable()
 export class ExportService {
@@ -28,9 +37,8 @@ export class ExportService {
                 protected userService: UserService,
                 protected http: HttpClient) {}
 
-    async resultToCsv(result) {
+    async resultToCsv(result: ItemElastic[]) {
         let settings = this.elasticService.searchSettings;
-        let csv = getCdeCsvHeader(settings.tableViewFields);
         if (settings.tableViewFields.linkedForms) {
             if (result.length < 50) {
                 for (let r of result) {
@@ -38,19 +46,19 @@ export class ExportService {
                         let forms = await new Promise<Array<CdeForm>>(resolve => {
                             let lfSettings = this.elasticService.buildElasticQuerySettings(new SearchSettings(r.tinyId));
                             this.elasticService.generalSearchQuery(lfSettings, 'form',
-                                (err?: string, esRes?: ElasticQueryResponse) => resolve(esRes.forms));
+                                (err?: string, esRes?: ElasticQueryResponse) => resolve(esRes && esRes.forms));
                         });
                         if (forms.length) r.linkedForms = forms.map(f => f.tinyId).join(', ');
                     }
                 }
             } else {
                 let lfSettings = this.elasticService.buildElasticQuerySettings(new SearchSettings());
-                let esResp = await this.http.post('/scrollExport/form', lfSettings).toPromise();
+                let esResp = await this.http.post<ElasticQueryResponse>('/scrollExport/form', lfSettings).toPromise();
                 let totalNbOfForms = 0;
                 let formCounter = 0;
                 let nonEmptyResults = result.filter(r => r !== undefined);
-                let intersectOnBatch = esResp => {
-                    if ((esResp as any).hits.hits.length) {
+                let intersectOnBatch = (esResp: ElasticQueryResponse) => {
+                    if (esResp.hits.hits.length) {
                         totalNbOfForms = (esResp as any).hits.total;
                         for (let hit of (esResp as any).hits.hits) {
                             formCounter++;
@@ -75,23 +83,18 @@ export class ExportService {
                 let keepScrolling = true;
                 while (keepScrolling) {
                     keepScrolling = intersectOnBatch(esResp);
-                    esResp = await this.http.get('/scrollExport/' + (esResp as any)._scroll_id).toPromise();
+                    esResp = await this.http.get<ElasticQueryResponse>('/scrollExport/' + (esResp as any)._scroll_id).toPromise();
                 }
             }
         }
-        result.forEach(r => {
-            if (!r) {
-                csv += '\n';
-            } else {
-                csv += convertToCsv(projectCdeForExport(r, settings.tableViewFields));
-            }
-        });
-        return csv;
+        return result.reduce(
+            (csv, r) => csv + (r ? convertToCsv(projectItemForExport(r, settings.tableViewFields)) : '\n'),
+            getCdeCsvHeader(settings.tableViewFields)
+        );
     }
 
-    exportSearchResults(type, module, exportSettings) {
-
-        if (module === 'form' && (!this.userService.user || !this.userService.user._id)) {
+    exportSearchResults(type: 'cvs'|'json'|'validationRules'|'xml', module: 'cde'|'form', exportSettings: ExportRecordSettings, cb?: Cb1<ExportRecord[] | undefined>) {
+        if (!this.userService.loggedIn() && (module === 'form' || module === 'cde' && type === 'validationRules')) {
             return this.alertService.addAlert('danger', 'Please login to access this feature');
         }
 
@@ -103,10 +106,10 @@ export class ExportService {
         }
 
         if (type !== 'validationRules') {
-            this.alertService.addAlert("", 'Your export is being generated, please wait.');
+            this.alertService.addAlert('', 'Your export is being generated, please wait.');
         }
 
-        this.alertService.addAlert("", 'Fetching ' + module + 's. Please wait...');
+        this.alertService.addAlert('', 'Fetching ' + module + 's. Please wait...');
         this.elasticService.getExport(
             this.elasticService.buildElasticQuerySettings(exportSettings.searchSettings), module || 'cde', (err, result) => {
                 if (err) {
@@ -115,18 +118,18 @@ export class ExportService {
                 }
 
                 let exporters = {
-                    csv: async (result: Item[]) => {
+                    csv: async (result: ItemElastic[]) => {
                         let csv = await this.resultToCsv(result);
                         let blob = new Blob([csv], {type: 'text/csv'});
                         saveAs(blob, 'SearchExport.csv');
-                        this.alertService.addAlert("", 'Export downloaded.');
+                        this.alertService.addAlert('', 'Export downloaded.');
                     },
-                    json: result => {
+                    json: (result: ItemElastic[]) => {
                         let blob = new Blob([JSON.stringify(result)], {type: 'application/json'});
                         saveAs(blob, 'SearchExport.json');
-                        this.alertService.addAlert("", 'Export downloaded.');
+                        this.alertService.addAlert('', 'Export downloaded.');
                     },
-                    xml: result => {
+                    xml: (result: ItemElastic[]) => {
                         let zip = new JSZip();
                         result.forEach(oneElt => {
                             if (oneElt.linkedForms) {
@@ -138,35 +141,45 @@ export class ExportService {
                         zip.generateAsync({type: 'blob'}).then(content => saveAs(content, 'SearchExport_XML.zip'));
                         this.alertService.addAlert('success', 'Export downloaded.');
                     },
-                    odm: result => {
+                    odm: (elts: CdeFormElastic[]) => {
                         let zip = new JSZip();
-                        result.forEach(oneElt => {
-                            getFormOdm(oneElt, (err, odmElt) => {
-                                if (!err) zip.file(oneElt.tinyId + '.xml', JXON.jsToString({ODM: odmElt}));
+                        elts.forEach(elt => {
+                            getFormOdm(elt, (err, odmElt) => {
+                                if (!err) zip.file(elt.tinyId + '.xml', JXON.jsToString({ODM: odmElt}));
                             });
                         });
                         zip.generateAsync({type: 'blob'}).then(content => saveAs(content, 'SearchExport_ODM.zip'));
                         this.alertService.addAlert('success', 'Export downloaded.');
                     },
-                    validationRules: (result) => {
+                    validationRules: (elts: ItemElastic[]) => {
+                        if (!cb) return;
                         let orgName = exportSettings.searchSettings.selectedOrg;
                         let status = exportSettings.status;
-                        let cdes = [];
-                        result.forEach((oneElt) => {
-                            let cdeOrgRules = this.registrationValidatorService.getOrgRulesForCde(oneElt);
-
-                            if (!conditionsMetForStatusWithinOrg(oneElt, orgName, status, cdeOrgRules)) {
-                                let record = {
-                                    tinyId: oneElt.tinyId,
-                                    cdeName: oneElt.designations[0].designation,
-                                    validationRules: evalCde(oneElt, orgName, status, cdeOrgRules),
-                                };
-                                if (!record.validationRules.every(function (x) {
-                                        return x.cdePassingRule;
-                                    })) cdes.push(record);
+                        let validations: Promise<ExportRecord | undefined>[] = elts.map(elt => {
+                            const cdeOrgRules = this.registrationValidatorService.getOrgRulesForCde(elt);
+                            const ruleStatuses = processRules(elt, orgName, status, cdeOrgRules);
+                            if (!ruleStatuses) {
+                                return undefined;
                             }
+                            return Promise.all(ruleStatuses.map(rule => rule.ruleResultPromise)).then(results => {
+                                if (results.every(result => !result)) {
+                                    return undefined; // All PASS
+                                }
+                                const record: ExportRecord = {
+                                    tinyId: elt.tinyId,
+                                    cdeName: elt.designations[0].designation,
+                                    validationRules: ruleStatuses,
+                                };
+                                results.forEach((ri, i) => {
+                                    record.validationRules![i].ruleError = ri;
+                                });
+                                return record;
+                            });
                         });
-                        if (exportSettings.cb) exportSettings.cb(cdes.slice(0, 100));
+                        Promise.all(validations).then(
+                            r => cb(r.filter(r => r).slice(0, 100)),
+                            () => cb(undefined)
+                        );
                     }
                 };
 
@@ -183,30 +196,30 @@ export class ExportService {
             });
     }
 
-    async quickBoardExport(elts) {
-        this.alertService.addAlert("", 'Fetching cdes. Please wait...');
-        let csv = await this.resultToCsv(elts);
+    async quickBoardExport(elts: Item[]) {
+        this.alertService.addAlert('', 'Fetching cdes. Please wait...');
+        let csv = await this.resultToCsv(elts as ItemElastic[]);
         if (csv) {
             let blob = new Blob([csv], {type: 'text/csv'});
             saveAs(blob, 'QuickBoardExport' + '.csv');
-            this.alertService.addAlert("", 'Export downloaded.');
+            this.alertService.addAlert('', 'Export downloaded.');
         } else {
             this.alertService.addAlert('danger', 'Something went wrong, please try again in a minute.');
         }
     }
 
     async formCdeExport(form: CdeForm) {
-        this.alertService.addAlert("", 'Fetching cdes. Please wait...');
+        this.alertService.addAlert('', 'Fetching cdes. Please wait...');
         let tinyIdList = getFormQuestionsAsQuestionCde(form).map(f => f.tinyId);
         let elts = await this.http.get<DataElement[]>('/deList/' + tinyIdList).toPromise().catch(_noop);
         let csv;
         if (elts) {
-            csv = await this.resultToCsv(elts);
+            csv = await this.resultToCsv(elts as DataElementElastic[]);
         }
         if (csv) {
             let blob = new Blob([csv], {type: 'text/csv'});
             saveAs(blob, 'FormCdes-' + form.tinyId + '.csv');
-            this.alertService.addAlert("", 'Export downloaded.');
+            this.alertService.addAlert('', 'Export downloaded.');
         } else {
             this.alertService.addAlert('danger', 'Something went wrong, please try again in a minute.');
         }
@@ -214,7 +227,7 @@ export class ExportService {
 
     redcapExport(form: CdeForm) {
         RedcapExport.getZipRedCap(form);
-        this.alertService.addAlert("", 'Export downloaded.');
+        this.alertService.addAlert('', 'Export downloaded.');
     }
 
 

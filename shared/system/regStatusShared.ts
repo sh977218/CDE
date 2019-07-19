@@ -1,4 +1,4 @@
-import { CurationStatus } from '../../shared/models.model';
+import { CurationStatus } from 'shared/models.model';
 
 // @TODO refactor this to = {'pref standard': {help: '', curHelp: ''}}
 export const statusList: {name: CurationStatus, help: string, curHelp: string}[] = [

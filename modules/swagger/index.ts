@@ -1,6 +1,6 @@
 'use strict';
-
 import { readFileSync } from 'fs';
+import { Express } from 'express';
 
 const config = require('config');
 var swaggerTools = require('swagger-tools');
@@ -14,14 +14,14 @@ var options = {
 };
 
 // The Swagger document (require it, build it programmatically, fetch it from a URL, ...)
-var spec = readFileSync(path.join(APP_DIR, 'modules/swagger/api/swagger.yaml'), 'utf8');
+var spec = readFileSync(path.join((global as any).APP_DIR, 'modules/swagger/api/swagger.yaml'), 'utf8');
 var swaggerDoc = jsyaml.safeLoad(spec);
 swaggerDoc.host = config.publicUrl.substr(config.publicUrl.indexOf('//') + 2);
 swaggerDoc.schemes = [config.publicUrl.substr(0, config.publicUrl.indexOf('://'))];
 
-export function init(app) {
+export function init(app: Express) {
     // Initialize the Swagger middleware
-    swaggerTools.initializeMiddleware(swaggerDoc, function (middleware) {
+    swaggerTools.initializeMiddleware(swaggerDoc, function (middleware: any) {
         // Interpret Swagger resources and attach metadata to request - must be first in swagger-tools middleware chain
         app.use(middleware.swaggerMetadata());
 

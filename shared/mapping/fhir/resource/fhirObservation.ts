@@ -1,12 +1,12 @@
 import { getIds } from 'core/form/formAndFe';
-import { newCodeableConcept } from '../../../../shared/mapping/fhir/datatype/fhirCodeableConcept';
-import { newCoding } from '../../../../shared/mapping/fhir/datatype/fhirCoding';
-import { toRef } from '../../../../shared/mapping/fhir/datatype/fhirReference';
-import { FormElement } from '../../../../shared/form/form.model';
+import { newCodeableConcept } from 'shared/mapping/fhir/datatype/fhirCodeableConcept';
+import { newCoding } from 'shared/mapping/fhir/datatype/fhirCoding';
+import { toRef } from 'shared/mapping/fhir/datatype/fhirReference';
+import { FormElement } from 'shared/form/form.model';
 import {
     FhirEncounter, FhirObservation, FhirObservationComponent, FhirPatient
-} from '../../../../shared/mapping/fhir/fhirResource.model';
-import { FhirCodeableConcept } from '../../../../shared/mapping/fhir/fhir.model';
+} from 'shared/mapping/fhir/fhirResource.model';
+import { FhirCodeableConcept } from 'shared/mapping/fhir/fhir.model';
 
 type GetDisplay = (system?: string, code?: string) => Promise<string>;
 

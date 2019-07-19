@@ -1,4 +1,4 @@
-import { CbRet } from '../../shared/models.model';
+import { CbRet } from 'shared/models.model';
 
 export function arrayFill<T>(size: number, fillFn: CbRet<T>) {
     return Array.apply(null, new Array(size)).map(fillFn);
@@ -35,6 +35,23 @@ export function partition<T>(arr: T[], condition: CbRet<boolean, T, number, T[]>
     }, [[], []]);
 }
 
+export function promiseArrayMapSeries<T, U>(array: T[], iterCb: CbRet<Promise<U>, T, number, T[]>): Promise<U[]> {
+    return array.reduce(
+        (ready, code, i, array) => ready.then(
+            results => iterCb(code, i, array).then(result => [...results, result])
+        ),
+        Promise.resolve<U[]>([])
+    );
+}
+
+export function promiseDelay<T>(duration: number): () => Promise<T> {
+    return (...args: any[]) => new Promise<T>((resolve, reject) => {
+        setTimeout(() => {
+            resolve(...args);
+        }, duration);
+    });
+}
+
 export function push2<T>(array: T[], ...element: T[]): T[] {
     array.push(...element);
     return array;
@@ -50,4 +67,19 @@ export function reduceOptionalArray<T, U>(arr: U[], cb: (a: T, c: U) => T, initi
 
 export function stringCompare(a: string, b: string): number {
     return a > b ? 1 : (a < b ? -1 : 0);
+}
+
+export function updateTag<T>(array: T[] | undefined, status: boolean, tag: T): T[] {
+    if (!array) array = [];
+    if (status) {
+        if (!array.includes(tag)) {
+            array.push(tag);
+        }
+    } else {
+        const index = array.indexOf(tag);
+        if (index > -1) {
+            array.splice(index, 1);
+        }
+    }
+    return array;
 }

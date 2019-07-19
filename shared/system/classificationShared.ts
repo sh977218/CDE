@@ -1,6 +1,8 @@
+// @ts-ignore: error TS2497: Module '"C:/cde/node_modules/@types/lodash/find"' resolves to a non-module entity and cannot be imported using this construct.
 import * as _find from 'lodash/find';
+// @ts-ignore: error TS2497: Module '"C:/cde/node_modules/@types/lodash/slice"' resolves to a non-module entity and cannot be imported using this construct.
 import * as _slice from 'lodash/slice';
-import { Cb, Cb1, Classification, ClassificationElement, Item, MongooseType, Organization } from '../../shared/models.model';
+import { Cb, Cb1, Classification, ClassificationElement, Item, MongooseType, Organization } from 'shared/models.model';
 
 export const actions: {
     create: string,

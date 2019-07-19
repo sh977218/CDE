@@ -1,5 +1,5 @@
 import { isEmpty } from 'lodash';
-import { Form } from '../../../server/form/mongo-form';
+import { Form } from 'server/form/mongo-form';
 import { batchloader, updatedByLoader } from '../../shared/updatedByLoader';
 import { compareForm, createForm, mergeForm } from '../Form/form';
 import { updateForm } from '../../shared/utility';

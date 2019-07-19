@@ -1,6 +1,6 @@
-import { newPeriod } from '../../../../shared/mapping/fhir/datatype/fhirPeriod';
-import { newReference } from '../../../../shared/mapping/fhir/datatype/fhirReference';
-import { FhirEncounter } from '../../../../shared/mapping/fhir/fhirResource.model';
+import { newPeriod } from 'shared/mapping/fhir/datatype/fhirPeriod';
+import { newReference } from 'shared/mapping/fhir/datatype/fhirReference';
+import { FhirEncounter } from 'shared/mapping/fhir/fhirResource.model';
 
 export function newEncounter(date: string, subject: string, serviceProvider?: string): FhirEncounter {
     return {
