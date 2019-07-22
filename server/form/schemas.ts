@@ -208,7 +208,7 @@ export const formJson = {
     noRenderAllowed: Boolean,
     copyright: {
         authority: StringType,
-        text: StringType
+        text: {type: StringType, default: ''}
     },
     formElements: [innerFormEltSchema],
     displayProfiles: [DisplayProfileSchema],

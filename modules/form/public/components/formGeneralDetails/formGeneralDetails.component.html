@@ -19,10 +19,10 @@
                    id="isCopyrighted" title="copyrighted" (change)="onEltChange.emit();"/>
             <div *ngIf="elt.isCopyrighted">
                 Statement:
-                <cde-inline-edit id="formCopyrightText" [(model)]="elt?.copyright.text"
+                <cde-inline-edit id="formCopyrightText" [(model)]="elt.copyright?.text"
                                  [isAllowed]="canEdit" (modelChange)="onEltChange.emit();"></cde-inline-edit>
                 Authority:
-                <cde-inline-edit id="formCopyrightAuthority" [(model)]="elt?.copyright.authority"
+                <cde-inline-edit id="formCopyrightAuthority" [(model)]="elt.copyright?.authority"
                                  [isAllowed]="canEdit" (modelChange)="onEltChange.emit();"></cde-inline-edit>
             </div>
         </dd>
