@@ -1,6 +1,7 @@
-import { isEmpty } from 'lodash';
+import { cloneDeep, isEmpty } from 'lodash';
 import { Form } from 'server/form/mongo-form';
 import { DataElement } from 'server/cde/mongo-cde';
+import { fixCdeError, fixValueDomain } from './fixDataElement';
 
 process.on('unhandledRejection', function (error) {
     console.log(error);
@@ -22,56 +23,92 @@ function fixEmptyAnswer(answers) {
     return result.filter(pv => !isEmpty(pv.permissibleValue));
 }
 
+async function createCde(fe, stewardOrg, registrationState) {
+    let datatype = fe.question.datatype;
+    let createCde: any = {
+        tinyId: fe.question.cde.tinyId,
+        designations: [{designation: fe.label}],
+        registrationState,
+        stewardOrg,
+        valueDomain: {
+            datatype,
+            datatypeText: fe.question.datatypeText,
+            datatypeNumber: fe.question.datatypeNumber,
+            datatypeDate: fe.question.datatypeDate,
+            datatypeTime: fe.question.datatypeTime,
+            datatypeExternallyDefined: fe.question.datatypeExternallyDefined,
+            datatypeValueList: fe.question.datatypeValueList,
+            datatypeDynamicCodeList: fe.question.datatypeDynamicCodeList,
+            permissibleValues: fe.question.permissibleValues
+        }
+    };
+    if (fe.question.cde.version) createCde.version = fe.question.cde.version;
+
+    createCde.valueDomain = fixValueDomain(createCde);
+    fixCreated(createCde);
+    fixCreatedBy(createCde);
+    let newCde = new DataElement(createCde);
+    fixCdeError(newCde);
+
+    let cond: any = {tinyId: fe.question.cde.tinyId};
+    if (fe.question.cde.version) cond.version = fe.question.cde.version;
+    else cond.archived = false;
+    await DataElement.updateOne(cond, createCde, {upsert: true});
+    let result = await DataElement.findOne(cond);
+    if (!result) {
+        process.exit(1);
+    }
+    return result;
+}
+
 async function fixQuestion(fe, form) {
     let cond: any = {tinyId: fe.question.cde.tinyId};
     if (fe.question.cde.version) cond.version = fe.question.cde.version;
     else cond.archived = false;
     let cde = await DataElement.findOne(cond);
     if (!cde) {
-        let error = `${form.tinyId} has ${fe.label} ${fe.question.cde.tinyId} not found. `;
-        errors.push(error);
+        let error = `${form.tinyId} has label '${fe.label}' not found. cond: ${JSON.stringify(cond)}. creating.`;
         console.log(error);
-        process.exit(1);
-    } else {
-        let cdeObj = cde.toObject();
-        let question: any = {
-            unitsOfMeasure: fe.question.unitsOfMeasure,
-            required: fe.question.required,
-            invisible: fe.question.invisible,
-            editable: fe.question.editable,
-            multiselect: !!fe.question.multiselect,
-            answers: fixEmptyAnswer(fe.question.answers),
-            defaultAnswer: fe.question.defaultAnswer,
-            cde: {
-                tinyId: fe.question.cde.tinyId,
-                name: fe.question.cde.name,
-                version: fe.question.cde.version,
-                ids: cde.ids,
-                derivationRules: fe.question.cde.derivationRules
-            },
-        };
-        let valueDomain = cdeObj.valueDomain;
-
-        if (valueDomain === 'Text' && !isEmpty(valueDomain.datatypeText)) {
-            question.datatypeText = valueDomain.datatypeText;
-        }
-        if (valueDomain === 'Number' && !isEmpty(valueDomain.datatypeNumber)) {
-            question.datatypeNumber = valueDomain.datatypeNumber;
-        }
-        if (valueDomain === 'Date' && !isEmpty(valueDomain.datatypeDate)) {
-            question.datatypeDate = valueDomain.datatypeDate;
-        }
-        if (valueDomain === 'Time' && !isEmpty(valueDomain.datatypeTime)) {
-            question.datatypeTime = valueDomain.datatypeTime;
-        }
-        if (valueDomain === 'Dynamic Code List' && !isEmpty(valueDomain.datatypeDynamicCodeList)) {
-            question.datatypeDynamicCodeList = valueDomain.datatypeDynamicCodeList;
-        }
-        if (valueDomain === 'Value List' && !isEmpty(valueDomain.datatypeValueList)) {
-            question.cde.permissibleValues = valueDomain.permissibleValues;
-        }
-        fe.question = question;
+        cde = await createCde(cloneDeep(fe), form.stewardOrg, form.registrationState);
     }
+    let cdeObj = cde.toObject();
+    let question: any = {
+        unitsOfMeasure: fe.question.unitsOfMeasure,
+        required: fe.question.required,
+        invisible: fe.question.invisible,
+        editable: fe.question.editable,
+        multiselect: !!fe.question.multiselect,
+        answers: fe.question.answers ? fixEmptyAnswer(fe.question.answers) : [],
+        defaultAnswer: fe.question.defaultAnswer,
+        cde: {
+            tinyId: fe.question.cde.tinyId,
+            name: fe.question.cde.name,
+            version: cde.version,
+            ids: cde.ids,
+            derivationRules: fe.question.cde.derivationRules
+        },
+    };
+    let valueDomain = cdeObj.valueDomain;
+
+    if (valueDomain === 'Text' && !isEmpty(valueDomain.datatypeText)) {
+        question.datatypeText = valueDomain.datatypeText;
+    }
+    if (valueDomain === 'Number' && !isEmpty(valueDomain.datatypeNumber)) {
+        question.datatypeNumber = valueDomain.datatypeNumber;
+    }
+    if (valueDomain === 'Date' && !isEmpty(valueDomain.datatypeDate)) {
+        question.datatypeDate = valueDomain.datatypeDate;
+    }
+    if (valueDomain === 'Time' && !isEmpty(valueDomain.datatypeTime)) {
+        question.datatypeTime = valueDomain.datatypeTime;
+    }
+    if (valueDomain === 'Dynamic Code List' && !isEmpty(valueDomain.datatypeDynamicCodeList)) {
+        question.datatypeDynamicCodeList = valueDomain.datatypeDynamicCodeList;
+    }
+    if (valueDomain === 'Value List' && !isEmpty(valueDomain.datatypeValueList)) {
+        question.cde.permissibleValues = valueDomain.permissibleValues;
+    }
+    fe.question = question;
 }
 
 async function loopFe(formElement, form) {
@@ -116,7 +153,7 @@ function fixCreated(cde) {
     cde.created = defaultDate;
 }
 
-async function fixError(form) {
+async function fixFormError(form) {
     if (!form.createdBy) {
         fixCreatedBy(form);
     }
@@ -145,7 +182,7 @@ async function fixError(form) {
 
     cursor.eachAsync(async (form: any) => {
         form.lastMigrationScript = 'fixForm';
-        await fixError(form);
+        await fixFormError(form);
         await form.save().catch(error => {
             console.log(`${form.tinyId} ${error}`);
             process.exit(1);

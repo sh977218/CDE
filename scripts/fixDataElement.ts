@@ -1,12 +1,11 @@
-import { isEmpty } from 'lodash';
+import { isEmpty, uniqBy } from 'lodash';
 import { DataElement } from 'server/cde/mongo-cde';
 
 process.on('unhandledRejection', function (error) {
     console.log(error);
 });
 
-function fixValueDomain(cde) {
-    let cdeObj = cde.toObject();
+export function fixValueDomain(cdeObj) {
     if (!cdeObj.valueDomain.datatype) {
         cdeObj.valueDomain.datatype = 'Text';
     }
@@ -29,7 +28,7 @@ function fixValueDomain(cde) {
         }
     }
     if (datatype === 'Value List') {
-        if (!cdeObj.valueDomain.permissibleValues.length) {
+        if (!cdeObj.valueDomain.permissibleValues) {
             cdeObj.valueDomain.permissibleValues = [{permissibleValue: '5'}];
         }
         cdeObj.valueDomain.permissibleValues = fixEmptyPermissibleValue(cdeObj.valueDomain.permissibleValues);
@@ -38,7 +37,7 @@ function fixValueDomain(cde) {
         delete cdeObj.valueDomain[p];
     });
 
-    cde.valueDomain = cdeObj.valueDomain;
+    return cdeObj.valueDomain;
 }
 
 function fixDatatypeText(datatypeText) {
@@ -68,13 +67,13 @@ function fixSourceName(cde) {
     cde.sources = cdeObj.sources;
 }
 
-function fixCreated(cde) {
+export function fixCreated(cde) {
     let defaultDate = new Date();
     defaultDate.setFullYear(1969, 1, 1);
     cde.created = defaultDate;
 }
 
-function fixCreatedBy(cde) {
+export function fixCreatedBy(cde) {
     cde.createdBy = {
         username: 'nobody'
     };
@@ -99,16 +98,22 @@ function fixEmptyPermissibleValue(permissibleValues) {
     return result.filter(pv => !isEmpty(pv.permissibleValue));
 }
 
-function fixError(cde) {
+function fixClassification(cde) {
+    let cdeObj = cde.toObject();
+    cde.classification = uniqBy(cdeObj.classification, 'stewardOrg.name');
+}
+
+export function fixCdeError(cde) {
     if (!cde.createdBy) {
         fixCreatedBy(cde);
     }
     if (!cde.created) {
         fixCreated(cde);
     }
-    fixValueDomain(cde);
+    cde.valueDomain = fixValueDomain(cde.toObject());
     fixEmptyDesignation(cde);
     fixSourceName(cde);
+    fixClassification(cde);
 }
 
 (function () {
@@ -116,7 +121,7 @@ function fixError(cde) {
     let cursor = DataElement.find({lastMigrationScript: {$ne: 'fixDataElement'}}).cursor();
     cursor.eachAsync(async (cde: any) => {
         cde.lastMigrationScript = 'fixDataElement';
-        fixError(cde);
+        fixCdeError(cde);
         await cde.save().catch(error => {
             throw(`${cde.tinyId} ${error}`);
         });
