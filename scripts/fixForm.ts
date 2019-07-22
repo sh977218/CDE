@@ -1,6 +1,6 @@
 import { isEmpty } from 'lodash';
-import { Form } from '../server/form/mongo-form';
-import { DataElement } from '../server/cde/mongo-cde';
+import { Form } from 'server/form/mongo-form';
+import { DataElement } from 'server/cde/mongo-cde';
 
 process.on('unhandledRejection', function (error) {
     console.log(error);
@@ -141,11 +141,7 @@ async function fixError(form) {
 
 (function () {
     let formCount = 0;
-    let cursor = Form.find({
-        lastMigrationScript: {$ne: 'fixForm'},
-        'ids.source': 'PhenX',
-        archived: false
-    }).cursor();
+    let cursor = Form.find({lastMigrationScript: {$ne: 'fixForm'}}).cursor();
 
     cursor.eachAsync(async (form: any) => {
         form.lastMigrationScript = 'fixForm';

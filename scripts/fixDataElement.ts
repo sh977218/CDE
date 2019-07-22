@@ -1,5 +1,5 @@
 import { isEmpty } from 'lodash';
-import { DataElement } from '../server/cde/mongo-cde';
+import { DataElement } from 'server/cde/mongo-cde';
 
 process.on('unhandledRejection', function (error) {
     console.log(error);
@@ -29,6 +29,9 @@ function fixValueDomain(cde) {
         }
     }
     if (datatype === 'Value List') {
+        if (!cdeObj.valueDomain.permissibleValues.length) {
+            cdeObj.valueDomain.permissibleValues = [{permissibleValue: '5'}];
+        }
         cdeObj.valueDomain.permissibleValues = fixEmptyPermissibleValue(cdeObj.valueDomain.permissibleValues);
     }
     myProps.filter(e => e !== checkType).forEach(p => {
@@ -110,11 +113,7 @@ function fixError(cde) {
 
 (function () {
     let cdeCount = 0;
-    let cursor = DataElement.find({
-        lastMigrationScript: {$ne: 'fixDataElement'},
-        'registrationState.registrationStatus': {$ne: "Retired"},
-        archived: false
-    }).cursor();
+    let cursor = DataElement.find({lastMigrationScript: {$ne: 'fixDataElement'}}).cursor();
     cursor.eachAsync(async (cde: any) => {
         cde.lastMigrationScript = 'fixDataElement';
         fixError(cde);
