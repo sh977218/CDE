@@ -13,7 +13,7 @@ function run() {
         cde.lastMigrationScript = 'fixDataElement';
         fixCdeError(cde);
         await cde.save().catch(error => {
-            throw(`${cde.tinyId} ${error}`);
+            throw `await cde.save() Error on ${cde.tinyId} ${error}`;
         });
         cdeCount++;
         console.log(`cdeCount: ${cdeCount}`);
