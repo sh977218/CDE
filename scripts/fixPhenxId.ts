@@ -1,4 +1,4 @@
-import { Form } from '../server/form/mongo-form';
+import { Form } from 'server/form/mongo-form';
 
 (function () {
     let formCount = 0;
@@ -19,6 +19,10 @@ import { Form } from '../server/form/mongo-form';
         formCount++;
         console.log(`formCount: ${formCount}`);
     }).then(e => {
-        console.log(e);
+        if (e) throw e;
+        else {
+            console.log('finished');
+            process.exit(0);
+        }
     })
 })();
