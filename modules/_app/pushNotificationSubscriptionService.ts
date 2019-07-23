@@ -33,7 +33,7 @@ export class PushNotificationSubscriptionService {
                     if (permissionResult === 'granted') {
                         resolve();
                     } else {
-                        reject('Notification permission denied.');
+                        reject(new Error('Notification permission denied.'));
                     }
                 });
             });
@@ -58,10 +58,16 @@ export class PushNotificationSubscriptionService {
 
     static fetchError(error: Error): Promise<any> {
         PushNotificationSubscriptionService.handleError(error);
-        if (error instanceof Error
-            && (error.message === 'Failed to fetch' || error.message === 'Unexpected token < in JSON at position 0')) {
-            throw 'Server is not available or you are offline.';
+        if (error instanceof Error) {
+            if (error.message.indexOf('denied')) {
+                alert("Your browser preferences prevent notifications from this website");
+                return;
+            }
+            if (error.message === 'Failed to fetch' || error.message === 'Unexpected token < in JSON at position 0') {
+                throw 'Server is not available or you are offline.';
+            }
         }
+        console.log(JSON.stringify(error));
         throw error;
     }
 
@@ -151,7 +157,7 @@ export class PushNotificationSubscriptionService {
                 .replace(/_/g, '/')
             ;
             const rawData = window.atob(base64);
-            return Uint8Array.from(Array.from(rawData).map((char) => char.charCodeAt(0)));
+            return Uint8Array.from(Array.from(rawData).map(char => char.charCodeAt(0)));
         }
         try {
             let pushSubscription: PushSubscription = await registration.pushManager.subscribe({
