@@ -114,7 +114,7 @@ export function init(app, daoManager) {
     });
 
     app.get('/cde/search', (req, res) => {
-        let selectedOrg = req.query.selectedOrg;
+        const selectedOrg = req.query.selectedOrg;
         let pageString = req.query.page; // starting from 1
         if (!pageString) pageString = '1';
         if (isSearchEngine(req)) {
@@ -126,36 +126,20 @@ export function init(app, daoManager) {
                     archived: false,
                     'registrationState.registrationStatus': 'Qualified'
                 };
-                deCount(cond, (err, totalCount) => {
-                    if (err) {
-                        res.status(500).send('ERROR - Static Html Error, /cde/search');
-                        errorLogger.error('Error: Static Html Error', {
-                            stack: err.stack,
-                            origin: req.url
+                deCount(cond, handleError({req, res}, totalCount => {
+                    DataElement.find(cond, 'tinyId designations', {
+                        skip: pageSize * (pageNum - 1),
+                        limit: pageSize
+                    }, handleError({req, res}, cdes => {
+                        let totalPages = totalCount / pageSize;
+                        if (totalPages % 1 > 0) totalPages = totalPages + 1;
+                        res.render('bot/cdeSearchOrg', 'system', {
+                            cdes: cdes,
+                            totalPages: totalPages,
+                            selectedOrg: selectedOrg
                         });
-                    } else {
-                        DataElement.find(cond, 'tinyId designations', {
-                            skip: pageSize * (pageNum - 1),
-                            limit: pageSize
-                        }, (err, cdes) => {
-                            if (err) {
-                                res.status(500).send('ERROR - Static Html Error, /cde/search');
-                                errorLogger.error('Error: Static Html Error', {
-                                    stack: err.stack,
-                                    origin: req.url
-                                });
-                            } else {
-                                let totalPages = totalCount / pageSize;
-                                if (totalPages % 1 > 0) totalPages = totalPages + 1;
-                                res.render('bot/cdeSearchOrg', 'system', {
-                                    cdes: cdes,
-                                    totalPages: totalPages,
-                                    selectedOrg: selectedOrg
-                                });
-                            }
-                        });
-                    }
-                });
+                    }));
+                }));
             } else {
                 res.render('bot/cdeSearch', 'system');
             }
@@ -164,23 +148,15 @@ export function init(app, daoManager) {
         }
     });
 
-    app.get('/deView', function (req, res) {
+    app.get('/deView', (req, res) => {
         const {tinyId, version} = req.query;
-        deByTinyIdVersion(tinyId, version, (err, cde) => {
-            if (err) {
-                res.status(500).send('ERROR - Static Html Error, /deView');
-                errorLogger.error('Error: Static Html Error', {
-                    stack: err.stack,
-                    origin: req.url
-                });
+        deByTinyIdVersion(tinyId, version, handleError({req, res}, cde => {
+            if (isSearchEngine(req)) {
+                res.render('bot/deView', 'system', {elt: cde});
             } else {
-                if (isSearchEngine(req)) {
-                    res.render('bot/deView', 'system', {elt: cde});
-                } else {
-                    respondHomeFull(req, res);
-                }
+                respondHomeFull(req, res);
             }
-        });
+        }));
     });
 
 

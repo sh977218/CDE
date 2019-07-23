@@ -232,7 +232,7 @@ export function create(elt, user, callback) {
     });
 }
 
-export function update(elt, user, options: any = {}, callback: CbError<DE> = () => {}) {
+export function update(elt, user, options: any = {}, callback: CbError<DE>) {
     if (elt.toObject) elt = elt.toObject();
     DataElement.findById(elt._id, (err, dataElement) => {
         if (dataElement.archived) {
@@ -245,16 +245,11 @@ export function update(elt, user, options: any = {}, callback: CbError<DE> = () 
         updateUser(elt, user);
 
         // user cannot edit sources.
-        if (!options.updateSources) {
-            elt.sources = dataElement.sources;
-        }
+        elt.sources = dataElement.sources;
 
         // because it's draft not edit attachment
         if (options.updateAttachments) {
             elt.attachments = dataElement.attachments;
-        }
-        if (options.updateClassification) {
-            elt.classification = dataElement.classification;
         }
 
         const newElt = new DataElement(elt);
