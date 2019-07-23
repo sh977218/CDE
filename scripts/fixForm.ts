@@ -1,7 +1,7 @@
 import { cloneDeep, isEmpty } from 'lodash';
 import { Form } from 'server/form/mongo-form';
 import { DataElement } from 'server/cde/mongo-cde';
-import { fixCdeError, fixValueDomain } from './fixDataElement';
+import { fixCdeError, fixClassification, fixValueDomain } from './fixDataElement';
 
 process.on('unhandledRejection', function (error) {
     console.log(error);
@@ -23,7 +23,7 @@ function fixEmptyAnswer(answers) {
     return result.filter(pv => !isEmpty(pv.permissibleValue));
 }
 
-async function createCde(fe, stewardOrg, registrationState) {
+async function convertQuestionToCde(fe, stewardOrg, registrationState) {
     let datatype = fe.question.datatype;
     let createCde: any = {
         tinyId: fe.question.cde.tinyId,
@@ -69,7 +69,7 @@ async function fixQuestion(fe, form) {
     if (!cde) {
         let error = `${form.tinyId} has label '${fe.label}' not found. cond: ${JSON.stringify(cond)}. creating.`;
         console.log(error);
-        cde = await createCde(cloneDeep(fe), form.stewardOrg, form.registrationState);
+        cde = await convertQuestionToCde(cloneDeep(fe), form.stewardOrg, form.registrationState);
     }
     let cdeObj = cde.toObject();
     let question: any = {
@@ -163,6 +163,8 @@ async function fixFormError(form) {
     fixEmptyDesignation(form);
     fixSources(form);
     fixProperties(form);
+    form.classification = fixClassification(form.toObject());
+
 
     let formElements = form.toObject().formElements;
 
@@ -176,7 +178,7 @@ async function fixFormError(form) {
     form.formElements = formElements;
 }
 
-(function () {
+function run() {
     let formCount = 0;
     let cursor = Form.find({lastMigrationScript: {$ne: 'fixForm'}}).cursor();
 
@@ -201,4 +203,6 @@ async function fixFormError(form) {
 
         process.exit(0);
     });
-})();
+}
+
+run();

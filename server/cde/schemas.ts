@@ -127,7 +127,7 @@ export const deJson = {
         },
         permissibleValues: {
             type: [permissibleValueSchema], // required to make optional
-            default: undefined,
+            default: [],
         }
     },
     history: [Schema.Types.ObjectId],

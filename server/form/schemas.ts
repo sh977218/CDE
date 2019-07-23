@@ -66,7 +66,7 @@ const questionSchema = new Schema({
         version: StringType,
         permissibleValues: {
             type: [sharedSchemas.permissibleValueSchema], // required to make optional
-            default: undefined,
+            default: [],
         },
         ids: [sharedSchemas.idSchema],
         derivationRules: [sharedSchemas.derivationRuleSchema]

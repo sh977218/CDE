@@ -6,6 +6,9 @@ process.on('unhandledRejection', function (error) {
 });
 
 export function fixValueDomain(cdeObj) {
+    if (!cdeObj.valueDomain.permissibleValues) {
+        cdeObj.valueDomain.permissibleValues = [];
+    }
     if (!cdeObj.valueDomain.datatype) {
         cdeObj.valueDomain.datatype = 'Text';
     }
@@ -27,6 +30,11 @@ export function fixValueDomain(cdeObj) {
             cdeObj.valueDomain.datatypeText = fixDatatypeText(cdeObj.valueDomain.datatypeText);
         }
     }
+    if (datatype === 'Number') {
+        if (!isEmpty(cdeObj.valueDomain.datatypeNumber)) {
+            cdeObj.valueDomain.datatypeNumber = fixDatatypeNumber(cdeObj.valueDomain.datatypeNumber);
+        }
+    }
     if (datatype === 'Value List') {
         if (!cdeObj.valueDomain.permissibleValues) {
             cdeObj.valueDomain.permissibleValues = [{permissibleValue: '5'}];
@@ -36,8 +44,24 @@ export function fixValueDomain(cdeObj) {
     myProps.filter(e => e !== checkType).forEach(p => {
         delete cdeObj.valueDomain[p];
     });
+    if (!cdeObj.valueDomain[checkType]) cdeObj.valueDomain[checkType] = {};
 
     return cdeObj.valueDomain;
+}
+
+function fixDatatypeNumber(datatypeNumber) {
+    let minValueString = datatypeNumber.minValue;
+    let minValue = parseInt(minValueString);
+    let maxValueString = datatypeNumber.maxValue;
+    let maxValue = parseInt(maxValueString);
+    let result: any = {};
+    if (!isNaN(minValue)) {
+        result.minValue = minValue;
+    }
+    if (!isNaN(maxValue)) {
+        result.maxValue = maxValue;
+    }
+    return result;
 }
 
 function fixDatatypeText(datatypeText) {
@@ -98,9 +122,8 @@ function fixEmptyPermissibleValue(permissibleValues) {
     return result.filter(pv => !isEmpty(pv.permissibleValue));
 }
 
-function fixClassification(cde) {
-    let cdeObj = cde.toObject();
-    cde.classification = uniqBy(cdeObj.classification, 'stewardOrg.name');
+export function fixClassification(cdeObj) {
+    return uniqBy(cdeObj.classification, 'stewardOrg.name');
 }
 
 export function fixCdeError(cde) {
@@ -113,10 +136,10 @@ export function fixCdeError(cde) {
     cde.valueDomain = fixValueDomain(cde.toObject());
     fixEmptyDesignation(cde);
     fixSourceName(cde);
-    fixClassification(cde);
+    cde.classification = fixClassification(cde.toObject());
 }
 
-(function () {
+function run() {
     let cdeCount = 0;
     let cursor = DataElement.find({lastMigrationScript: {$ne: 'fixDataElement'}}).cursor();
     cursor.eachAsync(async (cde: any) => {
@@ -136,4 +159,6 @@ export function fixCdeError(cde) {
         console.log('finished.');
         process.exit(0);
     });
-})();
+}
+
+run();
