@@ -262,54 +262,6 @@ export function transferSteward(from, to, callback) {
     });
 }
 
-<<<<<<< HEAD
-=======
-export function byOtherId(source, id, cb) {
-    DataElement.find({archived: false}).elemMatch('ids', {source, id}).exec((err, cdes) => {
-        if (cdes.length > 1) {
-            cb('Multiple results, returning first', cdes[0]);
-        } else cb(err, cdes[0]);
-    });
-}
-
-export function byOtherIdAndNotRetired(source, id, cb) {
-    DataElement.find({
-        archived: false,
-        'registrationState.registrationStatus': {$ne: 'Retired'},
-    }).elemMatch('ids', {source, id}).exec((err, cdes) => {
-        if (err) cb(err, null);
-        else if (cdes.length > 1) {
-            cb('Multiple results, returning first. source: ' + source + ' id: ' + id, cdes[0]);
-        } else if (cdes.length === 0) {
-            cb('No results', null);
-        } else cb(err, cdes[0]);
-    });
-}
-
-export function bySourceIdVersion(source, id, version, cb) {
-    DataElement.find({archived: false}).elemMatch('ids', {
-        id, source, version,
-    }).exec((err, cdes) => {
-        if (cdes.length > 1) cb('Multiple results, returning first', cdes[0]);
-        else cb(err, cdes[0]);
-    });
-}
-
-export function bySourceIdVersionAndNotRetiredNotArchived(source, id, version, cb) {
-    //noinspection JSUnresolvedFunction
-    DataElement.find({
-        archived: false,
-        'registrationState.registrationStatus': {$ne: 'Retired'},
-    }).elemMatch('ids', {
-        id, source, version,
-    }, cb);
-}
-
-export function findCurrCdesInFormElement(allCdes, cb) {
-    DataElement.find({archived: false}, 'tinyId version derivationRules').where('tinyId').in(allCdes).exec(cb);
-}
-
->>>>>>> 32ad47254fd897f1b881da32d6a99c0878e9d487
 export function derivationOutputs(inputTinyId, cb) {
     DataElement.find({archived: false, 'derivationRules.inputs': inputTinyId}).exec(cb);
 }
