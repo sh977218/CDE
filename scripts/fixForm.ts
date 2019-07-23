@@ -1,7 +1,9 @@
 import { cloneDeep, isEmpty } from 'lodash';
 import { Form } from 'server/form/mongo-form';
 import { DataElement } from 'server/cde/mongo-cde';
-import { fixCdeError, fixClassification, fixValueDomain } from './fixDataElement';
+import {
+    fixCdeError, fixClassification, fixCreated, fixCreatedBy, fixEmptyDesignation, fixValueDomain
+} from './utility';
 
 process.on('unhandledRejection', function (error) {
     console.log(error);
@@ -134,23 +136,6 @@ function fixSources(form) {
         if (!s.updated) delete s.updated;
     });
     form.sources = formObj.sources.filter(s => !isEmpty(s));
-}
-
-function fixEmptyDesignation(form) {
-    let formObj = form.toObject();
-    form.designations = formObj.designations.filter(d => d.designation);
-}
-
-function fixCreatedBy(form) {
-    form.createdBy = {
-        username: 'nobody'
-    };
-}
-
-function fixCreated(cde) {
-    let defaultDate = new Date();
-    defaultDate.setFullYear(1969, 1, 1);
-    cde.created = defaultDate;
 }
 
 async function fixFormError(form) {
