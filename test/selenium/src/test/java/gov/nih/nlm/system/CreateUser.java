@@ -30,7 +30,7 @@ public class CreateUser extends NlmCdeBaseTest {
     @Test
     public void createUserDuplicate() {
         mustBeLoggedInAs(nlm_username, nlm_password);
-        Cookie myCookie = getCurrentCookie();s
+        Cookie myCookie = getCurrentCookie();
         given().contentType(ContentType.JSON).cookie(myCookie)
                 .body("{\"username\": \"nlm\"}")
                 .post(baseUrl + "/server/user/addUser").then().statusCode(409);
