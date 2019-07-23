@@ -19,7 +19,7 @@ export const name = 'CDEs';
 
 export type DataElementDraft = DE;
 
-const ajvElt = new Ajv();
+const ajvElt = new Ajv({allErrors: true});
 ajvElt.addSchema(require('../../shared/de/assets/adminItem.schema'));
 export let validateSchema: any;
 fs.readFile(path.resolve(__dirname, '../../shared/de/assets/dataElement.schema.json'), (err, file) => {

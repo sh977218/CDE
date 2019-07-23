@@ -1,10 +1,10 @@
 import * as Ajv from 'ajv';
+import { find, forEach } from 'lodash';
 import { config } from 'server/system/parseConfig';
 import { CdeForm } from 'shared/form/form.model';
 import { CbError, User } from 'shared/models.model';
 
 const fs = require('fs');
-const _ = require('lodash');
 const path = require('path');
 const schemas = require('./schemas');
 const mongo_data = require('../system/mongo-data');
@@ -19,7 +19,7 @@ export const name = 'forms';
 
 export type CdeFormDraft = CdeForm;
 
-const ajvElt = new Ajv();
+const ajvElt = new Ajv({allErrors: true});
 fs.readdirSync(path.resolve(__dirname, '../../shared/de/assets/')).forEach(file => {
     if (file.indexOf('.schema.json') > -1) {
         ajvElt.addSchema(require('../../shared/de/assets/' + file));
@@ -43,6 +43,7 @@ fs.readFile(path.resolve(__dirname, '../../shared/form/assets/form.schema.json')
 
 schemas.formSchema.pre('save', function (next) {
     let elt = this;
+
     if (this.archived) return next();
     validateSchema(elt).then(() => {
         try {
@@ -111,8 +112,8 @@ export function byTinyIdList(tinyIdList, callback) {
         .exec((err, forms) => {
             let result = [];
             forms.forEach(mongo_data.formatElt);
-            _.forEach(tinyIdList, t => {
-                let c = _.find(forms, form => form.tinyId === t);
+            forEach(tinyIdList, t => {
+                let c = find(forms, form => form.tinyId === t);
                 if (c) result.push(c);
             });
             callback(err, result);

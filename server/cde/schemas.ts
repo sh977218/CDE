@@ -1,9 +1,10 @@
 import * as mongoose from 'mongoose';
 import { addStringtype } from '../system/mongoose-stringtype';
 import {
-    attachmentSchema, classificationSchema, dataSetSchema, definitionSchema, derivationRuleSchema, designationSchema,
-    eltLogSchema, idSchema, permissibleValueSchema, propertySchema, referenceDocumentSchema, registrationStateSchema,
-    sourceSchema
+    attachmentSchema, classificationSchema, dataSetSchema, datatypeDateSchema, datatypeExternallyDefinedSchema,
+    datatypeNumberSchema, datatypeTextSchema, datatypeTimeSchema, datatypeValueListSchema, definitionSchema,
+    derivationRuleSchema, designationSchema, eltLogSchema, idSchema, permissibleValueSchema, propertySchema,
+    referenceDocumentSchema, registrationStateSchema, sourceSchema
 } from '../system/schemas';
 
 addStringtype(mongoose);
@@ -18,6 +19,7 @@ let conceptSchema = new Schema({
 
 export const deJson = {
     elementType: {type: StringType, default: 'cde', enum: ['cde']},
+    tinyId: {type: StringType, index: true, description: 'Internal CDE identifier'},
     designations: {
         type: [designationSchema],
         description: 'Any string used by which CDE is known, addressed or referred to',
@@ -49,8 +51,36 @@ export const deJson = {
         userId: Schema.Types.ObjectId,
         username: StringType
     },
-    tinyId: {type: StringType, index: true, description: 'Internal CDE identifier'},
     version: StringType,
+    changeNote: {type: StringType, description: 'Description of last modification'},
+    lastMigrationScript: {type: StringType, description: 'Internal use only'},
+    registrationState: registrationStateSchema,
+    classification: {
+        type: [classificationSchema],
+        description: 'Organization or categorization by Steward Organization',
+    },
+    referenceDocuments: {
+        type: [referenceDocumentSchema],
+        description: 'Any written, printed or electronic matter used as a source of information. Used to provide information or evidence of authoritative or official record.',
+    },
+    properties: {
+        type: [propertySchema],
+        description: 'Attribute not otherwise documented by structured CDE record',
+    },
+    ids: {
+        type: [idSchema],
+        description: 'Identifier used to establish or indicate what CDE is within a specific context',
+    },
+    attachments: [attachmentSchema],
+    history: [Schema.Types.ObjectId],
+    archived: {
+        type: Boolean,
+        default: false,
+        index: true,
+        description: 'Indication of historical record. True for previous versions.',
+    },
+
+    property: {concepts: [conceptSchema]},
     dataElementConcept: {
         concepts: [conceptSchema],
         conceptualDomain: {
@@ -62,7 +92,6 @@ export const deJson = {
         }
     },
     objectClass: {concepts: [conceptSchema]},
-    property: {concepts: [conceptSchema]},
     valueDomain: {
         name: StringType,
         identifiers: [idSchema],
@@ -71,98 +100,24 @@ export const deJson = {
         uom: {type: StringType, description: 'Unit of Measure'},
         vsacOid: StringType,
         datatype: {type: StringType, description: 'Expected type of data'},
-        datatypeText: {
-            type: { // required to make optional
-                minLength: {type: Number, description: 'To indicate limits on length'},
-                maxLength: {type: Number, description: 'To indicate limits on length'},
-                regex: {
-                    type: StringType,
-                    description: 'To indicate a regular expression that someone may want to match on'
-                },
-                rule: {type: StringType, description: 'Any rule may go here'},
-                showAsTextArea: {type: Boolean, default: false, description: 'Multi-line'},
-            }
-        },
-        datatypeNumber: {
-            type: { // required to make optional
-                minValue: Number,
-                maxValue: Number,
-                precision: {
-                    type: Number,
-                    description: 'Any precision for this number. Typically an integer for a float. Limit to 10^precision'
-                },
-            }
-        },
-        datatypeDate: {
-            type: { // required to make optional
-                precision: {
-                    type: StringType,
-                    enum: ['Year', 'Month', 'Day', 'Hour', 'Minute', 'Second'],
-                    default: 'Day',
-                }
-            }
-        },
-        datatypeTime: { // time only, periodic?
-            type: { // required to make optional
-                format: {type: StringType, description: 'Any format that someone may want to enforce'},
-            }
-        },
-        datatypeExternallyDefined: {
-            type: { // required to make optional
-                link: {type: StringType, description: 'A link to an external source. Typically a URL'},
-                description: StringType,
-                descriptionFormat: {type: StringType, description: "if 'html', then parse with HTML"},
-            }
-        },
-        datatypeValueList: {
-            type: { // required to make optional
-                datatype: {type: StringType, description: "Value list format"}
-            }
-        },
-        datatypeDynamicCodeList: {
-            type: { // required to make optional
-                system: {type: StringType},
-                code: {type: StringType}
-            }
-        },
+        datatypeText: datatypeTextSchema,
+        datatypeNumber: datatypeNumberSchema,
+        datatypeDate: datatypeDateSchema,
+        datatypeTime: datatypeTimeSchema,
+        datatypeValueList: datatypeValueListSchema,
+        datatypeDynamicCodeList: datatypeValueListSchema,
+        datatypeExternallyDefined: datatypeExternallyDefinedSchema,
         permissibleValues: {
             type: [permissibleValueSchema], // required to make optional
             default: [],
         }
     },
-    history: [Schema.Types.ObjectId],
-    changeNote: {type: StringType, description: 'Description of last modification'},
-    lastMigrationScript: {type: StringType, description: 'Internal use only'},
-    registrationState: registrationStateSchema,
-    classification: {
-        type: [classificationSchema],
-        description: 'Organization or categorization by Steward Organization',
-    },
-    properties: {
-        type: [propertySchema],
-        description: 'Attribute not otherwise documented by structured CDE record',
-    },
-    ids: {
-        type: [idSchema],
-        description: 'Identifier used to establish or indicate what CDE is within a specific context',
-    },
     dataSets: {
         type: [dataSetSchema],
         description: 'A list of datasets that use this CDE',
     },
-    archived: {
-        type: Boolean,
-        default: false,
-        index: true,
-        description: 'Indication of historical record. True for previous versions.',
-    },
     forkOf: {type: StringType, description: 'May point to a tinyID if the CDE is a fork'},
-    attachments: [attachmentSchema],
     views: {type: Number, default: 0},
-    referenceDocuments: {
-        type: [referenceDocumentSchema],
-        description: 'Any written, printed or electronic matter used as a source of information. Used to provide information or evidence of authoritative or official record.',
-    },
     derivationRules: [derivationRuleSchema]
 };
 export const dataElementSchema = new Schema(deJson, {
