@@ -58,6 +58,7 @@ export class PushNotificationSubscriptionService {
 
     static fetchError(error: Error): Promise<any> {
         PushNotificationSubscriptionService.handleError(error);
+        console.log(JSON.stringify(error));
         if (error instanceof Error) {
             if (error.message.indexOf('denied')) {
                 alert("Your browser preferences prevent notifications from this website");
@@ -67,7 +68,6 @@ export class PushNotificationSubscriptionService {
                 throw 'Server is not available or you are offline.';
             }
         }
-        console.log(JSON.stringify(error));
         throw error;
     }
 
