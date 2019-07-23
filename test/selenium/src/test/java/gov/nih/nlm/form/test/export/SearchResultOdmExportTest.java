@@ -16,7 +16,7 @@ public class SearchResultOdmExportTest extends NlmCdeBaseTest {
         hangon(1);
         clickElement(By.id("export"));
         clickElement(By.id("odmExport"));
-        final long ACTUAL_SIZE = 8310;
+        final long ACTUAL_SIZE = 9086;
         long zipSize = 0;
         for (int i = 0; i < 30; i++) {
             zipSize = new File(downloadFolder + "/SearchExport_ODM.zip").length();
