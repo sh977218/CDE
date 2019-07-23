@@ -1,6 +1,6 @@
 import { config } from '../system/parseConfig';
 import { DataElement as DE } from 'shared/de/dataElement.model';
-import { checkDefinitions, checkPvUnicity, wipeDatatype } from 'shared/de/deValidator';
+import { wipeDatatype } from 'shared/de/deValidator';
 import { CbError, MongooseType } from 'shared/models.model';
 import { isOrgCurator } from 'shared/system/authorizationShared';
 import * as dataElementschema from 'shared/de/assets/dataElement.schema.json';
@@ -21,7 +21,7 @@ export const name = 'CDEs';
 
 export type DataElementDraft = DE;
 
-const ajvElt = new Ajv();
+const ajvElt = new Ajv({allErrors: true});
 ajvElt.addSchema(require('../../shared/de/assets/adminItem.schema'));
 export let validateSchema: any;
 try {
@@ -37,34 +37,17 @@ schemas.dataElementSchema.pre('save', function (next) {
     const elt = this;
 
     if (this.archived) return next();
-    let cdeError: any = checkPvUnicity(elt.valueDomain);
-    if (cdeError.allValid) {
-        cdeError = checkDefinitions(elt);
-    }
-    if (cdeError && !cdeError.allValid) {
-        cdeError.tinyId = this.tinyId;
-        logging.errorLogger.error(cdeError, {
-            details: JSON.stringify(cdeError),
-            stack: new Error().stack,
-        });
-        return next(new Error(JSON.stringify(cdeError)));
-    }
-
-    // validate
-    if (!validateSchema(elt)) {
-        return next(validateSchema.errors.map(e => e.dataPath + ': ' + e.message).join(', '));
-    }
-    const valErr = elt.validateSync();
-    if (valErr) {
-        return next('Doc does not pass validation: ' + valErr.message);
-    }
-
-    try {
-        elastic.updateOrInsert(elt);
-    } catch (exception) {
-        logging.errorLogger.error('Error Indexing CDE', {details: exception, stack: new Error().stack});
-    }
-    next();
+    validateSchema(elt).then(() => {
+        try {
+            elastic.updateOrInsert(elt);
+        } catch (exception) {
+            logging.errorLogger.error(`Error Indexing CDE ${elt.tinyId}`, {
+                details: exception,
+                stack: new Error().stack
+            });
+        }
+        next();
+    }, next);
 });
 
 const conn = connHelper.establishConnection(config.database.appData);
@@ -279,6 +262,54 @@ export function transferSteward(from, to, callback) {
     });
 }
 
+<<<<<<< HEAD
+=======
+export function byOtherId(source, id, cb) {
+    DataElement.find({archived: false}).elemMatch('ids', {source, id}).exec((err, cdes) => {
+        if (cdes.length > 1) {
+            cb('Multiple results, returning first', cdes[0]);
+        } else cb(err, cdes[0]);
+    });
+}
+
+export function byOtherIdAndNotRetired(source, id, cb) {
+    DataElement.find({
+        archived: false,
+        'registrationState.registrationStatus': {$ne: 'Retired'},
+    }).elemMatch('ids', {source, id}).exec((err, cdes) => {
+        if (err) cb(err, null);
+        else if (cdes.length > 1) {
+            cb('Multiple results, returning first. source: ' + source + ' id: ' + id, cdes[0]);
+        } else if (cdes.length === 0) {
+            cb('No results', null);
+        } else cb(err, cdes[0]);
+    });
+}
+
+export function bySourceIdVersion(source, id, version, cb) {
+    DataElement.find({archived: false}).elemMatch('ids', {
+        id, source, version,
+    }).exec((err, cdes) => {
+        if (cdes.length > 1) cb('Multiple results, returning first', cdes[0]);
+        else cb(err, cdes[0]);
+    });
+}
+
+export function bySourceIdVersionAndNotRetiredNotArchived(source, id, version, cb) {
+    //noinspection JSUnresolvedFunction
+    DataElement.find({
+        archived: false,
+        'registrationState.registrationStatus': {$ne: 'Retired'},
+    }).elemMatch('ids', {
+        id, source, version,
+    }, cb);
+}
+
+export function findCurrCdesInFormElement(allCdes, cb) {
+    DataElement.find({archived: false}, 'tinyId version derivationRules').where('tinyId').in(allCdes).exec(cb);
+}
+
+>>>>>>> 32ad47254fd897f1b881da32d6a99c0878e9d487
 export function derivationOutputs(inputTinyId, cb) {
     DataElement.find({archived: false, 'derivationRules.inputs': inputTinyId}).exec(cb);
 }
