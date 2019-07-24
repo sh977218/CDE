@@ -151,7 +151,7 @@ export class PushNotificationSubscriptionService {
                 .replace(/_/g, '/')
             ;
             const rawData = window.atob(base64);
-            return Uint8Array.from(Array.from(rawData).map((char) => char.charCodeAt(0)));
+            return Uint8Array.from(Array.from(rawData).map(char => char.charCodeAt(0)));
         }
         try {
             const pushSubscription: PushSubscription = await registration.pushManager.subscribe({

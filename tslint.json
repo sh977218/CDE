@@ -22,10 +22,6 @@
             "check-open-brace",
             "check-whitespace"
         ],
-        "quotemark": [
-            true,
-            "single"
-        ],
         "semicolon": [
             true,
             "always"
@@ -116,5 +112,6 @@
       "use-pipe-transform-interface": true,
       "component-class-suffix": true,
       "directive-class-suffix": true
+
     }
 }

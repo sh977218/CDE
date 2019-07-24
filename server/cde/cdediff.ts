@@ -1,8 +1,8 @@
 import { diff as deepDiff } from 'deep-diff';
 
 export function diff(newCde, oldCde) {
-    let newCdeObj = newCde.toObject ? newCde.toObject() : newCde;
-    let oldCdeObj = oldCde.toObject ? oldCde.toObject() : oldCde;
+    let newCdeObj = newCde.toObject();
+    let oldCdeObj = oldCde.toObject();
     [newCdeObj, oldCdeObj].forEach(cde => {
         delete cde._id;
         delete cde.updated;

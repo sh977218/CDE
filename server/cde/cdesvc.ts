@@ -11,9 +11,7 @@ const mongo_cde = require('./mongo-cde');
 
 export function byId(req, res) {
     let id = req.params.id;
-    if (!id) return res.status(400).send();
-    mongo_cde.byId(id, handleError({req, res}, dataElement => {
-        if (!dataElement) return res.status(404).send();
+    mongo_cde.byId(id, handle404({req, res}, dataElement => {
         if (!req.user) hideProprietaryCodes(dataElement);
         if (req.query.type === 'xml') {
             res.header('Access-Control-Allow-Origin', '*');
@@ -31,9 +29,7 @@ export function byId(req, res) {
 
 export function priorDataElements(req, res) {
     let id = req.params.id;
-    if (!id) return res.status(400).send();
-    mongo_cde.byId(id, handleError({req, res}, dataElement => {
-        if (!dataElement) return res.status(404).send();
+    mongo_cde.byId(id, handle404({req, res}, dataElement => {
         let history = dataElement.history.concat([dataElement._id]).reverse();
         mongo_cde.DataElement.find({}, {
             'updatedBy.username': 1,
@@ -41,19 +37,16 @@ export function priorDataElements(req, res) {
             changeNote: 1,
             version: 1,
             elementType: 1
-        }).where('_id').in(history).exec((err, priorDataElements) => {
-            if (err) return res.status(500).send('ERROR - Cannot get prior DE list');
+        }).where('_id').in(history).exec(handleError({req, res}, priorDataElements => {
             mongo_data.sortArrayByArray(priorDataElements, history);
             res.send(priorDataElements);
-        });
+        }));
     }));
 }
 
 export function byTinyId(req, res) {
     let tinyId = req.params.tinyId;
-    if (!tinyId) return res.status(400).send();
-    mongo_cde.byTinyId(tinyId, handleError({req, res}, dataElement => {
-        if (!dataElement) return res.status(404).send();
+    mongo_cde.byTinyId(tinyId, handle404({req, res}, dataElement => {
         if (!req.user) hideProprietaryCodes(dataElement);
         if (req.query.type === 'xml') {
             res.header('Access-Control-Allow-Origin', '*');
@@ -69,23 +62,9 @@ export function byTinyId(req, res) {
     }));
 }
 
-export function byTinyIdVersion(req, res) {
-    let tinyId = req.params.tinyId;
-    if (!tinyId) return res.status(400).send();
-    let version = req.params.version;
-    mongo_cde.byTinyIdVersion(tinyId, version, handleError({req, res}, dataElement => {
-        if (!dataElement) return res.status(404).send();
-        if (!req.user) hideProprietaryCodes(dataElement);
-        res.send(dataElement);
-    }));
-}
-
 export function byTinyIdAndVersion(req, res) {
-    let tinyId = req.params.tinyId;
-    if (!tinyId) return res.status(400).send();
-    let version = req.params.version;
-    mongo_cde.byTinyIdAndVersion(tinyId, version, handleError({req, res}, dataElement => {
-        if (!dataElement) return res.status(404).send();
+    const {tinyId, version} = req.params;
+    mongo_cde.byTinyIdAndVersion(tinyId, version, handle404({req, res}, dataElement => {
         if (!req.user) hideProprietaryCodes(dataElement);
         res.send(dataElement);
     }));
@@ -93,8 +72,7 @@ export function byTinyIdAndVersion(req, res) {
 
 export function draftForEditByTinyId(req, res) { // WORKAROUND: sends empty instead of 404 to not cause angular to litter console
     const handlerOptions = {req, res};
-    let tinyId = req.params.tinyId;
-    if (!tinyId) return res.status(400).send();
+    const tinyId = req.params.tinyId;
     mongo_cde.byTinyId(tinyId, handleError(handlerOptions, elt => {
         if (!canEditCuratedItem(req.user, elt)) {
             res.send();
@@ -115,15 +93,6 @@ export function draftForEditByTinyId(req, res) { // WORKAROUND: sends empty inst
     }));
 }
 
-export function draftById(req, res) {
-    let id = req.params.id;
-    if (!id || id.length !== 24) return res.status(400).send();
-    mongo_cde.draftById(id, handleError({req, res}, draft => {
-        if (!req.user) hideProprietaryCodes(draft);
-        res.send(draft);
-    }));
-}
-
 export function draftSave(req, res) {
     let elt = req.body;
     let tinyId = req.params.tinyId;
@@ -140,15 +109,11 @@ export function draftSave(req, res) {
 }
 
 export function draftDelete(req, res) {
-    let tinyId = req.params.tinyId;
-    if (!tinyId) return res.status(400).send();
-    mongo_cde.draftDelete(tinyId, handleError({req, res}, () => res.send()));
+    mongo_cde.draftDelete(req.params.tinyId, handleError({req, res}, () => res.send()));
 }
 
 export function byTinyIdList(req, res) {
-    let tinyIdList = req.params.tinyIdList;
-    if (!tinyIdList) return res.status(400).send();
-    tinyIdList = tinyIdList.split(',');
+    let tinyIdList = req.params.tinyIdList.split(',');
     mongo_cde.DataElement.find({archived: false}).where('tinyId')
         .in(tinyIdList)
         .exec(handleError({req, res}, dataElements => {
@@ -244,21 +209,6 @@ export function originalSourceByTinyIdSourceName(req, res) {
 }
 
 /* ---------- PUT NEW REST API Implementation above  ---------- */
-
-export function show(req, res, cb) {
-    let cdeId = req.params.id;
-    if (!cdeId) return res.send('No Data Element Id');
-    mongo_cde.byId(cdeId, handleError({req, res}, cde => {
-        cb(cde);
-        // Following have no callback because it's no big deal if it fails.
-        if (cde) {
-            mongo_cde.inCdeView(cde);
-            if (req.isAuthenticated()) {
-                mongo_cde.addCdeToViewHistory(cde, req.user);
-            }
-        }
-    }));
-}
 
 let systemWhitelist = ['RXNORM', 'HSLOC', 'CDCREC', 'SOP', 'AHRQ', 'HL7', 'CDC Race and Ethnicity', 'NCI', 'UMLS'];
 

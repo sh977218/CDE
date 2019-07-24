@@ -239,7 +239,7 @@ export const attachmentSchema = new Schema({
 }, {_id: false});
 
 export const registrationStateSchema = new Schema({
-    registrationStatus: {type: StringType, enum: orderedList},
+    registrationStatus: {type: StringType, enum: orderedList, default: "Incomplete"},
     effectiveDate: Date,
     untilDate: Date,
     administrativeNote: StringType,
@@ -387,3 +387,38 @@ export const trafficFilterSchema = new Schema({
         }
     ]
 }, {usePushEach: true});
+
+
+export const datatypeTextSchema = new Schema({
+    minLength: {type: Number, description: 'To indicate limits on length'},
+    maxLength: {type: Number, description: 'To indicate limits on length'},
+    regex: {type: StringType, description: 'To indicate a regular expression that someone may want to match on'},
+    rule: {type: StringType, description: 'Any rule may go here'},
+    showAsTextArea: {type: Boolean, description: 'Multi-line'},
+}, {_id: false});
+export const datatypeNumberSchema = new Schema({
+    minValue: Number,
+    maxValue: Number,
+    precision: Number,
+}, {_id: false});
+export const datatypeDateSchema = new Schema({
+    precision: {
+        type: StringType,
+        enum: ['Year', 'Month', 'Day', 'Hour', 'Minute', 'Second']
+    }
+}, {_id: false});
+export const datatypeTimeSchema = new Schema({
+    format: StringType,
+}, {_id: false});
+export const datatypeDynamicCodeListSchema = new Schema({
+    system: StringType,
+    code: StringType
+}, {_id: false});
+export const datatypeValueListSchema = new Schema({
+    datatype: {type: StringType, description: "Value list format"}
+}, {_id: false});
+export const datatypeExternallyDefinedSchema = new Schema({
+    link: {type: StringType, description: 'A link to an external source. Typically a URL'},
+    description: StringType,
+    descriptionFormat: {type: StringType, description: "if 'html', then parse with HTML"},
+}, {_id: false});

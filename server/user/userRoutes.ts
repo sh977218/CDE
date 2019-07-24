@@ -212,76 +212,49 @@ export function module(roleConfig) {
 
     router.post('/tasks/:clientVersion/read', [loggedInMiddleware], (req, res) => {
         // assume all comments for an elt have been read
-        userDb.byId(req.user._id, handle404({req, res}, user => {
-            let updated = false;
-            user.commentNotifications
-                .filter(t => t.eltTinyId === req.body.id && t.eltModule === req.body.idType)
-                .forEach(t => updated = t.read = true);
-            if (!updated) {
+        let updated = false;
+        req.user.commentNotifications
+            .filter(t => t.eltTinyId === req.body.id && t.eltModule === req.body.idType)
+            .forEach(t => updated = t.read = true);
+        if (!updated) {
+            taskAggregator(req, res);
+            return;
+        }
+        userDb.updateUser(req.user, {commentNotifications: req.user.commentNotifications}, handleError({req, res}, () => {
+            userDb.byId(req.user._id, handle404({req, res}, user => {
+                req.user = user;
                 taskAggregator(req, res);
-                return;
-            }
-            userDb.updateUser(user, {commentNotifications: user.commentNotifications}, handleError({req, res}, () => {
-                userDb.byId(req.user._id, handle404({req, res}, user => {
-                    req.user = user;
-                    taskAggregator(req, res);
-                }));
             }));
         }));
     });
 
-    router.post('/addUser', roleConfig.manage, (req, res) => {
-        let username = req.body.username;
-        userDb.byUsername(username, handleError({req, res}, existingUser => {
-            if (existingUser) return res.status(409).send("Duplicated username");
-            let newUser = {
-                username: username.toLowerCase(),
-                password: "umls",
-                quota: 1024 * 1024 * 1024
-            };
-            userDb.save(newUser, handleError({req, res}, () => res.send(username + " added.")));
-        }));
+    router.post('/addUser', roleConfig.manage, async (req, res) => {
+        const username = req.body.username;
+        const existingUser = await userDb.byUsername(username);
+        if (existingUser) return res.status(409).send("Duplicated username");
+        const newUser = {
+            username: username.toLowerCase(),
+            password: "umls",
+            quota: 1024 * 1024 * 1024
+        };
+        await userDb.save(newUser);
+        res.send(username + " added.");
     });
 
     router.post('/updateNotificationDate', roleConfig.notificationDate, (req, res) => {
         let notificationDate = req.body;
-        withRetry(handleConflict => {
-            userDb.byId(req.user._id, handle404({req, res}, user => {
-                if (user) {
-                    let changed = false;
-                    if (notificationDate.clientLogDate) {
-                        user.notificationDate.clientLogDate = notificationDate.clientLogDate;
-                        changed = true;
-                    }
-                    if (notificationDate.serverLogDate) {
-                        user.notificationDate.serverLogDate = notificationDate.serverLogDate;
-                        changed = true;
-                    }
-                    if (changed) {
-                        user.save(handleConflict({req, res}, () => res.send()));
-                    }
-                }
-            }));
-        });
+        let changed = false;
+        if (notificationDate.clientLogDate) {
+            req.user.notificationDate.clientLogDate = notificationDate.clientLogDate;
+            changed = true;
+        }
+        if (notificationDate.serverLogDate) {
+            req.user.notificationDate.serverLogDate = notificationDate.serverLogDate;
+            changed = true;
+        }
+        if (changed) {
+            req.user.save(handleError({req, res}, () => res.send()));
+        }
     });
     return router;
-}
-
-function withRetry(tryCb, retries = 1) {
-    function handleConflict(options, cb) {
-        return function errorHandler(err, ...args) {
-            if (err) {
-                if (retries > 0) {
-                    retries--;
-                    tryCb(handleConflict);
-                } else {
-                    respondError(err, options);
-                }
-                return;
-            }
-            cb(...args);
-        };
-    }
-
-    tryCb(handleConflict);
 }
