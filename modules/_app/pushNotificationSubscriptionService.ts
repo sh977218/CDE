@@ -61,7 +61,7 @@ export class PushNotificationSubscriptionService {
         console.log(JSON.stringify(error));
         if (error instanceof Error) {
             if (error.message.indexOf('denied')) {
-                alert("Your browser preferences prevent notifications from this website");
+                alert(`Your browser preferences prevent notifications from this website. (${error.message})`);
                 return;
             }
             if (error.message === 'Failed to fetch' || error.message === 'Unexpected token < in JSON at position 0') {
