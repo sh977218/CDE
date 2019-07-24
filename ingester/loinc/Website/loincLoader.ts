@@ -181,5 +181,5 @@ export function runOneLoinc(loincId) {
         }
         driver.close();
         resolve(loinc);
-    })
-};
+    });
+}
