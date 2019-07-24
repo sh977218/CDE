@@ -118,7 +118,7 @@ export class CdeAppComponent implements OnInit {
                 let r = this.route;
                 while (r.firstChild) r = r.firstChild;
                 if (r.outlet === 'primary') {
-                    r.data.subscribe((event) =>
+                    r.data.subscribe(event =>
                         this.title.setTitle(event.title || 'NIH Common Data Elements (CDE) Repository'));
                 }
 

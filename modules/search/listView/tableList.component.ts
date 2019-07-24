@@ -156,7 +156,7 @@ export class TableListComponent implements OnInit {
                 } else {
                     row.push({
                         css: 'ids',
-                        values: TableListComponent.truncatedList(e.ids, (e) => e)
+                        values: TableListComponent.truncatedList(e.ids, e => e)
                     });
                 }
             }
@@ -273,7 +273,7 @@ export class TableListComponent implements OnInit {
                 } else {
                     row.push({
                         css: 'ids',
-                        values: TableListComponent.truncatedList(e.ids, (e) => e)
+                        values: TableListComponent.truncatedList(e.ids, e => e)
                     });
                 }
             }

@@ -296,7 +296,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     }
 
     static updateRepeatQuestions(elt, oldLabel: string, newLabel: string) {
-        const modifyRepeat = (fe) => {
+        const modifyRepeat = fe => {
             if (repeatFe(fe) === '=' && repeatFeQuestion(fe) === oldLabel) {
                 fe.repeat = '="' + newLabel + '"';
             }

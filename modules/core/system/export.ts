@@ -73,7 +73,7 @@ export function projectItemForExport(ele: ItemElastic, settings?: TableViewField
     }
     if (settings && settings.naming) {
         cde.otherNames = ele.designations
-            .filter((n) => (n.tags || []).filter(
+            .filter(n => (n.tags || []).filter(
                 t => t.indexOf("Question Text") > -1
             ).length === 0)
             .map(n => n.designation)
