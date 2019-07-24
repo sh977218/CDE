@@ -1,10 +1,10 @@
-import { parseDesignations } from './parseDesignations';
-import { parseProperties } from './parseProperties';
-import { parseValueDomain } from './parseValueDomain';
-import { parseIds } from './parseIds';
-import { generateTinyId } from '../../../server/system/mongo-data';
-import { batchloader } from '../../shared/updatedByLoader';
-import { classifyItem } from '../../../shared/system/classificationShared';
+import { parseDesignations } from 'ingester/phenx/redCap/parseDesignations';
+import { parseProperties } from 'ingester/phenx/redCap/parseProperties';
+import { parseValueDomain } from 'ingester/phenx/redCap/parseValueDomain';
+import { parseIds } from 'ingester/phenx/redCap/parseIds';
+import { generateTinyId } from 'server/system/mongo-data';
+import { classifyItem } from 'shared/system/classificationShared';
+import { batchloader, created } from 'ingester/shared/utility';
 
 export async function createCde(row, formId, protocol) {
     let classificationArray = protocol['classification'];
@@ -14,18 +14,19 @@ export async function createCde(row, formId, protocol) {
     let properties = parseProperties(row);
 
     let newCde: any = {
-        created: new Date(),
+        created,
         createdBy: batchloader,
         tinyId: generateTinyId(),
         designations: designations,
         stewardOrg: {name: 'PhenX'},
-        sources: [{sourceName: 'PhenX'}],
+        sources: [],
         classification: [],
         valueDomain,
         registrationState: {registrationStatus: 'Candidate'},
         ids,
         properties,
-        attachments: []
+        attachments: [],
+        comments: []
     };
 
     let classificationToAdd = ['REDCap'].concat(classificationArray);

@@ -25,10 +25,10 @@ export function parseValueDomain(row) {
         let textValidationMin = row['Text Validation Min'].trim();
         let textValidationMax = row['Text Validation Max'].trim();
         if (textValidationMin.length > 0) {
-            valueDomain.datatypeNUmber.minValue = Number(textValidationMin);
+            valueDomain.datatypeNUmber.minValue = parseInt(textValidationMin);
         }
         if (textValidationMax.length > 0) {
-            valueDomain.datatypeNUmber.maxValue = Number(textValidationMax);
+            valueDomain.datatypeNUmber.maxValue = parseInt(textValidationMax);
         }
     } else if (datatype === 'Value List') {
         if (fieldType === 'yesno') {

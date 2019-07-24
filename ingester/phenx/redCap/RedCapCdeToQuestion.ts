@@ -1,7 +1,7 @@
 import { words } from 'capitalize';
-import { batchloader } from '../../shared/updatedByLoader';
 import { convertSkipLogic } from './BranchLogic';
 import { map as REDCAP_MULTISELECT_MAP } from './REDCAP_MULTISELECT_MAP';
+import { batchloader } from 'ingester/shared/utility';
 
 export async function convert(redCapCde, redCapCdes, cde, newForm) {
     if (cde.toObject) cde = cde.toObject();
@@ -19,7 +19,7 @@ export async function convert(redCapCde, redCapCdes, cde, newForm) {
             skipLogicCondition = convertSkipLogic(branchLogic, redCapCdes);
         else {
             let skipLogicComment = {
-                text: newForm.ids[0].id + ' Phenx Batch loader was not able to create Skip Logic rule on Question ' + fieldLabel + '. Rules: ' + branchLogic,
+                text: newForm.ids[0].id + ' PhenX Batch loader was not able to create Skip Logic rule on Question ' + fieldLabel + '. Rules: ' + branchLogic,
                 user: batchloader,
                 created: new Date(),
                 pendingApproval: false,
@@ -35,7 +35,7 @@ export async function convert(redCapCde, redCapCdes, cde, newForm) {
     }
     if (fieldType && fieldType.trim() === 'calc') {
         let scoreComment = {
-            text: 'Phenx Score Calculation was not parsed ' + fieldLabel + '. Formula: ' + choicesCalculationsORSliderLabels,
+            text: 'PhenX Score Calculation was not parsed ' + fieldLabel + '. Formula: ' + choicesCalculationsORSliderLabels,
             user: batchloader,
             created: new Date(),
             pendingApproval: false,

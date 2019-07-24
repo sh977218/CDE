@@ -1,14 +1,15 @@
 import * as csv from 'csv-parse';
 import { createReadStream, existsSync, readFile } from 'fs';
 import { find, isEmpty } from 'lodash';
-import { DataElement, DataElementSource } from '../../../server/cde/mongo-cde';
-import { batchloader, updatedByLoader } from '../../shared/updatedByLoader';
-import { compareCde, mergeCde } from '../CDE/cde';
-import { createCde } from './cde';
-import { convert } from './RedCapCdeToQuestion';
-import { printUpdateResult, updateCde } from '../../shared/utility';
+import { DataElement, DataElementSource } from 'server/cde/mongo-cde';
+import { mergeCde } from 'ingester/phenx/CDE/cde';
+import { createCde } from 'ingester/phenx/redCap/cde';
+import { convert } from 'ingester/phenx/redCap/RedCapCdeToQuestion';
+import { batchloader, compareElt, printUpdateResult, updateCde } from 'ingester/shared/utility';
+import { leadingZerosProtocolId } from 'ingester/phenx/Form/ParseAttachments';
+import { Comment } from 'server/discuss/discussDb';
 
-const redCapZipFolder = 's:/MLB/CDE/PhenX/www.phenxtoolkit.org/toolkit_content//redcap_zip/';
+const redCapZipFolder = 's:/MLB/CDE/PhenX/www.phenxtoolkit.org/toolkit_content/redcap_zip/';
 
 function doInstrumentID(instrumentIDFilePath): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -63,9 +64,16 @@ function doDescriptive(sectionFes, redCapCde, attachments) {
     let variableFieldName = redCapCde['Variable / Field Name'];
     let fieldLabel = redCapCde['Field Label'];
     let foundAttachment = find(attachments, a => a.filename === variableFieldName);
-    if (foundAttachment) sectionFes.instructions.value += '\n<figure><figcaption>' + fieldLabel + '</figcaption><img src="/data/' + foundAttachment.fileid + '"/></figure>';
-    else sectionFes.instructions.value += '\n' + fieldLabel;
+    if (foundAttachment) {
+        sectionFes.instructions.value += '\n<figure><figcaption>' + fieldLabel + '</figcaption><img src="/data/' + foundAttachment.fileid + '"/></figure>';
+    } else {
+        sectionFes.instructions.value += '\n' + fieldLabel;
+    }
 }
+
+let createdCde = 0;
+let sameCde = 0;
+let changeCde = 0;
 
 async function doQuestion(redCapCde, redCapCdes, formId, protocol, newForm) {
     let newCdeObj = await createCde(redCapCde, formId, protocol);
@@ -73,26 +81,39 @@ async function doQuestion(redCapCde, redCapCdes, formId, protocol, newForm) {
     let cdeId = newCdeObj.ids[0].id;
     let existingCde = await DataElement.findOne({
         archived: false,
-        'registrationState.registrationStatus': {$ne: 'Retired'},
         'ids.id': cdeId
     });
     if (!existingCde) {
-        existingCde = await newCde.save();
-    } else if (updatedByLoader(existingCde)) {
+        existingCde = await newCde.save().catch(e => {
+            throw 'existingCde = await newCde.save() Error: ' + e;
+        });
+        createdCde++;
+        console.log('createdCde: ' + createdCde);
     } else {
         existingCde.imported = new Date().toJSON();
-        existingCde.markModified('imported');
-        let diff = compareCde(newCde, existingCde);
+        existingCde.lastMigrationScript = 'loadPhenXJuly2019';
+        let diff = compareElt(newCde.toObject(), existingCde.toObject());
         if (isEmpty(diff)) {
             await existingCde.save().catch(e => {
                 throw "Error await existingCde.save(): " + e;
             });
+            sameCde++;
+            console.log('sameForm: ' + sameCde);
         } else {
             mergeCde(existingCde, newCde);
+            existingCde.changeNote = '';
             await updateCde(existingCde, batchloader).catch(e => {
                 throw "Error await updateCde(existingCde, batchloader): " + e;
             });
+            changeCde++;
+            console.log('changeForm: ' + changeCde);
         }
+    }
+    for (let comment of newCdeObj['comments']) {
+        comment.element.eltId = newCdeObj.tinyId;
+        await new Comment(comment).save().catch(e => {
+            throw "Error await comment.save(): " + e;
+        });
     }
     delete newCdeObj.tinyId;
     let updateResult = await DataElementSource.updateOne({tinyId: existingCde.tinyId}, newCdeObj, {upsert: true}).catch(e => {
@@ -108,7 +129,8 @@ export async function parseFormElements(protocol, attachments, newForm) {
     let formElements = [];
     let protocolId = protocol.protocolID;
 
-    let zipFolder = redCapZipFolder + 'PX' + protocolId;
+    let leadingZeroProtocolId = leadingZerosProtocolId(protocolId);
+    let zipFolder = redCapZipFolder + 'PX' + leadingZeroProtocolId;
 
     let formId = '';
     let instrumentIDFileName = 'instrumentID.txt';

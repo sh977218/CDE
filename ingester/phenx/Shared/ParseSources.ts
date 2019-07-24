@@ -1,3 +1,5 @@
+import { isEmpty } from 'lodash';
+
 export function parseSources(protocol) {
     let sources = [];
     let releaseDate = protocol.releaseDate;
@@ -8,7 +10,7 @@ export function parseSources(protocol) {
             value: "<a href='http://www.phenxtoolkit.org' target='_blank'>Terms of Use</a>"
         }
     };
-    if (releaseDate) {
+    if (!isEmpty(releaseDate)) {
         source['updated'] = releaseDate.trim();
     }
     sources.push(source);

@@ -4,7 +4,7 @@ export function parseProperties(protocol) {
     let properties = [];
 
     let protocolHtml = protocol.protocol;
-    if (protocolHtml) {
+    if (!isEmpty(protocolHtml)) {
         properties.push({key: 'Protocol', value: protocolHtml, valueFormat: 'html', source: 'PhenX'});
     }
 

@@ -23,8 +23,8 @@ temp/
 ssl/
 
 ## Ingest
-ingesters/.nb-gradle/private/
-ingesters/build/
+ingester/.nb-gradle/private/
+ingester/build/
 ingester/debug.log
 ingester/ninds/ingesters/.gradle/
 ingester/ninds/ingesters/1.17.5_0.crx

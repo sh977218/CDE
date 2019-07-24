@@ -1,9 +1,11 @@
+import { isEqual } from 'lodash';
+
 export function parseDefinitions(protocol) {
     let definitions = [];
     let description = protocol.description;
     let definition = protocol.definition;
 
-    if (description === definition) {
+    if (isEqual(description, definition)) {
         definitions.push({
             definition: description.trim(),
             tags: []
