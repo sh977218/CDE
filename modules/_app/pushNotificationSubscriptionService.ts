@@ -58,7 +58,6 @@ export class PushNotificationSubscriptionService {
 
     static fetchError(error: Error): Promise<any> {
         PushNotificationSubscriptionService.handleError(error);
-        console.log(JSON.stringify(error));
         if (error instanceof Error) {
             if (error.message.indexOf('denied')) {
                 alert(`Your browser preferences prevent notifications from this website. (${error.message})`);
