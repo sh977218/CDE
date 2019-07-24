@@ -618,11 +618,9 @@ export class CompareSideBySideComponent {
     getValue(o, d) {
         const value = _get(o, d.property);
         if (!value) { return; }
-        if (d.url) { return '<a target="_blank" href="' + d.url + value + '">' + value + '</a>'; }
-        else if (d.properties) {
+        if (d.url) { return '<a target="_blank" href="' + d.url + value + '">' + value + '</a>'; } else if (d.properties) {
             const v = value.map(v => _get(v, d.properties.property));
-            if (!_isEmpty(v)) { return d.properties.label + ': ' + v; }
-            else { return ''; }
+            if (!_isEmpty(v)) { return d.properties.label + ': ' + v; } else { return ''; }
         } else if (_isArray(value)) {
             return JSON.stringify(value);
         } else { return value; }

@@ -14,7 +14,7 @@ import {
     MatAutocompleteModule,
     MatSelectModule,
     MatTabsModule, MatChipsModule, MatTooltipModule,
-} from "@angular/material";
+} from '@angular/material';
 import { RouterModule } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BoardModule } from 'board/public/board.module';
@@ -25,7 +25,7 @@ import { CdeSummaryListContentComponent } from 'cde/public/components/listView/c
 import { QuickBoardCdeSummaryListContentComponent } from 'cde/public/components/listView/quickBoardCdeSummaryListContent.component';
 import { CdeSearchComponent } from 'cde/public/components/search/cdeSearch.component';
 import { SearchModule } from 'search/search.module';
-import { CdeTableViewPreferencesComponent } from "search/tableViewPreferences/cdeTableViewPreferencesComponent";
+import { CdeTableViewPreferencesComponent } from 'search/tableViewPreferences/cdeTableViewPreferencesComponent';
 import { TagModule } from 'tag/tag.module';
 
 @NgModule({

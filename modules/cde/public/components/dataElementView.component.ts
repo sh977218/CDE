@@ -105,7 +105,7 @@ export class DataElementViewComponent implements OnInit {
 
     eltLoaded(elt: DataElement, cb = _noop) {
         if (elt) {
-            if (elt.isDraft) this.hasDrafts = true;
+            if (elt.isDraft) { this.hasDrafts = true; }
             DataElement.validate(elt);
             this.elt = elt;
             this.title.setTitle('Data Element: ' + Elt.getLabel(this.elt));
@@ -225,7 +225,7 @@ export class DataElementViewComponent implements OnInit {
             formData.append('id', this.elt._id);
             this.http.post<any>('/server/attachment/cde/add', formData).subscribe(
                 r => {
-                    if (r.message) this.alert.addAlert('info', r);
+                    if (r.message) { this.alert.addAlert('info', r); }
                     else {
                         this.elt = r;
                         this.alert.addAlert('success', 'Attachment added.');
