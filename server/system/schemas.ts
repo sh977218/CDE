@@ -239,7 +239,7 @@ export const attachmentSchema = new Schema({
 }, {_id: false});
 
 export const registrationStateSchema = new Schema({
-    registrationStatus: {type: StringType, enum: orderedList},
+    registrationStatus: {type: StringType, enum: orderedList, default: "Incomplete"},
     effectiveDate: Date,
     untilDate: Date,
     administrativeNote: StringType,
