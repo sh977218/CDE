@@ -4,7 +4,7 @@ import * as DiffJson from 'diff-json';
 
 import { generateTinyId } from 'server/system/mongo-data';
 
-const BATCHLOADER_USERNAME = 'batchloader';
+export const BATCHLOADER_USERNAME = 'batchloader';
 
 export const batchloader = {
     username: BATCHLOADER_USERNAME,

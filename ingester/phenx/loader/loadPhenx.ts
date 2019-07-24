@@ -3,7 +3,7 @@ import { Form, FormSource } from 'server/form/mongo-form';
 import { Comment } from 'server/discuss/discussDb';
 import { ProtocolModel } from 'ingester/createMigrationConnection';
 import { createForm, mergeForm } from 'ingester/phenx/Form/form';
-import { batchloader, compareElt, printUpdateResult, updateForm } from 'ingester/shared/utility';
+import { BATCHLOADER_USERNAME, batchloader, compareElt, printUpdateResult, updateForm } from 'ingester/shared/utility';
 
 let protocolCount = 0;
 
@@ -14,20 +14,10 @@ let retiredForm = 0;
 
 async function retireForms() {
     let cond = {
-        'ids.source': "PhenX",
+        'ids.source': 'PhenX',
         lastMigrationScript: {$ne: 'loadPhenXJuly2019'},
         archived: false,
-        'registrationState.registrationStatus': {$ne: "Retired"},
-        imported: {$lt: new Date().setHours(new Date().getHours() - 8)},
-        $or: [
-            {"updatedBy.username": "batchloader"},
-            {
-                $and: [
-                    {"updatedBy.username": {$exists: false}},
-                    {"createdBy.username": {$exists: true}}
-                ]
-            }
-        ]
+        'updatedBy.username': BATCHLOADER_USERNAME,
     };
     let forms = await Form.find(cond);
     for (let form of forms) {
@@ -45,7 +35,6 @@ process.on('unhandledRejection', function (error) {
 
 (function () {
     let cond = {};
-//   let cond = {protocolID: '90602'};
 
     let cursor = ProtocolModel.find(cond).cursor();
 
@@ -57,11 +46,11 @@ process.on('unhandledRejection', function (error) {
         let newFormObj = await createForm(protocolObj);
         let newForm = new Form(newFormObj);
         let existingForm = await Form.findOne({archived: false, 'ids.id': protocolId}).catch(e => {
-            throw "Error await Form.findOne({: " + e;
+            throw 'Error await Form.findOne({: ' + e;
         });
         if (!existingForm) {
             existingForm = await newForm.save().catch(e => {
-                throw "Error await newForm.save(): " + protocolId + e;
+                throw 'Error await newForm.save(): ' + protocolId + e;
             });
             createdForm++;
             console.log('createdForm: ' + createdForm);
@@ -71,7 +60,7 @@ process.on('unhandledRejection', function (error) {
             let diff = compareElt(newForm.toObject(), existingForm.toObject());
             if (isEmpty(diff)) {
                 await existingForm.save().catch(e => {
-                    throw "Error await existingForm.save(): " + e;
+                    throw 'Error await existingForm.save(): ' + e;
                 });
                 sameForm++;
                 console.log('sameForm: ' + sameForm);
@@ -79,7 +68,7 @@ process.on('unhandledRejection', function (error) {
                 mergeForm(existingForm, newForm);
                 existingForm.changeNote = '';
                 await updateForm(existingForm, batchloader, {updateSource: true}).catch(e => {
-                    throw "Error await updateForm(existingForm, batchloader): " + e;
+                    throw 'Error await updateForm(existingForm, batchloader): ' + e;
                 });
                 changeForm++;
                 console.log('changeForm: ' + changeForm);
@@ -89,7 +78,7 @@ process.on('unhandledRejection', function (error) {
             for (let comment of newFormObj['comments']) {
                 comment.element.eltId = existingForm.tinyId;
                 await new Comment(comment).save().catch(e => {
-                    throw "Error await comment.save(): " + e;
+                    throw 'Error await comment.save(): ' + e;
                 });
             }
         }

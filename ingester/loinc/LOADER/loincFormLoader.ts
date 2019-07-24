@@ -1,13 +1,12 @@
 import { isEmpty } from 'lodash';
 import { Form } from 'server/form/mongo-form';
-import { batchloader, updatedByLoader } from '../../shared/updatedByLoader';
+import { batchloader } from '../../shared/updatedByLoader';
 import { compareForm, createForm, mergeForm } from '../Form/form';
 import { updateForm } from '../../shared/utility';
 
 export async function runOneForm(loinc, orgInfo) {
     let formCond = {
         archived: false,
-        "registrationState.registrationStatus": {$not: /Retired/},
         'ids.id': loinc.loincId
     };
     let existingForm = await Form.findOne(formCond).catch(e => {
@@ -21,7 +20,6 @@ export async function runOneForm(loinc, orgInfo) {
         existingForm = await newForm.save().catch(e => {
             throw 'Error newForm.save: ' + e;
         });
-    } else if (updatedByLoader(existingForm)) {
     } else {
         existingForm.imported = new Date().toJSON();
         existingForm.markModified('imported');
