@@ -6,7 +6,7 @@ import { UserService } from '_app/user.service';
 import { CbErr, Elt, Organization, StatusValidationRules } from 'shared/models.model';
 import { isOrgCurator } from 'shared/system/authorizationShared';
 
-type OrgDetailedInfo = {[org: string]: Organization};
+interface OrgDetailedInfo {[org: string]: Organization}
 
 @Injectable()
 export class OrgHelperService {
@@ -34,15 +34,15 @@ export class OrgHelperService {
 
     createOrgDetailedInfoHtml(orgName: string) {
         if (this.orgsDetailedInfo[orgName]) {
-            let anOrg = this.orgsDetailedInfo[orgName];
+            const anOrg = this.orgsDetailedInfo[orgName];
             if (anOrg.longName || anOrg.mailAddress || anOrg.emailAddress || anOrg.phoneNumber || anOrg.uri) {
                 let orgDetailsInfoHtml = 'Organization Details';
                 orgDetailsInfoHtml += '\nName: ' + anOrg.name;
-                if (anOrg.longName) orgDetailsInfoHtml += '\nLong name: ' + anOrg.longName;
-                if (anOrg.mailAddress) orgDetailsInfoHtml += '\nMailing address: ' + anOrg.mailAddress;
-                if (anOrg.emailAddress) orgDetailsInfoHtml += '\nE-mail address: ' + anOrg.emailAddress;
-                if (anOrg.phoneNumber) orgDetailsInfoHtml += '\nPhone number: ' + anOrg.phoneNumber;
-                if (anOrg.uri) orgDetailsInfoHtml += '\nWebsite: ' + anOrg.uri;
+                if (anOrg.longName) { orgDetailsInfoHtml += '\nLong name: ' + anOrg.longName; }
+                if (anOrg.mailAddress) { orgDetailsInfoHtml += '\nMailing address: ' + anOrg.mailAddress; }
+                if (anOrg.emailAddress) { orgDetailsInfoHtml += '\nE-mail address: ' + anOrg.emailAddress; }
+                if (anOrg.phoneNumber) { orgDetailsInfoHtml += '\nPhone number: ' + anOrg.phoneNumber; }
+                if (anOrg.uri) { orgDetailsInfoHtml += '\nWebsite: ' + anOrg.uri; }
 
                 return orgDetailsInfoHtml;
             }
@@ -56,14 +56,14 @@ export class OrgHelperService {
 
     getUsedBy(elt: Elt) {
         if (elt.classification) {
-            let arr = elt.classification.filter(c => this.showWorkingGroup(c.stewardOrg.name)).map(e => e.stewardOrg.name);
+            const arr = elt.classification.filter(c => this.showWorkingGroup(c.stewardOrg.name)).map(e => e.stewardOrg.name);
             return arr.filter((item, pos) => arr.indexOf(item) === pos);
-        } else return [];
+        } else { return []; }
     }
 
     reload(): Promise<OrgDetailedInfo> {
         return this.promise = new Promise<OrgDetailedInfo>((resolve, reject) => {
-            let userPromise = this.userService.catch(_noop);
+            const userPromise = this.userService.catch(_noop);
             this.http.get<Organization[]>('/listOrgsDetailedInfo').subscribe(response => {
                 this.orgsDetailedInfo = {};
                 response.forEach(org => {
@@ -78,20 +78,20 @@ export class OrgHelperService {
     }
 
     showWorkingGroup(orgToHide: string) {
-        if (!this.orgsDetailedInfo) return false;
-        let parentOrgOfThisClass = this.orgsDetailedInfo[orgToHide] && this.orgsDetailedInfo[orgToHide].workingGroupOf;
-        if (typeof(parentOrgOfThisClass) === "undefined") return true;
+        if (!this.orgsDetailedInfo) { return false; }
+        const parentOrgOfThisClass = this.orgsDetailedInfo[orgToHide] && this.orgsDetailedInfo[orgToHide].workingGroupOf;
+        if (typeof(parentOrgOfThisClass) === 'undefined') { return true; }
 
-        if (!this.userService.user) return false;
-        if (isOrgCurator(this.userService.user, orgToHide)) return true;
-        if (isOrgCurator(this.userService.user, parentOrgOfThisClass)) return true;
+        if (!this.userService.user) { return false; }
+        if (isOrgCurator(this.userService.user, orgToHide)) { return true; }
+        if (isOrgCurator(this.userService.user, parentOrgOfThisClass)) { return true; }
 
         let isSisterOfWg = false;
         this.userService.user.orgAdmin.concat(this.userService.user.orgCurator)
             .filter(org => this.orgsDetailedInfo[org] && this.orgsDetailedInfo[org].workingGroupOf)
             .map(org => this.orgsDetailedInfo[org].workingGroupOf)
             .forEach(parentOrg => {
-                if (parentOrg === parentOrgOfThisClass) isSisterOfWg = true;
+                if (parentOrg === parentOrgOfThisClass) { isSisterOfWg = true; }
             });
         return isSisterOfWg;
     }

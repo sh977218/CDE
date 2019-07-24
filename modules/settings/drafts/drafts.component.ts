@@ -12,11 +12,11 @@ export class DraftsComponent {
     draftColumns: string[] = ['name', 'id', 'updatedBy', 'updatedDate', 'organization'];
     deTableData: MatTableDataSource<DataElement>;
     formTableData: MatTableDataSource<CdeForm>;
-    title: string = 'Drafts';
+    title = 'Drafts';
     draftCdes: DataElement[] = [];
     draftForms: CdeForm[] = [];
     organizations: string[];
-    selectedOrganization: string = '';
+    selectedOrganization = '';
 
     constructor(private route: ActivatedRoute) {
         this.title = this.route.snapshot.data.title;
@@ -36,12 +36,14 @@ export class DraftsComponent {
 
     filterByOrganization() {
         this.deTableData.data = this.draftCdes.filter(d => {
-            if (this.selectedOrganization === 'all organizations') return true;
-            else return d.stewardOrg.name === this.selectedOrganization;
+            if (this.selectedOrganization === 'all organizations') {
+                return true;
+            } else { return d.stewardOrg.name === this.selectedOrganization; }
         });
         this.formTableData.data = this.draftForms.filter(d => {
-            if (this.selectedOrganization === 'all organizations') return true;
-            else return d.stewardOrg.name === this.selectedOrganization;
+            if (this.selectedOrganization === 'all organizations') {
+                return true;
+            } else { return d.stewardOrg.name === this.selectedOrganization; }
         });
     }
 }

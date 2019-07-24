@@ -7,13 +7,13 @@ export class SearchSettings {
     datatypes: DataType[] = [];
     excludeAllOrgs?: boolean;
     excludeOrgs: string[] = [];
-    meshTree: string = '';
-    page?: number = 1;
-    q?: string = '';
+    meshTree = '';
+    page = 1;
+    q = '';
     regStatuses: CurationStatus[] = [];
-    resultPerPage: number = 20;
+    resultPerPage = 20;
     searchTerm?: string;
-    selectedOrg?: string = '';
+    selectedOrg = '';
     selectedOrgAlt?: string;
 
     constructor(q = '', resultsPerPage = 20) {
@@ -30,10 +30,10 @@ export class SearchSettingsElastic {
     filterDatatype?: any; // server-side, ElasticCondition
     fullRecord?: boolean;
     includeAggregations?: boolean;
-    meshTree?: string = '';
-    page?: number = 1;
+    meshTree = '';
+    page = 1;
     q?: string;
-    resultPerPage?: number = 20;
+    resultPerPage = 20;
     searchTerm?: string;
     searchToken?: string;
     selectedDatatypes: DataType[] = [];

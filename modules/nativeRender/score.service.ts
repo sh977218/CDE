@@ -3,34 +3,12 @@ import { findQuestionByTinyId, getFormScoreQuestions } from 'core/form/fe';
 import { CdeForm, FormQuestion } from 'shared/form/form.model';
 import { CbErr } from 'shared/models.model';
 
-type ErrorOrScore = {error?: string, sum?: number};
+interface ErrorOrScore {error?: string, sum?: number}
 
 @Injectable()
 export class ScoreService {
     INPUT_SCORE_MAP!: Map<string, FormQuestion[]>;
     elt!: CdeForm;
-
-    register(elt: CdeForm) {
-        // register all scores used by one question tinyId
-        this.elt = elt;
-        this.INPUT_SCORE_MAP = new Map<string, FormQuestion[]>();
-        let formScoreQuestions = getFormScoreQuestions(elt);
-        formScoreQuestions.forEach(formScoreQuestion => {
-            formScoreQuestion.question.cde.derivationRules.forEach(derivationRule => {
-                derivationRule.inputs.forEach(cdeTinyId => {
-                    if (!this.INPUT_SCORE_MAP.has(cdeTinyId)) this.INPUT_SCORE_MAP.set(cdeTinyId, []);
-                    this.INPUT_SCORE_MAP.get(cdeTinyId)!.push(formScoreQuestion);
-                });
-            });
-        });
-    }
-
-    triggerCalculateScore(question: FormQuestion) {
-        let scoreQuestions: FormQuestion[] | undefined = this.INPUT_SCORE_MAP.get(question.question.cde.tinyId);
-        if (scoreQuestions) {
-            scoreQuestions.forEach(scoreQuestion => ScoreService.scoreSet(scoreQuestion, this.elt));
-        }
-    }
 
     static calculateScore(question: FormQuestion, elt: CdeForm, cb: CbErr<number>) {
         if (!question.question.isScore) {
@@ -43,14 +21,14 @@ export class ScoreService {
                     return cb(error, sum);
                 }
                 if (derRule.formula === 'mean') {
-                    let result = ScoreService.sum(derRule.inputs, elt);
+                    const result = ScoreService.sum(derRule.inputs, elt);
                     return cb(result.error, result.sum !== undefined && !Number.isNaN(result.sum)
                         ? result.sum / derRule.inputs.length
                         : result.sum
                     );
                 }
                 if (derRule.formula === 'bmi') {
-                    let aQuestion = findQuestionByTinyId(derRule.inputs[0], elt);
+                    const aQuestion = findQuestionByTinyId(derRule.inputs[0], elt);
                     if (!aQuestion) {
                         return cb('Cannot find ' + derRule.inputs[0] + ' in form ' + elt.tinyId);
                     }
@@ -62,7 +40,7 @@ export class ScoreService {
                         return cb('Select unit of measurement for weight');
                     }
 
-                    let bQuestion = findQuestionByTinyId(derRule.inputs[1], elt);
+                    const bQuestion = findQuestionByTinyId(derRule.inputs[1], elt);
                     if (!bQuestion) {
                         return cb('Cannot find ' + derRule.inputs[1] + ' in form ' + elt.tinyId);
                     }
@@ -101,7 +79,7 @@ export class ScoreService {
         let error = '';
         let sum = 0;
         tinyIds.forEach(cdeTinyId => {
-            let q = findQuestionByTinyId(cdeTinyId, elt);
+            const q = findQuestionByTinyId(cdeTinyId, elt);
             if (!q) {
                 return error = 'Cannot find ' + cdeTinyId + ' in form ' + elt.tinyId;
             }
@@ -117,5 +95,27 @@ export class ScoreService {
     static ucumConverter(value: number, from?: string, to?: string) {
         return fetch('/ucumConvert?value=' + value + '&from=' + from + '&to=' + to)
             .then(res => res.json());
+    }
+
+    register(elt: CdeForm) {
+        // register all scores used by one question tinyId
+        this.elt = elt;
+        this.INPUT_SCORE_MAP = new Map<string, FormQuestion[]>();
+        const formScoreQuestions = getFormScoreQuestions(elt);
+        formScoreQuestions.forEach(formScoreQuestion => {
+            formScoreQuestion.question.cde.derivationRules.forEach(derivationRule => {
+                derivationRule.inputs.forEach(cdeTinyId => {
+                    if (!this.INPUT_SCORE_MAP.has(cdeTinyId)) { this.INPUT_SCORE_MAP.set(cdeTinyId, []); }
+                    this.INPUT_SCORE_MAP.get(cdeTinyId)!.push(formScoreQuestion);
+                });
+            });
+        });
+    }
+
+    triggerCalculateScore(question: FormQuestion) {
+        const scoreQuestions: FormQuestion[] | undefined = this.INPUT_SCORE_MAP.get(question.question.cde.tinyId);
+        if (scoreQuestions) {
+            scoreQuestions.forEach(scoreQuestion => ScoreService.scoreSet(scoreQuestion, this.elt));
+        }
     }
 }

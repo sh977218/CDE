@@ -8,23 +8,22 @@ import { getQuestionPriorByLabel } from 'shared/form/skipLogic';
 import { assertUnreachable } from 'shared/models.model';
 import { range } from 'shared/system/util';
 
-type Style = {backgroundColor?: string};
-type Theme = {
-    sectionStyle: Style,
-    questionStyle: Style,
-    answerStyle: Style
-};
-type HeadQuestionType = {header?: boolean, label?: string, rspan?: number, cspan?: number, style?: Style};
-type HeadType = {q: HeadQuestionType[]};
-type BodyType = {name?: string, fe?: FormQuestion, type: 'date' | 'label' | 'geo' | 'list' | 'mlist' | 'number' | 'text', style: Style};
-type RowType = {label: string};
+interface Style {backgroundColor?: string;}
+interface Theme {
+    sectionStyle: Style;
+    questionStyle: Style;
+    answerStyle: Style;
+}
+interface HeadQuestionType {header?: boolean; label?: string; rspan?: number; cspan?: number; style?: Style;}
+interface HeadType {q: HeadQuestionType[];}
+interface BodyType {name?: string; fe?: FormQuestion; type: 'date' | 'label' | 'geo' | 'list' | 'mlist' | 'number' | 'text'; style: Style;}
+interface RowType {label: string;}
 
 @Component({
     selector: 'cde-native-table',
     templateUrl: './nativeTable.component.html'
 })
 export class NativeTableComponent {
-    _formElement!: FormSectionOrForm;
     @Input() set formElement(fe: FormSectionOrForm) {
         this._formElement = fe;
         this.questionsWithAnswersRepeated.clear();
@@ -52,6 +51,10 @@ export class NativeTableComponent {
     get formElement() {
         return this._formElement;
     }
+
+    constructor(public nrs: NativeRenderService) {
+    }
+    _formElement!: FormSectionOrForm;
     canRender = false;
     firstQuestion?: FormQuestion;
     numberingFormat?: string;
@@ -66,7 +69,52 @@ export class NativeTableComponent {
     datePrecisionToType = FormQuestion.datePrecisionToType;
     datePrecisionToStep = FormQuestion.datePrecisionToStep;
 
-    constructor(public nrs: NativeRenderService) {
+    theme: Theme[] = [
+        {
+            sectionStyle: {backgroundColor: '#d7f3da'},
+            questionStyle: {backgroundColor: '#d7f3da'},
+            answerStyle: {backgroundColor: '#f6fff9'}
+        },
+        {
+            sectionStyle: {backgroundColor: '#dad7f3'},
+            questionStyle: {backgroundColor: '#dad7f3'},
+            answerStyle: {backgroundColor: '#f9f6ff'}
+        },
+        {
+            sectionStyle: {backgroundColor: '#f3dad7'},
+            questionStyle: {backgroundColor: '#f3dad7'},
+            answerStyle: {backgroundColor: '#fff9f6'}
+        },
+        {
+            sectionStyle: {backgroundColor: '#f1f3d8'},
+            questionStyle: {backgroundColor: '#f1f3d8'},
+            answerStyle: {backgroundColor: '#fcfff5'}
+        },
+        {
+            sectionStyle: {backgroundColor: '#d8f1f3'},
+            questionStyle: {backgroundColor: '#d8f1f3'},
+            answerStyle: {backgroundColor: '#f5fcff'}
+        },
+        {
+            sectionStyle: {backgroundColor: '#f3d8f1'},
+            questionStyle: {backgroundColor: '#f3d8f1'},
+            answerStyle: {backgroundColor: '#fff5fc'}
+        },
+    ];
+
+    static getQuestionType(fe: FormQuestion) {
+        switch (fe.question.datatype) {
+            case 'Value List':
+                return questionMulti(fe) ? 'mlist' : 'list';
+            case 'Date':
+                return 'date';
+            case 'Geo Location':
+                return 'geo';
+            case 'Number':
+                return 'number';
+            default:
+                return 'text';
+        }
     }
 
     radioButtonSelect(required: boolean, obj: any, property: string, value: string, q: FormQuestion) {
@@ -100,7 +148,7 @@ export class NativeTableComponent {
         }
         this.canRender = true;
 
-        let [r, c] = this.renderFormElement(this.formElement, -1, undefined, undefined, undefined, undefined);
+        const [r, c] = this.renderFormElement(this.formElement, -1, undefined, undefined, undefined, undefined);
         this.setDepth(r + 1);
         head.rspan = r + 1;
     }
@@ -200,8 +248,8 @@ export class NativeTableComponent {
             [r, c] = list.reduce((acc, label, iN) => {
                 let iR = 1, iC = 0;
                 // create
-                let sectionStyle = this.getSectionStyle(this.sectionNumber!++);
-                let section = {
+                const sectionStyle = this.getSectionStyle(this.sectionNumber!++);
+                const section = {
                     header: true,
                     cspan: iC,
                     label: label + (f.label ? ' ' + f.label : ''),
@@ -274,65 +322,17 @@ export class NativeTableComponent {
     setDepth(r: number) {
         this.tableForm.head.forEach((s, level: number) => {
             s.q.forEach(q => {
-                if (!q.header) q.rspan = r - level;
+                if (!q.header) { q.rspan = r - level; }
             });
         });
     }
 
     getSectionLevel(level: number) {
-        if (this.tableForm.head.length <= level) this.tableForm.head[level] = {q: []};
+        if (this.tableForm.head.length <= level) { this.tableForm.head[level] = {q: []}; }
         return this.tableForm.head[level];
     }
 
-    theme: Theme[] = [
-        {
-            sectionStyle: {backgroundColor: '#d7f3da'},
-            questionStyle: {backgroundColor: '#d7f3da'},
-            answerStyle: {backgroundColor: '#f6fff9'}
-        },
-        {
-            sectionStyle: {backgroundColor: '#dad7f3'},
-            questionStyle: {backgroundColor: '#dad7f3'},
-            answerStyle: {backgroundColor: '#f9f6ff'}
-        },
-        {
-            sectionStyle: {backgroundColor: '#f3dad7'},
-            questionStyle: {backgroundColor: '#f3dad7'},
-            answerStyle: {backgroundColor: '#fff9f6'}
-        },
-        {
-            sectionStyle: {backgroundColor: '#f1f3d8'},
-            questionStyle: {backgroundColor: '#f1f3d8'},
-            answerStyle: {backgroundColor: '#fcfff5'}
-        },
-        {
-            sectionStyle: {backgroundColor: '#d8f1f3'},
-            questionStyle: {backgroundColor: '#d8f1f3'},
-            answerStyle: {backgroundColor: '#f5fcff'}
-        },
-        {
-            sectionStyle: {backgroundColor: '#f3d8f1'},
-            questionStyle: {backgroundColor: '#f3d8f1'},
-            answerStyle: {backgroundColor: '#fff5fc'}
-        },
-    ];
-
     getSectionStyle(i: number) {
         return this.theme[i % this.theme.length];
-    }
-
-    static getQuestionType(fe: FormQuestion) {
-        switch (fe.question.datatype) {
-            case 'Value List':
-                return questionMulti(fe) ? 'mlist' : 'list';
-            case 'Date':
-                return 'date';
-            case 'Geo Location':
-                return 'geo';
-            case 'Number':
-                return 'number';
-            default:
-                return 'text';
-        }
     }
 }
