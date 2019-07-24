@@ -7,7 +7,7 @@ export function areDerivationRulesSatisfied(elt: FormElementsContainer): string[
     let missingCdeTinyIds: string[] = [];
     let allCdes: {[tinyId: string]: Question} = {};
     let allQuestions: FormQuestion[] = [];
-    iterateFeSync(elt, undefined, undefined, (q) => {
+    iterateFeSync(elt, undefined, undefined, q => {
         if (q.question.datatype === 'Number') {
             q.question.answer = q.question.defaultAnswer ? Number.parseFloat(q.question.defaultAnswer) : 0;
         } else {

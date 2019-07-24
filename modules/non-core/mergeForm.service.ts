@@ -56,9 +56,7 @@ export class MergeFormService {
                     }
                 });
             }
-        }, (err) => {
-            cb(err);
-        });
+        }, cb);
     }
 
     doMerge(mergeFrom, mergeTo, fields, doneOne, cb) {
@@ -86,9 +84,7 @@ export class MergeFormService {
             if (fields.questions) {
                 this.mergeQuestions(mergeFrom.questions, mergeTo.questions, fields.cde, (index, next) => {
                     doneOne(index, next);
-                }, (err) => {
-                    cb(err);
-                });
+                }, cb);
             }
         }
     }

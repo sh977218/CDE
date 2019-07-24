@@ -22,6 +22,8 @@
 //    db.dataelements.updateOne({tinyId: cde.tinyId}, cde);
 //});
 
+import { DataElement } from 'server/cde/mongo-cde';
+
 var formIncrement = 100;
 var startPage = process.argv[2];
 var endPage = process.argv[3];
@@ -298,6 +300,14 @@ var saveForm = function(cadsrForm, cbfc) {
                 console.log("Form Public ID " + cadsrForm.publicID);
                 return cbq();
             }
+            // export function bySourceIdVersion(source, id, version, cb) {
+            //     DataElement.find({archived: false}).elemMatch('ids', {
+            //         source: source, id: id, version: version
+            //     }).exec(function (err, cdes) {
+            //         if (cdes.length > 1) cb('Multiple results, returning first', cdes[0]);
+            //         else cb(err, cdes[0]);
+            //     });
+            // }
             mongo_cde.bySourceIdVersion("caDSR", q.cde.publicID, q.cde.version, function (err, cde) {
                 if (!cde) {
                     console.log("CDE not found. caDSR ID: " + q.cde.publicID);

@@ -161,7 +161,7 @@ export class RedcapExport {
                 'Matrix Ranking?': ''
             };
         };
-        let doQuestion = (formElement) => {
+        let doQuestion = formElement => {
             let q = formElement.question;
             let _questionSkipLogic = '';
             let questionSkipLogic = formElement.skipLogic ? formElement.skipLogic.condition : '';

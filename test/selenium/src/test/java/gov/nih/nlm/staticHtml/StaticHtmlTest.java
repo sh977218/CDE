@@ -22,6 +22,10 @@ public class StaticHtmlTest extends NlmCdeBaseTest {
     public void staticCdeSearchHtml() {
         driver.get(baseUrl + "/cde/search");
         textPresent("Global Rare Diseases Patient Registry Data Repository");
+
+        driver.get(baseUrl + "/cde/search?selectedOrg=NICHD");
+        textPresent("Behavioral Assessment Bayley Scales of Infant Development java.lang.String");
+
     }
 
     @Test

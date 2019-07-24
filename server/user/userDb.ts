@@ -134,11 +134,11 @@ export function userByUsername(username, callback) {
 }
 
 export function byUsername(username, callback) {
-    User.findOne({username: username}, userProject, callback);
+    return User.findOne({username: username}, userProject).exec(callback);
 }
 
 export function save(user, callback) {
-    new User(user).save(callback);
+    return new User(user).save(callback);
 }
 
 // Site Admin
