@@ -20,11 +20,11 @@ export class EmbedAppComponent  {
     embed!: Embed;
     lastQueryTimeStamp?: number;
     name = 'Embedded NIH CDE Repository';
-    searchStarted: boolean = false;
+    searchStarted = false;
     searchSettings: SearchSettings = new SearchSettings('', 5);
     searchType: 'cde'|'form' = 'cde';
     searchViewSettings: UserSearchSettings;
-    selectedClassif: string = '';
+    selectedClassif = '';
     took?: number;
     totalItems?: number;
 
@@ -32,18 +32,18 @@ export class EmbedAppComponent  {
         private http: HttpClient,
         private elasticSvc: ElasticService,
     ) {
-        let args: any = {};
-        let args1 = window.location.search.substr(1).split('&');
+        const args: any = {};
+        const args1 = window.location.search.substr(1).split('&');
         args1.forEach(arg => {
-            let argArr = arg.split('=');
+            const argArr = arg.split('=');
             args[argArr[0]] = argArr[1];
         });
 
-        this.http.get<Embed>('/embed/' + args['id']).subscribe(response => {
+        this.http.get<Embed>('/embed/' + args.id).subscribe(response => {
             this.embed = response;
             this.searchViewSettings.tableViewFields.customFields = [];
 
-            let embed4Type = Object.assign({}, this.embed[this.searchType]);
+            const embed4Type = Object.assign({}, this.embed[this.searchType]);
 
             embed4Type.ids && embed4Type.ids.forEach(eId => {
                 this.searchViewSettings.tableViewFields.customFields!.push({key: eId.idLabel, label: eId.idLabel});
@@ -93,7 +93,7 @@ export class EmbedAppComponent  {
     }
 
     flattenClassification(elt: ItemElastic) {
-        let result: string[] = [];
+        const result: string[] = [];
         if (elt.classification) {
             elt.classification.forEach(cl => {
                 if (cl.elements) {
@@ -116,9 +116,9 @@ export class EmbedAppComponent  {
 
     search() {
         this.searchSettings.resultPerPage = this.embed[this.searchType]!.pageSize;
-        let embed4Type = Object.assign({}, this.embed[this.searchType]);
+        const embed4Type = Object.assign({}, this.embed[this.searchType]);
 
-        let timestamp = new Date().getTime();
+        const timestamp = new Date().getTime();
         this.lastQueryTimeStamp = timestamp;
 
         for (let i = 0; i < orderedList.length; i++) {
@@ -128,7 +128,7 @@ export class EmbedAppComponent  {
             }
         }
 
-        let settings = this.elasticSvc.buildElasticQuerySettings(this.searchSettings);
+        const settings = this.elasticSvc.buildElasticQuerySettings(this.searchSettings);
         settings.fullRecord = true;
 
         this.elasticSvc.generalSearchQuery(settings, this.searchType, (err?: string, result?: ElasticQueryResponse) => {
@@ -136,7 +136,7 @@ export class EmbedAppComponent  {
                 this.elts = [];
                 return;
             }
-            if (timestamp < this.lastQueryTimeStamp!) return;
+            if (timestamp < this.lastQueryTimeStamp!) { return; }
             this.totalItems = result.totalNumber;
             this.elts = this.searchType === 'cde' ? result.cdes! : result.forms!;
             this.took = result.took;
@@ -145,16 +145,16 @@ export class EmbedAppComponent  {
                 let maxJump = 0;
                 let maxJumpIndex = 100;
                 this.elts.map((e, i) => {
-                    if (!this.elts[i + 1]) return;
-                    let jump = e.score - this.elts[i + 1].score;
+                    if (!this.elts[i + 1]) { return; }
+                    const jump = e.score - this.elts[i + 1].score;
                     if (jump > maxJump) {
                         maxJump = jump;
                         maxJumpIndex = i + 1;
                     }
                 });
 
-                if (maxJump > (result.maxScore / 4)) this.cutoffIndex = maxJumpIndex;
-                else this.cutoffIndex = 100;
+                if (maxJump > (result.maxScore / 4)) { this.cutoffIndex = maxJumpIndex; }
+                else { this.cutoffIndex = 100; }
             } else {
                 this.cutoffIndex = 100;
             }
@@ -176,7 +176,7 @@ export class EmbedAppComponent  {
 
                 if (embed4Type.ids) {
                     embed4Type.ids.forEach(eId => {
-                        let id = c.ids.filter(e => e.source === eId.source)[0];
+                        const id = c.ids.filter(e => e.source === eId.source)[0];
                         if (id) {
                             c.embed[eId.idLabel] = id.id;
                             if (eId.version) {
@@ -188,7 +188,7 @@ export class EmbedAppComponent  {
 
                 if (embed4Type.properties) {
                     embed4Type.properties.forEach(eProp => {
-                        let prop = c.properties.filter(e => e.key === eProp.key)[0];
+                        const prop = c.properties.filter(e => e.key === eProp.key)[0];
                         if (prop) {
                             c.embed[eProp.label] = prop.value;
                             if (eProp.limit > 0) {
@@ -200,7 +200,7 @@ export class EmbedAppComponent  {
 
                 if (embed4Type.otherNames) {
                     embed4Type.otherNames.forEach(eName => {
-                        let name = c.designations.filter(
+                        const name = c.designations.filter(
                             n => (n.tags || []).filter(t => t.indexOf('Question Text') > -1).length > 0
                         )[0];
                         if (name) {
@@ -219,11 +219,11 @@ export class EmbedAppComponent  {
 
                 if (embed4Type.classifications && embed4Type.classifications.length > 0) {
                     embed4Type.classifications.forEach(eCl => {
-                        let flatClassifs = this.flattenClassification(c);
-                        let exclude = new RegExp(eCl.exclude);
+                        const flatClassifs = this.flattenClassification(c);
+                        const exclude = new RegExp(eCl.exclude);
                         c.embed[eCl.label] = flatClassifs.filter(cl => {
                             let result = cl.indexOf(eCl.startsWith) === 0;
-                            if (eCl.exclude) result = result && !cl.match(exclude);
+                            if (eCl.exclude) { result = result && !cl.match(exclude); }
                             if (eCl.selectedOnly) {
                                 result = result && cl.indexOf(this.embed.org + ';' +
                                     this.searchSettings.classification.join(';')) === 0;
@@ -236,9 +236,9 @@ export class EmbedAppComponent  {
                 if (embed4Type.linkedForms && embed4Type.linkedForms.show) {
                     c.embed.linkedForms = [];
 
-                    let searchSettings = new SearchSettings(c.tinyId);
+                    const searchSettings = new SearchSettings(c.tinyId);
                     searchSettings.selectedOrg = this.embed.org;
-                    let lfSettings = this.elasticSvc.buildElasticQuerySettings(searchSettings);
+                    const lfSettings = this.elasticSvc.buildElasticQuerySettings(searchSettings);
 
                     this.elasticSvc.generalSearchQuery(lfSettings, 'form', (err?: string, result?: ElasticQueryResponse) => {
                         if (err || !result) {

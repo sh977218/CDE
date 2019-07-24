@@ -6,7 +6,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { BoardModule } from 'board/public/board.module';
 import { PublicBoardsComponent } from 'board/public/components/publicBoards/publicBoards.component';
 
-import { MatIconModule, MatInputModule } from "@angular/material";
+import { MatIconModule, MatInputModule } from '@angular/material';
 import { NonCoreModule } from 'non-core/noncore.module';
 
 const boardRoutes: Routes = [

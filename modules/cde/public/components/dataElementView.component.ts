@@ -53,7 +53,7 @@ export class DataElementViewComponent implements OnInit {
     isOrgCurator = isOrgCurator;
     modalRef: MatDialogRef<TemplateRef<any>>;
     tabsCommented = [];
-    savingText: String;
+    savingText: string;
     tinyId;
     unsaved = false;
     url;
@@ -149,7 +149,7 @@ export class DataElementViewComponent implements OnInit {
 
     publish() {
         if (this.validationErrors.length) {
-            this.alert.addAlert("danger", "Please fix all errors before publishing");
+            this.alert.addAlert('danger', 'Please fix all errors before publishing');
         } else {
             this.saveModal.openSaveModal();
         }
@@ -193,7 +193,7 @@ export class DataElementViewComponent implements OnInit {
 
     removeAttachment(index) {
         this.http.post<DataElement>('/server/attachment/cde/remove', {
-            index: index,
+            index,
             id: this.elt._id
         }).subscribe(res => {
             this.elt = res;
@@ -205,7 +205,7 @@ export class DataElementViewComponent implements OnInit {
     setDefault(index) {
         this.http.post<DataElement>('/server/attachment/cde/setDefault',
             {
-                index: index,
+                index,
                 state: this.elt.attachments[index].isDefault,
                 id: this.elt._id
             }).subscribe(res => {
@@ -216,11 +216,11 @@ export class DataElementViewComponent implements OnInit {
     }
 
     upload(event) {
-        let files = event.srcElement.files;
+        const files = event.srcElement.files;
         if (files && files.length > 0) {
-            let formData = new FormData();
-            for (let i = 0; i < files.length; i++) {
-                formData.append('uploadedFiles', files[i]);
+            const formData = new FormData();
+            for (const file of files) {
+                formData.append('uploadedFiles', file);
             }
             formData.append('id', this.elt._id);
             this.http.post<any>('/server/attachment/cde/add', formData).subscribe(
@@ -244,7 +244,9 @@ export class DataElementViewComponent implements OnInit {
     }
 
     saveDraft(): Promise<any> {
-        if (!this.elt.isDraft) this.elt.changeNote = '';
+        if (!this.elt.isDraft) {
+            this.elt.changeNote = '';
+        }
         this.elt.isDraft = true;
         this.hasDrafts = true;
         this.savingText = 'Saving ...';
@@ -298,13 +300,17 @@ export class DataElementViewComponent implements OnInit {
     validate() {
         this.validationErrors.length = 0;
         const defError = checkDefinitions(this.elt);
-        if (!defError.allValid) this.validationErrors.push({message: defError.message});
+        if (!defError.allValid) {
+            this.validationErrors.push({message: defError.message});
+        }
         const pvErrors = checkPvUnicity(this.elt.valueDomain);
-        if (!pvErrors.allValid) this.validationErrors.push({message: pvErrors.message});
+        if (!pvErrors.allValid) {
+            this.validationErrors.push({message: pvErrors.message});
+        }
     }
 
     viewChanges() {
-        let draft = this.elt;
+        const draft = this.elt;
         this.deViewService.fetchPublished(this.route.snapshot.queryParams).then(published => {
             this.dialog.open(CompareHistoryContentComponent,
                 {width: '1000px', data: {newer: draft, older: published}});

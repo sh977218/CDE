@@ -9,62 +9,62 @@ import { deepCopy } from 'shared/system/util';
 export type contextTypes = 'Encounter'|'EpisodeOfCare';
 export const contextTypesArray = ['Encounter', 'EpisodeOfCare'];
 
-export type ResourceTreeRoot = {
-    crossReference?: any,
-    children: (ResourceTreeRoot|ResourceTreeResource)[],
-    parent?: ResourceTreeRoot,
-};
-export type ResourceTreeResource = {
-    resourceType: supportedFhirResources,
-    children: ResourceTree[],
-    childResourceType?: supportedFhirResources,
-    crossReference?: any,
-    map?: supportedResourcesMaps,
+export interface ResourceTreeRoot {
+    crossReference?: any;
+    children: (ResourceTreeRoot|ResourceTreeResource)[];
+    parent?: ResourceTreeRoot;
+}
+export interface ResourceTreeResource {
+    resourceType: supportedFhirResources;
+    children: ResourceTree[];
+    childResourceType?: supportedFhirResources;
+    crossReference?: any;
+    map?: supportedResourcesMaps;
     lookupResource?: any;
-    resource?: any,
-    resourceRemote?: any,
-    root: ResourceTreeResource,
-};
-export type ResourceTreeIntermediate = {
-    resourceType: undefined,
-    children: ResourceTree[],
-    crossReference?: any,
-    parent: ResourceTreeResource|ResourceTreeIntermediate,
-    resource?: any,
-    root: ResourceTreeResource,
-};
-export type ResourceTreeAttribute = {
-    resourceType: undefined,
-    crossReference?: any,
-    parent: ResourceTreeResource|ResourceTreeIntermediate,
-    parentAttribute: string,
-    resource?: any,
-    root: ResourceTreeResource,
-};
+    resource?: any;
+    resourceRemote?: any;
+    root: ResourceTreeResource;
+}
+export interface ResourceTreeIntermediate {
+    resourceType: undefined;
+    children: ResourceTree[];
+    crossReference?: any;
+    parent: ResourceTreeResource|ResourceTreeIntermediate;
+    resource?: any;
+    root: ResourceTreeResource;
+}
+export interface ResourceTreeAttribute {
+    resourceType: undefined;
+    crossReference?: any;
+    parent: ResourceTreeResource|ResourceTreeIntermediate;
+    parentAttribute: string;
+    resource?: any;
+    root: ResourceTreeResource;
+}
 export type ResourceTree = ResourceTreeResource | ResourceTreeIntermediate | ResourceTreeAttribute;
 
 export class ResourceTreeUtil {
     static createAttritube(parent: ResourceTreeResource|ResourceTreeIntermediate, parentAttribute: string, fe?: CdeForm|FormElement, resource?: FhirDomainResource): ResourceTreeAttribute {
-        let node: ResourceTreeAttribute = {parent, parentAttribute, resourceType: undefined, root: parent.root};
-        if (fe) ResourceTreeUtil.setCrossReference(node, fe);
-        if (resource) ResourceTreeUtil.setResource(node, resource);
+        const node: ResourceTreeAttribute = {parent, parentAttribute, resourceType: undefined, root: parent.root};
+        if (fe) { ResourceTreeUtil.setCrossReference(node, fe); }
+        if (resource) { ResourceTreeUtil.setResource(node, resource); }
         return node;
     }
 
     static createIntermediate(parent: ResourceTreeResource|ResourceTreeIntermediate, fe?: CdeForm|FormElement, resource?: FhirDomainResource) {
-        let node: ResourceTreeIntermediate = {children: [], parent: parent, resourceType: undefined, root: parent.root};
-        if (fe) ResourceTreeUtil.setCrossReference(node, fe);
-        if (resource) ResourceTreeUtil.setResource(node, resource);
+        const node: ResourceTreeIntermediate = {children: [], parent, resourceType: undefined, root: parent.root};
+        if (fe) { ResourceTreeUtil.setCrossReference(node, fe); }
+        if (resource) { ResourceTreeUtil.setResource(node, resource); }
         return node;
     }
 
     static createResource(resourceType: supportedFhirResources|undefined, fe?: CdeForm|FormElement,
                           resource?: FhirDomainResource): ResourceTreeResource {
-        let partial: any = {children: [], resourceType};
+        const partial: any = {children: [], resourceType};
         partial.root = partial;
-        let node: ResourceTreeResource = partial;
-        if (fe) ResourceTreeUtil.setCrossReference(node, fe);
-        if (resource) ResourceTreeUtil.setResource(node, resource);
+        const node: ResourceTreeResource = partial;
+        if (fe) { ResourceTreeUtil.setCrossReference(node, fe); }
+        if (resource) { ResourceTreeUtil.setResource(node, resource); }
         return node;
     }
 
@@ -107,7 +107,7 @@ export class ResourceTreeUtil {
         node.crossReference = fe;
         node.resourceType = getMapToFhirResource(fe) || node.resourceType;
         if (ResourceTreeUtil.isResource(node)) {
-            let map = resourceMap[node.resourceType];
+            const map = resourceMap[node.resourceType];
             if (map) {
                 node.map = new map(getFhirResourceMap(fe));
             }
@@ -116,7 +116,7 @@ export class ResourceTreeUtil {
 
     static setResource(node: ResourceTree, resource: any, resourceAfter?: any) {
         if (ResourceTreeUtil.isResource(node)) {
-            if (!resourceAfter) resourceAfter = deepCopy(resource);
+            if (!resourceAfter) { resourceAfter = deepCopy(resource); }
             node.resource = resourceAfter;
             node.resourceRemote = resource;
             if (!(node.resource instanceof Promise)) {
