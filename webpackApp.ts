@@ -11,12 +11,12 @@ import { htmlServedUri } from 'shared/serverConstants';
 const APP_DIR = __dirname;
 
 const assets = [
-    '/app/assets/img/min/NIH-CDE.png',
-    '/app/assets/img/min/NIH-CDE-FHIR.png',
-    '/app/assets/img/min/nih-cde-logo-simple.png',
-    '/app/assets/img/min/nih-cde-logo.png',
-    '/app/assets/img/min/usagov_logo.png',
-    '/app/assets/img/min/NLM-logo.png',
+    '/cde/public/assets/img/min/NIH-CDE.png',
+    '/cde/public/assets/img/min/NIH-CDE-FHIR.png',
+    '/cde/public/assets/img/min/nih-cde-logo-simple.png',
+    '/cde/public/assets/img/min/nih-cde-logo.png',
+    '/cde/public/assets/img/min/usagov_logo.png',
+    '/cde/public/assets/img/min/NLM-logo.png',
 ];
 
 export default {
