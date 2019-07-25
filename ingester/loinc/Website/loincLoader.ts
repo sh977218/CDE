@@ -26,10 +26,6 @@ const url_prefix = 'http://r.details.loinc.org/LOINC/';
 const url_postfix = '.html';
 const url_postfix_para = '?sections=Comprehensive';
 
-function parse3rdPartyCopyrightTable() {
-
-}
-
 const tasks = [
     {
         sectionName: 'PANEL HIERARCHY',
@@ -110,11 +106,13 @@ const tasks = [
         xpath: 'html/body/div/table[.//th[text()="EXAMPLE UNITS"]]'
     },
 
+/*
     {
         sectionName: '3rd PARTY COPYRIGHT',
         function: parse3rdPartyCopyrightTable,
         xpath: '/html/body/div/table[.//th[text()="3rd PARTY COPYRIGHT"]]'
     },
+*/
     {
         sectionName: 'COPYRIGHT',
         function: parseCopyrightTable,

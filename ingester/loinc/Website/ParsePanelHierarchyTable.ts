@@ -1,9 +1,7 @@
 import { By } from 'selenium-webdriver';
 
-export async function parsePanelHierarchyTable(driver, loincId, element) {
-    let trs = await element.findElements(By.xpath('tbody/tr')).catch(e => {
-        throw(e);
-    });
+export async function parsePanelHierarchyTable(driver, loincId, element, cb) {
+    let trs = await element.findElements(By.xpath('tbody/tr'));
     trs.shift();
     trs.pop();
 
@@ -59,10 +57,10 @@ export async function parsePanelHierarchyTable(driver, loincId, element) {
         }
         counter++;
     }
-    return currentLevels[0];
+    cb(currentLevels[0]);
 }
 
-async function parseOverrideDisplayName (driver, index) {
+async function parseOverrideDisplayName(driver, index) {
     let xpath = '(//*[@class="Section1000000F00"])[' + (index + 1) + ']/table';
     let tables = await driver.findElements(By.xpath(xpath)).catch(e => {
         throw(e);
@@ -81,7 +79,7 @@ async function parseOverrideDisplayName (driver, index) {
     }
 }
 
-async function _parseOneRow (driver, tds) {
+async function _parseOneRow(driver, tds) {
     let result: any = {};
     let loincIdText = await tds[0].getText().catch(e => {
         throw e;
