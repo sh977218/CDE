@@ -58,8 +58,19 @@ export class PermissibleValueComponent {
     newPermissibleValue: any = {};
     modalRef: MatDialogRef<TemplateRef<any>>;
     pVTypeheadVsacNameList;
-    searchSettings = new SearchSettings();
-
+    searchSettings: SearchSettings = {
+        classification: [],
+        classificationAlt: [],
+        datatypes: ['Value List'],
+        excludeOrgs: [],
+        excludeAllOrgs: false,
+        meshTree: '',
+        regStatuses: [],
+        resultPerPage: 20,
+        page: 1,
+        q: '',
+        selectedOrg: '';
+    };
     private searchTerms = new Subject<string>();
     vsacValueSet = [];
     vsac = {};

@@ -394,7 +394,7 @@ export class FormViewComponent implements OnInit {
             const files = event.srcElement.files;
             const formData = new FormData();
             for (const file of files) {
-                formData.append('uploadedFiles', files);
+                formData.append('uploadedFiles', file);
             }
             formData.append('id', this.elt._id);
             this.http.post<any>('/server/attachment/form/add', formData).subscribe(
