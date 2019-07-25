@@ -69,7 +69,7 @@ export class PermissibleValueComponent {
         resultPerPage: 20,
         page: 1,
         q: '',
-        selectedOrg: '';
+        selectedOrg: ''
     };
     private searchTerms = new Subject<string>();
     vsacValueSet = [];
