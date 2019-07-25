@@ -50,6 +50,58 @@ function allRequestsProcessing(req, res, next) {
 export function init(app, daoManager) {
     daoManager.registerDao(mongo_form);
 
+    app.get('/form/search', function (req, res) {
+        let selectedOrg = req.query.selectedOrg;
+        let pageString = req.query.page; // starting from 1
+        if (!pageString) pageString = '1';
+        if (isSearchEngine(req)) {
+            if (selectedOrg) {
+                let pageNum = toInteger(pageString);
+                let pageSize = 20;
+                let cond = {
+                    'classification.stewardOrg.name': selectedOrg,
+                    archived: false,
+                    'registrationState.registrationStatus': 'Qualified'
+                };
+                Form.countDocuments(cond, (err, totalCount) => {
+                    if (err) {
+                        res.status(500).send('ERROR - Static Html Error, /form/search');
+                        errorLogger.error('Error: Static Html Error', {
+                            stack: err.stack,
+                            origin: req.url
+                        });
+                    } else {
+                        Form.find(cond, 'tinyId designations', {
+                            skip: pageSize * (pageNum - 1),
+                            limit: pageSize
+                        }, (err, forms) => {
+                            if (err) {
+                                res.status(500).send('ERROR - Static Html Error, /form/search');
+                                errorLogger.error('Error: Static Html Error', {
+                                    stack: err.stack,
+                                    origin: req.url
+                                });
+                            } else {
+                                let totalPages = totalCount / pageSize;
+                                if (totalPages % 1 > 0) totalPages = totalPages + 1;
+                                res.render('bot/formSearchOrg', 'system', {
+                                    forms: forms,
+                                    totalPages: totalPages,
+                                    selectedOrg: selectedOrg
+                                });
+                            }
+                        });
+                    }
+                });
+            } else {
+                res.render('bot/formSearch', 'system');
+            }
+        } else {
+            respondHomeFull(req, res);
+        }
+    });
+
+
     app.get('/form/:tinyId', allowXOrigin, nocacheMiddleware, allRequestsProcessing, formSvc.byTinyId);
     app.get('/form/:tinyId/latestVersion/', nocacheMiddleware, formSvc.latestVersionByTinyId);
     app.get('/form/:tinyId/version/:version?', [allowXOrigin, nocacheMiddleware], formSvc.byTinyIdAndVersion);
@@ -154,56 +206,6 @@ export function init(app, daoManager) {
         exporters.json.export(res);
     });
 
-    app.get('/form/search', function (req, res) {
-        let selectedOrg = req.query.selectedOrg;
-        let pageString = req.query.page; // starting from 1
-        if (!pageString) pageString = '1';
-        if (isSearchEngine(req)) {
-            if (selectedOrg) {
-                let pageNum = toInteger(pageString);
-                let pageSize = 20;
-                let cond = {
-                    'classification.stewardOrg.name': selectedOrg,
-                    archived: false,
-                    'registrationState.registrationStatus': 'Qualified'
-                };
-                Form.countDocuments(cond, (err, totalCount) => {
-                    if (err) {
-                        res.status(500).send('ERROR - Static Html Error, /form/search');
-                        errorLogger.error('Error: Static Html Error', {
-                            stack: err.stack,
-                            origin: req.url
-                        });
-                    } else {
-                        Form.find(cond, 'tinyId designations', {
-                            skip: pageSize * (pageNum - 1),
-                            limit: pageSize
-                        }, (err, forms) => {
-                            if (err) {
-                                res.status(500).send('ERROR - Static Html Error, /form/search');
-                                errorLogger.error('Error: Static Html Error', {
-                                    stack: err.stack,
-                                    origin: req.url
-                                });
-                            } else {
-                                let totalPages = totalCount / pageSize;
-                                if (totalPages % 1 > 0) totalPages = totalPages + 1;
-                                res.render('bot/formSearchOrg', 'system', {
-                                    forms: forms,
-                                    totalPages: totalPages,
-                                    selectedOrg: selectedOrg
-                                });
-                            }
-                        });
-                    }
-                });
-            } else {
-                res.render('bot/formSearch', 'system');
-            }
-        } else {
-            respondHomeFull(req, res);
-        }
-    });
 
     app.get('/formView', function (req, res) {
         let tinyId = req.query.tinyId;
