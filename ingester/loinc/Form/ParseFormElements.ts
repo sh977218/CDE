@@ -36,8 +36,28 @@ export async function parseFormElements(loinc, orgInfo) {
             tempFormElements.push(formElement);
         }
     }
+    console.log('createdRedCde: ' + createdRedCde);
+    console.log('createdRedCdes: ' + createdRedCdes);
+    console.log('sameRedCde: ' + sameRedCde);
+    console.log('sameRedCdes: ' + sameRedCdes);
+    console.log('changedRedCde: ' + changedRedCde);
+    console.log('changedRedCdes: ' + changedRedCdes);
+
+    console.log('createdRedForm: ' + createdRedForm);
+    console.log('createdRedForms: ' + createdRedForms);
+    console.log('sameRedForm: ' + sameRedForm);
+    console.log('sameRedForms: ' + sameRedForms);
+    console.log('changedRedForm: ' + changedRedForm);
+    console.log('changedRedForms: ' + changedRedForms);
     return formElements;
 }
+
+let createdRedCde = 0;
+let createdRedCdes = [];
+let sameRedCde = 0;
+let sameRedCdes = [];
+let changedRedCde = 0;
+let changedRedCdes = [];
 
 async function loadCde(element, orgInfo) {
     let existingCde = await runOneCde(element, orgInfo);
@@ -75,6 +95,13 @@ async function loadCde(element, orgInfo) {
         formElements: []
     };
 }
+
+let createdRedForm = 0;
+let createdRedForms = [];
+let sameRedForm = 0;
+let sameRedForms = [];
+let changedRedForm = 0;
+let changedRedForms = [];
 
 async function loadForm(element, orgInfo) {
     let existingForm = await runOneForm(element, orgInfo);

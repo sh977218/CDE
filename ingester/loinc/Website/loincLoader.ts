@@ -1,7 +1,9 @@
-import { By, webdriver } from 'selenium-webdriver';
+const {Builder, By} = require('selenium-webdriver');
+
 import { parsePanelHierarchyTable } from 'ingester/loinc/Website/ParsePanelHierarchyTable';
 import { parseLoincIdTable } from 'ingester/loinc/Website/ParseLoincIdTable';
 import { parseLoincNameTable } from 'ingester/loinc/Website/ParseLoincNameTable';
+import { parse3rdPartyCopyrightTable } from 'ingester/loinc/Website/Parse3rdPartyCopyrightTable';
 import { parseNameTable } from 'ingester/loinc/Website/NameTable/ParseNameTable';
 import { parseCopyrightNotice } from 'ingester/loinc/Website/ParseCopyrightNotice';
 import { parsePartDefinitionDescriptionsTable } from 'ingester/loinc/Website/ParsePartDefinitionDescriptionsTable';
@@ -105,14 +107,11 @@ const tasks = [
         function: parseExampleUnitsTable,
         xpath: 'html/body/div/table[.//th[text()="EXAMPLE UNITS"]]'
     },
-
-/*
     {
         sectionName: '3rd PARTY COPYRIGHT',
         function: parse3rdPartyCopyrightTable,
         xpath: '/html/body/div/table[.//th[text()="3rd PARTY COPYRIGHT"]]'
     },
-*/
     {
         sectionName: 'COPYRIGHT',
         function: parseCopyrightTable,
@@ -160,24 +159,22 @@ const tasks = [
     }
 ];
 
-export function runOneLoinc(loincId) {
-    return new Promise(async (resolve, reject) => {
-        let driver = await new webdriver.Builder().forBrowser('firefox').build();
-        let url = url_prefix + loincId.trim() + url_postfix + url_postfix_para;
-        await driver.get(url);
-        let loinc = {URL: url, loincId: loincId};
-        for (let task of tasks) {
-            let sectionName = task.sectionName;
-            let elements = await driver.findElements(By.xpath(task.xpath));
-            if (elements && elements.length === 1) {
-                if (task.function) {
-                    await task.function(driver, loincId, elements[0], result => {
-                        loinc[sectionName] = result;
-                    });
-                }
+export async function runOneLoinc(loincId) {
+    let driver = await new Builder().forBrowser('firefox').build();
+    let url = url_prefix + loincId.trim() + url_postfix + url_postfix_para;
+    await driver.get(url);
+    let loinc = {URL: url, loincId: loincId};
+    for (let task of tasks) {
+        let sectionName = task.sectionName;
+        let elements = await driver.findElements(By.xpath(task.xpath));
+        if (elements && elements.length === 1) {
+            if (task.function) {
+                await task.function(driver, loincId, elements[0], result => {
+                    loinc[sectionName] = result;
+                });
             }
         }
-        driver.close();
-        resolve(loinc);
-    });
+    }
+    driver.close();
+    return loinc;
 }

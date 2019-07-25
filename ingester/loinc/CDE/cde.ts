@@ -1,25 +1,24 @@
 import { generateTinyId } from 'server/system/mongo-data';
-import { parseClassification } from '../Shared/ParseClassification';
-import { parseDefinitions } from '../Shared/ParseDefinitions';
-import { parseDesignations } from '../Shared/ParseDesignations';
-import { parseIds } from '../Shared/ParseIds';
-import { parseProperties } from '../Shared/ParseProperties';
-import { parseReferenceDocuments } from '../Shared/ParseReferenceDocuments';
-import { parseStewardOrg } from '../Shared/ParseStewardOrg';
-import { parseSources } from '../Shared/ParseSources';
-import { parseConcepts } from './ParseConcept';
-import { parseValueDomain } from './ParseValueDomain';
+import { parseClassification } from 'ingester/loinc/Shared/ParseClassification';
+import { parseDefinitions } from 'ingester/loinc/Shared/ParseDefinitions';
+import { parseDesignations } from 'ingester/loinc/Shared/ParseDesignations';
+import { parseIds } from 'ingester/loinc/Shared/ParseIds';
+import { parseProperties } from 'ingester/loinc/Shared/ParseProperties';
+import { parseReferenceDocuments } from 'ingester/loinc/Shared/ParseReferenceDocuments';
+import { parseStewardOrg } from 'ingester/loinc/Shared/ParseStewardOrg';
+import { parseSources } from 'ingester/loinc/Shared/ParseSources';
+import { parseConcepts } from 'ingester/loinc/CDE/ParseConcept';
+import { parseValueDomain } from 'ingester/loinc/CDE/ParseValueDomain';
 
 import { transferClassifications } from 'shared/system/classificationShared';
-import { mergeBySource } from '../Shared/mergeBySource';
-import { mergeBySourceName } from '../Shared/mergeBySourceName';
-import { mergeDefinitions } from '../Shared/mergeDefinitions';
-import { mergeDesignations } from '../Shared/mergeDesignations';
+import { mergeBySource } from 'ingester/loinc/Shared/mergeBySource';
+import { mergeBySourceName } from 'ingester/loinc/Shared/mergeBySourceName';
+import { mergeDefinitions } from 'ingester/loinc/Shared/mergeDefinitions';
+import { mergeDesignations } from 'ingester/loinc/Shared/mergeDesignations';
 import { diff as deepDiff } from 'deep-diff';
 import { cloneDeep } from 'lodash';
-import { wipeUseless } from '../Shared/wipeUseless';
-
-const today = new Date().toJSON();
+import { wipeUseless } from 'ingester/loinc/Shared/wipeUseless';
+import { created, imported } from 'ingester/shared/utility';
 
 export async function createCde(element, orgInfo) {
     let loinc = element.loinc ? element.loinc : element;
@@ -37,21 +36,21 @@ export async function createCde(element, orgInfo) {
     return {
         tinyId: generateTinyId(),
         createdBy: {username: 'batchloader'},
-        created: today,
-        imported: today,
+        created,
+        imported,
         registrationState: {registrationStatus: "Standard"},
         sources: sources,
-        designations: designations,
-        definitions: definitions,
-        ids: ids,
-        properties: properties,
-        referenceDocuments: referenceDocuments,
+        designations,
+        definitions,
+        ids,
+        properties,
+        referenceDocuments,
         objectClass: {concepts: concepts.objectClass},
         property: {concepts: concepts.property},
         dataElementConcept: {concepts: concepts.dataElementConcept},
-        stewardOrg: stewardOrg,
-        valueDomain: valueDomain,
-        classification: classification
+        stewardOrg,
+        valueDomain,
+        classification
     };
 }
 

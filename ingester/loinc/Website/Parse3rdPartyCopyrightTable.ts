@@ -1,6 +1,6 @@
 import { By } from 'selenium-webdriver';
 
-exports.parse3rdPartyCopyrightTable = async function (driver, loincId, element, cb) {
+export async function parse3rdPartyCopyrightTable(driver, loincId, element, cb) {
     let trs = await element.findElements(By.xpath('tbody/tr'));
     trs.shift();
     trs.pop();

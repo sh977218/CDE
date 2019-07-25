@@ -2,8 +2,6 @@ import * as mongo_cde from 'server/cde/mongo-cde';
 import * as mongo_form from 'server/form/mongo-form';
 import * as DiffJson from 'diff-json';
 
-import { generateTinyId } from 'server/system/mongo-data';
-
 export const BATCHLOADER_USERNAME = 'batchloader';
 
 export const batchloader = {
@@ -13,8 +11,6 @@ export const batchloader = {
 
 export const created = new Date().toJSON();
 export const imported = new Date().toJSON();
-
-export let tinyId = generateTinyId();
 
 export function removeWhite(text) {
     if (!text) {
@@ -36,6 +32,8 @@ export function wipeBeforeCompare(obj) {
     delete obj.source;
     delete obj.archived;
     delete obj.views;
+    delete obj.noRenderAllowed;
+    delete obj.isCopyrighted;
 
     if (obj.valueDomain) {
         delete obj.valueDomain.datatypeValueList;
@@ -49,6 +47,7 @@ export function wipeBeforeCompare(obj) {
     delete obj.updatedBy;
 
     delete obj.naming;
+    delete obj.displayProfiles;
     delete obj.history;
     delete obj.classification;
     delete obj.attachments;
@@ -103,13 +102,14 @@ function getChildren(formElements) {
 }
 
 export function compareElt(newEltObj, existingEltObj) {
+    let isQualified = existingEltObj.registrationState.registrationStatus === 'Qualified';
     [existingEltObj, newEltObj].forEach(obj => {
         obj.designations.sort((a, b) => a.designation >= b.designation);
         obj.definitions.sort((a, b) => a.definition >= b.definition);
         obj.ids.sort((a, b) => a.source >= b.source);
         obj.referenceDocuments.sort((a, b) => a.docType >= b.docType);
         obj.properties.sort((a, b) => a.key >= b.key);
-        if (obj.elementType === 'form') {
+        if (obj.elementType === 'form' && !isQualified) {
             obj.cdeIds = getChildren(obj.formElements);
         }
 
@@ -121,6 +121,11 @@ export function compareElt(newEltObj, existingEltObj) {
 export function replaceClassificationByOrg(newClassification, existingClassification, orgName) {
     let otherClassifications = existingClassification.filter(c => c.stewardOrg.name !== orgName)
     return newClassification.concat(otherClassifications);
+}
+
+export function mergeSourcesBySourceName(newSources, existingSources, sourceName) {
+    let otherSources = existingSources.filter(o => o.sourceName.indexOf(sourceName) === -1);
+    return newSources.concat(otherSources);
 }
 
 export function mergeBySource(newSources, existingSources, sourceName) {

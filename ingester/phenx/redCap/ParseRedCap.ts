@@ -11,6 +11,13 @@ import { Comment } from 'server/discuss/discussDb';
 
 const redCapZipFolder = 's:/MLB/CDE/PhenX/www.phenxtoolkit.org/toolkit_content/redcap_zip/';
 
+let createdRedCde = 0;
+let createdRedCdes = [];
+let sameRedCde = 0;
+let sameRedCdes = [];
+let changedRedCde = 0;
+let changedRedCdes = [];
+
 function doInstrumentID(instrumentIDFilePath): Promise<string> {
     return new Promise((resolve, reject) => {
         readFile(instrumentIDFilePath, 'utf8', (err, data) => {
@@ -71,24 +78,15 @@ function doDescriptive(sectionFes, redCapCde, attachments) {
     }
 }
 
-let createdCde = 0;
-let sameCde = 0;
-let changeCde = 0;
-
 async function doQuestion(redCapCde, redCapCdes, formId, protocol, newForm) {
     let newCdeObj = await createCde(redCapCde, formId, protocol);
     let newCde = new DataElement(newCdeObj);
     let cdeId = newCdeObj.ids[0].id;
-    let existingCde = await DataElement.findOne({
-        archived: false,
-        'ids.id': cdeId
-    });
+    let existingCde = await DataElement.findOne({archived: false, 'ids.id': cdeId});
     if (!existingCde) {
-        existingCde = await newCde.save().catch(e => {
-            throw 'existingCde = await newCde.save() Error: ' + e;
-        });
-        createdCde++;
-        console.log('createdCde: ' + createdCde);
+        existingCde = await newCde.save();
+        createdRedCde++;
+        createdRedCdes.push(existingCde.tinyId);
     } else {
         existingCde.imported = new Date().toJSON();
         existingCde.lastMigrationScript = 'loadPhenXJuly2019';
@@ -97,16 +95,16 @@ async function doQuestion(redCapCde, redCapCdes, formId, protocol, newForm) {
             await existingCde.save().catch(e => {
                 throw "Error await existingCde.save(): " + e;
             });
-            sameCde++;
-            console.log('sameForm: ' + sameCde);
+            sameRedCde++;
+            sameRedCdes.push(existingCde.tinyId);
         } else {
             mergeCde(existingCde, newCde);
             existingCde.changeNote = '';
             await updateCde(existingCde, batchloader).catch(e => {
                 throw "Error await updateCde(existingCde, batchloader): " + e;
             });
-            changeCde++;
-            console.log('changeForm: ' + changeCde);
+            changedRedCde++;
+            changedRedCdes.push(existingCde.tinyId);
         }
     }
     for (let comment of newCdeObj['comments']) {
@@ -116,6 +114,7 @@ async function doQuestion(redCapCde, redCapCdes, formId, protocol, newForm) {
         });
     }
     delete newCdeObj.tinyId;
+    newCdeObj.attachments = [];
     let updateResult = await DataElementSource.updateOne({tinyId: existingCde.tinyId}, newCdeObj, {upsert: true}).catch(e => {
         throw'Error await DataElementSource.updateOne({tinyId: existingCde.tinyId}: ' + e;
     });
@@ -130,19 +129,22 @@ export async function parseFormElements(protocol, attachments, newForm) {
     let protocolId = protocol.protocolID;
 
     let leadingZeroProtocolId = leadingZerosProtocolId(protocolId);
-    let zipFolder = redCapZipFolder + 'PX' + leadingZeroProtocolId;
+    let redCapFolder = redCapZipFolder + 'PX' + leadingZeroProtocolId + '/';
 
     let formId = '';
     let instrumentIDFileName = 'instrumentID.txt';
-    let instrumentIDFilePath = zipFolder + '/' + instrumentIDFileName;
+    let instrumentIDFilePath = redCapFolder + instrumentIDFileName;
     let instrumentIDFileExist = existsSync(instrumentIDFilePath);
     if (instrumentIDFileExist) {
         formId = await doInstrumentID(instrumentIDFilePath);
+    } else {
+        console.log('instrumentId.txt not found. protocolId: ' + protocolId);
+        process.exit(1);
     }
 
     let authorId = '';
     let authorIdFileName = 'AuthorID.txt';
-    let authorIdFilePath = zipFolder + '/' + authorIdFileName;
+    let authorIdFilePath = redCapFolder + authorIdFileName;
     let authorIdFileExist = existsSync(authorIdFilePath);
     if (authorIdFileExist) {
         authorId = await doAuthorID(authorIdFilePath);
@@ -150,22 +152,25 @@ export async function parseFormElements(protocol, attachments, newForm) {
             console.log('Unknown author Id ' + authorId);
             process.exit(1);
         }
+    } else {
+        console.log('AuthorID.txt not found. protocolId: ' + protocolId);
+        process.exit(1);
     }
 
     let redCapCdes = [];
     let instrumentFileName = 'instrument.csv';
-    let instrumentFilePath = zipFolder + '/' + instrumentFileName;
+    let instrumentFilePath = redCapFolder + instrumentFileName;
     let instrumentFileExist = existsSync(instrumentFilePath);
     if (instrumentFileExist) {
         redCapCdes = await doInstrument(instrumentFilePath);
     } else {
-        let _instrumentFilePath = zipFolder + '/' + 'PX' + protocolId + '/' + instrumentFileName;
+        let _instrumentFilePath = redCapFolder + 'PX' + protocolId + '/' + instrumentFileName;
         let _instrumentFileExist = existsSync(_instrumentFilePath);
         if (_instrumentFileExist) {
             redCapCdes = await doInstrument(_instrumentFilePath);
         } else {
             let csvComment = {
-                text: newForm.ids[0].id + ' Phenx Batch loader was not able to find instrument.csv',
+                text: newForm.ids[0].id + ' PhenX Batch loader was not able to find instrument.csv',
                 user: batchloader,
                 created: new Date(),
                 pendingApproval: false,
@@ -220,8 +225,15 @@ export async function parseFormElements(protocol, attachments, newForm) {
                 console.log('variableName: ' + variableName);
                 console.log('sectionHeader: ' + sectionHeader);
                 console.log('fieldLabel: ' + fieldLabel);
+                process.exit(1);
             }
         }
     }
     newForm.formElements = formElements;
+    console.log('createdRedCde: ' + createdRedCde);
+    console.log('createdRedCdes: ' + createdRedCdes);
+    console.log('sameRedCde: ' + sameRedCde);
+    console.log('sameRedCdes: ' + sameRedCdes);
+    console.log('changedRedCde: ' + changedRedCde);
+    console.log('changedRedCdes: ' + changedRedCdes);
 }

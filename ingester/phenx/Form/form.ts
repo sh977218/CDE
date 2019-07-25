@@ -4,28 +4,45 @@ import { parseSources } from 'ingester/phenx/Shared/ParseSources';
 import { parseIds } from 'ingester/phenx/Shared/ParseIds';
 import { parseProperties } from 'ingester/phenx/Shared/ParseProperties';
 import { parseReferenceDocuments } from 'ingester/phenx/Shared/ParseReferenceDocuments';
-import { parseAttachments } from 'ingester/phenx/Form/ParseAttachments';
+import { leadingZerosProtocolId, parseAttachments } from 'ingester/phenx/Form/ParseAttachments';
 import { parseClassification } from 'ingester/phenx/Shared/ParseClassification';
 import { parseFormElements } from 'ingester/phenx/Form/ParseFormElements';
 import {
-    batchloader, created, imported, mergeBySource, replaceClassificationByOrg, tinyId
+    batchloader, created, imported, mergeBySource, mergeSourcesBySourceName, replaceClassificationByOrg
 } from 'ingester/shared/utility';
+import { generateTinyId } from 'server/system/mongo-data';
+import { existsSync } from "fs";
+import * as AdmZip from 'adm-zip';
 
+
+const toolkit_content = 's:/MLB/CDE/PhenX/www.phenxtoolkit.org/toolkit_content';
+const zipFolder = toolkit_content + '/redcap_zip/';
+
+function extractRedCapZip(protocolId) {
+    let leadingZeroProtocolId = leadingZerosProtocolId(protocolId);
+    let zipFile = zipFolder + 'PX' + leadingZeroProtocolId + '.zip';
+    if (existsSync(zipFile)) {
+        let zip = new AdmZip(zipFile);
+        zip.extractAllTo(zipFolder + 'PX' + leadingZeroProtocolId, true);
+    } else {
+        console.log('RedCap zip not found. ' + protocolId);
+    }
+}
 
 export async function createForm(protocol) {
+    extractRedCapZip(protocol.protocolID);
     let designations = parseDesignations(protocol);
     let definitions = parseDefinitions(protocol);
     let sources = parseSources(protocol);
     let ids = parseIds(protocol);
     let properties = parseProperties(protocol);
     let referenceDocuments = parseReferenceDocuments(protocol);
-    let attachments = await parseAttachments(protocol).catch(e => {
-        throw "Error await require('./ParseAttachments').parseAttachments(protocol): " + e;
-    });
+    let attachments = await parseAttachments(protocol);
     let classification = parseClassification(protocol);
 
     let newForm = {
-        tinyId,
+        elementType: 'form',
+        tinyId: generateTinyId(),
         createdBy: batchloader,
         sources,
         designations,
@@ -58,8 +75,9 @@ export function mergeForm(existingForm, newForm) {
     existingForm.properties = mergeBySource(newForm.properties, existingForm.properties, sourceName);
     existingForm.referenceDocuments = mergeBySource(newForm.referenceDocuments, existingForm.referenceDocuments, sourceName);
     existingForm.attachments = newForm.attachments;
-    existingForm.sources = mergeBySource(newForm.sources, existingForm.sources, sourceName);
+    existingForm.sources = mergeSourcesBySourceName(newForm.sources, existingForm.sources, sourceName);
     existingForm.classification = replaceClassificationByOrg(newForm.classification, existingForm.classification, 'PhenX');
+    existingForm.version = newForm.version;
 
     // Liz make those 50 forms qualified, We don't want to modify.
     if (existingForm.registrationState.registrationStatus !== 'Qualified') {

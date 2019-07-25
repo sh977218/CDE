@@ -1,7 +1,6 @@
 import { createReadStream, existsSync, readdirSync, statSync } from 'fs';
 import * as md5File from 'md5-file';
 import { gfs } from 'server/system/mongo-data';
-import * as AdmZip from 'adm-zip';
 import { batchloader } from 'ingester/shared/utility';
 
 const toolkit_content = 's:/MLB/CDE/PhenX/www.phenxtoolkit.org/toolkit_content';
@@ -91,19 +90,14 @@ async function doImg(imgFolder) {
 
 export function leadingZerosProtocolId(protocolId) {
     let leadingZeroes = '00000000';
-    return (leadingZeroes + protocolId).substr(protocolId.length + leadingZeroes.length - 5);
+    let veryLongProtocolId = leadingZeroes + protocolId;
+    let result = veryLongProtocolId.substr(veryLongProtocolId.length - 6, veryLongProtocolId.length);
+    return result;
 }
 
 export async function parseAttachments(protocol) {
     let leadingZeroProtocolId = leadingZerosProtocolId(protocol.protocolID);
-    let zipFile = zipFolder + 'PX' + leadingZeroProtocolId + '.zip';
-    if (existsSync(zipFile)) {
-        let zip = new AdmZip(zipFile);
-        zip.extractAllTo(zipFolder + 'PX' + leadingZeroProtocolId, true);
-    }
-
     let attachments = [];
-
     let imgFolderPath = zipFolder + 'PX' + leadingZeroProtocolId + '/attachments';
     let imgFolderExist = existsSync(imgFolderPath);
     if (imgFolderExist) {

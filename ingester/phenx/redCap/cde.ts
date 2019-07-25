@@ -14,9 +14,9 @@ export async function createCde(row, formId, protocol) {
     let properties = parseProperties(row);
 
     let newCde: any = {
+        tinyId: generateTinyId(),
         created,
         createdBy: batchloader,
-        tinyId: generateTinyId(),
         designations: designations,
         stewardOrg: {name: 'PhenX'},
         sources: [],
