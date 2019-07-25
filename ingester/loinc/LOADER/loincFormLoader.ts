@@ -1,8 +1,7 @@
 import { isEmpty } from 'lodash';
 import { Form } from 'server/form/mongo-form';
-import { batchloader } from '../../shared/updatedByLoader';
-import { compareForm, createForm, mergeForm } from '../Form/form';
-import { updateForm } from '../../shared/utility';
+import { compareForm, createForm, mergeForm } from 'ingester/loinc/Form/form';
+import { batchloader, updateForm } from 'ingester/shared/utility';
 
 export async function runOneForm(loinc, orgInfo) {
     let formCond = {
