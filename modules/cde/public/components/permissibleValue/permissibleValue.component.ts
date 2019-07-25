@@ -58,16 +58,8 @@ export class PermissibleValueComponent {
     newPermissibleValue: any = {};
     modalRef: MatDialogRef<TemplateRef<any>>;
     pVTypeheadVsacNameList;
-    searchSettings: SearchSettings = {
-        classification: [],
-        classificationAlt: [],
-        datatypes: ['Value List'],
-        excludeOrgs: [],
-        excludeAllOrgs: false,
-        meshTree: '',
-        regStatuses: [],
-        resultPerPage: 20,
-    };
+    searchSettings = new SearchSettings();
+
     private searchTerms = new Subject<string>();
     vsacValueSet = [];
     vsac = {};
@@ -83,6 +75,7 @@ export class PermissibleValueComponent {
                 private dialog: MatDialog,
                 public userService: UserService,
                 private Alert: AlertService) {
+        this.searchSettings.datatypes = ['Value List'];
     }
 
     addAllVsac() {
@@ -107,8 +100,9 @@ export class PermissibleValueComponent {
     }
 
     addVsacValue(vsacValue, emit = true) {
-        if (this.isVsInPv(vsacValue)) { return; }
-        else {
+        if (this.isVsInPv(vsacValue)) {
+            return;
+        } else {
             this.elt.valueDomain.permissibleValues.push({
                 permissibleValue: vsacValue.displayName,
                 valueMeaningName: vsacValue.displayName,

@@ -237,8 +237,8 @@ export class FormViewComponent implements OnInit {
         delete this.eltCopy.history;
         delete this.eltCopy.changeNote;
         delete this.eltCopy.comments;
-        delete this.eltCopy.forkOf;
-        delete this.eltCopy.views;
+        delete this.eltCopy['forkOf'];
+        delete this.eltCopy['views'];
         this.eltCopy.ids = [];
         this.eltCopy.sources = [];
         this.eltCopy.designations = this.eltCopy.designations;
@@ -393,8 +393,8 @@ export class FormViewComponent implements OnInit {
         if (event.srcElement && event.srcElement.files) {
             const files = event.srcElement.files;
             const formData = new FormData();
-            for (let i = 0; i < files.length; i++) {
-                formData.append('uploadedFiles', files[i]);
+            for (const file of files) {
+                formData.append('uploadedFiles', files);
             }
             formData.append('id', this.elt._id);
             this.http.post<any>('/server/attachment/form/add', formData).subscribe(
