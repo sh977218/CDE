@@ -28,7 +28,7 @@ export class NativeRenderComponent {
         this.nrs.eltSet(this.nrs.elt);
     }
 
-    @Input() showTitle: boolean = true;
+    @Input() showTitle = true;
     endpointUrl: string;
     formUrl: string;
     readonly NRS = NativeRenderService;
@@ -36,7 +36,7 @@ export class NativeRenderComponent {
     constructor(private sanitizer: DomSanitizer,
                 public nrs: NativeRenderService) {
         this.formUrl = window.location.href;
-        this.endpointUrl = (<any>window).endpointUrl;
+        this.endpointUrl = (window as any).endpointUrl;
     }
 
     getEndpointUrl() {

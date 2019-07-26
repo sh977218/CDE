@@ -17,7 +17,7 @@ export class DeCompletionService {
     constructor(private alert: AlertService,
                 private elasticService: ElasticService,
                 private http: HttpClient) {
-        let settings = this.elasticService.buildElasticQuerySettings(this.searchSettings);
+        const settings = this.elasticService.buildElasticQuerySettings(this.searchSettings);
         this.searchTerms.pipe(
             debounceTime(300),
             distinctUntilChanged(),
@@ -31,13 +31,12 @@ export class DeCompletionService {
                 }
             })
         ).subscribe(res => {
-            let tinyIdList = res.map(r => r._id).slice(0, 5);
+            const tinyIdList = res.map(r => r._id).slice(0, 5);
             if (tinyIdList && tinyIdList.length > 0) {
                 this.http.get<any[]>('/deList/' + tinyIdList).subscribe(result => {
                     this.suggestedCdes = result;
                 }, err => this.alert.httpErrorMessageAlert(err));
-            }
-            else this.suggestedCdes = [];
+            } else { this.suggestedCdes = []; }
         });
     }
 

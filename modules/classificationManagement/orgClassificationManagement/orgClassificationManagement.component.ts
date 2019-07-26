@@ -44,18 +44,18 @@ export class OrgClassificationManagementComponent implements OnInit {
     dialogRef?: MatDialogRef<TemplateRef<any>>;
     newClassificationName?: string;
     oldReclassificationArray?: string[];
-    onInitDone: boolean = false;
+    onInitDone = false;
     options = {
         idField: 'name',
         childrenField: 'elements',
         displayField: 'name',
         useVirtualScroll: false,
         isExpandedField: 'elements',
-        actionMapping: actionMapping
+        actionMapping
     };
     orgToManage = '';
     renameClassificationNode?: TreeNode;
-    searching: boolean = false;
+    searching = false;
     private searchTerms = new Subject<string>();
     selectedClassificationArray = '';
     selectedClassificationString = '';
@@ -75,7 +75,7 @@ export class OrgClassificationManagementComponent implements OnInit {
                 this.orgChanged(this.orgToManage, () => {
                     this.onInitDone = true;
                 });
-            } else this.onInitDone = true;
+            } else { this.onInitDone = true; }
         });
     }
 
@@ -89,12 +89,12 @@ export class OrgClassificationManagementComponent implements OnInit {
                 this.descriptorID = '';
             }),
             switchMap(term => {
-                let url = (window as any).meshUrl + '/api/search/record?searchInField=termDescriptor&searchType=exactMatch&q=' + term;
+                const url = (window as any).meshUrl + '/api/search/record?searchInField=termDescriptor&searchType=exactMatch&q=' + term;
                 return term ? this.http.get<ElasticQueryResponse>(url) : EmptyObservable.create<ElasticQueryResponse>();
             })
         ).subscribe(res => {
             if (res && res.hits && res.hits.hits && res.hits.hits.length === 1) {
-                let desc = res.hits.hits[0]._source;
+                const desc = res.hits.hits[0]._source;
                 this.descriptorName = desc.DescriptorName.String.t;
                 this.descriptorID = desc.DescriptorUI.t;
             }
@@ -103,7 +103,7 @@ export class OrgClassificationManagementComponent implements OnInit {
             this.searching = false;
             this.descriptorName = '';
             this.descriptorID = '';
-            this.alert.addAlert('danger', "Unexpected error getting classification");
+            this.alert.addAlert('danger', 'Unexpected error getting classification');
         });
     }
 
@@ -115,16 +115,16 @@ export class OrgClassificationManagementComponent implements OnInit {
             let _treeNode = node;
             while (_treeNode.parent) {
                 _treeNode = _treeNode.parent;
-                if (!_treeNode.data.virtual) classificationArray.unshift(_treeNode.data.name);
+                if (!_treeNode.data.virtual) { classificationArray.unshift(_treeNode.data.name); }
             }
             classificationArray.forEach((c, i) => {
                 if (i < classificationArray.length - 1) {
                     this.selectedClassificationArray = this.selectedClassificationArray.concat('<span> ' + c + ' </span> ->');
-                } else this.selectedClassificationArray = this.selectedClassificationArray.concat(' <strong> ' + c + ' </strong>');
+                } else { this.selectedClassificationArray = this.selectedClassificationArray.concat(' <strong> ' + c + ' </strong>'); }
             });
-        } else this.selectedClassificationArray = ' <strong> ' + this.selectedOrg!.name + ' </strong>';
+        } else { this.selectedClassificationArray = ' <strong> ' + this.selectedOrg!.name + ' </strong>'; }
         classificationArray.push(this.newClassificationName!);
-        let newClassification = {
+        const newClassification = {
             orgName: this.selectedOrg!.name,
             categories: classificationArray
         };
@@ -149,14 +149,14 @@ export class OrgClassificationManagementComponent implements OnInit {
     }
 
     checkJob(type: string, cb: Cb) {
-        let indexFn = setInterval(() => {
+        const indexFn = setInterval(() => {
             this.http.get<any>('/jobStatus/' + type).subscribe(
                 res => {
                     if (res.done === true) {
                         this.orgChanged(this.selectedOrg!.name, () => {
                             this.tree.treeModel.update();
                             clearInterval(indexFn);
-                            if (cb) cb();
+                            if (cb) { cb(); }
                         });
                     }
                 });
@@ -169,15 +169,15 @@ export class OrgClassificationManagementComponent implements OnInit {
 
     orgChanged(value: string, cb?: Cb) {
         if (value) {
-            let url = '/org/' + encodeURIComponent(value);
+            const url = '/org/' + encodeURIComponent(value);
             this.http.get<Organization>(url).subscribe(
                 org => {
-                    if (org) this.selectedOrg = org;
-                    if (cb) cb();
+                    if (org) { this.selectedOrg = org; }
+                    if (cb) { cb(); }
                 }, () => {
                 });
         } else {
-            if (cb) cb();
+            if (cb) { cb(); }
         }
     }
 
@@ -196,20 +196,20 @@ export class OrgClassificationManagementComponent implements OnInit {
         this.userTyped = '';
         this.selectedClassificationArray = '';
         this.selectedClassificationString = node.data.name;
-        let classificationArray = [node.data.name];
+        const classificationArray = [node.data.name];
         let _treeNode = node;
         while (_treeNode.parent) {
             _treeNode = _treeNode.parent;
-            if (!_treeNode.data.virtual) classificationArray.unshift(_treeNode.data.name);
+            if (!_treeNode.data.virtual) { classificationArray.unshift(_treeNode.data.name); }
         }
         classificationArray.forEach((c, i) => {
             if (i < classificationArray.length - 1) {
                 this.selectedClassificationArray = this.selectedClassificationArray.concat('<span> ' + c + ' </span> ->');
-            } else this.selectedClassificationArray = this.selectedClassificationArray.concat(' <strong> ' + c + ' </strong>');
+            } else { this.selectedClassificationArray = this.selectedClassificationArray.concat(' <strong> ' + c + ' </strong>'); }
         });
         this.dialog.open(this.deleteClassificationContent).afterClosed().subscribe(result => {
             if (result) {
-                let deleteClassification = {
+                const deleteClassification = {
                     orgName: this.selectedOrg!.name,
                     categories: classificationArray
                 };
@@ -228,22 +228,22 @@ export class OrgClassificationManagementComponent implements OnInit {
             flatClassification: '',
             meshDescriptors: []
         };
-        let classificationArray = [node.data.name];
+        const classificationArray = [node.data.name];
         let _treeNode = node;
         while (_treeNode.parent) {
             _treeNode = _treeNode.parent;
-            if (!_treeNode.data.virtual) classificationArray.unshift(_treeNode.data.name);
+            if (!_treeNode.data.virtual) { classificationArray.unshift(_treeNode.data.name); }
         }
         this.mapping.flatClassification = [this.selectedOrg!.name].concat(classificationArray).join(';');
         classificationArray.forEach((c, i) => {
             if (i < classificationArray.length - 1) {
                 this.selectedClassificationArray = this.selectedClassificationArray.concat('<span> ' + c + ' </span> ->');
-            } else this.selectedClassificationArray = this.selectedClassificationArray.concat(' <strong> ' + c + ' </strong>');
+            } else { this.selectedClassificationArray = this.selectedClassificationArray.concat(' <strong> ' + c + ' </strong>'); }
         });
         this.dialog.open(this.mapClassificationMeshContent).afterClosed().subscribe(result => {
             if (result) {
                 classificationArray.push(this.newClassificationName);
-                let newClassification = {
+                const newClassification = {
                     orgName: this.selectedOrg!.name,
                     categories: classificationArray
                 };
@@ -258,16 +258,16 @@ export class OrgClassificationManagementComponent implements OnInit {
 
     openReclassificationModal(node: TreeNode) {
         this.selectedClassificationArray = '';
-        let classificationArray = [node.data.name];
+        const classificationArray = [node.data.name];
         let _treeNode = node;
         while (_treeNode.parent) {
             _treeNode = _treeNode.parent;
-            if (!_treeNode.data.virtual) classificationArray.unshift(_treeNode.data.name);
+            if (!_treeNode.data.virtual) { classificationArray.unshift(_treeNode.data.name); }
         }
         classificationArray.forEach((c, i) => {
             if (i < classificationArray.length - 1) {
                 this.selectedClassificationArray = this.selectedClassificationArray.concat(c + ' / ');
-            } else this.selectedClassificationArray = this.selectedClassificationArray.concat(c);
+            } else { this.selectedClassificationArray = this.selectedClassificationArray.concat(c); }
         });
         this.selectedClassificationArray = 'Classify CDEs in Bulk   <p>Classify all CDEs classified by <strong> ' +
             this.selectedClassificationArray + ' </strong> with new classification(s).</p>';
@@ -284,11 +284,11 @@ export class OrgClassificationManagementComponent implements OnInit {
     }
 
     reclassify(event: ClassificationClassified) {
-        let oldClassification = {
+        const oldClassification = {
             orgName: this.selectedOrg ? this.selectedOrg.name : undefined,
             categories: this.oldReclassificationArray
         };
-        let newClassification = {
+        const newClassification = {
             orgName: event.selectedOrg,
             categories: event.classificationArray
         };
@@ -306,13 +306,13 @@ export class OrgClassificationManagementComponent implements OnInit {
     }
 
     renameClassification(node: TreeNode) {
-        let classificationArray = [node.data.name];
+        const classificationArray = [node.data.name];
         let _treeNode = node;
         while (_treeNode.parent) {
             _treeNode = _treeNode.parent;
-            if (!_treeNode.data.virtual) classificationArray.unshift(_treeNode.data.name);
+            if (!_treeNode.data.virtual) { classificationArray.unshift(_treeNode.data.name); }
         }
-        let newClassification = {
+        const newClassification = {
             orgName: this.selectedOrg!.name,
             categories: classificationArray,
             newName: this.newClassificationName
@@ -325,11 +325,11 @@ export class OrgClassificationManagementComponent implements OnInit {
     }
 
     searchByClassification(node: TreeNode, orgName: string) {
-        let classificationArray = [node.data.name];
+        const classificationArray = [node.data.name];
         let _treeNode = node;
         while (_treeNode.parent) {
             _treeNode = _treeNode.parent;
-            if (!_treeNode.data.virtual) classificationArray.unshift(_treeNode.data.name);
+            if (!_treeNode.data.virtual) { classificationArray.unshift(_treeNode.data.name); }
         }
         return '/cde/search?selectedOrg=' + encodeURIComponent(orgName) +
             '&classification=' + encodeURIComponent(classificationArray.join(';'));

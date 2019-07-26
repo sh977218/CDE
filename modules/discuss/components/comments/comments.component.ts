@@ -68,9 +68,9 @@ export class CommentsComponent implements OnInit, OnDestroy {
     @Input() eltName;
     @Input() ownElt;
 
-    private _currentTab;
+    private localCurrentTab;
     @Input() set currentTab(t) {
-        this._currentTab = t;
+        this.localCurrentTab = t;
         this.comments.forEach(c => {
             c.currentComment = c.linkedTab === t;
         });
@@ -78,7 +78,7 @@ export class CommentsComponent implements OnInit, OnDestroy {
 
     comments: Array<any> = [];
     newReply: CommentReply = new CommentReply();
-    socket = io((<any>window).publicUrl + '/comment');
+    socket = io((window as any).publicUrl + '/comment');
     subscriptions: any = {};
     private emitCurrentReplying = new Subject<{ _id: string, comment: string }>();
 
@@ -96,7 +96,7 @@ export class CommentsComponent implements OnInit, OnDestroy {
         this.socket.on('userTyping', data => {
             this.comments.forEach(c => {
                 if (c._id === data.commentId && this.userService.user && data.username !== this.userService.user.username) {
-                    if (this.subscriptions[c._id]) this.subscriptions[c._id].unsubscribe();
+                    if (this.subscriptions[c._id]) { this.subscriptions[c._id].unsubscribe(); }
                     c.currentlyReplying = true;
                     this.subscriptions[c._id] = TimerObservable.create(10000)
                         .pipe(take(1)).subscribe(() => c.currentlyReplying = false);
@@ -123,7 +123,7 @@ export class CommentsComponent implements OnInit, OnDestroy {
         this.http.get<Array<any>>('/server/discuss/comments/eltId/' + this.eltId)
             .subscribe(res => {
                 res.forEach(c => {
-                    c.currentComment = c.linkedTab === this._currentTab;
+                    c.currentComment = c.linkedTab === this.localCurrentTab;
                     c.newReply = {};
                 });
                 this.comments = res;
@@ -144,27 +144,27 @@ export class CommentsComponent implements OnInit, OnDestroy {
     }
 
     removeComment(commentId) {
-        this.http.post('/server/discuss/deleteComment', {commentId: commentId}).subscribe();
+        this.http.post('/server/discuss/deleteComment', {commentId}).subscribe();
     }
 
     resolveComment(commentId) {
-        this.http.post('/server/discuss/resolveComment', {commentId: commentId}).subscribe();
+        this.http.post('/server/discuss/resolveComment', {commentId}).subscribe();
     }
 
     reopenComment(commentId) {
-        this.http.post('/server/discuss/reopenComment', {commentId: commentId}).subscribe();
+        this.http.post('/server/discuss/reopenComment', {commentId}).subscribe();
     }
 
     removeReply(replyId) {
-        this.http.post('/server/discuss/deleteReply', {replyId: replyId}).subscribe();
+        this.http.post('/server/discuss/deleteReply', {replyId}).subscribe();
     }
 
     resolveReply(replyId) {
-        this.http.post('/server/discuss/resolveReply', {replyId: replyId}).subscribe();
+        this.http.post('/server/discuss/resolveReply', {replyId}).subscribe();
     }
 
     reopenReply(replyId) {
-        this.http.post('/server/discuss/reopenReply', {replyId: replyId}).subscribe();
+        this.http.post('/server/discuss/reopenReply', {replyId}).subscribe();
     }
 
     replyToComment(comment) {
@@ -185,9 +185,11 @@ export class CommentsComponent implements OnInit, OnDestroy {
     }
 
     showReply(comment: any, j) {
-        if (comment.showAllReplies) return true;
-        else if (j < 2 || j > comment.replies.length - 3) return true;
-        else return false;
+        if (comment.showAllReplies) {
+            return true;
+        } else {
+            return j < 2 || j > comment.replies.length - 3;
+        }
     }
 
     showInfo(comment, j) {

@@ -9,7 +9,7 @@ import { hasRole } from 'shared/system/authorizationShared';
 })
 export class AttachmentsComponent {
     @Input() elt!: Item;
-    @Input() canEdit: boolean = false;
+    @Input() canEdit = false;
     @Output() removeAttachment = new EventEmitter<number>();
     @Output() setDefault = new EventEmitter<number>();
     @Output() upload = new EventEmitter<Event>();
@@ -24,13 +24,13 @@ export class AttachmentsComponent {
         if (attachment.filetype && attachment.filetype.indexOf('video') > -1) {
             url += '.mp4';
         }
-        let copyElement = document.createElement('input');
+        const copyElement = document.createElement('input');
         copyElement.setAttribute('type', 'text');
         copyElement.setAttribute('value', url);
         document.body.appendChild(copyElement);
         copyElement.select();
         try {
-            if (!document.execCommand('copy')) throw 'Not allowed.';
+            if (!document.execCommand('copy')) { throw new Error('Not allowed.'); }
             copyElement.remove();
         } catch (e) {
             copyElement.remove();

@@ -10,12 +10,12 @@ import { Subject } from 'rxjs/Subject';
 import { MeshClassification } from 'server/mesh/meshDb';
 import { ElasticQueryResponse } from 'shared/models.model';
 
-type MeshClassification = {
-    flatClassification?: string,
-    eltId?: string,
-    meshDescriptors: string[],
-    flatTrees?: string[]
-};
+interface MeshClassification {
+    flatClassification?: string;
+    eltId?: string;
+    meshDescriptors: string[];
+    flatTrees?: string[];
+}
 
 @Component({
     selector: 'cde-form-term-mapping',
@@ -49,10 +49,9 @@ export class FormTermMappingComponent implements OnInit {
             )
         ).subscribe((res: ElasticQueryResponse) => {
             if (res && res.hits && res.hits.hits.length === 1) {
-                let desc = res.hits.hits[0]._source;
+                const desc = res.hits.hits[0]._source;
                 this.descriptor = {name: desc.DescriptorName.String.t, id: desc.DescriptorUI.t};
-            }
-            else {
+            } else {
                 this.descriptor = null;
             }
         });
@@ -85,9 +84,9 @@ export class FormTermMappingComponent implements OnInit {
         this.mapping.eltId = this.elt.tinyId;
         this.flatMeshSimpleTrees = [];
         this.http.get<MeshClassification>('/server/mesh/eltId/' + this.elt.tinyId).subscribe(response => {
-            if (!response) return this.alert.addAlert('danger', 'There was an issue getting Mesh Terms.');
+            if (!response) { return this.alert.addAlert('danger', 'There was an issue getting Mesh Terms.'); }
 
-            if (response.eltId) this.mapping = response;
+            if (response.eltId) { this.mapping = response; }
             if (response.flatTrees) {
                 response.flatTrees.forEach(t => {
                     if (this.flatMeshSimpleTrees.indexOf(t.split(';').pop()) === -1) {
@@ -100,7 +99,7 @@ export class FormTermMappingComponent implements OnInit {
                     this.descToName[desc] = res.DescriptorName.String.t;
                 });
             });
-        }, function () {
+        }, function() {
         });
     }
 

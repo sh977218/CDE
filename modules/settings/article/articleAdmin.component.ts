@@ -10,7 +10,7 @@ import { AlertService } from 'alert/alert.service';
 export class ArticleAdminComponent {
     article?: Article;
 
-    articles = ["whatsNew", "contactUs"];
+    articles = ['whatsNew', 'contactUs'];
     selectedKey: string;
 
     constructor(private http: HttpClient,
@@ -18,14 +18,14 @@ export class ArticleAdminComponent {
     }
 
     save() {
-        this.http.post("/server/article/" + this.selectedKey, this.article).subscribe(() =>
-            this.alertSvc.addAlert("info", "Saved"));
+        this.http.post('/server/article/' + this.selectedKey, this.article).subscribe(() =>
+            this.alertSvc.addAlert('info', 'Saved'));
     }
 
     keyChanged() {
         this.article = undefined;
-        this.http.get<Article>("/server/article/" + this.selectedKey).subscribe(article => {
-            this.article = article ? article : {key: this.selectedKey, body: ""};
+        this.http.get<Article>('/server/article/' + this.selectedKey).subscribe(article => {
+            this.article = article ? article : {key: this.selectedKey, body: ''};
         });
     }
 

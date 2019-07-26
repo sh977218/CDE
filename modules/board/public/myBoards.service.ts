@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 import _noop from 'lodash/noop';
 import { ElasticQueryResponse } from 'shared/models.model';
 
@@ -10,14 +10,14 @@ export class MyBoardsService {
         tags: [],
         shareStatus: [],
         types: [],
-        sortBy: "createdDate",
-        sortDirection: "desc",
+        sortBy: 'createdDate',
+        sortDirection: 'desc',
         selectedShareStatus: [],
         selectedTypes: [],
         selectedTags: [],
         suggestTags: []
     };
-    reloading: boolean = false;
+    reloading = false;
 
     constructor(private http: HttpClient) {
     }
@@ -26,7 +26,7 @@ export class MyBoardsService {
         this.filter.selectedShareStatus = this.filter.shareStatus.filter(a => a.checked).map(a => a.key);
         this.filter.selectedTags = this.filter.tags.filter(a => a.checked).map(a => a.key);
         this.filter.selectedTypes = this.filter.types.filter(a => a.checked).map(a => a.key);
-        this.http.post<ElasticQueryResponse>("/server/board/myBoards", this.filter).subscribe(res => {
+        this.http.post<ElasticQueryResponse>('/server/board/myBoards', this.filter).subscribe(res => {
             if (res.hits) {
                 this.boards = res.hits.hits.map(h => {
                     h._source._id = h._id;
@@ -41,7 +41,7 @@ export class MyBoardsService {
                 this.filter.suggestTags = res.aggregations.tagAgg.buckets.map(t => t.key);
             }
             this.reloading = false;
-            if (type) this.boards = this.boards.filter(b => b.type === type);
+            if (type) { this.boards = this.boards.filter(b => b.type === type); }
             cb();
         }, cb);
     }

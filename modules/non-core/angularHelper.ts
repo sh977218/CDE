@@ -19,7 +19,7 @@ export function httpErrorMessage(err: HttpErrorResponse): string {
 }
 
 export function paramsToQueryString(params: Params) {
-    let query = ownKeys(params)
+    const query = ownKeys(params)
         .map(k => k + '=' + params[k])
         .join(';');
     return query ? '?' + query : '';

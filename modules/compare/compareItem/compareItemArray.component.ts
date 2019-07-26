@@ -24,10 +24,10 @@ class ComparedForm extends CdeForm {
 const compareArrayOption = [
     {
         label: 'Reference Documents',
-        isEqual: function (a, b) {
-            if (_isEmpty(a.diff)) a.diff = [];
-            if (_isEmpty(b.diff)) b.diff = [];
-            let result = _isEqual(a.document, b.document);
+        isEqual(a, b) {
+            if (_isEmpty(a.diff)) { a.diff = []; }
+            if (_isEmpty(b.diff)) { b.diff = []; }
+            const result = _isEqual(a.document, b.document);
             if (result) {
                 if (!_isEqual(a.title, b.title)) {
                     a.diff.push('title');
@@ -67,10 +67,10 @@ const compareArrayOption = [
     },
     {
         label: 'Designation',
-        isEqual: function (a, b) {
-            if (_isEmpty(a.diff)) a.diff = [];
-            if (_isEmpty(b.diff)) b.diff = [];
-            let result = _isEqual(a.designation, b.designation);
+        isEqual(a, b) {
+            if (_isEmpty(a.diff)) { a.diff = []; }
+            if (_isEmpty(b.diff)) { b.diff = []; }
+            const result = _isEqual(a.designation, b.designation);
             if (result) {
                 if (!_isEqual(a.tags, b.tags)) {
                     a.diff.push('tags');
@@ -89,10 +89,10 @@ const compareArrayOption = [
     },
     {
         label: 'Definition',
-        isEqual: function (a, b) {
-            if (_isEmpty(a.diff)) a.diff = [];
-            if (_isEmpty(b.diff)) b.diff = [];
-            let result = _isEqual(a.definition, b.definition);
+        isEqual(a, b) {
+            if (_isEmpty(a.diff)) { a.diff = []; }
+            if (_isEmpty(b.diff)) { b.diff = []; }
+            const result = _isEqual(a.definition, b.definition);
             if (result) {
                 if (!_isEqual(a.definitionFormat, b.definitionFormat)) {
                     a.diff.push('definitionFormat');
@@ -118,10 +118,10 @@ const compareArrayOption = [
     },
     {
         label: 'Properties',
-        isEqual: function (a, b) {
-            if (_isEmpty(a.diff)) a.diff = [];
-            if (_isEmpty(b.diff)) b.diff = [];
-            let result = _isEqual(a.key, b.key);
+        isEqual(a, b) {
+            if (_isEmpty(a.diff)) { a.diff = []; }
+            if (_isEmpty(b.diff)) { b.diff = []; }
+            const result = _isEqual(a.key, b.key);
             if (result) {
                 if (!_isEqual(a.value, b.value)) {
                     a.diff.push('value');
@@ -140,10 +140,10 @@ const compareArrayOption = [
     },
     {
         label: 'Identifiers',
-        isEqual: function (a, b) {
-            if (_isEmpty(a.diff)) a.diff = [];
-            if (_isEmpty(b.diff)) b.diff = [];
-            let result = _isEqual(a.source, b.source) && _isEqual(a.id, b.id);
+        isEqual(a, b) {
+            if (_isEmpty(a.diff)) { a.diff = []; }
+            if (_isEmpty(b.diff)) { b.diff = []; }
+            const result = _isEqual(a.source, b.source) && _isEqual(a.id, b.id);
             if (result) {
                 if (!_isEqual(a.version, b.version)) {
                     a.diff.push('version');
@@ -166,10 +166,10 @@ const compareArrayOption = [
 const cdeCompareArrayOption = [
     {
         label: 'Value List',
-        isEqual: function (a, b) {
-            if (_isEmpty(a.diff)) a.diff = [];
-            if (_isEmpty(b.diff)) b.diff = [];
-            let result = _isEqual(a.valueMeaningName, b.valueMeaningName);
+        isEqual(a, b) {
+            if (_isEmpty(a.diff)) { a.diff = []; }
+            if (_isEmpty(b.diff)) { b.diff = []; }
+            const result = _isEqual(a.valueMeaningName, b.valueMeaningName);
             if (result) {
                 if (!_isEqual(a.permissibleValue, b.permissibleValue)) {
                     a.diff.push('permissibleValue');
@@ -198,7 +198,7 @@ const cdeCompareArrayOption = [
     },
     {
         label: 'Concepts',
-        isEqual: function (a, b) {
+        isEqual(a, b) {
             return _isEqual(a, b);
         },
         property: 'concepts',
@@ -213,11 +213,11 @@ const cdeCompareArrayOption = [
 const formCompareArrayOption = [
     {
         label: 'Form Elements',
-        isEqual: function (a, b) {
+        isEqual(a, b) {
             if (a.elementType === 'question' && b.elementType === 'question') {
-                if (_isEmpty(a.diff)) a.diff = [];
-                if (_isEmpty(b.diff)) b.diff = [];
-                let result = _isEqual(a.question.cde.tinyId, b.question.cde.tinyId);
+                if (_isEmpty(a.diff)) { a.diff = []; }
+                if (_isEmpty(b.diff)) { b.diff = []; }
+                const result = _isEqual(a.question.cde.tinyId, b.question.cde.tinyId);
                 if (result) {
                     if (!a || !b) {
                     }
@@ -257,9 +257,9 @@ const formCompareArrayOption = [
                 return result;
             }
             if (a.elementType === 'form' && b.elementType === 'form') {
-                if (_isEmpty(a.diff)) a.diff = [];
-                if (_isEmpty(b.diff)) b.diff = [];
-                let result = _isEqual(a.inForm.form.tinyId, b.inForm.form.tinyId);
+                if (_isEmpty(a.diff)) { a.diff = []; }
+                if (_isEmpty(b.diff)) { b.diff = []; }
+                const result = _isEqual(a.inForm.form.tinyId, b.inForm.form.tinyId);
                 if (result) {
                     if (!_isEqual(a.instructions.value, b.instructions.value)) {
                         a.diff.push('instructions.value');
@@ -283,9 +283,9 @@ const formCompareArrayOption = [
                 return result;
             }
             if (a.elementType === 'section' && b.elementType === 'section') {
-                if (_isEmpty(a.diff)) a.diff = [];
-                if (_isEmpty(b.diff)) b.diff = [];
-                let result = _isEqual(a.sectionId, b.sectionId);
+                if (_isEmpty(a.diff)) { a.diff = []; }
+                if (_isEmpty(b.diff)) { b.diff = []; }
+                const result = _isEqual(a.sectionId, b.sectionId);
                 if (result) {
                     if (!_isEqual(a.instructions.value, b.instructions.value)) {
                         a.diff.push('instructions.value');
@@ -375,12 +375,12 @@ export class CompareItemArrayComponent implements OnInit {
 
     ngOnInit(): void {
         if (isDataElement(this.newer) && isDataElement(this.older)) {
-            if (!this.newer.property) this.newer.property = new Concepts();
-            if (!this.older.property) this.older.property = new Concepts();
-            if (!this.newer.objectClass) this.newer.objectClass = new Concepts();
-            if (!this.older.objectClass) this.older.objectClass = new Concepts();
-            if (!this.newer.dataElementConcept) this.newer.dataElementConcept = {concepts: []};
-            if (!this.older.dataElementConcept) this.older.dataElementConcept = {concepts: []};
+            if (!this.newer.property) { this.newer.property = new Concepts(); }
+            if (!this.older.property) { this.older.property = new Concepts(); }
+            if (!this.newer.objectClass) { this.newer.objectClass = new Concepts(); }
+            if (!this.older.objectClass) { this.older.objectClass = new Concepts(); }
+            if (!this.newer.dataElementConcept) { this.newer.dataElementConcept = {concepts: []}; }
+            if (!this.older.dataElementConcept) { this.older.dataElementConcept = {concepts: []}; }
             this.older.concepts = this.older.property.concepts.concat(this.older.objectClass.concepts).concat(this.older.dataElementConcept.concepts);
             this.newer.concepts = this.newer.property.concepts.concat(this.newer.objectClass.concepts).concat(this.newer.dataElementConcept.concepts);
             this.compareArrayOption = compareArrayOption.concat(cdeCompareArrayOption);
@@ -398,7 +398,7 @@ export class CompareItemArrayComponent implements OnInit {
 function copyValue(obj, data) {
     _forEach(data, d => {
         let value = _get(obj, d.property);
-        if (_isEmpty(value)) value = '';
+        if (_isEmpty(value)) { value = ''; }
         obj[d.property] = value;
     });
 }
@@ -410,11 +410,11 @@ function doCompareArray(newer, older, option) {
             property.display = false;
             return;
         }
-        if (!property.isEqual) property.isEqual = _isEqual;
+        if (!property.isEqual) { property.isEqual = _isEqual; }
         let l = [];
-        if (newer) l = _get(newer, property.property);
+        if (newer) { l = _get(newer, property.property); }
         let r = [];
-        if (older) r = _get(older, property.property);
+        if (older) { r = _get(older, property.property); }
         doCompareArrayImpl(l, r, property);
     });
 }
@@ -424,8 +424,8 @@ function doCompareArrayImpl(newer: Array<any>, older: Array<any>, option) {
     let beginIndex = 0;
 
     _forEach(newer, (l, leftIndex) => {
-        let rightArrayCopy = _slice(older, beginIndex);
-        let rightIndex = _findIndex(rightArrayCopy, o => option.isEqual(o, l));
+        const rightArrayCopy = _slice(older, beginIndex);
+        const rightIndex = _findIndex(rightArrayCopy, o => option.isEqual(o, l));
         if (rightIndex === -1) {
             if (leftIndex === newer.length - 1) {
                 option.result.push({
@@ -451,7 +451,7 @@ function doCompareArrayImpl(newer: Array<any>, older: Array<any>, option) {
                 });
             }
         } else { // found match in right array
-            let r: any = rightArrayCopy[rightIndex];
+            const r: any = rightArrayCopy[rightIndex];
             for (let k = 0; k < rightIndex; k++) {
                 option.result.push({
                     match: false,
@@ -461,13 +461,13 @@ function doCompareArrayImpl(newer: Array<any>, older: Array<any>, option) {
                 });
                 beginIndex++;
             }
-            let tempResult = {
+            const tempResult = {
                 match: true,
                 display: l.display && r.display
             };
-            if (!l.diff) l.diff = [];
-            if (!r.diff) r.diff = [];
-            let diff = _uniq(l.diff.concat(r.diff));
+            if (!l.diff) { l.diff = []; }
+            if (!r.diff) { r.diff = []; }
+            const diff = _uniq(l.diff.concat(r.diff));
             tempResult['older'] = l;
             tempResult['newer'] = r;
             tempResult['diff'] = diff;
@@ -494,12 +494,12 @@ function doCompareArrayImpl(newer: Array<any>, older: Array<any>, option) {
         option.result.forEach(r => {
             if (r.newer && r.add) {
                 if (_findIndex(older, o => {
-                    let temp = option.isEqual(o, r.data);
-                    if (temp) r.older = _cloneDeep(o);
+                    const temp = option.isEqual(o, r.data);
+                    if (temp) { r.older = _cloneDeep(o); }
                     return temp;
                 }) !== -1) {
                     delete r.add;
-                    if (!r.match) r.diff = _uniq(r.data.diff);
+                    if (!r.match) { r.diff = _uniq(r.data.diff); }
                     r.reorder = true;
                 }
             }
@@ -509,36 +509,36 @@ function doCompareArrayImpl(newer: Array<any>, older: Array<any>, option) {
                     r.remove = true;
                 } else {
                     delete r.add;
-                    if (!r.match) r.diff = _uniq(r.data.diff);
+                    if (!r.match) { r.diff = _uniq(r.data.diff); }
                     r.reorder = true;
                 }
             }
         });
         option.result = _uniqWith(option.result, (willRemove: any, willStay) => {
             if (willRemove.reorder && willStay.reorder) {
-                if (!willStay.newer) willStay.newer = willRemove.newer;
-                if (!willStay.older) willStay.older = willRemove.older;
-                let aData = _cloneDeep(willRemove.data);
+                if (!willStay.newer) { willStay.newer = willRemove.newer; }
+                if (!willStay.older) { willStay.older = willRemove.older; }
+                const aData = _cloneDeep(willRemove.data);
                 delete aData.diff;
-                let bData = _cloneDeep(willStay.data);
+                const bData = _cloneDeep(willStay.data);
                 delete bData.diff;
                 if (option.isEqual(aData, bData)) {
                     return true;
                 }
             }
             if (willRemove.add && willStay.add) {
-                let aData = _cloneDeep(willRemove.data);
+                const aData = _cloneDeep(willRemove.data);
                 delete aData.diff;
-                let bData = _cloneDeep(willStay.data);
+                const bData = _cloneDeep(willStay.data);
                 delete bData.diff;
                 if (option.isEqual(aData, bData)) {
                     return true;
                 }
             }
             if (willRemove.remove && willStay.remove) {
-                let aData = _cloneDeep(willRemove.data);
+                const aData = _cloneDeep(willRemove.data);
                 delete aData.diff;
-                let bData = _cloneDeep(willStay.data);
+                const bData = _cloneDeep(willStay.data);
                 delete bData.diff;
                 if (option.isEqual(aData, bData)) {
                     return true;
@@ -547,16 +547,16 @@ function doCompareArrayImpl(newer: Array<any>, older: Array<any>, option) {
             return false;
         });
         option.result.forEach(r => {
-            if (r.data) copyValue(r.data, option.data);
-            if (r.newer) copyValue(r.newer, option.data);
-            if (r.older) copyValue(r.older, option.data);
+            if (r.data) { copyValue(r.data, option.data); }
+            if (r.newer) { copyValue(r.newer, option.data); }
+            if (r.older) { copyValue(r.older, option.data); }
         });
     }
 }
 
 function fixFormElement(f) {
-    if (!f.skipLogic) f.skipLogic = {};
-    if (!f.instructions) f.instructions = {};
+    if (!f.skipLogic) { f.skipLogic = {}; }
+    if (!f.instructions) { f.instructions = {}; }
 }
 
 function flatFormQuestions(fe, questions) {
@@ -564,17 +564,17 @@ function flatFormQuestions(fe, questions) {
     if (fe.formElements !== undefined) {
         _forEach(fe.formElements, e => {
             if (e.elementType && e.elementType === 'question') {
-                let questionCopy = _cloneDeep(e);
+                const questionCopy = _cloneDeep(e);
                 fixFormElement(questionCopy);
                 questions.push(questionCopy);
             } else if (e.elementType && e.elementType === 'form') {
-                let formCopy = _cloneDeep(e);
+                const formCopy = _cloneDeep(e);
                 fixFormElement(formCopy);
                 questions.push(formCopy);
             } else if (e.elementType && e.elementType === 'section') {
-                let sectionCopy = _cloneDeep(e);
+                const sectionCopy = _cloneDeep(e);
                 fixFormElement(sectionCopy);
-                sectionCopy['sectionId'] = 'section_' + index;
+                sectionCopy.sectionId = 'section_' + index;
                 index++;
                 questions.push(sectionCopy);
                 flatFormQuestions(e, questions);

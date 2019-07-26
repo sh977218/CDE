@@ -1,4 +1,4 @@
-import { NgModule } from "@angular/core";
+import { NgModule } from '@angular/core';
 import { MatSnackBarModule } from '@angular/material';
 import { AlertService } from 'alert/alert.service';
 

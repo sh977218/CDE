@@ -59,7 +59,7 @@ export class CreateFormComponent implements OnInit {
     }
 
     afterClassified(event) {
-        let postBody = {
+        const postBody = {
             categories: event.classificationArray,
             eltId: this.elt._id,
             orgName: event.selectedOrg
@@ -81,16 +81,16 @@ export class CreateFormComponent implements OnInit {
         this.http.post<CdeForm>('/form', this.elt)
             .subscribe(res => {
                     this.router.navigate(['/formView'], {queryParams: {tinyId: res.tinyId}});
-                    if (this.done) this.done.emit();
+                    if (this.done) { this.done.emit(); }
                 },
                 err => this.alert.httpErrorMessageAlert(err));
     }
 
     confirmDelete(event) {
-        let steward = findSteward(this.elt, event.deleteOrgName);
+        const steward = findSteward(this.elt, event.deleteOrgName);
         removeCategory(steward.object, event.deleteClassificationArray, err => {
-            if (err) this.alert.addAlert('danger', 'Unexpected error removing classification');
-            else this.alert.addAlert('success', 'Classification removed.');
+            if (err) { this.alert.addAlert('danger', 'Unexpected error removing classification'); }
+            else { this.alert.addAlert('success', 'Classification removed.'); }
         });
     }
 
@@ -99,10 +99,10 @@ export class CreateFormComponent implements OnInit {
     }
 
     updateClassificationLocalStorage(item) {
-        let recentlyClassification = <Array<any>>this.localStorageService.get('classificationHistory');
-        if (!recentlyClassification) recentlyClassification = [];
+        let recentlyClassification = this.localStorageService.get('classificationHistory') as Array<any>;
+        if (!recentlyClassification) { recentlyClassification = []; }
         recentlyClassification = recentlyClassification.filter(o => {
-            if (o.cdeId) o.eltId = o.cdeId;
+            if (o.cdeId) { o.eltId = o.cdeId; }
             return _isEqual(o, item);
         });
         recentlyClassification.unshift(item);
