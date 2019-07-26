@@ -1,7 +1,7 @@
 import { By } from 'selenium-webdriver';
 import { sanitizeText } from '../../shared/utility';
 
-export async function parseBasicAttributesTable(driver, loincId, element, cb) {
+export async function parseBasicAttributesTable(driver, loincId, element) {
     let result = {};
     let trs = await element.findElements(By.xpath('tbody/tr'));
     trs.shift();
@@ -22,5 +22,5 @@ export async function parseBasicAttributesTable(driver, loincId, element, cb) {
         let valueText = await valueTd.getText();
         result[key] = valueText.trim();
     }
-    cb(result);
+    return result;
 }

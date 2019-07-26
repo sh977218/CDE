@@ -2,9 +2,7 @@ import { createReadStream, existsSync, readdirSync, statSync } from 'fs';
 import * as md5File from 'md5-file';
 import { gfs } from 'server/system/mongo-data';
 import { batchloader } from 'ingester/shared/utility';
-
-const toolkit_content = 's:/MLB/CDE/PhenX/www.phenxtoolkit.org/toolkit_content';
-const zipFolder = toolkit_content + '/redcap_zip/';
+import { redCapZipFolder } from 'ingester/createMigrationConnection';
 
 function addAttachment(fileName, filePath, fileType) {
     return new Promise(async (resolve, reject) => {
@@ -98,7 +96,7 @@ export function leadingZerosProtocolId(protocolId) {
 export async function parseAttachments(protocol) {
     let leadingZeroProtocolId = leadingZerosProtocolId(protocol.protocolID);
     let attachments = [];
-    let imgFolderPath = zipFolder + 'PX' + leadingZeroProtocolId + '/attachments';
+    let imgFolderPath = redCapZipFolder + 'PX' + leadingZeroProtocolId + '/attachments';
     let imgFolderExist = existsSync(imgFolderPath);
     if (imgFolderExist) {
         let zipAttachments = await doImg(imgFolderPath);

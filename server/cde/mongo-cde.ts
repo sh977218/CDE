@@ -7,9 +7,7 @@ import * as dataElementschema from 'shared/de/assets/dataElement.schema.json';
 import { forwardError } from 'server/errorHandler/errorHandler';
 
 const Ajv = require('ajv');
-const fs = require('fs');
 const _ = require('lodash');
-const path = require('path');
 const connHelper = require('../../server/system/connections');
 const mongo_data = require('../../server/system/mongo-data');
 const logging = require('../../server/system/logging');

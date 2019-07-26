@@ -1,4 +1,5 @@
 const {Builder, By} = require('selenium-webdriver');
+require('chromedriver');
 
 import { parsePanelHierarchyTable } from 'ingester/loinc/Website/ParsePanelHierarchyTable';
 import { parseLoincIdTable } from 'ingester/loinc/Website/ParseLoincIdTable';
@@ -23,10 +24,6 @@ import { parseWebContentTable } from 'ingester/loinc/Website/ParseWebContentTabl
 import { parseArticleTable } from 'ingester/loinc/Website/ParseArticleTable';
 import { parseCopyrightText } from 'ingester/loinc/Website/ParseCopyrightText';
 import { parseVersion } from 'ingester/loinc/Website/ParseVersion';
-
-const url_prefix = 'http://r.details.loinc.org/LOINC/';
-const url_postfix = '.html';
-const url_postfix_para = '?sections=Comprehensive';
 
 const tasks = [
     {
@@ -160,8 +157,8 @@ const tasks = [
 ];
 
 export async function runOneLoinc(loincId) {
-    let driver = await new Builder().forBrowser('firefox').build();
-    let url = url_prefix + loincId.trim() + url_postfix + url_postfix_para;
+    let driver = await new Builder().forBrowser('chrome').build();
+    let url = `http://r.details.loinc.org/LOINC/${loincId.trim()}.html?sections=Comprehensive`;
     await driver.get(url);
     let loinc = {URL: url, loincId: loincId};
     for (let task of tasks) {
@@ -169,9 +166,7 @@ export async function runOneLoinc(loincId) {
         let elements = await driver.findElements(By.xpath(task.xpath));
         if (elements && elements.length === 1) {
             if (task.function) {
-                await task.function(driver, loincId, elements[0], result => {
-                    loinc[sectionName] = result;
-                });
+                loinc[sectionName] = await task.function(driver, loincId, elements[0]);
             }
         }
     }

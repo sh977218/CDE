@@ -41,8 +41,8 @@ process.on('unhandledRejection', function (error) {
 });
 
 (function () {
-//    let cond = {protocolID: '41001'};
-    let cond = {};
+    let cond = {protocolID: '170101'};
+//    let cond = {};
     let cursor = ProtocolModel.find(cond).cursor();
 
     cursor.eachAsync(async (protocol: any) => {

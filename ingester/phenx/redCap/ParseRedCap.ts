@@ -8,8 +8,8 @@ import { convert } from 'ingester/phenx/redCap/RedCapCdeToQuestion';
 import { batchloader, compareElt, printUpdateResult, updateCde } from 'ingester/shared/utility';
 import { leadingZerosProtocolId } from 'ingester/phenx/Form/ParseAttachments';
 import { Comment } from 'server/discuss/discussDb';
+import { redCapZipFolder } from 'ingester/createMigrationConnection';
 
-const redCapZipFolder = 's:/MLB/CDE/PhenX/www.phenxtoolkit.org/toolkit_content/redcap_zip/';
 
 let createdRedCde = 0;
 let createdRedCdes = [];

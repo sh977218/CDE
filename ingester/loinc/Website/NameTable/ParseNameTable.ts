@@ -3,7 +3,7 @@ import { parseFullySpecifiedName } from './ParseFullySpecifiedName';
 import { parseLongCommonName } from './ParseLongCommonName';
 import { parseShortname } from './ParseShortname';
 
-export async function parseNameTable(driver, loincId, table, cb) {
+export async function parseNameTable(driver, loincId, table) {
     let result = {};
     let trs = await table.findElements(By.xpath('tbody/tr'));
     trs.shift();
@@ -27,5 +27,5 @@ export async function parseNameTable(driver, loincId, table, cb) {
         }
     }
 
-    cb(result);
+    return result;
 }

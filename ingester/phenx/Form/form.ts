@@ -13,17 +13,15 @@ import {
 import { generateTinyId } from 'server/system/mongo-data';
 import { existsSync } from "fs";
 import * as AdmZip from 'adm-zip';
+import { redCapZipFolder } from 'ingester/createMigrationConnection';
 
-
-const toolkit_content = 's:/MLB/CDE/PhenX/www.phenxtoolkit.org/toolkit_content';
-const zipFolder = toolkit_content + '/redcap_zip/';
 
 function extractRedCapZip(protocolId) {
     let leadingZeroProtocolId = leadingZerosProtocolId(protocolId);
-    let zipFile = zipFolder + 'PX' + leadingZeroProtocolId + '.zip';
+    let zipFile = redCapZipFolder + 'PX' + leadingZeroProtocolId + '.zip';
     if (existsSync(zipFile)) {
         let zip = new AdmZip(zipFile);
-        zip.extractAllTo(zipFolder + 'PX' + leadingZeroProtocolId, true);
+        zip.extractAllTo(redCapZipFolder + 'PX' + leadingZeroProtocolId, true);
     } else {
         console.log('RedCap zip not found. ' + protocolId);
     }

@@ -1,6 +1,6 @@
 import { By } from 'selenium-webdriver';
 
-export async function parseExampleUnitsTable(driver, loincId, element, cb) {
+export async function parseExampleUnitsTable(driver, loincId, element) {
     let exampleUnits = [];
     let trs = await element.findElements(By.xpath('tbody/tr'));
     trs.shift();
@@ -14,5 +14,5 @@ export async function parseExampleUnitsTable(driver, loincId, element, cb) {
         exampleUnit['Source Type'] = sourceTypeText.trim();
         exampleUnits.push(exampleUnit);
     }
-    cb(exampleUnits);
+    return exampleUnits;
 }

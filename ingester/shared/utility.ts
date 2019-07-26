@@ -1,9 +1,13 @@
 import * as mongo_cde from 'server/cde/mongo-cde';
 import * as mongo_form from 'server/form/mongo-form';
 import * as DiffJson from 'diff-json';
+import { isEmpty } from 'lodash';
+import { get } from 'request';
+import { PhenxURL } from 'ingester/createMigrationConnection';
+import * as cheerio from 'cheerio';
 
 export const BATCHLOADER_USERNAME = 'batchloader';
-
+export const CHROME_DRIVER = '/c/Users/huangs8/Downloads/chromedriver.exe';
 export const batchloader = {
     username: BATCHLOADER_USERNAME,
     roles: ['AttachmentReviewer']
@@ -145,4 +149,40 @@ export function updateCde(elt, user, options = {}) {
 
 export function updateForm(elt, user, options = {}) {
     return new Promise(resolve => mongo_form.update(elt, user, options, resolve));
+}
+
+let DomainCollectionMap = {};
+
+export function protocolLinkToProtocolId(href) {
+    let indexString = '/protocols/view/';
+    let protocolIdIndex = href.indexOf(indexString);
+    let protocolId = href.substr(protocolIdIndex + indexString.length, href.length);
+    return protocolId;
+}
+
+export function getDomainCollection() {
+    return new Promise((resolve, reject) => {
+        if (!isEmpty(DomainCollectionMap)) {
+            resolve(DomainCollectionMap);
+        } else {
+            get(PhenxURL, async function (err, response, body) {
+                if (err) reject(err);
+                const $ = cheerio.load(body, {normalizeWhitespace: true});
+                let table = $('#myTable');
+                let trs = table.find('tbody tr');
+                for (let i = 0; i < trs.length; i++) {
+                    let tr = trs[i];
+                    let tds = $(tr).find('td');
+                    if (tds.length !== 3) throw 'td length error.';
+                    let a = $(tds[1]).find('a');
+                    let href = $(a).attr('href');
+                    let protocolLink = 'https://www.phenxtoolkit.org' + href;
+                    let domainCollection = $(tds[2]).text().trim();
+                    let protocolId = protocolLinkToProtocolId(href);
+                    DomainCollectionMap[protocolId] = {protocolLink, domainCollection};
+                }
+                resolve(DomainCollectionMap);
+            })
+        }
+    })
 }
