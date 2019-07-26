@@ -1,5 +1,6 @@
 import * as _ from 'lodash';
 import { config } from '../system/parseConfig';
+import { forwardError, handleError } from 'server/errorHandler/errorHandler';
 
 const dbLogger = require('../log/dbLogger');
 const elasticsearch = require('elasticsearch');
@@ -9,7 +10,7 @@ let esClient = new elasticsearch.Client({
     hosts: config.elastic.hosts
 });
 
-export function updateOrInsert(elt, cb = _.noop) {
+export function updateOrInsert(elt) {
     esInit.riverFunction(elt.toObject(), doc => {
         if (doc) {
             let doneCount = 0;
@@ -20,11 +21,10 @@ export function updateOrInsert(elt, cb = _.noop) {
                         message: 'Unable to Index document: ' + doc.tinyId,
                         origin: 'form.elastic.updateOrInsert',
                         stack: err,
-                        details: ""
+                        details: ''
                     });
                 }
                 if (doneCount >= 1) {
-                    cb(err || doneError);
                     return;
                 }
                 doneCount++;
@@ -45,8 +45,6 @@ export function updateOrInsert(elt, cb = _.noop) {
                     body: sugDoc
                 }, done);
             });
-        } else {
-            cb();
         }
     });
 }
@@ -64,20 +62,9 @@ export function byTinyIdList(idList, size, cb) {
             },
             size: size
         }
-    }, (error, response) => {
-        if (error) {
-            dbLogger.errorLogger.error('Error Form.byTinyIdList', {
-                origin: 'form.elastic.byTinyIdList',
-                stack: new Error().stack,
-                details: 'Error ' + error + 'response' + JSON.stringify(response)
-            });
-            cb(error);
-        } else {
-            // @TODO possible to move this sort to elastic search?
-            response.hits.hits.sort((a, b) => {
-                return idList.indexOf(a._id) - idList.indexOf(b._id);
-            });
-            cb(null, response.hits.hits.map(h => h._source));
-        }
-    });
+    }, forwardError(cb, response => {
+        // @TODO possible to move this sort to elastic search?
+        response.hits.hits.sort((a, b) => idList.indexOf(a._id) - idList.indexOf(b._id));
+        cb(null, response.hits.hits.map(h => h._source));
+    }));
 }

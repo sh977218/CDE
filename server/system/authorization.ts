@@ -1,7 +1,7 @@
 import {
     canComment, canEditCuratedItem, hasRole, isOrgAdmin, isOrgAuthority, isOrgCurator, isSiteAdmin
 } from 'shared/system/authorizationShared';
-import { handle404 } from '../errorHandler/errorHandler';
+import { handle40x } from '../errorHandler/errorHandler';
 
 // --------------------------------------------------
 // Middleware
@@ -30,7 +30,7 @@ export function canCreateMiddleware(req, res, next) {
 
 export const canEditMiddleware = db => (req, res, next) => {
     loggedInMiddleware(req, res, () => {
-        db.byExisting(req.body, handle404({req, res}, item => {
+        db.byExisting(req.body, handle40x({req, res}, item => {
             if (!canEditCuratedItem(req.user, item)) {
                 // TODO: consider ban
                 res.status(403).send();
@@ -48,7 +48,7 @@ export const canEditByTinyIdMiddleware = db => (req, res, next) => {
         return;
     }
     isOrgCuratorMiddleware(req, res, () => {
-        db.byTinyId(req.params.tinyId, handle404({req, res}, item => {
+        db.byTinyId(req.params.tinyId, handle40x({req, res}, item => {
             if (!canEditCuratedItem(req.user, item)) {
                 return res.status(403).send();
             }

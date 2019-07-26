@@ -1,7 +1,7 @@
 import { addFormIds, iterateFe, trimWholeForm } from 'shared/form/fe';
 import { formToQuestionnaire } from 'shared/mapping/fhir/to/toQuestionnaire';
 import { canEditCuratedItem } from 'shared/system/authorizationShared';
-import { handle404, handleError, respondError } from '../errorHandler/errorHandler';
+import { forwardError, handle40x, handleError, respondError } from '../errorHandler/errorHandler';
 import { config } from '../system/parseConfig';
 
 const Ajv = require('ajv');
@@ -62,11 +62,7 @@ export function fetchWholeForm(form, callback) {
 // callback(err, form)
 // outdated is not necessary for endpoints by version
 function fetchWholeFormOutdated(form, callback) {
-    fetchWholeForm(form, function (err, wholeForm) {
-        if (err) {
-            callback(err);
-            return;
-        }
+    fetchWholeForm(form, forwardError(callback, wholeForm => {
         iterateFe(wholeForm, (f, cb) => {
             mongo_form.Form.findOne({tinyId: f.inForm.form.tinyId, archived: false}, {version: 1}, (err, elt) => {
                 if (elt && (f.inForm.form.version || null) !== (elt.version || null)) {
@@ -87,7 +83,7 @@ function fetchWholeFormOutdated(form, callback) {
                 cb(err);
             });
         }, () => callback(undefined, wholeForm));
-    });
+    }));
 }
 
 function wipeRenderDisallowed(form, user) {
@@ -98,8 +94,7 @@ function wipeRenderDisallowed(form, user) {
 
 export function byId(req, res) {
     let id = req.params.id;
-    if (!id || id.length !== 24) return res.status(400).send();
-    mongo_form.byId(id, handle404({req, res}, form => {
+    mongo_form.byId(id, handle40x({req, res}, form => {
         fetchWholeForm(form.toObject(), handleError({req, res}, wholeForm => {
             wipeRenderDisallowed(wholeForm, req.user);
             if (req.query.type === 'xml') {
@@ -153,7 +148,7 @@ export function byId(req, res) {
 export function priorForms(req, res) {
     let id = req.params.id;
     if (!id || id.length !== 24) return res.status(400).send();
-    mongo_form.byId(id, handle404({req, res}, form => {
+    mongo_form.byId(id, handle40x({req, res}, form => {
         let history = form.history.concat([form._id]).reverse();
         mongo_form.Form.find({}, {'updatedBy.username': 1, updated: 1, changeNote: 1, version: 1, elementType: 1})
             .where('_id').in(history).exec((err, priorForms) => {
@@ -167,7 +162,7 @@ export function byTinyId(req, res) {
     const handlerOptions = {req, res};
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
-    mongo_form.byTinyId(tinyId, handle404(handlerOptions, form => {
+    mongo_form.byTinyId(tinyId, handle40x(handlerOptions, form => {
         fetchWholeForm(form.toObject(), handleError(handlerOptions, wholeForm => {
             wipeRenderDisallowed(wholeForm, req.user);
             if (req.query.type === 'xml') {
@@ -204,7 +199,7 @@ export function byTinyIdVersion(req, res) {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
     let version = req.params.version;
-    mongo_form.byTinyIdVersion(tinyId, version, handle404({req, res}, form => {
+    mongo_form.byTinyIdVersion(tinyId, version, handle40x({req, res}, form => {
         fetchWholeForm(form.toObject(), handleError({req, res}, wholeForm => {
             wipeRenderDisallowed(wholeForm, req.user);
             res.send(wholeForm);
@@ -216,7 +211,7 @@ export function byTinyIdAndVersion(req, res) {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
     let version = req.params.version;
-    mongo_form.byTinyIdAndVersion(tinyId, version, handle404({req, res}, form => {
+    mongo_form.byTinyIdAndVersion(tinyId, version, handle40x({req, res}, form => {
         fetchWholeForm(form.toObject(), handleError({req, res}, wholeForm => {
             wipeRenderDisallowed(wholeForm, req.user);
             res.send(wholeForm);
@@ -267,7 +262,7 @@ export function forEditById(req, res) {
     const handlerOptions = {req, res};
     let id = req.params.id;
     if (!id || id.length !== 24) return res.status(400).send();
-    mongo_form.byId(id, handle404(handlerOptions, form => {
+    mongo_form.byId(id, handle40x(handlerOptions, form => {
         fetchWholeFormOutdated(form.toObject(), handleError(handlerOptions, wholeForm => {
             wipeRenderDisallowed(wholeForm, req.user);
             res.send(wholeForm);
@@ -280,7 +275,7 @@ export function forEditByTinyId(req, res) {
     const handlerOptions = {req, res};
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
-    mongo_form.byTinyId(tinyId, handle404(handlerOptions, form => {
+    mongo_form.byTinyId(tinyId, handle40x(handlerOptions, form => {
         fetchWholeFormOutdated(form.toObject(), handleError(handlerOptions, wholeForm => {
             wipeRenderDisallowed(wholeForm, req.user);
             res.send(wholeForm);
@@ -294,7 +289,7 @@ export function forEditByTinyIdAndVersion(req, res) {
     let tinyId = req.params.tinyId;
     if (!tinyId) return res.status(400).send();
     let version = req.params.version;
-    mongo_form.byTinyIdAndVersion(tinyId, version, handle404(handlerOptions, form => {
+    mongo_form.byTinyIdAndVersion(tinyId, version, handle40x(handlerOptions, form => {
         fetchWholeFormOutdated(form.toObject(), handleError(handlerOptions, wholeForm => {
             wipeRenderDisallowed(wholeForm, req.user);
             res.send(wholeForm);
@@ -342,7 +337,7 @@ export function latestVersionByTinyId(req, res) {
 
 export function publishFormToHtml(req, res) {
     if (!req.params.id || req.params.id.length !== 24) return res.status(400).send();
-    mongo_form.byId(req.params.id, handle404({req, res}, form => {
+    mongo_form.byId(req.params.id, handle40x({req, res}, form => {
         fetchWholeForm(form.toObject(), handleError({
             req, res, message: 'Fetch whole for publish'
         }, wholeForm => {
@@ -371,14 +366,14 @@ function publish(req, res, draft, options = {}) {
 
         trimWholeForm(draft);
 
-        mongo_form.update(draft, req.user, options, handle404(handlerOptions, doc => {
+        mongo_form.update(draft, req.user, options, handle40x(handlerOptions, doc => {
             mongo_form.draftDelete(draft.tinyId, handleError(handlerOptions, () => res.send(doc)));
         }));
     }));
 }
 
 export function publishFromDraft(req, res) {
-    mongo_form.draftById(req.body._id, handle404({req, res}, draft => {
+    mongo_form.draftById(req.body._id, handle40x({req, res}, draft => {
         if (draft.__v !== req.body.__v) {
             return res.status(400).send('Cannot publish this old version. Reload and redo.');
         }
@@ -401,7 +396,7 @@ export function publishExternal(req, res) {
 export function originalSourceByTinyIdSourceName(req, res) {
     let tinyId = req.params.tinyId;
     let sourceName = req.params.sourceName;
-    mongo_form.originalSourceByTinyIdSourceName(tinyId, sourceName, handle404({req, res}, originalSource => {
+    mongo_form.originalSourceByTinyIdSourceName(tinyId, sourceName, handle40x({req, res}, originalSource => {
         res.send(originalSource);
     }));
 }

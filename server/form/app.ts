@@ -1,7 +1,7 @@
 import { isOrgAuthority } from 'shared/system/authorizationShared';
 import { stripBsonIds } from 'shared/system/exportShared';
 import { getEnvironmentHost } from 'shared/env';
-import { handleError } from 'server/errorHandler/errorHandler';
+import { handle40x, handleError } from 'server/errorHandler/errorHandler';
 import {
     canCreateMiddleware, canEditByTinyIdMiddleware, canEditMiddleware,
     isOrgAuthorityMiddleware, isOrgCuratorMiddleware, loggedInMiddleware, nocacheMiddleware
@@ -127,57 +127,42 @@ export function init(app, daoManager) {
 
     app.post('/form/publish/:id', loggedInMiddleware, formSvc.publishFormToHtml);
 
-    app.get('/viewingHistory/form', nocacheMiddleware, function (req, res) {
-        if (!req.user) {
-            res.send('You must be logged in to do that');
-        } else {
-            let splicedArray = req.user.formViewHistory.splice(0, 10);
-            let idList = [];
-            for (let i = 0; i < splicedArray.length; i++) {
-                if (idList.indexOf(splicedArray[i]) === -1) idList.push(splicedArray[i]);
-            }
-            mongo_form.byTinyIdListInOrder(idList, function (err, forms) {
-                res.send(forms);
-            });
+    app.get('/viewingHistory/form', [loggedInMiddleware, nocacheMiddleware], function (req, res) {
+        let splicedArray = req.user.formViewHistory.splice(0, 10);
+        let idList = [];
+        for (let i = 0; i < splicedArray.length; i++) {
+            if (idList.indexOf(splicedArray[i]) === -1) idList.push(splicedArray[i]);
         }
+        mongo_form.byTinyIdListInOrder(idList, function (err, forms) {
+            res.send(forms);
+        });
     });
+
     /* ---------- PUT NEW REST API above ---------- */
-    app.get('/elasticSearch/form/count', function (req, res) {
-        elastic_system.nbOfForms((err, result) => res.send('' + result));
-    });
 
     app.post('/elasticSearch/form', (req, res) => {
         const query = sharedElastic.buildElasticSearchQuery(req.user, req.body);
-        if (query.size > 100) return res.status(400).send();
-        if ((query.from + query.size) > 10000) return res.status(400).send();
+        if (query.size > 100) return res.status(422).send('Too many results requested. (max 100)');
+        if ((query.from + query.size) > 10000) return res.status(422).send('Exceeded pagination limit (10,000)');
         if (!req.body.fullRecord) {
             query._source = {excludes: ['flatProperties', 'properties', 'classification.elements', 'formElements']};
         }
-        sharedElastic.elasticsearch('form', query, req.body, function (err, result) {
-            if (err) return res.status(400).send('invalid query');
+        sharedElastic.elasticsearch('form', query, req.body, handle40x({res, statusCode: '422'}, result => {
             res.send(result);
-        });
+        }));
     });
 
     app.post('/scrollExport/form', (req, res) => {
         let query = sharedElastic.buildElasticSearchQuery(req.user, req.body);
-        elastic_system.scrollExport(query, 'form', (err, response) => {
-            if (err) res.status(400).send();
-            else res.send(response);
-        });
+        elastic_system.scrollExport(query, 'form', handle40x({res, statusCode: 400}, response => res.send(response)));
     });
 
     app.get('/scrollExport/:scrollId', (req, res) => {
-        elastic_system.scrollNext(req.params.scrollId, (err, response) => {
-            if (err) res.status(400).send();
-            else res.send(response);
-        });
+        elastic_system.scrollNext(req.params.scrollId, handle40x({res, statusCode: 400}, response => res.send(response)));
     });
 
     app.post('/getFormAuditLog', isOrgAuthorityMiddleware, (req, res) => {
-        mongo_form.getAuditLog(req.body, (err, result) => {
-            res.send(result);
-        });
+        mongo_form.getAuditLog(req.body, (err, result) => res.send(result));
     });
 
     app.post('/elasticSearchExport/form', (req, res) => {
@@ -210,21 +195,13 @@ export function init(app, daoManager) {
     app.get('/formView', function (req, res) {
         let tinyId = req.query.tinyId;
         let version = req.query.version;
-        formByTinyIdVersion(tinyId, version, (err, cde) => {
-            if (err) {
-                res.status(500).send('ERROR - Static Html Error, /formView');
-                errorLogger.error('Error: Static Html Error', {
-                    stack: err.stack,
-                    origin: req.url
-                });
+        formByTinyIdVersion(tinyId, version, handleError({req, res}, cde => {
+            if (isSearchEngine(req)) {
+                res.render('bot/formView', 'system', {elt: cde});
             } else {
-                if (isSearchEngine(req)) {
-                    res.render('bot/formView', 'system', {elt: cde});
-                } else {
-                    respondHomeFull(req, res);
-                }
+                respondHomeFull(req, res);
             }
-        });
+        }));
     });
 
     app.post('/formCompletion/:term', nocacheMiddleware, (req, res) => {

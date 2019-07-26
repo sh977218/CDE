@@ -1,4 +1,4 @@
-import { handle404, handleError } from 'server/errorHandler/errorHandler';
+import { handle40x, handleError } from 'server/errorHandler/errorHandler';
 import { config } from 'server/system/parseConfig';
 import { stripBsonIds } from 'shared/system/exportShared';
 import {
@@ -123,7 +123,7 @@ export function module() {
         if (size > 500) return res.status(400).send('Request too large');
         let boardId = req.params.boardId;
         let start = Number.parseInt(req.params.start);
-        boardDb.byId(boardId, handle404({req, res}, b => {
+        boardDb.byId(boardId, handle40x({req, res}, b => {
             let board = b.toObject();
             if (board.shareStatus !== 'Public' && !checkBoardViewerShip(board, req.user)) {
                 return res.status(404).send();
@@ -173,7 +173,7 @@ export function module() {
                 }
             });
         } else {
-            boardDb.byId(board._id, handle404({req, res}, b => {
+            boardDb.byId(board._id, handle40x({req, res}, b => {
                 b.name = board.name;
                 b.description = board.description;
                 b.shareStatus = board.shareStatus;
