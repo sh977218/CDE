@@ -53,7 +53,7 @@ export class CreateDataElementComponent implements OnInit {
     }
 
     afterClassified(event) {
-        let postBody = {
+        const postBody = {
             categories: event.classificationArray,
             eltId: this.elt._id,
             orgName: event.selectedOrg
@@ -64,15 +64,15 @@ export class CreateDataElementComponent implements OnInit {
     }
 
     cancelCreateDataElement() {
-        if (this.dismiss.observers.length) this.dismiss.emit();
-        else this.router.navigate(['/']);
+        if (this.dismiss.observers.length) { this.dismiss.emit(); }
+        else { this.router.navigate(['/']); }
     }
 
     confirmDelete(event) {
-        let eltCopy = _cloneDeep(this.elt);
-        let steward = findSteward(eltCopy, event.deleteOrgName);
+        const eltCopy = _cloneDeep(this.elt);
+        const steward = findSteward(eltCopy, event.deleteOrgName);
         removeCategory(steward.object, event.deleteClassificationArray, err => {
-            if (err) this.alert.addAlert('danger', "Unexpected error removing classification");
+            if (err) { this.alert.addAlert('danger', 'Unexpected error removing classification'); }
             else {
                 for (let i = eltCopy.classification.length - 1; i >= 0; i--) {
                     if (eltCopy.classification[i].elements.length === 0) {
@@ -90,7 +90,7 @@ export class CreateDataElementComponent implements OnInit {
             .subscribe(res => {
                 this.close.emit();
                 this.router.navigate(['/deView'], {queryParams: {tinyId: res.tinyId}});
-            }, err => this.alert.addAlert('danger', "Unexpected error creating CDE"));
+            }, err => this.alert.addAlert('danger', 'Unexpected error creating CDE'));
     }
 
     openClassifyItemModal() {
@@ -98,10 +98,10 @@ export class CreateDataElementComponent implements OnInit {
     }
 
     updateClassificationLocalStorage(item) {
-        let recentlyClassification = <Array<any>>this.localStorageService.get('classificationHistory');
-        if (!recentlyClassification) recentlyClassification = [];
+        let recentlyClassification = this.localStorageService.get('classificationHistory') as Array<any>;
+        if (!recentlyClassification) { recentlyClassification = []; }
         recentlyClassification = recentlyClassification.filter(o => {
-            if (o.cdeId) o.eltId = o.cdeId;
+            if (o.cdeId) { o.eltId = o.cdeId; }
             return _isEqual(o, item);
         });
         recentlyClassification.unshift(item);

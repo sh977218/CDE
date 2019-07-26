@@ -25,10 +25,10 @@ export class SaveModalComponent {
                 public dialog: MatDialog) {}
 
     newVersionVersionUnicity(newVersion = null) {
-        if (newVersion === null) newVersion = this.elt.version;
+        if (newVersion === null) { newVersion = this.elt.version; }
         let url;
-        if (this.elt.elementType === 'cde') url = '/de/' + this.elt.tinyId + '/latestVersion/';
-        if (this.elt.elementType === 'form') url = '/form/' + this.elt.tinyId + '/latestVersion/';
+        if (this.elt.elementType === 'cde') { url = '/de/' + this.elt.tinyId + '/latestVersion/'; }
+        if (this.elt.elementType === 'form') { url = '/form/' + this.elt.tinyId + '/latestVersion/'; }
         this.http.get(url, {responseType: 'text'}).subscribe(
             res => {
                 if (res && newVersion && _isEqual(res, newVersion)) {
@@ -56,13 +56,12 @@ export class SaveModalComponent {
                             fe.question.cde.designations.message = null;
                         }
                         this.newCdes.push(fe.question.cde);
-                        if (cb) cb();
-                    } else if (cb) cb();
+                        if (cb) { cb(); }
+                    } else if (cb) { cb(); }
                 }
             }, () => {
                 this.dialog.open(this.updateElementContent);
             });
-        }
-        else this.dialog.open(this.updateElementContent);
+        } else { this.dialog.open(this.updateElementContent); }
     }
 }

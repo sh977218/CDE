@@ -14,10 +14,10 @@ import { isCdeForm, isDataElement } from 'shared/item';
 
 @Injectable()
 export class QuickBoardListService {
-    module: string = 'cde';
+    module = 'cde';
     quickBoard: any;
-    number_dataElements: number = 0;
-    number_forms: number = 0;
+    number_dataElements = 0;
+    number_forms = 0;
 
     dataElements: DataElementElastic[] = [];
     forms: CdeFormElastic[] = [];
@@ -62,9 +62,9 @@ export class QuickBoardListService {
     }
 
     loadElements(): void {
-        let dataElementLocalStorage = <Array<any>> this.localStorageService.get('quickBoard');
+        const dataElementLocalStorage = this.localStorageService.get('quickBoard') as Array<any>;
         if (dataElementLocalStorage) {
-            let l = dataElementLocalStorage.map(d => d.tinyId);
+            const l = dataElementLocalStorage.map(d => d.tinyId);
             if (!_isEmpty(l)) {
                 this.http.get<DataElement[]>('/deList/' + l)
                     .subscribe(res => {
@@ -75,9 +75,9 @@ export class QuickBoardListService {
                     }, err => this.alert.httpErrorMessageAlert(err));
             }
         }
-        let formLocalStorage = <Array<any>> this.localStorageService.get('formQuickBoard');
+        const formLocalStorage = this.localStorageService.get('formQuickBoard') as Array<any>;
         if (formLocalStorage) {
-            let l = formLocalStorage.map(d => d.tinyId);
+            const l = formLocalStorage.map(d => d.tinyId);
             if (!_isEmpty(l)) {
                 this.http.get<CdeFormElastic[]>('/formList/' + l)
                     .subscribe(res => {
@@ -93,7 +93,7 @@ export class QuickBoardListService {
                     }, err => this.alert.httpErrorMessageAlert(err));
             }
         }
-        this.module = <string>this.localStorageService.get('defaultQuickBoard');
+        this.module = this.localStorageService.get('defaultQuickBoard') as string;
     }
 
     removeElement(elt: ItemElastic) {
@@ -121,8 +121,8 @@ export class QuickBoardListService {
 
     setDefaultQuickBoard(event: MatTabChangeEvent) {
         let type;
-        if (event.tab.textLabel.startsWith("Form")) type = 'form';
-        if (event.tab.textLabel.startsWith("CDE")) type = 'cde';
+        if (event.tab.textLabel.startsWith('Form')) { type = 'form'; }
+        if (event.tab.textLabel.startsWith('CDE')) { type = 'cde'; }
         this.module = type;
         this.localStorageService.set('defaultQuickBoard', type);
     }

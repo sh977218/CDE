@@ -17,118 +17,9 @@ import { SkipLogicOperators } from 'shared/form/skipLogic';
 
 @Injectable()
 export class NativeRenderService {
-    static readonly SHOW_IF: string = 'Dynamic';
-    static readonly FOLLOW_UP: string = 'Follow-up';
-    static readonly getPvDisplayValue = pvGetDisplayValue;
-    static readonly getPvLabel = pvGetLabel;
-    private _nativeRenderType: DisplayType = 'Follow-up';
-    elt!: CdeForm;
-    private errors: string[] = [];
-    followForm?: CdeForm;
-    flatMapping: any;
-    locationDenied = false;
-    profile!: DisplayProfile;
-    questionChangeListeners: Cb1<FormQuestion>[] = [];
-    questionMulti = questionMulti;
-    submitForm?: boolean;
-    vm!: CdeForm;
 
     constructor(public scoreSvc: ScoreService,
                 public skipLogicService: SkipLogicService) {
-    }
-
-    addListener(cb: Cb1<FormQuestion>) {
-        this.questionChangeListeners.push(cb); // no need to cleanup because the whole nrs goes out of scope
-    }
-
-    convert(formElement: FormQuestion) {
-        let unit = formElement.question.answerUom;
-        if (formElement.question.previousUom && unit && formElement.question.answer != null) {
-            let value: number;
-            if (typeof(formElement.question.answer) === 'string') value = parseFloat(formElement.question.answer);
-            else value = formElement.question.answer;
-
-            if (typeof(value) === 'number' && !isNaN(value)) {
-                NativeRenderService.convertUnits(value, formElement.question.previousUom, unit, (error?: string, result?: number) => {
-                    if (!error && result !== undefined && !isNaN(result) && unit === formElement.question.answerUom) {
-                        formElement.question.answer = result;
-                        this.emit(formElement);
-                    }
-                });
-            }
-        }
-        formElement.question.previousUom = formElement.question.answerUom;
-    }
-
-    static convertUnits(value: number, fromUnit: CodeAndSystem, toUnit: CodeAndSystem, cb: CbErr<number>) {
-        if (fromUnit.system === 'UCUM' && toUnit.system === 'UCUM') {
-            callbackify(
-                FormService.convertUnits(value, encodeURIComponent(fromUnit.code), encodeURIComponent(toUnit.code))
-            )(cb);
-        } else {
-            cb(undefined, value); // no conversion for other systems
-        }
-    }
-
-    eltSet(elt: CdeForm) {
-        if (elt !== this.elt) {
-            this.elt = elt;
-            this.followForm = undefined;
-            this.scoreSvc.register(this.elt);
-            this.questionChangeListeners.length = 0;
-            if (!this.elt.formInput) {
-                this.elt.formInput = [];
-            }
-            if (this.nativeRenderType) {
-                this.render(this.nativeRenderType);
-                this.vm = this.nativeRenderType === NativeRenderService.SHOW_IF ? this.elt! : this.followForm!;
-            }
-        }
-        if (this.submitForm && !this.flatMapping) {
-            this.flatMapping = JSON.stringify({sections: NativeRenderService.flattenForm(this.elt)});
-        }
-    }
-
-    emit(fe: FormQuestion) {
-        this.scoreSvc.triggerCalculateScore(fe);
-        this.questionChangeListeners.forEach(cb => cb(fe));
-    }
-
-    getAliases(f: FormQuestion) {
-        if (this.profile) {
-            f.question.uomsAlias = [];
-            f.question.unitsOfMeasure.forEach(u => {
-                let aliases = this.profile.unitsOfMeasureAlias.filter(a => CodeAndSystem.compare(a.unitOfMeasure, u));
-                if (aliases.length) {
-                    f.question.uomsAlias.push(aliases[0].alias);
-                } else {
-                    f.question.uomsAlias.push(u.code);
-                }
-            });
-        } else {
-            f.question.uomsAlias = f.question.unitsOfMeasure.map(u => u.code);
-        }
-    }
-
-    getCurrentGeoLocation(formElement: FormQuestion) {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                position => {
-                    this.locationDenied = false;
-                    if (formElement) {
-                        formElement.question.answer = position.coords;
-                        this.emit(formElement);
-                    }
-                },
-                err => {
-                    this.locationDenied = err.code === err.PERMISSION_DENIED;
-                }
-            );
-        }
-    }
-
-    static isPreselectedRadio(fe: FormQuestion) {
-        return !fe.question.multiselect && (fe.question.answers || []).length === 1 && fe.question.required;
     }
 
     get nativeRenderType(): DisplayType {
@@ -153,171 +44,87 @@ export class NativeRenderService {
             this.vm = this.nativeRenderType === NativeRenderService.SHOW_IF ? this.elt! : this.followForm!;
         }
     }
+    static readonly SHOW_IF: string = 'Dynamic';
+    static readonly FOLLOW_UP: string = 'Follow-up';
+    static readonly getPvDisplayValue = pvGetDisplayValue;
+    static readonly getPvLabel = pvGetLabel;
+    private _nativeRenderType: DisplayType = 'Follow-up';
+    elt!: CdeForm;
+    private errors: string[] = [];
+    followForm?: CdeForm;
+    flatMapping: any;
+    locationDenied = false;
+    profile!: DisplayProfile;
+    questionChangeListeners: Cb1<FormQuestion>[] = [];
+    questionMulti = questionMulti;
+    submitForm?: boolean;
+    vm!: CdeForm;
 
-    profileSet(profile?: DisplayProfile) {
-        if (profile) {
-            this.profile = profile;
-        }
-        if (!this.profile || this.elt && this.elt.displayProfiles && this.elt.displayProfiles.length > 0 &&
-            this.elt.displayProfiles.indexOf(this.profile) === -1) {
-            this.profile = this.elt.displayProfiles[0];
-        }
-        if (!this.profile) {
-            this.profile = new DisplayProfile('Default Config');
-        }
-        iterateFeSync(this.elt, undefined, undefined, this.getAliases.bind(this));
-    }
-
-    radioButtonSelect(q: FormQuestion, value: string) {
-        if (q.question.required || q.question.answer !== value) {
-            q.question.answer = value;
+    static convertUnits(value: number, fromUnit: CodeAndSystem, toUnit: CodeAndSystem, cb: CbErr<number>) {
+        if (fromUnit.system === 'UCUM' && toUnit.system === 'UCUM') {
+            callbackify(
+                FormService.convertUnits(value, encodeURIComponent(fromUnit.code), encodeURIComponent(toUnit.code))
+            )(cb);
         } else {
-            q.question.answer = undefined;
-        }
-        this.emit(q);
-    }
-
-    render(renderType: DisplayType) {
-        if (!this.elt) {
-            return;
-        }
-
-        // Pre-Transform Processing
-        iterateFeSync(this.elt, undefined, undefined, (f: FormQuestion) => {
-            // clean up
-            if (Array.isArray(f.question.answers)) {
-                for (let i = 0; i < f.question.answers.length; i++) {
-                    let answer = f.question.answers[i];
-                    if (f.question.cde.permissibleValues && !f.question.cde.permissibleValues.some(p => p.permissibleValue === answer.permissibleValue)) {
-                        f.question.answers.splice(i--, 1);
-                    } else {
-                        if (answer.formElements) answer.formElements = [];
-                        if (answer.index) answer.index = undefined;
-                    }
-                }
-            }
-
-            this.getAliases(f);
-
-            // answers
-            if (f.question.unitsOfMeasure && f.question.unitsOfMeasure.length === 1) {
-                f.question.answerUom = f.question.unitsOfMeasure[0];
-            }
-            if (f.question.datatype === 'Value List' && NativeRenderService.isPreselectedRadio(f)) {
-                f.question.answer = f.question.answers![0].permissibleValue;
-            }
-        });
-
-        // assign name ids of format 'prefix_section#-section#-question#_suffix'
-        addFormIds(this.elt);
-        if (renderType === NativeRenderService.FOLLOW_UP) {
-            this.followForm = NativeRenderService.cloneForm(this.elt);
-            NativeRenderService.transformFormToInline(this.followForm);
-            NativeRenderService.assignValueListRows(this.followForm.formElements);
+            cb(undefined, value); // no conversion for other systems
         }
     }
 
-    addError(msg: string) {
-        if (this.errors.indexOf(msg) === -1) this.errors.push(msg);
-    }
-
-    hasErrors() {
-        return !!this.errors.length;
-    }
-
-    getErrors() {
-        return this.errors;
-    }
-
-    checkboxOnChange(checked: boolean, model: Question, value: any, q: FormQuestion) {
-        if (!Array.isArray(model.answer)) model.answer = [];
-        let index = model.answer.indexOf(value);
-        if (checked) {
-            if (index === -1) {
-                model.answer.push(value);
-            }
-        } else {
-            if (index > -1) {
-                model.answer.splice(model.answer.indexOf(value), 1);
-            }
-        }
-        this.emit(q);
-    }
-
-    checkboxIsChecked(model: Question, value: any) {
-        if (!Array.isArray(model.answer)) model.answer = [];
-        return (model.answer.indexOf(value) !== -1);
-    }
-
-    selectModel(q: FormQuestion) {
-        if (q.question.multiselect || q.question.answer === undefined) {
-            return q.question.answer;
-        } else {
-            if (!Array.isArray(q.question.answerVM)) {
-                q.question.answerVM = [];
-            }
-            q.question.answerVM.length = 0;
-            q.question.answerVM.push(q.question.answer);
-            return q.question.answerVM;
-        }
-    }
-
-    selectModelChange(value: any, q: FormQuestion) {
-        q.question.answer = q.question.multiselect ? value : value[0];
-        this.emit(q);
+    static isPreselectedRadio(fe: FormQuestion) {
+        return !fe.question.multiselect && (fe.question.answers || []).length === 1 && fe.question.required;
     }
 
     static cloneForm(form: CdeForm): CdeForm {
-        let clone = JSON.parse(JSON.stringify(form));
+        const clone = JSON.parse(JSON.stringify(form));
         NativeRenderService.cloneFes(clone.formElements, form.formElements);
         return clone;
     }
 
     static cloneFes(newFes: FormElement[], oldFes: FormElement[]) {
         for (let i = 0, size = newFes.length; i < size; i++) {
-            if (newFes[i].elementType === 'question') (newFes[i] as FormQuestion).question = (oldFes[i] as FormQuestion).question;
-            else NativeRenderService.cloneFes(newFes[i].formElements, oldFes[i].formElements);
+            if (newFes[i].elementType === 'question') { (newFes[i] as FormQuestion).question = (oldFes[i] as FormQuestion).question; }
+            else { NativeRenderService.cloneFes(newFes[i].formElements, oldFes[i].formElements); }
         }
     }
 
     static transformFormToInline(form: FormElementsContainer): boolean {
-        let followEligibleQuestions: FormElement[] = [];
+        const followEligibleQuestions: FormElement[] = [];
         let transformed = false;
         let feSize = Array.isArray(form.formElements) ? form.formElements.length : 0;
         for (let i = 0; i < feSize; i++) {
-            let fe = form.formElements[i];
-            let qs = getShowIfQ(followEligibleQuestions, fe);
+            const fe = form.formElements[i];
+            const qs = getShowIfQ(followEligibleQuestions, fe);
             if (qs.length > 0) {
                 let substitution = 0;
-                let parentQ: FormQuestion = qs[0][0];
+                const parentQ: FormQuestion = qs[0][0];
                 qs.forEach(match => {
                     function getNotMappedSuffix() {
-                        let value = substitution++;
+                        const value = substitution++;
                         return value ? '_fake' + value : '';
                     }
 
                     if (parentQ.question.datatype === 'Value List') {
-                        if (match[3] === "") { // not answered, own line "is none"
+                        if (match[3] === '') { // not answered, own line "is none"
                             parentQ.question.answers!.push({
                                 permissibleValue: NativeRenderService.createRelativeText([match[3]], match[2], true),
                                 nonValuelist: true,
                                 formElements: [Object.create(fe, {feId: {value: fe.feId + getNotMappedSuffix()}})]
                             });
                         } else {
-                            let answer = parentQ.question.answers!.filter(a => a.permissibleValue === match[3])[0];
+                            const answer = parentQ.question.answers!.filter(a => a.permissibleValue === match[3])[0];
                             if (answer) {
-                                if (!answer.formElements) answer.formElements = [];
+                                if (!answer.formElements) { answer.formElements = []; }
                                 answer.formElements.push(Object.create(fe, {feId: {value: fe.feId + getNotMappedSuffix()}}));
                             }
                             // else non-existing value is ignored
                         }
                     } else {
-                        if (!parentQ.question.answers) parentQ.question.answers = [];
-                        let existingLogic = parentQ.question.answers.filter(
+                        if (!parentQ.question.answers) { parentQ.question.answers = []; }
+                        const existingLogic = parentQ.question.answers.filter(
                             a => a.nonValuelist && a.formElements.length === 1 && a.formElements[0] === fe);
                         if (existingLogic.length > 0) {
                             // already substituted with relative text
-                            let existingSubQ = existingLogic[0];
+                            const existingSubQ = existingLogic[0];
                             existingSubQ.permissibleValue = existingSubQ.permissibleValue + ' or ' +
                                 NativeRenderService.createRelativeText([match[3]], match[2], false);
                         } else {
@@ -345,15 +152,15 @@ export class NativeRenderService {
                 && NativeRenderService.transformFormToInline(fe)) {
                 (fe as FormSectionOrForm).forbidMatrix = true;
             }
-            if (fe.skipLogic) fe.skipLogic = undefined;
+            if (fe.skipLogic) { fe.skipLogic = undefined; }
         }
         return transformed;
     }
 
     static createRelativeText(v: string[], oper: SkipLogicOperators, isValuelist: boolean): string {
-        let values: string[] = JSON.parse(JSON.stringify(v));
+        const values: string[] = JSON.parse(JSON.stringify(v));
         values.forEach((e, i, a) => {
-            if (e === "") {
+            if (e === '') {
                 a[i] = isValuelist ? 'none' : 'empty';
             }
         });
@@ -396,9 +203,9 @@ export class NativeRenderService {
                             if (NativeRenderService.hasOwnRow(pv) || index === -1 && (i + 1 < a.length
                                 && NativeRenderService.hasOwnRow(a[i + 1]) || i + 1 === a.length)) {
                                 pv.index = index = -1;
-                            } else pv.index = ++index;
+                            } else { pv.index = ++index; }
 
-                            if (pv.formElements) NativeRenderService.assignValueListRows(pv.formElements);
+                            if (pv.formElements) { NativeRenderService.assignValueListRows(pv.formElements); }
                         });
                     }
                     break;
@@ -413,8 +220,8 @@ export class NativeRenderService {
     }
 
     static flattenForm(elt: CdeForm) {
-        type QuestionStruct = { question: string, name: string, ids: CdeId[], tinyId: string, answerUom?: CodeAndSystem };
-        type SectionQuestions = { section: string, questions: QuestionStruct[] };
+        interface QuestionStruct { question: string, name: string, ids: CdeId[], tinyId: string, answerUom?: CodeAndSystem }
+        interface SectionQuestions { section: string, questions: QuestionStruct[] }
 
         function isSectionQuestions(a: SectionQuestions | QuestionStruct): a is SectionQuestions {
             return a.hasOwnProperty('section');
@@ -423,7 +230,7 @@ export class NativeRenderService {
         if (!elt.formElements || elt.formElements.length === 0) {
             return flattenFormSection(elt, [], '', '');
         } else {
-            let startSection = elt.formElements[0] as FormSection;
+            const startSection = elt.formElements[0] as FormSection;
             return flattenFormSection(startSection, [startSection.label || ''], '', '');
         }
 
@@ -432,7 +239,7 @@ export class NativeRenderService {
                 if (questions.length) {
                     repeatSection.push({
                         section: sectionHeading[sectionHeading.length - 1] + repeatNum,
-                        questions: questions
+                        questions
 
                     });
                     questions = [];
@@ -440,12 +247,12 @@ export class NativeRenderService {
                 return questions;
             }
 
-            let repeats = NativeRenderService.getRepeatNumber(fe);
+            const repeats = NativeRenderService.getRepeatNumber(fe);
             let repeatSection: SectionQuestions[] = [];
             let questions: QuestionStruct[] = [];
             let output: SectionQuestions[] | QuestionStruct[];
             for (let i = 0; i < repeats; i++) {
-                if (repeats > 1) repeatNum = ' #' + i;
+                if (repeats > 1) { repeatNum = ' #' + i; }
                 fe.formElements.forEach(feIter => {
                     output = flattenFormFe(feIter, sectionHeading.concat(feIter.label || ''), namePrefix + (repeats > 1 ? i + '_' : ''), repeatNum);
 
@@ -465,9 +272,9 @@ export class NativeRenderService {
 
         function flattenFormQuestion(fe: FormQuestion, sectionHeading: string[], namePrefix: string, repeatNum: string): QuestionStruct[] {
             let questions: QuestionStruct[] = [];
-            let repeats = NativeRenderService.getRepeatNumber(fe);
+            const repeats = NativeRenderService.getRepeatNumber(fe);
             for (let i = 0; i < repeats; i++) {
-                let q: QuestionStruct = {
+                const q: QuestionStruct = {
                     question: fe.label || '',
                     name: namePrefix + (repeats > 1 ? i + '_' : '') + fe.feId,
                     ids: fe.question.cde.ids,
@@ -478,7 +285,7 @@ export class NativeRenderService {
                 }
                 questions.push(q);
             }
-            if (!fe.question.answers) fe.question.answers = [];
+            if (!fe.question.answers) { fe.question.answers = []; }
             fe.question.answers.forEach(a => {
                 a.formElements && a.formElements.forEach(sq => {
                     questions = questions.concat(flattenFormFe(sq, sectionHeading, namePrefix, repeatNum) as QuestionStruct[]);
@@ -528,8 +335,8 @@ export class NativeRenderService {
                     // not statically analyzable
                     return 10;
                 case 'F':
-                    let firstQ = NativeRenderService.getFirstQuestion(fe);
-                    if (firstQ && firstQ.question.answers) return firstQ.question.answers.length;
+                    const firstQ = NativeRenderService.getFirstQuestion(fe);
+                    if (firstQ && firstQ.question.answers) { return firstQ.question.answers.length; }
                     return 1;
                 case 'N':
                     const repeatNumber = parseInt(fe.repeat!);
@@ -545,5 +352,198 @@ export class NativeRenderService {
 
     static validateDisplayType(displayType: string): boolean {
         return displayType === NativeRenderService.SHOW_IF || displayType === NativeRenderService.FOLLOW_UP;
+    }
+
+    addListener(cb: Cb1<FormQuestion>) {
+        this.questionChangeListeners.push(cb); // no need to cleanup because the whole nrs goes out of scope
+    }
+
+    convert(formElement: FormQuestion) {
+        const unit = formElement.question.answerUom;
+        if (formElement.question.previousUom && unit && formElement.question.answer != null) {
+            let value: number;
+            if (typeof(formElement.question.answer) === 'string') { value = parseFloat(formElement.question.answer); }
+            else { value = formElement.question.answer; }
+
+            if (typeof(value) === 'number' && !isNaN(value)) {
+                NativeRenderService.convertUnits(value, formElement.question.previousUom, unit, (error?: string, result?: number) => {
+                    if (!error && result !== undefined && !isNaN(result) && unit === formElement.question.answerUom) {
+                        formElement.question.answer = result;
+                        this.emit(formElement);
+                    }
+                });
+            }
+        }
+        formElement.question.previousUom = formElement.question.answerUom;
+    }
+
+    eltSet(elt: CdeForm) {
+        if (elt !== this.elt) {
+            this.elt = elt;
+            this.followForm = undefined;
+            this.scoreSvc.register(this.elt);
+            this.questionChangeListeners.length = 0;
+            if (!this.elt.formInput) {
+                this.elt.formInput = [];
+            }
+            if (this.nativeRenderType) {
+                this.render(this.nativeRenderType);
+                this.vm = this.nativeRenderType === NativeRenderService.SHOW_IF ? this.elt! : this.followForm!;
+            }
+        }
+        if (this.submitForm && !this.flatMapping) {
+            this.flatMapping = JSON.stringify({sections: NativeRenderService.flattenForm(this.elt)});
+        }
+    }
+
+    emit(fe: FormQuestion) {
+        this.scoreSvc.triggerCalculateScore(fe);
+        this.questionChangeListeners.forEach(cb => cb(fe));
+    }
+
+    getAliases(f: FormQuestion) {
+        if (this.profile) {
+            f.question.uomsAlias = [];
+            f.question.unitsOfMeasure.forEach(u => {
+                const aliases = this.profile.unitsOfMeasureAlias.filter(a => CodeAndSystem.compare(a.unitOfMeasure, u));
+                if (aliases.length) {
+                    f.question.uomsAlias.push(aliases[0].alias);
+                } else {
+                    f.question.uomsAlias.push(u.code);
+                }
+            });
+        } else {
+            f.question.uomsAlias = f.question.unitsOfMeasure.map(u => u.code);
+        }
+    }
+
+    getCurrentGeoLocation(formElement: FormQuestion) {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                position => {
+                    this.locationDenied = false;
+                    if (formElement) {
+                        formElement.question.answer = position.coords;
+                        this.emit(formElement);
+                    }
+                },
+                err => {
+                    this.locationDenied = err.code === err.PERMISSION_DENIED;
+                }
+            );
+        }
+    }
+
+    profileSet(profile?: DisplayProfile) {
+        if (profile) {
+            this.profile = profile;
+        }
+        if (!this.profile || this.elt && this.elt.displayProfiles && this.elt.displayProfiles.length > 0 &&
+            this.elt.displayProfiles.indexOf(this.profile) === -1) {
+            this.profile = this.elt.displayProfiles[0];
+        }
+        if (!this.profile) {
+            this.profile = new DisplayProfile('Default Config');
+        }
+        iterateFeSync(this.elt, undefined, undefined, this.getAliases.bind(this));
+    }
+
+    radioButtonSelect(q: FormQuestion, value: string) {
+        if (q.question.required || q.question.answer !== value) {
+            q.question.answer = value;
+        } else {
+            q.question.answer = undefined;
+        }
+        this.emit(q);
+    }
+
+    render(renderType: DisplayType) {
+        if (!this.elt) {
+            return;
+        }
+
+        // Pre-Transform Processing
+        iterateFeSync(this.elt, undefined, undefined, (f: FormQuestion) => {
+            // clean up
+            if (Array.isArray(f.question.answers)) {
+                for (let i = 0; i < f.question.answers.length; i++) {
+                    const answer = f.question.answers[i];
+                    if (f.question.cde.permissibleValues && !f.question.cde.permissibleValues.some(p => p.permissibleValue === answer.permissibleValue)) {
+                        f.question.answers.splice(i--, 1);
+                    } else {
+                        if (answer.formElements) { answer.formElements = []; }
+                        if (answer.index) { answer.index = undefined; }
+                    }
+                }
+            }
+
+            this.getAliases(f);
+
+            // answers
+            if (f.question.unitsOfMeasure && f.question.unitsOfMeasure.length === 1) {
+                f.question.answerUom = f.question.unitsOfMeasure[0];
+            }
+            if (f.question.datatype === 'Value List' && NativeRenderService.isPreselectedRadio(f)) {
+                f.question.answer = f.question.answers![0].permissibleValue;
+            }
+        });
+
+        // assign name ids of format 'prefix_section#-section#-question#_suffix'
+        addFormIds(this.elt);
+        if (renderType === NativeRenderService.FOLLOW_UP) {
+            this.followForm = NativeRenderService.cloneForm(this.elt);
+            NativeRenderService.transformFormToInline(this.followForm);
+            NativeRenderService.assignValueListRows(this.followForm.formElements);
+        }
+    }
+
+    addError(msg: string) {
+        if (this.errors.indexOf(msg) === -1) { this.errors.push(msg); }
+    }
+
+    hasErrors() {
+        return !!this.errors.length;
+    }
+
+    getErrors() {
+        return this.errors;
+    }
+
+    checkboxOnChange(checked: boolean, model: Question, value: any, q: FormQuestion) {
+        if (!Array.isArray(model.answer)) { model.answer = []; }
+        const index = model.answer.indexOf(value);
+        if (checked) {
+            if (index === -1) {
+                model.answer.push(value);
+            }
+        } else {
+            if (index > -1) {
+                model.answer.splice(model.answer.indexOf(value), 1);
+            }
+        }
+        this.emit(q);
+    }
+
+    checkboxIsChecked(model: Question, value: any) {
+        if (!Array.isArray(model.answer)) { model.answer = []; }
+        return (model.answer.indexOf(value) !== -1);
+    }
+
+    selectModel(q: FormQuestion) {
+        if (q.question.multiselect || q.question.answer === undefined) {
+            return q.question.answer;
+        } else {
+            if (!Array.isArray(q.question.answerVM)) {
+                q.question.answerVM = [];
+            }
+            q.question.answerVM.length = 0;
+            q.question.answerVM.push(q.question.answer);
+            return q.question.answerVM;
+        }
+    }
+
+    selectModelChange(value: any, q: FormQuestion) {
+        q.question.answer = q.question.multiselect ? value : value[0];
+        this.emit(q);
     }
 }

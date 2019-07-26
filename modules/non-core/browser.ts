@@ -1,7 +1,7 @@
 import { Cb, CbErr, CbRet } from 'shared/models.model';
 
 export function callbackify<T>(asyncFn: Promise<T>): (a: CbErr<T>) => void {
-    return function (cb) {
+    return function(cb) {
         asyncFn.then(value => cb(undefined, value), cb);
     };
 }
@@ -14,7 +14,7 @@ export function interruptEvent(event?: Event) {
 }
 
 export function isIe() {
-    let userAgent = window.navigator.userAgent;
+    const userAgent = window.navigator.userAgent;
     return /internet explorer/i.test(userAgent);
 }
 
@@ -29,7 +29,7 @@ export function openUrl(url: string, event: Event, newTab = false) {
 
 export function scrollTo(id: string) {
     const element = document.getElementById(id);
-    if (element) element.scrollIntoView();
+    if (element) { element.scrollIntoView(); }
 }
 
 export function textTruncate(limit: number, text: string) {

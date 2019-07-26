@@ -16,8 +16,8 @@ export class NativeSectionComponent {
     }
 
     sectionType() {
-        if (this.formElement.repeat && this.formElement.repeat !== '1') return 'table';
-        if (this.nrs.profile.sectionsAsMatrix && this.canBeDisplayedAsMatrix(this.formElement)) return 'matrix';
+        if (this.formElement.repeat && this.formElement.repeat !== '1') { return 'table'; }
+        if (this.nrs.profile.sectionsAsMatrix && this.canBeDisplayedAsMatrix(this.formElement)) { return 'matrix'; }
         return 'section';
     }
 
@@ -26,7 +26,7 @@ export class NativeSectionComponent {
     }
 
     canBeDisplayedAsMatrix(section: FormSectionOrForm) {
-        if (!section) return true;
+        if (!section) { return true; }
         let result = true;
         let answerHash: string;
 
@@ -35,7 +35,7 @@ export class NativeSectionComponent {
             return false;
         }
 
-        section && section.formElements && section.formElements.forEach(function (formElem) {
+        section && section.formElements && section.formElements.forEach(function(formElem) {
             if (formElem.elementType !== 'question'
                 || formElem.question.datatype !== 'Value List'
                 || formElem.question.answers!.length === 0
@@ -43,17 +43,17 @@ export class NativeSectionComponent {
                 return result = false;
             }
             if (!answerHash) {
-                answerHash = JSON.stringify(formElem.question.answers!.map(function (a) {
+                answerHash = JSON.stringify(formElem.question.answers!.map(function(a) {
                     return a.valueMeaningName;
                 }));
             }
-            if (answerHash !== JSON.stringify(formElem.question.answers!.map(function (a) {
+            if (answerHash !== JSON.stringify(formElem.question.answers!.map(function(a) {
                     return a.valueMeaningName;
                 }))) {
                 return result = false;
             }
         });
-        if (section.forbidMatrix) return false;
+        if (section.forbidMatrix) { return false; }
         return result;
     }
 }

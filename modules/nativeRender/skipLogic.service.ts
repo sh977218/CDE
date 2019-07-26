@@ -23,8 +23,8 @@ export class SkipLogicService {
     }
 
     evalSkipLogicAndClear(parent: FormElement, fe: FormElement, nrs: NativeRenderService): boolean {
-        let skipLogicResult = this.evalSkipLogic(parent, fe, nrs);
-        if (!skipLogicResult && isQuestion(fe)) fe.question.answer = undefined;
+        const skipLogicResult = this.evalSkipLogic(parent, fe, nrs);
+        if (!skipLogicResult && isQuestion(fe)) { fe.question.answer = undefined; }
         return skipLogicResult;
     }
 }

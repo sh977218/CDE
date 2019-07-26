@@ -31,6 +31,9 @@ import _cloneDeep from 'lodash/cloneDeep';
     `]
 })
 export class InlineAreaEditComponent implements OnInit, AfterViewInit {
+
+    constructor(private elementRef: ElementRef) {
+    }
     @Input() model!: string;
     @Input() inputType = 'text';
     @Input() isAllowed = false;
@@ -41,7 +44,25 @@ export class InlineAreaEditComponent implements OnInit, AfterViewInit {
     value!: string;
     localFormat?: string;
 
-    constructor(private elementRef: ElementRef) {
+    static isInvalidHtml(html: string) {
+        const allowUrls = [(window as any).publicUrl, (window as any).urlProd];
+        const srcs = html.match(/src\s*=\s*["'](.+?)["']/ig);
+        if (srcs) {
+            for (const src of srcs) {
+                const urls = src.match(/\s*["'](.+?)["']/ig);
+                if (urls) {
+                    for (const url of urls) {
+                        let allow = false;
+                        allowUrls.forEach(allowUrl => {
+                            const index = url.indexOf(allowUrl);
+                            if (index > -1) { allow = true; }
+                        });
+                        return !allow;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     ngOnInit(): void {
@@ -50,7 +71,7 @@ export class InlineAreaEditComponent implements OnInit, AfterViewInit {
     }
 
     ngAfterViewInit() {
-        let s = document.createElement('script');
+        const s = document.createElement('script');
         s.type = 'text/javascript';
         s.src = 'https://cdn.ckeditor.com/4.7.0/standard-all/ckeditor.js';
         this.elementRef.nativeElement.appendChild(s);
@@ -74,29 +95,6 @@ export class InlineAreaEditComponent implements OnInit, AfterViewInit {
 
     edit() {
         this.editMode = true;
-    }
-
-    static isInvalidHtml(html: string) {
-        let allowUrls = [(window as any).publicUrl, (window as any).urlProd];
-        let srcs = html.match(/src\s*=\s*["'](.+?)["']/ig);
-        if (srcs) {
-            for (let i = 0; i < srcs.length; i++) {
-                let src = srcs[i];
-                let urls = src.match(/\s*["'](.+?)["']/ig);
-                if (urls) {
-                    for (let j = 0; j < urls.length; j++) {
-                        let url = urls[j].replace(/["]/g, "").replace(/[']/g, "");
-                        let allow = false;
-                        allowUrls.forEach(allowUrl => {
-                            let index = url.indexOf(allowUrl);
-                            if (index > -1) allow = true;
-                        });
-                        return !allow;
-                    }
-                }
-            }
-        }
-        return false;
     }
 
     setHtml(html: boolean) {

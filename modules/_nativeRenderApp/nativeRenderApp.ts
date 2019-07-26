@@ -6,7 +6,9 @@ import 'reflect-metadata';
 import '../../node_modules/bootstrap/dist/css/bootstrap.css';
 
 import { enableProdMode } from '@angular/core';
-if (PRODUCTION) enableProdMode();
+if (PRODUCTION) {
+    enableProdMode();
+}
 
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { NativeRenderAppModule } from '_nativeRenderApp/nativeRenderApp.module';

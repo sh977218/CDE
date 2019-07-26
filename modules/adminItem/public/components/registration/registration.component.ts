@@ -13,7 +13,7 @@ import { MatDialog } from '@angular/material';
     templateUrl: './registration.component.html',
 })
 export class RegistrationComponent implements OnInit {
-    @Input() canEdit: boolean = false;
+    @Input() canEdit = false;
     @Input() elt: any;
     @Output() onEltChange = new EventEmitter();
     @ViewChild('regStatusEdit') regStatusEditModal!: TemplateRef<any>;
@@ -21,7 +21,7 @@ export class RegistrationComponent implements OnInit {
     newState?: RegistrationState;
     validRegStatuses: string[] = ['Retired', 'Incomplete', 'Candidate'];
 
-    constructor (
+    constructor(
         private alert: AlertService,
         private http: HttpClient,
         public dialog: MatDialog,
@@ -55,8 +55,8 @@ export class RegistrationComponent implements OnInit {
                     });
                 });
             } else {
-                this.helpMessage = "Elements that are not classified (or only classified by TEST " +
-                    "can only have Incomplete or Retired status";
+                this.helpMessage = 'Elements that are not classified (or only classified by TEST ' +
+                    'can only have Incomplete or Retired status';
             }
 
             this.dialog.open(this.regStatusEditModal, {width: '1000px'}).afterClosed().subscribe(res => {
@@ -70,7 +70,7 @@ export class RegistrationComponent implements OnInit {
 
     setHelpMessage(newValue: CurationStatus) {
         statusList.forEach(status => {
-            if (status.name === newValue) this.helpMessage = status.curHelp;
+            if (status.name === newValue) { this.helpMessage = status.curHelp; }
         });
     }
 }

@@ -16,7 +16,7 @@ export class AllDraftsResolve implements Resolve<Observable<Article>> {
     resolve() {
         return this.draftSvc.allDrafts()
             .pipe(catchError(() => {
-                this.router.navigate(["/404"]);
+                this.router.navigate(['/404']);
                 return EMPTY;
             }));
     }

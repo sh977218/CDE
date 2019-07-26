@@ -11,7 +11,7 @@ export class SearchSettings {
     page?: number = 1;
     q?: string = '';
     regStatuses: CurationStatus[] = [];
-    resultPerPage: number = 20;
+    resultPerPage = 20;
     searchTerm?: string;
     selectedOrg?: string = '';
     selectedOrgAlt?: string;
@@ -30,10 +30,10 @@ export class SearchSettingsElastic {
     filterDatatype?: any; // server-side, ElasticCondition
     fullRecord?: boolean;
     includeAggregations?: boolean;
-    meshTree?: string = '';
-    page?: number = 1;
+    meshTree = '';
+    page = 1;
     q?: string;
-    resultPerPage?: number = 20;
+    resultPerPage = 20;
     searchTerm?: string;
     searchToken?: string;
     selectedDatatypes: DataType[] = [];

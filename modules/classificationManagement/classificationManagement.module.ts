@@ -1,9 +1,9 @@
-import { CommonModule } from "@angular/common";
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
-import { FormsModule } from "@angular/forms";
-import { RouterModule, Routes } from "@angular/router";
+import { CommonModule } from '@angular/common';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { RouterModule, Routes } from '@angular/router';
 import { TreeModule } from 'angular-tree-component';
-import "angular-tree-component/dist/angular-tree-component.css";
+import 'angular-tree-component/dist/angular-tree-component.css';
 
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
 

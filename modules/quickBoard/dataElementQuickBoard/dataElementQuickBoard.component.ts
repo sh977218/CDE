@@ -1,10 +1,10 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit } from '@angular/core';
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { ExportService } from 'non-core/export.service';
 
 @Component({
-    selector: "cde-data-element-quick-board",
-    templateUrl: "dataElementQuickBoard.component.html"
+    selector: 'cde-data-element-quick-board',
+    templateUrl: 'dataElementQuickBoard.component.html'
 })
 export class DataElementQuickBoardComponent {
     listViews = {};
