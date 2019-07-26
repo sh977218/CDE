@@ -41,7 +41,7 @@ export function fetchWholeForm(form, callback) {
                 cb(undefined, {skip: true});
                 return;
             }
-            mongo_form.byTinyIdAndVersion(f.inForm.form.tinyId, f.inForm.form.version, function (err, result) {
+            mongo_form.byTinyIdAndVersion(f.inForm.form.tinyId, f.inForm.form.version, function(err, result) {
                 if (err) {
                     cb('Retrieving form tinyId: ' + f.inForm.form.tinyId + ' version: ' + f.inForm.form.version
                         + ' has error: ' + err);
@@ -93,7 +93,7 @@ function wipeRenderDisallowed(form, user) {
 }
 
 export function byId(req, res) {
-    let id = req.params.id;
+    const id = req.params.id;
     mongo_form.byId(id, handle40x({req, res}, form => {
         fetchWholeForm(form.toObject(), handleError({req, res}, wholeForm => {
             wipeRenderDisallowed(wholeForm, req.user);
@@ -109,10 +109,7 @@ export function byId(req, res) {
                         form: wholeForm,
                         renderer: req.query.renderer,
                         validate: req.query.validate
-                    }, (err, sdcForm) => {
-                        if (err) return res.send(err);
-                        return res.send(sdcForm);
-                    });
+                    }, handleError({req, res}, sdcForm => res.send(sdcForm)));
                 } else {
                     nih.getFormNih(wholeForm, handleError({req, res}, xmlForm => res.send(xmlForm)));
                 }
@@ -120,7 +117,7 @@ export function byId(req, res) {
                 if (req.query.subtype === 'fhirQuestionnaire') {
                     addFormIds(wholeForm);
                     if (req.query.hasOwnProperty('validate')) {
-                        let p = path.resolve(__dirname, '../../shared/mapping/fhir/assets/schema/Questionnaire.schema.json');
+                        const p = path.resolve(__dirname, '../../shared/mapping/fhir/assets/schema/Questionnaire.schema.json');
                         fs.readFile(p, (err, data) => {
                             if (err || !data) {
                                 return respondError(err, {
@@ -128,8 +125,7 @@ export function byId(req, res) {
                                     publicMessage: 'schema missing',
                                 });
                             }
-                            let result = ajv.validate(JSON.parse(data),
-                                formToQuestionnaire(wholeForm, null, config));
+                            const result = ajv.validate(JSON.parse(data), formToQuestionnaire(wholeForm, null, config));
                             res.send({valid: result, errors: ajv.errors});
                         });
                     } else {
@@ -146,10 +142,9 @@ export function byId(req, res) {
 }
 
 export function priorForms(req, res) {
-    let id = req.params.id;
-    if (!id || id.length !== 24) return res.status(400).send();
+    const id = req.params.id;
     mongo_form.byId(id, handle40x({req, res}, form => {
-        let history = form.history.concat([form._id]).reverse();
+        const history = form.history.concat([form._id]).reverse();
         mongo_form.Form.find({}, {'updatedBy.username': 1, updated: 1, changeNote: 1, version: 1, elementType: 1})
             .where('_id').in(history).exec((err, priorForms) => {
             mongo_data.sortArrayByArray(priorForms, history);
@@ -160,8 +155,7 @@ export function priorForms(req, res) {
 
 export function byTinyId(req, res) {
     const handlerOptions = {req, res};
-    let tinyId = req.params.tinyId;
-    if (!tinyId) return res.status(400).send();
+    const tinyId = req.params.tinyId;
     mongo_form.byTinyId(tinyId, handle40x(handlerOptions, form => {
         fetchWholeForm(form.toObject(), handleError(handlerOptions, wholeForm => {
             wipeRenderDisallowed(wholeForm, req.user);
@@ -179,10 +173,7 @@ export function byTinyId(req, res) {
                             form: wholeForm,
                             renderer: req.query.renderer,
                             validate: req.query.validate
-                        }, (err, sdcForm) => {
-                            if (err) return res.send(err);
-                            return res.send(sdcForm);
-                        });
+                        }, handleError({req, res}, sdcForm => res.send(sdcForm)));
                         break;
                     default:
                         nih.getFormNih(wholeForm, handleError(handlerOptions, xmlForm => res.send(xmlForm)));
@@ -195,22 +186,8 @@ export function byTinyId(req, res) {
     }));
 }
 
-export function byTinyIdVersion(req, res) {
-    let tinyId = req.params.tinyId;
-    if (!tinyId) return res.status(400).send();
-    let version = req.params.version;
-    mongo_form.byTinyIdVersion(tinyId, version, handle40x({req, res}, form => {
-        fetchWholeForm(form.toObject(), handleError({req, res}, wholeForm => {
-            wipeRenderDisallowed(wholeForm, req.user);
-            res.send(wholeForm);
-        }));
-    }));
-}
-
 export function byTinyIdAndVersion(req, res) {
-    let tinyId = req.params.tinyId;
-    if (!tinyId) return res.status(400).send();
-    let version = req.params.version;
+    const {tinyId, version} = req.params;
     mongo_form.byTinyIdAndVersion(tinyId, version, handle40x({req, res}, form => {
         fetchWholeForm(form.toObject(), handleError({req, res}, wholeForm => {
             wipeRenderDisallowed(wholeForm, req.user);
@@ -221,8 +198,7 @@ export function byTinyIdAndVersion(req, res) {
 
 export function draftForEditByTinyId(req, res) { // WORKAROUND: sends empty instead of 404 to not cause angular to litter console
     const handlerOptions = {req, res};
-    let tinyId = req.params.tinyId;
-    if (!tinyId) return res.status(400).send();
+    const tinyId = req.params.tinyId;
     mongo_form.byTinyId(tinyId, handleError({req, res}, elt => {
         if (!canEditCuratedItem(req.user, elt)) {
             res.send();
@@ -248,20 +224,20 @@ export function draftForEditByTinyId(req, res) { // WORKAROUND: sends empty inst
     }));
 }
 
-export function draftForEditById(req, res) {
-    const handlerOptions = {req, res};
-    let id = req.params.id;
-    if (!id || id.length !== 24) return res.status(400).send();
-    mongo_form.draftById(id, handleError(handlerOptions, form => {
-        if (!form) return res.send();
-        fetchWholeFormOutdated(form.toObject(), handleError(handlerOptions, wholeForm => res.send(wholeForm)));
-    }));
-}
+// export function draftForEditById(req, res) {
+//     const handlerOptions = {req, res};
+//     const id = req.params.id;
+//     if (!id || id.length !== 24) { return res.status(400).send(); }
+//     mongo_form.draftById(id, handleError(handlerOptions, form => {
+//         if (!form) { return res.send(); }
+//         fetchWholeFormOutdated(form.toObject(), handleError(handlerOptions, wholeForm => res.send(wholeForm)));
+//     }));
+// }
 
 export function forEditById(req, res) {
     const handlerOptions = {req, res};
-    let id = req.params.id;
-    if (!id || id.length !== 24) return res.status(400).send();
+    const id = req.params.id;
+    if (!id || id.length !== 24) { return res.status(400).send(); }
     mongo_form.byId(id, handle40x(handlerOptions, form => {
         fetchWholeFormOutdated(form.toObject(), handleError(handlerOptions, wholeForm => {
             wipeRenderDisallowed(wholeForm, req.user);
@@ -273,8 +249,8 @@ export function forEditById(req, res) {
 
 export function forEditByTinyId(req, res) {
     const handlerOptions = {req, res};
-    let tinyId = req.params.tinyId;
-    if (!tinyId) return res.status(400).send();
+    const tinyId = req.params.tinyId;
+    if (!tinyId) { return res.status(400).send(); }
     mongo_form.byTinyId(tinyId, handle40x(handlerOptions, form => {
         fetchWholeFormOutdated(form.toObject(), handleError(handlerOptions, wholeForm => {
             wipeRenderDisallowed(wholeForm, req.user);
@@ -286,9 +262,9 @@ export function forEditByTinyId(req, res) {
 
 export function forEditByTinyIdAndVersion(req, res) {
     const handlerOptions = {req, res};
-    let tinyId = req.params.tinyId;
-    if (!tinyId) return res.status(400).send();
-    let version = req.params.version;
+    const tinyId = req.params.tinyId;
+    if (!tinyId) { return res.status(400).send(); }
+    const version = req.params.version;
     mongo_form.byTinyIdAndVersion(tinyId, version, handle40x(handlerOptions, form => {
         fetchWholeFormOutdated(form.toObject(), handleError(handlerOptions, wholeForm => {
             wipeRenderDisallowed(wholeForm, req.user);
@@ -298,8 +274,8 @@ export function forEditByTinyIdAndVersion(req, res) {
 }
 
 export function draftSave(req, res) {
-    let elt = req.body;
-    let tinyId = req.params.tinyId;
+    const elt = req.body;
+    const tinyId = req.params.tinyId;
     if (!elt || !tinyId || elt.tinyId !== tinyId || elt._id !== req.item._id.toString()) {
         return res.status(400).send();
     }
@@ -313,14 +289,13 @@ export function draftSave(req, res) {
 }
 
 export function draftDelete(req, res) {
-    let tinyId = req.params.tinyId;
-    if (!tinyId) return res.status(400).send();
+    const tinyId = req.params.tinyId;
     mongo_form.draftDelete(tinyId, handleError({req, res}, () => res.send()));
 }
 
 export function byTinyIdList(req, res) {
     let tinyIdList = req.params.tinyIdList;
-    if (!tinyIdList) return res.status(400).send();
+    if (!tinyIdList) { return res.status(400).send(); }
     tinyIdList = tinyIdList.split(',');
     mongo_form.byTinyIdList(tinyIdList, handleError({req, res}, forms => {
         res.send(forms.map(mongo_data.formatElt));
@@ -328,15 +303,14 @@ export function byTinyIdList(req, res) {
 }
 
 export function latestVersionByTinyId(req, res) {
-    let tinyId = req.params.tinyId;
-    if (!tinyId) return res.status(400).send();
+    const tinyId = req.params.tinyId;
     mongo_form.latestVersionByTinyId(tinyId, handleError({req, res}, latestVersion => {
         res.send(latestVersion);
     }));
 }
 
 export function publishFormToHtml(req, res) {
-    if (!req.params.id || req.params.id.length !== 24) return res.status(400).send();
+    if (!req.params.id || req.params.id.length !== 24) { return res.status(400).send(); }
     mongo_form.byId(req.params.id, handle40x({req, res}, form => {
         fetchWholeForm(form.toObject(), handleError({
             req, res, message: 'Fetch whole for publish'
@@ -347,9 +321,9 @@ export function publishFormToHtml(req, res) {
 }
 
 export function create(req, res) {
-    let elt = req.body;
-    let user = req.user;
-    if (!elt.stewardOrg || !elt.stewardOrg.name) return res.status(400).send();
+    const elt = req.body;
+    const user = req.user;
+    if (!elt.stewardOrg || !elt.stewardOrg.name) { return res.status(400).send(); }
     mongo_form.create(elt, user, handleError({req, res}, dataElement => res.send(dataElement)));
 }
 
@@ -394,8 +368,8 @@ export function publishExternal(req, res) {
 }
 
 export function originalSourceByTinyIdSourceName(req, res) {
-    let tinyId = req.params.tinyId;
-    let sourceName = req.params.sourceName;
+    const tinyId = req.params.tinyId;
+    const sourceName = req.params.sourceName;
     mongo_form.originalSourceByTinyIdSourceName(tinyId, sourceName, handle40x({req, res}, originalSource => {
         res.send(originalSource);
     }));
@@ -404,7 +378,7 @@ export function originalSourceByTinyIdSourceName(req, res) {
 export let syncLinkedFormsProgress: any = {done: 0, total: 0};
 
 async function extractedSyncLinkedForms(cde) {
-    let esResult = await elastic.esClient.search({
+    const esResult = await elastic.esClient.search({
         index: config.elastic.formIndex.name,
         q: cde.tinyId,
         size: 200
@@ -441,7 +415,7 @@ async function extractedSyncLinkedForms(cde) {
         index: config.elastic.index.name,
         type: 'dataelement',
         id: cde.tinyId,
-        body: {doc: {linkedForms: linkedForms}}
+        body: {doc: {linkedForms}}
     });
     syncLinkedFormsProgress.done++;
     return new Promise(resolve => resolve());
@@ -456,7 +430,7 @@ export function syncLinkedFormsByTinyId(tinyId) {
 }
 
 export async function syncLinkedForms() {
-    let t0 = Date.now();
+    const t0 = Date.now();
     syncLinkedFormsProgress = {done: 0, total: 0};
     const cdeCursor = mongo_cde.getStream({archived: false});
     syncLinkedFormsProgress.total = await mongo_cde.count({archived: false});

@@ -50,15 +50,15 @@ function allRequestsProcessing(req, res, next) {
 export function init(app, daoManager) {
     daoManager.registerDao(mongo_form);
 
-    app.get('/form/search', function (req, res) {
-        let selectedOrg = req.query.selectedOrg;
+    app.get('/form/search', function(req, res) {
+        const selectedOrg = req.query.selectedOrg;
         let pageString = req.query.page; // starting from 1
-        if (!pageString) pageString = '1';
+        if (!pageString) { pageString = '1'; }
         if (isSearchEngine(req)) {
             if (selectedOrg) {
-                let pageNum = toInteger(pageString);
-                let pageSize = 20;
-                let cond = {
+                const pageNum = toInteger(pageString);
+                const pageSize = 20;
+                const cond = {
                     'classification.stewardOrg.name': selectedOrg,
                     archived: false,
                     'registrationState.registrationStatus': 'Qualified'
@@ -83,11 +83,11 @@ export function init(app, daoManager) {
                                 });
                             } else {
                                 let totalPages = totalCount / pageSize;
-                                if (totalPages % 1 > 0) totalPages = totalPages + 1;
+                                if (totalPages % 1 > 0) { totalPages = totalPages + 1; }
                                 res.render('bot/formSearchOrg', 'system', {
-                                    forms: forms,
-                                    totalPages: totalPages,
-                                    selectedOrg: selectedOrg
+                                    forms,
+                                    totalPages,
+                                    selectedOrg
                                 });
                             }
                         });
@@ -123,17 +123,17 @@ export function init(app, daoManager) {
     app.put('/draftForm/:tinyId', canEditMiddlewareForm, formSvc.draftSave);
     app.delete('/draftForm/:tinyId', canEditByTinyIdMiddlewareForm, formSvc.draftDelete);
 
-    app.get('/draftFormById/:id', formSvc.draftForEditById);
+    // app.get('/draftFormById/:id', formSvc.draftForEditById);
 
     app.post('/form/publish/:id', loggedInMiddleware, formSvc.publishFormToHtml);
 
-    app.get('/viewingHistory/form', [loggedInMiddleware, nocacheMiddleware], function (req, res) {
-        let splicedArray = req.user.formViewHistory.splice(0, 10);
-        let idList = [];
+    app.get('/viewingHistory/form', [loggedInMiddleware, nocacheMiddleware], function(req, res) {
+        const splicedArray = req.user.formViewHistory.splice(0, 10);
+        const idList = [];
         for (let i = 0; i < splicedArray.length; i++) {
-            if (idList.indexOf(splicedArray[i]) === -1) idList.push(splicedArray[i]);
+            if (idList.indexOf(splicedArray[i]) === -1) { idList.push(splicedArray[i]); }
         }
-        mongo_form.byTinyIdListInOrder(idList, function (err, forms) {
+        mongo_form.byTinyIdListInOrder(idList, function(err, forms) {
             res.send(forms);
         });
     });
@@ -142,8 +142,8 @@ export function init(app, daoManager) {
 
     app.post('/elasticSearch/form', (req, res) => {
         const query = sharedElastic.buildElasticSearchQuery(req.user, req.body);
-        if (query.size > 100) return res.status(422).send('Too many results requested. (max 100)');
-        if ((query.from + query.size) > 10000) return res.status(422).send('Exceeded pagination limit (10,000)');
+        if (query.size > 100) { return res.status(422).send('Too many results requested. (max 100)'); }
+        if ((query.from + query.size) > 10000) { return res.status(422).send('Exceeded pagination limit (10,000)'); }
         if (!req.body.fullRecord) {
             query._source = {excludes: ['flatProperties', 'properties', 'classification.elements', 'formElements']};
         }
@@ -153,7 +153,7 @@ export function init(app, daoManager) {
     });
 
     app.post('/scrollExport/form', (req, res) => {
-        let query = sharedElastic.buildElasticSearchQuery(req.user, req.body);
+        const query = sharedElastic.buildElasticSearchQuery(req.user, req.body);
         elastic_system.scrollExport(query, 'form', handle40x({res, statusCode: 400}, response => res.send(response)));
     });
 
@@ -166,16 +166,16 @@ export function init(app, daoManager) {
     });
 
     app.post('/elasticSearchExport/form', (req, res) => {
-        let query = sharedElastic.buildElasticSearchQuery(req.user, req.body);
-        let exporters = {
+        const query = sharedElastic.buildElasticSearchQuery(req.user, req.body);
+        const exporters = {
             json: {
-                export: function (res) {
+                export(res) {
                     let firstElt = true;
                     res.type('application/json');
                     res.write('[');
                     elastic_system.elasticSearchExport(handleError({req, res}, elt => {
                         if (elt) {
-                            if (!firstElt) res.write(',');
+                            if (!firstElt) { res.write(','); }
                             elt = stripBsonIds(elt);
                             elt = elastic_system.removeElasticFields(elt);
                             res.write(JSON.stringify(elt));
@@ -192,9 +192,9 @@ export function init(app, daoManager) {
     });
 
 
-    app.get('/formView', function (req, res) {
-        let tinyId = req.query.tinyId;
-        let version = req.query.version;
+    app.get('/formView', function(req, res) {
+        const tinyId = req.query.tinyId;
+        const version = req.query.version;
         formByTinyIdVersion(tinyId, version, handleError({req, res}, cde => {
             if (isSearchEngine(req)) {
                 res.render('bot/formView', 'system', {elt: cde});
@@ -205,7 +205,7 @@ export function init(app, daoManager) {
     });
 
     app.post('/formCompletion/:term', nocacheMiddleware, (req, res) => {
-        let term = req.params.term;
+        const term = req.params.term;
         elastic_system.completionSuggest(term, req.user, req.body, config.elastic.formSuggestIndex.name, resp => {
             resp.hits.hits.forEach(r => r._index = undefined);
             res.send(resp.hits.hits);
@@ -213,8 +213,8 @@ export function init(app, daoManager) {
     });
 
     // This is for tests only
-    app.post('/sendMockFormData', function (req, res) {
-        let mapping = JSON.parse(req.body.mapping);
+    app.post('/sendMockFormData', function(req, res) {
+        const mapping = JSON.parse(req.body.mapping);
         if (req.body['0-0'] === '1' && req.body['0-1'] === '2'
             && req.body['0-2'] === 'Lab Name'
             && req.body['0-3'] === 'FEMALE'
@@ -233,17 +233,17 @@ export function init(app, daoManager) {
             && mapping.sections[0].questions[3].name === '0-3'
             && mapping.sections[0].questions[3].tinyId === 'JWWpC2baVwK'
         ) {
-            if (req.body.formUrl.indexOf(config.publicUrl + '/data') === 0) res.send('<html lang="en"><body>Form Submitted</body></html>'); else if (config.publicUrl.indexOf('localhost') === -1) {
+            if (req.body.formUrl.indexOf(config.publicUrl + '/data') === 0) { res.send('<html lang="en"><body>Form Submitted</body></html>'); } else if (config.publicUrl.indexOf('localhost') === -1) {
                 dns.lookup(/\/\/.*:/.exec(req.body.formUrl), (err, result) => {
-                    if (!err && req.body.formUrl.indexOf(result + '/data') === 0) res.send('<html lang="en"><body>Form Submitted</body></html>'); else res.status(401).send('<html lang="en"><body>Not the right input</body></html>');
+                    if (!err && req.body.formUrl.indexOf(result + '/data') === 0) { res.send('<html lang="en"><body>Form Submitted</body></html>'); } else { res.status(401).send('<html lang="en"><body>Not the right input</body></html>'); }
                 });
             } else {
-                let ifaces = os.networkInterfaces();
+                const ifaces = os.networkInterfaces();
                 if (Object.keys(ifaces).some(ifname => {
                         return ifaces[ifname].filter(iface => {
                             return req.body.formUrl.indexOf(iface.address + '/data') !== 1;
                         }).length > 0;
-                    })) res.send('<html lang="en"><body>Form Submitted</body></html>');
+                    })) { res.send('<html lang="en"><body>Form Submitted</body></html>'); }
                 else {
                     res.status(401).send('<html lang="en"><body>Not the right input. Actual Input: <p>' + '</p></body></html>');
                 }
@@ -256,10 +256,10 @@ export function init(app, daoManager) {
     app.get('/schema/form', (req, res) => res.send(mongo_form.Form.jsonSchema()));
 
     app.get('/ucumConvert', (req, res) => {
-        let value = req.query.value === '0' ? 1e-20 : parseFloat(req.query.value); // 0 workaround
-        let result = ucum.convertUnitTo(req.query.from, value, req.query.to);
+        const value = req.query.value === '0' ? 1e-20 : parseFloat(req.query.value); // 0 workaround
+        const result = ucum.convertUnitTo(req.query.from, value, req.query.to);
         if (result.status === 'succeeded') {
-            let ret = Math.abs(result.toVal) < 1 ? _.round(result.toVal, 10) : result.toVal; // 0 workaround
+            const ret = Math.abs(result.toVal) < 1 ? _.round(result.toVal, 10) : result.toVal; // 0 workaround
             res.send('' + ret);
         } else {
             res.send('');
@@ -269,25 +269,25 @@ export function init(app, daoManager) {
     // cb(error, uom)
     function validateUom(uom, cb) {
         let error;
-        let validation = ucum.validateUnitString(uom, true);
+        const validation = ucum.validateUnitString(uom, true);
         if (validation.status === 'valid') {
             return cb(undefined, uom);
         }
 
         if (validation.suggestions && validation.suggestions.length) {
-            let suggestions = [];
+            const suggestions = [];
             validation.suggestions.forEach(s => s.units.forEach(u => u.name === uom ? suggestions.push(u.code) : null));
             if (suggestions.length) {
                 return cb(undefined, suggestions[0]);
             }
 
             if (validation.suggestions[0].units.length) {
-                let suggestion = validation.suggestions[0].units[0];
+                const suggestion = validation.suggestions[0].units[0];
                 error = 'Unit is not found. Did you mean ' + suggestion[0] + ' (' + suggestion[1] + ')?';
             }
         } else {
-            let suggestions = [];
-            let synonyms = ucum.checkSynonyms(uom);
+            const suggestions = [];
+            const synonyms = ucum.checkSynonyms(uom);
             if (synonyms.status === 'succeeded' && synonyms.units.length) {
                 synonyms.units.forEach(u => u.name === uom ? suggestions.push(u.code) : null);
                 if (suggestions.length) {
@@ -304,19 +304,19 @@ export function init(app, daoManager) {
     }
 
     app.get('/ucumSynonyms', (req, res) => {
-        let uom = req.query.uom;
+        const uom = req.query.uom;
         if (!uom || typeof uom !== 'string') {
             return res.sendStatus(400);
         }
 
-        let resp = ucum.getSpecifiedUnit(uom, 'validate', 'false');
+        const resp = ucum.getSpecifiedUnit(uom, 'validate', 'false');
         if (!resp || !resp.unit) {
             return res.send([]);
         }
 
-        let unit = resp.unit;
-        let name = unit.name_;
-        let synonyms = unit.synonyms_.split('; ');
+        const unit = resp.unit;
+        const name = unit.name_;
+        const synonyms = unit.synonyms_.split('; ');
         if (synonyms.length && synonyms[synonyms.length - 1] === '') {
             synonyms.length--;
         }
@@ -324,11 +324,11 @@ export function init(app, daoManager) {
     });
 
     app.get('/ucumNames', (req, res) => {
-        let uom = req.query.uom;
-        if (!uom || typeof uom !== 'string') return res.sendStatus(400);
+        const uom = req.query.uom;
+        if (!uom || typeof uom !== 'string') { return res.sendStatus(400); }
 
-        let resp = ucum.getSpecifiedUnit(uom, 'validate', true);
-        if (!resp || !resp.unit) return res.send([]);
+        const resp = ucum.getSpecifiedUnit(uom, 'validate', true);
+        if (!resp || !resp.unit) { return res.send([]); }
         else {
             res.send([{
                 name: resp.unit.name_,
@@ -339,13 +339,13 @@ export function init(app, daoManager) {
     });
 
     app.get('/ucumValidate', (req, res) => {
-        let uoms = JSON.parse(req.query.uoms);
+        const uoms = JSON.parse(req.query.uoms);
         if (!Array.isArray(uoms)) {
             return res.sendStatus(400);
         }
 
-        let errors = [];
-        let units = [];
+        const errors = [];
+        const units = [];
         uoms.forEach((uom, i) => {
             validateUom(uom, (error, u) => {
                 errors[i] = error;
@@ -355,13 +355,13 @@ export function init(app, daoManager) {
                 }
             });
             if (i > 0 && !errors[0] && !errors[i]) {
-                let result = ucum.convertUnitTo(units[i], 1, units[0], true);
+                const result = ucum.convertUnitTo(units[i], 1, units[0], true);
                 if (result.status !== 'succeeded') {
                     errors[i] = 'Unit not compatible with first unit.' + (result.msg.length ? ' ' + result.msg[0] : '');
                 }
             }
         });
-        res.send({errors: errors, units: units});
+        res.send({errors, units});
     });
 
     app.post('/syncLinkedForms', (req, res) => {
