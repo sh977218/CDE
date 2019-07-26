@@ -4,11 +4,11 @@ import { cdePassingRule, getStatusRules, RegistrationValidatorService } from 'no
 import { DataElement } from 'shared/de/dataElement.model';
 import { StatusValidationRules, StatusValidationRulesByOrgReg } from 'shared/models.model';
 
-type RuleResult = {
-    name: string,
-    result?: string,
-    resultPromise: Promise<string>
-};
+interface RuleResult {
+    name: string;
+    result?: string;
+    resultPromise: Promise<string>;
+}
 type RuleResultByOrg = Dictionary<RuleResult[]>;
 type RuleResultByOrgReg = Dictionary<RuleResultByOrg>;
 
@@ -22,10 +22,10 @@ export class ValidRulesComponent {
         this._elt = elt;
         this.cdeStatusRules = getStatusRules(this.registrationValidatorService.getOrgRulesForCde(this.elt));
         this.results = {};
-        for (let regStatus in this.cdeStatusRules) {
+        for (const regStatus in this.cdeStatusRules) {
             const resultReg = this.results[regStatus] = {};
-            for (let orgName in this.cdeStatusRules[regStatus]) {
-                resultReg[orgName] = this.cdeStatusRules[regStatus][orgName].map((rule:  StatusValidationRules) => {
+            for (const orgName in this.cdeStatusRules[regStatus]) {
+                resultReg[orgName] = this.cdeStatusRules[regStatus][orgName].map((rule: StatusValidationRules) => {
                     const result = {
                         name: rule.ruleName,
                         result: undefined,

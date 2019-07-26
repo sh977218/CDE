@@ -9,21 +9,21 @@ import { MatTabChangeEvent } from '@angular/material';
     templateUrl: './quickBoard.component.html',
 })
 export class QuickBoardComponent {
-    defaultQuickBoard: string = 'dataElementQuickBoard';
+    defaultQuickBoard = 'dataElementQuickBoard';
 
     constructor(private localStorageService: LocalStorageService,
                 public exportService: ExportService,
                 public quickBoardService: QuickBoardListService) {
-        let defaultQb = <string>  this.localStorageService.get('defaultQuickBoard');
+        const defaultQb = this.localStorageService.get('defaultQuickBoard') as string;
         if (defaultQb === 'form') {
-            this.defaultQuickBoard = "formQuickBoard";
+            this.defaultQuickBoard = 'formQuickBoard';
         }
         this.quickBoardService.loadElements();
     }
 
     tabChange(event: MatTabChangeEvent) {
-        if (event.tab.textLabel.startsWith("Form")) this.defaultQuickBoard = 'formQuickBoard';
-        if (event.tab.textLabel.startsWith("CDE")) this.defaultQuickBoard = 'dataElementQuickBoard';
+        if (event.tab.textLabel.startsWith('Form')) { this.defaultQuickBoard = 'formQuickBoard'; }
+        if (event.tab.textLabel.startsWith('CDE')) { this.defaultQuickBoard = 'dataElementQuickBoard'; }
 
         this.quickBoardService.setDefaultQuickBoard(event);
     }

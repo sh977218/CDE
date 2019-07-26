@@ -6,7 +6,7 @@ import {
     MatButtonModule, MatCardModule, MatCheckboxModule, MatChipsModule, MatDialogModule,
     MatExpansionModule, MatGridListModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule,
     MatSliderModule, MatTabsModule, MatTooltipModule, MatAutocompleteModule
-} from "@angular/material";
+} from '@angular/material';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { TreeModule } from 'angular-tree-component';
 import 'angular-tree-component/dist/angular-tree-component.css';

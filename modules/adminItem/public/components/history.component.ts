@@ -34,10 +34,10 @@ function createHistory(elt: DataElement | CdeForm): History {
 })
 export class HistoryComponent {
     private _elt?: Item;
-    @Input() canEdit: boolean = false;
+    @Input() canEdit = false;
     @Input() set elt(elt: Item) {
         this._elt = elt;
-        let url = ITEM_MAP[this.elt.elementType].apiById + this.elt._id + ITEM_MAP[this.elt.elementType].apiById_prior;
+        const url = ITEM_MAP[this.elt.elementType].apiById + this.elt._id + ITEM_MAP[this.elt.elementType].apiById_prior;
         this.http.get<History[]>(url).subscribe(res => {
             this.priorElements = res;
             this.priorElements.forEach(pe => {
@@ -52,9 +52,9 @@ export class HistoryComponent {
     get elt() {
         return this._elt;
     }
-    showVersioned: boolean = false;
+    showVersioned = false;
     priorElements: History[];
-    numberSelected: number = 0;
+    numberSelected = 0;
 
     constructor(private dialog: MatDialog,
                 private alert: AlertService,
@@ -62,7 +62,7 @@ export class HistoryComponent {
     }
 
     selectRow(index) {
-        let priorElt = this.priorElements[index];
+        const priorElt = this.priorElements[index];
         if (this.numberSelected === 2 && !priorElt.selected) {
             priorElt.selected = false;
         } else if (this.numberSelected === 2 && priorElt.selected) {
@@ -70,14 +70,13 @@ export class HistoryComponent {
             this.numberSelected--;
         } else {
             priorElt.selected = !priorElt.selected;
-            if (priorElt.selected) this.numberSelected++;
-            else this.numberSelected--;
+            if (priorElt.selected) { this.numberSelected++; } else { this.numberSelected--; }
         }
     }
 
     openHistoryCompareModal() {
         Promise.all(this.priorElements.filter(pe => pe.selected && !pe.tinyId).map(priorElt => {
-            let url = ITEM_MAP[priorElt.elementType][priorElt.isDraft ? 'apiDraftById' : 'apiById'] + priorElt._id;
+            const url = ITEM_MAP[priorElt.elementType][priorElt.isDraft ? 'apiDraftById' : 'apiById'] + priorElt._id;
             return this.http.get<History>(url).toPromise().then(res => {
                 res.url = ITEM_MAP[res.elementType].viewById + res._id;
                 res.selected = true;
@@ -85,11 +84,11 @@ export class HistoryComponent {
             });
         })).then(() => {
             const twoSelected = this.priorElements.filter(p => p.selected);
-            let data = {
+            const data = {
                 newer: twoSelected[0],
                 older: twoSelected[1]
             };
-            this.dialog.open(CompareHistoryContentComponent, {width: '800px', data: data});
+            this.dialog.open(CompareHistoryContentComponent, {width: '800px', data});
         }, err => this.alert.addAlert('danger', 'Error open history compare modal.' + err));
     }
 }

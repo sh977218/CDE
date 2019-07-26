@@ -43,25 +43,25 @@ export class EmbedComponent implements OnInit {
     }
 
     addCdeClassification() {
-        if (!this.selection!.cde!.classifications) this.selection!.cde!.classifications = [];
+        if (!this.selection!.cde!.classifications) { this.selection!.cde!.classifications = []; }
         this.selection!.cde!.classifications!.push({exclude: '', label: '', startsWith: ''});
     }
 
     addCdeId() {
-        if (!this.selection!.cde!.ids) this.selection!.cde!.ids = [];
+        if (!this.selection!.cde!.ids) { this.selection!.cde!.ids = []; }
         this.selection!.cde!.ids!.push({source: '', idLabel: 'Id', versionLabel: ''});
     }
 
     addCdeName() {
-        if (!this.selection!.cde!.otherNames) this.selection!.cde!.otherNames = [];
+        if (!this.selection!.cde!.otherNames) { this.selection!.cde!.otherNames = []; }
         this.selection!.cde!.otherNames!.push({contextName: '', label: ''});
     }
 
     addEmbed(org: string) {
-        if (!this.embeds[org]) this.embeds[org] = [];
+        if (!this.embeds[org]) { this.embeds[org] = []; }
 
-        let embed: Embed = {
-            org: org,
+        const embed: Embed = {
+            org,
             width: 1000,
             height: 900,
             cde: addEmbedItem(),
@@ -113,7 +113,7 @@ export class EmbedComponent implements OnInit {
 
     save() {
         this.http.post<Embed>('/embed', this.selection).subscribe(response => {
-            if (!this.selection!._id) this.selection!._id = response._id;
+            if (!this.selection!._id) { this.selection!._id = response._id; }
             this.selection = undefined;
             this.previewOn = false;
             this.alert.addAlert('success', 'Saved.');

@@ -13,7 +13,7 @@ export class MergeFormComponent {
     @Input() public right: any;
     @Output() doneMerging = new EventEmitter();
     @ViewChild('mergeFormContent') public mergeFormContent: TemplateRef<any>;
-    doneMerge: boolean = false;
+    doneMerge = false;
     maxNumberQuestions: any;
     mergeFields: any = {
         designations: true,
@@ -38,7 +38,7 @@ export class MergeFormComponent {
         }
     };
     numMergedQuestions: any;
-    showProgressBar: boolean = false;
+    showProgressBar = false;
 
     constructor(private alert: AlertService,
                 public isAllowedModel: IsAllowedService,
@@ -76,17 +76,17 @@ export class MergeFormComponent {
             this.numMergedQuestions = index;
             next();
         }, err => {
-            if (err) return this.alert.addAlert('danger', "Unexpected error merging forms");
+            if (err) { return this.alert.addAlert('danger', 'Unexpected error merging forms'); }
             else {
                 if (this.mergeFormService.error.ownSourceForm) {
                     this.left.changeNote = 'Merge to tinyId ' + this.right.tinyId;
-                    if (this.isAllowedModel.isAllowed(this.left)) this.left.registrationState.registrationStatus = 'Retired';
+                    if (this.isAllowedModel.isAllowed(this.left)) { this.left.registrationState.registrationStatus = 'Retired'; }
                     this.mergeFormService.saveForm(this.left, err => {
-                        if (err) this.alert.addAlert('danger', 'Can not save source form.');
+                        if (err) { this.alert.addAlert('danger', 'Can not save source form.'); }
                         else {
                             this.right.changeNote = 'Merge from tinyId ' + this.left.tinyId;
                             this.mergeFormService.saveForm(this.right, err => {
-                                if (err) this.alert.addAlert('danger', 'Can not save target form.');
+                                if (err) { this.alert.addAlert('danger', 'Can not save target form.'); }
                                 else {
                                     this.doneMerge = true;
                                     this.alert.addAlert('success', 'Form merged');
@@ -101,7 +101,7 @@ export class MergeFormComponent {
                 } else {
                     this.right.changeNote = 'Merge from tinyId ' + this.left.tinyId;
                     this.mergeFormService.saveForm(this.right, err => {
-                        if (err) this.alert.addAlert('danger', 'Cannot save target form.');
+                        if (err) { this.alert.addAlert('danger', 'Cannot save target form.'); }
                         else {
                             this.doneMerge = true;
                             this.alert.addAlert('success', 'Form merged');

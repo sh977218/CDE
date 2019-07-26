@@ -57,8 +57,8 @@ export class CompareSideBySideComponent {
     rightUrl;
     left;
     right;
-    canMergeForm: boolean = false;
-    canMergeDataElement: boolean = false;
+    canMergeForm = false;
+    canMergeDataElement = false;
 
     constructor(private alert: AlertService,
                 private http: HttpClient,
@@ -75,11 +75,11 @@ export class CompareSideBySideComponent {
     }
 
     doCompare(l, r, cb) {
-        let leftObservable = this.http.get(URL_MAP[l.elementType] + l.tinyId);
-        let rightObservable = this.http.get(URL_MAP[r.elementType] + r.tinyId);
+        const leftObservable = this.http.get(URL_MAP[l.elementType] + l.tinyId);
+        const rightObservable = this.http.get(URL_MAP[r.elementType] + r.tinyId);
         forkJoin([leftObservable, rightObservable]).subscribe(results => {
-            this.left = <any>results[0];
-            this.right = <any>results[1];
+            this.left = results[0] as any;
+            this.right = results[1] as any;
             if (this.left.elementType === 'form') {
                 this.left.questions = this.flatFormQuestions(this.left);
             }
@@ -90,14 +90,14 @@ export class CompareSideBySideComponent {
             this.options.forEach(option => {
                 let l = _get(this.left, option.displayAs.property);
                 let r = _get(this.right, option.displayAs.property);
-                if (!l) l = [];
-                if (!r) r = [];
-                if (typeof l !== 'object') l = [{data: l}];
-                if (!_isArray(l)) l = [l];
-                if (typeof r !== 'object') r = [{data: r}];
-                if (!_isArray(r)) r = [r];
+                if (!l) { l = []; }
+                if (!r) { r = []; }
+                if (typeof l !== 'object') { l = [{data: l}]; }
+                if (!_isArray(l)) { l = [l]; }
+                if (typeof r !== 'object') { r = [{data: r}]; }
+                if (!_isArray(r)) { r = [r]; }
                 _intersectionWith(l, r, (a, b) => {
-                    let fullMatchFnMatchDiff = option.fullMatchFn(a, b);
+                    const fullMatchFnMatchDiff = option.fullMatchFn(a, b);
                     if (fullMatchFnMatchDiff) {
                         option.displayAs.display = true;
                         option.fullMatches.push({left: a, right: b});
@@ -105,7 +105,7 @@ export class CompareSideBySideComponent {
                     }
                 });
                 _intersectionWith(l, r, (a, b) => {
-                    let partialMatchDiff = option.partialMatchFn(a, b);
+                    const partialMatchDiff = option.partialMatchFn(a, b);
                     if (partialMatchDiff.length > 0) {
                         option.displayAs.display = true;
                         option.partialMatches.push({left: a, right: b, diff: partialMatchDiff});
@@ -130,14 +130,14 @@ export class CompareSideBySideComponent {
                     delete e.formElements;
                     delete e._id;
                     questions.push(_cloneDeep(e));
-                } else questions = questions.concat(this.flatFormQuestions(e));
+                } else { questions = questions.concat(this.flatFormQuestions(e)); }
             });
         }
         return questions;
     }
 
     getOptions(left, right) {
-        let commonOption = [
+        const commonOption = [
             {
                 displayAs: {
                     label: 'Steward',
@@ -180,9 +180,9 @@ export class CompareSideBySideComponent {
                 },
                 fullMatches: [],
                 partialMatchFn: (a, b) => {
-                    let diff = [];
+                    const diff = [];
                     if (!_isEqual(a, b) && _isEqual(a.designation, b.designation)) {
-                        if (!_isEqual(a.tags, b.tags)) diff.push('tags');
+                        if (!_isEqual(a.tags, b.tags)) { diff.push('tags'); }
                     }
                     return diff;
                 },
@@ -207,9 +207,9 @@ export class CompareSideBySideComponent {
                 },
                 fullMatches: [],
                 partialMatchFn: (a, b) => {
-                    let diff = [];
+                    const diff = [];
                     if (!_isEqual(a, b) && _isEqual(a.definition, b.definition)) {
-                        if (!_isEqual(a.tags, b.tags)) diff.push('tags');
+                        if (!_isEqual(a.tags, b.tags)) { diff.push('tags'); }
                     }
                     return diff;
                 },
@@ -222,12 +222,12 @@ export class CompareSideBySideComponent {
             },
             {
                 displayAs: {
-                    label: "Identifiers",
-                    property: "ids",
+                    label: 'Identifiers',
+                    property: 'ids',
                     data: [
-                        {label: "Source", property: "source"},
-                        {label: "Id", property: "id"},
-                        {label: "Version", property: "version"}
+                        {label: 'Source', property: 'source'},
+                        {label: 'Id', property: 'id'},
+                        {label: 'Version', property: 'version'}
                     ]
                 },
                 fullMatchFn: (a, b) => {
@@ -235,10 +235,10 @@ export class CompareSideBySideComponent {
                 },
                 fullMatches: [],
                 partialMatchFn: (a, b) => {
-                    let diff = [];
+                    const diff = [];
                     if (!_isEqual(a, b) && _isEqual(a.source, b.source)) {
-                        if (!_isEqual(a.id, b.id)) diff.push("id");
-                        if (!_isEqual(a.version, b.version)) diff.push("version");
+                        if (!_isEqual(a.id, b.id)) { diff.push('id'); }
+                        if (!_isEqual(a.version, b.version)) { diff.push('version'); }
                     }
                     return diff;
                 },
@@ -263,13 +263,13 @@ export class CompareSideBySideComponent {
                 fullMatchFn: _isEqual,
                 fullMatches: [],
                 partialMatchFn: (a, b) => {
-                    let diff = [];
+                    const diff = [];
                     if (!_isEqual(a, b) && _isEqual(a.document, b.document)) {
-                        if (!_isEqual(a.title, b.title)) diff.push('title');
-                        if (!_isEqual(a.uri, b.uri)) diff.push('uri');
-                        if (!_isEqual(a.docType, b.docType)) diff.push('docType');
-                        if (!_isEqual(a.providerOrg, b.providerOrg)) diff.push('providerOrg');
-                        if (!_isEqual(a.languageCode, b.languageCode)) diff.push('languageCode');
+                        if (!_isEqual(a.title, b.title)) { diff.push('title'); }
+                        if (!_isEqual(a.uri, b.uri)) { diff.push('uri'); }
+                        if (!_isEqual(a.docType, b.docType)) { diff.push('docType'); }
+                        if (!_isEqual(a.providerOrg, b.providerOrg)) { diff.push('providerOrg'); }
+                        if (!_isEqual(a.languageCode, b.languageCode)) { diff.push('languageCode'); }
                     }
                     return diff;
                 },
@@ -294,10 +294,10 @@ export class CompareSideBySideComponent {
                 fullMatchFn: _isEqual,
                 fullMatches: [],
                 partialMatchFn: (a, b) => {
-                    let diff = [];
+                    const diff = [];
                     if (!_isEqual(a, b) && _isEqual(a.key, b.key)) {
-                        if (!_isEqual(a.value, b.value)) diff.push('value');
-                        if (!_isEqual(a.valueFormat, b.valueFormat)) diff.push('valueFormat');
+                        if (!_isEqual(a.value, b.value)) { diff.push('value'); }
+                        if (!_isEqual(a.valueFormat, b.valueFormat)) { diff.push('valueFormat'); }
                     }
                     return diff;
                 },
@@ -310,7 +310,7 @@ export class CompareSideBySideComponent {
             }
         ];
 
-        let dataElementOption = [
+        const dataElementOption = [
             {
                 displayAs: {
                     label: 'Data Element Concept',
@@ -560,7 +560,7 @@ export class CompareSideBySideComponent {
                 rightNotMatches: []
             }
         ];
-        let formOption = [
+        const formOption = [
             {
                 displayAs: {
                     label: 'Questions',
@@ -580,12 +580,12 @@ export class CompareSideBySideComponent {
                 fullMatchFn: _isEqual,
                 fullMatches: [],
                 partialMatchFn: (a, b) => {
-                    let diff = [];
+                    const diff = [];
                     if (!_isEqual(a, b) && _isEqual(a.question.cde.tinyId, b.question.cde.tinyId)) {
-                        if (!_isEqual(a.label, b.label)) diff.push('label');
-                        if (!_isEqual(a.question.datatype, b.question.datatype)) diff.push('question.datatype');
-                        if (!_isEqual(a.question.unitsOfMeasure, b.question.unitsOfMeasure)) diff.push('question.unitsOfMeasure');
-                        if (!_isEqual(a.question.answers, b.question.answers)) diff.push('question.answers');
+                        if (!_isEqual(a.label, b.label)) { diff.push('label'); }
+                        if (!_isEqual(a.question.datatype, b.question.datatype)) { diff.push('question.datatype'); }
+                        if (!_isEqual(a.question.unitsOfMeasure, b.question.unitsOfMeasure)) { diff.push('question.unitsOfMeasure'); }
+                        if (!_isEqual(a.question.answers, b.question.answers)) { diff.push('question.answers'); }
                     }
                     return diff;
                 },
@@ -616,16 +616,14 @@ export class CompareSideBySideComponent {
     }
 
     getValue(o, d) {
-        let value = _get(o, d.property);
-        if (!value) return;
-        if (d.url) return '<a target="_blank" href="' + d.url + value + '">' + value + '</a>';
-        else if (d.properties) {
-            let v = value.map(v => _get(v, d.properties.property));
-            if (!_isEmpty(v)) return d.properties.label + ': ' + v;
-            else return '';
+        const value = _get(o, d.property);
+        if (!value) { return; }
+        if (d.url) { return '<a target="_blank" href="' + d.url + value + '">' + value + '</a>'; } else if (d.properties) {
+            const v = value.map(v => _get(v, d.properties.property));
+            if (!_isEmpty(v)) { return d.properties.label + ': ' + v; } else { return ''; }
         } else if (_isArray(value)) {
             return JSON.stringify(value);
-        } else return value;
+        } else { return value; }
     }
 
     openCompareSideBySideContent() {

@@ -5,8 +5,8 @@ import { Cb1 } from 'shared/models.model';
 export const SkipLogicOperatorsArray: string[] = ['=', '!=', '>', '<', '>=', '<='];
 
 export function evaluateSkipLogic(condition: string | undefined, parent: FormElement, fe: FormElement, addError: Cb1<string>): boolean {
-    if (!condition) return true;
-    let rule = condition.trim() || '';
+    if (!condition) { return true; }
+    const rule = condition.trim() || '';
     if (rule.indexOf('OR') > -1) {
         return evaluateSkipLogic(((/.+OR/.exec(rule) || [])[0] || '').slice(0, -3), parent, fe, addError)
             || evaluateSkipLogic(((/OR.+/.exec(rule) || [])[0] || '').substr(3), parent, fe, addError);
@@ -16,22 +16,22 @@ export function evaluateSkipLogic(condition: string | undefined, parent: FormEle
             && evaluateSkipLogic(((/AND.+/.exec(rule) || [])[0] || '').substr(4), parent, fe, addError);
     }
 
-    let operatorArr = />=|<=|=|>|<|!=/.exec(rule);
+    const operatorArr = />=|<=|=|>|<|!=/.exec(rule);
     if (!operatorArr || operatorArr.length <= 0) {
         addError('SkipLogic is incorrect. Operator is missing. ' + rule);
         return false;
     }
-    let operator = operatorArr[0];
+    const operator = operatorArr[0];
 
-    let ruleArr = rule.split(/>=|<=|=|>|<|!=/);
+    const ruleArr = rule.split(/>=|<=|=|>|<|!=/);
     if (ruleArr.length !== 2) {
         addError('SkipLogic is incorrect. Operator requires 2 arguments. ' + rule);
         return false;
     }
-    let questionLabel = ruleArr[0].replace(/"/g, '').trim();
-    let expectedAnswer = ruleArr[1].replace(/"/g, '').trim();
+    const questionLabel = ruleArr[0].replace(/"/g, '').trim();
+    const expectedAnswer = ruleArr[1].replace(/"/g, '').trim();
 
-    let realAnswerObj = getQuestionPriorByLabel(parent, fe, questionLabel);
+    const realAnswerObj = getQuestionPriorByLabel(parent, fe, questionLabel);
     if (!realAnswerObj) {
         addError('SkipLogic is incorrect. Question not found. ' + rule);
         return false;
@@ -41,43 +41,43 @@ export function evaluateSkipLogic(condition: string | undefined, parent: FormEle
 
     function evalOperator(realAnswer: any, expectedAnswer: any) {
         if (realAnswer === undefined || realAnswer === null ||
-            (typeof realAnswer === 'number' && isNaN(realAnswer))) realAnswer = '';
+            (typeof realAnswer === 'number' && isNaN(realAnswer))) { realAnswer = ''; }
 
         if (expectedAnswer === '' && operator === '=') {
             if (realAnswerObj!.question.datatype === 'Number') {
-                if (realAnswer === '' || isNaN(realAnswer)) return true;
+                if (realAnswer === '' || isNaN(realAnswer)) { return true; }
             } else {
-                if (realAnswer === '' || ('' + realAnswer).trim().length === 0) return true;
+                if (realAnswer === '' || ('' + realAnswer).trim().length === 0) { return true; }
             }
         }
-        if (typeof (realAnswer) === 'undefined') return false;
+        if (typeof (realAnswer) === 'undefined') { return false; }
         switch (realAnswerObj!.question.datatype) {
             case 'Date':
                 // format HTML5 standard YYYY-MM-DD to American DD/MM/YYYY
                 if (realAnswer) {
-                    let match = /(\d{4})-(\d{2})-(\d{2})/.exec(realAnswer);
-                    if (match && match.length === 4) realAnswer = match[2] + '/' + match[3] + '/' + match[1];
+                    const match = /(\d{4})-(\d{2})-(\d{2})/.exec(realAnswer);
+                    if (match && match.length === 4) { realAnswer = match[2] + '/' + match[3] + '/' + match[1]; }
                 }
-                if (operator === '=') return new Date(realAnswer).getTime() === new Date(expectedAnswer).getTime();
-                if (operator === '!=') return new Date(realAnswer).getTime() !== new Date(expectedAnswer).getTime();
-                if (operator === '<') return new Date(realAnswer) < new Date(expectedAnswer);
-                if (operator === '>') return new Date(realAnswer) > new Date(expectedAnswer);
-                if (operator === '<=') return new Date(realAnswer) <= new Date(expectedAnswer);
-                if (operator === '>=') return new Date(realAnswer) >= new Date(expectedAnswer);
+                if (operator === '=') { return new Date(realAnswer).getTime() === new Date(expectedAnswer).getTime(); }
+                if (operator === '!=') { return new Date(realAnswer).getTime() !== new Date(expectedAnswer).getTime(); }
+                if (operator === '<') { return new Date(realAnswer) < new Date(expectedAnswer); }
+                if (operator === '>') { return new Date(realAnswer) > new Date(expectedAnswer); }
+                if (operator === '<=') { return new Date(realAnswer) <= new Date(expectedAnswer); }
+                if (operator === '>=') { return new Date(realAnswer) >= new Date(expectedAnswer); }
                 addError('SkipLogic is incorrect. Operator ' + operator + ' is incorrect for type date. ' + rule);
                 return false;
             case 'Number':
-                if (operator === '=') return realAnswer === parseInt(expectedAnswer);
-                if (operator === '!=') return realAnswer !== parseInt(expectedAnswer);
-                if (operator === '<') return realAnswer < parseInt(expectedAnswer);
-                if (operator === '>') return realAnswer > parseInt(expectedAnswer);
-                if (operator === '<=') return realAnswer <= parseInt(expectedAnswer);
-                if (operator === '>=') return realAnswer >= parseInt(expectedAnswer);
+                if (operator === '=') { return realAnswer === parseInt(expectedAnswer); }
+                if (operator === '!=') { return realAnswer !== parseInt(expectedAnswer); }
+                if (operator === '<') { return realAnswer < parseInt(expectedAnswer); }
+                if (operator === '>') { return realAnswer > parseInt(expectedAnswer); }
+                if (operator === '<=') { return realAnswer <= parseInt(expectedAnswer); }
+                if (operator === '>=') { return realAnswer >= parseInt(expectedAnswer); }
                 addError('SkipLogic is incorrect. Operator ' + operator + ' is incorrect for type number. ' + rule);
                 return false;
             case 'Text':
-                if (operator === '=') return realAnswer === expectedAnswer;
-                if (operator === '!=') return realAnswer !== expectedAnswer;
+                if (operator === '=') { return realAnswer === expectedAnswer; }
+                if (operator === '!=') { return realAnswer !== expectedAnswer; }
                 addError('SkipLogic is incorrect. Operator ' + operator + ' is incorrect for type text. ' + rule);
                 return false;
             case 'Value List':
@@ -91,8 +91,8 @@ export function evaluateSkipLogic(condition: string | undefined, parent: FormEle
                 addError('SkipLogic is incorrect. Operator ' + operator + ' is incorrect for value list. ' + rule);
                 return false;
             default: // external, text treatment
-                if (operator === '=') return realAnswer === expectedAnswer;
-                if (operator === '!=') return realAnswer !== expectedAnswer;
+                if (operator === '=') { return realAnswer === expectedAnswer; }
+                if (operator === '!=') { return realAnswer !== expectedAnswer; }
                 addError('SkipLogic is incorrect. Operator ' + operator + ' is incorrect for type external. ' + rule);
                 return false;
         }
@@ -101,22 +101,22 @@ export function evaluateSkipLogic(condition: string | undefined, parent: FormEle
 
 export function getQuestionByLabel(fes: FormElement[], label: string): FormQuestion | undefined {
     label = label.trim();
-    let matchedQuestions = getQuestions(fes, fe => getLabel(fe) === label);
-    if (matchedQuestions.length <= 0) return undefined;
+    const matchedQuestions = getQuestions(fes, fe => getLabel(fe) === label);
+    if (matchedQuestions.length <= 0) { return undefined; }
     return matchedQuestions[matchedQuestions.length - 1];
 }
 
 export function getShowIfQ(fes: FormElement[], fe: FormElement): any[] {
     if (fe.skipLogic && fe.skipLogic.condition) {
-        let strPieces = fe.skipLogic.condition.split('"');
-        if (strPieces[0] === '') strPieces.shift();
-        if (strPieces[strPieces.length - 1] === '') strPieces.pop();
+        const strPieces = fe.skipLogic.condition.split('"');
+        if (strPieces[0] === '') { strPieces.shift(); }
+        if (strPieces[strPieces.length - 1] === '') { strPieces.pop(); }
         return strPieces.reduce((acc: any, e, i, strPieces) => {
-            let matchQ = getQuestionByLabel(fes, strPieces[i]);
+            const matchQ = getQuestionByLabel(fes, strPieces[i]);
             if (matchQ && strPieces[i + 1]) {
                 let operator = strPieces[i + 1].trim();
                 let compValue = strPieces[i + 2];
-                let operatorWithNumber = operator.split(' ');
+                const operatorWithNumber = operator.split(' ');
                 if (operatorWithNumber.length > 1) {
                     operator = operatorWithNumber[0];
                     compValue = operatorWithNumber[1];

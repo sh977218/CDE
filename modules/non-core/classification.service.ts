@@ -19,14 +19,14 @@ export class ClassificationService {
     }
 
     updateClassificationLocalStorage(item: ClassificationHistory) {
-        let allPossibleCategories: string[][] = [];
-        let accumulateCategories: string[] = [];
+        const allPossibleCategories: string[][] = [];
+        const accumulateCategories: string[] = [];
         (item.categories || []).forEach((i: string) => {
             allPossibleCategories.push(accumulateCategories.concat(i));
             accumulateCategories.push(i);
         });
-        let recentlyClassification = <Array<any>>this.localStorageService.get('classificationHistory');
-        if (!recentlyClassification) recentlyClassification = [];
+        let recentlyClassification = this.localStorageService.get('classificationHistory') as Array<any>;
+        if (!recentlyClassification) { recentlyClassification = []; }
         allPossibleCategories.forEach(i => recentlyClassification.unshift({
             categories: i,
             orgName: item.orgName
@@ -38,7 +38,7 @@ export class ClassificationService {
 
 
     classifyItem(elt: Item, org: string | undefined, classifArray: string[] | undefined, endPoint: string, cb: CbErrObj<HttpErrorResponse>) {
-        let postBody: ItemClassification = {
+        const postBody: ItemClassification = {
             categories: classifArray,
             eltId: elt._id,
             orgName: org
@@ -51,7 +51,7 @@ export class ClassificationService {
     }
 
     removeClassification(elt: Item, org: string, classifArray: string[], endPoint: string, cb: CbErr) {
-        let deleteBody: ItemClassification = {
+        const deleteBody: ItemClassification = {
             categories: classifArray,
             eltId: elt._id,
             orgName: org
@@ -60,48 +60,48 @@ export class ClassificationService {
     }
 
     removeOrgClassification(deleteClassification, cb) {
-        let settings = new SearchSettingsElastic(this.esService.getUserDefaultStatuses(), 10000);
-        let ro = {
+        const settings = new SearchSettingsElastic(this.esService.getUserDefaultStatuses(), 10000);
+        const ro = {
             deleteClassification,
             settings,
         };
         this.http.post('/server/classification/deleteOrgClassification/', ro, {responseType: 'text'}).subscribe(
             res => cb(res),
-            () => this.alert.addAlert('danger', "Unexpected error removing classification"));
+            () => this.alert.addAlert('danger', 'Unexpected error removing classification'));
     }
 
     reclassifyOrgClassification(oldClassification, newClassification, cb) {
-        let settings = new SearchSettingsElastic(this.esService.getUserDefaultStatuses(), 10000);
-        let postBody = {
+        const settings = new SearchSettingsElastic(this.esService.getUserDefaultStatuses(), 10000);
+        const postBody = {
             settings,
             oldClassification,
             newClassification
         };
         this.http.post('/server/classification/reclassifyOrgClassification/', postBody, {responseType: 'text'}).subscribe(
             res => cb(res),
-            () => this.alert.addAlert('danger', "Unexpected error reclassifying"));
+            () => this.alert.addAlert('danger', 'Unexpected error reclassifying'));
     }
 
     renameOrgClassification(newClassification, cb) {
-        let settings = new SearchSettingsElastic(this.esService.getUserDefaultStatuses(), 10000);
-        let postBody = {
+        const settings = new SearchSettingsElastic(this.esService.getUserDefaultStatuses(), 10000);
+        const postBody = {
             settings,
             newClassification
         };
         this.http.post('/server/classification/renameOrgClassification', postBody, {responseType: 'text'}).subscribe(
             res => cb(res),
-            () => this.alert.addAlert('danger', "Unexpected error renaming classification"));
+            () => this.alert.addAlert('danger', 'Unexpected error renaming classification'));
     }
 
     addChildClassification(newClassification, cb) {
-        let putBody = {
+        const putBody = {
             newClassification
         };
         this.http.put('/server/classification/addOrgClassification/', putBody, {responseType: 'text'}).subscribe(
             res => cb(res),
             (err: HttpErrorResponse) => {
-                if (err.status === 409) this.alert.addAlert('danger', "Classification Already Exists");
-                this.alert.addAlert('danger', "Unexpected error adding classification: " + err.status);
+                if (err.status === 409) { this.alert.addAlert('danger', 'Classification Already Exists'); }
+                this.alert.addAlert('danger', 'Unexpected error adding classification: ' + err.status);
             });
     }
 }

@@ -11,7 +11,7 @@ export class RegistrationValidatorService {
     }
 
     getOrgRulesForCde(item: Item): StatusValidationRulesByOrg {
-        let rulesOrgs: StatusValidationRulesByOrg = {};
+        const rulesOrgs: StatusValidationRulesByOrg = {};
         item.classification && item.classification.forEach(c => {
             rulesOrgs[c.stewardOrg.name] = this.orgHelperService.getStatusValidationRules(c.stewardOrg.name);
         });
@@ -20,11 +20,11 @@ export class RegistrationValidatorService {
 }
 
 const statuses: CurationStatus[] = ['Standard', 'Qualified', 'Recorded', 'Candidate', 'Incomplete'];
-export type RuleStatus = {
+export interface RuleStatus {
     ruleError?: string,
     ruleName: string,
     ruleResultPromise: Promise<string>,
-};
+}
 
 export function processRules(cde: any, orgName: string, status: CurationStatus|undefined, cdeOrgRules: StatusValidationRulesByOrg): RuleStatus[] | undefined {
     const statusesIndex = statuses.indexOf(status as CurationStatus);
@@ -35,7 +35,7 @@ export function processRules(cde: any, orgName: string, status: CurationStatus|u
 }
 
 function lookForPropertyInNestedObject(cde: any, rule: StatusValidationRules, obj: any,  fields: string[]): Promise<string> {
-    let key = fields[0];
+    const key = fields[0];
     if (!obj[key]) {
         if (key === 'permissibleValues') {
             return Promise.resolve('');
@@ -88,7 +88,7 @@ export function cdePassingRule(cde: any, rule: StatusValidationRules): Promise<s
 }
 
 export function getStatusRules(cdeOrgRules: StatusValidationRulesByOrg): StatusValidationRulesByOrgReg {
-    let cdeStatusRules: StatusValidationRulesByOrgReg = {
+    const cdeStatusRules: StatusValidationRulesByOrgReg = {
         Incomplete: {},
         Candidate: {},
         Recorded: {},

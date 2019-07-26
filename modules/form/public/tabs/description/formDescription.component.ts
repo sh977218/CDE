@@ -134,8 +134,6 @@ import { scrollTo, waitRendered } from 'non-core/browser';
 })
 
 export class FormDescriptionComponent implements OnInit, AfterViewInit {
-    private _elt!: CdeForm;
-    @Input() canEdit: boolean = false;
     @Input() set elt(form: CdeForm) {
         this._elt = form;
         this.addExpanded(form);
@@ -144,6 +142,17 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     get elt() {
         return this._elt;
     }
+
+    constructor(
+        public deCompletionService: DeCompletionService,
+        private _hotkeysService: HotkeysService,
+        private http: HttpClient,
+        private localStorageService: LocalStorageService,
+        public matDialog: MatDialog,
+    ) {
+    }
+    private _elt!: CdeForm;
+    @Input() canEdit = false;
     @Output() onEltChange = new EventEmitter();
     @ViewChild(TreeComponent) tree!: TreeComponent;
     @ViewChild('formSearchTmpl') formSearchTmpl!: TemplateRef<any>;
@@ -152,7 +161,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     addQuestionDialogRef?: MatDialogRef<any, any>;
     dragActive = false;
     formElementEditing: any = {};
-    isModalOpen: boolean = false;
+    isModalOpen = false;
     newDataElement: DataElement = this.initNewDataElement();
     questionModelMode = 'search';
     treeOptions = {
@@ -175,7 +184,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
                             index: to.index
                         };
                         if (from.ref === 'section') {
-                            let newSection = new FormSection();
+                            const newSection = new FormSection();
                             this.formElementEditing.formElement = newSection;
                             this.addFormElement(newSection);
                         } else if (from.ref === 'question') {
@@ -183,7 +192,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
                         } else if (from.ref === 'form') {
                             this.openFormSearch();
                         } else if (from.ref === 'pasteSection') {
-                            let copiedSection: FormSection = this.localStorageService.get('sectionCopied');
+                            const copiedSection: FormSection = this.localStorageService.get('sectionCopied');
                             this.formElementEditing.formElement = copiedSection;
                             this.addFormElement(copiedSection);
                         } else {
@@ -207,17 +216,16 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     };
     updateDataCredit = 0;
 
-    @HostListener('window:scroll', ['$event']) scrollEvent() {
-        this.doIt();
+    static isSubForm(node: TreeNode): boolean {
+        let n = node;
+        while (n && n.data && n.data.elementType !== 'form' && n.parent) {
+            n = n.parent;
+        }
+        return n && n.data && n.data.elementType === 'form';
     }
 
-    constructor(
-        public deCompletionService: DeCompletionService,
-        private _hotkeysService: HotkeysService,
-        private http: HttpClient,
-        private localStorageService: LocalStorageService,
-        public matDialog: MatDialog,
-    ) {
+    @HostListener('window:scroll', ['$event']) scrollEvent() {
+        this.doIt();
     }
 
     ngOnInit(): void {
@@ -239,7 +247,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
 
     addExpanded(fe: FormElementsContainer) {
         fe.expanded = true;
-        let expand = (fe: FormElement) => {
+        const expand = (fe: FormElement) => {
             fe.expanded = true;
         };
         iterateFeSync(fe, undefined, expand, expand);
@@ -256,8 +264,8 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
 
     addFormFromSearch(form: CdeForm, cb: Cb<FormInForm> = _noop) {
         this.http.get<CdeForm>('/form/' + form.tinyId).subscribe(form => {
-            let inForm = convertFormToSection(form);
-            if (!inForm) return;
+            const inForm = convertFormToSection(form);
+            if (!inForm) { return; }
             this.addExpanded(inForm);
             this.formElementEditing.formElement = inForm;
             this.addFormElement(inForm);
@@ -299,18 +307,10 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     initNewDataElement(): DataElement {
         this.deCompletionService.suggestedCdes = [];
 
-        let de = new DataElement();
+        const de = new DataElement();
         de.designations.push({designation: '', tags: ['Question Text']});
         de.valueDomain.datatype = 'Text';
         return de;
-    }
-
-    static isSubForm(node: TreeNode): boolean {
-        let n = node;
-        while (n && n.data && n.data.elementType !== 'form' && n.parent) {
-            n = n.parent;
-        }
-        return n && n.data && n.data.elementType === 'form';
     }
 
     openFormSearch() {
@@ -326,7 +326,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         this.addQuestionDialogRef.afterClosed().subscribe(() => this.isModalOpen = false);
 
         setTimeout(() => {
-            if (this.questionModelMode === 'add') document.getElementById('newDEName')!.focus();
+            if (this.questionModelMode === 'add') { document.getElementById('newDEName')!.focus(); }
         }, 0);
     }
 
@@ -338,9 +338,9 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     setCurrentEditing(formElements: FormElement[], formElement: FormElement, index: number) {
         if (_isEmpty(this.formElementEditing.formElement)) {
             this.formElementEditing = {
-                formElement: formElement,
-                formElements: formElements,
-                index: index
+                formElement,
+                formElements,
+                index
             };
         } else {
             if (this.formElementEditing.formElement === formElement) {
@@ -348,9 +348,9 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
             } else {
                 this.formElementEditing.formElement.edit = false;
                 this.formElementEditing = {
-                    formElement: formElement,
-                    formElements: formElements,
-                    index: index
+                    formElement,
+                    formElements,
+                    index
                 };
             }
         }

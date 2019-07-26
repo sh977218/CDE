@@ -3,8 +3,8 @@ import { NativeRenderService } from 'nativeRender/nativeRender.service';
 import { CdeForm, DisplayProfile } from 'shared/form/form.model';
 
 @Component({
-    selector: "cde-native-render-full",
-    templateUrl: "./nativeRenderFull.component.html",
+    selector: 'cde-native-render-full',
+    templateUrl: './nativeRenderFull.component.html',
     styles: [`
      @media print {
         @page {
@@ -51,11 +51,11 @@ export class NativeRenderFullComponent implements OnInit {
     profile?: DisplayProfile;
     selectedProfileName?: string;
     selectedProfileNameDecode?: string;
-    overridePrintable: boolean = true;
+    overridePrintable = true;
     NativeRenderService = NativeRenderService;
 
     ngOnInit() {
-        if (this.elt.displayProfiles.length) this.selectProfile(0);
+        if (this.elt.displayProfiles.length) { this.selectProfile(0); }
     }
 
     selectProfile(profileIndex: number) {

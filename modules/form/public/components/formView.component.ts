@@ -75,7 +75,7 @@ export class FormViewComponent implements OnInit {
     isIe = isIe;
     isOrgCurator = isOrgCurator;
     missingCdes: string[] = [];
-    savingText: string = '';
+    savingText = '';
     tabsCommented: string[] = [];
     unsaved = false;
     validationErrors: { message: string, id: string }[] = [];
@@ -111,7 +111,7 @@ export class FormViewComponent implements OnInit {
     }
 
     createDataElement(newCde, cb: Cb) {
-        let dataElement = {
+        const dataElement = {
             designations: newCde.designations,
             definitions: newCde.definitions,
             stewardOrg: {
@@ -133,9 +133,9 @@ export class FormViewComponent implements OnInit {
         };
         this.http.post<DataElement>('/de', dataElement)
             .subscribe(res => {
-                if (res.tinyId) newCde.tinyId = res.tinyId;
-                if (res.version) newCde.version = res.version;
-                if (cb) cb();
+                if (res.tinyId) { newCde.tinyId = res.tinyId; }
+                if (res.version) { newCde.version = res.version; }
+                if (cb) { cb(); }
             }, err => {
                 this.alert.httpErrorMessageAlert(err);
             });
@@ -175,7 +175,7 @@ export class FormViewComponent implements OnInit {
 
     eltLoaded(elt: CdeForm, cb = _noop) {
         if (elt) {
-            if (elt.isDraft) this.hasDrafts = true;
+            if (elt.isDraft) { this.hasDrafts = true; }
             CdeForm.validate(elt);
             this.elt = elt;
             this.title.setTitle('Form: ' + Elt.getLabel(this.elt));
@@ -221,30 +221,30 @@ export class FormViewComponent implements OnInit {
 
     openCopyElementModal() {
         this.eltCopy = _cloneDeep(this.elt);
-        this.eltCopy['classification'] = this.elt.classification.filter(c => {
+        this.eltCopy.classification = this.elt.classification.filter(c => {
             return this.userService.userOrgs.indexOf(c.stewardOrg.name) !== -1;
         });
         this.eltCopy['registrationState.administrativeNote'] = 'Copy of: ' + this.elt.tinyId;
-        delete this.eltCopy['tinyId'];
-        delete this.eltCopy['_id'];
-        delete this.eltCopy['origin'];
-        delete this.eltCopy['created'];
-        delete this.eltCopy['updated'];
-        delete this.eltCopy['imported'];
-        delete this.eltCopy['updatedBy'];
-        delete this.eltCopy['createdBy'];
-        delete this.eltCopy['version'];
-        delete this.eltCopy['history'];
-        delete this.eltCopy['changeNote'];
-        delete this.eltCopy['comments'];
+        delete this.eltCopy.tinyId;
+        delete this.eltCopy._id;
+        delete this.eltCopy.origin;
+        delete this.eltCopy.created;
+        delete this.eltCopy.updated;
+        delete this.eltCopy.imported;
+        delete this.eltCopy.updatedBy;
+        delete this.eltCopy.createdBy;
+        delete this.eltCopy.version;
+        delete this.eltCopy.history;
+        delete this.eltCopy.changeNote;
+        delete this.eltCopy.comments;
         delete this.eltCopy['forkOf'];
         delete this.eltCopy['views'];
-        this.eltCopy['ids'] = [];
-        this.eltCopy['sources'] = [];
-        this.eltCopy['designations'] = this.eltCopy['designations'];
-        this.eltCopy['designations'][0].designation = 'Copy of: ' + this.eltCopy['designations'][0].designation;
-        this.eltCopy['definitions'] = this.eltCopy['definitions'];
-        this.eltCopy['registrationState'] = {
+        this.eltCopy.ids = [];
+        this.eltCopy.sources = [];
+        this.eltCopy.designations = this.eltCopy.designations;
+        this.eltCopy.designations[0].designation = 'Copy of: ' + this.eltCopy.designations[0].designation;
+        this.eltCopy.definitions = this.eltCopy.definitions;
+        this.eltCopy.registrationState = {
             administrativeNote: 'Copy of: ' + this.elt.tinyId,
             registrationStatus: 'Incomplete',
         };
@@ -257,8 +257,8 @@ export class FormViewComponent implements OnInit {
     }
 
     pinAllCdesIntoBoard() {
-        let cdes = [];
-        let doFormElement = formElt => {
+        const cdes = [];
+        const doFormElement = formElt => {
             if (formElt.elementType === 'question') {
                 cdes.push(formElt.question.cde);
             } else {
@@ -274,7 +274,7 @@ export class FormViewComponent implements OnInit {
     publish() {
         this.validate(() => {
             if (this.validationErrors.length) {
-                this.alert.addAlert("danger", "Please fix all errors before publishing");
+                this.alert.addAlert('danger', 'Please fix all errors before publishing');
             } else {
                 this.saveModal.openSaveModal();
             }
@@ -299,7 +299,7 @@ export class FormViewComponent implements OnInit {
     }
 
     saveDraft(): Promise<any> {
-        if (!this.elt.isDraft) this.elt.changeNote = '';
+        if (!this.elt.isDraft) { this.elt.changeNote = ''; }
         this.elt.isDraft = true;
         this.hasDrafts = true;
         this.savingText = 'Saving ...';
@@ -335,16 +335,16 @@ export class FormViewComponent implements OnInit {
 
     saveForm() {
         const saveFormImpl = () => {
-            let newCdes: QuestionCde[] = [];
+            const newCdes: QuestionCde[] = [];
             iterateFes(this.elt.formElements, undefined, undefined, (fe, cb) => {
                 fe.question.cde.datatype = fe.question.datatype;
-                if (!fe.question.cde.tinyId) newCdes.push(fe.question.cde);
+                if (!fe.question.cde.tinyId) { newCdes.push(fe.question.cde); }
                 cb();
             }, () => {
                 async_forEach(newCdes, (newCde, doneOneCde) => {
                     this.createDataElement(newCde, doneOneCde);
                 }, () => {
-                    let publish = () => {
+                    const publish = () => {
                         const publishData = {_id: this.elt._id, tinyId: this.elt.tinyId, __v: this.elt.__v};
                         this.http.post('/formPublish', publishData).subscribe(res => {
                             if (res) {
@@ -379,7 +379,7 @@ export class FormViewComponent implements OnInit {
     setDefault(index: number) {
         this.http.post<CdeForm>('/server/attachment/form/setDefault',
             {
-                index: index,
+                index,
                 state: this.elt.attachments[index].isDefault,
                 id: this.elt._id
             }).subscribe(res => {
@@ -391,15 +391,15 @@ export class FormViewComponent implements OnInit {
 
     upload(event) {
         if (event.srcElement && event.srcElement.files) {
-            let files = event.srcElement.files;
-            let formData = new FormData();
-            for (let i = 0; i < files.length; i++) {
-                formData.append('uploadedFiles', files[i]);
+            const files = event.srcElement.files;
+            const formData = new FormData();
+            for (const file of files) {
+                formData.append('uploadedFiles', file);
             }
             formData.append('id', this.elt._id);
             this.http.post<any>('/server/attachment/form/add', formData).subscribe(
                 r => {
-                    if (r.message) this.alert.addAlert('info', r);
+                    if (r.message) { this.alert.addAlert('info', r); }
                     else {
                         this.elt = r;
                         this.alert.addAlert('success', 'Attachment added.');
@@ -422,7 +422,7 @@ export class FormViewComponent implements OnInit {
     validateDefinitions() {
         this.elt.definitions.forEach(def => {
             if (!def.definition || !def.definition.length) {
-                this.validationErrors.push(new LocatableError("Definition may not be empty.", undefined));
+                this.validationErrors.push(new LocatableError('Definition may not be empty.', undefined));
             }
         });
     }
@@ -439,7 +439,7 @@ export class FormViewComponent implements OnInit {
     }
 
     validateRepeat() {
-        let validationErrors = this.validationErrors;
+        const validationErrors = this.validationErrors;
 
         const findExistingErrors = (parent: FormElementsContainer, fe: FormElement) => {
             if (fe.repeat) {
@@ -486,7 +486,7 @@ export class FormViewComponent implements OnInit {
     }
 
     validateSkipLogic() {
-        let validationErrors = this.validationErrors;
+        const validationErrors = this.validationErrors;
 
         function findExistingErrors(parent: FormElementsContainer, fe: FormElement) {
             if (fe.skipLogic && !SkipLogicValidateService.validateSkipLogic(parent, fe)) {
@@ -514,7 +514,7 @@ export class FormViewComponent implements OnInit {
     }
 
     viewChanges() {
-        let draft = this.elt;
+        const draft = this.elt;
         this.formViewService.fetchPublished(this.route.snapshot.queryParams).then(published => {
             this.dialogRef = this.dialog.open(CompareHistoryContentComponent,
                 {width: '800px', data: {newer: draft, older: published}});

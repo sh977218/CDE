@@ -21,7 +21,7 @@ const actionMapping: IActionMapping = {
     templateUrl: 'classifyItemModal.component.html',
 })
 export class ClassifyItemModalComponent {
-    @Input() modalTitle: string = 'Classify this CDE';
+    @Input() modalTitle = 'Classify this CDE';
     @Output() onEltSelected = new EventEmitter<ClassificationClassified>();
     @ViewChild('classifyItemContent') classifyItemContent!: TemplateRef<any>;
     orgClassificationsTreeView: any;
@@ -31,7 +31,7 @@ export class ClassifyItemModalComponent {
         childrenField: 'elements',
         displayField: 'name',
         isExpandedField: 'expanded',
-        actionMapping: actionMapping
+        actionMapping
     };
     selectedOrg?: string;
     treeNode?: TreeNode;
@@ -56,7 +56,7 @@ export class ClassifyItemModalComponent {
 
     classifyItemByTree(treeNode: TreeNode) {
         this.treeNode = treeNode;
-        let classificationArray = [treeNode.data.name];
+        const classificationArray = [treeNode.data.name];
         let _treeNode = treeNode;
         while (_treeNode.parent) {
             _treeNode = _treeNode.parent;
@@ -69,7 +69,7 @@ export class ClassifyItemModalComponent {
             orgName: this.selectedOrg
         });
         this.onEltSelected.emit({
-            classificationArray: classificationArray,
+            classificationArray,
             selectedOrg: this.selectedOrg
         });
     }
@@ -77,7 +77,7 @@ export class ClassifyItemModalComponent {
 
     onChangeOrg(value: string) {
         if (value) {
-            let url = '/org/' + encodeURIComponent(value);
+            const url = '/org/' + encodeURIComponent(value);
             //noinspection TypeScriptValidateTypes
             this.http.get(url).subscribe(
                 res => {
@@ -86,7 +86,7 @@ export class ClassifyItemModalComponent {
                 }, () => {
                     this.orgClassificationsTreeView = {};
                 });
-        } else this.orgClassificationsTreeView = [];
+        } else { this.orgClassificationsTreeView = []; }
     }
 
     openModal() {
@@ -97,7 +97,7 @@ export class ClassifyItemModalComponent {
             this.onChangeOrg(this.selectedOrg);
         } else {
             this.userService.then(() => {
-                if (this.userService.userOrgs.length === 1) this.onChangeOrg(this.userService.userOrgs[0]);
+                if (this.userService.userOrgs.length === 1) { this.onChangeOrg(this.userService.userOrgs[0]); }
             }, _noop);
         }
         return this.dialog.open(this.classifyItemContent, {width: '800px'});

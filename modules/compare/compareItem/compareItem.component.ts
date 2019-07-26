@@ -90,16 +90,16 @@ function doCompareObject(newer, older, option) {
             property.older = '';
             return;
         }
-        let l = newer ? _get(newer, property.property) : '';
-        let r = older ? _get(older, property.property) : '';
+        const l = newer ? _get(newer, property.property) : '';
+        const r = older ? _get(older, property.property) : '';
         if (property.data) {
             doCompareObject(l, r, property.data);
-            if (property.data) property.match = !property.data.some(p => !p.match);
+            if (property.data) { property.match = !property.data.some(p => !p.match); }
         } else {
             property.match = _isEqual(l, r);
             property.newer = l ? l.toString() : '';
             property.older = r ? r.toString() : '';
-            if (!newer && !older) property.match = true;
+            if (!newer && !older) { property.match = true; }
         }
     });
     return option;
