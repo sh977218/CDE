@@ -8,12 +8,14 @@ import { leadingZerosProtocolId, parseAttachments } from 'ingester/phenx/Form/Pa
 import { parseClassification } from 'ingester/phenx/Shared/ParseClassification';
 import { parseFormElements } from 'ingester/phenx/Form/ParseFormElements';
 import {
-    batchloader, created, imported, mergeBySource, mergeSourcesBySourceName, replaceClassificationByOrg
+    batchloader, created, imported, lastMigrationScript, mergeBySource, mergeSourcesBySourceName,
+    replaceClassificationByOrg
 } from 'ingester/shared/utility';
 import { generateTinyId } from 'server/system/mongo-data';
 import { existsSync } from "fs";
 import * as AdmZip from 'adm-zip';
 import { redCapZipFolder } from 'ingester/createMigrationConnection';
+import { transferClassifications } from 'shared/system/classificationShared';
 
 
 function extractRedCapZip(protocolId) {
@@ -58,27 +60,9 @@ export async function createForm(protocol) {
         noRenderAllowed: false,
         stewardOrg: {name: 'PhenX'},
         registrationState: {registrationStatus: "Candidate"},
-        lastMigrationScript: 'loadPhenXJuly2019'
+        lastMigrationScript: lastMigrationScript
     };
 
     await parseFormElements(protocol, attachments, newForm);
     return newForm;
-}
-
-export function mergeForm(existingForm, newForm) {
-    let sourceName = 'PhenX';
-    existingForm.designations = newForm.designations;
-    existingForm.definitions = newForm.definitions;
-    existingForm.ids = mergeBySource(newForm.ids, existingForm.ids, sourceName);
-    existingForm.properties = mergeBySource(newForm.properties, existingForm.properties, sourceName);
-    existingForm.referenceDocuments = mergeBySource(newForm.referenceDocuments, existingForm.referenceDocuments, sourceName);
-    existingForm.attachments = newForm.attachments;
-    existingForm.sources = mergeSourcesBySourceName(newForm.sources, existingForm.sources, sourceName);
-    existingForm.classification = replaceClassificationByOrg(newForm.classification, existingForm.classification, 'PhenX');
-    existingForm.version = newForm.version;
-
-    // Liz make those 50 forms qualified, We don't want to modify.
-    if (existingForm.registrationState.registrationStatus !== 'Qualified') {
-        existingForm.formElements = newForm.formElements;
-    }
 }

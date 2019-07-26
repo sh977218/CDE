@@ -251,19 +251,6 @@ export const registrationStateSchema = new Schema({
     replacedBy: {tinyId: {type: StringType, description: 'tinyId of replacement CDE'}},
 }, {_id: false});
 
-export const propertySchema = new Schema({
-    key: StringType,
-    value: StringType,
-    source: StringType,
-    valueFormat: StringType
-}, {_id: false});
-
-export const idSchema = new Schema({
-    source: StringType,
-    id: StringType,
-    version: StringType
-}, {_id: false});
-
 let requestSchema = {
     source: {tinyId: StringType, id: StringType},
     destination: {tinyId: StringType},
@@ -350,6 +337,19 @@ export const referenceDocumentSchema = new Schema({
     providerOrg: StringType,
     title: StringType,
     languageCode: StringType,
+    source: StringType
+}, {_id: false});
+
+export const propertySchema = new Schema({
+    key: StringType,
+    value: StringType,
+    valueFormat: StringType,
+    source: StringType
+}, {_id: false});
+
+export const idSchema = new Schema({
+    id: StringType,
+    version: StringType,
     source: StringType
 }, {_id: false});
 

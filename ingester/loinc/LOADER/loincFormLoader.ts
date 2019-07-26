@@ -1,40 +1,34 @@
 import { isEmpty } from 'lodash';
-import { Form } from 'server/form/mongo-form';
-import { compareForm, createForm, mergeForm } from 'ingester/loinc/Form/form';
-import { batchloader, updateForm } from 'ingester/shared/utility';
+import { Form, FormSource } from 'server/form/mongo-form';
+import { createForm } from 'ingester/loinc/Form/form';
+import {
+    batchloader, compareElt, imported, lastMigrationScript, mergeElt, printUpdateResult, updateForm
+} from 'ingester/shared/utility';
 
 export async function runOneForm(loinc, orgInfo) {
-    let formCond = {
-        archived: false,
-        'ids.id': loinc.loincId
-    };
-    let existingForm = await Form.findOne(formCond).catch(e => {
-        throw 'Error Form.findOne: ' + e;
-    });
-    let newFormObj = await createForm(loinc, orgInfo).catch(e => {
-        throw 'Error CreateForm.createForm: ' + e;
-    });
+    let formCond = {archived: false, 'ids.id': loinc.loincId};
+    let newFormObj = await createForm(loinc, orgInfo);
     let newForm = new Form(newFormObj);
+    newFormObj = newForm.toObject();
+    let existingForm = await Form.findOne(formCond);
     if (!existingForm) {
-        existingForm = await newForm.save().catch(e => {
-            throw 'Error newForm.save: ' + e;
-        });
+        existingForm = await newForm.save();
     } else {
-        existingForm.imported = new Date().toJSON();
-        existingForm.markModified('imported');
-        let diff = compareForm(newForm, existingForm);
+        existingForm.imported = imported;
+        existingForm.lastMigrationScript = lastMigrationScript;
+        existingForm.changeNote = lastMigrationScript;
+        let diff = compareElt(newForm.toObject(), existingForm.toObject(), 'LOINC');
         if (isEmpty(diff)) {
-            await existingForm.save().catch(e => {
-                throw 'Error existingForm.save: ' + e;
-            });
+            await existingForm.save();
         } else {
-            await mergeForm(newForm, existingForm).catch(e => {
-                throw 'Error MergeForm.mergeForm: ' + e;
-            });
-            await updateForm(existingForm, batchloader).catch(e => {
-                throw 'Error mongo_form.updatePromise: ' + e;
-            });
+            let existingFormObj = existingForm.toObject();
+            mergeElt(existingFormObj, newFormObj, 'LOINC');
+            await updateForm(existingForm, batchloader, {updateSource: true});
         }
+        delete newFormObj['tinyId'];
+        newFormObj.attachments = [];
+        let updateResult = await FormSource.updateOne({tinyId: existingForm.tinyId}, newFormObj, {upsert: true});
+        printUpdateResult(updateResult, existingForm);
     }
     return existingForm;
 }

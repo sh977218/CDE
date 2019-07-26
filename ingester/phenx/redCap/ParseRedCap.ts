@@ -2,10 +2,11 @@ import * as csv from 'csv-parse';
 import { createReadStream, existsSync, readFile } from 'fs';
 import { find, isEmpty } from 'lodash';
 import { DataElement, DataElementSource } from 'server/cde/mongo-cde';
-import { mergeCde } from 'ingester/phenx/CDE/cde';
 import { createCde } from 'ingester/phenx/redCap/cde';
 import { convert } from 'ingester/phenx/redCap/RedCapCdeToQuestion';
-import { batchloader, compareElt, printUpdateResult, updateCde } from 'ingester/shared/utility';
+import {
+    batchloader, compareElt, imported, lastMigrationScript, mergeElt, printUpdateResult, updateCde
+} from 'ingester/shared/utility';
 import { leadingZerosProtocolId } from 'ingester/phenx/Form/ParseAttachments';
 import { Comment } from 'server/discuss/discussDb';
 import { redCapZipFolder } from 'ingester/createMigrationConnection';
@@ -78,50 +79,41 @@ function doDescriptive(sectionFes, redCapCde, attachments) {
     }
 }
 
-async function doQuestion(redCapCde, redCapCdes, formId, protocol, newForm) {
+async function redCapToCde(redCapCde, redCapCdes, formId, protocol, newForm) {
     let newCdeObj = await createCde(redCapCde, formId, protocol);
     let newCde = new DataElement(newCdeObj);
-    let cdeId = newCdeObj.ids[0].id;
-    let existingCde = await DataElement.findOne({archived: false, 'ids.id': cdeId});
+    newCdeObj = newCde.toObject();
+    let existingCde = await DataElement.findOne({archived: false, 'ids.id': newCdeObj.ids[0].id});
     if (!existingCde) {
         existingCde = await newCde.save();
         createdRedCde++;
         createdRedCdes.push(existingCde.tinyId);
     } else {
-        existingCde.imported = new Date().toJSON();
-        existingCde.lastMigrationScript = 'loadPhenXJuly2019';
-        let diff = compareElt(newCde.toObject(), existingCde.toObject());
+        existingCde.imported = imported;
+        existingCde.lastMigrationScript = lastMigrationScript;
+        existingCde.changeNote = lastMigrationScript;
+        let diff = compareElt(newCde.toObject(), existingCde.toObject(), 'PhenX');
         if (isEmpty(diff)) {
-            await existingCde.save().catch(e => {
-                throw "Error await existingCde.save(): " + e;
-            });
+            await existingCde.save();
             sameRedCde++;
             sameRedCdes.push(existingCde.tinyId);
         } else {
-            mergeCde(existingCde, newCde);
-            existingCde.changeNote = '';
-            await updateCde(existingCde, batchloader).catch(e => {
-                throw "Error await updateCde(existingCde, batchloader): " + e;
-            });
+            let existingCdeObj = existingCde.toObject();
+            mergeElt(existingCdeObj, newCdeObj, 'PhenX');
+            await updateCde(existingCde, batchloader, {updateSource: true});
             changedRedCde++;
             changedRedCdes.push(existingCde.tinyId);
         }
     }
     for (let comment of newCdeObj['comments']) {
         comment.element.eltId = newCdeObj.tinyId;
-        await new Comment(comment).save().catch(e => {
-            throw "Error await comment.save(): " + e;
-        });
+        await new Comment(comment).save();
     }
     delete newCdeObj.tinyId;
     newCdeObj.attachments = [];
-    let updateResult = await DataElementSource.updateOne({tinyId: existingCde.tinyId}, newCdeObj, {upsert: true}).catch(e => {
-        throw'Error await DataElementSource.updateOne({tinyId: existingCde.tinyId}: ' + e;
-    });
+    let updateResult = await DataElementSource.updateOne({tinyId: existingCde.tinyId}, newCdeObj, {upsert: true});
     printUpdateResult(updateResult, existingCde);
-
-    let question = await convert(redCapCde, redCapCdes, existingCde, newForm);
-    return question;
+    return existingCde;
 }
 
 export async function parseFormElements(protocol, attachments, newForm) {
@@ -218,7 +210,8 @@ export async function parseFormElements(protocol, attachments, newForm) {
             newSection = true;
             fe = formElements[formElements.length - 1];
             if (!isEmpty(sectionHeader) || !isEmpty(fieldLabel)) {
-                let question = await doQuestion(redCapCde, redCapCdes, formId, protocol, newForm);
+                let existingCde = await redCapToCde(redCapCde, redCapCdes, formId, protocol, newForm);
+                let question = await convert(redCapCde, redCapCdes, existingCde, newForm);
                 fe.formElements.push(question);
             } else {
                 console.log('Empty designation row in redCap. ' + protocolId);
