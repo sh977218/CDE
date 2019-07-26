@@ -7,13 +7,13 @@ export class SearchSettings {
     datatypes: DataType[] = [];
     excludeAllOrgs?: boolean;
     excludeOrgs: string[] = [];
-    meshTree = '';
-    page = 1;
-    q = '';
+    meshTree: string = '';
+    page?: number = 1;
+    q?: string = '';
     regStatuses: CurationStatus[] = [];
     resultPerPage = 20;
     searchTerm?: string;
-    selectedOrg = '';
+    selectedOrg?: string = '';
     selectedOrgAlt?: string;
 
     constructor(q = '', resultsPerPage = 20) {

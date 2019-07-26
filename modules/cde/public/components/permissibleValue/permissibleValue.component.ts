@@ -66,10 +66,7 @@ export class PermissibleValueComponent {
         excludeAllOrgs: false,
         meshTree: '',
         regStatuses: [],
-        resultPerPage: 20,
-        page: 1,
-        q: '',
-        selectedOrg: ''
+        resultPerPage: 20
     };
     private searchTerms = new Subject<string>();
     vsacValueSet = [];
@@ -86,7 +83,6 @@ export class PermissibleValueComponent {
                 private dialog: MatDialog,
                 public userService: UserService,
                 private Alert: AlertService) {
-        this.searchSettings.datatypes = ['Value List'];
     }
 
     addAllVsac() {
