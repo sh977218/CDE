@@ -27,6 +27,7 @@ export const deJson = {
     definitions: {
         type: [definitionSchema],
         description: 'Description of the CDE',
+        default: []
     },
     source: {type: StringType, description: 'This field is replaced with sources'},
     sources: {

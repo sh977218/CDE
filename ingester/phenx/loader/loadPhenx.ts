@@ -4,31 +4,39 @@ import { Comment } from 'server/discuss/discussDb';
 import { ProtocolModel } from 'ingester/createMigrationConnection';
 import { createForm } from 'ingester/phenx/Form/form';
 import {
-    batchloader, BATCHLOADER_USERNAME, compareElt, imported, lastMigrationScript, mergeElt, printUpdateResult,
+    batchloader,
+    compareElt,
+    imported,
+    lastMigrationScript,
+    mergeElt,
+    printUpdateResult,
+    updateCde,
     updateForm
 } from 'ingester/shared/utility';
+import { DataElement } from 'server/cde/mongo-cde';
 
 let protocolCount = 0;
 
 let createdForm = 0;
-let createdForms = [];
+const createdForms = [];
 let sameForm = 0;
-let sameForms = [];
+const sameForms = [];
 let changedForm = 0;
-let changedForms = [];
+const changedForms = [];
 let retiredForm = 0;
-let retiredForms = [];
+const retiredForms = [];
+let retiredCde = 0;
+const retiredCdes = [];
 
 async function retireForms() {
-    let cond = {
+    const cond = {
         'ids.source': 'PhenX',
         lastMigrationScript: {$ne: lastMigrationScript},
-        archived: false,
-        'updatedBy.username': BATCHLOADER_USERNAME,
+        archived: false
     };
-    let forms = await Form.find(cond);
-    for (let form of forms) {
-        let formObj = form.toObject();
+    const forms = await Form.find(cond);
+    for (const form of forms) {
+        const formObj = form.toObject();
         formObj.registrationState.registrationStatus = 'Retired';
         formObj.registrationState.administrativeNote = 'Not present in import at ' + new Date().toJSON();
         await updateForm(formObj, batchloader);
@@ -37,20 +45,37 @@ async function retireForms() {
     }
 }
 
-process.on('unhandledRejection', function (error) {
+async function retireCdes() {
+    const cond = {
+        'ids.source': 'PhenX',
+        lastMigrationScript: {$ne: lastMigrationScript},
+        archived: false
+    };
+    const cdes = await DataElement.find(cond);
+    for (const cde of cdes) {
+        const cdeObj = cde.toObject();
+        cdeObj.registrationState.registrationStatus = 'Retired';
+        cdeObj.registrationState.administrativeNote = 'Not present in import at ' + new Date().toJSON();
+        await updateCde(cdeObj, batchloader);
+        retiredCde++;
+        retiredCdes.push(cdeObj.tinyId);
+    }
+}
+
+process.on('unhandledRejection', error => {
     console.log(error);
 });
 
-(function () {
+(() => {
 //    let cond = {protocolID: '170101'};
-    let cond = {};
-    let cursor = ProtocolModel.find(cond).cursor();
+    const cond = {};
+    const cursor = ProtocolModel.find(cond).cursor();
 
     cursor.eachAsync(async (protocol: any) => {
-        let protocolObj = protocol.toObject();
-        let protocolId = protocolObj.protocolID;
+        const protocolObj = protocol.toObject();
+        const protocolId = protocolObj.protocolID;
         let newFormObj = await createForm(protocolObj);
-        let newForm = new Form(newFormObj);
+        const newForm = new Form(newFormObj);
         newFormObj = newForm.toObject();
         let existingForm = await Form.findOne({archived: false, 'ids.id': protocolId});
         if (!existingForm) {
@@ -61,13 +86,13 @@ process.on('unhandledRejection', function (error) {
             existingForm.imported = imported;
             existingForm.lastMigrationScript = lastMigrationScript;
             existingForm.changeNote = lastMigrationScript;
-            let diff = compareElt(newForm.toObject(), existingForm.toObject(), 'PhenX');
+            const diff = compareElt(newForm.toObject(), existingForm.toObject(), 'PhenX');
             if (isEmpty(diff)) {
                 await existingForm.save();
                 sameForm++;
                 sameForms.push(existingForm.tinyId);
             } else {
-                let existingFormObj = existingForm.toObject();
+                const existingFormObj = existingForm.toObject();
                 mergeElt(existingFormObj, newFormObj, 'PhenX');
                 await updateForm(existingFormObj, batchloader, {updateSource: true});
                 changedForm++;
@@ -75,23 +100,23 @@ process.on('unhandledRejection', function (error) {
             }
         }
         if (newFormObj.registrationState.registrationStatus !== 'Qualified') {
-            for (let comment of newFormObj['comments']) {
+            for (const comment of newFormObj.comments) {
                 comment.element.eltId = existingForm.tinyId;
                 await new Comment(comment).save();
             }
         }
         delete newFormObj.tinyId;
         newFormObj.attachments = [];
-        let updateResult = await FormSource.updateOne({tinyId: existingForm.tinyId}, newFormObj, {upsert: true});
+        const updateResult = await FormSource.updateOne({tinyId: existingForm.tinyId}, newFormObj, {upsert: true});
         printUpdateResult(updateResult, existingForm);
         protocolCount++;
         console.log('protocolCount ' + protocolCount++);
         console.log('Finished protocol: ' + protocolId);
     }).then(async () => {
         console.log('************************************************');
-        /*
-                        await retireForms();
-        */
+
+        await retireForms();
+        await retireCdes();
         console.log('Finished PhenX Loader: ');
         console.log('createdForm: ' + createdForm);
         console.log('createdForms: ' + createdForms);

@@ -150,6 +150,7 @@ export const formJson = {
     definitions: {
         type: [definitionSchema],
         description: 'Description of the Form',
+        default: []
     },
     source: {type: StringType, description: 'This field is replaced with sources'},
     sources: {

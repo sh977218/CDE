@@ -7,11 +7,9 @@ async function run() {
     await ProtocolModel.remove({protocolId});
     console.log('Removed Migration Protocol collection');
     console.log(`Starting fetching Protocol ${protocolId}`);
-    let protocol = await runOnePhenX(protocolId);
+    const protocol = await runOnePhenX(protocolId);
     console.log(`Finished fetching Protocol ${protocolId}`);
-    await new ProtocolModel(protocol).save().catch(e => {
-        throw 'new ProtocolModel(protocol).save() Error: ' + e;
-    });
+    await new ProtocolModel(protocol).save();
     console.log(`Finished saving Protocol ${protocolId}`);
 }
 

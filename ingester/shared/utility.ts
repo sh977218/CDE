@@ -8,11 +8,11 @@ import * as cheerio from 'cheerio';
 import { transferClassifications } from 'shared/system/classificationShared';
 
 const sourceMap = {
-    'LOINC': ['LOINC'],
-    'PHENX': ['PhenX', 'PhenX Variable'],
-    'NINDS': ['NINDS', 'NINDS Variable Name', 'NINDS caDSR', 'caDSR'],
+    LOINC: ['LOINC'],
+    PHENX: ['PhenX', 'PhenX Variable'],
+    NINDS: ['NINDS', 'NINDS Variable Name', 'NINDS caDSR', 'caDSR'],
 };
-let today = new Date();
+const today = new Date();
 export const lastMigrationScript = 'load PhenX on ' + today.getMonth() + today.getFullYear();
 
 export const BATCHLOADER_USERNAME = 'batchloader';
@@ -21,8 +21,8 @@ export const batchloader = {
     roles: ['AttachmentReviewer']
 };
 
-export const created = new Date().toJSON();
-export const imported = new Date().toJSON();
+export const created = today;
+export const imported = today;
 
 export function removeWhite(text) {
     if (!text) {
@@ -32,8 +32,8 @@ export function removeWhite(text) {
     }
 }
 
-export function sanitizeText(string) {
-    return string.replace(/:/g, '').replace(/\./g, '').trim();
+export function sanitizeText(s) {
+    return s.replace(/:/g, '').replace(/\./g, '').trim();
 }
 
 export function wipeBeforeCompare(obj) {
@@ -49,7 +49,9 @@ export function wipeBeforeCompare(obj) {
 
     if (obj.valueDomain) {
         delete obj.valueDomain.datatypeValueList;
-        if (!obj.valueDomain.uom) delete obj.valueDomain.uom;
+        if (!obj.valueDomain.uom) {
+            delete obj.valueDomain.uom;
+        }
     }
 
     delete obj.imported;
@@ -71,7 +73,7 @@ export function wipeBeforeCompare(obj) {
     delete obj.comments;
     delete obj.formElements;
 
-    Object.keys(obj).forEach(function (key) {
+    Object.keys(obj).forEach(key => {
         if (Array.isArray(obj[key]) && obj[key].length === 0) {
             delete obj[key];
         }
@@ -96,7 +98,7 @@ export function printUpdateResult(updateResult, elt) {
 }
 
 export function replaceClassificationByOrg(newClassification, existingClassification, orgName) {
-    let otherClassifications = existingClassification.filter(c => c.stewardOrg.name !== orgName)
+    const otherClassifications = existingClassification.filter(c => c.stewardOrg.name !== orgName);
     return newClassification.concat(otherClassifications);
 }
 
@@ -109,13 +111,12 @@ export function updateForm(elt, user, options = {}) {
     return new Promise(resolve => mongo_form.update(elt, user, options, resolve));
 }
 
-let DomainCollectionMap = {};
+const DomainCollectionMap = {};
 
 export function protocolLinkToProtocolId(href) {
-    let indexString = '/protocols/view/';
-    let protocolIdIndex = href.indexOf(indexString);
-    let protocolId = href.substr(protocolIdIndex + indexString.length, href.length);
-    return protocolId;
+    const indexString = '/protocols/view/';
+    const protocolIdIndex = href.indexOf(indexString);
+    return href.substr(protocolIdIndex + indexString.length, href.length);
 }
 
 export function getDomainCollection() {
@@ -123,26 +124,29 @@ export function getDomainCollection() {
         if (!isEmpty(DomainCollectionMap)) {
             resolve(DomainCollectionMap);
         } else {
-            get(PhenxURL, async function (err, response, body) {
-                if (err) reject(err);
+            get(PhenxURL, async (err, response, body) => {
+                if (err) {
+                    reject(err);
+                }
                 const $ = cheerio.load(body, {normalizeWhitespace: true});
-                let table = $('#myTable');
-                let trs = table.find('tbody tr');
-                for (let i = 0; i < trs.length; i++) {
-                    let tr = trs[i];
-                    let tds = $(tr).find('td');
-                    if (tds.length !== 3) throw 'td length error.';
-                    let a = $(tds[1]).find('a');
-                    let href = $(a).attr('href');
-                    let protocolLink = 'https://www.phenxtoolkit.org' + href;
-                    let domainCollection = $(tds[2]).text().trim();
-                    let protocolId = protocolLinkToProtocolId(href);
+                const table = $('#myTable');
+                const trs = table.find('tbody tr');
+                for (const tr of trs) {
+                    const tds = $(tr).find('td');
+                    if (tds.length !== 3) {
+                        throw new Error('td length error.');
+                    }
+                    const a = $(tds[1]).find('a');
+                    const href = $(a).attr('href');
+                    const protocolLink = 'https://www.phenxtoolkit.org' + href;
+                    const domainCollection = $(tds[2]).text().trim();
+                    const protocolId = protocolLinkToProtocolId(href);
                     DomainCollectionMap[protocolId] = {protocolLink, domainCollection};
                 }
                 resolve(DomainCollectionMap);
-            })
+            });
         }
-    })
+    });
 }
 
 function getChildren(formElements) {
@@ -150,7 +154,7 @@ function getChildren(formElements) {
     if (formElements) {
         formElements.forEach(formElement => {
             if (formElement.elementType === 'section' || formElement.elementType === 'form') {
-                let newIds = getChildren(formElement.formElements);
+                const newIds = getChildren(formElement.formElements);
                 ids = ids.concat(newIds);
             } else if (formElement.elementType === 'question') {
                 ids.push({
@@ -166,8 +170,12 @@ function getChildren(formElements) {
 
 // Compare two elements
 export function compareElt(newEltObj, existingEltObj, source) {
-    let upperCaseSource = source.toUpperCase();
-    let isQualified = existingEltObj.registrationState.registrationStatus === 'Qualified';
+    if (newEltObj.elementType !== existingEltObj.elementType) {
+        console.log(`Two element type different. newEltObj: ${newEltObj.tinyId} existingEltObj: ${existingEltObj.tinyId} `);
+        process.exit(1);
+    }
+    const upperCaseSource = source.toUpperCase();
+    const isQualified = existingEltObj.registrationState.registrationStatus === 'Qualified';
     [existingEltObj, newEltObj].forEach(eltObj => {
         eltObj.designations.sort((a, b) => a.designation >= b.designation);
         eltObj.definitions.sort((a, b) => a.definition >= b.definition);
@@ -195,10 +203,8 @@ export function compareElt(newEltObj, existingEltObj, source) {
 // Merge two elements
 function mergeDesignation(existingDesignations, newDesignations, source) {
     existingDesignations.forEach(existingDesignation => {
-        let i = findIndex(newDesignations, {designation: existingDesignation.designation});
+        const i = findIndex(newDesignations, {designation: existingDesignation.designation});
         if (i !== -1) {
-            existingDesignation.sources.push(source);
-            existingDesignation.sources = uniq(existingDesignation.sources);
             newDesignations = drop(newDesignations, i);
         }
     });
@@ -206,8 +212,11 @@ function mergeDesignation(existingDesignations, newDesignations, source) {
 }
 
 function mergeDefinition(existingDefinitions, newDefinitions, source) {
+    if (!existingDefinitions) {
+        existingDefinitions = [];
+    }
     existingDefinitions.forEach(existingDefinition => {
-        let i = findIndex(newDefinitions, {definition: existingDefinition.definition});
+        const i = findIndex(newDefinitions, {definition: existingDefinition.definition});
         if (i !== -1) {
             existingDefinition.sources.push(source);
             existingDefinition.sources = uniq(existingDefinition.sources);
@@ -218,18 +227,28 @@ function mergeDefinition(existingDefinitions, newDefinitions, source) {
 }
 
 export function mergeBySources(newSources, existingSources, sources) {
-    let otherSources = existingSources.filter(o => sources.indexOf(o.source) === -1);
+    if (!existingSources) {
+        existingSources = [];
+    }
+    const otherSources = existingSources.filter(o => sources.indexOf(o.source) === -1);
     return newSources.concat(otherSources);
 }
 
 export function mergeSourcesBySourcesName(newSources, existingSources, sources) {
-    let otherSources = existingSources.filter(o => sources.indexOf(o.sourceName) === -1);
+    if (!existingSources) {
+        existingSources = [];
+    }
+    const otherSources = existingSources.filter(o => sources.indexOf(o.sourceName) === -1);
     return newSources.concat(otherSources);
 }
 
 export function mergeElt(existingEltObj, newEltObj, source) {
-    let upperCaseSource = source.toUpperCase();
-    let sources = sourceMap[upperCaseSource]; // ['PhenX', 'PhenX Variable']
+    if (newEltObj.elementType !== existingEltObj.elementType) {
+        console.log(`Two element type different. newEltObj: ${newEltObj.tinyId} existingEltObj: ${existingEltObj.tinyId} `);
+        process.exit(1);
+    }
+    const upperCaseSource = source.toUpperCase();
+    const sources = sourceMap[upperCaseSource]; // ['PhenX', 'PhenX Variable']
     existingEltObj.designations = mergeDesignation(existingEltObj.designations, newEltObj.designations, source);
     existingEltObj.definitions = mergeDefinition(existingEltObj.definitions, newEltObj.definitions, source);
 
@@ -243,6 +262,10 @@ export function mergeElt(existingEltObj, newEltObj, source) {
     existingEltObj.version = newEltObj.version;
 
     // Those 50 forms qualified, We don't want to modify form elements.
+    if (!existingEltObj.registrationState) {
+        console.log(existingEltObj.tinyId + ' has no registrationState');
+        process.exit(1);
+    }
     if (existingEltObj.registrationState.registrationStatus !== 'Qualified') {
         existingEltObj.formElements = newEltObj.formElements;
     }
@@ -262,13 +285,13 @@ export function mergeElt(existingEltObj, newEltObj, source) {
 
 // Fix data type
 function fixDatatypeText(datatypeText) {
-    let minLengthString = datatypeText.minLength;
-    let minLength = parseInt(minLengthString);
+    const minLengthString = datatypeText.minLength;
+    const minLength = parseInt(minLengthString, 10);
 
-    let maxLengthString = datatypeText.maxLength;
-    let maxLength = parseInt(maxLengthString);
+    const maxLengthString = datatypeText.maxLength;
+    const maxLength = parseInt(maxLengthString, 10);
 
-    let result: any = {};
+    const result: any = {};
     if (!isNaN(minLength)) {
         result.minLength = minLength;
     }
@@ -279,13 +302,13 @@ function fixDatatypeText(datatypeText) {
 }
 
 function fixDatatypeNumber(datatypeNumber) {
-    let minValueString = datatypeNumber.minValue;
-    let minValue = parseInt(minValueString);
+    const minValueString = datatypeNumber.minValue;
+    const minValue = parseInt(minValueString, 10);
 
-    let maxValueString = datatypeNumber.maxValue;
-    let maxValue = parseInt(maxValueString);
+    const maxValueString = datatypeNumber.maxValue;
+    const maxValue = parseInt(maxValueString, 10);
 
-    let result: any = {};
+    const result: any = {};
     if (!isNaN(minValue)) {
         result.minValue = minValue;
     }
@@ -296,10 +319,10 @@ function fixDatatypeNumber(datatypeNumber) {
 }
 
 function fixDatatypeDate(datatypeDate) {
-    let precisionString = datatypeDate.precision + '';
-    let precision = precisionString.trim();
+    const precisionString = datatypeDate.precision + '';
+    const precision = precisionString.trim();
 
-    let result: any = {};
+    const result: any = {};
     if (precision) {
         result.precision = precision;
     }
@@ -307,10 +330,10 @@ function fixDatatypeDate(datatypeDate) {
 }
 
 function fixDatatypeTime(datatypeTime) {
-    let formatString = datatypeTime.format + '';
-    let format = formatString.trim();
+    const formatString = datatypeTime.format + '';
+    const format = formatString.trim();
 
-    let result: any = {};
+    const result: any = {};
     if (format) {
         result.format = format;
     }
@@ -318,13 +341,13 @@ function fixDatatypeTime(datatypeTime) {
 }
 
 function fixDatatypeDynamicCodeList(datatypeDynamicCodeList) {
-    let systemString = datatypeDynamicCodeList.system + '';
-    let system = systemString.trim();
+    const systemString = datatypeDynamicCodeList.system + '';
+    const system = systemString.trim();
 
-    let codeString = datatypeDynamicCodeList.code + '';
-    let code = codeString.trim();
+    const codeString = datatypeDynamicCodeList.code + '';
+    const code = codeString.trim();
 
-    let result: any = {};
+    const result: any = {};
     if (system) {
         result.system = system;
     }
@@ -335,10 +358,10 @@ function fixDatatypeDynamicCodeList(datatypeDynamicCodeList) {
 }
 
 function fixDatatypeValueList(datatypeValueList) {
-    let datatypeString = datatypeValueList.datatype + '';
-    let datatype = datatypeString.trim();
+    const datatypeString = datatypeValueList.datatype + '';
+    const datatype = datatypeString.trim();
 
-    let result: any = {};
+    const result: any = {};
     if (datatype) {
         result.datatype = datatype;
     }
@@ -346,16 +369,16 @@ function fixDatatypeValueList(datatypeValueList) {
 }
 
 function fixDatatypeExternallyDefined(datatypeExternallyDefined) {
-    let linkString = datatypeExternallyDefined.link + '';
-    let link = linkString.trim();
+    const linkString = datatypeExternallyDefined.link;
+    const link = linkString.trim();
 
-    let descriptionString = datatypeExternallyDefined.description + '';
-    let description = descriptionString.trim();
+    const descriptionString = datatypeExternallyDefined.description;
+    const description = descriptionString.trim();
 
-    let descriptionFormatString = datatypeExternallyDefined.descriptionFormat + '';
-    let descriptionFormat = descriptionFormatString.trim();
+    const descriptionFormatString = datatypeExternallyDefined.descriptionFormat;
+    const descriptionFormat = descriptionFormatString.trim();
 
-    let result: any = {};
+    const result: any = {};
     if (link) {
         result.link = link;
     }
@@ -369,33 +392,33 @@ function fixDatatypeExternallyDefined(datatypeExternallyDefined) {
 }
 
 export function fixValueDomainOrQuestion(obj) {
-    let datatype = obj.datatype;
+    const datatype = obj.datatype;
     if (datatype === 'Text' && !isEmpty(datatype.datatypeText)) {
         obj.datatypeText = fixDatatypeText(obj.datatypeText);
     }
 
     if (datatype === 'Number' && !isEmpty(datatype.datatypeNumber)) {
-        obj.datatypeNumber = fixDatatypeNumber(obj.datatypeNumber)
+        obj.datatypeNumber = fixDatatypeNumber(obj.datatypeNumber);
     }
 
     if (datatype === 'Date' && !isEmpty(datatype.datatypeDate)) {
-        obj.datatypeDate = fixDatatypeDate(obj.datatypeDate)
+        obj.datatypeDate = fixDatatypeDate(obj.datatypeDate);
     }
 
     if (datatype === 'Time' && !isEmpty(datatype.datatypeTime)) {
-        obj.datatypeTime = fixDatatypeTime(obj.datatypeTime)
+        obj.datatypeTime = fixDatatypeTime(obj.datatypeTime);
     }
 
     if (datatype === 'Dynamic Code List' && !isEmpty(datatype.datatypeDynamicCodeList)) {
-        obj.datatypeDynamicCodeList = fixDatatypeDynamicCodeList(obj.datatypeDynamicCodeList)
+        obj.datatypeDynamicCodeList = fixDatatypeDynamicCodeList(obj.datatypeDynamicCodeList);
     }
 
     if (datatype === 'Value List' && !isEmpty(datatype.datatypeValueList)) {
-        obj.datatypeValueList = fixDatatypeValueList(obj.datatypeValueList)
+        obj.datatypeValueList = fixDatatypeValueList(obj.datatypeValueList);
     }
 
     if (datatype === 'Externally Defined' && !isEmpty(datatype.datatypeExternallyDefined)) {
-        obj.datatypeExternallyDefined = fixDatatypeExternallyDefined(obj.datatypeExternallyDefined)
+        obj.datatypeExternallyDefined = fixDatatypeExternallyDefined(obj.datatypeExternallyDefined);
     }
 }
 
