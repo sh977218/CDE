@@ -6,18 +6,18 @@ import { generateTinyId } from 'server/system/mongo-data';
 import { classifyItem } from 'shared/system/classificationShared';
 import { batchloader, created } from 'ingester/shared/utility';
 
-export async function createCde(row, formId, protocol) {
-    let classificationArray = protocol['classification'];
-    let designations = parseDesignations(row);
-    let valueDomain = parseValueDomain(row);
-    let ids = parseIds(formId, row);
-    let properties = parseProperties(row);
+export async function createRedCde(row, formId, protocol) {
+    const classificationArray = protocol.classification;
+    const designations = parseDesignations(row);
+    const valueDomain = parseValueDomain(row);
+    const ids = parseIds(formId, row);
+    const properties = parseProperties(row);
 
-    let newCde: any = {
+    const newCde: any = {
         tinyId: generateTinyId(),
         created,
         createdBy: batchloader,
-        designations: designations,
+        designations,
         stewardOrg: {name: 'PhenX'},
         sources: [],
         classification: [],
@@ -29,8 +29,8 @@ export async function createCde(row, formId, protocol) {
         comments: []
     };
 
-    let classificationToAdd = ['REDCap'].concat(classificationArray);
-    classifyItem(newCde, "PhenX", classificationToAdd);
+    const classificationToAdd = ['REDCap'].concat(classificationArray);
+    classifyItem(newCde, 'PhenX', classificationToAdd);
 
     return newCde;
 }

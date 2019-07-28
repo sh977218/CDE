@@ -34,7 +34,9 @@ try {
 schemas.dataElementSchema.pre('save', function (next) {
     const elt = this;
 
-    if (this.archived) return next();
+    if (elt.archived) {
+        return next();
+    }
     validateSchema(elt).then(() => {
         try {
             elastic.updateOrInsert(elt);
@@ -45,7 +47,9 @@ schemas.dataElementSchema.pre('save', function (next) {
             });
         }
         next();
-    }, next);
+    }, err => {
+        next(`Cde ${elt.tinyId} has error: ` + err);
+    });
 });
 
 const conn = connHelper.establishConnection(config.database.appData);

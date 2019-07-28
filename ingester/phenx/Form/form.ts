@@ -24,7 +24,7 @@ function extractRedCapZip(protocolId) {
     }
 }
 
-export async function createForm(protocol) {
+export async function createPhenxForm(protocol) {
     extractRedCapZip(protocol.protocolID);
     const designations = parseDesignations(protocol);
     const definitions = parseDefinitions(protocol);

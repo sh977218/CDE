@@ -4,26 +4,25 @@ import { parseFormElements as parseLoincFormElements } from 'ingester/loinc/Form
 import { map as orgMapping } from 'ingester/loinc/Mapping/ORG_INFO_MAP';
 
 export async function parseFormElements(protocol, attachments, newForm) {
-    let loincStandard = find(protocol.standards, standard => standard.Source === 'LOINC');
+    const loincStandard = find(protocol.standards, standard => standard.Source === 'LOINC');
     if (isEmpty(loincStandard)) {
         await parseRedcapFormElements(protocol, attachments, newForm);
     } else {
-        let formElements = await parseLoincFormElements(loincStandard, orgMapping['PhenX']);
-        let loinc = loincStandard.loinc;
+        const formElements = await parseLoincFormElements(loincStandard, orgMapping.PhenX);
+        const loinc = loincStandard.loinc;
         if (!loinc['PANEL HIERARCHY']) {
-            console.log(`${protocol.protocolID} has LOINC ${loinc.loincId} PANEL HIERARCHY is missing.`);
-            process.exit(1);
+            console.log(`Protocol ${protocol.protocolID} has LOINC ${loinc.loincId} PANEL HIERARCHY is missing.`);
         }
         newForm.formElements = formElements;
     }
     if (protocol.specificInstructions && protocol.specificInstructions.trim() !== 'None') {
         newForm.formElements.unshift({
-            "elementType": "section",
-            "instructions": {
+            elementType: 'section',
+            instructions: {
                 value: protocol.specificInstructions,
-                valueFormat: "html"
+                valueFormat: 'html'
             },
-            "formElements": []
+            formElements: []
         });
     }
 }

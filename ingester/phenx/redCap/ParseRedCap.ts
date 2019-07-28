@@ -2,7 +2,7 @@ import * as csv from 'csv-parse';
 import { createReadStream, existsSync, readFile } from 'fs';
 import { find, isEmpty } from 'lodash';
 import { DataElement, DataElementSource } from 'server/cde/mongo-cde';
-import { createCde } from 'ingester/phenx/redCap/cde';
+import { createRedCde } from 'ingester/phenx/redCap/cde';
 import { convert } from 'ingester/phenx/redCap/RedCapCdeToQuestion';
 import {
     batchloader, compareElt, imported, lastMigrationScript, mergeElt, printUpdateResult, updateCde
@@ -73,18 +73,18 @@ function doDescriptive(sectionFes, redCapCde, attachments) {
     const fieldLabel = redCapCde['Field Label'];
     const foundAttachment = find(attachments, a => a.filename === variableFieldName);
     if (foundAttachment) {
-        const img = '<img src="/data/' + foundAttachment.fileid + '"/>';
-        const figcaption = '<figcaption>' + fieldLabel + '</figcaption>';
-        sectionFes.instructions.value += '\n<figure>' + figcaption + img + '</figure>';
+        const img = `<img src="/data/${foundAttachment.fileid}" alt="${foundAttachment.filename}"/>`;
+        const figcaption = `<figcaption>${fieldLabel}</figcaption>`;
+        sectionFes.instructions.value += `\n<figure>${figcaption}${img}</figure>`;
     } else {
         sectionFes.instructions.value += '\n' + fieldLabel;
     }
 }
 
-async function redCapToCde(redCapCde, redCapCdes, formId, protocol, newForm) {
-    let newCdeObj = await createCde(redCapCde, formId, protocol);
-    const newCde = new DataElement(newCdeObj);
-    newCdeObj = newCde.toObject();
+async function doOneRedCap(redCap, redCaps, formId, protocol) {
+    const redCapCde = await createRedCde(redCap, formId, protocol);
+    const newCde = new DataElement(redCapCde);
+    const newCdeObj = newCde.toObject();
     let existingCde = await DataElement.findOne({archived: false, 'ids.id': newCdeObj.ids[0].id});
     if (!existingCde) {
         existingCde = await newCde.save();
@@ -107,11 +107,12 @@ async function redCapToCde(redCapCde, redCapCdes, formId, protocol, newForm) {
             changedRedCdes.push(existingCde.tinyId);
         }
     }
-    for (const comment of newCdeObj.comments) {
-        comment.element.eltId = newCdeObj.tinyId;
+    for (const comment of redCapCde.comments) {
+        comment.element.eltId = existingCde.tinyId;
         await new Comment(comment).save();
     }
     delete newCdeObj.tinyId;
+    delete newCdeObj._id;
     newCdeObj.attachments = [];
     const updateResult = await DataElementSource.updateOne({tinyId: existingCde.tinyId}, newCdeObj, {upsert: true});
     printUpdateResult(updateResult, existingCde);
@@ -151,17 +152,17 @@ export async function parseFormElements(protocol, attachments, newForm) {
         process.exit(1);
     }
 
-    let redCapCdes = [];
+    let redCaps = [];
     const instrumentFileName = 'instrument.csv';
     const instrumentFilePath = redCapFolder + instrumentFileName;
     const instrumentFileExist = existsSync(instrumentFilePath);
     if (instrumentFileExist) {
-        redCapCdes = await doInstrument(instrumentFilePath);
+        redCaps = await doInstrument(instrumentFilePath);
     } else {
         const instrumentFilePathAlter = redCapFolder + 'PX' + protocolId + '/' + instrumentFileName;
         const instrumentFileExistAlter = existsSync(instrumentFilePathAlter);
         if (instrumentFileExistAlter) {
-            redCapCdes = await doInstrument(instrumentFilePathAlter);
+            redCaps = await doInstrument(instrumentFilePathAlter);
         } else {
             const csvComment = {
                 text: newForm.ids[0].id + ' PhenX Batch loader was not able to find instrument.csv',
@@ -181,12 +182,12 @@ export async function parseFormElements(protocol, attachments, newForm) {
     let newSection = true;
     let fe;
     let index = 0;
-    for (const redCapCde of redCapCdes) {
+    for (const redCap of redCaps) {
         index++;
-        const fieldType = redCapCde['Field Type'];
-        const variableName = redCapCde['Variable / Field Name'];
-        const fieldLabel = redCapCde['Field Label'];
-        const sectionHeader = redCapCde['Section Header'];
+        const fieldType = redCap['Field Type'];
+        const variableName = redCap['Variable / Field Name'];
+        const fieldLabel = redCap['Field Label'];
+        const sectionHeader = redCap['Section Header'];
         if (fieldType === 'descriptive') {
             if (newSection) {
                 formElements.push({
@@ -199,7 +200,7 @@ export async function parseFormElements(protocol, attachments, newForm) {
                 newSection = false;
             }
             fe = formElements[formElements.length - 1];
-            doDescriptive(fe, redCapCde, attachments);
+            doDescriptive(fe, redCap, attachments);
         } else {
             if (index === 1) {
                 formElements.push({
@@ -213,8 +214,8 @@ export async function parseFormElements(protocol, attachments, newForm) {
             newSection = true;
             fe = formElements[formElements.length - 1];
             if (!isEmpty(sectionHeader) || !isEmpty(fieldLabel)) {
-                const existingCde = await redCapToCde(redCapCde, redCapCdes, formId, protocol, newForm);
-                const question = await convert(redCapCde, redCapCdes, existingCde, newForm);
+                const existingCde = await doOneRedCap(redCap, redCaps, formId, protocol);
+                const question = await convert(redCap, redCaps, existingCde, newForm);
                 fe.formElements.push(question);
             } else {
                 console.log('Empty designation row in redCap. ' + protocolId);

@@ -1,24 +1,23 @@
 import { isEmpty } from 'lodash';
 import { DataElement, DataElementSource } from 'server/cde/mongo-cde';
-import { createCde } from 'ingester/loinc/CDE/cde';
+import { createLoincCde } from 'ingester/loinc/CDE/cde';
 import {
     batchloader, compareElt, imported, lastMigrationScript, mergeElt, printUpdateResult, updateCde
 } from 'ingester/shared/utility';
 
 export async function runOneCde(loinc, orgInfo) {
-    const loincId = loinc.loincId;
-    let newCdeObj = await createCde(loinc, orgInfo);
-    const newCde = new DataElement(newCdeObj);
-    newCdeObj = newCde.toObject();
-    let existingCde = await DataElement.findOne({archived: false, 'ids.id': loincId});
+    const loincCde = await createLoincCde(loinc, orgInfo);
+    const newCde = new DataElement(loincCde);
+    const newCdeObj = newCde.toObject();
+    let existingCde = await DataElement.findOne({archived: false, 'ids.id': loinc.loincId});
     if (!existingCde) {
         existingCde = await newCde.save();
     } else {
-        existingCde.imported = imported;
-        existingCde.lastMigrationScript = lastMigrationScript;
-        existingCde.changeNote = lastMigrationScript;
         const existingCdeObj = existingCde.toObject();
-        const diff = compareElt(newCdeObj, existingCdeObj, 'LOINC');
+        existingCdeObj.imported = imported;
+        existingCdeObj.lastMigrationScript = lastMigrationScript;
+        existingCdeObj.changeNote = lastMigrationScript;
+        const diff = compareElt(newCde.toObject(), existingCde.toObject(), 'LOINC');
         if (isEmpty(diff)) {
             await existingCde.save();
         } else {
@@ -27,6 +26,7 @@ export async function runOneCde(loinc, orgInfo) {
         }
     }
     delete newCdeObj.tinyId;
+    delete newCdeObj._id;
     newCdeObj.attachments = [];
     const updateResult = await DataElementSource.updateOne({tinyId: existingCde.tinyId}, newCdeObj, {upsert: true});
     printUpdateResult(updateResult, existingCde);

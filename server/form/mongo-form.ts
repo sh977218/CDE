@@ -42,9 +42,11 @@ fs.readFile(path.resolve(__dirname, '../../shared/form/assets/form.schema.json')
 });
 
 schemas.formSchema.pre('save', function (next) {
-    let elt = this;
+    const elt = this;
 
-    if (this.archived) return next();
+    if (elt.archived) {
+        return next();
+    }
     validateSchema(elt).then(() => {
         try {
             elastic.updateOrInsert(elt);
@@ -55,7 +57,9 @@ schemas.formSchema.pre('save', function (next) {
             });
         }
         next();
-    }, next);
+    }, err => {
+        next(`Form ${elt.tinyId} has error: ` + err);
+    });
 });
 
 const conn = connHelper.establishConnection(config.database.appData);

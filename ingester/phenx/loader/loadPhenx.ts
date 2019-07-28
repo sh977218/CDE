@@ -2,7 +2,7 @@ import { isEmpty } from 'lodash';
 import { Form, FormSource } from 'server/form/mongo-form';
 import { Comment } from 'server/discuss/discussDb';
 import { ProtocolModel } from 'ingester/createMigrationConnection';
-import { createForm } from 'ingester/phenx/Form/form';
+import { createPhenxForm } from 'ingester/phenx/Form/form';
 import {
     batchloader,
     compareElt,
@@ -74,25 +74,25 @@ process.on('unhandledRejection', error => {
     cursor.eachAsync(async (protocol: any) => {
         const protocolObj = protocol.toObject();
         const protocolId = protocolObj.protocolID;
-        let newFormObj = await createForm(protocolObj);
-        const newForm = new Form(newFormObj);
-        newFormObj = newForm.toObject();
+        const phenxForm = await createPhenxForm(protocolObj);
+        const newForm = new Form(phenxForm);
+        const newFormObj = newForm.toObject();
         let existingForm = await Form.findOne({archived: false, 'ids.id': protocolId});
         if (!existingForm) {
             existingForm = await newForm.save();
             createdForm++;
             createdForms.push(existingForm.tinyId);
         } else {
-            existingForm.imported = imported;
-            existingForm.lastMigrationScript = lastMigrationScript;
-            existingForm.changeNote = lastMigrationScript;
+            const existingFormObj = existingForm.toObject();
+            existingFormObj.imported = imported;
+            existingFormObj.lastMigrationScript = lastMigrationScript;
+            existingFormObj.changeNote = lastMigrationScript;
             const diff = compareElt(newForm.toObject(), existingForm.toObject(), 'PhenX');
             if (isEmpty(diff)) {
                 await existingForm.save();
                 sameForm++;
                 sameForms.push(existingForm.tinyId);
             } else {
-                const existingFormObj = existingForm.toObject();
                 mergeElt(existingFormObj, newFormObj, 'PhenX');
                 await updateForm(existingFormObj, batchloader, {updateSource: true});
                 changedForm++;
@@ -100,12 +100,13 @@ process.on('unhandledRejection', error => {
             }
         }
         if (newFormObj.registrationState.registrationStatus !== 'Qualified') {
-            for (const comment of newFormObj.comments) {
+            for (const comment of phenxForm.comments) {
                 comment.element.eltId = existingForm.tinyId;
                 await new Comment(comment).save();
             }
         }
         delete newFormObj.tinyId;
+        delete newFormObj._id;
         newFormObj.attachments = [];
         const updateResult = await FormSource.updateOne({tinyId: existingForm.tinyId}, newFormObj, {upsert: true});
         printUpdateResult(updateResult, existingForm);

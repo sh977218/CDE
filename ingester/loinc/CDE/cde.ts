@@ -12,25 +12,25 @@ import { parseValueDomain } from 'ingester/loinc/CDE/ParseValueDomain';
 
 import { batchloader, created, imported } from 'ingester/shared/utility';
 
-export async function createCde(element, orgInfo) {
-    let loinc = element.loinc ? element.loinc : element;
-    let designations = parseDesignations(loinc, element);
-    let definitions = parseDefinitions(loinc);
-    let ids = parseIds(loinc);
-    let properties = parseProperties(loinc);
-    let referenceDocuments = parseReferenceDocuments(loinc);
-    let valueDomain = parseValueDomain(loinc);
-    let concepts = parseConcepts(loinc);
-    let stewardOrg = parseStewardOrg(orgInfo);
-    let sources = parseSources(loinc);
-    let classification = await parseClassification(loinc, orgInfo);
+export async function createLoincCde(element, orgInfo) {
+    const loinc = element.loinc ? element.loinc : element;
+    const designations = parseDesignations(loinc, element);
+    const definitions = parseDefinitions(loinc);
+    const ids = parseIds(loinc);
+    const properties = parseProperties(loinc);
+    const referenceDocuments = parseReferenceDocuments(loinc);
+    const valueDomain = parseValueDomain(loinc);
+    const concepts = parseConcepts(loinc);
+    const stewardOrg = parseStewardOrg(orgInfo);
+    const sources = parseSources(loinc);
+    const classification = await parseClassification(loinc, orgInfo);
 
     return {
         tinyId: generateTinyId(),
         createdBy: batchloader,
         created,
         imported,
-        registrationState: {registrationStatus: "Standard"},
+        registrationState: {registrationStatus: 'Standard'},
         sources,
         designations,
         definitions,

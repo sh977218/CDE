@@ -218,8 +218,6 @@ function mergeDefinition(existingDefinitions, newDefinitions, source) {
     existingDefinitions.forEach(existingDefinition => {
         const i = findIndex(newDefinitions, {definition: existingDefinition.definition});
         if (i !== -1) {
-            existingDefinition.sources.push(source);
-            existingDefinition.sources = uniq(existingDefinition.sources);
             newDefinitions = drop(newDefinitions, i);
         }
     });
@@ -262,10 +260,6 @@ export function mergeElt(existingEltObj, newEltObj, source) {
     existingEltObj.version = newEltObj.version;
 
     // Those 50 forms qualified, We don't want to modify form elements.
-    if (!existingEltObj.registrationState) {
-        console.log(existingEltObj.tinyId + ' has no registrationState');
-        process.exit(1);
-    }
     if (existingEltObj.registrationState.registrationStatus !== 'Qualified') {
         existingEltObj.formElements = newEltObj.formElements;
     }

@@ -79,14 +79,6 @@ doOneNindsCde = async cdeId => {
             existingCde.markModified('imported');
             let diff = CompareCDE.compareCde(newCde, existingCde);
 
-            //@TODO uncomment after this load.
-/*
-            for (let comment of newCdeObj.comments) {
-                comment.element.eltId = existingCde.tinyId;
-                await new Comment(comment).save();
-                console.log('comment saved on existing CDE ' + existingCde.tinyId);
-            }
-*/
             if (_.isEmpty(diff)) {
                 await existingCde.save();
                 sameCDE++;
