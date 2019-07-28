@@ -6,11 +6,11 @@ import { generateTinyId } from 'server/system/mongo-data';
 import { classifyItem } from 'shared/system/classificationShared';
 import { batchloader, created } from 'ingester/shared/utility';
 
-export async function createRedCde(row, formId, protocol) {
+export async function createRedCde(row, protocol, newForm) {
     const classificationArray = protocol.classification;
     const designations = parseDesignations(row);
     const valueDomain = parseValueDomain(row);
-    const ids = parseIds(formId, row);
+    const ids = parseIds(row, newForm);
     const properties = parseProperties(row);
 
     const newCde: any = {

@@ -1,11 +1,13 @@
+import { hostname } from 'os';
 import { createConnection, Schema } from 'mongoose';
-import { config } from 'server/system/parseConfig';
 
-let migrationConfig = config.database.migration;
-
-let migrationConn = createConnection(migrationConfig.uri, migrationConfig.options);
+const migrationConn = createConnection('mongodb://miguser:password@localhost:27017/migration', {
+    ssl: false,
+    useCreateIndex: true,
+    useNewUrlParser: true
+});
 migrationConn.once('open', function callback() {
-    console.info('mongodb ' + migrationConfig.db + ' connection open');
+    console.log('mongodb local migration connection open');
 });
 
 // LOINC
@@ -38,9 +40,11 @@ export const ProtocolModel = migrationConn.model('Protocol', new Schema({}, {
     collection: 'Protocol',
     usePushEach: true
 }));
-export const PhenxURL = "https://www.phenxtoolkit.org/protocols";
-export const redCapZipFolder = 's:/MLB/CDE/PhenX/www.phenxtoolkit.org/toolkit_content/redcap_zip/';
-
+export const PhenxURL = 'https://www.phenxtoolkit.org/protocols';
+export let redCapZipFolder = 's:/MLB/CDE/PhenX/www.phenxtoolkit.org/toolkit_content/redcap_zip/';
+if (hostname() === 'Peter-PC') {
+    redCapZipFolder = 'e:/www.phenxtoolkit.org/toolkit_content/redcap_zip/';
+}
 
 // MIGRATION REFERENCE COLLECTION
 export const MigrationPhenxToLoincMappingModel = migrationConn.model('MigrationPhenxToLoincMapping', new Schema({}, {

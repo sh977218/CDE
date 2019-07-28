@@ -11,7 +11,6 @@ import { leadingZerosProtocolId } from 'ingester/phenx/Form/ParseAttachments';
 import { Comment } from 'server/discuss/discussDb';
 import { redCapZipFolder } from 'ingester/createMigrationConnection';
 
-
 let createdRedCde = 0;
 const createdRedCdes = [];
 let sameRedCde = 0;
@@ -57,7 +56,9 @@ function doInstrument(instrumentFilePath): Promise<any[]> {
         createReadStream(instrumentFilePath)
             .pipe(csv(options))
             .on('data', data => {
-                results.push(data);
+                if (!isEmpty(data)) {
+                    results.push(data);
+                }
             })
             .on('err', err => {
                 reject(err);
@@ -81,8 +82,8 @@ function doDescriptive(sectionFes, redCapCde, attachments) {
     }
 }
 
-async function doOneRedCap(redCap, redCaps, formId, protocol) {
-    const redCapCde = await createRedCde(redCap, formId, protocol);
+async function doOneRedCap(redCap, redCaps, protocol, newForm) {
+    const redCapCde = await createRedCde(redCap, protocol, newForm);
     const newCde = new DataElement(redCapCde);
     const newCdeObj = newCde.toObject();
     let existingCde = await DataElement.findOne({archived: false, 'ids.id': newCdeObj.ids[0].id});
@@ -125,32 +126,6 @@ export async function parseFormElements(protocol, attachments, newForm) {
 
     const leadingZeroProtocolId = leadingZerosProtocolId(protocolId);
     const redCapFolder = redCapZipFolder + 'PX' + leadingZeroProtocolId + '/';
-
-    let formId = '';
-    const instrumentIDFileName = 'instrumentID.txt';
-    const instrumentIDFilePath = redCapFolder + instrumentIDFileName;
-    const instrumentIDFileExist = existsSync(instrumentIDFilePath);
-    if (instrumentIDFileExist) {
-        formId = await doInstrumentID(instrumentIDFilePath);
-    } else {
-        console.log('instrumentId.txt not found. protocolId: ' + protocolId);
-        process.exit(1);
-    }
-
-    let authorId = '';
-    const authorIdFileName = 'AuthorID.txt';
-    const authorIdFilePath = redCapFolder + authorIdFileName;
-    const authorIdFileExist = existsSync(authorIdFilePath);
-    if (authorIdFileExist) {
-        authorId = await doAuthorID(authorIdFilePath);
-        if (authorId !== 'PhenX') {
-            console.log('Unknown author Id ' + authorId);
-            process.exit(1);
-        }
-    } else {
-        console.log('AuthorID.txt not found. protocolId: ' + protocolId);
-        process.exit(1);
-    }
 
     let redCaps = [];
     const instrumentFileName = 'instrument.csv';
@@ -214,7 +189,7 @@ export async function parseFormElements(protocol, attachments, newForm) {
             newSection = true;
             fe = formElements[formElements.length - 1];
             if (!isEmpty(sectionHeader) || !isEmpty(fieldLabel)) {
-                const existingCde = await doOneRedCap(redCap, redCaps, formId, protocol);
+                const existingCde = await doOneRedCap(redCap, redCaps, protocol, newForm);
                 const question = await convert(redCap, redCaps, existingCde, newForm);
                 fe.formElements.push(question);
             } else {
