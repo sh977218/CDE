@@ -4,7 +4,7 @@ import { addCategory, findSteward } from 'shared/system/classificationShared';
 export function classifyItem(item: Item, orgName: string, classifPath: string[]): void {
     let steward = findSteward(item, orgName);
     if (!steward) {
-        if (!item.classification) item.classification = [];
+        if (!item.classification) { item.classification = []; }
         item.classification.push({
             stewardOrg: {
                 name: orgName
@@ -25,15 +25,13 @@ export function flattenClassification(elt: Item): string[] {
         }
         currentString = currentString + classif.name;
         if (classif.elements && classif.elements.length > 0) {
-            classif.elements.forEach((cl) => {
-                doClassif(currentString, cl, result);
-            });
+            classif.elements.forEach(cl => doClassif(currentString, cl, result));
         } else {
             result.push(currentString);
         }
     }
 
-    let result: string[] = [];
+    const result: string[] = [];
     if (elt.classification) {
         elt.classification.forEach(cl => {
             if (cl.elements) {
@@ -46,7 +44,7 @@ export function flattenClassification(elt: Item): string[] {
 
 export function mergeArrayByProperty(arrayFrom: any, arrayTo: any, property: string): void {
     arrayFrom[property].forEach((objFrom: any) => {
-        let exist = arrayTo[property].filter((objTo: any) => JSON.stringify(objTo) === JSON.stringify(objFrom)).length > 0;
-        if (!exist) arrayTo[property].push(objFrom);
+        const exist = arrayTo[property].filter((objTo: any) => JSON.stringify(objTo) === JSON.stringify(objFrom)).length > 0;
+        if (!exist) { arrayTo[property].push(objFrom); }
     });
 }

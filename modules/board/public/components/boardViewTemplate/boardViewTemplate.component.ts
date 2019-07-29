@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, Input, Output, TemplateRef, ViewChild } from "@angular/core";
+import { Component, OnInit, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material';
 
 @Component({
@@ -10,9 +10,9 @@ export class BoardViewTemplateComponent implements OnInit {
     @ViewChild('deleteBoardContent') deleteBoardContent: TemplateRef<any>;
     @Input() board: any;
     @Input() canEdit: boolean;
-    @Input() headerLink: boolean = true;
+    @Input() headerLink = true;
 
-    boardTitle: string = 'CDE(s)';
+    boardTitle = 'CDE(s)';
 
     @Output() onSave = new EventEmitter();
     @Output() onDelete = new EventEmitter();
@@ -45,7 +45,7 @@ export class BoardViewTemplateComponent implements OnInit {
     }
 
     clickHeader(board) {
-        if (this.onHeaderClick) this.onHeaderClick.emit(board);
+        if (this.onHeaderClick) { this.onHeaderClick.emit(board); }
     }
 
     onBoardShareStatusChange($event) {

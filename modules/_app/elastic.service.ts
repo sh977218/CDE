@@ -12,57 +12,14 @@ import { orderedList } from 'shared/system/regStatusShared';
 
 @Injectable()
 export class ElasticService {
-    searchSettings!: UserSearchSettings;
-    searchToken = 'id' + Math.random().toString(16).slice(2);
 
     constructor(public http: HttpClient,
                 private localStorageService: LocalStorageService,
                 private userService: UserService) {
         this.loadSearchSettings();
     }
-
-    buildElasticQuerySettings(queryParams: SearchSettings): SearchSettingsElastic {
-        return {
-            resultPerPage: queryParams.resultPerPage,
-            searchTerm: queryParams.q,
-            selectedOrg: queryParams.selectedOrg,
-            selectedOrgAlt: queryParams.selectedOrgAlt,
-            excludeAllOrgs: queryParams.excludeAllOrgs,
-            excludeOrgs: queryParams.excludeOrgs || [],
-            selectedElements: queryParams.classification || [],
-            selectedElementsAlt: queryParams.classificationAlt || [],
-            page: queryParams.page,
-            includeAggregations: true,
-            meshTree: queryParams.meshTree,
-            selectedStatuses: queryParams.regStatuses || [],
-            selectedDatatypes: queryParams.datatypes || [],
-            visibleStatuses: this.getUserDefaultStatuses(),
-            searchToken: this.searchToken,
-            fullRecord: undefined,
-        };
-    }
-
-    generalSearchQuery(settings: SearchSettingsElastic, type: 'cde' | 'form', cb: CbErr<ElasticQueryResponse, boolean>) {
-        let search = (good: Cb1<ElasticQueryResponse>, bad: CbErr) => {
-            this.http.post<ElasticQueryResponse>('/elasticSearch/' + type, settings).subscribe(good, bad);
-        };
-
-        function success(response: ElasticQueryResponse, isRetry = false) {
-            if (type === 'cde') {
-                ElasticService.highlightResults(response.cdes!);
-                response.cdes!.forEach(DataElement.validate);
-            } else {
-                ElasticService.highlightResults(response.forms!);
-                response.forms!.forEach(CdeForm.validate);
-            }
-            cb(undefined, response, isRetry);
-        }
-
-        search(success, () => {
-            if (settings.searchTerm) settings.searchTerm = settings.searchTerm.replace(/[^\w\s]/gi, '');
-            search(response => success(response, true), cb);
-        });
-    }
+    searchSettings!: UserSearchSettings;
+    searchToken = 'id' + Math.random().toString(16).slice(2);
 
     static getDefault(): UserSearchSettings {
         return {
@@ -91,31 +48,6 @@ export class ElasticService {
         };
     }
 
-    getDefaultSearchView() {
-        return this.searchSettings.defaultSearchView;
-    }
-
-    getExport(query: SearchSettingsElastic, type: 'cde' | 'form', cb: CbErr<ItemElastic[]>) {
-        this.http.post<ItemElastic[]>('/elasticSearchExport/' + type, query).subscribe(
-            response => cb(undefined, response),
-            (err: HttpErrorResponse) => {
-                if (err.status === 503) cb('The server is busy processing similar request, please try again in a minute.');
-                else cb('An error occured. This issue has been reported.');
-            }
-        );
-    }
-
-    getUserDefaultStatuses(): CurationStatus[] {
-        let overThreshold = false;
-        let result = orderedList.filter(status => {
-            if (overThreshold) return false;
-            overThreshold = this.searchSettings.lowestRegistrationStatus === status;
-            return true;
-        });
-        if (this.searchSettings.includeRetired) result.push('Retired');
-        return result;
-    }
-
     // static highlight(field1: string, field2: string, cde) {
     //     if (cde.highlight[field1 + '.' + field2]) {
     //         cde.highlight[field1 + '.' + field2].forEach(function (nameHighlight) {
@@ -140,10 +72,10 @@ export class ElasticService {
     }
 
     static highlightOne(field: string, cde: ItemElastic) {
-        if (!cde.highlight) return;
+        if (!cde.highlight) { return; }
         if (cde.highlight[field]) {
             if (field.indexOf('.') < 0) {
-                if (cde.highlight[field][0].replace(/<strong>/g, "").replace(/<\/strong>/g, "")
+                if (cde.highlight[field][0].replace(/<strong>/g, '').replace(/<\/strong>/g, '')
                     .substr(0, 50) === cde[field].substr(0, 50)) {
                     cde[field] = cde.highlight[field][0];
                 } else {
@@ -151,11 +83,11 @@ export class ElasticService {
                         cde[field] = cde[field].substr(0, 50) + ' [...] ' + cde.highlight[field][0];
                     }
                 }
-            } else cde[field.replace(/\..+$/, "")][field.replace(/^.+\./, "")] = cde.highlight[field][0];
+            } else { cde[field.replace(/\..+$/, '')][field.replace(/^.+\./, '')] = cde.highlight[field][0]; }
         } else {
             if (field.indexOf('.') < 0) {
                 cde[field] = cde[field].substr(0, 200);
-                if (cde[field].length > 199) cde[field] += '...';
+                if (cde[field].length > 199) { cde[field] += '...'; }
             }
         }
     }
@@ -164,10 +96,99 @@ export class ElasticService {
         elts.forEach(ElasticService.highlightElt);
     }
 
+    static setMatchedBy(cde: ItemElastic) {
+        let field = 'Full Document';
+        if (!cde.highlight) {
+            cde.highlight = {matchedBy: field};
+            return;
+        } else {
+            if (cde.highlight.primaryNameCopy || cde.highlight.primaryDefinitionCopy) { return; }
+            const matched = Object.keys(cde.highlight)[0];
+            if (matched === 'definitions.definition') { field = 'Definition'; }
+            if (matched.indexOf('classification.') > -1) { field = 'Classification'; }
+            if (matched.indexOf('valueDomain.permissibleValues') > -1) { field = 'Permissible Values'; }
+            if (matched.indexOf('.concepts.') > -1) { field = 'Concepts'; }
+            if (matched.substr(0, 11) === 'valueDomain') { field = 'Permissible Values'; }
+            if (matched.substr(0, 15) === 'flatProperties') { field = 'Properties'; }
+            if (matched === 'designations.designation') { field = 'Other Names'; }
+            if (matched === 'stewardOrgCopy.name') { field = 'Steward'; }
+            if (matched === 'flatIds') { field = 'Identifiers'; }
+            cde.highlight.matchedBy = field;
+        }
+    }
+
+    buildElasticQuerySettings(queryParams: SearchSettings): SearchSettingsElastic {
+        return {
+            resultPerPage: queryParams.resultPerPage,
+            searchTerm: queryParams.q,
+            selectedOrg: queryParams.selectedOrg,
+            selectedOrgAlt: queryParams.selectedOrgAlt,
+            excludeAllOrgs: queryParams.excludeAllOrgs,
+            excludeOrgs: queryParams.excludeOrgs || [],
+            selectedElements: queryParams.classification || [],
+            selectedElementsAlt: queryParams.classificationAlt || [],
+            page: queryParams.page,
+            includeAggregations: true,
+            meshTree: queryParams.meshTree,
+            selectedStatuses: queryParams.regStatuses || [],
+            selectedDatatypes: queryParams.datatypes || [],
+            visibleStatuses: this.getUserDefaultStatuses(),
+            searchToken: this.searchToken,
+            fullRecord: undefined,
+        };
+    }
+
+    generalSearchQuery(settings: SearchSettingsElastic, type: 'cde' | 'form', cb: CbErr<ElasticQueryResponse, boolean>) {
+        const search = (good: Cb1<ElasticQueryResponse>, bad: CbErr) => {
+            this.http.post<ElasticQueryResponse>('/elasticSearch/' + type, settings).subscribe(good, bad);
+        };
+
+        function success(response: ElasticQueryResponse, isRetry = false) {
+            if (type === 'cde') {
+                ElasticService.highlightResults(response.cdes!);
+                response.cdes!.forEach(DataElement.validate);
+            } else {
+                ElasticService.highlightResults(response.forms!);
+                response.forms!.forEach(CdeForm.validate);
+            }
+            cb(undefined, response, isRetry);
+        }
+
+        search(success, () => {
+            if (settings.searchTerm) { settings.searchTerm = settings.searchTerm.replace(/[^\w\s]/gi, ''); }
+            search(response => success(response, true), cb);
+        });
+    }
+
+    getDefaultSearchView() {
+        return this.searchSettings.defaultSearchView;
+    }
+
+    getExport(query: SearchSettingsElastic, type: 'cde' | 'form', cb: CbErr<ItemElastic[]>) {
+        this.http.post<ItemElastic[]>('/elasticSearchExport/' + type, query).subscribe(
+            response => cb(undefined, response),
+            (err: HttpErrorResponse) => {
+                if (err.status === 503) { cb('The server is busy processing similar request, please try again in a minute.'); }
+                else { cb('An error occured. This issue has been reported.'); }
+            }
+        );
+    }
+
+    getUserDefaultStatuses(): CurationStatus[] {
+        let overThreshold = false;
+        const result = orderedList.filter(status => {
+            if (overThreshold) { return false; }
+            overThreshold = this.searchSettings.lowestRegistrationStatus === status;
+            return true;
+        });
+        if (this.searchSettings.includeRetired) { result.push('Retired'); }
+        return result;
+    }
+
     loadSearchSettings() {
         if (!this.searchSettings) {
             this.searchSettings = this.localStorageService.get('SearchSettings');
-            if (!this.searchSettings) this.searchSettings = ElasticService.getDefault();
+            if (!this.searchSettings) { this.searchSettings = ElasticService.getDefault(); }
 
             this.userService.then(user => {
                 if (!user.searchSettings) {
@@ -187,32 +208,11 @@ export class ElasticService {
 
     saveConfiguration(settings: UserSearchSettings) {
         this.searchSettings = settings;
-        let savedSettings = JSON.parse(JSON.stringify(this.searchSettings));
+        const savedSettings = JSON.parse(JSON.stringify(this.searchSettings));
         delete savedSettings.includeRetired;
         this.localStorageService.set('SearchSettings', savedSettings);
         if (this.userService.user) {
             this.http.post('/server/user/', {searchSettings: savedSettings}).subscribe();
-        }
-    }
-
-    static setMatchedBy(cde: ItemElastic) {
-        let field = 'Full Document';
-        if (!cde.highlight) {
-            cde.highlight = {matchedBy: field};
-            return;
-        } else {
-            if (cde.highlight.primaryNameCopy || cde.highlight.primaryDefinitionCopy) return;
-            let matched = Object.keys(cde.highlight)[0];
-            if (matched === 'definitions.definition') field = 'Definition';
-            if (matched.indexOf('classification.') > -1) field = 'Classification';
-            if (matched.indexOf('valueDomain.permissibleValues') > -1) field = 'Permissible Values';
-            if (matched.indexOf('.concepts.') > -1) field = 'Concepts';
-            if (matched.substr(0, 11) === 'valueDomain') field = 'Permissible Values';
-            if (matched.substr(0, 15) === 'flatProperties') field = 'Properties';
-            if (matched === 'designations.designation') field = 'Other Names';
-            if (matched === 'stewardOrgCopy.name') field = 'Steward';
-            if (matched === 'flatIds') field = 'Identifiers';
-            cde.highlight.matchedBy = field;
         }
     }
 }

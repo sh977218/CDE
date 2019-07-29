@@ -12,7 +12,7 @@ import _uniq from 'lodash/uniq';
 })
 export class NamingComponent implements OnInit {
     @Input() elt: any;
-    @Input() canEdit: boolean = false;
+    @Input() canEdit = false;
     @Output() onEltChange = new EventEmitter();
     allTags = [];
 
@@ -21,7 +21,7 @@ export class NamingComponent implements OnInit {
     }
 
     ngOnInit() {
-        let stewardOrgName = this.elt.stewardOrg.name;
+        const stewardOrgName = this.elt.stewardOrg.name;
         this.orgHelperService.then(orgsDetailedInfo => {
             this.allTags = orgsDetailedInfo[stewardOrgName].nameTags;
         }, _noop);

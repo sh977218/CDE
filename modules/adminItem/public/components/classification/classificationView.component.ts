@@ -9,10 +9,10 @@ import { isSiteAdmin } from 'shared/system/authorizationShared';
 import { Classification, Item } from 'shared/models.model';
 import { TreeNode } from 'angular-tree-component';
 
-export type DeletedNodeEvent = {
+export interface DeletedNodeEvent {
     deleteClassificationArray: string[],
     deleteOrgName: string
-};
+}
 
 const actionMapping: IActionMapping = {
     mouse: {
@@ -40,7 +40,7 @@ export class ClassificationViewComponent {
         displayField: 'name',
         useVirtualScroll: false,
         isExpandedField: 'elements',
-        actionMapping: actionMapping
+        actionMapping
     };
 
     constructor(public dialog: MatDialog,
@@ -56,28 +56,28 @@ export class ClassificationViewComponent {
 
     openDeleteClassificationModal(node: TreeNode, deleteOrgName: string) {
         this.deleteClassificationString = node.data.name;
-        let deleteClassificationArray = [node.data.name];
+        const deleteClassificationArray = [node.data.name];
         let _treeNode = node;
         while (_treeNode.parent) {
             _treeNode = _treeNode.parent;
-            if (!_treeNode.data.virtual) deleteClassificationArray.unshift(_treeNode.data.name);
+            if (!_treeNode.data.virtual) { deleteClassificationArray.unshift(_treeNode.data.name); }
         }
         this.dialog.open(this.deleteClassificationContent).afterClosed().subscribe(result => {
             if (result === 'confirm') {
                 this.confirmDelete.emit({
-                    deleteClassificationArray: deleteClassificationArray,
-                    deleteOrgName: deleteOrgName
+                    deleteClassificationArray,
+                    deleteOrgName
                 });
             }
         }, () => {});
     }
 
     searchByClassificationParams(node: TreeNode, orgName: string) {
-        let classificationArray = [node.data.name];
+        const classificationArray = [node.data.name];
         let _treeNode = node;
         while (_treeNode.parent) {
             _treeNode = _treeNode.parent;
-            if (!_treeNode.data.virtual) classificationArray.unshift(_treeNode.data.name);
+            if (!_treeNode.data.virtual) { classificationArray.unshift(_treeNode.data.name); }
         }
         return {
             selectedOrg: orgName,

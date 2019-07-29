@@ -30,7 +30,7 @@ export class FhirProcedureMappingComponent {
 
     }
 
-    initRefMaps (usedRefs) {
+    initRefMaps(usedRefs) {
         if (usedRefs) {
             this.mapping.usedReferencesMaps = new Array(usedRefs.question.cde.permissibleValues.length);
             this.mapping.usedReferences = usedRefs.question.cde.tinyId;
@@ -38,7 +38,7 @@ export class FhirProcedureMappingComponent {
     }
 
     isTinyIdSingleSelect(tinyId: string): boolean {
-        let match = this.questions.filter(q => q.question.cde.tinyId === tinyId);
+        const match = this.questions.filter(q => q.question.cde.tinyId === tinyId);
         return !!match.length && !match[0].question.multiselect;
     }
 }

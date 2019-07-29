@@ -230,16 +230,11 @@ export function update(elt, user, options: any = {}, callback: CbError<CdeForm> 
         elt.history.push(form._id);
         updateUser(elt, user);
         // user cannot edit sources.
-        if (!options.updateSources) {
-            elt.sources = form.sources;
-        }
+        elt.sources = form.sources;
 
         // because it's draft not edit attachment
         if (options.updateAttachments) {
             elt.attachments = form.attachments;
-        }
-        if (options.updateClassification) {
-            elt.classification = form.classification;
         }
 
         let newElt = new Form(elt);

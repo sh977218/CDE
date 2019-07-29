@@ -9,7 +9,7 @@ import './home.scss';
     templateUrl: 'home.component.html'
 })
 export class HomeComponent implements OnInit {
-    displayCarousel: Boolean = (window.screen.width > 575);
+    displayCarousel = (window.screen.width > 575);
 
     @HostListener('window:resize', ['$event'])
     onResize(event: UIEvent) {

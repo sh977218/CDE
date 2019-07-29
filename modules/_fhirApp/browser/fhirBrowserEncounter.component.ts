@@ -17,7 +17,7 @@ export class FhirBrowserEncounterComponent {
     newEncounterDate?: string = new Date().toISOString().slice(0, 16);
     newEncounterErrorMessage?: string;
     newEncounterReason?: string;
-    newEncounterType?: string = 'Outpatient Encounter';
+    newEncounterType = 'Outpatient Encounter';
     newEncounterValid?: boolean;
     selectedEncounter?: FhirEncounter;
 
@@ -34,7 +34,7 @@ export class FhirBrowserEncounterComponent {
                     ? asRefString(this.fhirData.patient.managingOrganization) : undefined
             ))
         }).then((response: any) => {
-            let encounter: FhirEncounter = response.data;
+            const encounter: FhirEncounter = response.data;
             this.reset();
         });
     }

@@ -33,7 +33,7 @@ export class PushNotificationSubscriptionService {
                     if (permissionResult === 'granted') {
                         resolve();
                     } else {
-                        reject('Notification permission denied.');
+                        reject(new Error('Notification permission denied.'));
                     }
                 });
             });
@@ -43,8 +43,8 @@ export class PushNotificationSubscriptionService {
         if (!this.lastEndpoint) {
             try {
                 // generate new endpoint
-                let registration = await this.registration;
-                let pushSubscription: PushSubscription | null = await registration.pushManager.getSubscription();
+                const registration = await this.registration;
+                const pushSubscription: PushSubscription | null = await registration.pushManager.getSubscription();
                 if (pushSubscription && pushSubscription.endpoint) {
                     this.lastEndpoint = pushSubscription.endpoint;
                 } else {
@@ -58,9 +58,14 @@ export class PushNotificationSubscriptionService {
 
     static fetchError(error: Error): Promise<any> {
         PushNotificationSubscriptionService.handleError(error);
-        if (error instanceof Error
-            && (error.message === 'Failed to fetch' || error.message === 'Unexpected token < in JSON at position 0')) {
-            throw 'Server is not available or you are offline.';
+        if (error instanceof Error) {
+            if (error.message.indexOf('denied')) {
+                alert(`Your browser preferences prevent notifications from this website. (${error.message})`);
+                return;
+            }
+            if (error.message === 'Failed to fetch' || error.message === 'Unexpected token < in JSON at position 0') {
+                throw new Error('Server is not available or you are offline.');
+            }
         }
         throw error;
     }
@@ -106,16 +111,16 @@ export class PushNotificationSubscriptionService {
                 return this.fetchError(e);
             }
         } else {
-            throw 'Not Subscribed';
+            throw new Error('Not Subscribed');
         }
     }
 
     static async subscriptionNew(userId: string): Promise<PushSubscription | null> {
         try {
             await this.askNotificationPermission();
-            let registration = await this.registration;
-            let pushSubscription: PushSubscription | null = await registration.pushManager.getSubscription();
-            let response: Response = await fetch('./pushRegistration', {
+            const registration = await this.registration;
+            const pushSubscription: PushSubscription | null = await registration.pushManager.getSubscription();
+            const response: Response = await fetch('./pushRegistration', {
                 method: 'post',
                 headers: {
                     'Content-type': 'application/json',
@@ -126,7 +131,7 @@ export class PushNotificationSubscriptionService {
                     subscription: pushSubscription,
                 }),
             });
-            let res = await response.json();
+            const res = await response.json();
             if (res.subscribed) {
                 return pushSubscription;
             }
@@ -151,10 +156,10 @@ export class PushNotificationSubscriptionService {
                 .replace(/_/g, '/')
             ;
             const rawData = window.atob(base64);
-            return Uint8Array.from(Array.from(rawData).map((char) => char.charCodeAt(0)));
+            return Uint8Array.from(Array.from(rawData).map(char => char.charCodeAt(0)));
         }
         try {
-            let pushSubscription: PushSubscription = await registration.pushManager.subscribe({
+            const pushSubscription: PushSubscription = await registration.pushManager.subscribe({
                 applicationServerKey: urlBase64ToUint8Array(applicationServerKey),
                 userVisibleOnly: true,
             });
@@ -168,7 +173,7 @@ export class PushNotificationSubscriptionService {
                 },
                 credentials: 'include',
                 body: JSON.stringify({
-                    applicationServerKey: applicationServerKey,
+                    applicationServerKey,
                     features: ['all'],
                     subscription: pushSubscription,
                 }),
@@ -183,7 +188,7 @@ export class PushNotificationSubscriptionService {
 
     static async subscriptionServerUpdate(userId: string): Promise<void> {
         if (!this.lastEndpoint) {
-            throw 'Not Subscribed.';
+            throw new Error('Not Subscribed.');
         }
         let response: Response;
         try {
@@ -199,32 +204,32 @@ export class PushNotificationSubscriptionService {
                 }),
             });
         } catch (e) {
-            throw 'Network Error';
+            throw new Error('Network Error');
         }
         let body;
         try {
             body = await response.json();
         } catch (e) {
-            throw 'Network Error - not json';
+            throw new Error('Network Error - not json');
         }
         if (body && body.exists === false) {
             this.lastEndpoint = '';
             this.lastUser = '';
-            throw 'This subscription does not exist.';
+            throw new Error('This subscription does not exist.');
         } else if (body && body.status === false) {
             this.lastUser = '';
-            throw 'This subscription does not exist.';
+            throw new Error('This subscription does not exist.');
         } else if (body && body.status === true) {
             this.lastUser = userId;
             return Promise.resolve();
         } else {
-            throw 'Network Error';
+            throw new Error('Network Error');
         }
     }
 
     static async updateExisting(userId?: string) {
         try {
-            let registration = await navigator.serviceWorker.register('/sw.js').catch();
+            const registration = await navigator.serviceWorker.register('/sw.js').catch();
             this.registrationResolve(registration);
             if (userId) {
                 this.subscriptionServerUpdate(userId).catch(_noop);

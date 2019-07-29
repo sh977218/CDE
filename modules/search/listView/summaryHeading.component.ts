@@ -1,10 +1,10 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 import { ItemElastic } from 'shared/models.model';
 
 @Component({
-    selector: "cde-summary-heading",
-    templateUrl: "./summaryHeading.component.html",
+    selector: 'cde-summary-heading',
+    templateUrl: './summaryHeading.component.html',
     styles: [`
         .text-muted {
             color: #696f74 !important;

@@ -13,17 +13,31 @@ type AccessGUDIDDevice = any;
     templateUrl: './nativeMetadata.component.html',
 })
 export class NativeMetadataComponent {
+
+    constructor(public nativeFe: NativeQuestionComponent) {}
     componentClass = NativeMetadataComponent;
     metadataSearch?: string;
     metadataSearchResult: any;
     textTruncate = textTruncate;
     watchNewState?: string;
 
-    constructor(public nativeFe: NativeQuestionComponent) {}
+    static deviceId(accessgudid: AccessGUDIDDevice) {
+        const ids = accessgudid.gudid.device.identifiers.identifier;
+        if (Array.isArray(ids)) {
+            const primary = ids.filter(id => id.deviceIdType === 'Primary');
+            return primary.length ? primary[0].deviceId : (ids.length ? ids[0].deviceId : '');
+        } else {
+            return ids.deviceId;
+        }
+    }
+
+    static ensureArray(obj: any) {
+        return Array.isArray(obj) ? obj : [obj];
+    }
 
     accessGUDIdSearch() {
-        if (typeof(this.metadataSearch) === 'string') this.metadataSearch = this.metadataSearch.trim();
-        if (!this.metadataSearch) return;
+        if (typeof(this.metadataSearch) === 'string') { this.metadataSearch = this.metadataSearch.trim(); }
+        if (!this.metadataSearch) { return; }
         fetch(ACCESSGUDID_LOOKUP
             + (this.nativeFe.metadataTagsNew === 'UDI' ? '?udi=' : '?di=')
             + encodeURIComponent(this.metadataSearch))
@@ -38,8 +52,8 @@ export class NativeMetadataComponent {
     }
 
     addDevice(accessgudid: AccessGUDIDDevice) {
-        let addDI = () => this.nativeFe.formElement.metadataTags!.push({key: 'device', value: accessgudid});
-        if (!this.nativeFe.formElement.metadataTags) this.nativeFe.formElement.metadataTags = [];
+        const addDI = () => this.nativeFe.formElement.metadataTags!.push({key: 'device', value: accessgudid});
+        if (!this.nativeFe.formElement.metadataTags) { this.nativeFe.formElement.metadataTags = []; }
         if (this.nativeFe.metadataTagsNew === 'UDI') {
             fetch(ACCESSGUDID_PARSEUDI + encodeURIComponent(this.metadataSearch!.trim()))
                 .then(res => res.json())
@@ -56,20 +70,6 @@ export class NativeMetadataComponent {
         this.metadataSearch = undefined;
         this.metadataSearchResult = undefined;
         this.watchNewState = undefined;
-    }
-
-    static deviceId(accessgudid: AccessGUDIDDevice) {
-        let ids = accessgudid.gudid.device.identifiers.identifier;
-        if (Array.isArray(ids)) {
-            let primary = ids.filter(id => id.deviceIdType === 'Primary');
-            return primary.length ? primary[0].deviceId : (ids.length ? ids[0].deviceId : '');
-        } else {
-            return ids.deviceId;
-        }
-    }
-
-    static ensureArray(obj: any) {
-        return Array.isArray(obj) ? obj : [obj];
     }
 
     moveFocus(field: HTMLElement) {

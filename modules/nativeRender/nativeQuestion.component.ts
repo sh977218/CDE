@@ -27,7 +27,7 @@ export class NativeQuestionComponent implements OnInit {
 
     ngOnInit() {
         if (this.formElement.question.datatype === 'Dynamic Code List') {
-            let q = this.formElement.question;
+            const q = this.formElement.question;
             this.loadVsacCode((q.datatypeDynamicCodeList!.code || ''), '');
             this.vsacControl.valueChanges
                 .pipe(
@@ -51,7 +51,7 @@ export class NativeQuestionComponent implements OnInit {
     }
 
     classColumns(pvIndex: number, index: number) {
-        let result = "";
+        let result = '';
 
         if (pvIndex !== -1 && this.nrs.profile && this.nrs.profile.numberOfColumns) {
             switch (this.nrs.profile.numberOfColumns) {
@@ -74,7 +74,7 @@ export class NativeQuestionComponent implements OnInit {
             }
         }
 
-        if (this.isFirstInRow(pvIndex !== undefined ? pvIndex : index)) result += ' clear';
+        if (this.isFirstInRow(pvIndex !== undefined ? pvIndex : index)) { result += ' clear'; }
         return result;
     }
 
@@ -87,8 +87,8 @@ export class NativeQuestionComponent implements OnInit {
     }
 
     isFirstInRow(index: number): boolean {
-        if (this.nrs.profile && this.nrs.profile.numberOfColumns > 0) return index % this.nrs.profile.numberOfColumns === 0;
-        else return index % 4 === 0;
+        if (this.nrs.profile && this.nrs.profile.numberOfColumns > 0) { return index % this.nrs.profile.numberOfColumns === 0; }
+        else { return index % 4 === 0; }
     }
 
     isOneLiner(q: FormQuestion, numSubQuestions: number): boolean {

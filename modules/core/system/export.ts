@@ -1,80 +1,80 @@
 import { ItemElastic, TableViewFields } from 'shared/models.model';
 
 export function getCdeCsvHeader(settings: TableViewFields): string {
-    let cdeHeader = "Name";
+    let cdeHeader = 'Name';
 
     if (settings.questionTexts) {
-        cdeHeader += ", Question Texts";
+        cdeHeader += ', Question Texts';
     }
     if (settings.naming) {
-        cdeHeader += ", Other Names";
+        cdeHeader += ', Other Names';
     }
     if (settings.permissibleValues || settings.pvCodeNames) {
-        cdeHeader += ", Value Type";
+        cdeHeader += ', Value Type';
     }
     if (settings.permissibleValues) {
-        cdeHeader += ", Permissible Values";
+        cdeHeader += ', Permissible Values';
     }
     if (settings.pvCodeNames) {
-        cdeHeader += ", Code Names";
+        cdeHeader += ', Code Names';
     }
     if (settings.nbOfPVs) {
-        cdeHeader += ", Nb of Permissible Values";
+        cdeHeader += ', Nb of Permissible Values';
     }
     if (settings.uom) {
-        cdeHeader += ", Unit of Measure";
+        cdeHeader += ', Unit of Measure';
     }
     if (settings.stewardOrg) {
-        cdeHeader += ", Steward";
+        cdeHeader += ', Steward';
     }
     if (settings.usedBy) {
-        cdeHeader += ", Used By";
+        cdeHeader += ', Used By';
     }
     if (settings.registrationStatus) {
-        cdeHeader += ", Registration Status";
+        cdeHeader += ', Registration Status';
     }
     if (settings.administrativeStatus) {
-        cdeHeader += ", Administrative Status";
+        cdeHeader += ', Administrative Status';
     }
     if (settings.ids) {
         if (settings.identifiers && settings.identifiers.length > 0) {
             settings.identifiers.forEach(i => {
-                cdeHeader = cdeHeader + ", " + i;
+                cdeHeader = cdeHeader + ', ' + i;
             });
-        } else cdeHeader += ", Identifiers";
+        } else { cdeHeader += ', Identifiers'; }
     }
     if (settings.source) {
-        cdeHeader += ", Source";
+        cdeHeader += ', Source';
     }
     if (settings.updated) {
-        cdeHeader += ", Updated";
+        cdeHeader += ', Updated';
     }
     if (settings.tinyId) {
-        cdeHeader += ", NLM ID";
+        cdeHeader += ', NLM ID';
     }
     if (settings.linkedForms) {
-        cdeHeader += ", Forms";
+        cdeHeader += ', Forms';
     }
-    cdeHeader += "\n";
+    cdeHeader += '\n';
     return cdeHeader;
 }
 
 export function projectItemForExport(ele: ItemElastic, settings?: TableViewFields): any {
-    let cde: any = {
+    const cde: any = {
         name: ele.designations[0].designation
     };
     if (settings && settings.questionTexts) {
         cde.questionTexts = ele.designations
             .filter(n => (n.tags || []).filter(
-                t => t.indexOf("Question Text") > -1
+                t => t.indexOf('Question Text') > -1
             ).length > 0)
             .map(n => n.designation)
             .filter(n => n);
     }
     if (settings && settings.naming) {
         cde.otherNames = ele.designations
-            .filter((n) => (n.tags || []).filter(
-                t => t.indexOf("Question Text") > -1
+            .filter(n => (n.tags || []).filter(
+                t => t.indexOf('Question Text') > -1
             ).length === 0)
             .map(n => n.designation)
             .filter(n => n);
@@ -113,7 +113,7 @@ export function projectItemForExport(ele: ItemElastic, settings?: TableViewField
             settings.identifiers.forEach(i => {
                 cde[i] = '';
                 ele.ids.forEach(id => {
-                    if (id.source === i) cde[i] = id.id + (id.version ? ' v' + id.version : '');
+                    if (id.source === i) { cde[i] = id.id + (id.version ? ' v' + id.version : ''); }
                 });
             });
         } else {
@@ -137,18 +137,18 @@ export function projectItemForExport(ele: ItemElastic, settings?: TableViewField
 }
 
 function sanitize(v?: string | any) {
-    return (v && v.trim) ? v.trim().replace(/"/g, "\"\"") : v;
+    return (v && v.trim) ? v.trim().replace(/"/g, '""') : v;
 }
 
 export function convertToCsv(obj: any): string {
-    let row = "";
-    Object.keys(obj).forEach(function (key) {
+    let row = '';
+    Object.keys(obj).forEach(function(key) {
         row += '"';
-        let value = obj[key];
+        const value = obj[key];
         if (Array.isArray(value)) {
-            row += value.map(function (value) {
+            row += value.map(function(value) {
                 return sanitize(value);
-            }).join("; ");
+            }).join('; ');
         } else if (value !== undefined) {
             row += sanitize(value);
         }

@@ -1,7 +1,11 @@
 package gov.nih.nlm.system;
 
+import io.restassured.http.ContentType;
+import io.restassured.http.Cookie;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
+
+import static io.restassured.RestAssured.given;
 
 public class CreateUser extends NlmCdeBaseTest {
 
@@ -21,6 +25,16 @@ public class CreateUser extends NlmCdeBaseTest {
         searchUsername("Coco Ch");
         clickElement(By.id("searchUsersSubmit"));
         textPresent("coco channel");
+    }
+
+    @Test
+    public void createUserDuplicate() {
+        mustBeLoggedInAs(nlm_username, nlm_password);
+        Cookie myCookie = getCurrentCookie();
+        given().contentType(ContentType.JSON).cookie(myCookie)
+                .body("{\"username\": \"nlm\"}")
+                .post(baseUrl + "/server/user/addUser").then().statusCode(409);
+
     }
 
 }

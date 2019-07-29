@@ -16,7 +16,7 @@ export class MyOrgDraftsResolve implements Resolve<Observable<Article>> {
     resolve() {
         return this.draftSvc.myOrgDrafts()
             .pipe(catchError(() => {
-                this.router.navigate(["/404"]);
+                this.router.navigate(['/404']);
                 return EMPTY;
             }));
     }

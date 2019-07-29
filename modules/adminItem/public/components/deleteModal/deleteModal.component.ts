@@ -13,7 +13,9 @@ export class DeleteModalComponent {
 
     openDeleteModal() {
         this.dialog.open(this.deleteElementContent).afterClosed().subscribe(res => {
-            if (res) this.confirm.emit();
+            if (res) {
+                this.confirm.emit();
+            }
         });
     }
 }

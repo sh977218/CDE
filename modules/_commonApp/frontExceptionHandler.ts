@@ -10,11 +10,11 @@ export class FrontExceptionHandler implements ErrorHandler {
     constructor(
     ) {}
 
-    handleError (error: AngularError) {
-        if (this.previousException && error.toString() === this.previousException.toString()) return;
+    handleError(error: AngularError) {
+        if (this.previousException && error.toString() === this.previousException.toString()) { return; }
         this.previousException = error;
         console.error(error);
-        if (typeof error.message === "object") {
+        if (typeof error.message === 'object') {
             try {
                 error.message = JSON.stringify(error.message).substr(0, 500);
             } catch (e) {}
@@ -30,7 +30,8 @@ export class FrontExceptionHandler implements ErrorHandler {
                     credentials: 'include',
                     body: JSON.stringify({
                         stack: error.stack,
-                        message: typeof error !== 'string' ? error.message : 'bad throw and error: ' + error, // TODO: remove, possibly never a string
+                        // TODO: remove, possibly never a string
+                        message: typeof error !== 'string' ? error.message : 'bad throw and error: ' + error,
                         name: error.name,
                         url: window.location.href
                     }),

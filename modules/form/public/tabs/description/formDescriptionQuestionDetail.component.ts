@@ -29,8 +29,6 @@ const dataTypeArray = DataTypeArray.filter(d => ignoreDatatypeArray.indexOf(d) =
     templateUrl: 'formDescriptionQuestionDetail.component.html'
 })
 export class FormDescriptionQuestionDetailComponent implements OnInit {
-    @Input() canEdit: boolean = false;
-    @Input() elt;
 
     @Input() set node(node: TreeNode) {
         this.question = node.data;
@@ -50,6 +48,15 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         this.questionAnswers = (this.question.question.answers || []).map(pvGetLabel);
     }
 
+    constructor(private alert: AlertService,
+                private http: HttpClient,
+                public dialog: MatDialog,
+                private orgHelperService: OrgHelperService,
+                public ucumService: UcumService) {
+    }
+    @Input() canEdit = false;
+    @Input() elt;
+
     @Output() onEltChange: EventEmitter<void> = new EventEmitter<void>();
     @ViewChild('formDescriptionQuestionTmpl') formDescriptionQuestionTmpl!: TemplateRef<any>;
     @ViewChild('formDescriptionQuestionEditTmpl') formDescriptionQuestionEditTmpl!: TemplateRef<any>;
@@ -68,17 +75,19 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     uomControl = new FormControl();
     filteredUoms = [];
 
-    constructor(private alert: AlertService,
-                private http: HttpClient,
-                public dialog: MatDialog,
-                private orgHelperService: OrgHelperService,
-                public ucumService: UcumService) {
+    static updateRepeatQuestions(elt, oldLabel: string, newLabel: string) {
+        const modifyRepeat = fe => {
+            if (repeatFe(fe) === '=' && repeatFeQuestion(fe) === oldLabel) {
+                fe.repeat = '="' + newLabel + '"';
+            }
+        };
+        iterateFeSync(elt, modifyRepeat, modifyRepeat, modifyRepeat);
     }
 
     ngOnInit() {
         this.syncAnswerListItems();
         this.syncDefaultAnswerListItems();
-        let stewardOrgName = this.elt.stewardOrg.name;
+        const stewardOrgName = this.elt.stewardOrg.name;
         this.orgHelperService.then(orgsDetailedInfo => {
             this.tag = orgsDetailedInfo[stewardOrgName].nameTags;
         }, _noop);
@@ -140,7 +149,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     openEditAnswerModal(q) {
         this.dialog.open(QuestionAnswerEditContentComponent, {data: {answers: q.question.answers}})
             .afterClosed().subscribe(response => {
-            if (response === "clear") {
+            if (response === 'clear') {
                 q.question.answers = [];
                 this.questionAnswers = [];
                 this.onAnswerListChanged();
@@ -153,11 +162,11 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     }
 
     openNameSelect(question: FormQuestion, parent: FormElement) {
-        let dialogRef = this.dialog.open(SelectQuestionLabelComponent, {
+        const dialogRef = this.dialog.open(SelectQuestionLabelComponent, {
             width: '800px',
             data: {
-                question: question,
-                parent: parent
+                question,
+                parent
             }
         });
         dialogRef.componentInstance.onSelect.subscribe(designation => {
@@ -179,9 +188,9 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         const value = event.value;
 
         if ((value || '').trim()) {
-            let idArray = value.trim().split(';');
+            const idArray = value.trim().split(';');
             if (idArray.length !== 2) {
-                return this.alert.addAlert("danger", "Incorrect Identifier Format");
+                return this.alert.addAlert('danger', 'Incorrect Identifier Format');
             }
             this.question.question.cde.ids.push({
                 source: idArray[0].trim(),
@@ -190,7 +199,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         }
 
         // Reset the input value
-        if (input) input.value = '';
+        if (input) { input.value = ''; }
         this.onEltChange.emit();
     }
 
@@ -210,7 +219,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         }
 
         // Reset the input value
-        if (input) input.value = '';
+        if (input) { input.value = ''; }
         this.onEltChange.emit();
     }
 
@@ -231,15 +240,15 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         }
 
         // Reset the input value
-        if (input) input.value = '';
+        if (input) { input.value = ''; }
         this.syncDefaultAnswerListItems();
-        this.question.question.answers = <any>this.question.question.cde.permissibleValues.concat([]);
+        this.question.question.answers = this.question.question.cde.permissibleValues.concat([]) as any;
         this.onEltChange.emit();
     }
 
     removeCdePv(i) {
         this.question.question.cde.permissibleValues.splice(i, 1);
-        this.question.question.answers = <any>this.question.question.cde.permissibleValues.concat([]);
+        this.question.question.answers = this.question.question.cde.permissibleValues.concat([]) as any;
         this.syncDefaultAnswerListItems();
         this.onEltChange.emit();
     }
@@ -253,7 +262,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     private syncAnswerListItems() {
         this.answerListItems = (this.question.question.cde.permissibleValues || []).map(p => {
             let value = p.valueMeaningName;
-            if (!value) value = p.permissibleValue;
+            if (!value) { value = p.permissibleValue; }
             return value;
         });
         this.syncDefaultAnswerListItems();
@@ -262,7 +271,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     private syncDefaultAnswerListItems() {
         this.defaultAnswerListItems = (this.question.question.answers || []).map(p => {
             let value = p.valueMeaningName;
-            if (!value) value = p.permissibleValue;
+            if (!value) { value = p.permissibleValue; }
             return value;
         });
     }
@@ -293,15 +302,6 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
             this.newUom = '';
             this.ucumService.validateUoms(this.question.question);
         }
-    }
-
-    static updateRepeatQuestions(elt, oldLabel: string, newLabel: string) {
-        const modifyRepeat = (fe) => {
-            if (repeatFe(fe) === '=' && repeatFeQuestion(fe) === oldLabel) {
-                fe.repeat = '="' + newLabel + '"';
-            }
-        };
-        iterateFeSync(elt, modifyRepeat, modifyRepeat, modifyRepeat);
     }
 
     displayFn(uom) {

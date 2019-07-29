@@ -21,7 +21,7 @@ export class FormClassificationComponent {
     @ViewChild('classifyItemComponent') public classifyItemComponent!: ClassifyItemModalComponent;
     classifyCdesModalRef?: MatDialogRef<TemplateRef<any>>;
     classifyItemModalRef?: MatDialogRef<TemplateRef<any>>;
-    showProgressBar: boolean = false;
+    showProgressBar = false;
 
     constructor(private alert: AlertService,
                 private classificationSvc: ClassificationService,
@@ -31,10 +31,10 @@ export class FormClassificationComponent {
     }
 
     classifyAllCdesInForm(event: ClassificationClassified) {
-        let allCdeIds: IdVersion[] = [];
+        const allCdeIds: IdVersion[] = [];
         this.getChildren(this.elt.formElements, allCdeIds);
 
-        let postBody: ItemClassification = {
+        const postBody: ItemClassification = {
             categories: event.classificationArray,
             eltId: this.elt._id,
             orgName: event.selectedOrg,
@@ -46,9 +46,8 @@ export class FormClassificationComponent {
                 if (res === 'Done') {
                     this.classifyCdesModalRef!.close('success');
                     this.alert.addAlert('success', 'All CDEs Classified.');
-                }
-                else if (res === 'Processing') {
-                    let fn = setInterval(() => {
+                } else if (res === 'Processing') {
+                    const fn = setInterval(() => {
                         //noinspection TypeScriptValidateTypes
                         this.http.get<any>('/server/classification/bulkClassifyCdeStatus/' + this.elt._id)
                             .subscribe(
@@ -78,10 +77,9 @@ export class FormClassificationComponent {
 
     classifyItem(event: ClassificationClassified) {
         this.classificationSvc.classifyItem(this.elt, event.selectedOrg, event.classificationArray,
-            '/server/classification/addFormClassification/', (err) => {
+            '/server/classification/addFormClassification/', err => {
                 this.classifyItemModalRef!.close();
-                if (err) this.alert.addAlert('danger', 'Unexpected error classifying');
-                else this.reloadElt(() => this.alert.addAlert('success', 'Classification added.'));
+                if (err) { this.alert.addAlert('danger', 'Unexpected error classifying'); } else { this.reloadElt(() => this.alert.addAlert('success', 'Classification added.')); }
             });
     }
 
@@ -112,10 +110,10 @@ export class FormClassificationComponent {
         this.http.get<CdeForm>('form/' + this.elt.tinyId).subscribe(res => {
             this.elt = res;
             this.onEltChange.emit(this.elt);
-            if (cb) cb();
+            if (cb) { cb(); }
         }, err => {
-            if (err) this.alert.addAlert('danger', 'Error retrieving. ' + err);
-            if (cb) cb();
+            if (err) { this.alert.addAlert('danger', 'Error retrieving. ' + err); }
+            if (cb) { cb(); }
         });
     }
 

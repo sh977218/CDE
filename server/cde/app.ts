@@ -1,16 +1,20 @@
 import { stripBsonIds } from 'shared/system/exportShared';
 import { handleError } from '../errorHandler/errorHandler';
 import {
-    canCreateMiddleware, canEditByTinyIdMiddleware, canEditMiddleware, isOrgAuthorityMiddleware, isOrgCuratorMiddleware,
-    nocacheMiddleware
+    canCreateMiddleware, canEditByTinyIdMiddleware, canEditMiddleware,
+    isOrgAuthorityMiddleware, isOrgCuratorMiddleware, nocacheMiddleware
 } from '../system/authorization';
 import { config } from '../system/parseConfig';
-import { validatePvs } from '../../server/cde/utsValidate';
+import { validatePvs } from '../cde/utsValidate';
+import { byTinyIdVersion as deByTinyIdVersion, count as deCount, DataElement } from './mongo-cde';
+import { errorLogger } from '../system/logging';
+import { respondHomeFull } from '../system/app';
+import { isSearchEngine } from '../system/helper';
+import { toInteger } from 'lodash';
 
 const cdesvc = require('./cdesvc');
 const mongo_cde = require('./mongo-cde');
 const elastic = require('./elastic');
-const adminItemSvc = require('../system/adminItemSvc');
 const appStatus = require('../siteAdmin/status');
 const elastic_system = require('../system/elastic');
 
@@ -38,8 +42,6 @@ export function init(app, daoManager) {
     app.put('/draftDataElement/:tinyId', canEditMiddlewareDe, cdesvc.draftSave);
     app.delete('/draftDataElement/:tinyId', canEditByTinyIdMiddlewareDe, cdesvc.draftDelete);
 
-    app.get('/draftDataElementById/:id', cdesvc.draftById);
-
     app.get('/viewingHistory/dataElement', nocacheMiddleware, cdesvc.viewHistory);
 
     /* ---------- PUT NEW REST API above ---------- */
@@ -49,15 +51,11 @@ export function init(app, daoManager) {
     });
 
     app.post('/elasticSearch/cde', (req, res) => {
-        elastic.elasticsearch(req.user, req.body, function (err, result) {
+        elastic.elasticsearch(req.user, req.body, (err, result) => {
             if (err) return res.status(400).send('invalid query');
             cdesvc.hideProprietaryCodes(result.cdes, req.user);
             res.send(result);
         });
-    });
-
-    app.get('/elasticSearch/count', (req, res) => {
-        elastic_system.nbOfCdes((err, result) => res.send("" + result));
     });
 
     app.get('/moreLikeCde/:tinyId', nocacheMiddleware, (req, res) => {
@@ -73,24 +71,7 @@ export function init(app, daoManager) {
         }));
     });
 
-    app.post('/desByConcept', (req, res) => {
-        mongo_cde.desByConcept(req.body, result => {
-            cdesvc.hideProprietaryCodes(result, req.user);
-            res.send(result);
-        });
-    });
-
-    app.get('/deCount', (req, res) => {
-        mongo_cde.count({archived: false}, (err, result) => {
-            res.send({count: result});
-        });
-    });
-
     app.get('/status/cde', appStatus.status);
-
-    app.get('/cde/properties/keys', nocacheMiddleware, (req, res) => {
-        adminItemSvc.allPropertiesKeys(req, res, mongo_cde);
-    });
 
     app.post('/getCdeAuditLog', isOrgAuthorityMiddleware, (req, res) => {
         mongo_cde.getAuditLog(req.body, (err, result) => {
@@ -132,6 +113,53 @@ export function init(app, daoManager) {
         exporters.json.export(res);
     });
 
+    app.get('/cde/search', (req, res) => {
+        const selectedOrg = req.query.selectedOrg;
+        let pageString = req.query.page; // starting from 1
+        if (!pageString) pageString = '1';
+        if (isSearchEngine(req)) {
+            if (selectedOrg) {
+                let pageNum = toInteger(pageString);
+                let pageSize = 20;
+                let cond = {
+                    'classification.stewardOrg.name': selectedOrg,
+                    archived: false,
+                    'registrationState.registrationStatus': 'Qualified'
+                };
+                deCount(cond, handleError({req, res}, totalCount => {
+                    DataElement.find(cond, 'tinyId designations', {
+                        skip: pageSize * (pageNum - 1),
+                        limit: pageSize
+                    }, handleError({req, res}, cdes => {
+                        let totalPages = totalCount / pageSize;
+                        if (totalPages % 1 > 0) totalPages = totalPages + 1;
+                        res.render('bot/cdeSearchOrg', 'system', {
+                            cdes: cdes,
+                            totalPages: totalPages,
+                            selectedOrg: selectedOrg
+                        });
+                    }));
+                }));
+            } else {
+                res.render('bot/cdeSearch', 'system');
+            }
+        } else {
+            respondHomeFull(req, res);
+        }
+    });
+
+    app.get('/deView', (req, res) => {
+        const {tinyId, version} = req.query;
+        deByTinyIdVersion(tinyId, version, handleError({req, res}, cde => {
+            if (isSearchEngine(req)) {
+                res.render('bot/deView', 'system', {elt: cde});
+            } else {
+                respondHomeFull(req, res);
+            }
+        }));
+    });
+
+
     app.post('/cdeCompletion/:term', nocacheMiddleware, (req, res) => {
         let term = req.params.term;
         elastic_system.completionSuggest(term, req.user, req.body, config.elastic.cdeSuggestIndex.name, resp => {
@@ -166,7 +194,7 @@ export function init(app, daoManager) {
     app.post('/umlsDe', (req, res) => {
         validatePvs(req.body).then(
             () => res.send(),
-            (err) => res.status(400).send(err)
+            err => res.status(400).send(err)
         );
     });
 }

@@ -37,8 +37,8 @@ export class CdeClassificationComponent {
             (err: HttpErrorResponse) => {
                 this.classifyItemModalRef.close();
                 if (err) {
-                    if (err.status === 409) this.alert.addAlert('danger', "Classification Already Exists");
-                    else this.alert.addAlert('danger', "Unexpected error adding classification");
+                    if (err.status === 409) { this.alert.addAlert('danger', 'Classification Already Exists'); }
+                    else { this.alert.addAlert('danger', 'Unexpected error adding classification'); }
                 } else {
                     this.reloadElt(() => this.alert.addAlert('success', 'Classification added.'));
                 }
@@ -50,22 +50,22 @@ export class CdeClassificationComponent {
         this.classifyItemModalRef = this.classifyItemComponent.openModal();
     }
 
-    reloadElt (cb) {
+    reloadElt(cb) {
         this.http.get('de/' + this.elt.tinyId).subscribe(res => {
             this.elt = res;
             this.onEltChange.emit(this.elt);
-            if (cb) cb();
+            if (cb) { cb(); }
         }, err => {
-            if (err) this.alert.addAlert('danger', 'Error retrieving. ' + err);
-            if (cb) cb();
+            if (err) { this.alert.addAlert('danger', 'Error retrieving. ' + err); }
+            if (cb) { cb(); }
         });
     }
 
-    removeClassif (event) {
+    removeClassif(event) {
         this.classificationSvc.removeClassification(this.elt, event.deleteOrgName,
             event.deleteClassificationArray, '/server/classification/removeCdeClassification/', err => {
                 if (err) {
-                    this.alert.addAlert('danger', "Unexpected error removing classification");
+                    this.alert.addAlert('danger', 'Unexpected error removing classification');
                 } else {
                     this.reloadElt(() => this.alert.addAlert('success', 'Classification removed.'));
                 }

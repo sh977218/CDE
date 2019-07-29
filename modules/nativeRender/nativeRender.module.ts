@@ -1,6 +1,6 @@
-import { CommonModule } from "@angular/common";
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { CommonModule } from '@angular/common';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NativeMetadataComponent } from 'nativeRender/nativeMetadata.component';
 import { NativeRenderComponent } from 'nativeRender/nativeRender.component';
 import { NativeSectionComponent } from 'nativeRender/nativeSection.component';

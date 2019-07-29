@@ -19,8 +19,8 @@ export class CommentsComponent {
     commentUrl: string;
     getEltLink = UserService.getEltLink;
     organizationNames?: string[];
-    selectedOrganization: string = '';
-    title: string = 'Comments';
+    selectedOrganization = '';
+    title = 'Comments';
 
     constructor(protected route: ActivatedRoute,
                 private alert: AlertService,

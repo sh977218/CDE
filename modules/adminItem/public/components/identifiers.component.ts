@@ -10,7 +10,6 @@ import { CdeId, Item, Source } from 'shared/models.model';
     templateUrl: './identifiers.component.html'
 })
 export class IdentifiersComponent {
-    @Input() canEdit: boolean = false;
     @Input() set elt(e) {
         this._elt = e;
         this.idsLinks.length = 0;
@@ -21,6 +20,12 @@ export class IdentifiersComponent {
     get elt() {
         return this._elt;
     }
+
+    constructor(private alert: AlertService,
+                public dialog: MatDialog,
+                private http: HttpClient) {
+    }
+    @Input() canEdit = false;
     @Output() onEltChange = new EventEmitter();
     @ViewChild('newIdentifierContent') newIdentifierContent: TemplateRef<any>;
     _elt: Item;
@@ -29,9 +34,10 @@ export class IdentifiersComponent {
     idSourcesPromise: Promise<Source[]>;
     newIdentifier!: CdeId;
 
-    constructor(private alert: AlertService,
-                public dialog: MatDialog,
-                private http: HttpClient) {
+    static linkWithId(link = '', id) {
+        return link
+            .replace('{{id}}', id.id)
+            .replace('{{version}}', id.version);
     }
 
     addNewIdentifier() {
@@ -61,12 +67,6 @@ export class IdentifiersComponent {
                 return [];
             });
         }
-    }
-
-    static linkWithId(link = '', id) {
-        return link
-            .replace('{{id}}', id.id)
-            .replace('{{version}}', id.version);
     }
 
     openNewIdentifierModal() {

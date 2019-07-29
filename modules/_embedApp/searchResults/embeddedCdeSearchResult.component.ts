@@ -11,11 +11,13 @@ export class EmbeddedCdeSearchResultComponent {
     @Input() embed!: Embed;
     @Input() searchViewSettings!: UserSearchSettings;
 
+    lfLimit = 3;
+
+    clLimit = 3;
+
     concatenatePVs(elt: DataElementElastic) {
         return (elt.valueDomain.permissibleValues || []).map(a => a.permissibleValue).join(',');
     }
-
-    lfLimit = 3;
 
     raiseLfLimit() {
         return this.lfLimit = 100;
@@ -24,8 +26,6 @@ export class EmbeddedCdeSearchResultComponent {
     lowerLfLimit() {
         return this.lfLimit = 3;
     }
-
-    clLimit = 3;
 
     raiseClLimit() {
         return this.clLimit = 100;

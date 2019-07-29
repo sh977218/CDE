@@ -23,7 +23,7 @@ import { MatDialog } from '@angular/material';
     `]
 })
 export class FormDescriptionQuestionComponent implements OnInit {
-    @Input() canEdit: boolean = false;
+    @Input() canEdit = false;
     @Input() index;
     @Input() node: TreeNode;
     @Output() stageElt: EventEmitter<void> = new EventEmitter<void>();
@@ -65,8 +65,8 @@ export class FormDescriptionQuestionComponent implements OnInit {
     }
 
     getDatatypeLabel(question) {
-        let datatype = question.question.datatype;
-        if (!datatype) return '';
+        const datatype = question.question.datatype;
+        if (!datatype) { return ''; }
         else if (datatype === 'Number') {
             return '(Number)';
         } else if (datatype === 'Date') {
@@ -75,7 +75,7 @@ export class FormDescriptionQuestionComponent implements OnInit {
             return '(Geo Location)';
         } else if (datatype === 'Dynamic Code List') {
             return '(Dynamic Code List)';
-        } else return '';
+        } else { return ''; }
     }
 
     isScore(formElt) {
@@ -84,7 +84,7 @@ export class FormDescriptionQuestionComponent implements OnInit {
 
     openUpdateCdeVersion(question: FormQuestion) {
         DataElementService.fetchDe(question.question.cde.tinyId).then(newCde => {
-            let oldVersion = question.question.cde.version ? question.question.cde.version : '';
+            const oldVersion = question.question.cde.version ? question.question.cde.version : '';
             DataElementService.fetchDe(question.question.cde.tinyId, oldVersion).then(oldCde => {
                 FormService.convertCdeToQuestion(newCde, newQuestion => {
                     this.openUpdateCdeVersionMerge(newQuestion, question, newCde, oldCde);
@@ -111,9 +111,9 @@ export class FormDescriptionQuestionComponent implements OnInit {
             newQuestion.label = currentQuestion.label;
         }
 
-        let modal: any = {
-            currentQuestion: currentQuestion,
-            newQuestion: newQuestion
+        const modal: any = {
+            currentQuestion,
+            newQuestion
         };
         modal.bCde = true;
         modal.bLabel = !_isEqual(newCde.designations, oldCde.designations);
@@ -126,7 +126,7 @@ export class FormDescriptionQuestionComponent implements OnInit {
                 if (currentQuestion.question.datatype === 'Value List') {
                     modal.bValuelist = !_isEqual(currentQuestion.question.cde.permissibleValues,
                         newQuestion.question.cde.permissibleValues);
-                    if (!modal.bValuelist) newQuestion.question.answers = currentQuestion.question.answers;
+                    if (!modal.bValuelist) { newQuestion.question.answers = currentQuestion.question.answers; }
 
                     if (currentQuestion.question.defaultAnswer && newQuestion.question.answers.filter(
                         a => a.permissibleValue === currentQuestion.question.defaultAnswer).length > 0) {
@@ -138,7 +138,7 @@ export class FormDescriptionQuestionComponent implements OnInit {
                 break;
             case 'Date':
                 if (currentQuestion.question.datatype === 'Date' && currentQuestion.question.datatypeDate) {
-                    if (!newQuestion.question.datatypeDate) newQuestion.question.datatypeDate = {};
+                    if (!newQuestion.question.datatypeDate) { newQuestion.question.datatypeDate = {}; }
                     newQuestion.question.datatypeDate.precision = currentQuestion.question.datatypeDate.precision;
                 }
                 break;
@@ -156,7 +156,7 @@ export class FormDescriptionQuestionComponent implements OnInit {
         }
 
         this.updateCdeVersion = modal;
-        this.dialog.open(this.updateCdeVersionTmpl, {width: '1000px'}).afterClosed().subscribe((res) => {
+        this.dialog.open(this.updateCdeVersionTmpl, {width: '1000px'}).afterClosed().subscribe(res => {
             if (res) {
                 currentQuestion.question = newQuestion.question;
                 currentQuestion.label = newQuestion.label;

@@ -17,11 +17,11 @@ export class LoginService {
         private alert: AlertService
     ) {}
 
-    getPreviousRoute () {
+    getPreviousRoute() {
         return this.lastRoute;
     }
 
-    goToLogin () {
+    goToLogin() {
         if (window.location.href.indexOf('login') === -1) {
             this.lastRoute = {
                 url: this.router.url.toString() + '',

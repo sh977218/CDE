@@ -20,7 +20,7 @@ export class FormGeneralDetailsComponent {
     get elt() {
         return this._elt;
     }
-    @Input() canEdit: boolean = false;
+    @Input() canEdit = false;
     @Output() onEltChange = new EventEmitter();
     private _elt!: CdeForm;
     options = {
@@ -48,8 +48,8 @@ export class FormGeneralDetailsComponent {
             if (this.elt.mapTo) {
                 this.elt.mapTo.fhir = undefined;
                 let count = 0;
-                for (let m in this.elt.mapTo) {
-                    if (m) count++;
+                for (const m in this.elt.mapTo) {
+                    if (m) { count++; }
                 }
                 if (!count) {
                     this.elt.mapTo = undefined;

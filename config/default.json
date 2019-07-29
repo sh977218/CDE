@@ -151,7 +151,6 @@
     "cde": {
       "attachments": true,
       "comments": true,
-      "highlight": true,
       "audit": true
     }
   },

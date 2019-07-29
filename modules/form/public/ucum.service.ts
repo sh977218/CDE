@@ -20,8 +20,8 @@ export class UcumService {
 
     // cb(names)
     getUnitNames(uom: string, cb) {
-        let match = this.uomUnitMap.get(uom);
-        if (match) return cb(match);
+        const match = this.uomUnitMap.get(uom);
+        if (match) { return cb(match); }
 
         this.http.get('/ucumSynonyms?uom=' + encodeURIComponent(uom)).subscribe(response => {
             if (Array.isArray(response)) {
@@ -44,7 +44,7 @@ export class UcumService {
 
     // cb()
     validateUoms(question, cb = _noop) {
-        let ucumUnits = question.unitsOfMeasure.filter(u => u.system === 'UCUM');
+        const ucumUnits = question.unitsOfMeasure.filter(u => u.system === 'UCUM');
         question.uomsValid = [];
         this.validateUcumUnits(ucumUnits, errors => {
             ucumUnits.forEach((u, i) => {

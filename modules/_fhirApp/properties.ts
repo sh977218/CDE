@@ -14,9 +14,9 @@ import { newPeriod } from 'shared/mapping/fhir/datatype/fhirPeriod';
 import { getRef, newReference } from 'shared/mapping/fhir/datatype/fhirReference';
 
 export function propertyToQuestion(q: FormQuestion, parent: ResourceTreeResource, name: string): boolean {
-    let map: supportedResourcesMaps|undefined = parent.map;
-    let resource = parent.resource;
-    let [propertyMap] = getMapPropertyFromId(q.question.cde.tinyId, map);
+    const map: supportedResourcesMaps|undefined = parent.map;
+    const resource = parent.resource;
+    const [propertyMap] = getMapPropertyFromId(q.question.cde.tinyId, map);
     if (!resource || !propertyMap) {
         return false;
     }
@@ -26,11 +26,11 @@ export function propertyToQuestion(q: FormQuestion, parent: ResourceTreeResource
             throw assertThrow();
         case 'choiceType':
             if (_isEqual(propertyMap.properties, ['dateTime', 'Period'])) {
-                let period = resource[propertyMap.property + 'Period'];
+                const period = resource[propertyMap.property + 'Period'];
                 if (period) {
                     value = [period.start, period.end];
                 } else {
-                    let date = resource[propertyMap.property + 'DateTime'];
+                    const date = resource[propertyMap.property + 'DateTime'];
                     value = date ? [date] : [];
                 }
             } else {
@@ -38,7 +38,7 @@ export function propertyToQuestion(q: FormQuestion, parent: ResourceTreeResource
             }
             break;
         default:
-            let answer = resource[name]
+            const answer = resource[name]
                 ? (propertyMap.max === -1 || propertyMap.max > 1
                     ? resource[name]
                     : [resource[name]]
@@ -63,7 +63,7 @@ export function propertyToQuestion(q: FormQuestion, parent: ResourceTreeResource
             }
             if (name === 'usedReference' && map && map.mapping && Array.isArray(map.mapping.usedReferencesMaps)) {
                 value = value.map((a: string) => {
-                    let i = map!.mapping.usedReferencesMaps!.indexOf(a);
+                    const i = map!.mapping.usedReferencesMaps!.indexOf(a);
                     if (i > -1 && q.question.answers![i] && q.question.answers![i].permissibleValue) {
                         return q.question.answers![i].permissibleValue;
                     }
@@ -77,9 +77,9 @@ export function propertyToQuestion(q: FormQuestion, parent: ResourceTreeResource
 }
 
 export function questionToProperty(q: FormQuestion, parent: ResourceTreeResource, name: string): boolean {
-    let map: supportedResourcesMaps|undefined = parent.map;
-    let resource = parent.resource;
-    let [propertyMap] = getMapPropertyFromId(q.question.cde.tinyId, map);
+    const map: supportedResourcesMaps|undefined = parent.map;
+    const resource = parent.resource;
+    const [propertyMap] = getMapPropertyFromId(q.question.cde.tinyId, map);
     if (!resource || !propertyMap) {
         return false;
     }
@@ -87,7 +87,7 @@ export function questionToProperty(q: FormQuestion, parent: ResourceTreeResource
     if (!value.length && propertyMap.default) {
         value = [propertyMap.default];
     }
-    if (!value) value = [];
+    if (!value) { value = []; }
     switch (propertyMap.type) {
         case 'backbone':
             throw assertThrow();
@@ -113,9 +113,9 @@ export function questionToProperty(q: FormQuestion, parent: ResourceTreeResource
         default:
             if (name === 'usedReference' && map && map.mapping && Array.isArray(map.mapping.usedReferencesMaps)) {
                 value = value.map((a: string) => {
-                    let match = q.question.answers!.filter(pv => pv.permissibleValue === a)[0];
+                    const match = q.question.answers!.filter(pv => pv.permissibleValue === a)[0];
                     if (match) {
-                        let staticValue = map!.mapping.usedReferencesMaps![q.question.answers!.indexOf(match)];
+                        const staticValue = map!.mapping.usedReferencesMaps![q.question.answers!.indexOf(match)];
                         if (staticValue) {
                             return staticValue;
                         }
@@ -123,23 +123,23 @@ export function questionToProperty(q: FormQuestion, parent: ResourceTreeResource
                     return a;
                 });
             }
-            let answer: any = value.map((a: string) => typedValueToProperty(propertyMap!, a));
+            const answer: any = value.map((a: string) => typedValueToProperty(propertyMap!, a));
             if (propertyMap.max === -1 || propertyMap.max > 1) {
                 if (questionMulti(q)) {
                     // replace
                     resource[name] = answer.length ? answer : undefined;
                 } else {
                     // mismatch single-select to array, partial update, no delete
-                    if (!Array.isArray(resource[name])) resource[name] = [];
+                    if (!Array.isArray(resource[name])) { resource[name] = []; }
                     value.forEach((v: string, i: number) => {
-                        let index = presentIndex(resource[name], propertyMap!, value[0]);
+                        const index = presentIndex(resource[name], propertyMap!, value[0]);
                         if (index > -1) {
                             resource[name][index] = answer[i];
                         } else {
                             resource[name].push(answer[i]);
                         }
                     });
-                    if (resource[name].length === 0) resource[name] = undefined;
+                    if (resource[name].length === 0) { resource[name] = undefined; }
                 }
             } else {
                 resource[name] = answer[0];
@@ -152,7 +152,7 @@ export function questionToProperty(q: FormQuestion, parent: ResourceTreeResource
 }
 
 function presentIndex(list: any[], propertyMap: FhirMapped, v: any): number {
-    let match = list.filter(l => {
+    const match = list.filter(l => {
         switch (propertyMap.type) {
             // case 'Period': // won't work without value
             //     return l.start === value[0] && l.end === value[1];
@@ -173,15 +173,15 @@ export function staticToProperty(self: ResourceTreeResource) {
     if (!self.resource || !self.map) {
         return false;
     }
-    let ids = self.map.questionIds;
-    let map: supportedResourcesMaps = self.map;
-    let resource = self.resource;
+    const ids = self.map.questionIds;
+    const map: supportedResourcesMaps = self.map;
+    const resource = self.resource;
     self.map.questionProperties.forEach((propertyMap, i) => {
         if (ids[i] === 'static') {
-            let value = propertyMap.mapFieldValue && map.mapping[propertyMap.mapFieldValue];
+            const value = propertyMap.mapFieldValue && map.mapping[propertyMap.mapFieldValue];
             if (value) {
-                let answer = typedValueToProperty(propertyMap, value, map.mapping[propertyMap.mapFieldValue + 'System']);
-                let name = propertyMap.property;
+                const answer = typedValueToProperty(propertyMap, value, map.mapping[propertyMap.mapFieldValue + 'System']);
+                const name = propertyMap.property;
                 if (propertyMap.max === -1 || propertyMap.max > 1) {
                     resource[name] = answer ? [answer] : undefined;
                 } else {

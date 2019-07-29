@@ -22,15 +22,53 @@ export class TableListComponent implements OnInit {
     get elts() {
         return this._elts;
     }
+
+    constructor(public dialog: MatDialog,
+                public esService: ElasticService) {
+        this.searchSettings = this.esService.searchSettings;
+    }
+
+    static readonly maxLines = 5;
+    static readonly lineLength = 62;
     @Input() module: string;
     private _elts: any[];
     headings: string[];
     rows: any[];
     searchSettings: UserSearchSettings;
 
-    constructor(public dialog: MatDialog,
-                public esService: ElasticService) {
-        this.searchSettings = this.esService.searchSettings;
+    static lineClip(line): string {
+        return line.length > this.lineLength
+            ? line.substr(0, this.lineLength - 4) + ' ...'
+            : line;
+    }
+
+    static truncatedList(list, f) {
+        if (!Array.isArray(list)) { list = []; }
+        const size = list.length;
+        const result = [];
+        for (let i = 0; i < size; i++) {
+            const formatted = f(list[i]);
+            if (formatted) { result.push(this.lineClip(formatted)); }
+            if (result.length === this.maxLines && (i + 1) < size) {
+                result.push('...');
+                i = size;
+            }
+        }
+        return result;
+    }
+
+    static getQuestionTexts(e) {
+        return e.designations.filter(n => {
+            if (!n.tags) { n.tags = []; }
+            return n.tags.filter(t => t.indexOf('Question Text') > -1).length > 0;
+        });
+    }
+
+    static getOtherNames(cde) {
+        return cde.designations.filter((n, i) => {
+            if (!n.tags) { n.tags = []; }
+            return i > 0 && n.tags.filter(t => t.indexOf('Question Text') > -1).length === 0;
+        });
     }
 
     ngOnInit() {
@@ -38,25 +76,25 @@ export class TableListComponent implements OnInit {
     }
 
     render() {
-        if (!this.esService.searchSettings.tableViewFields) return;
-        if (this.module === 'cde') this.renderCde();
-        else if (this.module === 'form') this.renderForm();
+        if (!this.esService.searchSettings.tableViewFields) { return; }
+        if (this.module === 'cde') { this.renderCde(); }
+        else if (this.module === 'form') { this.renderForm(); }
     }
 
     renderCde() {
-        let tableSetup = this.searchSettings.tableViewFields;
+        const tableSetup = this.searchSettings.tableViewFields;
         this.headings = [];
-        if (tableSetup.name) this.headings.push('Name');
-        if (tableSetup.questionTexts) this.headings.push('Question Texts');
-        if (tableSetup.naming) this.headings.push('Other Names');
-        if (tableSetup.permissibleValues) this.headings.push('Permissible Values');
-        if (tableSetup.pvCodeNames) this.headings.push('Code Names');
-        if (tableSetup.nbOfPVs) this.headings.push('Nb of PVs');
-        if (tableSetup.uom) this.headings.push('Unit of Measure');
-        if (tableSetup.stewardOrg) this.headings.push('Steward');
-        if (tableSetup.usedBy) this.headings.push('Used by');
-        if (tableSetup.registrationStatus) this.headings.push('Registration Status');
-        if (tableSetup.administrativeStatus) this.headings.push('Admin Status');
+        if (tableSetup.name) { this.headings.push('Name'); }
+        if (tableSetup.questionTexts) { this.headings.push('Question Texts'); }
+        if (tableSetup.naming) { this.headings.push('Other Names'); }
+        if (tableSetup.permissibleValues) { this.headings.push('Permissible Values'); }
+        if (tableSetup.pvCodeNames) { this.headings.push('Code Names'); }
+        if (tableSetup.nbOfPVs) { this.headings.push('Nb of PVs'); }
+        if (tableSetup.uom) { this.headings.push('Unit of Measure'); }
+        if (tableSetup.stewardOrg) { this.headings.push('Steward'); }
+        if (tableSetup.usedBy) { this.headings.push('Used by'); }
+        if (tableSetup.registrationStatus) { this.headings.push('Registration Status'); }
+        if (tableSetup.administrativeStatus) { this.headings.push('Admin Status'); }
         if (tableSetup.ids) {
             if (Array.isArray(tableSetup.identifiers) && tableSetup.identifiers.length > 0) {
                 tableSetup.identifiers.forEach(i => this.headings.push(i));
@@ -64,13 +102,13 @@ export class TableListComponent implements OnInit {
                 this.headings.push('Identifiers');
             }
         }
-        if (tableSetup.source) this.headings.push('Source');
-        if (tableSetup.updated) this.headings.push('Updated');
-        if (tableSetup.tinyId) this.headings.push('NLM ID');
-        if (tableSetup.linkedForms) this.headings.push('Forms');
+        if (tableSetup.source) { this.headings.push('Source'); }
+        if (tableSetup.updated) { this.headings.push('Updated'); }
+        if (tableSetup.tinyId) { this.headings.push('NLM ID'); }
+        if (tableSetup.linkedForms) { this.headings.push('Forms'); }
 
         this.rows = this.elts.map(e => {
-            let row = [];
+            const row = [];
             if (tableSetup.name) {
                 row.push({
                     css: 'name',
@@ -145,7 +183,7 @@ export class TableListComponent implements OnInit {
                         let value = '';
                         e.ids.forEach(id => {
                             if (id.source === i) {
-                                value = id.id + (id.version ? " v" + id.version : "");
+                                value = id.id + (id.version ? ' v' + id.version : '');
                             }
                         });
                         row.push({
@@ -156,7 +194,7 @@ export class TableListComponent implements OnInit {
                 } else {
                     row.push({
                         css: 'ids',
-                        values: TableListComponent.truncatedList(e.ids, (e) => e)
+                        values: TableListComponent.truncatedList(e.ids, e => e)
                     });
                 }
             }
@@ -179,17 +217,17 @@ export class TableListComponent implements OnInit {
                 });
             }
             if (tableSetup.linkedForms) {
-                let lfSettings = this.esService.buildElasticQuerySettings(new SearchSettings(e.tinyId));
+                const lfSettings = this.esService.buildElasticQuerySettings(new SearchSettings(e.tinyId));
 
-                let values = [];
+                const values = [];
                 this.esService.generalSearchQuery(lfSettings, 'form', (err?: string, result?: ElasticQueryResponse) => {
                     if (result.forms) {
-                        if (result.forms.length > 5) result.forms.length = 5;
+                        if (result.forms.length > 5) { result.forms.length = 5; }
                         result.forms.forEach(crf => values.push({name: crf.primaryNameCopy, tinyId: crf.tinyId}));
                     }
                     row.push({
                         css: 'linkedForms',
-                        values: values
+                        values
                     });
                 });
             }
@@ -198,28 +236,28 @@ export class TableListComponent implements OnInit {
     }
 
     renderForm() {
-        let tableSetup = this.searchSettings.tableViewFields;
+        const tableSetup = this.searchSettings.tableViewFields;
         this.headings = [];
-        if (tableSetup.name) this.headings.push('Name');
-        if (tableSetup.naming) this.headings.push('Other Names');
-        if (tableSetup.stewardOrg) this.headings.push('Steward');
-        if (tableSetup.usedBy) this.headings.push('Used by');
-        if (tableSetup.registrationStatus) this.headings.push('Registration Status');
-        if (tableSetup.administrativeStatus) this.headings.push('Admin Status');
+        if (tableSetup.name) { this.headings.push('Name'); }
+        if (tableSetup.naming) { this.headings.push('Other Names'); }
+        if (tableSetup.stewardOrg) { this.headings.push('Steward'); }
+        if (tableSetup.usedBy) { this.headings.push('Used by'); }
+        if (tableSetup.registrationStatus) { this.headings.push('Registration Status'); }
+        if (tableSetup.administrativeStatus) { this.headings.push('Admin Status'); }
         if (tableSetup.ids) {
             if (tableSetup.identifiers.length > 0) {
                 tableSetup.identifiers.forEach(i => {
                     this.headings.push(i);
                 });
-            } else this.headings.push('Identifiers');
+            } else { this.headings.push('Identifiers'); }
         }
-        if (tableSetup.numQuestions) this.headings.push('Questions');
-        if (tableSetup.source) this.headings.push('Source');
-        if (tableSetup.updated) this.headings.push('Updated');
-        if (tableSetup.tinyId) this.headings.push('NLM ID');
+        if (tableSetup.numQuestions) { this.headings.push('Questions'); }
+        if (tableSetup.source) { this.headings.push('Source'); }
+        if (tableSetup.updated) { this.headings.push('Updated'); }
+        if (tableSetup.tinyId) { this.headings.push('NLM ID'); }
 
         this.rows = this.elts.map(e => {
-            let row = [];
+            const row = [];
             if (tableSetup.name) {
                 row.push({
                     css: 'name',
@@ -262,7 +300,7 @@ export class TableListComponent implements OnInit {
                         let value = '';
                         e.ids.forEach(id => {
                             if (id.source === i) {
-                                value = id.id + (id.version ? " v" + id.version : "");
+                                value = id.id + (id.version ? ' v' + id.version : '');
                             }
                         });
                         row.push({
@@ -273,7 +311,7 @@ export class TableListComponent implements OnInit {
                 } else {
                     row.push({
                         css: 'ids',
-                        values: TableListComponent.truncatedList(e.ids, (e) => e)
+                        values: TableListComponent.truncatedList(e.ids, e => e)
                     });
                 }
             }
@@ -305,48 +343,10 @@ export class TableListComponent implements OnInit {
         });
     }
 
-    static readonly maxLines = 5;
-    static readonly lineLength = 62;
-
-    static lineClip(line): string {
-        return line.length > this.lineLength
-            ? line.substr(0, this.lineLength - 4) + ' ...'
-            : line;
-    }
-
-    static truncatedList(list, f) {
-        if (!Array.isArray(list)) list = [];
-        const size = list.length;
-        let result = [];
-        for (let i = 0; i < size; i++) {
-            let formatted = f(list[i]);
-            if (formatted) result.push(this.lineClip(formatted));
-            if (result.length === this.maxLines && (i + 1) < size) {
-                result.push("...");
-                i = size;
-            }
-        }
-        return result;
-    }
-
-    static getQuestionTexts(e) {
-        return e.designations.filter(n => {
-            if (!n.tags) n.tags = [];
-            return n.tags.filter(t => t.indexOf('Question Text') > -1).length > 0;
-        });
-    }
-
-    static getOtherNames(cde) {
-        return cde.designations.filter((n, i) => {
-            if (!n.tags) n.tags = [];
-            return i > 0 && n.tags.filter(t => t.indexOf('Question Text') > -1).length === 0;
-        });
-    }
-
     openTableViewPreferences() {
         let viewComponent = CdeTableViewPreferencesComponent;
-        if (this.module === 'form') viewComponent = FormTableViewPreferencesComponent;
-        let dialogRef = this.dialog.open(viewComponent, {
+        if (this.module === 'form') { viewComponent = FormTableViewPreferencesComponent; }
+        const dialogRef = this.dialog.open(viewComponent, {
             width: '550px',
             data: {
                 searchSettings: this.searchSettings

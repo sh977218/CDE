@@ -4,10 +4,10 @@ import {
 } from 'shared/form/form.model';
 
 export function areDerivationRulesSatisfied(elt: FormElementsContainer): string[] {
-    let missingCdeTinyIds: string[] = [];
-    let allCdes: {[tinyId: string]: Question} = {};
-    let allQuestions: FormQuestion[] = [];
-    iterateFeSync(elt, undefined, undefined, (q) => {
+    const missingCdeTinyIds: string[] = [];
+    const allCdes: {[tinyId: string]: Question} = {};
+    const allQuestions: FormQuestion[] = [];
+    iterateFeSync(elt, undefined, undefined, q => {
         if (q.question.datatype === 'Number') {
             q.question.answer = q.question.defaultAnswer ? Number.parseFloat(q.question.defaultAnswer) : 0;
         } else {
@@ -46,19 +46,19 @@ export function findQuestionByTinyId(tinyId: string, elt: FormElementsContainer)
 }
 
 export function getFormQuestions(form: FormElementsContainer): FormQuestion[] {
-    let questions: FormQuestion[] = [];
+    const questions: FormQuestion[] = [];
     iterateFeSync(form, undefined, undefined, q => questions.push(q));
     return questions;
 }
 
 export function getFormScoreQuestions(form: FormElementsContainer): FormQuestion[] {
-    let questions: FormQuestion[] = [];
+    const questions: FormQuestion[] = [];
     iterateFeSync(form, undefined, undefined, q => q.question.isScore && questions.push(q));
     return questions;
 }
 
 export function getFormSkipLogicQuestions(form: FormElementsContainer): FormQuestion[] {
-    let questions: FormQuestion[] = [];
+    const questions: FormQuestion[] = [];
     iterateFeSync(form, undefined, undefined, q => q.skipLogic && q.skipLogic.condition.length > 0 && questions.push(q));
     return questions;
 }
@@ -89,9 +89,9 @@ export function questionAnswered(q: FormQuestion): boolean {
 }
 
 export function repeatFe(fe: FormElement): '' | '=' | 'F' | 'N' {
-    if (!fe.repeat) return '';
-    if (fe.repeat[0] === 'F') return 'F';
-    if (fe.repeat.startsWith('="') && fe.repeat.length >= 3 && fe.repeat.endsWith('"')) return '=';
+    if (!fe.repeat) { return ''; }
+    if (fe.repeat[0] === 'F') { return 'F'; }
+    if (fe.repeat.startsWith('="') && fe.repeat.length >= 3 && fe.repeat.endsWith('"')) { return '='; }
     return 'N';
 }
 

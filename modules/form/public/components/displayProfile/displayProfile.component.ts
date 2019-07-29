@@ -11,14 +11,14 @@ import { CodeAndSystem } from 'shared/models.model';
 import { deepCopy } from 'shared/system/util';
 import { interruptEvent } from 'non-core/browser';
 
-type DisplayProfileVM = {
+interface DisplayProfileVM {
     aliases: {
         date: Date,
         edit: boolean,
     },
     profile: DisplayProfile,
     sample: CdeForm,
-};
+}
 
 @Component({
     selector: 'cde-display-profile',
@@ -51,7 +51,385 @@ export class DisplayProfileComponent {
     get elt() {
         return this._elt;
     }
-    @Input() public canEdit: boolean = false;
+
+    constructor(public dialog: MatDialog,
+                private ucumService: UcumService,
+                private formViewComponent: FormViewComponent) {
+    }
+
+    static sampleElt = {
+        _id: '',
+        __v: 0,
+        archived: false,
+        attachments: [],
+        classification: [],
+        comments: [],
+        definitions: [],
+        designations: [],
+        displayProfiles: [],
+        history: [],
+        ids: [],
+        label: '',
+        properties: [],
+        referenceDocuments: [],
+        registrationState: {
+            registrationStatus: 'Incomplete'
+        },
+        sources: [],
+        stewardOrg: '',
+        tinyId: '',
+        formElements: [
+            {
+                label: 'Section',
+                elementType: 'section',
+                skipLogic: {
+                    condition: ''
+                },
+                formElements: [
+                    {
+                        label: '',
+                        elementType: 'section',
+                        skipLogic: {
+                            condition: ''
+                        },
+                        formElements: [
+                            {
+                                elementType: 'question',
+                                label: 'Lately I felt cheerful.',
+                                skipLogic: {
+                                    condition: ''
+                                },
+                                formElements: [],
+                                question: {
+                                    datatype: 'Value List',
+                                    answers: [
+                                        {
+                                            permissibleValue: '5',
+                                            valueMeaningName: 'Always'
+                                        },
+                                        {
+                                            permissibleValue: '4',
+                                            valueMeaningName: 'Often'
+                                        },
+                                        {
+                                            permissibleValue: '3',
+                                            valueMeaningName: 'Sometimes'
+                                        },
+                                        {
+                                            permissibleValue: '2',
+                                            valueMeaningName: 'Rarely'
+                                        },
+                                        {
+                                            permissibleValue: '1',
+                                            valueMeaningName: 'Never'
+                                        }
+                                    ],
+                                    editable: true,
+                                    required: false,
+                                    unitsOfMeasure: [],
+                                    uomsAlias: [],
+                                    uomsValid: [],
+                                    cde: {
+                                        definitions: [],
+                                        derivationRules: [],
+                                        designations: [],
+                                        ids: [],
+                                        naming: [],
+                                        permissibleValues: [
+                                            {
+                                                permissibleValue: '5',
+                                                valueMeaningName: 'Always'
+                                            },
+                                            {
+                                                permissibleValue: '4',
+                                                valueMeaningName: 'Often'
+                                            },
+                                            {
+                                                permissibleValue: '3',
+                                                valueMeaningName: 'Sometimes'
+                                            },
+                                            {
+                                                permissibleValue: '2',
+                                                valueMeaningName: 'Rarely'
+                                            },
+                                            {
+                                                permissibleValue: '1',
+                                                valueMeaningName: 'Never'
+                                            }
+                                        ],
+                                        tinyId: '',
+                                    }
+                                }
+                            },
+                            {
+                                elementType: 'question',
+                                label: 'Lately I felt confident.',
+                                skipLogic: {
+                                    condition: ''
+                                },
+                                formElements: [],
+                                question: {
+                                    datatype: 'Value List',
+                                    answers: [
+                                        {
+                                            permissibleValue: '5',
+                                            valueMeaningName: 'Always'
+                                        },
+                                        {
+                                            permissibleValue: '4',
+                                            valueMeaningName: 'Often'
+                                        },
+                                        {
+                                            permissibleValue: '3',
+                                            valueMeaningName: 'Sometimes'
+                                        },
+                                        {
+                                            permissibleValue: '2',
+                                            valueMeaningName: 'Rarely'
+                                        },
+                                        {
+                                            permissibleValue: '1',
+                                            valueMeaningName: 'Never'
+                                        }
+                                    ],
+                                    editable: true,
+                                    invisible: true,
+                                    required: false,
+                                    unitsOfMeasure: [],
+                                    uomsAlias: [],
+                                    uomsValid: [],
+                                    cde: {
+                                        definitions: [],
+                                        derivationRules: [],
+                                        designations: [],
+                                        ids: [],
+                                        naming: [],
+                                        permissibleValues: [
+                                            {
+                                                permissibleValue: '5',
+                                                valueMeaningName: 'Always'
+                                            },
+                                            {
+                                                permissibleValue: '4',
+                                                valueMeaningName: 'Often'
+                                            },
+                                            {
+                                                permissibleValue: '3',
+                                                valueMeaningName: 'Sometimes'
+                                            },
+                                            {
+                                                permissibleValue: '2',
+                                                valueMeaningName: 'Rarely'
+                                            },
+                                            {
+                                                permissibleValue: '1',
+                                                valueMeaningName: 'Never'
+                                            }
+                                        ],
+                                        tinyId: '',
+                                    }
+                                }
+                            }
+                        ],
+                        question: {
+                            answers: [],
+                            datatype: 'Value List',
+                            editable: true,
+                            required: false,
+                            unitsOfMeasure: [],
+                            uomsAlias: [],
+                            uomsValid: [],
+                            cde: {
+                                definitions: [],
+                                derivationRules: [],
+                                designations: [],
+                                ids: [],
+                                naming: [],
+                                tinyId: '',
+                            }
+                        }
+                    },
+                    {
+                        elementType: 'question',
+                        label: 'Education level USA type',
+                        skipLogic: {
+                            condition: ''
+                        },
+                        formElements: [],
+                        question: {
+                            datatype: 'Value List',
+                            defaultAnswer: 'Never attended/Kindergarten only',
+                            answer: 'Never attended/Kindergarten only',
+                            answers: [
+                                {
+                                    permissibleValue: 'Never attended/Kindergarten only',
+                                    valueMeaningName: 'Never attended/Kindergarten only'
+                                },
+                                {
+                                    permissibleValue: '1st Grade',
+                                    valueMeaningName: '1st Grade'
+                                },
+                                {
+                                    permissibleValue: '2nd Grade',
+                                    valueMeaningName: '2nd Grade'
+                                },
+                                {
+                                    permissibleValue: '3rd Grade',
+                                    valueMeaningName: '3rd Grade'
+                                },
+                                {
+                                    permissibleValue: '4th Grade',
+                                    valueMeaningName: '4th Grade'
+                                },
+                                {
+                                    permissibleValue: '5th Grade',
+                                    valueMeaningName: '5th Grade'
+                                },
+                                {
+                                    permissibleValue: '6th Grade',
+                                    valueMeaningName: '6th Grade'
+                                },
+                                {
+                                    permissibleValue: '7th Grade',
+                                    valueMeaningName: '7th Grade'
+                                },
+                                {
+                                    permissibleValue: '8th Grade',
+                                    valueMeaningName: '8th Grade'
+                                },
+                                {
+                                    permissibleValue: '9th Grade',
+                                    valueMeaningName: '9th Grade'
+                                },
+                                {
+                                    permissibleValue: '10th Grade',
+                                    valueMeaningName: '10th Grade'
+                                },
+                                {
+                                    permissibleValue: '11th Grade',
+                                    valueMeaningName: '11th Grade'
+                                }
+                            ],
+                            editable: true,
+                            required: false,
+                            unitsOfMeasure: [],
+                            uomsAlias: [],
+                            uomsValid: [],
+                            cde: {
+                                definitions: [],
+                                derivationRules: [],
+                                designations: [],
+                                ids: [],
+                                naming: [],
+                                permissibleValues: [
+                                    {
+                                        permissibleValue: 'Never attended/Kindergarten only',
+                                        valueMeaningName: 'Never attended/Kindergarten only'
+                                    },
+                                    {
+                                        permissibleValue: '1st Grade',
+                                        valueMeaningName: '1st Grade'
+                                    },
+                                    {
+                                        permissibleValue: '2nd Grade',
+                                        valueMeaningName: '2nd Grade'
+                                    },
+                                    {
+                                        permissibleValue: '3rd Grade',
+                                        valueMeaningName: '3rd Grade'
+                                    },
+                                    {
+                                        permissibleValue: '4th Grade',
+                                        valueMeaningName: '4th Grade'
+                                    },
+                                    {
+                                        permissibleValue: '5th Grade',
+                                        valueMeaningName: '5th Grade'
+                                    },
+                                    {
+                                        permissibleValue: '6th Grade',
+                                        valueMeaningName: '6th Grade'
+                                    },
+                                    {
+                                        permissibleValue: '7th Grade',
+                                        valueMeaningName: '7th Grade'
+                                    },
+                                    {
+                                        permissibleValue: '8th Grade',
+                                        valueMeaningName: '8th Grade'
+                                    },
+                                    {
+                                        permissibleValue: '9th Grade',
+                                        valueMeaningName: '9th Grade'
+                                    },
+                                    {
+                                        permissibleValue: '10th Grade',
+                                        valueMeaningName: '10th Grade'
+                                    },
+                                    {
+                                        permissibleValue: '11th Grade',
+                                        valueMeaningName: '11th Grade'
+                                    }
+                                ],
+                                tinyId: '',
+                            }
+                        }
+                    },
+                    {
+                        elementType: 'question',
+                        label: 'Person Birth Date',
+                        skipLogic: {
+                            condition: '"Education level USA type" = "Never attended/Kindergarten only"'
+                        },
+                        formElements: [],
+                        question: {
+                            datatype: 'DATE',
+                            datatypeDate: {precision: 'Month'},
+                            answers: [],
+                            editable: true,
+                            required: false,
+                            unitsOfMeasure: [],
+                            uomsAlias: [],
+                            uomsValid: [],
+                            cde: {
+                                ids: [],
+                                definitions: [],
+                                derivationRules: [],
+                                designations: [],
+                                naming: [],
+                                tinyId: '',
+                            }
+                        },
+                        instructions: {
+                            value: 'Include year and month but no day.'
+                        }
+                    }
+                ],
+                question: {
+                    answers: [],
+                    datatype: 'Value List',
+                    editable: true,
+                    required: false,
+                    unitsOfMeasure: [],
+                    uomsAlias: [],
+                    uomsValid: [],
+                    cde: {
+                        definitions: [],
+                        derivationRules: [],
+                        designations: [],
+                        ids: [],
+                        naming: [],
+                        permissibleValues: [],
+                        tinyId: '',
+                    }
+                },
+                instructions: {
+                    value: 'Fill out to the best of your knowledge.'
+                }
+            }
+        ]
+    };
+    @Input() public canEdit = false;
     @Output() onEltChange = new EventEmitter();
     private _elt: CdeForm;
     dPVMs: DisplayProfileVM[] = [];
@@ -61,28 +439,23 @@ export class DisplayProfileComponent {
     uomsDate: Date;
     uomsPromise: Promise<void>;
 
-    constructor(public dialog: MatDialog,
-                private ucumService: UcumService,
-                private formViewComponent: FormViewComponent) {
-    }
-
-    addProfile() {
-        let newProfile = new DisplayProfile('New Profile');
-        if (!this.elt.displayProfiles) this.elt.displayProfiles = [newProfile];
-        else this.elt.displayProfiles.push(newProfile);
-        this.dPVMs.push(DisplayProfileComponent.dPVMNew(newProfile));
-        this.onEltChange.emit();
-    }
-
     static dPVMNew(profile): DisplayProfileVM {
         return {
             aliases: {
                 date: undefined,
                 edit: false,
             },
-            profile: profile,
+            profile,
             sample: deepCopy(this.sampleElt as CdeForm),
         };
+    }
+
+    addProfile() {
+        const newProfile = new DisplayProfile('New Profile');
+        if (!this.elt.displayProfiles) { this.elt.displayProfiles = [newProfile]; }
+        else { this.elt.displayProfiles.push(newProfile); }
+        this.dPVMs.push(DisplayProfileComponent.dPVMNew(newProfile));
+        this.onEltChange.emit();
     }
 
     getUoms(): Promise<void> {
@@ -100,7 +473,7 @@ export class DisplayProfileComponent {
                         resourceCount++;
                         this.ucumService.getUnitNames(u.code, names => {
                             this.saveAliases(this.uoms, u, names);
-                            if (--resourceCount === 0) resolve();
+                            if (--resourceCount === 0) { resolve(); }
                         });
                     });
                 }
@@ -125,13 +498,13 @@ export class DisplayProfileComponent {
     }
 
     profileAliasGet(dPVM: DisplayProfileVM, v: CodeAndSystem) {
-        let matches = dPVM.profile.unitsOfMeasureAlias.filter(a => CodeAndSystem.compare(a.unitOfMeasure, v));
+        const matches = dPVM.profile.unitsOfMeasureAlias.filter(a => CodeAndSystem.compare(a.unitOfMeasure, v));
         return matches.length ? matches[0].alias : v.code;
     }
 
     profileAliasSet(dPVM: DisplayProfileVM, v: CodeAndSystem, a: string) {
         if (a === v.code) {
-            let indexes = [];
+            const indexes = [];
             dPVM.profile.unitsOfMeasureAlias.forEach((a, i) => {
                 if (a.unitOfMeasure.code === v.code && a.unitOfMeasure.system === v.system) {
                     indexes.push(i);
@@ -139,7 +512,7 @@ export class DisplayProfileComponent {
             });
             indexes.reverse().forEach(i => dPVM.profile.unitsOfMeasureAlias.splice(i, 1));
         } else {
-            let existing = dPVM.profile.unitsOfMeasureAlias.filter(u => CodeAndSystem.compare(u.unitOfMeasure, v));
+            const existing = dPVM.profile.unitsOfMeasureAlias.filter(u => CodeAndSystem.compare(u.unitOfMeasure, v));
             if (existing.length) {
                 existing[0].alias = a;
             } else {
@@ -150,13 +523,13 @@ export class DisplayProfileComponent {
     }
 
     profileUomsEditCreate(dPVM: DisplayProfileVM) {
-        if (!dPVM) return;
+        if (!dPVM) { return; }
 
         this.getUoms().then(() => {
-            if (dPVM.aliases && dPVM.aliases.date === this.uomsDate) return;
+            if (dPVM.aliases && dPVM.aliases.date === this.uomsDate) { return; }
 
-            for (let u of dPVM.profile.unitsOfMeasureAlias) {
-                let found = this.uoms.filter(a => CodeAndSystem.compare(a.u, u.unitOfMeasure));
+            for (const u of dPVM.profile.unitsOfMeasureAlias) {
+                const found = this.uoms.filter(a => CodeAndSystem.compare(a.u, u.unitOfMeasure));
                 if (!found.length || !found.map(a => a.a.indexOf(u.alias)).every(r => r > 0)) {
                     dPVM.profile.unitsOfMeasureAlias.splice(dPVM.profile.unitsOfMeasureAlias.indexOf(u), 1);
                     this.onEltChange.emit();
@@ -173,20 +546,20 @@ export class DisplayProfileComponent {
     }
 
     saveAliases(aliases: any[], v: CodeAndSystem, a: string[]) {
-        let match = a.indexOf(v.code);
-        if (match > -1) a.splice(match, 1);
+        const match = a.indexOf(v.code);
+        if (match > -1) { a.splice(match, 1); }
         a.unshift(v.code);
 
-        let existing = aliases.filter(u => CodeAndSystem.compare(u.u, v));
+        const existing = aliases.filter(u => CodeAndSystem.compare(u.u, v));
         if (existing.length) {
             existing[0].a = a;
         } else {
-            aliases.push({u: v, a: a});
+            aliases.push({u: v, a});
         }
     }
 
     setDisplayType(dPVM: DisplayProfileVM) {
-        let profile = deepCopy(dPVM.profile);
+        const profile = deepCopy(dPVM.profile);
         this.substituteProfile(dPVM, profile);
         this.onEltChange.emit();
     }
@@ -202,381 +575,8 @@ export class DisplayProfileComponent {
     }
 
     uomAliasEdit(dPVM: DisplayProfileVM) {
-        if (!this.canEdit) return;
+        if (!this.canEdit) { return; }
         dPVM.aliases.edit = !dPVM.aliases.edit;
-        if (dPVM.aliases.edit) this.profileUomsEditCreate(dPVM);
+        if (dPVM.aliases.edit) { this.profileUomsEditCreate(dPVM); }
     }
-
-    static sampleElt = {
-        _id: "",
-        __v: 0,
-        archived: false,
-        attachments: [],
-        classification: [],
-        comments: [],
-        definitions: [],
-        designations: [],
-        displayProfiles: [],
-        history: [],
-        ids: [],
-        label: "",
-        properties: [],
-        referenceDocuments: [],
-        registrationState: {
-            registrationStatus: "Incomplete"
-        },
-        sources: [],
-        stewardOrg: "",
-        tinyId: "",
-        formElements: [
-            {
-                label: "Section",
-                elementType: "section",
-                skipLogic: {
-                    condition: ""
-                },
-                formElements: [
-                    {
-                        label: "",
-                        elementType: "section",
-                        skipLogic: {
-                            condition: ""
-                        },
-                        formElements: [
-                            {
-                                elementType: "question",
-                                label: "Lately I felt cheerful.",
-                                skipLogic: {
-                                    condition: ""
-                                },
-                                formElements: [],
-                                question: {
-                                    datatype: "Value List",
-                                    answers: [
-                                        {
-                                            permissibleValue: "5",
-                                            valueMeaningName: "Always"
-                                        },
-                                        {
-                                            permissibleValue: "4",
-                                            valueMeaningName: "Often"
-                                        },
-                                        {
-                                            permissibleValue: "3",
-                                            valueMeaningName: "Sometimes"
-                                        },
-                                        {
-                                            permissibleValue: "2",
-                                            valueMeaningName: "Rarely"
-                                        },
-                                        {
-                                            permissibleValue: "1",
-                                            valueMeaningName: "Never"
-                                        }
-                                    ],
-                                    editable: true,
-                                    required: false,
-                                    unitsOfMeasure: [],
-                                    uomsAlias: [],
-                                    uomsValid: [],
-                                    cde: {
-                                        definitions: [],
-                                        derivationRules: [],
-                                        designations: [],
-                                        ids: [],
-                                        naming: [],
-                                        permissibleValues: [
-                                            {
-                                                permissibleValue: "5",
-                                                valueMeaningName: "Always"
-                                            },
-                                            {
-                                                permissibleValue: "4",
-                                                valueMeaningName: "Often"
-                                            },
-                                            {
-                                                permissibleValue: "3",
-                                                valueMeaningName: "Sometimes"
-                                            },
-                                            {
-                                                permissibleValue: "2",
-                                                valueMeaningName: "Rarely"
-                                            },
-                                            {
-                                                permissibleValue: "1",
-                                                valueMeaningName: "Never"
-                                            }
-                                        ],
-                                        tinyId: "",
-                                    }
-                                }
-                            },
-                            {
-                                elementType: "question",
-                                label: "Lately I felt confident.",
-                                skipLogic: {
-                                    condition: ""
-                                },
-                                formElements: [],
-                                question: {
-                                    datatype: "Value List",
-                                    answers: [
-                                        {
-                                            permissibleValue: "5",
-                                            valueMeaningName: "Always"
-                                        },
-                                        {
-                                            permissibleValue: "4",
-                                            valueMeaningName: "Often"
-                                        },
-                                        {
-                                            permissibleValue: "3",
-                                            valueMeaningName: "Sometimes"
-                                        },
-                                        {
-                                            permissibleValue: "2",
-                                            valueMeaningName: "Rarely"
-                                        },
-                                        {
-                                            permissibleValue: "1",
-                                            valueMeaningName: "Never"
-                                        }
-                                    ],
-                                    editable: true,
-                                    invisible: true,
-                                    required: false,
-                                    unitsOfMeasure: [],
-                                    uomsAlias: [],
-                                    uomsValid: [],
-                                    cde: {
-                                        definitions: [],
-                                        derivationRules: [],
-                                        designations: [],
-                                        ids: [],
-                                        naming: [],
-                                        permissibleValues: [
-                                            {
-                                                permissibleValue: "5",
-                                                valueMeaningName: "Always"
-                                            },
-                                            {
-                                                permissibleValue: "4",
-                                                valueMeaningName: "Often"
-                                            },
-                                            {
-                                                permissibleValue: "3",
-                                                valueMeaningName: "Sometimes"
-                                            },
-                                            {
-                                                permissibleValue: "2",
-                                                valueMeaningName: "Rarely"
-                                            },
-                                            {
-                                                permissibleValue: "1",
-                                                valueMeaningName: "Never"
-                                            }
-                                        ],
-                                        tinyId: "",
-                                    }
-                                }
-                            }
-                        ],
-                        question: {
-                            answers: [],
-                            datatype: "Value List",
-                            editable: true,
-                            required: false,
-                            unitsOfMeasure: [],
-                            uomsAlias: [],
-                            uomsValid: [],
-                            cde: {
-                                definitions: [],
-                                derivationRules: [],
-                                designations: [],
-                                ids: [],
-                                naming: [],
-                                tinyId: "",
-                            }
-                        }
-                    },
-                    {
-                        elementType: "question",
-                        label: "Education level USA type",
-                        skipLogic: {
-                            condition: ""
-                        },
-                        formElements: [],
-                        question: {
-                            datatype: "Value List",
-                            defaultAnswer: "Never attended/Kindergarten only",
-                            answer: "Never attended/Kindergarten only",
-                            answers: [
-                                {
-                                    permissibleValue: "Never attended/Kindergarten only",
-                                    valueMeaningName: "Never attended/Kindergarten only"
-                                },
-                                {
-                                    permissibleValue: "1st Grade",
-                                    valueMeaningName: "1st Grade"
-                                },
-                                {
-                                    permissibleValue: "2nd Grade",
-                                    valueMeaningName: "2nd Grade"
-                                },
-                                {
-                                    permissibleValue: "3rd Grade",
-                                    valueMeaningName: "3rd Grade"
-                                },
-                                {
-                                    permissibleValue: "4th Grade",
-                                    valueMeaningName: "4th Grade"
-                                },
-                                {
-                                    permissibleValue: "5th Grade",
-                                    valueMeaningName: "5th Grade"
-                                },
-                                {
-                                    permissibleValue: "6th Grade",
-                                    valueMeaningName: "6th Grade"
-                                },
-                                {
-                                    permissibleValue: "7th Grade",
-                                    valueMeaningName: "7th Grade"
-                                },
-                                {
-                                    permissibleValue: "8th Grade",
-                                    valueMeaningName: "8th Grade"
-                                },
-                                {
-                                    permissibleValue: "9th Grade",
-                                    valueMeaningName: "9th Grade"
-                                },
-                                {
-                                    permissibleValue: "10th Grade",
-                                    valueMeaningName: "10th Grade"
-                                },
-                                {
-                                    permissibleValue: "11th Grade",
-                                    valueMeaningName: "11th Grade"
-                                }
-                            ],
-                            editable: true,
-                            required: false,
-                            unitsOfMeasure: [],
-                            uomsAlias: [],
-                            uomsValid: [],
-                            cde: {
-                                definitions: [],
-                                derivationRules: [],
-                                designations: [],
-                                ids: [],
-                                naming: [],
-                                permissibleValues: [
-                                    {
-                                        permissibleValue: "Never attended/Kindergarten only",
-                                        valueMeaningName: "Never attended/Kindergarten only"
-                                    },
-                                    {
-                                        permissibleValue: "1st Grade",
-                                        valueMeaningName: "1st Grade"
-                                    },
-                                    {
-                                        permissibleValue: "2nd Grade",
-                                        valueMeaningName: "2nd Grade"
-                                    },
-                                    {
-                                        permissibleValue: "3rd Grade",
-                                        valueMeaningName: "3rd Grade"
-                                    },
-                                    {
-                                        permissibleValue: "4th Grade",
-                                        valueMeaningName: "4th Grade"
-                                    },
-                                    {
-                                        permissibleValue: "5th Grade",
-                                        valueMeaningName: "5th Grade"
-                                    },
-                                    {
-                                        permissibleValue: "6th Grade",
-                                        valueMeaningName: "6th Grade"
-                                    },
-                                    {
-                                        permissibleValue: "7th Grade",
-                                        valueMeaningName: "7th Grade"
-                                    },
-                                    {
-                                        permissibleValue: "8th Grade",
-                                        valueMeaningName: "8th Grade"
-                                    },
-                                    {
-                                        permissibleValue: "9th Grade",
-                                        valueMeaningName: "9th Grade"
-                                    },
-                                    {
-                                        permissibleValue: "10th Grade",
-                                        valueMeaningName: "10th Grade"
-                                    },
-                                    {
-                                        permissibleValue: "11th Grade",
-                                        valueMeaningName: "11th Grade"
-                                    }
-                                ],
-                                tinyId: "",
-                            }
-                        }
-                    },
-                    {
-                        elementType: "question",
-                        label: "Person Birth Date",
-                        skipLogic: {
-                            condition: "\"Education level USA type\" = \"Never attended/Kindergarten only\""
-                        },
-                        formElements: [],
-                        question: {
-                            datatype: "DATE",
-                            datatypeDate: {precision: "Month"},
-                            answers: [],
-                            editable: true,
-                            required: false,
-                            unitsOfMeasure: [],
-                            uomsAlias: [],
-                            uomsValid: [],
-                            cde: {
-                                ids: [],
-                                definitions: [],
-                                derivationRules: [],
-                                designations: [],
-                                naming: [],
-                                tinyId: "",
-                            }
-                        },
-                        instructions: {
-                            value: "Include year and month but no day."
-                        }
-                    }
-                ],
-                question: {
-                    answers: [],
-                    datatype: "Value List",
-                    editable: true,
-                    required: false,
-                    unitsOfMeasure: [],
-                    uomsAlias: [],
-                    uomsValid: [],
-                    cde: {
-                        definitions: [],
-                        derivationRules: [],
-                        designations: [],
-                        ids: [],
-                        naming: [],
-                        permissibleValues: [],
-                        tinyId: "",
-                    }
-                },
-                instructions: {
-                    value: "Fill out to the best of your knowledge."
-                }
-            }
-        ]
-    };
 }

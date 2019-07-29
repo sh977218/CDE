@@ -20,21 +20,25 @@ import { TableListComponent } from 'search/listView/tableList.component';
     templateUrl: './listView.component.html'
 })
 export class ListViewComponent implements OnChanges, OnInit {
+
+    constructor(private _componentFactoryResolver: ComponentFactoryResolver,
+                private esService: ElasticService) {
+    }
+    static readonly RESULTVIEWS = ['accordion', 'summary', 'table'];
     @Input() board?: any = null;
-    @Input() currentPage?: number = 0;
+    @Input() currentPage = 0;
     @Input() location?: string = undefined;
     @Input() elts!: Elt[];
-    @Input() embedded?: boolean = false;
+    @Input() embedded = false;
     @Input() listView!: ListTypes;
     @Input() module!: string;
-    @Input() totalItems?: number = 0;
+    @Input() totalItems = 0;
     @Output() add = new EventEmitter<Item>();
     @Output() listViewChange = new EventEmitter<string>();
     @ViewChild('viewContainer', {read: ViewContainerRef}) viewContainer!: ViewContainerRef;
     private _listView?: ListTypes;
     viewsMap!: Map<string, any>;
     viewComponentRef: any;
-    static readonly RESULTVIEWS = ['accordion', 'summary', 'table'];
 
     ngOnChanges(changes: SimpleChanges) {
         if (changes.elts && this.viewComponentRef && this.viewComponentRef.instance) {
@@ -75,11 +79,7 @@ export class ListViewComponent implements OnChanges, OnInit {
             }
         }
 
-        if (changes.listView) this.setListView(this.listView);
-    }
-
-    constructor(private _componentFactoryResolver: ComponentFactoryResolver,
-                private esService: ElasticService) {
+        if (changes.listView) { this.setListView(this.listView); }
     }
 
     ngOnInit() {
@@ -94,23 +94,23 @@ export class ListViewComponent implements OnChanges, OnInit {
     }
 
     render() {
-        if (this.embedded) this._listView = 'accordion';
-        let view = this.viewsMap.get(this._listView as string);
-        let viewFactory = this._componentFactoryResolver.resolveComponentFactory(view);
+        if (this.embedded) { this._listView = 'accordion'; }
+        const view = this.viewsMap.get(this._listView as string);
+        const viewFactory = this._componentFactoryResolver.resolveComponentFactory(view);
         this.viewContainer.clear();
         this.viewComponentRef = this.viewContainer.createComponent(viewFactory);
         this.viewComponentRef.instance.elts = this.elts;
         if (this._listView === 'accordion') {
             this.viewComponentRef.instance.location = this.location;
             this.viewComponentRef.instance.openInNewTab = true;
-            if (this.embedded) this.viewComponentRef.instance.addMode = 0;
+            if (this.embedded) { this.viewComponentRef.instance.addMode = 0; }
             this.viewComponentRef.instance.add.subscribe((elt: Item) => this.add.emit(elt));
         } else if (this.location === 'board' && this._listView !== 'table') {
             this.viewComponentRef.instance.board = this.board;
             this.viewComponentRef.instance.currentPage = this.currentPage;
             this.viewComponentRef.instance.totalItems = this.totalItems;
             this.viewComponentRef.instance.reload.subscribe(() => this.add.emit());
-        } else if (this._listView === 'table') this.viewComponentRef.instance.module = this.module;
+        } else if (this._listView === 'table') { this.viewComponentRef.instance.module = this.module; }
         else if (this._listView === 'summary') {
             this.viewComponentRef.instance.contentComponent = this.viewsMap.get(this._listView + 'Content');
         }

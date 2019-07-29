@@ -12,7 +12,7 @@ export class SearchExportButtonComponent implements OnInit {
 
     constructor(public userService: UserService) {}
 
-    ngOnInit () {
+    ngOnInit() {
         if (this.module === 'cde') {
             this.exportOptions = [
                 {id: 'csv', label: 'CSV File'},

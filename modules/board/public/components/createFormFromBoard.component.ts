@@ -36,7 +36,9 @@ export class CreateFormFromBoardComponent {
                         });
                     });
                     this.modalRef = this.dialog.open(this.createFormContent, {width: '1200px'});
-                } else this.alert.addAlert('danger', 'No elements in board.');
+                } else {
+                    this.alert.addAlert('danger', 'No elements in board.');
+                }
             }, err => this.alert.addAlert('danger', 'Error on load elements in board ' + err)
         );
     }

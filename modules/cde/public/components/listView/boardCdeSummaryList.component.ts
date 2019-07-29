@@ -19,15 +19,15 @@ export class BoardCdeSummaryListComponent implements DoCheck, OnChanges, OnInit 
 
     ngDoCheck() {
         // TODO: remove DoCheck when OnChanges inputs is implemented for Dynamic Components
-        if (this.board !== this.boardListService.board) this.boardListService.board = this.board;
-        if (this.currentPage !== this.boardListService.currentPage) this.boardListService.currentPage = this.currentPage;
-        if (this.totalItems !== this.boardListService.totalItems) this.boardListService.totalItems = this.totalItems;
+        if (this.board !== this.boardListService.board) { this.boardListService.board = this.board; }
+        if (this.currentPage !== this.boardListService.currentPage) { this.boardListService.currentPage = this.currentPage; }
+        if (this.totalItems !== this.boardListService.totalItems) { this.boardListService.totalItems = this.totalItems; }
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        if (changes.board) this.boardListService.board = this.board;
-        if (changes.currentPage) this.boardListService.currentPage = this.currentPage;
-        if (changes.totalItems) this.boardListService.totalItems = this.totalItems;
+        if (changes.board) { this.boardListService.board = this.board; }
+        if (changes.currentPage) { this.boardListService.currentPage = this.currentPage; }
+        if (changes.totalItems) { this.boardListService.totalItems = this.totalItems; }
     }
 
     ngOnInit() {

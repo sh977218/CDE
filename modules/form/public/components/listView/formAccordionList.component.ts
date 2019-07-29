@@ -10,7 +10,7 @@ export class FormAccordionListComponent {
     @Input() addMode: any = null;
     @Input() location: string = null;
     @Input() elts: CdeForm[];
-    @Input() openInNewTab: boolean = false;
+    @Input() openInNewTab = false;
     @Output() add = new EventEmitter<CdeForm>();
 
     module = 'form';

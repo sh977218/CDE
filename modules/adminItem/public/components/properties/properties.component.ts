@@ -22,12 +22,12 @@ import { Property } from 'shared/models.model';
         `]
 })
 export class PropertiesComponent implements OnInit {
-    @Input() canEdit: boolean = false;
+    @Input() canEdit = false;
     @Input() elt: DataElement;
     @Output() onEltChange = new EventEmitter();
     @ViewChild('newPropertyContent') newPropertyContent: TemplateRef<any>;
     newProperty: Property = new Property();
-    onInitDone: boolean = false;
+    onInitDone = false;
     orgPropertyKeys: string[] = [];
 
     constructor(
@@ -46,7 +46,8 @@ export class PropertiesComponent implements OnInit {
 
     openNewPropertyModal() {
         if (this.orgPropertyKeys.length === 0) {
-            this.alert.addAlert('danger', 'No valid property keys present, have an Org Admin go to Org Management > List Management to add one');
+            this.alert.addAlert('danger',
+                'No valid property keys present, have an Org Admin go to Org Management > List Management to add one');
         } else {
             this.dialog.open(this.newPropertyContent).afterClosed().subscribe(res => {
                 if (res) {

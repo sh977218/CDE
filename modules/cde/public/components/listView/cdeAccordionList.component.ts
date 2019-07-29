@@ -14,7 +14,7 @@ export class CdeAccordionListComponent {
     @Input() addMode: any = null;
     @Input() location: string = null;
     @Input() elts: DataElement[];
-    @Input() openInNewTab: boolean = false;
+    @Input() openInNewTab = false;
     @Output() add = new EventEmitter<DataElement>();
 
     module = 'cde';
@@ -22,7 +22,7 @@ export class CdeAccordionListComponent {
     user: User;
     Elt = Elt;
 
-    @ViewChild("pinModalCde") public pinModalCde: PinBoardModalComponent;
+    @ViewChild('pinModalCde') public pinModalCde: PinBoardModalComponent;
 
     constructor(private userService: UserService,
                 public quickBoard: QuickBoardListService) {

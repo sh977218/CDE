@@ -30,20 +30,13 @@ import { CbErr } from 'shared/models.model';
     templateUrl: './nativeRenderApp.component.html'
 })
 export class NativeRenderAppComponent {
-    elt?: CdeForm;
-    errorMessage?: string;
-    methodLoadForm = this.loadForm.bind(this);
-    selectedProfile?: DisplayProfile;
-    selectedProfileName: string;
-    summary = false;
-    submitForm: boolean;
 
     constructor() {
-        let args: any = NativeRenderAppComponent.searchParamsGet();
+        const args: any = NativeRenderAppComponent.searchParamsGet();
         this.selectedProfileName = args.selectedProfile;
         this.submitForm = args.submit !== undefined;
-        if ((<any>window).formElt) {
-            let elt = JSON.parse(JSON.stringify((<any>window).formElt));
+        if ((window as any).formElt) {
+            const elt = JSON.parse(JSON.stringify((window as any).formElt));
             this.loadForm(undefined, elt);
         } else {
             if (args.tinyId) {
@@ -52,6 +45,23 @@ export class NativeRenderAppComponent {
                 this.summary = true;
             }
         }
+    }
+    elt?: CdeForm;
+    errorMessage?: string;
+    methodLoadForm = this.loadForm.bind(this);
+    selectedProfile?: DisplayProfile;
+    selectedProfileName: string;
+    summary = false;
+    submitForm: boolean;
+
+    static searchParamsGet(): string[] {
+        const params: any = {};
+        location.search && location.search.substr(1).split('&').forEach(e => {
+            const p = e.split('=');
+            if (p.length === 2) { params[p[0]] = decodeURI(p[1]); }
+            else { params[p[0]] = null; }
+        });
+        return params;
     }
 
     getForm(tinyId: string, cb: CbErr<CdeForm>) {
@@ -69,19 +79,9 @@ export class NativeRenderAppComponent {
         if (!this.selectedProfileName) {
             this.selectedProfile = this.elt.displayProfiles[0];
         } else {
-            let selectedProfileArray = this.elt.displayProfiles.filter(d => d.name === this.selectedProfileName);
-            if (selectedProfileArray && selectedProfileArray.length > 0) this.selectedProfile = selectedProfileArray[0];
-            else this.selectedProfile = undefined;
+            const selectedProfileArray = this.elt.displayProfiles.filter(d => d.name === this.selectedProfileName);
+            if (selectedProfileArray && selectedProfileArray.length > 0) { this.selectedProfile = selectedProfileArray[0]; }
+            else { this.selectedProfile = undefined; }
         }
-    }
-
-    static searchParamsGet(): string[] {
-        let params: any = {};
-        location.search && location.search.substr(1).split('&').forEach(e => {
-            let p = e.split('=');
-            if (p.length === 2) params[p[0]] = decodeURI(p[1]);
-            else params[p[0]] = null;
-        });
-        return params;
     }
 }

@@ -38,15 +38,15 @@ export class MergeFormService {
         let index = 0;
         //noinspection TypeScriptUnresolvedFunction
         async_forEachSeries(questionsFrom, (questionFrom: any, doneOneQuestion) => {
-            let questionTo = questionsTo[index];
+            const questionTo = questionsTo[index];
             if (!questionFrom.question.cde.tinyId || !questionTo.question.cde.tinyId) {
                 index++;
                 doneOne(index, doneOneQuestion);
             } else {
-                let tinyIdFrom = questionFrom.question.cde.tinyId;
-                let tinyIdTo = questionTo.question.cde.tinyId;
+                const tinyIdFrom = questionFrom.question.cde.tinyId;
+                const tinyIdTo = questionTo.question.cde.tinyId;
                 this.mergeCdeService.doMerge(tinyIdFrom, tinyIdTo, fields, (err, result) => {
-                    if (err) return cb(err);
+                    if (err) { return cb(err); }
                     else {
                         index++;
                         if (result && result[0].registrationState.registrationStatus === 'Retired') {
@@ -56,9 +56,7 @@ export class MergeFormService {
                     }
                 });
             }
-        }, (err) => {
-            cb(err);
-        });
+        }, cb);
     }
 
     doMerge(mergeFrom, mergeTo, fields, doneOne, cb) {
@@ -86,9 +84,7 @@ export class MergeFormService {
             if (fields.questions) {
                 this.mergeQuestions(mergeFrom.questions, mergeTo.questions, fields.cde, (index, next) => {
                     doneOne(index, next);
-                }, (err) => {
-                    cb(err);
-                });
+                }, cb);
             }
         }
     }
@@ -102,10 +98,10 @@ export class MergeFormService {
             return this.error;
         }
         left.questions.forEach((leftQuestion, i) => {
-            let leftTinyId = leftQuestion.question.cde.tinyId;
+            const leftTinyId = leftQuestion.question.cde.tinyId;
             leftQuestion.info = {};
             right.questions.filter((rightQuestion, j) => {
-                let rightTinyId = rightQuestion.question.cde.tinyId;
+                const rightTinyId = rightQuestion.question.cde.tinyId;
                 if (leftTinyId === rightTinyId && i !== j) {
                     leftQuestion.info.error = 'Not align';
                     this.error.error = 'Form not align';

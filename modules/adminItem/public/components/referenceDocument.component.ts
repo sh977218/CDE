@@ -1,22 +1,22 @@
-import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from "@angular/core";
+import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
 
 import { DataElement } from 'shared/de/dataElement.model';
 import { ReferenceDocument } from 'shared/models.model';
 import { MatDialog, MatDialogRef } from '@angular/material';
 
 @Component({
-    selector: "cde-reference-document",
-    templateUrl: "./referenceDocument.component.html",
+    selector: 'cde-reference-document',
+    templateUrl: './referenceDocument.component.html',
     styles: [`
         dd {
             min-height: 20px;
         }`]
 })
 export class ReferenceDocumentComponent {
-    @Input() canEdit: boolean = false;
+    @Input() canEdit = false;
     @Input() elt: DataElement;
     @Output() onEltChange = new EventEmitter();
-    @ViewChild("newReferenceDocumentContent") public newReferenceDocumentContent: TemplateRef<any>;
+    @ViewChild('newReferenceDocumentContent') public newReferenceDocumentContent: TemplateRef<any>;
     newReferenceDocument: ReferenceDocument = new ReferenceDocument();
     modalRef: MatDialogRef<TemplateRef<any>>;
 
@@ -29,7 +29,7 @@ export class ReferenceDocumentComponent {
     }
 
     openNewReferenceDocumentModal() {
-        this.modalRef = this.dialog.open(this.newReferenceDocumentContent, {width: "800px"});
+        this.modalRef = this.dialog.open(this.newReferenceDocumentContent, {width: '800px'});
         this.modalRef.afterClosed().subscribe(() => this.newReferenceDocument = new ReferenceDocument(), () => {});
     }
 

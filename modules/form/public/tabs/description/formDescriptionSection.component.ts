@@ -34,7 +34,7 @@ import { getQuestionsPrior } from 'shared/form/skipLogic';
 })
 export class FormDescriptionSectionComponent implements OnInit {
     @Input() elt!: CdeForm;
-    @Input() canEdit: boolean = false;
+    @Input() canEdit = false;
     @Input() index!: number;
     @Input() node!: TreeNode;
     @Output() onEltChange: EventEmitter<void> = new EventEmitter<void>();
@@ -48,7 +48,7 @@ export class FormDescriptionSectionComponent implements OnInit {
     parent!: FormElement;
     repeatFeLabel = repeatFeLabel;
     repeatOptions = [
-        {label: "", value: ""},
+        {label: '', value: ''},
         {label: 'Set Number of Times', value: 'N'},
         {label: 'Over answer of specified question', value: '='},
         {label: 'Over first question', value: 'F'}
@@ -72,13 +72,13 @@ export class FormDescriptionSectionComponent implements OnInit {
         this.section.repeatOption = repeatFe(this.section);
         this.section.repeatNumber = repeatFeNumber(this.section);
         this.section.repeatQuestion = repeatFeQuestion(this.section);
-        if (!this.section.instructions) this.section.instructions = new FormattedValue;
-        if (!this.section.skipLogic) this.section.skipLogic = new SkipLogic;
+        if (!this.section.instructions) { this.section.instructions = new FormattedValue; }
+        if (!this.section.skipLogic) { this.section.skipLogic = new SkipLogic; }
 
         if (this.node.data.elementType === 'form') {
-            if (FormDescriptionComponent.isSubForm(this.node.parent)) this.isSubForm = FormDescriptionComponent.isSubForm(this.node);
+            if (FormDescriptionComponent.isSubForm(this.node.parent)) { this.isSubForm = FormDescriptionComponent.isSubForm(this.node); }
         } else {
-            if (FormDescriptionComponent.isSubForm(this.node)) this.isSubForm = FormDescriptionComponent.isSubForm(this.node);
+            if (FormDescriptionComponent.isSubForm(this.node)) { this.isSubForm = FormDescriptionComponent.isSubForm(this.node); }
         }
 
         this.checkRepeatOptions();
@@ -131,7 +131,7 @@ export class FormDescriptionSectionComponent implements OnInit {
 
     openUpdateFormVersion(formSection: FormInForm) {
         FormService.fetchForm(formSection.inForm.form.tinyId).then(newForm => {
-            let oldVersion = formSection.inForm.form.version ? formSection.inForm.form.version : '';
+            const oldVersion = formSection.inForm.form.version ? formSection.inForm.form.version : '';
             FormService.fetchForm(formSection.inForm.form.tinyId, oldVersion).then(oldForm => {
                 this.openUpdateFormVersionMerge(convertFormToSection(newForm), formSection, newForm, oldForm);
             });
@@ -146,15 +146,15 @@ export class FormDescriptionSectionComponent implements OnInit {
             newSection.label = currentSection.label;
         }
 
-        let modal: any = {
-            currentSection: currentSection,
-            newSection: newSection
+        const modal: any = {
+            currentSection,
+            newSection
         };
         modal.bForm = true;
         modal.bLabel = !_isEqual(newForm.designations, oldForm.designations);
 
         this.updateFormVersion =  modal;
-        this.dialog.open(this.updateFormVersionTmpl, {width: '1000px'}).afterClosed().subscribe((res) => {
+        this.dialog.open(this.updateFormVersionTmpl, {width: '1000px'}).afterClosed().subscribe(res => {
             if (res) {
                 currentSection.inForm = newSection.inForm;
                 currentSection.formElements = newSection.formElements;
@@ -179,7 +179,7 @@ export class FormDescriptionSectionComponent implements OnInit {
             section.repeat = '="' + section.repeatQuestion + '"';
         } else if (section.repeatOption === 'N') {
             section.repeat = (section.repeatNumber && section.repeatNumber > 1 ? section.repeatNumber.toString() : undefined);
-            if (parseInt(section.repeat || '') > 0) this.onEltChange.emit();
+            if (parseInt(section.repeat || '') > 0) { this.onEltChange.emit(); }
         } else {
             section.repeat = undefined;
         }

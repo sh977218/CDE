@@ -51,6 +51,7 @@
     "include": [
       "**/server/article/*",
       "**/server/board/*",
+      "**/server/cde/*",
       "**/server/discuss/*",
       "**/server/log/*",
       "**/server/notification",

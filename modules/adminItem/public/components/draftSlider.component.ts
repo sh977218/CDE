@@ -1,10 +1,10 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
-import "../../../../node_modules/js-toggle-switch/dist/toggle-switch.css";
-import ToggleSwitch from "../../../../node_modules/js-toggle-switch/dist/toggle-switch";
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import '../../../../node_modules/js-toggle-switch/dist/toggle-switch.css';
+import ToggleSwitch from '../../../../node_modules/js-toggle-switch/dist/toggle-switch';
 
 
 @Component({
-    selector: "cde-draft-slider",
+    selector: 'cde-draft-slider',
     template: `<span #sliderParent><input #sliderInput title="draft toggle" type="checkbox"></span>`,
     styles: [`
         :host >>> .toggle-switch {
@@ -75,8 +75,8 @@ export class DraftSliderComponent implements OnInit {
         }
     }
     @Output() isDraftChange = new EventEmitter<boolean>();
-    @ViewChild("sliderInput") public draftSliderElem: ElementRef;
-    @ViewChild("sliderParent") public draftSliderParent: ElementRef;
+    @ViewChild('sliderInput') public draftSliderElem: ElementRef;
+    @ViewChild('sliderParent') public draftSliderParent: ElementRef;
     draftToggle: any;
 
     ngOnInit() {

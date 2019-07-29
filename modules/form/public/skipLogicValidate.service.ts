@@ -17,7 +17,7 @@ export class SkipLogicValidateService {
             if (!fe.skipLogic || !fe.skipLogic.condition) {
                 return false;
             }
-            let tokens = tokenSplitter(fe.skipLogic.condition).map((token, i) => {
+            const tokens = tokenSplitter(fe.skipLogic.condition).map((token, i) => {
                 if (i % 4 === 0 && token === '"' + oldLabel + '"') {
                     fe.updatedSkipLogic = true;
                     return '"' + newLabel + '"';
@@ -32,11 +32,73 @@ export class SkipLogicValidateService {
         });
     }
 
-    getTypeaheadOptions(currentContent: string, parent: FormElementsContainer, fe: FormElement): string[] {
-        if (!currentContent) currentContent = '';
-        if (!fe.skipLogic) fe.skipLogic = new SkipLogic();
+    static validateSkipLogic(parent: FormElementsContainer, fe: FormElement): boolean {
+        // skip logic object should exist
+        const skipLogic = fe.skipLogic;
+        const tokens = tokenSplitter(skipLogic.condition);
+        if (tokens.unmatched) {
+            skipLogic.validationError = 'Unexpected token: ' + tokens.unmatched;
+            return false;
+        }
+        if (tokens.length === 0) { return true; }
+        if (tokens.length % 4 !== 3) {
+            skipLogic.validationError = 'Unexpected number of tokens in expression ' + tokens.length;
+            return false;
+        }
+        const err = this.validateSkipLogicSingleExpression(parent, fe, tokens.slice(0, 3));
+        if (err) {
+            skipLogic.validationError = err;
+            return false;
+        }
+        return true;
+    }
 
-        let tokens = tokenSplitter(currentContent);
+    static validateSkipLogicSingleExpression(parent: FormElementsContainer, fe: FormElement, tokens): string {
+        const filteredQuestion = getQuestionPriorByLabel(parent, fe, _trim(tokens[0], '"'));
+        const filteredAnswer = _trim(tokens[2], '"');
+        if (!filteredQuestion) {
+            return tokens[0] + ' is not a valid question label';
+        }
+
+        if (filteredAnswer.length === 0) { return ''; }
+
+        switch (filteredQuestion.question.datatype) {
+            case 'Value List':
+                if (filteredQuestion.question.answers.map(a => tokenSanitizer(a.permissibleValue)).indexOf(filteredAnswer) < 0) {
+                    return tokens[2] + ' is not a valid answer for "' + filteredQuestion.label + '"';
+                }
+                break;
+            case 'Number':
+                if (isNaN(parseFloat(filteredAnswer))) {
+                    return tokens[2] + ' is not a valid number for "' + filteredQuestion.label + '". Replace '
+                        + tokens[2] + ' with a valid number.';
+                }
+                if (filteredQuestion.question.datatypeNumber) {
+                    const answerNumber = parseFloat(tokens[2]);
+                    const max = filteredQuestion.question.datatypeNumber.maxValue;
+                    const min = filteredQuestion.question.datatypeNumber.minValue;
+                    if (min !== undefined && answerNumber < min) {
+                        return tokens[2] + ' is less than a minimal answer for "' + filteredQuestion.label + '"';
+                    }
+                    if (max !== undefined && answerNumber > max) {
+                        return tokens[2] + ' is bigger than a maximal answer for "' + filteredQuestion.label + '"';
+                    }
+                }
+                break;
+            case 'Date':
+                if (new Date(filteredAnswer).toString() === 'Invalid Date') {
+                    return tokens[2] + ' is not a valid date for "' + filteredQuestion.label + '".';
+                }
+                break;
+        }
+        return '';
+    }
+
+    getTypeaheadOptions(currentContent: string, parent: FormElementsContainer, fe: FormElement): string[] {
+        if (!currentContent) { currentContent = ''; }
+        if (!fe.skipLogic) { fe.skipLogic = new SkipLogic(); }
+
+        const tokens = tokenSplitter(currentContent);
         this.previousSkipLogicPriorToSelect = currentContent.substr(0, currentContent.length - tokens.unmatched.length);
 
         this.optionsMap.clear();
@@ -53,23 +115,23 @@ export class SkipLogicValidateService {
             options = ['AND ', 'OR '];
         }
 
-        if (!options) options = [];
-        let optionsFiltered = options.filter(o => o.toLowerCase().indexOf(tokens.unmatched.toLowerCase()) > -1);
-        if (optionsFiltered.length > 0) options = optionsFiltered;
+        if (!options) { options = []; }
+        const optionsFiltered = options.filter(o => o.toLowerCase().indexOf(tokens.unmatched.toLowerCase()) > -1);
+        if (optionsFiltered.length > 0) { options = optionsFiltered; }
         return options;
     }
 
     getTypeaheadOptionsAnswer(parent: FormElementsContainer, fe: FormElement, questionName: string): string[] {
-        let q = getQuestionPriorByLabel(parent, fe, questionName.substring(1, questionName.length - 1));
-        if (!q) return [];
+        const q = getQuestionPriorByLabel(parent, fe, questionName.substring(1, questionName.length - 1));
+        if (!q) { return []; }
 
         if (q.question.datatype === 'Value List') {
-            if (!q.question.answers) return [];
+            if (!q.question.answers) { return []; }
             else {
                 return q.question.answers.map(a => {
-                    let pv = tokenSanitizer(a.permissibleValue);
-                    let pvString = `"${pv}" `;
-                    let nameString = a.valueMeaningName && a.valueMeaningName !== a.permissibleValue
+                    const pv = tokenSanitizer(a.permissibleValue);
+                    const pvString = `"${pv}" `;
+                    const nameString = a.valueMeaningName && a.valueMeaningName !== a.permissibleValue
                         ? `"${pv}" - ${tokenSanitizer(a.valueMeaningName)}` : pvString;
                     this.optionsMap.set(nameString, pvString);
                     return nameString;
@@ -83,67 +145,5 @@ export class SkipLogicValidateService {
             return ['"{{MM/DD/YYYY}}"'];
         }
         return [];
-    }
-
-    static validateSkipLogic(parent: FormElementsContainer, fe: FormElement): boolean {
-        // skip logic object should exist
-        let skipLogic = fe.skipLogic;
-        let tokens = tokenSplitter(skipLogic.condition);
-        if (tokens.unmatched) {
-            skipLogic.validationError = 'Unexpected token: ' + tokens.unmatched;
-            return false;
-        }
-        if (tokens.length === 0) return true;
-        if (tokens.length % 4 !== 3) {
-            skipLogic.validationError = 'Unexpected number of tokens in expression ' + tokens.length;
-            return false;
-        }
-        let err = this.validateSkipLogicSingleExpression(parent, fe, tokens.slice(0, 3));
-        if (err) {
-            skipLogic.validationError = err;
-            return false;
-        }
-        return true;
-    }
-
-    static validateSkipLogicSingleExpression(parent: FormElementsContainer, fe: FormElement, tokens): string {
-        let filteredQuestion = getQuestionPriorByLabel(parent, fe, _trim(tokens[0], '"'));
-        let filteredAnswer = _trim(tokens[2], '"');
-        if (!filteredQuestion) {
-            return tokens[0] + ' is not a valid question label';
-        }
-
-        if (filteredAnswer.length === 0) return '';
-
-        switch (filteredQuestion.question.datatype) {
-            case 'Value List':
-                if (filteredQuestion.question.answers.map(a => tokenSanitizer(a.permissibleValue)).indexOf(filteredAnswer) < 0) {
-                    return tokens[2] + ' is not a valid answer for "' + filteredQuestion.label + '"';
-                }
-                break;
-            case 'Number':
-                if (isNaN(parseFloat(filteredAnswer))) {
-                    return tokens[2] + ' is not a valid number for "' + filteredQuestion.label + '". Replace '
-                        + tokens[2] + ' with a valid number.';
-                }
-                if (filteredQuestion.question.datatypeNumber) {
-                    let answerNumber = parseFloat(tokens[2]);
-                    let max = filteredQuestion.question.datatypeNumber.maxValue;
-                    let min = filteredQuestion.question.datatypeNumber.minValue;
-                    if (min !== undefined && answerNumber < min) {
-                        return tokens[2] + ' is less than a minimal answer for "' + filteredQuestion.label + '"';
-                    }
-                    if (max !== undefined && answerNumber > max) {
-                        return tokens[2] + ' is bigger than a maximal answer for "' + filteredQuestion.label + '"';
-                    }
-                }
-                break;
-            case 'Date':
-                if (new Date(filteredAnswer).toString() === 'Invalid Date') {
-                    return tokens[2] + ' is not a valid date for "' + filteredQuestion.label + '".';
-                }
-                break;
-        }
-        return '';
     }
 }

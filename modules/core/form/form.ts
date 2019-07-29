@@ -26,48 +26,48 @@ export function convertFormToSection(form: CdeForm): FormInForm | undefined {
 }
 
 export function getFormOdm(form: CdeForm, cb: (error?: string, odm?: any) => void): void {
-    if (!form) return cb(undefined, "");
+    if (!form) { return cb(undefined, ''); }
     if (!form.formElements) {
         form.formElements = [];
     }
 
     function cdeToOdmDatatype(cdeType: string) {
         return ({
-            "Value List": "text",
-            Character: "text",
-            Numeric: "float",
-            "Date/Time": "datetime",
-            Number: "float",
-            Text: "text",
-            Date: "date",
-            "Externally Defined": "text",
-            "String\nNumeric": "text",
-            anyClass: "text",
-            "java.util.Date": "date",
-            "java.lang.String": "text",
-            "java.lang.Long": "float",
-            "java.lang.Integer": "integer",
-            "java.lang.Double": "float",
-            "java.lang.Boolean": "boolean",
-            "java.util.Map": "text",
-            "java.lang.Float": "float",
-            Time: "time",
-            "xsd:string": "text",
-            "java.lang.Character": "text",
-            "xsd:boolean": "boolean",
-            "java.lang.Short": "integer",
-            "java.sql.Timestamp": "time",
-            "DATE/TIME": "datetime",
-            "java.lang.Byte": "integer"
+            'Value List': 'text',
+            Character: 'text',
+            Numeric: 'float',
+            'Date/Time': 'datetime',
+            Number: 'float',
+            Text: 'text',
+            Date: 'date',
+            'Externally Defined': 'text',
+            'String\nNumeric': 'text',
+            anyClass: 'text',
+            'java.util.Date': 'date',
+            'java.lang.String': 'text',
+            'java.lang.Long': 'float',
+            'java.lang.Integer': 'integer',
+            'java.lang.Double': 'float',
+            'java.lang.Boolean': 'boolean',
+            'java.util.Map': 'text',
+            'java.lang.Float': 'float',
+            Time: 'time',
+            'xsd:string': 'text',
+            'java.lang.Character': 'text',
+            'xsd:boolean': 'boolean',
+            'java.lang.Short': 'integer',
+            'java.sql.Timestamp': 'time',
+            'DATE/TIME': 'datetime',
+            'java.lang.Byte': 'integer'
         } as {[key: string]: string})[cdeType] || 'text';
     }
 
     function escapeHTML(text?: string) {
-        if (!text) return "";
-        return text.replace(/\<.+?\>/gi, ""); // jshint ignore:line
+        if (!text) { return ''; }
+        return text.replace(/\<.+?\>/gi, ''); // jshint ignore:line
     }
 
-    let odmJsonForm: any = {
+    const odmJsonForm: any = {
         $CreationDateTime: new Date().toISOString(),
         $FileOID: form.tinyId,
         $FileType: 'Snapshot',
@@ -117,16 +117,16 @@ export function getFormOdm(form: CdeForm, cb: (error?: string, odm?: any) => voi
             },
         },
     };
-    let sections: any[] = [];
-    let questions: any[] = [];
-    let codeLists: any[] = [];
+    const sections: any[] = [];
+    const questions: any[] = [];
+    const codeLists: any[] = [];
 
-    form.formElements.forEach(function (s1, si) {
-        let childrenOids: string[] = [];
-        flattenFormElement(s1).forEach(function (q1, qi) {
-            let oid = q1.question.cde.tinyId + '_s' + si + '_q' + qi;
+    form.formElements.forEach(function(s1, si) {
+        const childrenOids: string[] = [];
+        flattenFormElement(s1).forEach(function(q1, qi) {
+            const oid = q1.question.cde.tinyId + '_s' + si + '_q' + qi;
             childrenOids.push(oid);
-            let odmQuestion: any = {
+            const odmQuestion: any = {
                 Question: {
                     TranslatedText: {
                         '$xml:lang': 'en',
@@ -139,15 +139,15 @@ export function getFormOdm(form: CdeForm, cb: (error?: string, odm?: any) => voi
             };
             if (q1.question.answers) {
                 let codeListAlreadyPresent = false;
-                codeLists.forEach(function (cl) {
-                    let codeListInHouse = cl.CodeListItem.map(function (i: any) {
+                codeLists.forEach(function(cl) {
+                    const codeListInHouse = cl.CodeListItem.map(function(i: any) {
                         return i.Decode.TranslatedText._;
                     }).sort();
-                    let codeListToAdd = (q1.question.answers || []).map(function (a) {
+                    const codeListToAdd = (q1.question.answers || []).map(function(a) {
                         return a.valueMeaningName;
                     }).sort();
                     if (JSON.stringify(codeListInHouse) === JSON.stringify(codeListToAdd)) {
-                        odmQuestion.CodeListRef = {$CodeListOID: cl['$OID']};
+                        odmQuestion.CodeListRef = {$CodeListOID: cl.$OID};
                         questions.push(odmQuestion);
                         codeListAlreadyPresent = true;
                     }
@@ -156,13 +156,13 @@ export function getFormOdm(form: CdeForm, cb: (error?: string, odm?: any) => voi
                 if (!codeListAlreadyPresent) {
                     odmQuestion.CodeListRef = {$CodeListOID: 'CL_' + oid};
                     questions.push(odmQuestion);
-                    let codeList: any = {
+                    const codeList: any = {
                         $DataType: cdeToOdmDatatype(q1.question.datatype),
                         $OID: 'CL_' + oid,
                         $Name: q1.label,
                     };
-                    codeList.CodeListItem = q1.question.answers.map(function (pv) {
-                        let cl: any = {
+                    codeList.CodeListItem = q1.question.answers.map(function(pv) {
+                        const cl: any = {
                             $CodedValue: pv.permissibleValue,
                             Decode: {
                                 TranslatedText: {
@@ -183,7 +183,7 @@ export function getFormOdm(form: CdeForm, cb: (error?: string, odm?: any) => voi
                 }
             }
         });
-        let oid = Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+        const oid = Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
         odmJsonForm.Study.MetaDataVersion.FormDef.ItemGroupRef.push({
             $ItemGroupOID: oid,
             $Mandatory: 'Yes',
@@ -200,7 +200,7 @@ export function getFormOdm(form: CdeForm, cb: (error?: string, odm?: any) => voi
                     _: s1.label
                 }
             },
-            ItemRef: childrenOids.map(function (oid, i) {
+            ItemRef: childrenOids.map(function(oid, i) {
                 return {
                     $ItemOID: oid,
                     $Mandatory: 'Yes',
@@ -209,13 +209,13 @@ export function getFormOdm(form: CdeForm, cb: (error?: string, odm?: any) => voi
             })
         });
     });
-    sections.forEach(function (s) {
+    sections.forEach(function(s) {
         odmJsonForm.Study.MetaDataVersion.ItemGroupDef.push(s);
     });
-    questions.forEach(function (s) {
+    questions.forEach(function(s) {
         odmJsonForm.Study.MetaDataVersion.ItemDef.push(s);
     });
-    codeLists.forEach(function (cl) {
+    codeLists.forEach(function(cl) {
         odmJsonForm.Study.MetaDataVersion.CodeList.push(cl);
     });
     cb(undefined, odmJsonForm);

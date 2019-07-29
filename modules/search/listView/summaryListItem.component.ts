@@ -19,7 +19,7 @@ export interface SummaryComponent {
 export class SummaryPlaceholderDirective {
     @Input() elt: Elt;
     @Input() eltIndex: number;
-    constructor (public viewContainerRef: ViewContainerRef) {}
+    constructor(public viewContainerRef: ViewContainerRef) {}
 }
 
 @Component({
@@ -43,20 +43,20 @@ export class SummaryListItemComponent implements AfterViewInit, OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        if (changes.elt && this.componentRef) (<SummaryComponent>this.componentRef.instance).elt = this.elt;
-        if (changes.eltIndex && this.componentRef) (<SummaryComponent>this.componentRef.instance).eltIndex = this.eltIndex;
+        if (changes.elt && this.componentRef) { (this.componentRef.instance as SummaryComponent).elt = this.elt; }
+        if (changes.eltIndex && this.componentRef) { (this.componentRef.instance as SummaryComponent).eltIndex = this.eltIndex; }
     }
 
     loadComponent() {
-        let componentFactory = this._componentFactoryResolver.resolveComponentFactory(this.contentComponent);
+        const componentFactory = this._componentFactoryResolver.resolveComponentFactory(this.contentComponent);
 
-        let viewContainerRef = this.cHost.viewContainerRef;
+        const viewContainerRef = this.cHost.viewContainerRef;
         viewContainerRef.clear();
 
         this.componentRef = viewContainerRef.createComponent(componentFactory);
-        (<SummaryComponent>this.componentRef.instance).elt = this.elt;
-        (<SummaryComponent>this.componentRef.instance).eltIndex = this.eltIndex;
-        (<SummaryComponent>this.componentRef.instance).select.subscribe(event => this.select.emit(event));
+        (this.componentRef.instance as SummaryComponent).elt = this.elt;
+        (this.componentRef.instance as SummaryComponent).eltIndex = this.eltIndex;
+        (this.componentRef.instance as SummaryComponent).select.subscribe(event => this.select.emit(event));
         this.cdr.detectChanges();
     }
 }

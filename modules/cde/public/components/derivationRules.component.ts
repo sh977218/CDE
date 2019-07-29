@@ -15,7 +15,7 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
     @Input() elt: any;
     @Output() onEltChange = new EventEmitter();
     @ViewChild('newScoreContent') newScoreContent!: TemplateRef<any>;
-    invalidCdeMessage: string = '';
+    invalidCdeMessage = '';
     modalRef?: MatDialogRef<TemplateRef<any>>;
     newDerivationRule: DerivationRule = {
         ruleType: 'score',
@@ -46,7 +46,7 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
     }
 
     addNewScore() {
-        if (!this.elt.derivationRules) this.elt.derivationRules = [];
+        if (!this.elt.derivationRules) { this.elt.derivationRules = []; }
         this.quickBoardService.dataElements.forEach((qbElt: any) => {
             this.newDerivationRule.inputs.push(qbElt.tinyId);
         });
@@ -83,7 +83,7 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
     }
 
     getViewCdes(dr: DerivationRule) {
-        if (!dr.fullCdes) return [];
+        if (!dr.fullCdes) { return []; }
         return dr.fullCdes.filter((item, index) => index < 8);
     }
 
@@ -123,7 +123,7 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
             }
         });
         this.quickBoardService.dataElements.forEach((qbElt: any) => {
-            if (qbElt.valueDomain.datatype === 'Number') return;
+            if (qbElt.valueDomain.datatype === 'Number') { return; }
             if (qbElt.valueDomain.datatype === 'Value List') {
                 qbElt.valueDomain.permissibleValues.forEach((pv: any) => {
                     if (isNaN(pv.permissibleValue)) {
