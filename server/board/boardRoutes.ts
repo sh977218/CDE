@@ -1,6 +1,3 @@
-import { byIdAndOwner } from 'server/board/boardDb';
-import { intersection, isEmpty, uniqBy } from 'lodash';
-
 import { handle404, handleError } from 'server/errorHandler/errorHandler';
 import { config } from 'server/system/parseConfig';
 import { stripBsonIds } from 'shared/system/exportShared';
@@ -8,26 +5,21 @@ import {
     checkBoardViewerShip, loggedInMiddleware, nocacheMiddleware, unauthorizedPublishing
 } from 'server/system/authorization';
 import { validateBody } from 'server/system/bodyValidator';
-import { hideProprietaryCodes } from 'server/cde/cdesvc';
-import { buildElasticSearchQuery } from 'server/system/elastic';
 
-const {check} = require('express-validator');
-
+const _ = require('lodash');
 const js2xml = require('js2xmlparser');
+const cdeSvc = require('../cde/cdesvc');
+const mongo_data = require('../system/mongo-data');
 const elastic_system = require('../system/elastic');
 const daoManager = require('../system/moduleDaoManager');
+const userDb = require('../user/userDb');
 const boardDb = require('./boardDb');
 const elastic = require('./elastic');
-require('express-async-errors');
+const { check } = require('express-validator');
 
 export function module() {
     const router = require('express').Router();
     daoManager.registerDao(boardDb);
-
-    router.get('/aaaa', async (req, res, next) => {
-        await byIdAndOwner('a', 'b');
-        console.log('a');
-    });
 
     router.get('/byPinTinyId/:tinyId', [nocacheMiddleware], (req, res) => {
         boardDb.publicBoardsByPinTinyId(req.params.tinyId, handleError({req, res}, boards => res.send(boards)));
@@ -40,10 +32,7 @@ export function module() {
         let index = board.pins.map(p => p.tinyId).indexOf(tinyId);
         if (index > -1) {
             board.pins.splice(index, 1);
-            await board.save().catch(e => {
-                handleError({err: e, req, res});
-            });
-            res.send('Removed')
+            board.save(handleError({req, res}, () => res.send('Removed')));
         } else {
             res.send(422).send();
         }
@@ -54,8 +43,8 @@ export function module() {
         let board = await boardDb.byIdAndOwner(boardId, req.user._id);
         if (!board) return res.status(404).send();
 
-        let intersectionCdes = intersection(board.pins.map(p => p.tinyId), tinyIdList);
-        if (!isEmpty(intersectionCdes)) {
+        let intersection = _.intersection(board.pins.map(p => p.tinyId), tinyIdList);
+        if (!_.isEmpty(intersection)) {
             return res.status(409).send('Already added');
         }
         daoManager.getDao(type).byTinyIdList(tinyIdList, handleError({req, res}, elts => {
@@ -65,7 +54,7 @@ export function module() {
                 name: e.designations[0].designation,
                 tinyId: e.tinyId
             }));
-            board.pins = uniqBy(board.pins.concat(newPins), 'tinyId');
+            board.pins = _.uniqWith(board.pins.concat(newPins), 'tinyId');
             board.save(handleError({req, res}, () => res.send()));
         }));
     });
@@ -78,7 +67,7 @@ export function module() {
         let index = match ? match.__index : -1;
         if (index !== -1) {
             board.pins.splice(index - 1, 0, board.pins.splice(index, 1)[0]);
-            board.save(handleError({req, res}, () => res.send())).catch();
+            board.save(handleError({req, res}, () => res.send()));
         } else {
             res.status(422).send();
         }
@@ -92,8 +81,7 @@ export function module() {
         let index = match ? match.__index : -1;
         if (index !== -1) {
             board.pins.splice(index + 1, 0, board.pins.splice(index, 1)[0]);
-            await board.save();
-            res.send();
+            board.save(handleError({req, res}, () => res.send()));
         } else {
             res.status(422).send();
         }
@@ -106,8 +94,7 @@ export function module() {
         let index = match ? match.__index : -1;
         if (index !== -1) {
             board.pins.splice(0, 0, board.pins.splice(index, 1)[0]);
-            await board.save().catch(e => handleError({err: e, req, res}));
-            res.send();
+            board.save(handleError({req, res}, () => res.send()));
         } else {
             res.status(422).send('Nothing to move');
         }
@@ -117,8 +104,9 @@ export function module() {
         let boardId = req.params.boardId;
         let board = await boardDb.byIdAndOwner(boardId, req.user._id);
         if (!board) return res.status(404).send();
-        await board.remove().catch(e => handleError({err: e, req, res}));
-        elastic.boardRefresh(() => res.send('Board Removed.'));
+        board.remove(handleError({req, res}, () => {
+            elastic.boardRefresh(() => res.send('Board Removed.'));
+        }));
     });
 
     router.post('/boardSearch', [nocacheMiddleware,
@@ -145,7 +133,7 @@ export function module() {
             let tinyIdList = board.pins.splice(start, size).map(p => p.tinyId);
             board.pins = [];
             daoManager.getDao(board.type).elastic.byTinyIdList(tinyIdList, size, handleError({req, res}, elts => {
-                if (board.type === 'cde') hideProprietaryCodes(elts, req.user);
+                if (board.type === 'cde') cdeSvc.hideProprietaryCodes(elts, req.user);
                 let exportBoard = {
                     board: stripBsonIds(board),
                     elts: elts,
@@ -171,7 +159,7 @@ export function module() {
             };
             board.pins.forEach(p => p.pinnedDate = new Date());
             if (unauthorizedPublishing(req.user, req.body)) {
-                return res.status(403).send(`You don't have permission to make boards public!`);
+                return res.status(403).send('You don\'t have permission to make boards public!');
             }
             boardDb.nbBoardsByUserId(req.user._id, function (err, nbBoards) {
                 if (nbBoards < boardQuota) {
@@ -206,20 +194,19 @@ export function module() {
         let board = await boardDb.byIdAndOwner(boardId, req.user._id);
         if (!board) return res.status(404).send();
         board.users = users;
-        await board.save().catch(e => handleError({err: e, req, res}));
-        res.send('done');
+        board.save(handleError({req, res}, () => res.send('done')));
     });
 
     router.post('/myBoards', [nocacheMiddleware, loggedInMiddleware,
         check('sortDirection').isIn(['', 'desc', 'asc']), validateBody], (req, res) => {
-        elastic.myBoards(req.user, req.body, handleError({req, res}, result => res.send(result)));
+            elastic.myBoards(req.user, req.body, handleError({req, res}, result => res.send(result)));
     });
 
     router.post('/pinEntireSearchToBoard', [loggedInMiddleware], async (req, res) => {
         const boardId = req.body.boardId;
         let board = await boardDb.byIdAndOwner(boardId, req.user._id);
         if (!board) return res.status(404).send();
-        let query = buildElasticSearchQuery(req.user, req.body.query);
+        let query = elastic_system.buildElasticSearchQuery(req.user, req.body.query);
         if (query.size > config.maxPin) {
             return res.status(403).send('Maximum number excesses.');
         }
@@ -230,7 +217,7 @@ export function module() {
                 tinyId: e.tinyId,
                 name: e.designations[0].designation,
             }));
-            board.pins = uniqBy(board.pins.concat(eltsPins), 'tinyId');
+            board.pins = _.uniqWith(board.pins.concat(eltsPins), 'tinyId');
             board.save(handleError({req, res}, () => res.send('Added to Board')));
         }));
     });
