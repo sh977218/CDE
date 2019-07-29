@@ -53,7 +53,6 @@ import { isOrgAuthority, isOrgCurator } from 'shared/system/authorizationShared'
 const config = Config as any;
 const domain = Domain.create();
 
-
 initEs();
 
 console.log('Node ' + process.versions.node);
@@ -81,6 +80,11 @@ app.use(ticketAuth);
 app.use(compress());
 
 app.use(hsts({maxAge: 31536000000}));
+
+
+process.on('unhandledRejection', error => {
+    console.log('unhandledRejection: '+error);
+});
 
 process.on('uncaughtException', function (err) {
     console.log('Error: Process Uncaught Exception');

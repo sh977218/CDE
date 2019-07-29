@@ -92,11 +92,15 @@ export function boardById(boardId, callback) {
 }
 
 export function byIdAndOwner(boardId, ownerId) {
-    return PinningBoard.findOne({_id: ObjectId(boardId), 'owner.userId': ownerId}).exec();
+    return new Promise((res,rej)=>{
+        rej('wrong');
+    })
+//    throw new Error('wrong');
+//    return PinningBoard.findOne({_id: ObjectId(boardId), 'owner.userId': ownerId}).exec();
 }
 
 export const byId = boardById;
 
 export function newBoard(board, callback) {
-    new PinningBoard(board).save(callback);
+    return new PinningBoard(board).save(callback);
 }
