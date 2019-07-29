@@ -56,9 +56,9 @@ const datatypeNumberSchema = new Schema({
 }, {_id: false});
 
 const mapToSchema = {
-    fhir: {
+    fhir: new Schema({
         resourceType: StringType,
-    },
+    }),
 };
 
 const questionSchema = new Schema({
