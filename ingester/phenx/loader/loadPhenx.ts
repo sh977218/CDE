@@ -5,9 +5,9 @@ import { ProtocolModel } from 'ingester/createMigrationConnection';
 import { createPhenxForm } from 'ingester/phenx/Form/form';
 import {
     batchloader,
-    compareElt,
     imported,
     lastMigrationScript,
+    compareElt,
     mergeElt,
     printUpdateResult,
     updateCde,
