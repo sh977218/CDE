@@ -13,16 +13,16 @@ import { isSearchEngine } from '../system/helper';
 import { toInteger } from 'lodash';
 
 const cdesvc = require('./cdesvc');
-const mongo_cde = require('./mongo-cde');
+const mongoCde = require('./mongo-cde');
 const elastic = require('./elastic');
 const appStatus = require('../siteAdmin/status');
 const elastic_system = require('../system/elastic');
 
-const canEditMiddlewareDe = canEditMiddleware(mongo_cde);
-const canEditByTinyIdMiddlewareDe = canEditByTinyIdMiddleware(mongo_cde);
+const canEditMiddlewareDe = canEditMiddleware(mongoCde);
+const canEditByTinyIdMiddlewareDe = canEditByTinyIdMiddleware(mongoCde);
 
 export function init(app, daoManager) {
-    daoManager.registerDao(mongo_cde);
+    daoManager.registerDao(mongoCde);
 
     app.get('/de/:tinyId', nocacheMiddleware, cdesvc.byTinyId);
     app.get('/de/:tinyId/latestVersion/', nocacheMiddleware, cdesvc.latestVersionByTinyId);
@@ -47,12 +47,12 @@ export function init(app, daoManager) {
     /* ---------- PUT NEW REST API above ---------- */
 
     app.post('/cdesByTinyIdList', (req, res) => {
-        mongo_cde.byTinyIdList(req.body, handleError({req, res}, cdes => res.send(cdes)));
+        mongoCde.byTinyIdList(req.body, handleError({req, res}, cdes => res.send(cdes)));
     });
 
     app.post('/elasticSearch/cde', (req, res) => {
         elastic.elasticsearch(req.user, req.body, (err, result) => {
-            if (err) return res.status(400).send('invalid query');
+            if (err) { return res.status(400).send('invalid query'); }
             cdesvc.hideProprietaryCodes(result.cdes, req.user);
             res.send(result);
         });
@@ -66,7 +66,7 @@ export function init(app, daoManager) {
     });
 
     app.get('/cde/derivationOutputs/:inputCdeTinyId', (req, res) => {
-        mongo_cde.derivationOutputs(req.params.inputCdeTinyId, handleError({req, res}, cdes => {
+        mongoCde.derivationOutputs(req.params.inputCdeTinyId, handleError({req, res}, cdes => {
             res.send(cdes);
         }));
     });
@@ -74,21 +74,21 @@ export function init(app, daoManager) {
     app.get('/status/cde', appStatus.status);
 
     app.post('/getCdeAuditLog', isOrgAuthorityMiddleware, (req, res) => {
-        mongo_cde.getAuditLog(req.body, (err, result) => {
+        mongoCde.getAuditLog(req.body, (err, result) => {
             res.send(result);
         });
     });
 
     app.post('/elasticSearchExport/cde', (req, res) => {
-        let query = elastic_system.buildElasticSearchQuery(req.user, req.body);
-        let exporters = {
+        const query = elastic_system.buildElasticSearchQuery(req.user, req.body);
+        const exporters = {
             json: {
-                export: function (res) {
+                export(res) {
                     let firstElt = true;
                     let typeSent = false;
                     elastic_system.elasticSearchExport((err, elt) => {
                         if (err) {
-                            if (!typeSent) res.status(403);
+                            if (!typeSent) { res.status(403); }
                             return res.send('ERROR with es search export');
                         }
                         if (!typeSent) {
@@ -97,7 +97,7 @@ export function init(app, daoManager) {
                             typeSent = true;
                         }
                         if (elt) {
-                            if (!firstElt) res.write(',');
+                            if (!firstElt) { res.write(','); }
                             elt = stripBsonIds(elt);
                             elt = elastic_system.removeElasticFields(elt);
                             res.write(JSON.stringify(elt));
@@ -116,12 +116,12 @@ export function init(app, daoManager) {
     app.get('/cde/search', (req, res) => {
         const selectedOrg = req.query.selectedOrg;
         let pageString = req.query.page; // starting from 1
-        if (!pageString) pageString = '1';
+        if (!pageString) { pageString = '1'; }
         if (isSearchEngine(req)) {
             if (selectedOrg) {
-                let pageNum = toInteger(pageString);
-                let pageSize = 20;
-                let cond = {
+                const pageNum = toInteger(pageString);
+                const pageSize = 20;
+                const cond = {
                     'classification.stewardOrg.name': selectedOrg,
                     archived: false,
                     'registrationState.registrationStatus': 'Qualified'
@@ -132,11 +132,11 @@ export function init(app, daoManager) {
                         limit: pageSize
                     }, handleError({req, res}, cdes => {
                         let totalPages = totalCount / pageSize;
-                        if (totalPages % 1 > 0) totalPages = totalPages + 1;
+                        if (totalPages % 1 > 0) { totalPages = totalPages + 1; }
                         res.render('bot/cdeSearchOrg', 'system', {
-                            cdes: cdes,
-                            totalPages: totalPages,
-                            selectedOrg: selectedOrg
+                            cdes,
+                            totalPages,
+                            selectedOrg
                         });
                     }));
                 }));
@@ -161,7 +161,7 @@ export function init(app, daoManager) {
 
 
     app.post('/cdeCompletion/:term', nocacheMiddleware, (req, res) => {
-        let term = req.params.term;
+        const term = req.params.term;
         elastic_system.completionSuggest(term, req.user, req.body, config.elastic.cdeSuggestIndex.name, resp => {
             resp.hits.hits.forEach(r => r._index = undefined);
             res.send(resp.hits.hits);
@@ -177,11 +177,11 @@ export function init(app, daoManager) {
             res.status(300).send('Invalid date format, please provide as: /api/cde/modifiedElements?from=2015-12-24');
         }
 
-        if (!r.test(dstring)) return badDate();
+        if (!r.test(dstring)) { return badDate(); }
 
-        let date = new Date(dstring);
-        mongo_cde.findModifiedElementsSince(date, function (err, elts) {
-            res.send(elts.map(function (e) {
+        const date = new Date(dstring);
+        mongoCde.findModifiedElementsSince(date, (err, elts) => {
+            res.send(elts.map(e =>  {
                 return {tinyId: e._id};
             }));
         });
@@ -189,7 +189,7 @@ export function init(app, daoManager) {
 
     require('mongoose-schema-jsonschema')(require('mongoose'));
 
-    app.get('/schema/cde', (req, res) => res.send(mongo_cde.DataElement.jsonSchema()));
+    app.get('/schema/cde', (req, res) => res.send(mongoCde.DataElement.jsonSchema()));
 
     app.post('/umlsDe', (req, res) => {
         validatePvs(req.body).then(

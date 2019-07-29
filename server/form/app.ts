@@ -50,7 +50,7 @@ function allRequestsProcessing(req, res, next) {
 export function init(app, daoManager) {
     daoManager.registerDao(mongo_form);
 
-    app.get('/form/search', function(req, res) {
+    app.get('/form/search', (req, res) => {
         const selectedOrg = req.query.selectedOrg;
         let pageString = req.query.page; // starting from 1
         if (!pageString) { pageString = '1'; }
@@ -63,36 +63,20 @@ export function init(app, daoManager) {
                     archived: false,
                     'registrationState.registrationStatus': 'Qualified'
                 };
-                Form.countDocuments(cond, (err, totalCount) => {
-                    if (err) {
-                        res.status(500).send('ERROR - Static Html Error, /form/search');
-                        errorLogger.error('Error: Static Html Error', {
-                            stack: err.stack,
-                            origin: req.url
+                Form.countDocuments(cond, handleError({req, res}, totalCount => {
+                    Form.find(cond, 'tinyId designations', {
+                        skip: pageSize * (pageNum - 1),
+                        limit: pageSize
+                    }, handleError({req, res}, forms => {
+                        let totalPages = totalCount / pageSize;
+                        if (totalPages % 1 > 0) { totalPages = totalPages + 1; }
+                        res.render('bot/formSearchOrg', 'system', {
+                            forms,
+                            totalPages,
+                            selectedOrg
                         });
-                    } else {
-                        Form.find(cond, 'tinyId designations', {
-                            skip: pageSize * (pageNum - 1),
-                            limit: pageSize
-                        }, (err, forms) => {
-                            if (err) {
-                                res.status(500).send('ERROR - Static Html Error, /form/search');
-                                errorLogger.error('Error: Static Html Error', {
-                                    stack: err.stack,
-                                    origin: req.url
-                                });
-                            } else {
-                                let totalPages = totalCount / pageSize;
-                                if (totalPages % 1 > 0) { totalPages = totalPages + 1; }
-                                res.render('bot/formSearchOrg', 'system', {
-                                    forms,
-                                    totalPages,
-                                    selectedOrg
-                                });
-                            }
-                        });
-                    }
-                });
+                    }));
+                }));
             } else {
                 res.render('bot/formSearch', 'system');
             }
