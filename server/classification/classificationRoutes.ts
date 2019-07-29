@@ -1,6 +1,8 @@
 import { handleError } from '../errorHandler/errorHandler';
 import { actions } from 'shared/system/classificationShared';
 import { Cb } from 'shared/models.model';
+import { updateOrgClassification } from 'server/classification/orgClassificationSvc';
+import { orgByNamePromise } from 'server/system/mongo-data';
 
 const async = require('async');
 const mongo_cde = require('../cde/mongo-cde');
@@ -8,6 +10,8 @@ const mongo_form = require('../form/mongo-form');
 const mongo_data = require('../system/mongo-data');
 const classificationNode = require('./classificationNode');
 const orgClassificationSvc = require('./orgClassificationSvc');
+
+require('express-async-errors');
 
 export function module(roleConfig) {
     const router = require('express').Router();
@@ -166,6 +170,17 @@ export function module(roleConfig) {
         );
     });
 
+    // update org classification
+    router.post('/updateOrgClassification', async (req, res) => {
+        let orgName = req.body.orgName;
+        if (!roleConfig.allowClassify(req.user, orgName)) return res.status(403).send();
+        let organization = await orgByNamePromise(orgName);
+        let classifications = await updateOrgClassification(orgName);
+        organization.classifications = classifications;
+        await organization.save();
+        res.send(organization);
+    });
+
 
     let bulkClassifyCdesStatus = {};
 
@@ -204,8 +219,7 @@ export function module(roleConfig) {
         if (elements.length <= 50) {
             bulkClassifyCdes(req.user, req.body.eltId, elements, req.body, handleError({req, res}, () =>
                 res.send('Done')));
-        }
-        else {
+        } else {
             res.status(202).send('Processing');
             bulkClassifyCdes(req.user, req.body.eltId, elements, req.body);
         }

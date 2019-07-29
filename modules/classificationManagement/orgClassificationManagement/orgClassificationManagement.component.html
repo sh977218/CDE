@@ -7,6 +7,10 @@
             <mat-option *ngFor="let o of userService.userOrgs" [value]="o">{{o}}</mat-option>
         </mat-select>
     </mat-form-field>
+    <mat-form-field *ngIf="orgToManage" style="width: 300px">
+        <mat-button [(ngModel)]="orgToManage" id="updateOrg" (click)="updateOrganization()">
+        </mat-button>
+    </mat-form-field>
     <div class="boxed-div overflowHidden" *ngIf="selectedOrg">
         <h4 id="org-{{selectedOrg.name}}">{{selectedOrg.name}}
             <a title="Add Child Classification" (click)="openAddChildClassificationModal(null);">

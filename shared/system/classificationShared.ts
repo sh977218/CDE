@@ -235,6 +235,9 @@ export function transferClassifications(source: Item, destination: Item): void {
     });
 }
 
+export function mergeClassifications(c1,c2){
+}
+
 function treeChildren(tree: Classification | ClassificationElement, path: string[], cb: Cb1<string[]>) {
     tree.elements.forEach(function (element) {
         let newPath = path.slice(0);

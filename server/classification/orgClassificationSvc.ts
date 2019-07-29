@@ -2,7 +2,11 @@ import {
     addCategoriesToOrg, addCategoriesToTree, classifyItem, deleteCategory, renameCategory, renameClassifyElt,
     unclassifyElt
 } from 'shared/system/classificationShared';
+import { DataElement } from 'server/cde/mongo-cde';
+import { Form } from 'server/form/mongo-form';
 import { handleError } from '../errorHandler/errorHandler';
+
+const deepmerge = require('deepmerge');
 
 const async = require('async');
 const mongo_cde = require('../cde/mongo-cde');
@@ -197,7 +201,7 @@ export function reclassifyOrgClassification(user, oldClassification, newClassifi
                             });
                         } else done();
                     })),
-                    done => elastic.elasticsearch( "form", query, settings, handleError({}, result => {
+                    done => elastic.elasticsearch("form", query, settings, handleError({}, result => {
                         if (result && result.forms && result.forms.length > 0) {
                             let tinyIds = result.cdes.map(c => c.tinyId);
                             async.forEach(tinyIds, (tinyId, doneOne) => {
@@ -223,4 +227,12 @@ export function reclassifyOrgClassification(user, oldClassification, newClassifi
             });
         });
     });
+}
+
+export async function updateOrgClassification(organization) {
+    const distinctField = 'classification';
+    const query = {'classification.stewardOrg.name': organization};
+    const cdeClassifications = await DataElement.distinct(distinctField, query);
+    const formClassifications = await Form.distinct(distinctField, query);
+    return deepmerge(cdeClassifications, formClassifications);
 }

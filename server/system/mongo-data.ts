@@ -48,7 +48,6 @@ export const sessionStore = new MongoStore({
 });
 
 
-
 const userProject = {password: 0};
 const orgDetailProject = {
     _id: 0,
@@ -283,6 +282,10 @@ export function orgAdmins(callback) {
 
 export function orgCurators(orgs, callback) {
     User.find().where("orgCurator").in(orgs).exec(callback);
+}
+
+export function orgByNamePromise(orgName) {
+    return Org.findOne({name: orgName});
 }
 
 export function orgByName(orgName, callback) {
