@@ -372,9 +372,12 @@ export class OrgClassificationManagementComponent implements OnInit {
     }
 
     updateOrganization() {
-        this.http.post('/server/classification/updateOrgClassification', {
+        this.http.post<Organization>('/server/classification/updateOrgClassification', {
             orgName: this.orgToManage
-        }).subscribe(() => this.alert.addAlert('success', 'Saved'),
+        }).subscribe(org => {
+                this.selectedOrg = org;
+                this.alert.addAlert('success', 'Saved');
+            },
             () => this.alert.addAlert('danger', 'There was an issue update this org.'));
     }
 }

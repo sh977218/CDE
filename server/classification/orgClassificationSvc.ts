@@ -1,6 +1,6 @@
 import {
-    addCategoriesToOrg, addCategoriesToTree, classifyItem, deleteCategory, renameCategory, renameClassifyElt,
-    unclassifyElt
+    addCategoriesToOrg, addCategoriesToTree, classifyItem, deleteCategory, mergeOrgClassifications, renameCategory,
+    renameClassifyElt, unclassifyElt
 } from 'shared/system/classificationShared';
 import { DataElement } from 'server/cde/mongo-cde';
 import { Form } from 'server/form/mongo-form';
@@ -229,10 +229,15 @@ export function reclassifyOrgClassification(user, oldClassification, newClassifi
     });
 }
 
-export async function updateOrgClassification(organization) {
-    const distinctField = 'classification';
-    const query = {'classification.stewardOrg.name': organization};
-    const cdeClassifications = await DataElement.distinct(distinctField, query);
-    const formClassifications = await Form.distinct(distinctField, query);
-    return deepmerge(cdeClassifications, formClassifications);
+export async function updateOrgClassification(orgName) {
+    const aggregate = [
+        {$match: {archived: false, 'classification.stewardOrg.name': orgName}},
+        {$unwind: '$classification'},
+        {$match: {archived: false, 'classification.stewardOrg.name': orgName}},
+        {$group: {_id: '$classification.stewardOrg.name', elements: {$addToSet: "$classification.elements"}}}
+    ];
+    const cdeClassifications = await DataElement.aggregate(aggregate);
+    const formClassifications = await Form.aggregate(aggregate);
+    let element = mergeOrgClassifications(cdeClassifications, formClassifications);
+    return element;
 }
