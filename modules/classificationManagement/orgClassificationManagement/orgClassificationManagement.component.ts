@@ -62,10 +62,10 @@ export class OrgClassificationManagementComponent implements OnInit {
     selectedOrg?: Organization;
     userTyped = '';
 
-    constructor(private alert: AlertService,
-                private classificationSvc: ClassificationService,
-                private http: HttpClient,
+    constructor(private http: HttpClient,
                 public dialog: MatDialog,
+                private alert: AlertService,
+                private classificationSvc: ClassificationService,
                 private userService: UserService) {
         this.userService.reload(() => {
             if (this.userService.userOrgs.length > 0) {
@@ -375,6 +375,6 @@ export class OrgClassificationManagementComponent implements OnInit {
         this.http.post('/server/classification/updateOrgClassification', {
             orgName: this.orgToManage
         }).subscribe(() => this.alert.addAlert('success', 'Saved'),
-            () => this.alert.addAlert('danger', 'There was an issue update this org.'))
+            () => this.alert.addAlert('danger', 'There was an issue update this org.'));
     }
 }
