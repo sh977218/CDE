@@ -2,11 +2,11 @@ import { isEmpty } from 'lodash';
 import { Form, FormSource } from 'server/form/mongo-form';
 import { Comment } from 'server/discuss/discussDb';
 import { ProtocolModel } from 'ingester/createMigrationConnection';
-import { createPhenxForm } from 'ingester/phenx/Form/form';
 import {
     batchloader, compareElt, imported, lastMigrationScript, mergeElt, printUpdateResult, updateCde, updateForm
 } from 'ingester/shared/utility';
 import { DataElement } from 'server/cde/mongo-cde';
+import { createPhenxForm } from 'ingester/phenx/Form/form';
 
 let protocolCount = 0;
 
