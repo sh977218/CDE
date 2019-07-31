@@ -148,7 +148,7 @@ export function reIndexStream(dbStream: DbStream, cb?: Cb) {
         };
 
         dbStream.query.dao.count(dbStream.query.condition, (err: Error | undefined, totalCount: number) => {
-            if (err) { dbLogger.consoleLog('Error getting count: ' + err, 'error'); }
+            if (err) { dbLogger.consoleLog(`Error getting count: ${err}`, 'error'); }
             dbLogger.consoleLog('Total count for ' + dbStream.query.dao.name + ' is ' + totalCount);
             dbStream.indexes.forEach(index => {
                 index.totalCount = totalCount;
@@ -167,7 +167,8 @@ export function reIndexStream(dbStream: DbStream, cb?: Cb) {
                     // end
                     eachOf(dbStream.indexes, (index: ElasticIndex, i, doneOne) => {
                         inject(i as number, () => {
-                            const info = 'done ingesting ' + index.name + ' in : ' + (new Date().getTime() - startTime) / 1000 + ' secs. count: ' + index.count;
+                            const info = `done ingesting ${index.name} in : ` + (new Date().getTime() - startTime) / 1000
+                                + ` secs. count: ${index.count}`;
                             noDbLogger.noDbLogger.info(info);
                             dbLogger.consoleLog(info);
                             doneOne();
@@ -267,7 +268,8 @@ export function initEs(cb: Cb = () => {
     });
 }
 
-export function completionSuggest(term: ElasticCondition, user: User, settings: SearchSettingsElastic, indexName: string, cb: Cb<SearchResponse<ItemElastic>>) {
+export function completionSuggest(term: ElasticCondition, user: User,
+                                  settings: SearchSettingsElastic, indexName: string, cb: Cb<SearchResponse<ItemElastic>>) {
     const suggestQuery = {
         query: {
             match: {
