@@ -1,7 +1,7 @@
 import * as mongo_cde from 'server/cde/mongo-cde';
 import * as mongo_form from 'server/form/mongo-form';
 import * as DiffJson from 'diff-json';
-import { drop, findIndex, isEmpty, uniq } from 'lodash';
+import { drop, findIndex, isEmpty } from 'lodash';
 import { get } from 'request';
 import { PhenxURL } from 'ingester/createMigrationConnection';
 import * as cheerio from 'cheerio';
@@ -201,7 +201,7 @@ export function compareElt(newEltObj, existingEltObj, source) {
 }
 
 // Merge two elements
-function mergeDesignation(existingDesignations, newDesignations, source) {
+function mergeDesignation(existingDesignations, newDesignations) {
     existingDesignations.forEach(existingDesignation => {
         const i = findIndex(newDesignations, {designation: existingDesignation.designation});
         if (i !== -1) {
@@ -211,7 +211,7 @@ function mergeDesignation(existingDesignations, newDesignations, source) {
     return existingDesignations.concat(newDesignations);
 }
 
-function mergeDefinition(existingDefinitions, newDefinitions, source) {
+function mergeDefinition(existingDefinitions, newDefinitions) {
     if (!existingDefinitions) {
         existingDefinitions = [];
     }
@@ -247,8 +247,8 @@ export function mergeElt(existingEltObj, newEltObj, source) {
     }
     const upperCaseSource = source.toUpperCase();
     const sources = sourceMap[upperCaseSource]; // ['PhenX', 'PhenX Variable']
-    existingEltObj.designations = mergeDesignation(existingEltObj.designations, newEltObj.designations, source);
-    existingEltObj.definitions = mergeDefinition(existingEltObj.definitions, newEltObj.definitions, source);
+    existingEltObj.designations = mergeDesignation(existingEltObj.designations, newEltObj.designations);
+    existingEltObj.definitions = mergeDefinition(existingEltObj.definitions, newEltObj.definitions);
 
     existingEltObj.ids = mergeBySources(newEltObj.ids, existingEltObj.ids, sources);
     existingEltObj.properties = mergeBySources(newEltObj.properties, existingEltObj.properties, sources);
