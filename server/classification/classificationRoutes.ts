@@ -175,8 +175,8 @@ export function module(roleConfig) {
         let orgName = req.body.orgName;
         if (!roleConfig.allowClassify(req.user, orgName)) return res.status(403).send();
         let organization = await orgByNamePromise(orgName);
-        let classifications = await updateOrgClassification(orgName);
-        organization.classifications = classifications;
+        let elements = await updateOrgClassification(orgName);
+        organization.classifications = elements;
         await organization.save();
         res.send(organization);
     });

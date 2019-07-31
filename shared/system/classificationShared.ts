@@ -1,4 +1,4 @@
-import { find, slice, uniqWith } from 'lodash';
+import { find, slice, sortBy, uniqWith } from 'lodash';
 import { Cb, Cb1, Classification, ClassificationElement, Item, MongooseType, Organization } from 'shared/models.model';
 
 export const actions: {
@@ -237,27 +237,30 @@ type Element = {
     name: string,
     elements: Element[]
 }
-type OrgClassification = {
+export type OrgClassification = {
     _id: String,
     elements: Element []
 }
 
-function mergeElements(e1: Element[], e2: Element[]): Element [] {
-    return uniqWith(e1.concat(e2), (arrVal: Element, othVal: Element) => {
+function mergeElements(e1: Element[] = [], e2: Element[] = []): Element [] {
+    let elements = uniqWith(e1.concat(e2), (arrVal: Element, othVal: Element) => {
         if (arrVal.name === othVal.name) {
             othVal.elements = mergeElements(arrVal.elements, othVal.elements);
             return true;
         } else return false;
     });
+    return sortBy(elements, 'name');
 }
 
-export function mergeOrgClassifications(c1: OrgClassification[], c2: OrgClassification[]): OrgClassification[] {
-    return uniqWith(c1.concat(c2), (arrVal: OrgClassification, othVal: OrgClassification) => {
+export function mergeOrgClassifications(c1: OrgClassification[], c2: OrgClassification[]): Element[] {
+    let orgClassification = uniqWith(c1.concat(c2), (arrVal: OrgClassification, othVal: OrgClassification) => {
         if (arrVal._id === othVal._id) {
             othVal.elements = mergeElements(arrVal.elements, othVal.elements);
             return true;
         } else return false;
     });
+    let c = sortBy(orgClassification, '_id');
+    return c[0].elements[0].elements;
 }
 
 function treeChildren(tree: Classification | ClassificationElement, path: string[], cb: Cb1<string[]>) {

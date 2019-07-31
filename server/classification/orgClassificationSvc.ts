@@ -1,12 +1,11 @@
 import {
-    addCategoriesToOrg, addCategoriesToTree, classifyItem, deleteCategory, mergeOrgClassifications, renameCategory,
+    addCategoriesToOrg, addCategoriesToTree, classifyItem, deleteCategory, mergeOrgClassifications, OrgClassification,
+    renameCategory,
     renameClassifyElt, unclassifyElt
 } from 'shared/system/classificationShared';
 import { DataElement } from 'server/cde/mongo-cde';
 import { Form } from 'server/form/mongo-form';
 import { handleError } from '../errorHandler/errorHandler';
-
-const deepmerge = require('deepmerge');
 
 const async = require('async');
 const mongo_cde = require('../cde/mongo-cde');
@@ -229,15 +228,14 @@ export function reclassifyOrgClassification(user, oldClassification, newClassifi
     });
 }
 
-export async function updateOrgClassification(orgName) {
+export async function updateOrgClassification(orgName): Promise<any[]> {
     const aggregate = [
         {$match: {archived: false, 'classification.stewardOrg.name': orgName}},
         {$unwind: '$classification'},
         {$match: {archived: false, 'classification.stewardOrg.name': orgName}},
-        {$group: {_id: '$classification.stewardOrg.name', elements: {$addToSet: "$classification.elements"}}}
+        {$group: {_id: '$classification.stewardOrg.name', elements: {$addToSet: "$classification"}}}
     ];
-    const cdeClassifications = await DataElement.aggregate(aggregate);
-    const formClassifications = await Form.aggregate(aggregate);
-    let element = mergeOrgClassifications(cdeClassifications, formClassifications);
-    return element;
+    const cdeClassifications: OrgClassification[] = await DataElement.aggregate(aggregate);
+    const formClassifications: OrgClassification[] = await Form.aggregate(aggregate);
+    return mergeOrgClassifications(cdeClassifications, formClassifications);
 }
