@@ -55,11 +55,11 @@ const datatypeNumberSchema = new Schema({
     precision: Number
 }, {_id: false});
 
-const mapToSchema = {
+const mapToSchema = new Schema({
     fhir: {
         resourceType: StringType,
     },
-};
+});
 
 const questionSchema = new Schema({
     cde: {
