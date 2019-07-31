@@ -170,7 +170,7 @@ export function module() {
                 return res.status(403).send('You don\'t have permission to make boards public!');
             }
             let nbBoards = await boardDb.nbBoardsByUserId(req.user._id);
-            if (nbBoards <= boardQuota) {
+            if (nbBoards >= boardQuota) {
                 res.status(403).send('You have too many boards!');
             } else {
                 await boardDb.newBoard(board);

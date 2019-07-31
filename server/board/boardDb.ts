@@ -83,15 +83,13 @@ export function nbBoardsByUserId(userId) {
     return PinningBoard.countDocuments({'owner.userId': userId});
 }
 
-export function boardById(boardId) {
-    return PinningBoard.findById(boardId);
+export function byId(boardId, callback?) {
+    return PinningBoard.findById(boardId).exec(callback);
 }
 
 export function byIdAndOwner(boardId, ownerId) {
     return PinningBoard.findOne({_id: ObjectId(boardId), 'owner.userId': ownerId}).exec();
 }
-
-export const byId = boardById;
 
 export function newBoard(board) {
     return new PinningBoard(board).save();
