@@ -62,7 +62,7 @@ process.on('unhandledRejection', error => {
 (() => {
 //    let cond = {protocolID: '170101'};
     const cond = {};
-    const cursor = ProtocolModel.find(cond, {}, {timeout: false}).cursor();
+    const cursor = ProtocolModel.find(cond).cursor({batchSize: 1});
 
     cursor.eachAsync(async (protocol: any) => {
         const protocolObj = protocol.toObject();
@@ -104,8 +104,6 @@ process.on('unhandledRejection', error => {
         const updateResult = await FormSource.updateOne({tinyId: existingForm.tinyId}, newFormObj, {upsert: true});
         printUpdateResult(updateResult, existingForm);
         protocolCount++;
-        protocol.lastMigrationScript = lastMigrationScript;
-        await protocol.save();
         console.log('protocolCount ' + protocolCount++);
         console.log('Finished protocol: ' + protocolId);
     }).then(async () => {
