@@ -4,14 +4,7 @@ import { Comment } from 'server/discuss/discussDb';
 import { ProtocolModel } from 'ingester/createMigrationConnection';
 import { createPhenxForm } from 'ingester/phenx/Form/form';
 import {
-    batchloader,
-    imported,
-    lastMigrationScript,
-    compareElt,
-    mergeElt,
-    printUpdateResult,
-    updateCde,
-    updateForm
+    batchloader, compareElt, imported, lastMigrationScript, mergeElt, printUpdateResult, updateCde, updateForm
 } from 'ingester/shared/utility';
 import { DataElement } from 'server/cde/mongo-cde';
 
@@ -69,7 +62,7 @@ process.on('unhandledRejection', error => {
 (() => {
 //    let cond = {protocolID: '170101'};
     const cond = {};
-    const cursor = ProtocolModel.find(cond).cursor();
+    const cursor = ProtocolModel.find(cond, {}, {timeout: false}).cursor();
 
     cursor.eachAsync(async (protocol: any) => {
         const protocolObj = protocol.toObject();
@@ -111,6 +104,8 @@ process.on('unhandledRejection', error => {
         const updateResult = await FormSource.updateOne({tinyId: existingForm.tinyId}, newFormObj, {upsert: true});
         printUpdateResult(updateResult, existingForm);
         protocolCount++;
+        protocol.lastMigrationScript = lastMigrationScript;
+        await protocol.save();
         console.log('protocolCount ' + protocolCount++);
         console.log('Finished protocol: ' + protocolId);
     }).then(async () => {
