@@ -55,7 +55,7 @@ export function module() {
         daoManager.getDao(type).byTinyIdList(tinyIdList, handleError({req, res}, elts => {
             let newPins = elts.map(e => ({
                 pinnedDate: new Date(),
-                type: type,
+                type,
                 name: e.designations[0].designation,
                 tinyId: e.tinyId
             }));
