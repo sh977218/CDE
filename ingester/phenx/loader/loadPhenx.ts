@@ -69,7 +69,7 @@ process.on('unhandledRejection', error => {
 (() => {
 //    let cond = {protocolID: '170101'};
     const cond = {};
-    const cursor = ProtocolModel.find(cond).cursor();
+    const cursor = ProtocolModel.find(cond).cursor({batchSize:1});
 
     cursor.eachAsync(async (protocol: any) => {
         const protocolObj = protocol.toObject();
