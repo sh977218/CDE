@@ -18,6 +18,8 @@ const daoManager = require('../system/moduleDaoManager');
 const boardDb = require('./boardDb');
 const elastic = require('./elastic');
 
+require('express-async-errors');
+
 export function module() {
     const router = require('express').Router();
     daoManager.registerDao(boardDb);
