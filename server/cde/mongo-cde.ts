@@ -165,6 +165,10 @@ export function getStream(condition) {
     return DataElement.find(condition).sort({_id: -1}).cursor();
 }
 
+export function count(condition, callback) {
+    return DataElement.countDocuments(condition, callback);
+}
+
 export function byTinyIdVersion(tinyId, version, cb) {
     if (version) {
         this.byTinyIdAndVersion(tinyId, version, cb);
