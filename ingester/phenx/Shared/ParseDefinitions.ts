@@ -1,24 +1,30 @@
-import { isEqual } from 'lodash';
+import { isEqual, isEmpty } from 'lodash';
 
 export function parseDefinitions(protocol) {
-    let definitions = [];
-    let description = protocol.description;
-    let definition = protocol.definition;
+    const definitions = [];
+    const description = protocol.description;
+    const definition = protocol.definition;
 
     if (isEqual(description, definition)) {
-        definitions.push({
-            definition: description.trim(),
-            tags: []
-        });
+        if (!isEmpty(description)) {
+            definitions.push({
+                definition: description.trim(),
+                tags: []
+            });
+        }
     } else {
-        definitions.push({
-            definition: description.trim(),
-            tags: []
-        });
-        definitions.push({
-            definition: definition.trim(),
-            tags: []
-        });
+        if (!isEmpty(description)) {
+            definitions.push({
+                definition: description.trim(),
+                tags: []
+            });
+        }
+        if (!isEmpty(definition)) {
+            definitions.push({
+                definition: definition.trim(),
+                tags: []
+            });
+        }
     }
 
     return definitions;
