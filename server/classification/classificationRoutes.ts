@@ -1,10 +1,11 @@
+import { forEachSeries } from 'async';
+
 import { handleError } from '../errorHandler/errorHandler';
 import { actions } from 'shared/system/classificationShared';
 import { Cb } from 'shared/models.model';
 import { updateOrgClassification } from 'server/classification/orgClassificationSvc';
-import { orgByName } from '../server/system/mongo-data';
+import { orgByName } from 'server/system/mongo-data';
 
-const async = require('async');
 const mongo_cde = require('../cde/mongo-cde');
 const mongo_form = require('../form/mongo-form');
 const mongo_data = require('../system/mongo-data');
@@ -175,8 +176,7 @@ export function module(roleConfig) {
         let orgName = req.body.orgName;
         if (!roleConfig.allowClassify(req.user, orgName)) return res.status(403).send();
         let organization = await orgByName(orgName);
-        let elements = await updateOrgClassification(orgName);
-        organization.classifications = elements;
+        organization.classifications = await updateOrgClassification(orgName);
         await organization.save();
         res.send(organization);
     });
@@ -191,14 +191,14 @@ export function module(roleConfig) {
                 numberTotal: elements.length
             };
         }
-        async.forEachSeries(elements, function (element, doneOneElement) {
+        forEachSeries(elements, function (element: any, doneOneElement) {
             let classifReq = {
                 orgName: body.orgName,
                 categories: body.categories,
                 tinyId: element.id,
                 version: element.version
             };
-            classificationNode.eltClassification(classifReq, actions.create, mongo_cde, function (err) {
+            classificationNode.eltClassification(classifReq, actions.create, mongo_cde, () => {
                 bulkClassifyCdesStatus[user.username + eltId].numberProcessed++;
                 doneOneElement();
             });
