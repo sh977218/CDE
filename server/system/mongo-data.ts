@@ -284,12 +284,8 @@ export function orgCurators(orgs, callback) {
     User.find().where("orgCurator").in(orgs).exec(callback);
 }
 
-export function orgByNamePromise(orgName) {
-    return Org.findOne({name: orgName});
-}
-
-export function orgByName(orgName, callback) {
-    Org.findOne({name: orgName}, callback);
+export function orgByName(orgName, callback?) {
+    return Org.findOne({name: orgName}).exec(callback);
 }
 
 export function listOrgs(callback) {
@@ -540,10 +536,6 @@ export function addUserRole(username, role, cb) {
         }
     });
 }
-
-// export function usersByRole(role, callback) {
-//     User.find({roles: role}, callback);
-// }
 
 export function mailStatus(user, callback) {
     getMessages({user: user, params: {type: "received"}}, callback);

@@ -1,7 +1,6 @@
 import {
     addCategoriesToOrg, addCategoriesToTree, classifyItem, deleteCategory, mergeOrgClassifications, OrgClassification,
-    renameCategory,
-    renameClassifyElt, unclassifyElt
+    renameCategory, renameClassifyElt, unclassifyElt
 } from 'shared/system/classificationShared';
 import { DataElement } from 'server/cde/mongo-cde';
 import { Form } from 'server/form/mongo-form';
@@ -17,7 +16,7 @@ export function deleteOrgClassification(user, deleteClassification, settings, ca
     if (!(deleteClassification.categories instanceof Array)) {
         deleteClassification.categories = [deleteClassification.categories];
     }
-    mongo_data.updateJobStatus("deleteClassification", "Running", err => {
+    mongo_data.updateJobStatus('deleteClassification', "Running", err => {
         if (err) return callback(err);
         mongo_data.orgByName(deleteClassification.orgName, (err, stewardOrg) => {
             if (err) return callback(err, stewardOrg);
@@ -30,7 +29,7 @@ export function deleteOrgClassification(user, deleteClassification, settings, ca
                 settings.selectedElements = deleteClassification.categories;
                 let query = elastic.buildElasticSearchQuery(user, settings);
                 async.parallel([
-                    done => elastic.elasticsearch("cde", query, settings, handleError({}, result => {
+                    done => elastic.elasticsearch('cde', query, settings, handleError({}, result => {
                         if (result && result.cdes && result.cdes.length > 0) {
                             let tinyIds = result.cdes.map(c => c.tinyId);
                             async.forEach(tinyIds, (tinyId, doneOne) => {
@@ -200,7 +199,7 @@ export function reclassifyOrgClassification(user, oldClassification, newClassifi
                             });
                         } else done();
                     })),
-                    done => elastic.elasticsearch("form", query, settings, handleError({}, result => {
+                    done => elastic.elasticsearch('form', query, settings, handleError({}, result => {
                         if (result && result.forms && result.forms.length > 0) {
                             let tinyIds = result.cdes.map(c => c.tinyId);
                             async.forEach(tinyIds, (tinyId, doneOne) => {

@@ -2,7 +2,7 @@ import { handleError } from '../errorHandler/errorHandler';
 import { actions } from 'shared/system/classificationShared';
 import { Cb } from 'shared/models.model';
 import { updateOrgClassification } from 'server/classification/orgClassificationSvc';
-import { orgByNamePromise } from 'server/system/mongo-data';
+import { orgByName } from '../server/system/mongo-data';
 
 const async = require('async');
 const mongo_cde = require('../cde/mongo-cde');
@@ -174,7 +174,7 @@ export function module(roleConfig) {
     router.post('/updateOrgClassification', async (req, res) => {
         let orgName = req.body.orgName;
         if (!roleConfig.allowClassify(req.user, orgName)) return res.status(403).send();
-        let organization = await orgByNamePromise(orgName);
+        let organization = await orgByName(orgName);
         let elements = await updateOrgClassification(orgName);
         organization.classifications = elements;
         await organization.save();
