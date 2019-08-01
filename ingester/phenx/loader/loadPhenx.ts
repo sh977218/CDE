@@ -62,7 +62,7 @@ process.on('unhandledRejection', error => {
 (() => {
 //    let cond = {protocolID: '170101'};
     const cond = {};
-    const cursor = ProtocolModel.find(cond).cursor({batchSize: 1});
+    const cursor = ProtocolModel.find(cond).cursor({batchSize: 10});
 
     cursor.eachAsync(async (protocol: any) => {
         const protocolObj = protocol.toObject();
@@ -108,7 +108,6 @@ process.on('unhandledRejection', error => {
         console.log('Finished protocol: ' + protocolId);
     }).then(async () => {
         console.log('************************************************');
-
         await retireForms();
         await retireCdes();
         console.log('Finished PhenX Loader: ');
