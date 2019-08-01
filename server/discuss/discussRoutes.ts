@@ -14,6 +14,8 @@ const userService = require('../system/usersrvc');
 const mongo_data = require('../system/mongo-data');
 const adminItemService = require('../system/adminItemSvc');
 
+require('express-async-errors');
+
 function getEltUsers(elt, cb: Cb<string[]>) {
     let userIds = [];
     if (elt.owner && elt.owner.userId) {
@@ -53,8 +55,7 @@ export function module(roleConfig) {
         const comment = req.body;
         const eltModule = comment.element && comment.element.eltType;
         const eltTinyId = comment.element && comment.element.eltId;
-        let numberUnapprovedMessages = await discussDb.numberUnapprovedMessageByUsername(req.user.username)
-            .catch(handleError(handlerOptions));
+        let numberUnapprovedMessages = await discussDb.numberUnapprovedMessageByUsername(req.user.username);
         if (numberUnapprovedMessages >= 5) return res.status(403).send('You have too many unapproved messages.');
         mongo_data.fetchItem(eltModule, eltTinyId, handle404(handlerOptions, elt => {
             comment.user = req.user;
@@ -69,7 +70,7 @@ export function module(roleConfig) {
                         eltTinyId, 'comment');
                 } else {
                     getEltUsers(elt, userIds => {
-                        adminItemService.notifyForComment({}, savedComment, eltModule,  eltTinyId,
+                        adminItemService.notifyForComment({}, savedComment, eltModule, eltTinyId,
                             elt.stewardOrg && elt.stewardOrg.name, userIds);
                     });
                 }
@@ -80,8 +81,7 @@ export function module(roleConfig) {
 
     router.post('/replyComment', loggedInMiddleware, async (req, res) => {
         const handlerOptions = {req, res};
-        let numberUnapprovedMessages = await discussDb.numberUnapprovedMessageByUsername(req.user.username)
-            .catch(handleError(handlerOptions));
+        let numberUnapprovedMessages = await discussDb.numberUnapprovedMessageByUsername(req.user.username);
         if (numberUnapprovedMessages >= 5) return res.status(403).send('You have too many unapproved messages.');
         discussDb.byId(req.body.commentId, handle404(handlerOptions, comment => {
             const eltModule = comment.element && comment.element.eltType;
