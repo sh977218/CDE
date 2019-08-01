@@ -667,7 +667,6 @@ let searchTemplate: { [key: string]: any } = {
     }
 };
 
-
 export function elasticsearch(type: ModuleItem, query: any, settings: any, cb: CbErr<any>) {
     let search = searchTemplate[type];
     if (!search) return cb('Invalid query');
