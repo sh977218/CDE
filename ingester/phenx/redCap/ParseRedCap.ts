@@ -193,11 +193,8 @@ export async function parseFormElements(protocol, attachments, newForm) {
                 const question = await convert(redCap, redCaps, existingCde, newForm);
                 fe.formElements.push(question);
             } else {
-                console.log('Empty designation row in redCap. ' + protocolId);
+                console.log('Skip row with empty sectionHeader and empty fieldLabel in redCap. ' + protocolId);
                 console.log('variableName: ' + variableName);
-                console.log('sectionHeader: ' + sectionHeader);
-                console.log('fieldLabel: ' + fieldLabel);
-                process.exit(1);
             }
         }
     }
