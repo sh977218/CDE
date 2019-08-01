@@ -104,7 +104,7 @@ process.on('unhandledRejection', error => {
         const updateResult = await FormSource.updateOne({tinyId: existingForm.tinyId}, newFormObj, {upsert: true});
         printUpdateResult(updateResult, existingForm);
         protocolCount++;
-        console.log('protocolCount ' + protocolCount++);
+        console.log('protocolCount ' + protocolCount);
         console.log('Finished protocol: ' + protocolId);
     }).then(async () => {
         console.log('************************************************');
