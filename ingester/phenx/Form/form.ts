@@ -39,6 +39,7 @@ export async function createPhenxForm(protocol) {
         elementType: 'form',
         tinyId: generateTinyId(),
         createdBy: batchloader,
+        source: 'PhenX',
         sources,
         designations,
         definitions,

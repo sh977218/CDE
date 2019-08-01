@@ -20,6 +20,7 @@ export async function createRedCde(row, protocol, newForm) {
         designations,
         stewardOrg: {name: 'PhenX'},
         sources: [],
+        source: 'PhenX',
         classification: [],
         valueDomain,
         registrationState: {registrationStatus: 'Candidate'},
