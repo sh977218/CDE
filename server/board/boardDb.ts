@@ -5,39 +5,43 @@ import { ObjectId } from 'server/system/mongo-data';
 import { establishConnection } from 'server/system/connections';
 
 import { deleteBoardById, updateOrInsertBoardById } from 'server/board/elastic';
+import { addStringtype } from 'server/system/mongoose-stringtype';
 
+addStringtype(mongoose);
 const Schema = mongoose.Schema;
+const StringType = (Schema.Types as any).StringType;
 
 const conn = establishConnection(config.database.appData);
 // for DAO manager
 export const type = 'board';
 
-let pinSchema = {
-    tinyId: String,
-    type: {type: String, default: 'cde', enum: ['cde', 'form']},
+let pinSchema = new Schema({
+    tinyId: StringType,
+    type: {type: StringType, default: 'cde', enum: ['cde', 'form']},
     pinnedDate: Date,
-};
+});
 
 let pinningBoardSchema = new Schema({
-    name: String,
-    description: String,
-    type: {type: String, default: 'cde', enum: ['cde', 'form']},
-    tags: [String],
-    shareStatus: String,
+    name: StringType,
+    description: StringType,
+    type: {type: StringType, default: 'cde', enum: ['cde', 'form']},
+    tags: [StringType],
+    shareStatus: StringType,
     createdDate: Date,
     updatedDate: Date,
     owner: {
         userId: Schema.Types.ObjectId,
-        username: String
+        username: StringType
     },
     pins: [pinSchema],
     users: [{
-        username: String,
-        role: {type: String, default: 'viewer', enum: ['viewer']},
+        username: StringType,
+        role: {type: StringType, default: 'viewer', enum: ['viewer']},
         lastViewed: Date,
     }],
 }, {
-    usePushEach: true, toObject: {
+    usePushEach: true,
+    toObject: {
         virtuals: true
     },
     toJSON: {
