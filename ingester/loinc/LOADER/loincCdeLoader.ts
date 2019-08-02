@@ -5,8 +5,8 @@ import {
     batchloader, compareElt, imported, lastMigrationScript, mergeElt, printUpdateResult, updateCde
 } from 'ingester/shared/utility';
 
-export async function runOneCde(loinc, orgInfo) {
-    const loincCde = await createLoincCde(loinc, orgInfo);
+export async function runOneCde(loinc, orgInfo, source) {
+    const loincCde = await createLoincCde(loinc, orgInfo, source);
     const newCde = new DataElement(loincCde);
     const newCdeObj = newCde.toObject();
     let existingCde = await DataElement.findOne({archived: false, 'ids.id': loinc.loincId});

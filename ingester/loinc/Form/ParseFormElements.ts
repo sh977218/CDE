@@ -5,15 +5,21 @@ import { runOneCde } from 'ingester/loinc/LOADER/loincCdeLoader';
 import { runOneForm } from 'ingester/loinc/LOADER/loincFormLoader';
 import { fixValueDomainOrQuestion } from 'ingester/shared/utility';
 
-export async function parseFormElements(loinc, orgInfo) {
+export async function parseFormElements(loinc, orgInfo, source) {
     if (loinc.loinc) {
         loinc = loinc.loinc;
     }
     const formElements = [];
-    if (!loinc['PANEL HIERARCHY']) { return formElements; }
+    if (!loinc['PANEL HIERARCHY']) {
+        return formElements;
+    }
     const elements = loinc['PANEL HIERARCHY'].elements;
-    if (!elements) { return formElements; }
-    if (!elements || elements.length === 0) { return; }
+    if (!elements) {
+        return formElements;
+    }
+    if (!elements || elements.length === 0) {
+        return;
+    }
     console.log('Form ' + loinc.loincId + ' has ' + elements.length + ' elements to process.');
     let tempFormElements = formElements;
     const needOuterSection = elements.filter(element => element.elements.length > 0).length === 0;
@@ -32,10 +38,10 @@ export async function parseFormElements(loinc, orgInfo) {
     for (const element of elements) {
         const isElementForm = element.elements.length > 0;
         if (isElementForm) {
-            const formElement = await loadForm(element, orgInfo);
+            const formElement = await loadForm(element, orgInfo, source);
             tempFormElements.push(formElement);
         } else {
-            const formElement = await loadCde(element, orgInfo);
+            const formElement = await loadCde(element, orgInfo, source);
             tempFormElements.push(formElement);
         }
     }
@@ -83,8 +89,8 @@ function elementToQuestion(existingCde, element) {
     };
 }
 
-async function loadCde(element, orgInfo) {
-    const existingCde = await runOneCde(element, orgInfo);
+async function loadCde(element, orgInfo, source) {
+    const existingCde = await runOneCde(element, orgInfo, source);
     return elementToQuestion(existingCde, element);
 }
 
@@ -106,7 +112,7 @@ function elementToInForm(existingForm, element) {
     };
 }
 
-async function loadForm(element, orgInfo) {
-    const existingForm = await runOneForm(element, orgInfo);
+async function loadForm(element, orgInfo, source) {
+    const existingForm = await runOneForm(element, orgInfo, source);
     return elementToInForm(existingForm, element);
 }

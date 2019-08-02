@@ -8,7 +8,7 @@ export async function parseFormElements(protocol, attachments, newForm) {
     if (isEmpty(loincStandard)) {
         await parseRedcapFormElements(protocol, attachments, newForm);
     } else {
-        const formElements = await parseLoincFormElements(loincStandard, orgMapping.PhenX);
+        const formElements = await parseLoincFormElements(loincStandard, orgMapping.PhenX, 'PhenX');
         const loinc = loincStandard.loinc;
         if (!loinc['PANEL HIERARCHY']) {
             console.log(`Protocol ${protocol.protocolID} has LOINC ${loinc.loincId} PANEL HIERARCHY is missing.`);
