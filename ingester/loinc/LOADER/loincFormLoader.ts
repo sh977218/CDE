@@ -4,6 +4,7 @@ import { createLoincForm } from 'ingester/loinc/Form/form';
 import {
     batchloader, compareElt, imported, lastMigrationScript, mergeElt, printUpdateResult, updateForm
 } from 'ingester/shared/utility';
+import { LoincLogger } from 'ingester/log/LoincLogger';
 
 export async function runOneForm(loinc, orgInfo, source) {
     const loincForm = await createLoincForm(loinc, orgInfo, source);
@@ -12,6 +13,8 @@ export async function runOneForm(loinc, orgInfo, source) {
     let existingForm = await Form.findOne({archived: false, 'ids.id': loinc.loincId});
     if (!existingForm) {
         existingForm = await newForm.save();
+        LoincLogger.createdLoincForm++;
+        LoincLogger.createdLoincForms.push(existingForm.tinyId);
     } else {
         const existingFormObj = existingForm.toObject();
         existingFormObj.imported = imported;
@@ -20,9 +23,13 @@ export async function runOneForm(loinc, orgInfo, source) {
         const diff = compareElt(newForm.toObject(), existingForm.toObject(), 'LOINC');
         if (isEmpty(diff)) {
             await existingForm.save();
+            LoincLogger.sameLoincForm++;
+            LoincLogger.sameLoincForms.push(existingForm.tinyId);
         } else {
             mergeElt(existingFormObj, newFormObj, 'LOINC');
             await updateForm(existingForm, batchloader, {updateSource: true});
+            LoincLogger.changedLoincForm++;
+            LoincLogger.changedLoincForms.push(existingForm.tinyId);
         }
         delete newFormObj.tinyId;
         delete newFormObj._id;

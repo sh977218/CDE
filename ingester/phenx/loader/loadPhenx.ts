@@ -8,18 +8,9 @@ import {
 import { DataElement } from 'server/cde/mongo-cde';
 import { createPhenxForm } from 'ingester/phenx/Form/form';
 
-let protocolCount = 0;
+import { PhenxLogger } from 'ingester/log/PhenxLogger';
 
-let createdForm = 0;
-const createdForms = [];
-let sameForm = 0;
-const sameForms = [];
-let changedForm = 0;
-const changedForms = [];
-let retiredForm = 0;
-const retiredForms = [];
-let retiredCde = 0;
-const retiredCdes = [];
+let protocolCount = 0;
 
 async function retireForms() {
     const cond = {
@@ -31,10 +22,10 @@ async function retireForms() {
     for (const form of forms) {
         const formObj = form.toObject();
         formObj.registrationState.registrationStatus = 'Retired';
-        formObj.registrationState.administrativeNote = 'Not present in import at ' + new Date().toJSON();
+        formObj.registrationState.administrativeNote = 'Not present in import at ' + imported;
         await updateForm(formObj, batchloader);
-        retiredForm++;
-        retiredForms.push(formObj.tinyId);
+        PhenxLogger.retiredPhenxForm++;
+        PhenxLogger.retiredPhenxForms.push(formObj.tinyId);
     }
 }
 
@@ -48,10 +39,10 @@ async function retireCdes() {
     for (const cde of cdes) {
         const cdeObj = cde.toObject();
         cdeObj.registrationState.registrationStatus = 'Retired';
-        cdeObj.registrationState.administrativeNote = 'Not present in import at ' + new Date().toJSON();
+        cdeObj.registrationState.administrativeNote = 'Not present in import at ' + imported;
         await updateCde(cdeObj, batchloader);
-        retiredCde++;
-        retiredCdes.push(cdeObj.tinyId);
+        PhenxLogger.retiredPhenxCde++;
+        PhenxLogger.retiredPhenxCdes.push(cdeObj.tinyId);
     }
 }
 
@@ -73,8 +64,8 @@ process.on('unhandledRejection', error => {
         let existingForm = await Form.findOne({archived: false, 'ids.id': protocolId});
         if (!existingForm) {
             existingForm = await newForm.save();
-            createdForm++;
-            createdForms.push(existingForm.tinyId);
+            PhenxLogger.createdPhenxForm++;
+            PhenxLogger.createdPhenxForms.push(existingForm.tinyId);
         } else {
             const existingFormObj = existingForm.toObject();
             existingFormObj.imported = imported;
@@ -83,13 +74,13 @@ process.on('unhandledRejection', error => {
             const diff = compareElt(newForm.toObject(), existingForm.toObject(), 'PhenX');
             if (isEmpty(diff)) {
                 await existingForm.save();
-                sameForm++;
-                sameForms.push(existingForm.tinyId);
+                PhenxLogger.samePhenxForm++;
+                PhenxLogger.samePhenxForms.push(existingForm.tinyId);
             } else {
                 mergeElt(existingFormObj, newFormObj, 'PhenX');
                 await updateForm(existingFormObj, batchloader, {updateSource: true});
-                changedForm++;
-                changedForms.push(existingForm.tinyId);
+                PhenxLogger.changedPhenxForm++;
+                PhenxLogger.changedPhenxForms.push(existingForm.tinyId);
             }
         }
         if (newFormObj.registrationState.registrationStatus !== 'Qualified') {
@@ -111,14 +102,7 @@ process.on('unhandledRejection', error => {
         await retireForms();
         await retireCdes();
         console.log('Finished PhenX Loader: ');
-        console.log('createdForm: ' + createdForm);
-        console.log('createdForms: ' + createdForms);
-        console.log('changeForm: ' + changedForm);
-        console.log('changeForms: ' + changedForms);
-        console.log('sameForm: ' + sameForm);
-        console.log('sameForms: ' + sameForms);
-        console.log('retiredForm: ' + retiredForm);
-        console.log('retiredForms: ' + retiredForms);
+        PhenxLogger.log();
         process.exit(0);
     }, error => {
         if (error) {

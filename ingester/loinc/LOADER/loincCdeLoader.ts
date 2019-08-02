@@ -5,6 +5,8 @@ import {
     batchloader, compareElt, imported, lastMigrationScript, mergeElt, printUpdateResult, updateCde
 } from 'ingester/shared/utility';
 
+import { LoincLogger } from 'ingester/log/LoincLogger';
+
 export async function runOneCde(loinc, orgInfo, source) {
     const loincCde = await createLoincCde(loinc, orgInfo, source);
     const newCde = new DataElement(loincCde);
@@ -12,6 +14,8 @@ export async function runOneCde(loinc, orgInfo, source) {
     let existingCde = await DataElement.findOne({archived: false, 'ids.id': loinc.loincId});
     if (!existingCde) {
         existingCde = await newCde.save();
+        LoincLogger.createdLoincCde++;
+        LoincLogger.createdLoincCdes.push(existingCde.tinyId);
     } else {
         const existingCdeObj = existingCde.toObject();
         existingCdeObj.imported = imported;
@@ -20,9 +24,13 @@ export async function runOneCde(loinc, orgInfo, source) {
         const diff = compareElt(newCde.toObject(), existingCde.toObject(), 'LOINC');
         if (isEmpty(diff)) {
             await existingCde.save();
+            LoincLogger.sameLoincCde++;
+            LoincLogger.sameLoincCdes.push(existingCde.tinyId);
         } else {
             mergeElt(newCdeObj, existingCdeObj, 'LOINC');
             await updateCde(existingCde, batchloader, {updateSource: true});
+            LoincLogger.changedLoincCde++;
+            LoincLogger.changedLoincCdes.push(existingCde.tinyId);
         }
     }
     delete newCdeObj.tinyId;

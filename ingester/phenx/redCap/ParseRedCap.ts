@@ -10,13 +10,7 @@ import {
 import { leadingZerosProtocolId } from 'ingester/phenx/Form/ParseAttachments';
 import { Comment } from 'server/discuss/discussDb';
 import { redCapZipFolder } from 'ingester/createMigrationConnection';
-
-let createdRedCde = 0;
-const createdRedCdes = [];
-let sameRedCde = 0;
-const sameRedCdes = [];
-let changedRedCde = 0;
-const changedRedCdes = [];
+import { RedcapLogger } from 'ingester/log/RedcapLogger';
 
 function doInstrumentID(instrumentIDFilePath): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -89,8 +83,8 @@ async function doOneRedCap(redCap, redCaps, protocol, newForm) {
     let existingCde = await DataElement.findOne({archived: false, 'ids.id': newCdeObj.ids[0].id});
     if (!existingCde) {
         existingCde = await newCde.save();
-        createdRedCde++;
-        createdRedCdes.push(existingCde.tinyId);
+        RedcapLogger.createdRedcapCde++;
+        RedcapLogger.createdRedcapCdes.push(existingCde.tinyId);
     } else {
         existingCde.imported = imported;
         existingCde.lastMigrationScript = lastMigrationScript;
@@ -98,14 +92,14 @@ async function doOneRedCap(redCap, redCaps, protocol, newForm) {
         const diff = compareElt(newCde.toObject(), existingCde.toObject(), 'PhenX');
         if (isEmpty(diff)) {
             await existingCde.save();
-            sameRedCde++;
-            sameRedCdes.push(existingCde.tinyId);
+            RedcapLogger.sameRedcapCde++;
+            RedcapLogger.sameRedcapCdes.push(existingCde.tinyId);
         } else {
             const existingCdeObj = existingCde.toObject();
             mergeElt(existingCdeObj, newCdeObj, 'PhenX');
             await updateCde(existingCde, batchloader, {updateSource: true});
-            changedRedCde++;
-            changedRedCdes.push(existingCde.tinyId);
+            RedcapLogger.changedRedcapCde++;
+            RedcapLogger.changedRedcapCdes.push(existingCde.tinyId);
         }
     }
     for (const comment of redCapCde.comments) {
@@ -199,10 +193,5 @@ export async function parseFormElements(protocol, attachments, newForm) {
         }
     }
     newForm.formElements = formElements;
-    console.log('createdRedCde: ' + createdRedCde);
-    console.log('createdRedCdes: ' + createdRedCdes);
-    console.log('sameRedCde: ' + sameRedCde);
-    console.log('sameRedCdes: ' + sameRedCdes);
-    console.log('changedRedCde: ' + changedRedCde);
-    console.log('changedRedCdes: ' + changedRedCdes);
+    RedcapLogger.log();
 }

@@ -12,8 +12,8 @@ const sourceMap = {
     PHENX: ['PhenX', 'PhenX Variable'],
     NINDS: ['NINDS', 'NINDS Variable Name', 'NINDS caDSR', 'caDSR'],
 };
-const today = new Date();
-export const lastMigrationScript = 'load PhenX on ' + today.getMonth() + today.getFullYear();
+const today = new Date().toJSON();
+export const lastMigrationScript = 'load PhenX on ' + new Date().getMonth() + new Date().getFullYear();
 
 export const BATCHLOADER_USERNAME = 'batchloader';
 export const batchloader = {
