@@ -3,11 +3,11 @@ import { parseProperties } from 'ingester/phenx/redCap/parseProperties';
 import { parseValueDomain } from 'ingester/phenx/redCap/parseValueDomain';
 import { parseIds } from 'ingester/phenx/redCap/parseIds';
 import { generateTinyId } from 'server/system/mongo-data';
-import { classifyItem } from 'shared/system/classificationShared';
 import { batchloader, created } from 'ingester/shared/utility';
+import { parseClassification } from 'ingester/phenx/redCap/parseclassification';
 
 export async function createRedCde(row, protocol, newForm) {
-    const classificationArray = protocol.classification;
+    const classification = parseClassification(protocol);
     const designations = parseDesignations(row);
     const valueDomain = parseValueDomain(row);
     const ids = parseIds(row, newForm);
@@ -21,7 +21,7 @@ export async function createRedCde(row, protocol, newForm) {
         stewardOrg: {name: 'PhenX'},
         sources: [],
         source: 'PhenX',
-        classification: [],
+        classification,
         valueDomain,
         registrationState: {registrationStatus: 'Candidate'},
         ids,
@@ -29,9 +29,6 @@ export async function createRedCde(row, protocol, newForm) {
         attachments: [],
         comments: []
     };
-
-    const classificationToAdd = ['REDCap'].concat(classificationArray);
-    classifyItem(newCde, 'PhenX', classificationToAdd);
 
     return newCde;
 }

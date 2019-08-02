@@ -1,5 +1,5 @@
 import * as csv from 'csv-parse';
-import { createReadStream, existsSync, readFile } from 'fs';
+import { createReadStream, existsSync } from 'fs';
 import { find, isEmpty } from 'lodash';
 import { DataElement, DataElementSource } from 'server/cde/mongo-cde';
 import { createRedCde } from 'ingester/phenx/redCap/cde';
@@ -11,32 +11,6 @@ import { leadingZerosProtocolId } from 'ingester/phenx/Form/ParseAttachments';
 import { Comment } from 'server/discuss/discussDb';
 import { redCapZipFolder } from 'ingester/createMigrationConnection';
 import { RedcapLogger } from 'ingester/log/RedcapLogger';
-
-function doInstrumentID(instrumentIDFilePath): Promise<string> {
-    return new Promise((resolve, reject) => {
-        readFile(instrumentIDFilePath, 'utf8', (err, data) => {
-            if (err) {
-                console.log('Read instrumentIDFilePath failed. ' + err);
-                reject(err);
-            } else {
-                resolve(data);
-            }
-        });
-    });
-}
-
-function doAuthorID(authorIDFilePath): Promise<string> {
-    return new Promise((resolve, reject) => {
-        readFile(authorIDFilePath, 'utf8', (err, data) => {
-            if (err) {
-                console.log('Read authorIDFilePath failed. ' + err);
-                reject(err);
-            } else {
-                resolve(data);
-            }
-        });
-    });
-}
 
 function doInstrument(instrumentFilePath): Promise<any[]> {
     return new Promise((resolve, reject) => {

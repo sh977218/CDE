@@ -1,11 +1,11 @@
-import { isEqual, isEmpty } from 'lodash';
+import { isEmpty, isEqual, toLower, trim } from 'lodash';
 
 export function parseDefinitions(protocol) {
     const definitions = [];
-    const description = protocol.description;
-    const definition = protocol.definition;
+    const description = trim(protocol.description);
+    const definition = trim(protocol.definition);
 
-    if (isEqual(description, definition)) {
+    if (isEqual(toLower(description), toLower(definition))) {
         if (!isEmpty(description)) {
             definitions.push({
                 definition: description.trim(),

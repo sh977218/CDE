@@ -12,7 +12,7 @@ import { parseValueDomain } from 'ingester/loinc/CDE/ParseValueDomain';
 
 import { batchloader, created, imported } from 'ingester/shared/utility';
 
-export async function createLoincCde(element, orgInfo, source) {
+export async function createLoincCde(element, orgInfo) {
     const loinc = element.loinc ? element.loinc : element;
     const designations = parseDesignations(loinc, element);
     const definitions = parseDefinitions(loinc);
@@ -30,7 +30,7 @@ export async function createLoincCde(element, orgInfo, source) {
         createdBy: batchloader,
         created,
         imported,
-        source,
+        source: 'LOINC',
         registrationState: {registrationStatus: 'Standard'},
         sources,
         designations,

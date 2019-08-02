@@ -5,7 +5,7 @@ import { runOneCde } from 'ingester/loinc/LOADER/loincCdeLoader';
 import { runOneForm } from 'ingester/loinc/LOADER/loincFormLoader';
 import { fixValueDomainOrQuestion } from 'ingester/shared/utility';
 
-export async function parseFormElements(loinc, orgInfo, source) {
+export async function parseFormElements(loinc, orgInfo) {
     if (loinc.loinc) {
         loinc = loinc.loinc;
     }
@@ -38,10 +38,10 @@ export async function parseFormElements(loinc, orgInfo, source) {
     for (const element of elements) {
         const isElementForm = element.elements.length > 0;
         if (isElementForm) {
-            const formElement = await loadForm(element, orgInfo, source);
+            const formElement = await loadForm(element, orgInfo);
             tempFormElements.push(formElement);
         } else {
-            const formElement = await loadCde(element, orgInfo, source);
+            const formElement = await loadCde(element, orgInfo);
             tempFormElements.push(formElement);
         }
     }
@@ -89,8 +89,8 @@ function elementToQuestion(existingCde, element) {
     };
 }
 
-async function loadCde(element, orgInfo, source) {
-    const existingCde = await runOneCde(element, orgInfo, source);
+async function loadCde(element, orgInfo) {
+    const existingCde = await runOneCde(element, orgInfo);
     return elementToQuestion(existingCde, element);
 }
 
@@ -112,7 +112,7 @@ function elementToInForm(existingForm, element) {
     };
 }
 
-async function loadForm(element, orgInfo, source) {
-    const existingForm = await runOneForm(element, orgInfo, source);
+async function loadForm(element, orgInfo) {
+    const existingForm = await runOneForm(element, orgInfo);
     return elementToInForm(existingForm, element);
 }

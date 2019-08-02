@@ -12,7 +12,7 @@ import { parseFormElements } from './ParseFormElements';
 import { created, imported } from 'ingester/shared/utility';
 
 
-export async function createLoincForm(loinc, orgInfo, source) {
+export async function createLoincForm(loinc, orgInfo) {
     const designations = parseDesignations(loinc, {});
     const definitions = parseDefinitions(loinc);
     const ids = parseIds(loinc);
@@ -21,14 +21,14 @@ export async function createLoincForm(loinc, orgInfo, source) {
     const stewardOrg = parseStewardOrg(orgInfo);
     const sources = parseSources(loinc);
     const classification = await parseClassification(loinc, orgInfo);
-    const formElements = await parseFormElements(loinc, orgInfo, source);
+    const formElements = await parseFormElements(loinc, orgInfo);
 
     const newForm = {
         tinyId: generateTinyId(),
         createdBy: {username: 'batchloader'},
         created,
         imported,
-        source,
+        source: 'LOINC',
         registrationState: {registrationStatus: 'Qualified'},
         sources,
         designations,

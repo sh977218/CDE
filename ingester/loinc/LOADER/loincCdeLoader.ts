@@ -7,8 +7,8 @@ import {
 
 import { LoincLogger } from 'ingester/log/LoincLogger';
 
-export async function runOneCde(loinc, orgInfo, source) {
-    const loincCde = await createLoincCde(loinc, orgInfo, source);
+export async function runOneCde(loinc, orgInfo) {
+    const loincCde = await createLoincCde(loinc, orgInfo);
     const newCde = new DataElement(loincCde);
     const newCdeObj = newCde.toObject();
     let existingCde = await DataElement.findOne({archived: false, 'ids.id': loinc.loincId});

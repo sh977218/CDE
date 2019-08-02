@@ -33,7 +33,7 @@ export async function createPhenxForm(protocol) {
     const properties = parseProperties(protocol);
     const referenceDocuments = parseReferenceDocuments(protocol);
     const attachments = await parseAttachments(protocol);
-    const classification = parseClassification(protocol);
+    const classification = parseClassification();
 
     const newForm = {
         elementType: 'form',

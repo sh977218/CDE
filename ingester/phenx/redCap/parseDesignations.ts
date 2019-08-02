@@ -11,7 +11,7 @@ export function parseDesignations(row) {
         fieldLabelDesignation = {
             designation: fieldLabel.trim(),
             source: 'PhenX',
-            tags: []
+            tags: ['Question Text']
         };
         designations.push(fieldLabelDesignation);
     }
