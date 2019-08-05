@@ -19,12 +19,13 @@ function run() {
         let histories = formObj.history;
         for (let history of histories) {
             let historyObj = await Form.findById(history).lean();
+            let updatedBy = historyObj.updatedBy.username;
             console.log(historyObj);
-            if (historyObj.updatedBy.username === 'lizamos') {
+            if (updatedBy === 'lizamos') {
                 formObj.formElements = historyObj.formElements;
                 break;
-            } else if (historyObj.updatedBy.username !== BATCHLOADER_USERNAME) {
-                formNeedReview.push(formObj.tinyId);
+            } else if (updatedBy !== BATCHLOADER_USERNAME) {
+                formNeedReview.push(formObj.tinyId + ' updated by ' + updatedBy);
             }
         }
         await updateForm(formObj, batchloader);
