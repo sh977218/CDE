@@ -17,11 +17,16 @@ function run() {
     cursor.eachAsync(async (form: any) => {
         let formObj = form.toObject();
         let histories = formObj.history;
-        for (let history of histories) {
+        for (let i = histories.length - 1; i >= 0; i--) {
+            let history = histories[i];
             let historyObj = await Form.findById(history).lean();
+            if (!historyObj.updatedBy) {
+                console.log(i);
+                console.log('b');
+            }
             let updatedBy = historyObj.updatedBy.username;
             console.log(historyObj);
-            if (updatedBy === 'lizamos') {
+            if (updatedBy === 'lizamos' || updatedBy === 'ludetc') {
                 formObj.formElements = historyObj.formElements;
                 break;
             } else if (updatedBy !== BATCHLOADER_USERNAME) {

@@ -108,7 +108,15 @@ export function updateCde(elt, user, options = {}) {
 }
 
 export function updateForm(elt, user, options = {}) {
-    return new Promise(resolve => mongo_form.update(elt, user, options, resolve));
+    return new Promise(resolve => {
+/*
+ @todo disable Qualified phenX update form element.
+        if (elt.registrationState.registrationStatus === 'Qualified') {
+
+        }
+*/
+        mongo_form.update(elt, user, options, resolve);
+    });
 }
 
 const DomainCollectionMap = {};
