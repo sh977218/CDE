@@ -164,7 +164,7 @@ export function searchUmls(term) {
         )
 }
 
-export function getSourcePT (cui, src) {
+export function getSourcePT(cui, src) {
     return getTicket()
         .then(ticket => promisify(request.get)({
             uri: `${config.umls.wsHost}/rest/content/current/CUI/${cui}/atoms?sabs=${src}&ttys=${ttys[src]}&ticket=${ticket}`,
@@ -207,8 +207,7 @@ export function searchBySystemAndCode(system, code) {
             strictSSL: false,
             uri: config.umls.wsHost + '/rest/content/current/source/' + system + '/' + code + '/atoms?ticket=' + ticket,
         }))
-        .then(
-            response => response.body,
+        .then(response => response.body,
             err => {
                 _TGT = undefined;
                 respondError(err, {details: 'get umls ERROR'});
@@ -217,28 +216,19 @@ export function searchBySystemAndCode(system, code) {
         );
 }
 
-export function systemToUmlsSystem(system) {
-    switch (system) {
-        case 'LOINC':
-            return 'LNC';
-        case 'NCI Thesaurus':
-            return 'NCI';
-        case 'SNOMEDCT US':
-            return 'SNOMEDCT_US';
-        case 'UMLS':
-            return 'UMLS';
-        case 'AHRQ Common Formats':
-        case 'CDCREC':
-        case 'HL7 Administrative Gender':
-        case 'HL7 NullFlavor':
-        case 'ICD9CM':
-        case 'ICD10CM':
-        case 'OBI':
-        case 'SNOMED':
-        case 'SNOMED CT':
-        case 'SNOMEDCT':
-            return '';
-        default:
-            throw 'new system: ' + system;
-    }
-}
+export const CDE_SYSTEM_TO_UMLS_SYSTEM_MAP = {
+    'LOINC': 'LNC',
+    'NCI Thesaurus': 'NCI',
+    'SNOMEDCT US': 'SNOMEDCT_US',
+    'UMLS': 'UMLS',
+    'AHRQ Common Formats': '',
+    'CDCREC': '',
+    'HL7 Administrative Gender': '',
+    'HL7 NullFlavor': '',
+    'ICD9CM': '',
+    'ICD10CM': '',
+    'OBI': '',
+    'SNOMED': '',
+    'SNOMED CT': '',
+    'SNOMEDCT': '',
+};
