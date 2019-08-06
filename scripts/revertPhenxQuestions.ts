@@ -16,16 +16,18 @@ function run() {
 
     cursor.eachAsync(async (form: any) => {
         let formObj = form.toObject();
-        let histories = formObj.history;
-        for (let i = histories.length - 1; i >= 0; i--) {
+        console.log(formObj.tinyId);
+        let histories = formObj.history.reverse().map(h => h.toString());
+        for (let i = 0; i < histories.length; i++) {
             let history = histories[i];
             let historyObj = await Form.findById(history).lean();
+            console.log(historyObj);
+            console.log(history);
+            console.log(i);
             if (!historyObj.updatedBy) {
-                console.log(i);
                 console.log('b');
             }
             let updatedBy = historyObj.updatedBy.username;
-            console.log(historyObj);
             if (updatedBy === 'lizamos' || updatedBy === 'ludetc') {
                 formObj.formElements = historyObj.formElements;
                 break;
