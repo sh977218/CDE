@@ -1,7 +1,4 @@
-// @ts-ignore: error TS2497: Module '"C:/cde/node_modules/@types/lodash/find"' resolves to a non-module entity and cannot be imported using this construct.
-import * as _find from 'lodash/find';
-// @ts-ignore: error TS2497: Module '"C:/cde/node_modules/@types/lodash/slice"' resolves to a non-module entity and cannot be imported using this construct.
-import * as _slice from 'lodash/slice';
+import { find, slice, sortBy, uniqWith } from 'lodash';
 import { Cb, Cb1, Classification, ClassificationElement, Item, MongooseType, Organization } from 'shared/models.model';
 
 export const actions: {
@@ -15,7 +12,7 @@ export const actions: {
 };
 
 function findClassifOrCreate(elements: ClassificationElement[], category: string): ClassificationElement {
-    let found = _find(elements, (element: ClassificationElement) => element.name === category);
+    let found = find(elements, (element: ClassificationElement) => element.name === category);
     if (!found) {
         found = {name: category, elements: []};
         elements.push(found);
@@ -25,7 +22,7 @@ function findClassifOrCreate(elements: ClassificationElement[], category: string
 
 export function addCategoriesToOrg(org: Organization, categories: string[]): void {
     if (!org.classifications) org.classifications = [];
-    addCategoriesToTree(findClassifOrCreate(org.classifications, categories[0]), _slice(categories, 1));
+    addCategoriesToTree(findClassifOrCreate(org.classifications, categories[0]), slice(categories, 1));
 }
 
 export function addCategoriesToTree(tree: Classification | ClassificationElement, categories: string[]): void {
@@ -43,7 +40,7 @@ export function arrangeClassification(item: Item, orgName: string): void {
 
 export function classifyItem(item: MongooseType<Item>, orgName: string, categories: string[]): void {
     if (!item.classification) item.classification = [];
-    let classification = _find(item.classification, (o: Classification) => o.stewardOrg && o.stewardOrg.name === orgName);
+    let classification = find(item.classification, (o: Classification) => o.stewardOrg && o.stewardOrg.name === orgName);
     if (!classification) {
         classification = {
             stewardOrg: {name: orgName},
@@ -63,7 +60,7 @@ export function findLeaf(classification: Classification, categories: string[]): 
     let index = null;
     categories.forEach((category, i) => {
         index = i;
-        let found = _find(leaf!.elements, (element: ClassificationElement) => element.name === category);
+        let found = find(leaf!.elements, (element: ClassificationElement) => element.name === category);
         if (i === categories.length - 2) parent = found;
         if (!found) notExist = true;
         leaf = found;
@@ -80,7 +77,7 @@ export function findLeaf(classification: Classification, categories: string[]): 
 
 export function renameClassifyElt(item: MongooseType<Item>, orgName: string, categories: string[], newName: string): void {
     if (!item.classification) item.classification = [];
-    let classification = _find(item.classification, (o: Classification) => o.stewardOrg && o.stewardOrg.name === orgName);
+    let classification = find(item.classification, (o: Classification) => o.stewardOrg && o.stewardOrg.name === orgName);
     if (classification) {
         let leaf = findLeaf(classification, categories);
         if (leaf) {
@@ -92,7 +89,7 @@ export function renameClassifyElt(item: MongooseType<Item>, orgName: string, cat
 }
 
 export function unclassifyElt(item: MongooseType<Item>, orgName: string, categories: string[]): any {
-    let classification = _find(item.classification, (o: Classification) => o.stewardOrg && o.stewardOrg.name === orgName);
+    let classification = find(item.classification, (o: Classification) => o.stewardOrg && o.stewardOrg.name === orgName);
     if (classification) {
         let leaf = findLeaf(classification, categories);
         if (leaf) {
@@ -104,7 +101,8 @@ export function unclassifyElt(item: MongooseType<Item>, orgName: string, categor
 
 // PUT NEW API ABOVE
 // ---------------------------------------------------
-export function addCategory(tree: Classification, fields: string[], cb: Cb<string> = () => {}): void {
+export function addCategory(tree: Classification, fields: string[], cb: Cb<string> = () => {
+}): void {
     let lastLevel = fetchLevel(tree, fields);
     if (lastLevel.elements.some(element => element.name === fields[fields.length - 1])) {
         return cb('Classification Already Exists');
@@ -149,7 +147,7 @@ export function fetchLevel(tree: Classification, fields: string[]): Classificati
     return tempTree;
 }
 
-export function findSteward(de: Item, orgName: string): {index: number, object: Classification} | undefined {
+export function findSteward(de: Item, orgName: string): { index: number, object: Classification } | undefined {
     if (!de || !de.classification) return undefined;
     for (let i = 0; i < de.classification.length; i++) {
         if (de.classification[i].stewardOrg.name === orgName) {
@@ -178,7 +176,7 @@ export function modifyCategory(tree: Classification, fields: string[], action: a
     cb();
 }
 
-export function removeCategory(tree: Classification, fields: string[], cb:  Cb<string>): void {
+export function removeCategory(tree: Classification, fields: string[], cb: Cb<string>): void {
     let lastLevel = fetchLevel(tree, fields);
     for (let i = 0; i < lastLevel.elements.length; i++) {
         if (lastLevel.elements[i] === null) {
@@ -233,6 +231,36 @@ export function transferClassifications(source: Item, destination: Item): void {
             addCategory(stewardOrgDestination, path);
         });
     });
+}
+
+type Element = {
+    name: string,
+    elements: Element[]
+}
+export type OrgClassification = {
+    _id: String,
+    elements: Element []
+}
+
+function mergeElements(e1: Element[] = [], e2: Element[] = []): Element [] {
+    let elements = uniqWith(e1.concat(e2), (arrVal: Element, othVal: Element) => {
+        if (arrVal.name === othVal.name) {
+            othVal.elements = mergeElements(arrVal.elements, othVal.elements);
+            return true;
+        } else return false;
+    });
+    return sortBy(elements, 'name');
+}
+
+export function mergeOrgClassifications(c1: OrgClassification[], c2: OrgClassification[]): Element[] {
+    let orgClassification = uniqWith(c1.concat(c2), (arrVal: OrgClassification, othVal: OrgClassification) => {
+        if (arrVal._id === othVal._id) {
+            othVal.elements = mergeElements(arrVal.elements, othVal.elements);
+            return true;
+        } else return false;
+    });
+    let c = sortBy(orgClassification, '_id');
+    return c[0].elements[0].elements;
 }
 
 function treeChildren(tree: Classification | ClassificationElement, path: string[], cb: Cb1<string[]>) {

@@ -1,6 +1,6 @@
 import { PermissibleValue } from 'shared/models.model';
 import { promiseArrayMapSeries } from 'shared/system/util';
-import { searchBySystemAndCode, systemToUmlsSystem } from 'server/uts/utsSvc';
+import { searchBySystemAndCode, CDE_SYSTEM_TO_UMLS_SYSTEM_MAP } from 'server/uts/utsSvc';
 import { umlsPvFilter } from 'shared/de/umls';
 
 export function validatePvs(permissibleValues: PermissibleValue[]): Promise<void> {
@@ -15,7 +15,7 @@ export function validatePv(pv: PermissibleValue): Promise<void> {
     if (!umlsPvFilter(pv)) {
         return Promise.resolve();
     }
-    const system = systemToUmlsSystem(pv.codeSystemName);
+    const system = CDE_SYSTEM_TO_UMLS_SYSTEM_MAP[pv.codeSystemName];
     if (!system) {
         return Promise.resolve();
     }
