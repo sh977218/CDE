@@ -108,7 +108,8 @@ export const deJson = {
         datatypeDynamicCodeList: datatypeValueListSchema,
         datatypeExternallyDefined: datatypeExternallyDefinedSchema,
         permissibleValues: {
-            type: [permissibleValueSchema] // required to make optional
+            type: [permissibleValueSchema], // required to make optional
+            default: [],
         }
     },
     dataSets: {
