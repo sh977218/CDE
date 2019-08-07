@@ -12,17 +12,17 @@ const sourceMap = {
     PHENX: ['PhenX', 'PhenX Variable'],
     NINDS: ['NINDS', 'NINDS Variable Name', 'NINDS caDSR', 'caDSR'],
 };
-const today = new Date().toJSON();
+export const TODAY = new Date().toJSON();
 export const lastMigrationScript = 'load PhenX on ' + new Date().getMonth() + new Date().getFullYear();
 
 export const BATCHLOADER_USERNAME = 'batchloader';
-export const batchloader = {
+export const BATCHLOADER = {
     username: BATCHLOADER_USERNAME,
     roles: ['AttachmentReviewer']
 };
 
-export const created = today;
-export const imported = today;
+export const created = TODAY;
+export const imported = TODAY;
 
 export function removeWhite(text) {
     if (!text) {
@@ -104,18 +104,26 @@ export function replaceClassificationByOrg(newClassification, existingClassifica
 
 
 export function updateCde(elt, user, options = {}) {
-    return new Promise(resolve => mongo_cde.update(elt, user, options, resolve));
+    return new Promise((resolve, reject) => {
+        mongo_cde.update(elt, user, options, (err, savedElt) => {
+            if (err) reject(err);
+            else resolve(savedElt);
+        })
+    });
 }
 
 export function updateForm(elt, user, options = {}) {
-    return new Promise(resolve => {
-/*
- @todo disable Qualified phenX update form element.
-        if (elt.registrationState.registrationStatus === 'Qualified') {
+    return new Promise((resolve, reject) => {
+        /*
+         @todo disable Qualified phenX update form element.
+                if (elt.registrationState.registrationStatus === 'Qualified') {
 
-        }
-*/
-        mongo_form.update(elt, user, options, resolve);
+                }
+        */
+        mongo_form.update(elt, user, options, (err, savedElt) => {
+            if (err) reject(err);
+            else resolve(savedElt);
+        });
     });
 }
 

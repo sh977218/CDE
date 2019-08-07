@@ -1,6 +1,6 @@
 import { isEmpty } from 'lodash';
 import { Form } from 'server/form/mongo-form';
-import { BATCHLOADER_USERNAME } from 'ingester/shared/utility';
+import { BATCHLOADER, BATCHLOADER_USERNAME, TODAY, updateForm } from 'ingester/shared/utility';
 
 process.on('unhandledRejection', function (error) {
     console.log(error);
@@ -18,7 +18,7 @@ function run() {
     cursor.eachAsync(async (form: any) => {
         let formObj = form.toObject();
         console.log(formObj.tinyId);
-        let histories = formObj.history.map(h => h.toString());
+        let histories = formObj.history.map(h => h.toString()).reverse();
         for (let i = 0; i < histories.length; i++) {
             let history = histories[i];
             let historyObj = await Form.findById(history).lean();
@@ -35,7 +35,8 @@ function run() {
                 formNeedReview.push(formObj.tinyId + ' updated by ' + updatedBy);
             }
         }
-//        await updateForm(formObj, batchloader);
+        formObj.changeNote = 'Revert Qualified form on ' + TODAY;
+        await updateForm(formObj, BATCHLOADER);
         formCount++;
         console.log(`formCount: ${formCount}`);
     }).then(() => {
