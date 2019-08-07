@@ -1,6 +1,6 @@
 import { isEmpty } from 'lodash';
 import { Form } from 'server/form/mongo-form';
-import { BATCHLOADER, BATCHLOADER_USERNAME, TODAY, updateForm } from 'ingester/shared/utility';
+import { BATCHLOADER, BATCHLOADER_USERNAME, updateForm } from 'ingester/shared/utility';
 
 process.on('unhandledRejection', function (error) {
     console.log(error);
@@ -19,6 +19,8 @@ function run() {
         let formObj = form.toObject();
         console.log(formObj.tinyId);
         let histories = formObj.history.map(h => h.toString()).reverse();
+        let revertEltId = '';
+        let revertUsername = '';
         for (let i = 0; i < histories.length; i++) {
             let history = histories[i];
             let historyObj = await Form.findById(history).lean();
@@ -30,12 +32,17 @@ function run() {
             let username = updatedBy.username;
             if (username === 'lizamos' || username === 'ludetc') {
                 formObj.formElements = historyObj.formElements;
+                revertEltId = history;
+                revertUsername = username;
                 break;
             } else if (username !== BATCHLOADER_USERNAME) {
                 formNeedReview.push(formObj.tinyId + ' updated by ' + updatedBy);
             }
+            revertEltId = '';
+            revertUsername = '';
+
         }
-        formObj.changeNote = 'Revert Qualified form on ' + TODAY;
+        formObj.changeNote = `Revert from on ${new Date()} to version ${revertEltId} made by ${revertUsername}`;
         await updateForm(formObj, BATCHLOADER);
         formCount++;
         console.log(`formCount: ${formCount}`);
