@@ -1,5 +1,6 @@
+import { isEmpty } from 'lodash';
 import { Form } from 'server/form/mongo-form';
-import { batchloader, BATCHLOADER_USERNAME, updateForm } from 'ingester/shared/utility';
+import { BATCHLOADER_USERNAME } from 'ingester/shared/utility';
 
 process.on('unhandledRejection', function (error) {
     console.log(error);
@@ -21,11 +22,9 @@ function run() {
         for (let i = 0; i < histories.length; i++) {
             let history = histories[i];
             let historyObj = await Form.findById(history).lean();
-            console.log(historyObj);
-            console.log(history);
-            console.log(i);
             let updatedBy = historyObj.updatedBy;
-            if (!updatedBy) {
+            if (isEmpty(updatedBy)) {
+                console.log(history);
                 console.log('b');
             }
             let username = updatedBy.username;
@@ -36,7 +35,7 @@ function run() {
                 formNeedReview.push(formObj.tinyId + ' updated by ' + updatedBy);
             }
         }
-        await updateForm(formObj, batchloader);
+//        await updateForm(formObj, batchloader);
         formCount++;
         console.log(`formCount: ${formCount}`);
     }).then(() => {
