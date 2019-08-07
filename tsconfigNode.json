@@ -15,6 +15,7 @@
     "outDir": "./buildNode",
     "pretty": false,
     "rootDir": ".",
+    "resolveJsonModule": true,
     "sourceMap": true,
     "suppressImplicitAnyIndexErrors": true,
     "target": "ES5",

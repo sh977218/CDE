@@ -69,7 +69,8 @@ const questionSchema = new Schema({
         definitions: [definitionSchema],
         version: StringType,
         permissibleValues: {
-            type: [permissibleValueSchema] // required to make optional
+            type: [permissibleValueSchema], // required to make optional
+            default: [],
         },
         ids: [idSchema],
         derivationRules: [derivationRuleSchema]
