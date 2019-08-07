@@ -17,21 +17,22 @@ function run() {
     cursor.eachAsync(async (form: any) => {
         let formObj = form.toObject();
         console.log(formObj.tinyId);
-        let histories = formObj.history.reverse().map(h => h.toString());
+        let histories = formObj.history.map(h => h.toString());
         for (let i = 0; i < histories.length; i++) {
             let history = histories[i];
             let historyObj = await Form.findById(history).lean();
             console.log(historyObj);
             console.log(history);
             console.log(i);
-            if (!historyObj.updatedBy) {
+            let updatedBy = historyObj.updatedBy;
+            if (!updatedBy) {
                 console.log('b');
             }
-            let updatedBy = historyObj.updatedBy.username;
-            if (updatedBy === 'lizamos' || updatedBy === 'ludetc') {
+            let username = updatedBy.username;
+            if (username === 'lizamos' || username === 'ludetc') {
                 formObj.formElements = historyObj.formElements;
                 break;
-            } else if (updatedBy !== BATCHLOADER_USERNAME) {
+            } else if (username !== BATCHLOADER_USERNAME) {
                 formNeedReview.push(formObj.tinyId + ' updated by ' + updatedBy);
             }
         }
@@ -40,6 +41,7 @@ function run() {
         console.log(`formCount: ${formCount}`);
     }).then(() => {
         console.log('finished.');
+        console.log('form need to be reviewed: ' + formNeedReview);
         process.exit(0);
     }, e => {
         console.log(e);
