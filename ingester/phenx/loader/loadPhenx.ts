@@ -69,15 +69,16 @@ process.on('unhandledRejection', error => {
         } else {
             const existingFormObj = existingForm.toObject();
             existingFormObj.imported = imported;
-            existingFormObj.lastMigrationScript = lastMigrationScript;
             existingFormObj.changeNote = lastMigrationScript;
             const diff = compareElt(newForm.toObject(), existingForm.toObject(), 'PhenX');
             if (isEmpty(diff)) {
+                existingFormObj.lastMigrationScript = lastMigrationScript;
                 await existingForm.save();
                 PhenxLogger.samePhenxForm++;
                 PhenxLogger.samePhenxForms.push(existingForm.tinyId);
             } else {
                 mergeElt(existingFormObj, newFormObj, 'PhenX');
+                existingFormObj.lastMigrationScript = lastMigrationScript;
                 await updateForm(existingFormObj, batchloader, {updateSource: true});
                 PhenxLogger.changedPhenxForm++;
                 PhenxLogger.changedPhenxForms.push(existingForm.tinyId);

@@ -61,16 +61,17 @@ async function doOneRedCap(redCap, redCaps, protocol, newForm) {
         RedcapLogger.createdRedcapCdes.push(existingCde.tinyId);
     } else {
         existingCde.imported = imported;
-        existingCde.lastMigrationScript = lastMigrationScript;
         existingCde.changeNote = lastMigrationScript;
         const diff = compareElt(newCde.toObject(), existingCde.toObject(), 'PhenX');
         if (isEmpty(diff)) {
+            existingCde.lastMigrationScript = lastMigrationScript;
             await existingCde.save();
             RedcapLogger.sameRedcapCde++;
             RedcapLogger.sameRedcapCdes.push(existingCde.tinyId);
         } else {
             const existingCdeObj = existingCde.toObject();
             mergeElt(existingCdeObj, newCdeObj, 'PhenX');
+            existingCde.lastMigrationScript = lastMigrationScript;
             await updateCde(existingCde, batchloader, {updateSource: true});
             RedcapLogger.changedRedcapCde++;
             RedcapLogger.changedRedcapCdes.push(existingCde.tinyId);
