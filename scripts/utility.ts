@@ -259,6 +259,7 @@ async function fixFormElements(formObj) {
     for (let fe of formObj.formElements) {
         let elementType = fe.elementType;
         if (elementType === 'question') {
+            fe.question.cde.tinyId = fe.question.cde.tinyId.replace(/-/g, "_");
             let fixFe = await fixQuestion(fe, formObj);
             formElements.push(fixFe);
         } else {
