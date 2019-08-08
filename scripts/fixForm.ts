@@ -17,14 +17,12 @@ function run() {
         });
         formCount++;
         console.log(`formCount: ${formCount}`);
-    });
-    cursor.on('error', e => {
-        console.log(e);
-        process.exit(1);
-    });
-    cursor.on('close', () => {
+    }).then(() => {
         console.log('finished.');
         process.exit(0);
+    }, e => {
+        console.log(e);
+        process.exit(1);
     });
 }
 
