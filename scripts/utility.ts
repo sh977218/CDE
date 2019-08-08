@@ -149,6 +149,9 @@ function fixProperties(formObj) {
 
 async function convertQuestionToCde(fe, stewardOrg, registrationState) {
     let datatype = fe.question.datatype;
+    if (fe.question.cde.tinyId === 'DYeDWT-d17e') {
+        console.log('no');
+    }
     let createCdeObj: any = {
         tinyId: fe.question.cde.tinyId,
         archived: false,
@@ -180,6 +183,9 @@ async function convertQuestionToCde(fe, stewardOrg, registrationState) {
 
 async function fixQuestion(questionFe, formObj) {
     let tinyId = questionFe.question.cde.tinyId;
+    if (tinyId.indexOf('-') !== -1) {
+        console.log('c');
+    }
     let version = questionFe.question.cde.version;
     let label = questionFe.label;
     let formErrorMessage = `${formObj.tinyId} has question '${label}'`;
@@ -244,6 +250,10 @@ async function fixSectionInform(sectionInformFe, formObj) {
     for (let fe of sectionInformFe.formElements) {
         let elementType = fe.elementType;
         if (elementType === 'question') {
+            if (fe.question.cde.tinyId.indexOf('-') !== -1) {
+                console.log('b');
+                fe.question.cde.tinyId = fe.question.cde.tinyId.replace(/-/g, "_");
+            }
             let fixFe = await fixQuestion(fe, formObj);
             formElements.push(fixFe);
         } else {
@@ -259,7 +269,10 @@ async function fixFormElements(formObj) {
     for (let fe of formObj.formElements) {
         let elementType = fe.elementType;
         if (elementType === 'question') {
-            fe.question.cde.tinyId = fe.question.cde.tinyId.replace(/-/g, "_");
+            if (fe.question.cde.tinyId.indexOf('-') !== -1) {
+                console.log('b');
+                fe.question.cde.tinyId = fe.question.cde.tinyId.replace(/-/g, "_");
+            }
             let fixFe = await fixQuestion(fe, formObj);
             formElements.push(fixFe);
         } else {
@@ -271,7 +284,10 @@ async function fixFormElements(formObj) {
 }
 
 export async function fixFormError(form) {
-    form.tinyId = form.tinyId.replace(/-/g, "_");
+    if (form.tinyId.indexOf('-') !== -1) {
+        console.log('a');
+        form.tinyId = form.tinyId.replace(/-/g, "_");
+    }
     if (!form.createdBy) {
         fixCreatedBy(form);
     }
