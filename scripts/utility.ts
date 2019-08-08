@@ -271,6 +271,7 @@ async function fixFormElements(formObj) {
 }
 
 export async function fixFormError(form) {
+    form.tinyId = form.tinyId.replace(/-/g, "_");
     if (!form.createdBy) {
         fixCreatedBy(form);
     }
