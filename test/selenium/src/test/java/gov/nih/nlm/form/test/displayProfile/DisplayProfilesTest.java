@@ -32,9 +32,12 @@ public class DisplayProfilesTest extends BaseFormTest {
         String baseXpath = "//*[@id='profile_3']//*[contains(@class,'displayProfileRenderDiv')]//*[*[normalize-space()='Education level USA type']]//";
         int i = 5;
         while (i >= 0) {
-            if (i == 0) Assert.fail("Unexpected y value");
-            if (findElement(By.xpath(baseXpath + byValueListValueXPath("1st Grade"))).getLocation().y
-                    == findElement(By.xpath(baseXpath + byValueListValueXPath("5th Grade"))).getLocation().y) {
+            int firstGradeY = findElement(By.xpath(baseXpath + byValueListValueXPath("1st Grade"))).getLocation().y;
+            int fifthGrade = findElement(By.xpath(baseXpath + byValueListValueXPath("5th Grade"))).getLocation().y;
+            if (i == 0) {
+                Assert.fail("After 5 tries, firstGradeY: " + firstGradeY + " is not equal to fifthGrade: " + fifthGrade);
+            }
+            if (firstGradeY == fifthGrade) {
                 break;
             }
             i--;

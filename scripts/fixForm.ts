@@ -11,7 +11,7 @@ function run() {
     let cursor = Form.find(cond).cursor();
 
     cursor.eachAsync(async (form: any) => {
-        form.lastMigrationScript = 'fixForm';
+        form.lastMigrationScript = 'fixFoif (fe.question.cde.tinyId === \'DYeDWT-d17e\') {rm';
         await fixFormError(form);
         await form.save().catch(error => {
             throw `await form.save() Error on ${form.tinyId} ${error}`;

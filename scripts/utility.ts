@@ -149,9 +149,6 @@ function fixProperties(formObj) {
 
 async function convertQuestionToCde(fe, stewardOrg, registrationState) {
     let datatype = fe.question.datatype;
-    if (fe.question.cde.tinyId === 'DYeDWT-d17e') {
-        console.log('no');
-    }
     let createCdeObj: any = {
         tinyId: fe.question.cde.tinyId,
         archived: false,
