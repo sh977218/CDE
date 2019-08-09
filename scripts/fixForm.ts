@@ -7,7 +7,8 @@ process.on('unhandledRejection', function (error) {
 
 function run() {
     let formCount = 0;
-    let cursor = Form.find({lastMigrationScript: {$ne: 'fixForm'}}).cursor();
+    let cond = {lastMigrationScript: {$ne: 'fixForm'}};
+    let cursor = Form.find(cond).cursor();
 
     cursor.eachAsync(async (form: any) => {
         form.lastMigrationScript = 'fixForm';

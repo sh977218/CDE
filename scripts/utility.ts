@@ -185,15 +185,15 @@ async function fixQuestion(questionFe, formObj) {
     let tinyId = questionFe.question.cde.tinyId;
     if (tinyId.indexOf('-') !== -1) {
         console.log('c');
+        process.exit(1);
     }
-    let version = questionFe.question.cde.version;
     let label = questionFe.label;
     let formErrorMessage = `${formObj.tinyId} has question '${label}'`;
     if (!tinyId) {
         throw `cde tinyId is null ${formObj.tinyId} ${label}`;
         process.exit(1);
     }
-    let cond: any = {tinyId, version, archived: false};
+    let cond: any = {tinyId, archived: false};
 
     let cde = await DataElement.findOne(cond);
     if (!cde) {
@@ -247,11 +247,11 @@ async function fixQuestion(questionFe, formObj) {
 
 async function fixSectionInform(sectionInformFe, formObj) {
     let formElements = [];
-    for (let fe of sectionInformFe.formElements) {
+    for (let i = 0; i < sectionInformFe.formElements.length; i++) {
+        let fe = sectionInformFe.formElements[i];
         let elementType = fe.elementType;
         if (elementType === 'question') {
             if (fe.question.cde.tinyId.indexOf('-') !== -1) {
-                console.log('b');
                 fe.question.cde.tinyId = fe.question.cde.tinyId.replace(/-/g, "_");
             }
             let fixFe = await fixQuestion(fe, formObj);
@@ -266,11 +266,11 @@ async function fixSectionInform(sectionInformFe, formObj) {
 
 async function fixFormElements(formObj) {
     let formElements = [];
-    for (let fe of formObj.formElements) {
+    for (let i = 0; i < formObj.formElements.length; i++) {
+        let fe = formObj.formElements[i];
         let elementType = fe.elementType;
         if (elementType === 'question') {
             if (fe.question.cde.tinyId.indexOf('-') !== -1) {
-                console.log('b');
                 fe.question.cde.tinyId = fe.question.cde.tinyId.replace(/-/g, "_");
             }
             let fixFe = await fixQuestion(fe, formObj);
@@ -285,7 +285,6 @@ async function fixFormElements(formObj) {
 
 export async function fixFormError(form) {
     if (form.tinyId.indexOf('-') !== -1) {
-        console.log('a');
         form.tinyId = form.tinyId.replace(/-/g, "_");
     }
     if (!form.createdBy) {
@@ -299,5 +298,5 @@ export async function fixFormError(form) {
     form.properties = fixProperties(form.toObject());
     form.classification = fixClassification(form.toObject());
 
-    form.formElements = fixFormElements(form.toObject());
+    form.formElements = await fixFormElements(form.toObject());
 }
