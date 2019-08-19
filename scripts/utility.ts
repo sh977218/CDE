@@ -202,6 +202,7 @@ async function fixQuestion(questionFe, formObj) {
     }
     let cdeObj = cde.toObject();
     let question: any = {
+        datatype: 'Text',
         unitsOfMeasure: questionFe.question.unitsOfMeasure,
         required: questionFe.question.required,
         invisible: questionFe.question.invisible,
