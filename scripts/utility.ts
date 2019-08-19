@@ -201,8 +201,12 @@ async function fixQuestion(questionFe, formObj) {
         });
     }
     let cdeObj = cde.toObject();
+    if(isEmpty(cdeObj.valueDomain.datatype)){
+        console.log(cdeObj.tinyId + 'datatype empty.');
+        process.exit(1);
+    }
     let question: any = {
-        datatype: 'Text',
+        datatype: cdeObj.valueDomain.datatype,
         unitsOfMeasure: questionFe.question.unitsOfMeasure,
         required: questionFe.question.required,
         invisible: questionFe.question.invisible,
@@ -223,30 +227,21 @@ async function fixQuestion(questionFe, formObj) {
 
     if (valueDomain === 'Text' && !isEmpty(valueDomain.datatypeText)) {
         question.datatypeText = valueDomain.datatypeText;
-        question.datatype = 'Text';
     }
     if (valueDomain === 'Number' && !isEmpty(valueDomain.datatypeNumber)) {
         question.datatypeNumber = valueDomain.datatypeNumber;
-        question.datatype = 'Number';
-
     }
     if (valueDomain === 'Date' && !isEmpty(valueDomain.datatypeDate)) {
         question.datatypeDate = valueDomain.datatypeDate;
-        question.datatype = 'Date';
-
     }
     if (valueDomain === 'Time' && !isEmpty(valueDomain.datatypeTime)) {
         question.datatypeTime = valueDomain.datatypeTime;
-        question.datatype = 'Time';
     }
     if (valueDomain === 'Dynamic Code List' && !isEmpty(valueDomain.datatypeDynamicCodeList)) {
         question.datatypeDynamicCodeList = valueDomain.datatypeDynamicCodeList;
-        question.datatype = 'Dynamic Code List';
-
     }
     if (valueDomain === 'Value List' && !isEmpty(valueDomain.datatypeValueList)) {
         question.cde.permissibleValues = valueDomain.permissibleValues;
-        question.datatype = 'Value List';
     }
     questionFe.question = question;
     return questionFe;
