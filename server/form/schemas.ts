@@ -5,6 +5,7 @@ import {
     designationSchema, eltLogSchema, idSchema, permissibleValueSchema, propertySchema, referenceDocumentSchema,
     registrationStateSchema, sourceSchema
 } from 'server/system/schemas';
+import { FormElement } from 'shared/form/form.model';
 
 addStringtype(mongoose);
 const Schema = mongoose.Schema;
@@ -114,9 +115,10 @@ let inFormSchema = new Schema({
     }
 }, {_id: false});
 
-function getFormElementJson() {
-    return {
+function getFormElementJson(formElements: FormElement[]) {
+    return new Schema({
         elementType: {type: StringType, enum: ['section', 'question', 'form']},
+        formElements,
         instructions: instructionSchema,
         inForm: {type: inFormSchema, default: undefined},
         label: StringType,
@@ -130,15 +132,12 @@ function getFormElementJson() {
             action: {type: StringType, enum: ['show', 'enable']},
             condition: StringType,
         },
-    };
+    }, {_id: false});
 }
 
-let innerFormEltSchema: any = getFormElementJson();
-innerFormEltSchema.formElements = [];
+let innerFormEltSchema: any = getFormElementJson([]);
 for (let i = 0; i < config.modules.forms.sectionLevels; i++) {
-    let innerFormEltJson: any = getFormElementJson();
-    innerFormEltJson.formElements = [innerFormEltSchema];
-    innerFormEltSchema = innerFormEltJson;
+    innerFormEltSchema = getFormElementJson([innerFormEltSchema]);
 }
 
 export const formJson = {

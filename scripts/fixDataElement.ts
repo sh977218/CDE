@@ -8,7 +8,8 @@ process.on('unhandledRejection', function (error) {
 
 function run() {
     let cdeCount = 0;
-    let cursor = DataElement.find({lastMigrationScript: {$ne: 'fixDataElement'}}).cursor();
+    let cond = {};
+    let cursor = DataElement.find(cond).cursor();
     cursor.eachAsync(async (cde: any) => {
         cde.lastMigrationScript = 'fixDataElement';
         fixCdeError(cde);

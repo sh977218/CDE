@@ -65,7 +65,7 @@ export function fixValueDomain(cdeObj) {
         }
     }
     if (datatype === 'Value List') {
-        if (!cdeObj.valueDomain.permissibleValues) {
+        if (isEmpty(cdeObj.valueDomain.permissibleValues)) {
             cdeObj.valueDomain.permissibleValues = [{permissibleValue: '5'}];
         }
         cdeObj.valueDomain.permissibleValues = fixEmptyPermissibleValue(cdeObj.valueDomain.permissibleValues);
@@ -181,7 +181,7 @@ async function convertQuestionToCde(fe, stewardOrg, registrationState) {
 async function fixQuestion(questionFe, formObj) {
     let tinyId = questionFe.question.cde.tinyId;
     if (tinyId.indexOf('-') !== -1) {
-        console.log('c');
+        throw `cde tinyId is contains -`;
         process.exit(1);
     }
     let label = questionFe.label;
@@ -199,6 +199,10 @@ async function fixQuestion(questionFe, formObj) {
         cde = await new DataElement(createCdeObj).save().catch(e => {
             throw `await new DataElement(cdeObj).save() Error ` + e;
         });
+    } else {
+        cde = await cde.save().catch(error => {
+            throw `await cde.save() Error on ${cde.tinyId} ${error}`;
+        });
     }
     let cdeObj = cde.toObject();
     if (isEmpty(cdeObj.valueDomain.datatype)) {
@@ -207,15 +211,13 @@ async function fixQuestion(questionFe, formObj) {
     }
     let question: any = {
         datatype: cdeObj.valueDomain.datatype,
-        unitsOfMeasure: questionFe.question.unitsOfMeasure,
         required: questionFe.question.required,
         invisible: questionFe.question.invisible,
         editable: questionFe.question.editable,
-        multiselect: !!questionFe.question.multiselect,
-        answers: questionFe.question.answers ? fixEmptyPermissibleValue(questionFe.question.answers) : [],
+        unitsOfMeasure: questionFe.question.unitsOfMeasure,
         defaultAnswer: questionFe.question.defaultAnswer,
         cde: {
-            tinyId: questionFe.question.cde.tinyId,
+            tinyId: cde.tinyId,
             name: questionFe.question.cde.name,
             ids: cde.ids,
             derivationRules: questionFe.question.cde.derivationRules
@@ -224,23 +226,31 @@ async function fixQuestion(questionFe, formObj) {
     if (cde.version) question.cde.version = cde.version;
 
     let valueDomain = cdeObj.valueDomain;
+    let datatype = valueDomain.datatype;
 
-    if (valueDomain === 'Text' && !isEmpty(valueDomain.datatypeText)) {
+    if (datatype === 'Text' && !isEmpty(valueDomain.datatypeText)) {
         question.datatypeText = valueDomain.datatypeText;
     }
-    if (valueDomain === 'Number' && !isEmpty(valueDomain.datatypeNumber)) {
+    if (datatype === 'Number' && !isEmpty(valueDomain.datatypeNumber)) {
         question.datatypeNumber = valueDomain.datatypeNumber;
     }
-    if (valueDomain === 'Date' && !isEmpty(valueDomain.datatypeDate)) {
+    if (datatype === 'Date' && !isEmpty(valueDomain.datatypeDate)) {
         question.datatypeDate = valueDomain.datatypeDate;
     }
-    if (valueDomain === 'Time' && !isEmpty(valueDomain.datatypeTime)) {
+    if (datatype === 'Time' && !isEmpty(valueDomain.datatypeTime)) {
         question.datatypeTime = valueDomain.datatypeTime;
     }
-    if (valueDomain === 'Dynamic Code List' && !isEmpty(valueDomain.datatypeDynamicCodeList)) {
+    if (datatype === 'Dynamic Code List' && !isEmpty(valueDomain.datatypeDynamicCodeList)) {
         question.datatypeDynamicCodeList = valueDomain.datatypeDynamicCodeList;
     }
-    if (valueDomain === 'Value List') {
+    if (datatype === 'Value List') {
+        if (isEmpty(valueDomain.permissibleValues)) {
+            throw `cde tinyId ${cdeObj.tinyId} is value list, empty permissible values.`;
+            process.exit(1);
+        }
+        question.multiselect = !!questionFe.question.multiselect;
+        question.answers = questionFe.question.answers ? fixEmptyPermissibleValue(questionFe.question.answers) : [];
+
         if (!isEmpty(valueDomain.permissibleValues)) {
             question.cde.permissibleValues = valueDomain.permissibleValues;
         }
