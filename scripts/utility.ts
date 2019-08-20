@@ -201,7 +201,7 @@ async function fixQuestion(questionFe, formObj) {
         });
     }
     let cdeObj = cde.toObject();
-    if(isEmpty(cdeObj.valueDomain.datatype)){
+    if (isEmpty(cdeObj.valueDomain.datatype)) {
         console.log(cdeObj.tinyId + 'datatype empty.');
         process.exit(1);
     }
@@ -240,8 +240,13 @@ async function fixQuestion(questionFe, formObj) {
     if (valueDomain === 'Dynamic Code List' && !isEmpty(valueDomain.datatypeDynamicCodeList)) {
         question.datatypeDynamicCodeList = valueDomain.datatypeDynamicCodeList;
     }
-    if (valueDomain === 'Value List' && !isEmpty(valueDomain.datatypeValueList)) {
-        question.cde.permissibleValues = valueDomain.permissibleValues;
+    if (valueDomain === 'Value List') {
+        if (!isEmpty(valueDomain.permissibleValues)) {
+            question.cde.permissibleValues = valueDomain.permissibleValues;
+        }
+        if (!isEmpty(valueDomain.datatypeValueList)) {
+            question.datatypeValueList = valueDomain.datatypeValueList;
+        }
     }
     questionFe.question = question;
     return questionFe;
