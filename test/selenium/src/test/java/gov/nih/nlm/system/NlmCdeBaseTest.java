@@ -1888,7 +1888,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         String connectSid = "";
         Set<org.openqa.selenium.Cookie> cookies = driver.manage().getCookies();
         for (org.openqa.selenium.Cookie cookie : cookies) {
-            connectSid =  cookie.getValue();
+            connectSid = cookie.getValue();
             System.out.println("cookie: " + cookie.toString());
         }
         Cookie myCookie = new Cookie.Builder("connect.sid", connectSid).build();
