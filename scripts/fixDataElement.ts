@@ -11,6 +11,15 @@ function run() {
     let cond = {};
     let cursor = DataElement.find(cond).cursor();
     cursor.eachAsync(async (cde: any) => {
+
+        /* @TODO Remove this code after run against test data.
+           This fix is to fix form XkSTmyBSYg has xug6J6R8fkf that is version '3',
+           but in Data Element xug6J6R8fkf has version thirdVersion
+        */
+        if (cde.tinyId === 'xug6J6R8fkf') {
+            cde.version = '3';
+        }
+
         cde.lastMigrationScript = 'fixDataElement';
         fixCdeError(cde);
         await cde.save().catch(error => {

@@ -12,7 +12,6 @@ public class RenderDisplayProfile extends BaseFormTest {
     public void renderDisplayProfiles() {
         String formName = "PROMIS SF v1.1 - Anger 5a";
 
-        String baseXpath = "//*[@id='profile_3']//*[contains(@class,'displayProfileRenderDiv')]//*[*[normalize-space()='Education level USA type']]//";
         goToFormByName(formName);
         // look for add device button
         Assert.assertEquals(driver.findElements(By.cssSelector("i.iconButton")).size(), 0);
@@ -50,7 +49,7 @@ public class RenderDisplayProfile extends BaseFormTest {
 
         selectDisplayProfileByName("No Matrix No Values Wider");
 
-        baseXpath = "//*[*[normalize-space()='I was irritated more than people knew']]//";
+        String baseXpath = "//*[*[normalize-space()='I was irritated more than people knew']]//";
         int i = 5;
         while (i >= 0) {
             if (i == 0) Assert.fail("Unexpected y value");

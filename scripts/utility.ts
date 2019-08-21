@@ -185,7 +185,7 @@ async function convertQuestionToCde(fe, stewardOrg, registrationState) {
             datatypeExternallyDefined: fe.question.datatypeExternallyDefined,
             datatypeValueList: fe.question.datatypeValueList,
             datatypeDynamicCodeList: fe.question.datatypeDynamicCodeList,
-            permissibleValues: fe.question.permissibleValues
+            permissibleValues: fe.question.cde.permissibleValues
         }
     };
     if (fe.question.cde.version) createCdeObj.version = fe.question.cde.version;
@@ -196,24 +196,47 @@ async function convertQuestionToCde(fe, stewardOrg, registrationState) {
 }
 
 async function fixQuestion(questionFe, formObj) {
+    /* @TODO Remove this code after run against test data.
+       This fix is to fix form X1FOIySBYl has QkY_BmqoSA that is version '1',
+       but in Data Element QkY_BmqoSA version '1' is archived, use version '1.1'
+    */
+    /*
+        if (questionFe.question.cde.tinyId === 'QkY_BmqoSA') {
+            questionFe.question.cde.version = '1.1';
+        }
+        if (questionFe.question.cde.tinyId === 'zFTV14_HMhv') {
+            questionFe.question.cde.version = '3.1.1';
+        }
+    */
+
     let tinyId = questionFe.question.cde.tinyId;
+    let version = null;
+    if (questionFe.question.cde.version) {
+        version = questionFe.question.cde.version;
+    }
     if (tinyId.indexOf('-') !== -1) {
         throw `cde tinyId is contains -`;
         process.exit(1);
     }
     let label = questionFe.label;
-    let formErrorMessage = `${formObj.tinyId} has question '${label}'`;
+    let formErrorMessage = `${formObj.tinyId} ${formObj.version} ${formObj.archived} has question '${label}'`;
     if (!tinyId) {
         throw `cde tinyId is null ${formObj.tinyId} ${label}`;
         process.exit(1);
     }
-    let cond: any = {tinyId, archived: false};
+    let cond: any = {tinyId};
+    if (version) {
+        cond.version = version;
+    } else {
+        cond.archived = false;
+    }
 
     let cde = await DataElement.findOne(cond);
     if (!cde) {
         console.log(`${formErrorMessage} ${tinyId} not exist. Creating`);
         let createCdeObj = await convertQuestionToCde(cloneDeep(questionFe), formObj.stewardOrg, formObj.registrationState);
         cde = await new DataElement(createCdeObj).save().catch(e => {
+            console.log(`mongo cond: ${JSON.stringify(cond)}`);
             throw `await new DataElement(cdeObj).save() Error ` + e;
         });
     } else {
@@ -305,7 +328,7 @@ async function fixQuestion(questionFe, formObj) {
 }
 
 async function fixSectionInform(sectionInformFe, formObj) {
-    if (isEmpty(sectionInformFe.formElements)) {
+    if (sectionInformFe.elementType === 'section' && isEmpty(sectionInformFe.formElements)) {
         delete sectionInformFe.repeatsFor;
         delete sectionInformFe.repeat;
     }

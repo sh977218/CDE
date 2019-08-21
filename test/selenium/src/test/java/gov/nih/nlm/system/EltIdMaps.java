@@ -189,7 +189,6 @@ public class EltIdMaps {
         eltMap.put("Written Verbal Fluency Test", "QklqIkSrKx");
         eltMap.put("Vessel Imaging Angiography", "XJDPIySHtx");
         eltMap.put("Vital Signs and Tests", "XyWYLJSBKx");
-        eltMap.put("Vital Signs", "m1j_L1HHte");
 
         //Boards
         eltMap.put("Blood Board", "5711497e28329938330f5c4c");
