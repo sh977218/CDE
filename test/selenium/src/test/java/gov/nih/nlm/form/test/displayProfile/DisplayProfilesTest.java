@@ -33,11 +33,11 @@ public class DisplayProfilesTest extends BaseFormTest {
         int i = 5;
         while (i >= 0) {
             int firstGradeY = findElement(By.xpath(baseXpath + byValueListValueXPath("1st Grade"))).getLocation().y;
-            int fifthGrade = findElement(By.xpath(baseXpath + byValueListValueXPath("5th Grade"))).getLocation().y;
+            int fifthGradeY = findElement(By.xpath(baseXpath + byValueListValueXPath("5th Grade"))).getLocation().y;
             if (i == 0) {
-                Assert.fail("After 5 tries, firstGradeY: " + firstGradeY + " is not equal to fifthGrade: " + fifthGrade);
+                Assert.fail("After 5 tries, firstGradeY: " + firstGradeY + " is not equal to fifthGradeY: " + fifthGradeY);
             }
-            if (firstGradeY == fifthGrade) {
+            if (firstGradeY == fifthGradeY) {
                 break;
             }
             i--;

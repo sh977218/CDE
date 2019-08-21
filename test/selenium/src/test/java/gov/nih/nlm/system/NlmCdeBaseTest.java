@@ -937,6 +937,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
 
     protected void scrollToViewById(String id) {
         scrollToView(By.xpath("//*[@id='" + id + "']"));
+        findElement(By.id(id));
     }
 
     protected int getCurrentYOffset() {
