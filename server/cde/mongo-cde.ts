@@ -5,9 +5,9 @@ import { CbError, MongooseType } from 'shared/models.model';
 import { isOrgCurator } from 'shared/system/authorizationShared';
 import * as dataElementschema from 'shared/de/assets/dataElement.schema.json';
 import { forwardError } from 'server/errorHandler/errorHandler';
+import { find, forEach } from 'lodash';
 
 const Ajv = require('ajv');
-const _ = require('lodash');
 const connHelper = require('../../server/system/connections');
 const mongo_data = require('../../server/system/mongo-data');
 const logging = require('../../server/system/logging');
@@ -96,8 +96,8 @@ export function byTinyIdList(tinyIdList, callback) {
         .exec((err, cdes) => {
             const result = [];
             cdes.forEach(mongo_data.formatElt);
-            _.forEach(tinyIdList, t => {
-                const c = _.find(cdes, cde => cde.tinyId === t);
+            forEach(tinyIdList, t => {
+                const c = find(cdes, cde => cde.tinyId === t);
                 if (c) result.push(c);
             });
             callback(err, result);
