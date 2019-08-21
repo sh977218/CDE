@@ -196,14 +196,15 @@ async function convertQuestionToCde(fe, stewardOrg, registrationState) {
 }
 
 async function fixQuestion(questionFe, formObj) {
+    if (formObj.tinyId === 'X17IaQ_NQ' && questionFe.question.cde.tinyId === 'rErbwwAasvz') {
+        questionFe.question.cde.version = '3';
+    }
     /* @TODO Remove this code after run against test data.
        This fix is to fix form X1FOIySBYl has QkY_BmqoSA that is version '1',
        but in Data Element QkY_BmqoSA version '1' is archived, use version '1.1'
     */
     /*
-        if (questionFe.question.cde.tinyId === 'QkY_BmqoSA') {
-            questionFe.question.cde.version = '1.1';
-        }
+
         if (questionFe.question.cde.tinyId === 'zFTV14_HMhv') {
             questionFe.question.cde.version = '3.1.1';
         }
