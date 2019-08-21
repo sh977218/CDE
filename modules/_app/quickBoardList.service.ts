@@ -9,19 +9,17 @@ import _remove from 'lodash/remove';
 import { DataElement, DataElementElastic } from 'shared/de/dataElement.model';
 import { CdeFormElastic } from 'shared/form/form.model';
 import { iterateFesSync } from 'shared/form/fe';
-import { ItemElastic } from 'shared/models.model';
+import { Item, ItemElastic } from 'shared/models.model';
 import { isCdeForm, isDataElement } from 'shared/item';
 
 @Injectable()
 export class QuickBoardListService {
-    module = 'cde';
-    quickBoard: any;
-    number_dataElements = 0;
-    number_forms = 0;
-
     dataElements: DataElementElastic[] = [];
     forms: CdeFormElastic[] = [];
-
+    module = 'cde';
+    numberDataElements = 0;
+    numberForms = 0;
+    quickBoard: any;
 
     constructor(private alert: AlertService,
                 private http: HttpClient,
@@ -29,20 +27,20 @@ export class QuickBoardListService {
         this.loadElements();
     }
 
-    addToQuickBoard(elt: ItemElastic) {
+    addToQuickBoard(elt: Item) {
         if (isDataElement(elt)) {
-            this.dataElements.push(elt);
+            this.dataElements.push(elt as DataElementElastic);
             this.saveDataElementQuickBoard();
             this.alert.addAlert('success', 'Added to QuickBoard!');
         }
         if (isCdeForm(elt)) {
-            this.forms.push(elt);
+            this.forms.push(elt as CdeFormElastic);
             this.saveFormQuickBoard();
             this.alert.addAlert('success', 'Added to QuickBoard!');
         }
     }
 
-    canAddElement(elt: ItemElastic) {
+    canAddElement(elt: Item) {
         if (isDataElement(elt)) {
             return _isEmpty(_find(this.dataElements, {tinyId: elt.tinyId}));
         }
@@ -70,7 +68,7 @@ export class QuickBoardListService {
                     .subscribe(res => {
                         if (res) {
                             this.dataElements = res as DataElementElastic[];
-                            this.number_dataElements = this.dataElements.length;
+                            this.numberDataElements = this.dataElements.length;
                         }
                     }, err => this.alert.httpErrorMessageAlert(err));
             }
@@ -84,11 +82,12 @@ export class QuickBoardListService {
                         if (res) {
                             this.forms = res;
                             this.forms.forEach(f => {
-                                f.numQuestions = 0;
-                                iterateFesSync(f.formElements, undefined, undefined, () => f.numQuestions++);
+                                let numQuestions = 0;
+                                iterateFesSync(f.formElements, undefined, undefined, () => numQuestions = numQuestions + 1);
+                                f.numQuestions = numQuestions;
                                 f.score = NaN;
                             });
-                            this.number_forms = this.forms.length;
+                            this.numberForms = this.forms.length;
                         }
                     }, err => this.alert.httpErrorMessageAlert(err));
             }
@@ -111,19 +110,17 @@ export class QuickBoardListService {
 
     saveDataElementQuickBoard() {
         this.localStorageService.set('quickBoard', this.dataElements);
-        this.number_dataElements = this.dataElements.length;
+        this.numberDataElements = this.dataElements.length;
     }
 
     saveFormQuickBoard() {
         this.localStorageService.set('formQuickBoard', this.forms);
-        this.number_forms = this.forms.length;
+        this.numberForms = this.forms.length;
     }
 
     setDefaultQuickBoard(event: MatTabChangeEvent) {
-        let type;
-        if (event.tab.textLabel.startsWith('Form')) { type = 'form'; }
-        if (event.tab.textLabel.startsWith('CDE')) { type = 'cde'; }
-        this.module = type;
-        this.localStorageService.set('defaultQuickBoard', type);
+        if (event.tab.textLabel.startsWith('Form')) { this.module = 'form'; }
+        if (event.tab.textLabel.startsWith('CDE')) { this.module = 'cde'; }
+        this.localStorageService.set('defaultQuickBoard', this.module);
     }
 }

@@ -99,13 +99,13 @@
             <cde-inline-area-edit
                     [(model)]="question.instructions.value"
                     [(defFormat)]="question.instructions.valueFormat"
-                    [isAllowed]="true" (modelChange)="onEltChange.emit()">
+                    [isAllowed]="true" (modelChange)="eltChange.emit()">
             </cde-inline-area-edit>
         </dd>
         <ng-container *ngIf="question.question.datatype === 'Date'">
             <dt class="col-2 font-weight-bold">Date Precision:</dt>
             <dd class="col-10">
-                <select [(ngModel)]="question.question.datatypeDate.precision" (change)="onEltChange.emit()"
+                <select [(ngModel)]="question.question.datatypeDate.precision" (change)="eltChange.emit()"
                         class="form-control" style="width: fit-content">
                     <option>Year</option>
                     <option>Month</option>
@@ -121,18 +121,18 @@
             <dd class="col-10">
                 <input type="checkbox" title="Show as Text Area"
                        [(ngModel)]="question.question.datatypeText.showAsTextArea"
-                       (change)="onEltChange.emit()">
+                       (change)="eltChange.emit()">
             </dd>
         </ng-container>
         <dt class="col-2">Required:</dt>
         <dd class="col-10">
             <input type="checkbox" title="Required" [(ngModel)]="question.question.required"
-                   (change)="onEltChange.emit()"/>
+                   (change)="eltChange.emit()"/>
         </dd>
         <dt class="col-2">Invisible:</dt>
         <dd class="col-10 editQuestionInvisible">
             <input type="checkbox" title="Invisible" [(ngModel)]="question.question.invisible"
-                   (change)="onEltChange.emit()">
+                   (change)="eltChange.emit()">
         </dd>
         <ng-container *ngIf="question.question.datatype === 'Dynamic Code List'">
             <dt class="col-2">System:</dt>
@@ -144,7 +144,7 @@
             <dt class="col-2">Show if:</dt>
             <dd class="col-10 skipLogicEditTextarea" [ngClass]="{'has-error':question.skipLogic?.validationError}">
                 <cde-skip-logic [parent]="parent" [formElement]="question" [canEdit]="canEdit"
-                                (onSaved)="onEltChange.emit();"></cde-skip-logic>
+                                (saved)="eltChange.emit();"></cde-skip-logic>
             </dd>
         </ng-container>
         <ng-container
@@ -170,7 +170,7 @@
                             <mat-form-field class="d-inline-block col-9">
                                 <input type="text" placeholder="New Unit of Measure Code" matInput name="searchUomInput"
                                        [formControl]="uomControl" [matAutocomplete]="auto">
-                                <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                                <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayUom">
                                     <mat-option *ngFor="let uom of filteredUoms" [value]="uom"
                                                 (click)="uomAddSelected(uom);">
                                         <ng-container *ngIf="uom.name">
@@ -209,12 +209,12 @@
             <dt class="col-2">Multiple Selection:</dt>
             <dd class="col-10 multipleSelection">
                 <input type="checkbox" title="Multiple" [(ngModel)]="question.question.multiselect"
-                       (change)="onEltChange.emit()"/>
+                       (change)="eltChange.emit()"/>
             </dd>
             <ng-container *ngIf="question.question.cde.tinyId">
                 <dt class="col-2 answerListLabel">Answer List
                     <mat-icon *ngIf="question.question.answers.length > 0" class="hand-cursor"
-                              (click)="openEditAnswerModal(question)">edit
+                              (click)="openEditAnswerModal()">edit
                     </mat-icon>
                     :
                 </dt>
@@ -229,7 +229,7 @@
             <ng-container *ngIf="question.question.datatype === 'Value List'">
                 <mat-form-field class="w-100">
                     <mat-select [(value)]="question.question.defaultAnswer" [placeholder]="'Select Default Answer'"
-                                (selectionChange)="onEltChange.emit()">
+                                (selectionChange)="eltChange.emit()">
                         <mat-option *ngFor="let defaultAnswer of  defaultAnswerListItems"
                                     [value]="defaultAnswer">{{defaultAnswer}}</mat-option>
                     </mat-select>
@@ -237,14 +237,14 @@
             </ng-container>
             <ng-container *ngIf="question.question.datatype !== 'Value List'">
                 <cde-inline-edit [(model)]="question.question.defaultAnswer" [isAllowed]="true"
-                                 (modelChange)="onEltChange.emit()"></cde-inline-edit>
+                                 (modelChange)="eltChange.emit()"></cde-inline-edit>
             </ng-container>
         </dd>
         <ng-container *ngIf="question.question.defaultAnswer">
             <dt class="col-2">Editable:</dt>
             <dd class="col-10">
                 <input type="checkbox" title="Editable" [(ngModel)]="question.question.editable"
-                       (change)="onEltChange.emit()"/>
+                       (change)="eltChange.emit()"/>
             </dd>
         </ng-container>
     </dl>
@@ -287,7 +287,7 @@
             <mat-form-field class="w-50 newCdeDataType">
                 <mat-select placeholder="CDE Data Type" [ngModel]="question.question.datatype"
                             (selectionChange)="onDatatypeChange(question.question, $event)">
-                    <mat-option *ngFor="let dataType of DataTypeArray" [value]="dataType">{{dataType}}</mat-option>
+                    <mat-option *ngFor="let dataType of dataTypeArray" [value]="dataType">{{dataType}}</mat-option>
                 </mat-select>
             </mat-form-field>
             <mat-form-field class="w-50 newCdePvs" *ngIf="question.question.datatype==='Value List'">

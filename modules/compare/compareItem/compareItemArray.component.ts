@@ -9,9 +9,42 @@ import _slice from 'lodash/slice';
 import _uniq from 'lodash/uniq';
 import _uniqWith from 'lodash/uniqWith';
 import { Concept, Concepts, DataElement } from 'shared/de/dataElement.model';
-import { CdeForm, FormElement } from 'shared/form/form.model';
+import { CdeForm, FormElement, FormOrElement, FormQuestion, SkipLogic } from 'shared/form/form.model';
 import { isCdeForm, isDataElement } from 'shared/item';
-import { Item } from 'shared/models.model';
+import { CdeId, Definition, Designation, FormattedValue, PermissibleValue, Property, ReferenceDocument } from 'shared/models.model';
+
+interface DiffOption {
+    data: DiffOptionData[];
+    diff?: string[];
+    display?: boolean;
+    isEqual: (a: any, b: any) => boolean;
+    label: string;
+    match?: boolean;
+    property: string;
+    result?: DiffOptionResult[];
+}
+
+interface DiffOptionData  {
+    array?: boolean;
+    label: string;
+    property: string;
+    url?: string;
+}
+
+interface DiffOptionResult {
+    add?: boolean;
+    data?: {
+        diff?: any;
+    };
+    diff?: string[];
+    display?: boolean;
+    edited?: boolean;
+    match: boolean;
+    newer?: {};
+    older?: {};
+    remove?: boolean;
+    reorder?: boolean;
+}
 
 class ComparedDe extends DataElement {
     concepts?: Concept[];
@@ -21,12 +54,14 @@ class ComparedForm extends CdeForm {
     questions?: FormElement[];
 }
 
-const compareArrayOption = [
+type FeCompare = {question: any, sectionId?: string} & FormElement & DiffOptionResult;
+
+const compareArrayOption: DiffOption[] = [
     {
         label: 'Reference Documents',
-        isEqual(a, b) {
-            if (_isEmpty(a.diff)) { a.diff = []; }
-            if (_isEmpty(b.diff)) { b.diff = []; }
+        isEqual(a: ReferenceDocument & DiffOptionResult, b: ReferenceDocument & DiffOptionResult) {
+            if (!a.diff) { a.diff = []; }
+            if (!b.diff) { b.diff = []; }
             const result = _isEqual(a.document, b.document);
             if (result) {
                 if (!_isEqual(a.title, b.title)) {
@@ -67,9 +102,9 @@ const compareArrayOption = [
     },
     {
         label: 'Designation',
-        isEqual(a, b) {
-            if (_isEmpty(a.diff)) { a.diff = []; }
-            if (_isEmpty(b.diff)) { b.diff = []; }
+        isEqual(a: Designation & DiffOptionResult, b: Designation & DiffOptionResult) {
+            if (!a.diff) { a.diff = []; }
+            if (!b.diff) { b.diff = []; }
             const result = _isEqual(a.designation, b.designation);
             if (result) {
                 if (!_isEqual(a.tags, b.tags)) {
@@ -89,9 +124,9 @@ const compareArrayOption = [
     },
     {
         label: 'Definition',
-        isEqual(a, b) {
-            if (_isEmpty(a.diff)) { a.diff = []; }
-            if (_isEmpty(b.diff)) { b.diff = []; }
+        isEqual(a: Definition & DiffOptionResult, b: Definition & DiffOptionResult) {
+            if (!a.diff) { a.diff = []; }
+            if (!b.diff) { b.diff = []; }
             const result = _isEqual(a.definition, b.definition);
             if (result) {
                 if (!_isEqual(a.definitionFormat, b.definitionFormat)) {
@@ -118,9 +153,9 @@ const compareArrayOption = [
     },
     {
         label: 'Properties',
-        isEqual(a, b) {
-            if (_isEmpty(a.diff)) { a.diff = []; }
-            if (_isEmpty(b.diff)) { b.diff = []; }
+        isEqual(a: Property & DiffOptionResult, b: Property & DiffOptionResult) {
+            if (!a.diff) { a.diff = []; }
+            if (!b.diff) { b.diff = []; }
             const result = _isEqual(a.key, b.key);
             if (result) {
                 if (!_isEqual(a.value, b.value)) {
@@ -140,9 +175,9 @@ const compareArrayOption = [
     },
     {
         label: 'Identifiers',
-        isEqual(a, b) {
-            if (_isEmpty(a.diff)) { a.diff = []; }
-            if (_isEmpty(b.diff)) { b.diff = []; }
+        isEqual(a: CdeId & DiffOptionResult, b: CdeId & DiffOptionResult) {
+            if (!a.diff) { a.diff = []; }
+            if (!b.diff) { b.diff = []; }
             const result = _isEqual(a.source, b.source) && _isEqual(a.id, b.id);
             if (result) {
                 if (!_isEqual(a.version, b.version)) {
@@ -163,12 +198,12 @@ const compareArrayOption = [
         diff: []
     }
 ];
-const cdeCompareArrayOption = [
+const cdeCompareArrayOption: DiffOption[] = [
     {
         label: 'Value List',
-        isEqual(a, b) {
-            if (_isEmpty(a.diff)) { a.diff = []; }
-            if (_isEmpty(b.diff)) { b.diff = []; }
+        isEqual(a: PermissibleValue & DiffOptionResult, b: PermissibleValue & DiffOptionResult) {
+            if (!a.diff) { a.diff = []; }
+            if (!b.diff) { b.diff = []; }
             const result = _isEqual(a.valueMeaningName, b.valueMeaningName);
             if (result) {
                 if (!_isEqual(a.permissibleValue, b.permissibleValue)) {
@@ -198,7 +233,7 @@ const cdeCompareArrayOption = [
     },
     {
         label: 'Concepts',
-        isEqual(a, b) {
+        isEqual(a: Concept & DiffOptionResult, b: Concept & DiffOptionResult) {
             return _isEqual(a, b);
         },
         property: 'concepts',
@@ -210,13 +245,13 @@ const cdeCompareArrayOption = [
         diff: []
     }
 ];
-const formCompareArrayOption = [
+const formCompareArrayOption: DiffOption[] = [
     {
         label: 'Form Elements',
-        isEqual(a, b) {
+        isEqual(a: FeCompare, b: FeCompare) {
             if (a.elementType === 'question' && b.elementType === 'question') {
-                if (_isEmpty(a.diff)) { a.diff = []; }
-                if (_isEmpty(b.diff)) { b.diff = []; }
+                if (!a.diff) { a.diff = []; }
+                if (!b.diff) { b.diff = []; }
                 const result = _isEqual(a.question.cde.tinyId, b.question.cde.tinyId);
                 if (result) {
                     if (!a || !b) {
@@ -227,7 +262,7 @@ const formCompareArrayOption = [
                         a.display = true;
                         b.display = true;
                     }
-                    if (!_isEqual(a.instructions.value, b.instructions.value)) {
+                    if (!_isEqual(a.instructions && a.instructions.value, b.instructions && b.instructions.value)) {
                         a.diff.push('instructions.value');
                         b.diff.push('instructions.value');
                         a.display = true;
@@ -239,13 +274,14 @@ const formCompareArrayOption = [
                         a.display = true;
                         b.display = true;
                     }
-                    if (!_isEqual(a.skipLogic.condition, b.skipLogic.condition)) {
+                    if (!_isEqual(a.skipLogic && a.skipLogic.condition, b.skipLogic && b.skipLogic.condition)) {
                         a.diff.push('skipLogic.condition');
                         b.diff.push('skipLogic.condition');
                         a.display = true;
                         b.display = true;
                     }
-                    if (!_isEqual(a.question.answers, b.question.answers)) {
+                    if (a.question.datatype === 'Value List' && b.question.datatype === 'Value List'
+                        && !_isEqual(a.question.answers, b.question.answers)) {
                         a.diff.push('question.answers');
                         b.diff.push('question.answers');
                         a.question.answers = JSON.stringify(a.question.answers);
@@ -257,11 +293,11 @@ const formCompareArrayOption = [
                 return result;
             }
             if (a.elementType === 'form' && b.elementType === 'form') {
-                if (_isEmpty(a.diff)) { a.diff = []; }
-                if (_isEmpty(b.diff)) { b.diff = []; }
+                if (!a.diff) { a.diff = []; }
+                if (!b.diff) { b.diff = []; }
                 const result = _isEqual(a.inForm.form.tinyId, b.inForm.form.tinyId);
                 if (result) {
-                    if (!_isEqual(a.instructions.value, b.instructions.value)) {
+                    if (!_isEqual(a.instructions && a.instructions.value, b.instructions && b.instructions.value)) {
                         a.diff.push('instructions.value');
                         b.diff.push('instructions.value');
                         a.display = true;
@@ -273,7 +309,7 @@ const formCompareArrayOption = [
                         a.display = true;
                         b.display = true;
                     }
-                    if (!_isEqual(a.skipLogic.condition, b.skipLogic.condition)) {
+                    if (!_isEqual(a.skipLogic && a.skipLogic.condition, b.skipLogic && b.skipLogic.condition)) {
                         a.diff.push('skipLogic.condition');
                         b.diff.push('skipLogic.condition');
                         a.display = true;
@@ -283,11 +319,11 @@ const formCompareArrayOption = [
                 return result;
             }
             if (a.elementType === 'section' && b.elementType === 'section') {
-                if (_isEmpty(a.diff)) { a.diff = []; }
-                if (_isEmpty(b.diff)) { b.diff = []; }
+                if (!a.diff) { a.diff = []; }
+                if (!b.diff) { b.diff = []; }
                 const result = _isEqual(a.sectionId, b.sectionId);
                 if (result) {
-                    if (!_isEqual(a.instructions.value, b.instructions.value)) {
+                    if (!_isEqual(a.instructions && a.instructions.value, b.instructions && b.instructions.value)) {
                         a.diff.push('instructions.value');
                         b.diff.push('instructions.value');
                         a.display = true;
@@ -299,7 +335,7 @@ const formCompareArrayOption = [
                         a.display = true;
                         b.display = true;
                     }
-                    if (!_isEqual(a.skipLogic.condition, b.skipLogic.condition)) {
+                    if (!_isEqual(a.skipLogic && a.skipLogic.condition,  b.skipLogic && b.skipLogic.condition)) {
                         a.diff.push('skipLogic.condition');
                         b.diff.push('skipLogic.condition');
                         a.display = true;
@@ -308,6 +344,7 @@ const formCompareArrayOption = [
                 }
                 return result;
             }
+            return false;
         },
         property: 'questions',
         data: [
@@ -363,10 +400,10 @@ const formCompareArrayOption = [
     `]
 })
 export class CompareItemArrayComponent implements OnInit {
-    @Input() older: ComparedDe | ComparedForm;
-    @Input() newer: ComparedDe | ComparedForm;
-    @Input() filter;
-    compareArrayOption = [];
+    @Input() older!: ComparedDe | ComparedForm;
+    @Input() newer!: ComparedDe | ComparedForm;
+    @Input() filter!: {add: {select: any}, edited: {select: any}, remove: {select: any}, reorder: {select: any}};
+    compareArrayOption: DiffOption[] = [];
     newerArray: any = {};
     olderArray: any = {};
 
@@ -381,8 +418,12 @@ export class CompareItemArrayComponent implements OnInit {
             if (!this.older.objectClass) { this.older.objectClass = new Concepts(); }
             if (!this.newer.dataElementConcept) { this.newer.dataElementConcept = {concepts: []}; }
             if (!this.older.dataElementConcept) { this.older.dataElementConcept = {concepts: []}; }
-            this.older.concepts = this.older.property.concepts.concat(this.older.objectClass.concepts).concat(this.older.dataElementConcept.concepts);
-            this.newer.concepts = this.newer.property.concepts.concat(this.newer.objectClass.concepts).concat(this.newer.dataElementConcept.concepts);
+            this.older.concepts = this.older.property.concepts
+                .concat(this.older.objectClass.concepts)
+                .concat(this.older.dataElementConcept.concepts || []);
+            this.newer.concepts = this.newer.property.concepts
+                .concat(this.newer.objectClass.concepts)
+                .concat(this.newer.dataElementConcept.concepts || []);
             this.compareArrayOption = compareArrayOption.concat(cdeCompareArrayOption);
         } else if (isCdeForm(this.newer) && isCdeForm(this.older)) {
             this.older.questions = [];
@@ -395,7 +436,7 @@ export class CompareItemArrayComponent implements OnInit {
     }
 }
 
-function copyValue(obj, data) {
+function copyValue(obj: any, data: DiffOptionData[]) {
     _forEach(data, d => {
         let value = _get(obj, d.property);
         if (_isEmpty(value)) { value = ''; }
@@ -403,7 +444,7 @@ function copyValue(obj, data) {
     });
 }
 
-function doCompareArray(newer, older, option) {
+function doCompareArray(newer: any, older: any, option: DiffOption[]) {
     _forEach(option, property => {
         if (!newer && !older) {
             property.match = true;
@@ -419,23 +460,24 @@ function doCompareArray(newer, older, option) {
     });
 }
 
-function doCompareArrayImpl(newer: Array<any>, older: Array<any>, option) {
+function doCompareArrayImpl(newer: DiffOption[], older: DiffOption[], option: DiffOption) {
     option.result = [];
+    const result = option.result;
     let beginIndex = 0;
 
     _forEach(newer, (l, leftIndex) => {
-        const rightArrayCopy = _slice(older, beginIndex);
+        const rightArrayCopy: DiffOption[] = _slice(older, beginIndex);
         const rightIndex = _findIndex(rightArrayCopy, o => option.isEqual(o, l));
         if (rightIndex === -1) {
             if (leftIndex === newer.length - 1) {
-                option.result.push({
+                result.push({
                     match: false,
                     add: true,
                     data: l,
                     newer: l
                 });
-                rightArrayCopy.forEach(o => {
-                    option.result.push({
+                rightArrayCopy.forEach((o: any) => {
+                    result.push({
                         match: false,
                         add: true,
                         data: o,
@@ -443,7 +485,7 @@ function doCompareArrayImpl(newer: Array<any>, older: Array<any>, option) {
                     });
                 });
             } else {
-                option.result.push({
+                result.push({
                     match: false,
                     add: true,
                     data: l,
@@ -453,7 +495,7 @@ function doCompareArrayImpl(newer: Array<any>, older: Array<any>, option) {
         } else { // found match in right array
             const r: any = rightArrayCopy[rightIndex];
             for (let k = 0; k < rightIndex; k++) {
-                option.result.push({
+                result.push({
                     match: false,
                     add: true,
                     data: rightArrayCopy[k],
@@ -461,24 +503,22 @@ function doCompareArrayImpl(newer: Array<any>, older: Array<any>, option) {
                 });
                 beginIndex++;
             }
-            const tempResult = {
-                match: true,
-                display: l.display && r.display
-            };
             if (!l.diff) { l.diff = []; }
             if (!r.diff) { r.diff = []; }
-            const diff = _uniq(l.diff.concat(r.diff));
-            tempResult['older'] = l;
-            tempResult['newer'] = r;
-            tempResult['diff'] = diff;
-            tempResult['edited'] = true;
-            option.result.push(tempResult);
+            result.push({
+                match: true,
+                display: l.display && r.display,
+                older: l,
+                newer: r,
+                diff: _uniq(l.diff.concat(r.diff)),
+                edited: true,
+            });
             beginIndex++;
         }
         if (leftIndex === newer.length - 1) {
             rightArrayCopy.forEach((o, i) => {
                 if (i > 0) {
-                    option.result.push({
+                    result.push({
                         match: false,
                         add: true,
                         data: o,
@@ -499,7 +539,7 @@ function doCompareArrayImpl(newer: Array<any>, older: Array<any>, option) {
                     return temp;
                 }) !== -1) {
                     delete r.add;
-                    if (!r.match) { r.diff = _uniq(r.data.diff); }
+                    if (!r.match) { r.diff = _uniq(r.data && r.data.diff); }
                     r.reorder = true;
                 }
             }
@@ -509,7 +549,7 @@ function doCompareArrayImpl(newer: Array<any>, older: Array<any>, option) {
                     r.remove = true;
                 } else {
                     delete r.add;
-                    if (!r.match) { r.diff = _uniq(r.data.diff); }
+                    if (!r.match) { r.diff = _uniq(r.data && r.data.diff); }
                     r.reorder = true;
                 }
             }
@@ -554,12 +594,12 @@ function doCompareArrayImpl(newer: Array<any>, older: Array<any>, option) {
     }
 }
 
-function fixFormElement(f) {
-    if (!f.skipLogic) { f.skipLogic = {}; }
-    if (!f.instructions) { f.instructions = {}; }
+function fixFormElement(f: FormElement) {
+    if (!f.skipLogic) { f.skipLogic = new SkipLogic(); }
+    if (!f.instructions) { f.instructions = new FormattedValue(); }
 }
 
-function flatFormQuestions(fe, questions) {
+function flatFormQuestions(fe: FormOrElement, questions: (FormElement & {sectionId?: string})[]) {
     let index = 0;
     if (fe.formElements !== undefined) {
         _forEach(fe.formElements, e => {
@@ -572,7 +612,7 @@ function flatFormQuestions(fe, questions) {
                 fixFormElement(formCopy);
                 questions.push(formCopy);
             } else if (e.elementType && e.elementType === 'section') {
-                const sectionCopy = _cloneDeep(e);
+                const sectionCopy: FormElement & {sectionId?: string} = _cloneDeep(e);
                 fixFormElement(sectionCopy);
                 sectionCopy.sectionId = 'section_' + index;
                 index++;

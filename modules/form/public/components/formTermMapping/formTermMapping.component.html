@@ -25,7 +25,7 @@
             <div *ngIf="descriptor">
                 {{descriptor.id}} -- {{descriptor.name}}
                 <button type="submit" class="btn btn-outline-dark "
-                        id="addMeshDescButton" (click)="addMeshDescriptor()"
+                        id="addMeshDescButton" (click)="addMeshDescriptor(descriptor)"
                         *ngIf="descriptor.name.length > 0"
                         [disabled]="mapping.meshDescriptors?.indexOf(descriptor.id) > -1">Add
                 </button>

@@ -8,10 +8,9 @@ import { AlertService } from 'alert/alert.service';
     templateUrl: './articleAdmin.component.html'
 })
 export class ArticleAdminComponent {
-    article?: Article;
-
+    article?: Partial<Article>;
     articles = ['whatsNew', 'contactUs'];
-    selectedKey: string;
+    selectedKey?: string;
 
     constructor(private http: HttpClient,
                 private alertSvc: AlertService) {

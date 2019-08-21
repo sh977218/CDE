@@ -14,18 +14,18 @@
                           id="removeDesignation-{{i}}">delete
                 </mat-icon>
                 <cde-sortable-array [theArray]="elt.designations" [index]="i" *ngIf="canEdit"
-                                    (cb)="onEltChange.emit()"></cde-sortable-array>
+                                    (cb)="eltChange.emit()"></cde-sortable-array>
                 Name:
             </dt>
             <dd id="designation_{{i}}" class="col-9">
                 <cde-inline-edit id="designationEdit" [(model)]="designation.designation"
-                                 (modelChange)="onEltChange.emit();"
+                                 (modelChange)="eltChange.emit();"
                                  [isAllowed]="canEdit"></cde-inline-edit>
             </dd>
             <dt class="col-3 text-right">Tags:</dt>
             <dd id="designationTags_{{i}}" class="col-9">
                 <cde-tag [tags]="designation.tags" [allTags]="allTags"
-                         [canEdit]="canEdit" (changed)="onEltChange.emit();"></cde-tag>
+                         [canEdit]="canEdit" (changed)="eltChange.emit();"></cde-tag>
             </dd>
         </dl>
         <hr>
@@ -44,18 +44,18 @@
                           id="removeDefinition-{{i}}">delete
                 </mat-icon>
                 <cde-sortable-array [theArray]="elt.definitions" [index]="i" *ngIf="canEdit"
-                                    (cb)="onEltChange.emit()"></cde-sortable-array>
+                                    (cb)="eltChange.emit()"></cde-sortable-array>
                 Definition:
             </dt>
             <dd id="definition_{{i}}" class="col-9">
-                <cde-inline-area-edit [(model)]="definition.definition" (modelChange)="onEltChange.emit();"
+                <cde-inline-area-edit [(model)]="definition.definition" (modelChange)="eltChange.emit();"
                                       [(defFormat)]="definition.definitionFormat"
                                       [isAllowed]="canEdit"></cde-inline-area-edit>
             </dd>
             <dt class="col-3 text-right">Tags:</dt>
             <dd id="definitionTags_{{i}}" class="col-9">
                 <cde-tag [tags]="definition.tags" [allTags]="allTags"
-                         [canEdit]="canEdit" (changed)="onEltChange.emit();"></cde-tag>
+                         [canEdit]="canEdit" (changed)="eltChange.emit();"></cde-tag>
             </dd>
         </dl>
         <hr>

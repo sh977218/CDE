@@ -17,10 +17,10 @@
         <dl class="dl-horizontal" style="margin: 5px 0 10px 0 ">
             <dt>Steward:</dt>
             <dd [innerHtml]="elt.stewardOrg.name"></dd>
-            <dt [hidden]="!(elt.classification.length > 0)">Used By:</dt>
-            <dd [hidden]="!(elt.classification.length > 0)" id="usedBy_{{eltIndex}}">
-                <span *ngIf="!(elt.classification.length > 0)">None</span>
-                <span *ngIf="elt.classification.length > 0">{{getStewards()}}</span>
+            <dt [hidden]="!(elt.classification?.length > 0)">Used By:</dt>
+            <dd [hidden]="!(elt.classification?.length > 0)" id="usedBy_{{eltIndex}}">
+                <span *ngIf="!(elt.classification?.length > 0)">None</span>
+                <span *ngIf="elt.classification?.length > 0">{{getStewards()}}</span>
             </dd>
         </dl>
     </div>

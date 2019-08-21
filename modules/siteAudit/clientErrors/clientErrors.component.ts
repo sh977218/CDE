@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, TemplateRef, ViewChild } from '@angular/core';
-import { AlertService } from 'alert/alert.service';
 import { MatDialog, PageEvent } from '@angular/material';
+import { AlertService } from 'alert/alert.service';
 
 type ClientErrorRecord = any;
 
@@ -43,7 +43,7 @@ export class ClientErrorsComponent {
                     this.records.forEach(r => {
                         if (r.url) {
                             r.url = r.url.substr(8);
-                            r.url = r.url.substr(r.url.indexOf("/"));
+                            r.url = r.url.substr(r.url.indexOf('/'));
                         }
                     });
                     this.filter();
@@ -59,7 +59,7 @@ export class ClientErrorsComponent {
     filter() {
         this.filteredRecords = this.records.filter(r => {
             try {
-                return this.browserInclude[r.agent.substr(0, r.agent.indexOf(" ")).toLowerCase()];
+                return this.browserInclude[r.agent.substr(0, r.agent.indexOf(' ')).toLowerCase()];
             } catch (e) {
                 return true;
             }

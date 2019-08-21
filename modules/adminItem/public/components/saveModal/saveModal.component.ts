@@ -1,43 +1,50 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Input, Output, ViewChild, EventEmitter, TemplateRef } from '@angular/core';
-import _isEqual from 'lodash/isEqual';
-
 import { AlertService } from 'alert/alert.service';
+import _isEqual from 'lodash/isEqual';
 import { iterateFormElements } from 'shared/form/fe';
 import { MatDialog } from '@angular/material';
+import { FormQuestion, QuestionCde } from 'shared/form/form.model';
+import { Cb, Item } from 'shared/models.model';
 
+export type SaveModalQuestionCde = QuestionCde & {
+    datatype: string,
+    designations: {invalid?: boolean, message?: string},
+    isCollapsed?: boolean
+};
+export type SaveModalFormQuestion = FormQuestion & {question: {cde: SaveModalQuestionCde}};
 
 @Component({
     selector: 'cde-save-modal',
     templateUrl: './saveModal.component.html'
 })
 export class SaveModalComponent {
-    @Input() elt: any;
+    @Input() elt!: Item;
     @Output() save = new EventEmitter();
-    @Output() onEltChange = new EventEmitter();
-    @ViewChild('updateElementContent') updateElementContent: TemplateRef<any>;
+    @Output() eltChange = new EventEmitter();
+    @ViewChild('updateElementContent') updateElementContent!: TemplateRef<any>;
     duplicatedVersion = false;
-    protected newCdes = [];
-    overrideVersion: false;
+    protected newCdes: SaveModalQuestionCde[] = [];
+    overrideVersion = false;
 
     constructor(private alert: AlertService,
                 public http: HttpClient,
                 public dialog: MatDialog) {}
 
-    newVersionVersionUnicity(newVersion = null) {
-        if (newVersion === null) { newVersion = this.elt.version; }
-        let url;
-        if (this.elt.elementType === 'cde') { url = '/de/' + this.elt.tinyId + '/latestVersion/'; }
-        if (this.elt.elementType === 'form') { url = '/form/' + this.elt.tinyId + '/latestVersion/'; }
-        this.http.get(url, {responseType: 'text'}).subscribe(
-            res => {
+    newVersionVersionUnicity(newVersion?: string) {
+        if (!newVersion) { newVersion = this.elt.version; }
+        this.http.get('/' + (this.elt.elementType === 'cde' ? 'de' : this.elt.elementType) + '/' + this.elt.tinyId + '/latestVersion/',
+            {responseType: 'text'}).subscribe(
+            (res: string) => {
                 if (res && newVersion && _isEqual(res, newVersion)) {
                     this.duplicatedVersion = true;
                 } else {
                     this.duplicatedVersion = false;
                     this.overrideVersion = false;
                 }
-            }, err => this.alert.httpErrorMessageAlert(err));
+            },
+            (err: any) => this.alert.httpErrorMessageAlert(err)
+        );
     }
 
     openSaveModal() {
@@ -46,14 +53,14 @@ export class SaveModalComponent {
         if (this.elt.elementType === 'form' && this.elt.isDraft) {
             iterateFormElements(this.elt, {
                 async: true,
-                questionCb: (fe, cb) => {
+                questionCb: (fe: SaveModalFormQuestion, cb?: Cb) => {
                     if (!fe.question.cde.tinyId) {
                         if (fe.question.cde.designations.length === 0) {
                             fe.question.cde.designations.invalid = true;
                             fe.question.cde.designations.message = 'no designation.';
                         } else {
                             fe.question.cde.designations.invalid = false;
-                            fe.question.cde.designations.message = null;
+                            fe.question.cde.designations.message = '';
                         }
                         this.newCdes.push(fe.question.cde);
                         if (cb) { cb(); }
@@ -62,6 +69,8 @@ export class SaveModalComponent {
             }, () => {
                 this.dialog.open(this.updateElementContent);
             });
-        } else { this.dialog.open(this.updateElementContent); }
+        } else {
+            this.dialog.open(this.updateElementContent);
+        }
     }
 }

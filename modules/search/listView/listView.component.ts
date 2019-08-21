@@ -20,11 +20,6 @@ import { TableListComponent } from 'search/listView/tableList.component';
     templateUrl: './listView.component.html'
 })
 export class ListViewComponent implements OnChanges, OnInit {
-
-    constructor(private _componentFactoryResolver: ComponentFactoryResolver,
-                private esService: ElasticService) {
-    }
-    static readonly RESULTVIEWS = ['accordion', 'summary', 'table'];
     @Input() board?: any = null;
     @Input() currentPage = 0;
     @Input() location?: string = undefined;
@@ -40,6 +35,10 @@ export class ListViewComponent implements OnChanges, OnInit {
     viewsMap!: Map<string, any>;
     viewComponentRef: any;
 
+    constructor(private _componentFactoryResolver: ComponentFactoryResolver,
+                private esService: ElasticService) {
+    }
+
     ngOnChanges(changes: SimpleChanges) {
         if (changes.elts && this.viewComponentRef && this.viewComponentRef.instance) {
             this.viewComponentRef.instance.elts = this.elts;
@@ -51,7 +50,7 @@ export class ListViewComponent implements OnChanges, OnInit {
         }
 
         if (changes.module) {
-            this.viewsMap = new Map;
+            this.viewsMap = new Map();
             this.viewsMap.set('table', TableListComponent);
             if (this.module === 'cde') {
                 this.viewsMap.set('accordion', CdeAccordionListComponent);
@@ -110,8 +109,9 @@ export class ListViewComponent implements OnChanges, OnInit {
             this.viewComponentRef.instance.currentPage = this.currentPage;
             this.viewComponentRef.instance.totalItems = this.totalItems;
             this.viewComponentRef.instance.reload.subscribe(() => this.add.emit());
-        } else if (this._listView === 'table') { this.viewComponentRef.instance.module = this.module; }
-        else if (this._listView === 'summary') {
+        } else if (this._listView === 'table') {
+            this.viewComponentRef.instance.module = this.module;
+        } else if (this._listView === 'summary') {
             this.viewComponentRef.instance.contentComponent = this.viewsMap.get(this._listView + 'Content');
         }
     }
@@ -129,4 +129,6 @@ export class ListViewComponent implements OnChanges, OnInit {
         }
         return false;
     }
+
+    static readonly RESULTVIEWS = ['accordion', 'summary', 'table'];
 }

@@ -1,11 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
-
-import { AlertService } from 'alert/alert.service';
 import { UserService } from '_app/user.service';
+import { AlertService } from 'alert/alert.service';
 import { IsAllowedService } from 'non-core/isAllowed.service';
 import { UsersOrgQuery } from 'shared/models.model';
-
 
 @Component({
     selector: 'cde-org-admin',
@@ -43,7 +41,7 @@ export class OrgAdminComponent {
     removeOrgAdmin(orgName: string, userId: string) {
         this.http.post('/removeOrgAdmin', {
             org: orgName,
-            userId: userId
+            userId
         }, {responseType: 'text'}).subscribe(() => {
             this.alert.addAlert('success', 'Removed');
             this.getAdmins();

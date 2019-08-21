@@ -7,7 +7,7 @@ import { MatDialog } from '@angular/material';
 })
 
 export class DatasetsComponent {
-    @ViewChild('datasetsContent') public datasetsContent: TemplateRef<any>;
+    @ViewChild('datasetsContent') datasetsContent!: TemplateRef<any>;
     @Input() public elt: any;
     constructor(public dialog: MatDialog) {}
 

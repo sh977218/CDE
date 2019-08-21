@@ -22,37 +22,27 @@ const today = new Date().toJSON();
 
 export function createForm(loinc, orgInfo) {
     return new Promise(async (resolve, reject) => {
-        let designations = parseDesignations(loinc, {});
-        let definitions = parseDefinitions(loinc);
-        let ids = parseIds(loinc);
-        let properties = parseProperties(loinc);
-        let referenceDocuments = parseReferenceDocuments(loinc);
-        let stewardOrg = parseStewardOrg(orgInfo);
-        let sources = parseSources(loinc);
-        let classification = await parseClassification(loinc, orgInfo).catch(e => {
+        function catchError(e: any) {
             reject(e);
-        });
-
-        let formElements = await parseFormElements(loinc, orgInfo).catch(e => {
-            reject(e);
-        });
-        let newForm = {
-            tinyId: generateTinyId(),
-            createdBy: {username: 'batchloader'},
+        }
+        const classificationPromise = parseClassification(loinc, orgInfo).catch(catchError);
+        const formElementsPromise = parseFormElements(loinc, orgInfo).catch(catchError);
+        resolve({
+            classification: await classificationPromise,
             created: today,
+            createdBy: {username: 'batchloader'},
+            definitions: parseDefinitions(loinc),
+            designations: parseDesignations(loinc, {}),
+            formElements: await formElementsPromise,
+            ids: parseIds(loinc),
             imported: today,
-            registrationState: {registrationStatus: "Qualified"},
-            sources,
-            designations,
-            definitions,
-            ids,
-            properties,
-            referenceDocuments,
-            stewardOrg,
-            classification,
-            formElements
-        };
-        resolve(newForm);
+            properties: parseProperties(loinc),
+            referenceDocuments: parseReferenceDocuments(loinc),
+            registrationState: {registrationStatus: 'Qualified'},
+            sources: parseSources(loinc),
+            stewardOrg: parseStewardOrg(orgInfo),
+            tinyId: generateTinyId(),
+        });
     });
 }
 

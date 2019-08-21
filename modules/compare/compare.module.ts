@@ -11,7 +11,7 @@ import { CompareSideBySideComponent } from 'compare/compareSideBySide/compareSid
 import { MergeDataElementComponent } from 'compare/mergeDataElement/mergeDataElement.component';
 import { MergeFormComponent } from 'compare/mergeForm/mergeForm.component';
 import { NonCoreModule } from 'non-core/noncore.module';
-import { SortableModule } from 'ngx-bootstrap';
+import { SortableModule } from 'ngx-bootstrap/sortable';
 import { DiffMatchPatchModule } from 'ng-diff-match-patch';
 
 @NgModule({

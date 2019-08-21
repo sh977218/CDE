@@ -4,7 +4,8 @@ import { UserService } from '_app/user.service';
 import { LocalStorageService } from 'angular-2-local-storage';
 import { SearchSettings, SearchSettingsElastic } from 'search/search.model';
 import {
-    CbErr, Cb1, CurationStatus, ElasticQueryResponse, ItemElastic, UserSearchSettings
+    CbErr, Cb1, CurationStatus, ItemElastic, UserSearchSettings, ElasticQueryResponseDe,
+    ElasticQueryResponseForm, ModuleItem, ElasticQueryResponseItem
 } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm } from 'shared/form/form.model';
@@ -12,14 +13,125 @@ import { orderedList } from 'shared/system/regStatusShared';
 
 @Injectable()
 export class ElasticService {
+    searchSettings!: UserSearchSettings;
+    searchToken = 'id' + Math.random().toString(16).slice(2);
 
     constructor(public http: HttpClient,
                 private localStorageService: LocalStorageService,
                 private userService: UserService) {
         this.loadSearchSettings();
     }
-    searchSettings!: UserSearchSettings;
-    searchToken = 'id' + Math.random().toString(16).slice(2);
+
+    buildElasticQuerySettings(queryParams: SearchSettings): SearchSettingsElastic {
+        return {
+            resultPerPage: queryParams.resultPerPage,
+            searchTerm: queryParams.q,
+            selectedOrg: queryParams.selectedOrg,
+            selectedOrgAlt: queryParams.selectedOrgAlt,
+            excludeAllOrgs: queryParams.excludeAllOrgs,
+            excludeOrgs: queryParams.excludeOrgs || [],
+            selectedElements: queryParams.classification || [],
+            selectedElementsAlt: queryParams.classificationAlt || [],
+            page: queryParams.page,
+            includeAggregations: true,
+            meshTree: queryParams.meshTree,
+            selectedStatuses: queryParams.regStatuses || [],
+            selectedDatatypes: queryParams.datatypes || [],
+            visibleStatuses: this.getUserDefaultStatuses(),
+            searchToken: this.searchToken,
+            fullRecord: undefined,
+        };
+    }
+
+    generalSearchQuery(settings: SearchSettingsElastic, type: 'cde',
+                       cb: CbErr<ElasticQueryResponseDe, boolean>): void;
+    generalSearchQuery(settings: SearchSettingsElastic, type: 'form',
+                       cb: CbErr<ElasticQueryResponseForm, boolean>): void;
+    generalSearchQuery(settings: SearchSettingsElastic, type: 'cde' | 'form',
+                       cb: CbErr<ElasticQueryResponseDe, boolean> | CbErr<ElasticQueryResponseForm, boolean>): void;
+    generalSearchQuery(settings: SearchSettingsElastic, type: 'cde' | 'form',
+                       cb: CbErr<ElasticQueryResponseDe, boolean> | CbErr<ElasticQueryResponseForm, boolean>): void {
+        const search = (good: Cb1<ElasticQueryResponseItem, boolean>, bad: CbErr<ElasticQueryResponseItem, boolean>) => {
+            this.http.post<ElasticQueryResponseItem>('/elasticSearch/' + type, settings).subscribe(good, bad);
+        };
+
+        function success(response: ElasticQueryResponseItem, isRetry = false) {
+            if (type === 'cde') {
+                const responseDe = response as ElasticQueryResponseDe;
+                ElasticService.highlightResults(responseDe.cdes);
+                responseDe.cdes.forEach(DataElement.validate);
+            } else {
+                const responseForm = response as ElasticQueryResponseForm;
+                ElasticService.highlightResults(responseForm.forms);
+                responseForm.forms.forEach(CdeForm.validate);
+            }
+            (cb as CbErr<ElasticQueryResponseItem, boolean>)(undefined, response, isRetry);
+        }
+
+        search(success, () => {
+            if (settings.searchTerm) { settings.searchTerm = settings.searchTerm.replace(/[^\w\s]/gi, ''); }
+            search(response => success(response, true), cb as CbErr<ElasticQueryResponseItem, boolean>);
+        });
+    }
+
+    getDefaultSearchView() {
+        return this.searchSettings.defaultSearchView;
+    }
+
+    getExport(query: SearchSettingsElastic, type: 'cde' | 'form', cb: CbErr<ItemElastic[]>) {
+        this.http.post<ItemElastic[]>('/elasticSearchExport/' + type, query).subscribe(
+            response => cb(undefined, response),
+            (err: HttpErrorResponse) => {
+                if (err.status === 503) {
+                    cb('The server is busy processing similar request, please try again in a minute.');
+                } else {
+                    cb('An error occured. This issue has been reported.');
+                }
+            }
+        );
+    }
+
+    getUserDefaultStatuses(): CurationStatus[] {
+        let overThreshold = false;
+        const result = orderedList.filter(status => {
+            if (overThreshold) { return false; }
+            overThreshold = this.searchSettings.lowestRegistrationStatus === status;
+            return true;
+        });
+        if (this.searchSettings.includeRetired) { result.push('Retired'); }
+        return result;
+    }
+
+    loadSearchSettings() {
+        if (!this.searchSettings) {
+            this.searchSettings = this.localStorageService.get('SearchSettings');
+            if (!this.searchSettings) { this.searchSettings = ElasticService.getDefault(); }
+
+            this.userService.then(user => {
+                if (!user.searchSettings) {
+                    user.searchSettings = ElasticService.getDefault();
+                }
+                this.searchSettings = user.searchSettings;
+                if (this.searchSettings.version !== ElasticService.getDefault().version) {
+                    this.searchSettings = ElasticService.getDefault();
+                }
+            }, () => {
+                if (this.searchSettings.version !== ElasticService.getDefault().version) {
+                    this.searchSettings = ElasticService.getDefault();
+                }
+            });
+        }
+    }
+
+    saveConfiguration(settings: UserSearchSettings) {
+        this.searchSettings = settings;
+        const savedSettings = JSON.parse(JSON.stringify(this.searchSettings));
+        delete savedSettings.includeRetired;
+        this.localStorageService.set('SearchSettings', savedSettings);
+        if (this.userService.user) {
+            this.http.post('/server/user/', {searchSettings: savedSettings}).subscribe();
+        }
+    }
 
     static getDefault(): UserSearchSettings {
         return {
@@ -114,105 +226,6 @@ export class ElasticService {
             if (matched === 'stewardOrgCopy.name') { field = 'Steward'; }
             if (matched === 'flatIds') { field = 'Identifiers'; }
             cde.highlight.matchedBy = field;
-        }
-    }
-
-    buildElasticQuerySettings(queryParams: SearchSettings): SearchSettingsElastic {
-        return {
-            resultPerPage: queryParams.resultPerPage,
-            searchTerm: queryParams.q,
-            selectedOrg: queryParams.selectedOrg,
-            selectedOrgAlt: queryParams.selectedOrgAlt,
-            excludeAllOrgs: queryParams.excludeAllOrgs,
-            excludeOrgs: queryParams.excludeOrgs || [],
-            selectedElements: queryParams.classification || [],
-            selectedElementsAlt: queryParams.classificationAlt || [],
-            page: queryParams.page,
-            includeAggregations: true,
-            meshTree: queryParams.meshTree,
-            selectedStatuses: queryParams.regStatuses || [],
-            selectedDatatypes: queryParams.datatypes || [],
-            visibleStatuses: this.getUserDefaultStatuses(),
-            searchToken: this.searchToken,
-            fullRecord: undefined,
-        };
-    }
-
-    generalSearchQuery(settings: SearchSettingsElastic, type: 'cde' | 'form', cb: CbErr<ElasticQueryResponse, boolean>) {
-        const search = (good: Cb1<ElasticQueryResponse>, bad: CbErr) => {
-            this.http.post<ElasticQueryResponse>('/elasticSearch/' + type, settings).subscribe(good, bad);
-        };
-
-        function success(response: ElasticQueryResponse, isRetry = false) {
-            if (type === 'cde') {
-                ElasticService.highlightResults(response.cdes!);
-                response.cdes!.forEach(DataElement.validate);
-            } else {
-                ElasticService.highlightResults(response.forms!);
-                response.forms!.forEach(CdeForm.validate);
-            }
-            cb(undefined, response, isRetry);
-        }
-
-        search(success, () => {
-            if (settings.searchTerm) { settings.searchTerm = settings.searchTerm.replace(/[^\w\s]/gi, ''); }
-            search(response => success(response, true), cb);
-        });
-    }
-
-    getDefaultSearchView() {
-        return this.searchSettings.defaultSearchView;
-    }
-
-    getExport(query: SearchSettingsElastic, type: 'cde' | 'form', cb: CbErr<ItemElastic[]>) {
-        this.http.post<ItemElastic[]>('/elasticSearchExport/' + type, query).subscribe(
-            response => cb(undefined, response),
-            (err: HttpErrorResponse) => {
-                if (err.status === 503) { cb('The server is busy processing similar request, please try again in a minute.'); }
-                else { cb('An error occured. This issue has been reported.'); }
-            }
-        );
-    }
-
-    getUserDefaultStatuses(): CurationStatus[] {
-        let overThreshold = false;
-        const result = orderedList.filter(status => {
-            if (overThreshold) { return false; }
-            overThreshold = this.searchSettings.lowestRegistrationStatus === status;
-            return true;
-        });
-        if (this.searchSettings.includeRetired) { result.push('Retired'); }
-        return result;
-    }
-
-    loadSearchSettings() {
-        if (!this.searchSettings) {
-            this.searchSettings = this.localStorageService.get('SearchSettings');
-            if (!this.searchSettings) { this.searchSettings = ElasticService.getDefault(); }
-
-            this.userService.then(user => {
-                if (!user.searchSettings) {
-                    user.searchSettings = ElasticService.getDefault();
-                }
-                this.searchSettings = user.searchSettings;
-                if (this.searchSettings.version !== ElasticService.getDefault().version) {
-                    this.searchSettings = ElasticService.getDefault();
-                }
-            }, () => {
-                if (this.searchSettings.version !== ElasticService.getDefault().version) {
-                    this.searchSettings = ElasticService.getDefault();
-                }
-            });
-        }
-    }
-
-    saveConfiguration(settings: UserSearchSettings) {
-        this.searchSettings = settings;
-        const savedSettings = JSON.parse(JSON.stringify(this.searchSettings));
-        delete savedSettings.includeRetired;
-        this.localStorageService.set('SearchSettings', savedSettings);
-        if (this.userService.user) {
-            this.http.post('/server/user/', {searchSettings: savedSettings}).subscribe();
         }
     }
 }

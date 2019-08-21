@@ -1,6 +1,6 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import '../../../../node_modules/js-toggle-switch/dist/toggle-switch.css';
-import ToggleSwitch from '../../../../node_modules/js-toggle-switch/dist/toggle-switch';
+import ToggleSwitch from 'js-toggle-switch/dist/toggle-switch';
 
 
 @Component({
@@ -75,8 +75,8 @@ export class DraftSliderComponent implements OnInit {
         }
     }
     @Output() isDraftChange = new EventEmitter<boolean>();
-    @ViewChild('sliderInput') public draftSliderElem: ElementRef;
-    @ViewChild('sliderParent') public draftSliderParent: ElementRef;
+    @ViewChild('sliderInput') draftSliderElem!: ElementRef;
+    @ViewChild('sliderParent') draftSliderParent!: ElementRef;
     draftToggle: any;
 
     ngOnInit() {

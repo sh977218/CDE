@@ -6,8 +6,8 @@ import { AlertService } from 'alert/alert.service';
 import { Source, UserSearchSettings } from 'shared/models.model';
 
 export class TableViewPreferencesComponent {
-    @Output() onChanged = new EventEmitter();
-    @Output() onClosed = new EventEmitter();
+    @Output() changed = new EventEmitter();
+    @Output() closed = new EventEmitter();
     identifierSources: string[] = [];
     searchSettings: UserSearchSettings;
     placeHolder = 'Optional: select identifiers to include (default: all)';
@@ -22,6 +22,6 @@ export class TableViewPreferencesComponent {
     loadDefault() {
         this.searchSettings = ElasticService.getDefault();
         this.alert.addAlert('info', 'Default settings loaded. Press Save to persist them.');
-        this.onChanged.emit();
+        this.changed.emit();
     }
 }

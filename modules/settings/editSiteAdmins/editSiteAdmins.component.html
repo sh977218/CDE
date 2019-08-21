@@ -1,7 +1,7 @@
 <h1>Site Admins</h1>
 <form name="form" class="form-inline pt40 pb40" novalidate>
     <cde-username-autocomplete [placeHolder]="'Make the user '"
-                               (onSelect)="newAdmin = $event;"></cde-username-autocomplete>
+                               (selected)="newAdmin = $event;"></cde-username-autocomplete>
     <span class="mx-2">a site admin</span>
     <button mat-raised-button (click)="addSiteAdmin()" id="saveMessage">Make Admin</button>
 </form>

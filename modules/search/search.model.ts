@@ -31,7 +31,7 @@ export class SearchSettingsElastic {
     fullRecord?: boolean;
     includeAggregations?: boolean;
     meshTree = '';
-    page = 1;
+    page?: number = 1;
     q?: string;
     resultPerPage = 20;
     searchTerm?: string;

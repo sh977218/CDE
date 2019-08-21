@@ -13,6 +13,6 @@ export class EmbeddedFormSearchResultComponent {
     @Input() searchViewSettings!: UserSearchSettings;
 
     concatenateQuestions(form: CdeFormElastic) {
-        return getFormQuestionsAsQuestionCde(form).map(c => c.name).join(",");
+        return getFormQuestionsAsQuestionCde(form).map(c => c.name).join(',');
     }
 }

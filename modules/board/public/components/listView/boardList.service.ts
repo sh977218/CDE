@@ -1,11 +1,12 @@
 import { EventEmitter, Injectable } from '@angular/core';
+import { Board } from 'shared/models.model';
 
 @Injectable()
 export class BoardListService {
-    board: any;
-    currentPage: number;
-    reload: EventEmitter<any> = new EventEmitter();
-    totalItems: number;
+    board!: Board;
+    currentPage!: number;
+    reload = new EventEmitter<void>();
+    totalItems!: number;
 
     constructor() {}
 }

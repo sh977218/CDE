@@ -4,43 +4,43 @@
         <mat-grid-tile [colspan]="1" [rowspan]="1">
             <mat-list>
                 <mat-list-item role="listitem">
-                    <mat-checkbox [disabled]="true" id="name" name="name" (change)="onChanged.emit();"
+                    <mat-checkbox [disabled]="true" id="name" name="name" (change)="changed.emit();"
                                   [(ngModel)]="searchSettings.tableViewFields.name">
                         Name
                     </mat-checkbox>
                 </mat-list-item>
                 <mat-list-item role="listitem">
-                    <mat-checkbox id="naming" name="naming" (change)="onChanged.emit();"
+                    <mat-checkbox id="naming" name="naming" (change)="changed.emit();"
                                   [(ngModel)]="searchSettings.tableViewFields.naming">
                         Other Names
                     </mat-checkbox>
                 </mat-list-item>
                 <mat-list-item role="listitem">
-                    <mat-checkbox id="usedBy" name="usedBy" (change)="onChanged.emit();"
+                    <mat-checkbox id="usedBy" name="usedBy" (change)="changed.emit();"
                                   [(ngModel)]="searchSettings.tableViewFields.usedBy">
                         Used by
                     </mat-checkbox>
                 </mat-list-item>
                 <mat-list-item role="listitem">
-                    <mat-checkbox id="updated" name="updated" (change)="onChanged.emit();"
+                    <mat-checkbox id="updated" name="updated" (change)="changed.emit();"
                                   [(ngModel)]="searchSettings.tableViewFields.updated">
                         Updated
                     </mat-checkbox>
                 </mat-list-item>
                 <mat-list-item role="listitem">
-                    <mat-checkbox id="source" name="source" (change)="onChanged.emit();"
+                    <mat-checkbox id="source" name="source" (change)="changed.emit();"
                                   [(ngModel)]="searchSettings.tableViewFields.source">
                         Source
                     </mat-checkbox>
                 </mat-list-item>
                 <mat-list-item role="listitem">
-                    <mat-checkbox id="tinyId" name="tinyId" (change)="onChanged.emit();"
+                    <mat-checkbox id="tinyId" name="tinyId" (change)="changed.emit();"
                                   [(ngModel)]="searchSettings.tableViewFields.tinyId">
                         NLM ID
                     </mat-checkbox>
                 </mat-list-item>
                 <mat-list-item role="listitem">
-                    <mat-checkbox id="stewardOrg" name="stewardOrg" (change)="onChanged.emit();"
+                    <mat-checkbox id="stewardOrg" name="stewardOrg" (change)="changed.emit();"
                                   [(ngModel)]="searchSettings.tableViewFields.stewardOrg">
                         Steward
                     </mat-checkbox>
@@ -50,25 +50,25 @@
         <mat-grid-tile [colspan]="1" [rowspan]="1">
             <mat-list>
                 <mat-list-item role="listitem">
-                    <mat-checkbox id="registrationStatus" name="registrationStatus" (change)="onChanged.emit();"
+                    <mat-checkbox id="registrationStatus" name="registrationStatus" (change)="changed.emit();"
                                   [(ngModel)]="searchSettings.tableViewFields.registrationStatus">
                         Registration Status
                     </mat-checkbox>
                 </mat-list-item>
                 <mat-list-item role="listitem">
-                    <mat-checkbox id="administrativeStatus" name="administrativeStatus" (change)="onChanged.emit();"
+                    <mat-checkbox id="administrativeStatus" name="administrativeStatus" (change)="changed.emit();"
                                   [(ngModel)]="searchSettings.tableViewFields.administrativeStatus">
                         Admin Status
                     </mat-checkbox>
                 </mat-list-item>
                 <mat-list-item role="listitem">
-                    <mat-checkbox id="numQuestions" name="numQuestions" (change)="onChanged.emit();"
+                    <mat-checkbox id="numQuestions" name="numQuestions" (change)="changed.emit();"
                                   [(ngModel)]="searchSettings.tableViewFields.numQuestions">
                         Number of Questions
                     </mat-checkbox>
                 </mat-list-item>
                 <mat-list-item role="listitem">
-                    <mat-checkbox id="ids" name="ids" (change)="onChanged.emit();"
+                    <mat-checkbox id="ids" name="ids" (change)="changed.emit();"
                                   [(ngModel)]="searchSettings.tableViewFields.ids">
                         Identifiers
                     </mat-checkbox>
@@ -78,9 +78,9 @@
     </mat-grid-list>
     <cde-tag id="identifiers" name="identifiers" [tags]="searchSettings.tableViewFields.identifiers"
              [allTags]="identifierSources" [placeHolder]="placeHolder" [canEdit]="searchSettings.tableViewFields.ids"
-             (changed)="onChanged.emit();"></cde-tag>
+             (changed)="changed.emit();"></cde-tag>
 </mat-dialog-content>
 <mat-dialog-actions>
     <button mat-raised-button (click)="loadDefault()" id="loadDefaultTableViewSettingsBtn">Load Default</button>
-    <button mat-raised-button (click)="onClosed.emit();" id="closeTableViewSettingsBtn">Close</button>
+    <button mat-raised-button (click)="closed.emit();" id="closeTableViewSettingsBtn">Close</button>
 </mat-dialog-actions>

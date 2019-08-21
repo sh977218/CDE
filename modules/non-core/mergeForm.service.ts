@@ -1,11 +1,38 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import async_forEachSeries from 'async/forEachSeries';
+import { CompareForm, CompareQuestion } from 'compare/compareSideBySide/compareSideBySide.component';
 import { mergeArrayByProperty } from 'core/adminItem/classification';
 import { IsAllowedService } from 'non-core/isAllowed.service';
 import { MergeCdeService } from 'non-core/mergeCde.service';
+import { CdeForm } from 'shared/form/form.model';
+import { Cb, Cb2, CbErr } from 'shared/models.model';
 import { transferClassifications } from 'shared/system/classificationShared';
 
+export interface MergeFieldsForm {
+    designations: boolean;
+    definitions: boolean;
+    referenceDocuments: boolean;
+    properties: boolean;
+    ids: boolean;
+    classifications: boolean;
+    questions: boolean;
+    cde: MergeFieldsFormCde;
+}
+
+export interface MergeFieldsFormCde {
+    designations: boolean;
+    definitions: boolean;
+    referenceDocuments: boolean;
+    properties: boolean;
+    attachments: boolean;
+    dataSets: boolean;
+    derivationRules: boolean;
+    sources: boolean;
+    ids: boolean;
+    classifications: boolean;
+    retireCde: boolean;
+}
 
 @Injectable()
 export class MergeFormService {
@@ -22,11 +49,10 @@ export class MergeFormService {
     ) {
     }
 
-    saveForm(form, cb) {
-        //noinspection TypeScriptValidateTypes
-        this.http.post('/formPublishExternal', form).subscribe(
+    saveForm(form: CdeForm, cb: CbErr<CdeForm>) {
+        this.http.post<CdeForm>('/formPublishExternal', form).subscribe(
             data => {
-                cb(null, data);
+                cb(undefined, data);
             },
             err => {
                 cb('Error, unable to save form ' + form.tinyId + ' ' + err);
@@ -34,10 +60,10 @@ export class MergeFormService {
         );
     }
 
-    private mergeQuestions(questionsFrom, questionsTo, fields, doneOne, cb) {
+    private mergeQuestions(questionsFrom: CompareQuestion[], questionsTo: CompareQuestion[], fields: MergeFieldsFormCde,
+                           doneOne: Cb2<number, Cb>, cb: CbErr) {
         let index = 0;
-        //noinspection TypeScriptUnresolvedFunction
-        async_forEachSeries(questionsFrom, (questionFrom: any, doneOneQuestion) => {
+        async_forEachSeries(questionsFrom, (questionFrom: CompareQuestion, doneOneQuestion: Cb) => {
             const questionTo = questionsTo[index];
             if (!questionFrom.question.cde.tinyId || !questionTo.question.cde.tinyId) {
                 index++;
@@ -46,8 +72,9 @@ export class MergeFormService {
                 const tinyIdFrom = questionFrom.question.cde.tinyId;
                 const tinyIdTo = questionTo.question.cde.tinyId;
                 this.mergeCdeService.doMerge(tinyIdFrom, tinyIdTo, fields, (err, result) => {
-                    if (err) { return cb(err); }
-                    else {
+                    if (err) {
+                        return cb(err);
+                    } else {
                         index++;
                         if (result && result[0].registrationState.registrationStatus === 'Retired') {
                             questionFrom.isRetired = true;
@@ -59,9 +86,9 @@ export class MergeFormService {
         }, cb);
     }
 
-    doMerge(mergeFrom, mergeTo, fields, doneOne, cb) {
-        if (mergeFrom.length !== mergeTo.length) {
-            cb({error: 'number of question on left is not same on right.'});
+    doMerge(mergeFrom: CompareForm, mergeTo: CompareForm, fields: MergeFieldsForm, doneOne: Cb2<number, Cb>, cb: CbErr) {
+        if (mergeFrom.questions.length !== mergeTo.questions.length) {
+            cb('number of question on left is not same on right.');
         } else {
             if (fields.designations) {
                 mergeArrayByProperty(mergeFrom, mergeTo, 'designations');
@@ -82,14 +109,12 @@ export class MergeFormService {
                 transferClassifications(mergeFrom, mergeTo);
             }
             if (fields.questions) {
-                this.mergeQuestions(mergeFrom.questions, mergeTo.questions, fields.cde, (index, next) => {
-                    doneOne(index, next);
-                }, cb);
+                this.mergeQuestions(mergeFrom.questions, mergeTo.questions, fields.cde, doneOne, cb);
             }
         }
     }
 
-    validateQuestions(left, right, selectedFields) {
+    validateQuestions(left: CompareForm, right: CompareForm, selectedFields: MergeFieldsForm) {
         this.error.error = '';
         this.error.ownSourceForm = this.isAllowedModel.isAllowed(left);
         this.error.ownTargetForm = this.isAllowedModel.isAllowed(right);
@@ -100,13 +125,14 @@ export class MergeFormService {
         left.questions.forEach((leftQuestion, i) => {
             const leftTinyId = leftQuestion.question.cde.tinyId;
             leftQuestion.info = {};
+            const info = leftQuestion.info;
             right.questions.filter((rightQuestion, j) => {
                 const rightTinyId = rightQuestion.question.cde.tinyId;
                 if (leftTinyId === rightTinyId && i !== j) {
-                    leftQuestion.info.error = 'Not align';
+                    info.error = 'Not align';
                     this.error.error = 'Form not align';
                 } else if (leftTinyId === rightTinyId && i === j) {
-                    leftQuestion.info.match = true;
+                    info.match = true;
                 }
             });
         });

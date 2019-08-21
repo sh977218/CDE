@@ -2,16 +2,16 @@ import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm } from 'shared/form/form.model';
 import { Item, ModuleAll } from 'shared/models.model';
 
-type itemActionsApi = {
-    api: string,
-    apiById: string,
-    apiById_prior: string,
-    apiDraft: string,
-    apiDraftById: string,
-    schema: string,
-    view: string,
-    viewById: string,
-};
+interface ItemActionsApi {
+    api: string;
+    apiById: string;
+    apiById_prior: string;
+    apiDraft: string;
+    apiDraftById: string;
+    schema: string;
+    view: string;
+    viewById: string;
+}
 
 export const ITEM_MAP: {
     board: {
@@ -25,8 +25,8 @@ export const ITEM_MAP: {
             }
         }
     },
-    cde: itemActionsApi,
-    form: itemActionsApi
+    cde: ItemActionsApi,
+    form: ItemActionsApi
 } = {
     board: {
         view: '/board/',
@@ -70,7 +70,7 @@ export function isDataElement(item: Item): item is DataElement {
 }
 
 export function uriView(module: ModuleAll, tinyId: string): string|undefined {
-    let mod = ITEM_MAP[module];
+    const mod = ITEM_MAP[module];
     return mod && mod.view && (mod.view + tinyId);
 }
 

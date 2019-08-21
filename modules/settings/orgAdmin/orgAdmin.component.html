@@ -1,6 +1,6 @@
 <h1>My Organizations' Admins</h1>
 <form class="form-inline pt40 pb40" #adminForm="ngForm" role="form" id="newOrgAdminForm" novalidate>
-    <cde-username-autocomplete (onSelect)="newAdmin.username = $event"></cde-username-autocomplete>
+    <cde-username-autocomplete (selected)="newAdmin.username = $event"></cde-username-autocomplete>
     an administrator for
     <div class="form-group mx-1">
         <select id="newOrgAdminOrgName" name="newOrgAdminOrgName" class="form-control"

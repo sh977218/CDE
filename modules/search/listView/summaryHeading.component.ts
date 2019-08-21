@@ -12,8 +12,8 @@ import { ItemElastic } from 'shared/models.model';
     `]
 })
 export class SummaryHeadingComponent {
-    @Input() elt: ItemElastic;
-    @Input() eltIndex: number;
-    @Input() urlPrefix: string;
+    @Input() elt!: ItemElastic;
+    @Input() eltIndex!: number;
+    @Input() urlPrefix!: string;
     @Output() select = new EventEmitter<string>();
 }

@@ -8,7 +8,7 @@ import { DeCompletionService } from 'cde/public/components/completion/deCompleti
 })
 export class DeCompletionComponent implements OnInit {
     @Output() add: EventEmitter<any> = new EventEmitter<any>();
-    adding: boolean;
+    adding!: boolean;
 
     ngOnInit() {
         this.adding = !!this.add.observers.length;

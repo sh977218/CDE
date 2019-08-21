@@ -1,9 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
-import { AlertService } from 'alert/alert.service';
-import { UserService } from '_app/user.service';
-import { MyBoardsService } from 'board/public/myBoards.service';
 import { MatDialog, MatDialogRef } from '@angular/material';
+import { UserService } from '_app/user.service';
+import { AlertService } from 'alert/alert.service';
+import { MyBoardsService } from 'board/public/myBoards.service';
+import { Board, Cb, Item, ModuleItem } from 'shared/models.model';
 
 
 @Component({
@@ -11,12 +12,12 @@ import { MatDialog, MatDialogRef } from '@angular/material';
     templateUrl: './pinBoardModal.component.html',
 })
 export class PinBoardModalComponent {
-    @Input() module = null;
-    @ViewChild('pinModal') pinModal: TemplateRef<any>;
-    @ViewChild('ifYouLoginModal') ifYouLoginModal: TemplateRef<any>;
-    dialogRef: MatDialogRef<TemplateRef<any>>;
-    private resolve;
-    private reject;
+    @Input() module!: ModuleItem;
+    @ViewChild('pinModal') pinModal!: TemplateRef<any>;
+    @ViewChild('ifYouLoginModal') ifYouLoginModal!: TemplateRef<any>;
+    dialogRef!: MatDialogRef<TemplateRef<any>>;
+    private resolve!: Cb<Board>;
+    private reject!: Cb<any>;
 
     constructor(private alert: AlertService,
                 private http: HttpClient,
@@ -26,7 +27,7 @@ export class PinBoardModalComponent {
     }
 
 
-    pinMultiple(elts: any, promise: Promise<any>) {
+    pinMultiple(elts: {tinyId: string}[], promise: Promise<any>) {
         promise.then(board => {
             this.http.put('/server/board/pinToBoard/', {
                 boardId: board._id,
@@ -58,7 +59,7 @@ export class PinBoardModalComponent {
         });
     }
 
-    selectBoard(board) {
+    selectBoard(board: Board) {
         this.resolve(board);
         this.dialogRef.close();
     }

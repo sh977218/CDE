@@ -4,25 +4,23 @@ import _noop from 'lodash/noop';
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { UserService } from '_app/user.service';
 import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
-import { Elt, User } from 'shared/models.model';
+import { Elt, ModuleItem, User } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 
 @Component({
     templateUrl: './cdeAccordionList.component.html'
 })
 export class CdeAccordionListComponent {
-    @Input() addMode: any = null;
-    @Input() location: string = null;
-    @Input() elts: DataElement[];
+    @Input() addMode: string = '';
+    @Input() location: string = 'null';
+    @Input() elts!: DataElement[];
     @Input() openInNewTab = false;
     @Output() add = new EventEmitter<DataElement>();
-
-    module = 'cde';
+    @ViewChild('pinModalCde')pinModalCde!: PinBoardModalComponent;
+    module: ModuleItem = 'cde';
     pinModal: any;
-    user: User;
+    user!: User;
     Elt = Elt;
-
-    @ViewChild('pinModalCde') public pinModalCde: PinBoardModalComponent;
 
     constructor(private userService: UserService,
                 public quickBoard: QuickBoardListService) {

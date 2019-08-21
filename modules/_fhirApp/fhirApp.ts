@@ -10,10 +10,12 @@ require('expose-loader?bootstrap!bootstrap');
 import '../../node_modules/deeppurple-amber.css';
 
 import { enableProdMode } from '@angular/core';
-if (PRODUCTION) enableProdMode();
+if (PRODUCTION) {
+    enableProdMode();
+}
 
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { FhirAppModule } from "./fhirApp.module";
+import { FhirAppModule } from './fhirApp.module';
 platformBrowserDynamic().bootstrapModule(FhirAppModule);
 
 // must be after bootstrap to overload material styles

@@ -23,9 +23,9 @@ import { Property } from 'shared/models.model';
 })
 export class PropertiesComponent implements OnInit {
     @Input() canEdit = false;
-    @Input() elt: DataElement;
-    @Output() onEltChange = new EventEmitter();
-    @ViewChild('newPropertyContent') newPropertyContent: TemplateRef<any>;
+    @Input() elt!: DataElement;
+    @Output() eltChange = new EventEmitter();
+    @ViewChild('newPropertyContent') newPropertyContent!: TemplateRef<any>;
     newProperty: Property = new Property();
     onInitDone = false;
     orgPropertyKeys: string[] = [];
@@ -39,7 +39,9 @@ export class PropertiesComponent implements OnInit {
 
     ngOnInit() {
         this.orgHelperService.then(orgsDetailedInfo => {
-            this.orgPropertyKeys = orgsDetailedInfo[this.elt.stewardOrg.name].propertyKeys;
+            if (this.elt.stewardOrg.name) {
+                this.orgPropertyKeys = orgsDetailedInfo[this.elt.stewardOrg.name].propertyKeys || [];
+            }
             this.onInitDone = true;
         }, _noop);
     }
@@ -52,16 +54,15 @@ export class PropertiesComponent implements OnInit {
             this.dialog.open(this.newPropertyContent).afterClosed().subscribe(res => {
                 if (res) {
                     this.elt.properties.push(this.newProperty);
-                    this.onEltChange.emit();
+                    this.eltChange.emit();
                 }
                 this.newProperty = new Property();
             });
         }
     }
 
-    removePropertyByIndex(index) {
+    removePropertyByIndex(index: number) {
         this.elt.properties.splice(index, 1);
-        this.onEltChange.emit();
+        this.eltChange.emit();
     }
-
 }

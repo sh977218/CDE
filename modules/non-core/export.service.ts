@@ -14,19 +14,19 @@ import { processRules, RegistrationValidatorService, RuleStatus } from 'non-core
 import { SearchSettings } from 'search/search.model';
 import { DataElement, DataElementElastic } from 'shared/de/dataElement.model';
 import { CdeForm, CdeFormElastic } from 'shared/form/form.model';
-import { Cb1, CurationStatus, ElasticQueryResponse, Item, ItemElastic } from 'shared/models.model';
+import { Cb1, CurationStatus, ElasticQueryResponse, ElasticQueryResponseForm, Item, ItemElastic } from 'shared/models.model';
 import { convertToCsv, getCdeCsvHeader, projectItemForExport } from 'core/system/export';
 import { RedcapExport } from 'form/public/redcapExport';
 
 export interface ExportRecord {
-    tinyId: string,
-    cdeName: string,
-    validationRules?: RuleStatus[]
+    tinyId: string;
+    cdeName: string;
+    validationRules: RuleStatus[];
 }
 
 export interface ExportRecordSettings {
-    searchSettings: SearchSettings,
-    status?: CurationStatus,
+    searchSettings: SearchSettings;
+    status?: CurationStatus;
 }
 
 @Injectable()
@@ -46,7 +46,7 @@ export class ExportService {
                         const forms = await new Promise<Array<CdeForm>>(resolve => {
                             const lfSettings = this.elasticService.buildElasticQuerySettings(new SearchSettings(r.tinyId));
                             this.elasticService.generalSearchQuery(lfSettings, 'form',
-                                (err?: string, esRes?: ElasticQueryResponse) => resolve(esRes && esRes.forms));
+                                (err?: string, esRes?: ElasticQueryResponseForm) => resolve(esRes && esRes.forms));
                         });
                         if (forms.length) { r.linkedForms = forms.map(f => f.tinyId).join(', '); }
                     }
@@ -71,11 +71,15 @@ export class ExportService {
                             interArr.forEach(matchId => {
                                 const foundCdes = result.filter(c => c.tinyId === matchId.tinyId);
                                 foundCdes.forEach(c => {
-                                    if (c.linkedForms) { c.linkedForms = c.linkedForms + ', ' + esForm.tinyId; }
-                                    else { c.linkedForms = esForm.tinyId; }
+                                    if (c.linkedForms) {
+                                        c.linkedForms = c.linkedForms + ', ' + esForm.tinyId;
+                                    } else {
+                                        c.linkedForms = esForm.tinyId;
+                                    }
                                 });
                             });
-                            this.alertService.addAlert('success', 'Attaching linked forms ' + Math.trunc(100 * formCounter / totalNbOfForms) + '%');
+                            this.alertService.addAlert('success', 'Attaching linked forms '
+                                + Math.trunc(100 * formCounter / totalNbOfForms) + '%');
                         }
                         return true;
                     } else { return false; }
@@ -93,13 +97,16 @@ export class ExportService {
         );
     }
 
-    exportSearchResults(type: 'cvs'|'json'|'validationRules'|'xml', module: 'cde'|'form', exportSettings: ExportRecordSettings, cb?: Cb1<ExportRecord[] | undefined>) {
+    exportSearchResults(type: 'cvs'|'json'|'validationRules'|'xml', module: 'cde'|'form', exportSettings: ExportRecordSettings,
+                        cb?: Cb1<ExportRecord[] | undefined>) {
         if (!this.userService.loggedIn() && (module === 'form' || module === 'cde' && type === 'validationRules')) {
             return this.alertService.addAlert('danger', 'Please login to access this feature');
         }
 
         try {
-            !!new Blob;
+            /* tslint:disable */
+            !!new Blob();
+            /* tslint:enable */
         } catch (e) {
             return this.alertService.addAlert('danger',
                 'Export feature is not supported in this browser. Please try Google Chrome or Mozilla FireFox.');
@@ -138,7 +145,7 @@ export class ExportService {
                             }
                             zip.file(oneElt.tinyId + '.xml', JXON.jsToString({element: oneElt}));
                         });
-                        zip.generateAsync({type: 'blob'}).then(content => saveAs(content, 'SearchExport_XML.zip'));
+                        zip.generateAsync({type: 'blob'}).then((content: any) => saveAs(content, 'SearchExport_XML.zip'));
                         this.alertService.addAlert('success', 'Export downloaded.');
                     },
                     odm: (elts: CdeFormElastic[]) => {
@@ -148,19 +155,22 @@ export class ExportService {
                                 if (!err) { zip.file(elt.tinyId + '.xml', JXON.jsToString({ODM: odmElt})); }
                             });
                         });
-                        zip.generateAsync({type: 'blob'}).then(content => saveAs(content, 'SearchExport_ODM.zip'));
+                        zip.generateAsync({type: 'blob'}).then((content: any) => saveAs(content, 'SearchExport_ODM.zip'));
                         this.alertService.addAlert('success', 'Export downloaded.');
                     },
                     validationRules: (elts: ItemElastic[]) => {
-                        if (!cb) { return; }
                         const orgName = exportSettings.searchSettings.selectedOrg;
+                        if (!cb || !orgName) {
+                            return;
+                        }
                         const status = exportSettings.status;
                         const validations: Promise<ExportRecord | undefined>[] = elts.map(elt => {
                             const cdeOrgRules = this.registrationValidatorService.getOrgRulesForCde(elt);
                             const ruleStatuses = processRules(elt, orgName, status, cdeOrgRules);
                             if (!ruleStatuses) {
-                                return undefined;
+                                return Promise.resolve(undefined);
                             }
+                            const ruleStatusesExists = ruleStatuses;
                             return Promise.all(ruleStatuses.map(rule => rule.ruleResultPromise)).then(results => {
                                 if (results.every(result => !result)) {
                                     return undefined; // All PASS
@@ -168,16 +178,16 @@ export class ExportService {
                                 const record: ExportRecord = {
                                     tinyId: elt.tinyId,
                                     cdeName: elt.designations[0].designation,
-                                    validationRules: ruleStatuses,
+                                    validationRules: ruleStatusesExists,
                                 };
                                 results.forEach((ri, i) => {
-                                    record.validationRules![i].ruleError = ri;
+                                    record.validationRules[i].ruleError = ri;
                                 });
                                 return record;
                             });
                         });
                         Promise.all(validations).then(
-                            r => cb(r.filter(r => r).slice(0, 100)),
+                            r => cb(r.filter<ExportRecord>((r: ExportRecord | undefined): r is ExportRecord => !!r).slice(0, 100)),
                             () => cb(undefined)
                         );
                     }

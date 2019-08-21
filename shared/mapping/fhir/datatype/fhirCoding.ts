@@ -6,13 +6,8 @@ export function getText(coding?: FhirCoding): string {
 }
 
 export function getTextFromArray(coding?: FhirCoding[]): string {
-    if (Array.isArray(coding)) {
-        let display = coding.filter(c => !!c.display);
-        if (display.length) {
-            return display[0].display!;
-        }
-    }
-    return '';
+    const codings = Array.isArray(coding) && coding.filter(c => !!c.display);
+    return codings && codings.length && codings[0].display || '';
 }
 
 export function getTextFromArrayAll(coding?: FhirCoding[]): string {
@@ -21,10 +16,10 @@ export function getTextFromArrayAll(coding?: FhirCoding[]): string {
 
 export function newCoding(system?: string, code?: string, version?: string, display?: string): FhirCoding {
     return {
-        code: code,
-        display: display,
+        code,
+        display,
         system: codeSystemOut(system),
         userSelected: false,
-        version: version,
+        version,
     };
 }

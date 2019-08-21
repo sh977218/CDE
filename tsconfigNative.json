@@ -12,11 +12,10 @@
     ],
     "module": "ES2015",
     "moduleResolution": "Node",
-    "noImplicitAny": false,
     "pretty": false,
     "rootDir": ".",
     "sourceMap": false,
-    "suppressImplicitAnyIndexErrors": true,
+    "strict": true,
     "target": "ES5",
     "typeRoots": [
       "node_modules/@types"
@@ -33,6 +32,7 @@
     "buildNode",
     "deploy",
     "dist",
+    "gulpfile.ts",
     "ingester",
     "modules/_app",
     "modules/_embedApp",

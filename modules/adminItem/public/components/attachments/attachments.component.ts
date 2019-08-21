@@ -39,7 +39,9 @@ export class AttachmentsComponent {
     }
 
     openFileDialog() {
-        document.getElementById('fileToUpload')!.click();
+        const open = document.getElementById('fileToUpload');
+        if (open) {
+            open.click();
+        }
     }
-
 }

@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Resolve, Router } from '@angular/router';
-
 import { Observable } from 'rxjs/Observable';
 import { catchError } from 'rxjs/operators';
-import { EMPTY } from 'rxjs';
+import { empty } from 'rxjs/observable/empty';
 import { HttpClient } from '@angular/common/http';
 import { Organization } from 'shared/models.model';
 
@@ -16,8 +15,8 @@ export class ManagedOrgsResolve implements Resolve<Observable<Organization>> {
     resolve() {
         return this.http.get<Organization>('/managedOrgs')
             .pipe(catchError(() => {
-                this.router.navigate(["/404"]);
-                return EMPTY;
+                this.router.navigate(['/404']);
+                return empty();
             }));
     }
 }

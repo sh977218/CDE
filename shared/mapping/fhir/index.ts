@@ -18,7 +18,7 @@ export const externalCodeSystemsMap: any = {
 };
 
 export function codeSystemIn(uri?: FhirUri): string {
-    let results = externalCodeSystems.filter(c => c.uri === uri);
+    const results = externalCodeSystems.filter(c => c.uri === uri);
     return results.length ? results[0].id : '';
 }
 

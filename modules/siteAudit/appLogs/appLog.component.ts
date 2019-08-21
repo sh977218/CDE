@@ -23,14 +23,14 @@ export class AppLogComponent {
         if (event) {
             this.currentPage = event.pageIndex;
         }
-
-        let postBody = {
+        this.http.post<any>('/server/log/appLogs', {
             currentPage: this.currentPage,
             fromDate: this.fromDate,
             toDate: this.toDate
-        };
-        this.http.post<any>('/server/log/appLogs', postBody).subscribe(res => {
-            if (res.totalItems) this.totalItems = res.totalItems;
+        }).subscribe(res => {
+            if (res.totalItems) {
+                this.totalItems = res.totalItems;
+            }
             this.gridLogEvents = res.logs.map((log: AppLogEntry) => {
                 return {
                     date: new Date(log.date).toLocaleString(),
