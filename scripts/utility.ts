@@ -122,6 +122,22 @@ export function fixEmptyPermissibleValue(permissibleValues) {
     return result.filter(pv => !isEmpty(pv.permissibleValue));
 }
 
+function fixDerivationRules(cdeObj) {
+    let derivationRules = [];
+    cdeObj.derivationRules.forEach(d => {
+        if (!isEmpty(d.inputs)) {
+            let inputs = [];
+            d.inputs.forEach(input => {
+                let underScoreTinyId = input.replace(/-/g, "_");
+                inputs.push(underScoreTinyId);
+            });
+            d.inputs = inputs;
+        }
+        derivationRules.push(d);
+    });
+    return derivationRules;
+}
+
 export function fixCdeError(cde) {
     if (!cde.createdBy) {
         fixCreatedBy(cde);
@@ -132,6 +148,7 @@ export function fixCdeError(cde) {
     cde.valueDomain = fixValueDomain(cde.toObject());
     cde.designations = fixEmptyDesignation(cde.toObject());
     cde.sources = fixSourceName(cde.toObject());
+    cde.derivationRules = fixDerivationRules(cde.toObject());
     cde.classification = fixClassification(cde.toObject());
 }
 
@@ -220,7 +237,7 @@ async function fixQuestion(questionFe, formObj) {
             tinyId: cde.tinyId,
             name: questionFe.question.cde.name,
             ids: cde.ids,
-            derivationRules: questionFe.question.cde.derivationRules
+            derivationRules: fixDerivationRules(questionFe.question.cde)
         },
     };
     if (cde.version) question.cde.version = cde.version;
@@ -228,20 +245,45 @@ async function fixQuestion(questionFe, formObj) {
     let valueDomain = cdeObj.valueDomain;
     let datatype = valueDomain.datatype;
 
-    if (datatype === 'Text' && !isEmpty(valueDomain.datatypeText)) {
-        question.datatypeText = valueDomain.datatypeText;
+    if (datatype === 'Text') {
+        if (!isEmpty(valueDomain.datatypeText)) {
+            question.datatypeText = valueDomain.datatypeText;
+        }
+        if (!isEmpty(questionFe.question.datatypeText)) {
+            question.datatypeText = questionFe.question.datatypeText;
+        }
     }
-    if (datatype === 'Number' && !isEmpty(valueDomain.datatypeNumber)) {
-        question.datatypeNumber = valueDomain.datatypeNumber;
+    if (datatype === 'Number') {
+        if (!isEmpty(valueDomain.datatypeNumber)) {
+            question.datatypeNumber = valueDomain.datatypeNumber;
+        }
+        if (!isEmpty(questionFe.question.datatypeNumber)) {
+            question.datatypeNumber = questionFe.question.datatypeNumber;
+        }
     }
-    if (datatype === 'Date' && !isEmpty(valueDomain.datatypeDate)) {
-        question.datatypeDate = valueDomain.datatypeDate;
+    if (datatype === 'Date') {
+        if (!isEmpty(valueDomain.datatypeDate)) {
+            question.datatypeDate = valueDomain.datatypeDate;
+        }
+        if (!isEmpty(questionFe.question.datatypeDate)) {
+            question.datatypeDate = questionFe.question.datatypeDate;
+        }
     }
-    if (datatype === 'Time' && !isEmpty(valueDomain.datatypeTime)) {
-        question.datatypeTime = valueDomain.datatypeTime;
+    if (datatype === 'Time') {
+        if (!isEmpty(valueDomain.datatypeTime)) {
+            question.datatypeTime = valueDomain.datatypeTime;
+        }
+        if (!isEmpty(questionFe.question.datatypeTime)) {
+            question.datatypeTime = questionFe.question.datatypeTime;
+        }
     }
-    if (datatype === 'Dynamic Code List' && !isEmpty(valueDomain.datatypeDynamicCodeList)) {
-        question.datatypeDynamicCodeList = valueDomain.datatypeDynamicCodeList;
+    if (datatype === 'Dynamic Code List') {
+        if (!isEmpty(valueDomain.datatypeDynamicCodeList)) {
+            question.datatypeDynamicCodeList = valueDomain.datatypeDynamicCodeList;
+        }
+        if (!isEmpty(questionFe.question.datatypeDynamicCodeList)) {
+            question.datatypeDynamicCodeList = questionFe.question.datatypeDynamicCodeList;
+        }
     }
     if (datatype === 'Value List') {
         if (isEmpty(valueDomain.permissibleValues)) {
@@ -263,6 +305,10 @@ async function fixQuestion(questionFe, formObj) {
 }
 
 async function fixSectionInform(sectionInformFe, formObj) {
+    if (isEmpty(sectionInformFe.formElements)) {
+        delete sectionInformFe.repeatsFor;
+        delete sectionInformFe.repeat;
+    }
     let formElements = [];
     for (let i = 0; i < sectionInformFe.formElements.length; i++) {
         let fe = sectionInformFe.formElements[i];
