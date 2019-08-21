@@ -7,7 +7,7 @@ process.on('unhandledRejection', function (error) {
 
 function run() {
     let formCount = 0;
-    let cond = {tinyId: '7y_PFN4Zr', archived: false};
+    let cond = {};
     let cursor = Form.find(cond).cursor();
 
     cursor.eachAsync(async (form: any) => {
