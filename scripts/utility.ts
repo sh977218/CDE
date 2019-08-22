@@ -220,7 +220,7 @@ async function fixQuestion(questionFe, formObj) {
         process.exit(1);
     }
     let label = questionFe.label;
-    let formErrorMessage = `${formObj.tinyId} ${formObj.version} ${formObj.archived} has question '${label}'`;
+    let formErrorMessage = `form ${formObj.tinyId} version ${formObj.version} archived ${formObj.archived} has question '${label}'`;
     if (!tinyId) {
         throw `cde tinyId is null ${formObj.tinyId} ${label}`;
         process.exit(1);
