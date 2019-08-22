@@ -171,7 +171,7 @@ public class BaseFormTest extends NlmCdeBaseTest {
         if (displayValues) clickElement(By.id("displayValues_" + index));
         if (!instructions) clickElement(By.id("displayInstructions_" + index));
         if (!numbering) clickElement(By.id("displayNumbering_" + index));
-        if(displayMetadataDevice) clickElement(By.id("displayMetadataDevice_"+index));
+        if (displayMetadataDevice) clickElement(By.id("displayMetadataDevice_" + index));
 
         clickElement(By.id("displayType_" + index));
         clickElement(By.xpath("//mat-option[contains(.,'" + displayType + "')]"));

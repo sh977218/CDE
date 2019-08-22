@@ -15,7 +15,9 @@ public class DisplayProfilesMatrixNoValuesTest extends BaseFormTest {
         goToDisplayProfiles();
 
         createDisplayProfile(0, "Matrix No Values", true, false, false, false, "Dynamic", 6, true, 0, false);
-        scrollToTop();
+
+        goToFormByName(formName);
+        goToDisplayProfiles();
         // use driver.findElement because zoom 60% makes element not visible
         int firstRadioY = driver.findElement(By.xpath("(//*[@id='profile_0']//table//input[@type='radio'])[1]")).getLocation().y;
         int fifthRadioY = driver.findElement(By.xpath("(//*[@id='profile_0']//table//input[@type='radio'])[5]")).getLocation().y;
@@ -24,9 +26,6 @@ public class DisplayProfilesMatrixNoValuesTest extends BaseFormTest {
 
         String fifthRadioText = driver.findElement(By.xpath("(//*[@id='profile_0']//*[contains(@class,'native-section')]//table//input[@type='radio'])[5]/..")).getText().trim();
         Assert.assertEquals(fifthRadioText, "");
-
-        newFormVersion();
-
     }
 
 }

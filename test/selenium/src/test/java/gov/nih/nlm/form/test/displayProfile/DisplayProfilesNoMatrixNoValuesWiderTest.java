@@ -14,8 +14,10 @@ public class DisplayProfilesNoMatrixNoValuesWiderTest extends BaseFormTest {
         goToFormByName(formName);
         goToDisplayProfiles();
 
-        createDisplayProfile(0, "No Matrix No Values Wider", false, false, false, false, "Follow-up", 5, false, 0,false);
-        scrollToTop();
+        createDisplayProfile(0, "No Matrix No Values Wider", false, false, false, false, "Follow-up", 5, false, 0, false);
+
+        goToFormByName(formName);
+        goToDisplayProfiles();
         // use driver.findElement because zoom 60% makes element not visible
         int firstRadioY = driver.findElement(By.xpath("(//*[@id='profile_0']//table//input[@type='radio'])[1]")).getLocation().y;
         int fifthRadioY = driver.findElement(By.xpath("(//*[@id='profile_0']//table//input[@type='radio'])[5]")).getLocation().y;
@@ -40,9 +42,6 @@ public class DisplayProfilesNoMatrixNoValuesWiderTest extends BaseFormTest {
             i--;
             hangon(2);
         }
-
-        newFormVersion();
-
     }
 
 }

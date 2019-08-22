@@ -15,7 +15,9 @@ public class DisplayProfilesNoMatrixNoValuesTest extends BaseFormTest {
         goToDisplayProfiles();
 
         createDisplayProfile(0, "No Matrix No Values", false, false, false, false, "Follow-up", 1, false, 0, true);
-        scrollToTop();
+
+        goToFormByName(formName);
+        goToDisplayProfiles();
         // use driver.findElement because zoom 60% makes element not visible
         int firstRadioY = driver.findElement(By.xpath("(//*[@id='profile_0']//table//input[@type='radio'])[1]")).getLocation().y;
         int fifthRadioY = driver.findElement(By.xpath("(//*[@id='profile_0']//table//input[@type='radio'])[5]")).getLocation().y;
@@ -27,9 +29,6 @@ public class DisplayProfilesNoMatrixNoValuesTest extends BaseFormTest {
 
         int number_add_icon = driver.findElements(By.xpath("//*[@id='profile_0']//*[contains(@class,'displayProfilePreview')]//i")).size();
         Assert.assertTrue(number_add_icon > 0, "Expected number of add icon more than 0, actual number_add_icon is " + number_add_icon);
-
-        newFormVersion();
-
     }
 
 }
