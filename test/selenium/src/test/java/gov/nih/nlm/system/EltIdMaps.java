@@ -132,6 +132,18 @@ public class EltIdMaps {
         eltMap.put("Imaging OCT Analysis - Spectralis Report Analysis", "XJrcQ1HSFx");
         eltMap.put("Loinc Widget Test Form", "Q1ncc4Rg_");
         eltMap.put("McGill Quality of Life Questionnaire (MQOL)", "Xk44kSSYe");
+
+        // Display Profile Tests
+        eltMap.put("Matrix Display Profile Test", "QktaN3OFL9");
+        eltMap.put("No Matrix Display Profile Test", "QktaN3OFL8");
+        eltMap.put("Answer Value Display Profile Test", "QktaN3OFL7");
+        eltMap.put("No Answer Value Display Profile Test", "QktaN3OFL6");
+        eltMap.put("Metadata Device Display Profile Test", "QktaN3OFL5");
+        eltMap.put("No Metadata Device Display Profile Test", "QktaN3OFL4");
+        eltMap.put("Multiple Select Display Profile Test", "QktaN3OFL3");
+        eltMap.put("No Matrix No Answer Value Wider Profile Test", "QktaN3OFL2");
+
+
         eltMap.put("Mean Value Test", "X17IaQ_NQ");
         eltMap.put("Measures of Gas Exchange", "Q1eNEJrHtx");
         eltMap.put("Motor Evoked Potentials", "mkWON1SrFe");

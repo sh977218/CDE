@@ -1,5 +1,6 @@
 package gov.nih.nlm.form.test;
 
+import gov.nih.nlm.form.test.displayProfile.DisplayProfile;
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
@@ -9,6 +10,7 @@ import org.testng.Assert;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.List;
+import java.util.ListIterator;
 
 public class BaseFormTest extends NlmCdeBaseTest {
 
@@ -157,6 +159,26 @@ public class BaseFormTest extends NlmCdeBaseTest {
         return builder.toString();
     }
 
+    protected void createDisplayProfile(DisplayProfile displayProfile) {
+        int index = displayProfile.displayProfileIndex;
+        String name = displayProfile.displayProfileName;
+        boolean matrix = displayProfile.displayAsMatrix;
+        boolean displayValues = displayProfile.displayAnswerValue;
+        boolean instructions = displayProfile.displayInstruction;
+
+        boolean numbering = displayProfile.displayQuestionNumber;
+        String displayType = displayProfile.displayProfileType;
+        int numberOfColumns = displayProfile.numberOfColumn;
+        boolean displayInvisible = displayProfile.displayInvisible;
+        int answerDropdownLimit = displayProfile.answerDropdownLimit;
+        boolean displayMetadataDevice = displayProfile.displayMetadataDevice;
+
+        createDisplayProfile(index, name, matrix, displayValues, instructions,
+                numbering, displayType, numberOfColumns, displayInvisible, answerDropdownLimit,
+                displayMetadataDevice);
+
+    }
+
     protected void createDisplayProfile(int index, String name, boolean matrix, boolean displayValues, boolean instructions,
                                         boolean numbering, String displayType, int numberOfColumns, boolean displayInvisible, int answerDropdownLimit,
                                         boolean displayMetadataDevice) {
@@ -218,5 +240,36 @@ public class BaseFormTest extends NlmCdeBaseTest {
         }
         clickElement(By.id("saveNewSkipLogicButton"));
 
+    }
+
+    protected void checkMatrixLayout(List<WebElement> list, boolean isMatrix) {
+        int yLocation = -1;
+        ListIterator<WebElement> iterator = list.listIterator();
+        while (iterator.hasNext()) {
+            WebElement next = iterator.next();
+            int nextYLocation = next.getLocation().y;
+            if (yLocation == -1) {
+                yLocation = nextYLocation;
+            } else {
+                if (isMatrix) {
+                    Assert.assertEquals(nextYLocation, yLocation);
+                } else {
+                    Assert.assertNotEquals(nextYLocation, yLocation);
+                }
+            }
+        }
+    }
+
+    protected void checkAnswerValue(List<WebElement> list, boolean displayAnswerValue) {
+        ListIterator<WebElement> iterator = list.listIterator();
+        while (iterator.hasNext()) {
+            WebElement next = iterator.next();
+            String nextText = next.getText().trim();
+            if (displayAnswerValue) {
+                Assert.assertNotEquals(nextText, "");
+            } else {
+                Assert.assertEquals(nextText, "");
+            }
+        }
     }
 }

@@ -9,23 +9,13 @@ public class DisplayProfilesNoMatrixNoValuesWiderTest extends BaseFormTest {
 
     @Test
     public void noMatrixNoValuesWiderDisplayProfiles() {
-        String formName = "DisplayProfileNoMatrixNoValuesWider";
+        String formName = "No Matrix No Answer Value Wider Profile Test";
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName(formName);
         goToDisplayProfiles();
 
-        createDisplayProfile(0, "No Matrix No Values Wider", false, false, false, false, "Follow-up", 5, false, 0, false);
-
-        goToFormByName(formName);
-        goToDisplayProfiles();
-        // use driver.findElement because zoom 60% makes element not visible
-        int firstRadioY = driver.findElement(By.xpath("(//*[@id='profile_0']//table//input[@type='radio'])[1]")).getLocation().y;
-        int fifthRadioY = driver.findElement(By.xpath("(//*[@id='profile_0']//table//input[@type='radio'])[5]")).getLocation().y;
-        // no matrix makes radios lay in a column
-        Assert.assertNotEquals(firstRadioY, fifthRadioY);
-
-        String fifthRadioText = driver.findElement(By.xpath("(//*[@id='profile_0']//*[contains(@class,'native-section')]//table//input[@type='radio'])[5]/..")).getText().trim();
-        Assert.assertEquals(fifthRadioText, "");
+        DisplayProfile noMatrixNoAnswerValueWiderDisplayProfile = new DisplayProfile(0,"No Matrix No Answer Value Wider Display Profile","Follow-up",5,0,false,false,false,false,false,false);
+        createDisplayProfile(noMatrixNoAnswerValueWiderDisplayProfile);
 
         // 5 columns across with first item hoisted up by skip logic
         String baseXpath = "//*[@id='profile_0']//*[contains(@class,'displayProfileRenderDiv')]//*[*[normalize-space()='Education level USA type']]//";

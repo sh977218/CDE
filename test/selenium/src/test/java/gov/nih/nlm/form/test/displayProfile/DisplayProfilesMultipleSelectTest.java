@@ -9,17 +9,15 @@ public class DisplayProfilesMultipleSelectTest extends BaseFormTest {
 
     @Test
     public void multipleSelectDisplayProfiles() {
-        String formName = "DisplayProfileMultipleSelect";
+        String formName = "Multiple Select Display Profile Test";
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName(formName);
         goToDisplayProfiles();
 
-        createDisplayProfile(0, "Multiple Select", false, false, false, false, "Dynamic", 5, false, 4, false);
+        DisplayProfile multipleSelectDisplayProfile = new DisplayProfile(0,"Multiple Select Display Profile","Dynamic",5,4,false,false,false,false,false,false);
+        createDisplayProfile(multipleSelectDisplayProfile);
 
-        goToFormByName(formName);
-        goToDisplayProfiles();
-        // use driver.findElement because zoom 60% makes element not visible
-        int number_select = driver.findElements(By.xpath("//*[@id='profile_0']//*[contains(@class,'displayProfilePreview')]//select")).size();
+        int number_select = findElements(By.xpath("//*[@id='profile_0']//*[contains(@class,'displayProfilePreview')]//select")).size();
         Assert.assertTrue(number_select > 0, "Expected number of select more than 0, actual number_select is " + number_select);
     }
 
