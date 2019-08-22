@@ -158,7 +158,8 @@ public class BaseFormTest extends NlmCdeBaseTest {
     }
 
     protected void createDisplayProfile(int index, String name, boolean matrix, boolean displayValues, boolean instructions,
-                                        boolean numbering, String displayType, int numberOfColumns, boolean displayInvisible, int answerDropdownLimit) {
+                                        boolean numbering, String displayType, int numberOfColumns, boolean displayInvisible, int answerDropdownLimit,
+                                        boolean displayMetadataDevice) {
         textPresent("Add Profile");
         clickElement(By.id("addDisplayProfile"));
         clickElement(By.cssSelector("#profile_" + index + " mat-panel-title h3"));
@@ -170,6 +171,7 @@ public class BaseFormTest extends NlmCdeBaseTest {
         if (displayValues) clickElement(By.id("displayValues_" + index));
         if (!instructions) clickElement(By.id("displayInstructions_" + index));
         if (!numbering) clickElement(By.id("displayNumbering_" + index));
+        if(displayMetadataDevice) clickElement(By.id("displayMetadataDevice_"+index));
 
         clickElement(By.id("displayType_" + index));
         clickElement(By.xpath("//mat-option[contains(.,'" + displayType + "')]"));

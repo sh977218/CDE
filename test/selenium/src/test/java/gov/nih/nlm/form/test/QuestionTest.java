@@ -102,6 +102,7 @@ public class QuestionTest extends BaseFormTest {
     }
 
     public void addQuestionDialog(int sectionNumber) {
+        scrollToViewById("section_" + sectionNumber);
         // drag and drop selenium is buggy, try 5 times.
         for (int i = 0; i < 5; i++) {
             try {
