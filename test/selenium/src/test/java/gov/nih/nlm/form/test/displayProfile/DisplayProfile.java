@@ -3,7 +3,7 @@ package gov.nih.nlm.form.test.displayProfile;
 public class DisplayProfile {
     public int displayProfileIndex;
     public String displayProfileName;
-    public  String displayProfileType;
+    public String displayProfileType;
     public int numberOfColumn;
     public int answerDropdownLimit;
     public boolean displayAsMatrix;

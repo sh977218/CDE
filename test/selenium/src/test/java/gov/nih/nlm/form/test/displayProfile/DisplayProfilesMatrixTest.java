@@ -16,16 +16,16 @@ public class DisplayProfilesMatrixTest extends BaseFormTest {
         goToFormByName(formName);
         goToDisplayProfiles();
 
-        DisplayProfile matrixDisplayProfile = new DisplayProfile(0,"Matrix Display Profile","Dynamic",5,0,true,false,false,false,false,false);
+        DisplayProfile matrixDisplayProfile = new DisplayProfile(0, "Matrix Display Profile", "Dynamic", 5, 0, true, false, false, false, false, false);
         createDisplayProfile(matrixDisplayProfile);
 
         goToPreview();
         List<WebElement> tdsInPreview = findElements(By.xpath("//cde-native-section-matrix//tr[1]//td"));
-        checkMatrixLayout(tdsInPreview,true);
+        checkMatrixLayout(tdsInPreview, true);
 
         goToDisplayProfiles();
         clickElement(By.id("profile_0"));
         List<WebElement> tdsInDisplayProfile = findElements(By.xpath("//*[@id='profile_0']//*[contains(@class,'displayProfilePreview')]//cde-native-section-matrix//tr[1]//td"));
-        checkMatrixLayout(tdsInDisplayProfile,true);
+        checkMatrixLayout(tdsInDisplayProfile, true);
     }
 }

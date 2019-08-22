@@ -14,7 +14,7 @@ public class DisplayProfilesNoMatrixNoValuesWiderTest extends BaseFormTest {
         goToFormByName(formName);
         goToDisplayProfiles();
 
-        DisplayProfile noMatrixNoAnswerValueWiderDisplayProfile = new DisplayProfile(0,"No Matrix No Answer Value Wider Display Profile","Follow-up",5,0,false,false,false,false,false,false);
+        DisplayProfile noMatrixNoAnswerValueWiderDisplayProfile = new DisplayProfile(0, "No Matrix No Answer Value Wider Display Profile", "Follow-up", 5, 0, false, false, false, false, false, false);
         createDisplayProfile(noMatrixNoAnswerValueWiderDisplayProfile);
 
         // 5 columns across with first item hoisted up by skip logic

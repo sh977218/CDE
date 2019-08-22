@@ -14,7 +14,7 @@ public class DisplayProfilesMultipleSelectTest extends BaseFormTest {
         goToFormByName(formName);
         goToDisplayProfiles();
 
-        DisplayProfile multipleSelectDisplayProfile = new DisplayProfile(0,"Multiple Select Display Profile","Dynamic",5,4,false,false,false,false,false,false);
+        DisplayProfile multipleSelectDisplayProfile = new DisplayProfile(0, "Multiple Select Display Profile", "Dynamic", 5, 4, false, false, false, false, false, false);
         createDisplayProfile(multipleSelectDisplayProfile);
 
         int number_select = findElements(By.xpath("//*[@id='profile_0']//*[contains(@class,'displayProfilePreview')]//select")).size();

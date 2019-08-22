@@ -14,7 +14,7 @@ public class DisplayProfilesNoMetadataDeviceTest extends BaseFormTest {
         goToFormByName(formName);
         goToDisplayProfiles();
 
-        DisplayProfile noMetadataDeviceDisplayProfile = new DisplayProfile(0,"Metadata Device Display Profile","Dynamic",5,0,false,false,false,false,false,false);
+        DisplayProfile noMetadataDeviceDisplayProfile = new DisplayProfile(0, "Metadata Device Display Profile", "Dynamic", 5, 0, false, false, false, false, false, false);
         createDisplayProfile(noMetadataDeviceDisplayProfile);
 
         int number_add_icon = findElements(By.xpath("//*[@id='profile_0']//*[contains(@class,'displayProfilePreview')]//i")).size();

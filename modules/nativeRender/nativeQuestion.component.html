@@ -1,4 +1,4 @@
-<div [hidden]="formElement.question.invisible && !nrs.profile.displayInvisible">
+<div *ngIf="!(formElement.question.invisible && !nrs.profile.displayInvisible)">
     <fieldset>
         <legend class="native-question-label"></legend>
         <ng-template #labelClause>
