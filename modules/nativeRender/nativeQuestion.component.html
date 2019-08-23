@@ -1,4 +1,4 @@
-<div [hidden]="formElement.question.invisible && !nrs.profile.displayInvisible">
+<div *ngIf="!(formElement.question.invisible && !nrs.profile.displayInvisible)">
     <fieldset>
         <legend class="native-question-label"></legend>
         <ng-template #labelClause>
@@ -70,8 +70,11 @@
                                                        [disabled]="!formElement.question.editable"/>
                                             </ng-template>
                                             {{NRS.getPvLabel(pv)}}
-                                            <span class="native-value" *ngIf="nrs.profile.displayValues">
-                                                  {{NRS.getPvDisplayValue(pv)}}</span>
+                                            <span class="native-value">
+                                                <ng-container
+                                                        *ngIf="nrs.profile.displayValues">{{NRS.getPvDisplayValue(pv)}}
+                                                </ng-container>
+                                            </span>
                                         </label>
                                         <ng-container *ngIf="pv?.formElements">
                                             <ng-container *ngFor="let fe of pv.formElements">
