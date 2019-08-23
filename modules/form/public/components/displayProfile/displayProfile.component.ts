@@ -3,7 +3,6 @@ import { MatDialog } from '@angular/material';
 import { getMapToFhirResource } from 'core/form/formAndFe';
 import { findQuestionByTinyId, getFormQuestions } from 'core/form/fe';
 import { UcumService } from 'form/public/ucum.service';
-import { FormViewComponent } from 'form/public/components/formView.component';
 import { FhirProcedureMappingComponent } from 'form/public/components/fhir/fhirProcedureMapping.component';
 import { CdeForm, DisplayProfile } from 'shared/form/form.model';
 import { iterateFeSync } from 'shared/form/fe';
@@ -53,8 +52,7 @@ export class DisplayProfileComponent {
     }
 
     constructor(public dialog: MatDialog,
-                private ucumService: UcumService,
-                private formViewComponent: FormViewComponent) {
+                private ucumService: UcumService) {
     }
 
     static sampleElt = {

@@ -207,8 +207,9 @@ public class BaseFormTest extends NlmCdeBaseTest {
 
         if (answerDropdownLimit > 0) {
             findElement(By.id("displayAnswerDropdownLimit_" + index)).clear();
-            findElement(By.id("displayAnswerDropdownLimit_" + index)).sendKeys(String.valueOf(answerDropdownLimit) + Keys.TAB);
+            findElement(By.id("displayAnswerDropdownLimit_" + index)).sendKeys(String.valueOf(answerDropdownLimit));
         }
+        clickElement(By.xpath("//*[@id='profile_0']//h4[text()='View Specific Settings']"));
     }
 
     protected void deleteSkipLogicById(String id) {

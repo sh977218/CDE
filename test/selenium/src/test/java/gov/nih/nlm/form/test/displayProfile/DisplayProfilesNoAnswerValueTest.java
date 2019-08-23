@@ -16,16 +16,15 @@ public class DisplayProfilesNoAnswerValueTest extends BaseFormTest {
         goToFormByName(formName);
         goToDisplayProfiles();
 
-        DisplayProfile noAnswerValueDisplayProfile = new DisplayProfile(0, "No Answer Value Display Profile", "Dynamic", 5, 0, false, true, false, false, false, false);
+        DisplayProfile noAnswerValueDisplayProfile = new DisplayProfile(0, "No Answer Value Display Profile", "Dynamic", 5, 0, false, false, false, false, false, false);
         createDisplayProfile(noAnswerValueDisplayProfile);
 
+        List<WebElement> tdsInDisplayProfile = driver.findElements(By.xpath("//*[@id='profile_0']//*[contains(@class,'displayProfilePreview')]//*[contains(@class,'form-check-label')]"));
+        checkAnswerValue(tdsInDisplayProfile, false);
+
         goToPreview();
-        List<WebElement> tdsInPreview = findElements(By.xpath("//cde-native-section-matrix//tr[1]//td[input]"));
+        List<WebElement> tdsInPreview = findElements(By.xpath("//label[contains(@class,'form-check-label')]/span"));
         checkAnswerValue(tdsInPreview, false);
 
-        goToDisplayProfiles();
-        clickElement(By.id("profile_0"));
-        List<WebElement> tdsInDisplayProfile = findElements(By.xpath("//*[@id='profile_0']//*[contains(@class,'displayProfilePreview')]//cde-native-section-matrix//tr[1]//td[input]"));
-        checkAnswerValue(tdsInDisplayProfile, false);
     }
 }

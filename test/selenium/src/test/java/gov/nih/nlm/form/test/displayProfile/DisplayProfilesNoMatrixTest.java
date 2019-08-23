@@ -19,13 +19,12 @@ public class DisplayProfilesNoMatrixTest extends BaseFormTest {
         DisplayProfile noMatrixDisplayProfile = new DisplayProfile(0, "No Matrix Display Profile", "Dynamic", 5, 0, false, false, false, false, false, false);
         createDisplayProfile(noMatrixDisplayProfile);
 
+        List<WebElement> tdsInDisplayProfile = findElements(By.xpath("(//*[@id='profile_0']//*[contains(@class,'displayProfilePreview')]//cde-native-section//*[contains(@class,'native-box')])[1]//input"));
+        checkMatrixLayout(tdsInDisplayProfile, false);
+
         goToPreview();
-        List<WebElement> tdsInPreview = findElements(By.xpath("//cde-native-section-matrix//tr[1]//td"));
+        List<WebElement> tdsInPreview = findElements(By.xpath("(//cde-native-section//*[contains(@class,'native-box')])[1]//input"));
         checkMatrixLayout(tdsInPreview, false);
 
-        goToDisplayProfiles();
-        clickElement(By.id("profile_0"));
-        List<WebElement> tdsInDisplayProfile = findElements(By.xpath("//*[@id='profile_0']//*[contains(@class,'displayProfilePreview')]//cde-native-section-matrix//tr[1]//td"));
-        checkMatrixLayout(tdsInDisplayProfile, false);
     }
 }

@@ -14,11 +14,17 @@ public class DisplayProfilesMultipleSelectTest extends BaseFormTest {
         goToFormByName(formName);
         goToDisplayProfiles();
 
-        DisplayProfile multipleSelectDisplayProfile = new DisplayProfile(0, "Multiple Select Display Profile", "Dynamic", 5, 4, false, false, false, false, false, false);
+        DisplayProfile multipleSelectDisplayProfile = new DisplayProfile(0, "Multiple Select Display Profile", "Dynamic", 6, 3, false, false, false, false, false, false);
         createDisplayProfile(multipleSelectDisplayProfile);
 
-        int number_select = findElements(By.xpath("//*[@id='profile_0']//*[contains(@class,'displayProfilePreview')]//select")).size();
-        Assert.assertTrue(number_select > 0, "Expected number of select more than 0, actual number_select is " + number_select);
+        while (true) {
+
+        }
+
+/*
+        int number_select = driver.findElements(By.xpath("//*[@id='profile_0']//*[contains(@class,'displayProfilePreview')]//select")).size();
+        Assert.assertTrue(number_select > 0, "Expected number of select more than 0, actual number_select is " + number_select + ".");
+*/
     }
 
 }

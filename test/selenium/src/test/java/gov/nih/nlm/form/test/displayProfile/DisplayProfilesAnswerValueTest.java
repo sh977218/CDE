@@ -19,13 +19,12 @@ public class DisplayProfilesAnswerValueTest extends BaseFormTest {
         DisplayProfile answerValueDisplayProfile = new DisplayProfile(0, "Answer Value Display Profile", "Dynamic", 5, 0, false, true, false, false, false, false);
         createDisplayProfile(answerValueDisplayProfile);
 
-        goToPreview();
-        List<WebElement> tdsInPreview = findElements(By.xpath("//*[@id='formRenderSection_Section']//*[contains(@class,'form-check-label')]"));
-        checkAnswerValue(tdsInPreview, true);
-
-        goToDisplayProfiles();
-        clickElement(By.id("profile_0"));
         List<WebElement> tdsInDisplayProfile = driver.findElements(By.xpath("//*[@id='profile_0']//*[contains(@class,'displayProfilePreview')]//*[contains(@class,'form-check-label')]"));
         checkAnswerValue(tdsInDisplayProfile, true);
+
+        goToPreview();
+        List<WebElement> tdsInPreview = findElements(By.xpath("//label[contains(@class,'form-check-label')]/span"));
+        checkAnswerValue(tdsInPreview, true);
+
     }
 }
