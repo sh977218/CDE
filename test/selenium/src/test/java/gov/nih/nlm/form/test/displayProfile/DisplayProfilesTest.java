@@ -14,22 +14,12 @@ public class DisplayProfilesTest extends BaseFormTest {
         goToFormByName(formName);
         clickElement(By.id("displayProfiles_tab"));
 
-        createDisplayProfile(0, "Matrix and Values", true, true, true, true, "Follow-up", 1, false, 0);
-        createDisplayProfile(1, "Matrix No Values", true, false, false, false, "Dynamic", 6, true, 0);
-        createDisplayProfile(2, "No Matrix No Values", false, false, false, false, "Follow-up", 1, false, 0);
-        clickElement(By.id("displayMetadataDevice_2"));
-        createDisplayProfile(3, "No Matrix No Values Wider", false, false, false, false, "Follow-up", 5, false, 0);
-        createDisplayProfile(4, "Multiple Select", false, false, false, false, "Dynamic", 5, false, 4);
+        createDisplayProfile(0, "No Matrix No Values Wider", false, false, false, false, "Follow-up", 5, false, 0);
         scrollToTop();
 
-        // use driver.findElement because zoom 60% makes element not visible
-        Assert.assertEquals(driver.findElements(By.xpath("//*[@id='profile_0']//table//input[@type='radio']")).size(), 10);
-        Assert.assertEquals(driver.findElement(By.xpath("(//*[@id='profile_0']//*[contains(@class,'native-section')]//table//input[@type='radio'])[5]/../span")).getText(), "1");
-
-
-        scrollToViewById("profile_3");
+        scrollToViewById("profile_0");
         // 5 columns across with first item hoisted up by skip logic
-        String baseXpath = "//*[@id='profile_3']//*[contains(@class,'displayProfileRenderDiv')]//*[*[normalize-space()='Education level USA type']]//";
+        String baseXpath = "//*[@id='profile_0']//*[contains(@class,'displayProfileRenderDiv')]//*[*[normalize-space()='Education level USA type']]//";
         int i = 5;
         while (i >= 0) {
             if (i == 0) Assert.fail("Unexpected y value");
@@ -40,21 +30,6 @@ public class DisplayProfilesTest extends BaseFormTest {
             i--;
             hangon(2);
         }
-        newFormVersion();
-
-        deleteWithConfirm("//*[@id = 'profile_0']");
-        hangon(1);
-        deleteWithConfirm("//*[@id = 'profile_0']");
-        hangon(1);
-        deleteWithConfirm("//*[@id = 'profile_0']");
-        hangon(1);
-        deleteWithConfirm("//*[@id = 'profile_0']");
-        hangon(1);
-        deleteWithConfirm("//*[@id = 'profile_0']");
-
-        newFormVersion();
-        goToPreview();
-        textNotPresent("Display Profile:");
     }
 
 }
