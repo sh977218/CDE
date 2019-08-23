@@ -187,7 +187,7 @@ public class BaseFormTest extends NlmCdeBaseTest {
                                         boolean numbering, String displayType, int numberOfColumns, boolean displayInvisible,
                                         int answerDropdownLimit) {
         createDisplayProfile(index, name, matrix, displayValues, instructions,
-                numbering, displayType, numberOfColumns, displayInvisible, answerDropdownLimit);
+                numbering, displayType, numberOfColumns, displayInvisible, answerDropdownLimit, false);
     }
 
     protected void createDisplayProfile(int index, String name, boolean matrix, boolean displayValues, boolean instructions,
