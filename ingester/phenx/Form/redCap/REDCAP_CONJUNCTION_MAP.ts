@@ -1,4 +1,4 @@
-exports.map = {
+export const map = {
     'and': ' AND ',
     'or': ' OR ',
     'AND': ' AND ',

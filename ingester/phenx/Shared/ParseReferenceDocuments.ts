@@ -1,12 +1,12 @@
-const _ = require('lodash');
+import { forEach, isEmpty } from 'lodash';
 
-exports.parseReferenceDocuments = protocol => {
+export function parseReferenceDocuments(protocol) {
     let referenceDocuments = [];
     let generalReferences = protocol['General References'];
-    if (!_.isEmpty(generalReferences)) {
-        _.forEach(generalReferences, generalReference => {
+    if (!isEmpty(generalReferences)) {
+        forEach(generalReferences, generalReference => {
             let gr = generalReference.trim();
-            if (!_.isEmpty(gr))
+            if (!isEmpty(gr))
                 referenceDocuments.push({
                     document: generalReference.trim(),
                     source: 'PhenX'
@@ -14,4 +14,4 @@ exports.parseReferenceDocuments = protocol => {
         });
     }
     return referenceDocuments;
-};
+}

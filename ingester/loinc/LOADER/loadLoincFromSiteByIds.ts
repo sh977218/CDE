@@ -1,5 +1,5 @@
-import { MigrationLoincModel } from '../../createMigrationConnection';
-import { runOneLoinc } from '../Website/loincLoader';
+import { MigrationLoincModel } from 'ingester/createMigrationConnection';
+import { runOneLoinc } from 'ingester/loinc/Website/loincLoader';
 
 const loincId = '62400-7';
 

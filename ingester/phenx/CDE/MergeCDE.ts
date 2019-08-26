@@ -1,8 +1,6 @@
-const _ = require('lodash');
-
 import { transferClassifications } from 'shared/system/classificationShared';
 
-mergeBySources = (newSources, existingSources) => {
+const mergeBySources = (newSources, existingSources) => {
     let otherSources = existingSources.filter(o => ['PhenX', 'PhenX Variable'].indexOf(o.source) == -1);
     let result = newSources.concat(otherSources);
     return result;

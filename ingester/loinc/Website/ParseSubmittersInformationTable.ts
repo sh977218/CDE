@@ -1,7 +1,7 @@
 import { By } from 'selenium-webdriver';
 import { sanitizeText } from '../Utility/utility';
 
-export async function parseSubmittersInformationTable(driver, loincId, element, cb) {
+export async function parseSubmittersInformationTable(driver, loincId, element) {
     let basicAttributesObj = {};
     let trs = await element.findElements(By.xpath('tbody/tr'));
     trs.shift();
@@ -13,5 +13,5 @@ export async function parseSubmittersInformationTable(driver, loincId, element, 
         let key = sanitizeText(keyText.trim());
         basicAttributesObj[key.trim()] = valueText.trim();
     }
-    cb(basicAttributesObj);
+    return basicAttributesObj;
 }

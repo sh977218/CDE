@@ -19,7 +19,6 @@ const ParseObjectClass = require('./ParseObjectClass');
 const ParseProperty = require('./ParseProperty');
 
 const today = new Date().toJSON();
-const batchloader = require('../../shared/updatedByLoader').batchloader;
 
 import { checkPvUnicity } from 'shared/de/deValidator';
 

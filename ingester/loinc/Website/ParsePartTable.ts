@@ -1,6 +1,6 @@
 import { By } from 'selenium-webdriver';
 
-export async function parsePartTable(driver, loincId, element, cb) {
+export async function parsePartTable(driver, loincId, element) {
     let parts = [];
     let trs = await element.findElements(By.xpath('tbody/tr'));
     trs.shift();
@@ -18,5 +18,5 @@ export async function parsePartTable(driver, loincId, element, cb) {
         part['Part Name'] = text3.replace(/&nbsp;/g, '').trim();
         parts.push(part);
     }
-    cb(parts);
+    return parts;
 }

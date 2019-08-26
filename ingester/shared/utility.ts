@@ -21,6 +21,14 @@ export const BATCHLOADER = {
     roles: ['AttachmentReviewer']
 };
 
+
+export function updatedByLoader(elt) {
+    if (elt.toObject) elt = elt.toObject;
+    let allow = elt.updatedBy && elt.updatedBy.username
+        && elt.updatedBy.username !== BATCHLOADER_USERNAME;
+    return allow;
+}
+
 export const created = TODAY;
 export const imported = TODAY;
 

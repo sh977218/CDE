@@ -1,10 +1,17 @@
-const fs = require('fs');
+import { existsSync } from 'fs';
+import { generateTinyId } from 'server/system/mongo-data';
+import { BATCHLOADER, created, imported } from 'ingester/shared/utility';
+import { parseDesignations } from 'ingester/phenx/Shared/ParseDesignations';
+import { parseDefinitions } from 'ingester/phenx/Shared/ParseDefinitions';
+import { parseSources } from 'ingester/phenx/Shared/ParseSources';
+import { parseIds } from 'ingester/phenx/Shared/ParseIds';
+import { parseProperties } from 'ingester/phenx/Shared/ParseProperties';
+import { parseReferenceDocuments } from 'ingester/phenx/Shared/ParseReferenceDocuments';
+import { parseAttachments } from 'ingester/phenx/Form/ParseAttachments';
+import { parseClassification } from 'ingester/phenx/Shared/ParseClassification';
+import { parseFormElements } from 'ingester/phenx/Form/ParseFormElements';
+
 const AdmZip = require('adm-zip');
-
-const generateTinyId = require('../../../server/system/mongo-data').generateTinyId;
-const today = new Date().toJSON();
-
-const batchloader = require('../../shared/updatedByLoader').batchloader;
 
 const zipFolder = 's:/MLB/CDE/phenx/original-phenxtoolkit.rti.org/toolkit_content/redcap_zip/';
 
@@ -12,26 +19,26 @@ exports.createForm = async (measure, protocolObj) => {
     let protocolId = protocolObj.protocolId;
     let protocol = protocolObj.protocol;
     let zipFile = zipFolder + 'PX' + protocolId + '.zip';
-    if (fs.existsSync(zipFile)) {
+    if (existsSync(zipFile)) {
         let zip = new AdmZip(zipFile);
         zip.extractAllTo(zipFolder + 'PX' + protocolId, true);
     }
 
-    let designations = require('../Shared/ParseDesignations').parseDesignations(protocol);
-    let definitions = require('../Shared/ParseDefinitions').parseDefinitions(protocol);
-    let sources = require('../Shared/ParseSources').parseSources(protocol);
-    let ids = require('../Shared/ParseIds').parseIds(protocolObj);
-    let properties = require('../Shared/ParseProperties').parseProperties(measure, protocol);
-    let referenceDocuments = require('../Shared/ParseReferenceDocuments').parseReferenceDocuments(protocol);
-    let attachments = await require('./ParseAttachments').parseAttachments(protocol);
-    let classification = require('../Shared/ParseClassification').parseClassification(measure);
+    let designations = parseDesignations(protocol);
+    let definitions = parseDefinitions(protocol);
+    let sources = parseSources(protocol);
+    let ids = parseIds(protocolObj);
+    let properties = parseProperties(measure, protocol);
+    let referenceDocuments = parseReferenceDocuments(protocol);
+    let attachments = await parseAttachments(protocol);
+    let classification = parseClassification(measure);
 
     let newForm = {
         tinyId: generateTinyId(),
-        createdBy: batchloader,
+        createdBy: BATCHLOADER,
         sources,
-        created: today,
-        imported: today,
+        created: created,
+        imported: imported,
         isCopyrighted: false,
         noRenderAllowed: false,
         stewardOrg: {name: 'PhenX'},
@@ -47,7 +54,7 @@ exports.createForm = async (measure, protocolObj) => {
         comments: []
     };
 
-    await require('./ParseFormElements').parseFormElements(protocol, attachments, newForm);
+    await parseFormElements(protocol, attachments, newForm);
 
     return newForm;
 };
