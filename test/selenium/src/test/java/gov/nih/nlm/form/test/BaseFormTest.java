@@ -209,7 +209,7 @@ public class BaseFormTest extends NlmCdeBaseTest {
         clickElement(By.id("displayType_" + index));
         clickElement(By.xpath("//mat-option[contains(.,'" + displayType + "')]"));
 
-        WebElement nbColSlider = findElement(By.cssSelector("mat-slider[max='6']"));
+        WebElement nbColSlider = findElement(By.cssSelector("#profile_" + index + " mat-slider[max='6']"));
         nbColSlider.click();
 
         int currentNbOfCols = Integer.valueOf(findElement(By.id("nbOfColumnsValue")).getText());
@@ -217,11 +217,6 @@ public class BaseFormTest extends NlmCdeBaseTest {
             Keys key = (numberOfColumns - currentNbOfCols) > 0 ? Keys.RIGHT : Keys.LEFT;
             nbColSlider.sendKeys(key);
         }
-
-//        WebElement slider = findElement(By.cssSelector("#profile_" + index + " .mat-slider-wrapper"));
-//        Actions slide = new Actions(driver);
-//        int width = slider.getSize().getWidth() / 6;
-//        slide.moveToElement(slider, width * (numberOfColumns - 1) + width / 2, slider.getSize().getHeight() / 2).click().build().perform();
 
         if (displayInvisible) clickElement(By.id("displayInvisible_" + index));
 
