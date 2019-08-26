@@ -164,6 +164,7 @@ public class EltIdMaps {
         eltMap.put("PROMIS SF v1.0 - Pain Behavior 7a", "QkggxHhuF8x");
         eltMap.put("PROMIS SF v1.0-Sleep Disturbance 4a", "Q1JxnV2OYIx");
         eltMap.put("PROMIS SF v1.0-Sleep Disturbance 6a", "QJbbHnOFUl");
+        eltMap.put("PROMIS SF v1.1 - Anger 5a", "mk8PNndtLg");
         eltMap.put("PROMIS SF v2.0 - Instrumental Support 4a", "mkG_EhdYIe");
         eltMap.put("PROMIS SF v2.0 - Companionship 6a", "m1BxH3_tIe");
         eltMap.put("PTSD Checklist - Civilian (PCL-C)", "7JZgS1BrKx");

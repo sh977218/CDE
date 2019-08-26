@@ -13,19 +13,19 @@ public class RenderDisplayProfile extends BaseFormTest {
         String formName = "PROMIS SF v1.1 - Anger 5a";
 
         goToFormByName(formName);
-        // look for add device button
+        // look for add device butto
         Assert.assertEquals(driver.findElements(By.cssSelector("i.iconButton")).size(), 0);
         textPresent("In the past 7 days");
         textPresent("I felt annoyed");
         textPresent("1", By.xpath("//*[@id='formRenderSection_In the past 7 days']//table/tbody/tr[1]/td[2]"));
         textPresent("5", By.xpath("//*[@id='formRenderSection_In the past 7 days']//table/tbody/tr[1]/td[6]"));
-        Assert.assertEquals(driver.findElements(By.xpath("//div[@id='formRenderSection_In the past 7 days']//table//input[@type='radio']")).size(), 25);
+        Assert.assertEquals(driver.findElements(By.xpath("//div[@id='formRenderSection_In the past 7 days']//table//input[@type='radio']")).size(), 20);
         assertNoElt(By.xpath("//select[@ng-model='question.question.answer']"));
         textNotPresent("I was grouchy");
 
         selectDisplayProfileByName("Matrix No Values");
         hangon(1);
-        Assert.assertEquals(driver.findElements(By.xpath("//div[@id='formRenderSection_In the past 7 days']//table//input[@type='radio']")).size(), 25);
+        Assert.assertEquals(driver.findElements(By.xpath("//div[@id='formRenderSection_In the past 7 days']//table//input[@type='radio']")).size(), 20);
         assertNoElt(By.xpath("//select[@ng-model='question.question.answer']"));
         textNotPresent("1", By.xpath("//table"));
         textPresent("I was grouchy");
