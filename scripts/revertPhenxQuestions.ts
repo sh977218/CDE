@@ -26,8 +26,8 @@ function run() {
             let historyObj = await Form.findById(history).lean();
             let updatedBy = historyObj.updatedBy;
             if (isEmpty(updatedBy)) {
-                console.log(history);
-                console.log('b');
+                console.log(`${formObj.tinyId} has history ${history} with empty updatedBy.`);
+                process.exit(1);
             }
             let username = updatedBy.username;
             if (username === 'lizamos' || username === 'ludetc') {
@@ -40,7 +40,6 @@ function run() {
             }
             revertEltId = '';
             revertUsername = '';
-
         }
         formObj.changeNote = `Revert from on ${new Date()} to version ${revertEltId} made by ${revertUsername}`;
         await updateForm(formObj, BATCHLOADER);
