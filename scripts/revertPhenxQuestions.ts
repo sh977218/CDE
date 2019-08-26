@@ -20,6 +20,7 @@ function run() {
         console.log(formObj.tinyId);
         let histories = formObj.history.map(h => h.toString()).reverse();
         let revertEltId = '';
+        let revertEltDate = '';
         let revertUsername = '';
         for (let i = 0; i < histories.length; i++) {
             let history = histories[i];
@@ -34,14 +35,16 @@ function run() {
                 formObj.formElements = historyObj.formElements;
                 revertEltId = history;
                 revertUsername = username;
+                revertEltDate = historyObj.updated;
                 break;
             } else if (username !== BATCHLOADER_USERNAME) {
                 formNeedReview.push(formObj.tinyId + ' updated by ' + updatedBy);
             }
             revertEltId = '';
+            revertEltDate = '';
             revertUsername = '';
         }
-        formObj.changeNote = `Revert from on ${new Date()} to version ${revertEltId} made by ${revertUsername}`;
+        formObj.changeNote = `Revert to ${revertEltDate} (${revertEltId}) version updated by ${revertUsername}`;
         await updateForm(formObj, BATCHLOADER);
         formCount++;
         console.log(`formCount: ${formCount}`);
