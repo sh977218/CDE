@@ -17,13 +17,13 @@ const _ = require('lodash');
 const dns = require('dns');
 const os = require('os');
 const formSvc = require('./formsvc');
-const mongo_form = require('./mongo-form');
-const elastic_system = require('../system/elastic');
+const mongoForm = require('./mongo-form');
+const elasticSystem = require('../system/elastic');
 const sharedElastic = require('../system/elastic');
 const CronJob = require('cron').CronJob;
 
-const canEditMiddlewareForm = canEditMiddleware(mongo_form);
-const canEditByTinyIdMiddlewareForm = canEditByTinyIdMiddleware(mongo_form);
+const canEditMiddlewareForm = canEditMiddleware(mongoForm);
+const canEditByTinyIdMiddlewareForm = canEditByTinyIdMiddleware(mongoForm);
 
 // ucum from lhc uses IndexDB
 (global as any).location = {origin: 'localhost'};
@@ -48,7 +48,7 @@ function allRequestsProcessing(req, res, next) {
 }
 
 export function init(app, daoManager) {
-    daoManager.registerDao(mongo_form);
+    daoManager.registerDao(mongoForm);
 
     app.get('/form/search', (req, res) => {
         const selectedOrg = req.query.selectedOrg;
@@ -111,13 +111,13 @@ export function init(app, daoManager) {
 
     app.post('/form/publish/:id', loggedInMiddleware, formSvc.publishFormToHtml);
 
-    app.get('/viewingHistory/form', [loggedInMiddleware, nocacheMiddleware], function(req, res) {
+    app.get('/viewingHistory/form', [loggedInMiddleware, nocacheMiddleware], (req, res) => {
         const splicedArray = req.user.formViewHistory.splice(0, 10);
         const idList = [];
-        for (let i = 0; i < splicedArray.length; i++) {
-            if (idList.indexOf(splicedArray[i]) === -1) { idList.push(splicedArray[i]); }
+        for (const sa of splicedArray) {
+            if (idList.indexOf(sa) === -1) { idList.push(sa); }
         }
-        mongo_form.byTinyIdListInOrder(idList, function(err, forms) {
+        mongoForm.byTinyIdListInOrder(idList, (err, forms) => {
             res.send(forms);
         });
     });
@@ -138,15 +138,15 @@ export function init(app, daoManager) {
 
     app.post('/scrollExport/form', (req, res) => {
         const query = sharedElastic.buildElasticSearchQuery(req.user, req.body);
-        elastic_system.scrollExport(query, 'form', handle40x({res, statusCode: 400}, response => res.send(response)));
+        elasticSystem.scrollExport(query, 'form', handle40x({res, statusCode: 400}, response => res.send(response)));
     });
 
     app.get('/scrollExport/:scrollId', (req, res) => {
-        elastic_system.scrollNext(req.params.scrollId, handle40x({res, statusCode: 400}, response => res.send(response)));
+        elasticSystem.scrollNext(req.params.scrollId, handle40x({res, statusCode: 400}, response => res.send(response)));
     });
 
     app.post('/getFormAuditLog', isOrgAuthorityMiddleware, (req, res) => {
-        mongo_form.getAuditLog(req.body, (err, result) => res.send(result));
+        mongoForm.getAuditLog(req.body, (err, result) => res.send(result));
     });
 
     app.post('/elasticSearchExport/form', (req, res) => {
@@ -157,11 +157,11 @@ export function init(app, daoManager) {
                     let firstElt = true;
                     res.type('application/json');
                     res.write('[');
-                    elastic_system.elasticSearchExport(handleError({req, res}, elt => {
+                    elasticSystem.elasticSearchExport(handleError({req, res}, elt => {
                         if (elt) {
                             if (!firstElt) { res.write(','); }
                             elt = stripBsonIds(elt);
-                            elt = elastic_system.removeElasticFields(elt);
+                            elt = elasticSystem.removeElasticFields(elt);
                             res.write(JSON.stringify(elt));
                             firstElt = false;
                         } else {
@@ -176,7 +176,7 @@ export function init(app, daoManager) {
     });
 
 
-    app.get('/formView', function(req, res) {
+    app.get('/formView', (req, res) => {
         const tinyId = req.query.tinyId;
         const version = req.query.version;
         formByTinyIdVersion(tinyId, version, handleError({req, res}, cde => {
@@ -190,14 +190,14 @@ export function init(app, daoManager) {
 
     app.post('/formCompletion/:term', nocacheMiddleware, (req, res) => {
         const term = req.params.term;
-        elastic_system.completionSuggest(term, req.user, req.body, config.elastic.formSuggestIndex.name, resp => {
+        elasticSystem.completionSuggest(term, req.user, req.body, config.elastic.formSuggestIndex.name, resp => {
             resp.hits.hits.forEach(r => r._index = undefined);
             res.send(resp.hits.hits);
         });
     });
 
     // This is for tests only
-    app.post('/sendMockFormData', function(req, res) {
+    app.post('/sendMockFormData', (req, res) => {
         const mapping = JSON.parse(req.body.mapping);
         if (req.body['0-0'] === '1' && req.body['0-1'] === '2'
             && req.body['0-2'] === 'Lab Name'
@@ -217,9 +217,15 @@ export function init(app, daoManager) {
             && mapping.sections[0].questions[3].name === '0-3'
             && mapping.sections[0].questions[3].tinyId === 'JWWpC2baVwK'
         ) {
-            if (req.body.formUrl.indexOf(config.publicUrl + '/data') === 0) { res.send('<html lang="en"><body>Form Submitted</body></html>'); } else if (config.publicUrl.indexOf('localhost') === -1) {
+            if (req.body.formUrl.indexOf(config.publicUrl + '/data') === 0) {
+                res.send('<html lang="en"><body>Form Submitted</body></html>');
+            } else if (config.publicUrl.indexOf('localhost') === -1) {
                 dns.lookup(/\/\/.*:/.exec(req.body.formUrl), (err, result) => {
-                    if (!err && req.body.formUrl.indexOf(result + '/data') === 0) { res.send('<html lang="en"><body>Form Submitted</body></html>'); } else { res.status(401).send('<html lang="en"><body>Not the right input</body></html>'); }
+                    if (!err && req.body.formUrl.indexOf(result + '/data') === 0) {
+                        res.send('<html lang="en"><body>Form Submitted</body></html>');
+                    } else {
+                        res.status(401).send('<html lang="en"><body>Not the right input</body></html>');
+                    }
                 });
             } else {
                 const ifaces = os.networkInterfaces();
@@ -227,8 +233,9 @@ export function init(app, daoManager) {
                         return ifaces[ifname].filter(iface => {
                             return req.body.formUrl.indexOf(iface.address + '/data') !== 1;
                         }).length > 0;
-                    })) { res.send('<html lang="en"><body>Form Submitted</body></html>'); }
-                else {
+                    })) {
+                    res.send('<html lang="en"><body>Form Submitted</body></html>');
+                } else {
                     res.status(401).send('<html lang="en"><body>Not the right input. Actual Input: <p>' + '</p></body></html>');
                 }
             }
@@ -237,7 +244,7 @@ export function init(app, daoManager) {
         }
     });
 
-    app.get('/schema/form', (req, res) => res.send(mongo_form.Form.jsonSchema()));
+    app.get('/schema/form', (req, res) => res.send(mongoForm.Form.jsonSchema()));
 
     app.get('/ucumConvert', (req, res) => {
         const value = req.query.value === '0' ? 1e-20 : parseFloat(req.query.value); // 0 workaround
@@ -312,8 +319,9 @@ export function init(app, daoManager) {
         if (!uom || typeof uom !== 'string') { return res.sendStatus(400); }
 
         const resp = ucum.getSpecifiedUnit(uom, 'validate', true);
-        if (!resp || !resp.unit) { return res.send([]); }
-        else {
+        if (!resp || !resp.unit) {
+            return res.send([]);
+        } else {
             res.send([{
                 name: resp.unit.name_,
                 synonyms: resp.unit.synonyms_.split('; '),

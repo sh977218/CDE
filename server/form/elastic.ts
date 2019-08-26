@@ -1,4 +1,3 @@
-import * as _ from 'lodash';
 import { config } from '../system/parseConfig';
 import { forwardError, handleError } from 'server/errorHandler/errorHandler';
 
@@ -6,7 +5,7 @@ const dbLogger = require('../log/dbLogger');
 const elasticsearch = require('elasticsearch');
 const esInit = require('../system/elasticSearchInit');
 
-let esClient = new elasticsearch.Client({
+const esClient = new elasticsearch.Client({
     hosts: config.elastic.hosts
 });
 
@@ -60,7 +59,7 @@ export function byTinyIdList(idList, size, cb) {
                     values: idList
                 }
             },
-            size: size
+            size
         }
     }, forwardError(cb, response => {
         // @TODO possible to move this sort to elastic search?

@@ -10,7 +10,6 @@ const path = require('path');
 const schemas = require('./schemas');
 const mongoData = require('../system/mongo-data');
 const connHelper = require('../system/connections');
-const mongooseHelper = require('../system/mongooseHelper');
 // TODO: remove logging, error is passed out of this layer, handleError should fail-back and tee to no-db logger
 const logging = require('../system/logging');
 export const elastic = require('../form/elastic');
@@ -262,7 +261,7 @@ export function create(elt, user, callback) {
 }
 
 export function byOtherId(source, id, cb) {
-    Form.find({archived: false}).elemMatch('ids', {source, id}).exec(function(err, forms) {
+    Form.find({archived: false}).elemMatch('ids', {source, id}).exec((err, forms) => {
         if (forms.length > 1) {
             cb('Multiple results, returning first', forms[0]);
         } else { cb(err, forms[0]); }
@@ -274,7 +273,7 @@ export function query(query, callback) {
 }
 
 export function transferSteward(from, to, callback) {
-    Form.updateMany({'stewardOrg.name': from}, {$set: {'stewardOrg.name': to}}).exec(function(err, result) {
+    Form.updateMany({'stewardOrg.name': from}, {$set: {'stewardOrg.name': to}}).exec((err, result) => {
         callback(err, result.nModified);
     });
 }
