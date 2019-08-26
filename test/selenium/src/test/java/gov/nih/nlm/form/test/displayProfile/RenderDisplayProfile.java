@@ -19,13 +19,13 @@ public class RenderDisplayProfile extends BaseFormTest {
         textPresent("I felt annoyed");
         textPresent("1", By.xpath("//*[@id='formRenderSection_In the past 7 days']//table/tbody/tr[1]/td[2]"));
         textPresent("5", By.xpath("//*[@id='formRenderSection_In the past 7 days']//table/tbody/tr[1]/td[6]"));
-        Assert.assertEquals(driver.findElements(By.xpath("//div[@id='formRenderSection_In the past 7 days']//table//input[@type='radio']")).size(), 20);
+        Assert.assertEquals(driver.findElements(By.xpath("//div[@id='formRenderSection_In the past 7 days']//table//input[@type='radio']")).size(), 25);
         assertNoElt(By.xpath("//select[@ng-model='question.question.answer']"));
         textNotPresent("I was grouchy");
 
         selectDisplayProfileByName("Matrix No Values");
         hangon(1);
-        Assert.assertEquals(driver.findElements(By.xpath("//div[@id='formRenderSection_In the past 7 days']//table//input[@type='radio']")).size(), 20);
+        Assert.assertEquals(driver.findElements(By.xpath("//div[@id='formRenderSection_In the past 7 days']//table//input[@type='radio']")).size(), 25);
         assertNoElt(By.xpath("//select[@ng-model='question.question.answer']"));
         textNotPresent("1", By.xpath("//table"));
         textPresent("I was grouchy");
