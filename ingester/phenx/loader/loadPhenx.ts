@@ -51,8 +51,8 @@ process.on('unhandledRejection', error => {
 });
 
 (() => {
-//    let cond = {protocolID: '170101'};
     const cond = {};
+//    const cond = {lastMigrationScript: {$ne: lastMigrationScript}};
     const cursor = ProtocolModel.find(cond).cursor({batchSize: 10});
 
     cursor.eachAsync(async (protocol: any) => {

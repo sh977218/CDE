@@ -117,6 +117,7 @@ export function updateCde(elt, user, options = {}) {
 
 export function updateForm(elt, user, options = {}) {
     return new Promise((resolve, reject) => {
+/*@TODO remove it after PhenX loader.
         const isPhenX = elt.ids.filter(id => id.source === 'PhenX').length > 0;
         const isQualified = elt.registrationState.registrationStatus === 'Qualified';
         const isArchived = elt.archived;
@@ -124,6 +125,7 @@ export function updateForm(elt, user, options = {}) {
             console.log(`Qualified PhenX Form cannot be updated through loader.`);
             process.exit(1);
         }
+*/
         mongo_form.update(elt, user, options, (err, savedElt) => {
             if (err) {
                 reject(err);
