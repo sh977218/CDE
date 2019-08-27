@@ -113,6 +113,7 @@ public class QuestionTest extends BaseFormTest {
                 WebElement sourceElt = findElement(By.xpath("//*[@id='startAddingQuestions']"));
                 WebElement targetElt = findElement(By.xpath("//*[@id='section_" + sectionNumber + "']//*[contains(@class,'node-content-wrapper')]"));
                 (new Actions(driver)).moveToElement(targetElt).perform(); // scroll into view
+                scrollDownBy(50);
                 dragAndDrop(sourceElt, targetElt);
                 textPresent("Search Data Elements");
                 i = 10;
