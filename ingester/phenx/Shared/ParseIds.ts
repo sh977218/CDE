@@ -1,4 +1,4 @@
-exports.parseIds = protocol => {
+export function parseIds(protocol) {
     let ids = [];
     let protocolId = protocol['protocolId'];
     if (protocolId)
@@ -7,4 +7,4 @@ exports.parseIds = protocol => {
             id: protocolId
         });
     return ids;
-};
+}

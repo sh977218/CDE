@@ -10,7 +10,7 @@ const toolkit_content = 's:/MLB/CDE/phenx/original-phenxtoolkit.rti.org/toolkit_
 const pdfFolder = toolkit_content + '/PDF/';
 const zipFolder = toolkit_content + '/redcap_zip/';
 
-addAttachment = (fileName, filePath, fileType) => {
+const addAttachment = (fileName, filePath, fileType) => {
     return new Promise(async (resolve, reject) => {
         let fileSize = fs.statSync(filePath).size;
         let attachment = {
@@ -61,11 +61,11 @@ addAttachment = (fileName, filePath, fileType) => {
     })
 };
 
-doPdf = async (pdfFileName, pdfFilePath) => {
+const doPdf = async (pdfFileName, pdfFilePath) => {
     return await addAttachment(pdfFileName, pdfFilePath, 'pdf');
 };
 
-doImg = async imgFolder => {
+const doImg = async imgFolder => {
     let attachments = [];
 
     let imgSubFolders = fs.readdirSync(imgFolder);
@@ -92,7 +92,7 @@ doImg = async imgFolder => {
     return attachments;
 };
 
-exports.parseAttachments = async protocol => {
+export async function parseAttachments (protocol) {
     let attachments = [];
     let protocolId = protocol.protocolId;
 

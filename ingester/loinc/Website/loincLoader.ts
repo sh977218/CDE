@@ -1,46 +1,33 @@
-const _ = require('lodash');
-
-const webdriver = require('selenium-webdriver');
-const By = webdriver.By;
-
-const mongo_cde = require('../../../server/cde/mongo-cde');
-const DataElement = mongo_cde.DataElement;
-const CreateCDE = require('../CDE/CreateCDE');
-const MergeCDE = require('../CDE/MergeCDE');
-const CompareCDE = require('../CDE/CompareCDE');
-
-const mongo_form = require('../../../server/form/mongo-form');
-const Form = mongo_form.Form;
-const CreateForm = require('../Form/CreateForm');
-const MergeForm = require('../Form/MergeForm');
-const CompareForm = require('../Form/CompareForm');
-
-const updatedByLoader = require('../../shared/updatedByLoader').updatedByLoader;
-const batchloader = require('../../shared/updatedByLoader').batchloader;
-
-const ParseLoincNameTable = require('./ParseLoincNameTable');
-const ParseLoincIdTable = require('./ParseLoincIdTable');
-const ParsePanelHierarchyTable = require('./ParsePanelHierarchyTable');
-const ParseNameTable = require('./NameTable/ParseNameTable');
-const ParseTermDefinitionDescriptionsTable = require('./ParseTermDefinitionDescriptionsTable');
-const ParseFormCodingInstructionsTable = require('./ParseFormCodingInstructionsTable');
-const ParsePartDefinitionDescriptionsTable = require('./ParsePartDefinitionDescriptionsTable');
-const ParsePartTable = require('./ParsePartTable');
-const ParseBasicAttributesTable = require('./ParseBasicAttributesTable');
-const ParseHL7AttributesTable = require('./ParseHL7AttributesTable');
-const ParseSubmittersInformationTable = require('./ParseSubmittersInformationTable');
-const ParsingAnswerListTable = require('./ParseAnswerListTable');
-const ParseSurveyQuestionTable = require('./ParseSurveyQuestionTable');
-const ParseLanguageVariantsTable = require('./ParseLanguageVariantsTable');
-const ParseRelatedNamesTable = require('./ParseRelatedNamesTable');
-const ParseExampleUnitsTable = require('./ParseExampleUnitsTable');
-const Parse3rdPartyCopyrightTable = require('./Parse3rdPartyCopyrightTable');
-const ParseCopyrightTable = require('./ParseCopyrightTable');
-const ParseWebContentTable = require('./ParseWebContentTable');
-const ParseArticleTable = require('./ParseArticleTable');
-const ParseCopyrightText = require('./ParseCopyrightText');
-const ParseCopyrightNotice = require('./ParseCopyrightNotice');
-const ParsingVersion = require('./ParseVersion');
+import { isEmpty } from 'lodash';
+import { By, webdriver } from 'selenium-webdriver';
+import { BATCHLOADER, updateCde, updatedByLoader, updateForm } from 'ingester/shared/utility';
+import { DataElement } from 'server/cde/mongo-cde';
+import { Form } from 'server/form/mongo-form';
+import { compareCde, createCde, mergeCde } from 'ingester/loinc/CDE/cde';
+import { compareForm, createForm, mergeForm } from 'ingester/loinc/Form/form';
+import { parsePanelHierarchyTable } from 'ingester/loinc/Website/ParsePanelHierarchyTable';
+import { parseLoincIdTable } from 'ingester/loinc/Website/ParseLoincIdTable';
+import { parseLoincNameTable } from 'ingester/loinc/Website/ParseLoincNameTable';
+import { parseNameTable } from 'ingester/loinc/Website/NameTable/ParseNameTable';
+import { parseCopyrightNotice } from 'ingester/loinc/Website/ParseCopyrightNotice';
+import { parsePartDefinitionDescriptionsTable } from 'ingester/loinc/Website/ParsePartDefinitionDescriptionsTable';
+import { parseTermDefinitionDescriptionsTable } from 'ingester/loinc/Website/ParseTermDefinitionDescriptionsTable';
+import { parsePartTable } from 'ingester/loinc/Website/ParsePartTable';
+import { parseFormCodingInstructionsTable } from 'ingester/loinc/Website/ParseFormCodingInstructionsTable';
+import { parseBasicAttributesTable } from 'ingester/loinc/Website/ParseBasicAttributesTable';
+import { parseHL7AttributesTable } from 'ingester/loinc/Website/ParseHL7AttributesTable';
+import { parseSubmittersInformationTable } from 'ingester/loinc/Website/ParseSubmittersInformationTable';
+import { parseLanguageVariantsTable } from 'ingester/loinc/Website/ParseLanguageVariantsTable';
+import { parseRelatedNamesTable } from 'ingester/loinc/Website/ParseRelatedNamesTable';
+import { parseExampleUnitsTable } from 'ingester/loinc/Website/ParseExampleUnitsTable';
+import { parse3rdPartyCopyrightTable } from 'ingester/loinc/Website/Parse3rdPartyCopyrightTable';
+import { parseCopyrightTable } from 'ingester/loinc/Website/ParseCopyrightTable';
+import { parseAnswerListTable } from 'ingester/loinc/Website/ParseAnswerListTable';
+import { parseSurveyQuestionTable } from 'ingester/loinc/Website/ParseSurveyQuestionTable';
+import { parseWebContentTable } from 'ingester/loinc/Website/ParseWebContentTable';
+import { parseArticleTable } from 'ingester/loinc/Website/ParseArticleTable';
+import { parseCopyrightText } from 'ingester/loinc/Website/ParseCopyrightText';
+import { parseVersion } from 'ingester/loinc/Website/ParseVersion';
 
 const url_prefix = 'http://r.details.loinc.org/LOINC/';
 const url_postfix = '.html';
@@ -49,137 +36,137 @@ const url_postfix_para = '?sections=Comprehensive';
 const tasks = [
     {
         sectionName: 'PANEL HIERARCHY',
-        function: ParsePanelHierarchyTable.parsePanelHierarchyTable,
+        function: parsePanelHierarchyTable,
         xpath: 'html/body/div[@class="Section1"]/table[.//th[contains(text(),"PANEL HIERARCHY")]]/following-sibling::table[1]'
     },
     {
         sectionName: 'LOINC Id',
-        function: ParseLoincIdTable.parseLoincIdTable,
+        function: parseLoincIdTable,
         xpath: '((//table)[1])'
     },
     {
         sectionName: 'LOINC NAME',
-        function: ParseLoincNameTable.parseLoincNameTable,
+        function: parseLoincNameTable,
         xpath: '((//table)[1])'
     },
     {
         sectionName: 'NAME',
-        function: ParseNameTable.parseNameTable,
+        function: parseNameTable,
         xpath: 'html/body/div/table[.//th[text()="NAME"]]'
     },
 
     {
         sectionName: 'COPYRIGHT NOTICE',
-        function: ParseCopyrightNotice.parseCopyrightNotice,
+        function: parseCopyrightNotice,
         xpath: 'html/body/div/table[.//tr[contains(.,"NOTICE") and contains(.,"COPYRIGHT")]]'
     },
     {
         sectionName: 'PART DEFINITION/DESCRIPTION(S)',
-        function: ParsePartDefinitionDescriptionsTable.parsePartDefinitionDescriptionsTable,
+        function: parsePartDefinitionDescriptionsTable,
         xpath: 'html/body/div[@class="Section0"]/table[.//th[text()="PART DEFINITION/DESCRIPTION(S)"]]'
     },
     {
         sectionName: 'TERM DEFINITION/DESCRIPTION(S)',
-        function: ParseTermDefinitionDescriptionsTable.parseTermDefinitionDescriptionsTable,
+        function: parseTermDefinitionDescriptionsTable,
         xpath: 'html/body/div[@class="Section0"]/table[.//th[text()="TERM DEFINITION/DESCRIPTION(S)"]]'
     },
     {
         sectionName: 'PARTS',
-        function: ParsePartTable.parsePartTable,
+        function: parsePartTable,
         xpath: '(//*[@class="Section7000"]/div/table)[1]'
     },
     {
         sectionName: 'FORM CODING INSTRUCTIONS',
-        function: ParseFormCodingInstructionsTable.parseFormCodingInstructionsTable,
+        function: parseFormCodingInstructionsTable,
         xpath: 'html/body/div/table[.//th[contains(node(),"FORM CODING INSTRUCTIONS")]]'
     },
     {
         sectionName: 'BASIC ATTRIBUTES',
-        function: ParseBasicAttributesTable.parseBasicAttributesTable,
+        function: parseBasicAttributesTable,
         xpath: 'html/body/div/table[.//th[text()="BASIC ATTRIBUTES"]]'
     },
     {
         sectionName: 'HL7 ATTRIBUTES',
-        function: ParseHL7AttributesTable.parseHL7AttributesTable,
+        function: parseHL7AttributesTable,
         xpath: 'html/body/div/table[.//th[contains(node(),"HL7 ATTRIBUTES")]]'
     },
     {
-        sectionName: 'SUBMITTER\'S INFORMATION',
-        function: ParseSubmittersInformationTable.parseSubmittersInformationTable,
+        sectionName: "SUBMITTER'S INFORMATION",
+        function: parseSubmittersInformationTable,
         xpath: 'html/body/div/table[.//th[text()="SUBMITTER\'S INFORMATION"]]'
     },
 
     {
         sectionName: 'LANGUAGE VARIANTS',
-        function: ParseLanguageVariantsTable.parseLanguageVariantsTable,
+        function: parseLanguageVariantsTable,
         xpath: 'html/body/div/table[.//th[text()="LANGUAGE VARIANTS"]]'
     },
     {
         sectionName: 'RELATED NAMES',
-        function: ParseRelatedNamesTable.parseRelatedNamesTable,
+        function: parseRelatedNamesTable,
         xpath: 'html/body/div/table[.//th[text()="RELATED NAMES"]]'
     },
 
     {
         sectionName: 'EXAMPLE UNITS',
-        function: ParseExampleUnitsTable.parseExampleUnitsTable,
+        function: parseExampleUnitsTable,
         xpath: 'html/body/div/table[.//th[text()="EXAMPLE UNITS"]]'
     },
 
     {
         sectionName: '3rd PARTY COPYRIGHT',
-        function: Parse3rdPartyCopyrightTable.parse3rdPartyCopyrightTable,
+        function: parse3rdPartyCopyrightTable,
         xpath: '/html/body/div/table[.//th[text()="3rd PARTY COPYRIGHT"]]'
     },
     {
         sectionName: 'COPYRIGHT',
-        function: ParseCopyrightTable.parseCopyrightTable,
+        function: parseCopyrightTable,
         xpath: '/html/body/div/table[.//th[text()="COPYRIGHT"]]'
     },
     {
         sectionName: 'EXAMPLE ANSWER LIST',
-        function: ParsingAnswerListTable.parseAnswerListTable,
+        function: parseAnswerListTable,
         xpath: 'html/body/div[@class="Section80000"]/table[.//th[contains(node(),"EXAMPLE ANSWER LIST")]]'
     },
     {
         sectionName: 'NORMATIVE ANSWER LIST',
-        function: ParsingAnswerListTable.parseAnswerListTable,
+        function: parseAnswerListTable,
         xpath: 'html/body/div[@class="Section80000"]/table[.//th[contains(node(),"NORMATIVE ANSWER LIST")]]'
     },
     {
         sectionName: 'PREFERRED ANSWER LIST',
-        function: ParsingAnswerListTable.parseAnswerListTable,
+        function: parseAnswerListTable,
         xpath: 'html/body/div[@class="Section80000"]/table[.//th[contains(node(),"PREFERRED ANSWER LIST")]]'
     },
     {
         sectionName: 'SURVEY QUESTION',
-        function: ParseSurveyQuestionTable.parseSurveyQuestionTable,
+        function: parseSurveyQuestionTable,
         xpath: 'html/body/div/table[.//th[contains(node(),"SURVEY")]]'
     },
     {
         sectionName: 'WEB CONTENT',
-        function: ParseWebContentTable.parseWebContentTable,
+        function: parseWebContentTable,
         xpath: 'html/body/div/table[.//th[text()="WEB CONTENT"]]'
     },
     {
         sectionName: 'ARTICLE',
-        function: ParseArticleTable.parseArticleTable,
+        function: parseArticleTable,
         xpath: 'html/body/div/table[.//th[text()="ARTICLE"]]'
     },
     {
         sectionName: 'COPYRIGHT TEXT',
-        function: ParseCopyrightText.parseCopyrightText,
+        function: parseCopyrightText,
         xpath: '//p[@class="copyright"][1]'
     },
     {
         sectionName: 'VERSION',
-        function: ParsingVersion.parseVersion,
+        function: parseVersion,
         xpath: '//p[contains(text(),"Generated from LOINC version")]'
     }
 ];
 
-exports.runOneLoinc = loincId => {
-    return new Promise(async (resolve, reject) => {
+export function runOneLoinc(loincId) {
+    return new Promise(async (resolve) => {
         let driver = await new webdriver.Builder().forBrowser('firefox').build();
         let url = url_prefix + loincId.trim() + url_postfix + url_postfix_para;
         await driver.get(url);
@@ -188,16 +175,13 @@ exports.runOneLoinc = loincId => {
             let sectionName = task.sectionName;
             let elements = await driver.findElements(By.xpath(task.xpath));
             if (elements && elements.length === 1) {
-                await task.function(driver, loincId, elements[0], result => {
-                    loinc[sectionName] = result;
-                });
+                loinc[sectionName] = await task.function(driver, loincId, elements[0]);
             }
         }
         driver.close();
         resolve(loinc);
     })
-};
-
+}
 
 exports.runOneCde = async (loinc, orgInfo) => {
     let loincId = loinc.loincId;
@@ -207,19 +191,19 @@ exports.runOneCde = async (loinc, orgInfo) => {
         'ids.id': loincId
     };
     let existingCde = await DataElement.findOne(cdeCond).exec();
-    let newCde = await CreateCDE.createCde(loinc, orgInfo);
+    let newCde = await createCde(loinc, orgInfo);
     if (!existingCde) {
         existingCde = await new DataElement(newCde).save();
     } else if (updatedByLoader(existingCde)) {
     } else {
         existingCde.imported = new Date().toJSON();
         existingCde.markModified('imported');
-        let diff = CompareCDE.compareCde(newCde, existingCde);
-        if (_.isEmpty(diff)) {
+        let diff = compareCde(newCde, existingCde);
+        if (isEmpty(diff)) {
             await existingCde.save();
         } else {
-            await MergeCDE.mergeCde(newCde, existingCde);
-            await mongo_cde.updatePromise(existingCde, batchloader);
+            await mergeCde(newCde, existingCde);
+            await updateCde(existingCde, BATCHLOADER);
         }
     }
     return existingCde;
@@ -232,7 +216,7 @@ exports.runOneForm = async (loinc, orgInfo) => {
         'ids.id': loinc.loincId
     };
     let existingForm = await Form.findOne(formCond);
-    let newFormObj = await CreateForm.createForm(loinc, orgInfo);
+    let newFormObj = await createForm(loinc, orgInfo);
     let newForm = new Form(newFormObj);
     if (!existingForm) {
         existingForm = await newForm.save();
@@ -240,12 +224,12 @@ exports.runOneForm = async (loinc, orgInfo) => {
     } else {
         existingForm.imported = new Date().toJSON();
         existingForm.markModified('imported');
-        let diff = CompareForm.compareForm(newForm, existingForm);
-        if (_.isEmpty(diff)) {
+        let diff = compareForm(newForm, existingForm);
+        if (isEmpty(diff)) {
             await existingForm.save();
         } else {
-            await MergeForm.mergeForm(newForm, existingForm);
-            await mongo_form.updatePromise(existingForm, batchloader);
+            await mergeForm(newForm, existingForm);
+            await updateForm(existingForm, BATCHLOADER);
         }
     }
     return existingForm;

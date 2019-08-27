@@ -1,4 +1,4 @@
-exports.parseSources = protocol => {
+export function parseSources(protocol) {
     let sources = [];
     let releaseDate = protocol['Protocol Release Date'];
     if (releaseDate)
@@ -11,4 +11,4 @@ exports.parseSources = protocol => {
             }
         });
     return sources;
-};
+}

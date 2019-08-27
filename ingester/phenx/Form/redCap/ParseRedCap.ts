@@ -1,25 +1,22 @@
-const _ = require('lodash');
-const fs = require('fs');
-const csvParser = require('csv-parse');
+import { existsSync, readFile } from 'fs';
+import { find, isEmpty } from 'lodash';
+import { BATCHLOADER, updateCde, updatedByLoader } from 'ingester/shared/utility';
+import { DataElement } from 'server/cde/mongo-cde';
+import { convert } from 'ingester/phenx/Form/redCap/RedCapCdeToQuestion';
 
-const mongo_cde = require('../../../../server/cde/mongo-cde');
-const DataElement = mongo_cde.DataElement;
+const csvParser = require('csv-parse');
 
 const CreateCDE = require('./CreateCDE');
 const CompareCDE = require('../../CDE/CompareCDE');
 const MergeCDE = require('../../CDE/MergeCDE');
 
-const RedCapCdeToQuestion = require('./RedCapCdeToQuestion');
-
-const updatedByLoader = require('../../../shared/updatedByLoader').updatedByLoader;
-const batchloader = require('../../../shared/updatedByLoader').batchloader;
 
 const toolkit_content = 's:/MLB/CDE/phenx/original-phenxtoolkit.rti.org/toolkit_content';
 const redCapZipFolder = toolkit_content + '/redcap_zip/';
 
-doInstrumentID = instrumentIDFilePath => {
+const doInstrumentID = instrumentIDFilePath => {
     return new Promise((resolve, reject) => {
-        fs.readFile(instrumentIDFilePath, 'utf8', (err, data) => {
+        readFile(instrumentIDFilePath, 'utf8', (err, data) => {
             if (err) {
                 console.log('Read instrumentIDFilePath failed. ' + err);
                 process.exit(1);
@@ -28,9 +25,9 @@ doInstrumentID = instrumentIDFilePath => {
         });
     })
 };
-doAuthorID = authorIDFilePath => {
+const doAuthorID = authorIDFilePath => {
     return new Promise((resolve, reject) => {
-        fs.readFile(authorIDFilePath, 'utf8', (err, data) => {
+        readFile(authorIDFilePath, 'utf8', (err, data) => {
             if (err) {
                 console.log('Read authorIDFilePath failed. ' + err);
                 process.exit(1);
@@ -40,9 +37,9 @@ doAuthorID = authorIDFilePath => {
     })
 };
 
-doInstrument = instrumentFilePath => {
+const doInstrument = instrumentFilePath => {
     return new Promise((resolve, reject) => {
-        fs.readFile(instrumentFilePath, 'utf8', (err, data) => {
+        readFile(instrumentFilePath, 'utf8', (err, data) => {
             if (err) {
                 console.log('Read instrumentFilePath failed. ' + err);
                 process.exit(1);
@@ -69,7 +66,7 @@ doInstrument = instrumentFilePath => {
 function doDescriptive(sectionFes, redCapCde, attachments) {
     let variableFieldName = redCapCde['Variable / Field Name'];
     let fieldLabel = redCapCde['Field Label'];
-    let foundAttachment = _.find(attachments, a => a.filename === variableFieldName);
+    let foundAttachment = find(attachments, a => a.filename === variableFieldName);
     if (foundAttachment) sectionFes.instructions.value += '\n<figure><figcaption>' + fieldLabel + '</figcaption><img src="/data/' + foundAttachment.fileid + '"/></figure>';
     else sectionFes.instructions.value += '\n' + fieldLabel;
 }
@@ -85,20 +82,19 @@ async function doQuestion(redCapCde, redCapCdes, formId, protocol, newForm) {
     });
     if (!existingCde) {
         existingCde = await newCde.save();
-//        existingCde = await DataElement.findOneAndUpdate({_id: newCde._id}, newCde, {upsert: true, new: true});
     } else if (updatedByLoader(existingCde)) {
     } else {
         existingCde.imported = new Date().toJSON();
         existingCde.markModified('imported');
         let diff = CompareCDE.compareCde(newCde, existingCde);
-        if (_.isEmpty(diff)) {
+        if (isEmpty(diff)) {
             await existingCde.save();
         } else {
             await MergeCDE.mergeCde(existingCde, newCde);
-            await mongo_cde.updatePromise(existingCde, batchloader);
+            await updateCde(existingCde, BATCHLOADER);
         }
     }
-    let question = await RedCapCdeToQuestion.convert(redCapCde, redCapCdes, existingCde, newForm);
+    let question = await convert(redCapCde, redCapCdes, existingCde, newForm);
     return question;
 }
 
@@ -111,7 +107,7 @@ exports.parseFormElements = async (protocol, attachments, newForm) => {
     let formId = '';
     let instrumentIDFileName = 'instrumentID.txt';
     let instrumentIDFilePath = zipFolder + '/' + instrumentIDFileName;
-    let instrumentIDFileExist = fs.existsSync(instrumentIDFilePath);
+    let instrumentIDFileExist = existsSync(instrumentIDFilePath);
     if (instrumentIDFileExist) {
         formId = await doInstrumentID(instrumentIDFilePath);
     }
@@ -119,7 +115,7 @@ exports.parseFormElements = async (protocol, attachments, newForm) => {
     let authorId = '';
     let authorIdFileName = 'AuthorID.txt';
     let authorIdFilePath = zipFolder + '/' + authorIdFileName;
-    let authorIdFileExist = fs.existsSync(authorIdFilePath);
+    let authorIdFileExist = existsSync(authorIdFilePath);
     if (authorIdFileExist) {
         authorId = await doAuthorID(authorIdFilePath);
         if (authorId !== 'PhenX') {
@@ -131,12 +127,12 @@ exports.parseFormElements = async (protocol, attachments, newForm) => {
     let redCapCdes = [];
     let instrumentFileName = 'instrument.csv';
     let instrumentFilePath = zipFolder + '/' + instrumentFileName;
-    let instrumentFileExist = fs.existsSync(instrumentFilePath);
+    let instrumentFileExist = existsSync(instrumentFilePath);
     if (instrumentFileExist) {
         redCapCdes = await doInstrument(instrumentFilePath);
     } else {
         let _instrumentFilePath = zipFolder + '/' + 'PX' + protocolId + '/' + instrumentFileName;
-        let _instrumentFileExist = fs.existsSync(_instrumentFilePath);
+        let _instrumentFileExist = existsSync(_instrumentFilePath);
         if (_instrumentFileExist) {
             redCapCdes = await doInstrument(_instrumentFilePath);
         } else {
@@ -188,7 +184,7 @@ exports.parseFormElements = async (protocol, attachments, newForm) => {
                 });
             newSection = true;
             fe = formElements[formElements.length - 1];
-            if (!_.isEmpty(sectionHeader) || !_.isEmpty(fieldLabel)) {
+            if (!isEmpty(sectionHeader) || !isEmpty(fieldLabel)) {
                 let question = await doQuestion(redCapCde, redCapCdes, formId, protocol, newForm);
                 fe.formElements.push(question);
             } else {

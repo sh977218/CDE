@@ -1,6 +1,6 @@
 import { By } from 'selenium-webdriver';
 
-export async function parseLanguageVariantsTable(driver, loincId, table, cb) {
+export async function parseLanguageVariantsTable(driver, loincId, table) {
     let languageVariants = [];
     let trs = await table.findElements(By.xpath('tbody/tr'));
     trs.shift();
@@ -15,5 +15,5 @@ export async function parseLanguageVariantsTable(driver, loincId, table, cb) {
         let languageVariant = {title: title.trim(), content: content.trim()};
         languageVariants.push(languageVariant);
     }
-    cb(languageVariants);
+    return languageVariants;
 }
