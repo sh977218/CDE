@@ -458,7 +458,7 @@ export class FormViewComponent implements OnInit {
                                 'Repeat First Question does not exist: "' + getLabel(fe) + '".', fe.elementType + '_' + fe.feId));
                             break;
                         }
-                        if (refQuestion.question.cde.datatype !== 'Value List') {
+                        if (refQuestion.question.datatype !== 'Value List') {
                             validationErrors.push(new LocatableError(
                                 'Repeat First Question does not a Value List: "' + getLabel(fe) + '".', fe.elementType + '_' + fe.feId));
                         }

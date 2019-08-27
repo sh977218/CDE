@@ -12,15 +12,14 @@ public class RenderDisplayProfile extends BaseFormTest {
     public void renderDisplayProfiles() {
         String formName = "PROMIS SF v1.1 - Anger 5a";
 
-        String baseXpath = "//*[@id='profile_3']//*[contains(@class,'displayProfileRenderDiv')]//*[*[normalize-space()='Education level USA type']]//";
         goToFormByName(formName);
-        // look for add device button
+        // look for add device butto
         Assert.assertEquals(driver.findElements(By.cssSelector("i.iconButton")).size(), 0);
         textPresent("In the past 7 days");
         textPresent("I felt annoyed");
         textPresent("1", By.xpath("//*[@id='formRenderSection_In the past 7 days']//table/tbody/tr[1]/td[2]"));
         textPresent("5", By.xpath("//*[@id='formRenderSection_In the past 7 days']//table/tbody/tr[1]/td[6]"));
-        Assert.assertEquals(driver.findElements(By.xpath("//div[@id='formRenderSection_In the past 7 days']//table//input[@type='radio']")).size(), 25);
+        Assert.assertEquals(driver.findElements(By.xpath("//div[@id='formRenderSection_In the past 7 days']//table//input[@type='radio']")).size(), 20);
         assertNoElt(By.xpath("//select[@ng-model='question.question.answer']"));
         textNotPresent("I was grouchy");
 
@@ -50,7 +49,7 @@ public class RenderDisplayProfile extends BaseFormTest {
 
         selectDisplayProfileByName("No Matrix No Values Wider");
 
-        baseXpath = "//*[*[normalize-space()='I was irritated more than people knew']]//";
+        String baseXpath = "//*[*[normalize-space()='I was irritated more than people knew']]//";
         int i = 5;
         while (i >= 0) {
             if (i == 0) Assert.fail("Unexpected y value");
