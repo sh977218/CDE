@@ -35,11 +35,7 @@ cat <<EOT >>buildNode/package.json
   "name": "ludetc-cdes-built",
   "version": "0.0.1",
   "dependencies": {
-<<<<<<< HEAD
     "ingester": "file:./ingester",
-=======
-      "ingester": "file:./ingester",
->>>>>>> d3d8bbaa7ef7ae8cf7575c41ed64819c341217e7
     "server": "file:./server",
     "shared": "file:./shared"
   }
