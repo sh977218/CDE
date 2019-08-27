@@ -1,7 +1,7 @@
-const _ = require('lodash');
 const deepDiff = require('deep-diff');
+import { cloneDeep, isEmpty } from 'lodash';
 
-getChildren = (formElements, ids) => {
+const getChildren = (formElements, ids) => {
     if (formElements) {
         formElements.forEach(formElement => {
             if (formElement.elementType === 'section' || formElement.elementType === 'form') {
@@ -18,9 +18,9 @@ getChildren = (formElements, ids) => {
 
 
 exports.compareForm = function (newForm, existingForm) {
-    let newFormObj = _.cloneDeep(newForm);
+    let newFormObj = cloneDeep(newForm);
     if (newFormObj.toObject) newFormObj = newFormObj.toObject();
-    let existingFormObj = _.cloneDeep(existingForm);
+    let existingFormObj = cloneDeep(existingForm);
     if (existingFormObj.toObject) existingFormObj = existingFormObj.toObject();
 
     [existingFormObj, newFormObj].forEach(obj => {
@@ -58,7 +58,9 @@ exports.compareForm = function (newForm, existingForm) {
 
         obj.referenceDocuments.forEach(a => {
             for (let p in a) {
-                if (_.isEmpty(a[p])) delete a[p];
+                if (isEmpty(a[p])) {
+                    delete a[p];
+                }
             }
         });
         obj.ids.forEach(a => {

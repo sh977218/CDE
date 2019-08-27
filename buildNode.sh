@@ -22,6 +22,7 @@ sed -i -e "s/'\.\/modules\/_fhirApp\/fhirApp\.module'/'\.\.\/modules\/_fhirApp\/
 sed -i -e "s/'\.\/modules\/_nativeRenderApp\/nativeRenderApp\.module'/'\.\.\/modules\/_nativeRenderApp\/nativeRenderApp\.module'/g" buildNode/webpackNative.prod.js
 cp -R config buildNode
 sed -i -e 's/"buildDir": "\.\.\/build"/"buildDir": "\.\.\/\.\.\/build"/g' buildNode/config/default.json
+cp ingester/package.json buildNode/ingester
 cp server/package.json buildNode/server
 cp shared/package.json buildNode/shared
 cp -R shared/de/assets buildNode/shared/de
@@ -29,11 +30,12 @@ cp -R shared/form/assets buildNode/shared/form
 cp -R shared/mapping/fhir/assets buildNode/shared/mapping/fhir
 
 # create dev Js node_modules
-cat <<EOT >> buildNode/package.json
+cat <<EOT >>buildNode/package.json
 {
   "name": "ludetc-cdes-built",
   "version": "0.0.1",
   "dependencies": {
+      "ingester": "file:./ingester",
     "server": "file:./server",
     "shared": "file:./shared"
   }

@@ -1,4 +1,4 @@
-exports.parseDefinitions = protocol => {
+export function parseDefinitions(protocol) {
     let definitions = [];
     let Description = protocol['Description of Protocol'];
     if (Description) {
@@ -8,4 +8,4 @@ exports.parseDefinitions = protocol => {
         });
     }
     return definitions;
-};
+}
