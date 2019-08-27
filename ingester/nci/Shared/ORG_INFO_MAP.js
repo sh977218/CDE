@@ -68,7 +68,7 @@ exports.map = {
         }
     },
     'NCI-CDMH-PCORNet': {
-        'xml': 'S:/MLB/CDE/NCI/CdmhPcoriCdm/PCORNetFinalCDEBrowser_SearchResults.xml',
+        'xml': 'S:/MLB/CDE/NCI/8-27-19/CDEBrowser_SearchResults_PCOR4.0_asOf-20190812.xml',
         'stewardOrgName': 'NCI',
         'classificationOrgName': 'NCI',
         'classificationMap': {'PCORTF CDMH': 'PCORNet'},
@@ -79,7 +79,7 @@ exports.map = {
         }
     },
     'NCI-CDMH-OMOP': {
-        'xml': 'S:/MLB/CDE/NCI/CdmhPcoriCdm/OMOPFINALCDEBrowser_SearchResults.xml',
+        'xml': 'S:/MLB/CDE/NCI/8-27-19/CDEBrowser_SearchResults_OMOP5.2_asOf-20190812.xml',
         'stewardOrgName': 'NCI',
         'classificationOrgName': 'NCI',
         'classificationMap': {'PCORTF CDMH': 'OMOP'},
@@ -90,7 +90,7 @@ exports.map = {
         }
     },
     'NCI-CDMH-ACT': {
-        'xml': 'S:/MLB/CDE/NCI/CdmhPcoriCdm/ACTFINALCDEBrowser_SearchResults.xml',
+        'xml': 'S:/MLB/CDE/NCI/8-27-19/CDEBrowser_SearchResults_ACTI2b2-1.4_asOf-20190812.xml',
         'stewardOrgName': 'NCI',
         'classificationOrgName': 'NCI',
         'classificationMap': {'PCORTF CDMH': 'ACT'},
@@ -101,7 +101,7 @@ exports.map = {
         }
     },
     'NCI-CDMH-Sentinel': {
-        'xml': 'S:/MLB/CDE/NCI/CdmhPcoriCdm/SentinelFinalCDEBrowser_SearchResults.xml',
+        'xml': 'S:/MLB/CDE/NCI/8-27-19/CDEBrowser_SearchResults_Sentinel6.02_asOf-20190812.xml',
         'stewardOrgName': 'NCI',
         'classificationOrgName': 'NCI',
         'classificationMap': {'PCORTF CDMH': 'Sentinel'},

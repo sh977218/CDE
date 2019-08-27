@@ -13,7 +13,7 @@ const sourceMap = {
     NINDS: ['NINDS', 'NINDS Variable Name', 'NINDS caDSR', 'caDSR'],
 };
 export const TODAY = new Date().toJSON();
-export const lastMigrationScript = 'load PhenX on ' + new Date().getMonth() + new Date().getFullYear();
+export const lastMigrationScript = 'load NCI on ' + new Date().getMonth() + new Date().getFullYear();
 
 export const BATCHLOADER_USERNAME = 'batchloader';
 export const BATCHLOADER = {
