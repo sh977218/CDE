@@ -6,6 +6,11 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.KeyEvent;
+
 public class QuestionTest extends BaseFormTest {
 
     public void addQuestionToSection(String cdeName, int sectionNumber) {
@@ -38,7 +43,7 @@ public class QuestionTest extends BaseFormTest {
         textPresent("Create Data Element");
 
         hangon(1);
-
+        
         // test autofocus in create mode
         new Actions(driver).sendKeys(cdeName).build().perform();
         if (!isSuggested) clickElement(By.id("createNewDataElement"));
@@ -102,13 +107,13 @@ public class QuestionTest extends BaseFormTest {
     }
 
     public void addQuestionDialog(int sectionNumber) {
-        scrollToViewById("section_" + sectionNumber);
         // drag and drop selenium is buggy, try 5 times.
         for (int i = 0; i < 5; i++) {
             try {
                 WebElement sourceElt = findElement(By.xpath("//*[@id='startAddingQuestions']"));
                 WebElement targetElt = findElement(By.xpath("//*[@id='section_" + sectionNumber + "']//*[contains(@class,'node-content-wrapper')]"));
                 (new Actions(driver)).moveToElement(targetElt).perform(); // scroll into view
+                scrollDownBy(50);
                 dragAndDrop(sourceElt, targetElt);
                 textPresent("Search Data Elements");
                 i = 10;

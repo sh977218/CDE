@@ -17,8 +17,39 @@ public class DisplayProfilesMultipleSelectTest extends BaseFormTest {
         DisplayProfile multipleSelectDisplayProfile = new DisplayProfile(0, "Multiple Select Display Profile", "Dynamic", 6, 3, false, false, false, false, false, false);
         createDisplayProfile(multipleSelectDisplayProfile);
 
-        int number_select = driver.findElements(By.xpath("//*[@id='profile_0']//*[contains(@class,'displayProfilePreview')]//select")).size();
-        Assert.assertTrue(number_select > 0, "Expected number of select more than 0, actual number_select is " + number_select + ".");
+        /*@TODO
+        Multiple Select options require to reload the page to work.
+        Is it a bug?
+         */
+        goToFormByName(formName);
+
+        int number_select_in_preview = findElements(By.xpath("//cde-native-section//select")).size();
+        Assert.assertTrue(number_select_in_preview > 0);
+
+        goToDisplayProfiles();
+        toggleDisplayProfile(0);
+        int number_select_in_display_profile = findElements(By.xpath("//cde-native-section//select")).size();
+        Assert.assertTrue(number_select_in_display_profile > 0);
+
+        deleteDisplayProfile(0);
+        DisplayProfile noMultipleSelectDisplayProfile = new DisplayProfile(0, "No Multiple Select Display Profile", "Dynamic", 6, 15, false, false, false, false, false, false);
+        createDisplayProfile(noMultipleSelectDisplayProfile);
+
+        /*@TODO
+        Multiple Select options require to reload the page to work.
+        Is it a bug?
+         */
+        goToFormByName(formName);
+
+        number_select_in_preview = driver.findElements(By.xpath("//cde-native-section//select")).size();
+        Assert.assertTrue(number_select_in_preview == 0);
+
+        goToDisplayProfiles();
+        toggleDisplayProfile(0);
+        number_select_in_display_profile = driver.findElements(By.xpath("//cde-native-section//select")).size();
+        Assert.assertTrue(number_select_in_display_profile == 0);
+
+
     }
 
 }

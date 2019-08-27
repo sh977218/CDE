@@ -121,6 +121,10 @@ public class BaseFormTest extends NlmCdeBaseTest {
         clickElement(By.id("printableLogicCb"));
     }
 
+    public void toggleDisplayProfile(int index) {
+        clickElement(By.xpath("//*[@id='profile_" + index + "']//mat-panel-title"));
+    }
+
     protected void dragAndDrop(WebElement source, WebElement target) {
         String basePath = new File("").getAbsolutePath();
 
@@ -180,8 +184,15 @@ public class BaseFormTest extends NlmCdeBaseTest {
     }
 
     protected void createDisplayProfile(int index, String name, boolean matrix, boolean displayValues, boolean instructions,
-                                        boolean numbering, String displayType, int numberOfColumns, boolean displayInvisible, int answerDropdownLimit,
-                                        boolean displayMetadataDevice) {
+                                        boolean numbering, String displayType, int numberOfColumns, boolean displayInvisible,
+                                        int answerDropdownLimit) {
+        createDisplayProfile(index, name, matrix, displayValues, instructions,
+                numbering, displayType, numberOfColumns, displayInvisible, answerDropdownLimit, false);
+    }
+
+    protected void createDisplayProfile(int index, String name, boolean matrix, boolean displayValues, boolean instructions,
+                                        boolean numbering, String displayType, int numberOfColumns, boolean displayInvisible,
+                                        int answerDropdownLimit, boolean displayMetadataDevice) {
         textPresent("Add Profile");
         clickElement(By.id("addDisplayProfile"));
         clickElement(By.cssSelector("#profile_" + index + " mat-panel-title h3"));
@@ -198,10 +209,14 @@ public class BaseFormTest extends NlmCdeBaseTest {
         clickElement(By.id("displayType_" + index));
         clickElement(By.xpath("//mat-option[contains(.,'" + displayType + "')]"));
 
-        WebElement slider = findElement(By.cssSelector("#profile_" + index + " .mat-slider-wrapper"));
-        Actions slide = new Actions(driver);
-        int width = slider.getSize().getWidth() / 6;
-        slide.moveToElement(slider, width * (numberOfColumns - 1) + width / 2, slider.getSize().getHeight() / 2).click().build().perform();
+        WebElement nbColSlider = findElement(By.cssSelector("#profile_" + index + " mat-slider[max='6']"));
+        nbColSlider.click();
+
+        int currentNbOfCols = Integer.valueOf(findElement(By.id("nbOfColumnsValue")).getText());
+        for (int i = 0; i < Math.abs(numberOfColumns - currentNbOfCols); i++) {
+            Keys key = (numberOfColumns - currentNbOfCols) > 0 ? Keys.RIGHT : Keys.LEFT;
+            nbColSlider.sendKeys(key);
+        }
 
         if (displayInvisible) clickElement(By.id("displayInvisible_" + index));
 
@@ -209,7 +224,12 @@ public class BaseFormTest extends NlmCdeBaseTest {
             findElement(By.id("displayAnswerDropdownLimit_" + index)).clear();
             findElement(By.id("displayAnswerDropdownLimit_" + index)).sendKeys(String.valueOf(answerDropdownLimit));
         }
-        clickElement(By.xpath("//*[@id='profile_0']//h4[text()='View Specific Settings']"));
+        clickElement(By.xpath("//*[@id='profile_" + index + "']//h4[text()='View Specific Settings']"));
+
+    }
+
+    protected void deleteDisplayProfile(int index) {
+        deleteWithConfirm("//*[@id = 'profile_" + index + "']");
     }
 
     protected void deleteSkipLogicById(String id) {
@@ -240,25 +260,6 @@ public class BaseFormTest extends NlmCdeBaseTest {
             }
         }
         clickElement(By.id("saveNewSkipLogicButton"));
-
-    }
-
-    protected void checkMatrixLayout(List<WebElement> list, boolean isMatrix) {
-        int yLocation = -1;
-        ListIterator<WebElement> iterator = list.listIterator();
-        while (iterator.hasNext()) {
-            WebElement next = iterator.next();
-            int nextYLocation = next.getLocation().y;
-            if (yLocation == -1) {
-                yLocation = nextYLocation;
-            } else {
-                if (isMatrix) {
-                    Assert.assertEquals(nextYLocation, yLocation);
-                } else {
-                    Assert.assertNotEquals(nextYLocation, yLocation);
-                }
-            }
-        }
     }
 
     protected void checkAnswerValue(List<WebElement> list, boolean displayAnswerValue) {
@@ -273,4 +274,5 @@ public class BaseFormTest extends NlmCdeBaseTest {
             }
         }
     }
+
 }
