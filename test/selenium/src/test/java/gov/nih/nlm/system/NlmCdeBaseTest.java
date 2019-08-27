@@ -496,6 +496,10 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         clickElement(By.id("attachments_tab"));
     }
 
+    protected void goToDisplayProfiles(){
+        clickElement(By.id("displayProfiles_tab"));
+    }
+
     protected void goToHistory() {
         clickElement(By.id("history_tab"));
     }

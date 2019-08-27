@@ -1,7 +1,7 @@
 import { createReadStream, existsSync, readdirSync, statSync } from 'fs';
 import * as md5File from 'md5-file';
 import { gfs } from 'server/system/mongo-data';
-import { batchloader } from 'ingester/shared/utility';
+import { BATCHLOADER } from 'ingester/shared/utility';
 import { redCapZipFolder } from 'ingester/createMigrationConnection';
 
 function addAttachment(fileName, filePath, fileType) {
@@ -15,7 +15,7 @@ function addAttachment(fileName, filePath, fileType) {
             comment: [],
             scanned: 'scanned',
             filesize: fileSize,
-            uploadedBy: batchloader
+            uploadedBy: BATCHLOADER
         };
 
         md5File(filePath, async (err, md5) => {

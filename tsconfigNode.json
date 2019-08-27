@@ -15,6 +15,7 @@
     "moduleResolution": "Node",
     "outDir": "./buildNode",
     "pretty": false,
+    "resolveJsonModule": true,
     "rootDir": ".",
     "resolveJsonModule": true,
     "sourceMap": true,

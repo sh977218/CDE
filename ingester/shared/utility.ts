@@ -12,17 +12,25 @@ const sourceMap = {
     PHENX: ['PhenX', 'PhenX Variable'],
     NINDS: ['NINDS', 'NINDS Variable Name', 'NINDS caDSR', 'caDSR'],
 };
-const today = new Date().toJSON();
-export const lastMigrationScript = 'load PhenX on ' + new Date().getMonth() + new Date().getFullYear();
 
 export const BATCHLOADER_USERNAME = 'batchloader';
-export const batchloader = {
+export const BATCHLOADER = {
     username: BATCHLOADER_USERNAME,
     roles: ['AttachmentReviewer']
 };
 
-export const created = today;
-export const imported = today;
+export const TODAY = new Date().toJSON();
+export const created = TODAY;
+export const imported = TODAY;
+
+export const lastMigrationScript = 'load PhenX on ' + new Date().getMonth() + new Date().getFullYear();
+
+export function updatedByLoader(elt) {
+    if (elt.toObject) elt = elt.toObject;
+    let allow = elt.updatedBy && elt.updatedBy.username
+        && elt.updatedBy.username !== BATCHLOADER_USERNAME;
+    return allow;
+}
 
 export function removeWhite(text) {
     if (!text) {
@@ -102,13 +110,29 @@ export function replaceClassificationByOrg(newClassification, existingClassifica
     return newClassification.concat(otherClassifications);
 }
 
-
 export function updateCde(elt, user, options = {}) {
-    return new Promise(resolve => mongo_cde.update(elt, user, options, resolve));
+    return new Promise((resolve, reject) => {
+        mongo_cde.update(elt, user, options, (err, savedElt) => {
+            if (err) reject(err);
+            else resolve(savedElt);
+        })
+    });
 }
 
 export function updateForm(elt, user, options = {}) {
-    return new Promise(resolve => mongo_form.update(elt, user, options, resolve));
+    return new Promise((resolve, reject) => {
+        const isPhenX = elt.ids.filter(id => id.source === 'PhenX').length > 0;
+        const isQualified = elt.registrationState.registrationStatus === 'Qualified';
+        const isArchived = elt.archived;
+        if (isPhenX && isQualified && !isArchived) {
+            console.log(`Qualified PhenX Form cannot be updated through loader.`);
+            process.exit(1);
+        }
+        mongo_form.update(elt, user, options, (err, savedElt) => {
+            if (err) reject(err);
+            else resolve(savedElt);
+        });
+    });
 }
 
 const DomainCollectionMap = {};
@@ -166,7 +190,6 @@ function getChildren(formElements) {
     }
     return ids;
 }
-
 
 // Compare two elements
 export function compareElt(newEltObj, existingEltObj, source) {
@@ -415,5 +438,4 @@ export function fixValueDomainOrQuestion(obj) {
         obj.datatypeExternallyDefined = fixDatatypeExternallyDefined(obj.datatypeExternallyDefined);
     }
 }
-
 

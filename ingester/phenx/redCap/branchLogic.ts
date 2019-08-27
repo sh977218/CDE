@@ -1,10 +1,11 @@
 import { find, isEqual, words } from 'lodash';
-import { map as SYMBOL_MAP } from './REDCAP_SYMBOL_MAP';
-import { map as CONJUNCTION_MAP } from './REDCAP_CONJUNCTION_MAP';
+import { map as SYMBOL_MAP } from 'ingester/phenx/Form/redCap/REDCAP_SYMBOL_MAP';
 
-function formatSkipLogic(equationText, redCapCdes) {
+import { map as CONJUNCTION_MAP } from 'ingester/phenx/Form/redCap/REDCAP_CONJUNCTION_MAP';
+
+const formatSkipLogic = function (equationText, redCapCdes) {
     let result = '';
-    let foundLabelArray = equationText.match(/\[[^\[\]]*\]\s*/);
+    let foundLabelArray = equationText.match(/\[[^\[\]]*]\s*/);
     if (foundLabelArray && foundLabelArray.length === 1) {
         let foundLabel = foundLabelArray[0];
         if (!foundLabel) {
@@ -56,7 +57,7 @@ function formatSkipLogic(equationText, redCapCdes) {
         result += '"' + equationText.trim() + '"';
         return result;
     }
-}
+};
 
 export function convertSkipLogic(skipLogicText, redCapCdes) {
     let loop_num = 0;

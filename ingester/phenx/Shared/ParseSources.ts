@@ -16,3 +16,4 @@ export function parseSources(protocol) {
     sources.push(source);
     return sources;
 }
+

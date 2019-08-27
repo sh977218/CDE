@@ -5,7 +5,7 @@ import { DataElement, DataElementSource } from 'server/cde/mongo-cde';
 import { createRedCde } from 'ingester/phenx/redCap/cde';
 import { convert } from 'ingester/phenx/redCap/RedCapCdeToQuestion';
 import {
-    batchloader, compareElt, imported, lastMigrationScript, mergeElt, printUpdateResult, updateCde
+    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeElt, printUpdateResult, updateCde
 } from 'ingester/shared/utility';
 import { leadingZerosProtocolId } from 'ingester/phenx/Form/ParseAttachments';
 import { Comment } from 'server/discuss/discussDb';
@@ -72,7 +72,7 @@ async function doOneRedCap(redCap, redCaps, protocol, newForm) {
             const existingCdeObj = existingCde.toObject();
             mergeElt(existingCdeObj, newCdeObj, 'PhenX');
             existingCde.lastMigrationScript = lastMigrationScript;
-            await updateCde(existingCde, batchloader, {updateSource: true});
+            await updateCde(existingCde, BATCHLOADER, {updateSource: true});
             RedcapLogger.changedRedcapCde++;
             RedcapLogger.changedRedcapCdes.push(existingCde.tinyId);
         }
@@ -110,7 +110,7 @@ export async function parseFormElements(protocol, attachments, newForm) {
         } else {
             const csvComment = {
                 text: newForm.ids[0].id + ' PhenX Batch loader was not able to find instrument.csv',
-                user: batchloader,
+                user: BATCHLOADER,
                 created: new Date(),
                 pendingApproval: false,
                 linkedTab: 'description',
