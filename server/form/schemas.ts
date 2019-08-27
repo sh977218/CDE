@@ -55,11 +55,11 @@ const datatypeNumberSchema = new Schema({
     precision: Number
 }, {_id: false});
 
-const mapToSchema = {
-    fhir: new Schema({
+const mapToSchema = new Schema({
+    fhir: {
         resourceType: StringType,
-    }),
-};
+    },
+});
 
 const questionSchema = new Schema({
     cde: {
@@ -69,7 +69,8 @@ const questionSchema = new Schema({
         definitions: [definitionSchema],
         version: StringType,
         permissibleValues: {
-            type: [permissibleValueSchema] // required to make optional
+            type: [permissibleValueSchema], // required to make optional
+            default: [],
         },
         ids: [idSchema],
         derivationRules: [derivationRuleSchema]

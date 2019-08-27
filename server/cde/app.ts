@@ -7,7 +7,6 @@ import {
 import { config } from '../system/parseConfig';
 import { validatePvs } from '../cde/utsValidate';
 import { byTinyIdVersion as deByTinyIdVersion, count as deCount, DataElement } from './mongo-cde';
-import { errorLogger } from '../system/logging';
 import { respondHomeFull } from '../system/app';
 import { isSearchEngine } from '../system/helper';
 import { toInteger } from 'lodash';

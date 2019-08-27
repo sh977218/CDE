@@ -7,8 +7,8 @@ const esClient = new ElasticSearch.Client({
     hosts: config.elastic.hosts
 });
 
-export function boardRefresh(cb) {
-    esClient.indices.refresh({index: config.elastic.boardIndex.name}, cb);
+export function boardRefresh() {
+    return esClient.indices.refresh({index: config.elastic.boardIndex.name});
 }
 
 export function updateOrInsertBoardById(id, board, callback) {
@@ -28,7 +28,7 @@ export function deleteBoardById(id, callback) {
     }, callback);
 }
 
-export function boardSearch(filter, callback) {
+export function boardSearch(filter) {
     let query: any = {
         size: 100,
         query: {bool: {must: [{match: {shareStatus: 'Public'}}]}},
@@ -51,14 +51,14 @@ export function boardSearch(filter, callback) {
             query.query.bool.must.push({term: {tags: {value: t}}});
         }
     });
-    esClient.search({
+    return esClient.search({
         index: boardIndexName,
         type: 'board',
         body: query
-    }, callback);
+    });
 }
 
-export function myBoards(user, filter, callback) {
+export function myBoards(user, filter) {
     let query: any = {
         size: 100,
         query: {
@@ -75,8 +75,7 @@ export function myBoards(user, filter, callback) {
     if (filter.sortBy) {
         sort[filter.sortBy] = {};
         sort[filter.sortBy].order = filter.sortDirection;
-    }
-    else {
+    } else {
         sort['updatedDate'] = {order: 'asc'};
         query.sort.push(sort);
     }
@@ -103,9 +102,9 @@ export function myBoards(user, filter, callback) {
             }
         });
     }
-    esClient.search({
+    return esClient.search({
         index: boardIndexName,
         type: 'board',
         body: query
-    }, callback);
+    });
 }

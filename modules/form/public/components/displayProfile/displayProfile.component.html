@@ -47,7 +47,7 @@
                     <mat-checkbox id="displayInvisible_{{index}}" [disabled]="!canEdit"
                                   [(ngModel)]="dPVM.profile.displayInvisible"
                                   (change)="onEltChange.emit()">Display Invisible Questions</mat-checkbox>
-                    Number of Columns: {{dPVM.profile.numberOfColumns}}
+                    Number of Columns: <span id="nbOfColumnsValue">{{dPVM.profile.numberOfColumns}}</span>
                     <mat-slider min="1" max="6" step="1" thumbLabel="true" tickInterval="1"
                                 [ngModel]="dPVM.profile.numberOfColumns"
                                 (ngModelChange)="onChange(dPVM.profile,$event)" [disabled]="!canEdit"></mat-slider>
@@ -68,7 +68,7 @@
                     </mat-card-content>
                 </mat-card>
             </div>
-            <div class="col-lg-7 col-sm-12">
+            <div class="col-lg-7 col-sm-12 displayProfilePreview">
                 <h4>Preview</h4>
                 <mat-card class="displayProfileRenderDiv" style="padding: .1rem 1rem 0 1rem">
                     <mat-card-content>
