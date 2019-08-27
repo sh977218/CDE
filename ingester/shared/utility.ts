@@ -24,6 +24,7 @@ export const created = TODAY;
 export const imported = TODAY;
 
 export const lastMigrationScript = 'load PhenX on ' + new Date().getMonth() + new Date().getFullYear();
+export const lastPhenXMigrationScript = 'load PhenX on ' + new Date().getMonth() + new Date().getFullYear();
 
 export function updatedByLoader(elt) {
     if (elt.toObject) elt = elt.toObject;
