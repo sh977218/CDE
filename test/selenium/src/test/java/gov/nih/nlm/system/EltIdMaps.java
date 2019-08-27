@@ -132,6 +132,14 @@ public class EltIdMaps {
         eltMap.put("Imaging OCT Analysis - Spectralis Report Analysis", "XJrcQ1HSFx");
         eltMap.put("Loinc Widget Test Form", "Q1ncc4Rg_");
         eltMap.put("McGill Quality of Life Questionnaire (MQOL)", "Xk44kSSYe");
+
+
+        // Display Profile Tests
+        eltMap.put("Matrix Display Profile Test", "QktaN3OFL1");
+        eltMap.put("Answer Value Display Profile Test", "QktaN3OFL2");
+        eltMap.put("Metadata Device Display Profile Test", "QktaN3OFL3");
+        eltMap.put("Multiple Select Display Profile Test", "QktaN3OFL4");
+
         eltMap.put("Mean Value Test", "X17IaQ_NQ");
         eltMap.put("Measures of Gas Exchange", "Q1eNEJrHtx");
         eltMap.put("Motor Evoked Potentials", "mkWON1SrFe");
@@ -156,6 +164,7 @@ public class EltIdMaps {
         eltMap.put("PROMIS SF v1.0 - Pain Behavior 7a", "QkggxHhuF8x");
         eltMap.put("PROMIS SF v1.0-Sleep Disturbance 4a", "Q1JxnV2OYIx");
         eltMap.put("PROMIS SF v1.0-Sleep Disturbance 6a", "QJbbHnOFUl");
+        eltMap.put("PROMIS SF v1.1 - Anger 5a", "mk8PNndtLg");
         eltMap.put("PROMIS SF v2.0 - Instrumental Support 4a", "mkG_EhdYIe");
         eltMap.put("PROMIS SF v2.0 - Companionship 6a", "m1BxH3_tIe");
         eltMap.put("PTSD Checklist - Civilian (PCL-C)", "7JZgS1BrKx");

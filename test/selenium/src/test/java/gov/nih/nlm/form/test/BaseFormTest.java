@@ -1,5 +1,6 @@
 package gov.nih.nlm.form.test;
 
+import gov.nih.nlm.form.test.displayProfile.DisplayProfile;
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
@@ -9,6 +10,7 @@ import org.testng.Assert;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.List;
+import java.util.ListIterator;
 
 public class BaseFormTest extends NlmCdeBaseTest {
 
@@ -119,6 +121,10 @@ public class BaseFormTest extends NlmCdeBaseTest {
         clickElement(By.id("printableLogicCb"));
     }
 
+    public void toggleDisplayProfile(int index) {
+        clickElement(By.xpath("//*[@id='profile_" + index + "']//mat-panel-title"));
+    }
+
     protected void dragAndDrop(WebElement source, WebElement target) {
         String basePath = new File("").getAbsolutePath();
 
@@ -157,8 +163,36 @@ public class BaseFormTest extends NlmCdeBaseTest {
         return builder.toString();
     }
 
+    protected void createDisplayProfile(DisplayProfile displayProfile) {
+        int index = displayProfile.displayProfileIndex;
+        String name = displayProfile.displayProfileName;
+        boolean matrix = displayProfile.displayAsMatrix;
+        boolean displayValues = displayProfile.displayAnswerValue;
+        boolean instructions = displayProfile.displayInstruction;
+
+        boolean numbering = displayProfile.displayQuestionNumber;
+        String displayType = displayProfile.displayProfileType;
+        int numberOfColumns = displayProfile.numberOfColumn;
+        boolean displayInvisible = displayProfile.displayInvisible;
+        int answerDropdownLimit = displayProfile.answerDropdownLimit;
+        boolean displayMetadataDevice = displayProfile.displayMetadataDevice;
+
+        createDisplayProfile(index, name, matrix, displayValues, instructions,
+                numbering, displayType, numberOfColumns, displayInvisible, answerDropdownLimit,
+                displayMetadataDevice);
+
+    }
+
     protected void createDisplayProfile(int index, String name, boolean matrix, boolean displayValues, boolean instructions,
-                                        boolean numbering, String displayType, int numberOfColumns, boolean displayInvisible, int answerDropdownLimit) {
+                                        boolean numbering, String displayType, int numberOfColumns, boolean displayInvisible,
+                                        int answerDropdownLimit) {
+        createDisplayProfile(index, name, matrix, displayValues, instructions,
+                numbering, displayType, numberOfColumns, displayInvisible, answerDropdownLimit, false);
+    }
+
+    protected void createDisplayProfile(int index, String name, boolean matrix, boolean displayValues, boolean instructions,
+                                        boolean numbering, String displayType, int numberOfColumns, boolean displayInvisible,
+                                        int answerDropdownLimit, boolean displayMetadataDevice) {
         textPresent("Add Profile");
         clickElement(By.id("addDisplayProfile"));
         clickElement(By.cssSelector("#profile_" + index + " mat-panel-title h3"));
@@ -170,21 +204,32 @@ public class BaseFormTest extends NlmCdeBaseTest {
         if (displayValues) clickElement(By.id("displayValues_" + index));
         if (!instructions) clickElement(By.id("displayInstructions_" + index));
         if (!numbering) clickElement(By.id("displayNumbering_" + index));
+        if (displayMetadataDevice) clickElement(By.id("displayMetadataDevice_" + index));
 
         clickElement(By.id("displayType_" + index));
         clickElement(By.xpath("//mat-option[contains(.,'" + displayType + "')]"));
 
-        WebElement slider = findElement(By.cssSelector("#profile_" + index + " .mat-slider-wrapper"));
-        Actions slide = new Actions(driver);
-        int width = slider.getSize().getWidth() / 6;
-        slide.moveToElement(slider, width * (numberOfColumns - 1) + width / 2, slider.getSize().getHeight() / 2).click().build().perform();
+        WebElement nbColSlider = findElement(By.cssSelector("#profile_" + index + " mat-slider[max='6']"));
+        nbColSlider.click();
+
+        int currentNbOfCols = Integer.valueOf(findElement(By.id("nbOfColumnsValue")).getText());
+        for (int i = 0; i < Math.abs(numberOfColumns - currentNbOfCols); i++) {
+            Keys key = (numberOfColumns - currentNbOfCols) > 0 ? Keys.RIGHT : Keys.LEFT;
+            nbColSlider.sendKeys(key);
+        }
 
         if (displayInvisible) clickElement(By.id("displayInvisible_" + index));
 
         if (answerDropdownLimit > 0) {
             findElement(By.id("displayAnswerDropdownLimit_" + index)).clear();
-            findElement(By.id("displayAnswerDropdownLimit_" + index)).sendKeys(String.valueOf(answerDropdownLimit) + Keys.TAB);
+            findElement(By.id("displayAnswerDropdownLimit_" + index)).sendKeys(String.valueOf(answerDropdownLimit));
         }
+        clickElement(By.xpath("//*[@id='profile_" + index + "']//h4[text()='View Specific Settings']"));
+
+    }
+
+    protected void deleteDisplayProfile(int index) {
+        deleteWithConfirm("//*[@id = 'profile_" + index + "']");
     }
 
     protected void deleteSkipLogicById(String id) {
@@ -215,6 +260,19 @@ public class BaseFormTest extends NlmCdeBaseTest {
             }
         }
         clickElement(By.id("saveNewSkipLogicButton"));
-
     }
+
+    protected void checkAnswerValue(List<WebElement> list, boolean displayAnswerValue) {
+        ListIterator<WebElement> iterator = list.listIterator();
+        while (iterator.hasNext()) {
+            WebElement next = iterator.next();
+            String nextText = next.getText().trim();
+            if (displayAnswerValue) {
+                Assert.assertNotEquals(nextText, "");
+            } else {
+                Assert.assertEquals(nextText, "");
+            }
+        }
+    }
+
 }
