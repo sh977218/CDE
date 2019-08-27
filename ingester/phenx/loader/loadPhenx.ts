@@ -3,7 +3,7 @@ import { Form, FormSource } from 'server/form/mongo-form';
 import { Comment } from 'server/discuss/discussDb';
 import { ProtocolModel } from 'ingester/createMigrationConnection';
 import {
-    batchloader, compareElt, imported, lastMigrationScript, mergeElt, printUpdateResult, updateCde, updateForm
+    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeElt, printUpdateResult, updateCde, updateForm
 } from 'ingester/shared/utility';
 import { DataElement } from 'server/cde/mongo-cde';
 import { createPhenxForm } from 'ingester/phenx/Form/form';
@@ -23,7 +23,7 @@ async function retireForms() {
         const formObj = form.toObject();
         formObj.registrationState.registrationStatus = 'Retired';
         formObj.registrationState.administrativeNote = 'Not present in import at ' + imported;
-        await updateForm(formObj, batchloader);
+        await updateForm(formObj, BATCHLOADER);
         PhenxLogger.retiredPhenxForm++;
         PhenxLogger.retiredPhenxForms.push(formObj.tinyId);
     }
@@ -40,7 +40,7 @@ async function retireCdes() {
         const cdeObj = cde.toObject();
         cdeObj.registrationState.registrationStatus = 'Retired';
         cdeObj.registrationState.administrativeNote = 'Not present in import at ' + imported;
-        await updateCde(cdeObj, batchloader);
+        await updateCde(cdeObj, BATCHLOADER);
         PhenxLogger.retiredPhenxCde++;
         PhenxLogger.retiredPhenxCdes.push(cdeObj.tinyId);
     }
@@ -79,7 +79,7 @@ process.on('unhandledRejection', error => {
             } else {
                 mergeElt(existingFormObj, newFormObj, 'PhenX');
                 existingFormObj.lastMigrationScript = lastMigrationScript;
-                await updateForm(existingFormObj, batchloader, {updateSource: true});
+                await updateForm(existingFormObj, BATCHLOADER, {updateSource: true});
                 PhenxLogger.changedPhenxForm++;
                 PhenxLogger.changedPhenxForms.push(existingForm.tinyId);
             }

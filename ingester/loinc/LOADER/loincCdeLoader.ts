@@ -2,7 +2,7 @@ import { isEmpty } from 'lodash';
 import { DataElement, DataElementSource } from 'server/cde/mongo-cde';
 import { createLoincCde } from 'ingester/loinc/CDE/cde';
 import {
-    batchloader, compareElt, imported, lastMigrationScript, mergeElt, printUpdateResult, updateCde
+    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeElt, printUpdateResult, updateCde
 } from 'ingester/shared/utility';
 
 import { LoincLogger } from 'ingester/log/LoincLogger';
@@ -28,7 +28,7 @@ export async function runOneCde(loinc, orgInfo) {
             LoincLogger.sameLoincCdes.push(existingCde.tinyId);
         } else {
             mergeElt(newCdeObj, existingCdeObj, 'LOINC');
-            await updateCde(existingCde, batchloader, {updateSource: true});
+            await updateCde(existingCde, BATCHLOADER, {updateSource: true});
             LoincLogger.changedLoincCde++;
             LoincLogger.changedLoincCdes.push(existingCde.tinyId);
         }

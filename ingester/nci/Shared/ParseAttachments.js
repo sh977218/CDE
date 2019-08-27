@@ -1,3 +1,5 @@
+import { BATCHLOADER } from 'ingester/shared/utility';
+
 const xml2js = require('xml2js');
 const builder = new xml2js.Builder();
 const _ = require('lodash');
@@ -27,7 +29,7 @@ exports.parseAttachments = nciCde => {
             filename: nciId + "v" + nciVersion + ".xml",
             filesize: origXml.length,
             filetype: "application/xml",
-            uploadedBy: batchloader,
+            uploadedBy: BATCHLOADER,
             uploadDate: Date.now(),
         };
         let streamDescription = {

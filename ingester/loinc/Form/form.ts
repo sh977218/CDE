@@ -9,7 +9,7 @@ import { parseStewardOrg } from '../Shared/ParseStewardOrg';
 import { parseSources } from '../Shared/ParseSources';
 import { parseFormElements } from './ParseFormElements';
 
-import { created, imported } from 'ingester/shared/utility';
+import { BATCHLOADER, created, imported } from 'ingester/shared/utility';
 
 
 export async function createLoincForm(loinc, orgInfo) {
@@ -25,7 +25,7 @@ export async function createLoincForm(loinc, orgInfo) {
 
     const newForm = {
         tinyId: generateTinyId(),
-        createdBy: {username: 'batchloader'},
+        createdBy: BATCHLOADER,
         created,
         imported,
         source: 'LOINC',

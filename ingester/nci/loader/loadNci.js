@@ -1,3 +1,5 @@
+import { BATCHLOADER, updateCde } from 'ingester/shared/utility';
+
 const xml2js = require('xml2js');
 const xmlParser = new xml2js.Parser();
 const fs = require('fs');
@@ -49,7 +51,7 @@ function runOneOrg(org) {
                         let diff = CompareCDE.compareCde(newCde, existingCde);
                         if (diff.length) {
                             MergeCDE.mergeCde(newCde, existingCde);
-                            await mongo_cde.updatePromise(existingCde, batchloader, {updateSource: true}).catch(e => {
+                            await updateCde(existingCde, BATCHLOADER, {updateSource: true}).catch(e => {
                                 console.log('mongo cde update promise err');
                                 throw e;
                             })

@@ -1,3 +1,5 @@
+import { BATCHLOADER } from 'ingester/shared/utility';
+
 const _ = require('lodash');
 
 const generateTinyId = require('../../../server/system/mongo-data').generateTinyId;
@@ -42,7 +44,7 @@ exports.createCde = async (nciCde, orgInfo) => {
         tinyId: generateTinyId(),
         imported: today,
         created: today,
-        createdBy: {username: 'batchloader'},
+        createdBy: BATCHLOADER,
         registrationState: registrationState,
         sources: sources,
         source: 'caDSR',
@@ -72,7 +74,7 @@ exports.createCde = async (nciCde, orgInfo) => {
             cde.valueDomain.permissibleValues = uniqPvs;
             let comment  = {
                 text: cdeError.message +'. See attachment for original xml.',
-                user: batchloader,
+                user: BATCHLOADER,
                 created: new Date(),
                 pendingApproval: false,
                 linkedTab: 'pvs',
@@ -88,7 +90,7 @@ exports.createCde = async (nciCde, orgInfo) => {
             cde.valueDomain.permissibleValues = uniqPvs;
             let comment = {
                 text: cdeError.message +'. See attachment for original xml.',
-                user: batchloader,
+                user: BATCHLOADER,
                 created: new Date(),
                 pendingApproval: false,
                 linkedTab: 'pvs',

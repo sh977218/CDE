@@ -1,7 +1,7 @@
 import { find, isEqual, words } from 'lodash';
-import { map as SYMBOL_MAP } from 'ingester/phenx/Form/redCap/REDCAP_SYMBOL_MAP';
+import { map as SYMBOL_MAP } from 'ingester/phenx/redCap/REDCAP_SYMBOL_MAP';
 
-import { map as CONJUNCTION_MAP } from 'ingester/phenx/Form/redCap/REDCAP_CONJUNCTION_MAP';
+import { map as CONJUNCTION_MAP } from 'ingester/phenx/redCap/REDCAP_CONJUNCTION_MAP';
 
 const formatSkipLogic = function (equationText, redCapCdes) {
     let result = '';

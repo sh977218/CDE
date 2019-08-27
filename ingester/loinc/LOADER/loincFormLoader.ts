@@ -2,7 +2,7 @@ import { isEmpty } from 'lodash';
 import { Form, FormSource } from 'server/form/mongo-form';
 import { createLoincForm } from 'ingester/loinc/Form/form';
 import {
-    batchloader, compareElt, imported, lastMigrationScript, mergeElt, printUpdateResult, updateForm
+    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeElt, printUpdateResult, updateForm
 } from 'ingester/shared/utility';
 import { LoincLogger } from 'ingester/log/LoincLogger';
 
@@ -28,7 +28,7 @@ export async function runOneForm(loinc, orgInfo) {
         } else {
             mergeElt(existingFormObj, newFormObj, 'LOINC');
             existingFormObj.lastMigrationScript = lastMigrationScript;
-            await updateForm(existingForm, batchloader, {updateSource: true});
+            await updateForm(existingForm, BATCHLOADER, {updateSource: true});
             LoincLogger.changedLoincForm++;
             LoincLogger.changedLoincForms.push(existingForm.tinyId);
         }

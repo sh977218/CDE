@@ -7,7 +7,7 @@ import { parseReferenceDocuments } from 'ingester/phenx/Shared/ParseReferenceDoc
 import { leadingZerosProtocolId, parseAttachments } from 'ingester/phenx/Form/ParseAttachments';
 import { parseClassification } from 'ingester/phenx/Shared/ParseClassification';
 import { parseFormElements } from 'ingester/phenx/Form/ParseFormElements';
-import { batchloader, created, imported, lastMigrationScript } from 'ingester/shared/utility';
+import { BATCHLOADER, created, imported, lastMigrationScript } from 'ingester/shared/utility';
 import { generateTinyId } from 'server/system/mongo-data';
 import { existsSync } from 'fs';
 import * as AdmZip from 'adm-zip';
@@ -38,7 +38,7 @@ export async function createPhenxForm(protocol) {
     const newForm = {
         elementType: 'form',
         tinyId: generateTinyId(),
-        createdBy: batchloader,
+        createdBy: BATCHLOADER,
         source: 'PhenX',
         sources,
         designations,

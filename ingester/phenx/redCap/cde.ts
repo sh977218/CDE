@@ -3,7 +3,7 @@ import { parseProperties } from 'ingester/phenx/redCap/parseProperties';
 import { parseValueDomain } from 'ingester/phenx/redCap/parseValueDomain';
 import { parseIds } from 'ingester/phenx/redCap/parseIds';
 import { generateTinyId } from 'server/system/mongo-data';
-import { batchloader, created } from 'ingester/shared/utility';
+import { BATCHLOADER, created } from 'ingester/shared/utility';
 import { parseClassification } from 'ingester/phenx/redCap/parseclassification';
 
 export async function createRedCde(row, protocol, newForm) {
@@ -16,7 +16,7 @@ export async function createRedCde(row, protocol, newForm) {
     const newCde: any = {
         tinyId: generateTinyId(),
         created,
-        createdBy: batchloader,
+        createdBy: BATCHLOADER,
         designations,
         stewardOrg: {name: 'PhenX'},
         sources: [],
