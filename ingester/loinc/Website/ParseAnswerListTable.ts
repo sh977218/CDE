@@ -1,6 +1,6 @@
 import { By } from 'selenium-webdriver';
 
-export async function parseAnswerListTable(driver, loincId, table, cb) {
+export async function parseAnswerListTable(driver, loincId, table) {
     let answerListObj: any = {
         answerListId: {},
         answerList: []
@@ -57,5 +57,5 @@ export async function parseAnswerListTable(driver, loincId, table, cb) {
             answerListArray.push(answerListItem);
         }
     }
-    cb(answerListObj);
+    return answerListObj;
 }

@@ -1,7 +1,7 @@
 import { isEmpty } from 'lodash';
-import { DataElement, DataElementSource, updatePromise } from 'server/cde/mongo-cde';
-import { batchloader, updatedByLoader } from 'shared/updatedByLoader';
+import { DataElement, DataElementSource } from 'server/cde/mongo-cde';
 import { createCde,compareCde,mergeCde } from '../CDE/cde';
+import { BATCHLOADER, updateCde, updatedByLoader } from 'ingester/shared/utility';
 
 export async function runOneCde(loinc, orgInfo) {
     let loincId = loinc.loincId;
@@ -32,7 +32,7 @@ export async function runOneCde(loinc, orgInfo) {
             });
         } else {
             await mergeCde(newCdeObj, existingCde);
-            await updatePromise(existingCde, batchloader).catch(e => {
+            await updateCde(existingCde, BATCHLOADER).catch(e => {
                 throw 'Error mongo_cde.updatePromise: ' + e;
             });
         }

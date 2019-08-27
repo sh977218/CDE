@@ -1,7 +1,7 @@
 import { By } from 'selenium-webdriver';
 import { sanitizeText } from '../Utility/utility';
 
-export async function parseHL7AttributesTable(driver, loincId, element, cb) {
+export async function parseHL7AttributesTable(driver, loincId, element) {
     let basicAttributes = {};
     let trs = await element.findElements(By.xpath('tbody/tr'));
     trs.shift();
@@ -18,5 +18,5 @@ export async function parseHL7AttributesTable(driver, loincId, element, cb) {
         let value = await valueTd.getText();
         basicAttributes[sanitizeText(key.trim())] = sanitizeText(value.trim());
     }
-    cb(basicAttributes);
+    return basicAttributes;
 }

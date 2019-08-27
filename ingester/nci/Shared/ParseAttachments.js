@@ -5,8 +5,6 @@ let Readable = require('stream').Readable;
 
 const mongo_data = require('../../../server/system/mongo-data');
 
-const batchloader = require('../../shared/updatedByLoader').batchloader;
-
 exports.parseAttachments = nciCde => {
     let attachments = [];
     let nciXml = _.cloneDeep(nciCde);
