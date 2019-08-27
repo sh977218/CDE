@@ -24,14 +24,6 @@ export const created = TODAY;
 export const imported = TODAY;
 
 export const lastMigrationScript = 'load PhenX on ' + new Date().getMonth() + new Date().getFullYear();
-export const lastPhenXMigrationScript = 'load PhenX on ' + new Date().getMonth() + new Date().getFullYear();
-
-export function updatedByLoader(elt) {
-    if (elt.toObject) elt = elt.toObject;
-    let allow = elt.updatedBy && elt.updatedBy.username
-        && elt.updatedBy.username !== BATCHLOADER_USERNAME;
-    return allow;
-}
 
 export function removeWhite(text) {
     if (!text) {
@@ -114,9 +106,12 @@ export function replaceClassificationByOrg(newClassification, existingClassifica
 export function updateCde(elt, user, options = {}) {
     return new Promise((resolve, reject) => {
         mongo_cde.update(elt, user, options, (err, savedElt) => {
-            if (err) reject(err);
-            else resolve(savedElt);
-        })
+            if (err) {
+                reject(err);
+            } else {
+                resolve(savedElt);
+            }
+        });
     });
 }
 
@@ -130,8 +125,11 @@ export function updateForm(elt, user, options = {}) {
             process.exit(1);
         }
         mongo_form.update(elt, user, options, (err, savedElt) => {
-            if (err) reject(err);
-            else resolve(savedElt);
+            if (err) {
+                reject(err);
+            } else {
+                resolve(savedElt);
+            }
         });
     });
 }

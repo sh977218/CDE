@@ -3,7 +3,7 @@ import { Form, FormSource } from 'server/form/mongo-form';
 import { Comment } from 'server/discuss/discussDb';
 import { ProtocolModel } from 'ingester/createMigrationConnection';
 import {
-    BATCHLOADER, compareElt, imported, lastPhenXMigrationScript, mergeElt, printUpdateResult, updateCde, updateForm
+    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeElt, printUpdateResult, updateCde, updateForm
 } from 'ingester/shared/utility';
 import { DataElement } from 'server/cde/mongo-cde';
 import { createPhenxForm } from 'ingester/phenx/Form/form';
@@ -15,7 +15,7 @@ let protocolCount = 0;
 async function retireForms() {
     const cond = {
         'ids.source': 'PhenX',
-        lastMigrationScript: {$ne: lastPhenXMigrationScript},
+        lastMigrationScript: {$ne: lastMigrationScript},
         archived: false
     };
     const forms = await Form.find(cond);
@@ -32,7 +32,7 @@ async function retireForms() {
 async function retireCdes() {
     const cond = {
         'ids.source': 'PhenX',
-        lastMigrationScript: {$ne: lastPhenXMigrationScript},
+        lastMigrationScript: {$ne: lastMigrationScript},
         archived: false
     };
     const cdes = await DataElement.find(cond);
@@ -69,16 +69,16 @@ process.on('unhandledRejection', error => {
         } else {
             const existingFormObj = existingForm.toObject();
             existingFormObj.imported = imported;
-            existingFormObj.changeNote = lastPhenXMigrationScript;
+            existingFormObj.changeNote = lastMigrationScript;
             const diff = compareElt(newForm.toObject(), existingForm.toObject(), 'PhenX');
             if (isEmpty(diff)) {
-                existingFormObj.lastMigrationScript = lastPhenXMigrationScript;
+                existingFormObj.lastMigrationScript = lastMigrationScript;
                 await existingForm.save();
                 PhenxLogger.samePhenxForm++;
                 PhenxLogger.samePhenxForms.push(existingForm.tinyId);
             } else {
                 mergeElt(existingFormObj, newFormObj, 'PhenX');
-                existingFormObj.lastMigrationScript = lastPhenXMigrationScript;
+                existingFormObj.lastMigrationScript = lastMigrationScript;
                 await updateForm(existingFormObj, BATCHLOADER, {updateSource: true});
                 PhenxLogger.changedPhenxForm++;
                 PhenxLogger.changedPhenxForms.push(existingForm.tinyId);

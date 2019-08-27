@@ -5,13 +5,13 @@ import { parseIds } from 'ingester/phenx/Shared/ParseIds';
 import { parseProperties } from 'ingester/phenx/Shared/ParseProperties';
 import { parseReferenceDocuments } from 'ingester/phenx/Shared/ParseReferenceDocuments';
 import { leadingZerosProtocolId, parseAttachments } from 'ingester/phenx/Form/ParseAttachments';
-import { parseClassification } from 'ingester/phenx/Shared/ParseClassification';
 import { parseFormElements } from 'ingester/phenx/Form/ParseFormElements';
 import { BATCHLOADER, created, imported, lastMigrationScript } from 'ingester/shared/utility';
 import { generateTinyId } from 'server/system/mongo-data';
 import { existsSync } from 'fs';
 import * as AdmZip from 'adm-zip';
 import { redCapZipFolder } from 'ingester/createMigrationConnection';
+import { parseClassification } from 'ingester/phenx/Shared/ParseClassification';
 
 function extractRedCapZip(protocolId) {
     const leadingZeroProtocolId = leadingZerosProtocolId(protocolId);
