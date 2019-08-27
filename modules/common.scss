@@ -9,7 +9,6 @@
   background-color: $navBackgroundColor;
   white-space: pre-line;
 }
-
 /* END Theme */
 
 
@@ -155,6 +154,10 @@ button.flush {
 
 
 /* BEGIN Bootstrap overrides */
+.container-fluid {
+  padding-bottom: 10px;
+}
+
 .fake-link,
 a:not([href]):not([tabindex]).fake-link {
   color: #337ab7;
@@ -181,7 +184,6 @@ a:not([href]):not([tabindex]).fake-link:hover {
 .modal {
   overflow-y: scroll !important;
 }
-
 /* END Bootstrap overrides */
 
 
