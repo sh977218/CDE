@@ -12,7 +12,7 @@ import { updateTag } from 'shared/system/util';
 export class StatusValidationRulesComponent implements OnInit {
     @ViewChild('removeRuleModal') removeRuleModal!: TemplateRef<any>;
     @ViewChild('addNewRuleModal') addNewRuleModal!: TemplateRef<any>;
-    dialogRef?: MatDialogRef<TemplateRef<any>>;
+    dialogRef!: MatDialogRef<TemplateRef<any>>;
     fields: string[] = [
         'ids.source',
         'ids.version',
@@ -75,7 +75,7 @@ export class StatusValidationRulesComponent implements OnInit {
         // @TODO does not refresh page
        this.dialog.open(this.removeRuleModal).afterClosed().subscribe(res => {
            if (res) {
-               this.http.post<Organization>('/disableRule', {orgName: orgName, rule: rule}).subscribe(response => {
+               this.http.post<Organization>('/disableRule', {orgName, rule}).subscribe(response => {
                    this.userOrgs[orgName] = response.cdeStatusValidationRules || [];
                });
            }
@@ -93,7 +93,7 @@ export class StatusValidationRulesComponent implements OnInit {
         }).subscribe(org => {
             this.userOrgs[this.newRuleOrg] = org.cdeStatusValidationRules || [];
         }, () => {});
-        this.dialogRef!.close();
+        this.dialogRef.close();
     }
 
     openAddRuleModal() {

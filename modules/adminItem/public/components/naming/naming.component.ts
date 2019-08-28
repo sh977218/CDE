@@ -4,7 +4,6 @@ import { NewDesignationComponent } from 'adminItem/public/components/naming/desi
 import { NewDefinitionComponent } from 'adminItem/public/components/naming/definition/newDefinition.component';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import _noop from 'lodash/noop';
-import _uniq from 'lodash/uniq';
 
 @Component({
     selector: 'cde-naming',
@@ -13,8 +12,8 @@ import _uniq from 'lodash/uniq';
 export class NamingComponent implements OnInit {
     @Input() elt: any;
     @Input() canEdit = false;
-    @Output() onEltChange = new EventEmitter();
-    allTags = [];
+    @Output() eltChange = new EventEmitter();
+    allTags: string[] = [];
 
     constructor(private orgHelperService: OrgHelperService,
                 public dialog: MatDialog) {
@@ -23,29 +22,8 @@ export class NamingComponent implements OnInit {
     ngOnInit() {
         const stewardOrgName = this.elt.stewardOrg.name;
         this.orgHelperService.then(orgsDetailedInfo => {
-            this.allTags = orgsDetailedInfo[stewardOrgName].nameTags;
+            this.allTags = orgsDetailedInfo[stewardOrgName].nameTags || [];
         }, _noop);
-    }
-
-    removeDesignationByIndex(index) {
-        this.elt.designations.splice(index, 1);
-        this.onEltChange.emit();
-    }
-
-    removeDefinitionByIndex(index) {
-        this.elt.definitions.splice(index, 1);
-        this.onEltChange.emit();
-    }
-
-    openNewDesignationModal() {
-        this.dialog.open(NewDesignationComponent, {data: {tags: this.allTags}})
-            .afterClosed()
-            .subscribe(newDesignation => {
-                if (newDesignation) {
-                    this.elt.designations.push(newDesignation);
-                    this.onEltChange.emit();
-                }
-            });
     }
 
     openNewDefinitionModal() {
@@ -54,8 +32,29 @@ export class NamingComponent implements OnInit {
             .subscribe(newDefinition => {
                 if (newDefinition) {
                     this.elt.definitions.push(newDefinition);
-                    this.onEltChange.emit();
+                    this.eltChange.emit();
                 }
             });
+    }
+
+    openNewDesignationModal() {
+        this.dialog.open(NewDesignationComponent, {data: {tags: this.allTags}})
+            .afterClosed()
+            .subscribe(newDesignation => {
+                if (newDesignation) {
+                    this.elt.designations.push(newDesignation);
+                    this.eltChange.emit();
+                }
+            });
+    }
+
+    removeDefinitionByIndex(index: number) {
+        this.elt.definitions.splice(index, 1);
+        this.eltChange.emit();
+    }
+
+    removeDesignationByIndex(index: number) {
+        this.elt.designations.splice(index, 1);
+        this.eltChange.emit();
     }
 }

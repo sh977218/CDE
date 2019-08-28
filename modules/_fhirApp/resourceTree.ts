@@ -1,7 +1,7 @@
 import { resourceMap, supportedResourcesMaps } from '_fhirApp/resources';
 import { getFhirResourceMap, getMapToFhirResource } from 'core/form/formAndFe';
 import { assertUnreachable } from 'shared/models.model';
-import { CdeForm, FormElement } from 'shared/form/form.model';
+import { CdeForm, FormElement, FormOrElement } from 'shared/form/form.model';
 import { toRef } from 'shared/mapping/fhir/datatype/fhirReference';
 import { FhirDomainResource, supportedFhirResources } from 'shared/mapping/fhir/fhirResource.model';
 import { deepCopy } from 'shared/system/util';
@@ -44,21 +44,23 @@ export interface ResourceTreeAttribute {
 export type ResourceTree = ResourceTreeResource | ResourceTreeIntermediate | ResourceTreeAttribute;
 
 export class ResourceTreeUtil {
-    static createAttritube(parent: ResourceTreeResource|ResourceTreeIntermediate, parentAttribute: string, fe?: CdeForm|FormElement, resource?: FhirDomainResource): ResourceTreeAttribute {
+    static createAttritube(parent: ResourceTreeResource|ResourceTreeIntermediate, parentAttribute: string,
+                           fe?: FormOrElement, resource?: FhirDomainResource): ResourceTreeAttribute {
         const node: ResourceTreeAttribute = {parent, parentAttribute, resourceType: undefined, root: parent.root};
         if (fe) { ResourceTreeUtil.setCrossReference(node, fe); }
         if (resource) { ResourceTreeUtil.setResource(node, resource); }
         return node;
     }
 
-    static createIntermediate(parent: ResourceTreeResource|ResourceTreeIntermediate, fe?: CdeForm|FormElement, resource?: FhirDomainResource) {
+    static createIntermediate(parent: ResourceTreeResource|ResourceTreeIntermediate, fe?: FormOrElement,
+                              resource?: FhirDomainResource) {
         const node: ResourceTreeIntermediate = {children: [], parent, resourceType: undefined, root: parent.root};
         if (fe) { ResourceTreeUtil.setCrossReference(node, fe); }
         if (resource) { ResourceTreeUtil.setResource(node, resource); }
         return node;
     }
 
-    static createResource(resourceType: supportedFhirResources|undefined, fe?: CdeForm|FormElement,
+    static createResource(resourceType: supportedFhirResources|undefined, fe?: FormOrElement,
                           resource?: FhirDomainResource): ResourceTreeResource {
         const partial: any = {children: [], resourceType};
         partial.root = partial;
@@ -68,7 +70,7 @@ export class ResourceTreeUtil {
         return node;
     }
 
-    static createRoot(fe: CdeForm|FormElement, parent?: ResourceTreeRoot): ResourceTreeRoot {
+    static createRoot(fe: FormOrElement, parent?: ResourceTreeRoot): ResourceTreeRoot {
         return {children: [], crossReference: fe, parent};
     }
 
@@ -96,14 +98,14 @@ export class ResourceTreeUtil {
         return node.hasOwnProperty('parentAttribute');
     }
 
-    static recurse(node: ResourceTree, parent: ResourceTree, action: Function) {
+    static recurse(node: ResourceTree, parent: ResourceTree, action: (node: ResourceTree, parent: ResourceTree) => void) {
         action(node, parent);
         if (ResourceTreeUtil.isResource(node)) {
             node.children.forEach(c => ResourceTreeUtil.recurse(c, node, action));
         }
     }
 
-    static setCrossReference(node: ResourceTree, fe: CdeForm|FormElement) {
+    static setCrossReference(node: ResourceTree, fe: FormOrElement) {
         node.crossReference = fe;
         node.resourceType = getMapToFhirResource(fe) || node.resourceType;
         if (ResourceTreeUtil.isResource(node)) {
@@ -139,7 +141,7 @@ export class ResourceTreeUtil {
                     }
                     break;
                 default:
-                    assertUnreachable(node.resourceType);
+                    throw assertUnreachable(node.resourceType);
             }
         }
     }

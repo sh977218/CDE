@@ -98,7 +98,7 @@ export function repeatFe(fe: FormElement): '' | '=' | 'F' | 'N' {
 export function repeatFeLabel(fe: FormElement): string {
     switch (repeatFe(fe)) {
         case '=':
-            return 'over Question Answer ' + fe.repeat!.substr(1);
+            return 'over Question Answer ' + (fe.repeat || '').substr(1);
         case 'F':
             return 'over First Question';
         case 'N':
@@ -109,7 +109,7 @@ export function repeatFeLabel(fe: FormElement): string {
 }
 
 export function repeatFeNumber(fe: FormElement): number {
-    return fe.repeat ? parseInt(fe.repeat) : 0;
+    return fe.repeat ? parseInt(fe.repeat, 10) : 0;
 }
 
 export function repeatFeQuestion(fe: FormElement): string {

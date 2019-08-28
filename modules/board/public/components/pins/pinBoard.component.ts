@@ -12,8 +12,8 @@ import { interruptEvent } from 'non-core/browser';
     `
 })
 export class PinBoardComponent {
-    @Input() elt: Elt;
-    @Input() eltIndex: number;
+    @Input() elt!: Elt;
+    @Input() eltIndex!: number;
     @Input() module: any;
     interruptEvent = interruptEvent;
 }

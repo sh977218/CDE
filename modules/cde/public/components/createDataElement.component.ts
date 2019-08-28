@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialogRef } from '@angular/material';
 import { Router } from '@angular/router';
 import { UserService } from '_app/user.service';
@@ -11,9 +11,10 @@ import { classifyItem } from 'core/adminItem/classification';
 import _cloneDeep from 'lodash/cloneDeep';
 import _isEqual from 'lodash/isEqual';
 import { IsAllowedService } from 'non-core/isAllowed.service';
-import { Definition, Designation } from 'shared/models.model';
+import { ClassificationClassified, ClassificationHistory, Definition, Designation } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { findSteward, removeCategory } from 'shared/system/classificationShared';
+import { DeletedNodeEvent } from 'adminItem/public/components/classification/classificationView.component';
 
 @Component({
     selector: 'cde-create-data-element',
@@ -26,12 +27,11 @@ import { findSteward, removeCategory } from 'shared/system/classificationShared'
     `]
 })
 export class CreateDataElementComponent implements OnInit {
-    @Input() elt: DataElement;
+    @Input() elt!: DataElement;
     @Output() close = new EventEmitter<void>();
     @Output() dismiss = new EventEmitter<void>();
-    @ViewChild('classifyItemComponent') public classifyItemComponent: ClassifyItemModalComponent;
-    dialogRef: MatDialogRef<TemplateRef<any>>;
-    validationMessage;
+    @ViewChild('classifyItemComponent') classifyItemComponent!: ClassifyItemModalComponent;
+    dialogRef!: MatDialogRef<TemplateRef<any>>;
 
     ngOnInit() {
         if (!this.elt) {
@@ -40,7 +40,6 @@ export class CreateDataElementComponent implements OnInit {
             this.elt.designations.push(new Designation());
             this.elt.definitions.push(new Definition());
         }
-        this.validationErrors(this.elt);
     }
 
     constructor(private alert: AlertService,
@@ -52,31 +51,39 @@ export class CreateDataElementComponent implements OnInit {
                 public userService: UserService) {
     }
 
-    afterClassified(event) {
-        const postBody = {
+    afterClassified(event: ClassificationClassified) {
+        classifyItem(this.elt, event.selectedOrg, event.classificationArray);
+        this.updateClassificationLocalStorage({
             categories: event.classificationArray,
             eltId: this.elt._id,
             orgName: event.selectedOrg
-        };
-        classifyItem(this.elt, event.selectedOrg, event.classificationArray);
-        this.updateClassificationLocalStorage(postBody);
+        });
         this.dialogRef.close();
     }
 
     cancelCreateDataElement() {
-        if (this.dismiss.observers.length) { this.dismiss.emit(); }
-        else { this.router.navigate(['/']); }
+        if (this.dismiss.observers.length) {
+            this.dismiss.emit();
+        } else {
+            this.router.navigate(['/']);
+        }
     }
 
-    confirmDelete(event) {
+    confirmDelete(event: DeletedNodeEvent) {
         const eltCopy = _cloneDeep(this.elt);
         const steward = findSteward(eltCopy, event.deleteOrgName);
+        if (!steward || !eltCopy.classification) {
+            this.alert.addAlert('success', 'No classification to remove.');
+            return;
+        }
+        const eltCopyClassification = eltCopy.classification;
         removeCategory(steward.object, event.deleteClassificationArray, err => {
-            if (err) { this.alert.addAlert('danger', 'Unexpected error removing classification'); }
-            else {
-                for (let i = eltCopy.classification.length - 1; i >= 0; i--) {
-                    if (eltCopy.classification[i].elements.length === 0) {
-                        eltCopy.classification.splice(i, 1);
+            if (err) {
+                this.alert.addAlert('danger', 'Unexpected error removing classification');
+            } else {
+                for (let i = eltCopyClassification.length - 1; i >= 0; i--) {
+                    if (eltCopyClassification[i].elements.length === 0) {
+                        eltCopyClassification.splice(i, 1);
                     }
                 }
                 this.elt = eltCopy;
@@ -97,7 +104,7 @@ export class CreateDataElementComponent implements OnInit {
         this.dialogRef = this.classifyItemComponent.openModal();
     }
 
-    updateClassificationLocalStorage(item) {
+    updateClassificationLocalStorage(item: ClassificationHistory) {
         let recentlyClassification = this.localStorageService.get('classificationHistory') as Array<any>;
         if (!recentlyClassification) { recentlyClassification = []; }
         recentlyClassification = recentlyClassification.filter(o => {
@@ -108,33 +115,23 @@ export class CreateDataElementComponent implements OnInit {
         this.localStorageService.set('classificationHistory', recentlyClassification);
     }
 
-    validationErrors(elt) {
+    validationErrors(elt: DataElement): string {
         if (!elt.designations[0].designation) {
-            this.validationMessage = 'Please enter a name for the new CDE';
-            return true;
+            return  'Please enter a name for the new CDE';
         } else if (!elt.definitions[0] || !elt.definitions[0].definition) {
-            this.validationMessage = 'Please enter a definition for the new CDE';
-            return true;
+            return  'Please enter a definition for the new CDE';
         } else if (!elt.stewardOrg.name || elt.stewardOrg.name === 'Select One') {
-            this.validationMessage = 'Please select a steward for the new CDE';
-            return true;
+            return  'Please select a steward for the new CDE';
         }
-        if (elt.classification.length === 0) {
-            this.validationMessage = 'Please select at least one classification';
-            return true;
-        } else {
-            let found = false;
-            for (let i = 0; i < elt.classification.length; i++) {
-                if (elt.classification[i].stewardOrg.name === elt.stewardOrg.name) {
-                    found = true;
+        if (elt.classification) {
+            if (elt.classification.length) {
+                if (!elt.classification.some(oneClassification => oneClassification.stewardOrg.name === elt.stewardOrg.name)) {
+                    return 'Please select at least one classification owned by ' + elt.stewardOrg.name;
                 }
-            }
-            if (!found) {
-                this.validationMessage = 'Please select at least one classification owned by ' + elt.stewardOrg.name;
-                return true;
+            } else {
+                return  'Please select at least one classification';
             }
         }
-        this.validationMessage = null;
-        return false;
+        return '';
     }
 }

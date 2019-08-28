@@ -10,9 +10,9 @@ import { CdeForm } from 'shared/form/form.model';
 })
 export class BoardFormSummaryListComponent implements DoCheck, OnChanges, OnInit {
     @Input() board: any;
-    @Input() currentPage: number;
-    @Input() elts: CdeForm[];
-    @Input() totalItems: number;
+    @Input() currentPage!: number;
+    @Input() elts!: CdeForm[];
+    @Input() totalItems!: number;
     @Output() reload: EventEmitter<any> = new EventEmitter();
 
     summaryComponent = BoardFormSummaryListContentComponent;

@@ -58,7 +58,7 @@ gulp.task('npmRebuildNodeSass', ['npm'], function npmRebuildNodeSass() {
 });
 
 gulp.task('copyThirdParty', ['npmRebuildNodeSass'], function copyThirdParty() {
-    let streamArr: NodeJS.ReadWriteStream[] = [];
+    const streamArr: NodeJS.ReadWriteStream[] = [];
 
     streamArr.push(gulp.src(appDir('./node_modules/core-js/client/core.min.js'))
         .pipe(replace('//# sourceMappingURL=core.min.js.map', ''))
@@ -87,7 +87,7 @@ gulp.task('createDist', ['copyThirdParty'], function createDist() {
 });
 
 gulp.task('copyCode', function copyCode() {
-    let streamArray: NodeJS.ReadWriteStream[] = [];
+    const streamArray: NodeJS.ReadWriteStream[] = [];
 
     streamArray.push(gulp.src(appDir('./modules/_fhirApp/fhirAppLaunch.html'))
         .pipe(gulp.dest(BUILD_DIR + '/modules/_fhirApp/')));

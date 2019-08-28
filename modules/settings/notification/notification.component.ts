@@ -1,10 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import _noop from 'lodash/noop';
-
-import { AlertService } from 'alert/alert.service';
 import { PushNotificationSubscriptionService } from '_app/pushNotificationSubscriptionService';
 import { UserService } from '_app/user.service';
+import { AlertService } from 'alert/alert.service';
 import { User } from 'shared/models.model';
 import { hasRole, isSiteAdmin } from 'shared/system/authorizationShared';
 
@@ -29,7 +28,7 @@ export class NotificationComponent {
     readonly booleanSettingOptions = ['Disabled', 'Enabled'];
     subscriptionStatusClient = PushNotificationSubscriptionService.subscriptionCheckClient;
     subscriptionStatusServer?: string;
-    user?: User;
+    user!: User;
 
     constructor(private alert: AlertService,
                 private http: HttpClient,
@@ -40,7 +39,7 @@ export class NotificationComponent {
     checkSubscriptionServerStatus() {
         this.checkSubscriptionServerStatusEndpoint().then(
             () => {
-                PushNotificationSubscriptionService.lastUser = this.user!._id;
+                PushNotificationSubscriptionService.lastUser = this.user._id;
                 this.subscriptionStatusServer = 'Subscribed';
             },
             err => {
@@ -51,7 +50,7 @@ export class NotificationComponent {
 
     checkSubscriptionServerStatusEndpoint(): Promise<void> {
         if (PushNotificationSubscriptionService.lastEndpoint) {
-            return PushNotificationSubscriptionService.subscriptionServerUpdate(this.user!._id)
+            return PushNotificationSubscriptionService.subscriptionServerUpdate(this.user._id)
                 .catch(() => {
                     PushNotificationSubscriptionService.lastEndpoint = '';
                     return this.checkSubscriptionServerStatusNoEndpoint();
@@ -63,18 +62,18 @@ export class NotificationComponent {
 
     checkSubscriptionServerStatusNoEndpoint(): Promise<void> {
         return PushNotificationSubscriptionService.getEndpoint().then(() => {
-            return PushNotificationSubscriptionService.subscriptionServerUpdate(this.user!._id);
+            return PushNotificationSubscriptionService.subscriptionServerUpdate(this.user._id);
         });
     }
 
     pushSubscribe() {
-        PushNotificationSubscriptionService.subscriptionNew(this.user!._id).then(() => {
+        PushNotificationSubscriptionService.subscriptionNew(this.user._id).then(() => {
             this.subscriptionStatusServer = 'Subscribed';
         }, _noop);
     }
 
     pushUnsubscribe() {
-        PushNotificationSubscriptionService.subscriptionDelete(this.user!._id).then(() => {
+        PushNotificationSubscriptionService.subscriptionDelete(this.user._id).then(() => {
             this.subscriptionStatusServer = 'Not Subscribed';
         });
     }

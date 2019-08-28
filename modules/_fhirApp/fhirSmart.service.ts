@@ -16,16 +16,8 @@ export class FhirSmartService {
     patient?: FhirPatient;
     smart: any;
 
-    static authorize(clientId: string, config: string) {
-        (<any>window).FHIR.oauth2.authorize({
-            client_id: clientId,
-            redirect_uri: '/' + config,
-            scope: SCOPE,
-        });
-    }
-
     init() {
-        (<any>window).FHIR.oauth2.ready((smart: any) => {
+        (window as any).FHIR.oauth2.ready((smart: any) => {
             this.smart = smart;
             this.smart.patient.read().then((patient: FhirPatient) => this.patient = patient);
         });
@@ -39,7 +31,7 @@ export class FhirSmartService {
                 id: resource.id,
                 type: resource.resourceType
             })).then(response => response.data, () => {
-                throw resource.resourceType + ' ' + resource.id + ' not saved.';
+                return Promise.reject(resource.resourceType + ' ' + resource.id + ' not saved.');
             });
         } else {
             return Promise.resolve(this.smart.patient.api.create({
@@ -47,13 +39,13 @@ export class FhirSmartService {
                 data: JSON.stringify(resource),
                 type: resource.resourceType
             })).then(response => response.data, () => {
-                throw resource.resourceType + ' not created.';
+                return Promise.reject(resource.resourceType + ' not created.');
             });
         }
     }
 
     search<T>(resourceType: string, query: any): Promise<T[]> {
-        let contextQuery = deepCopy(query);
+        const contextQuery = deepCopy(query);
         if (this.patient) {
             contextQuery.patient = asRefString(this.patient);
         }
@@ -75,6 +67,14 @@ export class FhirSmartService {
                 throw new Error('network error or unavailable');
             }
         });
+    }
+
+    static authorize(clientId: string, config: string) {
+        (window as any).FHIR.oauth2.authorize({
+            client_id: clientId,
+            redirect_uri: '/' + config,
+            scope: SCOPE,
+        } as any);
     }
 }
     // addDevice(deviceRef: FhirReference<FhirDevice | FhirDeviceMetric>, containers: Array<FhirEncounter | FhirObservation>): boolean {

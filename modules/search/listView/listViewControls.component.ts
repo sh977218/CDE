@@ -5,7 +5,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
     templateUrl: './listViewControls.component.html',
 })
 export class ListViewControlsComponent {
-    @Input() listView: string;
+    @Input() listView!: string;
     @Output() listViewChange = new EventEmitter<string>();
 
     constructor() {}

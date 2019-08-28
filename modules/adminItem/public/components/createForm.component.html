@@ -35,7 +35,7 @@
                 </cde-classification-view>
             </div>
         </div>
-        <div *ngIf="validationErrors(elt) !== null" class="form-group text-danger">
+        <div *ngIf="validationErrors(elt)" class="form-group text-danger">
             <mat-icon>warning</mat-icon>
             {{validationErrors(elt)}}
         </div>
@@ -43,12 +43,12 @@
         <div class="form-group">
             <button (click)="cancelCreateForm()" mat-raised-button color="warn"> Cancel</button>
             <button id="submit" type="submit" (click)="createForm()" mat-raised-button color="primary"
-                    [disabled]="!dataElementForm.form.valid || validationErrors(elt)"> Submit
+                    [disabled]="!dataElementForm.form.valid || !!validationErrors(elt)"> Submit
             </button>
         </div>
         <hr/>
     </form>
 </div>
 
-<cde-classify-item-modal #classifyItemComponent [elt]="elt" [modalTitle]="'Classify this Form'"
-                         (onEltSelected)="afterClassified($event)"></cde-classify-item-modal>
+<cde-classify-item-modal #classifyItemComponent [modalTitle]="'Classify this Form'"
+                         (classified)="afterClassified($event)"></cde-classify-item-modal>

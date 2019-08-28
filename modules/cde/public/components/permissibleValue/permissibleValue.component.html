@@ -6,7 +6,7 @@
             <mat-form-field class="w-100">
                 <mat-select [(value)]="elt.valueDomain.datatype" [disabled]="!canEdit"
                             (selectionChange)="onDataTypeChange();" placeholder="Select data type">
-                    <mat-option *ngFor="let dataType of DataTypeArray" [value]="dataType">{{dataType}}</mat-option>
+                    <mat-option *ngFor="let dataType of dataTypeArray" [value]="dataType">{{dataType}}</mat-option>
                 </mat-select>
             </mat-form-field>
         </dd>
@@ -18,7 +18,7 @@
         </ng-container>
         <dt class="col-3 text-right">Unit of Measure:</dt>
         <dd class="col-9">
-            <cde-inline-edit id="uom" [(model)]="elt.valueDomain.uom" (modelChange)="onEltChange.emit();"
+            <cde-inline-edit id="uom" [(model)]="elt.valueDomain.uom" (modelChange)="eltChange.emit();"
                              [isAllowed]="canEdit"></cde-inline-edit>
         </dd>
         <ng-container *ngIf="elt.valueDomain.ids?.length > 0">
@@ -38,43 +38,43 @@
                 <dt class="col-3 text-right">Minimum Value:</dt>
                 <dd class="col-9">
                     <cde-inline-edit id="datatypeNumberMin" [(model)]="elt.valueDomain.datatypeNumber.minValue"
-                                     [inputType]="'Number'" (modelChange)="onEltChange.emit();"
+                                     [inputType]="'Number'" (modelChange)="eltChange.emit();"
                                      [isAllowed]="canEdit"></cde-inline-edit>
                 </dd>
                 <dt class="col-3 text-right">Maximum Value:</dt>
                 <dd class="col-9">
                     <cde-inline-edit id="datatypeNumberMax" [(model)]="elt.valueDomain.datatypeNumber.maxValue"
-                                     [inputType]="'Number'" (modelChange)="onEltChange.emit();"
+                                     [inputType]="'Number'" (modelChange)="eltChange.emit();"
                                      [isAllowed]="canEdit"></cde-inline-edit>
                 </dd>
                 <dt class="col-3 text-right">Precision:</dt>
                 <dd class="col-9">
                     <cde-inline-edit id="datatypeNumberPrecision" [(model)]="elt.valueDomain.datatypeNumber.precision"
-                                     (modelChange)="onEltChange.emit();" [isAllowed]="canEdit"></cde-inline-edit>
+                                     (modelChange)="eltChange.emit();" [isAllowed]="canEdit"></cde-inline-edit>
                 </dd>
             </ng-container>
             <ng-container *ngSwitchCase="'Text'">
                 <dt class="col-3 text-right">Minimum Length:</dt>
                 <dd class="col-9">
                     <cde-inline-edit id="datatypeTextMin" [(model)]="elt.valueDomain.datatypeText.minLength"
-                                     [inputType]="'Number'" (modelChange)="onEltChange.emit();"
+                                     [inputType]="'Number'" (modelChange)="eltChange.emit();"
                                      [isAllowed]="canEdit"></cde-inline-edit>
                 </dd>
                 <dt class="col-3 text-right">Maximum Length:</dt>
                 <dd class="col-9">
                     <cde-inline-edit id="datatypeTextMax" [(model)]="elt.valueDomain.datatypeText.maxLength"
-                                     [inputType]="'Number'" (modelChange)="onEltChange.emit();"
+                                     [inputType]="'Number'" (modelChange)="eltChange.emit();"
                                      [isAllowed]="canEdit"></cde-inline-edit>
                 </dd>
                 <dt class="col-3 text-right">Regular Expression:</dt>
                 <dd class="col-9">
                     <cde-inline-edit id="datatypeTextRegex" [(model)]="elt.valueDomain.datatypeText.regex"
-                                     (modelChange)="onEltChange.emit();" [isAllowed]="canEdit"></cde-inline-edit>
+                                     (modelChange)="eltChange.emit();" [isAllowed]="canEdit"></cde-inline-edit>
                 </dd>
                 <dt class="col-3 text-right">Free Text Rule:</dt>
                 <dd class="col-9">
                     <cde-inline-edit id="datatypeTextRule" [(model)]="elt.valueDomain.datatypeText.rule"
-                                     (modelChange)="onEltChange.emit();" [isAllowed]="canEdit"></cde-inline-edit>
+                                     (modelChange)="eltChange.emit();" [isAllowed]="canEdit"></cde-inline-edit>
                 </dd>
             </ng-container>
             <ng-container *ngSwitchCase="'File'">
@@ -93,13 +93,13 @@
                     <mat-form-field class="w-50">
                         <mat-label>Select system name</mat-label>
                         <mat-select matNativeControl [(ngModel)]="elt.valueDomain.datatypeDynamicCodeList.system"
-                                    (selectionChange)="onEltChange.emit()" [disabled]="!canEdit" required>
+                                    (selectionChange)="eltChange.emit()" [disabled]="!canEdit" required>
                             <mat-option value="VSAC">VSAC</mat-option>
                         </mat-select>
                     </mat-form-field>
                     <mat-form-field class="w-50">
                         <input matInput [(ngModel)]="elt.valueDomain.datatypeDynamicCodeList.code"
-                               (ngModelChange)="onEltChange.emit()" [disabled]="!canEdit" placeholder="VSAC OID">
+                               (ngModelChange)="eltChange.emit()" [disabled]="!canEdit" placeholder="VSAC OID">
                     </mat-form-field>
                 </dd>
             </ng-container>
@@ -108,7 +108,7 @@
                 <dd class="col-9">
                     <cde-inline-edit id="datatypeExternallyDefinedLink"
                                      [(model)]="elt.valueDomain.datatypeExternallyDefined.link"
-                                     (modelChange)="onEltChange.emit();" [isAllowed]="canEdit"></cde-inline-edit>
+                                     (modelChange)="eltChange.emit();" [isAllowed]="canEdit"></cde-inline-edit>
                 </dd>
                 <dt class="col-3 text-right">Description:</dt>
                 <dd class="col-9">
@@ -154,11 +154,11 @@
                 <tr *ngFor="let pv of elt.valueDomain.permissibleValues; let i=index" id="pv_{{i}}">
                     <td id="pvValue_{{i}}">
                         <cde-inline-edit [(model)]="pv.permissibleValue" [isAllowed]="canEdit"
-                                         (modelChange)="onEltChange.emit();"></cde-inline-edit>
+                                         (modelChange)="eltChange.emit();"></cde-inline-edit>
                     </td>
                     <td id="pvMeaningName_{{i}}">
                         <cde-inline-edit [(model)]="pv.valueMeaningName" [isAllowed]="canEdit"
-                                         (modelChange)="onEltChange.emit();"></cde-inline-edit>
+                                         (modelChange)="eltChange.emit();"></cde-inline-edit>
                     <td id="pvMeaningCode_{{i}}">{{pv.valueMeaningCode}}</td>
                     <td id="pvCodeSystem_{{i}}">{{pv.codeSystemName}}</td>
                     <td *ngIf="SOURCES['UMLS'].selected" id="codeAsUMLS_{{i}}">
@@ -188,7 +188,7 @@
                     <td id="pvMeaningDefinition_{{i}}">
                         <cde-inline-edit [(model)]="pv.valueMeaningDefinition"
                                          [isAllowed]="canEdit"
-                                         (modelChange)="onEltChange.emit();"></cde-inline-edit>
+                                         (modelChange)="eltChange.emit();"></cde-inline-edit>
                     </td>
                     <td id="pvAction_{{i}}">
                         <ng-container *ngIf="pv.notValid">
@@ -197,7 +197,7 @@
                         <ng-container *ngIf="canEdit">
                             <mat-icon id="pvRemove_{{i}}" (click)="removePv(i)">delete_outline</mat-icon>
                             <cde-sortable-array [theArray]="elt.valueDomain.permissibleValues" [index]="i"
-                                                (cb)="onEltChange.emit()"></cde-sortable-array>
+                                                (cb)="eltChange.emit()"></cde-sortable-array>
                         </ng-container>
                     </td>
                 </tr>
@@ -236,7 +236,6 @@
 
         <div *ngIf="!vsacMappingExists()">No Value Set specified.</div>
         <div *ngIf="userService.loggedIn()">
-            <div>{{vsacError}}</div>
             <div *ngIf="!editMode">
                 <button *ngIf="canEdit" mat-raised-button id="updateOIDBtn" (click)="editMode=true">Update O.I.D
                 </button>
@@ -248,7 +247,7 @@
                 <mat-form-field>
                     <input name="vsacId" [(ngModel)]="elt.dataElementConcept.conceptualDomain.vsac.id" matInput
                            placeholder="VSAC O.I.D"/>
-                    <mat-icon matSuffix id="vsacIdCheck" (click)="checkVsacId(elt)">check</mat-icon>
+                    <mat-icon matSuffix id="vsacIdCheck" (click)="checkVsacId()">check</mat-icon>
                     <mat-icon matSuffix (click)="editMode = false">cancel</mat-icon>
                 </mat-form-field>
             </div>

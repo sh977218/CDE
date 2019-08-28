@@ -72,11 +72,11 @@
                                         <cde-form-description-section
                                                 *ngIf="node.data.elementType === 'section' || node.data.elementType === 'form'"
                                                 [elt]="elt" [canEdit]="canEdit" [node]="node" [index]="index"
-                                                (onEltChange)="onEltChange.emit()"></cde-form-description-section>
+                                                (eltChange)="eltChange.emit()"></cde-form-description-section>
                                         <cde-form-description-question
                                                 *ngIf="node.data.elementType === 'question'"
                                                 [canEdit]="canEdit" [node]="node" [index]="index"
-                                                (stageElt)="onEltChange.emit()"></cde-form-description-question>
+                                                (stageElt)="eltChange.emit()"></cde-form-description-question>
                                     </div>
                                 </div>
                             </div>
@@ -94,7 +94,7 @@
                                 <cde-form-description-question-detail *ngIf="node.data.elementType === 'question'"
                                                                       [elt]="elt" [node]="node"
                                                                       [canEdit]="canEdit"
-                                                                      (onEltChange)="onEltChange.emit();">
+                                                                      (eltChange)="eltChange.emit();">
                                 </cde-form-description-question-detail>
                                 <tree-node-children [node]="node" [templates]="templates"></tree-node-children>
                             </div>

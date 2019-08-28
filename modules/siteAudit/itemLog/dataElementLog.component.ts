@@ -45,7 +45,9 @@ export class DataElementLogComponent {
             if (Array.isArray(response)) {
                 this.records = response;
                 this.records.forEach(rec => {
-                    if (rec.diff) rec.diff.forEach(d => makeHumanReadable(d));
+                    if (rec.diff) {
+                        rec.diff.forEach(d => makeHumanReadable(d));
+                    }
                 });
             }
         });

@@ -2,7 +2,7 @@ import { CdeForm, CdeFormElastic } from 'shared/form/form.model';
 import { DataElement, DataElementElastic } from 'shared/de/dataElement.model';
 import { Dictionary } from 'async';
 
-export function assertThrow(): never {
+export function assertThrow(): void {
     throw new Error('Please submit a bug report.');
 }
 
@@ -14,7 +14,7 @@ export function assertTrue(x: boolean): void {
     }
 }
 
-export function assertUnreachable(x: never): never {
+export function assertUnreachable(x: void): never {
     throw new Error('Unreachable');
 }
 
@@ -38,18 +38,20 @@ export class Attachment {
     }
 }
 
-export type Cb<T = never, U = never, V = never> = (t?: T, u?: U, v?: V) => void;
-export type Cb1<T = never, U = never, V = never> = (t: T, u?: U, v?: V) => void;
-export type Cb2<T = never, U = never, V = never> = (t: T, u: U, v?: V) => void;
-export type Cb3<T = never, U = never, V = never> = (t: T, u: U, v: V) => void;
-export type CbErr<T = never, U = never, V = never> = (error?: string, t?: T, u?: U, v?: V) => void;
-export type CbError<T = never, U = never, V = never> = (error?: Error, t?: T, u?: U, v?: V) => void;
-export type CbError1<T = never, U = never, V = never> = (error: Error | undefined, t: T, u?: U, v?: V) => void;
-export type CbErrObj<E = string, T = never, U = never, V = never> = (error?: E, t?: T, u?: U, v?: V) => void;
-export type CbRet<R = never, T = never, U = never, V = never> = (t?: T, u?: U, v?: V) => R;
-export type CbRet1<R = never, T = never, U = never, V = never> = (t: T, u?: U, v?: V) => R;
-export type CbRet2<R = never, T = never, U = never, V = never> = (t: T, u: U, v?: V) => R;
-export type CbRet3<R = never, T = never, U = never, V = never> = (t: T, u: U, v: V) => R;
+export type Cb<T = void, U = void, V = void> = (t?: T, u?: U, v?: V) => void;
+export type Cb1<T = void, U = void, V = void> = (t: T, u?: U, v?: V) => void;
+export type Cb2<T = void, U = void, V = void> = (t: T, u: U, v?: V) => void;
+export type Cb3<T = void, U = void, V = void> = (t: T, u: U, v: V) => void;
+export type CbErr<T = void, U = void, V = void> = (error?: string, t?: T, u?: U, v?: V) => void;
+export type CbErr1<T = void, U = void, V = void> = (error: string | undefined, t: T, u?: U, v?: V) => void;
+export type CbError<T = void, U = void, V = void> = (error?: Error, t?: T, u?: U, v?: V) => void;
+export type CbError1<T = void, U = void, V = void> = (error: Error | undefined, t: T, u?: U, v?: V) => void;
+export type CbErrObj<E = string, T = void, U = void, V = void> = (error?: E, t?: T, u?: U, v?: V) => void;
+export type CbErrObj1<E = string, T = void, U = void, V = void> = (error: E | undefined, t: T, u?: U, v?: V) => void;
+export type CbRet<R = void, T = void, U = void, V = void> = (t?: T, u?: U, v?: V) => R;
+export type CbRet1<R = void, T = void, U = void, V = void> = (t: T, u?: U, v?: V) => R;
+export type CbRet2<R = void, T = void, U = void, V = void> = (t: T, u: U, v?: V) => R;
+export type CbRet3<R = void, T = void, U = void, V = void> = (t: T, u: U, v: V) => R;
 
 export class CdeId {
     [key: string]: string | undefined;
@@ -76,16 +78,20 @@ export class Classification {
     workingGroup?: boolean;
 }
 
-export class ClassificationClassified {
-    classificationArray?: string[];
-    selectedOrg?: string;
+export interface ClassificationClassified {
+    classificationArray: string[];
+    selectedOrg: string;
+}
+
+export interface ClassificationClassifier {
+    categories: string[];
+    orgName: string;
 }
 
 export class ClassificationElement {
     elements: ClassificationElement[] = [];
     name!: string;
 }
-
 export class ClassificationHistory {
     categories?: string[];
     cdeId?: string;
@@ -116,21 +122,21 @@ export class CodeAndSystem {
 }
 
 export class CommentReply {
-    _id?: ObjectId;
+    _id!: ObjectId;
     created?: Date;
     pendingApproval?: boolean;
     status: string = 'active';
     text?: string;
-    user!: UserRef;
+    user!: UserRefSecondary;
 }
 
 export class Comment extends CommentReply {
     currentComment: boolean = false; // calculated, used by CommentsComponent
     currentlyReplying?: boolean; // calculated, used by CommentsComponent
-    element?: {
-        eltId?: string,
-        eltType?: 'board' | 'cde' | 'form',
-    };
+    element: {
+        eltId: string,
+        eltType: ModuleAll,
+    } = {eltId: '', eltType: 'cde'};
     linkedTab?: string;
     replies?: CommentReply[];
 }
@@ -158,10 +164,10 @@ export class DataSource {
     updated?: Date;
 }
 
-export class DiscussionComments {
-    currentCommentsPage?: number;
-    latestComments?: Comment[];
-    totalItems?: number;
+export interface DiscussionComments {
+    currentCommentsPage: number;
+    latestComments: Comment[];
+    totalItems: number;
 }
 
 export interface ElasticQueryParams {
@@ -175,10 +181,7 @@ export interface ElasticQueryParams {
 
 export interface ElasticQueryResponse {
     _shards?: any;
-    aggregations?: ElasticQueryResponseAggregation & { [key: string]: ElasticQueryResponseAggregation }; // Elastic aggregated grouping
-    cdes?: DataElementElastic[];
     error?: any;
-    forms?: CdeFormElastic[];
     hits: {
         max_score: number,
         hits: ElasticQueryResponseHit[],
@@ -190,6 +193,21 @@ export interface ElasticQueryResponse {
     timed_out?: boolean;
     totalNumber: number; // Elastic number of results
 }
+export type ElasticQueryResponseDe = ElasticQueryResponse & {
+    cdes: DataElementElastic[];
+};
+export type ElasticQueryResponseForm = ElasticQueryResponse & {
+    forms: CdeFormElastic[];
+};
+export type ElasticQueryResponseItem = ElasticQueryResponseDe | ElasticQueryResponseForm;
+
+interface ElasticQueryResponseAggregationsPart {
+    aggregations: ElasticQueryResponseAggregation & { [key: string]: ElasticQueryResponseAggregation }; // Elastic aggregated grouping
+}
+export type ElasticQueryResponseAggregations = ElasticQueryResponse & ElasticQueryResponseAggregationsPart;
+export type ElasticQueryResponseAggregationsDe = ElasticQueryResponseDe & ElasticQueryResponseAggregationsPart;
+export type ElasticQueryResponseAggregationsForm = ElasticQueryResponseForm & ElasticQueryResponseAggregationsPart;
+export type ElasticQueryResponseAggregationsItem = ElasticQueryResponseAggregationsDe | ElasticQueryResponseAggregationsForm;
 
 export interface ElasticQueryResponseAggregation {
     [key: string]: { // 1 or 2 levels of keys...
@@ -199,6 +217,7 @@ export interface ElasticQueryResponseAggregation {
 }
 
 export interface ElasticQueryResponseAggregationBucket {
+    checked: boolean;
     key: string;
     doc_count: number;
 }
@@ -213,7 +232,9 @@ export interface ElasticQueryResponseHit {
 }
 
 export abstract class Elt {
+    /* tslint:disable */
     __v!: number;
+    /* tslint:enable */
     _id!: ObjectId;
     archived: boolean = false;
     attachments: Attachment[] = [];
@@ -246,11 +267,11 @@ export abstract class Elt {
     usedBy?: string[]; // volatile, Classification stewardOrg names
     version?: string; // ??? elastic(version) or mongo(__v)
 
+    static getEltUrl: (elt: Elt) => string;
+
     static isDefault(elt: Elt) {
         return elt.isDefault === true;
     }
-
-    static getEltUrl: (elt: Elt) => string;
 
     static getLabel(elt: Elt) {
         return (elt as any).primaryNameCopy || elt.designations[0].designation;
@@ -261,13 +282,17 @@ export abstract class Elt {
     }
 
     static validate(elt: Elt) {
-        if (!elt.classification) elt.classification = [];
-        if (!elt.ids) elt.ids = [];
+        if (!elt.classification) {
+            elt.classification = [];
+        }
+        if (!elt.ids) {
+            elt.ids = [];
+        }
     }
 
 }
 
-export declare type EltLog = {
+export declare interface EltLog {
     date: Date;
     user: {
         username: string  // not UserRef!?
@@ -275,7 +300,7 @@ export declare type EltLog = {
     adminItem: EltLogEltRef;
     previousItem: EltLogEltRef;
     diff: EltLogDiff[];
-};
+}
 
 export type EltLogDiff = EltLogDiffAmend | {
     fieldName?: string; // calculated makeHumanReadable
@@ -288,7 +313,7 @@ export type EltLogDiff = EltLogDiffAmend | {
     rhs?: string;
 };
 
-export type EltLogDiffAmend = {
+export interface EltLogDiffAmend {
     fieldName?: string; // calculated makeHumanReadable
     item: {
         kind: 'D' | 'N';
@@ -302,7 +327,7 @@ export type EltLogDiffAmend = {
     path: (string | number)[];
     previousValue?: string; // calculated makeHumanReadable
     rhs?: string;
-};
+}
 
 export class EltRef {
     name?: string;
@@ -315,59 +340,59 @@ export class EltLogEltRef extends EltRef {
     _id!: ObjectId;
 }
 
-export type Embed = {
-    _id?: ObjectId,
-    cde?: EmbedItem,
-    form?: EmbedItem
-    height: number,
-    name?: string,
-    org: string,
-    width: number,
-};
+export interface Embed {
+    _id?: ObjectId;
+    cde?: EmbedItem; // data element only
+    form?: EmbedItem; // form only
+    height: number;
+    name?: string;
+    org: string;
+    width: number;
+}
 
-export type EmbedItem = {
+export interface EmbedItem {
     cdes?: boolean; // form only
     classifications?: {
         label: string,
         startsWith: string,
         exclude: string,
         selectedOnly?: boolean
-    }[],
+    }[];
     ids?: {
         idLabel: string,
         source: string,
         version?: boolean,
         versionLabel: string
-    }[]
+    }[];
     linkedForms?: { // cde only
         label?: string,
         show?: boolean,
-    },
-    lowestRegistrationStatus: CurationStatus,
-    nameLabel?: string,
+    };
+    lowestRegistrationStatus: CurationStatus;
+    nameLabel?: string;
     nbOfQuestions?: boolean; // form only
     otherNames?: {
         label: string,
         contextName: string
-    }[],
-    pageSize: number,
+    }[];
+    pageSize: number;
     permissibleValues?: boolean; // cde only
     primaryDefinition?: {
         label?: string,
         show?: boolean,
         style?: string
-    },
+    };
     properties?: {
         label: string,
         limit: number
         key: string,
-    }[],
+    }[];
     registrationStatus?: {
         show?: boolean,
         label?: string
-    },
+    };
     sdcLink?: boolean; // form only
-};
+}
 
 export class FormattedValue {
     value: string;
@@ -399,40 +424,66 @@ export class Definition {
     }
 }
 
-export class DerivationRule {
+export interface DerivationRule {
     formula?: DerivationRuleFormula;
     fullCdes?: DataElement[];
-    inputs: string[] = [];
-    name?: string;
+    inputs: string[];
+    name: string;
     outputs?: string[];
     ruleType?: DerivationRuleType;
 }
 
 type DerivationRuleFormula = 'sumAll' | 'mean' | 'bmi';
 type DerivationRuleType = 'score' | 'panel';
-export type Drafts = { draftCdes: DataElement[], draftForms: CdeForm[] };
-export type Board = {owner: {username: string}};
 
-export type IdVersion = {
-    id: string,
-    version?: string
-};
+export interface Drafts {
+    draftCdes: DataElement[];
+    draftForms: CdeForm[];
+}
+
+interface BoardPart {
+    _id: ObjectId;
+    elementType: 'board';
+    id: string; // generated by mongoose toObject() ???
+    name: string;
+    owner: {username: string};
+    pins: {}[];
+    type: ModuleItem;
+    users: User[];
+}
+
+export type Board = BoardDe | BoardForm;
+export type BoardDe = BoardPart & {elts: DataElement[]};
+export type BoardForm = BoardPart & {elts: CdeForm[]};
+
+export interface IdVersion {
+    id: string;
+    version?: string;
+}
 
 export type Item = DataElement | CdeForm;
 
-export type ItemClassification = {
-    categories?: string[],
-    elements?: IdVersion[],
-    eltId: ObjectId,
-    orgName?: string,
-};
+export interface ItemClassification {
+    categories?: string[];
+    elements?: IdVersion[];
+    eltId: ObjectId;
+    orgName?: string;
+}
 
 export type ItemElastic = DataElementElastic | CdeFormElastic;
 export type ListTypes = 'accordion' | 'table' | 'summary';
+
+export interface MeshClassification {
+    flatClassification?: string;
+    eltId?: string;
+    meshDescriptors: string[];
+    flatTrees?: string[];
+}
+
 export type MongooseType<T> = T & {markModified: (path: string) => void};
 export type NotificationSettingsMediaType = 'drawer' | 'push';
 export type NotificationSettingsMedia = {
-    [key in NotificationSettingsMediaType]?: boolean;
+    [key in NotificationSettingsMediaType]: boolean | undefined;
 };
 export type NotificationSettingsType = 'approvalAttachment' | 'approvalComment' | 'comment';
 export type NotificationSettings = {
@@ -450,18 +501,28 @@ export class Organization {
     mailAddress?: string;
     name!: string;
     nameContexts?: any[];
-    nameTags?: any[];
+    nameTags?: string[];
     phoneNumber?: string;
     propertyKeys?: any[];
     uri?: string;
     workingGroupOf?: string;
 
     static validate(o: Organization) {
-        if (!o.cdeStatusValidationRules) o.cdeStatusValidationRules = [];
-        if (!o.classifications) o.classifications = [];
-        if (!o.nameContexts) o.nameContexts = [];
-        if (!o.nameTags) o.nameTags = [];
-        if (!o.propertyKeys) o.propertyKeys = [];
+        if (!o.cdeStatusValidationRules) {
+            o.cdeStatusValidationRules = [];
+        }
+        if (!o.classifications) {
+            o.classifications = [];
+        }
+        if (!o.nameContexts) {
+            o.nameContexts = [];
+        }
+        if (!o.nameTags) {
+            o.nameTags = [];
+        }
+        if (!o.propertyKeys) {
+            o.propertyKeys = [];
+        }
     }
 }
 
@@ -496,6 +557,7 @@ export class ReferenceDocument {
     _id?: ObjectId;
     document?: string;
     docType?: string;
+    edit?: boolean; // tab GUI
     languageCode?: string;
     providerOrg?: string;
     referenceDocumentId?: string;
@@ -519,13 +581,13 @@ export class RegistrationState {
 }
 
 export class Source {
-    _id?: string;
+    _id: string;
     linkTemplateDe: string = '';
     linkTemplateForm: string = '';
     version?: string;
 
-    constructor(id: string) {
-        this._id = id;
+    constructor(_id: string) {
+        this._id = _id;
     }
 }
 
@@ -544,40 +606,40 @@ export class StatusValidationRules {
 export type StatusValidationRulesByOrg = Dictionary<StatusValidationRules[]>; // by Organization Name
 export type StatusValidationRulesByOrgReg = Dictionary<StatusValidationRulesByOrg>; // by Registration Status
 
-export type TableViewFields = {
-    administrativeStatus?: boolean,
+export interface TableViewFields {
+    administrativeStatus?: boolean;
     customFields?: { key: string, label?: string, style?: string }[];
-    ids?: boolean,
-    identifiers?: string[],
-    linkedForms?: boolean, // cde only
-    name?: boolean,
-    naming?: boolean,
-    nbOfPVs?: boolean,
-    numQuestions?: boolean,
-    permissibleValues?: boolean,
-    pvCodeNames?: boolean,
-    questionTexts?: boolean,
-    registrationStatus?: boolean,
-    source?: boolean,
-    stewardOrg?: boolean,
-    tinyId?: boolean,
-    uom?: boolean,
-    updated?: boolean,
-    usedBy?: boolean,
-};
+    ids?: boolean;
+    identifiers?: string[];
+    linkedForms?: boolean; // cde only
+    name?: boolean;
+    naming?: boolean;
+    nbOfPVs?: boolean;
+    numQuestions?: boolean;
+    permissibleValues?: boolean;
+    pvCodeNames?: boolean;
+    questionTexts?: boolean;
+    registrationStatus?: boolean;
+    source?: boolean;
+    stewardOrg?: boolean;
+    tinyId?: boolean;
+    uom?: boolean;
+    updated?: boolean;
+    usedBy?: boolean;
+}
 
-export type Task = {
-    date: Date,
-    id: string,
-    idType: TaskIdType,
-    name: string,
-    properties: { key: string, value?: string }[],
-    source: TaskSource,
-    state?: number,
-    text?: string,
-    type: TaskType,
-    url: string,
-};
+export interface Task {
+    date: Date;
+    id: string;
+    idType: TaskIdType;
+    name: string;
+    properties: { key: string, value?: string }[];
+    source: TaskSource;
+    state?: number;
+    text?: string;
+    type: TaskType;
+    url: string;
+}
 
 export type TaskIdType =
     'attachment' |
@@ -590,17 +652,17 @@ export type TaskIdType =
     'versionUpdate';
 export type TaskType = 'approve' | 'comment' | 'error' | 'message' | 'vote';
 export type TaskSource = 'calculated' | 'user';
-export const TaskStateUnread = 1;
+export const TASK_STATE_UNREAD = 1;
 
-export class User {
-    _id!: ObjectId;
+export interface User {
+    _id: ObjectId;
     accessToken?: string;
     avatarUrl?: string;
     email?: string;
     formViewHistory?: string[];
     notificationSettings?: NotificationSettings;
-    orgAdmin: string[] = [];
-    orgCurator: string[] = [];
+    orgAdmin: string[];
+    orgCurator: string[];
     publishedForms?: PublishedForm[];
     quota?: number;
     refreshToken?: string;
@@ -609,7 +671,7 @@ export class User {
     siteAdmin?: boolean;
     tasks?: Task[];
     tester?: boolean;
-    username?: string;
+    username: string;
     viewHistory?: string[];
 }
 
@@ -623,13 +685,13 @@ export interface UserRefSecondary {
     username: string;
 }
 
-export type UserSearchSettings = {
-    defaultSearchView: ListTypes,
-    includeRetired?: boolean
-    lowestRegistrationStatus: CurationStatus,
-    tableViewFields: TableViewFields,
-    version?: number,
-};
+export interface UserSearchSettings {
+    defaultSearchView: ListTypes;
+    includeRetired?: boolean;
+    lowestRegistrationStatus: CurationStatus;
+    tableViewFields: TableViewFields;
+    version?: number;
+}
 
 export interface UsersOrgQuery {
     name: string;

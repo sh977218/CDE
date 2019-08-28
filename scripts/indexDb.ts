@@ -1,12 +1,13 @@
 import { syncLinkedFormsByTinyId } from 'server/form/formsvc';
 import { syncWithMesh } from 'server/mesh/elastic';
 import { initEs } from 'server/system/elastic';
+import { Cb } from 'shared/models.model';
 
 initEs(() => {
     console.log('Done indexing collections');
     console.log('Syncing with Mesh');
     Promise.all([
-        new Promise(resolve => {
+        new Promise((resolve: Cb) => {
             syncWithMesh(resolve);
         }),
         syncLinkedFormsByTinyId('myg51_nyXg'),

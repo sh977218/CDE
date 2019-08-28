@@ -1,17 +1,16 @@
 import { Component, ViewChild, Input, Output, EventEmitter, TemplateRef } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { UserService } from '_app/user.service';
-import { IActionMapping } from 'angular-tree-component/dist/models/tree-options.model';
+import { TreeNode, IActionMapping } from 'angular-tree-component';
 import _noop from 'lodash/noop';
 import { IsAllowedService } from 'non-core/isAllowed.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { isSiteAdmin } from 'shared/system/authorizationShared';
 import { Classification, Item } from 'shared/models.model';
-import { TreeNode } from 'angular-tree-component';
 
 export interface DeletedNodeEvent {
-    deleteClassificationArray: string[],
-    deleteOrgName: string
+    deleteClassificationArray: string[];
+    deleteOrgName: string;
 }
 
 const actionMapping: IActionMapping = {
@@ -28,9 +27,9 @@ const actionMapping: IActionMapping = {
     templateUrl: './classificationView.component.html'
 })
 export class ClassificationViewComponent {
-    @ViewChild('deleteClassificationContent') public deleteClassificationContent!: TemplateRef<any>;
     @Input() elt!: Item;
     @Output() confirmDelete = new EventEmitter<DeletedNodeEvent>();
+    @ViewChild('deleteClassificationContent') deleteClassificationContent!: TemplateRef<any>;
     deleteClassificationString?: string;
     orgHelperLoaded = false;
 

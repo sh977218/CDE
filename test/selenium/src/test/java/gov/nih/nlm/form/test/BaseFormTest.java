@@ -211,12 +211,12 @@ public class BaseFormTest extends NlmCdeBaseTest {
 
         WebElement nbColSlider = findElement(By.cssSelector("#profile_" + index + " mat-slider[max='6']"));
         nbColSlider.click();
-
-        int currentNbOfCols = Integer.valueOf(findElement(By.id("nbOfColumnsValue")).getText());
+        int currentNbOfCols = Integer.valueOf(findElement(By.cssSelector("#profile_" + index + " #nbOfColumnsValue")).getText());
         for (int i = 0; i < Math.abs(numberOfColumns - currentNbOfCols); i++) {
             Keys key = (numberOfColumns - currentNbOfCols) > 0 ? Keys.RIGHT : Keys.LEFT;
             nbColSlider.sendKeys(key);
         }
+        textPresent("Number of Columns: " + String.valueOf(numberOfColumns), By.id("profile_" + index));
 
         if (displayInvisible) clickElement(By.id("displayInvisible_" + index));
 

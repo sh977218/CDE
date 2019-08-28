@@ -54,16 +54,6 @@ export class NativeRenderAppComponent {
     summary = false;
     submitForm: boolean;
 
-    static searchParamsGet(): string[] {
-        const params: any = {};
-        location.search && location.search.substr(1).split('&').forEach(e => {
-            const p = e.split('=');
-            if (p.length === 2) { params[p[0]] = decodeURI(p[1]); }
-            else { params[p[0]] = null; }
-        });
-        return params;
-    }
-
     getForm(tinyId: string, cb: CbErr<CdeForm>) {
         FormService.fetchForm(tinyId).then(elt => {
             cb(undefined, elt);
@@ -76,12 +66,23 @@ export class NativeRenderAppComponent {
         }
         CdeForm.validate(elt);
         this.elt = elt;
-        if (!this.selectedProfileName) {
-            this.selectedProfile = this.elt.displayProfiles[0];
-        } else {
-            const selectedProfileArray = this.elt.displayProfiles.filter(d => d.name === this.selectedProfileName);
-            if (selectedProfileArray && selectedProfileArray.length > 0) { this.selectedProfile = selectedProfileArray[0]; }
-            else { this.selectedProfile = undefined; }
+        this.selectedProfile = this.selectedProfileName
+            ? this.elt.displayProfiles.filter(d => d.name === this.selectedProfileName)[0]
+            : this.elt.displayProfiles[0];
+    }
+
+    static searchParamsGet(): string[] {
+        const params: any = {};
+        if (location.search) {
+            location.search.substr(1).split('&').forEach(e => {
+                const p = e.split('=');
+                if (p.length === 2) {
+                    params[p[0]] = decodeURI(p[1]);
+                } else {
+                    params[p[0]] = null;
+                }
+            });
         }
+        return params;
     }
 }

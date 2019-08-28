@@ -1,7 +1,7 @@
 <div class="container-fluid">
     <h1>My Published Forms</h1>
     <div>
-        <span *ngIf="!user?.publishedForms.length">You have no published forms.</span>
+        <span *ngIf="!user?.publishedForms?.length">You have no published forms.</span>
         <ul class="list-group">
             <li class="list-group-item" *ngFor="let pf of user.publishedForms">
                 <a href="/data/{{pf.id}}?submit" target="_blank">{{pf.name}}</a>

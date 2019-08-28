@@ -19,11 +19,11 @@ export class FhirAppsComponent {
     }
 
     deleteApp(app: FhirApp) {
-        this.http.delete("/fhirApp/" + app._id).subscribe(() => this.loadAllApps());
+        this.http.delete('/fhirApp/' + app._id).subscribe(() => this.loadAllApps());
     }
 
     formsUpdated(event: any, app: FhirApp) {
-        app.forms = event.target.value.split(",")
+        app.forms = event.target.value.split(',')
             .map((id: string) => id.trim())
             .filter((id: string) => id)
             .map((id: string) => ({tinyId: id}));
@@ -31,7 +31,7 @@ export class FhirAppsComponent {
     }
 
     getFormIds(app: FhirApp) {
-        return app.forms.map(f => f.tinyId).join(",");
+        return app.forms.map(f => f.tinyId).join(',');
     }
 
     loadAllApps() {
@@ -39,10 +39,10 @@ export class FhirAppsComponent {
     }
 
     newApp() {
-        this.saveApp(new FhirApp);
+        this.saveApp(new FhirApp());
     }
 
     saveApp(app: FhirApp) {
-        this.http.post("/fhirApp", app).subscribe(() => this.loadAllApps());
+        this.http.post('/fhirApp', app).subscribe(() => this.loadAllApps());
     }
 }

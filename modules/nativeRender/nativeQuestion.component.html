@@ -78,7 +78,7 @@
                                         </label>
                                         <ng-container *ngIf="pv?.formElements">
                                             <ng-container *ngFor="let fe of pv.formElements">
-                                                <div *ngIf="nrs.nativeRenderType !== nrs.SHOW_IF
+                                                <div *ngIf="nrs.nativeRenderType !== NRS.SHOW_IF
                                                || nrs.skipLogicService.evalSkipLogicAndClear(pv, fe, nrs)"
                                                      [ngClass]="{'native-question-oneline-r': isOneLiner(pv.formElements[0], pv.formElements.length),
                                                             'native-box': pv.formElements && !isOneLiner(fe, pv.formElements.length)}"
@@ -241,7 +241,7 @@
             <ng-container *ngFor="let pv of formElement.question.answers">
                 <ng-container *ngIf="pv.nonValuelist && pv.formElements">
                     <ng-container *ngFor="let fe of pv.formElements">
-                        <div *ngIf="nrs.nativeRenderType !== this.nrs.SHOW_IF
+                        <div *ngIf="nrs.nativeRenderType !== NRS.SHOW_IF
                                         || nrs.skipLogicService.evalSkipLogicAndClear(pv, fe, nrs)"
                              [ngClass]="{'native-question-oneline-r': isOneLiner(pv.formElements[0], pv.formElements.length)}"
                              class="native-question-header">

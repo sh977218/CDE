@@ -18,7 +18,7 @@ export class SearchPreferencesComponent implements OnInit {
     }
 
     ngOnInit() {
-        if (this.route.snapshot.queryParams['triggerClientError']) {
+        if (this.route.snapshot.queryParams.triggerClientError) {
             throw new Error('An exception has been thrown');
         }
     }

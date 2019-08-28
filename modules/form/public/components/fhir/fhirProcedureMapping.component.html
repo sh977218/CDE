@@ -49,7 +49,7 @@
 </div>
 
 <div>
-    <div *ngIf="isTinyIdSingleSelect(mapping.bodySiteQuestionID)"
+    <div *ngIf="isTinyIdSingleSelect(mapping.bodySiteQuestionID || '')"
          class="alert alert-warning" role="alert">
         Warning: The selected question is single-select while used to edit a multi-select field. The answers will only be used to append values.
     </div>
@@ -70,7 +70,7 @@
 </div>
 
 <div>
-    <div *ngIf="usedRefs && !usedRefs.question.multiselect"
+    <div *ngIf="usedRefs && (usedRefs.question.datatype !== 'Value List' || !usedRefs.question.multiselect)"
          class="alert alert-warning" role="alert">
         Warning: The selected question is single-select while used to edit a multi-select field. The answers will only be used to append values.
     </div>
@@ -92,7 +92,7 @@
 </div>
 
 <div>
-    <div *ngIf="isTinyIdSingleSelect(mapping.complications)"
+    <div *ngIf="isTinyIdSingleSelect(mapping.complications || '')"
          class="alert alert-warning" role="alert">
         Warning: The selected question is single-select while used to edit a multi-select field. The answers will only be used to append values.
     </div>
@@ -109,5 +109,3 @@
     <button mat-raised-button [mat-dialog-close]="" color="warn" id="loadDefaultTableViewSettingsBtn">Cancel</button>
     <button mat-raised-button [mat-dialog-close]="mapping" color="accent" id="closeTableViewSettingsBtn">Save</button>
 </mat-dialog-actions>
-
-

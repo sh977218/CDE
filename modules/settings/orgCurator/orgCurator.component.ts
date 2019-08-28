@@ -1,13 +1,18 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
-
-import { AlertService } from 'alert/alert.service';
 import { UserService } from '_app/user.service';
+import { AlertService } from 'alert/alert.service';
 import { IsAllowedService } from 'non-core/isAllowed.service';
 import { ObjectId } from 'shared/models.model';
 import { stringCompare } from 'shared/system/util';
 
-type OrgUsers = { org: string, users: { _id: ObjectId, username: string }[] };
+interface OrgUsers {
+    org: string;
+    users: {
+        _id: ObjectId,
+        username: string,
+    }[];
+}
 
 @Component({
     selector: 'cde-org-curator',
@@ -26,13 +31,11 @@ export class OrgCuratorComponent {
 
     }
 
-
     getOrgCurators() {
         this.http.get<OrgUsers[]>('/orgCurators').subscribe(response => {
             this.orgCurators = response.sort((a, b) => stringCompare(a.org, b.org));
         });
     }
-
 
     addOrgCurator() {
         this.http.post('/addOrgCurator', {
@@ -46,15 +49,13 @@ export class OrgCuratorComponent {
         this.newOrgName = '';
     }
 
-
     removeOrgCurator(orgName: string, userId: string) {
         this.http.post('/removeOrgCurator', {
             org: orgName,
-            userId: userId
+            userId
         }, {responseType: 'text'}).subscribe(() => {
             this.alert.addAlert('success', 'Removed');
             this.getOrgCurators();
         }, () => this.alert.addAlert('danger', 'An error occured.'));
     }
-
 }

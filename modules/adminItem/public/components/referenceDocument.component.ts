@@ -14,17 +14,17 @@ import { MatDialog, MatDialogRef } from '@angular/material';
 })
 export class ReferenceDocumentComponent {
     @Input() canEdit = false;
-    @Input() elt: DataElement;
-    @Output() onEltChange = new EventEmitter();
-    @ViewChild('newReferenceDocumentContent') public newReferenceDocumentContent: TemplateRef<any>;
+    @Input() elt!: DataElement;
+    @Output() eltChange = new EventEmitter();
+    @ViewChild('newReferenceDocumentContent') newReferenceDocumentContent!: TemplateRef<any>;
+    modalRef!: MatDialogRef<TemplateRef<any>>;
     newReferenceDocument: ReferenceDocument = new ReferenceDocument();
-    modalRef: MatDialogRef<TemplateRef<any>>;
 
     constructor(private dialog: MatDialog) {}
 
     addNewReferenceDocument() {
         this.elt.referenceDocuments.push(this.newReferenceDocument);
-        this.onEltChange.emit();
+        this.eltChange.emit();
         this.modalRef.close();
     }
 
@@ -33,8 +33,8 @@ export class ReferenceDocumentComponent {
         this.modalRef.afterClosed().subscribe(() => this.newReferenceDocument = new ReferenceDocument(), () => {});
     }
 
-    removeReferenceDocumentByIndex(index) {
+    removeReferenceDocumentByIndex(index: number) {
         this.elt.referenceDocuments.splice(index, 1);
-        this.onEltChange.emit();
+        this.eltChange.emit();
     }
 }

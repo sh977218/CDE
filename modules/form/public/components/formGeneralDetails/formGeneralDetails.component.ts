@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { UserService } from '_app/user.service';
-import { isMappedTo } from 'core/form/formAndFe';
 import _noop from 'lodash/noop';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { CdeForm } from 'shared/form/form.model';
@@ -13,15 +12,15 @@ import { supportedFhirResources, supportedFhirResourcesArray } from 'shared/mapp
 export class FormGeneralDetailsComponent {
     @Input() set elt(e: CdeForm) {
         this._elt = e;
-        this.tagFhirResource = isMappedTo(e, 'fhir')
-            ? e.mapTo && e.mapTo.fhir && e.mapTo.fhir.resourceType || 'Default Mapping'
+        this.tagFhirResource = e.mapTo && e.mapTo.fhir
+            ? e.mapTo.fhir.resourceType || 'Default Mapping'
             : 'Not Mapped';
     }
     get elt() {
         return this._elt;
     }
     @Input() canEdit = false;
-    @Output() onEltChange = new EventEmitter();
+    @Output() eltChange = new EventEmitter();
     private _elt!: CdeForm;
     options = {
         multiple: false,
@@ -40,7 +39,7 @@ export class FormGeneralDetailsComponent {
 
     changeStewardOrg(event: string) {
         this.elt.stewardOrg.name = event;
-        this.onEltChange.emit();
+        this.eltChange.emit();
     }
 
     updateTagFhir() {
@@ -64,6 +63,6 @@ export class FormGeneralDetailsComponent {
             }
             this.elt.mapTo.fhir.resourceType = this.tagFhirResource === 'Default Mapping' ? undefined : this.tagFhirResource;
         }
-        this.onEltChange.emit();
+        this.eltChange.emit();
     }
 }
