@@ -223,6 +223,7 @@ gulp.task('usemin', ['copyDist'], function useminTask() {
                 jsAttributes: {async: true},
                 assetsDir: appDir('./dist/'),
                 css: [minifyCss(), 'concat', rev(), data(outputFile)],
+                html: [],
                 js: ['concat', rev(), data(outputFile)],
                 poly: [uglify({mangle: false}), 'concat', rev()],
             }))
