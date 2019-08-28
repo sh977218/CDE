@@ -31,9 +31,6 @@ import _cloneDeep from 'lodash/cloneDeep';
     `]
 })
 export class InlineAreaEditComponent implements OnInit, AfterViewInit {
-
-    constructor(private elementRef: ElementRef) {
-    }
     @Input() model!: string;
     @Input() inputType = 'text';
     @Input() isAllowed = false;
@@ -44,25 +41,7 @@ export class InlineAreaEditComponent implements OnInit, AfterViewInit {
     value!: string;
     localFormat?: string;
 
-    static isInvalidHtml(html: string) {
-        const allowUrls = [(window as any).publicUrl, (window as any).urlProd];
-        const srcs = html.match(/src\s*=\s*["'](.+?)["']/ig);
-        if (srcs) {
-            for (const src of srcs) {
-                const urls = src.match(/\s*["'](.+?)["']/ig);
-                if (urls) {
-                    for (const url of urls) {
-                        let allow = false;
-                        allowUrls.forEach(allowUrl => {
-                            const index = url.indexOf(allowUrl);
-                            if (index > -1) { allow = true; }
-                        });
-                        return !allow;
-                    }
-                }
-            }
-        }
-        return false;
+    constructor(private elementRef: ElementRef) {
     }
 
     ngOnInit(): void {
@@ -99,5 +78,26 @@ export class InlineAreaEditComponent implements OnInit, AfterViewInit {
 
     setHtml(html: boolean) {
         this.localFormat = html ? 'html' : '';
+    }
+
+    static isInvalidHtml(html: string) {
+        const allowUrls = [(window as any).publicUrl, (window as any).urlProd];
+        const srcs = html.match(/src\s*=\s*["'](.+?)["']/ig);
+        if (srcs) {
+            for (const src of srcs) {
+                const urls = src.match(/\s*["'](.+?)["']/ig);
+                if (urls) {
+                    for (const url of urls) {
+                        let allow = false;
+                        allowUrls.forEach(allowUrl => {
+                            const index = url.indexOf(allowUrl);
+                            if (index > -1) { allow = true; }
+                        });
+                        return !allow;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }

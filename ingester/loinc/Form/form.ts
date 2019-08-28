@@ -43,4 +43,3 @@ export async function createLoincForm(loinc, orgInfo) {
     };
     return newForm;
 }
-

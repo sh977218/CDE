@@ -1,11 +1,9 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-
 import { ENTER } from '@angular/cdk/keycodes';
 import { MatAutocompleteSelectedEvent, MatChipInputEvent } from '@angular/material';
 import { FormControl } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
 import { map, startWith } from 'rxjs/operators';
-
 
 @Component({
     selector: 'cde-one-list-management',
@@ -31,9 +29,10 @@ export class OneListMgtComponent implements OnInit {
 
     }
 
-
     _filter(options: string[], value: string): string[] {
-        if (!value) return [];
+        if (!value) {
+            return [];
+        }
         return options.filter(option => option.toLowerCase().includes(value.toLowerCase()));
     }
 
@@ -66,5 +65,4 @@ export class OneListMgtComponent implements OnInit {
         this.keyControl.setValue(null);
         this.save.emit();
     }
-
 }

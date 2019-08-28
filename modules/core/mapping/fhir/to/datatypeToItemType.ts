@@ -6,7 +6,8 @@ import {
 import { FhirValue } from 'shared/mapping/fhir/fhir.model';
 import { capString } from 'shared/system/util';
 
-export function questionToFhirValue(q: FormQuestion, fhirObj: FhirValue, fhirMulti: boolean = false, prefix?: string, hasCodeableConcept: boolean = false): void {
+export function questionToFhirValue(q: FormQuestion, fhirObj: FhirValue, fhirMulti: boolean = false, prefix?: string,
+                                    hasCodeableConcept: boolean = false): void {
     const qType = containerToItemType(q.question);
     if (fhirMulti) {
         const answer = questionMulti(q) ? q.question.answer : [q.question.answer];
@@ -21,6 +22,7 @@ export function questionToFhirValue(q: FormQuestion, fhirObj: FhirValue, fhirMul
     }
 }
 
-export function storeTypedValue(value: any, obj: FhirValue, qType: string, prefix: string = 'value', hasCodeableConcept: boolean = false): void {
+export function storeTypedValue(value: any, obj: FhirValue, qType: string, prefix: string = 'value',
+                                hasCodeableConcept: boolean = false): void {
     obj[prefix + capString(itemTypeToItemDatatype(qType, hasCodeableConcept))] = value;
 }

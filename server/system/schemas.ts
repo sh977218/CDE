@@ -6,7 +6,7 @@ addStringtype(mongoose);
 const Schema = mongoose.Schema;
 const StringType = (Schema.Types as any).StringType;
 
-let csEltSchema = {
+const csEltSchema = {
     elements: [],
     name: {type: StringType, index: true}
 };
@@ -57,7 +57,7 @@ export const sourceSchema = new Schema({
     }
 }, {_id: false});
 
-let commonEmbedSchema = {
+const commonEmbedSchema = {
     nameLabel: StringType,
     pageSize: Number,
     primaryDefinition: {
@@ -97,7 +97,7 @@ let commonEmbedSchema = {
     ]
 };
 
-let embedJson = {
+const embedJson = {
     org: StringType,
     name: StringType,
     height: Number,
@@ -239,7 +239,7 @@ export const attachmentSchema = new Schema({
 }, {_id: false});
 
 export const registrationStateSchema = new Schema({
-    registrationStatus: {type: StringType, enum: orderedList, default: "Incomplete"},
+    registrationStatus: {type: StringType, enum: orderedList, default: 'Incomplete'},
     effectiveDate: Date,
     untilDate: Date,
     administrativeNote: StringType,
@@ -251,7 +251,20 @@ export const registrationStateSchema = new Schema({
     replacedBy: {tinyId: {type: StringType, description: 'tinyId of replacement CDE'}},
 }, {_id: false});
 
-let requestSchema = {
+export const propertySchema = new Schema({
+    key: StringType,
+    value: StringType,
+    source: StringType,
+    valueFormat: StringType
+}, {_id: false});
+
+export const idSchema = new Schema({
+    source: StringType,
+    id: StringType,
+    version: StringType
+}, {_id: false});
+
+const requestSchema = {
     source: {tinyId: StringType, id: StringType},
     destination: {tinyId: StringType},
     mergeFields: {
@@ -284,13 +297,13 @@ export const eltLogSchema = {
     diff: Object
 };
 
-let elementRefSchema = {
+const elementRefSchema = {
     eltId: StringType,
     eltType: {type: StringType, enum: ['board', 'cde', 'form']},
     name: StringType,
 };
 
-let commentApprovalSchema = {
+const commentApprovalSchema = {
     comment: {
         commentId: StringType,
         replyIndex: Number,
@@ -298,7 +311,8 @@ let commentApprovalSchema = {
     },
     element: elementRefSchema,
 };
-let boardApprovalSchema = {
+
+const boardApprovalSchema = {
     element: elementRefSchema,
 };
 
@@ -337,19 +351,6 @@ export const referenceDocumentSchema = new Schema({
     providerOrg: StringType,
     title: StringType,
     languageCode: StringType,
-    source: StringType
-}, {_id: false});
-
-export const propertySchema = new Schema({
-    key: StringType,
-    value: StringType,
-    valueFormat: StringType,
-    source: StringType
-}, {_id: false});
-
-export const idSchema = new Schema({
-    id: StringType,
-    version: StringType,
     source: StringType
 }, {_id: false});
 
@@ -415,7 +416,7 @@ export const datatypeDynamicCodeListSchema = new Schema({
     code: StringType
 }, {_id: false});
 export const datatypeValueListSchema = new Schema({
-    datatype: {type: StringType, description: "Value list format"}
+    datatype: {type: StringType, description: 'Value list format'}
 }, {_id: false});
 export const datatypeExternallyDefinedSchema = new Schema({
     link: {type: StringType, description: 'A link to an external source. Typically a URL'},

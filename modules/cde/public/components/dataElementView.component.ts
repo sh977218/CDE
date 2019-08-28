@@ -41,22 +41,20 @@ export class DataElementViewComponent implements OnInit {
     @ViewChild('commentAreaComponent') commentAreaComponent!: DiscussAreaComponent;
     @ViewChild('copyDataElementContent') copyDataElementContent!: TemplateRef<any>;
     @ViewChild('saveModal') saveModal!: SaveModalComponent;
-    commentMode;
+    commentMode?: boolean;
     currentTab = 'general_tab';
-    displayStatusWarning;
-    draftSaving: Promise<DataElement>;
-    elt: DataElement;
-    eltCopy = {};
-    hasComments;
+    displayStatusWarning?: boolean;
+    draftSaving?: Promise<DataElement>;
+    elt!: DataElement;
+    eltCopy?: DataElement;
+    hasComments = false;
     hasDrafts = false;
-    highlightedTabs = [];
+    highlightedTabs: string[] = [];
     isOrgCurator = isOrgCurator;
-    modalRef: MatDialogRef<TemplateRef<any>>;
-    tabsCommented = [];
-    savingText: string;
-    tinyId;
+    modalRef?: MatDialogRef<TemplateRef<any>>;
+    tabsCommented: string[] = [];
+    savingText = '';
     unsaved = false;
-    url;
     validationErrors: { message: string }[] = [];
 
     ngOnInit() {
@@ -126,7 +124,7 @@ export class DataElementViewComponent implements OnInit {
         }
     }
 
-    loadComments(de, cb = _noop) {
+    loadComments(de: DataElement, cb = _noop) {
         this.http.get<Comment[]>('/server/discuss/comments/eltId/' + de.tinyId)
             .subscribe(res => {
                 this.hasComments = res && (res.length > 0);
@@ -139,7 +137,7 @@ export class DataElementViewComponent implements OnInit {
         this.eltLoad(this.deViewService.fetchEltForEditing(this.route.snapshot.queryParams), cb);
     }
 
-    loadHighlightedTabs($event) {
+    loadHighlightedTabs($event: string[]) {
         this.highlightedTabs = $event;
     }
 
@@ -157,41 +155,38 @@ export class DataElementViewComponent implements OnInit {
 
     openCopyElementModal() {
         this.eltCopy = _cloneDeep(this.elt);
-        this.eltCopy['classification'] = this.elt.classification.filter(c => {
-            return this.userService.userOrgs.indexOf(c.stewardOrg.name) !== -1;
-        });
-        this.eltCopy['registrationState.administrativeNote'] = 'Copy of: ' + this.elt.tinyId;
-        delete this.eltCopy['tinyId'];
-        delete this.eltCopy['_id'];
-        delete this.eltCopy['origin'];
-        delete this.eltCopy['created'];
-        delete this.eltCopy['updated'];
-        delete this.eltCopy['imported'];
-        delete this.eltCopy['updatedBy'];
-        delete this.eltCopy['createdBy'];
-        delete this.eltCopy['version'];
-        delete this.eltCopy['history'];
-        delete this.eltCopy['changeNote'];
-        delete this.eltCopy['comments'];
-        delete this.eltCopy['forkOf'];
-        delete this.eltCopy['views'];
-        this.eltCopy['ids'] = [];
-        this.eltCopy['sources'] = [];
-        this.eltCopy['designations'] = this.eltCopy['designations'];
-        this.eltCopy['designations'][0].designation = 'Copy of: ' + this.eltCopy['designations'][0].designation;
-        this.eltCopy['definitions'] = this.eltCopy['definitions'];
-        this.eltCopy['registrationState'] = {
+        this.eltCopy.classification =  this.elt.classification
+            && this.elt.classification.filter(c => this.userService.userOrgs.indexOf(c.stewardOrg.name) !== -1);
+        this.eltCopy.registrationState.administrativeNote = 'Copy of: ' + this.elt.tinyId;
+        delete this.eltCopy.tinyId;
+        delete this.eltCopy._id;
+        delete this.eltCopy.origin;
+        delete this.eltCopy.created;
+        delete this.eltCopy.updated;
+        delete this.eltCopy.imported;
+        delete this.eltCopy.updatedBy;
+        delete this.eltCopy.createdBy;
+        delete this.eltCopy.version;
+        delete this.eltCopy.history;
+        delete this.eltCopy.changeNote;
+        delete this.eltCopy.comments;
+        delete this.eltCopy.forkOf;
+        delete this.eltCopy.views;
+        this.eltCopy.ids = [];
+        this.eltCopy.sources = [];
+        this.eltCopy.designations[0].designation = 'Copy of: ' + this.eltCopy.designations[0].designation;
+        this.eltCopy.registrationState = {
             registrationStatus: 'Incomplete',
             administrativeNote: 'Copy of: ' + this.elt.tinyId
         };
         this.modalRef = this.dialog.open(this.copyDataElementContent, {width: '1200px'});
     }
 
-    setCurrentTab(currentTab) {
+    setCurrentTab(currentTab: string) {
         this.currentTab = currentTab;
     }
 
-    removeAttachment(index) {
+    removeAttachment(index: number) {
         this.http.post<DataElement>('/server/attachment/cde/remove', {
             index,
             id: this.elt._id
@@ -202,7 +197,7 @@ export class DataElementViewComponent implements OnInit {
         });
     }
 
-    setDefault(index) {
+    setDefault(index: number) {
         this.http.post<DataElement>('/server/attachment/cde/setDefault',
             {
                 index,
@@ -215,24 +210,29 @@ export class DataElementViewComponent implements OnInit {
         });
     }
 
-    upload(event) {
-        const files = event.srcElement.files;
-        if (files && files.length > 0) {
-            const formData = new FormData();
-            for (const file of files) {
-                formData.append('uploadedFiles', file);
-            }
-            formData.append('id', this.elt._id);
-            this.http.post<any>('/server/attachment/cde/add', formData).subscribe(
-                r => {
-                    if (r.message) { this.alert.addAlert('info', r); }
-                    else {
-                        this.elt = r;
-                        this.alert.addAlert('success', 'Attachment added.');
-                        this.ref.detectChanges();
-                    }
+    upload(event: Event) {
+        if (event.srcElement) {
+            const files = (event.srcElement as HTMLInputElement).files;
+            if (files && files.length > 0) {
+                const formData = new FormData();
+                /* tslint:disable */
+                for (let i = 0; i < files.length; i++) {
+                    formData.append('uploadedFiles', files[i]);
                 }
-            );
+                /* tslint:enable */
+                formData.append('id', this.elt._id);
+                this.http.post<any>('/server/attachment/cde/add', formData).subscribe(
+                    r => {
+                        if (r.message) {
+                            this.alert.addAlert('info', r);
+                        } else {
+                            this.elt = r;
+                            this.alert.addAlert('success', 'Attachment added.');
+                            this.ref.detectChanges();
+                        }
+                    }
+                );
+            }
         }
     }
 

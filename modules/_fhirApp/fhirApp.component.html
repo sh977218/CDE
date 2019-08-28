@@ -71,7 +71,7 @@
                         Browse
                         <mat-form-field>
                             <mat-select placeholder="Select Type" [(ngModel)]="browseMode"
-                                        (selectionChange)="browseResourceSelected($event)">
+                                        (selectionChange)="browseResourceSelected()">
                                 <mat-option *ngFor="let option of browseOptions" [value]="option">{{option}}</mat-option>
                             </mat-select>
                         </mat-form-field>

@@ -23,11 +23,11 @@ import { Item } from 'shared/models.model';
     `]
 })
 export class CompareItemComponent implements OnInit {
-    @Input() older: Item;
-    @Input() newer: Item;
-    @Input() filter;
-    newerFlatClassifications: string;
-    olderFlatClassifications: string;
+    @Input() older!: Item;
+    @Input() newer!: Item;
+    @Input() filter!: {add: {select: any}, edited: {select: any}, remove: {select: any}, reorder: {select: any}};
+    newerFlatClassifications!: string;
+    olderFlatClassifications!: string;
     map = {
         Text: 'valueDomain.datatypeText'
     };
@@ -82,7 +82,7 @@ export class CompareItemComponent implements OnInit {
     }
 }
 
-function doCompareObject(newer, older, option) {
+function doCompareObject(newer: any, older: any, option: any) {
     _forEach(option, property => {
         if (!newer && !older) {
             property.match = true;
@@ -94,7 +94,7 @@ function doCompareObject(newer, older, option) {
         const r = older ? _get(older, property.property) : '';
         if (property.data) {
             doCompareObject(l, r, property.data);
-            if (property.data) { property.match = !property.data.some(p => !p.match); }
+            if (property.data) { property.match = !property.data.some((p: any) => !p.match); }
         } else {
             property.match = _isEqual(l, r);
             property.newer = l ? l.toString() : '';

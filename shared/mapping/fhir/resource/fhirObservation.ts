@@ -30,13 +30,14 @@ export function newObservation(patient?: FhirPatient, encounter?: FhirEncounter)
 
 export function newObservationComponent(code: FhirCodeableConcept): FhirObservationComponent {
     return {
-        code: code
+        code
     };
 }
 
-export function observationComponentFromForm(fe: FormElement, getDisplay: GetDisplay, observationComponent?: FhirObservationComponent | Partial<FhirObservationComponent>): Promise<FhirObservationComponent> {
-    let ids = getIds(fe) || [];
-    let id = ids.filter(id => id.source === 'LOINC')[0] || ids[0];
+export function observationComponentFromForm(fe: FormElement, getDisplay: GetDisplay, observationComponent?: FhirObservationComponent
+    | Partial<FhirObservationComponent>): Promise<FhirObservationComponent> {
+    const ids = getIds(fe) || [];
+    const id = ids.filter(id => id.source === 'LOINC')[0] || ids[0];
     if (!id) {
         throw new Error('cannot be here without ids');
     }
@@ -51,11 +52,12 @@ export function observationComponentFromForm(fe: FormElement, getDisplay: GetDis
     });
 }
 
-export function observationFromForm(fe: FormElement, getDisplay: GetDisplay, encounter?: FhirEncounter, patient?: FhirPatient): Promise<FhirObservation> {
+export function observationFromForm(fe: FormElement, getDisplay: GetDisplay, encounter?: FhirEncounter,
+                                    patient?: FhirPatient): Promise<FhirObservation> {
     return observationComponentFromForm(fe, getDisplay, newObservation(patient, encounter)).then((component: FhirObservationComponent) => {
         const observation = component as FhirObservation;
         if (Array.isArray(fe.metadataTags)) {
-            let devices = fe.metadataTags.filter(m => m.key === 'device');
+            const devices = fe.metadataTags.filter(m => m.key === 'device');
             if (devices.length) {
                 observation.device = toRef(devices[0].value);
             }

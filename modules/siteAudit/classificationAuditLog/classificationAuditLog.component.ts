@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import _noop from 'lodash/noop';
 import { PageEvent } from '@angular/material';
+import _noop from 'lodash/noop';
 
 type ClassificationAuditLogRecord = any;
 
@@ -19,7 +19,7 @@ export class ClassificationAuditLogComponent {
         this.gotoPage();
     }
 
-    gotoPage (event?: PageEvent) {
+    gotoPage(event?: PageEvent) {
         if (event) {
             this.currentPage = event.pageIndex;
         }

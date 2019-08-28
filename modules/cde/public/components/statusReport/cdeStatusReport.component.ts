@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { UserService } from '_app/user.service';
 import _noop from 'lodash/noop';
-import { ExportRecord, ExportRecordSettings, ExportService } from 'non-core/export.service';
+import { ExportRecord, ExportService } from 'non-core/export.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 
 type ExportStatusRecord = ExportRecord | {results: string[]};
@@ -14,7 +14,7 @@ export class CdeStatusReportComponent implements OnInit {
     gridOptionsReport = {
         columnDefs: [{field: 'cdeName', displayName: 'CDE Name'}, {field: 'tinyId', displayName: 'NLM ID'}]
     };
-    message: string = undefined;
+    message?: string;
     results?: ExportStatusRecord[];
     state: 'fail' | 'message' | 'processing' | 'fail' = 'processing';
 
@@ -24,15 +24,15 @@ export class CdeStatusReportComponent implements OnInit {
                 private route: ActivatedRoute) {
     }
 
-    ngOnInit () {
+    ngOnInit() {
         this.orgSvc.then(() => {
             this.userSvc.then(() => {
                 this.exportSvc.exportSearchResults(
                     'validationRules',
                     'cde',
                     {
-                        searchSettings: JSON.parse(this.route.snapshot.queryParams['searchSettings']),
-                        status: this.route.snapshot.queryParams['status']
+                        searchSettings: JSON.parse(this.route.snapshot.queryParams.searchSettings),
+                        status: this.route.snapshot.queryParams.status
                     },
                     (records?: ExportRecord[]) => {
                         if (!records) {
@@ -46,7 +46,9 @@ export class CdeStatusReportComponent implements OnInit {
                             return;
                         }
                         this.state = 'fail';
-                        if (records.length > 100) records.length = 100;
+                        if (records.length > 100) {
+                            records.length = 100;
+                        }
                         (records[0].validationRules || []).forEach((r, i) => {
                             this.gridOptionsReport.columnDefs.push({field: 'rule' + i, displayName: r.ruleName});
                         });

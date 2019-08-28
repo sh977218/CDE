@@ -2,22 +2,23 @@ import { Component, Inject, EventEmitter, Output } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MAT_DIALOG_DATA } from '@angular/material';
 import { AlertService } from 'alert/alert.service';
-import { QuestionCde } from 'shared/form/form.model';
+import { FormQuestion, FormSection, Question, QuestionCde } from 'shared/form/form.model';
+import { Designation } from 'shared/models.model';
 
 @Component({
     selector: 'cde-select-question-label',
     templateUrl: 'selectQuestionLabel.component.html'
 })
 export class SelectQuestionLabelComponent {
-    question;
-    section;
+    @Output() closed = new EventEmitter<void>();
+    @Output() selected = new EventEmitter<Designation>();
     cde = new QuestionCde();
-    @Output() onSelect = new EventEmitter();
-    @Output() onClosed = new EventEmitter();
+    question: Question;
+    section: FormSection;
 
     constructor(private http: HttpClient,
                 private alert: AlertService,
-                @Inject(MAT_DIALOG_DATA) data) {
+                @Inject(MAT_DIALOG_DATA) data: {question: FormQuestion, parent: FormSection}) {
         this.question = data.question.question;
         this.section = data.parent;
         if (this.question.cde.tinyId) {
@@ -27,8 +28,10 @@ export class SelectQuestionLabelComponent {
                 res => this.cde = res,
                 () => {
                     this.alert.addAlert('danger', 'Error load CDE.');
-                    this.onClosed.emit();
+                    this.closed.emit();
                 });
-        } else { this.cde = this.question.cde; }
+        } else {
+            this.cde = this.question.cde;
+        }
     }
 }

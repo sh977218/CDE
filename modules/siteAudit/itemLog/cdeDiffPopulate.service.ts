@@ -62,12 +62,16 @@ export function makeHumanReadable(change: EltLogDiff): void {
         change.fieldName = 'Classification';
         if ((change as EltLogDiffAmend).item) {
             change = change as EltLogDiffAmend;
-            if (change.item.lhs) change.newValue = stringifyClassif(change.item.lhs);
-            if (change.item.rhs) change.newValue = stringifyClassif(change.item.rhs);
+            if (change.item.lhs) {
+                change.newValue = stringifyClassif(change.item.lhs);
+            }
+            if (change.item.rhs) {
+                change.newValue = stringifyClassif(change.item.rhs);
+            }
         }
         return;
     }
-    let paths = pathFieldMap[change.path.length] && pathFieldMap[change.path.length]
+    const paths = pathFieldMap[change.path.length] && pathFieldMap[change.path.length]
         .filter(pathPair => comparePaths(pathPair.path, change.path)) || [];
     change.fieldName = paths.length
         ? paths[0].fieldName

@@ -1,6 +1,6 @@
-import { CommonModule } from "@angular/common";
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
-import { RouterModule, Routes } from "@angular/router";
+import { CommonModule } from '@angular/common';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
 import { WhatsNewComponent } from 'system/public/components/whatsNew/whatsNew.component';
 
 const appRoutes: Routes = [

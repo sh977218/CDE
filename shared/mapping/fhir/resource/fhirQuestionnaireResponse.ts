@@ -3,7 +3,8 @@ import {
     FhirEncounter, FhirPatient, FhirQuestionnaire, FhirQuestionnaireResponse, FhirQuestionnaireResponseItem
 } from 'shared/mapping/fhir/fhirResource.model';
 
-export function newQuestionnaireResponse(patient?: FhirPatient, encounter?: FhirEncounter, questionnaire?: FhirQuestionnaire): FhirQuestionnaireResponse {
+export function newQuestionnaireResponse(patient?: FhirPatient, encounter?: FhirEncounter,
+                                         questionnaire?: FhirQuestionnaire): FhirQuestionnaireResponse {
     return {
         resourceType: 'QuestionnaireResponse',
         authored: encounter ? encounter.period && encounter.period.start : undefined,

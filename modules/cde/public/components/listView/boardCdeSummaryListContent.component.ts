@@ -1,18 +1,16 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-
 import { BoardListService } from 'board/public/components/listView/boardList.service';
 import { SummaryComponent } from 'search/listView/summaryListItem.component';
 import { Attachment } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
-
 
 @Component({
     selector: 'cde-board-cde-summary-list-content',
     templateUrl: './boardCdeSummaryListContent.component.html',
 })
 export class BoardCdeSummaryListContentComponent implements SummaryComponent {
-    @Input() elt: DataElement;
-    @Input() eltIndex: number;
+    @Input() elt!: DataElement;
+    @Input() eltIndex!: number;
     @Output() select = new EventEmitter<string>();
 
     defaultAttachmentsFilter = Attachment.isDefault;

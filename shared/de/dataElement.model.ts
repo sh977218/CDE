@@ -24,7 +24,7 @@ export class DataElement extends Elt {
     };
     dataSets: DataSet[] = []; // mutable
     derivationRules: DerivationRule[] = []; // mutable
-    elementType = 'cde';
+    elementType: 'cde' = 'cde';
     forkOf?: string;
     mappingSpecifications: { // mutable
         content?: string,
@@ -33,7 +33,7 @@ export class DataElement extends Elt {
     }[] = [];
     objectClass: Concepts = new Concepts(); // mutable
     property: Concepts = new Concepts(); // mutable
-    valueDomain: ValueDomain = new ValueDomain(); // mutable
+    valueDomain: ValueDomain = valueDomain() as ValueDomain; // mutable
     views?: number;
 
     static getEltUrl(elt: Elt) {
@@ -46,13 +46,17 @@ export class DataElement extends Elt {
         if (!Array.isArray(de.derivationRules)) {
             de.derivationRules = [];
         }
-        if (!de.valueDomain) de.valueDomain = new ValueDomain();
+        if (!de.valueDomain) {
+            de.valueDomain = valueDomain() as ValueDomain;
+        }
         fixDataElement(de);
         if (de.valueDomain.datatype === 'Date') {
-            if (!de.valueDomain.datatypeDate) de.valueDomain.datatypeDate = new QuestionTypeDate();
+            if (!de.valueDomain.datatypeDate) {
+                de.valueDomain.datatypeDate = new QuestionTypeDate();
+            }
             if (!de.valueDomain.datatypeDate.precision
-                || QuestionTypeDate.PrecisionEnum.indexOf(de.valueDomain.datatypeDate.precision) === -1) {
-                de.valueDomain.datatypeDate.precision = QuestionTypeDate.PrecisionDefault;
+                || QuestionTypeDate.PRECISION_ENUM.indexOf(de.valueDomain.datatypeDate.precision) === -1) {
+                de.valueDomain.datatypeDate.precision = QuestionTypeDate.PRECISION_DEFAULT;
             }
         }
     }
@@ -64,17 +68,18 @@ export class DataElementElastic extends DataElement { // all volatile
     highlight?: any;
     linkedForms?: string;
     primaryDefinitionCopy?: string;
-    primaryNameCopy?: string;
+    primaryNameCopy!: string;
     primaryNameSuggest?: string;
     score!: number;
+    valueDomain!: ValueDomain & {nbOfPVs: number};
 }
 
 export class QuestionTypeDate {
-    precision?: string = QuestionTypeDate.PrecisionDefault;
+    precision?: string = QuestionTypeDate.PRECISION_DEFAULT;
     format?: string;
 
-    static PrecisionEnum = ['Year', 'Month', 'Day', 'Hour', 'Minute', 'Second'];
-    static PrecisionDefault = 'Day';
+    static PRECISION_ENUM = ['Year', 'Month', 'Day', 'Hour', 'Minute', 'Second'];
+    static PRECISION_DEFAULT = 'Day';
 }
 
 export class QuestionTypeDynamicCodeList {
@@ -118,44 +123,115 @@ export class DataSet {
 }
 
 export type DataType =
-    'Value List'
-    | 'Date'
-    | 'Time'
+    'Date'
+    | 'Dynamic Code List'
+    | 'Externally Defined'
     | 'File'
     | 'Geo Location'
     | 'Number'
     | 'Text'
-    | 'Dynamic Code List'
-    | 'Externally Defined';
+    | 'Time'
+    | 'Value List';
 
-export const DataTypeArray = [
-    'Value List',
+export const DATA_TYPE_ARRAY = Object.freeze([
     'Date',
-    'Time',
+    'Dynamic Code List',
+    'Externally Defined',
     'File',
     'Geo Location',
     'Number',
     'Text',
-    'Dynamic Code List',
-    'Externally Defined'
-];
+    'Time',
+    'Value List'
+]);
 
-export class DatatypeContainer {
-    datatype: DataType = 'Text';  // require
-    datatypeDate?: QuestionTypeDate; // mutable
-    datatypeDynamicCodeList?: QuestionTypeDynamicCodeList; // mutable
-    datatypeExternallyDefined?: QuestionTypeExternallyDefined; // mutable
-    datatypeNumber?: QuestionTypeNumber; // mutable
-    datatypeText?: QuestionTypeText; // mutable
-    datatypeTime?: QuestionTypeTime;
-    datatypeValueList?: QuestionTypeValueList; // mutable, unused, along with 2 more such objects
+export interface DatatypeContainerDate {
+    datatype: 'Date';
+    datatypeDate: QuestionTypeDate;
 }
 
-export class ValueDomain extends DatatypeContainer {
+export interface DatatypeContainerDynamicList {
+    datatype: 'Dynamic Code List';
+    datatypeDynamicCodeList: QuestionTypeDynamicCodeList;
+}
+
+export interface DatatypeContainerExternal {
+    datatype: 'Externally Defined';
+    datatypeExternallyDefined: QuestionTypeExternallyDefined;
+}
+
+export interface DatatypeContainerFile {
+    datatype: 'File';
+}
+
+export interface DatatypeContainerGeo {
+    datatype: 'Geo Location';
+}
+
+export interface DatatypeContainerNumber {
+    datatype: 'Number';
+    datatypeNumber: QuestionTypeNumber;
+}
+
+export interface DatatypeContainerText {
+    datatype: 'Text';
+    datatypeText: QuestionTypeText;
+}
+
+export interface DatatypeContainerTime {
+    datatype: 'Time';
+    datatypeTime: QuestionTypeTime;
+}
+
+export interface DatatypeContainerValueList {
+    datatype: 'Value List';
+    datatypeValueList?: QuestionTypeValueList;
+}
+
+export type DatatypeContainer = DatatypeContainerDate
+    | DatatypeContainerDynamicList
+    | DatatypeContainerExternal
+    | DatatypeContainerFile
+    | DatatypeContainerGeo
+    | DatatypeContainerNumber
+    | DatatypeContainerText
+    | DatatypeContainerTime
+    | DatatypeContainerValueList;
+
+export type ValueDomain = ValueDomainValueList
+    | ValueDomainDate
+    | ValueDomainDynamicList
+    | ValueDomainExternal
+    | ValueDomainFile
+    | ValueDomainGeo
+    | ValueDomainNumber
+    | ValueDomainText
+    | ValueDomainTime;
+
+interface ValueDomainPart {
     definition?: string;
-    identifiers: CdeId[] = [];
-    ids: CdeId[] = [];
-    permissibleValues?: PermissibleValue[];
+    identifiers: CdeId[];
+    ids: CdeId[];
     uom?: string;
     vsacOid?: string;
+}
+
+export type ValueDomainDate = DatatypeContainerDate & ValueDomainPart;
+export type ValueDomainDynamicList = DatatypeContainerDynamicList & ValueDomainPart;
+export type ValueDomainExternal = DatatypeContainerExternal & ValueDomainPart;
+export type ValueDomainFile = DatatypeContainerFile & ValueDomainPart;
+export type ValueDomainGeo = DatatypeContainerGeo & ValueDomainPart;
+export type ValueDomainNumber = DatatypeContainerNumber & ValueDomainPart;
+export type ValueDomainText = DatatypeContainerText & ValueDomainPart;
+export type ValueDomainTime = DatatypeContainerTime & ValueDomainPart;
+export type ValueDomainValueList = DatatypeContainerValueList & ValueDomainPart & {
+    permissibleValues: PermissibleValue[];
+};
+
+export function valueDomain(): Partial<ValueDomain> {
+    return {
+        datatype: 'Text',
+        identifiers: [],
+        ids: [],
+    };
 }

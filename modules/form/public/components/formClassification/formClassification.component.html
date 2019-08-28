@@ -19,7 +19,7 @@
     </ng-container>
 </div>
 <cde-classify-item-modal #classifyItemComponent [modalTitle]="'Classify this Form'"
-                         (onEltSelected)="classifyItem($event)"></cde-classify-item-modal>
+                         (classified)="classifyItem($event)"></cde-classify-item-modal>
 <cde-classify-item-modal #classifyCdesComponent [modalTitle]="'Classify all CDEs in this Form'"
-                         (onEltSelected)="classifyAllCdesInForm($event)"></cde-classify-item-modal>
+                         (classified)="classifyAllCdesInForm($event)"></cde-classify-item-modal>
 

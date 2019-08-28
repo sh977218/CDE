@@ -3,12 +3,41 @@ import { findQuestionByTinyId, getFormScoreQuestions } from 'core/form/fe';
 import { CdeForm, FormQuestion } from 'shared/form/form.model';
 import { CbErr } from 'shared/models.model';
 
-interface ErrorOrScore {error?: string, sum?: number}
+interface ErrorOrScore {
+    error?: string;
+    sum?: number;
+}
 
 @Injectable()
 export class ScoreService {
     INPUT_SCORE_MAP!: Map<string, FormQuestion[]>;
     elt!: CdeForm;
+
+    register(elt: CdeForm) {
+        // register all scores used by one question tinyId
+        this.elt = elt;
+        this.INPUT_SCORE_MAP = new Map<string, FormQuestion[]>();
+        const formScoreQuestions = getFormScoreQuestions(elt);
+        formScoreQuestions.forEach(formScoreQuestion => {
+            formScoreQuestion.question.cde.derivationRules.forEach(derivationRule => {
+                derivationRule.inputs.forEach(cdeTinyId => {
+                    let scores = this.INPUT_SCORE_MAP.get(cdeTinyId);
+                    if (!scores) {
+                        scores = [];
+                        this.INPUT_SCORE_MAP.set(cdeTinyId, scores);
+                    }
+                    scores.push(formScoreQuestion);
+                });
+            });
+        });
+    }
+
+    triggerCalculateScore(question: FormQuestion) {
+        const scoreQuestions: FormQuestion[] | undefined = this.INPUT_SCORE_MAP.get(question.question.cde.tinyId);
+        if (scoreQuestions) {
+            scoreQuestions.forEach(scoreQuestion => ScoreService.scoreSet(scoreQuestion, this.elt));
+        }
+    }
 
     static calculateScore(question: FormQuestion, elt: CdeForm, cb: CbErr<number>) {
         if (!question.question.isScore) {
@@ -95,27 +124,5 @@ export class ScoreService {
     static ucumConverter(value: number, from?: string, to?: string) {
         return fetch('/ucumConvert?value=' + value + '&from=' + from + '&to=' + to)
             .then(res => res.json());
-    }
-
-    register(elt: CdeForm) {
-        // register all scores used by one question tinyId
-        this.elt = elt;
-        this.INPUT_SCORE_MAP = new Map<string, FormQuestion[]>();
-        const formScoreQuestions = getFormScoreQuestions(elt);
-        formScoreQuestions.forEach(formScoreQuestion => {
-            formScoreQuestion.question.cde.derivationRules.forEach(derivationRule => {
-                derivationRule.inputs.forEach(cdeTinyId => {
-                    if (!this.INPUT_SCORE_MAP.has(cdeTinyId)) { this.INPUT_SCORE_MAP.set(cdeTinyId, []); }
-                    this.INPUT_SCORE_MAP.get(cdeTinyId)!.push(formScoreQuestion);
-                });
-            });
-        });
-    }
-
-    triggerCalculateScore(question: FormQuestion) {
-        const scoreQuestions: FormQuestion[] | undefined = this.INPUT_SCORE_MAP.get(question.question.cde.tinyId);
-        if (scoreQuestions) {
-            scoreQuestions.forEach(scoreQuestion => ScoreService.scoreSet(scoreQuestion, this.elt));
-        }
     }
 }

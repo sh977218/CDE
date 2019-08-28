@@ -21,7 +21,7 @@
                             <mat-icon id="remove{{config.type}}-{{$index}}"
                                   (click)="removeConcept(config.type, $index)" title="Remove">delete_outline</mat-icon>
                             <cde-sortable-array [theArray]="elt[config.type].concepts" [index]="$index"
-                                                (cb)="onEltChange.emit()"></cde-sortable-array>
+                                                (cb)="eltChange.emit()"></cde-sortable-array>
                         </td>
                     </tr>
                 </table>

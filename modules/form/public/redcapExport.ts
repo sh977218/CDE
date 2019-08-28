@@ -1,9 +1,10 @@
-import { CdeForm } from 'shared/form/form.model';
+import { CdeForm, FormElement, FormElementsContainer, FormQuestion, FormSection } from 'shared/form/form.model';
 import _isEqual from 'lodash/isEqual';
 import _uniqWith from 'lodash/uniqWith';
 import { saveAs } from 'file-saver';
 import * as JSZip from 'jszip';
 import { Parser } from 'json2csv';
+import { Dictionary } from 'async';
 
 const json2csvParser = new Parser({
     fields: [
@@ -27,13 +28,13 @@ const json2csvParser = new Parser({
     ]
 });
 
-const field_type_map = {
+const datatTypeToRedcapDataType: Dictionary<string> = {
     Text: 'text',
     'Value List': 'radio',
     Number: 'text',
     Date: 'text'
 };
-const text_validation_type_map = {
+const datatTypeToRedcapValidationType: Dictionary<string> = {
     Text: '',
     'Value List': '',
     Number: 'number',
@@ -42,7 +43,7 @@ const text_validation_type_map = {
 
 export class RedcapExport {
 
-    static getZipRedCap(form) {
+    static getZipRedCap(form: CdeForm) {
         RedcapExport.oneLayerForm(form);
 
         const instrumentResult = RedcapExport.getRedCap(form);
@@ -52,7 +53,7 @@ export class RedcapExport {
         zip.file('InstrumentID.txt', form.tinyId);
         zip.file('instrument.csv', instrumentResult);
 
-        zip.generateAsync({type: 'blob'}).then(content => saveAs(content, form.designations[0].designation + '.zip'));
+        zip.generateAsync({type: 'blob'}).then((content: any) => saveAs(content, form.designations[0].designation + '.zip'));
     }
 
     /*
@@ -68,9 +69,9 @@ export class RedcapExport {
     |       Q4      |           |       Q4      |
     |---------------|           |---------------|
     */
-    static oneLayerForm(form) {
-        function doSection(sFormElement) {
-            let formElements = [];
+    static oneLayerForm(form: FormElementsContainer) {
+        function doSection(sFormElement: FormElementsContainer): FormElement[] {
+            let formElements: FormElement[] = [];
             for (const fe of sFormElement.formElements) {
                 if (fe.elementType === 'question') {
                     formElements.push(fe);
@@ -83,11 +84,12 @@ export class RedcapExport {
         }
 
 
-        const formElements = [];
-        let newSection = {
+        const formElements: FormElement[] = [];
+        let newSection: FormSection = {
             elementType: 'section',
             label: '',
-            formElements: []
+            formElements: [],
+            section: {},
         };
         for (const formElement of form.formElements) {
             const type = formElement.elementType;
@@ -99,7 +101,8 @@ export class RedcapExport {
                     newSection = {
                         elementType: 'section',
                         label: '',
-                        formElements: []
+                        formElements: [],
+                        section: {}
                     };
                 }
                 formElement.formElements = doSection(formElement);
@@ -109,8 +112,7 @@ export class RedcapExport {
         form.formElements = formElements;
     }
 
-
-    static formatSkipLogic(skipLogicString, map) {
+    static formatSkipLogic(skipLogicString: string, map: Dictionary<string>) {
         let redCapSkipLogic = skipLogicString;
         const _skipLogicString = skipLogicString.replace(/ AND /g, ' and ').replace(/ OR /g, ' or ');
         const foundEquationArray = _skipLogicString.match(/"([^"])+"/g);
@@ -127,11 +129,12 @@ export class RedcapExport {
 
 
     static getRedCap(form: CdeForm) {
-        const existingVariables = {};
-        const label_variables_map = {};
+        const existingVariables: Dictionary<number> = {};
+        const labelToVariablesMap: Dictionary<string> = {};
         let variableCounter = 1;
         let sectionsAsMatrix = form.displayProfiles && form.displayProfiles[0] && form.displayProfiles[0].sectionsAsMatrix;
-        const doSection = (formElement, i) => {
+
+        function oneLayerFormconvertSectionToRow(formElement: FormElement, i: number) {
             const sectionHeader = formElement.label ? formElement.label : '';
             const fieldLabel = formElement.instructions ? formElement.instructions.value : '';
             if (sectionsAsMatrix) {
@@ -140,7 +143,7 @@ export class RedcapExport {
             }
             let _sectionSkipLogic = '';
             const sectionSkipLogic = formElement.skipLogic ? formElement.skipLogic.condition : '';
-            if (sectionSkipLogic) { _sectionSkipLogic = RedcapExport.formatSkipLogic(sectionSkipLogic, label_variables_map); }
+            if (sectionSkipLogic) { _sectionSkipLogic = RedcapExport.formatSkipLogic(sectionSkipLogic, labelToVariablesMap); }
             return {
                 'Variable / Field Name': 'insect_' + i,
                 'Form Name': form.designations[0].designation,
@@ -160,12 +163,13 @@ export class RedcapExport {
                 'Matrix Group Name': sectionsAsMatrix ? sectionHeader : '',
                 'Matrix Ranking?': ''
             };
-        };
-        const doQuestion = formElement => {
+        }
+
+        function oneLayerFormconvertQuestionToRow(formElement: FormQuestion) {
             const q = formElement.question;
             let _questionSkipLogic = '';
             const questionSkipLogic = formElement.skipLogic ? formElement.skipLogic.condition : '';
-            if (questionSkipLogic) { _questionSkipLogic = this.formatSkipLogic(questionSkipLogic, label_variables_map); }
+            if (questionSkipLogic) { _questionSkipLogic = RedcapExport.formatSkipLogic(questionSkipLogic, labelToVariablesMap); }
             if (!q.cde.tinyId) { q.cde.tinyId = 'missing question cde'; }
             let variableName = 'nlmcde_' + form.tinyId.toLowerCase() + '_' +
                 variableCounter++ + '_' + q.cde.tinyId.toLowerCase();
@@ -174,11 +178,11 @@ export class RedcapExport {
                 const newVariableName = variableName + '_' + index;
                 existingVariables[variableName] = index++;
                 existingVariables[newVariableName] = 1;
-                label_variables_map[formElement.label] = variableName;
+                labelToVariablesMap[formElement.label || ''] = variableName;
                 variableName = newVariableName;
             } else {
                 existingVariables[variableName] = 1;
-                label_variables_map[formElement.label] = variableName;
+                labelToVariablesMap[formElement.label || ''] = variableName;
             }
 
             const fieldLabel = formElement.label;
@@ -186,13 +190,14 @@ export class RedcapExport {
                 'Variable / Field Name': variableName,
                 'Form Name': form.designations[0].designation,
                 'Section Header': '',
-                'Field Type': field_type_map[q.datatype],
+                'Field Type': datatTypeToRedcapDataType[q.datatype],
                 'Field Label': fieldLabel,
-                'Choices, Calculations, OR Slider Labels': (q.answers || []).map(a => a.permissibleValue + ',' + a.valueMeaningName).join('|'),
+                'Choices, Calculations, OR Slider Labels': (q.datatype === 'Value List' && q.answers || [])
+                    .map(a => a.permissibleValue + ',' + a.valueMeaningName).join('|'),
                 'Field Note': '',
-                'Text Validation Type OR Show Slider Number': text_validation_type_map[q.datatype],
-                'Text Validation Min': q.datatypeNumber ? q.datatypeNumber.minValue : '',
-                'Text Validation Max': q.datatypeNumber ? q.datatypeNumber.maxValue : '',
+                'Text Validation Type OR Show Slider Number': datatTypeToRedcapValidationType[q.datatype],
+                'Text Validation Min': q.datatype === 'Number' && q.datatypeNumber ? q.datatypeNumber.minValue : '',
+                'Text Validation Max': q.datatype === 'Number' && q.datatypeNumber ? q.datatypeNumber.maxValue : '',
                 'Identifier?': '',
                 'Branching Logic (Show field only if...)': _questionSkipLogic,
                 'Required Field?': q.required,
@@ -201,15 +206,15 @@ export class RedcapExport {
                 'Matrix Group Name': '',
                 'Matrix Ranking?': ''
             };
-        };
+        }
 
         const instrumentJsonRows = [];
         let sectionIndex = 0;
         for (const formElement of form.formElements) {
             sectionIndex++;
-            instrumentJsonRows.push(doSection(formElement, sectionIndex));
+            instrumentJsonRows.push(oneLayerFormconvertSectionToRow(formElement, sectionIndex));
             for (const fe of formElement.formElements) {
-                instrumentJsonRows.push(doQuestion(fe));
+                instrumentJsonRows.push(oneLayerFormconvertQuestionToRow(fe as FormQuestion));
             }
         }
         return json2csvParser.parse(instrumentJsonRows);

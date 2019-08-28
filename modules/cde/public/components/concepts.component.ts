@@ -1,25 +1,28 @@
 import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
 import { MatDialog, MatDialogRef } from '@angular/material';
+import { Router } from '@angular/router';
+import { assertUnreachable } from 'shared/models.model';
+
+type ConceptTypes = 'dataElementConcept' | 'objectClass' | 'property';
+
+interface Config {
+    type: ConceptTypes;
+    details: {
+        display: string,
+        path: string,
+    };
+}
 
 @Component({
     selector: 'cde-concepts',
     templateUrl: './concepts.component.html'
 })
 export class ConceptsComponent {
-
-    @ViewChild('newConceptContent') public newConceptContent: TemplateRef<any>;
-    public modalRef: MatDialogRef<TemplateRef<any>>;
     @Input() public elt: any;
     @Input() public canEdit = false;
-    @Output() onEltChange = new EventEmitter();
-
-    constructor(public dialog: MatDialog,
-                private router: Router) {}
-
-    newConcept: { name?: string, originId?: string, origin: string, type: string } = {origin: 'LOINC', type: 'dec'};
-
-    conceptConfigurations = [
+    @Output() eltChange = new EventEmitter();
+    @ViewChild('newConceptContent') newConceptContent!: TemplateRef<any>;
+    conceptConfigurations: Config[] = [
         {
             type: 'dataElementConcept',
             details: {display: 'Data Element Concept', path: 'dataElementConcept.concepts.name'}
@@ -32,6 +35,11 @@ export class ConceptsComponent {
             type: 'property',
             details: {display: 'Property', path: 'property.concepts.name'}
         }];
+    modalRef!: MatDialogRef<TemplateRef<any>>;
+    newConcept: { name?: string, originId?: string, origin: string, type: string } = {origin: 'LOINC', type: 'dec'};
+
+    constructor(public dialog: MatDialog,
+                private router: Router) {}
 
     addNewConcept() {
         if (!this.elt.dataElementConcept) { this.elt.dataElementConcept = {}; }
@@ -45,7 +53,7 @@ export class ConceptsComponent {
             if (!this.elt.objectClass.concepts) { this.elt.objectClass.concepts = []; }
             this.elt.objectClass.concepts.push(this.newConcept);
         }
-        this.onEltChange.emit();
+        this.eltChange.emit();
         this.modalRef.close();
     }
 
@@ -54,26 +62,38 @@ export class ConceptsComponent {
         this.modalRef = this.dialog.open(this.newConceptContent);
     }
 
-    dataElementConceptRemoveConcept(index) {
+    dataElementConceptRemoveConcept(index: number) {
         this.elt.dataElementConcept.concepts.splice(index, 1);
-        this.onEltChange.emit();
+        this.eltChange.emit();
     }
 
-    objectClassRemoveConcept(index) {
+    objectClassRemoveConcept(index: number) {
         this.elt.objectClass.concepts.splice(index, 1);
-        this.onEltChange.emit();
+        this.eltChange.emit();
     }
 
-    propertyRemoveConcept(index) {
+    propertyRemoveConcept(index: number) {
         this.elt.property.concepts.splice(index, 1);
-        this.onEltChange.emit();
+        this.eltChange.emit();
     }
 
-    relatedCdes(concept, config) {
+    relatedCdes(concept: string, config: Config) {
         this.router.navigate(['/cde/search'], {queryParams: {q: config.details.path + ':"' + concept + '"'}});
     }
 
-    removeConcept(type, i) {
-        this[type + 'RemoveConcept'](i);
+    removeConcept(type: ConceptTypes, i: number) {
+        switch (type) {
+            case 'dataElementConcept':
+                this.dataElementConceptRemoveConcept(i);
+                break;
+            case 'objectClass':
+                this.objectClassRemoveConcept(i);
+                break;
+            case 'property':
+                this.propertyRemoveConcept(i);
+                break;
+            default:
+                throw assertUnreachable(type);
+        }
     }
 }

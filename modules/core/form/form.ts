@@ -121,9 +121,9 @@ export function getFormOdm(form: CdeForm, cb: (error?: string, odm?: any) => voi
     const questions: any[] = [];
     const codeLists: any[] = [];
 
-    form.formElements.forEach(function(s1, si) {
+    form.formElements.forEach((s1, si) => {
         const childrenOids: string[] = [];
-        flattenFormElement(s1).forEach(function(q1, qi) {
+        flattenFormElement(s1).forEach((q1: any, qi) => {
             const oid = q1.question.cde.tinyId + '_s' + si + '_q' + qi;
             childrenOids.push(oid);
             const odmQuestion: any = {
@@ -139,13 +139,10 @@ export function getFormOdm(form: CdeForm, cb: (error?: string, odm?: any) => voi
             };
             if (q1.question.answers) {
                 let codeListAlreadyPresent = false;
-                codeLists.forEach(function(cl) {
-                    const codeListInHouse = cl.CodeListItem.map(function(i: any) {
-                        return i.Decode.TranslatedText._;
-                    }).sort();
-                    const codeListToAdd = (q1.question.answers || []).map(function(a) {
-                        return a.valueMeaningName;
-                    }).sort();
+                codeLists.forEach((cl) => {
+                    const codeListInHouse = cl.CodeListItem.map((i: any) => i.Decode.TranslatedText._).sort();
+                    const codeListToAdd = (q1.question.answers || [])
+                        .map((a: any) => a.valueMeaningName).sort();
                     if (JSON.stringify(codeListInHouse) === JSON.stringify(codeListToAdd)) {
                         odmQuestion.CodeListRef = {$CodeListOID: cl.$OID};
                         questions.push(odmQuestion);
@@ -161,7 +158,7 @@ export function getFormOdm(form: CdeForm, cb: (error?: string, odm?: any) => voi
                         $OID: 'CL_' + oid,
                         $Name: q1.label,
                     };
-                    codeList.CodeListItem = q1.question.answers.map(function(pv) {
+                    codeList.CodeListItem = q1.question.answers.map((pv: any) => {
                         const cl: any = {
                             $CodedValue: pv.permissibleValue,
                             Decode: {
@@ -200,7 +197,7 @@ export function getFormOdm(form: CdeForm, cb: (error?: string, odm?: any) => voi
                     _: s1.label
                 }
             },
-            ItemRef: childrenOids.map(function(oid, i) {
+            ItemRef: childrenOids.map((oid, i) => {
                 return {
                     $ItemOID: oid,
                     $Mandatory: 'Yes',
@@ -209,13 +206,13 @@ export function getFormOdm(form: CdeForm, cb: (error?: string, odm?: any) => voi
             })
         });
     });
-    sections.forEach(function(s) {
+    sections.forEach((s) => {
         odmJsonForm.Study.MetaDataVersion.ItemGroupDef.push(s);
     });
-    questions.forEach(function(s) {
+    questions.forEach((s) => {
         odmJsonForm.Study.MetaDataVersion.ItemDef.push(s);
     });
-    codeLists.forEach(function(cl) {
+    codeLists.forEach((cl) => {
         odmJsonForm.Study.MetaDataVersion.CodeList.push(cl);
     });
     cb(undefined, odmJsonForm);

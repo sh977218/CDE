@@ -10,10 +10,10 @@ import { OrgHelperService } from 'non-core/orgHelper.service';
     templateUrl: './deGeneralDetails.component.html'
 })
 export class DeGeneralDetailsComponent {
+    @Input() canEdit: boolean = false;
     @Input() elt: any;
-    @Input() canEdit;
-    @Output() onEltChange = new EventEmitter();
-    userOrgs = [];
+    @Output() eltChange = new EventEmitter();
+    userOrgs: string[] = [];
 
     constructor(
         public userService: UserService,
@@ -24,8 +24,8 @@ export class DeGeneralDetailsComponent {
         }, _noop);
     }
 
-    changeStewardOrg(event) {
+    changeStewardOrg(event: string) {
         this.elt.stewardOrg.name = event;
-        this.onEltChange.emit();
+        this.eltChange.emit();
     }
 }

@@ -7,11 +7,9 @@ import { Article } from 'core/article/article.model';
     templateUrl: 'whatsNew.component.html'
 })
 export class WhatsNewComponent {
-
-    article: Article = new Article();
+    article?: Article;
 
     constructor(private http: HttpClient) {
-        this.http.get<Article>("/server/article/whatsNew").subscribe(a => this.article = a);
+        this.http.get<Article>('/server/article/whatsNew').subscribe(a => this.article = a);
     }
-
 }

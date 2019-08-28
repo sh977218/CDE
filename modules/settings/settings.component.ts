@@ -1,7 +1,7 @@
 import { Component, HostListener, ViewChild } from '@angular/core';
+import { MatSidenav } from '@angular/material';
+import { Router } from '@angular/router';
 import { UserService } from '_app/user.service';
-import { Router } from "@angular/router";
-import { MatSidenav } from "@angular/material";
 
 @Component({
     templateUrl: './settings.component.html',
@@ -32,14 +32,8 @@ import { MatSidenav } from "@angular/material";
 })
 export class SettingsComponent {
     @ViewChild('drawer') drawer!: MatSidenav;
+    isMobile: boolean = (window.screen.width <= 575);
     opened: boolean = true;
-
-    isMobile: Boolean = (window.screen.width <= 575);
-
-    @HostListener('window:resize', ['$event'])
-    onResize() {
-        this.isMobile = (window.screen.width <= 575);
-    }
 
     constructor(private router: Router,
                 public userSvc: UserService) {
@@ -50,8 +44,12 @@ export class SettingsComponent {
         });
     }
 
+    @HostListener('window:resize', ['$event'])
+    onResize() {
+        this.isMobile = (window.screen.width <= 575);
+    }
+
     scrollTop() {
         window.scrollTo(0, 0);
     }
-
 }

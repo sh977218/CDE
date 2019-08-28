@@ -23,11 +23,12 @@ export class SiteAuditComponent implements OnInit {
 
     ngOnInit() {
         setTimeout(() => {
-            if (this.route.snapshot.queryParams['tab']) {
-                let tab = this.route.snapshot.queryParams['tab'];
-                if (tab === "serverErrors") {
+            if (this.route.snapshot.queryParams.tab) {
+                const tab = this.route.snapshot.queryParams.tab;
+                if (tab === 'serverErrors') {
                     this.selectedTab.setValue(this.serverErrorTab.position);
-                } if (tab === "clientErrors") {
+                }
+                if (tab === 'clientErrors') {
                     this.selectedTab.setValue(this.clientErrorTab.position);
                 }
             }

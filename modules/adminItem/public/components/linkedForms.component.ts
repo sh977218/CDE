@@ -2,8 +2,9 @@ import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { ElasticService } from '_app/elastic.service';
 import { FormSummaryListContentComponent } from 'form/public/components/listView/formSummaryListContent.component';
+import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm } from 'shared/form/form.model';
-import { ElasticQueryResponse } from 'shared/models.model';
+import { ElasticQueryResponseForm } from 'shared/models.model';
 import { SearchSettings } from 'search/search.model';
 
 @Component({
@@ -12,12 +13,11 @@ import { SearchSettings } from 'search/search.model';
 })
 
 export class LinkedFormsComponent {
-    @Input() public elt: any;
-    @ViewChild('linkedFormsContent') public linkedFormsContent: TemplateRef<any>;
-
-    forms: CdeForm[];
+    @Input() elt!: DataElement;
+    @ViewChild('linkedFormsContent') linkedFormsContent!: TemplateRef<any>;
+    dialogRef!: MatDialogRef<TemplateRef<any>>;
+    forms!: CdeForm[];
     formSummaryContentComponent = FormSummaryListContentComponent;
-    dialogRef: MatDialogRef<TemplateRef<any>>;
 
     constructor(private elasticService: ElasticService,
                 public dialog: MatDialog) {}
@@ -37,8 +37,9 @@ export class LinkedFormsComponent {
     openLinkedFormsModal() {
         const searchSettings = new SearchSettings();
         searchSettings.q = '"' + this.elt.tinyId + '"';
-        this.elasticService.generalSearchQuery(this.elasticService.buildElasticQuerySettings(searchSettings), 'form', (err?: string, result?: ElasticQueryResponse) => {
-            if (err) { return; }
+        this.elasticService.generalSearchQuery(this.elasticService.buildElasticQuerySettings(searchSettings), 'form',
+            (err?: string, result?: ElasticQueryResponseForm) => {
+            if (err || !result) { return; }
             this.forms = result.forms.filter(f => f.tinyId !== this.elt.tinyId);
             this.dialogRef = this.dialog.open(this.linkedFormsContent);
         });
@@ -47,5 +48,4 @@ export class LinkedFormsComponent {
     viewLinkedForms() {
         window.open('/form/search?q=' + this.elt.tinyId, '_blank');
     }
-
 }

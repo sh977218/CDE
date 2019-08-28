@@ -1,33 +1,34 @@
 import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material';
 import { AlertService } from 'alert/alert.service';
 import { IsAllowedService } from 'non-core/isAllowed.service';
-import { MergeCdeService } from 'non-core/mergeCde.service';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MergeCdeService, MergeFieldsDe } from 'non-core/mergeCde.service';
+import { DataElement } from 'shared/de/dataElement.model';
 
 @Component({
     selector: 'cde-merge-data-element',
     templateUrl: './mergeDataElement.component.html'
 })
 export class MergeDataElementComponent {
-    @Input() public source: any;
-    @Input() public destination: any;
-    @Output() doneMerge = new EventEmitter();
-    @ViewChild('mergeDataElementContent') public mergeDataElementContent: TemplateRef<any>;
+    @Input() source!: DataElement;
+    @Input() destination!: DataElement;
+    @Output() doneMerge = new EventEmitter<{left: DataElement, right: DataElement}>();
+    @ViewChild('mergeDataElementContent') mergeDataElementContent!: TemplateRef<any>;
     allow = true;
-    mergeFields: any = {
-        classifications: true,
-        ids: false,
-        designations: false,
-        definitions: false,
-        properties: false,
+    dialogRef!: MatDialogRef<TemplateRef<any>>;
+    mergeFields: MergeFieldsDe = {
         attachments: false,
-        sources: false,
-        referenceDocuments: false,
+        classifications: true,
         dataSets: false,
+        definitions: false,
         derivationRules: false,
-        retireCde: true
+        designations: false,
+        ids: false,
+        properties: false,
+        referenceDocuments: false,
+        retireCde: true,
+        sources: false
     };
-    dialogRef: MatDialogRef<TemplateRef<any>>;
 
     constructor(private alert: AlertService,
                 public isAllowedModel: IsAllowedService,
@@ -70,13 +71,13 @@ export class MergeDataElementComponent {
     doMerge() {
         const tinyIdFrom = this.source.tinyId;
         const tinyIdTo = this.destination.tinyId;
-        this.mergeCdeService.doMerge(tinyIdFrom, tinyIdTo, this.mergeFields, (err, results) => {
-            if (err) { return this.alert.addAlert('danger', 'Unexpected error merging CDEs'); }
-            else {
-                this.alert.addAlert('success', 'Finished merging');
-                this.doneMerge.emit({left: results[0], right: results[1]});
-                this.dialogRef.close();
+        this.mergeCdeService.doMerge(tinyIdFrom, tinyIdTo, this.mergeFields, (err?: string, results?: [DataElement, DataElement]) => {
+            if (err || !results) {
+                return this.alert.addAlert('danger', 'Unexpected error merging CDEs');
             }
+            this.alert.addAlert('success', 'Finished merging');
+            this.doneMerge.emit({left: results[0], right: results[1]});
+            this.dialogRef.close();
         });
     }
 

@@ -19,7 +19,7 @@ let pinSchema = new Schema({
     tinyId: StringType,
     type: {type: StringType, default: 'cde', enum: ['cde', 'form']},
     pinnedDate: Date,
-});
+}, {_id: false});
 
 let pinningBoardSchema = new Schema({
     name: StringType,

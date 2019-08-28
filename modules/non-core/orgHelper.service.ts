@@ -6,7 +6,9 @@ import { UserService } from '_app/user.service';
 import { CbErr, Elt, Organization, StatusValidationRules } from 'shared/models.model';
 import { isOrgCurator } from 'shared/system/authorizationShared';
 
-interface OrgDetailedInfo {[org: string]: Organization}
+interface OrgDetailedInfo {
+    [org: string]: Organization;
+}
 
 @Injectable()
 export class OrgHelperService {
@@ -21,11 +23,13 @@ export class OrgHelperService {
     }
 
     addLongNameToOrgs(buckets: any) {
-        buckets && buckets.forEach( (v: any) => {
-            if (this.orgsDetailedInfo[v.key] && this.orgsDetailedInfo[v.key].longName) {
-                v.longName = this.orgsDetailedInfo[v.key].longName;
-            }
-        });
+        if (buckets) {
+            buckets.forEach( (v: any) => {
+                if (this.orgsDetailedInfo[v.key] && this.orgsDetailedInfo[v.key].longName) {
+                    v.longName = this.orgsDetailedInfo[v.key].longName;
+                }
+            });
+        }
     }
 
     catch(cb: CbErr): Promise<any> {

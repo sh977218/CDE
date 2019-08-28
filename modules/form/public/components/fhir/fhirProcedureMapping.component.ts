@@ -4,22 +4,16 @@ import './fhirMapping.scss';
 import { FhirProcedureMapping, FormQuestion } from 'shared/form/form.model';
 
 @Component({
-    selector: 'cde-fhir-procedure-mappin',
     templateUrl: './fhirProcedureMapping.component.html',
 })
 export class FhirProcedureMappingComponent {
-
-    @Output() onChanged = new EventEmitter();
-    @Output() onClosed = new EventEmitter();
-
-    questions: FormQuestion[];
     dateQuestions: FormQuestion[];
+    mapping: FhirProcedureMapping;
+    questions: FormQuestion[];
+    usedRefs!: FormQuestion;
     valueListQuestions: FormQuestion[];
 
-    mapping: FhirProcedureMapping;
-    usedRefs: FormQuestion;
-
-    constructor(@Inject(MAT_DIALOG_DATA) data) {
+    constructor(@Inject(MAT_DIALOG_DATA) data: any) {
         this.questions = data.questions;
         this.dateQuestions = this.questions.filter(q => q.question.datatype === 'Date');
         this.valueListQuestions = this.questions.filter(q => q.question.datatype === 'Value List');
@@ -30,15 +24,16 @@ export class FhirProcedureMappingComponent {
 
     }
 
-    initRefMaps(usedRefs) {
+    initRefMaps(usedRefs: FormQuestion) {
         if (usedRefs) {
-            this.mapping.usedReferencesMaps = new Array(usedRefs.question.cde.permissibleValues.length);
+            this.mapping.usedReferencesMaps = new Array(usedRefs.question.datatype === 'Value List'
+                ? usedRefs.question.cde.permissibleValues.length : 0);
             this.mapping.usedReferences = usedRefs.question.cde.tinyId;
         }
     }
 
     isTinyIdSingleSelect(tinyId: string): boolean {
         const match = this.questions.filter(q => q.question.cde.tinyId === tinyId);
-        return !!match.length && !match[0].question.multiselect;
+        return !match.length || match[0].question.datatype !== 'Value List' || !match[0].question.multiselect;
     }
 }

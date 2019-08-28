@@ -10,9 +10,9 @@ import { DataElement } from 'shared/de/dataElement.model';
 })
 export class BoardCdeSummaryListComponent implements DoCheck, OnChanges, OnInit {
     @Input() board: any;
-    @Input() currentPage: number;
-    @Input() elts: DataElement[];
-    @Input() totalItems: number;
+    @Input() currentPage!: number;
+    @Input() elts!: DataElement[];
+    @Input() totalItems!: number;
     @Output() reload: EventEmitter<any> = new EventEmitter();
 
     summaryComponent = BoardCdeSummaryListContentComponent;

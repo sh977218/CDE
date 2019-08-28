@@ -36,16 +36,14 @@ export class UserService {
     clear() {
         this.user = undefined;
         this.userOrgs.length = 0;
-        if (this.mailSubscription) this.mailSubscription.unsubscribe();
+        if (this.mailSubscription) {
+            this.mailSubscription.unsubscribe();
+        }
         this.mailSubscription = undefined;
     }
 
-    static getEltLink(c: Comment) {
-        return uriView(c.element!.eltType!, c.element!.eltId!);
-    }
-
-    loggedIn() {
-        return !!this.user;
+    loggedIn(): User | undefined {
+        return this.user;
     }
 
     isOrgCurator = () => isOrgCurator(this.user);
@@ -74,9 +72,13 @@ export class UserService {
     setOrganizations() {
         if (this.user && this.user.orgAdmin) {
             this.userOrgs = this.user.orgAdmin.slice(0);
-            this.user.orgCurator && this.user.orgCurator.forEach(c => {
-                if (this.userOrgs.indexOf(c) < 0) this.userOrgs.push(c);
-            });
+            if (this.user.orgCurator) {
+                this.user.orgCurator.forEach(c => {
+                    if (this.userOrgs.indexOf(c) < 0) {
+                        this.userOrgs.push(c);
+                    }
+                });
+            }
         }
     }
 
@@ -104,17 +106,29 @@ export class UserService {
     }
 
     static validate(user: User) {
-        if (!user.orgAdmin) user.orgAdmin = [];
-        if (!user.orgCurator) user.orgCurator = [];
-        if (!user.notificationSettings) user.notificationSettings = newNotificationSettings();
+        if (!user.orgAdmin) {
+            user.orgAdmin = [];
+        }
+        if (!user.orgCurator) {
+            user.orgCurator = [];
+        }
+        if (!user.notificationSettings) {
+            user.notificationSettings = newNotificationSettings();
+        }
         if (!user.notificationSettings.approvalAttachment && hasRole(user, 'AttachmentReviewer')) {
             user.notificationSettings.approvalAttachment = newNotificationSettingsMediaDrawer();
         }
         if (!user.notificationSettings.approvalComment && hasRole(user, 'CommentReviewer')) {
             user.notificationSettings.approvalComment = newNotificationSettingsMediaDrawer();
         }
-        if (!user.notificationSettings.comment) user.notificationSettings.comment = newNotificationSettingsMediaDrawer();
+        if (!user.notificationSettings.comment) {
+            user.notificationSettings.comment = newNotificationSettingsMediaDrawer();
+        }
         return user;
+    }
+
+    static getEltLink(c: Comment) {
+        return uriView(c.element.eltType, c.element.eltId);
     }
 }
 

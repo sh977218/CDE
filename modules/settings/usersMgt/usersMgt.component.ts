@@ -15,10 +15,10 @@ export class UsersMgtComponent {
     @ViewChild('newUserContent') newUserContent!: TemplateRef<any>;
     foundUsers: any[] = [];
     newUsername = '';
-    search: any = {username: ''};
+    search: {username: User | string} = {username: ''};
     rolesEnum = rolesEnum;
 
-    constructor(private Alert: AlertService,
+    constructor(private alert: AlertService,
                 private http: HttpClient,
                 public dialog: MatDialog,
                 public userService: UserService) {
@@ -28,23 +28,24 @@ export class UsersMgtComponent {
         this.dialog.open(this.newUserContent, {width: '800px'}).afterClosed().subscribe(res => {
             if (res) {
                 this.http.post('/server/user/addUser', {username: this.newUsername}, {responseType: 'text'}).subscribe(
-                    () => this.Alert.addAlert('success', 'User created'),
-                    () => this.Alert.addAlert('danger', 'Cannot create user. Does it already exist?')
+                    () => this.alert.addAlert('success', 'User created'),
+                    () => this.alert.addAlert('danger', 'Cannot create user. Does it already exist?')
                 );
             }
         });
     }
 
     searchUsers() {
-        let uname = this.search.username.username ? this.search.username.username : this.search.username;
-        this.http.get<User[]>('/server/user/searchUsers/' + uname).subscribe(users => this.foundUsers = users);
+        this.http.get<User[]>('/server/user/searchUsers/'
+            + (typeof(this.search.username) === 'object' && this.search.username.username || this.search.username)
+        ).subscribe(users => this.foundUsers = users);
     }
 
     updateAvatar(user: User) {
-        this.http.post('/updateUserAvatar', user).subscribe(() => this.Alert.addAlert('success', 'Saved.'));
+        this.http.post('/updateUserAvatar', user).subscribe(() => this.alert.addAlert('success', 'Saved.'));
     }
 
     updateRoles(user: User) {
-        this.http.post('/updateUserRoles', user).subscribe(() => this.Alert.addAlert('success', 'Roles saved.'));
+        this.http.post('/updateUserRoles', user).subscribe(() => this.alert.addAlert('success', 'Roles saved.'));
     }
 }

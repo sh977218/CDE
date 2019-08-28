@@ -8,7 +8,7 @@ import { Article } from 'core/article/article.model';
     templateUrl: './resourcesAdmin.component.html'
 })
 export class ResourcesAdminComponent {
-    resource?: Article;
+    resource!: Partial<Article>;
 
     constructor(private http: HttpClient,
                 private alertSvc: AlertService) {
@@ -25,12 +25,16 @@ export class ResourcesAdminComponent {
 
     upload(event: Event) {
         if (event.srcElement && (event.srcElement as HTMLInputElement).files) {
-            let files = (event.srcElement as HTMLInputElement).files;
-            let formData = new FormData();
-            for (let i = 0; i < files!.length; i++) {
-                formData.append('uploadedFiles', files![i]);
+            const files = (event.srcElement as HTMLInputElement).files;
+            const formData = new FormData();
+            if (files) {
+                /* tslint:disable */
+                for (let i = 0; i < files.length; i++) {
+                    formData.append('uploadedFiles', files[i]);
+                }
+                /* tslint:disable */
             }
-            formData.append('id', this.resource!._id!);
+            formData.append('id', this.resource._id || '');
             this.http.post<Article>('/server/attachment/article/add', formData).subscribe(
                 res => this.resource = res,
                 () => this.alertSvc.addAlert('danger', 'Unexpected error attaching'));
@@ -40,7 +44,7 @@ export class ResourcesAdminComponent {
     removeAttachment(event: number) {
         this.http.post<Article>('/server/attachment/article/remove', {
             index: event,
-            id: this.resource!._id
+            id: this.resource._id
         }).subscribe(res => {
             this.resource = res;
             this.alertSvc.addAlert('success', 'Attachment Removed.');
