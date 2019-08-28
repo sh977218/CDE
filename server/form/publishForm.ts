@@ -35,7 +35,7 @@ export function getFormForPublishing(form, req, res) {
                 const content = readFileSync(`dist/${cssFileName}`);
                 lines[i] = `<style type="text/css">${content}</style>`;
             }
-            if (l.includes("deferCss('") && l.includes('.css')) {
+            if (l.includes("deferCss('/")) {
                 cssFileName = l.substring(l.indexOf("deferCss('") + 10, l.indexOf(".css'") + 4);
                 const content = readFileSync(`dist/${cssFileName}`);
                 lines.splice(headIndex, 0, `<style type="text/css">${content}</style>`);
