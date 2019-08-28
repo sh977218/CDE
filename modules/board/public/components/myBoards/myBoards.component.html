@@ -57,8 +57,8 @@
         <div class="col-lg-10 col-8 dragDiv" id="my-board-container">
             <div class="row">
                 <div *ngFor="let board of myBoardsSvc.boards" class="col-xl-4 col-lg-4 col-sm-6 col-12 ">
-                    <cde-board-view-template [board]="board" [canEdit]="true" (onSave)="saveBoard($event)"
-                                             (onDelete)="deleteBoard($event);"></cde-board-view-template>
+                    <cde-board-view-template [board]="board" [canEdit]="true" (saved)="saveBoard($event)"
+                                             (deleted)="deleteBoard($event);"></cde-board-view-template>
                 </div>
             </div>
         </div>

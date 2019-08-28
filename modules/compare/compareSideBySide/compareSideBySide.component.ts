@@ -12,10 +12,40 @@ import _isArray from 'lodash/isArray';
 import _isEmpty from 'lodash/isEmpty';
 import _isEqual from 'lodash/isEqual';
 import { forkJoin } from 'rxjs/observable/forkJoin';
+import { DataElement } from 'shared/de/dataElement.model';
+import { Cb, Item } from 'shared/models.model';
+import { CdeForm, FormElement, FormElementsContainer, FormQuestion } from 'shared/form/form.model';
 
-const URL_MAP = {
+export type CompareQuestion = FormQuestion & {info?: {error?: string, match?: boolean}, isRetired?: boolean};
+export type CompareForm = CdeForm & {questions: CompareQuestion[]};
+export type CompareItem = DataElement | CompareForm;
+
+interface CompareOption {
+    displayAs: {
+        data: Data[],
+        display?: boolean,
+        label: string,
+        property: string,
+    };
+    fullMatches: {left: any, right: any}[];
+    fullMatchFn: (a: any, b: any) => boolean;
+    leftNotMatches: {left: any, right: any}[];
+    notMatchFn: (a: any, b: any) => boolean;
+    partialMatches: {left: any, right: any, diff: {}}[];
+    partialMatchFn: (a: any, b: any) => string[];
+    rightNotMatches: {left: any, right: any}[];
+}
+
+interface Data {
+    label: string;
+    properties?: Data;
+    property: string;
+    url?: string;
+}
+
+const URL_MAP: {[module: string]: string} = {
     cde: '/de/',
-    form: '/form/'
+    form: '/form/',
 };
 
 @Component({
@@ -49,14 +79,13 @@ const URL_MAP = {
     `]
 })
 export class CompareSideBySideComponent {
-
-    @ViewChild('compareSideBySideContent') public compareSideBySideContent: TemplateRef<any>;
-    @Input() elements: any = [];
-    options = [];
-    leftUrl;
-    rightUrl;
-    left;
-    right;
+    @Input() elements: Item[] = [];
+    @ViewChild('compareSideBySideContent') public compareSideBySideContent!: TemplateRef<any>;
+    options: CompareOption[] = [];
+    leftUrl?: string;
+    rightUrl?: string;
+    left?: CompareItem;
+    right?: CompareItem;
     canMergeForm = false;
     canMergeDataElement = false;
 
@@ -67,25 +96,25 @@ export class CompareSideBySideComponent {
                 public quickBoardService: QuickBoardListService) {
     }
 
-    doneMerge(event) {
+    doneMerge(event: {left: CompareItem, right: CompareItem}) {
         this.left = event.left;
         this.right = event.right;
         this.doCompare(this.left, this.right, () => {
         });
     }
 
-    doCompare(l, r, cb) {
+    doCompare(l: Item, r: Item, cb: Cb) {
         const leftObservable = this.http.get(URL_MAP[l.elementType] + l.tinyId);
         const rightObservable = this.http.get(URL_MAP[r.elementType] + r.tinyId);
-        forkJoin([leftObservable, rightObservable]).subscribe(results => {
-            this.left = results[0] as any;
-            this.right = results[1] as any;
-            if (this.left.elementType === 'form') {
-                this.left.questions = this.flatFormQuestions(this.left);
+        forkJoin([leftObservable, rightObservable]).subscribe((results: [any, any]) => {
+            if (results[0].elementType === 'form') {
+                results[0].questions = this.flatFormQuestions(results[0]);
             }
-            if (this.right.elementType === 'form') {
-                this.right.questions = this.flatFormQuestions(this.right);
+            if (results[1].elementType === 'form') {
+                results[1].questions = this.flatFormQuestions(results[1]);
             }
+            this.left = results[0] as CompareItem;
+            this.right = results[1] as CompareItem;
             this.getOptions(this.left, this.right);
             this.options.forEach(option => {
                 let l = _get(this.left, option.displayAs.property);
@@ -103,6 +132,7 @@ export class CompareSideBySideComponent {
                         option.fullMatches.push({left: a, right: b});
                         return true;
                     }
+                    return false;
                 });
                 _intersectionWith(l, r, (a, b) => {
                     const partialMatchDiff = option.partialMatchFn(a, b);
@@ -111,6 +141,7 @@ export class CompareSideBySideComponent {
                         option.partialMatches.push({left: a, right: b, diff: partialMatchDiff});
                         return true;
                     }
+                    return false;
                 });
                 option.leftNotMatches = _differenceWith(l, r, option.notMatchFn);
                 option.rightNotMatches = _differenceWith(r, l, option.notMatchFn);
@@ -122,22 +153,24 @@ export class CompareSideBySideComponent {
         }, err => this.alert.httpErrorMessageAlert(err));
     }
 
-    flatFormQuestions(fe) {
-        let questions = [];
+    flatFormQuestions(fe: FormElementsContainer): FormQuestion[] {
+        let questions: FormQuestion[] = [];
         if (fe.formElements) {
-            fe.formElements.forEach(e => {
+            fe.formElements.forEach((e: FormElement) => {
                 if (e.elementType && e.elementType === 'question') {
                     delete e.formElements;
                     delete e._id;
                     questions.push(_cloneDeep(e));
-                } else { questions = questions.concat(this.flatFormQuestions(e)); }
+                } else {
+                    questions = questions.concat(this.flatFormQuestions(e));
+                }
             });
         }
         return questions;
     }
 
-    getOptions(left, right) {
-        const commonOption = [
+    getOptions(left: CompareItem, right: CompareItem) {
+        const commonOption: CompareOption[] = [
             {
                 displayAs: {
                     label: 'Steward',
@@ -310,7 +343,7 @@ export class CompareSideBySideComponent {
             }
         ];
 
-        const dataElementOption = [
+        const dataElementOption: CompareOption[] = [
             {
                 displayAs: {
                     label: 'Data Element Concept',
@@ -560,7 +593,7 @@ export class CompareSideBySideComponent {
                 rightNotMatches: []
             }
         ];
-        const formOption = [
+        const formOption: CompareOption[] = [
             {
                 displayAs: {
                     label: 'Questions',
@@ -615,15 +648,22 @@ export class CompareSideBySideComponent {
             this.isAllowedModel.isAllowed(right);
     }
 
-    getValue(o, d) {
+    getValue(o: any, d: Data): string | undefined {
         const value = _get(o, d.property);
-        if (!value) { return; }
-        if (d.url) { return '<a target="_blank" href="' + d.url + value + '">' + value + '</a>'; } else if (d.properties) {
-            const v = value.map(v => _get(v, d.properties.property));
+        if (!value) {
+            return;
+        }
+        if (d.url) {
+            return '<a target="_blank" href="' + d.url + value + '">' + value + '</a>';
+        } else if (d.properties) {
+            const properties = d.properties;
+            const v = value.map((v: any) => _get(v, properties.property));
             if (!_isEmpty(v)) { return d.properties.label + ': ' + v; } else { return ''; }
         } else if (_isArray(value)) {
             return JSON.stringify(value);
-        } else { return value; }
+        } else {
+            return value;
+        }
     }
 
     openCompareSideBySideContent() {

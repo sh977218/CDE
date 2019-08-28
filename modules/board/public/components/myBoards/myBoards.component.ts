@@ -4,6 +4,7 @@ import { Component } from '@angular/core';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
 import { MyBoardsService } from 'board/public/myBoards.service';
+import { Board } from 'shared/models.model';
 
 @Component({
     selector: 'cde-my-boards',
@@ -17,7 +18,7 @@ export class MyBoardsComponent {
         this.myBoardsSvc.loadMyBoards();
     }
 
-    saveBoard(board) {
+    saveBoard(board: Board) {
         this.http.post('/server/board/', board, {responseType: 'text'}).subscribe(() => {
             this.myBoardsSvc.waitAndReload(() => {
                 this.alert.addAlert('success', 'Saved.');
@@ -25,7 +26,7 @@ export class MyBoardsComponent {
         }, err => this.alert.httpErrorMessageAlert(err));
     }
 
-    deleteBoard(board) {
+    deleteBoard(board: Board) {
         this.http.delete('/server/board/' + board._id, {responseType: 'text'}).subscribe(() => {
             this.myBoardsSvc.waitAndReload(() => {
                 this.alert.addAlert('success', 'Deleted.');
@@ -34,7 +35,7 @@ export class MyBoardsComponent {
     }
 
 
-    selectAggregation(aggName, $index) {
+    selectAggregation(aggName: string, $index: string) {
         this.myBoardsSvc.filter[aggName][$index].checked = !this.myBoardsSvc.filter[aggName][$index].checked;
         this.myBoardsSvc.loadMyBoards();
     }

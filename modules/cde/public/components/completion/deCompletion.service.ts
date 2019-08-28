@@ -1,18 +1,18 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { ElasticService } from '_app/elastic.service';
+import { AlertService } from 'alert/alert.service';
+import { SearchSettings } from 'search/search.model';
 import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
-
-import { AlertService } from 'alert/alert.service';
-import { ElasticService } from '_app/elastic.service';
-import { SearchSettings } from 'search/search.model';
 import { Subject } from 'rxjs/Subject';
+import { DataElement } from 'shared/de/dataElement.model';
 
 @Injectable()
 export class DeCompletionService {
-    private searchSettings = new SearchSettings;
+    private searchSettings = new SearchSettings();
     private searchTerms = new Subject<string>();
-    suggestedCdes = [];
+    suggestedCdes: DataElement[] = [];
 
     constructor(private alert: AlertService,
                 private elasticService: ElasticService,
@@ -40,7 +40,7 @@ export class DeCompletionService {
         });
     }
 
-    next(term) {
+    next(term: string) {
         this.searchTerms.next(term);
     }
 }

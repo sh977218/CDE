@@ -1,8 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
-
-import { AlertService } from 'alert/alert.service';
 import { UserService } from '_app/user.service';
+import { AlertService } from 'alert/alert.service';
 import { PublishedForm, User } from 'shared/models.model';
 
 @Component({
@@ -10,17 +9,18 @@ import { PublishedForm, User } from 'shared/models.model';
     templateUrl: 'myPublishedForms.component.html'
 })
 export class MyPublishedFormsComponent {
-    user?: User;
+    user!: User;
 
     constructor(private http: HttpClient,
                 private alert: AlertService,
                 private userService: UserService) {
-        this.user = this.userService.user;
+        if (this.userService.user) {
+            this.user = this.userService.user;
+        }
     }
 
     removePublishedForm(pf: PublishedForm) {
-        this.user!.publishedForms = this.user!.publishedForms ? this.user!.publishedForms!.filter(p =>
-            p._id !== pf._id) : [];
+        this.user.publishedForms = this.user.publishedForms ? this.user.publishedForms.filter(p => p._id !== pf._id) : [];
         this.saveProfile();
     }
 

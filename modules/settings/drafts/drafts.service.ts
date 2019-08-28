@@ -19,5 +19,4 @@ export class DraftsService {
     allDrafts() {
         return this.http.get<Article>('/allDrafts');
     }
-
 }

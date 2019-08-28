@@ -138,6 +138,10 @@ export class FhirReference<T> {
     reference?: string;
 }
 
+export type FhirReferenceValid<T> = FhirReference<T> & {
+    reference: string;
+};
+
 export class FhirSampledData extends FhirElementBase {
     data!: string;
     dimensions: number = NaN; // unsigned int >0

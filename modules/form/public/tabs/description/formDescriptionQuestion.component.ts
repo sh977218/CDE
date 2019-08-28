@@ -1,15 +1,14 @@
 import { Component, EventEmitter, Host, Input, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material';
 import { TreeNode } from 'angular-tree-component';
+import { DataElementService } from 'cde/public/dataElement.service';
+import { FormDescriptionComponent } from 'form/public/tabs/description/formDescription.component';
 import _isEqual from 'lodash/isEqual';
 import _noop from 'lodash/noop';
 import _toString from 'lodash/toString';
-
-import { DataElementService } from 'cde/public/dataElement.service';
-import { FormDescriptionComponent } from 'form/public/tabs/description/formDescription.component';
 import { FormService } from 'nativeRender/form.service';
-import { DataElement } from 'shared/de/dataElement.model';
-import { FormElement, FormQuestion } from 'shared/form/form.model';
-import { MatDialog } from '@angular/material';
+import { DataElement, DataType } from 'shared/de/dataElement.model';
+import { FormElement, FormQuestion, QuestionValueList } from 'shared/form/form.model';
 
 @Component({
     selector: 'cde-form-description-question',
@@ -24,20 +23,14 @@ import { MatDialog } from '@angular/material';
 })
 export class FormDescriptionQuestionComponent implements OnInit {
     @Input() canEdit = false;
-    @Input() index;
-    @Input() node: TreeNode;
+    @Input() index!: number;
+    @Input() node!: TreeNode;
     @Output() stageElt: EventEmitter<void> = new EventEmitter<void>();
-    @ViewChild('updateCdeVersionTmpl') updateCdeVersionTmpl: TemplateRef<any>;
+    @ViewChild('updateCdeVersionTmpl') updateCdeVersionTmpl!: TemplateRef<any>;
     isSubForm = false;
-    parent: FormElement;
-    question: FormQuestion;
+    parent!: FormElement;
+    question!: FormQuestion;
     updateCdeVersion: any;
-
-    ngOnInit() {
-        this.question = this.node.data;
-        this.parent = this.node.parent.data;
-        this.isSubForm = FormDescriptionComponent.isSubForm(this.node);
-    }
 
     constructor(
         @Host() public formDescriptionComponent: FormDescriptionComponent,
@@ -45,41 +38,45 @@ export class FormDescriptionQuestionComponent implements OnInit {
     ) {
     }
 
-    editQuestion(question) {
+    ngOnInit() {
+        this.question = this.node.data;
+        this.parent = this.node.parent.data;
+        this.isSubForm = FormDescriptionComponent.isSubForm(this.node);
+    }
+
+    editQuestion(q: FormQuestion) {
         if (!this.isSubForm && this.canEdit) {
-            question.edit = !question.edit;
-            this.formDescriptionComponent.setCurrentEditing(this.parent.formElements, question, this.index);
+            q.edit = !q.edit;
+            this.formDescriptionComponent.setCurrentEditing(this.parent.formElements, q, this.index);
         }
     }
 
-    hoverInQuestion(question) {
+    hoverInQuestion(q: FormQuestion) {
         if (!this.isSubForm && this.canEdit) {
-            question.hover = true;
+            q.hover = true;
         }
     }
 
-    hoverOutQuestion(question) {
+    hoverOutQuestion(q: FormQuestion) {
         if (!this.isSubForm && this.canEdit) {
-            question.hover = false;
+            q.hover = false;
         }
     }
 
-    getDatatypeLabel(question) {
-        const datatype = question.question.datatype;
-        if (!datatype) { return ''; }
-        else if (datatype === 'Number') {
-            return '(Number)';
-        } else if (datatype === 'Date') {
-            return '(Date)';
-        } else if (datatype === 'Geo Location') {
-            return '(Geo Location)';
-        } else if (datatype === 'Dynamic Code List') {
-            return '(Dynamic Code List)';
-        } else { return ''; }
-    }
-
-    isScore(formElt) {
-        return formElt.question.cde.derivationRules && formElt.question.cde.derivationRules.length > 0;
+    getDatatypeLabel(q: FormQuestion) {
+        const datatype: DataType | undefined = q.question.datatype;
+        switch (datatype) {
+            case 'Date':
+                return '(Date)';
+            case 'Dynamic Code List':
+                return '(Dynamic Code List)';
+            case 'Geo Location':
+                return '(Geo Location)';
+            case 'Number':
+                return '(Number)';
+            default:
+                return '';
+        }
     }
 
     openUpdateCdeVersion(question: FormQuestion) {
@@ -87,7 +84,9 @@ export class FormDescriptionQuestionComponent implements OnInit {
             const oldVersion = question.question.cde.version ? question.question.cde.version : '';
             DataElementService.fetchDe(question.question.cde.tinyId, oldVersion).then(oldCde => {
                 FormService.convertCdeToQuestion(newCde, newQuestion => {
-                    this.openUpdateCdeVersionMerge(newQuestion, question, newCde, oldCde);
+                    if (newQuestion) {
+                        this.openUpdateCdeVersionMerge(newQuestion, question, newCde, oldCde);
+                    }
                 });
             });
         });
@@ -97,7 +96,9 @@ export class FormDescriptionQuestionComponent implements OnInit {
         newQuestion.instructions = currentQuestion.instructions;
         newQuestion.question.editable = currentQuestion.question.editable;
         newQuestion.question.invisible = currentQuestion.question.invisible;
-        newQuestion.question.multiselect = currentQuestion.question.multiselect;
+        if (currentQuestion.question.datatype === 'Value List') {
+            (newQuestion.question as QuestionValueList).multiselect = currentQuestion.question.multiselect;
+        }
         newQuestion.question.required = currentQuestion.question.required;
         newQuestion.question.unitsOfMeasure =
             newQuestion.question.unitsOfMeasure.length && currentQuestion.question.unitsOfMeasure.filter(
@@ -165,7 +166,7 @@ export class FormDescriptionQuestionComponent implements OnInit {
         }, _noop);
     }
 
-    removeNode(node) {
+    removeNode(node: TreeNode) {
         node.parent.data.formElements.splice(node.parent.data.formElements.indexOf(node.data), 1);
         node.treeModel.update();
         this.stageElt.emit();

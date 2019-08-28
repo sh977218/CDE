@@ -1,4 +1,5 @@
 import {
+    assertUnreachable,
     CdeId,
     CodeAndSystem, Definition,
     DerivationRule, Designation,
@@ -10,7 +11,10 @@ import {
     PermissibleValue,
 } from 'shared/models.model';
 import {
-    DatatypeContainer,
+    DataType,
+    DatatypeContainer, DatatypeContainerDate, DatatypeContainerDynamicList, DatatypeContainerExternal,
+    DatatypeContainerFile, DatatypeContainerGeo, DatatypeContainerNumber, DatatypeContainerText, DatatypeContainerTime,
+    DatatypeContainerValueList,
     QuestionTypeDate,
     QuestionTypeNumber,
     QuestionTypeText,
@@ -26,9 +30,8 @@ export class CdeForm extends Elt implements FormElementsContainer {
         text?: string,
     };
     displayProfiles: DisplayProfile[] = []; // mutable
-    elementType?: string = 'form';
+    elementType: 'form' = 'form';
     expanded?: boolean; // calculated, formDescription view model
-    formInput?: {[key: string]: QuestionValue}; // volatile, nativeRender and export
     formElements: FormElement[] = []; // mutable
     isCopied?: 'copied' | 'clear'; // volatile, form description
     isCopyrighted?: boolean;
@@ -44,14 +47,24 @@ export class CdeForm extends Elt implements FormElementsContainer {
         Elt.validate(elt);
 
         elt.displayProfiles.forEach(dp => {
-            if (!dp.metadata) dp.metadata = {};
-            if (!dp.unitsOfMeasureAlias) dp.unitsOfMeasureAlias = [];
+            if (!dp.metadata) {
+                dp.metadata = {};
+            }
+            if (!dp.unitsOfMeasureAlias) {
+                dp.unitsOfMeasureAlias = [];
+            }
         });
 
         function feValid(fe: FormElement) {
-            if (!Array.isArray(fe.formElements)) fe.formElements = [];
-            if (!fe.instructions) fe.instructions = new FormattedValue();
-            if (!fe.skipLogic) fe.skipLogic = new SkipLogic();
+            if (!Array.isArray(fe.formElements)) {
+                fe.formElements = [];
+            }
+            if (!fe.instructions) {
+                fe.instructions = new FormattedValue();
+            }
+            if (!fe.skipLogic) {
+                fe.skipLogic = new SkipLogic();
+            }
         }
 
         iterateFeSync(elt,
@@ -67,39 +80,69 @@ export class CdeForm extends Elt implements FormElementsContainer {
                 //     section.section = new Section();
                 // }
             },
-            q => {
+            (q: FormQuestion) => {
                 feValid(q);
-                if (!q.question) q.question = new Question();
-                if (!Array.isArray(q.question.unitsOfMeasure)) q.question.unitsOfMeasure = [];
-                if (!q.question.cde) q.question.cde = new QuestionCde();
-                if (!Array.isArray(q.question.cde.derivationRules)) q.question.cde.derivationRules = [];
-                if (!Array.isArray(q.question.uomsAlias)) q.question.uomsAlias = [];
-                if (!Array.isArray(q.question.uomsValid)) q.question.uomsValid = [];
+                if (!q.question) {
+                    q.question = question() as Question;
+                }
+                if (!Array.isArray(q.question.unitsOfMeasure)) {
+                    q.question.unitsOfMeasure = [];
+                }
+                if (!q.question.cde) {
+                    q.question.cde = new QuestionCde();
+                }
+                if (!Array.isArray(q.question.cde.derivationRules)) {
+                    q.question.cde.derivationRules = [];
+                }
+                if (!Array.isArray(q.question.uomsAlias)) {
+                    q.question.uomsAlias = [];
+                }
+                if (!Array.isArray(q.question.uomsValid)) {
+                    q.question.uomsValid = [];
+                }
                 switch (q.question.datatype) {
                     case 'Value List':
-                        if (!Array.isArray(q.question.answers)) q.question.answers = [];
-                        if (!Array.isArray(q.question.cde.permissibleValues)) q.question.cde.permissibleValues = [];
+                        if (!Array.isArray(q.question.answers)) {
+                            q.question.answers = [];
+                        }
+                        if (!Array.isArray(q.question.cde.permissibleValues)) {
+                            q.question.cde.permissibleValues = [];
+                        }
                         break;
                     case 'Date':
-                        if (!q.question.datatypeDate) q.question.datatypeDate = new QuestionTypeDate();
-                        break;
-                    case 'Geo Location':
-                    case 'Time':
-                    case 'Externally Defined':
-                    case 'File':
+                        if (!q.question.datatypeDate) {
+                            q.question.datatypeDate = new QuestionTypeDate();
+                        }
                         break;
                     case 'Number':
-                        if (!q.question.datatypeNumber) q.question.datatypeNumber = new QuestionTypeNumber();
+                        if (!q.question.datatypeNumber) {
+                            q.question.datatypeNumber = new QuestionTypeNumber();
+                        }
                         break;
                     case 'Text':
-                    default:
-                        if (!q.question.datatypeText) q.question.datatypeText = new QuestionTypeText();
+                        if (!q.question.datatypeText) {
+                            q.question.datatypeText = new QuestionTypeText();
+                        }
                         break;
+                    case 'Dynamic Code List':
+                    case 'Externally Defined':
+                    case 'File':
+                    case 'Geo Location':
+                    case 'Time':
+                        break;
+                    default:
+                        throw assertUnreachable(q.question);
                 }
             }
         );
     }
 }
+
+export type CdeFormFollow = CdeForm & FormElementsFollowContainer;
+
+export type CdeFormInputArray = CdeForm & {
+    formInput: {[key: string]: QuestionValue}; // volatile, nativeRender and export
+};
 
 export class CdeFormElastic extends CdeForm { // all volatile
     [key: string]: any; // used for highlighting
@@ -107,7 +150,7 @@ export class CdeFormElastic extends CdeForm { // all volatile
     highlight?: any;
     numQuestions?: number;
     primaryDefinitionCopy?: string;
-    primaryNameCopy?: string;
+    primaryNameCopy!: string;
     primaryNameSuggest?: string;
     score!: number;
 }
@@ -180,93 +223,74 @@ export class FhirObservationInfo {
 }
 
 export interface FormElementsContainer {
-    expanded?: boolean; // calculated, formDescription view model
+    // expanded?: boolean; // calculated, formDescription view model
     formElements: FormElement[];
 }
 
-interface FormElementPart extends FormElementsContainer {
-    _id?: ObjectId; // TODO: remove
-    readonly elementType: 'section' | 'form' | 'question';
+export type FormElementsFollowContainer = FormElementsContainer & {
+    formElements: FormElementFollow[];
+};
+
+class FormElementEdit implements FormElementsContainer {
+    edit?: boolean; // calculated, formDescription view model
     expanded?: boolean; // calculated, formDescription view model
-    feId?: string; // calculated, nativeRender and formView view model
-    formElements: FormElement[];
-    instructions?: Instruction;
-    label?: string;
-    mapTo?: ExternalMappings; // calculated, used by: FHIR
-    metadataTags?: MetadataTag[]; // calculated, used by FHIR
-    repeat?: string;
-    skipLogic?: SkipLogic;
+    formElements: FormElement[] = [];
+    hover?: boolean; // calculated, formDescription view model
+    repeatNumber?: number; // calculated, formDescription view model
+    repeatOption?: string; // calculated, formDescription view model
+    repeatQuestion?: string; // calculated, formDescription view model
     updatedSkipLogic?: boolean; // calculated, formDescription view model
 }
 
-export interface FormSectionOrFormPart extends FormElementPart {
+class FormElementPart extends FormElementEdit implements FormElementsContainer {
+    _id?: ObjectId; // TODO: remove
+    feId?: string; // calculated, nativeRender and formView view model
+    instructions?: Instruction;
+    label?: string = '';
+    mapTo?: ExternalMappings; // calculated, used by: FHIR
+    metadataTags?: MetadataTag[]; // calculated, used by FHIR
+    repeat?: string;
+    skipLogic?: SkipLogic = new SkipLogic();
+}
+
+class FormSectionOrFormPart extends FormElementPart {
     forbidMatrix?: boolean; // Calculated, used for Follow View Model
     isCopied?: 'copied' | 'clear'; // volatile, form description
 }
 
-export class FormSection implements FormSectionOrFormPart {
-    _id?: ObjectId; // TODO: remove
-    edit?: boolean; // calculated, formDescription view model
-    readonly elementType = 'section';
-    expanded?: boolean = true; // calculated, formDescription view model
-    feId?: string; // calculated, nativeRender and formView view model
-    forbidMatrix?: boolean; // calculated, nativeRender view model
-    formElements: FormElement[] = [];
-    hover?: boolean; // calculated, formDescription view model
-    instructions?: Instruction;
-    isCopied?: 'copied' | 'clear'; // volatile, form description
-    label?: string = '';
-    mapTo?: ExternalMappings;
-    metadataTags?: MetadataTag[];
-    repeat?: string;
-    repeatNumber?: number; // calculated, formDescription view model
-    repeatOption?: string; // calculated, formDescription view model
-    repeatQuestion?: string; // calculated, formDescription view model
+export class FormSection extends FormSectionOrFormPart {
+    readonly elementType: 'section' = 'section';
     section = new Section();
-    skipLogic?: SkipLogic = new SkipLogic();
-    updatedSkipLogic?: boolean; // calculated, formDescription view model
+
+    constructor() {
+        super();
+        this.expanded = true;
+    }
 }
 
-export class FormInForm implements FormSectionOrFormPart {
-    _id?: ObjectId; // TODO: remove
-    edit?: boolean; // calculated, formDescription view model
-    readonly elementType = 'form';
-    expanded?: boolean = false; // calculated, formDescription view model
-    feId?: string; // calculated, nativeRender and formView view model
-    forbidMatrix?: boolean; // calculated, nativeRender view model
-    formElements: FormElement[] = [];
-    hover?: boolean; // calculated, formDescription view model
-    instructions?: Instruction;
+export type FormSectionFollow = FormSection & FormElementsFollowContainer;
+
+export class FormInForm extends FormSectionOrFormPart {
+    readonly elementType: 'form' = 'form';
     inForm = new InForm();
-    isCopied?: 'copied' | 'clear'; // volatile, form description
-    label?: string = '';
-    mapTo?: ExternalMappings;
-    metadataTags?: MetadataTag[];
-    repeat?: string;
-    repeatNumber?: number; // calculated, formDescription view model
-    repeatOption?: string; // calculated, formDescription view model
-    repeatQuestion?: string; // calculated, formDescription view model
-    skipLogic?: SkipLogic = new SkipLogic();
-    updatedSkipLogic?: boolean; // calculated, formDescription view model
+
+    constructor() {
+        super();
+        this.expanded = false;
+    }
 }
 
-export class FormQuestion implements FormElementPart {
-    _id?: ObjectId; // TODO: remove
-    edit?: boolean = false; // calculated, formDescription view model
-    readonly elementType = 'question';
-    expanded?: boolean = true; // calculated, formDescription view model
-    feId?: string; // calculated, nativeRender and formView view model
-    formElements: FormElement[] = [];
-    hover?: boolean = false; // calculated, formDescription view model
+export type FormInFormFollow = FormInForm & FormElementsFollowContainer;
+
+export class FormQuestion extends FormElementPart {
+    readonly elementType: 'question' = 'question';
     incompleteRule?: boolean;
-    instructions?: Instruction;
-    label?: string = '';
-    mapTo?: ExternalMappings;
-    metadataTags?: MetadataTag[];
-    question = new Question();
-    repeat?: string;
-    skipLogic?: SkipLogic = new SkipLogic();
-    updatedSkipLogic?: boolean; // calculated, formDescription view model
+    question: Question = question() as Question;
+
+    constructor() {
+        super();
+        this.expanded = true;
+    }
 
     static datePrecisionToType = {
         Year: 'Number',
@@ -286,9 +310,15 @@ export class FormQuestion implements FormElementPart {
     };
 }
 
+export type FormQuestionFollow = FormQuestion & FormElementsFollowContainer & {
+    question: QuestionFollow;
+};
 export type FormSectionOrForm = FormInForm | FormSection;
+export type FormSectionOrFormFollow = FormInFormFollow | FormSectionFollow;
 export type FormElement = FormInForm | FormSection | FormQuestion;
+export type FormElementFollow = FormInFormFollow | FormSectionFollow | FormQuestionFollow;
 export type FormOrElement = CdeForm | FormElement;
+export type FormOrElementFollow = CdeFormFollow | FormElementFollow;
 
 class InForm {
     form!: EltRefCaching;
@@ -304,42 +334,83 @@ export class MetadataTag {
 }
 
 export class PermissibleFormValue extends PermissibleValue implements FormElementsContainer { // view model
-    formElements!: FormElement[]; // volatile, nativeRender
+    formElements!: FormElementFollow[]; // volatile, nativeRender
     index?: number;
     nonValuelist?: boolean;
 }
 
-export class Question extends DatatypeContainer {
+export type Question = QuestionDate
+    | QuestionDynamicList
+    | QuestionExternal
+    | QuestionFile
+    | QuestionGeo
+    | QuestionNumber
+    | QuestionText
+    | QuestionTime
+    | QuestionValueList;
+
+export type QuestionFollow = Question & {
+    answers?: PermissibleFormValue[]; // mutable
+    cde?: QuestionCdeValueList;
+    multiselect?: boolean;
+};
+
+interface QuestionPart {
     answer?: QuestionValue; // volatile, input value
     answerVM?: any[]; // volatile, input value for select
     answerUom?: CodeAndSystem; // volatile, input uom value
-    answerDate?: any; // volatile, working storage for date part
-    answerTime?: any; // volatile, working storage for time part
-    answers?: PermissibleFormValue[]; // mutable
-    cde: QuestionCde = new QuestionCde();
+    cde: QuestionCde;
     defaultAnswer?: string; // all datatypes, defaulted by areDerivationRulesSatisfied
-    editable?: boolean = true;
+    editable?: boolean;
     invisible?: boolean;
     isScore?: boolean;
     scoreFormula?: string;
     scoreError?: string;
-    multiselect?: boolean;
     partOf?: string; // volatile, display '(part of ...)' in Form Description
     required?: boolean;
     previousUom?: CodeAndSystem; // volatile, native render question renderer
-    unitsOfMeasure: CodeAndSystem[] = [];
-    uomsAlias: string[] = []; // volatile, NativeRenderService
-    uomsValid: string[] = []; // volatile, FormDescription
+    unitsOfMeasure: CodeAndSystem[];
+    uomsAlias: string[]; // volatile, NativeRenderService
+    uomsValid: string[]; // volatile, FormDescription
+}
+
+export type QuestionDate = DatatypeContainerDate & QuestionPart & {
+    answerDate?: any; // volatile, working storage for date part
+    answerTime?: any; // volatile, working storage for time part
+};
+export type QuestionDynamicList = DatatypeContainerDynamicList & QuestionPart;
+export type QuestionExternal = DatatypeContainerExternal & QuestionPart;
+export type QuestionFile = DatatypeContainerFile & QuestionPart;
+export type QuestionGeo = DatatypeContainerGeo & QuestionPart;
+export type QuestionNumber = DatatypeContainerNumber & QuestionPart;
+export type QuestionText = DatatypeContainerText & QuestionPart;
+export type QuestionTime = DatatypeContainerTime & QuestionPart;
+export type QuestionValueList = DatatypeContainerValueList & QuestionPart & {
+    answers: PermissibleValue[]; // mutable
+    cde: QuestionCdeValueList;
+    multiselect?: boolean;
+};
+
+export function question(): Partial<Question> {
+    return {
+        cde: new QuestionCde(),
+        datatype: 'Text',
+        editable: true,
+        unitsOfMeasure: [],
+        uomsAlias: [],
+        uomsValid: []
+    };
 }
 
 export class QuestionCde extends EltRefCaching { // copied from original data element, not configurable
-    datatype?: string; // volatile, use by save new cde
     definitions: Definition[] = [];
     derivationRules: DerivationRule[] = [];
     designations: Designation[] = [];
-    naming = [];
-    permissibleValues?: PermissibleValue[];
 }
+
+export type QuestionCdeValueList = QuestionCde & {
+    permissibleValues: PermissibleValue[];
+};
 
 class Section {
 }

@@ -118,7 +118,7 @@
 </ng-template>
 
 <cde-classify-item-modal #reclassifyComponent [modalTitle]="selectedClassificationArray"
-                         (onEltSelected)="reclassify($event)">
+                         (classified)="reclassify($event)">
 </cde-classify-item-modal>
 
 <ng-template #addChildClassificationContent>

@@ -17,7 +17,7 @@ import { ActivatedRoute } from '@angular/router';
 export class ResourcesComponent implements OnDestroy {
     canEdit: boolean;
     containers: HtmlContainer[] = [];
-    resource: Article = new Article();
+    resource: Article;
 
     constructor(private route: ActivatedRoute,
                 private alert: AlertService,
@@ -32,25 +32,26 @@ export class ResourcesComponent implements OnDestroy {
     }
 
     renderMe() {
-        let size = this.resource.rssFeeds ? this.resource.rssFeeds.length : 0;
-        let waitUntilBodyHtml = setInterval(() => {
-            for (let i = 0; i < size; i++) {
-                let rssFeed = this.resource.rssFeeds![i];
-                let myArea = document.getElementById('rssContent_' + i);
-                if (!myArea) {
-                    return;
+        const waitUntilBodyHtml = setInterval(() => {
+            if (this.resource.rssFeeds) {
+                for (let i = 0; i < this.resource.rssFeeds.length; i++) {
+                    const rssFeed = this.resource.rssFeeds[i];
+                    const myArea = document.getElementById('rssContent_' + i);
+                    if (!myArea) {
+                        return;
+                    }
+                    const myRow = document.createElement('div');
+                    myArea.appendChild(myRow);
+                    this.addComponentToRow(ResourcesRssComponent, myRow, rssFeed);
                 }
-                let myRow = document.createElement('div');
-                myArea.appendChild(myRow);
-                this.addComponentToRow(ResourcesRssComponent, myRow, rssFeed);
             }
             clearInterval(waitUntilBodyHtml);
         }, 0);
     }
 
     addComponentToRow(component: Type<any>, row: HTMLElement, param: string) {
-        let container = new HtmlContainer(row, this.appRef, this.componentFactoryResolver, this.injector);
-        let componentRef = container.attach(component);
+        const container = new HtmlContainer(row, this.appRef, this.componentFactoryResolver, this.injector);
+        const componentRef = container.attach(component);
         componentRef.instance.rssFeed = param;
 
         this.containers.push(container);
@@ -80,7 +81,7 @@ export class HtmlContainer {
         this.attached = true;
         const childComponentFactory = this.componentFactoryResolver.resolveComponentFactory(component);
 
-        let componentRef = childComponentFactory.create(this.injector);
+        const componentRef = childComponentFactory.create(this.injector);
 
         this.appRef.attachView(componentRef.hostView);
         this.disposeFn = () => {

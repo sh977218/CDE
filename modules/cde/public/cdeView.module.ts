@@ -7,7 +7,7 @@ import {
     MatIconModule, MatInputModule,
     MatMenuModule,
     MatProgressSpinnerModule, MatSelectModule, MatTooltipModule
-} from "@angular/material";
+} from '@angular/material';
 import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
@@ -24,16 +24,16 @@ import { DerivationRulesComponent } from 'cde/public/components/derivationRules.
 import { MoreLikeThisComponent } from 'cde/public/components/mlt/moreLikeThis.component';
 import { CdeClassificationComponent } from 'cde/public/components/cdeClassification/cdeClassification.component';
 import { DeGeneralDetailsComponent } from 'cde/public/components/deGeneralDetails/deGeneralDetails.component';
+import { PermissibleValueComponent } from 'cde/public/components/permissibleValue/permissibleValue.component';
 import { ValidRulesComponent } from 'cde/public/components/validationRules/validRules.component';
 import { CompareModule } from 'compare/compare.module';
 import { DiscussModule } from 'discuss/discuss.module';
-import { FormSearchModule } from 'form/public/formSearch.module';
-import { NonCoreModule } from 'non-core/noncore.module';
 import { InlineEditModule } from 'inlineEdit/inlineEdit.module';
 import { InlineSelectEditModule } from 'inlineSelectEdit/inlineSelectEdit.module';
 import { InlineAreaEditModule } from 'inlineAreaEdit/inlineAreaEdit.module';
+import { FormSearchModule } from 'form/public/formSearch.module';
+import { NonCoreModule } from 'non-core/noncore.module';
 import { SortableArrayModule } from 'sortableArray/sortableArray.module';
-import { PermissibleValueComponent } from 'cde/public/components/permissibleValue/permissibleValue.component';
 
 const appRoutes: Routes = [
     {path: '', component: DataElementViewComponent},

@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 
-
 @Component({
     selector: 'cde-active-bans',
     templateUrl: './activeBans.component.html'
@@ -14,11 +13,10 @@ export class ActiveBansComponent {
     }
 
     refresh() {
-        this.http.get("/activeBans").subscribe((result: any) => this.ipList = result.ipList);
+        this.http.get('/activeBans').subscribe((result: any) => this.ipList = result.ipList);
     }
 
     remove(ip: string) {
-        this.http.post("/removeBan", {ip: ip}).subscribe(() => this.refresh());
+        this.http.post('/removeBan', {ip}).subscribe(() => this.refresh());
     }
-
 }

@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { AlertService } from 'alert/alert.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { Organization } from 'shared/models.model';
-import { ActivatedRoute } from '@angular/router';
 
 @Component({
     templateUrl: './propertiesManagement.component.html'
@@ -13,7 +13,7 @@ export class PropertiesManagementComponent {
     orgs: any[];
 
     constructor(private http: HttpClient,
-                private Alert: AlertService,
+                private alert: AlertService,
                 private route: ActivatedRoute,
                 private orgHelperService: OrgHelperService) {
 
@@ -29,8 +29,8 @@ export class PropertiesManagementComponent {
 
     saveOrg(org: Organization) {
         this.http.post('/updateOrg', org).subscribe(
-            () => this.orgHelperService.reload().then(() => this.Alert.addAlert('success', 'Org Updated')),
-            () => this.Alert.addAlert('danger', 'Error. Unable to save.')
+            () => this.orgHelperService.reload().then(() => this.alert.addAlert('success', 'Org Updated')),
+            () => this.alert.addAlert('danger', 'Error. Unable to save.')
         );
     }
 }

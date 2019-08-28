@@ -1,9 +1,8 @@
 import { diff as deepDiff } from 'deep-diff';
+import { DataElement } from 'shared/de/dataElement.model';
 
 export function diff(newCde, oldCde) {
-    let newCdeObj = newCde.toObject();
-    let oldCdeObj = oldCde.toObject();
-    [newCdeObj, oldCdeObj].forEach(cde => {
+    function deIdentifyItem(cde: DataElement) {
         delete cde._id;
         delete cde.updated;
         delete cde.updatedBy;
@@ -13,7 +12,7 @@ export function diff(newCde, oldCde) {
         delete cde.__v;
         delete cde.views;
         delete cde.comments;
-        delete cde.naming;
-    });
-    return deepDiff(oldCdeObj, newCdeObj);
+        return cde;
+    }
+    return deepDiff(deIdentifyItem(oldCde.toObject()), deIdentifyItem(newCde.toObject()));
 }

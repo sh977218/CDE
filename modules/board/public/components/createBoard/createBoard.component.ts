@@ -1,9 +1,10 @@
 import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { AlertService } from 'alert/alert.service';
-import { MyBoardsService } from 'board/public/myBoards.service';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { UserService } from '_app/user.service';
+import { AlertService } from 'alert/alert.service';
+import { MyBoardsService } from 'board/public/myBoards.service';
+import { Item, ModuleItem } from 'shared/models.model';
 
 @Component({
     selector: 'cde-create-board',
@@ -11,17 +12,16 @@ import { UserService } from '_app/user.service';
 })
 export class CreateBoardComponent {
     @Input() buttonName?: string = 'Add Board';
-
-    @Input() set module(module) {
+    @Input() elts: Item[] = [];
+    @Input() set module(module: ModuleItem) {
         this._module = module;
-        if (this.newBoard) this.newBoard.type = module;
+        if (this.newBoard) {
+            this.newBoard.type = module;
+        }
     }
-
-    @Input() elts = [];
-    @ViewChild('createBoardModal') createBoardModal: TemplateRef<any>;
-
-    _module = undefined;
-    dialogRef: MatDialogRef<TemplateRef<any>>;
+    @ViewChild('createBoardModal') createBoardModal!: TemplateRef<any>;
+    _module!: ModuleItem;
+    dialogRef!: MatDialogRef<TemplateRef<any>>;
     newBoard: any;
 
     constructor(private http: HttpClient,
@@ -47,7 +47,7 @@ export class CreateBoardComponent {
             pins: this.elts.map(e => {
                 return {
                     tinyId: e.tinyId,
-                    name: e.designations[0].desgiantion,
+                    name: e.designations[0].designation,
                     type: this._module
                 };
             })

@@ -15,15 +15,13 @@ import { Component } from '@angular/core';
     `]
 })
 export class IEBannerComponent {
-
     isIe = false;
 
     constructor() {
-        this.isIe = false || !!(document as any).documentMode;
+        this.isIe = !!(document as any).documentMode;
     }
 
-    ignore () {
+    ignore() {
         this.isIe = false;
     }
-
 }

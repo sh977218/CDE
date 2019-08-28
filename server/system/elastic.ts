@@ -4,14 +4,13 @@ import { Document } from 'mongoose';
 import { handleError, respondError } from '../errorHandler/errorHandler';
 import { config } from '../system/parseConfig';
 import { DataElementElastic } from 'shared/de/dataElement.model';
-import {
-    Cb, Cb1, CbErr, CbError, CbError1, ElasticQueryResponse, ItemElastic, ModuleItem, User
-} from 'shared/models.model';
+import { Cb, Cb1, CbErr, CbError, CbError1, ElasticQueryResponseAggregations, ItemElastic, ModuleItem, User } from 'shared/models.model';
 import { ElasticIndex } from '../system/elasticSearchInit';
 import { Cursor } from 'mongodb';
 import { SearchSettingsElastic } from 'search/search.model';
 import { orderedList } from 'shared/system/regStatusShared';
 import { arrayFill } from 'shared/system/util';
+import { myOrgs } from 'server/system/usersrvc';
 
 const _ = require('lodash');
 const request = require('request');
@@ -27,22 +26,22 @@ const noDbLogger = require('./noDbLogger');
 type ElasticCondition = any;
 type MongoCondition = any;
 
-type DbItem = {
-    dao: Document,
-    name: ModuleItem,
+interface DbItem {
+    dao: Document;
+    name: ModuleItem;
     count: (query: MongoCondition, cb: CbError1<number>) => void;
-    getStream: (query: MongoCondition) => Cursor
-};
+    getStream: (query: MongoCondition) => Cursor;
+}
 
-type DbQuery = {
-    condition: MongoCondition,
-    dao: DbItem,
-};
+interface DbQuery {
+    condition: MongoCondition;
+    dao: DbItem;
+}
 
-type DbStream = {
-    query: DbQuery,
-    indexes: ElasticIndex[]
-};
+interface DbStream {
+    query: DbQuery;
+    indexes: ElasticIndex[];
+}
 
 export const esClient = new Client({
     hosts: config.elastic.hosts
@@ -54,7 +53,9 @@ export function removeElasticFields(elt: ItemElastic) {
     delete elt.primaryNameCopy;
     delete elt.stewardOrgCopy;
     delete elt.flatProperties;
-    if (elt.valueDomain) delete elt.valueDomain.nbOfPVs;
+    if (elt.valueDomain) {
+        delete elt.valueDomain.nbOfPVs;
+    }
     delete elt.primaryDefinitionCopy;
     delete elt.flatMeshSimpleTrees;
     delete elt.flatMeshTrees;
@@ -65,7 +66,7 @@ export function removeElasticFields(elt: ItemElastic) {
 }
 
 export function nbOfCdes(cb: CbError<number>) {
-    esClient.count({index: config.elastic.index.name}, function (err, result) {
+    esClient.count({index: config.elastic.index.name}, (err, result) => {
         cb(err, result.count);
     });
 }
@@ -93,7 +94,7 @@ export const daoMap: { [key: string]: DbQuery } = {
     formSuggest: queryForm
 };
 
-export function reIndex(index: ElasticIndex, cb: CbError) {
+export function reIndex(index: ElasticIndex, cb: Cb) {
     reIndexStream({query: daoMap[index.name], indexes: [index]}, cb);
 }
 
@@ -101,14 +102,14 @@ const BUFFER_MAX_SIZE = 10000000; // ~10MB
 const DOC_MAX_SIZE = BUFFER_MAX_SIZE;
 
 export function reIndexStream(dbStream: DbStream, cb?: Cb) {
-    createIndex(dbStream, handleError({}, () => {
-        let riverFunctions = dbStream.indexes.map(index => index.filter || ((elt: ItemElastic, cb: Cb1<ItemElastic>) => cb(elt)));
-        let buffers: Buffer[] = arrayFill<Buffer>(dbStream.indexes.length, () => Buffer.alloc(BUFFER_MAX_SIZE));
-        let bufferOffsets = new Array(dbStream.indexes.length).fill(0);
-        let nextCommandBuffer = Buffer.alloc(DOC_MAX_SIZE);
+    createIndex(dbStream, () => {
+        const riverFunctions = dbStream.indexes.map(index => index.filter || ((elt: ItemElastic, cb: Cb1<ItemElastic>) => cb(elt)));
+        const buffers: Buffer[] = arrayFill<Buffer>(dbStream.indexes.length, () => Buffer.alloc(BUFFER_MAX_SIZE));
+        const bufferOffsets = new Array(dbStream.indexes.length).fill(0);
+        const nextCommandBuffer = Buffer.alloc(DOC_MAX_SIZE);
         let nextCommandOffset = 0;
-        let startTime = new Date().getTime();
-        let indexTypes = dbStream.indexes.map(index => Object.keys(index.indexJson.mappings)[0]);
+        const startTime = new Date().getTime();
+        const indexTypes = dbStream.indexes.map(index => Object.keys(index.indexJson.mappings)[0]);
 
         dbStream.indexes.forEach(index => {
             index.count = 0;
@@ -125,7 +126,7 @@ export function reIndexStream(dbStream: DbStream, cb?: Cb) {
                 }, (err: Error | undefined) => {
                     if (err) {
                         if (retries) {
-                            setTimeout(function () {
+                            setTimeout(() => {
                                 bulkIndex(req, cb, --retries);
                             }, 2000);
                         } else {
@@ -167,13 +168,16 @@ export function reIndexStream(dbStream: DbStream, cb?: Cb) {
                     // end
                     eachOf(dbStream.indexes, (index: ElasticIndex, i, doneOne) => {
                         inject(i as number, () => {
-                            let info = 'done ingesting ' + index.name + ' in : ' + (new Date().getTime() - startTime) / 1000 + ' secs. count: ' + index.count;
+                            const info = 'done ingesting ' + index.name + ' in : '
+                                + (new Date().getTime() - startTime) / 1000 + ' secs. count: ' + index.count;
                             noDbLogger.noDbLogger.info(info);
                             dbLogger.consoleLog(info);
                             doneOne();
                         });
                     }, () => {
-                        if (cb) cb();
+                        if (cb) {
+                            cb();
+                        }
                     });
                     return;
                 }
@@ -211,7 +215,7 @@ export function reIndexStream(dbStream: DbStream, cb?: Cb) {
                 }, 0);
             });
         })(cursor);
-    }));
+    });
 }
 
 function createIndex(dbStream: DbStream, cb: Cb) {
@@ -267,8 +271,9 @@ export function initEs(cb: Cb = () => {
     });
 }
 
-export function completionSuggest(term: ElasticCondition, user: User, settings: SearchSettingsElastic, indexName: string, cb: Cb<SearchResponse<ItemElastic>>) {
-    let suggestQuery = {
+export function completionSuggest(term: ElasticCondition, user: User, settings: SearchSettingsElastic,
+                                  indexName: string, cb: Cb<SearchResponse<ItemElastic>>) {
+    const suggestQuery = {
         query: {
             match: {
                 nameSuggest: {
@@ -288,7 +293,7 @@ export function completionSuggest(term: ElasticCondition, user: User, settings: 
     esClient.search<ItemElastic>({
         index: indexName,
         body: suggestQuery
-    }, function (error, response) {
+    }, (error, response) => {
         if (error) {
             cb(error);
         } else {
@@ -310,9 +315,8 @@ export function regStatusFilter(user: User, settings: SearchSettingsElastic) {
         );
         // Filter by Steward
         if (user) {
-            let curatorOf = user.orgAdmin.concat(user.orgCurator);
             filterRegStatusTerms = filterRegStatusTerms.concat(
-                curatorOf.map(o => ({term: {'stewardOrg.name': o}}))
+                myOrgs(user).map(o => ({term: {'stewardOrg.name': o}}))
             );
         }
         return filterRegStatusTerms;
@@ -325,19 +329,19 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
     }
 
     // Increase ranking score for high registration status
-    let script = "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) * doc['classificationBoost'].value";
+    const script = "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) * doc['classificationBoost'].value";
 
     // Search for the query term given by user
-    let hasSearchTerm = !!settings.searchTerm;
+    const hasSearchTerm = !!settings.searchTerm;
 
     // last resort, we sort.
     let sort = !hasSearchTerm;
 
     // (function setFilters() {
-    let filterRegStatusTerms = regStatusFilter(user, settings);
+    const filterRegStatusTerms = regStatusFilter(user, settings);
 
     // Filter by selected Datatypes
-    let filterDatatypeTerms = settings.selectedDatatypes && settings.selectedDatatypes.map(datatype => {
+    const filterDatatypeTerms = settings.selectedDatatypes && settings.selectedDatatypes.map(datatype => {
         return {term: {'valueDomain.datatype': datatype}};
     });
 
@@ -363,7 +367,7 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
         bool: {should: filterRegStatusTerms}
     };
 
-    let queryStuff: ElasticCondition = {
+    const queryStuff: ElasticCondition = {
         post_filter: settings.filter,
         query: {
             bool: {
@@ -402,7 +406,7 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
                         query: settings.searchTerm
                     }
                 },
-                script_score: {script: script}
+                script_score: {script}
             }
         });
 
@@ -419,7 +423,7 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
                             query: '"' + settings.searchTerm + '"~4'
                         }
                     },
-                    script_score: {script: script}
+                    script_score: {script}
                 }
             });
         }
@@ -460,8 +464,8 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
         queryStuff.query.bool.must.push({term: {flatMeshTrees: settings.meshTree}});
     }
 
-    let flatSelection = settings.selectedElements ? settings.selectedElements.join(';') : "";
-    if (settings.selectedOrg && flatSelection !== "") {
+    let flatSelection = settings.selectedElements ? settings.selectedElements.join(';') : '';
+    if (settings.selectedOrg && flatSelection !== '') {
         sort = false;
         // boost for those elts classified fewer times
         queryStuff.query.bool.must.push({
@@ -478,8 +482,8 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
         queryStuff.query.bool.must.push({term: {flatClassifications: settings.selectedOrg + ';' + flatSelection}});
     }
 
-    let flatSelectionAlt = settings.selectedElementsAlt ? settings.selectedElementsAlt.join(';') : "";
-    if (settings.selectedOrgAlt && flatSelectionAlt !== "") {
+    let flatSelectionAlt = settings.selectedElementsAlt ? settings.selectedElementsAlt.join(';') : '';
+    if (settings.selectedOrgAlt && flatSelectionAlt !== '') {
         queryStuff.query.bool.must.push({term: {flatClassifications: settings.selectedOrgAlt + ';' + flatSelectionAlt}});
     }
 
@@ -555,10 +559,11 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
                     field: 'flatClassifications'
                 }
             };
-            if (selectionString === "") {
+            if (selectionString === '') {
                 flatClassifications.terms.include = escapeRegExp(settings[orgVariableName]) + ';[^;]+';
             } else {
-                flatClassifications.terms.include = escapeRegExp(settings[orgVariableName]) + ';' + escapeRegExp(selectionString) + ';[^;]+';
+                flatClassifications.terms.include = escapeRegExp(settings[orgVariableName]) + ';'
+                    + escapeRegExp(selectionString) + ';[^;]+';
             }
             queryStuff.aggregations[variableName] = {
                 filter: settings.filter,
@@ -656,7 +661,7 @@ export function isSearch(settings: SearchSettingsElastic) {
     return settings && (settings.searchTerm || settings.selectedOrg || settings.meshTree);
 }
 
-let searchTemplate: { [key: string]: any } = {
+const searchTemplate: { [key: string]: any } = {
     cde: {
         index: config.elastic.index.name,
         type: 'dataelement'
@@ -668,11 +673,13 @@ let searchTemplate: { [key: string]: any } = {
 };
 
 export function elasticsearch(type: ModuleItem, query: any, settings: any, cb: CbErr<any>) {
-    let search = searchTemplate[type];
-    if (!search) return cb('Invalid query');
+    const search = searchTemplate[type];
+    if (!search) {
+        return cb('Invalid query');
+    }
     search.body = query;
     esClient.search(search, (error, resp) => {
-        const response = resp as ElasticQueryResponse;
+        const response = resp as ElasticQueryResponseAggregations;
         if (error) {
             if (response && response.status === 400) {
                 if (response.error!.type !== 'search_phase_execution_exception') {
@@ -703,22 +710,22 @@ export function elasticsearch(type: ModuleItem, query: any, settings: any, cb: C
                 dbLogger.consoleLog('No response. QUERY: ' + JSON.stringify(query), 'debug');
             }
 
-            let result: any = {
+            const result: any = {
                 totalNumber: response.hits.total
                 , maxScore: response.hits.max_score
                 , took: response.took
             };
             result[type + 's'] = [];
-            for (let i = 0; i < response.hits.hits.length; i++) {
-                let thisCde: DataElementElastic = response.hits.hits[i]._source;
-                thisCde.score = response.hits.hits[i]._score;
-                if (thisCde.valueDomain && thisCde.valueDomain.permissibleValues
+            for (const hit of response.hits.hits) {
+                const thisCde: DataElementElastic = hit._source;
+                thisCde.score = hit._score;
+                if (thisCde.valueDomain && thisCde.valueDomain.datatype === 'Value List' && thisCde.valueDomain.permissibleValues
                     && thisCde.valueDomain.permissibleValues.length > 10) {
                     thisCde.valueDomain.permissibleValues = thisCde.valueDomain.permissibleValues.slice(0, 10);
                 }
                 thisCde.properties = [];
                 thisCde.flatProperties = [];
-                thisCde.highlight = response.hits.hits[i].highlight;
+                thisCde.highlight = hit.highlight;
                 result[type + 's'].push(thisCde);
             }
             result.aggregations = response.aggregations;
@@ -737,7 +744,7 @@ export function elasticSearchExport(dataCb: CbErr<ItemElastic>, query: any, type
     query.size = 500;
     delete query.aggregations;
 
-    let search = JSON.parse(JSON.stringify(searchTemplate[type]));
+    const search = JSON.parse(JSON.stringify(searchTemplate[type]));
     search.scroll = '1m';
     search.body = query;
 
@@ -762,8 +769,8 @@ export function elasticSearchExport(dataCb: CbErr<ItemElastic>, query: any, type
             lock = false;
             dataCb();
         } else {
-            for (let i = 0; i < response.hits.hits.length; i++) {
-                dataCb(undefined, response.hits.hits[i]._source);
+            for (const hit of response.hits.hits) {
+                dataCb(undefined, hit._source);
             }
             scrollThrough(response);
         }
@@ -789,7 +796,7 @@ export function scrollExport(query: any, type: ModuleItem, cb: CbError<SearchRes
     query.size = 100;
     delete query.aggregations;
 
-    let search = JSON.parse(JSON.stringify(searchTemplate[type]));
+    const search = JSON.parse(JSON.stringify(searchTemplate[type]));
     search.scroll = '1m';
     search.body = query;
 
@@ -797,7 +804,7 @@ export function scrollExport(query: any, type: ModuleItem, cb: CbError<SearchRes
 }
 
 export function scrollNext(scrollId: string, cb: CbError<SearchResponse<ItemElastic>>) {
-    esClient.scroll({scrollId: scrollId, scroll: '1m'}, cb);
+    esClient.scroll({scrollId, scroll: '1m'}, cb);
 }
 
 export const queryMostViewed = {

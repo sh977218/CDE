@@ -18,7 +18,6 @@ function addEmbedItem(): EmbedItem {
     };
 }
 
-
 @Component({
     selector: 'cde-embed',
     templateUrl: 'embed.component.html'
@@ -43,18 +42,31 @@ export class EmbedComponent implements OnInit {
     }
 
     addCdeClassification() {
-        if (!this.selection!.cde!.classifications) { this.selection!.cde!.classifications = []; }
-        this.selection!.cde!.classifications!.push({exclude: '', label: '', startsWith: ''});
+        if (!this.selection || !this.selection.cde) {
+            return;
+        }
+        if (!this.selection.cde.classifications) { this.selection.cde.classifications = []; }
+        this.selection.cde.classifications.push({exclude: '', label: '', startsWith: ''});
     }
 
     addCdeId() {
-        if (!this.selection!.cde!.ids) { this.selection!.cde!.ids = []; }
-        this.selection!.cde!.ids!.push({source: '', idLabel: 'Id', versionLabel: ''});
+        if (!this.selection || !this.selection.cde) {
+            return;
+        }
+        if (!this.selection.cde.ids) {
+            this.selection.cde.ids = [];
+        }
+        this.selection.cde.ids.push({source: '', idLabel: 'Id', versionLabel: ''});
     }
 
     addCdeName() {
-        if (!this.selection!.cde!.otherNames) { this.selection!.cde!.otherNames = []; }
-        this.selection!.cde!.otherNames!.push({contextName: '', label: ''});
+        if (!this.selection || !this.selection.cde) {
+            return;
+        }
+        if (!this.selection.cde.otherNames) {
+            this.selection.cde.otherNames = [];
+        }
+        this.selection.cde.otherNames.push({contextName: '', label: ''});
     }
 
     addEmbed(org: string) {
@@ -76,17 +88,18 @@ export class EmbedComponent implements OnInit {
     }
 
     enableCde(b: boolean) {
-        if (b) {
-            this.selection!.cde = {lowestRegistrationStatus: 'Qualified', pageSize: 20};
-        } else {
-            this.selection!.cde = undefined;
+        if (!this.selection) {
+            return;
         }
+        this.selection.cde = b
+            ? {lowestRegistrationStatus: 'Qualified', pageSize: 20}
+            : undefined;
     }
 
     enablePreview(b: boolean) {
         this.previewOn = b;
-        if (b) {
-            this.previewSrc = this.sanitizer.bypassSecurityTrustResourceUrl('/embedded/public/html/index.html?id=' + this.selection!._id);
+        if (b && this.selection) {
+            this.previewSrc = this.sanitizer.bypassSecurityTrustResourceUrl('/embedded/public/html/index.html?id=' + this.selection._id);
         }
     }
 
@@ -112,8 +125,12 @@ export class EmbedComponent implements OnInit {
     }
 
     save() {
+        if (!this.selection) {
+            return;
+        }
+        const selection = this.selection;
         this.http.post<Embed>('/embed', this.selection).subscribe(response => {
-            if (!this.selection!._id) { this.selection!._id = response._id; }
+            if (!selection._id) { selection._id = response._id; }
             this.selection = undefined;
             this.previewOn = false;
             this.alert.addAlert('success', 'Saved.');

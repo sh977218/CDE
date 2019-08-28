@@ -33,7 +33,8 @@ export default {
         new CleanWebpackPlugin(['dist/app'], {root: process.cwd()}),
         new CopyWebpackPlugin([
             {from: 'modules/_app/assets/'},
-            {from: 'node_modules/material-design-lite/material.min.js', transform: (content: any) => content.toString().replace('//# sourceMappingURL=material.min.js.map', '')},
+            {from: 'node_modules/material-design-lite/material.min.js', transform: (content: Buffer) => content.toString()
+                    .replace('//# sourceMappingURL=material.min.js.map', '')},
             {from: 'node_modules/material-design-lite/material.min.css'}
         ]),
         new DefinePlugin({
@@ -46,14 +47,14 @@ export default {
             },
             format: function defaultFormat(listItems: string[]) {
                 let sw = readFileSync('modules/_app/sw.template.js', {encoding: 'utf8'});
-                let filesInsert = listItems.map(e => '/app/' + e).concat(assets).map(e => '"' + e + '"').join(',');
-                let version = createHash('md5').update(filesInsert).digest('hex').substr(0, 4);
+                const filesInsert = listItems.map(e => '/app/' + e).concat(assets).map(e => '"' + e + '"').join(',');
+                const version = createHash('md5').update(filesInsert).digest('hex').substr(0, 4);
                 sw = sw.replace('{#}', version);
                 sw = sw.replace('{#}', version);
                 sw = sw.replace('{htmlServedUri}', htmlServedUri.join('", "'));
-                let location = sw.indexOf('"###"');
-                let pre = sw.substring(0, location);
-                let post = sw.substring(location + 5);
+                const location = sw.indexOf('"###"');
+                const pre = sw.substring(0, location);
+                const post = sw.substring(location + 5);
                 return pre + filesInsert + post;
             }
         }),

@@ -45,7 +45,9 @@ export class FormLogComponent {
             if (Array.isArray(response)) {
                 this.records = response;
                 this.records.forEach(rec => {
-                    if (rec.diff) rec.diff.forEach(makeHumanReadable);
+                    if (rec.diff) {
+                        rec.diff.forEach(makeHumanReadable);
+                    }
                 });
             }
         });

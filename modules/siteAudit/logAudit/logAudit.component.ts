@@ -2,7 +2,6 @@ import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { PageEvent } from '@angular/material';
 
-
 @Component({
     selector: 'cde-log-audit',
     templateUrl: './logAudit.component.html',
@@ -57,17 +56,18 @@ export class LogAuditComponent {
             this.currentPage = event.pageIndex;
         }
 
-        let postBody = {
+        this.http.post<any>('/server/log/httpLogs', {
             currentPage: this.currentPage,
             ipAddress: this.ipAddress,
             totalItems: this.totalItems,
             fromDate: this.fromDate,
             toDate: this.toDate,
             sort: this.sortingBy
-        };
-        this.http.post<any>('/server/log/httpLogs', postBody)
+        })
             .subscribe(res => {
-                if (res.totalItems) this.totalItems = res.totalItems;
+                if (res.totalItems) {
+                    this.totalItems = res.totalItems;
+                }
                 this.gridLogEvents = res.logs.map((log: any) => {
                     return {
                         date: new Date(log.date).toLocaleString(),

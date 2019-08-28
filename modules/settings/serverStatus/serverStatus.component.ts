@@ -15,14 +15,14 @@ import { MatDialog } from '@angular/material';
 export class ServerStatusComponent {
     @ViewChild('confirmReindex') confirmReindex!: TemplateRef<any>;
     esIndices: any;
-    indexToReindex?: number;
+    indexToReindex!: number;
     isDone: boolean = false;
     meshSyncs: any;
-    linkedForms: { total?: number, done?: number } = {};
+    linkedForms: { total: number, done: number } = {total: 0, done: 0};
     statuses: any[] = [];
 
     constructor(
-        private Alert: AlertService,
+        private alert: AlertService,
         private http: HttpClient,
         public dialog: MatDialog,
     ) {
@@ -31,16 +31,16 @@ export class ServerStatusComponent {
 
     okReIndex() {
         this.http.post('/reindex/' + this.indexToReindex, {}).subscribe(() => this.isDone = true);
-        let indexFn = setInterval(() => {
+        const indexFn = setInterval(() => {
             this.http.get<any>('indexCurrentNumDoc/' + this.indexToReindex).subscribe(response => {
-                this.esIndices[this.indexToReindex!].count = response.count;
-                this.esIndices[this.indexToReindex!].totalCount = response.totalCount;
-                if (this.esIndices[this.indexToReindex!].count >= this.esIndices[this.indexToReindex!].totalCount && this.isDone) {
+                this.esIndices[this.indexToReindex].count = response.count;
+                this.esIndices[this.indexToReindex].totalCount = response.totalCount;
+                if (this.esIndices[this.indexToReindex].count >= this.esIndices[this.indexToReindex].totalCount && this.isDone) {
                     clearInterval(indexFn);
-                    this.Alert.addAlert('success', 'Finished reindex ' + this.esIndices[this.indexToReindex!].name);
+                    this.alert.addAlert('success', 'Finished reindex ' + this.esIndices[this.indexToReindex].name);
                     setTimeout(() => {
-                        this.esIndices[this.indexToReindex!].count = 0;
-                        this.esIndices[this.indexToReindex!].totalCount = 0;
+                        this.esIndices[this.indexToReindex].count = 0;
+                        this.esIndices[this.indexToReindex].totalCount = 0;
                     }, 2000);
                 }
             });
@@ -68,32 +68,34 @@ export class ServerStatusComponent {
 
     syncMesh() {
         this.http.post('/server/mesh/syncWithMesh', {}).subscribe();
-        let indexFn = setInterval(() => {
+        const indexFn = setInterval(() => {
             this.http.get<any>('/server/mesh/syncWithMesh').subscribe(res => {
                 this.meshSyncs = [];
-                for (let p in res) {
-                    if (res.hasOwnProperty(p)) this.meshSyncs.push(res[p]);
+                for (const p in res) {
+                    if (res.hasOwnProperty(p)) {
+                        this.meshSyncs.push(res[p]);
+                    }
                 }
                 if (res.dataelement.done === res.dataelement.total
                     && res.form.done === res.form.total) {
                     clearInterval(indexFn);
-                    this.Alert.addAlert('success', 'Done syncing');
+                    this.alert.addAlert('success', 'Done syncing');
                     this.meshSyncs = null;
                 }
-            }, () => this.Alert.addAlert('danger', "Unexpected error syncing"));
+            }, () => this.alert.addAlert('danger', 'Unexpected error syncing'));
         }, 1000);
     }
 
     syncLinkedForms() {
         this.http.post('/syncLinkedForms', {}).subscribe();
-        let indexFn = setInterval(() => {
+        const indexFn = setInterval(() => {
             this.http.get<any>('/syncLinkedForms').subscribe(res => {
                 this.linkedForms = res;
                 if (res.done === res.total) {
                     clearInterval(indexFn);
-                    this.Alert.addAlert('success', 'Done syncing');
+                    this.alert.addAlert('success', 'Done syncing');
                 }
-            }, () => this.Alert.addAlert('danger', "Unexpected error syncing"));
+            }, () => this.alert.addAlert('danger', 'Unexpected error syncing'));
         }, 1000);
     }
 

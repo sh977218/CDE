@@ -1,8 +1,8 @@
-<h4 *ngIf="elt.isDraft">
+<h4 *ngIf="(elt.elementType === 'cde' || elt.elementType === 'form') && elt.isDraft; else discussArea">
     Discussion is not available in Drafts. Click the Draft slider above to view the current Published version.
 </h4>
 
-<div *ngIf="!elt.isDraft">
+<ng-template #discussArea>
     <div *ngIf="!userService.user" class="ml-2 my-4">
         Please <a routerLink="/login">log in</a> to comment.
     </div>
@@ -17,4 +17,4 @@
         </form>
     </div>
     <cde-comments [eltId]="eltId" [eltName]="eltName" [currentTab]="_currentTab" [ownElt]="ownElt"></cde-comments>
-</div>
+</ng-template>

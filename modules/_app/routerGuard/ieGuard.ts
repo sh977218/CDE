@@ -1,4 +1,4 @@
-import { Injectable }       from '@angular/core';
+import { Injectable } from '@angular/core';
 import {
     ActivatedRouteSnapshot,
     CanActivate,
@@ -8,7 +8,6 @@ import {
     Router,
     RouterStateSnapshot,
 } from '@angular/router';
-
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
 

@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-
 import { NonCoreModule } from 'non-core/noncore.module';
 import {
     MatIconModule, MatInputModule, MatSelectModule, MatButtonModule, MatAutocompleteModule, MatDialogModule

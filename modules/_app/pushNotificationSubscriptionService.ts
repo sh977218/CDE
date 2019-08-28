@@ -56,12 +56,12 @@ export class PushNotificationSubscriptionService {
         }
     }
 
-    static fetchError(error: Error): Promise<any> {
+    static fetchError(error: any): Promise<any> {
         PushNotificationSubscriptionService.handleError(error);
         if (error instanceof Error) {
             if (error.message.indexOf('denied')) {
                 alert(`Your browser preferences prevent notifications from this website. (${error.message})`);
-                return;
+                return Promise.resolve();
             }
             if (error.message === 'Failed to fetch' || error.message === 'Unexpected token < in JSON at position 0') {
                 throw new Error('Server is not available or you are offline.');

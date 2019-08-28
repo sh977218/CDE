@@ -20,7 +20,7 @@ export function newCodeableConcept(coding: FhirCoding[], text?: string): FhirCod
             return false;
         });
     }
-    return {coding: coding, text: text};
+    return {coding, text};
 }
 
 export function reduce<T>(concept: FhirCodeableConcept, codingCb: (a: T, c: FhirCoding) => T, initialValue: T): T {

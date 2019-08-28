@@ -1,5 +1,5 @@
 import { find, slice, sortBy, uniqWith } from 'lodash';
-import { Cb, Cb1, Classification, ClassificationElement, Item, MongooseType, Organization } from 'shared/models.model';
+import { Cb, Cb1, Classification, ClassificationElement, Item, MongooseType, ObjectId, Organization } from 'shared/models.model';
 
 export const actions: {
     create: string,
@@ -21,25 +21,35 @@ function findClassifOrCreate(elements: ClassificationElement[], category: string
 }
 
 export function addCategoriesToOrg(org: Organization, categories: string[]): void {
-    if (!org.classifications) org.classifications = [];
+    if (!org.classifications) {
+        org.classifications = [];
+    }
     addCategoriesToTree(findClassifOrCreate(org.classifications, categories[0]), slice(categories, 1));
 }
 
 export function addCategoriesToTree(tree: Classification | ClassificationElement, categories: string[]): void {
     let p = tree;
     categories.forEach(category => {
-        if (!p.elements) p.elements = [];
+        if (!p.elements) {
+            p.elements = [];
+        }
         p = findClassifOrCreate(p.elements, category);
     });
 }
 
 export function arrangeClassification(item: Item, orgName: string): void {
-    let index = item.classification!.findIndex(o => o.stewardOrg.name === orgName);
-    item.classification!.unshift(item.classification!.splice(index, 1)[0]);
+    if (item.classification) {
+        item.classification.unshift(item.classification.splice(
+            item.classification.findIndex(o => o.stewardOrg.name === orgName),
+            1
+        )[0]);
+    }
 }
 
 export function classifyItem(item: MongooseType<Item>, orgName: string, categories: string[]): void {
-    if (!item.classification) item.classification = [];
+    if (!item.classification) {
+        item.classification = [];
+    }
     let classification = find(item.classification, (o: Classification) => o.stewardOrg && o.stewardOrg.name === orgName);
     if (!classification) {
         classification = {
@@ -50,51 +60,61 @@ export function classifyItem(item: MongooseType<Item>, orgName: string, categori
     }
     addCategoriesToTree(classification, categories);
     arrangeClassification(item, orgName);
-    if (item.markModified) item.markModified('classification');
+    if (item.markModified) {
+        item.markModified('classification');
+    }
 }
 
 export function findLeaf(classification: Classification, categories: string[]): any {
     let notExist = false;
     let leaf: Classification | ClassificationElement | undefined = classification;
     let parent: Classification | ClassificationElement | undefined = classification;
-    let index = null;
     categories.forEach((category, i) => {
-        index = i;
-        let found = find(leaf!.elements, (element: ClassificationElement) => element.name === category);
-        if (i === categories.length - 2) parent = found;
-        if (!found) notExist = true;
+        const found = find(leaf && leaf.elements || [], (element: ClassificationElement) => element.name === category);
+        if (i === categories.length - 2) {
+            parent = found;
+        }
+        if (!found) {
+            notExist = true;
+        }
         leaf = found;
     });
     if (notExist) {
         return null;
     } else {
         return {
-            leaf: leaf,
-            parent: parent
+            leaf,
+            parent,
         };
     }
 }
 
 export function renameClassifyElt(item: MongooseType<Item>, orgName: string, categories: string[], newName: string): void {
-    if (!item.classification) item.classification = [];
-    let classification = find(item.classification, (o: Classification) => o.stewardOrg && o.stewardOrg.name === orgName);
+    if (!item.classification) {
+        item.classification = [];
+    }
+    const classification = find(item.classification, (o: Classification) => o.stewardOrg && o.stewardOrg.name === orgName);
     if (classification) {
-        let leaf = findLeaf(classification, categories);
+        const leaf = findLeaf(classification, categories);
         if (leaf) {
             leaf.leaf.name = newName;
             arrangeClassification(item, orgName);
-            if (item.markModified) item.markModified('classification');
+            if (item.markModified) {
+                item.markModified('classification');
+            }
         }
     }
 }
 
 export function unclassifyElt(item: MongooseType<Item>, orgName: string, categories: string[]): any {
-    let classification = find(item.classification, (o: Classification) => o.stewardOrg && o.stewardOrg.name === orgName);
+    const classification = find(item.classification, (o: Classification) => o.stewardOrg && o.stewardOrg.name === orgName);
     if (classification) {
-        let leaf = findLeaf(classification, categories);
+        const leaf = findLeaf(classification, categories);
         if (leaf) {
             leaf.parent.elements.splice(leaf.index, 1);
-            if (item.markModified) item.markModified('classification');
+            if (item.markModified) {
+                item.markModified('classification');
+            }
         }
     }
 }
@@ -103,7 +123,7 @@ export function unclassifyElt(item: MongooseType<Item>, orgName: string, categor
 // ---------------------------------------------------
 export function addCategory(tree: Classification, fields: string[], cb: Cb<string> = () => {
 }): void {
-    let lastLevel = fetchLevel(tree, fields);
+    const lastLevel = fetchLevel(tree, fields);
     if (lastLevel.elements.some(element => element.name === fields[fields.length - 1])) {
         return cb('Classification Already Exists');
     } else {
@@ -113,7 +133,7 @@ export function addCategory(tree: Classification, fields: string[], cb: Cb<strin
 }
 
 export function deleteCategory(tree: Classification, fields: string[]): void {
-    let lastLevel = fetchLevel(tree, fields);
+    const lastLevel = fetchLevel(tree, fields);
     for (let i = 0; i < lastLevel.elements.length; i++) {
         if (lastLevel.elements[i] === null) {
             lastLevel.elements.splice(i, 1);
@@ -128,13 +148,15 @@ export function deleteCategory(tree: Classification, fields: string[]): void {
 
 export function fetchLevel(tree: Classification, fields: string[]): Classification | ClassificationElement {
     function findCategory(subTree: Classification | ClassificationElement, name: string) {
-        for (let i = 0; i < subTree.elements.length; i++) {
-            if (subTree.elements[i].name === name) {
-                if (!subTree.elements[i].elements) subTree.elements[i].elements = [];
-                return subTree.elements[i];
+        for (const element of subTree.elements) {
+            if (element.name === name) {
+                if (!element.elements) {
+                    element.elements = [];
+                }
+                return element;
             }
         }
-        subTree.elements.push({name: name, elements: []});
+        subTree.elements.push({name, elements: []});
         return subTree.elements[subTree.elements.length - 1];
     }
 
@@ -148,7 +170,9 @@ export function fetchLevel(tree: Classification, fields: string[]): Classificati
 }
 
 export function findSteward(de: Item, orgName: string): { index: number, object: Classification } | undefined {
-    if (!de || !de.classification) return undefined;
+    if (!de || !de.classification) {
+        return;
+    }
     for (let i = 0; i < de.classification.length; i++) {
         if (de.classification[i].stewardOrg.name === orgName) {
             return {index: i, object: de.classification[i]};
@@ -157,7 +181,7 @@ export function findSteward(de: Item, orgName: string): { index: number, object:
 }
 
 export function modifyCategory(tree: Classification, fields: string[], action: any, cb: Cb): void {
-    let lastLevel = fetchLevel(tree, fields);
+    const lastLevel = fetchLevel(tree, fields);
     for (let i = 0; i < lastLevel.elements.length; i++) {
         if (lastLevel.elements[i] === null) {
             lastLevel.elements.splice(i, 1);
@@ -177,7 +201,7 @@ export function modifyCategory(tree: Classification, fields: string[], action: a
 }
 
 export function removeCategory(tree: Classification, fields: string[], cb: Cb<string>): void {
-    let lastLevel = fetchLevel(tree, fields);
+    const lastLevel = fetchLevel(tree, fields);
     for (let i = 0; i < lastLevel.elements.length; i++) {
         if (lastLevel.elements[i] === null) {
             lastLevel.elements.splice(i, 1);
@@ -192,7 +216,7 @@ export function removeCategory(tree: Classification, fields: string[], cb: Cb<st
 }
 
 export function renameCategory(tree: Classification, fields: string[], newName: string): void {
-    let lastLevel = fetchLevel(tree, fields);
+    const lastLevel = fetchLevel(tree, fields);
     for (let i = 0; i < lastLevel.elements.length; i++) {
         if (lastLevel.elements[i] === null) {
             lastLevel.elements.splice(i, 1);
@@ -210,62 +234,69 @@ export function sortClassification(item: Item): Item {
         elements.sort((c1, c2) => c1.name.localeCompare(c2.name));
         elements.forEach(e => sortElements(e.elements));
     }
-
-    item.classification!.sort((c1, c2) => c1.stewardOrg.name.localeCompare(c2.stewardOrg.name));
-    item.classification!.forEach(c => sortElements(c.elements));
+    if (item.classification) {
+        item.classification.sort((c1, c2) => c1.stewardOrg.name.localeCompare(c2.stewardOrg.name));
+        item.classification.forEach(c => sortElements(c.elements));
+    }
     return item;
 }
 
 export function transferClassifications(source: Item, destination: Item): void {
-    if (!destination.classification) destination.classification = [];
-    source.classification!.forEach(stewardOrgSource => {
-        let st = findSteward(destination, stewardOrgSource.stewardOrg.name);
-        let stewardOrgDestination: Classification;
-        if (st) {
-            stewardOrgDestination = st.object;
-        } else {
-            destination.classification!.push({stewardOrg: {name: stewardOrgSource.stewardOrg.name}, elements: []});
-            stewardOrgDestination = destination.classification![destination.classification!.length - 1];
+    if (source.classification) {
+        if (!destination.classification) {
+            destination.classification = [];
         }
-        treeChildren(stewardOrgSource, [], path => {
-            addCategory(stewardOrgDestination, path);
+        const destinationClassification = destination.classification;
+        source.classification.forEach(stewardOrgSource => {
+            const st = findSteward(destination, stewardOrgSource.stewardOrg.name);
+            let stewardOrgDestination: Classification;
+            if (st) {
+                stewardOrgDestination = st.object;
+            } else {
+                destinationClassification.push({stewardOrg: {name: stewardOrgSource.stewardOrg.name}, elements: []});
+                stewardOrgDestination = destinationClassification[destinationClassification.length - 1];
+            }
+            treeChildren(stewardOrgSource, [], path => {
+                addCategory(stewardOrgDestination, path);
+            });
         });
-    });
+    }
 }
 
-type Element = {
-    name: string,
-    elements: Element[]
+interface Element {
+    name: string;
+    elements: Element[];
 }
-export type OrgClassification = {
-    _id: String,
-    elements: Element []
+export interface OrgClassification {
+    _id: ObjectId;
+    elements: Element [];
 }
 
 function mergeElements(e1: Element[] = [], e2: Element[] = []): Element [] {
-    let elements = uniqWith(e1.concat(e2), (arrVal: Element, othVal: Element) => {
+    return sortBy(uniqWith(e1.concat(e2), (arrVal: Element, othVal: Element) => {
         if (arrVal.name === othVal.name) {
             othVal.elements = mergeElements(arrVal.elements, othVal.elements);
             return true;
-        } else return false;
-    });
-    return sortBy(elements, 'name');
+        } else {
+            return false;
+        }
+    }), 'name');
 }
 
 export function mergeOrgClassifications(c1: OrgClassification[], c2: OrgClassification[]): Element[] {
-    let orgClassification = uniqWith(c1.concat(c2), (arrVal: OrgClassification, othVal: OrgClassification) => {
+    return sortBy(uniqWith(c1.concat(c2), (arrVal: OrgClassification, othVal: OrgClassification) => {
         if (arrVal._id === othVal._id) {
             othVal.elements = mergeElements(arrVal.elements, othVal.elements);
             return true;
-        } else return false;
-    });
-    let c = sortBy(orgClassification, '_id');
-    return c[0].elements[0].elements;
+        } else {
+            return false;
+        }
+    }), '_id')[0].elements[0].elements;
 }
 
 function treeChildren(tree: Classification | ClassificationElement, path: string[], cb: Cb1<string[]>) {
-    tree.elements.forEach(function (element) {
-        let newPath = path.slice(0);
+    tree.elements.forEach((element) => {
+        const newPath = path.slice(0);
         newPath.push(element.name);
         if (element.elements && element.elements.length > 0) {
             treeChildren(element, newPath, cb);

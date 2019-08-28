@@ -6,6 +6,7 @@ import {
     registrationStateSchema, sourceSchema
 } from 'server/system/schemas';
 import { FormElement } from 'shared/form/form.model';
+import { Classification } from 'shared/models.model';
 
 addStringtype(mongoose);
 const Schema = mongoose.Schema;
@@ -13,7 +14,7 @@ const StringType = (Schema.Types as any).StringType;
 
 const config = require('config');
 
-const DisplayProfileSchema = new Schema({
+const displayProfileSchema = new Schema({
     name: StringType,
     sectionsAsMatrix: {type: Boolean},
     displayCopyright: {type: Boolean},
@@ -106,7 +107,7 @@ const questionSchema = new Schema({
     defaultAnswer: StringType
 }, {_id: false});
 
-let inFormSchema = new Schema({
+const inFormSchema = new Schema({
     form: {
         tinyId: StringType,
         version: StringType,
@@ -184,7 +185,8 @@ export const formJson = {
     },
     referenceDocuments: {
         type: [referenceDocumentSchema],
-        description: 'Any written, printed or electronic matter used as a source of information. Used to provide information or evidence of authoritative or official record.',
+        description: 'Any written, printed or electronic matter used as a source of information. Used to provide information or evidence' +
+            ' of authoritative or official record.',
     },
     properties: {
         type: [propertySchema],
@@ -211,16 +213,16 @@ export const formJson = {
         text: {type: StringType, default: ''}
     },
     formElements: [innerFormEltSchema],
-    displayProfiles: [DisplayProfileSchema],
+    displayProfiles: [displayProfileSchema],
 };
 export const formSchema = new Schema(formJson, {
     collection: 'forms',
     usePushEach: true
 });
-formSchema.path("classification").validate(v => {
+formSchema.path('classification').validate((v: Classification[]) => {
     return !v.map(value => value.stewardOrg.name)
         .some((value, index, array) => array.indexOf(value) !== array.lastIndexOf(value));
-}, "Duplicate Steward Classification");
+}, 'Duplicate Steward Classification');
 formSchema.index({tinyId: 1, archived: 1}, {
     unique: true,
     name: 'formLiveTinyId',
@@ -237,9 +239,7 @@ export const draftSchema = new Schema(formJson, {
         virtuals: true
     }
 });
-draftSchema.virtual('isDraft').get(function () {
-    return true;
-});
+draftSchema.virtual('isDraft').get(() => true);
 
 export const formSourceSchema = new Schema(formJson, {
     collection: 'formsources',

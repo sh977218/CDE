@@ -17,8 +17,8 @@ export interface SummaryComponent {
     selector: '[cdeSummaryPlaceholder]',
 })
 export class SummaryPlaceholderDirective {
-    @Input() elt: Elt;
-    @Input() eltIndex: number;
+    @Input() elt!: Elt;
+    @Input() eltIndex!: number;
     constructor(public viewContainerRef: ViewContainerRef) {}
 }
 
@@ -27,13 +27,12 @@ export class SummaryPlaceholderDirective {
     templateUrl: './summaryListItem.component.html',
 })
 export class SummaryListItemComponent implements AfterViewInit, OnChanges {
-    @Input() elt: Elt;
-    @Input() eltIndex: number;
+    @Input() elt!: Elt;
+    @Input() eltIndex!: number;
     @Input() contentComponent: any;
     @Output() select = new EventEmitter<string>();
-    @ViewChild(SummaryPlaceholderDirective) cHost: SummaryPlaceholderDirective;
-
-    componentRef: ComponentRef<any>;
+    @ViewChild(SummaryPlaceholderDirective) cHost!: SummaryPlaceholderDirective;
+    componentRef!: ComponentRef<any>;
 
     constructor(private _componentFactoryResolver: ComponentFactoryResolver,
                 private cdr: ChangeDetectorRef) {}
@@ -56,7 +55,7 @@ export class SummaryListItemComponent implements AfterViewInit, OnChanges {
         this.componentRef = viewContainerRef.createComponent(componentFactory);
         (this.componentRef.instance as SummaryComponent).elt = this.elt;
         (this.componentRef.instance as SummaryComponent).eltIndex = this.eltIndex;
-        (this.componentRef.instance as SummaryComponent).select.subscribe(event => this.select.emit(event));
+        (this.componentRef.instance as SummaryComponent).select.subscribe((event: string) => this.select.emit(event));
         this.cdr.detectChanges();
     }
 }

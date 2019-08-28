@@ -11,13 +11,13 @@
                 <mat-icon (click)="prop.edit = true" *ngIf="canEdit && !prop.edit"
                       id="removeProperty-{{i}}">delete</mat-icon>
                 <cde-sortable-array [theArray]="elt.properties" [index]="i" *ngIf="canEdit"
-                                    (cb)="onEltChange.emit()"></cde-sortable-array>
+                                    (cb)="eltChange.emit()"></cde-sortable-array>
                 Key:
             </dt>
             <dd id="key_{{i}}" class="col-9">{{prop.key}}</dd>
             <dt class="col-3 text-right">Value:</dt>
             <dd id="value_{{i}}" class="col-9">
-                <cde-inline-area-edit [(model)]="prop.value" (modelChange)="onEltChange.emit()"
+                <cde-inline-area-edit [(model)]="prop.value" (modelChange)="eltChange.emit()"
                                       [(defFormat)]="prop.valueFormat"
                                       [isAllowed]="canEdit"></cde-inline-area-edit>
             </dd>

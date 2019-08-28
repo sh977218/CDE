@@ -15,39 +15,39 @@
                         <h4>Form fields:</h4>
                         <div>
                             <button class="btn btn-outline-dark btn-xs" (click)="selectAllFormMergerFields();"
-                                    [disabled]="!ownTargetForm">All
+                                    [disabled]="!mergeFormService.error.ownTargetForm">All
                             </button>
                             <button class="btn btn-outline-dark btn-xs" (click)="deselectAllFormMergerFields();"
-                                    [disabled]="!ownTargetForm">None
+                                    [disabled]="!mergeFormService.error.ownTargetForm">None
                             </button>
                         </div>
                         <div>
                             <label><input type="checkbox" [(ngModel)]="mergeFields.designations"
-                                          [disabled]="!ownTargetForm"> Designation</label>
+                                          [disabled]="!mergeFormService.error.ownTargetForm"> Designation</label>
                         </div>
                         <div>
                             <label><input type="checkbox" [(ngModel)]="mergeFields.definitions"
-                                          [disabled]="!ownTargetForm"> Definition</label>
+                                          [disabled]="!mergeFormService.error.ownTargetForm"> Definition</label>
                         </div>
                         <div>
                             <label><input type="checkbox" [(ngModel)]="mergeFields.referenceDocuments"
-                                          [disabled]="!ownTargetForm">Ref Documents</label>
+                                          [disabled]="!mergeFormService.error.ownTargetForm">Ref Documents</label>
                         </div>
                         <div>
                             <label><input type="checkbox" [(ngModel)]="mergeFields.properties"
-                                          [disabled]="!ownTargetForm">Properties</label>
+                                          [disabled]="!mergeFormService.error.ownTargetForm">Properties</label>
                         </div>
                         <div>
                             <label> <input type="checkbox" [(ngModel)]="mergeFields.ids"
-                                           [disabled]="!ownTargetForm"> IDs</label>
+                                           [disabled]="!mergeFormService.error.ownTargetForm"> IDs</label>
                         </div>
                         <div>
                             <label> <input type="checkbox" [(ngModel)]="mergeFields.classifications"
-                                           [disabled]="!ownTargetForm"> Classifications</label>
+                                           [disabled]="!mergeFormService.error.ownTargetForm"> Classifications</label>
                         </div>
                         <div>
                             <label> <input type="checkbox" [(ngModel)]="mergeFields.questions"
-                                           [disabled]="!ownTargetForm"> Questions</label>
+                                           [disabled]="!mergeFormService.error.ownTargetForm"> Questions</label>
                         </div>
                     </div>
                     <div class="smallSpace left"></div>

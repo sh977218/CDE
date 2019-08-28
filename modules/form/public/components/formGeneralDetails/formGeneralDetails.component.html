@@ -15,35 +15,35 @@
         <dt class="col-3 text-right">Copyrighted:</dt>
         <dd class="col-9">
             <input type="checkbox" [(ngModel)]="elt.isCopyrighted" [disabled]="!canEdit"
-                   id="isCopyrighted" title="copyrighted" (change)="onEltChange.emit();"/>
+                   id="isCopyrighted" title="copyrighted" (change)="eltChange.emit();"/>
             <div *ngIf="elt.isCopyrighted">
                 Statement:
                 <cde-inline-edit id="formCopyrightText" [(model)]="elt.copyright.text"
-                                 [isAllowed]="canEdit" (modelChange)="onEltChange.emit();"></cde-inline-edit>
+                                 [isAllowed]="canEdit" (modelChange)="eltChange.emit();"></cde-inline-edit>
                 Authority:
                 <cde-inline-edit id="formCopyrightAuthority" [(model)]="elt.copyright.authority"
-                                 [isAllowed]="canEdit" (modelChange)="onEltChange.emit();"></cde-inline-edit>
+                                 [isAllowed]="canEdit" (modelChange)="eltChange.emit();"></cde-inline-edit>
             </div>
         </dd>
         <dt class="col-3 text-right">Origin:</dt>
         <dd class="col-9">
             <cde-inline-edit id="origin" [(model)]="elt.origin" [isAllowed]="canEdit"
-                             (modelChange)="onEltChange.emit();">
+                             (modelChange)="eltChange.emit();">
             </cde-inline-edit>
         </dd>
         <dt class="col-3 text-right">Disallow Rendering:</dt>
         <dd class="col-9">
             <input type="checkbox" [(ngModel)]="elt.noRenderAllowed" [disabled]="!canEdit"
-                   id="disallowRendering" title="disallow rendering" (change)="onEltChange.emit();"/>
+                   id="disallowRendering" title="disallow rendering" (change)="eltChange.emit();"/>
         </dd>
         <dt class="col-3 text-right">Version:</dt>
         <dd class="col-9">{{elt.version}}</dd>
         <dt class="col-3 text-right">Steward:</dt>
         <dd class="col-9">
-            <cde-inline-select-edit [(value)]="elt.stewardOrg.name" [selectOptions]="userOrgs"
+            <cde-inline-select-edit [value]="elt.stewardOrg.name" [selectOptions]="userOrgs"
                                     (save)="changeStewardOrg($event);" [isAllowed]="canEdit && !elt.isDraft"
-                                    [attr.aria-label]="orgHelperService.createOrgDetailedInfoHtml(elt.stewardOrg.name)"
-                                    [matTooltip]="orgHelperService.createOrgDetailedInfoHtml(elt.stewardOrg.name)"
+                                    [attr.aria-label]="orgHelperService.createOrgDetailedInfoHtml(elt.stewardOrg.name || '')"
+                                    [matTooltip]="orgHelperService.createOrgDetailedInfoHtml(elt.stewardOrg.name || '')"
                                     matTooltipClass="cdeTooltipMultiline">
             </cde-inline-select-edit>
         </dd>

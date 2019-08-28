@@ -1,6 +1,6 @@
 <div id="derivationRulesDiv">
     <h4>Derivation Rules</h4>
-    <div *ngIf="elt.derivationRules < 1">There are no derivation rules.</div>
+    <div *ngIf="elt.derivationRules.length < 1">There are no derivation rules.</div>
     <div *ngFor="let derRule of elt.derivationRules; let i = index">
         <div class="row">
             <div class="col-lg-1" *ngIf="canEdit">
@@ -64,7 +64,7 @@
             <div class="form-group">
                 <label for="newDerivationRule.inputs">Inputs: </label>
                 <div id="newDerivationRule.inputs">
-                    <span *ngIf="!invalidCdeMessage.length">All {{quickBoardService.number_dataElements}} CDEs in your quickboard.</span>
+                    <span *ngIf="!invalidCdeMessage.length">All {{quickBoardService.numberDataElements}} CDEs in your quickboard.</span>
                     <span *ngIf="invalidCdeMessage.length" class="error-block">{{invalidCdeMessage}}</span>
                 </div>
             </div>

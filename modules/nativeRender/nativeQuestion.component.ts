@@ -3,14 +3,14 @@ import { FormControl } from '@angular/forms';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
 import { distinctUntilChanged, debounceTime } from 'rxjs/operators';
 import { questionMulti } from 'shared/form/fe';
-import { FormQuestion } from 'shared/form/form.model';
+import { FormQuestion, FormQuestionFollow } from 'shared/form/form.model';
 
 @Component({
     selector: 'cde-native-question',
     templateUrl: './nativeQuestion.component.html',
 })
 export class NativeQuestionComponent implements OnInit {
-    @Input() formElement!: FormQuestion;
+    @Input() formElement!: FormQuestionFollow;
     @Input() numSubQuestions!: number;
     @Input() parentValue!: string;
     NRS = NativeRenderService;
@@ -18,9 +18,8 @@ export class NativeQuestionComponent implements OnInit {
     datePrecisionToStep = FormQuestion.datePrecisionToStep;
     metadataTagsNew?: string;
     questionMulti = questionMulti;
-
     vsacControl = new FormControl();
-    vsacCodes: string[] = [];
+    vsacCodes: {code: string, displayname: string}[] = [];
 
     constructor(public nrs: NativeRenderService) {
     }
@@ -28,14 +27,14 @@ export class NativeQuestionComponent implements OnInit {
     ngOnInit() {
         if (this.formElement.question.datatype === 'Dynamic Code List') {
             const q = this.formElement.question;
-            this.loadVsacCode((q.datatypeDynamicCodeList!.code || ''), '');
+            this.loadVsacCode((q.datatypeDynamicCodeList.code || ''), '');
             this.vsacControl.valueChanges
                 .pipe(
                     debounceTime(400),
                     distinctUntilChanged()
                 )
                 .subscribe(value => {
-                    this.loadVsacCode((q.datatypeDynamicCodeList!.code || ''), value);
+                    this.loadVsacCode((q.datatypeDynamicCodeList.code || ''), value);
                 });
         }
         this.formElement.question.previousUom = this.formElement.question.answerUom;
@@ -87,8 +86,11 @@ export class NativeQuestionComponent implements OnInit {
     }
 
     isFirstInRow(index: number): boolean {
-        if (this.nrs.profile && this.nrs.profile.numberOfColumns > 0) { return index % this.nrs.profile.numberOfColumns === 0; }
-        else { return index % 4 === 0; }
+        if (this.nrs.profile && this.nrs.profile.numberOfColumns > 0) {
+            return index % this.nrs.profile.numberOfColumns === 0;
+        } else {
+            return index % 4 === 0;
+        }
     }
 
     isOneLiner(q: FormQuestion, numSubQuestions: number): boolean {

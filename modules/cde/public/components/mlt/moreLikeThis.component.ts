@@ -1,10 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
-import { AlertService } from 'alert/alert.service';
-import { QuickBoardListService } from '_app/quickBoardList.service';
-import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
 import { MatDialog } from '@angular/material';
+import { Router } from '@angular/router';
+import { QuickBoardListService } from '_app/quickBoardList.service';
+import { AlertService } from 'alert/alert.service';
+import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
+import { DataElement } from 'shared/de/dataElement.model';
 
 
 @Component({
@@ -12,10 +13,10 @@ import { MatDialog } from '@angular/material';
     templateUrl: 'moreLikeThis.component.html',
 })
 export class MoreLikeThisComponent {
-    @Input() elt: any;
-    @ViewChild('mltModal') public mltModal: TemplateRef<any>;
-    @ViewChild('mltPinModal') public mltPinModal: PinBoardModalComponent;
-    cdes: any[];
+    @Input() elt!: DataElement;
+    @ViewChild('mltModal') mltModal!: TemplateRef<any>;
+    @ViewChild('mltPinModal') mltPinModal!: PinBoardModalComponent;
+    cdes!: DataElement[];
 
     constructor(
         private http: HttpClient,
@@ -26,7 +27,7 @@ export class MoreLikeThisComponent {
     ) {}
 
     open() {
-        this.http.get<any>('/moreLikeCde/' + this.elt.tinyId).subscribe(response => {
+        this.http.get<{cdes: DataElement[]}>('/moreLikeCde/' + this.elt.tinyId).subscribe(response => {
             this.cdes = response.cdes;
         }, () => this.alert.addAlert('error', 'Unable to retrieve MLT'));
         this.dialog.open(this.mltModal, {width: '1000px'});

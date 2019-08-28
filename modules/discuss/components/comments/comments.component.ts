@@ -1,17 +1,28 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MatDialog } from '@angular/material';
+import { UserService } from '_app/user.service';
+import { AlertService } from 'alert/alert.service';
+import { IsAllowedService } from 'non-core/isAllowed.service';
 import { Subject } from 'rxjs/Subject';
 import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
 import { TimerObservable } from 'rxjs/observable/TimerObservable';
 import { debounceTime, distinctUntilChanged, map, take } from 'rxjs/operators';
+import { Comment, CommentReply } from 'shared/models.model';
 import * as io from 'socket.io-client';
 
-import { AlertService } from 'alert/alert.service';
-import { UserService } from '_app/user.service';
-import { IsAllowedService } from 'non-core/isAllowed.service';
-import { CommentReply } from 'shared/models.model';
+interface ReplyDraft {
+     text?: string;
+}
 
+type CommentWithReplyDraft = Comment & {
+    newReply: ReplyDraft;
+};
+
+type CommentWithShowReplies = Comment & {
+    replies: CommentReply[];
+    showAllReplies: boolean;
+};
 
 @Component({
     selector: 'cde-comments',
@@ -64,23 +75,22 @@ import { CommentReply } from 'shared/models.model';
     `]
 })
 export class CommentsComponent implements OnInit, OnDestroy {
-    @Input() eltId;
-    @Input() eltName;
-    @Input() ownElt;
-
-    private localCurrentTab;
-    @Input() set currentTab(t) {
-        this.localCurrentTab = t;
+    @Input() eltId!: string;
+    @Input() eltName!: string;
+    @Input() ownElt!: boolean;
+    @Input() set currentTab(t: string) {
+        this._currentTab = t;
         this.comments.forEach(c => {
             c.currentComment = c.linkedTab === t;
         });
     }
+    private _currentTab!: string;
 
     comments: Array<any> = [];
     newReply: CommentReply = new CommentReply();
     socket = io((window as any).publicUrl + '/comment');
     subscriptions: any = {};
-    private emitCurrentReplying = new Subject<{ _id: string, comment: string }>();
+    private emitCurrentReplying = new Subject<{ _id: string, comment: ReplyDraft }>();
 
     constructor(private http: HttpClient,
                 public dialog: MatDialog,
@@ -93,7 +103,7 @@ export class CommentsComponent implements OnInit, OnDestroy {
         this.loadComments();
         this.socket.emit('room', this.eltId);
         this.socket.on('commentUpdated', () => this.loadComments());
-        this.socket.on('userTyping', data => {
+        this.socket.on('userTyping', (data: {commentId: string, username: string}) => {
             this.comments.forEach(c => {
                 if (c._id === data.commentId && this.userService.user && data.username !== this.userService.user.username) {
                     if (this.subscriptions[c._id]) { this.subscriptions[c._id].unsubscribe(); }
@@ -123,7 +133,7 @@ export class CommentsComponent implements OnInit, OnDestroy {
         this.http.get<Array<any>>('/server/discuss/comments/eltId/' + this.eltId)
             .subscribe(res => {
                 res.forEach(c => {
-                    c.currentComment = c.linkedTab === this.localCurrentTab;
+                    c.currentComment = c.linkedTab === this._currentTab;
                     c.newReply = {};
                 });
                 this.comments = res;
@@ -131,43 +141,44 @@ export class CommentsComponent implements OnInit, OnDestroy {
     }
 
 
-    canRemoveComment(com) {
-        return this.ownElt || (this.userService.user && this.userService.user._id === com.user.userId);
+    canRemoveComment(comment: Comment) {
+        return this.ownElt
+            || (this.userService.user && this.userService.user._id === comment.user.userId);
     }
 
-    canReopenComment(com) {
-        return com.status === 'resolved' && this.canRemoveComment(com);
+    canReopenComment(comment: Comment) {
+        return comment.status === 'resolved' && this.canRemoveComment(comment);
     }
 
-    canResolveComment(com) {
-        return com.status !== 'resolved' && this.canRemoveComment(com);
+    canResolveComment(comment: Comment) {
+        return comment.status !== 'resolved' && this.canRemoveComment(comment);
     }
 
-    removeComment(commentId) {
+    removeComment(commentId: string) {
         this.http.post('/server/discuss/deleteComment', {commentId}).subscribe();
     }
 
-    resolveComment(commentId) {
+    resolveComment(commentId: string) {
         this.http.post('/server/discuss/resolveComment', {commentId}).subscribe();
     }
 
-    reopenComment(commentId) {
+    reopenComment(commentId: string) {
         this.http.post('/server/discuss/reopenComment', {commentId}).subscribe();
     }
 
-    removeReply(replyId) {
+    removeReply(replyId: string) {
         this.http.post('/server/discuss/deleteReply', {replyId}).subscribe();
     }
 
-    resolveReply(replyId) {
+    resolveReply(replyId: string) {
         this.http.post('/server/discuss/resolveReply', {replyId}).subscribe();
     }
 
-    reopenReply(replyId) {
+    reopenReply(replyId: string) {
         this.http.post('/server/discuss/reopenReply', {replyId}).subscribe();
     }
 
-    replyToComment(comment) {
+    replyToComment(comment: CommentWithReplyDraft) {
         this.http.post('/server/discuss/replyComment', {
             commentId: comment._id,
             eltName: this.eltName,
@@ -178,13 +189,15 @@ export class CommentsComponent implements OnInit, OnDestroy {
         );
     }
 
-    cancelReply = comment => comment.newReply = {};
+    cancelReply(comment: CommentWithReplyDraft) {
+        comment.newReply = {};
+    }
 
-    changeOnReply(comment) {
+    changeOnReply(comment: CommentWithReplyDraft) {
         this.emitCurrentReplying.next({_id: comment._id, comment: comment.newReply});
     }
 
-    showReply(comment: any, j) {
+    showReply(comment: CommentWithShowReplies, j: number) {
         if (comment.showAllReplies) {
             return true;
         } else {
@@ -192,7 +205,7 @@ export class CommentsComponent implements OnInit, OnDestroy {
         }
     }
 
-    showInfo(comment, j) {
+    showInfo(comment: CommentWithShowReplies, j: number) {
         return j === 3 && !comment.showAllReplies && comment.replies.length > 5;
     }
 }

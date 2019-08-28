@@ -11,5 +11,8 @@ declare module 'async/forEachSeries';
 declare module 'async/memoize';
 declare module 'async/series';
 declare module 'async/some';
+declare module 'bootstrap-tour/build/js/bootstrap-tour-standalone.min.js';
+declare module 'js-toggle-switch/dist/toggle-switch';
+declare module 'jxon';
 declare module 'lodash/find';
 declare module 'lodash/slice';

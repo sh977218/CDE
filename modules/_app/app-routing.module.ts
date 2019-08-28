@@ -15,9 +15,17 @@ const appRoutes: Routes = [
     {path: 'board/:boardId', loadChildren: 'board/public/boardView.module#BoardViewModule', data: {title: 'Board View'}},
     {path: 'home', loadChildren: 'home/home.module#HomeModule'},
     {path: 'cde/search', loadChildren: 'cde/public/cdeSearchEntry.module#CdeSearchEntryModule', data: {title: 'Data Element Search'}},
-    {path: 'cdeStatusReport', loadChildren: 'cde/public/cdeStatusReport.module#CdeStatusReportModule', data: {title: 'Data Element Status Report'}},
+    {
+        path: 'cdeStatusReport', loadChildren: 'cde/public/cdeStatusReport.module#CdeStatusReportModule',
+        data: {title: 'Data Element Status Report'}
+        },
     {path: 'cde', redirectTo: '/cde/search', pathMatch: 'full'},
-    {path: 'classificationManagement', loadChildren: 'classificationManagement/classificationManagement.module#ClassificationManagementModule', canLoad: [OrgCuratorGuard], data: {title: 'Manage Classification'}},
+    {
+        path: 'classificationManagement',
+        loadChildren: 'classificationManagement/classificationManagement.module#ClassificationManagementModule',
+        canLoad: [OrgCuratorGuard],
+        data: {title: 'Manage Classification'},
+    },
     {path: 'createCde', loadChildren: 'cde/public/cdeCreate.module#CdeCreateModule', data: {title: 'Create Data Element'}},
     {path: 'createForm', loadChildren: 'form/public/formCreate.module#FormCreateModule', data: {title: 'Create Form'}},
     {path: 'deView', loadChildren: 'cde/public/cdeView.module#CdeViewModule', data: {title: 'Data Element View'}},
@@ -33,7 +41,11 @@ const appRoutes: Routes = [
     {path: 'settings', loadChildren: 'settings/settings.module#SettingsModule', canLoad: [LoggedInGuard], data: {title: 'Settings'}},
     {path: 'whatsNew', loadChildren: 'system/public/whatsNew.module#WhatsNewModule', data: {title: `What's New`}},
     {path: 'contactUs', loadChildren: 'system/public/contactUs.module#ContactUsModule', data: {title: 'Contact Us'}},
-    {path: 'searchPreferences', loadChildren: 'system/public/searchPreferences.module#SearchPreferencesModule', data: {title: 'Search Preferences'}},
+    {
+        path: 'searchPreferences',
+        loadChildren: 'system/public/searchPreferences.module#SearchPreferencesModule',
+        data: {title: 'Search Preferences'},
+    },
     {path: 'siteAudit', loadChildren: 'siteAudit/siteAudit.module#SiteAuditModule', canLoad: [OrgAuthorityGuard], data: {title: 'Audit'}},
     {path: '', redirectTo: '/home', pathMatch: 'full'},
     {path: '**', component: PageNotFoundComponent, data: {title: 'Page Not Found'}}

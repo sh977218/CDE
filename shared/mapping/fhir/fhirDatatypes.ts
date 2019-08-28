@@ -12,7 +12,8 @@ function codingPreview(coding: FhirCoding) {
     return coding.display + ' ' + codeSystemIn(coding.system) + ':' + coding.code;
 }
 
-export function getDateString(resource: FhirDomainResource, periodName: string = '', dateTimeName: string = '', instanceName: string = ''): string {
+export function getDateString(resource: FhirDomainResource, periodName: string = '', dateTimeName: string = '',
+                              instanceName: string = ''): string {
     if (resource[periodName]) {
         return resource[periodName].start + ' - ' + resource[periodName].end;
     } else if (resource[dateTimeName]) {
@@ -43,17 +44,20 @@ export function valuePreview(container: FhirValue, prefix: string = 'value'): st
     } else if (container[prefix + 'Integer']) {
         return '' + container[prefix + 'Integer'];
     } else if (container[prefix + 'Quantity']) {
-        let q = container[prefix + 'Quantity'];
+        const q = container[prefix + 'Quantity'];
         return q.value
             ? q.value + ' ' + (q.code || '(no unit)') + ' (' + (codeSystemIn(q.system) || 'no code system') + ')'
             : '';
     } else if (container[prefix + 'String']) {
         return container[prefix + 'String'];
-    } else if ((container as FhirObservation).component) {
-        return (container as FhirObservation).component!.reduce((a: string, v) => {
-            let vs = valuePreview(v);
-            return a + (vs ? codingArrayPreview(v.code.coding) + ' = ' + vs + '\n' : '');
-        }, '');
+    } else {
+        const observation = container as FhirObservation;
+        if (observation.component) {
+            return observation.component.reduce((a: string, v) => {
+                const vs = valuePreview(v);
+                return a + (vs ? codingArrayPreview(v.code.coding) + ' = ' + vs + '\n' : '');
+            }, '');
+        }
     }
     return '';
 }

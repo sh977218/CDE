@@ -2,16 +2,19 @@ import {
     getAllUsernames as userGetAllUsernames, managedOrgs, orgAdmins as userOrgAdmins, orgCurators as userOrgCurators,
     userById, userByName
 } from './mongo-data';
+import { handle404, handleError } from 'server/errorHandler/errorHandler';
+import { User } from 'shared/models.model';
 import { hasRole } from 'shared/system/authorizationShared';
-import { handle404, handleError } from '../errorHandler/errorHandler';
 
-export function myOrgs(user) {
-    if (!user) return [];
+export function myOrgs(user: User): string[] {
+    if (!user) {
+        return [];
+    }
     return user.orgAdmin.concat(user.orgCurator);
 }
 
 export function updateUserRoles(req, res) {
-    let user = req.body;
+    const user = req.body;
     userByName(user.username, handle404({req, res}, found => {
         found.roles = user.roles;
         found.save(handleError({req, res}, () => {

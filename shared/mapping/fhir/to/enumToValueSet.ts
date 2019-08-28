@@ -1,7 +1,8 @@
 import { FhirCode } from 'shared/mapping/fhir/fhir.model';
 import { CurationStatus } from 'shared/models.model';
 
-export function regStatusToPublicationStatus(status: CurationStatus): FhirCode<'active'|'draft'|'retired'|'unknown'> { // http://hl7.org/fhir/publication-status
+// http://hl7.org/fhir/publication-status
+export function regStatusToPublicationStatus(status: CurationStatus): FhirCode<'active'|'draft'|'retired'|'unknown'> {
     switch (status) {
         case 'Preferred Standard':
         case 'Standard':

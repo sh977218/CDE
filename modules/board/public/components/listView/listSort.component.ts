@@ -1,20 +1,18 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Input } from '@angular/core';
-
 import { AlertService } from 'alert/alert.service';
 import { BoardListService } from 'board/public/components/listView/boardList.service';
 import { Elt } from 'shared/models.model';
-
 
 @Component({
     selector: 'cde-list-sort',
     templateUrl: './listSort.component.html',
 })
 export class ListSortComponent {
-    @Input() currentPage: number;
-    @Input() elt: Elt;
-    @Input() eltIndex: number;
-    @Input() totalItems: number;
+    @Input() currentPage!: number;
+    @Input() elt!: Elt;
+    @Input() eltIndex!: number;
+    @Input() totalItems!: number;
 
     pinModal: any;
 
@@ -24,19 +22,19 @@ export class ListSortComponent {
         private http: HttpClient,
     ) {}
 
-    moveUp(id) {
+    moveUp(id: string) {
         this.movePin('/server/board/pinMoveUp', id);
     }
 
-    moveDown(id) {
+    moveDown(id: string) {
         this.movePin('/server/board/pinMoveDown', id);
     }
 
-    moveTop(id) {
+    moveTop(id: string) {
         this.movePin('/server/board/pinMoveTop', id);
     }
 
-    movePin(endPoint, pinId) {
+    movePin(endPoint: string, pinId: string) {
         this.http.post(endPoint, {boardId: this.boardListService.board.id, tinyId: pinId}, {responseType: 'text'}).subscribe(() => {
             this.alert.addAlert('success', 'Saved');
             this.boardListService.reload.emit();

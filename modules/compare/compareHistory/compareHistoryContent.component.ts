@@ -48,7 +48,7 @@ export class CompareHistoryContentComponent {
         }
     };
 
-    constructor(@Inject(MAT_DIALOG_DATA) public data) {
+    constructor(@Inject(MAT_DIALOG_DATA) public data: {newer: Item, older: Item}) {
         this.newer = data.newer;
         this.older = data.older;
     }

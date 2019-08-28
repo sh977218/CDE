@@ -2,15 +2,14 @@ import { Component, Input, Output, ViewChild, EventEmitter, ElementRef } from '@
 import { FormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent, MatChipInputEvent, MatAutocomplete } from '@angular/material';
 import { startWith, distinctUntilChanged, debounceTime, map } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
     selector: 'cde-tag',
     templateUrl: './tag.component.html'
 })
 export class TagComponent {
-    private _tags: string[];
-    @Input() set tags(tags: string[] | undefined) {
+    @Input() set tags(tags: string[]) {
         this._tags = tags || [];
     }
     get tags(): string[] {
@@ -20,13 +19,12 @@ export class TagComponent {
     @Input() allTags: string[] = [];
     @Input() placeHolder: string = 'New tag...';
     @Input() allowFreeType: boolean = false;
-
     @Output() changed = new EventEmitter();
-
+    @ViewChild('tagAuto') matAutocomplete!: MatAutocomplete;
+    @ViewChild('tagInput') tagInput!: ElementRef;
+    private _tags!: string[];
     tagCtrl = new FormControl();
     filteredTags: Observable<string[]>;
-    @ViewChild('tagInput') tagInput!: ElementRef;
-    @ViewChild('tagAuto') matAutocomplete!: MatAutocomplete;
 
     constructor() {
         this.filteredTags = this.tagCtrl.valueChanges
@@ -34,25 +32,26 @@ export class TagComponent {
                 startWith(''),
                 debounceTime(300),
                 distinctUntilChanged(),
-                map(value => {
-                    let filterValue = value.toLowerCase();
-                    let temp = this.allTags.filter(t => t.toLowerCase().indexOf(filterValue) > -1);
-                    return temp;
-                })
+                map(value => this.allTags.filter(t => t.toLowerCase().indexOf(value.toLowerCase()) > -1))
             );
     }
 
     remove(tag: string): void {
         const index = this.tags.indexOf(tag);
-        if (index >= 0) this.tags.splice(index, 1);
+        if (index >= 0) {
+            this.tags.splice(index, 1);
+        }
         this.changed.emit();
     }
 
     selected(event: MatAutocompleteSelectedEvent): void {
-        let selectedTag = event.option.viewValue;
-        let tagIndex = this.tags.indexOf(selectedTag);
-        if (tagIndex === -1) this.tags.push(selectedTag);
-        else this.tags.splice(tagIndex, 1);
+        const selectedTag = event.option.viewValue;
+        const tagIndex = this.tags.indexOf(selectedTag);
+        if (tagIndex === -1) {
+            this.tags.push(selectedTag);
+        } else {
+            this.tags.splice(tagIndex, 1);
+        }
         this.changed.emit();
         this.tagInput.nativeElement.value = '';
         this.tagCtrl.setValue('');
@@ -69,11 +68,15 @@ export class TagComponent {
                     this.changed.emit();
                 }
 
-                if (input) input.value = '';
+                if (input) {
+                    input.value = '';
+                }
 
                 this.tagCtrl.setValue('');
             }
-        } else this.tagInput.nativeElement.value = '';
+        } else {
+            this.tagInput.nativeElement.value = '';
+        }
 
     }
 
