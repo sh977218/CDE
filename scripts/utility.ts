@@ -29,16 +29,8 @@ export function fixEmptyDesignation(cdeObj) {
     return cdeObj.designations.filter(d => d.designation);
 }
 
-export function fixClassification(cdeObj) {
-    /*
-        @TODO have duplicated classification to test
-        remove after run against test.
-    */
-    if (cdeObj.tinyId === 'QJgAXYdXv' || cdeObj.tinyId === 'XyEbt94V_') {
-        return cdeObj.classification;
-    } else {
-        return uniqBy(cdeObj.classification, 'stewardOrg.name');
-    }
+export function fixClassification(eltObj) {
+    return uniqBy(eltObj.classification, 'stewardOrg.name');
 }
 
 // cde

@@ -23,6 +23,7 @@ public class EltIdMaps {
         eltMap.put("Cde Delete Test", "7yl_YaTQOe");
         eltMap.put("Data source", "_URwV8TsYjS");
         eltMap.put("Definition Type Definition Type String", "OoKQxxjOGzT");
+        eltMap.put("Double Classif Cde", "QJgAXYdXO");
         eltMap.put("Draft Cde Test", "QyT6ElNKLl");
         eltMap.put("ExportLatest", "XkZpBf60z");
         eltMap.put("FAD Total score value", "fp_oYN6A_SJ");

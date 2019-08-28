@@ -145,13 +145,6 @@ dataElementSchema.path("valueDomain").validate(v => {
 }, "Code is required for CodeList Datatype");
 */
 dataElementSchema.path("classification").validate(v => {
-    let result = true;
-    v.forEach(classif => {
-        if (!classif.elements || classif.elements.length === 0) result = false;
-    });
-    return result;
-}, "Classification cannot be empty");
-dataElementSchema.path("classification").validate(v => {
     return !v.map(value => value.stewardOrg.name)
         .some((value, index, array) => array.indexOf(value) !== array.lastIndexOf(value));
 }, "Duplicate Steward Classification");

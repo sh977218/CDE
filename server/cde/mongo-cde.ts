@@ -47,7 +47,7 @@ schemas.dataElementSchema.pre('save', function (next) {
 
         let valueDomain = this.valueDomain;
         if (valueDomain.datatype === 'Value List' && isEmpty(valueDomain.permissibleValues)) {
-            next('Value List with empty permissible values.')
+            next('Value List with empty permissible values.');
         } else {
             next();
         }
