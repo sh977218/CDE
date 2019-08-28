@@ -20,6 +20,18 @@ function run() {
             cde.version = '3';
         }
 
+        /* @TODO Remove this code after run against test data.
+           This fix is to fix form 71P6HVrUM has question 71P6HVrUM that has id 59052-1, but it's missing in data element.
+           for sdc export test.
+        */
+        if (cde.tinyId === '71P6HVrUM') {
+            cde.ids = [{
+                "id": "59052-1",
+                "source": "LOINC",
+                "version": "2.1213"
+            }];
+        }
+
         cde.lastMigrationScript = 'fixDataElement';
         fixCdeError(cde);
         await cde.save().catch(error => {

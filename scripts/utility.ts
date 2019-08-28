@@ -30,7 +30,15 @@ export function fixEmptyDesignation(cdeObj) {
 }
 
 export function fixClassification(cdeObj) {
-    return uniqBy(cdeObj.classification, 'stewardOrg.name');
+    /*
+        @TODO have duplicated classification to test
+        remove after run against test.
+    */
+    if (cdeObj.tinyId === 'QJgAXYdXv' || cdeObj.tinyId === 'XyEbt94V_') {
+        return cdeObj.classification;
+    } else {
+        return uniqBy(cdeObj.classification, 'stewardOrg.name');
+    }
 }
 
 // cde
@@ -372,7 +380,7 @@ async function fixFormElements(formObj) {
 
 export async function fixFormError(form) {
     if (form.tinyId.indexOf('-') !== -1) {
-        form.tinyId = form.tinyId.replace(/-/g, "_");
+        form.tinyId = form.tinyId.replace(/-/g, '_');
     }
     if (!form.createdBy) {
         fixCreatedBy(form);
