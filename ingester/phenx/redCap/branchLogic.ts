@@ -3,20 +3,20 @@ import { map as SYMBOL_MAP } from 'ingester/phenx/redCap/REDCAP_SYMBOL_MAP';
 
 import { map as CONJUNCTION_MAP } from 'ingester/phenx/redCap/REDCAP_CONJUNCTION_MAP';
 
-const formatSkipLogic = function (equationText, redCapCdes) {
+const formatSkipLogic = function(equationText, redCapCdes) {
     let result = '';
-    let foundLabelArray = equationText.match(/\[[^\[\]]*]\s*/);
+    const foundLabelArray = equationText.match(/\[[^\[\]]*]\s*/);
     if (foundLabelArray && foundLabelArray.length === 1) {
-        let foundLabel = foundLabelArray[0];
+        const foundLabel = foundLabelArray[0];
         if (!foundLabel) {
             console.log('Label not found ' + equationText);
             process.exit(1);
         }
-        let _foundLabel = foundLabel.replace('[', '').replace(']', '').trim();
-        let redCapCde = find(redCapCdes, redCapCde => {
-            let variableFieldName = redCapCde['Variable / Field Name'];
-            let l = words(variableFieldName.toUpperCase());
-            let r = words(_foundLabel.toUpperCase());
+        const _foundLabel = foundLabel.replace('[', '').replace(']', '').trim();
+        const redCapCde = find(redCapCdes, redCapCde => {
+            const variableFieldName = redCapCde['Variable / Field Name'];
+            const l = words(variableFieldName.toUpperCase());
+            const r = words(_foundLabel.toUpperCase());
             return isEqual(l, r);
         });
         if (!redCapCde) {
@@ -26,14 +26,14 @@ const formatSkipLogic = function (equationText, redCapCdes) {
 
         result += '"' + redCapCde['Field Label'] + '"';
         equationText = equationText.replace(foundLabel, '').trim();
-        let foundSymbolArray = equationText.match(/<>|<=|>=|=|>|</);
+        const foundSymbolArray = equationText.match(/<>|<=|>=|=|>|</);
         if (foundSymbolArray && foundSymbolArray.length === 1) {
-            let foundSymbol = foundSymbolArray[0];
+            const foundSymbol = foundSymbolArray[0];
             if (!foundSymbol) {
                 console.log('Symbol not found ' + equationText);
                 process.exit(1);
             }
-            let cdeSymbol = SYMBOL_MAP[foundSymbol.trim()];
+            const cdeSymbol = SYMBOL_MAP[foundSymbol.trim()];
             if (!cdeSymbol) {
                 console.log(foundSymbol + ' not found in SYMBOL_MAP');
                 process.exit(1);
@@ -41,14 +41,14 @@ const formatSkipLogic = function (equationText, redCapCdes) {
             result += cdeSymbol;
             equationText = equationText.replace(foundSymbol.trim(), '').trim();
         }
-        let foundValueWithSingQuoteArray = equationText.match(/'.*'/);
+        const foundValueWithSingQuoteArray = equationText.match(/'.*'/);
         if (foundValueWithSingQuoteArray && foundValueWithSingQuoteArray.length === 1) {
-            let foundValueWithSingQuote = foundValueWithSingQuoteArray[0];
+            const foundValueWithSingQuote = foundValueWithSingQuoteArray[0];
             return result += foundValueWithSingQuote.replace(/'/g, '"').trim();
         }
-        let foundValueWithDoubleQuoteArray = equationText.match(/".*"/);
+        const foundValueWithDoubleQuoteArray = equationText.match(/".*"/);
         if (foundValueWithDoubleQuoteArray && foundValueWithDoubleQuoteArray.length === 1) {
-            let foundValueWithDoubleQuote = foundValueWithDoubleQuoteArray[0];
+            const foundValueWithDoubleQuote = foundValueWithDoubleQuoteArray[0];
             return result += foundValueWithDoubleQuote.trim();
         }
         if (equationText.match(/'.*"/) && equationText.match(/".*'/)) {
@@ -61,27 +61,27 @@ const formatSkipLogic = function (equationText, redCapCdes) {
 
 export function convertSkipLogic(skipLogicText, redCapCdes) {
     let loop_num = 0;
-    let result = [];
+    const result = [];
     while (skipLogicText.trim().length > 0) {
         loop_num++;
-        let foundEquationArray = skipLogicText.match(/\[[^[\]]*]\s*(?:<>|[<>]=|[=><])\s*['"]?[\w-]*['"]?/);
+        const foundEquationArray = skipLogicText.match(/\[[^[\]]*]\s*(?:<>|[<>]=|[=><])\s*['"]?[\w-]*['"]?/);
         if (foundEquationArray && foundEquationArray.length === 1) {
-            let foundEquation = foundEquationArray[0];
+            const foundEquation = foundEquationArray[0];
             if (!foundEquation) {
                 console.log(' Equation not found in ' + skipLogicText);
                 process.exit(1);
             }
-            let cdeSkipLogicEquation = formatSkipLogic(foundEquation, redCapCdes);
+            const cdeSkipLogicEquation = formatSkipLogic(foundEquation, redCapCdes);
             result.push(cdeSkipLogicEquation);
             skipLogicText = skipLogicText.replace(foundEquation, '').trim();
-            let foundConjunctionArray = skipLogicText.match(/[^\[\]]*\s/);
+            const foundConjunctionArray = skipLogicText.match(/[^\[\]]*\s/);
             if (foundConjunctionArray && foundConjunctionArray.length === 1) {
-                let foundConjunction = foundConjunctionArray[0];
+                const foundConjunction = foundConjunctionArray[0];
                 if (!foundConjunction) {
                     console.log('Conjunction not found ' + skipLogicText);
                     process.exit(1);
                 }
-                let cdeSkipLogicConjunction = CONJUNCTION_MAP[foundConjunction.trim()];
+                const cdeSkipLogicConjunction = CONJUNCTION_MAP[foundConjunction.trim()];
                 if (!cdeSkipLogicConjunction) {
                     console.log(foundConjunction + ' not found in CONJUNCTION_MAP');
                     process.exit(1);

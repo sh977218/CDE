@@ -1,5 +1,5 @@
 export const map = {
-    'radio': false,
-    'checkbox': true,
+    radio: false,
+    checkbox: true,
     '': false
 };

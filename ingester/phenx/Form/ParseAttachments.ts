@@ -39,7 +39,7 @@ function addAttachment(fileName, filePath, fileType) {
                         }
                     };
                     const writestream = gfs.createWriteStream(streamDescription);
-                    writestream.on('close', function(newFile) {
+                    writestream.on('close', newFile => {
                         attachment.fileid = newFile._id;
                         resolve(attachment);
                     });
@@ -53,10 +53,6 @@ function addAttachment(fileName, filePath, fileType) {
         });
 
     });
-}
-
-async function doPdf(pdfFileName, pdfFilePath) {
-    return await addAttachment(pdfFileName, pdfFilePath, 'pdf');
 }
 
 async function doImg(imgFolder) {
@@ -78,7 +74,9 @@ async function doImg(imgFolder) {
                 }
                 if (imgFileExist) {
                     const attachment = await addAttachment(imgFile, imgFilePath, fileType);
-                    if (attachment) { attachments.push(attachment); }
+                    if (attachment) {
+                        attachments.push(attachment);
+                    }
                 }
             }
         }
