@@ -20,7 +20,6 @@ public class FormFormUpdateTest extends NlmCdeBaseTest {
         goToFormDescription();
         textPresent("Substance User", By.id("form_0-1"));
         textPresent("(Outdated)", By.id("form_0-1"));
-        textPresent("Repeats: 5 times", By.id("form_0-1"));
         textPresent("Show if: \"Neoadjuvant Therapy\" = \"Yes (specify type)\"", By.id("form_0-1"));
         clickElement(By.cssSelector(".expand-form"));
         textPresent("During the last 12 months");

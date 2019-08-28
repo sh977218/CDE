@@ -8,7 +8,7 @@ import org.testng.annotations.Test;
 
 import java.util.List;
 
-public class FormAnswerListTest extends NlmCdeBaseTest {
+public class FormReorderAnswerListTest extends NlmCdeBaseTest {
 
 
     @Test

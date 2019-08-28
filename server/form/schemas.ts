@@ -5,6 +5,7 @@ import {
     designationSchema, eltLogSchema, idSchema, permissibleValueSchema, propertySchema, referenceDocumentSchema,
     registrationStateSchema, sourceSchema
 } from 'server/system/schemas';
+import { FormElement } from 'shared/form/form.model';
 import { Classification } from 'shared/models.model';
 
 addStringtype(mongoose);
@@ -115,7 +116,7 @@ const inFormSchema = new Schema({
     }
 }, {_id: false});
 
-function getFormElementJson(formElements) {
+function getFormElementJson(formElements: FormElement[]) {
     return new Schema({
         elementType: {type: StringType, enum: ['section', 'question', 'form']},
         formElements,

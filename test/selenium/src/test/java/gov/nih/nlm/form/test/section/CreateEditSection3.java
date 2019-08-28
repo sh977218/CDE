@@ -14,17 +14,15 @@ public class CreateEditSection3 extends BaseFormTest {
 
         goToFormByName(formName);
         goToFormDescription();
+        String section1 = findElement(By.xpath("//*[@id='innerForm_label_edit_icon_Section 1']")).getText();
+        Assert.assertEquals(section1, "Section 1");
+        String section2 = findElement(By.xpath("//*[@id='innerForm_label_edit_icon_Section 2']")).getText();
+        Assert.assertEquals(section2, "Section 2");
 
         addSectionBottom("Section 3", "F");
+        String section3 = findElement(By.xpath("//*[@id='innerForm_label_edit_icon_Section 3']")).getText();
+        Assert.assertEquals(section3, "Section 3");
 
-        goToFormByName(formName);
-        goToFormDescription();
-        Assert.assertTrue(findElement(By.xpath("//*[@id='section_0']/div/div[1]/div[1]//*[contains(@class,'sectionTitle')]")).getText().contains("Section 1"));
-        Assert.assertTrue(findElement(By.xpath("//*[@id='section_1']/div/div[1]/div[1]//*[contains(@class,'sectionTitle')]")).getText().contains("Section 2"));
-        Assert.assertTrue(findElement(By.xpath("//*[@id='section_2']/div/div[1]/div[1]//*[contains(@class,'sectionTitle')]")).getText().contains("Section 3"));
-
-        textNotPresent("Repeats", By.xpath("//*[@id='section_0']"));
-        textPresent("Repeats: 2 times", By.xpath("//*[@id='section_1']"));
         textPresent("Repeats: over First Question", By.xpath("//*[@id='section_2']"));
     }
 
