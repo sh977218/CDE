@@ -1,7 +1,7 @@
 import * as mongo_cde from 'server/cde/mongo-cde';
 import * as mongo_form from 'server/form/mongo-form';
 import * as DiffJson from 'diff-json';
-import { drop, findIndex, isEmpty } from 'lodash';
+import { findIndex, isEmpty, uniq } from 'lodash';
 import { get } from 'request';
 import { PhenxURL } from 'ingester/createMigrationConnection';
 import * as cheerio from 'cheerio';
@@ -23,7 +23,7 @@ export const TODAY = new Date().toJSON();
 export const created = TODAY;
 export const imported = TODAY;
 
-export const lastMigrationScript = 'load PhenX on ' + new Date().getMonth() + new Date().getFullYear();
+export const lastMigrationScript = 'load PhenX on ' + new Date();
 
 export function removeWhite(text) {
     if (!text) {
@@ -117,15 +117,15 @@ export function updateCde(elt, user, options = {}) {
 
 export function updateForm(elt, user, options = {}) {
     return new Promise((resolve, reject) => {
-/*@TODO remove it after PhenX loader.
-        const isPhenX = elt.ids.filter(id => id.source === 'PhenX').length > 0;
-        const isQualified = elt.registrationState.registrationStatus === 'Qualified';
-        const isArchived = elt.archived;
-        if (isPhenX && isQualified && !isArchived) {
-            console.log(`Qualified PhenX Form cannot be updated through loader.`);
-            process.exit(1);
-        }
-*/
+        /*@TODO remove it after PhenX loader.
+                const isPhenX = elt.ids.filter(id => id.source === 'PhenX').length > 0;
+                const isQualified = elt.registrationState.registrationStatus === 'Qualified';
+                const isArchived = elt.archived;
+                if (isPhenX && isQualified && !isArchived) {
+                    console.log(`Qualified PhenX Form cannot be updated through loader.`);
+                    process.exit(1);
+                }
+        */
         mongo_form.update(elt, user, options, (err, savedElt) => {
             if (err) {
                 reject(err);
@@ -226,26 +226,34 @@ export function compareElt(newEltObj, existingEltObj, source) {
 
 // Merge two elements
 function mergeDesignation(existingDesignations, newDesignations) {
-    existingDesignations.forEach(existingDesignation => {
-        const i = findIndex(newDesignations, {designation: existingDesignation.designation});
+    const designations = [];
+    const allDesignations = existingDesignations.concat(newDesignations);
+    allDesignations.forEach(designation => {
+        const i = findIndex(designations, {designation: designation.designation});
         if (i !== -1) {
-            newDesignations = drop(newDesignations, i);
+            const allTags = designations[i].tags.concat(designation.tags);
+            designations[i].tags = uniq(allTags).filter(t => !isEmpty(t));
+        } else {
+            designations.push(designation);
         }
+
     });
-    return existingDesignations.concat(newDesignations);
+    return designations;
 }
 
 function mergeDefinition(existingDefinitions, newDefinitions) {
-    if (!existingDefinitions) {
-        existingDefinitions = [];
-    }
-    existingDefinitions.forEach(existingDefinition => {
-        const i = findIndex(newDefinitions, {definition: existingDefinition.definition});
+    const definitions = [];
+    const allDefinitions = existingDefinitions.concat(newDefinitions);
+    allDefinitions.forEach(definition => {
+        const i = findIndex(definitions, {definition: definition.definition});
         if (i !== -1) {
-            newDefinitions = drop(newDefinitions, i);
+            const allTags = definitions[i].tags.concat(definition.tags);
+            definitions[i].tags = uniq(allTags).filter(t => !isEmpty(t));
+        } else {
+            definitions.push(definition);
         }
     });
-    return existingDefinitions.concat(newDefinitions);
+    return definitions;
 }
 
 export function mergeBySources(newSources, existingSources, sources) {

@@ -6,8 +6,8 @@ import { redCapZipFolder } from 'ingester/createMigrationConnection';
 
 function addAttachment(fileName, filePath, fileType) {
     return new Promise(async (resolve, reject) => {
-        let fileSize = statSync(filePath).size;
-        let attachment = {
+        const fileSize = statSync(filePath).size;
+        const attachment = {
             fileid: null,
             filename: fileName,
             filetype: fileType,
@@ -23,13 +23,13 @@ function addAttachment(fileName, filePath, fileType) {
                 console.log('MD5 failed. ' + err);
                 reject(err);
             }
-            gfs.findOne({md5: md5}, (error, existingFile) => {
+            gfs.findOne({md5}, (error, existingFile) => {
                 if (error) {
                     console.log('Error gsf find ' + err);
                     reject(error);
                 }
                 if (!existingFile) {
-                    let streamDescription = {
+                    const streamDescription = {
                         filename: fileName,
                         mode: 'w',
                         content_type: fileType,
@@ -38,12 +38,12 @@ function addAttachment(fileName, filePath, fileType) {
                             status: 'approved'
                         }
                     };
-                    let writestream = gfs.createWriteStream(streamDescription);
-                    writestream.on('close', function (newFile) {
+                    const writestream = gfs.createWriteStream(streamDescription);
+                    writestream.on('close', function(newFile) {
                         attachment.fileid = newFile._id;
                         resolve(attachment);
                     });
-                    let attachmentStream = createReadStream(filePath);
+                    const attachmentStream = createReadStream(filePath);
                     attachmentStream.pipe(writestream);
                 } else {
                     attachment.fileid = existingFile._id;
@@ -52,7 +52,7 @@ function addAttachment(fileName, filePath, fileType) {
             });
         });
 
-    })
+    });
 }
 
 async function doPdf(pdfFileName, pdfFilePath) {
@@ -60,14 +60,14 @@ async function doPdf(pdfFileName, pdfFilePath) {
 }
 
 async function doImg(imgFolder) {
-    let attachments = [];
+    const attachments = [];
 
-    let imgSubFolders = readdirSync(imgFolder);
-    for (let imgSubFolder of imgSubFolders) {
-        let imgSubFolderExist = existsSync(imgFolder + '/' + imgSubFolder);
+    const imgSubFolders = readdirSync(imgFolder);
+    for (const imgSubFolder of imgSubFolders) {
+        const imgSubFolderExist = existsSync(imgFolder + '/' + imgSubFolder);
         if (imgSubFolderExist) {
-            let imgFiles = readdirSync(imgFolder);
-            for (let imgFile of imgFiles) {
+            const imgFiles = readdirSync(imgFolder);
+            for (const imgFile of imgFiles) {
                 let fileType = 'jpg';
                 let imgFilePath = imgFolder + '/' + imgSubFolder + '/' + imgFile + '.' + fileType;
                 let imgFileExist = existsSync(imgFilePath);
@@ -77,8 +77,8 @@ async function doImg(imgFolder) {
                     imgFileExist = existsSync(imgFilePath);
                 }
                 if (imgFileExist) {
-                    let attachment = await addAttachment(imgFile, imgFilePath, fileType);
-                    if (attachment) attachments.push(attachment);
+                    const attachment = await addAttachment(imgFile, imgFilePath, fileType);
+                    if (attachment) { attachments.push(attachment); }
                 }
             }
         }
@@ -87,19 +87,19 @@ async function doImg(imgFolder) {
 }
 
 export function leadingZerosProtocolId(protocolId) {
-    let leadingZeroes = '00000000';
-    let veryLongProtocolId = leadingZeroes + protocolId;
-    let result = veryLongProtocolId.substr(veryLongProtocolId.length - 6, veryLongProtocolId.length);
+    const leadingZeroes = '00000000';
+    const veryLongProtocolId = leadingZeroes + protocolId;
+    const result = veryLongProtocolId.substr(veryLongProtocolId.length - 6, veryLongProtocolId.length);
     return result;
 }
 
 export async function parseAttachments(protocol) {
-    let leadingZeroProtocolId = leadingZerosProtocolId(protocol.protocolID);
+    const leadingZeroProtocolId = leadingZerosProtocolId(protocol.protocolID);
     let attachments = [];
-    let imgFolderPath = redCapZipFolder + 'PX' + leadingZeroProtocolId + '/attachments';
-    let imgFolderExist = existsSync(imgFolderPath);
+    const imgFolderPath = redCapZipFolder + 'PX' + leadingZeroProtocolId + '/attachments';
+    const imgFolderExist = existsSync(imgFolderPath);
     if (imgFolderExist) {
-        let zipAttachments = await doImg(imgFolderPath);
+        const zipAttachments = await doImg(imgFolderPath);
         attachments = attachments.concat(zipAttachments);
     }
     return attachments;

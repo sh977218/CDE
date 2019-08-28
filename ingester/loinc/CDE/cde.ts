@@ -10,7 +10,7 @@ import { parseSources } from 'ingester/loinc/Shared/ParseSources';
 import { parseConcepts } from 'ingester/loinc/CDE/ParseConcept';
 import { parseValueDomain } from 'ingester/loinc/CDE/ParseValueDomain';
 
-import { BATCHLOADER, created, imported } from 'ingester/shared/utility';
+import { BATCHLOADER, created, imported, lastMigrationScript } from 'ingester/shared/utility';
 
 export async function createLoincCde(element, orgInfo) {
     const loinc = element.loinc ? element.loinc : element;
@@ -30,6 +30,7 @@ export async function createLoincCde(element, orgInfo) {
         createdBy: BATCHLOADER,
         created,
         imported,
+        changeNote: lastMigrationScript,
         source: 'LOINC',
         registrationState: {registrationStatus: 'Standard'},
         sources,

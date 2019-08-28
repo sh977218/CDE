@@ -1,12 +1,14 @@
 import { isEmpty } from 'lodash';
+import { leadingZerosProtocolId } from 'ingester/phenx/Form/ParseAttachments';
 
 export function parseIds(row, newForm) {
     const ids = [];
     const variableName = row['Variable / Field Name'];
+    const leadingZeroFormId = leadingZerosProtocolId(newForm.ids[0].id);
     if (!isEmpty(variableName)) {
         ids.push({
             source: 'PhenX Variable',
-            id: newForm.ids[0].id + '_' + variableName.trim()
+            id: leadingZeroFormId + '_' + variableName.trim()
         });
     }
 
