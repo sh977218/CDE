@@ -4,10 +4,10 @@ import { parseValueDomain } from 'ingester/phenx/redCap/parseValueDomain';
 import { parseIds } from 'ingester/phenx/redCap/parseIds';
 import { generateTinyId } from 'server/system/mongo-data';
 import { BATCHLOADER, created } from 'ingester/shared/utility';
-import { parseClassificationa } from 'ingester/phenx/redCap/parseClassification';
+import { parseClassification } from 'ingester/phenx/redCap/parseClassification';
 
 export async function createRedCde(row, protocol, newForm) {
-    const classification = parseClassificationa(protocol);
+    const classification = parseClassification(protocol);
     const designations = parseDesignations(row);
     const valueDomain = parseValueDomain(row);
     const ids = parseIds(row, newForm);
