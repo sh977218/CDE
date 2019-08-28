@@ -6,7 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AlertService } from 'alert/alert.service';
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { UserService } from '_app/user.service';
-import { SaveModalComponent } from 'adminItem/public/components/saveModal/saveModal.component';
+import { SaveModalComponent, SaveModalFormQuestion } from 'adminItem/public/components/saveModal/saveModal.component';
 import async_forEach from 'async/forEach';
 import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
 import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHistoryContent.component';
@@ -21,19 +21,26 @@ import { NativeRenderService } from 'nativeRender/nativeRender.service';
 import { ExportService } from 'non-core/export.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { Observable } from 'rxjs/Observable';
-import { assertUnreachable, Cb, Comment, Elt } from 'shared/models.model';
-import { DataElement } from 'shared/de/dataElement.model';
+import { assertUnreachable, Cb, Comment, Elt, PermissibleValue } from 'shared/models.model';
+import {
+    DataElement, DatatypeContainerDate, DatatypeContainerNumber, DatatypeContainerText, DatatypeContainerTime,
+    DatatypeContainerValueList
+} from 'shared/de/dataElement.model';
 import { CdeForm, FormElement, FormElementsContainer, FormInForm, QuestionCde } from 'shared/form/form.model';
 import { addFormIds, getLabel, iterateFe, iterateFes, iterateFeSync, noopSkipIterCb } from 'shared/form/fe';
 import { canEditCuratedItem, isOrgCurator } from 'shared/system/authorizationShared';
 import { isIe, scrollTo } from 'non-core/browser';
 import { getQuestionPriorByLabel } from 'shared/form/skipLogic';
+import { Dictionary } from 'async';
+
+type NewDataElement = DataElement & DatatypeContainerDate & DatatypeContainerNumber & DatatypeContainerText & DatatypeContainerTime
+    & DatatypeContainerValueList & {permissibleValues: PermissibleValue[]};
 
 class LocatableError {
-    id: string;
+    id?: string;
     message: string;
 
-    constructor(m: string, id: string) {
+    constructor(m: string, id?: string) {
         this.id = id;
         this.message = m;
     }
@@ -62,23 +69,23 @@ export class FormViewComponent implements OnInit {
     @ViewChild('mltPinModalCde') mltPinModalCde!: PinBoardModalComponent;
     @ViewChild('exportPublishModal') exportPublishModal!: TemplateRef<any>;
     @ViewChild('saveModal') saveModal!: SaveModalComponent;
-    commentMode;
+    commentMode?: boolean;
     currentTab = 'preview_tab';
-    dialogRef: MatDialogRef<any>;
-    draftSaving: Promise<CdeForm>;
-    elt: CdeForm;
+    dialogRef!: MatDialogRef<any>;
+    draftSaving?: Promise<CdeForm>;
+    elt!: CdeForm;
     eltCopy?: CdeForm;
-    formInput;
-    hasComments;
+    formInput!: Dictionary<string>;
+    hasComments = false;
     hasDrafts = false;
-    highlightedTabs = [];
+    highlightedTabs: string[] = [];
     isIe = isIe;
     isOrgCurator = isOrgCurator;
     missingCdes: string[] = [];
     savingText = '';
     tabsCommented: string[] = [];
     unsaved = false;
-    validationErrors: { message: string, id: string }[] = [];
+    validationErrors: LocatableError[] = [];
 
     ngOnInit() {
         this.route.queryParams.subscribe(() => {
@@ -110,7 +117,7 @@ export class FormViewComponent implements OnInit {
         return canEditCuratedItem(this.userService.user, this.elt);
     }
 
-    createDataElement(newCde, cb: Cb) {
+    createDataElement(newCde: NewDataElement, cb: Cb) {
         const dataElement = {
             designations: newCde.designations,
             definitions: newCde.definitions,
@@ -135,7 +142,7 @@ export class FormViewComponent implements OnInit {
             .subscribe(res => {
                 if (res.tinyId) { newCde.tinyId = res.tinyId; }
                 if (res.version) { newCde.version = res.version; }
-                if (cb) { cb(); }
+                cb();
             }, err => {
                 this.alert.httpErrorMessageAlert(err);
             });
@@ -149,10 +156,10 @@ export class FormViewComponent implements OnInit {
             () => {
                 this.userService.reload();
                 this.alert.addAlert('info', 'Done. Go to your profile to see all your published forms');
-                this.dialogRef!.close();
+                this.dialogRef.close();
             }, err => {
                 this.alert.httpErrorMessageAlert(err, 'Error when publishing form.');
-                this.dialogRef!.close();
+                this.dialogRef.close();
             }
         );
     }
@@ -199,7 +206,7 @@ export class FormViewComponent implements OnInit {
         this.eltLoad(this.formViewService.fetchEltForEditing(this.route.snapshot.queryParams), cb);
     }
 
-    loadHighlightedTabs($event) {
+    loadHighlightedTabs($event: string[]) {
         this.highlightedTabs = $event;
     }
 
@@ -221,10 +228,9 @@ export class FormViewComponent implements OnInit {
 
     openCopyElementModal() {
         this.eltCopy = _cloneDeep(this.elt);
-        this.eltCopy.classification = this.elt.classification.filter(c => {
-            return this.userService.userOrgs.indexOf(c.stewardOrg.name) !== -1;
-        });
-        this.eltCopy['registrationState.administrativeNote'] = 'Copy of: ' + this.elt.tinyId;
+        this.eltCopy.classification = this.elt.classification
+            && this.elt.classification.filter(c => this.userService.userOrgs.indexOf(c.stewardOrg.name) !== -1);
+        this.eltCopy.registrationState.administrativeNote = 'Copy of: ' + this.elt.tinyId;
         delete this.eltCopy.tinyId;
         delete this.eltCopy._id;
         delete this.eltCopy.origin;
@@ -237,13 +243,9 @@ export class FormViewComponent implements OnInit {
         delete this.eltCopy.history;
         delete this.eltCopy.changeNote;
         delete this.eltCopy.comments;
-        delete this.eltCopy['forkOf'];
-        delete this.eltCopy['views'];
         this.eltCopy.ids = [];
         this.eltCopy.sources = [];
-        this.eltCopy.designations = this.eltCopy.designations;
         this.eltCopy.designations[0].designation = 'Copy of: ' + this.eltCopy.designations[0].designation;
-        this.eltCopy.definitions = this.eltCopy.definitions;
         this.eltCopy.registrationState = {
             administrativeNote: 'Copy of: ' + this.elt.tinyId,
             registrationStatus: 'Incomplete',
@@ -257,8 +259,8 @@ export class FormViewComponent implements OnInit {
     }
 
     pinAllCdesIntoBoard() {
-        const cdes = [];
-        const doFormElement = formElt => {
+        const cdes: QuestionCde[] = [];
+        function doFormElement(formElt: FormElement) {
             if (formElt.elementType === 'question') {
                 cdes.push(formElt.question.cde);
             } else {
@@ -266,7 +268,7 @@ export class FormViewComponent implements OnInit {
                     formElt.formElements.forEach(doFormElement);
                 }
             }
-        };
+        }
         this.elt.formElements.forEach(doFormElement);
         this.mltPinModalCde.pinMultiple(cdes, this.mltPinModalCde.open());
     }
@@ -281,7 +283,7 @@ export class FormViewComponent implements OnInit {
         });
     }
 
-    removeAttachment(event) {
+    removeAttachment(event: number) {
         this.http.post<CdeForm>('/server/attachment/form/remove', {
             index: event,
             id: this.elt._id
@@ -337,11 +339,11 @@ export class FormViewComponent implements OnInit {
         const saveFormImpl = () => {
             const newCdes: QuestionCde[] = [];
             iterateFes(this.elt.formElements, undefined, undefined, (fe, cb) => {
-                fe.question.cde.datatype = fe.question.datatype;
+                (fe as SaveModalFormQuestion).question.cde.datatype = fe.question.datatype;
                 if (!fe.question.cde.tinyId) { newCdes.push(fe.question.cde); }
                 cb();
             }, () => {
-                async_forEach(newCdes, (newCde, doneOneCde) => {
+                async_forEach(newCdes, (newCde: NewDataElement, doneOneCde: Cb) => {
                     this.createDataElement(newCde, doneOneCde);
                 }, () => {
                     const publish = () => {
@@ -389,18 +391,23 @@ export class FormViewComponent implements OnInit {
         });
     }
 
-    upload(event) {
-        if (event.srcElement && event.srcElement.files) {
-            const files = event.srcElement.files;
+    upload(event: Event) {
+        if (event.srcElement && (event.srcElement as HTMLInputElement).files) {
+            const files = (event.srcElement as HTMLInputElement).files;
             const formData = new FormData();
-            for (const file of files) {
-                formData.append('uploadedFiles', file);
+            if (files) {
+                /* tslint:disable */
+                for (let i = 0; i < files.length; i++) {
+                    formData.append('uploadedFiles', files[i]);
+                }
+                /* tslint:enable */
             }
             formData.append('id', this.elt._id);
             this.http.post<any>('/server/attachment/form/add', formData).subscribe(
                 r => {
-                    if (r.message) { this.alert.addAlert('info', r); }
-                    else {
+                    if (r.message) {
+                        this.alert.addAlert('info', r);
+                    } else {
                         this.elt = r;
                         this.alert.addAlert('success', 'Attachment added.');
                         this.ref.detectChanges();
@@ -464,7 +471,7 @@ export class FormViewComponent implements OnInit {
                         }
                         break;
                     case 'N':
-                        if (parseInt(fe.repeat) < 1) {
+                        if (parseInt(fe.repeat, 10) < 1) {
                             validationErrors.push(new LocatableError(
                                 'Repeat Number is below 1: "' + getLabel(fe) + '".', fe.elementType + '_' + fe.feId));
                         }
@@ -489,7 +496,7 @@ export class FormViewComponent implements OnInit {
         const validationErrors = this.validationErrors;
 
         function findExistingErrors(parent: FormElementsContainer, fe: FormElement) {
-            if (fe.skipLogic && !SkipLogicValidateService.validateSkipLogic(parent, fe)) {
+            if (fe.skipLogic && !SkipLogicValidateService.validateSkipLogic(parent, fe, fe.skipLogic)) {
                 validationErrors.push(new LocatableError(
                     'SkipLogic error on form element "' + getLabel(fe) + '".', fe.elementType + '_' + fe.feId));
             }
@@ -510,7 +517,7 @@ export class FormViewComponent implements OnInit {
                 }
                 cb();
             });
-        }, callback);
+        }, () => callback());
     }
 
     viewChanges() {

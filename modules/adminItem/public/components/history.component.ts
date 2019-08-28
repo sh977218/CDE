@@ -33,7 +33,6 @@ function createHistory(elt: DataElement | CdeForm): History {
     templateUrl: './history.component.html'
 })
 export class HistoryComponent {
-    private _elt?: Item;
     @Input() canEdit = false;
     @Input() set elt(elt: Item) {
         this._elt = elt;
@@ -52,16 +51,17 @@ export class HistoryComponent {
     get elt() {
         return this._elt;
     }
-    showVersioned = false;
-    priorElements: History[];
+    private _elt!: Item;
     numberSelected = 0;
+    priorElements!: History[];
+    showVersioned = false;
 
     constructor(private dialog: MatDialog,
                 private alert: AlertService,
                 private http: HttpClient) {
     }
 
-    selectRow(index) {
+    selectRow(index: number) {
         const priorElt = this.priorElements[index];
         if (this.numberSelected === 2 && !priorElt.selected) {
             priorElt.selected = false;

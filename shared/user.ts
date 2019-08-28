@@ -15,13 +15,14 @@ export function newNotificationSettingsMediaDrawer(): NotificationSettingsMedia 
     return {drawer: true, push: undefined};
 }
 
-export function ownKeys(obj?: Object): string[] {
+export function ownKeys(obj?: any): string[] {
     return obj ? Object.keys(obj).filter(k => obj.hasOwnProperty(k)) : [];
 }
 
-export function usersToNotify(type: NotificationSettingsType, media: NotificationSettingsMediaType, users: User[]): User[] {
-    return users.filter(u =>
-        u.notificationSettings && u.notificationSettings[type] && u.notificationSettings[type]![media] === true
-        || (!u.notificationSettings || !u.notificationSettings[type] || u.notificationSettings[type]![media] !== false) && media === 'drawer' // drawer default true, mongoose defaults missing objects
-    );
+export function usersToNotify(type: NotificationSettingsType, medium: NotificationSettingsMediaType, users: User[]): User[] {
+    return users.filter(u => {
+        const media = u.notificationSettings && u.notificationSettings[type];
+        return media && media[medium]
+            || medium === 'drawer' && !(media && media[medium] === false); // drawer default true, mongoose defaults missing objects
+    });
 }

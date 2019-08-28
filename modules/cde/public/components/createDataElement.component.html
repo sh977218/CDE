@@ -36,7 +36,7 @@
                 </div>
                 <div *ngIf="validationErrors(elt)" class="form-group text-danger">
                     <mat-icon>warning</mat-icon>
-                    {{validationMessage}}
+                    {{validationErrors(elt)}}
                 </div>
 
                 <div class="form-group">
@@ -44,7 +44,7 @@
                         Cancel
                     </button>
                     <button id="submit" type="submit" (click)="createDataElement()" mat-raised-button color="primary"
-                            [disabled]="!dataElementForm.form.valid || validationErrors(elt)"> Submit
+                            [disabled]="!dataElementForm.form.valid || !!validationErrors(elt)"> Submit
                     </button>
                 </div>
                 <hr/>
@@ -56,5 +56,5 @@
     </div>
 </div>
 
-<cde-classify-item-modal #classifyItemComponent [elt]="elt" (onEltSelected)="afterClassified($event)">
+<cde-classify-item-modal #classifyItemComponent (classified)="afterClassified($event)">
 </cde-classify-item-modal>

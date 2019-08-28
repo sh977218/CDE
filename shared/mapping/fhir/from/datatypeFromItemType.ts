@@ -1,16 +1,17 @@
-import { ValueDomain } from 'shared/de/dataElement.model';
+import { ValueDomain, ValueDomainValueList } from 'shared/de/dataElement.model';
 import { questionQuestionMulti } from 'shared/form/fe';
-import { Question } from 'shared/form/form.model';
+import { Question, QuestionValueList } from 'shared/form/form.model';
 import { codeSystemOut } from 'shared/mapping/fhir';
-import { FhirCoding, FhirExtension, FhirQuantity, FhirValue } from 'shared/mapping/fhir/fhir.model';
-import { CodeAndSystem } from 'shared/models.model';
+import { FhirCoding, FhirQuantity, FhirValue } from 'shared/mapping/fhir/fhir.model';
+import { CodeAndSystem, PermissibleValue } from 'shared/models.model';
 
-export function isCodingToValueList(container: Question | ValueDomain, coding: FhirCoding | FhirCoding[]): boolean {
+export function isCodingToValueList(container: Question | ValueDomain, coding: FhirCoding | FhirCoding[])
+    : container is QuestionValueList | ValueDomainValueList {
     function isCodingInContainer(container: Question | ValueDomain, c: FhirCoding) {
-        let pvs = Array.isArray((container as Question).answers)
-            ? (container as Question).answers
-            : (container as ValueDomain).permissibleValues;
-        return pvs!.some(pv => pv.permissibleValue === c.code && codeSystemOut(pv.codeSystemName) === c.system);
+        const pvs: PermissibleValue[] = Array.isArray((container as QuestionValueList).answers)
+            ? (container as QuestionValueList).answers
+            : (container as ValueDomainValueList).permissibleValues;
+        return pvs.some(pv => pv.permissibleValue === c.code && codeSystemOut(pv.codeSystemName) === c.system);
     }
     if (Array.isArray(coding)) {
         return coding.every(c => isCodingInContainer(container, c));
@@ -30,9 +31,9 @@ export function isItemTypeToContainer(container: Question | ValueDomain, type: s
         case 'choice':
             return container.datatype === 'Value List';
         case 'date':
-            return container.datatype === 'Date' && ['Hour', 'Minute', 'Second'].indexOf(container.datatypeDate!.precision!) <= -1;
+            return container.datatype === 'Date' && ['Hour', 'Minute', 'Second'].indexOf(container.datatypeDate.precision || '') <= -1;
         case 'dateTime':
-            return container.datatype === 'Date' && ['Hour', 'Minute', 'Second'].indexOf(container.datatypeDate!.precision!) > -1;
+            return container.datatype === 'Date' && ['Hour', 'Minute', 'Second'].indexOf(container.datatypeDate.precision || '') > -1;
         case 'quantity':
             return container.datatype === 'Number'
                 && (Array.isArray((container as Question).unitsOfMeasure)
@@ -49,10 +50,10 @@ export function isItemTypeToContainer(container: Question | ValueDomain, type: s
                     || container.datatypeNumber.precision < 0);
         case 'text':
             return ['Value List', 'Date', 'Number'].indexOf(container.datatype) <= -1
-                && !!container.datatypeText && !!container.datatypeText.showAsTextArea;
+                && container.datatype === 'Text' && container.datatypeText && !!container.datatypeText.showAsTextArea;
         case 'string':
             return ['Value List', 'Date', 'Number'].indexOf(container.datatype) <= -1
-                && !(container.datatypeText && container.datatypeText.showAsTextArea);
+                && !(container.datatype === 'Text' && container.datatypeText && container.datatypeText.showAsTextArea);
         default:
             return false;
     }
@@ -61,12 +62,12 @@ export function isItemTypeToContainer(container: Question | ValueDomain, type: s
 export function quantityToUnitsOfMeasure(container: Question | ValueDomain, quantity: FhirQuantity): CodeAndSystem | undefined {
     if (Array.isArray((container as Question).unitsOfMeasure)) {
         container = container as Question;
-        let matches = container.unitsOfMeasure.filter(u => quantity.code === u.code
+        const matches = container.unitsOfMeasure.filter(u => quantity.code === u.code
             && (quantity.system ? quantity.system === codeSystemOut(u.system) : !u.system));
         return matches.length ? matches[0] : undefined;
     } else {
         container = container as ValueDomain;
-        return container.uom === (quantity.unit && container.uom) ? {code: container.uom!} : undefined;
+        return container.uom && container.uom === quantity.unit ? {code: container.uom} : undefined;
     }
 }
 
@@ -78,9 +79,14 @@ export function typedValueToValue(container: Question, type: string, v: FhirValu
         case 'display':
             return true;
         case 'choice':
-            let coding = typeof(v.valueCoding) !== 'undefined' ? v.valueCoding : v.valueCodeableConcept!.coding!;
+            /* tslint:disable */
+            const coding = typeof(v.valueCoding) !== 'undefined' ? v.valueCoding : v.valueCodeableConcept!.coding!;
+            /* tslint:enable */
             if (!isCodingToValueList(container, coding)) {
+                console.log(container.datatype);
                 return false;
+            } else {
+                console.log(container.datatype);
             }
             if (Array.isArray(coding)) {
                 container.answer = questionQuestionMulti(container)
@@ -94,12 +100,15 @@ export function typedValueToValue(container: Question, type: string, v: FhirValu
             container.answer = v.valueBoolean ? '1' : '0';
             return true;
         case 'quantity':
-            let unit = quantityToUnitsOfMeasure(container, v.valueQuantity!);
+            if (!v.valueQuantity) {
+                v.valueQuantity = {};
+            }
+            const unit = quantityToUnitsOfMeasure(container, v.valueQuantity);
             if (typeof(unit) === 'undefined') {
                 return false;
             }
             container.answerUom = unit;
-            container.answer = '' + v.valueQuantity!.value;
+            container.answer = '' + v.valueQuantity.value;
             return true;
         case 'integer':
             container.answer = '' + v.valueInteger;
@@ -125,15 +134,35 @@ export function typedValueToValue(container: Question, type: string, v: FhirValu
 }
 
 export function valuedElementToItemType(elem: FhirValue): string {
-    if (typeof(elem.valueBoolean) !== 'undefined') return 'boolean';
-    if (typeof(elem.valueCoding) !== 'undefined') return 'choice';
-    if (typeof(elem.valueCodeableConcept) !== 'undefined') return 'choice';
-    if (typeof(elem.valueDate) !== 'undefined') return 'date';
-    if (typeof(elem.valueDateTime) !== 'undefined') return 'dateTime';
-    if (typeof(elem.valueDecimal) !== 'undefined') return 'decimal';
-    if (typeof(elem.valueInteger) !== 'undefined') return 'integer';
-    if (typeof(elem.valueQuantity) !== 'undefined') return 'quantity';
-    if (typeof(elem.valueString) !== 'undefined') return 'string';
-    if (typeof((elem as any).valueText) !== 'undefined') return 'text';
-    else return '';
+    if (typeof(elem.valueBoolean) !== 'undefined') {
+        return 'boolean';
+    }
+    if (typeof(elem.valueCoding) !== 'undefined') {
+        return 'choice';
+    }
+    if (typeof(elem.valueCodeableConcept) !== 'undefined') {
+        return 'choice';
+    }
+    if (typeof(elem.valueDate) !== 'undefined') {
+        return 'date';
+    }
+    if (typeof(elem.valueDateTime) !== 'undefined') {
+        return 'dateTime';
+    }
+    if (typeof(elem.valueDecimal) !== 'undefined') {
+        return 'decimal';
+    }
+    if (typeof(elem.valueInteger) !== 'undefined') {
+        return 'integer';
+    }
+    if (typeof(elem.valueQuantity) !== 'undefined') {
+        return 'quantity';
+    }
+    if (typeof(elem.valueString) !== 'undefined') {
+        return 'string';
+    }
+    if (typeof((elem as any).valueText) !== 'undefined') {
+        return 'text';
+    }
+    return '';
 }

@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
+import { PageEvent } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
-
 import { UserService } from '_app/user.service';
 import { Comment, DiscussionComments } from 'shared/models.model';
 
@@ -10,7 +10,7 @@ import { Comment, DiscussionComments } from 'shared/models.model';
     templateUrl: 'latestComments.component.html'
 })
 export class LatestCommentsComponent {
-    comments: DiscussionComments = {currentCommentsPage: 1, totalItems: 10000, latestComments: undefined};
+    comments: DiscussionComments = {currentCommentsPage: 1, totalItems: 10000, latestComments: []};
     getEltLink = UserService.getEltLink;
 
     constructor(private http: HttpClient,
@@ -19,17 +19,21 @@ export class LatestCommentsComponent {
     }
 
     getComments(page: number) {
-        let commentsUrl = this.route.snapshot.data['commentsUrl'];
-        if (!commentsUrl) commentsUrl = '/server/discuss/allComments';
+        let commentsUrl = this.route.snapshot.data.commentsUrl;
+        if (!commentsUrl) {
+            commentsUrl = '/server/discuss/allComments';
+        }
         this.http.get<Comment[]>(commentsUrl + '/' + (page - 1) * 30 + '/31').subscribe(comments => {
             if (comments.length < 31) {
                 this.comments.totalItems = (page - 1) * 30 + comments.length;
-            } else comments.length = 30;
+            } else {
+                comments.length = 30;
+            }
             this.comments.latestComments = comments;
         });
     }
 
-    pageChange(newPageNb) {
+    pageChange(newPageNb: PageEvent) {
         this.comments.currentCommentsPage = newPageNb.pageIndex + 1;
         this.getComments(this.comments.currentCommentsPage);
     }

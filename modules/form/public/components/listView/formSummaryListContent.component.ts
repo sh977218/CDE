@@ -10,8 +10,8 @@ import { CdeFormElastic } from 'shared/form/form.model';
     templateUrl: './formSummaryListContent.component.html',
 })
 export class FormSummaryListContentComponent implements SummaryComponent {
-    @Input() elt: CdeFormElastic;
-    @Input() eltIndex: number;
+    @Input() elt!: CdeFormElastic;
+    @Input() eltIndex!: number;
     @Output() select = new EventEmitter<string>();
 
     defaultAttachmentsFilter = Attachment.isDefault;
@@ -19,7 +19,7 @@ export class FormSummaryListContentComponent implements SummaryComponent {
 
     constructor() {}
 
-    getStewards() {
-        return this.elt.classification.map(cl => cl.stewardOrg.name).join(' ');
+    getStewards(): string {
+        return (this.elt.classification || []).map(cl => cl.stewardOrg.name).join(' ');
     }
 }

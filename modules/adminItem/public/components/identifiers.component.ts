@@ -13,37 +13,33 @@ export class IdentifiersComponent {
     @Input() set elt(e) {
         this._elt = e;
         this.idsLinks.length = 0;
-        this._elt && this._elt.ids.forEach(id => {
-            this.getIdSource(id).then(source => this.addLink(source, id));
-        });
+        if (this._elt) {
+            this._elt.ids.forEach(id => {
+                this.getIdSource(id).then(source => this.addLink(source, id));
+            });
+        }
     }
     get elt() {
         return this._elt;
     }
+    @Input() canEdit = false;
+    @Output() eltChange = new EventEmitter();
+    @ViewChild('newIdentifierContent') newIdentifierContent!: TemplateRef<any>;
+    _elt!: Item;
+    dialogRef!: MatDialogRef<TemplateRef<any>>;
+    idsLinks: string[] = [];
+    idSourcesPromise!: Promise<Source[]>;
+    newIdentifier!: CdeId;
 
     constructor(private alert: AlertService,
                 public dialog: MatDialog,
                 private http: HttpClient) {
     }
-    @Input() canEdit = false;
-    @Output() onEltChange = new EventEmitter();
-    @ViewChild('newIdentifierContent') newIdentifierContent: TemplateRef<any>;
-    _elt: Item;
-    dialogRef: MatDialogRef<TemplateRef<any>>;
-    idsLinks: string[] = [];
-    idSourcesPromise: Promise<Source[]>;
-    newIdentifier!: CdeId;
-
-    static linkWithId(link = '', id) {
-        return link
-            .replace('{{id}}', id.id)
-            .replace('{{version}}', id.version);
-    }
 
     addNewIdentifier() {
         this.elt.ids.push(this.newIdentifier);
         this.getIdSource(this.newIdentifier).then(source => this.addLink(source, this.newIdentifier));
-        this.onEltChange.emit();
+        this.eltChange.emit();
         this.dialogRef.close();
     }
 
@@ -74,9 +70,15 @@ export class IdentifiersComponent {
         this.dialogRef = this.dialog.open(this.newIdentifierContent, {width: '800px'});
     }
 
-    removeIdentifierByIndex(index) {
+    removeIdentifierByIndex(index: number) {
         this.elt.ids.splice(index, 1);
         this.idsLinks.splice(index, 1);
-        this.onEltChange.emit();
+        this.eltChange.emit();
+    }
+
+    static linkWithId(link = '', id: CdeId) {
+        return link
+            .replace('{{id}}', id.id || '')
+            .replace('{{version}}', id.version || '');
     }
 }

@@ -9,15 +9,15 @@ export class SortableArrayComponent {
     @Input() index!: number;
     @Output() cb = new EventEmitter();
 
-    moveUp () {
+    moveUp() {
         this.theArray.splice(this.index - 1, 0, this.theArray.splice(this.index, 1)[0]);
         this.cb.emit();
     }
-    moveDown () {
+    moveDown() {
         this.theArray.splice(this.index + 1, 0, this.theArray.splice(this.index, 1)[0]);
         this.cb.emit();
     }
-    moveTop () {
+    moveTop() {
         this.theArray.splice(0, 0, this.theArray.splice(this.index, 1)[0]);
         this.cb.emit();
     }

@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { CdeFhirService, PatientForm } from '_fhirApp/cdeFhir.service';
 import { getMapToFhirResource } from 'core/form/formAndFe';
 import { interruptEvent } from 'non-core/browser';
-import { CdeForm } from 'shared/form/form.model';
+import { CdeForm, DisplayProfile } from 'shared/form/form.model';
 import { FhirEncounter, FhirObservation } from 'shared/mapping/fhir/fhirResource.model';
 import { codingArrayPreview, getDateString, valuePreview } from 'shared/mapping/fhir/fhirDatatypes';
 import { getText, getTextFromArray } from 'shared/mapping/fhir/datatype/fhirCodeableConcept';
@@ -81,6 +81,7 @@ export class FhirAppComponent {
     interruptEvent = interruptEvent;
     mode: FhirAppViewModes = 'filter';
     saveMessage?: string;
+    selectedProfile?: DisplayProfile;
     selectedProfileName: string;
     saving = false;
     saved = false;
@@ -89,7 +90,7 @@ export class FhirAppComponent {
                 public dialog: MatDialog,
                 public snackBar: MatSnackBar,
                 private route: ActivatedRoute) {
-        this.selectedProfileName = this.route.snapshot.queryParams['selectedProfile'];
+        this.selectedProfileName = this.route.snapshot.queryParams.selectedProfile;
         cdeFhir.init(this.route.snapshot, this.cleanupPatient.bind(this), err => this.errorMessage = err);
     }
 
@@ -119,6 +120,10 @@ export class FhirAppComponent {
         this.saving = true;
         this.cdeFhir.loadFormData(f, () => {
             this.saving = false;
+            this.selectedProfile = this.selectedProfileName
+                ? this.cdeFhir.renderedResourceTree.crossReference.displayProfiles
+                    .filter((d: DisplayProfile) => d.name === this.selectedProfileName)[0]
+                : this.cdeFhir.renderedResourceTree.crossReference.displayProfiles[0];
         });
     }
 

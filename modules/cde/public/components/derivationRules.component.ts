@@ -12,17 +12,18 @@ import { MatDialog, MatDialogRef } from '@angular/material';
 })
 export class DerivationRulesComponent implements DoCheck, OnChanges {
     @Input() canEdit!: boolean;
-    @Input() elt: any;
-    @Output() onEltChange = new EventEmitter();
+    @Input() elt!: DataElement & {derivationOutputs: {ruleName: string, cde: DataElement}[]};
+    @Output() eltChange = new EventEmitter();
     @ViewChild('newScoreContent') newScoreContent!: TemplateRef<any>;
     invalidCdeMessage = '';
-    modalRef?: MatDialogRef<TemplateRef<any>>;
+    modalRef!: MatDialogRef<TemplateRef<any>>;
     newDerivationRule: DerivationRule = {
         ruleType: 'score',
         formula: 'sumAll',
-        inputs: []
+        inputs: [],
+        name: ''
     };
-    previousCdeId: string;
+    previousCdeId!: string;
 
     constructor(
         private http: HttpClient,
@@ -52,8 +53,8 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
         });
         this.elt.derivationRules.push(this.newDerivationRule);
         this.updateRules();
-        this.modalRef!.close();
-        this.onEltChange.emit();
+        this.modalRef.close();
+        this.eltChange.emit();
     }
 
     canAddScore() {
@@ -109,7 +110,7 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
 
     removeDerivationRule(index: number) {
         this.elt.derivationRules.splice(index, 1);
-        this.onEltChange.emit();
+        this.eltChange.emit();
     }
 
     someCdesInvalid() {

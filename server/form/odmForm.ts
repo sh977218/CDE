@@ -1,6 +1,9 @@
+import { Document } from 'mongoose';
+import { CdeForm } from 'shared/form/form.model';
 const JXON = require('jxon');
 const _ = require('lodash');
 import { flattenFormElement } from 'shared/form/fe';
+import { CbError } from 'shared/models.model';
 
 let localCo: any;
 
@@ -14,7 +17,8 @@ if (typeof(window) === 'undefined') {
     } catch (e) {
     }
 }
-const ODM_DATATYPE_MAP = {
+
+const ODM_DATATYPE_MAP: any = {
     'Value List': 'text',
     Character: 'text',
     Numeric: 'float',
@@ -41,15 +45,19 @@ const ODM_DATATYPE_MAP = {
     'java.sql.Timestamp': 'time',
     'DATE/TIME': 'datetime',
     'java.lang.Byte': 'integer'
-};
+}
 
-export function getFormOdm(form, cb) {
-    if (!form) { return cb(null, ''); }
-    if (form.toObject) { form = form.toObject(); }
+export function getFormOdm(form: Document & CdeForm, cb: CbError<string>) {
+    if (!form) {
+        return cb(undefined, '');
+    }
+    if (form.toObject) {
+        form = form.toObject();
+    }
     if (!form.formElements) {
         form.formElements = [];
     }
-    const odmJsonForm = {
+    const odmJsonForm: any = {
         $CreationDateTime: new Date().toISOString(),
         $FileOID: form.tinyId,
         $FileType: 'Snapshot',
@@ -103,9 +111,9 @@ export function getFormOdm(form, cb) {
     const questions: any[] = [];
     const codeLists: any[] = [];
 
-    form.formElements.forEach(function(s1, si) {
-        const childrenOids = [];
-        flattenFormElement(s1).forEach(function(q1, qi) {
+    form.formElements.forEach((s1, si) => {
+        const childrenOids: string[] = [];
+        flattenFormElement(s1).forEach((q1, qi) => {
             const oid = q1.question.cde.tinyId + '_s' + si + '_q' + qi;
             childrenOids.push(oid);
             const omdDatatype = ODM_DATATYPE_MAP[q1.question.datatype] ? ODM_DATATYPE_MAP[q1.question.datatype] : 'text';
@@ -122,41 +130,43 @@ export function getFormOdm(form, cb) {
             };
 
             let codeListAlreadyPresent = false;
-            codeLists.forEach(function(cl) {
-                    const codeListInHouse = cl.CodeListItem.map(i => i.Decode.TranslatedText._).sort();
-                    const codeListToAdd = (q1.question.answers || []).map(a => a.valueMeaningName).sort();
-                    if (JSON.stringify(codeListInHouse) === JSON.stringify(codeListToAdd)) {
-                        odmQuestion.CodeListRef = {$CodeListOID: cl.$OID};
-                        questions.push(odmQuestion);
-                        codeListAlreadyPresent = true;
-                    }
-                });
-            if (!codeListAlreadyPresent) {
-                    odmQuestion.CodeListRef = {$CodeListOID: 'CL_' + oid};
+
+            codeLists.forEach((cl) => {
+                const codeListInHouse = cl.CodeListItem.map((i: any) => i.Decode.TranslatedText._).sort();
+                const codeListToAdd = (q1.question.datatype === 'Value List' && q1.question.answers || [])
+                    .map(a => a.valueMeaningName).sort();
+                if (JSON.stringify(codeListInHouse) === JSON.stringify(codeListToAdd)) {
+                    odmQuestion.CodeListRef = {$CodeListOID: cl.$OID};
                     questions.push(odmQuestion);
-                    codeLists.push({
-                        CodeListItem: (q1.question.answers || []).map(function(pv) {
-                            const cl: any = {
-                                $CodedValue: pv.permissibleValue,
-                                Decode: {
-                                    TranslatedText: {
-                                        '$xml:lang': 'en',
-                                        _: pv.valueMeaningName
-                                    }
-                                }
-                            };
-                            if (pv.valueMeaningCode && pv.codeSystemName) { cl.Alias = {
-                                $Context: pv.codeSystemName,
-                                $Name: pv.valueMeaningCode
-                            };
-                            }
-                            return cl;
-                        }),
-                        $DataType: omdDatatype,
-                        $OID: 'CL_' + oid,
-                        $Name: q1.label ? q1.label : ''
-                    });
+                    codeListAlreadyPresent = true;
                 }
+            });
+            if (!codeListAlreadyPresent) {
+                odmQuestion.CodeListRef = {$CodeListOID: 'CL_' + oid};
+                questions.push(odmQuestion);
+                codeLists.push({
+                    CodeListItem: (q1.question.datatype === 'Value List' && q1.question.answers || []).map((pv) => {
+                        const cl: any = {
+                            $CodedValue: pv.permissibleValue,
+                            Decode: {
+                                TranslatedText: {
+                                    '$xml:lang': 'en',
+                                    _: pv.valueMeaningName
+                                }
+                            }
+                        };
+                        if (pv.valueMeaningCode && pv.codeSystemName) { cl.Alias = {
+                            $Context: pv.codeSystemName,
+                            $Name: pv.valueMeaningCode
+                        };
+                        }
+                        return cl;
+                    }),
+                    $DataType: omdDatatype,
+                    $OID: 'CL_' + oid,
+                    $Name: q1.label ? q1.label : ''
+                });
+            }
         });
         const oid = localCo.createHash('md5').update(s1.label ? s1.label : '').digest('hex');
         odmJsonForm.Study.MetaDataVersion.FormDef.ItemGroupRef.push({
@@ -184,5 +194,5 @@ export function getFormOdm(form, cb) {
     sections.forEach(s => odmJsonForm.Study.MetaDataVersion.ItemGroupDef.push(s));
     questions.forEach(q => odmJsonForm.Study.MetaDataVersion.ItemDef.push(q));
     codeLists.forEach(cl => odmJsonForm.Study.MetaDataVersion.CodeList.push(cl));
-    cb(null, JXON.jsToString({element: odmJsonForm}));
+    cb(undefined, JXON.jsToString({element: odmJsonForm}));
 }

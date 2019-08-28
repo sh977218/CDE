@@ -10,9 +10,9 @@ import { User } from 'shared/models.model';
 })
 export class UsernameAutocompleteComponent {
     @Input() placeHolder: string = 'Make the user';
-    usernameControl = new FormControl();
+    @Output() selected = new EventEmitter<User | string>();
     filteredUsernames: User[] = [];
-    @Output() onSelect = new EventEmitter<any>();
+    usernameControl = new FormControl();
 
     constructor(userService: UserService) {
         this.usernameControl.valueChanges
@@ -22,8 +22,6 @@ export class UsernameAutocompleteComponent {
                 switchMap(value => value.length < 3 ? [] : userService.searchUsernames(value)),
             ).subscribe(usernames => this.filteredUsernames = usernames);
 
-
-        this.usernameControl.valueChanges.subscribe(val => this.onSelect.emit(val));
-
+        this.usernameControl.valueChanges.subscribe(val => this.selected.emit(val));
     }
 }

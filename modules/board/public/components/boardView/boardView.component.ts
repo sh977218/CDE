@@ -9,36 +9,41 @@ import { ClassifyItemModalComponent } from 'adminItem/public/components/classifi
 import { AlertService } from 'alert/alert.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { saveAs } from 'file-saver';
-import { Comment } from 'shared/models.model';
+import { Board, ClassificationClassified, Comment, ItemElastic, ListTypes, User } from 'shared/models.model';
 import { convertToCsv, getCdeCsvHeader, projectItemForExport } from 'core/system/export';
 
+export interface BoardQuery {
+    board: Board;
+    elts: ItemElastic[];
+    totalItems: number;
+}
+
 @Component({
-    selector: 'cde-board-view',
     templateUrl: './boardView.component.html',
 })
 export class BoardViewComponent implements OnInit {
-    @ViewChild('shareBoardModal') public shareBoardModal: TemplateRef<any>;
-    @ViewChild('classifyCdesModal') public classifyCdesModal: ClassifyItemModalComponent;
+    @ViewChild('classifyCdesModal') classifyCdesModal!: ClassifyItemModalComponent;
+    @ViewChild('shareBoardModal') shareBoardModal!: TemplateRef<any>;
     allRoles = [{
         label: 'can view',
         name: 'viewer',
         icon: 'fa fa-eye'
     }];
-    board: any;
-    boardId: string;
-    classifyCdesRefModal: MatDialogRef<TemplateRef<any>>;
-    commentMode: boolean;
+    board!: Board;
+    boardId!: string;
+    classifyCdesRefModal!: MatDialogRef<TemplateRef<any>>;
+    commentMode: boolean = false;
     currentPage: number = 0;
     elts: any[] = [];
     feedbackClass: string[] = [''];
-    hasComments: boolean;
-    listViews: {};
-    modalTitle: string;
+    hasComments: boolean = false;
+    listViews?: ListTypes;
+    modalTitle!: string;
     newUser: any = {username: '', role: 'viewer'};
-    shareDialogRef: MatDialogRef<TemplateRef<any>>;
-    totalItems: number;
-    url: string;
-    users: any[] = [];
+    shareDialogRef!: MatDialogRef<TemplateRef<any>>;
+    totalItems!: number;
+    url!: string;
+    users: User[] = [];
 
     constructor(private alert: AlertService,
                 private dialog: MatDialog,
@@ -51,13 +56,14 @@ export class BoardViewComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.boardId = this.route.snapshot.params['boardId'];
+        this.boardId = this.route.snapshot.params.boardId;
         this.reload();
         this.url = location.href;
     }
 
-    addClassification(event) {
-        let _timeout = setInterval(() => this.alert.addAlert('warning', 'Classification task is still in progress. Please hold on.'), 3000);
+    addClassification(event: ClassificationClassified) {
+        const _timeout = setInterval(() => this.alert.addAlert('warning',
+            'Classification task is still in progress. Please hold on.'), 3000);
         this.http.post(this.board.type === 'form' ? '/server/classification/classifyFormBoard' : '/server/classification/classifyCdeBoard',
             {
                 boardId: this.boardId,
@@ -76,7 +82,7 @@ export class BoardViewComponent implements OnInit {
         this.classifyCdesRefModal.close();
     }
 
-    addUser(newUser) {
+    addUser(newUser: User) {
         if (this.users.filter(o => o.username.toLowerCase() === newUser.username.toLowerCase())[0]) {
             this.alert.addAlert('danger', 'username exists');
         } else {
@@ -89,19 +95,19 @@ export class BoardViewComponent implements OnInit {
         this.classifyCdesRefModal = this.classifyCdesModal.openModal();
     }
 
-    deleteUser(index) {
+    deleteUser(index: number) {
         this.users.splice(index, 1);
     }
 
     exportBoard() {
-        this.http.get<any>('/server/board/' + this.boardId + '/0/500/?type=csv').subscribe(response => {
-            let settings = this.esService.searchSettings;
+        this.http.get<BoardQuery>('/server/board/' + this.boardId + '/0/500/?type=csv').subscribe(response => {
+            const settings = this.esService.searchSettings;
             let csv = getCdeCsvHeader(settings.tableViewFields);
             response.elts.forEach(ele => {
                 csv += convertToCsv(projectItemForExport(ele, settings.tableViewFields));
             });
             if (csv) {
-                let blob = new Blob([csv], {
+                const blob = new Blob([csv], {
                     type: 'text/csv'
                 });
                 saveAs(blob, 'BoardExport' + '.csv');  // jshint ignore:line
@@ -125,7 +131,7 @@ export class BoardViewComponent implements OnInit {
     }
 
     reload() {
-        this.http.get<any>('/server/board/' + this.boardId + '/' + (this.currentPage) * 20).subscribe(response => {
+        this.http.get<BoardQuery>('/server/board/' + this.boardId + '/' + (this.currentPage) * 20).subscribe(response => {
             if (response.board) {
                 this.board = response.board;
                 this.elts = response.elts;
@@ -152,7 +158,7 @@ export class BoardViewComponent implements OnInit {
     }
 
     setPage(newPage: PageEvent) {
-        let goToPage = newPage.pageIndex;
+        const goToPage = newPage.pageIndex;
         if (this.currentPage !== goToPage) {
             this.currentPage = goToPage;
             this.reload();

@@ -5,9 +5,9 @@ import { CbError, MongooseType } from 'shared/models.model';
 import { isOrgCurator } from 'shared/system/authorizationShared';
 import * as dataElementschema from 'shared/de/assets/dataElement.schema.json';
 import { forwardError } from 'server/errorHandler/errorHandler';
+import { find, forEach } from 'lodash';
 
 const Ajv = require('ajv');
-const _ = require('lodash');
 const connHelper = require('../../server/system/connections');
 const mongoData = require('../../server/system/mongo-data');
 const logging = require('../../server/system/logging');
@@ -47,7 +47,7 @@ schemas.dataElementSchema.pre('save', function(next) {
             });
         }
         next();
-    }, next);
+    }, err => next(`Cde ${elt.tinyId} has error: ${err}`));
 });
 
 const conn = connHelper.establishConnection(config.database.appData);
@@ -98,9 +98,9 @@ export function byTinyIdList(tinyIdList, callback) {
         .exec((err, cdes) => {
             const result = [];
             cdes.forEach(mongoData.formatElt);
-            _.forEach(tinyIdList, t => {
-                const c = _.find(cdes, cde => cde.tinyId === t);
-                if (c) { result.push(c); }
+            forEach(tinyIdList, t => {
+                const c = find(cdes, cde => cde.tinyId === t);
+                if (c) result.push(c);
             });
             callback(err, result);
         });

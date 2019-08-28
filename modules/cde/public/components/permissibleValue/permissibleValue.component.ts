@@ -1,29 +1,53 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material';
+import { Dictionary } from 'async';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
 import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
 import { catchError, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Subject } from 'rxjs/Subject';
-import { SearchSettings } from 'search/search.model';
-import { DataElement, DataTypeArray } from 'shared/de/dataElement.model';
+import { DataElement, DATA_TYPE_ARRAY, ValueDomainValueList, ValueDomain } from 'shared/de/dataElement.model';
 import { fixDataElement, fixDatatype } from 'shared/de/deValidator';
-
+import { PermissibleValue } from 'shared/models.model';
+import { SearchSettings } from 'search/search.model';
 import xml2js from 'xml2js';
+
+interface Source {
+    source: string;
+    termType: 'PT' | 'LA';
+    codes: Dictionary<{ code: string, meaning: string }>;
+    selected: boolean;
+    disabled: boolean;
+}
+
+interface UmlsTerm {
+    name?: string;
+    ui?: string;
+}
+
+interface VsacValue {
+    code: string;
+    codeSystemName: string;
+    codeSystemVersion: string;
+    displayName: string;
+    isValid: boolean;
+}
 
 @Component({
     selector: 'cde-permissible-value',
     templateUrl: 'permissibleValue.component.html'
 })
 export class PermissibleValueComponent {
-    @Input() canEdit;
-    _elt: DataElement;
+    @Input() canEdit!: boolean;
     @Input() set elt(v: DataElement) {
         this._elt = v;
         fixDataElement(this.elt);
         if (this.userService.loggedIn()) { this.loadValueSet(); }
         this.initSrcOptions();
+        if (!this.elt.dataElementConcept) {
+            this.elt.dataElementConcept = {};
+        }
         if (!this.elt.dataElementConcept.conceptualDomain) {
             this.elt.dataElementConcept.conceptualDomain = {vsac: {}};
         }
@@ -43,21 +67,19 @@ export class PermissibleValueComponent {
             } else { this.umlsTerms = []; }
         });
     }
-
     get elt(): DataElement {
         return this._elt;
     }
-
-    @Output() onEltChange = new EventEmitter();
-    @ViewChild('newPermissibleValueContent') public newPermissibleValueContent: TemplateRef<any>;
-    @ViewChild('importPermissibleValueContent') public importPermissibleValueContent: TemplateRef<any>;
-    readonly DataTypeArray = DataTypeArray;
+    _elt!: DataElement;
+    @Output() eltChange = new EventEmitter();
+    @ViewChild('newPermissibleValueContent') public newPermissibleValueContent!: TemplateRef<any>;
+    @ViewChild('importPermissibleValueContent') public importPermissibleValueContent!: TemplateRef<any>;
+    readonly dataTypeArray = DATA_TYPE_ARRAY;
     containsKnownSystem = false;
-    editMode;
+    editMode = false;
     keys = Object.keys;
     newPermissibleValue: any = {};
-    modalRef: MatDialogRef<TemplateRef<any>>;
-    pVTypeheadVsacNameList;
+    modalRef!: MatDialogRef<TemplateRef<any>>;
     searchSettings: SearchSettings = {
         classification: [],
         classificationAlt: [],
@@ -69,10 +91,9 @@ export class PermissibleValueComponent {
         resultPerPage: 20
     };
     private searchTerms = new Subject<string>();
-    vsacValueSet = [];
-    vsac = {};
-    umlsTerms = [];
-    SOURCES = {
+    vsacValueSet: VsacValue[] = [];
+    umlsTerms: UmlsTerm[] = [];
+    readonly SOURCES: Dictionary<Source> = {
         'NCI Thesaurus': {source: 'NCI', termType: 'PT', codes: {}, selected: false, disabled: false},
         UMLS: {source: 'UMLS', termType: 'PT', codes: {}, selected: false, disabled: false},
         LOINC: {source: 'LNC', termType: 'LA', codes: {}, selected: false, disabled: true},
@@ -82,22 +103,22 @@ export class PermissibleValueComponent {
     constructor(public http: HttpClient,
                 private dialog: MatDialog,
                 public userService: UserService,
-                private Alert: AlertService) {
+                private alert: AlertService) {
     }
 
     addAllVsac() {
         this.removeSourceSelection();
         this.vsacValueSet.forEach(v => this.addVsacValue(v, false));
-        this.onEltChange.emit();
+        this.eltChange.emit();
     }
 
     addNewPermissibleValue() {
         this.removeSourceSelection();
-        this.elt.valueDomain.permissibleValues.push(this.newPermissibleValue);
+        (this.elt.valueDomain as ValueDomainValueList).permissibleValues.push(this.newPermissibleValue);
         this.modalRef.close();
         this.runManualValidation();
         this.initSrcOptions();
-        this.onEltChange.emit();
+        this.eltChange.emit();
     }
 
     allVsacMatch() {
@@ -106,11 +127,11 @@ export class PermissibleValueComponent {
         return allVsacMatch;
     }
 
-    addVsacValue(vsacValue, emit = true) {
+    addVsacValue(vsacValue: VsacValue, emit = true) {
         if (this.isVsInPv(vsacValue)) {
             return;
         } else {
-            this.elt.valueDomain.permissibleValues.push({
+            (this.elt.valueDomain as ValueDomainValueList).permissibleValues.push({
                 permissibleValue: vsacValue.displayName,
                 valueMeaningName: vsacValue.displayName,
                 valueMeaningCode: vsacValue.code,
@@ -119,100 +140,101 @@ export class PermissibleValueComponent {
             });
         }
         this.runManualValidation();
-        if (emit) { this.onEltChange.emit(); }
+        if (emit) { this.eltChange.emit(); }
     }
 
     checkVsacId() {
         this.loadValueSet();
-        this.onEltChange.emit();
+        this.eltChange.emit();
         this.editMode = false;
     }
 
-    dupCodesForSameSrc(src) {
-        const allPvs = this.elt.valueDomain.permissibleValues;
-        const matchedPvs = allPvs.filter(pv => pv.codeSystemName === src);
+    dupCodesForSameSrc(src: string) {
+        const matchedPvs = (this.elt.valueDomain as ValueDomainValueList).permissibleValues.filter(pv => pv.codeSystemName === src);
         const source = this.SOURCES[src];
         if (src && source) {
             matchedPvs.forEach(pvObj => {
-                pvObj.valueMeaningCode && pvObj.valueMeaningCode.split(':').forEach(code => {
-                    if (this.SOURCES[pvObj.codeSystemName]) {
-                        if (!source.codes) {
-                            source.codes = {};
-                        }
-                        if (!source.codes[code]) {
-                            source.codes[code] = {code: '', meaning: 'Retrieving...'};
-                        }
-                    } else { this.Alert.addAlert('danger', 'Unknown source in pv code ' + code); }
-                });
+                if (pvObj.valueMeaningCode) {
+                    pvObj.valueMeaningCode.split(':').forEach(code => {
+                        if (pvObj.codeSystemName && this.SOURCES[pvObj.codeSystemName]) {
+                            if (!source.codes) {
+                                source.codes = {};
+                            }
+                            if (!source.codes[code]) {
+                                source.codes[code] = {code: '', meaning: 'Retrieving...'};
+                            }
+                        } else { this.alert.addAlert('danger', 'Unknown source in pv code ' + code); }
+                    });
+                }
             });
         } else {
-            this.Alert.addAlert('danger', 'Unknown source in pv source: ' + src);
+            this.alert.addAlert('danger', 'Unknown source in pv source: ' + src);
         }
     }
 
     initSrcOptions() {
-        this.containsKnownSystem = (this.elt.valueDomain.permissibleValues || [])
-            .filter(pv => this.SOURCES[pv.codeSystemName]).length > 0;
+        this.containsKnownSystem = (this.elt.valueDomain.datatype === 'Value List' && this.elt.valueDomain.permissibleValues || [])
+            .filter(pv => pv.codeSystemName && this.SOURCES[pv.codeSystemName]).length > 0;
     }
 
-    isPvInVSet(pv) {
-        const temp = this.vsacValueSet.filter(vsac =>
+    isPvInVSet(pv: PermissibleValue) {
+        return this.vsacValueSet.filter(vsac =>
             pv.valueMeaningCode === vsac.code &&
             pv.codeSystemName === vsac.codeSystemName &&
             pv.valueMeaningName === vsac.displayName
-        );
-        return temp.length > 0;
+        ).length > 0;
     }
 
-    isVsInPv(vs) {
-        const pvs = this.elt.valueDomain.permissibleValues;
-        if (!pvs) { return false; }
-        const temp = pvs.filter(pv =>
+    isVsInPv(vs: VsacValue) {
+        const pvs = (this.elt.valueDomain as ValueDomainValueList).permissibleValues;
+        if (!pvs) {
+            return false;
+        }
+        return pvs.filter(pv =>
             pv.valueMeaningCode === vs.code &&
             pv.codeSystemName === vs.codeSystemName &&
             pv.valueMeaningName === vs.displayName
-        );
-        return temp.length > 0;
+        ).length > 0;
     }
 
-    importPv(de) {
-        const vd = de.valueDomain;
+    importPv(de: DataElement) {
+        const vd: ValueDomain = de.valueDomain;
         if (vd && vd.datatype) {
             if (vd.datatype === 'Value List') {
                 if (vd.permissibleValues.length > 0) {
-                    this.elt.valueDomain.permissibleValues = this.elt.valueDomain.permissibleValues.concat(vd.permissibleValues);
+                    (this.elt.valueDomain as ValueDomainValueList).permissibleValues
+                        = (this.elt.valueDomain as ValueDomainValueList).permissibleValues.concat(vd.permissibleValues);
                     this.runManualValidation();
                     this.initSrcOptions();
-                    this.onEltChange.emit();
+                    this.eltChange.emit();
                     this.modalRef.close();
-                } else { this.Alert.addAlert('danger', 'No PV found in this element.'); }
-            } else { this.Alert.addAlert('danger', 'Only Value Lists can be imported.'); }
-        } else { this.Alert.addAlert('danger', 'No Datatype found.'); }
+                } else { this.alert.addAlert('danger', 'No PV found in this element.'); }
+            } else { this.alert.addAlert('danger', 'Only Value Lists can be imported.'); }
+        } else { this.alert.addAlert('danger', 'No Datatype found.'); }
     }
 
     loadValueSet() {
-        const dec = this.elt.dataElementConcept;
         this.vsacValueSet = [];
-        if (dec && dec.conceptualDomain && dec.conceptualDomain.vsac && dec.conceptualDomain.vsac.id) {
-            this.pVTypeheadVsacNameList = [];
-            this.http.get('/server/uts/vsacBridge/' + dec.conceptualDomain.vsac.id, {responseType: 'text'}).subscribe(
+        if (this.elt.dataElementConcept && this.elt.dataElementConcept.conceptualDomain && this.elt.dataElementConcept.conceptualDomain.vsac
+            && this.elt.dataElementConcept.conceptualDomain.vsac.id) {
+            const vsac = this.elt.dataElementConcept.conceptualDomain.vsac;
+            this.http.get('/server/uts/vsacBridge/' + vsac.id, {responseType: 'text'}).subscribe(
                 res => {
                     xml2js.parseString(res, (err, data) => {
                         if (err) {
-                            this.Alert.addAlert('danger', 'Error parsing xml to json.');
+                            this.alert.addAlert('danger', 'Error parsing xml to json.');
                             console.log('Received from VSAC: ');
                             console.log(res);
                         } else if (!data) {
-                            this.Alert.addAlert('danger', 'Error: No data retrieved from VSAC for ' + dec.conceptualDomain.vsac.id);
+                            this.alert.addAlert('danger', 'Error: No data retrieved from VSAC for ' + vsac.id);
                         } else {
                             const vsacJson = data['ns0:RetrieveValueSetResponse'];
                             if (vsacJson) {
-                                this.elt.dataElementConcept.conceptualDomain.vsac.name = vsacJson['ns0:ValueSet'][0].$.displayName;
-                                this.elt.dataElementConcept.conceptualDomain.vsac.version = vsacJson['ns0:ValueSet'][0].$.version;
-                                for (let i = 0; i < vsacJson['ns0:ValueSet'][0]['ns0:ConceptList'][0]['ns0:Concept'].length; i++) {
-                                    const vsac = vsacJson['ns0:ValueSet'][0]['ns0:ConceptList'][0]['ns0:Concept'][i].$;
+                                vsac.name = vsacJson['ns0:ValueSet'][0].$.displayName;
+                                vsac.version = vsacJson['ns0:ValueSet'][0].$.version;
+                                for (const vsacConcept of vsacJson['ns0:ValueSet'][0]['ns0:ConceptList'][0]['ns0:Concept']) {
+                                    const vsac = vsacConcept.$;
                                     this.vsacValueSet.push(vsac);
-                                    this.pVTypeheadVsacNameList.push(vsac.displayName);
                                 }
                                 this.validateVsacWithPv();
                                 this.validatePvWithVsac();
@@ -220,53 +242,56 @@ export class PermissibleValueComponent {
                         }
                     });
                 }, error => {
-                    this.Alert.addAlert('danger', 'Error querying VSAC' + error);
+                    this.alert.addAlert('danger', 'Error querying VSAC' + error);
                 });
         }
     }
 
-    lookupAsSource(src) {
-        if (!this.SOURCES[src].selected) { this.SOURCES[src].codes = {}; }
-        else { this.dupCodesForSameSrc(src); }
+    lookupAsSource(src: string) {
+        if (!this.SOURCES[src].selected) {
+            this.SOURCES[src].codes = {};
+        } else {
+            this.dupCodesForSameSrc(src);
+        }
         const targetSource = this.SOURCES[src].source;
-        this.elt.valueDomain.permissibleValues.forEach(async pv => {
-            this.SOURCES[src].codes[pv.valueMeaningCode] = {code: '', meaning: 'Retrieving...'};
-            const code = pv.valueMeaningCode;
-            let source;
-            if (pv.codeSystemName) {
-                if (this.SOURCES[pv.codeSystemName]) {
-                    source = this.SOURCES[pv.codeSystemName].source;
-                }
+        (this.elt.valueDomain as ValueDomainValueList).permissibleValues.forEach(async pv => {
+            const code: string = pv.valueMeaningCode || '';
+            let source: string = '';
+            this.SOURCES[src].codes[code] = {code: '', meaning: 'Retrieving...'};
+            if (pv.codeSystemName && this.SOURCES[pv.codeSystemName]) {
+                source = this.SOURCES[pv.codeSystemName].source;
             }
             if (code && source) {
                 if (src === 'UMLS' && source === 'UMLS') {
-                    this.SOURCES[src].codes[pv.valueMeaningCode] = {
-                        code: pv.valueMeaningCode,
-                        meaning: pv.valueMeaningName
+                    this.SOURCES[src].codes[code] = {
+                        code,
+                        meaning: pv.valueMeaningName || ''
                     };
                 } else if (src === 'UMLS') {
                     this.http.get<any>(`/server/uts/umlsCuiFromSrc/${code}/${source}`)
                         .subscribe(res => {
                             if (res.result.results.length > 0) {
-                                res.result.results.forEach(r => {
-                                    this.SOURCES[src].codes[pv.valueMeaningCode] = {code: r.ui, meaning: r.name};
+                                res.result.results.forEach((r: any) => {
+                                        this.SOURCES[src].codes[code] = {code: r.ui, meaning: r.name};
                                 });
-                            } else { this.SOURCES[src].codes[pv.valueMeaningCode] = {code: 'N/A', meaning: 'N/A'}; }
-                        }, () => this.Alert.addAlert('danger', 'Error query UMLS.'));
+                            } else {
+                                this.SOURCES[src].codes[code] = {code: 'N/A', meaning: 'N/A'};
+                            }
+                        }, () => this.alert.addAlert('danger', 'Error query UMLS.'));
 
                 } else if (source === 'UMLS') {
                     this.http.get<any>(`/server/uts/umlsAtomsBridge/${code}/${targetSource}`)
                         .subscribe(
                             res => {
                                 let l = [];
-                                if (res && res.result) { l = res.result.filter(r => r.termType === this.SOURCES[src].termType); }
+                                if (res && res.result) { l = res.result.filter((r: any) => r.termType === this.SOURCES[src].termType); }
                                 if (l[0]) {
-                                    this.SOURCES[src].codes[pv.valueMeaningCode] = {
+                                    this.SOURCES[src].codes[code] = {
                                         code: l[0].ui,
                                         meaning: l[0].name
                                     };
-                                } else { this.SOURCES[src].codes[pv.valueMeaningCode] = {code: 'N/A', meaning: 'N/A'}; }
-                            }, () => this.Alert.addAlert('danger', 'Error query UMLS.'));
+                                } else { this.SOURCES[src].codes[code] = {code: 'N/A', meaning: 'N/A'}; }
+                            }, () => this.alert.addAlert('danger', 'Error query UMLS.'));
                 } else {
                     const umlsResult = await this.http.get<any>(`/server/uts/umlsCuiFromSrc/${code}/${source}`).toPromise();
                     if (umlsResult.result.results.length > 0) {
@@ -274,7 +299,7 @@ export class PermissibleValueComponent {
                         try {
                             const srcResult = await this.http.get<any>(`/server/uts/umlsPtSource/${umlsCui}/${targetSource}`).toPromise();
                             if (srcResult.result.length > 0) {
-                                this.SOURCES[src].codes[pv.valueMeaningCode] = {
+                                this.SOURCES[src].codes[code] = {
                                     code: srcResult.result[0].code.substr(srcResult.result[0].code.lastIndexOf('/') + 1),
                                     meaning: srcResult.result[0].name
                                 };
@@ -283,11 +308,13 @@ export class PermissibleValueComponent {
                             // UMLS return html instead of status 404! :)
                         }
                     }
-                    if (!this.SOURCES[src].codes[pv.valueMeaningCode].code) {
-                        this.SOURCES[src].codes[pv.valueMeaningCode] = {code: 'N/A', meaning: 'N/A'};
+                    if (!this.SOURCES[src].codes[code].code) {
+                        this.SOURCES[src].codes[code] = {code: 'N/A', meaning: 'N/A'};
                     }
                 }
-            } else { this.SOURCES[src].codes[pv.valueMeaningCode] = {code: 'N/A', meaning: 'N/A'}; }
+            } else {
+                this.SOURCES[src].codes[code] = {code: 'N/A', meaning: 'N/A'};
+            }
         });
     }
 
@@ -306,15 +333,15 @@ export class PermissibleValueComponent {
     }
 
     removeAllPermissibleValues() {
-        this.elt.valueDomain.permissibleValues = [];
+        (this.elt.valueDomain as ValueDomainValueList).permissibleValues = [];
         this.runManualValidation();
     }
 
-    removePv(index) {
-        this.elt.valueDomain.permissibleValues.splice(index, 1);
+    removePv(index: number) {
+        (this.elt.valueDomain as ValueDomainValueList).permissibleValues.splice(index, 1);
         this.runManualValidation();
         this.initSrcOptions();
-        this.onEltChange.emit();
+        this.eltChange.emit();
     }
 
     removeSourceSelection() {
@@ -322,10 +349,16 @@ export class PermissibleValueComponent {
     }
 
     removeVSMapping() {
+        if (!this.elt.dataElementConcept) {
+            this.elt.dataElementConcept = {};
+        }
+        if (!this.elt.dataElementConcept.conceptualDomain) {
+            this.elt.dataElementConcept.conceptualDomain = {};
+        }
         this.elt.dataElementConcept.conceptualDomain.vsac = {};
         this.runManualValidation();
         this.initSrcOptions();
-        this.onEltChange.emit();
+        this.eltChange.emit();
     }
 
     runManualValidation() {
@@ -335,7 +368,7 @@ export class PermissibleValueComponent {
     }
 
 
-    selectFromUmls(term) {
+    selectFromUmls(term: UmlsTerm) {
         this.newPermissibleValue.valueMeaningName = term.name;
         this.newPermissibleValue.valueMeaningCode = term.ui;
         this.newPermissibleValue.codeSystemName = 'UMLS';
@@ -345,7 +378,7 @@ export class PermissibleValueComponent {
     }
 
     validatePvWithVsac() {
-        const pvs = this.elt.valueDomain.permissibleValues;
+        const pvs: PermissibleValue[] = (this.elt.valueDomain as ValueDomainValueList).permissibleValues;
         if (!pvs) { return; }
         pvs.forEach(pv => pv.isValid = this.isPvInVSet(pv));
     }
@@ -355,7 +388,9 @@ export class PermissibleValueComponent {
     }
 
     vsacMappingExists() {
-        return this.elt.dataElementConcept.conceptualDomain.vsac
+        return this.elt.dataElementConcept
+            && this.elt.dataElementConcept.conceptualDomain
+            && this.elt.dataElementConcept.conceptualDomain.vsac
             && this.elt.dataElementConcept.conceptualDomain.vsac.name
             && this.elt.dataElementConcept.conceptualDomain.vsac.version
             && this.elt.dataElementConcept.conceptualDomain.vsac.id;
@@ -364,6 +399,6 @@ export class PermissibleValueComponent {
     onDataTypeChange() {
         fixDatatype(this.elt.valueDomain);
         this.runManualValidation();
-        this.onEltChange.emit();
+        this.eltChange.emit();
     }
 }

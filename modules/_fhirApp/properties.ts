@@ -1,7 +1,6 @@
-import _isEqual from 'lodash/isEqual';
-
 import { FhirMapped, getMapPropertyFromId, supportedResourcesMaps } from '_fhirApp/resources';
 import { ResourceTreeResource } from '_fhirApp/resourceTree';
+import _isEqual from 'lodash/isEqual';
 import { assertThrow } from 'shared/models.model';
 import { questionMulti } from 'shared/form/fe';
 import { FormQuestion } from 'shared/form/form.model';
@@ -62,10 +61,13 @@ export function propertyToQuestion(q: FormQuestion, parent: ResourceTreeResource
                     value = answer;
             }
             if (name === 'usedReference' && map && map.mapping && Array.isArray(map.mapping.usedReferencesMaps)) {
+                const usedReferencesMaps = map.mapping.usedReferencesMaps;
                 value = value.map((a: string) => {
-                    const i = map!.mapping.usedReferencesMaps!.indexOf(a);
-                    if (i > -1 && q.question.answers![i] && q.question.answers![i].permissibleValue) {
-                        return q.question.answers![i].permissibleValue;
+                    const i = usedReferencesMaps.indexOf(a);
+                    if (i > -1 && q.question.datatype === 'Value List' && q.question.answers[i]
+                        && q.question.answers[i].permissibleValue
+                    ) {
+                        return q.question.answers[i].permissibleValue;
                     }
                     return a;
                 });
@@ -112,18 +114,21 @@ export function questionToProperty(q: FormQuestion, parent: ResourceTreeResource
             break;
         default:
             if (name === 'usedReference' && map && map.mapping && Array.isArray(map.mapping.usedReferencesMaps)) {
+                const usedReferencesMaps = map.mapping.usedReferencesMaps;
                 value = value.map((a: string) => {
-                    const match = q.question.answers!.filter(pv => pv.permissibleValue === a)[0];
-                    if (match) {
-                        const staticValue = map!.mapping.usedReferencesMaps![q.question.answers!.indexOf(match)];
-                        if (staticValue) {
-                            return staticValue;
+                    if (q.question.datatype === 'Value List') {
+                        const match = q.question.answers.filter(pv => pv.permissibleValue === a)[0];
+                        if (match) {
+                            const staticValue = usedReferencesMaps[q.question.answers.indexOf(match)];
+                            if (staticValue) {
+                                return staticValue;
+                            }
                         }
                     }
                     return a;
                 });
             }
-            const answer: any = value.map((a: string) => typedValueToProperty(propertyMap!, a));
+            const answer: any = value.map((a: string) => typedValueToProperty(propertyMap, a));
             if (propertyMap.max === -1 || propertyMap.max > 1) {
                 if (questionMulti(q)) {
                     // replace
@@ -132,7 +137,7 @@ export function questionToProperty(q: FormQuestion, parent: ResourceTreeResource
                     // mismatch single-select to array, partial update, no delete
                     if (!Array.isArray(resource[name])) { resource[name] = []; }
                     value.forEach((v: string, i: number) => {
-                        const index = presentIndex(resource[name], propertyMap!, value[0]);
+                        const index = presentIndex(resource[name], propertyMap, value[0]);
                         if (index > -1) {
                             resource[name][index] = answer[i];
                         } else {

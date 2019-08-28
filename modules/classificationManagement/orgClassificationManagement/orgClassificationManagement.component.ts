@@ -33,16 +33,16 @@ export class OrgClassificationManagementComponent implements OnInit {
     @ViewChild('mapClassificationMeshContent') mapClassificationMeshContent!: TemplateRef<any>;
     @ViewChild(TreeComponent) private tree!: TreeComponent;
     childClassificationNode?: TreeNode;
-    descriptorID?: string;
-    descriptorName?: string;
+    descriptorID!: string;
+    descriptorName!: string;
     descToName: { [descId: string]: string } = {};
-    mapping?: {
+    dialogRef!: MatDialogRef<TemplateRef<any>>;
+    mapping!: {
         flatClassification: string,
         meshDescriptors: string[],
     };
     meshSearchTerm = '';
-    dialogRef?: MatDialogRef<TemplateRef<any>>;
-    newClassificationName?: string;
+    newClassificationName!: string;
     oldReclassificationArray?: string[];
     onInitDone = false;
     options = {
@@ -59,7 +59,7 @@ export class OrgClassificationManagementComponent implements OnInit {
     private searchTerms = new Subject<string>();
     selectedClassificationArray = '';
     selectedClassificationString = '';
-    selectedOrg?: Organization;
+    selectedOrg!: Organization;
     userTyped = '';
 
     constructor(private http: HttpClient,
@@ -129,24 +129,24 @@ export class OrgClassificationManagementComponent implements OnInit {
                 }
             });
         } else {
-            this.selectedClassificationArray = ' <strong> ' + this.selectedOrg!.name + ' </strong>';
+            this.selectedClassificationArray = ' <strong> ' + this.selectedOrg.name + ' </strong>';
         }
-        classificationArray.push(this.newClassificationName!);
+        classificationArray.push(this.newClassificationName);
         const newClassification = {
-            orgName: this.selectedOrg!.name,
+            orgName: this.selectedOrg.name,
             categories: classificationArray
         };
         this.classificationSvc.addChildClassification(newClassification, (message: string) => {
-            this.orgChanged(this.selectedOrg!.name, () => {
+            this.orgChanged(this.selectedOrg.name, () => {
                 this.alert.addAlert('success', message);
-                this.dialogRef!.close();
+                this.dialogRef.close();
             });
         });
     }
 
     addMeshDescriptor() {
-        this.mapping!.meshDescriptors.push(this.descriptorID!);
-        this.descToName[this.descriptorID!] = this.descriptorName!;
+        this.mapping.meshDescriptors.push(this.descriptorID);
+        this.descToName[this.descriptorID] = this.descriptorName;
         this.descriptorID = '';
         this.descriptorName = '';
         this.http.post<any>('/server/mesh/meshClassification', this.mapping).subscribe(
@@ -161,7 +161,7 @@ export class OrgClassificationManagementComponent implements OnInit {
             this.http.get<any>('/jobStatus/' + type).subscribe(
                 res => {
                     if (res.done === true) {
-                        this.orgChanged(this.selectedOrg!.name, () => {
+                        this.orgChanged(this.selectedOrg.name, () => {
                             this.tree.treeModel.update();
                             clearInterval(indexFn);
                             if (cb) {
@@ -230,10 +230,11 @@ export class OrgClassificationManagementComponent implements OnInit {
         this.dialog.open(this.deleteClassificationContent).afterClosed().subscribe(result => {
             if (result) {
                 const deleteClassification = {
-                    orgName: this.selectedOrg!.name,
+                    orgName: this.selectedOrg.name,
                     categories: classificationArray
                 };
-                this.classificationSvc.removeOrgClassification(deleteClassification, (message: string) => this.alert.addAlert('info', message));
+                this.classificationSvc.removeOrgClassification(deleteClassification,
+                    (message: string) => this.alert.addAlert('info', message));
                 this.checkJob('deleteClassification', () => this.alert.addAlert('success', 'Classification Deleted'));
             }
         }, () => {
@@ -256,7 +257,7 @@ export class OrgClassificationManagementComponent implements OnInit {
                 classificationArray.unshift(_treeNode.data.name);
             }
         }
-        this.mapping.flatClassification = [this.selectedOrg!.name].concat(classificationArray).join(';');
+        this.mapping.flatClassification = [this.selectedOrg.name].concat(classificationArray).join(';');
         classificationArray.forEach((c, i) => {
             if (i < classificationArray.length - 1) {
                 this.selectedClassificationArray = this.selectedClassificationArray.concat('<span> ' + c + ' </span> ->');
@@ -268,11 +269,10 @@ export class OrgClassificationManagementComponent implements OnInit {
             if (result) {
                 classificationArray.push(this.newClassificationName);
                 const newClassification = {
-                    orgName: this.selectedOrg!.name,
+                    orgName: this.selectedOrg.name,
                     categories: classificationArray
                 };
-                this.classificationSvc.addChildClassification(newClassification, (newOrg: Organization) => {
-                    this.selectedOrg = newOrg;
+                this.classificationSvc.addChildClassification(newClassification, () => {
                     this.alert.addAlert('success', 'Classification Added');
                 });
             }
@@ -320,12 +320,13 @@ export class OrgClassificationManagementComponent implements OnInit {
             orgName: event.selectedOrg,
             categories: event.classificationArray
         };
-        this.classificationSvc.reclassifyOrgClassification(oldClassification, newClassification, (message: string) => this.alert.addAlert('info', message));
+        this.classificationSvc.reclassifyOrgClassification(oldClassification, newClassification, (message: string) =>
+            this.alert.addAlert('info', message));
         this.checkJob('reclassifyClassification', () => this.alert.addAlert('success', 'Classification Reclassified.'));
     }
 
     removeDescriptor(i: number) {
-        this.mapping!.meshDescriptors.splice(i, 1);
+        this.mapping.meshDescriptors.splice(i, 1);
         this.http.post<any>('/server/mesh/meshClassification', this.mapping).subscribe(
             res => {
                 this.alert.addAlert('success', 'Saved');
@@ -343,14 +344,14 @@ export class OrgClassificationManagementComponent implements OnInit {
             }
         }
         const newClassification = {
-            orgName: this.selectedOrg!.name,
+            orgName: this.selectedOrg.name,
             categories: classificationArray,
             newName: this.newClassificationName
         };
         this.classificationSvc.renameOrgClassification(newClassification, (message: string) => this.alert.addAlert('info', message));
         this.checkJob('renameClassification', () => {
             this.alert.addAlert('success', 'Classification Renamed.');
-            this.dialogRef!.close();
+            this.dialogRef.close();
         });
     }
 

@@ -5,6 +5,7 @@ import {
     designationSchema, eltLogSchema, idSchema, permissibleValueSchema, propertySchema, referenceDocumentSchema,
     registrationStateSchema, sourceSchema
 } from 'server/system/schemas';
+import { Classification } from 'shared/models.model';
 
 addStringtype(mongoose);
 const Schema = mongoose.Schema;
@@ -12,7 +13,7 @@ const StringType = (Schema.Types as any).StringType;
 
 const config = require('config');
 
-const DisplayProfileSchema = new Schema({
+const displayProfileSchema = new Schema({
     name: StringType,
     sectionsAsMatrix: {type: Boolean},
     displayCopyright: {type: Boolean},
@@ -114,9 +115,10 @@ const inFormSchema = new Schema({
     }
 }, {_id: false});
 
-function getFormElementJson() {
-    return {
+function getFormElementJson(formElements) {
+    return new Schema({
         elementType: {type: StringType, enum: ['section', 'question', 'form']},
+        formElements,
         instructions: instructionSchema,
         inForm: {type: inFormSchema, default: undefined},
         label: StringType,
@@ -130,15 +132,12 @@ function getFormElementJson() {
             action: {type: StringType, enum: ['show', 'enable']},
             condition: StringType,
         },
-    };
+    }, {_id: false});
 }
 
-let innerFormEltSchema: any = getFormElementJson();
-innerFormEltSchema.formElements = [];
+let innerFormEltSchema: any = getFormElementJson([]);
 for (let i = 0; i < config.modules.forms.sectionLevels; i++) {
-    const innerFormEltJson: any = getFormElementJson();
-    innerFormEltJson.formElements = [innerFormEltSchema];
-    innerFormEltSchema = innerFormEltJson;
+    innerFormEltSchema = getFormElementJson([innerFormEltSchema]);
 }
 
 export const formJson = {
@@ -185,8 +184,8 @@ export const formJson = {
     },
     referenceDocuments: {
         type: [referenceDocumentSchema],
-        description: 'Any written, printed or electronic matter used as a source of information. ' +
-            'Used to provide information or evidence of authoritative or official record.',
+        description: 'Any written, printed or electronic matter used as a source of information. Used to provide information or evidence' +
+            ' of authoritative or official record.',
     },
     properties: {
         type: [propertySchema],
@@ -213,13 +212,13 @@ export const formJson = {
         text: {type: StringType, default: ''}
     },
     formElements: [innerFormEltSchema],
-    displayProfiles: [DisplayProfileSchema],
+    displayProfiles: [displayProfileSchema],
 };
 export const formSchema = new Schema(formJson, {
     collection: 'forms',
     usePushEach: true
 });
-formSchema.path('classification').validate(v => {
+formSchema.path('classification').validate((v: Classification[]) => {
     return !v.map(value => value.stewardOrg.name)
         .some((value, index, array) => array.indexOf(value) !== array.lastIndexOf(value));
 }, 'Duplicate Steward Classification');

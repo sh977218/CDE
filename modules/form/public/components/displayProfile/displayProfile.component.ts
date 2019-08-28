@@ -12,11 +12,11 @@ import { interruptEvent } from 'non-core/browser';
 
 interface DisplayProfileVM {
     aliases: {
-        date: Date,
+        date?: Date,
         edit: boolean,
-    },
-    profile: DisplayProfile,
-    sample: CdeForm,
+    };
+    profile: DisplayProfile;
+    sample: CdeForm;
 }
 
 @Component({
@@ -50,12 +50,170 @@ export class DisplayProfileComponent {
     get elt() {
         return this._elt;
     }
+    @Input() public canEdit = false;
+    @Output() eltChange = new EventEmitter();
+    private _elt!: CdeForm;
+    dPVMs: DisplayProfileVM[] = [];
+    getMapToFhirResource = getMapToFhirResource;
+    interruptEvent = interruptEvent;
+    uoms: {u: CodeAndSystem, a: string[]}[] = [];
+    uomsDate?: Date;
+    uomsPromise!: Promise<void>;
 
     constructor(public dialog: MatDialog,
                 private ucumService: UcumService) {
     }
 
-    static sampleElt = {
+    addProfile() {
+        const newProfile = new DisplayProfile('New Profile');
+        if (!this.elt.displayProfiles) {
+            this.elt.displayProfiles = [newProfile];
+        } else {
+            this.elt.displayProfiles.push(newProfile);
+        }
+        this.dPVMs.push(DisplayProfileComponent.dPVMNew(newProfile));
+        this.eltChange.emit();
+    }
+
+    getUoms(): Promise<void> {
+        if (this.uomsDate === this.elt.updated) {
+            return this.uomsPromise;
+        }
+
+        return this.uomsPromise = new Promise<void>(resolve => {
+            let resourceCount = 0;
+            this.uoms.length = 0;
+            this.uomsDate = this.elt.updated;
+            iterateFeSync(this.elt, undefined, undefined, q => {
+                if (Array.isArray(q.question.unitsOfMeasure)) {
+                    q.question.unitsOfMeasure.filter(u => u.system === 'UCUM').forEach(u => {
+                        resourceCount++;
+                        this.ucumService.getUnitNames(u.code, names => {
+                            if (names) {
+                                this.saveAliases(this.uoms, u, names);
+                            }
+                            if (--resourceCount === 0) { resolve(); }
+                        });
+                    });
+                }
+            });
+        });
+    }
+
+    openProcedureMapping(dpvm: DisplayProfileVM) {
+        this.dialog.open(FhirProcedureMappingComponent, {
+            width: '700px',
+            data: {
+                questions: getFormQuestions(this.elt),
+                mapping: this.elt.displayProfiles[0].fhirProcedureMapping,
+                usedRefs: findQuestionByTinyId(this.elt.displayProfiles[0].fhirProcedureMapping
+                    && this.elt.displayProfiles[0].fhirProcedureMapping.usedReferences || '', this.elt)
+            }
+        }).afterClosed().subscribe(result => {
+            if (result) {
+                dpvm.profile.fhirProcedureMapping = result;
+                this.eltChange.emit();
+            }
+        });
+    }
+
+    profileAliasGet(dPVM: DisplayProfileVM, v: CodeAndSystem) {
+        const matches = dPVM.profile.unitsOfMeasureAlias.filter(a => CodeAndSystem.compare(a.unitOfMeasure, v));
+        return matches.length ? matches[0].alias : v.code;
+    }
+
+    profileAliasSet(dPVM: DisplayProfileVM, v: CodeAndSystem, a: string) {
+        if (a === v.code) {
+            const indexes: number[] = [];
+            dPVM.profile.unitsOfMeasureAlias.forEach((a, i) => {
+                if (a.unitOfMeasure.code === v.code && a.unitOfMeasure.system === v.system) {
+                    indexes.push(i);
+                }
+            });
+            indexes.reverse().forEach(i => dPVM.profile.unitsOfMeasureAlias.splice(i, 1));
+        } else {
+            const existing = dPVM.profile.unitsOfMeasureAlias.filter(u => CodeAndSystem.compare(u.unitOfMeasure, v));
+            if (existing.length) {
+                existing[0].alias = a;
+            } else {
+                dPVM.profile.unitsOfMeasureAlias.push({unitOfMeasure: v, alias: a});
+            }
+        }
+        this.eltChange.emit();
+    }
+
+    profileUomsEditCreate(dPVM: DisplayProfileVM) {
+        if (!dPVM) { return; }
+
+        this.getUoms().then(() => {
+            if (dPVM.aliases && dPVM.aliases.date === this.uomsDate) { return; }
+
+            for (const u of dPVM.profile.unitsOfMeasureAlias) {
+                const found = this.uoms.filter(a => CodeAndSystem.compare(a.u, u.unitOfMeasure));
+                if (!found.length || !found.map(a => a.a.indexOf(u.alias)).every(r => r > 0)) {
+                    dPVM.profile.unitsOfMeasureAlias.splice(dPVM.profile.unitsOfMeasureAlias.indexOf(u), 1);
+                    this.eltChange.emit();
+                }
+            }
+            dPVM.aliases.date = this.uomsDate;
+        });
+    }
+
+    removeDisplayProfile(index: number) {
+        this.elt.displayProfiles.splice(index, 1);
+        this.dPVMs.splice(index, 1);
+        this.eltChange.emit();
+    }
+
+    saveAliases(aliases: any[], v: CodeAndSystem, a: string[]) {
+        const match = a.indexOf(v.code);
+        if (match > -1) { a.splice(match, 1); }
+        a.unshift(v.code);
+
+        const existing = aliases.filter(u => CodeAndSystem.compare(u.u, v));
+        if (existing.length) {
+            existing[0].a = a;
+        } else {
+            aliases.push({u: v, a});
+        }
+    }
+
+    setDisplayType(dPVM: DisplayProfileVM) {
+        const profile = deepCopy(dPVM.profile);
+        this.substituteProfile(dPVM, profile);
+        this.eltChange.emit();
+    }
+
+    substituteProfile(dPVM: DisplayProfileVM, profile: DisplayProfile) {
+        this.elt.displayProfiles[this.elt.displayProfiles.indexOf(dPVM.profile)] = profile;
+        this.dPVMs.filter(p => p === dPVM)[0].profile = profile;
+    }
+
+    onChange(p: DisplayProfile, event: string) {
+        p.numberOfColumns = parseInt(event, 10);
+        this.eltChange.emit();
+    }
+
+    uomAliasEdit(dPVM: DisplayProfileVM) {
+        if (!this.canEdit) { return; }
+        dPVM.aliases.edit = !dPVM.aliases.edit;
+        if (dPVM.aliases.edit) { this.profileUomsEditCreate(dPVM); }
+    }
+
+    static dPVMNew(profile: DisplayProfile): DisplayProfileVM {
+        return {
+            aliases: {
+                date: undefined,
+                edit: false,
+            },
+            profile,
+            sample: getSampleElt(),
+        };
+    }
+}
+
+function getSampleElt(): CdeForm {
+    return {
         _id: '',
         __v: 0,
         archived: false,
@@ -65,31 +223,33 @@ export class DisplayProfileComponent {
         definitions: [],
         designations: [],
         displayProfiles: [],
+        elementType: 'form',
         history: [],
         ids: [],
-        label: '',
         properties: [],
         referenceDocuments: [],
         registrationState: {
             registrationStatus: 'Incomplete'
         },
         sources: [],
-        stewardOrg: '',
+        stewardOrg: {name: ''},
         tinyId: '',
         formElements: [
             {
-                label: 'Section',
                 elementType: 'section',
+                label: 'Section',
                 skipLogic: {
                     condition: ''
                 },
+                section: {},
                 formElements: [
                     {
-                        label: '',
                         elementType: 'section',
+                        label: '',
                         skipLogic: {
                             condition: ''
                         },
+                        section: {},
                         formElements: [
                             {
                                 elementType: 'question',
@@ -228,24 +388,7 @@ export class DisplayProfileComponent {
                                     }
                                 }
                             }
-                        ],
-                        question: {
-                            answers: [],
-                            datatype: 'Value List',
-                            editable: true,
-                            required: false,
-                            unitsOfMeasure: [],
-                            uomsAlias: [],
-                            uomsValid: [],
-                            cde: {
-                                definitions: [],
-                                derivationRules: [],
-                                designations: [],
-                                ids: [],
-                                naming: [],
-                                tinyId: '',
-                            }
-                        }
+                        ]
                     },
                     {
                         elementType: 'question',
@@ -381,9 +524,8 @@ export class DisplayProfileComponent {
                         },
                         formElements: [],
                         question: {
-                            datatype: 'DATE',
+                            datatype: 'Date',
                             datatypeDate: {precision: 'Month'},
-                            answers: [],
                             editable: true,
                             required: false,
                             unitsOfMeasure: [],
@@ -403,178 +545,10 @@ export class DisplayProfileComponent {
                         }
                     }
                 ],
-                question: {
-                    answers: [],
-                    datatype: 'Value List',
-                    editable: true,
-                    required: false,
-                    unitsOfMeasure: [],
-                    uomsAlias: [],
-                    uomsValid: [],
-                    cde: {
-                        definitions: [],
-                        derivationRules: [],
-                        designations: [],
-                        ids: [],
-                        naming: [],
-                        permissibleValues: [],
-                        tinyId: '',
-                    }
-                },
                 instructions: {
                     value: 'Fill out to the best of your knowledge.'
                 }
             }
         ]
     };
-    @Input() public canEdit = false;
-    @Output() onEltChange = new EventEmitter();
-    private _elt: CdeForm;
-    dPVMs: DisplayProfileVM[] = [];
-    getMapToFhirResource = getMapToFhirResource;
-    interruptEvent = interruptEvent;
-    uoms: {u: CodeAndSystem, a: string[]}[] = [];
-    uomsDate: Date;
-    uomsPromise: Promise<void>;
-
-    static dPVMNew(profile): DisplayProfileVM {
-        return {
-            aliases: {
-                date: undefined,
-                edit: false,
-            },
-            profile,
-            sample: deepCopy(this.sampleElt as CdeForm),
-        };
-    }
-
-    addProfile() {
-        const newProfile = new DisplayProfile('New Profile');
-        if (!this.elt.displayProfiles) { this.elt.displayProfiles = [newProfile]; }
-        else { this.elt.displayProfiles.push(newProfile); }
-        this.dPVMs.push(DisplayProfileComponent.dPVMNew(newProfile));
-        this.onEltChange.emit();
-    }
-
-    getUoms(): Promise<void> {
-        if (this.uomsDate === this.elt.updated) {
-            return this.uomsPromise;
-        }
-
-        return this.uomsPromise = new Promise<void>(resolve => {
-            let resourceCount = 0;
-            this.uoms.length = 0;
-            this.uomsDate = this.elt.updated;
-            iterateFeSync(this.elt, undefined, undefined, q => {
-                if (Array.isArray(q.question.unitsOfMeasure)) {
-                    q.question.unitsOfMeasure.filter(u => u.system === 'UCUM').forEach(u => {
-                        resourceCount++;
-                        this.ucumService.getUnitNames(u.code, names => {
-                            this.saveAliases(this.uoms, u, names);
-                            if (--resourceCount === 0) { resolve(); }
-                        });
-                    });
-                }
-            });
-        });
-    }
-
-    openProcedureMapping(dpvm) {
-        this.dialog.open(FhirProcedureMappingComponent, {
-            width: '700px',
-            data: {
-                questions: getFormQuestions(this.elt),
-                mapping: this.elt.displayProfiles[0].fhirProcedureMapping,
-                usedRefs: findQuestionByTinyId(this.elt.displayProfiles[0].fhirProcedureMapping.usedReferences, this.elt)
-            }
-        }).afterClosed().subscribe(result => {
-            if (result) {
-                dpvm.profile.fhirProcedureMapping = result;
-                this.onEltChange.emit();
-            }
-        });
-    }
-
-    profileAliasGet(dPVM: DisplayProfileVM, v: CodeAndSystem) {
-        const matches = dPVM.profile.unitsOfMeasureAlias.filter(a => CodeAndSystem.compare(a.unitOfMeasure, v));
-        return matches.length ? matches[0].alias : v.code;
-    }
-
-    profileAliasSet(dPVM: DisplayProfileVM, v: CodeAndSystem, a: string) {
-        if (a === v.code) {
-            const indexes = [];
-            dPVM.profile.unitsOfMeasureAlias.forEach((a, i) => {
-                if (a.unitOfMeasure.code === v.code && a.unitOfMeasure.system === v.system) {
-                    indexes.push(i);
-                }
-            });
-            indexes.reverse().forEach(i => dPVM.profile.unitsOfMeasureAlias.splice(i, 1));
-        } else {
-            const existing = dPVM.profile.unitsOfMeasureAlias.filter(u => CodeAndSystem.compare(u.unitOfMeasure, v));
-            if (existing.length) {
-                existing[0].alias = a;
-            } else {
-                dPVM.profile.unitsOfMeasureAlias.push({unitOfMeasure: v, alias: a});
-            }
-        }
-        this.onEltChange.emit();
-    }
-
-    profileUomsEditCreate(dPVM: DisplayProfileVM) {
-        if (!dPVM) { return; }
-
-        this.getUoms().then(() => {
-            if (dPVM.aliases && dPVM.aliases.date === this.uomsDate) { return; }
-
-            for (const u of dPVM.profile.unitsOfMeasureAlias) {
-                const found = this.uoms.filter(a => CodeAndSystem.compare(a.u, u.unitOfMeasure));
-                if (!found.length || !found.map(a => a.a.indexOf(u.alias)).every(r => r > 0)) {
-                    dPVM.profile.unitsOfMeasureAlias.splice(dPVM.profile.unitsOfMeasureAlias.indexOf(u), 1);
-                    this.onEltChange.emit();
-                }
-            }
-            dPVM.aliases.date = this.uomsDate;
-        });
-    }
-
-    removeDisplayProfile(index) {
-        this.elt.displayProfiles.splice(index, 1);
-        this.dPVMs.splice(index, 1);
-        this.onEltChange.emit();
-    }
-
-    saveAliases(aliases: any[], v: CodeAndSystem, a: string[]) {
-        const match = a.indexOf(v.code);
-        if (match > -1) { a.splice(match, 1); }
-        a.unshift(v.code);
-
-        const existing = aliases.filter(u => CodeAndSystem.compare(u.u, v));
-        if (existing.length) {
-            existing[0].a = a;
-        } else {
-            aliases.push({u: v, a});
-        }
-    }
-
-    setDisplayType(dPVM: DisplayProfileVM) {
-        const profile = deepCopy(dPVM.profile);
-        this.substituteProfile(dPVM, profile);
-        this.onEltChange.emit();
-    }
-
-    substituteProfile(dPVM: DisplayProfileVM, profile: DisplayProfile) {
-        this.elt.displayProfiles[this.elt.displayProfiles.indexOf(dPVM.profile)] = profile;
-        this.dPVMs.filter(p => p === dPVM)[0].profile = profile;
-    }
-
-    onChange(p: DisplayProfile, event) {
-        p.numberOfColumns = parseInt(event);
-        this.onEltChange.emit();
-    }
-
-    uomAliasEdit(dPVM: DisplayProfileVM) {
-        if (!this.canEdit) { return; }
-        dPVM.aliases.edit = !dPVM.aliases.edit;
-        if (dPVM.aliases.edit) { this.profileUomsEditCreate(dPVM); }
-    }
 }

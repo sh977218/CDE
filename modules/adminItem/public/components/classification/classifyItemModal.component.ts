@@ -7,7 +7,7 @@ import _noop from 'lodash/noop';
 
 import { UserService } from '_app/user.service';
 import { ClassificationService } from 'non-core/classification.service';
-import { ClassificationClassified, ClassificationHistory } from 'shared/models.model';
+import { ClassificationClassified, ClassificationClassifier, ClassificationHistory } from 'shared/models.model';
 import { MatDialog, MatTabChangeEvent } from '@angular/material';
 
 const actionMapping: IActionMapping = {
@@ -22,10 +22,10 @@ const actionMapping: IActionMapping = {
 })
 export class ClassifyItemModalComponent {
     @Input() modalTitle = 'Classify this CDE';
-    @Output() onEltSelected = new EventEmitter<ClassificationClassified>();
+    @Output() classified = new EventEmitter<ClassificationClassified>();
     @ViewChild('classifyItemContent') classifyItemContent!: TemplateRef<any>;
     orgClassificationsTreeView: any;
-    orgClassificationsRecentlyAddView?: ClassificationHistory[];
+    orgClassificationsRecentlyAddView?: ClassificationClassifier[];
     options = {
         idField: 'name',
         childrenField: 'elements',
@@ -43,18 +43,18 @@ export class ClassifyItemModalComponent {
                 public userService: UserService) {
     }
 
-    classifyItemByRecentlyAdd(classificationRecentlyAdd: ClassificationHistory) {
+    classifyItemByRecentlyAdd(classificationRecentlyAdd: ClassificationClassifier) {
         this.classificationSvc.updateClassificationLocalStorage({
             categories: classificationRecentlyAdd.categories,
             orgName: classificationRecentlyAdd.orgName
         });
-        this.onEltSelected.emit({
+        this.classified.emit({
             classificationArray: classificationRecentlyAdd.categories,
             selectedOrg: classificationRecentlyAdd.orgName,
         });
     }
 
-    classifyItemByTree(treeNode: TreeNode) {
+    classifyItemByTree(treeNode: TreeNode, selectedOrg: string) {
         this.treeNode = treeNode;
         const classificationArray = [treeNode.data.name];
         let _treeNode = treeNode;
@@ -68,9 +68,9 @@ export class ClassifyItemModalComponent {
             categories: classificationArray,
             orgName: this.selectedOrg
         });
-        this.onEltSelected.emit({
+        this.classified.emit({
             classificationArray,
-            selectedOrg: this.selectedOrg
+            selectedOrg
         });
     }
 

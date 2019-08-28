@@ -161,10 +161,10 @@
                 </div>
                 <div id="middleView" class="col-xl-10 col-lg-9 col-md-8 col-12">
                     <ng-container *ngIf="currentTab === 'general_tab'">
-                        <cde-de-general-details [(elt)]="elt" [canEdit]="canEdit()"
-                                                (onEltChange)="saveDraftVoid()"></cde-de-general-details>
+                        <cde-de-general-details [elt]="elt" [canEdit]="canEdit()"
+                                                (eltChange)="saveDraftVoid()"></cde-de-general-details>
                         <cde-admin-item-sources [elt]="elt"></cde-admin-item-sources>
-                        <cde-registration [elt]="elt" (onEltChange)="saveDraftVoid()"
+                        <cde-registration [elt]="elt" (eltChange)="saveDraftVoid()"
                                           [canEdit]="canEdit()"></cde-registration>
                         <div role="group" aria-label="More Info">
                             <cde-linked-forms [elt]="elt"></cde-linked-forms>
@@ -175,27 +175,27 @@
                     </ng-container>
                     <ng-container *ngIf="currentTab === 'pvs_tab'">
                         <cde-permissible-value [elt]="elt" [canEdit]="canEdit()"
-                                               (onEltChange)="saveDraftVoid()"></cde-permissible-value>
+                                               (eltChange)="saveDraftVoid()"></cde-permissible-value>
                     </ng-container>
                     <ng-container *ngIf="currentTab === 'naming_tab'">
-                        <cde-naming [elt]="elt" [canEdit]="canEdit()" (onEltChange)="saveDraftVoid()"></cde-naming>
+                        <cde-naming [elt]="elt" [canEdit]="canEdit()" (eltChange)="saveDraftVoid()"></cde-naming>
                     </ng-container>
                     <ng-container *ngIf="currentTab === 'classification_tab'">
-                        <cde-cde-classification [elt]="elt" (onEltChange)="eltLoaded($event)"></cde-cde-classification>
+                        <cde-cde-classification [elt]="elt" (eltChange)="eltLoaded($event)"></cde-cde-classification>
                     </ng-container>
                     <ng-container *ngIf="currentTab === 'concepts_tab'">
-                        <cde-concepts [elt]="elt" [canEdit]="canEdit()" (onEltChange)="saveDraftVoid()"></cde-concepts>
+                        <cde-concepts [elt]="elt" [canEdit]="canEdit()" (eltChange)="saveDraftVoid()"></cde-concepts>
                     </ng-container>
                     <ng-container *ngIf="currentTab === 'referenceDocuments_tab'">
                         <cde-reference-document [elt]="elt" [canEdit]="canEdit()"
-                                                (onEltChange)="saveDraftVoid()"></cde-reference-document>
+                                                (eltChange)="saveDraftVoid()"></cde-reference-document>
                     </ng-container>
                     <ng-container *ngIf="currentTab === 'properties_tab'">
-                        <cde-properties [elt]="elt" [canEdit]="canEdit()" (onEltChange)="saveDraftVoid()">
+                        <cde-properties [elt]="elt" [canEdit]="canEdit()" (eltChange)="saveDraftVoid()">
                         </cde-properties>
                     </ng-container>
                     <ng-container *ngIf="currentTab === 'ids_tab'">
-                        <cde-identifiers [elt]="elt" [canEdit]="canEdit()" (onEltChange)="saveDraftVoid()">
+                        <cde-identifiers [elt]="elt" [canEdit]="canEdit()" (eltChange)="saveDraftVoid()">
                         </cde-identifiers>
                     </ng-container>
                     <ng-container *ngIf="currentTab === 'attachments_tab'">
@@ -209,7 +209,7 @@
                     </ng-container>
                     <ng-container *ngIf="currentTab === 'rules_tab'">
                         <cde-derivation-rules [canEdit]="canEdit()" [elt]="elt"
-                                              (onEltChange)="saveDraftVoid()"></cde-derivation-rules>
+                                              (eltChange)="saveDraftVoid()"></cde-derivation-rules>
                         <cde-valid-rules [elt]="elt"></cde-valid-rules>
                     </ng-container>
                 </div>
@@ -222,7 +222,7 @@
                               [eltName]="elt.designations[0].designation"></cde-discuss-area>
         </div>
     </div>
-    <cde-save-modal #saveModal [elt]="elt" (save)="saveDataElement()" (onEltChange)="saveDraftVoid()"></cde-save-modal>
+    <cde-save-modal #saveModal [elt]="elt" (save)="saveDataElement()" (eltChange)="saveDraftVoid()"></cde-save-modal>
     <cde-delete-modal #deleteModal (confirm)="removeDraft()"></cde-delete-modal>
 </div>
 

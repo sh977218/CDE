@@ -27,7 +27,8 @@ export class DraftsComponent {
         this.deTableData = new MatTableDataSource(this.draftCdes);
         this.formTableData = new MatTableDataSource(this.draftForms);
         const organizationSet = new Set<string>();
-        const addOrgSet = (elt: DataElement | CdeForm) => organizationSet.add(elt.stewardOrg && elt.stewardOrg.name ? elt.stewardOrg.name : '');
+        const addOrgSet = (elt: DataElement | CdeForm) => organizationSet.add(elt.stewardOrg && elt.stewardOrg.name
+            ? elt.stewardOrg.name : '');
 
         this.draftCdes.forEach(addOrgSet);
         this.draftForms.forEach(addOrgSet);

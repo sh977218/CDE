@@ -5,7 +5,10 @@ import { ElasticService } from '_app/elastic.service';
 import { SearchSettings } from 'search/search.model';
 import { orderedList } from 'shared/system/regStatusShared';
 import {
-    ClassificationElement, ElasticQueryResponse, Embed, ItemElastic, UserSearchSettings
+    ClassificationElement, ElasticQueryResponseAggregationsItem, ElasticQueryResponseDe,
+    ElasticQueryResponseForm, ElasticQueryResponseItem, Embed, ItemElastic,
+    ModuleItem,
+    UserSearchSettings
 } from 'shared/models.model';
 
 
@@ -22,7 +25,7 @@ export class EmbedAppComponent  {
     name = 'Embedded NIH CDE Repository';
     searchStarted = false;
     searchSettings: SearchSettings = new SearchSettings('', 5);
-    searchType: 'cde'|'form' = 'cde';
+    searchType: ModuleItem = 'cde';
     searchViewSettings: UserSearchSettings;
     selectedClassif = '';
     took?: number;
@@ -42,19 +45,24 @@ export class EmbedAppComponent  {
         this.http.get<Embed>('/embed/' + args.id).subscribe(response => {
             this.embed = response;
             this.searchViewSettings.tableViewFields.customFields = [];
+            const customFields = this.searchViewSettings.tableViewFields.customFields;
 
             const embed4Type = Object.assign({}, this.embed[this.searchType]);
 
-            embed4Type.ids && embed4Type.ids.forEach(eId => {
-                this.searchViewSettings.tableViewFields.customFields!.push({key: eId.idLabel, label: eId.idLabel});
-                if (eId.version) {
-                    this.searchViewSettings.tableViewFields.customFields!.push({key: eId.idLabel + '_version', label: eId.versionLabel});
-                }
-            });
+            if (embed4Type.ids) {
+                embed4Type.ids.forEach(eId => {
+                    customFields.push({key: eId.idLabel, label: eId.idLabel});
+                    if (eId.version) {
+                        customFields.push({key: eId.idLabel + '_version', label: eId.versionLabel});
+                    }
+                });
+            }
 
-            embed4Type.otherNames && embed4Type.otherNames.forEach(eName => {
-                this.searchViewSettings.tableViewFields.customFields!.push({key: eName.label, label: eName.label});
-            });
+            if (embed4Type.otherNames) {
+                embed4Type.otherNames.forEach(eName => {
+                    customFields.push({key: eName.label, label: eName.label});
+                });
+            }
 
             if (embed4Type.primaryDefinition && embed4Type.primaryDefinition.show) {
                 this.searchViewSettings.tableViewFields.customFields.push({key: 'primaryDefinition',
@@ -115,11 +123,12 @@ export class EmbedAppComponent  {
     }
 
     search() {
-        this.searchSettings.resultPerPage = this.embed[this.searchType]!.pageSize;
+        const embedItem = this.embed[this.searchType];
+        this.searchSettings.resultPerPage = embedItem ? embedItem.pageSize : 0;
         const embed4Type = Object.assign({}, this.embed[this.searchType]);
 
         const timestamp = new Date().getTime();
-        this.lastQueryTimeStamp = timestamp;
+        const lastQueryTimeStamp = this.lastQueryTimeStamp = timestamp;
 
         for (let i = 0; i < orderedList.length; i++) {
             this.searchSettings.regStatuses.push(orderedList[i]);
@@ -131,14 +140,18 @@ export class EmbedAppComponent  {
         const settings = this.elasticSvc.buildElasticQuerySettings(this.searchSettings);
         settings.fullRecord = true;
 
-        this.elasticSvc.generalSearchQuery(settings, this.searchType, (err?: string, result?: ElasticQueryResponse) => {
+        this.elasticSvc.generalSearchQuery(settings, this.searchType,
+            (err?: string, r?: ElasticQueryResponseItem) => {
+            const result = r as ElasticQueryResponseAggregationsItem;
             if (err || !result) {
                 this.elts = [];
                 return;
             }
-            if (timestamp < this.lastQueryTimeStamp!) { return; }
+            if (timestamp < lastQueryTimeStamp) { return; }
             this.totalItems = result.totalNumber;
-            this.elts = this.searchType === 'cde' ? result.cdes! : result.forms!;
+            this.elts = this.searchType === 'cde'
+                ? (result as ElasticQueryResponseDe).cdes
+                : (result as ElasticQueryResponseForm).forms;
             this.took = result.took;
 
             if (this.searchSettings.page === 1 && result.totalNumber > 0) {
@@ -153,8 +166,11 @@ export class EmbedAppComponent  {
                     }
                 });
 
-                if (maxJump > (result.maxScore / 4)) { this.cutoffIndex = maxJumpIndex; }
-                else { this.cutoffIndex = 100; }
+                if (maxJump > (result.maxScore / 4)) {
+                    this.cutoffIndex = maxJumpIndex;
+                } else {
+                    this.cutoffIndex = 100;
+                }
             } else {
                 this.cutoffIndex = 100;
             }
@@ -240,7 +256,7 @@ export class EmbedAppComponent  {
                     searchSettings.selectedOrg = this.embed.org;
                     const lfSettings = this.elasticSvc.buildElasticQuerySettings(searchSettings);
 
-                    this.elasticSvc.generalSearchQuery(lfSettings, 'form', (err?: string, result?: ElasticQueryResponse) => {
+                    this.elasticSvc.generalSearchQuery(lfSettings, 'form', (err?: string, result?: ElasticQueryResponseForm) => {
                         if (err || !result) {
                             return;
                         }

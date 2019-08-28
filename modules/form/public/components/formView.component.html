@@ -221,39 +221,39 @@
                         <cde-native-render-full [elt]="elt"></cde-native-render-full>
                     </ng-container>
                     <ng-container *ngIf="currentTab === 'general_tab'">
-                        <cde-form-general-details [elt]="elt" [canEdit]="canEdit()" (onEltChange)="saveDraftVoid()">
+                        <cde-form-general-details [elt]="elt" [canEdit]="canEdit()" (eltChange)="saveDraftVoid()">
                         </cde-form-general-details>
                         <cde-admin-item-sources [elt]="elt"></cde-admin-item-sources>
-                        <cde-registration [elt]="elt" (onEltChange)="saveDraftVoid()"
+                        <cde-registration [elt]="elt" (eltChange)="saveDraftVoid()"
                                           [canEdit]="canEdit()"></cde-registration>
                         <cde-linked-boards [elt]="elt"></cde-linked-boards>
                         <cde-linked-forms [elt]="elt"></cde-linked-forms>
                         <cde-form-term-mapping [elt]="elt"></cde-form-term-mapping>
                     </ng-container>
                     <ng-container *ngIf="currentTab=== 'description_tab'">
-                        <cde-form-description [(elt)]="elt" [canEdit]="canEdit()"
-                                              (onEltChange)="saveDraftVoid()"></cde-form-description>
+                        <cde-form-description [elt]="elt" [canEdit]="canEdit()"
+                                              (eltChange)="saveDraftVoid()"></cde-form-description>
                     </ng-container>
                     <ng-container *ngIf="currentTab=== 'naming_tab'">
-                        <cde-naming [elt]="elt" [canEdit]="canEdit()" (onEltChange)="saveDraftVoid()"></cde-naming>
+                        <cde-naming [elt]="elt" [canEdit]="canEdit()" (eltChange)="saveDraftVoid()"></cde-naming>
                     </ng-container>
                     <ng-container *ngIf="currentTab=== 'classification_tab'">
-                        <cde-form-classification [elt]="elt" (onEltChange)="eltLoaded($event)"></cde-form-classification>
+                        <cde-form-classification [elt]="elt" (eltChange)="eltLoaded($event)"></cde-form-classification>
                     </ng-container>
                     <ng-container *ngIf="currentTab=== 'referenceDocuments_tab'">
-                        <cde-reference-document [elt]="elt" [canEdit]="canEdit()" (onEltChange)="saveDraftVoid()">
+                        <cde-reference-document [elt]="elt" [canEdit]="canEdit()" (eltChange)="saveDraftVoid()">
                         </cde-reference-document>
                     </ng-container>
                     <ng-container *ngIf="currentTab=== 'displayProfiles_tab'">
-                        <cde-display-profile [elt]="elt" [canEdit]="canEdit()" (onEltChange)="saveDraftVoid()">
+                        <cde-display-profile [elt]="elt" [canEdit]="canEdit()" (eltChange)="saveDraftVoid()">
                         </cde-display-profile>
                     </ng-container>
                     <ng-container *ngIf="currentTab=== 'properties_tab'">
-                        <cde-properties [elt]="elt" [canEdit]="canEdit()" (onEltChange)="saveDraftVoid()">
+                        <cde-properties [elt]="elt" [canEdit]="canEdit()" (eltChange)="saveDraftVoid()">
                         </cde-properties>
                     </ng-container>
                     <ng-container *ngIf="currentTab=== 'ids_tab'">
-                        <cde-identifiers [elt]="elt" [canEdit]="canEdit()" (onEltChange)="saveDraftVoid()">
+                        <cde-identifiers [elt]="elt" [canEdit]="canEdit()" (eltChange)="saveDraftVoid()">
                         </cde-identifiers>
                     </ng-container>
                     <ng-container *ngIf="currentTab=== 'attachments_tab'">
@@ -275,7 +275,7 @@
                               [eltName]="elt.designations[0].designation"></cde-discuss-area>
         </div>
     </div>
-    <cde-save-modal #saveModal [elt]="elt" (save)="saveForm()" (onEltChange)="saveDraftVoid()"></cde-save-modal>
+    <cde-save-modal #saveModal [elt]="elt" (save)="saveForm()" (eltChange)="saveDraftVoid()"></cde-save-modal>
     <cde-delete-modal #deleteModal (confirm)="removeDraft()"></cde-delete-modal>
 </div>
 

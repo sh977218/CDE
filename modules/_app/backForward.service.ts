@@ -15,8 +15,11 @@ export class BackForwardService {
 
         this.router.events.subscribe(e => {
             if (e instanceof NavigationStart) {
-                if (this.hasNavigated) this.isBackForward = false;
-                else this.hasNavigated = true;
+                if (this.hasNavigated) {
+                    this.isBackForward = false;
+                } else {
+                    this.hasNavigated = true;
+                }
             }
         });
     }

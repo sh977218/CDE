@@ -66,13 +66,13 @@
                 <label for="changeNote">Change Note</label>
                 <textarea id="changeNote" class="form-control" name="changeNote"
                           [(ngModel)]="elt.changeNote" placeholder="Optional Change Note"
-                          (ngModelChange)="onEltChange.emit()"></textarea>
+                          (ngModelChange)="eltChange.emit()"></textarea>
             </div>
             <div class="form-group">
                 <label for="newVersion">Choose a new version</label>
                 <input id="newVersion" name="newVersion" #newVersion="ngModel" class="form-control"
                        [(ngModel)]="elt.version" pattern="^[A-z0-9-=.]+$"
-                       (ngModelChange)="newVersionVersionUnicity($event);onEltChange.emit()"/>
+                       (ngModelChange)="newVersionVersionUnicity($event); eltChange.emit()"/>
                 <div *ngIf="newVersion.errors && (newVersion.dirty || newVersion.touched)" class="help-inline">
                     Version number cannot include characters other than letters, numbers, -, = and .
                 </div>

@@ -11,7 +11,9 @@ require('expose-loader?bootstrap!bootstrap');
 import '../../node_modules/deeppurple-amber.css';
 
 import { enableProdMode } from '@angular/core';
-if (PRODUCTION) enableProdMode();
+if (PRODUCTION) {
+    enableProdMode();
+}
 
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { CdeAppModule } from './app.module';

@@ -1,7 +1,7 @@
 import { Cb, CbErr, CbRet } from 'shared/models.model';
 
 export function callbackify<T>(asyncFn: Promise<T>): (a: CbErr<T>) => void {
-    return function(cb) {
+    return (cb) => {
         asyncFn.then(value => cb(undefined, value), cb);
     };
 }

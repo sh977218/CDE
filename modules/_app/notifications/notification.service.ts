@@ -6,8 +6,9 @@ import { ApprovalService } from '_app/notifications/approval.service';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
 import _noop from 'lodash/noop';
-import { assertUnreachable, Cb, Task, TaskStateUnread } from 'shared/models.model';
+import { assertUnreachable, Cb, Task, TASK_STATE_UNREAD } from 'shared/models.model';
 import { partition } from 'shared/system/util';
+import { Dictionary } from 'async';
 
 const TYPES = ['error', 'approve', 'vote', 'message', 'comment']; // in sort order
 
@@ -25,7 +26,7 @@ export interface NotificationTask {
     urlQueryParams?: Params;
 }
 
-function tasksEqualAndState(l: Task, r: Task): {state?: number} {
+function tasksEqualAndState(l: Task, r: Task): {state?: number} | undefined {
     if (l.id !== r.id || l.idType !== r.idType) {
         return undefined;
     }
@@ -61,16 +62,6 @@ export class NotificationService {
     reloading = false;
     tasks: NotificationTask[] = [];
 
-    static sortTasks(tasks: NotificationTask[]): NotificationTask[] {
-        return tasks.sort((a: NotificationTask, b: NotificationTask) => {
-            if (TYPES.indexOf(a.tasks[0].type) !== TYPES.indexOf(b.tasks[0].type)) {
-                return TYPES.indexOf(a.tasks[0].type) - TYPES.indexOf(b.tasks[0].type);
-            } else {
-                return new Date(a.tasks[0].date).getTime() - new Date(b.tasks[0].date).getTime();
-            }
-        });
-    }
-
     authorizeToComment(username: string) {
         this.http.post('/addCommentAuthor', {username}).subscribe(() => {
             this.alert.addAlert('success', 'Role added.');
@@ -81,30 +72,30 @@ export class NotificationService {
         this.tasks.length = 0;
     }
 
-    createTask(t: Task[], name?: string) {
+    createTask(tasks: Task[], name?: string) {
         const abstain = _noop;
         let approve = _noop;
         let reject = _noop;
-        const t0 = t[0];
-        const task: NotificationTask = {
-            actions: undefined,
-            background: undefined,
-            icon: undefined,
-            name: name || t0.name,
-            properties: t0.properties && t0.properties.concat() || [],
-            url: t0.url,
-            tasks: t,
-            text: t0.text ? (t0.text.length < 150 ? t0.text : t0.text.slice(0, 150) + '...') : undefined,
-            unread: !!(t0.state === undefined || TaskStateUnread & t0.state),
-        };
-        if (task.url) {
-            const urlTree = this.router.parseUrl(task.url);
-            task.urlLink = '/' + urlTree.root.children.primary.segments.join('/');
-            task.urlQueryParams = urlTree.queryParams;
-        }
+        const t0 = tasks[0];
+        let task: NotificationTask;
+        name = name || t0.name;
+        const properties = t0.properties && t0.properties.concat() || [];
+        const text = t0.text ? (t0.text.length < 150 ? t0.text : t0.text.slice(0, 150) + '...') : undefined;
+        const unread = !!(t0.state === undefined || TASK_STATE_UNREAD & t0.state);
+        const url = t0.url;
         switch (t0.type) {
             case 'approve': // idType: comment, commentReply
-                task.actions = [];
+                task = {
+                    actions: [],
+                    background: '#d4edda',
+                    icon: 'supervisor_account',
+                    name: 'Approve',
+                    properties,
+                    tasks,
+                    text,
+                    unread,
+                    url,
+                };
                 switch (t0.idType) {
                     case 'attachment':
                         task.properties.unshift({key: 'Attachment', icon: 'attach_file'});
@@ -117,7 +108,7 @@ export class NotificationService {
                         approve = () => this.approvalService.funcCommentApprove(task, this.funcReload);
                         reject = () => this.approvalService.funcCommentDecline(task, this.funcReload);
                         const userProp = task.tasks[0].properties.filter(p => p.key === 'User')[0];
-                        if (userProp) {
+                        if (userProp && userProp.value) {
                             const username = userProp.value;
                             task.actions.push({
                                 color: 'accent', icon: 'person_add', text: 'Authorize', click: () => {
@@ -134,13 +125,19 @@ export class NotificationService {
                 }
                 task.actions.push({color: 'primary', icon: 'done', text: 'Approve', click: approve});
                 task.actions.push({color: 'warn', icon: 'clear', text: 'Reject', click: reject});
-                task.background = '#d4edda';
-                task.icon = 'supervisor_account';
-                task.name = 'Approve';
                 break;
             case 'error': // idType: version
-                task.background = '#f8d7da';
-                task.icon = 'error';
+                task = {
+                    actions: [],
+                    background: '#f8d7da',
+                    icon: 'error',
+                    name,
+                    properties,
+                    tasks,
+                    text,
+                    unread,
+                    url,
+                };
                 switch (t0.idType) {
                     case 'versionUpdate':
                         task.icon = 'new_releases';
@@ -148,24 +145,49 @@ export class NotificationService {
                 }
                 break;
             case 'vote': // idType:
-                task.actions = [
-                    {color: 'primary', icon: 'thumb_up', text: 'Yes', click: approve},
-                    {color: 'warn', icon: 'thumb_down', text: 'No', click: reject},
-                    {color: 'accent', icon: 'thumbs_up_down', text: 'Abstain', click: abstain}
-                ];
-                task.background = '#cce5ff';
-                task.icon = 'done_all';
+                task = {
+                    actions: [
+                        {color: 'primary', icon: 'thumb_up', text: 'Yes', click: approve},
+                        {color: 'warn', icon: 'thumb_down', text: 'No', click: reject},
+                        {color: 'accent', icon: 'thumbs_up_down', text: 'Abstain', click: abstain}
+                    ],
+                    background: '#cce5ff',
+                    icon: 'done_all',
+                    name,
+                    properties,
+                    tasks,
+                    text,
+                    unread,
+                    url,
+                };
                 break;
             case 'comment':
                 // TODO: read/unread impl
-                task.background = '#d1ecf1';
-                task.icon = 'question_answer';
+                task = {
+                    actions: [],
+                    background: '#d1ecf1',
+                    icon: 'question_answer',
+                    name,
+                    properties,
+                    tasks,
+                    text,
+                    unread,
+                    url,
+                };
                 break;
             case 'message':
             default:
-                task.actions = [];
-                task.background = '#d1ecf1';
-                task.icon = 'assignment';
+                task = {
+                    actions: [],
+                    background: '#d1ecf1',
+                    icon: 'assignment',
+                    name,
+                    properties,
+                    tasks,
+                    text,
+                    unread,
+                    url,
+                };
                 switch (t0.idType) {
                     case 'clientError':
                     case 'serverError':
@@ -174,7 +196,12 @@ export class NotificationService {
                         break;
                 }
         }
-        return task;
+        if (task.url) {
+            const urlTree = this.router.parseUrl(task.url);
+            task.urlLink = '/' + urlTree.root.children.primary.segments.join('/');
+            task.urlQueryParams = urlTree.queryParams;
+        }
+        return task as NotificationTask;
     }
 
     drawer() {
@@ -210,7 +237,7 @@ export class NotificationService {
         let grouped = tasks.concat();
 
         // user comments on same item
-        const groups = {};
+        const groups: Dictionary<number> = {};
         tasks
             .filter(task => task.tasks[0].source === 'user' && task.tasks[0].type === 'comment')
             .forEach(task => {
@@ -226,7 +253,7 @@ export class NotificationService {
                     && task.tasks[0].idType === eltModule);
                 grouped.push(
                     this.createTask(
-                        eltTasks.reduce((acc, t) => acc.concat(t.tasks), []),
+                        eltTasks.reduce<Task[]>((acc, t) => acc.concat(t.tasks), []),
                         groups[group] + ' comments'
                     )
                 );
@@ -237,11 +264,11 @@ export class NotificationService {
     }
 
     mergeTaskMessages(acc: NotificationTask[], t: Task): NotificationTask[] {
-        let unread;
+        let unread = false;
         const match = this.tasks.filter(task => !!task.tasks.filter(i => {
             const stateObj = tasksEqualAndState(i, t);
             if (stateObj && stateObj.state) {
-                unread = unread || stateObj.state & TaskStateUnread;
+                unread = unread || !!(stateObj.state & TASK_STATE_UNREAD);
             }
             return !!stateObj;
         }).length);
@@ -273,7 +300,7 @@ export class NotificationService {
                 }
                 break;
             default:
-                assertUnreachable(source);
+                throw assertUnreachable(source);
         }
     }
 
@@ -289,13 +316,23 @@ export class NotificationService {
         this.reloading = false;
     }
 
-    updateTaskMessages(serverTasks) {
+    updateTaskMessages(serverTasks: NotificationTask[]) {
         this.tasks = NotificationService.sortTasks(
             this.groupTasks(
                 serverTasks.reduce(this.funcMergeTaskMessages, [])
             )
         );
         this.hasCriticalError = this.tasks.filter(t => t.tasks[0].idType === 'versionUpdate').length > 0;
+    }
+
+    static sortTasks(tasks: NotificationTask[]): NotificationTask[] {
+        return tasks.sort((a: NotificationTask, b: NotificationTask) => {
+            if (TYPES.indexOf(a.tasks[0].type) !== TYPES.indexOf(b.tasks[0].type)) {
+                return TYPES.indexOf(a.tasks[0].type) - TYPES.indexOf(b.tasks[0].type);
+            } else {
+                return new Date(a.tasks[0].date).getTime() - new Date(b.tasks[0].date).getTime();
+            }
+        });
     }
 }
 

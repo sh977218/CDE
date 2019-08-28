@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-
 import { AlertService } from 'alert/alert.service';
-import { ElasticQueryResponse } from 'shared/models.model';
+import { Board, ElasticQueryResponseAggregations } from 'shared/models.model';
+import { BoardFilter } from 'board/public/myBoards.service';
+import { Dictionary } from 'async';
 
 
 @Component({
@@ -10,8 +11,8 @@ import { ElasticQueryResponse } from 'shared/models.model';
     templateUrl: './publicBoards.component.html'
 })
 export class PublicBoardsComponent implements OnInit {
-    boards = [];
-    filter = {
+    boards: Board[] = [];
+    filter: BoardFilter & Dictionary<any> = {
         search: '',
         selectedTags: [],
         selectedTypes: [],
@@ -20,6 +21,7 @@ export class PublicBoardsComponent implements OnInit {
         tags: [],
         types: []
     };
+    search: string = '';
 
     ngOnInit() {
         this.loadPublicBoards();
@@ -32,7 +34,7 @@ export class PublicBoardsComponent implements OnInit {
     loadPublicBoards() {
         this.filter.selectedTags = this.filter.tags.filter(a => a.checked).map(a => a.key);
         this.filter.selectedTypes = this.filter.types.filter(a => a.checked).map(a => a.key);
-        this.http.post<ElasticQueryResponse>('/server/board/boardSearch', this.filter).subscribe(response => {
+        this.http.post<ElasticQueryResponseAggregations>('/server/board/boardSearch', this.filter).subscribe(response => {
                 this.boards = response.hits.hits.map(h => {
                     h._source._id = h._id;
                     return h._source;
@@ -48,7 +50,7 @@ export class PublicBoardsComponent implements OnInit {
         );
     }
 
-    selectAggregation(aggName, $index) {
+    selectAggregation(aggName: string, $index: number) {
         this.filter[aggName][$index].checked = !this.filter[aggName][$index].checked;
         this.loadPublicBoards();
     }
