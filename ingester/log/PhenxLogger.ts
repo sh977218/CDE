@@ -14,7 +14,7 @@ export class PhenxLogger {
     static retiredPhenxCdes = [];
 
     constructor() {
-        let timeInterval = 10 * 1000; // 10 seconds
+        const timeInterval = 10 * 1000; // 10 seconds
         setInterval(PhenxLogger.log, timeInterval);
     }
 
