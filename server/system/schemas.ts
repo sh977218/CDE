@@ -6,10 +6,10 @@ addStringtype(mongoose);
 const Schema = mongoose.Schema;
 const StringType = (Schema.Types as any).StringType;
 
-const csEltSchema = {
+const csEltSchema = new Schema({
     elements: [],
     name: {type: StringType, index: true}
-};
+}, {_id: false});
 
 export const classificationSchema = new Schema({
     stewardOrg: {
