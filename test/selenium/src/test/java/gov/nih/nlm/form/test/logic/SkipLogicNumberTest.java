@@ -26,6 +26,7 @@ public class SkipLogicNumberTest extends BaseFormTest {
 
         goToPreview();
         togglePrintableLogic();
+        findElement(By.xpath("//*[@id='Greatest Dimension_0-0_box']")).clear();
         textPresent(cdeName);
         findElement(By.xpath("//*[@id='Greatest Dimension_0-0_box']")).sendKeys("2");
         textPresent(cdeName);
@@ -52,9 +53,9 @@ public class SkipLogicNumberTest extends BaseFormTest {
 
         goToPreview();
         togglePrintableLogic();
+        findElement(By.xpath("//*[@id='Additional Dimension_0-1_box']")).clear();
         textPresent(cdeName);
         findElement(By.xpath("//*[@id='Additional Dimension_0-1_box']")).sendKeys("4");
         textNotPresent(cdeName);
     }
-
 }

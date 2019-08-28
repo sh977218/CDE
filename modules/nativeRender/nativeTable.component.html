@@ -51,6 +51,9 @@
                     <span class="native-value" *ngIf="nrs.profile.displayValues"
                           [textContent]="NRS.getPvDisplayValue(a)"></span>
                 </label>
+                <div *ngIf="q.fe.question.required && !NRS.answeredValueListAnswer(nrs.elt.formInput[ni + q.name])">
+                    <code>Please fill out this field.</code>
+                </div>
             </div>
             <div *ngIf="q.type === 'mlist'" class="checkbox native-table-cell native-table-list">
                 <label style="display: block" *ngFor="let a of q.fe.question.answers">
@@ -67,10 +70,13 @@
                     <span class="native-value" *ngIf="nrs.profile.displayValues"
                           [textContent]="NRS.getPvDisplayValue(a)"></span>
                 </label>
+                <div *ngIf="q.fe.question.required && !NRS.answeredValueListAnswer(nrs.elt.formInput[ni + q.name], true)">
+                    <code>Please fill out this field.</code>
+                </div>
             </div>
             <div *ngIf="q.type === 'date'" class="native-table-cell" style="min-width: 135px;">
                 <div class="input-group">
-                    <input class="form-control native-table-box"
+                    <input #inputDate class="form-control native-table-box"
                            type="{{datePrecisionToType[q.fe.question.datatypeDate?.precision]}}"
                            step="{{datePrecisionToStep[q.fe.question.datatypeDate?.precision]}}"
                            [title]="n.label"
@@ -80,6 +86,7 @@
                            (change)="nrs.emit(q.fe)"
                            [required]="q.fe.question.required" [disabled]="!q.fe.question.editable">
                 </div>
+                <div [hidden]="!inputDate.validationMessage"><code>{{inputDate.validationMessage}}</code></div>
             </div>
             <div *ngIf="q.type === 'geo'">
                 <div class="input-group">
@@ -101,12 +108,15 @@
                             <i class="material-icons iconFit">location_disabled</i>
                         </button>
                         <ng-template #templateLocation>
-                            <button [id]="formElement.feId+'_location'" class="btn btn-primary">
+                            <button [id]="q.fe.feId+'_location'" class="btn btn-primary">
                                 <i class="material-icons iconFit"
                                    (click)="nrs.getCurrentGeoLocation(q.fe)">location_searching</i>
                             </button>
                         </ng-template>
                     </div>
+                </div>
+                <div *ngIf="q.fe.question.required && (!q.fe.question.answer || !q.fe.question.answer.latitude || !q.fe.question.answer.longitude)">
+                    <code>Please fill out this field.</code>
                 </div>
                 <div *ngIf="nrs.locationDenied"><code>Please enable location for this site.</code></div>
             </div>
@@ -135,11 +145,14 @@
                            [attr.value]="q.fe.question.unitsOfMeasure[i]"
                            [required]="q.fe.question.required || nrs.elt.formInput[ni + q.name]"
                            [disabled]="!q.fe.question.editable"/> {{uom}}</label>
+                <div *ngIf="q.fe.question.required && typeof(nrs.elt.formInput[ni + q.name]) !== 'number'">
+                    <code>Please fill out this field.</code>
+                </div>
             </div>
             <div *ngIf="q.type === 'text'" class="native-table-cell" style="min-width: 80px;"
                  [ngSwitch]="q.fe.question.datatypeText?.showAsTextArea">
                 <ng-container *ngSwitchDefault>
-                    <input type="text"
+                    <input #inputText type="text"
                            class="form-control native-table-box"
                            [title]="n.label"
                            [name]="ni + q.name"
@@ -160,17 +173,22 @@
                                [value]="q.fe.question.unitsOfMeasure[i]"
                                [attr.value]="q.fe.question.unitsOfMeasure[i]"
                                [required]="q.fe.question.required || nrs.elt.formInput[ni + q.name]"
-                               [disabled]="!q.fe.question.editable"/> {{uom}}</label>
+                               [disabled]="!q.fe.question.editable"/> {{uom}}
+                    </label>
+                    <div [hidden]="!inputText.validationMessage"><code>{{inputText.validationMessage}}</code></div>
                 </ng-container>
                 <ng-container *ngSwitchCase="true">
-                        <textarea class="form-control native-table-box"
-                                  [title]="n.label"
-                                  [name]="ni + q.name"
-                                  [attr.name]="ni + q.name"
-                                  [(ngModel)]="nrs.elt.formInput[ni + q.name]"
-                                  (change)="nrs.emit(q.fe)"
-                                  [required]="q.fe.question.required"
-                                  [disabled]="!q.fe.question.editable"></textarea>
+                    <textarea #inputTextArea
+                              class="form-control native-table-box"
+                              [title]="n.label"
+                              [name]="ni + q.name"
+                              [attr.name]="ni + q.name"
+                              [(ngModel)]="nrs.elt.formInput[ni + q.name]"
+                              (change)="nrs.emit(q.fe)"
+                              [required]="q.fe.question.required"
+                              [disabled]="!q.fe.question.editable">
+                    </textarea>
+                    <div [hidden]="!inputTextArea.validationMessage"><code>{{inputTextArea.validationMessage}}</code></div>
                 </ng-container>
             </div>
         </td>
