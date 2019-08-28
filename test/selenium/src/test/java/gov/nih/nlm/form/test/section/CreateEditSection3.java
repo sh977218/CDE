@@ -14,13 +14,13 @@ public class CreateEditSection3 extends BaseFormTest {
 
         goToFormByName(formName);
         goToFormDescription();
-        String section1 = findElement(By.xpath("//*[@id='section_0']/div/div[1]/div[1]//*[contains(@class,'sectionTitle')]")).getText();
+        String section1 = findElement(By.xpath("//*[@id='innerForm_label_edit_icon_Section 1']")).getText();
         Assert.assertEquals(section1, "Section 1");
-        String section2 = findElement(By.xpath("//*[@id='section_1']/div/div[1]/div[1]//*[contains(@class,'sectionTitle')]")).getText();
+        String section2 = findElement(By.xpath("//*[@id='innerForm_label_edit_icon_Section 2']")).getText();
         Assert.assertEquals(section2, "Section 2");
 
         addSectionBottom("Section 3", "F");
-        String section3 = findElement(By.xpath("//*[@id='section_2']/div/div[1]/div[1]//*[contains(@class,'sectionTitle')]")).getText();
+        String section3 = findElement(By.xpath("//*[@id='innerForm_label_edit_icon_Section 3']")).getText();
         Assert.assertEquals(section3, "Section 3");
 
         textPresent("Repeats: over First Question", By.xpath("//*[@id='section_2']"));
