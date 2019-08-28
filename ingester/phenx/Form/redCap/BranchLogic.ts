@@ -1,11 +1,12 @@
-const _ = require('lodash');
+import { find, isEqual, words } from 'lodash';
 
-const SYMBOL_MAP = require('./REDCAP_SYMBOL_MAP').map;
-const CONJUNCTION_MAP = require('./REDCAP_CONJUNCTION_MAP').map;
+import { map as SYMBOL_MAP } from 'ingester/phenx/Form/redCap/REDCAP_SYMBOL_MAP';
 
-formatSkipLogic = function (equationText, redCapCdes) {
+import { map as CONJUNCTION_MAP } from 'ingester/phenx/Form/redCap/REDCAP_CONJUNCTION_MAP';
+
+const formatSkipLogic = function (equationText, redCapCdes) {
     let result = '';
-    let foundLabelArray = equationText.match(/\[[^\[\]]*\]\s*/);
+    let foundLabelArray = equationText.match(/\[[^\[\]]*]\s*/);
     if (foundLabelArray && foundLabelArray.length === 1) {
         let foundLabel = foundLabelArray[0];
         if (!foundLabel) {
@@ -13,11 +14,11 @@ formatSkipLogic = function (equationText, redCapCdes) {
             process.exit(1);
         }
         let _foundLabel = foundLabel.replace('[', '').replace(']', '').trim();
-        let redCapCde = _.find(redCapCdes, redCapCde => {
+        let redCapCde = find(redCapCdes, redCapCde => {
             let variableFieldName = redCapCde['Variable / Field Name'];
-            let l = _.words(variableFieldName.toUpperCase());
-            let r = _.words(_foundLabel.toUpperCase());
-            return _.isEqual(l, r);
+            let l = words(variableFieldName.toUpperCase());
+            let r = words(_foundLabel.toUpperCase());
+            return isEqual(l, r);
         });
         if (!redCapCde) {
             console.log('Branch Logic not found ' + foundLabel);

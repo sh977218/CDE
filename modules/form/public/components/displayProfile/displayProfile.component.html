@@ -6,8 +6,8 @@
                 <h3 style="line-height: initial; width: 100%">
                     {{dPVM.profile.name}}
                     <span class="pull-right" *ngIf="canEdit">
-                        <cde-delete-with-confirm (click)="interruptEvent($event)"
-                                                 (deleted)="removeDisplayProfile(index)"></cde-delete-with-confirm>
+                        <cde-delete-with-confirm (click)="interruptEvent($event)" (deleted)="removeDisplayProfile(index)">
+                        </cde-delete-with-confirm>
                     </span>
                 </h3>
             </mat-panel-title>
@@ -94,8 +94,8 @@
                             <ng-template #displayAliases>
                                 <ng-container *ngFor="let u of dPVM.profile.unitsOfMeasureAlias">
                                     <span class="col-12 col-sm-6 col-lg-12 col-xl-6 mb-1">
-                                        <ng-container *ngIf="u.unitOfMeasure.system"
-                                        >{{u.unitOfMeasure.system}}/</ng-container>{{u.unitOfMeasure.code}}: {{u.alias}}
+                                        <ng-container *ngIf="u.unitOfMeasure.system">
+                                            {{u.unitOfMeasure.system}}/</ng-container>{{u.unitOfMeasure.code}}: {{u.alias}}
                                     </span>
                                 </ng-container>
                                 <div *ngIf="!dPVM.profile.unitsOfMeasureAlias.length" class="w-100 text-center">

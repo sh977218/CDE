@@ -1,7 +1,7 @@
 import { By } from 'selenium-webdriver';
 import { sanitizeText } from '../Utility/utility';
 
-export async function parseCopyrightTable(driver, loincId, element, cb) {
+export async function parseCopyrightTable(driver, loincId, element) {
     let result = {};
     let trs = await element.findElements(By.xpath('tbody/tr'));
     trs.shift();
@@ -12,5 +12,5 @@ export async function parseCopyrightTable(driver, loincId, element, cb) {
         let value = await tds[2].getText();
         result[sanitizeText(key.trim())] = value.trim();
     }
-    cb(result);
+    return result;
 }

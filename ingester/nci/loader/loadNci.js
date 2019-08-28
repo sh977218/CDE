@@ -13,8 +13,6 @@ const Comment = require('../../../server/discuss/discussDb').Comment;
 
 const ORG_INFO_MAP = require('../Shared/ORG_INFO_MAP').map;
 
-const batchloader = require('../../shared/updatedByLoader').batchloader;
-
 let createdCDE = 0;
 
 function runOneOrg(org) {

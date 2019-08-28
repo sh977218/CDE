@@ -6,7 +6,7 @@ const REDCAP_MULTISELECT_MAP = require('./REDCAP_MULTISELECT_MAP').map;
 const batchloader = require('../../../shared/updatedByLoader').batchloader;
 
 
-exports.convert = async (redCapCde, redCapCdes, cde, newForm) => {
+export async function convert(redCapCde, redCapCdes, cde, newForm) {
     let fieldType = redCapCde['Field Type'];
     let validationType = redCapCde['Text Validation Type OR Show Slider Number'];
     let choicesCalculationsORSliderLabels = redCapCde['Choices, Calculations, OR Slider Labels'];
@@ -51,7 +51,7 @@ exports.convert = async (redCapCde, redCapCdes, cde, newForm) => {
         };
         newForm.comments.push(scoreComment);
     }
-    let question = {
+    let question: any = {
         elementType: "question",
         label: fieldLabel,
         cardinality: {min: 1, max: 1},

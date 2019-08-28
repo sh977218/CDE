@@ -1,5 +1,4 @@
-export async function parseCopyrightText(driver, loincId, element, cb) {
+export async function parseCopyrightText(driver, loincId, element) {
     let text = await element.getText();
-    let copyright = text.trim();
-    cb(copyright);
+    return text.trim();
 }

@@ -1,7 +1,7 @@
 import { By } from 'selenium-webdriver';
 import { sanitizeText } from '../Utility/utility';
 
-export async function parseSurveyQuestionTable(driver, loincId, table, cb) {
+export async function parseSurveyQuestionTable(driver, loincId, table) {
     let surveyQuestion = {};
     let trs = await table.findElements(By.xpath('tbody/tr'));
     trs.shift();
@@ -12,5 +12,5 @@ export async function parseSurveyQuestionTable(driver, loincId, table, cb) {
         let valueText = await tds[2].getText();
         surveyQuestion[sanitizeText(keyText.trim())] = valueText.trim();
     }
-    cb(surveyQuestion);
+    return surveyQuestion;
 }

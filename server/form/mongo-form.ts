@@ -55,7 +55,7 @@ schemas.formSchema.pre('save', function (next) {
             });
         }
         next();
-    }, next);
+    }, err => next(`Form ${elt.tinyId} has error: ${err}`));
 });
 
 const conn = connHelper.establishConnection(config.database.appData);
