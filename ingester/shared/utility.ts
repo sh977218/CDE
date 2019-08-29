@@ -1,11 +1,14 @@
+import * as cheerio from 'cheerio';
 import * as mongo_cde from 'server/cde/mongo-cde';
 import * as mongo_form from 'server/form/mongo-form';
 import * as DiffJson from 'diff-json';
+import * as moment from 'moment';
 import { findIndex, isEmpty, uniq } from 'lodash';
 import { get } from 'request';
 import { PhenxURL } from 'ingester/createMigrationConnection';
-import * as cheerio from 'cheerio';
 import { transferClassifications } from 'shared/system/classificationShared';
+import { Classification, Definition, Designation } from 'shared/models.model';
+import { FormElement } from 'shared/form/form.model';
 
 const sourceMap = {
     LOINC: ['LOINC'],
@@ -19,13 +22,13 @@ export const BATCHLOADER = {
     roles: ['AttachmentReviewer']
 };
 
-export const TODAY = new Date().toJSON();
+export const TODAY = moment().format('MMMM YYYY');
 export const created = TODAY;
 export const imported = TODAY;
 
-export const lastMigrationScript = 'load PhenX on ' + new Date();
+export const lastMigrationScript = 'load PhenX on ' + TODAY;
 
-export function removeWhite(text) {
+export function removeWhite(text: string) {
     if (!text) {
         return '';
     } else {
@@ -33,11 +36,11 @@ export function removeWhite(text) {
     }
 }
 
-export function sanitizeText(s) {
+export function sanitizeText(s: string) {
     return s.replace(/:/g, '').replace(/\./g, '').trim();
 }
 
-export function wipeBeforeCompare(obj) {
+export function wipeBeforeCompare(obj: any) {
     delete obj._id;
     delete obj.__v;
     delete obj.tinyId;
@@ -81,7 +84,7 @@ export function wipeBeforeCompare(obj) {
     });
 }
 
-export function trimWhite(text) {
+export function trimWhite(text: string) {
     if (!text) {
         return '';
     } else {
@@ -89,7 +92,7 @@ export function trimWhite(text) {
     }
 }
 
-export function printUpdateResult(updateResult, elt) {
+export function printUpdateResult(updateResult: any, elt: any) {
     if (updateResult.nModified) {
         console.log(`${updateResult.nModified} ${elt.elementType} source modified: ${elt.tinyId}`);
     }
@@ -98,12 +101,12 @@ export function printUpdateResult(updateResult, elt) {
     }
 }
 
-export function replaceClassificationByOrg(newClassification, existingClassification, orgName) {
+export function replaceClassificationByOrg(newClassification: Classification[], existingClassification: Classification[], orgName: string) {
     const otherClassifications = existingClassification.filter(c => c.stewardOrg.name !== orgName);
     return newClassification.concat(otherClassifications);
 }
 
-export function updateCde(elt, user, options = {}) {
+export function updateCde(elt: any, user: any, options = {}) {
     return new Promise((resolve, reject) => {
         mongo_cde.update(elt, user, options, (err, savedElt) => {
             if (err) {
@@ -115,7 +118,7 @@ export function updateCde(elt, user, options = {}) {
     });
 }
 
-export function updateForm(elt, user, options = {}) {
+export function updateForm(elt: any, user: any, options = {}) {
     return new Promise((resolve, reject) => {
         /*@TODO remove it after PhenX loader.
                 const isPhenX = elt.ids.filter(id => id.source === 'PhenX').length > 0;
@@ -136,9 +139,9 @@ export function updateForm(elt, user, options = {}) {
     });
 }
 
-const DomainCollectionMap = {};
+const DOMAIN_COLLECTION_MAP: any = {};
 
-export function protocolLinkToProtocolId(href) {
+export function protocolLinkToProtocolId(href: string) {
     const indexString = '/protocols/view/';
     const protocolIdIndex = href.indexOf(indexString);
     return href.substr(protocolIdIndex + indexString.length, href.length);
@@ -146,8 +149,8 @@ export function protocolLinkToProtocolId(href) {
 
 export function getDomainCollection() {
     return new Promise((resolve, reject) => {
-        if (!isEmpty(DomainCollectionMap)) {
-            resolve(DomainCollectionMap);
+        if (!isEmpty(DOMAIN_COLLECTION_MAP)) {
+            resolve(DOMAIN_COLLECTION_MAP);
         } else {
             get(PhenxURL, async (err, response, body) => {
                 if (err) {
@@ -166,16 +169,16 @@ export function getDomainCollection() {
                     const protocolLink = 'https://www.phenxtoolkit.org' + href;
                     const domainCollection = $(tds[2]).text().trim();
                     const protocolId = protocolLinkToProtocolId(href);
-                    DomainCollectionMap[protocolId] = {protocolLink, domainCollection};
+                    DOMAIN_COLLECTION_MAP[protocolId] = {protocolLink, domainCollection};
                 }
-                resolve(DomainCollectionMap);
+                resolve(DOMAIN_COLLECTION_MAP);
             });
         }
     });
 }
 
-function getChildren(formElements) {
-    let ids = [];
+function getChildren(formElements: FormElement[]) {
+    let ids: any = [];
     if (formElements) {
         formElements.forEach(formElement => {
             if (formElement.elementType === 'section' || formElement.elementType === 'form') {
@@ -193,7 +196,7 @@ function getChildren(formElements) {
 }
 
 // Compare two elements
-export function compareElt(newEltObj, existingEltObj, source) {
+export function compareElt(newEltObj, existingEltObj, source: string) {
     if (newEltObj.elementType !== existingEltObj.elementType) {
         console.log(`Two element type different. newEltObj: ${newEltObj.tinyId} existingEltObj: ${existingEltObj.tinyId} `);
         process.exit(1);
@@ -225,8 +228,8 @@ export function compareElt(newEltObj, existingEltObj, source) {
 }
 
 // Merge two elements
-function mergeDesignation(existingDesignations, newDesignations) {
-    const designations = [];
+function mergeDesignation(existingDesignations: Designation[], newDesignations: Designation[]) {
+    const designations: Designation[] = [];
     const allDesignations = existingDesignations.concat(newDesignations);
     allDesignations.forEach(designation => {
         const i = findIndex(designations, {designation: designation.designation});
@@ -241,8 +244,8 @@ function mergeDesignation(existingDesignations, newDesignations) {
     return designations;
 }
 
-function mergeDefinition(existingDefinitions, newDefinitions) {
-    const definitions = [];
+function mergeDefinition(existingDefinitions: Definition[], newDefinitions: Definition[]) {
+    const definitions: Definition[] = [];
     const allDefinitions = existingDefinitions.concat(newDefinitions);
     allDefinitions.forEach(definition => {
         const i = findIndex(definitions, {definition: definition.definition});
@@ -272,7 +275,7 @@ export function mergeSourcesBySourcesName(newSources, existingSources, sources) 
     return newSources.concat(otherSources);
 }
 
-export function mergeElt(existingEltObj, newEltObj, source) {
+export function mergeElt(existingEltObj: any, newEltObj: any, source: string) {
     if (newEltObj.elementType !== existingEltObj.elementType) {
         console.log(`Two element type different. newEltObj: ${newEltObj.tinyId} existingEltObj: ${existingEltObj.tinyId} `);
         process.exit(1);

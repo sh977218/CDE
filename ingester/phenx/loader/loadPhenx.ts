@@ -14,7 +14,7 @@ let protocolCount = 0;
 
 async function retireForms() {
     const cond = {
-        'ids.source': 'PhenX',
+        'ids.source': 'PhenX Variable',
         lastMigrationScript: {$ne: lastMigrationScript},
         archived: false
     };
