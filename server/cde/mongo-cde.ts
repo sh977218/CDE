@@ -5,7 +5,7 @@ import { CbError, MongooseType } from 'shared/models.model';
 import { isOrgCurator } from 'shared/system/authorizationShared';
 import * as dataElementschema from 'shared/de/assets/dataElement.schema.json';
 import { forwardError } from 'server/errorHandler/errorHandler';
-import { find, forEach } from 'lodash';
+import { find, forEach, isEmpty } from 'lodash';
 
 const Ajv = require('ajv');
 const connHelper = require('../../server/system/connections');
@@ -46,7 +46,13 @@ schemas.dataElementSchema.pre('save', function(next) {
                 stack: new Error().stack
             });
         }
-        next();
+
+        let valueDomain = this.valueDomain;
+        if (valueDomain.datatype === 'Value List' && isEmpty(valueDomain.permissibleValues)) {
+            next('Value List with empty permissible values.');
+        } else {
+            next();
+        }
     }, err => next(`Cde ${elt.tinyId} has error: ${err}`));
 });
 

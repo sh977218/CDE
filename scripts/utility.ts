@@ -29,8 +29,8 @@ export function fixEmptyDesignation(cdeObj) {
     return cdeObj.designations.filter(d => d.designation);
 }
 
-export function fixClassification(cdeObj) {
-    return uniqBy(cdeObj.classification, 'stewardOrg.name');
+export function fixClassification(eltObj) {
+    return uniqBy(eltObj.classification, 'stewardOrg.name');
 }
 
 // cde
@@ -65,7 +65,7 @@ export function fixValueDomain(cdeObj) {
         }
     }
     if (datatype === 'Value List') {
-        if (!cdeObj.valueDomain.permissibleValues) {
+        if (isEmpty(cdeObj.valueDomain.permissibleValues)) {
             cdeObj.valueDomain.permissibleValues = [{permissibleValue: '5'}];
         }
         cdeObj.valueDomain.permissibleValues = fixEmptyPermissibleValue(cdeObj.valueDomain.permissibleValues);
@@ -122,6 +122,22 @@ export function fixEmptyPermissibleValue(permissibleValues) {
     return result.filter(pv => !isEmpty(pv.permissibleValue));
 }
 
+function fixDerivationRules(cdeObj) {
+    let derivationRules = [];
+    cdeObj.derivationRules.forEach(d => {
+        if (!isEmpty(d.inputs)) {
+            let inputs = [];
+            d.inputs.forEach(input => {
+                let underScoreTinyId = input.replace(/-/g, "_");
+                inputs.push(underScoreTinyId);
+            });
+            d.inputs = inputs;
+        }
+        derivationRules.push(d);
+    });
+    return derivationRules;
+}
+
 export function fixCdeError(cde) {
     if (!cde.createdBy) {
         fixCreatedBy(cde);
@@ -132,6 +148,7 @@ export function fixCdeError(cde) {
     cde.valueDomain = fixValueDomain(cde.toObject());
     cde.designations = fixEmptyDesignation(cde.toObject());
     cde.sources = fixSourceName(cde.toObject());
+    cde.derivationRules = fixDerivationRules(cde.toObject());
     cde.classification = fixClassification(cde.toObject());
 }
 
@@ -168,7 +185,7 @@ async function convertQuestionToCde(fe, stewardOrg, registrationState) {
             datatypeExternallyDefined: fe.question.datatypeExternallyDefined,
             datatypeValueList: fe.question.datatypeValueList,
             datatypeDynamicCodeList: fe.question.datatypeDynamicCodeList,
-            permissibleValues: fe.question.permissibleValues
+            permissibleValues: fe.question.cde.permissibleValues
         }
     };
     if (fe.question.cde.version) createCdeObj.version = fe.question.cde.version;
@@ -179,71 +196,151 @@ async function convertQuestionToCde(fe, stewardOrg, registrationState) {
 }
 
 async function fixQuestion(questionFe, formObj) {
+    if (formObj.tinyId === 'X17IaQ_NQ' && questionFe.question.cde.tinyId === 'rErbwwAasvz') {
+        questionFe.question.cde.version = '3';
+    }
+    /* @TODO Remove this code after run against test data.
+       This fix is to fix form X1FOIySBYl has QkY_BmqoSA that is version '1',
+       but in Data Element QkY_BmqoSA version '1' is archived, use version '1.1'
+    */
+    /*
+
+        if (questionFe.question.cde.tinyId === 'zFTV14_HMhv') {
+            questionFe.question.cde.version = '3.1.1';
+        }
+    */
+
     let tinyId = questionFe.question.cde.tinyId;
-    let version = questionFe.question.cde.version;
+    let version = null;
+    if (questionFe.question.cde.version) {
+        version = questionFe.question.cde.version;
+    }
+    if (tinyId.indexOf('-') !== -1) {
+        throw `cde tinyId is contains -`;
+        process.exit(1);
+    }
     let label = questionFe.label;
-    let formErrorMessage = `${formObj.tinyId} has question '${label}'`;
+    let formErrorMessage = `form ${formObj.tinyId} version ${formObj.version} archived ${formObj.archived} has question '${label}'`;
     if (!tinyId) {
         throw `cde tinyId is null ${formObj.tinyId} ${label}`;
         process.exit(1);
     }
-    let cond: any = {tinyId, version, archived: false};
+    let cond: any = {tinyId};
+    if (version) {
+        cond.version = version;
+    } else {
+        cond.archived = false;
+    }
 
     let cde = await DataElement.findOne(cond);
     if (!cde) {
         console.log(`${formErrorMessage} ${tinyId} not exist. Creating`);
         let createCdeObj = await convertQuestionToCde(cloneDeep(questionFe), formObj.stewardOrg, formObj.registrationState);
         cde = await new DataElement(createCdeObj).save().catch(e => {
+            console.log(`mongo cond: ${JSON.stringify(cond)}`);
             throw `await new DataElement(cdeObj).save() Error ` + e;
+        });
+    } else {
+        cde = await cde.save().catch(error => {
+            throw `await cde.save() Error on ${cde.tinyId} ${error}`;
         });
     }
     let cdeObj = cde.toObject();
+    if (isEmpty(cdeObj.valueDomain.datatype)) {
+        console.log(cdeObj.tinyId + 'datatype empty.');
+        process.exit(1);
+    }
     let question: any = {
-        unitsOfMeasure: questionFe.question.unitsOfMeasure,
+        datatype: cdeObj.valueDomain.datatype,
         required: questionFe.question.required,
         invisible: questionFe.question.invisible,
         editable: questionFe.question.editable,
-        multiselect: !!questionFe.question.multiselect,
-        answers: questionFe.question.answers ? fixEmptyPermissibleValue(questionFe.question.answers) : [],
+        unitsOfMeasure: questionFe.question.unitsOfMeasure,
         defaultAnswer: questionFe.question.defaultAnswer,
         cde: {
-            tinyId: questionFe.question.cde.tinyId,
+            tinyId: cde.tinyId,
             name: questionFe.question.cde.name,
             ids: cde.ids,
-            derivationRules: questionFe.question.cde.derivationRules
+            derivationRules: fixDerivationRules(questionFe.question.cde)
         },
     };
     if (cde.version) question.cde.version = cde.version;
 
     let valueDomain = cdeObj.valueDomain;
+    let datatype = valueDomain.datatype;
 
-    if (valueDomain === 'Text' && !isEmpty(valueDomain.datatypeText)) {
-        question.datatypeText = valueDomain.datatypeText;
+    if (datatype === 'Text') {
+        if (!isEmpty(valueDomain.datatypeText)) {
+            question.datatypeText = valueDomain.datatypeText;
+        }
+        if (!isEmpty(questionFe.question.datatypeText)) {
+            question.datatypeText = questionFe.question.datatypeText;
+        }
     }
-    if (valueDomain === 'Number' && !isEmpty(valueDomain.datatypeNumber)) {
-        question.datatypeNumber = valueDomain.datatypeNumber;
+    if (datatype === 'Number') {
+        if (!isEmpty(valueDomain.datatypeNumber)) {
+            question.datatypeNumber = valueDomain.datatypeNumber;
+        }
+        if (!isEmpty(questionFe.question.datatypeNumber)) {
+            question.datatypeNumber = questionFe.question.datatypeNumber;
+        }
     }
-    if (valueDomain === 'Date' && !isEmpty(valueDomain.datatypeDate)) {
-        question.datatypeDate = valueDomain.datatypeDate;
+    if (datatype === 'Date') {
+        if (!isEmpty(valueDomain.datatypeDate)) {
+            question.datatypeDate = valueDomain.datatypeDate;
+        }
+        if (!isEmpty(questionFe.question.datatypeDate)) {
+            question.datatypeDate = questionFe.question.datatypeDate;
+        }
     }
-    if (valueDomain === 'Time' && !isEmpty(valueDomain.datatypeTime)) {
-        question.datatypeTime = valueDomain.datatypeTime;
+    if (datatype === 'Time') {
+        if (!isEmpty(valueDomain.datatypeTime)) {
+            question.datatypeTime = valueDomain.datatypeTime;
+        }
+        if (!isEmpty(questionFe.question.datatypeTime)) {
+            question.datatypeTime = questionFe.question.datatypeTime;
+        }
     }
-    if (valueDomain === 'Dynamic Code List' && !isEmpty(valueDomain.datatypeDynamicCodeList)) {
-        question.datatypeDynamicCodeList = valueDomain.datatypeDynamicCodeList;
+    if (datatype === 'Dynamic Code List') {
+        if (!isEmpty(valueDomain.datatypeDynamicCodeList)) {
+            question.datatypeDynamicCodeList = valueDomain.datatypeDynamicCodeList;
+        }
+        if (!isEmpty(questionFe.question.datatypeDynamicCodeList)) {
+            question.datatypeDynamicCodeList = questionFe.question.datatypeDynamicCodeList;
+        }
     }
-    if (valueDomain === 'Value List' && !isEmpty(valueDomain.datatypeValueList)) {
-        question.cde.permissibleValues = valueDomain.permissibleValues;
+    if (datatype === 'Value List') {
+        if (isEmpty(valueDomain.permissibleValues)) {
+            throw `cde tinyId ${cdeObj.tinyId} is value list, empty permissible values.`;
+            process.exit(1);
+        }
+        question.multiselect = !!questionFe.question.multiselect;
+        question.answers = questionFe.question.answers ? fixEmptyPermissibleValue(questionFe.question.answers) : [];
+
+        if (!isEmpty(valueDomain.permissibleValues)) {
+            question.cde.permissibleValues = valueDomain.permissibleValues;
+        }
+        if (!isEmpty(valueDomain.datatypeValueList)) {
+            question.datatypeValueList = valueDomain.datatypeValueList;
+        }
     }
     questionFe.question = question;
     return questionFe;
 }
 
 async function fixSectionInform(sectionInformFe, formObj) {
+    if (sectionInformFe.elementType === 'section' && isEmpty(sectionInformFe.formElements)) {
+        delete sectionInformFe.repeatsFor;
+        delete sectionInformFe.repeat;
+    }
     let formElements = [];
-    for (let fe of sectionInformFe.formElements) {
+    for (let i = 0; i < sectionInformFe.formElements.length; i++) {
+        let fe = sectionInformFe.formElements[i];
         let elementType = fe.elementType;
         if (elementType === 'question') {
+            if (fe.question.cde.tinyId.indexOf('-') !== -1) {
+                fe.question.cde.tinyId = fe.question.cde.tinyId.replace(/-/g, "_");
+            }
             let fixFe = await fixQuestion(fe, formObj);
             formElements.push(fixFe);
         } else {
@@ -256,9 +353,13 @@ async function fixSectionInform(sectionInformFe, formObj) {
 
 async function fixFormElements(formObj) {
     let formElements = [];
-    for (let fe of formObj.formElements) {
+    for (let i = 0; i < formObj.formElements.length; i++) {
+        let fe = formObj.formElements[i];
         let elementType = fe.elementType;
         if (elementType === 'question') {
+            if (fe.question.cde.tinyId.indexOf('-') !== -1) {
+                fe.question.cde.tinyId = fe.question.cde.tinyId.replace(/-/g, "_");
+            }
             let fixFe = await fixQuestion(fe, formObj);
             formElements.push(fixFe);
         } else {
@@ -270,6 +371,9 @@ async function fixFormElements(formObj) {
 }
 
 export async function fixFormError(form) {
+    if (form.tinyId.indexOf('-') !== -1) {
+        form.tinyId = form.tinyId.replace(/-/g, '_');
+    }
     if (!form.createdBy) {
         fixCreatedBy(form);
     }
@@ -281,5 +385,5 @@ export async function fixFormError(form) {
     form.properties = fixProperties(form.toObject());
     form.classification = fixClassification(form.toObject());
 
-    form.formElements = fixFormElements(form.toObject());
+    form.formElements = await fixFormElements(form.toObject());
 }

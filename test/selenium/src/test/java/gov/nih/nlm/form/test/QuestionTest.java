@@ -6,11 +6,6 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 
-import java.awt.*;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
-import java.awt.event.KeyEvent;
-
 public class QuestionTest extends BaseFormTest {
 
     public void addQuestionToSection(String cdeName, int sectionNumber) {
@@ -18,6 +13,7 @@ public class QuestionTest extends BaseFormTest {
     }
 
     public void addQuestionToSectionByAutoComplete(String cdeNameString, int sectionNumber) {
+        scrollToViewById("section_" + sectionNumber);
         addQuestionDialog(sectionNumber);
 
         findElement(By.id("ftsearch-input")).clear();
@@ -43,7 +39,7 @@ public class QuestionTest extends BaseFormTest {
         textPresent("Create Data Element");
 
         hangon(1);
-        
+
         // test autofocus in create mode
         new Actions(driver).sendKeys(cdeName).build().perform();
         if (!isSuggested) clickElement(By.id("createNewDataElement"));
