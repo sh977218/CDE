@@ -7,7 +7,10 @@ process.on('unhandledRejection', error => {
 
 function run() {
     let cdeCount: number = 0;
-    const cond = {archived: false};
+    const cond = {
+        archived: false,
+        'registrationState.registrationStatus': {$not: /Retired/},
+    };
     const cursor = DataElement.find(cond).cursor();
     cursor.eachAsync(async (cde: any) => {
         cde.lastMigrationScript = 'fixDataElement';

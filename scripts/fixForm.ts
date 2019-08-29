@@ -1,4 +1,5 @@
 import { Form } from 'server/form/mongo-form';
+import { fixFormError } from './utility';
 
 process.on('unhandledRejection', error => {
     console.log(error);
@@ -6,12 +7,15 @@ process.on('unhandledRejection', error => {
 
 function run() {
     let formCount: number = 0;
-    const cond = {archived: false};
+    const cond = {
+        archived: false,
+        'registrationState.registrationStatus': {$not: /Retired/},
+    };
     const cursor = Form.find(cond).cursor();
 
     cursor.eachAsync(async (form: any) => {
         form.lastMigrationScript = 'fixForm';
-//        await fixFormError(form);
+        await fixFormError(form);
         await form.save().catch(error => {
             throw new Error(`await form.save() Error on ${form.tinyId} ${error}`);
         });
