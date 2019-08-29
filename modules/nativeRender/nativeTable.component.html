@@ -138,7 +138,7 @@
             </div>
             <div *ngIf="q.type === 'text'" class="native-table-cell" style="min-width: 80px;"
                  [ngSwitch]="q.fe.question.datatypeText?.showAsTextArea">
-                <ng-container *ngSwitchCase="false">
+                <ng-container *ngSwitchDefault>
                     <input type="text"
                            class="form-control native-table-box"
                            [title]="n.label"

@@ -3,7 +3,7 @@
     <div *ngIf="board" class="row overflowHidden">
         <div class="col-lg-12 mt-4 mb-2">
             <h3 class="ib pull-left" id="board_name_{{board.name}}">
-                {{board.name}} <span *ngIf="isModifiedSinceReview">(Board has been modified since last review)</span>
+                {{board.name}}
             </h3>
             <div class="ml-auto pull-right">
                 <button *ngIf="userService.user?.username === board.owner.username" mat-raised-button
@@ -128,5 +128,5 @@
     </div>
 </ng-template>
 
-<cde-classify-item-modal #classifyCdesModal [elt]="board" [modalTitle]="modalTitle"
-                         (onEltSelected)="addClassification($event)"></cde-classify-item-modal>
+<cde-classify-item-modal #classifyCdesModal [modalTitle]="modalTitle"
+                         (classified)="addClassification($event)"></cde-classify-item-modal>

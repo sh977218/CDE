@@ -6,9 +6,22 @@ import { mergeArrayByProperty } from 'core/adminItem/classification';
 import { SearchSettings } from 'search/search.model';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import { DataElement } from 'shared/de/dataElement.model';
-import { ElasticQueryResponse } from 'shared/models.model';
+import { CbErr, ElasticQueryResponseForm } from 'shared/models.model';
 import { transferClassifications } from 'shared/system/classificationShared';
 
+export interface MergeFieldsDe {
+    attachments: boolean;
+    classifications: boolean;
+    dataSets: boolean;
+    definitions: boolean;
+    derivationRules: boolean;
+    designations: boolean;
+    ids: boolean;
+    properties: boolean;
+    referenceDocuments: boolean;
+    retireCde: boolean;
+    sources: boolean;
+}
 
 @Injectable()
 export class MergeCdeService {
@@ -19,7 +32,7 @@ export class MergeCdeService {
     }
 
 
-    doMerge(tinyIdFrom, tinyIdTo, fields, cb) {
+    doMerge(tinyIdFrom: string, tinyIdTo: string, fields: MergeFieldsDe, cb: CbErr<[DataElement, DataElement]>) {
         if (tinyIdFrom === tinyIdTo) { return cb(); }
         const getDeFromObservable = this.getCdeByTinyId(tinyIdFrom);
         const getDeToObservable = this.getCdeByTinyId(tinyIdTo);
@@ -39,7 +52,8 @@ export class MergeCdeService {
                 if (fields.retireCde) {
                     const searchSettings = new SearchSettings();
                     searchSettings.q = '"' + cdeFrom.tinyId + '"';
-                    this.elasticService.generalSearchQuery(this.elasticService.buildElasticQuerySettings(searchSettings), 'form', (err?: string, result?: ElasticQueryResponse) => {
+                    this.elasticService.generalSearchQuery(this.elasticService.buildElasticQuerySettings(searchSettings), 'form',
+                        (err?: string, result?: ElasticQueryResponseForm) => {
                         if (err) { return this.alert.addAlert('danger', err); }
                         if (!result || !result.forms || result.forms.length < 2) {
                             cdeFrom.changeNote = 'Merged to tinyId ' + cdeTo.tinyId;
@@ -49,7 +63,7 @@ export class MergeCdeService {
                         const putDeFromObservable = this.putDeByTinyId(cdeFrom);
                         const putDeToObservable = this.putDeByTinyId(cdeTo);
                         forkJoin([putDeFromObservable, putDeToObservable]).subscribe(results => {
-                            cb(null, results);
+                            cb(undefined, results);
                         }, err => cb('Unable to mergeCde ' + tinyIdFrom + '. Err:' + err));
                     });
                 }
@@ -57,32 +71,11 @@ export class MergeCdeService {
         );
     }
 
-    getCdeByTinyId(tinyId) {
+    getCdeByTinyId(tinyId: string) {
         return this.http.get<DataElement>('/de/' + tinyId);
     }
 
-    putDeByTinyId(elt) {
-        return this.http.post('/dePublishExternal', elt);
-    }
-
-    retireSource(source, destination, cb) {
-        this.http.post('/retireCde', {cde: source, merge: destination}).subscribe(response => {
-            if (cb) { cb(response); }
-        });
-    }
-
-    transferFields(source, destination, type) {
-        if (!source[type]) { return; }
-
-        const alreadyExists = function(obj) {
-            delete obj.$$hashKey;
-            return destination[type].map(function(obj) {
-                return JSON.stringify(obj);
-            }).indexOf(JSON.stringify(obj)) >= 0;
-        };
-        source[type].forEach(obj => {
-            if (alreadyExists(obj)) { return; }
-            destination[type].push(obj);
-        });
+    putDeByTinyId(elt: DataElement) {
+        return this.http.post<DataElement>('/dePublishExternal', elt);
     }
 }

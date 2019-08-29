@@ -4,7 +4,33 @@ import { ElasticService } from '_app/elastic.service';
 import { SearchSettings } from 'search/search.model';
 import { CdeTableViewPreferencesComponent } from 'search/tableViewPreferences/cdeTableViewPreferencesComponent';
 import { FormTableViewPreferencesComponent } from 'search/tableViewPreferences/formTableViewPreferencesComponent';
-import { ElasticQueryResponse, UserSearchSettings } from 'shared/models.model';
+import { CdeId, Designation, ElasticQueryResponseForm, Item, ItemElastic, ModuleItem, UserSearchSettings } from 'shared/models.model';
+import { DataElementElastic, DataType } from 'shared/de/dataElement.model';
+
+// interface Row {
+//     css: string;
+//     datatype?: DataType;
+//     elt?: ItemElastic;
+//     value?: string;
+//     values?: string[];
+// }
+type Row = {
+    css: 'ids';
+    values: CdeId[];
+} | {
+    css: 'name';
+    elt: ItemElastic;
+} | {
+    css: 'naming';
+    values: string[];
+} | {
+    css: 'permissibleValues multiline-ellipsis';
+    datatype: DataType;
+    values: string[];
+} | {
+    css: string,
+    value?: string
+};
 
 @Component({
     templateUrl: './tableList.component.html',
@@ -15,60 +41,22 @@ import { ElasticQueryResponse, UserSearchSettings } from 'shared/models.model';
     `]
 })
 export class TableListComponent implements OnInit {
-    @Input() set elts(elts: any[]) {
+    @Input() set elts(elts: ItemElastic[]) {
         this._elts = elts;
         this.render();
     }
     get elts() {
         return this._elts;
     }
+    @Input() module!: ModuleItem;
+    private _elts!: any[];
+    headings!: string[];
+    rows!: any[];
+    searchSettings: UserSearchSettings;
 
     constructor(public dialog: MatDialog,
                 public esService: ElasticService) {
         this.searchSettings = this.esService.searchSettings;
-    }
-
-    static readonly maxLines = 5;
-    static readonly lineLength = 62;
-    @Input() module: string;
-    private _elts: any[];
-    headings: string[];
-    rows: any[];
-    searchSettings: UserSearchSettings;
-
-    static lineClip(line): string {
-        return line.length > this.lineLength
-            ? line.substr(0, this.lineLength - 4) + ' ...'
-            : line;
-    }
-
-    static truncatedList(list, f) {
-        if (!Array.isArray(list)) { list = []; }
-        const size = list.length;
-        const result = [];
-        for (let i = 0; i < size; i++) {
-            const formatted = f(list[i]);
-            if (formatted) { result.push(this.lineClip(formatted)); }
-            if (result.length === this.maxLines && (i + 1) < size) {
-                result.push('...');
-                i = size;
-            }
-        }
-        return result;
-    }
-
-    static getQuestionTexts(e) {
-        return e.designations.filter(n => {
-            if (!n.tags) { n.tags = []; }
-            return n.tags.filter(t => t.indexOf('Question Text') > -1).length > 0;
-        });
-    }
-
-    static getOtherNames(cde) {
-        return cde.designations.filter((n, i) => {
-            if (!n.tags) { n.tags = []; }
-            return i > 0 && n.tags.filter(t => t.indexOf('Question Text') > -1).length === 0;
-        });
     }
 
     ngOnInit() {
@@ -76,9 +64,14 @@ export class TableListComponent implements OnInit {
     }
 
     render() {
-        if (!this.esService.searchSettings.tableViewFields) { return; }
-        if (this.module === 'cde') { this.renderCde(); }
-        else if (this.module === 'form') { this.renderForm(); }
+        if (!this.esService.searchSettings.tableViewFields) {
+            return;
+        }
+        if (this.module === 'cde') {
+            this.renderCde();
+        } else if (this.module === 'form') {
+            this.renderForm();
+        }
     }
 
     renderCde() {
@@ -107,8 +100,8 @@ export class TableListComponent implements OnInit {
         if (tableSetup.tinyId) { this.headings.push('NLM ID'); }
         if (tableSetup.linkedForms) { this.headings.push('Forms'); }
 
-        this.rows = this.elts.map(e => {
-            const row = [];
+        this.rows = (this.elts as DataElementElastic[]).map(e => {
+            const row: Row[] = [];
             if (tableSetup.name) {
                 row.push({
                     css: 'name',
@@ -131,20 +124,26 @@ export class TableListComponent implements OnInit {
                 row.push({
                     css: 'permissibleValues multiline-ellipsis',
                     datatype: e.valueDomain.datatype,
-                    values: TableListComponent.truncatedList(e.valueDomain.permissibleValues, pv => pv.permissibleValue)
+                    values: TableListComponent.truncatedList(
+                        e.valueDomain.datatype === 'Value List' ? e.valueDomain.permissibleValues : undefined,
+                        pv => pv.permissibleValue
+                    )
                 });
             }
             if (tableSetup.pvCodeNames) {
                 row.push({
                     css: 'permissibleValues multiline-ellipsis',
                     datatype: e.valueDomain.datatype,
-                    values: TableListComponent.truncatedList(e.valueDomain.permissibleValues, pv => pv.valueMeaningName)
+                    values: TableListComponent.truncatedList(
+                        e.valueDomain.datatype === 'Value List' ? e.valueDomain.permissibleValues : undefined,
+                        pv => pv.valueMeaningName || ''
+                    )
                 });
             }
             if (tableSetup.nbOfPVs) {
                 row.push({
                     css: 'nbOfPVs',
-                    value: e.valueDomain.nbOfPVs
+                    value: e.valueDomain.nbOfPVs + ''
                 });
             }
             if (tableSetup.uom) {
@@ -178,7 +177,7 @@ export class TableListComponent implements OnInit {
                 });
             }
             if (tableSetup.ids) {
-                if (tableSetup.identifiers.length > 0) {
+                if (tableSetup.identifiers && tableSetup.identifiers.length > 0) {
                     tableSetup.identifiers.forEach(i => {
                         let value = '';
                         e.ids.forEach(id => {
@@ -188,7 +187,7 @@ export class TableListComponent implements OnInit {
                         });
                         row.push({
                             css: i,
-                            values: value
+                            value
                         });
                     });
                 } else {
@@ -207,7 +206,7 @@ export class TableListComponent implements OnInit {
             if (tableSetup.updated) {
                 row.push({
                     css: 'updated',
-                    value: e.updated ? new Date(e.updated).toLocaleString('en-US') : null
+                    value: e.updated ? new Date(e.updated).toLocaleString('en-US') : ''
                 });
             }
             if (tableSetup.tinyId) {
@@ -219,9 +218,9 @@ export class TableListComponent implements OnInit {
             if (tableSetup.linkedForms) {
                 const lfSettings = this.esService.buildElasticQuerySettings(new SearchSettings(e.tinyId));
 
-                const values = [];
-                this.esService.generalSearchQuery(lfSettings, 'form', (err?: string, result?: ElasticQueryResponse) => {
-                    if (result.forms) {
+                const values: {tinyId: string, name: string}[] = [];
+                this.esService.generalSearchQuery(lfSettings, 'form', (err?: string, result?: ElasticQueryResponseForm) => {
+                    if (result && result.forms) {
                         if (result.forms.length > 5) { result.forms.length = 5; }
                         result.forms.forEach(crf => values.push({name: crf.primaryNameCopy, tinyId: crf.tinyId}));
                     }
@@ -245,11 +244,13 @@ export class TableListComponent implements OnInit {
         if (tableSetup.registrationStatus) { this.headings.push('Registration Status'); }
         if (tableSetup.administrativeStatus) { this.headings.push('Admin Status'); }
         if (tableSetup.ids) {
-            if (tableSetup.identifiers.length > 0) {
+            if (tableSetup.identifiers && tableSetup.identifiers.length > 0) {
                 tableSetup.identifiers.forEach(i => {
                     this.headings.push(i);
                 });
-            } else { this.headings.push('Identifiers'); }
+            } else {
+                this.headings.push('Identifiers');
+            }
         }
         if (tableSetup.numQuestions) { this.headings.push('Questions'); }
         if (tableSetup.source) { this.headings.push('Source'); }
@@ -257,7 +258,7 @@ export class TableListComponent implements OnInit {
         if (tableSetup.tinyId) { this.headings.push('NLM ID'); }
 
         this.rows = this.elts.map(e => {
-            const row = [];
+            const row: Row[] = [];
             if (tableSetup.name) {
                 row.push({
                     css: 'name',
@@ -295,7 +296,7 @@ export class TableListComponent implements OnInit {
                 });
             }
             if (tableSetup.ids) {
-                if (tableSetup.identifiers.length > 0) {
+                if (tableSetup.identifiers && tableSetup.identifiers.length > 0) {
                     tableSetup.identifiers.forEach(i => {
                         let value = '';
                         e.ids.forEach(id => {
@@ -305,7 +306,7 @@ export class TableListComponent implements OnInit {
                         });
                         row.push({
                             css: i,
-                            values: value
+                            value
                         });
                     });
                 } else {
@@ -330,7 +331,7 @@ export class TableListComponent implements OnInit {
             if (tableSetup.updated) {
                 row.push({
                     css: 'updated',
-                    value: e.updated ? new Date(e.updated).toLocaleString('en-US') : null
+                    value: e.updated ? new Date(e.updated).toLocaleString('en-US') : ''
                 });
             }
             if (tableSetup.tinyId) {
@@ -352,10 +353,50 @@ export class TableListComponent implements OnInit {
                 searchSettings: this.searchSettings
             }
         });
-        dialogRef.componentInstance.onChanged.subscribe(() => {
+        dialogRef.componentInstance.changed.subscribe(() => {
             this.render();
             this.esService.saveConfiguration(this.searchSettings);
         });
-        dialogRef.componentInstance.onClosed.subscribe(() => dialogRef.close());
+        dialogRef.componentInstance.closed.subscribe(() => dialogRef.close());
+    }
+
+    static readonly maxLines = 5;
+    static readonly lineLength = 62;
+
+    static lineClip(line: string): string {
+        return line.length > this.lineLength
+            ? line.substr(0, this.lineLength - 4) + ' ...'
+            : line;
+    }
+
+    static truncatedList<T, U = string>(list: T[] | undefined, f: (a: T) => U): U[] {
+        if (!Array.isArray(list)) { list = []; }
+        const size = list.length;
+        const result: any[] = [];
+        for (let i = 0; i < size; i++) {
+            const formatted = f(list[i]);
+            if (formatted) {
+                result.push(typeof(formatted) === 'string' ? this.lineClip(formatted) : formatted);
+            }
+            if (typeof(formatted) === 'string' && result.length === this.maxLines && (i + 1) < size) {
+                result.push('...');
+                i = size;
+            }
+        }
+        return result;
+    }
+
+    static getQuestionTexts(e: Item): Designation[] {
+        return e.designations.filter(n => {
+            if (!n.tags) { n.tags = []; }
+            return n.tags.filter(t => t.indexOf('Question Text') > -1).length > 0;
+        });
+    }
+
+    static getOtherNames(cde: Item): Designation[] {
+        return cde.designations.filter((n, i) => {
+            if (!n.tags) { n.tags = []; }
+            return i > 0 && n.tags.filter(t => t.indexOf('Question Text') > -1).length === 0;
+        });
     }
 }

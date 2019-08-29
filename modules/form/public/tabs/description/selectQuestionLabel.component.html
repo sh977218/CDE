@@ -8,7 +8,7 @@
     <div *ngFor="let designation of cde.designations; let i = index" class="row"
          id="q_select_name_{{i}}">
         <div class="col-3">
-            <button mat-raised-button (click)="onSelect.emit(designation)">
+            <button mat-raised-button (click)="selected.emit(designation)">
                 <mat-icon>check</mat-icon>Select
             </button>
         </div>
@@ -26,12 +26,12 @@
     </div>
     <div class="row">
         <div class="col-lg-12">
-            <button mat-raised-button (click)="onSelect.emit()" id="selectQuestionNoLabel">
+            <button mat-raised-button (click)="selected.emit()" id="selectQuestionNoLabel">
                 <mat-icon>indeterminate_check_box</mat-icon> No Label
             </button>
         </div>
     </div>
 </mat-dialog-content>
 <mat-dialog-actions>
-    <button mat-raised-button (click)="onClosed.emit();" id="closeSelectQuestionLabelBtn">Close</button>
+    <button mat-raised-button (click)="closed.emit();" id="closeSelectQuestionLabelBtn">Close</button>
 </mat-dialog-actions>

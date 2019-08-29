@@ -4,7 +4,8 @@ import { CurationStatus } from 'shared/models.model';
 export const statusList: {name: CurationStatus, help: string, curHelp: string}[] = [
     {
         name: 'Preferred Standard',
-        help: 'Preferred Standard elements are managed by the CDE Working Group and described by Meaninful Use terminology. <br/>Preferred Standard elements can only be editied by the CDE Working Group',
+        help: 'Preferred Standard elements are managed by the CDE Working Group and described by Meaninful Use terminology. <br/>' +
+            'Preferred Standard elements can only be edited by the CDE Working Group',
         curHelp: 'Preferred Standard elements cannot be edited by their stewards',
     },
     {

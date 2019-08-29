@@ -9,7 +9,6 @@ import { LocalStorageService } from 'angular-2-local-storage';
 import { AlertService } from 'alert/alert.service';
 import { repeatFe, repeatFeLabel, repeatFeNumber, repeatFeQuestion } from 'core/form/fe';
 import { convertFormToSection } from 'core/form/form';
-import { isMappedTo } from 'core/form/formAndFe';
 import { FormDescriptionComponent } from 'form/public/tabs/description/formDescription.component';
 import _isEqual from 'lodash/isEqual';
 import _noop from 'lodash/noop';
@@ -19,7 +18,6 @@ import { FormattedValue } from 'shared/models.model';
 import { getLabel } from 'shared/form/fe';
 import { CdeForm, FormElement, FormInForm, FormSectionOrForm, SkipLogic } from 'shared/form/form.model';
 import { getQuestionsPrior } from 'shared/form/skipLogic';
-
 
 @Component({
     selector: 'cde-form-description-section',
@@ -37,12 +35,11 @@ export class FormDescriptionSectionComponent implements OnInit {
     @Input() canEdit = false;
     @Input() index!: number;
     @Input() node!: TreeNode;
-    @Output() onEltChange: EventEmitter<void> = new EventEmitter<void>();
+    @Output() eltChange: EventEmitter<void> = new EventEmitter<void>();
     @ViewChild('formDescriptionSectionTmpl') formDescriptionSectionTmpl!: TemplateRef<any>;
     @ViewChild('formDescriptionFormTmpl') formDescriptionFormTmpl!: TemplateRef<any>;
     @ViewChild('slInput') slInput!: ElementRef;
     @ViewChild('updateFormVersionTmpl') updateFormVersionTmpl!: TemplateRef<any>;
-    isMappedTo = isMappedTo;
     isSubForm = false;
     formSection?: FormInForm;
     parent!: FormElement;
@@ -72,8 +69,8 @@ export class FormDescriptionSectionComponent implements OnInit {
         this.section.repeatOption = repeatFe(this.section);
         this.section.repeatNumber = repeatFeNumber(this.section);
         this.section.repeatQuestion = repeatFeQuestion(this.section);
-        if (!this.section.instructions) { this.section.instructions = new FormattedValue; }
-        if (!this.section.skipLogic) { this.section.skipLogic = new SkipLogic; }
+        if (!this.section.instructions) { this.section.instructions = new FormattedValue(); }
+        if (!this.section.skipLogic) { this.section.skipLogic = new SkipLogic(); }
 
         if (this.node.data.elementType === 'form') {
             if (FormDescriptionComponent.isSubForm(this.node.parent)) { this.isSubForm = FormDescriptionComponent.isSubForm(this.node); }
@@ -160,7 +157,7 @@ export class FormDescriptionSectionComponent implements OnInit {
                 currentSection.formElements = newSection.formElements;
                 currentSection.label = newSection.label;
                 this.formDescriptionComponent.updateTree();
-                this.onEltChange.emit();
+                this.eltChange.emit();
             }
         }, _noop);
     }
@@ -174,17 +171,17 @@ export class FormDescriptionSectionComponent implements OnInit {
     repeatChange(section: FormSectionOrForm) {
         if (section.repeatOption === 'F') {
             section.repeat = 'First Question';
-            this.onEltChange.emit();
+            this.eltChange.emit();
         } else if (section.repeatOption === '=') {
             section.repeat = '="' + section.repeatQuestion + '"';
         } else if (section.repeatOption === 'N') {
             section.repeat = (section.repeatNumber && section.repeatNumber > 1 ? section.repeatNumber.toString() : undefined);
-            if (parseInt(section.repeat || '') > 0) { this.onEltChange.emit(); }
+            if (parseInt(section.repeat || '', 10) > 0) { this.eltChange.emit(); }
         } else {
             section.repeat = undefined;
         }
 
         this.checkRepeatOptions();
-        this.onEltChange.emit();
+        this.eltChange.emit();
     }
 }

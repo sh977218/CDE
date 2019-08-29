@@ -1,4 +1,4 @@
-import { ItemElastic, TableViewFields } from 'shared/models.model';
+import { ItemElastic, PermissibleValue, TableViewFields } from 'shared/models.model';
 
 export function getCdeCsvHeader(settings: TableViewFields): string {
     let cdeHeader = 'Name';
@@ -83,10 +83,10 @@ export function projectItemForExport(ele: ItemElastic, settings?: TableViewField
         cde.valueDomainType = ele.valueDomain.datatype;
     }
     if (settings && settings.permissibleValues) {
-        cde.permissibleValues = (ele.valueDomain.permissibleValues || []).slice(0, 50).map(pv => pv.permissibleValue);
+        cde.permissibleValues = (ele.valueDomain.permissibleValues || []).slice(0, 50).map((pv: PermissibleValue) => pv.permissibleValue);
     }
     if (settings && settings.pvCodeNames) {
-        cde.pvCodeNames = (ele.valueDomain.permissibleValues || []).slice(0, 50).map(pv => pv.valueMeaningName);
+        cde.pvCodeNames = (ele.valueDomain.permissibleValues || []).slice(0, 50).map((pv: PermissibleValue) => pv.valueMeaningName);
     }
     if (settings && settings.nbOfPVs) {
         cde.nbOfPVs = ele.valueDomain.permissibleValues && ele.valueDomain.permissibleValues.length || 0;  // jshint ignore:line
@@ -142,11 +142,11 @@ function sanitize(v?: string | any) {
 
 export function convertToCsv(obj: any): string {
     let row = '';
-    Object.keys(obj).forEach(function(key) {
+    Object.keys(obj).forEach(key => {
         row += '"';
         const value = obj[key];
         if (Array.isArray(value)) {
-            row += value.map(function(value) {
+            row += value.map(value => {
                 return sanitize(value);
             }).join('; ');
         } else if (value !== undefined) {

@@ -1,11 +1,9 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-
-import { AlertService } from 'alert/alert.service';
 import { LoginService } from '_app/login.service';
 import { UserService } from '_app/user.service';
-
+import { AlertService } from 'alert/alert.service';
 
 @Component({
     selector: 'cde-login',
@@ -79,19 +77,22 @@ export class LoginComponent {
     }
 
     login() {
-        if (!this.csrf) return;
-        let loginParams = {
+        if (!this.csrf) {
+            return;
+        }
+        this.http.post('/login', {
             username: this.username,
             password: this.password,
             _csrf: this.csrf,
             recaptcha: this.recaptcha
-        };
-        delete this.csrf;
-        this.http.post('/login', loginParams, {responseType: 'text'}).subscribe(res => {
+        }, {responseType: 'text'}).subscribe(res => {
             this.userService.reload();
             if (res === 'OK') {
                 if (this.loginSvc.getPreviousRoute()) {
-                    this.router.navigate([this.loginSvc.getPreviousRoute().url], {queryParams: this.loginSvc.getPreviousRoute().queryParams});
+                    this.router.navigate(
+                        [this.loginSvc.getPreviousRoute().url],
+                        {queryParams: this.loginSvc.getPreviousRoute().queryParams}
+                    );
                 } else {
                     this.router.navigate(['/home']);
                 }
@@ -111,7 +112,7 @@ export class LoginComponent {
             }
             this.getCsrf();
         });
-
+        delete this.csrf;
     }
 
     resolved(e: any) {

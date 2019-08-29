@@ -20,9 +20,10 @@ import { TreeComponent } from 'angular-tree-component';
 import { classifyItem } from 'core/adminItem/classification';
 import _isEqual from 'lodash/isEqual';
 import { IsAllowedService } from 'non-core/isAllowed.service';
-import { Definition, Designation } from 'shared/models.model';
+import { ClassificationClassified, ClassificationHistory, Definition, Designation } from 'shared/models.model';
 import { CdeForm } from 'shared/form/form.model';
 import { findSteward, removeCategory } from 'shared/system/classificationShared';
+import { DeletedNodeEvent } from 'adminItem/public/components/classification/classificationView.component';
 
 @Component({
     selector: 'cde-create-form',
@@ -34,12 +35,12 @@ import { findSteward, removeCategory } from 'shared/system/classificationShared'
     `]
 })
 export class CreateFormComponent implements OnInit {
-    @Input() elt: CdeForm;
+    @Input() elt!: CdeForm;
     @Output() done = new EventEmitter();
     @Output() eltChange = new EventEmitter();
-    @ViewChild('classifyItemComponent') public classifyItemComponent: ClassifyItemModalComponent;
-    @ViewChildren(TreeComponent) public classificationView: QueryList<TreeComponent>;
-    dialogRef: MatDialogRef<TemplateRef<any>>;
+    @ViewChild('classifyItemComponent') classifyItemComponent!: ClassifyItemModalComponent;
+    @ViewChildren(TreeComponent) classificationView!: QueryList<TreeComponent>;
+    dialogRef!: MatDialogRef<TemplateRef<any>>;
 
     ngOnInit() {
         if (!this.elt) {
@@ -58,7 +59,7 @@ export class CreateFormComponent implements OnInit {
                 private router: Router, public userService: UserService) {
     }
 
-    afterClassified(event) {
+    afterClassified(event: ClassificationClassified) {
         const postBody = {
             categories: event.classificationArray,
             eltId: this.elt._id,
@@ -86,11 +87,18 @@ export class CreateFormComponent implements OnInit {
                 err => this.alert.httpErrorMessageAlert(err));
     }
 
-    confirmDelete(event) {
+    confirmDelete(event: DeletedNodeEvent) {
         const steward = findSteward(this.elt, event.deleteOrgName);
+        if (!steward) {
+            this.alert.addAlert('success', 'No classification to remove.');
+            return;
+        }
         removeCategory(steward.object, event.deleteClassificationArray, err => {
-            if (err) { this.alert.addAlert('danger', 'Unexpected error removing classification'); }
-            else { this.alert.addAlert('success', 'Classification removed.'); }
+            if (err) {
+                this.alert.addAlert('danger', 'Unexpected error removing classification');
+            } else {
+                this.alert.addAlert('success', 'Classification removed.');
+            }
         });
     }
 
@@ -98,7 +106,7 @@ export class CreateFormComponent implements OnInit {
         this.dialogRef = this.classifyItemComponent.openModal();
     }
 
-    updateClassificationLocalStorage(item) {
+    updateClassificationLocalStorage(item: ClassificationHistory) {
         let recentlyClassification = this.localStorageService.get('classificationHistory') as Array<any>;
         if (!recentlyClassification) { recentlyClassification = []; }
         recentlyClassification = recentlyClassification.filter(o => {
@@ -109,7 +117,7 @@ export class CreateFormComponent implements OnInit {
         this.localStorageService.set('classificationHistory', recentlyClassification);
     }
 
-    validationErrors(elt): string {
+    validationErrors(elt: CdeForm): string {
         if (!elt.designations[0].designation) {
             return 'Please enter a name for the new Form';
         }
@@ -119,18 +127,12 @@ export class CreateFormComponent implements OnInit {
         if (!elt.stewardOrg.name) {
             return 'Please select a steward for the new Form';
         }
-        if (elt.classification.length === 0) {
+        if (!elt.classification || elt.classification.length === 0) {
             return 'Please select at least one classification';
         }
-        let found = false;
-        for (let i = 0; i < elt.classification.length; i++) {
-            if (elt.classification[i].stewardOrg.name === elt.stewardOrg.name) {
-                found = true;
-            }
-        }
-        if (!found) {
+        if (!elt.classification.some(classification => classification.stewardOrg.name === elt.stewardOrg.name)) {
             return 'Please select at least one classification owned by ' + elt.stewardOrg.name;
         }
-        return;
+        return '';
     }
 }

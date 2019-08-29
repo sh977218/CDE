@@ -1,7 +1,9 @@
 import { DataElementService } from 'cde/public/dataElement.service';
-import { CodeAndSystem, ObjectId } from 'shared/models.model';
-import { DataElement } from 'shared/de/dataElement.model';
-import { CdeForm, FormQuestion } from 'shared/form/form.model';
+import { CodeAndSystem, ObjectId, PermissibleValue } from 'shared/models.model';
+import { DataElement, ValueDomainValueList } from 'shared/de/dataElement.model';
+import {
+    CdeForm, FormQuestion, QuestionDate, QuestionDynamicList, QuestionNumber, QuestionText, QuestionValueList
+} from 'shared/form/form.model';
 
 export class FormService {
     // TODO: use Mongo cde and move to shared, currently open to using Elastic cde
@@ -21,14 +23,14 @@ export class FormService {
 
         switch (de.valueDomain.datatype) {
             case 'Value List':
-                q.question.answers = [];
-                q.question.cde.permissibleValues = [];
+                (q.question as QuestionValueList).answers = [];
+                (q.question as QuestionValueList).cde.permissibleValues = [];
                 break;
             case 'Date':
-                q.question.datatypeDate = de.valueDomain.datatypeDate || {};
+                (q.question as QuestionDate).datatypeDate = de.valueDomain.datatypeDate || {};
                 break;
             case 'Dynamic Code List':
-                q.question.datatypeDynamicCodeList = de.valueDomain.datatypeDynamicCodeList || {};
+                (q.question as QuestionDynamicList).datatypeDynamicCodeList = de.valueDomain.datatypeDynamicCodeList || {};
                 break;
             case 'Geo Location':
             case 'Time':
@@ -36,11 +38,11 @@ export class FormService {
             case 'File':
                 break;
             case 'Number':
-                q.question.datatypeNumber = de.valueDomain.datatypeNumber || {};
+                (q.question as QuestionNumber).datatypeNumber = de.valueDomain.datatypeNumber || {};
                 break;
             case 'Text':
             default:
-                q.question.datatypeText = de.valueDomain.datatypeText || {};
+                (q.question as QuestionText).datatypeText = de.valueDomain.datatypeText || {};
                 break;
         }
 
@@ -60,24 +62,24 @@ export class FormService {
             q.label = de.designations[0].designation;
         }
 
-        function convertPv(q: FormQuestion, cde: DataElement) {
-            cde.valueDomain.permissibleValues!.forEach(pv => {
+        function convertPv(question: QuestionValueList, pvs: PermissibleValue[]) {
+            pvs.forEach(pv => {
                 if (!pv.valueMeaningName || pv.valueMeaningName.trim().length === 0) {
                     pv.valueMeaningName = pv.permissibleValue;
                 }
-                q.question.answers!.push(Object.assign({formElements: []}, pv));
-                q.question.cde.permissibleValues!.push(pv);
+                question.answers.push(Object.assign({formElements: []}, pv));
+                question.cde.permissibleValues.push(pv);
             });
         }
-        if (de.valueDomain.permissibleValues && de.valueDomain.permissibleValues.length > 0) {
+        if (de.valueDomain.datatype === 'Value List' && de.valueDomain.permissibleValues && de.valueDomain.permissibleValues.length > 0) {
             // elastic only store 10 pv, retrieve pv when have more than 9 pv.
             if (de.valueDomain.permissibleValues.length > 9) {
                 DataElementService.fetchDe(de.tinyId, de.version || '').then(de => {
-                    convertPv(q, de);
+                    convertPv(q.question as QuestionValueList, (de.valueDomain as ValueDomainValueList).permissibleValues);
                     cb(q);
                 }, cb);
             } else {
-                convertPv(q, de);
+                convertPv(q.question as QuestionValueList, de.valueDomain.permissibleValues);
                 cb(q);
             }
         } else {

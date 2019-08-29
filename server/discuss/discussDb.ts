@@ -29,7 +29,7 @@ export const commentSchema = new Schema(Object.assign({
     replies: [replySchema],
 }, replySchema), {usePushEach: true});
 
-type CommentDocument = Comment & {organizationName: string} & mongoose.Document
+type CommentDocument = Comment & {organizationName: string} & mongoose.Document;
 export const Comment: mongoose.Model<CommentDocument> = conn.model('Comment', commentSchema);
 
 export function byId(id, cb) {
@@ -41,7 +41,7 @@ export function byReplyId(id, cb) {
 }
 
 export function byEltId(id, cb) {
-    let aggregate = [
+    const aggregate = [
         {$match: {'element.eltId': id}},
         {
             $lookup: {

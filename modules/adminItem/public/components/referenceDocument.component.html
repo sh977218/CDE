@@ -9,7 +9,7 @@
                     <mat-icon (click)="rd.edit = false" id="cancelRemoveReferenceDocument-{{i}}">cancel</mat-icon>
                 </ng-container>
                 <mat-icon (click)="rd.edit = true" *ngIf="canEdit && !rd.edit" id="removeReferenceDocument-{{i}}">delete</mat-icon>
-                <cde-sortable-array [theArray]="elt.referenceDocuments" [index]="i" (cb)="onEltChange.emit()"></cde-sortable-array>
+                <cde-sortable-array [theArray]="elt.referenceDocuments" [index]="i" (cb)="eltChange.emit()"></cde-sortable-array>
                 ID:
             </dt>
             <dd id="id_{{i}}" class="col-9">{{rd.referenceDocumentId}}</dd>

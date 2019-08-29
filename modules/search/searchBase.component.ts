@@ -30,8 +30,10 @@ import { DataType } from 'shared/de/dataElement.model';
 import { uriViewBase } from 'shared/item';
 import {
     CbErr,
-    CurationStatus, ElasticQueryResponse, ElasticQueryResponseAggregation, ElasticQueryResponseAggregationBucket,
-    ElasticQueryResponseHit, Item, ItemElastic, ModuleItem,
+    CurationStatus, ElasticQueryResponseAggregation, ElasticQueryResponseAggregationBucket,
+    ElasticQueryResponseAggregationsDe, ElasticQueryResponseAggregationsForm,
+    ElasticQueryResponseAggregationsItem,
+    ElasticQueryResponseHit, ItemElastic, ModuleItem,
     Organization
 } from 'shared/models.model';
 import { hasRole, isSiteAdmin } from 'shared/system/authorizationShared';
@@ -141,6 +143,58 @@ export const searchStyles = `
 `;
 
 export abstract class SearchBaseComponent implements OnDestroy, OnInit {
+    @Input() searchSettingsInput?: SearchSettings;
+    @ViewChild('orgDetailsModal') orgDetailsModal!: TemplateRef<any>;
+    @ViewChild('pinModal', {read: ViewContainerRef}) pinContainer!: ViewContainerRef;
+    @ViewChild('validRulesModal') validRulesModal!: TemplateRef<any>;
+    @ViewChild('autoCompleteInput', {read: MatAutocompleteTrigger}) autoCompleteInput!: MatAutocompleteTrigger;
+    @ViewChild(MatPaginator) paginator!: MatPaginator;
+    add!: EventEmitter<any>;
+    addMode?: string;
+    aggregations?: ElasticQueryResponseAggregation;
+    aggregationsFlatClassifications?: NamedCounts;
+    aggregationsFlatClassificationsAlt?: NamedCounts;
+    aggregationsExcludeClassification?: NamedCounts;
+    aggregationsTopics?: NamedCounts;
+    altClassificationFilterMode?: boolean;
+    excludeOrgFilterMode?: boolean;
+    autocompleteSuggestions?: string[];
+    cutoffIndex?: number;
+    elts?: ItemElastic[];
+    embedded = false; // is in another page, for example form description
+    exporters: { [format: string]: { id: string, display: string } } = {
+        json: {id: 'jsonExport', display: 'JSON Export'},
+        xml: {id: 'xmlExport', display: 'XML Export'}
+    };
+    filterMode = true;
+    goToPage = 1;
+    lastQueryTimeStamp?: number;
+    private lastTypeahead: { [term: string]: string } = {};
+    module!: ModuleItem;
+    numPages?: number;
+    orgs?: Organization[];
+    orgHtmlOverview?: string;
+    ownKeys = ownKeys;
+    pinComponent!: Type<PinBoardModalComponent>;
+    pinModalComponent?: ComponentRef<PinBoardModalComponent>;
+    previousUrl?: string;
+    resultsView = '';
+    routerSubscription: Subscription;
+    searching = false;
+    searchSettings: SearchSettings = new SearchSettings();
+    searchedTerm?: string;
+    searchTermAutoComplete = new EventEmitter<string>();
+    took?: number;
+    topics?: {[topic: string]: NamedCounts};
+    topicsKeys: string[] = [];
+    totalItems?: number;
+    totalItemsLimited?: number;
+    trackByKey = trackByKey;
+    trackByName = trackByName;
+    validRulesOrg?: string;
+    validRulesOrgs?: string[];
+    validRulesStatus?: CurationStatus;
+    view?: 'welcome' | 'results';
 
     constructor(protected _componentFactoryResolver: ComponentFactoryResolver,
                 protected alert: AlertService,
@@ -184,87 +238,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                 }
             });
     }
-    @Input() searchSettingsInput?: SearchSettings;
-
-    @ViewChild('orgDetailsModal') orgDetailsModal!: TemplateRef<any>;
-    @ViewChild('pinModal', {read: ViewContainerRef}) pinContainer!: ViewContainerRef;
-    @ViewChild('validRulesModal') validRulesModal!: TemplateRef<any>;
-    @ViewChild('autoCompleteInput', {read: MatAutocompleteTrigger}) autoCompleteInput!: MatAutocompleteTrigger;
-    @ViewChild(MatPaginator) paginator!: MatPaginator;
-    add = new EventEmitter<Item>();
-    addMode?: string;
-    aggregations?: ElasticQueryResponseAggregation;
-    aggregationsFlatClassifications?: NamedCounts;
-    aggregationsFlatClassificationsAlt?: NamedCounts;
-    aggregationsExcludeClassification?: NamedCounts;
-    aggregationsTopics?: NamedCounts;
-    altClassificationFilterMode?: boolean;
-    excludeOrgFilterMode?: boolean;
-    autocompleteSuggestions?: string[];
-    cutoffIndex?: number;
-    elts?: ItemElastic[];
-    embedded = false; // is in another page, for example form description
-    exporters: { [format: string]: { id: string, display: string } } = {
-        json: {id: 'jsonExport', display: 'JSON Export'},
-        xml: {id: 'xmlExport', display: 'XML Export'}
-    };
-    filterMode = true;
-    goToPage = 1;
-    lastQueryTimeStamp?: number;
-    private lastTypeahead: { [term: string]: string } = {};
-    module!: ModuleItem;
-    numPages?: number;
-    orgs?: Organization[];
-    orgHtmlOverview?: string;
-    ownKeys = ownKeys;
-    pinComponent!: Type<PinBoardModalComponent>;
-    pinModalComponent?: ComponentRef<PinBoardModalComponent>;
-    previousUrl?: string;
-    resultsView = '';
-    routerSubscription: Subscription;
-    searching = false;
-    searchSettings: SearchSettings = new SearchSettings;
-    searchedTerm?: string;
-    searchTermAutoComplete = new EventEmitter<string>();
-    took?: number;
-    topics?: {[topic: string]: NamedCounts};
-    topicsKeys: string[] = [];
-    totalItems?: number;
-    totalItemsLimited?: number;
-    trackByKey = trackByKey;
-    trackByName = trackByName;
-    validRulesOrg?: string;
-    validRulesOrgs?: string[];
-    validRulesStatus?: CurationStatus;
-    view?: 'welcome' | 'results';
-
-    static compareObjName(a: {name: string}, b: {name: string}): number {
-        return SearchBaseComponent.compareString(a.name, b.name);
-    }
-
-    static compareString(a: string, b: string): number {
-        if (a > b) { return 1; }
-        if (a < b) { return -1; }
-        if (a === b) { return 0; }
-        return NaN;
-    }
-
-    static focusClassification() {
-        document.getElementById('classificationListHolder')!.focus();
-    }
-
-    static focusTopic() {
-        document.getElementById('meshTreesListHolder')!.focus();
-    }
-
-    static getRegStatusIndex(rg: ElasticQueryResponseAggregationBucket) {
-        return orderedList.indexOf(rg.key as any);
-    }
-
-    static waitScroll(count: number, previousSpot: number) {
-        if (count > 0) { setTimeout(() => SearchBaseComponent.waitScroll(count - 1, previousSpot), 100); }
-        else { window.scrollTo(0, previousSpot); }
-    }
 
     @HostListener('window:beforeunload') unload() {
         if (/^\/(cde|form)\/search$/.exec(location.pathname)) {
@@ -285,7 +258,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
             this.searchSettings.excludeOrgs = params.excludeOrgs ? params.excludeOrgs.split(';') : [];
             this.searchSettings.excludeAllOrgs = !!params.excludeAllOrgs;
             this.searchSettings.meshTree = params.topic;
-            this.searchSettings.page = parseInt(params.page) || 1;
+            this.searchSettings.page = parseInt(params.page, 10) || 1;
             this.searchSettings.q = params.q;
             this.searchSettings.regStatuses = params.regStatuses ? params.regStatuses.split(';') as CurationStatus[] : [];
             this.searchSettings.selectedOrg = params.selectedOrg;
@@ -299,8 +272,11 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     addDatatypeFilter(datatype: DataType) {
         if (!this.searchSettings.datatypes) { this.searchSettings.datatypes = []; }
         const index = this.searchSettings.datatypes.indexOf(datatype);
-        if (index > -1) { this.searchSettings.datatypes.splice(index, 1); }
-        else { this.searchSettings.datatypes.push(datatype); }
+        if (index > -1) {
+            this.searchSettings.datatypes.splice(index, 1);
+        } else {
+            this.searchSettings.datatypes.push(datatype);
+        }
 
         this.doSearch();
     }
@@ -308,8 +284,11 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     addStatusFilter(status: CurationStatus) {
         if (!this.searchSettings.regStatuses) { this.searchSettings.regStatuses = []; }
         const index = this.searchSettings.regStatuses.indexOf(status);
-        if (index > -1) { this.searchSettings.regStatuses.splice(index, 1); }
-        else { this.searchSettings.regStatuses.push(status); }
+        if (index > -1) {
+            this.searchSettings.regStatuses.splice(index, 1);
+        } else {
+            this.searchSettings.regStatuses.push(status);
+        }
 
         this.doSearch();
     }
@@ -326,11 +305,17 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                 this.searchSettings.selectedOrg = orgName;
             }
         } else {
-            if (this.altClassificationFilterMode) { this.searchSettings.classificationAlt.length = 0; }
-            else if (this.excludeOrgFilterMode) { this.searchSettings.excludeOrgs.push(orgName); }
-            else { this.searchSettings.classification.length = 0; }
+            if (this.altClassificationFilterMode) {
+                this.searchSettings.classificationAlt.length = 0;
+            } else if (this.excludeOrgFilterMode) {
+                this.searchSettings.excludeOrgs.push(orgName);
+            } else {
+                this.searchSettings.classification.length = 0;
+            }
         }
-        delete this.aggregations!.groups;
+        if (this.aggregations) {
+            delete this.aggregations.groups;
+        }
         if (this.isSearched()) {
             this.doSearch();
             if (!this.embedded) { SearchBaseComponent.focusClassification(); }
@@ -433,7 +418,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     fakeNextPageLink(): string {
-        const p = (this.totalItemsLimited! / this.searchSettings.resultPerPage > 1)
+        const p = ((this.totalItemsLimited || 0) / this.searchSettings.resultPerPage > 1)
             ? (this.searchSettings.page ? this.searchSettings.page : 1) + 1 : 1;
         return paramsToQueryString(this.generateSearchForTerm(p));
     }
@@ -441,9 +426,12 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     private filterOutWorkingGroups(cb: CbErr) {
         this.userService.catch(_noop).then(user => {
             this.orgHelperService.then(() => {
-                (this.aggregations!.orgs.buckets as any) = this.aggregations!.orgs.orgs.buckets.filter((bucket: ElasticQueryResponseAggregationBucket) =>
-                    this.orgHelperService.showWorkingGroup(bucket.key) || isSiteAdmin(user)
-                );
+                if (this.aggregations) {
+                    (this.aggregations.orgs.buckets as any) = this.aggregations.orgs.orgs.buckets
+                        .filter((bucket: ElasticQueryResponseAggregationBucket) =>
+                            this.orgHelperService.showWorkingGroup(bucket.key) || isSiteAdmin(user)
+                        );
+                }
                 cb();
             }, cb);
         });
@@ -471,8 +459,11 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         if (this.searchSettings.excludeOrgs && this.searchSettings.excludeOrgs.length > 0) {
             searchTerms.excludeOrgs = this.searchSettings.excludeOrgs.join(';');
         }
-        if (pageNumber > 1) { searchTerms.page = pageNumber; }
-        else if (this.searchSettings.page && this.searchSettings.page > 1) { searchTerms.page = this.searchSettings.page; }
+        if (pageNumber > 1) {
+            searchTerms.page = pageNumber;
+        } else if (this.searchSettings.page && this.searchSettings.page > 1) {
+            searchTerms.page = this.searchSettings.page;
+        }
         if (this.searchSettings.meshTree) { searchTerms.topic = this.searchSettings.meshTree; }
         return searchTerms;
     }
@@ -484,9 +475,13 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     getCurrentSelectedOrg() {
-        if (this.altClassificationFilterMode) { return this.searchSettings.selectedOrgAlt; }
-        else if (this.excludeOrgFilterMode) { return this.searchSettings.selectedOrgAlt; }
-        else { return this.searchSettings.selectedOrg; }
+        if (this.altClassificationFilterMode) {
+            return this.searchSettings.selectedOrgAlt;
+        } else if (this.excludeOrgFilterMode) {
+            return this.searchSettings.selectedOrgAlt;
+        } else {
+            return this.searchSettings.selectedOrg;
+        }
     }
 
     getCurrentSelectedTopic() {
@@ -495,7 +490,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
     getRegStatusHelp(name: string) {
         let result = '';
-        statusList.forEach(function(s) { // jshint ignore:line
+        statusList.forEach((s) => {
             if (s.name === name) { result = s.help; }
         });
         return result;
@@ -511,14 +506,21 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     getSelectedClassificationsAlt(): string {
-        if (this.searchSettings.selectedOrgAlt) { return [this.searchSettings.selectedOrgAlt].concat(this.searchSettings.classificationAlt).join(' > '); }
-        else { return '(Select Orgs)'; }
+        if (this.searchSettings.selectedOrgAlt) {
+            return [this.searchSettings.selectedOrgAlt].concat(this.searchSettings.classificationAlt).join(' > ');
+        } else {
+            return '(Select Orgs)';
+        }
     }
 
     getExcludedOrgs(): string {
-        if (this.searchSettings.excludeAllOrgs) { return 'Exclude all Orgs (except ' + this.searchSettings.selectedOrg + ')'; }
-        else if (this.searchSettings.excludeOrgs.length > 0) { return this.searchSettings.excludeOrgs.join(' , '); }
-        else { return '(Select Orgs)'; }
+        if (this.searchSettings.excludeAllOrgs) {
+            return 'Exclude all Orgs (except ' + this.searchSettings.selectedOrg + ')';
+        } else if (this.searchSettings.excludeOrgs.length > 0) {
+            return this.searchSettings.excludeOrgs.join(' , ');
+        } else {
+            return '(Select Orgs)';
+        }
     }
 
     searchExcludeAllOrgs() {
@@ -527,9 +529,13 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     getClassificationSelectedOrg() {
-        if (this.altClassificationFilterMode) { return this.aggregationsFlatClassificationsAlt; }
-        else if (this.excludeOrgFilterMode) { return this.aggregationsExcludeClassification; }
-        else { return this.aggregationsFlatClassifications; }
+        if (this.altClassificationFilterMode) {
+            return this.aggregationsFlatClassificationsAlt;
+        } else if (this.excludeOrgFilterMode) {
+            return this.aggregationsExcludeClassification;
+        } else {
+            return this.aggregationsFlatClassifications;
+        }
     }
 
     getSelectedDatatypes() {
@@ -581,14 +587,16 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     openPinModal() {
-        this.pinAll(this.pinModalComponent!.instance.open());
+        if (this.pinModalComponent) {
+            this.pinAll(this.pinModalComponent.instance.open());
+        }
     }
 
     openValidRulesModal() {
         this.orgHelperService.then(orgsDetailedInfo => {
             this.validRulesOrgs = Object.keys(orgsDetailedInfo).sort();
             this.validRulesStatus = 'Incomplete';
-            this.validRulesOrg = orgsDetailedInfo[this.searchSettings.selectedOrg]
+            this.validRulesOrg = orgsDetailedInfo[this.searchSettings.selectedOrg || '']
                 ? this.searchSettings.selectedOrg
                 : this.validRulesOrgs[0];
             this.dialog.open(this.validRulesModal).afterClosed().subscribe((submitted: boolean) => {
@@ -610,7 +618,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     pageChange(newPage: PageEvent) {
         this.goToPage = newPage.pageIndex + 1;
         if (this.goToPage !== 0) {
-            if (this.goToPage < 1 || this.goToPage > this.numPages!) {
+            if (this.goToPage < 1 || this.goToPage > (this.numPages || 0)) {
                 this.alert.addAlert('danger', 'Invalid page: ' + this.goToPage);
             } else {
                 this.searchSettings.page = this.goToPage;
@@ -652,21 +660,24 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     reload() {
         const timestamp = new Date().getTime();
         this.lastQueryTimeStamp = timestamp;
+        const lastQueryTimeStamp = this.lastQueryTimeStamp;
         this.searching = true;
         if (this.searchSettingsInput) { Object.assign(this.searchSettings, this.searchSettingsInput); }
         const settings = this.elasticService.buildElasticQuerySettings(this.searchSettings);
-        this.elasticService.generalSearchQuery(settings, this.module, (err?: string, result?: ElasticQueryResponse, corrected?: boolean) => {
+        this.elasticService.generalSearchQuery(settings, this.module,
+            (err?: string, resultNonAgg?: any, corrected?: boolean) => {
+            const result: ElasticQueryResponseAggregationsItem = resultNonAgg;
             this.searchedTerm = this.searchSettings.q;
             if (corrected && this.searchedTerm) {
                 this.searchedTerm = this.searchedTerm.replace(/[^\w\s]/gi, '');
             }
-            if (err || !result) {
+            if (err || !result || !result.aggregations) {
                 this.alert.addAlert('danger', 'There was a problem with your query');
                 this.elts = [];
                 this.searching = false;
                 return;
             }
-            if (timestamp < this.lastQueryTimeStamp!) {
+            if (timestamp < lastQueryTimeStamp) {
                 this.searching = false;
                 return;
             }
@@ -675,74 +686,77 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
             this.totalItems = result.totalNumber;
             this.totalItemsLimited = this.totalItems <= 10000 ? this.totalItems : 10000;
 
-            this.elts = this.module === 'form' ? result.forms : result.cdes;
+            this.elts = this.module === 'form'
+                ? (result as ElasticQueryResponseAggregationsForm).forms
+                : (result as ElasticQueryResponseAggregationsDe).cdes;
+            const elts = this.elts;
 
             if (this.searchSettings.page === 1 && result.totalNumber > 0) {
                 let maxJump = 0;
                 let maxJumpIndex = 100;
-                this.elts!.map((e, i) => {
-                    if (!this.elts![i + 1]) { return; }
-                    const jump = e.score - this.elts![i + 1].score;
+                this.elts.map((e, i) => {
+                    if (!elts[i + 1]) { return; }
+                    const jump = e.score - elts[i + 1].score;
                     if (jump > maxJump) {
                         maxJump = jump;
                         maxJumpIndex = i + 1;
                     }
                 });
 
-                if (maxJump > (result.maxScore / 4)) { this.cutoffIndex = maxJumpIndex; }
-                else { this.cutoffIndex = 100; }
+                if (maxJump > (result.maxScore / 4)) {
+                    this.cutoffIndex = maxJumpIndex;
+                } else {
+                    this.cutoffIndex = 100;
+                }
             } else {
                 this.cutoffIndex = 100;
             }
 
             this.orgHelperService.then(() => {
-                this.elts!.forEach(elt => {
+                elts.forEach(elt => {
                     elt.usedBy = this.orgHelperService.getUsedBy(elt);
                 });
             }, _noop);
 
-            this.aggregations = result.aggregations!;
+            this.aggregations = result.aggregations;
 
-            if (result.aggregations !== undefined) {
-                if (result.aggregations.flatClassifications !== undefined) {
-                    this.aggregationsFlatClassifications = result.aggregations.flatClassifications.flatClassifications.buckets.map(
-                        (c: ElasticQueryResponseAggregationBucket) => ({name: c.key.split(';').pop()!, count: c.doc_count})
-                    );
-                } else {
-                    this.aggregationsFlatClassifications = [];
-                }
+            this.aggregationsFlatClassifications = this.aggregations.flatClassifications
+                ? this.aggregations.flatClassifications.flatClassifications.buckets.map(
+                    (c: ElasticQueryResponseAggregationBucket) => ({name: c.key.split(';').pop() || '', count: c.doc_count})
+                )
+                : [];
 
-                if (result.aggregations.flatClassificationsAlt !== undefined) {
-                    this.aggregationsFlatClassificationsAlt = result.aggregations.flatClassificationsAlt.flatClassificationsAlt.buckets.map(
-                        (c: ElasticQueryResponseAggregationBucket) => ({name: c.key.split(';').pop()!, count: c.doc_count})
-                    );
-                } else {
-                    this.aggregationsFlatClassificationsAlt = [];
-                    this.aggregationsExcludeClassification = [];
-                }
-
-                if (result.aggregations.meshTrees !== undefined) {
-                    if (this.searchSettings.meshTree) {
-                        this.aggregationsTopics = result.aggregations.meshTrees.meshTrees.buckets.map(
-                            (c: ElasticQueryResponseAggregationBucket) => ({name: c.key.split(';').pop()!, count: c.doc_count})
-                        );
-                    } else {
-                        this.aggregationsTopics = result.aggregations.meshTrees.meshTrees.buckets.map(
-                            (c: ElasticQueryResponseAggregationBucket) => ({name: c.key.split(';')[0], count: c.doc_count})
-                        );
-                    }
-                } else {
-                    this.aggregationsTopics = [];
-                }
-
+            if (this.aggregations.flatClassificationsAlt !== undefined) {
+                this.aggregationsFlatClassificationsAlt = this.aggregations.flatClassificationsAlt.flatClassificationsAlt.buckets.map(
+                    (c: ElasticQueryResponseAggregationBucket) => ({name: c.key.split(';').pop() || '', count: c.doc_count})
+                );
+            } else {
+                this.aggregationsFlatClassificationsAlt = [];
+                this.aggregationsExcludeClassification = [];
             }
 
+            if (this.aggregations.meshTrees !== undefined) {
+                if (this.searchSettings.meshTree) {
+                    this.aggregationsTopics = this.aggregations.meshTrees.meshTrees.buckets.map(
+                        (c: ElasticQueryResponseAggregationBucket) => ({name: c.key.split(';').pop() || '', count: c.doc_count})
+                    );
+                } else {
+                    this.aggregationsTopics = this.aggregations.meshTrees.meshTrees.buckets.map(
+                        (c: ElasticQueryResponseAggregationBucket) => ({name: c.key.split(';')[0], count: c.doc_count})
+                    );
+                }
+            } else {
+                this.aggregationsTopics = [];
+            }
+
+            const aggregations = this.aggregations;
             const orgsCreatedPromise = new Promise(resolve => {
                 this.filterOutWorkingGroups(() => {
                     this.orgHelperService.then(() => {
-                        this.orgHelperService.addLongNameToOrgs(this.aggregations!.orgs.buckets);
+                        this.orgHelperService.addLongNameToOrgs(aggregations.orgs.buckets);
                     }, _noop);
-                    this.aggregations!.orgs.buckets.sort((a: ElasticQueryResponseAggregationBucket, b: ElasticQueryResponseAggregationBucket) => {
+                    aggregations.orgs.buckets.sort(
+                        (a: ElasticQueryResponseAggregationBucket, b: ElasticQueryResponseAggregationBucket) => {
                         const A = a.key.toLowerCase();
                         const B = b.key.toLowerCase();
                         if (B > A) { return -1; }
@@ -753,52 +767,52 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                 });
             });
 
-            this.aggregationsFlatClassifications!.sort(SearchBaseComponent.compareObjName);
-            this.aggregationsFlatClassificationsAlt!.sort(SearchBaseComponent.compareObjName);
-            this.aggregations.statuses.statuses.buckets.sort(function(a: ElasticQueryResponseAggregationBucket, b: ElasticQueryResponseAggregationBucket) {
-                return SearchBaseComponent.getRegStatusIndex(a) - SearchBaseComponent.getRegStatusIndex(b);
-            });
-            this.aggregationsTopics!.sort(SearchBaseComponent.compareObjName);
+            this.aggregationsFlatClassifications.sort(SearchBaseComponent.compareObjName);
+            this.aggregationsFlatClassificationsAlt.sort(SearchBaseComponent.compareObjName);
+            this.aggregations.statuses.statuses.buckets.sort(
+                (a: ElasticQueryResponseAggregationBucket, b: ElasticQueryResponseAggregationBucket) =>
+                    SearchBaseComponent.getRegStatusIndex(a) - SearchBaseComponent.getRegStatusIndex(b));
+            this.aggregationsTopics.sort(SearchBaseComponent.compareObjName);
 
             this.switchView(this.isSearched() ? 'results' : 'welcome');
             if (this.view === 'welcome') {
                 this.orgs = [];
+                const orgs = this.orgs;
 
-                if (this.aggregations) {
-                    orgsCreatedPromise.then(() => {
-                        this.orgHelperService.then(orgsDetailedInfo => {
-                            this.aggregations!.orgs.buckets.forEach((org_t: ElasticQueryResponseAggregationBucket) => {
-                                if (orgsDetailedInfo[org_t.key]) {
-                                    this.orgs!.push({
-                                        name: org_t.key,
-                                        longName: orgsDetailedInfo[org_t.key].longName,
-                                        count: org_t.doc_count,
-                                        uri: orgsDetailedInfo[org_t.key].uri,
-                                        extraInfo: orgsDetailedInfo[org_t.key].extraInfo,
-                                        htmlOverview: orgsDetailedInfo[org_t.key].htmlOverview
-                                    });
-                                }
-                            });
-                            this.orgs!.sort(SearchBaseComponent.compareObjName);
-                        }, _noop);
-                    });
-                }
+                orgsCreatedPromise.then(() => {
+                    this.orgHelperService.then(orgsDetailedInfo => {
+                        aggregations.orgs.buckets.forEach((orgBucket: ElasticQueryResponseAggregationBucket) => {
+                            if (orgsDetailedInfo[orgBucket.key]) {
+                                orgs.push({
+                                    name: orgBucket.key,
+                                    longName: orgsDetailedInfo[orgBucket.key].longName,
+                                    count: orgBucket.doc_count,
+                                    uri: orgsDetailedInfo[orgBucket.key].uri,
+                                    extraInfo: orgsDetailedInfo[orgBucket.key].extraInfo,
+                                    htmlOverview: orgsDetailedInfo[orgBucket.key].htmlOverview
+                                });
+                            }
+                        });
+                        orgs.sort(SearchBaseComponent.compareObjName);
+                    }, _noop);
+                });
 
                 this.topics = {};
+                const topics = this.topics;
                 this.topicsKeys.length = 0;
-                if (this.aggregations) {
-                    this.aggregations.twoLevelMesh.twoLevelMesh.buckets.forEach((term: ElasticQueryResponseAggregationBucket) => {
-                        const spli: string[] = term.key.split(';');
-                        if (!this.topics![spli[0]]) {
-                            this.topics![spli[0]] = [];
-                        }
-                        this.topics![spli[0]].push({name: spli[1], count: term.doc_count});
-                    });
-                    for (const prop in this.topics) {
-                        if (this.topics.hasOwnProperty(prop)) { this.topicsKeys.push(prop); }
+                this.aggregations.twoLevelMesh.twoLevelMesh.buckets.forEach((term: ElasticQueryResponseAggregationBucket) => {
+                    const spli: string[] = term.key.split(';');
+                    if (!topics[spli[0]]) {
+                        topics[spli[0]] = [];
                     }
-                    this.topicsKeys.sort();
+                    topics[spli[0]].push({name: spli[1], count: term.doc_count});
+                });
+                for (const prop in this.topics) {
+                    if (this.topics.hasOwnProperty(prop)) {
+                        this.topicsKeys.push(prop);
+                    }
                 }
+                this.topicsKeys.sort();
             }
             this.scrollHistoryLoad();
             this.searching = false;
@@ -806,7 +820,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     reset() {
-        this.searchSettings = new SearchSettings;
+        this.searchSettings = new SearchSettings();
         this.aggregations = undefined;
         this.doSearch();
     }
@@ -831,8 +845,11 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
             classifToSelect.push(e);
         } else {
             const i = classifToSelect.indexOf(e);
-            if (i > -1) { classifToSelect.length = i + 1; }
-            else { classifToSelect.push(e); }
+            if (i > -1) {
+                classifToSelect.length = i + 1;
+            } else {
+                classifToSelect.push(e);
+            }
         }
 
         this.doSearch();
@@ -842,8 +859,11 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     selectTopic(topic: string) {
         const toSelect = !this.searchSettings.meshTree ? [] : this.searchSettings.meshTree.split(';');
         const i = toSelect.indexOf(topic);
-        if (i > -1) { toSelect.length = i + 1; }
-        else { toSelect.push(topic); }
+        if (i > -1) {
+            toSelect.length = i + 1;
+        } else {
+            toSelect.push(topic);
+        }
         this.searchSettings.meshTree = toSelect.join(';');
 
         this.doSearch();
@@ -911,6 +931,37 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         } else {
             this.router.navigate([uriViewBase(this.module)],
                 {queryParams: {tinyId: this.lastTypeahead[item.option.value]}});
+        }
+    }
+
+    static compareObjName(a: {name: string}, b: {name: string}): number {
+        return SearchBaseComponent.compareString(a.name, b.name);
+    }
+
+    static compareString(a: string, b: string): number {
+        if (a > b) { return 1; }
+        if (a < b) { return -1; }
+        if (a === b) { return 0; }
+        return NaN;
+    }
+
+    static focusClassification() {
+        (document as any).getElementById('classificationListHolder').focus();
+    }
+
+    static focusTopic() {
+        (document as any).getElementById('meshTreesListHolder').focus();
+    }
+
+    static getRegStatusIndex(rg: ElasticQueryResponseAggregationBucket) {
+        return orderedList.indexOf(rg.key as any);
+    }
+
+    static waitScroll(count: number, previousSpot: number) {
+        if (count > 0) {
+            setTimeout(() => SearchBaseComponent.waitScroll(count - 1, previousSpot), 100);
+        } else {
+            window.scrollTo(0, previousSpot);
         }
     }
 }

@@ -5,16 +5,17 @@ export function classifyItem(item: Item, orgName: string, classifPath: string[])
     let steward = findSteward(item, orgName);
     if (!steward) {
         if (!item.classification) { item.classification = []; }
-        item.classification.push({
+        const newClassification = {
             stewardOrg: {
                 name: orgName
             },
             elements: []
-        });
-        steward = findSteward(item, orgName);
+        };
+        item.classification.push(newClassification);
+        steward = {index: item.classification.length - 1, object: newClassification};
     }
     for (let i = 1; i <= classifPath.length; i++) {
-        addCategory(steward!.object, classifPath.slice(0, i));
+        addCategory(steward.object, classifPath.slice(0, i));
     }
 }
 

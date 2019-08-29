@@ -1,10 +1,11 @@
 import { getLabel, getQuestionPriorByLabel, getQuestions, } from 'shared/form/skipLogic';
-import { FormElement, FormQuestion } from 'shared/form/form.model';
+import { FormElement, FormElementsContainer, FormQuestion } from 'shared/form/form.model';
 import { Cb1 } from 'shared/models.model';
 
-export const SkipLogicOperatorsArray: string[] = ['=', '!=', '>', '<', '>=', '<='];
+export const SKIP_LOGIC_OPERATORS_ARRAY: string[] = ['=', '!=', '>', '<', '>=', '<='];
 
-export function evaluateSkipLogic(condition: string | undefined, parent: FormElement, fe: FormElement, addError: Cb1<string>): boolean {
+export function evaluateSkipLogic(condition: string | undefined, parent: FormElementsContainer,
+                                  fe: FormElement, addError: Cb1<string>): boolean {
     if (!condition) { return true; }
     const rule = condition.trim() || '';
     if (rule.indexOf('OR') > -1) {
@@ -31,11 +32,12 @@ export function evaluateSkipLogic(condition: string | undefined, parent: FormEle
     const questionLabel = ruleArr[0].replace(/"/g, '').trim();
     const expectedAnswer = ruleArr[1].replace(/"/g, '').trim();
 
-    const realAnswerObj = getQuestionPriorByLabel(parent, fe, questionLabel);
-    if (!realAnswerObj) {
+    const realAnswerObjOptional = getQuestionPriorByLabel(parent, fe, questionLabel);
+    if (!realAnswerObjOptional) {
         addError('SkipLogic is incorrect. Question not found. ' + rule);
         return false;
     }
+    const realAnswerObj = realAnswerObjOptional;
 
     return evalOperator(realAnswerObj.question.answer, expectedAnswer);
 
@@ -44,14 +46,14 @@ export function evaluateSkipLogic(condition: string | undefined, parent: FormEle
             (typeof realAnswer === 'number' && isNaN(realAnswer))) { realAnswer = ''; }
 
         if (expectedAnswer === '' && operator === '=') {
-            if (realAnswerObj!.question.datatype === 'Number') {
+            if (realAnswerObj.question.datatype === 'Number') {
                 if (realAnswer === '' || isNaN(realAnswer)) { return true; }
             } else {
                 if (realAnswer === '' || ('' + realAnswer).trim().length === 0) { return true; }
             }
         }
         if (typeof (realAnswer) === 'undefined') { return false; }
-        switch (realAnswerObj!.question.datatype) {
+        switch (realAnswerObj.question.datatype) {
             case 'Date':
                 // format HTML5 standard YYYY-MM-DD to American DD/MM/YYYY
                 if (realAnswer) {
@@ -67,12 +69,13 @@ export function evaluateSkipLogic(condition: string | undefined, parent: FormEle
                 addError('SkipLogic is incorrect. Operator ' + operator + ' is incorrect for type date. ' + rule);
                 return false;
             case 'Number':
-                if (operator === '=') { return realAnswer === parseInt(expectedAnswer); }
-                if (operator === '!=') { return realAnswer !== parseInt(expectedAnswer); }
-                if (operator === '<') { return realAnswer < parseInt(expectedAnswer); }
-                if (operator === '>') { return realAnswer > parseInt(expectedAnswer); }
-                if (operator === '<=') { return realAnswer <= parseInt(expectedAnswer); }
-                if (operator === '>=') { return realAnswer >= parseInt(expectedAnswer); }
+                const expectedAnswerInt = parseInt(expectedAnswer, 10);
+                if (operator === '=') { return realAnswer === expectedAnswerInt; }
+                if (operator === '!=') { return realAnswer !== expectedAnswerInt; }
+                if (operator === '<') { return realAnswer < expectedAnswerInt; }
+                if (operator === '>') { return realAnswer > expectedAnswerInt; }
+                if (operator === '<=') { return realAnswer <= expectedAnswerInt; }
+                if (operator === '>=') { return realAnswer >= expectedAnswerInt; }
                 addError('SkipLogic is incorrect. Operator ' + operator + ' is incorrect for type number. ' + rule);
                 return false;
             case 'Text':
@@ -121,7 +124,7 @@ export function getShowIfQ(fes: FormElement[], fe: FormElement): any[] {
                     operator = operatorWithNumber[0];
                     compValue = operatorWithNumber[1];
                 }
-                if (compValue !== undefined && SkipLogicOperatorsArray.includes(operator)) {
+                if (compValue !== undefined && SKIP_LOGIC_OPERATORS_ARRAY.includes(operator)) {
                     acc.push([matchQ, strPieces[i], operator, compValue]);
                 }
             }

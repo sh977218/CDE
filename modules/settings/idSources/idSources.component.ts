@@ -16,7 +16,7 @@ import { Source } from 'shared/models.model';
 })
 export class IdSourcesComponent {
     newId?: string;
-    sources?: Source[];
+    sources!: Source[];
 
     constructor(private alert: AlertService, private http: HttpClient) {
         this.http.get<Source[]>('/idSources')
@@ -27,7 +27,7 @@ export class IdSourcesComponent {
 
     add() {
         this.http.post<Source>('/idSource/' + this.newId, {})
-            .subscribe(res => this.sources!.push(res),
+            .subscribe(res => this.sources.push(res),
                 err => this.alert.httpErrorMessageAlert(err)
             );
         this.newId = undefined;
@@ -35,7 +35,7 @@ export class IdSourcesComponent {
 
     delete(source: Source, i: number) {
         this.http.delete('/idSource/' + source._id)
-            .subscribe(() => this.sources!.splice(i, 0),
+            .subscribe(() => this.sources.splice(i, 0),
                 err => this.alert.httpErrorMessageAlert(err)
             );
     }

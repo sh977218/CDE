@@ -1,23 +1,22 @@
 import { Component, OnInit, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatButtonToggleChange, MatDialog, MatDialogRef } from '@angular/material';
+import { Board } from 'shared/models.model';
 
 @Component({
     selector: 'cde-board-view-template',
     templateUrl: './boardViewTemplate.component.html'
 })
 export class BoardViewTemplateComponent implements OnInit {
-    @ViewChild('editBoardContent') editBoardContent: TemplateRef<any>;
-    @ViewChild('deleteBoardContent') deleteBoardContent: TemplateRef<any>;
     @Input() board: any;
-    @Input() canEdit: boolean;
+    @Input() canEdit!: boolean;
     @Input() headerLink = true;
-
+    @Output() saved = new EventEmitter<Board>();
+    @Output() deleted = new EventEmitter();
+    @Output() headerClicked = new EventEmitter();
+    @ViewChild('editBoardContent') editBoardContent!: TemplateRef<any>;
+    @ViewChild('deleteBoardContent') deleteBoardContent!: TemplateRef<any>;
     boardTitle = 'CDE(s)';
-
-    @Output() onSave = new EventEmitter();
-    @Output() onDelete = new EventEmitter();
-    @Output() onHeaderClick = new EventEmitter();
-    dialogRef: MatDialogRef<TemplateRef<any>>;
+    dialogRef!: MatDialogRef<TemplateRef<any>>;
 
     constructor(public dialog: MatDialog) {
     }
@@ -34,22 +33,21 @@ export class BoardViewTemplateComponent implements OnInit {
         this.dialogRef = this.dialog.open(this.deleteBoardContent);
     }
 
-    save(board) {
+    save(board: Board) {
         this.dialogRef.close();
-        this.onSave.emit(board);
+        this.saved.emit(board);
     }
 
-    delete(board) {
+    delete(board: Board) {
         this.dialogRef.close();
-        this.onDelete.emit(board);
+        this.deleted.emit(board);
     }
 
-    clickHeader(board) {
-        if (this.onHeaderClick) { this.onHeaderClick.emit(board); }
+    clickHeader(board: Board) {
+        if (this.headerClicked) { this.headerClicked.emit(board); }
     }
 
-    onBoardShareStatusChange($event) {
+    onBoardShareStatusChange($event: MatButtonToggleChange) {
         this.board.shareStatus = $event.value;
     }
-
 }

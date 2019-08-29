@@ -12,21 +12,24 @@ export class RegistrationValidatorService {
 
     getOrgRulesForCde(item: Item): StatusValidationRulesByOrg {
         const rulesOrgs: StatusValidationRulesByOrg = {};
-        item.classification && item.classification.forEach(c => {
-            rulesOrgs[c.stewardOrg.name] = this.orgHelperService.getStatusValidationRules(c.stewardOrg.name);
-        });
+        if (item.classification) {
+            item.classification.forEach(c => {
+                rulesOrgs[c.stewardOrg.name] = this.orgHelperService.getStatusValidationRules(c.stewardOrg.name);
+            });
+        }
         return rulesOrgs;
     }
 }
 
 const statuses: CurationStatus[] = ['Standard', 'Qualified', 'Recorded', 'Candidate', 'Incomplete'];
 export interface RuleStatus {
-    ruleError?: string,
-    ruleName: string,
-    ruleResultPromise: Promise<string>,
+    ruleError?: string;
+    ruleName: string;
+    ruleResultPromise: Promise<string>;
 }
 
-export function processRules(cde: any, orgName: string, status: CurationStatus|undefined, cdeOrgRules: StatusValidationRulesByOrg): RuleStatus[] | undefined {
+export function processRules(cde: any, orgName: string, status: CurationStatus|undefined,
+                             cdeOrgRules: StatusValidationRulesByOrg): RuleStatus[] | undefined {
     const statusesIndex = statuses.indexOf(status as CurationStatus);
     const orgRules = cdeOrgRules[orgName];
     return !Array.isArray(orgRules) ? undefined : orgRules

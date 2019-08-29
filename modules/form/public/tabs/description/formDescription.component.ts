@@ -23,7 +23,7 @@ import { copySectionAnimation } from 'form/public/tabs/description/copySectionAn
 import { FormService } from 'nativeRender/form.service';
 import { Cb } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
-import { CdeForm, FormElement, FormElementsContainer, FormInForm, FormSection } from 'shared/form/form.model';
+import { CdeForm, FormElement, FormElementsContainer, FormInForm, FormOrElement, FormSection } from 'shared/form/form.model';
 import { addFormIds, iterateFeSync } from 'shared/form/fe';
 import { scrollTo, waitRendered } from 'non-core/browser';
 
@@ -142,18 +142,9 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     get elt() {
         return this._elt;
     }
-
-    constructor(
-        public deCompletionService: DeCompletionService,
-        private _hotkeysService: HotkeysService,
-        private http: HttpClient,
-        private localStorageService: LocalStorageService,
-        public matDialog: MatDialog,
-    ) {
-    }
     private _elt!: CdeForm;
     @Input() canEdit = false;
-    @Output() onEltChange = new EventEmitter();
+    @Output() eltChange = new EventEmitter<void>();
     @ViewChild(TreeComponent) tree!: TreeComponent;
     @ViewChild('formSearchTmpl') formSearchTmpl!: TemplateRef<any>;
     @ViewChild('questionSearchTmpl') questionSearchTmpl!: TemplateRef<any>;
@@ -165,8 +156,9 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     newDataElement: DataElement = this.initNewDataElement();
     questionModelMode = 'search';
     treeOptions = {
-        allowDrag: (element: TreeNode) => !FormDescriptionComponent.isSubForm(element) || element.data.elementType === 'form' && !FormDescriptionComponent.isSubForm(element.parent),
-        allowDrop: (element, {parent, index}) => {
+        allowDrag: (element: TreeNode) => !FormDescriptionComponent.isSubForm(element)
+            || element.data.elementType === 'form' && !FormDescriptionComponent.isSubForm(element.parent),
+        allowDrop: (element: any, {parent, index}: any) => {
             return element !== parent && parent.data.elementType !== 'question' && (!element
                 || !element.ref && (element.data.elementType !== 'question' || parent.data.elementType === 'section')
                 || element.ref === 'section' || element.ref === 'form' || element.ref === 'pasteSection'
@@ -177,7 +169,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
             mouse: {
                 drag: () => this.dragActive = true,
                 dragEnd: () => this.dragActive = false,
-                drop: (tree: TreeModel, node: TreeNode, $event: any, {from, to}) => {
+                drop: (tree: TreeModel, node: TreeNode, $event: any, {from, to}: any) => {
                     if (from.ref) {
                         this.formElementEditing = {
                             formElements: to.parent.data.formElements,
@@ -216,12 +208,13 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     };
     updateDataCredit = 0;
 
-    static isSubForm(node: TreeNode): boolean {
-        let n = node;
-        while (n && n.data && n.data.elementType !== 'form' && n.parent) {
-            n = n.parent;
-        }
-        return n && n.data && n.data.elementType === 'form';
+    constructor(
+        public deCompletionService: DeCompletionService,
+        private _hotkeysService: HotkeysService,
+        private http: HttpClient,
+        private localStorageService: LocalStorageService,
+        public matDialog: MatDialog,
+    ) {
     }
 
     @HostListener('window:scroll', ['$event']) scrollEvent() {
@@ -245,7 +238,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         this.doIt();
     }
 
-    addExpanded(fe: FormElementsContainer) {
+    addExpanded(fe: FormOrElement) {
         fe.expanded = true;
         const expand = (fe: FormElement) => {
             fe.expanded = true;
@@ -326,13 +319,20 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         this.addQuestionDialogRef.afterClosed().subscribe(() => this.isModalOpen = false);
 
         setTimeout(() => {
-            if (this.questionModelMode === 'add') { document.getElementById('newDEName')!.focus(); }
+            if (this.questionModelMode === 'add') {
+                const newDeElement = document.getElementById('newDEName');
+                if (newDeElement) {
+                    newDeElement.focus();
+                }
+            }
         }, 0);
     }
 
     createNewDataElement(newCde: DataElement = this.newDataElement) {
         this.addQuestionFromSearch(newCde);
-        this.addQuestionDialogRef!.close();
+        if (this.addQuestionDialogRef) {
+            this.addQuestionDialogRef.close();
+        }
     }
 
     setCurrentEditing(formElements: FormElement[], formElement: FormElement, index: number) {
@@ -358,7 +358,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
 
     treeEvents(event: any) {
         if (event && event.eventName === 'updateData' && this.updateDataCredit === 0) {
-            this.onEltChange.emit();
+            this.eltChange.emit();
         }
         if (event && event.eventName === 'moveNode') {
             this.updateDataCredit++;
@@ -370,5 +370,13 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         this.tree.treeModel.update();
         // @TODO: if node passed in, expand all node only, else no expand
         this.tree.treeModel.expandAll();
+    }
+
+    static isSubForm(node: TreeNode): boolean {
+        let n = node;
+        while (n && n.data && n.data.elementType !== 'form' && n.parent) {
+            n = n.parent;
+        }
+        return n && n.data && n.data.elementType === 'form';
     }
 }

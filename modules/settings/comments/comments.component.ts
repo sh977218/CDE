@@ -5,18 +5,19 @@ import { ActivatedRoute } from '@angular/router';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
 import { Comment } from 'shared/models.model';
+import { Dictionary } from 'async';
 
-type CommentWithOrgName = Comment & {organizationName: string};
+type CommentWithOrgName = Comment & {organizationName: string} & Dictionary<any>;
 
 @Component({
     templateUrl: './comments.component.html'
 })
 export class CommentsComponent {
-    @ViewChild('commentTable', { read: MatSort }) commentSort: MatSort;
-    @ViewChild('commentPage') commentPaginator: MatPaginator;
+    @ViewChild('commentTable', { read: MatSort }) commentSort!: MatSort;
+    @ViewChild('commentPage') commentPaginator!: MatPaginator;
     commentColumns: string[] = ['created', 'text', 'type', 'user', 'organizationName'];
-    commentTableData?: MatTableDataSource<CommentWithOrgName>;
-    commentUrl: string;
+    commentTableData!: MatTableDataSource<CommentWithOrgName>;
+    commentUrl!: string;
     getEltLink = UserService.getEltLink;
     organizationNames?: string[];
     selectedOrganization = '';

@@ -7,9 +7,9 @@ import { QuickBoardListService } from '_app/quickBoardList.service';
     templateUrl: './formAccordionList.component.html'
 })
 export class FormAccordionListComponent {
-    @Input() addMode: any = null;
-    @Input() location: string = null;
-    @Input() elts: CdeForm[];
+    @Input() addMode: string = '';
+    @Input() location: string = '';
+    @Input() elts!: CdeForm[];
     @Input() openInNewTab = false;
     @Output() add = new EventEmitter<CdeForm>();
 

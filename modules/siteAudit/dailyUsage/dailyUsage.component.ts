@@ -9,7 +9,7 @@ type DailyUsage = any;
 })
 export class DailyUsageComponent {
     entryLimit: number = 50;
-    dailyUsage?: DailyUsage[];
+    dailyUsage!: DailyUsage[];
 
     constructor(
         private http: HttpClient
@@ -25,24 +25,28 @@ export class DailyUsageComponent {
         });
     }
 
-    static generateDaysAgo(year: number, month: number, day: number) {
-        let recordDate = new Date(year, month - 1, day, 0, 0, 0, 0);
-        let diffMs = new Date().getTime() - recordDate.getTime();
-        let diffDays = diffMs / (3600 * 24 * 1000);
-        diffDays = Math.floor(diffDays);
-        return diffDays;
-    }
-
     lookupUsername(ip: string) {
         this.http.get<any>('/server/siteAdmin/usernamesByIp/' + ip).subscribe(usernames => {
-            if (usernames.length === 0) usernames = [{username: 'Anonymous'}];
-            this.dailyUsage!.forEach(d => {
-                if (d._id.ip === ip) d.usernames = usernames;
+            if (usernames.length === 0) {
+                usernames = [{username: 'Anonymous'}];
+            }
+            this.dailyUsage.forEach(d => {
+                if (d._id.ip === ip) {
+                    d.usernames = usernames;
+                }
             });
         });
     }
 
     seeMore() {
         this.entryLimit += 50;
+    }
+
+    static generateDaysAgo(year: number, month: number, day: number) {
+        const recordDate = new Date(year, month - 1, day, 0, 0, 0, 0);
+        const diffMs = new Date().getTime() - recordDate.getTime();
+        let diffDays = diffMs / (3600 * 24 * 1000);
+        diffDays = Math.floor(diffDays);
+        return diffDays;
     }
 }

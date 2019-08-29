@@ -14,14 +14,14 @@ import { DataElementElastic } from 'shared/de/dataElement.model';
     `]
 })
 export class CdeSummaryListContentComponent implements SummaryComponent {
-    @Input() elt: DataElementElastic;
-    @Input() eltIndex: number;
+    @Input() elt!: DataElementElastic;
+    @Input() eltIndex!: number;
     @Output() select = new EventEmitter<string>();
 
     defaultAttachmentsFilter = Attachment.isDefault;
     module = 'cde';
 
-    getStewards() {
-        return this.elt.classification.map(cl => cl.stewardOrg.name);
+    getStewards(): string[] {
+        return  this.elt.classification ? this.elt.classification.map(cl => cl.stewardOrg.name) : [];
     }
 }

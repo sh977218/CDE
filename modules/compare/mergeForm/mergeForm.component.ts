@@ -1,21 +1,25 @@
 import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { AlertService } from 'alert/alert.service';
+import { CompareForm } from 'compare/compareSideBySide/compareSideBySide.component';
 import { IsAllowedService } from 'non-core/isAllowed.service';
-import { MergeFormService } from 'non-core/mergeForm.service';
+import { MergeFieldsForm, MergeFormService } from 'non-core/mergeForm.service';
+import { Cb } from 'shared/models.model';
+
+
 
 @Component({
     selector: 'cde-merge-form',
     templateUrl: './mergeForm.component.html'
 })
 export class MergeFormComponent {
-    @Input() public left: any;
-    @Input() public right: any;
-    @Output() doneMerging = new EventEmitter();
-    @ViewChild('mergeFormContent') public mergeFormContent: TemplateRef<any>;
+    @Input() left!: CompareForm;
+    @Input() right!: CompareForm;
+    @Output() doneMerging = new EventEmitter<{left: CompareForm, right: CompareForm}>();
+    @ViewChild('mergeFormContent') mergeFormContent!: TemplateRef<any>;
     doneMerge = false;
     maxNumberQuestions: any;
-    mergeFields: any = {
+    mergeFields: MergeFieldsForm = {
         designations: true,
         definitions: true,
         referenceDocuments: true,
@@ -72,22 +76,25 @@ export class MergeFormComponent {
     doMerge() {
         this.showProgressBar = true;
         this.maxNumberQuestions = this.right.questions.length;
-        this.mergeFormService.doMerge(this.left, this.right, this.mergeFields, (index, next) => {
+        this.mergeFormService.doMerge(this.left, this.right, this.mergeFields, (index: number, next: Cb) => {
             this.numMergedQuestions = index;
             next();
-        }, err => {
-            if (err) { return this.alert.addAlert('danger', 'Unexpected error merging forms'); }
-            else {
+        }, (err: any) => {
+            if (err) {
+                return this.alert.addAlert('danger', 'Unexpected error merging forms');
+            } else {
                 if (this.mergeFormService.error.ownSourceForm) {
                     this.left.changeNote = 'Merge to tinyId ' + this.right.tinyId;
                     if (this.isAllowedModel.isAllowed(this.left)) { this.left.registrationState.registrationStatus = 'Retired'; }
-                    this.mergeFormService.saveForm(this.left, err => {
-                        if (err) { this.alert.addAlert('danger', 'Can not save source form.'); }
-                        else {
+                    this.mergeFormService.saveForm(this.left, (err: any) => {
+                        if (err) {
+                            this.alert.addAlert('danger', 'Can not save source form.');
+                        } else {
                             this.right.changeNote = 'Merge from tinyId ' + this.left.tinyId;
-                            this.mergeFormService.saveForm(this.right, err => {
-                                if (err) { this.alert.addAlert('danger', 'Can not save target form.'); }
-                                else {
+                            this.mergeFormService.saveForm(this.right, (err: any) => {
+                                if (err) {
+                                    this.alert.addAlert('danger', 'Can not save target form.');
+                                } else {
                                     this.doneMerge = true;
                                     this.alert.addAlert('success', 'Form merged');
                                     setTimeout(() => {
@@ -100,9 +107,10 @@ export class MergeFormComponent {
                     });
                 } else {
                     this.right.changeNote = 'Merge from tinyId ' + this.left.tinyId;
-                    this.mergeFormService.saveForm(this.right, err => {
-                        if (err) { this.alert.addAlert('danger', 'Cannot save target form.'); }
-                        else {
+                    this.mergeFormService.saveForm(this.right, (err: any) => {
+                        if (err) {
+                            this.alert.addAlert('danger', 'Cannot save target form.');
+                        } else {
                             this.doneMerge = true;
                             this.alert.addAlert('success', 'Form merged');
                             setTimeout(() => {

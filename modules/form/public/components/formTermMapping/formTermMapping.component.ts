@@ -7,14 +7,11 @@ import { IsAllowedService } from 'non-core/isAllowed.service';
 import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Subject } from 'rxjs/Subject';
-import { MeshClassification } from 'server/mesh/meshDb';
-import { ElasticQueryResponse } from 'shared/models.model';
+import { ElasticQueryResponse, MeshClassification } from 'shared/models.model';
 
-interface MeshClassification {
-    flatClassification?: string;
-    eltId?: string;
-    meshDescriptors: string[];
-    flatTrees?: string[];
+interface Descriptor {
+    id: string;
+    name: string;
 }
 
 @Component({
@@ -24,7 +21,7 @@ interface MeshClassification {
 export class FormTermMappingComponent implements OnInit {
     @Input() elt: any;
     @ViewChild('newTermMap') public newTermMap!: TemplateRef<any>;
-    descriptor!: { name: string, id: string } | null;
+    descriptor?: Descriptor;
     descToName: any = {};
     flatMeshSimpleTrees: any[] = [];
     mapping: MeshClassification = {meshDescriptors: []};
@@ -52,14 +49,14 @@ export class FormTermMappingComponent implements OnInit {
                 const desc = res.hits.hits[0]._source;
                 this.descriptor = {name: desc.DescriptorName.String.t, id: desc.DescriptorUI.t};
             } else {
-                this.descriptor = null;
+                this.descriptor = undefined;
             }
         });
         this.reloadMeshTerms();
     }
 
-    addMeshDescriptor() {
-        this.mapping.meshDescriptors.push(this.descriptor!.id);
+    addMeshDescriptor(descriptor: Descriptor) {
+        this.mapping.meshDescriptors.push(descriptor.id);
 
         this.http.post<MeshClassification>('/server/mesh/meshClassification', this.mapping).subscribe(response => {
             this.alert.addAlert('success', 'Saved');
@@ -76,7 +73,7 @@ export class FormTermMappingComponent implements OnInit {
 
     openAddTermMap() {
         this.meshTerm = '';
-        this.descriptor = null;
+        this.descriptor = undefined;
         this.dialog.open(this.newTermMap, {width: '800px'});
     }
 
@@ -99,7 +96,7 @@ export class FormTermMappingComponent implements OnInit {
                     this.descToName[desc] = res.DescriptorName.String.t;
                 });
             });
-        }, function() {
+        }, () => {
         });
     }
 

@@ -70,14 +70,14 @@
             <div class="section_label">
                 <span class="font-weight-bold">Label:</span>
                 <cde-inline-edit [(model)]="section.label" [isAllowed]="canEditSection()"
-                                 (modelChange)="onEltChange.emit()"></cde-inline-edit>
+                                 (modelChange)="eltChange.emit()"></cde-inline-edit>
             </div>
             <div class="section_instruction">
                 <span class="font-weight-bold">Instructions:</span>
                 <cde-inline-area-edit
                         [(model)]="section.instructions.value"
                         [(defFormat)]="section.instructions.valueFormat"
-                        [isAllowed]="canEditSection()" (modelChange)="onEltChange.emit()"></cde-inline-area-edit>
+                        [isAllowed]="canEditSection()" (modelChange)="eltChange.emit()"></cde-inline-area-edit>
             </div>
             <div class="font-weight-bold section_cardinality">Repeats:
                 <select class="form-control" title="Repeats" [(ngModel)]="section.repeatOption"
@@ -105,7 +105,7 @@
             <div class="font-weight-bold skipLogicEditTextarea">Show if:
                 <span id="dd_s_skipLogic_{{$index}}" [ngClass]="{'has-error':section.skipLogic?.skipLogicError}">
                     <cde-skip-logic [parent]="parent" [formElement]="section" [canEdit]="canEditSection()"
-                                    (onSaved)="onEltChange.emit();"></cde-skip-logic>
+                                    (saved)="eltChange.emit();"></cde-skip-logic>
                 </span>
             </div>
         </div>
@@ -123,7 +123,7 @@
                   class="badge badge-primary formViewSummaryLabel">
                 Repeats: {{repeatFeLabel(section)}}
             </span>
-            <span *ngIf="isMappedTo(section, 'fhir')" class="badge badge-primary formViewSummaryLabel">
+            <span *ngIf="section.mapTo && section.mapTo.fhir" class="badge badge-primary formViewSummaryLabel">
                 FHIR <ng-container
                     *ngIf="section.mapTo.fhir.resourceType">Resource: {{section.mapTo.fhir.resourceType}}</ng-container>
             </span>
@@ -139,14 +139,14 @@
             <div class="section_label">
                 <span class="font-weight-bold">Label:</span>
                 <cde-inline-edit [(model)]="section.label" [isAllowed]="canEditSection()"
-                                 (modelChange)="onEltChange.emit()"></cde-inline-edit>
+                                 (modelChange)="eltChange.emit()"></cde-inline-edit>
             </div>
             <div class="section_instruction">
                 <span class="font-weight-bold">Instructions:</span>
                 <cde-inline-area-edit [(model)]="section.instructions.value"
                                       [(defFormat)]="section.instructions.valueFormat"
                                       [isAllowed]="canEditSection()"
-                                      (modelChange)="onEltChange.emit()">
+                                      (modelChange)="eltChange.emit()">
                 </cde-inline-area-edit>
             </div>
             <div class="font-weight-bold section_cardinality">Repeats:
@@ -175,7 +175,7 @@
             <div class="font-weight-bold">Show if:
                 <span id="dd_s_skipLogic_{{$index}}" [ngClass]="{'has-error':section.skipLogic?.skipLogicError}">
                     <cde-skip-logic [parent]="parent" [formElement]="section" [canEdit]="canEditSection()"
-                                    (onSaved)="onEltChange.emit();"></cde-skip-logic>
+                                    (saved)="eltChange.emit();"></cde-skip-logic>
                 </span>
             </div>
         </div>

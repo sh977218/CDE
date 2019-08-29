@@ -10,14 +10,17 @@ export function getLabel(q: FormQuestion): string {
 }
 
 export function getQuestions(fes: FormElement[], filter?: filter): FormQuestion[] {
-    let matchedQuestions: FormQuestion[] = [];
+    const matchedQuestions: FormQuestion[] = [];
     iterateFesSync(fes, undefined, undefined, fe => {
-        if (!filter || filter(fe)) matchedQuestions.push(fe);
+        if (!filter || filter(fe)) {
+            matchedQuestions.push(fe);
+        }
     });
     return matchedQuestions;
 }
 
-export function getQuestionsPrior(parent: FormElementsContainer, fe: FormElement, filter?: filter, topFe?: FormElementsContainer): FormQuestion[] { // search all tree prior
+export function getQuestionsPrior(parent: FormElementsContainer, fe: FormElement, filter?: filter,
+                                  topFe?: FormElementsContainer): FormQuestion[] { // search all tree prior
     function questions(parent: FormElementsContainer, index: number) {
         return getQuestions(parent.formElements.slice(0, index > 0 ? index : 0), filter);
     }
@@ -35,7 +38,7 @@ export function getQuestionsPrior(parent: FormElementsContainer, fe: FormElement
         const self = input[input.length - 1].parent.formElements[input[input.length - 1].index];
         const index = self.formElements.indexOf(parent as FormElement);
         if (index > -1) {
-            path = input.concat({parent: self, index: index});
+            path = input.concat({parent: self, index});
             break;
         }
         /*jshint loopfunc: true */
@@ -45,10 +48,13 @@ export function getQuestionsPrior(parent: FormElementsContainer, fe: FormElement
     return path.reduce((acc, p) => acc.concat(questions(p.parent, p.index)), []);
 }
 
-export function getQuestionPriorByLabel(parent: FormElementsContainer, fe: FormElement, label: string, topFe?: FormElementsContainer): FormQuestion | undefined {
+export function getQuestionPriorByLabel(parent: FormElementsContainer, fe: FormElement, label: string,
+                                        topFe?: FormElementsContainer): FormQuestion | undefined {
     label = label.trim();
-    let matchedQuestions = getQuestionsPrior(parent, fe, fe => getLabel(fe) === label, topFe);
-    if (matchedQuestions.length <= 0) return undefined;
+    const matchedQuestions = getQuestionsPrior(parent, fe, fe => getLabel(fe) === label, topFe);
+    if (matchedQuestions.length <= 0) {
+        return undefined;
+    }
     return matchedQuestions[matchedQuestions.length - 1];
 }
 
@@ -57,10 +63,14 @@ export class Tokens extends Array {
 }
 
 export function tokenSplitter(str: string): Tokens {
-    let tokens: Tokens = new Tokens();
-    if (!str) return tokens;
+    const tokens: Tokens = new Tokens();
+    if (!str) {
+        return tokens;
+    }
     str = str.trim();
-    if (!str) return tokens;
+    if (!str) {
+        return tokens;
+    }
 
     let res = str.match(/^"[^"]+"/);
     if (!res) {
@@ -97,8 +107,8 @@ export function tokenSplitter(str: string): Tokens {
     tokens.unmatched = str;
 
     if (str.length > 0) {
-        let innerTokens = tokenSplitter(str);
-        let outerTokens = tokens.concat(innerTokens) as Tokens;
+        const innerTokens = tokenSplitter(str);
+        const outerTokens = tokens.concat(innerTokens) as Tokens;
         outerTokens.unmatched = innerTokens.unmatched;
         return outerTokens;
     }

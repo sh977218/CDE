@@ -35,24 +35,26 @@ export class NativeSectionComponent {
             return false;
         }
 
-        section && section.formElements && section.formElements.forEach(function(formElem) {
-            if (formElem.elementType !== 'question'
-                || formElem.question.datatype !== 'Value List'
-                || formElem.question.answers!.length === 0
-                || !formElem.question.answers![0].valueMeaningName) {
-                return result = false;
-            }
-            if (!answerHash) {
-                answerHash = JSON.stringify(formElem.question.answers!.map(function(a) {
-                    return a.valueMeaningName;
-                }));
-            }
-            if (answerHash !== JSON.stringify(formElem.question.answers!.map(function(a) {
-                    return a.valueMeaningName;
-                }))) {
-                return result = false;
-            }
-        });
+        if (section && section.formElements) {
+            section.formElements.forEach((formElem) => {
+                if (formElem.elementType !== 'question'
+                    || formElem.question.datatype !== 'Value List'
+                    || formElem.question.answers.length === 0
+                    || !formElem.question.answers[0].valueMeaningName) {
+                    result = false;
+                    return;
+                }
+                const newHash = JSON.stringify(formElem.question.answers.map((a) => a.valueMeaningName));
+                if (!answerHash) {
+                    answerHash = newHash;
+                    return;
+                }
+                if (answerHash !== newHash) {
+                    result = false;
+                    return;
+                }
+            });
+        }
         if (section.forbidMatrix) { return false; }
         return result;
     }

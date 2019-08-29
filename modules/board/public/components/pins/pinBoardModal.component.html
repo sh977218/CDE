@@ -28,7 +28,7 @@
             <div class="row">
                 <div *ngFor="let board of myBoardsSvc.boards; let $index = index" class="col-lg-4 col-md-3">
                     <cde-board-view-template [board]="board" [headerLink]="false"
-                                             (onHeaderClick)="selectBoard(board); ">
+                                             (headerClicked)="selectBoard(board); ">
                     </cde-board-view-template>
                 </div>
             </div>

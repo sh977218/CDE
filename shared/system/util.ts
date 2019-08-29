@@ -1,4 +1,4 @@
-import { CbRet } from 'shared/models.model';
+import { CbRet, CbRet1 } from 'shared/models.model';
 
 export function arrayFill<T>(size: number, fillFn: CbRet<T>) {
     return Array.apply(null, new Array(size)).map(fillFn);
@@ -25,7 +25,7 @@ export function deepCopy<T>(obj: T): T {
     return JSON.parse(JSON.stringify(obj));
 }
 
-export function partition<T>(arr: T[], condition: CbRet<boolean, T, number, T[]>): [T[], T[]] {
+export function partition<T>(arr: T[], condition: CbRet1<boolean, T, number, T[]>): [T[], T[]] {
     return arr.reduce((result: [T[], T[]], e: T, i: number, arr: T[]) => {
         condition(e, i, arr)
             ? result[0].push(e)
@@ -70,7 +70,9 @@ export function stringCompare(a: string, b: string): number {
 }
 
 export function updateTag<T>(array: T[] | undefined, status: boolean, tag: T): T[] {
-    if (!array) array = [];
+    if (!array) {
+        array = [];
+    }
     if (status) {
         if (!array.includes(tag)) {
             array.push(tag);

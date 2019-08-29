@@ -1,13 +1,11 @@
-import { CommonModule } from "@angular/common";
-import { NgModule } from "@angular/core";
-import { FormsModule } from "@angular/forms";
+import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatIconModule } from '@angular/material';
 import { NgbCarouselModule } from '@ng-bootstrap/ng-bootstrap';
-
 import { HomeComponent } from 'home/home.component';
 import { HomeRoutingModule } from 'home/home-routing.module';
 import { NativeRenderModule } from 'nativeRender/nativeRender.module';
-
-import { MatIconModule } from '@angular/material';
 
 @NgModule({
     imports: [
@@ -15,7 +13,6 @@ import { MatIconModule } from '@angular/material';
         FormsModule,
         NgbCarouselModule,
         // non-core
-
         // internal
         HomeRoutingModule,
         NativeRenderModule,

@@ -1,12 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-
+import { AlertService } from 'alert/alert.service';
 import { UserService } from '_app/user.service';
 import { IsAllowedService } from 'non-core/isAllowed.service';
-import { Comment } from 'shared/models.model';
-import { AlertService } from 'alert/alert.service';
+import { Board, Comment, Item } from 'shared/models.model';
+import { Dictionary } from 'async';
 
-const tabMap = {
+const tabMap: Dictionary<string> = {
     preview_tab: 'preview',
     meshTopic_tab: 'meshTopic',
     general_tab: 'general',
@@ -28,37 +28,32 @@ const tabMap = {
     templateUrl: './discussArea.component.html'
 })
 export class DiscussAreaComponent {
-    newComment: Comment = new Comment();
-    private ownElt;
-    private _elt;
-    @Input() set elt(e) {
+    @Input() set elt(e: Item | Board) {
         this.ownElt = this.isAllowedModel.doesUserOwnElt(e);
-        if (!this.newComment.element) { this.newComment.element = {}; }
+        if (!this.newComment.element) { this.newComment.element = {eltType: 'cde', eltId: ''}; }
         this.newComment.element.eltType = e.elementType;
-        this.newComment.element.eltId = e.tinyId ? e.tinyId : e.id;
-        this.eltId = e.tinyId ? e.tinyId : e.id;
+        const id = e.elementType === 'cde' || e.elementType === 'form' ? e.tinyId : e.id;
+        this.newComment.element.eltId = id;
+        this.eltId = id;
         this._elt = e;
     }
-
     get elt() {
         return this._elt;
     }
-
-    @Input() public eltName: string;
-
-    private _currentTab = 'general_tab';
+    @Input() public eltName!: string;
     @Input() set currentTab(tab: string) {
         this._currentTab = tabMap[tab];
         this.newComment.linkedTab = this._currentTab;
     }
-
     get currentTab() {
         return this._currentTab;
     }
-
-    @Input() highlightedTabs = [];
-    @Output() highlightedTabsChange = new EventEmitter();
-    eltId: string;
+    @Output() highlightedTabsChange = new EventEmitter<string[]>(); // unused
+    private _currentTab: string = 'general_tab';
+    private _elt!: Item | Board;
+    eltId!: string;
+    newComment: Comment = new Comment();
+    private ownElt!: boolean;
 
     constructor(private http: HttpClient,
                 public isAllowedModel: IsAllowedService,

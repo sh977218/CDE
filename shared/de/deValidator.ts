@@ -1,21 +1,28 @@
 import { Dictionary } from 'async';
-import { DataElement, ValueDomain } from 'shared/de/dataElement.model';
+import { DataElement, valueDomain, ValueDomain, ValueDomainValueList } from 'shared/de/dataElement.model';
 import { Question } from 'shared/form/form.model';
+import { copyValueDomain } from 'shared/datatype';
 
+type ErrorMessage = {
+    allValid: true
+} | {
+    allValid: false;
+    message: string;
+};
 
-type errorMessage = { allValid: boolean, message?: string };
-
-export function checkPvUnicity(valueDomain: ValueDomain): errorMessage {
+export function checkPvUnicity(valueDomain: ValueDomain): ErrorMessage {
     if (valueDomain.datatype !== 'Value List') {
         return {allValid: true};
     }
     if (valueDomain.datatype === 'Value List' && valueDomain.permissibleValues && valueDomain.permissibleValues.length === 0) {
         return resultInvalid('Value List must contain at least one Permissible Value');
     }
-    let allPvs: Dictionary<number> = {}, allCodes: Dictionary<number> = {}, allVms: Dictionary<number> = {};
-    return (valueDomain.permissibleValues || []).reduce((acc, pv) => {
-        let pvCode = pv.valueMeaningCode ? pv.valueMeaningCode : '';
-        let pvCodeSystem = pv.codeSystemName ? pv.codeSystemName : '';
+    const allCodes: Dictionary<number> = {};
+    const allPvs: Dictionary<number> = {};
+    const allVms: Dictionary<number> = {};
+    return (valueDomain.permissibleValues || []).reduce<ErrorMessage>((acc, pv) => {
+        const pvCode = pv.valueMeaningCode ? pv.valueMeaningCode : '';
+        const pvCodeSystem = pv.codeSystemName ? pv.codeSystemName : '';
         if (pvCode.length > 0 && pvCodeSystem.length === 0) {
             return resultInvalid(pv.notValid = 'pvCode is not empty, pvCodeSystem is empty');
         }
@@ -28,7 +35,9 @@ export function checkPvUnicity(valueDomain: ValueDomain): errorMessage {
         if (pv.valueMeaningCode && allCodes[pv.valueMeaningCode]) {
             return resultInvalid(pv.notValid = 'Duplicate Code: ' + pv.valueMeaningCode);
         }
-        if (pv.permissibleValue) allPvs[pv.permissibleValue] = 1;
+        if (pv.permissibleValue) {
+            allPvs[pv.permissibleValue] = 1;
+        }
         if (pv.valueMeaningName && pv.valueMeaningName.length > 0 && pv.valueMeaningName.indexOf('Login to see the value') === -1) {
             allVms[pv.valueMeaningName] = 1;
         }
@@ -40,8 +49,8 @@ export function checkPvUnicity(valueDomain: ValueDomain): errorMessage {
     }, {allValid: true});
 }
 
-export function checkDefinitions(elt: DataElement): errorMessage {
-    let result = {allValid: true};
+export function checkDefinitions(elt: DataElement): ErrorMessage {
+    let result: ErrorMessage = {allValid: true};
     elt.definitions.forEach(def => {
         if (!def.definition || !def.definition.length) {
             result = resultInvalid('Definition may not be empty.');
@@ -50,14 +59,14 @@ export function checkDefinitions(elt: DataElement): errorMessage {
     return result;
 }
 
-export function fixDatatype(dc: Question | ValueDomain): void {
+export function fixDatatype(dc: Partial<Question | ValueDomain>): void {
     if (!dc.datatype) {
         dc.datatype = 'Text';
     }
     if (dc.datatype === 'Value List' && !dc.datatypeValueList) {
         dc.datatypeValueList = {};
-        if (!(dc as ValueDomain).permissibleValues) {
-            (dc as ValueDomain).permissibleValues = [];
+        if (!(dc as ValueDomainValueList).permissibleValues) {
+            (dc as ValueDomainValueList).permissibleValues = [];
         }
     }
     if (dc.datatype === 'Number' && !dc.datatypeNumber) {
@@ -78,47 +87,28 @@ export function fixDatatype(dc: Question | ValueDomain): void {
 }
 
 export function fixDataElement(elt: DataElement): void {
-    if (!elt.valueDomain) elt.valueDomain = {datatype: 'Text', identifiers: [], ids: []};
+    if (!elt.valueDomain) {
+        elt.valueDomain = valueDomain() as ValueDomain;
+    }
     fixDatatype(elt.valueDomain);
 }
 
 export function wipeDatatype(elt: DataElement): void {
-    if (elt.elementType !== 'cde') return;
+    if (elt.elementType !== 'cde') {
+        return;
+    }
     fixDataElement(elt);
-    let valueDomain: ValueDomain = {
-        datatype: 'Text',
+    const valueDomain: Partial<ValueDomain> = {
         definition: elt.valueDomain.definition,
         identifiers: elt.valueDomain.identifiers,
         ids: elt.valueDomain.ids,
         uom: elt.valueDomain.uom,
         vsacOid: elt.valueDomain.vsacOid
     };
-    if (elt.valueDomain.datatype === 'Value List') {
-        valueDomain.datatype = 'Value List';
-        valueDomain.permissibleValues = elt.valueDomain.permissibleValues;
-        valueDomain.datatypeValueList = elt.valueDomain.datatypeValueList;
-    } else if (elt.valueDomain.datatype === 'Number') {
-        valueDomain.datatype = 'Number';
-        valueDomain.datatypeNumber = elt.valueDomain.datatypeNumber;
-    } else if (elt.valueDomain.datatype === 'Text') {
-        valueDomain.datatype = 'Text';
-        valueDomain.datatypeText = elt.valueDomain.datatypeText;
-    } else if (elt.valueDomain.datatype === 'Date') {
-        valueDomain.datatype = 'Date';
-        valueDomain.datatypeDate = elt.valueDomain.datatypeDate;
-    } else if (elt.valueDomain.datatype === 'Dynamic Code List') {
-        valueDomain.datatype = 'Dynamic Code List';
-        valueDomain.datatypeDynamicCodeList = elt.valueDomain.datatypeDynamicCodeList;
-    } else if (elt.valueDomain.datatype === 'Externally Defined') {
-        valueDomain.datatype = 'Externally Defined';
-        valueDomain.datatypeExternallyDefined = elt.valueDomain.datatypeExternallyDefined;
-    } else {
-        valueDomain.datatype = elt.valueDomain.datatype;
-    }
-    elt.valueDomain = valueDomain;
+    elt.valueDomain = copyValueDomain(elt.valueDomain, valueDomain) as ValueDomain;
 }
 
-function resultInvalid(message: string): errorMessage {
+function resultInvalid(message: string): ErrorMessage {
     return {
         allValid: false,
         message

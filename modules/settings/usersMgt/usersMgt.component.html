@@ -9,7 +9,7 @@
         </div>
         <div class="form-group">
             <cde-username-autocomplete [placeHolder]="'enter username'"
-                                       (onSelect)="search.username = $event"></cde-username-autocomplete>
+                                       (selected)="search.username = $event"></cde-username-autocomplete>
         </div>
         <button type="submit" mat-raised-button color="primary" id="searchUsersSubmit" (click)="searchUsers()">
             Search

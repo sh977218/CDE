@@ -4,7 +4,7 @@ import _noop from 'lodash/noop';
 
 import { AlertService } from 'alert/alert.service';
 import { UserService } from '_app/user.service';
-import { Comment, CurationStatus, RegistrationState } from 'shared/models.model';
+import { Comment, CurationStatus, Item, RegistrationState } from 'shared/models.model';
 import { statusList } from 'shared/system/regStatusShared';
 import { MatDialog } from '@angular/material';
 
@@ -14,11 +14,11 @@ import { MatDialog } from '@angular/material';
 })
 export class RegistrationComponent implements OnInit {
     @Input() canEdit = false;
-    @Input() elt: any;
-    @Output() onEltChange = new EventEmitter();
+    @Input() elt!: Item;
+    @Output() eltChange = new EventEmitter();
     @ViewChild('regStatusEdit') regStatusEditModal!: TemplateRef<any>;
     helpMessage?: string;
-    newState?: RegistrationState;
+    newState!: RegistrationState;
     validRegStatuses: string[] = ['Retired', 'Incomplete', 'Candidate'];
 
     constructor(
@@ -40,10 +40,10 @@ export class RegistrationComponent implements OnInit {
             }
 
             this.validRegStatuses = ['Retired', 'Incomplete'];
-            if (this.elt.classification.some(cl => cl.stewardOrg.name !== 'TEST')) {
+            if (this.elt.classification && this.elt.classification.some(cl => cl.stewardOrg.name !== 'TEST')) {
                 this.validRegStatuses.push('Candidate');
 
-                this.http.get<any>('/org/' + encodeURIComponent(this.elt.stewardOrg.name)).subscribe(res => {
+                this.http.get<any>('/org/' + encodeURIComponent(this.elt.stewardOrg.name || '')).subscribe(res => {
                     this.userService.catch(_noop).then(user => {
                         if (!res.workingGroupOf || res.workingGroupOf.length < 1) {
                             this.validRegStatuses = this.validRegStatuses.concat(['Recorded', 'Qualified']);
@@ -62,7 +62,7 @@ export class RegistrationComponent implements OnInit {
             this.dialog.open(this.regStatusEditModal, {width: '1000px'}).afterClosed().subscribe(res => {
                 if (res) {
                     this.elt.registrationState = this.newState;
-                    this.onEltChange.emit();
+                    this.eltChange.emit();
                 }
             });
         });

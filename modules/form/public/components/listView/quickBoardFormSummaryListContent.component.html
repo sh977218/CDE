@@ -18,7 +18,7 @@
         <dl class="dl-horizontal" style="margin: 5px 0 10px 0 ">
             <dt>Steward:</dt>
             <dd [innerHtml]="elt.stewardOrg.name"></dd>
-            <ng-container *ngIf="elt.classification.length > 0">
+            <ng-container *ngIf="elt.classification?.length > 0">
                 <dt>Used By:</dt>
                 <dd id="usedBy_{{eltIndex}}">
                     <span *ngFor="let cl of elt.classification">{{cl.stewardOrg.name}} </span>
