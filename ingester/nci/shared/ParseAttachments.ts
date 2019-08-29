@@ -4,7 +4,6 @@ import { cloneDeep } from 'lodash';
 import { addFile } from 'server/system/mongo-data';
 
 const xml2js = require('xml2js');
-
 const builder = new xml2js.Builder();
 
 export function parseAttachments(nciXmlCde) {

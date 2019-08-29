@@ -5,8 +5,6 @@ const parseString = new xml2js.Parser({attrkey: 'attribute'}).parseString;
 const builder = new xml2js.Builder({attrkey: 'attribute'});
 const Readable = require('stream').Readable;
 
-const ORG_INFO_MAP = require('../Shared/ORG_INFO_MAP').map;
-
 const attachment = require('../../../server/attachment/attachmentSvc');
 
 const CreateCDE = require('../CDE/CreateCDE');
