@@ -52,8 +52,7 @@ export function fetchWholeForm(form, callback) {
         },
         undefined,
         undefined,
-        err =>
-            callback(err, form),
+        err => callback(err, form),
         {return: [form.tinyId]}
     );
 }

@@ -1,4 +1,3 @@
-import { isOrgAuthority } from 'shared/system/authorizationShared';
 import { stripBsonIds } from 'shared/system/exportShared';
 import { getEnvironmentHost } from 'shared/env';
 import { handle40x, handleError } from 'server/errorHandler/errorHandler';
@@ -9,9 +8,9 @@ import {
 import { config } from 'server/system/parseConfig';
 import { isSearchEngine } from 'server/system/helper';
 import { byTinyIdVersion as formByTinyIdVersion, Form } from 'server/form/mongo-form';
-import { errorLogger } from 'server/system/logging';
 import { respondHomeFull } from 'server/system/app';
 import { toInteger } from 'lodash';
+import { validateBody } from 'server/system/bodyValidator';
 
 const _ = require('lodash');
 const dns = require('dns');
@@ -21,6 +20,8 @@ const mongoForm = require('./mongo-form');
 const elasticSystem = require('../system/elastic');
 const sharedElastic = require('../system/elastic');
 const CronJob = require('cron').CronJob;
+const { checkSchema, check } = require('express-validator');
+
 
 const canEditMiddlewareForm = canEditMiddleware(mongoForm);
 const canEditByTinyIdMiddlewareForm = canEditByTinyIdMiddleware(mongoForm);
@@ -217,28 +218,7 @@ export function init(app, daoManager) {
             && mapping.sections[0].questions[3].name === '0-3'
             && mapping.sections[0].questions[3].tinyId === 'JWWpC2baVwK'
         ) {
-            if (req.body.formUrl.indexOf(config.publicUrl + '/data') === 0) {
-                res.send('<html lang="en"><body>Form Submitted</body></html>');
-            } else if (config.publicUrl.indexOf('localhost') === -1) {
-                dns.lookup(/\/\/.*:/.exec(req.body.formUrl), (err, result) => {
-                    if (!err && req.body.formUrl.indexOf(result + '/data') === 0) {
-                        res.send('<html lang="en"><body>Form Submitted</body></html>');
-                    } else {
-                        res.status(401).send('<html lang="en"><body>Not the right input</body></html>');
-                    }
-                });
-            } else {
-                const ifaces = os.networkInterfaces();
-                if (Object.keys(ifaces).some(ifname => {
-                        return ifaces[ifname].filter(iface => {
-                            return req.body.formUrl.indexOf(iface.address + '/data') !== 1;
-                        }).length > 0;
-                    })) {
-                    res.send('<html lang="en"><body>Form Submitted</body></html>');
-                } else {
-                    res.status(401).send('<html lang="en"><body>Not the right input. Actual Input: <p>' + '</p></body></html>');
-                }
-            }
+            res.send('<html lang="en"><body>Form Submitted</body></html>');
         } else {
             res.status(401).send('<html lang="en"><body>Not the right input</body></html>');
         }
@@ -266,12 +246,6 @@ export function init(app, daoManager) {
         }
 
         if (validation.suggestions && validation.suggestions.length) {
-            const suggestions = [];
-            validation.suggestions.forEach(s => s.units.forEach(u => u.name === uom ? suggestions.push(u.code) : null));
-            if (suggestions.length) {
-                return cb(undefined, suggestions[0]);
-            }
-
             if (validation.suggestions[0].units.length) {
                 const suggestion = validation.suggestions[0].units[0];
                 error = 'Unit is not found. Did you mean ' + suggestion[0] + ' (' + suggestion[1] + ')?';
@@ -294,11 +268,8 @@ export function init(app, daoManager) {
         cb(error, uom);
     }
 
-    app.get('/ucumSynonyms', (req, res) => {
+    app.get('/ucumSynonyms', check('uom').isAlphanumeric(), validateBody, (req, res) => {
         const uom = req.query.uom;
-        if (!uom || typeof uom !== 'string') {
-            return res.sendStatus(400);
-        }
 
         const resp = ucum.getSpecifiedUnit(uom, 'validate', 'false');
         if (!resp || !resp.unit) {
@@ -308,15 +279,11 @@ export function init(app, daoManager) {
         const unit = resp.unit;
         const name = unit.name_;
         const synonyms = unit.synonyms_.split('; ');
-        if (synonyms.length && synonyms[synonyms.length - 1] === '') {
-            synonyms.length--;
-        }
         res.send([name, ...synonyms]);
     });
 
-    app.get('/ucumNames', (req, res) => {
+    app.get('/ucumNames', check('uom').isAlphanumeric(), validateBody, (req, res) => {
         const uom = req.query.uom;
-        if (!uom || typeof uom !== 'string') { return res.sendStatus(400); }
 
         const resp = ucum.getSpecifiedUnit(uom, 'validate', true);
         if (!resp || !resp.unit) {
@@ -330,15 +297,14 @@ export function init(app, daoManager) {
         }
     });
 
-    app.get('/ucumValidate', (req, res) => {
-        const uoms = JSON.parse(req.query.uoms);
-        if (!Array.isArray(uoms)) {
-            return res.sendStatus(400);
-        }
+    app.post('/ucumValidate',
+        check('uoms').isArray(),
+        validateBody,
+        (req, res) => {
 
         const errors = [];
         const units = [];
-        uoms.forEach((uom, i) => {
+        req.body.uoms.forEach((uom, i) => {
             validateUom(uom, (error, u) => {
                 errors[i] = error;
                 units[i] = u;
@@ -356,10 +322,7 @@ export function init(app, daoManager) {
         res.send({errors, units});
     });
 
-    app.post('/syncLinkedForms', (req, res) => {
-        if (!config.autoSyncMesh && !isOrgAuthority(req.user)) {
-            return res.status(401).send();
-        }
+    app.post('/syncLinkedForms', isOrgAuthorityMiddleware, (req, res) => {
         res.send();
         formSvc.syncLinkedForms();
     });

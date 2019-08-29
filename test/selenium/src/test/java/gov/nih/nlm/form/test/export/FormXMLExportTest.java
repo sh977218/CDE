@@ -31,5 +31,10 @@ public class FormXMLExportTest extends NlmCdeBaseTest {
         if (!response.contains(shouldContain)) {
             Assert.fail("response:\n" + response + "\nshouldContain1:\n" + shouldContain1);
         }
+
+
+        String resp = get(baseUrl + "/form/sdsflijkfsd?type=xml").asString();
+        Assert.assertTrue(resp.contains("ctepCurator"));
+
     }
 }
