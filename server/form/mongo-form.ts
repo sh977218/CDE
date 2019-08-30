@@ -27,20 +27,17 @@ fs.readdirSync(path.resolve(__dirname, '../../shared/de/assets/')).forEach(file 
     }
 });
 export let validateSchema: any;
-fs.readFile(path.resolve(__dirname, '../../shared/form/assets/form.schema.json'), (err, file) => {
-    if (!file) {
-        console.log('Error: form.schema.json missing. ' + err);
-        process.exit(1);
-    }
-    try {
-        const schema = JSON.parse(file.toString());
-        schema.$async = true;
-        validateSchema = validateSchema = ajvElt.compile(schema);
-    } catch (err) {
-        console.log('Error: form.schema.json does not compile. ' + err);
-        process.exit(1);
-    }
-});
+
+const file = fs.readFileSync(path.resolve(__dirname, '../../shared/form/assets/form.schema.json');
+try {
+    const schema = JSON.parse(file.toString());
+    schema.$async = true;
+    validateSchema = validateSchema = ajvElt.compile(schema);
+} catch (err) {
+    console.log('Error: form.schema.json does not compile. ' + err);
+    process.exit(1);
+}
+
 
 schemas.formSchema.pre('save', function(next) {
     const elt = this;
@@ -72,14 +69,8 @@ export const daoDraft = FormDraft;
 
 mongoData.attachables.push(Form);
 
-function defaultElt(elt) {
-    if (!elt.registrationState || !elt.registrationState.registrationStatus) {
-        elt.registrationState = {registrationStatus: 'Incomplete'};
-    }
-}
 
 function updateUser(elt, user) {
-    defaultElt(elt);
     elt.updated = new Date();
     elt.updatedBy = {
         userId: user._id,
@@ -207,9 +198,7 @@ export function count(condition, callback) {
     return Form.countDocuments(condition, callback);
 }
 
-export function update(elt, user, options: any = {}, callback: CbError<CdeForm> = () => {
-}) {
-    if (elt.toObject) { elt = elt.toObject(); }
+export function update(elt, user, options: any = {}, callback: CbError<CdeForm> = () => {}) {
     Form.findById(elt._id, (err, form) => {
         if (form.archived) {
             callback(new Error('You are trying to edit an archived elements'));
@@ -248,7 +237,6 @@ export function update(elt, user, options: any = {}, callback: CbError<CdeForm> 
 }
 
 export function create(elt, user, callback) {
-    defaultElt(elt);
     elt.created = Date.now();
     elt.createdBy = {
         userId: user._id,
@@ -259,14 +247,6 @@ export function create(elt, user, callback) {
     newItem.save((err, newElt) => {
         callback(err, newElt);
         if (!err) { auditModifications(user, null, newElt); }
-    });
-}
-
-export function byOtherId(source, id, cb) {
-    Form.find({archived: false}).elemMatch('ids', {source, id}).exec((err, forms) => {
-        if (forms.length > 1) {
-            cb('Multiple results, returning first', forms[0]);
-        } else { cb(err, forms[0]); }
     });
 }
 
@@ -288,17 +268,6 @@ export function byTinyIdListInOrder(idList, callback) {
             }
         });
         callback(err, reorderedForms);
-    });
-}
-
-export function checkOwnership(req, id, cb) {
-    if (!req.isAuthenticated()) { return cb('You are not authorized.', null); }
-    byId(id, (err, elt) => {
-        if (err || !elt) { return cb('Element does not exist.', null); }
-        if (!isOrgCurator(req.user, elt.stewardOrg.name)) {
-            return cb('You do not own this element.', null);
-        }
-        cb(null, elt);
     });
 }
 

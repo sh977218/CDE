@@ -63,7 +63,8 @@
     ],
     "exclude": [
       "build/**",
-      "**/server/siteAdmin/status*"
+      "**/server/siteAdmin/status*",
+      "**/server/form/aws*"
     ],
     "lines": "95",
     "branches": "81",

@@ -1,6 +1,7 @@
 import { consoleLog, logError } from 'server/log/dbLogger';
 import { config } from 'server/system/parseConfig';
 import { create as builderCreate } from 'xmlbuilder';
+import { sdcExport } from './aws';
 
 function addQuestion(parent, question) {
     const newQuestion: any = {
@@ -169,38 +170,7 @@ export function formToSDC({form, renderer, validate}, cb) {
         consoleLog('faas: ' + config.provider.faas + ' ' + (global as any).CURRENT_SERVER_ENV);
         switch (config.provider.faas) {
             case 'AWS':
-                const AWS = require('aws-sdk');
-                if (!(global as any).CURRENT_SERVER_ENV) {
-                    throw new Error('ENV not ready');
-                }
-                // test error: xmlStr = xmlStr.replace(/<List>.*<\/List>/g, '');
-                const jsonPayload = {
-                    input: xmlStr
-                };
-                const params = {
-                    FunctionName: config.cloudFunction.formSdcValidate.name + '-' + (global as any).CURRENT_SERVER_ENV,
-                    Payload: JSON.stringify(jsonPayload)
-                };
-                const validateCb = (err, data) => {
-                    if (err || !data) {
-                        logError({
-                            message: 'SDC Schema validation AWS error: ',
-                            stack: err,
-                            details: 'formID: ' + form._id
-                        });
-                        cb(err, '<!-- Validation Error: general error -->' + xmlStr);
-                        return;
-                    }
-                    const res = JSON.parse(data.Payload);
-                    if (res.body) {
-                        const body = JSON.parse(res.body);
-                        if (body.message) {
-                            xmlStr = '<!-- Validation Error: ' + body.message + ' -->' + xmlStr;
-                        }
-                    }
-                    cb(null, xmlStr);
-                };
-                new AWS.Lambda({region: 'us-east-1'}).invoke(params, validateCb);
+                sdcExport(xmlStr, form, cb);
                 break;
             case 'ON_PREM':
                 // workaround until local lambda
