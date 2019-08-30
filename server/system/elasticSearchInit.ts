@@ -3,6 +3,7 @@ import { createHash } from 'crypto';
 import { createIndexJson as boardCreateIndexJson } from 'server/board/elasticSearchMapping';
 import { Cb, CbError, ClassificationElement, ItemElastic } from 'shared/models.model';
 import { FormElement, FormQuestion } from 'shared/form/form.model';
+import { fetchWholeForm } from 'server/form/formsvc';
 
 const config = Config as any;
 
@@ -263,9 +264,8 @@ export function suggestRiverFunction(_elt: ItemElastic, cb: Cb<any>) {
 export function riverFunction(_elt: ItemElastic, cb: Cb<ItemElastic>) {
     if (_elt.archived) return cb();
 
-    const formSvc = require('../form/formsvc');
 
-    let getElt = _elt.formElements ? formSvc.fetchWholeForm : function (e: ItemElastic, cb: CbError<ItemElastic>) {
+    let getElt = _elt.formElements ? fetchWholeForm : function (e: ItemElastic, cb: CbError<ItemElastic>) {
         cb(undefined, e);
     };
 
