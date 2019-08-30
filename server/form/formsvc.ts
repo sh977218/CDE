@@ -116,16 +116,9 @@ export function byId(req, res) {
                     addFormIds(wholeForm);
                     if (req.query.hasOwnProperty('validate')) {
                         const p = path.resolve(__dirname, '../../shared/mapping/fhir/assets/schema/Questionnaire.schema.json');
-                        fs.readFile(p, (err, data) => {
-                            if (err || !data) {
-                                return respondError(err, {
-                                    res,
-                                    publicMessage: 'schema missing',
-                                });
-                            }
-                            const result = ajv.validate(JSON.parse(data), formToQuestionnaire(wholeForm, null, config));
-                            res.send({valid: result, errors: ajv.errors});
-                        });
+                        const data = fs.readFileSync(p);
+                        const result = ajv.validate(JSON.parse(data), formToQuestionnaire(wholeForm, null, config));
+                        res.send({valid: result, errors: ajv.errors});
                     } else {
                         res.send(formToQuestionnaire(wholeForm, null, config));
                     }
@@ -222,20 +215,9 @@ export function draftForEditByTinyId(req, res) { // WORKAROUND: sends empty inst
     }));
 }
 
-// export function draftForEditById(req, res) {
-//     const handlerOptions = {req, res};
-//     const id = req.params.id;
-//     if (!id || id.length !== 24) { return res.status(400).send(); }
-//     mongoForm.draftById(id, handleError(handlerOptions, form => {
-//         if (!form) { return res.send(); }
-//         fetchWholeFormOutdated(form.toObject(), handleError(handlerOptions, wholeForm => res.send(wholeForm)));
-//     }));
-// }
-
 export function forEditById(req, res) {
     const handlerOptions = {req, res};
     const id = req.params.id;
-    if (!id || id.length !== 24) { return res.status(400).send(); }
     mongoForm.byId(id, handle40x(handlerOptions, form => {
         fetchWholeFormOutdated(form.toObject(), handleError(handlerOptions, wholeForm => {
             wipeRenderDisallowed(wholeForm, req.user);
@@ -248,7 +230,6 @@ export function forEditById(req, res) {
 export function forEditByTinyId(req, res) {
     const handlerOptions = {req, res};
     const tinyId = req.params.tinyId;
-    if (!tinyId) { return res.status(400).send(); }
     mongoForm.byTinyId(tinyId, handle40x(handlerOptions, form => {
         fetchWholeFormOutdated(form.toObject(), handleError(handlerOptions, wholeForm => {
             wipeRenderDisallowed(wholeForm, req.user);
@@ -261,7 +242,6 @@ export function forEditByTinyId(req, res) {
 export function forEditByTinyIdAndVersion(req, res) {
     const handlerOptions = {req, res};
     const tinyId = req.params.tinyId;
-    if (!tinyId) { return res.status(400).send(); }
     const version = req.params.version;
     mongoForm.byTinyIdAndVersion(tinyId, version, handle40x(handlerOptions, form => {
         fetchWholeFormOutdated(form.toObject(), handleError(handlerOptions, wholeForm => {
@@ -274,7 +254,7 @@ export function forEditByTinyIdAndVersion(req, res) {
 export function draftSave(req, res) {
     const elt = req.body;
     const tinyId = req.params.tinyId;
-    if (!elt || !tinyId || elt.tinyId !== tinyId || elt._id !== req.item._id.toString()) {
+    if (!elt || elt.tinyId !== tinyId || elt._id !== req.item._id.toString()) {
         return res.status(400).send();
     }
     mongoForm.draftSave(elt, req.user, handleError({req, res}, elt => {

@@ -97,9 +97,43 @@ export function init(app, daoManager) {
     app.get('/formById/:id', nocacheMiddleware, allRequestsProcessing, formSvc.byId);
     app.get('/formById/:id/priorForms/', nocacheMiddleware, formSvc.priorForms);
 
-    app.get('/formForEdit/:tinyId', nocacheMiddleware, formSvc.forEditByTinyId);
-    app.get('/formForEdit/:tinyId/version/:version?', nocacheMiddleware, formSvc.forEditByTinyIdAndVersion);
-    app.get('/formForEditById/:id', nocacheMiddleware, formSvc.forEditById);
+    app.get('/formForEdit/:tinyId', nocacheMiddleware,
+        checkSchema({tinyId: {
+                in: ['params'],
+                isLength: {
+                    options: {
+                        min: 10,
+                        max: 10
+                    }
+                }
+            }}),
+        validateBody, formSvc.forEditByTinyId);
+
+    app.get('/formForEdit/:tinyId/version/:version?', nocacheMiddleware,
+        checkSchema({tinyId: {
+                in: ['params'],
+                isLength: {
+                    options: {
+                        min: 10,
+                        max: 10
+                    }
+                }
+            }}),
+        validateBody,
+        formSvc.forEditByTinyIdAndVersion);
+
+    app.get('/formForEditById/:id', nocacheMiddleware,
+        checkSchema({id: {
+                in: ['params'],
+                isLength: {
+                    options: {
+                        min: 24,
+                        max: 24
+                    }
+                }
+            }}),
+        validateBody,
+        formSvc.forEditById);
 
     app.get('/formList/:tinyIdList?', nocacheMiddleware, formSvc.byTinyIdList);
     app.get('/originalSource/form/:sourceName/:tinyId', formSvc.originalSourceByTinyIdSourceName);
@@ -297,11 +331,7 @@ export function init(app, daoManager) {
         }
     });
 
-    app.post('/ucumValidate',
-        check('uoms').isArray(),
-        validateBody,
-        (req, res) => {
-
+    app.post('/ucumValidate', check('uoms').isArray(), validateBody, (req, res) => {
         const errors = [];
         const units = [];
         req.body.uoms.forEach((uom, i) => {
