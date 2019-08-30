@@ -13,9 +13,7 @@ public class FormForEdit extends NlmCdeBaseTest {
 
     @Test
     public void forEditByTinyIdVersion() {
-        System.out.println(baseUrl);
-
-        String resp = get(baseUrl + "/formForEdit/XJzVz1TZDe/version/v1.0%202014Jul2").asString();
+        String resp = get(baseUrl + "/formForEdit/XJzVz1TZDe/version/v1.0 2014Jul2").asString();
         Assert.assertTrue(resp.contains("NIDA Clinical"), "actually: " + resp);
     }
 
@@ -24,25 +22,13 @@ public class FormForEdit extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         Cookie myCookie = getCurrentCookie();
         given().contentType(ContentType.JSON).cookie(myCookie)
-                .body("{\"elt\": {\"tinyId\": \"b\"}}").put(baseUrl + "/draftForm/a").then().statusCode(400);
-
+                .body("{\"tinyId\": \"QktaN3OFL1\", \"_id\": \"5d60123aba5e11ce43a7d457\"}")
+                .put(baseUrl + "/draftForm/my9q6NmEb").then().statusCode(400);
     }
 
     @Test
     public void originalSource() {
         get(baseUrl + "/originalSource/form/sourceName/tinyId").then().statusCode(404);
     }
-    
-//    @Test
-//    public void publishArchived() {
-//        mustBeLoggedInAs(nlm_username, nlm_password);
-//        Cookie myCookie = getCurrentCookie();
-//        Response resp = given().contentType(ContentType.JSON).cookie(myCookie)
-//                .body("{\"_id\": \"55d743fd748e653826fddb88\"}").post(baseUrl + "/formPublish");
-//
-//        System.out.println(resp.getStatusCode());
-//        System.out.println(resp.getBody());
-//
-//    }
 
 }
