@@ -216,53 +216,6 @@ export function formToSDC({form, renderer, validate}, cb) {
                     }
                     cb(null, xmlStr);
                 });
-
-                // ---- Imports:
-                // -- napa
-                // "localstack": "https://github.com/localstack/localstack"
-                // "aws-lambda-local-runner": "https://github.com/cagataygurturk/aws-lambda-local-runner"
-                // -- deps
-                // "lambda-local": "^1.5.1",
-                // -- devDeps
-                // "serverless-localstack": "^0.2.3",
-                // "serverless-offline": "^3.25.5",
-                // "serverless-offline-localstack": "^0.0.3",
-                // "serverless-webpack": "^5.2.0",
-
-                // const ServerlessOfflineLocalstack = require('serverless-offline-localstack');
-                // ServerlessOfflineLocalstack.configureAWS(AWS);
-                // let reqLambda;
-                // let Lambda;
-                // Lambda = new AWS.Lambda({region: 'us-east-1'});
-                // // Lambda.endpoint = 'http://localhost:4574';
-                // Lambda.endpoint = 'http://localhost:3000';
-                // reqLambda = new AWS.Lambda({region: 'us-east-1'}).invoke(params, validateCb);
-                // console.log('----req----------');
-                // console.log(reqLambda);
-
-                // const lambdaLocal = require('lambda-local');
-                // reqLambda = lambdaLocal.execute({
-                //     event: jsonPayload,
-                //     lambdaPath: path.join(__dirname, 'path_to_index.js'),
-                //     profilePath: '~/.aws/credentials',
-                //     profileName: 'default',
-                //     timeoutMs: 3000,
-                //     callback: validateCb
-                // });
-
-                //// Node Modules Source Implementation for Java FaaS
-                // const validator = require('xsd-schema-validator');
-                // validator.validateXML(xmlStr, './modules/form/public/assets/sdc/SDCFormDesign.xsd', err => {
-                //     if (err) {
-                //         dbLogger.logError({
-                //             message: 'SDC Schema validation error: ',
-                //             stack: err,
-                //             details: 'formID: ' + form._id
-                //         });
-                //         xmlStr = '<!-- Validation Error: ' + err + ' -->' + xmlStr;
-                //     }
-                //     cb(null, xmlStr);
-                // });
                 break;
             default:
                 throw new Error('not supported');

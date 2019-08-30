@@ -35,6 +35,13 @@ public class FormXMLExportTest extends NlmCdeBaseTest {
 
         String resp = get(baseUrl + "/form/sdsflijkfsd?type=xml").asString();
         Assert.assertTrue(resp.contains("ctepCurator"));
+    }
+
+    @Test
+    public void getFormNih() {
+        String resp = get(baseUrl + "/formById/58caa836453619ab06d913b3?type=xml").asString();
+        Assert.assertTrue(resp.contains("XJzVz1TZDe"));
 
     }
+
 }

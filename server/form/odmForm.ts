@@ -48,15 +48,6 @@ const ODM_DATATYPE_MAP: any = {
 }
 
 export function getFormOdm(form: Document & CdeForm, cb: CbError<string>) {
-    if (!form) {
-        return cb(undefined, '');
-    }
-    if (form.toObject) {
-        form = form.toObject();
-    }
-    if (!form.formElements) {
-        form.formElements = [];
-    }
     const odmJsonForm: any = {
         $CreationDateTime: new Date().toISOString(),
         $FileOID: form.tinyId,

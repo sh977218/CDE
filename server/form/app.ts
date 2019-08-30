@@ -102,7 +102,7 @@ export function init(app, daoManager) {
                 in: ['params'],
                 isLength: {
                     options: {
-                        min: 10,
+                        min: 9,
                         max: 10
                     }
                 }
@@ -114,7 +114,7 @@ export function init(app, daoManager) {
                 in: ['params'],
                 isLength: {
                     options: {
-                        min: 10,
+                        min: 9,
                         max: 10
                     }
                 }
