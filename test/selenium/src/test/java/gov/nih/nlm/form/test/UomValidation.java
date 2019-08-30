@@ -75,17 +75,24 @@ public class UomValidation extends BaseFormTest {
         String resp = get(baseUrl + "/ucumSynonyms?uom=kgg").asString();
         Assert.assertEquals(resp, "[]");
 
-        resp = given().body("{\"uoms\": ['psi']}").post(baseUrl + "/ucumValidate").asString();
-        Assert.assertTrue(resp.contains("Unit is not found. Did you mean pound per square inch?"));
+        resp = given().contentType(ContentType.JSON)
+                .body("{\"uoms\": ['psi']}").post(baseUrl + "/ucumValidate").asString();
+        Assert.assertTrue(resp.contains("Unit is not found. Did you mean pound per square inch?"),
+                "actually: " + resp);
 
-        resp = given().body("{\"uoms\": ['meters']}").post(baseUrl + "/ucumValidate").asString();
-        Assert.assertTrue(resp.contains("Unit is not found. Did you mean m (meter)?"));
+        resp = given().contentType(ContentType.JSON)
+                .body("{\"uoms\": ['meters']}").post(baseUrl + "/ucumValidate").asString();
+        Assert.assertTrue(resp.contains("Unit is not found. Did you mean m (meter)?"),
+                "actually: " + resp);
 
-        resp = given().body("{\"uoms\": ['mets']}").post(baseUrl + "/ucumValidate").asString();
-        Assert.assertTrue(resp.contains("mets is not a valid UCUM code.  No alternatives were found"));
+        resp = given().contentType(ContentType.JSON)
+                .body("{\"uoms\": ['mets']}").post(baseUrl + "/ucumValidate").asString();
+        Assert.assertTrue(resp.contains("mets is not a valid UCUM code.  No alternatives were found"),
+                "actually: " + resp);
 
         resp = get(baseUrl + "/ucumConvert?value=0&to=0&from=0").asString();
-        Assert.assertEquals(resp, "");
+        Assert.assertEquals(resp, "",
+                "actually: " + resp);
     }
 
 }

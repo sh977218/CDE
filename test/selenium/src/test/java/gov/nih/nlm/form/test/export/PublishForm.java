@@ -41,7 +41,7 @@ public class PublishForm extends BaseFormTest {
 
     @Test
     public void publishWrongInput() {
-        String resp = given().contentType(ContentType.JSON).body("{}")
+        String resp = given().contentType(ContentType.JSON).body("{\"mapping\": \"{}\"}")
                 .post(baseUrl + "/sendMockFormData").asString();
         Assert.assertTrue(resp.contains("Not the right input"));
     }
