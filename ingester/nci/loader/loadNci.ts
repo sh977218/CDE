@@ -1,7 +1,5 @@
 import { isEmpty } from 'lodash';
-import {
-    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeElt, printUpdateResult, updateCde
-} from 'ingester/shared/utility';
+import { BATCHLOADER, compareElt, imported, lastMigrationScript, mergeElt, updateCde } from 'ingester/shared/utility';
 import { DataElement, DataElementSource } from 'server/cde/mongo-cde';
 import { Comment } from 'server/discuss/discussDb';
 import { createNciCde } from 'ingester/nci/CDE/cde';
@@ -30,7 +28,9 @@ function runOneOrg(orgName) {
                     if (error) {
                         reject(err);
                     }
-                    for (const nciXmlCde of nciXml.DataElementsList.DataElement) {
+//                    let nciXmlCdes = nciXml.DataElementsList.DataElement.filter(n => n.PUBLICID[0] === '6365382');
+                    let nciXmlCdes = nciXml.DataElementsList.DataElement;
+                    for (const nciXmlCde of nciXmlCdes) {
                         const nciId = nciXmlCde.PUBLICID[0];
                         const nciCde = await createNciCde(nciXmlCde, orgInfo);
                         const newCde = new DataElement(nciCde);
@@ -45,33 +45,69 @@ function runOneOrg(orgName) {
                             createdCDE++;
                             createdCdes.push(existingCde.tinyId);
                         } else {
-                            const existingCdeObj = existingCde.toObject();
-                            existingCdeObj.imported = imported;
-                            existingCdeObj.changeNote = lastMigrationScript;
+                            const _existingCdeObj = existingCde.toObject();
+                            _existingCdeObj.properties.forEach(p => {
+                                if (isEmpty(p.source)) {
+                                    p.source = 'caDSR';
+                                }
+                            });
+                            existingCde.properties = _existingCdeObj.properties;
+                            if (_existingCdeObj.valueDomain.datatype === 'Date') {
+                                delete _existingCdeObj.valueDomain.datatypeDate;
+                            }
+                            if (_existingCdeObj.valueDomain.datatype === 'Text') {
+                                if (isEmpty(_existingCdeObj.valueDomain.datatypeText)) {
+                                    delete _existingCdeObj.valueDomain.datatypeText;
+                                }
+                            }
+                            if (_existingCdeObj.valueDomain.datatype === 'Number') {
+                                if (isEmpty(_existingCdeObj.valueDomain.datatypeNumber)) {
+                                    delete _existingCdeObj.valueDomain.datatypeNumber;
+                                }
+                            }
+                            existingCde.valueDomain = _existingCdeObj.valueDomain;
+
+                            existingCde = await existingCde.save();
+
+                            existingCde.sources.forEach(s => {
+                                if (s.sourceName === 'caDSR') {
+                                    s.imported = imported;
+                                    existingCde.markModified('sources');
+                                }
+                            });
                             const diff = compareElt(newCde.toObject(), existingCde.toObject(), 'NCI');
                             if (isEmpty(diff)) {
-                                existingCdeObj.lastMigrationScript = lastMigrationScript;
+                                existingCde.imported = imported;
+                                existingCde.lastMigrationScript = lastMigrationScript;
                                 await existingCde.save();
                                 sameCde++;
-                                sameCdes.push(existingCdeObj.tinyId);
+                                sameCdes.push(existingCde.tinyId);
                             } else {
+                                const existingCdeObj = existingCde.toObject();
                                 mergeElt(existingCdeObj, newCdeObj, 'NCI');
+                                existingCdeObj.imported = imported;
+                                existingCdeObj.changeNote = lastMigrationScript;
                                 existingCdeObj.lastMigrationScript = lastMigrationScript;
                                 await updateCde(existingCdeObj, BATCHLOADER, {updateSource: true});
                                 changedCde++;
                                 changedCdes.push(existingCde.tinyId);
                             }
                         }
-                        for (const comment of nciCde.comments) {
-                            comment.element.eltId = existingCde.tinyId;
-                            await new Comment(comment).save();
-                            console.log('comment saved on ' + existingCde.tinyId);
+                        if (nciCde.comments) {
+                            for (const comment of nciCde.comments) {
+                                comment.element.eltId = existingCde.tinyId;
+                                await new Comment(comment).save();
+                                console.log('comment saved on ' + existingCde.tinyId);
+                            }
                         }
                         delete newCdeObj.tinyId;
                         delete newCdeObj._id;
                         newCdeObj.attachments = [];
-                        const updateResult = await DataElementSource.updateOne({tinyId: existingCde.tinyId}, newCdeObj, {upsert: true});
-                        printUpdateResult(updateResult, existingCde);
+                        const updateResult = await DataElementSource.updateOne({
+                            tinyId: existingCde.tinyId,
+                            source: 'caDSR'
+                        }, newCdeObj, {upsert: true});
+                        // printUpdateResult(updateResult, existingCde);
                     }
                     resolve();
                 });

@@ -1,3 +1,5 @@
+import { isEmpty } from 'lodash';
+
 const datatypeMapping = {
     CHARACTER: 'Text',
     character: 'Text',
@@ -36,59 +38,66 @@ export function parseValueDomain(nciXmlCde) {
     };
     const nciDataTypeString = nciXmlCde.VALUEDOMAIN[0].Datatype[0];
     const nciDataType = nciDataTypeString.trim().toLowerCase();
-    if (!datatypeMapping[nciDataType]) {
+    let datatype = datatypeMapping[nciDataType];
+    if (!datatype) {
         console.log('No Mapping in ParseValueDomain ' + nciDataType);
         process.exit(1);
     }
-    valueDomain.datatype = datatypeMapping[nciDataType];
-
-    if (valueDomain.datatype === 'Number') {
-        valueDomain.datatypeNumber = {};
-        if (nciXmlCde.VALUEDOMAIN[0].MaximumValue[0].length > 0) {
-            valueDomain.datatypeNumber.maxValue = nciXmlCde.VALUEDOMAIN[0].MaximumValue[0];
-        }
-        if (nciXmlCde.VALUEDOMAIN[0].MinimumValue[0].length > 0) {
-            valueDomain.datatypeNumber.minValue = nciXmlCde.VALUEDOMAIN[0].MinimumValue[0];
-        }
-        if (nciXmlCde.VALUEDOMAIN[0].DecimalPlace[0].length > 0) {
-            valueDomain.datatypeNumber.precision = nciXmlCde.VALUEDOMAIN[0].DecimalPlace[0];
-        }
-    }
-    if (valueDomain.datatype === 'Text') {
-        valueDomain.datatypeText = {};
-        if (nciXmlCde.VALUEDOMAIN[0].MaximumLength[0].length > 0) {
-            valueDomain.datatypeText.maxLength = nciXmlCde.VALUEDOMAIN[0].MaximumLength[0];
-        }
-        if (nciXmlCde.VALUEDOMAIN[0].MinimumLength[0].length > 0) {
-            valueDomain.datatypeText.minLength = nciXmlCde.VALUEDOMAIN[0].MinimumLength[0];
-        }
-    }
 
     if (nciXmlCde.VALUEDOMAIN[0].ValueDomainType[0] === 'Enumerated') {
-        valueDomain.datatypeValueList = {datatype: valueDomain.datatype};
+        valueDomain.datatypeValueList = {datatype};
         valueDomain.datatype = 'Value List';
+        if (nciXmlCde.VALUEDOMAIN[0].PermissibleValues[0].PermissibleValues_ITEM) {
+            nciXmlCde.VALUEDOMAIN[0].PermissibleValues[0].PermissibleValues_ITEM.forEach(pv => {
+                const newPv: any = {
+                    permissibleValue: pv.VALIDVALUE[0],
+                    valueMeaningName: pv.VALUEMEANING[0],
+                    valueMeaningDefinition: pv.MEANINGDESCRIPTION[0],
+                    codeSystemName: pv.MEANINGCONCEPTORIGIN[0].split(',')[0]
+                };
+                if (!pv.MEANINGCONCEPTS[0].attribute) {
+                    const valueMeaningCodeString = pv.MEANINGCONCEPTS[0].replace(/,/g, ':');
+                    newPv.valueMeaningCode = valueMeaningCodeString;
+
+                }
+                valueDomain.permissibleValues.push(newPv);
+            });
+            valueDomain.permissibleValues.sort((a, b) => a.permissibleValue - b.permissibleValue
+            );
+        }
+    } else {
+        valueDomain.datatype = datatype;
+        if (valueDomain.datatype === 'Number') {
+            const datatypeNumber = {};
+            if (nciXmlCde.VALUEDOMAIN[0].MaximumValue[0].length > 0) {
+                datatypeNumber.maxValue = nciXmlCde.VALUEDOMAIN[0].MaximumValue[0];
+            }
+            if (nciXmlCde.VALUEDOMAIN[0].MinimumValue[0].length > 0) {
+                datatypeNumber.minValue = nciXmlCde.VALUEDOMAIN[0].MinimumValue[0];
+            }
+            if (nciXmlCde.VALUEDOMAIN[0].DecimalPlace[0].length > 0) {
+                datatypeNumber.precision = nciXmlCde.VALUEDOMAIN[0].DecimalPlace[0];
+            }
+            if (!isEmpty(datatypeNumber)) {
+                valueDomain.datatypeNumber = datatypeNumber;
+            }
+        }
+        if (valueDomain.datatype === 'Text') {
+            const datatypeText = {};
+            if (nciXmlCde.VALUEDOMAIN[0].MaximumLength[0].length > 0) {
+                datatypeText.maxLength = nciXmlCde.VALUEDOMAIN[0].MaximumLength[0];
+            }
+            if (nciXmlCde.VALUEDOMAIN[0].MinimumLength[0].length > 0) {
+                datatypeText.minLength = nciXmlCde.VALUEDOMAIN[0].MinimumLength[0];
+            }
+            if (!isEmpty(datatypeText)) {
+                valueDomain.datatypeText = datatypeText;
+            }
+        }
     }
 
     if (nciXmlCde.VALUEDOMAIN[0].UnitOfMeasure[0].length > 0) {
         valueDomain.uom = nciXmlCde.VALUEDOMAIN[0].UnitOfMeasure[0];
-    }
-    if (nciXmlCde.VALUEDOMAIN[0].PermissibleValues[0].PermissibleValues_ITEM) {
-        nciXmlCde.VALUEDOMAIN[0].PermissibleValues[0].PermissibleValues_ITEM.forEach(pv => {
-            const newPv: any = {
-                permissibleValue: pv.VALIDVALUE[0],
-                valueMeaningName: pv.VALUEMEANING[0],
-                valueMeaningDefinition: pv.MEANINGDESCRIPTION[0],
-                codeSystemName: pv.MEANINGCONCEPTORIGIN[0].split(',')[0]
-            };
-            if (!pv.MEANINGCONCEPTS[0].attribute) {
-                const valueMeaningCodeString = pv.MEANINGCONCEPTS[0].replace(/,/g, ':');
-                newPv.valueMeaningCode = valueMeaningCodeString;
-
-            }
-            valueDomain.permissibleValues.push(newPv);
-        });
-        valueDomain.permissibleValues.sort((a, b) => a.permissibleValue - b.permissibleValue
-        );
     }
     return valueDomain;
 }
