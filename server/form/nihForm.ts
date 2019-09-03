@@ -3,8 +3,8 @@ import * as JXON from 'jxon';
 export function getFormNih(form, cb) {
     delete form._id;
     delete form.history;
-    form.formElements.forEach(function (s) {
-        s.formElements.forEach(function (q) {
+    form.formElements.forEach(s => {
+        s.formElements.forEach(q => {
             delete q._id;
         });
     });

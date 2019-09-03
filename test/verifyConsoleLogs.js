@@ -64,11 +64,12 @@ let expectedContent = {
     ],
     report: 'cde/search 0:0 Uncaught SyntaxError: Unexpected token <',
     resourcesPage: 'Content Security Policy',
-    searchPageSize: 'the server responded with a status of 400 (Bad Request)',
+    searchPageSize: '*',
     tooManyBoards: [
         'board - Failed to load resource: the server responded with a status of 403 (Forbidden)',
         'You have too many boards!'
     ],
+    "uomValidation": "*",
     validRulesPvUmls: 'Failed to load resource: the server responded with a status of 400 (Bad Request)',
     wrongLogin: 'login - Failed to load resource: the server responded with a status of 403'
 };

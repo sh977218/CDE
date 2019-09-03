@@ -20,7 +20,8 @@ export class MyPublishedFormsComponent {
     }
 
     removePublishedForm(pf: PublishedForm) {
-        this.user.publishedForms = this.user.publishedForms ? this.user.publishedForms.filter(p => p._id !== pf._id) : [];
+        this.user!.publishedForms = this.user!.publishedForms ? this.user!.publishedForms!.filter(p =>
+            p.id !== pf.id) : [];
         this.saveProfile();
     }
 

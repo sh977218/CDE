@@ -229,6 +229,7 @@ gulp.task('usemin', ['copyDist'], function useminTask() {
                     conservativeCollapse: true,
                     minifyJS: true,
                     minifyCSS: true,
+                    preserveLineBreaks: true,
                     processScripts: ['application/ld+json', 'text/javascript'],
                     processConditionalComments: true,
                     removeComments: true,

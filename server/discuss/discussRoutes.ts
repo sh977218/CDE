@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { Cb } from 'shared/models.model';
 import { canComment, canRemoveComment } from 'shared/system/authorizationShared';
-import { handle404, handleError } from '../errorHandler/errorHandler';
+import { handle40x, handleError } from '../errorHandler/errorHandler';
 
 const async = require('async');
 const authorization = require('../system/authorization');
@@ -57,7 +57,7 @@ export function module(roleConfig) {
         const eltTinyId = comment.element && comment.element.eltId;
         let numberUnapprovedMessages = await discussDb.numberUnapprovedMessageByUsername(req.user.username);
         if (numberUnapprovedMessages >= 5) return res.status(403).send('You have too many unapproved messages.');
-        mongo_data.fetchItem(eltModule, eltTinyId, handle404(handlerOptions, elt => {
+        mongo_data.fetchItem(eltModule, eltTinyId, handle40x(handlerOptions, elt => {
             comment.user = req.user;
             comment.created = new Date().toJSON();
             if (!canComment(req.user)) {
@@ -83,7 +83,7 @@ export function module(roleConfig) {
         const handlerOptions = {req, res};
         let numberUnapprovedMessages = await discussDb.numberUnapprovedMessageByUsername(req.user.username);
         if (numberUnapprovedMessages >= 5) return res.status(403).send('You have too many unapproved messages.');
-        discussDb.byId(req.body.commentId, handle404(handlerOptions, comment => {
+        discussDb.byId(req.body.commentId, handle40x(handlerOptions, comment => {
             const eltModule = comment.element && comment.element.eltType;
             const eltTinyId = comment.element && comment.element.eltId;
             let numberUnapprovedReplies = comment.replies.filter(r => r.pendingApproval && r.user.username === req.user.username).length;
@@ -103,7 +103,7 @@ export function module(roleConfig) {
                     adminItemService.createTask(req.user, 'CommentReviewer', 'approval', eltModule,
                         eltTinyId, 'comment');
                 } else {
-                    mongo_data.fetchItem(eltModule, eltTinyId, handle404({}, elt => {
+                    mongo_data.fetchItem(eltModule, eltTinyId, handle40x({}, elt => {
                         getEltUsers(elt, userIds => {
                             adminItemService.notifyForComment({}, savedComment.replies.filter(r =>
                                 +new Date(r.created) === +new Date(reply.created))[0], eltModule, eltTinyId,
@@ -140,11 +140,11 @@ export function module(roleConfig) {
 
     router.post('/deleteComment', loggedInMiddleware, (req, res) => {
         let commentId = req.body.commentId;
-        discussDb.byId(commentId, handle404({req, res}, comment => {
+        discussDb.byId(commentId, handle40x({req, res}, comment => {
             let dao = daoManager.getDao(comment.element.eltType);
             let idRetrievalFunc = dao.byTinyId ? dao.byTinyId : dao.byId;
             let eltId = comment.element.eltId;
-            idRetrievalFunc(eltId, handle404({req, res}, element => {
+            idRetrievalFunc(eltId, handle40x({req, res}, element => {
                 if (!canRemoveComment(req.user, comment, element)) {
                     return res.status(403).send('You can only remove ' + element.type + ' you own.');
                 }
@@ -158,11 +158,11 @@ export function module(roleConfig) {
 
     router.post('/deleteReply', loggedInMiddleware, (req, res) => {
         let replyId = req.body.replyId;
-        discussDb.byReplyId(replyId, handle404({req, res}, comment => {
+        discussDb.byReplyId(replyId, handle40x({req, res}, comment => {
             let dao = daoManager.getDao(comment.element.eltType);
             let idRetrievalFunc = dao.byTinyId ? dao.byTinyId : dao.byId;
             let eltId = comment.element.eltId;
-            idRetrievalFunc(eltId, handle404({req, res}, element => {
+            idRetrievalFunc(eltId, handle40x({req, res}, element => {
                 if (!canRemoveComment(req.user, comment, element)) {
                     return res.status(403).send('You can only remove ' + element.type + ' you own.');
                 }
@@ -206,12 +206,12 @@ export function module(roleConfig) {
 
     router.post('/approveComment', roleConfig.manageComment, (req, res) => {
         if (req.body.replyId) {
-            discussDb.byReplyId(req.body.replyId, handle404({req, res}, comment => {
+            discussDb.byReplyId(req.body.replyId, handle40x({req, res}, comment => {
                 comment.replies.filter(r => r._id.toString() === req.body.replyId).map(r => r.pendingApproval = false);
                 comment.save(handleError({req, res}, () => res.send('Approved')));
             }));
         } else {
-            discussDb.byId(req.body.commentId, handle404({req, res}, comment => {
+            discussDb.byId(req.body.commentId, handle40x({req, res}, comment => {
                 comment.pendingApproval = false;
                 comment.save(handleError({req, res}, () => res.send('Approved')));
             }));
@@ -220,12 +220,12 @@ export function module(roleConfig) {
 
     router.post('/declineComment', roleConfig.manageComment, (req, res) => {
         if (req.body.replyId) {
-            discussDb.byReplyId(req.body.replyId, handle404({req, res}, comment => {
+            discussDb.byReplyId(req.body.replyId, handle40x({req, res}, comment => {
                 comment.replies = comment.replies.filter(r => r._id.toString() !== req.body.replyId);
                 comment.save(handleError({req, res}, () => res.send('Declined')));
             }));
         } else {
-            discussDb.byId(req.body.commentId, handle404({req, res}, comment => {
+            discussDb.byId(req.body.commentId, handle40x({req, res}, comment => {
                 comment.pendingApproval = false;
                 comment.remove(handleError({req, res}, () => res.send('Declined')));
             }));
@@ -233,25 +233,25 @@ export function module(roleConfig) {
     });
 
     router.post('/resolveComment', loggedInMiddleware, (req, res) => {
-        discussDb.byId(req.body.commentId, handle404({req, res}, comment => {
+        discussDb.byId(req.body.commentId, handle40x({req, res}, comment => {
             replyTo(req, res, comment, 'resolved');
         }));
     });
 
     router.post('/reopenComment', loggedInMiddleware, (req, res) => {
-        discussDb.byId(req.body.commentId, handle404({req, res}, comment => {
+        discussDb.byId(req.body.commentId, handle40x({req, res}, comment => {
             replyTo(req, res, comment, 'active');
         }));
     });
 
     router.post('/resolveReply', loggedInMiddleware, (req, res) => {
-        discussDb.byReplyId(req.body.replyId, handle404({req, res}, comment => {
+        discussDb.byReplyId(req.body.replyId, handle40x({req, res}, comment => {
             replyTo(req, res, comment, undefined, 'resolved');
         }));
     });
 
     router.post('/reopenReply', loggedInMiddleware, (req, res) => {
-        discussDb.byReplyId(req.body.replyId, handle404({req, res}, comment => {
+        discussDb.byReplyId(req.body.replyId, handle40x({req, res}, comment => {
             replyTo(req, res, comment, undefined, 'active');
         }));
     });

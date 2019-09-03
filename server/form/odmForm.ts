@@ -1,23 +1,23 @@
 import { Document } from 'mongoose';
 import { CdeForm } from 'shared/form/form.model';
-
 const JXON = require('jxon');
 const _ = require('lodash');
 import { flattenFormElement } from 'shared/form/fe';
 import { CbError } from 'shared/models.model';
 
-let _crypto: any;
+let localCo: any;
 
 if (typeof(window) === 'undefined') {
     // This will be executed in NodeJS
-    _crypto = require('crypto');
+    localCo = require('crypto');
 } else {
     // This will be executed in Chrome
     try {
-        _crypto = (window as any).jscrypto;
+        localCo = (window as any).jscrypto;
     } catch (e) {
     }
 }
+
 const ODM_DATATYPE_MAP: any = {
     'Value List': 'text',
     Character: 'text',
@@ -45,18 +45,9 @@ const ODM_DATATYPE_MAP: any = {
     'java.sql.Timestamp': 'time',
     'DATE/TIME': 'datetime',
     'java.lang.Byte': 'integer'
-};
+}
 
 export function getFormOdm(form: Document & CdeForm, cb: CbError<string>) {
-    if (!form) {
-        return cb(undefined, '');
-    }
-    if (form.toObject) {
-        form = form.toObject();
-    }
-    if (!form.formElements) {
-        form.formElements = [];
-    }
     const odmJsonForm: any = {
         $CreationDateTime: new Date().toISOString(),
         $FileOID: form.tinyId,
@@ -130,6 +121,7 @@ export function getFormOdm(form: Document & CdeForm, cb: CbError<string>) {
             };
 
             let codeListAlreadyPresent = false;
+
             codeLists.forEach((cl) => {
                 const codeListInHouse = cl.CodeListItem.map((i: any) => i.Decode.TranslatedText._).sort();
                 const codeListToAdd = (q1.question.datatype === 'Value List' && q1.question.answers || [])
@@ -167,7 +159,7 @@ export function getFormOdm(form: Document & CdeForm, cb: CbError<string>) {
                 });
             }
         });
-        const oid = _crypto.createHash('md5').update(s1.label ? s1.label : '').digest('hex');
+        const oid = localCo.createHash('md5').update(s1.label ? s1.label : '').digest('hex');
         odmJsonForm.Study.MetaDataVersion.FormDef.ItemGroupRef.push({
             $ItemGroupOID: oid,
             $Mandatory: 'Yes',
