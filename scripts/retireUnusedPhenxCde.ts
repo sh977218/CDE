@@ -6,10 +6,11 @@ process.on('unhandledRejection', error => {
     console.log(error);
 });
 
+let cdeCount = 0;
+let retiredPhenxCde = 0;
 const retiredPhenxCdes = [];
 
 function run() {
-    let cdeCount = 0;
     const cond = {
         'registrationState.registrationStatus': {$ne: 'Retired'},
         archived: false,
@@ -21,7 +22,11 @@ function run() {
     cursor.eachAsync(async (cde: any) => {
         const cdeObj = cde.toObject();
         const linkedForm = await Form.findOne({
-            'formElements.formElements.question.cde.tinyId': cdeObj.tinyId
+            $or: [{
+                'formElements.question.cde.tinyId': cdeObj.tinyId
+            }, {
+                'formElements.formElements.question.cde.tinyId': cdeObj.tinyId
+            }]
         });
         if (linkedForm) {
 //            console.log(`Skipping cde ${cdeObj.tinyId}, because it presents in form ${linkedForm.tinyId}`);
@@ -29,13 +34,15 @@ function run() {
             cdeObj.registrationState.registrationStatus = 'Retired';
             cdeObj.changeNote = 'Retired because not used on any form.';
             await updateCde(cdeObj, BATCHLOADER);
-//            console.log(`Retired cde ${cdeObj.tinyId}, because it doesn't present in any forms.`);
+            console.log(`Retired cde ${cdeObj.tinyId}, because it doesn't present in any forms.`);
             retiredPhenxCdes.push(cdeObj.tinyId);
+            retiredPhenxCde++;
         }
         cdeCount++;
     }).then(() => {
         console.log('finished.');
         console.log(`cdeCount: ${cdeCount}`);
+        console.log(`retiredPhenxCde: ${retiredPhenxCde}`);
         console.log('retiredPhenxCdes: ' + retiredPhenxCdes);
         process.exit(0);
     }, (e: any) => {
