@@ -386,7 +386,9 @@ export function userTotalSpace(name, callback) {
 
 export function addFile(file, cb, streamDescription: any = null) {
     gfs.findOne({md5: file.md5}, (err, f) => {
-        if (f) return cb(err, f, false);
+        if (f) {
+            return cb(err, f, false);
+        }
         if (!streamDescription) {
             streamDescription = {
                 filename: file.filename,

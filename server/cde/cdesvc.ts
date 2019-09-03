@@ -1,4 +1,4 @@
-import { handle404, handleError, respondError } from '../errorHandler/errorHandler';
+import { handle40x, handleError, respondError } from '../errorHandler/errorHandler';
 import { User } from 'shared/models.model';
 import { canEditCuratedItem } from 'shared/system/authorizationShared';
 import { stripBsonIds } from 'shared/system/exportShared';
@@ -11,7 +11,7 @@ const mongo_cde = require('./mongo-cde');
 
 export function byId(req, res) {
     let id = req.params.id;
-    mongo_cde.byId(id, handle404({req, res}, dataElement => {
+    mongo_cde.byId(id, handle40x({req, res}, dataElement => {
         if (!req.user) hideProprietaryCodes(dataElement);
         if (req.query.type === 'xml') {
             res.header('Access-Control-Allow-Origin', '*');
@@ -29,7 +29,7 @@ export function byId(req, res) {
 
 export function priorDataElements(req, res) {
     let id = req.params.id;
-    mongo_cde.byId(id, handle404({req, res}, dataElement => {
+    mongo_cde.byId(id, handle40x({req, res}, dataElement => {
         let history = dataElement.history.concat([dataElement._id]).reverse();
         mongo_cde.DataElement.find({}, {
             'updatedBy.username': 1,
@@ -46,7 +46,7 @@ export function priorDataElements(req, res) {
 
 export function byTinyId(req, res) {
     let tinyId = req.params.tinyId;
-    mongo_cde.byTinyId(tinyId, handle404({req, res}, dataElement => {
+    mongo_cde.byTinyId(tinyId, handle40x({req, res}, dataElement => {
         if (!req.user) hideProprietaryCodes(dataElement);
         if (req.query.type === 'xml') {
             res.header('Access-Control-Allow-Origin', '*');
@@ -64,7 +64,7 @@ export function byTinyId(req, res) {
 
 export function byTinyIdAndVersion(req, res) {
     const {tinyId, version} = req.params;
-    mongo_cde.byTinyIdAndVersion(tinyId, version, handle404({req, res}, dataElement => {
+    mongo_cde.byTinyIdAndVersion(tinyId, version, handle40x({req, res}, dataElement => {
         if (!req.user) hideProprietaryCodes(dataElement);
         res.send(dataElement);
     }));
@@ -162,7 +162,7 @@ function publish(req, res, draft, options = {}) {
 }
 
 export function publishFromDraft(req, res) {
-    mongo_cde.draftById(req.body._id, handle404({req, res}, draft => {
+    mongo_cde.draftById(req.body._id, handle40x({req, res}, draft => {
         if (draft.__v !== req.body.__v) {
             return res.status(400).send('Cannot publish this old version. Reload and redo.');
         }

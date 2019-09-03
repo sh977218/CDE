@@ -149,13 +149,13 @@ export function reIndexStream(dbStream: DbStream, cb?: Cb) {
         };
 
         dbStream.query.dao.count(dbStream.query.condition, (err: Error | undefined, totalCount: number) => {
-            if (err) dbLogger.consoleLog('Error getting count: ' + err, 'error');
+            if (err) { dbLogger.consoleLog(`Error getting count: ${err}`, 'error'); }
             dbLogger.consoleLog('Total count for ' + dbStream.query.dao.name + ' is ' + totalCount);
             dbStream.indexes.forEach(index => {
                 index.totalCount = totalCount;
             });
         });
-        let cursor = dbStream.query.dao.getStream(dbStream.query.condition);
+        const cursor = dbStream.query.dao.getStream(dbStream.query.condition);
 
         (function processOneDocument(cursor) {
             cursor.next((err: Error | undefined, doc) => {
@@ -383,7 +383,7 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
                                                 query: settings.searchTerm
                                             }
                                         } : undefined,
-                                        script_score: {script: script}
+                                        script_score: {script}
                                     }
                                 }
                             ]
@@ -492,7 +492,7 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
     }
 
     // show statuses that either you selected, or it's your org and it's not retired.
-    let regStatusAggFilter: ElasticCondition = {
+    const regStatusAggFilter: ElasticCondition = {
         bool: {
             filter: [
                 {
@@ -552,8 +552,8 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
             }
         };
 
-        let flattenClassificationAggregations = function (variableName: string, orgVariableName: string, selectionString: string) {
-            let flatClassifications: ElasticCondition = {
+        const flattenClassificationAggregations = function(variableName: string, orgVariableName: string, selectionString: string) {
+            const flatClassifications: ElasticCondition = {
                 terms: {
                     size: 500,
                     field: 'flatClassifications'
@@ -737,7 +737,7 @@ export function elasticsearch(type: ModuleItem, query: any, settings: any, cb: C
 let lock = false;
 
 export function elasticSearchExport(dataCb: CbErr<ItemElastic>, query: any, type: ModuleItem) {
-    if (lock) return dataCb('Servers busy');
+    if (lock) { return dataCb('Servers busy'); }
 
     lock = true;
 

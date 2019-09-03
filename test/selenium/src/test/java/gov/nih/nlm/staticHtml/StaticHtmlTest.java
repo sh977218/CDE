@@ -33,6 +33,10 @@ public class StaticHtmlTest extends NlmCdeBaseTest {
     public void staticFormSearchHtml() {
         driver.get(baseUrl + "/form/search");
         textPresent("Patient Reported Outcomes Measurement Information System");
+
+        driver.get(baseUrl + "/form/search?selectedOrg=NIDA");
+        textPresent("PHQ-2");
+
     }
 
     @Test

@@ -3,7 +3,7 @@ import { getModule } from 'shared/elt';
 import { hasRole, isSiteAdmin } from 'shared/system/authorizationShared';
 import { capString } from 'shared/system/util';
 import { loggedInMiddleware, nocacheMiddleware } from '../system/authorization';
-import { handle404, handleError, respondError } from '../errorHandler/errorHandler';
+import { handle40x, handleError, respondError } from '../errorHandler/errorHandler';
 
 const config = require('config');
 const attachment = require('../attachment/attachmentSvc');
@@ -23,25 +23,25 @@ export function module(roleConfig) {
 
     router.get('/', [nocacheMiddleware], (req, res) => {
         if (!req.user) return res.send({});
-        userDb.byId(req.user._id, handle404({req, res}, user => {
+        userDb.byId(req.user._id, handle40x({req, res}, user => {
             res.send(user);
         }));
     });
 
     router.post('/', [loggedInMiddleware], (req, res) => {
-        userDb.updateUser(req.user, req.body, handle404({req, res}, () => {
+        userDb.updateUser(req.user, req.body, handle40x({req, res}, () => {
             res.send();
         }));
     });
 
     router.get('/usernames/:username', (req, res) => {
-        userDb.usersByUsername(req.params.username, handle404({req, res}, users => {
+        userDb.usersByUsername(req.params.username, handle40x({req, res}, users => {
             res.send(users.map(u => u.username.toLowerCase()));
         }));
     });
 
     router.get('/searchUsers/:username?', roleConfig.search, (req, res) => {
-        userDb.usersByUsername(req.params.username, handle404({req, res}, users => {
+        userDb.usersByUsername(req.params.username, handle40x({req, res}, users => {
             res.send(users);
         }));
     });
@@ -221,7 +221,7 @@ export function module(roleConfig) {
             return;
         }
         userDb.updateUser(req.user, {commentNotifications: req.user.commentNotifications}, handleError({req, res}, () => {
-            userDb.byId(req.user._id, handle404({req, res}, user => {
+            userDb.byId(req.user._id, handle40x({req, res}, user => {
                 req.user = user;
                 taskAggregator(req, res);
             }));

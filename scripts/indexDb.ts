@@ -1,4 +1,4 @@
-import { syncLinkedFormsByTinyId } from 'server/form/formsvc';
+import { syncLinkedFormsByTinyId } from 'server/form/syncLinkedForms';
 import { syncWithMesh } from 'server/mesh/elastic';
 import { initEs } from 'server/system/elastic';
 import { Cb } from 'shared/models.model';

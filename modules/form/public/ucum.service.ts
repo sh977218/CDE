@@ -36,8 +36,8 @@ export class UcumService {
 
     validateUcumUnits(unitsOfMeasure: CodeAndSystem[], cb: Cb1<string[], string[]>) {
         if (Array.isArray(unitsOfMeasure) && unitsOfMeasure.length) {
-            this.http.get<{ errors: string[], units: any[] }>('/ucumValidate?uoms='
-                + encodeURIComponent(JSON.stringify(unitsOfMeasure.map(u => u.code))))
+            this.http.post<{ errors: string[], units: any[] }>('/ucumValidate', 
+                {uoms: unitsOfMeasure.map(u => u.code)})
                 .subscribe(response => cb(response.errors, response.units), () => cb([], []));
         } else {
             cb([], []);
