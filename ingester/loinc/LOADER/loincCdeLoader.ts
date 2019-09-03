@@ -36,7 +36,10 @@ export async function runOneCde(loinc, orgInfo) {
     delete newCdeObj.tinyId;
     delete newCdeObj._id;
     newCdeObj.attachments = [];
-    const updateResult = await DataElementSource.updateOne({tinyId: existingCde.tinyId}, newCdeObj, {upsert: true});
+    const updateResult = await DataElementSource.updateOne({
+        tinyId: existingCde.tinyId,
+        source: 'LOINC'
+    }, newCdeObj, {upsert: true});
     printUpdateResult(updateResult, existingCde);
     return existingCde;
 }

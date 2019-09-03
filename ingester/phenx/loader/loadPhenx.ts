@@ -67,16 +67,16 @@ process.on('unhandledRejection', error => {
             PhenxLogger.createdPhenxForm++;
             PhenxLogger.createdPhenxForms.push(existingForm.tinyId);
         } else {
-            const existingFormObj = existingForm.toObject();
-            existingFormObj.imported = imported;
-            existingFormObj.changeNote = lastMigrationScript;
             const diff = compareElt(newForm.toObject(), existingForm.toObject(), 'PhenX');
             if (isEmpty(diff)) {
-                existingFormObj.lastMigrationScript = lastMigrationScript;
+                existingForm.imported = imported;
+                existingForm.lastMigrationScript = lastMigrationScript;
                 await existingForm.save();
                 PhenxLogger.samePhenxForm++;
                 PhenxLogger.samePhenxForms.push(existingForm.tinyId);
             } else {
+                const existingFormObj = existingForm.toObject();
+                existingFormObj.changeNote = lastMigrationScript;
                 mergeElt(existingFormObj, newFormObj, 'PhenX');
                 existingFormObj.lastMigrationScript = lastMigrationScript;
                 await updateForm(existingFormObj, BATCHLOADER, {updateSource: true});
@@ -93,7 +93,10 @@ process.on('unhandledRejection', error => {
         delete newFormObj.tinyId;
         delete newFormObj._id;
         newFormObj.attachments = [];
-        const updateResult = await FormSource.updateOne({tinyId: existingForm.tinyId}, newFormObj, {upsert: true});
+        const updateResult = await FormSource.updateOne({
+            tinyId: existingForm.tinyId,
+            source: 'PhenX'
+        }, newFormObj, {upsert: true});
         printUpdateResult(updateResult, existingForm);
         protocolCount++;
         console.log('protocolCount ' + protocolCount);

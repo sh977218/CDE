@@ -84,7 +84,10 @@ async function doOneRedCap(redCap, redCaps, protocol, newForm) {
     delete newCdeObj.tinyId;
     delete newCdeObj._id;
     newCdeObj.attachments = [];
-    const updateResult = await DataElementSource.updateOne({tinyId: existingCde.tinyId}, newCdeObj, {upsert: true});
+    const updateResult = await DataElementSource.updateOne({
+        tinyId: existingCde.tinyId,
+        source: 'PhenX'
+    }, newCdeObj, {upsert: true});
     printUpdateResult(updateResult, existingCde);
     return existingCde;
 }

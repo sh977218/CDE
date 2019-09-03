@@ -35,7 +35,10 @@ export async function runOneForm(loinc, orgInfo) {
         delete newFormObj.tinyId;
         delete newFormObj._id;
         newFormObj.attachments = [];
-        const updateResult = await FormSource.updateOne({tinyId: existingForm.tinyId}, newFormObj, {upsert: true});
+        const updateResult = await FormSource.updateOne({
+            tinyId: existingForm.tinyId,
+            source: 'LOINC'
+        }, newFormObj, {upsert: true});
         printUpdateResult(updateResult, existingForm);
     }
     return existingForm;

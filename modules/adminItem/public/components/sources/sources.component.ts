@@ -7,5 +7,5 @@ import { Component, Input } from '@angular/core';
 export class SourcesComponent {
     @Input() elt: any;
 
-    allowSources = ['NINDS', 'caDSR', 'PhenX', 'Loinc'];
+    allowSources = ['NINDS', 'caDSR', 'PhenX', 'LOINC'];
 }
