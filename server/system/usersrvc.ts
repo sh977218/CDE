@@ -2,7 +2,7 @@ import {
     getAllUsernames as userGetAllUsernames, managedOrgs, orgAdmins as userOrgAdmins, orgCurators as userOrgCurators,
     userById, userByName
 } from './mongo-data';
-import { handle404, handleError } from 'server/errorHandler/errorHandler';
+import { handle40x, handleError } from 'server/errorHandler/errorHandler';
 import { User } from 'shared/models.model';
 import { hasRole } from 'shared/system/authorizationShared';
 
@@ -15,7 +15,7 @@ export function myOrgs(user: User): string[] {
 
 export function updateUserRoles(req, res) {
     const user = req.body;
-    userByName(user.username, handle404({req, res}, found => {
+    userByName(user.username, handle40x({req, res}, found => {
         found.roles = user.roles;
         found.save(handleError({req, res}, () => {
             res.send();
@@ -25,7 +25,7 @@ export function updateUserRoles(req, res) {
 
 export function updateUserAvatar(req, res) {
     let user = req.body;
-    userByName(user.username, handle404({req, res}, found => {
+    userByName(user.username, handle40x({req, res}, found => {
         found.avatarUrl = user.avatarUrl;
         found.save(handleError({req, res}, () => {
             res.send();
@@ -34,8 +34,8 @@ export function updateUserAvatar(req, res) {
 }
 
 export function myOrgsAdmins(req, res) {
-    userById(req.user._id, handle404({req, res}, foundUser => {
-        userOrgAdmins(handle404({req, res}, users => {
+    userById(req.user._id, handle40x({req, res}, foundUser => {
+        userOrgAdmins(handle40x({req, res}, users => {
             res.send(foundUser.orgAdmin
                 .map(org => ({
                     name: org,
@@ -52,7 +52,7 @@ export function myOrgsAdmins(req, res) {
 }
 
 export function orgCurators(req, res) {
-    userOrgCurators(req.user.orgAdmin, handle404({req, res}, users => {
+    userOrgCurators(req.user.orgAdmin, handle40x({req, res}, users => {
         res.send(req.user.orgAdmin
             .map(org => ({
                 name: org,
@@ -69,8 +69,8 @@ export function orgCurators(req, res) {
 }
 
 export function orgAdmins(req, res) {
-    managedOrgs(handle404({req, res}, managedOrgs => {
-        userOrgAdmins(handle404({req, res}, users => {
+    managedOrgs(handle40x({req, res}, managedOrgs => {
+        userOrgAdmins(handle40x({req, res}, users => {
             res.send(managedOrgs
                 .map(mo => ({
                     name: mo.name,
@@ -87,7 +87,7 @@ export function orgAdmins(req, res) {
 }
 
 export function addOrgAdmin(req, res) {
-    userByName(req.body.username, handle404({req, res}, user => {
+    userByName(req.body.username, handle40x({req, res}, user => {
         let changed = false;
         if (user.orgAdmin.indexOf(req.body.org) === -1) {
             user.orgAdmin.push(req.body.org);
@@ -108,7 +108,7 @@ export function addOrgAdmin(req, res) {
 }
 
 export function removeOrgAdmin(req, res) {
-    userById(req.body.userId, handle404({req, res}, found => {
+    userById(req.body.userId, handle40x({req, res}, found => {
         let orgInd = found.orgAdmin.indexOf(req.body.org);
         if (orgInd < 0) {
             return res.send();
@@ -121,7 +121,7 @@ export function removeOrgAdmin(req, res) {
 }
 
 export function addOrgCurator(req, res) {
-    userByName(req.body.username, handle404({req, res}, user => {
+    userByName(req.body.username, handle40x({req, res}, user => {
         let changed = false;
         if (user.orgCurator.indexOf(req.body.org) === -1) {
             user.orgCurator.push(req.body.org);
@@ -142,7 +142,7 @@ export function addOrgCurator(req, res) {
 }
 
 export function removeOrgCurator(req, res) {
-    userById(req.body.userId, handle404({req, res}, found => {
+    userById(req.body.userId, handle40x({req, res}, found => {
         let orgInd = found.orgCurator.indexOf(req.body.org);
         if (orgInd < 0) {
             return res.send();

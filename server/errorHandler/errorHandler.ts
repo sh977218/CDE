@@ -34,7 +34,7 @@ export function handleError(options?: any, cb = _.noop) {
     };
 }
 
-export function handle404(options, cb) { // Not Found
+export function handle40x(options, cb) { // Not Found
     return function errorHandler(err?: HandledError, arg?: any, ...args) {
         if (err) {
             respondError(err, options);
@@ -42,7 +42,7 @@ export function handle404(options, cb) { // Not Found
         }
         if (!arg) {
             if (options && options.res) {
-                options.res.status(404).send();
+                options.res.status(options.statusCode | 404).send();
             }
             return;
         }

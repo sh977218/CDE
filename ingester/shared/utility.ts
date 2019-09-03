@@ -1,10 +1,10 @@
+import * as DiffJson from 'diff-json';
 import * as cheerio from 'cheerio';
+import * as moment from 'moment';
+import { get } from 'request';
+import { findIndex, isEmpty, uniq } from 'lodash';
 import * as mongo_cde from 'server/cde/mongo-cde';
 import * as mongo_form from 'server/form/mongo-form';
-import * as DiffJson from 'diff-json';
-import * as moment from 'moment';
-import { findIndex, isEmpty, uniq } from 'lodash';
-import { get } from 'request';
 import { PhenxURL } from 'ingester/createMigrationConnection';
 import { transferClassifications } from 'shared/system/classificationShared';
 import { Classification, Definition, Designation } from 'shared/models.model';
@@ -14,7 +14,10 @@ const sourceMap = {
     LOINC: ['LOINC'],
     PHENX: ['PhenX', 'PhenX Variable'],
     NINDS: ['NINDS', 'NINDS Variable Name', 'NINDS caDSR', 'caDSR'],
+    NCI: ['caDSR']
 };
+export const TODAY = new Date().toJSON();
+export const lastMigrationScript = `load PhenX on ${moment().format('DD MMMM YYYY')}`;
 
 export const BATCHLOADER_USERNAME = 'batchloader';
 export const BATCHLOADER = {
@@ -22,11 +25,8 @@ export const BATCHLOADER = {
     roles: ['AttachmentReviewer']
 };
 
-export const TODAY = moment().format('MMMM YYYY');
 export const created = TODAY;
 export const imported = TODAY;
-
-export const lastMigrationScript = 'load PhenX on ' + TODAY;
 
 export function removeWhite(text: string) {
     if (!text) {
@@ -230,7 +230,6 @@ export function compareElt(newEltObj, existingEltObj, source: string) {
 // Merge two elements
 function mergeDesignation(existingDesignations: Designation[], newDesignations: Designation[]) {
     const designations: Designation[] = [];
-    const allDesignations = existingDesignations.concat(newDesignations);
     allDesignations.forEach(designation => {
         const i = findIndex(designations, {designation: designation.designation});
         if (i !== -1) {

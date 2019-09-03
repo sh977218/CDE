@@ -53,6 +53,7 @@
       "**/server/article/*",
       "**/server/board/*",
       "**/server/cde/*",
+      "**/server/form/*",
       "**/server/discuss/*",
       "**/server/log/*",
       "**/server/notification",
@@ -62,7 +63,9 @@
     ],
     "exclude": [
       "build/**",
-      "**/server/siteAdmin/status*"
+      "**/server/siteAdmin/status*",
+      "**/server/form/aws*",
+      "**/server/form/syncLinkedForms*"
     ],
     "lines": "95",
     "branches": "81",

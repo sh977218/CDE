@@ -9,7 +9,7 @@ import { find, forEach, isEmpty } from 'lodash';
 
 const Ajv = require('ajv');
 const connHelper = require('../../server/system/connections');
-const mongo_data = require('../../server/system/mongo-data');
+const mongoData = require('../../server/system/mongo-data');
 const logging = require('../../server/system/logging');
 export const elastic = require('../../server/cde/elastic');
 const schemas = require('../../server/cde/schemas');
@@ -31,10 +31,12 @@ try {
     process.exit(1);
 }
 
-schemas.dataElementSchema.pre('save', function (next) {
+schemas.dataElementSchema.pre('save', function(next) {
     const elt = this;
 
-    if (this.archived) return next();
+    if (this.archived) {
+        return next();
+    }
     validateSchema(elt).then(() => {
         try {
             elastic.updateOrInsert(elt);
@@ -61,12 +63,12 @@ export const DataElementDraft = conn.model('DataElementDraft', schemas.draftSche
 export const DataElementSource = conn.model('DataElementSource', schemas.dataElementSourceSchema);
 export const User = require('../user/userDb').User;
 
-const auditModifications = mongo_data.auditModifications(CdeAudit);
-export const getAuditLog = mongo_data.auditGetLog(CdeAudit);
+const auditModifications = mongoData.auditModifications(CdeAudit);
+export const getAuditLog = mongoData.auditGetLog(CdeAudit);
 export const dao = DataElement;
 export const daoDraft = DataElementDraft;
 
-mongo_data.attachables.push(DataElement);
+mongoData.attachables.push(DataElement);
 
 function updateUser(elt, user) {
     wipeDatatype(elt);
@@ -101,7 +103,7 @@ export function byTinyIdList(tinyIdList, callback) {
         .slice('valueDomain.permissibleValues', 10)
         .exec((err, cdes) => {
             const result = [];
-            cdes.forEach(mongo_data.formatElt);
+            cdes.forEach(mongoData.formatElt);
             forEach(tinyIdList, t => {
                 const c = find(cdes, cde => cde.tinyId === t);
                 if (c) result.push(c);
@@ -172,14 +174,20 @@ export function count(condition, callback) {
 }
 
 export function byTinyIdVersion(tinyId, version, cb) {
-    if (version) this.byTinyIdAndVersion(tinyId, version, cb);
-    else this.byTinyId(tinyId, cb);
+    if (version) {
+        this.byTinyIdAndVersion(tinyId, version, cb);
+    } else {
+        this.byTinyId(tinyId, cb);
+    }
 }
 
 export function byTinyIdAndVersion(tinyId, version, callback) {
     const _query: any = {tinyId};
-    if (version) _query.version = version;
-    else _query.$or = [{version: null}, {version: ''}];
+    if (version) {
+        _query.version = version;
+    } else {
+        _query.$or = [{version: null}, {version: ''}];
+    }
     DataElement.find(_query).sort({updated: -1}).limit(1).exec((err, elts) => {
         callback(err, elts[0]);
     });
@@ -196,7 +204,7 @@ const viewedCdes = {};
 const threshold = config.viewsIncrementThreshold;
 
 export function inCdeView(cde) {
-    if (!viewedCdes[cde._id]) viewedCdes[cde._id] = 0;
+    if (!viewedCdes[cde._id]) { viewedCdes[cde._id] = 0; }
     viewedCdes[cde._id]++;
     if (viewedCdes[cde._id] >= threshold && cde && cde._id) {
         viewedCdes[cde._id] = 0;
@@ -212,22 +220,22 @@ export function create(elt, user, callback) {
         username: user.username,
     };
     const newItem = new DataElement(elt);
-    newItem.tinyId = mongo_data.generateTinyId();
+    newItem.tinyId = mongoData.generateTinyId();
     newItem.save((err, newElt) => {
         callback(err, newElt);
-        if (!err) auditModifications(user, null, newElt);
+        if (!err) { auditModifications(user, null, newElt); }
     });
 }
 
 export function update(elt, user, options: any = {}, callback: CbError<DE>) {
-    if (elt.toObject) elt = elt.toObject();
+    if (elt.toObject) { elt = elt.toObject(); }
     DataElement.findById(elt._id, (err, dataElement) => {
         if (dataElement.archived) {
             callback(new Error('You are trying to edit an archived elements'));
             return;
         }
         delete elt._id;
-        if (!elt.history) elt.history = [];
+        if (!elt.history) { elt.history = []; }
         elt.history.push(dataElement._id);
         updateUser(elt, user);
 
@@ -286,9 +294,9 @@ export function findModifiedElementsSince(date, cb) {
 }
 
 export function checkOwnership(req, id, cb) {
-    if (!req.isAuthenticated()) return cb('You are not authorized.', null);
+    if (!req.isAuthenticated()) { return cb('You are not authorized.', null); }
     byId(id, (err, elt) => {
-        if (err || !elt) return cb('Element does not exist.', null);
+        if (err || !elt) { return cb('Element does not exist.', null); }
         if (!isOrgCurator(req.user, elt.stewardOrg.name)) {
             return cb('You do not own this element.', null);
         }

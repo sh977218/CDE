@@ -7,8 +7,6 @@ const parseString = new xml2js.Parser({attrkey: 'attribute'}).parseString;
 const builder = new xml2js.Builder({attrkey: 'attribute'});
 const Readable = require('stream').Readable;
 
-const ORG_INFO_MAP = require('../Shared/ORG_INFO_MAP').map;
-
 const attachment = require('../../../server/attachment/attachmentSvc');
 
 const CreateCDE = require('../CDE/CreateCDE');
@@ -50,13 +48,13 @@ fs.readFile(xmlFile, function (err, data) {
         if (e) throw e;
         let nciCdes = json.DataElementsList.DataElement;
         console.log('There are ' + nciCdes.length + ' nci CDEs.');
-        for (let nciCde of nciCdes) {
-            let id = nciCde.PUBLICID[0];
+        for (let nciXmlCde of nciCdes) {
+            let id = nciXmlCde.PUBLICID[0];
             console.log('Starting id: ' + id);
-            let newCdeObj = await CreateCDE.createCde(nciCde, orgInfo);
+            let newCdeObj = await CreateCDE.createCde(nciXmlCde, orgInfo);
             let newCde = new DataElement(newCdeObj);
             let existingCde = await DataElement.findOne({'ids.id': id});
-            await addAttachments({DataElement: nciCde}, newCde);
+            await addAttachments({DataElement: nciXmlCde}, newCde);
             if (!existingCde) {
                 await newCde.save();
                 console.log('newCde tinyId: ' + newCde.tinyId);

@@ -1,22 +1,23 @@
-exports.parseProperties = nciCde => {
-    let properties = [{
+export function parseProperties(nciXmlCde) {
+    const properties = [{
         key: 'caDSR_Context',
         source: 'caDSR',
-        value: nciCde.CONTEXTNAME[0]
+        value: nciXmlCde.CONTEXTNAME[0]
     }, {
         key: 'caDSR_Short_Name',
         source: 'caDSR',
-        value: nciCde.PREFERREDNAME[0]
+        value: nciXmlCde.PREFERREDNAME[0]
     }];
-    if (nciCde.ALTERNATENAMELIST[0] && nciCde.ALTERNATENAMELIST[0].ALTERNATENAMELIST_ITEM.length > 0) {
-        nciCde.ALTERNATENAMELIST[0].ALTERNATENAMELIST_ITEM.forEach(altName => {
+    if (nciXmlCde.ALTERNATENAMELIST[0] && nciXmlCde.ALTERNATENAMELIST[0].ALTERNATENAMELIST_ITEM.length > 0) {
+        nciXmlCde.ALTERNATENAMELIST[0].ALTERNATENAMELIST_ITEM.forEach(altName => {
             if (['USED_BY'].indexOf(altName.AlternateNameType[0]) === -1) {
                 properties.push({
                     key: altName.AlternateNameType[0],
+                    source: 'caDSR',
                     value: altName.AlternateName[0]
                 });
             }
         });
     }
     return properties;
-};
+}
