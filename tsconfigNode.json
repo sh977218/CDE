@@ -19,7 +19,7 @@
     "resolveJsonModule": true,
     "sourceMap": true,
     "suppressImplicitAnyIndexErrors": true,
-    "target": "ES5",
+    "target": "ESNext",
     "typeRoots": [
       "node_modules/@types"
     ]
