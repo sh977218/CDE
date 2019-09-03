@@ -16,6 +16,7 @@ const _ = require('lodash');
 const dns = require('dns');
 const os = require('os');
 const formSvc = require('./formsvc');
+const syncLinkedForms = require('./syncLinkedForms');
 const mongoForm = require('./mongo-form');
 const elasticSystem = require('../system/elastic');
 const sharedElastic = require('../system/elastic');
@@ -352,11 +353,11 @@ export function init(app, daoManager) {
 
     app.post('/syncLinkedForms', isOrgAuthorityMiddleware, (req, res) => {
         res.send();
-        formSvc.syncLinkedForms();
+        syncLinkedForms.syncLinkedForms();
     });
 
-    app.get('/syncLinkedForms', (req, res) => res.send(formSvc.syncLinkedFormsProgress));
+    app.get('/syncLinkedForms', (req, res) => res.send(syncLinkedForms.syncLinkedFormsProgress));
 
-    new CronJob('00 30 4 * * *', () => formSvc.syncLinkedForms(), null, true, 'America/New_York');
+    new CronJob('00 30 4 * * *', () => syncLinkedForms.syncLinkedForms(), null, true, 'America/New_York');
 
 }
