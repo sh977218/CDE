@@ -51,6 +51,7 @@
     "exclude-after-remap": false,
     "include": [
       "**/server/article/*",
+      "**/server/attachment/*",
       "**/server/board/*",
       "**/server/cde/*",
       "**/server/form/*",
