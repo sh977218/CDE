@@ -10,13 +10,13 @@ const xml2js = require('xml2js');
 const xmlParser = new xml2js.Parser();
 
 let createdCDE = 0;
-const createdCdes = [];
+const createdCdes: string[] = [];
 let sameCde = 0;
-const sameCdes = [];
+const sameCdes: string[] = [];
 let changedCde = 0;
-const changedCdes = [];
+const changedCdes: string[] = [];
 
-function runOneOrg(orgName) {
+function runOneOrg(orgName: string) {
     const orgInfo = NCI_ORG_INFO_MAP[orgName];
     const xmlFile = orgInfo.xml;
     return new Promise((resolve, reject) => {
@@ -28,7 +28,6 @@ function runOneOrg(orgName) {
                     if (error) {
                         reject(err);
                     }
-//                    let nciXmlCdes = nciXml.DataElementsList.DataElement.filter(n => n.PUBLICID[0] === '6365382');
                     let nciXmlCdes = nciXml.DataElementsList.DataElement;
                     for (const nciXmlCde of nciXmlCdes) {
                         const nciId = nciXmlCde.PUBLICID[0];
@@ -45,36 +44,6 @@ function runOneOrg(orgName) {
                             createdCDE++;
                             createdCdes.push(existingCde.tinyId);
                         } else {
-                            const _existingCdeObj = existingCde.toObject();
-                            _existingCdeObj.properties.forEach(p => {
-                                if (isEmpty(p.source)) {
-                                    p.source = 'caDSR';
-                                }
-                            });
-                            existingCde.properties = _existingCdeObj.properties;
-                            if (_existingCdeObj.valueDomain.datatype === 'Date') {
-                                delete _existingCdeObj.valueDomain.datatypeDate;
-                            }
-                            if (_existingCdeObj.valueDomain.datatype === 'Text') {
-                                if (isEmpty(_existingCdeObj.valueDomain.datatypeText)) {
-                                    delete _existingCdeObj.valueDomain.datatypeText;
-                                }
-                            }
-                            if (_existingCdeObj.valueDomain.datatype === 'Number') {
-                                if (isEmpty(_existingCdeObj.valueDomain.datatypeNumber)) {
-                                    delete _existingCdeObj.valueDomain.datatypeNumber;
-                                }
-                            }
-                            existingCde.valueDomain = _existingCdeObj.valueDomain;
-
-                            existingCde = await existingCde.save();
-
-                            existingCde.sources.forEach(s => {
-                                if (s.sourceName === 'caDSR') {
-                                    s.imported = imported;
-                                    existingCde.markModified('sources');
-                                }
-                            });
                             const diff = compareElt(newCde.toObject(), existingCde.toObject(), 'NCI');
                             if (isEmpty(diff)) {
                                 existingCde.imported = imported;
@@ -119,13 +88,12 @@ function runOneOrg(orgName) {
 export async function runOrgs(orgNames) {
     for (const orgName of orgNames) {
         await runOneOrg(orgName);
-        console.log(`*********************${orgName}`);
-        console.log(`createdCDE: ${createdCDE}`);
-        console.log(`createdCdes: ${createdCdes}`);
-        console.log(`sameCde: ${sameCde}`);
-        console.log(`sameCdes: ${sameCdes}`);
-        console.log(`changedCde: ${changedCde}`);
-        console.log(`changedCdes: ${changedCdes}`);
         console.log(`********************Finished org: ${orgName}\n`);
     }
+    console.log(`createdCDE: ${createdCDE}`);
+    console.log(`createdCdes: ${createdCdes}`);
+    console.log(`sameCde: ${sameCde}`);
+    console.log(`sameCdes: ${sameCdes}`);
+    console.log(`changedCde: ${changedCde}`);
+    console.log(`changedCdes: ${changedCdes}`);
 }

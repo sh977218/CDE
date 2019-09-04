@@ -8,15 +8,14 @@ process.on('unhandledRejection', error => {
 
 let cdeCount = 0;
 let retiredPhenxCde = 0;
-const retiredPhenxCdes = [];
+const retiredPhenxCdes: string[] = [];
 
 function run() {
     const cond = {
         'registrationState.registrationStatus': {$ne: 'Retired'},
         archived: false,
-        'ids.source': 'PhenX Variable',
-        classification: {$size: 1},
-        'classification.stewardOrg.name': 'PhenX'
+        'stewardOrg.name': 'LOINC',
+        'classification.0': {$exists: false}
     };
     const cursor = DataElement.find(cond).cursor();
     cursor.eachAsync(async (cde: any) => {
