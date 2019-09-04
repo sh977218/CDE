@@ -8,6 +8,7 @@ import _noop from 'lodash/noop';
 import _toString from 'lodash/toString';
 import { FormService } from 'nativeRender/form.service';
 import { DataElement, DataType } from 'shared/de/dataElement.model';
+import { isScore } from 'shared/form/fe';
 import { FormElement, FormQuestion, QuestionValueList } from 'shared/form/form.model';
 
 @Component({
@@ -27,6 +28,7 @@ export class FormDescriptionQuestionComponent implements OnInit {
     @Input() node!: TreeNode;
     @Output() stageElt: EventEmitter<void> = new EventEmitter<void>();
     @ViewChild('updateCdeVersionTmpl') updateCdeVersionTmpl!: TemplateRef<any>;
+    isScore = isScore;
     isSubForm = false;
     parent!: FormElement;
     question!: FormQuestion;

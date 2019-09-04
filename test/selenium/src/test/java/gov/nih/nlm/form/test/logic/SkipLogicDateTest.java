@@ -2,6 +2,7 @@ package gov.nih.nlm.form.test.logic;
 
 import gov.nih.nlm.form.test.BaseFormTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.testng.annotations.Test;
 
 public class SkipLogicDateTest extends BaseFormTest {
@@ -26,10 +27,10 @@ public class SkipLogicDateTest extends BaseFormTest {
 
         goToPreview();
         togglePrintableLogic();
+        findElement(By.xpath("//*[@id='Person Birth Date_0-0_box']")).clear();
         textPresent(cdeName);
         findElement(By.xpath("//*[@id='Person Birth Date_0-0_box']")).sendKeys("02/04/2019");
         textPresent(cdeName);
-
     }
 
     @Test
@@ -42,19 +43,20 @@ public class SkipLogicDateTest extends BaseFormTest {
         goToPreview();
         togglePrintableLogic();
         textPresent(cdeName);
-        findElement(By.xpath("//*[@id='Axillary Surgery Dissection Date_0-1_box']")).sendKeys("02/04/2019");
+        findElement(By.xpath("//*[@id='Axillary Surgery Dissection Date_0-1_box']")).sendKeys("02042019");
         textPresent(cdeName);
 
         goToFormDescription();
         startEditQuestionById(questionId);
         addSkipLogicById(questionId, "Axillary Surgery Dissection Date", "<", "02/05/2019", "date");
         saveEditQuestionById(questionId);
+        textPresent("Show if: \"Axillary Surgery Dissection Date\" < \"2019-02-05\"");
 
         goToPreview();
         togglePrintableLogic();
+        findElement(By.xpath("//*[@id='Axillary Surgery Dissection Date_0-1_box']")).sendKeys(Keys.BACK_SPACE);
         textNotPresent(cdeName);
-        findElement(By.xpath("//*[@id='Axillary Surgery Dissection Date_0-1_box']")).sendKeys("02/04/2019");
+        findElement(By.xpath("//*[@id='Axillary Surgery Dissection Date_0-1_box']")).sendKeys("02042019");
         textPresent(cdeName);
     }
-
 }

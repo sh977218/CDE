@@ -174,6 +174,7 @@ public class EltIdMaps {
         eltMap.put("Remove SkipLogic Form", "X1s87bif7");
         eltMap.put("Reorder reference document form", "7yxjmyAQP");
         eltMap.put("Reorder definition form", "myYlSJAQD");
+        eltMap.put("Required and Default Test", "QyBYny_lu");
         eltMap.put("Section in Section Form", "Q11QuVmN_");
         eltMap.put("Section Inside Section Form", "71AKDVQhW");
         eltMap.put("Section Test Form", "XJFylVmN_");
