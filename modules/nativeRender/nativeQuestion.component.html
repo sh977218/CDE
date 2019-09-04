@@ -36,7 +36,7 @@
             <ng-template #scoreDisplay>Score:
                 {{formElement.question.answer | number }}{{formElement.question.scoreError}}
             </ng-template>
-            <ng-container *ngIf="!formElement.question.isScore; else scoreDisplay">
+            <ng-container *ngIf="!isScore(formElement.question); else scoreDisplay">
                 <ng-container [ngSwitch]="formElement.question.datatype">
                     <ng-container *ngSwitchCase="'Value List'">
                         <ng-container
@@ -97,24 +97,32 @@
                                     </div>
                                 </div>
                             </div>
+                            <div *ngIf="formElement.question.required && !NRS.answeredValueList(formElement.question)">
+                                <code>Please fill out this field.</code>
+                            </div>
                         </ng-container>
                         <ng-template #dropdownValueList>
-                            <select class="form-control"
+                            <select #inputValueListDropDown class="form-control"
                                     [name]="formElement.feId"
                                     [attr.name]="formElement.feId"
                                     [multiple]="formElement.question.multiselect"
                                     [ngModel]="nrs.selectModel(formElement)"
-                                    (ngModelChange)="nrs.selectModelChange($event, formElement)">
+                                    (ngModelChange)="nrs.selectModelChange($event, formElement)"
+                                    [required]="formElement.question.required"
+                                    [disabled]="!formElement.question.editable">
                                 <option value=""></option>
                                 <option *ngFor="let pv of formElement.question.answers"
                                         [value]="pv.permissibleValue"
                                         [attr.value]="pv.permissibleValue">{{NRS.getPvLabel(pv)}}
                                 </option>
                             </select>
+                            <div *ngIf="formElement.question.required && !NRS.answeredValueList(formElement.question)">
+                                <code>Please fill out this field.</code>
+                            </div>
                         </ng-template>
                     </ng-container>
                     <ng-container *ngSwitchCase="'Date'">
-                        <input class="form-control"
+                        <input #inputDate class="form-control"
                                type="{{datePrecisionToType[formElement.question.datatypeDate?.precision]}}"
                                step="{{datePrecisionToStep[formElement.question.datatypeDate?.precision]}}"
                                [title]="formElement.label"
@@ -125,6 +133,7 @@
                                (change)="nrs.emit(formElement)"
                                [required]="formElement.question.required"
                                [disabled]="!formElement.question.editable"/>
+                        <div [hidden]="!inputDate.validationMessage"><code>{{inputDate.validationMessage}}</code></div>
                     </ng-container>
                     <ng-container *ngSwitchCase="'Dynamic Code List'">
                         <input list="dynamicCodeListDropDown" id="dynamicCodeListInput"
@@ -139,33 +148,54 @@
                             <div class="input-group-prepend d-none d-sm-flex">
                                 <span class="input-group-text">Coordinates:</span>
                             </div>
-                            <input type="text" class="form-control" [disabled]="nrs.locationDenied"
+                            <input type="text" class="form-control"
+                                   [title]="formElement.label + 'latitude'"
                                    [id]="formElement.feId+'_latitude'"
-                                   value="{{formElement.question.answer?.latitude}}">
+                                   attr.id="{{formElement.label}}_{{formElement.feId}}_box_latitude"
+                                   [name]="formElement.feId"
+                                   [attr.name]="formElement.feId"
+                                   [ngModel]="formElement.question.answer?.latitude"
+                                   (ngModelChange)="NRS.setLatitude(formElement, $event)"
+                                   (change)="nrs.emit(formElement)"
+                                   [required]="formElement.question.required"
+                                   [disabled]="!formElement.question.editable">
                             <div class="input-group-prepend input-group-append">
                                 <span class="input-group-text">,</span>
                             </div>
-                            <input type="text" class="form-control" [disabled]="nrs.locationDenied"
+                            <input type="text" class="form-control"
+                                   [title]="formElement.label + 'longitude'"
                                    [id]="formElement.feId+'_longitude'"
-                                   value="{{formElement.question.answer?.longitude}}">
+                                   attr.id="{{formElement.label}}_{{formElement.feId}}_box_longitude"
+                                   [name]="formElement.feId"
+                                   [attr.name]="formElement.feId"
+                                   [ngModel]="formElement.question.answer?.longitude"
+                                   (ngModelChange)="NRS.setLongitude(formElement, $event)"
+                                   (change)="nrs.emit(formElement)"
+                                   [required]="formElement.question.required"
+                                   [disabled]="!formElement.question.editable">
                             <div class="input-group-append">
                                 <button *ngIf="nrs.locationDenied; else templateLocation" class="btn btn-disabled"
+                                        title="Location is disabled. Enable on browser to use this feature."
                                         (click)="nrs.getCurrentGeoLocation(formElement)">
                                     <i class="material-icons iconFit">location_disabled</i>
                                 </button>
                                 <ng-template #templateLocation>
-                                    <button [id]="formElement.feId+'_location'" class="btn btn-primary">
+                                    <button [id]="formElement.feId+'_location'" class="btn btn-primary"
+                                            title="Fill in with current location">
                                         <i class="material-icons iconFit"
                                            (click)="nrs.getCurrentGeoLocation(formElement)">location_searching</i>
                                     </button>
                                 </ng-template>
                             </div>
                         </div>
-                        <div *ngIf="nrs.locationDenied"><code>Please enable location for this site.</code></div>
+                        <div *ngIf="formElement.question.required && (!formElement.question.answer || !formElement.question.answer.latitude || !formElement.question.answer.longitude)">
+                            <code>Please fill out this field.</code>
+                        </div>
+                        <div *ngIf="nrs.locationDenied"><code>Enable location for this site to use autofill.</code></div>
                     </ng-container>
                     <ng-container *ngSwitchCase="'Number'">
                         <div [ngClass]="{'input-group': formElement.question.uomsAlias.length > 0}">
-                            <input type="number" class="form-control"
+                            <input #inputNumber type="number" class="form-control"
                                    [title]="formElement.label"
                                    attr.id="{{formElement.label}}_{{formElement.feId}}_box"
                                    [name]="formElement.feId"
@@ -190,6 +220,9 @@
                                            [attr.value]="formElement.question.unitsOfMeasure[i]"
                                            [required]="formElement.question.required || formElement.question.answer"
                                            [disabled]="!formElement.question.editable"/>{{uom}}</label>
+                            </div>
+                            <div *ngIf="formElement.question.required && typeof(formElement.question.answer) !== 'number'">
+                                <code>Please fill out this field.</code>
                             </div>
                         </div>
                     </ng-container>
@@ -220,10 +253,11 @@
                                                [disabled]="!formElement.question.editable"/>{{uom}}</label>
                                 </div>
                             </div>
-                            <div *ngIf="inputText.validationMessage"><code>{{inputText.validationMessage}}</code></div>
+                            <div [hidden]="!inputText.validationMessage"><code>{{inputText.validationMessage}}</code></div>
                         </ng-container>
                         <ng-container *ngSwitchCase="true">
-                            <textarea class="form-control" #inputTextArea
+                            <textarea #inputTextArea
+                                      class="form-control"
                                       attr.id="{{formElement.label}}_{{formElement.feId}}_box"
                                       [name]="formElement.feId"
                                       [attr.name]="formElement.feId"
@@ -232,8 +266,7 @@
                                       [required]="formElement.question.required"
                                       [disabled]="!formElement.question.editable">
                             </textarea>
-                            <div *ngIf="inputTextArea.validationMessage">
-                                <code>{{inputTextArea.validationMessage}}</code></div>
+                            <div [hidden]="!inputTextArea.validationMessage"><code>{{inputTextArea.validationMessage}}</code></div>
                         </ng-container>
                     </ng-container>
                 </ng-container>

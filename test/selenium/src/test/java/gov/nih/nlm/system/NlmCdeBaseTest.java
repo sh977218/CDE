@@ -118,7 +118,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         }
         try {
             driver = new RemoteWebDriver(_hubUrl, caps);
-        } catch (SessionNotCreatedException e) {
+        } catch (Exception e) {
             hangon(10);
             driver = new RemoteWebDriver(_hubUrl, caps);
         }

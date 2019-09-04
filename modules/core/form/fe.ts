@@ -1,4 +1,4 @@
-import { iterateFeSync, iterateFeSyncOptions, noopSkipSync } from 'shared/form/fe';
+import { isScore, iterateFeSync, iterateFeSyncOptions, noopSkipSync } from 'shared/form/fe';
 import {
     FormElement, FormElementsContainer, FormInForm, FormQuestion, FormSection, Question, QuestionCde
 } from 'shared/form/form.model';
@@ -8,11 +8,6 @@ export function areDerivationRulesSatisfied(elt: FormElementsContainer): string[
     const allCdes: {[tinyId: string]: Question} = {};
     const allQuestions: FormQuestion[] = [];
     iterateFeSync(elt, undefined, undefined, q => {
-        if (q.question.datatype === 'Number') {
-            q.question.answer = q.question.defaultAnswer ? Number.parseFloat(q.question.defaultAnswer) : 0;
-        } else {
-            q.question.answer = q.question.defaultAnswer;
-        }
         allCdes[q.question.cde.tinyId] = q.question;
         allQuestions.push(q);
     });
@@ -21,7 +16,6 @@ export function areDerivationRulesSatisfied(elt: FormElementsContainer): string[
             quest.question.cde.derivationRules.forEach(derRule => {
                 delete quest.incompleteRule;
                 if (derRule.ruleType === 'score') {
-                    quest.question.isScore = true;
                     quest.question.scoreFormula = derRule.formula;
                 }
                 derRule.inputs.forEach(input => {
@@ -53,7 +47,7 @@ export function getFormQuestions(form: FormElementsContainer): FormQuestion[] {
 
 export function getFormScoreQuestions(form: FormElementsContainer): FormQuestion[] {
     const questions: FormQuestion[] = [];
-    iterateFeSync(form, undefined, undefined, q => q.question.isScore && questions.push(q));
+    iterateFeSync(form, undefined, undefined, q => isScore(q.question) && questions.push(q));
     return questions;
 }
 

@@ -26,6 +26,7 @@ public class SkipLogicValueListTest extends BaseFormTest {
 
         goToPreview();
         togglePrintableLogic();
+        clickElement(By.xpath("(//*[@id='Distance from Closest Margin_0-0']//input[@type='radio'])[1]"));
         textPresent(cdeName);
         clickElement(By.xpath("(//*[@id='Distance from Closest Margin_0-0']//input[@type='radio'])[1]"));
         textPresent(cdeName);
@@ -52,9 +53,9 @@ public class SkipLogicValueListTest extends BaseFormTest {
 
         goToPreview();
         togglePrintableLogic();
+        clickElement(By.xpath("(//*[@id='Adrenal Gland Received_0-1']//input[@type='radio'])[1]"));
         textNotPresent(cdeName);
         clickElement(By.xpath("(//*[@id='Adrenal Gland Received_0-1']//input[@type='radio'])[1]"));
         textPresent(cdeName);
     }
-
 }

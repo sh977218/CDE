@@ -14,10 +14,10 @@ import _clone from 'lodash/clone';
 import _noop from 'lodash/noop';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { switchMap, debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { DATA_TYPE_ARRAY, QuestionTypeDate, QuestionTypeNumber, QuestionTypeText } from 'shared/de/dataElement.model';
+import { DATA_TYPE_ARRAY } from 'shared/de/dataElement.model';
 import { pvGetLabel } from 'core/de/deShared';
-import { iterateFeSync } from 'shared/form/fe';
-import { CdeForm, FormElement, FormQuestion, PermissibleFormValue, Question, QuestionValueList, SkipLogic } from 'shared/form/form.model';
+import { isScore, iterateFeSync } from 'shared/form/fe';
+import { CdeForm, FormElement, FormQuestion, Question, QuestionValueList, SkipLogic } from 'shared/form/form.model';
 import { CodeAndSystem, Designation, FormattedValue } from 'shared/models.model';
 import { fixDatatype } from 'shared/de/deValidator';
 
@@ -53,13 +53,14 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     @ViewChild('formDescriptionQuestionEditTmpl') formDescriptionQuestionEditTmpl!: TemplateRef<any>;
     readonly dataTypeArray = dataTypeArray;
     answerListItems: string[] = [];
-    defaultAnswerListItems: string[] = [];
     filteredUoms: UcumSynonyms[] = [];
+    isScore = isScore;
     newUom = '';
     newUomSystem = 'UCUM';
     parent!: FormElement;
     question!: FormQuestion;
     questionAnswers: string[] = [];
+    pvGetLabel = pvGetLabel;
     repeatFeLabel = repeatFeLabel;
     readonly separatorKeysCodes: number[] = [ENTER];
     tag: string[] = [];
@@ -74,7 +75,6 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
 
     ngOnInit() {
         this.syncAnswerListItems();
-        this.syncDefaultAnswerListItems();
         const stewardOrgName: string = this.elt.stewardOrg.name || '';
         this.orgHelperService.then(orgsDetailedInfo => {
             this.tag = orgsDetailedInfo[stewardOrgName].nameTags || [];
@@ -88,6 +88,12 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
             ).subscribe(uoms => this.filteredUoms = uoms);
     }
 
+    defaultToLabel(question: Question) {
+        return question.datatype === 'Value List'
+            ? pvGetLabel(question.answers.filter(pv => pv.permissibleValue === question.defaultAnswer)[0])
+            : question.defaultAnswer;
+    }
+
     displayUom(uom: UcumSynonyms) {
         return uom ? uom.name : '';
     }
@@ -98,15 +104,10 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
             : this.formDescriptionQuestionTmpl);
     }
 
-    isScore(formElt: FormQuestion) {
-        return formElt.question.cde.derivationRules && formElt.question.cde.derivationRules.length > 0;
-    }
-
     onAnswerListChanged() {
         const question = this.question.question as QuestionValueList;
         question.answers = question.cde.permissibleValues.filter(ans =>
             this.questionAnswers.indexOf(ans.valueMeaningName || ans.permissibleValue) >= 0);
-        this.syncDefaultAnswerListItems();
         this.eltChange.emit();
     }
 
@@ -207,7 +208,6 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
 
         // Reset the input value
         if (input) { input.value = ''; }
-        this.syncDefaultAnswerListItems();
         question.answers = question.cde.permissibleValues.concat([]) as any;
         this.eltChange.emit();
     }
@@ -216,7 +216,6 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         const question = this.question.question as QuestionValueList;
         question.cde.permissibleValues.splice(i, 1);
         question.answers = question.cde.permissibleValues.concat([]) as any;
-        this.syncDefaultAnswerListItems();
         this.eltChange.emit();
     }
 
@@ -229,13 +228,6 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     private syncAnswerListItems() {
         if (this.question.question.datatype === 'Value List') {
             this.answerListItems = this.question.question.cde.permissibleValues.map(pvGetLabel);
-            this.syncDefaultAnswerListItems();
-        }
-    }
-
-    private syncDefaultAnswerListItems() {
-        if (this.question.question.datatype === 'Value List') {
-            this.defaultAnswerListItems = this.question.question.answers.map(pvGetLabel);
         }
     }
 
