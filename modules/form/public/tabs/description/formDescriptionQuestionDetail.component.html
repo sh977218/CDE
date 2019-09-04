@@ -23,7 +23,7 @@
         <span *ngIf="repeatFeLabel(question)" class="badge badge-primary formViewSummaryLabel">
             Repeats: {{repeatFeLabel(question)}} times
         </span>
-        <span *ngIf="isScore(question)" class="badge badge-primary formViewSummaryLabel">
+        <span *ngIf="isScore(question.question)" class="badge badge-primary formViewSummaryLabel">
             Score: <span [textContent]="question.question.scoreFormula"></span>
         </span>
         <span *ngIf="question.question.required" class="badge badge-danger formViewSummaryLabel">
@@ -67,7 +67,7 @@
                  class="defaultAnswer">
                 <span class="formViewQuestionLabel">Default Answer:</span>
                 <span class="badge badge-secondary formViewSummaryLabel"
-                      style="background-color: #666">{{question.question.defaultAnswer}}</span>
+                      style="background-color: #666">{{defaultToLabel(question.question)}}</span>
             </div>
             <div *ngIf="question.question.unitsOfMeasure.length > 0" class="questionUom">
                 <span class="formViewQuestionLabel">Units of Measure:</span>
@@ -102,6 +102,23 @@
                     [isAllowed]="true" (modelChange)="eltChange.emit()">
             </cde-inline-area-edit>
         </dd>
+        <dt class="col-2">Required:</dt>
+        <dd class="col-10">
+            <input type="checkbox" title="Required" [(ngModel)]="question.question.required"
+                   (change)="eltChange.emit()"/>
+        </dd>
+        <dt class="col-2">Invisible:</dt>
+        <dd class="col-10 editQuestionInvisible">
+            <input type="checkbox" title="Invisible" [(ngModel)]="question.question.invisible"
+                   (change)="eltChange.emit()">
+        </dd>
+        <ng-container *ngIf="parent">
+            <dt class="col-2">Show if:</dt>
+            <dd class="col-10 skipLogicEditTextarea" [ngClass]="{'has-error':question.skipLogic?.validationError}">
+                <cde-skip-logic [parent]="parent" [formElement]="question" [canEdit]="canEdit"
+                                (saved)="eltChange.emit();"></cde-skip-logic>
+            </dd>
+        </ng-container>
         <ng-container *ngIf="question.question.datatype === 'Date'">
             <dt class="col-2 font-weight-bold">Date Precision:</dt>
             <dd class="col-10">
@@ -124,28 +141,11 @@
                        (change)="eltChange.emit()">
             </dd>
         </ng-container>
-        <dt class="col-2">Required:</dt>
-        <dd class="col-10">
-            <input type="checkbox" title="Required" [(ngModel)]="question.question.required"
-                   (change)="eltChange.emit()"/>
-        </dd>
-        <dt class="col-2">Invisible:</dt>
-        <dd class="col-10 editQuestionInvisible">
-            <input type="checkbox" title="Invisible" [(ngModel)]="question.question.invisible"
-                   (change)="eltChange.emit()">
-        </dd>
         <ng-container *ngIf="question.question.datatype === 'Dynamic Code List'">
             <dt class="col-2">System:</dt>
             <dd class="col-10">{{question.question.datatypeDynamicCodeList.system}}</dd>
             <dt class="col-2">Code:</dt>
             <dd class="col-10">{{question.question.datatypeDynamicCodeList.code}}</dd>
-        </ng-container>
-        <ng-container *ngIf="parent">
-            <dt class="col-2">Show if:</dt>
-            <dd class="col-10 skipLogicEditTextarea" [ngClass]="{'has-error':question.skipLogic?.validationError}">
-                <cde-skip-logic [parent]="parent" [formElement]="question" [canEdit]="canEdit"
-                                (saved)="eltChange.emit();"></cde-skip-logic>
-            </dd>
         </ng-container>
         <ng-container
                 *ngIf="question.question.datatype === 'Number' || (question.question.datatype === 'Text' && !question.question.datatypeText.showAsTextArea)">
@@ -230,13 +230,15 @@
                 <mat-form-field class="w-100">
                     <mat-select [(value)]="question.question.defaultAnswer" [placeholder]="'Select Default Answer'"
                                 (selectionChange)="eltChange.emit()">
-                        <mat-option *ngFor="let defaultAnswer of  defaultAnswerListItems"
-                                    [value]="defaultAnswer">{{defaultAnswer}}</mat-option>
+                        <mat-option value=""></mat-option>
+                        <mat-option *ngFor="let pv of  question.question.answers"
+                                    [value]="pv.permissibleValue">{{pvGetLabel(pv)}}</mat-option>
                     </mat-select>
                 </mat-form-field>
             </ng-container>
             <ng-container *ngIf="question.question.datatype !== 'Value List'">
                 <cde-inline-edit [(model)]="question.question.defaultAnswer" [isAllowed]="true"
+                                 [inputType]="question.question.datatype === 'Date' && 'date' || question.question.datatype === 'Number' && 'number' || 'text'"
                                  (modelChange)="eltChange.emit()"></cde-inline-edit>
             </ng-container>
         </dd>

@@ -13,9 +13,9 @@ import {
     FormOrElement,
     FormQuestion, FormQuestionFollow, FormSection,
     FormSectionOrForm,
-    PermissibleFormValue, Question
+    PermissibleFormValue, question, Question, QuestionValue, QuestionValueList
 } from 'shared/form/form.model';
-import { addFormIds, iterateFeSync, questionMulti } from 'shared/form/fe';
+import { addFormIds, iterateFeSync } from 'shared/form/fe';
 import { SkipLogicOperators } from 'shared/form/skipLogic';
 
 @Injectable()
@@ -49,7 +49,6 @@ export class NativeRenderService {
     locationDenied = false;
     profile!: DisplayProfile;
     questionChangeListeners: Cb1<FormQuestion>[] = [];
-    questionMulti = questionMulti;
     submitForm?: boolean;
     vm!: CdeForm;
 
@@ -187,6 +186,30 @@ export class NativeRenderService {
             this.getAliases(f);
 
             // answers
+            if (f.question.defaultAnswer) {
+                switch (f.question.datatype) {
+                    case 'Geo Location':
+                        const inputs = f.question.defaultAnswer.split(',').map(value => parseFloat(value.trim()));
+                        f.question.answer = {latitude: inputs[0], longitude: inputs[1]};
+                        break;
+                    case 'Number':
+                        f.question.answer = parseFloat(f.question.defaultAnswer);
+                        break;
+                    case 'Value List':
+                        f.question.answer = f.question.multiselect ? [f.question.defaultAnswer] : f.question.defaultAnswer;
+                        break;
+                    case 'Date':
+                    case 'Dynamic Code List':
+                    case 'Externally Defined':
+                    case 'File':
+                    case 'Text':
+                    case 'Time':
+                        f.question.answer = f.question.defaultAnswer;
+                        break;
+                    default:
+                        throw assertUnreachable(f.question);
+                }
+            }
             if (f.question.unitsOfMeasure && f.question.unitsOfMeasure.length === 1) {
                 f.question.answerUom = f.question.unitsOfMeasure[0];
             }
@@ -205,10 +228,6 @@ export class NativeRenderService {
 
     addError(msg: string) {
         if (this.errors.indexOf(msg) === -1) { this.errors.push(msg); }
-    }
-
-    hasErrors() {
-        return !!this.errors.length;
     }
 
     getErrors() {
@@ -257,6 +276,14 @@ export class NativeRenderService {
     static readonly FOLLOW_UP: string = 'Follow-up';
     static readonly getPvDisplayValue = pvGetDisplayValue;
     static readonly getPvLabel = pvGetLabel;
+
+    static answeredValueList(question: QuestionValueList) {
+        return question.answer && (!question.multiselect || question.answer.length !== 0);
+    }
+
+    static answeredValueListAnswer(answer: QuestionValue, multiselect?: boolean) {
+        return answer && (!multiselect || answer.length !== 0);
+    }
 
     static convertUnits(value: number, fromUnit: CodeAndSystem, toUnit: CodeAndSystem, cb: CbErr<number>) {
         if (fromUnit.system === 'UCUM' && toUnit.system === 'UCUM') {
@@ -571,6 +598,20 @@ export class NativeRenderService {
             }
         }
         return 1;
+    }
+
+    static setLatitude(fe: FormQuestion, value: number) {
+        if (typeof(fe.question.answer) !== 'object') {
+            fe.question.answer = {};
+        }
+        fe.question.answer.latitude = value;
+    }
+
+    static setLongitude(fe: FormQuestion, value: number) {
+        if (typeof(fe.question.answer) !== 'object') {
+            fe.question.answer = {};
+        }
+        fe.question.answer.longitude = value;
     }
 
     static validateDisplayType(displayType: string): boolean {

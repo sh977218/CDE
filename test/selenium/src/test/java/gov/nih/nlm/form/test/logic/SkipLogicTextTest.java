@@ -26,6 +26,7 @@ public class SkipLogicTextTest extends BaseFormTest {
 
         goToPreview();
         togglePrintableLogic();
+        findElement(By.xpath("//*[@id='Other, specify_0-0_box']")).clear();
         textPresent(cdeName);
         findElement(By.xpath("//*[@id='Other, specify_0-0_box']")).sendKeys("abcde");
         textPresent(cdeName);
@@ -52,9 +53,10 @@ public class SkipLogicTextTest extends BaseFormTest {
 
         goToPreview();
         togglePrintableLogic();
+        findElement(By.xpath("//*[@id='AIS grade_0-1_box']")).clear();
+        findElement(By.xpath("//*[@id='AIS grade_0-1_box']")).sendKeys("s");
         textNotPresent(cdeName);
-        findElement(By.xpath("//*[@id='AIS grade_0-1_box']")).sendKeys("show question 4");
+        findElement(By.xpath("//*[@id='AIS grade_0-1_box']")).sendKeys("how question 4");
         textPresent(cdeName);
     }
-
 }

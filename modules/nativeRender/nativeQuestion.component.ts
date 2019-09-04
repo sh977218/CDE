@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
 import { distinctUntilChanged, debounceTime } from 'rxjs/operators';
-import { questionMulti } from 'shared/form/fe';
+import { isScore, questionMulti } from 'shared/form/fe';
 import { FormQuestion, FormQuestionFollow } from 'shared/form/form.model';
 
 @Component({
@@ -13,13 +13,14 @@ export class NativeQuestionComponent implements OnInit {
     @Input() formElement!: FormQuestionFollow;
     @Input() numSubQuestions!: number;
     @Input() parentValue!: string;
-    NRS = NativeRenderService;
     datePrecisionToType = FormQuestion.datePrecisionToType;
     datePrecisionToStep = FormQuestion.datePrecisionToStep;
+    isScore = isScore;
     metadataTagsNew?: string;
     questionMulti = questionMulti;
     vsacControl = new FormControl();
     vsacCodes: {code: string, displayname: string}[] = [];
+    NRS = NativeRenderService;
 
     constructor(public nrs: NativeRenderService) {
     }
@@ -96,5 +97,9 @@ export class NativeQuestionComponent implements OnInit {
     isOneLiner(q: FormQuestion, numSubQuestions: number): boolean {
         return !!numSubQuestions && !this.hasHeading(q) && (!q.instructions || !q.instructions.value)
             && q.elementType === 'question' && q.question.datatype !== 'Value List';
+    }
+
+    typeof(value: any) {
+        return typeof value;
     }
 }

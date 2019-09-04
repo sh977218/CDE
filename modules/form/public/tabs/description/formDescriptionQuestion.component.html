@@ -13,7 +13,7 @@
     <div class="font-weight-bold d-inline-block" (click)="editQuestion(question);"
          [ngClass]="{'hand-cursor':!isSubForm && canEdit}"
          (mouseover)="hoverInQuestion(question)" (mouseout)="hoverOutQuestion(question)">
-        <span *ngIf="question.question.isScore">Score:</span>
+        <span *ngIf="isScore(question.question)">Score:</span>
         <span class="questionLabel ml-1" title="{{question.label}}">
             <strong *ngIf="question.label; else labelHidden">{{question.label}} </strong>
             <ng-template #labelHidden>

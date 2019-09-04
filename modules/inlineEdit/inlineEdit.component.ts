@@ -1,5 +1,8 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import _cloneDeep from 'lodash/cloneDeep';
+import { assertUnreachable } from 'shared/models.model';
+
+type inputTypes = 'date' | 'email' | 'number' | 'select' | 'text' | 'textArea';
 
 @Component({
     selector: 'cde-inline-edit',
@@ -39,7 +42,7 @@ export class InlineEditComponent {
     get model() {
         return this._model;
     }
-    @Input() inputType = 'text';
+    @Input() inputType: inputTypes = 'text';
     @Input() selectOptions = [];
     @Input() isAllowed = false;
     @Input() linkSource!: string;
@@ -55,6 +58,21 @@ export class InlineEditComponent {
 
     edit() {
         this.editMode = true;
+    }
+
+    isNotNA(value: any): boolean {
+        switch (this.inputType) {
+            case 'number':
+                return !isNaN(value);
+            case 'date':
+            case 'email':
+            case 'select':
+            case 'text':
+            case 'textArea':
+                return !!value;
+            default:
+                throw assertUnreachable(this.inputType);
+        }
     }
 
     save() {
