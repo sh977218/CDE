@@ -2,13 +2,14 @@ import { codeSystemOut } from 'shared/mapping/fhir';
 import { newCodeableConcept } from 'shared/mapping/fhir/datatype/fhirCodeableConcept';
 import { newCoding } from 'shared/mapping/fhir/datatype/fhirCoding';
 import { assertUnreachable, CodeAndSystem, PermissibleValue } from 'shared/models.model';
-import { DatatypeContainer, ValueDomain, ValueDomainValueList } from 'shared/de/dataElement.model';
+import { ValueDomain, ValueDomainValueList } from 'shared/de/dataElement.model';
+import { isScore } from 'shared/form/fe';
 import { FhirCoding, FhirQuantity } from 'shared/mapping/fhir/fhir.model';
 import { Question, QuestionValueList } from 'shared/form/form.model';
 
 export function containerToItemType(container: Question | ValueDomain): string { // http://hl7.org/fhir/item-type
     // NOT IMPLEMENTED: boolean, time, url, open-choice(choice+string), attachment, reference
-    if ((container as Question).isScore) {
+    if (isScore(container as Question)) {
         return 'display';
     }
     switch (container.datatype) {
