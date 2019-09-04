@@ -197,7 +197,7 @@ function getChildren(formElements) {
 
 
 // Compare two elements
-export function compareElt(newEltObj, existingEltObj, source) {
+export function compareElt(newEltObj, existingEltObj) {
     if (newEltObj.elementType !== existingEltObj.elementType) {
         console.log(`Two element type different. newEltObj: ${newEltObj.tinyId} existingEltObj: ${existingEltObj.tinyId} `);
         process.exit(1);
@@ -212,7 +212,7 @@ export function compareElt(newEltObj, existingEltObj, source) {
         eltObj.ids.sort((a, b) => a.source >= b.source);
         ['designations', 'definitions', 'properties', 'referenceDocuments', 'ids']
             .forEach(field => {
-                delete eltObj[field].forEach(o => {
+                eltObj[field].forEach(o => {
                     delete o.sources;
                     delete o.source;
                 });

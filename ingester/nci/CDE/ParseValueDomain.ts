@@ -1,4 +1,6 @@
 import { isEmpty } from 'lodash';
+import { QuestionTypeNumber, QuestionTypeText } from 'shared/de/dataElement.model';
+import { PermissibleValue } from 'shared/models.model';
 
 const datatypeMapping = {
     CHARACTER: 'Text',
@@ -34,6 +36,7 @@ const datatypeMapping = {
 
 export function parseValueDomain(nciXmlCde) {
     const valueDomain: any = {
+        datatype: 'Text',
         permissibleValues: []
     };
     const nciDataTypeString = nciXmlCde.VALUEDOMAIN[0].Datatype[0];
@@ -49,7 +52,7 @@ export function parseValueDomain(nciXmlCde) {
         valueDomain.datatype = 'Value List';
         if (nciXmlCde.VALUEDOMAIN[0].PermissibleValues[0].PermissibleValues_ITEM) {
             nciXmlCde.VALUEDOMAIN[0].PermissibleValues[0].PermissibleValues_ITEM.forEach(pv => {
-                const newPv: any = {
+                const newPv: PermissibleValue = {
                     permissibleValue: pv.VALIDVALUE[0],
                     valueMeaningName: pv.VALUEMEANING[0],
                     valueMeaningDefinition: pv.MEANINGDESCRIPTION[0],
@@ -68,7 +71,7 @@ export function parseValueDomain(nciXmlCde) {
     } else {
         valueDomain.datatype = datatype;
         if (valueDomain.datatype === 'Number') {
-            const datatypeNumber = {};
+            const datatypeNumber: QuestionTypeNumber = {};
             if (nciXmlCde.VALUEDOMAIN[0].MaximumValue[0].length > 0) {
                 datatypeNumber.maxValue = nciXmlCde.VALUEDOMAIN[0].MaximumValue[0];
             }
@@ -83,7 +86,7 @@ export function parseValueDomain(nciXmlCde) {
             }
         }
         if (valueDomain.datatype === 'Text') {
-            const datatypeText = {};
+            const datatypeText: QuestionTypeText = {};
             if (nciXmlCde.VALUEDOMAIN[0].MaximumLength[0].length > 0) {
                 datatypeText.maxLength = nciXmlCde.VALUEDOMAIN[0].MaximumLength[0];
             }
