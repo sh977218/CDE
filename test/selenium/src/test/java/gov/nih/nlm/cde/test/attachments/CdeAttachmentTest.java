@@ -1,8 +1,13 @@
 package gov.nih.nlm.cde.test.attachments;
 
 import gov.nih.nlm.common.test.BaseAttachmentTest;
+import io.restassured.http.Cookie;
+import io.restassured.response.Response;
 import org.openqa.selenium.By;
+import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import static io.restassured.RestAssured.given;
 
 public class CdeAttachmentTest extends BaseAttachmentTest {
 
@@ -48,6 +53,31 @@ public class CdeAttachmentTest extends BaseAttachmentTest {
         goToCdeByName(cdeName);
 
         removeAttachment("glass.jpg");
+    }
+
+
+    @Test
+    public void checkErrors() {
+        mustBeLoggedInAs(reguser_username, password);
+        Cookie myCookie = getCurrentCookie();
+        given().cookie(myCookie).body("").post(baseUrl + "/server/attachment/add").then().statusCode(400);
+
+        Response resp = given().cookie(myCookie).body("{\"id\": \"5aa6dd751217150ae0a19800\"")
+                .post(baseUrl + "/server/attachment/add");
+        Assert.assertEquals(resp.getStatusCode(), 401);
+        Assert.assertTrue(resp.getBody().toString().contains("You do not own"));
+
+
+        resp = given().cookie(myCookie).body("{\"id\": \"5aa6dd751217150ae0a19800\"")
+                .post(baseUrl + "/server/attachment/remove");
+        Assert.assertEquals(resp.getStatusCode(), 401);
+        Assert.assertTrue(resp.getBody().toString().contains("You do not own"));
+
+        resp = given().cookie(myCookie).body("{\"id\": \"5aa6dd751217150ae0a19800\"")
+                .post(baseUrl + "/server/attachment/setDefault");
+        Assert.assertEquals(resp.getStatusCode(), 401);
+        Assert.assertTrue(resp.getBody().toString().contains("You do not own"));
+
     }
 
 }
