@@ -14,8 +14,8 @@ const ttys = {
     SNOMEDCT_US: 'PT',
 };
 
-function handleReject(message) {
-    return error => {
+function handleReject(message: string) {
+    return (error: Error) => {
         _TGT = undefined;
         consoleLog(message + error);
         throw error;
@@ -27,9 +27,9 @@ setInterval(async () => {
     getVsacCookies().catch(handleReject('get vsac cookies ERROR'));
 }, 60 * 60 * 6 * 1000);
 
-let _TGT: Promise<string> | undefined = undefined; // TGT string is tgtUrl + '/' + TGTCode
+let _TGT: Promise<string> | undefined; // TGT string is tgtUrl + '/' + TGTCode
 
-export let _vsacCookies: Promise<any[]> | undefined = undefined;
+export let _vsacCookies: Promise<any[]> | undefined;
 
 function getTGT() {
     if (_TGT) {
@@ -47,9 +47,13 @@ function getTGT() {
         }
     })
         .then(
-            response => response.body,
+            (response: Response) => response.body,
             handleReject('get TGT ERROR')
         );
+}
+
+function verifyUMLS200(response) {
+    return !!response.body && response.body.indexOf("<html>") === -1;
 }
 
 function getVsacCookies() {
@@ -67,14 +71,14 @@ function getVsacCookies() {
         }
     })
         .then(
-            response => response.headers['set-cookie'],
+            (response: Response) => response.headers['set-cookie'],
             handleReject('get vsac cookies ERROR')
         );
 }
 
 function getTicket() {
     return getTGT()
-        .then(tgt => promisify(request.post)({
+        .then((tgt: string) => promisify(request.post)({
             uri: config.vsac.tgtUrl + '/' + tgt,
             qs: {
                 service: config.uts.service
@@ -84,26 +88,31 @@ function getTicket() {
             }
         }))
         .then(
-            response => response.body,
-            handleReject('get ticket ERROR')
+            (response: Response) => {
+                if (verifyUMLS200(response)) {
+                    return response.body;
+                } else {
+                    handleReject('get revision ERROR');
+                }
+            }, handleReject('get ticket ERROR')
         );
 }
 
-function getRevision(oid, j) {
+function getRevision(oid: string, j) {
     return promisify(request.get)({
         uri: `https://vsac.nlm.nih.gov/vsac/pc/vs/valueset/${oid}/detail?label=Latest`,
         jar: j,
         method: 'GET'
     })
         .then(
-            response => JSON.parse(response.body).revision,
+            (response: Response) => JSON.parse(response.body).revision,
             handleReject('get revision ERROR')
         );
 
 }
 
-export function searchValueSet(oid, term = '', page = '1') {
-    let uri = 'https://vsac.nlm.nih.gov/vsac/pc/code/codes';
+export function searchValueSet(oid: string, term = '', page = '1') {
+    const uri = 'https://vsac.nlm.nih.gov/vsac/pc/code/codes';
     return getVsacCookies()
         .then(vsacCookies => {
             const j = request.jar();
@@ -128,8 +137,13 @@ export function searchValueSet(oid, term = '', page = '1') {
                     }
                 }))
                 .then(
-                    response => response.body,
-                    handleReject('get revision ERROR')
+                    (response: Response) => {
+                        if (verifyUMLS200(response)) {
+                            return response.body;
+                        } else {
+                            handleReject('get revision ERROR');
+                        }
+                    } , handleReject('get revision ERROR')
                 );
         });
 }
@@ -147,48 +161,68 @@ export function getValueSet(oid) {
             }
         }))
         .then(
-            response => response.body,
-            handleReject('get vsac set ERROR')
+            (response: Response) => {
+                if (verifyUMLS200(response)) {
+                    return response.body;
+                } else {
+                    handleReject('get revision ERROR');
+                }
+            }, handleReject('get vsac set ERROR')
         );
 }
 
-export function searchUmls(term) {
+export function searchUmls(term: string) {
     return getTicket()
         .then(ticket => promisify(request.get)({
             strictSSL: false,
             uri: `${config.umls.wsHost}/rest/search/current?ticket=${ticket}&string=${term}`
         }))
         .then(
-            response => response.body,
-            handleReject('get umls ERROR')
-        )
+            (response: Response) => {
+                if (verifyUMLS200(response)) {
+                    return response.body;
+                } else {
+                    handleReject('get revision ERROR');
+                }
+            }, handleReject('get umls ERROR')
+        );
 }
 
-export function getSourcePT(cui, src) {
+export function getSourcePT(cui: string, src: string) {
     return getTicket()
         .then(ticket => promisify(request.get)({
             uri: `${config.umls.wsHost}/rest/content/current/CUI/${cui}/atoms?sabs=${src}&ttys=${ttys[src]}&ticket=${ticket}`,
             strictSSL: false
         }))
         .then(
-            response => response.body,
-            handleReject('get src PT from umls ERROR')
+            (response: Response) => {
+                if (verifyUMLS200(response)) {
+                    return response.body;
+                } else {
+                    handleReject('get revision ERROR');
+                }
+            }, handleReject('get src PT from umls ERROR')
         );
 }
 
-export function getAtomsFromUMLS(cui, source) {
+export function getAtomsFromUMLS(cui: string, source: string) {
     return getTicket()
         .then(ticket => promisify(request.get)({
             strictSSL: false,
             uri: `${config.umls.wsHost}/rest/content/current/CUI/${cui}/atoms?sabs=${source}&pageSize=500&ticket=${ticket}`
         }))
         .then(
-            response => response.body,
-            handleReject('get atoms from umls ERROR')
+            (response: Response) => {
+                if (verifyUMLS200(response)) {
+                    return response.body;
+                } else {
+                    handleReject('get revision ERROR');
+                }
+            }, handleReject('get atoms from umls ERROR')
         );
 }
 
-export function umlsCuiFromSrc(id, src) {
+export function umlsCuiFromSrc(id: string, src: string) {
     return getTicket()
         .then(ticket => promisify(request.get)({
             strictSSL: false,
@@ -196,19 +230,29 @@ export function umlsCuiFromSrc(id, src) {
                 + `&includeObsolete=true&includeSuppressible=true&ticket=${ticket}`
         }))
         .then(
-            response => response.body,
-            handleReject('get cui from src ERROR')
+            (response: Response) => {
+                if (verifyUMLS200(response)) {
+                    return response.body;
+                } else {
+                    handleReject('get revision ERROR');
+                }
+            }, handleReject('get cui from src ERROR')
         );
 }
 
-export function searchBySystemAndCode(system, code) {
+export function searchBySystemAndCode(system: string, code: string) {
     return getTicket()
         .then(ticket => promisify(request.get)({
             strictSSL: false,
             uri: config.umls.wsHost + '/rest/content/current/source/' + system + '/' + code + '/atoms?ticket=' + ticket,
         }))
-        .then(response => response.body,
-            err => {
+        .then((response: Response) => {
+                if (verifyUMLS200(response)) {
+                    return response.body;
+                } else {
+                    handleReject('get revision ERROR');
+                }
+            }, (err: Error) => {
                 _TGT = undefined;
                 respondError(err, {details: 'get umls ERROR'});
                 throw err;
@@ -217,18 +261,18 @@ export function searchBySystemAndCode(system, code) {
 }
 
 export const CDE_SYSTEM_TO_UMLS_SYSTEM_MAP = {
-    'LOINC': 'LNC',
+    LOINC: 'LNC',
     'NCI Thesaurus': 'NCI',
     'SNOMEDCT US': 'SNOMEDCT_US',
-    'UMLS': 'UMLS',
+    UMLS: 'UMLS',
     'AHRQ Common Formats': '',
-    'CDCREC': '',
+    CDCREC: '',
     'HL7 Administrative Gender': '',
     'HL7 NullFlavor': '',
-    'ICD9CM': '',
-    'ICD10CM': '',
-    'OBI': '',
-    'SNOMED': '',
+    ICD9CM: '',
+    ICD10CM: '',
+    OBI: '',
+    SNOMED: '',
     'SNOMED CT': '',
-    'SNOMEDCT': '',
+    SNOMEDCT: '',
 };
