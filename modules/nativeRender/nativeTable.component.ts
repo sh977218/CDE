@@ -3,7 +3,7 @@ import { NativeRenderService } from 'nativeRender/nativeRender.service';
 import { pvGetLabel } from 'core/de/deShared';
 import { isInForm, isQuestion, isSection, repeatFe, repeatFeQuestion } from 'core/form/fe';
 import {
-    FormElement, FormElementFollow, FormQuestion, FormSectionOrFormFollow, PermissibleFormValue
+    FormElement, FormElementFollow, FormQuestion, FormSectionOrFormFollow, PermissibleFormValue, QuestionValue
 } from 'shared/form/form.model';
 import { iterateFeSync, questionMulti } from 'shared/form/fe';
 import { getQuestionPriorByLabel } from 'shared/form/skipLogic';
@@ -12,6 +12,11 @@ import { range } from 'shared/system/util';
 
 interface Style {
     backgroundColor?: string;
+    borderColor?: string;
+    borderStyle?: string;
+    borderWidth?: string;
+    color?: string;
+    font?: string;
 }
 interface Theme {
     sectionStyle: Style;
@@ -70,9 +75,6 @@ export class NativeTableComponent {
     get formElement(): FormSectionOrFormFollow {
         return this._formElement;
     }
-
-    constructor(public nrs: NativeRenderService) {
-    }
     _formElement!: FormSectionOrFormFollow;
     canRender = false;
     firstQuestion?: FormQuestion;
@@ -87,6 +89,9 @@ export class NativeTableComponent {
     readonly NRS = NativeRenderService;
     datePrecisionToType = FormQuestion.datePrecisionToType;
     datePrecisionToStep = FormQuestion.datePrecisionToStep;
+
+    constructor(public nrs: NativeRenderService) {
+    }
 
     radioButtonSelect(required: boolean, obj: any, property: string, value: string, q: FormQuestion) {
         if (required || obj[property] !== value) {
@@ -274,6 +279,37 @@ export class NativeTableComponent {
                         this.nrs.elt.formInput[location] = question.answers[0].permissibleValue;
                     });
                 }
+                if (f.question.defaultAnswer) {
+                    let answer: QuestionValue;
+                    switch (f.question.datatype) {
+                        case 'Geo Location':
+                            const inputs = f.question.defaultAnswer.split(',').map(value => parseFloat(value.trim()));
+                            answer = {latitude: inputs[0], longitude: inputs[1]};
+                            break;
+                        case 'Number':
+                            answer = parseFloat(f.question.defaultAnswer);
+                            break;
+                        case 'Date':
+                        case 'Dynamic Code List':
+                        case 'Externally Defined':
+                        case 'File':
+                        case 'Text':
+                        case 'Time':
+                        case 'Value List':
+                            answer = f.question.defaultAnswer;
+                            break;
+                        default:
+                            throw assertUnreachable(f.question);
+                    }
+                    this.tableForm.rows.forEach((r, i) => {
+                        const location = i + questionName;
+                        if (f.question.datatype === 'Value List' && questionMulti(f)) {
+                            this.nrs.elt.formInput[location].push(answer);
+                        } else {
+                            this.nrs.elt.formInput[location] = answer;
+                        }
+                    });
+                }
                 if (f.question.unitsOfMeasure && f.question.unitsOfMeasure.length === 1) {
                     this.tableForm.rows.forEach((r, i) => {
                         const location = i + questionName;
@@ -307,6 +343,10 @@ export class NativeTableComponent {
     getSectionLevel(level: number) {
         if (this.tableForm.head.length <= level) { this.tableForm.head[level] = {q: []}; }
         return this.tableForm.head[level];
+    }
+
+    typeof(value: any) {
+        return typeof value;
     }
 
     static readonly THEME: Theme[] = [

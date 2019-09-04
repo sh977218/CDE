@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { findQuestionByTinyId, getFormScoreQuestions } from 'core/form/fe';
+import { isScore } from 'shared/form/fe';
 import { CdeForm, FormQuestion } from 'shared/form/form.model';
 import { CbErr } from 'shared/models.model';
 
@@ -40,7 +41,7 @@ export class ScoreService {
     }
 
     static calculateScore(question: FormQuestion, elt: CdeForm, cb: CbErr<number>) {
-        if (!question.question.isScore) {
+        if (!isScore(question.question)) {
             return;
         }
         question.question.cde.derivationRules.forEach(async derRule => {

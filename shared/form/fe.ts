@@ -58,6 +58,10 @@ export function getLabel(fe: FormElement): string {
     return fe.question && fe.question.cde && fe.question.cde.name || '';
 }
 
+export function isScore(question: Question): boolean {
+    return question.cde.derivationRules && question.cde.derivationRules.length > 0;
+}
+
 // implemented options: return, skip
 // feCb(fe, cbContinue(error, newOptions), options)
 //     cbContinue skip: noopSkipIterCb()
