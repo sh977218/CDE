@@ -1,79 +1,38 @@
-import { generateTinyId } from 'server/system/mongo-data';
-import { DataElement } from 'server/cde/mongo-cde';
+import { isEmpty, words } from 'lodash';
+import { createNindsForm } from 'ingester/ninds/csv/form';
+import { BATCHLOADER, compareElt, imported, lastMigrationScript, mergeElt, updateForm } from 'ingester/shared/utility';
 import { Form } from 'server/form/mongo-form';
-import { filter, toLower, uniqBy, words } from 'lodash';
 
-export async function loadFormByCsv(rows){
-    const allFormsArray = uniqBy(rows, 'Form');
-    for (const oneform of allFormsArray) {
-        const form = {
-            tinyId: generateTinyId(),
-            stewardOrg: {
-                name: 'NINDS'
-            },
-            naming: [
-                {designation: words(oneForm.Form).join(' ')}
-            ],
-            registrationState: {
-                registrationStatus: 'Recorded'
-            },
-            createdBy: {
-                username: 'batchloader'
-            },
-            referenceDocuments: [],
-            properties: [],
-            formElements: [],
-            classification: [{
-                stewardOrg: {name: 'NINDS'},
-                elements: [{
-                    name: 'Preclinical TBI',
-                    elements: []
-                }]
-            }]
-        };
-        let lastSection = '';
-        let currentSection = '';
-        let formElements = form.formElements;
-        const oneFormArray = filter(rows, r => r.Form === oneForm.Form);
-        for (const row of oneFormArray) {
-            const variableName = row['Variable Name'].trim();
-            const existingDE = await DataElement.findOne({'ids.id': variableName});
-            currentSection = getCell(row, 'Category/Group');
-            if (currentSection !== lastSection) {
-                const newSection = {
-                    elementType: 'section',
-                    label: currentSection,
-                    formElements: []
-                };
-                form.formElements.push(newSection);
-                formElements = newSection.formElements;
-            }
-            if (existingDE) {
-                const question = deToQuestion(row, existingDE);
-                formElements.push(question);
-                lastSection = currentSection;
-            } else {
-                rowToDataElement(row, form, (err, de) => {
-                    if (err) {
-                        throw err;
-                    } else {
-                        new DataElement(de).save((err, newCde) => {
-                            if (err) {
-                                throw err;
-                            } else {
-                                const question = deToQuestion(row, newCde);
-                                formElements.push(question);
-                                lastSection = currentSection;
-                                deCount++;
-                                console.log('deCount: ' + deCount);
-                                doneOneRow();
-                            }
-                        });
-                    }
-                });
-            }
+function convertFileNameToFormName(fullFileName) {
+    const trimmedFileName = fullFileName
+        .replace('.csv', '')
+        .replace('.xlsx').trim();
+    const terms = words(trimmedFileName);
+    return terms.filter(t => !isEmpty(t) && isNaN(t)).join(' ');
+}
+
+export async function loadFormByCsv({rows, csvFileName}) {
+    const formName = convertFileNameToFormName(csvFileName);
+    const nindsForm = await createNindsForm(formName, rows);
+    const newForm = new Form(nindsForm);
+    const newFormObj = newForm.toObject();
+    let existingForm = await Form.findOne({archived: false, 'designations.designation': formName});
+    if (!existingForm) {
+        existingForm = await newForm.save();
+        console.log(`created form: ${formName} tinyId: ${existingForm.tinyId}`);
+    } else {
+        const diff = compareElt(newForm.toObject(), existingForm.toObject(), 'NINDS');
+        if (isEmpty(diff)) {
+            existingForm.imported = imported;
+            existingForm.lastMigrationScript = lastMigrationScript;
+            await existingForm.save();
+        } else {
+            const existingFormObj = existingForm.toObject();
+            existingFormObj.changeNote = lastMigrationScript;
+            mergeElt(existingFormObj, newFormObj, 'NINDS');
+            existingFormObj.lastMigrationScript = lastMigrationScript;
+            await updateForm(existingFormObj, BATCHLOADER, {updateSource: true});
         }
-        form.referenceDocuments = uniqBy(form.referenceDocuments, 'uri');
-        await new Form(form).save();
+        console.log(`existing form: ${formName} tinyId: ${existingForm.tinyId}`);
     }
 }

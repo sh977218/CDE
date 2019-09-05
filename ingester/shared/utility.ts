@@ -15,7 +15,7 @@ const sourceMap = {
     NCI: ['caDSR']
 };
 export const TODAY = new Date().toJSON();
-export const lastMigrationScript = `load NCI on ${moment().format('DD MMMM YYYY')}`;
+export const lastMigrationScript = `load Preclinical + NEI on ${moment().format('DD MMMM YYYY')}`;
 
 export const BATCHLOADER_USERNAME = 'batchloader';
 export const BATCHLOADER = {
