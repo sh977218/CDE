@@ -1,4 +1,4 @@
-import { findIndex, isEmpty } from 'lodash';
+import { findIndex, isEmpty, isEqual } from 'lodash';
 import { generateTinyId } from 'server/system/mongo-data';
 import {
     BATCHLOADER, compareElt, created, imported, lastMigrationScript, mergeElt, updateCde
@@ -47,17 +47,71 @@ async function doOneRow(row) {
     return existingCde.toObject();
 }
 
-function convertCsvRowToQuestion(row, cde) {
-    const question = {};
-    
-    return question;
+function convertCsvRowToFormElement(row, cde) {
+    const preferredQuestionText = getCell(row, 'Preferred Question Text');
+    const guidelinesInstructions = getCell(row, 'Guidelines/Instructions');
+    const title = getCell(row, 'Title');
+
+    const formElement = {
+        elementType: 'question',
+        label: preferredQuestionText,
+        instructions: {
+            value: guidelinesInstructions
+        },
+        question: {
+            cde: {
+                tinyId: cde.tinyId,
+                name: title,
+                version: cde.version,
+                permissibleValues: cde.valueDomain.permissibleValues,
+                ids: cde.ids,
+                derivationRules: cde.derivationRules
+            },
+            datatype: cde.valueDomain.datatype,
+            datatypeNumber: cde.valueDomain.datatypeNumber,
+            datatypeText: cde.valueDomain.datatypeText,
+            datatypeDate: cde.valueDomain.datatypeDate,
+            unitsOfMeasure: {system: '', code: cde.valueDomain.uom},
+            answers: cde.valueDomain.permissibleValues
+        }
+    };
+
+    return formElement;
 }
 
 async function parseFormElements(rows) {
     const formElements = [];
+    let newSection = {
+        label: '',
+        elementType: 'section',
+        formElements: []
+    };
+
+    let prevCategoryGroup = '';
     for (const row of rows) {
         const cde = await doOneRow(row);
-        convertCsvRowToQuestion(row, cde);
+        const formElement = convertCsvRowToFormElement(row, cde);
+        const categoryGroup = getCell(row, 'Category/Group');
+        if (isEmpty(prevCategoryGroup)) {
+            prevCategoryGroup = categoryGroup;
+        }
+        if (isEmpty(prevCategoryGroup)) {
+            console.log(`empty category`);
+            process.exit(1);
+        }
+
+        if (isEqual(prevCategoryGroup, categoryGroup)) {
+            newSection.label =categoryGroup;
+            newSection.formElements.push(formElement);
+        } else {
+            formElements.push(newSection);
+            newSection = {
+                label: '',
+                elementType: 'section',
+                formElements: [formElement]
+            };
+        }
+
     }
 
     return formElements;
