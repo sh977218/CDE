@@ -240,7 +240,9 @@ export function update(elt, user, options: any = {}, callback: CbError<DE>) {
         updateUser(elt, user);
 
         // user cannot edit sources.
-        elt.sources = dataElement.sources;
+        if (!options.updateSource) {
+            elt.sources = dataElement.sources;
+        }
 
         // because it's draft not edit attachment
         if (options.updateAttachments) {

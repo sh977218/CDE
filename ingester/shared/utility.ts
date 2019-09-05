@@ -69,6 +69,7 @@ export function wipeBeforeCompare(obj) {
     delete obj.createdBy;
     delete obj.updated;
     delete obj.updatedBy;
+    delete obj.sources;
 
     delete obj.naming;
     delete obj.displayProfiles;
@@ -100,10 +101,10 @@ export function trimWhite(text) {
 
 export function printUpdateResult(updateResult, elt) {
     if (updateResult.nModified) {
-        console.log(`${updateResult.nModified} ${elt.elementType} source modified: ${elt.tinyId}`);
+        console.log(`${updateResult.nModified} ${elt.elementType} Raw Artifact modified: ${elt.tinyId}`);
     }
     if (updateResult.upserted && updateResult.upserted.length) {
-        console.log(`${updateResult.upserted.length} ${elt.elementType} source inserted: ${elt.tinyId}`);
+        console.log(`${updateResult.upserted.length} ${elt.elementType} Raw Artifact inserted: ${elt.tinyId}`);
     }
 }
 
@@ -118,7 +119,7 @@ export function updateCde(elt, user, options = {}) {
         mongo_cde.update(elt, user, options, (err, savedElt) => {
             if (err) reject(err);
             else resolve(savedElt);
-        })
+        });
     });
 }
 
@@ -196,26 +197,26 @@ function getChildren(formElements) {
 
 
 // Compare two elements
-export function compareElt(newEltObj, existingEltObj, source) {
+export function compareElt(newEltObj, existingEltObj) {
     if (newEltObj.elementType !== existingEltObj.elementType) {
         console.log(`Two element type different. newEltObj: ${newEltObj.tinyId} existingEltObj: ${existingEltObj.tinyId} `);
         process.exit(1);
     }
-    const upperCaseSource = source.toUpperCase();
     const isQualified = existingEltObj.registrationState.registrationStatus === 'Qualified';
     [existingEltObj, newEltObj].forEach(eltObj => {
         eltObj.designations.sort((a, b) => a.designation >= b.designation);
         eltObj.definitions.sort((a, b) => a.definition >= b.definition);
-        ['designations', 'definitions'].forEach(p => {
-            delete eltObj[p].sources;
-        });
 
         eltObj.properties.sort((a, b) => a.key >= b.key);
         eltObj.referenceDocuments.sort((a, b) => a.docType >= b.docType);
         eltObj.ids.sort((a, b) => a.source >= b.source);
-        ['properties', 'referenceDocuments', 'ids'].forEach(p => {
-            eltObj[p] = eltObj[p].filter(a => sourceMap[upperCaseSource].indexOf(a.source) !== -1);
-        });
+        ['designations', 'definitions', 'properties', 'referenceDocuments', 'ids']
+            .forEach(field => {
+                eltObj[field].forEach(o => {
+                    delete o.sources;
+                    delete o.source;
+                });
+            });
 
         if (eltObj.elementType === 'form' && !isQualified) {
             eltObj.cdeIds = getChildren(eltObj.formElements);
@@ -224,7 +225,8 @@ export function compareElt(newEltObj, existingEltObj, source) {
         wipeBeforeCompare(eltObj);
 
     });
-    return DiffJson.diff(existingEltObj, newEltObj);
+    const result = DiffJson.diff(existingEltObj, newEltObj);
+    return result;
 }
 
 // Merge two elements
@@ -258,6 +260,18 @@ function mergeDefinition(existingDefinitions, newDefinitions) {
     return definitions;
 }
 
+export function mergeProperties(newProperties, existingProperties) {
+    const properties = [];
+    const allProperties = newProperties.concat(existingProperties);
+    allProperties.forEach(property => {
+        const i = findIndex(properties, {key: property.key});
+        if (i === -1) {
+            properties.push(property);
+        }
+    });
+    return properties;
+}
+
 export function mergeBySources(newSources, existingSources, sources) {
     if (!existingSources) {
         existingSources = [];
@@ -267,9 +281,6 @@ export function mergeBySources(newSources, existingSources, sources) {
 }
 
 export function mergeSourcesBySourcesName(newSources, existingSources, sources) {
-    if (!existingSources) {
-        existingSources = [];
-    }
     const otherSources = existingSources.filter(o => sources.indexOf(o.sourceName) === -1);
     return newSources.concat(otherSources);
 }
@@ -285,7 +296,7 @@ export function mergeElt(existingEltObj, newEltObj, source) {
     existingEltObj.definitions = mergeDefinition(existingEltObj.definitions, newEltObj.definitions);
 
     existingEltObj.ids = mergeBySources(newEltObj.ids, existingEltObj.ids, sources);
-    existingEltObj.properties = mergeBySources(newEltObj.properties, existingEltObj.properties, sources);
+    existingEltObj.properties = mergeProperties(newEltObj.properties, existingEltObj.properties);
     existingEltObj.referenceDocuments = mergeBySources(newEltObj.referenceDocuments, existingEltObj.referenceDocuments, sources);
 
     existingEltObj.sources = mergeSourcesBySourcesName(newEltObj.sources, existingEltObj.sources, sources);
