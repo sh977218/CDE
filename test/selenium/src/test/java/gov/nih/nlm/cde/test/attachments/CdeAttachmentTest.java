@@ -60,21 +60,21 @@ public class CdeAttachmentTest extends BaseAttachmentTest {
     public void checkErrors() {
         mustBeLoggedInAs(reguser_username, password);
         Cookie myCookie = getCurrentCookie();
-        given().cookie(myCookie).body("").post(baseUrl + "/server/attachment/add").then().statusCode(400);
+        given().cookie(myCookie).body("").post(baseUrl + "/server/attachment/cde/add").then().statusCode(400);
 
         Response resp = given().cookie(myCookie).body("{\"id\": \"5aa6dd751217150ae0a19800\"")
-                .post(baseUrl + "/server/attachment/add");
+                .post(baseUrl + "/server/attachment/cde/add");
         Assert.assertEquals(resp.getStatusCode(), 401);
         Assert.assertTrue(resp.getBody().toString().contains("You do not own"));
 
 
         resp = given().cookie(myCookie).body("{\"id\": \"5aa6dd751217150ae0a19800\"")
-                .post(baseUrl + "/server/attachment/remove");
+                .post(baseUrl + "/server/attachment/cde/remove");
         Assert.assertEquals(resp.getStatusCode(), 401);
         Assert.assertTrue(resp.getBody().toString().contains("You do not own"));
 
         resp = given().cookie(myCookie).body("{\"id\": \"5aa6dd751217150ae0a19800\"")
-                .post(baseUrl + "/server/attachment/setDefault");
+                .post(baseUrl + "/server/attachment/cde/setDefault");
         Assert.assertEquals(resp.getStatusCode(), 401);
         Assert.assertTrue(resp.getBody().toString().contains("You do not own"));
 
