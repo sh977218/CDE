@@ -1,5 +1,6 @@
 import { readdirSync, readFileSync } from 'fs';
 import { loadFormByCsv } from 'ingester/ninds/Loader/loadNindsForm';
+import { toLower, words } from 'lodash';
 
 const csv = require('csv');
 
@@ -21,19 +22,33 @@ function parseOneCsv(csvFileName) {
                 console.log(err);
                 process.exit(1);
             } else {
-                resolve({rows, csvFileName});
+                const formattedRows = formatRows(rows);
+                resolve({rows: formattedRows, csvFileName});
             }
         });
     });
 }
 
+function formatRows(rows) {
+    const formattedRows = [];
+    rows.forEach(row => {
+        const formattedRow = {};
+        for (const p in row) {
+            const formattedP = words(toLower(p)).join('');
+            formattedRow[formattedP] = row[p];
+        }
+        formattedRows.push(formattedRow);
+    });
+    return formattedRows;
+}
+
 async function run() {
     const csvFiles = readdirSync(FILE_PATH);
     for (const csvFileName of csvFiles) {
-        console.log(`csvFileName: ${csvFileName}.`);
         if (csvFileName.indexOf('.csv') !== -1) {
-            const rows = await parseOneCsv(csvFileName);
-            await loadFormByCsv(rows);
+            const csvResult = await parseOneCsv(csvFileName);
+            console.log(`csvFileName: ${csvFileName}.`);
+            await loadFormByCsv(csvResult);
         }
     }
 }

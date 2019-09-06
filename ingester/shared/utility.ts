@@ -2,7 +2,7 @@ import * as DiffJson from 'diff-json';
 import * as cheerio from 'cheerio';
 import * as moment from 'moment';
 import { get } from 'request';
-import { findIndex, isEmpty, uniq } from 'lodash';
+import { findIndex, isEmpty, sortBy, uniq } from 'lodash';
 import * as mongo_cde from 'server/cde/mongo-cde';
 import * as mongo_form from 'server/form/mongo-form';
 import { PhenxURL } from 'ingester/createMigrationConnection';
@@ -12,9 +12,9 @@ import { FormElement } from 'shared/form/form.model';
 
 const sourceMap = {
     LOINC: ['LOINC'],
-    PHENX: ['PhenX', 'PhenX Variable'],
-    NINDS: ['NINDS', 'NINDS Variable Name', 'NINDS caDSR', 'caDSR'],
-    NCI: ['caDSR']
+    PhenX: ['PhenX', 'PhenX Variable'],
+    NINDS: ['NINDS', 'NINDS Variable Name', 'NINDS caDSR', 'NINDS Preclinical'],
+    NCI: ['NCI', 'caDSR']
 };
 export const TODAY = new Date().toJSON();
 export const lastMigrationScript = `load Preclinical + NEI on ${moment().format('DD MMMM YYYY')}`;
@@ -232,6 +232,7 @@ export function compareElt(newEltObj, existingEltObj) {
 // Merge two elements
 function mergeDesignation(existingDesignations: Designation[], newDesignations: Designation[]) {
     const designations: Designation[] = [];
+    const allDesignations = existingDesignations.concat(newDesignations);
     allDesignations.forEach(designation => {
         const i = findIndex(designations, {designation: designation.designation});
         if (i !== -1) {
@@ -459,5 +460,16 @@ export function fixValueDomainOrQuestion(obj) {
     if (datatype === 'Externally Defined' && !isEmpty(datatype.datatypeExternallyDefined)) {
         obj.datatypeExternallyDefined = fixDatatypeExternallyDefined(obj.datatypeExternallyDefined);
     }
+}
+
+
+// Utility methods related to cde and form
+
+export function sortReferenceDocuments(referenceDocuments) {
+    return sortBy(referenceDocuments, ['title', 'uri']);
+}
+
+export function sortProperties(properties) {
+    return sortBy(properties, ['key']);
 }
 

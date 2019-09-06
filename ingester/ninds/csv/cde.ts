@@ -1,6 +1,6 @@
-import { isEmpty, isEqual, toLower, trim } from 'lodash';
+import { isEmpty, isEqual, toLower, trim, words } from 'lodash';
 import { generateTinyId } from 'server/system/mongo-data';
-import { BATCHLOADER, created, imported } from 'ingester/shared/utility';
+import { BATCHLOADER, created, imported, sortProperties, sortReferenceDocuments } from 'ingester/shared/utility';
 import { QuestionTypeNumber, QuestionTypeText } from 'shared/de/dataElement.model';
 import { get } from 'request';
 import * as cheerio from 'cheerio';
@@ -59,7 +59,6 @@ const UOM_MAP = {
 };
 
 const DATA_TYPE_MAP = {
-    '': 'Text',
     Alphanumeric: 'Text',
     'Date or Date & Time': 'Date',
     'Numeric Values': 'Number',
@@ -71,15 +70,11 @@ const DATA_TYPE_MAP = {
 };
 
 export function getCell(row, header) {
-    if (!isEmpty(row[header])) {
-        return trim(row[header]);
+    const formattedHeader = words(toLower(header)).join('');
+    if (!isEmpty(row[formattedHeader])) {
+        return trim(row[formattedHeader]);
     } else {
-        const headerLower = toLower(header);
-        if (!isEmpty(row[headerLower])) {
-            return trim(row[headerLower]);
-        } else {
-            return '';
-        }
+        return '';
     }
 }
 
@@ -94,14 +89,18 @@ function parseDesignations(row) {
             tags: ['Preferred Question Text']
         });
     } else {
-        designations.push({
-            designation: title,
-            tags: []
-        });
-        designations.push({
-            designation: preferredQuestionText,
-            tags: ['Preferred Question Text']
-        });
+        if (!isEmpty(title)) {
+            designations.push({
+                designation: title,
+                tags: []
+            });
+        }
+        if (!isEmpty(preferredQuestionText)) {
+            designations.push({
+                designation: preferredQuestionText,
+                tags: ['Preferred Question Text']
+            });
+        }
     }
     return designations;
 }
@@ -116,14 +115,19 @@ function parseDefinitions(row) {
             tags: []
         });
     } else {
-        definitions.push({
-            definition: description,
-            tags: []
-        });
-        definitions.push({
-            definition: shortDescription,
-            tags: []
-        });
+        if (!isEmpty(description)) {
+            definitions.push({
+                definition: description,
+                tags: []
+            });
+        }
+        if (!isEmpty(shortDescription)) {
+            definitions.push({
+                definition: shortDescription,
+                tags: []
+            });
+        }
+
     }
     return definitions;
 }
@@ -131,12 +135,11 @@ function parseDefinitions(row) {
 function parseValueDomain(row) {
     const unitOfMeasure = getCell(row, 'Unit of Measure');
     const uom = UOM_MAP[unitOfMeasure];
-    if (isEmpty(uom)) {
+    if (uom === undefined) {
         console.log(`${unitOfMeasure} is not in the uom map.`);
         process.exit(1);
     }
     const valueDomain = {
-        datatype: 'Text',
         uom,
         permissibleValues: []
     };
@@ -162,8 +165,8 @@ function parseValueDomain(row) {
             console.log('bad pvs');
             process.exit(1);
         }
-    } else if (inputRestrictionString === 'free-form entry') {
-        const datatypeString = getCell(row, 'datatype');
+    } else {
+        const datatypeString = getCell(row, 'Datatype');
         const datatype = DATA_TYPE_MAP[datatypeString];
 
         if (isEmpty(datatype)) {
@@ -197,9 +200,6 @@ function parseValueDomain(row) {
                 valueDomain.datatypeNumber = datatypeNumber;
             }
         }
-    } else {
-        console.log('bad input restriction');
-        process.exit(1);
     }
 
     return valueDomain;
@@ -218,7 +218,10 @@ function fetchPubmedRef(pmId) {
             } else if (response.statusCode === 200) {
                 const $ = cheerio.load(body);
                 const title = $('.rprt_all h1').text();
-                const abstracttext = $('abstracttext').text();
+                const abstracttext = $('.abstr div p:first-child').text();
+                if (isEmpty(abstracttext)) {
+                    console.log(`${uri} has empty Abstract`);
+                }
                 resolve({title, uri, text: abstracttext});
             } else {
                 console.log('status: ' + response.statusCode);
@@ -247,6 +250,7 @@ export function parseReferenceDocuments(row) {
                         .replace(/\./ig, '')
                         .replace(/pubmed\//ig, '')
                         .replace(/PMID/ig, '')
+                        .replace(/PUBMED:/ig, '')
                         .trim().split(',').filter(p => !isEmpty(p));
                     for (const pmId of pmIds) {
                         const pubmedRef = await fetchPubmedRef(pmId);
@@ -267,7 +271,7 @@ export function parseReferenceDocuments(row) {
                 });
             }
         }
-        resolve(referenceDocuments);
+        resolve(sortReferenceDocuments(referenceDocuments));
     });
 }
 
@@ -286,7 +290,7 @@ function parseProperties(row) {
         properties.push({key: 'Notes', value: notes, source: 'NINDS'});
     }
 
-    return properties;
+    return sortProperties(properties);
 }
 
 function parseIds(row) {

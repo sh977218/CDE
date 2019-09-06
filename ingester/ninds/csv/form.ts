@@ -1,7 +1,8 @@
 import { findIndex, isEmpty, isEqual } from 'lodash';
 import { generateTinyId } from 'server/system/mongo-data';
 import {
-    BATCHLOADER, compareElt, created, imported, lastMigrationScript, mergeElt, updateCde
+    BATCHLOADER, compareElt, created, imported, lastMigrationScript, mergeElt, sortProperties, sortReferenceDocuments,
+    updateCde
 } from 'ingester/shared/utility';
 import { createNindsCde, getCell, parseReferenceDocuments } from 'ingester/ninds/csv/cde';
 import { DataElement } from 'server/cde/mongo-cde';
@@ -42,7 +43,7 @@ async function doOneRow(row) {
             console.log(`same cde tinyId: ${existingCde.tinyId}`);
         } else {
             const existingCdeObj = existingCde.toObject();
-            mergeEingester/shared/utility.tslt(existingCdeObj, newCdeObj, 'NCI');
+            mergeElt(existingCdeObj, newCdeObj, 'NINDS');
             existingCdeObj.imported = imported;
             existingCdeObj.changeNote = lastMigrationScript;
             existingCdeObj.lastMigrationScript = lastMigrationScript;
@@ -99,14 +100,10 @@ async function parseFormElements(rows) {
         const cde = await doOneRow(row);
         const formElement = convertCsvRowToFormElement(row, cde);
         const categoryGroup = getCell(row, 'Category/Group');
-        if (isEmpty(prevCategoryGroup)) {
-            prevCategoryGroup = categoryGroup;
-        }
-        if (isEmpty(prevCategoryGroup)) {
+        if (isEmpty(categoryGroup)) {
             console.log(`empty category`);
             process.exit(1);
         }
-
         if (isEqual(prevCategoryGroup, categoryGroup)) {
             newSection.label = categoryGroup;
             newSection.formElements.push(formElement);
@@ -118,9 +115,9 @@ async function parseFormElements(rows) {
                 formElements: [formElement]
             };
         }
-
+        prevCategoryGroup = categoryGroup;
     }
-
+    formElements.push(newSection);
     return formElements;
 }
 
@@ -135,11 +132,11 @@ async function parseFormReferenceDocuments(rows) {
             }
         }
     }
-    return referenceDocuments;
+    return sortReferenceDocuments(referenceDocuments);
 }
 
 function parseProperties() {
-    return [];
+    return sortProperties([]);
 }
 
 function parseIds() {
