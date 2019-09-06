@@ -59,6 +59,7 @@ const UOM_MAP = {
 };
 
 const DATA_TYPE_MAP = {
+    '': 'Text',
     Alphanumeric: 'Text',
     'Date or Date & Time': 'Date',
     'Numeric Values': 'Number',

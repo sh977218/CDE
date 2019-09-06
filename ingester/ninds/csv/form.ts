@@ -25,14 +25,20 @@ async function doOneRow(row) {
         'ids.id': variableName
     });
     if (!existingCde) {
-        existingCde = await newCde.save();
+        existingCde = await newCde.save().catch(e => {
+            console.log('await newCde.save().catch: ' + e);
+            process.exit(1);
+        });
         console.log(`created cde tinyId: ${existingCde.tinyId}`);
     } else {
         const diff = compareElt(newCde.toObject(), existingCde.toObject(), 'NINDS');
         if (isEmpty(diff)) {
             existingCde.imported = imported;
             existingCde.lastMigrationScript = lastMigrationScript;
-            existingCde = await existingCde.save();
+            existingCde = await existingCde.save().catch(e => {
+                console.log('await existingCde.save().catch: ' + e);
+                process.exit(1);
+            });
             console.log(`same cde tinyId: ${existingCde.tinyId}`);
         } else {
             const existingCdeObj = existingCde.toObject();
@@ -48,16 +54,17 @@ async function doOneRow(row) {
 }
 
 function convertCsvRowToFormElement(row, cde) {
-    const preferredQuestionText = getCell(row, 'Preferred Question Text');
-    const guidelinesInstructions = getCell(row, 'Guidelines/Instructions');
+    const label = getCell(row, 'Preferred Question Text');
+    const value = getCell(row, 'Guidelines/Instructions');
+    const inputRestriction = getCell(row, 'Input Restriction');
+    const multiselect = inputRestriction.indexOf('Multiple Pre-Defined Values Selected') !== -1;
     const title = getCell(row, 'Title');
 
     const formElement = {
         elementType: 'question',
-        label: preferredQuestionText,
-        instructions: {
-            value: guidelinesInstructions
-        },
+        label,
+        instructions: {value},
+        multiselect,
         question: {
             cde: {
                 tinyId: cde.tinyId,
@@ -101,7 +108,7 @@ async function parseFormElements(rows) {
         }
 
         if (isEqual(prevCategoryGroup, categoryGroup)) {
-            newSection.label =categoryGroup;
+            newSection.label = categoryGroup;
             newSection.formElements.push(formElement);
         } else {
             formElements.push(newSection);

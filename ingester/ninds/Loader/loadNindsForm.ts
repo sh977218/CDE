@@ -18,14 +18,20 @@ export async function loadFormByCsv({rows, csvFileName}) {
     const newFormObj = newForm.toObject();
     let existingForm = await Form.findOne({archived: false, 'designations.designation': formName});
     if (!existingForm) {
-        existingForm = await newForm.save();
+        existingForm = await newForm.save().catch(e => {
+            console.log('await newForm.save().catch: ' + e);
+            process.exit(1);
+        });
         console.log(`created form: ${formName} tinyId: ${existingForm.tinyId}`);
     } else {
         const diff = compareElt(newForm.toObject(), existingForm.toObject(), 'NINDS');
         if (isEmpty(diff)) {
             existingForm.imported = imported;
             existingForm.lastMigrationScript = lastMigrationScript;
-            await existingForm.save();
+            await existingForm.save().catch(e => {
+                console.log('await existingForm.save().catch: ' + e);
+                process.exit(1);
+            });
         } else {
             const existingFormObj = existingForm.toObject();
             existingFormObj.changeNote = lastMigrationScript;
