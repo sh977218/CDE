@@ -9,7 +9,7 @@ import { parseDesignations } from 'ingester/ninds/csv/cde/ParseDesignations';
 import { parseDefinitions } from 'ingester/ninds/csv/cde/ParseDefinitions';
 import { parseClassification } from 'ingester/ninds/csv/cde/ParseClassification';
 
-export async function createNindsCde(row) {
+export async function createNindsCde(row: any) {
     const ids = parseIds(row);
     const designations = parseDesignations(row);
     const definitions = parseDefinitions(row);
@@ -17,7 +17,7 @@ export async function createNindsCde(row) {
     const referenceDocuments = await parseReferenceDocuments(row);
     const properties = parseProperties(row);
     const classification = parseClassification(row);
-    const nindsCde = {
+    return {
         tinyId: generateTinyId(),
         stewardOrg: {
             name: 'NINDS'
@@ -36,5 +36,4 @@ export async function createNindsCde(row) {
         ids,
         classification
     };
-    return nindsCde;
 }

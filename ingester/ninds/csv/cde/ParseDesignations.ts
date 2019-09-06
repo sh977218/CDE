@@ -1,5 +1,6 @@
 import { isEmpty, isEqual } from 'lodash';
-import { getCell } from 'ingester/ninds/csv/cde/cde';
+import { getCell } from 'ingester/ninds/csv/shared/utility';
+
 
 export function parseDesignations(row) {
     const designations = [];

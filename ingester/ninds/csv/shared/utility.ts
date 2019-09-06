@@ -1,6 +1,6 @@
 import { isEmpty, toLower, trim, words } from 'lodash';
 
-export function getCell(row, header) {
+export function getCell(row: any, header: string) {
     const formattedHeader = words(toLower(header)).join('');
     if (!isEmpty(row[formattedHeader])) {
         return trim(row[formattedHeader]);
@@ -9,15 +9,17 @@ export function getCell(row, header) {
     }
 }
 
-export function formatRows(rows) {
-    const formattedRows = [];
+export function formatRows(rows: any[]) {
+    const formattedRows: any[] = [];
     rows.forEach(row => {
-        const formattedRow = {};
+        const formattedRow: any = {};
         for (const p in row) {
-            const formattedP = words(toLower(p)).join('');
-            formattedRow[formattedP] = row[p];
+            if (row.hasOwnProperty(p)) {
+                const formattedP = words(toLower(p)).join('');
+                formattedRow[formattedP] = row[p];
+            }
         }
         formattedRows.push(formattedRow);
     });
-    return formattedRows.filter(r => !isEmpty(r['variablename']) && !isEmpty(r['title']));
+    return formattedRows.filter(r => !isEmpty(r.variablename) && !isEmpty(r.title));
 }

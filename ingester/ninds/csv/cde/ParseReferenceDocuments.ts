@@ -2,11 +2,9 @@ import { isEmpty } from 'lodash';
 import { get } from 'request';
 import * as cheerio from 'cheerio';
 import { sortReferenceDocuments } from 'ingester/shared/utility';
-import { getCell } from 'ingester/ninds/csv/cde/cde';
+import { getCell } from 'ingester/ninds/csv/shared/utility';
 
-const UNPARSED_REF_DOC = new Set();
-
-function fetchPubmedRef(pmId) {
+function fetchPubmedRef(pmId: string) {
     return new Promise(resolve => {
         const pubmedUrl = 'https://www.ncbi.nlm.nih.gov/pubmed/?term=';
         const uri = pubmedUrl + pmId.trim();
@@ -29,13 +27,14 @@ function fetchPubmedRef(pmId) {
         });
     });
 }
-export function parseReferenceDocuments(row) {
+
+export function parseReferenceDocuments(row: any) {
     const EXCLUDE_REF_DOC = [
         'No references available',
         'Please fill out'
     ];
-    const referenceDocuments = [];
-    return new Promise(async (resolve, reject) => {
+    const referenceDocuments: any[] = [];
+    return new Promise(async resolve => {
         let referencesString = getCell(row, 'References');
         EXCLUDE_REF_DOC.forEach(excludeRefDoc => referencesString = referencesString.replace(excludeRefDoc, '').trim());
         if (referencesString) {
@@ -51,20 +50,28 @@ export function parseReferenceDocuments(row) {
                         .replace(/PUBMED:/ig, '')
                         .trim().split(',').filter(p => !isEmpty(p));
                     for (const pmId of pmIds) {
-                        const pubmedRef = await fetchPubmedRef(pmId);
-                        referenceDocuments.push({
-                            docType: 'text',
-                            title: pubmedRef.title
-                            uri: pubmedRef.uri,
-                            source: 'PubMed',
-                            languageCode: 'en-us',
-                            document: pubmedRef.abstracttext
-                        });
+                        const pubmedRef: any = await fetchPubmedRef(pmId);
+                        const refDoc: any = {};
+                        if (!isEmpty(pubmedRef.title)) {
+                            refDoc.title = pubmedRef.title;
+                        }
+                        if (!isEmpty(pubmedRef.uri)) {
+                            refDoc.uri = pubmedRef.uri;
+                        }
+                        if (!isEmpty(pubmedRef.abstracttext)) {
+                            refDoc.document = pubmedRef.abstracttext;
+                        }
+                        if (!isEmpty(refDoc)) {
+                            refDoc.docType = 'text';
+                            refDoc.source = 'PubMed';
+                            refDoc.languageCode = 'en-us';
+                            referenceDocuments.push(refDoc);
+                        }
                     }
                 }
             } else {
-                UNPARSED_REF_DOC.add(referencesString);
                 referenceDocuments.push({
+                    docType: 'text',
                     document: referencesString
                 });
             }

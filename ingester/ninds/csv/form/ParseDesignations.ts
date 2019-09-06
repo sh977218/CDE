@@ -1,3 +1,2 @@
-export function parseDesignations(formName) {
-    return [{designation: formName, tags: []}];
-}
+export const parseDesignations = (formName: string) => [{designation: formName, tags: []}];
+

@@ -1,3 +1,1 @@
-export function parseIds() {
-    return [];
-}
+export const parseIds = () => [];

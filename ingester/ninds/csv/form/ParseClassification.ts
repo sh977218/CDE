@@ -1,10 +1,9 @@
-export function parseClassification(rows) {
-    const classification = [{
+export const parseClassification = () => {
+    return [{
         stewardOrg: {name: 'NINDS'},
         elements: [{
             name: 'Preclinical TBI',
             elements: []
         }]
     }];
-    return classification;
-}
+};

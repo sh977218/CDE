@@ -1,11 +1,5 @@
-import { findIndex, isEmpty, isEqual } from 'lodash';
 import { generateTinyId } from 'server/system/mongo-data';
-import {
-    BATCHLOADER, compareElt, created, imported, lastMigrationScript, mergeElt, sortProperties, sortReferenceDocuments,
-    updateCde
-} from 'ingester/shared/utility';
-import { createNindsCde, getCell, } from 'ingester/ninds/csv/cde';
-import { DataElement } from 'server/cde/mongo-cde';
+import { BATCHLOADER, created, imported } from 'ingester/shared/utility';
 import { parseDesignations } from 'ingester/ninds/csv/form/ParseDesignations';
 import { parseDefinitions } from 'ingester/ninds/csv/form/ParseDefinitions';
 import { parseSources } from 'ingester/ninds/csv/shared/ParseSources';
@@ -15,7 +9,7 @@ import { parseIds } from 'ingester/ninds/csv/form/ParseIds';
 import { parseClassification } from 'ingester/ninds/csv/form/ParseClassification';
 import { parseFormElements } from 'ingester/ninds/csv/form/ParseFormElements';
 
-export async function createNindsForm(formName, rows) {
+export async function createNindsForm(formName: string, rows: any[]) {
     const designations = parseDesignations(formName);
     const definitions = parseDefinitions();
     const sources = parseSources();
@@ -23,8 +17,8 @@ export async function createNindsForm(formName, rows) {
     const formElements = await parseFormElements(rows);
     const properties = parseProperties();
     const ids = parseIds();
-    const classification = parseClassification(rows);
-    const nindsForm = {
+    const classification = parseClassification();
+    return {
         tinyId: generateTinyId(),
         stewardOrg: {
             name: 'NINDS'
@@ -44,5 +38,4 @@ export async function createNindsForm(formName, rows) {
         ids,
         classification
     };
-    return nindsForm;
 }

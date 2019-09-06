@@ -1,5 +1,3 @@
 import { sortProperties } from 'ingester/shared/utility';
 
-export function parseProperties() {
-    return sortProperties([]);
-}
+export const parseProperties = () => sortProperties([]);

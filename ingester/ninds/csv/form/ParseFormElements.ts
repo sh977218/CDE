@@ -15,7 +15,7 @@ async function doOneRow(row) {
         'ids.id': variableName
     });
     if (!existingCde) {
-        existingCde = await newCde.save().catch(e => {
+        existingCde = await newCde.save().catch((e: any) => {
             console.log('await newCde.save().catch: ' + e);
             process.exit(1);
         });
@@ -25,7 +25,7 @@ async function doOneRow(row) {
         if (isEmpty(diff)) {
             existingCde.imported = imported;
             existingCde.lastMigrationScript = lastMigrationScript;
-            existingCde = await existingCde.save().catch(e => {
+            existingCde = await existingCde.save().catch((e: any) => {
                 console.log('await existingCde.save().catch: ' + e);
                 process.exit(1);
             });

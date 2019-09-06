@@ -1,8 +1,6 @@
 import { isEmpty } from 'lodash';
 import { QuestionTypeNumber, QuestionTypeText } from 'shared/de/dataElement.model';
-import { getCell } from 'ingester/ninds/csv/cde/cde';
-
-import { QuestionTypeNumber, QuestionTypeText } from 'shared/de/dataElement.model';
+import { getCell } from 'ingester/ninds/csv/shared/utility';
 
 const UOM_MAP = {
     '': '',
@@ -67,7 +65,8 @@ const DATA_TYPE_MAP = {
     Time: 'Text',
     alphanumeric: 'Text'
 };
-export function parseValueDomain(row) {
+
+export function parseValueDomain(row: any) {
     const unitOfMeasure = getCell(row, 'Unit of Measure');
     const uom = UOM_MAP[unitOfMeasure];
     if (uom === undefined) {
@@ -89,8 +88,8 @@ export function parseValueDomain(row) {
         if (permissibleValueString) {
             const permissibleValueArray = permissibleValueString.split(';').filter(t => t);
             const pvCodes = permissibleValueOutputCodes.split(';').filter(t => t);
-            permissibleValueArray.forEach((pv, i) => {
-                const permissibleValue = {
+            permissibleValueArray.forEach((pv: any, i) => {
+                const permissibleValue: any = {
                     permissibleValue: pvCodes[i] ? pvCodes[i] : pv,
                     valueMeaningName: pv
                 };
@@ -114,7 +113,7 @@ export function parseValueDomain(row) {
             const datatypeText: QuestionTypeText = {};
             const maximumCharacterQuantity = getCell(row, 'Maximum Character Quantity');
             if (!isEmpty(maximumCharacterQuantity)) {
-                datatypeText.maxLength = parseInt(maximumCharacterQuantity);
+                datatypeText.maxLength = Number(maximumCharacterQuantity);
             }
             if (!isEmpty(datatypeText)) {
                 valueDomain.datatypeText = datatypeText;
@@ -125,11 +124,11 @@ export function parseValueDomain(row) {
             const datatypeNumber: QuestionTypeNumber = {};
             const minimumValue = getCell(row, 'Minimum Value');
             if (!isEmpty(minimumValue)) {
-                datatypeNumber.minValue = parseInt(minimumValue);
+                datatypeNumber.minValue = Number(minimumValue);
             }
             const maximumValue = getCell(row, 'Maximum Value');
             if (!isEmpty(maximumValue)) {
-                datatypeNumber.maxValue = parseInt(maximumValue);
+                datatypeNumber.maxValue = Number(maximumValue);
             }
             if (!isEmpty(datatypeNumber)) {
                 valueDomain.datatypeNumber = datatypeNumber;
