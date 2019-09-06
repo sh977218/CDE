@@ -14,6 +14,14 @@ const ttys = {
     SNOMEDCT_US: 'PT',
 };
 
+function utsFake200Handler(response: Response) {
+    if (verifyUMLS200(response)) {
+        return response.body;
+    } else {
+        handleReject('get revision ERROR');
+    }
+}
+
 function handleReject(message: string) {
     return (error: Error) => {
         _TGT = undefined;
@@ -87,14 +95,7 @@ function getTicket() {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
         }))
-        .then(
-            (response: Response) => {
-                if (verifyUMLS200(response)) {
-                    return response.body;
-                } else {
-                    handleReject('get revision ERROR');
-                }
-            }, handleReject('get ticket ERROR')
+        .then(utsFake200Handler, handleReject('get ticket ERROR')
         );
 }
 
@@ -136,14 +137,7 @@ export function searchValueSet(oid: string, term = '', page = '1') {
                         'Content-Type': 'application/x-www-form-urlencoded'
                     }
                 }))
-                .then(
-                    (response: Response) => {
-                        if (verifyUMLS200(response)) {
-                            return response.body;
-                        } else {
-                            handleReject('get revision ERROR');
-                        }
-                    } , handleReject('get revision ERROR')
+                .then(utsFake200Handler, handleReject('get revision ERROR')
                 );
         });
 }
@@ -160,14 +154,7 @@ export function getValueSet(oid) {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
         }))
-        .then(
-            (response: Response) => {
-                if (verifyUMLS200(response)) {
-                    return response.body;
-                } else {
-                    handleReject('get revision ERROR');
-                }
-            }, handleReject('get vsac set ERROR')
+        .then(utsFake200Handler, handleReject('get vsac set ERROR')
         );
 }
 
@@ -177,14 +164,7 @@ export function searchUmls(term: string) {
             strictSSL: false,
             uri: `${config.umls.wsHost}/rest/search/current?ticket=${ticket}&string=${term}`
         }))
-        .then(
-            (response: Response) => {
-                if (verifyUMLS200(response)) {
-                    return response.body;
-                } else {
-                    handleReject('get revision ERROR');
-                }
-            }, handleReject('get umls ERROR')
+        .then(utsFake200Handler, handleReject('get umls ERROR')
         );
 }
 
@@ -194,14 +174,7 @@ export function getSourcePT(cui: string, src: string) {
             uri: `${config.umls.wsHost}/rest/content/current/CUI/${cui}/atoms?sabs=${src}&ttys=${ttys[src]}&ticket=${ticket}`,
             strictSSL: false
         }))
-        .then(
-            (response: Response) => {
-                if (verifyUMLS200(response)) {
-                    return response.body;
-                } else {
-                    handleReject('get revision ERROR');
-                }
-            }, handleReject('get src PT from umls ERROR')
+        .then(utsFake200Handler, handleReject('get src PT from umls ERROR')
         );
 }
 
@@ -211,14 +184,7 @@ export function getAtomsFromUMLS(cui: string, source: string) {
             strictSSL: false,
             uri: `${config.umls.wsHost}/rest/content/current/CUI/${cui}/atoms?sabs=${source}&pageSize=500&ticket=${ticket}`
         }))
-        .then(
-            (response: Response) => {
-                if (verifyUMLS200(response)) {
-                    return response.body;
-                } else {
-                    handleReject('get revision ERROR');
-                }
-            }, handleReject('get atoms from umls ERROR')
+        .then(utsFake200Handler, handleReject('get atoms from umls ERROR')
         );
 }
 
@@ -229,14 +195,7 @@ export function umlsCuiFromSrc(id: string, src: string) {
             uri: `${config.umls.wsHost}/rest/search/current?string=${id}&searchType=exact&inputType=sourceUi&sabs=${src}`
                 + `&includeObsolete=true&includeSuppressible=true&ticket=${ticket}`
         }))
-        .then(
-            (response: Response) => {
-                if (verifyUMLS200(response)) {
-                    return response.body;
-                } else {
-                    handleReject('get revision ERROR');
-                }
-            }, handleReject('get cui from src ERROR')
+        .then(utsFake200Handler, handleReject('get cui from src ERROR')
         );
 }
 
@@ -246,13 +205,7 @@ export function searchBySystemAndCode(system: string, code: string) {
             strictSSL: false,
             uri: config.umls.wsHost + '/rest/content/current/source/' + system + '/' + code + '/atoms?ticket=' + ticket,
         }))
-        .then((response: Response) => {
-                if (verifyUMLS200(response)) {
-                    return response.body;
-                } else {
-                    handleReject('get revision ERROR');
-                }
-            }, (err: Error) => {
+        .then(utsFake200Handler, (err: Error) => {
                 _TGT = undefined;
                 respondError(err, {details: 'get umls ERROR'});
                 throw err;
