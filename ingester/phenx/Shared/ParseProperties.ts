@@ -1,21 +1,40 @@
-import { forEach, forOwn, isEmpty, keys } from 'lodash';
+import { capitalize, forEach, forOwn, isEmpty, keys, words } from 'lodash';
 
-export function parseProperties(measure, protocol) {
+export function parseProperties(protocol) {
     let properties = [];
 
-    let protocolHtml = protocol['Protocol'];
-    properties.push({key: 'Protocol', value: protocolHtml, valueFormat: 'html', source: 'PhenX'});
+    let protocolHtml = protocol.protocol;
+    if (!isEmpty(protocolHtml)) {
+        properties.push({key: 'Protocol', value: protocolHtml, valueFormat: 'html', source: 'PhenX'});
+    }
 
-
-    let prop1 = ['Specific Instructions', 'Protocol Name From Source', 'Selection Rationale', 'Life Stage', 'Language', 'Participant', 'Personnel and Training Required', 'Equipment Needs', 'Mode of Administration', 'Derived Variables', 'Process and Review'];
+    let prop1 = [
+        'protocolNameFromSource',
+        'selectionRationale',
+        'lifeStage',
+        'language',
+        'participants',
+        'personnelAndTrainingRequired',
+        'equipmentNeeds',
+        'modeOfAdministration',
+        'derivedVariables',
+        'processAndReview',
+        'purpose',
+        'keywords',
+        'source'
+    ];
     forEach(prop1, p => {
+        let keyArray = words(p);
+        let key = keyArray.reduce((accumulator, currentValue) => {
+            return accumulator + ' ' + capitalize(currentValue);
+        }, '');
         let value = protocol[p];
-        if (value) {
-            properties.push({key: p, value: value.trim(), source: 'PhenX'});
+        if (!isEmpty(value)) {
+            properties.push({key: key.trim(), value: value.trim(), source: 'PhenX'});
         }
     });
 
-    let prop2 = ['Variables', 'Requirements'];
+    let prop2 = ['variables', 'requirements'];
     forEach(prop2, p => {
         let valueArray = protocol[p];
         if (!isEmpty(valueArray)) {
@@ -37,43 +56,32 @@ export function parseProperties(measure, protocol) {
             });
             let tbody = '<tr>' + tr + '</tr>';
             let table = "<table class='table table-striped'>" + thead + tbody + "</table>";
-            properties.push({key: p.trim(), value: table, valueFormat: "html", source: "PhenX"});
+            properties.push({key: capitalize(p).trim(), value: table, valueFormat: "html", source: "PhenX"});
         }
     });
 
-    let standards = protocol['Standards'];
+    let standards = protocol.standards;
     if (!isEmpty(standards)) {
         let tbody = '';
         for (let standard of standards) {
-            let tr = `
-                      <tr>
-                         <td>${standard['Source']}</td>
-                         <td>${standard['ID']}</td>
-                         <td>${standard['Name']}</td>
-                         <td>${standard['Standard']}</td>
-                      </tr>
-                        `;
+            let tr = '<tr>'
+                + '<td>' + standard['Source'] + '</td>'
+                + '<td>' + standard['ID'] + '</td>'
+                + '<td>' + standard['Name'] + '</td>'
+                + '<td>' + standard['Standard'] + '</td>'
+                + '</tr>';
             tbody = tbody + tr;
         }
-        let value =`
-                    <table class='table table-striped'>
-                        <tr>
-                            <th>Source</th>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Standard</th>
-                        </tr>
-                        ${tbody}
-                    </table>
-        `;
+        let value = "<table class='table table-striped'>"
+            + "<tr>"
+            + "<th>Source</th>"
+            + "<th>ID</th>"
+            + "<th>Name</th>"
+            + "<th>Standard</th>"
+            + "</tr>"
+            + tbody + "</table>";
         properties.push({key: 'Standards', value: value, valueFormat: "html", source: "PhenX"});
 
-    }
-
-    let keywords = measure['Keywords'];
-    if (!isEmpty(keywords)) {
-        let value = keywords.map(v => v.trim()).join(",");
-        properties.push({key: 'Keywords', value: value, source: "PhenX"});
     }
 
     return properties;

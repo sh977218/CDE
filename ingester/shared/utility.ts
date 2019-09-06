@@ -7,6 +7,8 @@ import * as mongo_cde from 'server/cde/mongo-cde';
 import * as mongo_form from 'server/form/mongo-form';
 import { PhenxURL } from 'ingester/createMigrationConnection';
 import { transferClassifications } from 'shared/system/classificationShared';
+import { Classification, Definition, Designation } from 'shared/models.model';
+import { FormElement } from 'shared/form/form.model';
 
 const sourceMap = {
     LOINC: ['LOINC'],
@@ -15,7 +17,7 @@ const sourceMap = {
     NCI: ['caDSR']
 };
 export const TODAY = new Date().toJSON();
-export const lastMigrationScript = `load NCI on ${moment().format('DD MMMM YYYY')}`;
+export const lastMigrationScript = `load PhenX on ${moment().format('DD MMMM YYYY')}`;
 
 export const BATCHLOADER_USERNAME = 'batchloader';
 export const BATCHLOADER = {
@@ -23,18 +25,10 @@ export const BATCHLOADER = {
     roles: ['AttachmentReviewer']
 };
 
-
-export function updatedByLoader(elt) {
-    if (elt.toObject) elt = elt.toObject;
-    let allow = elt.updatedBy && elt.updatedBy.username
-        && elt.updatedBy.username !== BATCHLOADER_USERNAME;
-    return allow;
-}
-
 export const created = TODAY;
 export const imported = TODAY;
 
-export function removeWhite(text) {
+export function removeWhite(text: string) {
     if (!text) {
         return '';
     } else {
@@ -42,11 +36,11 @@ export function removeWhite(text) {
     }
 }
 
-export function sanitizeText(s) {
+export function sanitizeText(s: string) {
     return s.replace(/:/g, '').replace(/\./g, '').trim();
 }
 
-export function wipeBeforeCompare(obj) {
+export function wipeBeforeCompare(obj: any) {
     delete obj._id;
     delete obj.__v;
     delete obj.tinyId;
@@ -69,6 +63,7 @@ export function wipeBeforeCompare(obj) {
     delete obj.createdBy;
     delete obj.updated;
     delete obj.updatedBy;
+    delete obj.sources;
 
     delete obj.naming;
     delete obj.displayProfiles;
@@ -90,7 +85,7 @@ export function wipeBeforeCompare(obj) {
     });
 }
 
-export function trimWhite(text) {
+export function trimWhite(text: string) {
     if (!text) {
         return '';
     } else {
@@ -98,49 +93,56 @@ export function trimWhite(text) {
     }
 }
 
-export function printUpdateResult(updateResult, elt) {
+export function printUpdateResult(updateResult: any, elt: any) {
     if (updateResult.nModified) {
-        console.log(`${updateResult.nModified} ${elt.elementType} source modified: ${elt.tinyId}`);
+        console.log(`${updateResult.nModified} ${elt.elementType} Raw Artifact modified: ${elt.tinyId}`);
     }
     if (updateResult.upserted && updateResult.upserted.length) {
-        console.log(`${updateResult.upserted.length} ${elt.elementType} source inserted: ${elt.tinyId}`);
+        console.log(`${updateResult.upserted.length} ${elt.elementType} Raw Artifact inserted: ${elt.tinyId}`);
     }
 }
 
-export function replaceClassificationByOrg(newClassification, existingClassification, orgName) {
+export function replaceClassificationByOrg(newClassification: Classification[], existingClassification: Classification[], orgName: string) {
     const otherClassifications = existingClassification.filter(c => c.stewardOrg.name !== orgName);
     return newClassification.concat(otherClassifications);
 }
 
-
-export function updateCde(elt, user, options = {}) {
+export function updateCde(elt: any, user: any, options = {}) {
     return new Promise((resolve, reject) => {
         mongo_cde.update(elt, user, options, (err, savedElt) => {
-            if (err) reject(err);
-            else resolve(savedElt);
-        })
-    });
-}
-
-export function updateForm(elt, user, options = {}) {
-    return new Promise((resolve, reject) => {
-        const isPhenX = elt.ids.filter(id => id.source === 'PhenX').length > 0;
-        const isQualified = elt.registrationState.registrationStatus === 'Qualified';
-        const isArchived = elt.archived;
-        if (isPhenX && isQualified && !isArchived) {
-            console.log(`Qualified PhenX Form cannot be updated through loader.`);
-            process.exit(1);
-        }
-        mongo_form.update(elt, user, options, (err, savedElt) => {
-            if (err) reject(err);
-            else resolve(savedElt);
+            if (err) {
+                reject(err);
+            } else {
+                resolve(savedElt);
+            }
         });
     });
 }
 
-const DomainCollectionMap = {};
+export function updateForm(elt: any, user: any, options = {}) {
+    return new Promise((resolve, reject) => {
+        /*@TODO remove it after PhenX loader.
+                const isPhenX = elt.ids.filter(id => id.source === 'PhenX').length > 0;
+                const isQualified = elt.registrationState.registrationStatus === 'Qualified';
+                const isArchived = elt.archived;
+                if (isPhenX && isQualified && !isArchived) {
+                    console.log(`Qualified PhenX Form cannot be updated through loader.`);
+                    process.exit(1);
+                }
+        */
+        mongo_form.update(elt, user, options, (err, savedElt) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(savedElt);
+            }
+        });
+    });
+}
 
-export function protocolLinkToProtocolId(href) {
+const DOMAIN_COLLECTION_MAP: any = {};
+
+export function protocolLinkToProtocolId(href: string) {
     const indexString = '/protocols/view/';
     const protocolIdIndex = href.indexOf(indexString);
     return href.substr(protocolIdIndex + indexString.length, href.length);
@@ -148,8 +150,8 @@ export function protocolLinkToProtocolId(href) {
 
 export function getDomainCollection() {
     return new Promise((resolve, reject) => {
-        if (!isEmpty(DomainCollectionMap)) {
-            resolve(DomainCollectionMap);
+        if (!isEmpty(DOMAIN_COLLECTION_MAP)) {
+            resolve(DOMAIN_COLLECTION_MAP);
         } else {
             get(PhenxURL, async (err, response, body) => {
                 if (err) {
@@ -168,16 +170,16 @@ export function getDomainCollection() {
                     const protocolLink = 'https://www.phenxtoolkit.org' + href;
                     const domainCollection = $(tds[2]).text().trim();
                     const protocolId = protocolLinkToProtocolId(href);
-                    DomainCollectionMap[protocolId] = {protocolLink, domainCollection};
+                    DOMAIN_COLLECTION_MAP[protocolId] = {protocolLink, domainCollection};
                 }
-                resolve(DomainCollectionMap);
+                resolve(DOMAIN_COLLECTION_MAP);
             });
         }
     });
 }
 
-function getChildren(formElements) {
-    let ids = [];
+function getChildren(formElements: FormElement[]) {
+    let ids: any = [];
     if (formElements) {
         formElements.forEach(formElement => {
             if (formElement.elementType === 'section' || formElement.elementType === 'form') {
@@ -194,28 +196,27 @@ function getChildren(formElements) {
     return ids;
 }
 
-
 // Compare two elements
-export function compareElt(newEltObj, existingEltObj, source) {
+export function compareElt(newEltObj, existingEltObj) {
     if (newEltObj.elementType !== existingEltObj.elementType) {
         console.log(`Two element type different. newEltObj: ${newEltObj.tinyId} existingEltObj: ${existingEltObj.tinyId} `);
         process.exit(1);
     }
-    const upperCaseSource = source.toUpperCase();
     const isQualified = existingEltObj.registrationState.registrationStatus === 'Qualified';
     [existingEltObj, newEltObj].forEach(eltObj => {
         eltObj.designations.sort((a, b) => a.designation >= b.designation);
         eltObj.definitions.sort((a, b) => a.definition >= b.definition);
-        ['designations', 'definitions'].forEach(p => {
-            delete eltObj[p].sources;
-        });
 
         eltObj.properties.sort((a, b) => a.key >= b.key);
         eltObj.referenceDocuments.sort((a, b) => a.docType >= b.docType);
         eltObj.ids.sort((a, b) => a.source >= b.source);
-        ['properties', 'referenceDocuments', 'ids'].forEach(p => {
-            eltObj[p] = eltObj[p].filter(a => sourceMap[upperCaseSource].indexOf(a.source) !== -1);
-        });
+        ['designations', 'definitions', 'properties', 'referenceDocuments', 'ids']
+            .forEach(field => {
+                eltObj[field].forEach(o => {
+                    delete o.sources;
+                    delete o.source;
+                });
+            });
 
         if (eltObj.elementType === 'form' && !isQualified) {
             eltObj.cdeIds = getChildren(eltObj.formElements);
@@ -224,13 +225,13 @@ export function compareElt(newEltObj, existingEltObj, source) {
         wipeBeforeCompare(eltObj);
 
     });
-    return DiffJson.diff(existingEltObj, newEltObj);
+    const result = DiffJson.diff(existingEltObj, newEltObj);
+    return result;
 }
 
 // Merge two elements
-function mergeDesignation(existingDesignations, newDesignations) {
-    const designations = [];
-    const allDesignations = existingDesignations.concat(newDesignations);
+function mergeDesignation(existingDesignations: Designation[], newDesignations: Designation[]) {
+    const designations: Designation[] = [];
     allDesignations.forEach(designation => {
         const i = findIndex(designations, {designation: designation.designation});
         if (i !== -1) {
@@ -239,12 +240,13 @@ function mergeDesignation(existingDesignations, newDesignations) {
         } else {
             designations.push(designation);
         }
+
     });
     return designations;
 }
 
-function mergeDefinition(existingDefinitions, newDefinitions) {
-    const definitions = [];
+function mergeDefinition(existingDefinitions: Definition[], newDefinitions: Definition[]) {
+    const definitions: Definition[] = [];
     const allDefinitions = existingDefinitions.concat(newDefinitions);
     allDefinitions.forEach(definition => {
         const i = findIndex(definitions, {definition: definition.definition});
@@ -258,6 +260,18 @@ function mergeDefinition(existingDefinitions, newDefinitions) {
     return definitions;
 }
 
+export function mergeProperties(newProperties, existingProperties) {
+    const properties = [];
+    const allProperties = newProperties.concat(existingProperties);
+    allProperties.forEach(property => {
+        const i = findIndex(properties, {key: property.key});
+        if (i === -1) {
+            properties.push(property);
+        }
+    });
+    return properties;
+}
+
 export function mergeBySources(newSources, existingSources, sources) {
     if (!existingSources) {
         existingSources = [];
@@ -267,14 +281,11 @@ export function mergeBySources(newSources, existingSources, sources) {
 }
 
 export function mergeSourcesBySourcesName(newSources, existingSources, sources) {
-    if (!existingSources) {
-        existingSources = [];
-    }
     const otherSources = existingSources.filter(o => sources.indexOf(o.sourceName) === -1);
     return newSources.concat(otherSources);
 }
 
-export function mergeElt(existingEltObj, newEltObj, source) {
+export function mergeElt(existingEltObj: any, newEltObj: any, source: string) {
     if (newEltObj.elementType !== existingEltObj.elementType) {
         console.log(`Two element type different. newEltObj: ${newEltObj.tinyId} existingEltObj: ${existingEltObj.tinyId} `);
         process.exit(1);
@@ -285,7 +296,7 @@ export function mergeElt(existingEltObj, newEltObj, source) {
     existingEltObj.definitions = mergeDefinition(existingEltObj.definitions, newEltObj.definitions);
 
     existingEltObj.ids = mergeBySources(newEltObj.ids, existingEltObj.ids, sources);
-    existingEltObj.properties = mergeBySources(newEltObj.properties, existingEltObj.properties, sources);
+    existingEltObj.properties = mergeProperties(newEltObj.properties, existingEltObj.properties);
     existingEltObj.referenceDocuments = mergeBySources(newEltObj.referenceDocuments, existingEltObj.referenceDocuments, sources);
 
     existingEltObj.sources = mergeSourcesBySourcesName(newEltObj.sources, existingEltObj.sources, sources);

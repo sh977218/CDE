@@ -28,7 +28,7 @@ fs.readdirSync(path.resolve(__dirname, '../../shared/de/assets/')).forEach(file 
 });
 export let validateSchema: any;
 
-const file = fs.readFileSync(path.resolve(__dirname, '../../shared/form/assets/form.schema.json');
+const file = fs.readFileSync(path.resolve(__dirname, '../../shared/form/assets/form.schema.json'));
 try {
     const schema = JSON.parse(file.toString());
     schema.$async = true;

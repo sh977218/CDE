@@ -1,5 +1,5 @@
 import { By } from 'selenium-webdriver';
-import { sanitizeText } from '../Utility/utility';
+import { sanitizeText } from 'ingester/shared/utility';
 
 export async function parseSurveyQuestionTable(driver, loincId, table) {
     let surveyQuestion = {};

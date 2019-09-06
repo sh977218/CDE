@@ -1,8 +1,10 @@
+import { BATCHLOADER } from 'ingester/shared/utility';
+import { sortClassification } from 'shared/system/classificationShared';
+
 var async = require('async');
 
 var mongo_cde = require('../../server/cde/mongo-cde');
 var cdeDiff = require('../../server/cde/cdediff');
-import { sortClassification } from 'shared/system/classificationShared';
 var MigrationDataElement = require('../createMigrationConnection').MigrationDataElementModel;
 var DataElement = mongo_cde.DataElement;
 var MigrationOrg = require('../createMigrationConnection').MigrationOrgModel;
@@ -140,13 +142,12 @@ function processCde(migrationCde, existingCde, processCdeCb) {
         }
         newDe._id = existingCde._id;
         try {
-            mongo_cde.update(newDe, {username: "batchloader"}, function (err) {
+            mongo_cde.update(newDe, BATCHLOADER, function (err) {
                 if (err) {
                     console.log("Cannot save CDE.");
                     console.log(newDe);
                     throw err;
-                }
-                else migrationCde.remove(function (err) {
+                } else migrationCde.remove(function (err) {
                     if (err) console.log("unable to remove " + err);
                     processCdeCb();
                     changed++;
@@ -219,6 +220,7 @@ function findCde(cdeId, migrationCde, idv, findCdeDone) {
         }
     });
 }
+
 var migStream;
 
 function streamOnData(migrationCde) {

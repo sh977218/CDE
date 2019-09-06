@@ -1,47 +1,45 @@
 import { isEmpty } from 'lodash';
 import { DataElement, DataElementSource } from 'server/cde/mongo-cde';
-import { createCde,compareCde,mergeCde } from '../CDE/cde';
-import { BATCHLOADER, updateCde, updatedByLoader } from 'ingester/shared/utility';
+import { createLoincCde } from 'ingester/loinc/CDE/cde';
+import {
+    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeElt, printUpdateResult, updateCde
+} from 'ingester/shared/utility';
+
+import { LoincLogger } from 'ingester/log/LoincLogger';
 
 export async function runOneCde(loinc, orgInfo) {
-    let loincId = loinc.loincId;
-    let cdeCond = {
-        archived: false,
-        "registrationState.registrationStatus": {$ne: "Retired"},
-        'ids.id': loincId
-    };
-    let newCdeObj = await createCde(loinc, orgInfo).catch(e => {
-        throw 'Error CreateCDE.createCde: ' + e;
-    });
-    let existingCde = await DataElement.findOne(cdeCond).catch(e => {
-        throw "Error DataElement.findOne: " + e;
-    });
-
+    const loincCde = await createLoincCde(loinc, orgInfo);
+    const newCde = new DataElement(loincCde);
+    const newCdeObj = newCde.toObject();
+    let existingCde = await DataElement.findOne({archived: false, 'ids.id': loinc.loincId});
     if (!existingCde) {
-        existingCde = await new DataElement(newCdeObj).save().catch(e => {
-            throw 'Error new DataElement: ' + e;
-        });
-    } else if (updatedByLoader(existingCde)) {
+        existingCde = await newCde.save();
+        LoincLogger.createdLoincCde++;
+        LoincLogger.createdLoincCdes.push(existingCde.tinyId);
     } else {
-        existingCde.imported = new Date().toJSON();
-        existingCde.markModified('imported');
-        let diff = compareCde(newCdeObj, existingCde);
+        const existingCdeObj = existingCde.toObject();
+        existingCdeObj.imported = imported;
+        existingCdeObj.lastMigrationScript = lastMigrationScript;
+        existingCdeObj.changeNote = lastMigrationScript;
+        const diff = compareElt(newCde.toObject(), existingCde.toObject(), 'LOINC');
         if (isEmpty(diff)) {
-            await existingCde.save().catch(e => {
-                throw 'Error existingCde.save: ' + e;
-            });
+            await existingCde.save();
+            LoincLogger.sameLoincCde++;
+            LoincLogger.sameLoincCdes.push(existingCde.tinyId);
         } else {
-            await mergeCde(newCdeObj, existingCde);
-            await updateCde(existingCde, BATCHLOADER).catch(e => {
-                throw 'Error mongo_cde.updatePromise: ' + e;
-            });
+            mergeElt(newCdeObj, existingCdeObj, 'LOINC');
+            await updateCde(existingCde, BATCHLOADER, {updateSource: true});
+            LoincLogger.changedLoincCde++;
+            LoincLogger.changedLoincCdes.push(existingCde.tinyId);
         }
     }
     delete newCdeObj.tinyId;
-    let updateResult = await DataElementSource.updateOne({tinyId: existingCde.tinyId}, newCdeObj, {upsert: true}).catch(e => {
-        throw'Error await DataElementSource.updateOne({tinyId: existingCde.tinyId}: ' + e;
-    });
-    console.log(updateResult.nModified + ' cde source modified: ');
-
+    delete newCdeObj._id;
+    newCdeObj.attachments = [];
+    const updateResult = await DataElementSource.updateOne({
+        tinyId: existingCde.tinyId,
+        source: 'LOINC'
+    }, newCdeObj, {upsert: true});
+    printUpdateResult(updateResult, existingCde);
     return existingCde;
 }
