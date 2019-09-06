@@ -1,5 +1,5 @@
 import { By } from 'selenium-webdriver';
-import { sanitizeText } from '../Utility/utility';
+import { sanitizeText } from '../../shared/utility';
 
 export async function parseSubmittersInformationTable(driver, loincId, element) {
     let basicAttributesObj = {};

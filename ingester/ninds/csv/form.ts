@@ -42,7 +42,7 @@ async function doOneRow(row) {
             console.log(`same cde tinyId: ${existingCde.tinyId}`);
         } else {
             const existingCdeObj = existingCde.toObject();
-            mergeElt(existingCdeObj, newCdeObj, 'NCI');
+            mergeEingester/shared/utility.tslt(existingCdeObj, newCdeObj, 'NCI');
             existingCdeObj.imported = imported;
             existingCdeObj.changeNote = lastMigrationScript;
             existingCdeObj.lastMigrationScript = lastMigrationScript;

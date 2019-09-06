@@ -1,3 +1,5 @@
+import { BATCHLOADER } from 'ingester/shared/utility';
+
 const async = require('async');
 const fs = require('fs');
 const path = require('path');
@@ -33,7 +35,7 @@ fs.readdir(dir, (err, files) => {
 });
 
 function addForm(rootElem, cb) {
-    let study = rootElem.$.study_id + (rootElem.$.participant_set ? '.p' + rootElem.$.participant_set : '' );
+    let study = rootElem.$.study_id + (rootElem.$.participant_set ? '.p' + rootElem.$.participant_set : '');
     let dataSetId = (rootElem.$.id ? rootElem.$.id : rootElem.$.dataset_id);
     let dataSetName = rootElem.variable.reduce((acc, elem) => {
         let dataset = elem.name[0].substr(0, 4);
@@ -75,9 +77,7 @@ function addForm(rootElem, cb) {
                     name: "NLM"
                 }
             }],
-            createdBy: {
-                username: 'batchloader'
-            },
+            createdBy: BATCHLOADER,
             created: Date.parse(rootElem.$.date_created),
             formElements: [{
                 elementType: "section",
@@ -112,7 +112,7 @@ function addForm(rootElem, cb) {
 }
 
 function modifyForm(form, rootElem, dataSetName, cb) {
-    let study = rootElem.$.study_id + (rootElem.$.participant_set ? '.p' + rootElem.$.participant_set : '' );
+    let study = rootElem.$.study_id + (rootElem.$.participant_set ? '.p' + rootElem.$.participant_set : '');
     let dataSetId = (rootElem.$.id ? rootElem.$.id : rootElem.$.dataset_id);
     let studyUrl = "https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/dataset.cgi?study_id=" + study + "&pht=" + dataSetId.substr(3, 6);
     let designation = (rootElem.description[0] ? rootElem.description[0] : dataSetName);
@@ -193,8 +193,8 @@ function addCde(elem, form, study, cb) {
             stewardOrg: {name: "NLM"},
             tinyId: mongo_data.generateTinyId(),
             valueDomain: {
-                datatype: ( elem.type[0] === 'encoded' && elem.value && elem.value.length ? 'Value List' :
-                    ( elem.type[0] === 'number' || elem.type[0] === 'integer' ? 'Number' : 'Text' ))
+                datatype: (elem.type[0] === 'encoded' && elem.value && elem.value.length ? 'Value List' :
+                    (elem.type[0] === 'number' || elem.type[0] === 'integer' ? 'Number' : 'Text'))
             },
             version: "1"
         });
@@ -225,8 +225,8 @@ function modifyCde(cde, elem, form, study, description, cb) {
         cde.valueDomain.datatype = 'Value List';
         elem.value.forEach(v => {
             let pv = {
-                permissibleValue: (typeof(v) === "object" ? v.$.code : v),
-                valueMeaningName: (typeof(v) === "object" ? v._ : v)
+                permissibleValue: (typeof (v) === "object" ? v.$.code : v),
+                valueMeaningName: (typeof (v) === "object" ? v._ : v)
             };
             if (cde.valueDomain.permissibleValues.filter(p => {
                 return p.permissibleValue === pv.permissibleValue;

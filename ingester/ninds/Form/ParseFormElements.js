@@ -1,3 +1,6 @@
+import { BATCHLOADER, updateCde } from 'ingester/shared/utility';
+import { checkPvUnicity } from 'shared/de/deValidator';
+
 const _ = require('lodash');
 
 const mongo_cde = require('../../../server/cde/mongo-cde');
@@ -10,25 +13,23 @@ const CreateCDE = require('../CDE/CreateCDE');
 const CompareCDE = require('../CDE/CompareCDE');
 const MergeCDE = require('../CDE/MergeCDE');
 
-import { checkPvUnicity } from 'shared/de/deValidator';
 const Comment = require('../../../server/discuss/discussDb').Comment;
 
 const updatedByNonLoader = require('../../shared/updatedByNonLoader').updatedByNonLoader;
-const batchloader = require('../../shared/updatedByNonLoader').batchloader;
 
 let createdCDE = 0;
 let sameCDE = 0;
 let changeCDE = 0;
 let skipCDE = 0;
 
-doOneNindsCde = async cdeId => {
+const doOneNindsCde = async cdeId => {
     let newCdeObj = await CreateCDE.createCde(cdeId);
     let cdeError = checkPvUnicity(newCdeObj.valueDomain);
     if (cdeError && !cdeError.allValid) {
         if (cdeError.message === 'Value List must contain at least one Permissible Value') {
             let slComment = {
                 text: 'NINDS Batch loader was not able to find PV Value List on ' + cdeId,
-                user: batchloader,
+                user: BATCHLOADER,
                 created: new Date(),
                 pendingApproval: false,
                 linkedTab: 'pvs',
@@ -79,18 +80,13 @@ doOneNindsCde = async cdeId => {
             existingCde.markModified('imported');
             let diff = CompareCDE.compareCde(newCde, existingCde);
 
-            for (let comment of newCdeObj.comments) {
-                comment.element.eltId = existingCde.tinyId;
-                await new Comment(comment).save();
-                console.log('comment saved on existing CDE ' + existingCde.tinyId);
-            }
             if (_.isEmpty(diff)) {
                 await existingCde.save();
                 sameCDE++;
                 console.log('sameCDE: ' + sameCDE + ' ' + existingCde.tinyId);
             } else {
                 await MergeCDE.mergeCde(existingCde, newCde);
-                await mongo_cde.updatePromise(existingCde, batchloader);
+                await updateCde(existingCde, BATCHLOADER);
                 changeCDE++;
                 console.log('changeCDE: ' + changeCDE + ' ' + existingCde.tinyId);
             }

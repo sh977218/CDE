@@ -26,5 +26,6 @@ export async function parseNameTable(driver, loincId, table) {
             result['Shortname'] = await parseShortname(tr);
         }
     }
+
     return result;
 }

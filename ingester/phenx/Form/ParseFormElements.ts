@@ -1,23 +1,28 @@
-import {find} from 'lodash';
-import {existsSync} from 'fs';
+import { find, isEmpty } from 'lodash';
+import { parseFormElements as parseRedcapFormElements } from 'ingester/phenx/redCap/ParseRedCap';
+import { parseFormElements as parseLoincFormElements } from 'ingester/loinc/Form/ParseFormElements';
+import { map as orgMapping } from 'ingester/loinc/Mapping/ORG_INFO_MAP';
 
-const ParseRedCap = require('./redCap/ParseRedCap');
-
-const ParseLOINC = require('../../loinc/Form/ParseFormElements');
-const orgMapping = require('../../loinc/Mapping/ORG_INFO_MAP').map;
-
-const zipFolder = 's:/MLB/CDE/phenx/original-phenxtoolkit.rti.org/toolkit_content/redcap_zip/';
-
-export async function parseFormElements (protocol, attachments, newForm) {
-    let loinc = find(protocol.Standards, standard => standard.Source === 'LOINC');
-    if (loinc) {
-        let formElements = await ParseLOINC.parseFormElements(loinc, orgMapping['PhenX']);
-        newForm.formElements = formElements;
+export async function parseFormElements(protocol, attachments, newForm) {
+    const loincStandard = find(protocol.standards, standard => standard.Source === 'LOINC');
+    if (isEmpty(loincStandard)) {
+        await parseRedcapFormElements(protocol, attachments, newForm);
     } else {
-        let protocolId = protocol.protocolId;
-        let zipFile = zipFolder + 'PX' + protocolId + '.zip';
-        if (existsSync(zipFile)) {
-            await ParseRedCap.parseFormElements(protocol, attachments, newForm);
+        const formElements = await parseLoincFormElements(loincStandard, orgMapping.PhenX);
+        const loinc = loincStandard.loinc;
+        if (!loinc['PANEL HIERARCHY']) {
+            console.log(`Protocol ${protocol.protocolID} has LOINC ${loinc.loincId} PANEL HIERARCHY is missing.`);
         }
+        newForm.formElements = formElements;
     }
-};
+    if (protocol.specificInstructions && protocol.specificInstructions.trim() !== 'None') {
+        newForm.formElements.unshift({
+            elementType: 'section',
+            instructions: {
+                value: protocol.specificInstructions,
+                valueFormat: 'html'
+            },
+            formElements: []
+        });
+    }
+}
