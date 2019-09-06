@@ -1,19 +1,8 @@
-import { findIndex, isEmpty, isEqual } from 'lodash';
-import { generateTinyId } from 'server/system/mongo-data';
-import {
-    BATCHLOADER, compareElt, created, imported, lastMigrationScript, mergeElt, sortProperties, sortReferenceDocuments,
-    updateCde
-} from 'ingester/shared/utility';
-import { createNindsCde, getCell, parseReferenceDocuments } from 'ingester/ninds/csv/cde';
+import { isEmpty, isEqual } from 'lodash';
 import { DataElement } from 'server/cde/mongo-cde';
-
-function parseDesignations(formName) {
-    return [{designation: formName, tags: []}];
-}
-
-function parseDefinitions() {
-    return [];
-}
+import { BATCHLOADER, compareElt, imported, lastMigrationScript, mergeElt, updateCde } from 'ingester/shared/utility';
+import { getCell } from 'ingester/ninds/csv/shared/utility';
+import { createNindsCde } from 'ingester/ninds/csv/cde/cde';
 
 async function doOneRow(row) {
     const nindsCde = await createNindsCde(row);
@@ -32,7 +21,7 @@ async function doOneRow(row) {
         });
         console.log(`created cde tinyId: ${existingCde.tinyId}`);
     } else {
-        const diff = compareElt(newCde.toObject(), existingCde.toObject(), 'NINDS');
+        const diff = compareElt(newCde.toObject(), existingCde.toObject());
         if (isEmpty(diff)) {
             existingCde.imported = imported;
             existingCde.lastMigrationScript = lastMigrationScript;
@@ -87,7 +76,7 @@ function convertCsvRowToFormElement(row, cde) {
     return formElement;
 }
 
-async function parseFormElements(rows) {
+export async function parseFormElements(rows) {
     const formElements = [];
     let newSection = {
         label: '',
@@ -119,67 +108,4 @@ async function parseFormElements(rows) {
     }
     formElements.push(newSection);
     return formElements;
-}
-
-async function parseFormReferenceDocuments(rows) {
-    const referenceDocuments = [];
-    for (const row of rows) {
-        const newReferenceDocuments = await parseReferenceDocuments(row);
-        for (const newReferenceDocument of newReferenceDocuments) {
-            const i = findIndex(referenceDocuments, newReferenceDocument);
-            if (i === -1) {
-                referenceDocuments.push(newReferenceDocument);
-            }
-        }
-    }
-    return sortReferenceDocuments(referenceDocuments);
-}
-
-function parseProperties() {
-    return sortProperties([]);
-}
-
-function parseIds() {
-    return [];
-}
-
-function parseClassification(rows) {
-    const classification = [{
-        stewardOrg: {name: 'NINDS'},
-        elements: [{
-            name: 'Preclinical TBI',
-            elements: []
-        }]
-    }];
-    return classification;
-}
-
-export async function createNindsForm(formName, rows) {
-    const designations = parseDesignations(formName);
-    const definitions = parseDefinitions();
-    const referenceDocuments = await parseFormReferenceDocuments(rows);
-    const formElements = await parseFormElements(rows);
-    const properties = parseProperties();
-    const ids = parseIds();
-    const classification = parseClassification(rows);
-    const nindsForm = {
-        tinyId: generateTinyId(),
-        stewardOrg: {
-            name: 'NINDS'
-        },
-        registrationState: {
-            registrationStatus: 'Qualified'
-        },
-        createdBy: BATCHLOADER,
-        created,
-        imported,
-        designations,
-        definitions,
-        formElements,
-        referenceDocuments,
-        properties,
-        ids,
-        classification
-    };
-    return nindsForm;
 }

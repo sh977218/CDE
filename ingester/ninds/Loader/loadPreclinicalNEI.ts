@@ -1,6 +1,6 @@
 import { readdirSync, readFileSync } from 'fs';
 import { loadFormByCsv } from 'ingester/ninds/Loader/loadNindsForm';
-import { toLower, words } from 'lodash';
+import { formatRows } from 'ingester/ninds/csv/shared/utility';
 
 const csv = require('csv');
 
@@ -29,22 +29,10 @@ function parseOneCsv(csvFileName) {
     });
 }
 
-function formatRows(rows) {
-    const formattedRows = [];
-    rows.forEach(row => {
-        const formattedRow = {};
-        for (const p in row) {
-            const formattedP = words(toLower(p)).join('');
-            formattedRow[formattedP] = row[p];
-        }
-        formattedRows.push(formattedRow);
-    });
-    return formattedRows;
-}
-
 async function run() {
     const csvFiles = readdirSync(FILE_PATH);
-    for (const csvFileName of csvFiles) {
+    const csvFileNames = csvFiles.filter(c => c === 'MarbleBurying_061217.csv');
+    for (const csvFileName of csvFileNames) {
         if (csvFileName.indexOf('.csv') !== -1) {
             const csvResult = await parseOneCsv(csvFileName);
             console.log(`csvFileName: ${csvFileName}.`);

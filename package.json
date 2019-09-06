@@ -199,7 +199,7 @@
     "bootstrap-tour": "https://github.com/sorich87/bootstrap-tour.git",
     "cache-loader": "^2.0.1",
     "capitalize": "^2.0.0",
-    "cheerio": "1.0.0-rc.2",
+    "cheerio": "^1.0.0-rc.3",
     "chromedriver": "^75.1.0",
     "classlist.js": "1.1.20150312",
     "clean-webpack-plugin": "^0.1.19",

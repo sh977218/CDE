@@ -1,7 +1,7 @@
 import { isEmpty, words } from 'lodash';
-import { createNindsForm } from 'ingester/ninds/csv/form';
 import { BATCHLOADER, compareElt, imported, lastMigrationScript, mergeElt, updateForm } from 'ingester/shared/utility';
-import { Form } from 'server/form/mongo-form';
+import { Form, FormSource } from 'server/form/mongo-form';
+import { createNindsForm } from 'ingester/ninds/csv/form/form';
 
 function convertFileNameToFormName(fullFileName) {
     const trimmedFileName = fullFileName
@@ -24,7 +24,7 @@ export async function loadFormByCsv({rows, csvFileName}) {
         });
         console.log(`created form: ${formName} tinyId: ${existingForm.tinyId}`);
     } else {
-        const diff = compareElt(newForm.toObject(), existingForm.toObject(), 'NINDS');
+        const diff = compareElt(newForm.toObject(), existingForm.toObject());
         if (isEmpty(diff)) {
             existingForm.imported = imported;
             existingForm.lastMigrationScript = lastMigrationScript;
@@ -34,11 +34,20 @@ export async function loadFormByCsv({rows, csvFileName}) {
             });
         } else {
             const existingFormObj = existingForm.toObject();
-            existingFormObj.changeNote = lastMigrationScript;
             mergeElt(existingFormObj, newFormObj, 'NINDS');
+            existingFormObj.changeNote = lastMigrationScript;
+            existingFormObj.imported = imported;
             existingFormObj.lastMigrationScript = lastMigrationScript;
             await updateForm(existingFormObj, BATCHLOADER, {updateSource: true});
         }
+        delete newFormObj.tinyId;
+        delete newFormObj._id;
+        newFormObj.attachments = [];
+        const updateResult = await FormSource.updateOne({
+            tinyId: existingForm.tinyId,
+            source: 'NINDS'
+        }, newFormObj, {upsert: true});
+        // printUpdateResult(updateResult, existingForm);
         console.log(`existing form: ${formName} tinyId: ${existingForm.tinyId}`);
     }
 }
