@@ -1,7 +1,7 @@
 import * as cheerio from 'cheerio';
 import { get } from 'request';
-import { PhenxURL as baseUrl, ProtocolModel } from '../../createMigrationConnection';
-import { runOneLoinc } from '../../loinc/Website/loincLoader';
+import { runOneLoinc } from 'ingester/loinc/Website/loincLoader';
+import { getDomainCollection } from 'ingester/shared/utility';
 
 const SECTIONS = [
     {
@@ -176,44 +176,11 @@ function doOneProtocol(protocol) {
     })
 }
 
-let protocols = [];
-(function () {
-    get(baseUrl, async function (err, response, body) {
-        if (err) throw err;
-        const $ = cheerio.load(body, {normalizeWhitespace: true});
-        let table = $('#myTable');
-        let trs = table.find('tbody tr');
-        for (let i = 0; i < trs.length; i++) {
-            let tr = trs[i];
-            let tds = $(tr).find('td');
-            if (tds.length !== 3) throw 'td length error.';
-            let a = $(tds[1]).find('a');
-            let href = $(a).attr('href');
-            let protocolLink = 'https://www.phenxtoolkit.org' + href;
-            let domainCollection = $(tds[2]).text().trim();
-            protocols.push({protocolLink, domainCollection});
-        }
-
-        console.debug(protocols.length + ' protocol(s) need to be grabbed.');
-        for (let protocol of protocols) {
-            let protocolLink = protocol.protocolLink;
-            let existProtocol = await ProtocolModel.findOne({protocolLink: protocolLink}).catch(e => {
-                throw "Error ProtocolModel.findOne: " + e;
-            });
-            if (!existProtocol) {
-                await doOneProtocol(protocol).catch(e => {
-                    throw "Error doOneProtocol: " + e;
-                });
-                delete protocol.fn;
-                delete protocol.async;
-                await new ProtocolModel(protocol).save().catch(e => {
-                    throw "Error ProtocolModel(protocol).save: " + e;
-                });
-                console.debug(protocolLink + ' saved.');
-            } else {
-                console.debug(protocolLink + ' exists. skip...');
-            }
-        }
-        console.info('Finished.');
-    })
-})();
+export async function runOnePhenX(protocolId) {
+    let DomainCollectionMap = await getDomainCollection();
+    let protocol = DomainCollectionMap[protocolId];
+    await doOneProtocol(protocol);
+    delete protocol.fn;
+    delete protocol.async;
+    return protocol;
+}

@@ -1,111 +1,119 @@
-const _ = require('lodash');
+import { isEmpty } from 'lodash';
+import { Form, FormSource } from 'server/form/mongo-form';
+import { Comment } from 'server/discuss/discussDb';
+import { ProtocolModel } from 'ingester/createMigrationConnection';
+import {
+    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeElt, printUpdateResult, updateCde, updateForm
+} from 'ingester/shared/utility';
+import { DataElement } from 'server/cde/mongo-cde';
+import { createPhenxForm } from 'ingester/phenx/Form/form';
 
-const MeasureModel = require('../../createMigrationConnection').MeasureModel;
+import { PhenxLogger } from 'ingester/log/PhenxLogger';
 
-const mongo_form = require('../../../server/form/mongo-form');
-const Form = mongo_form.Form;
-const CreateForm = require('../Form/CreateForm');
-const CompareForm = require('../Form/CompareForm');
-const MergeForm = require('../Form/MergeForm');
-
-const batchloader = require('../../shared/updatedByLoader').batchloader;
-
-let measureCount = 0;
 let protocolCount = 0;
 
-let createdForm = 0;
-let sameForm = 0;
-let changeForm = 0;
-let retiredForm = 0;
-
-retireForms = async () => {
-    let cond = {
-        "ids.source": "PhenX",
-        "archived": false,
-        "registrationState.registrationStatus": {$ne: "Retired"},
-        "imported": {$lt: new Date().setHours(new Date().getHours() - 8)},
-        $or: [
-            {"updatedBy.username": "batchloader"},
-            {
-                $and: [
-                    {"updatedBy.username": {$exists: false}},
-                    {"createdBy.username": {$exists: true}}
-                ]
-            }
-        ]
+async function retireForms() {
+    const cond = {
+        'ids.source': 'PhenX Variable',
+        lastMigrationScript: {$ne: lastMigrationScript},
+        archived: false
     };
-    let forms = await Form.find(cond);
-    for (let form of forms) {
-        form.registrationState.registrationStatus = 'Retired';
-        form.registrationState.administrativeNote = 'Not present in import at ' + new Date().toJSON();
-        form.markModified('registrationState');
-        await form.save();
-        retiredForm++;
+    const forms = await Form.find(cond);
+    for (const form of forms) {
+        const formObj = form.toObject();
+        formObj.registrationState.registrationStatus = 'Retired';
+        formObj.registrationState.administrativeNote = 'Not present in import at ' + imported;
+        await updateForm(formObj, BATCHLOADER);
+        PhenxLogger.retiredPhenxForm++;
+        PhenxLogger.retiredPhenxForms.push(formObj.tinyId);
     }
-};
+}
 
-run = () => {
-    let cond = {};
-    MeasureModel.find(cond).cursor({batchSize: 1, useMongooseAggCursor: true})
-        .eachAsync(async measure => {
-            let measureObj = measure.toObject();
-            console.log('Starting measurement: ' + measureObj.browserId);
-            measureCount++;
-            if (measureObj.protocols) {
-                for (let protocol of measureObj.protocols) {
-                    let protocolId = protocol.protocolId;
-                    console.log('Starting protocol: ' + protocolId);
-                    protocolCount++;
-                    let newFormObj = await CreateForm.createForm(measureObj, protocol);
-                    let newForm = new Form(newFormObj);
-                    let existingForm = await Form.findOne({
-                        archived: false,
-                        'registrationState.registrationStatus': {$ne: 'Retired'},
-                        'ids.id': protocolId
-                    });
-                    if (!existingForm) {
-                        for (let comment of newFormObj.comments) {
-                            comment.eltTinyId = newForm.tinyId;
-                            await comment.save();
-                        }
-                        await newForm.save();
-                        createdForm++;
-                        console.log('createdForm: ' + createdForm);
-                    } else {
-                        existingForm.imported = new Date().toJSON();
-                        existingForm.markModified('imported');
-                        let diff = CompareForm.compareForm(newForm, existingForm);
-                        for (let comment of newFormObj.comments) {
-                            comment.eltTinyId = existingForm.tinyId;
-                            await comment.save();
-                            console.log(existingForm.tinyId);
-                        }
-                        if (_.isEmpty(diff)) {
-                            await existingForm.save();
-                            sameForm++;
-                            console.log('sameForm: ' + sameForm);
-                        } else {
-                            await MergeForm.mergeForm(existingForm, newForm);
-                            existingForm.changeNote = '';
-                            await mongo_form.updatePromise(existingForm, batchloader);
-                            changeForm++;
-                            console.log('changeForm: ' + changeForm);
-                        }
-                    }
-                    console.log('Finished protocol: ' + protocolId);
-                }
+async function retireCdes() {
+    const cond = {
+        'ids.source': 'PhenX',
+        lastMigrationScript: {$ne: lastMigrationScript},
+        archived: false
+    };
+    const cdes = await DataElement.find(cond);
+    for (const cde of cdes) {
+        const cdeObj = cde.toObject();
+        cdeObj.registrationState.registrationStatus = 'Retired';
+        cdeObj.registrationState.administrativeNote = 'Not present in import at ' + imported;
+        await updateCde(cdeObj, BATCHLOADER);
+        PhenxLogger.retiredPhenxCde++;
+        PhenxLogger.retiredPhenxCdes.push(cdeObj.tinyId);
+    }
+}
+
+process.on('unhandledRejection', error => {
+    console.log(error);
+});
+
+(() => {
+//    const cond = {protocolID: '11101'};
+    const cond = {};
+    const cursor = ProtocolModel.find(cond).cursor({batchSize: 10});
+
+    cursor.eachAsync(async (protocol: any) => {
+        const protocolObj = protocol.toObject();
+        const protocolId = protocolObj.protocolID;
+        const phenxForm = await createPhenxForm(protocolObj);
+        const newForm = new Form(phenxForm);
+        const newFormObj = newForm.toObject();
+        let existingForm = await Form.findOne({archived: false, 'ids.id': protocolId});
+        if (!existingForm) {
+            existingForm = await newForm.save();
+            PhenxLogger.createdPhenxForm++;
+            PhenxLogger.createdPhenxForms.push(existingForm.tinyId);
+        } else {
+            const diff = compareElt(newForm.toObject(), existingForm.toObject(), 'PhenX');
+            if (isEmpty(diff)) {
+                existingForm.imported = imported;
+                existingForm.lastMigrationScript = lastMigrationScript;
+                await existingForm.save();
+                PhenxLogger.samePhenxForm++;
+                PhenxLogger.samePhenxForms.push(existingForm.tinyId);
+            } else {
+                const existingFormObj = existingForm.toObject();
+                existingFormObj.changeNote = lastMigrationScript;
+                mergeElt(existingFormObj, newFormObj, 'PhenX');
+                existingFormObj.lastMigrationScript = lastMigrationScript;
+                await updateForm(existingFormObj, BATCHLOADER, {updateSource: true});
+                PhenxLogger.changedPhenxForm++;
+                PhenxLogger.changedPhenxForms.push(existingForm.tinyId);
             }
-            console.log('Finished measurement: ' + measureObj.browserId);
-            await measure.remove();
-        }).then(async () => {
+        }
+        if (newFormObj.registrationState.registrationStatus !== 'Qualified') {
+            for (const comment of phenxForm.comments) {
+                comment.element.eltId = existingForm.tinyId;
+                await new Comment(comment).save();
+            }
+        }
+        delete newFormObj.tinyId;
+        delete newFormObj._id;
+        newFormObj.attachments = [];
+        const updateResult = await FormSource.updateOne({
+            tinyId: existingForm.tinyId,
+            source: 'PhenX'
+        }, newFormObj, {upsert: true});
+        printUpdateResult(updateResult, existingForm);
+        protocolCount++;
+        console.log('protocolCount ' + protocolCount);
+        console.log('Finished protocol: ' + protocolId);
+    }).then(async () => {
         console.log('************************************************');
         await retireForms();
+        await retireCdes();
         console.log('Finished PhenX Loader: ');
-        console.log('createdForm: ' + createdForm);
-        console.log('changeForm: ' + changeForm);
-        console.log('sameForm: ' + sameForm);
-        console.log('retiredForm: ' + retiredForm);
-    }, error => console.log(error));
-};
-
-run();
+        PhenxLogger.log();
+        process.exit(0);
+    }, error => {
+        if (error) {
+            console.log(error);
+            process.exit(1);
+        } else {
+            process.exit(0);
+        }
+    });
+})();

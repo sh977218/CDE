@@ -1,3 +1,6 @@
+import { BATCHLOADER, updateCde, updateForm } from 'ingester/shared/utility';
+import { transferClassifications } from 'shared/system/classificationShared';
+
 const _ = require('lodash');
 const NindsModel = require('../../createMigrationConnection').NindsModel;
 
@@ -13,12 +16,9 @@ const MergeForm = require('../Form/MergeForm');
 
 const updatedByNonLoaderShared = require('../../shared/updatedByNonLoader');
 const updatedByNonLoader = updatedByNonLoaderShared.updatedByNonLoader;
-const batchloader = updatedByNonLoaderShared.batchloader;
 const batchloaderUsername = updatedByNonLoaderShared.BATCHLOADER_USERNAME;
 
 const checkNullComments = require('../../shared/utility').checkNullComments;
-
-import { transferClassifications } from 'shared/system/classificationShared';
 
 let createdForm = 0;
 let sameForm = 0;
@@ -50,7 +50,7 @@ async function retireCdes() {
         let cdeObj = cde.toObject();
         cdeObj.registrationState.registrationStatus = 'Retired';
         cdeObj.registrationState.administrativeNote = 'Not present in import at ' + new Date().toJSON();
-        await mongo_cde.updatePromise(cdeObj, batchloader);
+        await updateCde(cdeObj, BATCHLOADER);
         retiredCDE++;
     }
 }
@@ -76,12 +76,12 @@ async function retiredForms() {
         let formObj = form.toObject();
         formObj.registrationState.registrationStatus = 'Retired';
         formObj.registrationState.administrativeNote = 'Not present in import at ' + new Date().toJSON();
-        await mongo_form.updatePromise(formObj, batchloader);
+        await updateForm(formObj, BATCHLOADER);
         retiredForm++;
     }
 }
 
-doOneNindsFormById = async formIdString => {
+const doOneNindsFormById = async formIdString => {
     let formId = formIdString.replace('form', '').trim();
     let nindsForms = await NindsModel.find({formId: formIdString}).lean();
     let newFormObj = await CreateForm.createForm(nindsForms);
@@ -137,7 +137,7 @@ doOneNindsFormById = async formIdString => {
                 console.log('sameForm: ' + sameForm + ' ' + existingForm.tinyId);
             } else {
                 await MergeForm.mergeForm(existingForm, newForm);
-                await mongo_form.updatePromise(existingForm, batchloader);
+                await updateForm(existingForm, BATCHLOADER);
                 changeForm++;
                 console.log('changeForm: ' + changeForm + ' ' + existingForm.tinyId);
             }

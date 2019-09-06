@@ -4,8 +4,10 @@ export async function parseLanguageVariantsTable(driver, loincId, table) {
     let languageVariants = [];
     let trs = await table.findElements(By.xpath('tbody/tr'));
     trs.shift();
-    if (trs.length % 2 !== 0)
-        throw new Error('Parse language variants error ' + loincId);
+    if (trs.length % 2 !== 0) {
+        console.log('Parse language variants error ' + loincId);
+        process.exit(1);
+    }
     let num_language_variants = trs.length / 2;
     for (let i = 0; i < num_language_variants; i++) {
         let titleTr = trs[i];

@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "allowJs": false,
     "allowUnreachableCode": true,
@@ -14,9 +15,7 @@
     "moduleResolution": "Node",
     "outDir": "./buildNode",
     "pretty": false,
-    "resolveJsonModule": true,
     "rootDir": ".",
-    "resolveJsonModule": true,
     "sourceMap": true,
     "suppressImplicitAnyIndexErrors": true,
     "target": "ESNext",

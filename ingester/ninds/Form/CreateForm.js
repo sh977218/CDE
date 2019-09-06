@@ -1,3 +1,5 @@
+import { BATCHLOADER } from 'ingester/shared/utility';
+
 const generateTinyId = require('../../../server/system/mongo-data').generateTinyId;
 
 const parseDesignations = require('./ParseDesignations').parseDesignations;
@@ -11,7 +13,6 @@ const parseFormElements = require('./ParseFormElements').parseFormElements;
 const parseCopyright = require('./ParseCopyright').parseCopyright;
 
 const today = new Date().toJSON();
-const batchloader = require('../../shared/updatedByNonLoader').batchloader;
 
 
 exports.createForm = async nindsForms => {
@@ -30,7 +31,7 @@ exports.createForm = async nindsForms => {
         source: 'NINDS',
         tinyId: generateTinyId(),
         sources,
-        createdBy: batchloader,
+        createdBy: BATCHLOADER,
         created: today,
         imported: today,
         isCopyrighted,

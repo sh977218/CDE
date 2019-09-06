@@ -1,8 +1,14 @@
-import { trimWhite } from 'ingester/shared/utility'
+import { isEmpty, trim } from 'lodash';
+import { trimWhite } from '../../shared/utility';
 
 export function parseDesignations(protocol) {
-    return [{
-        designation: trimWhite(protocol.classification[protocol.classification.length - 1]),
-        tags: []
-    }];
+    const designations = [];
+    const protocolName = trim(protocol.protocolName.replace('Protocol - ', ''));
+    if (!isEmpty(protocolName)) {
+        designations.push({
+            designation: trimWhite(protocolName),
+            tags: []
+        });
+    }
+    return designations;
 }

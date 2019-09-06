@@ -1,3 +1,5 @@
+import { BATCHLOADER, updateCde } from 'ingester/shared/utility';
+
 const _ = require('lodash');
 const fs = require('fs');
 const xml2js = require('xml2js');
@@ -17,10 +19,9 @@ const DataElement = mongo_cde.DataElement;
 const xmlFile = 'S:/MLB/CDE/NCI/CDE XML/cdmh.xml';
 
 let orgInfo = ORG_INFO_MAP['NCI-CDMH'];
-const user = {username: 'batchloader'};
 let counter = 0;
 
-addAttachments = (originXml, elt) => {
+const addAttachments = (originXml, elt) => {
     return new Promise((resolve, reject) => {
         let readable = new Readable();
         let xml = builder.buildObject(originXml).toString();
@@ -32,7 +33,7 @@ addAttachments = (originXml, elt) => {
                 size: xml.length,
                 stream: readable
             },
-            {username: "batchloader", roles: ["AttachmentReviewer"]},
+            BATCHLOADER,
             "Original XML File", (attachment, newFileCreated, e) => {
                 if (e) throw reject(e);
                 resolve();
@@ -67,7 +68,7 @@ fs.readFile(xmlFile, function (err, data) {
                     MergeCDE.mergeCde(newCde, existingCde);
                 }
                 existingCde.attachments = newCde.attachments;
-                await mongo_cde.updatePromise(existingCde, user);
+                await updateCde(existingCde, BATCHLOADER);
                 console.log('existingCde tinyId: ' + existingCde.tinyId);
             }
             counter++;
