@@ -23,17 +23,6 @@ temp/
 ssl/
 
 ## Ingest
-ingesters/.nb-gradle/private/
-ingesters/build/
-ingester/debug.log
-ingester/ninds/ingesters/.gradle/
-ingester/ninds/ingesters/1.17.5_0.crx
-ingester/ninds/ingesters/build/
-ingester/ninds/ingesters/gradle/
-ingester/ninds/ingesters/src/main/resources/
-ingester/ninds/ingesters/src/test/
-ingester/ninds/target/
-ingester/src/
 
 ## Local Files
 my-*

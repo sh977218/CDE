@@ -1,3 +1,5 @@
+import { BATCHLOADER } from 'ingester/shared/utility';
+
 const generateTinyId = require('../../../server/system/mongo-data').generateTinyId;
 
 const NindsModel = require('../../createMigrationConnection').NindsModel;
@@ -12,7 +14,6 @@ const parseReferenceDocuments = require('./ParseReferenceDocuments').parseRefere
 const parseValueDomain = require('./ParseValueDomain').parseValueDomain;
 
 const today = new Date().toJSON();
-const batchloader = require('../../shared/updatedByNonLoader').batchloader;
 
 exports.createCde = async cdeId => {
     let nindsForms = await NindsModel.find({'cdes.CDE ID': cdeId}, {
@@ -37,8 +38,7 @@ exports.createCde = async cdeId => {
         elementType: 'cde',
         source: 'NINDS',
         tinyId: generateTinyId(),
-        sources,
-        createdBy: batchloader,
+        createdBy: BATCHLOADER,
         created: today,
         imported: today,
         stewardOrg: {name: 'NINDS'},

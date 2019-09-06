@@ -1,3 +1,5 @@
+import { BATCHLOADER } from 'ingester/shared/utility';
+
 const fs = require('fs');
 const util = require('util');
 const async = require('async');
@@ -212,9 +214,7 @@ function rowToDataElement(row, form, cb) {
         registrationState: {
             registrationStatus: 'Qualified'
         },
-        createdBy: {
-            username: 'batchloader'
-        },
+        createdBy: BATCHLOADER,
         referenceDocuments: [],
         properties: [],
         valueDomain: {},
@@ -371,9 +371,7 @@ function run() {
                         registrationState: {
                             registrationStatus: 'Recorded'
                         },
-                        createdBy: {
-                            username: 'batchloader'
-                        },
+                        createdBy: BATCHLOADER,
                         referenceDocuments: [],
                         properties: [],
                         formElements: [],

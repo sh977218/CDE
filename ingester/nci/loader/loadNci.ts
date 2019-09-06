@@ -1,7 +1,5 @@
 import { isEmpty } from 'lodash';
-import {
-    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeElt, printUpdateResult, updateCde
-} from 'ingester/shared/utility';
+import { BATCHLOADER, compareElt, imported, lastMigrationScript, mergeElt, updateCde } from 'ingester/shared/utility';
 import { DataElement, DataElementSource } from 'server/cde/mongo-cde';
 import { Comment } from 'server/discuss/discussDb';
 import { createNciCde } from 'ingester/nci/CDE/cde';
@@ -12,13 +10,13 @@ const xml2js = require('xml2js');
 const xmlParser = new xml2js.Parser();
 
 let createdCDE = 0;
-const createdCdes = [];
+const createdCdes: string[] = [];
 let sameCde = 0;
-const sameCdes = [];
+const sameCdes: string[] = [];
 let changedCde = 0;
-const changedCdes = [];
+const changedCdes: string[] = [];
 
-function runOneOrg(orgName) {
+function runOneOrg(orgName: string) {
     const orgInfo = NCI_ORG_INFO_MAP[orgName];
     const xmlFile = orgInfo.xml;
     return new Promise((resolve, reject) => {
@@ -30,7 +28,8 @@ function runOneOrg(orgName) {
                     if (error) {
                         reject(err);
                     }
-                    for (const nciXmlCde of nciXml.DataElementsList.DataElement) {
+                    let nciXmlCdes = nciXml.DataElementsList.DataElement;
+                    for (const nciXmlCde of nciXmlCdes) {
                         const nciId = nciXmlCde.PUBLICID[0];
                         const nciCde = await createNciCde(nciXmlCde, orgInfo);
                         const newCde = new DataElement(nciCde);
@@ -45,33 +44,39 @@ function runOneOrg(orgName) {
                             createdCDE++;
                             createdCdes.push(existingCde.tinyId);
                         } else {
-                            const existingCdeObj = existingCde.toObject();
-                            existingCdeObj.imported = imported;
-                            existingCdeObj.changeNote = lastMigrationScript;
                             const diff = compareElt(newCde.toObject(), existingCde.toObject(), 'NCI');
                             if (isEmpty(diff)) {
-                                existingCdeObj.lastMigrationScript = lastMigrationScript;
+                                existingCde.imported = imported;
+                                existingCde.lastMigrationScript = lastMigrationScript;
                                 await existingCde.save();
                                 sameCde++;
-                                sameCdes.push(existingCdeObj.tinyId);
+                                sameCdes.push(existingCde.tinyId);
                             } else {
+                                const existingCdeObj = existingCde.toObject();
                                 mergeElt(existingCdeObj, newCdeObj, 'NCI');
+                                existingCdeObj.imported = imported;
+                                existingCdeObj.changeNote = lastMigrationScript;
                                 existingCdeObj.lastMigrationScript = lastMigrationScript;
                                 await updateCde(existingCdeObj, BATCHLOADER, {updateSource: true});
                                 changedCde++;
                                 changedCdes.push(existingCde.tinyId);
                             }
                         }
-                        for (const comment of nciCde.comments) {
-                            comment.element.eltId = existingCde.tinyId;
-                            await new Comment(comment).save();
-                            console.log('comment saved on ' + existingCde.tinyId);
+                        if (nciCde.comments) {
+                            for (const comment of nciCde.comments) {
+                                comment.element.eltId = existingCde.tinyId;
+                                await new Comment(comment).save();
+                                console.log('comment saved on ' + existingCde.tinyId);
+                            }
                         }
                         delete newCdeObj.tinyId;
                         delete newCdeObj._id;
                         newCdeObj.attachments = [];
-                        const updateResult = await DataElementSource.updateOne({tinyId: existingCde.tinyId}, newCdeObj, {upsert: true});
-                        printUpdateResult(updateResult, existingCde);
+                        const updateResult = await DataElementSource.updateOne({
+                            tinyId: existingCde.tinyId,
+                            source: 'caDSR'
+                        }, newCdeObj, {upsert: true});
+                        // printUpdateResult(updateResult, existingCde);
                     }
                     resolve();
                 });
@@ -83,13 +88,12 @@ function runOneOrg(orgName) {
 export async function runOrgs(orgNames) {
     for (const orgName of orgNames) {
         await runOneOrg(orgName);
-        console.log(`*********************${orgName}`);
-        console.log(`createdCDE: ${createdCDE}`);
-        console.log(`createdCdes: ${createdCdes}`);
-        console.log(`sameCde: ${sameCde}`);
-        console.log(`sameCdes: ${sameCdes}`);
-        console.log(`changedCde: ${changedCde}`);
-        console.log(`changedCdes: ${changedCdes}`);
         console.log(`********************Finished org: ${orgName}\n`);
     }
+    console.log(`createdCDE: ${createdCDE}`);
+    console.log(`createdCdes: ${createdCdes}`);
+    console.log(`sameCde: ${sameCde}`);
+    console.log(`sameCdes: ${sameCdes}`);
+    console.log(`changedCde: ${changedCde}`);
+    console.log(`changedCdes: ${changedCdes}`);
 }

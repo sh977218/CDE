@@ -1,13 +1,10 @@
-import { isEmpty } from 'lodash';
-import { By, webdriver } from 'selenium-webdriver';
-import { BATCHLOADER, updateCde, updatedByLoader, updateForm } from 'ingester/shared/utility';
-import { DataElement } from 'server/cde/mongo-cde';
-import { Form } from 'server/form/mongo-form';
-import { compareCde, createCde, mergeCde } from 'ingester/loinc/CDE/cde';
-import { compareForm, createForm, mergeForm } from 'ingester/loinc/Form/form';
+const {Builder, By} = require('selenium-webdriver');
+require('chromedriver');
+
 import { parsePanelHierarchyTable } from 'ingester/loinc/Website/ParsePanelHierarchyTable';
 import { parseLoincIdTable } from 'ingester/loinc/Website/ParseLoincIdTable';
 import { parseLoincNameTable } from 'ingester/loinc/Website/ParseLoincNameTable';
+import { parse3rdPartyCopyrightTable } from 'ingester/loinc/Website/Parse3rdPartyCopyrightTable';
 import { parseNameTable } from 'ingester/loinc/Website/NameTable/ParseNameTable';
 import { parseCopyrightNotice } from 'ingester/loinc/Website/ParseCopyrightNotice';
 import { parsePartDefinitionDescriptionsTable } from 'ingester/loinc/Website/ParsePartDefinitionDescriptionsTable';
@@ -20,7 +17,6 @@ import { parseSubmittersInformationTable } from 'ingester/loinc/Website/ParseSub
 import { parseLanguageVariantsTable } from 'ingester/loinc/Website/ParseLanguageVariantsTable';
 import { parseRelatedNamesTable } from 'ingester/loinc/Website/ParseRelatedNamesTable';
 import { parseExampleUnitsTable } from 'ingester/loinc/Website/ParseExampleUnitsTable';
-import { parse3rdPartyCopyrightTable } from 'ingester/loinc/Website/Parse3rdPartyCopyrightTable';
 import { parseCopyrightTable } from 'ingester/loinc/Website/ParseCopyrightTable';
 import { parseAnswerListTable } from 'ingester/loinc/Website/ParseAnswerListTable';
 import { parseSurveyQuestionTable } from 'ingester/loinc/Website/ParseSurveyQuestionTable';
@@ -28,10 +24,6 @@ import { parseWebContentTable } from 'ingester/loinc/Website/ParseWebContentTabl
 import { parseArticleTable } from 'ingester/loinc/Website/ParseArticleTable';
 import { parseCopyrightText } from 'ingester/loinc/Website/ParseCopyrightText';
 import { parseVersion } from 'ingester/loinc/Website/ParseVersion';
-
-const url_prefix = 'http://r.details.loinc.org/LOINC/';
-const url_postfix = '.html';
-const url_postfix_para = '?sections=Comprehensive';
 
 const tasks = [
     {
@@ -91,7 +83,7 @@ const tasks = [
         xpath: 'html/body/div/table[.//th[contains(node(),"HL7 ATTRIBUTES")]]'
     },
     {
-        sectionName: "SUBMITTER'S INFORMATION",
+        sectionName: 'SUBMITTER\'S INFORMATION',
         function: parseSubmittersInformationTable,
         xpath: 'html/body/div/table[.//th[text()="SUBMITTER\'S INFORMATION"]]'
     },
@@ -112,7 +104,6 @@ const tasks = [
         function: parseExampleUnitsTable,
         xpath: 'html/body/div/table[.//th[text()="EXAMPLE UNITS"]]'
     },
-
     {
         sectionName: '3rd PARTY COPYRIGHT',
         function: parse3rdPartyCopyrightTable,
@@ -165,72 +156,20 @@ const tasks = [
     }
 ];
 
-export function runOneLoinc(loincId) {
-    return new Promise(async (resolve) => {
-        let driver = await new webdriver.Builder().forBrowser('firefox').build();
-        let url = url_prefix + loincId.trim() + url_postfix + url_postfix_para;
-        await driver.get(url);
-        let loinc = {URL: url, loincId: loincId};
-        for (let task of tasks) {
-            let sectionName = task.sectionName;
-            let elements = await driver.findElements(By.xpath(task.xpath));
-            if (elements && elements.length === 1) {
+export async function runOneLoinc(loincId) {
+    let driver = await new Builder().forBrowser('chrome').build();
+    let url = `http://r.details.loinc.org/LOINC/${loincId.trim()}.html?sections=Comprehensive`;
+    await driver.get(url);
+    let loinc = {URL: url, loincId: loincId};
+    for (let task of tasks) {
+        let sectionName = task.sectionName;
+        let elements = await driver.findElements(By.xpath(task.xpath));
+        if (elements && elements.length === 1) {
+            if (task.function) {
                 loinc[sectionName] = await task.function(driver, loincId, elements[0]);
             }
         }
-        driver.close();
-        resolve(loinc);
-    })
+    }
+    driver.close();
+    return loinc;
 }
-
-exports.runOneCde = async (loinc, orgInfo) => {
-    let loincId = loinc.loincId;
-    let cdeCond = {
-        archived: false,
-        "registrationState.registrationStatus": {$ne: "Retired"},
-        'ids.id': loincId
-    };
-    let existingCde = await DataElement.findOne(cdeCond).exec();
-    let newCde = await createCde(loinc, orgInfo);
-    if (!existingCde) {
-        existingCde = await new DataElement(newCde).save();
-    } else if (updatedByLoader(existingCde)) {
-    } else {
-        existingCde.imported = new Date().toJSON();
-        existingCde.markModified('imported');
-        let diff = compareCde(newCde, existingCde);
-        if (isEmpty(diff)) {
-            await existingCde.save();
-        } else {
-            await mergeCde(newCde, existingCde);
-            await updateCde(existingCde, BATCHLOADER);
-        }
-    }
-    return existingCde;
-};
-
-exports.runOneForm = async (loinc, orgInfo) => {
-    let formCond = {
-        archived: false,
-        "registrationState.registrationStatus": {$not: /Retired/},
-        'ids.id': loinc.loincId
-    };
-    let existingForm = await Form.findOne(formCond);
-    let newFormObj = await createForm(loinc, orgInfo);
-    let newForm = new Form(newFormObj);
-    if (!existingForm) {
-        existingForm = await newForm.save();
-    } else if (updatedByLoader(existingForm)) {
-    } else {
-        existingForm.imported = new Date().toJSON();
-        existingForm.markModified('imported');
-        let diff = compareForm(newForm, existingForm);
-        if (isEmpty(diff)) {
-            await existingForm.save();
-        } else {
-            await mergeForm(newForm, existingForm);
-            await updateForm(existingForm, BATCHLOADER);
-        }
-    }
-    return existingForm;
-};

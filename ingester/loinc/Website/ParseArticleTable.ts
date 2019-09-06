@@ -2,7 +2,6 @@ import { By } from 'selenium-webdriver';
 
 export async function parseArticleTable(driver, loincId, element) {
     let trs = await element.findElements(By.xpath('tbody/tr'));
-
     trs.shift();
     let articles = [];
     let article = "";

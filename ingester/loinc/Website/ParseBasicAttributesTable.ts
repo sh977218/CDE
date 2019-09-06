@@ -1,5 +1,5 @@
 import { By } from 'selenium-webdriver';
-import { sanitizeText } from '../Utility/utility';
+import { sanitizeText } from '../../shared/utility';
 
 export async function parseBasicAttributesTable(driver, loincId, element) {
     let result = {};
@@ -7,12 +7,14 @@ export async function parseBasicAttributesTable(driver, loincId, element) {
     trs.shift();
     for (let tr of trs) {
         let tds = await tr.findElements(By.xpath('td'));
-        if (tds.length !== 3)
+        if (tds.length !== 3) {
             throw new Error('Parse basic attributes error ' + loincId);
+        }
         let spaceTd = tds[0];
         let spaceClass = await spaceTd.getAttribute('class');
-        if (spaceClass.trim().indexOf('spacer') === -1) throw new Error('Parse basic attributes error ' + loincId);
-
+        if (spaceClass.trim().indexOf('spacer') === -1) {
+            throw new Error('Parse basic attributes error ' + loincId);
+        }
         let keyTd = tds[1];
         let keyText = await keyTd.getText();
         let key = sanitizeText(keyText.trim());
