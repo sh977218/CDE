@@ -29,6 +29,7 @@ const UOM_MAP = {
     cm: 'cm',
     percent: '%',
     days: 'd',
+    'Hour per Day': 'h/d',
     minutes: 'min',
     'hour:minutes': 'h:m',
     'cm/s': 'cm/s',
@@ -63,7 +64,8 @@ const DATA_TYPE_MAP = {
     'numeric Values': 'Number',
     'Numeric values': 'Number',
     Time: 'Text',
-    alphanumeric: 'Text'
+    alphanumeric: 'Text',
+    GUID: 'Text'
 };
 
 export function parseValueDomain(row: any) {

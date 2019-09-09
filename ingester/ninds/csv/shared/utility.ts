@@ -72,8 +72,10 @@ const xlsxColumnToCsvColumn = {
     'steward organization name': 'Steward Organization Name',
     'steward contact name': 'Steward Contact Name',
     'steward contact information': 'Steward Contact Information',
-    'creation date': '', 'last change date': '',
-    'administrative status': '', 'CAT OID': '',
+    'creation date': '',
+    'last change date': '',
+    'administrative status': '',
+    'CAT OID': '',
     'Form Item OID': ''
 };
 
@@ -81,6 +83,8 @@ export function getCell(row: any, header: string) {
     const formattedHeader = words(toLower(header)).join('');
     if (!isEmpty(row[formattedHeader])) {
         return trim(row[formattedHeader]);
+    } else if (header === 'Category/Group') {
+        return trim(row.group);
     } else {
         return '';
     }
