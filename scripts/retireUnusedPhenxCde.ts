@@ -15,17 +15,42 @@ function run() {
         'registrationState.registrationStatus': {$ne: 'Retired'},
         archived: false,
         'stewardOrg.name': 'LOINC',
-        'classification.0': {$exists: false}
+        classification: {$exists: true}, $where: 'this.classification.length<2'
     };
     const cursor = DataElement.find(cond).cursor();
     cursor.eachAsync(async (cde: any) => {
         const cdeObj = cde.toObject();
         const linkedForm = await Form.findOne({
-            $or: [{
-                'formElements.question.cde.tinyId': cdeObj.tinyId
-            }, {
-                'formElements.formElements.question.cde.tinyId': cdeObj.tinyId
-            }]
+            archived: false,
+            $or: [
+                {
+                    'formElements.question.cde.tinyId': cdeObj.tinyId
+                },
+                {
+                    'formElements.formElements.question.cde.tinyId': cdeObj.tinyId
+                },
+                {
+                    'formElements.formElements.formElements.question.cde.tinyId': cdeObj.tinyId
+                },
+                {
+                    'formElements.formElements.formElements.formElements.question.cde.tinyId': cdeObj.tinyId
+                },
+                {
+                    'formElements.formElements.formElements.formElements.formElements.question.cde.tinyId': cdeObj.tinyId
+                },
+                {
+                    'formElements.formElements.formElements.formElements.formElements.formElements.question.cde.tinyId': cdeObj.tinyId
+                },
+                {
+                    'formElements.formElements.formElements.formElements.formElements.formElements.formElements.question.cde.tinyId': cdeObj.tinyId
+                },
+                {
+                    'formElements.formElements.formElements.formElements.formElements.formElements.formElements.formElements.question.cde.tinyId': cdeObj.tinyId
+                },
+                {
+                    'formElements.formElements.formElements.formElements.formElements.formElements.formElements.formElements.formElements.question.cde.tinyId': cdeObj.tinyId
+                }
+            ]
         });
         if (linkedForm) {
 //            console.log(`Skipping cde ${cdeObj.tinyId}, because it presents in form ${linkedForm.tinyId}`);
@@ -33,7 +58,6 @@ function run() {
             cdeObj.registrationState.registrationStatus = 'Retired';
             cdeObj.changeNote = 'Retired because not used on any form.';
             await updateCde(cdeObj, BATCHLOADER);
-            console.log(`Retired cde ${cdeObj.tinyId}, because it doesn't present in any forms.`);
             retiredPhenxCdes.push(cdeObj.tinyId);
             retiredPhenxCde++;
         }
