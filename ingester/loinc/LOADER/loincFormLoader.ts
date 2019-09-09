@@ -19,7 +19,7 @@ export async function runOneForm(loinc, orgInfo) {
         const existingFormObj = existingForm.toObject();
         existingFormObj.imported = imported;
         existingFormObj.changeNote = lastMigrationScript;
-        const diff = compareElt(newForm.toObject(), existingForm.toObject(), 'LOINC');
+        const diff = compareElt(newForm.toObject(), existingForm.toObject());
         if (isEmpty(diff)) {
             existingFormObj.lastMigrationScript = lastMigrationScript;
             await existingForm.save();

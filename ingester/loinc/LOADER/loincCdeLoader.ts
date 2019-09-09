@@ -21,7 +21,7 @@ export async function runOneCde(loinc, orgInfo) {
         existingCdeObj.imported = imported;
         existingCdeObj.lastMigrationScript = lastMigrationScript;
         existingCdeObj.changeNote = lastMigrationScript;
-        const diff = compareElt(newCde.toObject(), existingCde.toObject(), 'LOINC');
+        const diff = compareElt(newCde.toObject(), existingCde.toObject());
         if (isEmpty(diff)) {
             await existingCde.save();
             LoincLogger.sameLoincCde++;

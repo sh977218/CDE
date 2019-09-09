@@ -44,7 +44,7 @@ function runOneOrg(orgName: string) {
                             createdCDE++;
                             createdCdes.push(existingCde.tinyId);
                         } else {
-                            const diff = compareElt(newCde.toObject(), existingCde.toObject(), 'NCI');
+                            const diff = compareElt(newCde.toObject(), existingCde.toObject());
                             if (isEmpty(diff)) {
                                 existingCde.imported = imported;
                                 existingCde.lastMigrationScript = lastMigrationScript;

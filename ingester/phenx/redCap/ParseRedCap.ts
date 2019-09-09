@@ -62,7 +62,7 @@ async function doOneRedCap(redCap, redCaps, protocol, newForm) {
     } else {
         existingCde.imported = imported;
         existingCde.changeNote = lastMigrationScript;
-        const diff = compareElt(newCde.toObject(), existingCde.toObject(), 'PhenX');
+        const diff = compareElt(newCde.toObject(), existingCde.toObject());
         if (isEmpty(diff)) {
             existingCde.lastMigrationScript = lastMigrationScript;
             await existingCde.save();

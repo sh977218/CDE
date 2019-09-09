@@ -7,7 +7,7 @@ import * as mongo_cde from 'server/cde/mongo-cde';
 import * as mongo_form from 'server/form/mongo-form';
 import { PhenxURL } from 'ingester/createMigrationConnection';
 import { transferClassifications } from 'shared/system/classificationShared';
-import { Classification, Definition, Designation } from 'shared/models.model';
+import { Classification, Definition, Designation, Property } from 'shared/models.model';
 import { FormElement } from 'shared/form/form.model';
 
 const sourceMap = {
@@ -121,15 +121,14 @@ export function updateCde(elt: any, user: any, options = {}) {
 
 export function updateForm(elt: any, user: any, options = {}) {
     return new Promise((resolve, reject) => {
-        /*@TODO remove it after PhenX loader.
-                const isPhenX = elt.ids.filter(id => id.source === 'PhenX').length > 0;
-                const isQualified = elt.registrationState.registrationStatus === 'Qualified';
-                const isArchived = elt.archived;
-                if (isPhenX && isQualified && !isArchived) {
-                    console.log(`Qualified PhenX Form cannot be updated through loader.`);
-                    process.exit(1);
-                }
-        */
+        /*@TODO remove it after PhenX loader.*/
+        const isPhenX = elt.ids.filter(id => id.source === 'PhenX').length > 0;
+        const isQualified = elt.registrationState.registrationStatus === 'Qualified';
+        const isArchived = elt.archived;
+        if (isPhenX && isQualified && !isArchived) {
+            console.log(`Qualified PhenX Form cannot be updated through loader.`);
+            process.exit(1);
+        }
         mongo_form.update(elt, user, options, (err, savedElt) => {
             if (err) {
                 reject(err);
@@ -159,7 +158,7 @@ export function getDomainCollection() {
                 }
                 const $ = cheerio.load(body, {normalizeWhitespace: true});
                 const table = $('#myTable');
-                const trs = table.find('tbody tr');
+                const trs: any[] = table.find('tbody tr');
                 for (const tr of trs) {
                     const tds = $(tr).find('td');
                     if (tds.length !== 3) {
@@ -232,6 +231,7 @@ export function compareElt(newEltObj, existingEltObj) {
 // Merge two elements
 function mergeDesignation(existingDesignations: Designation[], newDesignations: Designation[]) {
     const designations: Designation[] = [];
+    const allDesignations = existingDesignations.concat(newDesignations);
     allDesignations.forEach(designation => {
         const i = findIndex(designations, {designation: designation.designation});
         if (i !== -1) {
@@ -260,8 +260,8 @@ function mergeDefinition(existingDefinitions: Definition[], newDefinitions: Defi
     return definitions;
 }
 
-export function mergeProperties(newProperties, existingProperties) {
-    const properties = [];
+export function mergeProperties(newProperties: Property[], existingProperties: Property[]) {
+    const properties: Property[] = [];
     const allProperties = newProperties.concat(existingProperties);
     allProperties.forEach(property => {
         const i = findIndex(properties, {key: property.key});
