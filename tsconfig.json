@@ -12,6 +12,7 @@
     ],
     "module": "ES2015",
     "moduleResolution": "Node",
+    "noImplicitAny": false,
     "pretty": false,
     "resolveJsonModule": true,
     "rootDir": ".",
