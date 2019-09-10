@@ -14,11 +14,6 @@ export class RedcapLogger {
     static changedRedcapCde = 0;
     static changedRedcapCdes = [];
 
-    static retiredRedcapForm = 0;
-    static retiredRedcapForms = [];
-    static retiredRedcapCde = 0;
-    static retiredRedcapCdes = [];
-
     static log() {
         console.log('createdRedcapCde: ' + this.createdRedcapCde);
         console.log('createdRedcapCdes: ' + this.createdRedcapCdes);
@@ -34,10 +29,5 @@ export class RedcapLogger {
         console.log('changedRedcapCdes: ' + this.changedRedcapCdes);
         console.log('changedRedcapForm: ' + this.changedRedcapForm);
         console.log('changedRedcapForms: ' + this.changedRedcapForms);
-
-        console.log('retiredRedcapCde: ' + this.retiredRedcapCde);
-        console.log('retiredRedcapCdes: ' + this.retiredRedcapCdes);
-        console.log('retiredRedcapForm: ' + this.retiredRedcapForm);
-        console.log('retiredRedcapForms: ' + this.retiredRedcapForms);
     }
 }

@@ -10,9 +10,9 @@ import { transferClassifications } from 'shared/system/classificationShared';
 import { Classification, Definition, Designation, Property } from 'shared/models.model';
 import { FormElement } from 'shared/form/form.model';
 
-const sourceMap = {
+export const sourceMap = {
     LOINC: ['LOINC'],
-    PHENX: ['PhenX', 'PhenX Variable'],
+    PhenX: ['PhenX', 'PhenX Variable'],
     NINDS: ['NINDS', 'NINDS Variable Name', 'NINDS caDSR', 'caDSR'],
     NCI: ['caDSR']
 };

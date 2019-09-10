@@ -3,7 +3,8 @@ import { Form, FormSource } from 'server/form/mongo-form';
 import { Comment } from 'server/discuss/discussDb';
 import { ProtocolModel } from 'ingester/createMigrationConnection';
 import {
-    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeElt, printUpdateResult, updateCde, updateForm
+    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeElt, printUpdateResult, sourceMap, updateCde,
+    updateForm
 } from 'ingester/shared/utility';
 import { DataElement } from 'server/cde/mongo-cde';
 import { createPhenxForm } from 'ingester/phenx/Form/form';
@@ -14,37 +15,43 @@ import { RedcapLogger } from 'ingester/log/RedcapLogger';
 
 let protocolCount = 0;
 
+const phenxSources = sourceMap.PhenX;
+
 async function retireForms() {
     const cond = {
-        'ids.source': 'PhenX Variable',
-        lastMigrationScript: {$ne: lastMigrationScript},
+        'ids.source': {$in: phenxSources},
+        'registrationState.registrationStatus': {$ne: 'Retired'},
         archived: false
     };
     const forms = await Form.find(cond);
     for (const form of forms) {
         const formObj = form.toObject();
-        formObj.registrationState.registrationStatus = 'Retired';
-        formObj.registrationState.administrativeNote = 'Not present in import at ' + imported;
-        await updateForm(formObj, BATCHLOADER);
-        PhenxLogger.retiredPhenxForm++;
-        PhenxLogger.retiredPhenxForms.push(formObj.tinyId);
+        if (formObj.lastMigrationScript !== lastMigrationScript) {
+            formObj.registrationState.registrationStatus = 'Retired';
+            formObj.registrationState.administrativeNote = 'Not present in import at ' + imported;
+            await updateForm(formObj, BATCHLOADER);
+            PhenxLogger.retiredPhenxForm++;
+            PhenxLogger.retiredPhenxForms.push(formObj.tinyId);
+        }
     }
 }
 
 async function retireCdes() {
     const cond = {
-        'ids.source': 'PhenX',
-        lastMigrationScript: {$ne: lastMigrationScript},
+        'ids.source': {$in: phenxSources},
+        'registrationState.registrationStatus': {$ne: 'Retired'},
         archived: false
     };
     const cdes = await DataElement.find(cond);
     for (const cde of cdes) {
         const cdeObj = cde.toObject();
-        cdeObj.registrationState.registrationStatus = 'Retired';
-        cdeObj.registrationState.administrativeNote = 'Not present in import at ' + imported;
-        await updateCde(cdeObj, BATCHLOADER);
-        PhenxLogger.retiredPhenxCde++;
-        PhenxLogger.retiredPhenxCdes.push(cdeObj.tinyId);
+        if (cdeObj.lastMigrationScript !== lastMigrationScript) {
+            cdeObj.registrationState.registrationStatus = 'Retired';
+            cdeObj.registrationState.administrativeNote = 'Not present in import at ' + imported;
+            await updateCde(cdeObj, BATCHLOADER);
+            PhenxLogger.retiredPhenxCde++;
+            PhenxLogger.retiredPhenxCdes.push(cdeObj.tinyId);
+        }
     }
 }
 
@@ -54,7 +61,7 @@ process.on('unhandledRejection', error => {
 
 (() => {
 //    const cond = {protocolID: '11101'};
-    const cond = {};
+    const cond = {a: 'a'};
     const cursor = ProtocolModel.find(cond).cursor({batchSize: 10});
 
     cursor.eachAsync(async (protocol: any) => {
@@ -104,13 +111,14 @@ process.on('unhandledRejection', error => {
         console.log('protocolCount ' + protocolCount);
         console.log('Finished protocol: ' + protocolId);
     }).then(async () => {
-        console.log('************************************************');
+        console.log('Retiring forms.');
         await retireForms();
+        console.log('Retiring cdes.');
         await retireCdes();
-        console.log('Finished PhenX Loader: ');
         PhenxLogger.log();
         LoincLogger.log();
         RedcapLogger.log();
+        console.log('Finished PhenX Loader: ');
         process.exit(0);
     }, error => {
         if (error) {
