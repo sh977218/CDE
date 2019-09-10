@@ -13,11 +13,6 @@ export class PhenxLogger {
     static retiredPhenxCde = 0;
     static retiredPhenxCdes = [];
 
-    constructor() {
-        const timeInterval = 10 * 1000; // 10 seconds
-        setInterval(PhenxLogger.log, timeInterval);
-    }
-
     static log() {
         console.log('createdPhenxForm: ' + this.createdPhenxForm);
         console.log('createdPhenxForms: ' + this.createdPhenxForms);

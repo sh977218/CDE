@@ -9,6 +9,8 @@ import { DataElement } from 'server/cde/mongo-cde';
 import { createPhenxForm } from 'ingester/phenx/Form/form';
 
 import { PhenxLogger } from 'ingester/log/PhenxLogger';
+import { LoincLogger } from 'ingester/log/LoincLogger';
+import { RedcapLogger } from 'ingester/log/RedcapLogger';
 
 let protocolCount = 0;
 
@@ -107,6 +109,8 @@ process.on('unhandledRejection', error => {
         await retireCdes();
         console.log('Finished PhenX Loader: ');
         PhenxLogger.log();
+        LoincLogger.log();
+        RedcapLogger.log();
         process.exit(0);
     }, error => {
         if (error) {

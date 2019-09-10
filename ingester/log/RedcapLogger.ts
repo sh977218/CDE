@@ -19,11 +19,6 @@ export class RedcapLogger {
     static retiredRedcapCde = 0;
     static retiredRedcapCdes = [];
 
-    constructor() {
-        const timeInterval = 10 * 1000; // 10 seconds
-        setInterval(RedcapLogger.log, timeInterval);
-    }
-
     static log() {
         console.log('createdRedcapCde: ' + this.createdRedcapCde);
         console.log('createdRedcapCdes: ' + this.createdRedcapCdes);

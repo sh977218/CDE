@@ -19,11 +19,6 @@ export class LoincLogger {
     static retiredLoincCde = 0;
     static retiredLoincCdes = [];
 
-    constructor() {
-        let timeInterval = 10 * 1000; // 10 seconds
-        setInterval(LoincLogger.log, timeInterval);
-    }
-
     static log() {
         console.log('createdLoincCde: ' + this.createdLoincCde);
         console.log('createdLoincCdes: ' + this.createdLoincCdes);
