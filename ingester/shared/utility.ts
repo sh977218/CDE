@@ -4,6 +4,7 @@ import * as moment from 'moment';
 import { get } from 'request';
 import { findIndex, isEmpty, uniq } from 'lodash';
 import * as mongo_cde from 'server/cde/mongo-cde';
+import { DataElement } from 'server/cde/mongo-cde';
 import * as mongo_form from 'server/form/mongo-form';
 import { PhenxURL } from 'ingester/createMigrationConnection';
 import { transferClassifications } from 'shared/system/classificationShared';
@@ -93,12 +94,12 @@ export function trimWhite(text: string) {
     }
 }
 
-export function printUpdateResult(updateResult: any, elt: any) {
+export function printUpdateResult(updateResult: any, elt?: any) {
     if (updateResult.nModified) {
-//        console.log(`${updateResult.nModified} ${elt.elementType} Raw Artifact modified: ${elt.tinyId}`);
+        console.log(`${updateResult.nModified} ${elt.elementType} Raw Artifact modified: ${elt.tinyId}`);
     }
     if (updateResult.upserted && updateResult.upserted.length) {
-//        console.log(`${updateResult.upserted.length} ${elt.elementType} Raw Artifact inserted: ${elt.tinyId}`);
+        console.log(`${updateResult.upserted.length} ${elt.elementType} Raw Artifact inserted: ${elt.tinyId}`);
     }
 }
 
@@ -120,13 +121,26 @@ export function updateCde(elt: any, user: any, options = {}) {
 }
 
 export function updateForm(elt: any, user: any, options: any = {}) {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         /* Loader cannot change Qualified PhenX formElements.*/
         const isPhenX = elt.ids.filter(id => id.source === 'PhenX').length > 0;
         const isQualified = elt.registrationState.registrationStatus === 'Qualified';
         const isArchived = elt.archived;
         if (isPhenX && isQualified && !isArchived) {
             options.updateFormElements = false;
+            // update Qualified PhenX CDE lastMigrationScript so they won't get retired.
+            const cdeTinyIds = getChildren(elt.formElements);
+            for (const cdeTinyId of cdeTinyIds) {
+                let cond = {
+                    archived: false,
+                    tinyId: cdeTinyId
+                };
+                if (cdeTinyId) {
+                    cond.version = cdeTinyId.version;
+                }
+                const updateResult = await DataElement.updateMany(cond, {$set: {lastMigrationScript}});
+                printUpdateResult(updateResult, elt);
+            }
         }
 
         mongo_form.update(elt, user, options, (err, savedElt) => {
@@ -218,7 +232,7 @@ export function compareElt(newEltObj, existingEltObj) {
             });
 
         if (eltObj.elementType === 'form' && !isQualified) {
-            eltObj.cdeIds = getChildren(eltObj.formElements);
+            eltObj.cdeTinyIds = getChildren(eltObj.formElements);
         }
 
         wipeBeforeCompare(eltObj);
@@ -272,6 +286,7 @@ export function mergeProperties(newProperties: Property[], existingProperties: P
     return properties;
 }
 
+//@TODO some phenx form has LOINC id, this implementation doesn't work.
 export function mergeBySources(newSources, existingSources, sources) {
     if (!existingSources) {
         existingSources = [];
