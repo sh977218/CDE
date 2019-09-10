@@ -95,10 +95,10 @@ export function trimWhite(text: string) {
 
 export function printUpdateResult(updateResult: any, elt: any) {
     if (updateResult.nModified) {
-        console.log(`${updateResult.nModified} ${elt.elementType} Raw Artifact modified: ${elt.tinyId}`);
+//        console.log(`${updateResult.nModified} ${elt.elementType} Raw Artifact modified: ${elt.tinyId}`);
     }
     if (updateResult.upserted && updateResult.upserted.length) {
-        console.log(`${updateResult.upserted.length} ${elt.elementType} Raw Artifact inserted: ${elt.tinyId}`);
+//        console.log(`${updateResult.upserted.length} ${elt.elementType} Raw Artifact inserted: ${elt.tinyId}`);
     }
 }
 
@@ -119,16 +119,16 @@ export function updateCde(elt: any, user: any, options = {}) {
     });
 }
 
-export function updateForm(elt: any, user: any, options = {}) {
+export function updateForm(elt: any, user: any, options: any = {}) {
     return new Promise((resolve, reject) => {
-        /*@TODO remove it after PhenX loader.*/
+        /* Loader cannot change Qualified PhenX formElements.*/
         const isPhenX = elt.ids.filter(id => id.source === 'PhenX').length > 0;
         const isQualified = elt.registrationState.registrationStatus === 'Qualified';
         const isArchived = elt.archived;
         if (isPhenX && isQualified && !isArchived) {
-            console.log(`Qualified PhenX Form cannot be updated through loader.`);
-            process.exit(1);
+            options.updateFormElements = false;
         }
+
         mongo_form.update(elt, user, options, (err, savedElt) => {
             if (err) {
                 reject(err);

@@ -412,7 +412,7 @@ export type Instruction = FormattedValue;
 
 export class Designation {
     designation: string;
-    tags: string[] = [];
+    tags?: string[] = [];
 
     constructor(designation = '') {
         this.designation = designation;
@@ -422,7 +422,7 @@ export class Designation {
 export class Definition {
     definition: string;
     definitionFormat?: 'html' | undefined; // TODO: change to use FormattedValue
-    tags: string[] = [];
+    tags?: string[] = [];
 
     constructor(definition = '') {
         this.definition = definition;
