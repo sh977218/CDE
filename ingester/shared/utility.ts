@@ -13,7 +13,7 @@ import { FormElement } from 'shared/form/form.model';
 export const sourceMap = {
     LOINC: ['LOINC'],
     PhenX: ['PhenX', 'PhenX Variable'],
-    NINDS: ['NINDS', 'NINDS Variable Name', 'NINDS caDSR', 'caDSR'],
+    NINDS: ['NINDS', 'NINDS Variable Name', 'NINDS caDSR'],
     NCI: ['caDSR']
 };
 export const TODAY = new Date().toJSON();
@@ -290,8 +290,7 @@ export function mergeElt(existingEltObj: any, newEltObj: any, source: string) {
         console.log(`Two element type different. newEltObj: ${newEltObj.tinyId} existingEltObj: ${existingEltObj.tinyId} `);
         process.exit(1);
     }
-    const upperCaseSource = source.toUpperCase();
-    const sources = sourceMap[upperCaseSource]; // ['PhenX', 'PhenX Variable']
+    const sources = sourceMap[source];
     existingEltObj.designations = mergeDesignation(existingEltObj.designations, newEltObj.designations);
     existingEltObj.definitions = mergeDefinition(existingEltObj.definitions, newEltObj.definitions);
 
