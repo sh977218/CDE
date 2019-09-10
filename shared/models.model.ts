@@ -7,7 +7,7 @@ export function assertThrow(): void {
 }
 
 export function assertTrue(x: boolean): void {
-    if (!PRODUCTION) {
+    if (!process.env.PRODUCTION) {
         if (!x) {
             throw new Error('Assertion Failed.');
         }
