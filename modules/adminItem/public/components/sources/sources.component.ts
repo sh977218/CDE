@@ -1,13 +1,13 @@
 import { Component, Input } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { CdeForm } from 'shared/form/form.model';
+import { Item } from 'shared/models.model';
 
 @Component({
     selector: 'cde-admin-item-sources[elt]',
     templateUrl: './sources.component.html'
 })
 export class SourcesComponent {
-    @Input() set elt(e: CdeForm) {
+    @Input() set elt(e: Item) {
         e.sources.forEach(async s => {
             const url = `/originalSource/${e.elementType}/${s.sourceName}/${e.tinyId}`;
             let result = true;
@@ -19,7 +19,7 @@ export class SourcesComponent {
     get elt() {
         return this._elt;
     }
-    private _elt!: CdeForm;
+    private _elt!: Item;
 
     sourceUrls: any = {};
 
