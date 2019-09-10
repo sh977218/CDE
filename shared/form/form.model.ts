@@ -131,7 +131,7 @@ export class CdeForm extends Elt implements FormElementsContainer {
                     case 'Time':
                         break;
                     default:
-                        throw assertUnreachable(q.question);
+                        assertUnreachable(q.question);
                 }
             }
         );
