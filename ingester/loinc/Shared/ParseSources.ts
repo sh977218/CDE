@@ -1,6 +1,8 @@
+import { imported } from 'ingester/shared/utility';
+
 export function parseSources(loinc) {
-    const sources = [];
-    const source: any = {sourceName: 'LOINC'};
+    const sources: any[] = [];
+    const source: any = {sourceName: 'LOINC', imported};
     if (loinc['BASIC ATTRIBUTES']) {
         source.created = loinc['BASIC ATTRIBUTES']['Created On'];
         source.registrationStatus = loinc['BASIC ATTRIBUTES'].Status;
