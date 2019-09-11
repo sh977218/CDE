@@ -78,9 +78,8 @@ process.on('unhandledRejection', error => {
 });
 
 function run() {
-//    const allProtocolId = await ProtocolModel.distinct('protocolID');
-//    const cond = {protocolID: {$in: allProtocolId}};
-    const cond = {protocolID: '10101'};
+//    const cond = {protocolID: '10101'};
+    const cond = {};
     const cursor = ProtocolModel.find(cond).cursor({batchSize: 10});
 
     cursor.eachAsync(async (protocol: any) => {
