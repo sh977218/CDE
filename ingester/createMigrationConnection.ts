@@ -16,7 +16,7 @@ export const LoincModel = migrationConn.model('LOINC', new Schema({}, {
     collection: 'LOINC',
     usePushEach: true
 }));
-export const MigrationLoincClassificationMappingModel = migrationConn.model('MigrationLoincClassificationMapping', new Schema({}, {
+export const LOINC_CLASSIFICATION_MAPPING = migrationConn.model('LoincClassificationMapping', new Schema({}, {
     strict: false,
     collection: 'LoincClassificationMapping',
     usePushEach: true

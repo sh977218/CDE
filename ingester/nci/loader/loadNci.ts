@@ -54,9 +54,6 @@ function runOneOrg(orgName: string) {
                             } else {
                                 const existingCdeObj = existingCde.toObject();
                                 mergeElt(existingCdeObj, newCdeObj, 'NCI');
-                                existingCdeObj.imported = imported;
-                                existingCdeObj.changeNote = lastMigrationScript;
-                                existingCdeObj.lastMigrationScript = lastMigrationScript;
                                 await updateCde(existingCdeObj, BATCHLOADER, {updateSource: true});
                                 changedCde++;
                                 changedCdes.push(existingCde.tinyId);

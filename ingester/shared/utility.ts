@@ -276,9 +276,11 @@ export function mergeIds(newIds, existingIds, sources) {
     const ids: CdeId[] = [];
     const allIds = newIds.concat(existingIds);
     allIds.forEach(id => {
-        const i = findIndex(ids, id);
+        const i = findIndex(ids, {source: id.source, id: id.id});
         if (i === -1) {
             ids.push(id);
+        } else if (!isEmpty(id.version)) {
+            ids[i].version = id.version;
         }
     });
     return ids;
@@ -298,10 +300,17 @@ export function mergeSourcesBySourcesName(newSources, existingSources, sources) 
 }
 
 export function mergeElt(existingEltObj: any, newEltObj: any, source: string) {
+    const existingFormElements = existingEltObj.formElements;
+    const existingEltRegistrationStatus = existingEltObj.registrationState.registrationStatus;
+
     if (newEltObj.elementType !== existingEltObj.elementType) {
         console.log(`Two element type different. newEltObj: ${newEltObj.tinyId} existingEltObj: ${existingEltObj.tinyId} `);
         process.exit(1);
     }
+
+    const isForm = existingEltObj.elementType === 'form';
+    const isCde = existingEltObj.elementType === 'cde';
+
     const sources = sourceMap[source];
     existingEltObj.designations = mergeDesignation(existingEltObj.designations, newEltObj.designations);
     existingEltObj.definitions = mergeDefinition(existingEltObj.definitions, newEltObj.definitions);
@@ -315,23 +324,38 @@ export function mergeElt(existingEltObj: any, newEltObj: any, source: string) {
     existingEltObj.attachments = newEltObj.attachments;
     existingEltObj.version = newEltObj.version;
 
-    // Those 50 forms qualified, We don't want to modify form elements.
-    if (existingEltObj.registrationState.registrationStatus !== 'Qualified') {
-        existingEltObj.formElements = newEltObj.formElements;
-        existingEltObj.registrationState.registrationStatus = newEltObj.registrationState.registrationStatus;
-    }
-    if (existingEltObj.elementType === 'cde') {
+    if (isCde) {
         existingEltObj.property = newEltObj.property;
         existingEltObj.dataElementConcept = newEltObj.dataElementConcept;
         existingEltObj.objectClass = newEltObj.objectClass;
         existingEltObj.valueDomain = newEltObj.valueDomain;
     }
+    if (isForm) {
+        existingEltObj.formElements = newEltObj.formElements;
+    }
+
+    existingEltObj.registrationState.registrationStatus = newEltObj.registrationState.registrationStatus;
+    existingEltObj.imported = newEltObj.imported;
+    existingEltObj.changeNote = lastMigrationScript;
 
     if (existingEltObj.lastMigrationScript === lastMigrationScript) {
         transferClassifications(newEltObj, existingEltObj);
     } else {
         existingEltObj.classification = replaceClassificationByOrg(newEltObj.classification, existingEltObj.classification, source);
+        existingEltObj.lastMigrationScript = lastMigrationScript;
     }
+
+    const isPhenX = existingEltObj.ids.filter(id => id.source === 'PhenX').length > 0;
+    const isQualified = existingEltObj.registrationState.registrationStatus === 'Qualified';
+    const isArchived = existingEltObj.archived;
+
+    // EXCEPTIONS
+    // Those 50 qualified phenx forms , loader skip form elements.
+    if (isForm && isPhenX && !isArchived && isQualified) {
+        existingEltObj.formElements = existingFormElements;
+        existingEltObj.registrationState.registrationStatus = existingEltRegistrationStatus;
+    }
+
 }
 
 // Fix data type
