@@ -34,7 +34,7 @@ export const NindsModel = migrationConn.model('NINDS', new Schema({}, {
     usePushEach: true
 }));
 
-// PHENX
+// PhenX
 export const ProtocolModel = migrationConn.model('Protocol', new Schema({}, {
     strict: false,
     collection: 'Protocol',

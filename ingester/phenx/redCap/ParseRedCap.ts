@@ -171,5 +171,4 @@ export async function parseFormElements(protocol, attachments, newForm) {
         }
     }
     newForm.formElements = formElements;
-    RedcapLogger.log();
 }
