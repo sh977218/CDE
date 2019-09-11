@@ -12,6 +12,7 @@ import { LoincLogger } from 'ingester/log/LoincLogger';
 import { RedcapLogger } from 'ingester/log/RedcapLogger';
 
 let protocolCount = 0;
+
 /*
 const NewPhenxIdToOldPhenxId = {
     10903: 10902, // Current Marital Status
@@ -76,10 +77,10 @@ process.on('unhandledRejection', error => {
     console.log(error);
 });
 
-async function run() {
-    const allProtocolId = await ProtocolModel.distinct('protocolID');
-    const cond = {protocolID: {$in: allProtocolId}};
-//    const cond = {};
+function run() {
+//    const allProtocolId = await ProtocolModel.distinct('protocolID');
+//    const cond = {protocolID: {$in: allProtocolId}};
+    const cond = {protocolID: '10101'};
     const cursor = ProtocolModel.find(cond).cursor({batchSize: 10});
 
     cursor.eachAsync(async (protocol: any) => {
@@ -96,14 +97,15 @@ async function run() {
         } else {
             const diff = compareElt(newForm.toObject(), existingForm.toObject());
             if (isEmpty(diff)) {
-                existingForm.imported = imported;
                 existingForm.lastMigrationScript = lastMigrationScript;
+                existingForm.imported = imported;
                 await existingForm.save();
                 PhenxLogger.samePhenxForm++;
                 PhenxLogger.samePhenxForms.push(existingForm.tinyId);
             } else {
                 const existingFormObj = existingForm.toObject();
                 mergeElt(existingFormObj, newFormObj, 'PhenX');
+                existingFormObj.imported = imported;
                 existingFormObj.changeNote = lastMigrationScript;
                 existingFormObj.lastMigrationScript = lastMigrationScript;
                 await updateForm(existingFormObj, BATCHLOADER, {updateSource: true});
@@ -148,7 +150,8 @@ async function run() {
     });
 }
 
-run().then(
+run();
+/*.then(
     () => console.log('done'),
     err => console.log('err: ' + err)
-);
+);*/

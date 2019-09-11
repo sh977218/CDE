@@ -17,17 +17,19 @@ export async function runOneCde(loinc, orgInfo) {
         LoincLogger.createdLoincCde++;
         LoincLogger.createdLoincCdes.push(existingCde.tinyId);
     } else {
-        const existingCdeObj = existingCde.toObject();
-        existingCdeObj.imported = imported;
-        existingCdeObj.lastMigrationScript = lastMigrationScript;
-        existingCdeObj.changeNote = lastMigrationScript;
         const diff = compareElt(newCde.toObject(), existingCde.toObject());
         if (isEmpty(diff)) {
+            existingCde.lastMigrationScript = lastMigrationScript;
+            existingCde.imported = imported;
             await existingCde.save();
             LoincLogger.sameLoincCde++;
             LoincLogger.sameLoincCdes.push(existingCde.tinyId);
         } else {
+            const existingCdeObj = existingCde.toObject();
             mergeElt(newCdeObj, existingCdeObj, 'LOINC');
+            existingCdeObj.imported = imported;
+            existingCdeObj.lastMigrationScript = lastMigrationScript;
+            existingCdeObj.changeNote = lastMigrationScript;
             await updateCde(existingCde, BATCHLOADER, {updateSource: true});
             LoincLogger.changedLoincCde++;
             LoincLogger.changedLoincCdes.push(existingCde.tinyId);

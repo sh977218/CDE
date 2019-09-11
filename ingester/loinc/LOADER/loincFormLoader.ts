@@ -16,17 +16,18 @@ export async function runOneForm(loinc, orgInfo) {
         LoincLogger.createdLoincForm++;
         LoincLogger.createdLoincForms.push(existingForm.tinyId);
     } else {
-        const existingFormObj = existingForm.toObject();
-        existingFormObj.imported = imported;
-        existingFormObj.changeNote = lastMigrationScript;
         const diff = compareElt(newForm.toObject(), existingForm.toObject());
         if (isEmpty(diff)) {
-            existingFormObj.lastMigrationScript = lastMigrationScript;
+            existingForm.lastMigrationScript = lastMigrationScript;
+            existingForm.imported = imported;
             await existingForm.save();
             LoincLogger.sameLoincForm++;
             LoincLogger.sameLoincForms.push(existingForm.tinyId);
         } else {
+            const existingFormObj = existingForm.toObject();
             mergeElt(existingFormObj, newFormObj, 'LOINC');
+            existingFormObj.imported = imported;
+            existingFormObj.changeNote = lastMigrationScript;
             existingFormObj.lastMigrationScript = lastMigrationScript;
             await updateForm(existingForm, BATCHLOADER, {updateSource: true});
             LoincLogger.changedLoincForm++;

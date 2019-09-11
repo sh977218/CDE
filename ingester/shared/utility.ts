@@ -127,7 +127,6 @@ export function updateForm(elt: any, user: any, options: any = {}) {
         const isArchived = elt.archived;
         if (isPhenX && isQualified && !isArchived) {
             options.updateFormElements = false;
-            // update Qualified PhenX CDE lastMigrationScript so they won't get retired.
         }
 
         mongo_form.update(elt, user, options, (err, savedElt) => {
@@ -319,6 +318,7 @@ export function mergeElt(existingEltObj: any, newEltObj: any, source: string) {
     // Those 50 forms qualified, We don't want to modify form elements.
     if (existingEltObj.registrationState.registrationStatus !== 'Qualified') {
         existingEltObj.formElements = newEltObj.formElements;
+        existingEltObj.registrationState.registrationStatus = newEltObj.registrationState.registrationStatus;
     }
     if (existingEltObj.elementType === 'cde') {
         existingEltObj.property = newEltObj.property;
