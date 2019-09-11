@@ -3,24 +3,36 @@ import { Form, FormSource } from 'server/form/mongo-form';
 import { Comment } from 'server/discuss/discussDb';
 import { ProtocolModel } from 'ingester/createMigrationConnection';
 import {
-    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeElt, printUpdateResult, sourceMap, updateCde,
-    updateForm
+    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeElt, printUpdateResult, updateForm
 } from 'ingester/shared/utility';
 import { createPhenxForm } from 'ingester/phenx/Form/form';
 
 import { PhenxLogger } from 'ingester/log/PhenxLogger';
 import { LoincLogger } from 'ingester/log/LoincLogger';
 import { RedcapLogger } from 'ingester/log/RedcapLogger';
-import { DataElement } from 'server/cde/mongo-cde';
 
 let protocolCount = 0;
-
-const phenxSources = sourceMap.PhenX;
+/*
+const NewPhenxIdToOldPhenxId = {
+    10903: 10902, // Current Marital Status
+    11402: 011402, // Household Roster - Relationships
+    11502: 11502, // Health Insurance Coverage
+    10902: 91102, // Pulse Oximetry (Rest)
+    10902: 91404, // Respiratory Rate - Infant
+    10902: 100303, // Current Contraception Use - Female
+    10902: 100402, // Difficulty Getting Pregnant - Current Duration
+    10902: 100502, // Removal of Female Reproductive Organs
+    10902: 101202, // Prostate Symptoms
+    10902: 122101, // Global Psychopathology Rating Scale - Research
+    10902: 180302, // Quality of Life Enjoyment and Satisfaction - Adult
+    10902: 211302, // Neighborhood Concentrated Disadvantage
+};
+*/
 
 function retireForms() {
     return new Promise(resolve => {
         const cond = {
-            'ids.source': {$in: phenxSources},
+            'ids.source': {$in: ['PhenX', 'PhenX Variable']},
             'registrationState.registrationStatus': {$ne: 'Retired'},
             archived: false
         };
@@ -38,10 +50,10 @@ function retireForms() {
     });
 }
 
-async function retireCdes() {
+async function retireCdes() {/*
     return new Promise(resolve => {
         const cond = {
-            'ids.source': {$in: phenxSources},
+            'ids.source': {$in: ['PhenX', 'LOINC']},
             'registrationState.registrationStatus': {$ne: 'Retired'},
             archived: false,
             lastMigrationScript: {$ne: lastMigrationScript}
@@ -57,16 +69,17 @@ async function retireCdes() {
                     PhenxLogger.retiredPhenxCdes.push(cdeObj.tinyId);
                 }
             }).then(resolve);
-    });
+    });*/
 }
 
 process.on('unhandledRejection', error => {
     console.log(error);
 });
 
-(() => {
-//    const cond = {protocolID: {$in: ['21302']}};
-    const cond = {};
+async function run() {
+    const allProtocolId = await ProtocolModel.distinct('protocolID');
+    const cond = {protocolID: {$in: allProtocolId}};
+//    const cond = {};
     const cursor = ProtocolModel.find(cond).cursor({batchSize: 10});
 
     cursor.eachAsync(async (protocol: any) => {
@@ -133,4 +146,9 @@ process.on('unhandledRejection', error => {
             process.exit(0);
         }
     });
-})();
+}
+
+run().then(
+    () => console.log('done'),
+    err => console.log('err: ' + err)
+);

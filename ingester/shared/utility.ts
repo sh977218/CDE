@@ -2,13 +2,12 @@ import * as DiffJson from 'diff-json';
 import * as cheerio from 'cheerio';
 import * as moment from 'moment';
 import { get } from 'request';
-import { findIndex, isEmpty, uniq } from 'lodash';
+import { findIndex, isEmpty, sortBy, uniq } from 'lodash';
 import * as mongo_cde from 'server/cde/mongo-cde';
-import { DataElement } from 'server/cde/mongo-cde';
 import * as mongo_form from 'server/form/mongo-form';
 import { PhenxURL } from 'ingester/createMigrationConnection';
 import { transferClassifications } from 'shared/system/classificationShared';
-import { Classification, Definition, Designation, Property } from 'shared/models.model';
+import { CdeId, Classification, Definition, Designation, Property } from 'shared/models.model';
 import { FormElement } from 'shared/form/form.model';
 
 export const sourceMap = {
@@ -121,7 +120,7 @@ export function updateCde(elt: any, user: any, options = {}) {
 }
 
 export function updateForm(elt: any, user: any, options: any = {}) {
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
         /* Loader cannot change Qualified PhenX formElements.*/
         const isPhenX = elt.ids.filter(id => id.source === 'PhenX').length > 0;
         const isQualified = elt.registrationState.registrationStatus === 'Qualified';
@@ -129,18 +128,6 @@ export function updateForm(elt: any, user: any, options: any = {}) {
         if (isPhenX && isQualified && !isArchived) {
             options.updateFormElements = false;
             // update Qualified PhenX CDE lastMigrationScript so they won't get retired.
-            const cdeTinyIds = getChildren(elt.formElements);
-            for (const cdeTinyId of cdeTinyIds) {
-                let cond = {
-                    archived: false,
-                    tinyId: cdeTinyId
-                };
-                if (cdeTinyId) {
-                    cond.version = cdeTinyId.version;
-                }
-                const updateResult = await DataElement.updateMany(cond, {$set: {lastMigrationScript}});
-                printUpdateResult(updateResult, elt);
-            }
         }
 
         mongo_form.update(elt, user, options, (err, savedElt) => {
@@ -217,12 +204,12 @@ export function compareElt(newEltObj, existingEltObj) {
     }
     const isQualified = existingEltObj.registrationState.registrationStatus === 'Qualified';
     [existingEltObj, newEltObj].forEach(eltObj => {
-        eltObj.designations.sort((a, b) => a.designation >= b.designation);
-        eltObj.definitions.sort((a, b) => a.definition >= b.definition);
+        eltObj.designations = sortBy(eltObj.designations, ['designation']);
+        eltObj.definitions = sortBy(eltObj.definitions, ['definition']);
 
-        eltObj.properties.sort((a, b) => a.key >= b.key);
-        eltObj.referenceDocuments.sort((a, b) => a.docType >= b.docType);
-        eltObj.ids.sort((a, b) => a.source >= b.source);
+        eltObj.properties = sortBy(eltObj.properties, ['key']);
+        eltObj.referenceDocuments = sortBy(eltObj.referenceDocuments, ['docType', 'languageCode', 'document']);
+        eltObj.ids = sortBy(eltObj.ids, ['source', 'id']);
         ['designations', 'definitions', 'properties', 'referenceDocuments', 'ids']
             .forEach(field => {
                 eltObj[field].forEach(o => {
@@ -286,7 +273,18 @@ export function mergeProperties(newProperties: Property[], existingProperties: P
     return properties;
 }
 
-//@TODO some phenx form has LOINC id, this implementation doesn't work.
+export function mergeIds(newIds, existingIds, sources) {
+    const ids: CdeId[] = [];
+    const allIds = newIds.concat(existingIds);
+    allIds.forEach(id => {
+        const i = findIndex(ids, id);
+        if (i === -1) {
+            ids.push(id);
+        }
+    });
+    return ids;
+}
+
 export function mergeBySources(newSources, existingSources, sources) {
     if (!existingSources) {
         existingSources = [];
@@ -309,7 +307,7 @@ export function mergeElt(existingEltObj: any, newEltObj: any, source: string) {
     existingEltObj.designations = mergeDesignation(existingEltObj.designations, newEltObj.designations);
     existingEltObj.definitions = mergeDefinition(existingEltObj.definitions, newEltObj.definitions);
 
-    existingEltObj.ids = mergeBySources(newEltObj.ids, existingEltObj.ids, sources);
+    existingEltObj.ids = mergeIds(newEltObj.ids, existingEltObj.ids, sources);
     existingEltObj.properties = mergeProperties(newEltObj.properties, existingEltObj.properties);
     existingEltObj.referenceDocuments = mergeBySources(newEltObj.referenceDocuments, existingEltObj.referenceDocuments, sources);
 
