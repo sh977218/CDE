@@ -14,8 +14,9 @@ export function assertTrue(x: boolean): void {
     }
 }
 
-export function assertUnreachable(x: void): never {
-    throw new Error('Unreachable ' + JSON.stringify(x));
+export function assertUnreachable(x: void) {
+    console.error('Unreachable ' + JSON.stringify(x));
+    // handleError(new Error('Unreachable ' + JSON.stringify(x)));
 }
 
 export class Attachment {
