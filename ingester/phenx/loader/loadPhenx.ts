@@ -12,6 +12,22 @@ import { LoincLogger } from 'ingester/log/LoincLogger';
 import { RedcapLogger } from 'ingester/log/RedcapLogger';
 
 let protocolCount = 0;
+/*
+const NewPhenxIdToOldPhenxId = {
+    10903: 10902, // Current Marital Status
+    11402: 011402, // Household Roster - Relationships
+    11502: 11502, // Health Insurance Coverage
+    10902: 91102, // Pulse Oximetry (Rest)
+    10902: 91404, // Respiratory Rate - Infant
+    10902: 100303, // Current Contraception Use - Female
+    10902: 100402, // Difficulty Getting Pregnant - Current Duration
+    10902: 100502, // Removal of Female Reproductive Organs
+    10902: 101202, // Prostate Symptoms
+    10902: 122101, // Global Psychopathology Rating Scale - Research
+    10902: 180302, // Quality of Life Enjoyment and Satisfaction - Adult
+    10902: 211302, // Neighborhood Concentrated Disadvantage
+};
+*/
 
 function retireForms() {
     return new Promise(resolve => {
@@ -62,7 +78,7 @@ process.on('unhandledRejection', error => {
 
 async function run() {
     const allProtocolId = await ProtocolModel.distinct('protocolID');
-    const cond = {protocolID: {$in: allProtocolId.slice(1, 10)}};
+    const cond = {protocolID: {$in: allProtocolId}};
 //    const cond = {};
     const cursor = ProtocolModel.find(cond).cursor({batchSize: 10});
 
