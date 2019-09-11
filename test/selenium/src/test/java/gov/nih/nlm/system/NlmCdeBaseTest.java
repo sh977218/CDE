@@ -311,6 +311,15 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         clickElement(By.id("user_settings"));
     }
 
+    protected void goToHelp() {
+        clickElement(By.id("helpLink"));
+    }
+
+    protected void goToContactUs() {
+        goToHelp();
+        clickElement(By.id("contactUsLink"));
+    }
+
     protected void goToStewardTransfer() {
         goToSettings();
         clickElement(By.id("stewardTransfer"));
@@ -496,7 +505,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         clickElement(By.id("attachments_tab"));
     }
 
-    protected void goToDisplayProfiles(){
+    protected void goToDisplayProfiles() {
         clickElement(By.id("displayProfiles_tab"));
     }
 
