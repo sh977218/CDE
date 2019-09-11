@@ -3,24 +3,20 @@ import { Form, FormSource } from 'server/form/mongo-form';
 import { Comment } from 'server/discuss/discussDb';
 import { ProtocolModel } from 'ingester/createMigrationConnection';
 import {
-    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeElt, printUpdateResult, sourceMap, updateCde,
-    updateForm
+    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeElt, printUpdateResult, updateForm
 } from 'ingester/shared/utility';
 import { createPhenxForm } from 'ingester/phenx/Form/form';
 
 import { PhenxLogger } from 'ingester/log/PhenxLogger';
 import { LoincLogger } from 'ingester/log/LoincLogger';
 import { RedcapLogger } from 'ingester/log/RedcapLogger';
-import { DataElement } from 'server/cde/mongo-cde';
 
 let protocolCount = 0;
-
-const phenxSources = sourceMap.PhenX;
 
 function retireForms() {
     return new Promise(resolve => {
         const cond = {
-            'ids.source': {$in: phenxSources},
+            'ids.source': {$in: ['PhenX', 'PhenX Variable']},
             'registrationState.registrationStatus': {$ne: 'Retired'},
             archived: false
         };
@@ -38,10 +34,10 @@ function retireForms() {
     });
 }
 
-async function retireCdes() {
+async function retireCdes() {/*
     return new Promise(resolve => {
         const cond = {
-            'ids.source': {$in: phenxSources},
+            'ids.source': {$in: ['PhenX', 'LOINC']},
             'registrationState.registrationStatus': {$ne: 'Retired'},
             archived: false,
             lastMigrationScript: {$ne: lastMigrationScript}
@@ -57,16 +53,17 @@ async function retireCdes() {
                     PhenxLogger.retiredPhenxCdes.push(cdeObj.tinyId);
                 }
             }).then(resolve);
-    });
+    });*/
 }
 
 process.on('unhandledRejection', error => {
     console.log(error);
 });
 
-(() => {
-//    const cond = {protocolID: {$in: ['21302']}};
-    const cond = {};
+async function run() {
+    const allProtocolId = await ProtocolModel.distinct('protocolID');
+    const cond = {protocolID: {$in: allProtocolId.slice(1, 10)}};
+//    const cond = {};
     const cursor = ProtocolModel.find(cond).cursor({batchSize: 10});
 
     cursor.eachAsync(async (protocol: any) => {
@@ -133,4 +130,9 @@ process.on('unhandledRejection', error => {
             process.exit(0);
         }
     });
-})();
+}
+
+run().then(
+    () => console.log('done'),
+    err => console.log('err: ' + err)
+);

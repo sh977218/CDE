@@ -1,20 +1,20 @@
 import { Form } from 'server/form/mongo-form';
 import { fixFormError } from './utility';
 
-process.on('unhandledRejection', function (error) {
+process.on('unhandledRejection', function(error) {
     console.log(error);
 });
 
 function run() {
     let formCount = 0;
-    let cond = {};
-    let cursor = Form.find(cond).cursor();
+    const cond = {};
+    const cursor = Form.find(cond).cursor();
 
     cursor.eachAsync(async (form: any) => {
         form.lastMigrationScript = 'fixForm';
         await fixFormError(form);
         await form.save().catch(error => {
-            throw `await form.save() Error on ${form.tinyId} ${error}`;
+            throw new Error(`await form.save() Error on ${form.tinyId} ${error}`);
         });
         formCount++;
         console.log(`formCount: ${formCount}`);
