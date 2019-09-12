@@ -201,7 +201,21 @@ export function compareElt(newEltObj, existingEltObj) {
         console.log(`Two element type different. newEltObj: ${newEltObj.tinyId} existingEltObj: ${existingEltObj.tinyId} `);
         process.exit(1);
     }
+    const isPhenX = existingEltObj.ids.filter(id => id.source === 'PhenX').length > 0;
     const isQualified = existingEltObj.registrationState.registrationStatus === 'Qualified';
+    const isArchived = existingEltObj.archived;
+    const isForm = existingEltObj.elementType === 'form';
+    const isCde = existingEltObj.elementType === 'cde';
+
+/*
+    // PhenX Qualified form not need to compare formElements
+    if (isForm && isPhenX && isQualified && !isArchived) {
+        delete existingEltObj.formElements;
+        delete newEltObj.formElements;
+    }
+*/
+
+
     [existingEltObj, newEltObj].forEach(eltObj => {
         eltObj.designations = sortBy(eltObj.designations, ['designation']);
         eltObj.definitions = sortBy(eltObj.definitions, ['definition']);
@@ -217,7 +231,7 @@ export function compareElt(newEltObj, existingEltObj) {
                 });
             });
 
-        if (eltObj.elementType === 'form' && !isQualified) {
+        if (isForm) {
             eltObj.cdeTinyIds = getChildren(eltObj.formElements);
         }
 

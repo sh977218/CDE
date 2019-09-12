@@ -1,6 +1,6 @@
 var MigrationLoincModel = require('.././createMigrationConnection').MigrationLoincModel;
 
-var LoadFromLoincSite = require('../loinc/Website/LOINCLoader');
+var LoadFromLoincSite = require('../loinc/website/LOINCLoader');
 
 
 var newArray = ['74725-3', '74080-3', '74495-3', '74501-8', '74502-6'];

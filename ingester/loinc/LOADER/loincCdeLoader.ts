@@ -13,7 +13,10 @@ export async function runOneCde(loinc, orgInfo) {
     const newCdeObj = newCde.toObject();
     let existingCde = await DataElement.findOne({archived: false, 'ids.id': loinc.loincId});
     if (!existingCde) {
-        existingCde = await newCde.save();
+        existingCde = await newCde.save().catch(err => {
+            console.log('LOINC existingCde = await newCde.save() error: ' + err);
+            process.exit(1);
+        });
         LoincLogger.createdLoincCde++;
         LoincLogger.createdLoincCdes.push(existingCde.tinyId);
     } else {
@@ -21,13 +24,19 @@ export async function runOneCde(loinc, orgInfo) {
         if (isEmpty(diff)) {
             existingCde.lastMigrationScript = lastMigrationScript;
             existingCde.imported = imported;
-            await existingCde.save();
+            await existingCde.save().catch(err => {
+                console.log('LOINC await existingCde.save() error: ' + err);
+                process.exit(1);
+            });
             LoincLogger.sameLoincCde++;
             LoincLogger.sameLoincCdes.push(existingCde.tinyId);
         } else {
             const existingCdeObj = existingCde.toObject();
-            mergeElt(existingCdeObj, newCdeObj, 'LOINC');
-            await updateCde(existingCdeObj, BATCHLOADER, {updateSource: true});
+            mergeElt(existingCdeObj, newCdeObj, orgInfo.classificationOrgName);
+            await updateCde(existingCdeObj, BATCHLOADER, {updateSource: true}).catch(err => {
+                console.log('LOINC await updateCde(existingCdeObj error: ' + err);
+                process.exit(1);
+            });
             LoincLogger.changedLoincCde++;
             LoincLogger.changedLoincCdes.push(existingCde.tinyId);
         }

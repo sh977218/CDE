@@ -1,5 +1,5 @@
 import { By } from 'selenium-webdriver';
-import { runOneLoinc } from '../../loinc/Website/LOINCLoader';
+import { runOneLoinc } from '../../loinc/website/LOINCLoader';
 
 export async function parseStandards(element) {
     let standards = [];
