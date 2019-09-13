@@ -67,8 +67,9 @@
 <script>
     var cdeQuick = window.localStorage["nlmcde.quickBoard"];
     var formQuick = window.localStorage["nlmcde.formQuickBoard"]
-    document.getElementById("menu_qb_link").innerHTML = "Quick Board (" +
-        ((cdeQuick ? JSON.parse(cdeQuick).length : 0) + (formQuick ? JSON.parse(formQuick).length : 0)) + ")";
+    document.getElementById("menu_qb_link").innerHTML =
+        document.getElementById("drawer_menu_qb_link").innerHTML = "Quick Board (" +
+            ((cdeQuick ? JSON.parse(cdeQuick).length : 0) + (formQuick ? JSON.parse(formQuick).length : 0)) + ")";
 </script>
 
 <!-- build:inlinejs /launch/vendor.js -->

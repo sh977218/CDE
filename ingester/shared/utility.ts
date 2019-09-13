@@ -1,3 +1,4 @@
+import { Builder, By } from 'selenium-webdriver';
 import * as DiffJson from 'diff-json';
 import * as cheerio from 'cheerio';
 import * as moment from 'moment';
@@ -9,6 +10,8 @@ import { PhenxURL } from 'ingester/createMigrationConnection';
 import { transferClassifications } from 'shared/system/classificationShared';
 import { CdeId, Classification, Definition, Designation, Property } from 'shared/models.model';
 import { FormElement } from 'shared/form/form.model';
+
+require('chromedriver');
 
 export const sourceMap = {
     LOINC: ['LOINC'],
@@ -147,6 +150,46 @@ export function protocolLinkToProtocolId(href: string) {
     return href.substr(protocolIdIndex + indexString.length, href.length);
 }
 
+export async function getDomainCollectionSite() {
+    if (!isEmpty(DOMAIN_COLLECTION_MAP)) {
+        return DOMAIN_COLLECTION_MAP;
+    }
+    const driver = await new Builder().forBrowser('chrome').build();
+    await driver.get(PhenxURL);
+    await driver.findElement(By.xpath("//*[@class='close btn-cookie-agree']")).click();
+
+    const totalPageElement = await driver.findElement(By.xpath("(//*[@id='myTable_paginate']/span/a)[last()]"));
+    const totalPageText = await totalPageElement.getText();
+    const totalPage = parseInt(totalPageText.trim());
+    let currentPage = 1;
+    while (currentPage < totalPage) {
+        const currentPageElement = await driver.findElement(By.xpath("//*[@id='myTable_paginate']/span/a[@class='paginate_button current']"));
+        const currentPageText = await currentPageElement.getText();
+        currentPage = parseInt(currentPageText.trim());
+        const trs = await driver.findElements(By.xpath("//*[@id='myTable']/tbody/tr"));
+        for (const tr of trs) {
+            const tds = await tr.findElements(By.xpath('./td'));
+            if (tds.length !== 3) {
+                throw new Error('td length error.');
+            }
+            const a = await tds[1].findElement(By.xpath('.//a'));
+            const href = await a.getAttribute('href');
+            const phenXProtocol = await a.getText();
+            const domainCollection = await tds[2].getText();
+            const protocolId = protocolLinkToProtocolId(href);
+            DOMAIN_COLLECTION_MAP[protocolId] = {
+                phenXProtocol,
+                protocolLink: href,
+                domainCollection: domainCollection.trim()
+            };
+        }
+        await driver.findElement(By.id('myTable_next')).click();
+        console.log('currentPage: ' + currentPage);
+    }
+    await driver.close();
+    return DOMAIN_COLLECTION_MAP;
+}
+
 export function getDomainCollection() {
     return new Promise((resolve, reject) => {
         if (!isEmpty(DOMAIN_COLLECTION_MAP)) {
@@ -158,7 +201,8 @@ export function getDomainCollection() {
                 }
                 const $ = cheerio.load(body, {normalizeWhitespace: true});
                 const table = $('#myTable');
-                const trs: any[] = table.find('tbody tr');
+                const trs = table.find('tbody tr');
+                console.log('trs: ' + typeof trs);
                 for (const tr of trs) {
                     const tds = $(tr).find('td');
                     if (tds.length !== 3) {
@@ -201,7 +245,21 @@ export function compareElt(newEltObj, existingEltObj) {
         console.log(`Two element type different. newEltObj: ${newEltObj.tinyId} existingEltObj: ${existingEltObj.tinyId} `);
         process.exit(1);
     }
+    const isPhenX = existingEltObj.ids.filter(id => id.source === 'PhenX').length > 0;
     const isQualified = existingEltObj.registrationState.registrationStatus === 'Qualified';
+    const isArchived = existingEltObj.archived;
+    const isForm = existingEltObj.elementType === 'form';
+    const isCde = existingEltObj.elementType === 'cde';
+
+    /*
+        // PhenX Qualified form not need to compare formElements
+        if (isForm && isPhenX && isQualified && !isArchived) {
+            delete existingEltObj.formElements;
+            delete newEltObj.formElements;
+        }
+    */
+
+
     [existingEltObj, newEltObj].forEach(eltObj => {
         eltObj.designations = sortBy(eltObj.designations, ['designation']);
         eltObj.definitions = sortBy(eltObj.definitions, ['definition']);
@@ -217,7 +275,7 @@ export function compareElt(newEltObj, existingEltObj) {
                 });
             });
 
-        if (eltObj.elementType === 'form' && !isQualified) {
+        if (isForm) {
             eltObj.cdeTinyIds = getChildren(eltObj.formElements);
         }
 
@@ -276,9 +334,11 @@ export function mergeIds(newIds, existingIds, sources) {
     const ids: CdeId[] = [];
     const allIds = newIds.concat(existingIds);
     allIds.forEach(id => {
-        const i = findIndex(ids, id);
+        const i = findIndex(ids, {source: id.source, id: id.id});
         if (i === -1) {
             ids.push(id);
+        } else if (!isEmpty(id.version)) {
+            ids[i].version = id.version;
         }
     });
     return ids;
@@ -298,10 +358,17 @@ export function mergeSourcesBySourcesName(newSources, existingSources, sources) 
 }
 
 export function mergeElt(existingEltObj: any, newEltObj: any, source: string) {
+    const existingFormElements = existingEltObj.formElements;
+    const existingEltRegistrationStatus = existingEltObj.registrationState.registrationStatus;
+
     if (newEltObj.elementType !== existingEltObj.elementType) {
         console.log(`Two element type different. newEltObj: ${newEltObj.tinyId} existingEltObj: ${existingEltObj.tinyId} `);
         process.exit(1);
     }
+
+    const isForm = existingEltObj.elementType === 'form';
+    const isCde = existingEltObj.elementType === 'cde';
+
     const sources = sourceMap[source];
     existingEltObj.designations = mergeDesignation(existingEltObj.designations, newEltObj.designations);
     existingEltObj.definitions = mergeDefinition(existingEltObj.definitions, newEltObj.definitions);
@@ -315,23 +382,38 @@ export function mergeElt(existingEltObj: any, newEltObj: any, source: string) {
     existingEltObj.attachments = newEltObj.attachments;
     existingEltObj.version = newEltObj.version;
 
-    // Those 50 forms qualified, We don't want to modify form elements.
-    if (existingEltObj.registrationState.registrationStatus !== 'Qualified') {
-        existingEltObj.formElements = newEltObj.formElements;
-        existingEltObj.registrationState.registrationStatus = newEltObj.registrationState.registrationStatus;
-    }
-    if (existingEltObj.elementType === 'cde') {
+    if (isCde) {
         existingEltObj.property = newEltObj.property;
         existingEltObj.dataElementConcept = newEltObj.dataElementConcept;
         existingEltObj.objectClass = newEltObj.objectClass;
         existingEltObj.valueDomain = newEltObj.valueDomain;
     }
+    if (isForm) {
+        existingEltObj.formElements = newEltObj.formElements;
+    }
+
+    existingEltObj.registrationState.registrationStatus = newEltObj.registrationState.registrationStatus;
+    existingEltObj.imported = newEltObj.imported;
+    existingEltObj.changeNote = lastMigrationScript;
 
     if (existingEltObj.lastMigrationScript === lastMigrationScript) {
         transferClassifications(newEltObj, existingEltObj);
     } else {
         existingEltObj.classification = replaceClassificationByOrg(newEltObj.classification, existingEltObj.classification, source);
+        existingEltObj.lastMigrationScript = lastMigrationScript;
     }
+
+    const isPhenX = existingEltObj.ids.filter(id => id.source === 'PhenX').length > 0;
+    const isQualified = existingEltObj.registrationState.registrationStatus === 'Qualified';
+    const isArchived = existingEltObj.archived;
+
+    // EXCEPTIONS
+    // Those 50 qualified phenx forms , loader skip form elements.
+    if (isForm && isPhenX && !isArchived && isQualified) {
+        existingEltObj.formElements = existingFormElements;
+        existingEltObj.registrationState.registrationStatus = existingEltRegistrationStatus;
+    }
+
 }
 
 // Fix data type

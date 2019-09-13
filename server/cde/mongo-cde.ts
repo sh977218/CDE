@@ -53,7 +53,9 @@ schemas.dataElementSchema.pre('save', function(next) {
         } else {
             next();
         }
-    }, err => next(`Cde ${elt.tinyId} has error: ${err}`));
+    }, err => {
+        next(`Cde ${elt.tinyId} has error: ${err}`)
+    });
 });
 
 const conn = connHelper.establishConnection(config.database.appData);

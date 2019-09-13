@@ -78,7 +78,7 @@ process.on('unhandledRejection', error => {
 });
 
 function run() {
-//    const cond = {protocolID: '10101'};
+    // const cond = {protocolID: {$in: ['150101']}};
     const cond = {};
     const cursor = ProtocolModel.find(cond).cursor({batchSize: 10});
 
@@ -104,9 +104,6 @@ function run() {
             } else {
                 const existingFormObj = existingForm.toObject();
                 mergeElt(existingFormObj, newFormObj, 'PhenX');
-                existingFormObj.imported = imported;
-                existingFormObj.changeNote = lastMigrationScript;
-                existingFormObj.lastMigrationScript = lastMigrationScript;
                 await updateForm(existingFormObj, BATCHLOADER, {updateSource: true});
                 PhenxLogger.changedPhenxForm++;
                 PhenxLogger.changedPhenxForms.push(existingForm.tinyId);

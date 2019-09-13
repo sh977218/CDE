@@ -70,9 +70,6 @@ async function doOneRedCap(redCap, redCaps, protocol, newForm) {
         } else {
             const existingCdeObj = existingCde.toObject();
             mergeElt(existingCdeObj, newCdeObj, 'PhenX');
-            existingCdeObj.imported = imported;
-            existingCdeObj.changeNote = lastMigrationScript;
-            existingCdeObj.lastMigrationScript = lastMigrationScript;
             await updateCde(existingCdeObj, BATCHLOADER, {updateSource: true});
             RedcapLogger.changedRedcapCde++;
             RedcapLogger.changedRedcapCdes.push(existingCde.tinyId);

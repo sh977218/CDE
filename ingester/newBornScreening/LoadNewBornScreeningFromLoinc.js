@@ -1,7 +1,7 @@
 var MigrationNewBornScreeningCDEModel = require('./../createMigrationConnection').MigrationNewbornScreeningCDEModel;
 var MigrationLoincModel = require('.././createMigrationConnection').MigrationLoincModel;
 
-var LoadFromLoincSite = require('../loinc/Website/LOINCLoader');
+var LoadFromLoincSite = require('../loinc/website/LOINCLoader');
 var orgName = 'Newborn Screening';
 
 MigrationNewBornScreeningCDEModel.find({}).exec(function (err, dataArray) {

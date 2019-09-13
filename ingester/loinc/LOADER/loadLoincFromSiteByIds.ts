@@ -1,16 +1,18 @@
 import { LoincModel } from 'ingester/createMigrationConnection';
-import { runOneLoinc } from 'ingester/loinc/Website/loincLoader';
+import { loadLoincById } from 'ingester/loinc/website/newSite/loincLoader';
 
-const loincId = '62399-1';
+//const loincId = '62863-6';
+//const loincId = '66178-5'; // Normative Answer List
+const loincId = '62403-1'; // Part Description | Example Answer List
 
 async function run() {
-    await LoincModel.remove({loincId});
+    await LoincModel.remove({'LOINC Code': loincId});
     console.log('Removed Migration LOINC collection');
     console.log(`Starting fetching LOINC ${loincId}`);
-    let loinc = await runOneLoinc(loincId);
+    const loinc = await loadLoincById(loincId);
     console.log(`Finished fetching LOINC ${loincId}`);
     await new LoincModel(loinc).save().catch(e => {
-        throw 'new LoincModel(loinc).save() Error: ' + e;
+        throw new Error('new LoincModel(loinc).save() Error: ' + e);
     });
     console.log(`Finished saving LOINC ${loincId}`);
 }

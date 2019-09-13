@@ -16,7 +16,7 @@ export const LoincModel = migrationConn.model('LOINC', new Schema({}, {
     collection: 'LOINC',
     usePushEach: true
 }));
-export const MigrationLoincClassificationMappingModel = migrationConn.model('MigrationLoincClassificationMapping', new Schema({}, {
+export const LOINC_CLASSIFICATION_MAPPING = migrationConn.model('LoincClassificationMapping', new Schema({}, {
     strict: false,
     collection: 'LoincClassificationMapping',
     usePushEach: true
@@ -45,15 +45,3 @@ export let redCapZipFolder = 's:/MLB/CDE/PhenX/www.phenxtoolkit.org/toolkit_cont
 if (hostname() === 'Peter-PC') {
     redCapZipFolder = 'e:/www.phenxtoolkit.org/toolkit_content/redcap_zip/';
 }
-
-// MIGRATION REFERENCE COLLECTION
-export const MigrationPhenxToLoincMappingModel = migrationConn.model('MigrationPhenxToLoincMapping', new Schema({}, {
-    strict: false,
-    collection: 'PhenxToLoincMapping',
-    usePushEach: true
-}));
-export const MigrationVariableCrossReferenceModel = migrationConn.model('MigrationVariableCrossReference', new Schema({}, {
-    strict: false,
-    collection: 'VariableCrossReference',
-    usePushEach: true
-}));
