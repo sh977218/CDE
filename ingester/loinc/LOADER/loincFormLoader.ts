@@ -6,11 +6,11 @@ import {
 } from 'ingester/shared/utility';
 import { LoincLogger } from 'ingester/log/LoincLogger';
 
-export async function runOneForm(loinc, orgInfo) {
-    const loincForm = await createLoincForm(loinc, orgInfo);
+export async function runOneForm(loinc, classificationOrgName = 'LOINC', classificationArray = []) {
+    const loincForm = await createLoincForm(loinc, classificationOrgName, classificationArray);
     const newForm = new Form(loincForm);
     const newFormObj = newForm.toObject();
-    let existingForm = await Form.findOne({archived: false, 'ids.id': loinc.loincId});
+    let existingForm = await Form.findOne({archived: false, 'ids.id': loinc['LOINC Code']});
     if (!existingForm) {
         existingForm = await newForm.save();
         LoincLogger.createdLoincForm++;

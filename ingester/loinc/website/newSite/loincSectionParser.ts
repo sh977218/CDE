@@ -1,6 +1,7 @@
 import { By } from 'selenium-webdriver';
 import { isEmpty } from 'lodash';
 import { loadLoincById } from 'ingester/loinc/website/newSite/loincLoader';
+import { loadLoincPartById } from 'ingester/loinc/website/newSite/loincPartLoader';
 
 async function parseVersion(htmlElement) {
     const versionText = await htmlElement.getText();
@@ -22,7 +23,7 @@ async function parseLoincStatus(htmlElement) {
     return loincStatusText.trim();
 }
 
-async function parseDl(dlElement) {
+export async function parseDl(dlElement) {
     const result = {};
     const childElements = await dlElement.findElements(By.xpath('./*'));
     const dtDdArray: any[] = [];
@@ -123,7 +124,7 @@ async function getSelectionName(htmlElement) {
     return sectionNameText.trim();
 }
 
-async function parseDlWithValidation(htmlElement) {
+export async function parseDlWithValidation(htmlElement) {
     const sectionName = await getSelectionName(htmlElement);
     const dlElements = await htmlElement.findElements(By.xpath('./dl'));
     if (dlElements.length !== 1) {
@@ -273,12 +274,12 @@ async function parsePartDescriptions(htmlElement) {
     const partDescriptions: any[] = [];
     const pElements = await htmlElement.findElements(By.xpath('./p'));
     for (const pElement of pElements) {
-        const partDescription: any = {};
-        const citeElement = await pElement.findElement(By.xpath('./cite'));
-        const citeText = await citeElement.getText();
+        const aElement = await pElement.findElement(By.xpath('./a'));
+        const partId = await aElement.getText();
+        const partDescription: any = await loadLoincPartById(partId);
         const pText = await pElement.getText();
-        partDescription.cite = citeText.trim();
-        partDescription.text = pText.replace(citeText, '').trim();
+        partDescription.partId = partId;
+        partDescription.text = pText;
         partDescriptions.push(partDescription);
     }
     return partDescriptions;
@@ -329,7 +330,8 @@ export const tasks = [
         sectionName: 'Basic Attributes',
         function: selectionWithDl,
         xpath: "//*[@id='basic-attributes']"
-    }, {
+    },
+    {
         sectionName: 'HL7 Attributes',
         function: selectionWithDl,
         xpath: "//*[@id='hl7-attributes']"

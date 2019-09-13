@@ -7,11 +7,11 @@ import {
 
 import { LoincLogger } from 'ingester/log/LoincLogger';
 
-export async function runOneCde(loinc, orgInfo) {
-    const loincCde = await createLoincCde(loinc, orgInfo);
+export async function runOneCde(loinc, classificationOrgName = 'LOINC', classificationArray = []) {
+    const loincCde = await createLoincCde(loinc, classificationOrgName, classificationArray);
     const newCde = new DataElement(loincCde);
     const newCdeObj = newCde.toObject();
-    let existingCde = await DataElement.findOne({archived: false, 'ids.id': loinc.loincId});
+    let existingCde: any = await DataElement.findOne({archived: false, 'ids.id': loinc['LOINC Code']});
     if (!existingCde) {
         existingCde = await newCde.save().catch(err => {
             console.log('LOINC existingCde = await newCde.save() error: ' + err);
@@ -32,7 +32,7 @@ export async function runOneCde(loinc, orgInfo) {
             LoincLogger.sameLoincCdes.push(existingCde.tinyId);
         } else {
             const existingCdeObj = existingCde.toObject();
-            mergeElt(existingCdeObj, newCdeObj, orgInfo.classificationOrgName);
+            mergeElt(existingCdeObj, newCdeObj, 'LOINC');
             await updateCde(existingCdeObj, BATCHLOADER, {updateSource: true}).catch(err => {
                 console.log('LOINC await updateCde(existingCdeObj error: ' + err);
                 process.exit(1);

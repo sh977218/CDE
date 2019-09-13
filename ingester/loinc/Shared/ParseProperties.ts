@@ -78,7 +78,14 @@ export function parseProperties(loinc) {
         const table = '<table class="table table-striped">' + '<tr>' + ths + '</tr>' + '<tr>' + tds + '</tr>' + '</table>';
         properties.push({key: 'HL7 Attributes', value: table, source: 'LOINC', valueFormat: 'html'});
     }
-
+    const thirdPartyCopyright = loinc['Third Party Copyright'];
+    if (thirdPartyCopyright) {
+        properties.push({
+            key: 'Third Party Copyright',
+            value: thirdPartyCopyright,
+            source: 'LOINC'
+        });
+    }
 
     if (loinc['LOINC Copyright']) {
         properties.push({
