@@ -39,9 +39,10 @@ async function parseDl(dlElement) {
         }
     }
     for (const {dt, dd} of dtDdArray) {
-        const key = await dt.getText();
+        const keyText = await dt.getText();
+        const key = keyText.replace(/\./igm, '-').trim();
         const value = await dd.getText();
-        result[key.trim()] = value.trim();
+        result[key] = value.trim();
     }
     return result;
 }
@@ -59,7 +60,26 @@ async function parseUl(ulElement) {
     return result;
 }
 
+async function parseP(pElement) {
+    const result: any = {};
+    const citeElements = await pElement.findElements(By.xpath('./cite'));
+    if (citeElements.length > 0) {
+        const citeText = await citeElements[0].getText();
+        result.cite = citeText.trim();
+    }
+    const pText = await pElement.getText();
+    if (result.cite) {
+        return {
+            text: pText.replace(result.cite, '').trim(),
+            cite: result.cite
+        };
+    } else {
+        return pText.trim();
+    }
+}
+
 async function parseTable(tableElement) {
+    const result: any[] = [];
     const thElements = await tableElement.findElements(By.xpath('./thead/tr/th'));
     const headers: any[] = [];
     for (const thElement of thElements) {
@@ -71,50 +91,30 @@ async function parseTable(tableElement) {
         }
         headers.push(header);
     }
-    const currentLevels: any[] = [];
-    let currentDepth = 0;
-
     const trElements = await tableElement.findElements(By.xpath('./tbody/tr'));
     for (const trElement of trElements) {
         const tdElements = await trElement.findElements(By.xpath('./td'));
         let i = 0;
         const row: any = {};
-        let numberIndent = 0;
         for (const tdElement of tdElements) {
-            const tdText = await tdElement.getText();
-            const key = headers[i];
-            const value = tdText.trim();
-            row[key] = value.replace(/Indent/igm, '').trim();
-            if (i === 0) {
-                const matchIndent = value.match(/Indent/igm);
-                if (matchIndent && matchIndent.length) {
-                    numberIndent = matchIndent.length;
-                }
+            const citeElements = await tdElement.findElements(By.xpath('./cite'));
+            if (citeElements.length > 0) {
+                const citeText = await citeElements[0].getText();
+                row.cite = citeText.trim();
             }
+            const tdText = await tdElement.getText();
+            const keyText = headers[i];
+            const key = keyText.replace(/\./igm, '').trim();
+            let value = tdText.trim();
+            if (row.cite) {
+                value = value.replace(row.cite, '').trim();
+            }
+            row[key] = value;
             i++;
         }
-        if (numberIndent > 0) {
-            row.loinc = await loadLoincById(row.loincId);
-        }
-        if (numberIndent === 0) {
-            currentLevels[0] = row;
-            currentDepth = 0;
-        } else if (numberIndent > currentDepth) {
-            currentLevels[currentDepth].elements.push(row);
-            currentLevels[numberIndent] = row;
-            currentDepth = numberIndent;
-        } else if (numberIndent === currentDepth) {
-            currentLevels[numberIndent - 1].elements.push(row);
-            currentLevels[numberIndent] = row;
-        } else if (numberIndent < currentDepth) {
-            currentLevels[currentDepth] = null;
-            currentLevels[numberIndent] = row;
-            currentLevels[numberIndent - 1].elements.push(row);
-            currentDepth = numberIndent;
-        }
+        result.push(row);
     }
-    const panelHierarchy = currentLevels[0];
-    return panelHierarchy;
+    return result;
 }
 
 async function getSelectionName(htmlElement) {
@@ -154,7 +154,7 @@ async function parsePWithValidation(htmlElement) {
         console.log(`${sectionName} has wrong p`);
         process.exit(1);
     } else {
-        const result = await pElements[0].getText();
+        const result = await parseP(pElements[0]);
         return result;
     }
 }
@@ -176,18 +176,81 @@ async function parseFullySpecifiedName(htmlElement) {
     return fullySpecifiedName;
 }
 
-async function f(htmlElement) {
+async function selectionWithDl(htmlElement) {
     const result = await parseDlWithValidation(htmlElement);
     return result;
 }
 
-async function g(htmlElement) {
+async function selectionWithUl(htmlElement) {
     const result = await parseUlWithValidation(htmlElement);
     return result;
 }
 
 async function parsePanelHierarchy(htmlElement) {
-    return parseTableWithValidation(htmlElement);
+    const sectionName = await getSelectionName(htmlElement);
+    const tableElements = await htmlElement.findElements(By.xpath('./table'));
+    if (tableElements.length !== 1) {
+        console.log(`${sectionName} has wrong table`);
+        process.exit(1);
+    } else {
+        const tableElement = tableElements[0];
+        const thElements = await tableElement.findElements(By.xpath('./thead/tr/th'));
+        const headers: any[] = [];
+        for (const thElement of thElements) {
+            const headerText = await thElement.getText();
+            const header = headerText.trim();
+            if (isEmpty(header)) {
+                console.log(`${headers} has empty headers`);
+                process.exit(1);
+            }
+            headers.push(header);
+        }
+        const currentLevels: any[] = [];
+        let currentDepth = 0;
+
+        const trElements = await tableElement.findElements(By.xpath('./tbody/tr'));
+        for (const trElement of trElements) {
+            const tdElements = await trElement.findElements(By.xpath('./td'));
+            let i = 0;
+            const row: any = {};
+            let numberIndent = 0;
+            for (const tdElement of tdElements) {
+                const tdText = await tdElement.getText();
+                const key = headers[i];
+                const value = tdText.trim();
+                row[key] = value.replace(/Indent/igm, '').trim();
+                row.elements = [];
+                if (i === 0) {
+                    const matchIndent = value.match(/Indent/igm);
+                    if (matchIndent && matchIndent.length) {
+                        numberIndent = matchIndent.length;
+                    }
+                }
+                i++;
+            }
+            if (numberIndent > 0) {
+                row.loinc = await loadLoincById(row.LOINC);
+            }
+            if (numberIndent === 0) {
+                currentLevels[0] = row;
+                currentDepth = 0;
+            } else if (numberIndent > currentDepth) {
+                currentLevels[currentDepth].elements.push(row);
+                currentLevels[numberIndent] = row;
+                currentDepth = numberIndent;
+            } else if (numberIndent === currentDepth) {
+                currentLevels[numberIndent - 1].elements.push(row);
+                currentLevels[numberIndent] = row;
+            } else if (numberIndent < currentDepth) {
+                currentLevels[currentDepth] = null;
+                currentLevels[numberIndent] = row;
+                currentLevels[numberIndent - 1].elements.push(row);
+                currentDepth = numberIndent;
+            }
+        }
+        const panelHierarchy = currentLevels[0];
+        return panelHierarchy;
+    }
 }
 
 export const tasks = [
@@ -218,32 +281,41 @@ export const tasks = [
     },
     {
         sectionName: 'Status Information',
-        function: f,
+        function: selectionWithDl,
         xpath: "//*[@id='non-active']"
     },
     {
         sectionName: 'Additional Names',
-        function: f,
+        function: selectionWithDl,
         xpath: "//*[@id='names']"
     },
     {
+        sectionName: 'Part Description',
+        function: parsePWithValidation,
+        xpath: "//*[@id='part-descriptions']"
+    },
+    {
         sectionName: 'Basic Attributes',
-        function: f,
+        function: selectionWithDl,
         xpath: "//*[@id='basic-attributes']"
+    }, {
+        sectionName: 'HL7 Attributes',
+        function: selectionWithDl,
+        xpath: "//*[@id='hl7-attributes']"
     },
     {
         sectionName: 'Survey Question',
-        function: f,
+        function: selectionWithDl,
         xpath: "//*[@id='survey-question']"
     },
     {
         sectionName: 'Language Variants',
-        function: f,
+        function: selectionWithDl,
         xpath: "//*[@id='language-variants']"
     },
     {
         sectionName: 'Related Names',
-        function: g,
+        function: selectionWithUl,
         xpath: "//*[@id='related-names']"
     },
     {
@@ -257,9 +329,34 @@ export const tasks = [
         xpath: "//*[@id='term-description']"
     },
     {
+        sectionName: 'Related Codes',
+        function: parseTableWithValidation,
+        xpath: "//*[@id='related-codes']"
+    },
+    {
+        sectionName: 'Normative Answer List',
+        function: parseTableWithValidation,
+        xpath: "//section[./h2[normalize-space(text()) ='Normative Answer List']]"
+    },
+    {
+        sectionName: 'Example Answer List',
+        function: parseTableWithValidation,
+        xpath: "//section[./h2[normalize-space(text()) ='Example Answer List']]"
+    },
+    {
         sectionName: 'Panel Hierarchy',
         function: parsePanelHierarchy,
         xpath: "//*[@id='panel-hierarchy']"
     },
+    {
+        sectionName: 'Third Party Copyright',
+        function: parsePWithValidation,
+        xpath: "//*[@id='third-party-copyright']"
+    },
+    {
+        sectionName: 'Reference Information',
+        function: parseTableWithValidation,
+        xpath: "//*[@id='reference-info']"
+    }
 
 ];

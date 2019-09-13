@@ -1,5 +1,5 @@
 import { By } from 'selenium-webdriver';
-import { sanitizeText } from '../../shared/utility';
+import { sanitizeText } from 'ingester/shared/utility';
 
 export async function parseBasicAttributesTable(driver, loincId, element) {
     if (loincId === '56094-6') {

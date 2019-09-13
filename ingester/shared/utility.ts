@@ -1,3 +1,4 @@
+import { Builder, By } from 'selenium-webdriver';
 import * as DiffJson from 'diff-json';
 import * as cheerio from 'cheerio';
 import * as moment from 'moment';
@@ -9,6 +10,8 @@ import { PhenxURL } from 'ingester/createMigrationConnection';
 import { transferClassifications } from 'shared/system/classificationShared';
 import { CdeId, Classification, Definition, Designation, Property } from 'shared/models.model';
 import { FormElement } from 'shared/form/form.model';
+
+require('chromedriver');
 
 export const sourceMap = {
     LOINC: ['LOINC'],
@@ -147,6 +150,40 @@ export function protocolLinkToProtocolId(href: string) {
     return href.substr(protocolIdIndex + indexString.length, href.length);
 }
 
+export async function getDomainCollectionSite() {
+    if (!isEmpty(DOMAIN_COLLECTION_MAP)) {
+        return DOMAIN_COLLECTION_MAP;
+    }
+    const driver = await new Builder().forBrowser('chrome').build();
+    await driver.get(PhenxURL);
+    await driver.findElement(By.id("//*[@class='close btn-cookie-agree']")).click();
+
+    const totalPageElement = await driver.findElement(By.xpath("(//*[@id='myTable_paginate']/span/a)[last()]"));
+    const totalPageText = await totalPageElement.getText();
+    const currentPageElement = await driver.findElement(By.xpath("//*[@id='myTable_paginate']/span/a[@class='paginate_button current']"));
+    const currentPageText = await currentPageElement.getText();
+    const totalPage = parseInt(totalPageText.trim());
+    let currentPage = 1;
+    while (currentPage < totalPage) {
+        currentPage = parseInt(currentPageText.trim());
+        const trs = await driver.findElements(By.xpath("//*[@id='myTable']/tbody/tr"));
+        for (const tr of trs) {
+            const tds = await tr.findElements(By.xpath('./td'));
+            if (tds.length !== 3) {
+                throw new Error('td length error.');
+            }
+            const a = await tds[1].findElement(By.xpath('.//a'));
+            const href = await a.getAttribute('href');
+            const domainCollection = await tds[2].getText();
+            const protocolId = protocolLinkToProtocolId(href);
+            DOMAIN_COLLECTION_MAP[protocolId] = {protocolLink: href, domainCollection: domainCollection.trim()};
+        }
+        await driver.findElement(By.id('myTable_next')).click();
+    }
+    await driver.close();
+    return DOMAIN_COLLECTION_MAP;
+}
+
 export function getDomainCollection() {
     return new Promise((resolve, reject) => {
         if (!isEmpty(DOMAIN_COLLECTION_MAP)) {
@@ -158,7 +195,8 @@ export function getDomainCollection() {
                 }
                 const $ = cheerio.load(body, {normalizeWhitespace: true});
                 const table = $('#myTable');
-                const trs: any[] = table.find('tbody tr');
+                const trs = table.find('tbody tr');
+                console.log('trs: ' + typeof trs);
                 for (const tr of trs) {
                     const tds = $(tr).find('td');
                     if (tds.length !== 3) {
@@ -207,13 +245,13 @@ export function compareElt(newEltObj, existingEltObj) {
     const isForm = existingEltObj.elementType === 'form';
     const isCde = existingEltObj.elementType === 'cde';
 
-/*
-    // PhenX Qualified form not need to compare formElements
-    if (isForm && isPhenX && isQualified && !isArchived) {
-        delete existingEltObj.formElements;
-        delete newEltObj.formElements;
-    }
-*/
+    /*
+        // PhenX Qualified form not need to compare formElements
+        if (isForm && isPhenX && isQualified && !isArchived) {
+            delete existingEltObj.formElements;
+            delete newEltObj.formElements;
+        }
+    */
 
 
     [existingEltObj, newEltObj].forEach(eltObj => {

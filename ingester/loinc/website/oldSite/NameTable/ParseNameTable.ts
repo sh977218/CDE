@@ -4,7 +4,7 @@ import { parseLongCommonName } from './ParseLongCommonName';
 import { parseShortname } from './ParseShortname';
 
 export async function parseNameTable(driver, loincId, table) {
-    const result = {};
+    const result: any = {};
     const trs = await table.findElements(By.xpath('tbody/tr'));
     trs.shift();
 

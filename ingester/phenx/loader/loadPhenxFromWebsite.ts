@@ -1,10 +1,10 @@
 import { ProtocolModel } from 'ingester/createMigrationConnection';
 import { runOnePhenX } from 'ingester/phenx/Website/phenxLoader';
-import { getDomainCollection } from 'ingester/shared/utility';
+import { getDomainCollectionSite } from 'ingester/shared/utility';
 
-(async () => {
-    const DomainCollectionMap = await getDomainCollection();
-    const allProtocolIds = Object.keys(DomainCollectionMap);
+async function run() {
+    const domainCollectionMap = await getDomainCollectionSite();
+    const allProtocolIds = Object.keys(domainCollectionMap);
     console.log(allProtocolIds.length + ' protocol(s) need to be grabbed.');
     for (const protocolId of allProtocolIds) {
         const existProtocol = await ProtocolModel.findOne({protocolId});
@@ -16,5 +16,14 @@ import { getDomainCollection } from 'ingester/shared/utility';
             console.log(protocolId + ' exists. skip...');
         }
     }
-    console.log('Finished.');
-})();
+}
+
+run().then(() => {
+        console.log('Finished.');
+        process.exit(0);
+    }, err => {
+        console.log('err: +' + err);
+        process.exit(1);
+    }
+);
+
