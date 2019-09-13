@@ -3,7 +3,7 @@ import { loadLoincById } from 'ingester/loinc/website/newSite/loincLoader';
 
 //const loincId = '62863-6';
 //const loincId = '66178-5'; // Normative Answer List
-const loincId = '46098-0'; // Part Description | Example Answer List
+const loincId = '62403-1'; // Part Description | Example Answer List
 
 async function run() {
     await LoincModel.remove({'LOINC Code': loincId});

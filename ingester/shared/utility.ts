@@ -156,15 +156,15 @@ export async function getDomainCollectionSite() {
     }
     const driver = await new Builder().forBrowser('chrome').build();
     await driver.get(PhenxURL);
-    await driver.findElement(By.id("//*[@class='close btn-cookie-agree']")).click();
+    await driver.findElement(By.xpath("//*[@class='close btn-cookie-agree']")).click();
 
     const totalPageElement = await driver.findElement(By.xpath("(//*[@id='myTable_paginate']/span/a)[last()]"));
     const totalPageText = await totalPageElement.getText();
-    const currentPageElement = await driver.findElement(By.xpath("//*[@id='myTable_paginate']/span/a[@class='paginate_button current']"));
-    const currentPageText = await currentPageElement.getText();
     const totalPage = parseInt(totalPageText.trim());
     let currentPage = 1;
     while (currentPage < totalPage) {
+        const currentPageElement = await driver.findElement(By.xpath("//*[@id='myTable_paginate']/span/a[@class='paginate_button current']"));
+        const currentPageText = await currentPageElement.getText();
         currentPage = parseInt(currentPageText.trim());
         const trs = await driver.findElements(By.xpath("//*[@id='myTable']/tbody/tr"));
         for (const tr of trs) {
@@ -174,11 +174,17 @@ export async function getDomainCollectionSite() {
             }
             const a = await tds[1].findElement(By.xpath('.//a'));
             const href = await a.getAttribute('href');
+            const phenXProtocol = await a.getText();
             const domainCollection = await tds[2].getText();
             const protocolId = protocolLinkToProtocolId(href);
-            DOMAIN_COLLECTION_MAP[protocolId] = {protocolLink: href, domainCollection: domainCollection.trim()};
+            DOMAIN_COLLECTION_MAP[protocolId] = {
+                phenXProtocol,
+                protocolLink: href,
+                domainCollection: domainCollection.trim()
+            };
         }
         await driver.findElement(By.id('myTable_next')).click();
+        console.log('currentPage: ' + currentPage);
     }
     await driver.close();
     return DOMAIN_COLLECTION_MAP;

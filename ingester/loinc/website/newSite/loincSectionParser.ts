@@ -253,6 +253,22 @@ async function parsePanelHierarchy(htmlElement) {
     }
 }
 
+
+async function parseTermDescriptions(htmlElement) {
+    const termDescriptions: any[] = [];
+    const pElements = await htmlElement.findElements(By.xpath('./p'));
+    for (const pElement of pElements) {
+        const termDescription: any = {};
+        const citeElement = await pElement.findElement(By.xpath('./cite'));
+        const citeText = await citeElement.getText();
+        const pText = await pElement.getText();
+        termDescription.cite = citeText.trim();
+        termDescription.text = pText.replace(citeText, '').trim();
+        termDescriptions.push(termDescription);
+    }
+    return termDescriptions;
+}
+
 export const tasks = [
     {
         sectionName: 'VERSION',
@@ -325,7 +341,7 @@ export const tasks = [
     },
     {
         sectionName: 'Term Description',
-        function: parsePWithValidation,
+        function: parseTermDescriptions,
         xpath: "//*[@id='term-description']"
     },
     {
