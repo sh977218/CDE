@@ -93,17 +93,21 @@ $/cde/> npm i
 
 ## Compile Static Homepage
 1. Do a prod build.
-1. After the build, In Chrome, load CDE Search Welcome page, then navigate to home page while logged out. ___(navigating directly to home would serve the existing static page)___
+1. Reload node server.
+1. In Chrome, load CDE Search Welcome page, then navigate to home page while logged out. ___(navigating directly to home would serve the existing static page)___
 1. In the Devtool Elements Tab, right click the specified tag and click "Copy Element" to copy the following:
    1. Copy the matching __\<style>__ tags to __one.css__ and __three.css__.
-   1. Copy __<nih-cde>__ to __nihcde.html__. ___\*\*\*INSTRUCTIONS MISSING\*\*\*___
-      1. (Remove Angular related properties from element. i.e. [routeLink]="XXXXXX").
-      1. For slideshow slides:
-         1. Replace paths __/app/__ to __/launch/__ path.
-         1. For __source@srcset__ and __img@src__, prepend attributes with __data-__.
+   1. Copy __<nih-cde>__ to __nihcde.html__ and run `./scripts/buildHomeCleanup.sh` (re-runnable).
+      1. If the "Boards" or "Help" menu has changed, manually edit __./scripts/buildHomeCleanup.sh__ to recreate the new menu with JS classes.
 1. Run `npm run gulp buildHome`.
-1. Check-in the resulting css, html, png files and home-launch.ejs into git while removing old versions.
+1. Deliver any changes to __/modules/_app/staticHome/__.
 1. Restart node to view changes.
+1. Verify:
+   1. _Boards_ and _Help_ drop-downs work. Quick Board number is accurate.
+   2. Carousel rotates and buttons work.
+   3. The mobile menu has button in top-right corner and opens from the right with:
+      1. _Boards_ and _Help_ drop-downs work.
+      1. Quick Board number appears.
 1. To update the production build, run `npm run gulp`.
 
 ## Run Node from the cde project directory

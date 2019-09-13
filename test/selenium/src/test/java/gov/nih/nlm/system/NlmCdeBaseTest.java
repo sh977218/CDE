@@ -884,7 +884,19 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         checkAlert("Added to QuickBoard!");
     }
 
+    public void goToQuickBoard() {
+        clickElement(By.id("boardsMenu"));
+        clickElement(By.id("menu_qb_link"));
+    }
+
     public void goToQuickBoardByModule(String module) {
+        goToQuickBoardByModule(module, false);
+    }
+
+    public void goToQuickBoardByModule(String module, Boolean menuOpened) {
+        if (!menuOpened) {
+            clickElement(By.id("boardsMenu"));
+        }
         clickElement(By.id("menu_qb_link"));
         if (module.equals("cde")) {
             clickElement(By.xpath("//div[contains(., 'CDE QuickBoard') and contains(@class, 'mat-tab-label-content')]"));
@@ -897,20 +909,24 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void emptyQuickBoardByModule(String module) {
+        clickElement(By.id("boardsMenu"));
         if (findElement(By.id("menu_qb_link")).getText().contains("(0)")) return;
-        goToQuickBoardByModule(module);
+        goToQuickBoardByModule(module, true);
         clickElement(By.id("qb_" + module + "_empty"));
         textPresent(("cde".equals(module) ? "CDE" : "Form") + " QuickBoard (0)");
-        clickElement(By.id("menu_qb_link"));
+        goToQuickBoard();
         hangon(1);
     }
 
     protected void addToCompare(String cdeName1, String cdeName2) {
-        textPresent("QUICK BOARD (0)");
+        clickElement(By.id("boardsMenu"));
+        textPresent("Quick Board (0)");
         addCdeToQuickBoard(cdeName1);
-        textPresent("QUICK BOARD (1)");
+        clickElement(By.id("boardsMenu"));
+        textPresent("Quick Board (1)");
         addCdeToQuickBoard(cdeName2);
-        clickElement(By.linkText("QUICK BOARD (2)"));
+        clickElement(By.id("boardsMenu"));
+        clickElement(By.linkText("Quick Board (2)"));
         clickElement(By.xpath("//div[contains(., 'CDE QuickBoard') and contains(@class, 'mat-tab-label-content')]"));
         textPresent(cdeName1);
         textPresent(cdeName2);
