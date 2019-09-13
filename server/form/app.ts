@@ -11,6 +11,7 @@ import { byTinyIdVersion as formByTinyIdVersion, Form } from 'server/form/mongo-
 import { respondHomeFull } from 'server/system/app';
 import { toInteger } from 'lodash';
 import { validateBody } from 'server/system/bodyValidator';
+import { CbErr } from 'shared/models.model';
 
 const _ = require('lodash');
 const dns = require('dns');
@@ -147,7 +148,7 @@ export function init(app, daoManager) {
 
     app.get('/viewingHistory/form', [loggedInMiddleware, nocacheMiddleware], (req, res) => {
         const splicedArray = req.user.formViewHistory.splice(0, 10);
-        const idList = [];
+        const idList: string[] = [];
         for (const sa of splicedArray) {
             if (idList.indexOf(sa) === -1) { idList.push(sa); }
         }
@@ -271,7 +272,7 @@ export function init(app, daoManager) {
     });
 
     // cb(error, uom)
-    function validateUom(uom, cb) {
+    function validateUom(uom, cb: CbErr<string>) {
         let error;
         const validation = ucum.validateUnitString(uom, true);
         if (validation.status === 'valid') {
@@ -284,7 +285,7 @@ export function init(app, daoManager) {
                 error = 'Unit is not found. Did you mean ' + suggestion[0] + ' (' + suggestion[1] + ')?';
             }
         } else {
-            const suggestions = [];
+            const suggestions: string[] = [];
             const synonyms = ucum.checkSynonyms(uom);
             if (synonyms.status === 'succeeded' && synonyms.units.length) {
                 synonyms.units.forEach(u => u.name === uom ? suggestions.push(u.code) : null);
@@ -331,8 +332,8 @@ export function init(app, daoManager) {
     });
 
     app.post('/ucumValidate', check('uoms').isArray(), validateBody, (req, res) => {
-        const errors = [];
-        const units = [];
+        const errors: (string|undefined)[] = [];
+        const units: (string|undefined)[] = [];
         req.body.uoms.forEach((uom, i) => {
             validateUom(uom, (error, u) => {
                 errors[i] = error;

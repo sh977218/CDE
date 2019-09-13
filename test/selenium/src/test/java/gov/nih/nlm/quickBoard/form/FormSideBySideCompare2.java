@@ -11,8 +11,9 @@ public class FormSideBySideCompare2 extends NlmCdeBaseTest {
         mustBeLoggedInAs(testAdmin_username, password);
         addFormToQuickBoard("compareForm1");
         addFormToQuickBoard("emptyForm");
-        textPresent("QUICK BOARD (2)");
-        goToQuickBoardByModule("form");
+        clickElement(By.id("boardsMenu"));
+        textPresent("Quick Board (2)");
+        goToQuickBoardByModule("form", true);
         clickElement(By.id("qb_elt_compare_0"));
         clickElement(By.id("qb_elt_compare_1"));
         clickElement(By.id("qb_compare"));

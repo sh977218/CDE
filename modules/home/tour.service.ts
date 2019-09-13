@@ -26,13 +26,8 @@ const navigationSteps: Array<any> = [
         title: 'Boards',
         element: '#boardsMenu',
         content: 'Boards allow registered users to group CDEs or Forms. Boards can be private or public. Boards are persistent and will' +
-            ' not disappear unless you remove them.'
-    },
-    {
-        title: 'Quick Board',
-        element: '#menu_qb_link',
-        content: 'The quick board is a volatile board that can be used for temporarily storing CDEs and forms. You can also use the quick' +
-            ' board to compare CDEs and Forms.'
+            ' not disappear unless you remove them. The quick board is a volatile board that can be used for temporarily storing CDEs and' +
+            ' forms. You can also use the quick board to compare CDEs and Forms.'
     },
     {
         title: 'Help',

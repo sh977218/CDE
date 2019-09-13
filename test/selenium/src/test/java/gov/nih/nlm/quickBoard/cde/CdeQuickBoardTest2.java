@@ -12,15 +12,20 @@ public class CdeQuickBoardTest2 extends NlmCdeBaseTest {
     @Test
     public void showGridViewInCdeQuickBoard() {
         addCdeToQuickBoard("Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage");
-        textPresent("QUICK BOARD (1)");
+        clickElement(By.id("boardsMenu"));
+        textPresent("Quick Board (1)");
         addCdeToQuickBoard("Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value");
-        textPresent("QUICK BOARD (2)");
+        clickElement(By.id("boardsMenu"));
+        textPresent("Quick Board (2)");
         addCdeToQuickBoard("Recurrent Malignant Neoplasm Patient No Cisplatin Interval Month Count");
-        textPresent("QUICK BOARD (3)");
+        clickElement(By.id("boardsMenu"));
+        textPresent("Quick Board (3)");
         addCdeToQuickBoard("Prior BMSCT Administered Indicator");
-        textPresent("QUICK BOARD (4)");
+        clickElement(By.id("boardsMenu"));
+        textPresent("Quick Board (4)");
         addCdeToQuickBoard("Generalized Activities of Daily Living Pain Restricted Scale");
-        textPresent("QUICK BOARD (5)");
+        clickElement(By.id("boardsMenu"));
+        textPresent("Quick Board (5)");
         clickElement(By.id("menu_qb_link"));
         textPresent("Generalized Activities of Daily Living Pain Restricted Scale");
         hangon(1);
@@ -61,7 +66,8 @@ public class CdeQuickBoardTest2 extends NlmCdeBaseTest {
     @Test
     public void goToEmptyQuickBoard() {
         goHome();
-        textPresent("QUICK BOARD (0)");
+        clickElement(By.id("boardsMenu"));
+        textPresent("Quick Board (0)");
         clickElement(By.id("menu_qb_link"));
         textPresent("CDE QuickBoard (0)");
         textPresent("Form QuickBoard (0)");
