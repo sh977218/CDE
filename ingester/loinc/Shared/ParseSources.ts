@@ -3,13 +3,20 @@ import { imported } from 'ingester/shared/utility';
 export function parseSources(loinc) {
     const sources: any[] = [];
     const source: any = {sourceName: 'LOINC', imported};
-    if (loinc['BASIC ATTRIBUTES']) {
-        source.created = loinc['BASIC ATTRIBUTES']['Created On'];
-        source.registrationStatus = loinc['BASIC ATTRIBUTES'].Status;
+    const basicAttributes = loinc['Basic Attributes'];
+    if (basicAttributes) {
+        for (const key in basicAttributes) {
+            if (basicAttributes.hasOwnProperty(key) && key !== 'Class' && key !== 'Type') {
+                source[key] = basicAttributes[key];
+            }
+        }
     }
-    if (loinc['EXAMPLE UNITS']) {
-        source.datatype = loinc['EXAMPLE UNITS'][0].Unit;
+
+    const statusInformation = loinc['Status Information'];
+    if (statusInformation) {
+        source.Status = statusInformation.Status;
     }
+
     sources.push(source);
     return sources;
 }
