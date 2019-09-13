@@ -12,9 +12,8 @@ import { parseValueDomain } from 'ingester/loinc/CDE/ParseValueDomain';
 
 import { BATCHLOADER, created, imported, lastMigrationScript } from 'ingester/shared/utility';
 
-export async function createLoincCde(element, orgInfo) {
-    const loinc = element.loinc ? element.loinc : element;
-    const designations = parseDesignations(loinc, element);
+export async function createLoincCde(loinc, orgInfo) {
+    const designations = parseDesignations(loinc);
     const definitions = parseDefinitions(loinc);
     const ids = parseIds(loinc);
     const properties = parseProperties(loinc);

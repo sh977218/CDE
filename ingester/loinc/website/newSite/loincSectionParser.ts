@@ -269,6 +269,21 @@ async function parseTermDescriptions(htmlElement) {
     return termDescriptions;
 }
 
+async function parsePartDescriptions(htmlElement) {
+    const partDescriptions: any[] = [];
+    const pElements = await htmlElement.findElements(By.xpath('./p'));
+    for (const pElement of pElements) {
+        const partDescription: any = {};
+        const citeElement = await pElement.findElement(By.xpath('./cite'));
+        const citeText = await citeElement.getText();
+        const pText = await pElement.getText();
+        partDescription.cite = citeText.trim();
+        partDescription.text = pText.replace(citeText, '').trim();
+        partDescriptions.push(partDescription);
+    }
+    return partDescriptions;
+}
+
 export const tasks = [
     {
         sectionName: 'VERSION',
@@ -306,8 +321,8 @@ export const tasks = [
         xpath: "//*[@id='names']"
     },
     {
-        sectionName: 'Part Description',
-        function: parsePWithValidation,
+        sectionName: 'Part Descriptions',
+        function: parsePartDescriptions,
         xpath: "//*[@id='part-descriptions']"
     },
     {
@@ -340,7 +355,7 @@ export const tasks = [
         xpath: "//*[@id='loinc-copyright']"
     },
     {
-        sectionName: 'Term Description',
+        sectionName: 'Term Descriptions',
         function: parseTermDescriptions,
         xpath: "//*[@id='term-description']"
     },

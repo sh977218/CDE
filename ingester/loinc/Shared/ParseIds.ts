@@ -1,5 +1,5 @@
 export function parseIds(loinc) {
-    const ids = [];
-    ids.push({source: 'LOINC', id: loinc.loincId, version: loinc.VERSION});
+    const ids: any[] = [];
+    ids.push({source: 'LOINC', id: loinc['LOINC Code'], version: loinc.VERSION});
     return ids;
 }
