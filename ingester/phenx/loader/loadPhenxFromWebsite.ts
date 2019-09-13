@@ -10,6 +10,7 @@ async function run() {
         const existProtocol = await ProtocolModel.findOne({protocolId});
         if (!existProtocol) {
             const protocol = await runOnePhenX(protocolId);
+            protocol.loadDate = new Date();
             await new ProtocolModel(protocol).save();
             console.log(protocolId + ' saved.');
         } else {
