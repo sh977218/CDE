@@ -4,10 +4,10 @@ import { getDomainCollectionSite } from 'ingester/shared/utility';
 
 async function run() {
     const domainCollectionMap = await getDomainCollectionSite();
-    const allProtocolIds = Object.keys(domainCollectionMap);
-    console.log(allProtocolIds.length + ' protocol(s) need to be grabbed.');
-    for (const protocolId of allProtocolIds) {
-        const existProtocol = await ProtocolModel.findOne({protocolId});
+    const allProtocolIDs = Object.keys(domainCollectionMap);
+    console.log(allProtocolIDs.length + ' protocol(s) need to be grabbed.');
+    for (const protocolID of allProtocolIDs) {
+        const existProtocol = await ProtocolModel.findOne({protocolID});
         if (!existProtocol) {
             const protocol = await runOnePhenX(protocolId);
             protocol.loadDate = new Date();
