@@ -1,0 +1,76 @@
+{
+  "port": 3001,
+  "provider": {
+    "faas": "ON_PREM"
+  },
+  "publicUrl": "http://localhost:3001",
+  "debugEnabled": true,
+  "pmRunOnStartup": [],
+  "viewsIncrementThreshold": 1,
+  "autoSyncMesh": true,
+  "elastic": {
+    "index": {
+      "name": "cdetest"
+    },
+    "formIndex": {
+      "name": "formtest"
+    },
+    "boardIndex": {
+      "name": "boardtest"
+    },
+    "cdeSuggestIndex": {
+      "name": "cdesuggesttest"
+    },
+    "formSuggestIndex": {
+      "name": "formsuggesttest"
+    },
+    "number_of_replicas": 0
+  },
+  "versionCheckIntervalInSeconds": 20,
+  "siteKey": "6LecRzAUAAAAAOB_LOhlf3itbTn3zOC2jYC6Er6u",
+  "captchaCode": "6LecRzAUAAAAAN5GJyrT5ZuAPOAi9GtiKo5jXgMF",
+  "useCaptcha": true,
+  "sessionKey": "Kfji76R",
+  "database": {
+    "servers": [
+      {
+        "host": "localhost",
+        "port": 27017
+      }
+    ],
+    "appData": {
+      "db": "test",
+      "username": "",
+      "password": "",
+      "options": {
+        "ssl": false,
+        "useCreateIndex": true,
+        "useNewUrlParser": true,
+        "poolSize": 20
+      }
+    },
+    "log": {
+      "db": "cde-logs-test",
+      "username": "",
+      "password": "",
+      "options": {
+        "ssl": false,
+        "useCreateIndex": true,
+        "useNewUrlParser": true,
+        "poolSize": 20
+      },
+      "cappedCollectionSizeMB": 262144000
+    },
+    "migration": {
+      "db": "migration",
+      "username": "",
+      "password": "",
+      "options": {
+        "ssl": false,
+        "useCreateIndex": true,
+        "useNewUrlParser": true
+      }
+    }
+  }
+}
+
