@@ -9,9 +9,9 @@ const loincId = '56091-2';
 async function run() {
     const loinc: any = await LoincModel.findOne({'LOINC Code': loincId}).lean();
     if (!isEmpty(loinc['Panel Hierarchy'])) {
-        await runOneForm(loinc);
+        await runOneForm(loinc, 'LOINC', []);
     } else {
-        await runOneCde(loinc);
+        await runOneCde(loinc, 'LOINC', []);
     }
 }
 
