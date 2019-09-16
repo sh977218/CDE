@@ -4,9 +4,9 @@ import { readFileSync } from 'fs';
 export const config = Config as any;
 
 ['log', 'appData', 'migration'].forEach(databaseName => {
-    const database = config.database[databaseName];
+    const database: any = config.database[databaseName];
     if (database) {
-        const uriOptions = [];
+        const uriOptions: any[] = [];
         if (database.options.replicaSet) {
             uriOptions.push('replicaSet=' + database.options.replicaSet);
         }
@@ -19,8 +19,11 @@ export const config = Config as any;
                 database.options.sslCert = readFileSync(database.sslCertPath);
             }
         }
-        database.uri = 'mongodb://' + database.username + ':' + database.password + '@'
-            + config.database.servers.map((srv: any) => srv.host + ':' + srv.port).join(',') + '/' + database.db;
+        database.uri = 'mongodb://';
+        if (database.username && database.password) {
+            database.uri = 'mongodb://' + database.username + ':' + database.password + '@';
+        }
+        database.uri = database.uri + config.database.servers.map((srv: any) => srv.host + ':' + srv.port).join(',') + '/' + database.db;
         if (uriOptions.length) {
             database.uri += '?' + uriOptions.join('&');
         }
