@@ -1,8 +1,15 @@
 import { map as CLASSIFICATION_TYPE_MAP } from 'ingester/loinc/Mapping/LOINC_CLASSIFICATION_TYPE_MAP';
-import { LOINC_CLASSIFICATION_MAPPING } from 'ingester/createMigrationConnection';
+import { LOINC_CLASSIFICATION_MAPPING, LOINC_USERS_GUIDE } from 'ingester/createMigrationConnection';
 import { classifyItem } from 'shared/system/classificationShared';
+import { readFileSync } from 'fs';
+
+const pdf = require('pdf-parse');
+
+const dataBuffer = readFileSync(LOINC_USERS_GUIDE);
 
 export async function parseClassification(loinc, elt, classificationOrgName, classificationArray) {
+    const data = await pdf(dataBuffer);
+
     const basicAttributes = loinc['Basic Attributes'];
     if (!basicAttributes) {
         console.log('No Basic Attributes ' + loinc['LOINC Code']);

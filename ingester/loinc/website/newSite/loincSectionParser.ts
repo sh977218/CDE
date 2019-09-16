@@ -372,6 +372,11 @@ export const tasks = [
         xpath: "//section[./h2[normalize-space(text()) ='Normative Answer List']]"
     },
     {
+        sectionName: 'Preferred Answer List',
+        function: parseTableWithValidation,
+        xpath: "//section[./h2[normalize-space(text()) ='Preferred Answer List']]"
+    },
+    {
         sectionName: 'Example Answer List',
         function: parseTableWithValidation,
         xpath: "//section[./h2[normalize-space(text()) ='Example Answer List']]"

@@ -1,7 +1,7 @@
 import { LoincModel } from 'ingester/createMigrationConnection';
 import { loadLoincById } from 'ingester/loinc/website/newSite/loincLoader';
 
-const loincId = '62865-1'; // Part Description | Example Answer List
+const loincId = '20149-1';
 
 async function run() {
     await LoincModel.remove({'LOINC Code': loincId});
