@@ -78,8 +78,8 @@ process.on('unhandledRejection', error => {
 });
 
 function run() {
-    // const cond = {protocolID: {$in: ['150101']}};
-    const cond = {};
+    const cond = {protocolID: {$in: ['10101']}};
+    //const cond = {};
     const cursor = ProtocolModel.find(cond).cursor({batchSize: 10});
 
     cursor.eachAsync(async (protocol: any) => {
@@ -103,7 +103,7 @@ function run() {
                 PhenxLogger.samePhenxForms.push(existingForm.tinyId);
             } else {
                 const existingFormObj = existingForm.toObject();
-                mergeElt(existingFormObj, newFormObj, 'PhenX');
+                mergeElt(existingFormObj, newFormObj, 'PhenX', 'PhenX');
                 await updateForm(existingFormObj, BATCHLOADER, {updateSource: true});
                 PhenxLogger.changedPhenxForm++;
                 PhenxLogger.changedPhenxForms.push(existingForm.tinyId);

@@ -7,7 +7,7 @@ async function run() {
     const allProtocolIds = Object.keys(domainCollectionMap);
     console.log(allProtocolIds.length + ' protocol(s) need to be grabbed.');
     for (const protocolId of allProtocolIds) {
-        const existProtocol = await ProtocolModel.findOne({protocolId});
+        const existProtocol = await ProtocolModel.findOne({protocolID: protocolId});
         if (!existProtocol) {
             const protocol = await runOnePhenX(protocolId);
             protocol.loadDate = new Date();

@@ -54,7 +54,7 @@ schemas.dataElementSchema.pre('save', function(next) {
             next();
         }
     }, err => {
-        next(`Cde ${elt.tinyId} has error: ${err}`)
+        next(`Cde ${elt.tinyId} has error: ${err}`);
     });
 });
 

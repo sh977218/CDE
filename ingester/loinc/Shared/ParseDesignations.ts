@@ -10,7 +10,7 @@ export function parseDesignations(loinc) {
         if (additionalNames.hasOwnProperty(additionalName)) {
             const newName = additionalNames[additionalName];
             const n: any = {};
-            n[additionalName] = newName;
+            n.designation = newName;
             const existingName = find(designations, {designation: newName});
             if (existingName) {
                 const allTags = existingName.tags.concat(additionalName);
