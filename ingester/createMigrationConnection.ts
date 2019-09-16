@@ -21,11 +21,7 @@ export const LOINC_CLASSIFICATION_MAPPING = migrationConn.model('LoincClassifica
     collection: 'LoincClassificationMapping',
     usePushEach: true
 }));
-export const MigrationLoincScaleMappingModel = migrationConn.model('MigrationLoincScaleMapping', new Schema({}, {
-    strict: false,
-    collection: 'LoincScaleMapping',
-    usePushEach: true
-}));
+export let LOINC_USERS_GUIDE = 'S:/MLB/CDE/LOINC/LOINCUsersGuide.pdf';
 
 // NINDS
 export const NindsModel = migrationConn.model('NINDS', new Schema({}, {

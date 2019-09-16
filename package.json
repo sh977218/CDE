@@ -256,6 +256,7 @@
     "npm": "^6.10.1",
     "nyc": "^14.1.1",
     "optimize-js-plugin": "0.0.4",
+    "pdf-parse": "^1.1.1",
     "raw-loader": "^0.5.1",
     "reflect-metadata": "0.1.12",
     "rollup": "^1.6.0",
