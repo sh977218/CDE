@@ -7,7 +7,11 @@ import {
 
 import { LoincLogger } from 'ingester/log/LoincLogger';
 
-export async function runOneCde(loinc, classificationOrgName = 'LOINC', classificationArray = []) {
+export async function runOneCde(loinc, classificationOrgName, classificationArray = []) {
+    if (!classificationOrgName) {
+        console.log('loincCdeLoader.ts classificationOrgName is empty.');
+        process.exit(1);
+    }
     const loincCde = await createLoincCde(loinc, classificationOrgName, classificationArray);
     const newCde = new DataElement(loincCde);
     const newCdeObj = newCde.toObject();
@@ -32,7 +36,7 @@ export async function runOneCde(loinc, classificationOrgName = 'LOINC', classifi
             LoincLogger.sameLoincCdes.push(existingCde.tinyId);
         } else {
             const existingCdeObj = existingCde.toObject();
-            mergeElt(existingCdeObj, newCdeObj, 'LOINC');
+            mergeElt(existingCdeObj, newCdeObj, 'LOINC', classificationOrgName);
             await updateCde(existingCdeObj, BATCHLOADER, {updateSource: true}).catch(err => {
                 console.log('LOINC await updateCde(existingCdeObj error: ' + err);
                 process.exit(1);

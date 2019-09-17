@@ -1,17 +1,13 @@
-import { isEmpty } from 'lodash';
-import { Form, FormSource } from 'server/form/mongo-form';
-import { Comment } from 'server/discuss/discussDb';
-import { ProtocolModel } from 'ingester/createMigrationConnection';
-import {
-    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeElt, printUpdateResult, updateForm
-} from 'ingester/shared/utility';
-import { createPhenxForm } from 'ingester/phenx/Form/form';
+import { Form } from 'server/form/mongo-form';
+import { PROTOCOL } from 'ingester/createMigrationConnection';
+import { BATCHLOADER, imported, lastMigrationScript, updateForm } from 'ingester/shared/utility';
 
 import { PhenxLogger } from 'ingester/log/PhenxLogger';
 import { LoincLogger } from 'ingester/log/LoincLogger';
 import { RedcapLogger } from 'ingester/log/RedcapLogger';
+import { loadPhenxById } from 'ingester/phenx/loader/loadPhenxById';
 
-let protocolCount = 0;
+const protocolCount = 0;
 
 /*
 const NewPhenxIdToOldPhenxId = {
@@ -77,77 +73,29 @@ process.on('unhandledRejection', error => {
     console.log(error);
 });
 
-function run() {
-    // const cond = {protocolID: {$in: ['150101']}};
+async function run() {
+    //const cond = {protocolID: {$in: ['10101', '10201']}};
     const cond = {};
-    const cursor = ProtocolModel.find(cond).cursor({batchSize: 10});
-
-    cursor.eachAsync(async (protocol: any) => {
-        const protocolObj = protocol.toObject();
-        const protocolId = protocolObj.protocolID;
-        const phenxForm = await createPhenxForm(protocolObj);
-        const newForm = new Form(phenxForm);
-        const newFormObj = newForm.toObject();
-        let existingForm = await Form.findOne({archived: false, 'ids.id': protocolId});
-        if (!existingForm) {
-            existingForm = await newForm.save();
-            PhenxLogger.createdPhenxForm++;
-            PhenxLogger.createdPhenxForms.push(existingForm.tinyId);
-        } else {
-            const diff = compareElt(newForm.toObject(), existingForm.toObject());
-            if (isEmpty(diff)) {
-                existingForm.lastMigrationScript = lastMigrationScript;
-                existingForm.imported = imported;
-                await existingForm.save();
-                PhenxLogger.samePhenxForm++;
-                PhenxLogger.samePhenxForms.push(existingForm.tinyId);
-            } else {
-                const existingFormObj = existingForm.toObject();
-                mergeElt(existingFormObj, newFormObj, 'PhenX');
-                await updateForm(existingFormObj, BATCHLOADER, {updateSource: true});
-                PhenxLogger.changedPhenxForm++;
-                PhenxLogger.changedPhenxForms.push(existingForm.tinyId);
-            }
-        }
-        if (newFormObj.registrationState.registrationStatus !== 'Qualified') {
-            for (const comment of phenxForm.comments) {
-                comment.element.eltId = existingForm.tinyId;
-                await new Comment(comment).save();
-            }
-        }
-        delete newFormObj.tinyId;
-        delete newFormObj._id;
-        newFormObj.attachments = [];
-        const updateResult = await FormSource.updateOne({
-            tinyId: existingForm.tinyId,
-            source: 'PhenX'
-        }, newFormObj, {upsert: true});
-        printUpdateResult(updateResult, existingForm);
-        protocolCount++;
-        console.log('protocolCount ' + protocolCount);
-        console.log('Finished protocol: ' + protocolId);
-    }).then(async () => {
-        console.log('Retiring cdes.');
-        await retireCdes();
-        console.log('Retiring forms.');
-        await retireForms();
-        PhenxLogger.log();
-        LoincLogger.log();
-        RedcapLogger.log();
-        console.log('Finished PhenX Loader: ');
-        process.exit(0);
-    }, error => {
-        if (error) {
-            console.log(error);
-            process.exit(1);
-        } else {
-            process.exit(0);
-        }
-    });
+    const phenxIds = await PROTOCOL.find(cond, {protocolID: 1}).lean();
+//    const slicedPhenxIds = phenxIds.slice(0, 10);
+    const slicedPhenxIds = phenxIds;
+    for (const phenxId of slicedPhenxIds) {
+        await loadPhenxById(phenxId.protocolID);
+    }
+    console.log('Retiring cdes.');
+    await retireCdes();
+    console.log('Retiring forms.');
+    await retireForms();
+    PhenxLogger.log();
+    LoincLogger.log();
+    RedcapLogger.log();
 }
 
-run();
-/*.then(
-    () => console.log('done'),
-    err => console.log('err: ' + err)
-);*/
+run().then(() => {
+        console.log('Finished PhenX Loader: ');
+        process.exit(0);
+    }, err => {
+        console.log('err: ' + err);
+        process.exit(1);
+    }
+);

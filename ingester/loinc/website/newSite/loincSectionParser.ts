@@ -395,6 +395,10 @@ export const tasks = [
         sectionName: 'Reference Information',
         function: parseTableWithValidation,
         xpath: "//*[@id='reference-info']"
+    },
+    {
+        sectionName: 'Example Units',
+        function: parseTableWithValidation,
+        xpath: "//*[@id='example-units']"
     }
-
 ];

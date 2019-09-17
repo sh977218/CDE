@@ -53,7 +53,7 @@ function runOneOrg(orgName: string) {
                                 sameCdes.push(existingCde.tinyId);
                             } else {
                                 const existingCdeObj = existingCde.toObject();
-                                mergeElt(existingCdeObj, newCdeObj, 'NCI');
+                                mergeElt(existingCdeObj, newCdeObj, 'NCI', 'NCI');
                                 await updateCde(existingCdeObj, BATCHLOADER, {updateSource: true});
                                 changedCde++;
                                 changedCdes.push(existingCde.tinyId);

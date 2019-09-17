@@ -25,7 +25,7 @@ export async function runOneForm(loinc, classificationOrgName = 'LOINC', classif
             LoincLogger.sameLoincForms.push(existingForm.tinyId);
         } else {
             const existingFormObj = existingForm.toObject();
-            mergeElt(existingFormObj, newFormObj, 'LOINC');
+            mergeElt(existingFormObj, newFormObj, 'LOINC', classificationOrgName);
             await updateForm(existingFormObj, BATCHLOADER, {updateSource: true});
             LoincLogger.changedLoincForm++;
             LoincLogger.changedLoincForms.push(existingForm.tinyId);

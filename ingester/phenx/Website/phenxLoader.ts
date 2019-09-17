@@ -3,7 +3,7 @@ import { get } from 'request';
 import { getDomainCollectionSite } from 'ingester/shared/utility';
 import { loadLoincById } from 'ingester/loinc/website/newSite/loincLoader';
 
-const SECTIONS = [
+const SECTIONS: any[] = [
     {
         tabName: 'Protocol',
         domId: '#tabprotocol',
@@ -100,7 +100,7 @@ async function findStandardsTable(node) {
         standard.Source = cheerio(tds[3]).text().trim();
         if (standard.Source === 'LOINC') {
             standard.loinc = await loadLoincById(standard.ID).catch(e => {
-                throw new Error('Error findStandardsTable ' + standard.ID);
+                throw new Error('Error findStandardsTable ' + standard.ID + ' error: ' + e);
             });
 
         }
@@ -150,26 +150,24 @@ function doOneProtocol(protocol) {
             }
             const $ = cheerio.load(body, {normalizeWhitespace: true});
 
-            const protocolName = $('#main-content > div > div.row.mb-2 > div > h1').text().trim();
-            protocol.protocolName = protocolName;
+            protocol.protocolName = $('#main-content > div > div.row.mb-2 > div > h1').text().trim();
 
-            const classification = $('#page-header > div > p').text().trim();
-            protocol.classification = classification;
+            protocol.classification = $('#page-header > div > p').text().trim();
 
-            for (let i = 0; i < SECTIONS.length; i++) {
-                const SECTION = SECTIONS[i];
+            for (const SECTION of SECTIONS) {
                 const selector = SECTION.domId + ' h5';
-                for (let j = 0; j < SECTION.sections.length; j++) {
-                    const section: any = SECTION.sections[j];
+                for (const section of SECTION.sections) {
                     for (const k in section) {
-                        const value = section[k];
-                        const node = $(selector).filter(function () {
-                            return $(this).text().trim() === value;
-                        });
-                        if (!section.fn) {
-                            protocol[k] = findNextText(node);
-                        } else {
-                            protocol[k] = await section.fn(node);
+                        if (section.hasOwnProperty(k)) {
+                            const value = section[k];
+                            const node = $(selector).filter(function () {
+                                return $(this).text().trim() === value;
+                            });
+                            if (!section.fn) {
+                                protocol[k] = findNextText(node);
+                            } else {
+                                protocol[k] = await section.fn(node);
+                            }
                         }
                     }
                 }

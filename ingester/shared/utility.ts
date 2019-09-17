@@ -1,15 +1,19 @@
 import { Builder, By } from 'selenium-webdriver';
+import { readFileSync } from 'fs';
+
 import * as DiffJson from 'diff-json';
 import * as cheerio from 'cheerio';
 import * as moment from 'moment';
 import { get } from 'request';
-import { findIndex, isEmpty, sortBy, uniq } from 'lodash';
+import { findIndex, isEmpty, isEqual, lowerCase, sortBy, uniq } from 'lodash';
 import * as mongo_cde from 'server/cde/mongo-cde';
 import * as mongo_form from 'server/form/mongo-form';
-import { PhenxURL } from 'ingester/createMigrationConnection';
+import { LOINC_USERS_GUIDE, PhenxURL } from 'ingester/createMigrationConnection';
 import { transferClassifications } from 'shared/system/classificationShared';
 import { CdeId, Classification, Definition, Designation, Property } from 'shared/models.model';
 import { FormElement } from 'shared/form/form.model';
+
+const pdfParser = require('pdf-parse');
 
 require('chromedriver');
 
@@ -148,6 +152,52 @@ export function protocolLinkToProtocolId(href: string) {
     const indexString = '/protocols/view/';
     const protocolIdIndex = href.indexOf(indexString);
     return href.substr(protocolIdIndex + indexString.length, href.length);
+}
+
+const LOINC_CLASSIFICATION_MAP = {};
+
+function parseOneTermClass(content) {
+    const result = {};
+    const rows = content.split('\n');
+    const filterRows = rows.filter(c => {
+        if (isNaN(c)) {
+            return true;
+        } else {
+            if (c.match(/Table.*:/ig) || c.match(/Abbreviation.*Term Class/ig)) {
+                return false;
+            } else {
+                return false;
+            }
+        }
+    });
+    filterRows.forEach(row => {
+        const t = row.indexOf('\s');
+        const abbreviation = row.substr(0, t).trim();
+        const value = row.substr(t, row.length - 1).trim();
+        result[abbreviation] = value;
+    });
+    return result;
+}
+
+export async function getLoincClassificationMapping() {
+    if (!isEmpty(LOINC_CLASSIFICATION_MAP)) {
+        return LOINC_CLASSIFICATION_MAP;
+    } else {
+        const dataBuffer = readFileSync(LOINC_USERS_GUIDE);
+        const loincUserGuidePdf = await pdfParser(dataBuffer);
+        const pdfText = loincUserGuidePdf.text;
+        const table32aIndex = pdfText.indexOf('Table 32a: Clinical Term Classes');
+        const table32bIndex = pdfText.indexOf('Table 32b: Laboratory Term Classes');
+        const table32cIndex = pdfText.indexOf('Table 32c: Attachment Term Classes');
+        const table32dIndex = pdfText.indexOf('Table 32d: Survey Term Classes');
+        const endOfTableIndex = pdfText.indexOf('Appendix C Calculating Mod 10 check\n digits');
+        const table32aText = pdfText.substring(table32aIndex, table32bIndex);
+        const table32bText = pdfText.substring(table32bIndex, table32cIndex);
+        const table32cText = pdfText.substring(table32cIndex, table32dIndex);
+        const table32dText = pdfText.substring(table32dIndex, endOfTableIndex);
+        LOINC_CLASSIFICATION_MAP['Clinical Term Classes'] = parseOneTermClass(table32aText);
+        console.log(loincUserGuidePdf);
+    }
 }
 
 export async function getDomainCollectionSite() {
@@ -292,11 +342,11 @@ function mergeDesignation(existingDesignations: Designation[], newDesignations: 
     const allDesignations = existingDesignations.concat(newDesignations);
     allDesignations.forEach(designation => {
         const i = findIndex(designations, {designation: designation.designation});
-        if (i !== -1) {
+        if (i === -1) {
+            designations.push(designation);
+        } else {
             const allTags = designations[i].tags.concat(designation.tags);
             designations[i].tags = uniq(allTags).filter(t => !isEmpty(t));
-        } else {
-            designations.push(designation);
         }
 
     });
@@ -308,11 +358,12 @@ function mergeDefinition(existingDefinitions: Definition[], newDefinitions: Defi
     const allDefinitions = existingDefinitions.concat(newDefinitions);
     allDefinitions.forEach(definition => {
         const i = findIndex(definitions, {definition: definition.definition});
-        if (i !== -1) {
+        if (i === -1) {
+            definitions.push(definition);
+        } else {
             const allTags = definitions[i].tags.concat(definition.tags);
             definitions[i].tags = uniq(allTags).filter(t => !isEmpty(t));
-        } else {
-            definitions.push(definition);
+            definitions[i].definitionFormat = definition.definitionFormat;
         }
     });
     return definitions;
@@ -322,9 +373,21 @@ export function mergeProperties(newProperties: Property[], existingProperties: P
     const properties: Property[] = [];
     const allProperties = newProperties.concat(existingProperties);
     allProperties.forEach(property => {
-        const i = findIndex(properties, {key: property.key});
+        const i = findIndex(properties, o => {
+            const keyWithS = o.key + 's';
+            if (isEqual(lowerCase(o.key), lowerCase(property.key))) {
+                return true;
+            } else if (isEqual(lowerCase(keyWithS), lowerCase(property.key))) {
+                // LOINC Participant => Participants
+                return true;
+            } else {
+                return false;
+            }
+        });
         if (i === -1) {
             properties.push(property);
+        } else {
+            properties[i] = property;
         }
     });
     return properties;
@@ -357,7 +420,7 @@ export function mergeSourcesBySourcesName(newSources, existingSources, sources) 
     return newSources.concat(otherSources);
 }
 
-export function mergeElt(existingEltObj: any, newEltObj: any, source: string) {
+export function mergeElt(existingEltObj: any, newEltObj: any, source: string, classificationOrgName) {
     const existingFormElements = existingEltObj.formElements;
     const existingEltRegistrationStatus = existingEltObj.registrationState.registrationStatus;
 
@@ -392,20 +455,23 @@ export function mergeElt(existingEltObj: any, newEltObj: any, source: string) {
         existingEltObj.formElements = newEltObj.formElements;
     }
 
-    existingEltObj.registrationState.registrationStatus = newEltObj.registrationState.registrationStatus;
+    const isPhenX = existingEltObj.ids.filter(id => id.source === 'PhenX').length > 0;
+    const isQualified = existingEltObj.registrationState.registrationStatus === 'Qualified';
+    const isArchived = existingEltObj.archived;
+
+    if (isForm && isPhenX && !isArchived && !isQualified) {
+        existingEltObj.registrationState.registrationStatus = newEltObj.registrationState.registrationStatus;
+    }
     existingEltObj.imported = newEltObj.imported;
     existingEltObj.changeNote = lastMigrationScript;
 
     if (existingEltObj.lastMigrationScript === lastMigrationScript) {
         transferClassifications(newEltObj, existingEltObj);
     } else {
-        existingEltObj.classification = replaceClassificationByOrg(newEltObj.classification, existingEltObj.classification, source);
+        existingEltObj.classification = replaceClassificationByOrg(newEltObj.classification, existingEltObj.classification, classificationOrgName);
         existingEltObj.lastMigrationScript = lastMigrationScript;
     }
 
-    const isPhenX = existingEltObj.ids.filter(id => id.source === 'PhenX').length > 0;
-    const isQualified = existingEltObj.registrationState.registrationStatus === 'Qualified';
-    const isArchived = existingEltObj.archived;
 
     // EXCEPTIONS
     // Those 50 qualified phenx forms , loader skip form elements.
