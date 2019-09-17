@@ -5,7 +5,7 @@ import * as DiffJson from 'diff-json';
 import * as cheerio from 'cheerio';
 import * as moment from 'moment';
 import { get } from 'request';
-import { findIndex, isEmpty, sortBy, uniq } from 'lodash';
+import { findIndex, isEmpty, isEqual, lowerCase, sortBy, uniq } from 'lodash';
 import * as mongo_cde from 'server/cde/mongo-cde';
 import * as mongo_form from 'server/form/mongo-form';
 import { LOINC_USERS_GUIDE, PhenxURL } from 'ingester/createMigrationConnection';
@@ -342,11 +342,11 @@ function mergeDesignation(existingDesignations: Designation[], newDesignations: 
     const allDesignations = existingDesignations.concat(newDesignations);
     allDesignations.forEach(designation => {
         const i = findIndex(designations, {designation: designation.designation});
-        if (i !== -1) {
+        if (i === -1) {
+            designations.push(designation);
+        } else {
             const allTags = designations[i].tags.concat(designation.tags);
             designations[i].tags = uniq(allTags).filter(t => !isEmpty(t));
-        } else {
-            designations.push(designation);
         }
 
     });
@@ -358,11 +358,12 @@ function mergeDefinition(existingDefinitions: Definition[], newDefinitions: Defi
     const allDefinitions = existingDefinitions.concat(newDefinitions);
     allDefinitions.forEach(definition => {
         const i = findIndex(definitions, {definition: definition.definition});
-        if (i !== -1) {
+        if (i === -1) {
+            definitions.push(definition);
+        } else {
             const allTags = definitions[i].tags.concat(definition.tags);
             definitions[i].tags = uniq(allTags).filter(t => !isEmpty(t));
-        } else {
-            definitions.push(definition);
+            definitions[i].definitionFormat = definition.definitionFormat;
         }
     });
     return definitions;
@@ -372,9 +373,11 @@ export function mergeProperties(newProperties: Property[], existingProperties: P
     const properties: Property[] = [];
     const allProperties = newProperties.concat(existingProperties);
     allProperties.forEach(property => {
-        const i = findIndex(properties, {key: property.key});
+        const i = findIndex(properties, o => isEqual(lowerCase(o.key), lowerCase(property.key)));
         if (i === -1) {
             properties.push(property);
+        } else {
+            properties[i] = property;
         }
     });
     return properties;
@@ -442,7 +445,13 @@ export function mergeElt(existingEltObj: any, newEltObj: any, source: string, cl
         existingEltObj.formElements = newEltObj.formElements;
     }
 
-    existingEltObj.registrationState.registrationStatus = newEltObj.registrationState.registrationStatus;
+    const isPhenX = existingEltObj.ids.filter(id => id.source === 'PhenX').length > 0;
+    const isQualified = existingEltObj.registrationState.registrationStatus === 'Qualified';
+    const isArchived = existingEltObj.archived;
+
+    if (isForm && isPhenX && !isArchived && !isQualified) {
+        existingEltObj.registrationState.registrationStatus = newEltObj.registrationState.registrationStatus;
+    }
     existingEltObj.imported = newEltObj.imported;
     existingEltObj.changeNote = lastMigrationScript;
 
@@ -453,9 +462,6 @@ export function mergeElt(existingEltObj: any, newEltObj: any, source: string, cl
         existingEltObj.lastMigrationScript = lastMigrationScript;
     }
 
-    const isPhenX = existingEltObj.ids.filter(id => id.source === 'PhenX').length > 0;
-    const isQualified = existingEltObj.registrationState.registrationStatus === 'Qualified';
-    const isArchived = existingEltObj.archived;
 
     // EXCEPTIONS
     // Those 50 qualified phenx forms , loader skip form elements.

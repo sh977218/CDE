@@ -1,7 +1,8 @@
 import { hostname } from 'os';
 import { createConnection, Schema } from 'mongoose';
+import { config } from 'server/system/parseConfig';
 
-const migrationConn = createConnection('mongodb://localhost:27017/migration', {
+const migrationConn = createConnection(config.database.migration.uri, {
     ssl: false,
     useCreateIndex: true,
     useNewUrlParser: true
@@ -31,7 +32,7 @@ export const NindsModel = migrationConn.model('NINDS', new Schema({}, {
 }));
 
 // PhenX
-export const ProtocolModel = migrationConn.model('Protocol', new Schema({}, {
+export const PROTOCOL = migrationConn.model('PROTOCOL', new Schema({}, {
     strict: false,
     collection: 'Protocol',
     usePushEach: true
