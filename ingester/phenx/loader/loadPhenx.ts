@@ -77,7 +77,9 @@ async function run() {
     //const cond = {protocolID: {$in: ['10101', '10201']}};
     const cond = {};
     const phenxIds = await PROTOCOL.find(cond, {protocolID: 1}).lean();
-    for (const phenxId of phenxIds.slice(0, 10)) {
+//    const slicedPhenxIds = phenxIds.slice(0, 10);
+    const slicedPhenxIds = phenxIds;
+    for (const phenxId of slicedPhenxIds) {
         await loadPhenxById(phenxId.protocolID);
     }
     console.log('Retiring cdes.');

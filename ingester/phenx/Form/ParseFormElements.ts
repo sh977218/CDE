@@ -7,10 +7,12 @@ export async function parseFormElements(protocol, attachments, newForm) {
     if (isEmpty(loincStandard)) {
         await parseRedcapFormElements(protocol, attachments, newForm);
     } else {
-        const formElements = await parseLoincFormElements(loincStandard.loinc, 'PhenX', []);
+        let formElements: any[] = [];
         const loinc = loincStandard.loinc;
-        if (!loinc['PANEL HIERARCHY']) {
+        if (isEmpty(loinc['PANEL HIERARCHY'])) {
             console.log(`Protocol ${protocol.protocolID} has LOINC ${loinc.loincId} PANEL HIERARCHY is missing.`);
+        } else {
+            formElements = await parseLoincFormElements(loinc, 'PhenX', []);
         }
         newForm.formElements = formElements;
     }

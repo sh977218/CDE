@@ -10,10 +10,7 @@ export function parseValueDomain(loinc) {
     const loincAnswerList = loinc['Normative Answer List'] || loinc['Example Answer List'];
     if (isEmpty(loincAnswerList)) {
         const exampleUnits = loinc['Example Units'];
-        if (exampleUnits.length !== 1) {
-            console.log(`${loinc['LOINC Code']} has wrong Example Units.`);
-            process.exit(1);
-        } else {
+        if (exampleUnits && exampleUnits.length === 1) {
             const exampleUnit = exampleUnits[0];
             const unit = exampleUnit.Unit;
             const datatype = map[unit];
@@ -23,6 +20,8 @@ export function parseValueDomain(loinc) {
             } else {
                 valueDomain.datatype = datatype;
             }
+        } else {
+            console.log(`${loinc['LOINC Code']} has no or wrong Example Units.`);
         }
 
     } else {

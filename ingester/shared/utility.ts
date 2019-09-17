@@ -373,7 +373,17 @@ export function mergeProperties(newProperties: Property[], existingProperties: P
     const properties: Property[] = [];
     const allProperties = newProperties.concat(existingProperties);
     allProperties.forEach(property => {
-        const i = findIndex(properties, o => isEqual(lowerCase(o.key), lowerCase(property.key)));
+        const i = findIndex(properties, o => {
+            const keyWithS = o.key + 's';
+            if (isEqual(lowerCase(o.key), lowerCase(property.key))) {
+                return true;
+            } else if (isEqual(lowerCase(keyWithS), lowerCase(property.key))) {
+                // LOINC Participant => Participants
+                return true;
+            } else {
+                return false;
+            }
+        });
         if (i === -1) {
             properties.push(property);
         } else {
