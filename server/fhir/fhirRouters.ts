@@ -48,4 +48,6 @@ export function module() {
     router.put('/fhirObservationInfo', loggedInMiddleware, (req, res) => {
         fhirObservationInfo.put(res, req.body, info => res.send(info));
     });
+
+    return router;
 }
