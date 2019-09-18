@@ -6,6 +6,7 @@ import { isOrgAdminMiddleware, loggedInMiddleware } from 'server/system/authoriz
 import { embeds } from 'server/embed/embedSvc';
 import { handleError } from 'server/errorHandler/errorHandler';
 import { isOrgAdmin } from 'shared/system/authorizationShared';
+import { is } from 'useragent';
 
 /* for IE Opera Safari, emit polyfill.js */
 function isModernBrowser(req) {
