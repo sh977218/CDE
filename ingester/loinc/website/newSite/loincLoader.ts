@@ -1,12 +1,10 @@
 import { Builder, By } from 'selenium-webdriver';
 import { findIndex, isEqual, sortBy, words } from 'lodash';
 import { tasks } from 'ingester/loinc/website/newSite/loincSectionParser';
-import { getLoincClassificationMapping } from 'ingester/shared/utility';
 
 require('chromedriver');
 
 export async function loadLoincById(loincId) {
-//    await getLoincClassificationMapping();
     const driver = await new Builder().forBrowser('chrome').build();
     const url = `https://loinc.org/${loincId.trim()}/`;
     await driver.get(url);

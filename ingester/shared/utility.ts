@@ -1,5 +1,4 @@
 import { Builder, By } from 'selenium-webdriver';
-import { readFileSync } from 'fs';
 
 import * as DiffJson from 'diff-json';
 import * as cheerio from 'cheerio';
@@ -8,7 +7,7 @@ import { get } from 'request';
 import { findIndex, isEmpty, isEqual, lowerCase, sortBy, uniq } from 'lodash';
 import * as mongo_cde from 'server/cde/mongo-cde';
 import * as mongo_form from 'server/form/mongo-form';
-import { LOINC_USERS_GUIDE, PhenxURL } from 'ingester/createMigrationConnection';
+import { PhenxURL } from 'ingester/createMigrationConnection';
 import { transferClassifications } from 'shared/system/classificationShared';
 import { CdeId, Classification, Definition, Designation, Property } from 'shared/models.model';
 import { FormElement } from 'shared/form/form.model';
@@ -177,27 +176,6 @@ function parseOneTermClass(content) {
         result[abbreviation] = value;
     });
     return result;
-}
-
-export async function getLoincClassificationMapping() {
-    if (!isEmpty(LOINC_CLASSIFICATION_MAP)) {
-        return LOINC_CLASSIFICATION_MAP;
-    } else {
-        const dataBuffer = readFileSync(LOINC_USERS_GUIDE);
-        const loincUserGuidePdf = await pdfParser(dataBuffer);
-        const pdfText = loincUserGuidePdf.text;
-        const table32aIndex = pdfText.indexOf('Table 32a: Clinical Term Classes');
-        const table32bIndex = pdfText.indexOf('Table 32b: Laboratory Term Classes');
-        const table32cIndex = pdfText.indexOf('Table 32c: Attachment Term Classes');
-        const table32dIndex = pdfText.indexOf('Table 32d: Survey Term Classes');
-        const endOfTableIndex = pdfText.indexOf('Appendix C Calculating Mod 10 check\n digits');
-        const table32aText = pdfText.substring(table32aIndex, table32bIndex);
-        const table32bText = pdfText.substring(table32bIndex, table32cIndex);
-        const table32cText = pdfText.substring(table32cIndex, table32dIndex);
-        const table32dText = pdfText.substring(table32dIndex, endOfTableIndex);
-        LOINC_CLASSIFICATION_MAP['Clinical Term Classes'] = parseOneTermClass(table32aText);
-        console.log(loincUserGuidePdf);
-    }
 }
 
 export async function getDomainCollectionSite() {
