@@ -21,7 +21,6 @@ import {
 } from 'server/system/authorization';
 import { reIndex } from 'server/system/elastic';
 import { indices } from 'server/system/elasticSearchInit';
-import { fhirApps, fhirObservationInfo } from 'server/system/fhir';
 import { errorLogger } from 'server/system/logging';
 import {
     addUserRole, disableRule, embeds, enableRule, getClassificationAuditLog, getFile,
@@ -74,16 +73,6 @@ export function init(app) {
                 })
                 .catch(err => consoleLog('Error getting folder modules/_embedApp/public: ', err));
         }
-    });
-
-    let fhirHtml = '';
-    renderFile('modules/_fhirApp/fhirApp.ejs', {isLegacy: false, version: version}, (err, str) => {
-        fhirHtml = str;
-    });
-
-    let fhirLegacyHtml = '';
-    renderFile('modules/_fhirApp/fhirApp.ejs', {isLegacy: true, version: version}, (err, str) => {
-        fhirLegacyHtml = str;
     });
 
     let indexHtml = '';
@@ -188,24 +177,6 @@ export function init(app) {
 
     app.get('/embedSearch', (req, res) => {
         res.send(isModernBrowser(req) ? embedHtml : embedLegacyHtml);
-    });
-
-    app.get('/fhir/form/:param', (req, res) => {
-        res.send(isModernBrowser(req) ? fhirHtml : fhirLegacyHtml);
-    });
-
-    app.get('/fhir/launch/:param', (req, res) => {
-        res.sendFile(join(__dirname, '../../modules/_fhirApp', 'fhirAppLaunch.html'), undefined, err => {
-            if (err) res.sendStatus(404);
-        });
-    });
-
-    app.get('/fhirObservationInfo', (req, res) => {
-        fhirObservationInfo.get(res, req.query.id, info => res.send(info));
-    });
-
-    app.put('/fhirObservationInfo', loggedInMiddleware, (req, res) => {
-        fhirObservationInfo.put(res, req.body, info => res.send(info));
     });
 
     app.get('/nativeRender', (req, res) => {
@@ -456,13 +427,6 @@ export function init(app) {
             res.send(embedsData);
         }));
     });
-
-    app.get('/fhirApps', (req, res) => fhirApps.find(res, {}, apps => res.send(apps)));
-    app.get('/fhirApp/:id', (req, res) => fhirApps.get(res, req.params.id, app => res.send(app)));
-    app.post('/fhirApp', isSiteAdminMiddleware,
-        (req, res) => fhirApps.save(res, req.body, app => res.send(app)));
-    app.delete('/fhirApp/:id', isSiteAdminMiddleware,
-        (req, res) => fhirApps.delete(res, req.params.id, () => res.send()));
 
     app.post('/disableRule', isOrgAuthorityMiddleware, (req, res) => {
         disableRule(req.body, handleError({req, res}, org => {
