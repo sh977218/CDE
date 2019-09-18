@@ -33,6 +33,7 @@ export class ResourcesComponent implements OnDestroy {
 
     renderMe() {
         const waitUntilBodyHtml = setInterval(() => {
+            clearInterval(waitUntilBodyHtml);
             if (this.resource.rssFeeds) {
                 for (let i = 0; i < this.resource.rssFeeds.length; i++) {
                     const rssFeed = this.resource.rssFeeds[i];
@@ -45,7 +46,6 @@ export class ResourcesComponent implements OnDestroy {
                     this.addComponentToRow(ResourcesRssComponent, myRow, rssFeed);
                 }
             }
-            clearInterval(waitUntilBodyHtml);
         }, 0);
     }
 
