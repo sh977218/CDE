@@ -9,8 +9,8 @@ export async function parseFormElements(protocol, attachments, newForm) {
     } else {
         let formElements: any[] = [];
         const loinc = loincStandard.loinc;
-        if (isEmpty(loinc['PANEL HIERARCHY'])) {
-            console.log(`Protocol ${protocol.protocolID} has LOINC ${loinc.loincId} PANEL HIERARCHY is missing.`);
+        if (isEmpty(loinc['Panel Hierarchy'])) {
+            console.log(`Protocol ${protocol.protocolID} has LOINC ${loinc['LOINC Code']} Panel Hierarchy is missing.`);
         } else {
             formElements = await parseLoincFormElements(loinc, 'PhenX', []);
         }

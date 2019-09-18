@@ -12,8 +12,6 @@ import { transferClassifications } from 'shared/system/classificationShared';
 import { CdeId, Classification, Definition, Designation, Property } from 'shared/models.model';
 import { FormElement } from 'shared/form/form.model';
 
-const pdfParser = require('pdf-parse');
-
 require('chromedriver');
 
 export const sourceMap = {
