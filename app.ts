@@ -34,6 +34,8 @@ import { init as formInit } from 'server/form/app';
 import * as mongo_form from 'server/form/mongo-form';
 import { module as meshModule } from 'server/mesh/meshRoutes';
 import { module as siteAdminModule } from 'server/siteAdmin/siteAdminRoutes';
+import { module as embedModule } from 'server/embed/embedRouters';
+
 import { init as systemInit, respondHomeFull } from 'server/system/app';
 import { init as authInit, ticketAuth } from 'server/system/authentication';
 import {
@@ -319,6 +321,8 @@ try {
             next();
         }
     }));
+    app.use('/server/embed', embedModule());
+
     cdeInit(app, daoManager);
     systemInit(app);
     formInit(app, daoManager);
