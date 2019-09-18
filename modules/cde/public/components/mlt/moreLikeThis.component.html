@@ -16,7 +16,7 @@
                     <div class="card" *ngFor="let cde of cdes;let index = index;">
                         <div class="card-header">
                             <span class="hand-cursor" (click)="cde.isCollapsed = !cde.isCollapsed"> {{cde.designations[0].designation}} </span>
-                            <a href="deView?tinyId={{cde.tinyId}}" target="_blank">
+                            <a href="/deView?tinyId={{cde.tinyId}}" target="_blank">
                                 <mat-icon class="iconColor">visibility</mat-icon></a>
                             <cde-pin-board [elt]="cde" [eltIndex]="index" [module]="'cde'"></cde-pin-board>
                             <cde-pin-quickboard [elt]="cde" [eltIndex]="index"></cde-pin-quickboard>

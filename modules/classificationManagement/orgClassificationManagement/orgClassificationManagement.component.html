@@ -18,7 +18,7 @@
             <tree-root #treeRoot [nodes]="selectedOrgIter.classifications" [options]="options">
                 <ng-template #treeNodeTemplate let-node="node" let-index="index">
                     <a [id]="node.path" href="{{searchByClassification(node,selectedOrgIter.name)}}"
-                       target="_blank">{{ node.data.name }}</a>
+                       target="_blank" rel="noopener noreferrer">{{ node.data.name }}</a>
                     <ng-container *ngIf="isOrgAdmin()">
                         <button mat-icon-button [matMenuTriggerFor]="actionMenu" aria-label="actions">
                             <mat-icon>more_vert</mat-icon>

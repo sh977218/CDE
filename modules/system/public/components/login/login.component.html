@@ -2,7 +2,7 @@
     <form class="form-signin" #loginForm="ngForm" autocomplete="false">
         <h2 class="form-signin-heading">Please Log In</h2>
         <p>Note: Log in with your UMLS account. Don't have a UMLS account? <a
-                href="https://uts.nlm.nih.gov//license.html" target="_blank">
+                href="https://uts.nlm.nih.gov//license.html" target="_blank" rel="noopener noreferrer">
             <span class="vsloginLink">Request One Now</span></a></p>
         <div class="form-group">
             <label id="l1" class="sr-only" for="uname">Username</label>
@@ -15,9 +15,10 @@
         </div>
         <button [disabled]="!loginForm.valid || !csrf" mat-raised-button color="link" (click)="login()"
                 id="login_button" style="width: 300px">Log In</button>
-        <p>Forgot your <a href="https://uts.nlm.nih.gov/license.html#emailUsername" class="vsloginLink" target="_blank">
+        <p>Forgot your <a href="https://uts.nlm.nih.gov/license.html#emailUsername" class="vsloginLink"
+                          target="_blank" rel="noopener noreferrer">
             <span>username</span></a> or <a href="https://uts.nlm.nih.gov/license.html#emailTemporaryPassword"
-                                            target="_blank">
+                                            target="_blank" rel="noopener noreferrer">
             <span class="vsloginLink">password</span></a>?</p>
         <div *ngIf="showCaptcha">
             <re-captcha siteKey="{{siteKey}}" (resolved)="resolved($event)"></re-captcha>

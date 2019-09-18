@@ -152,9 +152,11 @@ gulp.task('copyCode', function copyCode() {
         .pipe(gulp.dest(BUILD_DIR + '/modules/form/public/assets/')));
 
     // from buildNode (required)
-    streamArray.push(gulp.src('./app.js')
+    streamArray.push(gulp.src('./app.js*')
         .pipe(replace('APP_DIR = __dirname + "/.."', 'APP_DIR = __dirname'))
         .pipe(gulp.dest(BUILD_DIR + '/')));
+    streamArray.push(gulp.src('./modules/**')
+        .pipe(gulp.dest(BUILD_DIR + '/modules/')));
     streamArray.push(gulp.src('./server/**')
         .pipe(gulp.dest(BUILD_DIR + '/server/')));
     streamArray.push(gulp.src('./shared/**')

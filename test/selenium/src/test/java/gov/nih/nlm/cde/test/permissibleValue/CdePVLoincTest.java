@@ -1,7 +1,7 @@
 package gov.nih.nlm.cde.test.permissibleValue;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
-import org.junit.Assert;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class CdePVLoincTest extends NlmCdeBaseTest {
@@ -18,10 +18,9 @@ public class CdePVLoincTest extends NlmCdeBaseTest {
             driver.get(baseUrl + url);
             String source = driver.getPageSource();
             boolean isContains = source.contains("LA6270-8");
-            Assert.assertFalse(url + " failed.\n" +
+            Assert.assertFalse(isContains,url + " failed.\n" +
                             "<source>" + source + "</source>\n" +
-                            "<isContains>" + isContains + "</isContains>\n"
-                    , isContains);
+                            "<isContains>" + isContains + "</isContains>\n");
         }
     }
 
