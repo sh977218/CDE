@@ -1,5 +1,5 @@
 (global as any).APP_DIR = __dirname;
-(global as any).appDir = function addDir(... args: string[]) {
+(global as any).appDir = function addDir(...args: string[]) {
     return path.resolve((global as any).APP_DIR, ...args);
 };
 import * as bodyParser from 'body-parser';
@@ -61,7 +61,7 @@ initEs();
 console.log('Node ' + process.versions.node);
 console.log('Node Environment ' + process.env.NODE_ENV);
 
-let app = express();
+const app = express();
 
 app.use(helmet());
 app.use(helmet.contentSecurityPolicy({
@@ -84,7 +84,7 @@ app.use(compress());
 
 app.use(hsts({maxAge: 31536000000}));
 
-process.on('uncaughtException', function (err) {
+process.on('uncaughtException', err => {
     console.log('Error: Process Uncaught Exception');
     console.log(err.stack || err);
     errorLogger.error('Error: Uncaught Exception', {
@@ -93,7 +93,7 @@ process.on('uncaughtException', function (err) {
     });
 });
 
-domain.on('error', function (err) {
+domain.on('error', err => {
     console.log('Error: Domain Error');
     console.log(err.stack || err);
     errorLogger.error('Error: Domain Error', {stack: err.stack || err, origin: 'app.domain.error'});
@@ -119,16 +119,23 @@ const expressSettings = {
     cookie: {httpOnly: true, secure: config.proxy, maxAge: config.inactivityTimeout}
 };
 
-let getRealIp = function (req) {
-    if (req._remoteAddress) return req._remoteAddress;
-    if (req.ip) return req.ip;
+const getRealIp = req => {
+    if (req._remoteAddress) {
+        return req._remoteAddress;
+    }
+    if (req.ip) {
+        return req.ip;
+    }
 };
 
 let blackIps: string[] = [];
 app.use((req, res, next) => {
     if (blackIps.indexOf(getRealIp(req)) !== -1) {
+        // tslint:disable-next-line:max-line-length
         res.status(403).send('Access is temporarily disabled. If you think you received this response in error, please contact support. Otherwise, please try again in an hour.');
-    } else next();
+    } else {
+        next();
+    }
 });
 const banEndsWith = config.banEndsWith || [];
 const banStartsWith = config.banStartsWith || [];
@@ -153,23 +160,28 @@ app.use((req, res, next) => {
         if (req.protocol !== 'https') {
             if (req.query.gotohttps === '1') {
                 res.send('Missing X-Forward-Proto Header');
+            } else {
+                res.redirect(config.publicUrl + '?gotohttps=1');
             }
-            else res.redirect(config.publicUrl + '?gotohttps=1');
-        } else next();
-    } else next();
+        } else {
+            next();
+        }
+    } else {
+        next();
+    }
 });
 
 app.use(function banHackers(req, res, next) {
     banEndsWith.forEach(ban => {
         if (req.originalUrl.slice(-(ban.length)) === ban) {
-            let ip = getRealIp(req);
+            const ip = getRealIp(req);
             banIp(ip, req.originalUrl);
             blackIps.push(ip);
         }
     });
     banStartsWith.forEach(ban => {
         if (req.originalUrl.substr(0, ban.length) === ban) {
-            let ip = getRealIp(req);
+            const ip = getRealIp(req);
             banIp(ip, req.originalUrl);
             blackIps.push(ip);
         }
@@ -179,13 +191,20 @@ app.use(function banHackers(req, res, next) {
 
 app.use(function preventSessionCreation(req, res, next) {
     function isFile(req) {
-        if (req.originalUrl.substr(req.originalUrl.length - 3, 3) === '.js') return true;
-        if (req.originalUrl.substr(req.originalUrl.length - 4, 4) === '.css') return true;
+        if (req.originalUrl.substr(req.originalUrl.length - 3, 3) === '.js') {
+            return true;
+        }
+        if (req.originalUrl.substr(req.originalUrl.length - 4, 4) === '.css') {
+            return true;
+        }
         return req.originalUrl.substr(req.originalUrl.length - 4, 4) === '.gif';
     }
+
     if ((req.cookies['connect.sid'] || req.originalUrl === '/login' || req.originalUrl === '/csrf') && !isFile(req)) {
         session(expressSettings)(req, res, next);
-    } else next();
+    } else {
+        next();
+    }
 
 });
 
@@ -251,47 +270,52 @@ const logFormat = {
     responseTime: ':response-time'
 };
 
-morganLogger.token('real-remote-addr', function (req) {
-    return getRealIp(req);
-});
+morganLogger.token('real-remote-addr', req => getRealIp(req));
 
-let winstonStream = {
-    write: function (message) {
+const winstonStream = {
+    write(message) {
         expressLogger.info(message);
     }
 };
 
-let expressLogger1 = morganLogger(JSON.stringify(logFormat), {stream: winstonStream});
+const expressLogger1 = morganLogger(JSON.stringify(logFormat), {stream: winstonStream});
 
 if (config.expressLogFile) {
-    let logger = new (winston.Logger)({
+    const logger = new (winston.Logger)({
         transports: [new Rotate({
             file: config.expressLogFile
         })]
     });
-    let fileStream = {
-        write: function (message) {
+    const fileStream = {
+        write(message) {
             logger.info(message);
         }
     };
+
+    // tslint:disable-next-line:max-line-length
     app.use(morganLogger(':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" ":response-time ms"', {stream: fileStream}));
 }
 
 let connections = 0;
 setInterval(() => connections = 0, 60000);
 
-app.use(function (req, res, next) {
-    let maxLogsPerMinute = config.maxLogsPerMinute || 1000;
+app.use((req, res, next) => {
+    const maxLogsPerMinute = config.maxLogsPerMinute || 1000;
     connections++;
-    if (connections > maxLogsPerMinute) return next();
-    else expressLogger1(req, res, next);
+    if (connections > maxLogsPerMinute) {
+        return next();
+    } else {
+        expressLogger1(req, res, next);
+    }
 });
 
 app.set('views', path.join(__dirname, './modules'));
 
-let originalRender = express.response.render;
+const originalRender = express.response.render;
 express.response.render = function (view, module, msg) {
-    if (!module) module = 'cde';
+    if (!module) {
+        module = 'cde';
+    }
     originalRender.call(this, path.join(__dirname, '/modules/' + module + '/views/' + view), msg);
 } as any;
 
@@ -317,7 +341,9 @@ try {
     }));
     app.use('/server/mesh', meshModule({
         allowSyncMesh: (req, res, next) => {
-            if (!config.autoSyncMesh && !isOrgAuthority(req.user)) return res.status(401).send();
+            if (!config.autoSyncMesh && !isOrgAuthority(req.user)) {
+                return res.status(401).send();
+            }
             next();
         }
     }));
@@ -362,13 +388,17 @@ app.use((err, req, res, next) => {
     }
 
     // to test => restassured with simple post
-    if (err.type === 'charset.unsupported') return res.status(400).send('Unsupported charset');
+    if (err.type === 'charset.unsupported') {
+        return res.status(400).send('Unsupported charset');
+    }
 
     // Do Log Errors
     console.log('ERROR3: ' + err);
     console.log(err.stack);
-    if (req && req.body && req.body.password) req.body.password = '';
-    let meta = {
+    if (req && req.body && req.body.password) {
+        req.body.password = '';
+    }
+    const meta = {
         stack: err.stack,
         origin: 'app.express.error',
         request: {
@@ -386,9 +416,9 @@ app.use((err, req, res, next) => {
 });
 
 domain.run(() => {
-    let server = http.createServer(app);
+    const server = http.createServer(app);
     exports.server = server;
-    server.listen(app.get('port'), function () {
+    server.listen(app.get('port'), () => {
         console.log('Express server listening on port ' + app.get('port'));
     });
     startServer(server, expressSettings);

@@ -82,4 +82,6 @@ export function module() {
             res.send(embedsData);
         }));
     });
+
+    return router;
 }
