@@ -2,6 +2,7 @@ import { fhirApps, fhirObservationInfo } from 'server/fhir/fhirSvc';
 import { isSiteAdminMiddleware, loggedInMiddleware } from 'server/system/authorization';
 import { join } from 'path';
 import { renderFile } from 'ejs';
+import { is } from 'useragent';
 
 /* for IE Opera Safari, emit polyfill.js */
 function isModernBrowser(req) {
