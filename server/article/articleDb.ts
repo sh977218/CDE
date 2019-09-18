@@ -4,8 +4,8 @@ import { attachables } from '../system/mongo-data';
 import { config } from '../system/parseConfig';
 import { attachmentSchema } from '../system/schemas';
 
-let conn = establishConnection(config.database.appData);
-let Article = conn.model('article', new Schema({
+const conn = establishConnection(config.database.appData);
+const Article = conn.model('article', new Schema({
     key: {type: String, index: true},
     body: String,
     created: {type: Date, default: new Date()},
@@ -22,7 +22,7 @@ export function byId(id, cb) {
 }
 
 export function byKey(key, cb) {
-    Article.findOne({key: key}, cb);
+    Article.findOne({key}, cb);
 }
 
 export function update(art, cb) {
