@@ -8,7 +8,7 @@
     <tbody>
     <ng-container *ngFor="let q of formElement.formElements">
         <tr *ngIf="!q.question.invisible || q.question.invisible && nrs.profile.displayInvisible">
-            <td [attr.rowspan]="NRS.answeredValueList(q.question) ? 1 : 2">
+            <td [attr.rowspan]="q.question.required && !NRS.answeredValueList(q.question) ? 2 : 1">
                 <label [ngClass]="{'native-question-label-number': !numSubQuestions && nrs.profile.displayNumbering}"
                        class="native-question-label">{{q.label}}</label>
             </td>
