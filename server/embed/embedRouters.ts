@@ -44,14 +44,14 @@ export function module() {
     });
 
 
-    router.post('/embed/', isOrgAdminMiddleware, (req, res) => {
+    router.post('/', isOrgAdminMiddleware, (req, res) => {
         const handlerOptions = {req, res, publicMessage: 'There was an error saving this embed.'};
         embeds.save(req.body, handleError(handlerOptions, embed => {
             res.send(embed);
         }));
     });
 
-    router.delete('/embed/:id', loggedInMiddleware, (req, res) => {
+    router.delete('/:id', loggedInMiddleware, (req, res) => {
         const handlerOptions = {req, res, publicMessage: 'There was an error removing this embed.'};
         embeds.find({_id: req.params.id}, handleError(handlerOptions, embedsData => {
             if (embedsData.length !== 1) {
@@ -66,7 +66,7 @@ export function module() {
         }));
     });
 
-    router.get('/embed/:id', (req, res) => {
+    router.get('/:id', (req, res) => {
         embeds.find({_id: req.params.id}, handleError({req, res}, embedsData => {
             if (embedsData.length !== 1) {
                 res.status.send('Expectation not met: one document.');
@@ -77,7 +77,7 @@ export function module() {
 
     });
 
-    router.get('/embeds/:org', (req, res) => {
+    router.get('/embedsByOrg/:org', (req, res) => {
         embeds.find({org: req.params.org}, handleError({req, res}, embedsData => {
             res.send(embedsData);
         }));

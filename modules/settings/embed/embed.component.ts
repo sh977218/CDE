@@ -110,7 +110,7 @@ export class EmbedComponent implements OnInit {
     }
 
     reloadEmbedsOrg(org: string) {
-        this.http.get<Embed[]>('/embeds/' + encodeURIComponent(org)).subscribe(response => {
+        this.http.get<Embed[]>('/server/embed/embedsByOrg/' + encodeURIComponent(org)).subscribe(response => {
             this.embeds[org] = response;
             this.selection = undefined;
             this.previewOn = false;
@@ -118,7 +118,7 @@ export class EmbedComponent implements OnInit {
     }
 
     remove(e: Embed) {
-        this.http.delete('/embed/' + e._id).subscribe(() => {
+        this.http.delete('/server/embed/' + e._id).subscribe(() => {
             this.alert.addAlert('success', 'Removed');
             this.reloadEmbeds();
         });
@@ -129,7 +129,7 @@ export class EmbedComponent implements OnInit {
             return;
         }
         const selection = this.selection;
-        this.http.post<Embed>('/embed', this.selection).subscribe(response => {
+        this.http.post<Embed>('/server/embed/', this.selection).subscribe(response => {
             if (!selection._id) { selection._id = response._id; }
             this.selection = undefined;
             this.previewOn = false;
