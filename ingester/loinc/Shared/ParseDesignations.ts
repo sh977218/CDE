@@ -13,6 +13,9 @@ export function parseDesignations(loinc) {
             n.designation = newName;
             const existingName = find(designations, {designation: newName});
             if (existingName) {
+                if (!existingName.tags) {
+                    existingName.tags = [];
+                }
                 const allTags = existingName.tags.concat(additionalName);
                 existingName.tags = uniq(allTags);
             } else {
@@ -27,6 +30,9 @@ export function parseDesignations(loinc) {
         if (surveyQuestionText) {
             const existingQuestionTextName = find(designations, {designation: surveyQuestionText});
             if (existingQuestionTextName) {
+                if (!existingQuestionTextName.tags) {
+                    existingQuestionTextName.tags = [];
+                }
                 const allTags = existingQuestionTextName.tags.concat('Question Text');
                 existingQuestionTextName.tags = uniq(allTags);
             } else {

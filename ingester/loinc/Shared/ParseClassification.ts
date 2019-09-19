@@ -13,16 +13,17 @@ export async function parseClassification(loinc, elt, classificationOrgName, cla
 
     const type = CLASSIFICATION_TYPE_MAP[basicAttributesType];
     if (!type) {
-        console.log(basicAttributesType + ' is not in the loinc classification type map.');
+        console.log(`${loinc['LOINC Code']} has ${basicAttributesType} is not in the loinc classification type map.`);
         process.exit(1);
     }
-    const foundLoincClassification: any = await LOINC_CLASSIFICATION_MAPPING.findOne({
+    let foundLoincClassification: any = await LOINC_CLASSIFICATION_MAPPING.findOne({
         Abbreviation: basicAttributesClass,
         Type: type
     }).lean();
     if (!foundLoincClassification) {
-        console.log(`${loinc['LOINC Code']} ${type} ${basicAttributesClass} not in LOINC_CLASSIFICATION_MAPPING. See README and update the map.`);
-        process.exit(1);
+        const errMsg = `${loinc['LOINC Code']} ${type} ${basicAttributesClass} not in LOINC_CLASSIFICATION_MAPPING.`;
+        console.log(errMsg);
+        foundLoincClassification = {Value: errMsg};
     }
     classifyItem(elt, classificationOrgName, classificationArray.concat([foundLoincClassification.Value]));
 }

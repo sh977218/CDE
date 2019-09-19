@@ -18,7 +18,7 @@ export async function runOneCde(loinc, classificationOrgName, classificationArra
     let existingCde: any = await DataElement.findOne({archived: false, 'ids.id': loinc['LOINC Code']});
     if (!existingCde) {
         existingCde = await newCde.save().catch(err => {
-            console.log('LOINC existingCde = await newCde.save() error: ' + err);
+            console.log(`LOINC existingCde = await newCde.save() error: ${JSON.stringify(err)}`);
             process.exit(1);
         });
         LoincLogger.createdLoincCde++;
@@ -38,7 +38,7 @@ export async function runOneCde(loinc, classificationOrgName, classificationArra
             const existingCdeObj = existingCde.toObject();
             mergeElt(existingCdeObj, newCdeObj, 'LOINC', classificationOrgName);
             await updateCde(existingCdeObj, BATCHLOADER, {updateSource: true}).catch(err => {
-                console.log('LOINC await updateCde(existingCdeObj error: ' + err);
+                console.log(`LOINC await updateCde(existingCdeObj error: ${JSON.stringify(err)}`);
                 process.exit(1);
             });
             LoincLogger.changedLoincCde++;

@@ -16,7 +16,7 @@ export function parseValueDomain(loinc) {
             const datatype = map[unit];
             if (isEmpty(datatype)) {
                 console.log(`${loinc['LOINC Code']} uom ${unit} is not in LOINC_UOM_DATATYPE_MAP.`);
-                process.exit(1);
+                valueDomain.datatype = 'Text';
             } else {
                 valueDomain.datatype = datatype;
             }
