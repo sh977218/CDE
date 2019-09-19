@@ -315,8 +315,7 @@ export function compareElt(newEltObj, existingEltObj) {
 // Merge two elements
 function mergeDesignation(existingDesignations: Designation[], newDesignations: Designation[]) {
     const designations: Designation[] = [];
-    const allDesignations = existingDesignations.concat(newDesignations);
-    allDesignations.forEach(designation => {
+    existingDesignations.forEach(designation => {
         const i = findIndex(designations, {designation: designation.designation});
         if (i === -1) {
             designations.push(designation);
@@ -324,15 +323,32 @@ function mergeDesignation(existingDesignations: Designation[], newDesignations: 
             const allTags = designations[i].tags.concat(designation.tags);
             designations[i].tags = uniq(allTags).filter(t => !isEmpty(t));
         }
-
+    });
+    newDesignations.forEach(designation => {
+        const i = findIndex(designations, {designation: designation.designation});
+        if (i === -1) {
+            designations.push(designation);
+        } else {
+            const allTags = designations[i].tags.concat(designation.tags);
+            designations[i].tags = uniq(allTags).filter(t => !isEmpty(t));
+        }
     });
     return designations;
 }
 
 function mergeDefinition(existingDefinitions: Definition[], newDefinitions: Definition[]) {
     const definitions: Definition[] = [];
-    const allDefinitions = existingDefinitions.concat(newDefinitions);
-    allDefinitions.forEach(definition => {
+    existingDefinitions.forEach(definition => {
+        const i = findIndex(definitions, {definition: definition.definition});
+        if (i === -1) {
+            definitions.push(definition);
+        } else {
+            const allTags = definitions[i].tags.concat(definition.tags);
+            definitions[i].tags = uniq(allTags).filter(t => !isEmpty(t));
+            definitions[i].definitionFormat = definition.definitionFormat;
+        }
+    });
+    newDefinitions.forEach(definition => {
         const i = findIndex(definitions, {definition: definition.definition});
         if (i === -1) {
             definitions.push(definition);
@@ -347,8 +363,25 @@ function mergeDefinition(existingDefinitions: Definition[], newDefinitions: Defi
 
 export function mergeProperties(newProperties: Property[], existingProperties: Property[]) {
     const properties: Property[] = [];
-    const allProperties = newProperties.concat(existingProperties);
-    allProperties.forEach(property => {
+    newProperties.forEach(property => {
+        const i = findIndex(properties, o => {
+            const keyWithS = o.key + 's';
+            if (isEqual(lowerCase(o.key), lowerCase(property.key))) {
+                return true;
+            } else if (isEqual(lowerCase(keyWithS), lowerCase(property.key))) {
+                // LOINC Participant => Participants
+                return true;
+            } else {
+                return false;
+            }
+        });
+        if (i === -1) {
+            properties.push(property);
+        } else {
+            properties[i] = property;
+        }
+    });
+    existingProperties.forEach(property => {
         const i = findIndex(properties, o => {
             const keyWithS = o.key + 's';
             if (isEqual(lowerCase(o.key), lowerCase(property.key))) {
@@ -371,8 +404,15 @@ export function mergeProperties(newProperties: Property[], existingProperties: P
 
 export function mergeIds(newIds, existingIds, sources) {
     const ids: CdeId[] = [];
-    const allIds = newIds.concat(existingIds);
-    allIds.forEach(id => {
+    existingIds.forEach(id => {
+        const i = findIndex(ids, {source: id.source, id: id.id});
+        if (i === -1) {
+            ids.push(id);
+        } else if (!isEmpty(id.version)) {
+            ids[i].version = id.version;
+        }
+    });
+    newIds.forEach(id => {
         const i = findIndex(ids, {source: id.source, id: id.id});
         if (i === -1) {
             ids.push(id);
