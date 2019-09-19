@@ -14,7 +14,7 @@ export function module() {
     const router = require('express').Router();
     let version = 'local-dev';
     try {
-        version = require('./version.js').version;
+        version = require('server/system/version.js').version;
     } catch (e) {
     }
 
