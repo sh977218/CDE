@@ -7,6 +7,8 @@ import { embeds } from 'server/embed/embedSvc';
 import { handleError } from 'server/errorHandler/errorHandler';
 import { isOrgAdmin } from 'shared/system/authorizationShared';
 import { is } from 'useragent';
+import * as express from 'express';
+import * as path from "path";
 
 /* for IE Opera Safari, emit polyfill.js */
 function isModernBrowser(req) {
@@ -82,6 +84,16 @@ export function module() {
             res.send(embedsData);
         }));
     });
+
+    ['/embedded/public', '/_embedApp/public'].forEach(p => {
+        router.use(p, (req, res, next) => {
+                res.removeHeader('x-frame-options');
+                next();
+            },
+            express.static(path.join(__dirname, '/modules/_embedApp/public'))
+        );
+    });
+
 
     return router;
 }

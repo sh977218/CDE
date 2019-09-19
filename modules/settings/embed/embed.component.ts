@@ -99,7 +99,7 @@ export class EmbedComponent implements OnInit {
     enablePreview(b: boolean) {
         this.previewOn = b;
         if (b && this.selection) {
-            this.previewSrc = this.sanitizer.bypassSecurityTrustResourceUrl('/embedded/public/html/index.html?id=' + this.selection._id);
+            this.previewSrc = this.sanitizer.bypassSecurityTrustResourceUrl('/server/embed/embedded/public/html/index.html?id=' + this.selection._id);
         }
     }
 
