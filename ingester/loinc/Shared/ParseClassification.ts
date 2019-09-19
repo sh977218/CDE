@@ -22,8 +22,9 @@ export async function parseClassification(loinc, elt, classificationOrgName, cla
     }).lean();
     if (!foundLoincClassification) {
         const errMsg = `${loinc['LOINC Code']} ${type} ${basicAttributesClass} not in LOINC_CLASSIFICATION_MAPPING.`;
+        classificationOrgName = 'LOINC(TEST)';
         console.log(errMsg);
-        foundLoincClassification = {Value: errMsg};
+        foundLoincClassification = {Value: `LOINC(TEST) ${type} ${basicAttributesClass}`};
     }
     classifyItem(elt, classificationOrgName, classificationArray.concat([foundLoincClassification.Value]));
 }
