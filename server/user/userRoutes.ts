@@ -2,27 +2,28 @@ import { uriView } from 'shared/item';
 import { getModule } from 'shared/elt';
 import { hasRole, isSiteAdmin } from 'shared/system/authorizationShared';
 import { capString } from 'shared/system/util';
-import { loggedInMiddleware, nocacheMiddleware } from '../system/authorization';
-import { handle40x, handleError, respondError } from '../errorHandler/errorHandler';
+import { loggedInMiddleware, nocacheMiddleware } from 'server/system/authorization';
+import { handle40x, handleError } from 'server/errorHandler/errorHandler';
 
 const config = require('config');
-const attachment = require('../attachment/attachmentSvc');
-const discussDb = require('../discuss/discussDb');
-const notificationDb = require('../notification/notificationDb');
-const mongo_data = require('../system/mongo-data');
-const userDb = require('./userDb');
+const attachment = require('server/attachment/attachmentSvc');
+const discussDb = require('server/discuss/discussDb');
+const notificationDb = require('server/notification/notificationDb');
+const userDb = require('server/user/userDb');
 
 export function module(roleConfig) {
     const router = require('express').Router();
 
-    let version = "local-dev";
+    let version = 'local-dev';
     try {
-        version = require('../system/version.js').version;
+        version = require('server/system/version.js').version;
     } catch (e) {
     }
 
     router.get('/', [nocacheMiddleware], (req, res) => {
-        if (!req.user) return res.send({});
+        if (!req.user) {
+            return res.send({});
+        }
         userDb.byId(req.user._id, handle40x({req, res}, user => {
             res.send(user);
         }));
@@ -47,8 +48,6 @@ export function module(roleConfig) {
     });
 
     async function taskAggregator(req, res) {
-        const handlerOptions = {req, res};
-
         function createTaskFromCommentNotification(c) {
             return {
                 date: c.date,
@@ -68,7 +67,7 @@ export function module(roleConfig) {
         }
 
         function pending(comment) {
-            let pending = [];
+            let pending: any = [];
             if (comment.pendingApproval) {
                 pending.push(comment);
             }
@@ -78,11 +77,11 @@ export function module(roleConfig) {
             return pending;
         }
 
-        let user = req.user;
-        let tasks = user ? user.commentNotifications.map(createTaskFromCommentNotification) : [];
+        const user = req.user;
+        const tasks = user ? user.commentNotifications.map(createTaskFromCommentNotification) : [];
 
         if (isSiteAdmin(user)) {
-            let clientErrorCount = await notificationDb.getNumberClientError(user);
+            const clientErrorCount = await notificationDb.getNumberClientError(user);
             if (clientErrorCount > 0) {
                 tasks.push({
                     id: clientErrorCount,
@@ -94,7 +93,7 @@ export function module(roleConfig) {
                 });
             }
 
-            let serverErrorCount = await notificationDb.getNumberServerError(user);
+            const serverErrorCount = await notificationDb.getNumberServerError(user);
             if (serverErrorCount > 0) {
                 tasks.push({
                     id: serverErrorCount,
@@ -120,9 +119,11 @@ export function module(roleConfig) {
 
         // TODO: implement org boundaries
         if (hasRole(user, 'AttachmentReviewer')) { // required, req.user.notificationSettings.approvalAttachment.drawer not used
-            let attachmentElts = await new Promise((resolve, reject) => {
+            const attachmentElts = await new Promise((resolve, reject) => {
                 attachment.unapproved((err, results) => {
-                    if (err) return reject (err);
+                    if (err) {
+                        return reject(err);
+                    }
                     resolve(results);
                 });
             });
@@ -134,7 +135,7 @@ export function module(roleConfig) {
                     elt.attachments
                         .filter(a => !!a.pendingApproval)
                         .forEach(a => {
-                            let task: any = {
+                            const task: any = {
                                 id: a.fileid,
                                 idType: 'attachment',
                                 properties: [
@@ -165,13 +166,13 @@ export function module(roleConfig) {
             }
         }
         if (hasRole(user, 'CommentReviewer')) { // required, req.user.notificationSettings.approvalComment.drawer not used
-            let comments = await discussDb.unapproved();
+            const comments = await discussDb.unapproved();
             if (Array.isArray(comments)) {
                 comments.forEach(c => {
                     const eltModule = c.element && c.element.eltType;
                     const eltTinyId = c.element && c.element.eltId;
                     pending(c).forEach(p => {
-                        let task = {
+                        const task = {
                             id: p._id,
                             idType: p === c ? 'comment' : 'commentReply',
                             properties: [
@@ -185,7 +186,7 @@ export function module(roleConfig) {
                             type: 'approve',
                             url: uriView(eltModule, eltTinyId),
                         };
-                        let username = p.user && p.user.username || c.user && c.user.username;
+                        const username = p.user && p.user.username || c.user && c.user.username;
                         if (username) {
                             task.properties.unshift({
                                 key: 'User',
@@ -203,7 +204,7 @@ export function module(roleConfig) {
 
     if (!config.proxy) {
         router.post('/site-version', (req, res) => {
-            version = version + ".";
+            version = version + '.';
             res.send();
         });
     }
@@ -220,7 +221,10 @@ export function module(roleConfig) {
             taskAggregator(req, res);
             return;
         }
-        userDb.updateUser(req.user, {commentNotifications: req.user.commentNotifications}, handleError({req, res}, () => {
+        userDb.updateUser(req.user, {commentNotifications: req.user.commentNotifications}, handleError({
+            req,
+            res
+        }, () => {
             userDb.byId(req.user._id, handle40x({req, res}, user => {
                 req.user = user;
                 taskAggregator(req, res);
@@ -231,18 +235,20 @@ export function module(roleConfig) {
     router.post('/addUser', roleConfig.manage, async (req, res) => {
         const username = req.body.username;
         const existingUser = await userDb.byUsername(username);
-        if (existingUser) return res.status(409).send("Duplicated username");
+        if (existingUser) {
+            return res.status(409).send('Duplicated username');
+        }
         const newUser = {
             username: username.toLowerCase(),
-            password: "umls",
+            password: 'umls',
             quota: 1024 * 1024 * 1024
         };
         await userDb.save(newUser);
-        res.send(username + " added.");
+        res.send(username + ' added.');
     });
 
     router.post('/updateNotificationDate', roleConfig.notificationDate, (req, res) => {
-        let notificationDate = req.body;
+        const notificationDate = req.body;
         let changed = false;
         if (notificationDate.clientLogDate) {
             req.user.notificationDate.clientLogDate = notificationDate.clientLogDate;
