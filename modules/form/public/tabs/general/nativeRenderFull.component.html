@@ -4,7 +4,7 @@
             Options <mat-icon>arrow_drop_down</mat-icon>
         </button>
         <mat-menu #optionsMenu>
-            <span attr.data-url="/server/nativeRender?tinyId={{elt.tinyId}}&selectedProfile={{selectedProfileNameDecode}}"
+            <span attr.data-url="/nativeRender?tinyId={{elt.tinyId}}&selectedProfile={{selectedProfileNameDecode}}"
                     onclick="window.open(this.getAttribute('data-url'),'_blank')" mat-menu-item>
                 <a id="button_print_follow">Printable</a>
             </span>

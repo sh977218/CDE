@@ -320,7 +320,7 @@ try {
             next();
         }
     }));
-    app.use('/server/nativeRender', nativeRenderModule());
+    app.use('/nativeRender', nativeRenderModule());
     cdeInit(app, daoManager);
     systemInit(app);
     formInit(app, daoManager);

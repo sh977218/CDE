@@ -27,6 +27,7 @@ export function module() {
     router.get('/', (req, res) => {
         res.send(isModernBrowser(req) ? nativeRenderHtml : nativeRenderLegacyHtml);
     });
+
     return router;
 
 }
