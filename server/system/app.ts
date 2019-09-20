@@ -101,16 +101,6 @@ export function init(app) {
         homeHtml = str;
     });
 
-    let nativeRenderHtml = '';
-    renderFile('modules/_nativeRenderApp/nativeRenderApp.ejs', {isLegacy: false, version: version}, (err, str) => {
-        nativeRenderHtml = str;
-    });
-
-    let nativeRenderLegacyHtml = '';
-    renderFile('modules/_nativeRenderApp/nativeRenderApp.ejs', {isLegacy: true, version: version}, (err, str) => {
-        nativeRenderLegacyHtml = str;
-    });
-
     /* for IE Opera Safari, emit polyfill.js */
     function isModernBrowser(req) {
         let ua = is(req.headers['user-agent']);
@@ -202,10 +192,6 @@ export function init(app) {
 
     app.put('/fhirObservationInfo', loggedInMiddleware, (req, res) => {
         fhirObservationInfo.put(res, req.body, info => res.send(info));
-    });
-
-    app.get('/nativeRender', (req, res) => {
-        res.send(isModernBrowser(req) ? nativeRenderHtml : nativeRenderLegacyHtml);
     });
 
     app.get('/sw.js', function (req, res) {
