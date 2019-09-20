@@ -99,7 +99,7 @@ export class EmbedComponent implements OnInit {
     enablePreview(b: boolean) {
         this.previewOn = b;
         if (b && this.selection) {
-            this.previewSrc = this.sanitizer.bypassSecurityTrustResourceUrl('/server/embed/embedded/public/html/index.html?id=' + this.selection._id);
+            this.previewSrc = this.sanitizer.bypassSecurityTrustResourceUrl('/embedded/public/html/index.html?id=' + this.selection._id);
         }
     }
 
@@ -110,7 +110,7 @@ export class EmbedComponent implements OnInit {
     }
 
     reloadEmbedsOrg(org: string) {
-        this.http.get<Embed[]>('/server/embed/embedsByOrg/' + encodeURIComponent(org)).subscribe(response => {
+        this.http.get<Embed[]>('/server/embeds/' + encodeURIComponent(org)).subscribe(response => {
             this.embeds[org] = response;
             this.selection = undefined;
             this.previewOn = false;

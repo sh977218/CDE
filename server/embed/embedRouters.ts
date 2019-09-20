@@ -27,33 +27,28 @@ export function module() {
     let embedLegacyHtml = '';
     renderFile('modules/_embedApp/embedApp.ejs', {isLegacy: true}, (err, str) => {
         embedLegacyHtml = str;
-        if (embedLegacyHtml) {
-            promisify(access)('modules/_embedApp/public/html', constants.R_OK)
-                .catch(() => promisify(mkdir)('modules/_embedApp/public/html', {recursive: true} as any)) // Node 12
-                .then(() => {
-                    writeFile('modules/_embedApp/public/html/index.html', embedLegacyHtml, err => {
-                        if (err) {
-                            console.log('ERROR generating /modules/_embedApp/public/html/index.html: ' + err);
-                        }
-                    });
-                })
-                .catch(err => consoleLog('Error getting folder modules/_embedApp/public: ', err));
-        }
+        // if (embedLegacyHtml) {
+        //     promisify(access)('modules/_embedApp/public/html', constants.R_OK)
+        //         .catch(() => promisify(mkdir)('modules/_embedApp/public/html', {recursive: true} as any)) // Node 12
+        //         .then(() => {
+        //             writeFile('modules/_embedApp/public/html/index.html', embedLegacyHtml, err => {
+        //                 if (err) {
+        //                     console.log('ERROR generating /modules/_embedApp/public/html/index.html: ' + err);
+        //                 }
+        //             });
+        //         })
+        //         .catch(err => consoleLog('Error getting folder modules/_embedApp/public: ', err));
+        // }
     });
 
-    router.get('/embedSearch', (req, res) => {
-        res.send(isModernBrowser(req) ? embedHtml : embedLegacyHtml);
-    });
-
-
-    router.post('/', isOrgAdminMiddleware, (req, res) => {
+    router.post('/server/embed', isOrgAdminMiddleware, (req, res) => {
         const handlerOptions = {req, res, publicMessage: 'There was an error saving this embed.'};
         embeds.save(req.body, handleError(handlerOptions, embed => {
             res.send(embed);
         }));
     });
 
-    router.delete('/:id', loggedInMiddleware, (req, res) => {
+    router.delete('/server/embed/:id', loggedInMiddleware, (req, res) => {
         const handlerOptions = {req, res, publicMessage: 'There was an error removing this embed.'};
         embeds.find({_id: req.params.id}, handleError(handlerOptions, embedsData => {
             if (embedsData.length !== 1) {
@@ -68,7 +63,7 @@ export function module() {
         }));
     });
 
-    router.get('/:id', (req, res) => {
+    router.get('/server/embed/:id', (req, res) => {
         embeds.find({_id: req.params.id}, handleError({req, res}, embedsData => {
             if (embedsData.length !== 1) {
                 res.status.send('Expectation not met: one document.');
@@ -79,20 +74,20 @@ export function module() {
 
     });
 
-    router.get('/embedsByOrg/:org', (req, res) => {
+    router.get('/server/embeds/:org', (req, res) => {
         embeds.find({org: req.params.org}, handleError({req, res}, embedsData => {
             res.send(embedsData);
         }));
     });
 
-    ['/embedded/public', '/_embedApp/public'].forEach(p => {
-        router.use(p, (req, res, next) => {
-                res.removeHeader('x-frame-options');
-                next();
-            },
-            express.static(path.join(__dirname, '/modules/_embedApp/public'))
-        );
-    });
+    // ['/embedded/public', '/_embedApp/public'].forEach(p => {
+    router.use('/embedded/public/html/index.html', (req, res, next) => {
+            res.removeHeader('x-frame-options');
+            res.send(isModernBrowser(req) ? embedHtml : embedLegacyHtml);
+            // next();
+        },
+        // express.static(path.join(__dirname, '/modules/_embedApp/public'))
+    );
 
 
     return router;

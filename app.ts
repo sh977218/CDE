@@ -338,7 +338,7 @@ try {
             next();
         }
     }));
-    app.use('/server/embed', embedModule());
+    app.use('/', embedModule());
 
     cdeInit(app, daoManager);
     systemInit(app);

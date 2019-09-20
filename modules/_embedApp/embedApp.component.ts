@@ -42,7 +42,7 @@ export class EmbedAppComponent  {
             args[argArr[0]] = argArr[1];
         });
 
-        this.http.get<Embed>('/server/embed/' + args.id).subscribe(response => {
+        this.http.get<Embed>('/embed/' + args.id).subscribe(response => {
             this.embed = response;
             this.searchViewSettings.tableViewFields.customFields = [];
             const customFields = this.searchViewSettings.tableViewFields.customFields;
