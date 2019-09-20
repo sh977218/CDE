@@ -89,7 +89,7 @@ export function init(app) {
         version: version
     }, (err, str) => {
         indexHtml = str;
-        writeFileSync('/modules/_app/index.html', indexHtml);
+        writeFileSync('modules/_app/index.html', indexHtml);
     });
 
 
