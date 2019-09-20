@@ -15,20 +15,14 @@ export function module() {
     const router = require('express').Router();
 
     let embedHtml = '';
-    renderFile('modules/_embedApp/embedApp.ejs', {isLegacy: false}, (err, str) => {
-        embedHtml = str;
-    });
+    renderFile('modules/_embedApp/embedApp.ejs', {isLegacy: false}, (err, str) => embedHtml = str);
 
     let embedLegacyHtml = '';
-    renderFile('modules/_embedApp/embedApp.ejs', {isLegacy: true}, (err, str) => {
-        embedLegacyHtml = str;
-    });
+    renderFile('modules/_embedApp/embedApp.ejs', {isLegacy: true}, (err, str) => embedLegacyHtml = str);
 
     router.post('/server/embed', isOrgAdminMiddleware, (req, res) => {
         const handlerOptions = {req, res, publicMessage: 'There was an error saving this embed.'};
-        embeds.save(req.body, handleError(handlerOptions, embed => {
-            res.send(embed);
-        }));
+        embeds.save(req.body, handleError(handlerOptions, embed => res.send(embed)));
     });
 
     router.delete('/server/embed/:id', loggedInMiddleware, (req, res) => {
@@ -58,9 +52,7 @@ export function module() {
     });
 
     router.get('/server/embeds/:org', (req, res) => {
-        embeds.find({org: req.params.org}, handleError({req, res}, embedsData => {
-            res.send(embedsData);
-        }));
+        embeds.find({org: req.params.org}, handleError({req, res}, embedsData => res.send(embedsData)));
     });
 
     router.use('/embedded/public/html/index.html', (req, res) => {
