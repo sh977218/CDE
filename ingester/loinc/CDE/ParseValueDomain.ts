@@ -7,7 +7,7 @@ export function parseValueDomain(loinc) {
         uom: '',
         permissibleValues: []
     };
-    const loincAnswerList = [] || loinc['Normative Answer List'] || loinc['Example Answer List'];
+    const loincAnswerList = loinc['Normative Answer List'] || loinc['Example Answer List'] || loinc['Preferred Answer List'] || [];
     const loincAnswerListFilterEmpty = loincAnswerList.filter(l => !isEmpty(l));
     if (isEmpty(loincAnswerListFilterEmpty)) {
         const exampleUnits = loinc['Example Units'];

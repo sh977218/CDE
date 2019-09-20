@@ -24,7 +24,7 @@ function extractRedCapZip(protocolId) {
     }
 }
 
-export async function createPhenxForm(protocol) {
+export async function createPhenxForm(protocol, isExistingFormQualified) {
     extractRedCapZip(protocol.protocolID);
     const designations = parseDesignations(protocol);
     const definitions = parseDefinitions(protocol);
@@ -33,7 +33,7 @@ export async function createPhenxForm(protocol) {
     const properties = parseProperties(protocol);
     const referenceDocuments = parseReferenceDocuments(protocol);
     const attachments = await parseAttachments(protocol);
-    const classification = parseClassification();
+    const classification = parseClassification(protocol);
 
     const newForm = {
         elementType: 'form',
@@ -59,6 +59,6 @@ export async function createPhenxForm(protocol) {
         lastMigrationScript
     };
 
-    await parseFormElements(protocol, attachments, newForm);
+    await parseFormElements(protocol, attachments, newForm, isExistingFormQualified);
     return newForm;
 }

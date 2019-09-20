@@ -14,7 +14,7 @@ import { RedcapLogger } from 'ingester/log/RedcapLogger';
 
 function doInstrument(instrumentFilePath): Promise<any[]> {
     return new Promise((resolve, reject) => {
-        const results = [];
+        const results: any[] = [];
         const options = {
             trim: true,
             skip_empty_lines: true,
@@ -54,7 +54,9 @@ async function doOneRedCap(redCap, redCaps, protocol, newForm) {
     const redCapCde = await createRedCde(redCap, protocol, newForm);
     const newCde = new DataElement(redCapCde);
     const newCdeObj = newCde.toObject();
-    let existingCde = await DataElement.findOne({archived: false, 'ids.id': newCdeObj.ids[0].id});
+    const leadingZeroProtocolId = leadingZerosProtocolId(protocol.protocolID);
+
+    let existingCde = await DataElement.findOne({archived: false, 'ids.id': 'PX' + leadingZeroProtocolId});
     if (!existingCde) {
         existingCde = await newCde.save();
         RedcapLogger.createdRedcapCde++;
@@ -91,13 +93,13 @@ async function doOneRedCap(redCap, redCaps, protocol, newForm) {
 }
 
 export async function parseFormElements(protocol, attachments, newForm) {
-    const formElements = [];
+    const formElements: any[] = [];
     const protocolId = protocol.protocolID;
 
     const leadingZeroProtocolId = leadingZerosProtocolId(protocolId);
     const redCapFolder = redCapZipFolder + 'PX' + leadingZeroProtocolId + '/';
 
-    let redCaps = [];
+    let redCaps: any[] = [];
     const instrumentFileName = 'instrument.csv';
     const instrumentFilePath = redCapFolder + instrumentFileName;
     const instrumentFileExist = existsSync(instrumentFilePath);

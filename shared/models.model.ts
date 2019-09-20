@@ -417,6 +417,7 @@ export class Designation {
 
     constructor(designation = '') {
         this.designation = designation;
+        this.tags = [];
     }
 }
 
