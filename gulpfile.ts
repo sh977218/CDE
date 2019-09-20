@@ -4,7 +4,6 @@ import { readFileSync, writeFile } from 'fs';
 import * as gulp from 'gulp';
 import * as minifyCss from 'gulp-clean-css';
 import * as data from 'gulp-data';
-import { revParse } from 'gulp-git';
 import * as htmlmin from 'gulp-htmlmin';
 import * as rename from 'gulp-rename';
 import * as replace from 'gulp-replace';
