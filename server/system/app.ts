@@ -2,7 +2,7 @@ import { series } from 'async';
 import { CronJob } from 'cron';
 import * as csrf from 'csurf';
 import { renderFile } from 'ejs';
-import { access, constants, createWriteStream, mkdir, writeFile } from 'fs';
+import { access, constants, createWriteStream, mkdir, writeFile, writeFileSync } from 'fs';
 import { join } from 'path';
 import { authenticate } from 'passport';
 import {
@@ -89,7 +89,9 @@ export function init(app) {
         version: version
     }, (err, str) => {
         indexHtml = str;
+        writeFileSync('/modules/_app/index.html', indexHtml);
     });
+
 
     let indexLegacyHtml = '';
     renderFile('modules/system/views/index.ejs', {config: config, isLegacy: true, version: version}, (err, str) => {

@@ -172,19 +172,6 @@ gulp.task('copyNpmDeps', ['copyCode', 'npmRebuildNodeSass'], function copyNpmDep
         });
 });
 
-gulp.task('prepareVersion', ['copyCode'], function prepareVersion() {
-    return revParse({args: '--short HEAD'}, (err: NodeJS.ErrnoException, hash: string) => {
-        writeFile(BUILD_DIR + '/server/system/version.js', 'exports.version = "' + hash + '";',
-            (err: NodeJS.ErrnoException) => {
-                if (err) {
-                    console.log('ERROR generating version.html: ' + err);
-                } else {
-                    console.log('generated ' + BUILD_DIR + '/server/system/version.js');
-                }
-            });
-    });
-});
-
 gulp.task('buildDist', ['createDist'], function copyDist() {
     return Promise.all([
         run('npm run buildAppJs', runInAppOptions),
@@ -377,6 +364,6 @@ gulp.task('checkBundleSize', ['buildDist'], function checkBundleSize() {
 
 gulp.task('refreshDbs', ['es', 'mongorestoretest', 'injectElastic']);
 
-gulp.task('prepareApp', ['copyNpmDeps', 'prepareVersion', 'copyUsemin', 'checkDbConnection', 'checkBundleSize']);
+gulp.task('prepareApp', ['copyNpmDeps', 'copyUsemin', 'checkDbConnection', 'checkBundleSize']);
 
 gulp.task('default', ['refreshDbs', 'prepareApp']);
