@@ -8,7 +8,13 @@ export function parseValueDomain(loinc) {
         permissibleValues: []
     };
     const loincAnswerList = loinc['Normative Answer List'] || loinc['Example Answer List'] || loinc['Preferred Answer List'] || [];
-    const loincAnswerListFilterEmpty = loincAnswerList.filter(l => !isEmpty(l));
+    const loincAnswerListFilterEmpty = loincAnswerList.filter(l => {
+        if (!isEmpty(l.Code) || !isEmpty(l.Answer) || !isEmpty(l['Answer ID'])) {
+            return true;
+        } else {
+            return false;
+        }
+    });
     if (isEmpty(loincAnswerListFilterEmpty)) {
         const exampleUnits = loinc['Example Units'];
         if (exampleUnits && exampleUnits.length === 1) {

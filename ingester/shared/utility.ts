@@ -477,7 +477,11 @@ export function mergeElt(existingEltObj: any, newEltObj: any, source: string, cl
     mergeClassification(existingEltObj, newEltObj, classificationOrgName);
 
     existingEltObj.attachments = newEltObj.attachments;
-    existingEltObj.version = newEltObj.version;
+    if (newEltObj.version) {
+        existingEltObj.version = newEltObj.version;
+    } else {
+        existingEltObj.version = '';
+    }
 
 
     if (isCde) {
