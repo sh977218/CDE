@@ -3,28 +3,22 @@ import { CronJob } from 'cron';
 import * as csrf from 'csurf';
 import { renderFile } from 'ejs';
 import { access, constants, createWriteStream, mkdir, writeFile } from 'fs';
-import { join } from 'path';
 import { authenticate } from 'passport';
-import {
-    byTinyIdVersion as deByTinyIdVersion, count as deCount, DataElement, DataElementDraft, draftsList as deDraftsList
-} from 'server/cde/mongo-cde';
+import { DataElement, draftsList as deDraftsList } from 'server/cde/mongo-cde';
 import { handleError, respondError } from 'server/errorHandler/errorHandler';
-import {
-    byTinyIdVersion as formByTinyIdVersion, CdeFormDraft, draftsList as formDraftsList, Form
-} from 'server/form/mongo-form';
+import { draftsList as formDraftsList, Form } from 'server/form/mongo-form';
 import { consoleLog } from 'server/log/dbLogger';
 import { syncWithMesh } from 'server/mesh/elastic';
 import {
-    canApproveCommentMiddleware,
-    isOrgAdminMiddleware,
-    isOrgAuthorityMiddleware, isOrgCuratorMiddleware, isSiteAdminMiddleware, loggedInMiddleware, nocacheMiddleware
+    canApproveCommentMiddleware, isOrgAdminMiddleware, isOrgAuthorityMiddleware, isOrgCuratorMiddleware,
+    isSiteAdminMiddleware, loggedInMiddleware, nocacheMiddleware
 } from 'server/system/authorization';
 import { reIndex } from 'server/system/elastic';
 import { indices } from 'server/system/elasticSearchInit';
 import { errorLogger } from 'server/system/logging';
 import {
-    addUserRole, disableRule, embeds, enableRule, getClassificationAuditLog, getFile,
-    IdSource, jobStatus, listOrgs, listOrgsDetailedInfo, orgByName, updateOrg, userById, usersByName
+    addUserRole, disableRule, embeds, enableRule, getClassificationAuditLog, getFile, IdSource, jobStatus, listOrgs,
+    listOrgsDetailedInfo, orgByName, updateOrg, userById, usersByName
 } from 'server/system/mongo-data';
 import { addOrg, managedOrgs, transferSteward } from 'server/system/orgsvc';
 import { config } from 'server/system/parseConfig';
@@ -92,16 +86,6 @@ export function init(app) {
     let homeHtml = '';
     renderFile('modules/system/views/home-launch.ejs', {config: config, version: version}, (err, str) => {
         homeHtml = str;
-    });
-
-    let nativeRenderHtml = '';
-    renderFile('modules/_nativeRenderApp/nativeRenderApp.ejs', {isLegacy: false, version: version}, (err, str) => {
-        nativeRenderHtml = str;
-    });
-
-    let nativeRenderLegacyHtml = '';
-    renderFile('modules/_nativeRenderApp/nativeRenderApp.ejs', {isLegacy: true, version: version}, (err, str) => {
-        nativeRenderLegacyHtml = str;
     });
 
     /* for IE Opera Safari, emit polyfill.js */
@@ -177,10 +161,6 @@ export function init(app) {
 
     app.get('/embedSearch', (req, res) => {
         res.send(isModernBrowser(req) ? embedHtml : embedLegacyHtml);
-    });
-
-    app.get('/nativeRender', (req, res) => {
-        res.send(isModernBrowser(req) ? nativeRenderHtml : nativeRenderLegacyHtml);
     });
 
     app.get('/sw.js', function (req, res) {

@@ -34,6 +34,8 @@ import { init as formInit } from 'server/form/app';
 import * as mongo_form from 'server/form/mongo-form';
 import { module as meshModule } from 'server/mesh/meshRoutes';
 import { module as siteAdminModule } from 'server/siteAdmin/siteAdminRoutes';
+import { module as nativeRenderModule } from 'server/nativeRender/nativeRenderRouters';
+import { module as fhirModule } from 'server/fhir/fhirRouters';
 import { init as systemInit, respondHomeFull } from 'server/system/app';
 import { init as authInit, ticketAuth } from 'server/system/authentication';
 import {
@@ -345,8 +347,8 @@ try {
             next();
         }
     }));
+    app.use('/nativeRender', nativeRenderModule());
     app.use('/server/fhir', fhirModule());
-
     cdeInit(app, daoManager);
     systemInit(app);
     formInit(app, daoManager);
