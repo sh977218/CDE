@@ -1,14 +1,9 @@
 import { renderFile } from 'ejs';
-import { promisify } from 'util';
-import { access, constants, mkdir, writeFile } from 'fs';
-import { consoleLog } from 'server/log/dbLogger';
 import { isOrgAdminMiddleware, loggedInMiddleware } from 'server/system/authorization';
 import { embeds } from 'server/embed/embedSvc';
 import { handleError } from 'server/errorHandler/errorHandler';
 import { isOrgAdmin } from 'shared/system/authorizationShared';
 import { is } from 'useragent';
-import * as express from 'express';
-import * as path from "path";
 
 /* for IE Opera Safari, emit polyfill.js */
 function isModernBrowser(req) {
@@ -27,18 +22,6 @@ export function module() {
     let embedLegacyHtml = '';
     renderFile('modules/_embedApp/embedApp.ejs', {isLegacy: true}, (err, str) => {
         embedLegacyHtml = str;
-        // if (embedLegacyHtml) {
-        //     promisify(access)('modules/_embedApp/public/html', constants.R_OK)
-        //         .catch(() => promisify(mkdir)('modules/_embedApp/public/html', {recursive: true} as any)) // Node 12
-        //         .then(() => {
-        //             writeFile('modules/_embedApp/public/html/index.html', embedLegacyHtml, err => {
-        //                 if (err) {
-        //                     console.log('ERROR generating /modules/_embedApp/public/html/index.html: ' + err);
-        //                 }
-        //             });
-        //         })
-        //         .catch(err => consoleLog('Error getting folder modules/_embedApp/public: ', err));
-        // }
     });
 
     router.post('/server/embed', isOrgAdminMiddleware, (req, res) => {
@@ -80,15 +63,10 @@ export function module() {
         }));
     });
 
-    // ['/embedded/public', '/_embedApp/public'].forEach(p => {
-    router.use('/embedded/public/html/index.html', (req, res, next) => {
-            res.removeHeader('x-frame-options');
-            res.send(isModernBrowser(req) ? embedHtml : embedLegacyHtml);
-            // next();
-        },
-        // express.static(path.join(__dirname, '/modules/_embedApp/public'))
-    );
-
+    router.use('/embedded/public/html/index.html', (req, res) => {
+        res.removeHeader('x-frame-options');
+        res.send(isModernBrowser(req) ? embedHtml : embedLegacyHtml);
+    });
 
     return router;
 }
