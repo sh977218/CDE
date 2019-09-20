@@ -312,88 +312,142 @@ export function compareElt(newEltObj, existingEltObj) {
 }
 
 // Merge two elements
-function mergeDesignation(existingDesignations: Designation[], newDesignations: Designation[]) {
-    newDesignations.forEach(newDesignation => {
-        const i = findIndex(existingDesignations, {designation: newDesignation.designation});
-        if (i === -1) {
-            existingDesignations.push(newDesignation);
-        } else {
-            const allTags = existingDesignations[i].tags.concat(newDesignation.tags);
-            existingDesignations[i].tags = uniq(allTags).filter(t => !isEmpty(t));
-        }
-    });
-    return existingDesignations;
+function isOneClassificationSameSource(existingEltObj, newEltObj) {
+    const existingObjClassificationSize = existingEltObj.classification.length;
+    const newEltObjClassificationSize = newEltObj.classification.length;
+    const existingObjSources = existingEltObj.sources.length;
+    const newEltObjSources = newEltObj.sources.length;
+    const classificationEqual = existingObjClassificationSize && newEltObjClassificationSize;
+    const sourcesEqual = existingObjSources && newEltObjSources;
+    return classificationEqual && sourcesEqual;
 }
 
-function mergeDefinition(existingDefinitions: Definition[], newDefinitions: Definition[]) {
-    newDefinitions.forEach(newDefinition => {
-        const i = findIndex(existingDefinitions, {definition: newDefinition.definition});
-        if (i === -1) {
-            existingDefinitions.push(newDefinition);
-        } else {
-            const allTags = existingDefinitions[i].tags.concat(newDefinition.tags);
-            existingDefinitions[i].tags = uniq(allTags).filter(t => !isEmpty(t));
-            existingDefinitions[i].definitionFormat = newDefinition.definitionFormat;
-        }
-    });
-    return existingDefinitions;
-}
-
-export function mergeProperties(existingProperties: Property[], newProperties: Property[]) {
-    newProperties.forEach(newProperty => {
-        const i = findIndex(existingProperties, o => {
-            const keyWithS = o.key + 's';
-            if (isEqual(lowerCase(o.key), lowerCase(newProperty.key))) {
-                return true;
-            } else if (isEqual(lowerCase(keyWithS), lowerCase(newProperty.key))) {
-                // LOINC Participant => Participants
-                return true;
+function mergeDesignations(existingObj, newObj) {
+    const replaceDesignations = isOneClassificationSameSource(existingObj, newObj);
+    if (replaceDesignations) {
+        existingObj.designations = newObj.designations;
+    } else {
+        const existingDesignations: Designation[] = existingObj.designations;
+        const newDesignations: Designation[] = newObj.designations;
+        newDesignations.forEach(newDesignation => {
+            const i = findIndex(existingDesignations, {designation: newDesignation.designation});
+            if (i === -1) {
+                existingDesignations.push(newDesignation);
             } else {
-                return false;
+                const allTags = existingDesignations[i].tags.concat(newDesignation.tags);
+                existingDesignations[i].tags = uniq(allTags).filter(t => !isEmpty(t));
             }
         });
-        if (i === -1) {
-            existingProperties.push(newProperty);
-        } else {
-            existingProperties[i] = newProperty;
-        }
-    });
-    return existingProperties;
+    }
 }
 
-export function mergeReferenceDocuments(existingReferenceDocuments: ReferenceDocument[], newReferenceDocuments: ReferenceDocument[]) {
-    newReferenceDocuments.forEach(newReferenceDocument => {
-        const i = findIndex(existingReferenceDocuments, o =>
-            isEqual(o.docType, newReferenceDocument.docType) &&
-            isEqual(o.languageCode, newReferenceDocument.languageCode) &&
-            isEqual(o.document, newReferenceDocument.document) &&
-            isEqual(o.source, newReferenceDocument.source));
-        if (i === -1) {
-            existingReferenceDocuments.push(newReferenceDocument);
-        } else {
-            existingReferenceDocuments[i] = newReferenceDocument;
-        }
-    });
-    return existingReferenceDocuments;
+function mergeDefinitions(existingObj, newObj) {
+    const replaceDefinitions = isOneClassificationSameSource(existingObj, newObj);
+    if (replaceDefinitions) {
+        existingObj.definitions = newObj.definitions;
+    } else {
+        const existingDefinitions: Definition[] = existingObj.definitions;
+        const newDefinitions: Definition[] = newObj.definitions;
+        newDefinitions.forEach(newDefinition => {
+            const i = findIndex(existingDefinitions, {definition: newDefinition.definition});
+            if (i === -1) {
+                existingDefinitions.push(newDefinition);
+            } else {
+                const allTags = existingDefinitions[i].tags.concat(newDefinition.tags);
+                existingDefinitions[i].tags = uniq(allTags).filter(t => !isEmpty(t));
+                existingDefinitions[i].definitionFormat = newDefinition.definitionFormat;
+            }
+        });
+    }
 }
 
-export function mergeIds(existingIds: CdeId[], newIds: CdeId[]) {
-    newIds.forEach(newId => {
-        const i = findIndex(existingIds, o =>
-            isEqual(o.source, newId.source) &&
-            isEqual(o.id, newId.id));
-        if (i === -1) {
-            existingIds.push(newId);
-        } else {
-            existingIds[i] = newId;
-        }
-    });
-    return existingIds;
+export function mergeProperties(existingObj, newObj) {
+    const replaceProperties = isOneClassificationSameSource(existingObj, newObj);
+    if (replaceProperties) {
+        existingObj.properties = newObj.properties;
+    } else {
+        const existingProperties: Property[] = existingObj.properties;
+        const newProperties: Property[] = newObj.properties;
+        newProperties.forEach(newProperty => {
+            const i = findIndex(existingProperties, o => {
+                const keyWithS = o.key + 's';
+                if (isEqual(lowerCase(o.key), lowerCase(newProperty.key))) {
+                    return true;
+                } else if (isEqual(lowerCase(keyWithS), lowerCase(newProperty.key))) {
+                    // LOINC Participant => Participants
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+            if (i === -1) {
+                existingProperties.push(newProperty);
+            } else {
+                existingProperties[i] = newProperty;
+            }
+        });
+    }
 }
 
-export function mergeSources(existingSources, newSources, sources) {
+export function mergeReferenceDocuments(existingObj, newObj) {
+    const replaceReferenceDocuments = isOneClassificationSameSource(existingObj, newObj);
+    if (replaceReferenceDocuments) {
+        existingObj.referenceDocuments = newObj.referenceDocuments;
+    } else {
+        const existingReferenceDocuments: ReferenceDocument[] = existingObj.referenceDocuments;
+        const newReferenceDocuments: ReferenceDocument[] = newObj.referenceDocuments;
+
+        newReferenceDocuments.forEach(newReferenceDocument => {
+            const i = findIndex(existingReferenceDocuments, o =>
+                isEqual(o.docType, newReferenceDocument.docType) &&
+                isEqual(o.languageCode, newReferenceDocument.languageCode) &&
+                isEqual(o.document, newReferenceDocument.document) &&
+                isEqual(o.source, newReferenceDocument.source));
+            if (i === -1) {
+                existingReferenceDocuments.push(newReferenceDocument);
+            } else {
+                existingReferenceDocuments[i] = newReferenceDocument;
+            }
+        });
+    }
+}
+
+export function mergeIds(existingObj, newObj) {
+    const replaceIds = isOneClassificationSameSource(existingObj, newObj);
+    if (replaceIds) {
+        existingObj.ids = newObj.ids;
+    } else {
+        const existingIds: CdeId[] = existingObj.ids;
+        const newIds: CdeId[] = newObj.ids;
+        newIds.forEach(newId => {
+            const i = findIndex(existingIds, o =>
+                isEqual(o.source, newId.source) &&
+                isEqual(o.id, newId.id));
+            if (i === -1) {
+                existingIds.push(newId);
+            } else {
+                existingIds[i] = newId;
+            }
+        });
+    }
+}
+
+export function mergeClassification(existingObj, newObj, classificationOrgName) {
+    if (existingObj.lastMigrationScript === lastMigrationScript) {
+        transferClassifications(newObj, existingObj);
+    } else {
+        existingObj.classification =
+            replaceClassificationByOrg(newObj.classification, existingObj.classification, classificationOrgName);
+        existingObj.lastMigrationScript = lastMigrationScript;
+    }
+
+}
+
+export function mergeSources(existingObj, newObj, sources) {
+    const existingSources = existingObj.sources;
+    const newSources = newObj.sources;
     const otherSources = existingSources.filter(o => sources.indexOf(o.sourceName) === -1);
-    return newSources.concat(otherSources);
+    existingObj.sources = newSources.concat(otherSources);
 }
 
 export function mergeElt(existingEltObj: any, newEltObj: any, source: string, classificationOrgName) {
@@ -412,14 +466,15 @@ export function mergeElt(existingEltObj: any, newEltObj: any, source: string, cl
     existingEltObj.imported = imported;
     existingEltObj.changeNote = lastMigrationScript;
 
-    existingEltObj.designations = mergeDesignation(existingEltObj.designations, newEltObj.designations);
-    existingEltObj.definitions = mergeDefinition(existingEltObj.definitions, newEltObj.definitions);
+    mergeDesignations(existingEltObj, newEltObj);
+    mergeDefinitions(existingEltObj, newEltObj);
 
-    existingEltObj.ids = mergeIds(existingEltObj.ids, newEltObj.ids);
-    existingEltObj.properties = mergeProperties(existingEltObj.properties, newEltObj.properties);
-    existingEltObj.referenceDocuments = mergeReferenceDocuments(existingEltObj.referenceDocuments, newEltObj.referenceDocuments);
+    mergeIds(existingEltObj, newEltObj);
+    mergeProperties(existingEltObj, newEltObj);
+    mergeReferenceDocuments(existingEltObj, newEltObj);
 
-    existingEltObj.sources = mergeSources(existingEltObj.sources, newEltObj.sources, sources);
+    mergeSources(existingEltObj, newEltObj, sources);
+    mergeClassification(existingEltObj, newEltObj, classificationOrgName);
 
     existingEltObj.attachments = newEltObj.attachments;
     existingEltObj.version = newEltObj.version;
@@ -446,14 +501,6 @@ export function mergeElt(existingEltObj: any, newEltObj: any, source: string, cl
         existingEltObj.registrationState.registrationStatus = existingEltRegistrationStatus;
     } else {
         existingEltObj.registrationState.registrationStatus = newEltObj.registrationState.registrationStatus;
-    }
-
-    if (existingEltObj.lastMigrationScript === lastMigrationScript) {
-        transferClassifications(newEltObj, existingEltObj);
-    } else {
-        existingEltObj.classification =
-            replaceClassificationByOrg(newEltObj.classification, existingEltObj.classification, classificationOrgName);
-        existingEltObj.lastMigrationScript = lastMigrationScript;
     }
 
 }

@@ -38,6 +38,8 @@ export async function runOneCde(loinc, classificationOrgName, classificationArra
             const existingCdeObj = existingCde.toObject();
             mergeElt(existingCdeObj, newCdeObj, 'LOINC', classificationOrgName);
             await updateCde(existingCdeObj, BATCHLOADER, {updateSource: true}).catch(err => {
+                console.log(newCdeObj);
+                console.log(existingCdeObj);
                 console.log(`LOINC await updateCde(existingCdeObj error: ${JSON.stringify(err)}`);
                 process.exit(1);
             });
