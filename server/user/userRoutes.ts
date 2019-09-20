@@ -15,14 +15,14 @@ const userDb = require('./userDb');
 export function module(roleConfig) {
     const router = require('express').Router();
 
-    let version = "local-dev";
+    let version = 'local-dev';
     try {
         version = require('../system/version.js').version;
     } catch (e) {
     }
 
     router.get('/', [nocacheMiddleware], (req, res) => {
-        if (!req.user) return res.send({});
+        if (!req.user) { return res.send({}); }
         userDb.byId(req.user._id, handle40x({req, res}, user => {
             res.send(user);
         }));
@@ -78,11 +78,11 @@ export function module(roleConfig) {
             return pending;
         }
 
-        let user = req.user;
-        let tasks = user ? user.commentNotifications.map(createTaskFromCommentNotification) : [];
+        const user = req.user;
+        const tasks = user ? user.commentNotifications.map(createTaskFromCommentNotification) : [];
 
         if (isSiteAdmin(user)) {
-            let clientErrorCount = await notificationDb.getNumberClientError(user);
+            const clientErrorCount = await notificationDb.getNumberClientError(user);
             if (clientErrorCount > 0) {
                 tasks.push({
                     id: clientErrorCount,
@@ -94,7 +94,7 @@ export function module(roleConfig) {
                 });
             }
 
-            let serverErrorCount = await notificationDb.getNumberServerError(user);
+            const serverErrorCount = await notificationDb.getNumberServerError(user);
             if (serverErrorCount > 0) {
                 tasks.push({
                     id: serverErrorCount,
@@ -120,9 +120,9 @@ export function module(roleConfig) {
 
         // TODO: implement org boundaries
         if (hasRole(user, 'AttachmentReviewer')) { // required, req.user.notificationSettings.approvalAttachment.drawer not used
-            let attachmentElts = await new Promise((resolve, reject) => {
+            const attachmentElts = await new Promise((resolve, reject) => {
                 attachment.unapproved((err, results) => {
-                    if (err) return reject (err);
+                    if (err) { return reject (err); }
                     resolve(results);
                 });
             });
@@ -134,7 +134,7 @@ export function module(roleConfig) {
                     elt.attachments
                         .filter(a => !!a.pendingApproval)
                         .forEach(a => {
-                            let task: any = {
+                            const task: any = {
                                 id: a.fileid,
                                 idType: 'attachment',
                                 properties: [
@@ -165,13 +165,13 @@ export function module(roleConfig) {
             }
         }
         if (hasRole(user, 'CommentReviewer')) { // required, req.user.notificationSettings.approvalComment.drawer not used
-            let comments = await discussDb.unapproved();
+            const comments = await discussDb.unapproved();
             if (Array.isArray(comments)) {
                 comments.forEach(c => {
                     const eltModule = c.element && c.element.eltType;
                     const eltTinyId = c.element && c.element.eltId;
                     pending(c).forEach(p => {
-                        let task = {
+                        const task = {
                             id: p._id,
                             idType: p === c ? 'comment' : 'commentReply',
                             properties: [
@@ -185,7 +185,7 @@ export function module(roleConfig) {
                             type: 'approve',
                             url: uriView(eltModule, eltTinyId),
                         };
-                        let username = p.user && p.user.username || c.user && c.user.username;
+                        const username = p.user && p.user.username || c.user && c.user.username;
                         if (username) {
                             task.properties.unshift({
                                 key: 'User',
@@ -203,7 +203,7 @@ export function module(roleConfig) {
 
     if (!config.proxy) {
         router.post('/site-version', (req, res) => {
-            version = version + ".";
+            version = version + '.';
             res.send();
         });
     }
@@ -231,18 +231,18 @@ export function module(roleConfig) {
     router.post('/addUser', roleConfig.manage, async (req, res) => {
         const username = req.body.username;
         const existingUser = await userDb.byUsername(username);
-        if (existingUser) return res.status(409).send("Duplicated username");
+        if (existingUser) { return res.status(409).send('Duplicated username'); }
         const newUser = {
             username: username.toLowerCase(),
-            password: "umls",
+            password: 'umls',
             quota: 1024 * 1024 * 1024
         };
         await userDb.save(newUser);
-        res.send(username + " added.");
+        res.send(username + ' added.');
     });
 
     router.post('/updateNotificationDate', roleConfig.notificationDate, (req, res) => {
-        let notificationDate = req.body;
+        const notificationDate = req.body;
         let changed = false;
         if (notificationDate.clientLogDate) {
             req.user.notificationDate.clientLogDate = notificationDate.clientLogDate;

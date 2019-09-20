@@ -48,11 +48,7 @@ export function init(app) {
         if (req.ip) return req.ip;
     };
 
-    let version = 'local-dev';
-    try {
-        version = require('./version.js').version;
-    } catch (e) {
-    }
+    let version = 'x';
 
     let embedHtml = '';
     renderFile('modules/_embedApp/embedApp.ejs', {isLegacy: false}, (err, str) => {
