@@ -1,8 +1,7 @@
 import { hostname } from 'os';
 import { createConnection, Schema } from 'mongoose';
-import { config } from 'server/system/parseConfig';
 
-const migrationConn = createConnection(config.database.migration.uri, {
+const migrationConn = createConnection('mongodb://miguser:password@localhost:27017/migration', {
     ssl: false,
     useCreateIndex: true,
     useNewUrlParser: true

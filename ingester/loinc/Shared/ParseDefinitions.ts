@@ -8,6 +8,9 @@ export function parseDefinitions(loinc) {
             const text = t.text;
             const existingTermDescription = find(definitions, {definition: text});
             if (existingTermDescription) {
+                if (!existingTermDescription.tags) {
+                    existingTermDescription.tags = [];
+                }
                 const allTags = existingTermDescription.tags.concat(t.cite);
                 existingTermDescription.tags = uniq(allTags);
             } else {

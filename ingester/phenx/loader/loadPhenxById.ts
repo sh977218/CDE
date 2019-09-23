@@ -14,10 +14,11 @@ export async function loadPhenxById(phenxId) {
     const protocol: any = await PROTOCOL.findOne({protocolID: phenxId}).lean();
     const protocolId = protocol.protocolID;
     console.log('Start protocol: ' + protocolId);
-    const phenxForm: any = await createPhenxForm(protocol);
+    let existingForm: any = await Form.findOne({archived: false, 'ids.id': protocolId});
+    const isExistingFormQualified = existingForm && existingForm.registrationState.registrationStatus === 'Qualified';
+    const phenxForm: any = await createPhenxForm(protocol, isExistingFormQualified);
     const newForm = new Form(phenxForm);
     const newFormObj = newForm.toObject();
-    let existingForm: any = await Form.findOne({archived: false, 'ids.id': protocolId});
     if (!existingForm) {
         existingForm = await newForm.save();
         PhenxLogger.createdPhenxForm++;

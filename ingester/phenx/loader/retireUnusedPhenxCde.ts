@@ -10,7 +10,7 @@ let cdeCount = 0;
 let retiredPhenxCde = 0;
 const retiredPhenxCdes: string[] = [];
 
-function run() {
+export async function retiredUnusedPhenxCde() {
     const cond = {
         'registrationState.registrationStatus': {$ne: 'Retired'},
         archived: false,
@@ -18,7 +18,7 @@ function run() {
         classification: {$exists: true}, $where: 'this.classification.length<2'
     };
     const cursor = DataElement.find(cond).cursor();
-    cursor.eachAsync(async (cde: any) => {
+    return cursor.eachAsync(async (cde: any) => {
         const cdeObj = cde.toObject();
         const linkedForm = await Form.findOne({
             archived: false,
@@ -62,16 +62,5 @@ function run() {
             retiredPhenxCde++;
         }
         cdeCount++;
-    }).then(() => {
-        console.log('finished.');
-        console.log(`cdeCount: ${cdeCount}`);
-        console.log(`retiredPhenxCde: ${retiredPhenxCde}`);
-        console.log('retiredPhenxCdes: ' + retiredPhenxCdes);
-        process.exit(0);
-    }, (e: any) => {
-        console.log(e);
-        process.exit(1);
     });
 }
-
-run();

@@ -2,17 +2,21 @@ import { find, isEmpty } from 'lodash';
 import { parseFormElements as parseRedcapFormElements } from 'ingester/phenx/redCap/ParseRedCap';
 import { parseFormElements as parseLoincFormElements } from 'ingester/loinc/Form/ParseFormElements';
 
-export async function parseFormElements(protocol, attachments, newForm) {
+export async function parseFormElements(protocol, attachments, newForm, isExistingFormQualified) {
     const loincStandard = find(protocol.standards, standard => standard.Source === 'LOINC');
     if (isEmpty(loincStandard)) {
         await parseRedcapFormElements(protocol, attachments, newForm);
     } else {
         let formElements: any[] = [];
         const loinc = loincStandard.loinc;
-        if (isEmpty(loinc['PANEL HIERARCHY'])) {
-            console.log(`Protocol ${protocol.protocolID} has LOINC ${loinc.loincId} PANEL HIERARCHY is missing.`);
+        if (isEmpty(loinc['Panel Hierarchy'])) {
+            console.log(`Protocol ${protocol.protocolID} has LOINC ${loinc['LOINC Code']} Panel Hierarchy is missing.`);
         } else {
-            formElements = await parseLoincFormElements(loinc, 'PhenX', []);
+            if (!isExistingFormQualified) {
+                formElements = await parseLoincFormElements(loinc, 'PhenX', [protocol.domainCollection]);
+            } else {
+                formElements = [];
+            }
         }
         newForm.formElements = formElements;
     }

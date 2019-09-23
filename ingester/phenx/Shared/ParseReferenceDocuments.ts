@@ -1,8 +1,8 @@
-import { forEach, isEmpty } from 'lodash';
+import { forEach, isEmpty, sortBy } from 'lodash';
 
 export function parseReferenceDocuments(protocol) {
-    let referenceDocuments = [];
-    let generalReferences = protocol.generalReferences;
+    const referenceDocuments: any[] = [];
+    const generalReferences = protocol.generalReferences;
     if (!isEmpty(generalReferences)) {
         forEach(generalReferences, generalReference => {
             const gr = generalReference.trim();
@@ -16,5 +16,6 @@ export function parseReferenceDocuments(protocol) {
             }
         });
     }
-    return referenceDocuments;
+
+    return sortBy(referenceDocuments, ['docType', 'languageCode', 'document']);
 }

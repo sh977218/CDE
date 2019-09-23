@@ -12,7 +12,7 @@ import { parseFormElements } from './ParseFormElements';
 import { BATCHLOADER, created, imported } from 'ingester/shared/utility';
 
 
-export async function createLoincForm(loinc, classificationOrgName, classificationArray) {
+export async function createLoincForm(loinc, classificationOrgName = 'LOINC', classificationArray = []) {
     const designations = parseDesignations(loinc);
     const definitions = parseDefinitions(loinc);
     const ids = parseIds(loinc);

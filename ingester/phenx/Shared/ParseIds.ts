@@ -1,7 +1,7 @@
-import { isEmpty } from 'lodash';
+import { isEmpty, sortBy } from 'lodash';
 
 export function parseIds(protocol) {
-    const ids = [];
+    const ids: any[] = [];
     const protocolId = protocol.protocolID;
     if (!isEmpty(protocolId)) {
         ids.push({
@@ -17,6 +17,7 @@ export function parseIds(protocol) {
             });
         }
     });
-    return ids;
+    return sortBy(ids, ['source', 'id']);
+
 }
 

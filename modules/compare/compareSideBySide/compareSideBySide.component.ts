@@ -320,7 +320,6 @@ export class CompareSideBySideComponent {
                     data: [
                         {label: 'Key', property: 'key'},
                         {label: 'Value', property: 'value'},
-                        {label: 'Source', property: 'source'},
                         {label: 'Value Format', property: 'valueFormat'}
                     ]
                 },

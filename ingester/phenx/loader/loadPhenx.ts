@@ -6,8 +6,8 @@ import { PhenxLogger } from 'ingester/log/PhenxLogger';
 import { LoincLogger } from 'ingester/log/LoincLogger';
 import { RedcapLogger } from 'ingester/log/RedcapLogger';
 import { loadPhenxById } from 'ingester/phenx/loader/loadPhenxById';
-
-const protocolCount = 0;
+import { sortBy } from 'lodash';
+import { retiredUnusedPhenxCde } from 'ingester/phenx/loader/retireUnusedPhenxCde';
 
 /*
 const NewPhenxIdToOldPhenxId = {
@@ -47,39 +47,42 @@ function retireForms() {
     });
 }
 
-async function retireCdes() {/*
-    return new Promise(resolve => {
-        const cond = {
-            'ids.source': {$in: ['PhenX', 'LOINC']},
-            'registrationState.registrationStatus': {$ne: 'Retired'},
-            archived: false,
-            lastMigrationScript: {$ne: lastMigrationScript}
-        };
-        DataElement.find(cond).cursor({batchSize: 10})
-            .eachAsync(async cde => {
-                const cdeObj = cde.toObject();
-                if (cdeObj.lastMigrationScript !== lastMigrationScript) {
-                    cdeObj.registrationState.registrationStatus = 'Retired';
-                    cdeObj.registrationState.administrativeNote = 'Not present in import at ' + imported;
-                    await updateCde(cdeObj, BATCHLOADER);
-                    PhenxLogger.retiredPhenxCde++;
-                    PhenxLogger.retiredPhenxCdes.push(cdeObj.tinyId);
-                }
-            }).then(resolve);
-    });*/
+async function retireCdes() {
+    await retiredUnusedPhenxCde();
 }
 
 process.on('unhandledRejection', error => {
     console.log(error);
 });
 
+function fixProp(protocol) {
+    const protocolObj = protocol.toObject();
+    protocol.properties = sortBy(protocolObj.properties, 'key');
+}
+
+function fixRefDoc(protocol) {
+    const protocolObj = protocol.toObject();
+    protocolObj.referenceDocuments.forEach(r => {
+        r.languageCode = 'en-us';
+    });
+    protocol.referenceDocuments = sortBy(protocolObj.referenceDocuments, ['docType', 'languageCode', 'document']);
+}
+
 async function run() {
-    //const cond = {protocolID: {$in: ['10101', '10201']}};
+//    const cond = {protocolID: {$in: ['190401']}};
     const cond = {};
     const phenxIds = await PROTOCOL.find(cond, {protocolID: 1}).lean();
 //    const slicedPhenxIds = phenxIds.slice(0, 10);
     const slicedPhenxIds = phenxIds;
     for (const phenxId of slicedPhenxIds) {
+        // @TODO remove after this load
+        const existingForm: any = await Form.findOne({archived: false, 'ids.id': phenxId.protocolID});
+        if (existingForm) {
+            fixRefDoc(existingForm);
+            fixProp(existingForm);
+            await existingForm.save();
+        }
+
         await loadPhenxById(phenxId.protocolID);
     }
     console.log('Retiring cdes.');
