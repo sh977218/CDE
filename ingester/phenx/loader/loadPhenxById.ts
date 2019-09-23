@@ -3,7 +3,7 @@ import { createPhenxForm } from 'ingester/phenx/Form/form';
 import { Form, FormSource } from 'server/form/mongo-form';
 import { PhenxLogger } from 'ingester/log/PhenxLogger';
 import {
-    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeElt, printUpdateResult, updateForm
+    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeClassification, mergeElt, printUpdateResult, updateForm
 } from 'ingester/shared/utility';
 import { Comment } from 'server/discuss/discussDb';
 import { PROTOCOL } from 'ingester/createMigrationConnection';
@@ -25,6 +25,8 @@ export async function loadPhenxById(phenxId) {
         PhenxLogger.createdPhenxForms.push(existingForm.tinyId);
     } else {
         const diff = compareElt(newForm.toObject(), existingForm.toObject());
+        const existingFormObj = existingForm.toObject();
+        mergeClassification(existingFormObj, newForm.toObject(), 'PhenX');
         if (isEmpty(diff)) {
             existingForm.lastMigrationScript = lastMigrationScript;
             existingForm.imported = imported;
@@ -32,7 +34,6 @@ export async function loadPhenxById(phenxId) {
             PhenxLogger.samePhenxForm++;
             PhenxLogger.samePhenxForms.push(existingForm.tinyId);
         } else {
-            const existingFormObj = existingForm.toObject();
             mergeElt(existingFormObj, newFormObj, 'PhenX', 'PhenX');
             await updateForm(existingFormObj, BATCHLOADER, {updateSource: true});
             PhenxLogger.changedPhenxForm++;

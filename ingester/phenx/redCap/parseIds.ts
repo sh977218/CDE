@@ -8,7 +8,7 @@ export function parseIds(row, newForm) {
     if (!isEmpty(variableName)) {
         ids.push({
             source: 'PhenX Variable',
-            id: leadingZeroFormId + '_' + variableName.trim()
+            id: 'PX' + leadingZeroFormId + '_' + variableName.trim()
         });
     }
 

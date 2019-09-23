@@ -3,6 +3,9 @@ import { map as MULTISELECT_MAP } from 'ingester/loinc/Mapping/LOINC_MULTISELECT
 import { map as REQUIRED_MAP } from 'ingester/loinc/Mapping/LOINC_REQUIRED_MAP';
 import { runOneCde } from 'ingester/loinc/LOADER/loincCdeLoader';
 import { runOneForm } from 'ingester/loinc/LOADER/loincFormLoader';
+import { DataElement } from 'server/cde/mongo-cde';
+import { Form } from 'server/form/mongo-form';
+import { fixValueDomainOrQuestion, sortProp, sortRefDoc } from 'ingester/shared/utility';
 
 export async function parseFormElements(loinc, classificationOrgName, classificationArray) {
     const panelHierarchy = loinc['Panel Hierarchy'];
@@ -79,6 +82,12 @@ function elementToQuestion(existingCde, element) {
 }
 
 async function loadCde(element, classificationOrgName, classificationArray) {
+    // @TODO remove after this load
+    const cdeToFix: any = await DataElement.findOne({archived: false, 'ids.id': element.loinc['LOINC Code']});
+    if (cdeToFix) {
+        fixValueDomainOrQuestion(cdeToFix.valueDomain);
+        await cdeToFix.save();
+    }
     const existingCde = await runOneCde(element.loinc, classificationOrgName, classificationArray);
     return elementToQuestion(existingCde, element);
 }
@@ -102,6 +111,15 @@ function elementToInForm(existingForm, element) {
 }
 
 async function loadForm(element, classificationOrgName, classificationArray) {
+    // @TODO remove after this load
+    const formToFix: any = await Form.findOne({archived: false, 'ids.id': element.loinc['LOINC Code']});
+    if (formToFix) {
+        sortRefDoc(formToFix);
+        sortProp(formToFix);
+        await formToFix.save();
+    }
+
+
     const existingForm = await runOneForm(element.loinc, classificationOrgName, classificationArray);
     return elementToInForm(existingForm, element);
 }

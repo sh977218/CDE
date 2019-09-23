@@ -272,6 +272,7 @@ export function compareElt(newEltObj, existingEltObj) {
         console.log(`Two element type different. newEltObj: ${newEltObj.tinyId} existingEltObj: ${existingEltObj.tinyId} `);
         process.exit(1);
     }
+
     const isPhenX = existingEltObj.ids.filter(id => id.source === 'PhenX').length > 0;
     const isQualified = existingEltObj.registrationState.registrationStatus === 'Qualified';
     const isArchived = existingEltObj.archived;
@@ -303,10 +304,20 @@ export function compareElt(newEltObj, existingEltObj) {
         if (isForm) {
             eltObj.cdeTinyIds = getChildren(eltObj.formElements);
         }
+        if (isCde) {
+            delete eltObj.dataSets;
+            fixValueDomainOrQuestion(eltObj.valueDomain);
+        }
 
         wipeBeforeCompare(eltObj);
 
     });
+
+    // Within single load, don't version if only classification changed.
+    if (existingEltObj.lastMigrationScript === newEltObj.lastMigrationScript) {
+        delete existingEltObj.classification;
+        delete existingEltObj.newEltObj;
+    }
     const result = DiffJson.diff(existingEltObj, newEltObj);
     return result;
 }
@@ -451,9 +462,6 @@ export function mergeSources(existingObj, newObj, sources) {
 }
 
 export function mergeElt(existingEltObj: any, newEltObj: any, source: string, classificationOrgName) {
-    const existingFormElements = existingEltObj.formElements;
-    const existingEltRegistrationStatus = existingEltObj.registrationState.registrationStatus;
-
     const isForm = existingEltObj.elementType === 'form';
     const isCde = existingEltObj.elementType === 'cde';
 
@@ -474,7 +482,6 @@ export function mergeElt(existingEltObj: any, newEltObj: any, source: string, cl
     mergeReferenceDocuments(existingEltObj, newEltObj);
 
     mergeSources(existingEltObj, newEltObj, sources);
-    mergeClassification(existingEltObj, newEltObj, classificationOrgName);
 
     existingEltObj.attachments = newEltObj.attachments;
     if (newEltObj.version) {
@@ -495,14 +502,12 @@ export function mergeElt(existingEltObj: any, newEltObj: any, source: string, cl
         // EXCEPTIONS
         // Those 50 qualified phenx forms , loader skip form elements.
         if (isPhenX && !isArchived && isQualified) {
-            existingEltObj.formElements = existingFormElements;
         } else {
             existingEltObj.formElements = newEltObj.formElements;
         }
     }
 
     if (isPhenX && !isArchived && isQualified) {
-        existingEltObj.registrationState.registrationStatus = existingEltRegistrationStatus;
     } else {
         existingEltObj.registrationState.registrationStatus = newEltObj.registrationState.registrationStatus;
     }
@@ -617,34 +622,58 @@ function fixDatatypeExternallyDefined(datatypeExternallyDefined) {
     return result;
 }
 
-export function fixValueDomainOrQuestion(obj) {
-    const datatype = obj.datatype;
-    if (datatype === 'Text' && !isEmpty(datatype.datatypeText)) {
-        obj.datatypeText = fixDatatypeText(obj.datatypeText);
+export function fixValueDomainOrQuestion(valueDomainOrQuestion) {
+    const datatype = valueDomainOrQuestion.datatype;
+    if (datatype === 'Text') {
+        if (!isEmpty(datatype.datatypeText)) {
+            valueDomainOrQuestion.datatypeText = fixDatatypeText(valueDomainOrQuestion.datatypeText);
+        } else {
+            delete valueDomainOrQuestion.datatypeText;
+        }
     }
 
-    if (datatype === 'Number' && !isEmpty(datatype.datatypeNumber)) {
-        obj.datatypeNumber = fixDatatypeNumber(obj.datatypeNumber);
+    if (datatype === 'Number') {
+        if (!isEmpty(datatype.datatypeNumber)) {
+            valueDomainOrQuestion.datatypeNumber = fixDatatypeNumber(valueDomainOrQuestion.datatypeNumber);
+        } else {
+            delete valueDomainOrQuestion.datatypeNumber;
+        }
     }
 
-    if (datatype === 'Date' && !isEmpty(datatype.datatypeDate)) {
-        obj.datatypeDate = fixDatatypeDate(obj.datatypeDate);
+    if (datatype === 'Date') {
+        if (!isEmpty(datatype.datatypeDate)) {
+            valueDomainOrQuestion.datatypeDate = fixDatatypeDate(valueDomainOrQuestion.datatypeDate);
+        } else {
+            delete valueDomainOrQuestion.datatypeDate;
+        }
     }
 
     if (datatype === 'Time' && !isEmpty(datatype.datatypeTime)) {
-        obj.datatypeTime = fixDatatypeTime(obj.datatypeTime);
+        valueDomainOrQuestion.datatypeTime = fixDatatypeTime(valueDomainOrQuestion.datatypeTime);
     }
 
     if (datatype === 'Dynamic Code List' && !isEmpty(datatype.datatypeDynamicCodeList)) {
-        obj.datatypeDynamicCodeList = fixDatatypeDynamicCodeList(obj.datatypeDynamicCodeList);
+        valueDomainOrQuestion.datatypeDynamicCodeList = fixDatatypeDynamicCodeList(valueDomainOrQuestion.datatypeDynamicCodeList);
     }
 
     if (datatype === 'Value List' && !isEmpty(datatype.datatypeValueList)) {
-        obj.datatypeValueList = fixDatatypeValueList(obj.datatypeValueList);
+        valueDomainOrQuestion.datatypeValueList = fixDatatypeValueList(valueDomainOrQuestion.datatypeValueList);
     }
 
     if (datatype === 'Externally Defined' && !isEmpty(datatype.datatypeExternallyDefined)) {
-        obj.datatypeExternallyDefined = fixDatatypeExternallyDefined(obj.datatypeExternallyDefined);
+        valueDomainOrQuestion.datatypeExternallyDefined = fixDatatypeExternallyDefined(valueDomainOrQuestion.datatypeExternallyDefined);
     }
+}
+
+
+export function sortProp(elt) {
+    return sortBy(elt.properties, 'key');
+}
+
+export function sortRefDoc(elt) {
+    elt.referenceDocuments.forEach(r => {
+        r.languageCode = 'en-us';
+    });
+    return sortBy(elt.referenceDocuments, ['docType', 'languageCode', 'document']);
 }
 

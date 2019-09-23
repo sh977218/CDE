@@ -2,9 +2,6 @@ import { By } from 'selenium-webdriver';
 import { sanitizeText } from 'ingester/shared/utility';
 
 export async function parseBasicAttributesTable(driver, loincId, element) {
-    if (loincId === '56094-6') {
-        console.log('a');
-    }
     const result = {};
     const trs = await element.findElements(By.xpath('tbody/tr'));
     trs.shift();
