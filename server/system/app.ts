@@ -2,16 +2,14 @@ import { series } from 'async';
 import { CronJob } from 'cron';
 import * as csrf from 'csurf';
 import { renderFile } from 'ejs';
-import { access, constants, createWriteStream, mkdir, writeFile, writeFileSync } from 'fs';
+import { access, constants, createWriteStream, mkdir, writeFile, writeFileSync, existsSync } from 'fs';
 import { join } from 'path';
 import { authenticate } from 'passport';
 import {
     byTinyIdVersion as deByTinyIdVersion, count as deCount, DataElement, DataElementDraft, draftsList as deDraftsList
 } from 'server/cde/mongo-cde';
 import { handleError, respondError } from 'server/errorHandler/errorHandler';
-import {
-    byTinyIdVersion as formByTinyIdVersion, CdeFormDraft, draftsList as formDraftsList, Form
-} from 'server/form/mongo-form';
+import { draftsList as formDraftsList, Form } from 'server/form/mongo-form';
 import { consoleLog } from 'server/log/dbLogger';
 import { syncWithMesh } from 'server/mesh/elastic';
 import {
@@ -88,7 +86,9 @@ export function init(app) {
         version: version
     }, (err, str) => {
         indexHtml = str;
-        writeFileSync('modules/_app/index.html', indexHtml);
+        if (existsSync('modules/_app')) {
+            writeFileSync('modules/_app/index.html', indexHtml);
+        }
     });
 
 
