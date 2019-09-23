@@ -39,7 +39,7 @@ public class LogClientErrors extends NlmCdeBaseTest {
     }
 
     @Test
-    public void goToClientErrorsTab() {
+    public void goToClientErrorsTabClient() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         driver.get(baseUrl + "/siteAudit?tab=clientErrors");
         textPresent("Agent");

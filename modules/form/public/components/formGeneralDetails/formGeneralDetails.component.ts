@@ -30,8 +30,8 @@ export class FormGeneralDetailsComponent {
     tagFhirResource!: 'Not Mapped'|'Default Mapping'|supportedFhirResources;
     userOrgs: string[] = [];
 
-    constructor(public userService: UserService,
-                public orgHelperService: OrgHelperService) {
+    constructor(public orgHelperService: OrgHelperService,
+                public userService: UserService) {
         this.userService.then(() => {
             this.userOrgs = this.userService.userOrgs;
         }, _noop);

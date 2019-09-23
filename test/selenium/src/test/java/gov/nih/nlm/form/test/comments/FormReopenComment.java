@@ -6,7 +6,7 @@ import org.testng.annotations.Test;
 public class FormReopenComment extends NlmCdeBaseTest {
 
     @Test
-    public void cdeResolveCommentTest() {
+    public void formResolveCommentTest() {
         String formName = "Brain Motor Control Assessment";
         mustBeLoggedInAs(test_username, password);
         goToFormByName(formName);

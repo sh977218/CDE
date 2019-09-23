@@ -1033,6 +1033,14 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         Assert.assertEquals(0, driver.findElements(By.xpath("//*[@id='" + String.join(",", categories) + "']")).size());
     }
 
+    protected void inlineEdit(String path, String string) {
+        clickElement(By.xpath(path + "//mat-icon[normalize-space() = 'edit']"));
+        findElement(By.xpath(path + "//input")).clear();
+        findElement(By.xpath(path + "//input")).sendKeys(string);
+        clickElement(By.xpath(path + "//button[contains(text(),'Confirm')]"));
+        textPresent(string, By.xpath(path));
+    }
+
     protected void selectHistoryAndCompare(Integer leftIndex, Integer rightIndex) {
         clickElement(By.xpath("//*[@id='historyTable']/tbody/tr[td][" + leftIndex + "]"));
         clickElement(By.xpath("//*[@id='historyTable']/tbody/tr[td][" + rightIndex + "]"));
@@ -1736,7 +1744,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
             if (order > 6) order = REG_STATUS_SORT_MAP.get(status);
             int currentOrder = REG_STATUS_SORT_MAP.get(status);
             if (currentOrder < order)
-                org.junit.Assert.fail("Registration status order incorrect. Current:" + currentOrder + " Previous: " + order);
+                Assert.fail("Registration status order incorrect. Current:" + currentOrder + " Previous: " + order);
         }
     }
 

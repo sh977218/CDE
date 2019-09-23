@@ -13,27 +13,27 @@ import { handleError, respondError } from '../errorHandler/errorHandler';
 
 export function writableCollection(model, postCheckFn = (data, cb) => cb(undefined, true), versionKey = '__v') {
     function post(res, data, cb) {
-        const errorOptions = {res, origin: 'writableCollection post ' + model};
+        const handlerOptions = {res};
         if (!postCheckFn) {
-            respondError(new Error('id generation is not supported'), errorOptions);
+            respondError(new Error('id generation is not supported'), handlerOptions);
             return;
         }
         postCheckFn(data, (err, pass) => {
             if (err) {
-                respondError(err, errorOptions);
+                respondError(err, handlerOptions);
                 return;
             }
             if (!pass) {
                 res.status(409).send('Cannot create. Already exists.');
                 return;
             }
-            new model(data).save(handleError(errorOptions, cb));
+            new model(data).save(handleError(handlerOptions, cb));
         });
     }
     function put(res, data, cb) {
-        const errorOptions = {res, origin: 'writableCollection put ' + model};
+        const handlerOptions = {res};
         if (typeof data[versionKey] !== 'number') {
-            model.findOne({_id: data._id}, handleError(errorOptions, exists => {
+            model.findOne({_id: data._id}, handleError(handlerOptions, exists => {
                 if (exists && typeof exists[versionKey] === 'undefined') { // WORKAROUND until data updated to mongo 4 __v
                     exists = undefined;
                 }
@@ -41,12 +41,12 @@ export function writableCollection(model, postCheckFn = (data, cb) => cb(undefin
                     res.status(409).send('Cannot create. Already exists.');
                     return;
                 }
-                new model(data).save(handleError(errorOptions, cb));
+                new model(data).save(handleError(handlerOptions, cb));
             }));
             return;
         }
         let query = {_id: data._id, [versionKey]: data[versionKey]};
-        model.findOne(query, handleError(errorOptions, oldInfo => {
+        model.findOne(query, handleError(handlerOptions, oldInfo => {
             if (!oldInfo) {
                 res.status(409).send('Edited by someone else. Please refresh and redo.');
                 return;
@@ -54,7 +54,7 @@ export function writableCollection(model, postCheckFn = (data, cb) => cb(undefin
             data[versionKey]++;
             oldInfo._doc = data;
             new model(data).save();
-            model.save(query, oldInfo, {new: true}, handleError(errorOptions, doc => {
+            model.save(query, oldInfo, {new: true}, handleError(handlerOptions, doc => {
                 if (!doc) {
                     res.status(409).send('Edited by someone else. Please refresh and redo.');
                     return;
@@ -65,13 +65,13 @@ export function writableCollection(model, postCheckFn = (data, cb) => cb(undefin
     }
     return {
         delete: (res, id, cb) => {
-            model.remove({_id: id}, handleError({res, origin: 'writableCollection delete ' + model}, cb));
+            model.remove({_id: id}, handleError({res}, cb));
         },
         find: (res, crit, cb) => {
-            model.find(crit, handleError({res, origin: 'writableCollection find ' + model}, cb));
+            model.find(crit, handleError({res}, cb));
         },
         get: (res, id, cb) => {
-            model.findOne({_id: id}, handleError({res, origin: 'writableCollection get ' + model}, cb));
+            model.findOne({_id: id}, handleError({res}, cb));
         },
         post,
         put,
