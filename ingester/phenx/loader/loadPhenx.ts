@@ -1,12 +1,14 @@
 import { Form } from 'server/form/mongo-form';
 import { PROTOCOL } from 'ingester/createMigrationConnection';
-import { BATCHLOADER, imported, lastMigrationScript, sortProp, sortRefDoc, updateForm } from 'ingester/shared/utility';
+import {
+    BATCHLOADER, imported, lastMigrationScript, sortProp, sortRefDoc, updateCde, updateForm
+} from 'ingester/shared/utility';
 
 import { PhenxLogger } from 'ingester/log/PhenxLogger';
 import { LoincLogger } from 'ingester/log/LoincLogger';
 import { RedcapLogger } from 'ingester/log/RedcapLogger';
 import { loadPhenxById } from 'ingester/phenx/loader/loadPhenxById';
-import { retiredUnusedPhenxCde } from 'ingester/phenx/loader/retireUnusedPhenxCde';
+import { DataElement } from 'server/cde/mongo-cde';
 
 /*
 const NewPhenxIdToOldPhenxId = {
@@ -27,6 +29,7 @@ const NewPhenxIdToOldPhenxId = {
 
 function retireForms() {
     return new Promise(resolve => {
+        console.log('Retiring forms......');
         const cond = {
             'ids.source': {$in: ['PhenX', 'PhenX Variable']},
             'registrationState.registrationStatus': {$ne: 'Retired'},
@@ -42,12 +45,70 @@ function retireForms() {
                     PhenxLogger.retiredPhenxForm++;
                     PhenxLogger.retiredPhenxForms.push(formObj.tinyId);
                 }
-            }).then(resolve);
+            }).then(() => {
+            console.log(PhenxLogger.retiredPhenxForm + ' Forms Retired.');
+            resolve();
+        });
     });
 }
 
 async function retireCdes() {
-    await retiredUnusedPhenxCde();
+    return new Promise(resolve => {
+        console.log('Retiring cdes......');
+        const cond = {
+            'registrationState.registrationStatus': {$ne: 'Retired'},
+            archived: false,
+            'ids.source': {$in: ['LOINC', 'PhenX', 'PhenX Variable']},
+            classification: {$exists: true}, $where: 'this.classification.length<2'
+        };
+        const cursor = DataElement.find(cond).cursor();
+        cursor.eachAsync(async (cde: any) => {
+            const cdeObj = cde.toObject();
+            const linkedForm = await Form.findOne({
+                archived: false,
+                $or: [
+                    {
+                        'formElements.question.cde.tinyId': cdeObj.tinyId
+                    },
+                    {
+                        'formElements.formElements.question.cde.tinyId': cdeObj.tinyId
+                    },
+                    {
+                        'formElements.formElements.formElements.question.cde.tinyId': cdeObj.tinyId
+                    },
+                    {
+                        'formElements.formElements.formElements.formElements.question.cde.tinyId': cdeObj.tinyId
+                    },
+                    {
+                        'formElements.formElements.formElements.formElements.formElements.question.cde.tinyId': cdeObj.tinyId
+                    },
+                    {
+                        'formElements.formElements.formElements.formElements.formElements.formElements.question.cde.tinyId': cdeObj.tinyId
+                    },
+                    {
+                        'formElements.formElements.formElements.formElements.formElements.formElements.formElements.question.cde.tinyId': cdeObj.tinyId
+                    },
+                    {
+                        'formElements.formElements.formElements.formElements.formElements.formElements.formElements.formElements.question.cde.tinyId': cdeObj.tinyId
+                    },
+                    {
+                        'formElements.formElements.formElements.formElements.formElements.formElements.formElements.formElements.formElements.question.cde.tinyId': cdeObj.tinyId
+                    }
+                ]
+            });
+            if (linkedForm) {
+            } else {
+                cdeObj.registrationState.registrationStatus = 'Retired';
+                cdeObj.changeNote = 'Retired because not used on any form.';
+                await updateCde(cdeObj, BATCHLOADER);
+                PhenxLogger.retiredPhenxCdes.push(cdeObj.tinyId);
+                PhenxLogger.retiredPhenxCde++;
+            }
+        }).then(() => {
+            console.log(PhenxLogger.retiredPhenxCde + ' cdes retired.');
+            resolve();
+        });
+    });
 }
 
 process.on('unhandledRejection', error => {
@@ -55,7 +116,7 @@ process.on('unhandledRejection', error => {
 });
 
 async function run() {
-//    const cond = {protocolID: {$in: ['150701', '91502']}};
+//    const cond = {protocolID: {$in: ['150701']}};
     const cond = {};
     const phenxIds = await PROTOCOL.find(cond, {protocolID: 1}).lean();
 //    const slicedPhenxIds = phenxIds.slice(0, 10);
@@ -71,9 +132,7 @@ async function run() {
 
         await loadPhenxById(phenxId.protocolID);
     }
-    console.log('Retiring cdes.');
     await retireCdes();
-    console.log('Retiring forms.');
     await retireForms();
     PhenxLogger.log();
     LoincLogger.log();

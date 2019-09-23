@@ -14,11 +14,11 @@ export async function runOneForm(loinc, classificationOrgName = 'LOINC', classif
     if (!existingForm) {
         existingForm = await newForm.save();
         LoincLogger.createdLoincForm++;
-        LoincLogger.createdLoincForms.push(existingForm.tinyId);
+        LoincLogger.createdLoincForms.push(existingForm.tinyId+ `[${loinc['LOINC Code']}]`);
     } else {
         const diff = compareElt(newForm.toObject(), existingForm.toObject());
         const existingFormObj = existingForm.toObject();
-        mergeClassification(existingFormObj, newForm.toObject(), classificationOrgName);
+        mergeClassification(existingForm, newForm.toObject(), classificationOrgName);
         if (isEmpty(diff)) {
             existingForm.lastMigrationScript = lastMigrationScript;
             existingForm.imported = imported;

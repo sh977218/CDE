@@ -22,11 +22,11 @@ export async function loadPhenxById(phenxId) {
     if (!existingForm) {
         existingForm = await newForm.save();
         PhenxLogger.createdPhenxForm++;
-        PhenxLogger.createdPhenxForms.push(existingForm.tinyId);
+        PhenxLogger.createdPhenxForms.push(existingForm.tinyId + `[${protocolId}]`);
     } else {
         const diff = compareElt(newForm.toObject(), existingForm.toObject());
         const existingFormObj = existingForm.toObject();
-        mergeClassification(existingFormObj, newForm.toObject(), 'PhenX');
+        mergeClassification(existingForm, newForm.toObject(), 'PhenX');
         if (isEmpty(diff)) {
             existingForm.lastMigrationScript = lastMigrationScript;
             existingForm.imported = imported;
