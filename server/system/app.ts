@@ -39,6 +39,7 @@ import { isOrgAdmin } from 'shared/system/authorizationShared';
 import { is } from 'useragent';
 import { promisify } from 'util';
 import { isSearchEngine } from './helper';
+import { version } from '../version';
 
 export let respondHomeFull: Function;
 
@@ -47,8 +48,6 @@ export function init(app) {
         if (req._remoteAddress) return req._remoteAddress;
         if (req.ip) return req.ip;
     };
-
-    let version = 'x';
 
     let embedHtml = '';
     renderFile('modules/_embedApp/embedApp.ejs', {isLegacy: false}, (err, str) => {

@@ -22,8 +22,7 @@ sed -i -e "s/'\.\/modules\/_fhirApp\/fhirApp\.module'/'\.\.\/modules\/_fhirApp\/
 sed -i -e "s/'\.\/modules\/_nativeRenderApp\/nativeRenderApp\.module'/'\.\.\/modules\/_nativeRenderApp\/nativeRenderApp\.module'/g" buildNode/webpackNative.prod.js
 
 # must use " because of $(
-sed -i "s/version = 'x'/version='$(git rev-parse --short HEAD)'/" buildNode/server/system/app.js
-sed -i "s/version = 'x'/version='$(git rev-parse --short HEAD)'/" buildNode/server/system/app.js
+sed -i "s/version = 'x'/version='$(git rev-parse --short HEAD)'/" buildNode/server/version.js
 
 cp -R config buildNode
 sed -i -e 's/"buildDir": "\.\.\/build"/"buildDir": "\.\.\/\.\.\/build"/g' buildNode/config/default.json

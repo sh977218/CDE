@@ -4,6 +4,7 @@ import { hasRole, isSiteAdmin } from 'shared/system/authorizationShared';
 import { capString } from 'shared/system/util';
 import { loggedInMiddleware, nocacheMiddleware } from '../system/authorization';
 import { handle40x, handleError, respondError } from '../errorHandler/errorHandler';
+import { version } from '../version';
 
 const config = require('config');
 const attachment = require('../attachment/attachmentSvc');
@@ -14,12 +15,6 @@ const userDb = require('./userDb');
 
 export function module(roleConfig) {
     const router = require('express').Router();
-
-    let version = 'local-dev';
-    try {
-        version = require('../system/version.js').version;
-    } catch (e) {
-    }
 
     router.get('/', [nocacheMiddleware], (req, res) => {
         if (!req.user) { return res.send({}); }
