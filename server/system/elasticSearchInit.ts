@@ -1,15 +1,15 @@
 import * as Config from 'config';
 import { createHash } from 'crypto';
 import { createIndexJson as boardCreateIndexJson } from 'server/board/elasticSearchMapping';
-import { Cb, CbError, ClassificationElement, ItemElastic } from 'shared/models.model';
+import { Cb, Cb1, CbError, ClassificationElement, ItemElastic } from 'shared/models.model';
 import { FormElement, FormQuestion } from 'shared/form/form.model';
 
 const config = Config as any;
 
-let primaryNameSuggest = {
-    type: "text",
-    analyzer: "autocomplete",
-    search_analyzer: "standard"
+const primaryNameSuggest = {
+    type: 'text',
+    analyzer: 'autocomplete',
+    search_analyzer: 'standard'
 };
 
 export const createSuggestIndexJson = {
@@ -19,12 +19,12 @@ export const createSuggestIndexJson = {
                 nameSuggest: primaryNameSuggest,
                 stewardOrg: {
                     properties: {
-                        name: {type: "keyword"}
+                        name: {type: 'keyword'}
                     }
                 },
                 registrationState: {
                     properties: {
-                        registrationStatus: {type: "keyword"}
+                        registrationStatus: {type: 'keyword'}
                     }
                 }
             }
@@ -35,7 +35,7 @@ export const createSuggestIndexJson = {
             analysis: {
                 filter: {
                     autocomplete_filter: {
-                        type: "edge_ngram",
+                        type: 'edge_ngram',
                         min_gram: 1,
                         max_gram: 20
                     }
@@ -46,11 +46,11 @@ export const createSuggestIndexJson = {
                         , language: 'English'
                     },
                     autocomplete: {
-                        type: "custom",
-                        tokenizer: "standard",
+                        type: 'custom',
+                        tokenizer: 'standard',
                         filter: [
-                            "lowercase",
-                            "autocomplete_filter"
+                            'lowercase',
+                            'autocomplete_filter'
                         ]
                     }
                 }
@@ -65,69 +65,69 @@ export const createIndexJson = {
             date_detection: false,
             properties: {
                 primaryNameCopy: {
-                    type: "text",
+                    type: 'text',
                     fields: {
                         raw: {
-                            type: "keyword",
+                            type: 'keyword',
                             index: false
                         }
                     }
                 },
                 stewardOrg: {
                     properties: {
-                        name: {type: "keyword"}
+                        name: {type: 'keyword'}
                     }
                 }
-                , flatClassifications: {type: "keyword"}
-                , flatMeshTrees: {type: "keyword"}
+                , flatClassifications: {type: 'keyword'}
+                , flatMeshTrees: {type: 'keyword'}
                 , classification: {
                     properties: {
                         stewardOrg: {
                             properties: {
-                                name: {type: "keyword"}
+                                name: {type: 'keyword'}
                             }
                         }
                     }
                 }
-                , classificationSize: {type: "integer"}
+                , classificationSize: {type: 'integer'}
                 , registrationState: {
                     properties: {
-                        registrationStatus: {type: "keyword"}
+                        registrationStatus: {type: 'keyword'}
                     }
                 }
-                , source: {type: "keyword"}
-                , origin: {type: "keyword"}
+                , source: {type: 'keyword'}
+                , origin: {type: 'keyword'}
                 , valueDomain: {
                     properties: {
-                        datatype: {type: "keyword"},
+                        datatype: {type: 'keyword'},
                         permissibleValues: {
                             properties: {
-                                codeSystemName: {type: "keyword"}
+                                codeSystemName: {type: 'keyword'}
                             }
                         }
                     }
                 }
                 , properties: {
-                    type: "nested",
+                    type: 'nested',
                     include_in_parent: true,
                     properties: {
-                        key: {type: "text"},
-                        value: {type: "text"}
+                        key: {type: 'text'},
+                        value: {type: 'text'}
                     }
                 }, ids: {
-                    type: "nested",
+                    type: 'nested',
                     include_in_parent: true,
                     properties: {
-                        source: {type: "keyword"},
-                        id: {type: "text"},
-                        version: {type: "text"}
+                        source: {type: 'keyword'},
+                        id: {type: 'text'},
+                        version: {type: 'text'}
                     }
                 }
-                , tinyId: {type: "keyword"}
-                , created: {type: "date"}
-                , updated: {type: "date"}
-                , imported: {type: "date"}
-                , updatedBy: {properties: {username: {type: "text"}}}
+                , tinyId: {type: 'keyword'}
+                , created: {type: 'date'}
+                , updated: {type: 'date'}
+                , imported: {type: 'date'}
+                , updatedBy: {properties: {username: {type: 'text'}}}
                 , changeNote: {enabled: false}
                 , attachments: {
                     properties: {
@@ -136,22 +136,22 @@ export const createIndexJson = {
                     }
                 }
                 , history: {enabled: false}
-                , version: {type: "keyword"}
-                , views: {type: "integer"}
+                , version: {type: 'keyword'}
+                , views: {type: 'integer'}
                 , linkedForms: {
                     properties: {
-                        Retired: {type: "integer"},
-                        Incomplete: {type: "integer"},
-                        Candidate: {type: "integer"},
-                        Recorded: {type: "integer"},
-                        Qualified: {type: "integer"},
-                        Standard: {type: "integer"},
-                        'Preferred Standard': {type: "integer"},
+                        Retired: {type: 'integer'},
+                        Incomplete: {type: 'integer'},
+                        Candidate: {type: 'integer'},
+                        Recorded: {type: 'integer'},
+                        Qualified: {type: 'integer'},
+                        Standard: {type: 'integer'},
+                        'Preferred Standard': {type: 'integer'},
                         forms: {
                             properties: {
-                                primaryName: {type: "text"},
-                                tinyId: {type: "keyword"},
-                                registrationStatus: {type: "keyword"}
+                                primaryName: {type: 'text'},
+                                tinyId: {type: 'keyword'},
+                                registrationStatus: {type: 'keyword'}
                             }
                         }
 
@@ -180,59 +180,59 @@ export const createFormIndexJson = {
             date_detection: false,
             properties: {
                 primaryNameCopy: {
-                    type: "text",
+                    type: 'text',
                     fields: {
                         raw: {
-                            type: "keyword",
+                            type: 'keyword',
                             index: false
                         }
                     }
                 },
-                stewardOrg: {properties: {name: {type: "keyword"}}}
-                , flatClassifications: {type: "keyword"}
-                , flatMeshTrees: {type: "keyword"}
+                stewardOrg: {properties: {name: {type: 'keyword'}}}
+                , flatClassifications: {type: 'keyword'}
+                , flatMeshTrees: {type: 'keyword'}
                 , classification: {
                     properties: {
                         stewardOrg: {
                             properties: {
-                                name: {type: "keyword"}
+                                name: {type: 'keyword'}
                             }
                         }
                     }
                 }
-                , classificationSize: {type: "integer"}
+                , classificationSize: {type: 'integer'}
                 , registrationState: {
                     properties: {
-                        registrationStatus: {type: "keyword"}
+                        registrationStatus: {type: 'keyword'}
                     }
                 }
-                , source: {type: "keyword"}
-                , origin: {type: "keyword"}
+                , source: {type: 'keyword'}
+                , origin: {type: 'keyword'}
                 , properties: {
-                    type: "nested",
+                    type: 'nested',
                     include_in_parent: true,
                     properties: {
-                        key: {type: "text"},
-                        value: {type: "text"}
+                        key: {type: 'text'},
+                        value: {type: 'text'}
                     }
                 }, ids: {
-                    type: "nested",
+                    type: 'nested',
                     include_in_parent: true,
                     properties: {
-                        source: {type: "keyword"},
-                        id: {type: "text"},
-                        version: {type: "text"}
+                        source: {type: 'keyword'},
+                        id: {type: 'text'},
+                        version: {type: 'text'}
                     }
-                }, views: {type: "integer"},
-                created: {type: "date"},
-                updated: {type: "date"},
-                imported: {type: "date"},
-                numQuestions: {type: "integer"},
-                cdeTinyIds: {type: "keyword"}
+                }, views: {type: 'integer'},
+                created: {type: 'date'},
+                updated: {type: 'date'},
+                imported: {type: 'date'},
+                numQuestions: {type: 'integer'},
+                cdeTinyIds: {type: 'keyword'}
             }
         }
     }, settings: {
-        "index.mapping.total_fields.limit": 2000,
+        'index.mapping.total_fields.limit': 2000,
         index: {
             number_of_replicas: config.elastic.number_of_replicas
         },
@@ -250,7 +250,7 @@ export const createFormIndexJson = {
 
 
 export function suggestRiverFunction(_elt: ItemElastic, cb: Cb<any>) {
-    let toIndex: any = {nameSuggest: _elt.designations[0].designation};
+    const toIndex: any = {nameSuggest: _elt.designations[0].designation};
     toIndex.registrationState = _elt.registrationState;
     toIndex.stewardOrg = _elt.stewardOrg;
     toIndex.tinyId = _elt.tinyId;
@@ -261,21 +261,25 @@ export function suggestRiverFunction(_elt: ItemElastic, cb: Cb<any>) {
 
 
 export function riverFunction(_elt: ItemElastic, cb: Cb<ItemElastic>) {
-    if (_elt.archived) return cb();
+    if (_elt.archived) {
+        return cb();
+    }
 
     const formSvc = require('../form/formsvc');
 
-    let getElt = _elt.formElements ? formSvc.fetchWholeForm : function (e: ItemElastic, cb: CbError<ItemElastic>) {
+    const getElt = _elt.formElements ? formSvc.fetchWholeForm : (e: ItemElastic, cb: CbError<ItemElastic>) => {
         cb(undefined, e);
     };
 
-    getElt(_elt, function (err: Error | undefined, elt: ItemElastic) {
+    getElt(_elt, (err: Error | undefined, elt: ItemElastic) => {
         function escapeHTML(s: string) {
-            if (!s) return '';
+            if (!s) {
+                return '';
+            }
             return s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         }
 
-        let flatArray: string[] = [];
+        const flatArray: string[] = [];
 
         function doClassif(currentString: string, classif: ClassificationElement) {
             if (currentString.length > 0) {
@@ -283,7 +287,9 @@ export function riverFunction(_elt: ItemElastic, cb: Cb<ItemElastic>) {
             }
             currentString = currentString + classif.name;
             flatArray.push(currentString);
-            if (classif.elements) classif.elements.forEach(e => doClassif(currentString, e));
+            if (classif.elements) {
+                classif.elements.forEach(e => doClassif(currentString, e));
+            }
         }
 
         function flattenClassification(doc: ItemElastic) {
@@ -301,8 +307,11 @@ export function riverFunction(_elt: ItemElastic, cb: Cb<ItemElastic>) {
         function findFormQuestions(fe: ItemElastic|FormElement) {
             if (fe.formElements) {
                 fe.formElements.forEach((fee: FormElement) => {
-                    if (fee.elementType === 'question') formQuestions.push(fee);
-                    else findFormQuestions(fee);
+                    if (fee.elementType === 'question') {
+                        formQuestions.push(fee);
+                    } else {
+                        findFormQuestions(fee);
+                    }
                 });
             }
         }
@@ -332,18 +341,18 @@ export function riverFunction(_elt: ItemElastic, cb: Cb<ItemElastic>) {
             elt.primaryDefinitionCopy = escapeHTML(elt.primaryDefinitionCopy);
         }
 
-        let regStatusSortMap = {
+        const regStatusSortMap = {
             Retired: 6,
             Incomplete: 5,
             Candidate: 4,
             Recorded: 3,
             Qualified: 2,
             Standard: 1,
-            "Preferred Standard": 0
+            'Preferred Standard': 0
         };
         elt.registrationState.registrationStatusSortOrder = regStatusSortMap[elt.registrationState.registrationStatus];
         if (elt.classification) {
-            let size = elt.classification.length;
+            const size = elt.classification.length;
             if (size > 10) {
                 elt.classificationBoost = 2.1;
             } else {
@@ -359,63 +368,68 @@ export function riverFunction(_elt: ItemElastic, cb: Cb<ItemElastic>) {
     });
 }
 
-let shortHash = function (content: any) {
+const shortHash = (content: any) => {
     return createHash('md5')
-        .update(JSON.stringify(content)).digest("hex")
+        .update(JSON.stringify(content)).digest('hex')
         .substr(0, 5).toLowerCase();
 };
 
-if (config.elastic.index.name === "auto") {
-    config.elastic.index.name = "cde_v4_" + shortHash(createIndexJson);
+if (config.elastic.index.name === 'auto') {
+    config.elastic.index.name = 'cde_v4_' + shortHash(createIndexJson);
 }
-if (config.elastic.formIndex.name === "auto") {
-    config.elastic.formIndex.name = "form_v4_" + shortHash(createFormIndexJson);
+if (config.elastic.formIndex.name === 'auto') {
+    config.elastic.formIndex.name = 'form_v4_' + shortHash(createFormIndexJson);
 }
-if (config.elastic.boardIndex.name === "auto") {
-    config.elastic.boardIndex.name = "board_" + shortHash(boardCreateIndexJson);
+if (config.elastic.boardIndex.name === 'auto') {
+    config.elastic.boardIndex.name = 'board_' + shortHash(boardCreateIndexJson);
 }
-if (config.elastic.cdeSuggestIndex.name === "auto") {
-    config.elastic.cdeSuggestIndex.name = "cdesuggest_v4_" + shortHash(createSuggestIndexJson);
+if (config.elastic.cdeSuggestIndex.name === 'auto') {
+    config.elastic.cdeSuggestIndex.name = 'cdesuggest_v4_' + shortHash(createSuggestIndexJson);
 }
-if (config.elastic.formSuggestIndex.name === "auto") {
-    config.elastic.formSuggestIndex.name = "formsuggest_v4_" + shortHash(createSuggestIndexJson);
+if (config.elastic.formSuggestIndex.name === 'auto') {
+    config.elastic.formSuggestIndex.name = 'formsuggest_v4_' + shortHash(createSuggestIndexJson);
 }
 
-export type ElasticIndex = {
-    count?: number,
-    totalCount?: number, // populated after query
-    filter?: Function,
-    indexJson: any
-    indexName: string,
-    name: string,
-};
+export interface ElasticIndex {
+    count: number;
+    totalCount?: number; // populated after query
+    filter?: (elt: ItemElastic, cb: Cb<ItemElastic>) => void;
+    indexJson: any;
+    indexName: string;
+    name: string;
+}
 
 export const indices: ElasticIndex[] = [
     {
-        name: "cde",
+        name: 'cde',
+        count: 0,
         indexName: config.elastic.index.name,
         indexJson: createIndexJson,
         filter: riverFunction
     },
     {
-        name: "form",
+        name: 'form',
+        count: 0,
         indexName: config.elastic.formIndex.name,
         indexJson: createFormIndexJson,
         filter: riverFunction
     },
     {
-        name: "board",
+        name: 'board',
+        count: 0,
         indexName: config.elastic.boardIndex.name,
         indexJson: boardCreateIndexJson
     },
     {
-        name: "cdeSuggest",
+        name: 'cdeSuggest',
+        count: 0,
         indexName: config.elastic.cdeSuggestIndex.name,
         indexJson: createSuggestIndexJson,
         filter: suggestRiverFunction
     },
     {
-        name: "formSuggest",
+        name: 'formSuggest',
+        count: 0,
         indexName: config.elastic.formSuggestIndex.name,
         indexJson: createSuggestIndexJson,
         filter: suggestRiverFunction

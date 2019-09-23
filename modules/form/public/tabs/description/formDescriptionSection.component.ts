@@ -151,7 +151,7 @@ export class FormDescriptionSectionComponent implements OnInit {
         modal.bLabel = !_isEqual(newForm.designations, oldForm.designations);
 
         this.updateFormVersion =  modal;
-        this.dialog.open(this.updateFormVersionTmpl, {width: '1000px'}).afterClosed().subscribe(res => {
+        this.dialog.open<boolean>(this.updateFormVersionTmpl, {width: '1000px'}).afterClosed().subscribe(res => {
             if (res) {
                 currentSection.inForm = newSection.inForm;
                 currentSection.formElements = newSection.formElements;

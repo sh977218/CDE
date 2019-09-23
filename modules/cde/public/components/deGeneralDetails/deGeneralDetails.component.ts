@@ -1,9 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import _noop from 'lodash/noop';
-
 import { UserService } from '_app/user.service';
+import _noop from 'lodash/noop';
 import { OrgHelperService } from 'non-core/orgHelper.service';
-
 
 @Component({
     selector: 'cde-de-general-details',
@@ -16,8 +14,8 @@ export class DeGeneralDetailsComponent {
     userOrgs: string[] = [];
 
     constructor(
-        public userService: UserService,
-        public orgHelperService: OrgHelperService
+        public orgHelperService: OrgHelperService,
+        public userService: UserService
     ) {
         this.userService.then(() => {
             this.userOrgs = this.userService.userOrgs;

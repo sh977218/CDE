@@ -18,7 +18,6 @@ public class LaunchFhirApp extends NlmCdeBaseTest {
         findElement(By.cssSelector("input[name='email']")).sendKeys("giyucado@web2mailco.com");
         findElement(By.cssSelector("input[name='password']")).sendKeys("koko123!");
         clickElement(By.xpath("//button/div/div/span[. = 'LogIn']"));
-        hangon(10);
         textPresent("My Sandboxes");
 
         hangon(5);

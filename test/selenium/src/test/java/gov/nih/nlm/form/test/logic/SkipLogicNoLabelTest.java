@@ -1,10 +1,9 @@
 package gov.nih.nlm.form.test.logic;
 
-
 import gov.nih.nlm.form.test.BaseFormTest;
-import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.List;
@@ -26,8 +25,7 @@ public class SkipLogicNoLabelTest extends BaseFormTest {
         clickElement(By.id("skipLogicLabelSelection_0"));
         List<WebElement> options = findElements(By.xpath("//*[@id='skipLogicLabelSelection_0']/option"));
         for (int i = 0; i < expectedOptions.length; i++) {
-            String expectedOption = expectedOptions[i];
-            Assert.assertEquals(expectedOption, options.get(i).getText().trim());
+            Assert.assertEquals(options.get(i).getText().trim(), expectedOptions[i]);
         }
         clickElement(By.xpath(" //h1[@class='mat-dialog-title']"));
         clickElement(By.id("cancelNewSkipLogicButton"));

@@ -5,7 +5,7 @@
                 <mat-icon>add</mat-icon> Add
             </button>
             <span class="hand-cursor" (click)="elt.isCollapsed = !elt.isCollapsed"> {{elt.designations[0].designation}} </span>
-            <a href="formView?tinyId={{elt.tinyId}}" target="_blank" id="acc_link_{{i}}">
+            <a href="/formView?tinyId={{elt.tinyId}}" target="_blank" id="acc_link_{{i}}">
                 <mat-icon>visibility</mat-icon>
             </a>
             <cde-pin-board [elt]="elt" [eltIndex]="index" [module]="'form'"></cde-pin-board>

@@ -29,9 +29,9 @@ export function module() {
     router.post('/fhirApp', isSiteAdminMiddleware, (req, res) => fhirApps.save(res, req.body, app => res.send(app)));
     router.delete('/fhirApp/:id', isSiteAdminMiddleware, (req, res) => fhirApps.delete(res, req.params.id, () => res.send()));
 
-    router.get('/fhir/form/:param', (req, res) => res.send(isModernBrowser(req) ? fhirHtml : fhirLegacyHtml));
+    router.get('/form/:param', (req, res) => res.send(isModernBrowser(req) ? fhirHtml : fhirLegacyHtml));
 
-    router.get('/fhir/launch/:param', (req, res) => {
+    router.get('/launch/:param', (req, res) => {
         res.sendFile(join(__dirname, '../../modules/_fhirApp', 'fhirAppLaunch.html'), undefined, err => {
             if (err) {
                 res.sendStatus(404);

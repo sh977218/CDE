@@ -481,7 +481,7 @@ export function init(app) {
                 doc.linkTemplateDe = req.body.linkTemplateDe;
                 doc.linkTemplateForm = req.body.linkTemplateForm;
                 doc.version = req.body.version;
-                doc.save(handleError(source => res.send(source)));
+                doc.save(handleError({req, res},source => res.send(source)));
             }
         }));
     });
