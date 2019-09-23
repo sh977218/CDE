@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { AlertService } from 'alert/alert.service';
+import _noop from 'lodash/noop';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { Cb, Organization } from 'shared/models.model';
 import { stringCompare } from 'shared/system/util';
@@ -52,7 +53,7 @@ export class OrgsEditComponent implements OnInit {
     updateOrg(org: Organization) {
         this.http.post('/updateOrg', org).subscribe(res => {
                 this.getOrgs(() => {
-                    this.orgHelperService.reload().then(() => this.alert.addAlert('success', 'Saved'));
+                    this.orgHelperService.reload().then(() => this.alert.addAlert('success', 'Saved'), _noop);
                 });
             }, () => this.alert.addAlert('danger', 'There was an issue updating this org.')
         );

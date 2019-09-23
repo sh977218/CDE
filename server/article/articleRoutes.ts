@@ -9,14 +9,16 @@ export function module(roleConfig) {
 
     ['whatsNew', 'contactUs', 'resources'].forEach(a => {
         router.get('/' + a, (req, res) => {
-            byKey(a, handleError({res, origin: 'GET /article/' + a},
+            byKey(a, handleError({req, res},
                 article => res.send(article)));
         });
     });
 
     router.post('/:key', roleConfig.update, (req, res) => {
-        if (req.body.key !== req.params.key) { return res.status(400).send(); }
-        update(req.body, handleError({res, origin: 'POST /article/:key'}, () => {
+        if (req.body.key !== req.params.key) {
+            return res.status(400).send();
+        }
+        update(req.body, handleError({req, res}, () => {
             byKey(req.params.key, (err, art) => res.send(art));
         }));
     });
@@ -46,11 +48,11 @@ export function module(roleConfig) {
     }
 
     router.get('/resourcesAndFeed', (req, res) => {
-        byKey('resources', handleError({res}, async article => {
-                article = article.toObject();
-                await replaceRssToken(article).catch(handleError({req, res}));
-                res.send(article);
-            }));
+        byKey('resources', handleError({req, res}, async article => {
+            article = article.toObject();
+            await replaceRssToken(article).catch(handleError({req, res}));
+            res.send(article);
+        }));
     });
 
     return router;

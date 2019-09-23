@@ -25,7 +25,6 @@ import { OrgHelperService } from 'non-core/orgHelper.service';
 import _noop from 'lodash/noop';
 import { debounceTime, map } from 'rxjs/operators';
 import { Subscription } from 'rxjs/Subscription';
-import { SearchSettings } from 'search/search.model';
 import { DataType } from 'shared/de/dataElement.model';
 import { uriViewBase } from 'shared/item';
 import {
@@ -36,6 +35,7 @@ import {
     ElasticQueryResponseHit, ItemElastic, ModuleItem,
     Organization
 } from 'shared/models.model';
+import { SearchSettings } from 'shared/search/search.model';
 import { hasRole, isSiteAdmin } from 'shared/system/authorizationShared';
 import { orderedList, statusList } from 'shared/system/regStatusShared';
 import { ownKeys } from 'shared/user';
@@ -612,7 +612,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                 });
             }, () => {
             });
-        });
+        }, _noop);
     }
 
     pageChange(newPage: PageEvent) {

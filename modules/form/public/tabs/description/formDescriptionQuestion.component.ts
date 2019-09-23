@@ -159,7 +159,7 @@ export class FormDescriptionQuestionComponent implements OnInit {
         }
 
         this.updateCdeVersion = modal;
-        this.dialog.open(this.updateCdeVersionTmpl, {width: '1000px'}).afterClosed().subscribe(res => {
+        this.dialog.open<boolean>(this.updateCdeVersionTmpl, {width: '1000px'}).afterClosed().subscribe(res => {
             if (res) {
                 currentQuestion.question = newQuestion.question;
                 currentQuestion.label = newQuestion.label;

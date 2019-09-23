@@ -10,7 +10,7 @@ import { Subject } from 'rxjs/Subject';
 import { DataElement, DATA_TYPE_ARRAY, ValueDomainValueList, ValueDomain } from 'shared/de/dataElement.model';
 import { fixDataElement, fixDatatype } from 'shared/de/deValidator';
 import { PermissibleValue } from 'shared/models.model';
-import { SearchSettings } from 'search/search.model';
+import { SearchSettings } from 'shared/search/search.model';
 import xml2js from 'xml2js';
 
 interface Source {

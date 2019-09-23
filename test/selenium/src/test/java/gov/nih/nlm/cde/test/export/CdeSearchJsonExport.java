@@ -14,7 +14,7 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 public class CdeSearchJsonExport extends NlmCdeBaseTest {
 
     @Test
-    public void cdeSearchExport() {
+    public void cdeSearchJsonExport() {
         goToCdeSearch();
         clickElement(By.id("browseOrg-NINDS"));
         textPresent("All Statuses");

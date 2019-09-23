@@ -3,10 +3,10 @@ import { Injectable } from '@angular/core';
 import { ElasticService } from '_app/elastic.service';
 import { AlertService } from 'alert/alert.service';
 import { mergeArrayByProperty } from 'core/adminItem/classification';
-import { SearchSettings } from 'search/search.model';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import { DataElement } from 'shared/de/dataElement.model';
 import { CbErr, ElasticQueryResponseForm } from 'shared/models.model';
+import { SearchSettings } from 'shared/search/search.model';
 import { transferClassifications } from 'shared/system/classificationShared';
 
 export interface MergeFieldsDe {
@@ -30,7 +30,6 @@ export class MergeCdeService {
         private elasticService: ElasticService,
         private http: HttpClient) {
     }
-
 
     doMerge(tinyIdFrom: string, tinyIdTo: string, fields: MergeFieldsDe, cb: CbErr<[DataElement, DataElement]>) {
         if (tinyIdFrom === tinyIdTo) { return cb(); }

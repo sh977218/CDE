@@ -2,7 +2,7 @@ import '../../node_modules/feedback/stable/2.0/html2canvas.js';
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { ElasticService } from '_app/elastic.service';
-import { SearchSettings } from 'search/search.model';
+import { SearchSettings } from 'shared/search/search.model';
 import { orderedList } from 'shared/system/regStatusShared';
 import {
     ClassificationElement, ElasticQueryResponseAggregationsItem, ElasticQueryResponseDe,
