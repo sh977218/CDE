@@ -2,7 +2,7 @@ import { isEmpty } from 'lodash';
 import { Form, FormSource } from 'server/form/mongo-form';
 import { createLoincForm } from 'ingester/loinc/Form/form';
 import {
-    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeElt, printUpdateResult, updateForm
+    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeClassification, mergeElt, printUpdateResult, updateForm
 } from 'ingester/shared/utility';
 import { LoincLogger } from 'ingester/log/LoincLogger';
 
@@ -17,6 +17,8 @@ export async function runOneForm(loinc, classificationOrgName = 'LOINC', classif
         LoincLogger.createdLoincForms.push(existingForm.tinyId);
     } else {
         const diff = compareElt(newForm.toObject(), existingForm.toObject());
+        const existingFormObj = existingForm.toObject();
+        mergeClassification(existingFormObj, newForm.toObject(), classificationOrgName);
         if (isEmpty(diff)) {
             existingForm.lastMigrationScript = lastMigrationScript;
             existingForm.imported = imported;
@@ -24,7 +26,6 @@ export async function runOneForm(loinc, classificationOrgName = 'LOINC', classif
             LoincLogger.sameLoincForm++;
             LoincLogger.sameLoincForms.push(existingForm.tinyId);
         } else {
-            const existingFormObj = existingForm.toObject();
             mergeElt(existingFormObj, newFormObj, 'LOINC', classificationOrgName);
             await updateForm(existingFormObj, BATCHLOADER, {updateSource: true});
             LoincLogger.changedLoincForm++;

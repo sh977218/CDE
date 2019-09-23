@@ -14,7 +14,7 @@ export function fixSourceName(cdeObj) {
 }
 
 export function fixCreated(cde) {
-    let defaultDate = new Date();
+    const defaultDate = new Date();
     defaultDate.setFullYear(1969, 1, 1);
     cde.created = defaultDate;
 }
@@ -41,7 +41,7 @@ export function fixValueDomain(cdeObj) {
     if (!cdeObj.valueDomain.datatype) {
         cdeObj.valueDomain.datatype = 'Text';
     }
-    let datatype = cdeObj.valueDomain.datatype;
+    const datatype = cdeObj.valueDomain.datatype;
     const myProps = [
         'datatypeText',
         'datatypeNumber',
@@ -73,17 +73,19 @@ export function fixValueDomain(cdeObj) {
     myProps.filter(e => e !== checkType).forEach(p => {
         delete cdeObj.valueDomain[p];
     });
-    if (!cdeObj.valueDomain[checkType]) cdeObj.valueDomain[checkType] = {};
+    if (!cdeObj.valueDomain[checkType]) {
+        cdeObj.valueDomain[checkType] = {};
+    }
 
     return cdeObj.valueDomain;
 }
 
 export function fixDatatypeNumber(datatypeNumber) {
-    let minValueString = datatypeNumber.minValue;
-    let minValue = parseInt(minValueString);
-    let maxValueString = datatypeNumber.maxValue;
-    let maxValue = parseInt(maxValueString);
-    let result: any = {};
+    const minValueString = datatypeNumber.minValue;
+    const minValue = parseInt(minValueString);
+    const maxValueString = datatypeNumber.maxValue;
+    const maxValue = parseInt(maxValueString);
+    const result: any = {};
     if (!isNaN(minValue)) {
         result.minValue = minValue;
     }
@@ -94,11 +96,11 @@ export function fixDatatypeNumber(datatypeNumber) {
 }
 
 export function fixDatatypeText(datatypeText) {
-    let minLengthString = datatypeText.minLength;
-    let minLength = parseInt(minLengthString);
-    let maxLengthString = datatypeText.maxLength;
-    let maxLength = parseInt(maxLengthString);
-    let result: any = {};
+    const minLengthString = datatypeText.minLength;
+    const minLength = parseInt(minLengthString);
+    const maxLengthString = datatypeText.maxLength;
+    const maxLength = parseInt(maxLengthString);
+    const result: any = {};
     if (!isNaN(minLength)) {
         result.minLength = minLength;
     }
@@ -109,7 +111,7 @@ export function fixDatatypeText(datatypeText) {
 }
 
 export function fixEmptyPermissibleValue(permissibleValues) {
-    let result = [];
+    const result = [];
     permissibleValues.forEach(pv => {
         if (!pv.permissibleValue) {
             pv.permissibleValue = pv.valueMeaningName;
@@ -123,12 +125,12 @@ export function fixEmptyPermissibleValue(permissibleValues) {
 }
 
 function fixDerivationRules(cdeObj) {
-    let derivationRules = [];
+    const derivationRules = [];
     cdeObj.derivationRules.forEach(d => {
         if (!isEmpty(d.inputs)) {
-            let inputs = [];
+            const inputs = [];
             d.inputs.forEach(input => {
-                let underScoreTinyId = input.replace(/-/g, "_");
+                const underScoreTinyId = input.replace(/-/g, '_');
                 inputs.push(underScoreTinyId);
             });
             d.inputs = inputs;
@@ -155,7 +157,9 @@ export function fixCdeError(cde) {
 // form
 function fixSources(formObj) {
     formObj.sources.forEach(s => {
-        if (!s.updated) delete s.updated;
+        if (!s.updated) {
+            delete s.updated;
+        }
     });
     return formObj.sources.filter(s => !isEmpty(s));
 }
@@ -165,8 +169,8 @@ function fixProperties(formObj) {
 }
 
 async function convertQuestionToCde(fe, stewardOrg, registrationState) {
-    let datatype = fe.question.datatype;
-    let createCdeObj: any = {
+    const datatype = fe.question.datatype;
+    const createCdeObj: any = {
         tinyId: fe.question.cde.tinyId,
         archived: false,
         designations: [{designation: fe.label}],
@@ -188,7 +192,9 @@ async function convertQuestionToCde(fe, stewardOrg, registrationState) {
             permissibleValues: fe.question.cde.permissibleValues
         }
     };
-    if (fe.question.cde.version) createCdeObj.version = fe.question.cde.version;
+    if (fe.question.cde.version) {
+        createCdeObj.version = fe.question.cde.version;
+    }
 
     createCdeObj.valueDomain = fixValueDomain(createCdeObj);
 
@@ -210,22 +216,22 @@ async function fixQuestion(questionFe, formObj) {
         }
     */
 
-    let tinyId = questionFe.question.cde.tinyId;
+    const tinyId = questionFe.question.cde.tinyId;
     let version = null;
     if (questionFe.question.cde.version) {
         version = questionFe.question.cde.version;
     }
     if (tinyId.indexOf('-') !== -1) {
-        throw `cde tinyId is contains -`;
+        throw new Error(`cde tinyId is contains -`);
         process.exit(1);
     }
-    let label = questionFe.label;
-    let formErrorMessage = `form ${formObj.tinyId} version ${formObj.version} archived ${formObj.archived} has question '${label}'`;
+    const label = questionFe.label;
+    const formErrorMessage = `form ${formObj.tinyId} version ${formObj.version} archived ${formObj.archived} has question '${label}'`;
     if (!tinyId) {
-        throw `cde tinyId is null ${formObj.tinyId} ${label}`;
+        throw new Error(`cde tinyId is null ${formObj.tinyId} ${label}`);
         process.exit(1);
     }
-    let cond: any = {tinyId};
+    const cond: any = {tinyId};
     if (version) {
         cond.version = version;
     } else {
@@ -235,22 +241,22 @@ async function fixQuestion(questionFe, formObj) {
     let cde = await DataElement.findOne(cond);
     if (!cde) {
         console.log(`${formErrorMessage} ${tinyId} not exist. Creating`);
-        let createCdeObj = await convertQuestionToCde(cloneDeep(questionFe), formObj.stewardOrg, formObj.registrationState);
+        const createCdeObj = await convertQuestionToCde(cloneDeep(questionFe), formObj.stewardOrg, formObj.registrationState);
         cde = await new DataElement(createCdeObj).save().catch(e => {
             console.log(`mongo cond: ${JSON.stringify(cond)}`);
-            throw `await new DataElement(cdeObj).save() Error ` + e;
+            throw new Error(`await new DataElement(cdeObj).save() Error ` + e);
         });
     } else {
         cde = await cde.save().catch(error => {
-            throw `await cde.save() Error on ${cde.tinyId} ${error}`;
+            throw new Error(`await cde.save() Error on ${cde.tinyId} ${error}`);
         });
     }
-    let cdeObj = cde.toObject();
+    const cdeObj = cde.toObject();
     if (isEmpty(cdeObj.valueDomain.datatype)) {
         console.log(cdeObj.tinyId + 'datatype empty.');
         process.exit(1);
     }
-    let question: any = {
+    const question: any = {
         datatype: cdeObj.valueDomain.datatype,
         required: questionFe.question.required,
         invisible: questionFe.question.invisible,
@@ -264,10 +270,12 @@ async function fixQuestion(questionFe, formObj) {
             derivationRules: fixDerivationRules(questionFe.question.cde)
         },
     };
-    if (cde.version) question.cde.version = cde.version;
+    if (cde.version) {
+        question.cde.version = cde.version;
+    }
 
-    let valueDomain = cdeObj.valueDomain;
-    let datatype = valueDomain.datatype;
+    const valueDomain = cdeObj.valueDomain;
+    const datatype = valueDomain.datatype;
 
     if (datatype === 'Text') {
         if (!isEmpty(valueDomain.datatypeText)) {
@@ -311,7 +319,7 @@ async function fixQuestion(questionFe, formObj) {
     }
     if (datatype === 'Value List') {
         if (isEmpty(valueDomain.permissibleValues)) {
-            throw `cde tinyId ${cdeObj.tinyId} is value list, empty permissible values.`;
+            throw new Error(`cde tinyId ${cdeObj.tinyId} is value list, empty permissible values.`);
             process.exit(1);
         }
         question.multiselect = !!questionFe.question.multiselect;
@@ -333,15 +341,15 @@ async function fixSectionInform(sectionInformFe, formObj) {
         delete sectionInformFe.repeatsFor;
         delete sectionInformFe.repeat;
     }
-    let formElements = [];
+    const formElements = [];
     for (let i = 0; i < sectionInformFe.formElements.length; i++) {
-        let fe = sectionInformFe.formElements[i];
-        let elementType = fe.elementType;
+        const fe = sectionInformFe.formElements[i];
+        const elementType = fe.elementType;
         if (elementType === 'question') {
             if (fe.question.cde.tinyId.indexOf('-') !== -1) {
-                fe.question.cde.tinyId = fe.question.cde.tinyId.replace(/-/g, "_");
+                fe.question.cde.tinyId = fe.question.cde.tinyId.replace(/-/g, '_');
             }
-            let fixFe = await fixQuestion(fe, formObj);
+            const fixFe = await fixQuestion(fe, formObj);
             formElements.push(fixFe);
         } else {
             fe.formElements = await fixSectionInform(fe, formObj);
@@ -352,15 +360,15 @@ async function fixSectionInform(sectionInformFe, formObj) {
 }
 
 async function fixFormElements(formObj) {
-    let formElements = [];
+    const formElements = [];
     for (let i = 0; i < formObj.formElements.length; i++) {
-        let fe = formObj.formElements[i];
-        let elementType = fe.elementType;
+        const fe = formObj.formElements[i];
+        const elementType = fe.elementType;
         if (elementType === 'question') {
             if (fe.question.cde.tinyId.indexOf('-') !== -1) {
-                fe.question.cde.tinyId = fe.question.cde.tinyId.replace(/-/g, "_");
+                fe.question.cde.tinyId = fe.question.cde.tinyId.replace(/-/g, '_');
             }
-            let fixFe = await fixQuestion(fe, formObj);
+            const fixFe = await fixQuestion(fe, formObj);
             formElements.push(fixFe);
         } else {
             fe.formElements = await fixSectionInform(fe, formObj);

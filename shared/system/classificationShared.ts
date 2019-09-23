@@ -1,5 +1,7 @@
 import { find, slice, sortBy, uniqWith } from 'lodash';
-import { Cb, Cb1, Classification, ClassificationElement, Item, MongooseType, ObjectId, Organization } from 'shared/models.model';
+import {
+    Cb, Cb1, Classification, ClassificationElement, Item, MongooseType, ObjectId, Organization
+} from 'shared/models.model';
 
 export const actions: {
     create: string,
@@ -230,10 +232,11 @@ export function renameCategory(tree: Classification, fields: string[], newName: 
 }
 
 export function sortClassification(item: Item): Item {
-    function sortElements(elements: ClassificationElement[]) {
+    function sortElements(elements: ClassificationElement[] = []) {
         elements.sort((c1, c2) => c1.name.localeCompare(c2.name));
         elements.forEach(e => sortElements(e.elements));
     }
+
     if (item.classification) {
         item.classification.sort((c1, c2) => c1.stewardOrg.name.localeCompare(c2.stewardOrg.name));
         item.classification.forEach(c => sortElements(c.elements));
@@ -267,6 +270,7 @@ interface Element {
     name: string;
     elements: Element[];
 }
+
 export interface OrgClassification {
     _id: ObjectId;
     elements: Element [];

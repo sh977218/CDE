@@ -2,7 +2,9 @@ import { isEmpty } from 'lodash';
 import { DataElement, DataElementSource } from 'server/cde/mongo-cde';
 import { createLoincCde } from 'ingester/loinc/CDE/cde';
 import {
-    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeElt, printUpdateResult, updateCde
+    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeClassification, mergeElt, printUpdateResult,
+    replaceClassificationByOrg,
+    updateCde
 } from 'ingester/shared/utility';
 
 import { LoincLogger } from 'ingester/log/LoincLogger';
@@ -25,6 +27,8 @@ export async function runOneCde(loinc, classificationOrgName, classificationArra
         LoincLogger.createdLoincCdes.push(existingCde.tinyId);
     } else {
         const diff = compareElt(newCde.toObject(), existingCde.toObject());
+        const existingCdeObj = existingCde.toObject();
+        mergeClassification(existingCdeObj, newCde.toObject(), classificationOrgName);
         if (isEmpty(diff)) {
             existingCde.lastMigrationScript = lastMigrationScript;
             existingCde.imported = imported;
@@ -35,7 +39,6 @@ export async function runOneCde(loinc, classificationOrgName, classificationArra
             LoincLogger.sameLoincCde++;
             LoincLogger.sameLoincCdes.push(existingCde.tinyId);
         } else {
-            const existingCdeObj = existingCde.toObject();
             mergeElt(existingCdeObj, newCdeObj, 'LOINC', classificationOrgName);
             await updateCde(existingCdeObj, BATCHLOADER, {updateSource: true}).catch(err => {
                 console.log(newCdeObj);

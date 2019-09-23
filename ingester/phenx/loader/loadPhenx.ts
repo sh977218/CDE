@@ -1,12 +1,11 @@
 import { Form } from 'server/form/mongo-form';
 import { PROTOCOL } from 'ingester/createMigrationConnection';
-import { BATCHLOADER, imported, lastMigrationScript, updateForm } from 'ingester/shared/utility';
+import { BATCHLOADER, imported, lastMigrationScript, sortProp, sortRefDoc, updateForm } from 'ingester/shared/utility';
 
 import { PhenxLogger } from 'ingester/log/PhenxLogger';
 import { LoincLogger } from 'ingester/log/LoincLogger';
 import { RedcapLogger } from 'ingester/log/RedcapLogger';
 import { loadPhenxById } from 'ingester/phenx/loader/loadPhenxById';
-import { sortBy } from 'lodash';
 import { retiredUnusedPhenxCde } from 'ingester/phenx/loader/retireUnusedPhenxCde';
 
 /*
@@ -55,21 +54,8 @@ process.on('unhandledRejection', error => {
     console.log(error);
 });
 
-function fixProp(protocol) {
-    const protocolObj = protocol.toObject();
-    protocol.properties = sortBy(protocolObj.properties, 'key');
-}
-
-function fixRefDoc(protocol) {
-    const protocolObj = protocol.toObject();
-    protocolObj.referenceDocuments.forEach(r => {
-        r.languageCode = 'en-us';
-    });
-    protocol.referenceDocuments = sortBy(protocolObj.referenceDocuments, ['docType', 'languageCode', 'document']);
-}
-
 async function run() {
-//    const cond = {protocolID: {$in: ['190401']}};
+//    const cond = {protocolID: {$in: ['150701', '91502']}};
     const cond = {};
     const phenxIds = await PROTOCOL.find(cond, {protocolID: 1}).lean();
 //    const slicedPhenxIds = phenxIds.slice(0, 10);
@@ -78,8 +64,8 @@ async function run() {
         // @TODO remove after this load
         const existingForm: any = await Form.findOne({archived: false, 'ids.id': phenxId.protocolID});
         if (existingForm) {
-            fixRefDoc(existingForm);
-            fixProp(existingForm);
+            existingForm.referenceDocuments = sortRefDoc(existingForm);
+            existingForm.properties = sortProp(existingForm.toObject());
             await existingForm.save();
         }
 

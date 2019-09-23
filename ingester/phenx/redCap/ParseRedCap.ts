@@ -55,8 +55,9 @@ async function doOneRedCap(redCap, redCaps, protocol, newForm) {
     const newCde = new DataElement(redCapCde);
     const newCdeObj = newCde.toObject();
     const leadingZeroProtocolId = leadingZerosProtocolId(protocol.protocolID);
-
-    let existingCde = await DataElement.findOne({archived: false, 'ids.id': 'PX' + leadingZeroProtocolId});
+    const variableName = redCap['Variable / Field Name'];
+    const cdeId = 'PX' + leadingZeroProtocolId + '_' + variableName.trim();
+    let existingCde = await DataElement.findOne({archived: false, 'ids.id': cdeId});
     if (!existingCde) {
         existingCde = await newCde.save();
         RedcapLogger.createdRedcapCde++;
