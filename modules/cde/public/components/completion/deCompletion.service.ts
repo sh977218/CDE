@@ -2,11 +2,11 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ElasticService } from '_app/elastic.service';
 import { AlertService } from 'alert/alert.service';
-import { SearchSettings } from 'search/search.model';
 import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Subject } from 'rxjs/Subject';
 import { DataElement } from 'shared/de/dataElement.model';
+import { SearchSettings } from 'shared/search/search.model';
 
 @Injectable()
 export class DeCompletionService {

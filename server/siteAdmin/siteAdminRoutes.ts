@@ -1,4 +1,4 @@
-import { handle40x, handleError } from '../errorHandler/errorHandler';
+import { handle40x, handleError } from 'server/errorHandler/errorHandler';
 
 const app_status = require("./status");
 const userDb = require('../user/userDb');

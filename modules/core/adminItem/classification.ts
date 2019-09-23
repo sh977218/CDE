@@ -26,7 +26,9 @@ export function flattenClassification(elt: Item): string[] {
         }
         currentString = currentString + classif.name;
         if (classif.elements && classif.elements.length > 0) {
-            classif.elements.forEach(cl => doClassif(currentString, cl, result));
+            classif.elements.forEach((cl: ClassificationElement) => {
+                doClassif(currentString, cl, result);
+            });
         } else {
             result.push(currentString);
         }

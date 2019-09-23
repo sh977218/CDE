@@ -24,14 +24,12 @@ public class LogErrorsTest extends NlmCdeBaseTest {
         textPresent("/triggerServerErrorExpress");
     }
 
-
     @Test
-    public void goToClientErrorsTab() {
+    public void goToClientErrorsTabServer() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         driver.get(baseUrl + "/siteAudit?tab=serverErrors");
         textPresent("Request");
         textPresent("Stack");
     }
-
 
 }

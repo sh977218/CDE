@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, ViewChild } from '@angular/core';
-import { MatPaginator, MatSort, MatTableDataSource, Sort } from '@angular/material';
-import { ActivatedRoute } from '@angular/router';
+import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
+import { ActivatedRoute, Data } from '@angular/router';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
 import { Comment } from 'shared/models.model';
@@ -26,9 +26,9 @@ export class CommentsComponent {
     constructor(protected route: ActivatedRoute,
                 private alert: AlertService,
                 private http: HttpClient) {
-        this.route.data.subscribe(event => {
-            this.title = event.title;
-            this.commentUrl = event.commentsUrl;
+        this.route.data.subscribe((data: Data) => {
+            this.title = data.title;
+            this.commentUrl = data.commentsUrl;
             this.getComments();
         });
     }
@@ -55,7 +55,6 @@ export class CommentsComponent {
                     default:
                         return data[sortHeaderId];
                 }
-
             };
 
             const organizationSet = new Set<string>();

@@ -1,7 +1,7 @@
 package gov.nih.nlm.cde.test.permissibleValue;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
-import junit.framework.Assert;
+import org.testng.Assert;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 

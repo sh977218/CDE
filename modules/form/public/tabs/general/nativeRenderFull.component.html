@@ -12,13 +12,13 @@
                     onclick="window.open(this.getAttribute('data-url'),'_blank')">
                 <a class="d-inline" id="button_lforms">LHC-Forms</a>
                 (Provided by <a class="d-inline" href="https://lhncbc.nlm.nih.gov/project/lforms"
-                                target="_blank" (click)="$event.stopPropagation()">LHNCBC</a>)
+                                target="_blank" rel="noopener noreferrer" (click)="$event.stopPropagation()">LHNCBC</a>)
             </span>
             <span mat-menu-item
                     attr.data-url="/form/{{elt.tinyId}}?type=xml&subtype=sdc&renderer=defaultHtml"
                     onclick="window.open(this.getAttribute('data-url'),'_blank')">
                 <a class="d-inline" id="button_sdc">SDC</a>
-                (Provided by <a class="d-inline" href="https://www.healthit.gov/techlab/" target="_blank"
+                (Provided by <a class="d-inline" href="https://www.healthit.gov/techlab/" target="_blank" rel="noopener noreferrer"
                                 (click)="$event.stopPropagation()">ONC</a>)
             </span>
             <span id="printableLogicCb" (click)="overridePrintable = !overridePrintable" mat-menu-item>

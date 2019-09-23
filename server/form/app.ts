@@ -225,7 +225,10 @@ export function init(app, daoManager) {
 
     app.post('/formCompletion/:term', nocacheMiddleware, (req, res) => {
         const term = req.params.term;
-        elasticSystem.completionSuggest(term, req.user, req.body, config.elastic.formSuggestIndex.name, resp => {
+        elasticSystem.completionSuggest(term, req.user, req.body, config.elastic.formSuggestIndex.name, (err, resp) => {
+            if (err) {
+                throw new Error('/formCompletion failed');
+            }
             resp.hits.hits.forEach(r => r._index = undefined);
             res.send(resp.hits.hits);
         });

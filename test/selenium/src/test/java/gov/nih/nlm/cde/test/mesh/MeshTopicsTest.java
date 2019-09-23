@@ -26,8 +26,7 @@ public class MeshTopicsTest extends NlmCdeBaseTest {
             hangon(1);
             j--;
         }
-        if (j == 0)
-            System.out.println("NINDS not typed");
+        if (j == 0) System.out.println("NINDS not typed");
         findElement(By.id("addMeshDescButton"));
         textPresent("National Institute of Neurological Disorders and Stroke");
         clickElement(By.id("addMeshDescButton"));
