@@ -272,7 +272,7 @@ export function initEs(cb: Cb = () => {
 }
 
 export function completionSuggest(term: ElasticCondition, user: User, settings: SearchSettingsElastic,
-                                  indexName: string, cb: Cb<SearchResponse<ItemElastic>>) {
+                                  indexName: string, cb: CbError<SearchResponse<ItemElastic>>) {
     const suggestQuery = {
         query: {
             match: {
@@ -297,7 +297,7 @@ export function completionSuggest(term: ElasticCondition, user: User, settings: 
         if (error) {
             cb(error);
         } else {
-            cb(response);
+            cb(undefined, response);
         }
     });
 }

@@ -74,12 +74,13 @@ export class DataElementElastic extends DataElement { // all volatile
     valueDomain!: ValueDomain & {nbOfPVs: number};
 }
 
+type Precision = 'Year' | 'Month' | 'Day' | 'Hour' | 'Minute' | 'Second';
 export class QuestionTypeDate {
-    precision?: string = QuestionTypeDate.PRECISION_DEFAULT;
+    precision?: Precision = QuestionTypeDate.PRECISION_DEFAULT;
     format?: string;
 
     static PRECISION_ENUM = ['Year', 'Month', 'Day', 'Hour', 'Minute', 'Second'];
-    static PRECISION_DEFAULT = 'Day';
+    static PRECISION_DEFAULT: Precision = 'Day';
 }
 
 export class QuestionTypeDynamicCodeList {

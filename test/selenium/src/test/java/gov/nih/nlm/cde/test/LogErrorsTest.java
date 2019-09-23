@@ -26,7 +26,7 @@ public class LogErrorsTest extends NlmCdeBaseTest {
 
 
     @Test
-    public void goToClientErrorsTab() {
+    public void goToClientErrorsTabServerCde() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         driver.get(baseUrl + "/siteAudit?tab=serverErrors");
         textPresent("Request");

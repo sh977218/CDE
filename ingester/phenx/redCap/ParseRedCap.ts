@@ -61,7 +61,7 @@ async function doOneRedCap(redCap, redCaps, protocol, newForm) {
     if (!existingCde) {
         existingCde = await newCde.save();
         RedcapLogger.createdRedcapCde++;
-        RedcapLogger.createdRedcapCdes.push(existingCde.tinyId);
+        RedcapLogger.createdRedcapCdes.push(existingCde.tinyId + `[${cdeId}]`);
     } else {
         const diff = compareElt(newCde.toObject(), existingCde.toObject());
         if (isEmpty(diff)) {

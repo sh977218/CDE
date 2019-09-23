@@ -40,7 +40,7 @@ export async function createLoincForm(loinc, classificationOrgName = 'LOINC', cl
         formElements,
         attachments: []
     };
-    await parseClassification(loinc, form, classificationOrgName, classificationArray);
+    await parseClassification(form, classificationOrgName, classificationArray);
 
     return form;
 }

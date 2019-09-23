@@ -46,6 +46,6 @@ export async function createLoincCde(loinc, classificationOrgName = 'LOINC', cla
         attachments: []
     };
 
-    await parseClassification(loinc, cde, classificationOrgName, classificationArray);
+    await parseClassification(cde, classificationOrgName, classificationArray);
     return cde;
 }

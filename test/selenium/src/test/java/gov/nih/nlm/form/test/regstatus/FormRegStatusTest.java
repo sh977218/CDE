@@ -23,7 +23,7 @@ public class FormRegStatusTest extends RegStatusTest {
     }
 
     @Test
-    public void nlmPromotesToStandard() {
+    public void nlmPromotesToStandardForm() {
         nlmPromotesToStandard("Form Standard Test");
     }
 

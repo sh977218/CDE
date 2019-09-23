@@ -4,11 +4,10 @@ import * as DiffJson from 'diff-json';
 import * as cheerio from 'cheerio';
 import * as moment from 'moment';
 import { get } from 'request';
-import { findIndex, isEmpty, isEqual, lowerCase, sortBy, uniq } from 'lodash';
+import { find, findIndex, isEmpty, isEqual, lowerCase, sortBy, uniq } from 'lodash';
 import * as mongo_cde from 'server/cde/mongo-cde';
 import * as mongo_form from 'server/form/mongo-form';
 import { PhenxURL } from 'ingester/createMigrationConnection';
-import { transferClassifications } from 'shared/system/classificationShared';
 import { CdeId, Classification, Definition, Designation, Property, ReferenceDocument } from 'shared/models.model';
 import { FormElement } from 'shared/form/form.model';
 
@@ -106,12 +105,52 @@ export function printUpdateResult(updateResult: any, elt?: any) {
     }
 }
 
-export function replaceClassificationByOrg(newClassification: Classification[], existingClassification: Classification[], orgName: string) {
-    const otherClassifications = existingClassification.filter(c => c.stewardOrg.name !== orgName);
-    return newClassification.concat(otherClassifications);
+export function replaceClassificationByOrg(existingObj, newObj, orgName: string) {
+    const otherClassifications = existingObj.classification.filter(c => c.stewardOrg.name !== orgName);
+    newObj.classification.push(...otherClassifications);
+}
+
+function mergeElements(existingElements, newElements) {
+    newElements.forEach(e => {
+        const foundElement = find(existingElements.elements, o => {
+            return o.name === e.name;
+        });
+        if (!foundElement) {
+            existingElements.unshift(e);
+        } else {
+            mergeElements(foundElement.elements, e.elements);
+        }
+    });
+}
+
+
+export function mergeClassificationByOrg(existingObj, newObj, orgName: string = '') {
+    const newClassification = newObj.classification;
+    const existingClassification = existingObj.classification;
+    newClassification
+        .filter(c => {
+            if (orgName) {
+                return c.stewardOrg.name === orgName;
+            } else {
+                return true;
+            }
+        })
+        .forEach(c => {
+            const foundClassification: Classification | undefined = find(existingClassification, o => {
+                return o.stewardOrg.name === c.stewardOrg.name;
+            });
+            if (!foundClassification) {
+                existingObj.classification.unshift(c);
+            } else {
+                const existingElements = foundClassification.elements;
+                const newElements = c.elements;
+                mergeElements(existingElements, newElements);
+            }
+        });
 }
 
 export function updateCde(elt: any, user: any, options = {}) {
+    elt.lastMigrationScript = lastMigrationScript;
     return new Promise((resolve, reject) => {
         mongo_cde.update(elt, user, options, (err, savedElt) => {
             if (err) {
@@ -124,6 +163,7 @@ export function updateCde(elt: any, user: any, options = {}) {
 }
 
 export function updateForm(elt: any, user: any, options: any = {}) {
+    elt.lastMigrationScript = lastMigrationScript;
     return new Promise((resolve, reject) => {
         /* Loader cannot change Qualified PhenX formElements.*/
         const isPhenX = elt.ids.filter(id => id.source === 'PhenX').length > 0;
@@ -341,12 +381,12 @@ function mergeDesignations(existingObj, newObj) {
         const existingDesignations: Designation[] = existingObj.designations;
         const newDesignations: Designation[] = newObj.designations;
         newDesignations.forEach(newDesignation => {
-            const i = findIndex(existingDesignations, {designation: newDesignation.designation});
-            if (i === -1) {
+            const foundDesignation: Designation | undefined = find(existingDesignations, {designation: newDesignation.designation});
+            if (!foundDesignation) {
                 existingDesignations.push(newDesignation);
             } else {
-                const allTags = existingDesignations[i].tags.concat(newDesignation.tags);
-                existingDesignations[i].tags = uniq(allTags).filter(t => !isEmpty(t));
+                const allTags = foundDesignation.tags.concat(newDesignation.tags);
+                foundDesignation.tags = uniq(allTags).filter(t => !isEmpty(t));
             }
         });
     }
@@ -360,13 +400,13 @@ function mergeDefinitions(existingObj, newObj) {
         const existingDefinitions: Definition[] = existingObj.definitions;
         const newDefinitions: Definition[] = newObj.definitions;
         newDefinitions.forEach(newDefinition => {
-            const i = findIndex(existingDefinitions, {definition: newDefinition.definition});
-            if (i === -1) {
+            const foundDefinition: Definition | undefined = find(existingDefinitions, {definition: newDefinition.definition});
+            if (!foundDefinition) {
                 existingDefinitions.push(newDefinition);
             } else {
-                const allTags = existingDefinitions[i].tags.concat(newDefinition.tags);
-                existingDefinitions[i].tags = uniq(allTags).filter(t => !isEmpty(t));
-                existingDefinitions[i].definitionFormat = newDefinition.definitionFormat;
+                const allTags = foundDefinition.tags.concat(newDefinition.tags);
+                foundDefinition.tags = uniq(allTags).filter(t => !isEmpty(t));
+                foundDefinition.definitionFormat = newDefinition.definitionFormat;
             }
         });
     }
@@ -445,11 +485,9 @@ export function mergeIds(existingObj, newObj) {
 
 export function mergeClassification(existingObj, newObj, classificationOrgName) {
     if (existingObj.lastMigrationScript === lastMigrationScript) {
-        transferClassifications(newObj, existingObj);
+        mergeClassificationByOrg(existingObj, newObj, classificationOrgName);
     } else {
-        existingObj.classification =
-            replaceClassificationByOrg(newObj.classification, existingObj.classification, classificationOrgName);
-        existingObj.lastMigrationScript = lastMigrationScript;
+        replaceClassificationByOrg(existingObj, newObj, classificationOrgName);
     }
 
 }

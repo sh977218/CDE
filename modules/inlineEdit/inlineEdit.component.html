@@ -5,7 +5,7 @@
             <span *ngIf="isNotNA(value); else NAvalue">{{value}}</span>
             <ng-template #NAvalue><span>N/A</span></ng-template>
         </span>
-        <a *ngIf="linkSource" href="{{linkSource}}" target="_blank">{{value}}</a>
+        <a *ngIf="linkSource" href="{{linkSource}}" target="_blank" rel="noopener noreferrer">{{value}}</a>
     </span>
     <form *ngIf="editMode" #inlineForm="ngForm">
         <ng-container *ngIf="INPUT_TYPE_ARRAY.indexOf(inputType.toLowerCase()) > -1">

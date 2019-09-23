@@ -161,7 +161,10 @@ export function init(app, daoManager) {
 
     app.post('/cdeCompletion/:term', nocacheMiddleware, (req, res) => {
         const term = req.params.term;
-        elastic_system.completionSuggest(term, req.user, req.body, config.elastic.cdeSuggestIndex.name, resp => {
+        elastic_system.completionSuggest(term, req.user, req.body, config.elastic.cdeSuggestIndex.name, (err, resp) => {
+            if (err) {
+                throw new Error('/cdeCompletion error');
+            }
             resp.hits.hits.forEach(r => r._index = undefined);
             res.send(resp.hits.hits);
         });

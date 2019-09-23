@@ -21,13 +21,21 @@ export async function parseFormElements(protocol, attachments, newForm, isExisti
         newForm.formElements = formElements;
     }
     if (protocol.specificInstructions && protocol.specificInstructions.trim() !== 'None') {
-        newForm.formElements.unshift({
+        const instructionFormElement = {
             elementType: 'section',
             instructions: {
                 value: protocol.specificInstructions,
                 valueFormat: 'html'
             },
             formElements: []
-        });
+        };
+        if (newForm.formElements) {
+            newForm.formElements[0].instructions = {
+                value: protocol.specificInstructions,
+                valueFormat: 'html'
+            };
+        } else {
+            newForm.formElements.unshift(instructionFormElement);
+        }
     }
 }
