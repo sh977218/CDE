@@ -29,13 +29,13 @@ export async function parseFormElements(protocol, attachments, newForm, isExisti
             },
             formElements: []
         };
-        if (newForm.formElements) {
+        if (isEmpty(newForm.formElements)) {
+            newForm.formElements.unshift(instructionFormElement);
+        } else {
             newForm.formElements[0].instructions = {
                 value: protocol.specificInstructions,
                 valueFormat: 'html'
             };
-        } else {
-            newForm.formElements.unshift(instructionFormElement);
         }
     }
 }
