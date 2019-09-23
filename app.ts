@@ -1,5 +1,5 @@
 (global as any).APP_DIR = __dirname;
-(global as any).appDir = function addDir(...args: string[]) {
+(global as any).appDir = function addDir(... args: string[]) {
     return path.resolve((global as any).APP_DIR, ...args);
 };
 import * as bodyParser from 'body-parser';
@@ -84,7 +84,7 @@ app.use(compress());
 
 app.use(hsts({maxAge: 31536000000}));
 
-process.on('uncaughtException', err => {
+process.on('uncaughtException', (err) => {
     console.log('Error: Process Uncaught Exception');
     console.log(err.stack || err);
     errorLogger.error('Error: Uncaught Exception', {
@@ -93,7 +93,7 @@ process.on('uncaughtException', err => {
     });
 });
 
-domain.on('error', err => {
+domain.on('error', (err) => {
     console.log('Error: Domain Error');
     console.log(err.stack || err);
     errorLogger.error('Error: Domain Error', {stack: err.stack || err, origin: 'app.domain.error'});
@@ -119,7 +119,7 @@ const expressSettings = {
     cookie: {httpOnly: true, secure: config.proxy, maxAge: config.inactivityTimeout}
 };
 
-const getRealIp = req => {
+const getRealIp = (req) => {
     if (req._remoteAddress) {
         return req._remoteAddress;
     }
@@ -131,8 +131,8 @@ const getRealIp = req => {
 let blackIps: string[] = [];
 app.use((req, res, next) => {
     if (blackIps.indexOf(getRealIp(req)) !== -1) {
-        // tslint:disable-next-line:max-line-length
-        res.status(403).send('Access is temporarily disabled. If you think you received this response in error, please contact support. Otherwise, please try again in an hour.');
+        res.status(403).send('Access is temporarily disabled. If you think you received this response in error, please contact' +
+            ' support. Otherwise, please try again in an hour.');
     } else {
         next();
     }
@@ -199,7 +199,6 @@ app.use(function preventSessionCreation(req, res, next) {
         }
         return req.originalUrl.substr(req.originalUrl.length - 4, 4) === '.gif';
     }
-
     if ((req.cookies['connect.sid'] || req.originalUrl === '/login' || req.originalUrl === '/csrf') && !isFile(req)) {
         session(expressSettings)(req, res, next);
     } else {
@@ -248,6 +247,15 @@ if (config.s3) {
     app.use('/native', express.static((global as any).appDir('dist/native')));
 }
 
+['/embedded/public', '/_embedApp/public'].forEach(p => {
+    app.use(p, (req, res, next) => {
+            res.removeHeader('x-frame-options');
+            next();
+        },
+        express.static(path.join(__dirname, '/modules/_embedApp/public'))
+    );
+});
+
 app.use(flash());
 authInit(app);
 
@@ -261,10 +269,12 @@ const logFormat = {
     responseTime: ':response-time'
 };
 
-morganLogger.token('real-remote-addr', req => getRealIp(req));
+morganLogger.token('real-remote-addr', (req) => {
+    return getRealIp(req);
+});
 
 const winstonStream = {
-    write(message) {
+    write: (message) => {
         expressLogger.info(message);
     }
 };
@@ -278,13 +288,12 @@ if (config.expressLogFile) {
         })]
     });
     const fileStream = {
-        write(message) {
+        write: (message) => {
             logger.info(message);
         }
     };
-
-    // tslint:disable-next-line:max-line-length
-    app.use(morganLogger(':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" ":response-time ms"', {stream: fileStream}));
+    app.use(morganLogger(':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length]' +
+        ' ":referrer" ":user-agent" ":response-time ms"', {stream: fileStream}));
 }
 
 let connections = 0;
@@ -303,7 +312,7 @@ app.use((req, res, next) => {
 app.set('views', path.join(__dirname, './modules'));
 
 const originalRender = express.response.render;
-express.response.render = function (view, module, msg) {
+express.response.render = function(view, module, msg) {
     if (!module) {
         module = 'cde';
     }

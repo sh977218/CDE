@@ -5,7 +5,7 @@ import { FormSummaryListContentComponent } from 'form/public/components/listView
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm } from 'shared/form/form.model';
 import { ElasticQueryResponseForm } from 'shared/models.model';
-import { SearchSettings } from 'search/search.model';
+import { SearchSettings } from 'shared/search/search.model';
 
 @Component({
     selector: 'cde-linked-forms',

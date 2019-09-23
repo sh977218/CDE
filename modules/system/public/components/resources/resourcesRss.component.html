@@ -12,6 +12,6 @@ RSS Feeds Result:
     </div>
     <div class="clearfix"></div>
     <div *ngFor="let item of rssFeed.items" class="border-top border-bottom p-1">
-        <a [href]="item.link" target="_blank">{{item.title}}</a>
+        <a [href]="item.link" target="_blank" rel="noopener noreferrer">{{item.title}}</a>
     </div>
 </div>

@@ -2,30 +2,25 @@ import { series } from 'async';
 import { CronJob } from 'cron';
 import * as csrf from 'csurf';
 import { renderFile } from 'ejs';
-import { access, constants, createWriteStream, mkdir, writeFile } from 'fs';
+import { access, constants, createWriteStream, mkdir } from 'fs';
 import { join } from 'path';
 import { authenticate } from 'passport';
-import {
-    byTinyIdVersion as deByTinyIdVersion, count as deCount, DataElement, DataElementDraft, draftsList as deDraftsList
-} from 'server/cde/mongo-cde';
+import { DataElement, draftsList as deDraftsList } from 'server/cde/mongo-cde';
 import { handleError, respondError } from 'server/errorHandler/errorHandler';
-import {
-    byTinyIdVersion as formByTinyIdVersion, CdeFormDraft, draftsList as formDraftsList, Form
-} from 'server/form/mongo-form';
+import { draftsList as formDraftsList, Form } from 'server/form/mongo-form';
 import { consoleLog } from 'server/log/dbLogger';
 import { syncWithMesh } from 'server/mesh/elastic';
 import {
-    canApproveCommentMiddleware,
-    isOrgAdminMiddleware,
-    isOrgAuthorityMiddleware, isOrgCuratorMiddleware, isSiteAdminMiddleware, loggedInMiddleware, nocacheMiddleware
+    canApproveCommentMiddleware, isOrgAdminMiddleware, isOrgAuthorityMiddleware, isOrgCuratorMiddleware,
+    isSiteAdminMiddleware, loggedInMiddleware, nocacheMiddleware
 } from 'server/system/authorization';
 import { reIndex } from 'server/system/elastic';
 import { indices } from 'server/system/elasticSearchInit';
 import { fhirApps, fhirObservationInfo } from 'server/system/fhir';
 import { errorLogger } from 'server/system/logging';
 import {
-    addUserRole, disableRule, enableRule, getClassificationAuditLog, getFile,
-    IdSource, jobStatus, listOrgs, listOrgsDetailedInfo, orgByName, updateOrg, userById, usersByName
+    addUserRole, disableRule, enableRule, getClassificationAuditLog, getFile, IdSource, jobStatus, listOrgs,
+    listOrgsDetailedInfo, orgByName, updateOrg, userById, usersByName
 } from 'server/system/mongo-data';
 import { addOrg, managedOrgs, transferSteward } from 'server/system/orgsvc';
 import { config } from 'server/system/parseConfig';
@@ -35,7 +30,6 @@ import {
     addOrgAdmin, addOrgCurator, myOrgs, myOrgsAdmins, orgAdmins, orgCurators, removeOrgAdmin, removeOrgCurator,
     updateUserAvatar, updateUserRoles
 } from 'server/system/usersrvc';
-import { isOrgAdmin } from 'shared/system/authorizationShared';
 import { is } from 'useragent';
 import { promisify } from 'util';
 import { isSearchEngine } from './helper';
@@ -458,7 +452,7 @@ export function init(app) {
                 doc.linkTemplateDe = req.body.linkTemplateDe;
                 doc.linkTemplateForm = req.body.linkTemplateForm;
                 doc.version = req.body.version;
-                doc.save(handleError(source => res.send(source)));
+                doc.save(handleError({req, res},source => res.send(source)));
             }
         }));
     });

@@ -1,4 +1,4 @@
-import { Request, Response } from 'express-serve-static-core';
+import { Request, Response } from 'express';
 import * as _ from 'lodash';
 import { CastError } from 'mongoose';
 import { logError } from 'server/log/dbLogger';
@@ -24,7 +24,7 @@ export function handleConsoleError(options, cb = _.noop) {
     };
 }
 
-export function handleError(options?: any, cb = _.noop) {
+export function handleError(options?: HandlerOptions, cb = _.noop) {
     return function errorHandler(err?: HandledError, ...args) {
         if (err) {
             respondError(err, options);

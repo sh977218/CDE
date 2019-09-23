@@ -2,13 +2,13 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { UserService } from '_app/user.service';
 import { LocalStorageService } from 'angular-2-local-storage';
-import { SearchSettings, SearchSettingsElastic } from 'search/search.model';
-import {
-    CbErr, Cb1, CurationStatus, ItemElastic, UserSearchSettings, ElasticQueryResponseDe,
-    ElasticQueryResponseForm, ModuleItem, ElasticQueryResponseItem
-} from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm } from 'shared/form/form.model';
+import {
+    CbErr, Cb1, CurationStatus, ItemElastic, UserSearchSettings, ElasticQueryResponseDe,
+    ElasticQueryResponseForm, ElasticQueryResponseItem
+} from 'shared/models.model';
+import { SearchSettings, SearchSettingsElastic } from 'shared/search/search.model';
 import { orderedList } from 'shared/system/regStatusShared';
 
 @Injectable()
