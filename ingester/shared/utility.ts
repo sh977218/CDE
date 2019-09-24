@@ -1,9 +1,7 @@
 import { Builder, By } from 'selenium-webdriver';
 
 import * as DiffJson from 'diff-json';
-import * as cheerio from 'cheerio';
 import * as moment from 'moment';
-import { get } from 'request';
 import { find, findIndex, isEmpty, isEqual, lowerCase, sortBy, uniq } from 'lodash';
 import * as mongo_cde from 'server/cde/mongo-cde';
 import * as mongo_form from 'server/form/mongo-form';
@@ -191,31 +189,6 @@ export function protocolLinkToProtocolId(href: string) {
     return href.substr(protocolIdIndex + indexString.length, href.length);
 }
 
-const LOINC_CLASSIFICATION_MAP = {};
-
-function parseOneTermClass(content) {
-    const result = {};
-    const rows = content.split('\n');
-    const filterRows = rows.filter(c => {
-        if (isNaN(c)) {
-            return true;
-        } else {
-            if (c.match(/Table.*:/ig) || c.match(/Abbreviation.*Term Class/ig)) {
-                return false;
-            } else {
-                return false;
-            }
-        }
-    });
-    filterRows.forEach(row => {
-        const t = row.indexOf('\s');
-        const abbreviation = row.substr(0, t).trim();
-        const value = row.substr(t, row.length - 1).trim();
-        result[abbreviation] = value;
-    });
-    return result;
-}
-
 export async function getDomainCollectionSite() {
     if (!isEmpty(DOMAIN_COLLECTION_MAP)) {
         return DOMAIN_COLLECTION_MAP;
@@ -255,37 +228,6 @@ export async function getDomainCollectionSite() {
     }
     await driver.close();
     return DOMAIN_COLLECTION_MAP;
-}
-
-export function getDomainCollection() {
-    return new Promise((resolve, reject) => {
-        if (!isEmpty(DOMAIN_COLLECTION_MAP)) {
-            resolve(DOMAIN_COLLECTION_MAP);
-        } else {
-            get(PhenxURL, async (err, response, body) => {
-                if (err) {
-                    reject(err);
-                }
-                const $ = cheerio.load(body, {normalizeWhitespace: true});
-                const table = $('#myTable');
-                const trs = table.find('tbody tr');
-                console.log('trs: ' + typeof trs);
-                for (const tr of trs) {
-                    const tds = $(tr).find('td');
-                    if (tds.length !== 3) {
-                        throw new Error('td length error.');
-                    }
-                    const a = $(tds[1]).find('a');
-                    const href = $(a).attr('href');
-                    const protocolLink = 'https://www.phenxtoolkit.org' + href;
-                    const domainCollection = $(tds[2]).text().trim();
-                    const protocolId = protocolLinkToProtocolId(href);
-                    DOMAIN_COLLECTION_MAP[protocolId] = {protocolLink, domainCollection};
-                }
-                resolve(DOMAIN_COLLECTION_MAP);
-            });
-        }
-    });
 }
 
 function getChildren(formElements: FormElement[]) {
@@ -464,23 +406,18 @@ export function mergeReferenceDocuments(existingObj, newObj) {
 }
 
 export function mergeIds(existingObj, newObj) {
-    const replaceIds = isOneClassificationSameSource(existingObj, newObj);
-    if (replaceIds) {
-        existingObj.ids = newObj.ids;
-    } else {
-        const existingIds: CdeId[] = existingObj.ids;
-        const newIds: CdeId[] = newObj.ids;
-        newIds.forEach(newId => {
-            const i = findIndex(existingIds, o =>
-                isEqual(o.source, newId.source) &&
-                isEqual(o.id, newId.id));
-            if (i === -1) {
-                existingIds.push(newId);
-            } else {
-                existingIds[i] = newId;
-            }
-        });
-    }
+    const existingIds: CdeId[] = existingObj.ids;
+    const newIds: CdeId[] = newObj.ids;
+    newIds.forEach(newId => {
+        const i = findIndex(existingIds, o =>
+            isEqual(o.source, newId.source) &&
+            isEqual(o.id, newId.id));
+        if (i === -1) {
+            existingIds.push(newId);
+        } else {
+            existingIds[i] = newId;
+        }
+    });
 }
 
 export function mergeClassification(existingObj, newObj, classificationOrgName) {

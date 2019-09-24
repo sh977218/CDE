@@ -61,7 +61,7 @@ async function retireCdes() {
             'ids.source': {$in: ['LOINC', 'PhenX', 'PhenX Variable']},
             classification: {$exists: true}, $where: 'this.classification.length<2'
         };
-        const cursor = DataElement.find(cond).cursor();
+        const cursor = DataElement.find(cond).cursor({batchSize: 10});
         cursor.eachAsync(async (cde: any) => {
             const cdeObj = cde.toObject();
             const linkedForm = await Form.findOne({
