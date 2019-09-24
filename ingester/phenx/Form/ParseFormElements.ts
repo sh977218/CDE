@@ -3,23 +3,23 @@ import { parseFormElements as parseRedcapFormElements } from 'ingester/phenx/red
 import { parseFormElements as parseLoincFormElements } from 'ingester/loinc/Form/ParseFormElements';
 
 export async function parseFormElements(protocol, attachments, newForm, isExistingFormQualified) {
-    const loincStandard = find(protocol.standards, standard => standard.Source === 'LOINC');
-    if (isEmpty(loincStandard)) {
-        await parseRedcapFormElements(protocol, attachments, newForm);
+    let formElements: any[] = [];
+    if (isExistingFormQualified) {
     } else {
-        let formElements: any[] = [];
-        const loinc = loincStandard.loinc;
-        if (isEmpty(loinc['Panel Hierarchy'])) {
-            console.log(`Protocol ${protocol.protocolID} has LOINC ${loinc['LOINC Code']} Panel Hierarchy is missing.`);
+        const loincStandard = find(protocol.standards, standard => standard.Source === 'LOINC');
+        if (isEmpty(loincStandard)) {
+            await parseRedcapFormElements(protocol, attachments, newForm);
         } else {
-            if (!isExistingFormQualified) {
-                formElements = await parseLoincFormElements(loinc, 'PhenX', [protocol.domainCollection]);
+            const loinc = loincStandard.loinc;
+            if (isEmpty(loinc['Panel Hierarchy'])) {
+                console.log(`Protocol ${protocol.protocolID} has LOINC ${loinc['LOINC Code']} Panel Hierarchy is missing.`);
             } else {
-                formElements = [];
+                formElements = await parseLoincFormElements(loinc, 'PhenX', [protocol.domainCollection]);
             }
+            newForm.formElements = formElements;
         }
-        newForm.formElements = formElements;
     }
+
     if (protocol.specificInstructions && protocol.specificInstructions.trim() !== 'None') {
         const instructionFormElement = {
             elementType: 'section',

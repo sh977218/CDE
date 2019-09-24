@@ -4,7 +4,9 @@ import * as DiffJson from 'diff-json';
 import * as moment from 'moment';
 import { find, findIndex, isEmpty, isEqual, lowerCase, sortBy, uniq } from 'lodash';
 import * as mongo_cde from 'server/cde/mongo-cde';
+import { DataElementSource } from 'server/cde/mongo-cde';
 import * as mongo_form from 'server/form/mongo-form';
+import { FormSource } from 'server/form/mongo-form';
 import { PhenxURL } from 'ingester/createMigrationConnection';
 import { CdeId, Classification, Definition, Designation, Property, ReferenceDocument } from 'shared/models.model';
 import { FormElement } from 'shared/form/form.model';
@@ -18,7 +20,7 @@ export const sourceMap = {
     NCI: ['caDSR']
 };
 export const TODAY = new Date().toJSON();
-export const lastMigrationScript = `load PhenX on ${moment().format('DD MMMM YYYY')}`;
+export const lastMigrationScript = `load PhenX on ${moment().format('DD MMMM YYYY hh mm')}`;
 
 export const BATCHLOADER_USERNAME = 'batchloader';
 export const BATCHLOADER = {
@@ -94,7 +96,22 @@ export function trimWhite(text: string) {
     }
 }
 
-export function printUpdateResult(updateResult: any, elt?: any) {
+export async function updateRowArtifact(existingElt, newElt, source, classificationOrgName) {
+    delete newElt.tinyId;
+    delete newElt._id;
+    newElt.classification = existingElt.classification.filter(c => c.stewardOrg.name === classificationOrgName);
+    let mongooseModel = DataElementSource;
+    if (existingElt.elementType === 'form') {
+        mongooseModel = FormSource;
+    }
+    const updateResult = await mongooseModel.updateOne({
+        tinyId: existingElt.tinyId,
+        source
+    }, newElt, {upsert: true});
+    printUpdateResult(updateResult, existingElt);
+}
+
+function printUpdateResult(updateResult: any, elt: any) {
     if (updateResult.nModified) {
         console.log(`${updateResult.nModified} ${elt.elementType} Raw Artifact modified: ${elt.tinyId}`);
     }
@@ -106,13 +123,12 @@ export function printUpdateResult(updateResult: any, elt?: any) {
 export function replaceClassificationByOrg(existingObj, newObj, orgName: string) {
     const otherClassifications = existingObj.classification.filter(c => c.stewardOrg.name !== orgName);
     newObj.classification.push(...otherClassifications);
+    return newObj.classification;
 }
 
 function mergeElements(existingElements, newElements) {
     newElements.forEach(e => {
-        const foundElement = find(existingElements.elements, o => {
-            return o.name === e.name;
-        });
+        const foundElement = find(existingElements, o => o.name === e.name);
         if (!foundElement) {
             existingElements.unshift(e);
         } else {
@@ -420,13 +436,15 @@ export function mergeIds(existingObj, newObj) {
     });
 }
 
-export function mergeClassification(existingObj, newObj, classificationOrgName) {
-    if (existingObj.lastMigrationScript === lastMigrationScript) {
+export function mergeClassification(existingElt, newObj, classificationOrgName) {
+    const existingObj = existingElt.toObject();
+    if (existingElt.lastMigrationScript === lastMigrationScript) {
         mergeClassificationByOrg(existingObj, newObj, classificationOrgName);
+        existingElt.classification = existingObj.classification;
     } else {
-        replaceClassificationByOrg(existingObj, newObj, classificationOrgName);
+        const resultClassification = replaceClassificationByOrg(existingObj, newObj, classificationOrgName);
+        existingElt.classification = resultClassification;
     }
-
 }
 
 export function mergeSources(existingObj, newObj, sources) {
@@ -650,5 +668,19 @@ export function sortRefDoc(elt) {
         r.languageCode = 'en-us';
     });
     return sortBy(elt.referenceDocuments, ['docType', 'languageCode', 'document']);
+}
+
+export function fixFormCopyright(form) {
+    if (form.copyright) {
+        if (form.copyright.text) {
+            form.copyright.text = form.copyright.text;
+        }
+        if (form.copyright.authority) {
+            form.copyright.authority = form.copyright.authority;
+        }
+    }
+    if (isEmpty(form.copyright)) {
+        delete form.copyright;
+    }
 }
 

@@ -17,7 +17,12 @@ export function parseValueDomain(loinc) {
     });
     if (isEmpty(loincAnswerListFilterEmpty)) {
         const exampleUnits = loinc['Example Units'];
-        if (exampleUnits && exampleUnits.length === 1) {
+        if (isEmpty(exampleUnits)) {
+            console.log(`${loinc['LOINC Code']} has no Example Units. Default data type as Text`);
+        } else {
+            if (exampleUnits.length !== 1) {
+                console.log(`${loinc['LOINC Code']} has more than one Example Units. Parse data type from first one`);
+            }
             const exampleUnit = exampleUnits[0];
             const unit = exampleUnit.Unit;
             const datatype = map[unit];
@@ -27,8 +32,6 @@ export function parseValueDomain(loinc) {
             } else {
                 valueDomain.datatype = datatype;
             }
-        } else {
-            console.log(`${loinc['LOINC Code']} has no or wrong Example Units.`);
         }
 
     } else {

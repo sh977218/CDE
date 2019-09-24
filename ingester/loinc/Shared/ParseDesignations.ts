@@ -9,8 +9,10 @@ export function parseDesignations(loinc) {
     for (const additionalName in additionalNames) {
         if (additionalNames.hasOwnProperty(additionalName)) {
             const newName = additionalNames[additionalName];
-            const n: any = {};
-            n.designation = newName;
+            const n: any = {
+                tags: [additionalName],
+                designation: newName
+            };
             const existingName = find(designations, {designation: newName});
             if (existingName) {
                 if (!existingName.tags) {

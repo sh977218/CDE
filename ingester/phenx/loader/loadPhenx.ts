@@ -1,7 +1,7 @@
 import { Form } from 'server/form/mongo-form';
 import { PROTOCOL } from 'ingester/createMigrationConnection';
 import {
-    BATCHLOADER, imported, lastMigrationScript, sortProp, sortRefDoc, updateCde, updateForm
+    BATCHLOADER, fixFormCopyright, imported, lastMigrationScript, sortProp, sortRefDoc, updateCde, updateForm
 } from 'ingester/shared/utility';
 
 import { PhenxLogger } from 'ingester/log/PhenxLogger';
@@ -28,6 +28,7 @@ const NewPhenxIdToOldPhenxId = {
 */
 
 function retireForms() {
+    let retiredForm = 0;
     return new Promise(resolve => {
         console.log('Retiring forms......');
         const cond = {
@@ -44,6 +45,8 @@ function retireForms() {
                     await updateForm(formObj, BATCHLOADER);
                     PhenxLogger.retiredPhenxForm++;
                     PhenxLogger.retiredPhenxForms.push(formObj.tinyId);
+                    retiredForm++;
+                    console.log('retiredForm: ' + retiredForm);
                 }
             }).then(() => {
             console.log(PhenxLogger.retiredPhenxForm + ' Forms Retired.');
@@ -53,6 +56,7 @@ function retireForms() {
 }
 
 async function retireCdes() {
+    let retiredCde = 0;
     return new Promise(resolve => {
         console.log('Retiring cdes......');
         const cond = {
@@ -103,6 +107,8 @@ async function retireCdes() {
                 await updateCde(cdeObj, BATCHLOADER);
                 PhenxLogger.retiredPhenxCdes.push(cdeObj.tinyId);
                 PhenxLogger.retiredPhenxCde++;
+                retiredCde++;
+                console.log('Retired Cde: ' + retiredCde);
             }
         }).then(() => {
             console.log(PhenxLogger.retiredPhenxCde + ' cdes retired.');
@@ -116,7 +122,7 @@ process.on('unhandledRejection', error => {
 });
 
 async function run() {
-//    const cond = {protocolID: {$in: ['150701']}};
+//    const cond = {protocolID: {$in: ['151401', '150203', '91501', '201501', '130501']}};
     const cond = {};
     const phenxIds = await PROTOCOL.find(cond, {protocolID: 1}).lean();
 //    const slicedPhenxIds = phenxIds.slice(0, 10);
@@ -125,6 +131,7 @@ async function run() {
         // @TODO remove after this load
         const existingForm: any = await Form.findOne({archived: false, 'ids.id': phenxId.protocolID});
         if (existingForm) {
+            fixFormCopyright(existingForm);
             existingForm.referenceDocuments = sortRefDoc(existingForm);
             existingForm.properties = sortProp(existingForm.toObject());
             await existingForm.save();
@@ -132,8 +139,8 @@ async function run() {
 
         await loadPhenxById(phenxId.protocolID);
     }
-    await retireCdes();
     await retireForms();
+    await retireCdes();
     PhenxLogger.log();
     LoincLogger.log();
     RedcapLogger.log();

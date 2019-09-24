@@ -1,11 +1,11 @@
 import * as csv from 'csv-parse';
 import { createReadStream, existsSync } from 'fs';
 import { find, isEmpty } from 'lodash';
-import { DataElement, DataElementSource } from 'server/cde/mongo-cde';
+import { DataElement } from 'server/cde/mongo-cde';
 import { createRedCde } from 'ingester/phenx/redCap/cde';
 import { convert } from 'ingester/phenx/redCap/RedCapCdeToQuestion';
 import {
-    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeElt, printUpdateResult, updateCde
+    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeClassification, mergeElt, updateCde, updateRowArtifact
 } from 'ingester/shared/utility';
 import { leadingZerosProtocolId } from 'ingester/phenx/Form/ParseAttachments';
 import { Comment } from 'server/discuss/discussDb';
@@ -64,6 +64,7 @@ async function doOneRedCap(redCap, redCaps, protocol, newForm) {
         RedcapLogger.createdRedcapCdes.push(existingCde.tinyId + `[${cdeId}]`);
     } else {
         const diff = compareElt(newCde.toObject(), existingCde.toObject());
+        mergeClassification(existingCde, newCde.toObject(), 'PhenX');
         if (isEmpty(diff)) {
             existingCde.lastMigrationScript = lastMigrationScript;
             existingCde.imported = imported;
@@ -82,14 +83,7 @@ async function doOneRedCap(redCap, redCaps, protocol, newForm) {
         comment.element.eltId = existingCde.tinyId;
         await new Comment(comment).save();
     }
-    delete newCdeObj.tinyId;
-    delete newCdeObj._id;
-    newCdeObj.attachments = [];
-    const updateResult = await DataElementSource.updateOne({
-        tinyId: existingCde.tinyId,
-        source: 'PhenX'
-    }, newCdeObj, {upsert: true});
-    printUpdateResult(updateResult, existingCde);
+    await updateRowArtifact(existingCde, newCdeObj, 'PhenX', 'PhenX');
     return existingCde;
 }
 
