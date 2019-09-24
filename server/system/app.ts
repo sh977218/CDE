@@ -2,7 +2,12 @@ import { series } from 'async';
 import { CronJob } from 'cron';
 import * as csrf from 'csurf';
 import { renderFile } from 'ejs';
+<<<<<<< HEAD
 import { access, constants, createWriteStream, mkdir, writeFile } from 'fs';
+=======
+import { access, constants, createWriteStream, mkdir } from 'fs';
+import { join } from 'path';
+>>>>>>> abe90b9304c4f16f82820ec1f3e206f3d2f4c08f
 import { authenticate } from 'passport';
 import { DataElement, draftsList as deDraftsList } from 'server/cde/mongo-cde';
 import { handleError, respondError } from 'server/errorHandler/errorHandler';
@@ -17,7 +22,11 @@ import { reIndex } from 'server/system/elastic';
 import { indices } from 'server/system/elasticSearchInit';
 import { errorLogger } from 'server/system/logging';
 import {
+<<<<<<< HEAD
     addUserRole, disableRule, embeds, enableRule, getClassificationAuditLog, getFile, IdSource, jobStatus, listOrgs,
+=======
+    addUserRole, disableRule, enableRule, getClassificationAuditLog, getFile, IdSource, jobStatus, listOrgs,
+>>>>>>> abe90b9304c4f16f82820ec1f3e206f3d2f4c08f
     listOrgsDetailedInfo, orgByName, updateOrg, userById, usersByName
 } from 'server/system/mongo-data';
 import { addOrg, managedOrgs, transferSteward } from 'server/system/orgsvc';
@@ -28,7 +37,6 @@ import {
     addOrgAdmin, addOrgCurator, myOrgs, myOrgsAdmins, orgAdmins, orgCurators, removeOrgAdmin, removeOrgCurator,
     updateUserAvatar, updateUserRoles
 } from 'server/system/usersrvc';
-import { isOrgAdmin } from 'shared/system/authorizationShared';
 import { is } from 'useragent';
 import { promisify } from 'util';
 import { isSearchEngine } from './helper';
@@ -47,6 +55,7 @@ export function init(app) {
     } catch (e) {
     }
 
+<<<<<<< HEAD
     let embedHtml = '';
     renderFile('modules/_embedApp/embedApp.ejs', {isLegacy: false}, (err, str) => {
         embedHtml = str;
@@ -67,6 +76,16 @@ export function init(app) {
                 })
                 .catch(err => consoleLog('Error getting folder modules/_embedApp/public: ', err));
         }
+=======
+    let fhirHtml = '';
+    renderFile('modules/_fhirApp/fhirApp.ejs', {isLegacy: false, version: version}, (err, str) => {
+        fhirHtml = str;
+    });
+
+    let fhirLegacyHtml = '';
+    renderFile('modules/_fhirApp/fhirApp.ejs', {isLegacy: true, version: version}, (err, str) => {
+        fhirLegacyHtml = str;
+>>>>>>> abe90b9304c4f16f82820ec1f3e206f3d2f4c08f
     });
 
     let indexHtml = '';
@@ -159,8 +178,27 @@ export function init(app) {
         respondHomeFull
     );
 
+<<<<<<< HEAD
     app.get('/embedSearch', (req, res) => {
         res.send(isModernBrowser(req) ? embedHtml : embedLegacyHtml);
+=======
+    app.get('/fhir/form/:param', (req, res) => {
+        res.send(isModernBrowser(req) ? fhirHtml : fhirLegacyHtml);
+    });
+
+    app.get('/fhir/launch/:param', (req, res) => {
+        res.sendFile(join(__dirname, '../../modules/_fhirApp', 'fhirAppLaunch.html'), undefined, err => {
+            if (err) res.sendStatus(404);
+        });
+    });
+
+    app.get('/fhirObservationInfo', (req, res) => {
+        fhirObservationInfo.get(res, req.query.id, info => res.send(info));
+    });
+
+    app.put('/fhirObservationInfo', loggedInMiddleware, (req, res) => {
+        fhirObservationInfo.put(res, req.body, info => res.send(info));
+>>>>>>> abe90b9304c4f16f82820ec1f3e206f3d2f4c08f
     });
 
     app.get('/sw.js', function (req, res) {
@@ -369,6 +407,7 @@ export function init(app) {
         }));
     });
 
+<<<<<<< HEAD
     app.post('/embed/', isOrgAdminMiddleware, (req, res) => {
         const handlerOptions = {req, res, publicMessage: 'There was an error saving this embed.'};
         embeds.save(req.body, handleError(handlerOptions, embed => {
@@ -407,6 +446,14 @@ export function init(app) {
             res.send(embedsData);
         }));
     });
+=======
+    app.get('/fhirApps', (req, res) => fhirApps.find(res, {}, apps => res.send(apps)));
+    app.get('/fhirApp/:id', (req, res) => fhirApps.get(res, req.params.id, app => res.send(app)));
+    app.post('/fhirApp', isSiteAdminMiddleware,
+        (req, res) => fhirApps.save(res, req.body, app => res.send(app)));
+    app.delete('/fhirApp/:id', isSiteAdminMiddleware,
+        (req, res) => fhirApps.delete(res, req.params.id, () => res.send()));
+>>>>>>> abe90b9304c4f16f82820ec1f3e206f3d2f4c08f
 
     app.post('/disableRule', isOrgAuthorityMiddleware, (req, res) => {
         disableRule(req.body, handleError({req, res}, org => {
