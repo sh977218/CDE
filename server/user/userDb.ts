@@ -11,12 +11,12 @@ const StringType = (Schema.Types as any).StringType;
 const connHelper = require('../system/connections');
 const conn = connHelper.establishConnection(config.database.appData);
 
-let notificationTypesSchema = new Schema({
+const notificationTypesSchema = new Schema({
     drawer: Boolean,
     push: Boolean,
 }, {_id: false});
 
-let CommentNotificationSchema = new Schema({
+const commentNotificationSchema = new Schema({
     date: Date,
     eltModule: {type: StringType, enum: ['board', 'cde', 'form']},
     eltTinyId: StringType,
@@ -25,14 +25,14 @@ let CommentNotificationSchema = new Schema({
     username: StringType,
 }, {_id: false});
 
-let publishedFormSchema = new Schema({
+const publishedFormSchema = new Schema({
     name: StringType,
     id: Schema.Types.ObjectId
 }, {_id: false});
 
-let userSchema = new Schema({
+const userSchema = new Schema({
     username: {type: StringType, lowercase: true, trim: true, unique: true},
-    commentNotifications: [CommentNotificationSchema],
+    commentNotifications: [commentNotificationSchema],
     email: StringType,
     password: StringType,
     lastLogin: Date,
@@ -56,7 +56,7 @@ let userSchema = new Schema({
     roles: [{type: StringType, enum: rolesEnum}],
     searchSettings: {
         version: Number,
-        defaultSearchView: {type: StringType, enum: ["accordion", "table", "summary"]},
+        defaultSearchView: {type: StringType, enum: ['accordion', 'table', 'summary']},
         lowestRegistrationStatus: StringType,
         tableViewFields: {
             name: {type: Boolean, default: true},
@@ -104,9 +104,9 @@ export function find(crit, cb) {
 
 // cb(err, {nMatched, nUpserted, nModified})
 export function updateUser(user, fields, callback: CbError<number, number, number>) {
-    let update: any = {};
-    if (fields.commentNotifications) update.commentNotifications = fields.commentNotifications;
-    if (fields.email) update.email = fields.email;
+    const update: any = {};
+    if (fields.commentNotifications) { update.commentNotifications = fields.commentNotifications; }
+    if (fields.email) { update.email = fields.email; }
     if (fields.notificationSettings) {
         if (fields.notificationSettings.approvalAttachment && !hasRole(user, 'AttachmentReviewer')) {
             delete fields.notificationSettings.approvalAttachment;
@@ -120,8 +120,8 @@ export function updateUser(user, fields, callback: CbError<number, number, numbe
             update.notificationSettings = fields.notificationSettings;
         }
     }
-    if (fields.searchSettings) update.searchSettings = fields.searchSettings;
-    if (fields.publishedForms) update.publishedForms = fields.publishedForms;
+    if (fields.searchSettings) { update.searchSettings = fields.searchSettings; }
+    if (fields.publishedForms) { update.publishedForms = fields.publishedForms; }
     User.updateOne({_id: user._id}, {$set: update}, callback);
 }
 
@@ -134,7 +134,7 @@ export function userByUsername(username, callback) {
 }
 
 export function byUsername(username, callback) {
-    return User.findOne({username: username}, userProject).exec(callback);
+    return User.findOne({username}, userProject).exec(callback);
 }
 
 export function save(user, callback) {

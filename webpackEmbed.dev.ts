@@ -8,7 +8,7 @@ export default merge(baseConfig, embedConfig, {
             {
                 test: /(?:\.ngfactory\.js|\.ngstyle\.js|\.ts)$/,
                 use: [
-                    {loader: 'ts-loader', options: {configFile: './tsconfigEmbed.json'}},
+                    {loader: 'ts-loader', options: {configFile: '../../tsconfigEmbed.json'}},
                     'angular-router-loader',
                     'angular2-template-loader'
                 ]

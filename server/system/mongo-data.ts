@@ -22,7 +22,6 @@ const schemas = require('./schemas');
 const writableCollection = require('./writableCollection').writableCollection;
 
 const conn = connHelper.establishConnection(config.database.appData);
-const Embeds = conn.model('Embed', schemas.embedSchema);
 export const FhirApps = conn.model('FhirApp', schemas.fhirAppSchema);
 export const FhirObservationInfo = conn.model('FhirObservationInfo', schemas.fhirObservationInformationSchema);
 export const IdSource = conn.model('IdSource', schemas.idSourceSchema);
@@ -161,24 +160,6 @@ export const auditGetLog = auditDb => (params, callback) => {
         .skip(params.skip)
         .limit(params.limit)
         .exec(callback);
-};
-
-export const embeds = {
-    save: function (embed, cb) {
-        if (embed._id) {
-            let _id = embed._id;
-            delete embed._id;
-            Embeds.updateOne({_id: _id}, embed, cb);
-        } else {
-            new Embeds(embed).save(cb);
-        }
-    },
-    find: function (crit, cb) {
-        Embeds.find(crit, cb);
-    },
-    delete: function (id, cb) {
-        Embeds.remove({_id: id}, cb);
-    }
 };
 
 export function orgNames(callback) {
