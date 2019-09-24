@@ -350,7 +350,7 @@ try {
     }));
     app.use('/nativeRender', nativeRenderModule());
     app.use('/', embedModule());
-    app.use('/fhir', fhirModule());
+    app.use('/', fhirModule());
     cdeInit(app, daoManager);
     systemInit(app);
     formInit(app, daoManager);
