@@ -2,30 +2,25 @@ import { series } from 'async';
 import { CronJob } from 'cron';
 import * as csrf from 'csurf';
 import { renderFile } from 'ejs';
-import { access, constants, createWriteStream, mkdir, writeFile } from 'fs';
+import { access, constants, createWriteStream, mkdir, writeFile, writeFileSync, existsSync } from 'fs';
 import { join } from 'path';
 import { authenticate } from 'passport';
-import {
-    byTinyIdVersion as deByTinyIdVersion, count as deCount, DataElement, DataElementDraft, draftsList as deDraftsList
-} from 'server/cde/mongo-cde';
+import { DataElement, draftsList as deDraftsList } from 'server/cde/mongo-cde';
 import { handleError, respondError } from 'server/errorHandler/errorHandler';
-import {
-    byTinyIdVersion as formByTinyIdVersion, CdeFormDraft, draftsList as formDraftsList, Form
-} from 'server/form/mongo-form';
+import { draftsList as formDraftsList, Form } from 'server/form/mongo-form';
 import { consoleLog } from 'server/log/dbLogger';
 import { syncWithMesh } from 'server/mesh/elastic';
 import {
-    canApproveCommentMiddleware,
-    isOrgAdminMiddleware,
-    isOrgAuthorityMiddleware, isOrgCuratorMiddleware, isSiteAdminMiddleware, loggedInMiddleware, nocacheMiddleware
+    canApproveCommentMiddleware, isOrgAdminMiddleware, isOrgAuthorityMiddleware, isOrgCuratorMiddleware,
+    isSiteAdminMiddleware, loggedInMiddleware, nocacheMiddleware
 } from 'server/system/authorization';
 import { reIndex } from 'server/system/elastic';
 import { indices } from 'server/system/elasticSearchInit';
 import { fhirApps, fhirObservationInfo } from 'server/system/fhir';
 import { errorLogger } from 'server/system/logging';
 import {
-    addUserRole, disableRule, embeds, enableRule, getClassificationAuditLog, getFile,
-    IdSource, jobStatus, listOrgs, listOrgsDetailedInfo, orgByName, updateOrg, userById, usersByName
+    addUserRole, disableRule, enableRule, getClassificationAuditLog, getFile, IdSource, jobStatus, listOrgs,
+    listOrgsDetailedInfo, orgByName, updateOrg, userById, usersByName
 } from 'server/system/mongo-data';
 import { addOrg, managedOrgs, transferSteward } from 'server/system/orgsvc';
 import { config } from 'server/system/parseConfig';
@@ -35,10 +30,10 @@ import {
     addOrgAdmin, addOrgCurator, myOrgs, myOrgsAdmins, orgAdmins, orgCurators, removeOrgAdmin, removeOrgCurator,
     updateUserAvatar, updateUserRoles
 } from 'server/system/usersrvc';
-import { isOrgAdmin } from 'shared/system/authorizationShared';
 import { is } from 'useragent';
 import { promisify } from 'util';
 import { isSearchEngine } from './helper';
+import { version } from '../version';
 
 export let respondHomeFull: Function;
 
@@ -47,12 +42,6 @@ export function init(app) {
         if (req._remoteAddress) return req._remoteAddress;
         if (req.ip) return req.ip;
     };
-
-    let version = 'local-dev';
-    try {
-        version = require('./version.js').version;
-    } catch (e) {
-    }
 
     let embedHtml = '';
     renderFile('modules/_embedApp/embedApp.ejs', {isLegacy: false}, (err, str) => {
@@ -93,7 +82,11 @@ export function init(app) {
         version: version
     }, (err, str) => {
         indexHtml = str;
+        if (existsSync('modules/_app')) {
+            writeFileSync('modules/_app/index.html', indexHtml);
+        }
     });
+
 
     let indexLegacyHtml = '';
     renderFile('modules/system/views/index.ejs', {config: config, isLegacy: true, version: version}, (err, str) => {
@@ -175,10 +168,6 @@ export function init(app) {
             '/classificationManagement', '/profile', '/login', '/orgAuthority', '/orgComments'],
         respondHomeFull
     );
-
-    app.get('/embedSearch', (req, res) => {
-        res.send(isModernBrowser(req) ? embedHtml : embedLegacyHtml);
-    });
 
     app.get('/fhir/form/:param', (req, res) => {
         res.send(isModernBrowser(req) ? fhirHtml : fhirLegacyHtml);
@@ -401,45 +390,6 @@ export function init(app) {
     app.post('/getClassificationAuditLog', isOrgAuthorityMiddleware, (req, res) => {
         getClassificationAuditLog(req.body, handleError({req, res}, result => {
             res.send(result);
-        }));
-    });
-
-    app.post('/embed/', isOrgAdminMiddleware, (req, res) => {
-        const handlerOptions = {req, res, publicMessage: 'There was an error saving this embed.'};
-        embeds.save(req.body, handleError(handlerOptions, embed => {
-            res.send(embed);
-        }));
-    });
-
-    app.delete('/embed/:id', loggedInMiddleware, (req, res) => {
-        const handlerOptions = {req, res, publicMessage: 'There was an error removing this embed.'};
-        embeds.find({_id: req.params.id}, handleError(handlerOptions, embedsData => {
-            if (embedsData.length !== 1) {
-                res.status.send('Expectation not met: one document.');
-                return;
-            }
-            if (!req.isAuthenticated() || !isOrgAdmin(req.user, embedsData[0].org)) {
-                res.status(403).send();
-                return;
-            }
-            embeds.delete(req.params.id, handleError(handlerOptions, () => res.send()));
-        }));
-    });
-
-    app.get('/embed/:id', (req, res) => {
-        embeds.find({_id: req.params.id}, handleError({req, res}, embedsData => {
-            if (embedsData.length !== 1) {
-                res.status.send('Expectation not met: one document.');
-                return;
-            }
-            res.send(embedsData[0]);
-        }));
-
-    });
-
-    app.get('/embeds/:org', (req, res) => {
-        embeds.find({org: req.params.org}, handleError({req, res}, embedsData => {
-            res.send(embedsData);
         }));
     });
 
