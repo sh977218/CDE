@@ -1,6 +1,8 @@
 import { isEmpty } from 'lodash';
-import { BATCHLOADER, compareElt, imported, lastMigrationScript, mergeElt, updateCde } from 'ingester/shared/utility';
-import { DataElement, DataElementSource } from 'server/cde/mongo-cde';
+import {
+    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeClassification, mergeElt, updateCde, updateRowArtifact
+} from 'ingester/shared/utility';
+import { DataElement } from 'server/cde/mongo-cde';
 import { Comment } from 'server/discuss/discussDb';
 import { createNciCde } from 'ingester/nci/CDE/cde';
 import { readFile } from 'fs';
@@ -45,6 +47,7 @@ function runOneOrg(orgName: string) {
                             createdCdes.push(existingCde.tinyId);
                         } else {
                             const diff = compareElt(newCde.toObject(), existingCde.toObject());
+                            mergeClassification(existingCde, newCde.toObject(), 'PhenX');
                             if (isEmpty(diff)) {
                                 existingCde.imported = imported;
                                 existingCde.lastMigrationScript = lastMigrationScript;
@@ -66,14 +69,8 @@ function runOneOrg(orgName: string) {
                                 console.log('comment saved on ' + existingCde.tinyId);
                             }
                         }
-                        delete newCdeObj.tinyId;
-                        delete newCdeObj._id;
-                        newCdeObj.attachments = [];
-                        const updateResult = await DataElementSource.updateOne({
-                            tinyId: existingCde.tinyId,
-                            source: 'caDSR'
-                        }, newCdeObj, {upsert: true});
-                        // printUpdateResult(updateResult, existingCde);
+
+                        await updateRowArtifact(existingCde, newCdeObj, 'caDSR', 'NCI');
                     }
                     resolve();
                 });

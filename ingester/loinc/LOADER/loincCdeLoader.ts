@@ -1,8 +1,8 @@
 import { isEmpty } from 'lodash';
-import { DataElement, DataElementSource } from 'server/cde/mongo-cde';
+import { DataElement } from 'server/cde/mongo-cde';
 import { createLoincCde } from 'ingester/loinc/CDE/cde';
 import {
-    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeClassification, mergeElt, printUpdateResult, updateCde
+    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeClassification, mergeElt, updateCde, updateRowArtifact
 } from 'ingester/shared/utility';
 
 import { LoincLogger } from 'ingester/log/LoincLogger';
@@ -25,21 +25,19 @@ export async function runOneCde(loinc, classificationOrgName, classificationArra
         LoincLogger.createdLoincCdes.push(existingCde.tinyId + `[${loinc['LOINC Code']}]`);
     } else {
         const diff = compareElt(newCde.toObject(), existingCde.toObject());
-        const existingCdeObj = existingCde.toObject();
-        if (loinc['LOINC Code'] === '21112-8') {
-            console.log('a');
-        }
         mergeClassification(existingCde, newCde.toObject(), classificationOrgName);
         if (isEmpty(diff)) {
             existingCde.lastMigrationScript = lastMigrationScript;
             existingCde.imported = imported;
             await existingCde.save().catch(err => {
+                console.log(existingCde);
                 console.log('LOINC await existingCde.save() error: ' + err);
                 process.exit(1);
             });
             LoincLogger.sameLoincCde++;
             LoincLogger.sameLoincCdes.push(existingCde.tinyId);
         } else {
+            const existingCdeObj = existingCde.toObject();
             mergeElt(existingCdeObj, newCdeObj, 'LOINC', classificationOrgName);
             await updateCde(existingCdeObj, BATCHLOADER, {updateSource: true}).catch(err => {
                 console.log(newCdeObj);
@@ -51,13 +49,6 @@ export async function runOneCde(loinc, classificationOrgName, classificationArra
             LoincLogger.changedLoincCdes.push(existingCde.tinyId);
         }
     }
-    delete newCdeObj.tinyId;
-    delete newCdeObj._id;
-    newCdeObj.attachments = [];
-    const updateResult = await DataElementSource.updateOne({
-        tinyId: existingCde.tinyId,
-        source: 'LOINC'
-    }, newCdeObj, {upsert: true});
-    printUpdateResult(updateResult, existingCde);
+    await updateRowArtifact(existingCde, newCdeObj, 'LOINC', classificationOrgName);
     return existingCde;
 }

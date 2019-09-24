@@ -11,13 +11,14 @@ import _intersectionWith from 'lodash/intersectionWith';
 import _isArray from 'lodash/isArray';
 import _isEmpty from 'lodash/isEmpty';
 import _isEqual from 'lodash/isEqual';
+import _lowerCase from 'lodash/lowerCase';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import { DataElement } from 'shared/de/dataElement.model';
 import { Cb, Item } from 'shared/models.model';
 import { CdeForm, FormElement, FormElementsContainer, FormQuestion } from 'shared/form/form.model';
 
-export type CompareQuestion = FormQuestion & {info?: {error?: string, match?: boolean}, isRetired?: boolean};
-export type CompareForm = CdeForm & {questions: CompareQuestion[]};
+export type CompareQuestion = FormQuestion & { info?: { error?: string, match?: boolean }, isRetired?: boolean };
+export type CompareForm = CdeForm & { questions: CompareQuestion[] };
 export type CompareItem = DataElement | CompareForm;
 
 interface CompareOption {
@@ -27,13 +28,13 @@ interface CompareOption {
         label: string,
         property: string,
     };
-    fullMatches: {left: any, right: any}[];
+    fullMatches: { left: any, right: any }[];
     fullMatchFn: (a: any, b: any) => boolean;
-    leftNotMatches: {left: any, right: any}[];
+    leftNotMatches: { left: any, right: any }[];
     notMatchFn: (a: any, b: any) => boolean;
-    partialMatches: {left: any, right: any, diff: {}}[];
+    partialMatches: { left: any, right: any, diff: {} }[];
     partialMatchFn: (a: any, b: any) => string[];
-    rightNotMatches: {left: any, right: any}[];
+    rightNotMatches: { left: any, right: any }[];
 }
 
 interface Data {
@@ -43,7 +44,7 @@ interface Data {
     url?: string;
 }
 
-const URL_MAP: {[module: string]: string} = {
+const URL_MAP: { [module: string]: string } = {
     cde: '/de/',
     form: '/form/',
 };
@@ -96,7 +97,7 @@ export class CompareSideBySideComponent {
                 public quickBoardService: QuickBoardListService) {
     }
 
-    doneMerge(event: {left: CompareItem, right: CompareItem}) {
+    doneMerge(event: { left: CompareItem, right: CompareItem }) {
         this.left = event.left;
         this.right = event.right;
         this.doCompare(this.left, this.right, () => {
@@ -119,12 +120,24 @@ export class CompareSideBySideComponent {
             this.options.forEach(option => {
                 let l = _get(this.left, option.displayAs.property);
                 let r = _get(this.right, option.displayAs.property);
-                if (!l) { l = []; }
-                if (!r) { r = []; }
-                if (typeof l !== 'object') { l = [{data: l}]; }
-                if (!_isArray(l)) { l = [l]; }
-                if (typeof r !== 'object') { r = [{data: r}]; }
-                if (!_isArray(r)) { r = [r]; }
+                if (!l) {
+                    l = [];
+                }
+                if (!r) {
+                    r = [];
+                }
+                if (typeof l !== 'object') {
+                    l = [{data: l}];
+                }
+                if (!_isArray(l)) {
+                    l = [l];
+                }
+                if (typeof r !== 'object') {
+                    r = [{data: r}];
+                }
+                if (!_isArray(r)) {
+                    r = [r];
+                }
                 _intersectionWith(l, r, (a, b) => {
                     const fullMatchFnMatchDiff = option.fullMatchFn(a, b);
                     if (fullMatchFnMatchDiff) {
@@ -213,9 +226,11 @@ export class CompareSideBySideComponent {
                 },
                 fullMatches: [],
                 partialMatchFn: (a, b) => {
-                    const diff = [];
+                    const diff: any = [];
                     if (!_isEqual(a, b) && _isEqual(a.designation, b.designation)) {
-                        if (!_isEqual(a.tags, b.tags)) { diff.push('tags'); }
+                        if (!_isEqual(a.tags, b.tags)) {
+                            diff.push('tags');
+                        }
                     }
                     return diff;
                 },
@@ -240,9 +255,11 @@ export class CompareSideBySideComponent {
                 },
                 fullMatches: [],
                 partialMatchFn: (a, b) => {
-                    const diff = [];
+                    const diff: any[] = [];
                     if (!_isEqual(a, b) && _isEqual(a.definition, b.definition)) {
-                        if (!_isEqual(a.tags, b.tags)) { diff.push('tags'); }
+                        if (!_isEqual(a.tags, b.tags)) {
+                            diff.push('tags');
+                        }
                     }
                     return diff;
                 },
@@ -268,10 +285,14 @@ export class CompareSideBySideComponent {
                 },
                 fullMatches: [],
                 partialMatchFn: (a, b) => {
-                    const diff = [];
+                    const diff: any[] = [];
                     if (!_isEqual(a, b) && _isEqual(a.source, b.source)) {
-                        if (!_isEqual(a.id, b.id)) { diff.push('id'); }
-                        if (!_isEqual(a.version, b.version)) { diff.push('version'); }
+                        if (!_isEqual(a.id, b.id)) {
+                            diff.push('id');
+                        }
+                        if (!_isEqual(a.version, b.version)) {
+                            diff.push('version');
+                        }
                     }
                     return diff;
                 },
@@ -296,13 +317,23 @@ export class CompareSideBySideComponent {
                 fullMatchFn: _isEqual,
                 fullMatches: [],
                 partialMatchFn: (a, b) => {
-                    const diff = [];
+                    const diff: any[] = [];
                     if (!_isEqual(a, b) && _isEqual(a.document, b.document)) {
-                        if (!_isEqual(a.title, b.title)) { diff.push('title'); }
-                        if (!_isEqual(a.uri, b.uri)) { diff.push('uri'); }
-                        if (!_isEqual(a.docType, b.docType)) { diff.push('docType'); }
-                        if (!_isEqual(a.providerOrg, b.providerOrg)) { diff.push('providerOrg'); }
-                        if (!_isEqual(a.languageCode, b.languageCode)) { diff.push('languageCode'); }
+                        if (!_isEqual(a.title, b.title)) {
+                            diff.push('title');
+                        }
+                        if (!_isEqual(a.uri, b.uri)) {
+                            diff.push('uri');
+                        }
+                        if (!_isEqual(a.docType, b.docType)) {
+                            diff.push('docType');
+                        }
+                        if (!_isEqual(a.providerOrg, b.providerOrg)) {
+                            diff.push('providerOrg');
+                        }
+                        if (!_isEqual(a.languageCode, b.languageCode)) {
+                            diff.push('languageCode');
+                        }
                     }
                     return diff;
                 },
@@ -326,10 +357,14 @@ export class CompareSideBySideComponent {
                 fullMatchFn: _isEqual,
                 fullMatches: [],
                 partialMatchFn: (a, b) => {
-                    const diff = [];
-                    if (!_isEqual(a, b) && _isEqual(a.key, b.key)) {
-                        if (!_isEqual(a.value, b.value)) { diff.push('value'); }
-                        if (!_isEqual(a.valueFormat, b.valueFormat)) { diff.push('valueFormat'); }
+                    const diff: any[] = [];
+                    if (!_isEqual(a, b) && _isEqual(_lowerCase(a.key), _lowerCase(b.key))) {
+                        if (!_isEqual(a.value, b.value)) {
+                            diff.push('value');
+                        }
+                        if (!_isEqual(a.valueFormat, b.valueFormat)) {
+                            diff.push('valueFormat');
+                        }
                     }
                     return diff;
                 },
@@ -612,12 +647,20 @@ export class CompareSideBySideComponent {
                 fullMatchFn: _isEqual,
                 fullMatches: [],
                 partialMatchFn: (a, b) => {
-                    const diff = [];
+                    const diff: any[] = [];
                     if (!_isEqual(a, b) && _isEqual(a.question.cde.tinyId, b.question.cde.tinyId)) {
-                        if (!_isEqual(a.label, b.label)) { diff.push('label'); }
-                        if (!_isEqual(a.question.datatype, b.question.datatype)) { diff.push('question.datatype'); }
-                        if (!_isEqual(a.question.unitsOfMeasure, b.question.unitsOfMeasure)) { diff.push('question.unitsOfMeasure'); }
-                        if (!_isEqual(a.question.answers, b.question.answers)) { diff.push('question.answers'); }
+                        if (!_isEqual(a.label, b.label)) {
+                            diff.push('label');
+                        }
+                        if (!_isEqual(a.question.datatype, b.question.datatype)) {
+                            diff.push('question.datatype');
+                        }
+                        if (!_isEqual(a.question.unitsOfMeasure, b.question.unitsOfMeasure)) {
+                            diff.push('question.unitsOfMeasure');
+                        }
+                        if (!_isEqual(a.question.answers, b.question.answers)) {
+                            diff.push('question.answers');
+                        }
                     }
                     return diff;
                 },
@@ -657,7 +700,11 @@ export class CompareSideBySideComponent {
         } else if (d.properties) {
             const properties = d.properties;
             const v = value.map((v: any) => _get(v, properties.property));
-            if (!_isEmpty(v)) { return d.properties.label + ': ' + v; } else { return ''; }
+            if (!_isEmpty(v)) {
+                return d.properties.label + ': ' + v;
+            } else {
+                return '';
+            }
         } else if (_isArray(value)) {
             return JSON.stringify(value);
         } else {

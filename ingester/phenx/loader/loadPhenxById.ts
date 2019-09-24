@@ -1,9 +1,9 @@
 import { isEmpty } from 'lodash';
 import { createPhenxForm } from 'ingester/phenx/Form/form';
-import { Form, FormSource } from 'server/form/mongo-form';
+import { Form } from 'server/form/mongo-form';
 import { PhenxLogger } from 'ingester/log/PhenxLogger';
 import {
-    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeClassification, mergeElt, printUpdateResult, updateForm
+    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeClassification, mergeElt, updateForm, updateRowArtifact
 } from 'ingester/shared/utility';
 import { Comment } from 'server/discuss/discussDb';
 import { PROTOCOL } from 'ingester/createMigrationConnection';
@@ -25,7 +25,6 @@ export async function loadPhenxById(phenxId) {
         PhenxLogger.createdPhenxForms.push(existingForm.tinyId + `[${protocolId}]`);
     } else {
         const diff = compareElt(newForm.toObject(), existingForm.toObject());
-        const existingFormObj = existingForm.toObject();
         mergeClassification(existingForm, newForm.toObject(), 'PhenX');
         if (isEmpty(diff)) {
             existingForm.lastMigrationScript = lastMigrationScript;
@@ -34,6 +33,7 @@ export async function loadPhenxById(phenxId) {
             PhenxLogger.samePhenxForm++;
             PhenxLogger.samePhenxForms.push(existingForm.tinyId);
         } else {
+            const existingFormObj = existingForm.toObject();
             mergeElt(existingFormObj, newFormObj, 'PhenX', 'PhenX');
             await updateForm(existingFormObj, BATCHLOADER, {updateSource: true});
             PhenxLogger.changedPhenxForm++;
@@ -46,14 +46,7 @@ export async function loadPhenxById(phenxId) {
             await new Comment(comment).save();
         }
     }
-    delete newFormObj.tinyId;
-    delete newFormObj._id;
-    newFormObj.attachments = [];
-    const updateResult = await FormSource.updateOne({
-        tinyId: existingForm.tinyId,
-        source: 'PhenX'
-    }, newFormObj, {upsert: true});
-    printUpdateResult(updateResult, existingForm);
+    await updateRowArtifact(existingForm, newForm, 'PhenX', 'PhenX');
     protocolCount++;
     console.log('protocolCount ' + protocolCount);
     console.log('Finished protocol: ' + protocolId);

@@ -57,69 +57,6 @@ export const sourceSchema = new Schema({
     }
 }, {_id: false});
 
-const commonEmbedSchema = {
-    nameLabel: StringType,
-    pageSize: Number,
-    primaryDefinition: {
-        show: {type: Boolean, default: false},
-        label: StringType,
-        style: StringType
-    },
-    registrationStatus: {
-        show: {type: Boolean, default: false},
-        label: StringType
-    },
-    lowestRegistrationStatus: {type: StringType, enum: orderedList},
-    properties: [
-        {
-            label: StringType,
-            key: StringType,
-            limit: Number
-        }
-    ],
-    otherNames: [{
-        label: StringType,
-        contextName: StringType
-    }],
-    classifications: [{
-        label: StringType,
-        startsWith: StringType,
-        exclude: StringType,
-        selectedOnly: Boolean
-    }],
-    ids: [
-        {
-            idLabel: StringType,
-            source: StringType,
-            version: Boolean,
-            versionLabel: StringType
-        }
-    ]
-};
-
-const embedJson = {
-    org: StringType,
-    name: StringType,
-    height: Number,
-    width: Number,
-    cde: {
-        ...commonEmbedSchema,
-        linkedForms: {
-            show: {type: Boolean, default: false},
-            label: StringType
-        },
-        permissibleValues: Boolean,
-    },
-    form: {
-        ...commonEmbedSchema,
-        cdes: {type: Boolean, default: false},
-        nbOfQuestions: {type: Boolean, default: false},
-        sdcLink: {type: Boolean, default: false}
-    }
-};
-
-export const embedSchema = new Schema(embedJson);
-
 export const fhirAppSchema = new Schema({
     clientId: String,
     dataEndpointUrl: String,

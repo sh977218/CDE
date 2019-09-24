@@ -54,7 +54,6 @@ function elementToQuestion(existingCde, element) {
         cde: {
             tinyId: existingCde.tinyId,
             name: existingCde.designations[0].designation,
-            version: existingCde.version,
             permissibleValues: existingCde.valueDomain.permissibleValues,
             ids: existingCde.ids
         },
@@ -64,6 +63,10 @@ function elementToQuestion(existingCde, element) {
         answers: existingCde.valueDomain.permissibleValues,
         unitsOfMeasure: [],
     };
+
+    if (existingCde.version) {
+        question.cde.version = existingCde.version;
+    }
     if (question.datatype === 'Text') {
         question.multiselect = false;
     }
