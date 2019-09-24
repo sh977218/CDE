@@ -3,21 +3,22 @@ import { getModule } from 'shared/elt';
 import { hasRole, isSiteAdmin } from 'shared/system/authorizationShared';
 import { capString } from 'shared/system/util';
 import { loggedInMiddleware, nocacheMiddleware } from '../system/authorization';
-import { handle40x, handleError, respondError } from '../errorHandler/errorHandler';
+import { handle40x, handleError } from '../errorHandler/errorHandler';
 import { version } from '../version';
 
 const config = require('config');
-const attachment = require('../attachment/attachmentSvc');
-const discussDb = require('../discuss/discussDb');
-const notificationDb = require('../notification/notificationDb');
-const mongo_data = require('../system/mongo-data');
-const userDb = require('./userDb');
+const attachment = require('server/attachment/attachmentSvc');
+const discussDb = require('server/discuss/discussDb');
+const notificationDb = require('server/notification/notificationDb');
+const userDb = require('server/user/userDb');
 
 export function module(roleConfig) {
     const router = require('express').Router();
 
     router.get('/', [nocacheMiddleware], (req, res) => {
-        if (!req.user) { return res.send({}); }
+        if (!req.user) {
+            return res.send({});
+        }
         userDb.byId(req.user._id, handle40x({req, res}, user => {
             res.send(user);
         }));
@@ -42,8 +43,6 @@ export function module(roleConfig) {
     });
 
     async function taskAggregator(req, res) {
-        const handlerOptions = {req, res};
-
         function createTaskFromCommentNotification(c) {
             return {
                 date: c.date,
@@ -63,7 +62,7 @@ export function module(roleConfig) {
         }
 
         function pending(comment) {
-            let pending = [];
+            let pending: any = [];
             if (comment.pendingApproval) {
                 pending.push(comment);
             }
@@ -117,7 +116,9 @@ export function module(roleConfig) {
         if (hasRole(user, 'AttachmentReviewer')) { // required, req.user.notificationSettings.approvalAttachment.drawer not used
             const attachmentElts = await new Promise((resolve, reject) => {
                 attachment.unapproved((err, results) => {
-                    if (err) { return reject (err); }
+                    if (err) {
+                        return reject(err);
+                    }
                     resolve(results);
                 });
             });
@@ -215,7 +216,10 @@ export function module(roleConfig) {
             taskAggregator(req, res);
             return;
         }
-        userDb.updateUser(req.user, {commentNotifications: req.user.commentNotifications}, handleError({req, res}, () => {
+        userDb.updateUser(req.user, {commentNotifications: req.user.commentNotifications}, handleError({
+            req,
+            res
+        }, () => {
             userDb.byId(req.user._id, handle40x({req, res}, user => {
                 req.user = user;
                 taskAggregator(req, res);
@@ -226,7 +230,9 @@ export function module(roleConfig) {
     router.post('/addUser', roleConfig.manage, async (req, res) => {
         const username = req.body.username;
         const existingUser = await userDb.byUsername(username);
-        if (existingUser) { return res.status(409).send('Duplicated username'); }
+        if (existingUser) {
+            return res.status(409).send('Duplicated username');
+        }
         const newUser = {
             username: username.toLowerCase(),
             password: 'umls',
