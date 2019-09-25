@@ -24,7 +24,6 @@ import {
 } from 'server/system/mongo-data';
 import { addOrg, managedOrgs, transferSteward } from 'server/system/orgsvc';
 import { config } from 'server/system/parseConfig';
-import { checkDatabase, create, remove, subscribe, updateStatus } from 'server/system/pushNotification';
 import { banIp, getTrafficFilter } from 'server/system/traffic';
 import {
     addOrgAdmin, addOrgCurator, myOrgs, myOrgsAdmins, orgAdmins, orgCurators, removeOrgAdmin, removeOrgCurator,
@@ -192,12 +191,6 @@ export function init(app) {
             if (err) res.sendStatus(404);
         });
     });
-
-    checkDatabase();
-    app.post('/pushRegistration', loggedInMiddleware, create);
-    app.delete('/pushRegistration', loggedInMiddleware, remove);
-    app.post('/pushRegistrationSubscribe', loggedInMiddleware, subscribe);
-    app.post('/pushRegistrationUpdate', updateStatus);
 
     app.get('/jobStatus/:type', function (req, res) {
         let jobType = req.params.type;
