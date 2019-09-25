@@ -37,12 +37,16 @@ public class HttpLogSearch extends NlmCdeBaseTest {
         clickElement(By.cssSelector(".mat-paginator-navigation-next"));
         clickElement(By.xpath("//th[. = 'Method']"));
         textPresent("200");
-        
+
+        // do bad query to wipe result.
+        findElement(By.name("ip")).sendKeys("badIP");
+        clickElement(By.id("searchBtn"));
+        textNotPresent(ipTerm);
+
         findElement(By.name("ip")).sendKeys(ipTerm);
         clickElement(By.id("searchBtn"));
         clickElement(By.cssSelector(".mat-paginator-navigation-previous"));
         textPresent(ipTerm);
-        hangon(2);
         List<WebElement> ips = driver.findElements(By.cssSelector(".ip"));
         for (WebElement ip : ips) {
             Assert.assertEquals(ip.getText().trim(), ipTerm);
