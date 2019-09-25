@@ -129,24 +129,6 @@ export const orgJson = {
 
 export const orgSchema = new Schema(orgJson, {collection: 'orgs', usePushEach: true});
 
-export const pushRegistration = new Schema({
-    features: [StringType],
-    loggedIn: Boolean,
-    subscription: {
-        endpoint: StringType,
-        expirationTime: StringType,
-        keys: {
-            auth: StringType,
-            p256dh: StringType
-        }
-    },
-    userId: StringType,
-    vapidKeys: {
-        privateKey: StringType,
-        publicKey: StringType
-    }
-}, {collection: 'pushRegistration'});
-
 export const designationSchema = new Schema({
     designation: StringType,
     tags: [StringType],

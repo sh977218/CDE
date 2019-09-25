@@ -5,7 +5,6 @@ import { capString } from 'shared/system/util';
 import { loggedInMiddleware, nocacheMiddleware } from '../system/authorization';
 import { handle40x, handleError } from '../errorHandler/errorHandler';
 import { version } from '../version';
-import { checkDatabase, create, remove, subscribe, updateStatus } from 'server/user/pushNotification';
 
 const config = require('config');
 const attachment = require('server/attachment/attachmentSvc');
@@ -242,29 +241,6 @@ export function module(roleConfig) {
         await userDb.save(newUser);
         res.send(username + ' added.');
     });
-
-    router.post('/updateNotificationDate', roleConfig.notificationDate, (req, res) => {
-        const notificationDate = req.body;
-        let changed = false;
-        if (notificationDate.clientLogDate) {
-            req.user.notificationDate.clientLogDate = notificationDate.clientLogDate;
-            changed = true;
-        }
-        if (notificationDate.serverLogDate) {
-            req.user.notificationDate.serverLogDate = notificationDate.serverLogDate;
-            changed = true;
-        }
-        if (changed) {
-            req.user.save(handleError({req, res}, () => res.send()));
-        }
-    });
-
-
-    checkDatabase();
-    router.post('/pushRegistration', loggedInMiddleware, create);
-    router.delete('/pushRegistration', loggedInMiddleware, remove);
-    router.post('/pushRegistrationSubscribe', loggedInMiddleware, subscribe);
-    router.post('/pushRegistrationUpdate', updateStatus);
 
     return router;
 }

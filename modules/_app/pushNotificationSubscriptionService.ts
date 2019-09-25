@@ -93,7 +93,7 @@ export class PushNotificationSubscriptionService {
     static async subscriptionDelete(userId: string): Promise<void> {
         if (userId && this.lastEndpoint && this.lastUser) {
             try {
-                await fetch('/server/user//pushRegistration', {
+                await fetch('/server/Notification', {
                     method: 'delete',
                     headers: {
                         'Content-type': 'application/json'
@@ -120,7 +120,7 @@ export class PushNotificationSubscriptionService {
             await this.askNotificationPermission();
             const registration = await this.registration;
             const pushSubscription: PushSubscription | null = await registration.pushManager.getSubscription();
-            const response: Response = await fetch('/server/user//pushRegistration', {
+            const response: Response = await fetch('/server/notification/', {
                 method: 'post',
                 headers: {
                     'Content-type': 'application/json',
@@ -166,7 +166,7 @@ export class PushNotificationSubscriptionService {
             if (!pushSubscription || !pushSubscription.getKey || !pushSubscription.endpoint) {
                 return this.fetchError(new Error('Bad syntax.'));
             }
-            await fetch('/server/user//pushRegistrationSubscribe', {
+            await fetch('/server/notification/', {
                 method: 'post',
                 headers: {
                     'Content-type': 'application/json',
@@ -192,7 +192,7 @@ export class PushNotificationSubscriptionService {
         }
         let response: Response;
         try {
-            response = await fetch('/server/user//pushRegistrationUpdate', {
+            response = await fetch('/server/notification/', {
                 method: 'post',
                 headers: {
                     'Content-type': 'application/json'

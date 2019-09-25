@@ -1,7 +1,7 @@
-import { ClientErrorModel, LogErrorModel } from '../log/dbLogger';
+import { ClientErrorModel, LogErrorModel } from 'server/log/dbLogger';
 
 export function getNumberServerError(user) {
-    let query = LogErrorModel.countDocuments(
+    const query = LogErrorModel.countDocuments(
         user.notificationDate.serverLogDate
             ? {date: {$gt: user.notificationDate.serverLogDate}}
             : {}
@@ -10,7 +10,7 @@ export function getNumberServerError(user) {
 }
 
 export function getNumberClientError(user) {
-    let query = ClientErrorModel.countDocuments(
+    const query = ClientErrorModel.countDocuments(
         user.notificationDate.clientLogDate
             ? {date: {$gt: user.notificationDate.clientLogDate}}
             : {}
