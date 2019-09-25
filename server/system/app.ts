@@ -42,28 +42,6 @@ export function init(app) {
         if (req.ip) return req.ip;
     };
 
-    let embedHtml = '';
-    renderFile('modules/_embedApp/embedApp.ejs', {isLegacy: false}, (err, str) => {
-        embedHtml = str;
-    });
-
-    let embedLegacyHtml = '';
-    renderFile('modules/_embedApp/embedApp.ejs', {isLegacy: true}, (err, str) => {
-        embedLegacyHtml = str;
-        if (embedLegacyHtml) {
-            promisify(access)('modules/_embedApp/public/html', constants.R_OK)
-                .catch(() => promisify(mkdir)('modules/_embedApp/public/html', {recursive: true} as any)) // Node 12
-                .then(() => {
-                    writeFile('modules/_embedApp/public/html/index.html', embedLegacyHtml, err => {
-                        if (err) {
-                            console.log('ERROR generating /modules/_embedApp/public/html/index.html: ' + err);
-                        }
-                    });
-                })
-                .catch(err => consoleLog('Error getting folder modules/_embedApp/public: ', err));
-        }
-    });
-
     let indexHtml = '';
     renderFile('modules/system/views/index.ejs', {
         config: config,

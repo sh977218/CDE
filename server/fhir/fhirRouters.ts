@@ -3,6 +3,7 @@ import { isSiteAdminMiddleware, loggedInMiddleware } from 'server/system/authori
 import { join } from 'path';
 import { renderFile } from 'ejs';
 import { is } from 'useragent';
+import { version } from 'server/version';
 
 /* for IE Opera Safari, emit polyfill.js */
 function isModernBrowser(req) {
@@ -12,11 +13,6 @@ function isModernBrowser(req) {
 
 export function module() {
     const router = require('express').Router();
-    let version = 'local-dev';
-    try {
-        version = require('server/system/version.js').version;
-    } catch (e) {
-    }
 
     let fhirHtml = '';
     renderFile('modules/_fhirApp/fhirApp.ejs', {isLegacy: false, version}, (err, str) => fhirHtml = str);
