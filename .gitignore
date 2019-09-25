@@ -13,7 +13,7 @@ dump/
 migration/
 nbproject
 node_modules
-##modules/_embedApp/public/
+modules/_app/index.html
 modules/cde/public/assets/fonts/
 modules/cde/public/assets/img/robot.png
 modules/system/views/version.html
