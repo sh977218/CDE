@@ -49,7 +49,7 @@ function retireForms() {
                     console.log('retiredForm: ' + retiredForm);
                 }
             }).then(() => {
-            console.log(PhenxLogger.retiredPhenxForm + ' Forms Retired.');
+            console.log(retiredForm + ' Forms Retired.');
             resolve();
         });
     });
@@ -63,7 +63,7 @@ async function retireCdes() {
             'registrationState.registrationStatus': {$ne: 'Retired'},
             archived: false,
             'ids.source': {$in: ['LOINC', 'PhenX', 'PhenX Variable']},
-            classification: {$exists: true}, $where: 'this.classification.length<2'
+            $where: 'this.classification.length<2'
         };
         const cursor = DataElement.find(cond).cursor({batchSize: 10});
         cursor.eachAsync(async (cde: any) => {
@@ -111,7 +111,7 @@ async function retireCdes() {
                 console.log('Retired Cde: ' + retiredCde);
             }
         }).then(() => {
-            console.log(PhenxLogger.retiredPhenxCde + ' cdes retired.');
+            console.log(retiredCde + ' cdes retired.');
             resolve();
         });
     });
@@ -122,7 +122,7 @@ process.on('unhandledRejection', error => {
 });
 
 async function run() {
-//    const cond = {protocolID: {$in: ['151401', '150203', '91501', '201501', '130501']}};
+//    const cond = {protocolID: {$in: ['30502']}};
     const cond = {};
     const phenxIds = await PROTOCOL.find(cond, {protocolID: 1}).lean();
 //    const slicedPhenxIds = phenxIds.slice(0, 10);
@@ -139,8 +139,8 @@ async function run() {
 
         await loadPhenxById(phenxId.protocolID);
     }
-    await retireForms();
-    await retireCdes();
+//    await retireForms();
+//    await retireCdes();
     PhenxLogger.log();
     LoincLogger.log();
     RedcapLogger.log();
