@@ -2,32 +2,30 @@ import { series } from 'async';
 import { CronJob } from 'cron';
 import * as csrf from 'csurf';
 import { renderFile } from 'ejs';
-import { access, constants, createWriteStream, mkdir, writeFile, writeFileSync, existsSync } from 'fs';
+import { access, constants, createWriteStream, existsSync, mkdir, writeFileSync } from 'fs';
 import { join } from 'path';
 import { authenticate } from 'passport';
-import { DataElement, draftsList as deDraftsList } from 'server/cde/mongo-cde';
+import { DataElement } from 'server/cde/mongo-cde';
 import { handleError, respondError } from 'server/errorHandler/errorHandler';
-import { draftsList as formDraftsList, Form } from 'server/form/mongo-form';
+import { Form } from 'server/form/mongo-form';
 import { consoleLog } from 'server/log/dbLogger';
 import { syncWithMesh } from 'server/mesh/elastic';
 import {
-    canApproveCommentMiddleware, isOrgAdminMiddleware, isOrgAuthorityMiddleware, isOrgCuratorMiddleware,
-    isSiteAdminMiddleware, loggedInMiddleware, nocacheMiddleware
+    canApproveCommentMiddleware, isOrgAdminMiddleware, isOrgAuthorityMiddleware, isSiteAdminMiddleware,
+    loggedInMiddleware, nocacheMiddleware
 } from 'server/system/authorization';
 import { reIndex } from 'server/system/elastic';
 import { indices } from 'server/system/elasticSearchInit';
 import { fhirApps, fhirObservationInfo } from 'server/system/fhir';
 import { errorLogger } from 'server/system/logging';
 import {
-    addUserRole, disableRule, enableRule, getClassificationAuditLog, getFile, IdSource, jobStatus, listOrgs,
-    listOrgsDetailedInfo, orgByName, updateOrg, userById, usersByName
+    addUserRole, getFile, jobStatus, listOrgs, listOrgsDetailedInfo, orgByName, userById, usersByName
 } from 'server/system/mongo-data';
-import { addOrg, managedOrgs, transferSteward } from 'server/system/orgsvc';
 import { config } from 'server/system/parseConfig';
 import { checkDatabase, create, remove, subscribe, updateStatus } from 'server/system/pushNotification';
-import { banIp, getTrafficFilter } from 'server/system/traffic';
+import { banIp } from 'server/system/traffic';
 import {
-    addOrgAdmin, addOrgCurator, myOrgs, myOrgsAdmins, orgAdmins, orgCurators, removeOrgAdmin, removeOrgCurator,
+    addOrgAdmin, addOrgCurator, myOrgsAdmins, orgAdmins, orgCurators, removeOrgAdmin, removeOrgCurator,
     updateUserAvatar, updateUserRoles
 } from 'server/system/usersrvc';
 import { is } from 'useragent';
@@ -42,28 +40,6 @@ export function init(app) {
         if (req._remoteAddress) return req._remoteAddress;
         if (req.ip) return req.ip;
     };
-
-    let embedHtml = '';
-    renderFile('modules/_embedApp/embedApp.ejs', {isLegacy: false}, (err, str) => {
-        embedHtml = str;
-    });
-
-    let embedLegacyHtml = '';
-    renderFile('modules/_embedApp/embedApp.ejs', {isLegacy: true}, (err, str) => {
-        embedLegacyHtml = str;
-        if (embedLegacyHtml) {
-            promisify(access)('modules/_embedApp/public/html', constants.R_OK)
-                .catch(() => promisify(mkdir)('modules/_embedApp/public/html', {recursive: true} as any)) // Node 12
-                .then(() => {
-                    writeFile('modules/_embedApp/public/html/index.html', embedLegacyHtml, err => {
-                        if (err) {
-                            console.log('ERROR generating /modules/_embedApp/public/html/index.html: ' + err);
-                        }
-                    });
-                })
-                .catch(err => consoleLog('Error getting folder modules/_embedApp/public: ', err));
-        }
-    });
 
     let fhirHtml = '';
     renderFile('modules/_fhirApp/fhirApp.ejs', {isLegacy: false, version: version}, (err, str) => {
@@ -339,10 +315,6 @@ export function init(app) {
     });
 
 
-    app.get('/managedOrgs', managedOrgs);
-    app.post('/addOrg', isOrgAuthorityMiddleware, addOrg);
-    app.post('/updateOrg', isOrgAuthorityMiddleware, (req, res) => updateOrg(req.body, res));
-
     app.get('/user/:search', nocacheMiddleware, loggedInMiddleware, (req, res) => {
         if (!req.params.search) {
             return res.send({});
@@ -375,8 +347,6 @@ export function init(app) {
         getFile(req.user, fileId, res);
     });
 
-    app.post('/transferSteward', transferSteward);
-
     app.post('/addCommentAuthor', canApproveCommentMiddleware, (req, res) => {
         addUserRole(req.body.username, 'CommentAuthor', handleError({req, res}, err => {
             if (err) {
@@ -387,12 +357,6 @@ export function init(app) {
         }));
     });
 
-    app.post('/getClassificationAuditLog', isOrgAuthorityMiddleware, (req, res) => {
-        getClassificationAuditLog(req.body, handleError({req, res}, result => {
-            res.send(result);
-        }));
-    });
-
     app.get('/fhirApps', (req, res) => fhirApps.find(res, {}, apps => res.send(apps)));
     app.get('/fhirApp/:id', (req, res) => fhirApps.get(res, req.params.id, app => res.send(app)));
     app.post('/fhirApp', isSiteAdminMiddleware,
@@ -400,84 +364,4 @@ export function init(app) {
     app.delete('/fhirApp/:id', isSiteAdminMiddleware,
         (req, res) => fhirApps.delete(res, req.params.id, () => res.send()));
 
-    app.post('/disableRule', isOrgAuthorityMiddleware, (req, res) => {
-        disableRule(req.body, handleError({req, res}, org => {
-            res.send(org);
-        }));
-    });
-
-    app.post('/enableRule', isOrgAuthorityMiddleware, (req, res) => {
-        enableRule(req.body, handleError({req, res}, org => {
-            res.send(org);
-        }));
-    });
-
-    app.get('/activeBans', isSiteAdminMiddleware, (req, res) => {
-        getTrafficFilter(list => res.send(list));
-    });
-
-    app.post('/removeBan', isSiteAdminMiddleware, (req, res) => {
-        getTrafficFilter(elt => {
-            let foundIndex = elt.ipList.findIndex(r => r.ip === req.body.ip);
-            if (foundIndex > -1) {
-                elt.ipList.splice(foundIndex, 1);
-                elt.save(() => res.send());
-            } else {
-                res.send();
-            }
-        });
-    });
-
-    app.get('/allDrafts', isOrgAuthorityMiddleware, (req, res) => {
-        getDrafts(req, res, {});
-    });
-
-    app.get('/orgDrafts', isOrgCuratorMiddleware, (req, res) => {
-        getDrafts(req, res, {'stewardOrg.name': {$in: myOrgs(req.user)}});
-    });
-
-    app.get('/myDrafts', isOrgCuratorMiddleware, (req, res) => {
-        getDrafts(req, res, {'updatedBy.username': req.user.username});
-    });
-
-    function getDrafts(req, res, criteria) {
-        Promise.all([deDraftsList(criteria), formDraftsList(criteria)])
-            .then(results => res.send({draftCdes: results[0], draftForms: results[1]}))
-            .catch(err => respondError(err, {req, res}));
-    }
-
-    app.get('/idSources', (req, res) => IdSource.find({}, handleError({req, res}, sources => res.send(sources))));
-
-    app.get('/idSource/:id', (req, res) =>
-        IdSource.findOneById(req.params.id, handleError({req, res}, source => res.send(source))));
-
-    app.post('/idSource/:id', isSiteAdminMiddleware, (req, res) => {
-        IdSource.findById(req.params.id, handleError({req, res}, doc => {
-            if (doc) return res.status(409).send(req.params.id + " already exists.");
-            else {
-                let idSource = {
-                    _id: req.params.id,
-                    linkTemplateDe: req.body.linkTemplateDe,
-                    linkTemplateForm: req.body.linkTemplateForm,
-                    version: req.body.version,
-                };
-                new IdSource(idSource).save(handleError({req, res}, source => res.send(source)));
-            }
-        }));
-    });
-
-    app.put('/idSource/:id', isSiteAdminMiddleware, (req, res) => {
-        IdSource.findById(req.body._id, handleError({req, res}, doc => {
-            if (!doc) return res.status(404).send(req.params.id + " does not exist.");
-            else {
-                doc.linkTemplateDe = req.body.linkTemplateDe;
-                doc.linkTemplateForm = req.body.linkTemplateForm;
-                doc.version = req.body.version;
-                doc.save(handleError({req, res},source => res.send(source)));
-            }
-        }));
-    });
-
-    app.delete('/idSource/:id', isSiteAdminMiddleware, (req, res) =>
-        IdSource.delete(res, req.params.id, handleError({req, res}, () => res.send())));
 }

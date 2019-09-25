@@ -82,9 +82,6 @@ export function removeJobStatus(type, callback) {
     JobQueue.remove({type: type}, callback);
 }
 
-// _id is own string
-export const idSource = writableCollection(IdSource, undefined);
-
 export function addCdeToViewHistory(elt, user) {
     if (!elt || !user) return;
     let updStmt = {
