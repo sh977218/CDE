@@ -5,7 +5,7 @@ import { establishConnection } from 'server/system/connections';
 import { pushGetAdministratorRegistrations } from 'server/system/mongo-data';
 import { noDbLogger } from 'server/system/noDbLogger';
 import { config } from 'server/system/parseConfig';
-import { triggerPushMsg } from 'server/system/pushNotification';
+import { triggerPushMsg } from 'server/user/pushNotification';
 import { Cb, CbError } from 'shared/models.model';
 
 const moment = require('moment');
