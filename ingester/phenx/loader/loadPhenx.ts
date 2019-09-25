@@ -139,8 +139,8 @@ async function run() {
 
         await loadPhenxById(phenxId.protocolID);
     }
-//    await retireForms();
-//    await retireCdes();
+    await retireForms();
+    await retireCdes();
     PhenxLogger.log();
     LoincLogger.log();
     RedcapLogger.log();
