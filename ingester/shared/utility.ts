@@ -184,7 +184,7 @@ export function updateForm(elt: any, user: any, options: any = {}) {
         const isQualified = elt.registrationState.registrationStatus === 'Qualified';
         const isArchived = elt.archived;
         if (isPhenX && isQualified && !isArchived) {
-            options.updateFormElements = false;
+            options.skipFormElements = true;
         }
 
         mongo_form.update(elt, user, options, (err, savedElt) => {

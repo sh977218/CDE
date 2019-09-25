@@ -46,6 +46,7 @@ export function parseValueDomain(loinc) {
             if (!isEmpty(a['Answer ID'])) {
                 pv.valueMeaningCode = a['Answer ID'];
             }
+            pv.valueMeaningName = pv.permissibleValue;
             pv.codeSystemName = 'LOINC';
             return pv;
         });

@@ -1,7 +1,8 @@
 import { Form } from 'server/form/mongo-form';
 import { PROTOCOL } from 'ingester/createMigrationConnection';
 import {
-    BATCHLOADER, fixFormCopyright, imported, lastMigrationScript, sortProp, sortRefDoc, updateCde, updateForm
+    BATCHLOADER, fixFormCopyright, imported, lastMigrationScript, mergeClassificationByOrg, sortProp, sortRefDoc,
+    updateCde, updateForm
 } from 'ingester/shared/utility';
 
 import { PhenxLogger } from 'ingester/log/PhenxLogger';
@@ -101,14 +102,20 @@ async function retireCdes() {
                 ]
             });
             if (linkedForms.length > 0) {
-                const hasPhenxClassification = linkedForms.filter(linkedForm => {
+                const phenxForms = linkedForms.filter(linkedForm => {
                     const isPhenxClassified = linkedForm.classification.filter(c => c.stewardOrg.name === 'PhenX');
                     return isPhenxClassified.length > 0;
                 });
-                if (!hasPhenxClassification) {
+                if (phenxForms.length === 0) {
                     cde.classification = cdeObj.classification.filter(c => c.stewardOrg.name !== 'PhenX');
-                    await cde.save();
+                } else {
+                    const fakeElt = {classification: []};
+                    phenxForms.forEach(phenxForm => {
+                        mergeClassificationByOrg(fakeElt, phenxForm, 'PhenX');
+                    });
+                    cde.classification = fakeElt.classification;
                 }
+                await cde.save();
             } else {
                 cdeObj.registrationState.registrationStatus = 'Retired';
                 cdeObj.changeNote = 'Retired because not used on any form.';
@@ -130,7 +137,7 @@ process.on('unhandledRejection', error => {
 });
 
 async function run() {
-//    const cond = {protocolID: {$in: ['30502']}};
+//    const cond = {protocolID: {$in: ['161602']}};
     const cond = {};
     const phenxIds = await PROTOCOL.find(cond, {protocolID: 1}).lean();
 //    const slicedPhenxIds = phenxIds.slice(0, 10);
