@@ -46,7 +46,7 @@ function retireForms() {
                     PhenxLogger.retiredPhenxForm++;
                     PhenxLogger.retiredPhenxForms.push(formObj.tinyId);
                     retiredForm++;
-                    console.log('retiredForm: ' + retiredForm);
+                    console.log(`retiredForm: ${retiredForm} ${formObj.tinyId}`);
                 }
             }).then(() => {
             console.log(retiredForm + ' Forms Retired.');
@@ -68,7 +68,7 @@ async function retireCdes() {
         const cursor = DataElement.find(cond).cursor({batchSize: 10});
         cursor.eachAsync(async (cde: any) => {
             const cdeObj = cde.toObject();
-            const linkedForm = await Form.findOne({
+            const linkedForms = await Form.find({
                 archived: false,
                 $or: [
                     {
@@ -100,7 +100,15 @@ async function retireCdes() {
                     }
                 ]
             });
-            if (linkedForm) {
+            if (linkedForms.length > 0) {
+                const hasPhenxClassification = linkedForms.filter(linkedForm => {
+                    const isPhenxClassified = linkedForm.classification.filter(c => c.stewardOrg.name === 'PhenX');
+                    return isPhenxClassified.length > 0;
+                });
+                if (!hasPhenxClassification) {
+                    cde.classification = cdeObj.classification.filter(c => c.stewardOrg.name !== 'PhenX');
+                    await cde.save();
+                }
             } else {
                 cdeObj.registrationState.registrationStatus = 'Retired';
                 cdeObj.changeNote = 'Retired because not used on any form.';
@@ -108,7 +116,7 @@ async function retireCdes() {
                 PhenxLogger.retiredPhenxCdes.push(cdeObj.tinyId);
                 PhenxLogger.retiredPhenxCde++;
                 retiredCde++;
-                console.log('Retired Cde: ' + retiredCde);
+                console.log(`Retired Cde: ${retiredCde} ${cdeObj.tinyId}`);
             }
         }).then(() => {
             console.log(retiredCde + ' cdes retired.');
