@@ -31,6 +31,7 @@ public class HttpLogSearch extends NlmCdeBaseTest {
         findElement(By.id("toDate")).sendKeys(Keys.TAB);
         findElement(By.id("toDate")).sendKeys("0101P");
         clickElement(By.id("searchBtn"));
+        textPresent("200");
 
         String ipTerm = findElement(By.cssSelector("td.ip")).getText();
 
