@@ -20,7 +20,7 @@ export const sourceMap = {
     NCI: ['caDSR']
 };
 export const TODAY = new Date().toJSON();
-export const lastMigrationScript = `load PhenX on ${moment().format('DD MMMM YYYY hh mm')}`;
+export const lastMigrationScript = `load PhenX on ${moment().format('DD MMMM YYYY')}`;
 
 export const BATCHLOADER_USERNAME = 'batchloader';
 export const BATCHLOADER = {

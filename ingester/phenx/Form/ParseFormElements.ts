@@ -5,6 +5,7 @@ import { parseFormElements as parseLoincFormElements } from 'ingester/loinc/Form
 export async function parseFormElements(protocol, attachments, newForm, isExistingFormQualified) {
     let formElements: any[] = [];
     if (isExistingFormQualified) {
+        newForm.formElements = formElements;
     } else {
         const loincStandard = find(protocol.standards, standard => standard.Source === 'LOINC');
         if (isEmpty(loincStandard)) {

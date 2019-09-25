@@ -101,7 +101,7 @@ export async function parseFormElements(protocol, attachments, newForm) {
     if (instrumentFileExist) {
         redCaps = await doInstrument(instrumentFilePath);
     } else {
-        const instrumentFilePathAlter = redCapFolder + 'PX' + protocolId + '/' + instrumentFileName;
+        const instrumentFilePathAlter = redCapFolder + 'PX' + leadingZeroProtocolId + '/' + instrumentFileName;
         const instrumentFileExistAlter = existsSync(instrumentFilePathAlter);
         if (instrumentFileExistAlter) {
             redCaps = await doInstrument(instrumentFilePathAlter);
