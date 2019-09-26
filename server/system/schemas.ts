@@ -57,28 +57,6 @@ export const sourceSchema = new Schema({
     }
 }, {_id: false});
 
-export const fhirAppSchema = new Schema({
-    clientId: String,
-    dataEndpointUrl: String,
-    forms: [
-        {tinyId: String}
-    ],
-    mapping: [{
-        cdeSystem: StringType,
-        cdeCode: StringType,
-        fhirSystem: StringType,
-        fhirCode: StringType,
-    }],
-}, {collection: 'fhirapps'});
-
-export const fhirObservationInformationSchema = new Schema({
-    _id: String,
-    categories: [{
-        type: String,
-        enum: ['social-history', 'vital-signs', 'imaging', 'laboratory', 'procedure', 'survey', 'exam', 'therapy']
-    }],
-}, {collection: 'fhirObservationInfo'});
-
 export const idSourceSchema = new Schema({
     _id: String,
     linkTemplateDe: {type: StringType, default: ''},

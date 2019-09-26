@@ -21,8 +21,6 @@ const schemas = require('./schemas');
 const writableCollection = require('./writableCollection').writableCollection;
 
 const conn = connHelper.establishConnection(config.database.appData);
-export const FhirApps = conn.model('FhirApp', schemas.fhirAppSchema);
-export const FhirObservationInfo = conn.model('FhirObservationInfo', schemas.fhirObservationInformationSchema);
 export const IdSource = conn.model('IdSource', schemas.idSourceSchema);
 export const JobQueue = conn.model('JobQueue', schemas.jobQueue);
 export const Message = conn.model('Message', schemas.message);
