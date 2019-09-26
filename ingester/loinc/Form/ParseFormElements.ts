@@ -38,7 +38,8 @@ export async function parseFormElements(loinc, classificationOrgName, classifica
     for (const element of elements) {
         const isElementForm = element.elements.length > 0;
         if (isElementForm) {
-            const formElement = await loadForm(element, classificationOrgName, classificationArray);
+            const formClassificationArray = ['Protocol'].concat(classificationArray);
+            const formElement = await loadForm(element, classificationOrgName, formClassificationArray);
             tempFormElements.push(formElement);
         } else {
             const formElement = await loadCde(element, classificationOrgName, classificationArray);
@@ -99,10 +100,13 @@ function elementToInForm(existingForm, element) {
     const inForm = {
         form: {
             tinyId: existingForm.tinyId,
-            version: existingForm.version,
             name: existingForm.designations[0].designation
         }
     };
+    if (existingForm.version) {
+        inForm.form.version = existingForm.version;
+    }
+
     return {
         elementType: 'form',
         instructions: {value: '', valueFormat: ''},

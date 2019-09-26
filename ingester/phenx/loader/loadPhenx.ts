@@ -63,8 +63,7 @@ async function retireCdes() {
         const cond = {
             'registrationState.registrationStatus': {$ne: 'Retired'},
             archived: false,
-            'ids.source': {$in: ['LOINC', 'PhenX', 'PhenX Variable']},
-            $where: 'this.classification.length<2'
+            'ids.source': {$in: ['LOINC', 'PhenX', 'PhenX Variable']}
         };
         const cursor = DataElement.find(cond).cursor({batchSize: 10});
         cursor.eachAsync(async (cde: any) => {
@@ -138,7 +137,7 @@ process.on('unhandledRejection', error => {
 });
 
 async function run() {
-//    const cond = {protocolID: {$in: ['211501']}};
+//    const cond = {protocolID: {$in: ['21301']}};
     const cond = {};
     const phenxIds = await PROTOCOL.find(cond, {protocolID: 1}).lean();
 //    const slicedPhenxIds = phenxIds.slice(0, 10);
