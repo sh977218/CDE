@@ -93,7 +93,7 @@ export class PushNotificationSubscriptionService {
     static async subscriptionDelete(userId: string): Promise<void> {
         if (userId && this.lastEndpoint && this.lastUser) {
             try {
-                await fetch('/server/Notification', {
+                await fetch('/server/notification', {
                     method: 'delete',
                     headers: {
                         'Content-type': 'application/json'
