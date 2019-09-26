@@ -24,7 +24,7 @@ export async function runOneCde(loinc, classificationOrgName, classificationArra
         LoincLogger.createdLoincCde++;
         LoincLogger.createdLoincCdes.push(existingCde.tinyId + `[${loinc['LOINC Code']}]`);
     } else {
-        const diff = compareElt(newCde.toObject(), existingCde.toObject());
+        const diff = compareElt(newCde.toObject(), existingCde.toObject(), 'LOINC');
         mergeClassification(existingCde, newCde.toObject(), classificationOrgName);
         if (isEmpty(diff)) {
             existingCde.lastMigrationScript = lastMigrationScript;

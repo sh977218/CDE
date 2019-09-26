@@ -24,7 +24,7 @@ export async function loadPhenxById(phenxId) {
         PhenxLogger.createdPhenxForm++;
         PhenxLogger.createdPhenxForms.push(existingForm.tinyId + `[${protocolId}]`);
     } else {
-        const diff = compareElt(newForm.toObject(), existingForm.toObject());
+        const diff = compareElt(newForm.toObject(), existingForm.toObject(), 'PhenX');
         mergeClassification(existingForm, newForm.toObject(), 'PhenX');
         if (isEmpty(diff)) {
             existingForm.lastMigrationScript = lastMigrationScript;

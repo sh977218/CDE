@@ -265,10 +265,14 @@ function getChildren(formElements: FormElement[]) {
 }
 
 // Compare two elements
-export function compareElt(newEltObj, existingEltObj) {
+export function compareElt(newEltObj, existingEltObj, source) {
     if (newEltObj.elementType !== existingEltObj.elementType) {
         console.log(`Two element type different. newEltObj: ${newEltObj.tinyId} existingEltObj: ${existingEltObj.tinyId} `);
         process.exit(1);
+    }
+
+    if (existingEltObj.tinyId === 'X1mJv5j3jx') {
+        console.log('a');
     }
 
     const isPhenX = existingEltObj.ids.filter(id => id.source === 'PhenX').length > 0;
@@ -290,7 +294,8 @@ export function compareElt(newEltObj, existingEltObj) {
 
         eltObj.properties = sortBy(eltObj.properties, ['key']);
         eltObj.referenceDocuments = sortBy(eltObj.referenceDocuments, ['docType', 'languageCode', 'document']);
-        eltObj.ids = sortBy(eltObj.ids, ['source', 'id']);
+
+        eltObj.ids = sortBy(eltObj.ids.filter(id => sourceMap[source].indexOf(id.source) !== -1), ['source', 'id']);
         ['designations', 'definitions', 'properties', 'referenceDocuments', 'ids']
             .forEach(field => {
                 eltObj[field].forEach(o => {

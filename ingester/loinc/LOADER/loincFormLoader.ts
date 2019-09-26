@@ -16,7 +16,7 @@ export async function runOneForm(loinc, classificationOrgName = 'LOINC', classif
         LoincLogger.createdLoincForm++;
         LoincLogger.createdLoincForms.push(existingForm.tinyId + `[${loinc['LOINC Code']}]`);
     } else {
-        const diff = compareElt(newForm.toObject(), existingForm.toObject());
+        const diff = compareElt(newForm.toObject(), existingForm.toObject(), 'LOINC');
         mergeClassification(existingForm, newForm.toObject(), classificationOrgName);
         if (isEmpty(diff)) {
             existingForm.lastMigrationScript = lastMigrationScript;

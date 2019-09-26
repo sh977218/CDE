@@ -63,7 +63,7 @@ async function doOneRedCap(redCap, redCaps, protocol, newForm) {
         RedcapLogger.createdRedcapCde++;
         RedcapLogger.createdRedcapCdes.push(existingCde.tinyId + `[${cdeId}]`);
     } else {
-        const diff = compareElt(newCde.toObject(), existingCde.toObject());
+        const diff = compareElt(newCde.toObject(), existingCde.toObject(), 'PhenX');
         mergeClassification(existingCde, newCde.toObject(), 'PhenX');
         if (isEmpty(diff)) {
             existingCde.lastMigrationScript = lastMigrationScript;

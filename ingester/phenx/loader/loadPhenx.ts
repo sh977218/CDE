@@ -137,7 +137,7 @@ process.on('unhandledRejection', error => {
 });
 
 async function run() {
-//    const cond = {protocolID: {$in: ['21301']}};
+//    const cond = {protocolID: {$in: ['150701', '91502', '91601']}};
     const cond = {};
     const phenxIds = await PROTOCOL.find(cond, {protocolID: 1}).lean();
 //    const slicedPhenxIds = phenxIds.slice(0, 10);

@@ -38,7 +38,7 @@ export async function parseFormElements(loinc, classificationOrgName, classifica
     for (const element of elements) {
         const isElementForm = element.elements.length > 0;
         if (isElementForm) {
-            const formClassificationArray = ['Protocol'].concat(classificationArray);
+            const formClassificationArray = ['Protocols'].concat(classificationArray);
             const formElement = await loadForm(element, classificationOrgName, formClassificationArray);
             tempFormElements.push(formElement);
         } else {
