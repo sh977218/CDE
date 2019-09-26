@@ -4,7 +4,7 @@ import { usersToNotify } from 'shared/user';
 import { handleError } from '../errorHandler/errorHandler';
 import { CbError } from 'shared/models.model';
 import {
-    pushRegistrationSubscribersByType, pushRegistrationSubscribersByUsers, typeToCriteria
+    pushRegistrationSubscribersByType, pushRegistrationSubscribersByUsers, triggerPushMsg, typeToCriteria
 } from 'server/notification/notificationSvc';
 
 const async = require('async');
@@ -12,7 +12,6 @@ const _ = require('lodash');
 const discussDb = require('../discuss/discussDb');
 const userDb = require('../user/userDb');
 const mongooseHelper = require('./mongooseHelper');
-const pushNotification = require('./pushNotification');
 
 export function attachmentApproved(collection, id, cb) {
     collection.updateMany(
@@ -79,7 +78,7 @@ export function createTask(user, role, type, eltModule, eltTinyId, item) {
     }
     const pushTaskMsg = JSON.stringify(pushTask);
     pushRegistrationSubscribersByType(type + role, handleError({}, registrations => {
-        registrations.forEach(r => pushNotification.triggerPushMsg(r, pushTaskMsg));
+        registrations.forEach(r => triggerPushMsg(r, pushTaskMsg));
     }), undefined);
 }
 
@@ -169,7 +168,7 @@ export function notifyForComment(handlerOptions, commentOrReply, eltModule, eltT
                 }
             });
             pushRegistrationSubscribersByUsers(usersToNotify('comment', 'push', users), handleError(handlerOptions, registrations => {
-                registrations.forEach(r => pushNotification.triggerPushMsg(r, pushTaskMsg));
+                registrations.forEach(r => triggerPushMsg(r, pushTaskMsg));
                 cb();
             }));
         }));

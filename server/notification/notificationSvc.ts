@@ -7,8 +7,8 @@ import { handleError } from 'server/errorHandler/errorHandler';
 import {
     pushById, pushByIds, pushByIdsCount, pushByPublicKey, pushClearDb, pushCreate, pushDelete, pushEndpointUpdate,
     pushesByEndpoint, pushRegistrationFindActive
-} from 'server/notification/pushNotificationDb';
-import { logError } from 'server/log/dbLogger';
+} from 'server/notification/notificationDb';
+import { ClientErrorModel, logError, LogErrorModel } from 'server/log/dbLogger';
 import { find } from 'server/user/userDb';
 
 const webpush = require('web-push');
@@ -237,4 +237,23 @@ export function pushRegistrationSubscribersByType(type, cb, data) {
 export function pushRegistrationSubscribersByUsers(users, cb) {
     const userIds = users.map(u => u._id.toString());
     pushRegistrationFindActive({userId: {$in: userIds}}, cb);
+}
+
+
+export function getNumberServerError(user) {
+    const query = LogErrorModel.countDocuments(
+        user.notificationDate.serverLogDate
+            ? {date: {$gt: user.notificationDate.serverLogDate}}
+            : {}
+    );
+    return query.exec();
+}
+
+export function getNumberClientError(user) {
+    const query = ClientErrorModel.countDocuments(
+        user.notificationDate.clientLogDate
+            ? {date: {$gt: user.notificationDate.clientLogDate}}
+            : {}
+    );
+    return query.exec();
 }

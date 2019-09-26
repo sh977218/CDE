@@ -1,13 +1,12 @@
 import * as async from 'async';
 import { config } from '../system/parseConfig';
 import { DataElement } from 'server/cde/mongo-cde';
-const mongoCde = require('../cde/mongo-cde');
+import { triggerPushMsg } from 'server/notification/notificationSvc';
 const mongoForm = require('../form/mongo-form');
 const boardDb = require('../board/boardDb');
 const mongoData = require('../system/mongo-data');
 const elastic = require('../system/elastic');
 const esInit = require('../system/elasticSearchInit');
-const pushNotification = require('../system/pushNotification');
 const dbLogger = require('../log/dbLogger');
 
 export const statusReport: any = {
@@ -154,7 +153,7 @@ setInterval(() => {
                         }
                     });
                     mongoData.pushGetAdministratorRegistrations(registrations => {
-                        registrations.forEach(r => pushNotification.triggerPushMsg(r, msg));
+                        registrations.forEach(r => triggerPushMsg(r, msg));
                     });
 
                     dbLogger.logError({

@@ -5,7 +5,7 @@ import { establishConnection } from 'server/system/connections';
 import { noDbLogger } from 'server/system/noDbLogger';
 import { config } from 'server/system/parseConfig';
 import { Cb, CbError } from 'shared/models.model';
-import { pushGetAdministratorRegistrations } from 'server/notification/pushNotificationDb';
+import { pushGetAdministratorRegistrations } from 'server/notification/notificationDb';
 import { triggerPushMsg } from 'server/notification/notificationSvc';
 
 const moment = require('moment');
