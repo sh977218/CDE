@@ -227,7 +227,7 @@ export class CdeFhirService {
 
     init(snapshot: ActivatedRouteSnapshot, cleanupPatient: Cb, cb: CbErr) {
         this.cleanupPatient = cleanupPatient;
-        this.http.get<FhirApp>('/fhirApp/' + snapshot.paramMap.get('config')).subscribe(fhirApp => {
+        this.http.get<FhirApp>('/server/fhirApp/' + snapshot.paramMap.get('config')).subscribe(fhirApp => {
             if (!fhirApp || !fhirApp.dataEndpointUrl || !fhirApp.clientId) {
                 cb('Application not setup correctly.');
                 return;
