@@ -44,6 +44,7 @@ public class HttpLogSearch extends NlmCdeBaseTest {
         clickElement(By.id("searchBtn"));
         textNotPresent(ipTerm);
 
+        findElement(By.name("ip")).clear();
         findElement(By.name("ip")).sendKeys(ipTerm);
         clickElement(By.id("searchBtn"));
         clickElement(By.cssSelector(".mat-paginator-navigation-previous"));
