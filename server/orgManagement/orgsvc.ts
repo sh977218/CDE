@@ -1,4 +1,6 @@
 import { isOrgAdmin } from 'shared/system/authorizationShared';
+import { orgAdmins as userOrgAdmins, userById } from '../server/system/mongo-data';
+import { handle40x } from '../server/errorHandler/errorHandler';
 
 const mongo_data = require('./mongo-data');
 const daoManager = require('./moduleDaoManager');
@@ -46,4 +48,23 @@ export function transferSteward(req, res) {
     } else {
         res.status(400).send("Please login first.");
     }
+}
+
+/*
+new api
+*/
+
+
+export async function myOrgsAdmins(user, res) {
+    user.orgAdmin
+        .map(org => ({
+            name: org,
+            users: users
+                .filter(u => u.orgAdmin.indexOf(org) > -1)
+                .map(u => ({
+                    _id: u._id,
+                    username: u.username,
+                })),
+        }))
+        .filter(r => r.users.length > 0));
 }
