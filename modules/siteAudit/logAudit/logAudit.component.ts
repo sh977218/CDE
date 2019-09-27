@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { PageEvent } from '@angular/material';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'cde-log-audit',
@@ -19,6 +20,7 @@ export class LogAuditComponent {
     totalItems?: number;
     toDate: any;
     sortingBy: any = {date: 'desc'};
+    currentQuery: Subscription;
     sortMap: {[field: string]: {title: string, property: string}} = {
         date: {
             title: 'Date',
@@ -47,38 +49,39 @@ export class LogAuditComponent {
     };
     propertiesArray = ['date', 'ip', 'url', 'method', 'status', 'respTime'];
 
-    constructor(
-        private http: HttpClient
-    ) {}
+    constructor(private http: HttpClient) {}
 
     searchLogs(event?: PageEvent) {
         if (event) {
             this.currentPage = event.pageIndex;
         }
+        if (this.currentQuery) {
+            this.currentQuery.unsubscribe();
+            delete this.currentQuery;
+        }
 
-        this.http.post<any>('/server/log/httpLogs', {
+        this.currentQuery = this.http.post<any>('/server/log/httpLogs', {
             currentPage: this.currentPage,
             ipAddress: this.ipAddress,
             totalItems: this.totalItems,
             fromDate: this.fromDate,
             toDate: this.toDate,
             sort: this.sortingBy
-        })
-            .subscribe(res => {
-                if (res.totalItems) {
-                    this.totalItems = res.totalItems;
-                }
-                this.gridLogEvents = res.logs.map((log: any) => {
-                    return {
-                        date: new Date(log.date).toLocaleString(),
-                        ip: log.remoteAddr,
-                        url: log.url,
-                        method: log.method,
-                        status: log.httpStatus,
-                        respTime: log.responseTime
-                    };
-                });
+        }).subscribe(res => {
+            if (res.totalItems) {
+                this.totalItems = res.totalItems;
+            }
+            this.gridLogEvents = res.logs.map((log: any) => {
+                return {
+                    date: new Date(log.date).toLocaleString(),
+                    ip: log.remoteAddr,
+                    url: log.url,
+                    method: log.method,
+                    status: log.httpStatus,
+                    respTime: log.responseTime
+                };
             });
+        });
     }
 
     sort(p: string) {
