@@ -1,9 +1,9 @@
 import { handleError } from '../errorHandler/errorHandler';
 import { triggerPushMsg } from 'server/notification/notificationSvc';
+import { pushGetAdministratorRegistrations } from 'server/notification/notificationDb';
 
 const userAgent = require('useragent');
 const dbLogger = require('./dbLogger');
-const mongo_data = require('../system/mongo-data');
 
 export function module(roleConfig) {
     const router = require('express').Router();
@@ -91,7 +91,7 @@ export function module(roleConfig) {
                         ]
                     }
                 });
-                mongo_data.pushGetAdministratorRegistrations(registrations => {
+                pushGetAdministratorRegistrations(registrations => {
                     registrations.forEach(r => triggerPushMsg(r, msg));
                 });
                 res.send({});
