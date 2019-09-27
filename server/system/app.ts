@@ -16,7 +16,6 @@ import {
 } from 'server/system/authorization';
 import { reIndex } from 'server/system/elastic';
 import { indices } from 'server/system/elasticSearchInit';
-import { fhirApps, fhirObservationInfo } from 'server/system/fhir';
 import { errorLogger } from 'server/system/logging';
 import {
     addUserRole, disableRule, enableRule, getClassificationAuditLog, getFile, IdSource, jobStatus, listOrgs,
@@ -42,38 +41,6 @@ export function init(app) {
         if (req._remoteAddress) return req._remoteAddress;
         if (req.ip) return req.ip;
     };
-
-    let embedHtml = '';
-    renderFile('modules/_embedApp/embedApp.ejs', {isLegacy: false}, (err, str) => {
-        embedHtml = str;
-    });
-
-    let embedLegacyHtml = '';
-    renderFile('modules/_embedApp/embedApp.ejs', {isLegacy: true}, (err, str) => {
-        embedLegacyHtml = str;
-        if (embedLegacyHtml) {
-            promisify(access)('modules/_embedApp/public/html', constants.R_OK)
-                .catch(() => promisify(mkdir)('modules/_embedApp/public/html', {recursive: true} as any)) // Node 12
-                .then(() => {
-                    writeFile('modules/_embedApp/public/html/index.html', embedLegacyHtml, err => {
-                        if (err) {
-                            console.log('ERROR generating /modules/_embedApp/public/html/index.html: ' + err);
-                        }
-                    });
-                })
-                .catch(err => consoleLog('Error getting folder modules/_embedApp/public: ', err));
-        }
-    });
-
-    let fhirHtml = '';
-    renderFile('modules/_fhirApp/fhirApp.ejs', {isLegacy: false, version: version}, (err, str) => {
-        fhirHtml = str;
-    });
-
-    let fhirLegacyHtml = '';
-    renderFile('modules/_fhirApp/fhirApp.ejs', {isLegacy: true, version: version}, (err, str) => {
-        fhirLegacyHtml = str;
-    });
 
     let indexHtml = '';
     renderFile('modules/system/views/index.ejs', {
@@ -168,24 +135,6 @@ export function init(app) {
             '/classificationManagement', '/profile', '/login', '/orgAuthority', '/orgComments'],
         respondHomeFull
     );
-
-    app.get('/fhir/form/:param', (req, res) => {
-        res.send(isModernBrowser(req) ? fhirHtml : fhirLegacyHtml);
-    });
-
-    app.get('/fhir/launch/:param', (req, res) => {
-        res.sendFile(join(__dirname, '../../modules/_fhirApp', 'fhirAppLaunch.html'), undefined, err => {
-            if (err) res.sendStatus(404);
-        });
-    });
-
-    app.get('/fhirObservationInfo', (req, res) => {
-        fhirObservationInfo.get(res, req.query.id, info => res.send(info));
-    });
-
-    app.put('/fhirObservationInfo', loggedInMiddleware, (req, res) => {
-        fhirObservationInfo.put(res, req.body, info => res.send(info));
-    });
 
     app.get('/sw.js', function (req, res) {
         res.sendFile((global as any).appDir('dist/app', 'sw.js'), undefined, err => {
@@ -392,13 +341,6 @@ export function init(app) {
             res.send(result);
         }));
     });
-
-    app.get('/fhirApps', (req, res) => fhirApps.find(res, {}, apps => res.send(apps)));
-    app.get('/fhirApp/:id', (req, res) => fhirApps.get(res, req.params.id, app => res.send(app)));
-    app.post('/fhirApp', isSiteAdminMiddleware,
-        (req, res) => fhirApps.save(res, req.body, app => res.send(app)));
-    app.delete('/fhirApp/:id', isSiteAdminMiddleware,
-        (req, res) => fhirApps.delete(res, req.params.id, () => res.send()));
 
     app.post('/disableRule', isOrgAuthorityMiddleware, (req, res) => {
         disableRule(req.body, handleError({req, res}, org => {
