@@ -20,7 +20,9 @@ export class LogAuditComponent {
     totalItems?: number;
     toDate: any;
     sortingBy: any = {date: 'desc'};
-    currentQuery: Subscription;
+    // how to get rid of this silly message. ! is wrong here as the value is not set. Also, there is
+    // need or possibility to set in constructor. What am I missing?
+    currentQuery!: Subscription;
     sortMap: {[field: string]: {title: string, property: string}} = {
         date: {
             title: 'Date',
