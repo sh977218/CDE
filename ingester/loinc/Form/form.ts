@@ -9,7 +9,7 @@ import { parseStewardOrg } from '../Shared/ParseStewardOrg';
 import { parseSources } from '../Shared/ParseSources';
 import { parseFormElements } from './ParseFormElements';
 
-import { BATCHLOADER, created, imported } from 'ingester/shared/utility';
+import { BATCHLOADER, created, imported, version } from 'ingester/shared/utility';
 
 
 export async function createLoincForm(loinc, classificationOrgName = 'LOINC', classificationArray = []) {
@@ -28,6 +28,7 @@ export async function createLoincForm(loinc, classificationOrgName = 'LOINC', cl
         created,
         imported,
         source: 'LOINC',
+        version,
         registrationState: {registrationStatus: 'Qualified'},
         sources,
         designations,

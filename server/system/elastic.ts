@@ -1,7 +1,7 @@
 import { eachOf, filter, forEach } from 'async';
 import { Client, SearchResponse } from 'elasticsearch';
 import { Document } from 'mongoose';
-import { handleError, respondError } from '../errorHandler/errorHandler';
+import { respondError } from '../errorHandler/errorHandler';
 import { config } from '../system/parseConfig';
 import { DataElementElastic } from 'shared/de/dataElement.model';
 import { Cb, Cb1, CbErr, CbError, CbError1, ElasticQueryResponseAggregations, ItemElastic, ModuleItem, User } from 'shared/models.model';

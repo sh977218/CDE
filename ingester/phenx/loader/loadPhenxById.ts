@@ -46,7 +46,7 @@ export async function loadPhenxById(phenxId) {
             await new Comment(comment).save();
         }
     }
-    await updateRowArtifact(existingForm, newForm, 'PhenX', 'PhenX');
+    await updateRowArtifact(existingForm, newFormObj, 'PhenX', 'PhenX');
     protocolCount++;
     console.log('protocolCount ' + protocolCount);
     console.log('Finished protocol: ' + protocolId);

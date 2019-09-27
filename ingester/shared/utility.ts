@@ -2,7 +2,7 @@ import { Builder, By } from 'selenium-webdriver';
 
 import * as DiffJson from 'diff-json';
 import * as moment from 'moment';
-import { find, findIndex, isEmpty, isEqual, lowerCase, sortBy, uniq } from 'lodash';
+import { find, findIndex, isEmpty, isEqual, lastIndexOf, lowerCase, sortBy, uniq } from 'lodash';
 import * as mongo_cde from 'server/cde/mongo-cde';
 import { DataElementSource } from 'server/cde/mongo-cde';
 import * as mongo_form from 'server/form/mongo-form';
@@ -30,6 +30,7 @@ export const BATCHLOADER = {
 
 export const created = TODAY;
 export const imported = TODAY;
+export const version = '1.0';
 
 export function removeWhite(text: string) {
     if (!text) {
@@ -271,10 +272,6 @@ export function compareElt(newEltObj, existingEltObj, source) {
         process.exit(1);
     }
 
-    if (existingEltObj.tinyId === 'X1mJv5j3jx') {
-        console.log('a');
-    }
-
     const isPhenX = existingEltObj.ids.filter(id => id.source === 'PhenX').length > 0;
     const isQualified = existingEltObj.registrationState.registrationStatus === 'Qualified';
     const isArchived = existingEltObj.archived;
@@ -459,6 +456,24 @@ export function mergeSources(existingObj, newObj, sources) {
     existingObj.sources = newSources.concat(otherSources);
 }
 
+function increaseVersion(existingEltObj) {
+    const version = existingEltObj.version;
+    if (version) {
+        let majorVersion = version;
+        const dotIndex = lastIndexOf(version, '.');
+        if (dotIndex !== -1) {
+            majorVersion = version.substr(0, dotIndex);
+        }
+        const minorVersion = version.substr(dotIndex + 1, version.length - 1);
+        const minorVersionNum = parseInt(minorVersion, 10);
+        const increasedMinorVersion = minorVersionNum + 1;
+        existingEltObj.version = majorVersion + '.' + increasedMinorVersion;
+
+    } else {
+        existingEltObj.version = '1.0';
+    }
+}
+
 export function mergeElt(existingEltObj: any, newEltObj: any, source: string, classificationOrgName) {
     const isForm = existingEltObj.elementType === 'form';
     const isCde = existingEltObj.elementType === 'cde';
@@ -482,12 +497,9 @@ export function mergeElt(existingEltObj: any, newEltObj: any, source: string, cl
     mergeSources(existingEltObj, newEltObj, sources);
 
     existingEltObj.attachments = newEltObj.attachments;
-    if (newEltObj.version) {
-        existingEltObj.version = newEltObj.version;
-    } else {
-        existingEltObj.version = '';
+    if (existingEltObj.lastMigrationScript !== lastMigrationScript) {
+        increaseVersion(existingEltObj);
     }
-
 
     if (isCde) {
         existingEltObj.property = newEltObj.property;

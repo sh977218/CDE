@@ -10,7 +10,7 @@ import { parseSources } from 'ingester/loinc/Shared/ParseSources';
 import { parseConcepts } from 'ingester/loinc/CDE/ParseConcept';
 import { parseValueDomain } from 'ingester/loinc/CDE/ParseValueDomain';
 
-import { BATCHLOADER, created, imported, lastMigrationScript } from 'ingester/shared/utility';
+import { BATCHLOADER, created, imported, lastMigrationScript, version } from 'ingester/shared/utility';
 
 export async function createLoincCde(loinc, classificationOrgName = 'LOINC', classificationArray = []) {
     const designations = parseDesignations(loinc);
@@ -30,6 +30,7 @@ export async function createLoincCde(loinc, classificationOrgName = 'LOINC', cla
         imported,
         changeNote: lastMigrationScript,
         source: 'LOINC',
+        version,
         registrationState: {registrationStatus: 'Standard'},
         sources,
         designations,

@@ -50,5 +50,6 @@ export async function runOneCde(loinc, classificationOrgName, classificationArra
         }
     }
     await updateRowArtifact(existingCde, newCdeObj, 'LOINC', classificationOrgName);
-    return existingCde;
+    const savedCde: any = await DataElement.findOne({archived: false, 'ids.id': loinc['LOINC Code']});
+    return savedCde;
 }
