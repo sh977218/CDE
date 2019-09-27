@@ -1,6 +1,6 @@
-import { FhirApps, FhirObservationInfo } from '../system/mongo-data';
+import { FhirApps, FhirObservationInfo } from 'server/fhir/fhirDb';
 
-const writableCollection = require('./writableCollection').writableCollection;
+const writableCollection = require('server/system/writableCollection').writableCollection;
 
 export const fhirApps = writableCollection(FhirApps);
 

@@ -37,6 +37,7 @@ import { module as siteAdminModule } from 'server/siteAdmin/siteAdminRoutes';
 import { module as systemModule } from 'server/system/systemRouters';
 import { module as nativeRenderModule } from 'server/nativeRender/nativeRenderRouters';
 import { module as embedModule } from 'server/embed/embedRouters';
+import { module as fhirModule } from 'server/fhir/fhirRouters';
 import { init as systemInit, respondHomeFull } from 'server/system/app';
 import { init as authInit, ticketAuth } from 'server/system/authentication';
 import {
@@ -352,6 +353,7 @@ try {
     app.use('/', systemModule());
     app.use('/nativeRender', nativeRenderModule());
     app.use('/', embedModule());
+    app.use('/', fhirModule());
     cdeInit(app, daoManager);
     systemInit(app);
     formInit(app, daoManager);

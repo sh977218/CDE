@@ -31,6 +31,7 @@ function handleReject(message: string) {
 }
 
 setInterval(async () => {
+    _TGT = undefined;
     await getTGT().catch(() => _TGT = undefined);
     getVsacCookies().catch(handleReject('get vsac cookies ERROR'));
 }, 60 * 60 * 6 * 1000);
@@ -56,6 +57,7 @@ function getTGT() {
     })
         .then(
             response => response.body,
+            // response => response.body,
             handleReject('get TGT ERROR')
         );
 }

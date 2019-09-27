@@ -3,7 +3,6 @@ import { CronJob } from 'cron';
 import * as csrf from 'csurf';
 import { renderFile } from 'ejs';
 import { access, constants, createWriteStream, existsSync, mkdir, writeFileSync } from 'fs';
-import { join } from 'path';
 import { authenticate } from 'passport';
 import { DataElement } from 'server/cde/mongo-cde';
 import { handleError, respondError } from 'server/errorHandler/errorHandler';
@@ -16,7 +15,6 @@ import {
 } from 'server/system/authorization';
 import { reIndex } from 'server/system/elastic';
 import { indices } from 'server/system/elasticSearchInit';
-import { fhirApps, fhirObservationInfo } from 'server/system/fhir';
 import { errorLogger } from 'server/system/logging';
 import {
     addUserRole, getFile, jobStatus, listOrgs, listOrgsDetailedInfo, orgByName, userById, usersByName
@@ -40,16 +38,6 @@ export function init(app) {
         if (req._remoteAddress) return req._remoteAddress;
         if (req.ip) return req.ip;
     };
-
-    let fhirHtml = '';
-    renderFile('modules/_fhirApp/fhirApp.ejs', {isLegacy: false, version: version}, (err, str) => {
-        fhirHtml = str;
-    });
-
-    let fhirLegacyHtml = '';
-    renderFile('modules/_fhirApp/fhirApp.ejs', {isLegacy: true, version: version}, (err, str) => {
-        fhirLegacyHtml = str;
-    });
 
     let indexHtml = '';
     renderFile('modules/system/views/index.ejs', {
@@ -144,24 +132,6 @@ export function init(app) {
             '/classificationManagement', '/profile', '/login', '/orgAuthority', '/orgComments'],
         respondHomeFull
     );
-
-    app.get('/fhir/form/:param', (req, res) => {
-        res.send(isModernBrowser(req) ? fhirHtml : fhirLegacyHtml);
-    });
-
-    app.get('/fhir/launch/:param', (req, res) => {
-        res.sendFile(join(__dirname, '../../modules/_fhirApp', 'fhirAppLaunch.html'), undefined, err => {
-            if (err) res.sendStatus(404);
-        });
-    });
-
-    app.get('/fhirObservationInfo', (req, res) => {
-        fhirObservationInfo.get(res, req.query.id, info => res.send(info));
-    });
-
-    app.put('/fhirObservationInfo', loggedInMiddleware, (req, res) => {
-        fhirObservationInfo.put(res, req.body, info => res.send(info));
-    });
 
     app.get('/sw.js', function (req, res) {
         res.sendFile((global as any).appDir('dist/app', 'sw.js'), undefined, err => {
@@ -356,12 +326,5 @@ export function init(app) {
             res.send();
         }));
     });
-
-    app.get('/fhirApps', (req, res) => fhirApps.find(res, {}, apps => res.send(apps)));
-    app.get('/fhirApp/:id', (req, res) => fhirApps.get(res, req.params.id, app => res.send(app)));
-    app.post('/fhirApp', isSiteAdminMiddleware,
-        (req, res) => fhirApps.save(res, req.body, app => res.send(app)));
-    app.delete('/fhirApp/:id', isSiteAdminMiddleware,
-        (req, res) => fhirApps.delete(res, req.params.id, () => res.send()));
-
+    
 }
