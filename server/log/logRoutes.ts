@@ -21,7 +21,9 @@ export function module(roleConfig) {
     });
 
     router.post('/serverErrors', roleConfig.superLog, (req, res) => {
-        dbLogger.getServerErrors(req.body, handleError({req, res}, result => res.send(result)));
+        dbLogger.getServerErrors(req.body, handleError({req, res}, result => {
+            res.send(result);
+        }));
     });
 
     router.post('/clientErrors', roleConfig.superLog, (req, res) => {
