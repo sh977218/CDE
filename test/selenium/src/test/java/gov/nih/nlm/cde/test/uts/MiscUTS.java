@@ -37,7 +37,7 @@ public class MiscUTS extends NlmCdeBaseTest{
     @Test
     public void valueSetPage() {
         String response = get(baseUrl + "/server/uts/searchValueSet/2.16.840.1.113883.3.526.2.39?page=2").asString();
-        Assert.assertTrue(response.contains("page\":2"));
+        Assert.assertTrue(response.contains("page\":2"), "actual: " + response);
     }
 
 

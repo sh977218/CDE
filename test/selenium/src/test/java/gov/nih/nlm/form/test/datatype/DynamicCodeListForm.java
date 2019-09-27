@@ -24,7 +24,7 @@ public class DynamicCodeListForm extends NlmCdeBaseTest {
     public void dynamicCodeListFormTest() {
         try {
             doIt();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             doIt();
         }
     }
