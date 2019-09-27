@@ -34,7 +34,7 @@ try {
 schemas.dataElementSchema.pre('save', function(next) {
     const elt = this;
 
-    if (this.archived) {
+    if (elt.archived) {
         return next();
     }
     validateSchema(elt).then(() => {
@@ -47,7 +47,7 @@ schemas.dataElementSchema.pre('save', function(next) {
             });
         }
 
-        let valueDomain = this.valueDomain;
+        const valueDomain = elt.valueDomain;
         if (valueDomain.datatype === 'Value List' && isEmpty(valueDomain.permissibleValues)) {
             next('Value List with empty permissible values.');
         } else {
@@ -66,7 +66,6 @@ export const User = require('../user/userDb').User;
 const auditModifications = mongoData.auditModifications(CdeAudit);
 export const getAuditLog = mongoData.auditGetLog(CdeAudit);
 export const dao = DataElement;
-export const daoDraft = DataElementDraft;
 
 mongoData.attachables.push(DataElement);
 
@@ -106,7 +105,7 @@ export function byTinyIdList(tinyIdList, callback) {
             cdes.forEach(mongoData.formatElt);
             forEach(tinyIdList, t => {
                 const c = find(cdes, cde => cde.tinyId === t);
-                if (c) result.push(c);
+                if (c) { result.push(c); }
             });
             callback(err, result);
         });
@@ -175,9 +174,9 @@ export function count(condition, callback) {
 
 export function byTinyIdVersion(tinyId, version, cb) {
     if (version) {
-        this.byTinyIdAndVersion(tinyId, version, cb);
+        byTinyIdAndVersion(tinyId, version, cb);
     } else {
-        this.byTinyId(tinyId, cb);
+        byTinyId(tinyId, cb);
     }
 }
 
@@ -204,7 +203,9 @@ const viewedCdes = {};
 const threshold = config.viewsIncrementThreshold;
 
 export function inCdeView(cde) {
-    if (!viewedCdes[cde._id]) { viewedCdes[cde._id] = 0; }
+    if (!viewedCdes[cde._id]) {
+        viewedCdes[cde._id] = 0;
+    }
     viewedCdes[cde._id]++;
     if (viewedCdes[cde._id] >= threshold && cde && cde._id) {
         viewedCdes[cde._id] = 0;
@@ -223,19 +224,25 @@ export function create(elt, user, callback) {
     newItem.tinyId = mongoData.generateTinyId();
     newItem.save((err, newElt) => {
         callback(err, newElt);
-        if (!err) { auditModifications(user, null, newElt); }
+        if (!err) {
+            auditModifications(user, null, newElt);
+        }
     });
 }
 
 export function update(elt, user, options: any = {}, callback: CbError<DE>) {
-    if (elt.toObject) { elt = elt.toObject(); }
+    if (elt.toObject) {
+        elt = elt.toObject();
+    }
     DataElement.findById(elt._id, (err, dataElement) => {
         if (dataElement.archived) {
             callback(new Error('You are trying to edit an archived elements'));
             return;
         }
         delete elt._id;
-        if (!elt.history) { elt.history = []; }
+        if (!elt.history) {
+            elt.history = [];
+        }
         elt.history.push(dataElement._id);
         updateUser(elt, user);
 
@@ -296,9 +303,13 @@ export function findModifiedElementsSince(date, cb) {
 }
 
 export function checkOwnership(req, id, cb) {
-    if (!req.isAuthenticated()) { return cb('You are not authorized.', null); }
+    if (!req.isAuthenticated()) {
+        return cb('You are not authorized.', null);
+    }
     byId(id, (err, elt) => {
-        if (err || !elt) { return cb('Element does not exist.', null); }
+        if (err || !elt) {
+            return cb('Element does not exist.', null);
+        }
         if (!isOrgCurator(req.user, elt.stewardOrg.name)) {
             return cb('You do not own this element.', null);
         }
