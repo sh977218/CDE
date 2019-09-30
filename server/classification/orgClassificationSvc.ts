@@ -56,7 +56,7 @@ export function deleteOrgClassification(user, deleteClassification, settings, ca
                         if (result && result.forms && result.forms.length > 0) {
                             const tinyIds = result.forms.map(c => c.tinyId);
                             async.eachLimit(tinyIds, 100, (tinyId, doneOne) => {
-                                mongo_form.byTinyId(tinyId, form => {
+                                mongo_form.byTinyId(tinyId, (err, form) => {
                                     if (err) {
                                         return doneOne(err);
                                     }
@@ -104,7 +104,7 @@ export function renameOrgClassification(user, newClassification, settings, callb
                         if (result && result.cdes && result.cdes.length > 0) {
                             const tinyIds = result.cdes.map(c => c.tinyId);
                             async.eachLimit(tinyIds, 100, (tinyId, doneOne) => {
-                                mongo_cde.byTinyId(tinyId, de => {
+                                mongo_cde.byTinyId(tinyId, (err, de) => {
                                     if (err) {
                                         return doneOne(err);
                                     }
@@ -129,7 +129,7 @@ export function renameOrgClassification(user, newClassification, settings, callb
                         if (result && result.forms && result.forms.length > 0) {
                             const tinyIds = result.forms.map(c => c.tinyId);
                             async.eachLimit(tinyIds, 100, (tinyId, doneOne) => {
-                                mongo_form.byTinyId(tinyId, form => {
+                                mongo_form.byTinyId(tinyId, (err, form) => {
                                     if (err) {
                                         return doneOne(err);
                                     }
@@ -187,12 +187,12 @@ export function reclassifyOrgClassification(user, oldClassification, newClassifi
                         if (result && result.cdes && result.cdes.length > 0) {
                             const tinyIds = result.cdes.map(c => c.tinyId);
                             async.eachLimit(tinyIds, 100, (tinyId, doneOne) => {
-                                mongo_cde.byTinyId(tinyId, de => {
+                                mongo_cde.byTinyId(tinyId, (err, form) => {
                                     if (err) {
                                         return doneOne(err);
                                     }
-                                    classifyItem(de, newClassification.orgName, newClassification.categories);
-                                    de.save(doneOne);
+                                    classifyItem(form, newClassification.orgName, newClassification.categories);
+                                    form.save(doneOne);
                                 });
                             }, () => {
                                 done();
@@ -210,7 +210,7 @@ export function reclassifyOrgClassification(user, oldClassification, newClassifi
                         if (result && result.forms && result.forms.length > 0) {
                             const tinyIds = result.cdes.map(c => c.tinyId);
                             async.eachLimit(tinyIds, 100, (tinyId, doneOne) => {
-                                mongo_form.byTinyId(tinyId, de => {
+                                mongo_form.byTinyId(tinyId, (err, de) => {
                                     if (err) {
                                         return doneOne(err);
                                     }
