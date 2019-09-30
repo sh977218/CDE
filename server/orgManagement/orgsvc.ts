@@ -56,15 +56,18 @@ new api
 
 
 export async function myOrgsAdmins(user, res) {
-    user.orgAdmin
-        .map(org => ({
-            name: org,
-            users: users
-                .filter(u => u.orgAdmin.indexOf(org) > -1)
-                .map(u => ({
-                    _id: u._id,
-                    username: u.username,
-                })),
-        }))
-        .filter(r => r.users.length > 0));
+
+    userOrgAdmins(handle40x({req, res}, users => {
+        res.send(foundUser.orgAdmin
+            .map(org => ({
+                name: org,
+                users: users
+                    .filter(u => u.orgAdmin.indexOf(org) > -1)
+                    .map(u => ({
+                        _id: u._id,
+                        username: u.username,
+                    })),
+            }))
+            .filter(r => r.users.length > 0));
+    }));
 }
