@@ -220,6 +220,7 @@ function getSampleElt(): CdeForm {
         attachments: [],
         classification: [],
         comments: [],
+        created: '01-01-2018',
         definitions: [],
         designations: [],
         displayProfiles: [],

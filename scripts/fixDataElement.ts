@@ -1,15 +1,14 @@
-import { DataElement } from 'server/cde/mongo-cde';
+import { dataElementModel } from 'server/cde/mongo-cde';
 import { fixCdeError } from './utility';
 
-process.on('unhandledRejection', function (error) {
+process.on('unhandledRejection', (error) => {
     console.log(error);
 });
 
-
 function run() {
     let cdeCount = 0;
-    let cond = {};
-    let cursor = DataElement.find(cond).cursor();
+    const cond = {};
+    const cursor = dataElementModel.find(cond).cursor();
     cursor.eachAsync(async (cde: any) => {
 
         /* @TODO Remove this code after run against test data.
@@ -26,16 +25,16 @@ function run() {
         */
         if (cde.tinyId === '71P6HVrUM') {
             cde.ids = [{
-                "id": "59052-1",
-                "source": "LOINC",
-                "version": "2.1213"
+                id: '59052-1',
+                source: 'LOINC',
+                version: '2.1213'
             }];
         }
 
         cde.lastMigrationScript = 'fixDataElement';
         fixCdeError(cde);
         await cde.save().catch(error => {
-            throw `await cde.save() Error on ${cde.tinyId} ${error}`;
+            throw new Error(`await cde.save() Error on ${cde.tinyId} ${error}`);
         });
         cdeCount++;
         console.log(`cdeCount: ${cdeCount}`);

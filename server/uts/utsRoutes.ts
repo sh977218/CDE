@@ -1,3 +1,4 @@
+import { Router } from 'express';
 import { loggedInMiddleware, nocacheMiddleware } from 'server/system/authorization';
 import { config } from 'server/system/parseConfig';
 import {
@@ -5,7 +6,7 @@ import {
 } from 'server/uts/utsSvc';
 
 export function module() {
-    const router = require('express').Router();
+    const router = Router();
 
     router.get('/searchValueSet/:vsacId', [nocacheMiddleware], async (req, res) => {
         const vsacId = req.params.vsacId;

@@ -1,18 +1,19 @@
+import { Router } from 'express';
 import { fhirApps, fhirObservationInfo } from 'server/fhir/fhirSvc';
 import { isSiteAdminMiddleware, loggedInMiddleware } from 'server/system/authorization';
 import { join } from 'path';
 import { renderFile } from 'ejs';
 import { is } from 'useragent';
-import { version } from 'server/version';
+import { version } from '../version';
 
 /* for IE Opera Safari, emit polyfill.js */
 function isModernBrowser(req) {
     const ua = is(req.headers['user-agent']);
-    return ua.chrome || ua.firefox || ua.edge;
+    return ua.chrome || ua.firefox || (ua as any).edge;
 }
 
 export function module() {
-    const router = require('express').Router();
+    const router = Router();
 
     let fhirHtml = '';
     renderFile('modules/_fhirApp/fhirApp.ejs', {isLegacy: false, version}, (err, str) => fhirHtml = str);

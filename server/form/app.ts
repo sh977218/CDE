@@ -1,17 +1,19 @@
-import { stripBsonIds } from 'shared/system/exportShared';
-import { getEnvironmentHost } from 'shared/env';
-import { handle40x, handleError } from 'server/errorHandler/errorHandler';
+import { Express, RequestHandler } from 'express';
+import { toInteger } from 'lodash';
+import { handleError, handleNotFound } from 'server/errorHandler/errorHandler';
 import {
     canCreateMiddleware, canEditByTinyIdMiddleware, canEditMiddleware,
     isOrgAuthorityMiddleware, isOrgCuratorMiddleware, loggedInMiddleware, nocacheMiddleware
 } from 'server/system/authorization';
 import { config } from 'server/system/parseConfig';
 import { isSearchEngine } from 'server/system/helper';
-import { byTinyIdVersion as formByTinyIdVersion, Form } from 'server/form/mongo-form';
+import { byTinyIdVersion as formByTinyIdVersion, formModel } from 'server/form/mongo-form';
 import { respondHomeFull } from 'server/system/app';
-import { toInteger } from 'lodash';
 import { validateBody } from 'server/system/bodyValidator';
+import { completionSuggest, elasticSearchExport, removeElasticFields, scrollExport, scrollNext } from 'server/system/elastic';
+import { getEnvironmentHost } from 'shared/env';
 import { CbErr } from 'shared/models.model';
+import { stripBsonIdsElt } from 'shared/system/exportShared';
 
 const _ = require('lodash');
 const dns = require('dns');
@@ -19,7 +21,6 @@ const os = require('os');
 const formSvc = require('./formsvc');
 const syncLinkedForms = require('./syncLinkedForms');
 const mongoForm = require('./mongo-form');
-const elasticSystem = require('../system/elastic');
 const sharedElastic = require('../system/elastic');
 const CronJob = require('cron').CronJob;
 const { checkSchema, check } = require('express-validator');
@@ -35,22 +36,22 @@ const setGlobalVars = require('indexeddbshim');
 setGlobalVars();
 const ucum = require('ucum').UcumLhcUtils.getInstance();
 
-function allowXOrigin(req, res, next) {
+const allowXOrigin: RequestHandler = (req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Headers', 'X-Requested-With');
     next();
-}
+};
 
-function allRequestsProcessing(req, res, next) {
+const allRequestsProcessing: RequestHandler = (req, res, next) => {
     // update green/blue env GLOBAL
     const env = getEnvironmentHost(config, req.headers.host);
     if (env) {
         (global as any).CURRENT_SERVER_ENV = env;
     }
     next();
-}
+};
 
-export function init(app, daoManager) {
+export function init(app: Express, daoManager) {
     daoManager.registerDao(mongoForm);
 
     app.get('/form/search', (req, res) => {
@@ -66,22 +67,22 @@ export function init(app, daoManager) {
                     archived: false,
                     'registrationState.registrationStatus': 'Qualified'
                 };
-                Form.countDocuments(cond, handleError({req, res}, totalCount => {
-                    Form.find(cond, 'tinyId designations', {
+                formModel.countDocuments(cond, handleNotFound({req, res}, totalCount => {
+                    formModel.find(cond, 'tinyId designations', {
                         skip: pageSize * (pageNum - 1),
                         limit: pageSize
                     }, handleError({req, res}, forms => {
                         let totalPages = totalCount / pageSize;
                         if (totalPages % 1 > 0) { totalPages = totalPages + 1; }
-                        res.render('bot/formSearchOrg', 'system', {
+                        res.render('bot/formSearchOrg', 'system' as any, {
                             forms,
                             totalPages,
                             selectedOrg
-                        });
+                        } as any);
                     }));
                 }));
             } else {
-                res.render('bot/formSearch', 'system');
+                res.render('bot/formSearch', 'system' as any);
             }
         } else {
             respondHomeFull(req, res);
@@ -146,7 +147,7 @@ export function init(app, daoManager) {
 
     app.post('/form/publish/:id', loggedInMiddleware, formSvc.publishFormToHtml);
 
-    app.get('/viewingHistory/form', [loggedInMiddleware, nocacheMiddleware], (req, res) => {
+    app.get('/viewingHistory/form', loggedInMiddleware, nocacheMiddleware, (req, res) => {
         const splicedArray = req.user.formViewHistory.splice(0, 10);
         const idList: string[] = [];
         for (const sa of splicedArray) {
@@ -166,18 +167,18 @@ export function init(app, daoManager) {
         if (!req.body.fullRecord) {
             query._source = {excludes: ['flatProperties', 'properties', 'classification.elements', 'formElements']};
         }
-        sharedElastic.elasticsearch('form', query, req.body, handle40x({res, statusCode: '422'}, result => {
+        sharedElastic.elasticsearch('form', query, req.body, handleNotFound({res, statusCode: 422}, result => {
             res.send(result);
         }));
     });
 
     app.post('/scrollExport/form', (req, res) => {
         const query = sharedElastic.buildElasticSearchQuery(req.user, req.body);
-        elasticSystem.scrollExport(query, 'form', handle40x({res, statusCode: 400}, response => res.send(response)));
+        scrollExport(query, 'form', handleNotFound({res, statusCode: 400}, response => res.send(response)));
     });
 
     app.get('/scrollExport/:scrollId', (req, res) => {
-        elasticSystem.scrollNext(req.params.scrollId, handle40x({res, statusCode: 400}, response => res.send(response)));
+        scrollNext(req.params.scrollId, handleNotFound({res, statusCode: 400}, response => res.send(response)));
     });
 
     app.post('/getFormAuditLog', isOrgAuthorityMiddleware, (req, res) => {
@@ -192,18 +193,18 @@ export function init(app, daoManager) {
                     let firstElt = true;
                     res.type('application/json');
                     res.write('[');
-                    elasticSystem.elasticSearchExport(handleError({req, res}, elt => {
+                    elasticSearchExport('form', query, handleError({req, res}, (elt) => {
                         if (elt) {
                             if (!firstElt) { res.write(','); }
-                            elt = stripBsonIds(elt);
-                            elt = elasticSystem.removeElasticFields(elt);
+                            elt = stripBsonIdsElt(elt);
+                            elt = removeElasticFields(elt);
                             res.write(JSON.stringify(elt));
                             firstElt = false;
                         } else {
                             res.write(']');
                             res.send();
                         }
-                    }), query, 'form');
+                    }));
                 }
             }
         };
@@ -216,7 +217,7 @@ export function init(app, daoManager) {
         const version = req.query.version;
         formByTinyIdVersion(tinyId, version, handleError({req, res}, cde => {
             if (isSearchEngine(req)) {
-                res.render('bot/formView', 'system', {elt: cde});
+                res.render('bot/formView', 'system' as any, {elt: cde} as any);
             } else {
                 respondHomeFull(req, res);
             }
@@ -225,8 +226,8 @@ export function init(app, daoManager) {
 
     app.post('/formCompletion/:term', nocacheMiddleware, (req, res) => {
         const term = req.params.term;
-        elasticSystem.completionSuggest(term, req.user, req.body, config.elastic.formSuggestIndex.name, (err, resp) => {
-            if (err) {
+        completionSuggest(term, req.user, req.body, config.elastic.formSuggestIndex.name, (err, resp) => {
+            if (err || !resp) {
                 throw new Error('/formCompletion failed');
             }
             resp.hits.hits.forEach(r => r._index = undefined);
@@ -261,7 +262,7 @@ export function init(app, daoManager) {
         }
     });
 
-    app.get('/schema/form', (req, res) => res.send(mongoForm.Form.jsonSchema()));
+    app.get('/schema/form', (req, res) => res.send((formModel as any).jsonSchema()));
 
     app.get('/ucumConvert', (req, res) => {
         const value = req.query.value === '0' ? 1e-20 : parseFloat(req.query.value); // 0 workaround
@@ -362,6 +363,7 @@ export function init(app, daoManager) {
 
     app.get('/syncLinkedForms', (req, res) => res.send(syncLinkedForms.syncLinkedFormsProgress));
 
+    /* tslint:disable */
     new CronJob('00 30 4 * * *', () => syncLinkedForms.syncLinkedForms(), null, true, 'America/New_York');
-
+    /* tslint:enable */
 }

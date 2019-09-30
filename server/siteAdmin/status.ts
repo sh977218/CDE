@@ -1,6 +1,6 @@
 import * as async from 'async';
 import { config } from '../system/parseConfig';
-import { DataElement } from 'server/cde/mongo-cde';
+import { dataElementModel } from 'server/cde/mongo-cde';
 import { triggerPushMsg } from 'server/notification/pushNotificationSvc';
 import { pushGetAdministratorRegistrations } from 'server/notification/notificationDb';
 
@@ -77,7 +77,7 @@ export function getStatus(getStatusDone) {
             const condition = {archived: false};
             async.series([
                 done => {
-                    DataElement.countDocuments(condition, (err, deCount) => {
+                    dataElementModel.countDocuments(condition, (err, deCount) => {
                         esInit.indices[0].totalCount = deCount;
                         checkElasticCount(deCount, config.elastic.index.name, 'dataelement', (up, message) => {
                             tempIndices.push({

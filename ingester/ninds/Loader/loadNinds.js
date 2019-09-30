@@ -5,10 +5,9 @@ const _ = require('lodash');
 const NindsModel = require('../../createMigrationConnection').NindsModel;
 
 const mongo_form = require('../../../server/form/mongo-form');
-const Form = mongo_form.Form;
-const FormSource = mongo_form.FormSource;
-const mongo_cde = require('../../../server/cde/mongo-cde');
-const DataElement = mongo_cde.DataElement;
+const Form = mongo_form.formModel;
+const FormSource = mongo_form.formSourceModel;
+const DataElement = require('../../../server/cde/mongo-cde').dataElementModel;
 
 const CreateForm = require('../Form/CreateForm');
 const CompareForm = require('../Form/CompareForm');
@@ -143,7 +142,7 @@ const doOneNindsFormById = async formIdString => {
             }
         }
     }
-    await FormSource.update({tinyId: newFormObj.tinyId}, newFormObj, {upsert: true});
+    await formSourceModel.update({tinyId: newFormObj.tinyId}, newFormObj, {upsert: true});
 };
 
 run = async () => {

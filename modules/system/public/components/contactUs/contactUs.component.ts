@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { Article } from 'core/article/article.model';
+import { Article } from 'shared/article/article.model';
 
 @Component({
     selector: 'cde-contact-us',

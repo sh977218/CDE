@@ -1,5 +1,7 @@
-import { config } from '../system/parseConfig';
-import { handleError } from 'server/errorHandler/errorHandler';
+import { handleNotFound } from 'server/errorHandler/errorHandler';
+import { config } from 'server/system/parseConfig';
+import { CbErr, ElasticQueryResponse, ElasticQueryResponseDe, SearchResponseAggregationDe, User } from 'shared/models.model';
+import { SearchSettingsElastic } from 'shared/search/search.model';
 
 const sharedElastic = require('../system/elastic');
 const dbLogger = require('../log/dbLogger');
@@ -50,7 +52,7 @@ export function updateOrInsert(elt) {
     });
 }
 
-export function elasticsearch(user, settings, cb) {
+export function elasticsearch(user: User, settings: SearchSettingsElastic, cb: CbErr<SearchResponseAggregationDe>) {
     const query = sharedElastic.buildElasticSearchQuery(user, settings);
     if (query.size > 100) return cb('size exceeded');
     if ((query.from + query.size) > 10000) return cb('page size exceeded');
@@ -137,7 +139,7 @@ export function morelike(id, callback) {
         index: config.elastic.index.name,
         type: 'dataelement',
         body: mltPost
-    }, handleError({}, response => {
+    }, handleNotFound<ElasticQueryResponseDe>({}, response => {
             const result = {
                 cdes: []
                 , pages: Math.ceil(response.hits.total / limit)
@@ -145,8 +147,9 @@ export function morelike(id, callback) {
                 , totalNumber: response.hits.total
             };
             for (let i = 0; i < response.hits.hits.length; i++) {
-                let thisCde = response.hits.hits[i]._source;
-                if (thisCde.valueDomain && thisCde.valueDomain.permissibleValues && thisCde.valueDomain.permissibleValues.length > 10) {
+                const thisCde = response.hits.hits[i]._source;
+                if (thisCde.valueDomain && thisCde.valueDomain.datatype === 'Value List' && thisCde.valueDomain.permissibleValues
+                    && thisCde.valueDomain.permissibleValues.length > 10) {
                     thisCde.valueDomain.permissibleValues = thisCde.valueDomain.permissibleValues.slice(0, 10);
                 }
                 result.cdes.push(thisCde);
@@ -168,7 +171,7 @@ export function byTinyIdList(idList, size, cb) {
             },
             size: size
         }
-    }, handleError({}, response => {
+    }, handleNotFound<ElasticQueryResponse>({}, response => {
         // @TODO possible to move this sort to elastic search?
         response.hits.hits.sort((a, b) => idList.indexOf(a._id) - idList.indexOf(b._id));
         cb(null, response.hits.hits.map(h => h._source));

@@ -8,7 +8,7 @@ export default merge(baseConfig, fhirConfig, {
             {
                 test: /(?:\.ngfactory\.js|\.ngstyle\.js|\.ts)$/,
                 use: [
-                    {loader: 'ts-loader', options: {configFile: './tsconfigFhir.json'}},
+                    {loader: 'ts-loader', options: {configFile: '../../tsconfigFhir.json', transpileOnly: true}},
                     'angular-router-loader',
                     'angular2-template-loader'
                 ]

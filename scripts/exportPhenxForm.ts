@@ -1,11 +1,11 @@
 import { writeFile } from 'fs';
-import { Form } from '../server/form/mongo-form';
+import { formModel } from 'server/form/mongo-form';
 
 async function run() {
     let filePath = './phenx.csv';
     let header = ['NLM Id', 'PhenX Id', 'URL'];
     let csvHeader = header.join(',') + '\n';
-    let forms = await Form.find({
+    let forms = await formModel.find({
         'archived': false,
         'ids.source': 'PhenX',
         'registrationState.registrationStatus': {$ne: 'Retired'}
