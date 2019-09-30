@@ -460,11 +460,12 @@ function increaseVersion(existingEltObj) {
     const version = existingEltObj.version;
     if (version) {
         let majorVersion = version;
+        let minorVersion = '0';
         const dotIndex = lastIndexOf(version, '.');
         if (dotIndex !== -1) {
             majorVersion = version.substr(0, dotIndex);
+            minorVersion = version.substr(dotIndex + 1, version.length - 1);
         }
-        const minorVersion = version.substr(dotIndex + 1, version.length - 1);
         const minorVersionNum = parseInt(minorVersion, 10);
         const increasedMinorVersion = minorVersionNum + 1;
         existingEltObj.version = majorVersion + '.' + increasedMinorVersion;

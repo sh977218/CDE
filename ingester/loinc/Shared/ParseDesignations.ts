@@ -28,7 +28,7 @@ export function parseDesignations(loinc) {
 
     const surveyQuestion = loinc['Survey Question'];
     if (surveyQuestion) {
-        const surveyQuestionText = surveyQuestion.text;
+        const surveyQuestionText = surveyQuestion.Text;
         if (surveyQuestionText) {
             const existingQuestionTextName = find(designations, {designation: surveyQuestionText});
             if (existingQuestionTextName) {
