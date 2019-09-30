@@ -1,73 +1,120 @@
-import { isOrgAdmin } from 'shared/system/authorizationShared';
-import { orgAdmins as userOrgAdmins, userById } from '../server/system/mongo-data';
-import { handle40x } from '../server/errorHandler/errorHandler';
+import { remove } from 'lodash';
+import { findOneByName, Org, saveOrg, updateOrgById } from 'server/orgManagement/orgDb';
+import { transferSteward as cdeTransferSteward } from 'server/cde/mongo-cde';
+import { transferSteward as formTransferSteward } from 'server/form/mongo-form';
+import { hasRole } from 'shared/system/authorizationShared';
+import { orgAdmins as userOrgAdmins, orgCurators as userOrgCurators } from 'server/system/mongo-data';
+import { handle40x } from 'server/errorHandler/errorHandler';
 
-const mongo_data = require('./mongo-data');
-const daoManager = require('./moduleDaoManager');
-const async = require('async');
-
-export function managedOrgs(req, res) {
-    mongo_data.managedOrgs(function (err, orgs) {
-        res.send(orgs);
-    });
+export async function orgByName(orgName) {
+    return findOneByName(orgName);
 }
 
-export function addOrg(req, res) {
-    let newOrg = req.body;
-    if (newOrg.workingGroupOf) {
-        mongo_data.orgByName(newOrg.workingGroupOf, function (err, parentOrg) {
-            newOrg.classifications = parentOrg.classifications;
-            mongo_data.addOrg(newOrg, res);
-        });
-    } else {
-        mongo_data.addOrg(newOrg, res);
-    }
+
+export async function myOrgsAdmins(user) {
+
 }
 
-export function transferSteward(req, res) {
-    let results = [];
-    let hasError = false;
-    if (req.isAuthenticated() && isOrgAdmin(req.user, req.body.from) && isOrgAdmin(req.user, req.body.to)) {
-        async.each(daoManager.getDaoList(), function(dao, oneDone) {
-            if (dao.transferSteward) {
-                dao.transferSteward(req.body.from, req.body.to, function(err, result) {
-                    if (err || Number.isNaN(result)) {
-                        hasError = true;
-                        results.push( 'Error transferring ' + dao.name + ' from ' + req.body.from + ' to ' + req.body.to + '. Please try again. ');
-                    } else if (result === 0) {
-                        results.push( 'There are no ' + dao.name + ' to transfer. ');
-                    } else {
-                        results.push(result + ' ' + dao.name + ' transferred. ');
-                    }
-                    oneDone();
-                });
-            } else oneDone();
-        }, function allDone() {
-            return res.status(hasError ? 400 : 200).send(results.join(''));
-        });
-    } else {
-        res.status(400).send("Please login first.");
-    }
-}
-
-/*
-new api
-*/
-
-
-export async function myOrgsAdmins(user, res) {
-
-    userOrgAdmins(handle40x({req, res}, users => {
-        res.send(foundUser.orgAdmin
+export function orgCurators(req, res) {
+    userOrgCurators(req.user.orgAdmin, handle40x({req, res}, users => {
+        res.send(req.user.orgAdmin
             .map(org => ({
                 name: org,
                 users: users
-                    .filter(u => u.orgAdmin.indexOf(org) > -1)
-                    .map(u => ({
-                        _id: u._id,
-                        username: u.username,
+                    .filter(user => user.orgCurator.indexOf(org) > -1)
+                    .map(user => ({
+                        _id: user._id,
+                        username: user.username,
                     })),
             }))
-            .filter(r => r.users.length > 0));
+            .filter(org => org.users.length > 0)
+        );
     }));
 }
+
+export async function transferSteward(from, to) {
+    const results: any[] = [];
+    const cdeResult = await cdeTransferSteward(from, to);
+    results.push(cdeResult.nModified + ' cdes transferred. ');
+    const formResult = await formTransferSteward(from, to);
+    results.push(formResult.nModified + ' forms transferred. ');
+    return results;
+}
+
+export async function addOrganization(newOrg) {
+    const existingOrg = await findOneByName(newOrg.name);
+    if (existingOrg) {
+        throw new Error('Org Already Exists');
+    } else {
+        if (newOrg.workingGroupOf) {
+            const parentOrg = await findOneByName(newOrg.workingGroupOf);
+            newOrg.classifications = parentOrg.classifications;
+        }
+        const savedOrg = await saveOrg(newOrg);
+        return savedOrg;
+    }
+}
+
+export async function updateOrg(org) {
+    const id = org._id;
+    delete org._id;
+    const updatedOrg = updateOrgById(id, org);
+    return updatedOrg;
+}
+
+
+export async function removeOrgCurator(user, orgName) {
+    remove(user.orgCurator, o => o === orgName);
+    const savedUser = await user.save();
+    return savedUser;
+}
+
+export async function addOrgCurator(user, orgName) {
+    if (user.orgCurator.indexOf(orgName) === -1) {
+        user.orgCurator.push(orgName);
+    }
+    if (!hasRole(user, 'CommentReviewer')) {
+        user.roles.push('CommentReviewer');
+    }
+    const savedUser = await user.save();
+    return savedUser;
+}
+
+
+export async function removeOrgAdmin(user, orgName) {
+    remove(user.orgAdmin, o => o === orgName);
+    const savedUser = await user.save();
+    return savedUser;
+}
+
+export async function addOrgAdmin(user, orgName) {
+    if (user.orgCurator.indexOf(orgName) === -1) {
+        user.orgCurator.push(orgName);
+    }
+    if (!hasRole(user, 'CommentReviewer')) {
+        user.roles.push('CommentReviewer');
+    }
+    const savedUser = await user.save();
+    return savedUser;
+}
+
+
+export function orgAdmins(req, res) {
+    managedOrgs(handle40x({req, res}, managedOrgs => {
+        userOrgAdmins(handle40x({req, res}, users => {
+            res.send(managedOrgs
+                .map(mo => ({
+                    name: mo.name,
+                    users: users
+                        .filter(u => u.orgAdmin.indexOf(mo.name) > -1)
+                        .map(u => ({
+                            _id: u._id,
+                            username: u.username,
+                        })),
+                }))
+            );
+        }));
+    }));
+}
+
+

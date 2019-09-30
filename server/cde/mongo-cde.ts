@@ -31,7 +31,7 @@ try {
     process.exit(1);
 }
 
-schemas.dataElementSchema.pre('save', function(next) {
+schemas.dataElementSchema.pre('save', function (next) {
     const elt = this;
 
     if (this.archived) {
@@ -204,7 +204,9 @@ const viewedCdes = {};
 const threshold = config.viewsIncrementThreshold;
 
 export function inCdeView(cde) {
-    if (!viewedCdes[cde._id]) { viewedCdes[cde._id] = 0; }
+    if (!viewedCdes[cde._id]) {
+        viewedCdes[cde._id] = 0;
+    }
     viewedCdes[cde._id]++;
     if (viewedCdes[cde._id] >= threshold && cde && cde._id) {
         viewedCdes[cde._id] = 0;
@@ -223,19 +225,25 @@ export function create(elt, user, callback) {
     newItem.tinyId = mongoData.generateTinyId();
     newItem.save((err, newElt) => {
         callback(err, newElt);
-        if (!err) { auditModifications(user, null, newElt); }
+        if (!err) {
+            auditModifications(user, null, newElt);
+        }
     });
 }
 
 export function update(elt, user, options: any = {}, callback: CbError<DE>) {
-    if (elt.toObject) { elt = elt.toObject(); }
+    if (elt.toObject) {
+        elt = elt.toObject();
+    }
     DataElement.findById(elt._id, (err, dataElement) => {
         if (dataElement.archived) {
             callback(new Error('You are trying to edit an archived elements'));
             return;
         }
         delete elt._id;
-        if (!elt.history) { elt.history = []; }
+        if (!elt.history) {
+            elt.history = [];
+        }
         elt.history.push(dataElement._id);
         updateUser(elt, user);
 
@@ -270,10 +278,8 @@ export function update(elt, user, options: any = {}, callback: CbError<DE>) {
     });
 }
 
-export function transferSteward(from, to, callback) {
-    DataElement.updateMany({'stewardOrg.name': from}, {$set: {'stewardOrg.name': to}}).exec((err, result) => {
-        callback(err, result.nModified);
-    });
+export function transferSteward(from, to) {
+    return DataElement.updateMany({'stewardOrg.name': from}, {$set: {'stewardOrg.name': to}});
 }
 
 export function derivationOutputs(inputTinyId, cb) {
@@ -296,9 +302,13 @@ export function findModifiedElementsSince(date, cb) {
 }
 
 export function checkOwnership(req, id, cb) {
-    if (!req.isAuthenticated()) { return cb('You are not authorized.', null); }
+    if (!req.isAuthenticated()) {
+        return cb('You are not authorized.', null);
+    }
     byId(id, (err, elt) => {
-        if (err || !elt) { return cb('Element does not exist.', null); }
+        if (err || !elt) {
+            return cb('Element does not exist.', null);
+        }
         if (!isOrgCurator(req.user, elt.stewardOrg.name)) {
             return cb('You do not own this element.', null);
         }

@@ -2,8 +2,7 @@ import { series } from 'async';
 import { CronJob } from 'cron';
 import * as csrf from 'csurf';
 import { renderFile } from 'ejs';
-import { access, constants, createWriteStream, mkdir, writeFile, writeFileSync, existsSync } from 'fs';
-import { join } from 'path';
+import { access, constants, createWriteStream, existsSync, mkdir, writeFileSync } from 'fs';
 import { authenticate } from 'passport';
 import { DataElement, draftsList as deDraftsList } from 'server/cde/mongo-cde';
 import { handleError, respondError } from 'server/errorHandler/errorHandler';
@@ -11,24 +10,20 @@ import { draftsList as formDraftsList, Form } from 'server/form/mongo-form';
 import { consoleLog } from 'server/log/dbLogger';
 import { syncWithMesh } from 'server/mesh/elastic';
 import {
-    canApproveCommentMiddleware, isOrgAdminMiddleware, isOrgAuthorityMiddleware, isOrgCuratorMiddleware,
-    isSiteAdminMiddleware, loggedInMiddleware, nocacheMiddleware
+    canApproveCommentMiddleware, isOrgAuthorityMiddleware, isOrgCuratorMiddleware, isSiteAdminMiddleware,
+    loggedInMiddleware, nocacheMiddleware
 } from 'server/system/authorization';
 import { reIndex } from 'server/system/elastic';
 import { indices } from 'server/system/elasticSearchInit';
 import { errorLogger } from 'server/system/logging';
 import {
     addUserRole, disableRule, enableRule, getClassificationAuditLog, getFile, IdSource, jobStatus, listOrgs,
-    listOrgsDetailedInfo, orgByName, updateOrg, userById, usersByName
+    listOrgsDetailedInfo, userById, usersByName
 } from 'server/system/mongo-data';
-import { addOrg, managedOrgs, transferSteward } from 'server/system/orgsvc';
 import { config } from 'server/system/parseConfig';
 import { checkDatabase, create, remove, subscribe, updateStatus } from 'server/system/pushNotification';
 import { banIp, getTrafficFilter } from 'server/system/traffic';
-import {
-    addOrgAdmin, addOrgCurator, myOrgs, myOrgsAdmins, orgAdmins, orgCurators, removeOrgAdmin, removeOrgCurator,
-    updateUserAvatar, updateUserRoles
-} from 'server/system/usersrvc';
+import { myOrgs, updateUserAvatar, updateUserRoles } from 'server/system/usersrvc';
 import { is } from 'useragent';
 import { promisify } from 'util';
 import { isSearchEngine } from './helper';
@@ -283,15 +278,6 @@ export function init(app) {
         });
     });
 
-    app.get('/org/:name', nocacheMiddleware, (req, res) => {
-        return orgByName(req.params.name, (err, result) => res.send(result));
-    });
-
-
-    app.get('/managedOrgs', managedOrgs);
-    app.post('/addOrg', isOrgAuthorityMiddleware, addOrg);
-    app.post('/updateOrg', isOrgAuthorityMiddleware, (req, res) => updateOrg(req.body, res));
-
     app.get('/user/:search', nocacheMiddleware, loggedInMiddleware, (req, res) => {
         if (!req.params.search) {
             return res.send({});
@@ -301,16 +287,6 @@ export function init(app) {
             usersByName(req.params.search, handleError({req, res}, users => res.send(users)));
         }
     });
-
-    app.get('/myOrgsAdmins', [nocacheMiddleware, loggedInMiddleware], myOrgsAdmins);
-
-    app.get('/orgAdmins', nocacheMiddleware, isOrgAuthorityMiddleware, orgAdmins);
-    app.post('/addOrgAdmin', isOrgAdminMiddleware, addOrgAdmin);
-    app.post('/removeOrgAdmin', isOrgAdminMiddleware, removeOrgAdmin);
-
-    app.get('/orgCurators', nocacheMiddleware, isOrgAdminMiddleware, orgCurators);
-    app.post('/addOrgCurator', isOrgAdminMiddleware, addOrgCurator);
-    app.post('/removeOrgCurator', isOrgAdminMiddleware, removeOrgCurator);
 
     app.post('/updateUserRoles', isOrgAuthorityMiddleware, updateUserRoles);
     app.post('/updateUserAvatar', isOrgAuthorityMiddleware, updateUserAvatar);
@@ -323,8 +299,6 @@ export function init(app) {
         }
         getFile(req.user, fileId, res);
     });
-
-    app.post('/transferSteward', transferSteward);
 
     app.post('/addCommentAuthor', canApproveCommentMiddleware, (req, res) => {
         addUserRole(req.body.username, 'CommentAuthor', handleError({req, res}, err => {
@@ -415,7 +389,7 @@ export function init(app) {
                 doc.linkTemplateDe = req.body.linkTemplateDe;
                 doc.linkTemplateForm = req.body.linkTemplateForm;
                 doc.version = req.body.version;
-                doc.save(handleError({req, res},source => res.send(source)));
+                doc.save(handleError({req, res}, source => res.send(source)));
             }
         }));
     });

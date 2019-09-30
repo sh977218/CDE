@@ -39,10 +39,12 @@ try {
 }
 
 
-schemas.formSchema.pre('save', function(next) {
+schemas.formSchema.pre('save', function (next) {
     const elt = this;
 
-    if (this.archived) { return next(); }
+    if (this.archived) {
+        return next();
+    }
     validateSchema(elt).then(() => {
         try {
             elastic.updateOrInsert(elt);
@@ -125,7 +127,9 @@ export function byTinyIdAndVersion(tinyId, version, callback) {
     Form.find(query).sort({updated: -1}).limit(1).exec(forwardError(callback, elts => {
         if (elts.length) {
             callback('', elts[0]);
-        } else { callback(''); }
+        } else {
+            callback('');
+        }
     }));
 }
 
@@ -198,14 +202,17 @@ export function count(condition, callback) {
     return Form.countDocuments(condition, callback);
 }
 
-export function update(elt, user, options: any = {}, callback: CbError<CdeForm> = () => {}) {
+export function update(elt, user, options: any = {}, callback: CbError<CdeForm> = () => {
+}) {
     Form.findById(elt._id, (err, form) => {
         if (form.archived) {
             callback(new Error('You are trying to edit an archived elements'));
             return;
         }
         delete elt._id;
-        if (!elt.history) { elt.history = []; }
+        if (!elt.history) {
+            elt.history = [];
+        }
         elt.history.push(form._id);
         updateUser(elt, user);
         // user cannot edit sources.
@@ -246,7 +253,9 @@ export function create(elt, user, callback) {
     newItem.tinyId = mongoData.generateTinyId();
     newItem.save((err, newElt) => {
         callback(err, newElt);
-        if (!err) { auditModifications(user, null, newElt); }
+        if (!err) {
+            auditModifications(user, null, newElt);
+        }
     });
 }
 
@@ -254,17 +263,17 @@ export function query(query, callback) {
     Form.find(query).exec(callback);
 }
 
-export function transferSteward(from, to, callback) {
-    Form.updateMany({'stewardOrg.name': from}, {$set: {'stewardOrg.name': to}}).exec((err, result) => {
-        callback(err, result.nModified);
-    });
+export function transferSteward(from, to) {
+    return Form.updateMany({'stewardOrg.name': from}, {$set: {'stewardOrg.name': to}});
 }
 
 export function byTinyIdListInOrder(idList, callback) {
     byTinyIdList(idList, (err, forms) => {
         const reorderedForms = idList.map(id => {
             for (const form of forms) {
-                if (id === form.tinyId) { return form; }
+                if (id === form.tinyId) {
+                    return form;
+                }
             }
         });
         callback(err, reorderedForms);

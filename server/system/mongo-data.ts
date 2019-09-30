@@ -263,10 +263,6 @@ export function orgCurators(orgs, callback) {
     User.find().where("orgCurator").in(orgs).exec(callback);
 }
 
-export function orgByName(orgName, callback?) {
-    return Org.findOne({name: orgName}).exec(callback);
-}
-
 export function listOrgs(callback) {
     Org.distinct('name', callback);
 }
@@ -277,10 +273,6 @@ export function listOrgsLongName(callback) {
 
 export function listOrgsDetailedInfo(callback) {
     Org.find({}, orgDetailProject, callback);
-}
-
-export function managedOrgs(callback) {
-    Org.find({}).sort({name: 1}).exec(callback);
 }
 
 export function findOrCreateOrg(newOrg, cb) {
@@ -302,25 +294,6 @@ export function findOrCreateOrg(newOrg, cb) {
     });
 }
 
-export function addOrg(newOrgArg, res) {
-    Org.findOne({"name": newOrgArg.name}, (err, found) => {
-        if (err) {
-            res.send(500);
-            logging.errorLogger.error("Cannot add org.",
-                {
-                    origin: "system.mongo.addOrg",
-                    stack: new Error().stack,
-                    details: "orgName: " + newOrgArg + "Error: " + err
-                });
-        } else if (found) {
-            res.send("Org Already Exists");
-        } else {
-            new Org(newOrgArg).save(function () {
-                res.send("Org Added");
-            });
-        }
-    });
-}
 
 export function removeOrgById(id, callback) {
     Org.remove({"_id": id}, callback);
@@ -406,14 +379,6 @@ export function getFile(user, id, res) {
     });
 }
 
-export function updateOrg(org, res) {
-    let id = org._id;
-    delete org._id;
-    Org.findOneAndUpdate({_id: id}, org, {new: true}, (err, found) => {
-        if (err || !found) res.status(500).send('Could not update');
-        else res.send();
-    });
-}
 
 export function getAllUsernames(callback) {
     User.find({}, {username: true, _id: false}, callback);

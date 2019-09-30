@@ -105,8 +105,12 @@ export function find(crit, cb) {
 // cb(err, {nMatched, nUpserted, nModified})
 export function updateUser(user, fields, callback: CbError<number, number, number>) {
     const update: any = {};
-    if (fields.commentNotifications) { update.commentNotifications = fields.commentNotifications; }
-    if (fields.email) { update.email = fields.email; }
+    if (fields.commentNotifications) {
+        update.commentNotifications = fields.commentNotifications;
+    }
+    if (fields.email) {
+        update.email = fields.email;
+    }
     if (fields.notificationSettings) {
         if (fields.notificationSettings.approvalAttachment && !hasRole(user, 'AttachmentReviewer')) {
             delete fields.notificationSettings.approvalAttachment;
@@ -120,8 +124,12 @@ export function updateUser(user, fields, callback: CbError<number, number, numbe
             update.notificationSettings = fields.notificationSettings;
         }
     }
-    if (fields.searchSettings) { update.searchSettings = fields.searchSettings; }
-    if (fields.publishedForms) { update.publishedForms = fields.publishedForms; }
+    if (fields.searchSettings) {
+        update.searchSettings = fields.searchSettings;
+    }
+    if (fields.publishedForms) {
+        update.publishedForms = fields.publishedForms;
+    }
     User.updateOne({_id: user._id}, {$set: update}, callback);
 }
 
@@ -129,8 +137,8 @@ export function usersByUsername(username, callback) {
     User.find({username: new RegExp(username, 'i')}, userProject, callback);
 }
 
-export function userByUsername(username, callback) {
-    User.findOne({username: new RegExp(username, 'i')}, userProject, callback);
+export function userByUsername(username, callback?) {
+    return User.findOne({username: new RegExp(username, 'i')}, userProject).exec(callback);
 }
 
 export function byUsername(username, callback) {

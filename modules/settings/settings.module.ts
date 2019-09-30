@@ -53,6 +53,7 @@ import { UsersMgtComponent } from 'settings/usersMgt/usersMgt.component';
 import { ViewingHistoryComponent } from 'settings/viewingHistory/viewingHistory.component';
 import { TagModule } from 'tag/tag.module';
 import { UsernameAutocompleteModule } from 'usernameAutocomplete/usernameAutocomplete.module';
+import { OrgsEditResolve } from 'settings/orgsEdit/orgsEditResolve';
 
 const appRoutes: Routes = [
     {
@@ -160,6 +161,7 @@ const appRoutes: Routes = [
                 path: 'orgsEdit',
                 component: OrgsEditComponent,
                 canLoad: [OrgAuthorityGuard],
+                resolve: {organizations: OrgsEditResolve},
                 data: {title: 'Organizations'}
             },
 

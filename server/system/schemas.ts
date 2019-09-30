@@ -6,7 +6,7 @@ addStringtype(mongoose);
 const Schema = mongoose.Schema;
 const StringType = (Schema.Types as any).StringType;
 
-const csEltSchema = new Schema({
+export const csEltSchema = new Schema({
     elements: [],
     name: {type: StringType, index: true}
 }, {_id: false});
