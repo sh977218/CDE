@@ -23,8 +23,11 @@ public class TwoClassifSearch extends BoardTest {
         textPresent("NINDS > Domain > Assessments and Examinations", By.id("classifAlt_filter"));
         textPresent("Imaging Diagnostics (30");
 
+        int numbOfImages = Integer.parseInt(findElement(By.id("nbOfClassifElts-Imaging Diagnostics")).getText());
+
         clickElement(By.id("classif-Imaging Diagnostics"));
         textPresent("NINDS > Domain > Assessments and Examinations > Imaging Diagnostics", By.id("classifAlt_filter"));
+        textPresent(numbOfImages + " results for");
         hangon(1);
 
         gotoPublicBoards();
