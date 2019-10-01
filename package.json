@@ -70,6 +70,7 @@
       "**/server/form/aws*",
       "**/server/siteAdmin/status*",
       "**/server/form/syncLinkedForms*",
+      "**/server/notification/notificationDb*",
       "**/server/notification/pushNotificationSvc*"
     ],
     "lines": "95",
