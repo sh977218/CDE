@@ -1,6 +1,6 @@
 import { loggedInMiddleware } from '../system/authorization';
 import { handleError } from '../errorHandler/errorHandler';
-import { checkDatabase, create, remove, subscribe, updateStatus } from 'server/notification/notificationSvc';
+import { checkDatabase, create, remove, subscribe, updateStatus } from 'server/notification/pushNotificationSvc';
 
 export function module(roleConfig) {
     const router = require('express').Router();

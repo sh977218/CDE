@@ -1,5 +1,5 @@
 import { handleError } from '../errorHandler/errorHandler';
-import { triggerPushMsg } from 'server/notification/notificationSvc';
+import { triggerPushMsg } from 'server/notification/pushNotificationSvc';
 import { pushGetAdministratorRegistrations } from 'server/notification/notificationDb';
 
 const userAgent = require('useragent');

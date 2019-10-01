@@ -6,7 +6,7 @@ import { noDbLogger } from 'server/system/noDbLogger';
 import { config } from 'server/system/parseConfig';
 import { Cb, CbError } from 'shared/models.model';
 import { pushGetAdministratorRegistrations } from 'server/notification/notificationDb';
-import { triggerPushMsg } from 'server/notification/notificationSvc';
+import { triggerPushMsg } from 'server/notification/pushNotificationSvc';
 
 const moment = require('moment');
 const conn = establishConnection(config.database.log);

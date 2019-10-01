@@ -1,7 +1,7 @@
 import * as async from 'async';
 import { config } from '../system/parseConfig';
 import { DataElement } from 'server/cde/mongo-cde';
-import { triggerPushMsg } from 'server/notification/notificationSvc';
+import { triggerPushMsg } from 'server/notification/pushNotificationSvc';
 import { pushGetAdministratorRegistrations } from 'server/notification/notificationDb';
 
 const mongoForm = require('../form/mongo-form');

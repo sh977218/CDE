@@ -5,7 +5,7 @@ import { capString } from 'shared/system/util';
 import { loggedInMiddleware, nocacheMiddleware } from '../system/authorization';
 import { handle40x, handleError } from '../errorHandler/errorHandler';
 import { version } from '../version';
-import { getNumberClientError, getNumberServerError } from 'server/notification/notificationSvc';
+import { getNumberClientError, getNumberServerError } from 'server/notification/pushNotificationSvc';
 
 const config = require('config');
 const attachment = require('server/attachment/attachmentSvc');

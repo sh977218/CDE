@@ -4,8 +4,9 @@ import { usersToNotify } from 'shared/user';
 import { handleError } from '../errorHandler/errorHandler';
 import { CbError } from 'shared/models.model';
 import {
-    pushRegistrationSubscribersByType, pushRegistrationSubscribersByUsers, triggerPushMsg, typeToCriteria
-} from 'server/notification/notificationSvc';
+    pushRegistrationSubscribersByType, pushRegistrationSubscribersByUsers, triggerPushMsg
+} from 'server/notification/pushNotificationSvc';
+import { typeToCriteria } from 'server/notification/notificationSvc';
 
 const async = require('async');
 const _ = require('lodash');
