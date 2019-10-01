@@ -153,3 +153,19 @@ export function siteAdmins(callback) {
 export function orgAuthorities(callback) {
     User.find({roles: 'OrgAuthority'}, 'username', callback);
 }
+
+
+// Org
+
+export function orgAdmins(callback) {
+    User.find({orgAdmin: {$not: {$size: 0}}}).sort({username: 1}).exec(callback);
+}
+export function orgCurators(orgs, callback) {
+    User.find().where('orgCurator').in(orgs).exec(callback);
+}
+export function userById(id, callback) {
+    User.findOne({_id: id}, userProject, callback);
+}
+export function userByName(name, callback) {
+    User.findOne({username: new RegExp('^' + name + '$', "i")}, callback);
+}

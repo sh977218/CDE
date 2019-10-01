@@ -25,7 +25,6 @@ const conn = connHelper.establishConnection(config.database.appData);
 export const IdSource = conn.model('IdSource', schemas.idSourceSchema);
 export const JobQueue = conn.model('JobQueue', schemas.jobQueue);
 export const Message = conn.model('Message', schemas.message);
-export const Org = conn.model('Org', schemas.orgSchema);
 const PushRegistration = conn.model('PushRegistration', schemas.pushRegistration);
 const userDb = require('../user/userDb');
 export const User = require('../user/userDb').User;
@@ -46,25 +45,9 @@ export const sessionStore = new MongoStore({
 
 
 const userProject = {password: 0};
-const orgDetailProject = {
-    _id: 0,
-    name: 1,
-    longName: 1,
-    mailAddress: 1,
-    emailAddress: 1,
-    embeds: 1,
-    phoneNumber: 1,
-    uri: 1,
-    workingGroupOf: 1,
-    extraInfo: 1,
-    cdeStatusValidationRules: 1,
-    propertyKeys: 1,
-    nameTags: 1,
-    htmlOverview: 1
-};
+
 
 export const ObjectId = mongoose.Types.ObjectId;
-export const mongoose_connection = conn;
 
 var classificationAudit = conn.model('classificationAudit', schemas.classificationAudit);
 
@@ -160,9 +143,6 @@ export const auditGetLog = auditDb => (params, callback) => {
         .exec(callback);
 };
 
-export function orgNames(callback) {
-    Org.find({}, {name: true, _id: false}, callback);
-}
 
 export function pushesByEndpoint(endpoint, callback) {
     PushRegistration.find({'subscription.endpoint': endpoint}, callback);
@@ -238,92 +218,17 @@ export function pushRegistrationSubscribersByUsers(users, cb) {
     pushRegistrationFindActive({userId: {$in: userIds}}, cb);
 }
 
-export function userByName(name, callback) {
-    User.findOne({username: new RegExp('^' + name + '$', "i")}, callback);
-}
+
 
 export function usersByName(name, callback) {
     User.find({username: new RegExp('^' + name + '$', "i")}, userProject, callback);
 }
 
-export function userById(id, callback) {
-    User.findOne({_id: id}, userProject, callback);
-}
+
 
 export function addUser(user, callback) {
     user.username = user.username.toLowerCase();
     new User(user).save(callback);
-}
-
-export function orgAdmins(callback) {
-    User.find({orgAdmin: {$not: {$size: 0}}}).sort({username: 1}).exec(callback);
-}
-
-export function orgCurators(orgs, callback) {
-    User.find().where("orgCurator").in(orgs).exec(callback);
-}
-
-export function orgByName(orgName, callback?) {
-    return Org.findOne({name: orgName}).exec(callback);
-}
-
-export function listOrgs(callback) {
-    Org.distinct('name', callback);
-}
-
-export function listOrgsLongName(callback) {
-    Org.find({}, {_id: 0, name: 1, longName: 1}, callback);
-}
-
-export function listOrgsDetailedInfo(callback) {
-    Org.find({}, orgDetailProject, callback);
-}
-
-export function managedOrgs(callback) {
-    Org.find({}).sort({name: 1}).exec(callback);
-}
-
-export function findOrCreateOrg(newOrg, cb) {
-    Org.findOne({name: newOrg.name}).exec(function (err, found) {
-        if (err) {
-            cb(err);
-            logging.errorLogger.error("Cannot add org.",
-                {
-                    origin: "system.mongo.addOrg",
-                    stack: new Error().stack,
-                    details: "orgName: " + newOrg.name + "Error: " + err
-                });
-        } else if (found) {
-            cb(null, found);
-        } else {
-            newOrg = new Org(newOrg);
-            newOrg.save(cb);
-        }
-    });
-}
-
-export function addOrg(newOrgArg, res) {
-    Org.findOne({"name": newOrgArg.name}, (err, found) => {
-        if (err) {
-            res.send(500);
-            logging.errorLogger.error("Cannot add org.",
-                {
-                    origin: "system.mongo.addOrg",
-                    stack: new Error().stack,
-                    details: "orgName: " + newOrgArg + "Error: " + err
-                });
-        } else if (found) {
-            res.send("Org Already Exists");
-        } else {
-            new Org(newOrgArg).save(function () {
-                res.send("Org Added");
-            });
-        }
-    });
-}
-
-export function removeOrgById(id, callback) {
-    Org.remove({"_id": id}, callback);
 }
 
 export function formatElt(elt) {
@@ -406,14 +311,6 @@ export function getFile(user, id, res) {
     });
 }
 
-export function updateOrg(org, res) {
-    let id = org._id;
-    delete org._id;
-    Org.findOneAndUpdate({_id: id}, org, {new: true}, (err, found) => {
-        if (err || !found) res.status(500).send('Could not update');
-        else res.send();
-    });
-}
 
 export function getAllUsernames(callback) {
     User.find({}, {username: true, _id: false}, callback);

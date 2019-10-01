@@ -283,15 +283,6 @@ export function init(app) {
         });
     });
 
-    app.get('/org/:name', nocacheMiddleware, (req, res) => {
-        return orgByName(req.params.name, (err, result) => res.send(result));
-    });
-
-
-    app.get('/managedOrgs', managedOrgs);
-    app.post('/addOrg', isOrgAuthorityMiddleware, addOrg);
-    app.post('/updateOrg', isOrgAuthorityMiddleware, (req, res) => updateOrg(req.body, res));
-
     app.get('/user/:search', nocacheMiddleware, loggedInMiddleware, (req, res) => {
         if (!req.params.search) {
             return res.send({});
@@ -301,16 +292,6 @@ export function init(app) {
             usersByName(req.params.search, handleError({req, res}, users => res.send(users)));
         }
     });
-
-    app.get('/myOrgsAdmins', [nocacheMiddleware, loggedInMiddleware], myOrgsAdmins);
-
-    app.get('/orgAdmins', nocacheMiddleware, isOrgAuthorityMiddleware, orgAdmins);
-    app.post('/addOrgAdmin', isOrgAdminMiddleware, addOrgAdmin);
-    app.post('/removeOrgAdmin', isOrgAdminMiddleware, removeOrgAdmin);
-
-    app.get('/orgCurators', nocacheMiddleware, isOrgAdminMiddleware, orgCurators);
-    app.post('/addOrgCurator', isOrgAdminMiddleware, addOrgCurator);
-    app.post('/removeOrgCurator', isOrgAdminMiddleware, removeOrgCurator);
 
     app.post('/updateUserRoles', isOrgAuthorityMiddleware, updateUserRoles);
     app.post('/updateUserAvatar', isOrgAuthorityMiddleware, updateUserAvatar);
