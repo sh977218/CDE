@@ -261,12 +261,6 @@ export function query(query, callback) {
     Form.find(query).exec(callback);
 }
 
-export function transferSteward(from, to, callback) {
-    Form.updateMany({'stewardOrg.name': from}, {$set: {'stewardOrg.name': to}}).exec((err, result) => {
-        callback(err, result.nModified);
-    });
-}
-
 export function byTinyIdListInOrder(idList, callback) {
     byTinyIdList(idList, (err, forms) => {
         const reorderedForms = idList.map(id => {

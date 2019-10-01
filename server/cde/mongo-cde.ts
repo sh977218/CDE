@@ -277,12 +277,6 @@ export function update(elt, user, options: any = {}, callback: CbError<DE>) {
     });
 }
 
-export function transferSteward(from, to, callback) {
-    DataElement.updateMany({'stewardOrg.name': from}, {$set: {'stewardOrg.name': to}}).exec((err, result) => {
-        callback(err, result.nModified);
-    });
-}
-
 export function derivationOutputs(inputTinyId, cb) {
     DataElement.find({archived: false, 'derivationRules.inputs': inputTinyId}).exec(cb);
 }
@@ -300,21 +294,6 @@ export function findModifiedElementsSince(date, cb) {
         {$group: {_id: '$tinyId'}},
     ]).exec(cb);
 
-}
-
-export function checkOwnership(req, id, cb) {
-    if (!req.isAuthenticated()) {
-        return cb('You are not authorized.', null);
-    }
-    byId(id, (err, elt) => {
-        if (err || !elt) {
-            return cb('Element does not exist.', null);
-        }
-        if (!isOrgCurator(req.user, elt.stewardOrg.name)) {
-            return cb('You do not own this element.', null);
-        }
-        cb(null, elt);
-    });
 }
 
 export function originalSourceByTinyIdSourceName(tinyId, sourceName, cb) {
