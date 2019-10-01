@@ -5,6 +5,7 @@ import { config } from '../system/parseConfig';
 import * as eltShared from 'shared/elt';
 import { userByName } from 'server/user/userDb';
 import { orgByName } from 'server/orgManagement/orgDb';
+import { getDao, getDaoList } from 'server/system/moduleDaoManager';
 
 const _ = require('lodash');
 const async = require('async');
@@ -19,7 +20,6 @@ const logger = require('./noDbLogger');
 const cdediff = require('../cde/cdediff');
 const notificationSvc = require('../notification/notificationSvc');
 const logging = require('./logging');
-const daoManager = require('./moduleDaoManager');
 const schemas = require('./schemas');
 const writableCollection = require('./writableCollection').writableCollection;
 
@@ -416,7 +416,7 @@ export function addUserRole(username, role, cb) {
 
 // cb(err, item)
 export function fetchItem(module, tinyId, cb) {
-    const db = daoManager.getDao(module);
+    const db = getDao(module);
     if (!db) {
         cb('Module has no database.');
         return;
@@ -432,7 +432,7 @@ export function addToClassifAudit(msg) {
         msg.elements[0].status = elt.registrationState.registrationStatus;
         new classificationAudit(msg).save();
     };
-    daoManager.getDaoList().forEach(function(dao) {
+    getDaoList().forEach(function(dao) {
         if (msg.elements[0]) {
             if (msg.elements[0]._id && dao.byId) {
                 dao.byId(msg.elements[0]._id, persistClassifRecord);

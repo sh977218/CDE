@@ -2,8 +2,8 @@ import { orgAdmins as userOrgAdmins, orgCurators as userOrgCurators, userById, u
 import { managedOrgs, orgByName } from 'server/orgManagement/orgDb';
 import { handle40x, handleError } from 'server/errorHandler/errorHandler';
 import { hasRole, isOrgAdmin } from 'shared/system/authorizationShared';
+import { getDaoList } from 'server/system/moduleDaoManager';
 
-const daoManager = require('./moduleDaoManager');
 const async = require('async');
 
 export function myOrgsAdmins(req, res) {
@@ -143,7 +143,7 @@ export function transferSteward(req, res) {
     const results = [];
     let hasError = false;
     if (req.isAuthenticated() && isOrgAdmin(req.user, req.body.from) && isOrgAdmin(req.user, req.body.to)) {
-        async.each(daoManager.getDaoList(), function (dao, oneDone) {
+        async.each(getDaoList(), function (dao, oneDone) {
             if (dao.transferSteward) {
                 dao.transferSteward(req.body.from, req.body.to, function (err, result) {
                     if (err || Number.isNaN(result)) {
