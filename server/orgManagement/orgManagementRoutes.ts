@@ -1,7 +1,7 @@
 import { isOrgAdminMiddleware, isOrgAuthorityMiddleware, nocacheMiddleware } from 'server/system/authorization';
 import {
-    addOrgAdmin, addOrganization, addOrgCurator, myOrgsAdmins, orgByName, orgCurators, removeOrgAdmin, removeOrgCurator,
-    transferSteward, updateOrg
+    addOrgAdmin, addOrganization, addOrgCurator, myOrgsAdmins, orgAdmins, orgByName, orgCurators, removeOrgAdmin,
+    removeOrgCurator, transferSteward, updateOrg
 } from 'server/orgManagement/orgsvc';
 import { isOrgAdmin } from 'shared/system/authorizationShared';
 import { userByUsername } from 'server/user/userDb';
@@ -45,7 +45,8 @@ export function module() {
     });
 
     router.get('/orgAdmins', [nocacheMiddleware, isOrgAuthorityMiddleware], async (req, res) => {
-        orgAdmins();
+        const users = orgAdmins(req.user);
+        res.send(users);
     });
     router.post('/addOrgAdmin', isOrgAdminMiddleware, async (req, res) => {
         const user = await userByUsername(req.body.username);
@@ -59,7 +60,8 @@ export function module() {
     });
 
     router.get('/orgCurators', [nocacheMiddleware, isOrgAdminMiddleware], async (req, res) => {
-        orgCurators();
+        const users = await orgCurators(req.user);
+        res.send(users);
     });
     router.post('/addOrgCurator', isOrgAdminMiddleware, async (req, res) => {
         const user = await userByUsername(req.body.username);

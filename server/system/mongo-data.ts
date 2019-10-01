@@ -524,6 +524,10 @@ export function getAllRules(cb) {
     });
 }
 
+function orgByName(orgName, callback) {
+    Org.findOne({name: orgName}, callback);
+}
+
 export function disableRule(params, cb) {
     orgByName(params.orgName, function (err, org) {
         org.cdeStatusValidationRules.forEach(function (rule, i) {
