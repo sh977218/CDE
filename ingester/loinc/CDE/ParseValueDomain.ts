@@ -40,6 +40,8 @@ export function parseValueDomain(loinc) {
             const pv: any = {};
             if (!isEmpty(loincAnswer.Code)) {
                 pv.permissibleValue = loincAnswer.Code;
+            } else {
+                pv.permissibleValue = loincAnswer.Answer;
             }
             if (!isEmpty(loincAnswer['Answer ID'])) {
                 pv.valueMeaningCode = loincAnswer['Answer ID'];
