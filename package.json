@@ -57,6 +57,7 @@
       "**/server/attachment/*",
       "**/server/board/*",
       "**/server/cde/*",
+      "**/server/classification/*",
       "**/server/form/*",
       "**/server/discuss/*",
       "**/server/log/*",
