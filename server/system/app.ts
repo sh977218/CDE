@@ -2,8 +2,7 @@ import { series } from 'async';
 import { CronJob } from 'cron';
 import * as csrf from 'csurf';
 import { renderFile } from 'ejs';
-import { access, constants, createWriteStream, mkdir, writeFile, writeFileSync, existsSync } from 'fs';
-import { join } from 'path';
+import { access, constants, createWriteStream, mkdir, writeFileSync, existsSync } from 'fs';
 import { authenticate } from 'passport';
 import { DataElement, draftsList as deDraftsList } from 'server/cde/mongo-cde';
 import { handleError, respondError } from 'server/errorHandler/errorHandler';
@@ -36,16 +35,16 @@ import { version } from '../version';
 export let respondHomeFull: Function;
 
 export function init(app) {
-    let getRealIp = function (req) {
-        if (req._remoteAddress) return req._remoteAddress;
-        if (req.ip) return req.ip;
+    const getRealIp = function(req) {
+        if (req._remoteAddress) { return req._remoteAddress; }
+        if (req.ip) { return req.ip; }
     };
 
     let indexHtml = '';
     renderFile('modules/system/views/index.ejs', {
-        config: config,
+        config,
         isLegacy: false,
-        version: version
+        version
     }, (err, str) => {
         indexHtml = str;
         if (existsSync('modules/_app')) {
@@ -55,18 +54,18 @@ export function init(app) {
 
 
     let indexLegacyHtml = '';
-    renderFile('modules/system/views/index.ejs', {config: config, isLegacy: true, version: version}, (err, str) => {
+    renderFile('modules/system/views/index.ejs', {config, isLegacy: true, version}, (err, str) => {
         indexLegacyHtml = str;
     });
 
     let homeHtml = '';
-    renderFile('modules/system/views/home-launch.ejs', {config: config, version: version}, (err, str) => {
+    renderFile('modules/system/views/home-launch.ejs', {config, version}, (err, str) => {
         homeHtml = str;
     });
 
     /* for IE Opera Safari, emit polyfill.js */
     function isModernBrowser(req) {
-        let ua = is(req.headers['user-agent']);
+        const ua = is(req.headers['user-agent']);
         return ua.chrome || ua.firefox || ua.edge;
     }
 
@@ -74,7 +73,7 @@ export function init(app) {
         res.send(isModernBrowser(req) ? indexHtml : indexLegacyHtml);
     };
 
-    app.get(['/', '/home'], function (req, res) {
+    app.get(['/', '/home'], function(req, res) {
         if (isSearchEngine(req)) {
             res.render('bot/home', 'system');
         } else if (req.user || req.query.tour || req.query.notifications !== undefined
@@ -97,8 +96,8 @@ export function init(app) {
         promisify(access)('dist/app', constants.R_OK)
             .catch(() => promisify(mkdir)('dist/app', {recursive: true} as any)) // Node 12
             .then(() => {
-                let wstream = createWriteStream('./dist/app/sitemap.txt');
-                let cond = {
+                const wstream = createWriteStream('./dist/app/sitemap.txt');
+                const cond = {
                     archived: false,
                     'registrationState.registrationStatus': 'Qualified'
                 };
@@ -135,9 +134,9 @@ export function init(app) {
         respondHomeFull
     );
 
-    app.get('/sw.js', function (req, res) {
+    app.get('/sw.js', (req, res) => {
         res.sendFile((global as any).appDir('dist/app', 'sw.js'), undefined, err => {
-            if (err) res.sendStatus(404);
+            if (err) { res.sendStatus(404); }
         });
     });
 
@@ -145,8 +144,8 @@ export function init(app) {
         let jobType = req.params.type;
         if (!jobType) return res.status(400).end();
         jobStatus(jobType, (err, j) => {
-            if (err) return res.status(409).send('Error - job status ' + jobType);
-            if (j) return res.send({done: false});
+            if (err) { return res.status(409).send('Error - job status ' + jobType); }
+            if (j) { return res.send({done: false}); }
             res.send({done: true});
         });
     });
@@ -154,12 +153,12 @@ export function init(app) {
     /* ---------- PUT NEW REST API above ---------- */
 
     app.get('/indexCurrentNumDoc/:indexPosition', isSiteAdminMiddleware, (req, res) => {
-        let index = indices[req.params.indexPosition];
+        const index = indices[req.params.indexPosition];
         return res.send({count: index.count, totalCount: index.totalCount});
     });
 
     app.post('/reindex/:indexPosition', isSiteAdminMiddleware, (req, res) => {
-        let index = indices[req.params.indexPosition];
+        const index = indices[req.params.indexPosition];
         reIndex(index, () => {
             setTimeout(() => {
                 index.count = 0;
@@ -173,14 +172,14 @@ export function init(app) {
     app.get('/supportedBrowsers', (req, res) => res.render('supportedBrowsers', 'system'));
 
     app.get('/listOrgs', nocacheMiddleware, (req, res) => {
-        listOrgs(function (err, orgs) {
-            if (err) return res.status(500).send('ERROR - unable to list orgs');
+        listOrgs(function(err, orgs) {
+            if (err) { return res.status(500).send('ERROR - unable to list orgs'); }
             res.send(orgs);
         });
     });
 
     app.get('/listOrgsDetailedInfo', nocacheMiddleware, (req, res) => {
-        listOrgsDetailedInfo(function (err, orgs) {
+        listOrgsDetailedInfo(function(err, orgs) {
             if (err) {
                 errorLogger.error(JSON.stringify({msg: 'Failed to get list of orgs detailed info.'}),
                     {stack: new Error().stack});
@@ -192,11 +191,11 @@ export function init(app) {
 
     app.get('/loginText', csrf(), (req, res) => res.render('loginText', 'system', {csrftoken: req.csrfToken()}));
 
-    let failedIps: any[] = [];
+    const failedIps: any[] = [];
 
     app.get('/csrf', csrf(), nocacheMiddleware, (req, res) => {
-        let resp: any = {csrf: req.csrfToken()};
-        let failedIp = findFailedIp(getRealIp(req));
+        const resp: any = {csrf: req.csrfToken()};
+        const failedIp = findFailedIp(getRealIp(req));
         if ((failedIp && failedIp.nb > 2)) {
             resp.showCaptcha = true;
         }
@@ -208,7 +207,7 @@ export function init(app) {
     }
 
     function myCsrf(req, res, next) {
-        if (!req.body._csrf) return res.status(401).send();
+        if (!req.body._csrf) { return res.status(401).send(); }
         csrf()(req, res, next);
     }
 
@@ -227,7 +226,7 @@ export function init(app) {
     const validLoginBody = ['username', 'password', '_csrf', 'recaptcha'];
 
     app.post('/login', [checkLoginReq, myCsrf], (req, res, next) => {
-        let failedIp = findFailedIp(getRealIp(req));
+        const failedIp = findFailedIp(getRealIp(req));
         series([
                 function checkCaptcha(captchaDone) {
                     if (failedIp && failedIp.nb > 2) {
@@ -237,8 +236,8 @@ export function init(app) {
                     }
                 }],
             function allDone(err) {
-                if (failedIp) failedIp.nb = 0;
-                if (err) return res.status(412).send(err);
+                if (failedIp) { failedIp.nb = 0; }
+                if (err) { return res.status(412).send(err); }
                 // Regenerate is used so appscan won't complain
                 req.session.regenerate(() => {
                     authenticate('local', (err, user, info) => {
@@ -247,7 +246,7 @@ export function init(app) {
                             return res.status(403).send();
                         }
                         if (!user) {
-                            if (failedIp && config.useCaptcha) failedIp.nb++;
+                            if (failedIp && config.useCaptcha) { failedIp.nb++; }
                             else {
                                 failedIps.unshift({ip: getRealIp(req), nb: 1});
                                 failedIps.length = 50;
@@ -268,7 +267,7 @@ export function init(app) {
     });
 
     app.post('/logout', (req, res) => {
-        if (!req.session) return res.status(403).end();
+        if (!req.session) { return res.status(403).end(); }
         req.session.destroy(() => {
             req.logout();
             res.clearCookie('connect.sid');
@@ -310,7 +309,7 @@ export function init(app) {
 
     app.get('/data/:id', (req, res) => {
         let fileId = req.params.id;
-        const i = fileId.indexOf(".");
+        const i = fileId.indexOf('.');
         if (i > -1) {
             fileId = fileId.substr(0, i);
         }
@@ -353,7 +352,7 @@ export function init(app) {
 
     app.post('/removeBan', isSiteAdminMiddleware, (req, res) => {
         getTrafficFilter(elt => {
-            let foundIndex = elt.ipList.findIndex(r => r.ip === req.body.ip);
+            const foundIndex = elt.ipList.findIndex(r => r.ip === req.body.ip);
             if (foundIndex > -1) {
                 elt.ipList.splice(foundIndex, 1);
                 elt.save(() => res.send());
@@ -388,9 +387,9 @@ export function init(app) {
 
     app.post('/idSource/:id', isSiteAdminMiddleware, (req, res) => {
         IdSource.findById(req.params.id, handleError({req, res}, doc => {
-            if (doc) return res.status(409).send(req.params.id + " already exists.");
+            if (doc) { return res.status(409).send(req.params.id + ' already exists.'); }
             else {
-                let idSource = {
+                const idSource = {
                     _id: req.params.id,
                     linkTemplateDe: req.body.linkTemplateDe,
                     linkTemplateForm: req.body.linkTemplateForm,
@@ -403,12 +402,12 @@ export function init(app) {
 
     app.put('/idSource/:id', isSiteAdminMiddleware, (req, res) => {
         IdSource.findById(req.body._id, handleError({req, res}, doc => {
-            if (!doc) return res.status(404).send(req.params.id + " does not exist.");
+            if (!doc) { return res.status(404).send(req.params.id + ' does not exist.'); }
             else {
                 doc.linkTemplateDe = req.body.linkTemplateDe;
                 doc.linkTemplateForm = req.body.linkTemplateForm;
                 doc.version = req.body.version;
-                doc.save(handleError({req, res},source => res.send(source)));
+                doc.save(handleError({req, res}, source => res.send(source)));
             }
         }));
     });
