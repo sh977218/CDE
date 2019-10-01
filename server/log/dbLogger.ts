@@ -84,7 +84,7 @@ export function logError(message, callback?: Cb) { // all server errors, express
     if (typeof message.stack === 'string') {
         message.stack = message.stack.substr(0, 1000);
     }
-    const description = ((message.message | message.publicMessage) + '').substr(0, 30);
+    const description = ((message.message || message.publicMessage) + '').substr(0, 30);
     if (config.logToConsoleForServerError) {
         console.log('---Server Error---');
         console.log(message);
