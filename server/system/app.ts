@@ -2,8 +2,7 @@ import { series } from 'async';
 import { CronJob } from 'cron';
 import * as csrf from 'csurf';
 import { renderFile } from 'ejs';
-import { access, constants, createWriteStream, mkdir, writeFile, writeFileSync, existsSync } from 'fs';
-import { join } from 'path';
+import { access, constants, createWriteStream, existsSync, mkdir, writeFileSync } from 'fs';
 import { authenticate } from 'passport';
 import { DataElement, draftsList as deDraftsList } from 'server/cde/mongo-cde';
 import { handleError, respondError } from 'server/errorHandler/errorHandler';
@@ -11,28 +10,26 @@ import { draftsList as formDraftsList, Form } from 'server/form/mongo-form';
 import { consoleLog } from 'server/log/dbLogger';
 import { syncWithMesh } from 'server/mesh/elastic';
 import {
-    canApproveCommentMiddleware, isOrgAdminMiddleware, isOrgAuthorityMiddleware, isOrgCuratorMiddleware,
-    isSiteAdminMiddleware, loggedInMiddleware, nocacheMiddleware
+    canApproveCommentMiddleware, isOrgAuthorityMiddleware, isOrgCuratorMiddleware, isSiteAdminMiddleware,
+    loggedInMiddleware, nocacheMiddleware
 } from 'server/system/authorization';
 import { reIndex } from 'server/system/elastic';
 import { indices } from 'server/system/elasticSearchInit';
 import { errorLogger } from 'server/system/logging';
 import {
-    addUserRole, disableRule, enableRule, getClassificationAuditLog, getFile, IdSource, jobStatus, listOrgs,
-    listOrgsDetailedInfo, orgByName, updateOrg, userById, usersByName
+    addUserRole, disableRule, enableRule, getClassificationAuditLog, getFile, IdSource, jobStatus, usersByName
 } from 'server/system/mongo-data';
-import { addOrg, managedOrgs, transferSteward } from 'server/system/orgsvc';
+import { transferSteward } from 'server/orgManagement/orgSvc';
 import { config } from 'server/system/parseConfig';
 import { checkDatabase, create, remove, subscribe, updateStatus } from 'server/system/pushNotification';
 import { banIp, getTrafficFilter } from 'server/system/traffic';
-import {
-    addOrgAdmin, addOrgCurator, myOrgs, myOrgsAdmins, orgAdmins, orgCurators, removeOrgAdmin, removeOrgCurator,
-    updateUserAvatar, updateUserRoles
-} from 'server/system/usersrvc';
+import { myOrgs, updateUserAvatar, updateUserRoles } from 'server/system/usersrvc';
 import { is } from 'useragent';
 import { promisify } from 'util';
 import { isSearchEngine } from './helper';
 import { version } from '../version';
+import { listOrgs, listOrgsDetailedInfo } from '../orgManagement/orgDb';
+import { userById } from 'server/user/userDb';
 
 export let respondHomeFull: Function;
 
@@ -391,12 +388,12 @@ export function init(app) {
 
     app.put('/idSource/:id', isSiteAdminMiddleware, (req, res) => {
         IdSource.findById(req.body._id, handleError({req, res}, doc => {
-            if (!doc) return res.status(404).send(req.params.id + " does not exist.");
+            if (!doc) return res.status(404).send(req.params.id + ' does not exist.');
             else {
                 doc.linkTemplateDe = req.body.linkTemplateDe;
                 doc.linkTemplateForm = req.body.linkTemplateForm;
                 doc.version = req.body.version;
-                doc.save(handleError({req, res},source => res.send(source)));
+                doc.save(handleError({req, res}, source => res.send(source)));
             }
         }));
     });

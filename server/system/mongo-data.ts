@@ -3,6 +3,8 @@ import { consoleLog } from '../log/dbLogger';
 import { hasRole } from 'shared/system/authorizationShared';
 import { config } from '../system/parseConfig';
 import * as eltShared from 'shared/elt';
+import { userByName } from 'server/user/userDb';
+import { orgByName } from 'server/orgManagement/orgDb';
 
 const _ = require('lodash');
 const async = require('async');
@@ -413,10 +415,6 @@ export function addUserRole(username, role, cb) {
             cb();
         }
     });
-}
-
-export function mailStatus(user, callback) {
-    getMessages({user: user, params: {type: "received"}}, callback);
 }
 
 // cb(err, item)
