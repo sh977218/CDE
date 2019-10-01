@@ -1,6 +1,4 @@
-import {
-    isOrgAdminMiddleware, isOrgAuthorityMiddleware, loggedInMiddleware, nocacheMiddleware
-} from 'server/system/authorization';
+import { isOrgAdminMiddleware, isOrgAuthorityMiddleware, nocacheMiddleware } from 'server/system/authorization';
 import {
     addOrg, addOrgAdmin, addOrgCurator, myOrgsAdmins, orgAdmins, orgCurators, removeOrgAdmin, removeOrgCurator
 } from 'server/orgManagement/orgSvc';
@@ -19,10 +17,9 @@ export function module() {
     router.post('/addOrg', isOrgAuthorityMiddleware, addOrg);
     router.post('/updateOrg', isOrgAuthorityMiddleware, (req, res) => updateOrg(req.body, res));
 
+    router.get('/myOrgsAdmins', nocacheMiddleware, myOrgsAdmins);
 
-    router.get('/myOrgsAdmins', [nocacheMiddleware, loggedInMiddleware], myOrgsAdmins);
-
-    router.get('/orgAdmins', nocacheMiddleware, isOrgAuthorityMiddleware, orgAdmins);
+    router.get('/orgAdmins', [nocacheMiddleware, isOrgAuthorityMiddleware], orgAdmins);
     router.post('/addOrgAdmin', isOrgAdminMiddleware, addOrgAdmin);
     router.post('/removeOrgAdmin', isOrgAdminMiddleware, removeOrgAdmin);
 

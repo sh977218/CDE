@@ -29,7 +29,7 @@ export class TagsManagementComponent {
     }
 
     saveOrg(org: Organization) {
-        this.http.post('/updateOrg', org).subscribe(
+        this.http.post('/server/orgManagement/updateOrg', org).subscribe(
             () => this.orgHelperService.reload().then(() => this.alert.addAlert('success', 'Org Updated'), _noop),
             () => this.alert.addAlert('danger', 'Error. Unable to save.')
         );
