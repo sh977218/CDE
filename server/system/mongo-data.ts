@@ -224,13 +224,6 @@ export function usersByName(name, callback) {
     User.find({username: new RegExp('^' + name + '$', 'i')}, userProject, callback);
 }
 
-
-
-export function addUser(user, callback) {
-    user.username = user.username.toLowerCase();
-    new User(user).save(callback);
-}
-
 export function formatElt(elt) {
     if (elt.toObject) { elt = elt.toObject(); }
     elt.stewardOrgCopy = elt.stewardOrg;
