@@ -161,7 +161,7 @@ const appRoutes: Routes = [
                 path: 'orgsEdit',
                 component: OrgsEditComponent,
                 canLoad: [OrgAuthorityGuard],
-                resolve: {organizations: OrgsEditResolve},
+                resolve: {organizations: ManagedOrgsResolve},
                 data: {title: 'Organizations'}
             },
 

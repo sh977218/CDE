@@ -64,7 +64,6 @@ const orgDetailProject = {
 };
 
 export const ObjectId = mongoose.Types.ObjectId;
-export const mongoose_connection = conn;
 
 var classificationAudit = conn.model('classificationAudit', schemas.classificationAudit);
 
@@ -253,14 +252,6 @@ export function userById(id, callback) {
 export function addUser(user, callback) {
     user.username = user.username.toLowerCase();
     new User(user).save(callback);
-}
-
-export function orgAdmins(callback) {
-    User.find({orgAdmin: {$not: {$size: 0}}}).sort({username: 1}).exec(callback);
-}
-
-export function orgCurators(orgs, callback) {
-    User.find().where("orgCurator").in(orgs).exec(callback);
 }
 
 export function listOrgs(callback) {

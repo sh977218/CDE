@@ -149,6 +149,24 @@ export function save(user, callback) {
     return new User(user).save(callback);
 }
 
+// Org Admin
+export async function usersByOrgAdmins(orgAdmin = []) {
+    if (!orgAdmin) {
+        return [];
+    } else {
+        return User.find().where('orgAdmin').in(orgAdmin).sort({username: 1});
+    }
+}
+
+// Org Curator
+export async function usersByOrgCurators(orgCurator = []) {
+    if (!orgCurator) {
+        return [];
+    } else {
+        return User.find().where('orgCurator').in(orgCurator).sort({username: 1});
+    }
+}
+
 // Site Admin
 export function usernamesByIp(ip, callback) {
     User.find({knownIPs: {$in: [ip]}}, {username: 1}, callback);

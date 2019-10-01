@@ -1,7 +1,7 @@
 import { isOrgAdminMiddleware, isOrgAuthorityMiddleware, nocacheMiddleware } from 'server/system/authorization';
 import {
-    addOrgAdmin, addOrganization, addOrgCurator, myOrgsAdmins, orgByName, orgCurators, removeOrgAdmin,
-    removeOrgCurator, transferSteward, updateOrg
+    addOrgAdmin, addOrganization, addOrgCurator, myOrgsAdmins, orgByName, orgCurators, removeOrgAdmin, removeOrgCurator,
+    transferSteward, updateOrg
 } from 'server/orgManagement/orgsvc';
 import { isOrgAdmin } from 'shared/system/authorizationShared';
 import { userByUsername } from 'server/user/userDb';
@@ -13,7 +13,8 @@ export function module() {
     const router = require('express').Router();
 
     router.get('/myOrgsAdmins', nocacheMiddleware, async (req, res) => {
-        await myOrgsAdmins(req.user);
+        const orgAdmins = await myOrgsAdmins(req.user);
+        res.send(orgAdmins);
     });
 
 

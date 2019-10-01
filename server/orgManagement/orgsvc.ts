@@ -1,10 +1,9 @@
 import { remove } from 'lodash';
-import { findOneByName, Org, saveOrg, updateOrgById } from 'server/orgManagement/orgDb';
+import { findOneByName, saveOrg, updateOrgById } from 'server/orgManagement/orgDb';
 import { transferSteward as cdeTransferSteward } from 'server/cde/mongo-cde';
 import { transferSteward as formTransferSteward } from 'server/form/mongo-form';
 import { hasRole } from 'shared/system/authorizationShared';
-import { orgAdmins as userOrgAdmins, orgCurators as userOrgCurators } from 'server/system/mongo-data';
-import { handle40x } from 'server/errorHandler/errorHandler';
+import { usersByOrgAdmins, usersByOrgCurators } from 'server/user/userDb';
 
 export async function orgByName(orgName) {
     return findOneByName(orgName);
@@ -12,24 +11,13 @@ export async function orgByName(orgName) {
 
 
 export async function myOrgsAdmins(user) {
-
+    const users = await usersByOrgAdmins(user.orgAdmin);
+    return users;
 }
 
-export function orgCurators(req, res) {
-    userOrgCurators(req.user.orgAdmin, handle40x({req, res}, users => {
-        res.send(req.user.orgAdmin
-            .map(org => ({
-                name: org,
-                users: users
-                    .filter(user => user.orgCurator.indexOf(org) > -1)
-                    .map(user => ({
-                        _id: user._id,
-                        username: user.username,
-                    })),
-            }))
-            .filter(org => org.users.length > 0)
-        );
-    }));
+export async function orgCurators(user) {
+    const users = await usersByOrgCurators(user.orgCurator);
+    return users;
 }
 
 export async function transferSteward(from, to) {
@@ -97,24 +85,4 @@ export async function addOrgAdmin(user, orgName) {
     const savedUser = await user.save();
     return savedUser;
 }
-
-
-export function orgAdmins(req, res) {
-    managedOrgs(handle40x({req, res}, managedOrgs => {
-        userOrgAdmins(handle40x({req, res}, users => {
-            res.send(managedOrgs
-                .map(mo => ({
-                    name: mo.name,
-                    users: users
-                        .filter(u => u.orgAdmin.indexOf(mo.name) > -1)
-                        .map(u => ({
-                            _id: u._id,
-                            username: u.username,
-                        })),
-                }))
-            );
-        }));
-    }));
-}
-
 

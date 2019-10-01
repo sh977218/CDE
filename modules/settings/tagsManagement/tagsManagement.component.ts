@@ -14,8 +14,7 @@ export class TagsManagementComponent {
 
     constructor(private http: HttpClient,
                 private alert: AlertService,
-                private route: ActivatedRoute,
-                private orgHelperService: OrgHelperService) {
+                private route: ActivatedRoute) {
 
         this.orgs = this.route.snapshot.data.managedOrgs;
         this.orgs.forEach(o => {
