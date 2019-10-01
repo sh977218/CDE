@@ -36,18 +36,21 @@ export function parseValueDomain(loinc) {
 
     } else {
         valueDomain.datatype = 'Value List';
-        valueDomain.permissibleValues = loincAnswerList.map(a => {
+        valueDomain.permissibleValues = loincAnswerList.map(loincAnswer => {
             const pv: any = {};
-            if (!isEmpty(a.Code)) {
-                pv.permissibleValue = a.Code;
-            } else {
-                pv.permissibleValue = a.Answer;
+            if (!isEmpty(loincAnswer.Code)) {
+                pv.permissibleValue = loincAnswer.Code;
             }
-            if (!isEmpty(a['Answer ID'])) {
-                pv.valueMeaningCode = a['Answer ID'];
+            if (!isEmpty(loincAnswer['Answer ID'])) {
+                pv.valueMeaningCode = loincAnswer['Answer ID'];
             }
-            pv.valueMeaningName = pv.permissibleValue;
+            if (!isEmpty(loincAnswer.Answer)) {
+                pv.valueMeaningName = loincAnswer.Answer;
+            }
             pv.codeSystemName = 'LOINC';
+            if (isEmpty(loincAnswer.Answer)) {
+                console.log(`${loinc['LOINC Code']} has empty answer.`);
+            }
             return pv;
         });
     }
