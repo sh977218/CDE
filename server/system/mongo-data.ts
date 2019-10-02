@@ -65,7 +65,6 @@ const orgDetailProject = {
 export const ObjectId = mongoose.Types.ObjectId;
 export const mongoose_connection = conn;
 
-const classificationAudit = conn.model('classificationAudit', schemas.classificationAudit);
 
 export function jobStatus(type, callback) {
     JobQueue.findOne({type}, callback);
@@ -474,15 +473,6 @@ export function addToClassifAudit(msg) {
     });
 }
 
-export function getClassificationAuditLog(params, callback) {
-    classificationAudit.find({}, {elements: {$slice: 10}})
-        .sort('-date')
-        .skip(params.skip)
-        .limit(params.limit)
-        .exec(function(err, logs) {
-            callback(err, logs);
-        });
-}
 
 export function getAllRules(cb) {
     ValidationRule.find().exec(function(err, rules) {
@@ -490,24 +480,6 @@ export function getAllRules(cb) {
     });
 }
 
-export function disableRule(params, cb) {
-    orgByName(params.orgName, function(err, org) {
-        org.cdeStatusValidationRules.forEach(function(rule, i) {
-            if (rule.id === params.rule.id) {
-                org.cdeStatusValidationRules.splice(i, 1);
-            }
-        });
-        org.save(cb);
-    });
-}
-
-export function enableRule(params, cb) {
-    orgByName(params.orgName, function(err, org) {
-        delete params.rule._id;
-        org.cdeStatusValidationRules.push(params.rule);
-        org.save(cb);
-    });
-}
 
 export function sortArrayByArray(unSortArray, targetArray) {
     unSortArray.sort((a, b) => {

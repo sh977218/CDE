@@ -258,34 +258,6 @@ export const dataSetSchema = new Schema({
     notes: StringType
 }, {_id: false});
 
-export const classificationAudit = new Schema({
-    date: {type: Date, default: Date.now, index: true}, user: {
-        username: StringType
-    },
-    elements: [{
-        tinyId: StringType,
-        version: StringType,
-        _id: Schema.Types.ObjectId,
-        name: StringType,
-        status: {type: StringType, enum: orderedList},
-        eltType: {type: StringType, enum: ['cde', 'form']},
-    }],
-    newname: StringType,
-    action: {type: StringType, enum: ['add', 'delete', 'rename', 'reclassify']},
-    path: [StringType]
-}, {collection: 'classificationAudit'});
-
-export const trafficFilterSchema = new Schema({
-    ipList: [
-        {
-            ip: String,
-            date: {type: Date, default: Date.now()},
-            reason: String,
-            strikes: {type: Number, default: 1}
-        }
-    ]
-}, {usePushEach: true});
-
 
 export const datatypeTextSchema = new Schema({
     minLength: {type: Number, description: 'To indicate limits on length'},

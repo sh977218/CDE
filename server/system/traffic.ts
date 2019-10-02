@@ -6,15 +6,6 @@ const connHelper = require('../system/connections');
 const conn = connHelper.establishConnection(config.database.log);
 const TrafficFilterModel = conn.model('trafficFilter', schemas.trafficFilterSchema);
 
-let initTrafficFilter = cb => {
-    TrafficFilterModel.remove({}, () => new TrafficFilterModel({ipList: []}).save(cb));
-};
-export function getTrafficFilter(cb) {
-    TrafficFilterModel.findOne({}, (err, theOne) => {
-        if (err || !theOne) initTrafficFilter((err2, newOne) => cb(newOne));
-        else cb(theOne);
-    });
-}
 
 export function banIp(ip, reason) {
     TrafficFilterModel.findOne({}, handleError({}, theOne => {

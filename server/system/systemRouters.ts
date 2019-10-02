@@ -1,46 +1,45 @@
-import { disableRule, enableRule, getClassificationAuditLog, IdSource, updateOrg } from 'server/system/mongo-data';
-import { handleError, respondError } from 'server/errorHandler/errorHandler';
+import { IdSource } from 'server/system/mongo-data';
+import { respondError } from 'server/errorHandler/errorHandler';
 import { isOrgAuthorityMiddleware, isOrgCuratorMiddleware, isSiteAdminMiddleware } from 'server/system/authorization';
 import { draftsList as deDraftsList } from 'server/cde/mongo-cde';
 import { draftsList as formDraftsList } from 'server/form/mongo-form';
-import { getTrafficFilter } from 'server/system/traffic';
 import { myOrgs } from 'server/system/usersrvc';
+import { disableRule, enableRule, getClassificationAuditLog } from 'server/system/systemSvc';
+import { getTrafficFilter } from 'server/system/trafficFilterSvc';
 
 require('express-async-errors');
 
 export function module() {
     const router = require('express').Router();
 
-    router.post('/getClassificationAuditLog', isOrgAuthorityMiddleware, (req, res) => {
-        getClassificationAuditLog(req.body, handleError({req, res}, result => res.send(result)));
+    router.post('/getClassificationAuditLog', isOrgAuthorityMiddleware, async (req, res) => {
+        const records = await getClassificationAuditLog(req.body);
+        res.send(records);
     });
 
-    router.post('/disableRule', isOrgAuthorityMiddleware, (req, res) => {
-        disableRule(req.body, handleError({req, res}, org => {
-            res.send(org);
-        }));
+    router.post('/disableRule', isOrgAuthorityMiddleware, async (req, res) => {
+        const savedOrg = await disableRule(req.body.orgName, req.body.rule.id);
+        res.send(savedOrg);
     });
 
-    router.post('/enableRule', isOrgAuthorityMiddleware, (req, res) => {
-        enableRule(req.body, handleError({req, res}, org => {
-            res.send(org);
-        }));
+    router.post('/enableRule', isOrgAuthorityMiddleware, async (req, res) => {
+        const savedOrg = await enableRule(req.body.orgName, req.body.rule);
+        res.send(savedOrg);
     });
 
-    router.get('/activeBans', isSiteAdminMiddleware, (req, res) => {
-        getTrafficFilter(list => res.send(list));
+    router.get('/activeBans', isSiteAdminMiddleware, async (req, res) => {
+        const list = await getTrafficFilter();
+        res.send(list);
     });
 
-    router.post('/removeBan', isSiteAdminMiddleware, (req, res) => {
-        getTrafficFilter(elt => {
-            const foundIndex = elt.ipList.findIndex(r => r.ip === req.body.ip);
-            if (foundIndex > -1) {
-                elt.ipList.splice(foundIndex, 1);
-                elt.save(() => res.send());
-            } else {
-                res.send();
-            }
-        });
+    router.post('/removeBan', isSiteAdminMiddleware, async (req, res) => {
+        const elt = await getTrafficFilter();
+        const foundIndex = elt.ipList.findIndex(r => r.ip === req.body.ip);
+        if (foundIndex > -1) {
+            elt.ipList.splice(foundIndex, 1);
+            await elt.save();
+        }
+        res.send();
     });
 
     // drafts
