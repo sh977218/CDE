@@ -2,7 +2,7 @@ import { series } from 'async';
 import { CronJob } from 'cron';
 import * as csrf from 'csurf';
 import { renderFile } from 'ejs';
-import { access, constants, createWriteStream, mkdir, writeFileSync, existsSync } from 'fs';
+import { access, constants, createWriteStream, existsSync, mkdir, writeFileSync } from 'fs';
 import { authenticate } from 'passport';
 import { DataElement, draftsList as deDraftsList } from 'server/cde/mongo-cde';
 import { handleError, respondError } from 'server/errorHandler/errorHandler';
@@ -22,7 +22,6 @@ import {
 } from 'server/system/mongo-data';
 import { addOrg, managedOrgs, transferSteward } from 'server/system/orgsvc';
 import { config } from 'server/system/parseConfig';
-import { banIp, getTrafficFilter } from 'server/system/traffic';
 import {
     addOrgAdmin, addOrgCurator, myOrgs, myOrgsAdmins, orgAdmins, orgCurators, removeOrgAdmin, removeOrgCurator,
     updateUserAvatar, updateUserRoles
@@ -31,15 +30,13 @@ import { is } from 'useragent';
 import { promisify } from 'util';
 import { isSearchEngine } from './helper';
 import { version } from '../version';
+import { banIp, getRealIp, getTrafficFilter } from 'server/system/trafficFilterSvc';
+
+require('express-async-errors');
 
 export let respondHomeFull: Function;
 
 export function init(app) {
-    const getRealIp = function(req) {
-        if (req._remoteAddress) { return req._remoteAddress; }
-        if (req.ip) { return req.ip; }
-    };
-
     let indexHtml = '';
     renderFile('modules/system/views/index.ejs', {
         config,
@@ -73,7 +70,7 @@ export function init(app) {
         res.send(isModernBrowser(req) ? indexHtml : indexLegacyHtml);
     };
 
-    app.get(['/', '/home'], function(req, res) {
+    app.get(['/', '/home'], function (req, res) {
         if (isSearchEngine(req)) {
             res.render('bot/home', 'system');
         } else if (req.user || req.query.tour || req.query.notifications !== undefined
@@ -136,7 +133,9 @@ export function init(app) {
 
     app.get('/sw.js', (req, res) => {
         res.sendFile((global as any).appDir('dist/app', 'sw.js'), undefined, err => {
-            if (err) { res.sendStatus(404); }
+            if (err) {
+                res.sendStatus(404);
+            }
         });
     });
 
@@ -144,8 +143,12 @@ export function init(app) {
         let jobType = req.params.type;
         if (!jobType) return res.status(400).end();
         jobStatus(jobType, (err, j) => {
-            if (err) { return res.status(409).send('Error - job status ' + jobType); }
-            if (j) { return res.send({done: false}); }
+            if (err) {
+                return res.status(409).send('Error - job status ' + jobType);
+            }
+            if (j) {
+                return res.send({done: false});
+            }
             res.send({done: true});
         });
     });
@@ -172,14 +175,16 @@ export function init(app) {
     app.get('/supportedBrowsers', (req, res) => res.render('supportedBrowsers', 'system'));
 
     app.get('/listOrgs', nocacheMiddleware, (req, res) => {
-        listOrgs(function(err, orgs) {
-            if (err) { return res.status(500).send('ERROR - unable to list orgs'); }
+        listOrgs(function (err, orgs) {
+            if (err) {
+                return res.status(500).send('ERROR - unable to list orgs');
+            }
             res.send(orgs);
         });
     });
 
     app.get('/listOrgsDetailedInfo', nocacheMiddleware, (req, res) => {
-        listOrgsDetailedInfo(function(err, orgs) {
+        listOrgsDetailedInfo(function (err, orgs) {
             if (err) {
                 errorLogger.error(JSON.stringify({msg: 'Failed to get list of orgs detailed info.'}),
                     {stack: new Error().stack});
@@ -195,7 +200,8 @@ export function init(app) {
 
     app.get('/csrf', csrf(), nocacheMiddleware, (req, res) => {
         const resp: any = {csrf: req.csrfToken()};
-        const failedIp = findFailedIp(getRealIp(req));
+        const realIp = getRealIp(req);
+        const failedIp = findFailedIp(realIp);
         if ((failedIp && failedIp.nb > 2)) {
             resp.showCaptcha = true;
         }
@@ -207,17 +213,20 @@ export function init(app) {
     }
 
     function myCsrf(req, res, next) {
-        if (!req.body._csrf) { return res.status(401).send(); }
+        if (!req.body._csrf) {
+            return res.status(401).send();
+        }
         csrf()(req, res, next);
     }
 
-    function checkLoginReq(req, res, next) {
+    async function checkLoginReq(req, res, next) {
+        const realIp = getRealIp(req);
         if (Object.keys(req.body).filter(k => validLoginBody.indexOf(k) === -1).length) {
-            banIp(getRealIp(req), 'Invalid Login body');
+            await banIp(realIp, 'Invalid Login body');
             return res.status(401).send();
         }
         if (Object.keys(req.query).length) {
-            banIp(getRealIp(req), 'Passing params to /login');
+            await banIp(realIp, 'Passing params to /login');
             return res.status(401).send();
         }
         return next();
@@ -236,8 +245,12 @@ export function init(app) {
                     }
                 }],
             function allDone(err) {
-                if (failedIp) { failedIp.nb = 0; }
-                if (err) { return res.status(412).send(err); }
+                if (failedIp) {
+                    failedIp.nb = 0;
+                }
+                if (err) {
+                    return res.status(412).send(err);
+                }
                 // Regenerate is used so appscan won't complain
                 req.session.regenerate(() => {
                     authenticate('local', (err, user, info) => {
@@ -246,8 +259,9 @@ export function init(app) {
                             return res.status(403).send();
                         }
                         if (!user) {
-                            if (failedIp && config.useCaptcha) { failedIp.nb++; }
-                            else {
+                            if (failedIp && config.useCaptcha) {
+                                failedIp.nb++;
+                            } else {
                                 failedIps.unshift({ip: getRealIp(req), nb: 1});
                                 failedIps.length = 50;
                             }
@@ -267,7 +281,9 @@ export function init(app) {
     });
 
     app.post('/logout', (req, res) => {
-        if (!req.session) { return res.status(403).end(); }
+        if (!req.session) {
+            return res.status(403).end();
+        }
         req.session.destroy(() => {
             req.logout();
             res.clearCookie('connect.sid');
@@ -346,20 +362,19 @@ export function init(app) {
         }));
     });
 
-    app.get('/activeBans', isSiteAdminMiddleware, (req, res) => {
-        getTrafficFilter(list => res.send(list));
+    app.get('/activeBans', isSiteAdminMiddleware, async (req, res) => {
+        const list = await getTrafficFilter();
+        res.send(list);
     });
 
-    app.post('/removeBan', isSiteAdminMiddleware, (req, res) => {
-        getTrafficFilter(elt => {
-            const foundIndex = elt.ipList.findIndex(r => r.ip === req.body.ip);
-            if (foundIndex > -1) {
-                elt.ipList.splice(foundIndex, 1);
-                elt.save(() => res.send());
-            } else {
-                res.send();
-            }
-        });
+    app.post('/removeBan', isSiteAdminMiddleware, async (req, res) => {
+        const elt = await getTrafficFilter();
+        const foundIndex = elt.ipList.findIndex(r => r.ip === req.body.ip);
+        if (foundIndex > -1) {
+            elt.ipList.splice(foundIndex, 1);
+            await elt.save();
+        }
+        res.send();
     });
 
     app.get('/allDrafts', isOrgAuthorityMiddleware, (req, res) => {
@@ -387,8 +402,9 @@ export function init(app) {
 
     app.post('/idSource/:id', isSiteAdminMiddleware, (req, res) => {
         IdSource.findById(req.params.id, handleError({req, res}, doc => {
-            if (doc) { return res.status(409).send(req.params.id + ' already exists.'); }
-            else {
+            if (doc) {
+                return res.status(409).send(req.params.id + ' already exists.');
+            } else {
                 const idSource = {
                     _id: req.params.id,
                     linkTemplateDe: req.body.linkTemplateDe,
@@ -402,8 +418,9 @@ export function init(app) {
 
     app.put('/idSource/:id', isSiteAdminMiddleware, (req, res) => {
         IdSource.findById(req.body._id, handleError({req, res}, doc => {
-            if (!doc) { return res.status(404).send(req.params.id + ' does not exist.'); }
-            else {
+            if (!doc) {
+                return res.status(404).send(req.params.id + ' does not exist.');
+            } else {
                 doc.linkTemplateDe = req.body.linkTemplateDe;
                 doc.linkTemplateForm = req.body.linkTemplateForm;
                 doc.version = req.body.version;
