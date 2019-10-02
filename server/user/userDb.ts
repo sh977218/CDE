@@ -153,6 +153,9 @@ export function updateUser(user, fields, callback: CbError<number, number, numbe
     }
     User.updateOne({_id: user._id}, {$set: update}, callback);
 }
+export function usersByName(name, callback) {
+    User.find({username: new RegExp('^' + name + '$', 'i')}, userProject, callback);
+}
 
 export function usersByUsername(username, callback) {
     User.find({username: new RegExp(username, 'i')}, userProject, callback);

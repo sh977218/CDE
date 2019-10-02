@@ -143,9 +143,6 @@ export const auditGetLog = auditDb => (params, callback) => {
         .exec(callback);
 };
 
-export function usersByName(name, callback) {
-    User.find({username: new RegExp('^' + name + '$', 'i')}, userProject, callback);
-}
 
 export function formatElt(elt) {
     if (elt.toObject) { elt = elt.toObject(); }

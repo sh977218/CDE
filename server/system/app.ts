@@ -17,7 +17,7 @@ import { reIndex } from 'server/system/elastic';
 import { indices } from 'server/system/elasticSearchInit';
 import { errorLogger } from 'server/system/logging';
 import {
-    addUserRole, disableRule, enableRule, getClassificationAuditLog, getFile, IdSource, jobStatus, usersByName
+    addUserRole, disableRule, enableRule, getClassificationAuditLog, getFile, IdSource, jobStatus
 } from 'server/system/mongo-data';
 import { transferSteward } from 'server/orgManagement/orgSvc';
 import { config } from 'server/system/parseConfig';
@@ -28,7 +28,7 @@ import { promisify } from 'util';
 import { isSearchEngine } from './helper';
 import { version } from '../version';
 import { listOrgs, listOrgsDetailedInfo } from '../orgManagement/orgDb';
-import { userById } from 'server/user/userDb';
+import { userById, usersByName } from 'server/user/userDb';
 
 export let respondHomeFull: Function;
 
