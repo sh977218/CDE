@@ -67,9 +67,11 @@
     ],
     "exclude": [
       "build/**",
-      "**/server/siteAdmin/status*",
       "**/server/form/aws*",
-      "**/server/form/syncLinkedForms*"
+      "**/server/siteAdmin/status*",
+      "**/server/form/syncLinkedForms*",
+      "**/server/notification/notificationDb*",
+      "**/server/notification/pushNotificationSvc*"
     ],
     "lines": "95",
     "branches": "81",

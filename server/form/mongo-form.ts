@@ -13,7 +13,6 @@ const connHelper = require('../system/connections');
 // TODO: remove logging, error is passed out of this layer, handleError should fail-back and tee to no-db logger
 const logging = require('../system/logging');
 export const elastic = require('../form/elastic');
-const isOrgCurator = require('../../shared/system/authorizationShared').isOrgCurator;
 
 export const type = 'form';
 export const name = 'forms';
@@ -42,7 +41,7 @@ try {
 schemas.formSchema.pre('save', function (next) {
     const elt = this;
 
-    if (this.archived) {
+    if (elt.archived) {
         return next();
     }
     validateSchema(elt).then(() => {
@@ -67,7 +66,6 @@ export const FormSource = conn.model('formsources', schemas.formSourceSchema);
 const auditModifications = mongoData.auditModifications(FormAudit);
 export const getAuditLog = mongoData.auditGetLog(FormAudit);
 export const dao = Form;
-export const daoDraft = FormDraft;
 
 mongoData.attachables.push(Form);
 
@@ -111,9 +109,9 @@ export function byTinyId(tinyId, cb) {
 
 export function byTinyIdVersion(tinyId, version, cb) {
     if (version) {
-        this.byTinyIdAndVersion(tinyId, version, cb);
+        byTinyIdAndVersion(tinyId, version, cb);
     } else {
-        this.byTinyId(tinyId, cb);
+        byTinyId(tinyId, cb);
     }
 }
 
@@ -271,12 +269,6 @@ export function create(elt, user, callback) {
 
 export function query(query, callback) {
     Form.find(query).exec(callback);
-}
-
-export function transferSteward(from, to, callback) {
-    Form.updateMany({'stewardOrg.name': from}, {$set: {'stewardOrg.name': to}}).exec((err, result) => {
-        callback(err, result.nModified);
-    });
 }
 
 export function byTinyIdListInOrder(idList, callback) {

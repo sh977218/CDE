@@ -107,24 +107,6 @@ export const orgJson = {
 
 export const orgSchema = new Schema(orgJson, {collection: 'orgs', usePushEach: true});
 
-export const pushRegistration = new Schema({
-    features: [StringType],
-    loggedIn: Boolean,
-    subscription: {
-        endpoint: StringType,
-        expirationTime: StringType,
-        keys: {
-            auth: StringType,
-            p256dh: StringType
-        }
-    },
-    userId: StringType,
-    vapidKeys: {
-        privateKey: StringType,
-        publicKey: StringType
-    }
-}, {collection: 'pushRegistration'});
-
 export const designationSchema = new Schema({
     designation: StringType,
     tags: [StringType],
@@ -292,18 +274,6 @@ export const classificationAudit = new Schema({
     action: {type: StringType, enum: ['add', 'delete', 'rename', 'reclassify']},
     path: [StringType]
 }, {collection: 'classificationAudit'});
-
-export const trafficFilterSchema = new Schema({
-    ipList: [
-        {
-            ip: String,
-            date: {type: Date, default: Date.now()},
-            reason: String,
-            strikes: {type: Number, default: 1}
-        }
-    ]
-}, {usePushEach: true});
-
 
 export const datatypeTextSchema = new Schema({
     minLength: {type: Number, description: 'To indicate limits on length'},

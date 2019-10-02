@@ -31,7 +31,7 @@ export class ServerErrorsComponent {
             this.currentPage = event.pageIndex;
         }
 
-        this.http.post('/server/user/updateNotificationDate', {serverLogDate: new Date()})
+        this.http.post('/server/notification/updateNotificationDate', {serverLogDate: new Date()})
             .subscribe(() => {
                 this.http.post<ServerErrorRecord[]>('/server/log/serverErrors', {
                     skip: this.currentPage * 50,

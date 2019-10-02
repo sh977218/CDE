@@ -35,8 +35,8 @@ public class OrgAdmin2Test extends BaseClassificationTest {
         new Select(findElement(By.name("transferSteward_from"))).selectByVisibleText(org1);
         new Select(findElement(By.name("transferSteward_to"))).selectByVisibleText("LCC");
         clickElement(By.id("transferStewardButton"));
-        textPresent("There are no forms to transfer.");
-        textPresent("There are no CDEs to transfer.");
+        textPresent("0 forms transferred.");
+        textPresent("0 CDEs transferred.");
         closeAlert();
 
         new Select(findElement(By.name("transferSteward_from"))).selectByVisibleText("LCC");
