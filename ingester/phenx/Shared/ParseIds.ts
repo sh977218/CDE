@@ -13,7 +13,8 @@ export function parseIds(protocol) {
         if (s.Source === 'LOINC') {
             ids.push({
                 source: 'LOINC',
-                id: s.ID
+                id: s.ID,
+                version: s.loinc.VERSION ? s.loinc.VERSION : ''
             });
         }
     });
