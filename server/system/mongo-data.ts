@@ -22,7 +22,6 @@ const schemas = require('./schemas');
 const writableCollection = require('./writableCollection').writableCollection;
 
 const conn = connHelper.establishConnection(config.database.appData);
-export const IdSource = conn.model('IdSource', schemas.idSourceSchema);
 export const JobQueue = conn.model('JobQueue', schemas.jobQueue);
 export const Message = conn.model('Message', schemas.message);
 export const Org = conn.model('Org', schemas.orgSchema);

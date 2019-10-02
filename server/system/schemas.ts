@@ -57,13 +57,6 @@ export const sourceSchema = new Schema({
     }
 }, {_id: false});
 
-export const idSourceSchema = new Schema({
-    _id: String,
-    linkTemplateDe: {type: StringType, default: ''},
-    linkTemplateForm: {type: StringType, default: ''},
-    version: StringType,
-}, {collection: 'idSource'});
-
 export const statusValidationRuleSchema = new Schema({
     field: StringType,
     id: Number,
