@@ -22,7 +22,6 @@ import {
 } from 'server/system/mongo-data';
 import { addOrg, managedOrgs, transferSteward } from 'server/system/orgsvc';
 import { config } from 'server/system/parseConfig';
-import { banIp, getTrafficFilter } from 'server/system/traffic';
 import {
     addOrgAdmin, addOrgCurator, myOrgs, myOrgsAdmins, orgAdmins, orgCurators, removeOrgAdmin, removeOrgCurator,
     updateUserAvatar, updateUserRoles
@@ -34,20 +33,13 @@ import { version } from '../version';
 import {
     createIdSource, deleteIdSource, getAllIdSources, isSourceById, updateIdSource
 } from 'server/system/idSourceSvc';
+import { banIp, getRealIp, getTrafficFilter } from 'server/system/trafficFilterSvc';
 
-require('express-validator');
+require('express-async-errors');
 
 export let respondHomeFull: Function;
 
 export function init(app) {
-    const getRealIp = function (req) {
-        if (req._remoteAddress) {
-            return req._remoteAddress;
-        }
-        if (req.ip) {
-            return req.ip;
-        }
-    };
 
     let indexHtml = '';
     renderFile('modules/system/views/index.ejs', {
@@ -212,7 +204,8 @@ export function init(app) {
 
     app.get('/csrf', csrf(), nocacheMiddleware, (req, res) => {
         const resp: any = {csrf: req.csrfToken()};
-        const failedIp = findFailedIp(getRealIp(req));
+        const realIp = getRealIp(req);
+        const failedIp = findFailedIp(realIp);
         if ((failedIp && failedIp.nb > 2)) {
             resp.showCaptcha = true;
         }
@@ -230,13 +223,14 @@ export function init(app) {
         csrf()(req, res, next);
     }
 
-    function checkLoginReq(req, res, next) {
+    async function checkLoginReq(req, res, next) {
+        const realIp = getRealIp(req);
         if (Object.keys(req.body).filter(k => validLoginBody.indexOf(k) === -1).length) {
-            banIp(getRealIp(req), 'Invalid Login body');
+            await banIp(realIp, 'Invalid Login body');
             return res.status(401).send();
         }
         if (Object.keys(req.query).length) {
-            banIp(getRealIp(req), 'Passing params to /login');
+            await banIp(realIp, 'Passing params to /login');
             return res.status(401).send();
         }
         return next();
@@ -372,20 +366,19 @@ export function init(app) {
         }));
     });
 
-    app.get('/activeBans', isSiteAdminMiddleware, (req, res) => {
-        getTrafficFilter(list => res.send(list));
+    app.get('/activeBans', isSiteAdminMiddleware, async (req, res) => {
+        const list = await getTrafficFilter();
+        res.send(list);
     });
 
-    app.post('/removeBan', isSiteAdminMiddleware, (req, res) => {
-        getTrafficFilter(elt => {
-            const foundIndex = elt.ipList.findIndex(r => r.ip === req.body.ip);
-            if (foundIndex > -1) {
-                elt.ipList.splice(foundIndex, 1);
-                elt.save(() => res.send());
-            } else {
-                res.send();
-            }
-        });
+    app.post('/removeBan', isSiteAdminMiddleware, async (req, res) => {
+        const elt = await getTrafficFilter();
+        const foundIndex = elt.ipList.findIndex(r => r.ip === req.body.ip);
+        if (foundIndex > -1) {
+            elt.ipList.splice(foundIndex, 1);
+            await elt.save();
+        }
+        res.send();
     });
 
     app.get('/allDrafts', isOrgAuthorityMiddleware, (req, res) => {

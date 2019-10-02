@@ -49,7 +49,7 @@ import { startServer } from 'server/system/ioServer';
 import { errorLogger, expressLogger } from 'server/system/logging';
 import * as daoManager from 'server/system/moduleDaoManager';
 import { sessionStore } from 'server/system/mongo-data';
-import { banIp, getTrafficFilter } from 'server/system/traffic';
+import { banIp, getTrafficFilter } from 'server/system/trafficFilterSvc';
 import { module as userModule } from 'server/user/userRoutes';
 import { module as utsModule } from 'server/uts/utsRoutes';
 import { isOrgAuthority, isOrgCurator } from 'shared/system/authorizationShared';
