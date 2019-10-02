@@ -105,12 +105,8 @@ export function find(crit, cb) {
 // cb(err, {nMatched, nUpserted, nModified})
 export function updateUser(user, fields, callback: CbError<number, number, number>) {
     const update: any = {};
-    if (fields.commentNotifications) {
-        update.commentNotifications = fields.commentNotifications;
-    }
-    if (fields.email) {
-        update.email = fields.email;
-    }
+    if (fields.commentNotifications) { update.commentNotifications = fields.commentNotifications; }
+    if (fields.email) { update.email = fields.email; }
     if (fields.notificationSettings) {
         if (fields.notificationSettings.approvalAttachment && !hasRole(user, 'AttachmentReviewer')) {
             delete fields.notificationSettings.approvalAttachment;
@@ -124,12 +120,8 @@ export function updateUser(user, fields, callback: CbError<number, number, numbe
             update.notificationSettings = fields.notificationSettings;
         }
     }
-    if (fields.searchSettings) {
-        update.searchSettings = fields.searchSettings;
-    }
-    if (fields.publishedForms) {
-        update.publishedForms = fields.publishedForms;
-    }
+    if (fields.searchSettings) { update.searchSettings = fields.searchSettings; }
+    if (fields.publishedForms) { update.publishedForms = fields.publishedForms; }
     User.updateOne({_id: user._id}, {$set: update}, callback);
 }
 
@@ -137,8 +129,8 @@ export function usersByUsername(username, callback) {
     User.find({username: new RegExp(username, 'i')}, userProject, callback);
 }
 
-export function userByUsername(username, callback?) {
-    return User.findOne({username: new RegExp(username, 'i')}, userProject).exec(callback);
+export function userByUsername(username, callback) {
+    User.findOne({username: new RegExp(username, 'i')}, userProject, callback);
 }
 
 export function byUsername(username, callback) {
@@ -147,24 +139,6 @@ export function byUsername(username, callback) {
 
 export function save(user, callback) {
     return new User(user).save(callback);
-}
-
-// Org Admin
-export async function usersByOrgAdmins(orgAdmin = []) {
-    if (!orgAdmin) {
-        return [];
-    } else {
-        return User.find().where('orgAdmin').in(orgAdmin).sort({username: 1});
-    }
-}
-
-// Org Curator
-export async function usersByOrgCurators(orgCurator = []) {
-    if (!orgCurator) {
-        return [];
-    } else {
-        return User.find().where('orgCurator').in(orgCurator).sort({username: 1});
-    }
 }
 
 // Site Admin

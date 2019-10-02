@@ -1,27 +1,35 @@
 import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AlertService } from 'alert/alert.service';
+import _noop from 'lodash/noop';
+import { OrgHelperService } from 'non-core/orgHelper.service';
 import { Cb, Organization } from 'shared/models.model';
-import { ActivatedRoute } from '@angular/router';
 import { stringCompare } from 'shared/system/util';
 
 @Component({
     selector: 'cde-orgs-edit',
     templateUrl: 'orgsEdit.component.html'
 })
-export class OrgsEditComponent {
-    organizations: Organization[];
+export class OrgsEditComponent implements OnInit {
     editWG: any = {};
     newOrg: any = {};
+    orgs?: Organization[];
 
-    constructor(private alert: AlertService,
-                private route: ActivatedRoute,
-                private http: HttpClient) {
-        this.organizations = this.route.snapshot.data.organizations;
+    ngOnInit() {
+        this.getOrgs();
+    }
+
+    constructor(
+        private alert: AlertService,
+        private http: HttpClient,
+        private orgHelperService: OrgHelperService
+    ) {
     }
 
     addOrg() {
-        this.http.post('/addOrg', this.newOrg, {responseType: 'text'})
+        this.http.post('/addOrg',
+            {name: this.newOrg.name, longName: this.newOrg.longName, workingGroupOf: this.newOrg.workingGroupOf},
+            {responseType: 'text'})
             .subscribe(() => {
                     this.alert.addAlert('success', 'Saved');
                     this.getOrgs();
@@ -33,19 +41,20 @@ export class OrgsEditComponent {
     }
 
     getOrgs(cb?: Cb) {
-        this.http.get<Organization[]>('/allOrgs')
+        this.http.get<Organization[]>('/managedOrgs')
             .subscribe(orgs => {
-                this.organizations = orgs.sort((a, b) => stringCompare(a.name, b.name));
+                this.orgs = orgs.sort((a, b) => stringCompare(a.name, b.name));
                 if (cb) {
                     cb();
                 }
             });
     }
 
-    updateOrg(org: Organization, index) {
-        this.http.post<Organization>('/updateOrg', org).subscribe(updatedOrg => {
-                this.organizations[index] = updatedOrg;
-                this.alert.addAlert('success', 'Saved');
+    updateOrg(org: Organization) {
+        this.http.post('/updateOrg', org).subscribe(res => {
+                this.getOrgs(() => {
+                    this.orgHelperService.reload().then(() => this.alert.addAlert('success', 'Saved'), _noop);
+                });
             }, () => this.alert.addAlert('danger', 'There was an issue updating this org.')
         );
     }

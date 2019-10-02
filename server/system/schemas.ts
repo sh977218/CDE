@@ -6,7 +6,7 @@ addStringtype(mongoose);
 const Schema = mongoose.Schema;
 const StringType = (Schema.Types as any).StringType;
 
-export const csEltSchema = new Schema({
+const csEltSchema = new Schema({
     elements: [],
     name: {type: StringType, index: true}
 }, {_id: false});
@@ -106,24 +106,6 @@ export const orgJson = {
 };
 
 export const orgSchema = new Schema(orgJson, {collection: 'orgs', usePushEach: true});
-
-export const pushRegistration = new Schema({
-    features: [StringType],
-    loggedIn: Boolean,
-    subscription: {
-        endpoint: StringType,
-        expirationTime: StringType,
-        keys: {
-            auth: StringType,
-            p256dh: StringType
-        }
-    },
-    userId: StringType,
-    vapidKeys: {
-        privateKey: StringType,
-        publicKey: StringType
-    }
-}, {collection: 'pushRegistration'});
 
 export const designationSchema = new Schema({
     designation: StringType,
@@ -312,27 +294,28 @@ export const datatypeTextSchema = new Schema({
     rule: {type: StringType, description: 'Any rule may go here'},
     showAsTextArea: {type: Boolean, description: 'Multi-line'},
 }, {_id: false});
+
 export const datatypeNumberSchema = new Schema({
     minValue: Number,
     maxValue: Number,
     precision: Number,
 }, {_id: false});
+
 export const datatypeDateSchema = new Schema({
     precision: {
         type: StringType,
         enum: ['Year', 'Month', 'Day', 'Hour', 'Minute', 'Second']
     }
 }, {_id: false});
+
 export const datatypeTimeSchema = new Schema({
     format: StringType,
 }, {_id: false});
-export const datatypeDynamicCodeListSchema = new Schema({
-    system: StringType,
-    code: StringType
-}, {_id: false});
+
 export const datatypeValueListSchema = new Schema({
     datatype: {type: StringType, description: 'Value list format'}
 }, {_id: false});
+
 export const datatypeExternallyDefinedSchema = new Schema({
     link: {type: StringType, description: 'A link to an external source. Typically a URL'},
     description: StringType,

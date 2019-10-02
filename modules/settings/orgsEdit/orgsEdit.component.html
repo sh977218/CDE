@@ -11,7 +11,7 @@
     <div class="form-group mx-1">
         <select id="newOrgWorkingGroup" class="form-control" name="wgOf" [(ngModel)]="newOrg.workingGroupOf">
             <option value="">Working Group Of</option>
-            <option *ngFor="let o of organizations">{{o.name}}</option>
+            <option *ngFor="let o of orgs">{{o.name}}</option>
         </select>
     </div>
     <button type="submit" id="addOrg" (click)="addOrg()" mat-raised-button color="primary"
@@ -30,40 +30,40 @@
         <th>Working Group Of:</th>
         <th>HTML Overview:</th>
     </tr>
-    <tr *ngFor="let c of organizations;let i = index;">
+    <tr *ngFor="let c of orgs">
         <td id="orgName-{{c.name}}">{{c.name}}</td>
         <td>
             <cde-inline-edit id="orgLongName-{{c.name}}" [(model)]="c.longName"
-                             [isAllowed]="true" (modelChange)="updateOrg(c,i)"></cde-inline-edit>
+                             [isAllowed]="true" (modelChange)="updateOrg(c)"></cde-inline-edit>
         </td>
         <td>
             <cde-inline-edit id="orgMailAddress-{{c.name}}" [(model)]="c.mailAddress"
-                             [isAllowed]="true" (modelChange)="updateOrg(c,i)"></cde-inline-edit>
+                             [isAllowed]="true" (modelChange)="updateOrg(c)"></cde-inline-edit>
         </td>
         <td>
             <cde-inline-edit id="orgEmailAddress-{{c.name}}" [(model)]="c.emailAddress"
-                             [isAllowed]="true" (modelChange)="updateOrg(c,i)"></cde-inline-edit>
+                             [isAllowed]="true" (modelChange)="updateOrg(c)"></cde-inline-edit>
         </td>
         <td>
             <cde-inline-edit id="orgPhoneNumber-{{c.name}}" [(model)]="c.phoneNumber"
-                             [isAllowed]="true" (modelChange)="updateOrg(c,i)"></cde-inline-edit>
+                             [isAllowed]="true" (modelChange)="updateOrg(c)"></cde-inline-edit>
         </td>
         <td>
             <cde-inline-edit id="orgUri-{{c.name}}" [(model)]="c.uri" [isAllowed]="true"
-                             (modelChange)="updateOrg(c,i)"></cde-inline-edit>
+                             (modelChange)="updateOrg(c)"></cde-inline-edit>
         </td>
         <td>
             <cde-inline-edit id="orgExtra-{{c.name}}" [(model)]="c.extraInfo" [isAllowed]="true"
-                             (modelChange)="updateOrg(c,i)"></cde-inline-edit>
+                             (modelChange)="updateOrg(c)"></cde-inline-edit>
         </td>
         <td>
         <span *ngIf="editWG[c.name]">
             <select style="width: 120px" class="form-control" [(ngModel)]="editWG[c.name].tempWG">
                 <option></option>
-                <option *ngFor="let o of organizations">{{o.name}}</option>
+                <option *ngFor="let o of orgs">{{o.name}}</option>
             </select>
             <mat-icon id="wgEditok"
-                      (click)="c.workingGroupOf = editWG[c.name].tempWG; updateOrg(c,i); editWG[c.name] = null">check</mat-icon>&nbsp;&nbsp;
+                      (click)="c.workingGroupOf = editWG[c.name].tempWG; updateOrg(c); editWG[c.name] = null">check</mat-icon>&nbsp;&nbsp;
             <mat-icon id="egEditCancel" (click)="editWG[c.name] = null">cancel</mat-icon>
         </span>
             <span *ngIf="!editWG[c.name]">
@@ -75,7 +75,7 @@
         <td>
             <cde-inline-area-edit id="orgHtmlOverview-{{c.name}}"
                                   [(model)]="c.htmlOverview" [isAllowed]="true"
-                                  (modelChange)="updateOrg(c,i)"></cde-inline-area-edit>
+                                  (modelChange)="updateOrg(c)"></cde-inline-area-edit>
         </td>
     </tr>
 </table>
