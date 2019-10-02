@@ -15,11 +15,9 @@ const MongoStore = require('connect-mongo')(session); // TODO: update to new ver
 const connHelper = require('./connections');
 const logger = require('./noDbLogger');
 const cdediff = require('../cde/cdediff');
-const notificationSvc = require('../notification/notificationSvc');
 const logging = require('./logging');
 const daoManager = require('./moduleDaoManager');
 const schemas = require('./schemas');
-const writableCollection = require('./writableCollection').writableCollection;
 
 const conn = connHelper.establishConnection(config.database.appData);
 export const JobQueue = conn.model('JobQueue', schemas.jobQueue);
@@ -77,9 +75,6 @@ export function updateJobStatus(type, status, callback) {
 export function removeJobStatus(type, callback) {
     JobQueue.remove({type}, callback);
 }
-
-// _id is own string
-export const idSource = writableCollection(IdSource, undefined);
 
 export function addCdeToViewHistory(elt, user) {
     if (!elt || !user) { return; }
