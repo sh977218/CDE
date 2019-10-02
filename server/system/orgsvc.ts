@@ -35,7 +35,7 @@ export function transferSteward(req, res) {
                     if (err) {
                         doneOne(err);
                     } else {
-                        results.push(result.nModified + ' cde transferred. ');
+                        results.push(result.nModified + ' CDEs transferred. ');
                         doneOne();
                     }
                 });
@@ -45,7 +45,7 @@ export function transferSteward(req, res) {
                     if (err) {
                         doneOne(err);
                     } else {
-                        results.push(result.nModified + ' form transferred. ');
+                        results.push(result.nModified + ' forms transferred. ');
                         doneOne();
                     }
                 });
