@@ -2,13 +2,13 @@ import { errorLogger } from 'server/system/logging';
 import { config } from 'server/system/parseConfig';
 import { User } from 'shared/models.model';
 import * as express from 'express';
+import { addUser, updateUserAccessToken, updateUserIps, userById, userByName } from 'server/user/userDb';
 
 const https = require('https');
 const xml2js = require('xml2js');
-const mongo_data_system = require('./mongo-data');
 const request = require('request');
 const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
+const localStrategy = require('passport-local').Strategy;
 
 export type AuthenticatedRequest = {
     user: User,
@@ -29,11 +29,11 @@ const ticketValidationOptions = {
 
 const parser = new xml2js.Parser();
 
-passport.serializeUser(function (user, done) {
+passport.serializeUser((user, done) => {
     done(null, user._id);
 });
 
-passport.deserializeUser( mongo_data_system.userById);
+passport.deserializeUser(userById);
 
 export function init(app) {
     app.use(passport.initialize());
@@ -42,23 +42,23 @@ export function init(app) {
 
 export function ticketValidate(tkt, cb) {
     ticketValidationOptions.path = config.uts.ticketValidation.path + '?service=' + config.uts.service + '&ticket=' + tkt;
-    let req = https.request(ticketValidationOptions, function (res) {
+    const req = https.request(ticketValidationOptions, res => {
         let output = '';
         res.setEncoding('utf8');
 
-        res.on('data', function (chunk) {
+        res.on('data', (chunk) => {
             output += chunk;
         });
 
-        res.on('end', function () {
+        res.on('end', () => {
             // Parse xml result from ticket validation
-            parser.parseString(output, function (err, jsonResult) {
+            parser.parseString(output, (err, jsonResult) => {
                 if (err) {
                     return cb('ticketValidate: ' + err);
                 } else if (jsonResult['cas:serviceResponse'] &&
                     jsonResult['cas:serviceResponse']['cas:authenticationFailure']) {
                     // This statement gets the error message
-                    return cb(jsonResult['cas:serviceResponse']['cas:authenticationFailure'][0]['$']['code']);
+                    return cb(jsonResult['cas:serviceResponse']['cas:authenticationFailure'][0].$.code);
                 } else if (jsonResult['cas:serviceResponse']['cas:authenticationSuccess'] &&
                     jsonResult['cas:serviceResponse']['cas:authenticationSuccess']) {
                     // Returns the username
@@ -76,7 +76,7 @@ export function ticketValidate(tkt, cb) {
         return cb(e);
     });
 
-    req.on("timeout", function () {
+    req.on('timeout', () => {
         req.abort();
         return cb('ticketValidate: Request timeout. Abort if not done!');
     });
@@ -98,7 +98,7 @@ export function updateUserAfterLogin(user, ip, cb) {
     }
 
     if (user._id) {
-        mongo_data_system.User.findByIdAndUpdate(user._id, {lockCounter: 0, lastLogin: Date.now(), knownIPs: user.knownIPs}, cb);
+        updateUserIps(user._id, user.knownIPs, cb);
     }
 
 }
@@ -109,10 +109,10 @@ export function umlsAuth(user, password, cb) {
         {
             form: {
                 licenseCode: config.umls.licenseCode
-                , user: user
-                , password: password
+                , user
+                , password
             }
-        }, function (error, response, body) {
+        }, (error, response, body) => {
             cb(!error && response.statusCode === 200 ? body : undefined);
         }
     );
@@ -120,18 +120,18 @@ export function umlsAuth(user, password, cb) {
 
 export function authBeforeVsac(req, username, password, done) {
     // Allows other items on the event queue to complete before execution, excluding IO related events.
-    process.nextTick(function () {
+    process.nextTick(() => {
         // Find the user by username in local datastore first and perform authentication.
         // If user is not found, authenticate with UMLS. If user is authenticated with UMLS,
         // add user to local datastore. Else, don't authenticate user and send error message.
-        mongo_data_system.userByName(username, (err, user) => {
+        userByName(username, (err, user) => {
             // If user was not found in local datastore || an error occurred || user was found and password equals 'umls'
             if (err || !user || (user && user.password === 'umls')) {
                 umlsAuth(username, password, result => {
                     if (result === undefined) {
                         return done(null, false, {message: 'UMLS UTS login server is not available.'});
-                    } else if (result.indexOf("true") > 0) {
-                        findAddUserLocally({username: username, ip: req.ip}, user => {
+                    } else if (result.indexOf('true') > 0) {
+                        findAddUserLocally({username, ip: req.ip}, user => {
                             return done(null, user);
                         });
                     } else {
@@ -157,27 +157,28 @@ export function authBeforeVsac(req, username, password, done) {
     });
 }
 
-passport.use(new LocalStrategy({passReqToCallback: true}, authBeforeVsac));
+passport.use(new localStrategy({passReqToCallback: true}, authBeforeVsac));
 
 export function findAddUserLocally(profile, cb) {
-    mongo_data_system.userByName(profile.username, function (err, user) {
+    userByName(profile.username, (err, user) => {
         if (err) {
             cb(err);
         } else if (!user) { // User has been authenticated but user is not in local db, so register him.
-            mongo_data_system.addUser(
+            addUser(
                 {
                     username: profile.username,
-                    password: "umls",
+                    password: 'umls',
                     quota: 1024 * 1024 * 1024,
                     accessToken: profile.accessToken,
                     refreshToken: profile.refreshToken
-                },  (err, newUser) => {
+                }, (err, newUser) => {
                     updateUserAfterLogin(newUser, profile.ip, (err, newUser) => cb(newUser));
                 });
         } else {
             updateUserAfterLogin(user, profile.ip, () => {
-                mongo_data_system.User.findByIdAndUpdate(user._id,
-                    {accessToken: profile.accessToken, refreshToken: profile.refreshToken}, (err, user) => cb(user));
+                updateUserAccessToken(user._id, profile, (err, user) => {
+                    cb(user);
+                });
             });
         }
     });
@@ -187,12 +188,14 @@ export function ticketAuth(req, res, next) {
     if (!req.query.ticket || req.query.ticket.length <= 0) {
         next();
     } else {
-        ticketValidate(req.query.ticket, function (err, username) {
+        ticketValidate(req.query.ticket, (err, username) => {
             if (err) {
                 next();
             } else {
-                findAddUserLocally({username: username, ip: req.ip}, function (user) {
-                    if (user) req.user = user;
+                findAddUserLocally({username, ip: req.ip}, user => {
+                    if (user) {
+                        req.user = user;
+                    }
                     next();
                 });
             }
