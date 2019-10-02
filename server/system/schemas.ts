@@ -247,18 +247,6 @@ export const classificationAudit = new Schema({
     path: [StringType]
 }, {collection: 'classificationAudit'});
 
-export const trafficFilterSchema = new Schema({
-    ipList: [
-        {
-            ip: String,
-            date: {type: Date, default: Date.now()},
-            reason: String,
-            strikes: {type: Number, default: 1}
-        }
-    ]
-}, {usePushEach: true});
-
-
 export const datatypeTextSchema = new Schema({
     minLength: {type: Number, description: 'To indicate limits on length'},
     maxLength: {type: Number, description: 'To indicate limits on length'},
