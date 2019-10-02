@@ -41,3 +41,5 @@ export function criteriaSet(criteria, set) {
     criteria[set] = true;
     return criteria;
 }
+
+

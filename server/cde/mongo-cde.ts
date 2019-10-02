@@ -31,10 +31,10 @@ try {
     process.exit(1);
 }
 
-schemas.dataElementSchema.pre('save', function (next) {
+schemas.dataElementSchema.pre('save', function(next) {
     const elt = this;
 
-    if (this.archived) {
+    if (elt.archived) {
         return next();
     }
     validateSchema(elt).then(() => {
@@ -47,7 +47,7 @@ schemas.dataElementSchema.pre('save', function (next) {
             });
         }
 
-        let valueDomain = this.valueDomain;
+        const valueDomain = elt.valueDomain;
         if (valueDomain.datatype === 'Value List' && isEmpty(valueDomain.permissibleValues)) {
             next('Value List with empty permissible values.');
         } else {
@@ -66,7 +66,6 @@ export const User = require('../user/userDb').User;
 const auditModifications = mongoData.auditModifications(CdeAudit);
 export const getAuditLog = mongoData.auditGetLog(CdeAudit);
 export const dao = DataElement;
-export const daoDraft = DataElementDraft;
 
 mongoData.attachables.push(DataElement);
 
@@ -106,7 +105,7 @@ export function byTinyIdList(tinyIdList, callback) {
             cdes.forEach(mongoData.formatElt);
             forEach(tinyIdList, t => {
                 const c = find(cdes, cde => cde.tinyId === t);
-                if (c) result.push(c);
+                if (c) { result.push(c); }
             });
             callback(err, result);
         });
@@ -175,9 +174,9 @@ export function count(condition, callback) {
 
 export function byTinyIdVersion(tinyId, version, cb) {
     if (version) {
-        this.byTinyIdAndVersion(tinyId, version, cb);
+        byTinyIdAndVersion(tinyId, version, cb);
     } else {
-        this.byTinyId(tinyId, cb);
+        byTinyId(tinyId, cb);
     }
 }
 
@@ -278,10 +277,6 @@ export function update(elt, user, options: any = {}, callback: CbError<DE>) {
     });
 }
 
-export function transferSteward(from, to) {
-    return DataElement.updateMany({'stewardOrg.name': from}, {$set: {'stewardOrg.name': to}});
-}
-
 export function derivationOutputs(inputTinyId, cb) {
     DataElement.find({archived: false, 'derivationRules.inputs': inputTinyId}).exec(cb);
 }
@@ -299,21 +294,6 @@ export function findModifiedElementsSince(date, cb) {
         {$group: {_id: '$tinyId'}},
     ]).exec(cb);
 
-}
-
-export function checkOwnership(req, id, cb) {
-    if (!req.isAuthenticated()) {
-        return cb('You are not authorized.', null);
-    }
-    byId(id, (err, elt) => {
-        if (err || !elt) {
-            return cb('Element does not exist.', null);
-        }
-        if (!isOrgCurator(req.user, elt.stewardOrg.name)) {
-            return cb('You do not own this element.', null);
-        }
-        cb(null, elt);
-    });
 }
 
 export function originalSourceByTinyIdSourceName(tinyId, sourceName, cb) {

@@ -2,11 +2,11 @@ import { StoredQueryModel as storedQueryModel } from 'server/cde/mongo-storedQue
 import { handleConsoleError, handleError } from 'server/errorHandler/errorHandler';
 import { clientErrorSchema, consoleLogSchema, feedbackIssueSchema, logErrorSchema, logSchema } from 'server/log/schemas';
 import { establishConnection } from 'server/system/connections';
-import { pushGetAdministratorRegistrations } from 'server/system/mongo-data';
 import { noDbLogger } from 'server/system/noDbLogger';
 import { config } from 'server/system/parseConfig';
-import { triggerPushMsg } from 'server/system/pushNotification';
 import { Cb, CbError } from 'shared/models.model';
+import { pushGetAdministratorRegistrations } from 'server/notification/notificationDb';
+import { triggerPushMsg } from 'server/notification/pushNotificationSvc';
 
 const moment = require('moment');
 const conn = establishConnection(config.database.log);
@@ -84,7 +84,7 @@ export function logError(message, callback?: Cb) { // all server errors, express
     if (typeof message.stack === 'string') {
         message.stack = message.stack.substr(0, 1000);
     }
-    const description = (message.message || message.publicMessage || '').substr(0, 30);
+    const description = ((message.message || message.publicMessage) + '').substr(0, 30);
     if (config.logToConsoleForServerError) {
         console.log('---Server Error---');
         console.log(message);
