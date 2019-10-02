@@ -23,7 +23,6 @@ const conn = connHelper.establishConnection(config.database.appData);
 export const JobQueue = conn.model('JobQueue', schemas.jobQueue);
 export const Message = conn.model('Message', schemas.message);
 export const Org = conn.model('Org', schemas.orgSchema);
-const userDb = require('../user/userDb');
 export const User = require('../user/userDb').User;
 const ValidationRule = conn.model('ValidationRule', schemas.statusValidationRuleSchema);
 
@@ -60,7 +59,6 @@ const orgDetailProject = {
 };
 
 export const ObjectId = mongoose.Types.ObjectId;
-export const mongoose_connection = conn;
 
 const classificationAudit = conn.model('classificationAudit', schemas.classificationAudit);
 
