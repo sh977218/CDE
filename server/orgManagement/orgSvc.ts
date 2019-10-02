@@ -3,6 +3,8 @@ import { managedOrgs, orgByName } from 'server/orgManagement/orgDb';
 import { handle40x, handleError } from 'server/errorHandler/errorHandler';
 import { hasRole, isOrgAdmin } from 'shared/system/authorizationShared';
 import { getDaoList } from 'server/system/moduleDaoManager';
+import { DataElement } from '../server/cde/mongo-cde';
+import { Form } from '../server/form/mongo-form';
 
 const async = require('async');
 
@@ -138,31 +140,36 @@ export function addOrg(req, res) {
         addOrg(newOrg, res);
     }
 }
-
 export function transferSteward(req, res) {
-    const results = [];
-    let hasError = false;
+    const results: string[] = [];
+    const from = req.body.from;
+    const to = req.body.to;
     if (req.isAuthenticated() && isOrgAdmin(req.user, req.body.from) && isOrgAdmin(req.user, req.body.to)) {
-        async.each(getDaoList(), function (dao, oneDone) {
-            if (dao.transferSteward) {
-                dao.transferSteward(req.body.from, req.body.to, function (err, result) {
-                    if (err || Number.isNaN(result)) {
-                        hasError = true;
-                        results.push('Error transferring ' + dao.name + ' from ' + req.body.from + ' to ' + req.body.to + '. Please try again. ');
-                    } else if (result === 0) {
-                        results.push('There are no ' + dao.name + ' to transfer. ');
+        async.parallel([
+            doneOne => {
+                DataElement.updateMany({'stewardOrg.name': from}, {$set: {'stewardOrg.name': to}}, (err, result) => {
+                    if (err) {
+                        doneOne(err);
                     } else {
-                        results.push(result + ' ' + dao.name + ' transferred. ');
+                        results.push(result.nModified + ' CDEs transferred. ');
+                        doneOne();
                     }
-                    oneDone();
                 });
-            } else {
-                oneDone();
+            },
+            doneOne => {
+                Form.updateMany({'stewardOrg.name': from}, {$set: {'stewardOrg.name': to}}, (err, result) => {
+                    if (err) {
+                        doneOne(err);
+                    } else {
+                        results.push(result.nModified + ' forms transferred. ');
+                        doneOne();
+                    }
+                });
             }
-        }, function allDone() {
-            return res.status(hasError ? 400 : 200).send(results.join(''));
+        ], err => {
+            return res.status(err ? 400 : 200).send(results.join(''));
         });
     } else {
-        res.status(400).send('Please login first.');
+        res.status(400).send("Please login first.");
     }
 }

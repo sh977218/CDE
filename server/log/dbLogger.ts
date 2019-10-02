@@ -2,11 +2,11 @@ import { StoredQueryModel as storedQueryModel } from 'server/cde/mongo-storedQue
 import { handleConsoleError, handleError } from 'server/errorHandler/errorHandler';
 import { clientErrorSchema, consoleLogSchema, feedbackIssueSchema, logErrorSchema, logSchema } from 'server/log/schemas';
 import { establishConnection } from 'server/system/connections';
-import { pushGetAdministratorRegistrations } from 'server/system/mongo-data';
 import { noDbLogger } from 'server/system/noDbLogger';
 import { config } from 'server/system/parseConfig';
-import { triggerPushMsg } from 'server/system/pushNotification';
 import { Cb, CbError } from 'shared/models.model';
+import { pushGetAdministratorRegistrations } from 'server/notification/notificationDb';
+import { triggerPushMsg } from 'server/notification/pushNotificationSvc';
 
 const moment = require('moment');
 const conn = establishConnection(config.database.log);

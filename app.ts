@@ -1,5 +1,5 @@
 (global as any).APP_DIR = __dirname;
-(global as any).appDir = function addDir(... args: string[]) {
+(global as any).appDir = function addDir(...args: string[]) {
     return path.resolve((global as any).APP_DIR, ...args);
 };
 import * as bodyParser from 'body-parser';
@@ -35,6 +35,7 @@ import * as mongo_form from 'server/form/mongo-form';
 import { module as meshModule } from 'server/mesh/meshRoutes';
 import { module as siteAdminModule } from 'server/siteAdmin/siteAdminRoutes';
 import { module as orgManagementModule } from 'server/orgManagement/orgManagementRoutes';
+import { module as notificationModule } from 'server/notification/notificationRouters';
 import { module as nativeRenderModule } from 'server/nativeRender/nativeRenderRouters';
 import { module as embedModule } from 'server/embed/embedRouters';
 import { module as fhirModule } from 'server/fhir/fhirRouters';
@@ -201,6 +202,7 @@ app.use(function preventSessionCreation(req, res, next) {
         }
         return req.originalUrl.substr(req.originalUrl.length - 4, 4) === '.gif';
     }
+
     if ((req.cookies['connect.sid'] || req.originalUrl === '/login' || req.originalUrl === '/csrf') && !isFile(req)) {
         session(expressSettings)(req, res, next);
     } else {
@@ -314,7 +316,7 @@ app.use((req, res, next) => {
 app.set('views', path.join(__dirname, './modules'));
 
 const originalRender = express.response.render;
-express.response.render = function(view, module, msg) {
+express.response.render = function (view, module, msg) {
     if (!module) {
         module = 'cde';
     }
@@ -359,11 +361,13 @@ try {
     swaggerInit(app);
     app.use('/server/user', userModule({
         search: [isOrgAdminMiddleware],
-        manage: [isOrgAuthorityMiddleware],
-        notificationDate: [isSiteAdminMiddleware]
+        manage: [isOrgAuthorityMiddleware]
     }));
     app.use('/server/siteAdmin', isSiteAdminMiddleware, siteAdminModule());
     app.use('/server/orgManagement', loggedInMiddleware, orgManagementModule());
+    app.use('/server/notification', isSiteAdminMiddleware, notificationModule({
+        notificationDate: [isSiteAdminMiddleware]
+    }));
     app.use('/server/article', articleModule({
         update: [isOrgAuthorityMiddleware],
     }));

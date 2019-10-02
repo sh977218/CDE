@@ -3,15 +3,16 @@ import { capString } from 'shared/system/util';
 import { usersToNotify } from 'shared/user';
 import { handleError } from '../errorHandler/errorHandler';
 import { CbError } from 'shared/models.model';
+import {
+    pushRegistrationSubscribersByType, pushRegistrationSubscribersByUsers, triggerPushMsg
+} from 'server/notification/pushNotificationSvc';
+import { typeToCriteria } from 'server/notification/notificationSvc';
 
 const async = require('async');
 const _ = require('lodash');
 const discussDb = require('../discuss/discussDb');
-const notificationSvc = require('../notification/notificationSvc');
 const userDb = require('../user/userDb');
-const mongo_data = require('./mongo-data');
 const mongooseHelper = require('./mongooseHelper');
-const pushNotification = require('./pushNotification');
 
 export function attachmentApproved(collection, id, cb) {
     collection.updateMany(
@@ -30,6 +31,7 @@ export function attachmentRemove(collection, id, cb) {
 }
 
 const allowedRegStatuses = ['Retired', 'Incomplete', 'Candidate'];
+
 export function badWorkingGroupStatus(elt, org) {
     return org && org.workingGroupOf && org.workingGroupOf.length > 0 && allowedRegStatuses.indexOf(elt.registrationState.registrationStatus) === -1;
 }
@@ -76,9 +78,9 @@ export function createTask(user, role, type, eltModule, eltTinyId, item) {
         });
     }
     const pushTaskMsg = JSON.stringify(pushTask);
-    mongo_data.pushRegistrationSubscribersByType(type + role, handleError({}, registrations => {
-        registrations.forEach(r => pushNotification.triggerPushMsg(r, pushTaskMsg));
-    }));
+    pushRegistrationSubscribersByType(type + role, handleError({}, registrations => {
+        registrations.forEach(r => triggerPushMsg(r, pushTaskMsg));
+    }), undefined);
 }
 
 export function bulkAction(ids, action, cb) {
@@ -117,7 +119,7 @@ export function notifyForComment(handlerOptions, commentOrReply, eltModule, eltT
             .reduce((acc, c) => acc.concat(c.user._id, c.replies.map(r => r.user._id)), users)
             .filter(u => !!u && !u.equals(commentOrReply.user._id))
         ));
-        userDb.find(notificationSvc.typeToCriteria('comment', {
+        userDb.find(typeToCriteria('comment', {
             users: userList,
             org: eltStewardOrg
         }), handleError(handlerOptions, users => {
@@ -166,8 +168,8 @@ export function notifyForComment(handlerOptions, commentOrReply, eltModule, eltT
                     ]
                 }
             });
-            mongo_data.pushRegistrationSubscribersByUsers(usersToNotify('comment', 'push', users), handleError(handlerOptions, registrations => {
-                registrations.forEach(r => pushNotification.triggerPushMsg(r, pushTaskMsg));
+            pushRegistrationSubscribersByUsers(usersToNotify('comment', 'push', users), handleError(handlerOptions, registrations => {
+                registrations.forEach(r => triggerPushMsg(r, pushTaskMsg));
                 cb();
             }));
         }));

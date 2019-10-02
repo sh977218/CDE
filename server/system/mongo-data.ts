@@ -18,7 +18,6 @@ const MongoStore = require('connect-mongo')(session); // TODO: update to new ver
 const connHelper = require('./connections');
 const logger = require('./noDbLogger');
 const cdediff = require('../cde/cdediff');
-const notificationSvc = require('../notification/notificationSvc');
 const logging = require('./logging');
 const schemas = require('./schemas');
 const writableCollection = require('./writableCollection').writableCollection;
@@ -27,7 +26,6 @@ const conn = connHelper.establishConnection(config.database.appData);
 export const IdSource = conn.model('IdSource', schemas.idSourceSchema);
 export const JobQueue = conn.model('JobQueue', schemas.jobQueue);
 export const Message = conn.model('Message', schemas.message);
-const PushRegistration = conn.model('PushRegistration', schemas.pushRegistration);
 const userDb = require('../user/userDb');
 export const User = require('../user/userDb').User;
 const ValidationRule = conn.model('ValidationRule', schemas.statusValidationRuleSchema);
@@ -48,8 +46,8 @@ export const sessionStore = new MongoStore({
 
 const userProject = {password: 0};
 
-
 export const ObjectId = mongoose.Types.ObjectId;
+export const mongoose_connection = conn;
 
 const classificationAudit = conn.model('classificationAudit', schemas.classificationAudit);
 
@@ -144,81 +142,6 @@ export const auditGetLog = auditDb => (params, callback) => {
         .limit(params.limit)
         .exec(callback);
 };
-
-
-export function pushesByEndpoint(endpoint, callback) {
-    PushRegistration.find({'subscription.endpoint': endpoint}, callback);
-}
-
-export function pushById(id, callback) {
-    PushRegistration.findOne({_id: id}, callback);
-}
-
-export function pushByIds(endpoint, userId, callback) {
-    PushRegistration.findOne({'subscription.endpoint': endpoint, userId}, callback);
-}
-
-export function pushByIdsCount(endpoint, userId, callback) {
-    PushRegistration.countDocuments({'subscription.endpoint': endpoint, userId}, callback);
-}
-
-export function pushByPublicKey(publicKey, callback) {
-    PushRegistration.findOne({'vapidKeys.publicKey': publicKey}, callback);
-}
-
-export function pushClearDb(callback) {
-    PushRegistration.remove({}, callback);
-}
-
-export function pushCreate(push, callback) {
-    new PushRegistration(push).save(callback);
-}
-
-export function pushDelete(endpoint, userId, callback) {
-    pushByIds(endpoint, userId, (err, registration) => {
-        if (err) { return callback(err); }
-        PushRegistration.remove({_id: registration._id}, callback);
-    });
-}
-
-export function pushEndpointUpdate(endpoint, commandObj, callback) {
-    PushRegistration.updateMany({'subscription.endpoint': endpoint}, commandObj, callback);
-}
-
-export function pushGetAdministratorRegistrations(callback) {
-    userDb.siteAdmins(handleError({}, users => {
-        const userIds = users.map(u => u._id.toString());
-        PushRegistration.find({}).exec(handleError({}, registrations => {
-            callback(registrations.filter(reg => reg.loggedIn === true && userIds.indexOf(reg.userId) > -1));
-        }));
-    }));
-}
-
-// cb(err, registrations)
-export function pushRegistrationFindActive(criteria, cb) {
-    criteria.loggedIn = true;
-    PushRegistration.find(criteria, cb);
-}
-
-// cb(err, registrations)
-export function pushRegistrationSubscribersByType(type, cb, data = undefined) {
-    userDb.find(
-        notificationSvc.criteriaSet(
-            notificationSvc.typeToCriteria(type, data),
-            'notificationSettings.' + notificationSvc.typeToNotificationSetting(type) + '.push'
-        ),
-        (err, users) => {
-            if (err) { return cb(err); }
-            pushRegistrationSubscribersByUsers(users, cb);
-        }
-    );
-}
-
-// cb(err, registrations)
-export function pushRegistrationSubscribersByUsers(users, cb) {
-    const userIds = users.map(u => u._id.toString());
-    pushRegistrationFindActive({userId: {$in: userIds}}, cb);
-}
 
 export function usersByName(name, callback) {
     User.find({username: new RegExp('^' + name + '$', 'i')}, userProject, callback);
