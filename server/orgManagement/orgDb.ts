@@ -54,8 +54,8 @@ const orgDetailProject = {
     htmlOverview: 1
 };
 
-export function managedOrgs(callback) {
-    Org.find({}).sort({name: 1}).exec(callback);
+export async function managedOrgs() {
+    return Org.find({}).sort({name: 1});
 }
 
 export function orgByName(orgName, callback?) {
@@ -67,16 +67,16 @@ export function orgNames(callback) {
 }
 
 
-export function listOrgs(callback) {
-    Org.distinct('name', callback);
+export async function allOrgNames() {
+    return Org.distinct('name');
 }
 
 export function listOrgsLongName(callback) {
     Org.find({}, {_id: 0, name: 1, longName: 1}, callback);
 }
 
-export function listOrgsDetailedInfo(callback) {
-    Org.find({}, orgDetailProject, callback);
+export function listOrgsDetailedInfo() {
+    return Org.find({}, orgDetailProject);
 }
 
 export function findOrCreateOrg(newOrg, cb) {
@@ -98,24 +98,8 @@ export function findOrCreateOrg(newOrg, cb) {
     });
 }
 
-export function addOrg(newOrgArg, res) {
-    Org.findOne({name: newOrgArg.name}, (err, found) => {
-        if (err) {
-            res.send(500);
-            errorLogger.error('Cannot add org.',
-                {
-                    origin: 'system.mongo.addOrg',
-                    stack: new Error().stack,
-                    details: 'orgName: ' + newOrgArg + 'Error: ' + err
-                });
-        } else if (found) {
-            res.send('Org Already Exists');
-        } else {
-            new Org(newOrgArg).save(() => {
-                res.send('Org Added');
-            });
-        }
-    });
+export async function addOrgByName(newOrg) {
+    return new Org(newOrg).save();
 }
 
 export function removeOrgById(id, callback) {

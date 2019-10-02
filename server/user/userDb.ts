@@ -95,11 +95,11 @@ export const User = conn.model('User', userSchema);
 const userProject = {password: 0};
 
 
-
 export function addUser(user, callback) {
     user.username = user.username.toLowerCase();
     new User(user).save(callback);
 }
+
 export function updateUserAccessToken(userId, profile, callback) {
     User.findByIdAndUpdate(userId, {
         accessToken: profile.accessToken,
@@ -153,6 +153,7 @@ export function updateUser(user, fields, callback: CbError<number, number, numbe
     }
     User.updateOne({_id: user._id}, {$set: update}, callback);
 }
+
 export function usersByName(name, callback) {
     User.find({username: new RegExp('^' + name + '$', 'i')}, userProject, callback);
 }
@@ -189,8 +190,8 @@ export function orgAuthorities(callback) {
 
 // Org
 
-export function orgAdmins(callback) {
-    User.find({orgAdmin: {$not: {$size: 0}}}).sort({username: 1}).exec(callback);
+export function orgAdmins() {
+    return User.find({orgAdmin: {$not: {$size: 0}}}).sort({username: 1});
 }
 
 export function orgCurators(orgs, callback) {

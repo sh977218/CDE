@@ -27,7 +27,6 @@ import { is } from 'useragent';
 import { promisify } from 'util';
 import { isSearchEngine } from './helper';
 import { version } from '../version';
-import { listOrgs, listOrgsDetailedInfo } from '../orgManagement/orgDb';
 import { userById, usersByName } from 'server/user/userDb';
 
 export let respondHomeFull: Function;
@@ -169,25 +168,7 @@ export function init(app) {
 
     app.get('/supportedBrowsers', (req, res) => res.render('supportedBrowsers', 'system'));
 
-    app.get('/listOrgs', nocacheMiddleware, (req, res) => {
-        listOrgs(function(err, orgs) {
-            if (err) { return res.status(500).send('ERROR - unable to list orgs'); }
-            res.send(orgs);
-        });
-    });
-
-    app.get('/listOrgsDetailedInfo', nocacheMiddleware, (req, res) => {
-        listOrgsDetailedInfo(function(err, orgs) {
-            if (err) {
-                errorLogger.error(JSON.stringify({msg: 'Failed to get list of orgs detailed info.'}),
-                    {stack: new Error().stack});
-                return res.status(403).send('Failed to get list of orgs detailed info.');
-            }
-            res.send(orgs);
-        });
-    });
-
-    app.get('/loginText', csrf(), (req, res) => res.render('loginText', 'system', {csrftoken: req.csrfToken()}));
+       app.get('/loginText', csrf(), (req, res) => res.render('loginText', 'system', {csrftoken: req.csrfToken()}));
 
     const failedIps: any[] = [];
 

@@ -1,5 +1,5 @@
 import { orgAdmins as userOrgAdmins, orgCurators as userOrgCurators, userById, userByName } from 'server/user/userDb';
-import { managedOrgs, orgByName } from 'server/orgManagement/orgDb';
+import { addOrgByName, managedOrgs, orgByName } from 'server/orgManagement/orgDb';
 import { handle40x, handleError } from 'server/errorHandler/errorHandler';
 import { hasRole, isOrgAdmin } from 'shared/system/authorizationShared';
 import { DataElement } from 'server/cde/mongo-cde';
@@ -7,22 +7,19 @@ import { Form } from 'server/form/mongo-form';
 
 const async = require('async');
 
-export function myOrgsAdmins(req, res) {
-    userById(req.user._id, handle40x({req, res}, foundUser => {
-        userOrgAdmins(handle40x({req, res}, users => {
-            res.send(foundUser.orgAdmin
-                .map(org => ({
-                    name: org,
-                    users: users
-                        .filter(u => u.orgAdmin.indexOf(org) > -1)
-                        .map(u => ({
-                            _id: u._id,
-                            username: u.username,
-                        })),
-                }))
-                .filter(r => r.users.length > 0));
-        }));
-    }));
+export async function myOrgsAdmins(user) {
+    const users = await userOrgAdmins();
+    return user.orgAdmin
+        .map(org => ({
+            name: org,
+            users: users
+                .filter(u => u.orgAdmin.indexOf(org) > -1)
+                .map(u => ({
+                    _id: u._id,
+                    username: u.username,
+                })),
+        }))
+        .filter(r => r.users.length > 0);
 }
 
 export function orgCurators(req, res) {
@@ -42,21 +39,17 @@ export function orgCurators(req, res) {
     }));
 }
 
-export function orgAdmins(req, res) {
-    managedOrgs(handle40x({req, res}, managedOrgs => {
-        userOrgAdmins(handle40x({req, res}, users => {
-            res.send(managedOrgs
-                .map(mo => ({
-                    name: mo.name,
-                    users: users
-                        .filter(u => u.orgAdmin.indexOf(mo.name) > -1)
-                        .map(u => ({
-                            _id: u._id,
-                            username: u.username,
-                        })),
-                }))
-            );
-        }));
+export async function orgAdmins() {
+    const orgs = await managedOrgs();
+    const users = await userOrgAdmins();
+    return orgs.map(mo => ({
+        name: mo.name,
+        users: users
+            .filter(u => u.orgAdmin.indexOf(mo.name) > -1)
+            .map(u => ({
+                _id: u._id,
+                username: u.username,
+            }))
     }));
 }
 
@@ -128,17 +121,14 @@ export function removeOrgCurator(req, res) {
     }));
 }
 
-export function addOrg(req, res) {
-    const newOrg = req.body;
+export async function addNewOrg(newOrg) {
     if (newOrg.workingGroupOf) {
-        orgByName(newOrg.workingGroupOf, function (err, parentOrg) {
-            newOrg.classifications = parentOrg.classifications;
-            addOrg(newOrg, res);
-        });
-    } else {
-        addOrg(newOrg, res);
+        const parentOrg = await orgByName(newOrg.workingGroupOf);
+        newOrg.classifications = parentOrg.classifications;
     }
+    return addOrgByName(newOrg);
 }
+
 export function transferSteward(req, res) {
     const results: string[] = [];
     const from = req.body.from;
@@ -169,6 +159,6 @@ export function transferSteward(req, res) {
             return res.status(err ? 400 : 200).send(results.join(''));
         });
     } else {
-        res.status(400).send("Please login first.");
+        res.status(400).send('Please login first.');
     }
 }
