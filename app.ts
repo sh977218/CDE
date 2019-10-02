@@ -35,6 +35,7 @@ import * as mongo_form from 'server/form/mongo-form';
 import { module as meshModule } from 'server/mesh/meshRoutes';
 import { module as siteAdminModule } from 'server/siteAdmin/siteAdminRoutes';
 import { module as systemModule } from 'server/system/systemRouters';
+import { module as notificationModule } from 'server/notification/notificationRouters';
 import { module as nativeRenderModule } from 'server/nativeRender/nativeRenderRouters';
 import { module as embedModule } from 'server/embed/embedRouters';
 import { module as fhirModule } from 'server/fhir/fhirRouters';
@@ -361,10 +362,12 @@ try {
     swaggerInit(app);
     app.use('/server/user', userModule({
         search: [isOrgAdminMiddleware],
-        manage: [isOrgAuthorityMiddleware],
-        notificationDate: [isSiteAdminMiddleware]
+        manage: [isOrgAuthorityMiddleware]
     }));
     app.use('/server/siteAdmin', isSiteAdminMiddleware, siteAdminModule());
+    app.use('/server/notification', isSiteAdminMiddleware, notificationModule({
+        notificationDate: [isSiteAdminMiddleware]
+    }));
     app.use('/server/article', articleModule({
         update: [isOrgAuthorityMiddleware],
     }));

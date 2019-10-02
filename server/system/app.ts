@@ -2,29 +2,28 @@ import { series } from 'async';
 import { CronJob } from 'cron';
 import * as csrf from 'csurf';
 import { renderFile } from 'ejs';
-import { access, constants, createWriteStream, mkdir, writeFileSync, existsSync } from 'fs';
+import { access, constants, createWriteStream, existsSync, mkdir, writeFileSync } from 'fs';
 import { authenticate } from 'passport';
-import { DataElement, draftsList as deDraftsList } from 'server/cde/mongo-cde';
+import { DataElement } from 'server/cde/mongo-cde';
 import { handleError, respondError } from 'server/errorHandler/errorHandler';
-import { draftsList as formDraftsList, Form } from 'server/form/mongo-form';
+import { Form } from 'server/form/mongo-form';
 import { consoleLog } from 'server/log/dbLogger';
 import { syncWithMesh } from 'server/mesh/elastic';
 import {
-    canApproveCommentMiddleware, isOrgAdminMiddleware, isOrgAuthorityMiddleware, isOrgCuratorMiddleware,
-    isSiteAdminMiddleware, loggedInMiddleware, nocacheMiddleware
+    canApproveCommentMiddleware, isOrgAdminMiddleware, isOrgAuthorityMiddleware, isSiteAdminMiddleware,
+    loggedInMiddleware, nocacheMiddleware
 } from 'server/system/authorization';
 import { reIndex } from 'server/system/elastic';
 import { indices } from 'server/system/elasticSearchInit';
 import { errorLogger } from 'server/system/logging';
 import {
-    addUserRole, disableRule, enableRule, getClassificationAuditLog, getFile, IdSource, jobStatus, listOrgs,
-    listOrgsDetailedInfo, orgByName, updateOrg, userById, usersByName
+    addUserRole, getFile, jobStatus, listOrgs, listOrgsDetailedInfo, orgByName, updateOrg, userById, usersByName
 } from 'server/system/mongo-data';
 import { addOrg, managedOrgs, transferSteward } from 'server/system/orgsvc';
 import { config } from 'server/system/parseConfig';
-import { banIp, getTrafficFilter } from 'server/system/traffic';
+import { banIp } from 'server/system/traffic';
 import {
-    addOrgAdmin, addOrgCurator, myOrgs, myOrgsAdmins, orgAdmins, orgCurators, removeOrgAdmin, removeOrgCurator,
+    addOrgAdmin, addOrgCurator, myOrgsAdmins, orgAdmins, orgCurators, removeOrgAdmin, removeOrgCurator,
     updateUserAvatar, updateUserRoles
 } from 'server/system/usersrvc';
 import { is } from 'useragent';
@@ -35,9 +34,13 @@ import { version } from '../version';
 export let respondHomeFull: Function;
 
 export function init(app) {
-    const getRealIp = function(req) {
-        if (req._remoteAddress) { return req._remoteAddress; }
-        if (req.ip) { return req.ip; }
+    const getRealIp = function (req) {
+        if (req._remoteAddress) {
+            return req._remoteAddress;
+        }
+        if (req.ip) {
+            return req.ip;
+        }
     };
 
     let indexHtml = '';
@@ -73,7 +76,7 @@ export function init(app) {
         res.send(isModernBrowser(req) ? indexHtml : indexLegacyHtml);
     };
 
-    app.get(['/', '/home'], function(req, res) {
+    app.get(['/', '/home'], function (req, res) {
         if (isSearchEngine(req)) {
             res.render('bot/home', 'system');
         } else if (req.user || req.query.tour || req.query.notifications !== undefined
@@ -136,7 +139,9 @@ export function init(app) {
 
     app.get('/sw.js', (req, res) => {
         res.sendFile((global as any).appDir('dist/app', 'sw.js'), undefined, err => {
-            if (err) { res.sendStatus(404); }
+            if (err) {
+                res.sendStatus(404);
+            }
         });
     });
 
@@ -144,8 +149,12 @@ export function init(app) {
         let jobType = req.params.type;
         if (!jobType) return res.status(400).end();
         jobStatus(jobType, (err, j) => {
-            if (err) { return res.status(409).send('Error - job status ' + jobType); }
-            if (j) { return res.send({done: false}); }
+            if (err) {
+                return res.status(409).send('Error - job status ' + jobType);
+            }
+            if (j) {
+                return res.send({done: false});
+            }
             res.send({done: true});
         });
     });
@@ -172,14 +181,16 @@ export function init(app) {
     app.get('/supportedBrowsers', (req, res) => res.render('supportedBrowsers', 'system'));
 
     app.get('/listOrgs', nocacheMiddleware, (req, res) => {
-        listOrgs(function(err, orgs) {
-            if (err) { return res.status(500).send('ERROR - unable to list orgs'); }
+        listOrgs(function (err, orgs) {
+            if (err) {
+                return res.status(500).send('ERROR - unable to list orgs');
+            }
             res.send(orgs);
         });
     });
 
     app.get('/listOrgsDetailedInfo', nocacheMiddleware, (req, res) => {
-        listOrgsDetailedInfo(function(err, orgs) {
+        listOrgsDetailedInfo(function (err, orgs) {
             if (err) {
                 errorLogger.error(JSON.stringify({msg: 'Failed to get list of orgs detailed info.'}),
                     {stack: new Error().stack});
@@ -207,7 +218,9 @@ export function init(app) {
     }
 
     function myCsrf(req, res, next) {
-        if (!req.body._csrf) { return res.status(401).send(); }
+        if (!req.body._csrf) {
+            return res.status(401).send();
+        }
         csrf()(req, res, next);
     }
 
@@ -236,8 +249,12 @@ export function init(app) {
                     }
                 }],
             function allDone(err) {
-                if (failedIp) { failedIp.nb = 0; }
-                if (err) { return res.status(412).send(err); }
+                if (failedIp) {
+                    failedIp.nb = 0;
+                }
+                if (err) {
+                    return res.status(412).send(err);
+                }
                 // Regenerate is used so appscan won't complain
                 req.session.regenerate(() => {
                     authenticate('local', (err, user, info) => {
@@ -246,8 +263,9 @@ export function init(app) {
                             return res.status(403).send();
                         }
                         if (!user) {
-                            if (failedIp && config.useCaptcha) { failedIp.nb++; }
-                            else {
+                            if (failedIp && config.useCaptcha) {
+                                failedIp.nb++;
+                            } else {
                                 failedIps.unshift({ip: getRealIp(req), nb: 1});
                                 failedIps.length = 50;
                             }
@@ -267,7 +285,9 @@ export function init(app) {
     });
 
     app.post('/logout', (req, res) => {
-        if (!req.session) { return res.status(403).end(); }
+        if (!req.session) {
+            return res.status(403).end();
+        }
         req.session.destroy(() => {
             req.logout();
             res.clearCookie('connect.sid');
@@ -328,90 +348,4 @@ export function init(app) {
         }));
     });
 
-    app.post('/getClassificationAuditLog', isOrgAuthorityMiddleware, (req, res) => {
-        getClassificationAuditLog(req.body, handleError({req, res}, result => {
-            res.send(result);
-        }));
-    });
-
-    app.post('/disableRule', isOrgAuthorityMiddleware, (req, res) => {
-        disableRule(req.body, handleError({req, res}, org => {
-            res.send(org);
-        }));
-    });
-
-    app.post('/enableRule', isOrgAuthorityMiddleware, (req, res) => {
-        enableRule(req.body, handleError({req, res}, org => {
-            res.send(org);
-        }));
-    });
-
-    app.get('/activeBans', isSiteAdminMiddleware, (req, res) => {
-        getTrafficFilter(list => res.send(list));
-    });
-
-    app.post('/removeBan', isSiteAdminMiddleware, (req, res) => {
-        getTrafficFilter(elt => {
-            const foundIndex = elt.ipList.findIndex(r => r.ip === req.body.ip);
-            if (foundIndex > -1) {
-                elt.ipList.splice(foundIndex, 1);
-                elt.save(() => res.send());
-            } else {
-                res.send();
-            }
-        });
-    });
-
-    app.get('/allDrafts', isOrgAuthorityMiddleware, (req, res) => {
-        getDrafts(req, res, {});
-    });
-
-    app.get('/orgDrafts', isOrgCuratorMiddleware, (req, res) => {
-        getDrafts(req, res, {'stewardOrg.name': {$in: myOrgs(req.user)}});
-    });
-
-    app.get('/myDrafts', isOrgCuratorMiddleware, (req, res) => {
-        getDrafts(req, res, {'updatedBy.username': req.user.username});
-    });
-
-    function getDrafts(req, res, criteria) {
-        Promise.all([deDraftsList(criteria), formDraftsList(criteria)])
-            .then(results => res.send({draftCdes: results[0], draftForms: results[1]}))
-            .catch(err => respondError(err, {req, res}));
-    }
-
-    app.get('/idSources', (req, res) => IdSource.find({}, handleError({req, res}, sources => res.send(sources))));
-
-    app.get('/idSource/:id', (req, res) =>
-        IdSource.findOneById(req.params.id, handleError({req, res}, source => res.send(source))));
-
-    app.post('/idSource/:id', isSiteAdminMiddleware, (req, res) => {
-        IdSource.findById(req.params.id, handleError({req, res}, doc => {
-            if (doc) { return res.status(409).send(req.params.id + ' already exists.'); }
-            else {
-                const idSource = {
-                    _id: req.params.id,
-                    linkTemplateDe: req.body.linkTemplateDe,
-                    linkTemplateForm: req.body.linkTemplateForm,
-                    version: req.body.version,
-                };
-                new IdSource(idSource).save(handleError({req, res}, source => res.send(source)));
-            }
-        }));
-    });
-
-    app.put('/idSource/:id', isSiteAdminMiddleware, (req, res) => {
-        IdSource.findById(req.body._id, handleError({req, res}, doc => {
-            if (!doc) { return res.status(404).send(req.params.id + ' does not exist.'); }
-            else {
-                doc.linkTemplateDe = req.body.linkTemplateDe;
-                doc.linkTemplateForm = req.body.linkTemplateForm;
-                doc.version = req.body.version;
-                doc.save(handleError({req, res}, source => res.send(source)));
-            }
-        }));
-    });
-
-    app.delete('/idSource/:id', isSiteAdminMiddleware, (req, res) =>
-        IdSource.delete(res, req.params.id, handleError({req, res}, () => res.send())));
 }

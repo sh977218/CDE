@@ -14,7 +14,7 @@ const Grid = require('gridfs-stream');
 const MongoStore = require('connect-mongo')(session); // TODO: update to new version when available for mongodb 3 used by mongoose
 const connHelper = require('./connections');
 const logger = require('./noDbLogger');
-const cdediff = require("../cde/cdediff");
+const cdediff = require('../cde/cdediff');
 const notificationSvc = require('../notification/notificationSvc');
 const logging = require('./logging');
 const daoManager = require('./moduleDaoManager');
@@ -26,7 +26,6 @@ export const IdSource = conn.model('IdSource', schemas.idSourceSchema);
 export const JobQueue = conn.model('JobQueue', schemas.jobQueue);
 export const Message = conn.model('Message', schemas.message);
 export const Org = conn.model('Org', schemas.orgSchema);
-const PushRegistration = conn.model('PushRegistration', schemas.pushRegistration);
 const userDb = require('../user/userDb');
 export const User = require('../user/userDb').User;
 const ValidationRule = conn.model('ValidationRule', schemas.statusValidationRuleSchema);
@@ -34,7 +33,7 @@ const ValidationRule = conn.model('ValidationRule', schemas.statusValidationRule
 export let gfs;
 mongo.connect(config.database.appData.uri, (err, client) => {
     if (err) {
-        logger.noDbLogger.info("Error connection open to legacy mongodb: " + err);
+        logger.noDbLogger.info('Error connection open to legacy mongodb: ' + err);
     } else {
         gfs = Grid(client, mongo);
     }
@@ -66,23 +65,23 @@ const orgDetailProject = {
 export const ObjectId = mongoose.Types.ObjectId;
 export const mongoose_connection = conn;
 
-var classificationAudit = conn.model('classificationAudit', schemas.classificationAudit);
+const classificationAudit = conn.model('classificationAudit', schemas.classificationAudit);
 
 export function jobStatus(type, callback) {
-    JobQueue.findOne({type: type}, callback);
+    JobQueue.findOne({type}, callback);
 }
 
 export function updateJobStatus(type, status, callback) {
-    JobQueue.updateOne({type: type}, {status: status}, {upsert: true}, callback);
+    JobQueue.updateOne({type}, {status}, {upsert: true}, callback);
 }
 
 export function removeJobStatus(type, callback) {
-    JobQueue.remove({type: type}, callback);
+    JobQueue.remove({type}, callback);
 }
 
 export function addCdeToViewHistory(elt, user) {
-    if (!elt || !user) return;
-    let updStmt = {
+    if (!elt || !user) { return; }
+    const updStmt = {
         viewHistory: {
             $each: [elt.tinyId],
             $position: 0,
@@ -91,18 +90,18 @@ export function addCdeToViewHistory(elt, user) {
     };
     User.updateOne({_id: user._id}, {$push: updStmt}, err => {
         if (err) {
-            logging.errorLogger.error("Error: Cannot update viewing history", {
-                origin: "cde.mongo-cde.addCdeToViewHistory",
+            logging.errorLogger.error('Error: Cannot update viewing history', {
+                origin: 'cde.mongo-cde.addCdeToViewHistory',
                 stack: new Error().stack,
-                details: {cde: elt, user: user}
+                details: {cde: elt, user}
             });
         }
     });
 }
 
 export function addFormToViewHistory(elt, user) {
-    if (!elt || !user) return;
-    let updStmt = {
+    if (!elt || !user) { return; }
+    const updStmt = {
         formViewHistory: {
             $each: [elt.tinyId],
             $position: 0,
@@ -111,10 +110,10 @@ export function addFormToViewHistory(elt, user) {
     };
     User.updateOne({_id: user._id}, {$push: updStmt}, err => {
         if (err) {
-            logging.errorLogger.error("Error: Cannot update viewing history", {
-                origin: "cde.mongo-cde.addFormToViewHistory",
+            logging.errorLogger.error('Error: Cannot update viewing history', {
+                origin: 'cde.mongo-cde.addFormToViewHistory',
                 stack: new Error().stack,
-                details: {cde: elt, user: user}
+                details: {cde: elt, user}
             });
         }
     });
@@ -122,7 +121,7 @@ export function addFormToViewHistory(elt, user) {
 
 // WARNING: destroys oldItem and newItem by calling cdediff
 export const auditModifications = auditDb => (user, oldItem, newItem) => {
-    let message: any = {
+    const message: any = {
         adminItem: {
             _id: newItem._id,
             name: newItem.designations[0].designation,
@@ -150,7 +149,7 @@ export const auditModifications = auditDb => (user, oldItem, newItem) => {
 
 // cb(err, logs)
 export const auditGetLog = auditDb => (params, callback) => {
-    auditDb.find(params.includeBatch ? undefined : {"user.username": {$ne: 'batchloader'}})
+    auditDb.find(params.includeBatch ? undefined : {'user.username': {$ne: 'batchloader'}})
         .sort('-date')
         .skip(params.skip)
         .limit(params.limit)
@@ -161,86 +160,12 @@ export function orgNames(callback) {
     Org.find({}, {name: true, _id: false}, callback);
 }
 
-export function pushesByEndpoint(endpoint, callback) {
-    PushRegistration.find({'subscription.endpoint': endpoint}, callback);
-}
-
-export function pushById(id, callback) {
-    PushRegistration.findOne({_id: id}, callback);
-}
-
-export function pushByIds(endpoint, userId, callback) {
-    PushRegistration.findOne({'subscription.endpoint': endpoint, userId: userId}, callback);
-}
-
-export function pushByIdsCount(endpoint, userId, callback) {
-    PushRegistration.countDocuments({'subscription.endpoint': endpoint, userId: userId}, callback);
-}
-
-export function pushByPublicKey(publicKey, callback) {
-    PushRegistration.findOne({'vapidKeys.publicKey': publicKey}, callback);
-}
-
-export function pushClearDb(callback) {
-    PushRegistration.remove({}, callback);
-}
-
-export function pushCreate(push, callback) {
-    new PushRegistration(push).save(callback);
-}
-
-export function pushDelete(endpoint, userId, callback) {
-    pushByIds(endpoint, userId, (err, registration) => {
-        if (err) return callback(err);
-        PushRegistration.remove({_id: registration._id}, callback);
-    });
-}
-
-export function pushEndpointUpdate(endpoint, commandObj, callback) {
-    PushRegistration.updateMany({'subscription.endpoint': endpoint}, commandObj, callback);
-}
-
-export function pushGetAdministratorRegistrations(callback) {
-    userDb.siteAdmins(handleError({}, users => {
-        let userIds = users.map(u => u._id.toString());
-        PushRegistration.find({}).exec(handleError({}, registrations => {
-            callback(registrations.filter(reg => reg.loggedIn === true && userIds.indexOf(reg.userId) > -1));
-        }));
-    }));
-}
-
-// cb(err, registrations)
-export function pushRegistrationFindActive(criteria, cb) {
-    criteria.loggedIn = true;
-    PushRegistration.find(criteria, cb);
-}
-
-// cb(err, registrations)
-export function pushRegistrationSubscribersByType(type, cb, data = undefined) {
-    userDb.find(
-        notificationSvc.criteriaSet(
-            notificationSvc.typeToCriteria(type, data),
-            'notificationSettings.' + notificationSvc.typeToNotificationSetting(type) + '.push'
-        ),
-        (err, users) => {
-            if (err) return cb(err);
-            pushRegistrationSubscribersByUsers(users, cb);
-        }
-    );
-}
-
-// cb(err, registrations)
-export function pushRegistrationSubscribersByUsers(users, cb) {
-    let userIds = users.map(u => u._id.toString());
-    pushRegistrationFindActive({userId: {$in: userIds}}, cb);
-}
-
 export function userByName(name, callback) {
-    User.findOne({username: new RegExp('^' + name + '$', "i")}, callback);
+    User.findOne({username: new RegExp('^' + name + '$', 'i')}, callback);
 }
 
 export function usersByName(name, callback) {
-    User.find({username: new RegExp('^' + name + '$', "i")}, userProject, callback);
+    User.find({username: new RegExp('^' + name + '$', 'i')}, userProject, callback);
 }
 
 export function userById(id, callback) {
@@ -257,7 +182,7 @@ export function orgAdmins(callback) {
 }
 
 export function orgCurators(orgs, callback) {
-    User.find().where("orgCurator").in(orgs).exec(callback);
+    User.find().where('orgCurator').in(orgs).exec(callback);
 }
 
 export function orgByName(orgName, callback?) {
@@ -281,14 +206,14 @@ export function managedOrgs(callback) {
 }
 
 export function findOrCreateOrg(newOrg, cb) {
-    Org.findOne({name: newOrg.name}).exec(function (err, found) {
+    Org.findOne({name: newOrg.name}).exec(function(err, found) {
         if (err) {
             cb(err);
-            logging.errorLogger.error("Cannot add org.",
+            logging.errorLogger.error('Cannot add org.',
                 {
-                    origin: "system.mongo.addOrg",
+                    origin: 'system.mongo.addOrg',
                     stack: new Error().stack,
-                    details: "orgName: " + newOrg.name + "Error: " + err
+                    details: 'orgName: ' + newOrg.name + 'Error: ' + err
                 });
         } else if (found) {
             cb(null, found);
@@ -300,31 +225,31 @@ export function findOrCreateOrg(newOrg, cb) {
 }
 
 export function addOrg(newOrgArg, res) {
-    Org.findOne({"name": newOrgArg.name}, (err, found) => {
+    Org.findOne({name: newOrgArg.name}, (err, found) => {
         if (err) {
             res.send(500);
-            logging.errorLogger.error("Cannot add org.",
+            logging.errorLogger.error('Cannot add org.',
                 {
-                    origin: "system.mongo.addOrg",
+                    origin: 'system.mongo.addOrg',
                     stack: new Error().stack,
-                    details: "orgName: " + newOrgArg + "Error: " + err
+                    details: 'orgName: ' + newOrgArg + 'Error: ' + err
                 });
         } else if (found) {
-            res.send("Org Already Exists");
+            res.send('Org Already Exists');
         } else {
-            new Org(newOrgArg).save(function () {
-                res.send("Org Added");
+            new Org(newOrgArg).save(function() {
+                res.send('Org Added');
             });
         }
     });
 }
 
 export function removeOrgById(id, callback) {
-    Org.remove({"_id": id}, callback);
+    Org.remove({_id: id}, callback);
 }
 
 export function formatElt(elt) {
-    if (elt.toObject) elt = elt.toObject();
+    if (elt.toObject) { elt = elt.toObject(); }
     elt.stewardOrgCopy = elt.stewardOrg;
     elt.primaryNameCopy = _.escape(elt.designations[0].designation);
     elt.primaryDefinitionCopy = '';
@@ -341,12 +266,12 @@ export function userTotalSpace(name, callback) {
     async.forEach(attachables, (attachable, doneOne) => {
         attachable.aggregate(
             [
-                {$match: {"attachments.uploadedBy.username": name}},
-                {$unwind: "$attachments"},
+                {$match: {'attachments.uploadedBy.username': name}},
+                {$unwind: '$attachments'},
                 {
                     $group: {
-                        _id: {uname: "$attachments.uploadedBy.username"},
-                        totalSize: {$sum: "$attachments.filesize"}
+                        _id: {uname: '$attachments.uploadedBy.username'},
+                        totalSize: {$sum: '$attachments.filesize'}
                     }
                 },
                 {$sort: {totalSize: -1}}
@@ -384,31 +309,31 @@ export function deleteFileById(id, callback) {
 }
 
 export function getFile(user, id, res) {
-    gfs.exist({_id: id}, function (err, found) {
+    gfs.exist({_id: id}, function(err, found) {
         if (err || !found) {
-            res.status(404).send("File not found.");
+            res.status(404).send('File not found.');
         } else {
-            gfs.findOne({_id: id}, function (err, file) {
+            gfs.findOne({_id: id}, function(err, file) {
                 if (!file.metadata
                     || !file.metadata.status
-                    || file.metadata.status === "approved"
-                    || hasRole(user, "AttachmentReviewer")) {
+                    || file.metadata.status === 'approved'
+                    || hasRole(user, 'AttachmentReviewer')) {
                     res.contentType(file.contentType);
                     res.header('Accept-Ranges', 'bytes');
-                    res.header("Content-Length", file.length);
+                    res.header('Content-Length', file.length);
                     gfs.createReadStream({_id: id}).pipe(res);
-                } else res.status(403).send("This file has not been approved yet.");
+                } else { res.status(403).send('This file has not been approved yet.'); }
             });
         }
     });
 }
 
 export function updateOrg(org, res) {
-    let id = org._id;
+    const id = org._id;
     delete org._id;
     Org.findOneAndUpdate({_id: id}, org, {new: true}, (err, found) => {
-        if (err || !found) res.status(500).send('Could not update');
-        else res.send();
+        if (err || !found) { res.status(500).send('Could not update'); }
+        else { res.send(); }
     });
 }
 
@@ -417,20 +342,20 @@ export function getAllUsernames(callback) {
 }
 
 export function generateTinyId() {
-    return shortId.generate().replace(/-/g, "_");
+    return shortId.generate().replace(/-/g, '_');
 }
 
 export function createMessage(msg, cb) {
     msg.states = [{
-        action: "Filed",
+        action: 'Filed',
         date: new Date(),
-        comment: "cmnt"
+        comment: 'cmnt'
     }];
     new Message(msg).save(cb);
 }
 
 export function updateMessage(msg, callback) {
-    let id = msg._id;
+    const id = msg._id;
     delete msg._id;
     Message.updateOne({_id: id}, msg, callback);
 }
@@ -442,57 +367,57 @@ export function getMessages(req, callback) {
             {
                 $or: [
                     {
-                        "recipient.recipientType": "stewardOrg",
-                        "recipient.name": {$in: [].concat(req.user.orgAdmin.concat(req.user.orgCurator))}
+                        'recipient.recipientType': 'stewardOrg',
+                        'recipient.name': {$in: [].concat(req.user.orgAdmin.concat(req.user.orgCurator))}
                     },
                     {
-                        "recipient.recipientType": "user",
-                        "recipient.name": req.user.username
+                        'recipient.recipientType': 'user',
+                        'recipient.name': req.user.username
                     }
                 ]
             },
             {
-                "states.0.action": null
+                'states.0.action': null
             }
         ]
     };
 
     if (req.user.roles === null || req.user.roles === undefined) {
-        consoleLog("user: " + req.user.username + " has null roles.");
+        consoleLog('user: ' + req.user.username + ' has null roles.');
         req.user.roles = [];
     }
-    req.user.roles.forEach(function (r) {
-        let roleFilter = {
-            "recipient.recipientType": "role"
-            , "recipient.name": r
+    req.user.roles.forEach(function(r) {
+        const roleFilter = {
+            'recipient.recipientType': 'role'
+            , 'recipient.name': r
         };
-        authorRecipient["$and"][0]["$or"].push(roleFilter);
+        authorRecipient.$and[0].$or.push(roleFilter);
     });
 
     switch (req.params.type) {
-        case "received":
-            authorRecipient["$and"][1]["states.0.action"] = "Filed";
+        case 'received':
+            authorRecipient.$and[1]['states.0.action'] = 'Filed';
             break;
-        case "sent":
+        case 'sent':
             authorRecipient = {
                 $or: [
                     {
-                        "author.authorType": "stewardOrg",
-                        "author.name": {$in: [].concat(req.user.orgAdmin.concat(req.user.orgCurator))}
+                        'author.authorType': 'stewardOrg',
+                        'author.name': {$in: [].concat(req.user.orgAdmin.concat(req.user.orgCurator))}
                     },
                     {
-                        "author.authorType": "user",
-                        "author.name": req.user.username
+                        'author.authorType': 'user',
+                        'author.name': req.user.username
                     }
                 ]
             };
             break;
-        case "archived":
-            authorRecipient["$and"][1]["states.0.action"] = "Approved";
+        case 'archived':
+            authorRecipient.$and[1]['states.0.action'] = 'Approved';
             break;
     }
     if (!authorRecipient) {
-        callback("Type not specified!");
+        callback('Type not specified!');
         return;
     }
 
@@ -516,12 +441,12 @@ export function addUserRole(username, role, cb) {
 }
 
 export function mailStatus(user, callback) {
-    getMessages({user: user, params: {type: "received"}}, callback);
+    getMessages({user, params: {type: 'received'}}, callback);
 }
 
 // cb(err, item)
 export function fetchItem(module, tinyId, cb) {
-    let db = daoManager.getDao(module);
+    const db = daoManager.getDao(module);
     if (!db) {
         cb('Module has no database.');
         return;
@@ -530,14 +455,14 @@ export function fetchItem(module, tinyId, cb) {
 }
 
 export function addToClassifAudit(msg) {
-    let persistClassifRecord = function (err, elt) {
-        if (!elt) return;
+    const persistClassifRecord = function(err, elt) {
+        if (!elt) { return; }
         msg.elements[0].eltType = eltShared.getModule(elt);
         msg.elements[0].name = eltShared.getName(elt);
         msg.elements[0].status = elt.registrationState.registrationStatus;
         new classificationAudit(msg).save();
     };
-    daoManager.getDaoList().forEach(function (dao) {
+    daoManager.getDaoList().forEach(function(dao) {
         if (msg.elements[0]) {
             if (msg.elements[0]._id && dao.byId) {
                 dao.byId(msg.elements[0]._id, persistClassifRecord);
@@ -554,20 +479,20 @@ export function getClassificationAuditLog(params, callback) {
         .sort('-date')
         .skip(params.skip)
         .limit(params.limit)
-        .exec(function (err, logs) {
+        .exec(function(err, logs) {
             callback(err, logs);
         });
 }
 
 export function getAllRules(cb) {
-    ValidationRule.find().exec(function (err, rules) {
+    ValidationRule.find().exec(function(err, rules) {
         cb(err, rules);
     });
 }
 
 export function disableRule(params, cb) {
-    orgByName(params.orgName, function (err, org) {
-        org.cdeStatusValidationRules.forEach(function (rule, i) {
+    orgByName(params.orgName, function(err, org) {
+        org.cdeStatusValidationRules.forEach(function(rule, i) {
             if (rule.id === params.rule.id) {
                 org.cdeStatusValidationRules.splice(i, 1);
             }
@@ -577,7 +502,7 @@ export function disableRule(params, cb) {
 }
 
 export function enableRule(params, cb) {
-    orgByName(params.orgName, function (err, org) {
+    orgByName(params.orgName, function(err, org) {
         delete params.rule._id;
         org.cdeStatusValidationRules.push(params.rule);
         org.save(cb);
@@ -586,10 +511,10 @@ export function enableRule(params, cb) {
 
 export function sortArrayByArray(unSortArray, targetArray) {
     unSortArray.sort((a, b) => {
-        let aId = a._id;
-        let bId = b._id;
-        let aIndex = _.findIndex(targetArray, aId);
-        let bIndex = _.findIndex(targetArray, bId);
+        const aId = a._id;
+        const bId = b._id;
+        const aIndex = _.findIndex(targetArray, aId);
+        const bIndex = _.findIndex(targetArray, bId);
         return aIndex - bIndex;
     });
 }

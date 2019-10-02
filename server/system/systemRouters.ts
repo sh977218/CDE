@@ -4,7 +4,6 @@ import { isOrgAuthorityMiddleware, isOrgCuratorMiddleware, isSiteAdminMiddleware
 import { draftsList as deDraftsList } from 'server/cde/mongo-cde';
 import { draftsList as formDraftsList } from 'server/form/mongo-form';
 import { getTrafficFilter } from 'server/system/traffic';
-import { addOrg, managedOrgs, transferSteward } from 'server/system/orgsvc';
 import { myOrgs } from 'server/system/usersrvc';
 
 require('express-async-errors');
@@ -12,16 +11,9 @@ require('express-async-errors');
 export function module() {
     const router = require('express').Router();
 
-    router.get('/managedOrgs', managedOrgs);
-    router.post('/addOrg', isOrgAuthorityMiddleware, addOrg);
-    router.post('/updateOrg', isOrgAuthorityMiddleware, (req, res) => updateOrg(req.body, res));
-
     router.post('/getClassificationAuditLog', isOrgAuthorityMiddleware, (req, res) => {
         getClassificationAuditLog(req.body, handleError({req, res}, result => res.send(result)));
     });
-
-    router.post('/transferSteward', transferSteward);
-
 
     router.post('/disableRule', isOrgAuthorityMiddleware, (req, res) => {
         disableRule(req.body, handleError({req, res}, org => {
