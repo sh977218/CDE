@@ -2,9 +2,8 @@ import { orgAdmins as userOrgAdmins, orgCurators as userOrgCurators, userById, u
 import { managedOrgs, orgByName } from 'server/orgManagement/orgDb';
 import { handle40x, handleError } from 'server/errorHandler/errorHandler';
 import { hasRole, isOrgAdmin } from 'shared/system/authorizationShared';
-import { getDaoList } from 'server/system/moduleDaoManager';
-import { DataElement } from '../server/cde/mongo-cde';
-import { Form } from '../server/form/mongo-form';
+import { DataElement } from 'server/cde/mongo-cde';
+import { Form } from 'server/form/mongo-form';
 
 const async = require('async');
 
