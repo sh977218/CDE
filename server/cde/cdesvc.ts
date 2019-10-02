@@ -2,6 +2,7 @@ import { handle40x, handleError, respondError } from '../errorHandler/errorHandl
 import { User } from 'shared/models.model';
 import { canEditCuratedItem } from 'shared/system/authorizationShared';
 import { stripBsonIds } from 'shared/system/exportShared';
+import { orgByName } from 'server/orgManagement/orgDb';
 
 const _ = require('lodash');
 const js2xml = require('js2xmlparser');
@@ -149,7 +150,7 @@ function publish(req, res, draft, options = {}) {
         return res.status(400).send();
     }
     const eltToArchive = req.item;
-    mongo_data.orgByName(eltToArchive.stewardOrg.name, handleError(handlerOptions, org => {
+    orgByName(eltToArchive.stewardOrg.name, handleError(handlerOptions, org => {
         if (adminItemSvc.badWorkingGroupStatus(eltToArchive, org)) {
             return res.status(403).send();
         }

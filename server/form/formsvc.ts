@@ -3,6 +3,7 @@ import { formToQuestionnaire } from 'shared/mapping/fhir/to/toQuestionnaire';
 import { canEditCuratedItem } from 'shared/system/authorizationShared';
 import { forwardError, handle40x, handleError, respondError } from 'server/errorHandler/errorHandler';
 import { config } from 'server/system/parseConfig';
+import { orgByName } from 'server/orgManagement/orgDb';
 
 const Ajv = require('ajv');
 const fs = require('fs');
@@ -310,7 +311,7 @@ function publish(req, res, draft, options = {}) {
         return res.status(400).send();
     }
     const eltToArchive = req.item;
-    mongoData.orgByName(eltToArchive.stewardOrg.name, handleError(handlerOptions, org => {
+    orgByName(eltToArchive.stewardOrg.name, handleError(handlerOptions, org => {
         if (adminItemSvc.badWorkingGroupStatus(eltToArchive, org)) {
             return res.status(403).send();
         }

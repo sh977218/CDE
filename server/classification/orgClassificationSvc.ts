@@ -5,6 +5,7 @@ import {
 import { DataElement } from 'server/cde/mongo-cde';
 import { Form } from 'server/form/mongo-form';
 import { handleError } from '../errorHandler/errorHandler';
+import { orgByName } from 'server/orgManagement/orgDb';
 
 const async = require('async');
 const mongo_cde = require('../cde/mongo-cde');
@@ -18,7 +19,7 @@ export function deleteOrgClassification(user, deleteClassification, settings, ca
     }
     mongo_data.updateJobStatus('deleteClassification', 'Running', err => {
         if (err) { return callback(err); }
-        mongo_data.orgByName(deleteClassification.orgName, (err, stewardOrg) => {
+        orgByName(deleteClassification.orgName, (err, stewardOrg) => {
             if (err) { return callback(err, stewardOrg); }
             const fakeTree = {elements: stewardOrg.classifications, stewardOrg: {name: ''}};
             deleteCategory(fakeTree, deleteClassification.categories);
@@ -89,7 +90,7 @@ export function renameOrgClassification(user, newClassification, settings, callb
     }
     mongo_data.updateJobStatus('renameClassification', 'Running', err => {
         if (err) { return callback(err); }
-        mongo_data.orgByName(newClassification.orgName, (err, stewardOrg) => {
+        orgByName(newClassification.orgName, (err, stewardOrg) => {
             if (err) { return callback(err, stewardOrg); }
             const fakeTree = {elements: stewardOrg.classifications, stewardOrg: {name: ''}};
             renameCategory(fakeTree, newClassification.categories, newClassification.newName);
@@ -160,7 +161,7 @@ export function addOrgClassification(newClassification, callback) {
     if (!(newClassification.categories instanceof Array)) {
         newClassification.categories = [newClassification.categories];
     }
-    mongo_data.orgByName(newClassification.orgName, (err, stewardOrg) => {
+    orgByName(newClassification.orgName, (err, stewardOrg) => {
         if (err) { return callback(err, stewardOrg); }
         addCategoriesToOrg(stewardOrg, newClassification.categories);
         stewardOrg.markModified('classifications');
@@ -173,7 +174,7 @@ export function reclassifyOrgClassification(user, oldClassification, newClassifi
     if (!(newClassification.categories instanceof Array)) { newClassification.categories = [newClassification.categories]; }
     mongo_data.updateJobStatus('reclassifyClassification', 'Running', err => {
         if (err) { return callback(err); }
-        mongo_data.orgByName(newClassification.orgName, (err, stewardOrg) => {
+        orgByName(newClassification.orgName, (err, stewardOrg) => {
             if (err) { return callback(err, stewardOrg); }
             addCategoriesToTree(stewardOrg, newClassification.categories);
             stewardOrg.markModified('classifications');
