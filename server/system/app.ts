@@ -2,8 +2,7 @@ import { series } from 'async';
 import { CronJob } from 'cron';
 import * as csrf from 'csurf';
 import { renderFile } from 'ejs';
-import { access, constants, createWriteStream, mkdir, writeFile, writeFileSync, existsSync } from 'fs';
-import { join } from 'path';
+import { access, constants, createWriteStream, mkdir, writeFileSync, existsSync } from 'fs';
 import { authenticate } from 'passport';
 import { DataElement, draftsList as deDraftsList } from 'server/cde/mongo-cde';
 import { handleError, respondError } from 'server/errorHandler/errorHandler';
@@ -23,7 +22,6 @@ import {
 } from 'server/system/mongo-data';
 import { addOrg, managedOrgs, transferSteward } from 'server/system/orgsvc';
 import { config } from 'server/system/parseConfig';
-import { checkDatabase, create, remove, subscribe, updateStatus } from 'server/system/pushNotification';
 import { banIp, getTrafficFilter } from 'server/system/traffic';
 import {
     addOrgAdmin, addOrgCurator, myOrgs, myOrgsAdmins, orgAdmins, orgCurators, removeOrgAdmin, removeOrgCurator,
@@ -142,15 +140,9 @@ export function init(app) {
         });
     });
 
-    checkDatabase();
-    app.post('/pushRegistration', loggedInMiddleware, create);
-    app.delete('/pushRegistration', loggedInMiddleware, remove);
-    app.post('/pushRegistrationSubscribe', loggedInMiddleware, subscribe);
-    app.post('/pushRegistrationUpdate', updateStatus);
-
-    app.get('/jobStatus/:type', (req, res) => {
-        const jobType = req.params.type;
-        if (!jobType) { return res.status(400).end(); }
+    app.get('/jobStatus/:type', function (req, res) {
+        let jobType = req.params.type;
+        if (!jobType) return res.status(400).end();
         jobStatus(jobType, (err, j) => {
             if (err) { return res.status(409).send('Error - job status ' + jobType); }
             if (j) { return res.send({done: false}); }

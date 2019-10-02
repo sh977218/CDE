@@ -5,11 +5,11 @@ import { capString } from 'shared/system/util';
 import { loggedInMiddleware, nocacheMiddleware } from '../system/authorization';
 import { handle40x, handleError } from '../errorHandler/errorHandler';
 import { version } from '../version';
+import { getNumberClientError, getNumberServerError } from 'server/notification/pushNotificationSvc';
 
 const config = require('config');
 const attachment = require('server/attachment/attachmentSvc');
 const discussDb = require('server/discuss/discussDb');
-const notificationDb = require('server/notification/notificationDb');
 const userDb = require('server/user/userDb');
 
 export function module(roleConfig) {
@@ -76,7 +76,7 @@ export function module(roleConfig) {
         const tasks = user ? user.commentNotifications.map(createTaskFromCommentNotification) : [];
 
         if (isSiteAdmin(user)) {
-            const clientErrorCount = await notificationDb.getNumberClientError(user);
+            const clientErrorCount = await getNumberClientError(user);
             if (clientErrorCount > 0) {
                 tasks.push({
                     id: clientErrorCount,
@@ -88,7 +88,7 @@ export function module(roleConfig) {
                 });
             }
 
-            const serverErrorCount = await notificationDb.getNumberServerError(user);
+            const serverErrorCount = await getNumberServerError(user);
             if (serverErrorCount > 0) {
                 tasks.push({
                     id: serverErrorCount,
@@ -242,20 +242,5 @@ export function module(roleConfig) {
         res.send(username + ' added.');
     });
 
-    router.post('/updateNotificationDate', roleConfig.notificationDate, (req, res) => {
-        const notificationDate = req.body;
-        let changed = false;
-        if (notificationDate.clientLogDate) {
-            req.user.notificationDate.clientLogDate = notificationDate.clientLogDate;
-            changed = true;
-        }
-        if (notificationDate.serverLogDate) {
-            req.user.notificationDate.serverLogDate = notificationDate.serverLogDate;
-            changed = true;
-        }
-        if (changed) {
-            req.user.save(handleError({req, res}, () => res.send()));
-        }
-    });
     return router;
 }

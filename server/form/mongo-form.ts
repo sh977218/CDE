@@ -13,7 +13,6 @@ const connHelper = require('../system/connections');
 // TODO: remove logging, error is passed out of this layer, handleError should fail-back and tee to no-db logger
 const logging = require('../system/logging');
 export const elastic = require('../form/elastic');
-const isOrgCurator = require('../../shared/system/authorizationShared').isOrgCurator;
 
 export const type = 'form';
 export const name = 'forms';
@@ -39,10 +38,12 @@ try {
 }
 
 
-schemas.formSchema.pre('save', function(next) {
+schemas.formSchema.pre('save', function (next) {
     const elt = this;
 
-    if (this.archived) { return next(); }
+    if (elt.archived) {
+        return next();
+    }
     validateSchema(elt).then(() => {
         try {
             elastic.updateOrInsert(elt);
@@ -65,7 +66,6 @@ export const FormSource = conn.model('formsources', schemas.formSourceSchema);
 const auditModifications = mongoData.auditModifications(FormAudit);
 export const getAuditLog = mongoData.auditGetLog(FormAudit);
 export const dao = Form;
-export const daoDraft = FormDraft;
 
 mongoData.attachables.push(Form);
 
@@ -109,9 +109,9 @@ export function byTinyId(tinyId, cb) {
 
 export function byTinyIdVersion(tinyId, version, cb) {
     if (version) {
-        this.byTinyIdAndVersion(tinyId, version, cb);
+        byTinyIdAndVersion(tinyId, version, cb);
     } else {
-        this.byTinyId(tinyId, cb);
+        byTinyId(tinyId, cb);
     }
 }
 
@@ -125,7 +125,9 @@ export function byTinyIdAndVersion(tinyId, version, callback) {
     Form.find(query).sort({updated: -1}).limit(1).exec(forwardError(callback, elts => {
         if (elts.length) {
             callback('', elts[0]);
-        } else { callback(''); }
+        } else {
+            callback('');
+        }
     }));
 }
 
@@ -198,14 +200,17 @@ export function count(condition, callback) {
     return Form.countDocuments(condition, callback);
 }
 
-export function update(elt, user, options: any = {}, callback: CbError<CdeForm> = () => {}) {
+export function update(elt, user, options: any = {}, callback: CbError<CdeForm> = () => {
+}) {
     Form.findById(elt._id, (err, form) => {
         if (form.archived) {
             callback(new Error('You are trying to edit an archived elements'));
             return;
         }
         delete elt._id;
-        if (!elt.history) { elt.history = []; }
+        if (!elt.history) {
+            elt.history = [];
+        }
         elt.history.push(form._id);
         updateUser(elt, user);
         // user cannot edit sources.
@@ -246,7 +251,9 @@ export function create(elt, user, callback) {
     newItem.tinyId = mongoData.generateTinyId();
     newItem.save((err, newElt) => {
         callback(err, newElt);
-        if (!err) { auditModifications(user, null, newElt); }
+        if (!err) {
+            auditModifications(user, null, newElt);
+        }
     });
 }
 
@@ -254,17 +261,13 @@ export function query(query, callback) {
     Form.find(query).exec(callback);
 }
 
-export function transferSteward(from, to, callback) {
-    Form.updateMany({'stewardOrg.name': from}, {$set: {'stewardOrg.name': to}}).exec((err, result) => {
-        callback(err, result.nModified);
-    });
-}
-
 export function byTinyIdListInOrder(idList, callback) {
     byTinyIdList(idList, (err, forms) => {
         const reorderedForms = idList.map(id => {
             for (const form of forms) {
-                if (id === form.tinyId) { return form; }
+                if (id === form.tinyId) {
+                    return form;
+                }
             }
         });
         callback(err, reorderedForms);
