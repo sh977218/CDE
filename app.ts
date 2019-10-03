@@ -364,7 +364,7 @@ try {
         manage: [isOrgAuthorityMiddleware]
     }));
     app.use('/server/siteAdmin', isSiteAdminMiddleware, siteAdminModule());
-    app.use('/server/orgManagement', loggedInMiddleware, orgManagementModule());
+    app.use('/server/orgManagement', orgManagementModule());
     app.use('/server/notification', isSiteAdminMiddleware, notificationModule({
         notificationDate: [isSiteAdminMiddleware]
     }));
