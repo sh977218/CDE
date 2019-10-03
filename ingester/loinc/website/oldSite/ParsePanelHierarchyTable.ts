@@ -1,29 +1,31 @@
 import { By } from 'selenium-webdriver';
-import { runOneLoinc } from 'ingester/loinc/Website/loincLoader';
+import { runOneLoinc } from 'ingester/loinc/website/oldSite/loincLoader';
 
 export async function parsePanelHierarchyTable(driver, loincId, element) {
-    let trs = await element.findElements(By.xpath('tbody/tr'));
+    const trs = await element.findElements(By.xpath('tbody/tr'));
     trs.shift();
     trs.pop();
 
     let counter = 0;
     // Parse this form
-    let currentLevels = [];
+    const currentLevels: any[] = [];
     let currentDepth = 0;
-    for (let tr of trs) {
-        let tds = await tr.findElements(By.xpath('td'));
+    for (const tr of trs) {
+        const tds = await tr.findElements(By.xpath('td'));
         tds.shift();
-        let row = await _parseOneRow(driver, tds);
+        const row = await _parseOneRow(driver, tds);
 
         row.overrideDisplayNameText = await parseOverrideDisplayName(driver, counter);
         row.elements = [];
-        let span = await tds[0].findElement(By.xpath('span'));
-        let spanText = await span.getText();
-        let a = await span.findElement(By.xpath('a'));
-        let aText = await a.getText();
-        let spaces = spanText.replace(aText, '');
-        let depth = spaces.length / 5;
-        if (depth > 0) row.loinc = await runOneLoinc(row.loincId);
+        const span = await tds[0].findElement(By.xpath('span'));
+        const spanText = await span.getText();
+        const a = await span.findElement(By.xpath('a'));
+        const aText = await a.getText();
+        const spaces = spanText.replace(aText, '');
+        const depth = spaces.length / 5;
+        if (depth > 0) {
+            row.loinc = await runOneLoinc(row.loincId);
+        }
         if (depth === 0) {
             currentLevels[0] = row;
             currentDepth = 0;
@@ -46,18 +48,18 @@ export async function parsePanelHierarchyTable(driver, loincId, element) {
 }
 
 async function parseOverrideDisplayName(driver, index) {
-    let xpath = '(//*[@class="Section1000000F00"])[' + (index + 1) + ']/table';
-    let tables = await driver.findElements(By.xpath(xpath)).catch(e => {
+    const xpath = '(//*[@class="Section1000000F00"])[' + (index + 1) + ']/table';
+    const tables = await driver.findElements(By.xpath(xpath)).catch(e => {
         throw(e);
     });
     if (tables && tables[0]) {
-        let trs = await tables[0].findElements(By.xpath('tbody/tr')).catch(e => {
+        const trs = await tables[0].findElements(By.xpath('tbody/tr')).catch(e => {
             throw(e);
         });
-        let tds = await trs[2].findElements(By.xpath('td')).catch(e => {
+        const tds = await trs[2].findElements(By.xpath('td')).catch(e => {
             throw(e);
         });
-        let overrideDisplayNameText = await tds[2].getText().catch(e => {
+        const overrideDisplayNameText = await tds[2].getText().catch(e => {
             throw e;
         });
         return overrideDisplayNameText.trim();
@@ -65,24 +67,24 @@ async function parseOverrideDisplayName(driver, index) {
 }
 
 async function _parseOneRow(driver, tds) {
-    let result: any = {};
-    let loincIdText = await tds[0].getText().catch(e => {
+    const result: any = {};
+    const loincIdText = await tds[0].getText().catch(e => {
         throw e;
     });
     result.loincId = loincIdText.trim();
-    let LoincNameText = await tds[1].getText().catch(e => {
+    const loincNameText = await tds[1].getText().catch(e => {
         throw e;
     });
-    result.loincName = LoincNameText.trim();
-    let rocText = await tds[2].getText().catch(e => {
+    result.loincName = loincNameText.trim();
+    const rocText = await tds[2].getText().catch(e => {
         throw e;
     });
     result.roc = rocText.trim();
-    let cardinalityText = await tds[3].getText().catch(e => {
+    const cardinalityText = await tds[3].getText().catch(e => {
         throw e;
     });
     result.cardinality = cardinalityText.trim();
-    let exUcumUnitsText = await tds[4].getText().catch(e => {
+    const exUcumUnitsText = await tds[4].getText().catch(e => {
         throw e;
     });
     result.exUcumUnitsText = exUcumUnitsText.trim();

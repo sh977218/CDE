@@ -1,11 +1,11 @@
 import * as csv from 'csv-parse';
 import { createReadStream, existsSync } from 'fs';
 import { find, isEmpty } from 'lodash';
-import { DataElement, DataElementSource } from 'server/cde/mongo-cde';
+import { DataElement } from 'server/cde/mongo-cde';
 import { createRedCde } from 'ingester/phenx/redCap/cde';
 import { convert } from 'ingester/phenx/redCap/RedCapCdeToQuestion';
 import {
-    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeElt, printUpdateResult, updateCde
+    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeClassification, mergeElt, updateCde, updateRowArtifact
 } from 'ingester/shared/utility';
 import { leadingZerosProtocolId } from 'ingester/phenx/Form/ParseAttachments';
 import { Comment } from 'server/discuss/discussDb';
@@ -14,7 +14,7 @@ import { RedcapLogger } from 'ingester/log/RedcapLogger';
 
 function doInstrument(instrumentFilePath): Promise<any[]> {
     return new Promise((resolve, reject) => {
-        const results = [];
+        const results: any[] = [];
         const options = {
             trim: true,
             skip_empty_lines: true,
@@ -54,25 +54,27 @@ async function doOneRedCap(redCap, redCaps, protocol, newForm) {
     const redCapCde = await createRedCde(redCap, protocol, newForm);
     const newCde = new DataElement(redCapCde);
     const newCdeObj = newCde.toObject();
-    let existingCde = await DataElement.findOne({archived: false, 'ids.id': newCdeObj.ids[0].id});
+    const leadingZeroProtocolId = leadingZerosProtocolId(protocol.protocolID);
+    const variableName = redCap['Variable / Field Name'];
+    const cdeId = 'PX' + leadingZeroProtocolId + '_' + variableName.trim();
+    let existingCde = await DataElement.findOne({archived: false, 'ids.id': cdeId});
     if (!existingCde) {
         existingCde = await newCde.save();
         RedcapLogger.createdRedcapCde++;
-        RedcapLogger.createdRedcapCdes.push(existingCde.tinyId);
+        RedcapLogger.createdRedcapCdes.push(existingCde.tinyId + `[${cdeId}]`);
     } else {
-        existingCde.imported = imported;
-        existingCde.changeNote = lastMigrationScript;
         const diff = compareElt(newCde.toObject(), existingCde.toObject(), 'PhenX');
+        mergeClassification(existingCde, newCde.toObject(), 'PhenX');
         if (isEmpty(diff)) {
             existingCde.lastMigrationScript = lastMigrationScript;
+            existingCde.imported = imported;
             await existingCde.save();
             RedcapLogger.sameRedcapCde++;
             RedcapLogger.sameRedcapCdes.push(existingCde.tinyId);
         } else {
             const existingCdeObj = existingCde.toObject();
-            mergeElt(existingCdeObj, newCdeObj, 'PhenX');
-            existingCde.lastMigrationScript = lastMigrationScript;
-            await updateCde(existingCde, BATCHLOADER, {updateSource: true});
+            mergeElt(existingCdeObj, newCdeObj, 'PhenX', 'PhenX');
+            await updateCde(existingCdeObj, BATCHLOADER, {updateSource: true});
             RedcapLogger.changedRedcapCde++;
             RedcapLogger.changedRedcapCdes.push(existingCde.tinyId);
         }
@@ -81,32 +83,25 @@ async function doOneRedCap(redCap, redCaps, protocol, newForm) {
         comment.element.eltId = existingCde.tinyId;
         await new Comment(comment).save();
     }
-    delete newCdeObj.tinyId;
-    delete newCdeObj._id;
-    newCdeObj.attachments = [];
-    const updateResult = await DataElementSource.updateOne({
-        tinyId: existingCde.tinyId,
-        source: 'PhenX'
-    }, newCdeObj, {upsert: true});
-    printUpdateResult(updateResult, existingCde);
+    await updateRowArtifact(existingCde, newCdeObj, 'PhenX', 'PhenX');
     return existingCde;
 }
 
 export async function parseFormElements(protocol, attachments, newForm) {
-    const formElements = [];
+    const formElements: any[] = [];
     const protocolId = protocol.protocolID;
 
     const leadingZeroProtocolId = leadingZerosProtocolId(protocolId);
     const redCapFolder = redCapZipFolder + 'PX' + leadingZeroProtocolId + '/';
 
-    let redCaps = [];
+    let redCaps: any[] = [];
     const instrumentFileName = 'instrument.csv';
     const instrumentFilePath = redCapFolder + instrumentFileName;
     const instrumentFileExist = existsSync(instrumentFilePath);
     if (instrumentFileExist) {
         redCaps = await doInstrument(instrumentFilePath);
     } else {
-        const instrumentFilePathAlter = redCapFolder + 'PX' + protocolId + '/' + instrumentFileName;
+        const instrumentFilePathAlter = redCapFolder + 'PX' + leadingZeroProtocolId + '/' + instrumentFileName;
         const instrumentFileExistAlter = existsSync(instrumentFilePathAlter);
         if (instrumentFileExistAlter) {
             redCaps = await doInstrument(instrumentFilePathAlter);
@@ -171,5 +166,4 @@ export async function parseFormElements(protocol, attachments, newForm) {
         }
     }
     newForm.formElements = formElements;
-    RedcapLogger.log();
 }

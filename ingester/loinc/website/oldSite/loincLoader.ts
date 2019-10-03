@@ -1,29 +1,30 @@
 const {Builder, By} = require('selenium-webdriver');
-require('chromedriver');
+import { isEmpty, sortBy } from 'lodash';
+import { parsePanelHierarchyTable } from 'ingester/loinc/website/oldSite/ParsePanelHierarchyTable';
+import { parseLoincIdTable } from 'ingester/loinc/website/oldSite/ParseLoincIdTable';
+import { parseLoincNameTable } from 'ingester/loinc/website/oldSite/ParseLoincNameTable';
+import { parse3rdPartyCopyrightTable } from 'ingester/loinc/website/oldSite/Parse3rdPartyCopyrightTable';
+import { parseNameTable } from 'ingester/loinc/website/oldSite/NameTable/ParseNameTable';
+import { parseCopyrightNotice } from 'ingester/loinc/website/oldSite/ParseCopyrightNotice';
+import { parsePartDefinitionDescriptionsTable } from 'ingester/loinc/website/oldSite/ParsePartDefinitionDescriptionsTable';
+import { parseTermDefinitionDescriptionsTable } from 'ingester/loinc/website/oldSite/ParseTermDefinitionDescriptionsTable';
+import { parsePartTable } from 'ingester/loinc/website/oldSite/ParsePartTable';
+import { parseFormCodingInstructionsTable } from 'ingester/loinc/website/oldSite/ParseFormCodingInstructionsTable';
+import { parseBasicAttributesTable } from 'ingester/loinc/website/oldSite/ParseBasicAttributesTable';
+import { parseHL7AttributesTable } from 'ingester/loinc/website/oldSite/ParseHL7AttributesTable';
+import { parseSubmittersInformationTable } from 'ingester/loinc/website/oldSite/ParseSubmittersInformationTable';
+import { parseLanguageVariantsTable } from 'ingester/loinc/website/oldSite/ParseLanguageVariantsTable';
+import { parseRelatedNamesTable } from 'ingester/loinc/website/oldSite/ParseRelatedNamesTable';
+import { parseExampleUnitsTable } from 'ingester/loinc/website/oldSite/ParseExampleUnitsTable';
+import { parseCopyrightTable } from 'ingester/loinc/website/oldSite/ParseCopyrightTable';
+import { parseAnswerListTable } from 'ingester/loinc/website/oldSite/ParseAnswerListTable';
+import { parseSurveyQuestionTable } from 'ingester/loinc/website/oldSite/ParseSurveyQuestionTable';
+import { parseWebContentTable } from 'ingester/loinc/website/oldSite/ParseWebContentTable';
+import { parseArticleTable } from 'ingester/loinc/website/oldSite/ParseArticleTable';
+import { parseCopyrightText } from 'ingester/loinc/website/oldSite/ParseCopyrightText';
+import { parseVersion } from 'ingester/loinc/website/oldSite/ParseVersion';
 
-import { parsePanelHierarchyTable } from 'ingester/loinc/Website/ParsePanelHierarchyTable';
-import { parseLoincIdTable } from 'ingester/loinc/Website/ParseLoincIdTable';
-import { parseLoincNameTable } from 'ingester/loinc/Website/ParseLoincNameTable';
-import { parse3rdPartyCopyrightTable } from 'ingester/loinc/Website/Parse3rdPartyCopyrightTable';
-import { parseNameTable } from 'ingester/loinc/Website/NameTable/ParseNameTable';
-import { parseCopyrightNotice } from 'ingester/loinc/Website/ParseCopyrightNotice';
-import { parsePartDefinitionDescriptionsTable } from 'ingester/loinc/Website/ParsePartDefinitionDescriptionsTable';
-import { parseTermDefinitionDescriptionsTable } from 'ingester/loinc/Website/ParseTermDefinitionDescriptionsTable';
-import { parsePartTable } from 'ingester/loinc/Website/ParsePartTable';
-import { parseFormCodingInstructionsTable } from 'ingester/loinc/Website/ParseFormCodingInstructionsTable';
-import { parseBasicAttributesTable } from 'ingester/loinc/Website/ParseBasicAttributesTable';
-import { parseHL7AttributesTable } from 'ingester/loinc/Website/ParseHL7AttributesTable';
-import { parseSubmittersInformationTable } from 'ingester/loinc/Website/ParseSubmittersInformationTable';
-import { parseLanguageVariantsTable } from 'ingester/loinc/Website/ParseLanguageVariantsTable';
-import { parseRelatedNamesTable } from 'ingester/loinc/Website/ParseRelatedNamesTable';
-import { parseExampleUnitsTable } from 'ingester/loinc/Website/ParseExampleUnitsTable';
-import { parseCopyrightTable } from 'ingester/loinc/Website/ParseCopyrightTable';
-import { parseAnswerListTable } from 'ingester/loinc/Website/ParseAnswerListTable';
-import { parseSurveyQuestionTable } from 'ingester/loinc/Website/ParseSurveyQuestionTable';
-import { parseWebContentTable } from 'ingester/loinc/Website/ParseWebContentTable';
-import { parseArticleTable } from 'ingester/loinc/Website/ParseArticleTable';
-import { parseCopyrightText } from 'ingester/loinc/Website/ParseCopyrightText';
-import { parseVersion } from 'ingester/loinc/Website/ParseVersion';
+require('chromedriver');
 
 const tasks = [
     {
@@ -157,16 +158,26 @@ const tasks = [
 ];
 
 export async function runOneLoinc(loincId) {
-    let driver = await new Builder().forBrowser('chrome').build();
-    let url = `http://r.details.loinc.org/LOINC/${loincId.trim()}.html?sections=Comprehensive`;
+    const driver = await new Builder().forBrowser('chrome').build();
+    const url = `http://r.details.loinc.org/LOINC/${loincId.trim()}.html?sections=Comprehensive`;
     await driver.get(url);
-    let loinc = {URL: url, loincId: loincId};
-    for (let task of tasks) {
-        let sectionName = task.sectionName;
-        let elements = await driver.findElements(By.xpath(task.xpath));
-        if (elements && elements.length === 1) {
-            if (task.function) {
-                loinc[sectionName] = await task.function(driver, loincId, elements[0]);
+    console.log(url);
+    const loinc = {URL: url, loincId};
+    const sortTask = sortBy(tasks, ['sectionName']);
+    for (const task of sortTask) {
+        const sectionName = task.sectionName;
+        const elements = await driver.findElements(By.xpath(task.xpath));
+        const elementsLength = elements.length;
+        if (elementsLength === 0) {
+            console.log(`${loincId} doesn't have Selection ${sectionName}.`);
+        } else if (elementsLength > 1) {
+            console.log(`${loincId} multiple Selection ${sectionName} found.`);
+            process.exit(1);
+        } else {
+            loinc[sectionName] = await task.function(driver, loincId, elements[0]);
+            if (isEmpty(loinc[sectionName])) {
+                console.log(`${loincId} Selection ${sectionName} exists on page. but didn't get parsed.`);
+                process.exit(1);
             }
         }
     }

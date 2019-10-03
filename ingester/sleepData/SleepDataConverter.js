@@ -58,7 +58,7 @@ exports.SleepDataConverter.prototype.convert = function (sleep, classification, 
             id: sleep.id[0]
         })
     } else {
-        console.log('a');
+        process.exit(1);
     }
     sleep.shhs.forEach(s => {
         cde.ids.push({

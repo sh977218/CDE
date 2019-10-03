@@ -1,9 +1,9 @@
 import * as cheerio from 'cheerio';
 import { get } from 'request';
-import { runOneLoinc } from 'ingester/loinc/Website/loincLoader';
-import { getDomainCollection } from 'ingester/shared/utility';
+import { getDomainCollectionSite } from 'ingester/shared/utility';
+import { loadLoincById } from 'ingester/loinc/website/newSite/loincLoader';
 
-const SECTIONS = [
+const SECTIONS: any[] = [
     {
         tabName: 'Protocol',
         domId: '#tabprotocol',
@@ -78,7 +78,7 @@ function findNextText(node) {
 }
 
 function findGeneralReferences(node) {
-    let generalReferences = [];
+    const generalReferences: any[] = [];
     let current = node.next();
     while (current[0] && current[0].name !== 'h5') {
         generalReferences.push(current.text().trim());
@@ -88,19 +88,19 @@ function findGeneralReferences(node) {
 }
 
 async function findStandardsTable(node) {
-    let standards = [];
-    let trs = cheerio(node.next()).find('tr');
+    const standards: any[] = [];
+    const trs = cheerio(node.next()).find('tr');
     for (let i = 1; i < trs.length; i++) {
-        let tr = trs[i];
-        let standard: any = {};
-        let tds = cheerio(tr).find('td');
-        standard['Standard'] = cheerio(tds[0]).text().trim();
-        standard['Name'] = cheerio(tds[1]).text().trim();
-        standard['ID'] = cheerio(tds[2]).text().trim();
-        standard['Source'] = cheerio(tds[3]).text().trim();
-        if (standard['Source'] === 'LOINC') {
-            standard.loinc = await runOneLoinc(standard.ID).catch(e => {
-                throw 'Error findStandardsTable ' + standard.ID;
+        const tr = trs[i];
+        const standard: any = {};
+        const tds = cheerio(tr).find('td');
+        standard.Standard = cheerio(tds[0]).text().trim();
+        standard.Name = cheerio(tds[1]).text().trim();
+        standard.ID = cheerio(tds[2]).text().trim();
+        standard.Source = cheerio(tds[3]).text().trim();
+        if (standard.Source === 'LOINC') {
+            standard.loinc = await loadLoincById(standard.ID).catch(e => {
+                throw new Error('Error findStandardsTable ' + standard.ID + ' error: ' + e);
             });
 
         }
@@ -110,31 +110,31 @@ async function findStandardsTable(node) {
 }
 
 function findVariablesTable(node) {
-    let variables = [];
-    let trs = cheerio(node.next()).find('tr');
+    const variables: any[] = [];
+    const trs = cheerio(node.next()).find('tr');
     for (let i = 1; i < trs.length; i++) {
-        let tr = trs[i];
-        let variable = {};
-        let tds = cheerio(tr).find('td');
+        const tr = trs[i];
+        const variable: any = {};
+        const tds = cheerio(tr).find('td');
         variable['Variable Name'] = cheerio(tds[0]).text().trim();
         variable['Variable ID'] = cheerio(tds[1]).text().trim();
         variable['Variable Description'] = cheerio(tds[2]).text().trim();
-        variable['Version'] = cheerio(tds[3]).text().trim();
-        variable['Mapping'] = cheerio(tds[3]).text().trim();
+        variable.Version = cheerio(tds[3]).text().trim();
+        variable.Mapping = cheerio(tds[3]).text().trim();
         variables.push(variable);
     }
     return variables;
 }
 
 function findRequirementsTable(node) {
-    let requirements = [];
-    let trs = cheerio(node.next()).find('tr');
+    const requirements: any[] = [];
+    const trs = cheerio(node.next()).find('tr');
     for (let i = 1; i < trs.length; i++) {
-        let tr = trs[i];
-        let requirement = {};
-        let tds = cheerio(tr).find('td');
+        const tr = trs[i];
+        const requirement: any = {};
+        const tds = cheerio(tr).find('td');
         requirement['Requirement Category'] = cheerio(tds[0]).text().trim();
-        requirement['Required'] = cheerio(tds[1]).text().trim();
+        requirement.Required = cheerio(tds[1]).text().trim();
         requirements.push(requirement);
     }
     return requirements;
@@ -142,43 +142,44 @@ function findRequirementsTable(node) {
 
 function doOneProtocol(protocol) {
     return new Promise((resolve, reject) => {
-        let protocolLink = protocol.protocolLink;
-        get(protocolLink, async function (err, response, body) {
-            if (err) reject(err);
+        const protocolLink = protocol.protocolLink;
+        console.log('protocolLink: ' + protocolLink);
+        get(protocolLink, async (err, response, body) => {
+            if (err) {
+                reject(err);
+            }
             const $ = cheerio.load(body, {normalizeWhitespace: true});
 
-            let protocolName = $('#main-content > div > div.row.mb-2 > div > h1').text().trim();
-            protocol.protocolName = protocolName;
+            protocol.protocolName = $('#main-content > div > div.row.mb-2 > div > h1').text().trim();
 
-            let classification = $('#page-header > div > p').text().trim();
-            protocol.classification = classification;
+            protocol.classification = $('#page-header > div > p').text().trim();
 
-            for (let i = 0; i < SECTIONS.length; i++) {
-                let SECTION = SECTIONS[i];
-                let selector = SECTION.domId + ' h5';
-                for (let j = 0; j < SECTION.sections.length; j++) {
-                    let section: any = SECTION.sections[j];
-                    for (let k in section) {
-                        let value = section[k];
-                        let node = $(selector).filter(function () {
-                            return $(this).text().trim() === value;
-                        });
-                        if (!section.fn) {
-                            protocol[k] = findNextText(node);
-                        } else {
-                            protocol[k] = await section.fn(node);
+            for (const SECTION of SECTIONS) {
+                const selector = SECTION.domId + ' h5';
+                for (const section of SECTION.sections) {
+                    for (const k in section) {
+                        if (section.hasOwnProperty(k)) {
+                            const value = section[k];
+                            const node = $(selector).filter(function () {
+                                return $(this).text().trim() === value;
+                            });
+                            if (!section.fn) {
+                                protocol[k] = findNextText(node);
+                            } else {
+                                protocol[k] = await section.fn(node);
+                            }
                         }
                     }
                 }
             }
             resolve();
-        })
-    })
+        });
+    });
 }
 
 export async function runOnePhenX(protocolId) {
-    let DomainCollectionMap = await getDomainCollection();
-    let protocol = DomainCollectionMap[protocolId];
+    const domainCollectionMap = await getDomainCollectionSite();
+    const protocol = domainCollectionMap[protocolId];
     await doOneProtocol(protocol);
     delete protocol.fn;
     delete protocol.async;
