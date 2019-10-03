@@ -13,7 +13,7 @@ export function capString(str: string): string {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-export function decamelize(str: string, sep: string = ' '): string {
+export function decamelize(str: string = '', sep: string = ' '): string {
     const outFormat = '$1' + sep + '$2';
     return str
         .replace(/([a-z\d])([A-Z])/g, outFormat)
