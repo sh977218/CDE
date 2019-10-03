@@ -1,15 +1,15 @@
-import { ProtocolModel } from 'ingester/createMigrationConnection';
+import { PROTOCOL } from 'ingester/createMigrationConnection';
 import { runOnePhenX } from 'ingester/phenx/Website/phenxLoader';
 
 const protocolId = '641001';
 
 async function run() {
-    await ProtocolModel.remove({protocolId});
+    await PROTOCOL.remove({protocolId});
     console.log('Removed Migration Protocol collection');
     console.log(`Starting fetching Protocol ${protocolId}`);
     const protocol = await runOnePhenX(protocolId);
     console.log(`Finished fetching Protocol ${protocolId}`);
-    await new ProtocolModel(protocol).save();
+    await new PROTOCOL(protocol).save();
     console.log(`Finished saving Protocol ${protocolId}`);
 }
 
