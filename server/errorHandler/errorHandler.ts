@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 import { CastError } from 'mongoose';
 import { logError } from 'server/log/dbLogger';
 import { noDbLogger } from 'server/system/noDbLogger';
-import { AuthenticatedRequest } from 'server/system/authentication';
+import { AuthenticatedRequest } from 'server/user/authentication';
 
 type HandledError = CastError | Error;
 

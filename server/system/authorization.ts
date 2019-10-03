@@ -1,7 +1,7 @@
 import {
     canComment, canEditCuratedItem, hasRole, isOrgAdmin, isOrgAuthority, isOrgCurator, isSiteAdmin
 } from 'shared/system/authorizationShared';
-import { handle40x } from '../errorHandler/errorHandler';
+import { handle40x } from 'server/errorHandler/errorHandler';
 
 // --------------------------------------------------
 // Middleware
