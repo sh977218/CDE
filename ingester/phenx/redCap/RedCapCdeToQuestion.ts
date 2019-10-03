@@ -20,7 +20,8 @@ export async function convert(redCapCde, redCapCdes, cde, newForm) {
         if (branchLogic.indexOf('(') === -1) {
             skipLogicCondition = convertSkipLogic(branchLogic, redCapCdes);
         } else {
-            const commentText = `${newForm.ids[0].id} PhenX Batch loader was not able to create Skip Logic rule on Question ${fieldLabel}. Rules: ${branchLogic}`;
+            const newFormId = newForm.ids[0].id;
+            const commentText = `${newFormId} PhenX loader was not able to create Skip Logic rule on Question ${fieldLabel}. Rules: ${branchLogic}`;
             const skipLogicComment = {
                 text: commentText,
                 user: BATCHLOADER,
@@ -52,7 +53,7 @@ export async function convert(redCapCde, redCapCdes, cde, newForm) {
         };
         newForm.comments.push(scoreComment);
     }
-    const question: any = {
+    const questionFormElement: any = {
         elementType: 'question',
         label: fieldLabel,
         cardinality: {min: 1, max: 1},
@@ -62,7 +63,6 @@ export async function convert(redCapCde, redCapCdes, cde, newForm) {
         question: {
             cde: {
                 tinyId: cde.tinyId,
-                version: cde.version,
                 designations: cde.designations,
                 derivationRules: cde.derivationRules,
                 name: fieldLabel.length === 0 ? words(variableName.replace(/_/g, ' ')) : fieldLabel,
@@ -76,8 +76,11 @@ export async function convert(redCapCde, redCapCdes, cde, newForm) {
             answers: cde.valueDomain.permissibleValues
         }
     };
-    if (validationType.trim() === 'notes') {
-        question.question.datatypeText.showAsTextArea = true;
+    if (cde.version) {
+        questionFormElement.question.cde.version = cde.version;
     }
-    return question;
+    if (validationType.trim() === 'notes') {
+        questionFormElement.question.datatypeText.showAsTextArea = true;
+    }
+    return questionFormElement;
 }

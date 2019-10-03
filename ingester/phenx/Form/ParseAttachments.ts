@@ -13,7 +13,7 @@ function addAttachment(fileName, filePath, fileType) {
             filetype: fileType,
             uploadDate: Date.now(),
             comment: [],
-            scanned: 'scanned',
+            scanned: true,
             filesize: fileSize,
             uploadedBy: BATCHLOADER
         };
@@ -33,7 +33,7 @@ function addAttachment(fileName, filePath, fileType) {
                         filename: fileName,
                         mode: 'w',
                         content_type: fileType,
-                        scanned: 'scanned',
+                        scanned: true,
                         metadata: {
                             status: 'approved'
                         }
@@ -56,7 +56,7 @@ function addAttachment(fileName, filePath, fileType) {
 }
 
 async function doImg(imgFolder) {
-    const attachments = [];
+    const attachments: any[] = [];
 
     const imgSubFolders = readdirSync(imgFolder);
     for (const imgSubFolder of imgSubFolders) {
@@ -87,13 +87,12 @@ async function doImg(imgFolder) {
 export function leadingZerosProtocolId(protocolId) {
     const leadingZeroes = '00000000';
     const veryLongProtocolId = leadingZeroes + protocolId;
-    const result = veryLongProtocolId.substr(veryLongProtocolId.length - 6, veryLongProtocolId.length);
-    return result;
+    return veryLongProtocolId.substr(veryLongProtocolId.length - 6, veryLongProtocolId.length);
 }
 
 export async function parseAttachments(protocol) {
     const leadingZeroProtocolId = leadingZerosProtocolId(protocol.protocolID);
-    let attachments = [];
+    let attachments: any[] = [];
     const imgFolderPath = redCapZipFolder + 'PX' + leadingZeroProtocolId + '/attachments';
     const imgFolderExist = existsSync(imgFolderPath);
     if (imgFolderExist) {
