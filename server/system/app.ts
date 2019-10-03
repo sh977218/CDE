@@ -16,7 +16,7 @@ import {
 import { reIndex } from 'server/system/elastic';
 import { indices } from 'server/system/elasticSearchInit';
 import {
-    addUserRole, disableRule, enableRule, getClassificationAuditLog, getFile, IdSource, jobStatus
+    addUserRole, disableRule, enableRule, getClassificationAuditLog, getFile, jobStatus
 } from 'server/system/mongo-data';
 import { transferSteward } from 'server/orgManagement/orgSvc';
 import { config } from 'server/system/parseConfig';
@@ -25,6 +25,9 @@ import { is } from 'useragent';
 import { promisify } from 'util';
 import { isSearchEngine } from './helper';
 import { version } from '../version';
+import {
+    createIdSource, deleteIdSource, getAllIdSources, isSourceById, updateIdSource
+} from 'server/system/idSourceSvc';
 import { banIp, getRealIp, getTrafficFilter } from 'server/system/trafficFilterSvc';
 import { userById, usersByName } from 'server/user/userDb';
 
@@ -33,6 +36,7 @@ require('express-async-errors');
 export let respondHomeFull: Function;
 
 export function init(app) {
+
     let indexHtml = '';
     renderFile('modules/system/views/index.ejs', {
         config,
@@ -352,40 +356,41 @@ export function init(app) {
             .catch(err => respondError(err, {req, res}));
     }
 
-    app.get('/idSources', (req, res) => IdSource.find({}, handleError({req, res}, sources => res.send(sources))));
-
-    app.get('/idSource/:id', (req, res) =>
-        IdSource.findOneById(req.params.id, handleError({req, res}, source => res.send(source))));
-
-    app.post('/idSource/:id', isSiteAdminMiddleware, (req, res) => {
-        IdSource.findById(req.params.id, handleError({req, res}, doc => {
-            if (doc) {
-                return res.status(409).send(req.params.id + ' already exists.');
-            } else {
-                const idSource = {
-                    _id: req.params.id,
-                    linkTemplateDe: req.body.linkTemplateDe,
-                    linkTemplateForm: req.body.linkTemplateForm,
-                    version: req.body.version,
-                };
-                new IdSource(idSource).save(handleError({req, res}, source => res.send(source)));
-            }
-        }));
+    app.get('/idSources', async (req, res) => {
+        const sources = await getAllIdSources();
+        res.send(sources);
     });
 
-    app.put('/idSource/:id', isSiteAdminMiddleware, (req, res) => {
-        IdSource.findById(req.body._id, handleError({req, res}, doc => {
-            if (!doc) {
-                return res.status(404).send(req.params.id + ' does not exist.');
-            } else {
-                doc.linkTemplateDe = req.body.linkTemplateDe;
-                doc.linkTemplateForm = req.body.linkTemplateForm;
-                doc.version = req.body.version;
-                doc.save(handleError({req, res}, source => res.send(source)));
-            }
-        }));
+    app.get('/idSource/:id', async (req, res) => {
+        const source = await isSourceById(req.params.id);
+        res.send(source);
     });
 
-    app.delete('/idSource/:id', isSiteAdminMiddleware, (req, res) =>
-        IdSource.delete(res, req.params.id, handleError({req, res}, () => res.send())));
+    app.post('/idSource/:id', isSiteAdminMiddleware, async (req, res) => {
+        const sourceId = req.params.id;
+        const foundSource = await isSourceById(sourceId);
+        if (foundSource) {
+            return res.status(409).send(sourceId + ' already exists.');
+        } else {
+            const createdIdSource = await createIdSource(sourceId, req.body);
+            res.send(createdIdSource);
+        }
+    });
+
+    app.put('/idSource/:id', isSiteAdminMiddleware, async (req, res) => {
+        const sourceId = req.params.id;
+        const foundSource = await isSourceById(sourceId);
+        if (!foundSource) {
+            return res.status(409).send(sourceId + ' does not exist.');
+        } else {
+            const updatedIdSource = await updateIdSource(sourceId, req.body);
+            res.send(updatedIdSource);
+        }
+    });
+
+    app.delete('/idSource/:id', isSiteAdminMiddleware, async (req, res) => {
+        await deleteIdSource(req.params.id);
+        res.send();
+    });
 }
+
