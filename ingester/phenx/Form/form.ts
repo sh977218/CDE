@@ -6,7 +6,7 @@ import { parseProperties } from 'ingester/phenx/Shared/ParseProperties';
 import { parseReferenceDocuments } from 'ingester/phenx/Shared/ParseReferenceDocuments';
 import { leadingZerosProtocolId, parseAttachments } from 'ingester/phenx/Form/ParseAttachments';
 import { parseFormElements } from 'ingester/phenx/Form/ParseFormElements';
-import { BATCHLOADER, created, imported, lastMigrationScript } from 'ingester/shared/utility';
+import { BATCHLOADER, created, imported, lastMigrationScript, version } from 'ingester/shared/utility';
 import { generateTinyId } from 'server/system/mongo-data';
 import { existsSync } from 'fs';
 import * as AdmZip from 'adm-zip';
@@ -24,7 +24,7 @@ function extractRedCapZip(protocolId) {
     }
 }
 
-export async function createPhenxForm(protocol) {
+export async function createPhenxForm(protocol, isExistingFormQualified) {
     extractRedCapZip(protocol.protocolID);
     const designations = parseDesignations(protocol);
     const definitions = parseDefinitions(protocol);
@@ -33,13 +33,14 @@ export async function createPhenxForm(protocol) {
     const properties = parseProperties(protocol);
     const referenceDocuments = parseReferenceDocuments(protocol);
     const attachments = await parseAttachments(protocol);
-    const classification = parseClassification();
+    const classification = parseClassification(protocol);
 
     const newForm = {
         elementType: 'form',
         tinyId: generateTinyId(),
         createdBy: BATCHLOADER,
         source: 'PhenX',
+        version,
         sources,
         designations,
         definitions,
@@ -59,6 +60,6 @@ export async function createPhenxForm(protocol) {
         lastMigrationScript
     };
 
-    await parseFormElements(protocol, attachments, newForm);
+    await parseFormElements(protocol, attachments, newForm, isExistingFormQualified);
     return newForm;
 }

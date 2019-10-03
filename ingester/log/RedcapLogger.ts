@@ -1,28 +1,18 @@
 export class RedcapLogger {
     static createdRedcapCde = 0;
-    static createdRedcapCdes = [];
+    static createdRedcapCdes: any[] = [];
     static createdRedcapForm = 0;
-    static createdRedcapForms = [];
+    static createdRedcapForms: any[] = [];
 
     static sameRedcapForm = 0;
-    static sameRedcapForms = [];
+    static sameRedcapForms: any[] = [];
     static sameRedcapCde = 0;
-    static sameRedcapCdes = [];
+    static sameRedcapCdes: any[] = [];
 
     static changedRedcapForm = 0;
-    static changedRedcapForms = [];
+    static changedRedcapForms: any[] = [];
     static changedRedcapCde = 0;
-    static changedRedcapCdes = [];
-
-    static retiredRedcapForm = 0;
-    static retiredRedcapForms = [];
-    static retiredRedcapCde = 0;
-    static retiredRedcapCdes = [];
-
-    constructor() {
-        const timeInterval = 10 * 1000; // 10 seconds
-        setInterval(RedcapLogger.log, timeInterval);
-    }
+    static changedRedcapCdes: any[] = [];
 
     static log() {
         console.log('createdRedcapCde: ' + this.createdRedcapCde);
@@ -39,10 +29,5 @@ export class RedcapLogger {
         console.log('changedRedcapCdes: ' + this.changedRedcapCdes);
         console.log('changedRedcapForm: ' + this.changedRedcapForm);
         console.log('changedRedcapForms: ' + this.changedRedcapForms);
-
-        console.log('retiredRedcapCde: ' + this.retiredRedcapCde);
-        console.log('retiredRedcapCdes: ' + this.retiredRedcapCdes);
-        console.log('retiredRedcapForm: ' + this.retiredRedcapForm);
-        console.log('retiredRedcapForms: ' + this.retiredRedcapForms);
     }
 }

@@ -31,8 +31,7 @@ public class ContactUs extends NlmCdeBaseTest {
         clickElement(By.xpath("//mat-icon[normalize-space() = 'check']"));
         checkAlert("Saved");
         logout();
-        clickElement(By.id("helpLink"));
-        clickElement(By.id("contactUsLink"));
+        goToContactUs();
         textPresent("Sample bullet");
     }
 

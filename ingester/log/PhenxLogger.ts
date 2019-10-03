@@ -1,22 +1,17 @@
 export class PhenxLogger {
-    static createdPhenxForm = 0;
-    static createdPhenxForms = [];
+    static createdPhenxForm: any = 0;
+    static createdPhenxForms: any[] = [];
 
-    static samePhenxForm = 0;
-    static samePhenxForms = [];
+    static samePhenxForm: any = 0;
+    static samePhenxForms: any[] = [];
 
     static changedPhenxForm = 0;
-    static changedPhenxForms = [];
+    static changedPhenxForms: any[] = [];
 
-    static retiredPhenxForm = 0;
-    static retiredPhenxForms = [];
-    static retiredPhenxCde = 0;
-    static retiredPhenxCdes = [];
-
-    constructor() {
-        const timeInterval = 10 * 1000; // 10 seconds
-        setInterval(PhenxLogger.log, timeInterval);
-    }
+    static retiredPhenxForm: any = 0;
+    static retiredPhenxForms: any[] = [];
+    static retiredPhenxCde: any = 0;
+    static retiredPhenxCdes: any[] = [];
 
     static log() {
         console.log('createdPhenxForm: ' + this.createdPhenxForm);

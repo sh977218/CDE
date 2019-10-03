@@ -1,3 +1,5 @@
+import { imported } from 'ingester/shared/utility';
+
 const _ = require('lodash');
 
 exports.parseSources = nindsForms => {
@@ -30,6 +32,7 @@ exports.parseSources = nindsForms => {
     let sources = [];
     _versionDateArray.forEach(v => {
         sources.push({
+            imported,
             sourceName: 'NINDS',
             updated: v,
             datatype: _dataTypeArray[0]

@@ -216,9 +216,19 @@ export function update(elt, user, options: any = {}, callback: CbError<CdeForm> 
         // user cannot edit sources.
         elt.sources = form.sources;
 
+        // user cannot edit sources.
+        if (!options.updateSource) {
+            elt.sources = form.sources;
+        }
+
         // because it's draft not edit attachment
         if (options.updateAttachments) {
             elt.attachments = form.attachments;
+        }
+
+        // loader skip update formElements, i.e. Qualified PhenX forms
+        if (options.skipFormElements) {
+            elt.formElements = form.formElements;
         }
 
         const newElt = new Form(elt);
