@@ -23,7 +23,7 @@ export async function findAllIdSources() {
 }
 
 export async function findById(id) {
-    return idSourceModel.findOneById(id);
+    return idSourceModel.findOne({_id: id});
 }
 
 export async function saveIdSource(idSource) {
