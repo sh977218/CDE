@@ -17,7 +17,7 @@ export function module() {
     });
     router.post('/addOrg', isOrgAuthorityMiddleware, async (req, res) => {
         const newOrg = req.body;
-        const foundOrg = orgByName(newOrg);
+        const foundOrg = await orgByName(newOrg);
         if (foundOrg) {
             res.status(409).send('Org Already Exists');
         } else {
