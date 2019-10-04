@@ -3,6 +3,7 @@ import { config } from 'server/system/parseConfig';
 import { User } from 'shared/models.model';
 import * as express from 'express';
 import { addUser, updateUserAccessToken, updateUserIps, userById, userByName } from 'server/user/userDb';
+import { handleError } from 'server/errorHandler/errorHandler';
 
 const https = require('https');
 const xml2js = require('xml2js');
@@ -85,9 +86,6 @@ export function ticketValidate(tkt, cb) {
 }
 
 export function updateUserAfterLogin(user, ip, cb) {
-    if (!user.knownIPs) {
-        user.knownIPs = [];
-    }
     if (user.knownIPs.length > 100) {
         user.knownIPs.pop();
     }
@@ -124,9 +122,9 @@ export function authBeforeVsac(req, username, password, done) {
         // Find the user by username in local datastore first and perform authentication.
         // If user is not found, authenticate with UMLS. If user is authenticated with UMLS,
         // add user to local datastore. Else, don't authenticate user and send error message.
-        userByName(username, (err, user) => {
+        userByName(username, handleError({}, user => {
             // If user was not found in local datastore || an error occurred || user was found and password equals 'umls'
-            if (err || !user || (user && user.password === 'umls')) {
+            if (!user || (user && user.password === 'umls')) {
                 umlsAuth(username, password, result => {
                     if (result === undefined) {
                         return done(null, false, {message: 'UMLS UTS login server is not available.'});
@@ -153,17 +151,15 @@ export function authBeforeVsac(req, username, password, done) {
                     return updateUserAfterLogin(user, req.ip, done);
                 }
             }
-        });
+        }));
     });
 }
 
 passport.use(new localStrategy({passReqToCallback: true}, authBeforeVsac));
 
 export function findAddUserLocally(profile, cb) {
-    userByName(profile.username, (err, user) => {
-        if (err) {
-            cb(err);
-        } else if (!user) { // User has been authenticated but user is not in local db, so register him.
+    userByName(profile.username, handleError({}, user => {
+        if (!user) { // User has been authenticated but user is not in local db, so register him.
             addUser(
                 {
                     username: profile.username,
@@ -181,7 +177,7 @@ export function findAddUserLocally(profile, cb) {
                 });
             });
         }
-    });
+    }));
 }
 
 export function ticketAuth(req, res, next) {
