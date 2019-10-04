@@ -103,9 +103,7 @@ export function byTinyIdList(tinyIdList, callback) {
         });
 }
 
-export function byTinyId(tinyId, cb) {
-    return Form.findOne({tinyId, archived: false}, cb);
-}
+export const byTinyId = (tinyId, cb) => Form.findOne({tinyId, archived: false}).exec(cb);
 
 export function byTinyIdVersion(tinyId, version, cb) {
     if (version) {
@@ -122,13 +120,7 @@ export function byTinyIdAndVersion(tinyId, version, callback) {
     } else {
         query.$or = [{version: null}, {version: ''}];
     }
-    Form.find(query).sort({updated: -1}).limit(1).exec(forwardError(callback, elts => {
-        if (elts.length) {
-            callback('', elts[0]);
-        } else {
-            callback('');
-        }
-    }));
+    return Form.findOne(query).sort({updated: -1}).limit(1).exec(callback);
 }
 
 export function draftByTinyId(tinyId, cb) {

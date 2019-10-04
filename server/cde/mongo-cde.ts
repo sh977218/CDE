@@ -82,13 +82,9 @@ export function byExisting(elt: DE, cb: CbError<MongooseType<DE>>) {
     DataElement.findOne({_id: elt._id, tinyId: elt.tinyId}, cb);
 }
 
-export function byId(id, cb) {
-    DataElement.findOne({_id: id}, cb);
-}
+export const byId = (id: string, cb) => DataElement.findOne({_id: id}).exec(cb);
 
-export function byTinyId(tinyId, cb) {
-    return DataElement.findOne({tinyId, archived: false}, cb);
-}
+export const byTinyId = (tinyId, cb) => DataElement.findOne({tinyId, archived: false}).exec(cb);
 
 export function latestVersionByTinyId(tinyId, cb) {
     DataElement.findOne({tinyId, archived: false}, (err, dataElement) => {
@@ -187,9 +183,7 @@ export function byTinyIdAndVersion(tinyId, version, callback) {
     } else {
         _query.$or = [{version: null}, {version: ''}];
     }
-    DataElement.find(_query).sort({updated: -1}).limit(1).exec((err, elts) => {
-        callback(err, elts[0]);
-    });
+    return DataElement.findOne(_query).sort({updated: -1}).limit(1).exec(callback);
 }
 
 export function eltByTinyId(tinyId, callback) {
