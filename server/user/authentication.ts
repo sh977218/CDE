@@ -2,7 +2,7 @@ import { errorLogger } from 'server/system/logging';
 import { config } from 'server/system/parseConfig';
 import { User } from 'shared/models.model';
 import * as express from 'express';
-import { addUser, updateUserAccessToken, updateUserIps, userById, userByName } from 'server/user/userDb';
+import { addUser, updateUserIps, userById, userByName } from 'server/user/userDb';
 import { handleError } from 'server/errorHandler/errorHandler';
 
 const https = require('https');
@@ -18,14 +18,14 @@ export type AuthenticatedRequest = {
 
 
 const ticketValidationOptions = {
-    host: config.uts.ticketValidation.host
-    , hostname: config.uts.ticketValidation.host
-    , port: config.uts.ticketValidation.port
-    , path: config.uts.ticketValidation.path
-    , method: 'GET'
-    , agent: false
-    , requestCert: true
-    , rejectUnauthorized: false
+    host: config.uts.ticketValidation.host,
+    hostname: config.uts.ticketValidation.host,
+    port: config.uts.ticketValidation.port,
+    path: config.uts.ticketValidation.path,
+    method: 'GET',
+    agent: false,
+    requestCert: true,
+    rejectUnauthorized: false
 };
 
 const parser = new xml2js.Parser();
@@ -85,20 +85,15 @@ export function ticketValidate(tkt, cb) {
     req.end();
 }
 
-export function updateUserAfterLogin(user, ip, cb) {
+function updateUserAfterLogin(user, ip, cb) {
     if (user.knownIPs.length > 100) {
         user.knownIPs.pop();
     }
-    if (ip) {
-        if (user.knownIPs.indexOf(ip) < 0) {
-            user.knownIPs.unshift(ip);
-        }
+    if (user.knownIPs.indexOf(ip) < 0) {
+        user.knownIPs.unshift(ip);
     }
 
-    if (user._id) {
-        updateUserIps(user._id, user.knownIPs, cb);
-    }
-
+    updateUserIps(user._id, user.knownIPs, cb);
 }
 
 export function umlsAuth(user, password, cb) {
@@ -106,9 +101,9 @@ export function umlsAuth(user, password, cb) {
         config.umls.wsHost + '/restful/isValidUMLSUser',
         {
             form: {
-                licenseCode: config.umls.licenseCode
-                , user
-                , password
+                licenseCode: config.umls.licenseCode,
+                user,
+                password
             }
         }, (error, response, body) => {
             cb(!error && response.statusCode === 200 ? body : undefined);
@@ -139,20 +134,19 @@ export function authBeforeVsac(req, username, password, done) {
                         return done(null, false, {message: 'Incorrect username or password'});
                     }
                 });
-            } else { // If user was found in local datastore and password != 'umls'
-                if (user.lockCounter === 300) {
-                    return done(null, false, {message: 'User is locked out'});
-                } else if (user.password !== password) {
-                    // Initialize the lockCounter if it hasn't been
-                    (user.lockCounter >= 0 ? user.lockCounter += 1 : user.lockCounter = 1);
+            } else if (user.lockCounter === 300) {
+                // If user was found in local datastore and password != 'umls'
+                return done(null, false, {message: 'User is locked out'});
+            } else if (user.password !== password) {
+                // Initialize the lockCounter if it hasn't been
+                (user.lockCounter >= 0 ? user.lockCounter += 1 : user.lockCounter = 1);
 
-                    return user.save(() => {
-                        return done(null, false, {message: 'Incorrect username or password'});
-                    });
-                } else {
-                    // Update user info in datastore
-                    return updateUserAfterLogin(user, req.ip, done);
-                }
+                return user.save(() => {
+                    return done(null, false, {message: 'Incorrect username or password'});
+                });
+            } else {
+                // Update user info in datastore
+                return updateUserAfterLogin(user, req.ip, done);
             }
         }));
     });
@@ -174,11 +168,7 @@ export function findAddUserLocally(profile, cb) {
                     updateUserAfterLogin(newUser, profile.ip, (err, newUser) => cb(newUser));
                 });
         } else {
-            updateUserAfterLogin(user, profile.ip, () => {
-                updateUserAccessToken(user._id, profile, (err, user) => {
-                    cb(user);
-                });
-            });
+            updateUserAfterLogin(user, profile.ip, (err, newUser) => cb(newUser));
         }
     }));
 }
@@ -192,9 +182,7 @@ export function ticketAuth(req, res, next) {
                 next();
             } else {
                 findAddUserLocally({username, ip: req.ip}, user => {
-                    if (user) {
-                        req.user = user;
-                    }
+                    req.user = user;
                     next();
                 });
             }

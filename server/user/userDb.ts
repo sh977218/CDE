@@ -111,11 +111,11 @@ export function updateUserIps(userId, ips, callback) {
         lockCounter: 0,
         lastLogin: Date.now(),
         knownIPs: ips
-    }, callback);
+    }, {new: true}, callback);
 }
 
 export function userByName(name, callback) {
-    User.findOne({username: new RegExp('^' + name + '$', "i")}, callback);
+    User.findOne({username: new RegExp('^' + name + '$', 'i')}, callback);
 }
 
 
