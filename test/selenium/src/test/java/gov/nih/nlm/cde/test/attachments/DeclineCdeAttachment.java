@@ -9,7 +9,7 @@ public class DeclineCdeAttachment extends BaseAttachmentTest {
     public void declineCdeAttachment() {
         String cdeName = "Alcohol use frequency";
         mustBeLoggedInAs(ninds_username, password);
-        String attachmentName = "painLocationInapr.png";
+        String attachmentName = "ml.jpg";
         goToCdeByName("Alcohol use frequency");
         goToAttachments();
 
@@ -20,7 +20,7 @@ public class DeclineCdeAttachment extends BaseAttachmentTest {
         goToCdeByName(cdeName);
 
         goToAttachments();
-        textNotPresent("painLocationInapr.png");
+        textNotPresent("ml.jpg");
     }
 
 }

@@ -4,7 +4,7 @@ import { Attachment, Item } from 'shared/models.model';
 import { hasRole } from 'shared/system/authorizationShared';
 
 @Component({
-    selector: 'cde-attachments',
+    selector: 'cde-attachments[elt]',
     templateUrl: './attachments.component.html'
 })
 export class AttachmentsComponent {
