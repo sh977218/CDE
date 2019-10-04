@@ -18,14 +18,20 @@ export function deleteOrgClassification(user, deleteClassification, settings, ca
         deleteClassification.categories = [deleteClassification.categories];
     }
     mongo_data.updateJobStatus('deleteClassification', 'Running', err => {
-        if (err) { return callback(err); }
+        if (err) {
+            return callback(err);
+        }
         orgByName(deleteClassification.orgName, (err, stewardOrg) => {
-            if (err) { return callback(err, stewardOrg); }
+            if (err) {
+                return callback(err, stewardOrg);
+            }
             const fakeTree = {elements: stewardOrg.classifications, stewardOrg: {name: ''}};
             deleteCategory(fakeTree, deleteClassification.categories);
             stewardOrg.markModified('classifications');
             stewardOrg.save(err => {
-                if (err) { return callback(err, stewardOrg); }
+                if (err) {
+                    return callback(err, stewardOrg);
+                }
                 settings.selectedOrg = deleteClassification.orgName;
                 settings.selectedElements = deleteClassification.categories;
                 const query = elastic.buildElasticSearchQuery(user, settings);
@@ -51,7 +57,9 @@ export function deleteOrgClassification(user, deleteClassification, settings, ca
                                     path: [deleteClassification.orgName].concat(deleteClassification.categories)
                                 });
                             });
-                        } else { done(); }
+                        } else {
+                            done();
+                        }
                     })),
                     done => elastic.elasticsearch('form', query, settings, handleError({}, result => {
                         if (result && result.forms && result.forms.length > 0) {
@@ -74,7 +82,9 @@ export function deleteOrgClassification(user, deleteClassification, settings, ca
                                     path: [deleteClassification.orgName].concat(deleteClassification.categories)
                                 });
                             });
-                        } else { done(); }
+                        } else {
+                            done();
+                        }
                     }))
                 ], handleError({}, () => {
                     mongo_data.removeJobStatus('deleteClassification', callback);
@@ -89,14 +99,20 @@ export function renameOrgClassification(user, newClassification, settings, callb
         newClassification.categories = [newClassification.categories];
     }
     mongo_data.updateJobStatus('renameClassification', 'Running', err => {
-        if (err) { return callback(err); }
+        if (err) {
+            return callback(err);
+        }
         orgByName(newClassification.orgName, (err, stewardOrg) => {
-            if (err) { return callback(err, stewardOrg); }
+            if (err) {
+                return callback(err, stewardOrg);
+            }
             const fakeTree = {elements: stewardOrg.classifications, stewardOrg: {name: ''}};
             renameCategory(fakeTree, newClassification.categories, newClassification.newName);
             stewardOrg.markModified('classifications');
             stewardOrg.save(err => {
-                if (err) { return callback(err, stewardOrg); }
+                if (err) {
+                    return callback(err, stewardOrg);
+                }
                 settings.selectedOrg = newClassification.orgName;
                 settings.selectedElements = newClassification.categories;
                 const query = elastic.buildElasticSearchQuery(user, settings);
@@ -124,7 +140,9 @@ export function renameOrgClassification(user, newClassification, settings, callb
                                     newname: newClassification.newName
                                 });
                             });
-                        } else { done(); }
+                        } else {
+                            done();
+                        }
                     })),
                     done => elastic.elasticsearch('form', query, settings, handleError({}, result => {
                         if (result && result.forms && result.forms.length > 0) {
@@ -149,7 +167,9 @@ export function renameOrgClassification(user, newClassification, settings, callb
                                     newname: newClassification.newName
                                 });
                             });
-                        } else { done(); }
+                        } else {
+                            done();
+                        }
                     }))
                 ], handleError({}, () => mongo_data.removeJobStatus('renameClassification', callback)));
             });
@@ -162,7 +182,9 @@ export function addOrgClassification(newClassification, callback) {
         newClassification.categories = [newClassification.categories];
     }
     orgByName(newClassification.orgName, (err, stewardOrg) => {
-        if (err) { return callback(err, stewardOrg); }
+        if (err) {
+            return callback(err, stewardOrg);
+        }
         addCategoriesToOrg(stewardOrg, newClassification.categories);
         stewardOrg.markModified('classifications');
         stewardOrg.save(callback);
@@ -170,16 +192,26 @@ export function addOrgClassification(newClassification, callback) {
 }
 
 export function reclassifyOrgClassification(user, oldClassification, newClassification, settings, callback) {
-    if (!(oldClassification.categories instanceof Array)) { oldClassification.categories = [oldClassification.categories]; }
-    if (!(newClassification.categories instanceof Array)) { newClassification.categories = [newClassification.categories]; }
+    if (!(oldClassification.categories instanceof Array)) {
+        oldClassification.categories = [oldClassification.categories];
+    }
+    if (!(newClassification.categories instanceof Array)) {
+        newClassification.categories = [newClassification.categories];
+    }
     mongo_data.updateJobStatus('reclassifyClassification', 'Running', err => {
-        if (err) { return callback(err); }
+        if (err) {
+            return callback(err);
+        }
         orgByName(newClassification.orgName, (err, stewardOrg) => {
-            if (err) { return callback(err, stewardOrg); }
+            if (err) {
+                return callback(err, stewardOrg);
+            }
             addCategoriesToTree(stewardOrg, newClassification.categories);
             stewardOrg.markModified('classifications');
             stewardOrg.save(err => {
-                if (err) { return callback(err, stewardOrg); }
+                if (err) {
+                    return callback(err, stewardOrg);
+                }
                 settings.selectedOrg = oldClassification.orgName;
                 settings.selectedElements = oldClassification.categories;
                 const query = elastic.buildElasticSearchQuery(user, settings);
@@ -205,7 +237,9 @@ export function reclassifyOrgClassification(user, oldClassification, newClassifi
                                     path: [newClassification.orgName].concat(newClassification.categories)
                                 });
                             });
-                        } else { done(); }
+                        } else {
+                            done();
+                        }
                     })),
                     done => elastic.elasticsearch('form', query, settings, handleError({}, result => {
                         if (result && result.forms && result.forms.length > 0) {
@@ -228,7 +262,9 @@ export function reclassifyOrgClassification(user, oldClassification, newClassifi
                                     path: [newClassification.orgName].concat(newClassification.categories)
                                 });
                             });
-                        } else { done(); }
+                        } else {
+                            done();
+                        }
                     }))
                 ], handleError({}, () => mongo_data.removeJobStatus('reclassifyClassification', callback)));
             });
@@ -245,5 +281,6 @@ export async function updateOrgClassification(orgName): Promise<any[]> {
     ];
     const cdeClassifications: OrgClassification[] = await DataElement.aggregate(aggregate);
     const formClassifications: OrgClassification[] = await Form.aggregate(aggregate);
-    return mergeOrgClassifications(cdeClassifications, formClassifications);
+    const temp = mergeOrgClassifications(cdeClassifications, formClassifications);
+    return temp;
 }
