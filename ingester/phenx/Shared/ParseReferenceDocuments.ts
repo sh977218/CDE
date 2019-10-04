@@ -1,17 +1,21 @@
-import { forEach, isEmpty } from 'lodash';
+import { forEach, isEmpty, sortBy } from 'lodash';
 
 export function parseReferenceDocuments(protocol) {
-    let referenceDocuments = [];
-    let generalReferences = protocol.generalReferences;
+    const referenceDocuments: any[] = [];
+    const generalReferences = protocol.generalReferences;
     if (!isEmpty(generalReferences)) {
         forEach(generalReferences, generalReference => {
-            let gr = generalReference.trim();
-            if (!isEmpty(gr))
+            const gr = generalReference.trim();
+            if (!isEmpty(gr)) {
                 referenceDocuments.push({
-                    document: generalReference.trim(),
+                    docType: 'text',
+                    languageCode: 'en-us',
+                    document: gr,
                     source: 'PhenX'
                 });
+            }
         });
     }
-    return referenceDocuments;
+
+    return sortBy(referenceDocuments, ['docType', 'languageCode', 'document']);
 }

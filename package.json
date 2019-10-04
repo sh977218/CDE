@@ -68,9 +68,11 @@
     ],
     "exclude": [
       "build/**",
-      "**/server/siteAdmin/status*",
       "**/server/form/aws*",
-      "**/server/form/syncLinkedForms*"
+      "**/server/siteAdmin/status*",
+      "**/server/form/syncLinkedForms*",
+      "**/server/notification/notificationDb*",
+      "**/server/notification/pushNotificationSvc*"
     ],
     "lines": "95",
     "branches": "81",
@@ -207,8 +209,8 @@
     "bootstrap-tour": "https://github.com/sorich87/bootstrap-tour.git",
     "cache-loader": "^2.0.1",
     "capitalize": "^2.0.0",
-    "cheerio": "1.0.0-rc.2",
-    "chromedriver": "^75.1.0",
+    "cheerio": "^1.0.0-rc.3",
+    "chromedriver": "^76.0.1",
     "classlist.js": "1.1.20150312",
     "clean-webpack-plugin": "^0.1.19",
     "codelyzer": "^4.5.0",

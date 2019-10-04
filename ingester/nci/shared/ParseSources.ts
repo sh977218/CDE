@@ -1,10 +1,12 @@
+import { imported } from 'ingester/shared/utility';
+
 const request = require('request');
 const xml2js = require('xml2js');
 const parseString = new xml2js.Parser({attrkey: 'attribute'}).parseString;
 
 export function parseSources(nciXmlCde) {
     return new Promise((resolve, reject) => {
-        const source: any = {sourceName: 'caDSR', imported: new Date()};
+        const source: any = {sourceName: 'caDSR', imported};
         if (nciXmlCde.VALUEDOMAIN[0].Datatype[0]) {
             source.datatype = nciXmlCde.VALUEDOMAIN[0].Datatype[0];
         }

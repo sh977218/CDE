@@ -3,24 +3,24 @@ import { map as MULTISELECT_MAP } from 'ingester/loinc/Mapping/LOINC_MULTISELECT
 import { map as REQUIRED_MAP } from 'ingester/loinc/Mapping/LOINC_REQUIRED_MAP';
 import { runOneCde } from 'ingester/loinc/LOADER/loincCdeLoader';
 import { runOneForm } from 'ingester/loinc/LOADER/loincFormLoader';
-import { fixValueDomainOrQuestion } from 'ingester/shared/utility';
+import { DataElement } from 'server/cde/mongo-cde';
+import { Form } from 'server/form/mongo-form';
+import { fixValueDomainOrQuestion, sortProp, sortRefDoc } from 'ingester/shared/utility';
 
-export async function parseFormElements(loinc, orgInfo) {
-    if (loinc.loinc) {
-        loinc = loinc.loinc;
+export async function parseFormElements(loinc, classificationOrgName, classificationArray) {
+    const panelHierarchy = loinc['Panel Hierarchy'];
+    if (!panelHierarchy) {
+        console.log(`${loinc['LOINC Code']} does not have panelHierarchy`);
+        process.exit(1);
     }
-    const formElements = [];
-    if (!loinc['PANEL HIERARCHY']) {
-        return formElements;
-    }
-    const elements = loinc['PANEL HIERARCHY'].elements;
+    const elements = panelHierarchy.elements;
     if (!elements) {
-        return formElements;
+        console.log(`${loinc['LOINC Code']} has panelHierarchy, but not elements found inside panelHierarchy.`);
+        process.exit(1);
     }
-    if (!elements || elements.length === 0) {
-        return;
-    }
-    console.log('Form ' + loinc.loincId + ' has ' + elements.length + ' elements to process.');
+
+    const formElements: any[] = [];
+    console.log(`LOINC Form ${loinc['LOINC Code']} has ${elements.length} elements to process.`);
     let tempFormElements = formElements;
     const needOuterSection = elements.filter(element => element.elements.length > 0).length === 0;
     if (needOuterSection) {
@@ -38,10 +38,10 @@ export async function parseFormElements(loinc, orgInfo) {
     for (const element of elements) {
         const isElementForm = element.elements.length > 0;
         if (isElementForm) {
-            const formElement = await loadForm(element, orgInfo);
+            const formElement = await loadForm(element, classificationOrgName, classificationArray);
             tempFormElements.push(formElement);
         } else {
-            const formElement = await loadCde(element, orgInfo);
+            const formElement = await loadCde(element, classificationOrgName, classificationArray);
             tempFormElements.push(formElement);
         }
     }
@@ -49,70 +49,83 @@ export async function parseFormElements(loinc, orgInfo) {
 }
 
 function elementToQuestion(existingCde, element) {
-    const question = {
+    const question: any = {
         instructions: {value: ''},
         cde: {
             tinyId: existingCde.tinyId,
             name: existingCde.designations[0].designation,
-            version: existingCde.version,
             permissibleValues: existingCde.valueDomain.permissibleValues,
             ids: existingCde.ids
         },
-        required: REQUIRED_MAP[element.cardinality],
-        multiselect: MULTISELECT_MAP[element['ANSWER CARDINALITY']],
+        required: REQUIRED_MAP[element.Cardinality],
+        multiselect: MULTISELECT_MAP[element.Cardinality],
         datatype: existingCde.valueDomain.datatype,
         answers: existingCde.valueDomain.permissibleValues,
         unitsOfMeasure: [],
-
-        datatypeText: existingCde.valueDomain.datatypeText,
-        datatypeNumber: existingCde.valueDomain.datatypeNumber,
-        datatypeDate: existingCde.valueDomain.datatypeDate,
-        datatypeTime: existingCde.valueDomain.datatypeTime,
-        datatypeDynamicCodeList: existingCde.valueDomain.datatypeDynamicCodeList,
-        datatypeValueList: existingCde.valueDomain.datatypeValueList,
-        datatypeExternallyDefined: existingCde.valueDomain.datatypeExternallyDefined,
     };
-    fixValueDomainOrQuestion(question);
+
+    if (existingCde.version) {
+        question.cde.version = existingCde.version;
+    }
     if (question.datatype === 'Text') {
         question.multiselect = false;
     }
     if (element.exUcumUnitsText) {
-        question.unitsOfMeasure.push({system: '', code: element.exUcumUnitsText});
+        const uom: any = {system: '', code: element['Example UCUM Units']};
+        question.unitsOfMeasure.push(uom);
     }
     return {
         elementType: 'question',
         instructions: {},
-        cardinality: CARDINALITY_MAP[element.cardinality],
-        label: element.loincName.trim(),
+        cardinality: CARDINALITY_MAP[element.Cardinality],
+        label: element.Name.trim(),
         question,
         formElements: []
     };
 }
 
-async function loadCde(element, orgInfo) {
-    const existingCde = await runOneCde(element, orgInfo);
+async function loadCde(element, classificationOrgName, classificationArray) {
+    // @TODO remove after this load
+    const cdeToFix: any = await DataElement.findOne({archived: false, 'ids.id': element.loinc['LOINC Code']});
+    if (cdeToFix) {
+        fixValueDomainOrQuestion(cdeToFix.valueDomain);
+        await cdeToFix.save();
+    }
+    const existingCde = await runOneCde(element.loinc, classificationOrgName, classificationArray);
     return elementToQuestion(existingCde, element);
 }
 
 function elementToInForm(existingForm, element) {
-    const inForm = {
+    const inForm: any = {
         form: {
             tinyId: existingForm.tinyId,
-            version: existingForm.version,
             name: existingForm.designations[0].designation
         }
     };
+    if (existingForm.version) {
+        inForm.form.version = existingForm.version;
+    }
+
     return {
         elementType: 'form',
         instructions: {value: '', valueFormat: ''},
-        cardinality: CARDINALITY_MAP[element.cardinality],
-        label: element.loincName.trim(),
+        cardinality: CARDINALITY_MAP[element.Cardinality],
+        label: element.Name.trim(),
         inForm,
         formElements: []
     };
 }
 
-async function loadForm(element, orgInfo) {
-    const existingForm = await runOneForm(element, orgInfo);
+async function loadForm(element, classificationOrgName, classificationArray) {
+    // @TODO remove after this load
+    const formToFix: any = await Form.findOne({archived: false, 'ids.id': element.loinc['LOINC Code']});
+    if (formToFix) {
+        sortRefDoc(formToFix);
+        sortProp(formToFix);
+        await formToFix.save();
+    }
+
+
+    const existingForm = await runOneForm(element.loinc, classificationOrgName, classificationArray);
     return elementToInForm(existingForm, element);
 }
