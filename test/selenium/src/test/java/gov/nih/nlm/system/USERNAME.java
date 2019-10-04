@@ -4,6 +4,12 @@ public interface USERNAME {
     String nlm_username = "nlm";
     String nlm_password = "nlm";
 
+    String bad_username = "bad-username";
+    String bad_password = "bad-username";
+
+    String lockout_username = "cdelockcounter300";
+    String lockout_increase_username = "cdelockcounter1";
+
     String cabigAdmin_username = "cabigAdmin";
     String promis_username = "promis";
     String ctepCurator_username = "ctepCurator";
