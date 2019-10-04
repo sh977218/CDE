@@ -9,6 +9,8 @@ public interface USERNAME {
 
     String lockout_username = "cdelockcounter300";
     String lockout_increase_username = "cdelockcounter1";
+    String Umls_not_in_db_username = "cdeci1";
+    String Umls_not_in_db_password = "Aa!!!000";
 
     String cabigAdmin_username = "cabigAdmin";
     String promis_username = "promis";
