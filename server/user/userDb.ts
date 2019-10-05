@@ -99,13 +99,6 @@ export function addUser(user, callback) {
     new User(user).save(callback);
 }
 
-export function updateUserAccessToken(userId, profile, callback) {
-    User.findByIdAndUpdate(userId, {
-        accessToken: profile.accessToken,
-        refreshToken: profile.refreshToken
-    }, callback);
-}
-
 export function updateUserIps(userId, ips, callback) {
     User.findByIdAndUpdate(userId, {
         lockCounter: 0,

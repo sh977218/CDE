@@ -120,9 +120,6 @@ export function authBeforeVsac(req, username, password, done) {
         userByName(username, handleError({}, user => {
             // If user was not found in local datastore || an error occurred || user was found and password equals 'umls'
             if (!user || (user && user.password === 'umls')) {
-                console.log('***********************************************');
-                console.log(username);
-                console.log(JSON.stringify(user));
                 umlsAuth(username, password, result => {
                     if (result === undefined) {
                         return done(null, false, {message: 'UMLS UTS login server is not available.'});
