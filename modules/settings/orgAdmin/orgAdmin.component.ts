@@ -21,7 +21,7 @@ export class OrgAdminComponent {
     }
 
     addOrgAdmin() {
-        this.http.post('/addOrgAdmin', {
+        this.http.post('/server/orgManagement/addOrgAdmin', {
             username: this.newAdmin.username,
             org: this.newAdmin.orgName
         }, {responseType: 'text'}).subscribe(() => {
@@ -32,14 +32,14 @@ export class OrgAdminComponent {
 
     getAdmins() {
         if (this.isAllowedModel.hasRole('OrgAuthority')) {
-            return this.http.get<UsersOrgQuery[]>('/orgAdmins').subscribe(r => this.setOrgs(r));
+            return this.http.get<UsersOrgQuery[]>('/server/orgManagement/orgAdmins').subscribe(r => this.setOrgs(r));
         } else {
-            return this.http.get<UsersOrgQuery[]>('/myOrgsAdmins').subscribe(r => this.setOrgs(r));
+            return this.http.get<UsersOrgQuery[]>('/server/orgManagement/myOrgsAdmins').subscribe(r => this.setOrgs(r));
         }
     }
 
     removeOrgAdmin(orgName: string, userId: string) {
-        this.http.post('/removeOrgAdmin', {
+        this.http.post('/server/orgManagement/removeOrgAdmin', {
             org: orgName,
             userId
         }, {responseType: 'text'}).subscribe(() => {

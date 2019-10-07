@@ -10,11 +10,12 @@ import {
 } from 'server/cde/mongo-cde';
 import { badWorkingGroupStatus, hideProprietaryIds } from 'server/system/adminItemSvc';
 import { RequestWithItem } from 'server/system/authorization';
-import { addCdeToViewHistory, formatElt, orgByName, sortArrayByArray } from 'server/system/mongo-data';
+import { addCdeToViewHistory, formatElt, sortArrayByArray } from 'server/system/mongo-data';
 import { PermissibleValue, User } from 'shared/models.model';
 import { canEditCuratedItem } from 'shared/system/authorizationShared';
 import { stripBsonIdsElt } from 'shared/system/exportShared';
 import { DataElement } from 'shared/de/dataElement.model';
+import { orgByName } from 'server/orgManagement/orgDb';
 
 export function byId(req, res) {
     const id = req.params.id;

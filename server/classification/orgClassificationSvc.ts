@@ -1,19 +1,17 @@
 import { find } from 'lodash';
 import { byTinyId as deByTinyId, dataElementModel } from 'server/cde/mongo-cde';
-import { handleError, handleNotFound } from 'server/errorHandler/errorHandler';
+import { handleError } from 'server/errorHandler/errorHandler';
 import { byTinyId as formByTinyId, formModel } from 'server/form/mongo-form';
 import { buildElasticSearchQuery, elasticsearch } from 'server/system/elastic';
-import { ItemDocument } from 'server/system/mongo-data';
-import { Classification, Item } from 'shared/models.model';
+import { addToClassifAudit, ItemDocument, removeJobStatus, updateJobStatus } from 'server/system/mongo-data';
+import { Classification } from 'shared/models.model';
 import {
     addCategoriesToOrg, addCategoriesToTree, arrangeClassification, deleteCategory, findLeaf, mergeOrgClassifications,
     OrgClassification, renameCategory,
 } from 'shared/system/classificationShared';
+import { orgByName } from 'server/orgManagement/orgDb';
 
 const async = require('async');
-const mongo_cde = require('../cde/mongo-cde');
-const mongo_form = require('../form/mongo-form');
-const mongo_data = require('../system/mongo-data');
 
 export function classifyItem(item: ItemDocument, orgName: string, categories: string[]): void {
     if (!item.classification) {
@@ -38,12 +36,14 @@ export function deleteOrgClassification(user, deleteClassification, settings, ca
     if (!(deleteClassification.categories instanceof Array)) {
         deleteClassification.categories = [deleteClassification.categories];
     }
-    mongo_data.updateJobStatus('deleteClassification', 'Running', err => {
+    updateJobStatus('deleteClassification', 'Running', err => {
         if (err) {
             return callback(err);
         }
-        mongo_data.orgByName(deleteClassification.orgName, (err, stewardOrg) => {
-            if (err) { return callback(err, stewardOrg); }
+        orgByName(deleteClassification.orgName, (err, stewardOrg) => {
+            if (err) {
+                return callback(err, stewardOrg);
+            }
             const fakeTree = {elements: stewardOrg.classifications, stewardOrg: {name: ''}};
             deleteCategory(fakeTree, deleteClassification.categories);
             stewardOrg.markModified('classifications');
@@ -68,7 +68,7 @@ export function deleteOrgClassification(user, deleteClassification, settings, ca
                                 });
                             }, () => {
                                 done();
-                                mongo_data.addToClassifAudit({
+                                addToClassifAudit({
                                     date: new Date(),
                                     user,
                                     elements: tinyIds.map(e => ({tinyId: e, eltType: 'cde'})),
@@ -76,7 +76,9 @@ export function deleteOrgClassification(user, deleteClassification, settings, ca
                                     path: [deleteClassification.orgName].concat(deleteClassification.categories)
                                 });
                             });
-                        } else { done(); }
+                        } else {
+                            done();
+                        }
                     })),
                     done => elasticsearch('form', query, settings, handleError({}, result => {
                         if (result && result.forms && result.forms.length > 0) {
@@ -91,7 +93,7 @@ export function deleteOrgClassification(user, deleteClassification, settings, ca
                                 });
                             }, () => {
                                 done();
-                                mongo_data.addToClassifAudit({
+                                addToClassifAudit({
                                     date: new Date(),
                                     user,
                                     elements: tinyIds.map(e => ({tinyId: e, eltType: 'form'})),
@@ -99,10 +101,12 @@ export function deleteOrgClassification(user, deleteClassification, settings, ca
                                     path: [deleteClassification.orgName].concat(deleteClassification.categories)
                                 });
                             });
-                        } else { done(); }
+                        } else {
+                            done();
+                        }
                     }))
                 ], handleError({}, () => {
-                    mongo_data.removeJobStatus('deleteClassification', callback);
+                    removeJobStatus('deleteClassification', callback);
                 }));
             });
         });
@@ -113,17 +117,21 @@ export function renameOrgClassification(user, newClassification, settings, callb
     if (!(newClassification.categories instanceof Array)) {
         newClassification.categories = [newClassification.categories];
     }
-    mongo_data.updateJobStatus('renameClassification', 'Running', err => {
+    updateJobStatus('renameClassification', 'Running', err => {
         if (err) {
             return callback(err);
         }
-        mongo_data.orgByName(newClassification.orgName, (err, stewardOrg) => {
-            if (err) { return callback(err, stewardOrg); }
+        orgByName(newClassification.orgName, (err, stewardOrg) => {
+            if (err) {
+                return callback(err, stewardOrg);
+            }
             const fakeTree = {elements: stewardOrg.classifications, stewardOrg: {name: ''}};
             renameCategory(fakeTree, newClassification.categories, newClassification.newName);
             stewardOrg.markModified('classifications');
             stewardOrg.save(err => {
-                if (err) { return callback(err, stewardOrg); }
+                if (err) {
+                    return callback(err, stewardOrg);
+                }
                 settings.selectedOrg = newClassification.orgName;
                 settings.selectedElements = newClassification.categories;
                 const query = buildElasticSearchQuery(user, settings);
@@ -142,7 +150,7 @@ export function renameOrgClassification(user, newClassification, settings, callb
                                 });
                             }, () => {
                                 done();
-                                mongo_data.addToClassifAudit({
+                                addToClassifAudit({
                                     date: new Date(),
                                     user,
                                     elements: tinyIds.map(e => ({tinyId: e, eltType: 'cde'})),
@@ -151,7 +159,9 @@ export function renameOrgClassification(user, newClassification, settings, callb
                                     newname: newClassification.newName
                                 });
                             });
-                        } else { done(); }
+                        } else {
+                            done();
+                        }
                     })),
                     done => elasticsearch('form', query, settings, handleError({}, result => {
                         if (result && result.forms && result.forms.length > 0) {
@@ -167,7 +177,7 @@ export function renameOrgClassification(user, newClassification, settings, callb
                                 });
                             }, () => {
                                 done();
-                                mongo_data.addToClassifAudit({
+                                addToClassifAudit({
                                     date: new Date(),
                                     user,
                                     elements: tinyIds.map(e => ({tinyId: e, eltType: 'form'})),
@@ -176,9 +186,11 @@ export function renameOrgClassification(user, newClassification, settings, callb
                                     newname: newClassification.newName
                                 });
                             });
-                        } else { done(); }
+                        } else {
+                            done();
+                        }
                     }))
-                ], handleError({}, () => mongo_data.removeJobStatus('renameClassification', callback)));
+                ], handleError({}, () => removeJobStatus('renameClassification', callback)));
             });
         });
     });
@@ -188,8 +200,10 @@ export function addOrgClassification(newClassification, callback) {
     if (!(newClassification.categories instanceof Array)) {
         newClassification.categories = [newClassification.categories];
     }
-    mongo_data.orgByName(newClassification.orgName, (err, stewardOrg) => {
-        if (err) { return callback(err, stewardOrg); }
+    orgByName(newClassification.orgName, (err, stewardOrg) => {
+        if (err) {
+            return callback(err, stewardOrg);
+        }
         addCategoriesToOrg(stewardOrg, newClassification.categories);
         stewardOrg.markModified('classifications');
         stewardOrg.save(callback);
@@ -197,16 +211,26 @@ export function addOrgClassification(newClassification, callback) {
 }
 
 export function reclassifyOrgClassification(user, oldClassification, newClassification, settings, callback) {
-    if (!(oldClassification.categories instanceof Array)) { oldClassification.categories = [oldClassification.categories]; }
-    if (!(newClassification.categories instanceof Array)) { newClassification.categories = [newClassification.categories]; }
-    mongo_data.updateJobStatus('reclassifyClassification', 'Running', err => {
-        if (err) { return callback(err); }
-        mongo_data.orgByName(newClassification.orgName, (err, stewardOrg) => {
-            if (err) { return callback(err, stewardOrg); }
+    if (!(oldClassification.categories instanceof Array)) {
+        oldClassification.categories = [oldClassification.categories];
+    }
+    if (!(newClassification.categories instanceof Array)) {
+        newClassification.categories = [newClassification.categories];
+    }
+    updateJobStatus('reclassifyClassification', 'Running', err => {
+        if (err) {
+            return callback(err);
+        }
+        orgByName(newClassification.orgName, (err, stewardOrg) => {
+            if (err) {
+                return callback(err, stewardOrg);
+            }
             addCategoriesToTree(stewardOrg, newClassification.categories);
             stewardOrg.markModified('classifications');
             stewardOrg.save(err => {
-                if (err) { return callback(err, stewardOrg); }
+                if (err) {
+                    return callback(err, stewardOrg);
+                }
                 settings.selectedOrg = oldClassification.orgName;
                 settings.selectedElements = oldClassification.categories;
                 const query = buildElasticSearchQuery(user, settings);
@@ -224,7 +248,7 @@ export function reclassifyOrgClassification(user, oldClassification, newClassifi
                                 });
                             }, () => {
                                 done();
-                                mongo_data.addToClassifAudit({
+                                addToClassifAudit({
                                     date: new Date(),
                                     user,
                                     elements: tinyIds.map(e => ({tinyId: e, eltType: 'cde'})),
@@ -232,7 +256,9 @@ export function reclassifyOrgClassification(user, oldClassification, newClassifi
                                     path: [newClassification.orgName].concat(newClassification.categories)
                                 });
                             });
-                        } else { done(); }
+                        } else {
+                            done();
+                        }
                     })),
                     done => elasticsearch('form', query, settings, handleError({}, result => {
                         if (result && result.forms && result.forms.length > 0) {
@@ -247,7 +273,7 @@ export function reclassifyOrgClassification(user, oldClassification, newClassifi
                                 });
                             }, () => {
                                 done();
-                                mongo_data.addToClassifAudit({
+                                addToClassifAudit({
                                     date: new Date(),
                                     user,
                                     elements: tinyIds.map(e => ({tinyId: e, eltType: 'form'})),
@@ -255,9 +281,11 @@ export function reclassifyOrgClassification(user, oldClassification, newClassifi
                                     path: [newClassification.orgName].concat(newClassification.categories)
                                 });
                             });
-                        } else { done(); }
+                        } else {
+                            done();
+                        }
                     }))
-                ], handleError({}, () => mongo_data.removeJobStatus('reclassifyClassification', callback)));
+                ], handleError({}, () => removeJobStatus('reclassifyClassification', callback)));
             });
         });
     });

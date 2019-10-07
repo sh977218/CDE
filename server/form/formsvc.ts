@@ -15,6 +15,7 @@ import { CdeForm } from 'shared/form/form.model';
 import { formToQuestionnaire } from 'shared/mapping/fhir/to/toQuestionnaire';
 import { CbError } from 'shared/models.model';
 import { canEditCuratedItem } from 'shared/system/authorizationShared';
+import { orgByName } from 'server/orgManagement/orgDb';
 
 const fs = require('fs');
 const path = require('path');
@@ -318,7 +319,7 @@ function publish(req: RequestWithItem, res: Response, draft: CdeFormDraft, optio
         return res.status(400).send();
     }
     const eltToArchive = req.item;
-    mongoData.orgByName(eltToArchive.stewardOrg.name, handleError(handlerOptions, org => {
+    orgByName(eltToArchive.stewardOrg.name, handleError(handlerOptions, org => {
         if (adminItemSvc.badWorkingGroupStatus(eltToArchive, org)) {
             return res.status(403).send();
         }
