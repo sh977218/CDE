@@ -11,7 +11,7 @@ addStringtype(mongoose);
 const Schema = mongoose.Schema;
 const StringType = (Schema.Types as any).StringType;
 
-let conceptSchema = new Schema({
+const conceptSchema = new Schema({
     name: StringType,
     origin: {type: StringType, description: 'Source of concept'},
     originId: {type: StringType, description: 'Identifier of concept from source'},

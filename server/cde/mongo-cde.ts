@@ -117,57 +117,6 @@ export function byTinyIdList(tinyIdList: string[], cb: CbError<DataElementElasti
         });
 }
 
-export function draftByTinyId(tinyId: string, cb: CbError<DataElementDraftDocument>) {
-    const cond = {
-        archived: false,
-        tinyId,
-    };
-    dataElementDraftModel.findOne(cond, cb);
-}
-
-export function draftById(id: string, cb: CbError<DataElementDraftDocument>) {
-    const cond = {
-        _id: id,
-    };
-    dataElementDraftModel.findOne(cond, cb);
-}
-
-export function draftSave(elt: DataElement, user: User, cb: CbError<DataElementDocument>): void {
-    updateUser(elt, user);
-    dataElementDraftModel.findById(elt._id, splitError(cb, doc => {
-        if (!doc) {
-            new dataElementDraftModel(elt).save(cb);
-            return;
-        }
-        if (doc.__v !== elt.__v) {
-            return cb();
-        }
-        const version = elt.__v;
-        elt.__v++;
-        dataElementDraftModel.findOneAndUpdate({_id: elt._id, __v: version}, elt, {new: true},
-            (err, doc) => cb(err, doc === null ? undefined : doc));
-    }));
-}
-
-export function draftDelete(tinyId: string, cb: CbError<DataElementDraftDocument>) {
-    dataElementDraftModel.remove({tinyId}, cb);
-}
-
-export function draftsList(criteria: any): Promise<DataElementDraftDocument[]>;
-export function draftsList(criteria: any, cb: CbError<DataElementDraftDocument>): void;
-export function draftsList(criteria: any, cb?: CbError<DataElementDraftDocument>): void | Promise<DataElementDraftDocument[]> {
-    return dataElementDraftModel
-        .find(criteria, {
-            'designations.designation': 1,
-            'stewardOrg.name': 1,
-            tinyId: 1,
-            updated: 1,
-            'updatedBy.username': 1,
-        })
-        .sort({updated: -1})
-        .exec(cb as any);
-}
-
 /* ---------- PUT NEW REST API Implementation above  ---------- */
 
 export function getStream(condition: any): QueryCursor<DataElementDocument> {
