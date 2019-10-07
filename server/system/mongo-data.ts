@@ -26,10 +26,8 @@ type AuditLog = any;
 export type ItemDocument = DataElementDocument | CdeFormDocument;
 export type Message = any;
 export type MessageDocument = Document & Message;
-export type UserDocument = Document & UserFull;
 export type ObjectId = Types.ObjectId;
 export const objectId = Types.ObjectId;
-export type OrganizationDocument = Document & Organization;
 
 export interface PushRegistration {
     _id: ObjectId;

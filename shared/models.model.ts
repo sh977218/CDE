@@ -541,6 +541,7 @@ export type NotificationSettings = {
 };
 
 export class Organization {
+    _id?: string;
     cdeStatusValidationRules?: StatusValidationRules[];
     classifications?: ClassificationElement[];
     count?: number; // calculated, from elastic

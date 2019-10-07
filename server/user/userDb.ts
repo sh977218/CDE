@@ -1,7 +1,6 @@
 import * as mongoose from 'mongoose';
-import { Model } from 'mongoose';
+import { Document, Model } from 'mongoose';
 import { establishConnection } from 'server/system/connections';
-import { UserDocument } from 'server/system/mongo-data';
 import { addStringtype } from 'server/system/mongoose-stringtype';
 import { config } from 'server/system/parseConfig';
 import { hasRole, rolesEnum } from 'shared/system/authorizationShared';
@@ -110,7 +109,7 @@ export const userRefSchema = {
     _id: Schema.Types.ObjectId,
     username: {type: StringType, index: true}
 };
-
+export type UserDocument = Document & UserFull;
 export const userModel: Model<UserDocument> = conn.model('User', userSchema);
 
 const userProject = {password: 0};

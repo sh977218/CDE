@@ -1,3 +1,4 @@
+import { Router } from 'express';
 import { isOrgAdminMiddleware, isOrgAuthorityMiddleware, nocacheMiddleware } from 'server/system/authorization';
 import {
     addNewOrg, addOrgAdmin, addOrgCurator, myOrgsAdmins, orgAdmins, orgCurators, removeOrgAdmin, removeOrgCurator
@@ -5,7 +6,7 @@ import {
 import { allOrgNames, listOrgsDetailedInfo, managedOrgs, orgByName, updateOrg } from 'server/orgManagement/orgDb';
 
 export function module() {
-    const router = require('express').Router();
+    const router = Router();
 
     router.get('/org/:name', nocacheMiddleware, (req, res) => {
         return orgByName(req.params.name, (err, result) => res.send(result));
@@ -32,7 +33,7 @@ export function module() {
         res.send(result);
     });
 
-    router.get('/orgAdmins', [nocacheMiddleware, isOrgAuthorityMiddleware], async (req, res) => {
+    router.get('/orgAdmins', nocacheMiddleware, isOrgAuthorityMiddleware, async (req, res) => {
         const result = await orgAdmins();
         res.send(result);
     });
