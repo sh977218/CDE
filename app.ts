@@ -69,7 +69,7 @@ const app = express();
 app.use(helmet());
 app.use(helmet.contentSecurityPolicy({
     directives: {
-        defaultSrc: ["'self'", 'fonts.gstatic.com'],
+        defaultSrc: ["'self'", 'fonts.gstatic.com', '*.youtube.com'],
         fontSrc: ["'self'", 'fonts.gstatic.com', '*.nih.gov'],
         scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", 'cdn.ckeditor.com', 'cdn.jsdelivr.net',
             'cdnjs.cloudflare.com', '*.nih.gov', 'ajax.googleapis.com', 'www.googletagmanager.com', 'www.google-analytics.com'],
@@ -78,8 +78,7 @@ app.use(helmet.contentSecurityPolicy({
         imgSrc: ["'self'", 'data:', 'cdn.ckeditor.com', '*.nih.gov', 'www.google-analytics.com'],
         connectSrc: ['*'],
         reportUri: 'https://nlmoccs.report-uri.com/r/d/csp/reportOnly',
-        workerSrc: ['*'],
-        frameSrc: ["'self'", '*.youtube.com']
+        workerSrc: ['*']
     }
 }));
 app.use(helmet.referrerPolicy({policy: 'same-origin'}));
