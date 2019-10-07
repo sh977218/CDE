@@ -78,7 +78,7 @@ export class ClassifyItemModalComponent {
 
     onChangeOrg(value: string) {
         if (value) {
-            this.http.get('/server/orgManagement/org/' + value).subscribe(
+            this.http.get('/server/orgManagement/org/' + encodeURIComponent(value)).subscribe(
                 org => {
                     this.selectedOrg = value;
                     this.orgClassificationsTreeView = org;
