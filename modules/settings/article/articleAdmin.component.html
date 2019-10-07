@@ -5,6 +5,5 @@
     </mat-select>
 </mat-form-field>
 
-<cde-inline-area-edit *ngIf="article"
-                      [(model)]="article.body" [defFormat]="'html'" [isAllowed]="true"
+<cde-inline-area-edit *ngIf="article" [(model)]="article.body" [defFormat]="'html'" [isAllowed]="true"
                       (modelChange)="save()"></cde-inline-area-edit>

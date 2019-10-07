@@ -9,7 +9,7 @@ import { Article } from 'shared/article/article.model';
 })
 export class ArticleAdminComponent {
     article?: Partial<Article>;
-    articles = ['whatsNew', 'contactUs'];
+    articles = ['whatsNew', 'contactUs', 'video'];
     selectedKey?: string;
 
     constructor(private http: HttpClient,
