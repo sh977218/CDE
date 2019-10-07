@@ -53,6 +53,7 @@ import { UsersMgtComponent } from 'settings/usersMgt/usersMgt.component';
 import { ViewingHistoryComponent } from 'settings/viewingHistory/viewingHistory.component';
 import { TagModule } from 'tag/tag.module';
 import { UsernameAutocompleteModule } from 'usernameAutocomplete/usernameAutocomplete.module';
+import { ResourcesHelpDialogComponent } from 'settings/resources/resourceHelpDialog.component';
 
 const appRoutes: Routes = [
     {
@@ -295,6 +296,7 @@ const appRoutes: Routes = [
         OrgCuratorComponent,
         ProfileComponent,
         PropertiesManagementComponent,
+        ResourcesHelpDialogComponent,
         ResourcesAdminComponent,
         ServerStatusComponent,
         SettingsComponent,
@@ -304,7 +306,7 @@ const appRoutes: Routes = [
         UsersMgtComponent,
         ViewingHistoryComponent
     ],
-    entryComponents: [],
+    entryComponents: [ResourcesHelpDialogComponent],
     exports: [],
     providers: [
         DraftsService,
