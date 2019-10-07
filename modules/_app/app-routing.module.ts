@@ -71,7 +71,7 @@ const appRoutes: Routes = [
         OrgAdminGuard,
         OrgAuthorityGuard,
         OrgCuratorGuard,
-        SiteAdminGuard,
+        SiteAdminGuard
     ],
     exports: [RouterModule]
 })

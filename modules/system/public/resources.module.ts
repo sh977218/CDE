@@ -5,7 +5,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { ResourcesComponent } from 'system/public/components/resources/resources.component';
 import { ResourceResolve } from 'system/public/components/resources/resources.resolve';
 import { ResourcesRssComponent } from 'system/public/components/resources/resourcesRss.component';
-import { SafeHtmlPipe } from '_app/safeHtml.pipe';
+import { NonCoreModule } from 'non-core/noncore.module';
 
 const appRoutes: Routes = [
     {path: '', resolve: {resource: ResourceResolve}, component: ResourcesComponent},
@@ -15,20 +15,19 @@ const appRoutes: Routes = [
     imports: [
         CommonModule,
         RouterModule.forChild(appRoutes),
-
+        NonCoreModule,
         MatCardModule,
         MatButtonModule,
         MatIconModule,
         MatListModule,
     ],
     declarations: [
-        SafeHtmlPipe,
         ResourcesComponent,
         ResourcesRssComponent
     ],
     entryComponents: [ResourcesRssComponent],
     exports: [],
-    providers: [ResourceResolve, SafeHtmlPipe],
+    providers: [ResourceResolve],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class ResourcesModule {

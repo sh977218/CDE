@@ -78,7 +78,8 @@ app.use(helmet.contentSecurityPolicy({
         imgSrc: ["'self'", 'data:', 'cdn.ckeditor.com', '*.nih.gov', 'www.google-analytics.com'],
         connectSrc: ['*'],
         reportUri: 'https://nlmoccs.report-uri.com/r/d/csp/reportOnly',
-        workerSrc: ['*']
+        workerSrc: ['*'],
+        frameSrc: ["'self'", '*.youtube.com']
     }
 }));
 app.use(helmet.referrerPolicy({policy: 'same-origin'}));
