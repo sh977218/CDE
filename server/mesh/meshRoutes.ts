@@ -1,51 +1,54 @@
-import { handleError } from '../errorHandler/errorHandler';
-import { config } from '../system/parseConfig';
+import { Router } from 'express';
+import { handleError, handleNotFound } from 'server/errorHandler/errorHandler';
+import { byEltId, byFlatClassification, byId, MeshClassificationDocument } from 'server/mesh/meshDb';
+import { config } from 'server/system/parseConfig';
+import { Cb } from 'shared/models.model';
 
 const async = require('async');
 const request = require('request');
 const elastic = require('./elastic');
 const meshDb = require('./meshDb');
 
-let meshTopTreeMap = {
-    A: "Anatomy",
-    B: "Organisms",
-    C: "Diseases",
-    D: "Chemicals and Drugs",
-    E: "Analytical, Diagnostic and Therapeutic Techniques, and Equipment",
-    F: "Psychiatry and Psychology",
-    G: "Phenomena and Processes",
-    H: "Disciplines and Occupations",
-    I: "Anthropology, Education, Sociology, and Social Phenomena",
-    J: "Technology, Industry, and Agriculture",
-    K: "Humanities",
-    L: "Information Science",
-    M: "Named Groups",
-    N: "Health Care",
-    V: "Publication Characteristics",
-    Z: "Geographicals"
+const meshTopTreeMap = {
+    A: 'Anatomy',
+    B: 'Organisms',
+    C: 'Diseases',
+    D: 'Chemicals and Drugs',
+    E: 'Analytical, Diagnostic and Therapeutic Techniques, and Equipment',
+    F: 'Psychiatry and Psychology',
+    G: 'Phenomena and Processes',
+    H: 'Disciplines and Occupations',
+    I: 'Anthropology, Education, Sociology, and Social Phenomena',
+    J: 'Technology, Industry, and Agriculture',
+    K: 'Humanities',
+    L: 'Information Science',
+    M: 'Named Groups',
+    N: 'Health Care',
+    V: 'Publication Characteristics',
+    Z: 'Geographicals'
 };
 
 export function module(roleConfig) {
-    const router = require('express').Router();
+    const router = Router();
 
     router.get('/eltId/:eltId', (req, res) => {
-        meshDb.byEltId(req.params.eltId, handleError({req, res}, mm => res.send(mm.length ? mm[0] : '{}')));
+        byEltId(req.params.eltId, handleNotFound({req, res}, mm => res.send(mm.length ? mm[0] : '{}')));
     });
 
     router.post('/meshClassification', (req, res) => {
         if (req.body._id) {
-            let id = req.body._id;
+            const id = req.body._id;
             delete req.body._id;
-            flatTreesFromMeshDescriptorArray(req.body.meshDescriptors, function (trees) {
+            flatTreesFromMeshDescriptorArray(req.body.meshDescriptors, (trees) => {
                 req.body.flatTrees = trees;
-                meshDb.byId(id, handleError({req, res}, elt => {
+                byId(id, handleNotFound({req, res}, elt => {
                     elt.meshDescriptors = req.body.meshDescriptors;
                     elt.flatTrees = req.body.flatTrees;
-                    elt.save(handleError({req, res}, o => res.send(o)));
+                    elt.save(handleError<MeshClassificationDocument>({req, res}, o => res.send(o)));
                 }));
             });
         } else {
-            flatTreesFromMeshDescriptorArray(req.body.meshDescriptors, function (trees) {
+            flatTreesFromMeshDescriptorArray(req.body.meshDescriptors, (trees) => {
                 req.body.flatTrees = trees;
                 meshDb.newMesh(req.body, handleError({req, res}, o => res.send(o)));
             });
@@ -57,12 +60,14 @@ export function module(roleConfig) {
     });
 
     router.get('/meshClassification', (req, res) => {
-        if (!req.query.classification) return res.status(400).send("Missing Classification Parameter");
-        meshDb.byFlatClassification(req.query.classification, handleError({req, res}, mm => res.send(mm[0])));
+        if (!req.query.classification) {
+            return res.status(400).send('Missing Classification Parameter');
+        }
+        byFlatClassification(req.query.classification, handleNotFound({req, res}, mm => res.send(mm[0])));
     });
 
 
-    router.post("/syncWithMesh", [roleConfig.allowSyncMesh], (req, res) => {
+    router.post('/syncWithMesh', roleConfig.allowSyncMesh, (req, res) => {
         elastic.syncWithMesh();
         res.send();
     });
@@ -75,19 +80,19 @@ export function module(roleConfig) {
 
 }
 
-function flatTreesFromMeshDescriptorArray(descArr, cb) {
-    let allTrees = new Set();
-    async.each(descArr, function (desc, oneDescDone) {
-        request(config.mesh.baseUrl + "/api/record/ui/" + desc, {json: true}, function (err, response, oneDescBody) {
-            async.each(oneDescBody.TreeNumberList.TreeNumber, function (treeNumber, tnDone) {
-                request(config.mesh.baseUrl + "/api/tree/parents/" + treeNumber.t, {json: true}, function (err, response, oneTreeBody) {
+function flatTreesFromMeshDescriptorArray(descArr: string[], cb: Cb<string[]>) {
+    const allTrees = new Set();
+    async.each(descArr, (desc, oneDescDone) => {
+        request(config.mesh.baseUrl + '/api/record/ui/' + desc, {json: true}, (err, response, oneDescBody) => {
+            async.each(oneDescBody.TreeNumberList.TreeNumber, (treeNumber, tnDone) => {
+                request(config.mesh.baseUrl + '/api/tree/parents/' + treeNumber.t, {json: true}, (err, response, oneTreeBody) => {
                     let flatTree = meshTopTreeMap[treeNumber.t.substr(0, 1)];
                     if (oneTreeBody && oneTreeBody.length > 0) {
-                        flatTree = flatTree + ";" + oneTreeBody.map(function (a) {
+                        flatTree = flatTree + ';' + oneTreeBody.map((a) => {
                             return a.RecordName;
-                        }).join(";");
+                        }).join(';');
                     }
-                    flatTree = flatTree + ";" + oneDescBody.DescriptorName.String.t;
+                    flatTree = flatTree + ';' + oneDescBody.DescriptorName.String.t;
                     allTrees.add(flatTree);
                     tnDone();
                 });

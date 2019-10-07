@@ -1,12 +1,12 @@
-import { getStream } from '../server/cde/mongo-cde';
-import { esClient } from '../server/system/elastic';
 import * as Config from 'config';
+import { DataElementDocument, getStream } from 'server/cde/mongo-cde';
+import { esClient } from 'server/system/elastic';
 
 const config = Config as any;
 let i = 0;
 
 const stream = getStream({archived: false});
-stream.on('data', function(elt) {
+stream.on('data', (elt: DataElementDocument) => {
     stream.pause();
     esClient.search({
         index: config.elastic.index.name,
@@ -18,19 +18,19 @@ stream.on('data', function(elt) {
                 }
             }
         }
-    }).then(function(resp) {
+    }).then((resp) => {
         i++;
         if (i % 500 === 0) {
-            console.log("Done: " + i);
+            console.log('Done: ' + i);
         }
         if (resp.hits.hits.length !== 1) {
-            console.log("Not Found: " + elt.tinyId);
+            console.log('Not Found: ' + elt.tinyId);
         }
         stream.resume();
-    }, function (err) {
-        console.log("ERROR: " + err);
+    }, (err) => {
+        console.log('ERROR: ' + err);
     });
 });
-stream.on('end', function() {
+stream.on('end', () => {
     process.exit();
 });

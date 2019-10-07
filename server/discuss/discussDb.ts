@@ -1,23 +1,23 @@
 import * as mongoose from 'mongoose';
-import { addStringtype } from '../system/mongoose-stringtype';
-import { config } from '../system/parseConfig';
-import { CbError } from 'shared/models.model';
+import { Document } from 'mongoose';
+import { establishConnection } from 'server/system/connections';
+import { ObjectId } from 'server/system/mongo-data';
+import { addStringtype } from 'server/system/mongoose-stringtype';
+import { config } from 'server/system/parseConfig';
+import { userRefSchema } from 'server/user/userDb';
+import { CbError, Comment as CommentClient } from 'shared/models.model';
 
 addStringtype(mongoose);
 const Schema = mongoose.Schema;
 const StringType = (Schema.Types as any).StringType;
-
-const _ = require('lodash');
-const connHelper = require('../system/connections');
-const conn = connHelper.establishConnection(config.database.appData);
-const userDb = require('../user/userDb');
+const conn = establishConnection(config.database.appData);
 
 const replySchema = {
     created: Date,
     pendingApproval: {type: Boolean, index: true},
     status: {type: StringType, enum: ['active', 'resolved', 'deleted'], default: 'active'},
     text: StringType,
-    user: userDb.userRefSchema,
+    user: userRefSchema,
 };
 
 export const commentSchema = new Schema(Object.assign({
@@ -29,18 +29,19 @@ export const commentSchema = new Schema(Object.assign({
     replies: [replySchema],
 }, replySchema), {usePushEach: true});
 
-type CommentDocument = Comment & {organizationName: string} & mongoose.Document;
-export const Comment: mongoose.Model<CommentDocument> = conn.model('Comment', commentSchema);
+export type Comment = CommentClient & {organizationName: string, user: {userId: ObjectId}};
+export type CommentDocument = Document & Comment;
+export const commentModel: mongoose.Model<CommentDocument> = conn.model('Comment', commentSchema);
 
-export function byId(id, cb) {
-    Comment.findById(id, cb);
+export function byId(id: string, cb: CbError<CommentDocument>) {
+    commentModel.findById(id, cb);
 }
 
-export function byReplyId(id, cb) {
-    Comment.findOne({'replies._id': id}, cb);
+export function byReplyId(id: string, cb: CbError<CommentDocument>) {
+    commentModel.findOne({'replies._id': id}, cb);
 }
 
-export function byEltId(id, cb) {
+export function byEltId(id: string, cb: CbError<CommentDocument[]>) {
     const aggregate = [
         {$match: {'element.eltId': id}},
         {
@@ -57,18 +58,19 @@ export function byEltId(id, cb) {
         {$replaceRoot: {newRoot: {$mergeObjects: [{$arrayElemAt: ['$__user', 0]}, '$$ROOT']}}},
         {$project: {__user: 0}}
     ];
-    Comment.aggregate(aggregate, cb);
+    commentModel.aggregate(aggregate, cb);
 }
 
-export function save(comment, cb) {
-    new Comment(comment).save(cb);
+export function save(comment: Comment, cb: CbError<CommentDocument>) {
+    new commentModel(comment).save(cb);
 }
 
 // export function commentsByCriteria(criteria, from, size, cb: CbError<CommentDocument[]>) {
-//     Comment.find(criteria).skip(from).limit(size).sort({created: -1}).exec(cb);
+//     commentModel.find(criteria).skip(from).limit(size).sort({created: -1}).exec(cb);
 // }
 
-export function orgCommentsByCriteria(criteria: any, myOrgs: string[] | undefined, from: number, size: number, cb: CbError<CommentDocument[]>) {
+export function orgCommentsByCriteria(criteria: any, myOrgs: string[] | undefined, from: number, size: number,
+                                      cb: CbError<CommentDocument[]>) {
     let aggs: any[] = [
         {$match: criteria},
         {
@@ -136,15 +138,15 @@ export function orgCommentsByCriteria(criteria: any, myOrgs: string[] | undefine
     if (size > 0) {
         aggs.push({$limit: size});
     }
-    Comment.aggregate(aggs, cb);
+    commentModel.aggregate(aggs, cb);
 }
 
 export function unapproved() {
-    return Comment.find({$or: [{pendingApproval: true}, {'replies.pendingApproval': true}]});
+    return commentModel.find({$or: [{pendingApproval: true}, {'replies.pendingApproval': true}]});
 }
 
-export function numberUnapprovedMessageByUsername(username) {
-    return Comment.countDocuments({
+export function numberUnapprovedMessageByUsername(username: string) {
+    return commentModel.countDocuments({
         $or: [{'user.username': username, pendingApproval: true},
             {'replies.user.username': username, 'replies.pendingApproval': true}]
     });

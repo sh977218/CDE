@@ -1,6 +1,6 @@
 import { find, slice, sortBy, uniqWith } from 'lodash';
 import {
-    Cb, Cb1, Classification, ClassificationElement, Item, MongooseType, ObjectId, Organization
+    Cb, Cb1, Classification, ClassificationElement, Item, ObjectId, Organization
 } from 'shared/models.model';
 
 export const actions: {
@@ -48,25 +48,6 @@ export function arrangeClassification(item: Item, orgName: string): void {
     }
 }
 
-export function classifyItem(item: MongooseType<Item>, orgName: string, categories: string[]): void {
-    if (!item.classification) {
-        item.classification = [];
-    }
-    let classification = find(item.classification, (o: Classification) => o.stewardOrg && o.stewardOrg.name === orgName);
-    if (!classification) {
-        classification = {
-            stewardOrg: {name: orgName},
-            elements: []
-        };
-        item.classification.push(classification);
-    }
-    addCategoriesToTree(classification, categories);
-    arrangeClassification(item, orgName);
-    if (item.markModified) {
-        item.markModified('classification');
-    }
-}
-
 export function findLeaf(classification: Classification, categories: string[]): any {
     let notExist = false;
     let leaf: Classification | ClassificationElement | undefined = classification;
@@ -88,36 +69,6 @@ export function findLeaf(classification: Classification, categories: string[]): 
             leaf,
             parent,
         };
-    }
-}
-
-export function renameClassifyElt(item: MongooseType<Item>, orgName: string, categories: string[], newName: string): void {
-    if (!item.classification) {
-        item.classification = [];
-    }
-    const classification = find(item.classification, (o: Classification) => o.stewardOrg && o.stewardOrg.name === orgName);
-    if (classification) {
-        const leaf = findLeaf(classification, categories);
-        if (leaf) {
-            leaf.leaf.name = newName;
-            arrangeClassification(item, orgName);
-            if (item.markModified) {
-                item.markModified('classification');
-            }
-        }
-    }
-}
-
-export function unclassifyElt(item: MongooseType<Item>, orgName: string, categories: string[]): any {
-    const classification = find(item.classification, (o: Classification) => o.stewardOrg && o.stewardOrg.name === orgName);
-    if (classification) {
-        const leaf = findLeaf(classification, categories);
-        if (leaf) {
-            leaf.parent.elements.splice(leaf.index, 1);
-            if (item.markModified) {
-                item.markModified('classification');
-            }
-        }
     }
 }
 

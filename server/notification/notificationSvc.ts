@@ -1,4 +1,10 @@
-export function typeToCriteria(type, {org, users} = {org: undefined, users: []}) {
+import { ObjectId } from 'server/system/mongo-data';
+import { Dictionary } from 'async';
+
+export type NotificationType = 'approvalAttachmentReviewer' | 'approvalCommentReviewer' | 'comment';
+
+export function typeToCriteria(type: NotificationType,
+                               {org, users} = {org: undefined, users: []} as {org?: string, users: ObjectId[]}) {
     let result = {findNone: 1} as any;
     switch (type) {
         case 'approvalAttachmentReviewer':
@@ -29,12 +35,12 @@ export function typeToCriteria(type, {org, users} = {org: undefined, users: []})
     return result;
 }
 
-export function typeToNotificationSetting(type) {
-    return {
+export function typeToNotificationSetting(type: NotificationType): string {
+    return ({
         approvalAttachmentReviewer: 'approvalAttachment',
         approvalCommentReviewer: 'approvalComment',
         comment: 'comment'
-    }[type] || 'noMatch';
+    } as Dictionary<string>)[type] || 'noMatch';
 }
 
 export function criteriaSet(criteria, set) {

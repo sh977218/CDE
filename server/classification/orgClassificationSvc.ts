@@ -1,23 +1,42 @@
+import { find } from 'lodash';
+import { byTinyId as deByTinyId, dataElementModel } from 'server/cde/mongo-cde';
+import { handleError } from 'server/errorHandler/errorHandler';
+import { byTinyId as formByTinyId, formModel } from 'server/form/mongo-form';
+import { buildElasticSearchQuery, elasticsearch } from 'server/system/elastic';
+import { addToClassifAudit, ItemDocument, removeJobStatus, updateJobStatus } from 'server/system/mongo-data';
+import { Classification } from 'shared/models.model';
 import {
-    addCategoriesToOrg, addCategoriesToTree, classifyItem, deleteCategory, mergeOrgClassifications, OrgClassification,
-    renameCategory, renameClassifyElt, unclassifyElt
+    addCategoriesToOrg, addCategoriesToTree, arrangeClassification, deleteCategory, findLeaf, mergeOrgClassifications,
+    OrgClassification, renameCategory,
 } from 'shared/system/classificationShared';
-import { DataElement } from 'server/cde/mongo-cde';
-import { Form } from 'server/form/mongo-form';
-import { handleError } from '../errorHandler/errorHandler';
 import { orgByName } from 'server/orgManagement/orgDb';
 
 const async = require('async');
-const mongo_cde = require('../cde/mongo-cde');
-const mongo_form = require('../form/mongo-form');
-const mongo_data = require('../system/mongo-data');
-const elastic = require('../system/elastic');
+
+export function classifyItem(item: ItemDocument, orgName: string, categories: string[]): void {
+    if (!item.classification) {
+        item.classification = [];
+    }
+    let classification = find(item.classification, (o: Classification) => o.stewardOrg && o.stewardOrg.name === orgName);
+    if (!classification) {
+        classification = {
+            stewardOrg: {name: orgName},
+            elements: []
+        };
+        item.classification.push(classification);
+    }
+    addCategoriesToTree(classification, categories);
+    arrangeClassification(item, orgName);
+    if (item.markModified) {
+        item.markModified('classification');
+    }
+}
 
 export function deleteOrgClassification(user, deleteClassification, settings, callback) {
     if (!(deleteClassification.categories instanceof Array)) {
         deleteClassification.categories = [deleteClassification.categories];
     }
-    mongo_data.updateJobStatus('deleteClassification', 'Running', err => {
+    updateJobStatus('deleteClassification', 'Running', err => {
         if (err) {
             return callback(err);
         }
@@ -34,13 +53,13 @@ export function deleteOrgClassification(user, deleteClassification, settings, ca
                 }
                 settings.selectedOrg = deleteClassification.orgName;
                 settings.selectedElements = deleteClassification.categories;
-                const query = elastic.buildElasticSearchQuery(user, settings);
+                const query = buildElasticSearchQuery(user, settings);
                 async.parallel([
-                    done => elastic.elasticsearch('cde', query, settings, handleError({}, result => {
+                    done => elasticsearch('cde', query, settings, handleError({}, result => {
                         if (result && result.cdes && result.cdes.length > 0) {
                             const tinyIds = result.cdes.map(c => c.tinyId);
                             async.eachLimit(tinyIds, 100, (tinyId, doneOne) => {
-                                mongo_cde.byTinyId(tinyId, (err, de) => {
+                                deByTinyId(tinyId, (err, de) => {
                                     if (err) {
                                         return doneOne(err);
                                     }
@@ -49,7 +68,7 @@ export function deleteOrgClassification(user, deleteClassification, settings, ca
                                 });
                             }, () => {
                                 done();
-                                mongo_data.addToClassifAudit({
+                                addToClassifAudit({
                                     date: new Date(),
                                     user,
                                     elements: tinyIds.map(e => ({tinyId: e, eltType: 'cde'})),
@@ -61,11 +80,11 @@ export function deleteOrgClassification(user, deleteClassification, settings, ca
                             done();
                         }
                     })),
-                    done => elastic.elasticsearch('form', query, settings, handleError({}, result => {
+                    done => elasticsearch('form', query, settings, handleError({}, result => {
                         if (result && result.forms && result.forms.length > 0) {
                             const tinyIds = result.forms.map(c => c.tinyId);
                             async.eachLimit(tinyIds, 100, (tinyId, doneOne) => {
-                                mongo_form.byTinyId(tinyId, (err, form) => {
+                                formByTinyId(tinyId, (err, form) => {
                                     if (err) {
                                         return doneOne(err);
                                     }
@@ -74,7 +93,7 @@ export function deleteOrgClassification(user, deleteClassification, settings, ca
                                 });
                             }, () => {
                                 done();
-                                mongo_data.addToClassifAudit({
+                                addToClassifAudit({
                                     date: new Date(),
                                     user,
                                     elements: tinyIds.map(e => ({tinyId: e, eltType: 'form'})),
@@ -87,7 +106,7 @@ export function deleteOrgClassification(user, deleteClassification, settings, ca
                         }
                     }))
                 ], handleError({}, () => {
-                    mongo_data.removeJobStatus('deleteClassification', callback);
+                    removeJobStatus('deleteClassification', callback);
                 }));
             });
         });
@@ -98,7 +117,7 @@ export function renameOrgClassification(user, newClassification, settings, callb
     if (!(newClassification.categories instanceof Array)) {
         newClassification.categories = [newClassification.categories];
     }
-    mongo_data.updateJobStatus('renameClassification', 'Running', err => {
+    updateJobStatus('renameClassification', 'Running', err => {
         if (err) {
             return callback(err);
         }
@@ -115,13 +134,13 @@ export function renameOrgClassification(user, newClassification, settings, callb
                 }
                 settings.selectedOrg = newClassification.orgName;
                 settings.selectedElements = newClassification.categories;
-                const query = elastic.buildElasticSearchQuery(user, settings);
+                const query = buildElasticSearchQuery(user, settings);
                 async.parallel([
-                    done => elastic.elasticsearch('cde', query, settings, handleError({}, result => {
+                    done => elasticsearch('cde', query, settings, handleError({}, result => {
                         if (result && result.cdes && result.cdes.length > 0) {
                             const tinyIds = result.cdes.map(c => c.tinyId);
                             async.eachLimit(tinyIds, 100, (tinyId, doneOne) => {
-                                mongo_cde.byTinyId(tinyId, (err, de) => {
+                                deByTinyId(tinyId, (err, de) => {
                                     if (err) {
                                         return doneOne(err);
                                     }
@@ -131,7 +150,7 @@ export function renameOrgClassification(user, newClassification, settings, callb
                                 });
                             }, () => {
                                 done();
-                                mongo_data.addToClassifAudit({
+                                addToClassifAudit({
                                     date: new Date(),
                                     user,
                                     elements: tinyIds.map(e => ({tinyId: e, eltType: 'cde'})),
@@ -144,11 +163,11 @@ export function renameOrgClassification(user, newClassification, settings, callb
                             done();
                         }
                     })),
-                    done => elastic.elasticsearch('form', query, settings, handleError({}, result => {
+                    done => elasticsearch('form', query, settings, handleError({}, result => {
                         if (result && result.forms && result.forms.length > 0) {
                             const tinyIds = result.forms.map(c => c.tinyId);
                             async.eachLimit(tinyIds, 100, (tinyId, doneOne) => {
-                                mongo_form.byTinyId(tinyId, (err, form) => {
+                                formByTinyId(tinyId, (err, form) => {
                                     if (err) {
                                         return doneOne(err);
                                     }
@@ -158,7 +177,7 @@ export function renameOrgClassification(user, newClassification, settings, callb
                                 });
                             }, () => {
                                 done();
-                                mongo_data.addToClassifAudit({
+                                addToClassifAudit({
                                     date: new Date(),
                                     user,
                                     elements: tinyIds.map(e => ({tinyId: e, eltType: 'form'})),
@@ -171,7 +190,7 @@ export function renameOrgClassification(user, newClassification, settings, callb
                             done();
                         }
                     }))
-                ], handleError({}, () => mongo_data.removeJobStatus('renameClassification', callback)));
+                ], handleError({}, () => removeJobStatus('renameClassification', callback)));
             });
         });
     });
@@ -198,7 +217,7 @@ export function reclassifyOrgClassification(user, oldClassification, newClassifi
     if (!(newClassification.categories instanceof Array)) {
         newClassification.categories = [newClassification.categories];
     }
-    mongo_data.updateJobStatus('reclassifyClassification', 'Running', err => {
+    updateJobStatus('reclassifyClassification', 'Running', err => {
         if (err) {
             return callback(err);
         }
@@ -214,13 +233,13 @@ export function reclassifyOrgClassification(user, oldClassification, newClassifi
                 }
                 settings.selectedOrg = oldClassification.orgName;
                 settings.selectedElements = oldClassification.categories;
-                const query = elastic.buildElasticSearchQuery(user, settings);
+                const query = buildElasticSearchQuery(user, settings);
                 async.parallel([
-                    done => elastic.elasticsearch('cde', query, settings, handleError({}, result => {
+                    done => elasticsearch('cde', query, settings, handleError({}, result => {
                         if (result && result.cdes && result.cdes.length > 0) {
                             const tinyIds = result.cdes.map(c => c.tinyId);
                             async.eachLimit(tinyIds, 100, (tinyId, doneOne) => {
-                                mongo_cde.byTinyId(tinyId, (err, form) => {
+                                deByTinyId(tinyId, (err, form) => {
                                     if (err) {
                                         return doneOne(err);
                                     }
@@ -229,7 +248,7 @@ export function reclassifyOrgClassification(user, oldClassification, newClassifi
                                 });
                             }, () => {
                                 done();
-                                mongo_data.addToClassifAudit({
+                                addToClassifAudit({
                                     date: new Date(),
                                     user,
                                     elements: tinyIds.map(e => ({tinyId: e, eltType: 'cde'})),
@@ -241,11 +260,11 @@ export function reclassifyOrgClassification(user, oldClassification, newClassifi
                             done();
                         }
                     })),
-                    done => elastic.elasticsearch('form', query, settings, handleError({}, result => {
+                    done => elasticsearch('form', query, settings, handleError({}, result => {
                         if (result && result.forms && result.forms.length > 0) {
-                            const tinyIds = result.cdes.map(c => c.tinyId);
+                            const tinyIds = result.forms.map(c => c.tinyId);
                             async.eachLimit(tinyIds, 100, (tinyId, doneOne) => {
-                                mongo_form.byTinyId(tinyId, (err, de) => {
+                                formByTinyId(tinyId, (err, de) => {
                                     if (err) {
                                         return doneOne(err);
                                     }
@@ -254,7 +273,7 @@ export function reclassifyOrgClassification(user, oldClassification, newClassifi
                                 });
                             }, () => {
                                 done();
-                                mongo_data.addToClassifAudit({
+                                addToClassifAudit({
                                     date: new Date(),
                                     user,
                                     elements: tinyIds.map(e => ({tinyId: e, eltType: 'form'})),
@@ -266,10 +285,40 @@ export function reclassifyOrgClassification(user, oldClassification, newClassifi
                             done();
                         }
                     }))
-                ], handleError({}, () => mongo_data.removeJobStatus('reclassifyClassification', callback)));
+                ], handleError({}, () => removeJobStatus('reclassifyClassification', callback)));
             });
         });
     });
+}
+
+export function renameClassifyElt(item: ItemDocument, orgName: string, categories: string[], newName: string): void {
+    if (!item.classification) {
+        item.classification = [];
+    }
+    const classification = find(item.classification, (o: Classification) => o.stewardOrg && o.stewardOrg.name === orgName);
+    if (classification) {
+        const leaf = findLeaf(classification, categories);
+        if (leaf) {
+            leaf.leaf.name = newName;
+            arrangeClassification(item, orgName);
+            if (item.markModified) {
+                item.markModified('classification');
+            }
+        }
+    }
+}
+
+export function unclassifyElt(item: ItemDocument, orgName: string, categories: string[]): any {
+    const classification = find(item.classification, (o: Classification) => o.stewardOrg && o.stewardOrg.name === orgName);
+    if (classification) {
+        const leaf = findLeaf(classification, categories);
+        if (leaf) {
+            leaf.parent.elements.splice(leaf.index, 1);
+            if (item.markModified) {
+                item.markModified('classification');
+            }
+        }
+    }
 }
 
 export async function updateOrgClassification(orgName): Promise<any[]> {
@@ -279,8 +328,7 @@ export async function updateOrgClassification(orgName): Promise<any[]> {
         {$match: {archived: false, 'classification.stewardOrg.name': orgName}},
         {$group: {_id: '$classification.stewardOrg.name', elements: {$addToSet: '$classification'}}}
     ];
-    const cdeClassifications: OrgClassification[] = await DataElement.aggregate(aggregate);
-    const formClassifications: OrgClassification[] = await Form.aggregate(aggregate);
-    const temp = mergeOrgClassifications(cdeClassifications, formClassifications);
-    return temp;
+    const cdeClassifications: OrgClassification[] = await dataElementModel.aggregate(aggregate);
+    const formClassifications: OrgClassification[] = await formModel.aggregate(aggregate);
+    return mergeOrgClassifications(cdeClassifications, formClassifications);
 }

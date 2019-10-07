@@ -147,13 +147,7 @@ const releaseHackersFrequency = 5 * 60 * 1000;
 const keepHackerForDuration = 1000 * 60 * 60 * 24;
 // every minute, get latest list.
 setInterval(() => {
-    getTrafficFilter(record => {
-        blackIps.length = 0;
-        // release IPs, but keep track for a day
-        record.ipList = record.ipList.filter(ipElt => ((Date.now() - ipElt.date) < (keepHackerForDuration * ipElt.strikes)));
-        record.save();
-        blackIps = record.ipList.filter(ipElt => ((Date.now() - ipElt.date) < releaseHackersFrequency * ipElt.strikes)).map(r => r.ip);
-    });
+    getTrafficFilter();
 }, 60 * 1000);
 
 
@@ -316,7 +310,7 @@ app.use((req, res, next) => {
 app.set('views', path.join(__dirname, './modules'));
 
 const originalRender = express.response.render;
-express.response.render = function (view, module, msg) {
+express.response.render = function renderEjsUsingThis(view, module, msg) {
     if (!module) {
         module = 'cde';
     }
@@ -332,12 +326,12 @@ try {
         {module: 'article', db: articleDb, crudPermission: isDocumentationEditor}
     ]));
     app.use('/server/discuss', discussModule({
-        allComments: [isOrgAuthorityMiddleware],
-        manageComment: [canApproveCommentMiddleware]
+        allComments: isOrgAuthorityMiddleware,
+        manageComment: canApproveCommentMiddleware,
     }));
     app.use('/server/log', logModule({
-        feedbackLog: [isOrgAuthorityMiddleware],
-        superLog: [isSiteAdminMiddleware]
+        feedbackLog: isOrgAuthorityMiddleware,
+        superLog: isSiteAdminMiddleware,
     }));
     app.use('/server/uts', utsModule());
     app.use('/server/classification', classificationModule({
@@ -360,13 +354,13 @@ try {
     app.use('/server/board', boardModule());
     swaggerInit(app);
     app.use('/server/user', userModule({
-        search: [isOrgAdminMiddleware],
-        manage: [isOrgAuthorityMiddleware]
+        search: isOrgAdminMiddleware,
+        manage: isOrgAuthorityMiddleware
     }));
     app.use('/server/siteAdmin', isSiteAdminMiddleware, siteAdminModule());
     app.use('/server/orgManagement', orgManagementModule());
     app.use('/server/notification', isSiteAdminMiddleware, notificationModule({
-        notificationDate: [isSiteAdminMiddleware]
+        notificationDate: isSiteAdminMiddleware
     }));
     app.use('/server/article', articleModule({
         update: [isOrgAuthorityMiddleware],

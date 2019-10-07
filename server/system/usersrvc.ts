@@ -1,6 +1,7 @@
-import { userByName } from 'server/user/userDb';
-import { handle40x, handleError } from 'server/errorHandler/errorHandler';
+import { handleError, handleNotFound } from 'server/errorHandler/errorHandler';
+import { UserDocument } from 'server/system/mongo-data';
 import { User } from 'shared/models.model';
+import { userByName } from 'server/user/userDb';
 
 export function myOrgs(user: User): string[] {
     if (!user) {
@@ -11,19 +12,19 @@ export function myOrgs(user: User): string[] {
 
 export function updateUserRoles(req, res) {
     const user = req.body;
-    userByName(user.username, handle40x({req, res}, found => {
+    userByName(user.username, handleNotFound({req, res}, found => {
         found.roles = user.roles;
-        found.save(handleError({req, res}, () => {
+        found.save(handleError<UserDocument>({req, res}, () => {
             res.send();
         }));
     }));
 }
 
 export function updateUserAvatar(req, res) {
-    let user = req.body;
-    userByName(user.username, handle40x({req, res}, found => {
+    const user = req.body;
+    userByName(user.username, handleNotFound({req, res}, found => {
         found.avatarUrl = user.avatarUrl;
-        found.save(handleError({req, res}, () => {
+        found.save(handleError<UserDocument>({req, res}, () => {
             res.send();
         }));
     }));

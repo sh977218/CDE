@@ -1,9 +1,9 @@
 import { forEachSeries} from 'async';
-import { byTinyIdAndVersion } from '../server/cde/mongo-cde';
-import { Form, byTinyIdAndVersion as formByTinyIdAndVersion } from '../server/form/mongo-form';
+import { byTinyIdAndVersion } from 'server/cde/mongo-cde';
+import { formModel, byTinyIdAndVersion as formByTinyIdAndVersion } from 'server/form/mongo-form';
 
 let count = 0;
-let cursor = Form.find({}).cursor();
+let cursor = formModel.find({}).cursor();
 
 function loopFormElements(f, cb) {
     if (!f) return cb();

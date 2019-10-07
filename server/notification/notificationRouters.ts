@@ -1,9 +1,11 @@
-import { loggedInMiddleware } from '../system/authorization';
-import { handleError } from '../errorHandler/errorHandler';
+import { Router } from 'express';
+import { handleError } from 'server/errorHandler/errorHandler';
 import { checkDatabase, create, remove, subscribe, updateStatus } from 'server/notification/pushNotificationSvc';
+import { loggedInMiddleware } from 'server/system/authorization';
+import { RequestHandler } from 'express';
 
-export function module(roleConfig) {
-    const router = require('express').Router();
+export function module(roleConfig: { notificationDate: RequestHandler }) {
+    const router = Router();
 
     router.post('/updateNotificationDate', roleConfig.notificationDate, (req, res) => {
         const notificationDate = req.body;

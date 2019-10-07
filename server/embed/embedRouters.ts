@@ -1,4 +1,5 @@
 import { renderFile } from 'ejs';
+import { Request, Router } from 'express';
 import { isOrgAdminMiddleware, loggedInMiddleware } from 'server/system/authorization';
 import { embeds } from 'server/embed/embedSvc';
 import { handleError } from 'server/errorHandler/errorHandler';
@@ -6,13 +7,13 @@ import { isOrgAdmin } from 'shared/system/authorizationShared';
 import { is } from 'useragent';
 
 /* for IE Opera Safari, emit polyfill.js */
-function isModernBrowser(req) {
+function isModernBrowser(req: Request) {
     const ua = is(req.headers['user-agent']);
-    return ua.chrome || ua.firefox || ua.edge;
+    return ua.chrome || ua.firefox || (ua as any).edge;
 }
 
 export function module() {
-    const router = require('express').Router();
+    const router = Router();
 
     let embedHtml = '';
     renderFile('modules/_embedApp/embedApp.ejs', {isLegacy: false}, (err, str) => embedHtml = str);
@@ -28,8 +29,8 @@ export function module() {
     router.delete('/server/embed/:id', loggedInMiddleware, (req, res) => {
         const handlerOptions = {req, res, publicMessage: 'There was an error removing this embed.'};
         embeds.find({_id: req.params.id}, handleError(handlerOptions, embedsData => {
-            if (embedsData.length !== 1) {
-                res.status.send('Expectation not met: one document.');
+            if (!embedsData || embedsData.length !== 1) {
+                res.send('Expectation not met: one document.');
                 return;
             }
             if (!req.isAuthenticated() || !isOrgAdmin(req.user, embedsData[0].org)) {
@@ -42,8 +43,8 @@ export function module() {
 
     router.get('/server/embed/:id', (req, res) => {
         embeds.find({_id: req.params.id}, handleError({req, res}, embedsData => {
-            if (embedsData.length !== 1) {
-                res.status.send('Expectation not met: one document.');
+            if (!embedsData || embedsData.length !== 1) {
+                res.send('Expectation not met: one document.');
                 return;
             }
             res.send(embedsData[0]);

@@ -12,8 +12,8 @@ const mongo_cde = require('../../../server/cde/mongo-cde');
 const mongo_data = require('../../../server/system/mongo-data');
 const mongo_form = require('../../../server/form/mongo-form');
 
-const DataElement = mongo_cde.DataElement;
-const FormModel = mongo_form.Form;
+const DataElement = mongo_cde.dataElementModel;
+const FormModel = mongo_form.formModel;
 
 let dir = path.resolve('raw');
 fs.readdir(dir, (err, files) => {
@@ -153,7 +153,7 @@ function addCde(elem, form, study, cb) {
             {"ids.source": "dbGaP"}
         ]
     };
-    mongo_cde.DataElement.countDocuments(condition, (err, count) => {
+    DataElement.countDocuments(condition, (err, count) => {
         if (count === 1) {
             let stream = mongo_cde.getStream(condition);
             stream.on('data', function (cde) {

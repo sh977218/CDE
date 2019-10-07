@@ -1,17 +1,19 @@
-import { DataElement } from '../server/cde/mongo-cde';
-import { Form } from '../server/form/mongo-form';
+import { dataElementModel } from 'server/cde/mongo-cde';
+import { formModel } from 'server/form/mongo-form';
 
 let deCount = 0;
 let formCount = 0;
 
 function removeWhite(text) {
-    if (!text) return '';
+    if (!text) {
+        return '';
+    }
     return text.replace(/\s+/g, ' ');
 }
 
 function loopFes(fes) {
-    for (let fe of fes) {
-        let type = fe.elementType;
+    for (const fe of fes) {
+        const type = fe.elementType;
         fe.label = removeWhite(fe.label);
         if (fe.skipLogic && fe.skipLogic.condition) {
             fe.skipLogic.condition = removeWhite(fe.skipLogic.condition);
@@ -26,10 +28,10 @@ function loopFes(fes) {
 }
 
 function runDe() {
-    DataElement.find({archived: false, 'designations.designation': /[\n\r\t]/}).cursor()
+    dataElementModel.find({archived: false, 'designations.designation': /[\n\r\t]/}).cursor()
         .eachAsync(elt => {
             return new Promise((resolve, reject) => {
-                let eltObj = elt.toObject();
+                const eltObj = elt.toObject();
                 eltObj.designations.forEach(d => {
                     d.designation = removeWhite(d.designation);
                 });
@@ -37,13 +39,15 @@ function runDe() {
                 elt.save(err => {
                     if (err) {
                         console.log(err);
-                        process.exit(1)
+                        process.exit(1);
                     } else {
                         deCount++;
                         console.log('deCount: ' + deCount);
                         if (deCount % 200 === 0) {
                             setTimeout(() => resolve(), 5000);
-                        } else resolve();
+                        } else {
+                            resolve();
+                        }
                     }
                 });
             });
@@ -51,7 +55,7 @@ function runDe() {
 }
 
 function runForm() {
-    Form.find({archived: false}).cursor()
+    formModel.find({archived: false}).cursor()
         .eachAsync(elt => {
             return new Promise((resolve, reject) => {
                 elt.designations.forEach(d => {
@@ -63,18 +67,20 @@ function runForm() {
                 elt.save(err => {
                     if (err) {
                         console.log(err);
-                        process.exit(1)
+                        process.exit(1);
                     } else {
                         formCount++;
                         console.log('formCount: ' + formCount);
                         if (formCount % 200 === 0) {
                             setTimeout(() => resolve(), 5000);
-                        } else resolve();
+                        } else {
+                            resolve();
+                        }
                     }
                 });
-            })
+            });
         }).then(() => console.log('Finished. formCount: ' + formCount), err => console.log(err));
 }
 
-//runDe();
+// runDe();
 runForm();

@@ -1,4 +1,4 @@
-import { CbErr } from 'shared/models.model';
+import { CbErr, CbErrorObj } from 'shared/models.model';
 import {
     FormElement, FormElementsContainer, FormInForm, FormQuestion, FormSection, Question, QuestionValueList,
 } from 'shared/form/form.model';
@@ -7,10 +7,10 @@ import * as async_forEachSeries from 'async/forEachSeries';
 
 // async callbacks
 type IterateOptions = any;
-type continueCb = (error?: string, options?: any) => void; // options (skip: skip children) (return: pass data to children) extendable
-type informCb = (fe: FormInForm, continueCb: continueCb, options?: IterateOptions, key?: any) => void;
-type quesCb = (fe: FormQuestion, continueCb: continueCb, options?: IterateOptions, key?: any) => void;
-type sectionCb = (fe: FormSection, continueCb: continueCb, options?: IterateOptions, key?: any) => void;
+type continueCb<E> = (error?: E, options?: any) => void; // options (skip: skip children) (return: pass data to children) extendable
+type informCb<E> = (fe: FormInForm, continueCb: continueCb<E>, options?: IterateOptions, key?: any) => void;
+type quesCb<E> = (fe: FormQuestion, continueCb: continueCb<E>, options?: IterateOptions, key?: any) => void;
+type sectionCb<E> = (fe: FormSection, continueCb: continueCb<E>, options?: IterateOptions, key?: any) => void;
 
 // sync callbacks
 // returns data as "pass" to children
@@ -66,8 +66,8 @@ export function isScore(question: Question): boolean {
 // feCb(fe, cbContinue(error, newOptions), options)
 //     cbContinue skip: noopSkipIterCb()
 // callback(error)
-export function iterateFe(fe: FormElementsContainer, formCb: informCb | undefined, sectionCb: sectionCb | undefined,
-                          questionCb: quesCb | undefined, callback: CbErr, options?: IterateOptions): void {
+export function iterateFe<E = Error>(fe: FormElementsContainer, formCb: informCb<E> | undefined, sectionCb: sectionCb<E> | undefined,
+                                     questionCb: quesCb<E> | undefined, callback: CbErrorObj<E>, options?: IterateOptions): void {
     if (fe) {
         iterateFes(fe.formElements, formCb, sectionCb, questionCb, callback, options);
     } else {
@@ -97,12 +97,13 @@ export function iterateFeSyncOptions(fe: FormElementsContainer, formCb?: informO
 // feCb(fe, cbContinue(error, newOptions), options)
 //     cbContinue skip: noopSkipIterCb()
 // callback(error)
-export function iterateFes(fes: FormElement[], formCb: informCb = noopIterCb, sectionCb: sectionCb = noopIterCb,
-                           questionCb: quesCb = noopIterCb, callback: CbErr = () => {}, options?: IterateOptions): void {
+export function iterateFes<E = Error>(fes: FormElement[], formCb: informCb<E> = noopIterCb, sectionCb: sectionCb<E> = noopIterCb,
+                                      questionCb: quesCb<E> = noopIterCb, callback: CbErrorObj<E> = () => {},
+                                      options?: IterateOptions): void {
     if (!Array.isArray(fes)) {
         return callback();
     }
-    async_forEachOf(fes, (fe: FormElement, i: number, cb: CbErr) => {
+    async_forEachOf(fes, (fe: FormElement, i: number, cb: CbErrorObj<E>) => {
         switch (fe.elementType) {
             case 'form':
                 formCb(fe, (err, options = undefined) => {
@@ -182,11 +183,11 @@ export function iterateFesSyncOptions(fes: FormElement[], formCb: informOptionsC
     return pass;
 }
 
-export function noopIterCb(fe: FormElement, continueCb: continueCb, options?: IterateOptions): void {
+export function noopIterCb<E>(fe: FormElement, continueCb: continueCb<E>, options?: IterateOptions): void {
     continueCb(undefined, options);
 }
 
-export function noopSkipIterCb(dummy: FormElement, cb: continueCb): void {
+export function noopSkipIterCb<E>(dummy: FormElement, cb: continueCb<E>): void {
     cb(undefined, {skip: true});
 }
 

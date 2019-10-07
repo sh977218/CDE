@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Article } from 'core/article/article.model';
+import { Article } from 'shared/article/article.model';
 
 @Injectable()
 export class DraftsService {

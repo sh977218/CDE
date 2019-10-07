@@ -1,36 +1,72 @@
-import { handleError } from '../errorHandler/errorHandler';
-import { consoleLog } from '../log/dbLogger';
-import { hasRole } from 'shared/system/authorizationShared';
-import { config } from '../system/parseConfig';
-import * as eltShared from 'shared/elt';
-import { userByName } from 'server/user/userDb';
-import { orgByName } from 'server/orgManagement/orgDb';
+import { forEach } from 'async';
+import { escape, findIndex } from 'lodash';
+import * as mongo from 'mongodb';
+import { Document, Model, Types } from 'mongoose';
+import { diff } from 'server/cde/cdediff';
+import { DataElementDocument } from 'server/cde/mongo-cde';
+import { handleError } from 'server/errorHandler/errorHandler';
+import { CdeFormDocument } from 'server/form/mongo-form';
+import { establishConnection } from 'server/system/connections';
+import { errorLogger } from 'server/system/logging';
 import { getDao, getDaoList } from 'server/system/moduleDaoManager';
+import { noDbLogger } from 'server/system/noDbLogger';
+import { config } from 'server/system/parseConfig';
+import { classificationAudit, jobQueue, message, statusValidationRuleSchema } from 'server/system/schemas';
+import { userByName, UserFull, userModel } from 'server/user/userDb';
+import { DataElement, DataElementElastic } from 'shared/de/dataElement.model';
+import * as eltShared from 'shared/elt';
+import { CdeForm, CdeFormElastic } from 'shared/form/form.model';
+import { Cb1, CbError, Item, ItemElastic, ModuleAll, Organization, StatusValidationRules } from 'shared/models.model';
+import { hasRole } from 'shared/system/authorizationShared';
+import { generate as shortIdGenerate } from 'shortid';
+import { orgByName } from 'server/orgManagement/orgDb';
 
-const _ = require('lodash');
-const async = require('async');
-const mongo = require('mongodb');
-const mongoose = require('mongoose');
+type AuditLog = any;
+
+export type ItemDocument = DataElementDocument | CdeFormDocument;
+export type Message = any;
+export type MessageDocument = Document & Message;
+export type UserDocument = Document & UserFull;
+export type ObjectId = Types.ObjectId;
+export const objectId = Types.ObjectId;
+export type OrganizationDocument = Document & Organization;
+
+export interface PushRegistration {
+    _id: ObjectId;
+    features?: string[];
+    loggedIn?: boolean;
+    subscription?: {
+        endpoint: string,
+        expirationTime: string,
+        keys: {
+            auth: string,
+            p256dh: string
+        }
+    };
+    userId: string;
+    vapidKeys?: {
+        privateKey: string,
+        publicKey: string
+    };
+}
+
+export type PushRegistrationDocument = Document & PushRegistration;
+
 const session = require('express-session');
-const shortId = require('shortid');
 const Grid = require('gridfs-stream');
 const MongoStore = require('connect-mongo')(session); // TODO: update to new version when available for mongodb 3 used by mongoose
-const connHelper = require('./connections');
-const logger = require('./noDbLogger');
-const cdediff = require('../cde/cdediff');
-const logging = require('./logging');
-const schemas = require('./schemas');
 
-const conn = connHelper.establishConnection(config.database.appData);
-export const JobQueue = conn.model('JobQueue', schemas.jobQueue);
-export const Message = conn.model('Message', schemas.message);
-export const User = require('../user/userDb').User;
-const ValidationRule = conn.model('ValidationRule', schemas.statusValidationRuleSchema);
+const conn = establishConnection(config.database.appData);
+
+export const JobQueue = conn.model('JobQueue', jobQueue);
+export const messageModel: Model<MessageDocument> = conn.model('Message', message);
+const validationRuleModel = conn.model('ValidationRule', statusValidationRuleSchema);
+const classificationAuditModel = conn.model('classificationAudit', classificationAudit);
 
 export let gfs;
 mongo.connect(config.database.appData.uri, (err, client) => {
     if (err) {
-        logger.noDbLogger.info('Error connection open to legacy mongodb: ' + err);
+        noDbLogger.info('Error connection open to legacy mongodb: ' + err);
     } else {
         gfs = Grid(client, mongo);
     }
@@ -39,10 +75,6 @@ export const sessionStore = new MongoStore({
     mongooseConnection: conn,
     touchAfter: 60
 });
-
-export const ObjectId = mongoose.Types.ObjectId;
-
-const classificationAudit = conn.model('classificationAudit', schemas.classificationAudit);
 
 export function jobStatus(type, callback) {
     JobQueue.findOne({type}, callback);
@@ -57,7 +89,9 @@ export function removeJobStatus(type, callback) {
 }
 
 export function addCdeToViewHistory(elt, user) {
-    if (!elt || !user) { return; }
+    if (!elt || !user) {
+        return;
+    }
     const updStmt = {
         viewHistory: {
             $each: [elt.tinyId],
@@ -65,9 +99,9 @@ export function addCdeToViewHistory(elt, user) {
             $slice: 1000
         }
     };
-    User.updateOne({_id: user._id}, {$push: updStmt}, err => {
+    userModel.updateOne({_id: user._id}, {$push: updStmt}, err => {
         if (err) {
-            logging.errorLogger.error('Error: Cannot update viewing history', {
+            errorLogger.error('Error: Cannot update viewing history', {
                 origin: 'cde.mongo-cde.addCdeToViewHistory',
                 stack: new Error().stack,
                 details: {cde: elt, user}
@@ -77,7 +111,9 @@ export function addCdeToViewHistory(elt, user) {
 }
 
 export function addFormToViewHistory(elt, user) {
-    if (!elt || !user) { return; }
+    if (!elt || !user) {
+        return;
+    }
     const updStmt = {
         formViewHistory: {
             $each: [elt.tinyId],
@@ -85,9 +121,9 @@ export function addFormToViewHistory(elt, user) {
             $slice: 1000
         }
     };
-    User.updateOne({_id: user._id}, {$push: updStmt}, err => {
+    userModel.updateOne({_id: user._id}, {$push: updStmt}, err => {
         if (err) {
-            logging.errorLogger.error('Error: Cannot update viewing history', {
+            errorLogger.error('Error: Cannot update viewing history', {
                 origin: 'cde.mongo-cde.addFormToViewHistory',
                 stack: new Error().stack,
                 details: {cde: elt, user}
@@ -118,7 +154,7 @@ export const auditModifications = auditDb => (user, oldItem, newItem) => {
             tinyId: oldItem.tinyId,
             version: oldItem.version,
         };
-        message.diff = cdediff.diff(newItem, oldItem);
+        message.diff = diff(newItem, oldItem);
     }
 
     auditDb(message).save(handleError());
@@ -133,23 +169,24 @@ export const auditGetLog = auditDb => (params, callback) => {
         .exec(callback);
 };
 
-
-export function formatElt(elt) {
-    if (elt.toObject) { elt = elt.toObject(); }
+export function formatElt(doc: DataElement | DataElementDocument): DataElementElastic;
+export function formatElt(doc: CdeForm | CdeFormDocument): CdeFormElastic;
+export function formatElt(doc: Item | ItemDocument): ItemElastic {
+    const elt: ItemElastic = (doc as ItemDocument).toObject ? (doc as ItemDocument).toObject() : doc;
     elt.stewardOrgCopy = elt.stewardOrg;
-    elt.primaryNameCopy = _.escape(elt.designations[0].designation);
+    elt.primaryNameCopy = escape(elt.designations[0].designation);
     elt.primaryDefinitionCopy = '';
     if (elt.definitions[0] && elt.definitions[0].definition) {
-        elt.primaryDefinitionCopy = _.escape(elt.definitions[0].definition);
+        elt.primaryDefinitionCopy = escape(elt.definitions[0].definition);
     }
     return elt;
 }
 
-export const attachables = [];
+export const attachables: Model<Document>[] = [];
 
-export function userTotalSpace(name, callback) {
+export function userTotalSpace(name: string, callback: Cb1<number>) {
     let totalSpace = 0;
-    async.forEach(attachables, (attachable, doneOne) => {
+    forEach(attachables, (attachable, doneOne) => {
         attachable.aggregate(
             [
                 {$match: {'attachments.uploadedBy.username': name}},
@@ -190,16 +227,16 @@ export function addFile(file, cb, streamDescription: any = null) {
     });
 }
 
-export function deleteFileById(id, callback) {
+export function deleteFileById(id: string, callback: CbError) {
     gfs.remove({_id: id}, callback);
 }
 
 export function getFile(user, id, res) {
-    gfs.exist({_id: id}, function(err, found) {
+    gfs.exist({_id: id}, (err, found) => {
         if (err || !found) {
             res.status(404).send('File not found.');
         } else {
-            gfs.findOne({_id: id}, function(err, file) {
+            gfs.findOne({_id: id}, (err, file) => {
                 if (!file.metadata
                     || !file.metadata.status
                     || file.metadata.status === 'approved'
@@ -208,97 +245,29 @@ export function getFile(user, id, res) {
                     res.header('Accept-Ranges', 'bytes');
                     res.header('Content-Length', file.length);
                     gfs.createReadStream({_id: id}).pipe(res);
-                } else { res.status(403).send('This file has not been approved yet.'); }
+                } else {
+                    res.status(403).send('This file has not been approved yet.');
+                }
             });
         }
     });
 }
 
 export function getAllUsernames(callback) {
-    User.find({}, {username: true, _id: false}, callback);
+    userModel.find({}, {username: true, _id: false}, callback);
 }
 
 export function generateTinyId() {
-    return shortId.generate().replace(/-/g, '_');
+    return shortIdGenerate().replace(/-/g, '_');
 }
 
-export function createMessage(msg, cb) {
+export function createMessage(msg: Message, cb?: CbError<MessageDocument>) {
     msg.states = [{
         action: 'Filed',
         date: new Date(),
         comment: 'cmnt'
     }];
-    new Message(msg).save(cb);
-}
-
-export function updateMessage(msg, callback) {
-    const id = msg._id;
-    delete msg._id;
-    Message.updateOne({_id: id}, msg, callback);
-}
-
-// TODO this function name is not good
-export function getMessages(req, callback) {
-    let authorRecipient: any = {
-        $and: [
-            {
-                $or: [
-                    {
-                        'recipient.recipientType': 'stewardOrg',
-                        'recipient.name': {$in: [].concat(req.user.orgAdmin.concat(req.user.orgCurator))}
-                    },
-                    {
-                        'recipient.recipientType': 'user',
-                        'recipient.name': req.user.username
-                    }
-                ]
-            },
-            {
-                'states.0.action': null
-            }
-        ]
-    };
-
-    if (req.user.roles === null || req.user.roles === undefined) {
-        consoleLog('user: ' + req.user.username + ' has null roles.');
-        req.user.roles = [];
-    }
-    req.user.roles.forEach(function(r) {
-        const roleFilter = {
-            'recipient.recipientType': 'role'
-            , 'recipient.name': r
-        };
-        authorRecipient.$and[0].$or.push(roleFilter);
-    });
-
-    switch (req.params.type) {
-        case 'received':
-            authorRecipient.$and[1]['states.0.action'] = 'Filed';
-            break;
-        case 'sent':
-            authorRecipient = {
-                $or: [
-                    {
-                        'author.authorType': 'stewardOrg',
-                        'author.name': {$in: [].concat(req.user.orgAdmin.concat(req.user.orgCurator))}
-                    },
-                    {
-                        'author.authorType': 'user',
-                        'author.name': req.user.username
-                    }
-                ]
-            };
-            break;
-        case 'archived':
-            authorRecipient.$and[1]['states.0.action'] = 'Approved';
-            break;
-    }
-    if (!authorRecipient) {
-        callback('Type not specified!');
-        return;
-    }
-
-    Message.find(authorRecipient, callback);
+    new messageModel(msg).save(cb);
 }
 
 // cb(err)
@@ -317,25 +286,26 @@ export function addUserRole(username, role, cb) {
     });
 }
 
-// cb(err, item)
-export function fetchItem(module, tinyId, cb) {
+export function fetchItem(module: ModuleAll, tinyId: string, cb: CbError<ItemDocument>) {
     const db = getDao(module);
     if (!db) {
-        cb('Module has no database.');
+        cb(new Error('Module has no database.'));
         return;
     }
     (db.byTinyId || db.byId)(tinyId, cb);
 }
 
 export function addToClassifAudit(msg) {
-    const persistClassifRecord = function(err, elt) {
-        if (!elt) { return; }
+    const persistClassifRecord = (err, elt) => {
+        if (!elt) {
+            return;
+        }
         msg.elements[0].eltType = eltShared.getModule(elt);
         msg.elements[0].name = eltShared.getName(elt);
         msg.elements[0].status = elt.registrationState.registrationStatus;
-        new classificationAudit(msg).save();
+        new classificationAuditModel(msg).save();
     };
-    getDaoList().forEach(function(dao) {
+    getDaoList().forEach((dao) => {
         if (msg.elements[0]) {
             if (msg.elements[0]._id && dao.byId) {
                 dao.byId(msg.elements[0]._id, persistClassifRecord);
@@ -347,25 +317,21 @@ export function addToClassifAudit(msg) {
     });
 }
 
-export function getClassificationAuditLog(params, callback) {
-    classificationAudit.find({}, {elements: {$slice: 10}})
+export function getClassificationAuditLog(params, callback: CbError<AuditLog[]>) {
+    classificationAuditModel.find({}, {elements: {$slice: 10}})
         .sort('-date')
         .skip(params.skip)
         .limit(params.limit)
-        .exec(function(err, logs) {
-            callback(err, logs);
-        });
+        .exec(callback);
 }
 
-export function getAllRules(cb) {
-    ValidationRule.find().exec(function(err, rules) {
-        cb(err, rules);
-    });
+export function getAllRules(cb: CbError<StatusValidationRules>) {
+    validationRuleModel.find().exec(cb);
 }
 
 export function disableRule(params, cb) {
-    orgByName(params.orgName, function(err, org) {
-        org.cdeStatusValidationRules.forEach(function(rule, i) {
+    orgByName(params.orgName, (err, org) => {
+        org.cdeStatusValidationRules.forEach((rule, i) => {
             if (rule.id === params.rule.id) {
                 org.cdeStatusValidationRules.splice(i, 1);
             }
@@ -375,7 +341,7 @@ export function disableRule(params, cb) {
 }
 
 export function enableRule(params, cb) {
-    orgByName(params.orgName, function(err, org) {
+    orgByName(params.orgName, (err, org) => {
         delete params.rule._id;
         org.cdeStatusValidationRules.push(params.rule);
         org.save(cb);
@@ -383,11 +349,5 @@ export function enableRule(params, cb) {
 }
 
 export function sortArrayByArray(unSortArray, targetArray) {
-    unSortArray.sort((a, b) => {
-        const aId = a._id;
-        const bId = b._id;
-        const aIndex = _.findIndex(targetArray, aId);
-        const bIndex = _.findIndex(targetArray, bId);
-        return aIndex - bIndex;
-    });
+    unSortArray.sort((a, b) => findIndex(targetArray, a._id) - findIndex(targetArray, b._id));
 }

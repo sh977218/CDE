@@ -1,2 +1,2 @@
 // replaced at build time
-export const version = 'replaced';
+export const version = 'x';
