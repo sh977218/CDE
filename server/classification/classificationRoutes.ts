@@ -27,7 +27,7 @@ const isValidBody = [
 export function module(roleConfig) {
     const router = Router();
 
-    router.post('/addCdeClassification/', roleConfig.allowClassify, isValidBody, (req, res) => {
+    router.post('/addCdeClassification/', roleConfig.allowClassify, ...isValidBody, (req, res) => {
         classificationNode.addClassification(req.body, mongoCde, handleError({req, res}, result => {
             if (result === 'Classification Already Exists') { return res.status(409).send(result); }
             res.send(result);
@@ -46,7 +46,7 @@ export function module(roleConfig) {
         }));
     });
 
-    router.post('/removeCdeClassification/', roleConfig.allowClassify, isValidBody, (req, res) => {
+    router.post('/removeCdeClassification/', roleConfig.allowClassify, ...isValidBody, (req, res) => {
         classificationNode.removeClassification(req.body, mongoCde, handleError({req, res}, elt => {
             res.send(elt);
             mongoData.addToClassifAudit({
@@ -63,7 +63,7 @@ export function module(roleConfig) {
         }));
     });
 
-    router.post('/addFormClassification/', roleConfig.allowClassify, isValidBody, (req, res) => {
+    router.post('/addFormClassification/', roleConfig.allowClassify, ...isValidBody, (req, res) => {
         classificationNode.addClassification(req.body, mongoForm, handleError({req, res}, result => {
             if (result === 'Classification Already Exists') { return res.status(409).send(result); } else { res.send(result); }
             mongoData.addToClassifAudit({
@@ -76,7 +76,7 @@ export function module(roleConfig) {
         }));
     });
 
-    router.post('/removeFormClassification/', roleConfig.allowClassify, isValidBody, (req, res) => {
+    router.post('/removeFormClassification/', roleConfig.allowClassify, ...isValidBody, (req, res) => {
         classificationNode.removeClassification(req.body, mongoForm, handleError({req, res}, elt => {
             res.send(elt);
             mongoData.addToClassifAudit({
