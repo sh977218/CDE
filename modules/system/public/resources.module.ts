@@ -22,14 +22,12 @@ const appRoutes: Routes = [
         MatListModule,
     ],
     declarations: [
-        ResourcesComponent,
-        ResourcesRssComponent,
         SafeHtmlPipe,
+        ResourcesComponent,
+        ResourcesRssComponent
     ],
     entryComponents: [ResourcesRssComponent],
-    exports: [
-        SafeHtmlPipe
-    ],
+    exports: [],
     providers: [ResourceResolve, SafeHtmlPipe],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

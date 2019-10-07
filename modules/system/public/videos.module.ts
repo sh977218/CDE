@@ -17,6 +17,7 @@ const appRoutes: Routes = [
         ResourcesModule,
     ],
     declarations: [
+        SafeHtmlPipe,
         VideosComponent
     ],
     entryComponents: [],
