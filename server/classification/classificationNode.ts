@@ -35,7 +35,6 @@ export async function eltClassification(body, action, dao, cb) {
                 saveCdeClassif(err, elt, cb);
             });
         }
-
     };
 
 
