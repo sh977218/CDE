@@ -9,7 +9,7 @@ require('express-async-errors');
 export function module(roleConfig: { update: RequestHandler[] }) {
     const router = Router();
 
-    ['whatsNew', 'contactUs', 'resources'].forEach(a => {
+    ['whatsNew', 'contactUs', 'resources', 'videos'].forEach(a => {
         router.get('/' + a, async (req, res) => {
             const article = await byKey(a);
             res.send(article);
