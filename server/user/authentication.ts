@@ -3,14 +3,13 @@ import { Express } from 'express';
 import { errorLogger } from 'server/system/logging';
 import { config } from 'server/system/parseConfig';
 import { User } from 'shared/models.model';
-import { userById, userByName, userModel } from 'server/user/userDb';
+import { addUser, updateUserIps, userById, userByName } from 'server/user/userDb';
 
 const https = require('https');
 const xml2js = require('xml2js');
-const mongo_data_system = require('./mongo-data');
 const request = require('request');
 const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
+const localStrategy = require('passport-local').Strategy;
 
 export type AuthenticatedRequest = {
     user: User,
@@ -35,7 +34,7 @@ passport.serializeUser((user, done) => {
     done(null, user._id);
 });
 
-passport.deserializeUser( userById);
+passport.deserializeUser(userById);
 
 export function init(app: Express) {
     app.use(passport.initialize());
@@ -99,10 +98,7 @@ export function updateUserAfterLogin(user, ip, cb) {
         }
     }
 
-    if (user._id) {
-        userModel.findByIdAndUpdate(user._id, {lockCounter: 0, lastLogin: Date.now(), knownIPs: user.knownIPs}, cb);
-    }
-
+    updateUserIps(user._id, user.knownIPs, cb);
 }
 
 export function umlsAuth(user, password, cb) {
@@ -159,28 +155,25 @@ export function authBeforeVsac(req, username, password, done) {
     });
 }
 
-passport.use(new LocalStrategy({passReqToCallback: true}, authBeforeVsac));
+passport.use(new localStrategy({passReqToCallback: true}, authBeforeVsac));
 
 export function findAddUserLocally(profile, cb) {
     userByName(profile.username, function (err, user) {
         if (err) {
             cb(err);
         } else if (!user) { // User has been authenticated but user is not in local db, so register him.
-            mongo_data_system.addUser(
+            addUser(
                 {
                     username: profile.username,
                     password: "umls",
                     quota: 1024 * 1024 * 1024,
                     accessToken: profile.accessToken,
                     refreshToken: profile.refreshToken
-                },  (err, newUser) => {
-                    updateUserAfterLogin(newUser, profile.ip, (err, newUser) => cb(newUser));
+                }, (err, user) => {
+                    updateUserAfterLogin(user, profile.ip, (err, newUser) => cb(newUser));
                 });
         } else {
-            updateUserAfterLogin(user, profile.ip, () => {
-                userModel.findByIdAndUpdate(user._id,
-                    {accessToken: profile.accessToken, refreshToken: profile.refreshToken}, (err, user) => cb(user));
-            });
+            updateUserAfterLogin(user, profile.ip, (err, newUser) => cb(newUser));
         }
     });
 }

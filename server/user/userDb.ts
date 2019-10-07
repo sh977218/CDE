@@ -115,6 +115,27 @@ export const userModel: Model<UserDocument> = conn.model('User', userSchema);
 
 const userProject = {password: 0};
 
+export function addUser(user, callback) {
+    user.username = user.username.toLowerCase();
+    new userModel(user).save(callback);
+}
+
+export function updateUserIps(userId: string, ips: string[], callback: CbError<UserDocument>) {
+    userModel.findByIdAndUpdate(userId, {
+        lockCounter: 0,
+        lastLogin: Date.now(),
+        knownIPs: ips
+    }, {new: true}, callback);
+}
+
+export function userByName(name: string, callback: CbError<UserDocument>) {
+    userModel.findOne({username: new RegExp('^' + name + '$', 'i')}, callback);
+}
+
+export function userById(id: string, callback: CbError<UserDocument>) {
+    userModel.findById(id, userProject, callback);
+}
+
 export function byId(id: string, callback: CbError<UserDocument>) {
     userModel.findById(id, userProject).exec(callback);
 }
