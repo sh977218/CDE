@@ -1,0 +1,3 @@
+<div *ngIf="article" class="container">
+    <div [innerHtml]="article.body | cdeSafeHtml"></div>
+</div>

@@ -41,7 +41,7 @@ const appRoutes: Routes = [
     {path: 'settings', loadChildren: 'settings/settings.module#SettingsModule', canLoad: [LoggedInGuard], data: {title: 'Settings'}},
     {path: 'whatsNew', loadChildren: 'system/public/whatsNew.module#WhatsNewModule', data: {title: `What's New`}},
     {path: 'contactUs', loadChildren: 'system/public/contactUs.module#ContactUsModule', data: {title: 'Contact Us'}},
-    {path: 'Videos', loadChildren: 'system/public/videos.module#VideosModule', data: {title: 'Videos'}},
+    {path: 'videos', loadChildren: 'system/public/videos.module#VideosModule', data: {title: 'Videos'}},
     {
         path: 'searchPreferences',
         loadChildren: 'system/public/searchPreferences.module#SearchPreferencesModule',
