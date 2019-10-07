@@ -1,4 +1,4 @@
-import { Classification } from 'shared/models.model';
+import { Classification, Elt, Item } from 'shared/models.model';
 
 const boardDb = require('server/board/boardDb');
 const mongoSystem = require('server/system/mongo-data');
@@ -38,7 +38,7 @@ export async function eltClassification(body, action, dao, cb) {
     };
 
 
-    let elt;
+    let elt: Item;
     if (body.cdeId && dao.byId) {
         elt = await dao.byId(body.cdeId);
     } else if (body.tinyId && (!body.version) && dao.eltByTinyId) {
@@ -70,19 +70,13 @@ export async function eltClassification(body, action, dao, cb) {
 
 }
 
-export function isInvalidatedClassificationRequest(req) {
-    if (!req.body || !req.body.eltId || !req.body.categories || !(req.body.categories instanceof Array) || !req.body.orgName) {
-        return 'Bad Request';
-    } else { return false; }
-}
-
 export function addClassification(body, dao, cb) {
     if (!dao.byId) {
         cb('dao.byId is undefined');
         logging.log(null, 'dao.byId is undefined' + dao);
         return;
     }
-    dao.byId(body.eltId, function(err, elt) {
+    dao.byId(body.eltId, (err, elt) => {
         if (err) { return cb(err); }
         if (!elt) { return cb('Cannot find elt with _id: ' + body.eltId); }
         let steward = findSteward(elt, body.orgName);
@@ -108,7 +102,7 @@ export function removeClassification(body, dao, cb) {
         logging.log(null, 'Element id is undefined' + dao);
         return;
     }
-    dao.byId(body.eltId, function(err, elt) {
+    dao.byId(body.eltId, (err, elt) => {
         if (err) { return cb(err); }
         if (!elt) { return cb('Can not find elt with _id: ' + body.eltId); }
         const steward = findSteward(elt, body.orgName);
@@ -127,9 +121,9 @@ export function removeClassification(body, dao, cb) {
 
 export function classifyEltsInBoard(req, dao, cb) {
     const boardId = req.body.boardId;
-    const newClassification = req.body.newClassification;
+    const newClassification = req.body;
 
-    const action = function(id, actionCallback) {
+    const action = (id, actionCallback) => {
         const classifReq = {
             orgName: newClassification.orgName,
             categories: newClassification.categories,
@@ -137,11 +131,11 @@ export function classifyEltsInBoard(req, dao, cb) {
         };
         eltClassification(classifReq, actions.create, dao, actionCallback);
     };
-    boardDb.byId(boardId, function(err, board) {
+    boardDb.byId(boardId, (err, board) => {
         if (err) { return cb(err); }
         if (!board) { return cb('No such board'); }
         const tinyIds = board.pins.map(p => p.tinyId);
-        dao.byTinyIdList(tinyIds, function(err, cdes) {
+        dao.byTinyIdList(tinyIds, (err, cdes) => {
             const ids = cdes.map(cde => cde._id);
             adminItemSvc.bulkAction(ids, action, cb);
             mongoSystem.addToClassifAudit({
@@ -149,9 +143,7 @@ export function classifyEltsInBoard(req, dao, cb) {
                 user: {
                     username: req.user.username
                 },
-                elements: cdes.map(function(e) {
-                    return {tinyId: e.tinyId};
-                }),
+                elements: cdes.map(e => ({tinyId: e.tinyId})),
                 action: 'reclassify',
                 path: [newClassification.orgName].concat(newClassification.categories)
             });

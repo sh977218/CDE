@@ -334,7 +334,7 @@ try {
     }));
     app.use('/server/uts', utsModule());
     app.use('/server/classification', classificationModule({
-        allowClassify: (user, org) => isOrgCurator(user, org)
+        allowClassify: req => isOrgCurator(req.user, req.body.orgName)
     }));
     app.use('/server/mesh', meshModule({
         allowSyncMesh: (req, res, next) => {
