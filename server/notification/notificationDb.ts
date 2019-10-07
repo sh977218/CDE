@@ -3,6 +3,9 @@ import { config } from 'server/system/parseConfig';
 import { addStringtype } from 'server/system/mongoose-stringtype';
 import { handleError } from 'server/errorHandler/errorHandler';
 import { siteAdmins } from 'server/user/userDb';
+import { Cb1, CbError, CbError1 } from 'shared/models.model';
+import { PushRegistration, PushRegistrationDocument } from 'server/system/mongo-data';
+import { Model } from 'mongoose';
 
 addStringtype(mongoose);
 const Schema = mongoose.Schema;
@@ -30,62 +33,64 @@ const pushRegistrationSchema = new Schema({
 }, {collection: 'pushRegistration'});
 
 // tslint:disable-next-line:variable-name
-const PushRegistration = conn.model('PushRegistration', pushRegistrationSchema);
+const pushRegistrationModel: Model<PushRegistrationDocument> = conn.model('PushRegistration', pushRegistrationSchema);
 
-export function pushesByEndpoint(endpoint, callback) {
-    PushRegistration.find({'subscription.endpoint': endpoint}, callback);
+export function pushesByEndpoint(endpoint: string, callback: CbError<PushRegistrationDocument[]>) {
+    pushRegistrationModel.find({'subscription.endpoint': endpoint}, callback);
 }
 
-export function pushById(id, callback) {
-    PushRegistration.findOne({_id: id}, callback);
+export function pushById(id: string, callback: CbError<PushRegistrationDocument>) {
+    pushRegistrationModel.findOne({_id: id}, callback);
 }
 
-export function pushByIds(endpoint, userId, callback) {
-    PushRegistration.findOne({'subscription.endpoint': endpoint, userId}, callback);
+export function pushByIds(endpoint: string, userId: string, callback: CbError<PushRegistrationDocument>) {
+    pushRegistrationModel.findOne({'subscription.endpoint': endpoint, userId}, callback);
 }
 
-export function pushByIdsCount(endpoint, userId, callback) {
-    PushRegistration.countDocuments({'subscription.endpoint': endpoint, userId}, callback);
+export function pushByIdsCount(endpoint: string, userId: string | undefined, callback: CbError<number>) {
+    pushRegistrationModel.countDocuments({'subscription.endpoint': endpoint, userId}, callback);
 }
 
-export function pushByPublicKey(publicKey, callback) {
-    PushRegistration.findOne({'vapidKeys.publicKey': publicKey}, callback);
+export function pushByPublicKey(publicKey: string, callback: CbError<PushRegistrationDocument>) {
+    pushRegistrationModel.findOne({'vapidKeys.publicKey': publicKey}, callback);
 }
 
-export function pushClearDb(callback) {
-    PushRegistration.remove({}, callback);
+export function pushClearDb(callback: CbError) {
+    pushRegistrationModel.remove({}, callback);
 }
 
-export function pushCreate(push, callback) {
-    new PushRegistration(push).save(callback);
+export function pushCreate(push: Partial<PushRegistration>, callback: CbError1<PushRegistrationDocument>) {
+    new pushRegistrationModel(push).save(callback);
 }
 
-export function pushDelete(endpoint, userId, callback) {
+export function pushDelete(endpoint: string, userId: string, callback: CbError) {
     pushByIds(endpoint, userId, (err, registration) => {
-        if (err) {
+        if (err || !registration) {
             return callback(err);
         }
-        PushRegistration.remove({_id: registration._id}, callback);
+        pushRegistrationModel.remove({_id: registration._id}, callback);
     });
 }
 
-export function pushEndpointUpdate(endpoint, commandObj, callback) {
-    PushRegistration.updateMany({'subscription.endpoint': endpoint}, commandObj, callback);
+export function pushEndpointUpdate(endpoint: string, commandObj: any, callback: CbError) {
+    pushRegistrationModel.updateMany({'subscription.endpoint': endpoint}, commandObj, callback);
 }
 
-export function pushGetAdministratorRegistrations(callback) {
+export function pushGetAdministratorRegistrations(callback: Cb1<PushRegistrationDocument[]>) {
     siteAdmins(handleError({}, users => {
-        const userIds = users.map(u => u._id.toString());
-        PushRegistration.find({}).exec(handleError({}, registrations => {
-            callback(registrations.filter(reg => reg.loggedIn === true && userIds.indexOf(reg.userId) > -1));
+        if (!users) {
+            return callback([]);
+        }
+        const userIds: string[] = users.map(u => u._id.toString());
+        pushRegistrationModel.find({}).exec(handleError({}, registrations => {
+            callback(registrations ? registrations.filter(reg => reg.loggedIn === true && userIds.indexOf(reg.userId) > -1) : []);
         }));
     }));
 }
 
-// cb(err, registrations)
-export function pushRegistrationFindActive(criteria, cb) {
+export function pushRegistrationFindActive(criteria: any, cb: CbError1<PushRegistrationDocument[]>) {
     criteria.loggedIn = true;
-    PushRegistration.find(criteria, cb);
+    pushRegistrationModel.find(criteria, cb);
 }
 
 

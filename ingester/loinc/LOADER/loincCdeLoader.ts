@@ -1,10 +1,9 @@
 import { isEmpty } from 'lodash';
-import { DataElement } from 'server/cde/mongo-cde';
+import { dataElementModel } from 'server/cde/mongo-cde';
 import { createLoincCde } from 'ingester/loinc/CDE/cde';
 import {
     BATCHLOADER, compareElt, imported, lastMigrationScript, mergeClassification, mergeElt, updateCde, updateRowArtifact
 } from 'ingester/shared/utility';
-
 import { LoincLogger } from 'ingester/log/LoincLogger';
 
 export async function runOneCde(loinc, classificationOrgName, classificationArray = []) {
@@ -13,9 +12,9 @@ export async function runOneCde(loinc, classificationOrgName, classificationArra
         process.exit(1);
     }
     const loincCde = await createLoincCde(loinc, classificationOrgName, classificationArray);
-    const newCde = new DataElement(loincCde);
+    const newCde = new dataElementModel(loincCde);
     const newCdeObj = newCde.toObject();
-    let existingCde: any = await DataElement.findOne({archived: false, 'ids.id': loinc['LOINC Code']});
+    let existingCde: any = await dataElementModel.findOne({archived: false, 'ids.id': loinc['LOINC Code']});
     if (!existingCde) {
         existingCde = await newCde.save().catch(err => {
             console.log(`LOINC existingCde = await newCde.save() error: ${JSON.stringify(err)}`);
@@ -50,6 +49,6 @@ export async function runOneCde(loinc, classificationOrgName, classificationArra
         }
     }
     await updateRowArtifact(existingCde, newCdeObj, 'LOINC', classificationOrgName);
-    const savedCde: any = await DataElement.findOne({archived: false, 'ids.id': loinc['LOINC Code']});
+    const savedCde: any = await dataElementModel.findOne({archived: false, 'ids.id': loinc['LOINC Code']});
     return savedCde;
 }

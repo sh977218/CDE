@@ -13,8 +13,7 @@ const CreateCDE = require('../CDE/CreateCDE');
 const CompareCDE = require('../CDE/CompareCDE');
 const MergeCDE = require('../CDE/MergeCDE');
 
-const mongo_cde = require('../../../server/cde/mongo-cde');
-const DataElement = mongo_cde.DataElement;
+const DataElement = require('../../../server/cde/mongo-cde').dataElementModel;
 
 const xmlFile = 'S:/MLB/CDE/NCI/CDE XML/cdmh.xml';
 

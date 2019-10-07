@@ -40,11 +40,11 @@ export class FormTermMappingComponent implements OnInit {
             debounceTime(300),
             distinctUntilChanged(),
             switchMap(term => term
-                ? this.http.get<ElasticQueryResponse>((window as any).meshUrl
+                ? this.http.get<ElasticQueryResponse<any>>((window as any).meshUrl
                     + '/api/search/record?searchInField=termDescriptor&searchType=exactMatch&q=' + term)
-                : EmptyObservable.create<ElasticQueryResponse>()
+                : EmptyObservable.create<ElasticQueryResponse<any>>()
             )
-        ).subscribe((res: ElasticQueryResponse) => {
+        ).subscribe((res) => {
             if (res && res.hits && res.hits.hits.length === 1) {
                 const desc = res.hits.hits[0]._source;
                 this.descriptor = {name: desc.DescriptorName.String.t, id: desc.DescriptorUI.t};

@@ -1,18 +1,33 @@
+import { Document, Model } from 'mongoose';
 import { StoredQueryModel as storedQueryModel } from 'server/cde/mongo-storedQuery';
 import { handleConsoleError, handleError } from 'server/errorHandler/errorHandler';
 import { clientErrorSchema, consoleLogSchema, feedbackIssueSchema, logErrorSchema, logSchema } from 'server/log/schemas';
+import { pushGetAdministratorRegistrations } from 'server/notification/notificationDb';
+import { triggerPushMsg } from 'server/notification/pushNotificationSvc';
 import { establishConnection } from 'server/system/connections';
 import { noDbLogger } from 'server/system/noDbLogger';
 import { config } from 'server/system/parseConfig';
+import { UserFull } from 'server/user/userDb';
 import { Cb, CbError } from 'shared/models.model';
-import { pushGetAdministratorRegistrations } from 'server/notification/notificationDb';
-import { triggerPushMsg } from 'server/notification/pushNotificationSvc';
+
+export interface ClientError {
+    message: string;
+    date: Date | number;
+    origin: string;
+    name: string;
+    stack: string;
+    userAgent: string;
+    url: string;
+    username: string;
+    ip: string;
+}
+export type ClientErrorDocument = Document & ClientError;
 
 const moment = require('moment');
 const conn = establishConnection(config.database.log);
 const LogModel = conn.model('DbLogger', logSchema);
-export const LogErrorModel = conn.model('DbErrorLogger', logErrorSchema);
-export const ClientErrorModel = conn.model('DbClientErrorLogger', clientErrorSchema);
+export const logErrorModel = conn.model('DbErrorLogger', logErrorSchema);
+export const clientErrorModel: Model<ClientErrorDocument> = conn.model('DbClientErrorLogger', clientErrorSchema);
 export const StoredQueryModel = storedQueryModel;
 const FeedbackModel = conn.model('FeedbackIssue', feedbackIssueSchema);
 const consoleLogModel = conn.model('consoleLogs', consoleLogSchema);
@@ -90,7 +105,7 @@ export function logError(message, callback?: Cb) { // all server errors, express
         console.log(message);
         console.log('--- END Server Error---');
     }
-    new LogErrorModel(message).save(handleConsoleError({}, () => {
+    new logErrorModel(message).save(handleConsoleError({}, () => {
         if (message.origin && message.origin.indexOf('pushGetAdministratorRegistrations') === -1) {
             const msg = JSON.stringify({
                 title: 'Server Side Error',
@@ -127,7 +142,7 @@ export function logClientError(req, callback) {
     if (req.user) {
         exc.username = req.user.username;
     }
-    new ClientErrorModel(exc).save(handleConsoleError({}, () => {
+    new clientErrorModel(exc).save(handleConsoleError<ClientErrorDocument>({}, () => {
         const ua = userAgent.is(req.headers['user-agent']);
         if (ua.chrome || ua.firefox || ua.edge) {
             const msg = JSON.stringify({
@@ -212,6 +227,18 @@ export function appLogs(body, callback) {
     });
 }
 
+export function getClientErrors(params: {limit?: number, skip?: number}, callback: CbError<ClientErrorDocument[]>) {
+    clientErrorModel.find().sort('-date').skip(params.skip).limit(params.limit).exec(callback);
+}
+
+export function getClientErrorsNumber(user: UserFull): Promise<number> {
+    return clientErrorModel.countDocuments(
+        user.notificationDate.clientLogDate
+            ? {date: {$gt: user.notificationDate.clientLogDate}}
+            : {}
+    ).exec();
+}
+
 export function getServerErrors(params, callback) {
     if (!params.limit) {
         params.limit = 20;
@@ -223,7 +250,7 @@ export function getServerErrors(params, callback) {
     if (params.excludeOrigin && params.excludeOrigin.length > 0) {
         filter.origin = {$nin: params.excludeOrigin};
     }
-    LogErrorModel
+    logErrorModel
         .find(filter)
         .sort('-date')
         .skip(params.skip)
@@ -231,8 +258,12 @@ export function getServerErrors(params, callback) {
         .exec(callback);
 }
 
-export function getClientErrors(params, callback) {
-    ClientErrorModel.find().sort('-date').skip(params.skip).limit(params.limit).exec(callback);
+export function getServerErrorsNumber(user: UserFull): Promise<number> {
+    return logErrorModel.countDocuments(
+        user.notificationDate.serverLogDate
+            ? {date: {$gt: user.notificationDate.serverLogDate}}
+            : {}
+    ).exec();
 }
 
 export function getFeedbackIssues(params, callback) {

@@ -1,23 +1,23 @@
 export class LoincLogger {
     static createdLoincCde = 0;
-    static createdLoincCdes: any[] = [];
+    static createdLoincCdes: string[] = [];
     static createdLoincForm = 0;
-    static createdLoincForms: any[] = [];
+    static createdLoincForms: string[] = [];
 
     static sameLoincCde = 0;
-    static sameLoincCdes: any[] = [];
+    static sameLoincCdes: string[] = [];
     static sameLoincForm = 0;
-    static sameLoincForms: any[] = [];
+    static sameLoincForms: string[] = [];
 
     static changedLoincCde = 0;
-    static changedLoincCdes: any[] = [];
+    static changedLoincCdes: string[] = [];
     static changedLoincForm = 0;
-    static changedLoincForms: any[] = [];
+    static changedLoincForms: string[] = [];
 
-    static retiredLoincForm = 0;
-    static retiredLoincForms: any[] = [];
     static retiredLoincCde = 0;
-    static retiredLoincCdes: any[] = [];
+    static retiredLoincCdes: string[] = [];
+    static retiredLoincForm = 0;
+    static retiredLoincForms: string[] = [];
 
     static log() {
         console.log('createdLoincCde: ' + this.createdLoincCde);

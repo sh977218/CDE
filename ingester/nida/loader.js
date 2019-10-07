@@ -1,5 +1,6 @@
+import { classifyItem } from 'server/classification/orgClassificationSvc';
+
 const mongo_cde = require('../../server/cde/mongo-cde');
-import { classifyItem } from 'shared/system/classificationShared';
 const fs = require('fs');
 const csv = require('csv-parse');
 

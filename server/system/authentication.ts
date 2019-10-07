@@ -1,7 +1,9 @@
+import * as express from 'express';
+import { Express } from 'express';
 import { errorLogger } from 'server/system/logging';
 import { config } from 'server/system/parseConfig';
 import { User } from 'shared/models.model';
-import * as express from 'express';
+import { userModel } from 'server/user/userDb';
 
 const https = require('https');
 const xml2js = require('xml2js');
@@ -29,20 +31,20 @@ const ticketValidationOptions = {
 
 const parser = new xml2js.Parser();
 
-passport.serializeUser(function (user, done) {
+passport.serializeUser((user, done) => {
     done(null, user._id);
 });
 
 passport.deserializeUser( mongo_data_system.userById);
 
-export function init(app) {
+export function init(app: Express) {
     app.use(passport.initialize());
     app.use(passport.session());
 }
 
 export function ticketValidate(tkt, cb) {
     ticketValidationOptions.path = config.uts.ticketValidation.path + '?service=' + config.uts.service + '&ticket=' + tkt;
-    let req = https.request(ticketValidationOptions, function (res) {
+    let req = https.request(ticketValidationOptions, (res) => {
         let output = '';
         res.setEncoding('utf8');
 
@@ -98,7 +100,7 @@ export function updateUserAfterLogin(user, ip, cb) {
     }
 
     if (user._id) {
-        mongo_data_system.User.findByIdAndUpdate(user._id, {lockCounter: 0, lastLogin: Date.now(), knownIPs: user.knownIPs}, cb);
+        userModel.findByIdAndUpdate(user._id, {lockCounter: 0, lastLogin: Date.now(), knownIPs: user.knownIPs}, cb);
     }
 
 }
@@ -176,7 +178,7 @@ export function findAddUserLocally(profile, cb) {
                 });
         } else {
             updateUserAfterLogin(user, profile.ip, () => {
-                mongo_data_system.User.findByIdAndUpdate(user._id,
+                userModel.findByIdAndUpdate(user._id,
                     {accessToken: profile.accessToken, refreshToken: profile.refreshToken}, (err, user) => cb(user));
             });
         }

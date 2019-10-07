@@ -73,9 +73,8 @@ export function isDataElement(item: Item): item is DataElement {
     return item.elementType === 'cde';
 }
 
-export function uriView(module: ModuleAll, tinyId: string): string|undefined {
-    const mod = ITEM_MAP[module];
-    return mod && mod.view && (mod.view + tinyId);
+export function uriView(module: ModuleAll, tinyId: string): string {
+    return ITEM_MAP[module].view + tinyId;
 }
 
 export function uriViewBase(module: string): string|undefined {

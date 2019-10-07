@@ -1,4 +1,4 @@
-import { Form } from 'server/form/mongo-form';
+import { formModel } from 'server/form/mongo-form';
 import { PROTOCOL } from 'ingester/createMigrationConnection';
 import {
     BATCHLOADER, fixFormCopyright, imported, lastMigrationScript, mergeClassificationByOrg, sortProp, sortRefDoc,
@@ -9,7 +9,7 @@ import { PhenxLogger } from 'ingester/log/PhenxLogger';
 import { LoincLogger } from 'ingester/log/LoincLogger';
 import { RedcapLogger } from 'ingester/log/RedcapLogger';
 import { loadPhenxById } from 'ingester/phenx/loader/loadPhenxById';
-import { DataElement } from 'server/cde/mongo-cde';
+import { dataElementModel } from 'server/cde/mongo-cde';
 
 /*
 const NewPhenxIdToOldPhenxId = {
@@ -37,7 +37,7 @@ function retireForms() {
             'registrationState.registrationStatus': {$ne: 'Retired'},
             archived: false
         };
-        Form.find(cond).cursor({batchSize: 10})
+        formModel.find(cond).cursor({batchSize: 10})
             .eachAsync(async form => {
                 const formObj = form.toObject();
                 if (formObj.lastMigrationScript !== lastMigrationScript) {
@@ -65,10 +65,10 @@ async function retireCdes() {
             archived: false,
             'ids.source': {$in: ['LOINC', 'PhenX', 'PhenX Variable']}
         };
-        const cursor = DataElement.find(cond).cursor({batchSize: 10});
+        const cursor = dataElementModel.find(cond).cursor({batchSize: 10});
         cursor.eachAsync(async (cde: any) => {
             const cdeObj = cde.toObject();
-            const linkedForms = await Form.find({
+            const linkedForms = await formModel.find({
                 archived: false,
                 'registrationState.registrationStatus': {$ne: 'Retired'},
                 $or: [
@@ -144,7 +144,7 @@ async function run() {
     const slicedPhenxIds = phenxIds;
     for (const phenxId of slicedPhenxIds) {
         // @TODO remove after this load
-        const existingForm: any = await Form.findOne({archived: false, 'ids.id': phenxId.protocolID});
+        const existingForm: any = await formModel.findOne({archived: false, 'ids.id': phenxId.protocolID});
         if (existingForm) {
             fixFormCopyright(existingForm);
             existingForm.referenceDocuments = sortRefDoc(existingForm);

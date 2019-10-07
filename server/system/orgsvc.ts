@@ -1,59 +1,56 @@
+import { parallel } from 'async';
+import { RequestHandler } from 'express';
+import { dataElementModel } from 'server/cde/mongo-cde';
+import { handleNotFound } from 'server/errorHandler/errorHandler';
+import { formModel } from 'server/form/mongo-form';
+import { addOrg as addOrganization, managedOrgs as managedOrganizations, orgByName } from 'server/system/mongo-data';
 import { isOrgAdmin } from 'shared/system/authorizationShared';
-import { DataElement } from 'server/cde/mongo-cde';
-import { Form } from 'server/form/mongo-form';
+import { Organization } from 'shared/models.model';
 
-const mongo_data = require('./mongo-data');
-const daoManager = require('./moduleDaoManager');
-const async = require('async');
-
-export function managedOrgs(req, res) {
-    mongo_data.managedOrgs(function (err, orgs) {
+export const managedOrgs: RequestHandler = (req, res) => {
+    managedOrganizations((err, orgs) => {
         res.send(orgs);
     });
-}
+};
 
-export function addOrg(req, res) {
-    let newOrg = req.body;
+export const addOrg: RequestHandler = (req, res) => {
+    const newOrg: Organization = req.body;
     if (newOrg.workingGroupOf) {
-        mongo_data.orgByName(newOrg.workingGroupOf, function (err, parentOrg) {
+        orgByName(newOrg.workingGroupOf, handleNotFound({req, res}, parentOrg => {
             newOrg.classifications = parentOrg.classifications;
-            mongo_data.addOrg(newOrg, res);
-        });
+            addOrganization(newOrg, res);
+        }));
     } else {
-        mongo_data.addOrg(newOrg, res);
+        addOrganization(newOrg, res);
     }
-}
+};
 
-export function transferSteward(req, res) {
+export const transferSteward: RequestHandler = (req, res) => {
     const results: string[] = [];
     const from = req.body.from;
     const to = req.body.to;
     if (req.isAuthenticated() && isOrgAdmin(req.user, req.body.from) && isOrgAdmin(req.user, req.body.to)) {
-        async.parallel([
-            doneOne => {
-                DataElement.updateMany({'stewardOrg.name': from}, {$set: {'stewardOrg.name': to}}, (err, result) => {
-                    if (err) {
-                        doneOne(err);
-                    } else {
-                        results.push(result.nModified + ' CDEs transferred. ');
-                        doneOne();
-                    }
-                });
-            },
-            doneOne => {
-                Form.updateMany({'stewardOrg.name': from}, {$set: {'stewardOrg.name': to}}, (err, result) => {
-                    if (err) {
-                        doneOne(err);
-                    } else {
-                        results.push(result.nModified + ' forms transferred. ');
-                        doneOne();
-                    }
-                });
-            }
+        parallel([
+            doneOne => dataElementModel.updateMany({'stewardOrg.name': from}, {$set: {'stewardOrg.name': to}}, (err, result) => {
+                if (err) {
+                    doneOne(err);
+                } else {
+                    results.push(result.nModified + ' CDEs transferred. ');
+                    doneOne();
+                }
+            }),
+            doneOne => formModel.updateMany({'stewardOrg.name': from}, {$set: {'stewardOrg.name': to}}, (err, result) => {
+                if (err) {
+                    doneOne(err);
+                } else {
+                    results.push(result.nModified + ' forms transferred. ');
+                    doneOne();
+                }
+            })
         ], err => {
             return res.status(err ? 400 : 200).send(results.join(''));
         });
     } else {
-        res.status(400).send("Please login first.");
+        res.status(400).send('Please login first.');
     }
-}
+};

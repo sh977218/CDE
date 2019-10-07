@@ -1,5 +1,5 @@
 import { isEmpty } from 'lodash';
-import { Form } from 'server/form/mongo-form';
+import { formModel } from 'server/form/mongo-form';
 import { createLoincForm } from 'ingester/loinc/Form/form';
 import {
     BATCHLOADER, compareElt, imported, lastMigrationScript, mergeClassification, mergeElt, updateForm, updateRowArtifact
@@ -8,9 +8,9 @@ import { LoincLogger } from 'ingester/log/LoincLogger';
 
 export async function runOneForm(loinc, classificationOrgName = 'LOINC', classificationArray = []) {
     const loincForm = await createLoincForm(loinc, classificationOrgName, classificationArray);
-    const newForm = new Form(loincForm);
+    const newForm = new formModel(loincForm);
     const newFormObj = newForm.toObject();
-    let existingForm = await Form.findOne({archived: false, 'ids.id': loinc['LOINC Code']});
+    let existingForm = await formModel.findOne({archived: false, 'ids.id': loinc['LOINC Code']});
     if (!existingForm) {
         existingForm = await newForm.save();
         LoincLogger.createdLoincForm++;

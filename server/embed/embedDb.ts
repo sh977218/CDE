@@ -1,6 +1,8 @@
 import * as mongoose from 'mongoose';
+import { Document, Model } from 'mongoose';
 import { addStringtype } from 'server/system/mongoose-stringtype';
 import { config } from 'server/system/parseConfig';
+import { Embed } from 'shared/models.model';
 import { orderedList } from 'shared/system/regStatusShared';
 
 addStringtype(mongoose);
@@ -72,5 +74,5 @@ const embedJson = {
 
 const embedSchema = new Schema(embedJson);
 
-export const Embeds = conn.model('Embed', embedSchema);
-
+export type EmbedDocument = Document & Embed;
+export const embedModel: Model<EmbedDocument> = conn.model('Embed', embedSchema);
