@@ -39,7 +39,7 @@ import { module as nativeRenderModule } from 'server/nativeRender/nativeRenderRo
 import { module as embedModule } from 'server/embed/embedRouters';
 import { module as fhirModule } from 'server/fhir/fhirRouters';
 import { init as systemInit, respondHomeFull } from 'server/system/app';
-import { init as authInit, ticketAuth } from 'server/system/authentication';
+import { init as authInit, ticketAuth } from 'server/user/authentication';
 import {
     canApproveAttachmentMiddleware, canApproveCommentMiddleware, checkOwnership, isDocumentationEditor,
     isOrgAdminMiddleware, isOrgAuthorityMiddleware, isSiteAdminMiddleware, loggedInMiddleware

@@ -1,4 +1,4 @@
-package gov.nih.nlm.cde.user;
+package gov.nih.nlm.user;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;

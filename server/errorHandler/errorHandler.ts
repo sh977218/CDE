@@ -3,8 +3,8 @@ import { noop } from 'lodash';
 import { CastError } from 'mongoose';
 import { logError } from 'server/log/dbLogger';
 import { noDbLogger } from 'server/system/noDbLogger';
-import { AuthenticatedRequest } from 'server/system/authentication';
-import { Cb, Cb1, CbError, CbError1, CbErrorObj, CbErrorObj1, CbErrorObj3 } from 'shared/models.model';
+import { AuthenticatedRequest } from 'server/user/authentication';
+import { Cb, Cb1, CbError, CbErrorObj, CbErrorObj1 } from 'shared/models.model';
 
 type HandledError = CastError | Error;
 type AllErrors = HandledError | null | undefined;
