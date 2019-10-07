@@ -2,8 +2,7 @@ import { Router } from 'express';
 import { handleError, handleNotFound } from 'server/errorHandler/errorHandler';
 import { getStatus } from 'server/siteAdmin/status';
 import { indices } from 'server/system/elasticSearchInit';
-import { UserDocument } from 'server/system/mongo-data';
-import { orgAuthorities, siteAdmins, userByUsername, usernamesByIp } from 'server/user/userDb';
+import { orgAuthorities, siteAdmins, userByUsername, UserDocument, usernamesByIp } from 'server/user/userDb';
 
 export function module() {
     const router = Router();

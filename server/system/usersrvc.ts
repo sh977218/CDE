@@ -1,7 +1,6 @@
 import { handleError, handleNotFound } from 'server/errorHandler/errorHandler';
-import { UserDocument } from 'server/system/mongo-data';
 import { User } from 'shared/models.model';
-import { userByName } from 'server/user/userDb';
+import { userByName, UserDocument } from 'server/user/userDb';
 
 export function myOrgs(user: User): string[] {
     if (!user) {

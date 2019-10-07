@@ -3,7 +3,7 @@ import { Document, Model } from 'mongoose';
 import { config } from 'server/system/parseConfig';
 import { addStringtype } from 'server/system/mongoose-stringtype';
 import { csEltSchema, statusValidationRuleSchema } from 'server/system/schemas';
-import { CbError, Organization } from 'shared/models.model';
+import { Organization } from 'shared/models.model';
 
 addStringtype(mongoose);
 const Schema = mongoose.Schema;
@@ -60,7 +60,7 @@ export async function managedOrgs() {
     return organizationModel.find({}).sort({name: 1});
 }
 
-export function orgByName(orgName: string, callback?: CbError<Organization>) {
+export function orgByName(orgName: string, callback?) {
     return organizationModel.findOne({name: orgName}).exec(callback);
 }
 
