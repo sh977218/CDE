@@ -1,15 +1,15 @@
-import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { Article } from 'shared/article/article.model';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'cde-videos',
     templateUrl: 'videos.component.html'
 })
 export class VideosComponent {
-    article?: Article;
+    videos?: Article;
 
-    constructor(private http: HttpClient) {
-        this.http.get<Article>('/server/article/videos').subscribe(a => this.article = a);
+    constructor(private route: ActivatedRoute) {
+        this.videos = this.route.snapshot.data.videos;
     }
 }
