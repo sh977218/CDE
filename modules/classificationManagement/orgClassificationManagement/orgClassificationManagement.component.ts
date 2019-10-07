@@ -179,8 +179,7 @@ export class OrgClassificationManagementComponent implements OnInit {
 
     orgChanged(value: string, cb?: Cb) {
         if (value) {
-            const url = '/org/' + encodeURIComponent(value);
-            this.http.get<Organization>(url).subscribe(
+            this.http.get<Organization>('/server/orgManagement/org/' + encodeURIComponent(value)).subscribe(
                 org => {
                     if (org) {
                         this.selectedOrg = org;
