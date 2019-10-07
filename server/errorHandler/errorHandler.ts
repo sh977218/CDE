@@ -1,67 +1,69 @@
 import { Request, Response } from 'express';
-import * as _ from 'lodash';
+import { noop } from 'lodash';
 import { CastError } from 'mongoose';
 import { logError } from 'server/log/dbLogger';
 import { noDbLogger } from 'server/system/noDbLogger';
 import { AuthenticatedRequest } from 'server/user/authentication';
+import { Cb, Cb1, CbError, CbErrorObj, CbErrorObj1 } from 'shared/models.model';
 
 type HandledError = CastError | Error;
+type AllErrors = HandledError | null | undefined;
 
-export function forwardError(errCb, cb = _.noop) {
-    return function errorHandler(err?: string, ...args) {
+export interface HandlerOptions {
+    details?: string; // private accurate message additional
+    message?: string; // private accurate message
+    publicMessage?: string; // non-revealing usability message to be shown to users
+    req?: Request;
+    res?: Response;
+    statusCode?: number;
+}
+
+export function handleConsoleError<T = undefined, U = undefined, V = undefined>(options?: HandlerOptions,
+                                                                                cb: Cb<T, U, V> = noop): CbErrorObj<AllErrors, T, U, V> {
+    return function errorHandler(err: AllErrors | undefined,
+                                 arg1: T | undefined = undefined,
+                                 arg2: U | undefined = undefined,
+                                 arg3: V | undefined = undefined) {
         if (err) {
-            errCb(err);
-            return;
+            noDbLogger.info('ERROR: ' + err);
         }
-        cb(...args);
+        cb(arg1, arg2, arg3);
     };
 }
 
-export function handleConsoleError(options, cb = _.noop) {
-    return function errorHandler(err?: string, ...args) {
-        if (err) noDbLogger.info('ERROR: ' + err);
-        cb(...args);
-    };
-}
-
-export function handleError(options?: HandlerOptions, cb = _.noop) {
-    return function errorHandler(err?: HandledError, ...args) {
-        if (err) {
-            respondError(err, options);
-            return;
-        }
-        cb(...args);
-    };
-}
-
-export function handle40x(options, cb) { // Not Found
-    return function errorHandler(err?: HandledError, arg?: any, ...args) {
+export function handleError<T, U = void, V = void>(options?: HandlerOptions, cb: Cb<T, U, V> = noop): CbErrorObj<AllErrors, T, U, V> {
+    return function errorHandler(err: AllErrors | undefined, arg1?: T, arg2?: U, arg3?: V) {
         if (err) {
             respondError(err, options);
             return;
         }
-        if (!arg) {
+        cb(arg1, arg2, arg3);
+    };
+}
+
+export function handleNotFound<T, U = void, V = void>(options?: HandlerOptions,
+                                                      cb: Cb1<T & {}, U, V> = noop): CbErrorObj1<AllErrors, T, U, V> {
+    return function errorHandler(err: AllErrors, arg1: T, arg2?: U, arg3?: V) {
+        if (err) {
+            respondError(err, options);
+            return;
+        }
+        if (!arg1) {
             if (options && options.res) {
-                options.res.status(options.statusCode | 404).send();
+                options.res.status(options.statusCode || 404).send();
             }
             return;
         }
-        cb(arg, ...args);
+        cb(arg1, arg2, arg3);
     };
 }
-
-export type HandlerOptions = {
-    details?: string, // private accurate message additional
-    message?: string, // private accurate message
-    publicMessage?: string, // non-revealing usability message to be shown to users
-    req?: Request,
-    res?: Response,
-};
 
 // TODO: Combine with logError() which publishes notifications
 // TODO: tee to console.log
 export function respondError(err: HandledError, options?: HandlerOptions) {
-    if (!options) options = {};
+    if (!options) {
+        options = {};
+    }
     if (options.res) {
         if (err.name === 'CastError' && (err as CastError).kind === 'ObjectId') {
             options.res.status(400).send('Invalid id');
@@ -70,7 +72,7 @@ export function respondError(err: HandledError, options?: HandlerOptions) {
             options.res.status(422).send(err.message);
             return;
         }
-        let message = options.publicMessage || 'Generic Server Failure. Please submit an issue.';
+        const message = options.publicMessage || 'Generic Server Failure. Please submit an issue.';
         options.res.status(500).send('Error: ' + message);
     }
 
@@ -89,4 +91,18 @@ export function respondError(err: HandledError, options?: HandlerOptions) {
         };
     }
     logError(log);
+}
+
+export function splitError<T = undefined, U = undefined, V = undefined>(errCb: CbError<any, any, any>,
+                                                                        cb: Cb<T, U, V> = noop): CbErrorObj<AllErrors, T, U, V> {
+    return function errorHandler(err: AllErrors | undefined,
+                                 arg1: T | undefined = undefined,
+                                 arg2: U | undefined = undefined,
+                                 arg3: V | undefined = undefined) {
+        if (err) {
+            errCb(err);
+            return;
+        }
+        cb(arg1, arg2, arg3);
+    };
 }

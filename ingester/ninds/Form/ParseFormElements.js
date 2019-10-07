@@ -1,11 +1,8 @@
 import { BATCHLOADER, updateCde } from 'ingester/shared/utility';
+import { dataElementSourceModel } from 'server/cde/mongo-cde';
 import { checkPvUnicity } from 'shared/de/deValidator';
 
 const _ = require('lodash');
-
-const mongo_cde = require('../../../server/cde/mongo-cde');
-const DataElement = mongo_cde.DataElement;
-const DataElementSource = mongo_cde.DataElementSource;
 
 const parseAnswers = require('../Form/ParseAnswers').parseAnswers;
 
@@ -92,7 +89,7 @@ const doOneNindsCde = async cdeId => {
             }
         }
     }
-    await DataElementSource.update({tinyId: newCdeObj.tinyId}, newCdeObj, {upsert: true});
+    await dataElementSourceModel.update({tinyId: newCdeObj.tinyId}, newCdeObj, {upsert: true});
 };
 
 exports.parseFormElements = async nindsForms => {

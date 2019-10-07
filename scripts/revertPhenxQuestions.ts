@@ -1,5 +1,5 @@
 import { isEmpty } from 'lodash';
-import { Form } from 'server/form/mongo-form';
+import { formModel } from 'server/form/mongo-form';
 import { BATCHLOADER, BATCHLOADER_USERNAME, updateForm } from 'ingester/shared/utility';
 
 process.on('unhandledRejection', function (error) {
@@ -9,7 +9,7 @@ process.on('unhandledRejection', function (error) {
 function run() {
     let formNeedReview = [];
     let formCount = 0;
-    let cursor = Form.find({
+    let cursor = formModel.find({
         archived: false,
         'ids.source': 'PhenX',
         "registrationState.registrationStatus": 'Qualified',
@@ -24,7 +24,7 @@ function run() {
         let revertUsername = '';
         for (let i = 0; i < histories.length; i++) {
             let history = histories[i];
-            let historyObj = await Form.findById(history).lean();
+            let historyObj = await formModel.findById(history).lean();
             let updatedBy = historyObj.updatedBy;
             if (isEmpty(updatedBy)) {
                 console.log(`${formObj.tinyId} has history ${history} with empty updatedBy.`);

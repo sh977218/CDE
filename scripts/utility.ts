@@ -1,5 +1,7 @@
 import { cloneDeep, isEmpty, uniqBy } from 'lodash';
-import { DataElement } from 'server/cde/mongo-cde';
+import { dataElementModel } from 'server/cde/mongo-cde';
+import { DerivationRule, PermissibleValue } from 'shared/models.model';
+import { FormElement } from 'shared/form/form.model';
 
 // common
 export function fixSourceName(cdeObj) {
@@ -82,9 +84,9 @@ export function fixValueDomain(cdeObj) {
 
 export function fixDatatypeNumber(datatypeNumber) {
     const minValueString = datatypeNumber.minValue;
-    const minValue = parseInt(minValueString);
+    const minValue = parseInt(minValueString, 10);
     const maxValueString = datatypeNumber.maxValue;
-    const maxValue = parseInt(maxValueString);
+    const maxValue = parseInt(maxValueString, 10);
     const result: any = {};
     if (!isNaN(minValue)) {
         result.minValue = minValue;
@@ -97,9 +99,9 @@ export function fixDatatypeNumber(datatypeNumber) {
 
 export function fixDatatypeText(datatypeText) {
     const minLengthString = datatypeText.minLength;
-    const minLength = parseInt(minLengthString);
+    const minLength = parseInt(minLengthString, 10);
     const maxLengthString = datatypeText.maxLength;
-    const maxLength = parseInt(maxLengthString);
+    const maxLength = parseInt(maxLengthString, 10);
     const result: any = {};
     if (!isNaN(minLength)) {
         result.minLength = minLength;
@@ -111,7 +113,7 @@ export function fixDatatypeText(datatypeText) {
 }
 
 export function fixEmptyPermissibleValue(permissibleValues) {
-    const result = [];
+    const result: PermissibleValue[] = [];
     permissibleValues.forEach(pv => {
         if (!pv.permissibleValue) {
             pv.permissibleValue = pv.valueMeaningName;
@@ -125,10 +127,10 @@ export function fixEmptyPermissibleValue(permissibleValues) {
 }
 
 function fixDerivationRules(cdeObj) {
-    const derivationRules = [];
+    const derivationRules: DerivationRule[] = [];
     cdeObj.derivationRules.forEach(d => {
         if (!isEmpty(d.inputs)) {
-            const inputs = [];
+            const inputs: string[] = [];
             d.inputs.forEach(input => {
                 const underScoreTinyId = input.replace(/-/g, '_');
                 inputs.push(underScoreTinyId);
@@ -238,11 +240,11 @@ async function fixQuestion(questionFe, formObj) {
         cond.archived = false;
     }
 
-    let cde = await DataElement.findOne(cond);
+    let cde = await dataElementModel.findOne(cond);
     if (!cde) {
         console.log(`${formErrorMessage} ${tinyId} not exist. Creating`);
         const createCdeObj = await convertQuestionToCde(cloneDeep(questionFe), formObj.stewardOrg, formObj.registrationState);
-        cde = await new DataElement(createCdeObj).save().catch(e => {
+        cde = await new dataElementModel(createCdeObj).save().catch(e => {
             console.log(`mongo cond: ${JSON.stringify(cond)}`);
             throw new Error(`await new DataElement(cdeObj).save() Error ` + e);
         });
@@ -341,9 +343,8 @@ async function fixSectionInform(sectionInformFe, formObj) {
         delete sectionInformFe.repeatsFor;
         delete sectionInformFe.repeat;
     }
-    const formElements = [];
-    for (let i = 0; i < sectionInformFe.formElements.length; i++) {
-        const fe = sectionInformFe.formElements[i];
+    const formElements: FormElement[] = [];
+    for (const fe of sectionInformFe.formElements) {
         const elementType = fe.elementType;
         if (elementType === 'question') {
             if (fe.question.cde.tinyId.indexOf('-') !== -1) {
@@ -360,9 +361,8 @@ async function fixSectionInform(sectionInformFe, formObj) {
 }
 
 async function fixFormElements(formObj) {
-    const formElements = [];
-    for (let i = 0; i < formObj.formElements.length; i++) {
-        const fe = formObj.formElements[i];
+    const formElements: FormElement[] = [];
+    for (const fe of formObj.formElements) {
         const elementType = fe.elementType;
         if (elementType === 'question') {
             if (fe.question.cde.tinyId.indexOf('-') !== -1) {

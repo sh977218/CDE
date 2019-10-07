@@ -1,11 +1,14 @@
 import * as Config from 'config';
+import { RequestHandler, Router } from 'express';
 import * as multer from 'multer';
-import { add, approvalApprove, approvalDecline, remove, setDefault } from '../attachment/attachmentSvc';
+import { add, approvalApprove, approvalDecline, remove, setDefault } from 'server/attachment/attachmentSvc';
+import { Item, ModuleAll, User } from 'shared/models.model';
 
 const config = Config as any;
 
-export function module(roleConfig, modules) {
-    const router = require('express').Router();
+export function module(roleConfig: {attachmentApproval: RequestHandler[]},
+                       modules: {module: ModuleAll | 'article', db: any, crudPermission: (elt: Item, user?: User) => void}[]) {
+    const router = Router();
 
     modules.forEach(m => {
 
@@ -22,8 +25,8 @@ export function module(roleConfig, modules) {
         });
     });
 
-    router.post('/approve/:id', roleConfig.attachmentApproval, approvalApprove);
-    router.post('/decline/:id', roleConfig.attachmentApproval, approvalDecline);
+    router.post('/approve/:id', ...roleConfig.attachmentApproval, approvalApprove);
+    router.post('/decline/:id', ...roleConfig.attachmentApproval, approvalDecline);
 
     return router;
 }

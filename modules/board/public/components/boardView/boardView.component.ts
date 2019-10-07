@@ -9,7 +9,7 @@ import { ClassifyItemModalComponent } from 'adminItem/public/components/classifi
 import { AlertService } from 'alert/alert.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { saveAs } from 'file-saver';
-import { Board, ClassificationClassified, Comment, ItemElastic, ListTypes, User } from 'shared/models.model';
+import { Board, BoardUser, ClassificationClassified, Comment, ItemElastic, ListTypes, User } from 'shared/models.model';
 import { convertToCsv, getCdeCsvHeader, projectItemForExport } from 'core/system/export';
 
 export interface BoardQuery {
@@ -39,11 +39,11 @@ export class BoardViewComponent implements OnInit {
     hasComments: boolean = false;
     listViews?: ListTypes;
     modalTitle!: string;
-    newUser: any = {username: '', role: 'viewer'};
+    newUser: BoardUser = {username: '', role: 'viewer'};
     shareDialogRef!: MatDialogRef<TemplateRef<any>>;
     totalItems!: number;
     url!: string;
-    users: User[] = [];
+    users: BoardUser[] = [];
 
     constructor(private alert: AlertService,
                 private dialog: MatDialog,

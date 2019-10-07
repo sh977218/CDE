@@ -1,21 +1,21 @@
 import { isEmpty } from 'lodash';
-import { DataElement } from '../server/cde/mongo-cde';
+import { dataElementModel } from 'server/cde/mongo-cde';
 
-process.on('unhandledRejection', function (error) {
+process.on('unhandledRejection', (error) => {
     console.log(error);
 });
 
 function fixDatatypeExternallyDefined(datatypeExternallyDefined) {
-    let linkString = datatypeExternallyDefined.link + '';
-    let link = linkString.trim();
+    const linkString = datatypeExternallyDefined.link + '';
+    const link = linkString.trim();
 
-    let descriptionString = datatypeExternallyDefined.description + '';
-    let description = descriptionString.trim();
+    const descriptionString = datatypeExternallyDefined.description + '';
+    const description = descriptionString.trim();
 
-    let descriptionFormatString = datatypeExternallyDefined.descriptionFormat + '';
-    let descriptionFormat = descriptionFormatString.trim();
+    const descriptionFormatString = datatypeExternallyDefined.descriptionFormat + '';
+    const descriptionFormat = descriptionFormatString.trim();
 
-    let result: any = {};
+    const result: any = {};
     if (link) {
         result.link = link;
     }
@@ -29,10 +29,10 @@ function fixDatatypeExternallyDefined(datatypeExternallyDefined) {
 }
 
 function fixDatatypeValueList(datatypeValueList) {
-    let datatypeString = datatypeValueList.datatype + '';
-    let datatype = datatypeString.trim();
+    const datatypeString = datatypeValueList.datatype + '';
+    const datatype = datatypeString.trim();
 
-    let result: any = {};
+    const result: any = {};
     if (datatype) {
         result.datatype = datatype;
     }
@@ -40,13 +40,13 @@ function fixDatatypeValueList(datatypeValueList) {
 }
 
 function fixDatatypeDynamicCodeList(datatypeDynamicCodeList) {
-    let systemString = datatypeDynamicCodeList.system + '';
-    let system = systemString.trim();
+    const systemString = datatypeDynamicCodeList.system + '';
+    const system = systemString.trim();
 
-    let codeString = datatypeDynamicCodeList.code + '';
-    let code = codeString.trim();
+    const codeString = datatypeDynamicCodeList.code + '';
+    const code = codeString.trim();
 
-    let result: any = {};
+    const result: any = {};
     if (system) {
         result.system = system;
     }
@@ -57,10 +57,10 @@ function fixDatatypeDynamicCodeList(datatypeDynamicCodeList) {
 }
 
 function fixDatatypeTime(datatypeTime) {
-    let formatString = datatypeTime.format + '';
-    let format = formatString.trim();
+    const formatString = datatypeTime.format + '';
+    const format = formatString.trim();
 
-    let result: any = {};
+    const result: any = {};
     if (format) {
         result.format = format;
     }
@@ -68,10 +68,10 @@ function fixDatatypeTime(datatypeTime) {
 }
 
 function fixDatatypeDate(datatypeDate) {
-    let precisionString = datatypeDate.precision + '';
-    let precision = precisionString.trim();
+    const precisionString = datatypeDate.precision + '';
+    const precision = precisionString.trim();
 
-    let result: any = {};
+    const result: any = {};
     if (precision) {
         result.precision = precision;
     }
@@ -79,13 +79,13 @@ function fixDatatypeDate(datatypeDate) {
 }
 
 function fixDatatypeNumber(datatypeNumber) {
-    let minValueString = datatypeNumber.minValue;
-    let minValue = parseInt(minValueString);
+    const minValueString = datatypeNumber.minValue;
+    const minValue = parseInt(minValueString, 10);
 
-    let maxValueString = datatypeNumber.maxValue;
-    let maxValue = parseInt(maxValueString);
+    const maxValueString = datatypeNumber.maxValue;
+    const maxValue = parseInt(maxValueString, 10);
 
-    let result: any = {};
+    const result: any = {};
     if (!isNaN(minValue)) {
         result.minValue = minValue;
     }
@@ -96,13 +96,13 @@ function fixDatatypeNumber(datatypeNumber) {
 }
 
 function fixDatatypeText(datatypeText) {
-    let minLengthString = datatypeText.minLength;
-    let minLength = parseInt(minLengthString);
+    const minLengthString = datatypeText.minLength;
+    const minLength = parseInt(minLengthString, 10);
 
-    let maxLengthString = datatypeText.maxLength;
-    let maxLength = parseInt(maxLengthString);
+    const maxLengthString = datatypeText.maxLength;
+    const maxLength = parseInt(maxLengthString, 10);
 
-    let result: any = {};
+    const result: any = {};
     if (!isNaN(minLength)) {
         result.minLength = minLength;
     }
@@ -113,42 +113,42 @@ function fixDatatypeText(datatypeText) {
 }
 
 function fixValueDomain(cde) {
-    let cdeObj = cde.toObject();
-    let valueDomain = cdeObj.valueDomain;
+    const cdeObj = cde.toObject();
+    const valueDomain = cdeObj.valueDomain;
     if (valueDomain === 'Text' && !isEmpty(valueDomain.datatypeText)) {
-        cde.valueDomain.datatypeText = fixDatatypeText(valueDomain.datatypeText)
+        cde.valueDomain.datatypeText = fixDatatypeText(valueDomain.datatypeText);
     }
     if (valueDomain === 'Number' && !isEmpty(valueDomain.datatypeNumber)) {
-        cde.valueDomain.datatypeNumber = fixDatatypeNumber(valueDomain.datatypeNumber)
+        cde.valueDomain.datatypeNumber = fixDatatypeNumber(valueDomain.datatypeNumber);
     }
     if (valueDomain === 'Date' && !isEmpty(valueDomain.datatypeDate)) {
-        cde.valueDomain.datatypeDate = fixDatatypeDate(valueDomain.datatypeDate)
+        cde.valueDomain.datatypeDate = fixDatatypeDate(valueDomain.datatypeDate);
     }
     if (valueDomain === 'Time' && !isEmpty(valueDomain.datatypeTime)) {
-        cde.valueDomain.datatypeTime = fixDatatypeTime(valueDomain.datatypeTime)
+        cde.valueDomain.datatypeTime = fixDatatypeTime(valueDomain.datatypeTime);
     }
     if (valueDomain === 'Dynamic Code List' && !isEmpty(valueDomain.datatypeDynamicCodeList)) {
-        cde.valueDomain.datatypeDynamicCodeList = fixDatatypeDynamicCodeList(valueDomain.datatypeDynamicCodeList)
+        cde.valueDomain.datatypeDynamicCodeList = fixDatatypeDynamicCodeList(valueDomain.datatypeDynamicCodeList);
     }
     if (valueDomain === 'Value List' && !isEmpty(valueDomain.datatypeValueList)) {
-        cde.valueDomain.datatypeValueList = fixDatatypeValueList(valueDomain.datatypeValueList)
+        cde.valueDomain.datatypeValueList = fixDatatypeValueList(valueDomain.datatypeValueList);
     }
     if (valueDomain === 'Externally Defined' && !isEmpty(valueDomain.datatypeExternallyDefined)) {
-        cde.valueDomain.datatypeExternallyDefined = fixDatatypeExternallyDefined(valueDomain.datatypeExternallyDefined)
+        cde.valueDomain.datatypeExternallyDefined = fixDatatypeExternallyDefined(valueDomain.datatypeExternallyDefined);
     }
 }
 
 
-(function () {
+(() => {
     let cdeCount = 0;
-    let cursor = DataElement.find({
-        'registrationState.registrationStatus': {$ne: "Retired"},
+    const cursor = dataElementModel.find({
+        'registrationState.registrationStatus': {$ne: 'Retired'},
         archived: false
     }).cursor();
     cursor.eachAsync(async (cde: any) => {
         fixValueDomain(cde);
         await cde.save().catch(error => {
-            throw(`${cde.tinyId} ${error}`);
+            throw new Error(`${cde.tinyId} ${error}`);
         });
         cdeCount++;
         console.log(`cdeCount: ${cdeCount}`);

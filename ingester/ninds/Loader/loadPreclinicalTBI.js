@@ -8,8 +8,8 @@ const csv = require('csv');
 const request = require('request');
 const cheerio = require('cheerio');
 
-const DataElementModel = require('../../../server/cde/mongo-cde').DataElement;
-const FormModel = require('../../../server/form/mongo-form').Form;
+const DataElementModel = require('../../../server/cde/mongo-cde').dataElementModel;
+const FormModel = require('../../../server/form/mongo-form').formModel;
 const mongo_data = require('../../../server/system/mongo-data');
 
 const UOM_MAP = {

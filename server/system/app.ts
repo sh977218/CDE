@@ -2,11 +2,12 @@ import { series } from 'async';
 import { CronJob } from 'cron';
 import * as csrf from 'csurf';
 import { renderFile } from 'ejs';
+import { Express, Request, Response } from 'express';
 import { access, constants, createWriteStream, existsSync, mkdir, writeFileSync } from 'fs';
 import { authenticate } from 'passport';
-import { DataElement, draftsList as deDraftsList } from 'server/cde/mongo-cde';
-import { handleError, respondError } from 'server/errorHandler/errorHandler';
-import { draftsList as formDraftsList, Form } from 'server/form/mongo-form';
+import { dataElementModel, draftsList as deDraftsList } from 'server/cde/mongo-cde';
+import { handleError, handleNotFound, respondError } from 'server/errorHandler/errorHandler';
+import { draftsList as formDraftsList, formModel } from 'server/form/mongo-form';
 import { consoleLog } from 'server/log/dbLogger';
 import { syncWithMesh } from 'server/mesh/elastic';
 import {
@@ -17,8 +18,8 @@ import { reIndex } from 'server/system/elastic';
 import { indices } from 'server/system/elasticSearchInit';
 import { errorLogger } from 'server/system/logging';
 import {
-    addUserRole, disableRule, enableRule, getClassificationAuditLog, getFile, jobStatus, listOrgs, listOrgsDetailedInfo,
-    orgByName, updateOrg, userById, usersByName
+    addUserRole, disableRule, enableRule, getClassificationAuditLog, getFile, jobStatus, listOrgs,
+    listOrgsDetailedInfo, orgByName, updateOrg, userById, usersByName
 } from 'server/system/mongo-data';
 import { addOrg, managedOrgs, transferSteward } from 'server/system/orgsvc';
 import { config } from 'server/system/parseConfig';
@@ -37,10 +38,9 @@ import { banIp, getRealIp, getTrafficFilter } from 'server/system/trafficFilterS
 
 require('express-async-errors');
 
-export let respondHomeFull: Function;
+export let respondHomeFull: (req: Request, res: Response) => any;
 
-export function init(app) {
-
+export function init(app: Express) {
     let indexHtml = '';
     renderFile('modules/system/views/index.ejs', {
         config,
@@ -67,16 +67,16 @@ export function init(app) {
     /* for IE Opera Safari, emit polyfill.js */
     function isModernBrowser(req) {
         const ua = is(req.headers['user-agent']);
-        return ua.chrome || ua.firefox || ua.edge;
+        return ua.chrome || ua.firefox || (ua as any).edge;
     }
 
     respondHomeFull = function getIndexHtml(req, res) {
         res.send(isModernBrowser(req) ? indexHtml : indexLegacyHtml);
     };
 
-    app.get(['/', '/home'], function (req, res) {
+    app.get(['/', '/home'], (req, res) => {
         if (isSearchEngine(req)) {
-            res.render('bot/home', 'system');
+            res.render('bot/home', 'system' as any);
         } else if (req.user || req.query.tour || req.query.notifications !== undefined
             || req.headers.referer && req.headers.referer.endsWith('/sw.js')) {
             respondHomeFull(req, res);
@@ -111,12 +111,12 @@ export function init(app) {
 
                 return promisify(series)([
                     cb => handleStream(
-                        DataElement.find(cond, 'tinyId').cursor(),
+                        dataElementModel.find(cond, 'tinyId').cursor(),
                         doc => config.publicUrl + '/deView?tinyId=' + doc.tinyId + '\n',
                         cb
                     ),
                     cb => handleStream(
-                        Form.find(cond, 'tinyId').cursor(),
+                        formModel.find(cond, 'tinyId').cursor(),
                         doc => config.publicUrl + '/formView?tinyId=' + doc.tinyId + '\n',
                         cb
                     )
@@ -176,10 +176,10 @@ export function init(app) {
     });
 
 
-    app.get('/supportedBrowsers', (req, res) => res.render('supportedBrowsers', 'system'));
+    app.get('/supportedBrowsers', (req, res) => res.render('supportedBrowsers', 'system' as any));
 
     app.get('/listOrgs', nocacheMiddleware, (req, res) => {
-        listOrgs(function (err, orgs) {
+        listOrgs((err, orgs) => {
             if (err) {
                 return res.status(500).send('ERROR - unable to list orgs');
             }
@@ -188,7 +188,7 @@ export function init(app) {
     });
 
     app.get('/listOrgsDetailedInfo', nocacheMiddleware, (req, res) => {
-        listOrgsDetailedInfo(function (err, orgs) {
+        listOrgsDetailedInfo((err, orgs) => {
             if (err) {
                 errorLogger.error(JSON.stringify({msg: 'Failed to get list of orgs detailed info.'}),
                     {stack: new Error().stack});
@@ -198,7 +198,7 @@ export function init(app) {
         });
     });
 
-    app.get('/loginText', csrf(), (req, res) => res.render('loginText', 'system', {csrftoken: req.csrfToken()}));
+    app.get('/loginText', csrf(), (req, res) => res.render('loginText', 'system' as any, {csrftoken: req.csrfToken()} as any));
 
     const failedIps: any[] = [];
 

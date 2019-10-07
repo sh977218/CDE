@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import _noop from 'lodash/noop';
-import { ElasticQueryResponseAggregationBucket, ElasticQueryResponseAggregations, ModuleItem } from 'shared/models.model';
+import { ElasticQueryResponseAggregationBucket, ElasticQueryResponseAggregations, ItemElastic, ModuleItem } from 'shared/models.model';
 import { Dictionary } from 'async';
 
 export interface BoardFilter {
@@ -40,7 +40,7 @@ export class MyBoardsService {
         this.filter.selectedShareStatus = this.filter.shareStatus.filter(a => a.checked).map(a => a.key);
         this.filter.selectedTags = this.filter.tags.filter(a => a.checked).map(a => a.key);
         this.filter.selectedTypes = this.filter.types.filter(a => a.checked).map(a => a.key);
-        this.http.post<ElasticQueryResponseAggregations>('/server/board/myBoards', this.filter).subscribe(res => {
+        this.http.post<ElasticQueryResponseAggregations<ItemElastic>>('/server/board/myBoards', this.filter).subscribe(res => {
             if (res.hits) {
                 this.boards = res.hits.hits.map(h => {
                     h._source._id = h._id;

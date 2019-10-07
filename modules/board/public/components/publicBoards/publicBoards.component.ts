@@ -34,7 +34,7 @@ export class PublicBoardsComponent implements OnInit {
     loadPublicBoards() {
         this.filter.selectedTags = this.filter.tags.filter(a => a.checked).map(a => a.key);
         this.filter.selectedTypes = this.filter.types.filter(a => a.checked).map(a => a.key);
-        this.http.post<ElasticQueryResponseAggregations>('/server/board/boardSearch', this.filter).subscribe(response => {
+        this.http.post<ElasticQueryResponseAggregations<Board>>('/server/board/boardSearch', this.filter).subscribe(response => {
                 this.boards = response.hits.hits.map(h => {
                     h._source._id = h._id;
                     return h._source;
