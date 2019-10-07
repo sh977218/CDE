@@ -6,7 +6,7 @@ addStringtype(mongoose);
 const Schema = mongoose.Schema;
 const StringType = (Schema.Types as any).StringType;
 
-const csEltSchema = new Schema({
+export const csEltSchema = new Schema({
     elements: [],
     name: {type: StringType, index: true}
 }, {_id: false});
@@ -57,13 +57,6 @@ export const sourceSchema = new Schema({
     }
 }, {_id: false});
 
-export const idSourceSchema = new Schema({
-    _id: String,
-    linkTemplateDe: {type: StringType, default: ''},
-    linkTemplateForm: {type: StringType, default: ''},
-    version: StringType,
-}, {collection: 'idSource'});
-
 export const statusValidationRuleSchema = new Schema({
     field: StringType,
     id: Number,
@@ -78,34 +71,6 @@ export const statusValidationRuleSchema = new Schema({
     },
     occurence: {type: StringType, enum: ['exactlyOne', 'atLeastOne', 'all']},
 });
-
-export const orgJson = {
-    name: StringType,
-    longName: StringType,
-    mailAddress: StringType,
-    emailAddress: StringType,
-    phoneNumber: StringType,
-    uri: StringType,
-    classifications: [csEltSchema],
-    workingGroupOf: StringType,
-    propertyKeys: {
-        type: Array,
-        default: []
-    },
-    nameContexts: {
-        type: Array,
-        default: []
-    },
-    nameTags: {
-        type: Array,
-        default: []
-    },
-    extraInfo: StringType,
-    cdeStatusValidationRules: [statusValidationRuleSchema],
-    htmlOverview: StringType
-};
-
-export const orgSchema = new Schema(orgJson, {collection: 'orgs', usePushEach: true});
 
 export const designationSchema = new Schema({
     designation: StringType,
@@ -258,6 +223,22 @@ export const dataSetSchema = new Schema({
     notes: StringType
 }, {_id: false});
 
+export const classificationAudit = new Schema({
+    date: {type: Date, default: Date.now, index: true}, user: {
+        username: StringType
+    },
+    elements: [{
+        tinyId: StringType,
+        version: StringType,
+        _id: Schema.Types.ObjectId,
+        name: StringType,
+        status: {type: StringType, enum: orderedList},
+        eltType: {type: StringType, enum: ['cde', 'form']},
+    }],
+    newname: StringType,
+    action: {type: StringType, enum: ['add', 'delete', 'rename', 'reclassify']},
+    path: [StringType]
+}, {collection: 'classificationAudit'});
 
 export const datatypeTextSchema = new Schema({
     minLength: {type: Number, description: 'To indicate limits on length'},

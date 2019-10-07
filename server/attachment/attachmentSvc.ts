@@ -5,16 +5,16 @@ import { createWriteStream } from 'fs';
 import * as md5 from 'md5-file';
 import { createReadStream } from 'streamifier';
 import { hasRole } from 'shared/system/authorizationShared';
-import { handleError } from '../errorHandler/errorHandler';
-import { attachmentApproved, attachmentRemove, createTask, fileUsed } from '../system/adminItemSvc';
-import { getDaoList } from '../system/moduleDaoManager';
-import { addFile, deleteFileById, userTotalSpace } from '../system/mongo-data';
-import { alterAttachmentStatus } from '../attachment/attachmentDb';
-import { CbError, Item } from 'shared/models.model';
+import { handleError, handleNotFound } from 'server/errorHandler/errorHandler';
+import { attachmentApproved, attachmentRemove, createTask, fileUsed } from 'server/system/adminItemSvc';
+import { getDaoList } from 'server/system/moduleDaoManager';
+import { addFile, deleteFileById, ItemDocument, userTotalSpace } from 'server/system/mongo-data';
+import { alterAttachmentStatus } from 'server/attachment/attachmentDb';
+import { CbError, CbError1 } from 'shared/models.model';
 
 const config = Config as any;
 
-export function add(req, res, db, crudPermission) {
+export function add(req, res, db: any, crudPermission) {
     if (!req.files.uploadedFiles) {
         res.status(400).send('No files to attach.');
         return;
@@ -26,7 +26,7 @@ export function add(req, res, db, crudPermission) {
     const streamFS1 = createReadStream(fileBuffer);
     scanFile(stream, res, scanned => {
         req.files.uploadedFiles.scanned = scanned;
-        db.byId(req.body.id, handleError({req, res}, elt => {
+        db.byId(req.body.id, handleNotFound({req, res}, (elt: ItemDocument) => {
             const ownership = crudPermission(elt, req.user);
             if (!ownership) { return res.status(401).send('You do not own this element'); }
             userTotalSpace(req.user.username, totalSpace => {
@@ -65,7 +65,7 @@ function linkAttachmentToAdminItem(item, attachment, isFileCreated, cb) {
     });
 }
 
-export function addToItem(item, file, user, comment, cb) {
+export function addToItem(item: ItemDocument, file, user, comment, cb) {
     const attachment: any = {
         comment,
         fileid: null,
@@ -79,7 +79,7 @@ export function addToItem(item, file, user, comment, cb) {
         uploadDate: Date.now(),
     };
 
-    const streamDescription = {
+    const streamDescription: any = {
         filename: attachment.filename,
         mode: 'w',
         content_type: attachment.filetype,
@@ -128,12 +128,12 @@ export function approvalDecline(req, res) {
 }
 
 export function remove(req, res, db, crudPermission) {
-    db.byId(req.body.id, handleError({req, res}, elt => {
+    db.byId(req.body.id, handleNotFound({req, res}, (elt: ItemDocument) => {
         const ownership = crudPermission(elt, req.user);
         if (!ownership) { return res.status(401).send('You do not own this element'); }
         const fileId = elt.attachments[req.body.index].fileid;
         elt.attachments.splice(req.body.index, 1);
-        elt.save(handleError({req, res}, () => {
+        (elt.save as any)(handleError({req, res}, () => {
             removeUnusedAttachment(fileId, () => {
                 res.send(elt);
             });
@@ -158,19 +158,19 @@ export function scanFile(stream, res, cb) {
 }
 
 export function setDefault(req, res, db, crudPermission) {
-    db.byId(req.body.id, handleError({req, res}, elt => {
+    db.byId(req.body.id, handleNotFound({req, res}, (elt: ItemDocument) => {
         const ownership = crudPermission(elt, req.user);
         if (!ownership) { return res.status(401).send('You do not own this element'); }
         const state = req.body.state;
-        for (let i = 0; i < elt.attachments.length; i++) {
-            elt.attachments[i].isDefault = false;
+        for (const attachment of elt.attachments) {
+            attachment.isDefault = false;
         }
         elt.attachments[req.body.index].isDefault = state;
-        elt.save(handleError({req, res}, newElt => res.send(newElt)));
+        (elt.save as any)(handleError({req, res}, newElt => res.send(newElt)));
     }));
 }
 
-export function unapproved(cb: CbError<Item[]>) {
+export function unapproved(cb: CbError1<ItemDocument[]>) {
     map(
         getDaoList(),
         (dao: any, done) => dao.type !== 'board' ? dao.dao.find({'attachments.pendingApproval': true}, done) : done(undefined, []),

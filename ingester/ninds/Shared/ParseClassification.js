@@ -1,5 +1,7 @@
+import { classifyItem } from 'server/classification/orgClassificationSvc';
+
 const _ = require('lodash');
-import { classifyItem, sortClassification } from 'shared/system/classificationShared';
+import { sortClassification } from 'shared/system/classificationShared';
 
 exports.parseClassification = (nindsForms, item) => {
     let type = item.elementType;

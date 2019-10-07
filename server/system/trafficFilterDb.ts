@@ -28,6 +28,3 @@ export async function initTrafficFilter() {
 export async function findAnyOne() {
     return trafficFilterModel.findOne({});
 }
-
-
-

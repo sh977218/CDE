@@ -1,27 +1,31 @@
 import * as mongoose from 'mongoose';
-import { config } from 'server/system/parseConfig';
-import { handleError } from 'server/errorHandler/errorHandler';
-import { ObjectId } from 'server/system/mongo-data';
-import { establishConnection } from 'server/system/connections';
-
+import { Document, Model } from 'mongoose';
 import { deleteBoardById, updateOrInsertBoardById } from 'server/board/elastic';
+import { handleError } from 'server/errorHandler/errorHandler';
+import { establishConnection } from 'server/system/connections';
+import { ObjectId, objectId } from 'server/system/mongo-data';
 import { addStringtype } from 'server/system/mongoose-stringtype';
+import { config } from 'server/system/parseConfig';
+import { Board as BoardClient, CbError } from 'shared/models.model';
 
 addStringtype(mongoose);
 const Schema = mongoose.Schema;
 const StringType = (Schema.Types as any).StringType;
 
+export type Board = BoardClient & {_id: ObjectId, owner: {userId: ObjectId}};
+export type BoardDocument = Document & Board;
+
 const conn = establishConnection(config.database.appData);
 // for DAO manager
 export const type = 'board';
 
-let pinSchema = new Schema({
+const pinSchema = new Schema({
     tinyId: StringType,
     type: {type: StringType, default: 'cde', enum: ['cde', 'form']},
     pinnedDate: Date,
 }, {_id: false});
 
-let pinningBoardSchema = new Schema({
+const pinningBoardSchema = new Schema({
     name: StringType,
     description: StringType,
     type: {type: StringType, default: 'cde', enum: ['cde', 'form']},
@@ -49,17 +53,17 @@ let pinningBoardSchema = new Schema({
     }
 });
 
-pinningBoardSchema.pre('save', function (next) {
-    let id = this._id.toString();
-    let board = this.toObject();
+pinningBoardSchema.pre('save', function(next) {
+    const id = this._id.toString();
+    const board = this.toObject();
     delete board._id;
     updateOrInsertBoardById(id, board, handleError({
         publicMessage: 'Unable to index board: ' + id
     }, () => next()));
 });
 
-pinningBoardSchema.pre('remove', function (next) {
-    let id = this._id.toString();
+pinningBoardSchema.pre('remove', function(next) {
+    const id = this._id.toString();
     deleteBoardById(id, handleError({
         publicMessage: 'Unable to remove board: ' + id,
     }, () => next()));
@@ -67,34 +71,34 @@ pinningBoardSchema.pre('remove', function (next) {
 
 pinningBoardSchema.virtual('elementType').get(() => 'board');
 pinningBoardSchema.set('collection', 'pinningBoards');
-export const PinningBoard = conn.model('PinningBoard', pinningBoardSchema);
-export const dao = PinningBoard;
+export const pinningBoardModel: Model<BoardDocument> = conn.model('PinningBoard', pinningBoardSchema);
+export const dao = pinningBoardModel;
 
 // for Elastic reindex
-export function getStream(condition) {
-    return PinningBoard.find(condition).sort({_id: -1}).cursor();
+export function getStream(condition: any) {
+    return pinningBoardModel.find(condition).sort({_id: -1}).cursor();
 }
 
-export function count(condition, callback) {
-    PinningBoard.countDocuments(condition, callback);
+export function count(condition: any, callback: CbError<number>): void {
+    pinningBoardModel.countDocuments(condition, callback);
 }
 
-export function publicBoardsByPinTinyId(tinyId) {
-    return PinningBoard.find({'pins.tinyId': tinyId, shareStatus: 'Public'});
+export function publicBoardsByPinTinyId(tinyId: string) {
+    return pinningBoardModel.find({'pins.tinyId': tinyId, shareStatus: 'Public'});
 }
 
-export function nbBoardsByUserId(userId) {
-    return PinningBoard.countDocuments({'owner.userId': userId});
+export function nbBoardsByUserId(userId: string) {
+    return pinningBoardModel.countDocuments({'owner.userId': userId});
 }
 
-export function byId(boardId, callback?) {
-    return PinningBoard.findById(boardId).exec(callback);
+export function byId(boardId: string, callback?: CbError<BoardDocument>): Promise<BoardDocument | null> {
+    return pinningBoardModel.findById(boardId).exec(callback as any);
 }
 
-export function byIdAndOwner(boardId, ownerId) {
-    return PinningBoard.findOne({_id: ObjectId(boardId), 'owner.userId': ownerId}).exec();
+export function byIdAndOwner(boardId: string, ownerId: string): Promise<BoardDocument | null> {
+    return pinningBoardModel.findOne({_id: objectId(boardId), 'owner.userId': ownerId}).exec();
 }
 
-export function newBoard(board) {
-    return new PinningBoard(board).save();
+export function newBoard(board: Board): Promise<BoardDocument> {
+    return (new pinningBoardModel(board).save as any)();
 }

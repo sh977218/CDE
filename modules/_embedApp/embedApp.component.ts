@@ -5,8 +5,8 @@ import { ElasticService } from '_app/elastic.service';
 import { SearchSettings } from 'shared/search/search.model';
 import { orderedList } from 'shared/system/regStatusShared';
 import {
-    ClassificationElement, ElasticQueryResponseAggregationsItem, ElasticQueryResponseDe, ElasticQueryResponseForm,
-    ElasticQueryResponseItem, Embed, ItemElastic, ModuleItem, UserSearchSettings
+    ClassificationElement, ElasticQueryResponseDe, ElasticQueryResponseForm, Embed, ItemElastic, ModuleItem, SearchResponseAggregationItem,
+    UserSearchSettings
 } from 'shared/models.model';
 
 
@@ -140,9 +140,7 @@ export class EmbedAppComponent {
         const settings = this.elasticSvc.buildElasticQuerySettings(this.searchSettings);
         settings.fullRecord = true;
 
-        this.elasticSvc.generalSearchQuery(settings, this.searchType,
-            (err?: string, r?: ElasticQueryResponseItem) => {
-                const result = r as ElasticQueryResponseAggregationsItem;
+        this.elasticSvc.generalSearchQuery(settings, this.searchType, (err?: string, result?: SearchResponseAggregationItem) => {
                 if (err || !result) {
                     this.elts = [];
                     return;

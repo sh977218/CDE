@@ -1,45 +1,54 @@
 import { isEmpty } from 'lodash';
-import { DataElement, DataElementSource } from 'server/cde/mongo-cde';
+import { dataElementModel } from 'server/cde/mongo-cde';
 import { createLoincCde } from 'ingester/loinc/CDE/cde';
 import {
-    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeElt, printUpdateResult, updateCde
+    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeClassification, mergeElt, updateCde, updateRowArtifact
 } from 'ingester/shared/utility';
-
 import { LoincLogger } from 'ingester/log/LoincLogger';
 
-export async function runOneCde(loinc, orgInfo) {
-    const loincCde = await createLoincCde(loinc, orgInfo);
-    const newCde = new DataElement(loincCde);
+export async function runOneCde(loinc, classificationOrgName, classificationArray = []) {
+    if (!classificationOrgName) {
+        console.log('loincCdeLoader.ts classificationOrgName is empty.');
+        process.exit(1);
+    }
+    const loincCde = await createLoincCde(loinc, classificationOrgName, classificationArray);
+    const newCde = new dataElementModel(loincCde);
     const newCdeObj = newCde.toObject();
-    let existingCde = await DataElement.findOne({archived: false, 'ids.id': loinc.loincId});
+    let existingCde: any = await dataElementModel.findOne({archived: false, 'ids.id': loinc['LOINC Code']});
     if (!existingCde) {
-        existingCde = await newCde.save();
+        existingCde = await newCde.save().catch(err => {
+            console.log(`LOINC existingCde = await newCde.save() error: ${JSON.stringify(err)}`);
+            process.exit(1);
+        });
         LoincLogger.createdLoincCde++;
-        LoincLogger.createdLoincCdes.push(existingCde.tinyId);
+        LoincLogger.createdLoincCdes.push(existingCde.tinyId + `[${loinc['LOINC Code']}]`);
     } else {
-        const existingCdeObj = existingCde.toObject();
-        existingCdeObj.imported = imported;
-        existingCdeObj.lastMigrationScript = lastMigrationScript;
-        existingCdeObj.changeNote = lastMigrationScript;
         const diff = compareElt(newCde.toObject(), existingCde.toObject(), 'LOINC');
+        mergeClassification(existingCde, newCde.toObject(), classificationOrgName);
         if (isEmpty(diff)) {
-            await existingCde.save();
+            existingCde.lastMigrationScript = lastMigrationScript;
+            existingCde.imported = imported;
+            await existingCde.save().catch(err => {
+                console.log(existingCde);
+                console.log('LOINC await existingCde.save() error: ' + err);
+                process.exit(1);
+            });
             LoincLogger.sameLoincCde++;
             LoincLogger.sameLoincCdes.push(existingCde.tinyId);
         } else {
-            mergeElt(newCdeObj, existingCdeObj, 'LOINC');
-            await updateCde(existingCde, BATCHLOADER, {updateSource: true});
+            const existingCdeObj = existingCde.toObject();
+            mergeElt(existingCdeObj, newCdeObj, 'LOINC', classificationOrgName);
+            await updateCde(existingCdeObj, BATCHLOADER, {updateSource: true}).catch(err => {
+                console.log(newCdeObj);
+                console.log(existingCdeObj);
+                console.log(`LOINC await updateCde(existingCdeObj error: ${JSON.stringify(err)}`);
+                process.exit(1);
+            });
             LoincLogger.changedLoincCde++;
             LoincLogger.changedLoincCdes.push(existingCde.tinyId);
         }
     }
-    delete newCdeObj.tinyId;
-    delete newCdeObj._id;
-    newCdeObj.attachments = [];
-    const updateResult = await DataElementSource.updateOne({
-        tinyId: existingCde.tinyId,
-        source: 'LOINC'
-    }, newCdeObj, {upsert: true});
-    printUpdateResult(updateResult, existingCde);
-    return existingCde;
+    await updateRowArtifact(existingCde, newCdeObj, 'LOINC', classificationOrgName);
+    const savedCde: any = await dataElementModel.findOne({archived: false, 'ids.id': loinc['LOINC Code']});
+    return savedCde;
 }

@@ -1,7 +1,7 @@
-import { isEmpty, isEqual, toLower, trim } from 'lodash';
+import { isEmpty, isEqual, sortBy, toLower, trim } from 'lodash';
 
 export function parseDefinitions(protocol) {
-    const definitions = [];
+    const definitions: any[] = [];
     const description = trim(protocol.description);
     const definition = trim(protocol.definition);
 
@@ -26,6 +26,6 @@ export function parseDefinitions(protocol) {
             });
         }
     }
+    return sortBy(definitions, ['definition']);
 
-    return definitions;
 }

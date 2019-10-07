@@ -2,47 +2,35 @@ import { series } from 'async';
 import { CronJob } from 'cron';
 import * as csrf from 'csurf';
 import { renderFile } from 'ejs';
+import { Express, Request, Response } from 'express';
 import { access, constants, createWriteStream, existsSync, mkdir, writeFileSync } from 'fs';
 import { authenticate } from 'passport';
-import { DataElement } from 'server/cde/mongo-cde';
+import { dataElementModel } from 'server/cde/mongo-cde';
 import { handleError, respondError } from 'server/errorHandler/errorHandler';
-import { Form } from 'server/form/mongo-form';
+import { formModel } from 'server/form/mongo-form';
 import { consoleLog } from 'server/log/dbLogger';
 import { syncWithMesh } from 'server/mesh/elastic';
 import {
-    canApproveCommentMiddleware, isOrgAdminMiddleware, isOrgAuthorityMiddleware, isSiteAdminMiddleware,
-    loggedInMiddleware, nocacheMiddleware
+    canApproveCommentMiddleware, isOrgAuthorityMiddleware, isSiteAdminMiddleware, loggedInMiddleware, nocacheMiddleware
 } from 'server/system/authorization';
 import { reIndex } from 'server/system/elastic';
 import { indices } from 'server/system/elasticSearchInit';
-import { errorLogger } from 'server/system/logging';
-import {
-    addUserRole, getFile, jobStatus, listOrgs, listOrgsDetailedInfo, orgByName, updateOrg, userById, usersByName
-} from 'server/system/mongo-data';
-import { addOrg, managedOrgs, transferSteward } from 'server/system/orgsvc';
+import { addUserRole, getFile, jobStatus } from 'server/system/mongo-data';
+import { transferSteward } from 'server/orgManagement/orgSvc';
 import { config } from 'server/system/parseConfig';
-import { banIp } from 'server/system/traffic';
-import {
-    addOrgAdmin, addOrgCurator, myOrgsAdmins, orgAdmins, orgCurators, removeOrgAdmin, removeOrgCurator,
-    updateUserAvatar, updateUserRoles
-} from 'server/system/usersrvc';
+import { updateUserAvatar, updateUserRoles } from 'server/system/usersrvc';
 import { is } from 'useragent';
 import { promisify } from 'util';
 import { isSearchEngine } from './helper';
 import { version } from '../version';
+import { userById, usersByName } from 'server/user/userDb';
+import { banIp, getRealIp } from 'server/system/trafficFilterSvc';
 
-export let respondHomeFull: Function;
+require('express-async-errors');
 
-export function init(app) {
-    const getRealIp = function (req) {
-        if (req._remoteAddress) {
-            return req._remoteAddress;
-        }
-        if (req.ip) {
-            return req.ip;
-        }
-    };
+export let respondHomeFull: (req: Request, res: Response) => any;
 
+export function init(app: Express) {
     let indexHtml = '';
     renderFile('modules/system/views/index.ejs', {
         config,
@@ -69,16 +57,16 @@ export function init(app) {
     /* for IE Opera Safari, emit polyfill.js */
     function isModernBrowser(req) {
         const ua = is(req.headers['user-agent']);
-        return ua.chrome || ua.firefox || ua.edge;
+        return ua.chrome || ua.firefox || (ua as any).edge;
     }
 
     respondHomeFull = function getIndexHtml(req, res) {
         res.send(isModernBrowser(req) ? indexHtml : indexLegacyHtml);
     };
 
-    app.get(['/', '/home'], function (req, res) {
+    app.get(['/', '/home'], (req, res) => {
         if (isSearchEngine(req)) {
-            res.render('bot/home', 'system');
+            res.render('bot/home', 'system' as any);
         } else if (req.user || req.query.tour || req.query.notifications !== undefined
             || req.headers.referer && req.headers.referer.endsWith('/sw.js')) {
             respondHomeFull(req, res);
@@ -113,12 +101,12 @@ export function init(app) {
 
                 return promisify(series)([
                     cb => handleStream(
-                        DataElement.find(cond, 'tinyId').cursor(),
+                        dataElementModel.find(cond, 'tinyId').cursor(),
                         doc => config.publicUrl + '/deView?tinyId=' + doc.tinyId + '\n',
                         cb
                     ),
                     cb => handleStream(
-                        Form.find(cond, 'tinyId').cursor(),
+                        formModel.find(cond, 'tinyId').cursor(),
                         doc => config.publicUrl + '/formView?tinyId=' + doc.tinyId + '\n',
                         cb
                     )
@@ -178,35 +166,16 @@ export function init(app) {
     });
 
 
-    app.get('/supportedBrowsers', (req, res) => res.render('supportedBrowsers', 'system'));
+    app.get('/supportedBrowsers', (req, res) => res.render('supportedBrowsers', 'system' as any));
 
-    app.get('/listOrgs', nocacheMiddleware, (req, res) => {
-        listOrgs(function (err, orgs) {
-            if (err) {
-                return res.status(500).send('ERROR - unable to list orgs');
-            }
-            res.send(orgs);
-        });
-    });
-
-    app.get('/listOrgsDetailedInfo', nocacheMiddleware, (req, res) => {
-        listOrgsDetailedInfo(function (err, orgs) {
-            if (err) {
-                errorLogger.error(JSON.stringify({msg: 'Failed to get list of orgs detailed info.'}),
-                    {stack: new Error().stack});
-                return res.status(403).send('Failed to get list of orgs detailed info.');
-            }
-            res.send(orgs);
-        });
-    });
-
-    app.get('/loginText', csrf(), (req, res) => res.render('loginText', 'system', {csrftoken: req.csrfToken()}));
+    app.get('/loginText', csrf(), (req, res) => res.render('loginText', 'system' as any, {csrftoken: req.csrfToken()} as any));
 
     const failedIps: any[] = [];
 
     app.get('/csrf', csrf(), nocacheMiddleware, (req, res) => {
         const resp: any = {csrf: req.csrfToken()};
-        const failedIp = findFailedIp(getRealIp(req));
+        const realIp = getRealIp(req);
+        const failedIp = findFailedIp(realIp);
         if ((failedIp && failedIp.nb > 2)) {
             resp.showCaptcha = true;
         }
@@ -224,13 +193,14 @@ export function init(app) {
         csrf()(req, res, next);
     }
 
-    function checkLoginReq(req, res, next) {
+    async function checkLoginReq(req, res, next) {
+        const realIp = getRealIp(req);
         if (Object.keys(req.body).filter(k => validLoginBody.indexOf(k) === -1).length) {
-            banIp(getRealIp(req), 'Invalid Login body');
+            await banIp(realIp, 'Invalid Login body');
             return res.status(401).send();
         }
         if (Object.keys(req.query).length) {
-            banIp(getRealIp(req), 'Passing params to /login');
+            await banIp(realIp, 'Passing params to /login');
             return res.status(401).send();
         }
         return next();
@@ -295,15 +265,6 @@ export function init(app) {
         });
     });
 
-    app.get('/org/:name', nocacheMiddleware, (req, res) => {
-        return orgByName(req.params.name, (err, result) => res.send(result));
-    });
-
-
-    app.get('/managedOrgs', managedOrgs);
-    app.post('/addOrg', isOrgAuthorityMiddleware, addOrg);
-    app.post('/updateOrg', isOrgAuthorityMiddleware, (req, res) => updateOrg(req.body, res));
-
     app.get('/user/:search', nocacheMiddleware, loggedInMiddleware, (req, res) => {
         if (!req.params.search) {
             return res.send({});
@@ -313,16 +274,6 @@ export function init(app) {
             usersByName(req.params.search, handleError({req, res}, users => res.send(users)));
         }
     });
-
-    app.get('/myOrgsAdmins', [nocacheMiddleware, loggedInMiddleware], myOrgsAdmins);
-
-    app.get('/orgAdmins', nocacheMiddleware, isOrgAuthorityMiddleware, orgAdmins);
-    app.post('/addOrgAdmin', isOrgAdminMiddleware, addOrgAdmin);
-    app.post('/removeOrgAdmin', isOrgAdminMiddleware, removeOrgAdmin);
-
-    app.get('/orgCurators', nocacheMiddleware, isOrgAdminMiddleware, orgCurators);
-    app.post('/addOrgCurator', isOrgAdminMiddleware, addOrgCurator);
-    app.post('/removeOrgCurator', isOrgAdminMiddleware, removeOrgCurator);
 
     app.post('/updateUserRoles', isOrgAuthorityMiddleware, updateUserRoles);
     app.post('/updateUserAvatar', isOrgAuthorityMiddleware, updateUserAvatar);
@@ -347,5 +298,4 @@ export function init(app) {
             res.send();
         }));
     });
-
 }

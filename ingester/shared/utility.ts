@@ -1,19 +1,21 @@
+import { Builder, By } from 'selenium-webdriver';
 import * as DiffJson from 'diff-json';
-import * as cheerio from 'cheerio';
 import * as moment from 'moment';
-import { get } from 'request';
-import { findIndex, isEmpty, uniq } from 'lodash';
+import { find, findIndex, isEmpty, isEqual, lastIndexOf, lowerCase, sortBy, uniq } from 'lodash';
 import * as mongo_cde from 'server/cde/mongo-cde';
+import { dataElementSourceModel } from 'server/cde/mongo-cde';
 import * as mongo_form from 'server/form/mongo-form';
+import { formSourceModel } from 'server/form/mongo-form';
 import { PhenxURL } from 'ingester/createMigrationConnection';
-import { transferClassifications } from 'shared/system/classificationShared';
-import { Classification, Definition, Designation } from 'shared/models.model';
+import { CdeId, Classification, Definition, Designation, Property, ReferenceDocument } from 'shared/models.model';
 import { FormElement } from 'shared/form/form.model';
 
-const sourceMap = {
+require('chromedriver');
+
+export const sourceMap = {
     LOINC: ['LOINC'],
-    PHENX: ['PhenX', 'PhenX Variable'],
-    NINDS: ['NINDS', 'NINDS Variable Name', 'NINDS caDSR', 'caDSR'],
+    PhenX: ['PhenX', 'PhenX Variable'],
+    NINDS: ['NINDS', 'NINDS Variable Name', 'NINDS caDSR'],
     NCI: ['caDSR']
 };
 export const TODAY = new Date().toJSON();
@@ -27,6 +29,7 @@ export const BATCHLOADER = {
 
 export const created = TODAY;
 export const imported = TODAY;
+export const version = '1.0';
 
 export function removeWhite(text: string) {
     if (!text) {
@@ -93,7 +96,22 @@ export function trimWhite(text: string) {
     }
 }
 
-export function printUpdateResult(updateResult: any, elt: any) {
+export async function updateRowArtifact(existingElt, newElt, source, classificationOrgName) {
+    delete newElt.tinyId;
+    delete newElt._id;
+    newElt.classification = existingElt.classification.filter(c => c.stewardOrg.name === classificationOrgName);
+    let mongooseModel: any = dataElementSourceModel;
+    if (existingElt.elementType === 'form') {
+        mongooseModel = formSourceModel;
+    }
+    const updateResult = await mongooseModel.updateOne({
+        tinyId: existingElt.tinyId,
+        source
+    }, newElt, {upsert: true});
+    printUpdateResult(updateResult, existingElt);
+}
+
+function printUpdateResult(updateResult: any, elt: any) {
     if (updateResult.nModified) {
         console.log(`${updateResult.nModified} ${elt.elementType} Raw Artifact modified: ${elt.tinyId}`);
     }
@@ -102,12 +120,51 @@ export function printUpdateResult(updateResult: any, elt: any) {
     }
 }
 
-export function replaceClassificationByOrg(newClassification: Classification[], existingClassification: Classification[], orgName: string) {
-    const otherClassifications = existingClassification.filter(c => c.stewardOrg.name !== orgName);
-    return newClassification.concat(otherClassifications);
+export function replaceClassificationByOrg(existingObj, newObj, orgName: string) {
+    const otherClassifications = existingObj.classification.filter(c => c.stewardOrg.name !== orgName);
+    newObj.classification.push(...otherClassifications);
+    return newObj.classification;
+}
+
+function mergeElements(existingElements, newElements) {
+    newElements.forEach(e => {
+        const foundElement = find(existingElements, o => o.name === e.name);
+        if (!foundElement) {
+            existingElements.unshift(e);
+        } else {
+            mergeElements(foundElement.elements, e.elements);
+        }
+    });
+}
+
+
+export function mergeClassificationByOrg(existingObj, newObj, orgName: string = '') {
+    const newClassification = newObj.classification;
+    const existingClassification = existingObj.classification;
+    newClassification
+        .filter(c => {
+            if (orgName) {
+                return c.stewardOrg.name === orgName;
+            } else {
+                return true;
+            }
+        })
+        .forEach(c => {
+            const foundClassification: Classification | undefined = find(existingClassification, o => {
+                return o.stewardOrg.name === c.stewardOrg.name;
+            });
+            if (!foundClassification) {
+                existingObj.classification.unshift(c);
+            } else {
+                const existingElements = foundClassification.elements;
+                const newElements = c.elements;
+                mergeElements(existingElements, newElements);
+            }
+        });
 }
 
 export function updateCde(elt: any, user: any, options = {}) {
+    elt.lastMigrationScript = lastMigrationScript;
     return new Promise((resolve, reject) => {
         mongo_cde.update(elt, user, options, (err, savedElt) => {
             if (err) {
@@ -119,17 +176,17 @@ export function updateCde(elt: any, user: any, options = {}) {
     });
 }
 
-export function updateForm(elt: any, user: any, options = {}) {
+export function updateForm(elt: any, user: any, options: any = {}) {
+    elt.lastMigrationScript = lastMigrationScript;
     return new Promise((resolve, reject) => {
-        /*@TODO remove it after PhenX loader.
-                const isPhenX = elt.ids.filter(id => id.source === 'PhenX').length > 0;
-                const isQualified = elt.registrationState.registrationStatus === 'Qualified';
-                const isArchived = elt.archived;
-                if (isPhenX && isQualified && !isArchived) {
-                    console.log(`Qualified PhenX Form cannot be updated through loader.`);
-                    process.exit(1);
-                }
-        */
+        /* Loader cannot change Qualified PhenX formElements.*/
+        const isPhenX = elt.ids.filter(id => id.source === 'PhenX').length > 0;
+        const isQualified = elt.registrationState.registrationStatus === 'Qualified';
+        const isArchived = elt.archived;
+        if (isPhenX && isQualified && !isArchived) {
+            options.skipFormElements = true;
+        }
+
         mongo_form.update(elt, user, options, (err, savedElt) => {
             if (err) {
                 reject(err);
@@ -148,34 +205,45 @@ export function protocolLinkToProtocolId(href: string) {
     return href.substr(protocolIdIndex + indexString.length, href.length);
 }
 
-export function getDomainCollection() {
-    return new Promise((resolve, reject) => {
-        if (!isEmpty(DOMAIN_COLLECTION_MAP)) {
-            resolve(DOMAIN_COLLECTION_MAP);
-        } else {
-            get(PhenxURL, async (err, response, body) => {
-                if (err) {
-                    reject(err);
-                }
-                const $ = cheerio.load(body, {normalizeWhitespace: true});
-                const table = $('#myTable');
-                const trs = table.find('tbody tr');
-                for (const tr of trs) {
-                    const tds = $(tr).find('td');
-                    if (tds.length !== 3) {
-                        throw new Error('td length error.');
-                    }
-                    const a = $(tds[1]).find('a');
-                    const href = $(a).attr('href');
-                    const protocolLink = 'https://www.phenxtoolkit.org' + href;
-                    const domainCollection = $(tds[2]).text().trim();
-                    const protocolId = protocolLinkToProtocolId(href);
-                    DOMAIN_COLLECTION_MAP[protocolId] = {protocolLink, domainCollection};
-                }
-                resolve(DOMAIN_COLLECTION_MAP);
-            });
+export async function getDomainCollectionSite() {
+    if (!isEmpty(DOMAIN_COLLECTION_MAP)) {
+        return DOMAIN_COLLECTION_MAP;
+    }
+    const driver = await new Builder().forBrowser('chrome').build();
+    await driver.get(PhenxURL);
+    await driver.findElement(By.xpath("//*[@class='close btn-cookie-agree']")).click();
+
+    const totalPageElement = await driver.findElement(By.xpath("(//*[@id='myTable_paginate']/span/a)[last()]"));
+    const totalPageText = await totalPageElement.getText();
+    const totalPage = parseInt(totalPageText.trim(), 10);
+    let currentPage = 1;
+    while (currentPage < totalPage) {
+        const currentPageElementXpath = "//*[@id='myTable_paginate']/span/a[@class='paginate_button current']";
+        const currentPageElement = await driver.findElement(By.xpath(currentPageElementXpath));
+        const currentPageText = await currentPageElement.getText();
+        currentPage = parseInt(currentPageText.trim(), 10);
+        const trs = await driver.findElements(By.xpath("//*[@id='myTable']/tbody/tr"));
+        for (const tr of trs) {
+            const tds = await tr.findElements(By.xpath('./td'));
+            if (tds.length !== 3) {
+                throw new Error('td length error.');
+            }
+            const a = await tds[1].findElement(By.xpath('.//a'));
+            const href = await a.getAttribute('href');
+            const phenXProtocol = await a.getText();
+            const domainCollection = await tds[2].getText();
+            const protocolId = protocolLinkToProtocolId(href);
+            DOMAIN_COLLECTION_MAP[protocolId] = {
+                phenXProtocol,
+                protocolLink: href,
+                domainCollection: domainCollection.trim()
+            };
         }
-    });
+        await driver.findElement(By.id('myTable_next')).click();
+        console.log('currentPage: ' + currentPage);
+    }
+    await driver.close();
+    return DOMAIN_COLLECTION_MAP;
 }
 
 function getChildren(formElements: FormElement[]) {
@@ -197,19 +265,33 @@ function getChildren(formElements: FormElement[]) {
 }
 
 // Compare two elements
-export function compareElt(newEltObj, existingEltObj) {
+export function compareElt(newEltObj, existingEltObj, source) {
     if (newEltObj.elementType !== existingEltObj.elementType) {
         console.log(`Two element type different. newEltObj: ${newEltObj.tinyId} existingEltObj: ${existingEltObj.tinyId} `);
         process.exit(1);
     }
-    const isQualified = existingEltObj.registrationState.registrationStatus === 'Qualified';
-    [existingEltObj, newEltObj].forEach(eltObj => {
-        eltObj.designations.sort((a, b) => a.designation >= b.designation);
-        eltObj.definitions.sort((a, b) => a.definition >= b.definition);
 
-        eltObj.properties.sort((a, b) => a.key >= b.key);
-        eltObj.referenceDocuments.sort((a, b) => a.docType >= b.docType);
-        eltObj.ids.sort((a, b) => a.source >= b.source);
+    const isPhenX = existingEltObj.ids.filter(id => id.source === 'PhenX').length > 0;
+    const isQualified = existingEltObj.registrationState.registrationStatus === 'Qualified';
+    const isArchived = existingEltObj.archived;
+    const isForm = existingEltObj.elementType === 'form';
+    const isCde = existingEltObj.elementType === 'cde';
+
+    // PhenX Qualified form not need to compare formElements
+    if (isForm && isPhenX && isQualified && !isArchived) {
+        delete existingEltObj.formElements;
+        delete newEltObj.formElements;
+    }
+
+
+    [existingEltObj, newEltObj].forEach(eltObj => {
+        eltObj.designations = sortBy(eltObj.designations, ['designation']);
+        eltObj.definitions = sortBy(eltObj.definitions, ['definition']);
+
+        eltObj.properties = sortBy(eltObj.properties, ['key']);
+        eltObj.referenceDocuments = sortBy(eltObj.referenceDocuments, ['docType', 'languageCode', 'document']);
+
+        eltObj.ids = sortBy(eltObj.ids.filter(id => sourceMap[source].indexOf(id.source) !== -1), ['source', 'id']);
         ['designations', 'definitions', 'properties', 'referenceDocuments', 'ids']
             .forEach(field => {
                 eltObj[field].forEach(o => {
@@ -218,108 +300,228 @@ export function compareElt(newEltObj, existingEltObj) {
                 });
             });
 
-        if (eltObj.elementType === 'form' && !isQualified) {
-            eltObj.cdeIds = getChildren(eltObj.formElements);
+        if (isForm) {
+            eltObj.cdeTinyIds = getChildren(eltObj.formElements);
+        }
+        if (isCde) {
+            delete eltObj.dataSets;
+            fixValueDomainOrQuestion(eltObj.valueDomain);
         }
 
         wipeBeforeCompare(eltObj);
 
     });
+
+    // Within single load, don't version if only classification changed.
+    if (existingEltObj.lastMigrationScript === newEltObj.lastMigrationScript) {
+        delete existingEltObj.classification;
+        delete existingEltObj.newEltObj;
+    }
     const result = DiffJson.diff(existingEltObj, newEltObj);
     return result;
 }
 
 // Merge two elements
-function mergeDesignation(existingDesignations: Designation[], newDesignations: Designation[]) {
-    const designations: Designation[] = [];
-    allDesignations.forEach(designation => {
-        const i = findIndex(designations, {designation: designation.designation});
-        if (i !== -1) {
-            const allTags = designations[i].tags.concat(designation.tags);
-            designations[i].tags = uniq(allTags).filter(t => !isEmpty(t));
-        } else {
-            designations.push(designation);
-        }
-
-    });
-    return designations;
+function isOneClassificationSameSource(existingEltObj, newEltObj) {
+    const existingObjClassificationSize = existingEltObj.classification.length;
+    const newEltObjClassificationSize = newEltObj.classification.length;
+    const existingObjSources = existingEltObj.sources.length;
+    const newEltObjSources = newEltObj.sources.length;
+    const classificationEqual = existingObjClassificationSize && newEltObjClassificationSize;
+    const sourcesEqual = existingObjSources && newEltObjSources;
+    return classificationEqual && sourcesEqual;
 }
 
-function mergeDefinition(existingDefinitions: Definition[], newDefinitions: Definition[]) {
-    const definitions: Definition[] = [];
-    const allDefinitions = existingDefinitions.concat(newDefinitions);
-    allDefinitions.forEach(definition => {
-        const i = findIndex(definitions, {definition: definition.definition});
-        if (i !== -1) {
-            const allTags = definitions[i].tags.concat(definition.tags);
-            definitions[i].tags = uniq(allTags).filter(t => !isEmpty(t));
-        } else {
-            definitions.push(definition);
-        }
-    });
-    return definitions;
+function mergeDesignations(existingObj, newObj) {
+    const replaceDesignations = isOneClassificationSameSource(existingObj, newObj);
+    if (replaceDesignations) {
+        existingObj.designations = newObj.designations;
+    } else {
+        const existingDesignations: Designation[] = existingObj.designations;
+        const newDesignations: Designation[] = newObj.designations;
+        newDesignations.forEach(newDesignation => {
+            const foundDesignation: Designation | undefined = find(existingDesignations, {designation: newDesignation.designation});
+            if (!foundDesignation) {
+                existingDesignations.push(newDesignation);
+            } else {
+                const allTags = foundDesignation.tags.concat(newDesignation.tags);
+                foundDesignation.tags = uniq(allTags).filter(t => !isEmpty(t));
+            }
+        });
+    }
 }
 
-export function mergeProperties(newProperties, existingProperties) {
-    const properties = [];
-    const allProperties = newProperties.concat(existingProperties);
-    allProperties.forEach(property => {
-        const i = findIndex(properties, {key: property.key});
+function mergeDefinitions(existingObj, newObj) {
+    const replaceDefinitions = isOneClassificationSameSource(existingObj, newObj);
+    if (replaceDefinitions) {
+        existingObj.definitions = newObj.definitions;
+    } else {
+        const existingDefinitions: Definition[] = existingObj.definitions;
+        const newDefinitions: Definition[] = newObj.definitions;
+        newDefinitions.forEach(newDefinition => {
+            const foundDefinition: Definition | undefined = find(existingDefinitions, {definition: newDefinition.definition});
+            if (!foundDefinition) {
+                existingDefinitions.push(newDefinition);
+            } else {
+                const allTags = foundDefinition.tags.concat(newDefinition.tags);
+                foundDefinition.tags = uniq(allTags).filter(t => !isEmpty(t));
+                foundDefinition.definitionFormat = newDefinition.definitionFormat;
+            }
+        });
+    }
+}
+
+export function mergeProperties(existingObj, newObj) {
+    const replaceProperties = isOneClassificationSameSource(existingObj, newObj);
+    if (replaceProperties) {
+        existingObj.properties = newObj.properties;
+    } else {
+        const existingProperties: Property[] = existingObj.properties;
+        const newProperties: Property[] = newObj.properties;
+        newProperties.forEach(newProperty => {
+            const i = findIndex(existingProperties, o => {
+                const keyWithS = o.key + 's';
+                if (isEqual(lowerCase(o.key), lowerCase(newProperty.key))) {
+                    return true;
+                } else if (isEqual(lowerCase(keyWithS), lowerCase(newProperty.key))) {
+                    // LOINC Participant => Participants
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+            if (i === -1) {
+                existingProperties.push(newProperty);
+            } else {
+                existingProperties[i] = newProperty;
+            }
+        });
+    }
+}
+
+export function mergeReferenceDocuments(existingObj, newObj) {
+    const replaceReferenceDocuments = isOneClassificationSameSource(existingObj, newObj);
+    if (replaceReferenceDocuments) {
+        existingObj.referenceDocuments = newObj.referenceDocuments;
+    } else {
+        const existingReferenceDocuments: ReferenceDocument[] = existingObj.referenceDocuments;
+        const newReferenceDocuments: ReferenceDocument[] = newObj.referenceDocuments;
+
+        newReferenceDocuments.forEach(newReferenceDocument => {
+            const i = findIndex(existingReferenceDocuments, o =>
+                isEqual(o.docType, newReferenceDocument.docType) &&
+                isEqual(o.languageCode, newReferenceDocument.languageCode) &&
+                isEqual(o.document, newReferenceDocument.document) &&
+                isEqual(o.source, newReferenceDocument.source));
+            if (i === -1) {
+                existingReferenceDocuments.push(newReferenceDocument);
+            } else {
+                existingReferenceDocuments[i] = newReferenceDocument;
+            }
+        });
+    }
+}
+
+export function mergeIds(existingObj, newObj) {
+    const existingIds: CdeId[] = existingObj.ids;
+    const newIds: CdeId[] = newObj.ids;
+    newIds.forEach(newId => {
+        const i = findIndex(existingIds, o =>
+            isEqual(o.source, newId.source) &&
+            isEqual(o.id, newId.id));
         if (i === -1) {
-            properties.push(property);
+            existingIds.push(newId);
+        } else {
+            existingIds[i] = newId;
         }
     });
-    return properties;
 }
 
-export function mergeBySources(newSources, existingSources, sources) {
-    if (!existingSources) {
-        existingSources = [];
+export function mergeClassification(existingElt, newObj, classificationOrgName) {
+    const existingObj = existingElt.toObject();
+    if (existingElt.lastMigrationScript === lastMigrationScript) {
+        mergeClassificationByOrg(existingObj, newObj, classificationOrgName);
+        existingElt.classification = existingObj.classification;
+    } else {
+        const resultClassification = replaceClassificationByOrg(existingObj, newObj, classificationOrgName);
+        existingElt.classification = resultClassification;
     }
-    const otherSources = existingSources.filter(o => sources.indexOf(o.source) === -1);
-    return newSources.concat(otherSources);
 }
 
-export function mergeSourcesBySourcesName(newSources, existingSources, sources) {
+export function mergeSources(existingObj, newObj, sources) {
+    const existingSources = existingObj.sources;
+    const newSources = newObj.sources;
     const otherSources = existingSources.filter(o => sources.indexOf(o.sourceName) === -1);
-    return newSources.concat(otherSources);
+    existingObj.sources = newSources.concat(otherSources);
 }
 
-export function mergeElt(existingEltObj: any, newEltObj: any, source: string) {
-    if (newEltObj.elementType !== existingEltObj.elementType) {
-        console.log(`Two element type different. newEltObj: ${newEltObj.tinyId} existingEltObj: ${existingEltObj.tinyId} `);
-        process.exit(1);
+function increaseVersion(existingEltObj) {
+    const version = existingEltObj.version;
+    if (version) {
+        let majorVersion = version;
+        let minorVersion = '0';
+        const dotIndex = lastIndexOf(version, '.');
+        if (dotIndex !== -1) {
+            majorVersion = version.substr(0, dotIndex);
+            minorVersion = version.substr(dotIndex + 1, version.length - 1);
+        }
+        const minorVersionNum = parseInt(minorVersion, 10);
+        const increasedMinorVersion = minorVersionNum + 1;
+        existingEltObj.version = majorVersion + '.' + increasedMinorVersion;
+
+    } else {
+        existingEltObj.version = '1.0';
     }
-    const upperCaseSource = source.toUpperCase();
-    const sources = sourceMap[upperCaseSource]; // ['PhenX', 'PhenX Variable']
-    existingEltObj.designations = mergeDesignation(existingEltObj.designations, newEltObj.designations);
-    existingEltObj.definitions = mergeDefinition(existingEltObj.definitions, newEltObj.definitions);
+}
 
-    existingEltObj.ids = mergeBySources(newEltObj.ids, existingEltObj.ids, sources);
-    existingEltObj.properties = mergeProperties(newEltObj.properties, existingEltObj.properties);
-    existingEltObj.referenceDocuments = mergeBySources(newEltObj.referenceDocuments, existingEltObj.referenceDocuments, sources);
+export function mergeElt(existingEltObj: any, newEltObj: any, source: string, classificationOrgName) {
+    const isForm = existingEltObj.elementType === 'form';
+    const isCde = existingEltObj.elementType === 'cde';
 
-    existingEltObj.sources = mergeSourcesBySourcesName(newEltObj.sources, existingEltObj.sources, sources);
+    const isPhenX = existingEltObj.ids.filter(id => id.source === 'PhenX').length > 0;
+    const isQualified = existingEltObj.registrationState.registrationStatus === 'Qualified';
+    const isArchived = existingEltObj.archived;
+
+    const sources = sourceMap[source];
+
+    existingEltObj.imported = imported;
+    existingEltObj.changeNote = lastMigrationScript;
+
+    mergeDesignations(existingEltObj, newEltObj);
+    mergeDefinitions(existingEltObj, newEltObj);
+
+    mergeIds(existingEltObj, newEltObj);
+    mergeProperties(existingEltObj, newEltObj);
+    mergeReferenceDocuments(existingEltObj, newEltObj);
+
+    mergeSources(existingEltObj, newEltObj, sources);
 
     existingEltObj.attachments = newEltObj.attachments;
-    existingEltObj.version = newEltObj.version;
-
-    // Those 50 forms qualified, We don't want to modify form elements.
-    if (existingEltObj.registrationState.registrationStatus !== 'Qualified') {
-        existingEltObj.formElements = newEltObj.formElements;
+    if (existingEltObj.lastMigrationScript !== lastMigrationScript) {
+        increaseVersion(existingEltObj);
     }
-    if (existingEltObj.elementType === 'cde') {
+
+    if (isCde) {
         existingEltObj.property = newEltObj.property;
         existingEltObj.dataElementConcept = newEltObj.dataElementConcept;
         existingEltObj.objectClass = newEltObj.objectClass;
         existingEltObj.valueDomain = newEltObj.valueDomain;
     }
 
-    if (existingEltObj.lastMigrationScript === lastMigrationScript) {
-        transferClassifications(newEltObj, existingEltObj);
-    } else {
-        existingEltObj.classification = replaceClassificationByOrg(newEltObj.classification, existingEltObj.classification, source);
+    if (isForm) {
+        // EXCEPTIONS
+        // Those 50 qualified phenx forms , loader skip form elements.
+        if (isPhenX && !isArchived && isQualified) {
+        } else {
+            existingEltObj.formElements = newEltObj.formElements;
+        }
     }
+
+    if (isPhenX && !isArchived && isQualified) {
+    } else {
+        existingEltObj.registrationState.registrationStatus = newEltObj.registrationState.registrationStatus;
+    }
+
 }
 
 // Fix data type
@@ -430,34 +632,72 @@ function fixDatatypeExternallyDefined(datatypeExternallyDefined) {
     return result;
 }
 
-export function fixValueDomainOrQuestion(obj) {
-    const datatype = obj.datatype;
-    if (datatype === 'Text' && !isEmpty(datatype.datatypeText)) {
-        obj.datatypeText = fixDatatypeText(obj.datatypeText);
+export function fixValueDomainOrQuestion(valueDomainOrQuestion) {
+    const datatype = valueDomainOrQuestion.datatype;
+    if (datatype === 'Text') {
+        if (!isEmpty(datatype.datatypeText)) {
+            valueDomainOrQuestion.datatypeText = fixDatatypeText(valueDomainOrQuestion.datatypeText);
+        } else {
+            delete valueDomainOrQuestion.datatypeText;
+        }
     }
 
-    if (datatype === 'Number' && !isEmpty(datatype.datatypeNumber)) {
-        obj.datatypeNumber = fixDatatypeNumber(obj.datatypeNumber);
+    if (datatype === 'Number') {
+        if (!isEmpty(datatype.datatypeNumber)) {
+            valueDomainOrQuestion.datatypeNumber = fixDatatypeNumber(valueDomainOrQuestion.datatypeNumber);
+        } else {
+            delete valueDomainOrQuestion.datatypeNumber;
+        }
     }
 
-    if (datatype === 'Date' && !isEmpty(datatype.datatypeDate)) {
-        obj.datatypeDate = fixDatatypeDate(obj.datatypeDate);
+    if (datatype === 'Date') {
+        if (!isEmpty(datatype.datatypeDate)) {
+            valueDomainOrQuestion.datatypeDate = fixDatatypeDate(valueDomainOrQuestion.datatypeDate);
+        } else {
+            delete valueDomainOrQuestion.datatypeDate;
+        }
     }
 
     if (datatype === 'Time' && !isEmpty(datatype.datatypeTime)) {
-        obj.datatypeTime = fixDatatypeTime(obj.datatypeTime);
+        valueDomainOrQuestion.datatypeTime = fixDatatypeTime(valueDomainOrQuestion.datatypeTime);
     }
 
     if (datatype === 'Dynamic Code List' && !isEmpty(datatype.datatypeDynamicCodeList)) {
-        obj.datatypeDynamicCodeList = fixDatatypeDynamicCodeList(obj.datatypeDynamicCodeList);
+        valueDomainOrQuestion.datatypeDynamicCodeList = fixDatatypeDynamicCodeList(valueDomainOrQuestion.datatypeDynamicCodeList);
     }
 
     if (datatype === 'Value List' && !isEmpty(datatype.datatypeValueList)) {
-        obj.datatypeValueList = fixDatatypeValueList(obj.datatypeValueList);
+        valueDomainOrQuestion.datatypeValueList = fixDatatypeValueList(valueDomainOrQuestion.datatypeValueList);
     }
 
     if (datatype === 'Externally Defined' && !isEmpty(datatype.datatypeExternallyDefined)) {
-        obj.datatypeExternallyDefined = fixDatatypeExternallyDefined(obj.datatypeExternallyDefined);
+        valueDomainOrQuestion.datatypeExternallyDefined = fixDatatypeExternallyDefined(valueDomainOrQuestion.datatypeExternallyDefined);
+    }
+}
+
+
+export function sortProp(elt) {
+    return sortBy(elt.properties, 'key');
+}
+
+export function sortRefDoc(elt) {
+    elt.referenceDocuments.forEach(r => {
+        r.languageCode = 'en-us';
+    });
+    return sortBy(elt.referenceDocuments, ['docType', 'languageCode', 'document']);
+}
+
+export function fixFormCopyright(form) {
+    if (form.copyright) {
+        if (form.copyright.text) {
+            form.copyright.text = form.copyright.text;
+        }
+        if (form.copyright.authority) {
+            form.copyright.authority = form.copyright.authority;
+        }
+    }
+    if (isEmpty(form.copyright)) {
+        delete form.copyright;
     }
 }
 

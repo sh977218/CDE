@@ -1,13 +1,14 @@
 import { Classification } from 'shared/models.model';
+import { actions, addCategory, findSteward, modifyCategory, removeCategory } from 'shared/system/classificationShared';
+import { orgByName } from 'server/orgManagement/orgDb';
+import { addToClassifAudit } from 'server/system/mongo-data';
 
 const boardDb = require('../board/boardDb');
-const mongo_data_system = require('../system/mongo-data');
-import { actions, addCategory, findSteward, modifyCategory, removeCategory } from 'shared/system/classificationShared';
-const daoManager = require('../system/moduleDaoManager');
-const adminItemSvc = require('../system/adminItemSvc');
-const elastic = require('../system/elastic');
+const daoManager = require('server/system/moduleDaoManager');
+const adminItemSvc = require('server/system/adminItemSvc');
+const elastic = require('server/system/elastic');
 const async = require('async');
-const logging = require('../system/logging');
+const logging = require('server/system/logging');
 
 let classification = this;
 
@@ -47,7 +48,7 @@ export function eltClassification(body, action, dao, cb) {
         if (!elt) return cb('can not elt');
         let steward = findSteward(elt, body.orgName);
         if (!steward) {
-            mongo_data_system.orgByName(body.orgName, function (err, stewardOrg) {
+            orgByName(body.orgName, function (err, stewardOrg) {
                 let classifOrg: Classification = {
                     stewardOrg: {
                         name: body.orgName
@@ -77,8 +78,7 @@ export function eltClassification(body, action, dao, cb) {
 export function isInvalidatedClassificationRequest(req) {
     if (!req.body || !req.body.eltId || !req.body.categories || !(req.body.categories instanceof Array) || !req.body.orgName) {
         return 'Bad Request';
-    }
-    else return false;
+    } else return false;
 }
 
 export function addClassification(body, dao, cb) {
@@ -135,7 +135,7 @@ export function modifyOrgClassification(request, action, callback) {
     if (!(request.categories instanceof Array)) {
         request.categories = [request.categories];
     }
-    mongo_data_system.orgByName(request.orgName, function (err, stewardOrg) {
+    orgByName(request.orgName, function (err, stewardOrg) {
         let fakeTree = {elements: stewardOrg.classifications, stewardOrg: {name: ''}};
         modifyCategory(fakeTree, request.categories, {
             type: action,
@@ -161,7 +161,7 @@ export function modifyOrgClassification(request, action, callback) {
                                             classification.saveCdeClassif('', elt, doneOne);
                                         });
                                 }, function doneAll() {
-                                    mongo_data_system.addToClassifAudit({
+                                    addToClassifAudit({
                                         date: new Date()
                                         , user: {
                                             username: 'unknown'
@@ -195,7 +195,7 @@ export function addOrgClassification(body, cb) {
         body.categories = [body.categories];
     }
 
-    mongo_data_system.orgByName(body.orgName, function (err, stewardOrg) {
+    orgByName(body.orgName, function (err, stewardOrg) {
         let fakeTree = {elements: stewardOrg.classifications, stewardOrg: {name: ''}};
         addCategory(fakeTree, body.categories);
         stewardOrg.markModified('classifications');
@@ -222,7 +222,7 @@ export function classifyEltsInBoard(req, dao, cb) {
         dao.byTinyIdList(tinyIds, function (err, cdes) {
             let ids = cdes.map(cde => cde._id);
             adminItemSvc.bulkAction(ids, action, cb);
-            mongo_data_system.addToClassifAudit({
+            addToClassifAudit({
                 date: new Date(),
                 user: {
                     username: req.user.username
@@ -255,7 +255,7 @@ export function classifyEntireSearch(req, cb) {
 
             adminItemSvc.bulkAction(ids, action, oneDaoDone);
 
-            mongo_data_system.addToClassifAudit({
+            addToClassifAudit({
                 date: new Date(),
                 user: {
                     username: req.user.username

@@ -1,10 +1,10 @@
 import { forEachSeries } from 'async';
-
-import { handleError } from '../errorHandler/errorHandler';
+import { Router } from 'express';
+import { handleError } from 'server/errorHandler/errorHandler';
 import { actions } from 'shared/system/classificationShared';
 import { Cb } from 'shared/models.model';
 import { updateOrgClassification } from 'server/classification/orgClassificationSvc';
-import { orgByName } from 'server/system/mongo-data';
+import { orgByName } from 'server/orgManagement/orgDb';
 
 const mongo_cde = require('../cde/mongo-cde');
 const mongo_form = require('../form/mongo-form');
@@ -15,7 +15,7 @@ const orgClassificationSvc = require('./orgClassificationSvc');
 require('express-async-errors');
 
 export function module(roleConfig) {
-    const router = require('express').Router();
+    const router = Router();
 
     router.post('/addCdeClassification/', (req, res) => {
         if (!roleConfig.allowClassify(req.user, req.body.orgName)) {

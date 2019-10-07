@@ -9,26 +9,26 @@ import { parseStewardOrg } from '../Shared/ParseStewardOrg';
 import { parseSources } from '../Shared/ParseSources';
 import { parseFormElements } from './ParseFormElements';
 
-import { BATCHLOADER, created, imported } from 'ingester/shared/utility';
+import { BATCHLOADER, created, imported, version } from 'ingester/shared/utility';
 
 
-export async function createLoincForm(loinc, orgInfo) {
-    const designations = parseDesignations(loinc, {});
+export async function createLoincForm(loinc, classificationOrgName = 'LOINC', classificationArray = []) {
+    const designations = parseDesignations(loinc);
     const definitions = parseDefinitions(loinc);
     const ids = parseIds(loinc);
     const properties = parseProperties(loinc);
     const referenceDocuments = parseReferenceDocuments(loinc);
-    const stewardOrg = parseStewardOrg(orgInfo);
+    const stewardOrg = parseStewardOrg();
     const sources = parseSources(loinc);
-    const classification = await parseClassification(loinc, orgInfo);
-    const formElements = await parseFormElements(loinc, orgInfo);
+    const formElements = await parseFormElements(loinc, classificationOrgName, classificationArray);
 
-    const newForm = {
+    const form = {
         tinyId: generateTinyId(),
         createdBy: BATCHLOADER,
         created,
         imported,
         source: 'LOINC',
+        version,
         registrationState: {registrationStatus: 'Qualified'},
         sources,
         designations,
@@ -37,9 +37,11 @@ export async function createLoincForm(loinc, orgInfo) {
         properties,
         referenceDocuments,
         stewardOrg,
-        classification,
+        classification: [],
         formElements,
         attachments: []
     };
-    return newForm;
+    await parseClassification(form, classificationOrgName, classificationArray);
+
+    return form;
 }

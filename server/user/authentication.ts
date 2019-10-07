@@ -1,14 +1,15 @@
+import * as express from 'express';
+import { Express } from 'express';
 import { errorLogger } from 'server/system/logging';
 import { config } from 'server/system/parseConfig';
 import { User } from 'shared/models.model';
-import * as express from 'express';
+import { addUser, updateUserIps, userById, userByName } from 'server/user/userDb';
 
 const https = require('https');
 const xml2js = require('xml2js');
-const mongo_data_system = require('./mongo-data');
 const request = require('request');
 const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
+const localStrategy = require('passport-local').Strategy;
 
 export type AuthenticatedRequest = {
     user: User,
@@ -29,20 +30,20 @@ const ticketValidationOptions = {
 
 const parser = new xml2js.Parser();
 
-passport.serializeUser(function (user, done) {
+passport.serializeUser((user, done) => {
     done(null, user._id);
 });
 
-passport.deserializeUser( mongo_data_system.userById);
+passport.deserializeUser(userById);
 
-export function init(app) {
+export function init(app: Express) {
     app.use(passport.initialize());
     app.use(passport.session());
 }
 
 export function ticketValidate(tkt, cb) {
     ticketValidationOptions.path = config.uts.ticketValidation.path + '?service=' + config.uts.service + '&ticket=' + tkt;
-    let req = https.request(ticketValidationOptions, function (res) {
+    let req = https.request(ticketValidationOptions, (res) => {
         let output = '';
         res.setEncoding('utf8');
 
@@ -97,10 +98,7 @@ export function updateUserAfterLogin(user, ip, cb) {
         }
     }
 
-    if (user._id) {
-        mongo_data_system.User.findByIdAndUpdate(user._id, {lockCounter: 0, lastLogin: Date.now(), knownIPs: user.knownIPs}, cb);
-    }
-
+    updateUserIps(user._id, user.knownIPs, cb);
 }
 
 export function umlsAuth(user, password, cb) {
@@ -124,7 +122,7 @@ export function authBeforeVsac(req, username, password, done) {
         // Find the user by username in local datastore first and perform authentication.
         // If user is not found, authenticate with UMLS. If user is authenticated with UMLS,
         // add user to local datastore. Else, don't authenticate user and send error message.
-        mongo_data_system.userByName(username, (err, user) => {
+        userByName(username, (err, user) => {
             // If user was not found in local datastore || an error occurred || user was found and password equals 'umls'
             if (err || !user || (user && user.password === 'umls')) {
                 umlsAuth(username, password, result => {
@@ -157,28 +155,25 @@ export function authBeforeVsac(req, username, password, done) {
     });
 }
 
-passport.use(new LocalStrategy({passReqToCallback: true}, authBeforeVsac));
+passport.use(new localStrategy({passReqToCallback: true}, authBeforeVsac));
 
 export function findAddUserLocally(profile, cb) {
-    mongo_data_system.userByName(profile.username, function (err, user) {
+    userByName(profile.username, function (err, user) {
         if (err) {
             cb(err);
         } else if (!user) { // User has been authenticated but user is not in local db, so register him.
-            mongo_data_system.addUser(
+            addUser(
                 {
                     username: profile.username,
                     password: "umls",
                     quota: 1024 * 1024 * 1024,
                     accessToken: profile.accessToken,
                     refreshToken: profile.refreshToken
-                },  (err, newUser) => {
-                    updateUserAfterLogin(newUser, profile.ip, (err, newUser) => cb(newUser));
+                }, (err, user) => {
+                    updateUserAfterLogin(user, profile.ip, (err, newUser) => cb(newUser));
                 });
         } else {
-            updateUserAfterLogin(user, profile.ip, () => {
-                mongo_data_system.User.findByIdAndUpdate(user._id,
-                    {accessToken: profile.accessToken, refreshToken: profile.refreshToken}, (err, user) => cb(user));
-            });
+            updateUserAfterLogin(user, profile.ip, (err, newUser) => cb(newUser));
         }
     });
 }
