@@ -6,7 +6,7 @@ import { MergeFormService } from 'non-core/mergeForm.service';
 import { IsAllowedService } from 'non-core/isAllowed.service';
 import { RegistrationValidatorService } from 'non-core/registrationValidator.service';
 import { PlaceHoldEmptyPipe } from 'non-core/pipes/placeHoldEmpty.pipe';
-import { SafeHtmlPipe } from '_app/safeHtml.pipe';
+import { SafeHtmlPipe } from 'non-core/pipes/safeHtml.pipe';
 
 @NgModule({
     imports: [],
