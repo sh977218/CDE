@@ -17,9 +17,9 @@ import {
 import { reIndex } from 'server/system/elastic';
 import { indices } from 'server/system/elasticSearchInit';
 import {
-    addUserRole, disableRule, enableRule, getClassificationAuditLog, getFile, jobStatus, userById, usersByName
+    addUserRole, disableRule, enableRule, getClassificationAuditLog, getFile, jobStatus
 } from 'server/system/mongo-data';
-import { transferSteward } from 'server/system/orgsvc';
+import { transferSteward } from 'server/orgManagement/orgSvc';
 import { config } from 'server/system/parseConfig';
 import { myOrgs, updateUserAvatar, updateUserRoles } from 'server/system/usersrvc';
 import { is } from 'useragent';
@@ -30,6 +30,7 @@ import {
     createIdSource, deleteIdSource, getAllIdSources, isSourceById, updateIdSource
 } from 'server/system/idSourceSvc';
 import { banIp, getRealIp, getTrafficFilter } from 'server/system/trafficFilterSvc';
+import { userById, usersByName } from 'server/user/userDb';
 
 require('express-async-errors');
 

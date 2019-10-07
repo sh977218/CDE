@@ -1,9 +1,9 @@
 import { orgAdmins as userOrgAdmins, orgCurators as userOrgCurators, userById, userByName } from 'server/user/userDb';
 import { addOrgByName, managedOrgs, orgByName } from 'server/orgManagement/orgDb';
-import { handle40x, handleError } from 'server/errorHandler/errorHandler';
+import { handleNotFound, handleError } from 'server/errorHandler/errorHandler';
 import { hasRole, isOrgAdmin } from 'shared/system/authorizationShared';
-import { DataElement } from 'server/cde/mongo-cde';
-import { Form } from 'server/form/mongo-form';
+import { dataElementModel } from 'server/cde/mongo-cde';
+import { formModel } from 'server/form/mongo-form';
 
 const async = require('async');
 
@@ -23,7 +23,7 @@ export async function myOrgsAdmins(user) {
 }
 
 export function orgCurators(req, res) {
-    userOrgCurators(req.user.orgAdmin, handle40x({req, res}, users => {
+    userOrgCurators(req.user.orgAdmin, handleNotFound({req, res}, users => {
         res.send(req.user.orgAdmin
             .map(org => ({
                 name: org,
@@ -54,7 +54,7 @@ export async function orgAdmins() {
 }
 
 export function addOrgAdmin(req, res) {
-    userByName(req.body.username, handle40x({req, res}, user => {
+    userByName(req.body.username, handleNotFound({req, res}, user => {
         let changed = false;
         if (user.orgAdmin.indexOf(req.body.org) === -1) {
             user.orgAdmin.push(req.body.org);
@@ -75,7 +75,7 @@ export function addOrgAdmin(req, res) {
 }
 
 export function removeOrgAdmin(req, res) {
-    userById(req.body.userId, handle40x({req, res}, found => {
+    userById(req.body.userId, handleNotFound({req, res}, found => {
         const orgInd = found.orgAdmin.indexOf(req.body.org);
         if (orgInd < 0) {
             return res.send();
@@ -88,7 +88,7 @@ export function removeOrgAdmin(req, res) {
 }
 
 export function addOrgCurator(req, res) {
-    userByName(req.body.username, handle40x({req, res}, user => {
+    userByName(req.body.username, handleNotFound({req, res}, user => {
         let changed = false;
         if (user.orgCurator.indexOf(req.body.org) === -1) {
             user.orgCurator.push(req.body.org);
@@ -109,7 +109,7 @@ export function addOrgCurator(req, res) {
 }
 
 export function removeOrgCurator(req, res) {
-    userById(req.body.userId, handle40x({req, res}, found => {
+    userById(req.body.userId, handleNotFound({req, res}, found => {
         const orgInd = found.orgCurator.indexOf(req.body.org);
         if (orgInd < 0) {
             return res.send();
@@ -136,7 +136,7 @@ export function transferSteward(req, res) {
     if (req.isAuthenticated() && isOrgAdmin(req.user, req.body.from) && isOrgAdmin(req.user, req.body.to)) {
         async.parallel([
             doneOne => {
-                DataElement.updateMany({'stewardOrg.name': from}, {$set: {'stewardOrg.name': to}}, (err, result) => {
+                dataElementModel.updateMany({'stewardOrg.name': from}, {$set: {'stewardOrg.name': to}}, (err, result) => {
                     if (err) {
                         doneOne(err);
                     } else {
@@ -146,7 +146,7 @@ export function transferSteward(req, res) {
                 });
             },
             doneOne => {
-                Form.updateMany({'stewardOrg.name': from}, {$set: {'stewardOrg.name': to}}, (err, result) => {
+                formModel.updateMany({'stewardOrg.name': from}, {$set: {'stewardOrg.name': to}}, (err, result) => {
                     if (err) {
                         doneOne(err);
                     } else {

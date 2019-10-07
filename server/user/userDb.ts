@@ -115,7 +115,7 @@ export const userModel: Model<UserDocument> = conn.model('User', userSchema);
 
 const userProject = {password: 0};
 
-export function addUser(user, callback) {
+export function addUser(user: Partial<User>, callback: CbError<UserDocument>) {
     user.username = user.username.toLowerCase();
     new userModel(user).save(callback);
 }
@@ -215,12 +215,4 @@ export function orgAdmins() {
 
 export function orgCurators(orgs: string[], callback: CbError<UserDocument[]>) {
     userModel.find().where('orgCurator').in(orgs).exec(callback);
-}
-
-export function userById(id: string, callback: CbError<UserDocument>) {
-    userModel.findOne({_id: id}, userProject, callback);
-}
-
-export function userByName(name: string, callback: CbError<UserDocument>) {
-    userModel.findOne({username: new RegExp('^' + name + '$', 'i')}, callback);
 }

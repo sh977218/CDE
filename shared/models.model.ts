@@ -193,12 +193,12 @@ export type ElasticQueryError = {
 } | {
     status: 400,
     error: {
-        type: 'parsing_exception'|'search_phase_execution_exception', reason: string, line?: number, col?: number,
-        root_cause: {type: 'parsing_exception'|'search_phase_execution_exception', reason: string, line?: number, col?: number}[]
+        type: 'parsing_exception' | 'search_phase_execution_exception', reason: string, line?: number, col?: number,
+        root_cause: { type: 'parsing_exception' | 'search_phase_execution_exception', reason: string, line?: number, col?: number }[]
     }
 } | {
     status: 500,
-    error: {type: 'json_parse_exception', reason: string, root_cause: {type: 'json_parse_exception', reason: string}[]}
+    error: { type: 'json_parse_exception', reason: string, root_cause: { type: 'json_parse_exception', reason: string }[] }
 };
 
 export interface ElasticQueryResponse<T = void> {
@@ -235,8 +235,12 @@ export type ElasticQueryResponseAggregationsForm = ElasticQueryResponseForm & El
 export type ElasticQueryResponseAggregationsItem =
     ElasticQueryResponseAggregationsDe
     | ElasticQueryResponseAggregationsForm;
-export type SearchResponseAggregationDe = ElasticQueryResponseAggregationsDe & {maxScore: number, took: number, totalNumber: number};
-export type SearchResponseAggregationForm = ElasticQueryResponseAggregationsForm & {maxScore: number, took: number, totalNumber: number};
+export type SearchResponseAggregationDe =
+    ElasticQueryResponseAggregationsDe
+    & { maxScore: number, took: number, totalNumber: number };
+export type SearchResponseAggregationForm =
+    ElasticQueryResponseAggregationsForm
+    & { maxScore: number, took: number, totalNumber: number };
 export type SearchResponseAggregationItem = SearchResponseAggregationDe | SearchResponseAggregationForm;
 
 export interface ElasticQueryResponseAggregation {
@@ -718,6 +722,7 @@ export interface User {
     tasks?: Task[];
     tester?: boolean;
     username: string;
+    password: string;
     viewHistory?: string[];
 }
 
