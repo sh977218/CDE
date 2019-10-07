@@ -17,7 +17,7 @@ import {
 import { reIndex } from 'server/system/elastic';
 import { indices } from 'server/system/elasticSearchInit';
 import {
-    addUserRole, disableRule, enableRule, getClassificationAuditLog, getFile, jobStatus
+    addUserRole, disableRule, enableRule, getFile, jobStatus
 } from 'server/system/mongo-data';
 import { transferSteward } from 'server/orgManagement/orgSvc';
 import { config } from 'server/system/parseConfig';
@@ -31,6 +31,7 @@ import {
 } from 'server/system/idSourceSvc';
 import { banIp, getRealIp, getTrafficFilter } from 'server/system/trafficFilterSvc';
 import { userById, usersByName } from 'server/user/userDb';
+import { getClassificationAuditLog } from 'server/system/classificationAuditSvc';
 
 require('express-async-errors');
 
@@ -305,10 +306,9 @@ export function init(app: Express) {
         }));
     });
 
-    app.post('/getClassificationAuditLog', isOrgAuthorityMiddleware, (req, res) => {
-        getClassificationAuditLog(req.body, handleError({req, res}, result => {
-            res.send(result);
-        }));
+    app.post('/getClassificationAuditLog', isOrgAuthorityMiddleware, async (req, res) => {
+        const records = await getClassificationAuditLog(req.body);
+        res.send(records);
     });
 
     app.post('/disableRule', isOrgAuthorityMiddleware, (req, res) => {
