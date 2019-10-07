@@ -1,12 +1,11 @@
 import { Builder, By } from 'selenium-webdriver';
-
 import * as DiffJson from 'diff-json';
 import * as moment from 'moment';
 import { find, findIndex, isEmpty, isEqual, lastIndexOf, lowerCase, sortBy, uniq } from 'lodash';
 import * as mongo_cde from 'server/cde/mongo-cde';
-import { DataElementSource } from 'server/cde/mongo-cde';
+import { dataElementSourceModel } from 'server/cde/mongo-cde';
 import * as mongo_form from 'server/form/mongo-form';
-import { FormSource } from 'server/form/mongo-form';
+import { formSourceModel } from 'server/form/mongo-form';
 import { PhenxURL } from 'ingester/createMigrationConnection';
 import { CdeId, Classification, Definition, Designation, Property, ReferenceDocument } from 'shared/models.model';
 import { FormElement } from 'shared/form/form.model';
@@ -101,9 +100,9 @@ export async function updateRowArtifact(existingElt, newElt, source, classificat
     delete newElt.tinyId;
     delete newElt._id;
     newElt.classification = existingElt.classification.filter(c => c.stewardOrg.name === classificationOrgName);
-    let mongooseModel = DataElementSource;
+    let mongooseModel: any = dataElementSourceModel;
     if (existingElt.elementType === 'form') {
-        mongooseModel = FormSource;
+        mongooseModel = formSourceModel;
     }
     const updateResult = await mongooseModel.updateOne({
         tinyId: existingElt.tinyId,

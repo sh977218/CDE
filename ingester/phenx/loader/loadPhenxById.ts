@@ -1,11 +1,11 @@
 import { isEmpty } from 'lodash';
 import { createPhenxForm } from 'ingester/phenx/Form/form';
-import { Form } from 'server/form/mongo-form';
+import { formModel } from 'server/form/mongo-form';
 import { PhenxLogger } from 'ingester/log/PhenxLogger';
 import {
     BATCHLOADER, compareElt, imported, lastMigrationScript, mergeClassification, mergeElt, updateForm, updateRowArtifact
 } from 'ingester/shared/utility';
-import { Comment } from 'server/discuss/discussDb';
+import { commentModel } from 'server/discuss/discussDb';
 import { PROTOCOL } from 'ingester/createMigrationConnection';
 
 let protocolCount = 0;
@@ -14,10 +14,10 @@ export async function loadPhenxById(phenxId) {
     const protocol: any = await PROTOCOL.findOne({protocolID: phenxId}).lean();
     const protocolId = protocol.protocolID;
     console.log('Start protocol: ' + protocolId);
-    let existingForm: any = await Form.findOne({archived: false, 'ids.id': protocolId});
+    let existingForm: any = await formModel.findOne({archived: false, 'ids.id': protocolId});
     const isExistingFormQualified = existingForm && existingForm.registrationState.registrationStatus === 'Qualified';
     const phenxForm: any = await createPhenxForm(protocol, isExistingFormQualified);
-    const newForm = new Form(phenxForm);
+    const newForm = new formModel(phenxForm);
     const newFormObj = newForm.toObject();
     if (!existingForm) {
         existingForm = await newForm.save();
@@ -43,7 +43,7 @@ export async function loadPhenxById(phenxId) {
     if (newFormObj.registrationState.registrationStatus !== 'Qualified') {
         for (const comment of phenxForm.comments) {
             comment.element.eltId = existingForm.tinyId;
-            await new Comment(comment).save();
+            await new commentModel(comment).save();
         }
     }
     await updateRowArtifact(existingForm, newFormObj, 'PhenX', 'PhenX');

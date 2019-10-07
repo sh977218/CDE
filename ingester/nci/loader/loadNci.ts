@@ -2,8 +2,8 @@ import { isEmpty } from 'lodash';
 import {
     BATCHLOADER, compareElt, imported, lastMigrationScript, mergeClassification, mergeElt, updateCde, updateRowArtifact
 } from 'ingester/shared/utility';
-import { DataElement } from 'server/cde/mongo-cde';
-import { Comment } from 'server/discuss/discussDb';
+import { dataElementModel } from 'server/cde/mongo-cde';
+import { commentModel } from 'server/discuss/discussDb';
 import { createNciCde } from 'ingester/nci/CDE/cde';
 import { readFile } from 'fs';
 import { NCI_ORG_INFO_MAP } from 'ingester/nci/shared/ORG_INFO_MAP';
@@ -30,13 +30,13 @@ function runOneOrg(orgName: string) {
                     if (error) {
                         reject(err);
                     }
-                    let nciXmlCdes = nciXml.DataElementsList.DataElement;
+                    const nciXmlCdes = nciXml.DataElementsList.DataElement;
                     for (const nciXmlCde of nciXmlCdes) {
                         const nciId = nciXmlCde.PUBLICID[0];
                         const nciCde = await createNciCde(nciXmlCde, orgInfo);
-                        const newCde = new DataElement(nciCde);
+                        const newCde = new dataElementModel(nciCde);
                         const newCdeObj = newCde.toObject();
-                        let existingCde = await DataElement.findOne({
+                        let existingCde = await dataElementModel.findOne({
                             archived: false,
                             'registrationState.registrationStatus': {$ne: 'Retired'},
                             'ids.id': nciId
@@ -65,7 +65,7 @@ function runOneOrg(orgName: string) {
                         if (nciCde.comments) {
                             for (const comment of nciCde.comments) {
                                 comment.element.eltId = existingCde.tinyId;
-                                await new Comment(comment).save();
+                                await new commentModel(comment).save();
                                 console.log('comment saved on ' + existingCde.tinyId);
                             }
                         }

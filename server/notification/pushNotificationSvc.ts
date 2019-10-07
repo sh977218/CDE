@@ -1,27 +1,24 @@
-// cb(err, registrations)
-import { find } from 'server/user/userDb';
-import {
-    pushById, pushByIds, pushByIdsCount, pushByPublicKey, pushClearDb, pushCreate, pushDelete, pushEndpointUpdate,
-    pushesByEndpoint, pushRegistrationFindActive
-} from 'server/notification/notificationDb';
-import { ClientErrorModel, logError, LogErrorModel } from 'server/log/dbLogger';
-import { criteriaSet, typeToCriteria, typeToNotificationSetting } from 'server/notification/notificationSvc';
-import { ObjectId } from 'server/system/mongo-data';
-import { noop, union } from 'lodash';
-
-import { config } from 'server/system/parseConfig';
+import { RequestHandler } from 'express';
+import { find, noop, union } from 'lodash';
 import { handleError } from 'server/errorHandler/errorHandler';
-
-const webpush = require('web-push');
+import {
+    pushById, pushByIds, pushByIdsCount, pushByPublicKey, pushClearDb, pushCreate, pushDelete, pushEndpointUpdate, pushesByEndpoint,
+    pushRegistrationFindActive
+} from 'server/notification/notificationDb';
+import { ObjectId, objectId, PushRegistrationDocument } from 'server/system/mongo-data';
+import { config } from 'server/system/parseConfig';
+import { logError } from 'server/log/dbLogger';
+import { criteriaSet, NotificationType, typeToCriteria, typeToNotificationSetting } from 'server/notification/notificationSvc';
+import { find as userFind } from 'server/user/userDb';
+import { CbError, CbError1, User } from 'shared/models.model';
+import { generateVAPIDKeys, sendNotification, setVapidDetails } from 'web-push';
 
 export function checkDatabase(callback = noop) {
     // errorHandler.handleError because of circular dependency.
     pushById('000000000000000000000000', handleError({}, push => {
         function createDbTag() {
-            pushCreate({
-                    _id: ObjectId('000000000000000000000000'),
-                    userId: config.publicUrl
-                },
+            pushCreate(
+                {_id: objectId('000000000000000000000000'), userId: config.publicUrl},
                 handleError({}, callback)
             );
         }
@@ -38,7 +35,7 @@ export function checkDatabase(callback = noop) {
     }));
 }
 
-export function create(req, res) {
+export const create: RequestHandler = (req, res) => {
     if (!req.user || !req.user._id) {
         return res.status(400).send('Required parameters missing.');
     }
@@ -54,7 +51,7 @@ export function create(req, res) {
             const push = ownPushes[0];
             if (!push.loggedIn) {
                 push.loggedIn = true;
-                push.save(handleError({req, res}, () => {
+                push.save(handleError<PushRegistrationDocument>({req, res}, () => {
                     res.send({subscribed: true});
                 }));
             } else {
@@ -64,7 +61,7 @@ export function create(req, res) {
             pushes.forEach(push => {
                 if (push.loggedIn) {
                     push.loggedIn = false;
-                    push.save(handleError({req, res}, noop));
+                    push.save(handleError<PushRegistrationDocument>({req, res}, noop));
                 }
             });
             pushCreate({
@@ -78,10 +75,10 @@ export function create(req, res) {
             }));
         }
     }));
-}
+};
 
 export function createUnsubscribed(req, res) {
-    pushCreate({vapidKeys: webpush.generateVAPIDKeys()}, handleError({req, res}, push => {
+    pushCreate({vapidKeys: generateVAPIDKeys()}, handleError({req, res}, push => {
         res.send({applicationServerKey: push.vapidKeys.publicKey, subscribed: false});
     }));
 }
@@ -114,7 +111,7 @@ export function subscribe(req, res) {
         push.loggedIn = true;
         push.subscription = req.body.subscription;
         push.userId = req.user._id;
-        push.save(handleError({req, res}, push => res.send(push.features)));
+        push.save(handleError<PushRegistrationDocument>({req, res}, push => res.send(push.features)));
     }));
 }
 
@@ -126,12 +123,12 @@ export function triggerPushMsg(push, dataToSend) {
         return;
     }
 
-    webpush.setVapidDetails(
+    setVapidDetails(
         'https://cde.nlm.nih.gov',
         push.vapidKeys.publicKey,
         push.vapidKeys.privateKey
     );
-    return webpush.sendNotification(push.subscription, dataToSend)
+    return sendNotification(push.subscription, dataToSend)
         .catch(err => {
             if (err.name === 'WebPushError' && err.message === 'Received unexpected response code') {
                 push.remove().catch(logError);
@@ -161,7 +158,7 @@ export function updateStatus(req, res) {
                 if (!push || push.loggedIn) {
                     return respond();
                 }
-                push.updateOne({$set: {loggedIn: true}}, undefined, handleError({req, res}, respond));
+                push.updateOne({$set: {loggedIn: true}}, {}, handleError({req, res}, respond));
             }));
         }));
     } else {
@@ -172,42 +169,24 @@ export function updateStatus(req, res) {
     }
 }
 
-export function pushRegistrationSubscribersByType(type, cb, data) {
-    find(
+export function pushRegistrationSubscribersByType(type: NotificationType, cb: CbError<PushRegistrationDocument[]>,
+                                                  data?: {org?: string, users: ObjectId[]}) {
+    userFind(
         criteriaSet(
             typeToCriteria(type, data),
             'notificationSettings.' + typeToNotificationSetting(type) + '.push'
         ),
         (err, users) => {
-            if (err) {
-                return cb(err);
+            if (err || !users) {
+                cb(err);
+                return;
             }
             pushRegistrationSubscribersByUsers(users, cb);
         }
     );
 }
 
-// cb(err, registrations)
-export function pushRegistrationSubscribersByUsers(users, cb) {
+export function pushRegistrationSubscribersByUsers(users: User[], cb: CbError1<PushRegistrationDocument[]>) {
     const userIds = users.map(u => u._id.toString());
     pushRegistrationFindActive({userId: {$in: userIds}}, cb);
-}
-
-
-export function getNumberServerError(user) {
-    const query = LogErrorModel.countDocuments(
-        user.notificationDate.serverLogDate
-            ? {date: {$gt: user.notificationDate.serverLogDate}}
-            : {}
-    );
-    return query.exec();
-}
-
-export function getNumberClientError(user) {
-    const query = ClientErrorModel.countDocuments(
-        user.notificationDate.clientLogDate
-            ? {date: {$gt: user.notificationDate.clientLogDate}}
-            : {}
-    );
-    return query.exec();
 }

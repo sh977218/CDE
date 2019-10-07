@@ -3,8 +3,8 @@ import { map as MULTISELECT_MAP } from 'ingester/loinc/Mapping/LOINC_MULTISELECT
 import { map as REQUIRED_MAP } from 'ingester/loinc/Mapping/LOINC_REQUIRED_MAP';
 import { runOneCde } from 'ingester/loinc/LOADER/loincCdeLoader';
 import { runOneForm } from 'ingester/loinc/LOADER/loincFormLoader';
-import { DataElement } from 'server/cde/mongo-cde';
-import { Form } from 'server/form/mongo-form';
+import { dataElementModel } from 'server/cde/mongo-cde';
+import { formModel } from 'server/form/mongo-form';
 import { fixValueDomainOrQuestion, sortProp, sortRefDoc } from 'ingester/shared/utility';
 
 export async function parseFormElements(loinc, classificationOrgName, classificationArray) {
@@ -86,7 +86,7 @@ function elementToQuestion(existingCde, element) {
 
 async function loadCde(element, classificationOrgName, classificationArray) {
     // @TODO remove after this load
-    const cdeToFix: any = await DataElement.findOne({archived: false, 'ids.id': element.loinc['LOINC Code']});
+    const cdeToFix: any = await dataElementModel.findOne({archived: false, 'ids.id': element.loinc['LOINC Code']});
     if (cdeToFix) {
         fixValueDomainOrQuestion(cdeToFix.valueDomain);
         await cdeToFix.save();
@@ -118,7 +118,7 @@ function elementToInForm(existingForm, element) {
 
 async function loadForm(element, classificationOrgName, classificationArray) {
     // @TODO remove after this load
-    const formToFix: any = await Form.findOne({archived: false, 'ids.id': element.loinc['LOINC Code']});
+    const formToFix: any = await formModel.findOne({archived: false, 'ids.id': element.loinc['LOINC Code']});
     if (formToFix) {
         sortRefDoc(formToFix);
         sortProp(formToFix);

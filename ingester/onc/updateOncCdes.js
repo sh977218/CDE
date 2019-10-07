@@ -5,7 +5,7 @@ var mongo_cde = require('../../server/cde/mongo-cde');
 var cdeDiff = require('../../server/cde/cdediff');
 import { sortClassification } from 'shared/system/classificationShared';
 var MigrationDataElement = require('../createMigrationConnection').MigrationDataElementModel;
-var DataElement = mongo_cde.DataElement;
+var DataElement = mongo_cde.dataElementModel;
 var MigrationOrg = require('../createMigrationConnection').MigrationOrgModel;
 var Org = require('../../server/system/mongo-data').Org;
 var updateShare = require('../updateShare');
