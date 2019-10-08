@@ -5,26 +5,33 @@ import { renderFile } from 'ejs';
 import { Express, Request, Response } from 'express';
 import { access, constants, createWriteStream, existsSync, mkdir, writeFileSync } from 'fs';
 import { authenticate } from 'passport';
-import { dataElementModel } from 'server/cde/mongo-cde';
+import { dataElementModel, draftsList as deDraftsList } from 'server/cde/mongo-cde';
 import { handleError, respondError } from 'server/errorHandler/errorHandler';
-import { formModel } from 'server/form/mongo-form';
+import { draftsList as formDraftsList, formModel } from 'server/form/mongo-form';
 import { consoleLog } from 'server/log/dbLogger';
 import { syncWithMesh } from 'server/mesh/elastic';
 import {
-    canApproveCommentMiddleware, isOrgAuthorityMiddleware, isSiteAdminMiddleware, loggedInMiddleware, nocacheMiddleware
+    canApproveCommentMiddleware, isOrgAuthorityMiddleware, isOrgCuratorMiddleware, isSiteAdminMiddleware,
+    loggedInMiddleware, nocacheMiddleware
 } from 'server/system/authorization';
 import { reIndex } from 'server/system/elastic';
 import { indices } from 'server/system/elasticSearchInit';
-import { addUserRole, getFile, jobStatus } from 'server/system/mongo-data';
+import {
+    addUserRole, disableRule, enableRule, getFile, jobStatus
+} from 'server/system/mongo-data';
 import { transferSteward } from 'server/orgManagement/orgSvc';
 import { config } from 'server/system/parseConfig';
-import { updateUserAvatar, updateUserRoles } from 'server/system/usersrvc';
+import { myOrgs, updateUserAvatar, updateUserRoles } from 'server/system/usersrvc';
 import { is } from 'useragent';
 import { promisify } from 'util';
 import { isSearchEngine } from './helper';
 import { version } from '../version';
+import {
+    createIdSource, deleteIdSource, getAllIdSources, isSourceById, updateIdSource
+} from 'server/system/idSourceSvc';
+import { banIp, getRealIp, getTrafficFilter } from 'server/system/trafficFilterSvc';
 import { userById, usersByName } from 'server/user/userDb';
-import { banIp, getRealIp } from 'server/system/trafficFilterSvc';
+import { getClassificationAuditLog } from 'server/system/classificationAuditSvc';
 
 require('express-async-errors');
 
@@ -298,4 +305,92 @@ export function init(app: Express) {
             res.send();
         }));
     });
+
+    app.post('/getClassificationAuditLog', isOrgAuthorityMiddleware, async (req, res) => {
+        const records = await getClassificationAuditLog(req.body);
+        res.send(records);
+    });
+
+    app.post('/disableRule', isOrgAuthorityMiddleware, (req, res) => {
+        disableRule(req.body, handleError({req, res}, org => {
+            res.send(org);
+        }));
+    });
+
+    app.post('/enableRule', isOrgAuthorityMiddleware, (req, res) => {
+        enableRule(req.body, handleError({req, res}, org => {
+            res.send(org);
+        }));
+    });
+
+    app.get('/activeBans', isSiteAdminMiddleware, async (req, res) => {
+        const list = await getTrafficFilter();
+        res.send(list);
+    });
+
+    app.post('/removeBan', isSiteAdminMiddleware, async (req, res) => {
+        const elt = await getTrafficFilter();
+        const foundIndex = elt.ipList.findIndex(r => r.ip === req.body.ip);
+        if (foundIndex > -1) {
+            elt.ipList.splice(foundIndex, 1);
+            await elt.save();
+        }
+        res.send();
+    });
+
+    app.get('/allDrafts', isOrgAuthorityMiddleware, (req, res) => {
+        getDrafts(req, res, {});
+    });
+
+    app.get('/orgDrafts', isOrgCuratorMiddleware, (req, res) => {
+        getDrafts(req, res, {'stewardOrg.name': {$in: myOrgs(req.user)}});
+    });
+
+    app.get('/myDrafts', isOrgCuratorMiddleware, (req, res) => {
+        getDrafts(req, res, {'updatedBy.username': req.user.username});
+    });
+
+    function getDrafts(req, res, criteria) {
+        Promise.all([deDraftsList(criteria), formDraftsList(criteria)])
+            .then(results => res.send({draftCdes: results[0], draftForms: results[1]}))
+            .catch(err => respondError(err, {req, res}));
+    }
+
+    app.get('/idSources', async (req, res) => {
+        const sources = await getAllIdSources();
+        res.send(sources);
+    });
+
+    app.get('/idSource/:id', async (req, res) => {
+        const source = await isSourceById(req.params.id);
+        res.send(source);
+    });
+
+    app.post('/idSource/:id', isSiteAdminMiddleware, async (req, res) => {
+        const sourceId = req.params.id;
+        const foundSource = await isSourceById(sourceId);
+        if (foundSource) {
+            return res.status(409).send(sourceId + ' already exists.');
+        } else {
+            const createdIdSource = await createIdSource(sourceId, req.body);
+            res.send(createdIdSource);
+        }
+    });
+
+    app.put('/idSource/:id', isSiteAdminMiddleware, async (req, res) => {
+        const sourceId = req.params.id;
+        const foundSource = await isSourceById(sourceId);
+        if (!foundSource) {
+            return res.status(409).send(sourceId + ' does not exist.');
+        } else {
+            const updatedIdSource = await updateIdSource(sourceId, req.body);
+            res.send(updatedIdSource);
+        }
+    });
+
+    app.delete('/idSource/:id', isSiteAdminMiddleware, async (req, res) => {
+        await deleteIdSource(req.params.id);
+        res.send();
+    });
 }
+
