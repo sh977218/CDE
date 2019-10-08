@@ -7,8 +7,9 @@ public class YoutubeVideo extends NlmCdeBaseTest {
 
     @Test
     public void youtubeVideo() {
+        goHome();
         goToVideos();
-        textPresent("404");
+        textNotPresent("404");
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToArticles();
         clickElement(By.cssSelector("mat-select"));
