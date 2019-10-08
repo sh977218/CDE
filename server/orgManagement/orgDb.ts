@@ -60,7 +60,7 @@ export async function managedOrgs() {
     return organizationModel.find({}).sort({name: 1});
 }
 
-export function orgByName(orgName: string, callback?) {
+export async function orgByName(orgName: string, callback?) {
     return organizationModel.findOne({name: orgName}).exec(callback);
 }
 

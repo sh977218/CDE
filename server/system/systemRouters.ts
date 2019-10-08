@@ -4,8 +4,9 @@ import { isOrgAuthorityMiddleware, isOrgCuratorMiddleware, isSiteAdminMiddleware
 import { draftsList as deDraftsList } from 'server/cde/mongo-cde';
 import { draftsList as formDraftsList } from 'server/form/mongo-form';
 import { myOrgs } from 'server/system/usersrvc';
-import { disableRule, enableRule, getClassificationAuditLog } from 'server/system/systemSvc';
+import { disableRule, enableRule } from 'server/system/systemSvc';
 import { getTrafficFilter } from 'server/system/trafficFilterSvc';
+import { getClassificationAuditLog } from 'server/system/classificationAuditSvc';
 
 require('express-async-errors');
 
