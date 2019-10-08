@@ -3,10 +3,11 @@ import { Classification, Elt, Item } from 'shared/models.model';
 const boardDb = require('server/board/boardDb');
 const mongoSystem = require('server/system/mongo-data');
 import { actions, addCategory, findSteward, modifyCategory, removeCategory } from 'shared/system/classificationShared';
+import { each } from 'async';
 const adminItemSvc = require('server/system/adminItemSvc');
 const logging = require('server/system/logging');
 
-const saveCdeClassif = (err, elt, cb) => {
+const saveEltClassif = (err, elt, cb) => {
     if (err) {
         if (cb) { cb(err); }
         return;
@@ -22,22 +23,6 @@ const saveCdeClassif = (err, elt, cb) => {
 };
 
 export async function eltClassification(body, action, dao, cb) {
-    const classify = (steward, elt) => {
-        if (!(body.categories instanceof Array)) {
-            body.categories = [body.categories];
-        }
-        if (action === actions.create) {
-            addCategory(steward.object, body.categories, err => {
-                saveCdeClassif(err, elt, cb);
-            });
-        } else if (action === actions.delete) {
-            modifyCategory(steward.object, body.categories, {type: 'delete'}, err => {
-                saveCdeClassif(err, elt, cb);
-            });
-        }
-    };
-
-
     let elt: Item;
     if (body.cdeId && dao.byId) {
         elt = await dao.byId(body.cdeId);
@@ -52,30 +37,34 @@ export async function eltClassification(body, action, dao, cb) {
     if (!elt) { return cb('can not elt'); }
     let steward = findSteward(elt, body.orgName);
     if (!steward) {
-        mongoSystem.orgByName(body.orgName, (err, stewardOrg) => {
-            const classifOrg: Classification = {
-                stewardOrg: {
-                    name: body.orgName
-                },
-                elements: []
-            };
+        const stewardOrg = await mongoSystem.orgByName(body.orgName);
+        const classifOrg: Classification = {
+            stewardOrg: {
+                name: body.orgName
+            },
+            elements: []
+        };
 
-            if (stewardOrg.workingGroupOf) { classifOrg.workingGroup = true; }
-            if (!elt.classification) { elt.classification = []; }
-            elt.classification.push(classifOrg);
-            steward = findSteward(elt, body.orgName);
-            classify(steward, elt);
-        });
-    } else { classify(steward, elt); }
+        if (stewardOrg.workingGroupOf) {
+            classifOrg.workingGroup = true;
+        }
+        if (!elt.classification) {
+            elt.classification = [];
+        }
+        elt.classification.push(classifOrg);
+        steward = findSteward(elt, body.orgName);
+    }
 
+    if (action === actions.create) {
+        const err = addCategory(steward.object, body.categories);
+        saveEltClassif(err, elt, cb);
+    } else if (action === actions.delete) {
+        modifyCategory(steward.object, body.categories, {type: 'delete'});
+        saveEltClassif(undefined, elt, cb);
+    }
 }
 
 export async function addClassification(body, dao, cb) {
-    if (!dao.byId) {
-        cb('dao.byId is undefined');
-        logging.log(null, 'dao.byId is undefined' + dao);
-        return;
-    }
     const elt = await dao.byId(body.eltId);
     let steward = findSteward(elt, body.orgName);
     if (!steward) {
@@ -85,55 +74,52 @@ export async function addClassification(body, dao, cb) {
         });
         steward = findSteward(elt, body.orgName);
     }
-    addCategory(steward.object, body.categories, result => {
-        elt.markModified('classification');
-        elt.save(cb);
-    });
+    addCategory(steward.object, body.categories);
+    elt.markModified('classification');
+    elt.save(cb);
 }
 
 export async function removeClassification(body, dao, cb) {
-    if (!dao.byId) {
-        cb('Element id is undefined');
-        logging.log(null, 'Element id is undefined' + dao);
-        return;
-    }
     const elt = await dao.byId(body.eltId);
     const steward = findSteward(elt, body.orgName);
-    removeCategory(steward.object, body.categories, err => {
-        if (err) { return cb(err); }
-        for (let i = elt.classification.length - 1; i >= 0; i--) {
-            if (elt.classification[i].elements.length === 0) {
-                elt.classification.splice(i, 1);
-            }
-        }
-        elt.markModified('classification');
-        elt.save(cb);
-    });
+    const err = removeCategory(steward.object, body.categories);
+    saveEltClassif(err, elt, cb);
 }
 
 export async function classifyEltsInBoard(req, dao, cb) {
     const boardId = req.body.boardId;
     const newClassification = req.body;
-
-    const action = (id, actionCallback) => {
-        const classifReq = {
-            orgName: newClassification.orgName,
-            categories: newClassification.categories,
-            cdeId: id
-        };
-        eltClassification(classifReq, actions.create, dao, actionCallback);
-    };
     const  board = await boardDb.byId(boardId);
     const tinyIds = board.pins.map(p => p.tinyId);
-    dao.byTinyIdList(tinyIds, (err, cdes) => {
-        const ids = cdes.map(cde => cde._id);
-        adminItemSvc.bulkAction(ids, action, cb);
+    dao.byTinyIdList(tinyIds, (err, elts: Item[]) => {
+        const ids = elts.map(e => e._id);
+        const eltsTotal = ids.length;
+        let eltsProcessed = 0;
+        each(ids, (id, doneOne) => {
+                const classifReq = {
+                    orgName: newClassification.orgName,
+                    categories: newClassification.categories,
+                    cdeId: id
+                };
+                eltClassification(classifReq, actions.create, dao, () => {
+                    eltsProcessed++;
+                    doneOne(null);
+                });
+            },
+            () => {
+                if (eltsTotal === eltsProcessed) {
+                    cb(null);
+                } else {
+                    cb('Task not performed completely!');
+                }
+            }
+        );
         mongoSystem.addToClassifAudit({
             date: new Date(),
             user: {
                 username: req.user.username
             },
-            elements: cdes.map(e => ({tinyId: e.tinyId})),
+            elements: elts.map(e => ({tinyId: e.tinyId})),
             action: 'reclassify',
             path: [newClassification.orgName].concat(newClassification.categories)
         });

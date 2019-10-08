@@ -16,7 +16,6 @@ const { check } = require('express-validator');
 
 require('express-async-errors');
 
-
 const isValidBody = [
     check('eltId').isAlphanumeric(),
     check('orgName').isAlphanumeric(),
