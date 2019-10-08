@@ -29,6 +29,10 @@ export const classificationAuditSchema = new Schema({
 
 const classificationAuditModel = conn.model('classificationAudit', classificationAuditSchema);
 
+export function saveClassificationAudit(msg, callback?) {
+    new classificationAuditModel(msg).save(callback);
+}
+
 export function classificationAuditPagination({skip, limit, sort}) {
     return classificationAuditModel
         .find({}, {elements: {$slice: 10}})
