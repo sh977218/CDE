@@ -42,10 +42,10 @@ export class UsersMgtComponent {
     }
 
     updateAvatar(user: User) {
-        this.http.post('/updateUserAvatar', user).subscribe(() => this.alert.addAlert('success', 'Saved.'));
+        this.http.post('/server/user/updateUserAvatar', user).subscribe(() => this.alert.addAlert('success', 'Saved.'));
     }
 
     updateRoles(user: User) {
-        this.http.post('/updateUserRoles', user).subscribe(() => this.alert.addAlert('success', 'Roles saved.'));
+        this.http.post('/server/user/updateUserRoles', user).subscribe(() => this.alert.addAlert('success', 'Roles saved.'));
     }
 }
