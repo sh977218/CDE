@@ -15,13 +15,12 @@ import { Cursor } from 'mongodb';
 import { SearchSettingsElastic } from 'shared/search/search.model';
 import { orderedList } from 'shared/system/regStatusShared';
 import { arrayFill } from 'shared/system/util';
-import { myOrgs } from 'server/system/usersrvc';
 import { CdeFormElastic } from 'shared/form/form.model';
+import { myOrgs } from '../server/orgManagement/orgSvc';
 
 const _ = require('lodash');
 const request = require('request');
 const logging = require('./logging');
-const usersvc = require('./usersrvc');
 const esInit = require('./elasticSearchInit');
 const dbLogger = require('../log/dbLogger');
 const mongo_cde = require('../cde/mongo-cde');
@@ -513,8 +512,8 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
             ]
         }
     };
-    if (usersvc.myOrgs(user).length > 0) {
-        usersvc.myOrgs(user).map((org: string) => {
+    if (myOrgs(user).length > 0) {
+        myOrgs(user).map((org: string) => {
             regStatusAggFilter.bool.filter[0].bool.should.push({term: {'stewardOrg.name': org}});
         });
     }

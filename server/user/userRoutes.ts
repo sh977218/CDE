@@ -5,19 +5,24 @@ import { unapproved as discussUnapproved } from 'server/discuss/discussDb';
 import { handleError, handleNotFound } from 'server/errorHandler/errorHandler';
 import { getClientErrorsNumber, getServerErrorsNumber } from 'server/log/dbLogger';
 import { hasRole, isSiteAdmin } from 'shared/system/authorizationShared';
-import { loggedInMiddleware, nocacheMiddleware } from 'server/system/authorization';
+import {
+    canApproveCommentMiddleware, isOrgAuthorityMiddleware, loggedInMiddleware, nocacheMiddleware
+} from 'server/system/authorization';
 import { ItemDocument } from 'server/system/mongo-data';
-import { byId as userById, save as userSave, updateUser, usersByUsername, byUsername, UserFull } from 'server/user/userDb';
+import {
+    byId as userById, byUsername, save as userSave, updateUser, userByName, UserFull, usersByUsername
+} from 'server/user/userDb';
 import { getModule } from 'shared/elt';
 import { uriView } from 'shared/item';
 import { Comment, CommentReply, ModuleAll, Task } from 'shared/models.model';
 import { capString } from 'shared/system/util';
 import { promisify } from 'util';
 import { version } from '../version';
+import { uniq } from 'lodash';
 
 const config = Config as any;
 
-export function module(roleConfig: {manage: RequestHandler, search: RequestHandler}) {
+export function module(roleConfig: { manage: RequestHandler, search: RequestHandler }) {
     const router = Router();
 
     router.get('/', nocacheMiddleware, (req, res) => {
@@ -253,6 +258,39 @@ export function module(roleConfig: {manage: RequestHandler, search: RequestHandl
         };
         await userSave(newUser);
         res.send(username + ' added.');
+    });
+
+
+    router.post('/updateUserRoles', isOrgAuthorityMiddleware, async (req, res) => {
+        const foundUser = await userByName(req.body.username);
+        if (!foundUser) {
+            res.status(404).send();
+        } else {
+            foundUser.roles = req.body.roles;
+            await foundUser.save();
+            res.send();
+        }
+    });
+    router.post('/updateUserAvatar', isOrgAuthorityMiddleware, async (req, res) => {
+        const foundUser = await userByName(req.body.username);
+        if (!foundUser) {
+            res.status(404).send();
+        } else {
+            foundUser.avatarUrl = req.body.avatarUrl;
+            await foundUser.save();
+            res.send();
+        }
+    });
+    router.post('/addCommentAuthor', canApproveCommentMiddleware, async (req, res) => {
+        const foundUser = await userByName(req.body.username);
+        if (!foundUser) {
+            res.status(404).send();
+        } else {
+            foundUser.roles.push('CommentAuthor');
+            uniq(foundUser.roles);
+            await foundUser.save();
+            res.send();
+        }
     });
 
     return router;

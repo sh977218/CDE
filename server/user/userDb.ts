@@ -127,8 +127,8 @@ export function updateUserIps(userId: string, ips: string[], callback: CbError<U
     }, {new: true}, callback);
 }
 
-export function userByName(name: string, callback: CbError<UserDocument>) {
-    userModel.findOne({username: new RegExp('^' + name + '$', 'i')}, callback);
+export function userByName(name: string, callback?: CbError<UserDocument>) {
+    return userModel.findOne({username: new RegExp('^' + name + '$', 'i')}, callback);
 }
 
 export function userById(id: string, callback: CbError<UserDocument>) {
