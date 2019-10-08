@@ -1,7 +1,6 @@
 import * as mongoose from 'mongoose';
-import { Model } from 'mongoose';
+import { Document, Model } from 'mongoose';
 import { establishConnection } from 'server/system/connections';
-import { UserDocument } from 'server/system/mongo-data';
 import { addStringtype } from 'server/system/mongoose-stringtype';
 import { config } from 'server/system/parseConfig';
 import { hasRole, rolesEnum } from 'shared/system/authorizationShared';
@@ -110,12 +109,12 @@ export const userRefSchema = {
     _id: Schema.Types.ObjectId,
     username: {type: StringType, index: true}
 };
-
+export type UserDocument = Document & UserFull;
 export const userModel: Model<UserDocument> = conn.model('User', userSchema);
 
 const userProject = {password: 0};
 
-export function addUser(user, callback) {
+export function addUser(user: Partial<User>, callback: CbError<UserDocument>) {
     user.username = user.username.toLowerCase();
     new userModel(user).save(callback);
 }
@@ -175,6 +174,10 @@ export function updateUser(user: User, fields: any, callback: CbError<number, nu
     userModel.updateOne({_id: user._id}, {$set: update}, callback);
 }
 
+export function usersByName(name: string, callback: CbError<UserDocument[]>) {
+    userModel.find({username: new RegExp('^' + name + '$', 'i')}, userProject, callback);
+}
+
 export function usersByUsername(username: string, callback: CbError<UserDocument[]>) {
     userModel.find({username: new RegExp(username, 'i')}, userProject, callback);
 }
@@ -202,4 +205,13 @@ export function siteAdmins(callback: CbError<UserDocument[]>) {
 
 export function orgAuthorities(callback: CbError<UserDocument[]>) {
     userModel.find({roles: 'OrgAuthority'}, 'username', callback);
+}
+
+// Org
+export function orgAdmins() {
+    return userModel.find({orgAdmin: {$not: {$size: 0}}}).sort({username: 1});
+}
+
+export function orgCurators(orgs: string[], callback: CbError<UserDocument[]>) {
+    userModel.find().where('orgCurator').in(orgs).exec(callback);
 }

@@ -27,7 +27,7 @@ export class OrgsEditComponent implements OnInit {
     }
 
     addOrg() {
-        this.http.post('/addOrg',
+        this.http.post('/server/orgManagement/addOrg',
             {name: this.newOrg.name, longName: this.newOrg.longName, workingGroupOf: this.newOrg.workingGroupOf},
             {responseType: 'text'})
             .subscribe(() => {
@@ -41,7 +41,7 @@ export class OrgsEditComponent implements OnInit {
     }
 
     getOrgs(cb?: Cb) {
-        this.http.get<Organization[]>('/managedOrgs')
+        this.http.get<Organization[]>('/server/orgManagement/managedOrgs')
             .subscribe(orgs => {
                 this.orgs = orgs.sort((a, b) => stringCompare(a.name, b.name));
                 if (cb) {
@@ -51,7 +51,7 @@ export class OrgsEditComponent implements OnInit {
     }
 
     updateOrg(org: Organization) {
-        this.http.post('/updateOrg', org).subscribe(res => {
+        this.http.post('/server/orgManagement/updateOrg', org).subscribe(res => {
                 this.getOrgs(() => {
                     this.orgHelperService.reload().then(() => this.alert.addAlert('success', 'Saved'), _noop);
                 });

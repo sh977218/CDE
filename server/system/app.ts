@@ -6,27 +6,22 @@ import { Express, Request, Response } from 'express';
 import { access, constants, createWriteStream, existsSync, mkdir, writeFileSync } from 'fs';
 import { authenticate } from 'passport';
 import { dataElementModel, draftsList as deDraftsList } from 'server/cde/mongo-cde';
-import { handleError, handleNotFound, respondError } from 'server/errorHandler/errorHandler';
+import { handleError, respondError } from 'server/errorHandler/errorHandler';
 import { draftsList as formDraftsList, formModel } from 'server/form/mongo-form';
 import { consoleLog } from 'server/log/dbLogger';
 import { syncWithMesh } from 'server/mesh/elastic';
 import {
-    canApproveCommentMiddleware, isOrgAdminMiddleware, isOrgAuthorityMiddleware, isOrgCuratorMiddleware,
-    isSiteAdminMiddleware, loggedInMiddleware, nocacheMiddleware
+    canApproveCommentMiddleware, isOrgAuthorityMiddleware, isOrgCuratorMiddleware, isSiteAdminMiddleware,
+    loggedInMiddleware, nocacheMiddleware
 } from 'server/system/authorization';
 import { reIndex } from 'server/system/elastic';
 import { indices } from 'server/system/elasticSearchInit';
-import { errorLogger } from 'server/system/logging';
 import {
-    addUserRole, disableRule, enableRule, getClassificationAuditLog, getFile, jobStatus, listOrgs,
-    listOrgsDetailedInfo, orgByName, updateOrg, userById, usersByName
+    addUserRole, disableRule, enableRule, getFile, jobStatus
 } from 'server/system/mongo-data';
-import { addOrg, managedOrgs, transferSteward } from 'server/system/orgsvc';
+import { transferSteward } from 'server/orgManagement/orgSvc';
 import { config } from 'server/system/parseConfig';
-import {
-    addOrgAdmin, addOrgCurator, myOrgs, myOrgsAdmins, orgAdmins, orgCurators, removeOrgAdmin, removeOrgCurator,
-    updateUserAvatar, updateUserRoles
-} from 'server/system/usersrvc';
+import { myOrgs, updateUserAvatar, updateUserRoles } from 'server/system/usersrvc';
 import { is } from 'useragent';
 import { promisify } from 'util';
 import { isSearchEngine } from './helper';
@@ -35,6 +30,8 @@ import {
     createIdSource, deleteIdSource, getAllIdSources, isSourceById, updateIdSource
 } from 'server/system/idSourceSvc';
 import { banIp, getRealIp, getTrafficFilter } from 'server/system/trafficFilterSvc';
+import { userById, usersByName } from 'server/user/userDb';
+import { getClassificationAuditLog } from 'server/system/classificationAuditSvc';
 
 require('express-async-errors');
 
@@ -178,26 +175,6 @@ export function init(app: Express) {
 
     app.get('/supportedBrowsers', (req, res) => res.render('supportedBrowsers', 'system' as any));
 
-    app.get('/listOrgs', nocacheMiddleware, (req, res) => {
-        listOrgs((err, orgs) => {
-            if (err) {
-                return res.status(500).send('ERROR - unable to list orgs');
-            }
-            res.send(orgs);
-        });
-    });
-
-    app.get('/listOrgsDetailedInfo', nocacheMiddleware, (req, res) => {
-        listOrgsDetailedInfo((err, orgs) => {
-            if (err) {
-                errorLogger.error(JSON.stringify({msg: 'Failed to get list of orgs detailed info.'}),
-                    {stack: new Error().stack});
-                return res.status(403).send('Failed to get list of orgs detailed info.');
-            }
-            res.send(orgs);
-        });
-    });
-
     app.get('/loginText', csrf(), (req, res) => res.render('loginText', 'system' as any, {csrftoken: req.csrfToken()} as any));
 
     const failedIps: any[] = [];
@@ -295,15 +272,6 @@ export function init(app: Express) {
         });
     });
 
-    app.get('/org/:name', nocacheMiddleware, (req, res) => {
-        return orgByName(req.params.name, (err, result) => res.send(result));
-    });
-
-
-    app.get('/managedOrgs', managedOrgs);
-    app.post('/addOrg', isOrgAuthorityMiddleware, addOrg);
-    app.post('/updateOrg', isOrgAuthorityMiddleware, (req, res) => updateOrg(req.body, res));
-
     app.get('/user/:search', nocacheMiddleware, loggedInMiddleware, (req, res) => {
         if (!req.params.search) {
             return res.send({});
@@ -313,16 +281,6 @@ export function init(app: Express) {
             usersByName(req.params.search, handleError({req, res}, users => res.send(users)));
         }
     });
-
-    app.get('/myOrgsAdmins', [nocacheMiddleware, loggedInMiddleware], myOrgsAdmins);
-
-    app.get('/orgAdmins', nocacheMiddleware, isOrgAuthorityMiddleware, orgAdmins);
-    app.post('/addOrgAdmin', isOrgAdminMiddleware, addOrgAdmin);
-    app.post('/removeOrgAdmin', isOrgAdminMiddleware, removeOrgAdmin);
-
-    app.get('/orgCurators', nocacheMiddleware, isOrgAdminMiddleware, orgCurators);
-    app.post('/addOrgCurator', isOrgAdminMiddleware, addOrgCurator);
-    app.post('/removeOrgCurator', isOrgAdminMiddleware, removeOrgCurator);
 
     app.post('/updateUserRoles', isOrgAuthorityMiddleware, updateUserRoles);
     app.post('/updateUserAvatar', isOrgAuthorityMiddleware, updateUserAvatar);
@@ -348,10 +306,9 @@ export function init(app: Express) {
         }));
     });
 
-    app.post('/getClassificationAuditLog', isOrgAuthorityMiddleware, (req, res) => {
-        getClassificationAuditLog(req.body, handleError({req, res}, result => {
-            res.send(result);
-        }));
+    app.post('/getClassificationAuditLog', isOrgAuthorityMiddleware, async (req, res) => {
+        const records = await getClassificationAuditLog(req.body);
+        res.send(records);
     });
 
     app.post('/disableRule', isOrgAuthorityMiddleware, (req, res) => {

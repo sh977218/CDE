@@ -68,7 +68,7 @@ export class OrgHelperService {
     reload(): Promise<OrgDetailedInfo> {
         return this.promise = new Promise<OrgDetailedInfo>((resolve, reject) => {
             const userPromise = this.userService.catch(_noop);
-            this.http.get<Organization[]>('/listOrgsDetailedInfo').subscribe(response => {
+            this.http.get<Organization[]>('/server/orgManagement/listOrgsDetailedInfo').subscribe(response => {
                 this.orgsDetailedInfo = {};
                 response.forEach(org => {
                     if (org) {

@@ -13,7 +13,7 @@ export class ManagedOrgsResolve implements Resolve<Observable<Organization>> {
     }
 
     resolve() {
-        return this.http.get<Organization>('/managedOrgs')
+        return this.http.get<Organization>('/server/orgManagement/managedOrgs')
             .pipe(catchError(() => {
                 this.router.navigate(['/404']);
                 return empty();

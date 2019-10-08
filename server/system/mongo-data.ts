@@ -6,30 +6,29 @@ import { diff } from 'server/cde/cdediff';
 import { DataElementDocument } from 'server/cde/mongo-cde';
 import { handleError } from 'server/errorHandler/errorHandler';
 import { CdeFormDocument } from 'server/form/mongo-form';
-import { consoleLog } from 'server/log/dbLogger';
 import { establishConnection } from 'server/system/connections';
 import { errorLogger } from 'server/system/logging';
 import { getDao, getDaoList } from 'server/system/moduleDaoManager';
 import { noDbLogger } from 'server/system/noDbLogger';
 import { config } from 'server/system/parseConfig';
-import { classificationAudit, jobQueue, message, orgSchema, statusValidationRuleSchema } from 'server/system/schemas';
-import { UserFull, userModel } from 'server/user/userDb';
+import { classificationAudit, jobQueue, message, statusValidationRuleSchema } from 'server/system/schemas';
+import { userByName, UserFull, userModel } from 'server/user/userDb';
 import { DataElement, DataElementElastic } from 'shared/de/dataElement.model';
 import * as eltShared from 'shared/elt';
 import { CdeForm, CdeFormElastic } from 'shared/form/form.model';
 import { Cb1, CbError, Item, ItemElastic, ModuleAll, Organization, StatusValidationRules } from 'shared/models.model';
 import { hasRole } from 'shared/system/authorizationShared';
 import { generate as shortIdGenerate } from 'shortid';
+import { orgByName } from 'server/orgManagement/orgDb';
 
 type AuditLog = any;
 
 export type ItemDocument = DataElementDocument | CdeFormDocument;
 export type Message = any;
 export type MessageDocument = Document & Message;
-export type UserDocument = Document & UserFull;
 export type ObjectId = Types.ObjectId;
 export const objectId = Types.ObjectId;
-export type OrganizationDocument = Document & Organization;
+
 export interface PushRegistration {
     _id: ObjectId;
     features?: string[];
@@ -48,6 +47,7 @@ export interface PushRegistration {
         publicKey: string
     };
 }
+
 export type PushRegistrationDocument = Document & PushRegistration;
 
 const session = require('express-session');
@@ -58,9 +58,7 @@ const conn = establishConnection(config.database.appData);
 
 export const JobQueue = conn.model('JobQueue', jobQueue);
 export const messageModel: Model<MessageDocument> = conn.model('Message', message);
-export const Org: Model<OrganizationDocument> = conn.model('Org', orgSchema);
 const validationRuleModel = conn.model('ValidationRule', statusValidationRuleSchema);
-const classificationAuditModel = conn.model('classificationAudit', classificationAudit);
 
 export let gfs;
 mongo.connect(config.database.appData.uri, (err, client) => {
@@ -74,25 +72,6 @@ export const sessionStore = new MongoStore({
     mongooseConnection: conn,
     touchAfter: 60
 });
-
-
-const userProject = {password: 0};
-const orgDetailProject = {
-    _id: 0,
-    name: 1,
-    longName: 1,
-    mailAddress: 1,
-    emailAddress: 1,
-    embeds: 1,
-    phoneNumber: 1,
-    uri: 1,
-    workingGroupOf: 1,
-    extraInfo: 1,
-    cdeStatusValidationRules: 1,
-    propertyKeys: 1,
-    nameTags: 1,
-    htmlOverview: 1
-};
 
 export function jobStatus(type, callback) {
     JobQueue.findOne({type}, callback);
@@ -187,98 +166,6 @@ export const auditGetLog = auditDb => (params, callback) => {
         .exec(callback);
 };
 
-export function orgNames(callback) {
-    Org.find({}, {name: true, _id: false}, callback);
-}
-
-export function userByName(name: string, callback: CbError<UserDocument>) {
-    userModel.findOne({username: new RegExp('^' + name + '$', 'i')}, callback);
-}
-
-export function usersByName(name, callback) {
-    userModel.find({username: new RegExp('^' + name + '$', 'i')}, userProject, callback);
-}
-
-export function userById(id: string, callback: CbError<UserDocument>) {
-    userModel.findOne({_id: id}, userProject, callback);
-}
-
-export function addUser(user, callback) {
-    user.username = user.username.toLowerCase();
-    new userModel(user).save(callback);
-}
-
-export function orgAdmins(callback: CbError<UserDocument[]>) {
-    userModel.find({orgAdmin: {$not: {$size: 0}}}).sort({username: 1}).exec(callback);
-}
-
-export function orgCurators(orgs, callback) {
-    userModel.find().where('orgCurator').in(orgs).exec(callback);
-}
-
-export function orgByName(orgName: string, callback?: CbError<OrganizationDocument>) {
-    return Org.findOne({name: orgName}).exec(callback as any);
-}
-
-export function listOrgs(callback) {
-    Org.distinct('name', callback);
-}
-
-export function listOrgsLongName(callback) {
-    Org.find({}, {_id: 0, name: 1, longName: 1}, callback);
-}
-
-export function listOrgsDetailedInfo(callback) {
-    Org.find({}, orgDetailProject, callback);
-}
-
-export function managedOrgs(callback: CbError<OrganizationDocument[]>) {
-    Org.find({}).sort({name: 1}).exec(callback);
-}
-
-export function findOrCreateOrg(newOrg, cb) {
-    Org.findOne({name: newOrg.name}).exec((err, found) => {
-        if (err) {
-            cb(err);
-            errorLogger.error('Cannot add org.',
-                {
-                    origin: 'system.mongo.addOrg',
-                    stack: new Error().stack,
-                    details: 'orgName: ' + newOrg.name + 'Error: ' + err
-                });
-        } else if (found) {
-            cb(null, found);
-        } else {
-            newOrg = new Org(newOrg);
-            newOrg.save(cb);
-        }
-    });
-}
-
-export function addOrg(newOrgArg, res) {
-    Org.findOne({name: newOrgArg.name}, (err, found) => {
-        if (err) {
-            res.send(500);
-            errorLogger.error('Cannot add org.',
-                {
-                    origin: 'system.mongo.addOrg',
-                    stack: new Error().stack,
-                    details: 'orgName: ' + newOrgArg + 'Error: ' + err
-                });
-        } else if (found) {
-            res.send('Org Already Exists');
-        } else {
-            new Org(newOrgArg).save(() => {
-                res.send('Org Added');
-            });
-        }
-    });
-}
-
-export function removeOrgById(id, callback) {
-    Org.remove({_id: id}, callback);
-}
-
 export function formatElt(doc: DataElement | DataElementDocument): DataElementElastic;
 export function formatElt(doc: CdeForm | CdeFormDocument): CdeFormElastic;
 export function formatElt(doc: Item | ItemDocument): ItemElastic {
@@ -363,18 +250,6 @@ export function getFile(user, id, res) {
     });
 }
 
-export function updateOrg(org, res) {
-    const id = org._id;
-    delete org._id;
-    Org.findOneAndUpdate({_id: id}, org, {new: true}, (err, found) => {
-        if (err || !found) {
-            res.status(500).send('Could not update');
-        } else {
-            res.send();
-        }
-    });
-}
-
 export function getAllUsernames(callback) {
     userModel.find({}, {username: true, _id: false}, callback);
 }
@@ -390,75 +265,6 @@ export function createMessage(msg: Message, cb?: CbError<MessageDocument>) {
         comment: 'cmnt'
     }];
     new messageModel(msg).save(cb);
-}
-
-export function updateMessage(msg, callback) {
-    const id = msg._id;
-    delete msg._id;
-    messageModel.updateOne({_id: id}, msg, callback);
-}
-
-// TODO this function name is not good
-export function getMessages(req, callback) {
-    let authorRecipient: any = {
-        $and: [
-            {
-                $or: [
-                    {
-                        'recipient.recipientType': 'stewardOrg',
-                        'recipient.name': {$in: [].concat(req.user.orgAdmin.concat(req.user.orgCurator))}
-                    },
-                    {
-                        'recipient.recipientType': 'user',
-                        'recipient.name': req.user.username
-                    }
-                ]
-            },
-            {
-                'states.0.action': null
-            }
-        ]
-    };
-
-    if (req.user.roles === null || req.user.roles === undefined) {
-        consoleLog('user: ' + req.user.username + ' has null roles.');
-        req.user.roles = [];
-    }
-    req.user.roles.forEach((r) => {
-        authorRecipient.$and[0].$or.push({
-            'recipient.name': r,
-            'recipient.recipientType': 'role',
-        });
-    });
-
-    switch (req.params.type) {
-        case 'received':
-            authorRecipient.$and[1]['states.0.action'] = 'Filed';
-            break;
-        case 'sent':
-            authorRecipient = {
-                $or: [
-                    {
-                        'author.authorType': 'stewardOrg',
-                        'author.name': {$in: [].concat(req.user.orgAdmin.concat(req.user.orgCurator))}
-                    },
-                    {
-                        'author.authorType': 'user',
-                        'author.name': req.user.username
-                    }
-                ]
-            };
-            break;
-        case 'archived':
-            authorRecipient.$and[1]['states.0.action'] = 'Approved';
-            break;
-    }
-    if (!authorRecipient) {
-        callback('Type not specified!');
-        return;
-    }
-
-    messageModel.find(authorRecipient, callback);
 }
 
 // cb(err)
@@ -477,10 +283,6 @@ export function addUserRole(username, role, cb) {
     });
 }
 
-export function mailStatus(user, callback) {
-    getMessages({user, params: {type: 'received'}}, callback);
-}
-
 export function fetchItem(module: ModuleAll, tinyId: string, cb: CbError<ItemDocument>) {
     const db = getDao(module);
     if (!db) {
@@ -488,36 +290,6 @@ export function fetchItem(module: ModuleAll, tinyId: string, cb: CbError<ItemDoc
         return;
     }
     (db.byTinyId || db.byId)(tinyId, cb);
-}
-
-export function addToClassifAudit(msg) {
-    const persistClassifRecord = (err, elt) => {
-        if (!elt) {
-            return;
-        }
-        msg.elements[0].eltType = eltShared.getModule(elt);
-        msg.elements[0].name = eltShared.getName(elt);
-        msg.elements[0].status = elt.registrationState.registrationStatus;
-        new classificationAuditModel(msg).save();
-    };
-    getDaoList().forEach((dao) => {
-        if (msg.elements[0]) {
-            if (msg.elements[0]._id && dao.byId) {
-                dao.byId(msg.elements[0]._id, persistClassifRecord);
-            }
-            if (msg.elements[0].tinyId && dao.eltByTinyId) {
-                dao.eltByTinyId(msg.elements[0].tinyId, persistClassifRecord);
-            }
-        }
-    });
-}
-
-export function getClassificationAuditLog(params, callback: CbError<AuditLog[]>) {
-    classificationAuditModel.find({}, {elements: {$slice: 10}})
-        .sort('-date')
-        .skip(params.skip)
-        .limit(params.limit)
-        .exec(callback);
 }
 
 export function getAllRules(cb: CbError<StatusValidationRules>) {

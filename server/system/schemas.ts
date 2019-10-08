@@ -6,7 +6,7 @@ addStringtype(mongoose);
 const Schema = mongoose.Schema;
 const StringType = (Schema.Types as any).StringType;
 
-const csEltSchema = new Schema({
+export const csEltSchema = new Schema({
     elements: [],
     name: {type: StringType, index: true}
 }, {_id: false});
@@ -71,34 +71,6 @@ export const statusValidationRuleSchema = new Schema({
     },
     occurence: {type: StringType, enum: ['exactlyOne', 'atLeastOne', 'all']},
 });
-
-export const orgJson = {
-    name: StringType,
-    longName: StringType,
-    mailAddress: StringType,
-    emailAddress: StringType,
-    phoneNumber: StringType,
-    uri: StringType,
-    classifications: [csEltSchema],
-    workingGroupOf: StringType,
-    propertyKeys: {
-        type: Array,
-        default: []
-    },
-    nameContexts: {
-        type: Array,
-        default: []
-    },
-    nameTags: {
-        type: Array,
-        default: []
-    },
-    extraInfo: StringType,
-    cdeStatusValidationRules: [statusValidationRuleSchema],
-    htmlOverview: StringType
-};
-
-export const orgSchema = new Schema(orgJson, {collection: 'orgs', usePushEach: true});
 
 export const designationSchema = new Schema({
     designation: StringType,

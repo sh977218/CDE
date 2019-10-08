@@ -1,14 +1,16 @@
 import { find } from 'lodash';
 import { byTinyId as deByTinyId, dataElementModel } from 'server/cde/mongo-cde';
-import { handleError, handleNotFound } from 'server/errorHandler/errorHandler';
+import { handleError } from 'server/errorHandler/errorHandler';
 import { byTinyId as formByTinyId, formModel } from 'server/form/mongo-form';
 import { buildElasticSearchQuery, elasticsearch } from 'server/system/elastic';
-import { ItemDocument } from 'server/system/mongo-data';
-import { Classification, Item } from 'shared/models.model';
+import { ItemDocument, removeJobStatus, updateJobStatus } from 'server/system/mongo-data';
+import { Classification } from 'shared/models.model';
 import {
     addCategoriesToOrg, addCategoriesToTree, arrangeClassification, deleteCategory, findLeaf, mergeOrgClassifications,
     OrgClassification, renameCategory,
 } from 'shared/system/classificationShared';
+import { orgByName } from 'server/orgManagement/orgDb';
+import { addToClassifAudit } from 'server/system/classificationAuditSvc';
 
 const async = require('async');
 const mongoCde = require('../cde/mongo-cde');
@@ -76,7 +78,9 @@ export function deleteOrgClassification(user, deleteClassification, settings, ca
                                     path: [deleteClassification.orgName].concat(deleteClassification.categories)
                                 });
                             });
-                        } else { done(); }
+                        } else {
+                            done();
+                        }
                     })),
                     done => elasticsearch('form', query, settings, handleError({}, result => {
                         if (result && result.forms && result.forms.length > 0) {
@@ -99,7 +103,9 @@ export function deleteOrgClassification(user, deleteClassification, settings, ca
                                     path: [deleteClassification.orgName].concat(deleteClassification.categories)
                                 });
                             });
-                        } else { done(); }
+                        } else {
+                            done();
+                        }
                     }))
                 ], handleError({}, () => {
                     mongoData.removeJobStatus('deleteClassification', callback);
@@ -123,7 +129,9 @@ export function renameOrgClassification(user, newClassification, settings, callb
             renameCategory(fakeTree, newClassification.categories, newClassification.newName);
             stewardOrg.markModified('classifications');
             stewardOrg.save(err => {
-                if (err) { return callback(err, stewardOrg); }
+                if (err) {
+                    return callback(err, stewardOrg);
+                }
                 settings.selectedOrg = newClassification.orgName;
                 settings.selectedElements = newClassification.categories;
                 const query = buildElasticSearchQuery(user, settings);
@@ -151,7 +159,9 @@ export function renameOrgClassification(user, newClassification, settings, callb
                                     newname: newClassification.newName
                                 });
                             });
-                        } else { done(); }
+                        } else {
+                            done();
+                        }
                     })),
                     done => elasticsearch('form', query, settings, handleError({}, result => {
                         if (result && result.forms && result.forms.length > 0) {
@@ -176,7 +186,9 @@ export function renameOrgClassification(user, newClassification, settings, callb
                                     newname: newClassification.newName
                                 });
                             });
-                        } else { done(); }
+                        } else {
+                            done();
+                        }
                     }))
                 ], handleError({}, () => mongoData.removeJobStatus('renameClassification', callback)));
             });
@@ -206,7 +218,9 @@ export function reclassifyOrgClassification(user, oldClassification, newClassifi
             addCategoriesToTree(stewardOrg, newClassification.categories);
             stewardOrg.markModified('classifications');
             stewardOrg.save(err => {
-                if (err) { return callback(err, stewardOrg); }
+                if (err) {
+                    return callback(err, stewardOrg);
+                }
                 settings.selectedOrg = oldClassification.orgName;
                 settings.selectedElements = oldClassification.categories;
                 const query = buildElasticSearchQuery(user, settings);
@@ -232,7 +246,9 @@ export function reclassifyOrgClassification(user, oldClassification, newClassifi
                                     path: [newClassification.orgName].concat(newClassification.categories)
                                 });
                             });
-                        } else { done(); }
+                        } else {
+                            done();
+                        }
                     })),
                     done => elasticsearch('form', query, settings, handleError({}, result => {
                         if (result && result.forms && result.forms.length > 0) {
@@ -255,7 +271,9 @@ export function reclassifyOrgClassification(user, oldClassification, newClassifi
                                     path: [newClassification.orgName].concat(newClassification.categories)
                                 });
                             });
-                        } else { done(); }
+                        } else {
+                            done();
+                        }
                     }))
                 ], handleError({}, () => mongoData.removeJobStatus('reclassifyClassification', callback)));
             });

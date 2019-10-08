@@ -32,13 +32,13 @@ export class OrgCuratorComponent {
     }
 
     getOrgCurators() {
-        this.http.get<OrgUsers[]>('/orgCurators').subscribe(response => {
+        this.http.get<OrgUsers[]>('/server/orgManagement/orgCurators').subscribe(response => {
             this.orgCurators = response.sort((a, b) => stringCompare(a.org, b.org));
         });
     }
 
     addOrgCurator() {
-        this.http.post('/addOrgCurator', {
+        this.http.post('/server/orgManagement/addOrgCurator', {
             username: this.newUsername,
             org: this.newOrgName
         }, {responseType: 'text'}).subscribe(() => {
@@ -50,7 +50,7 @@ export class OrgCuratorComponent {
     }
 
     removeOrgCurator(orgName: string, userId: string) {
-        this.http.post('/removeOrgCurator', {
+        this.http.post('/server/orgManagement/removeOrgCurator', {
             org: orgName,
             userId
         }, {responseType: 'text'}).subscribe(() => {
