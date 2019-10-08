@@ -3,13 +3,14 @@ import { byTinyId as deByTinyId, dataElementModel } from 'server/cde/mongo-cde';
 import { handleError } from 'server/errorHandler/errorHandler';
 import { byTinyId as formByTinyId, formModel } from 'server/form/mongo-form';
 import { buildElasticSearchQuery, elasticsearch } from 'server/system/elastic';
-import { addToClassifAudit, ItemDocument, removeJobStatus, updateJobStatus } from 'server/system/mongo-data';
+import { ItemDocument, removeJobStatus, updateJobStatus } from 'server/system/mongo-data';
 import { Classification } from 'shared/models.model';
 import {
     addCategoriesToOrg, addCategoriesToTree, arrangeClassification, deleteCategory, findLeaf, mergeOrgClassifications,
     OrgClassification, renameCategory,
 } from 'shared/system/classificationShared';
 import { orgByName } from 'server/orgManagement/orgDb';
+import { addToClassifAudit } from 'server/system/classificationAuditSvc';
 
 const async = require('async');
 

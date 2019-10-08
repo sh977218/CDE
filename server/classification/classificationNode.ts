@@ -1,7 +1,7 @@
 import { Classification } from 'shared/models.model';
 import { actions, addCategory, findSteward, modifyCategory, removeCategory } from 'shared/system/classificationShared';
 import { orgByName } from 'server/orgManagement/orgDb';
-import { addToClassifAudit } from 'server/system/mongo-data';
+import { addToClassifAudit } from 'server/system/classificationAuditSvc';
 
 const boardDb = require('../board/boardDb');
 const daoManager = require('server/system/moduleDaoManager');

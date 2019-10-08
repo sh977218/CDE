@@ -5,6 +5,7 @@ import { actions } from 'shared/system/classificationShared';
 import { Cb } from 'shared/models.model';
 import { updateOrgClassification } from 'server/classification/orgClassificationSvc';
 import { orgByName } from 'server/orgManagement/orgDb';
+import { addToClassifAudit } from 'server/system/classificationAuditSvc';
 
 const mongo_cde = require('../cde/mongo-cde');
 const mongo_form = require('../form/mongo-form');
@@ -26,7 +27,7 @@ export function module(roleConfig) {
         classificationNode.addClassification(req.body, mongo_cde, handleError({req, res}, result => {
             if (result === 'Classification Already Exists') { return res.status(409).send(result); }
             res.send(result);
-            mongo_data.addToClassifAudit({
+            addToClassifAudit({
                 date: new Date(),
                 user: {
                     username: req.user.username
@@ -48,7 +49,7 @@ export function module(roleConfig) {
         if (invalidateRequest) { return res.status(400).send({error: invalidateRequest}); }
         classificationNode.removeClassification(req.body, mongo_cde, handleError({req, res}, elt => {
             res.send(elt);
-            mongo_data.addToClassifAudit({
+            addToClassifAudit({
                 date: new Date(),
                 user: {
                     username: req.user.username
@@ -70,7 +71,7 @@ export function module(roleConfig) {
         if (invalidateRequest) { return res.status(400).send(invalidateRequest); }
         classificationNode.addClassification(req.body, mongo_form, handleError({req, res}, result => {
             if (result === 'Classification Already Exists') { return res.status(409).send(result); } else { res.send(result); }
-            mongo_data.addToClassifAudit({
+            addToClassifAudit({
                 date: new Date(), user: {
                     username: req.user.username
                 }, elements: [{
@@ -87,7 +88,7 @@ export function module(roleConfig) {
         if (invalidateRequest) { return res.status(400).send({error: invalidateRequest}); }
         classificationNode.removeClassification(req.body, mongo_form, handleError({req, res}, elt => {
             res.send(elt);
-            mongo_data.addToClassifAudit({
+            addToClassifAudit({
                 date: new Date(), user: {
                     username: req.user.username
                 }, elements: [{
@@ -222,7 +223,7 @@ export function module(roleConfig) {
             res.status(202).send('Processing');
             bulkClassifyCdes(req.user, req.body.eltId, elements, req.body);
         }
-        mongo_data.addToClassifAudit({
+        addToClassifAudit({
             date: new Date(),
             user: {
                 username: req.user.username

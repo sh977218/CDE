@@ -59,7 +59,6 @@ const conn = establishConnection(config.database.appData);
 export const JobQueue = conn.model('JobQueue', jobQueue);
 export const messageModel: Model<MessageDocument> = conn.model('Message', message);
 const validationRuleModel = conn.model('ValidationRule', statusValidationRuleSchema);
-const classificationAuditModel = conn.model('classificationAudit', classificationAudit);
 
 export let gfs;
 mongo.connect(config.database.appData.uri, (err, client) => {
@@ -291,36 +290,6 @@ export function fetchItem(module: ModuleAll, tinyId: string, cb: CbError<ItemDoc
         return;
     }
     (db.byTinyId || db.byId)(tinyId, cb);
-}
-
-export function addToClassifAudit(msg) {
-    const persistClassifRecord = (err, elt) => {
-        if (!elt) {
-            return;
-        }
-        msg.elements[0].eltType = eltShared.getModule(elt);
-        msg.elements[0].name = eltShared.getName(elt);
-        msg.elements[0].status = elt.registrationState.registrationStatus;
-        new classificationAuditModel(msg).save();
-    };
-    getDaoList().forEach((dao) => {
-        if (msg.elements[0]) {
-            if (msg.elements[0]._id && dao.byId) {
-                dao.byId(msg.elements[0]._id, persistClassifRecord);
-            }
-            if (msg.elements[0].tinyId && dao.eltByTinyId) {
-                dao.eltByTinyId(msg.elements[0].tinyId, persistClassifRecord);
-            }
-        }
-    });
-}
-
-export function getClassificationAuditLog(params, callback: CbError<AuditLog[]>) {
-    classificationAuditModel.find({}, {elements: {$slice: 10}})
-        .sort('-date')
-        .skip(params.skip)
-        .limit(params.limit)
-        .exec(callback);
 }
 
 export function getAllRules(cb: CbError<StatusValidationRules>) {
