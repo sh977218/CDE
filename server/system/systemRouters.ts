@@ -1,4 +1,3 @@
-import { IdSource } from 'server/system/mongo-data';
 import { respondError } from 'server/errorHandler/errorHandler';
 import { isOrgAuthorityMiddleware, isOrgCuratorMiddleware, isSiteAdminMiddleware } from 'server/system/authorization';
 import { draftsList as deDraftsList } from 'server/cde/mongo-cde';
@@ -7,11 +6,16 @@ import { myOrgs } from 'server/system/usersrvc';
 import { disableRule, enableRule } from 'server/system/systemSvc';
 import { getTrafficFilter } from 'server/system/trafficFilterSvc';
 import { getClassificationAuditLog } from 'server/system/classificationAuditSvc';
+import { orgByName } from 'server/orgManagement/orgDb';
+import { Router } from 'express';
+import {
+    createIdSource, deleteIdSource, getAllIdSources, isSourceById, updateIdSource
+} from 'server/system/idSourceSvc';
 
 require('express-async-errors');
 
 export function module() {
-    const router = require('express').Router();
+    const router = Router();
 
     router.post('/getClassificationAuditLog', isOrgAuthorityMiddleware, async (req, res) => {
         const records = await getClassificationAuditLog(req.body);
@@ -19,12 +23,16 @@ export function module() {
     });
 
     router.post('/disableRule', isOrgAuthorityMiddleware, async (req, res) => {
-        const savedOrg = await disableRule(req.body.orgName, req.body.rule.id);
+        const org = await orgByName(req.body.orgName);
+        await disableRule(org, req.body.rule.id);
+        const savedOrg = await org.save();
         res.send(savedOrg);
     });
 
     router.post('/enableRule', isOrgAuthorityMiddleware, async (req, res) => {
-        const savedOrg = await enableRule(req.body.orgName, req.body.rule);
+        const org = await orgByName(req.body.orgName);
+        await enableRule(org, req.body.rule);
+        const savedOrg = await org.save();
         res.send(savedOrg);
     });
 
@@ -64,48 +72,40 @@ export function module() {
 
     // id sources
     router.get('/idSources', async (req, res) => {
-        const sources = await IdSource.find({});
+        const sources = await getAllIdSources();
         res.send(sources);
     });
 
     router.get('/idSource/:id', async (req, res) => {
-        const source = await IdSource.findOneById(req.params.id);
+        const source = await isSourceById(req.params.id);
         res.send(source);
     });
 
     router.post('/idSource/:id', isSiteAdminMiddleware, async (req, res) => {
-        const doc = await IdSource.findById(req.params.id);
-        if (doc) {
-            return res.status(409).send(req.params.id + ' already exists.');
+        const sourceId = req.params.id;
+        const foundSource = await isSourceById(sourceId);
+        if (foundSource) {
+            return res.status(409).send(sourceId + ' already exists.');
         } else {
-            const idSource = {
-                _id: req.params.id,
-                linkTemplateDe: req.body.linkTemplateDe,
-                linkTemplateForm: req.body.linkTemplateForm,
-                version: req.body.version,
-            };
-            const source = await new IdSource(idSource).save();
-            res.send(source);
+            const createdIdSource = await createIdSource(sourceId, req.body);
+            res.send(createdIdSource);
         }
     });
 
     router.put('/idSource/:id', isSiteAdminMiddleware, async (req, res) => {
-        const doc = await IdSource.findById(req.body._id);
-        if (!doc) {
-            return res.status(404).send(req.params.id + ' does not exist.');
+        const sourceId = req.params.id;
+        const foundSource = await isSourceById(sourceId);
+        if (!foundSource) {
+            return res.status(409).send(sourceId + ' does not exist.');
         } else {
-            doc.linkTemplateDe = req.body.linkTemplateDe;
-            doc.linkTemplateForm = req.body.linkTemplateForm;
-            doc.version = req.body.version;
-            const source = await doc.save();
-            res.send(source);
+            const updatedIdSource = await updateIdSource(sourceId, req.body);
+            res.send(updatedIdSource);
         }
     });
 
     router.delete('/idSource/:id', isSiteAdminMiddleware, async (req, res) => {
-        await IdSource.delete(req.params.id);
+        await deleteIdSource(req.params.id);
         res.send();
     });
-
     return router;
 }
