@@ -16,7 +16,7 @@ import { SearchSettingsElastic } from 'shared/search/search.model';
 import { orderedList } from 'shared/system/regStatusShared';
 import { arrayFill } from 'shared/system/util';
 import { CdeFormElastic } from 'shared/form/form.model';
-import { myOrgs } from '../server/orgManagement/orgSvc';
+import { myOrgs } from 'server/orgManagement/orgSvc';
 
 const _ = require('lodash');
 const request = require('request');
