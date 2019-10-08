@@ -89,7 +89,6 @@ export function byExisting(elt: CdeForm, cb: CbError<CdeFormDocument>) {
 
 export const byId = (id: string, cb: CbError<CdeFormDocument>) => formModel.findById(id).exec(cb);
 
-
 export function byTinyIdList(tinyIdList: string[], cb: CbError<CdeFormElastic[]>): void {
     formModel.find({archived: false}).where('tinyId')
         .in(tinyIdList)

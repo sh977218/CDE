@@ -70,56 +70,48 @@ export async function eltClassification(body, action, dao, cb) {
 
 }
 
-export function addClassification(body, dao, cb) {
+export async function addClassification(body, dao, cb) {
     if (!dao.byId) {
         cb('dao.byId is undefined');
         logging.log(null, 'dao.byId is undefined' + dao);
         return;
     }
-    dao.byId(body.eltId, (err, elt) => {
-        if (err) { return cb(err); }
-        if (!elt) { return cb('Cannot find elt with _id: ' + body.eltId); }
-        let steward = findSteward(elt, body.orgName);
-        if (!steward) {
-            elt.classification.push({
-                stewardOrg: {name: body.orgName},
-                elements: []
-            });
-            steward = findSteward(elt, body.orgName);
-        }
-        addCategory(steward.object, body.categories, result => {
-            elt.markModified('classification');
-            elt.save(err => {
-                if (err) { cb(err); } else { cb(null, result); }
-            });
+    const elt = await dao.byId(body.eltId);
+    let steward = findSteward(elt, body.orgName);
+    if (!steward) {
+        elt.classification.push({
+            stewardOrg: {name: body.orgName},
+            elements: []
         });
+        steward = findSteward(elt, body.orgName);
+    }
+    addCategory(steward.object, body.categories, result => {
+        elt.markModified('classification');
+        elt.save(cb);
     });
 }
 
-export function removeClassification(body, dao, cb) {
+export async function removeClassification(body, dao, cb) {
     if (!dao.byId) {
         cb('Element id is undefined');
         logging.log(null, 'Element id is undefined' + dao);
         return;
     }
-    dao.byId(body.eltId, (err, elt) => {
+    const elt = await dao.byId(body.eltId);
+    const steward = findSteward(elt, body.orgName);
+    removeCategory(steward.object, body.categories, err => {
         if (err) { return cb(err); }
-        if (!elt) { return cb('Can not find elt with _id: ' + body.eltId); }
-        const steward = findSteward(elt, body.orgName);
-        removeCategory(steward.object, body.categories, err => {
-            if (err) { return cb(err); }
-            for (let i = elt.classification.length - 1; i >= 0; i--) {
-                if (elt.classification[i].elements.length === 0) {
-                    elt.classification.splice(i, 1);
-                }
+        for (let i = elt.classification.length - 1; i >= 0; i--) {
+            if (elt.classification[i].elements.length === 0) {
+                elt.classification.splice(i, 1);
             }
-            elt.markModified('classification');
-            elt.save(cb);
-        });
+        }
+        elt.markModified('classification');
+        elt.save(cb);
     });
 }
 
-export function classifyEltsInBoard(req, dao, cb) {
+export async function classifyEltsInBoard(req, dao, cb) {
     const boardId = req.body.boardId;
     const newClassification = req.body;
 
@@ -131,22 +123,19 @@ export function classifyEltsInBoard(req, dao, cb) {
         };
         eltClassification(classifReq, actions.create, dao, actionCallback);
     };
-    boardDb.byId(boardId, (err, board) => {
-        if (err) { return cb(err); }
-        if (!board) { return cb('No such board'); }
-        const tinyIds = board.pins.map(p => p.tinyId);
-        dao.byTinyIdList(tinyIds, (err, cdes) => {
-            const ids = cdes.map(cde => cde._id);
-            adminItemSvc.bulkAction(ids, action, cb);
-            mongoSystem.addToClassifAudit({
-                date: new Date(),
-                user: {
-                    username: req.user.username
-                },
-                elements: cdes.map(e => ({tinyId: e.tinyId})),
-                action: 'reclassify',
-                path: [newClassification.orgName].concat(newClassification.categories)
-            });
+    const  board = await boardDb.byId(boardId);
+    const tinyIds = board.pins.map(p => p.tinyId);
+    dao.byTinyIdList(tinyIds, (err, cdes) => {
+        const ids = cdes.map(cde => cde._id);
+        adminItemSvc.bulkAction(ids, action, cb);
+        mongoSystem.addToClassifAudit({
+            date: new Date(),
+            user: {
+                username: req.user.username
+            },
+            elements: cdes.map(e => ({tinyId: e.tinyId})),
+            action: 'reclassify',
+            path: [newClassification.orgName].concat(newClassification.categories)
         });
     });
 }
