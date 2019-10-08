@@ -9,7 +9,7 @@ require('express-async-errors');
 export function module(roleConfig: { update: RequestHandler[] }) {
     const router = Router();
 
-    ['whatsNew', 'contactUs', 'resources', 'videos'].forEach(a => {
+    ['whatsNew', 'contactUs', 'resources'].forEach(a => {
         router.get('/' + a, async (req, res) => {
             const article = await byKey(a);
             res.send(article);
@@ -53,7 +53,7 @@ export function module(roleConfig: { update: RequestHandler[] }) {
     router.get('/resourcesAndFeed', async (req, res) => {
         const articleDocument = await byKey('resources');
         if (!articleDocument) {
-            res.send(404);
+            res.status(404).send();
         } else {
             const article = articleDocument.toObject();
             await replaceRssToken(article);
@@ -64,7 +64,7 @@ export function module(roleConfig: { update: RequestHandler[] }) {
     router.get('/videos', async (req, res) => {
         const articleDocument = await byKey('videos');
         if (!articleDocument) {
-            res.send(404);
+            res.status(404).send();
         } else {
             const article = articleDocument.toObject();
             res.send(article);
