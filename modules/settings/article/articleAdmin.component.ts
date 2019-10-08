@@ -2,6 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { AlertService } from 'alert/alert.service';
 import { Article } from 'shared/article/article.model';
+import { ArticleHelpDialogComponent } from 'settings/article/articleHelpDialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
     selector: 'cde-article-admin',
@@ -13,6 +15,7 @@ export class ArticleAdminComponent {
     selectedKey?: string;
 
     constructor(private http: HttpClient,
+                public dialog: MatDialog,
                 private alertSvc: AlertService) {
     }
 
@@ -28,4 +31,9 @@ export class ArticleAdminComponent {
         });
     }
 
+    openHelp(): void {
+        this.dialog.open(ArticleHelpDialogComponent, {
+            width: '500px'
+        });
+    }
 }

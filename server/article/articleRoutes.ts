@@ -9,7 +9,7 @@ require('express-async-errors');
 export function module(roleConfig: { update: RequestHandler[] }) {
     const router = Router();
 
-    ['whatsNew', 'contactUs', 'resources'].forEach(a => {
+    ['whatsNew', 'contactUs', 'resources', 'videos'].forEach(a => {
         router.get('/' + a, async (req, res) => {
             const article = await byKey(a);
             res.send(article);
@@ -61,12 +61,26 @@ export function module(roleConfig: { update: RequestHandler[] }) {
         }
     });
 
-    router.get('/videos', async (req, res) => {
+    async function replaceVideoToken(article: Article) {
+        const tokenRegex = /&lt;cde-youtube-video&gt;.+&lt;\/cde-youtube-video&gt;/gm;
+        const tokenMatches = article.body.match(tokenRegex);
+        if (tokenMatches) {
+            for (const match of tokenMatches) {
+                const url = match.replace('&lt;cde-youtube-video&gt;', '').replace('&lt;/cde-youtube-video&gt;', '').trim();
+                // tslint:disable-next-line:max-line-length
+                const iframe = `<iframe width="560" height="315" src="${url}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+                article.body = article.body.replace(match, iframe);
+            }
+        }
+    }
+
+    router.get('/videosAndIframe', async (req, res) => {
         const articleDocument = await byKey('videos');
         if (!articleDocument) {
             res.status(404).send();
         } else {
             const article = articleDocument.toObject();
+            await replaceVideoToken(article);
             res.send(article);
         }
     });

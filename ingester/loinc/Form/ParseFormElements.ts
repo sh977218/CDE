@@ -85,12 +85,6 @@ function elementToQuestion(existingCde, element) {
 }
 
 async function loadCde(element, classificationOrgName, classificationArray) {
-    // @TODO remove after this load
-    const cdeToFix: any = await dataElementModel.findOne({archived: false, 'ids.id': element.loinc['LOINC Code']});
-    if (cdeToFix) {
-        fixValueDomainOrQuestion(cdeToFix.valueDomain);
-        await cdeToFix.save();
-    }
     const existingCde = await runOneCde(element.loinc, classificationOrgName, classificationArray);
     return elementToQuestion(existingCde, element);
 }
@@ -117,15 +111,6 @@ function elementToInForm(existingForm, element) {
 }
 
 async function loadForm(element, classificationOrgName, classificationArray) {
-    // @TODO remove after this load
-    const formToFix: any = await formModel.findOne({archived: false, 'ids.id': element.loinc['LOINC Code']});
-    if (formToFix) {
-        sortRefDoc(formToFix);
-        sortProp(formToFix);
-        await formToFix.save();
-    }
-
-
     const existingForm = await runOneForm(element.loinc, classificationOrgName, classificationArray);
     return elementToInForm(existingForm, element);
 }

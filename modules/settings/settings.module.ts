@@ -54,6 +54,7 @@ import { ViewingHistoryComponent } from 'settings/viewingHistory/viewingHistory.
 import { TagModule } from 'tag/tag.module';
 import { UsernameAutocompleteModule } from 'usernameAutocomplete/usernameAutocomplete.module';
 import { ResourcesHelpDialogComponent } from 'settings/resources/resourceHelpDialog.component';
+import { ArticleHelpDialogComponent } from 'settings/article/articleHelpDialog.component';
 
 const appRoutes: Routes = [
     {
@@ -281,6 +282,7 @@ const appRoutes: Routes = [
         UsernameAutocompleteModule,
     ],
     declarations: [
+        ArticleHelpDialogComponent,
         ArticleAdminComponent,
         CommentsComponent,
         DraftsComponent,
@@ -306,7 +308,7 @@ const appRoutes: Routes = [
         UsersMgtComponent,
         ViewingHistoryComponent
     ],
-    entryComponents: [ResourcesHelpDialogComponent],
+    entryComponents: [ArticleHelpDialogComponent, ResourcesHelpDialogComponent],
     exports: [],
     providers: [
         DraftsService,

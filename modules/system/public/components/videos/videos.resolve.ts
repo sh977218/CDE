@@ -13,7 +13,7 @@ export class VideosResolve implements Resolve<Observable<Article>> {
     }
 
     resolve() {
-        return this.http.get<Article>('/server/article/videos')
+        return this.http.get<Article>('/server/article/videosAndIframe')
             .pipe(catchError(() => {
                 this.router.navigate(['/404']);
                 return empty();
