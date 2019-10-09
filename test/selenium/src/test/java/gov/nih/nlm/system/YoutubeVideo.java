@@ -18,9 +18,9 @@ public class YoutubeVideo extends NlmCdeBaseTest {
         hangon(2);
         clickElement(By.xpath("//button[. = 'Plain Text']"));
         hangon(2);
-        findElement(By.cssSelector("textArea")).sendKeys("<cde-youtube-video>2ckqOukGKK8</cde-youtube-video>");
-        hangon(2);
         clickElement(By.xpath("//button[text() = 'Rich Text']"));
+        hangon(2);
+        findElement(By.cssSelector("textArea")).sendKeys("<cde-youtube-video>2ckqOukGKK8</cde-youtube-video>");
         hangon(2);
         clickElement(By.xpath("//mat-icon[normalize-space() = 'check']"));
         checkAlert("Saved");
