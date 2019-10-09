@@ -23,9 +23,11 @@
         </div>
         <div class="row">
             <div class="col-3 text-right"><strong>Avatar:</strong></div>
-            <img *ngIf="u.avatarUrl" src="{{u.avatarUrl}}" width="32" height="32"/>
-            <cde-inline-edit id="user_avatar_{{$index}}"[(model)]="u.avatarUrl" [isAllowed]="true" (modelChange)="updateAvatar(u)"
-                             class="col-9"></cde-inline-edit>
+            <div class="col-9" id="user_avatar_{{$index}}">
+                <img *ngIf="u.avatarUrl" src="{{u.avatarUrl}}" width="32" height="32"/>
+                <cde-inline-edit [(model)]="u.avatarUrl" [isAllowed]="true" (modelChange)="updateAvatar(u)"
+                                 class="col-9"></cde-inline-edit>
+            </div>
         </div>
         <div class="row">
             <div class="col-3 text-right"><strong>Last Login:</strong></div>
