@@ -1,15 +1,15 @@
 import * as Config from 'config';
-import {RequestHandler, Router} from 'express';
-import {handleError, handleNotFound} from 'server/errorHandler/errorHandler';
+import { RequestHandler, Router } from 'express';
+import { handleNotFound } from 'server/errorHandler/errorHandler';
 import {
     canApproveCommentMiddleware, isOrgAuthorityMiddleware, loggedInMiddleware, nocacheMiddleware
 } from 'server/system/authorization';
 import {
     byId as userById, byUsername, save as userSave, updateUser, userByName, UserFull, usersByUsername
 } from 'server/user/userDb';
-import {version} from 'server/version';
-import {uniq} from 'lodash';
-import {taskAggregator} from 'server/user/taskAggregatorSvc';
+import { version } from 'server/version';
+import { uniq } from 'lodash';
+import { taskAggregator } from 'server/user/taskAggregatorSvc';
 
 const config = Config as any;
 require('express-async-errors');
@@ -17,19 +17,18 @@ require('express-async-errors');
 export function module(roleConfig: { manage: RequestHandler, search: RequestHandler }) {
     const router = Router();
 
-    router.get('/', nocacheMiddleware, (req, res) => {
+    router.get('/', nocacheMiddleware, async (req, res) => {
         if (!req.user) {
             return res.send({});
-        }
-        userById(req.user._id, handleNotFound({req, res}, user => {
+        } else {
+            const user = await userById(req.user._id);
             res.send(user);
-        }));
+        }
     });
 
-    router.post('/', loggedInMiddleware, (req, res) => {
-        updateUser(req.user, req.body, handleNotFound({req, res}, () => {
-            res.send();
-        }));
+    router.post('/', loggedInMiddleware, async (req, res) => {
+        await updateUser(req.user, req.body);
+        res.send();
     });
 
     router.get('/usernames/:username', async (req, res) => {
