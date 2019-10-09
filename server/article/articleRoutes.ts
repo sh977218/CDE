@@ -52,13 +52,9 @@ export function module(roleConfig: { update: RequestHandler[] }) {
 
     router.get('/resourcesAndFeed', async (req, res) => {
         const articleDocument = await byKey('resources');
-        if (!articleDocument) {
-            res.status(404).send();
-        } else {
-            const article = articleDocument.toObject();
-            await replaceRssToken(article);
-            res.send(article);
-        }
+        const article = articleDocument.toObject();
+        await replaceRssToken(article);
+        res.send(article);
     });
 
     async function replaceVideoToken(article: Article) {
@@ -77,13 +73,9 @@ export function module(roleConfig: { update: RequestHandler[] }) {
 
     router.get('/videosAndIframe', async (req, res) => {
         const articleDocument = await byKey('videos');
-        if (!articleDocument) {
-            res.status(404).send();
-        } else {
-            const article = articleDocument.toObject();
-            await replaceVideoToken(article);
-            res.send(article);
-        }
+        const article = articleDocument.toObject();
+        await replaceVideoToken(article);
+        res.send(article);
     });
 
     return router;
