@@ -1,0 +1,3 @@
+<div *ngIf="videos" class="container">
+    <div [innerHtml]="videos.body | cdeSafeHtml"></div>
+</div>
