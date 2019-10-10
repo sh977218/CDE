@@ -1,10 +1,12 @@
 <h1>Articles</h1>
-<mat-form-field class="w-50">
-    <mat-select placeholder="Article Key" [(ngModel)]="selectedKey" (ngModelChange)="keyChanged()">
-        <mat-option *ngFor="let key of articles" [value]="key">{{key}}</mat-option>
-    </mat-select>
-</mat-form-field>
+<mat-icon (click)="openHelp()">help_outline</mat-icon>
+<div class="container-fluid">
+    <mat-form-field class="w-50">
+        <mat-select placeholder="Article Key" [(ngModel)]="selectedKey" (ngModelChange)="keyChanged()">
+            <mat-option *ngFor="let key of articles" [value]="key">{{key}}</mat-option>
+        </mat-select>
+    </mat-form-field>
 
-<cde-inline-area-edit *ngIf="article"
-                      [(model)]="article.body" [defFormat]="'html'" [isAllowed]="true"
-                      (modelChange)="save()"></cde-inline-area-edit>
+    <cde-inline-area-edit *ngIf="article" [(model)]="article.body" [defFormat]="'html'" [isAllowed]="true"
+                          (modelChange)="save()"></cde-inline-area-edit>
+</div>

@@ -2,6 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { AlertService } from 'alert/alert.service';
 import { Article } from 'shared/article/article.model';
+import { MatDialog } from '@angular/material/dialog';
+import { ResourcesHelpDialogComponent } from 'settings/resources/resourceHelpDialog.component';
 
 @Component({
     selector: 'cde-resources-admin',
@@ -11,6 +13,7 @@ export class ResourcesAdminComponent {
     resource!: Partial<Article>;
 
     constructor(private http: HttpClient,
+                public dialog: MatDialog,
                 private alertSvc: AlertService) {
         this.http.get<Article>('/server/article/resources')
             .subscribe(resource => this.resource = resource ? resource : {key: 'resources', body: ''},
@@ -48,6 +51,12 @@ export class ResourcesAdminComponent {
         }).subscribe(res => {
             this.resource = res;
             this.alertSvc.addAlert('success', 'Attachment Removed.');
+        });
+    }
+
+    openHelp(): void {
+        this.dialog.open(ResourcesHelpDialogComponent, {
+            width: '500px'
         });
     }
 }

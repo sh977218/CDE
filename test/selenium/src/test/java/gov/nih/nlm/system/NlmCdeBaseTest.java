@@ -319,6 +319,10 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         goToHelp();
         clickElement(By.id("contactUsLink"));
     }
+    protected void goToVideos() {
+        goToHelp();
+        clickElement(By.id("videos"));
+    }
 
     protected void goToStewardTransfer() {
         goToSettings();

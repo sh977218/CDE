@@ -143,15 +143,6 @@ async function run() {
 //    const slicedPhenxIds = phenxIds.slice(0, 10);
     const slicedPhenxIds = phenxIds;
     for (const phenxId of slicedPhenxIds) {
-        // @TODO remove after this load
-        const existingForm: any = await formModel.findOne({archived: false, 'ids.id': phenxId.protocolID});
-        if (existingForm) {
-            fixFormCopyright(existingForm);
-            existingForm.referenceDocuments = sortRefDoc(existingForm);
-            existingForm.properties = sortProp(existingForm.toObject());
-            await existingForm.save();
-        }
-
         await loadPhenxById(phenxId.protocolID);
     }
     await retireForms();

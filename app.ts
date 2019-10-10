@@ -70,7 +70,7 @@ const app = express();
 app.use(helmet());
 app.use(helmet.contentSecurityPolicy({
     directives: {
-        defaultSrc: ["'self'", 'fonts.gstatic.com'],
+        defaultSrc: ["'self'", 'fonts.gstatic.com', '*.youtube.com'],
         fontSrc: ["'self'", 'fonts.gstatic.com', '*.nih.gov'],
         scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", 'cdn.ckeditor.com', 'cdn.jsdelivr.net',
             'cdnjs.cloudflare.com', '*.nih.gov', 'ajax.googleapis.com', 'www.googletagmanager.com', 'www.google-analytics.com'],
