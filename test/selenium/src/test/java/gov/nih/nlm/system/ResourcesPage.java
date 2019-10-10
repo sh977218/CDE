@@ -14,7 +14,7 @@ public class ResourcesPage extends BaseAttachmentTest {
         goToResources();
         // wait for ckeditor <script> to resolve.
         hangon(2);
-//        addAttachment(attachmentName);
+        addAttachment(attachmentName);
         clickElement(By.cssSelector("mat-icon[title='Edit']"));
         textPresent("Rich Text");
         clickElement(By.cssSelector(".cke_button__source"));
