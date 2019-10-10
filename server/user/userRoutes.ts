@@ -1,6 +1,5 @@
 import * as Config from 'config';
 import { RequestHandler, Router } from 'express';
-import { handleNotFound } from 'server/errorHandler/errorHandler';
 import {
     canApproveCommentMiddleware, isOrgAuthorityMiddleware, loggedInMiddleware, nocacheMiddleware
 } from 'server/system/authorization';

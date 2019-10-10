@@ -10,16 +10,11 @@ import { attachmentApproved, attachmentRemove, createTask, fileUsed } from 'serv
 import { getDaoList } from 'server/system/moduleDaoManager';
 import { addFile, deleteFileById, ItemDocument, userTotalSpace } from 'server/system/mongo-data';
 import { alterAttachmentStatus } from 'server/attachment/attachmentDb';
-import { CbError, CbError1 } from 'shared/models.model';
+import { CbError1 } from 'shared/models.model';
 
 const config = Config as any;
 
 export function add(req, res, db: any, crudPermission) {
-    if (!req.files.uploadedFiles) {
-        res.status(400).send('No files to attach.');
-        return;
-    }
-
     const fileBuffer = req.files.uploadedFiles.buffer;
     const stream = createReadStream(fileBuffer);
     const streamFS = createReadStream(fileBuffer);
@@ -28,7 +23,9 @@ export function add(req, res, db: any, crudPermission) {
         req.files.uploadedFiles.scanned = scanned;
         db.byId(req.body.id, handleNotFound({req, res}, (elt: ItemDocument) => {
             const ownership = crudPermission(elt, req.user);
-            if (!ownership) { return res.status(401).send('You do not own this element'); }
+            if (!ownership) {
+                return res.status(401).send('You do not own this element');
+            }
             userTotalSpace(req.user.username, totalSpace => {
                 if (totalSpace > req.user.quota) {
                     return res.send({message: 'You have exceeded your quota'});
@@ -129,7 +126,9 @@ export function approvalDecline(req, res) {
 export function remove(req, res, db, crudPermission) {
     db.byId(req.body.id, handleNotFound({req, res}, (elt: ItemDocument) => {
         const ownership = crudPermission(elt, req.user);
-        if (!ownership) { return res.status(401).send('You do not own this element'); }
+        if (!ownership) {
+            return res.status(401).send('You do not own this element');
+        }
         const fileId = elt.attachments[req.body.index].fileid;
         elt.attachments.splice(req.body.index, 1);
         (elt.save as any)(handleError({req, res}, () => {
@@ -150,8 +149,12 @@ export function removeUnusedAttachment(id, cb) {
 
 export function scanFile(stream, res, cb) {
     createScanner(config.antivirus.port, config.antivirus.ip).scan(stream, (err, object, malicious) => {
-        if (err) { return cb(false); }
-        if (malicious) { return res.status(431).send('The file probably contains a virus.'); }
+        if (err) {
+            return cb(false);
+        }
+        if (malicious) {
+            return res.status(431).send('The file probably contains a virus.');
+        }
         cb(true);
     });
 }
@@ -159,7 +162,9 @@ export function scanFile(stream, res, cb) {
 export function setDefault(req, res, db, crudPermission) {
     db.byId(req.body.id, handleNotFound({req, res}, (elt: ItemDocument) => {
         const ownership = crudPermission(elt, req.user);
-        if (!ownership) { return res.status(401).send('You do not own this element'); }
+        if (!ownership) {
+            return res.status(401).send('You do not own this element');
+        }
         const state = req.body.state;
         for (const attachment of elt.attachments) {
             attachment.isDefault = false;
