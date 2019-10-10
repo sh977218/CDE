@@ -41,8 +41,12 @@ export function init(app: Express) {
 }
 
 export function ticketValidate(tkt, cb) {
-    const url = 'https://' + ticketValidationOptions.host + ':' + ticketValidationOptions.port + ticketValidationOptions.path;
-    request.get(url, (error, response, body) => {
+    const host = 'https://' + ticketValidationOptions.host;
+    const port = ':' + ticketValidationOptions.port;
+    const path = config.uts.ticketValidation.path;
+    const param = '?service=' + config.uts.service + '&ticket=' + tkt;
+    const uri = host + port + path + param;
+    request.get(uri, (error, response, body) => {
         if (error) {
             errorLogger.error('getTgt: ERROR with request: ' + error, {stack: new Error().stack});
             return cb(error);
