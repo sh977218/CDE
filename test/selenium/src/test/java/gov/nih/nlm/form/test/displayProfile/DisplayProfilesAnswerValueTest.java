@@ -14,6 +14,15 @@ public class DisplayProfilesAnswerValueTest extends BaseFormTest {
         String formName = "Answer Value Display Profile Test";
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName(formName);
+
+        goToFormDescription();
+        startEditQuestionById("question_0-0");
+        clickElement(By.xpath("//dt[contains(.,'Display As')]/following-sibling::dd[1]//mat-select"));
+        selectMatSelectDropdownByText("Likert Scale");
+        textPresent("Likert Scale");
+        saveEditQuestionById("question_0-0");
+        textPresent("Likert Scale");
+
         goToDisplayProfiles();
 
         DisplayProfile answerValueDisplayProfile = new DisplayProfile(0, "Answer Value Display Profile", "Dynamic", 5, 0, false, true, false, false, false, false);
@@ -25,6 +34,7 @@ public class DisplayProfilesAnswerValueTest extends BaseFormTest {
         goToPreview();
         List<WebElement> tdsInPreview = findElements(By.xpath("//label[contains(@class,'form-check-label')]/span"));
         checkAnswerValue(tdsInPreview, true);
+        findElement(By.xpath("//li[contains(.,'Not at all')]/span[contains(.,'5')]"));
 
         goToDisplayProfiles();
         deleteDisplayProfile(0);

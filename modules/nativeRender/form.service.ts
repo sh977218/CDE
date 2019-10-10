@@ -64,9 +64,6 @@ export class FormService {
 
         function convertPv(question: QuestionValueList, pvs: PermissibleValue[]) {
             pvs.forEach(pv => {
-                if (!pv.valueMeaningName || pv.valueMeaningName.trim().length === 0) {
-                    pv.valueMeaningName = pv.permissibleValue;
-                }
                 question.answers.push(Object.assign({formElements: []}, pv));
                 question.cde.permissibleValues.push(pv);
             });
