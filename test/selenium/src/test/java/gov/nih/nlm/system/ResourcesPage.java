@@ -14,7 +14,7 @@ public class ResourcesPage extends BaseAttachmentTest {
         goToResources();
         // wait for ckeditor <script> to resolve.
         hangon(2);
-        addAttachment(attachmentName);
+//        addAttachment(attachmentName);
         clickElement(By.cssSelector("mat-icon[title='Edit']"));
         textPresent("Rich Text");
         clickElement(By.cssSelector(".cke_button__source"));
@@ -24,6 +24,9 @@ public class ResourcesPage extends BaseAttachmentTest {
 
         // one with no URL
         findElement(By.cssSelector("textarea.cke_source")).sendKeys("\n<p>&lt;rss-feed&gt;&lt;/rss-feed&gt;</p>\n");
+
+        // one with wrong format
+        findElement(By.cssSelector("textarea.cke_source")).sendKeys("\n<p>&lt;rs-feed&gt;&lt;/rs-feed&gt;</p>\n");
 
         clickElement(By.cssSelector(".cke_button__source"));
         clickElement(By.xpath("//mat-icon[. = 'check']"));

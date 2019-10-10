@@ -197,7 +197,10 @@ export const formJson = {
         type: [idSchema],
         description: 'Identifier used to establish or indicate what Form is within a specific context',
     },
-    attachments: [attachmentSchema],
+    attachments: {
+        type: [attachmentSchema],
+        default: []
+    },
     history: [Schema.Types.ObjectId],
     archived: {
         type: Boolean,
