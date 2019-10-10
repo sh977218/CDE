@@ -5,7 +5,6 @@ import { config } from 'server/system/parseConfig';
 import { User } from 'shared/models.model';
 import { addUser, updateUserIps, userById, userByName } from 'server/user/userDb';
 
-const https = require('https');
 const xml2js = require('xml2js');
 const request = require('request');
 const passport = require('passport');
@@ -42,18 +41,14 @@ export function init(app: Express) {
 }
 
 export function ticketValidate(tkt, cb) {
-    ticketValidationOptions.path = config.uts.ticketValidation.path + '?service=' + config.uts.service + '&ticket=' + tkt;
-    let req = https.request(ticketValidationOptions, (res) => {
-        let output = '';
-        res.setEncoding('utf8');
-
-        res.on('data', function (chunk) {
-            output += chunk;
-        });
-
-        res.on('end', function () {
+    const url = 'https://' + ticketValidationOptions.host + ':' + ticketValidationOptions.port + ticketValidationOptions.path;
+    request.get(url, (error, response, body) => {
+        if (error) {
+            errorLogger.error('getTgt: ERROR with request: ' + error, {stack: new Error().stack});
+            return cb(error);
+        } else {
             // Parse xml result from ticket validation
-            parser.parseString(output, function (err, jsonResult) {
+            parser.parseString(body, function (err, jsonResult) {
                 if (err) {
                     return cb('ticketValidate: ' + err);
                 } else if (jsonResult['cas:serviceResponse'] &&
@@ -68,21 +63,8 @@ export function ticketValidate(tkt, cb) {
 
                 return cb('ticketValidate: invalid XML response!');
             });
-
-        });
+        }
     });
-
-    req.on('error', e => {
-        errorLogger.error('getTgt: ERROR with request: ' + e, {stack: new Error().stack});
-        return cb(e);
-    });
-
-    req.on("timeout", function () {
-        req.abort();
-        return cb('ticketValidate: Request timeout. Abort if not done!');
-    });
-
-    req.end();
 }
 
 export function updateUserAfterLogin(user, ip, cb) {
