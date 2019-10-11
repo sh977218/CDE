@@ -5,7 +5,7 @@ import { sortReferenceDocuments } from 'ingester/shared/utility';
 export async function parseReferenceDocuments(rows: any[]) {
     const referenceDocuments = [];
     for (const row of rows) {
-        const newReferenceDocuments = await parseCdeReferenceDocuments(row);
+        const newReferenceDocuments: any[] = await parseCdeReferenceDocuments(row);
         for (const newReferenceDocument of newReferenceDocuments) {
             const i = findIndex(referenceDocuments, newReferenceDocument);
             if (i === -1) {

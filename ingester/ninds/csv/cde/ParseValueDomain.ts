@@ -2,7 +2,7 @@ import { isEmpty } from 'lodash';
 import { QuestionTypeNumber, QuestionTypeText } from 'shared/de/dataElement.model';
 import { getCell } from 'ingester/ninds/csv/shared/utility';
 
-const UOM_MAP = {
+const UOM_MAP: any = {
     '': '',
     Centimeter: 'cm',
     Day: 'd',
@@ -56,7 +56,7 @@ const UOM_MAP = {
     Degree: 'Degree',
 };
 
-const DATA_TYPE_MAP = {
+const DATA_TYPE_MAP: any = {
     Alphanumeric: 'Text',
     'Date or Date & Time': 'Date',
     'Numeric Values': 'Number',
@@ -75,7 +75,7 @@ export function parseValueDomain(row: any) {
         console.log(`${unitOfMeasure} is not in the uom map.`);
         process.exit(1);
     }
-    const valueDomain = {
+    const valueDomain: any = {
         uom,
         permissibleValues: []
     };

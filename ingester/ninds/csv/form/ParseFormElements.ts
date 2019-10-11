@@ -1,16 +1,16 @@
 import { isEmpty, isEqual } from 'lodash';
-import { DataElement } from 'server/cde/mongo-cde';
+import { dataElementModel } from 'server/cde/mongo-cde';
 import { BATCHLOADER, compareElt, imported, lastMigrationScript, mergeElt, updateCde } from 'ingester/shared/utility';
 import { getCell } from 'ingester/ninds/csv/shared/utility';
 import { createNindsCde } from 'ingester/ninds/csv/cde/cde';
 
-async function doOneRow(row) {
+async function doOneRow(row: any) {
     const nindsCde = await createNindsCde(row);
-    const newCde = new DataElement(nindsCde);
+    const newCde = new dataElementModel(nindsCde);
     const newCdeObj = newCde.toObject();
 
     const variableName = getCell(row, 'Variable Name');
-    let existingCde = await DataElement.findOne({
+    let existingCde: any = await dataElementModel.findOne({
         archived: false,
         'ids.id': variableName
     });
@@ -21,7 +21,7 @@ async function doOneRow(row) {
         });
         console.log(`created cde tinyId: ${existingCde.tinyId}`);
     } else {
-        const diff = compareElt(newCde.toObject(), existingCde.toObject());
+        const diff = compareElt(newCde.toObject(), existingCde.toObject(), 'NINDS');
         if (isEmpty(diff)) {
             existingCde.imported = imported;
             existingCde.lastMigrationScript = lastMigrationScript;
@@ -32,7 +32,7 @@ async function doOneRow(row) {
             console.log(`same cde tinyId: ${existingCde.tinyId}`);
         } else {
             const existingCdeObj = existingCde.toObject();
-            mergeElt(existingCdeObj, newCdeObj, 'NINDS');
+            mergeElt(existingCdeObj, newCdeObj, 'NINDS', 'NINDS');
             existingCdeObj.imported = imported;
             existingCdeObj.changeNote = lastMigrationScript;
             existingCdeObj.lastMigrationScript = lastMigrationScript;
@@ -43,14 +43,14 @@ async function doOneRow(row) {
     return existingCde.toObject();
 }
 
-function convertCsvRowToFormElement(row, cde) {
+function convertCsvRowToFormElement(row: any, cde: any) {
     const label = getCell(row, 'Preferred Question Text');
     const value = getCell(row, 'Guidelines/Instructions');
     const inputRestriction = getCell(row, 'Input Restriction');
     const multiselect = inputRestriction.indexOf('Multiple Pre-Defined Values Selected') !== -1;
     const title = getCell(row, 'Title');
 
-    const formElement = {
+    return {
         elementType: 'question',
         label,
         instructions: {value},
@@ -72,13 +72,11 @@ function convertCsvRowToFormElement(row, cde) {
             answers: cde.valueDomain.permissibleValues
         }
     };
-
-    return formElement;
 }
 
-export async function parseFormElements(rows) {
+export async function parseFormElements(rows: any[]) {
     const formElements = [];
-    let newSection = {
+    let newSection: any = {
         label: '',
         elementType: 'section',
         formElements: []

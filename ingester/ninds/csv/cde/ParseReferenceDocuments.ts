@@ -15,6 +15,9 @@ function fetchPubmedRef(pmId: string) {
             } else if (response.statusCode === 200) {
                 const $ = cheerio.load(body);
                 const title = $('.rprt_all h1').text();
+                if (isEmpty(title)) {
+                    console.log(`${uri} has empty title`);
+                }
                 const abstracttext = $('.abstr div').contents().text();
                 if (isEmpty(abstracttext)) {
                     console.log(`${uri} has empty Abstract`);
@@ -28,7 +31,7 @@ function fetchPubmedRef(pmId: string) {
     });
 }
 
-export function parseReferenceDocuments(row: any) {
+export function parseReferenceDocuments(row: any): Promise<any[]> {
     const EXCLUDE_REF_DOC = [
         'No references available',
         'Please fill out'

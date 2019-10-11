@@ -1,4 +1,4 @@
-export const parseClassification = () => {
+export function parseClassification() {
     return [{
         stewardOrg: {name: 'NINDS'},
         elements: [{
@@ -6,4 +6,4 @@ export const parseClassification = () => {
             elements: []
         }]
     }];
-};
+}
