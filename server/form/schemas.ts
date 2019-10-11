@@ -96,6 +96,10 @@ const questionSchema = new Schema({
         system: StringType,
         code: StringType
     },
+    displayAs: {
+        type: StringType,
+        enum: ['radio/checkbox/select', 'likert scale']
+    },
     unitsOfMeasure: [codeAndSystemSchema],
     required: {type: Boolean, default: false},
     invisible: {type: Boolean, default: false},

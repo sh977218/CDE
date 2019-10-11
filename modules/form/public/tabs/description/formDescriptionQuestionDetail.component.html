@@ -46,10 +46,15 @@
         <div class="col-12">
             <div *ngIf="question.instructions?.value" class="questionInstruction">
                 <span class="formViewQuestionLabel">Instructions:</span>
-                <span *ngIf="question.instructions.valueFormat === 'html'"
+                <span *ngIf="question.instructions.valueFormat === 'html'; else instructionsText"
                       [innerHtml]="question.instructions.value"></span>
-                <span *ngIf="question.instructions.valueFormat !== 'html'"
-                      [textContent]="question.instructions.value"></span>
+                <ng-template #instructionsText><span [textContent]="question.instructions.value"></span></ng-template>
+            </div>
+            <div *ngIf="question.question.datatype === 'Value List' && question.question.displayAs !== 'radio/checkbox/select'">
+                <span class="formViewQuestionLabel">Display As:</span>
+                <span class="badge badge-secondary formViewSummaryLabel" style="background-color: #666">
+                    {{question.question.displayAs === 'likert scale' ? 'Likert Scale' : 'Default'}}
+                </span>
             </div>
             <div class="answerList"
                  *ngIf="question.question.datatype === 'Value List' && question.question.answers && question.question.answers.length > 0">
@@ -206,6 +211,16 @@
             </dd>
         </ng-container>
         <ng-container *ngIf="question.question.datatype === 'Value List'">
+            <dt class="col-2">Display As:</dt>
+            <dd class="col-10">
+                <mat-form-field class="w-100">
+                    <mat-select [(value)]="question.question.displayAs" (selectionChange)="eltChange.emit()">
+                        <mat-option value="radio/checkbox/select">Multiple Choice</mat-option>
+                        <mat-option value="likert scale">Likert Scale</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <div *ngIf="question.question.displayAs === 'likert scale'">Likert Scale is only seen on the Digital view for single select questions. It's value is required and defaulted automatically.</div>
+            </dd>
             <dt class="col-2">Multiple Selection:</dt>
             <dd class="col-10 multipleSelection">
                 <input type="checkbox" title="Multiple" [(ngModel)]="question.question.multiselect"

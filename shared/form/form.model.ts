@@ -108,6 +108,9 @@ export class CdeForm extends Elt implements FormElementsContainer {
                         if (!Array.isArray(q.question.cde.permissibleValues)) {
                             q.question.cde.permissibleValues = [];
                         }
+                        if (!displayAsValueListList.includes(q.question.displayAs)) {
+                            q.question.displayAs = 'radio/checkbox/select';
+                        }
                         break;
                     case 'Date':
                         if (!q.question.datatypeDate) {
@@ -387,8 +390,12 @@ export type QuestionTime = DatatypeContainerTime & QuestionPart;
 export type QuestionValueList = DatatypeContainerValueList & QuestionPart & {
     answers: PermissibleValue[]; // mutable
     cde: QuestionCdeValueList;
+    displayAs: displayAsValueList;
     multiselect?: boolean;
 };
+
+export type displayAsValueList = 'radio/checkbox/select' | 'likert scale';
+export const displayAsValueListList = ['radio/checkbox/select', 'likert scale'];
 
 export function question(): Partial<Question> {
     return {
