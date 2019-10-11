@@ -99,6 +99,7 @@ export class FormDescriptionQuestionComponent implements OnInit {
         newQuestion.question.editable = currentQuestion.question.editable;
         newQuestion.question.invisible = currentQuestion.question.invisible;
         if (currentQuestion.question.datatype === 'Value List') {
+            (newQuestion.question as QuestionValueList).displayAs = currentQuestion.question.displayAs;
             (newQuestion.question as QuestionValueList).multiselect = currentQuestion.question.multiselect;
         }
         newQuestion.question.required = currentQuestion.question.required;
