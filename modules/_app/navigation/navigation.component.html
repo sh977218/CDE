@@ -18,16 +18,14 @@
 </ng-template>
 
 <ng-template #boardTpl let-prefix="prefix">
-    <ng-template #simpleBoards>
-        <a id="{{prefix}}boardsMenu" class="mdl-navigation__link mdl-typography--text-uppercase"
-           routerLink="/boardList">Boards</a>
-    </ng-template>
-    <ng-container *ngIf="userService.user; else simpleBoards">
+    <ng-container>
         <a id="{{prefix}}boardsMenu" class="mdl-navigation__link mdl-typography--text-uppercase"
            [matMenuTriggerFor]="boardMenu">Boards&nbsp;▼</a>
         <mat-menu #boardMenu="matMenu">
-            <a id="publicBoardsLink" routerLink="/boardList" mat-menu-item>Public Boards</a>
-            <a id="myBoardsLink" routerLink="/myBoards" mat-menu-item>My Boards</a>
+            <a id="{{prefix}}menu_qb_link" routerLink="/quickBoard" mat-menu-item
+               [textContent]="'Quick&nbsp;Board&nbsp;(' + (quickBoardService.numberDataElements + quickBoardService.numberForms) + ')'"></a>
+            <a routerLink="/boardList" mat-menu-item>Public Boards</a>
+            <a *ngIf="userService.user" id="{{prefix}}myBoardsLink" routerLink="/myBoards" mat-menu-item>My Boards</a>
         </mat-menu>
     </ng-container>
 </ng-template>
@@ -51,6 +49,8 @@
            mat-menu-item class="mdl-navigation__link mdl-typography--text-uppercase">Take a Tour</a>
         <a id="whatsNewLink" routerLink="/whatsNew"
            mat-menu-item class="mdl-navigation__link mdl-typography--text-uppercase">New Features</a>
+        <a id="videos" routerLink="/videos"
+           mat-menu-item class="mdl-navigation__link mdl-typography--text-uppercase">Video Tutorials</a>
         <a id="apiDocumentationLink" class="mdl-navigation__link mdl-typography--text-uppercase"
            mat-menu-item routerLink="/api">API</a>
         <a id="contactUsLink" routerLink="/contactUs"
@@ -59,7 +59,6 @@
 </ng-template>
 
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header" (click)="checkNotificationDrawer()">
-
     <div class="android-header mdl-layout__header mdl-layout__header--waterfall">
         <div class="mdl-layout__header-row">
 
@@ -78,19 +77,15 @@
                     <a id="menu_cdes_link" class="mdl-navigation__link mdl-typography--text-uppercase"
                        routerLink="/cde/search">CDEs</a>
 
-                    <a id="menu_forms_link" class="mdl-navigation__link mdl-typography--text-uppercase "
+                    <a id="menu_forms_link" class="mdl-navigation__link mdl-typography--text-uppercase"
                        routerLink="/form/search">Forms</a>
 
                     <ng-container [ngTemplateOutlet]="boardTpl" [ngTemplateOutletContext]="{prefix: ''}"></ng-container>
 
                     <ng-container [ngTemplateOutlet]="createTpl" [ngTemplateOutletContext]="{prefix: ''}"></ng-container>
 
-                    <a id="menu_qb_link" routerLink="/quickBoard"
-                       class="mdl-navigation__link mdl-typography--text-uppercase"
-                       [textContent]="'Quick&nbsp;Board&nbsp;(' + (quickBoardService.numberDataElements + quickBoardService.numberForms) + ')'"></a>
                     <a id="resourcesLink" routerLink="/resources"
                        class="mdl-navigation__link mdl-typography--text-uppercase">Resources&nbsp;</a>
-
 
                     <ng-container [ngTemplateOutlet]="helpTpl" [ngTemplateOutletContext]="{prefix: ''}"></ng-container>
 
@@ -122,7 +117,6 @@
             <div class="android-drawer-separator"></div>
             <ng-container [ngTemplateOutlet]="createTpl" [ngTemplateOutletContext]="{prefix: 'drawer_'}"></ng-container>
             <div *ngIf="userService.user" class="android-drawer-separator"></div>
-            <a class="mdl-navigation__link" routerLink="/quickBoard" (click)="toggleDrawer()">Quick Board</a>
             <a id="drawer_resourcesLink" routerLink="/resources" class="mdl-navigation__link mdl-typography--text-uppercase">Resources&nbsp;</a>
             <!--<a class="mdl-navigation__link" routerLink="/api" (click)="toggleDrawer()">API</a>-->
             <div class="android-drawer-separator"></div>

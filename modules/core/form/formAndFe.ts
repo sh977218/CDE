@@ -1,15 +1,16 @@
 import { CdeId } from 'shared/models.model';
 import { CdeForm, FormElement, FormOrElement } from 'shared/form/form.model';
+import { isCdeFormNotFe } from 'shared/item';
 import { supportedFhirResources } from 'shared/mapping/fhir/fhirResource.model';
 
 export function getFhirResourceMap(f: FormOrElement): any {
-    return isForm(f) && f.displayProfiles.length ? f.displayProfiles[0].fhirProcedureMapping : undefined;
+    return isCdeFormNotFe(f) && f.displayProfiles.length ? f.displayProfiles[0].fhirProcedureMapping : undefined;
 }
 
 export function getIds(f: CdeForm): CdeId[];
 export function getIds(f: FormOrElement): CdeId[] | undefined;
 export function getIds(f: FormOrElement): CdeId[] | undefined {
-    if (isForm(f)) {
+    if (isCdeFormNotFe(f)) {
         return f.ids;
     }
     switch (f.elementType) {
@@ -27,7 +28,7 @@ export function getMapToFhirResource(f: FormOrElement): supportedFhirResources |
 }
 
 export function getTinyId(f: FormOrElement): string|undefined {
-    if (isForm(f)) {
+    if (isCdeFormNotFe(f)) {
         return f.tinyId;
     }
     switch (f.elementType) {
@@ -41,7 +42,7 @@ export function getTinyId(f: FormOrElement): string|undefined {
 }
 
 export function getVersion(f: FormOrElement): string|undefined {
-    if (isForm(f)) {
+    if (isCdeFormNotFe(f)) {
         return f.version;
     }
     switch (f.elementType) {

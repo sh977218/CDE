@@ -1,4 +1,4 @@
-import { classifyItem } from 'shared/system/classificationShared';
+import { classifyItem } from 'server/classification/orgClassificationSvc';
 
 export function parseClassification(nciXmlCde, cde, orgInfo) {
     if (nciXmlCde.CLASSIFICATIONSLIST[0].CLASSIFICATIONSLIST_ITEM) {

@@ -4,7 +4,6 @@ import { readFileSync, writeFile } from 'fs';
 import * as gulp from 'gulp';
 import * as minifyCss from 'gulp-clean-css';
 import * as data from 'gulp-data';
-import { revParse } from 'gulp-git';
 import * as htmlmin from 'gulp-htmlmin';
 import * as rename from 'gulp-rename';
 import * as replace from 'gulp-replace';
@@ -25,36 +24,45 @@ interface StatusCodeError extends Error {
 
 const APP_DIR = __dirname;
 const BUILD_DIR = appDir(config.node.buildDir);
-const runOptions = {cwd: APP_DIR};
+const runInAppOptions = {cwd: APP_DIR};
+const nodeCmd = APP_DIR === __dirname ? 'npx ts-node -P tsconfigNode.json ' : 'node ';
 
-function appDir(path) {
+function appDir(path: string) {
     return resolve(APP_DIR, path);
 }
 
-function buildDir(path) {
+function buildDir(path: string) {
     return resolve(BUILD_DIR, path);
 }
 
-function run(command, options?: ExecOptions): Promise<void> {
+function run(command: string, options?: ExecOptions): Promise<void> {
     return new Promise(((resolve, reject) => {
         exec(command, options, (err, stdout, stderr) => {
-            stdout && console.log(stdout);
-            stderr && console.error(stderr);
+            if (stdout) {
+                console.log(stdout);
+            }
+            if (stderr) {
+                console.error(stderr);
+            }
             err ? reject(err) : resolve();
         });
     }));
 }
 
+function node(file: string, options?: ExecOptions): Promise<void> {
+    return run(nodeCmd + file, options);
+}
+
 gulp.task('npm', function npm() {
-    run('node --version', runOptions);
-    run('npm -v', runOptions);
-    run('npm cache verify', runOptions);
-    run('mongo --version', runOptions);
-    return run('npm i', runOptions);
+    run('node --version', runInAppOptions);
+    run('npm -v', runInAppOptions);
+    run('npm cache verify', runInAppOptions);
+    run('mongo --version', runInAppOptions);
+    return run('npm i', runInAppOptions);
 });
 
 gulp.task('npmRebuildNodeSass', ['npm'], function npmRebuildNodeSass() {
-    return run('npm rebuild node-sass', runOptions);
+    return run('npm rebuild node-sass', runInAppOptions);
 });
 
 gulp.task('copyThirdParty', ['npmRebuildNodeSass'], function copyThirdParty() {
@@ -105,7 +113,7 @@ gulp.task('copyCode', function copyCode() {
             .pipe(gulp.dest(BUILD_DIR + '/modules/' + module + '/views/bot/')));
     });
 
-    ['supportedBrowsers.ejs', 'loginText.ejs'].forEach(function (file) {
+    ['supportedBrowsers.ejs', 'loginText.ejs'].forEach((file) => {
         streamArray.push(gulp.src(appDir('./modules/system/views/' + file))
             .pipe(gulp.dest(BUILD_DIR + '/modules/system/views/')));
     });
@@ -143,9 +151,11 @@ gulp.task('copyCode', function copyCode() {
         .pipe(gulp.dest(BUILD_DIR + '/modules/form/public/assets/')));
 
     // from buildNode (required)
-    streamArray.push(gulp.src('./app.js')
+    streamArray.push(gulp.src('./app.js*')
         .pipe(replace('APP_DIR = __dirname + "/.."', 'APP_DIR = __dirname'))
         .pipe(gulp.dest(BUILD_DIR + '/')));
+    streamArray.push(gulp.src('./modules/**')
+        .pipe(gulp.dest(BUILD_DIR + '/modules/')));
     streamArray.push(gulp.src('./server/**')
         .pipe(gulp.dest(BUILD_DIR + '/server/')));
     streamArray.push(gulp.src('./shared/**')
@@ -163,32 +173,26 @@ gulp.task('copyNpmDeps', ['copyCode', 'npmRebuildNodeSass'], function copyNpmDep
         });
 });
 
-gulp.task('prepareVersion', ['copyCode'], function prepareVersion() {
-    return revParse({args: '--short HEAD'}, function (err: NodeJS.ErrnoException, hash: string) {
-        writeFile(BUILD_DIR + '/server/system/version.js', 'exports.version = "' + hash + '";',
-            function (err: NodeJS.ErrnoException) {
-                if (err) console.log('ERROR generating version.html: ' + err);
-                else console.log('generated ' + BUILD_DIR + '/server/system/version.js');
-            });
-    });
-});
-
 gulp.task('buildDist', ['createDist'], function copyDist() {
     return Promise.all([
-        run('npm run buildAppJs', runOptions),
-        run('npm run buildNativeJs', runOptions),
-        run('npm run buildEmbedJs', runOptions),
-        run('npm run buildFhirJs', runOptions),
-        run('npm run buildFnAwsJava', runOptions)
+        run('npm run buildAppJs', runInAppOptions),
+        run('npm run buildNativeJs', runInAppOptions),
+        run('npm run buildEmbedJs', runInAppOptions),
+        run('npm run buildFhirJs', runInAppOptions),
+        run('npm run buildFnAwsJava', runInAppOptions)
     ]);
 });
 
 gulp.task('copyDist', ['buildDist'], function copyDist() {
     return merge([
-        gulp.src([appDir('./dist/app/**/*'), '!' + appDir('./dist/app/cde.css'), '!' + appDir('./dist/app/cde.js')]).pipe(gulp.dest(BUILD_DIR + '/dist/app')),
-        gulp.src([appDir('./dist/embed/**/*'), '!' + appDir('./dist/embed/embed.css'), '!' + appDir('./dist/embed/embed.js')]).pipe(gulp.dest(BUILD_DIR + '/dist/embed')),
-        gulp.src([appDir('./dist/fhir/*'), '!' + appDir('./dist/fhir/fhir.css'), '!' + appDir('./dist/fhir/fhir.js')]).pipe(gulp.dest(BUILD_DIR + '/dist/fhir')),
-        gulp.src([appDir('./dist/native/**/*'), '!' + appDir('./dist/native/native.css'), '!' + appDir('./dist/native/native.js')]).pipe(gulp.dest(BUILD_DIR + '/dist/native')),
+        gulp.src([appDir('./dist/app/**/*'), '!' + appDir('./dist/app/cde.css'), '!' + appDir('./dist/app/cde.js')])
+            .pipe(gulp.dest(BUILD_DIR + '/dist/app')),
+        gulp.src([appDir('./dist/embed/**/*'), '!' + appDir('./dist/embed/embed.css'), '!' + appDir('./dist/embed/embed.js')])
+            .pipe(gulp.dest(BUILD_DIR + '/dist/embed')),
+        gulp.src([appDir('./dist/fhir/*'), '!' + appDir('./dist/fhir/fhir.css'), '!' + appDir('./dist/fhir/fhir.js')])
+            .pipe(gulp.dest(BUILD_DIR + '/dist/fhir')),
+        gulp.src([appDir('./dist/native/**/*'), '!' + appDir('./dist/native/native.css'), '!' + appDir('./dist/native/native.js')])
+            .pipe(gulp.dest(BUILD_DIR + '/dist/native')),
         gulp.src(appDir('./modules/system/views/home-launch.ejs')).pipe(gulp.dest(BUILD_DIR + '/modules/system/views')),
         gulp.src(appDir('./dist/launch/*')).pipe(gulp.dest(BUILD_DIR + '/dist/launch')),
         gulp.src(appDir('./serverless-aws-java/**/*')).pipe(gulp.dest(BUILD_DIR + '/serverless-aws-java'))
@@ -196,17 +200,21 @@ gulp.task('copyDist', ['buildDist'], function copyDist() {
 });
 
 gulp.task('usemin', ['copyDist'], function useminTask() {
-    let streamArray: NodeJS.ReadWriteStream[] = [];
+    const streamArray: NodeJS.ReadWriteStream[] = [];
     [
         {folder: './modules/system/views/', filename: 'index.ejs'},
         {folder: './modules/_embedApp/', filename: 'embedApp.ejs'},
         {folder: './modules/_fhirApp/', filename: 'fhirApp.ejs'},
         {folder: './modules/_nativeRenderApp/', filename: 'nativeRenderApp.ejs'},
     ].forEach(item => {
-        let useminOutputs: string[] = [];
+        const useminOutputs: string[] = [];
 
         function outputFile(file: File) {
-            useminOutputs.push(file.path.match(/(\\|\/)(app|embed|fhir|native)(\\|\/).*$/)![0].replace(/\\/g, '/'));
+            const matches = file.path.match(/(\\|\/)(app|embed|fhir|native)(\\|\/).*$/);
+            if (!matches || !matches.length) {
+                throw new Error('bad file path for being processed: ' + file.path);
+            }
+            useminOutputs.push(matches[0].replace(/\\/g, '/'));
             return file;
         }
 
@@ -218,7 +226,7 @@ gulp.task('usemin', ['copyDist'], function useminTask() {
             return '"' + useminOutputs.filter(f => f.endsWith('.js'))[0] + '"';
         }
 
-        let useminTask = gulp.src(appDir(item.folder + item.filename))
+        const useminTask = gulp.src(appDir(item.folder + item.filename))
             .pipe(usemin({
                 jsAttributes: {async: true},
                 assetsDir: appDir('./dist/'),
@@ -246,7 +254,7 @@ gulp.task('usemin', ['copyDist'], function useminTask() {
             .pipe(replace('"/native/native.js"', getJsLink))
             .pipe(gulp.dest(BUILD_DIR + '/dist/'));
         streamArray.push(useminTask);
-        useminTask.on('end', function () {
+        useminTask.on('end', () => {
             if (item.filename === 'index.ejs') {
                 if (useminOutputs.length !== 2) {
                     console.log('useminOutputs:' + useminOutputs);
@@ -264,7 +272,7 @@ gulp.task('usemin', ['copyDist'], function useminTask() {
 });
 
 gulp.task('copyUsemin', ['usemin'], function usemin() {
-    let streamArray: NodeJS.ReadWriteStream[] = [];
+    const streamArray: NodeJS.ReadWriteStream[] = [];
     [
         {folder: './modules/system/views/bot/', filename: '*.ejs'},
         {folder: './modules/system/views/', filename: 'index.ejs'},
@@ -279,7 +287,7 @@ gulp.task('copyUsemin', ['usemin'], function usemin() {
 });
 
 gulp.task('es', function es() {
-    let esClient = new elasticsearch.Client({
+    const esClient = new elasticsearch.Client({
         hosts: config.elastic.hosts
     });
     return Promise.all(
@@ -295,7 +303,7 @@ gulp.task('es', function es() {
 // Procedure calling task in README
 gulp.task('buildHome', function buildHome() {
     return gulp.src(appDir('./modules/system/views/home.ejs'))
-        .pipe(replace('<NIHCDECONTENT/>', readFileSync('./modules/_app/staticHome/nihcde.html', {encoding: 'utf8'})))
+        .pipe(replace('<NIHCDECONTENT/>', readFileSync(appDir('./modules/_app/staticHome/nihcde.html'), {encoding: 'utf8'})))
         .pipe(usemin({
             jsAttributes: {
                 async: true,
@@ -313,7 +321,7 @@ gulp.task('buildHome', function buildHome() {
                 removeScriptTypeAttributes: true,
                 removeStyleLinkTypeAttributes: true,
             })],
-            assetsDir: './dist/',
+            assetsDir: appDir('./dist/'),
             inlinecss: [minifyCss, 'concat'],
             inlinejs: [uglify({mangle: false}), 'concat'],
         }))
@@ -323,37 +331,40 @@ gulp.task('buildHome', function buildHome() {
 });
 
 gulp.task('checkDbConnection', function checkDbConnection() {
-    return new Promise(function (resolve, reject) {
-        let isRequireDbConnection = !!require.cache[require.resolve('./server/system/connections')];
-        if (isRequireDbConnection) reject('DB connection cannot be included in gulp.');
-        else resolve();
+    return new Promise((resolve, reject) => {
+        const isRequireDbConnection = !!require.cache[require.resolve('./server/system/connections')];
+        if (isRequireDbConnection) {
+            reject('DB connection cannot be included in gulp.');
+        } else {
+            resolve();
+        }
     });
 });
 
 gulp.task('npmrebuild', function npmrebuild() {
-    return run('npm rebuild', runOptions);
+    return run('npm rebuild', runInAppOptions);
 });
 
 gulp.task('mongorestoretest', function mongorestore() {
-    let username = config.database.appData.username;
-    let password = config.database.appData.password;
-    let hostname = config.database.servers[0].host + ':' + config.database.servers[0].port;
-    let db = config.database.appData.db;
-    let args = ['-u', username, '-p', password, '-h', hostname, '-d', db, '--drop', 'test/data/test/'];
+    const username = config.database.appData.username;
+    const password = config.database.appData.password;
+    const hostname = config.database.servers[0].host + ':' + config.database.servers[0].port;
+    const db = config.database.appData.db;
+    const args = ['-u', username, '-p', password, '-h', hostname, '-d', db, '--drop', 'test/data/test/'];
 
-    return run('mongorestore ' + args.join(' '), runOptions);
+    return run('mongorestore ' + args.join(' '), runInAppOptions);
 });
 
 gulp.task('injectElastic', ['es', 'mongorestoretest'], function injectElastic() {
-    return run('node scripts/indexDb');
+    return node('scripts/indexDb');
 });
 
 gulp.task('checkBundleSize', ['buildDist'], function checkBundleSize() {
-    return run('node scripts/buildCheckSize');
+    return node('scripts/buildCheckSize');
 });
 
 gulp.task('refreshDbs', ['es', 'mongorestoretest', 'injectElastic']);
 
-gulp.task('prepareApp', ['copyNpmDeps', 'prepareVersion', 'copyUsemin', 'checkDbConnection', 'checkBundleSize']);
+gulp.task('prepareApp', ['copyNpmDeps', 'copyUsemin', 'checkDbConnection', 'checkBundleSize']);
 
 gulp.task('default', ['refreshDbs', 'prepareApp']);

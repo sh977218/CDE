@@ -186,7 +186,7 @@ export class NativeRenderService {
             this.getAliases(f);
 
             // answers
-            if (f.question.defaultAnswer) {
+            if (f.question.answer === undefined && f.question.defaultAnswer) {
                 switch (f.question.datatype) {
                     case 'Geo Location':
                         const inputs = f.question.defaultAnswer.split(',').map(value => parseFloat(value.trim()));

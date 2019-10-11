@@ -25,17 +25,14 @@ import { OrgHelperService } from 'non-core/orgHelper.service';
 import _noop from 'lodash/noop';
 import { debounceTime, map } from 'rxjs/operators';
 import { Subscription } from 'rxjs/Subscription';
-import { SearchSettings } from 'search/search.model';
 import { DataType } from 'shared/de/dataElement.model';
 import { uriViewBase } from 'shared/item';
 import {
-    CbErr,
-    CurationStatus, ElasticQueryResponseAggregation, ElasticQueryResponseAggregationBucket,
-    ElasticQueryResponseAggregationsDe, ElasticQueryResponseAggregationsForm,
-    ElasticQueryResponseAggregationsItem,
+    CbErr, CurationStatus, ElasticQueryResponseAggregation, ElasticQueryResponseAggregationBucket,
     ElasticQueryResponseHit, ItemElastic, ModuleItem,
-    Organization
+    Organization, SearchResponseAggregationDe, SearchResponseAggregationForm, SearchResponseAggregationItem,
 } from 'shared/models.model';
+import { SearchSettings } from 'shared/search/search.model';
 import { hasRole, isSiteAdmin } from 'shared/system/authorizationShared';
 import { orderedList, statusList } from 'shared/system/regStatusShared';
 import { ownKeys } from 'shared/user';
@@ -219,7 +216,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
             .pipe(debounceTime(500))
             .subscribe(term => {
                 if (term && term.length >= 3) {
-                    this.http.post<ElasticQueryResponseHit[]>(
+                    this.http.post<ElasticQueryResponseHit<ItemElastic>[]>(
                         '/' + this.module + 'Completion/' + encodeURIComponent(term),
                         this.elasticService.buildElasticQuerySettings(this.searchSettings)
                     )
@@ -612,7 +609,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                 });
             }, () => {
             });
-        });
+        }, _noop);
     }
 
     pageChange(newPage: PageEvent) {
@@ -666,7 +663,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         const settings = this.elasticService.buildElasticQuerySettings(this.searchSettings);
         this.elasticService.generalSearchQuery(settings, this.module,
             (err?: string, resultNonAgg?: any, corrected?: boolean) => {
-            const result: ElasticQueryResponseAggregationsItem = resultNonAgg;
+            const result: SearchResponseAggregationItem = resultNonAgg;
             this.searchedTerm = this.searchSettings.q;
             if (corrected && this.searchedTerm) {
                 this.searchedTerm = this.searchedTerm.replace(/[^\w\s]/gi, '');
@@ -687,8 +684,8 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
             this.totalItemsLimited = this.totalItems <= 10000 ? this.totalItems : 10000;
 
             this.elts = this.module === 'form'
-                ? (result as ElasticQueryResponseAggregationsForm).forms
-                : (result as ElasticQueryResponseAggregationsDe).cdes;
+                ? (result as SearchResponseAggregationForm).forms
+                : (result as SearchResponseAggregationDe).cdes;
             const elts = this.elts;
 
             if (this.searchSettings.page === 1 && result.totalNumber > 0) {

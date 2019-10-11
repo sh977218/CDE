@@ -1,17 +1,28 @@
-import { addFormIds, iterateFe, trimWholeForm } from 'shared/form/fe';
-import { formToQuestionnaire } from 'shared/mapping/fhir/to/toQuestionnaire';
-import { canEditCuratedItem } from 'shared/system/authorizationShared';
-import { forwardError, handle40x, handleError, respondError } from 'server/errorHandler/errorHandler';
+import * as Ajv from 'ajv';
+import { Request, Response } from 'express';
+import { dataElementModel } from 'server/cde/mongo-cde';
+import {
+    byId as formById, byTinyId as formByTinyId, byTinyIdList as formByTinyIdList, byTinyIdAndVersion as formByTinyIdAndVersion,
+    create as formCreate, draftById, draftByTinyId, draftDelete as formDraftDelete, draftSave as formDraftSave, formModel,
+    latestVersionByTinyId as formLatestVersionByTinyId, originalSourceByTinyIdSourceName as formOriginalSourceByTinyIdSourceName, update,
+    CdeFormDraft
+} from 'server/form/mongo-form';
+import { splitError, handleError, handleNotFound, respondError } from 'server/errorHandler/errorHandler';
+import { RequestWithItem } from 'server/system/authorization';
 import { config } from 'server/system/parseConfig';
+import { addFormIds, iterateFe, trimWholeForm } from 'shared/form/fe';
+import { CdeForm } from 'shared/form/form.model';
+import { formToQuestionnaire } from 'shared/mapping/fhir/to/toQuestionnaire';
+import { CbError } from 'shared/models.model';
+import { canEditCuratedItem } from 'shared/system/authorizationShared';
+import { orgByName } from 'server/orgManagement/orgDb';
 
-const Ajv = require('ajv');
 const fs = require('fs');
 const path = require('path');
 const mongoCde = require('../cde/mongo-cde');
 const adminItemSvc = require('../system/adminItemSvc');
 const authorization = require('../system/authorization');
 const mongoData = require('../system/mongo-data');
-const mongoForm = require('./mongo-form');
 const nih = require('./nihForm');
 const sdc = require('./sdcForm');
 const odm = require('./odmForm');
@@ -31,18 +42,16 @@ function setResponseXmlHeader(res) {
     res.setHeader('Content-Type', 'application/xml');
 }
 
-// callback(err, form)
-export function fetchWholeForm(form, callback) {
+export function fetchWholeForm(form: CdeForm, callback: CbError<CdeForm>) {
     iterateFe(form,
         (f, cb, options) => {
             if (options.return.indexOf(f.inForm.form.tinyId) > -1) {
                 cb(undefined, {skip: true});
                 return;
             }
-            mongoForm.byTinyIdAndVersion(f.inForm.form.tinyId, f.inForm.form.version, (err, result) => {
+            formByTinyIdAndVersion(f.inForm.form.tinyId, f.inForm.form.version, (err, result) => {
                 if (err) {
-                    cb('Retrieving form tinyId: ' + f.inForm.form.tinyId + ' version: ' + f.inForm.form.version
-                        + ' has error: ' + err);
+                    cb(err);
                     return;
                 }
                 f.formElements = result.toObject().formElements;
@@ -58,10 +67,14 @@ export function fetchWholeForm(form, callback) {
 
 // callback(err, form)
 // outdated is not necessary for endpoints by version
-function fetchWholeFormOutdated(form, callback) {
-    fetchWholeForm(form, forwardError(callback, wholeForm => {
+function fetchWholeFormOutdated(form: CdeForm, callback: CbError<CdeForm>) {
+    fetchWholeForm(form, splitError(callback, wholeForm => {
+        if (!wholeForm) {
+            callback(undefined, wholeForm);
+            return;
+        }
         iterateFe(wholeForm, (f, cb) => {
-            mongoForm.Form.findOne({tinyId: f.inForm.form.tinyId, archived: false}, {version: 1}, (err, elt) => {
+            formModel.findOne({tinyId: f.inForm.form.tinyId, archived: false}, {version: 1}, (err, elt) => {
                 if (elt && (f.inForm.form.version || null) !== (elt.version || null)) {
                     f.inForm.form.outdated = true;
                     wholeForm.outdated = true;
@@ -69,7 +82,7 @@ function fetchWholeFormOutdated(form, callback) {
                 cb(err, {skip: true});
             });
         }, undefined, (q, cb) => {
-            mongoCde.DataElement.findOne({
+            dataElementModel.findOne({
                 tinyId: q.question.cde.tinyId,
                 archived: false
             }, {version: 1}, (err, elt) => {
@@ -91,8 +104,8 @@ function wipeRenderDisallowed(form, user) {
 
 export function byId(req, res) {
     const id = req.params.id;
-    mongoForm.byId(id, handle40x({req, res}, form => {
-        fetchWholeForm(form.toObject(), handleError({req, res}, wholeForm => {
+    formById(id, handleNotFound({req, res}, form => {
+        fetchWholeForm(form.toObject(), handleNotFound({req, res}, wholeForm => {
             wipeRenderDisallowed(wholeForm, req.user);
             if (req.query.type === 'xml') {
                 setResponseXmlHeader(res);
@@ -133,9 +146,9 @@ export function byId(req, res) {
 
 export function priorForms(req, res) {
     const id = req.params.id;
-    mongoForm.byId(id, handle40x({req, res}, form => {
+    formById(id, handleNotFound({req, res}, form => {
         const history = form.history.concat([form._id]).reverse();
-        mongoForm.Form.find({}, {'updatedBy.username': 1, updated: 1, changeNote: 1, version: 1, elementType: 1})
+        formModel.find({}, {'updatedBy.username': 1, updated: 1, changeNote: 1, version: 1, elementType: 1})
             .where('_id').in(history).exec((err, priorForms) => {
             mongoData.sortArrayByArray(priorForms, history);
             res.send(priorForms);
@@ -146,7 +159,7 @@ export function priorForms(req, res) {
 export function byTinyId(req, res) {
     const handlerOptions = {req, res};
     const tinyId = req.params.tinyId;
-    mongoForm.byTinyId(tinyId, handle40x(handlerOptions, form => {
+    formByTinyId(tinyId, handleNotFound(handlerOptions, form => {
         fetchWholeForm(form.toObject(), handleError(handlerOptions, wholeForm => {
             wipeRenderDisallowed(wholeForm, req.user);
             if (req.query.type === 'xml') {
@@ -178,7 +191,7 @@ export function byTinyId(req, res) {
 
 export function byTinyIdAndVersion(req, res) {
     const {tinyId, version} = req.params;
-    mongoForm.byTinyIdAndVersion(tinyId, version, handle40x({req, res}, form => {
+    formByTinyIdAndVersion(tinyId, version, handleNotFound({req, res}, form => {
         fetchWholeForm(form.toObject(), handleError({req, res}, wholeForm => {
             wipeRenderDisallowed(wholeForm, req.user);
             res.send(wholeForm);
@@ -189,22 +202,19 @@ export function byTinyIdAndVersion(req, res) {
 export function draftForEditByTinyId(req, res) { // WORKAROUND: sends empty instead of 404 to not cause angular to litter console
     const handlerOptions = {req, res};
     const tinyId = req.params.tinyId;
-    mongoForm.byTinyId(tinyId, handleError({req, res}, elt => {
-        if (!canEditCuratedItem(req.user, elt)) {
+    formByTinyId(tinyId, handleError({req, res}, elt => {
+        if (!canEditCuratedItem(req.user, elt) || ! elt) {
             res.send();
             return;
         }
         (function getDraft() {
-            mongoForm.draftByTinyId(tinyId, handleError(handlerOptions, draft => {
+            draftByTinyId(tinyId, handleError(handlerOptions, draft => {
                 if (!draft) {
                     return res.send();
                 }
                 if (elt._id.toString() !== draft._id.toString()) {
-                    mongoForm.draftDelete(tinyId, handleError(handlerOptions, () =>
-                        getDraft()
-                    ));
-                    respondError(new Error('Concurrency Error: Draft of prior elt should not exist'));
-                    return;
+                    draftDelete(tinyId, handleError(handlerOptions, getDraft));
+                    return respondError(new Error('Concurrency Error: Draft of prior elt should not exist'));
                 }
                 fetchWholeFormOutdated(draft.toObject(), handleError(handlerOptions, wholeForm =>
                     res.send(wholeForm)
@@ -217,7 +227,7 @@ export function draftForEditByTinyId(req, res) { // WORKAROUND: sends empty inst
 export function forEditById(req, res) {
     const handlerOptions = {req, res};
     const id = req.params.id;
-    mongoForm.byId(id, handle40x(handlerOptions, form => {
+    formById(id, handleNotFound(handlerOptions, form => {
         fetchWholeFormOutdated(form.toObject(), handleError(handlerOptions, wholeForm => {
             wipeRenderDisallowed(wholeForm, req.user);
             res.send(wholeForm);
@@ -229,7 +239,7 @@ export function forEditById(req, res) {
 export function forEditByTinyId(req, res) {
     const handlerOptions = {req, res};
     const tinyId = req.params.tinyId;
-    mongoForm.byTinyId(tinyId, handle40x(handlerOptions, form => {
+    formByTinyId(tinyId, handleNotFound(handlerOptions, form => {
         fetchWholeFormOutdated(form.toObject(), handleError(handlerOptions, wholeForm => {
             wipeRenderDisallowed(wholeForm, req.user);
             res.send(wholeForm);
@@ -242,7 +252,7 @@ export function forEditByTinyIdAndVersion(req, res) {
     const handlerOptions = {req, res};
     const tinyId = req.params.tinyId;
     const version = req.params.version;
-    mongoForm.byTinyIdAndVersion(tinyId, version, handle40x(handlerOptions, form => {
+    formByTinyIdAndVersion(tinyId, version, handleNotFound(handlerOptions, form => {
         fetchWholeFormOutdated(form.toObject(), handleError(handlerOptions, wholeForm => {
             wipeRenderDisallowed(wholeForm, req.user);
             res.send(wholeForm);
@@ -250,16 +260,15 @@ export function forEditByTinyIdAndVersion(req, res) {
     }));
 }
 
-export function draftSave(req, res) {
+export function draftSave(req: RequestWithItem, res: Response) {
     const elt = req.body;
     const tinyId = req.params.tinyId;
     if (!elt || elt.tinyId !== tinyId || elt._id !== req.item._id.toString()) {
         return res.status(400).send();
     }
-    mongoForm.draftSave(elt, req.user, handleError({req, res}, elt => {
+    formDraftSave(elt, req.user, handleError({req, res}, elt => {
         if (!elt) {
-            res.status(409).send('Edited by someone else. Please refresh and redo.');
-            return;
+            return res.status(409).send('Edited by someone else. Please refresh and redo.');
         }
         res.send(elt);
     }));
@@ -267,28 +276,28 @@ export function draftSave(req, res) {
 
 export function draftDelete(req, res) {
     const tinyId = req.params.tinyId;
-    mongoForm.draftDelete(tinyId, handleError({req, res}, () => res.send()));
+    formDraftDelete(tinyId, handleError({req, res}, () => res.send()));
 }
 
 export function byTinyIdList(req, res) {
     let tinyIdList = req.params.tinyIdList;
     if (!tinyIdList) { return res.status(400).send(); }
     tinyIdList = tinyIdList.split(',');
-    mongoForm.byTinyIdList(tinyIdList, handleError({req, res}, forms => {
+    formByTinyIdList(tinyIdList, handleNotFound({req, res}, forms => {
         res.send(forms.map(mongoData.formatElt));
     }));
 }
 
 export function latestVersionByTinyId(req, res) {
     const tinyId = req.params.tinyId;
-    mongoForm.latestVersionByTinyId(tinyId, handleError({req, res}, latestVersion => {
+    formLatestVersionByTinyId(tinyId, handleError({req, res}, latestVersion => {
         res.send(latestVersion);
     }));
 }
 
 export function publishFormToHtml(req, res) {
     if (!req.params.id || req.params.id.length !== 24) { return res.status(400).send(); }
-    mongoForm.byId(req.params.id, handle40x({req, res}, form => {
+    formById(req.params.id, handleNotFound({req, res}, form => {
         fetchWholeForm(form.toObject(), handleError({
             req, res, message: 'Fetch whole for publish'
         }, wholeForm => {
@@ -301,30 +310,30 @@ export function create(req, res) {
     const elt = req.body;
     const user = req.user;
     if (!elt.stewardOrg || !elt.stewardOrg.name) { return res.status(400).send(); }
-    mongoForm.create(elt, user, handleError({req, res}, dataElement => res.send(dataElement)));
+    formCreate(elt, user, handleError({req, res}, dataElement => res.send(dataElement)));
 }
 
-function publish(req, res, draft, options = {}) {
+function publish(req: RequestWithItem, res: Response, draft: CdeFormDraft, options = {}) {
     const handlerOptions = {req, res};
     if (!draft) {
         return res.status(400).send();
     }
     const eltToArchive = req.item;
-    mongoData.orgByName(eltToArchive.stewardOrg.name, handleError(handlerOptions, org => {
+    orgByName(eltToArchive.stewardOrg.name, handleError(handlerOptions, org => {
         if (adminItemSvc.badWorkingGroupStatus(eltToArchive, org)) {
             return res.status(403).send();
         }
 
         trimWholeForm(draft);
 
-        mongoForm.update(draft, req.user, options, handle40x(handlerOptions, doc => {
-            mongoForm.draftDelete(draft.tinyId, handleError(handlerOptions, () => res.send(doc)));
+        update(draft, req.user, options, handleNotFound(handlerOptions, doc => {
+            formDraftDelete(draft.tinyId, handleError(handlerOptions, () => res.send(doc)));
         }));
     }));
 }
 
-export function publishFromDraft(req, res) {
-    mongoForm.draftById(req.body._id, handle40x({req, res}, draft => {
+export function publishFromDraft(req: RequestWithItem, res: Response) {
+    draftById(req.body._id, handleNotFound({req, res}, draft => {
         if (draft.__v !== req.body.__v) {
             return res.status(400).send('Cannot publish this old version. Reload and redo.');
         }
@@ -335,8 +344,8 @@ export function publishFromDraft(req, res) {
     }));
 }
 
-export function publishExternal(req, res) {
-    mongoForm.draftById(req.body._id, handleError({req, res}, draft => {
+export function publishExternal(req: RequestWithItem, res: Response) {
+    draftById(req.body._id, handleError({req, res}, draft => {
         if (draft) {
             return res.status(400).send('Publishing would override an existing draft. Address the draft first.');
         }
@@ -347,7 +356,7 @@ export function publishExternal(req, res) {
 export function originalSourceByTinyIdSourceName(req, res) {
     const tinyId = req.params.tinyId;
     const sourceName = req.params.sourceName;
-    mongoForm.originalSourceByTinyIdSourceName(tinyId, sourceName, handle40x({req, res}, originalSource => {
+    formOriginalSourceByTinyIdSourceName(tinyId, sourceName, handleNotFound({req, res}, originalSource => {
         res.send(originalSource);
     }));
 }

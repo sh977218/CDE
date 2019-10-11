@@ -1,7 +1,7 @@
 package gov.nih.nlm.system;
 
-import org.junit.Assert;
 import org.openqa.selenium.By;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class ScrollHistoryTest extends NlmCdeBaseTest {

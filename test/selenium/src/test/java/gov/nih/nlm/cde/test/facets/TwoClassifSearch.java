@@ -1,10 +1,10 @@
 package gov.nih.nlm.cde.test.facets;
 
-import gov.nih.nlm.system.NlmCdeBaseTest;
+import gov.nih.nlm.board.cde.BoardTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
-public class TwoClassifSearch extends NlmCdeBaseTest {
+public class TwoClassifSearch extends BoardTest {
 
     @Test
     public void twoClassificationSearch() {
@@ -23,11 +23,14 @@ public class TwoClassifSearch extends NlmCdeBaseTest {
         textPresent("NINDS > Domain > Assessments and Examinations", By.id("classifAlt_filter"));
         textPresent("Imaging Diagnostics (30");
 
+        int numbOfImages = Integer.parseInt(findElement(By.id("nbOfClassifElts-Imaging Diagnostics")).getText());
+
         clickElement(By.id("classif-Imaging Diagnostics"));
         textPresent("NINDS > Domain > Assessments and Examinations > Imaging Diagnostics", By.id("classifAlt_filter"));
+        textPresent(numbOfImages + " results for");
         hangon(1);
 
-        clickElement(By.id("boardsMenu"));
+        gotoPublicBoards();
         hangon(1);
         driver.navigate().back();
         textPresent("NINDS > Domain > Assessments and Examinations > Imaging Diagnostics", By.id("classifAlt_filter"));

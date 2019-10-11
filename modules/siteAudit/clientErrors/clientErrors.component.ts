@@ -33,7 +33,7 @@ export class ClientErrorsComponent {
             this.currentPage = event.pageIndex;
         }
 
-        this.http.post('/server/user/updateNotificationDate', {clientLogDate: new Date()})
+        this.http.post('/server/notification/updateNotificationDate', {clientLogDate: new Date()})
             .subscribe(() => {
                 this.http.post<ClientErrorRecord[]>('/server/log/clientErrors', {
                     skip: this.currentPage * 50,

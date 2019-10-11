@@ -10,28 +10,27 @@ import { parseSources } from 'ingester/loinc/Shared/ParseSources';
 import { parseConcepts } from 'ingester/loinc/CDE/ParseConcept';
 import { parseValueDomain } from 'ingester/loinc/CDE/ParseValueDomain';
 
-import { BATCHLOADER, created, imported, lastMigrationScript } from 'ingester/shared/utility';
+import { BATCHLOADER, created, imported, lastMigrationScript, version } from 'ingester/shared/utility';
 
-export async function createLoincCde(element, orgInfo) {
-    const loinc = element.loinc ? element.loinc : element;
-    const designations = parseDesignations(loinc, element);
+export async function createLoincCde(loinc, classificationOrgName = 'LOINC', classificationArray = []) {
+    const designations = parseDesignations(loinc);
     const definitions = parseDefinitions(loinc);
     const ids = parseIds(loinc);
     const properties = parseProperties(loinc);
     const referenceDocuments = parseReferenceDocuments(loinc);
     const valueDomain = parseValueDomain(loinc);
     const concepts = parseConcepts(loinc);
-    const stewardOrg = parseStewardOrg(orgInfo);
+    const stewardOrg = parseStewardOrg();
     const sources = parseSources(loinc);
-    const classification = await parseClassification(loinc, orgInfo);
 
-    return {
+    const cde = {
         tinyId: generateTinyId(),
         createdBy: BATCHLOADER,
         created,
         imported,
         changeNote: lastMigrationScript,
         source: 'LOINC',
+        version,
         registrationState: {registrationStatus: 'Standard'},
         sources,
         designations,
@@ -44,7 +43,10 @@ export async function createLoincCde(element, orgInfo) {
         dataElementConcept: {concepts: concepts.dataElementConcept},
         stewardOrg,
         valueDomain,
-        classification,
+        classification: [],
         attachments: []
     };
+
+    await parseClassification(cde, classificationOrgName, classificationArray);
+    return cde;
 }

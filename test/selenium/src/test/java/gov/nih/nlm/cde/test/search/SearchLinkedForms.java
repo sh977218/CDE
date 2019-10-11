@@ -31,6 +31,8 @@ public class SearchLinkedForms extends NlmCdeBaseTest {
         clickElement(By.id("search.submit"));
         textPresent("7 results for");
 
+        hangon(1);
+
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("linkedForms.Qualified:>2");
         clickElement(By.id("search.submit"));

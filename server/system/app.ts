@@ -2,132 +2,78 @@ import { series } from 'async';
 import { CronJob } from 'cron';
 import * as csrf from 'csurf';
 import { renderFile } from 'ejs';
-import { access, constants, createWriteStream, mkdir, writeFile } from 'fs';
-import { join } from 'path';
+import { Express, Request, Response } from 'express';
+import { access, constants, createWriteStream, existsSync, mkdir, writeFileSync } from 'fs';
 import { authenticate } from 'passport';
-import {
-    byTinyIdVersion as deByTinyIdVersion, count as deCount, DataElement, DataElementDraft, draftsList as deDraftsList
-} from 'server/cde/mongo-cde';
+import { dataElementModel, draftsList as deDraftsList } from 'server/cde/mongo-cde';
 import { handleError, respondError } from 'server/errorHandler/errorHandler';
-import {
-    byTinyIdVersion as formByTinyIdVersion, CdeFormDraft, draftsList as formDraftsList, Form
-} from 'server/form/mongo-form';
+import { draftsList as formDraftsList, formModel } from 'server/form/mongo-form';
 import { consoleLog } from 'server/log/dbLogger';
 import { syncWithMesh } from 'server/mesh/elastic';
 import {
-    canApproveCommentMiddleware,
-    isOrgAdminMiddleware,
-    isOrgAuthorityMiddleware, isOrgCuratorMiddleware, isSiteAdminMiddleware, loggedInMiddleware, nocacheMiddleware
+    canApproveCommentMiddleware, isOrgAuthorityMiddleware, isOrgCuratorMiddleware, isSiteAdminMiddleware,
+    loggedInMiddleware, nocacheMiddleware
 } from 'server/system/authorization';
 import { reIndex } from 'server/system/elastic';
 import { indices } from 'server/system/elasticSearchInit';
-import { fhirApps, fhirObservationInfo } from 'server/system/fhir';
-import { errorLogger } from 'server/system/logging';
 import {
-    addUserRole, disableRule, embeds, enableRule, getClassificationAuditLog, getFile,
-    IdSource, jobStatus, listOrgs, listOrgsDetailedInfo, orgByName, updateOrg, userById, usersByName
+    addUserRole, disableRule, enableRule, getFile, jobStatus
 } from 'server/system/mongo-data';
-import { addOrg, managedOrgs, transferSteward } from 'server/system/orgsvc';
+import { transferSteward } from 'server/orgManagement/orgSvc';
 import { config } from 'server/system/parseConfig';
-import { checkDatabase, create, remove, subscribe, updateStatus } from 'server/system/pushNotification';
-import { banIp, getTrafficFilter } from 'server/system/traffic';
-import {
-    addOrgAdmin, addOrgCurator, myOrgs, myOrgsAdmins, orgAdmins, orgCurators, removeOrgAdmin, removeOrgCurator,
-    updateUserAvatar, updateUserRoles
-} from 'server/system/usersrvc';
-import { isOrgAdmin } from 'shared/system/authorizationShared';
+import { myOrgs, updateUserAvatar, updateUserRoles } from 'server/system/usersrvc';
 import { is } from 'useragent';
 import { promisify } from 'util';
 import { isSearchEngine } from './helper';
+import { version } from '../version';
+import {
+    createIdSource, deleteIdSource, getAllIdSources, isSourceById, updateIdSource
+} from 'server/system/idSourceSvc';
+import { banIp, getRealIp, getTrafficFilter } from 'server/system/trafficFilterSvc';
+import { userById, usersByName } from 'server/user/userDb';
+import { getClassificationAuditLog } from 'server/system/classificationAuditSvc';
 
-export let respondHomeFull: Function;
+require('express-async-errors');
 
-export function init(app) {
-    let getRealIp = function (req) {
-        if (req._remoteAddress) return req._remoteAddress;
-        if (req.ip) return req.ip;
-    };
+export let respondHomeFull: (req: Request, res: Response) => any;
 
-    let version = 'local-dev';
-    try {
-        version = require('./version.js').version;
-    } catch (e) {
-    }
-
-    let embedHtml = '';
-    renderFile('modules/_embedApp/embedApp.ejs', {isLegacy: false}, (err, str) => {
-        embedHtml = str;
-    });
-
-    let embedLegacyHtml = '';
-    renderFile('modules/_embedApp/embedApp.ejs', {isLegacy: true}, (err, str) => {
-        embedLegacyHtml = str;
-        if (embedLegacyHtml) {
-            promisify(access)('modules/_embedApp/public/html', constants.R_OK)
-                .catch(() => promisify(mkdir)('modules/_embedApp/public/html', {recursive: true} as any)) // Node 12
-                .then(() => {
-                    writeFile('modules/_embedApp/public/html/index.html', embedLegacyHtml, err => {
-                        if (err) {
-                            console.log('ERROR generating /modules/_embedApp/public/html/index.html: ' + err);
-                        }
-                    });
-                })
-                .catch(err => consoleLog('Error getting folder modules/_embedApp/public: ', err));
+export function init(app: Express) {
+    let indexHtml = '';
+    renderFile('modules/system/views/index.ejs', {
+        config,
+        isLegacy: false,
+        version
+    }, (err, str) => {
+        indexHtml = str;
+        if (existsSync('modules/_app')) {
+            writeFileSync('modules/_app/index.html', indexHtml);
         }
     });
 
-    let fhirHtml = '';
-    renderFile('modules/_fhirApp/fhirApp.ejs', {isLegacy: false, version: version}, (err, str) => {
-        fhirHtml = str;
-    });
-
-    let fhirLegacyHtml = '';
-    renderFile('modules/_fhirApp/fhirApp.ejs', {isLegacy: true, version: version}, (err, str) => {
-        fhirLegacyHtml = str;
-    });
-
-    let indexHtml = '';
-    renderFile('modules/system/views/index.ejs', {
-        config: config,
-        isLegacy: false,
-        version: version
-    }, (err, str) => {
-        indexHtml = str;
-    });
 
     let indexLegacyHtml = '';
-    renderFile('modules/system/views/index.ejs', {config: config, isLegacy: true, version: version}, (err, str) => {
+    renderFile('modules/system/views/index.ejs', {config, isLegacy: true, version}, (err, str) => {
         indexLegacyHtml = str;
     });
 
     let homeHtml = '';
-    renderFile('modules/system/views/home-launch.ejs', {config: config, version: version}, (err, str) => {
+    renderFile('modules/system/views/home-launch.ejs', {config, version}, (err, str) => {
         homeHtml = str;
-    });
-
-    let nativeRenderHtml = '';
-    renderFile('modules/_nativeRenderApp/nativeRenderApp.ejs', {isLegacy: false, version: version}, (err, str) => {
-        nativeRenderHtml = str;
-    });
-
-    let nativeRenderLegacyHtml = '';
-    renderFile('modules/_nativeRenderApp/nativeRenderApp.ejs', {isLegacy: true, version: version}, (err, str) => {
-        nativeRenderLegacyHtml = str;
     });
 
     /* for IE Opera Safari, emit polyfill.js */
     function isModernBrowser(req) {
-        let ua = is(req.headers['user-agent']);
-        return ua.chrome || ua.firefox || ua.edge;
+        const ua = is(req.headers['user-agent']);
+        return ua.chrome || ua.firefox || (ua as any).edge;
     }
 
     respondHomeFull = function getIndexHtml(req, res) {
         res.send(isModernBrowser(req) ? indexHtml : indexLegacyHtml);
     };
 
-    app.get(['/', '/home'], function (req, res) {
+    app.get(['/', '/home'], (req, res) => {
         if (isSearchEngine(req)) {
-            res.render('bot/home', 'system');
+            res.render('bot/home', 'system' as any);
         } else if (req.user || req.query.tour || req.query.notifications !== undefined
             || req.headers.referer && req.headers.referer.endsWith('/sw.js')) {
             respondHomeFull(req, res);
@@ -148,8 +94,8 @@ export function init(app) {
         promisify(access)('dist/app', constants.R_OK)
             .catch(() => promisify(mkdir)('dist/app', {recursive: true} as any)) // Node 12
             .then(() => {
-                let wstream = createWriteStream('./dist/app/sitemap.txt');
-                let cond = {
+                const wstream = createWriteStream('./dist/app/sitemap.txt');
+                const cond = {
                     archived: false,
                     'registrationState.registrationStatus': 'Qualified'
                 };
@@ -162,12 +108,12 @@ export function init(app) {
 
                 return promisify(series)([
                     cb => handleStream(
-                        DataElement.find(cond, 'tinyId').cursor(),
+                        dataElementModel.find(cond, 'tinyId').cursor(),
                         doc => config.publicUrl + '/deView?tinyId=' + doc.tinyId + '\n',
                         cb
                     ),
                     cb => handleStream(
-                        Form.find(cond, 'tinyId').cursor(),
+                        formModel.find(cond, 'tinyId').cursor(),
                         doc => config.publicUrl + '/formView?tinyId=' + doc.tinyId + '\n',
                         cb
                     )
@@ -186,50 +132,24 @@ export function init(app) {
         respondHomeFull
     );
 
-    app.get('/embedSearch', (req, res) => {
-        res.send(isModernBrowser(req) ? embedHtml : embedLegacyHtml);
-    });
-
-    app.get('/fhir/form/:param', (req, res) => {
-        res.send(isModernBrowser(req) ? fhirHtml : fhirLegacyHtml);
-    });
-
-    app.get('/fhir/launch/:param', (req, res) => {
-        res.sendFile(join(__dirname, '../../modules/_fhirApp', 'fhirAppLaunch.html'), undefined, err => {
-            if (err) res.sendStatus(404);
-        });
-    });
-
-    app.get('/fhirObservationInfo', (req, res) => {
-        fhirObservationInfo.get(res, req.query.id, info => res.send(info));
-    });
-
-    app.put('/fhirObservationInfo', loggedInMiddleware, (req, res) => {
-        fhirObservationInfo.put(res, req.body, info => res.send(info));
-    });
-
-    app.get('/nativeRender', (req, res) => {
-        res.send(isModernBrowser(req) ? nativeRenderHtml : nativeRenderLegacyHtml);
-    });
-
-    app.get('/sw.js', function (req, res) {
+    app.get('/sw.js', (req, res) => {
         res.sendFile((global as any).appDir('dist/app', 'sw.js'), undefined, err => {
-            if (err) res.sendStatus(404);
+            if (err) {
+                res.sendStatus(404);
+            }
         });
     });
-
-    checkDatabase();
-    app.post('/pushRegistration', loggedInMiddleware, create);
-    app.delete('/pushRegistration', loggedInMiddleware, remove);
-    app.post('/pushRegistrationSubscribe', loggedInMiddleware, subscribe);
-    app.post('/pushRegistrationUpdate', updateStatus);
 
     app.get('/jobStatus/:type', function (req, res) {
         let jobType = req.params.type;
         if (!jobType) return res.status(400).end();
         jobStatus(jobType, (err, j) => {
-            if (err) return res.status(409).send('Error - job status ' + jobType);
-            if (j) return res.send({done: false});
+            if (err) {
+                return res.status(409).send('Error - job status ' + jobType);
+            }
+            if (j) {
+                return res.send({done: false});
+            }
             res.send({done: true});
         });
     });
@@ -237,12 +157,12 @@ export function init(app) {
     /* ---------- PUT NEW REST API above ---------- */
 
     app.get('/indexCurrentNumDoc/:indexPosition', isSiteAdminMiddleware, (req, res) => {
-        let index = indices[req.params.indexPosition];
+        const index = indices[req.params.indexPosition];
         return res.send({count: index.count, totalCount: index.totalCount});
     });
 
     app.post('/reindex/:indexPosition', isSiteAdminMiddleware, (req, res) => {
-        let index = indices[req.params.indexPosition];
+        const index = indices[req.params.indexPosition];
         reIndex(index, () => {
             setTimeout(() => {
                 index.count = 0;
@@ -253,33 +173,16 @@ export function init(app) {
     });
 
 
-    app.get('/supportedBrowsers', (req, res) => res.render('supportedBrowsers', 'system'));
+    app.get('/supportedBrowsers', (req, res) => res.render('supportedBrowsers', 'system' as any));
 
-    app.get('/listOrgs', nocacheMiddleware, (req, res) => {
-        listOrgs(function (err, orgs) {
-            if (err) return res.status(500).send('ERROR - unable to list orgs');
-            res.send(orgs);
-        });
-    });
+    app.get('/loginText', csrf(), (req, res) => res.render('loginText', 'system' as any, {csrftoken: req.csrfToken()} as any));
 
-    app.get('/listOrgsDetailedInfo', nocacheMiddleware, (req, res) => {
-        listOrgsDetailedInfo(function (err, orgs) {
-            if (err) {
-                errorLogger.error(JSON.stringify({msg: 'Failed to get list of orgs detailed info.'}),
-                    {stack: new Error().stack});
-                return res.status(403).send('Failed to get list of orgs detailed info.');
-            }
-            res.send(orgs);
-        });
-    });
-
-    app.get('/loginText', csrf(), (req, res) => res.render('loginText', 'system', {csrftoken: req.csrfToken()}));
-
-    let failedIps: any[] = [];
+    const failedIps: any[] = [];
 
     app.get('/csrf', csrf(), nocacheMiddleware, (req, res) => {
-        let resp: any = {csrf: req.csrfToken()};
-        let failedIp = findFailedIp(getRealIp(req));
+        const resp: any = {csrf: req.csrfToken()};
+        const realIp = getRealIp(req);
+        const failedIp = findFailedIp(realIp);
         if ((failedIp && failedIp.nb > 2)) {
             resp.showCaptcha = true;
         }
@@ -291,17 +194,20 @@ export function init(app) {
     }
 
     function myCsrf(req, res, next) {
-        if (!req.body._csrf) return res.status(401).send();
+        if (!req.body._csrf) {
+            return res.status(401).send();
+        }
         csrf()(req, res, next);
     }
 
-    function checkLoginReq(req, res, next) {
+    async function checkLoginReq(req, res, next) {
+        const realIp = getRealIp(req);
         if (Object.keys(req.body).filter(k => validLoginBody.indexOf(k) === -1).length) {
-            banIp(getRealIp(req), 'Invalid Login body');
+            await banIp(realIp, 'Invalid Login body');
             return res.status(401).send();
         }
         if (Object.keys(req.query).length) {
-            banIp(getRealIp(req), 'Passing params to /login');
+            await banIp(realIp, 'Passing params to /login');
             return res.status(401).send();
         }
         return next();
@@ -310,7 +216,7 @@ export function init(app) {
     const validLoginBody = ['username', 'password', '_csrf', 'recaptcha'];
 
     app.post('/login', [checkLoginReq, myCsrf], (req, res, next) => {
-        let failedIp = findFailedIp(getRealIp(req));
+        const failedIp = findFailedIp(getRealIp(req));
         series([
                 function checkCaptcha(captchaDone) {
                     if (failedIp && failedIp.nb > 2) {
@@ -320,8 +226,12 @@ export function init(app) {
                     }
                 }],
             function allDone(err) {
-                if (failedIp) failedIp.nb = 0;
-                if (err) return res.status(412).send(err);
+                if (failedIp) {
+                    failedIp.nb = 0;
+                }
+                if (err) {
+                    return res.status(412).send(err);
+                }
                 // Regenerate is used so appscan won't complain
                 req.session.regenerate(() => {
                     authenticate('local', (err, user, info) => {
@@ -330,8 +240,9 @@ export function init(app) {
                             return res.status(403).send();
                         }
                         if (!user) {
-                            if (failedIp && config.useCaptcha) failedIp.nb++;
-                            else {
+                            if (failedIp && config.useCaptcha) {
+                                failedIp.nb++;
+                            } else {
                                 failedIps.unshift({ip: getRealIp(req), nb: 1});
                                 failedIps.length = 50;
                             }
@@ -351,22 +262,15 @@ export function init(app) {
     });
 
     app.post('/logout', (req, res) => {
-        if (!req.session) return res.status(403).end();
+        if (!req.session) {
+            return res.status(403).end();
+        }
         req.session.destroy(() => {
             req.logout();
             res.clearCookie('connect.sid');
             res.redirect('/login');
         });
     });
-
-    app.get('/org/:name', nocacheMiddleware, (req, res) => {
-        return orgByName(req.params.name, (err, result) => res.send(result));
-    });
-
-
-    app.get('/managedOrgs', managedOrgs);
-    app.post('/addOrg', isOrgAuthorityMiddleware, addOrg);
-    app.post('/updateOrg', isOrgAuthorityMiddleware, (req, res) => updateOrg(req.body, res));
 
     app.get('/user/:search', nocacheMiddleware, loggedInMiddleware, (req, res) => {
         if (!req.params.search) {
@@ -378,22 +282,12 @@ export function init(app) {
         }
     });
 
-    app.get('/myOrgsAdmins', [nocacheMiddleware, loggedInMiddleware], myOrgsAdmins);
-
-    app.get('/orgAdmins', nocacheMiddleware, isOrgAuthorityMiddleware, orgAdmins);
-    app.post('/addOrgAdmin', isOrgAdminMiddleware, addOrgAdmin);
-    app.post('/removeOrgAdmin', isOrgAdminMiddleware, removeOrgAdmin);
-
-    app.get('/orgCurators', nocacheMiddleware, isOrgAdminMiddleware, orgCurators);
-    app.post('/addOrgCurator', isOrgAdminMiddleware, addOrgCurator);
-    app.post('/removeOrgCurator', isOrgAdminMiddleware, removeOrgCurator);
-
     app.post('/updateUserRoles', isOrgAuthorityMiddleware, updateUserRoles);
     app.post('/updateUserAvatar', isOrgAuthorityMiddleware, updateUserAvatar);
 
     app.get('/data/:id', (req, res) => {
         let fileId = req.params.id;
-        const i = fileId.indexOf(".");
+        const i = fileId.indexOf('.');
         if (i > -1) {
             fileId = fileId.substr(0, i);
         }
@@ -412,57 +306,10 @@ export function init(app) {
         }));
     });
 
-    app.post('/getClassificationAuditLog', isOrgAuthorityMiddleware, (req, res) => {
-        getClassificationAuditLog(req.body, handleError({req, res}, result => {
-            res.send(result);
-        }));
+    app.post('/getClassificationAuditLog', isOrgAuthorityMiddleware, async (req, res) => {
+        const records = await getClassificationAuditLog(req.body);
+        res.send(records);
     });
-
-    app.post('/embed/', isOrgAdminMiddleware, (req, res) => {
-        const handlerOptions = {req, res, publicMessage: 'There was an error saving this embed.'};
-        embeds.save(req.body, handleError(handlerOptions, embed => {
-            res.send(embed);
-        }));
-    });
-
-    app.delete('/embed/:id', loggedInMiddleware, (req, res) => {
-        const handlerOptions = {req, res, publicMessage: 'There was an error removing this embed.'};
-        embeds.find({_id: req.params.id}, handleError(handlerOptions, embedsData => {
-            if (embedsData.length !== 1) {
-                res.status.send('Expectation not met: one document.');
-                return;
-            }
-            if (!req.isAuthenticated() || !isOrgAdmin(req.user, embedsData[0].org)) {
-                res.status(403).send();
-                return;
-            }
-            embeds.delete(req.params.id, handleError(handlerOptions, () => res.send()));
-        }));
-    });
-
-    app.get('/embed/:id', (req, res) => {
-        embeds.find({_id: req.params.id}, handleError({req, res}, embedsData => {
-            if (embedsData.length !== 1) {
-                res.status.send('Expectation not met: one document.');
-                return;
-            }
-            res.send(embedsData[0]);
-        }));
-
-    });
-
-    app.get('/embeds/:org', (req, res) => {
-        embeds.find({org: req.params.org}, handleError({req, res}, embedsData => {
-            res.send(embedsData);
-        }));
-    });
-
-    app.get('/fhirApps', (req, res) => fhirApps.find(res, {}, apps => res.send(apps)));
-    app.get('/fhirApp/:id', (req, res) => fhirApps.get(res, req.params.id, app => res.send(app)));
-    app.post('/fhirApp', isSiteAdminMiddleware,
-        (req, res) => fhirApps.save(res, req.body, app => res.send(app)));
-    app.delete('/fhirApp/:id', isSiteAdminMiddleware,
-        (req, res) => fhirApps.delete(res, req.params.id, () => res.send()));
 
     app.post('/disableRule', isOrgAuthorityMiddleware, (req, res) => {
         disableRule(req.body, handleError({req, res}, org => {
@@ -476,20 +323,19 @@ export function init(app) {
         }));
     });
 
-    app.get('/activeBans', isSiteAdminMiddleware, (req, res) => {
-        getTrafficFilter(list => res.send(list));
+    app.get('/activeBans', isSiteAdminMiddleware, async (req, res) => {
+        const list = await getTrafficFilter();
+        res.send(list);
     });
 
-    app.post('/removeBan', isSiteAdminMiddleware, (req, res) => {
-        getTrafficFilter(elt => {
-            let foundIndex = elt.ipList.findIndex(r => r.ip === req.body.ip);
-            if (foundIndex > -1) {
-                elt.ipList.splice(foundIndex, 1);
-                elt.save(() => res.send());
-            } else {
-                res.send();
-            }
-        });
+    app.post('/removeBan', isSiteAdminMiddleware, async (req, res) => {
+        const elt = await getTrafficFilter();
+        const foundIndex = elt.ipList.findIndex(r => r.ip === req.body.ip);
+        if (foundIndex > -1) {
+            elt.ipList.splice(foundIndex, 1);
+            await elt.save();
+        }
+        res.send();
     });
 
     app.get('/allDrafts', isOrgAuthorityMiddleware, (req, res) => {
@@ -510,38 +356,41 @@ export function init(app) {
             .catch(err => respondError(err, {req, res}));
     }
 
-    app.get('/idSources', (req, res) => IdSource.find({}, handleError({req, res}, sources => res.send(sources))));
-
-    app.get('/idSource/:id', (req, res) =>
-        IdSource.findOneById(req.params.id, handleError({req, res}, source => res.send(source))));
-
-    app.post('/idSource/:id', isSiteAdminMiddleware, (req, res) => {
-        IdSource.findById(req.params.id, handleError({req, res}, doc => {
-            if (doc) return res.status(409).send(req.params.id + " already exists.");
-            else {
-                let idSource = {
-                    _id: req.params.id,
-                    linkTemplateDe: req.body.linkTemplateDe,
-                    linkTemplateForm: req.body.linkTemplateForm,
-                    version: req.body.version,
-                };
-                new IdSource(idSource).save(handleError({req, res}, source => res.send(source)));
-            }
-        }));
+    app.get('/idSources', async (req, res) => {
+        const sources = await getAllIdSources();
+        res.send(sources);
     });
 
-    app.put('/idSource/:id', isSiteAdminMiddleware, (req, res) => {
-        IdSource.findById(req.body._id, handleError({req, res}, doc => {
-            if (!doc) return res.status(404).send(req.params.id + " does not exist.");
-            else {
-                doc.linkTemplateDe = req.body.linkTemplateDe;
-                doc.linkTemplateForm = req.body.linkTemplateForm;
-                doc.version = req.body.version;
-                doc.save(handleError(source => res.send(source)));
-            }
-        }));
+    app.get('/idSource/:id', async (req, res) => {
+        const source = await isSourceById(req.params.id);
+        res.send(source);
     });
 
-    app.delete('/idSource/:id', isSiteAdminMiddleware, (req, res) =>
-        IdSource.delete(res, req.params.id, handleError({req, res}, () => res.send())));
+    app.post('/idSource/:id', isSiteAdminMiddleware, async (req, res) => {
+        const sourceId = req.params.id;
+        const foundSource = await isSourceById(sourceId);
+        if (foundSource) {
+            return res.status(409).send(sourceId + ' already exists.');
+        } else {
+            const createdIdSource = await createIdSource(sourceId, req.body);
+            res.send(createdIdSource);
+        }
+    });
+
+    app.put('/idSource/:id', isSiteAdminMiddleware, async (req, res) => {
+        const sourceId = req.params.id;
+        const foundSource = await isSourceById(sourceId);
+        if (!foundSource) {
+            return res.status(409).send(sourceId + ' does not exist.');
+        } else {
+            const updatedIdSource = await updateIdSource(sourceId, req.body);
+            res.send(updatedIdSource);
+        }
+    });
+
+    app.delete('/idSource/:id', isSiteAdminMiddleware, async (req, res) => {
+        await deleteIdSource(req.params.id);
+        res.send();
+    });
 }
+

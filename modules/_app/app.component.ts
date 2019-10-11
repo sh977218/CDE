@@ -2,7 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { MatIconRegistry } from '@angular/material';
 import { DomSanitizer, Title } from '@angular/platform-browser';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, Data, NavigationEnd, Router } from '@angular/router';
 import { NotificationService } from '_app/notifications/notification.service';
 import { BackForwardService } from '_app/backForward.service';
 import { PushNotificationSubscriptionService } from '_app/pushNotificationSubscriptionService';
@@ -127,8 +127,8 @@ export class CdeAppComponent implements OnInit {
                 let r = this.route;
                 while (r.firstChild) { r = r.firstChild; }
                 if (r.outlet === 'primary') {
-                    r.data.subscribe(event =>
-                        this.title.setTitle(event.title || 'NIH Common Data Elements (CDE) Repository'));
+                    r.data.subscribe((data: Data) =>
+                        this.title.setTitle(data.title || 'NIH Common Data Elements (CDE) Repository'));
                 }
 
                 if (this.userService.loggedIn()) {

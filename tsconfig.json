@@ -12,7 +12,7 @@
     ],
     "module": "ES2015",
     "moduleResolution": "Node",
-    "noImplicitAny": false,
+    "outDir": "./buildWebStorm",
     "pretty": false,
     "resolveJsonModule": true,
     "rootDir": ".",

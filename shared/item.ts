@@ -1,5 +1,5 @@
 import { DataElement } from 'shared/de/dataElement.model';
-import { CdeForm } from 'shared/form/form.model';
+import { CdeForm, FormElement } from 'shared/form/form.model';
 import { Item, ModuleAll } from 'shared/models.model';
 
 interface ItemActionsApi {
@@ -61,17 +61,20 @@ export const ITEM_MAP: {
     }
 };
 
-export function isCdeForm(item: Item): item is CdeForm {
-    return item.elementType === 'form';
+export function isCdeForm(item: Item | FormElement ): item is CdeForm {
+    return item.elementType === 'form' && isCdeFormNotFe(item as CdeForm | FormElement);
+}
+
+export function isCdeFormNotFe(f: CdeForm | FormElement): f is CdeForm {
+    return f.hasOwnProperty('tinyId');
 }
 
 export function isDataElement(item: Item): item is DataElement {
     return item.elementType === 'cde';
 }
 
-export function uriView(module: ModuleAll, tinyId: string): string|undefined {
-    const mod = ITEM_MAP[module];
-    return mod && mod.view && (mod.view + tinyId);
+export function uriView(module: ModuleAll, tinyId: string): string {
+    return ITEM_MAP[module].view + tinyId;
 }
 
 export function uriViewBase(module: string): string|undefined {

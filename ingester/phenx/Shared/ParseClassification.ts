@@ -1,3 +1,11 @@
-export function parseClassification() {
-    return [{stewardOrg: {name: 'PhenX'}, elements: [{name: 'Protocols'}]}];
+export function parseClassification(protocol) {
+    const classification = [{
+        stewardOrg: {name: 'PhenX'},
+        elements: [{
+            name: protocol.domainCollection,
+            elements: []
+        }]
+    }];
+
+    return classification;
 }

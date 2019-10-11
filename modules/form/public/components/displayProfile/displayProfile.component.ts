@@ -220,6 +220,7 @@ function getSampleElt(): CdeForm {
         attachments: [],
         classification: [],
         comments: [],
+        created: '01-01-2018',
         definitions: [],
         designations: [],
         displayProfiles: [],
@@ -260,6 +261,7 @@ function getSampleElt(): CdeForm {
                                 formElements: [],
                                 question: {
                                     datatype: 'Value List',
+                                    displayAs: 'radio/checkbox/select',
                                     answers: [
                                         {
                                             permissibleValue: '5',
@@ -328,6 +330,7 @@ function getSampleElt(): CdeForm {
                                 formElements: [],
                                 question: {
                                     datatype: 'Value List',
+                                    displayAs: 'radio/checkbox/select',
                                     answers: [
                                         {
                                             permissibleValue: '5',
@@ -399,6 +402,7 @@ function getSampleElt(): CdeForm {
                         formElements: [],
                         question: {
                             datatype: 'Value List',
+                            displayAs: 'radio/checkbox/select',
                             defaultAnswer: 'Never attended/Kindergarten only',
                             answer: 'Never attended/Kindergarten only',
                             answers: [

@@ -99,6 +99,7 @@ export class FormDescriptionQuestionComponent implements OnInit {
         newQuestion.question.editable = currentQuestion.question.editable;
         newQuestion.question.invisible = currentQuestion.question.invisible;
         if (currentQuestion.question.datatype === 'Value List') {
+            (newQuestion.question as QuestionValueList).displayAs = currentQuestion.question.displayAs;
             (newQuestion.question as QuestionValueList).multiselect = currentQuestion.question.multiselect;
         }
         newQuestion.question.required = currentQuestion.question.required;
@@ -159,7 +160,7 @@ export class FormDescriptionQuestionComponent implements OnInit {
         }
 
         this.updateCdeVersion = modal;
-        this.dialog.open(this.updateCdeVersionTmpl, {width: '1000px'}).afterClosed().subscribe(res => {
+        this.dialog.open<boolean>(this.updateCdeVersionTmpl, {width: '1000px'}).afterClosed().subscribe(res => {
             if (res) {
                 currentQuestion.question = newQuestion.question;
                 currentQuestion.label = newQuestion.label;

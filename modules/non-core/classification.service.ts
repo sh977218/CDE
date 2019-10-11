@@ -5,8 +5,8 @@ import { AlertService } from 'alert/alert.service';
 import { LocalStorageService } from 'angular-2-local-storage';
 import _isEqual from 'lodash/isEqual';
 import _uniqWith from 'lodash/uniqWith';
-import { SearchSettingsElastic } from 'search/search.model';
-import { Cb1, CbErr, CbErrObj, ClassificationHistory, Item, ItemClassification } from 'shared/models.model';
+import { Cb1, CbErr, CbErrorObj, ClassificationHistory, Item, ItemClassification } from 'shared/models.model';
+import { SearchSettingsElastic } from 'shared/search/search.model';
 
 @Injectable()
 export class ClassificationService {
@@ -37,7 +37,7 @@ export class ClassificationService {
     }
 
     classifyItem(elt: Item, org: string | undefined, classifArray: string[] | undefined, endPoint: string,
-                 cb: CbErrObj<HttpErrorResponse>) {
+                 cb: CbErrorObj<HttpErrorResponse>) {
         const postBody: ItemClassification = {
             categories: classifArray,
             eltId: elt._id,

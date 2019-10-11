@@ -5,9 +5,10 @@ import {
     ResourceTreeUtil
 } from '_fhirApp/resourceTree';
 import { isQuestion } from 'core/form/fe';
-import { getMapToFhirResource, isForm } from 'core/form/formAndFe';
-import { assertThrow, assertUnreachable, CbErr, CdeId } from 'shared/models.model';
+import { getMapToFhirResource } from 'core/form/formAndFe';
 import { CdeForm, FhirProcedureMapping, FormElement } from 'shared/form/form.model';
+import { isCdeFormNotFe } from 'shared/item';
+import { assertThrow, assertUnreachable, CbErr, CdeId } from 'shared/models.model';
 import { codeSystemOut } from 'shared/mapping/fhir';
 import { FhirCoding } from 'shared/mapping/fhir/fhir.model';
 import { supportedFhirResources } from 'shared/mapping/fhir/fhirResource.model';
@@ -52,11 +53,11 @@ export function addRootNode(fe: FormElement|CdeForm, parent?: ResourceTreeRoot|R
 
 function addNode(fe: FormElement|CdeForm, parent: ResourceTreeResource|ResourceTreeIntermediate): ResourceTree|undefined {
     let node;
-    if (!isForm(fe) && !isQuestion(fe)) {
+    if (!isCdeFormNotFe(fe) && !isQuestion(fe)) {
         if (parent.resourceType === 'QuestionnaireResponse') {
             node = ResourceTreeUtil.createIntermediate(parent, fe);
         }
-    } else if (!isForm(fe) && isQuestion(fe)) {
+    } else if (!isCdeFormNotFe(fe) && isQuestion(fe)) {
         switch (parent.root.resourceType) {
             case 'Observation':
                 node = ResourceTreeUtil.createAttritube(parent, 'component', fe);

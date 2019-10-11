@@ -1,23 +1,26 @@
+import { isEmpty } from 'lodash';
+
 export function parseReferenceDocuments(loinc) {
-    let referenceDocuments = [];
-    if (loinc['ARTICLE']) {
-        loinc['ARTICLE'].forEach(article => {
-            referenceDocuments.push({
-                uri: article.SourceLink,
-                providerOrg: article.Source,
-                title: article.Description,
-                document: article.DescriptionLink
-            });
-        })
-    }
-    if (loinc['WEB CONTENT']) {
-        loinc['WEB CONTENT'].forEach(webContent => {
-            referenceDocuments.push({
-                uri: webContent.SourceLink,
-                providerOrg: webContent.Source,
-                title: webContent.Copyright
-            });
-        })
+    const referenceDocuments: any[] = [];
+    const referenceInformationArray = loinc['Reference Information'];
+    if (referenceInformationArray) {
+        referenceInformationArray.forEach(referenceInformation => {
+            const referenceDocument: any = {};
+            if (referenceInformation.Type) {
+                referenceDocument.docType = referenceInformation.Type;
+            }
+            if (referenceInformation.Source) {
+                referenceDocument.source = referenceInformation.Source;
+            }
+            if (referenceInformation.Reference) {
+                referenceDocument.document = referenceInformation.Reference;
+            }
+            if (!isEmpty(referenceDocument)) {
+                referenceDocument.languageCode = 'en-US';
+                referenceDocuments.push(referenceDocument);
+            }
+        });
+
     }
     return referenceDocuments;
 }

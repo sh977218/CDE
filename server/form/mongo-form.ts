@@ -1,34 +1,37 @@
 import * as Ajv from 'ajv';
-import { find, forEach } from 'lodash';
+import { readdirSync, readFileSync } from 'fs';
+import { Document, Model } from 'mongoose';
+import { resolve } from 'path';
+import { EltLogDocument } from 'server/cde/mongo-cde';
+import { splitError } from 'server/errorHandler/errorHandler';
+import { updateOrInsert } from 'server/form/elastic';
+import { auditSchema, draftSchema, formSchema, formSourceSchema } from 'server/form/schemas';
+import { establishConnection } from 'server/system/connections';
+import { errorLogger } from 'server/system/logging';
+import { attachables, auditGetLog, auditModifications, formatElt, generateTinyId } from 'server/system/mongo-data';
 import { config } from 'server/system/parseConfig';
-import { CdeForm } from 'shared/form/form.model';
-import { CbError, User } from 'shared/models.model';
-import { forwardError } from 'server/errorHandler/errorHandler';
-
-const fs = require('fs');
-const path = require('path');
-const schemas = require('./schemas');
-const mongoData = require('../system/mongo-data');
-const connHelper = require('../system/connections');
-// TODO: remove logging, error is passed out of this layer, handleError should fail-back and tee to no-db logger
-const logging = require('../system/logging');
-export const elastic = require('../form/elastic');
-const isOrgCurator = require('../../shared/system/authorizationShared').isOrgCurator;
+import { CdeForm, CdeFormElastic } from 'shared/form/form.model';
+import { CbError, CbError1, User } from 'shared/models.model';
 
 export const type = 'form';
 export const name = 'forms';
+export const elastic = require('../../server/form/elastic');
 
+export type CdeFormDocument = Document & CdeForm;
 export type CdeFormDraft = CdeForm;
+export type CdeFormDraftDocument = Document & CdeFormDraft;
+export type CdeFormSource = CdeForm;
+export type CdeFormSourceDocument = Document & CdeFormSource;
 
 const ajvElt = new Ajv({allErrors: true});
-fs.readdirSync(path.resolve(__dirname, '../../shared/de/assets/')).forEach(file => {
+readdirSync(resolve(__dirname, '../../shared/de/assets/')).forEach(file => {
     if (file.indexOf('.schema.json') > -1) {
         ajvElt.addSchema(require('../../shared/de/assets/' + file));
     }
 });
 export let validateSchema: any;
 
-const file = fs.readFileSync(path.resolve(__dirname, '../../shared/form/assets/form.schema.json'));
+const file = readFileSync(resolve(__dirname, '../../shared/form/assets/form.schema.json'));
 try {
     const schema = JSON.parse(file.toString());
     schema.$async = true;
@@ -38,39 +41,41 @@ try {
     process.exit(1);
 }
 
+formSchema.pre('save', function preSaveUsesThisForSomeReason(next) {
+    const elt = this as CdeFormDocument;
 
-schemas.formSchema.pre('save', function(next) {
-    const elt = this;
-
-    if (this.archived) { return next(); }
+    if (elt.archived) {
+        return next();
+    }
     validateSchema(elt).then(() => {
         try {
-            elastic.updateOrInsert(elt);
+            updateOrInsert(elt);
         } catch (exception) {
-            logging.errorLogger.error(`Error Indexing Form ${elt.tinyId}`, {
+            // TODO: remove logging, error is passed out of this layer, handleError should fail-back and tee to no-db logger
+            errorLogger.error(`Error Indexing Form ${elt.tinyId}`, {
                 details: exception,
                 stack: new Error().stack
             });
         }
         next();
-    }, err => next(`Form ${elt.tinyId} has error: ${err}`));
+    }, (err: string) => next(new Error(`Form ${elt.tinyId} has error: ${err}`)));
 });
 
-const conn = connHelper.establishConnection(config.database.appData);
-export const Form = conn.model('Form', schemas.formSchema);
-const FormAudit = conn.model('FormAudit', schemas.auditSchema);
-export const FormDraft = conn.model('Draft', schemas.draftSchema);
-export const FormSource = conn.model('formsources', schemas.formSourceSchema);
+const conn = establishConnection(config.database.appData);
+export const formModel: Model<CdeFormDocument> = conn.model('Form', formSchema);
+const formAuditModel: Model<EltLogDocument> = conn.model('FormAudit', auditSchema);
+export const formDraftModel: Model<CdeFormDraftDocument> = conn.model('Draft', draftSchema);
+export const formSourceModel: Model<CdeFormSourceDocument> = conn.model('formsources', formSourceSchema);
 
-const auditModifications = mongoData.auditModifications(FormAudit);
-export const getAuditLog = mongoData.auditGetLog(FormAudit);
-export const dao = Form;
-export const daoDraft = FormDraft;
+const auditModificationsForm = auditModifications(formAuditModel);
+export const getAuditLog = auditGetLog(formAuditModel);
+export const dao = formModel;
+export const daoDraft = formDraftModel;
 
-mongoData.attachables.push(Form);
+attachables.push(formModel);
 
 
-function updateUser(elt, user) {
+function updateUser(elt: CdeForm, user: User) {
     elt.updated = new Date();
     elt.updatedBy = {
         userId: user._id,
@@ -78,79 +83,73 @@ function updateUser(elt, user) {
     };
 }
 
-export function byExisting(elt: CdeForm, cb: CbError<CdeForm>) {
-    Form.findOne({_id: elt._id, tinyId: elt.tinyId}, cb);
+export function byExisting(elt: CdeForm, cb: CbError<CdeFormDocument>) {
+    formModel.findOne({_id: elt._id, tinyId: elt.tinyId}, cb);
 }
 
-export function byId(id, cb) {
-    Form.findById(id, cb);
+export function byId(id: string, cb: CbError<CdeFormDocument>) {
+    formModel.findById(id, cb);
 }
 
-export function byTinyIdList(tinyIdList, callback) {
-    Form.find({archived: false})
-        .where('tinyId')
+export function byTinyIdList(tinyIdList: string[], cb: CbError<CdeFormElastic[]>): void {
+    formModel.find({archived: false}).where('tinyId')
         .in(tinyIdList)
-        .exec((err, forms) => {
-            const result = [];
-            forms.forEach(mongoData.formatElt);
-            forEach(tinyIdList, t => {
-                const c = find(forms, form => form.tinyId === t);
-                if (c) {
-                    result.push(c);
-                }
-            });
-            callback(err, result);
+        .slice('valueDomain.permissibleValues', 10)
+        .exec((err, docs) => {
+            if (err) {
+                return cb(err);
+            }
+            const cdes = docs.map(formatElt);
+            cb(err, tinyIdList.map(t => cdes.filter(cde => cde.tinyId === t)[0]).filter(cde => !!cde));
         });
 }
 
-export function byTinyId(tinyId, cb) {
-    return Form.findOne({tinyId, archived: false}, cb);
+export function byTinyId(tinyId: string, cb: CbError<CdeFormDocument>) {
+    return formModel.findOne({tinyId, archived: false}, cb);
 }
 
-export function byTinyIdVersion(tinyId, version, cb) {
+export function byTinyIdVersion(tinyId: string, version: string | undefined, cb: CbError<CdeFormDocument>) {
     if (version) {
-        this.byTinyIdAndVersion(tinyId, version, cb);
+        byTinyIdAndVersion(tinyId, version, cb);
     } else {
-        this.byTinyId(tinyId, cb);
+        byTinyId(tinyId, cb);
     }
 }
 
-export function byTinyIdAndVersion(tinyId, version, callback) {
+export function byTinyIdAndVersion(tinyId: string, version: string | undefined, callback: CbError<CdeFormDocument>) {
     const query: any = {tinyId};
     if (version) {
         query.version = version;
     } else {
         query.$or = [{version: null}, {version: ''}];
     }
-    Form.find(query).sort({updated: -1}).limit(1).exec(forwardError(callback, elts => {
-        if (elts.length) {
-            callback('', elts[0]);
-        } else { callback(''); }
+    formModel.find(query).sort({updated: -1}).limit(1).exec(splitError(callback, elts => {
+        callback(undefined, elts && elts.length ? elts[0] : undefined);
     }));
 }
 
-export function draftByTinyId(tinyId, cb) {
+export function draftByTinyId(tinyId: string, cb: CbError<CdeFormDraftDocument>) {
     const cond = {
         tinyId,
         archived: false,
         elementType: 'form'
     };
-    FormDraft.findOne(cond, cb);
+    formDraftModel.findOne(cond, cb);
 }
 
-export function draftById(id, cb) {
+export function draftById(id: string, cb: CbError<CdeFormDocument>) {
     const cond = {
         _id: id,
         elementType: 'form'
     };
-    FormDraft.findOne(cond, cb);
+    formDraftModel.findOne(cond, cb);
 }
 
-export function draftSave(elt: CdeForm, user: User, cb: CbError<CdeForm>) {
+export function draftSave(elt: CdeForm, user: User, cb: CbError<CdeFormDocument>) {
     updateUser(elt, user);
-    FormDraft.findById(elt._id, forwardError(cb, doc => {
+    formDraftModel.findById(elt._id, splitError(cb, doc => {
         if (!doc) {
-            new FormDraft(elt).save(cb);
+            new formDraftModel(elt).save(cb);
             return;
         }
         if (doc.__v !== elt.__v) {
@@ -159,18 +158,19 @@ export function draftSave(elt: CdeForm, user: User, cb: CbError<CdeForm>) {
         }
         const version = elt.__v;
         elt.__v++;
-        FormDraft.findOneAndUpdate({_id: elt._id, __v: version}, elt, {new: true}, cb);
+        formDraftModel.findOneAndUpdate({_id: elt._id, __v: version}, elt, {new: true},
+            (err, doc) => cb(err, doc === null ? undefined : doc));
     }));
 }
 
-export function draftDelete(tinyId, cb) {
-    FormDraft.remove({tinyId}, cb);
+export function draftDelete(tinyId: string, cb: CbError) {
+    formDraftModel.remove({tinyId}, cb);
 }
 
-export function draftsList(criteria): Promise<CdeFormDraft[]>;
-export function draftsList(criteria, cb: CbError): void;
-export function draftsList(criteria, cb?: CbError): void | Promise<CdeFormDraft[]> {
-    return FormDraft
+export function draftsList(criteria: any): Promise<CdeFormDraftDocument[]>;
+export function draftsList(criteria: any, cb: CbError<CdeFormDraftDocument[]>): void;
+export function draftsList(criteria: any, cb?: CbError<CdeFormDraftDocument[]>): void | Promise<CdeFormDraftDocument[]> {
+    return formDraftModel
         .find(criteria, {
             'designations.designation': 1,
             'stewardOrg.name': 1,
@@ -182,95 +182,105 @@ export function draftsList(criteria, cb?: CbError): void | Promise<CdeFormDraft[
         .exec(cb);
 }
 
-export function latestVersionByTinyId(tinyId, cb) {
-    Form.findOne({tinyId, archived: false}, (err, form) => {
-        cb(err, form.version);
+export function latestVersionByTinyId(tinyId: string, cb: CbError<string | undefined>) {
+    formModel.findOne({tinyId, archived: false}, (err, form) => {
+        cb(err, form ? form.version : undefined);
     });
 }
 
 /* ---------- PUT NEW REST API above ---------- */
 
-export function getStream(condition) {
-    return Form.find(condition).sort({_id: -1}).cursor();
+export function getStream(condition: any) {
+    return formModel.find(condition).sort({_id: -1}).cursor();
 }
 
-export function count(condition, callback) {
-    return Form.countDocuments(condition, callback);
+export function count(condition: any, callback: CbError<number>) {
+    return formModel.countDocuments(condition, callback);
 }
 
-export function update(elt, user, options: any = {}, callback: CbError<CdeForm> = () => {}) {
-    Form.findById(elt._id, (err, form) => {
+export function update(elt: CdeForm, user: User, options: any = {}, callback: CbError<CdeForm> = () => {}) {
+    formModel.findById(elt._id, (err, form) => {
+        if (err || !form) {
+            return callback(err || new Error('Document does not exist.'));
+        }
         if (form.archived) {
-            callback(new Error('You are trying to edit an archived elements'));
-            return;
+            return callback(new Error('You are trying to edit an archived elements'));
         }
         delete elt._id;
-        if (!elt.history) { elt.history = []; }
+        if (!elt.history) {
+            elt.history = [];
+        }
         elt.history.push(form._id);
         updateUser(elt, user);
         // user cannot edit sources.
         elt.sources = form.sources;
+
+        // user cannot edit sources.
+        if (!options.updateSource) {
+            elt.sources = form.sources;
+        }
 
         // because it's draft not edit attachment
         if (options.updateAttachments) {
             elt.attachments = form.attachments;
         }
 
-        const newElt = new Form(elt);
+        // loader skip update formElements, i.e. Qualified PhenX forms
+        if (options.skipFormElements) {
+            elt.formElements = form.formElements;
+        }
+
+        const newElt = new formModel(elt);
 
         // archive form and replace it with newElt
-        Form.findOneAndUpdate({_id: form._id, archived: false}, {$set: {archived: true}}, (err, doc) => {
+        formModel.findOneAndUpdate({_id: form._id, archived: false}, {$set: {archived: true}}, (err, doc) => {
             if (err || !doc) {
-                callback(err, doc);
-                return;
+                return callback(err, doc === null ? undefined : doc);
             }
             newElt.save((err, savedElt) => {
                 if (err) {
-                    Form.findOneAndUpdate({_id: form._id}, {$set: {archived: false}}, () => callback(err));
+                    formModel.findOneAndUpdate({_id: form._id}, {$set: {archived: false}}, () => callback(err));
                 } else {
                     callback(undefined, savedElt);
-                    auditModifications(user, form, savedElt);
+                    auditModificationsForm(user, form, savedElt);
                 }
             });
         });
     });
 }
 
-export function create(elt, user, callback) {
+export function create(elt: CdeForm, user: User, callback: CbError1<CdeFormDocument>) {
     elt.created = Date.now();
     elt.createdBy = {
         userId: user._id,
         username: user.username
     };
-    const newItem = new Form(elt);
-    newItem.tinyId = mongoData.generateTinyId();
+    const newItem = new formModel(elt);
+    newItem.tinyId = generateTinyId();
     newItem.save((err, newElt) => {
         callback(err, newElt);
-        if (!err) { auditModifications(user, null, newElt); }
+        if (!err) {
+            auditModificationsForm(user, null, newElt);
+        }
     });
 }
 
-export function query(query, callback) {
-    Form.find(query).exec(callback);
-}
-
-export function transferSteward(from, to, callback) {
-    Form.updateMany({'stewardOrg.name': from}, {$set: {'stewardOrg.name': to}}).exec((err, result) => {
-        callback(err, result.nModified);
-    });
-}
-
-export function byTinyIdListInOrder(idList, callback) {
+export function byTinyIdListInOrder(idList: string[], callback: CbError<(CdeFormElastic | undefined)[]>) {
     byTinyIdList(idList, (err, forms) => {
+        if (err || !forms) {
+            return callback(err || new Error('forms not found'));
+        }
         const reorderedForms = idList.map(id => {
             for (const form of forms) {
-                if (id === form.tinyId) { return form; }
+                if (id === form.tinyId) {
+                    return form;
+                }
             }
         });
         callback(err, reorderedForms);
     });
 }
 
-export function originalSourceByTinyIdSourceName(tinyId, sourceName, cb) {
-    FormSource.findOne({tinyId, source: sourceName}, cb);
+export function originalSourceByTinyIdSourceName(tinyId: string, sourceName: string, cb: CbError<CdeFormDocument>) {
+    formSourceModel.findOne({tinyId, source: sourceName}, cb);
 }

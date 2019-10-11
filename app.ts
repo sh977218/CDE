@@ -1,5 +1,5 @@
 (global as any).APP_DIR = __dirname;
-(global as any).appDir = function addDir(... args: string[]) {
+(global as any).appDir = function addDir(...args: string[]) {
     return path.resolve((global as any).APP_DIR, ...args);
 };
 import * as bodyParser from 'body-parser';
@@ -34,8 +34,13 @@ import { init as formInit } from 'server/form/app';
 import * as mongo_form from 'server/form/mongo-form';
 import { module as meshModule } from 'server/mesh/meshRoutes';
 import { module as siteAdminModule } from 'server/siteAdmin/siteAdminRoutes';
+import { module as orgManagementModule } from 'server/orgManagement/orgManagementRoutes';
+import { module as notificationModule } from 'server/notification/notificationRouters';
+import { module as nativeRenderModule } from 'server/nativeRender/nativeRenderRouters';
+import { module as embedModule } from 'server/embed/embedRouters';
+import { module as fhirModule } from 'server/fhir/fhirRouters';
 import { init as systemInit, respondHomeFull } from 'server/system/app';
-import { init as authInit, ticketAuth } from 'server/system/authentication';
+import { init as authInit, ticketAuth } from 'server/user/authentication';
 import {
     canApproveAttachmentMiddleware, canApproveCommentMiddleware, checkOwnership, isDocumentationEditor,
     isOrgAdminMiddleware, isOrgAuthorityMiddleware, isSiteAdminMiddleware, loggedInMiddleware
@@ -45,7 +50,7 @@ import { startServer } from 'server/system/ioServer';
 import { errorLogger, expressLogger } from 'server/system/logging';
 import * as daoManager from 'server/system/moduleDaoManager';
 import { sessionStore } from 'server/system/mongo-data';
-import { banIp, getTrafficFilter } from 'server/system/traffic';
+import { banIp, getTrafficFilter } from 'server/system/trafficFilterSvc';
 import { module as userModule } from 'server/user/userRoutes';
 import { module as utsModule } from 'server/uts/utsRoutes';
 import { isOrgAuthority, isOrgCurator } from 'shared/system/authorizationShared';
@@ -59,12 +64,12 @@ initEs();
 console.log('Node ' + process.versions.node);
 console.log('Node Environment ' + process.env.NODE_ENV);
 
-let app = express();
+const app = express();
 
 app.use(helmet());
 app.use(helmet.contentSecurityPolicy({
     directives: {
-        defaultSrc: ["'self'", 'fonts.gstatic.com'],
+        defaultSrc: ["'self'", 'fonts.gstatic.com', '*.youtube.com'],
         fontSrc: ["'self'", 'fonts.gstatic.com', '*.nih.gov'],
         scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", 'cdn.ckeditor.com', 'cdn.jsdelivr.net',
             'cdnjs.cloudflare.com', '*.nih.gov', 'ajax.googleapis.com', 'www.googletagmanager.com', 'www.google-analytics.com'],
@@ -82,7 +87,7 @@ app.use(compress());
 
 app.use(hsts({maxAge: 31536000000}));
 
-process.on('uncaughtException', function (err) {
+process.on('uncaughtException', (err) => {
     console.log('Error: Process Uncaught Exception');
     console.log(err.stack || err);
     errorLogger.error('Error: Uncaught Exception', {
@@ -91,7 +96,7 @@ process.on('uncaughtException', function (err) {
     });
 });
 
-domain.on('error', function (err) {
+domain.on('error', (err) => {
     console.log('Error: Domain Error');
     console.log(err.stack || err);
     errorLogger.error('Error: Domain Error', {stack: err.stack || err, origin: 'app.domain.error'});
@@ -117,16 +122,23 @@ const expressSettings = {
     cookie: {httpOnly: true, secure: config.proxy, maxAge: config.inactivityTimeout}
 };
 
-let getRealIp = function (req) {
-    if (req._remoteAddress) return req._remoteAddress;
-    if (req.ip) return req.ip;
+const getRealIp = (req) => {
+    if (req._remoteAddress) {
+        return req._remoteAddress;
+    }
+    if (req.ip) {
+        return req.ip;
+    }
 };
 
 let blackIps: string[] = [];
 app.use((req, res, next) => {
     if (blackIps.indexOf(getRealIp(req)) !== -1) {
-        res.status(403).send('Access is temporarily disabled. If you think you received this response in error, please contact support. Otherwise, please try again in an hour.');
-    } else next();
+        res.status(403).send('Access is temporarily disabled. If you think you received this response in error, please contact' +
+            ' support. Otherwise, please try again in an hour.');
+    } else {
+        next();
+    }
 });
 const banEndsWith = config.banEndsWith || [];
 const banStartsWith = config.banStartsWith || [];
@@ -135,13 +147,7 @@ const releaseHackersFrequency = 5 * 60 * 1000;
 const keepHackerForDuration = 1000 * 60 * 60 * 24;
 // every minute, get latest list.
 setInterval(() => {
-    getTrafficFilter(record => {
-        blackIps.length = 0;
-        // release IPs, but keep track for a day
-        record.ipList = record.ipList.filter(ipElt => ((Date.now() - ipElt.date) < (keepHackerForDuration * ipElt.strikes)));
-        record.save();
-        blackIps = record.ipList.filter(ipElt => ((Date.now() - ipElt.date) < releaseHackersFrequency * ipElt.strikes)).map(r => r.ip);
-    });
+    getTrafficFilter();
 }, 60 * 1000);
 
 
@@ -151,23 +157,28 @@ app.use((req, res, next) => {
         if (req.protocol !== 'https') {
             if (req.query.gotohttps === '1') {
                 res.send('Missing X-Forward-Proto Header');
+            } else {
+                res.redirect(config.publicUrl + '?gotohttps=1');
             }
-            else res.redirect(config.publicUrl + '?gotohttps=1');
-        } else next();
-    } else next();
+        } else {
+            next();
+        }
+    } else {
+        next();
+    }
 });
 
 app.use(function banHackers(req, res, next) {
     banEndsWith.forEach(ban => {
         if (req.originalUrl.slice(-(ban.length)) === ban) {
-            let ip = getRealIp(req);
+            const ip = getRealIp(req);
             banIp(ip, req.originalUrl);
             blackIps.push(ip);
         }
     });
     banStartsWith.forEach(ban => {
         if (req.originalUrl.substr(0, ban.length) === ban) {
-            let ip = getRealIp(req);
+            const ip = getRealIp(req);
             banIp(ip, req.originalUrl);
             blackIps.push(ip);
         }
@@ -177,13 +188,20 @@ app.use(function banHackers(req, res, next) {
 
 app.use(function preventSessionCreation(req, res, next) {
     function isFile(req) {
-        if (req.originalUrl.substr(req.originalUrl.length - 3, 3) === '.js') return true;
-        if (req.originalUrl.substr(req.originalUrl.length - 4, 4) === '.css') return true;
+        if (req.originalUrl.substr(req.originalUrl.length - 3, 3) === '.js') {
+            return true;
+        }
+        if (req.originalUrl.substr(req.originalUrl.length - 4, 4) === '.css') {
+            return true;
+        }
         return req.originalUrl.substr(req.originalUrl.length - 4, 4) === '.gif';
     }
+
     if ((req.cookies['connect.sid'] || req.originalUrl === '/login' || req.originalUrl === '/csrf') && !isFile(req)) {
         session(expressSettings)(req, res, next);
-    } else next();
+    } else {
+        next();
+    }
 
 });
 
@@ -249,47 +267,53 @@ const logFormat = {
     responseTime: ':response-time'
 };
 
-morganLogger.token('real-remote-addr', function (req) {
+morganLogger.token('real-remote-addr', (req) => {
     return getRealIp(req);
 });
 
-let winstonStream = {
-    write: function (message) {
+const winstonStream = {
+    write: (message) => {
         expressLogger.info(message);
     }
 };
 
-let expressLogger1 = morganLogger(JSON.stringify(logFormat), {stream: winstonStream});
+const expressLogger1 = morganLogger(JSON.stringify(logFormat), {stream: winstonStream});
 
 if (config.expressLogFile) {
-    let logger = new (winston.Logger)({
+    const logger = new (winston.Logger)({
         transports: [new Rotate({
             file: config.expressLogFile
         })]
     });
-    let fileStream = {
-        write: function (message) {
+    const fileStream = {
+        write: (message) => {
             logger.info(message);
         }
     };
-    app.use(morganLogger(':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" ":response-time ms"', {stream: fileStream}));
+    app.use(morganLogger(':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length]' +
+        ' ":referrer" ":user-agent" ":response-time ms"', {stream: fileStream}));
 }
 
 let connections = 0;
 setInterval(() => connections = 0, 60000);
 
-app.use(function (req, res, next) {
-    let maxLogsPerMinute = config.maxLogsPerMinute || 1000;
+app.use((req, res, next) => {
+    const maxLogsPerMinute = config.maxLogsPerMinute || 1000;
     connections++;
-    if (connections > maxLogsPerMinute) return next();
-    else expressLogger1(req, res, next);
+    if (connections > maxLogsPerMinute) {
+        return next();
+    } else {
+        expressLogger1(req, res, next);
+    }
 });
 
 app.set('views', path.join(__dirname, './modules'));
 
-let originalRender = express.response.render;
-express.response.render = function (view, module, msg) {
-    if (!module) module = 'cde';
+const originalRender = express.response.render;
+express.response.render = function renderEjsUsingThis(view, module, msg) {
+    if (!module) {
+        module = 'cde';
+    }
     originalRender.call(this, path.join(__dirname, '/modules/' + module + '/views/' + view), msg);
 } as any;
 
@@ -302,12 +326,12 @@ try {
         {module: 'article', db: articleDb, crudPermission: isDocumentationEditor}
     ]));
     app.use('/server/discuss', discussModule({
-        allComments: [isOrgAuthorityMiddleware],
-        manageComment: [canApproveCommentMiddleware]
+        allComments: isOrgAuthorityMiddleware,
+        manageComment: canApproveCommentMiddleware,
     }));
     app.use('/server/log', logModule({
-        feedbackLog: [isOrgAuthorityMiddleware],
-        superLog: [isSiteAdminMiddleware]
+        feedbackLog: isOrgAuthorityMiddleware,
+        superLog: isSiteAdminMiddleware,
     }));
     app.use('/server/uts', utsModule());
     app.use('/server/classification', classificationModule({
@@ -315,21 +339,29 @@ try {
     }));
     app.use('/server/mesh', meshModule({
         allowSyncMesh: (req, res, next) => {
-            if (!config.autoSyncMesh && !isOrgAuthority(req.user)) return res.status(401).send();
+            if (!config.autoSyncMesh && !isOrgAuthority(req.user)) {
+                return res.status(401).send();
+            }
             next();
         }
     }));
+    app.use('/nativeRender', nativeRenderModule());
+    app.use('/', embedModule());
+    app.use('/', fhirModule());
     cdeInit(app, daoManager);
     systemInit(app);
     formInit(app, daoManager);
     app.use('/server/board', boardModule());
     swaggerInit(app);
     app.use('/server/user', userModule({
-        search: [isOrgAdminMiddleware],
-        manage: [isOrgAuthorityMiddleware],
-        notificationDate: [isSiteAdminMiddleware]
+        search: isOrgAdminMiddleware,
+        manage: isOrgAuthorityMiddleware
     }));
     app.use('/server/siteAdmin', isSiteAdminMiddleware, siteAdminModule());
+    app.use('/server/orgManagement', orgManagementModule());
+    app.use('/server/notification', isSiteAdminMiddleware, notificationModule({
+        notificationDate: isSiteAdminMiddleware
+    }));
     app.use('/server/article', articleModule({
         update: [isOrgAuthorityMiddleware],
     }));
@@ -358,13 +390,17 @@ app.use((err, req, res, next) => {
     }
 
     // to test => restassured with simple post
-    if (err.type === 'charset.unsupported') return res.status(400).send('Unsupported charset');
+    if (err.type === 'charset.unsupported') {
+        return res.status(400).send('Unsupported charset');
+    }
 
     // Do Log Errors
     console.log('ERROR3: ' + err);
     console.log(err.stack);
-    if (req && req.body && req.body.password) req.body.password = '';
-    let meta = {
+    if (req && req.body && req.body.password) {
+        req.body.password = '';
+    }
+    const meta = {
         stack: err.stack,
         origin: 'app.express.error',
         request: {
@@ -382,9 +418,9 @@ app.use((err, req, res, next) => {
 });
 
 domain.run(() => {
-    let server = http.createServer(app);
+    const server = http.createServer(app);
     exports.server = server;
-    server.listen(app.get('port'), function () {
+    server.listen(app.get('port'), () => {
         console.log('Express server listening on port ' + app.get('port'));
     });
     startServer(server, expressSettings);

@@ -1,28 +1,23 @@
 export class LoincLogger {
     static createdLoincCde = 0;
-    static createdLoincCdes = [];
+    static createdLoincCdes: string[] = [];
     static createdLoincForm = 0;
-    static createdLoincForms = [];
+    static createdLoincForms: string[] = [];
 
     static sameLoincCde = 0;
-    static sameLoincCdes = [];
+    static sameLoincCdes: string[] = [];
     static sameLoincForm = 0;
-    static sameLoincForms = [];
+    static sameLoincForms: string[] = [];
 
     static changedLoincCde = 0;
-    static changedLoincCdes = [];
+    static changedLoincCdes: string[] = [];
     static changedLoincForm = 0;
-    static changedLoincForms = [];
+    static changedLoincForms: string[] = [];
 
-    static retiredLoincForm = 0;
-    static retiredLoincForms = [];
     static retiredLoincCde = 0;
-    static retiredLoincCdes = [];
-
-    constructor() {
-        let timeInterval = 10 * 1000; // 10 seconds
-        setInterval(LoincLogger.log, timeInterval);
-    }
+    static retiredLoincCdes: string[] = [];
+    static retiredLoincForm = 0;
+    static retiredLoincForms: string[] = [];
 
     static log() {
         console.log('createdLoincCde: ' + this.createdLoincCde);

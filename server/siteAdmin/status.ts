@@ -1,13 +1,13 @@
 import * as async from 'async';
 import { config } from '../system/parseConfig';
-import { DataElement } from 'server/cde/mongo-cde';
-const mongoCde = require('../cde/mongo-cde');
+import { dataElementModel } from 'server/cde/mongo-cde';
+import { triggerPushMsg } from 'server/notification/pushNotificationSvc';
+import { pushGetAdministratorRegistrations } from 'server/notification/notificationDb';
+
 const mongoForm = require('../form/mongo-form');
 const boardDb = require('../board/boardDb');
-const mongoData = require('../system/mongo-data');
 const elastic = require('../system/elastic');
 const esInit = require('../system/elasticSearchInit');
-const pushNotification = require('../system/pushNotification');
 const dbLogger = require('../log/dbLogger');
 
 export const statusReport: any = {
@@ -73,11 +73,11 @@ export function isElasticUp(cb) {
 export function getStatus(getStatusDone) {
     isElasticUp(() => {
         if (statusReport.elastic.up) {
-            const tempIndices = [];
+            const tempIndices: any[] = [];
             const condition = {archived: false};
             async.series([
                 done => {
-                    DataElement.countDocuments(condition, (err, deCount) => {
+                    dataElementModel.countDocuments(condition, (err, deCount) => {
                         esInit.indices[0].totalCount = deCount;
                         checkElasticCount(deCount, config.elastic.index.name, 'dataelement', (up, message) => {
                             tempIndices.push({
@@ -153,8 +153,8 @@ setInterval(() => {
                             ]
                         }
                     });
-                    mongoData.pushGetAdministratorRegistrations(registrations => {
-                        registrations.forEach(r => pushNotification.triggerPushMsg(r, msg));
+                    pushGetAdministratorRegistrations(registrations => {
+                        registrations.forEach(r => triggerPushMsg(r, msg));
                     });
 
                     dbLogger.logError({
