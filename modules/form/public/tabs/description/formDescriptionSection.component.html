@@ -63,7 +63,7 @@
             </span>
             <div *ngIf="section.instructions?.value" class="questionInstruction">
                 <span class="font-weight-bold">Instructions:</span>
-                {{section.instructions.value}}
+                <ng-container *ngIf="section.instructions.valueFormat !== 'html'; else instructionsHtml">{{section.instructions.value}}</ng-container>
             </div>
         </div>
         <div *ngIf="canEditSection()">
@@ -132,7 +132,7 @@
             </span>
             <div *ngIf="section.instructions?.value" class="questionInstruction">
                 <span class="font-weight-bold">Instructions:</span>
-                {{section.instructions.value}}
+                <ng-container *ngIf="section.instructions.valueFormat !== 'html'; else instructionsHtml">{{section.instructions.value}}</ng-container>
             </div>
         </div>
         <div *ngIf="canEditSection()">
@@ -218,4 +218,8 @@
         <button mat-raised-button color="warn" id="cancelSelect" [mat-dialog-close]="false">Cancel</button>
         <button mat-raised-button color="primary" [mat-dialog-close]="true" id="okSelect">OK</button>
     </div>
+</ng-template>
+
+<ng-template #instructionsHtml>
+    <span [innerHTML]="section.instructions.value"></span>
 </ng-template>
