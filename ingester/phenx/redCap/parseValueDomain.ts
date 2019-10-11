@@ -66,7 +66,7 @@ export function parseValueDomain(row) {
 
     } else if (datatype === 'File') {
     } else {
-        throw 'Unknow datatype: ' + fieldType;
+        throw 'Unknown datatype: ' + fieldType;
     }
     return valueDomain;
 }

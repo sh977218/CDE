@@ -4,12 +4,13 @@ import {
 } from 'ingester/shared/utility';
 import { formModel } from 'server/form/mongo-form';
 import { createNindsForm } from 'ingester/ninds/csv/form/form';
+import { commentModel } from 'server/discuss/discussDb';
 
 function convertFileNameToFormName(csvFileName: string) {
     const replaceCsvFileName = replace(csvFileName, '.csv', '');
     const wordsCsvFileName = words(replaceCsvFileName);
     const filterCsvFileName = filter(wordsCsvFileName, o => !isEqual(o, 'C'));
-    const joinCsvFileName = join(filterCsvFileName, '');
+    const joinCsvFileName = join(filterCsvFileName, ' ');
     return trim(joinCsvFileName);
 }
 
@@ -41,6 +42,10 @@ export async function loadFormByCsv({rows, csvFileName}: any) {
             existingFormObj.imported = imported;
             existingFormObj.lastMigrationScript = lastMigrationScript;
             await updateForm(existingFormObj, BATCHLOADER, {updateSource: true});
+        }
+        for (const comment of nindsForm.comments) {
+            comment.element.eltId = existingForm.tinyId;
+            await new commentModel(comment).save();
         }
         await updateRowArtifact(existingForm, newFormObj, 'NINDS', 'NINDS');
         console.log(`existing form: ${formName} tinyId: ${existingForm.tinyId}`);

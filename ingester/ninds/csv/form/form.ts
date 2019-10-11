@@ -14,11 +14,9 @@ export async function createNindsForm(formName: string, rows: any[]) {
     const definitions = parseDefinitions();
     const sources = parseSources();
     const referenceDocuments = await parseReferenceDocuments(rows);
-    const formElements = await parseFormElements(rows);
     const properties = parseProperties();
     const ids = parseIds();
-    const classification = parseClassification();
-    return {
+    const nindsForm: any = {
         tinyId: generateTinyId(),
         stewardOrg: {
             name: 'NINDS'
@@ -32,10 +30,14 @@ export async function createNindsForm(formName: string, rows: any[]) {
         designations,
         definitions,
         sources,
-        formElements,
+        formElements: [],
         referenceDocuments,
         properties,
         ids,
-        classification
+        classification: [],
+        comments: []
     };
+    nindsForm.formElements = await parseFormElements(nindsForm, rows);
+    parseClassification(nindsForm, rows);
+    return nindsForm;
 }

@@ -74,8 +74,8 @@ function convertCsvRowToFormElement(row: any, cde: any) {
     };
 }
 
-export async function parseFormElements(rows: any[]) {
-    const formElements = [];
+export async function parseFormElements(form: any, rows: any[]): Promise<any[]> {
+    const formElements: any[] = [];
     let newSection: any = {
         label: '',
         elementType: 'section',
@@ -86,10 +86,24 @@ export async function parseFormElements(rows: any[]) {
     for (const row of rows) {
         const cde = await doOneRow(row);
         const formElement = convertCsvRowToFormElement(row, cde);
-        const categoryGroup = getCell(row, 'Category/Group');
+        let categoryGroup = getCell(row, 'Category/Group');
         if (isEmpty(categoryGroup)) {
             console.log(`empty category`);
-            process.exit(1);
+            categoryGroup = 'Unnamed category';
+            const title = getCell(row, 'Title');
+            const emptyCategoryComment = {
+                text: `${title} has empty category.`,
+                user: BATCHLOADER,
+                created: new Date(),
+                pendingApproval: false,
+                linkedTab: 'description',
+                status: 'active',
+                replies: [],
+                element: {
+                    eltType: 'form',
+                }
+            };
+            form.comments.push(emptyCategoryComment);
         }
         if (isEqual(prevCategoryGroup, categoryGroup)) {
             newSection.label = categoryGroup;

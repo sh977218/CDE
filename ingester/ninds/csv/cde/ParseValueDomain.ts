@@ -65,7 +65,8 @@ const DATA_TYPE_MAP: any = {
     'Numeric values': 'Number',
     Time: 'Text',
     alphanumeric: 'Text',
-    GUID: 'Text'
+    GUID: 'Text',
+    File: 'File'
 };
 
 export function parseValueDomain(row: any) {
