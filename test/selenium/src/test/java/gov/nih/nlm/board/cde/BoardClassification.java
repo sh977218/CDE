@@ -18,4 +18,3 @@ public class BoardClassification extends BoardTest {
     }
 
 }
-goto
