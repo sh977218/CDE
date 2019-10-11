@@ -4,8 +4,8 @@ import { handleError } from 'server/errorHandler/errorHandler';
 import { actions } from 'shared/system/classificationShared';
 import { Cb } from 'shared/models.model';
 import { updateOrgClassification } from 'server/classification/orgClassificationSvc';
-import { orgByName } from 'server/system/mongo-data';
 import { validateBody } from 'server/system/bodyValidator';
+import { orgByName } from 'server/orgManagement/orgDb';
 
 const mongoCde = require('server/cde/mongo-cde');
 const mongoForm = require('server/form/mongo-form');
