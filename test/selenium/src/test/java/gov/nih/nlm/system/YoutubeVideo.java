@@ -5,7 +5,7 @@ import org.testng.annotations.Test;
 
 public class YoutubeVideo extends NlmCdeBaseTest {
 
-    @Test
+//    @Test
     public void youtubeVideo() {
         goHome();
         goToVideos();
