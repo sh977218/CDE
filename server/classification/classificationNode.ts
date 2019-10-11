@@ -1,11 +1,10 @@
 import { Classification, Elt, Item } from 'shared/models.model';
 
 const boardDb = require('server/board/boardDb');
-const mongoSystem = require('server/system/mongo-data');
 import { actions, addCategory, findSteward, modifyCategory, removeCategory } from 'shared/system/classificationShared';
 import { each } from 'async';
-const adminItemSvc = require('server/system/adminItemSvc');
-const logging = require('server/system/logging');
+import { addToClassifAudit } from 'server/system/classificationAuditSvc';
+import { orgByName } from 'server/orgManagement/orgDb';
 
 const saveEltClassif = (err, elt, cb) => {
     if (err) {
@@ -37,7 +36,7 @@ export async function eltClassification(body, action, dao, cb) {
     if (!elt) { return cb('can not elt'); }
     let steward = findSteward(elt, body.orgName);
     if (!steward) {
-        const stewardOrg = await mongoSystem.orgByName(body.orgName);
+        const stewardOrg = await orgByName(body.orgName);
         const classifOrg: Classification = {
             stewardOrg: {
                 name: body.orgName
@@ -114,7 +113,7 @@ export async function classifyEltsInBoard(req, dao, cb) {
                 }
             }
         );
-        mongoSystem.addToClassifAudit({
+        addToClassifAudit({
             date: new Date(),
             user: {
                 username: req.user.username
