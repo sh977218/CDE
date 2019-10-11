@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { MatCardModule, MatButtonModule, MatIconModule, MatListModule } from '@angular/material';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
+import { MatButtonModule, MatCardModule, MatIconModule, MatListModule } from '@angular/material';
 import { RouterModule, Routes } from '@angular/router';
-import { SafeHtmlPipe } from '_app/safeHtml.pipe';
 import { ResourcesComponent } from 'system/public/components/resources/resources.component';
 import { ResourceResolve } from 'system/public/components/resources/resources.resolve';
 import { ResourcesRssComponent } from 'system/public/components/resources/resourcesRss.component';
+import { NonCoreModule } from 'non-core/noncore.module';
 
 const appRoutes: Routes = [
     {path: '', resolve: {resource: ResourceResolve}, component: ResourcesComponent},
@@ -15,16 +15,15 @@ const appRoutes: Routes = [
     imports: [
         CommonModule,
         RouterModule.forChild(appRoutes),
-
+        NonCoreModule,
         MatCardModule,
         MatButtonModule,
         MatIconModule,
         MatListModule,
     ],
     declarations: [
-        SafeHtmlPipe,
         ResourcesComponent,
-        ResourcesRssComponent,
+        ResourcesRssComponent
     ],
     entryComponents: [ResourcesRssComponent],
     exports: [],
