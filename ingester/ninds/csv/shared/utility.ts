@@ -18,9 +18,9 @@ export function getCell(row: any, header: string) {
     }
 }
 
-export function formatRows(rows: any[]) {
+export function formatRows(csvFileName: string, rows: any[]) {
     const formattedRows: any[] = [];
-    rows.forEach(row => {
+    rows.forEach((row, i) => {
         const formattedRow: any = {};
         for (const p in row) {
             if (row.hasOwnProperty(p)) {
@@ -31,11 +31,11 @@ export function formatRows(rows: any[]) {
             }
         }
         if (isEmpty(formattedRow.variablename)) {
-            console.log(`${formattedRow} has empty variablename`);
+            console.log(`${csvFileName} has empty variablename. row: ${i}`);
             process.exit(1);
         }
         if (isEmpty(formattedRow.title)) {
-            console.log(`${formattedRow} has empty title`);
+            console.log(`${csvFileName} has empty title. row: ${i}`);
             process.exit(1);
         }
         formattedRows.push(formattedRow);

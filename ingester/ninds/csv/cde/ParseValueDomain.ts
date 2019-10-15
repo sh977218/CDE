@@ -55,6 +55,9 @@ const UOM_MAP: any = {
     integer: 'integer',
     count: 'count',
     Degree: 'Degree',
+    Microliters: 'uL',
+    Days: 'd',
+    Chambers: '',
 };
 
 const DATA_TYPE_MAP: any = {
@@ -116,8 +119,9 @@ export function parseValueDomain(row: any) {
             valueDomain.datatype = 'Text';
             const datatypeText: QuestionTypeText = {};
             const maximumCharacterQuantity = getCell(row, 'Maximum Character Quantity');
-            if (!isEmpty(maximumCharacterQuantity)) {
-                datatypeText.maxLength = Number(maximumCharacterQuantity);
+            const maximumCharacterQuantityNumber = Number(maximumCharacterQuantity);
+            if (!isNaN(maximumCharacterQuantityNumber)) {
+                datatypeText.maxLength = maximumCharacterQuantityNumber;
             }
             if (!isEmpty(datatypeText)) {
                 valueDomain.datatypeText = datatypeText;
@@ -127,12 +131,14 @@ export function parseValueDomain(row: any) {
             valueDomain.datatype = 'Number';
             const datatypeNumber: QuestionTypeNumber = {};
             const minimumValue = getCell(row, 'Minimum Value');
-            if (!isEmpty(minimumValue)) {
-                datatypeNumber.minValue = Number(minimumValue);
+            const minimumValueNumber = Number(minimumValue);
+            if (!isNaN(minimumValueNumber)) {
+                datatypeNumber.minValue = minimumValueNumber;
             }
             const maximumValue = getCell(row, 'Maximum Value');
-            if (!isEmpty(maximumValue)) {
-                datatypeNumber.maxValue = Number(maximumValue);
+            const maximumValueNumber = Number(maximumValue);
+            if (!isNaN(maximumValueNumber)) {
+                datatypeNumber.maxValue = maximumValueNumber;
             }
             if (!isEmpty(datatypeNumber)) {
                 valueDomain.datatypeNumber = datatypeNumber;

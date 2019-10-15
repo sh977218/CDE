@@ -1,4 +1,5 @@
 import { readdirSync, readFileSync } from 'fs';
+import { drop, sortBy } from 'lodash';
 import { loadFormByCsv } from 'ingester/ninds/Loader/loadNindsForm';
 import { formatRows } from 'ingester/ninds/csv/shared/utility';
 
@@ -22,7 +23,7 @@ function parseOneCsv(csvFileName: string) {
                 console.log(err);
                 process.exit(1);
             } else {
-                const rows = formatRows(data);
+                const rows = formatRows(csvFileName, data);
                 resolve({rows, csvFileName});
             }
         });
@@ -31,7 +32,8 @@ function parseOneCsv(csvFileName: string) {
 
 async function run() {
     const csvFiles = readdirSync(FILE_PATH);
-    const csvFileNames: string[] = csvFiles;
+//    const csvFileNames: string[] = drop(csvFiles, 35);
+    const csvFileNames: string[] = sortBy(csvFiles);
     let i = 0;
     for (const csvFileName of csvFileNames) {
         const isCsv = csvFileName.indexOf('.csv') !== -1;
