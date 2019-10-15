@@ -38,6 +38,7 @@ const UOM_MAP: any = {
     mA: 'mA',
     Hz: 'Hz',
     ms: 'ms',
+    Millisecond: 'ms',
     Minutes: 'min',
     Seconds: 's',
     Meter: 'm',

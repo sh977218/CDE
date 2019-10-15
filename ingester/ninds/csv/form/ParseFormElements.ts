@@ -1,6 +1,8 @@
 import { isEmpty, isEqual } from 'lodash';
 import { dataElementModel } from 'server/cde/mongo-cde';
-import { BATCHLOADER, compareElt, imported, lastMigrationScript, mergeElt, updateCde } from 'ingester/shared/utility';
+import {
+    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeClassification, mergeElt, updateCde
+} from 'ingester/shared/utility';
 import { getCell } from 'ingester/ninds/csv/shared/utility';
 import { createNindsCde } from 'ingester/ninds/csv/cde/cde';
 
@@ -15,27 +17,19 @@ async function doOneRow(row: any) {
         'ids.id': variableName
     });
     if (!existingCde) {
-        existingCde = await newCde.save().catch((e: any) => {
-            console.log('await newCde.save().catch: ' + e);
-            process.exit(1);
-        });
+        existingCde = await newCde.save();
         console.log(`created cde tinyId: ${existingCde.tinyId}`);
     } else {
         const diff = compareElt(newCde.toObject(), existingCde.toObject(), 'NINDS');
+        mergeClassification(existingCde, newCde.toObject(), 'NINDS');
         if (isEmpty(diff)) {
-            existingCde.imported = imported;
             existingCde.lastMigrationScript = lastMigrationScript;
-            existingCde = await existingCde.save().catch((e: any) => {
-                console.log('await existingCde.save().catch: ' + e);
-                process.exit(1);
-            });
+            existingCde.imported = imported;
+            existingCde = await existingCde.save();
             console.log(`same cde tinyId: ${existingCde.tinyId}`);
         } else {
             const existingCdeObj = existingCde.toObject();
             mergeElt(existingCdeObj, newCdeObj, 'NINDS', 'NINDS');
-            existingCdeObj.imported = imported;
-            existingCdeObj.changeNote = lastMigrationScript;
-            existingCdeObj.lastMigrationScript = lastMigrationScript;
             await updateCde(existingCdeObj, BATCHLOADER, {updateSource: true});
             console.log(`updated cde tinyId: ${existingCde.tinyId}`);
         }

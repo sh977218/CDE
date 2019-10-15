@@ -8,10 +8,11 @@ function fetchPubmedRef(pmId: string) {
     return new Promise(resolve => {
         const pubmedUrl = 'https://www.ncbi.nlm.nih.gov/pubmed/?term=';
         const uri = pubmedUrl + pmId.trim();
+        const refDoc = {title: '', uri, text: ''};
         get(uri, (err, response, body) => {
             if (err) {
-                console.log(err);
-                process.exit(1);
+                console.log('fetchPubmedRef Error: ' + err);
+                resolve(refDoc);
             } else if (response.statusCode === 200) {
                 const $ = cheerio.load(body);
                 const title = $('.rprt_all h1').text();
@@ -22,10 +23,12 @@ function fetchPubmedRef(pmId: string) {
                 if (isEmpty(abstracttext)) {
                     console.log(`${uri} has empty Abstract`);
                 }
-                resolve({title, uri, text: abstracttext});
+                refDoc.title = title;
+                refDoc.text = abstracttext;
+                resolve(refDoc);
             } else {
-                console.log('status: ' + response.statusCode);
-                process.exit(1);
+                console.log(`http.get.status error: uri: ${uri}  statusCode:${response.statusCode}`);
+                resolve(refDoc);
             }
         });
     });
@@ -53,7 +56,10 @@ export function parseReferenceDocuments(row: any): Promise<any[]> {
                         .replace(/PUBMED:/ig, '')
                         .trim().split(',').filter(p => !isEmpty(p));
                     for (const pmId of pmIds) {
-                        const pubmedRef: any = await fetchPubmedRef(pmId);
+                        const pubmedRef: any = await fetchPubmedRef(pmId).catch(err => {
+                            console.log(`fetchPubmedRef Error: + ${err}`);
+                            process.exit(1);
+                        });
                         const refDoc: any = {};
                         if (!isEmpty(pubmedRef.title)) {
                             refDoc.title = pubmedRef.title;

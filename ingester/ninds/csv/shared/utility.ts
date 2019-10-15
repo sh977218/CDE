@@ -2,7 +2,8 @@ import { isEmpty, toLower, trim, words, join } from 'lodash';
 
 function formatKey(key: string) {
     const lowerKey = toLower(key);
-    const wordsKey = words(lowerKey);
+    // only remove spaces, not '.'. For example, population.all
+    const wordsKey = words(lowerKey, /[^\s]+/g);
     const joinKey = join(wordsKey, '');
     return trim(joinKey);
 }
@@ -30,11 +31,11 @@ export function formatRows(rows: any[]) {
             }
         }
         if (isEmpty(formattedRow.variablename)) {
-            console.log(`${row} has empty variablename`);
+            console.log(`${formattedRow} has empty variablename`);
             process.exit(1);
         }
         if (isEmpty(formattedRow.title)) {
-            console.log(`${row} has empty title`);
+            console.log(`${formattedRow} has empty title`);
             process.exit(1);
         }
         formattedRows.push(formattedRow);

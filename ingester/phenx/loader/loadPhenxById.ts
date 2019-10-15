@@ -10,7 +10,7 @@ import { PROTOCOL } from 'ingester/createMigrationConnection';
 
 let protocolCount = 0;
 
-export async function loadPhenxById(phenxId) {
+export async function loadPhenxById(phenxId: string) {
     const protocol: any = await PROTOCOL.findOne({protocolID: phenxId}).lean();
     const protocolId = protocol.protocolID;
     console.log('Start protocol: ' + protocolId);
