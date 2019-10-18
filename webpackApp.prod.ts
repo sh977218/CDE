@@ -9,6 +9,8 @@ export default merge(baseConfig, appConfig, {
         new AotPlugin.AngularCompilerPlugin({
             tsConfigPath: path.resolve(__dirname, './tsconfigApp.json'),
             entryModule: path.resolve(__dirname, './modules/_app/app.module') + '#CdeAppModule',
+            sourceMap: !!process.env.COVERAGE
         }),
     ],
-});
+    devtool: process.env.COVERAGE ? '#source-map' : undefined,
+} as any);
