@@ -360,6 +360,11 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         clickElement(By.id("resources"));
     }
 
+    protected void goToAPI() {
+        goToSettings();
+        clickElement(By.id("apiLink"));
+    }
+
     protected void goToCurators() {
         goToSettings();
         clickElement(By.id("curators"));
@@ -1625,8 +1630,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
 
     protected void swaggerApi(String api, String text, String tinyId, String version) {
         goHome();
-        clickElement(By.id("helpLink"));
-        clickElement(By.id("apiDocumentationLink"));
+        clickElement(By.id("apiLink"));
         hangon(1);
         driver.switchTo().frame(findElement(By.cssSelector("iframe")));
         textPresent("CDE API");
