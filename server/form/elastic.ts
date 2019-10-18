@@ -1,25 +1,24 @@
+import * as elastic from 'elasticsearch';
 import { splitError } from 'server/errorHandler/errorHandler';
-import { CdeFormDocument } from 'server/form/mongo-form';
+import { logError } from 'server/log/dbLogger';
+import { riverFunction, suggestRiverFunction } from 'server/system/elasticSearchInit';
 import { config } from 'server/system/parseConfig';
 import { CdeFormElastic } from 'shared/form/form.model';
-import { CbError, ElasticQueryResponseForm } from 'shared/models.model';
+import { CbError } from 'shared/models.model';
 
-const dbLogger = require('../log/dbLogger');
-const elasticsearch = require('elasticsearch');
-const esInit = require('../system/elasticSearchInit');
 
-const esClient = new elasticsearch.Client({
+const esClient = new elastic.Client({
     hosts: config.elastic.hosts
 });
 
-export function updateOrInsert(elt: CdeFormDocument) {
-    esInit.riverFunction(elt.toObject(), doc => {
+export function updateOrInsert(elt) {
+    riverFunction(elt.toObject(), doc => {
         if (doc) {
             let doneCount = 0;
             let doneError;
             const done = err => {
                 if (err) {
-                    dbLogger.logError({
+                    logError({
                         message: 'Unable to Index document: ' + doc.tinyId,
                         origin: 'form.elastic.updateOrInsert',
                         stack: err,
@@ -39,7 +38,7 @@ export function updateOrInsert(elt: CdeFormDocument) {
                 id: doc.tinyId,
                 body: doc
             }, done);
-            esInit.suggestRiverFunction(elt, sugDoc => {
+            suggestRiverFunction(elt, sugDoc => {
                 esClient.index({
                     index: config.elastic.formSuggestIndex.name,
                     type: 'suggest',
@@ -53,7 +52,7 @@ export function updateOrInsert(elt: CdeFormDocument) {
 
 export function byTinyIdList(idList: string[], size: number, cb: CbError<CdeFormElastic[]>) {
     idList = idList.filter(id => !!id);
-    esClient.search({
+    esClient.search<CdeFormElastic>({
         index: config.elastic.formIndex.name,
         type: 'form',
         body: {
@@ -64,7 +63,7 @@ export function byTinyIdList(idList: string[], size: number, cb: CbError<CdeForm
             },
             size
         }
-    }, splitError<ElasticQueryResponseForm>(cb, response => {
+    }, splitError(cb, response => {
         // @TODO possible to move this sort to elastic search?
         if (!response) {
             cb(undefined, []);
