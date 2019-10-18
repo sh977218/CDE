@@ -6,8 +6,8 @@ import { Cb } from 'shared/models.model';
 import { updateOrgClassification } from 'server/classification/orgClassificationSvc';
 import { validateBody } from 'server/system/bodyValidator';
 import { orgByName } from 'server/orgManagement/orgDb';
-import { addToClassifAudit } from '../server/system/classificationAuditSvc';
-import { jobStatus } from '../server/system/mongo-data';
+import { jobStatus } from 'server/system/mongo-data';
+import { addToClassifAudit } from 'server/system/classificationAuditSvc';
 
 const mongoCde = require('server/cde/mongo-cde');
 const mongoForm = require('server/form/mongo-form');
