@@ -30,13 +30,13 @@ public class ResourcesPage extends BaseAttachmentTest {
         checkAlert("Saved");
         textPresent(resourceText);
         goToHelp();
-        clickElement(By.id("resources"));
+        clickElement(By.id("resourcesLink"));
         textPresent(resourceText);
         textPresent("RSS Feeds Result:");
 
         // again for coverage of rss cachere
         goToHelp();
-        clickElement(By.id("resources"));
+        clickElement(By.id("resourcesLink"));
         textPresent(resourceText);
         textPresent("RSS Feeds Result");
 
