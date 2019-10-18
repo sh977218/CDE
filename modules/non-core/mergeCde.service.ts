@@ -32,7 +32,10 @@ export class MergeCdeService {
         private http: HttpClient) {
     }
 
-    async doMerge(tinyIdFrom: string, tinyIdTo: string, fields: MergeFieldsDe, cb: CbErr<[DataElement, DataElement]>) {
+    async doMerge(tinyIdFrom: string,
+                  tinyIdTo: string,
+                  fields: MergeFieldsDe,
+                  cb: CbErr<[DataElement, DataElement]>) {
         if (tinyIdFrom === tinyIdTo) { return cb(); }
         const cdeFrom = await this.getCdeByTinyId(tinyIdFrom).toPromise();
         const cdeTo = await this.getCdeByTinyId(tinyIdTo).toPromise();
