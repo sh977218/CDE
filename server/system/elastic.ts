@@ -1,33 +1,30 @@
 import { eachOf, filter, forEach } from 'async';
 import { Client, SearchResponse } from 'elasticsearch';
+import { noop } from 'lodash';
+import { Cursor } from 'mongodb';
 import { Document } from 'mongoose';
+import { post } from 'request';
+import * as boardDb from 'server/board/boardDb';
+import * as mongo_cde from 'server/cde/mongo-cde';
 import { respondError } from 'server/errorHandler/errorHandler';
+import * as mongo_form from 'server/form/mongo-form';
+import { consoleLog, logError } from 'server/log/dbLogger';
+import { ElasticIndex, indices } from 'server/system/elasticSearchInit';
+import { errorLogger } from 'server/system/logging';
+import { noDbLogger } from 'server/system/noDbLogger';
 import { config } from 'server/system/parseConfig';
+import { myOrgs } from 'server/system/usersrvc';
 import { DataElementElastic } from 'shared/de/dataElement.model';
+import { CdeFormElastic } from 'shared/form/form.model';
 import {
-    Cb, Cb1, CbErr, CbError, CbError1, ElasticQueryError, ElasticQueryResponse, ElasticQueryResponseAggregations, ItemElastic, ModuleItem,
+    Cb, Cb1, CbError, CbError1, ElasticQueryError, ElasticQueryResponse, ElasticQueryResponseAggregations, ItemElastic, ModuleItem,
     SearchResponseAggregationDe, SearchResponseAggregationForm,
     SearchResponseAggregationItem,
     User
 } from 'shared/models.model';
-import { ElasticIndex } from '../system/elasticSearchInit';
-import { Cursor } from 'mongodb';
 import { SearchSettingsElastic } from 'shared/search/search.model';
 import { orderedList } from 'shared/system/regStatusShared';
 import { arrayFill } from 'shared/system/util';
-import { myOrgs } from 'server/system/usersrvc';
-import { CdeFormElastic } from 'shared/form/form.model';
-
-const _ = require('lodash');
-const request = require('request');
-const logging = require('./logging');
-const usersvc = require('./usersrvc');
-const esInit = require('./elasticSearchInit');
-const dbLogger = require('../log/dbLogger');
-const mongo_cde = require('../cde/mongo-cde');
-const mongo_form = require('../form/mongo-form');
-const boardDb = require('../board/boardDb');
-const noDbLogger = require('./noDbLogger');
 
 type ElasticCondition = any;
 type MongoCondition = any;
@@ -83,20 +80,20 @@ export function nbOfForms(cb: CbError<number>) {
     esClient.count({index: config.elastic.formIndex.name}, (err, result) => cb(err, result.count));
 }
 
-const queryDe = {
+const queryDe: DbQuery = {
     condition: {archived: false},
-    dao: mongo_cde
+    dao: mongo_cde as any
 };
-const queryForm = {
+const queryForm: DbQuery = {
     condition: {archived: false},
-    dao: mongo_form
+    dao: mongo_form as any
 };
 export const daoMap: { [key: string]: DbQuery } = {
     cde: queryDe,
     form: queryForm,
     board: {
         condition: {},
-        dao: boardDb
+        dao: boardDb as any
     },
     cdeSuggest: queryDe,
     formSuggest: queryForm
@@ -123,9 +120,9 @@ export function reIndexStream(dbStream: DbStream, cb?: Cb) {
             index.count = 0;
         });
 
-        const inject = (i: number, cb = _.noop) => {
+        const inject = (i: number, cb = noop) => {
             (function bulkIndex(req, cb, retries = 1) {
-                request.post(config.elastic.hosts + '/_bulk', {
+                post(config.elastic.hosts + '/_bulk', {
                     headers: {'Content-Type': 'application/x-ndjson'},
                     agentOptions: {
                         rejectUnauthorized: false
@@ -138,7 +135,7 @@ export function reIndexStream(dbStream: DbStream, cb?: Cb) {
                                 bulkIndex(req, cb, --retries);
                             }, 2000);
                         } else {
-                            dbLogger.logError({
+                            logError({
                                 message: 'Unable to Index in bulk',
                                 origin: 'system.elastic.inject',
                                 stack: err,
@@ -147,7 +144,7 @@ export function reIndexStream(dbStream: DbStream, cb?: Cb) {
                             cb();
                         }
                     } else {
-                        dbLogger.consoleLog('ingested: ' + dbStream.indexes[i].count);
+                        consoleLog('ingested: ' + dbStream.indexes[i].count);
                         cb();
                     }
                 });
@@ -157,8 +154,8 @@ export function reIndexStream(dbStream: DbStream, cb?: Cb) {
         };
 
         dbStream.query.dao.count(dbStream.query.condition, (err: Error | undefined, totalCount: number) => {
-            if (err) { dbLogger.consoleLog(`Error getting count: ${err}`, 'error'); }
-            dbLogger.consoleLog('Total count for ' + dbStream.query.dao.name + ' is ' + totalCount);
+            if (err) { consoleLog(`Error getting count: ${err}`, 'error'); }
+            consoleLog('Total count for ' + dbStream.query.dao.name + ' is ' + totalCount);
             dbStream.indexes.forEach(index => {
                 index.totalCount = totalCount;
             });
@@ -169,7 +166,7 @@ export function reIndexStream(dbStream: DbStream, cb?: Cb) {
             cursor.next((err: Error | undefined, doc) => {
                 if (err) {
                     // err
-                    dbLogger.consoleLog('Error getting cursor: ' + err);
+                    consoleLog('Error getting cursor: ' + err);
                     return;
                 }
                 if (!doc) {
@@ -178,8 +175,8 @@ export function reIndexStream(dbStream: DbStream, cb?: Cb) {
                         inject(i as number, () => {
                             const info = 'done ingesting ' + index.name + ' in : '
                                 + (new Date().getTime() - startTime) / 1000 + ' secs. count: ' + index.count;
-                            noDbLogger.noDbLogger.info(info);
-                            dbLogger.consoleLog(info);
+                            noDbLogger.info(info);
+                            consoleLog(info);
                             doneOne();
                         });
                     }, () => {
@@ -192,7 +189,7 @@ export function reIndexStream(dbStream: DbStream, cb?: Cb) {
                 // data
                 const docObj = doc.toObject();
                 dbStream.indexes.forEach((index, i) => {
-                    riverFunctions[i](docObj, (doc: ItemElastic) => {
+                    riverFunctions[i](docObj, (doc?: ItemElastic) => {
                         if (!doc) {
                             return;
                         }
@@ -215,7 +212,7 @@ export function reIndexStream(dbStream: DbStream, cb?: Cb) {
                             inject(i);
                         }
                         bufferOffsets[i] += nextCommandBuffer.copy(buffers[i], bufferOffsets[i], 0, nextCommandOffset);
-                        index.count!++;
+                        index.count++;
                     });
                 });
                 setTimeout(() => {
@@ -233,10 +230,10 @@ function createIndex(dbStream: DbStream, cb: Cb) {
                 return doneOne(err);
             }
             if (indiceExists) {
-                dbLogger.consoleLog('index already exists: ' + index.indexName);
+                consoleLog('index already exists: ' + index.indexName);
                 doneOne(undefined, false);
             } else {
-                dbLogger.consoleLog('creating index: ' + index.indexName);
+                consoleLog('creating index: ' + index.indexName);
                 esClient.indices.create({
                     index: index.indexName,
                     timeout: '10s',
@@ -245,7 +242,7 @@ function createIndex(dbStream: DbStream, cb: Cb) {
                     if (err) {
                         respondError(err);
                     } else {
-                        dbLogger.consoleLog('index Created: ' + index.indexName);
+                        consoleLog('index Created: ' + index.indexName);
                     }
                     doneOne(undefined, true);
                 });
@@ -266,7 +263,7 @@ function createIndex(dbStream: DbStream, cb: Cb) {
 export function initEs(cb: Cb = () => {
 }) {
     const dbStreams: DbStream[] = [];
-    esInit.indices.forEach((index: ElasticIndex) => {
+    indices.forEach((index: ElasticIndex) => {
         const match = dbStreams.filter(s => s.query === daoMap[index.name])[0];
         if (match) {
             match.indexes.push(index);
@@ -318,7 +315,7 @@ export function regStatusFilter(user: User, settings: SearchSettingsElastic) {
             regStatus => ({term: {'registrationState.registrationStatus': regStatus}})
         );
     } else {
-        let filterRegStatusTerms: ElasticCondition = settings.visibleStatuses!.map(
+        let filterRegStatusTerms: ElasticCondition = (settings.visibleStatuses || []).map(
             regStatus => ({term: {'registrationState.registrationStatus': regStatus}})
         );
         // Filter by Steward
@@ -419,7 +416,7 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
         });
 
         // Boost rank if we find exact string match, or if terms are in a less than 4 terms apart.
-        if (settings.searchTerm!.indexOf('"') < 0) {
+        if ((settings.searchTerm || '').indexOf('"') < 0) {
             queryStuff.query.bool.must[0].dis_max.queries[1].function_score.boost = '2';
             queryStuff.query.bool.must[0].dis_max.queries.push({
                 function_score: {
@@ -463,7 +460,8 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
                 queries: [{
                     function_score: {
                         script_score: {
-                            script: "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) / (doc['flatMeshTrees'].values.size() + 1)"
+                            script: "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) /" +
+                                " (doc['flatMeshTrees'].values.size() + 1)"
                         }
                     }
                 }]
@@ -472,7 +470,7 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
         queryStuff.query.bool.must.push({term: {flatMeshTrees: settings.meshTree}});
     }
 
-    let flatSelection = settings.selectedElements ? settings.selectedElements.join(';') : '';
+    const flatSelection = settings.selectedElements ? settings.selectedElements.join(';') : '';
     if (settings.selectedOrg && flatSelection !== '') {
         sort = false;
         // boost for those elts classified fewer times
@@ -481,7 +479,8 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
                 queries: [{
                     function_score: {
                         script_score: {
-                            script: "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) / (doc['flatClassifications'].values.size() + 1)"
+                            script: "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) /" +
+                                " (doc['flatClassifications'].values.size() + 1)"
                         }
                     }
                 }]
@@ -490,7 +489,7 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
         queryStuff.query.bool.must.push({term: {flatClassifications: settings.selectedOrg + ';' + flatSelection}});
     }
 
-    let flatSelectionAlt = settings.selectedElementsAlt ? settings.selectedElementsAlt.join(';') : '';
+    const flatSelectionAlt = settings.selectedElementsAlt ? settings.selectedElementsAlt.join(';') : '';
     if (settings.selectedOrgAlt && flatSelectionAlt !== '') {
         queryStuff.query.bool.must.push({term: {flatClassifications: settings.selectedOrgAlt + ';' + flatSelectionAlt}});
     }
@@ -505,7 +504,7 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
             filter: [
                 {
                     bool: {
-                        should: settings.visibleStatuses!.concat(settings.selectedStatuses).map(regStatus => {
+                        should: settings.visibleStatuses.concat(settings.selectedStatuses).map(regStatus => {
                             return {term: {'registrationState.registrationStatus': regStatus}};
                         })
                     }
@@ -513,13 +512,13 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
             ]
         }
     };
-    if (usersvc.myOrgs(user).length > 0) {
-        usersvc.myOrgs(user).map((org: string) => {
+    if (myOrgs(user).length > 0) {
+        myOrgs(user).map((org: string) => {
             regStatusAggFilter.bool.filter[0].bool.should.push({term: {'stewardOrg.name': org}});
         });
     }
 
-    if (settings.visibleStatuses!.indexOf('Retired') === -1 && settings.selectedStatuses.indexOf('Retired') === -1) {
+    if (settings.visibleStatuses.indexOf('Retired') === -1 && settings.selectedStatuses.indexOf('Retired') === -1) {
         regStatusAggFilter.bool.filter.push({bool: {must_not: {term: {'registrationState.registrationStatus': 'Retired'}}}});
     }
 
@@ -560,7 +559,7 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
             }
         };
 
-        const flattenClassificationAggregations = function(variableName: string, orgVariableName: string, selectionString: string) {
+        const flattenClassificationAggregations = (variableName: string, orgVariableName: string, selectionString: string) => {
             const flatClassifications: ElasticCondition = {
                 terms: {
                     size: 500,
@@ -623,7 +622,7 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
         delete queryStuff.query.bool.must;
     }
 
-    queryStuff.from = (settings.page! - 1) * settings.resultPerPage!;
+    queryStuff.from = ((settings.page || 0) - 1) * settings.resultPerPage;
     if (!queryStuff.from || queryStuff.from < 0) {
         queryStuff.from = 0;
     }
@@ -695,7 +694,7 @@ export function elasticsearch(type: ModuleItem, query: any, settings: any,
             const response = resp as any as ElasticQueryError;
             if (response && response.status) {
                 if (response.status === 400 && response.error.type !== 'search_phase_execution_exception') {
-                    logging.errorLogger.error('Error: ElasticSearch Error',
+                    errorLogger.error('Error: ElasticSearch Error',
                         {
                             origin: 'system.elastic.elasticsearch',
                             stack: error.stack,
@@ -709,7 +708,7 @@ export function elasticsearch(type: ModuleItem, query: any, settings: any,
                     querystr = JSON.stringify(query);
                 } catch (e) {
                 }
-                logging.errorLogger.error('Error: ElasticSearch Error',
+                errorLogger.error('Error: ElasticSearch Error',
                     {
                         origin: 'system.elastic.elasticsearch',
                         stack: error.stack,
@@ -720,7 +719,7 @@ export function elasticsearch(type: ModuleItem, query: any, settings: any,
         } else {
             const response = resp as ElasticQueryResponseAggregations<ItemElastic>;
             if (response.hits.total === 0 && config.name.indexOf('Prod') === -1) {
-                dbLogger.consoleLog('No response. QUERY: ' + JSON.stringify(query), 'debug');
+                consoleLog('No response. QUERY: ' + JSON.stringify(query), 'debug');
             }
 
             const result: any = {
@@ -766,23 +765,23 @@ export function elasticSearchExport(type: ModuleItem, query: any, dataCb: CbErro
     search.scroll = '1m';
     search.body = query;
 
-    function scrollThrough(response: SearchResponse<ItemElastic>) {
-        esClient.scroll<ItemElastic>({scrollId: response._scroll_id!, scroll: '1m'}, (err, response) => {
+    function scrollThrough(response: SearchResponse<ItemElastic> & {_scroll_id: string}) {
+        esClient.scroll<ItemElastic>({scrollId: response._scroll_id, scroll: '1m'}, (err, response) => {
             if (err) {
                 lock = false;
-                logging.errorLogger.error('Error: Elastic Search Scroll Access Error',
+                errorLogger.error('Error: Elastic Search Scroll Access Error',
                     {
                         origin: 'system.elastic.elasticsearch',
                         stack: new Error().stack
                     });
                 streamCb(new Error('ES Error'));
             } else {
-                processScroll(response);
+                processScroll(response as SearchResponse<ItemElastic> & {_scroll_id: string});
             }
         });
     }
 
-    function processScroll(response: SearchResponse<ItemElastic>) {
+    function processScroll(response: SearchResponse<ItemElastic> & {_scroll_id: string}) {
         if (response.hits.hits.length === 0) {
             lock = false;
             streamCb();
@@ -797,7 +796,7 @@ export function elasticSearchExport(type: ModuleItem, query: any, dataCb: CbErro
     esClient.search<ItemElastic>(search, (err, response) => {
         if (err) {
             lock = false;
-            logging.errorLogger.error('Error: Elastic Search Scroll Query Error',
+            errorLogger.error('Error: Elastic Search Scroll Query Error',
                 {
                     origin: 'system.elastic.elasticsearch',
                     stack: new Error().stack,
@@ -805,7 +804,7 @@ export function elasticSearchExport(type: ModuleItem, query: any, dataCb: CbErro
                 });
             streamCb(new Error('ES Error'));
         } else {
-            processScroll(response);
+            processScroll(response as SearchResponse<ItemElastic> & {_scroll_id: string});
         }
     });
 }
@@ -865,7 +864,8 @@ export const queryNewest = {
     sort: {
         _script: {
             type: 'number',
-            script: "doc['updated'].value > 0 ? doc['updated'].value : (doc['created'].value > 0 ? doc['created'].value : doc['imported'].value)",
+            script: "doc['updated'].value > 0 ? doc['updated'].value : (doc['created'].value > 0 ? doc['created'].value" +
+                " : doc['imported'].value)",
             order: 'desc'
         }
     }
