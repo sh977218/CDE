@@ -19,7 +19,7 @@ require('express-async-errors');
 
 const isValidBody = [
     check('eltId').isAlphanumeric(),
-    check('orgName').isAlphanumeric(),
+    check('orgName').isString(),
     check('categories').isArray(),
     validateBody
 ];
