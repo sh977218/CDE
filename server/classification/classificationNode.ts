@@ -73,7 +73,10 @@ export async function addClassification(body, dao, cb) {
         });
         steward = findSteward(elt, body.orgName);
     }
-    addCategory(steward.object, body.categories);
+    const addCatRes = addCategory(steward.object, body.categories);
+    if (addCatRes) {
+        return cb(undefined, addCatRes);
+    }
     elt.markModified('classification');
     elt.save(cb);
 }
