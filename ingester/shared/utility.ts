@@ -9,8 +9,12 @@ import { formSourceModel } from 'server/form/mongo-form';
 import { PhenxURL } from 'ingester/createMigrationConnection';
 import { CdeId, Classification, Definition, Designation, Property, ReferenceDocument } from 'shared/models.model';
 import { FormElement } from 'shared/form/form.model';
+import { gfs } from 'server/system/mongo-data';
+import { Readable } from 'stream';
 
 require('chromedriver');
+
+export const NINDS_PRECLINICAL_NEI_FILE_PATH = 'S:/MLB/CDE/NINDS/Preclinical + NEI/10-7-2019/';
 
 export const sourceMap = {
     LOINC: ['LOINC'],
@@ -30,14 +34,6 @@ export const BATCHLOADER = {
 export const created = TODAY;
 export const imported = TODAY;
 export const version = '1.0';
-
-export function removeWhite(text: string) {
-    if (!text) {
-        return '';
-    } else {
-        return text.replace(/\s+/g, ' ');
-    }
-}
 
 export function sanitizeText(s: string) {
     return s.replace(/:/g, '').replace(/\./g, '').trim();
@@ -104,6 +100,7 @@ export async function updateRowArtifact(existingElt, newElt, source, classificat
     if (existingElt.elementType === 'form') {
         mongooseModel = formSourceModel;
     }
+    newElt.source = source;
     const updateResult = await mongooseModel.updateOne({
         tinyId: existingElt.tinyId,
         source
@@ -426,9 +423,13 @@ export function mergeIds(existingObj, newObj) {
     const existingIds: CdeId[] = existingObj.ids;
     const newIds: CdeId[] = newObj.ids;
     newIds.forEach(newId => {
-        const i = findIndex(existingIds, o =>
-            isEqual(o.source, newId.source) &&
-            isEqual(o.id, newId.id));
+        const i = findIndex(existingIds, o => {
+            if (o.source === 'NINDS Variable Name' && newId.source === 'BRICS Variable Name') {
+                return true;
+            } else {
+                return isEqual(o.source, newId.source) && isEqual(o.id, newId.id);
+            }
+        });
         if (i === -1) {
             existingIds.push(newId);
         } else {
@@ -699,6 +700,37 @@ export function fixFormCopyright(form) {
     if (isEmpty(form.copyright)) {
         delete form.copyright;
     }
+}
+
+export function addAttachment(readable: Readable, attachment: any) {
+    return new Promise((resolve, reject) => {
+        const file: any = {
+            stream: readable
+        };
+        const streamDescription = {
+            filename: attachment.filename,
+            mode: 'w',
+            content_type: attachment.filetype,
+            metadata: {
+                status: 'approved'
+            }
+        };
+        gfs.findOne({md5: file.md5}, (err: any, existingFile: any) => {
+            if (err) {
+                reject(err);
+            } else if (existingFile) {
+                attachment.fileid = existingFile._id;
+                resolve();
+            } else {
+                file.stream.pipe(gfs.createWriteStream(streamDescription)
+                    .on('close', (newFile: any) => {
+                        attachment.fileid = newFile._id;
+                        resolve();
+                    })
+                    .on('error', reject));
+            }
+        });
+    });
 }
 
 

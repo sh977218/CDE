@@ -24,6 +24,7 @@
               "type": "string",
               "description": "If 'html', interpret as HTML",
               "enum": [
+                "",
                 "html"
               ]
             }

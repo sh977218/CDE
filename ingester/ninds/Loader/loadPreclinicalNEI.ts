@@ -1,15 +1,14 @@
 import { readdirSync, readFileSync } from 'fs';
-import { drop, sortBy } from 'lodash';
+import { sortBy } from 'lodash';
 import { loadFormByCsv } from 'ingester/ninds/Loader/loadNindsForm';
 import { formatRows } from 'ingester/ninds/csv/shared/utility';
+import { NINDS_PRECLINICAL_NEI_FILE_PATH } from 'ingester/shared/utility';
 
 const CSV = require('csv');
 
-const FILE_PATH = 'S:/MLB/CDE/NINDS/Preclinical + NEI/10-7-2019/';
-
 function parseOneCsv(csvFileName: string) {
     return new Promise(resolve => {
-        const csvPath = `${FILE_PATH}/${csvFileName}`;
+        const csvPath = `${NINDS_PRECLINICAL_NEI_FILE_PATH}/${csvFileName}`;
         const cond = {
             columns: true,
             rtrim: true,
@@ -31,8 +30,7 @@ function parseOneCsv(csvFileName: string) {
 }
 
 async function run() {
-    const csvFiles = readdirSync(FILE_PATH);
-//    const csvFileNames: string[] = drop(csvFiles, 35);
+    const csvFiles = readdirSync(NINDS_PRECLINICAL_NEI_FILE_PATH);
     const csvFileNames: string[] = sortBy(csvFiles);
     let i = 0;
     for (const csvFileName of csvFileNames) {

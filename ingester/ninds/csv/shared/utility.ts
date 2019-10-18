@@ -1,4 +1,4 @@
-import { isEmpty, toLower, trim, words, join } from 'lodash';
+import { isEmpty, toLower, trim, words, join, isEqual } from 'lodash';
 
 function formatKey(key: string) {
     const lowerKey = toLower(key);
@@ -41,4 +41,13 @@ export function formatRows(csvFileName: string, rows: any[]) {
         formattedRows.push(formattedRow);
     });
     return formattedRows;
+}
+
+export function removePreclinicalClassification(elt: any) {
+    elt.classification.forEach((c: any) => {
+        if (c.stewardOrg.name === 'NINDS') {
+            c.elements = c.elements.filter((e: any) => !isEqual(e.name, 'Preclinical TBI'));
+        }
+    });
+
 }

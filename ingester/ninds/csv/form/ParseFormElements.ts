@@ -1,9 +1,10 @@
-import { isEmpty, isEqual } from 'lodash';
+import { isEmpty, isEqual, forEach, trim } from 'lodash';
 import { dataElementModel } from 'server/cde/mongo-cde';
 import {
-    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeClassification, mergeElt, updateCde
+    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeClassification, mergeClassificationByOrg, mergeElt,
+    updateCde
 } from 'ingester/shared/utility';
-import { getCell } from 'ingester/ninds/csv/shared/utility';
+import { getCell, removePreclinicalClassification } from 'ingester/ninds/csv/shared/utility';
 import { createNindsCde } from 'ingester/ninds/csv/cde/cde';
 
 async function doOneRow(row: any) {
@@ -12,16 +13,24 @@ async function doOneRow(row: any) {
     const newCdeObj = newCde.toObject();
 
     const variableName = getCell(row, 'Variable Name');
-    let existingCde: any = await dataElementModel.findOne({
-        archived: false,
-        'ids.id': variableName
-    });
+    let existingCde: any = await dataElementModel.findOne({archived: false, 'ids.id': variableName});
     if (!existingCde) {
         existingCde = await newCde.save();
         console.log(`created cde tinyId: ${existingCde.tinyId}`);
     } else {
+        // @TODO remove after load
+        const cdeToFix = existingCde.toObject();
+        forEach(cdeToFix.definitions, d => {
+            d.definition = trim(d.definition);
+            d.tags = d.tags.filter((t: string) => !isEqual(t, 'Preferred Question Text'));
+        });
+        existingCde.definitions = cdeToFix.definitions;
+        await existingCde.save();
+
         const diff = compareElt(newCde.toObject(), existingCde.toObject(), 'NINDS');
+        removePreclinicalClassification(existingCde);
         mergeClassification(existingCde, newCde.toObject(), 'NINDS');
+
         if (isEmpty(diff)) {
             existingCde.lastMigrationScript = lastMigrationScript;
             existingCde.imported = imported;
@@ -34,7 +43,8 @@ async function doOneRow(row: any) {
             console.log(`updated cde tinyId: ${existingCde.tinyId}`);
         }
     }
-    return existingCde.toObject();
+    const savedCde: any = await dataElementModel.findOne({archived: false, 'ids.id': variableName});
+    return savedCde;
 }
 
 function convertCsvRowToFormElement(row: any, cde: any) {
@@ -43,28 +53,34 @@ function convertCsvRowToFormElement(row: any, cde: any) {
     const inputRestriction = getCell(row, 'Input Restriction');
     const multiselect = inputRestriction.indexOf('Multiple Pre-Defined Values Selected') !== -1;
     const title = getCell(row, 'Title');
-
+    const unitsOfMeasure = [];
+    if (cde.valueDomain.uom) {
+        unitsOfMeasure.push({code: cde.valueDomain.uom});
+    }
+    const question: any = {
+        cde: {
+            tinyId: cde.tinyId,
+            name: title,
+            permissibleValues: cde.valueDomain.permissibleValues,
+            ids: cde.ids,
+            derivationRules: cde.derivationRules
+        },
+        datatype: cde.valueDomain.datatype,
+        datatypeNumber: cde.valueDomain.datatypeNumber,
+        datatypeText: cde.valueDomain.datatypeText,
+        datatypeDate: cde.valueDomain.datatypeDate,
+        unitsOfMeasure,
+        answers: cde.valueDomain.permissibleValues
+    };
+    if (cde.version) {
+        question.cde.version = cde.version;
+    }
     return {
         elementType: 'question',
         label,
         instructions: {value},
         multiselect,
-        question: {
-            cde: {
-                tinyId: cde.tinyId,
-                name: title,
-                version: cde.version,
-                permissibleValues: cde.valueDomain.permissibleValues,
-                ids: cde.ids,
-                derivationRules: cde.derivationRules
-            },
-            datatype: cde.valueDomain.datatype,
-            datatypeNumber: cde.valueDomain.datatypeNumber,
-            datatypeText: cde.valueDomain.datatypeText,
-            datatypeDate: cde.valueDomain.datatypeDate,
-            unitsOfMeasure: {system: '', code: cde.valueDomain.uom},
-            answers: cde.valueDomain.permissibleValues
-        }
+        question
     };
 }
 

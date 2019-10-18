@@ -1,27 +1,26 @@
 import { isEmpty, isEqual } from 'lodash';
 import { getCell } from 'ingester/ninds/csv/shared/utility';
 
-
-export function parseDefinitions(row) {
+export function parseDefinitions(row: any) {
     const definitions = [];
     const shortDescription = getCell(row, 'Short Description');
     const description = getCell(row, 'Definition');
     if (isEqual(shortDescription, description)) {
         definitions.push({
             definition: description,
-            tags: []
+            tags: ['Short Description', 'Definition']
         });
     } else {
         if (!isEmpty(description)) {
             definitions.push({
                 definition: description,
-                tags: []
+                tags: ['Definition']
             });
         }
         if (!isEmpty(shortDescription)) {
             definitions.push({
                 definition: shortDescription,
-                tags: []
+                tags: ['Short Description']
             });
         }
 

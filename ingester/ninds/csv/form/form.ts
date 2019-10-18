@@ -6,16 +6,18 @@ import { parseSources } from 'ingester/ninds/csv/shared/ParseSources';
 import { parseReferenceDocuments } from 'ingester/ninds/csv/form/ParseReferenceDocuments';
 import { parseProperties } from 'ingester/ninds/csv/form/ParseProperties';
 import { parseIds } from 'ingester/ninds/csv/form/ParseIds';
+import { parseAttachments } from 'ingester/ninds/csv/form/ParseAttachments';
 import { parseClassification } from 'ingester/ninds/csv/form/ParseClassification';
 import { parseFormElements } from 'ingester/ninds/csv/form/ParseFormElements';
 
-export async function createNindsForm(formName: string, rows: any[]) {
+export async function createNindsForm(formName: string, csvFileName: string, rows: any[]) {
     const designations = parseDesignations(formName);
     const definitions = parseDefinitions();
     const sources = parseSources();
     const referenceDocuments = await parseReferenceDocuments(rows);
     const properties = parseProperties();
     const ids = parseIds();
+    const attachments = await parseAttachments(formName, csvFileName);
     const nindsForm: any = {
         tinyId: generateTinyId(),
         stewardOrg: {
@@ -34,6 +36,7 @@ export async function createNindsForm(formName: string, rows: any[]) {
         referenceDocuments,
         properties,
         ids,
+        attachments,
         classification: [],
         comments: []
     };
