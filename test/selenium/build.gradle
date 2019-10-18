@@ -46,7 +46,7 @@ test {
         logger.lifecycle("Running test: " + descriptor)
     }
 
-    maxParallelForks = System.getProperty('forkNb')
+    maxParallelForks = Integer.parseInt(forkNb)
 
     testLogging {
         events "standardOut", "standardError"
