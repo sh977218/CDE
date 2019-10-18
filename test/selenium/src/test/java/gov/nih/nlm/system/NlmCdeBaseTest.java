@@ -176,9 +176,21 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     @AfterMethod
-    public void generateGif(Method m) {
+    public void tearDown(Method m) {
         String methodName = m.getName();
         System.out.println("TEST Complete: " + className + "." + methodName);
+
+        // coverage
+        String data = (String) (((JavascriptExecutor) driver).executeScript("return JSON.stringify(window.__coverage__);"));
+        if (data != null) {
+            try {
+                FileUtils.writeStringToFile(new File("build/.nyc_output/" + methodName + ".json"), data, "UTF-8");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        // generage gif
         if (m.getAnnotation(RecordVideo.class) != null) {
             try {
                 File inputScreenshots = new File("build/tmp/screenshots/" + className + "/" + methodName + "/");
