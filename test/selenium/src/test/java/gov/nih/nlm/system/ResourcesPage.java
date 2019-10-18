@@ -29,12 +29,13 @@ public class ResourcesPage extends BaseAttachmentTest {
         clickElement(By.xpath("//mat-icon[. = 'check']"));
         checkAlert("Saved");
         textPresent(resourceText);
+        goToHelp();
         clickElement(By.id("resourcesLink"));
         textPresent(resourceText);
         textPresent("RSS Feeds Result:");
 
         // again for coverage of rss cachere
-        goHome();
+        goToHelp();
         clickElement(By.id("resourcesLink"));
         textPresent(resourceText);
         textPresent("RSS Feeds Result");
