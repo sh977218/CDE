@@ -1,7 +1,7 @@
 import { Builder, By } from 'selenium-webdriver';
 import * as DiffJson from 'diff-json';
 import * as moment from 'moment';
-import { find, noop, findIndex, isEmpty, isEqual, lastIndexOf, lowerCase, sortBy, uniq } from 'lodash';
+import { find, differenceWith, noop, findIndex, isEmpty, isEqual, lastIndexOf, lowerCase, sortBy, uniq } from 'lodash';
 import * as mongo_cde from 'server/cde/mongo-cde';
 import { dataElementSourceModel } from 'server/cde/mongo-cde';
 import * as mongo_form from 'server/form/mongo-form';
@@ -283,6 +283,27 @@ export function loopFormElements(formElements: FormElement[], options: any = {
     }
 }
 
+function diffWithRecentUpdated(existingEltObj, newEltObj) {
+    // is any new designations not in existing designations
+    const newDesignations = differenceWith(newEltObj.designations, existingEltObj.designations, isEqual);
+    const isDesignationsDiff = newDesignations.length > 0;
+
+    const newDefinitions = differenceWith(newEltObj.definitions, existingEltObj.definitions, isEqual);
+    const isDefinitionsDiff = newDefinitions.length > 0;
+
+    const newRefDocs = differenceWith(newEltObj.referenceDocuments, existingEltObj.referenceDocuments, isEqual);
+    const isRefDocsDiff = newRefDocs.length > 0;
+
+    const newProperties = differenceWith(newEltObj.properties, existingEltObj.properties, isEqual);
+    const isPropertiesDiff = newProperties.length > 0;
+
+    const newIds = differenceWith(newEltObj.ids, existingEltObj.ids, isEqual);
+    const isIdsDiff = newIds.length > 0;
+
+
+    DiffJson.diff(existingEltObj, newEltObj);
+}
+
 // Compare two elements
 export function compareElt(newEltObj, existingEltObj, source) {
     if (newEltObj.elementType !== existingEltObj.elementType) {
@@ -336,10 +357,15 @@ export function compareElt(newEltObj, existingEltObj, source) {
         delete existingEltObj.classification;
         delete existingEltObj.newEltObj;
     }
-    const result = DiffJson.diff(existingEltObj, newEltObj);
+    let result = DiffJson.diff(existingEltObj, newEltObj);
+/*
+    if (existingEltObj.lastMigrationScript === newEltObj.lastMigrationScript) {
+        result = diffWithRecentUpdated(existingEltObj, newEltObj);
+    }
     if (!isEmpty(result)) {
         console.log('a');
     }
+*/
     return result;
 }
 
@@ -449,7 +475,9 @@ export function mergeIds(existingObj, newObj) {
     const newIds: CdeId[] = newObj.ids;
     newIds.forEach(newId => {
         const i = findIndex(existingIds, o => {
-            if (o.source === 'NINDS Variable Name' && newId.source === 'BRICS Variable Name') {
+            if (o.source === 'NINDS Preclinical' && newId.source === 'BRICS Variable Name') {
+                return true;
+            } else if (o.source === 'NINDS Variable Name' && newId.source === 'BRICS Variable Name') {
                 return true;
             } else {
                 return isEqual(o.source, newId.source) && isEqual(o.id, newId.id);
