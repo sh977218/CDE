@@ -1,11 +1,26 @@
 import { isEmpty, isEqual, forEach, trim } from 'lodash';
 import { dataElementModel } from 'server/cde/mongo-cde';
 import {
-    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeClassification, mergeClassificationByOrg, mergeElt,
-    updateCde
+    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeElt, updateCde, updateRowArtifact
 } from 'ingester/shared/utility';
-import { getCell, removePreclinicalClassification } from 'ingester/ninds/csv/shared/utility';
+import {
+    changeNindsPreclinicalNeiClassification, getCell, removePreclinicalClassification
+} from 'ingester/ninds/csv/shared/utility';
 import { createNindsCde } from 'ingester/ninds/csv/cde/cde';
+
+async function fixCde(existingCde: any) {
+    const cdeToFix = existingCde.toObject();
+    forEach(cdeToFix.definitions, d => {
+        d.definition = trim(d.definition);
+        d.tags = d.tags.filter((t: string) => !isEqual(t, 'Preferred Question Text'));
+    });
+    existingCde.definitions = cdeToFix.definitions;
+    const savedCde = await existingCde.save().catch((err: any) => {
+        console.log(`Not able to save form when fixCde ${cdeToFix.tinyId} ${err}`);
+        process.exit(1);
+    });
+    return savedCde;
+}
 
 async function doOneRow(row: any) {
     const nindsCde = await createNindsCde(row);
@@ -15,26 +30,25 @@ async function doOneRow(row: any) {
     const variableName = getCell(row, 'Variable Name');
     let existingCde: any = await dataElementModel.findOne({archived: false, 'ids.id': variableName});
     if (!existingCde) {
-        existingCde = await newCde.save();
+        existingCde = await newCde.save().catch((err: any) => {
+            console.log(`Not able to save form when save new NINDS cde ${newCde.tinyId} ${err}`);
+            process.exit(1);
+        });
         console.log(`created cde tinyId: ${existingCde.tinyId}`);
     } else {
         // @TODO remove after load
-        const cdeToFix = existingCde.toObject();
-        forEach(cdeToFix.definitions, d => {
-            d.definition = trim(d.definition);
-            d.tags = d.tags.filter((t: string) => !isEqual(t, 'Preferred Question Text'));
-        });
-        existingCde.definitions = cdeToFix.definitions;
-        await existingCde.save();
+        existingCde = await fixCde(existingCde);
 
         const diff = compareElt(newCde.toObject(), existingCde.toObject(), 'NINDS');
-        removePreclinicalClassification(existingCde);
-        mergeClassification(existingCde, newCde.toObject(), 'NINDS');
+        changeNindsPreclinicalNeiClassification(existingCde, newCde.toObject(), 'NINDS');
 
         if (isEmpty(diff)) {
             existingCde.lastMigrationScript = lastMigrationScript;
             existingCde.imported = imported;
-            existingCde = await existingCde.save();
+            existingCde = await existingCde.save().catch((err: any) => {
+                console.log(`Not able to save form when save existing NINDS cde ${existingCde.tinyId} ${err}`);
+                process.exit(1);
+            });
             console.log(`same cde tinyId: ${existingCde.tinyId}`);
         } else {
             const existingCdeObj = existingCde.toObject();
@@ -43,6 +57,8 @@ async function doOneRow(row: any) {
             console.log(`updated cde tinyId: ${existingCde.tinyId}`);
         }
     }
+    await updateRowArtifact(existingCde, newCdeObj, 'NINDS Preclinical NEI', 'NINDS');
+
     const savedCde: any = await dataElementModel.findOne({archived: false, 'ids.id': variableName});
     return savedCde;
 }

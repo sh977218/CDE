@@ -58,4 +58,8 @@ export function parseClassification(cde: any, row: any) {
     classifyDomain(cde, row);
     classifyDisease(cde, row);
     classifyTaxonomy(cde, row);
+
+    if (cde.classification.length === 0) {
+        classifyItem(cde, 'NINDS', DEFAULT_CLASSIFICATION.concat(['Not Classified']));
+    }
 }

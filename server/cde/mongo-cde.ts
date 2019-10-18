@@ -61,7 +61,9 @@ dataElementSchema.pre('save', function preSaveUseThisForSomeReason(next) {
         } else {
             next();
         }
-    }, (err: string) => next(new Error(`Cde ${elt.tinyId} has error: ${err}`)));
+    }, (err: string) => {
+        next(new Error(`Cde ${elt.tinyId} has error: ${err}`));
+    });
 });
 
 const conn = establishConnection(config.database.appData);
@@ -265,7 +267,10 @@ export function update(elt: DataElementDraft, user: User, options: any = {},
         const newElt = new dataElementModel(elt);
 
         // archive dataElement and replace it with newElt
-        dataElementModel.findOneAndUpdate({_id: dataElement._id, archived: false}, {$set: {archived: true}}, (err, doc) => {
+        dataElementModel.findOneAndUpdate({
+            _id: dataElement._id,
+            archived: false
+        }, {$set: {archived: true}}, (err, doc) => {
             if (err || !doc) {
                 return callback(err, doc || undefined);
             }

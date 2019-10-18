@@ -1,7 +1,7 @@
 import { Builder, By } from 'selenium-webdriver';
 import * as DiffJson from 'diff-json';
 import * as moment from 'moment';
-import { find, findIndex, isEmpty, isEqual, lastIndexOf, lowerCase, sortBy, uniq } from 'lodash';
+import { find, noop, findIndex, isEmpty, isEqual, lastIndexOf, lowerCase, sortBy, uniq } from 'lodash';
 import * as mongo_cde from 'server/cde/mongo-cde';
 import { dataElementSourceModel } from 'server/cde/mongo-cde';
 import * as mongo_form from 'server/form/mongo-form';
@@ -161,6 +161,9 @@ export function mergeClassificationByOrg(existingObj, newObj, orgName: string = 
 }
 
 export function updateCde(elt: any, user: any, options = {}) {
+    if (elt.tinyId === '7kJpuiGs4') {
+        console.log('b');
+    }
     elt.lastMigrationScript = lastMigrationScript;
     return new Promise((resolve, reject) => {
         mongo_cde.update(elt, user, options, (err, savedElt) => {
@@ -259,6 +262,24 @@ function getChildren(formElements: FormElement[]) {
         });
     }
     return ids;
+}
+
+export function loopFormElements(formElements: FormElement[], options: any = {
+    onQuestion: noop,
+    onSection: noop,
+    onForm: noop
+}) {
+    if (formElements) {
+        formElements.forEach(formElement => {
+            if (formElement.elementType === 'question') {
+                loopFormElements(formElement.formElements, options.onSection(formElement));
+            } else if (formElement.elementType === 'section') {
+                loopFormElements(formElement.formElements, options.onForm(formElement));
+            } else if (formElement.elementType === 'form') {
+                loopFormElements(formElement.formElements, options.onQuestion(formElement));
+            }
+        });
+    }
 }
 
 // Compare two elements

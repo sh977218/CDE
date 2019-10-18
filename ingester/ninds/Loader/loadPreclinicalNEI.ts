@@ -1,5 +1,5 @@
 import { readdirSync, readFileSync } from 'fs';
-import { sortBy } from 'lodash';
+import { sortBy, isEqual } from 'lodash';
 import { loadFormByCsv } from 'ingester/ninds/Loader/loadNindsForm';
 import { formatRows } from 'ingester/ninds/csv/shared/utility';
 import { NINDS_PRECLINICAL_NEI_FILE_PATH } from 'ingester/shared/utility';

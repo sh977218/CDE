@@ -1,4 +1,5 @@
 import { isEmpty, toLower, trim, words, join, isEqual } from 'lodash';
+import { mergeClassificationByOrg } from 'ingester/shared/utility';
 
 function formatKey(key: string) {
     const lowerKey = toLower(key);
@@ -49,5 +50,11 @@ export function removePreclinicalClassification(elt: any) {
             c.elements = c.elements.filter((e: any) => !isEqual(e.name, 'Preclinical TBI'));
         }
     });
+}
 
+export function changeNindsPreclinicalNeiClassification(existingElt, newObj, classificationOrgName) {
+    const existingObj = existingElt.toObject();
+    mergeClassificationByOrg(existingObj, newObj, classificationOrgName);
+    existingElt.classification = existingObj.classification;
+    removePreclinicalClassification(existingElt);
 }
