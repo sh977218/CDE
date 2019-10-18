@@ -8,9 +8,9 @@ import { formModel } from 'server/form/mongo-form';
 import { createNindsForm } from 'ingester/ninds/csv/form/form';
 import { commentModel } from 'server/discuss/discussDb';
 import {
-    changeNindsPreclinicalNeiClassification, removePreclinicalClassification
+    changeNindsPreclinicalNeiClassification, fixDefinitions, fixFormElements, fixReferenceDocuments,
+    removePreclinicalClassification
 } from 'ingester/ninds/csv/shared/utility';
-import { FormElement } from 'shared/form/form.model';
 
 function convertFileNameToFormName(csvFileName: string) {
     const replaceCsvFileName = replace(csvFileName, '.csv', '');
@@ -25,44 +25,13 @@ function convertFileNameToFormName(csvFileName: string) {
     return trim(joinCsvFileName);
 }
 
-function fixInstructions(fe: any) {
-    if (fe.instructions) {
-        const trimValueFormat = trim(fe.instructions.valueFormat);
-        const instructions: any = {
-            value: fe.instructions
-        };
-        if (trimValueFormat) {
-            instructions.valueFormat = trimValueFormat;
-            fe.instructions = instructions;
-        }
-    } else {
-        delete fe.instructions;
-    }
-}
-
 async function fixForm(existingForm: any) {
-    const formToFix: any = existingForm.toObject();
-    forEach(formToFix.definitions, d => {
-        d.definition = trim(d.definition);
-        d.tags = d.tags.filter((t: string) => !isEqual(t, 'Preferred Question Text'));
-    });
-    existingForm.definitions = formToFix.definitions;
-
-    loopFormElements(formToFix.formElements, {
-        onQuestion: (fe: any) => {
-            fixInstructions(fe);
-        },
-        onSection: (fe: any) => {
-            fixInstructions(fe);
-        },
-        onForm: (fe: any) => {
-            fixInstructions(fe);
-        },
-    });
-    existingForm.formElements = formToFix.formElements;
+    fixDefinitions(existingForm);
+    fixReferenceDocuments(existingForm);
+    fixFormElements(existingForm);
 
     const savedForm = await existingForm.save().catch((err: any) => {
-        console.log(`Not able to save form when fixForm ${formToFix.tinyId} ${err}`);
+        console.log(`Not able to save form when fixForm ${existingForm.tinyId} ${err}`);
         process.exit(1);
     });
     return savedForm;

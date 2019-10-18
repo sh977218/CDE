@@ -8,6 +8,7 @@ import { parseReferenceDocuments } from 'ingester/ninds/csv/cde/ParseReferenceDo
 import { parseDesignations } from 'ingester/ninds/csv/cde/ParseDesignations';
 import { parseDefinitions } from 'ingester/ninds/csv/cde/ParseDefinitions';
 import { parseClassification } from 'ingester/ninds/csv/cde/ParseClassification';
+import { classifyItem } from 'server/classification/orgClassificationSvc';
 
 export async function createNindsCde(row: any) {
     const designations = parseDesignations(row);
@@ -36,5 +37,9 @@ export async function createNindsCde(row: any) {
         classification: []
     };
     parseClassification(nindsCde, row);
+    const DEFAULT_CLASSIFICATION = ['Preclinical + NEI'];
+    if (nindsCde.classification.length === 0) {
+        classifyItem(nindsCde, 'NINDS', DEFAULT_CLASSIFICATION.concat(['Not Classified']));
+    }
     return nindsCde;
 }

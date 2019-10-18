@@ -1,5 +1,5 @@
-import { isEmpty, toLower, trim, words, join, isEqual } from 'lodash';
-import { mergeClassificationByOrg } from 'ingester/shared/utility';
+import { isEmpty, toLower, trim, forEach, words, join, isEqual } from 'lodash';
+import { loopFormElements, mergeClassificationByOrg } from 'ingester/shared/utility';
 
 function formatKey(key: string) {
     const lowerKey = toLower(key);
@@ -52,9 +52,58 @@ export function removePreclinicalClassification(elt: any) {
     });
 }
 
-export function changeNindsPreclinicalNeiClassification(existingElt, newObj, classificationOrgName) {
+export function changeNindsPreclinicalNeiClassification(existingElt: any, newObj: any, classificationOrgName: string) {
     const existingObj = existingElt.toObject();
     mergeClassificationByOrg(existingObj, newObj, classificationOrgName);
     existingElt.classification = existingObj.classification;
     removePreclinicalClassification(existingElt);
+}
+
+export function fixReferenceDocuments(existingElt: any) {
+    const eltToFix = existingElt.toObject();
+    forEach(eltToFix.referenceDocuments, refDoc => {
+        refDoc.languageCode = 'en-us';
+        refDoc.docType = 'text';
+    });
+    existingElt.referenceDocuments = eltToFix.referenceDocuments;
+}
+
+export function fixDefinitions(existingElt: any) {
+    const eltToFix = existingElt.toObject();
+    forEach(eltToFix.definitions, d => {
+        d.definition = trim(d.definition);
+        d.tags = d.tags.filter((t: string) => !isEqual(t, 'Preferred Question Text'));
+    });
+    existingElt.definitions = eltToFix.definitions;
+}
+
+function fixInstructions(fe: any) {
+    if (fe.instructions) {
+        const trimValueFormat = trim(fe.instructions.valueFormat);
+        const instructions: any = {
+            value: fe.instructions
+        };
+        if (trimValueFormat) {
+            instructions.valueFormat = trimValueFormat;
+            fe.instructions = instructions;
+        }
+    } else {
+        delete fe.instructions;
+    }
+}
+
+export function fixFormElements(existingForm: any) {
+    const formToFix: any = existingForm.toObject();
+    loopFormElements(formToFix.formElements, {
+        onQuestion: (fe: any) => {
+            fixInstructions(fe);
+        },
+        onSection: (fe: any) => {
+            fixInstructions(fe);
+        },
+        onForm: (fe: any) => {
+            fixInstructions(fe);
+        },
+    });
+    existingForm.formElements = formToFix.formElements;
 }

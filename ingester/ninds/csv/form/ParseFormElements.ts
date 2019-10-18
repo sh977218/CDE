@@ -4,19 +4,16 @@ import {
     BATCHLOADER, compareElt, imported, lastMigrationScript, mergeElt, updateCde, updateRowArtifact
 } from 'ingester/shared/utility';
 import {
-    changeNindsPreclinicalNeiClassification, getCell, removePreclinicalClassification
+    changeNindsPreclinicalNeiClassification, fixDefinitions, fixReferenceDocuments, getCell,
 } from 'ingester/ninds/csv/shared/utility';
 import { createNindsCde } from 'ingester/ninds/csv/cde/cde';
 
 async function fixCde(existingCde: any) {
-    const cdeToFix = existingCde.toObject();
-    forEach(cdeToFix.definitions, d => {
-        d.definition = trim(d.definition);
-        d.tags = d.tags.filter((t: string) => !isEqual(t, 'Preferred Question Text'));
-    });
-    existingCde.definitions = cdeToFix.definitions;
+    fixDefinitions(existingCde);
+    fixReferenceDocuments(existingCde);
+
     const savedCde = await existingCde.save().catch((err: any) => {
-        console.log(`Not able to save form when fixCde ${cdeToFix.tinyId} ${err}`);
+        console.log(`Not able to save form when fixCde ${existingCde.tinyId} ${err}`);
         process.exit(1);
     });
     return savedCde;

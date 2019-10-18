@@ -9,6 +9,7 @@ import { parseIds } from 'ingester/ninds/csv/form/ParseIds';
 import { parseAttachments } from 'ingester/ninds/csv/form/ParseAttachments';
 import { parseClassification } from 'ingester/ninds/csv/form/ParseClassification';
 import { parseFormElements } from 'ingester/ninds/csv/form/ParseFormElements';
+import { classifyItem } from 'server/classification/orgClassificationSvc';
 
 export async function createNindsForm(formName: string, csvFileName: string, rows: any[]) {
     const designations = parseDesignations(formName);
@@ -42,5 +43,12 @@ export async function createNindsForm(formName: string, csvFileName: string, row
     };
     nindsForm.formElements = await parseFormElements(nindsForm, rows);
     parseClassification(nindsForm, rows);
+
+    const DEFAULT_CLASSIFICATION = ['Preclinical + NEI'];
+
+    if (nindsForm.classification.length === 0) {
+        classifyItem(nindsForm, 'NINDS', DEFAULT_CLASSIFICATION.concat(['Not Classified']));
+    }
+
     return nindsForm;
 }

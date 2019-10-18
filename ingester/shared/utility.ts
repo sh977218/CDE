@@ -19,7 +19,7 @@ export const NINDS_PRECLINICAL_NEI_FILE_PATH = 'S:/MLB/CDE/NINDS/Preclinical + N
 export const sourceMap = {
     LOINC: ['LOINC'],
     PhenX: ['PhenX', 'PhenX Variable'],
-    NINDS: ['NINDS', 'NINDS Variable Name', 'NINDS caDSR', 'NINDS Preclinical'],
+    NINDS: ['NINDS', 'NINDS Variable Name', 'NINDS caDSR', 'NINDS Preclinical', 'BRICS Variable Name'],
     NCI: ['NCI', 'caDSR']
 };
 export const TODAY = new Date().toJSON();
@@ -49,6 +49,7 @@ export function wipeBeforeCompare(obj: any) {
     delete obj.views;
     delete obj.noRenderAllowed;
     delete obj.isCopyrighted;
+    delete obj.version;
 
     if (obj.valueDomain) {
         delete obj.valueDomain.datatypeValueList;
@@ -336,6 +337,9 @@ export function compareElt(newEltObj, existingEltObj, source) {
         delete existingEltObj.newEltObj;
     }
     const result = DiffJson.diff(existingEltObj, newEltObj);
+    if (!isEmpty(result)) {
+        console.log('a');
+    }
     return result;
 }
 
