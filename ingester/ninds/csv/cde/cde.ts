@@ -9,10 +9,13 @@ import { parseDesignations } from 'ingester/ninds/csv/cde/ParseDesignations';
 import { parseDefinitions } from 'ingester/ninds/csv/cde/ParseDefinitions';
 import { parseClassification } from 'ingester/ninds/csv/cde/ParseClassification';
 import { classifyItem } from 'server/classification/orgClassificationSvc';
+import { parseSources } from 'ingester/ninds/csv/shared/ParseSources';
 
 export async function createNindsCde(row: any) {
     const designations = parseDesignations(row);
     const definitions = parseDefinitions(row);
+    const sources = parseSources();
+
     const ids = parseIds(row);
     const valueDomain = parseValueDomain(row);
     const referenceDocuments = await parseReferenceDocuments(row);
@@ -28,10 +31,12 @@ export async function createNindsCde(row: any) {
         createdBy: BATCHLOADER,
         created,
         imported,
+        sources,
         designations,
         definitions,
         valueDomain,
         referenceDocuments,
+        attachments: [],
         properties,
         ids,
         classification: []

@@ -1,12 +1,14 @@
 import { readdirSync, readFileSync } from 'fs';
-import { sortBy, isEqual } from 'lodash';
+import { sortBy, groupBy } from 'lodash';
 import { loadFormByCsv } from 'ingester/ninds/Loader/loadNindsForm';
 import { formatRows } from 'ingester/ninds/csv/shared/utility';
-import { NINDS_PRECLINICAL_NEI_FILE_PATH } from 'ingester/shared/utility';
+import { mergeElt, NINDS_PRECLINICAL_NEI_FILE_PATH } from 'ingester/shared/utility';
+import { createNindsCde } from 'ingester/ninds/csv/cde/cde';
+import { doOneRow } from 'ingester/ninds/csv/form/ParseFormElements';
 
 const CSV = require('csv');
 
-function parseOneCsv(csvFileName: string) {
+function parseOneCsv(csvFileName: string): Promise<any> {
     return new Promise(resolve => {
         const csvPath = `${NINDS_PRECLINICAL_NEI_FILE_PATH}/${csvFileName}`;
         const cond = {
@@ -29,23 +31,41 @@ function parseOneCsv(csvFileName: string) {
     });
 }
 
+async function loadNindsCde(variablename, rows) {
+    const cde = await createNindsCde(rows[0]);
+    for (const row of rows) {
+        const newCde = await createNindsCde(row);
+        mergeElt(cde, newCde, 'NINDS', 'NINDS');
+    }
+    await doOneRow(cde, variablename);
+}
+
+async function loadNindsCdes(cdeRows) {
+    const result = groupBy(cdeRows, 'variablename');
+    for (const variablename in result) {
+        if (result.hasOwnProperty(variablename)) {
+            await loadNindsCde(variablename, result[variablename]);
+        }
+    }
+}
+
 async function run() {
     const csvFiles = readdirSync(NINDS_PRECLINICAL_NEI_FILE_PATH);
     const csvFileNames: string[] = sortBy(csvFiles);
-    let i = 0;
+    let cdeRows: any[] = [];
     for (const csvFileName of csvFileNames) {
-        const isCsv = csvFileName.indexOf('.csv') !== -1;
-        if (isCsv) {
-            const csvResult = await parseOneCsv(csvFileName);
-            console.log(`Starting csvFileName: ${csvFileName}.`);
-            await loadFormByCsv(csvResult);
-            console.log(`Finished csvFileName: ${csvFileName} ${i}`);
-        } else {
-            console.log('Unknown file type: ' + csvFileName);
-            process.exit(1);
-        }
-        i++;
+        const csvResult = await parseOneCsv(csvFileName);
+        cdeRows = cdeRows.concat(csvResult.rows);
     }
+    await loadNindsCdes(cdeRows);
+
+    for (const csvFileName of csvFileNames) {
+        const csvResult = await parseOneCsv(csvFileName);
+        console.log(`Starting csvFileName: ${csvFileName}.`);
+        await loadFormByCsv(csvResult);
+        console.log(`Finished csvFileName: ${csvFileName}`);
+    }
+
 }
 
 

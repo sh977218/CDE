@@ -19,12 +19,9 @@ async function fixCde(existingCde: any) {
     return savedCde;
 }
 
-async function doOneRow(row: any) {
-    const nindsCde = await createNindsCde(row);
+export async function doOneRow(nindsCde, variableName) {
     const newCde = new dataElementModel(nindsCde);
     const newCdeObj = newCde.toObject();
-
-    const variableName = getCell(row, 'Variable Name');
     let existingCde: any = await dataElementModel.findOne({archived: false, 'ids.id': variableName});
     if (!existingCde) {
         existingCde = await newCde.save().catch((err: any) => {
@@ -107,7 +104,12 @@ export async function parseFormElements(form: any, rows: any[]): Promise<any[]> 
 
     let prevCategoryGroup = '';
     for (const row of rows) {
-        const cde = await doOneRow(row);
+        const variableName = getCell(row, 'Variable Name');
+        const cde: any = await dataElementModel.findOne({archived: false, 'ids.id': variableName});
+        if (!cde) {
+            console.log(`${variableName} not found.`);
+            process.exit(1);
+        }
         const formElement = convertCsvRowToFormElement(row, cde);
         let categoryGroup = getCell(row, 'Category/Group');
         if (isEmpty(categoryGroup)) {
