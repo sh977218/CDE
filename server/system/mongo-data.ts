@@ -238,6 +238,9 @@ export function getFile(user, id, res) {
                     || !file.metadata.status
                     || file.metadata.status === 'approved'
                     || hasRole(user, 'AttachmentReviewer')) {
+                    if (file.contentType.indexOf('csv') !== -1) {
+                        res.setHeader('Content-disposition', 'attachment; filename=' + file.filename);
+                    }
                     res.contentType(file.contentType);
                     res.header('Accept-Ranges', 'bytes');
                     res.header('Content-Length', file.length);

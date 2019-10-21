@@ -1,7 +1,7 @@
 import { Builder, By } from 'selenium-webdriver';
 import * as DiffJson from 'diff-json';
 import * as moment from 'moment';
-import { find, findIndex, isEmpty, isEqual, lastIndexOf, lowerCase, sortBy, uniq } from 'lodash';
+import { find, differenceWith, noop, findIndex, isEmpty, isEqual, lastIndexOf, lowerCase, sortBy, uniq } from 'lodash';
 import * as mongo_cde from 'server/cde/mongo-cde';
 import { dataElementSourceModel } from 'server/cde/mongo-cde';
 import * as mongo_form from 'server/form/mongo-form';
@@ -9,17 +9,21 @@ import { formSourceModel } from 'server/form/mongo-form';
 import { PhenxURL } from 'ingester/createMigrationConnection';
 import { CdeId, Classification, Definition, Designation, Property, ReferenceDocument } from 'shared/models.model';
 import { FormElement } from 'shared/form/form.model';
+import { gfs } from 'server/system/mongo-data';
+import { Readable } from 'stream';
 
 require('chromedriver');
+
+export const NINDS_PRECLINICAL_NEI_FILE_PATH = 'S:/MLB/CDE/NINDS/Preclinical + NEI/10-7-2019/';
 
 export const sourceMap = {
     LOINC: ['LOINC'],
     PhenX: ['PhenX', 'PhenX Variable'],
-    NINDS: ['NINDS', 'NINDS Variable Name', 'NINDS caDSR'],
-    NCI: ['caDSR']
+    NINDS: ['NINDS', 'NINDS Variable Name', 'NINDS caDSR', 'NINDS Preclinical', 'BRICS Variable Name'],
+    NCI: ['NCI', 'caDSR']
 };
 export const TODAY = new Date().toJSON();
-export const lastMigrationScript = `load PhenX on ${moment().format('DD MMMM YYYY')}`;
+export const lastMigrationScript = `load Preclinical + NEI on ${moment().format('DD MMMM YYYY')}`;
 
 export const BATCHLOADER_USERNAME = 'batchloader';
 export const BATCHLOADER = {
@@ -30,14 +34,6 @@ export const BATCHLOADER = {
 export const created = TODAY;
 export const imported = TODAY;
 export const version = '1.0';
-
-export function removeWhite(text: string) {
-    if (!text) {
-        return '';
-    } else {
-        return text.replace(/\s+/g, ' ');
-    }
-}
 
 export function sanitizeText(s: string) {
     return s.replace(/:/g, '').replace(/\./g, '').trim();
@@ -53,6 +49,7 @@ export function wipeBeforeCompare(obj: any) {
     delete obj.views;
     delete obj.noRenderAllowed;
     delete obj.isCopyrighted;
+    delete obj.version;
 
     if (obj.valueDomain) {
         delete obj.valueDomain.datatypeValueList;
@@ -104,6 +101,7 @@ export async function updateRowArtifact(existingElt, newElt, source, classificat
     if (existingElt.elementType === 'form') {
         mongooseModel = formSourceModel;
     }
+    newElt.source = source;
     const updateResult = await mongooseModel.updateOne({
         tinyId: existingElt.tinyId,
         source
@@ -164,6 +162,9 @@ export function mergeClassificationByOrg(existingObj, newObj, orgName: string = 
 }
 
 export function updateCde(elt: any, user: any, options = {}) {
+    if (elt.tinyId === '7kJpuiGs4') {
+        console.log('b');
+    }
     elt.lastMigrationScript = lastMigrationScript;
     return new Promise((resolve, reject) => {
         mongo_cde.update(elt, user, options, (err, savedElt) => {
@@ -264,6 +265,45 @@ function getChildren(formElements: FormElement[]) {
     return ids;
 }
 
+export function loopFormElements(formElements: FormElement[], options: any = {
+    onQuestion: noop,
+    onSection: noop,
+    onForm: noop
+}) {
+    if (formElements) {
+        formElements.forEach(formElement => {
+            if (formElement.elementType === 'question') {
+                loopFormElements(formElement.formElements, options.onSection(formElement));
+            } else if (formElement.elementType === 'section') {
+                loopFormElements(formElement.formElements, options.onForm(formElement));
+            } else if (formElement.elementType === 'form') {
+                loopFormElements(formElement.formElements, options.onQuestion(formElement));
+            }
+        });
+    }
+}
+
+function diffWithRecentUpdated(existingEltObj, newEltObj) {
+    // is any new designations not in existing designations
+    const newDesignations = differenceWith(newEltObj.designations, existingEltObj.designations, isEqual);
+    const isDesignationsDiff = newDesignations.length > 0;
+
+    const newDefinitions = differenceWith(newEltObj.definitions, existingEltObj.definitions, isEqual);
+    const isDefinitionsDiff = newDefinitions.length > 0;
+
+    const newRefDocs = differenceWith(newEltObj.referenceDocuments, existingEltObj.referenceDocuments, isEqual);
+    const isRefDocsDiff = newRefDocs.length > 0;
+
+    const newProperties = differenceWith(newEltObj.properties, existingEltObj.properties, isEqual);
+    const isPropertiesDiff = newProperties.length > 0;
+
+    const newIds = differenceWith(newEltObj.ids, existingEltObj.ids, isEqual);
+    const isIdsDiff = newIds.length > 0;
+
+
+    DiffJson.diff(existingEltObj, newEltObj);
+}
+
 // Compare two elements
 export function compareElt(newEltObj, existingEltObj, source) {
     if (newEltObj.elementType !== existingEltObj.elementType) {
@@ -317,7 +357,15 @@ export function compareElt(newEltObj, existingEltObj, source) {
         delete existingEltObj.classification;
         delete existingEltObj.newEltObj;
     }
-    const result = DiffJson.diff(existingEltObj, newEltObj);
+    let result = DiffJson.diff(existingEltObj, newEltObj);
+/*
+    if (existingEltObj.lastMigrationScript === newEltObj.lastMigrationScript) {
+        result = diffWithRecentUpdated(existingEltObj, newEltObj);
+    }
+    if (!isEmpty(result)) {
+        console.log('a');
+    }
+*/
     return result;
 }
 
@@ -426,9 +474,15 @@ export function mergeIds(existingObj, newObj) {
     const existingIds: CdeId[] = existingObj.ids;
     const newIds: CdeId[] = newObj.ids;
     newIds.forEach(newId => {
-        const i = findIndex(existingIds, o =>
-            isEqual(o.source, newId.source) &&
-            isEqual(o.id, newId.id));
+        const i = findIndex(existingIds, o => {
+            if (o.source === 'NINDS Preclinical' && newId.source === 'BRICS Variable Name') {
+                return true;
+            } else if (o.source === 'NINDS Variable Name' && newId.source === 'BRICS Variable Name') {
+                return true;
+            } else {
+                return isEqual(o.source, newId.source) && isEqual(o.id, newId.id);
+            }
+        });
         if (i === -1) {
             existingIds.push(newId);
         } else {
@@ -699,5 +753,46 @@ export function fixFormCopyright(form) {
     if (isEmpty(form.copyright)) {
         delete form.copyright;
     }
+}
+
+export function addAttachment(readable: Readable, attachment: any) {
+    return new Promise((resolve, reject) => {
+        const file: any = {
+            stream: readable
+        };
+        const streamDescription = {
+            filename: attachment.filename,
+            mode: 'w',
+            content_type: attachment.filetype,
+            metadata: {
+                status: 'approved'
+            }
+        };
+        gfs.findOne({md5: file.md5}, (err: any, existingFile: any) => {
+            if (err) {
+                reject(err);
+            } else if (existingFile) {
+                attachment.fileid = existingFile._id;
+                resolve();
+            } else {
+                file.stream.pipe(gfs.createWriteStream(streamDescription)
+                    .on('close', (newFile: any) => {
+                        attachment.fileid = newFile._id;
+                        resolve();
+                    })
+                    .on('error', reject));
+            }
+        });
+    });
+}
+
+
+// Utility methods related to cde and form
+export function sortReferenceDocuments(referenceDocuments) {
+    return sortBy(referenceDocuments, ['title', 'uri']);
+}
+
+export function sortProperties(properties) {
+    return sortBy(properties, ['key']);
 }
 
