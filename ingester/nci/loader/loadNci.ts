@@ -47,7 +47,7 @@ function runOneOrg(orgName: string) {
                             createdCdes.push(existingCde.tinyId);
                         } else {
                             const diff = compareElt(newCde.toObject(), existingCde.toObject(), 'NCI');
-                            mergeClassification(existingCde, newCde.toObject(), 'PhenX');
+                            mergeClassification(existingCde, newCde.toObject(), 'NCI');
                             if (isEmpty(diff)) {
                                 existingCde.imported = imported;
                                 existingCde.lastMigrationScript = lastMigrationScript;

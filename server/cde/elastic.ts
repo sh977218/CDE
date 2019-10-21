@@ -1,30 +1,29 @@
+import * as elastic from 'elasticsearch';
 import { handleNotFound } from 'server/errorHandler/errorHandler';
+import { logError, storeQuery } from 'server/log/dbLogger';
+import { buildElasticSearchQuery, elasticsearch as elasticSearchShared } from 'server/system/elastic';
+import { riverFunction, suggestRiverFunction } from 'server/system/elasticSearchInit';
 import { config } from 'server/system/parseConfig';
-import { CbErr, ElasticQueryResponse, ElasticQueryResponseDe, SearchResponseAggregationDe, User } from 'shared/models.model';
+import { DataElementElastic } from 'shared/de/dataElement.model';
+import { CbErr, CbError, ElasticQueryResponse, SearchResponseAggregationDe, User } from 'shared/models.model';
 import { SearchSettingsElastic } from 'shared/search/search.model';
-
-const sharedElastic = require('../system/elastic');
-const dbLogger = require('../log/dbLogger');
-const logging = require('../system/logging');
-const elastic = require('elasticsearch');
-const esInit = require('../system/elasticSearchInit');
 
 export const esClient = new elastic.Client({
     hosts: config.elastic.hosts
 });
 
 export function updateOrInsert(elt) {
-    esInit.riverFunction(elt.toObject(), doc => {
+    riverFunction(elt.toObject(), doc => {
         if (doc) {
             let doneCount = 0;
             let doneError;
             const done = err => {
                 if (err) {
-                    dbLogger.logError({
+                    logError({
                         message: 'Unable to Index document: ' + doc.tinyId,
                         origin: 'cde.elastic.updateOrInsert',
                         stack: err,
-                        details: ""
+                        details: '',
                     });
                 }
                 if (doneCount >= 1) {
@@ -40,7 +39,7 @@ export function updateOrInsert(elt) {
                 id: doc.tinyId,
                 body: doc
             }, done);
-            esInit.suggestRiverFunction(elt, sugDoc => {
+            suggestRiverFunction(elt, sugDoc => {
                 esClient.index({
                     index: config.elastic.cdeSuggestIndex.name,
                     type: 'suggest',
@@ -52,10 +51,14 @@ export function updateOrInsert(elt) {
     });
 }
 
-export function elasticsearch(user: User, settings: SearchSettingsElastic, cb: CbErr<SearchResponseAggregationDe>) {
-    const query = sharedElastic.buildElasticSearchQuery(user, settings);
-    if (query.size > 100) return cb('size exceeded');
-    if ((query.from + query.size) > 10000) return cb('page size exceeded');
+export function elasticsearch(user: User, settings: SearchSettingsElastic, cb: CbError<SearchResponseAggregationDe>) {
+    const query = buildElasticSearchQuery(user, settings);
+    if (query.size > 100) {
+        return cb(new Error('size exceeded'));
+    }
+    if ((query.from + query.size) > 10000) {
+        return cb(new Error('page size exceeded'));
+    }
     if (settings.includeAggregations) {
         query.aggregations.datatype = {
             filter: settings.filterDatatype,
@@ -77,9 +80,9 @@ export function elasticsearch(user: User, settings: SearchSettingsElastic, cb: C
         query._source = {excludes: ['flatProperties', 'properties', 'classification.elements', 'formElements']};
     }
 
-    sharedElastic.elasticsearch('cde', query, settings, (err, result) => {
+    elasticSearchShared('cde', query, settings, (err, result) => {
         if (result && result.cdes && result.cdes.length > 0) {
-            dbLogger.storeQuery(settings);
+            storeQuery(settings);
         }
         cb(err, result);
     });
@@ -97,65 +100,64 @@ const mltConf = {
 };
 
 export function morelike(id, callback) {
-    let from = 0;
-    let limit = 20;
-    let mltPost = {
-        query: {
-            bool: {
-                must: {
-                    more_like_this: {
-                        fields: mltConf.mlt_fields,
-                        like: [
-                            {
-                                _id: id
-                            }
-                        ],
-                        min_term_freq: 1,
-                        min_doc_freq: 1,
-                        min_word_length: 2
-                    }
-                },
-                filter: {
-                    bool: {
-                        must_not: [
-                            {
-                                term: {
-                                    'registrationState.registrationStatus': 'Retired'
+    const from = 0;
+    const limit = 20;
+    esClient.search<DataElementElastic>({
+        index: config.elastic.index.name,
+        type: 'dataelement',
+        body: {
+            query: {
+                bool: {
+                    must: {
+                        more_like_this: {
+                            fields: mltConf.mlt_fields,
+                            like: [
+                                {
+                                    _id: id
                                 }
-                            },
-                            {
-                                term: {
-                                    isFork: 'true'
+                            ],
+                            min_term_freq: 1,
+                            min_doc_freq: 1,
+                            min_word_length: 2
+                        }
+                    },
+                    filter: {
+                        bool: {
+                            must_not: [
+                                {
+                                    term: {
+                                        'registrationState.registrationStatus': 'Retired'
+                                    }
+                                },
+                                {
+                                    term: {
+                                        isFork: 'true'
+                                    }
                                 }
-                            }
-                        ]
+                            ]
+                        }
                     }
                 }
             }
-        }
-    };
-
-    esClient.search({
-        index: config.elastic.index.name,
-        type: 'dataelement',
-        body: mltPost
-    }, handleNotFound<ElasticQueryResponseDe>({}, response => {
-            const result = {
-                cdes: []
-                , pages: Math.ceil(response.hits.total / limit)
-                , page: Math.ceil(from / limit)
-                , totalNumber: response.hits.total
+        },
+    }, handleNotFound({}, response => {
+            const result: any = {
+                cdes: [],
+                pages: Math.ceil(response.hits.total / limit),
+                page: Math.ceil(from / limit),
+                totalNumber: response.hits.total,
             };
-            for (let i = 0; i < response.hits.hits.length; i++) {
-                const thisCde = response.hits.hits[i]._source;
+            response.hits.hits.forEach(hit => {
+                const thisCde = hit._source;
                 if (thisCde.valueDomain && thisCde.valueDomain.datatype === 'Value List' && thisCde.valueDomain.permissibleValues
                     && thisCde.valueDomain.permissibleValues.length > 10) {
                     thisCde.valueDomain.permissibleValues = thisCde.valueDomain.permissibleValues.slice(0, 10);
                 }
                 result.cdes.push(thisCde);
-            }
+            });
             callback(result);
-        }));
+        })
+    );
 }
 
 export function byTinyIdList(idList, size, cb) {
@@ -169,7 +171,7 @@ export function byTinyIdList(idList, size, cb) {
                     values: idList
                 }
             },
-            size: size
+            size,
         }
     }, handleNotFound<ElasticQueryResponse>({}, response => {
         // @TODO possible to move this sort to elastic search?

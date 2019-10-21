@@ -84,7 +84,8 @@ async function doOneRedCap(redCap, redCaps, protocol, newForm) {
         await new commentModel(comment).save();
     }
     await updateRowArtifact(existingCde, newCdeObj, 'PhenX', 'PhenX');
-    return existingCde;
+    const savedCde: any = await dataElementModel.findOne({archived: false, 'ids.id': cdeId});
+    return savedCde;
 }
 
 export async function parseFormElements(protocol, attachments, newForm) {
