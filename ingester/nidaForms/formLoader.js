@@ -72,7 +72,6 @@ setTimeout(function() {
                                 , permissibleValues: cde.valueDomain.permissibleValues
                             }
                             , datatype: cde.valueDomain.datatype
-                            //, unitsOfMeasure: [{system: '', code: cde.valueDomain.uom}]
                             , answers: cde.valueDomain.permissibleValues
                         }
                     });

@@ -58,7 +58,9 @@ formSchema.pre('save', function preSaveUsesThisForSomeReason(next) {
             });
         }
         next();
-    }, (err: string) => next(new Error(`Form ${elt.tinyId} has error: ${err}`)));
+    }, (err: string) => {
+        next(new Error(`Form ${elt.tinyId} has error: ${err}`))
+    });
 });
 
 const conn = establishConnection(config.database.appData);
@@ -198,7 +200,8 @@ export function count(condition: any, callback: CbError<number>) {
     return formModel.countDocuments(condition, callback);
 }
 
-export function update(elt: CdeForm, user: User, options: any = {}, callback: CbError<CdeForm> = () => {}) {
+export function update(elt: CdeForm, user: User, options: any = {}, callback: CbError<CdeForm> = () => {
+}) {
     formModel.findById(elt._id, (err, form) => {
         if (err || !form) {
             return callback(err || new Error('Document does not exist.'));
@@ -212,8 +215,6 @@ export function update(elt: CdeForm, user: User, options: any = {}, callback: Cb
         }
         elt.history.push(form._id);
         updateUser(elt, user);
-        // user cannot edit sources.
-        elt.sources = form.sources;
 
         // user cannot edit sources.
         if (!options.updateSource) {
