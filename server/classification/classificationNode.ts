@@ -11,14 +11,18 @@ const saveEltClassif = (err, elt, cb) => {
         if (cb) { cb(err); }
         return;
     }
+    trimClassif(elt);
+    elt.updated = new Date();
+    elt.markModified('classification');
+    elt.save(cb);
+};
+
+const trimClassif = (elt: Item) => {
     elt.classification.forEach((steward, i) => {
         if (steward.elements.length === 0) {
             elt.classification.splice(i, 1);
         }
     });
-    elt.updated = new Date();
-    elt.markModified('classification');
-    elt.save(cb);
 };
 
 export async function eltClassification(body, action, dao, cb) {
@@ -85,7 +89,9 @@ export async function removeClassification(body, dao, cb) {
     const elt = await dao.byId(body.eltId);
     const steward = findSteward(elt, body.orgName);
     const err = removeCategory(steward.object, body.categories);
-    saveEltClassif(err, elt, cb);
+    trimClassif(elt);
+    elt.markModified('classification');
+    elt.save(cb);
 }
 
 export async function classifyEltsInBoard(req, dao, cb) {
