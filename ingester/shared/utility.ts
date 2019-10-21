@@ -1,7 +1,7 @@
 import { Builder, By } from 'selenium-webdriver';
 import * as DiffJson from 'diff-json';
 import * as moment from 'moment';
-import { find, differenceWith, noop, findIndex, isEmpty, isEqual, lastIndexOf, lowerCase, sortBy, uniq } from 'lodash';
+import { find, noop, findIndex, isEmpty, isEqual, lastIndexOf, lowerCase, sortBy, uniq } from 'lodash';
 import * as mongo_cde from 'server/cde/mongo-cde';
 import { dataElementSourceModel } from 'server/cde/mongo-cde';
 import * as mongo_form from 'server/form/mongo-form';
@@ -20,6 +20,7 @@ export const sourceMap = {
     LOINC: ['LOINC'],
     PhenX: ['PhenX', 'PhenX Variable'],
     NINDS: ['NINDS', 'NINDS Variable Name', 'NINDS caDSR', 'NINDS Preclinical', 'BRICS Variable Name'],
+    'NINDS Preclinical NEI': ['NINDS', 'NINDS Variable Name', 'NINDS caDSR', 'NINDS Preclinical', 'BRICS Variable Name', 'NINDS Preclinical NEI'],
     NCI: ['NCI', 'caDSR']
 };
 export const TODAY = new Date().toJSON();
@@ -283,27 +284,6 @@ export function loopFormElements(formElements: FormElement[], options: any = {
     }
 }
 
-function diffWithRecentUpdated(existingEltObj, newEltObj) {
-    // is any new designations not in existing designations
-    const newDesignations = differenceWith(newEltObj.designations, existingEltObj.designations, isEqual);
-    const isDesignationsDiff = newDesignations.length > 0;
-
-    const newDefinitions = differenceWith(newEltObj.definitions, existingEltObj.definitions, isEqual);
-    const isDefinitionsDiff = newDefinitions.length > 0;
-
-    const newRefDocs = differenceWith(newEltObj.referenceDocuments, existingEltObj.referenceDocuments, isEqual);
-    const isRefDocsDiff = newRefDocs.length > 0;
-
-    const newProperties = differenceWith(newEltObj.properties, existingEltObj.properties, isEqual);
-    const isPropertiesDiff = newProperties.length > 0;
-
-    const newIds = differenceWith(newEltObj.ids, existingEltObj.ids, isEqual);
-    const isIdsDiff = newIds.length > 0;
-
-
-    DiffJson.diff(existingEltObj, newEltObj);
-}
-
 // Compare two elements
 export function compareElt(newEltObj, existingEltObj, source) {
     if (newEltObj.elementType !== existingEltObj.elementType) {
@@ -358,14 +338,14 @@ export function compareElt(newEltObj, existingEltObj, source) {
         delete existingEltObj.newEltObj;
     }
     let result = DiffJson.diff(existingEltObj, newEltObj);
-/*
-    if (existingEltObj.lastMigrationScript === newEltObj.lastMigrationScript) {
-        result = diffWithRecentUpdated(existingEltObj, newEltObj);
-    }
-    if (!isEmpty(result)) {
-        console.log('a');
-    }
-*/
+    /*
+        if (existingEltObj.lastMigrationScript === newEltObj.lastMigrationScript) {
+            result = diffWithRecentUpdated(existingEltObj, newEltObj);
+        }
+        if (!isEmpty(result)) {
+            console.log('a');
+        }
+    */
     return result;
 }
 
@@ -505,7 +485,10 @@ export function mergeClassification(existingElt, newObj, classificationOrgName) 
 export function mergeSources(existingObj, newObj, sources) {
     const existingSources = existingObj.sources;
     const newSources = newObj.sources;
-    const otherSources = existingSources.filter(o => sources.indexOf(o.sourceName) === -1);
+    const otherSources = existingSources.filter(o => {
+        const index = sources.indexOf(o.sourceName);
+        return index === -1;
+    });
     existingObj.sources = newSources.concat(otherSources);
 }
 
@@ -796,3 +779,15 @@ export function sortProperties(properties) {
     return sortBy(properties, ['key']);
 }
 
+export function findOneElt(elts) {
+    const eltsLength = elts.length;
+    if (eltsLength === 0) {
+        return null;
+    } else {
+        if (eltsLength > 1) {
+            console.log(`Multiple ${elts[0].elementType} found. TinyIds:`);
+            elts.forEach((e: any) => console.log(`${e.tinyId} ${e.registrationState.registrationStatus} `));
+        }
+        return elts[0];
+    }
+}

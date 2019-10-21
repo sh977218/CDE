@@ -21,6 +21,10 @@ attachables.push(articleModel);
 
 export const type = 'articles';
 
+export function byId(id: string, cb: CbError<ArticleDocument>) {
+    articleModel.findOne({_id: id}, cb);
+}
+
 export async function byKey(key: string) {
     return articleModel.findOne({key});
 }

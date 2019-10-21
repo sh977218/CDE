@@ -1,6 +1,6 @@
 import { isEmpty, words, forEach, replace, filter, join, isEqual, trim } from 'lodash';
 import {
-    BATCHLOADER, compareElt, imported, lastMigrationScript, loopFormElements, mergeClassification,
+    BATCHLOADER, compareElt, findOneElt, imported, lastMigrationScript, loopFormElements, mergeClassification,
     mergeClassificationByOrg, mergeElt,
     updateForm, updateRowArtifact
 } from 'ingester/shared/utility';
@@ -42,7 +42,8 @@ export async function loadFormByCsv({rows, csvFileName}: any) {
     const nindsForm = await createNindsForm(formName, csvFileName, rows);
     const newForm = new formModel(nindsForm);
     const newFormObj = newForm.toObject();
-    let existingForm: any = await formModel.findOne({archived: false, 'designations.designation': formName});
+    const existingForms: any[] = await formModel.find({archived: false, 'designations.designation': formName});
+    let existingForm: any = findOneElt(existingForms);
     if (!existingForm) {
         existingForm = await newForm.save().catch((err: any) => {
             console.log(`Not able to save form when save new NINDS form ${newForm.tinyId} ${err}`);
@@ -53,7 +54,7 @@ export async function loadFormByCsv({rows, csvFileName}: any) {
         // @TODO remove after load
         existingForm = await fixForm(existingForm);
 
-        const diff = compareElt(newForm.toObject(), existingForm.toObject(), 'NINDS');
+        const diff = compareElt(newForm.toObject(), existingForm.toObject(), 'NINDS Preclinical NEI');
         changeNindsPreclinicalNeiClassification(existingForm, newForm.toObject(), 'NINDS');
 
         if (isEmpty(diff)) {
@@ -66,7 +67,7 @@ export async function loadFormByCsv({rows, csvFileName}: any) {
             console.log(`same form tinyId: ${existingForm.tinyId}`);
         } else {
             const existingFormObj = existingForm.toObject();
-            mergeElt(existingFormObj, newFormObj, 'NINDS', 'NINDS');
+            mergeElt(existingFormObj, newFormObj, 'NINDS Preclinical NEI', 'NINDS');
             await updateForm(existingFormObj, BATCHLOADER, {updateSource: true});
             console.log(`change form tinyId: ${existingForm.tinyId}`);
         }
