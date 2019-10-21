@@ -1,5 +1,5 @@
 import { readdirSync, readFileSync } from 'fs';
-import { sortBy, groupBy, forEach, trim, isEmpty } from 'lodash';
+import { sortBy, groupBy, isEmpty } from 'lodash';
 import { loadFormByCsv } from 'ingester/ninds/Loader/loadNindsForm';
 import {
     changeNindsPreclinicalNeiClassification, fixDefinitions, fixReferenceDocuments, formatRows
@@ -51,7 +51,16 @@ async function fixCde(existingCde: any) {
 async function doOneRow(nindsCde, variableName) {
     const newCde = new dataElementModel(nindsCde);
     const newCdeObj = newCde.toObject();
-    const existingCdes: any[] = await dataElementModel.find({archived: false, 'ids.id': variableName});
+    const cond = {
+        archived: false,
+        ids: {
+            $elemMatch: {
+                source: 'NINDS Variable Name',
+                id: variableName
+            }
+        }
+    };
+    const existingCdes: any[] = await dataElementModel.find(cond);
     let existingCde: any = findOneElt(existingCdes);
     if (!existingCde) {
         existingCde = await newCde.save().catch((err: any) => {

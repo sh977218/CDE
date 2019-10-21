@@ -42,7 +42,12 @@ export async function loadFormByCsv({rows, csvFileName}: any) {
     const nindsForm = await createNindsForm(formName, csvFileName, rows);
     const newForm = new formModel(nindsForm);
     const newFormObj = newForm.toObject();
-    const existingForms: any[] = await formModel.find({archived: false, 'designations.designation': formName});
+    const cond = {
+        archived: false,
+        'classification.elements.name': 'Preclinical TBI',
+        'designations.designation': formName
+    };
+    const existingForms: any[] = await formModel.find(cond);
     let existingForm: any = findOneElt(existingForms);
     if (!existingForm) {
         existingForm = await newForm.save().catch((err: any) => {
