@@ -6,7 +6,6 @@ import { riverFunction, suggestRiverFunction } from 'server/system/elasticSearch
 import { config } from 'server/system/parseConfig';
 import { DataElementElastic } from 'shared/de/dataElement.model';
 import { CbError, ElasticQueryResponse, SearchResponseAggregationDe, User } from 'shared/models.model';
-import { CbError, ElasticQueryResponse, SearchResponseAggregationDe, User } from 'shared/models.model';
 import { SearchSettingsElastic } from 'shared/search/search.model';
 import { storeQuery } from 'server/log/storedQueryDb';
 
