@@ -22,12 +22,14 @@ function fetchPubmedRef(pmId: string) {
                 } else if (response.statusCode === 200) {
                     const $ = cheerio.load(body);
                     const title = $('.rprt_all h1').text();
-                    if (!isEmpty(title)) {
-                        refDoc.title = trim(title);
+                    const trimTitle = trim(title);
+                    if (!isEmpty(trimTitle)) {
+                        refDoc.title = trimTitle;
                     }
                     const abstracttext = $('.abstr div').contents().text();
-                    if (!isEmpty(abstracttext)) {
-                        refDoc.text = trim(abstracttext);
+                    const trimAbstracttext = trim(abstracttext);
+                    if (!isEmpty(trimAbstracttext)) {
+                        refDoc.text = trimAbstracttext;
                     }
                     if (!isEmpty(refDoc)) {
                         refDoc.docType = 'text';
