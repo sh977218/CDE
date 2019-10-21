@@ -77,8 +77,8 @@ export function jobStatus(type, callback) {
     JobQueue.findOne({type}, callback);
 }
 
-export function updateJobStatus(type, status, callback) {
-    JobQueue.updateOne({type}, {status}, {upsert: true}, callback);
+export function updateJobStatus(type, status, callback?) {
+    return JobQueue.updateOne({type}, {status}, {upsert: true}).exec(callback);
 }
 
 export function removeJobStatus(type, callback) {

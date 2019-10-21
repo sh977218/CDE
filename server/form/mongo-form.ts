@@ -104,7 +104,7 @@ export function byTinyIdList(tinyIdList: string[], cb: CbError<CdeFormElastic[]>
         });
 }
 
-export const byTinyId = (tinyId: string, cb: CbError<CdeFormDocument>) => formModel.findOne({tinyId, archived: false}).exec(cb);
+export const byTinyId = (tinyId: string, cb?: CbError<CdeFormDocument>) => formModel.findOne({tinyId, archived: false}).exec(cb);
 
 export function byTinyIdVersion(tinyId: string, version: string | undefined, cb: CbError<CdeFormDocument>) {
     if (version) {

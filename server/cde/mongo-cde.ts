@@ -94,7 +94,7 @@ export function byExisting(elt: DataElement, cb: CbError<DataElementDocument>) {
 export const byId = (id: string, cb: CbError<DataElementDocument>) => dataElementModel.findOne({_id: id}).exec(cb);
 
 export const byTinyId =
-    (tinyId: string, cb: CbError<DataElementDocument>) => dataElementModel.findOne({tinyId, archived: false}).exec(cb);
+    (tinyId: string, cb?: CbError<DataElementDocument>) => dataElementModel.findOne({tinyId, archived: false}).exec(cb);
 
 export function latestVersionByTinyId(tinyId: string, cb: CbError<string>) {
     dataElementModel.findOne({tinyId, archived: false}, (err, dataElement) => {

@@ -95,6 +95,7 @@ public class EltIdMaps {
         eltMap.put("UnclassifiedCDE", "mkH_UGXEw");
         eltMap.put("Urinary tract surgical procedure indicator", "9h_xBFxdO4e");
         eltMap.put("Urinary tract drug type last year type", "c56fasYoV1T");
+        eltMap.put("Veterans Affairs Toxicity Scale - gastrointenstinal problem often score", "CmKt_yVMM1w");
         eltMap.put("Vision (aura) typical symptom type", "rRqc8KG1RNO");
 
         // Forms
@@ -133,6 +134,7 @@ public class EltIdMaps {
         eltMap.put("Imaging OCT Analysis - Spectralis Report Analysis", "XJrcQ1HSFx");
         eltMap.put("Loinc Widget Test Form", "Q1ncc4Rg_");
         eltMap.put("McGill Quality of Life Questionnaire (MQOL)", "Xk44kSSYe");
+        eltMap.put("VA Toxicity Scale", "7k4PUkrSKg");
 
 
         // Display Profile Tests

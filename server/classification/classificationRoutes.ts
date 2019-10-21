@@ -193,8 +193,11 @@ export function module(roleConfig) {
     }
 
     // TODO this works only for CDEs. Forms TODO later.
-    router.post('/bulk/tinyId', (req, res) => {
-        if (!req.body.orgName || !req.body.categories) { return res.status(400).send('Bad Request'); }
+    router.post('/bulk/tinyId', roleConfig.allowClassify,
+        check('orgName').isString(),
+        check('categories').isArray(),
+        validateBody,
+        (req, res) => {
         const elements = req.body.elements;
         if (elements.length <= 50) {
             bulkClassifyCdes(req.user, req.body.eltId, elements, req.body, handleError({req, res}, () =>
