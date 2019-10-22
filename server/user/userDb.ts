@@ -1,10 +1,10 @@
 import * as mongoose from 'mongoose';
-import { Document, Model } from 'mongoose';
-import { establishConnection } from 'server/system/connections';
-import { addStringtype } from 'server/system/mongoose-stringtype';
-import { config } from 'server/system/parseConfig';
-import { hasRole, rolesEnum } from 'shared/system/authorizationShared';
-import { CbError, CbError1, ModuleAll, User } from 'shared/models.model';
+import {Document, Model} from 'mongoose';
+import {establishConnection} from 'server/system/connections';
+import {addStringtype} from 'server/system/mongoose-stringtype';
+import {config} from 'server/system/parseConfig';
+import {hasRole, rolesEnum} from 'shared/system/authorizationShared';
+import {CbError, CbError1, ModuleAll, User} from 'shared/models.model';
 
 addStringtype(mongoose);
 const Schema = mongoose.Schema;
@@ -127,16 +127,16 @@ export function updateUserIps(userId: string, ips: string[], callback: CbError<U
     }, {new: true}, callback);
 }
 
-export function userByName(name: string, callback: CbError<UserDocument>) {
-    userModel.findOne({username: new RegExp('^' + name + '$', 'i')}, callback);
+export function userByName(name: string, callback?: CbError<UserDocument>) {
+    return userModel.findOne({username: new RegExp('^' + name + '$', 'i')}, callback);
 }
 
 export function userById(id: string, callback: CbError<UserDocument>) {
     userModel.findById(id, userProject, callback);
 }
 
-export function byId(id: string, callback: CbError<UserDocument>) {
-    userModel.findById(id, userProject).exec(callback);
+export function byId(id: string, callback?: CbError<UserDocument>) {
+    return userModel.findById(id, userProject).exec(callback);
 }
 
 export function find(crit: any, cb: CbError1<UserDocument[]>) {
@@ -144,7 +144,7 @@ export function find(crit: any, cb: CbError1<UserDocument[]>) {
 }
 
 // cb(err, {nMatched, nUpserted, nModified})
-export function updateUser(user: User, fields: any, callback: CbError<number, number, number>) {
+export async function updateUser(user: User, fields: any, callback?: CbError<number, number, number>) {
     const update: any = {};
     if (fields.commentNotifications) {
         update.commentNotifications = fields.commentNotifications;
@@ -171,15 +171,15 @@ export function updateUser(user: User, fields: any, callback: CbError<number, nu
     if (fields.publishedForms) {
         update.publishedForms = fields.publishedForms;
     }
-    userModel.updateOne({_id: user._id}, {$set: update}, callback);
+    return userModel.updateOne({_id: user._id}, {$set: update}).exec(callback);
 }
 
 export function usersByName(name: string, callback: CbError<UserDocument[]>) {
     userModel.find({username: new RegExp('^' + name + '$', 'i')}, userProject, callback);
 }
 
-export function usersByUsername(username: string, callback: CbError<UserDocument[]>) {
-    userModel.find({username: new RegExp(username, 'i')}, userProject, callback);
+export function usersByUsername(username: string) {
+    return userModel.find({username: new RegExp(username, 'i')}, userProject);
 }
 
 export function userByUsername(username: string, callback: CbError<UserDocument>) {

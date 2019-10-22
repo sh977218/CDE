@@ -63,7 +63,7 @@ export class NotificationService {
     tasks: NotificationTask[] = [];
 
     authorizeToComment(username: string) {
-        this.http.post('/addCommentAuthor', {username}).subscribe(() => {
+        this.http.post('/server/user/addCommentAuthor', {username}).subscribe(() => {
             this.alert.addAlert('success', 'Role added.');
         }, err => this.alert.httpErrorMessageAlert(err));
     }

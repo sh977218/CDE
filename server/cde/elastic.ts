@@ -1,12 +1,13 @@
 import * as elastic from 'elasticsearch';
 import { handleNotFound } from 'server/errorHandler/errorHandler';
-import { logError, storeQuery } from 'server/log/dbLogger';
+import { logError } from 'server/log/dbLogger';
 import { buildElasticSearchQuery, elasticsearch as elasticSearchShared } from 'server/system/elastic';
 import { riverFunction, suggestRiverFunction } from 'server/system/elasticSearchInit';
 import { config } from 'server/system/parseConfig';
 import { DataElementElastic } from 'shared/de/dataElement.model';
-import { CbErr, CbError, ElasticQueryResponse, SearchResponseAggregationDe, User } from 'shared/models.model';
+import { CbError, ElasticQueryResponse, SearchResponseAggregationDe, User } from 'shared/models.model';
 import { SearchSettingsElastic } from 'shared/search/search.model';
+import { storeQuery } from 'server/log/storedQueryDb';
 
 export const esClient = new elastic.Client({
     hosts: config.elastic.hosts

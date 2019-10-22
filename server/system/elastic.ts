@@ -13,7 +13,6 @@ import { ElasticIndex, indices } from 'server/system/elasticSearchInit';
 import { errorLogger } from 'server/system/logging';
 import { noDbLogger } from 'server/system/noDbLogger';
 import { config } from 'server/system/parseConfig';
-import { myOrgs } from 'server/system/usersrvc';
 import { DataElementElastic } from 'shared/de/dataElement.model';
 import { CdeFormElastic } from 'shared/form/form.model';
 import {
@@ -25,6 +24,7 @@ import {
 import { SearchSettingsElastic } from 'shared/search/search.model';
 import { orderedList } from 'shared/system/regStatusShared';
 import { arrayFill } from 'shared/system/util';
+import { myOrgs } from 'server/orgManagement/orgSvc';
 
 type ElasticCondition = any;
 type MongoCondition = any;
