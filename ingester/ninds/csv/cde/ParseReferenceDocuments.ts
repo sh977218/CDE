@@ -41,7 +41,7 @@ function fetchPubmedRef(pmId: string) {
                     resolve(refDoc);
                 } else {
                     console.log(`http.get.status error: uri: ${uri}  statusCode:${response.statusCode}`);
-                    process.exit(1);
+                    resolve({});
                 }
             });
         }

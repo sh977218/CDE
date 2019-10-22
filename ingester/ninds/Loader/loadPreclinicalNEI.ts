@@ -5,7 +5,7 @@ import {
     changeNindsPreclinicalNeiClassification, fixDefinitions, fixReferenceDocuments, formatRows
 } from 'ingester/ninds/csv/shared/utility';
 import {
-    BATCHLOADER, compareElt, findOneElt, imported, lastMigrationScript, mergeElt, NINDS_PRECLINICAL_NEI_FILE_PATH,
+    BATCHLOADER, compareElt, findOneCde, imported, lastMigrationScript, mergeElt, NINDS_PRECLINICAL_NEI_FILE_PATH,
     updateCde,
     updateRowArtifact
 } from 'ingester/shared/utility';
@@ -53,15 +53,10 @@ async function doOneRow(nindsCde, variableName) {
     const newCdeObj = newCde.toObject();
     const cond = {
         archived: false,
-        ids: {
-            $elemMatch: {
-                source: 'NINDS Variable Name',
-                id: variableName
-            }
-        }
+        'ids.id': variableName
     };
     const existingCdes: any[] = await dataElementModel.find(cond);
-    let existingCde: any = findOneElt(existingCdes);
+    let existingCde: any = findOneCde(existingCdes);
     if (!existingCde) {
         existingCde = await newCde.save().catch((err: any) => {
             console.log(`Not able to save form when save new NINDS cde ${newCde.tinyId} ${err}`);
@@ -125,6 +120,7 @@ async function run() {
     await preLoadNindsCdes(cdeRows);
 
     for (const csvFileName of csvFileNames) {
+//    for (const csvFileName of ['GripStrength_061217.csv']) {
         const csvResult = await parseOneCsv(csvFileName);
         console.log(`Starting csvFileName: ${csvFileName}.`);
         await loadFormByCsv(csvResult);

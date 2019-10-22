@@ -38,6 +38,7 @@ public class ResourcesPage extends BaseAttachmentTest {
         textPresent("RSS Feeds Result:");
 
         // again for coverage of rss cachere
+        goHome();
         goToHelp();
         clickElement(By.id("resourcesLink"));
         textPresent(resourceText);

@@ -779,15 +779,64 @@ export function sortProperties(properties) {
     return sortBy(properties, ['key']);
 }
 
-export function findOneElt(elts) {
-    const eltsLength = elts.length;
-    if (eltsLength === 0) {
+export function findOneCde(cdes) {
+    const cdesLength = cdes.length;
+    if (cdesLength === 0) {
         return null;
+    } else if (cdesLength === 1) {
+        return cdes[0];
     } else {
-        if (eltsLength > 1) {
-            console.log(`Multiple ${elts[0].elementType} found. TinyIds:`);
-            elts.forEach((e: any) => console.log(`${e.tinyId} ${e.registrationState.registrationStatus} `));
+        console.log(`Multiple cdes found. TinyIds:`);
+        cdes.forEach((e: any) => console.log(`${e.tinyId} ${e.registrationState.registrationStatus} `));
+        const preclinicalTbiCdes = cdes.filter(cde => {
+            const nindsPreclinical = cde.ids.filter(id => id.source === 'NINDS Preclinical');
+            const preclinicalCde = nindsPreclinical[0];
+            if (preclinicalCde) {
+                return true;
+            } else {
+                return false;
+            }
+        });
+        const preclinicalTbiCde = preclinicalTbiCdes[0];
+        if (preclinicalTbiCde) {
+            return preclinicalTbiCde;
+        } else {
+            return cdes[0];
         }
-        return elts[0];
+    }
+}
+
+export function findOneForm(forms) {
+    const formsLength = forms.length;
+    if (formsLength === 0) {
+        return null;
+    } else if (formsLength === 1) {
+        return forms[0];
+    } else {
+        console.log(`Multiple forms found. TinyIds:`);
+        forms.forEach((e: any) => console.log(`${e.tinyId} ${e.registrationState.registrationStatus} `));
+        console.log(`Return Preclinical TBI classification`);
+        const preclinicalTbiForms = forms.filter(form => {
+            const classifications = form.classification.filter(c => c.stewardOrg.name === 'NINDS');
+            const nindsClassification = classifications[0];
+            if (nindsClassification) {
+                const preclinicalTbiClassifications = classifications[0].elements.filter(e => e.name === 'Preclinical TBI');
+                const preclinicalTbiClassification = preclinicalTbiClassifications[0];
+                if (preclinicalTbiClassification) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        });
+        const preclinicalTbiForm = preclinicalTbiForms[0];
+        if (preclinicalTbiForm) {
+            return preclinicalTbiForm;
+        } else {
+            console.log('No form found.');
+            process.exit(1);
+        }
     }
 }

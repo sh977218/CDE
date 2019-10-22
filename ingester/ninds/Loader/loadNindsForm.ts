@@ -1,6 +1,6 @@
 import { isEmpty, words, forEach, replace, filter, join, isEqual, trim } from 'lodash';
 import {
-    BATCHLOADER, compareElt, findOneElt, imported, lastMigrationScript, loopFormElements, mergeClassification,
+    BATCHLOADER, compareElt, findOneForm, imported, lastMigrationScript, loopFormElements, mergeClassification,
     mergeClassificationByOrg, mergeElt,
     updateForm, updateRowArtifact
 } from 'ingester/shared/utility';
@@ -44,11 +44,10 @@ export async function loadFormByCsv({rows, csvFileName}: any) {
     const newFormObj = newForm.toObject();
     const cond = {
         archived: false,
-        'classification.elements.name': 'Preclinical TBI',
         'designations.designation': formName
     };
     const existingForms: any[] = await formModel.find(cond);
-    let existingForm: any = findOneElt(existingForms);
+    let existingForm: any = findOneForm(existingForms);
     if (!existingForm) {
         existingForm = await newForm.save().catch((err: any) => {
             console.log(`Not able to save form when save new NINDS form ${newForm.tinyId} ${err}`);
