@@ -789,17 +789,29 @@ export function findOneCde(cdes) {
         console.log(`Multiple cdes found. TinyIds:`);
         cdes.forEach((e: any) => console.log(`${e.tinyId} ${e.registrationState.registrationStatus} `));
         const preclinicalTbiCdes = cdes.filter(cde => {
-            const nindsPreclinical = cde.ids.filter(id => id.source === 'NINDS Preclinical');
-            const preclinicalCde = nindsPreclinical[0];
-            if (preclinicalCde) {
+            const nindsPreclinicalIds = cde.ids.filter(id => id.source === 'NINDS Preclinical');
+            const preclinicalCdeId = nindsPreclinicalIds[0];
+            if (preclinicalCdeId) {
+                return true;
+            } else {
+                return false;
+            }
+        });
+        const nindsCdes = cdes.filter(cde => {
+            const nindsIds = cde.ids.filter(id => id.source === 'NINDS Variable Name');
+            const nindsId = nindsIds[0];
+            if (nindsId) {
                 return true;
             } else {
                 return false;
             }
         });
         const preclinicalTbiCde = preclinicalTbiCdes[0];
+        const nindsCde = nindsCdes[0];
         if (preclinicalTbiCde) {
             return preclinicalTbiCde;
+        } else if (nindsCde) {
+            return nindsCde;
         } else {
             return cdes[0];
         }
