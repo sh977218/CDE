@@ -238,6 +238,9 @@ export function getFile(user, id, res) {
                     || !file.metadata.status
                     || file.metadata.status === 'approved'
                     || hasRole(user, 'AttachmentReviewer')) {
+                    if (file.contentType.indexOf('csv') !== -1) {
+                        res.setHeader('Content-disposition', 'attachment; filename=' + file.filename);
+                    }
                     res.contentType(file.contentType);
                     res.header('Accept-Ranges', 'bytes');
                     res.header('Content-Length', file.length);
@@ -265,22 +268,6 @@ export function createMessage(msg: Message, cb?: CbError<MessageDocument>) {
         comment: 'cmnt'
     }];
     new messageModel(msg).save(cb);
-}
-
-// cb(err)
-export function addUserRole(username, role, cb) {
-    userByName(username, (err, u) => {
-        if (!!err || !u) {
-            cb(err || 'user not found');
-            return;
-        }
-        if (u.roles.indexOf(role) === -1) {
-            u.roles.push(role);
-            u.save(cb);
-        } else {
-            cb();
-        }
-    });
 }
 
 export function fetchItem(module: ModuleAll, tinyId: string, cb: CbError<ItemDocument>) {

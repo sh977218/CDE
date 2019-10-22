@@ -4,6 +4,7 @@ import { handleNotFound, handleError } from 'server/errorHandler/errorHandler';
 import { createMessage, fetchItem, ItemDocument, Message } from 'server/system/mongo-data';
 import { Cb } from 'shared/models.model';
 import { canComment, canRemoveComment } from 'shared/system/authorizationShared';
+import { myOrgs } from 'server/orgManagement/orgSvc';
 
 const async = require('async');
 const authorization = require('../system/authorization');
@@ -12,7 +13,6 @@ const discussDb = require('./discussDb');
 const daoManager = require('../system/moduleDaoManager');
 const ioServer = require('../system/ioServer');
 const userDb = require('../user/userDb');
-const userService = require('../system/usersrvc');
 const adminItemService = require('../system/adminItemSvc');
 
 require('express-async-errors');
@@ -210,7 +210,7 @@ export function module(roleConfig: {allComments: RequestHandler, manageComment: 
 
     router.get('/orgComments/:from/:size/:orgName?', loggedInMiddleware, (req: Request, res: Response) => {
         if (!req.params.orgName) {
-            req.params.orgName = userService.myOrgs(req.user);
+            req.params.orgName = myOrgs(req.user);
         }
         respondCommentOrgsByCriteria(req, res, {});
     });

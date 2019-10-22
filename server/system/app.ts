@@ -11,17 +11,13 @@ import { draftsList as formDraftsList, formModel } from 'server/form/mongo-form'
 import { consoleLog } from 'server/log/dbLogger';
 import { syncWithMesh } from 'server/mesh/elastic';
 import {
-    canApproveCommentMiddleware, isOrgAuthorityMiddleware, isOrgCuratorMiddleware, isSiteAdminMiddleware,
-    loggedInMiddleware, nocacheMiddleware
+    isOrgAuthorityMiddleware, isOrgCuratorMiddleware, isSiteAdminMiddleware, loggedInMiddleware, nocacheMiddleware
 } from 'server/system/authorization';
 import { reIndex } from 'server/system/elastic';
 import { indices } from 'server/system/elasticSearchInit';
-import {
-    addUserRole, disableRule, enableRule, getFile, jobStatus
-} from 'server/system/mongo-data';
-import { transferSteward } from 'server/orgManagement/orgSvc';
+import { disableRule, enableRule, getFile, jobStatus } from 'server/system/mongo-data';
+import { myOrgs, transferSteward } from 'server/orgManagement/orgSvc';
 import { config } from 'server/system/parseConfig';
-import { myOrgs, updateUserAvatar, updateUserRoles } from 'server/system/usersrvc';
 import { is } from 'useragent';
 import { promisify } from 'util';
 import { isSearchEngine } from './helper';
@@ -279,9 +275,6 @@ export function init(app: Express) {
         }
     });
 
-    app.post('/updateUserRoles', isOrgAuthorityMiddleware, updateUserRoles);
-    app.post('/updateUserAvatar', isOrgAuthorityMiddleware, updateUserAvatar);
-
     app.get('/data/:id', (req, res) => {
         let fileId = req.params.id;
         const i = fileId.indexOf('.');
@@ -292,15 +285,4 @@ export function init(app: Express) {
     });
 
     app.post('/transferSteward', transferSteward);
-
-    app.post('/addCommentAuthor', canApproveCommentMiddleware, (req, res) => {
-        addUserRole(req.body.username, 'CommentAuthor', handleError({req, res}, err => {
-            if (err) {
-                res.status(404).send(err);
-                return;
-            }
-            res.send();
-        }));
-    });
-
 }

@@ -4,8 +4,17 @@ import { handleNotFound, handleError } from 'server/errorHandler/errorHandler';
 import { hasRole, isOrgAdmin } from 'shared/system/authorizationShared';
 import { dataElementModel } from 'server/cde/mongo-cde';
 import { formModel } from 'server/form/mongo-form';
+import { User } from 'shared/models.model';
 
 const async = require('async');
+
+
+export function myOrgs(user: User): string[] {
+    if (!user) {
+        return [];
+    }
+    return user.orgAdmin.concat(user.orgCurator);
+}
 
 export async function myOrgsAdmins(user) {
     const users = await userOrgAdmins();

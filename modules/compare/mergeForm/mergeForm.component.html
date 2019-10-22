@@ -97,7 +97,7 @@
             </div>
             <div class="col-12 col-lg-10 col-xl-10 noLeftRightPadding">
                 <div class="row">
-                    <div class="col-12" *ngIf="mergeFields.questions">
+                    <ng-container *ngIf="mergeFields.questions">
                         <div class="col-6" id="dropArea">
                             <cde-sortable [left]="left" [right]="right" [mergeFields]="mergeFields"></cde-sortable>
                         </div>
@@ -117,7 +117,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </ng-container>
                 </div>
             </div>
         </div>

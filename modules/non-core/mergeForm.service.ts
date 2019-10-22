@@ -60,8 +60,11 @@ export class MergeFormService {
         );
     }
 
-    private mergeQuestions(questionsFrom: CompareQuestion[], questionsTo: CompareQuestion[], fields: MergeFieldsFormCde,
-                           doneOne: Cb2<number, Cb>, cb: CbErr) {
+    private mergeQuestions(questionsFrom: CompareQuestion[],
+                           questionsTo: CompareQuestion[],
+                           fields: MergeFieldsFormCde,
+                           doneOne: Cb2<number, Cb>,
+                           cb: CbErr) {
         let index = 0;
         async_forEachSeries(questionsFrom, (questionFrom: CompareQuestion, doneOneQuestion: Cb) => {
             const questionTo = questionsTo[index];
