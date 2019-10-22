@@ -270,22 +270,6 @@ export function createMessage(msg: Message, cb?: CbError<MessageDocument>) {
     new messageModel(msg).save(cb);
 }
 
-// cb(err)
-export function addUserRole(username, role, cb) {
-    userByName(username, (err, u) => {
-        if (!!err || !u) {
-            cb(err || 'user not found');
-            return;
-        }
-        if (u.roles.indexOf(role) === -1) {
-            u.roles.push(role);
-            u.save(cb);
-        } else {
-            cb();
-        }
-    });
-}
-
 export function fetchItem(module: ModuleAll, tinyId: string, cb: CbError<ItemDocument>) {
     const db = getDao(module);
     if (!db) {

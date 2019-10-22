@@ -1,61 +1,7 @@
-import { isEmpty, isEqual, forEach, trim } from 'lodash';
+import { isEmpty, isEqual } from 'lodash';
 import { dataElementModel } from 'server/cde/mongo-cde';
-import {
-    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeElt, updateCde, updateRowArtifact
-} from 'ingester/shared/utility';
-import {
-    changeNindsPreclinicalNeiClassification, fixDefinitions, fixReferenceDocuments, getCell,
-} from 'ingester/ninds/csv/shared/utility';
-import { createNindsCde } from 'ingester/ninds/csv/cde/cde';
-
-async function fixCde(existingCde: any) {
-    fixDefinitions(existingCde);
-    fixReferenceDocuments(existingCde);
-
-    const savedCde = await existingCde.save().catch((err: any) => {
-        console.log(`Not able to save form when fixCde ${existingCde.tinyId} ${err}`);
-        process.exit(1);
-    });
-    return savedCde;
-}
-
-export async function doOneRow(nindsCde, variableName) {
-    const newCde = new dataElementModel(nindsCde);
-    const newCdeObj = newCde.toObject();
-    let existingCde: any = await dataElementModel.findOne({archived: false, 'ids.id': variableName});
-    if (!existingCde) {
-        existingCde = await newCde.save().catch((err: any) => {
-            console.log(`Not able to save form when save new NINDS cde ${newCde.tinyId} ${err}`);
-            process.exit(1);
-        });
-        console.log(`created cde tinyId: ${existingCde.tinyId}`);
-    } else {
-        // @TODO remove after load
-        existingCde = await fixCde(existingCde);
-
-        const diff = compareElt(newCde.toObject(), existingCde.toObject(), 'NINDS');
-        changeNindsPreclinicalNeiClassification(existingCde, newCde.toObject(), 'NINDS');
-
-        if (isEmpty(diff)) {
-            existingCde.lastMigrationScript = lastMigrationScript;
-            existingCde.imported = imported;
-            existingCde = await existingCde.save().catch((err: any) => {
-                console.log(`Not able to save form when save existing NINDS cde ${existingCde.tinyId} ${err}`);
-                process.exit(1);
-            });
-            console.log(`same cde tinyId: ${existingCde.tinyId}`);
-        } else {
-            const existingCdeObj = existingCde.toObject();
-            mergeElt(existingCdeObj, newCdeObj, 'NINDS', 'NINDS');
-            await updateCde(existingCdeObj, BATCHLOADER, {updateSource: true});
-            console.log(`updated cde tinyId: ${existingCde.tinyId}`);
-        }
-    }
-    await updateRowArtifact(existingCde, newCdeObj, 'NINDS Preclinical NEI', 'NINDS');
-
-    const savedCde: any = await dataElementModel.findOne({archived: false, 'ids.id': variableName});
-    return savedCde;
-}
+import { BATCHLOADER } from 'ingester/shared/utility';
+import { getCell } from 'ingester/ninds/csv/shared/utility';
 
 function convertCsvRowToFormElement(row: any, cde: any) {
     const label = getCell(row, 'Preferred Question Text');
