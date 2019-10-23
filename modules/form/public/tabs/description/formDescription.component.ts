@@ -197,6 +197,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
                         TREE_ACTIONS.MOVE_NODE(tree, node, $event, {from, to});
                         addFormIds(this.elt);
                         this.updateTree();
+                        this.dragActive = false;
                         // this.onEltChange.emit(); treeEvent will handle
                     }
                 }
