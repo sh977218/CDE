@@ -35,7 +35,7 @@ public class ClassifyCdesInFormTest extends NlmCdeBaseTest {
     public void classifyAllCdesBadInput() {
         mustBeLoggedInAs("ctepOnlyCurator", password);
         Cookie myCookie = getCurrentCookie();
-        given().cookie(myCookie).body("").post(baseUrl + "/server/classification//bulk/tinyId").then().statusCode(422);
+        given().cookie(myCookie).body("").post(baseUrl + "/server/classification/bulk/tinyId").then().statusCode(422);
     }
 
 }

@@ -7,7 +7,7 @@ public class ClassifyCdesInLargeForm extends NlmCdeBaseTest {
 
     @Test
     public void classifyCdesInLargeForm() {
-        String formName = "VA Toxicity Scale";
+        String formName = "Magnetic Resonance Spectroscopy (MRS)";
         mustBeLoggedInAs("ctepOnlyCurator", password);
 
         goToFormByName(formName);
@@ -15,7 +15,7 @@ public class ClassifyCdesInLargeForm extends NlmCdeBaseTest {
         _addClassificationByTree("CTEP", new String[]{"ABTC", "ABTC 0904"});
 
         // Verify
-        String cdeName1 = "Veterans Affairs Toxicity Scale - gastrointenstinal problem often score";
+        String cdeName1 = "Spectroscopy water suppression method oth";
         goToCdeByName(cdeName1);
         goToClassification();
         textPresent("ABTC");
