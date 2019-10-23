@@ -1,9 +1,9 @@
-const webdriver = require('selenium-webdriver');
-const By = webdriver.By;
-let driver = new webdriver.Builder().forBrowser('chrome').build();
-driver.manage().window().maximize();
+import { Builder, By } from 'selenium-webdriver';
+import { NindsModel } from 'ingester/createMigrationConnection';
 
-let NindsModel = require('../../createMigrationConnection').NindsModel;
+const driver = await new Builder().forBrowser('chrome').build();
+
+require('chromedriver');
 
 const doOnePage = require('./ParseNindsCdes').doOnePage;
 
@@ -231,7 +231,7 @@ const DISEASE_MAP = [
     }
 ];
 
-getFormInfo = async trElement => {
+async function getFormInfo(trElement) {
     let thElements = await trElement.findElements(By.xpath('th'));
     let thElement = thElements[0];
 
@@ -260,7 +260,7 @@ getFormInfo = async trElement => {
     }
 };
 
-doTrElement = async trElement => {
+async function doTrElement(trElement) {
     let form = {};
     let thElements = await trElement.findElements(By.xpath('th'));
     let tdElements = await trElement.findElements(By.xpath('td'));
@@ -305,7 +305,7 @@ doTrElement = async trElement => {
     return form;
 };
 
-doDomain = async (driver, disease, domainElement) => {
+async function doDomain(driver, disease, domainElement) {
     let domainText = await domainElement.getText();
     let domain = domainText.trim();
 
@@ -378,7 +378,7 @@ doDomain = async (driver, disease, domainElement) => {
             }
         }
     }
-};
+}
 
 async function doDisease(disease) {
     let domainElements = await driver.findElements(By.xpath("//*[@class='cdetable']/preceding-sibling::a"));
@@ -389,7 +389,7 @@ async function doDisease(disease) {
     for (let domainElement of domainElements) {
         await doDomain(driver, disease, domainElement);
     }
-};
+}
 
 async function run() {
     for (let disease of DISEASE_MAP) {
