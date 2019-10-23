@@ -28,9 +28,7 @@ export function classifyItem(item: ItemDocument, orgName: string, categories: st
     }
     addCategoriesToTree(classification, categories);
     arrangeClassification(item, orgName);
-    if (item.markModified) {
-        item.markModified('classification');
-    }
+    item.markModified('classification');
 }
 
 export async function deleteOrgClassification(user, deleteClassification, settings, callback) {
@@ -236,9 +234,7 @@ export function renameClassifyElt(item: ItemDocument, orgName: string, categorie
         if (leaf) {
             leaf.leaf.name = newName;
             arrangeClassification(item, orgName);
-            if (item.markModified) {
-                item.markModified('classification');
-            }
+            item.markModified('classification');
         }
     }
 }
@@ -249,9 +245,7 @@ export function unclassifyElt(item: ItemDocument, orgName: string, categories: s
         const leaf = findLeaf(classification, categories);
         if (leaf) {
             leaf.parent.elements.splice(leaf.index, 1);
-            if (item.markModified) {
-                item.markModified('classification');
-            }
+            item.markModified('classification');
         }
     }
 }

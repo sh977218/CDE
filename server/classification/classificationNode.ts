@@ -25,7 +25,7 @@ const trimClassif = (elt: Item) => {
     });
 };
 
-export async function eltClassification(body, action, dao, cb) {
+export async function eltClassification(body, dao, cb) {
     let elt: Item;
     if (body.cdeId && dao.byId) {
         elt = await dao.byId(body.cdeId);
@@ -58,13 +58,8 @@ export async function eltClassification(body, action, dao, cb) {
         steward = findSteward(elt, body.orgName);
     }
 
-    if (action === actions.create) {
-        const err = addCategory(steward.object, body.categories);
-        saveEltClassif(err, elt, cb);
-    } else if (action === actions.delete) {
-        modifyCategory(steward.object, body.categories, {type: 'delete'});
-        saveEltClassif(undefined, elt, cb);
-    }
+    const err = addCategory(steward.object, body.categories);
+    saveEltClassif(err, elt, cb);
 }
 
 export async function addClassification(body, dao, cb) {
@@ -109,7 +104,7 @@ export async function classifyEltsInBoard(req, dao, cb) {
                     categories: newClassification.categories,
                     cdeId: id
                 };
-                eltClassification(classifReq, actions.create, dao, () => {
+                eltClassification(classifReq, dao, () => {
                     eltsProcessed++;
                     doneOne(null);
                 });
