@@ -2,7 +2,7 @@ import { respondError } from 'server/errorHandler/errorHandler';
 import { isOrgAuthorityMiddleware, isOrgCuratorMiddleware, isSiteAdminMiddleware } from 'server/system/authorization';
 import { draftsList as deDraftsList } from 'server/cde/mongo-cde';
 import { draftsList as formDraftsList } from 'server/form/mongo-form';
-import { myOrgs } from 'server/system/usersrvc';
+import { myOrgs } from 'server/orgManagement/orgSvc';
 import { disableRule, enableRule } from 'server/system/systemSvc';
 import { getTrafficFilter } from 'server/system/trafficFilterSvc';
 import { getClassificationAuditLog } from 'server/system/classificationAuditSvc';
