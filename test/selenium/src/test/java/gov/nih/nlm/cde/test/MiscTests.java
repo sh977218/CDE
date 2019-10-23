@@ -105,4 +105,11 @@ public class MiscTests extends NlmCdeBaseTest {
         String response = get(baseUrl + "/status/cde").asString();
         Assert.assertTrue(response.contains("ALL SERVICES UP"));
     }
+
+    @Test
+    public void emptyPostBodyServerError(){
+        mustBeLoggedInAs(nlm_username, nlm_password);
+        Cookie myCookie = getCurrentCookie();
+        given().cookie(myCookie).body("{}").post(baseUrl + "/server/log/serverErrors").then().statusCode(200);
+    }
 }

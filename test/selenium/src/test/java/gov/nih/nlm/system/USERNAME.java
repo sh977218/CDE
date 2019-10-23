@@ -12,6 +12,9 @@ public interface USERNAME {
     String Umls_not_in_db_username = "cdeci1";
     String Umls_not_in_db_password = "Aa!!!000";
 
+    String empty_roles_username  ="emptyRolesUser";
+    String empty_avatar_username  ="emptyAvatarUser";
+
     String cabigAdmin_username = "cabigAdmin";
     String promis_username = "promis";
     String ctepCurator_username = "ctepCurator";

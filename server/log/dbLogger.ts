@@ -1,7 +1,8 @@
 import { Document, Model } from 'mongoose';
-import { StoredQueryModel as storedQueryModel } from 'server/cde/mongo-storedQuery';
 import { handleConsoleError, handleError } from 'server/errorHandler/errorHandler';
-import { clientErrorSchema, consoleLogSchema, feedbackIssueSchema, logErrorSchema, logSchema } from 'server/log/schemas';
+import {
+    clientErrorSchema, consoleLogSchema, feedbackIssueSchema, logErrorSchema, logSchema
+} from 'server/log/schemas';
 import { pushGetAdministratorRegistrations } from 'server/notification/notificationDb';
 import { triggerPushMsg } from 'server/notification/pushNotificationSvc';
 import { establishConnection } from 'server/system/connections';
@@ -21,6 +22,7 @@ export interface ClientError {
     username: string;
     ip: string;
 }
+
 export type ClientErrorDocument = Document & ClientError;
 
 const moment = require('moment');
@@ -28,7 +30,6 @@ const conn = establishConnection(config.database.log);
 const LogModel = conn.model('DbLogger', logSchema);
 export const logErrorModel = conn.model('DbErrorLogger', logErrorSchema);
 export const clientErrorModel: Model<ClientErrorDocument> = conn.model('DbClientErrorLogger', clientErrorSchema);
-export const StoredQueryModel = storedQueryModel;
 const FeedbackModel = conn.model('FeedbackIssue', feedbackIssueSchema);
 const consoleLogModel = conn.model('consoleLogs', consoleLogSchema);
 const userAgent = require('useragent');
@@ -40,41 +41,6 @@ export function consoleLog(message, level: 'debug' | 'error' | 'info' | 'warning
             noDbLogger.error('Cannot log to DB: ' + err);
         }
     });
-}
-
-export function storeQuery(settings, callback?: CbError) {
-    const storedQuery: any = {
-        datatypes: settings.selectedDatatypes,
-        date: new Date(),
-        regStatuses: settings.selectedStatuses,
-        searchTerm: settings.searchTerm ? settings.searchTerm : '',
-        selectedElements1: settings.selectedElements.slice(0),
-        selectedElements2: settings.selectedElementsAlt.slice(0)
-    };
-    if (settings.selectedOrg) {
-        storedQuery.selectedOrg1 = settings.selectedOrg;
-    }
-    if (settings.selectedOrgAlt) {
-        storedQuery.selectedOrg2 = settings.selectedOrgAlt;
-    }
-    if (settings.searchToken) {
-        storedQuery.searchToken = settings.searchToken;
-    }
-
-    if (!(!storedQuery.selectedOrg1 && storedQuery.searchTerm === '')) {
-        StoredQueryModel.findOne({date: {$gt: new Date().getTime() - 30000}, searchToken: storedQuery.searchToken},
-            (err, theOne) => {
-                if (theOne) {
-                    StoredQueryModel.findOneAndUpdate(
-                        {date: {$gt: new Date().getTime() - 30000}, searchToken: storedQuery.searchToken},
-                        storedQuery,
-                        handleError({}, () => {})
-                    );
-                } else {
-                    new StoredQueryModel(storedQuery).save(callback);
-                }
-            });
-    }
 }
 
 export function log(message, callback?: CbError) { // express only, all others dbLogger.consoleLog(message);
@@ -134,7 +100,7 @@ export function logError(message, callback?: Cb) { // all server errors, express
 }
 
 export function logClientError(req, callback) {
-    const getRealIp =  req => req._remoteAddress;
+    const getRealIp = req => req._remoteAddress;
     const exc = req.body;
     exc.userAgent = req.headers['user-agent'];
     exc.date = new Date();
@@ -227,7 +193,7 @@ export function appLogs(body, callback) {
     });
 }
 
-export function getClientErrors(params: {limit?: number, skip?: number}, callback: CbError<ClientErrorDocument[]>) {
+export function getClientErrors(params: { limit?: number, skip?: number }, callback: CbError<ClientErrorDocument[]>) {
     clientErrorModel.find().sort('-date').skip(params.skip).limit(params.limit).exec(callback);
 }
 
