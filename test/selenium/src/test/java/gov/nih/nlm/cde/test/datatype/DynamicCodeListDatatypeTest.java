@@ -3,6 +3,7 @@ package gov.nih.nlm.cde.test.datatype;
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class DynamicCodeListDatatypeTest extends NlmCdeBaseTest {
@@ -21,7 +22,7 @@ public class DynamicCodeListDatatypeTest extends NlmCdeBaseTest {
 
         goToCdeByName(cdeName);
         goToPermissibleValues();
-        textPresent("some OID");
+        Assert.assertEquals(findElement(By.id("dynamicListCode")).getAttribute("value"), "some OID");
 
         goToHistory();
         selectHistoryAndCompare(1, 2);
