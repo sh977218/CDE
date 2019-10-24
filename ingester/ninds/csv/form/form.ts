@@ -45,6 +45,9 @@ export async function createNindsForm(formName: string, csvFileName: string, row
     parseClassification(nindsForm, rows);
 
     const DEFAULT_CLASSIFICATION = ['Preclinical + NEI'];
+    if (nindsForm.classification.length === 0) {
+        classifyItem(nindsForm, 'NINDS', DEFAULT_CLASSIFICATION);
+    }
 
     return nindsForm;
 }
