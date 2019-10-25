@@ -15,7 +15,7 @@ import { BoardPin, ItemElastic, ModuleAll } from 'shared/models.model';
 import { stripBsonIds } from 'shared/system/exportShared';
 import { DataElement } from 'shared/de/dataElement.model';
 
-const {check} = require('express-validator');
+const { check } = require('express-validator');
 
 const js2xml = require('js2xmlparser');
 

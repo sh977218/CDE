@@ -93,12 +93,12 @@
                     <mat-form-field class="w-50">
                         <mat-label>Select system name</mat-label>
                         <mat-select matNativeControl [(ngModel)]="elt.valueDomain.datatypeDynamicCodeList.system"
-                                    (selectionChange)="eltChange.emit()" [disabled]="!canEdit" required>
+                                    (selectionChange)="eltChange.emit()" [disabled]="!canEdit" id="dynamicListSystem" required>
                             <mat-option value="VSAC">VSAC</mat-option>
                         </mat-select>
                     </mat-form-field>
                     <mat-form-field class="w-50">
-                        <input matInput [(ngModel)]="elt.valueDomain.datatypeDynamicCodeList.code"
+                        <input matInput [(ngModel)]="elt.valueDomain.datatypeDynamicCodeList.code" id="dynamicListCode"
                                (ngModelChange)="eltChange.emit()" [disabled]="!canEdit" placeholder="VSAC OID">
                     </mat-form-field>
                 </dd>

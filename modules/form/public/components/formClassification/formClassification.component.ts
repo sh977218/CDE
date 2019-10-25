@@ -59,6 +59,7 @@ export class FormClassificationComponent {
                                                 //noinspection TypeScriptUnresolvedFunction
                                                 clearInterval(fn);
                                                 this.classifyCdesModalRef.close('success');
+                                                this.alert.addAlert('success', 'All CDEs Classified.');
                                             }, () => {
                                                 this.alert.addAlert('danger', 'Unexpected error classifying');
                                             });
