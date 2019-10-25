@@ -25,7 +25,7 @@ public class ReclassifyForm extends NlmCdeBaseTest {
         clickElement(By.id(newClassification + "-classifyBtn"));
         clickElement(By.id("cancelNewClassifyItemBtn"));
 
-        goToCdeByName(formName);
+        goToFormByName(formName);
         goToClassification();
         textPresent(newClassification);
         textPresent(oldClassification);
