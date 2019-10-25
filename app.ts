@@ -335,7 +335,12 @@ try {
     }));
     app.use('/server/uts', utsModule());
     app.use('/server/classification', classificationModule({
-        allowClassify: (user, org) => isOrgCurator(user, org)
+        allowClassify: (req, res, next) => {
+            if (!isOrgCurator(req.user, req.body.orgName)) {
+                return res.status(401).send();
+            }
+            next();
+        }
     }));
     app.use('/server/mesh', meshModule({
         allowSyncMesh: (req, res, next) => {

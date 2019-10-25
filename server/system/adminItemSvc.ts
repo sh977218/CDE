@@ -85,25 +85,6 @@ export function createTask(user, role, type, eltModule, eltTinyId, item) {
     }), undefined);
 }
 
-export function bulkAction(ids, action, cb) {
-    const eltsTotal = ids.length;
-    let eltsProcessed = 0;
-    each(ids, (id, doneOne) => {
-            action(id, () => {
-                eltsProcessed++;
-                doneOne(null);
-            });
-        },
-        () => {
-            if (eltsTotal === eltsProcessed) {
-                cb(null);
-            } else {
-                cb('Task not performed completely!');
-            }
-        }
-    );
-}
-
 export function hideProprietaryIds(elt: Item) {
     if (elt && elt.ids) {
         const blackList = [
