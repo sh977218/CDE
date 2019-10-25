@@ -30,7 +30,7 @@ function classifyDomain(cde: any, row: any) {
             let classificationDiseaseArray = DEFAULT_CLASSIFICATION.concat(['Disease', capitalize(disease)]);
             if (isTbiSubDisease) {
                 // tslint:disable-next-line:max-line-length
-                classificationDiseaseArray = DEFAULT_CLASSIFICATION.concat(['Disease', 'Traumatic brain injury', capitalize(disease));
+                classificationDiseaseArray = DEFAULT_CLASSIFICATION.concat(['Disease', 'Traumatic brain injury', capitalize(disease)]);
             }
 
             // ['Disease','TBI','Domain','Assessments and Examinations','Autonomic']
