@@ -15,7 +15,7 @@ public class DynamicCodeListDatatypeTest extends NlmCdeBaseTest {
         changeDatatype(datatype);
 
         goToCdeByName(cdeName);
-        goToHistory();reclass
+        goToHistory();
         selectHistoryAndCompare(1, 2);
     }
 
