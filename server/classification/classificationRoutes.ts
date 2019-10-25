@@ -113,13 +113,12 @@ export function module(roleConfig) {
     // rename org classification
     router.post('/renameOrgClassification',
         roleConfig.allowClassify,
-        check('newClassification').isJSON(),
+        check('newClassification.orgName').isString(),
         check('newClassification.newName').isString(),
-        check('settings').isJSON(),
+        check('newClassification.categories').isArray(),
         validateBody,
         (req, res) => {
             const newClassification = req.body.newClassification;
-            const newName = req.body.newClassification.newName;
             const settings = req.body.settings;
             jobStatus('renameClassification', handleError({req, res}, j => {
                 if (j) { return res.status(409).send('Error - rename classification is in processing, try again later.'); }
@@ -131,7 +130,7 @@ export function module(roleConfig) {
 
     // add org classification
     router.put('/addOrgClassification/', roleConfig.allowClassify,
-        check('newClassification').isJSON(),
+        check('newClassification.categories').isArray(),
         validateBody,
         (req, res) => {
             const newClassification = req.body.newClassification;
