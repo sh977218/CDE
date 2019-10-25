@@ -67,10 +67,8 @@ export class BoardViewComponent implements OnInit {
         this.http.post(this.board.type === 'form' ? '/server/classification/classifyFormBoard' : '/server/classification/classifyCdeBoard',
             {
                 boardId: this.boardId,
-                newClassification: {
-                    categories: event.classificationArray,
-                    orgName: event.selectedOrg
-                }
+                categories: event.classificationArray,
+                orgName: event.selectedOrg
             }
         ).subscribe(() => {
             clearInterval(_timeout);

@@ -77,19 +77,18 @@ export class CreateDataElementComponent implements OnInit {
             return;
         }
         const eltCopyClassification = eltCopy.classification;
-        removeCategory(steward.object, event.deleteClassificationArray, err => {
-            if (err) {
-                this.alert.addAlert('danger', 'Unexpected error removing classification');
-            } else {
-                for (let i = eltCopyClassification.length - 1; i >= 0; i--) {
-                    if (eltCopyClassification[i].elements.length === 0) {
-                        eltCopyClassification.splice(i, 1);
-                    }
+        const err = removeCategory(steward.object, event.deleteClassificationArray);
+        if (err) {
+            this.alert.addAlert('danger', 'Unexpected error removing classification');
+        } else {
+            for (let i = eltCopyClassification.length - 1; i >= 0; i--) {
+                if (eltCopyClassification[i].elements.length === 0) {
+                    eltCopyClassification.splice(i, 1);
                 }
-                this.elt = eltCopy;
-                this.alert.addAlert('success', 'Classification removed.');
             }
-        });
+            this.elt = eltCopy;
+            this.alert.addAlert('success', 'Classification removed.');
+        }
     }
 
     createDataElement() {

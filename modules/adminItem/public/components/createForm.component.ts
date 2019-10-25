@@ -93,13 +93,12 @@ export class CreateFormComponent implements OnInit {
             this.alert.addAlert('success', 'No classification to remove.');
             return;
         }
-        removeCategory(steward.object, event.deleteClassificationArray, err => {
-            if (err) {
-                this.alert.addAlert('danger', 'Unexpected error removing classification');
-            } else {
-                this.alert.addAlert('success', 'Classification removed.');
-            }
-        });
+        const err = removeCategory(steward.object, event.deleteClassificationArray);
+        if (err) {
+            this.alert.addAlert('danger', 'Unexpected error removing classification');
+        } else {
+            this.alert.addAlert('success', 'Classification removed.');
+        }
     }
 
     openClassifyItemModal() {

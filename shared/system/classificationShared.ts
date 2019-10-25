@@ -74,14 +74,12 @@ export function findLeaf(classification: Classification, categories: string[]): 
 
 // PUT NEW API ABOVE
 // ---------------------------------------------------
-export function addCategory(tree: Classification, fields: string[], cb: Cb<string> = () => {
-}): void {
+export function addCategory(tree: Classification, fields: string[]): string | undefined {
     const lastLevel = fetchLevel(tree, fields);
     if (lastLevel.elements.some(element => element.name === fields[fields.length - 1])) {
-        return cb('Classification Already Exists');
+        return 'Classification Already Exists';
     } else {
         lastLevel.elements.push({name: fields[fields.length - 1], elements: []});
-        return cb();
     }
 }
 
@@ -133,7 +131,7 @@ export function findSteward(de: Item, orgName: string): { index: number, object:
     }
 }
 
-export function modifyCategory(tree: Classification, fields: string[], action: any, cb: Cb): void {
+export function modifyCategory(tree: Classification, fields: string[], action: any): void {
     const lastLevel = fetchLevel(tree, fields);
     for (let i = 0; i < lastLevel.elements.length; i++) {
         if (lastLevel.elements[i] === null) {
@@ -150,10 +148,9 @@ export function modifyCategory(tree: Classification, fields: string[], action: a
             break;
         }
     }
-    cb();
 }
 
-export function removeCategory(tree: Classification, fields: string[], cb: Cb<string>): void {
+export function removeCategory(tree: Classification, fields: string[]): string | undefined {
     const lastLevel = fetchLevel(tree, fields);
     for (let i = 0; i < lastLevel.elements.length; i++) {
         if (lastLevel.elements[i] === null) {
@@ -162,10 +159,10 @@ export function removeCategory(tree: Classification, fields: string[], cb: Cb<st
         }
         if (lastLevel.elements[i].name === fields[fields.length - 1]) {
             lastLevel.elements.splice(i, 1);
-            return cb();
+            return;
         }
     }
-    return cb('Did not find match classifications.');
+    return 'Did not find match classifications.';
 }
 
 export function renameCategory(tree: Classification, fields: string[], newName: string): void {

@@ -55,7 +55,8 @@ export function isOrgCurator(user?: User, org?: string): boolean {
     if (isOrgAdmin(user, org)) {
         return true;
     }
-    return user.orgCurator && (org ? user.orgCurator.indexOf(org) > -1 : user.orgCurator.length > 0);
+    const arr = (user.orgCurator || []).concat(user.orgAdmin || []);
+    return arr && (org ? arr.indexOf(org) > -1 : arr.length > 0);
 }
 
 export function isOrgAdmin(user?: User, org?: string): boolean {
