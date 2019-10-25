@@ -29,12 +29,12 @@ export async function eltClassification(body, dao, cb) {
     let elt: Item;
     if (body.cdeId && dao.byId) {
         elt = await dao.byId(body.cdeId);
-    } else if (body.tinyId && (!body.version) && dao.eltByTinyId) {
-        elt = await dao.eltByTinyId(body.tinyId);
-    } else if (body.tinyId && body.version && dao.byTinyIdAndVersion) {
-        elt = await dao.byTinyIdAndVersion(body.tinyId, body.version);
-    } else {
-        return cb('Missing parameters');
+    } else if (body.tinyId) {
+        if (body.version) {
+            elt = await dao.byTinyIdAndVersion(body.tinyId, body.version);
+        } else {
+            elt = await dao.eltByTinyId(body.tinyId);
+        }
     }
 
     if (!elt) { return cb('can not elt'); }
