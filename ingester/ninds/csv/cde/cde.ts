@@ -44,7 +44,7 @@ export async function createNindsCde(row: any) {
     parseClassification(nindsCde, row);
     const DEFAULT_CLASSIFICATION = ['Preclinical + NEI'];
     if (nindsCde.classification.length === 0) {
-        classifyItem(nindsCde, 'NINDS', DEFAULT_CLASSIFICATION);
+        classifyItem(nindsCde, 'NINDS', DEFAULT_CLASSIFICATION.concat(['Not Classified']));
     }
     return nindsCde;
 }

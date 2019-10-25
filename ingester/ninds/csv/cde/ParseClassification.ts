@@ -1,46 +1,7 @@
-import { filter, replace, isEmpty, capitalize, words, map, indexOf, forEach } from 'lodash';
+import { filter, replace, isEmpty, capitalize, forEach } from 'lodash';
 import { classifyItem } from 'server/classification/orgClassificationSvc';
 
 const DEFAULT_CLASSIFICATION = ['Preclinical + NEI'];
-
-
-const CAPITALIZE_BLACK_LIST = ['of', 'the', 'a'];
-
-function formatStringByToken(str: string, token: any) {
-    if (token.length !== 1) {
-        console.log(token + ' is not validated token.');
-        process.exit(1);
-    }
-    const strArray = words(str, token.regex).filter(s => !isEmpty(s));
-    const formatStrArray = map(strArray, str => {
-        const i = indexOf(CAPITALIZE_BLACK_LIST, str);
-        if (i === -1) {
-            return str;
-        } else {
-            return str;
-        }
-    });
-    return formatStrArray.join(token.char);
-}
-
-const tokens = [{char: '/', regex: new RegExp(/[^\/]+/, 'g')},
-    {char: ';', regex: new RegExp(/[^:]+/, 'g')}];
-
-function formatString(str: string) {
-    const strArray = words(str, /[^\s]+/g).filter(s => !isEmpty(s));
-    const formatStrArray = map(strArray, str => {
-        const i = indexOf(CAPITALIZE_BLACK_LIST, str);
-        if (i === -1) {
-            tokens.forEach(token => {
-                str = formatStringByToken(str, token);
-            });
-            return str;
-        } else {
-            return str;
-        }
-    });
-    return formatStrArray.join(' ');
-}
 
 function classifyPopulation(cde: any, row: any) {
     const allKeys: string[] = Object.keys(row);
@@ -48,7 +9,7 @@ function classifyPopulation(cde: any, row: any) {
     forEach(populationKeys, k => {
         const population = row[k];
         if (!isEmpty(population)) {
-            const classificationArray = DEFAULT_CLASSIFICATION.concat(['Population', formatString(population)]);
+            const classificationArray = DEFAULT_CLASSIFICATION.concat(['Population', population]);
             classifyItem(cde, 'NINDS', classificationArray);
         }
     });
@@ -58,25 +19,59 @@ function classifyDomain(cde: any, row: any) {
     const allKeys: string[] = Object.keys(row);
     const domainKeys = filter(allKeys, k => k.indexOf('domain.') !== -1);
     forEach(domainKeys, k => {
-        const domain = row[k];
+        const domainSubDomainString = row[k];
         const disease = replace(k, 'domain.', '');
-        if (!isEmpty(domain) && !isEmpty(disease)) {
-            const classificationArray = DEFAULT_CLASSIFICATION.concat(['Domain', formatString(domain), formatString(disease)]);
-            classifyItem(cde, 'NINDS', classificationArray);
+        if (!isEmpty(domainSubDomainString) && !isEmpty(disease)) {
+            const domainSubDomainArray = domainSubDomainString.split('.');
+            const domain = domainSubDomainArray[0];
+            const subDomain = domainSubDomainArray[1];
+
+            const isTbiSubDisease = TBI_SUB_DISEASES.indexOf(disease) !== -1;
+            let classificationDiseaseArray = DEFAULT_CLASSIFICATION.concat(['Disease', capitalize(disease)]);
+            if (isTbiSubDisease) {
+                // tslint:disable-next-line:max-line-length
+                classificationDiseaseArray = DEFAULT_CLASSIFICATION.concat(['Disease', 'Traumatic brain injury', capitalize(disease));
+            }
+
+            // ['Disease','TBI','Domain','Assessments and Examinations','Autonomic']
+            // ['Domain','Assessments and Examinations','Autonomic']
+            const classificationDomainArray = DEFAULT_CLASSIFICATION.concat([]);
+            if (!isEmpty(domain)) {
+                classificationDiseaseArray.push('Domain');
+                classificationDiseaseArray.push(domain);
+                classificationDomainArray.push('Domain');
+                classificationDomainArray.push(domain);
+            }
+            if (!isEmpty(subDomain[1])) {
+                classificationDiseaseArray.push(subDomain);
+                classificationDomainArray.push(subDomain);
+            }
+            classifyItem(cde, 'NINDS', classificationDiseaseArray);
+            classifyItem(cde, 'NINDS', classificationDomainArray);
         }
     });
 }
 
+const TBI_SUB_DISEASES = [
+    'acute hospitalized',
+    'concussion/mild tbi',
+    'epidemiology',
+    'moderate/severe tbi: rehabilitation',
+];
 
-function classifyDisease(cde: any, row: any) {
+function classifyClassification(cde: any, row: any) {
     const allKeys: string[] = Object.keys(row);
     const diseaseKeys = filter(allKeys, k => k.indexOf('classification.') !== -1);
     forEach(diseaseKeys, k => {
         const classification = row[k];
         const disease = replace(k, 'classification.', '');
         if (!isEmpty(classification) && !isEmpty(disease)) {
-            const classificationArray =
-                DEFAULT_CLASSIFICATION.concat(['Classification', formatString(classification), formatString(disease)]);
+            const isTbiSubDisease = TBI_SUB_DISEASES.indexOf(disease) !== -1;
+            let classificationArray = DEFAULT_CLASSIFICATION.concat(['Disease', capitalize(disease), 'Classification', classification]);
+            if (isTbiSubDisease) {
+                // tslint:disable-next-line:max-line-length
+                classificationArray = DEFAULT_CLASSIFICATION.concat(['Disease', 'Traumatic brain injury', capitalize(disease), 'Classification', classification]);
+            }
             classifyItem(cde, 'NINDS', classificationArray);
         }
     });
@@ -84,10 +79,10 @@ function classifyDisease(cde: any, row: any) {
 
 function classifyTaxonomy(cde: any, row: any) {
     const allKeys: string[] = Object.keys(row);
-    const taxonomyKeys = filter(allKeys, k => k.indexOf('Taxonomy') !== -1);
+    const taxonomyKeys = filter(allKeys, k => k.indexOf('taxonomy') !== -1);
     forEach(taxonomyKeys, k => {
         const taxonomy = row[k];
-        const classificationArray = DEFAULT_CLASSIFICATION.concat(['Taxonomy', formatString(taxonomy)]);
+        const classificationArray = DEFAULT_CLASSIFICATION.concat(['Taxonomy', taxonomy]);
         classifyItem(cde, 'NINDS', classificationArray);
     });
 }
@@ -95,6 +90,6 @@ function classifyTaxonomy(cde: any, row: any) {
 export function parseClassification(cde: any, row: any) {
     classifyPopulation(cde, row);
     classifyDomain(cde, row);
-    classifyDisease(cde, row);
+    classifyClassification(cde, row);
     classifyTaxonomy(cde, row);
 }
