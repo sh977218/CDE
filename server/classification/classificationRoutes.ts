@@ -143,9 +143,10 @@ export function module(roleConfig) {
 
     // reclassify org classification
     router.post('/reclassifyOrgClassification', roleConfig.allowClassify,
-        check('newClassification').isJSON(),
-        check('oldClassification').isJSON(),
-        check('settings').isJSON(),
+        check('newClassification.orgName').isString(),
+        check('newClassification.categories').isArray(),
+        check('oldClassification.orgName').isString(),
+        check('oldClassification.categories').isArray(),
         validateBody, (req, res) => {
             const oldClassification = req.body.oldClassification;
             const newClassification = req.body.newClassification;
