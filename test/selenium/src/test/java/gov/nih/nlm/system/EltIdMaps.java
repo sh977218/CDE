@@ -120,6 +120,7 @@ public class EltIdMaps {
         eltMap.put("Empty Logic", "7kAx6i5af");
         eltMap.put("Empty Section Form", "Q1CSvNQhW");
         eltMap.put("Frontal Behavioral Inventory (FBI)", "XJbbmJSrFe");
+        eltMap.put("Frontal Systems Behavioral Scale (FrSBe)", "71Qb7kBrKx");
         eltMap.put("Functional Imaging", "my7XySBtg");
         eltMap.put("Form Cde Update Test", "X1ghWjntf");
         eltMap.put("Form Delete Test", "QyT6ElOKLl");
