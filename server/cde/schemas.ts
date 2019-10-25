@@ -1,7 +1,8 @@
 import * as mongoose from 'mongoose';
 import { addStringtype } from '../system/mongoose-stringtype';
 import {
-    attachmentSchema, classificationSchema, dataSetSchema, datatypeDateSchema, datatypeExternallyDefinedSchema,
+    attachmentSchema, classificationSchema, dataSetSchema, datatypeDateSchema, datatypeDynamicListSchema,
+    datatypeExternallyDefinedSchema,
     datatypeNumberSchema, datatypeTextSchema, datatypeTimeSchema, datatypeValueListSchema, definitionSchema,
     derivationRuleSchema, designationSchema, eltLogSchema, idSchema, permissibleValueSchema, propertySchema,
     referenceDocumentSchema, registrationStateSchema, sourceSchema
@@ -109,7 +110,7 @@ export const deJson = {
         datatypeDate: datatypeDateSchema,
         datatypeTime: datatypeTimeSchema,
         datatypeValueList: datatypeValueListSchema,
-        datatypeDynamicCodeList: datatypeValueListSchema,
+        datatypeDynamicCodeList: datatypeDynamicListSchema,
         datatypeExternallyDefined: datatypeExternallyDefinedSchema,
         permissibleValues: {
             type: [permissibleValueSchema], // required to make optional
