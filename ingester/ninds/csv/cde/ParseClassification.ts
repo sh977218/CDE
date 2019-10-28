@@ -82,8 +82,11 @@ function classifyTaxonomy(cde: any, row: any) {
     const taxonomyKeys = filter(allKeys, k => k.indexOf('taxonomy') !== -1);
     forEach(taxonomyKeys, k => {
         const taxonomy = row[k];
-        const classificationArray = DEFAULT_CLASSIFICATION.concat(['Taxonomy', taxonomy]);
-        classifyItem(cde, 'NINDS', classificationArray);
+        const taxonomyReplace = taxonomy.replace(';', ',').trim();
+        if (!isEmpty(taxonomyReplace)) {
+            const classificationArray = DEFAULT_CLASSIFICATION.concat(['Taxonomy', taxonomyReplace]);
+            classifyItem(cde, 'NINDS', classificationArray);
+        }
     });
 }
 
