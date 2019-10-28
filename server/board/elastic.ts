@@ -1,5 +1,11 @@
 import * as ElasticSearch from 'elasticsearch';
 import { config } from '../system/parseConfig';
+import { createIndexJson as boardCreateIndexJson } from 'server/board/elasticSearchMapping';
+import { shortHash } from 'server/system/elasticSearchInit';
+
+if (config.elastic.boardIndex.name === 'auto') {
+    config.elastic.boardIndex.name = 'board_' + shortHash(boardCreateIndexJson);
+}
 
 const boardIndexName = config.elastic.boardIndex.name;
 
@@ -12,12 +18,12 @@ export function boardRefresh() {
 }
 
 export function updateOrInsertBoardById(id, board, callback) {
-    esClient.index({
-        index: config.elastic.boardIndex.name,
-        type: 'board',
-        id,
-        body: board
-    }, callback);
+        esClient.index({
+            index: config.elastic.boardIndex.name,
+            type: 'board',
+            id,
+            body: board
+        }, callback);
 }
 
 export function deleteBoardById(id, callback) {

@@ -28,7 +28,9 @@ export function classifyItem(item: ItemDocument, orgName: string, categories: st
     }
     addCategoriesToTree(classification, categories);
     arrangeClassification(item, orgName);
-    item.markModified('classification');
+    if (item.markModified) {
+        item.markModified('classification');
+    }
 }
 
 export async function deleteOrgClassification(user, deleteClassification, settings, callback) {
@@ -168,10 +170,14 @@ export async function addOrgClassification(newClassification, callback) {
 }
 
 export async function reclassifyOrgClassification(user, oldClassification, newClassification, settings, callback) {
-    if (!(oldClassification.categories instanceof Array)) { oldClassification.categories = [oldClassification.categories]; }
-    if (!(newClassification.categories instanceof Array)) { newClassification.categories = [newClassification.categories]; }
+    if (!(oldClassification.categories instanceof Array)) {
+        oldClassification.categories = [oldClassification.categories];
+    }
+    if (!(newClassification.categories instanceof Array)) {
+        newClassification.categories = [newClassification.categories];
+    }
     await updateJobStatus('reclassifyClassification', 'Running');
-    const stewardOrg = await orgByName(newClassification.orgName);
+    const stewardOrg: any = await orgByName(newClassification.orgName);
     addCategoriesToTree(stewardOrg, newClassification.categories);
     stewardOrg.markModified('classifications');
     await stewardOrg.save();
