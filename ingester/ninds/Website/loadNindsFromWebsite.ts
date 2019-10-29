@@ -1,5 +1,5 @@
 import { Builder, By } from 'selenium-webdriver';
-import { indexOf, replace } from 'lodash';
+import { replace } from 'lodash';
 import { NindsModel } from 'ingester/createMigrationConnection';
 
 require('chromedriver');
@@ -76,11 +76,10 @@ const DISORDERS: any = [
     }, {
         disorderName: 'Unruptured Cerebral Aneurysms and Subarachnoid Hemorrhage',
         url: URL_PREFIX + 'Unruptured%20Cerebral%20Aneurysms%20and%20Subarachnoid%20Hemorrhage',
-    },
-    /* {
+    }, {
         disorderName: 'Traumatic Brain Injury',
         url: URL_PREFIX + 'Traumatic%20Brain%20Injury',
-        subDiseases: [{
+        studyType: [{
             name: 'Acute Hospitalized',
         }, {
             name: 'Comprehensive',
@@ -94,7 +93,7 @@ const DISORDERS: any = [
     }, {
         disorderName: 'Sport-Related Concussion',
         url: URL_PREFIX + 'Sport%20Related%20Concussion',
-        subDiseases: [{
+        timeFrame: [{
             name: 'Acute',
         }, {
             name: 'Comprehensive',
@@ -103,7 +102,7 @@ const DISORDERS: any = [
         }, {
             name: 'Subacute',
         }]
-    }*/
+    }
 ];
 
 async function doCdesHeader(ninds: any, headerDiv: any) {
@@ -173,8 +172,7 @@ async function doCdes(ninds: any, url: string) {
 async function doDomainName(domainElement: any) {
     const domainNameElement = await domainElement.findElement(By.xpath("./div[@class='view-grouping-header']"));
     const domainNameText = await domainNameElement.getText();
-    const domainName = domainNameText.trim();
-    return domainName;
+    return domainNameText.trim();
 }
 
 async function doDomainTable(disorder: any, domainElement: any, domainName: string) {
@@ -213,17 +211,34 @@ async function doDomainTable(disorder: any, domainElement: any, domainName: stri
     }
 }
 
+async function selectSubDisease(driver: any, subDiseaseName: string) {
+    driver.findElement(By.xpath("//*[@id='edit-field-sub-disease-name-value-selective-wrapper']//select")).click();
+    // tslint:disable-next-line:max-line-length
+    const selectedOptionXpath = `//*[@id='edit-field-sub-disease-name-value-selective-wrapper']//select//option[text()='${subDiseaseName}']`;
+    driver.findElement(By.xpath(selectedOptionXpath));
+    setTimeout(() => {
+    }, 10000);
+}
+
 async function doDisorder(disorder: any) {
+    console.log(`Fetch disorder: ${disorder.disorderName}`);
     const driver = await new Builder().forBrowser('chrome').build();
     await driver.get(disorder.url);
-    driver.findElement(By.xpath("//button[normalize-space(text())='Expand All']")).click();
-    // tslint:disable-next-line:max-line-length
-    const domainDivXpath = "//div[div[p[button[normalize-space(text())='Expand All']]]]/div[@class='view-content']/div[@class='view-grouping']";
-    const domainElements = await driver.findElements(By.xpath(domainDivXpath));
-    for (const domainElement of domainElements) {
-        const domainName = await doDomainName(domainElement);
-        await doDomainTable(disorder, domainElement, domainName);
+    const subDiseases: any = disorder.studyType | disorder.timeFrame;
+    if (subDiseases && subDiseases.length) {
+        for (const subDisease of subDiseases) {
+            await selectSubDisease(driver, subDisease.name);
+            driver.findElement(By.xpath("//button[normalize-space(text())='Expand All']")).click();
+            // tslint:disable-next-line:max-line-length
+            const domainDivXpath = "//div[div[p[button[normalize-space(text())='Expand All']]]]/div[@class='view-content']/div[@class='view-grouping']";
+            const domainElements = await driver.findElements(By.xpath(domainDivXpath));
+            for (const domainElement of domainElements) {
+                const domainName = await doDomainName(domainElement);
+                await doDomainTable(disorder, domainElement, domainName);
+            }
+        }
     }
+    await driver.close();
 }
 
 async function run() {
