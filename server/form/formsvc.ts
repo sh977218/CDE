@@ -176,7 +176,10 @@ export function byTinyId(req, res) {
                             form: wholeForm,
                             renderer: req.query.renderer,
                             validate: req.query.validate
-                        }, handleError({req, res}, sdcForm => res.send(sdcForm)));
+                        }, handleError({req, res}, sdcForm => {
+                            console.log(sdcForm);
+                            res.send(sdcForm)
+                        }));
                         break;
                     default:
                         nih.getFormNih(wholeForm, handleError(handlerOptions, xmlForm => res.send(xmlForm)));

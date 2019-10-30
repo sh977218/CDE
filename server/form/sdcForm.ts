@@ -160,7 +160,7 @@ export function formToSDC({form, renderer, validate}, cb) {
     idToName = {};
 
     let xmlStr = formDesign.end({pretty: false});
-    if (noSupport) { cb('SDC Export does not support questions outside of sections. '); }
+    if (noSupport) { return cb(undefined, 'SDC Export does not support questions outside of sections. '); }
 
     if (renderer === 'defaultHtml') {
         xmlStr = "<?xml-stylesheet type='text/xsl' href='/form/public/assets/sdc/sdctemplate.xslt'?> \n" + xmlStr;

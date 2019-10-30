@@ -56,4 +56,15 @@ public class SdcExport extends NlmCdeBaseTest {
         switchTabAndClose(0);
     }
 
+    @Test
+    public void sdcNoSection() {
+        mustBeLoggedInAs(reguser_username, password);
+        goToFormByName("Alcohol - Age of First Use Protocol");
+        clickElement(By.id("export"));
+        clickElement(By.id("sdcHtmlExport"));
+        switchTab(1);
+        textPresent("SDC Export does not support questions outside of sections.");
+        switchTabAndClose(0);
+    }
+
 }
