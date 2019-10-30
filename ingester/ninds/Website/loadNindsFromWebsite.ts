@@ -91,7 +91,7 @@ const DISORDERS: any = [
             name: 'Moderate/Severe TBI: Rehabilitation',
         }]
     },
-    /* {
+    {
         disorderName: 'Sport-Related Concussion',
         url: URL_PREFIX + 'Sport%20Related%20Concussion',
         timeFrame: [{
@@ -103,7 +103,7 @@ const DISORDERS: any = [
         }, {
             name: 'Subacute',
         }]
-    }*/
+    }
 ];
 
 async function doCdesHeader(ninds: any, headerDiv: any) {
