@@ -79,7 +79,7 @@ const DISORDERS: any = [
     }, {
         disorderName: 'Traumatic Brain Injury',
         url: URL_PREFIX + 'Traumatic%20Brain%20Injury',
-        studyType: [{
+        subDiseases: [{
             name: 'Acute Hospitalized',
         }, {
             name: 'Comprehensive',
@@ -90,7 +90,8 @@ const DISORDERS: any = [
         }, {
             name: 'Moderate/Severe TBI: Rehabilitation',
         }]
-    }, {
+    },
+    /* {
         disorderName: 'Sport-Related Concussion',
         url: URL_PREFIX + 'Sport%20Related%20Concussion',
         timeFrame: [{
@@ -102,7 +103,7 @@ const DISORDERS: any = [
         }, {
             name: 'Subacute',
         }]
-    }
+    }*/
 ];
 
 async function doCdesHeader(ninds: any, headerDiv: any) {
@@ -175,7 +176,7 @@ async function doDomainName(domainElement: any) {
     return domainNameText.trim();
 }
 
-async function doDomainTable(disorder: any, domainElement: any, domainName: string) {
+async function doDomainTable(disorder: any, domainElement: any, domainName: string, subDiseaseName: string = '') {
     const domainTable = await domainElement.findElement(By.xpath("./div[@class='view-grouping-content']/div/table"));
     const trElements = await domainTable.findElements(By.xpath('./tbody/tr'));
     for (const trElement of trElements) {
@@ -191,6 +192,8 @@ async function doDomainTable(disorder: any, domainElement: any, domainName: stri
         }
         const ninds: any = {
             url: disorder.url,
+            diseaseName: disorder.disorderName,
+            subDiseaseName,
             domainName,
             formName,
             formId
@@ -212,31 +215,39 @@ async function doDomainTable(disorder: any, domainElement: any, domainName: stri
 }
 
 async function selectSubDisease(driver: any, subDiseaseName: string) {
-    driver.findElement(By.xpath("//*[@id='edit-field-sub-disease-name-value-selective-wrapper']//select")).click();
+    await driver.findElement(By.xpath("//*[@id='edit-field-sub-disease-name-value-selective-wrapper']//select")).click();
     // tslint:disable-next-line:max-line-length
     const selectedOptionXpath = `//*[@id='edit-field-sub-disease-name-value-selective-wrapper']//select//option[text()='${subDiseaseName}']`;
-    driver.findElement(By.xpath(selectedOptionXpath));
+    await driver.findElement(By.xpath(selectedOptionXpath)).click();
+    setTimeout(() => {
+    }, 30000);
+}
+
+async function doDomains(driver: any, disorder: any, subDiseaseName: string = '') {
+    await driver.findElement(By.xpath("//button[normalize-space(text())='Expand All']")).click();
     setTimeout(() => {
     }, 10000);
+    // tslint:disable-next-line:max-line-length
+    const domainDivXpath = "//div[div[p[button[normalize-space(text())='Collapse All']]]]/div[@class='view-content']/div[@class='view-grouping']";
+    const domainElements = await driver.findElements(By.xpath(domainDivXpath));
+    for (const domainElement of domainElements) {
+        const domainName = await doDomainName(domainElement);
+        await doDomainTable(disorder, domainElement, domainName, subDiseaseName);
+    }
 }
 
 async function doDisorder(disorder: any) {
     console.log(`Fetch disorder: ${disorder.disorderName}`);
     const driver = await new Builder().forBrowser('chrome').build();
     await driver.get(disorder.url);
-    const subDiseases: any = disorder.studyType | disorder.timeFrame;
+    const subDiseases: any = disorder.subDiseases;
     if (subDiseases && subDiseases.length) {
         for (const subDisease of subDiseases) {
             await selectSubDisease(driver, subDisease.name);
-            driver.findElement(By.xpath("//button[normalize-space(text())='Expand All']")).click();
-            // tslint:disable-next-line:max-line-length
-            const domainDivXpath = "//div[div[p[button[normalize-space(text())='Expand All']]]]/div[@class='view-content']/div[@class='view-grouping']";
-            const domainElements = await driver.findElements(By.xpath(domainDivXpath));
-            for (const domainElement of domainElements) {
-                const domainName = await doDomainName(domainElement);
-                await doDomainTable(disorder, domainElement, domainName);
-            }
+            await doDomains(driver, disorder, subDisease.name);
         }
+    } else {
+        await doDomains(driver, disorder);
     }
     await driver.close();
 }
