@@ -177,8 +177,7 @@ export function byTinyId(req, res) {
                             renderer: req.query.renderer,
                             validate: req.query.validate
                         }, handleError({req, res}, sdcForm => {
-                            console.log(sdcForm);
-                            res.send(sdcForm)
+                            res.send(sdcForm);
                         }));
                         break;
                     default:
