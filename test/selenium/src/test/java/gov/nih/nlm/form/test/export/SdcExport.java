@@ -58,13 +58,9 @@ public class SdcExport extends NlmCdeBaseTest {
 
     @Test
     public void sdcNoSection() {
-        mustBeLoggedInAs(reguser_username, password);
-        goToFormByName("Alcohol - Age of First Use Protocol");
-        clickElement(By.id("selectRenderButton"));
-        clickElement(By.id("button_sdc"));
-        switchTab(1);
-        textPresent("SDC Export does not support questions outside of sections.");
-        switchTabAndClose(0);
+        String url = baseUrl + "/form/XySUBn_NZ?type=xml&subtype=sdc&validate=true";
+        String response = get(url).asString();
+        Assert.assertTrue(response.contains("SDC Export does not support questions outside of sections"));
     }
 
 }
