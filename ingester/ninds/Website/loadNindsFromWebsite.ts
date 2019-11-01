@@ -202,6 +202,7 @@ async function doDomainTable(disorder: any, domainElement: any, domainName: stri
         } else {
             const aElements = await tds[1].findElements(By.xpath('./a'));
             if (aElements.length === 1) {
+                console.log(`${disorder.url}  ${formId} ${formName} has Cdes. Loading...`);
                 const cdeUrl = await aElements[0].getAttribute('href');
                 await doCdes(ninds, cdeUrl);
             } else {
@@ -244,7 +245,7 @@ async function doDisorder(disorder: any) {
             await selectSubDisease(driver, subDisease.name);
             const existingContentElementsXpath = "//div[div[p[button[normalize-space(text())='Expand All']]]]/div[@class='view-content']";
             await driver.wait(until.elementLocated(By.xpath(existingContentElementsXpath)), 30 * 1000);
-            console.log(`done waiting for... ${subDisease}`);
+            console.log(`done waiting for... ${subDisease.name}`);
             await doDomains(driver, disorder, subDisease.name);
         }
     } else {
