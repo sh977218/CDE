@@ -227,7 +227,7 @@ async function doDomains(driver: any, disorder: any, subDiseaseName: string = ''
 
     // tslint:disable-next-line:max-line-length
     const domainDivXpath = "//div[div[p[button[normalize-space(text())='Collapse All']]]]/div[@class='view-content']/div[@class='view-grouping']";
-    await driver.wait(until.elementLocated(By.xpath(domainDivXpath)), 10000);
+    await driver.wait(until.elementLocated(By.xpath(domainDivXpath)), 10 * 1000);
     const domainElements = await driver.findElements(By.xpath(domainDivXpath));
     for (const domainElement of domainElements) {
         const domainName = await doDomainName(domainElement);
@@ -255,7 +255,7 @@ async function doDisorder(disorder: any) {
 }
 
 async function run() {
-    for (const disorder of DISORDERS) {
+    for (const disorder of DISORDERS.slice(0, 1)) {
         await doDisorder(disorder);
     }
 }
