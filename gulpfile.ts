@@ -1,5 +1,5 @@
 import { exec, ExecOptions } from 'child_process';
-import * as elasticsearch from 'elasticsearch';
+import * as elasticsearch from '@elastic/elasticsearch';
 import { readFileSync, writeFile } from 'fs';
 import * as gulp from 'gulp';
 import * as minifyCss from 'gulp-clean-css';

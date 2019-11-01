@@ -1,5 +1,5 @@
 import { each, ErrorCallback } from 'async';
-import { Client } from 'elasticsearch';
+import { Client } from '@elastic/elasticsearch';
 import * as _ from 'lodash';
 import { consoleLog } from 'server/log/dbLogger';
 import { findAll } from 'server/mesh/meshDb';
@@ -8,7 +8,7 @@ import { config } from 'server/system/parseConfig';
 import { Cb, CbError } from 'shared/models.model';
 
 const esClient = new Client({
-    hosts: config.elastic.hosts
+    nodes: config.elastic.hosts
 });
 
 const searchTemplate = {
@@ -97,7 +97,6 @@ function doSyncWithMesh(allMappings, callback: ErrorCallback = () => {}) {
                     request.body.push({
                         update: {
                             _index: s.index,
-                            _type: s.type,
                             _id: thisElt.tinyId
                         }
                     });

@@ -1,4 +1,4 @@
-import * as elastic from 'elasticsearch';
+import * as elastic from '@elastic/elasticsearch';
 import { handleNotFound } from 'server/errorHandler/errorHandler';
 import { logError } from 'server/log/dbLogger';
 import { buildElasticSearchQuery, elasticsearch as elasticSearchShared } from 'server/system/elastic';
@@ -10,7 +10,7 @@ import { SearchSettingsElastic } from 'shared/search/search.model';
 import { storeQuery } from 'server/log/storedQueryDb';
 
 export const esClient = new elastic.Client({
-    hosts: config.elastic.hosts
+    nodes: config.elastic.hosts
 });
 
 export function updateOrInsert(elt) {
@@ -36,14 +36,14 @@ export function updateOrInsert(elt) {
             delete doc._id;
             esClient.index({
                 index: config.elastic.index.name,
-                type: 'dataelement',
                 id: doc.tinyId,
+                include_type_name: false,
                 body: doc
             }, done);
             suggestRiverFunction(elt, sugDoc => {
                 esClient.index({
                     index: config.elastic.cdeSuggestIndex.name,
-                    type: 'suggest',
+                    include_type_name: false,
                     id: doc.tinyId,
                     body: sugDoc
                 }, done);
@@ -103,9 +103,8 @@ const mltConf = {
 export function morelike(id, callback) {
     const from = 0;
     const limit = 20;
-    esClient.search<DataElementElastic>({
+    esClient.search({
         index: config.elastic.index.name,
-        type: 'dataelement',
         body: {
             query: {
                 bool: {
@@ -165,7 +164,6 @@ export function byTinyIdList(idList, size, cb) {
     idList = idList.filter(id => !!id);
     esClient.search({
         index: config.elastic.index.name,
-        type: 'dataelement',
         body: {
             query: {
                 ids: {

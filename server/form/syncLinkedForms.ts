@@ -40,7 +40,7 @@ async function extractedSyncLinkedForms(cde) {
 
     elastic.esClient.update({
         index: config.elastic.index.name,
-        type: 'dataelement',
+        include_type_name: false,
         id: cde.tinyId,
         body: {doc: {linkedForms}}
     });

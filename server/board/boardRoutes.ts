@@ -128,7 +128,7 @@ export function module() {
         validateBody,
         async (req, res) => {
             const result = await elastic.boardSearch(req.body);
-            res.send(result);
+            res.send(result.body);
         }
     );
 
@@ -219,7 +219,7 @@ export function module() {
     router.post('/myBoards', nocacheMiddleware, loggedInMiddleware,
         check('sortDirection').isIn(['', 'desc', 'asc']), validateBody, async (req, res) => {
         const result = await elastic.myBoards(req.user, req.body);
-        res.send(result);
+        res.send(result.body);
     });
 
     router.post('/pinEntireSearchToBoard', loggedInMiddleware, async (req, res) => {

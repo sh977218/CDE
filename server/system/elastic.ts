@@ -1,5 +1,5 @@
 import { eachOf, filter, forEach } from 'async';
-import { Client, SearchResponse } from 'elasticsearch';
+import { Client } from '@elastic/elasticsearch';
 import { noop } from 'lodash';
 import { Cursor } from 'mongodb';
 import { Document } from 'mongoose';
@@ -47,7 +47,7 @@ interface DbStream {
 }
 
 export const esClient = new Client({
-    hosts: config.elastic.hosts
+    nodes: config.elastic.hosts
 });
 
 export function removeElasticFields(elt: DataElementElastic): DataElementElastic;
@@ -128,8 +128,8 @@ export function reIndexStream(dbStream: DbStream, cb?: Cb) {
                         rejectUnauthorized: false
                     },
                     body: req
-                }, (err: Error | undefined) => {
-                    if (err) {
+                }, (err: Error | undefined, response) => {
+                    if (err || response.body.errors) {
                         if (retries) {
                             setTimeout(() => {
                                 bulkIndex(req, cb, --retries);
@@ -139,7 +139,7 @@ export function reIndexStream(dbStream: DbStream, cb?: Cb) {
                                 message: 'Unable to Index in bulk',
                                 origin: 'system.elastic.inject',
                                 stack: err,
-                                details: ''
+                                details: ((response || {}).body || {}).errors
                             });
                             cb();
                         }
@@ -202,7 +202,8 @@ export function reIndexStream(dbStream: DbStream, cb?: Cb) {
                         nextCommand({
                             index: {
                                 _index: index.indexName,
-                                _type: indexTypes[i],
+                                _type: '_doc',
+                                // _type: indexTypes[i],
                                 _id: doc.tinyId || doc._id
                             }
                         });
@@ -225,17 +226,18 @@ export function reIndexStream(dbStream: DbStream, cb?: Cb) {
 
 function createIndex(dbStream: DbStream, cb: Cb) {
     filter(dbStream.indexes, (index: ElasticIndex, doneOne) => {
-        esClient.indices.exists({index: index.indexName}, (err, indiceExists) => {
+        esClient.indices.exists({index: index.indexName}, (err, response) => {
             if (err) {
                 return doneOne(err);
             }
-            if (indiceExists) {
+            if (response.body) {
                 consoleLog('index already exists: ' + index.indexName);
                 doneOne(undefined, false);
             } else {
                 consoleLog('creating index: ' + index.indexName);
                 esClient.indices.create({
                     index: index.indexName,
+                    include_type_name: false,
                     timeout: '10s',
                     body: index.indexJson
                 }, err => {
@@ -295,7 +297,7 @@ export function completionSuggest(term: ElasticCondition, user: User, settings: 
         }
     };
 
-    esClient.search<ItemElastic>({
+    esClient.search({
         index: indexName,
         body: suggestQuery
     }, (error, response) => {
@@ -671,11 +673,9 @@ export function isSearch(settings: SearchSettingsElastic) {
 const searchTemplate: { [key: string]: any } = {
     cde: {
         index: config.elastic.index.name,
-        type: 'dataelement'
     },
     form: {
         index: config.elastic.formIndex.name,
-        type: 'form'
     }
 };
 
@@ -689,7 +689,7 @@ export function elasticsearch(type: ModuleItem, query: any, settings: any,
         return cb(new Error('Invalid query'));
     }
     search.body = query;
-    esClient.search<ItemElastic>(search, (error, resp) => {
+    esClient.search(search, (error, resp) => {
         if (error) {
             const response = resp as any as ElasticQueryError;
             if (response && response.status) {
@@ -717,7 +717,7 @@ export function elasticsearch(type: ModuleItem, query: any, settings: any,
                 cb(new Error('Server Error'));
             }
         } else {
-            const response = resp as ElasticQueryResponseAggregations<ItemElastic>;
+            const response = resp.body as ElasticQueryResponseAggregations<ItemElastic>;
             if (response.hits.total === 0 && config.name.indexOf('Prod') === -1) {
                 consoleLog('No response. QUERY: ' + JSON.stringify(query), 'debug');
             }
@@ -765,8 +765,8 @@ export function elasticSearchExport(type: ModuleItem, query: any, dataCb: CbErro
     search.scroll = '1m';
     search.body = query;
 
-    function scrollThrough(response: SearchResponse<ItemElastic> & {_scroll_id: string}) {
-        esClient.scroll<ItemElastic>({scrollId: response._scroll_id, scroll: '1m'}, (err, response) => {
+    function scrollThrough(response: any) {
+        esClient.scroll({scrollId: response._scroll_id, scroll: '1m'}, (err, response) => {
             if (err) {
                 lock = false;
                 errorLogger.error('Error: Elastic Search Scroll Access Error',
@@ -776,12 +776,12 @@ export function elasticSearchExport(type: ModuleItem, query: any, dataCb: CbErro
                     });
                 streamCb(new Error('ES Error'));
             } else {
-                processScroll(response as SearchResponse<ItemElastic> & {_scroll_id: string});
+                processScroll(response as any);
             }
         });
     }
 
-    function processScroll(response: SearchResponse<ItemElastic> & {_scroll_id: string}) {
+    function processScroll(response: any) {
         if (response.hits.hits.length === 0) {
             lock = false;
             streamCb();
@@ -793,7 +793,7 @@ export function elasticSearchExport(type: ModuleItem, query: any, dataCb: CbErro
         }
     }
 
-    esClient.search<ItemElastic>(search, (err, response) => {
+    esClient.search(search, (err, response) => {
         if (err) {
             lock = false;
             errorLogger.error('Error: Elastic Search Scroll Query Error',
@@ -804,12 +804,12 @@ export function elasticSearchExport(type: ModuleItem, query: any, dataCb: CbErro
                 });
             streamCb(new Error('ES Error'));
         } else {
-            processScroll(response as SearchResponse<ItemElastic> & {_scroll_id: string});
+            processScroll(response as any);
         }
     });
 }
 
-export function scrollExport(query: any, type: ModuleItem, cb: CbError<SearchResponse<ItemElastic>>) {
+export function scrollExport(query: any, type: ModuleItem, cb: CbError<any>) {
     query.size = 100;
     delete query.aggregations;
 
@@ -820,7 +820,7 @@ export function scrollExport(query: any, type: ModuleItem, cb: CbError<SearchRes
     esClient.search(search, cb);
 }
 
-export function scrollNext(scrollId: string, cb: CbError<SearchResponse<ItemElastic>>) {
+export function scrollNext(scrollId: string, cb: CbError<any>) {
     esClient.scroll({scrollId, scroll: '1m'}, cb);
 }
 

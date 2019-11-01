@@ -1,4 +1,4 @@
-import * as elastic from 'elasticsearch';
+import * as elastic from '@elastic/elasticsearch';
 import { splitError } from 'server/errorHandler/errorHandler';
 import { logError } from 'server/log/dbLogger';
 import { riverFunction, suggestRiverFunction } from 'server/system/elasticSearchInit';
@@ -6,9 +6,8 @@ import { config } from 'server/system/parseConfig';
 import { CdeFormElastic } from 'shared/form/form.model';
 import { CbError } from 'shared/models.model';
 
-
 const esClient = new elastic.Client({
-    hosts: config.elastic.hosts
+    nodes: config.elastic.hosts
 });
 
 export function updateOrInsert(elt) {
@@ -34,14 +33,14 @@ export function updateOrInsert(elt) {
             delete doc._id;
             esClient.index({
                 index: config.elastic.formIndex.name,
-                type: 'form',
+                include_type_name: false,
                 id: doc.tinyId,
                 body: doc
             }, done);
             suggestRiverFunction(elt, sugDoc => {
                 esClient.index({
                     index: config.elastic.formSuggestIndex.name,
-                    type: 'suggest',
+                    include_type_name: false,
                     id: doc.tinyId,
                     body: sugDoc
                 }, done);
@@ -52,9 +51,8 @@ export function updateOrInsert(elt) {
 
 export function byTinyIdList(idList: string[], size: number, cb: CbError<CdeFormElastic[]>) {
     idList = idList.filter(id => !!id);
-    esClient.search<CdeFormElastic>({
+    esClient.search({
         index: config.elastic.formIndex.name,
-        type: 'form',
         body: {
             query: {
                 ids: {
