@@ -34,16 +34,16 @@ export function updateOrInsert(elt) {
                 doneError = err;
             };
             delete doc._id;
-                // type: 'dataelement',
             esClient.index({
                 index: config.elastic.index.name,
+                type: 'dataelement',
                 id: doc.tinyId,
                 body: doc
             }, done);
             suggestRiverFunction(elt, sugDoc => {
                 esClient.index({
                     index: config.elastic.cdeSuggestIndex.name,
-                    // type: 'suggest',
+                    type: 'suggest',
                     id: doc.tinyId,
                     body: sugDoc
                 }, done);
@@ -105,7 +105,7 @@ export function morelike(id, callback) {
     const limit = 20;
     esClient.search<DataElementElastic>({
         index: config.elastic.index.name,
-        // type: 'dataelement',
+        type: 'dataelement',
         body: {
             query: {
                 bool: {
@@ -165,7 +165,7 @@ export function byTinyIdList(idList, size, cb) {
     idList = idList.filter(id => !!id);
     esClient.search({
         index: config.elastic.index.name,
-        // type: 'dataelement',
+        type: 'dataelement',
         body: {
             query: {
                 ids: {
