@@ -34,9 +34,9 @@ export function updateOrInsert(elt) {
                 doneError = err;
             };
             delete doc._id;
+                // type: 'dataelement',
             esClient.index({
                 index: config.elastic.index.name,
-                // type: 'dataelement',
                 id: doc.tinyId,
                 body: doc
             }, done);

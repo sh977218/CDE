@@ -14,16 +14,18 @@ const primaryNameSuggest = {
 
 export const createSuggestIndexJson = {
     mappings: {
-        properties: {
-            nameSuggest: primaryNameSuggest,
-            stewardOrg: {
-                properties: {
-                    name: {type: 'keyword'}
-                }
-            },
-            registrationState: {
-                properties: {
-                    registrationStatus: {type: 'keyword'}
+        suggest: {
+            properties: {
+                nameSuggest: primaryNameSuggest,
+                stewardOrg: {
+                    properties: {
+                        name: {type: 'keyword'}
+                    }
+                },
+                registrationState: {
+                    properties: {
+                        registrationStatus: {type: 'keyword'}
+                    }
                 }
             }
         }

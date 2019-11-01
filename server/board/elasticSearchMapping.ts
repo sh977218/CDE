@@ -2,12 +2,14 @@ import { config } from '../system/parseConfig';
 
 export const createIndexJson = {
     mappings: {
-        properties: {
-            type: {type: "keyword"},
-            tags: {type: "keyword"},
-            shareStatus: {type: "keyword"},
-            updatedDate: {type: "date"},
-            createdDate: {type: "date"}
+        board: {
+            properties: {
+                type: {type: "keyword"},
+                tags: {type: "keyword"},
+                shareStatus: {type: "keyword"},
+                updatedDate: {type: "date"},
+                createdDate: {type: "date"}
+            }
         }
     }, settings: {
         index: {
