@@ -57,7 +57,6 @@ export function add(req, res, db: any, crudPermission) {
 }
 
 function linkAttachmentToAdminItem(item, attachment, isFileCreated, cb) {
-    if (!item.attachments) { item.attachments = []; }
     item.attachments.push(attachment);
     item.markModified('attachments');
     item.save(err => {
