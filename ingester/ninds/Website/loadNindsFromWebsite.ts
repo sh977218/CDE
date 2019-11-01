@@ -159,8 +159,8 @@ async function doCdes(ninds: any, url: string) {
     const driver = await new Builder().forBrowser('chrome').build();
     await driver.get(url);
     const mainDiv = await driver.findElement(By.xpath("//section[@id='block-system-main']/div"));
-    const headerDiv = await mainDiv.findElement(By.xpath("./div[@class='view-header']"));
-    await doCdesHeader(ninds, headerDiv);
+//    const headerDiv = await mainDiv.findElement(By.xpath("./div[@class='view-header']"));
+//    await doCdesHeader(ninds, headerDiv);
     const contentDiv = await mainDiv.findElement(By.xpath("./div[@class='view-content']"));
     const cdeTableElement = await contentDiv.findElement(By.xpath('./div/table'));
     await doCdesTable(ninds, cdeTableElement);
@@ -175,41 +175,49 @@ async function doDomainName(domainElement: any) {
 }
 
 async function doDomainTable(disorder: any, domainElement: any, domainName: string, subDiseaseName: string = '') {
-    const domainTable = await domainElement.findElement(By.xpath("./div[@class='view-grouping-content']/div/table"));
-    const trElements = await domainTable.findElements(By.xpath('./tbody/tr'));
-    for (const trElement of trElements) {
-        const tds = await trElement.findElements(By.xpath('./td'));
-        const formName = await tds[0].getText();
-        const formIdElements = await tds[0].findElements(By.xpath('./a'));
-        let formId = '';
-        if (formIdElements.length === 1) {
-            formId = await formIdElements[0].getAttribute('title');
-        } else {
-            console.log('No formId found.');
-            process.exit(1);
-        }
-        const ninds: any = {
-            url: disorder.url,
-            diseaseName: disorder.disorderName,
-            subDiseaseName,
-            domainName,
-            formName,
-            formId
-        };
-        const existingNinds = await NindsModel.findOne(ninds);
-        if (existingNinds) {
-            console.log(`${disorder.url}  ${formId} ${formName} has loaded. Skipping...`);
-        } else {
-            const aElements = await tds[1].findElements(By.xpath('./a'));
-            if (aElements.length === 1) {
-                console.log(`${disorder.url}  ${formId} ${formName} has Cdes. Loading...`);
-                const cdeUrl = await aElements[0].getAttribute('href');
-                await doCdes(ninds, cdeUrl);
+
+    const subDomainTables = await domainElement.findElements(By.xpath("./div[@class='view-grouping-content']/div/table"));
+    for (const subDomainTable of subDomainTables) {
+        const subDomainElement = await subDomainTable.findElement(By.xpath('./caption'));
+        const subDomainText = await subDomainElement.getText();
+        const subDomainName = subDomainText.trim();
+        const trElements = await subDomainTable.findElements(By.xpath('./tbody/tr'));
+        for (const trElement of trElements) {
+            const tds = await trElement.findElements(By.xpath('./td'));
+            const formName = await tds[0].getText();
+            const formIdElements = await tds[0].findElements(By.xpath('./a'));
+            let formId = '';
+            if (formIdElements.length === 1) {
+                formId = await formIdElements[0].getAttribute('title');
             } else {
-                console.log(`${disorder.url}  ${formId} ${formName}  has no Cdes.`);
+                console.log('No formId found.');
+                process.exit(1);
             }
-            await new NindsModel(ninds).save();
+            const ninds: any = {
+                url: disorder.url,
+                diseaseName: disorder.disorderName,
+                subDiseaseName,
+                domainName,
+                subDomainName,
+                formName,
+                formId
+            };
+            const existingNinds = await NindsModel.findOne(ninds);
+            if (existingNinds) {
+                console.log(`| ${disorder.url} | ${domainName} | ${subDomainName} | ${formId} | ${formName} | has loaded. Skipping...`);
+            } else {
+                const aElements = await tds[1].findElements(By.xpath('./a'));
+                if (aElements.length === 1) {
+                    console.log(`| ${disorder.url} | ${domainName} | ${subDomainName} | ${formId} | ${formName} | has Cdes. Loading...`);
+                    const cdeUrl = await aElements[0].getAttribute('href');
+                    await doCdes(ninds, cdeUrl);
+                } else {
+                    console.log(`| ${disorder.url} | ${domainName} | ${subDomainName} | ${formId} | ${formName} |  has no Cdes.`);
+                }
+                await new NindsModel(ninds).save();
+            }
         }
+
     }
 }
 
@@ -224,10 +232,9 @@ async function selectSubDisease(driver: any, subDiseaseName: string) {
 
 async function doDomains(driver: any, disorder: any, subDiseaseName: string = '') {
     await driver.findElement(By.xpath("//button[normalize-space(text())='Expand All']")).click();
-
     // tslint:disable-next-line:max-line-length
     const domainDivXpath = "//div[div[p[button[normalize-space(text())='Collapse All']]]]/div[@class='view-content']/div[@class='view-grouping']";
-    await driver.wait(until.elementLocated(By.xpath(domainDivXpath)), 10 * 1000);
+    await driver.wait(until.elementLocated(By.xpath(domainDivXpath)), 30 * 1000);
     const domainElements = await driver.findElements(By.xpath(domainDivXpath));
     for (const domainElement of domainElements) {
         const domainName = await doDomainName(domainElement);
@@ -244,7 +251,7 @@ async function doDisorder(disorder: any) {
         for (const subDisease of subDiseases) {
             await selectSubDisease(driver, subDisease.name);
             const existingContentElementsXpath = "//div[div[p[button[normalize-space(text())='Expand All']]]]/div[@class='view-content']";
-            await driver.wait(until.elementLocated(By.xpath(existingContentElementsXpath)), 30 * 1000);
+            await driver.wait(until.elementLocated(By.xpath(existingContentElementsXpath)), 60 * 1000);
             console.log(`done waiting for... ${subDisease.name}`);
             await doDomains(driver, disorder, subDisease.name);
         }
@@ -255,7 +262,8 @@ async function doDisorder(disorder: any) {
 }
 
 async function run() {
-    for (const disorder of DISORDERS.slice(0, 1)) {
+//    for (const disorder of DISORDERS.slice(0, 1)) {
+    for (const disorder of DISORDERS) {
         await doDisorder(disorder);
     }
 }
