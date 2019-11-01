@@ -333,7 +333,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
     protected void goToVideos() {
         goToHelp();
-        clickElement(By.id("videos"));
+        clickElement(By.id("videosLink"));
     }
 
     protected void goToStewardTransfer() {
