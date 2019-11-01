@@ -69,7 +69,7 @@ function doSyncWithMesh(allMappings, callback: ErrorCallback = () => {}) {
                     {origin: 'system.elastic.syncWithMesh', stack: err.stack});
                 cb(err);
             } else {
-                processScroll(response._scroll_id, s, response, cb);
+                processScroll(response.body._scroll_id, s, response.body, cb);
             }
         });
     }
@@ -137,7 +137,7 @@ function doSyncWithMesh(allMappings, callback: ErrorCallback = () => {}) {
                     });
                 oneCb(err);
             } else {
-                processScroll(response._scroll_id, search, response, oneCb);
+                processScroll(response.body._scroll_id, search, response.body, oneCb);
             }
         });
     }, callback);

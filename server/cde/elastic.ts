@@ -141,13 +141,14 @@ export function morelike(id, callback) {
             }
         },
     }, handleNotFound({}, response => {
+            const body = response.body;
             const result: any = {
                 cdes: [],
-                pages: Math.ceil(response.hits.total / limit),
+                pages: Math.ceil(body.hits.total / limit),
                 page: Math.ceil(from / limit),
-                totalNumber: response.hits.total,
+                totalNumber: body.hits.total,
             };
-            response.hits.hits.forEach(hit => {
+            body.hits.hits.forEach(hit => {
                 const thisCde = hit._source;
                 if (thisCde.valueDomain && thisCde.valueDomain.datatype === 'Value List' && thisCde.valueDomain.permissibleValues
                     && thisCde.valueDomain.permissibleValues.length > 10) {
@@ -174,7 +175,7 @@ export function byTinyIdList(idList, size, cb) {
         }
     }, handleNotFound<ElasticQueryResponse>({}, response => {
         // @TODO possible to move this sort to elastic search?
-        response.hits.hits.sort((a, b) => idList.indexOf(a._id) - idList.indexOf(b._id));
-        cb(null, response.hits.hits.map(h => h._source));
+        response.body.hits.hits.sort((a, b) => idList.indexOf(a._id) - idList.indexOf(b._id));
+        cb(null, response.body.hits.hits.map(h => h._source));
     }));
 }

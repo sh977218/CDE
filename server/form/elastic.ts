@@ -67,7 +67,7 @@ export function byTinyIdList(idList: string[], size: number, cb: CbError<CdeForm
             cb(undefined, []);
             return;
         }
-        response.hits.hits.sort((a, b) => idList.indexOf(a._id) - idList.indexOf(b._id));
-        cb(undefined, response.hits.hits.map(h => h._source));
+        response.body.hits.hits.sort((a, b) => idList.indexOf(a._id) - idList.indexOf(b._id));
+        cb(undefined, response.body.hits.hits.map(h => h._source));
     }));
 }

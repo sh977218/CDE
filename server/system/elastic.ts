@@ -304,7 +304,7 @@ export function completionSuggest(term: ElasticCondition, user: User, settings: 
         if (error) {
             cb(error);
         } else {
-            cb(undefined, response);
+            cb(undefined, response.body);
         }
     });
 }
@@ -766,7 +766,7 @@ export function elasticSearchExport(type: ModuleItem, query: any, dataCb: CbErro
     search.body = query;
 
     function scrollThrough(response: any) {
-        esClient.scroll({scrollId: response._scroll_id, scroll: '1m'}, (err, response) => {
+        esClient.scroll({scrollId: response.body._scroll_id, scroll: '1m'}, (err, response) => {
             if (err) {
                 lock = false;
                 errorLogger.error('Error: Elastic Search Scroll Access Error',
@@ -776,7 +776,7 @@ export function elasticSearchExport(type: ModuleItem, query: any, dataCb: CbErro
                     });
                 streamCb(new Error('ES Error'));
             } else {
-                processScroll(response as any);
+                processScroll(response.body);
             }
         });
     }
@@ -804,7 +804,7 @@ export function elasticSearchExport(type: ModuleItem, query: any, dataCb: CbErro
                 });
             streamCb(new Error('ES Error'));
         } else {
-            processScroll(response as any);
+            processScroll(response.body);
         }
     });
 }
