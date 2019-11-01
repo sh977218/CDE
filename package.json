@@ -274,7 +274,7 @@
     "rxjs": "^6.3.3",
     "rxjs-compat": "^6.3.3",
     "sass-loader": "^7.0.1",
-    "selenium-webdriver": "^4.0.0-alpha.1",
+    "selenium-webdriver": "^4.0.0-alpha.5",
     "source-map-support": "^0.5.12",
     "style-loader": "0.21.0",
     "time-ago-pipe": "^1.3.2",

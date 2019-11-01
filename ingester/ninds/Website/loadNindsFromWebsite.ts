@@ -1,11 +1,10 @@
-import { Builder, By } from 'selenium-webdriver';
+import { Builder, By, until } from 'selenium-webdriver';
 import { replace } from 'lodash';
 import { NindsModel } from 'ingester/createMigrationConnection';
 
 require('chromedriver');
 
 const URL_PREFIX = 'https://www.commondataelements.ninds.nih.gov/';
-const DEFAULT_XPATH = "//*[@id='Data_Standards']/a/following-sibling::table/tbody/tr//td";
 
 // tslint:disable-next-line:max-line-length
 // document count xpath: //div[div[p[button[normalize-space(text())='Expand All']]]]/div[@class='view-content']/div[@class='view-grouping']/div[@class='view-grouping-content']/div/table/tbody/tr
@@ -90,11 +89,10 @@ const DISORDERS: any = [
         }, {
             name: 'Moderate/Severe TBI: Rehabilitation',
         }]
-    },
-    {
+    }, {
         disorderName: 'Sport-Related Concussion',
         url: URL_PREFIX + 'Sport%20Related%20Concussion',
-        timeFrame: [{
+        subDiseases: [{
             name: 'Acute',
         }, {
             name: 'Comprehensive',
@@ -207,7 +205,7 @@ async function doDomainTable(disorder: any, domainElement: any, domainName: stri
                 const cdeUrl = await aElements[0].getAttribute('href');
                 await doCdes(ninds, cdeUrl);
             } else {
-                console.log(`${formId} has no Cdes.`);
+                console.log(`${disorder.url}  ${formId} ${formName}  has no Cdes.`);
             }
             await new NindsModel(ninds).save();
         }
@@ -215,20 +213,20 @@ async function doDomainTable(disorder: any, domainElement: any, domainName: stri
 }
 
 async function selectSubDisease(driver: any, subDiseaseName: string) {
-    await driver.findElement(By.xpath("//*[@id='edit-field-sub-disease-name-value-selective-wrapper']//select")).click();
+    await driver.navigate().refresh();
+    const selectXpath = "//*[@id='edit-field-sub-disease-name-value-selective-wrapper']//select";
+    await driver.findElement(By.xpath(selectXpath)).click();
     // tslint:disable-next-line:max-line-length
     const selectedOptionXpath = `//*[@id='edit-field-sub-disease-name-value-selective-wrapper']//select//option[text()='${subDiseaseName}']`;
     await driver.findElement(By.xpath(selectedOptionXpath)).click();
-    setTimeout(() => {
-    }, 30000);
 }
 
 async function doDomains(driver: any, disorder: any, subDiseaseName: string = '') {
     await driver.findElement(By.xpath("//button[normalize-space(text())='Expand All']")).click();
-    setTimeout(() => {
-    }, 10000);
+
     // tslint:disable-next-line:max-line-length
     const domainDivXpath = "//div[div[p[button[normalize-space(text())='Collapse All']]]]/div[@class='view-content']/div[@class='view-grouping']";
+    await driver.wait(until.elementLocated(By.xpath(domainDivXpath)), 10000);
     const domainElements = await driver.findElements(By.xpath(domainDivXpath));
     for (const domainElement of domainElements) {
         const domainName = await doDomainName(domainElement);
@@ -244,6 +242,9 @@ async function doDisorder(disorder: any) {
     if (subDiseases && subDiseases.length) {
         for (const subDisease of subDiseases) {
             await selectSubDisease(driver, subDisease.name);
+            const existingContentElementsXpath = "//div[div[p[button[normalize-space(text())='Expand All']]]]/div[@class='view-content']";
+            await driver.wait(until.elementLocated(By.xpath(existingContentElementsXpath)), 30 * 1000);
+            console.log(`done waiting for... ${subDisease}`);
             await doDomains(driver, disorder, subDisease.name);
         }
     } else {
@@ -255,54 +256,8 @@ async function doDisorder(disorder: any) {
 async function run() {
     for (const disorder of DISORDERS) {
         await doDisorder(disorder);
-        /*
-                const existingDocumentCount = await NindsModel.countDocuments(disorder);
-                if (existingDocumentCount === disease.count) {
-                    console.log('***********************************************************************');
-                    console.log(`Previously Finished Disease  ${disease.disorderName}. Skipping... `);
-                    console.log('***********************************************************************');
-                } else {
-                }
-
-        */
     }
 }
 
 run().then(() => {
 }, error => console.log(error));
-/*
-if (disease.subDiseases) {
-    for (const subDisease of disease.subDiseases) {
-        const _existingSubDiseasesCount = await NindsModel.countDocuments({
-            disease: disease.disorderName,
-            subDisease: subDisease.name
-        });
-        if (_existingSubDiseasesCount === subDisease.count) {
-            console.log('***********************************************************************');
-            console.log(`Previously Finished Disease ${disease.name} SubDisease ${subDisease.name} on page ${disease.url}`);
-            console.log('***********************************************************************');
-        } else {
-            await driver.get(disease.url);
-            disease.subDisease = subDisease.name;
-            await driver.findElement(By.id('ddlSubDisease')).click();
-            const subDiseaseXpath = "//!*[@id='ddlSubDisease']//option[normalize-space(text())='" + subDisease.name + "']";
-            await driver.findElement(By.xpath(subDiseaseXpath)).click();
-            if (subDisease.existingXpath) {
-                const timeout = setInterval(async () => {
-                    const existingElement = await driver.findElement(By.xpath(subDisease.existingXpath));
-                    let existingElementText = '';
-                    if (disease.name === 'Traumatic Brain Injury') {
-                        existingElementText = await existingElement.getAttribute('id');
-                    } else {
-                        existingElementText = await existingElement.getText();
-                    }
-                    if (existingElementText.trim() === subDisease.existingText) {
-                        clearInterval(timeout);
-                    }
-                }, 20 * 1000);
-            }
-            await doDisease(disease);
-        }
-    }
-}
-*/
