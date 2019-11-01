@@ -72,16 +72,11 @@ export function ticketValidate(tkt, cb) {
 }
 
 export function updateUserAfterLogin(user, ip, cb) {
-    if (!user.knownIPs) {
-        user.knownIPs = [];
-    }
     if (user.knownIPs.length > 100) {
         user.knownIPs.pop();
     }
-    if (ip) {
-        if (user.knownIPs.indexOf(ip) < 0) {
-            user.knownIPs.unshift(ip);
-        }
+    if (user.knownIPs.indexOf(ip) < 0) {
+        user.knownIPs.unshift(ip);
     }
 
     updateUserIps(user._id, user.knownIPs, cb);
