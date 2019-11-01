@@ -58,7 +58,7 @@ public class SdcExport extends NlmCdeBaseTest {
 
     @Test
     public void sdcNoSection() {
-        String url = baseUrl + "/form/XySUBn_NZ?type=xml&subtype=sdc&validate=true";
+        String url = baseUrl + "/form/FtNNFMKHCM4?type=xml&subtype=sdc&validate=true";
         String response = get(url).asString();
         Assert.assertTrue(response.contains("SDC Export does not support questions outside of sections"), "actual: \n" + response);
     }
