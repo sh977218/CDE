@@ -14,7 +14,7 @@ export function boardRefresh() {
 export function updateOrInsertBoardById(id, board, callback) {
     esClient.index({
         index: config.elastic.boardIndex.name,
-        type: 'board',
+        // type: 'board',
         id,
         body: board
     }, callback);
@@ -23,7 +23,7 @@ export function updateOrInsertBoardById(id, board, callback) {
 export function deleteBoardById(id, callback) {
     esClient.delete({
         index: config.elastic.boardIndex.name,
-        type: 'board',
+        // type: 'board',
         id,
     }, callback);
 }
@@ -104,7 +104,7 @@ export function myBoards(user, filter) {
     }
     return esClient.search({
         index: boardIndexName,
-        type: 'board',
+        // type: 'board',
         body: query
     });
 }

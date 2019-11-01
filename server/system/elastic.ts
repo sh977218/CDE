@@ -202,7 +202,7 @@ export function reIndexStream(dbStream: DbStream, cb?: Cb) {
                         nextCommand({
                             index: {
                                 _index: index.indexName,
-                                _type: indexTypes[i],
+                                // _type: indexTypes[i],
                                 _id: doc.tinyId || doc._id
                             }
                         });
@@ -671,11 +671,11 @@ export function isSearch(settings: SearchSettingsElastic) {
 const searchTemplate: { [key: string]: any } = {
     cde: {
         index: config.elastic.index.name,
-        type: 'dataelement'
+        // type: 'dataelement'
     },
     form: {
         index: config.elastic.formIndex.name,
-        type: 'form'
+        // type: 'form'
     }
 };
 

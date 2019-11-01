@@ -31,7 +31,7 @@ public class LaunchFhirApp extends NlmCdeBaseTest {
         clickElement(By.xpath("//div[@title='CDE Forms']//button[contains(., 'Launch')]"));
         findElement(By.cssSelector("div.no-patient-button"));
         hangon(1);
-        clickElement(By.xpath("div.no-patient-button"));
+        clickElement(By.cssSelector("div.no-patient-button"));
 
         switchTab(1);
 

@@ -179,7 +179,7 @@
     "@types/copy-webpack-plugin": "^5.0.0",
     "@types/csurf": "^1.9.35",
     "@types/deep-diff": "0.0.31",
-    "@types/elasticsearch": "^5.0.33",
+    "@types/elasticsearch": "^5.0.35",
     "@types/express": "^4.16.1",
     "@types/express-http-proxy": "^1.5.11",
     "@types/express-session": "^1.15.14",
