@@ -52,7 +52,6 @@ export function boardSearch(filter) {
     });
     return esClient.search({
         index: boardIndexName,
-        type: 'board',
         body: query
     });
 }
