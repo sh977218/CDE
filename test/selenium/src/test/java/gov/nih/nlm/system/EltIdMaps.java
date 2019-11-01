@@ -104,6 +104,7 @@ public class EltIdMaps {
         eltMap.put("Activities of Daily Living and Gait", "QyVcb1Srtg");
         eltMap.put("Adverse Event Tracking Log ", "m1_5_1HBYl");
         eltMap.put("Acute Admission/Discharge", "XkS5WJHrtg");
+        eltMap.put("Alcohol - Age of First Use Protocol", "Qkn8qzT3og");
         eltMap.put("Answer List Test", "XyWvhfX4W");
         eltMap.put("Antithrombotics and Risk Factor Controlling Medications", "XJfnZyHrYg");
         eltMap.put("Behavioral History", "mJCZyrSte");

@@ -50,7 +50,7 @@ import { startServer } from 'server/system/ioServer';
 import { errorLogger, expressLogger } from 'server/system/logging';
 import * as daoManager from 'server/system/moduleDaoManager';
 import { sessionStore } from 'server/system/mongo-data';
-import { banIp, getTrafficFilter } from 'server/system/trafficFilterSvc';
+import { banHackers, banIp, blockBannedIps, getTrafficFilter } from 'server/system/trafficFilterSvc';
 import { module as userModule } from 'server/user/userRoutes';
 import { module as utsModule } from 'server/uts/utsRoutes';
 import { isOrgAuthority, isOrgCurator } from 'shared/system/authorizationShared';
@@ -131,25 +131,8 @@ const getRealIp = (req) => {
     }
 };
 
-let blackIps: string[] = [];
-app.use((req, res, next) => {
-    if (blackIps.indexOf(getRealIp(req)) !== -1) {
-        res.status(403).send('Access is temporarily disabled. If you think you received this response in error, please contact' +
-            ' support. Otherwise, please try again in an hour.');
-    } else {
-        next();
-    }
-});
-const banEndsWith = config.banEndsWith || [];
-const banStartsWith = config.banStartsWith || [];
-
-const releaseHackersFrequency = 5 * 60 * 1000;
-const keepHackerForDuration = 1000 * 60 * 60 * 24;
-// every minute, get latest list.
-setInterval(() => {
-    getTrafficFilter();
-}, 60 * 1000);
-
+app.use(blockBannedIps);
+app.use(banHackers);
 
 // check https
 app.use((req, res, next) => {
@@ -168,23 +151,6 @@ app.use((req, res, next) => {
     }
 });
 
-app.use(function banHackers(req, res, next) {
-    banEndsWith.forEach(ban => {
-        if (req.originalUrl.slice(-(ban.length)) === ban) {
-            const ip = getRealIp(req);
-            banIp(ip, req.originalUrl);
-            blackIps.push(ip);
-        }
-    });
-    banStartsWith.forEach(ban => {
-        if (req.originalUrl.substr(0, ban.length) === ban) {
-            const ip = getRealIp(req);
-            banIp(ip, req.originalUrl);
-            blackIps.push(ip);
-        }
-    });
-    next();
-});
 
 app.use(function preventSessionCreation(req, res, next) {
     function isFile(req) {
