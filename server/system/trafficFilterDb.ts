@@ -25,6 +25,6 @@ export async function initTrafficFilter() {
     return new trafficFilterModel({ipList: []}).save();
 }
 
-export async function findAnyOne() {
-    return trafficFilterModel.findOne({});
+export function findAnyOne() {
+    return trafficFilterModel.findOne({}).exec();
 }
