@@ -1,27 +1,31 @@
-const _ = require('lodash');
+import { uniq } from 'lodash';
 
-exports.parseIds = nindsForms => {
-    let cdeIdArray = [];
-    let versionNumArray = [];
-    let cadsrIdArray = [];
-    let variableNameArray = [];
+export function parseIds(nindsForms) {
+    const cdeIdArray = [];
+    const versionNumArray = [];
+    const cadsrIdArray = [];
+    const variableNameArray = [];
     nindsForms.forEach(nindsForm => {
         nindsForm.cdes.forEach(nindsCde => {
-            if (nindsCde['CDE ID'])
+            if (nindsCde['CDE ID']) {
                 cdeIdArray.push(nindsCde['CDE ID']);
-            if (nindsCde['Version #'])
+            }
+            if (nindsCde['Version #']) {
                 versionNumArray.push(nindsCde['Version #']);
-            if (nindsCde['caDSR ID'])
+            }
+            if (nindsCde['caDSR ID']) {
                 cadsrIdArray.push(nindsCde['caDSR ID']);
-            if (nindsCde['Variable Name'])
+            }
+            if (nindsCde['Variable Name']) {
                 variableNameArray.push(nindsCde['Variable Name']);
-        })
+            }
+        });
     });
 
-    let _cdeIdArray = _.uniq(cdeIdArray);
-    let _versionNumArray = _.uniq(versionNumArray);
-    let _cadsrIdArray = _.uniq(cadsrIdArray);
-    let _variableNameArray = _.uniq(variableNameArray);
+    const _cdeIdArray = uniq(cdeIdArray);
+    const _versionNumArray = uniq(versionNumArray);
+    const _cadsrIdArray = uniq(cadsrIdArray);
+    const _variableNameArray = uniq(variableNameArray);
 
     if (_cdeIdArray.length !== 1) {
         console.log('_cdeIdArray not 1');
@@ -40,25 +44,25 @@ exports.parseIds = nindsForms => {
         process.exit(1);
     }
 
-    let ids = [];
+    const ids = [];
     _cdeIdArray.forEach(v => {
         ids.push({
             source: 'NINDS',
             id: v,
             version: _versionNumArray[0]
-        })
+        });
     });
     _cadsrIdArray.forEach(v => {
         ids.push({
             source: 'NINDS caDSR',
             id: v
-        })
+        });
     });
     _variableNameArray.forEach(v => {
         ids.push({
             source: 'NINDS Variable Name',
             id: v
-        })
+        });
     });
 
     return ids;

@@ -6,9 +6,6 @@ const _ = require('lodash');
 
 const parseAnswers = require('../Form/ParseAnswers').parseAnswers;
 
-const CreateCDE = require('../CDE/CreateCDE');
-const CompareCDE = require('../CDE/CompareCDE');
-const MergeCDE = require('../CDE/MergeCDE');
 
 const Comment = require('../../../server/discuss/discussDb').Comment;
 
