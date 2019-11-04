@@ -716,18 +716,18 @@ export function elasticsearch(type: ModuleItem, query: any, settings: any,
                 cb(new Error('Server Error'));
             }
         } else {
-            const response = resp as ElasticQueryResponseAggregations<ItemElastic>;
-            if (response.body.hits.total === 0 && config.name.indexOf('Prod') === -1) {
+            const response = resp.body as ElasticQueryResponseAggregations<ItemElastic>;
+            if (response.hits.total === 0 && config.name.indexOf('Prod') === -1) {
                 consoleLog('No response. QUERY: ' + JSON.stringify(query), 'debug');
             }
 
             const result: any = {
-                totalNumber: response.body.hits.total
-                , maxScore: response.body.hits.max_score
-                , took: response.body.took
+                totalNumber: response.hits.total
+                , maxScore: response.hits.max_score
+                , took: response.took
             };
             result[type + 's'] = [];
-            for (const hit of response.body.hits.hits) {
+            for (const hit of response.hits.hits) {
                 const thisCde = hit._source as DataElementElastic;
                 thisCde.score = hit._score;
                 if (thisCde.valueDomain && thisCde.valueDomain.datatype === 'Value List' && thisCde.valueDomain.permissibleValues

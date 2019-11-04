@@ -167,8 +167,8 @@ export function init(app: Express, daoManager) {
             if (err || !resp) {
                 throw new Error('/cdeCompletion error');
             }
-            resp.body.hits.hits.forEach(r => r._index = undefined);
-            res.send(resp.body.hits.hits);
+            resp.hits.hits.forEach(r => r._index = undefined);
+            res.send(resp.hits.hits);
         });
     });
 
