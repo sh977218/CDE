@@ -1,4 +1,4 @@
-import { filter, replace, isEmpty, capitalize } from 'lodash';
+import { filter, replace, isEmpty, capitalize, forEach } from 'lodash';
 import { classifyItem } from 'server/classification/orgClassificationSvc';
 
 const DEFAULT_CLASSIFICATION = ['Preclinical + NEI'];
@@ -6,10 +6,10 @@ const DEFAULT_CLASSIFICATION = ['Preclinical + NEI'];
 function classifyPopulation(cde: any, row: any) {
     const allKeys: string[] = Object.keys(row);
     const populationKeys = filter(allKeys, k => k.indexOf('population.') !== -1);
-    populationKeys.forEach(k => {
+    forEach(populationKeys, k => {
         const population = row[k];
         if (!isEmpty(population)) {
-            const classificationArray = DEFAULT_CLASSIFICATION.concat(['Population', capitalize(population)]);
+            const classificationArray = DEFAULT_CLASSIFICATION.concat(['Population', population]);
             classifyItem(cde, 'NINDS', classificationArray);
         }
     });
@@ -18,44 +18,81 @@ function classifyPopulation(cde: any, row: any) {
 function classifyDomain(cde: any, row: any) {
     const allKeys: string[] = Object.keys(row);
     const domainKeys = filter(allKeys, k => k.indexOf('domain.') !== -1);
-    domainKeys.forEach(k => {
-        const domain = row[k];
+    forEach(domainKeys, k => {
+        const domainSubDomainString = row[k];
         const disease = replace(k, 'domain.', '');
-        if (!isEmpty(domain) && !isEmpty(disease)) {
-            const classificationArray = DEFAULT_CLASSIFICATION.concat(['Domain', capitalize(domain), capitalize(disease)]);
-            classifyItem(cde, 'NINDS', classificationArray);
+        if (!isEmpty(domainSubDomainString) && !isEmpty(disease)) {
+            const domainSubDomainArray = domainSubDomainString.split('.');
+            const domain = domainSubDomainArray[0];
+            const subDomain = domainSubDomainArray[1];
+
+            const isTbiSubDisease = TBI_SUB_DISEASES.indexOf(disease) !== -1;
+            let classificationDiseaseArray = DEFAULT_CLASSIFICATION.concat(['Disease', capitalize(disease)]);
+            if (isTbiSubDisease) {
+                // tslint:disable-next-line:max-line-length
+                classificationDiseaseArray = DEFAULT_CLASSIFICATION.concat(['Disease', 'Traumatic brain injury', capitalize(disease)]);
+            }
+
+            // ['Disease','TBI','Domain','Assessments and Examinations','Autonomic']
+            // ['Domain','Assessments and Examinations','Autonomic']
+            const classificationDomainArray = DEFAULT_CLASSIFICATION.concat([]);
+            if (!isEmpty(domain)) {
+                classificationDiseaseArray.push('Domain');
+                classificationDiseaseArray.push(domain);
+                classificationDomainArray.push('Domain');
+                classificationDomainArray.push(domain);
+            }
+            if (!isEmpty(subDomain[1])) {
+                classificationDiseaseArray.push(subDomain);
+                classificationDomainArray.push(subDomain);
+            }
+            classifyItem(cde, 'NINDS', classificationDiseaseArray);
+            classifyItem(cde, 'NINDS', classificationDomainArray);
         }
     });
 }
 
-function classifyDisease(cde: any, row: any) {
+const TBI_SUB_DISEASES = [
+    'acute hospitalized',
+    'concussion/mild tbi',
+    'epidemiology',
+    'moderate/severe tbi: rehabilitation',
+];
+
+function classifyClassification(cde: any, row: any) {
     const allKeys: string[] = Object.keys(row);
     const diseaseKeys = filter(allKeys, k => k.indexOf('classification.') !== -1);
-    diseaseKeys.forEach(k => {
+    forEach(diseaseKeys, k => {
         const classification = row[k];
         const disease = replace(k, 'classification.', '');
         if (!isEmpty(classification) && !isEmpty(disease)) {
-            const classificationArray =
-                DEFAULT_CLASSIFICATION.concat(['Classification', capitalize(classification), capitalize(disease)]);
+            const isTbiSubDisease = TBI_SUB_DISEASES.indexOf(disease) !== -1;
+            let classificationArray = DEFAULT_CLASSIFICATION.concat(['Disease', capitalize(disease), 'Classification', classification]);
+            if (isTbiSubDisease) {
+                // tslint:disable-next-line:max-line-length
+                classificationArray = DEFAULT_CLASSIFICATION.concat(['Disease', 'Traumatic brain injury', capitalize(disease), 'Classification', classification]);
+            }
             classifyItem(cde, 'NINDS', classificationArray);
         }
-//        classifyItem(cde, 'NINDS', ['Preclinical + NEI', 'Disease', disease, 'Domain', domain]);
     });
 }
 
 function classifyTaxonomy(cde: any, row: any) {
     const allKeys: string[] = Object.keys(row);
-    const taxonomyKeys = filter(allKeys, k => k.indexOf('Taxonomy') !== -1);
-    taxonomyKeys.forEach(k => {
+    const taxonomyKeys = filter(allKeys, k => k.indexOf('taxonomy') !== -1);
+    forEach(taxonomyKeys, k => {
         const taxonomy = row[k];
-        const classificationArray = DEFAULT_CLASSIFICATION.concat(['Taxonomy', capitalize(taxonomy)]);
-        classifyItem(cde, 'NINDS', classificationArray);
+        const taxonomyReplace = taxonomy.replace(';', ',').trim();
+        if (!isEmpty(taxonomyReplace)) {
+            const classificationArray = DEFAULT_CLASSIFICATION.concat(['Taxonomy', taxonomyReplace]);
+            classifyItem(cde, 'NINDS', classificationArray);
+        }
     });
 }
 
 export function parseClassification(cde: any, row: any) {
     classifyPopulation(cde, row);
     classifyDomain(cde, row);
-    classifyDisease(cde, row);
+    classifyClassification(cde, row);
     classifyTaxonomy(cde, row);
 }

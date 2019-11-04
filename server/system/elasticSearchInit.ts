@@ -362,7 +362,7 @@ export function riverFunction(_elt: ItemElastic, cb: Cb<ItemElastic>) {
     });
 }
 
-const shortHash = (content: any) => {
+export const shortHash = (content: any) => {
     return createHash('md5')
         .update(JSON.stringify(content)).digest('hex')
         .substr(0, 5).toLowerCase();
