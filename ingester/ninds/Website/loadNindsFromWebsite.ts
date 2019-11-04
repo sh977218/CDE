@@ -251,7 +251,7 @@ async function doDisorder(disorder: any) {
 async function run() {
 //    for (const disorder of DISORDERS.slice(0, 1)) {
     for (const disorder of DISORDERS) {
-        doDisorder(disorder);
+        await doDisorder(disorder);
     }
 }
 
