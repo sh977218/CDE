@@ -202,19 +202,21 @@ export type ElasticQueryError = {
 };
 
 export interface ElasticQueryResponse<T = void> {
-    _shards: {
-        failed: number,
-        successful: number,
-        total: number,
+    body: {
+        _shards: {
+            failed: number,
+            successful: number,
+            total: number,
+        };
+        hits: {
+            hits: ElasticQueryResponseHit<T>[],
+            max_score: number,
+            total: number
+        };
+        status?: undefined;
+        took: number; // Elastic time to process query in milliseconds
+        timed_out: boolean;
     };
-    hits: {
-        hits: ElasticQueryResponseHit<T>[],
-        max_score: number,
-        total: number
-    };
-    status?: undefined;
-    took: number; // Elastic time to process query in milliseconds
-    timed_out: boolean;
 }
 
 export type ElasticQueryResponseDe = ElasticQueryResponse<DataElementElastic> & {

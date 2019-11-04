@@ -8,6 +8,7 @@ import { DataElementElastic } from 'shared/de/dataElement.model';
 import { CbError, ElasticQueryResponse, SearchResponseAggregationDe, User } from 'shared/models.model';
 import { SearchSettingsElastic } from 'shared/search/search.model';
 import { storeQuery } from 'server/log/storedQueryDb';
+import { response } from 'express';
 
 export const esClient = new elastic.Client({
     nodes: config.elastic.hosts
@@ -37,13 +38,13 @@ export function updateOrInsert(elt) {
             esClient.index({
                 index: config.elastic.index.name,
                 id: doc.tinyId,
-                include_type_name: false,
+                type: '_doc',
                 body: doc
             }, done);
             suggestRiverFunction(elt, sugDoc => {
                 esClient.index({
                     index: config.elastic.cdeSuggestIndex.name,
-                    include_type_name: false,
+                    type: '_doc',
                     id: doc.tinyId,
                     body: sugDoc
                 }, done);

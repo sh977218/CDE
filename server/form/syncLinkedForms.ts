@@ -1,6 +1,6 @@
 import { config } from 'server/system/parseConfig';
-const elastic = require('../system/elastic');
-const mongoCde = require('../cde/mongo-cde');
+const elastic = require('server/system/elastic');
+const mongoCde = require('server/cde/mongo-cde');
 
 export let syncLinkedFormsProgress: any = {done: 0, total: 0};
 
@@ -22,7 +22,7 @@ async function extractedSyncLinkedForms(cde) {
         forms: []
     };
 
-    esResult.hits.hits.forEach(h => {
+    esResult.body.hits.hits.forEach(h => {
         linkedForms.forms.push({
             tinyId: h._source.tinyId,
             registrationStatus: h._source.registrationState.registrationStatus,
@@ -40,10 +40,10 @@ async function extractedSyncLinkedForms(cde) {
 
     elastic.esClient.update({
         index: config.elastic.index.name,
-        include_type_name: false,
+        type: '_doc',
         id: cde.tinyId,
         body: {doc: {linkedForms}}
-    });
+    }).catch(err => console.log(err));
     syncLinkedFormsProgress.done++;
     return new Promise(resolve => resolve());
 }

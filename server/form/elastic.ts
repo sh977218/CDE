@@ -33,14 +33,14 @@ export function updateOrInsert(elt) {
             delete doc._id;
             esClient.index({
                 index: config.elastic.formIndex.name,
-                include_type_name: false,
+                type: '_doc',
                 id: doc.tinyId,
                 body: doc
             }, done);
             suggestRiverFunction(elt, sugDoc => {
                 esClient.index({
                     index: config.elastic.formSuggestIndex.name,
-                    include_type_name: false,
+                    type: '_doc',
                     id: doc.tinyId,
                     body: sugDoc
                 }, done);
