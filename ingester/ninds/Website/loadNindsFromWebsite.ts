@@ -90,7 +90,7 @@ const DISORDERS: any = [
             name: 'Moderate/Severe TBI: Rehabilitation',
         }]
     }, {
-        disorderName: 'Sport-Related Concussion',
+        disorderName: 'Sport Related Concussion',
         url: URL_PREFIX + 'Sport%20Related%20Concussion',
         subDiseases: [{
             name: 'Acute',
@@ -104,35 +104,8 @@ const DISORDERS: any = [
     }
 ];
 
-async function doCdesHeader(ninds: any, headerDiv: any) {
-    let diseaseName = '';
-    let subDomainName = '';
-    let crfName = '';
-    const fullText = await headerDiv.getText();
-    const elements = await headerDiv.findElements(By.xpath('./*'));
-    for (const element of elements) {
-        const text = await element.getText();
-        const diseaseIndex = text.indexOf('Disease: ');
-        if (diseaseIndex !== -1) {
-            diseaseName = replace(text, 'Disease: ', '');
-        }
-        const subDomainIndex = text.indexOf('Sub-Domain: ');
-        if (subDomainIndex !== -1) {
-            subDomainName = replace(text, 'Sub-Domain: ', '');
-        }
-        const crfIndex = text.indexOf('CRF: ');
-        if (crfIndex !== -1) {
-            crfName = replace(text, 'CRF: ', '');
-        }
-    }
-    ninds.diseaseName = diseaseName;
-    ninds.subDomainName = subDomainName;
-    ninds.crfName = crfName;
-    ninds.fullText = fullText;
-}
-
-async function doCdesTable(ninds: any, cdeTableElement: any) {
-    ninds.cdes = [];
+async function doCdesTable(cdeTableElement: any) {
+    const cdes = [];
     const keys = [];
     const ths = await cdeTableElement.findElements(By.xpath('./thead/tr/th'));
     for (const th of ths) {
@@ -151,19 +124,33 @@ async function doCdesTable(ninds: any, cdeTableElement: any) {
             const value = await td.getText();
             cde[keys[i]] = value.trim();
         }
-        ninds.cdes.push(cde);
+        cdes.push(cde);
+    }
+    return cdes;
+}
+
+async function doOnePage(ninds: any, driver: any) {
+    const paginationXpath = "//section[@id='block-system-main']/div/div[@class='text-center']/ul/li[@class='next']/a";
+    const paginationElements = await driver.findElements(By.xpath(paginationXpath));
+    const cdeTableXpath = "//section[@id='block-system-main']/div/div[@class='view-content']/div/table";
+    const cdeTableElement = await driver.findElement(By.xpath(cdeTableXpath));
+    const cdes = await doCdesTable(cdeTableElement);
+    ninds.cdes = ninds.cdes.concat(cdes);
+    if (paginationElements.length === 0) {
+    } else if (paginationElements.length === 1) {
+        await paginationElements[0].click();
+        await doOnePage(ninds, driver);
+    } else {
+        console.log(`${ninds.formName} has multiple next button.`);
+        process.exit(1);
     }
 }
 
 async function doCdes(ninds: any, url: string) {
     const driver = await new Builder().forBrowser('chrome').build();
     await driver.get(url);
-    const mainDiv = await driver.findElement(By.xpath("//section[@id='block-system-main']/div"));
-//    const headerDiv = await mainDiv.findElement(By.xpath("./div[@class='view-header']"));
-//    await doCdesHeader(ninds, headerDiv);
-    const contentDiv = await mainDiv.findElement(By.xpath("./div[@class='view-content']"));
-    const cdeTableElement = await contentDiv.findElement(By.xpath('./div/table'));
-    await doCdesTable(ninds, cdeTableElement);
+    ninds.cdes = [];
+    await doOnePage(ninds, driver);
     await driver.close();
     return ninds;
 }
@@ -264,7 +251,7 @@ async function doDisorder(disorder: any) {
 async function run() {
 //    for (const disorder of DISORDERS.slice(0, 1)) {
     for (const disorder of DISORDERS) {
-        await doDisorder(disorder);
+        doDisorder(disorder);
     }
 }
 
