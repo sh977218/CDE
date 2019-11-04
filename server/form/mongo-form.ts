@@ -225,6 +225,11 @@ export function update(elt: CdeForm, user: User, options: any = {}, callback: Cb
             elt.formElements = form.formElements;
         }
 
+        // created & createdBy cannot be changed.
+        elt.created = form.created;
+        elt.createdBy = form.createdBy;
+
+
         const newElt = new formModel(elt);
 
         // archive form and replace it with newElt
