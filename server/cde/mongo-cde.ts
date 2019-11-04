@@ -258,6 +258,10 @@ export function update(elt: DataElementDraft, user: User, options: any = {},
             elt.attachments = dataElement.attachments;
         }
 
+        // created & createdBy cannot be changed.
+        elt.created = dataElement.created;
+        elt.createdBy = dataElement.createdBy;
+
         const newElt = new dataElementModel(elt);
 
         // archive dataElement and replace it with newElt
