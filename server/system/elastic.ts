@@ -262,8 +262,7 @@ function createIndex(dbStream: DbStream, cb: Cb) {
     });
 }
 
-export function initEs(cb: Cb = () => {
-}) {
+export function initEs(cb: Cb = () => {}) {
     const dbStreams: DbStream[] = [];
     indices.forEach((index: ElasticIndex) => {
         const match = dbStreams.filter(s => s.query === daoMap[index.name])[0];
