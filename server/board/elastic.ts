@@ -1,5 +1,11 @@
 import * as ElasticSearch from 'elasticsearch';
 import { config } from '../system/parseConfig';
+import { createIndexJson as boardCreateIndexJson } from 'server/board/elasticSearchMapping';
+import { shortHash } from 'server/system/elasticSearchInit';
+
+if (config.elastic.boardIndex.name === 'auto') {
+    config.elastic.boardIndex.name = 'board_' + shortHash(boardCreateIndexJson);
+}
 
 const boardIndexName = config.elastic.boardIndex.name;
 
