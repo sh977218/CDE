@@ -1,5 +1,4 @@
 import { Builder, By, until } from 'selenium-webdriver';
-import { replace } from 'lodash';
 import { NindsModel } from 'ingester/createMigrationConnection';
 
 require('chromedriver');
