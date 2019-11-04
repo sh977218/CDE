@@ -20,7 +20,6 @@ import * as path from 'path';
 import * as favicon from 'serve-favicon';
 import * as winston from 'winston';
 import { Rotate } from 'winston-logrotate';
-import { init as systemInit, respondHomeFull } from 'server/system/app';
 import { init as swaggerInit } from './modules/swagger/index';
 import * as articleDb from 'server/article/articleDb';
 import { module as articleModule } from 'server/article/articleRoutes';
@@ -40,6 +39,7 @@ import { module as notificationModule } from 'server/notification/notificationRo
 import { module as nativeRenderModule } from 'server/nativeRender/nativeRenderRouters';
 import { module as embedModule } from 'server/embed/embedRouters';
 import { module as fhirModule } from 'server/fhir/fhirRouters';
+import { init as systemInit, respondHomeFull } from 'server/system/app';
 import { init as authInit, ticketAuth } from 'server/user/authentication';
 import {
     canApproveAttachmentMiddleware, canApproveCommentMiddleware, checkOwnership, isDocumentationEditor,

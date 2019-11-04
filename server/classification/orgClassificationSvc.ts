@@ -28,9 +28,7 @@ export function classifyItem(item: ItemDocument, orgName: string, categories: st
     }
     addCategoriesToTree(classification, categories);
     arrangeClassification(item, orgName);
-    if (item.markModified) {
-        item.markModified('classification');
-    }
+    item.markModified('classification');
 }
 
 export async function deleteOrgClassification(user, deleteClassification, settings, callback) {

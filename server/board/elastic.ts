@@ -18,12 +18,12 @@ export function boardRefresh() {
 }
 
 export function updateOrInsertBoardById(id, board, callback) {
-        esClient.index({
-            index: config.elastic.boardIndex.name,
-            type: 'board',
-            id,
-            body: board
-        }, callback);
+    esClient.index({
+        index: config.elastic.boardIndex.name,
+        type: 'board',
+        id,
+        body: board
+    }, callback);
 }
 
 export function deleteBoardById(id, callback) {
