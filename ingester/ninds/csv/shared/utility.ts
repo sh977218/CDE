@@ -1,12 +1,63 @@
-import { isEmpty, toLower, trim, forEach, words, join, isEqual } from 'lodash';
+import { isEmpty, trim, lowerCase, forEach, words, capitalize, join, isEqual } from 'lodash';
 import { loopFormElements, mergeClassificationByOrg } from 'ingester/shared/utility';
 
+const STOP_WORDS = ['the', 'of', 'a'];
+
+function capitalizeWord(str: string) {
+    return STOP_WORDS.indexOf(str) === -1 ? capitalize(str) : str;
+}
+
+function notEmptyWord(str: string) {
+    return !isEmpty(str);
+}
+
+function capitalizeBySpace(str: string) {
+    const wordsSpitSpace = words(str, /[^\s]+/g);
+    const wordsSpitSpaceCapitalize = wordsSpitSpace.filter(notEmptyWord).map(capitalizeWord);
+    const joinKeySpace = join(wordsSpitSpaceCapitalize, ' ');
+    return trim(joinKeySpace);
+}
+
+function capitalizeByDot(str: string) {
+    const wordsSpitSpace = words(str, /[^.]+/g);
+    const wordsSpitSpaceCapitalize = wordsSpitSpace.filter(notEmptyWord).map(capitalizeWord);
+    const joinKeySpace = join(wordsSpitSpaceCapitalize, '.');
+    return trim(joinKeySpace);
+}
+
+function capitalizeBySlash(str: string) {
+    const wordsSpitSpace = words(str, /[^/]+/g);
+    const wordsSpitSpaceCapitalize = wordsSpitSpace.filter(notEmptyWord).map(capitalizeWord);
+    const joinKeySpace = join(wordsSpitSpaceCapitalize, '/');
+    return trim(joinKeySpace);
+}
+
+function capitalizeByLeftParentheses(str: string) {
+    const wordsSpitSpace = words(str, /[^(]+/g);
+    const wordsSpitSpaceCapitalize = wordsSpitSpace.filter(notEmptyWord).map(capitalizeWord);
+    const joinKeySpace = join(wordsSpitSpaceCapitalize, '(');
+    return trim(joinKeySpace);
+}
+
+function capitalizeByRightParentheses(str: string) {
+    const wordsSpitSpace = words(str, /[^)]+/g);
+    const wordsSpitSpaceCapitalize = wordsSpitSpace.filter(notEmptyWord).map(capitalizeWord);
+    const joinKeySpace = join(wordsSpitSpaceCapitalize, ')');
+    return trim(joinKeySpace);
+}
+
 function formatKey(key: string) {
-    const lowerKey = toLower(key);
-    // only remove spaces, not '.'. For example, population.all
-    const wordsKey = words(lowerKey, /[^\s]+/g);
-    const joinKey = join(wordsKey, '');
-    return trim(joinKey);
+    // reconstruct the key
+    /*
+        const dotFormat = capitalizeByDot(key);
+        const slashFormat = capitalizeBySlash(dotFormat);
+        const leftParenthesesFormat = capitalizeByLeftParentheses(slashFormat);
+        const rightParenthesesFormat = capitalizeByRightParentheses(leftParenthesesFormat);
+        const spaceFormat = capitalizeBySpace(rightParenthesesFormat);
+        const spaceFormat = capitalizeBySpace(key);
+        return trim(spaceFormat);
+    */
+    return trim(key.toLowerCase());
 }
 
 export function getCell(row: any, header: string) {
@@ -27,15 +78,18 @@ export function formatRows(csvFileName: string, rows: any[]) {
             if (row.hasOwnProperty(p)) {
                 const formattedP = formatKey(p);
                 if (!isEmpty(formattedP)) {
-                    formattedRow[formattedP] = row[p];
+                    formattedRow[formattedP] = trim(row[p]);
                 }
             }
         }
-        if (isEmpty(formattedRow.variablename)) {
+
+        const variableName = getCell(formattedRow, 'variable name');
+        const title = getCell(formattedRow, 'title');
+        if (isEmpty(variableName)) {
             console.log(`${csvFileName} has empty variablename. row: ${i}`);
             process.exit(1);
         }
-        if (isEmpty(formattedRow.title)) {
+        if (isEmpty(title)) {
             console.log(`${csvFileName} has empty title. row: ${i}`);
             process.exit(1);
         }

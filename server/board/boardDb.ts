@@ -18,6 +18,7 @@ export type BoardDocument = Document & Board;
 const conn = establishConnection(config.database.appData);
 // for DAO manager
 export const type = 'board';
+export const name = 'Boards';
 
 const pinSchema = new Schema({
     tinyId: StringType,

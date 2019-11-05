@@ -6,11 +6,12 @@ import {
 } from 'ingester/ninds/csv/shared/utility';
 import {
     BATCHLOADER, compareElt, findOneCde, imported, lastMigrationScript, mergeElt, NINDS_PRECLINICAL_NEI_FILE_PATH,
-    updateCde,
+    updateCde, updateForm,
     updateRowArtifact
 } from 'ingester/shared/utility';
 import { createNindsCde } from 'ingester/ninds/csv/cde/cde';
 import { dataElementModel } from 'server/cde/mongo-cde';
+import { formModel } from 'server/form/mongo-form';
 
 const CSV = require('csv');
 
@@ -48,7 +49,7 @@ async function fixCde(existingCde: any) {
     return savedCde;
 }
 
-async function doOneRow(nindsCde, variableName) {
+async function doOneRow(nindsCde: any, variableName: string) {
     const newCde = new dataElementModel(nindsCde);
     const newCdeObj = newCde.toObject();
     const cond = {
@@ -91,7 +92,7 @@ async function doOneRow(nindsCde, variableName) {
     return savedCde;
 }
 
-async function loadNindsCde(variablename, rows) {
+async function loadNindsCde(variablename: string, rows: any[]) {
     const cde = await createNindsCde(rows[0]);
     for (const row of rows) {
         const newCde = await createNindsCde(row);
@@ -100,8 +101,8 @@ async function loadNindsCde(variablename, rows) {
     await doOneRow(cde, variablename);
 }
 
-async function preLoadNindsCdes(cdeRows) {
-    const result = groupBy(cdeRows, 'variablename');
+async function preLoadNindsCdes(cdeRows: any[]) {
+    const result = groupBy(cdeRows, 'variable name');
     for (const variablename in result) {
         if (result.hasOwnProperty(variablename)) {
             await loadNindsCde(variablename, result[variablename]);
@@ -127,8 +128,36 @@ async function run() {
         console.log(`Finished csvFileName: ${csvFileName}`);
     }
 
+    await retireTbiCdes();
+    await retireTbiForms();
+
 }
 
+async function retireTbiCdes() {
+    const cdesToRetire = await dataElementModel.find({
+        archived: false, 'classification.elements.name': 'Preclinical TBI',
+        'registrationState.registrationStatus': {$ne: 'Retired'}
+    });
+    for (const cdeToRetire of cdesToRetire) {
+        const cdeObj = cdeToRetire.toObject();
+        cdeObj.registrationState.registrationStatus = 'Retired';
+        cdeObj.registrationState.administrativeNote = 'Not present in import at ' + imported;
+        await updateCde(cdeObj, BATCHLOADER);
+    }
+}
+
+async function retireTbiForms() {
+    const formsToRetire = await formModel.find({
+        archived: false, 'classification.elements.name': 'Preclinical TBI',
+        'registrationState.registrationStatus': {$ne: 'Retired'}
+    });
+    for (const formToRetire of formsToRetire) {
+        const formObj = formToRetire.toObject();
+        formObj.registrationState.registrationStatus = 'Retired';
+        formObj.registrationState.administrativeNote = 'Not present in import at ' + imported;
+        await updateForm(formObj, BATCHLOADER);
+    }
+}
 
 run().then(
     result => {
