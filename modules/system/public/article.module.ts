@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { WhatsNewComponent } from 'system/public/components/whatsNew/whatsNew.component';
+import { ArticleComponent } from 'system/public/components/article/article.component';
 
 const appRoutes: Routes = [
-    {path: '', component: WhatsNewComponent},
+    {path: '', component: ArticleComponent},
 ];
 
 @NgModule({
@@ -13,12 +13,12 @@ const appRoutes: Routes = [
         RouterModule.forChild(appRoutes),
     ],
     declarations: [
-        WhatsNewComponent
+        ArticleComponent
     ],
     entryComponents: [],
     exports: [],
     providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class WhatsNewModule {
+export class ArticleModule {
 }
