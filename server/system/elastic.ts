@@ -833,7 +833,7 @@ export const queryMostViewed = {
                     bool: {
                         should: [
                             {term: {'registrationState.registrationStatus': 'Standard'}},
-                            {term: {'registrationState.registrallOrgNamesationStatus': 'Qualified'}}
+                            {term: {'registrationState.registrationStatus': 'Qualified'}}
                         ]
                     }
                 }
