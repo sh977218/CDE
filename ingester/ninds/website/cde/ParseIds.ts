@@ -1,12 +1,12 @@
 import { uniq } from 'lodash';
 
-export function parseIds(nindsForms) {
-    const cdeIdArray = [];
-    const versionNumArray = [];
-    const cadsrIdArray = [];
-    const variableNameArray = [];
+export function parseIds(nindsForms: any[]) {
+    const cdeIdArray: any[] = [];
+    const versionNumArray: any[] = [];
+    const cadsrIdArray: any[] = [];
+    const variableNameArray: any[] = [];
     nindsForms.forEach(nindsForm => {
-        nindsForm.cdes.forEach(nindsCde => {
+        nindsForm.cdes.forEach((nindsCde: any) => {
             if (nindsCde['CDE ID']) {
                 cdeIdArray.push(nindsCde['CDE ID']);
             }
@@ -44,7 +44,7 @@ export function parseIds(nindsForms) {
         process.exit(1);
     }
 
-    const ids = [];
+    const ids: any[] = [];
     _cdeIdArray.forEach(v => {
         ids.push({
             source: 'NINDS',
@@ -66,4 +66,4 @@ export function parseIds(nindsForms) {
     });
 
     return ids;
-};
+}

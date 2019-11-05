@@ -1,7 +1,10 @@
-import { BATCHLOADER } from 'ingester/shared/utility';
+import { BATCHLOADER, created, imported } from 'ingester/shared/utility';
 import { parseDesignations } from 'ingester/ninds/website/cde/ParseDesignations';
 import { parseDefinitions } from 'ingester/ninds/website/cde/ParseDefinitions';
 import { parseIds } from 'ingester/ninds/website/cde/ParseIds';
+import { parseProperties } from 'ingester/ninds/website/cde/ParseProperties';
+import { parseReferenceDocuments } from 'ingester/ninds/website/cde/ParseReferenceDocuments';
+import { generateTinyId } from 'server/system/mongo-data';
 
 export async function createNindsCde(nindsForms: any[]) {
     const designations = parseDesignations(nindsForms);
@@ -18,8 +21,8 @@ export async function createNindsCde(nindsForms: any[]) {
         source: 'NINDS',
         tinyId: generateTinyId(),
         createdBy: BATCHLOADER,
-        created: today,
-        imported: today,
+        created,
+        imported,
         stewardOrg: {name: 'NINDS'},
         designations,
         definitions,

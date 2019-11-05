@@ -1,21 +1,23 @@
-const _ = require('lodash');
+import { uniq } from 'lodash';
 
-exports.parseProperties = nindsForms => {
-    let previousTitleArray = [];
-    let aliasesForVariableNameArray = [];
+export function parseProperties(nindsForms: any[]) {
+    const previousTitleArray: string[] = [];
+    const aliasesForVariableNameArray: string[] = [];
     nindsForms.forEach(nindsForm => {
-        nindsForm.cdes.forEach(nindsCde => {
-            if (nindsCde['Previous Title'])
+        nindsForm.cdes.forEach((nindsCde: any) => {
+            if (nindsCde['Previous Title']) {
                 previousTitleArray.push(nindsCde['Previous Title']);
-            if (nindsCde['Aliases for Variable Name'])
+            }
+            if (nindsCde['Aliases for Variable Name']) {
                 aliasesForVariableNameArray.push(nindsCde['Aliases for Variable Name']);
-        })
+            }
+        });
     });
 
-    let _previousTitle = _.uniq(previousTitleArray);
-    let _aliasesForVariableNameArray = _.uniq(aliasesForVariableNameArray);
+    const _previousTitle = uniq(previousTitleArray);
+    const _aliasesForVariableNameArray = uniq(aliasesForVariableNameArray);
 
-    let properties = [];
+    const properties: any[] = [];
     _previousTitle.forEach(p => {
         properties.push({
             key: 'NINDS Previous Title',
@@ -24,12 +26,13 @@ exports.parseProperties = nindsForms => {
         });
     });
     _aliasesForVariableNameArray.forEach(a => {
-        if (a !== 'Aliases for variable name not defined')
+        if (a !== 'Aliases for variable name not defined') {
             properties.push({
                 key: 'Aliases for Variable Name',
                 value: a,
                 source: 'NINDS'
             });
+        }
     });
     return properties;
-};
+}

@@ -28,7 +28,7 @@ exports.parseValueDomain = nindsForms => {
             if (nindsCde['Max Value'])
                 maxValueArray.push(nindsCde['Max Value']);
             permissibleValuesArray = permissibleValuesArray.concat(parseAnswer(nindsCde));
-        })
+        });
     });
 
     let _measurementTypeArray = _.uniq(measurementTypeArray);
