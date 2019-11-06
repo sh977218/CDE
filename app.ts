@@ -1,3 +1,5 @@
+import { consoleLog } from '../server/log/dbLogger';
+
 (global as any).APP_DIR = __dirname;
 (global as any).appDir = function addDir(...args: string[]) {
     return path.resolve((global as any).APP_DIR, ...args);
@@ -389,6 +391,7 @@ app.use((err, req, res, next) => {
 
 process.on('unhandledRejection', error => {
     console.log(error);
+    consoleLog(error);
 });
 
 domain.run(() => {
