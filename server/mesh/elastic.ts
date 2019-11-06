@@ -56,7 +56,7 @@ function doSyncWithMesh(allMappings, callback: ErrorCallback = () => {}) {
     allMappings.forEach(m => classifToSimpleTrees[m.flatClassification] = m.flatTrees);
 
     const searches: any = [_.cloneDeep(searchTemplate.cde), _.cloneDeep(searchTemplate.form)];
-    searches.forEach(search => {
+    searches.forEach((search: any) => {
         search.scroll = '2m';
         search.body = {};
     });
@@ -74,7 +74,7 @@ function doSyncWithMesh(allMappings, callback: ErrorCallback = () => {}) {
         });
     }
 
-    function processScroll(newScrollId, s, response, cb) {
+    async function processScroll(newScrollId: string, s, response, cb) {
         meshSyncStatus[s.type].total = response.hits.total;
         if (response.hits.hits.length > 0) {
             const request: any = {body: []};
@@ -125,20 +125,8 @@ function doSyncWithMesh(allMappings, callback: ErrorCallback = () => {}) {
         }
     }
 
-    each(searches, (search, oneCb) => {
-        esClient.search(search, (err, response) => {
-            if (err) {
-                lock = false;
-                errorLogger.error('Error: Elastic Search Scroll Query Error',
-                    {
-                        origin: 'system.elastic.syncWithMesh',
-                        stack: new Error().stack,
-                        details: '',
-                    });
-                oneCb(err);
-            } else {
-                processScroll(response.body._scroll_id, search, response.body, oneCb);
-            }
-        });
+    each(searches, async (search, oneCb) => {
+        const response = await esClient.search(search);
+        processScroll(response.body._scroll_id, search, response.body, oneCb);
     }, callback);
 }

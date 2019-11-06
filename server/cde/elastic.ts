@@ -9,6 +9,7 @@ import { CbError, ElasticQueryResponse, SearchResponseAggregationDe, User } from
 import { SearchSettingsElastic } from 'shared/search/search.model';
 import { storeQuery } from 'server/log/storedQueryDb';
 import { response } from 'express';
+import { ApiResponse } from '@elastic/elasticsearch';
 
 export const esClient = new elastic.Client({
     nodes: config.elastic.hosts
@@ -141,7 +142,7 @@ export function morelike(id, callback) {
                 }
             }
         },
-    }, handleNotFound({}, response => {
+    }, handleNotFound<ApiResponse>({}, response => {
             const body = response.body;
             const result: any = {
                 cdes: [],
@@ -174,7 +175,7 @@ export function byTinyIdList(idList, size, cb) {
             },
             size,
         }
-    }, handleNotFound<ElasticQueryResponse>({}, response => {
+    }, handleNotFound<ApiResponse>({}, response => {
         // @TODO possible to move this sort to elastic search?
         response.body.hits.hits.sort((a, b) => idList.indexOf(a._id) - idList.indexOf(b._id));
         cb(null, response.body.hits.hits.map(h => h._source));

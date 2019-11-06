@@ -135,11 +135,15 @@ export function reIndexStream(dbStream: DbStream, cb?: Cb) {
                                 bulkIndex(req, cb, --retries);
                             }, 2000);
                         } else {
+                            let bodyErr;
+                            if (response && response.body && response.body.err) {
+                                bodyErr = response.body.err;
+                            }
                             logError({
                                 message: 'Unable to Index in bulk',
                                 origin: 'system.elastic.inject',
                                 stack: err,
-                                details: ((response || {}).body || {}).errors
+                                details: bodyErr
                             });
                             cb();
                         }
@@ -749,7 +753,8 @@ let lock = false;
 
 export function elasticSearchExport(type: 'cde', query: any, dataCb: CbError<DataElementElastic>): void;
 export function elasticSearchExport(type: 'form', query: any, dataCb: CbError<CdeFormElastic>): void;
-export function elasticSearchExport(type: ModuleItem, query: any, dataCb: CbError<DataElementElastic> | CbError<CdeFormElastic>): void {
+export async function elasticSearchExport(type: ModuleItem, query: any,
+                                          dataCb: CbError<DataElementElastic> | CbError<CdeFormElastic>): void {
     const streamCb = dataCb as CbError<ItemElastic>;
     if (lock) {
         return streamCb(new Error('Servers busy'));
@@ -765,7 +770,7 @@ export function elasticSearchExport(type: ModuleItem, query: any, dataCb: CbErro
     search.body = query;
 
     function scrollThrough(response: any) {
-        esClient.scroll({scrollId: response.body._scroll_id, scroll: '1m'}, (err, response) => {
+        esClient.scroll({scrollId: response._scroll_id, scroll: '1m'}, (err, response) => {
             if (err) {
                 lock = false;
                 errorLogger.error('Error: Elastic Search Scroll Access Error',
@@ -792,20 +797,8 @@ export function elasticSearchExport(type: ModuleItem, query: any, dataCb: CbErro
         }
     }
 
-    esClient.search(search, (err, response) => {
-        if (err) {
-            lock = false;
-            errorLogger.error('Error: Elastic Search Scroll Query Error',
-                {
-                    origin: 'system.elastic.elasticsearch',
-                    stack: new Error().stack,
-                    details: query
-                });
-            streamCb(new Error('ES Error'));
-        } else {
-            processScroll(response.body);
-        }
-    });
+    const response = await esClient.search(search);
+    processScroll(response.body);
 }
 
 export function scrollExport(query: any, type: ModuleItem, cb: CbError<any>) {
