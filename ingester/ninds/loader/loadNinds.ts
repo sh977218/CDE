@@ -1,24 +1,19 @@
 import { NindsModel } from 'ingester/createMigrationConnection';
 import { createNindsCde } from 'ingester/ninds/website/cde/cde';
-import { mergeElt } from 'ingester/shared/utility';
-
-async function doOneCdeByCdeId(cdeId) {
-    const nindsForms = await NindsModel.find({'cdes.CDE ID': cdeId},
-        {
-            _id: 0,
-            diseaseName: 1,
-            subDiseaseName: 1,
-            domainName: 1,
-            subDomainName: 1,
-            cdes: {$elemMatch: {'CDE ID': cdeId}}
-        }).lean();
-    const cde = await createNindsCde(nindsForms);
-}
 
 function preLoadNindsCdes() {
     return NindsModel.distinct('cdes.CDE ID')
         .cursor().eachAsync(async cdeId => {
-            await doOneCdeByCdeId(cdeId);
+            const nindsForms = await NindsModel.find({'cdes.CDE ID': cdeId},
+                {
+                    _id: 0,
+                    diseaseName: 1,
+                    subDiseaseName: 1,
+                    domainName: 1,
+                    subDomainName: 1,
+                    cdes: {$elemMatch: {'CDE ID': cdeId}}
+                }).lean();
+            const cde = await createNindsCde(nindsForms);
         });
 }
 

@@ -1,6 +1,6 @@
 import { readdirSync, readFileSync } from 'fs';
 import { sortBy, groupBy, isEmpty } from 'lodash';
-import { loadFormByCsv } from 'ingester/ninds/Loader/loadNindsForm';
+import { loadFormByCsv } from 'ingester/ninds/Loader/loadNindsFormByCsv';
 import {
     changeNindsPreclinicalNeiClassification, fixDefinitions, fixReferenceDocuments, formatRows
 } from 'ingester/ninds/csv/shared/utility';
