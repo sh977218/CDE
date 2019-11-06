@@ -6,8 +6,10 @@ import { parseProperties } from 'ingester/ninds/website/cde/ParseProperties';
 import { parseReferenceDocuments } from 'ingester/ninds/website/cde/ParseReferenceDocuments';
 import { generateTinyId } from 'server/system/mongo-data';
 import { parseSources } from 'ingester/ninds/website/cde/ParseSources';
+import { parseClassification } from 'ingester/ninds/website/shared/ParseClassification';
+import { parseValueDomain } from 'ingester/ninds/website/cde/ParseValueDomain';
 
-export async function createNindsCde(nindsForms: any[]) {
+export function createNindsCde(nindsForms: any[]) {
     const designations = parseDesignations(nindsForms);
     const definitions = parseDefinitions(nindsForms);
     const sources = parseSources(nindsForms);
@@ -32,8 +34,7 @@ export async function createNindsCde(nindsForms: any[]) {
         referenceDocuments,
         valueDomain,
         classification: [],
-        registrationState: {registrationStatus: 'Qualified'},
-        comments: []
+        registrationState: {registrationStatus: 'Qualified'}
     };
 
     parseClassification(nindsForms, cde);

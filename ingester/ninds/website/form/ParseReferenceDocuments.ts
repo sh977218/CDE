@@ -1,13 +1,14 @@
-const _ = require('lodash');
+import { uniq } from 'lodash';
 
-exports.parseReferenceDocuments = nindsForms => {
-    let downloadLinkArray = [];
+export function parseReferenceDocuments(nindsForms: any[]) {
+    const downloadLinkArray: string[] = [];
     nindsForms.forEach(nindsForm => {
-        if (nindsForm.downloadLink)
+        if (nindsForm.downloadLink) {
             downloadLinkArray.push(nindsForm.downloadLink);
+        }
     });
-    let downloadLink = _.uniq(downloadLinkArray);
-    let referenceDocuments = [];
+    const downloadLink = uniq(downloadLinkArray);
+    const referenceDocuments: any[] = [];
 
     downloadLink.forEach(d => {
         referenceDocuments.push({
@@ -16,4 +17,4 @@ exports.parseReferenceDocuments = nindsForms => {
         });
     });
     return referenceDocuments;
-};
+}

@@ -1,23 +1,24 @@
-const _ = require('lodash');
+import { uniq } from 'lodash';
 
-exports.parseIds = nindsForms => {
-    let formIdArray = [];
+export function parseIds(nindsForms: any[]) {
+    const formIdArray: string[] = [];
     nindsForms.forEach(nindsForm => {
-        if (nindsForm.formId)
+        if (nindsForm.formId) {
             formIdArray.push(nindsForm.formId.replace('form', '').trim());
+        }
     });
-    let formId = _.uniq(formIdArray);
+    const formId = uniq(formIdArray);
     if (formId.length !== 1) {
         console.log(nindsForms[0].formId + ' formId not good');
         process.exit(1);
     }
-    let ids = [];
+    const ids: any[] = [];
 
     formId.forEach(i => {
         ids.push({
             source: 'NINDS',
             id: i
-        })
+        });
     });
     return ids;
-};
+}

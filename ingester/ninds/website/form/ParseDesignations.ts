@@ -1,25 +1,25 @@
-const _ = require('lodash');
-const trimWhite = require('../../shared/utility').trimWhite;
+import { uniq, trim } from 'lodash';
 
-exports.parseDesignations = nindsForms => {
-    let formNameArray = [];
+export function parseDesignations(nindsForms: any[]) {
+    const formNameArray: string[] = [];
     nindsForms.forEach(nindsForm => {
-        if (nindsForm.formName)
+        if (nindsForm.formName) {
             formNameArray.push(nindsForm.formName);
+        }
     });
 
-    let _formNameArray = _.uniq(formNameArray);
+    const _formNameArray: string[] = uniq(formNameArray);
     if (_formNameArray.length !== 1) {
         console.log(nindsForms[0].formId + ' _formNameArray not good');
         process.exit(1);
     }
-    let designations = [];
+    const designations: any[] = [];
 
     _formNameArray.forEach(c => {
         designations.push({
-            designation: trimWhite(c),
+            designation: trim(c),
             tags: []
-        })
+        });
     });
     return designations;
-};
+}

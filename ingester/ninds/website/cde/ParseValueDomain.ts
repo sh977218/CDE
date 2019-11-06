@@ -1,50 +1,83 @@
-const _ = require('lodash');
+import { uniq, uniqWith, isEqual } from 'lodash';
+import { map as DATA_TYPE_MAP } from 'ingester/ninds/website/cde/DATA_TYPE_MAP';
 
-const DATA_TYPE_MAP = require('./DATA_TYPE_MAP').map;
+export function parseAnswers(ninds: any) {
+    if (!ninds['Permissible Values'] || !ninds.Description) {
+        return [];
+    }
+    const pvsArray = ninds['Permissible Value'].split(';');
+    const pdsArray = ninds.Description.split(';');
+    if (pvsArray.length !== pdsArray.length) {
+        console.log(`${ninds.cdeId} permissibleValue and permissibleDescription do not match in ParseAnswer`);
+        process.exit(1);
+    }
+    const answers = [];
+    const isPvValueNumber = /^\d+$/.test(pvsArray[0]);
+    for (let i = 0; i < pvsArray.length; i++) {
+        if (pvsArray[i].length > 0) {
+            const pv: any = {
+                permissibleValue: pvsArray[i],
+                valueMeaningDefinition: pdsArray[i]
+            };
+            if (isPvValueNumber) {
+                pv.valueMeaningName = pdsArray[i];
+            } else {
+                pv.valueMeaningName = pvsArray[i];
+            }
+            answers.push(pv);
+        }
+    }
+    return answers;
+}
 
-const parseAnswer = require('../form/ParseAnswers').parseAnswers;
-
-exports.parseValueDomain = nindsForms => {
-    let measurementTypeArray = [];
-    let inputRestrictionsTypeArray = [];
-    let dataTypeTypeArray = [];
-    let sizeArray = [];
-    let minValueArray = [];
-    let maxValueArray = [];
-    let permissibleValuesArray = [];
+export function parseValueDomain(nindsForms: any[]) {
+    const measurementTypeArray: string[] = [];
+    const inputRestrictionsTypeArray: string[] = [];
+    const dataTypeTypeArray: string[] = [];
+    const sizeArray: string[] = [];
+    const minValueArray: string[] = [];
+    const maxValueArray: string[] = [];
+    let permissibleValuesArray: any[] = [];
 
     nindsForms.forEach(nindsForm => {
-        nindsForm.cdes.forEach(nindsCde => {
-            if (nindsCde['Measurement Type'])
+        nindsForm.cdes.forEach((nindsCde: any) => {
+            if (nindsCde['Measurement Type']) {
                 measurementTypeArray.push(nindsCde['Measurement Type']);
-            if (nindsCde['Input Restrictions'])
+            }
+            if (nindsCde['Input Restrictions']) {
                 inputRestrictionsTypeArray.push(nindsCde['Input Restrictions']);
-            if (nindsCde['Data Type'])
+            }
+            if (nindsCde['Data Type']) {
                 dataTypeTypeArray.push(nindsCde['Data Type']);
-            if (nindsCde['Size'])
-                sizeArray.push(nindsCde['Size']);
-            if (nindsCde['Min Value'])
+            }
+            if (nindsCde.Size) {
+                sizeArray.push(nindsCde.Size);
+            }
+            if (nindsCde['Min Value']) {
                 minValueArray.push(nindsCde['Min Value']);
-            if (nindsCde['Max Value'])
+            }
+            if (nindsCde['Max Value']) {
                 maxValueArray.push(nindsCde['Max Value']);
-            permissibleValuesArray = permissibleValuesArray.concat(parseAnswer(nindsCde));
+            }
+            permissibleValuesArray = permissibleValuesArray.concat(parseAnswers(nindsCde));
         });
     });
 
-    let _measurementTypeArray = _.uniq(measurementTypeArray);
-    let _inputRestrictionsTypeArray = _.uniq(inputRestrictionsTypeArray);
-    let _dataTypeTypeArray = _.uniq(dataTypeTypeArray);
-    let _sizeArray = _.uniq(sizeArray);
-    let _minValueArray = _.uniq(minValueArray);
-    let _maxValueArray = _.uniq(maxValueArray);
-    let _permissibleValuesArray = _.uniqWith(permissibleValuesArray, (a, b) => {
-        let apv = a.permissibleValue;
-        let bpv = b.permissibleValue;
-        return apv && bpv && _.isEqual(apv, bpv);
+    const _measurementTypeArray = uniq(measurementTypeArray);
+    const _inputRestrictionsTypeArray = uniq(inputRestrictionsTypeArray);
+    const _dataTypeTypeArray = uniq(dataTypeTypeArray);
+    const _sizeArray = uniq(sizeArray);
+    const _minValueArray = uniq(minValueArray);
+    const _maxValueArray = uniq(maxValueArray);
+
+    const _permissibleValuesArray = uniqWith(permissibleValuesArray, (a, b) => {
+        const apv = a.permissibleValue;
+        const bpv = b.permissibleValue;
+        return apv && bpv && isEqual(apv, bpv);
     });
 
-    let valueDomain = {
-        uom: "",
+    const valueDomain: any = {
+        uom: '',
         permissibleValues: []
     };
 
@@ -61,11 +94,13 @@ exports.parseValueDomain = nindsForms => {
         process.exit(1);
     }
     _measurementTypeArray.forEach(m => {
-        if (m) valueDomain.uom = m;
+        if (m) {
+            valueDomain.uom = m;
+        }
     });
     _inputRestrictionsTypeArray.forEach(inputRestrictions => {
         if (inputRestrictions === 'Free-Form Entry') {
-            let datatype = DATA_TYPE_MAP[_dataTypeTypeArray[0]];
+            const datatype = DATA_TYPE_MAP[_dataTypeTypeArray[0]];
             valueDomain.datatype = datatype;
             if (!datatype) {
                 console.log(' unknown dataType found:' + datatype);
@@ -76,8 +111,9 @@ exports.parseValueDomain = nindsForms => {
                     console.log('_sizeArray greater 1');
                     process.exit(1);
                 }
-                if (_sizeArray.length > 0)
+                if (_sizeArray.length > 0) {
                     valueDomain.datatypeText = {maxLength: Number(_sizeArray[0])};
+                }
             }
             if (valueDomain.datatype === 'Number') {
                 if (_minValueArray.length > 1) {
@@ -89,19 +125,21 @@ exports.parseValueDomain = nindsForms => {
                     process.exit(1);
                 }
                 valueDomain.datatypeNumber = {};
-                if (_minValueArray.length > 0)
+                if (_minValueArray.length > 0) {
                     valueDomain.datatypeNumber.minValue = Number(_minValueArray[0]);
-                if (_maxValueArray.length > 0)
+                }
+                if (_maxValueArray.length > 0) {
                     valueDomain.datatypeNumber.maxValue = Number(_maxValueArray[0]);
+                }
             }
         } else if (['Single Pre-Defined Value Selected', 'Multiple Pre-Defined Values Selected'].indexOf(inputRestrictions) > -1) {
             valueDomain.datatype = 'Value List';
-            let datatype = DATA_TYPE_MAP[_dataTypeTypeArray[0]];
+            const datatype = DATA_TYPE_MAP[_dataTypeTypeArray[0]];
             if (!datatype) {
                 console.log('Unknown dataType found:' + datatype);
                 process.exit(1);
             }
-            valueDomain.datatypeValueList = {datatype: datatype};
+            valueDomain.datatypeValueList = {datatype};
             if (datatype === 'Value List') {
                 if (_permissibleValuesArray.length === 0) {
                     console.log('_permissibleValuesArray is not 1');
@@ -116,4 +154,4 @@ exports.parseValueDomain = nindsForms => {
     });
 
     return valueDomain;
-};
+}
