@@ -355,7 +355,6 @@ app.use((req, res, next) => {
 
 
 app.use((err, req, res, next) => {
-
     if (err.code === 'EBADCSRFTOKEN') {
         return res.status(401).send('CSRF Error');
     }
@@ -386,6 +385,10 @@ app.use((err, req, res, next) => {
     };
     errorLogger.error('error', 'Error: Express Default Error Handler', meta);
     res.status(500).send('Something broke!');
+});
+
+process.on('unhandledRejection', error => {
+    console.log(error);
 });
 
 domain.run(() => {
