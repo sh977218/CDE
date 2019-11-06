@@ -131,7 +131,7 @@ export async function transferSteward(req, res) {
         let result = await dataElementModel.updateMany({'stewardOrg.name': from}, {$set: {'stewardOrg.name': to}});
         results.push(result.nModified + ' CDEs transferred. ');
 
-        result = formModel.updateMany({'stewardOrg.name': from}, {$set: {'stewardOrg.name': to}};
+        result = formModel.updateMany({'stewardOrg.name': from}, {$set: {'stewardOrg.name': to}});
         results.push(result.nModified + ' forms transferred. ');
         return res.send(results.join(''));
     } else {

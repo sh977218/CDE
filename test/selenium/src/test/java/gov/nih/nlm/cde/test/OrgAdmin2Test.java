@@ -12,7 +12,7 @@ public class OrgAdmin2Test extends BaseClassificationTest {
         mustBeLoggedInAs(cabigAdmin_username, password);
         goToProfile();
         Assert.assertEquals("cabigAdmin", findElement(By.id("username")).getText());
-        textPresent("1,024.00", By.id("quota"));
+        textPresent("1,024.00", By.id("quota"));cd
         Assert.assertEquals("", findElement(By.id("curatorFor")).getText());
         textPresent("caBIG", By.id("adminFor"));
     }
