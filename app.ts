@@ -389,11 +389,6 @@ app.use((err, req, res, next) => {
     res.status(500).send('Something broke!');
 });
 
-process.on('unhandledRejection', error => {
-    console.log(error);
-    consoleLog(error);
-});
-
 domain.run(() => {
     const server = http.createServer(app);
     exports.server = server;
