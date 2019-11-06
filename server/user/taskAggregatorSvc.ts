@@ -59,7 +59,7 @@ export async function taskAggregator(user, clientVersion) {
                     url: '/siteAudit?tab=clientErrors',
                 });
             }
-        });
+        }, err => console.log('getClientErrorsNumber ***** ' + err));
         serverErrorPromise = getServerErrorsNumber(user).then(serverErrorCount => {
             if (serverErrorCount > 0) {
                 tasks.push({
@@ -71,7 +71,7 @@ export async function taskAggregator(user, clientVersion) {
                     url: '/siteAudit?tab=serverErrors',
                 });
             }
-        });
+        }, err => console.log('getServerErrorsNumber ***** ' + err));
     }
 
     if (clientVersion && version !== clientVersion) {

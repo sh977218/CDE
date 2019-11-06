@@ -1,21 +1,7 @@
-import { BATCHLOADER } from 'ingester/shared/utility';
+import { BATCHLOADER, created, imported } from 'ingester/shared/utility';
+import { generateTinyId } from 'server/system/mongo-data';
 
-const generateTinyId = require('../../../server/system/mongo-data').generateTinyId;
-
-const parseDesignations = require('./ParseDesignations').parseDesignations;
-const parseDefinitions = require('./ParseDefinitions').parseDefinitions;
-const parseSources = require('./ParseSources').parseSources;
-const parseIds = require('./ParseIds').parseIds;
-const parseProperties = require('./ParseProperties').parseProperties;
-const parseReferenceDocuments = require('./ParseReferenceDocuments').parseReferenceDocuments;
-const parseClassification = require('../Shared/ParseClassification').parseClassification;
-const parseFormElements = require('./ParseFormElements').parseFormElements;
-const parseCopyright = require('./ParseCopyright').parseCopyright;
-
-const today = new Date().toJSON();
-
-
-exports.createForm = async nindsForms => {
+export async function createForm(nindsForms: any[]) {
     let designations = parseDesignations(nindsForms);
     let definitions = parseDefinitions(nindsForms);
     let sources = parseSources(nindsForms);
@@ -32,8 +18,8 @@ exports.createForm = async nindsForms => {
         tinyId: generateTinyId(),
         sources,
         createdBy: BATCHLOADER,
-        created: today,
-        imported: today,
+        created,
+        imported,
         isCopyrighted,
         noRenderAllowed: isCopyrighted,
         stewardOrg: {name: 'NINDS'},

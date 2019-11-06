@@ -4,7 +4,7 @@ import { checkPvUnicity } from 'shared/de/deValidator';
 
 const _ = require('lodash');
 
-const parseAnswers = require('../Form/ParseAnswers').parseAnswers;
+const parseAnswers = require('.//ParseAnswers').parseAnswers;
 
 
 const Comment = require('../../../server/discuss/discussDb').Comment;

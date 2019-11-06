@@ -2,7 +2,7 @@ const _ = require('lodash');
 
 const DATA_TYPE_MAP = require('./DATA_TYPE_MAP').map;
 
-const parseAnswer = require('../Form/ParseAnswers').parseAnswers;
+const parseAnswer = require('../form/ParseAnswers').parseAnswers;
 
 exports.parseValueDomain = nindsForms => {
     let measurementTypeArray = [];
