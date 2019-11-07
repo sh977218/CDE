@@ -287,8 +287,6 @@ export function init(app: Express) {
         getFile(req.user, fileId, res);
     });
 
-    app.post('/transferSteward', transferSteward);
-
     app.post('/getClassificationAuditLog', isOrgAuthorityMiddleware, async (req, res) => {
         const records = await getClassificationAuditLog(req.body);
         res.send(records);

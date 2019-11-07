@@ -43,7 +43,7 @@ export function module() {
             await (board.save as any)();
             res.send('Removed');
         } else {
-            res.send(422).send();
+            res.status(422).send();
         }
     });
 
