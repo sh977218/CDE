@@ -207,7 +207,6 @@ export function reIndexStream(dbStream: DbStream, cb?: Cb) {
                             index: {
                                 _index: index.indexName,
                                 _type: '_doc',
-                                // _type: indexTypes[i],
                                 _id: doc.tinyId || doc._id
                             }
                         });

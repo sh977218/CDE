@@ -132,6 +132,5 @@ function doSyncWithMesh(allMappings, callback: ErrorCallback = () => {}) {
     each(searches, async search  => {
         const response = await esClient.search(search);
         await new Promise(resolve => processScroll(response.body._scroll_id, search, response.body, resolve));
-        console.log(`${search} done`);
     }, callback);
 }
