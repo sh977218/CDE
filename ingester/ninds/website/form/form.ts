@@ -10,7 +10,7 @@ import { parseCopyright } from 'ingester/ninds/website/form/ParseCopyright';
 import { parseFormElements } from 'ingester/ninds/website/form/ParseFormElements';
 import { parseClassification } from 'ingester/ninds/website/shared/ParseClassification';
 
-export async function createForm(nindsForms: any[]) {
+export async function createNindsForm(nindsForms: any[]) {
     const designations = parseDesignations(nindsForms);
     const definitions = parseDefinitions();
     const sources = parseSources();

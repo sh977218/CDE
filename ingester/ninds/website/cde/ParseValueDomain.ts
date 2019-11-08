@@ -1,12 +1,18 @@
-import { uniq, uniqWith, isEqual } from 'lodash';
+import { uniq, uniqWith, isEqual, isEmpty } from 'lodash';
 import { map as DATA_TYPE_MAP } from 'ingester/ninds/website/cde/DATA_TYPE_MAP';
 
 export function parseAnswers(ninds: any) {
-    if (!ninds['Permissible Values'] || !ninds.Description) {
+    if (isEmpty(ninds)) {
+        console.log(`ninds is empty.`);
+        process.exit(1);
+    }
+    if (isEmpty(ninds['Permissible Values']) || isEmpty(ninds.Description)) {
         return [];
     }
-    const pvsArray = ninds['Permissible Value'].split(';');
-    const pdsArray = ninds.Description.split(';');
+    const a = ninds['Permissible Values'];
+    const b = ninds.Description;
+    const pvsArray = a.split(';');
+    const pdsArray = b.split(';');
     if (pvsArray.length !== pdsArray.length) {
         console.log(`${ninds.cdeId} permissibleValue and permissibleDescription do not match in ParseAnswer`);
         process.exit(1);

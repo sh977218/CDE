@@ -1,5 +1,7 @@
-import { isEmpty, trim, lowerCase, forEach, words, capitalize, join, isEqual } from 'lodash';
-import { loopFormElements, mergeClassificationByOrg } from 'ingester/shared/utility';
+const CSV = require('csv');
+import { readFileSync } from 'fs';
+import { isEmpty, trim, replace, forEach, words, capitalize, join, isEqual, filter } from 'lodash';
+import { loopFormElements, mergeClassificationByOrg, NINDS_PRECLINICAL_NEI_FILE_PATH } from 'ingester/shared/utility';
 
 const STOP_WORDS = ['the', 'of', 'a'];
 
@@ -160,4 +162,40 @@ export function fixFormElements(existingForm: any) {
         },
     });
     existingForm.formElements = formToFix.formElements;
+}
+
+export function convertFileNameToFormName(csvFileName: string) {
+    const replaceCsvFileName = replace(csvFileName, '.csv', '');
+    const wordsCsvFileName = words(replaceCsvFileName);
+    const filterCsvFileName = filter(wordsCsvFileName, o => {
+        const isC = isEqual(o, 'C');
+        const oNumber = Number(o);
+        const isNotNumber = isNaN(oNumber);
+        return !isC && isNotNumber;
+    });
+    const joinCsvFileName = join(filterCsvFileName, ' ');
+    return trim(joinCsvFileName);
+}
+
+export function parseOneCsv(csvFileName: string): Promise<any> {
+    return new Promise(resolve => {
+        const csvPath = `${NINDS_PRECLINICAL_NEI_FILE_PATH}/${csvFileName}`;
+        const cond = {
+            columns: true,
+            rtrim: true,
+            trim: true,
+            relax_column_count: true,
+            skip_empty_lines: true,
+            skip_lines_with_empty_values: true
+        };
+        CSV.parse(readFileSync(csvPath), cond, (err: any, data: any[]) => {
+            if (err) {
+                console.log(err);
+                process.exit(1);
+            } else {
+                const rows = formatRows(csvFileName, data);
+                resolve(rows);
+            }
+        });
+    });
 }

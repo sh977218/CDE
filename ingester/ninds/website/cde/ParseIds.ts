@@ -10,8 +10,8 @@ export function parseIds(nindsForms: any[]) {
             if (nindsCde['CDE ID']) {
                 cdeIdArray.push(nindsCde['CDE ID']);
             }
-            if (nindsCde['Version #']) {
-                versionNumArray.push(nindsCde['Version #']);
+            if (nindsCde['Version Number']) {
+                versionNumArray.push(nindsCde['Version Number']);
             }
             if (nindsCde['caDSR ID']) {
                 cadsrIdArray.push(nindsCde['caDSR ID']);
