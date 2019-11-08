@@ -4,9 +4,23 @@ import {
     BATCHLOADER, compareElt, findOneCde, findOneForm, imported, lastMigrationScript, mergeElt, updateCde, updateForm,
     updateRowArtifact
 } from 'ingester/shared/utility';
-import { changeNindsPreclinicalNeiClassification } from 'ingester/ninds/csv/shared/utility';
 import { formModel } from 'server/form/mongo-form';
 import { commentModel } from 'server/discuss/discussDb';
+
+export function doNindsClassification(existingCde, newCdeObj) {
+    const nindsClassifications = existingCde.classification.filter(c => c.stewardOrg.name === 'NINDS');
+    if (nindsClassifications.length === 1) {
+        const nindsClassification = nindsClassifications[0];
+        const preclinicalClassifications = nindsClassification.elements.filter(e => e.name === 'Preclinical TBI');
+        if (preclinicalClassifications.length === 1) {
+            newCdeObj.classification.forEach(c => {
+                c.elements = preclinicalClassifications.concat(c.elements);
+            });
+        }
+    }
+    const otherClassifications = existingCde.classification.filter(c => c.stewardOrg.name !== 'NINDS');
+    existingCde.classification = newCdeObj.classification.concat(otherClassifications);
+}
 
 export async function loadNindsCde(nindsCde: any, cond: any, source: string) {
     const newCde = new dataElementModel(nindsCde);
@@ -20,22 +34,24 @@ export async function loadNindsCde(nindsCde: any, cond: any, source: string) {
         });
         console.log(`created cde tinyId: ${existingCde.tinyId}`);
     } else {
-
         const diff = compareElt(newCde.toObject(), existingCde.toObject(), source);
-        changeNindsPreclinicalNeiClassification(existingCde, newCde.toObject(), 'NINDS');
-
         if (isEmpty(diff)) {
             existingCde.lastMigrationScript = lastMigrationScript;
             existingCde.imported = imported;
+            doNindsClassification(existingCde, newCde.toObject());
             existingCde = await existingCde.save().catch((err: any) => {
-                console.log(`Not able to save form when save existing NINDS cde ${existingCde.tinyId} ${err}`);
+                console.log(`Not able to save cde when save existing NINDS cde ${existingCde.tinyId} ${err}`);
                 process.exit(1);
             });
             console.log(`same cde tinyId: ${existingCde.tinyId}`);
         } else {
             const existingCdeObj = existingCde.toObject();
-            mergeElt(existingCdeObj, newCdeObj, source, 'NINDS');
-            await updateCde(existingCdeObj, BATCHLOADER, {updateSource: true});
+            doNindsClassification(existingCdeObj, newCde.toObject());
+            mergeElt(existingCdeObj, newCdeObj, source);
+            await updateCde(existingCdeObj, BATCHLOADER, {updateSource: true}).catch((err: any) => {
+                console.log(`Not able to update cde when update existing NINDS cde ${existingCde.tinyId} ${err}`);
+                process.exit(1);
+            });
             console.log(`updated cde tinyId: ${existingCde.tinyId}`);
         }
     }
@@ -58,8 +74,6 @@ export async function loadNindsForm(nindsForm: any, cond: any, source: string) {
         console.log(`created form tinyId: ${existingForm.tinyId}`);
     } else {
         const diff = compareElt(newForm.toObject(), existingForm.toObject(), source);
-        changeNindsPreclinicalNeiClassification(existingForm, newForm.toObject(), 'NINDS');
-
         if (isEmpty(diff)) {
             existingForm.lastMigrationScript = lastMigrationScript;
             existingForm.imported = imported;
@@ -70,8 +84,11 @@ export async function loadNindsForm(nindsForm: any, cond: any, source: string) {
             console.log(`same form tinyId: ${existingForm.tinyId}`);
         } else {
             const existingFormObj = existingForm.toObject();
-            mergeElt(existingFormObj, newFormObj, source, 'NINDS');
-            await updateForm(existingFormObj, BATCHLOADER, {updateSource: true});
+            mergeElt(existingFormObj, newFormObj, source);
+            await updateForm(existingFormObj, BATCHLOADER, {updateSource: true}).catch((err: any) => {
+                console.log(`Not able to update form when update existing NINDS form ${existingFormObj.tinyId} ${err}`);
+                process.exit(1);
+            });
             console.log(`change form tinyId: ${existingForm.tinyId}`);
         }
         for (const comment of nindsForm.comments) {

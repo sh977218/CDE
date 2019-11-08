@@ -8,17 +8,17 @@ export function parseClassification(nindsForms: any[], item: any) {
     const classificationArray: string[] = [];
     nindsForms.forEach((nindsForm: any) => {
         const temp: any = {};
-        if (nindsForm.disease) {
-            temp.disease = nindsForm.disease;
+        if (!isEmpty(nindsForm.diseaseName)) {
+            temp.diseaseName = nindsForm.diseaseName;
         }
-        if (nindsForm.subDisease) {
-            temp.subDisease = nindsForm.subDisease;
+        if (!isEmpty(nindsForm.subDiseaseName)) {
+            temp.subDiseaseName = nindsForm.subDiseaseName;
         }
-        if (nindsForm.domain) {
-            temp.domain = nindsForm.domain;
+        if (!isEmpty(nindsForm.domainName)) {
+            temp.domainName = nindsForm.domainName;
         }
-        if (nindsForm.subDomain) {
-            temp.subDomain = nindsForm.subDomain;
+        if (!isEmpty(nindsForm.subDomainName)) {
+            temp.subDomainName = nindsForm.subDomainName;
         }
         if (nindsForm.cdes.length && type === 'cde') {
             temp.population = nindsForm.cdes[0].Population;
@@ -30,16 +30,16 @@ export function parseClassification(nindsForms: any[], item: any) {
     const uniqClassificationArray = uniq(classificationArray);
 
     uniqClassificationArray.forEach((c: any) => {
-        const diseaseToAdd = ['Disease', c.disease];
-        const domainToAdd = ['Domain', c.domain];
-        const subDomainToAdd = ['Disease', c.disease];
+        const diseaseToAdd = ['Disease', c.diseaseName];
+        const domainToAdd = ['Domain', c.domainName];
+        const subDomainToAdd = ['Disease', c.diseaseName];
         // CDE only
-        const classificationToAdd = ['Disease', c.disease];
+        const classificationToAdd = ['Disease', c.diseaseName];
 
-        if (!isEmpty(c.subDisease)) {
-            diseaseToAdd.push(c.subDisease);
-            classificationToAdd.push(c.subDisease);
-            subDomainToAdd.push(c.subDisease);
+        if (!isEmpty(c.subDiseaseName)) {
+            diseaseToAdd.push(c.subDiseaseName);
+            classificationToAdd.push(c.subDiseaseName);
+            subDomainToAdd.push(c.subDiseaseName);
         }
 
         if (!isEmpty(c.classification) && type === 'cde') {
@@ -51,12 +51,12 @@ export function parseClassification(nindsForms: any[], item: any) {
         if (!isEmpty(c.domain)) {
             diseaseToAdd.push('Domain');
             subDomainToAdd.push('Domain');
-            diseaseToAdd.push(c.domain);
-            subDomainToAdd.push(c.domain);
+            diseaseToAdd.push(c.domainName);
+            subDomainToAdd.push(c.domainName);
             if (!isEmpty(c.subDomain)) {
-                diseaseToAdd.push(c.subDomain);
-                domainToAdd.push(c.subDomain);
-                subDomainToAdd.push(c.subDomain);
+                diseaseToAdd.push(c.subDomainName);
+                domainToAdd.push(c.subDomainName);
+                subDomainToAdd.push(c.subDomainName);
             }
         }
 

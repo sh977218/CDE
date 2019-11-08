@@ -100,19 +100,12 @@ export function formatRows(csvFileName: string, rows: any[]) {
     return formattedRows;
 }
 
-export function removePreclinicalClassification(elt: any) {
-    elt.classification.forEach((c: any) => {
-        if (c.stewardOrg.name === 'NINDS') {
-            c.elements = c.elements.filter((e: any) => !isEqual(e.name, 'Preclinical TBI'));
-        }
+export function addPreclinicalClassification() {
+    const nindsClassifications = existingCde.toObject().classification.filter(c => c.stewardOrg.name === 'NINDS');
+    const preclinicalClassifications = nindsClassifications.forEach(c => {
+        c.elements = c.elements.name.filter(e => e.name !== 'Preclinical TBI');
     });
-}
 
-export function changeNindsPreclinicalNeiClassification(existingElt: any, newObj: any, classificationOrgName: string) {
-    const existingObj = existingElt.toObject();
-    mergeClassificationByOrg(existingObj, newObj, classificationOrgName);
-    existingElt.classification = existingObj.classification;
-    removePreclinicalClassification(existingElt);
 }
 
 export function fixReferenceDocuments(existingElt: any) {

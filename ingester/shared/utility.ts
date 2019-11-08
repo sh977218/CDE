@@ -20,6 +20,7 @@ export const sourceMap = {
     LOINC: ['LOINC'],
     PhenX: ['PhenX', 'PhenX Variable'],
     NINDS: ['NINDS', 'NINDS Variable Name', 'NINDS caDSR', 'NINDS Preclinical', 'BRICS Variable Name'],
+    // tslint:disable-next-line:max-line-length
     'NINDS Preclinical NEI': ['NINDS', 'NINDS Variable Name', 'NINDS caDSR', 'NINDS Preclinical', 'BRICS Variable Name', 'NINDS Preclinical NEI'],
     NCI: ['NCI', 'caDSR']
 };
@@ -327,26 +328,13 @@ export function compareElt(newEltObj, existingEltObj, source) {
             delete eltObj.dataSets;
             fixValueDomainOrQuestion(eltObj.valueDomain);
         }
-
         wipeBeforeCompare(eltObj);
 
+        // Classification changes don't trigger version changes.
+        delete eltObj.classification;
     });
 
-    // Within single load, don't version if only classification changed.
-    if (existingEltObj.lastMigrationScript === newEltObj.lastMigrationScript) {
-        delete existingEltObj.classification;
-        delete existingEltObj.newEltObj;
-    }
-    let result = DiffJson.diff(existingEltObj, newEltObj);
-    /*
-        if (existingEltObj.lastMigrationScript === newEltObj.lastMigrationScript) {
-            result = diffWithRecentUpdated(existingEltObj, newEltObj);
-        }
-        if (!isEmpty(result)) {
-            console.log('a');
-        }
-    */
-    return result;
+    return DiffJson.diff(existingEltObj, newEltObj);
 }
 
 // Merge two elements
@@ -471,18 +459,8 @@ export function mergeIds(existingObj, newObj) {
     });
 }
 
-export function mergeClassification(existingElt, newObj, classificationOrgName) {
-    const existingObj = existingElt.toObject();
-    if (existingElt.lastMigrationScript === lastMigrationScript) {
-        mergeClassificationByOrg(existingObj, newObj, classificationOrgName);
-        existingElt.classification = existingObj.classification;
-    } else {
-        const resultClassification = replaceClassificationByOrg(existingObj, newObj, classificationOrgName);
-        existingElt.classification = resultClassification;
-    }
-}
-
-export function mergeSources(existingObj, newObj, sources) {
+export function mergeSources(existingObj, newObj, source) {
+    const sources = sourceMap[source];
     const existingSources = existingObj.sources;
     const newSources = newObj.sources;
     const otherSources = existingSources.filter(o => {
@@ -511,7 +489,7 @@ function increaseVersion(existingEltObj) {
     }
 }
 
-export function mergeElt(existingEltObj: any, newEltObj: any, source: string, classificationOrgName) {
+export function mergeElt(existingEltObj: any, newEltObj: any, source: string) {
     const isForm = existingEltObj.elementType === 'form';
     const isCde = existingEltObj.elementType === 'cde';
 
@@ -519,7 +497,6 @@ export function mergeElt(existingEltObj: any, newEltObj: any, source: string, cl
     const isQualified = existingEltObj.registrationState.registrationStatus === 'Qualified';
     const isArchived = existingEltObj.archived;
 
-    const sources = sourceMap[source];
 
     existingEltObj.imported = imported;
     existingEltObj.changeNote = lastMigrationScript;
@@ -531,7 +508,7 @@ export function mergeElt(existingEltObj: any, newEltObj: any, source: string, cl
     mergeProperties(existingEltObj, newEltObj);
     mergeReferenceDocuments(existingEltObj, newEltObj);
 
-    mergeSources(existingEltObj, newEltObj, sources);
+    mergeSources(existingEltObj, newEltObj, source);
 
     existingEltObj.attachments = newEltObj.attachments;
     if (existingEltObj.lastMigrationScript !== lastMigrationScript) {
@@ -779,76 +756,26 @@ export function sortProperties(properties) {
     return sortBy(properties, ['key']);
 }
 
-export function findOneCde(cdes) {
+export function findOneCde(cdes: any[]) {
     const cdesLength = cdes.length;
     if (cdesLength === 0) {
         return null;
     } else if (cdesLength === 1) {
         return cdes[0];
     } else {
-        console.log(`Multiple cdes found. TinyIds:`);
-        cdes.forEach((e: any) => console.log(`${e.tinyId} ${e.registrationState.registrationStatus} `));
-        const preclinicalTbiCdes = cdes.filter(cde => {
-            const nindsPreclinicalIds = cde.ids.filter(id => id.source === 'NINDS Preclinical');
-            const preclinicalCdeId = nindsPreclinicalIds[0];
-            if (preclinicalCdeId) {
-                return true;
-            } else {
-                return false;
-            }
-        });
-        const nindsCdes = cdes.filter(cde => {
-            const nindsIds = cde.ids.filter(id => id.source === 'NINDS Variable Name');
-            const nindsId = nindsIds[0];
-            if (nindsId) {
-                return true;
-            } else {
-                return false;
-            }
-        });
-        const preclinicalTbiCde = preclinicalTbiCdes[0];
-        const nindsCde = nindsCdes[0];
-        if (preclinicalTbiCde) {
-            return preclinicalTbiCde;
-        } else if (nindsCde) {
-            return nindsCde;
-        } else {
-            return cdes[0];
-        }
+        console.log(`Multiple cdes found. TinyIds: ${cdes[0].tinyId}`);
+        process.exit(1);
     }
 }
 
-export function findOneForm(forms) {
+export function findOneForm(forms: any[]) {
     const formsLength = forms.length;
     if (formsLength === 0) {
         return null;
     } else if (formsLength === 1) {
         return forms[0];
     } else {
-        console.log(`Multiple forms found. TinyIds:`);
-        forms.forEach((e: any) => console.log(`${e.tinyId} ${e.registrationState.registrationStatus} `));
-        console.log(`Return Preclinical TBI classification`);
-        const preclinicalTbiForms = forms.filter(form => {
-            const classifications = form.classification.filter(c => c.stewardOrg.name === 'NINDS');
-            const nindsClassification = classifications[0];
-            if (nindsClassification) {
-                const preclinicalTbiClassifications = classifications[0].elements.filter(e => e.name === 'Preclinical TBI');
-                const preclinicalTbiClassification = preclinicalTbiClassifications[0];
-                if (preclinicalTbiClassification) {
-                    return true;
-                } else {
-                    return false;
-                }
-            } else {
-                return false;
-            }
-        });
-        const preclinicalTbiForm = preclinicalTbiForms[0];
-        if (preclinicalTbiForm) {
-            return preclinicalTbiForm;
-        } else {
-            console.log('No form found.');
-            process.exit(1);
-        }
+        console.log(`Multiple forms found. TinyIds: ${forms[0].tinyId}`);
+        process.exit(1);
     }
 }

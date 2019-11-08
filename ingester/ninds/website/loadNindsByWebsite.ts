@@ -20,7 +20,7 @@ async function loadNindsCdes() {
             archived: false,
             'ids.id': cdeId
         };
-        await loadNindsCde(cde, cond, 'NINDS');
+        await loadNindsCde(cde, cond,  'NINDS');
     }
 }
 
