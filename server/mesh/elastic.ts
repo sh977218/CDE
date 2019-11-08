@@ -98,7 +98,8 @@ function doSyncWithMesh(allMappings, callback: ErrorCallback = () => {}) {
                     request.body.push({
                         update: {
                             _index: s.index,
-                            _id: thisElt.tinyId
+                            _id: thisElt.tinyId,
+                            _type: '_doc'
                         }
                     });
                     request.body.push({
