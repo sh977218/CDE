@@ -25,7 +25,7 @@ export class StewardOrgTransferComponent {
 
 
     transferSteward() {
-        this.http.post('/transferSteward', this.transferStewardObj, {responseType: 'text'})
+        this.http.post('/server/orgManagement/transferSteward', this.transferStewardObj, {responseType: 'text'})
             .subscribe(r => {
                 this.alert.addAlert('success', r);
                 this.transferStewardObj = new TransferSteward();

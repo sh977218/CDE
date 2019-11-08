@@ -1,9 +1,10 @@
 import { Router } from 'express';
 import { isOrgAdminMiddleware, isOrgAuthorityMiddleware, nocacheMiddleware } from 'server/system/authorization';
 import {
-    addNewOrg, addOrgAdmin, addOrgCurator, myOrgsAdmins, orgAdmins, orgCurators, removeOrgAdmin, removeOrgCurator
+    addNewOrg, addOrgAdmin, addOrgCurator, myOrgsAdmins, orgAdmins, orgCurators, removeOrgAdmin, removeOrgCurator,
+    transferSteward
 } from 'server/orgManagement/orgSvc';
-import { allOrgNames, listOrgsDetailedInfo, managedOrgs, orgByName, updateOrg } from 'server/orgManagement/orgDb';
+import { listOrgsDetailedInfo, managedOrgs, orgByName, updateOrg } from 'server/orgManagement/orgDb';
 
 export function module() {
     const router = Router();
@@ -18,7 +19,7 @@ export function module() {
     });
     router.post('/addOrg', isOrgAuthorityMiddleware, async (req, res) => {
         const newOrg = req.body;
-        const foundOrg = await orgByName(newOrg);
+        const foundOrg = await orgByName(newOrg.name);
         if (foundOrg) {
             res.status(409).send('Org Already Exists');
         } else {
@@ -44,15 +45,12 @@ export function module() {
     router.post('/addOrgCurator', isOrgAdminMiddleware, addOrgCurator);
     router.post('/removeOrgCurator', isOrgAdminMiddleware, removeOrgCurator);
 
-    router.get('/listOrgs', nocacheMiddleware, async (req, res) => {
-        const orgNames = await allOrgNames();
-        res.send(orgNames);
-    });
-
     router.get('/listOrgsDetailedInfo', nocacheMiddleware, async (req, res) => {
         const orgs = await listOrgsDetailedInfo();
         res.send(orgs);
     });
+
+    router.post('/transferSteward', isOrgAdminMiddleware, transferSteward);
 
     return router;
 }
