@@ -14,11 +14,11 @@ const esClient = new Client({
 const searchTemplate = {
     cde: {
         index: config.elastic.index.name,
-        type: 'dataelement'
+        type: '_doc',
     },
     form: {
         index: config.elastic.formIndex.name,
-        type: 'form'
+        type: '_doc',
     }
 };
 
@@ -75,7 +75,8 @@ function doSyncWithMesh(allMappings, callback: ErrorCallback = () => {}) {
     }
 
     async function processScroll(newScrollId: string, s, response, cb) {
-        meshSyncStatus[s.type].total = response.hits.total;
+        const sName = s.index === config.elastic.index.name ? 'dataelement' : 'form';
+        meshSyncStatus[sName].total = response.hits.total;
         if (response.hits.hits.length > 0) {
             const request: any = {body: []};
             response.hits.hits.forEach(hit => {
@@ -107,7 +108,7 @@ function doSyncWithMesh(allMappings, callback: ErrorCallback = () => {}) {
                         }
                     });
                 }
-                meshSyncStatus[s.type].done++;
+                meshSyncStatus[sName].done++;
             });
             if (request.body.length > 0) {
                 esClient.bulk(request, err => {
@@ -121,12 +122,15 @@ function doSyncWithMesh(allMappings, callback: ErrorCallback = () => {}) {
             }
         } else {
             consoleLog('done syncing ' + s.index + ' with MeSH');
-            cb();
+            if (cb) {
+                cb();
+            }
         }
     }
 
-    each(searches, async (search, oneCb) => {
+    each(searches, async search  => {
         const response = await esClient.search(search);
-        processScroll(response.body._scroll_id, search, response.body, oneCb);
+        await new Promise(resolve => processScroll(response.body._scroll_id, search, response.body, resolve));
+        console.log(`${search} done`);
     }, callback);
 }
