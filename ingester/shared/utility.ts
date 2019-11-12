@@ -164,9 +164,6 @@ export function mergeClassificationByOrg(existingObj, newObj, orgName: string = 
 }
 
 export function updateCde(elt: any, user: any, options = {}) {
-    if (elt.tinyId === '7kJpuiGs4') {
-        console.log('b');
-    }
     elt.lastMigrationScript = lastMigrationScript;
     return new Promise((resolve, reject) => {
         mongo_cde.update(elt, user, options, (err, savedElt) => {

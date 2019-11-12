@@ -156,7 +156,7 @@ export function parseValueDomain(nindsForms: any[]) {
 
             // @todo some ninds cdes have empty permissible values with Single Pre-Defined Value Selected,
             if (isEmpty(_permissibleValuesArray)) {
-                valueDomain.datetype = 'Text';
+                valueDomain.datatype = 'Text';
             }
         } else {
             console.log(' unknown inputRestrictions found:' + inputRestrictions);

@@ -4,7 +4,7 @@ import { consoleLog } from 'server/log/dbLogger';
 import { findAll } from 'server/mesh/meshDb';
 import { errorLogger } from 'server/system/logging';
 import { config } from 'server/system/parseConfig';
-import { esClient } from '../server/system/elastic';
+import { esClient } from 'server/system/elastic';
 
 
 const searchTemplate = {
