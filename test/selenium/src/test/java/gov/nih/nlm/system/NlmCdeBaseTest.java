@@ -1195,8 +1195,10 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
             }
         }
         clickElement(By.id("createNewDesignationBtn"));
-        for (String tag : tags) {
-            textPresent(tag);
+        if (tags != null) {
+            for (String tag : tags) {
+                textPresent(tag);
+            }
         }
     }
 
@@ -1216,8 +1218,10 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
             }
         }
         clickElement(By.id("createNewDefinitionBtn"));
-        for (String tag : tags) {
-            textPresent(tag);
+        if (tags != null) {
+            for (String tag : tags) {
+                textPresent(tag);
+            }
         }
     }
 
