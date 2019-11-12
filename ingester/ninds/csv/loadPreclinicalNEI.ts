@@ -25,7 +25,7 @@ async function loadNindsCdes() {
             const cde = await createNindsCde(rows[0]);
             for (const row of rows) {
                 const newCde = await createNindsCde(row);
-                mergeElt(cde, newCde, 'NINDS Preclinical NEI', 'NINDS');
+                mergeElt(cde, newCde, 'NINDS Preclinical NEI');
             }
             const cond = {
                 archived: false,

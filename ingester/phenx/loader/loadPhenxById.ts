@@ -34,7 +34,7 @@ export async function loadPhenxById(phenxId: string) {
             PhenxLogger.samePhenxForms.push(existingForm.tinyId);
         } else {
             const existingFormObj = existingForm.toObject();
-            mergeElt(existingFormObj, newFormObj, 'PhenX', 'PhenX');
+            mergeElt(existingFormObj, newFormObj, 'PhenX');
             await updateForm(existingFormObj, BATCHLOADER, {updateSource: true});
             PhenxLogger.changedPhenxForm++;
             PhenxLogger.changedPhenxForms.push(existingForm.tinyId);

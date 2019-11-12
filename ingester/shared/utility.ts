@@ -25,7 +25,7 @@ export const sourceMap = {
     NCI: ['NCI', 'caDSR']
 };
 export const TODAY = new Date().toJSON();
-export const lastMigrationScript = `load Preclinical + NEI on ${moment().format('DD MMMM YYYY')}`;
+export const lastMigrationScript = `load NINDS on ${moment().format('DD MMMM YYYY')}`;
 
 export const BATCHLOADER_USERNAME = 'batchloader';
 export const BATCHLOADER = {
@@ -457,6 +457,17 @@ export function mergeIds(existingObj, newObj) {
             existingIds[i] = newId;
         }
     });
+}
+
+export function mergeClassification(existingElt, newObj, classificationOrgName) {
+    const existingObj = existingElt.toObject();
+    if (existingElt.lastMigrationScript === lastMigrationScript) {
+        mergeClassificationByOrg(existingObj, newObj, classificationOrgName);
+        existingElt.classification = existingObj.classification;
+    } else {
+        const resultClassification = replaceClassificationByOrg(existingObj, newObj, classificationOrgName);
+        existingElt.classification = resultClassification;
+    }
 }
 
 export function mergeSources(existingObj, newObj, source) {

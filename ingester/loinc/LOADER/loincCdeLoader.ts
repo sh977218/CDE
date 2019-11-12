@@ -37,7 +37,7 @@ export async function runOneCde(loinc, classificationOrgName, classificationArra
             LoincLogger.sameLoincCdes.push(existingCde.tinyId);
         } else {
             const existingCdeObj = existingCde.toObject();
-            mergeElt(existingCdeObj, newCdeObj, 'LOINC', classificationOrgName);
+            mergeElt(existingCdeObj, newCdeObj, 'LOINC');
             await updateCde(existingCdeObj, BATCHLOADER, {updateSource: true}).catch(err => {
                 console.log(newCdeObj);
                 console.log(existingCdeObj);

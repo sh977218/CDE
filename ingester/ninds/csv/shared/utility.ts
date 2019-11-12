@@ -100,14 +100,6 @@ export function formatRows(csvFileName: string, rows: any[]) {
     return formattedRows;
 }
 
-export function addPreclinicalClassification() {
-    const nindsClassifications = existingCde.toObject().classification.filter(c => c.stewardOrg.name === 'NINDS');
-    const preclinicalClassifications = nindsClassifications.forEach(c => {
-        c.elements = c.elements.name.filter(e => e.name !== 'Preclinical TBI');
-    });
-
-}
-
 export function fixReferenceDocuments(existingElt: any) {
     const eltToFix = existingElt.toObject();
     forEach(eltToFix.referenceDocuments, refDoc => {
