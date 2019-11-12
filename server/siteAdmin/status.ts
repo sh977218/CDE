@@ -1,14 +1,14 @@
 import * as async from 'async';
-import { config } from '../system/parseConfig';
+import { config } from 'server/system/parseConfig';
 import { dataElementModel } from 'server/cde/mongo-cde';
 import { triggerPushMsg } from 'server/notification/pushNotificationSvc';
 import { pushGetAdministratorRegistrations } from 'server/notification/notificationDb';
 
-const mongoForm = require('../form/mongo-form');
-const boardDb = require('../board/boardDb');
-const elastic = require('../system/elastic');
-const esInit = require('../system/elasticSearchInit');
-const dbLogger = require('../log/dbLogger');
+const mongoForm = require('server/form/mongo-form');
+const boardDb = require('server/board/boardDb');
+const elastic = require('server/system/elastic');
+const esInit = require('server/system/elasticSearchInit');
+const dbLogger = require('server/log/dbLogger');
 
 export const statusReport: any = {
     elastic: {
@@ -30,7 +30,7 @@ export function status(req, res) {
 }
 
 export function checkElasticCount(count, index, type, cb) {
-    elastic.esClient.count({index, type}, (err, response) => {
+    elastic.esClient.count({index}, (err, response) => {
         if (err) {
             cb(false, 'Error retrieving index count: ' + err);
         } else {
@@ -49,15 +49,15 @@ export function isElasticUp(cb) {
             statusReport.elastic.up = 'No Response on Health Check: ' + err;
             cb(false);
         } else {
-            if (response.indexOf('red') === 0) {
+            if (response.body.indexOf('red') === 0) {
                 statusReport.elastic.up = false;
                 statusReport.elastic.message = 'Cluster status is Red.';
                 cb();
-            } else if (response.indexOf('yellow') === 0) {
+            } else if (response.body.indexOf('yellow') === 0) {
                 statusReport.elastic.up = true;
                 statusReport.elastic.message = 'Cluster status is Yellow.';
                 cb();
-            } else if (response.indexOf('green') === 0) {
+            } else if (response.body.indexOf('green') === 0) {
                 statusReport.elastic.up = true;
                 delete statusReport.elastic.message;
                 cb(true);

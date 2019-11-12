@@ -174,11 +174,11 @@ export function init(app: Express, daoManager) {
 
     app.post('/scrollExport/form', (req, res) => {
         const query = sharedElastic.buildElasticSearchQuery(req.user, req.body);
-        scrollExport(query, 'form', handleNotFound({res, statusCode: 400}, response => res.send(response)));
+        scrollExport(query, 'form', handleNotFound({res, statusCode: 400}, response => res.send(response.body)));
     });
 
     app.get('/scrollExport/:scrollId', (req, res) => {
-        scrollNext(req.params.scrollId, handleNotFound({res, statusCode: 400}, response => res.send(response)));
+        scrollNext(req.params.scrollId, handleNotFound({res, statusCode: 400}, response => res.send(response.body)));
     });
 
     app.post('/getFormAuditLog', isOrgAuthorityMiddleware, (req, res) => {

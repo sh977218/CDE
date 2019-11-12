@@ -1,6 +1,6 @@
 import { exec, ExecOptions } from 'child_process';
-import * as elasticsearch from 'elasticsearch';
-import { readFileSync, writeFile } from 'fs';
+import * as elasticsearch from '@elastic/elasticsearch';
+import { readFileSync } from 'fs';
 import * as gulp from 'gulp';
 import * as minifyCss from 'gulp-clean-css';
 import * as data from 'gulp-data';
@@ -288,7 +288,7 @@ gulp.task('copyUsemin', ['usemin'], function usemin() {
 
 gulp.task('es', function es() {
     const esClient = new elasticsearch.Client({
-        hosts: config.elastic.hosts
+        nodes: config.elastic.hosts
     });
     return Promise.all(
         indices.map((index: ElasticIndex) => new Promise((resolve, reject) => {
