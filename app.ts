@@ -1,3 +1,4 @@
+
 (global as any).APP_DIR = __dirname;
 (global as any).appDir = function addDir(...args: string[]) {
     return path.resolve((global as any).APP_DIR, ...args);
@@ -50,10 +51,11 @@ import { startServer } from 'server/system/ioServer';
 import { errorLogger, expressLogger } from 'server/system/logging';
 import * as daoManager from 'server/system/moduleDaoManager';
 import { sessionStore } from 'server/system/mongo-data';
-import { banHackers, banIp, blockBannedIps, getTrafficFilter } from 'server/system/trafficFilterSvc';
+import { banHackers, banIp, blockBannedIps } from 'server/system/trafficFilterSvc';
 import { module as userModule } from 'server/user/userRoutes';
 import { module as utsModule } from 'server/uts/utsRoutes';
 import { isOrgAuthority, isOrgCurator } from 'shared/system/authorizationShared';
+import { consoleLog } from 'server/log/dbLogger';
 
 const config = Config as any;
 const domain = Domain.create();
@@ -355,7 +357,6 @@ app.use((req, res, next) => {
 
 
 app.use((err, req, res, next) => {
-
     if (err.code === 'EBADCSRFTOKEN') {
         return res.status(401).send('CSRF Error');
     }

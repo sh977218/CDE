@@ -74,9 +74,6 @@ export function addOrgAdmin(req, res) {
             changed = true;
         }
 
-        if (!changed) {
-            return res.send();
-        }
         user.save(handleError({req, res}, () => {
             res.send();
         }));
@@ -84,13 +81,9 @@ export function addOrgAdmin(req, res) {
 }
 
 export function removeOrgAdmin(req, res) {
-    userById(req.body.userId, handleNotFound({req, res}, found => {
-        const orgInd = found.orgAdmin.indexOf(req.body.org);
-        if (orgInd < 0) {
-            return res.send();
-        }
-        found.orgAdmin.splice(orgInd, 1);
-        found.save(handleError({req, res}, () => {
+    userById(req.body.userId, handleNotFound({req, res}, user => {
+        user.orgAdmin = user.orgAdmin.filter(a => a !== req.body.org);
+        user.save(handleError({req, res}, () => {
             res.send();
         }));
     }));
@@ -107,10 +100,6 @@ export function addOrgCurator(req, res) {
             user.roles.push('CommentReviewer');
             changed = true;
         }
-
-        if (!changed) {
-            return res.send();
-        }
         user.save(handleError({req, res}, () => {
             res.send();
         }));
@@ -118,13 +107,9 @@ export function addOrgCurator(req, res) {
 }
 
 export function removeOrgCurator(req, res) {
-    userById(req.body.userId, handleNotFound({req, res}, found => {
-        const orgInd = found.orgCurator.indexOf(req.body.org);
-        if (orgInd < 0) {
-            return res.send();
-        }
-        found.orgCurator.splice(orgInd, 1);
-        found.save(handleError({req, res}, () => {
+    userById(req.body.userId, handleNotFound({req, res}, user => {
+        user.orgCurator = user.orgCurator.filter(a => a !== req.body.org);
+        user.save(handleError({req, res}, () => {
             res.send();
         }));
     }));
@@ -138,36 +123,18 @@ export async function addNewOrg(newOrg) {
     return addOrgByName(newOrg);
 }
 
-export function transferSteward(req, res) {
+export async function transferSteward(req, res) {
     const results: string[] = [];
     const from = req.body.from;
     const to = req.body.to;
-    if (req.isAuthenticated() && isOrgAdmin(req.user, req.body.from) && isOrgAdmin(req.user, req.body.to)) {
-        async.parallel([
-            doneOne => {
-                dataElementModel.updateMany({'stewardOrg.name': from}, {$set: {'stewardOrg.name': to}}, (err, result) => {
-                    if (err) {
-                        doneOne(err);
-                    } else {
-                        results.push(result.nModified + ' CDEs transferred. ');
-                        doneOne();
-                    }
-                });
-            },
-            doneOne => {
-                formModel.updateMany({'stewardOrg.name': from}, {$set: {'stewardOrg.name': to}}, (err, result) => {
-                    if (err) {
-                        doneOne(err);
-                    } else {
-                        results.push(result.nModified + ' forms transferred. ');
-                        doneOne();
-                    }
-                });
-            }
-        ], err => {
-            return res.status(err ? 400 : 200).send(results.join(''));
-        });
+    if (isOrgAdmin(req.user, req.body.from) && isOrgAdmin(req.user, req.body.to)) {
+        let result = await dataElementModel.updateMany({'stewardOrg.name': from}, {$set: {'stewardOrg.name': to}});
+        results.push(result.nModified + ' CDEs transferred. ');
+
+        result = await formModel.updateMany({'stewardOrg.name': from}, {$set: {'stewardOrg.name': to}});
+        results.push(result.nModified + ' forms transferred. ');
+        return res.send(results.join(''));
     } else {
-        res.status(400).send('Please login first.');
+        res.status(403).send();
     }
 }
