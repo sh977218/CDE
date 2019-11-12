@@ -1,15 +1,11 @@
 import { each, ErrorCallback } from 'async';
-import { Client } from '@elastic/elasticsearch';
 import * as _ from 'lodash';
 import { consoleLog } from 'server/log/dbLogger';
 import { findAll } from 'server/mesh/meshDb';
 import { errorLogger } from 'server/system/logging';
 import { config } from 'server/system/parseConfig';
-import { Cb, CbError } from 'shared/models.model';
+import { esClient } from '../server/system/elastic';
 
-const esClient = new Client({
-    nodes: config.elastic.hosts
-});
 
 const searchTemplate = {
     cde: {
