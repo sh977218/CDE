@@ -1,4 +1,4 @@
-import * as elastic from 'elasticsearch';
+import * as elastic from '@elastic/elasticsearch';
 import { splitError } from 'server/errorHandler/errorHandler';
 import { logError } from 'server/log/dbLogger';
 import { riverFunction, suggestRiverFunction } from 'server/system/elasticSearchInit';
@@ -6,9 +6,8 @@ import { config } from 'server/system/parseConfig';
 import { CdeFormElastic } from 'shared/form/form.model';
 import { CbError } from 'shared/models.model';
 
-
 const esClient = new elastic.Client({
-    hosts: config.elastic.hosts
+    nodes: config.elastic.hosts
 });
 
 export function updateOrInsert(elt) {
@@ -34,14 +33,14 @@ export function updateOrInsert(elt) {
             delete doc._id;
             esClient.index({
                 index: config.elastic.formIndex.name,
-                type: 'form',
+                type: '_doc',
                 id: doc.tinyId,
                 body: doc
             }, done);
             suggestRiverFunction(elt, sugDoc => {
                 esClient.index({
                     index: config.elastic.formSuggestIndex.name,
-                    type: 'suggest',
+                    type: '_doc',
                     id: doc.tinyId,
                     body: sugDoc
                 }, done);
@@ -52,9 +51,8 @@ export function updateOrInsert(elt) {
 
 export function byTinyIdList(idList: string[], size: number, cb: CbError<CdeFormElastic[]>) {
     idList = idList.filter(id => !!id);
-    esClient.search<CdeFormElastic>({
+    esClient.search({
         index: config.elastic.formIndex.name,
-        type: 'form',
         body: {
             query: {
                 ids: {
@@ -69,7 +67,7 @@ export function byTinyIdList(idList: string[], size: number, cb: CbError<CdeForm
             cb(undefined, []);
             return;
         }
-        response.hits.hits.sort((a, b) => idList.indexOf(a._id) - idList.indexOf(b._id));
-        cb(undefined, response.hits.hits.map(h => h._source));
+        response.body.hits.hits.sort((a, b) => idList.indexOf(a._id) - idList.indexOf(b._id));
+        cb(undefined, response.body.hits.hits.map(h => h._source));
     }));
 }
