@@ -48,10 +48,12 @@ interface DbStream {
 }
 
 export const esClient = new Client({
-    nodes: config.elastic.hosts,
-    ssl: {
-        rejectUnauthorized: false
-    }
+    nodes: config.elastic.hosts.map((host: string) => ({
+        url: new URL(host),
+        ssl: {
+            rejectUnauthorized: false
+        }
+    }))
 });
 
 export function removeElasticFields(elt: DataElementElastic): DataElementElastic;

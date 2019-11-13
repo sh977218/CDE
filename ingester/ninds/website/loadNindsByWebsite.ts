@@ -30,7 +30,7 @@ async function loadNindsCdes() {
 }
 
 async function loadNindsForms() {
-    const formIds = await NindsModel.distinct('formId');
+    const formIds = await NindsModel.distinct('formId', {'cdes.0': {$exists: true}});
     for (const formId of formIds) {
         const nindsForms = await NindsModel.find({formId}).lean();
         const nindsForm = await createNindsForm(nindsForms);
