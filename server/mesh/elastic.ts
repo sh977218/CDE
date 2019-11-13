@@ -6,10 +6,7 @@ import { findAll } from 'server/mesh/meshDb';
 import { errorLogger } from 'server/system/logging';
 import { config } from 'server/system/parseConfig';
 import { Cb, CbError } from 'shared/models.model';
-
-const esClient = new Client({
-    nodes: config.elastic.hosts
-});
+import { esClient } from 'server/system/elastic';
 
 const searchTemplate = {
     cde: {
