@@ -58,6 +58,7 @@ function doSyncWithMesh(allMappings, callback: ErrorCallback = () => {}) {
     });
 
     function scrollThrough(scrollId, s, cb) {
+        // @ts-ignore
         esClient.scroll({scrollId, scroll: '1m'}, (err, response) => {
             if (err) {
                 lock = false;

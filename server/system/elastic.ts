@@ -778,6 +778,7 @@ export async function elasticSearchExport(type: ModuleItem, query: any,
     search.body = query;
 
     function scrollThrough(response: any) {
+        // @ts-ignore
         esClient.scroll({scrollId: response._scroll_id, scroll: '1m'}, (err, response) => {
             if (err) {
                 lock = false;
@@ -821,6 +822,7 @@ export function scrollExport(query: any, type: ModuleItem, cb: CbError<any>) {
 }
 
 export function scrollNext(scrollId: string, cb: CbError<any>) {
+    // @ts-ignore
     esClient.scroll({scrollId, scroll: '1m'}, cb);
 }
 
