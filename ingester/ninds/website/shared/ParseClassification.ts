@@ -20,7 +20,7 @@ export function parseClassification(nindsForms: any[], item: any) {
         if (!isEmpty(nindsForm.subDomainName)) {
             temp.subDomainName = nindsForm.subDomainName;
         }
-        if (nindsForm.cdes.length && type === 'cde') {
+        if (nindsForm.cdes && nindsForm.cdes.length && type === 'cde') {
             temp.population = nindsForm.cdes[0].Population;
             temp.classification = nindsForm.cdes[0].Classification;
         }

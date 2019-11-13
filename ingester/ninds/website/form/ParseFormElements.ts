@@ -20,11 +20,13 @@ export async function parseFormElements(nindsForms: any[]) {
             });
             nindsQuestionList.push(questions);
         }
-        nindsForm.cdes.forEach((nindsCde: any) => {
-            if (nindsCde['CDE ID']) {
-                nindsCdeIdList.push(nindsCde['CDE ID']);
-            }
-        });
+        if (!isEmpty(nindsForm.cdes)) {
+            nindsForm.cdes.forEach((nindsCde: any) => {
+                if (nindsCde['CDE ID']) {
+                    nindsCdeIdList.push(nindsCde['CDE ID']);
+                }
+            });
+        }
     });
 
     const _nindsQuestionList = unionWith(nindsQuestionList, isEqual);
