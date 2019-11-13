@@ -288,7 +288,12 @@ gulp.task('copyUsemin', ['usemin'], function usemin() {
 
 gulp.task('es', function es() {
     const esClient = new elasticsearch.Client({
-        nodes: config.elastic.hosts
+        nodes: config.elastic.hosts.map((host: string) => ({
+            url: new URL(host),
+            ssl: {
+                rejectUnauthorized: false
+            }
+        }))
     });
     return Promise.all(
         indices.map((index: ElasticIndex) => new Promise((resolve, reject) => {

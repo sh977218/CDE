@@ -1,3 +1,4 @@
+import { forEachLimit } from 'async';
 import { NindsModel } from 'ingester/createMigrationConnection';
 import { createNindsCde } from 'ingester/ninds/website/cde/cde';
 import { createNindsForm } from 'ingester/ninds/website/form/form';
@@ -8,8 +9,7 @@ import { formModel } from 'server/form/mongo-form';
 
 async function loadNindsCdes() {
     const cdeIds = await NindsModel.distinct('cdes.CDE ID');
-//    const cdeIds = ['C51675'];
-    for (const cdeId of cdeIds) {
+    forEachLimit(cdeIds, 200, async cdeId => {
         const nindsForms = await NindsModel.find({'cdes.CDE ID': cdeId},
             {
                 _id: 0,
@@ -26,12 +26,12 @@ async function loadNindsCdes() {
             'registrationState.registrationStatus': {$ne: 'Retired'}
         };
         await loadNindsCde(cde, cond, 'NINDS');
-    }
+    });
 }
 
 async function loadNindsForms() {
     const formIds = await NindsModel.distinct('formId', {'cdes.0': {$exists: true}});
-    for (const formId of formIds) {
+    forEachLimit(formIds, 50, async formId => {
         const nindsForms = await NindsModel.find({formId}).lean();
         const nindsForm = await createNindsForm(nindsForms);
         const cond = {
@@ -40,7 +40,7 @@ async function loadNindsForms() {
             'registrationState.registrationStatus': {$ne: 'Retired'}
         };
         await loadNindsForm(nindsForm, cond, 'NINDS');
-    }
+    });
 }
 
 async function retireNindsCdes() {
@@ -72,7 +72,6 @@ async function retireNindsForms() {
         await updateForm(formObj, BATCHLOADER);
     }
 }
-
 
 async function run() {
     await loadNindsCdes();

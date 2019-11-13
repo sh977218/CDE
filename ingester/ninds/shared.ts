@@ -7,18 +7,18 @@ import {
 import { formModel } from 'server/form/mongo-form';
 import { commentModel } from 'server/discuss/discussDb';
 
-export function doNindsClassification(existingCde, newCdeObj) {
-    const nindsClassifications = existingCde.classification.filter(c => c.stewardOrg.name === 'NINDS');
+export function doNindsClassification(existingCde: any, newCdeObj: any) {
+    const nindsClassifications = existingCde.classification.filter((c: any) => c.stewardOrg.name === 'NINDS');
     if (nindsClassifications.length === 1) {
         const nindsClassification = nindsClassifications[0];
-        const preclinicalClassifications = nindsClassification.elements.filter(e => e.name === 'Preclinical TBI');
+        const preclinicalClassifications = nindsClassification.elements.filter((e: any) => e.name === 'Preclinical TBI');
         if (preclinicalClassifications.length === 1) {
-            newCdeObj.classification.forEach(c => {
+            newCdeObj.classification.forEach((c: any) => {
                 c.elements = preclinicalClassifications.concat(c.elements);
             });
         }
     }
-    const otherClassifications = existingCde.classification.filter(c => c.stewardOrg.name !== 'NINDS');
+    const otherClassifications = existingCde.classification.filter((c: any) => c.stewardOrg.name !== 'NINDS');
     existingCde.classification = newCdeObj.classification.concat(otherClassifications);
 }
 
