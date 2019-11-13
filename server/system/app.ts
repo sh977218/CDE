@@ -284,5 +284,4 @@ export function init(app: Express) {
         getFile(req.user, fileId, res);
     });
 
-    app.post('/transferSteward', transferSteward);
 }

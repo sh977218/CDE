@@ -64,10 +64,6 @@ export async function orgByName(orgName: string, callback?) {
     return organizationModel.findOne({name: orgName}).exec(callback);
 }
 
-export async function allOrgNames() {
-    return organizationModel.distinct('name');
-}
-
 export function listOrgsDetailedInfo() {
     return organizationModel.find({}, orgDetailProject);
 }
@@ -81,7 +77,7 @@ export function updateOrg(org: Organization, res) {
     delete org._id;
     organizationModel.findOneAndUpdate({_id: id}, org, {new: true}, (err, found) => {
         if (err || !found) {
-            res.status(500).send('Could not update');
+            res.status(400).send('Could not update');
         } else {
             res.send();
         }

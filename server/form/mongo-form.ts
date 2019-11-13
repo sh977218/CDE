@@ -89,9 +89,7 @@ export function byExisting(elt: CdeForm, cb: CbError<CdeFormDocument>) {
     formModel.findOne({_id: elt._id, tinyId: elt.tinyId}, cb);
 }
 
-export function byId(id: string, cb: CbError<CdeFormDocument>) {
-    formModel.findById(id, cb);
-}
+export const byId = (id: string, cb: CbError<CdeFormDocument>) => formModel.findById(id).exec(cb);
 
 export function byTinyIdList(tinyIdList: string[], cb: CbError<CdeFormElastic[]>): void {
     formModel.find({archived: false}).where('tinyId')
@@ -106,9 +104,7 @@ export function byTinyIdList(tinyIdList: string[], cb: CbError<CdeFormElastic[]>
         });
 }
 
-export function byTinyId(tinyId: string, cb: CbError<CdeFormDocument>) {
-    return formModel.findOne({tinyId, archived: false}, cb);
-}
+export const byTinyId = (tinyId: string, cb?: CbError<CdeFormDocument>) => formModel.findOne({tinyId, archived: false}).exec(cb);
 
 export function byTinyIdVersion(tinyId: string, version: string | undefined, cb: CbError<CdeFormDocument>) {
     if (version) {
@@ -125,9 +121,7 @@ export function byTinyIdAndVersion(tinyId: string, version: string | undefined, 
     } else {
         query.$or = [{version: null}, {version: ''}];
     }
-    formModel.find(query).sort({updated: -1}).limit(1).exec(splitError(callback, elts => {
-        callback(undefined, elts && elts.length ? elts[0] : undefined);
-    }));
+    return formModel.findOne(query).sort({updated: -1}).limit(1).exec(callback);
 }
 
 export function draftByTinyId(tinyId: string, cb: CbError<CdeFormDraftDocument>) {
@@ -230,6 +224,11 @@ export function update(elt: CdeForm, user: User, options: any = {}, callback: Cb
         if (options.skipFormElements) {
             elt.formElements = form.formElements;
         }
+
+        // created & createdBy cannot be changed.
+        elt.created = form.created;
+        elt.createdBy = form.createdBy;
+
 
         const newElt = new formModel(elt);
 

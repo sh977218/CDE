@@ -8,8 +8,8 @@ public class YoutubeVideo extends NlmCdeBaseTest {
     @Test
     public void youtubeVideo() {
         driver.get(baseUrl + "/videos");
-        //        goHome();
-//        goToVideos();
+        goHome();
+        goToVideos();
         textNotPresent("404");
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToArticles();
@@ -26,7 +26,7 @@ public class YoutubeVideo extends NlmCdeBaseTest {
         clickElement(By.xpath("//mat-icon[normalize-space() = 'check']"));
         checkAlert("Saved");
         logout();
-//        goToVideos();
+        goToVideos();
         driver.get(baseUrl + "/videos");
         textNotPresent("404");
     }

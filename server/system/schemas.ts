@@ -269,6 +269,12 @@ export const datatypeValueListSchema = new Schema({
     datatype: {type: StringType, description: 'Value list format'}
 }, {_id: false});
 
+export const datatypeDynamicListSchema = new Schema({
+    system: {type: StringType, description: 'Code System'},
+    code: {type: StringType, description: 'Code'},
+}, {_id: false});
+
+
 export const datatypeExternallyDefinedSchema = new Schema({
     link: {type: StringType, description: 'A link to an external source. Typically a URL'},
     description: StringType,

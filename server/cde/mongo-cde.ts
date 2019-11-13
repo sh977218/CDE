@@ -11,8 +11,7 @@ import { config } from 'server/system/parseConfig';
 import * as dataElementschema from 'shared/de/assets/dataElement.schema.json';
 import { DataElement as DataElementClient, DataElementElastic } from 'shared/de/dataElement.model';
 import { wipeDatatype } from 'shared/de/deValidator';
-import { CbErr, CbError, CbError1, EltLog, User } from 'shared/models.model';
-import { isOrgCurator } from 'shared/system/authorizationShared';
+import { CbError, CbError1, EltLog, User } from 'shared/models.model';
 import { Dictionary } from 'async';
 
 export const type = 'cde';
@@ -92,13 +91,10 @@ export function byExisting(elt: DataElement, cb: CbError<DataElementDocument>) {
     dataElementModel.findOne({_id: elt._id, tinyId: elt.tinyId}, cb);
 }
 
-export function byId(id: string, cb: CbError<DataElementDocument>) {
-    dataElementModel.findOne({_id: id}, cb);
-}
+export const byId = (id: string, cb: CbError<DataElementDocument>) => dataElementModel.findOne({_id: id}).exec(cb);
 
-export function byTinyId(tinyId: string, cb: CbError<DataElementDocument>) {
-    return dataElementModel.findOne({tinyId, archived: false}, cb);
-}
+export const byTinyId =
+    (tinyId: string, cb?: CbError<DataElementDocument>) => dataElementModel.findOne({tinyId, archived: false}).exec(cb);
 
 export function latestVersionByTinyId(tinyId: string, cb: CbError<string>) {
     dataElementModel.findOne({tinyId, archived: false}, (err, dataElement) => {
@@ -195,9 +191,7 @@ export function byTinyIdAndVersion(tinyId: string, version: string | undefined, 
     } else {
         _query.$or = [{version: null}, {version: ''}];
     }
-    dataElementModel.find(_query).sort({updated: -1}).limit(1).exec((err, elts) => {
-        callback(err, elts[0]);
-    });
+    return dataElementModel.findOne(_query).sort({updated: -1}).limit(1).exec(callback);
 }
 
 export function eltByTinyId(tinyId: string, callback: CbError<DataElementDocument>) {
@@ -263,6 +257,10 @@ export function update(elt: DataElementDraft, user: User, options: any = {},
         if (options.updateAttachments) {
             elt.attachments = dataElement.attachments;
         }
+
+        // created & createdBy cannot be changed.
+        elt.created = dataElement.created;
+        elt.createdBy = dataElement.createdBy;
 
         const newElt = new dataElementModel(elt);
 

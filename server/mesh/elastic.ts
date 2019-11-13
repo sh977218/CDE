@@ -1,5 +1,5 @@
 import { each, ErrorCallback } from 'async';
-import { Client } from 'elasticsearch';
+import { Client } from '@elastic/elasticsearch';
 import * as _ from 'lodash';
 import { consoleLog } from 'server/log/dbLogger';
 import { findAll } from 'server/mesh/meshDb';
@@ -8,17 +8,17 @@ import { config } from 'server/system/parseConfig';
 import { Cb, CbError } from 'shared/models.model';
 
 const esClient = new Client({
-    hosts: config.elastic.hosts
+    nodes: config.elastic.hosts
 });
 
 const searchTemplate = {
     cde: {
         index: config.elastic.index.name,
-        type: 'dataelement'
+        type: '_doc',
     },
     form: {
         index: config.elastic.formIndex.name,
-        type: 'form'
+        type: '_doc',
     }
 };
 
@@ -56,12 +56,13 @@ function doSyncWithMesh(allMappings, callback: ErrorCallback = () => {}) {
     allMappings.forEach(m => classifToSimpleTrees[m.flatClassification] = m.flatTrees);
 
     const searches: any = [_.cloneDeep(searchTemplate.cde), _.cloneDeep(searchTemplate.form)];
-    searches.forEach(search => {
+    searches.forEach((search: any) => {
         search.scroll = '2m';
         search.body = {};
     });
 
     function scrollThrough(scrollId, s, cb) {
+        // @ts-ignore
         esClient.scroll({scrollId, scroll: '1m'}, (err, response) => {
             if (err) {
                 lock = false;
@@ -69,13 +70,14 @@ function doSyncWithMesh(allMappings, callback: ErrorCallback = () => {}) {
                     {origin: 'system.elastic.syncWithMesh', stack: err.stack});
                 cb(err);
             } else {
-                processScroll(response._scroll_id, s, response, cb);
+                processScroll(response.body._scroll_id, s, response.body, cb);
             }
         });
     }
 
-    function processScroll(newScrollId, s, response, cb) {
-        meshSyncStatus[s.type].total = response.hits.total;
+    async function processScroll(newScrollId: string, s, response, cb) {
+        const sName = s.index === config.elastic.index.name ? 'dataelement' : 'form';
+        meshSyncStatus[sName].total = response.hits.total;
         if (response.hits.hits.length > 0) {
             const request: any = {body: []};
             response.hits.hits.forEach(hit => {
@@ -97,8 +99,8 @@ function doSyncWithMesh(allMappings, callback: ErrorCallback = () => {}) {
                     request.body.push({
                         update: {
                             _index: s.index,
-                            _type: s.type,
-                            _id: thisElt.tinyId
+                            _id: thisElt.tinyId,
+                            _type: '_doc'
                         }
                     });
                     request.body.push({
@@ -108,7 +110,7 @@ function doSyncWithMesh(allMappings, callback: ErrorCallback = () => {}) {
                         }
                     });
                 }
-                meshSyncStatus[s.type].done++;
+                meshSyncStatus[sName].done++;
             });
             if (request.body.length > 0) {
                 esClient.bulk(request, err => {
@@ -122,24 +124,14 @@ function doSyncWithMesh(allMappings, callback: ErrorCallback = () => {}) {
             }
         } else {
             consoleLog('done syncing ' + s.index + ' with MeSH');
-            cb();
+            if (cb) {
+                cb();
+            }
         }
     }
 
-    each(searches, (search, oneCb) => {
-        esClient.search(search, (err, response) => {
-            if (err) {
-                lock = false;
-                errorLogger.error('Error: Elastic Search Scroll Query Error',
-                    {
-                        origin: 'system.elastic.syncWithMesh',
-                        stack: new Error().stack,
-                        details: '',
-                    });
-                oneCb(err);
-            } else {
-                processScroll(response._scroll_id, search, response, oneCb);
-            }
-        });
+    each(searches, async search  => {
+        const response = await esClient.search(search);
+        await new Promise(resolve => processScroll(response.body._scroll_id, search, response.body, resolve));
     }, callback);
 }

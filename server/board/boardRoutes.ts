@@ -15,7 +15,7 @@ import { BoardPin, ItemElastic, ModuleAll } from 'shared/models.model';
 import { stripBsonIds } from 'shared/system/exportShared';
 import { DataElement } from 'shared/de/dataElement.model';
 
-const {check} = require('express-validator');
+const { check } = require('express-validator');
 
 const js2xml = require('js2xmlparser');
 
@@ -43,7 +43,7 @@ export function module() {
             await (board.save as any)();
             res.send('Removed');
         } else {
-            res.send(422).send();
+            res.status(422).send();
         }
     });
 
@@ -128,7 +128,7 @@ export function module() {
         validateBody,
         async (req, res) => {
             const result = await elastic.boardSearch(req.body);
-            res.send(result);
+            res.send(result.body);
         }
     );
 
@@ -219,7 +219,7 @@ export function module() {
     router.post('/myBoards', nocacheMiddleware, loggedInMiddleware,
         check('sortDirection').isIn(['', 'desc', 'asc']), validateBody, async (req, res) => {
         const result = await elastic.myBoards(req.user, req.body);
-        res.send(result);
+        res.send(result.body);
     });
 
     router.post('/pinEntireSearchToBoard', loggedInMiddleware, async (req, res) => {

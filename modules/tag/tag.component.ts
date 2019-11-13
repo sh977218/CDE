@@ -9,12 +9,7 @@ import { Observable } from 'rxjs/Observable';
     templateUrl: './tag.component.html'
 })
 export class TagComponent {
-    @Input() set tags(tags: string[]) {
-        this._tags = tags || [];
-    }
-    get tags(): string[] {
-        return this._tags;
-    }
+    @Input() tags: string[] = [];
     @Input() canEdit: boolean = false;
     @Input() allTags: string[] = [];
     @Input() placeHolder: string = 'New tag...';
@@ -22,7 +17,6 @@ export class TagComponent {
     @Output() changed = new EventEmitter();
     @ViewChild('tagAuto') matAutocomplete!: MatAutocomplete;
     @ViewChild('tagInput') tagInput!: ElementRef;
-    private _tags!: string[];
     tagCtrl = new FormControl();
     filteredTags: Observable<string[]>;
 

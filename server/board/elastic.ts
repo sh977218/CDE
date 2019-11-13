@@ -1,10 +1,16 @@
-import * as ElasticSearch from 'elasticsearch';
-import { config } from '../system/parseConfig';
+import * as ElasticSearch from '@elastic/elasticsearch';
+import { config } from 'server/system/parseConfig';
+import { createIndexJson as boardCreateIndexJson } from 'server/board/elasticSearchMapping';
+import { shortHash } from 'server/system/elasticSearchInit';
+
+if (config.elastic.boardIndex.name === 'auto') {
+    config.elastic.boardIndex.name = 'board_' + shortHash(boardCreateIndexJson);
+}
 
 const boardIndexName = config.elastic.boardIndex.name;
 
 const esClient = new ElasticSearch.Client({
-    hosts: config.elastic.hosts
+    nodes: config.elastic.hosts
 });
 
 export function boardRefresh() {
@@ -14,7 +20,7 @@ export function boardRefresh() {
 export function updateOrInsertBoardById(id, board, callback) {
     esClient.index({
         index: config.elastic.boardIndex.name,
-        type: 'board',
+        type: '_doc',
         id,
         body: board
     }, callback);
@@ -23,7 +29,6 @@ export function updateOrInsertBoardById(id, board, callback) {
 export function deleteBoardById(id, callback) {
     esClient.delete({
         index: config.elastic.boardIndex.name,
-        type: 'board',
         id,
     }, callback);
 }
@@ -53,7 +58,6 @@ export function boardSearch(filter) {
     });
     return esClient.search({
         index: boardIndexName,
-        type: 'board',
         body: query
     });
 }
@@ -104,7 +108,6 @@ export function myBoards(user, filter) {
     }
     return esClient.search({
         index: boardIndexName,
-        type: 'board',
         body: query
     });
 }

@@ -331,9 +331,10 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         goToHelp();
         clickElement(By.id("contactUsLink"));
     }
+
     protected void goToVideos() {
         goToHelp();
-        clickElement(By.id("videos"));
+        clickElement(By.id("videosLink"));
     }
 
     protected void goToStewardTransfer() {
@@ -1194,7 +1195,11 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
             }
         }
         clickElement(By.id("createNewDesignationBtn"));
-        hangon(1);
+        if (tags != null) {
+            for (String tag : tags) {
+                textPresent(tag);
+            }
+        }
     }
 
     protected void addNewDefinition(String definition, boolean isHtml, String[] tags) {
@@ -1213,6 +1218,11 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
             }
         }
         clickElement(By.id("createNewDefinitionBtn"));
+        if (tags != null) {
+            for (String tag : tags) {
+                textPresent(tag);
+            }
+        }
     }
 
     protected void addNewProperty(String key, String value, boolean isHtml) {

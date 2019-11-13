@@ -14,18 +14,16 @@ const primaryNameSuggest = {
 
 export const createSuggestIndexJson = {
     mappings: {
-        suggest: {
-            properties: {
-                nameSuggest: primaryNameSuggest,
-                stewardOrg: {
-                    properties: {
-                        name: {type: 'keyword'}
-                    }
-                },
-                registrationState: {
-                    properties: {
-                        registrationStatus: {type: 'keyword'}
-                    }
+        properties: {
+            nameSuggest: primaryNameSuggest,
+            stewardOrg: {
+                properties: {
+                    name: {type: 'keyword'}
+                }
+            },
+            registrationState: {
+                properties: {
+                    registrationStatus: {type: 'keyword'}
                 }
             }
         }
@@ -61,101 +59,99 @@ export const createSuggestIndexJson = {
 
 export const createIndexJson = {
     mappings: {
-        dataelement: {
-            date_detection: false,
-            properties: {
-                primaryNameCopy: {
-                    type: 'text',
-                    fields: {
-                        raw: {
-                            type: 'keyword',
-                            index: false
-                        }
-                    }
-                },
-                stewardOrg: {
-                    properties: {
-                        name: {type: 'keyword'}
+        date_detection: false,
+        properties: {
+            primaryNameCopy: {
+                type: 'text',
+                fields: {
+                    raw: {
+                        type: 'keyword',
+                        index: false
                     }
                 }
-                , flatClassifications: {type: 'keyword'}
-                , flatMeshTrees: {type: 'keyword'}
-                , classification: {
-                    properties: {
-                        stewardOrg: {
-                            properties: {
-                                name: {type: 'keyword'}
-                            }
-                        }
-                    }
+            },
+            stewardOrg: {
+                properties: {
+                    name: {type: 'keyword'}
                 }
-                , classificationSize: {type: 'integer'}
-                , registrationState: {
-                    properties: {
-                        registrationStatus: {type: 'keyword'}
-                    }
-                }
-                , source: {type: 'keyword'}
-                , origin: {type: 'keyword'}
-                , valueDomain: {
-                    properties: {
-                        datatype: {type: 'keyword'},
-                        permissibleValues: {
-                            properties: {
-                                codeSystemName: {type: 'keyword'}
-                            }
+            }
+            , flatClassifications: {type: 'keyword'}
+            , flatMeshTrees: {type: 'keyword'}
+            , classification: {
+                properties: {
+                    stewardOrg: {
+                        properties: {
+                            name: {type: 'keyword'}
                         }
                     }
                 }
-                , properties: {
-                    type: 'nested',
-                    include_in_parent: true,
-                    properties: {
-                        key: {type: 'text'},
-                        value: {type: 'text'}
-                    }
-                }, ids: {
-                    type: 'nested',
-                    include_in_parent: true,
-                    properties: {
-                        source: {type: 'keyword'},
-                        id: {type: 'text'},
-                        version: {type: 'text'}
-                    }
+            }
+            , classificationSize: {type: 'integer'}
+            , registrationState: {
+                properties: {
+                    registrationStatus: {type: 'keyword'}
                 }
-                , tinyId: {type: 'keyword'}
-                , created: {type: 'date'}
-                , updated: {type: 'date'}
-                , imported: {type: 'date'}
-                , updatedBy: {properties: {username: {type: 'text'}}}
-                , changeNote: {enabled: false}
-                , attachments: {
-                    properties: {
-                        fileid: {enabled: false},
-                        filename: {enabled: false}
-                    }
-                }
-                , history: {enabled: false}
-                , version: {type: 'keyword'}
-                , views: {type: 'integer'}
-                , linkedForms: {
-                    properties: {
-                        Retired: {type: 'integer'},
-                        Incomplete: {type: 'integer'},
-                        Candidate: {type: 'integer'},
-                        Recorded: {type: 'integer'},
-                        Qualified: {type: 'integer'},
-                        Standard: {type: 'integer'},
-                        'Preferred Standard': {type: 'integer'},
-                        forms: {
-                            properties: {
-                                primaryName: {type: 'text'},
-                                tinyId: {type: 'keyword'},
-                                registrationStatus: {type: 'keyword'}
-                            }
+            }
+            , source: {type: 'keyword'}
+            , origin: {type: 'keyword'}
+            , valueDomain: {
+                properties: {
+                    datatype: {type: 'keyword'},
+                    permissibleValues: {
+                        properties: {
+                            codeSystemName: {type: 'keyword'}
                         }
+                    }
+                }
+            }
+            , properties: {
+                type: 'nested',
+                include_in_parent: true,
+                properties: {
+                    key: {type: 'text'},
+                    value: {type: 'text'}
+                }
+            }, ids: {
+                type: 'nested',
+                include_in_parent: true,
+                properties: {
+                    source: {type: 'keyword'},
+                    id: {type: 'text'},
+                    version: {type: 'text'}
+                }
+            }
+            , tinyId: {type: 'keyword'}
+            , created: {type: 'date'}
+            , updated: {type: 'date'}
+            , imported: {type: 'date'}
+            , updatedBy: {properties: {username: {type: 'text'}}}
+            , changeNote: {enabled: false}
+            , attachments: {
+                properties: {
+                    fileid: {enabled: false},
+                    filename: {enabled: false}
+                }
+            }
+            , history: {enabled: false}
+            , version: {type: 'keyword'}
+            , views: {type: 'integer'}
+            , linkedForms: {
+                properties: {
+                    Retired: {type: 'integer'},
+                    Incomplete: {type: 'integer'},
+                    Candidate: {type: 'integer'},
+                    Recorded: {type: 'integer'},
+                    Qualified: {type: 'integer'},
+                    Standard: {type: 'integer'},
+                    'Preferred Standard': {type: 'integer'},
+                    forms: {
+                        properties: {
+                            primaryName: {type: 'text'},
+                            tinyId: {type: 'keyword'},
+                            registrationStatus: {type: 'keyword'}
+                        }
+                    }
 
-                    }
                 }
             }
         }
@@ -176,60 +172,58 @@ export const createIndexJson = {
 
 export const createFormIndexJson = {
     mappings: {
-        form: {
-            date_detection: false,
-            properties: {
-                primaryNameCopy: {
-                    type: 'text',
-                    fields: {
-                        raw: {
-                            type: 'keyword',
-                            index: false
-                        }
+        date_detection: false,
+        properties: {
+            primaryNameCopy: {
+                type: 'text',
+                fields: {
+                    raw: {
+                        type: 'keyword',
+                        index: false
                     }
-                },
-                stewardOrg: {properties: {name: {type: 'keyword'}}}
-                , flatClassifications: {type: 'keyword'}
-                , flatMeshTrees: {type: 'keyword'}
-                , classification: {
-                    properties: {
-                        stewardOrg: {
-                            properties: {
-                                name: {type: 'keyword'}
-                            }
+                }
+            },
+            stewardOrg: {properties: {name: {type: 'keyword'}}}
+            , flatClassifications: {type: 'keyword'}
+            , flatMeshTrees: {type: 'keyword'}
+            , classification: {
+                properties: {
+                    stewardOrg: {
+                        properties: {
+                            name: {type: 'keyword'}
                         }
                     }
                 }
-                , classificationSize: {type: 'integer'}
-                , registrationState: {
-                    properties: {
-                        registrationStatus: {type: 'keyword'}
-                    }
-                }
-                , source: {type: 'keyword'}
-                , origin: {type: 'keyword'}
-                , properties: {
-                    type: 'nested',
-                    include_in_parent: true,
-                    properties: {
-                        key: {type: 'text'},
-                        value: {type: 'text'}
-                    }
-                }, ids: {
-                    type: 'nested',
-                    include_in_parent: true,
-                    properties: {
-                        source: {type: 'keyword'},
-                        id: {type: 'text'},
-                        version: {type: 'text'}
-                    }
-                }, views: {type: 'integer'},
-                created: {type: 'date'},
-                updated: {type: 'date'},
-                imported: {type: 'date'},
-                numQuestions: {type: 'integer'},
-                cdeTinyIds: {type: 'keyword'}
             }
+            , classificationSize: {type: 'integer'}
+            , registrationState: {
+                properties: {
+                    registrationStatus: {type: 'keyword'}
+                }
+            }
+            , source: {type: 'keyword'}
+            , origin: {type: 'keyword'}
+            , properties: {
+                type: 'nested',
+                include_in_parent: true,
+                properties: {
+                    key: {type: 'text'},
+                    value: {type: 'text'}
+                }
+            }, ids: {
+                type: 'nested',
+                include_in_parent: true,
+                properties: {
+                    source: {type: 'keyword'},
+                    id: {type: 'text'},
+                    version: {type: 'text'}
+                }
+            }, views: {type: 'integer'},
+            created: {type: 'date'},
+            updated: {type: 'date'},
+            imported: {type: 'date'},
+            numQuestions: {type: 'integer'},
+            cdeTinyIds: {type: 'keyword'}
         }
     }, settings: {
         'index.mapping.total_fields.limit': 2000,
@@ -368,7 +362,7 @@ export function riverFunction(_elt: ItemElastic, cb: Cb<ItemElastic>) {
     });
 }
 
-const shortHash = (content: any) => {
+export const shortHash = (content: any) => {
     return createHash('md5')
         .update(JSON.stringify(content)).digest('hex')
         .substr(0, 5).toLowerCase();

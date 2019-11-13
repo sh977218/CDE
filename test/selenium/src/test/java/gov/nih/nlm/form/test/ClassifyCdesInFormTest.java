@@ -1,8 +1,10 @@
 package gov.nih.nlm.form.test;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
-import org.openqa.selenium.By;
+import io.restassured.http.Cookie;
 import org.testng.annotations.Test;
+
+import static io.restassured.RestAssured.given;
 
 public class ClassifyCdesInFormTest extends NlmCdeBaseTest {
 
@@ -27,6 +29,13 @@ public class ClassifyCdesInFormTest extends NlmCdeBaseTest {
         goToClassification();
         textPresent("ABTC");
         textPresent("ABTC 0904");
+    }
+
+    @Test
+    public void classifyAllCdesBadInput() {
+        mustBeLoggedInAs("ctepOnlyCurator", password);
+        Cookie myCookie = getCurrentCookie();
+        given().cookie(myCookie).body("").post(baseUrl + "/server/classification/bulk/tinyId").then().statusCode(422);
     }
 
 }
