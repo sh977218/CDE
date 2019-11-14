@@ -61,7 +61,7 @@ dataElementSchema.pre('save', function preSaveUseThisForSomeReason(next) {
             next();
         }
     }, (err: string) => {
-        next(new Error(`Cde ${elt.tinyId} has error: ${err}`));
+        next(new Error(`Cde ${elt.tinyId} has error: ${err.toString()}`));
     });
 });
 

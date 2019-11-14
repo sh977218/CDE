@@ -59,7 +59,7 @@ formSchema.pre('save', function preSaveUsesThisForSomeReason(next) {
         }
         next();
     }, (err: string) => {
-        next(new Error(`Form ${elt.tinyId} has error: ${err}`))
+        next(new Error(`Form ${elt.tinyId} has error: ${err.toString()}`));
     });
 });
 
