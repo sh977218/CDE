@@ -71,7 +71,7 @@ export function elasticsearch(user: User, settings: SearchSettingsElastic, cb: C
                         field: 'valueDomain.datatype',
                         size: 500,
                         order: {
-                            _term: 'desc'
+                            _key: 'desc'
                         }
                     }
                 }
@@ -102,7 +102,7 @@ const mltConf = {
     ]
 };
 
-export function morelike(id, callback) {
+export function morelike(id: string, callback) {
     const from = 0;
     const limit = 20;
     esClient.search({

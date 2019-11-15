@@ -544,7 +544,7 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
                             field: 'classification.stewardOrg.name',
                             size: 500,
                             order: {
-                                _term: 'desc'
+                                _key: 'desc'
                             }
                         }
                     }
@@ -690,7 +690,7 @@ export function elasticsearch(type: ModuleItem, query: any, settings: any,
         return cb(new Error('Invalid query'));
     }
     search.body = query;
-    esClient.search(search, (error, resp) => {
+    esClient.search(search, (error, resp: any) => {
         if (error) {
             const response = resp as any as ElasticQueryError;
             if (response && response.status) {
@@ -707,8 +707,7 @@ export function elasticsearch(type: ModuleItem, query: any, settings: any,
                 let querystr = 'cannot stringify query';
                 try {
                     querystr = JSON.stringify(query);
-                } catch (e) {
-                }
+                } catch (e) {}
                 errorLogger.error('Error: ElasticSearch Error',
                     {
                         origin: 'system.elastic.elasticsearch',

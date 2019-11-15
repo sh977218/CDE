@@ -87,6 +87,7 @@ export const createIndexJson = {
                 }
             }
             , classificationSize: {type: 'integer'}
+            , classificationBoost: {type: 'integer'}
             , registrationState: {
                 properties: {
                     registrationStatus: {type: 'keyword'}
@@ -196,9 +197,11 @@ export const createFormIndexJson = {
                 }
             }
             , classificationSize: {type: 'integer'}
+            , classificationBoost: {type: 'integer'}
             , registrationState: {
                 properties: {
-                    registrationStatus: {type: 'keyword'}
+                    registrationStatus: {type: 'keyword'},
+                    registrationStatusSortOrder: {type: 'integer'}
                 }
             }
             , source: {type: 'keyword'}
