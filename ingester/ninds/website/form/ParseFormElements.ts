@@ -82,13 +82,17 @@ export async function parseFormElements(nindsForms: any[]) {
             process.exit(1);
         }
 
-        formElements[0].formElements.push({
+
+        const questionText = nindsQuestion['Additional Notes (Question Text)'];
+
+        const questionFe = {
             elementType: 'question',
-            label: nindsQuestion['Question Text'],
+            label: questionText === 'N/A' ? '' : questionText,
             instructions: {value: nindsQuestion.Instructions},
             question,
             formElements: []
-        });
+        };
+        formElements[0].formElements.push(questionFe);
     }
     return formElements;
 }
