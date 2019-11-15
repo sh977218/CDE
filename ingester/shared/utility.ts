@@ -787,3 +787,26 @@ export function findOneForm(forms: any[]) {
         process.exit(1);
     }
 }
+
+
+function fixSourcesUpdated(formObj) {
+    formObj.sources.forEach(s => {
+        if (isEmpty(s.updated)) {
+            delete s.updated;
+        }
+    });
+    return formObj.sources;
+}
+
+export async function fixForm(form: any) {
+    const formObj = form.toObject();
+    const sources = fixSourcesUpdated(formObj);
+    form.sources = sources;
+    const savedForm = await form.save();
+    return savedForm.toObject();
+}
+
+export function retiredElt(elt: any) {
+    elt.registrationState.registrationStatus = 'Retired';
+    elt.registrationState.administrativeNote = 'Not present in import at ' + imported;
+}
