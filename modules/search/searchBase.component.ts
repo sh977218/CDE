@@ -24,7 +24,7 @@ import { ExportService } from 'non-core/export.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import _noop from 'lodash/noop';
 import { debounceTime, map } from 'rxjs/operators';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { DataType } from 'shared/de/dataElement.model';
 import { uriViewBase } from 'shared/item';
 import {
@@ -141,11 +141,11 @@ export const searchStyles = `
 
 export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     @Input() searchSettingsInput?: SearchSettings;
-    @ViewChild('orgDetailsModal') orgDetailsModal!: TemplateRef<any>;
-    @ViewChild('pinModal', {read: ViewContainerRef}) pinContainer!: ViewContainerRef;
-    @ViewChild('validRulesModal') validRulesModal!: TemplateRef<any>;
-    @ViewChild('autoCompleteInput', {read: MatAutocompleteTrigger}) autoCompleteInput!: MatAutocompleteTrigger;
-    @ViewChild(MatPaginator) paginator!: MatPaginator;
+    @ViewChild('orgDetailsModal', {static: false}) orgDetailsModal!: TemplateRef<any>;
+    @ViewChild('pinModal', {read: ViewContainerRef, static: false}) pinContainer!: ViewContainerRef;
+    @ViewChild('validRulesModal', {static: false}) validRulesModal!: TemplateRef<any>;
+    @ViewChild('autoCompleteInput', {read: MatAutocompleteTrigger, static: false}) autoCompleteInput!: MatAutocompleteTrigger;
+    @ViewChild(MatPaginator, {static: false}) paginator!: MatPaginator;
     add!: EventEmitter<any>;
     addMode?: string;
     aggregations?: ElasticQueryResponseAggregation;

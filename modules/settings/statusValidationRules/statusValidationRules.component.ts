@@ -10,8 +10,8 @@ import { updateTag } from 'shared/system/util';
     templateUrl: './statusValidationRules.component.html'
 })
 export class StatusValidationRulesComponent implements OnInit {
-    @ViewChild('removeRuleModal') removeRuleModal!: TemplateRef<any>;
-    @ViewChild('addNewRuleModal') addNewRuleModal!: TemplateRef<any>;
+    @ViewChild('removeRuleModal', {static: false}) removeRuleModal!: TemplateRef<any>;
+    @ViewChild('addNewRuleModal', {static: false}) addNewRuleModal!: TemplateRef<any>;
     dialogRef!: MatDialogRef<TemplateRef<any>>;
     fields: string[] = [
         'ids.source',

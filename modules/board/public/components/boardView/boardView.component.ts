@@ -22,8 +22,8 @@ export interface BoardQuery {
     templateUrl: './boardView.component.html',
 })
 export class BoardViewComponent implements OnInit {
-    @ViewChild('classifyCdesModal') classifyCdesModal!: ClassifyItemModalComponent;
-    @ViewChild('shareBoardModal') shareBoardModal!: TemplateRef<any>;
+    @ViewChild('classifyCdesModal', {static: false}) classifyCdesModal!: ClassifyItemModalComponent;
+    @ViewChild('shareBoardModal', {static: false}) shareBoardModal!: TemplateRef<any>;
     allRoles = [{
         label: 'can view',
         name: 'viewer',

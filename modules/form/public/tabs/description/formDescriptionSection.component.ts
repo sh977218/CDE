@@ -36,10 +36,10 @@ export class FormDescriptionSectionComponent implements OnInit {
     @Input() index!: number;
     @Input() node!: TreeNode;
     @Output() eltChange: EventEmitter<void> = new EventEmitter<void>();
-    @ViewChild('formDescriptionSectionTmpl') formDescriptionSectionTmpl!: TemplateRef<any>;
-    @ViewChild('formDescriptionFormTmpl') formDescriptionFormTmpl!: TemplateRef<any>;
-    @ViewChild('slInput') slInput!: ElementRef;
-    @ViewChild('updateFormVersionTmpl') updateFormVersionTmpl!: TemplateRef<any>;
+    @ViewChild('formDescriptionSectionTmpl', {static: false}) formDescriptionSectionTmpl!: TemplateRef<any>;
+    @ViewChild('formDescriptionFormTmpl', {static: false}) formDescriptionFormTmpl!: TemplateRef<any>;
+    @ViewChild('slInput', {static: false}) slInput!: ElementRef;
+    @ViewChild('updateFormVersionTmpl', {static: false}) updateFormVersionTmpl!: TemplateRef<any>;
     isSubForm = false;
     formSection?: FormInForm;
     parent!: FormElement;

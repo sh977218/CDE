@@ -29,7 +29,7 @@ const actionMapping: IActionMapping = {
 export class ClassificationViewComponent {
     @Input() elt!: Item;
     @Output() confirmDelete = new EventEmitter<DeletedNodeEvent>();
-    @ViewChild('deleteClassificationContent') deleteClassificationContent!: TemplateRef<any>;
+    @ViewChild('deleteClassificationContent', {static: false}) deleteClassificationContent!: TemplateRef<any>;
     deleteClassificationString?: string;
     orgHelperLoaded = false;
 

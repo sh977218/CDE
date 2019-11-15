@@ -27,7 +27,7 @@ export class FormDescriptionQuestionComponent implements OnInit {
     @Input() index!: number;
     @Input() node!: TreeNode;
     @Output() stageElt: EventEmitter<void> = new EventEmitter<void>();
-    @ViewChild('updateCdeVersionTmpl') updateCdeVersionTmpl!: TemplateRef<any>;
+    @ViewChild('updateCdeVersionTmpl', {static: false}) updateCdeVersionTmpl!: TemplateRef<any>;
     isScore = isScore;
     isSubForm = false;
     parent!: FormElement;

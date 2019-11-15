@@ -13,8 +13,8 @@ export class BoardViewTemplateComponent implements OnInit {
     @Output() saved = new EventEmitter<Board>();
     @Output() deleted = new EventEmitter();
     @Output() headerClicked = new EventEmitter();
-    @ViewChild('editBoardContent') editBoardContent!: TemplateRef<any>;
-    @ViewChild('deleteBoardContent') deleteBoardContent!: TemplateRef<any>;
+    @ViewChild('editBoardContent', {static: false}) editBoardContent!: TemplateRef<any>;
+    @ViewChild('deleteBoardContent', {static: false}) deleteBoardContent!: TemplateRef<any>;
     boardTitle = 'CDE(s)';
     dialogRef!: MatDialogRef<TemplateRef<any>>;
 

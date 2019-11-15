@@ -13,7 +13,7 @@ import { DataElement } from 'shared/de/dataElement.model';
 })
 export class CreateFormFromBoardComponent {
     @Input() board!: Board;
-    @ViewChild('createFormContent') createFormContent!: TemplateRef<any>;
+    @ViewChild('createFormContent', {static: false}) createFormContent!: TemplateRef<any>;
     elt!: CdeForm;
     modalRef!: MatDialogRef<TemplateRef<any>>;
 

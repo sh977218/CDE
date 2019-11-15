@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AlertService } from 'alert/alert.service';
 import { isCdeForm } from 'shared/item';
 import { CdeId, Item, Source } from 'shared/models.model';
@@ -24,7 +24,7 @@ export class IdentifiersComponent {
     }
     @Input() canEdit = false;
     @Output() eltChange = new EventEmitter();
-    @ViewChild('newIdentifierContent') newIdentifierContent!: TemplateRef<any>;
+    @ViewChild('newIdentifierContent', {static: false}) newIdentifierContent!: TemplateRef<any>;
     _elt!: Item;
     dialogRef!: MatDialogRef<TemplateRef<any>>;
     idsLinks: string[] = [];

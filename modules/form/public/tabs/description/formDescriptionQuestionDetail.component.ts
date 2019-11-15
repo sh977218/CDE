@@ -49,8 +49,8 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     @Input() canEdit = false;
     @Input() elt!: CdeForm;
     @Output() eltChange: EventEmitter<void> = new EventEmitter<void>();
-    @ViewChild('formDescriptionQuestionTmpl') formDescriptionQuestionTmpl!: TemplateRef<any>;
-    @ViewChild('formDescriptionQuestionEditTmpl') formDescriptionQuestionEditTmpl!: TemplateRef<any>;
+    @ViewChild('formDescriptionQuestionTmpl', {static: false}) formDescriptionQuestionTmpl!: TemplateRef<any>;
+    @ViewChild('formDescriptionQuestionEditTmpl', {static: false}) formDescriptionQuestionEditTmpl!: TemplateRef<any>;
     readonly dataTypeArray = dataTypeArray;
     answerListItems: string[] = [];
     filteredUoms: UcumSynonyms[] = [];

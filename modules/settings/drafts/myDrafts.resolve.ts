@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Resolve, Router } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { Article } from 'shared/article/article.model';
 import { catchError } from 'rxjs/operators';
-import { empty } from 'rxjs/observable/empty';
+import { empty } from 'rxjs';
 import { DraftsService } from 'settings/drafts/drafts.service';
 
 @Injectable()

@@ -23,7 +23,6 @@ import {
 } from 'shared/models.model';
 import { SearchSettingsElastic } from 'shared/search/search.model';
 import { orderedList } from 'shared/system/regStatusShared';
-import { arrayFill } from 'shared/system/util';
 import { myOrgs } from 'server/orgManagement/orgSvc';
 
 type ElasticCondition = any;
@@ -109,7 +108,7 @@ const DOC_MAX_SIZE = BUFFER_MAX_SIZE;
 export function reIndexStream(dbStream: DbStream, cb?: Cb) {
     createIndex(dbStream, () => {
         const riverFunctions = dbStream.indexes.map(index => index.filter || ((elt: ItemElastic, cb: Cb1<ItemElastic>) => cb(elt)));
-        const buffers: Buffer[] = arrayFill<Buffer>(dbStream.indexes.length, () => Buffer.alloc(BUFFER_MAX_SIZE));
+        const buffers = Array.apply(null, new Array(dbStream.indexes.length)).map(() => Buffer.alloc(BUFFER_MAX_SIZE));
         const bufferOffsets = new Array(dbStream.indexes.length).fill(0);
         const nextCommandBuffer = Buffer.alloc(DOC_MAX_SIZE);
         let nextCommandOffset = 0;

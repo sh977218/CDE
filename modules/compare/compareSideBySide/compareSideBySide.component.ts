@@ -11,7 +11,7 @@ import _intersectionWith from 'lodash/intersectionWith';
 import _isArray from 'lodash/isArray';
 import _isEmpty from 'lodash/isEmpty';
 import _isEqual from 'lodash/isEqual';
-import { forkJoin } from 'rxjs/observable/forkJoin';
+import { forkJoin } from 'rxjs';
 import { DataElement } from 'shared/de/dataElement.model';
 import { Cb, Item } from 'shared/models.model';
 import { CdeForm, FormElement, FormElementsContainer, FormQuestion } from 'shared/form/form.model';
@@ -80,7 +80,7 @@ const URL_MAP: {[module: string]: string} = {
 })
 export class CompareSideBySideComponent {
     @Input() elements: Item[] = [];
-    @ViewChild('compareSideBySideContent') public compareSideBySideContent!: TemplateRef<any>;
+    @ViewChild('compareSideBySideContent', {static: false}) public compareSideBySideContent!: TemplateRef<any>;
     options: CompareOption[] = [];
     leftUrl?: string;
     rightUrl?: string;

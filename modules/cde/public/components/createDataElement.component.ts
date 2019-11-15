@@ -30,7 +30,7 @@ export class CreateDataElementComponent implements OnInit {
     @Input() elt!: DataElement;
     @Output() close = new EventEmitter<void>();
     @Output() dismiss = new EventEmitter<void>();
-    @ViewChild('classifyItemComponent') classifyItemComponent!: ClassifyItemModalComponent;
+    @ViewChild('classifyItemComponent', {static: false}) classifyItemComponent!: ClassifyItemModalComponent;
     dialogRef!: MatDialogRef<TemplateRef<any>>;
 
     ngOnInit() {

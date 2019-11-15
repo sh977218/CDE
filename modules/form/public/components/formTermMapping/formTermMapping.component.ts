@@ -4,9 +4,8 @@ import { MatDialog } from '@angular/material';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
 import { IsAllowedService } from 'non-core/isAllowed.service';
-import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
-import { Subject } from 'rxjs/Subject';
+import { empty, Subject } from 'rxjs';
 import { ElasticQueryResponse, MeshClassification } from 'shared/models.model';
 
 interface Descriptor {
@@ -20,7 +19,7 @@ interface Descriptor {
 })
 export class FormTermMappingComponent implements OnInit {
     @Input() elt: any;
-    @ViewChild('newTermMap') public newTermMap!: TemplateRef<any>;
+    @ViewChild('newTermMap', {static: false}) public newTermMap!: TemplateRef<any>;
     descriptor?: Descriptor;
     descToName: any = {};
     flatMeshSimpleTrees: any[] = [];
@@ -42,9 +41,9 @@ export class FormTermMappingComponent implements OnInit {
             switchMap(term => term
                 ? this.http.get<ElasticQueryResponse<any>>((window as any).meshUrl
                     + '/api/search/record?searchInField=termDescriptor&searchType=exactMatch&q=' + term)
-                : EmptyObservable.create<ElasticQueryResponse<any>>()
+                : empty()
             )
-        ).subscribe((res) => {
+        ).subscribe((res: any) => {
             if (res && res.hits && res.hits.hits.length === 1) {
                 const desc = res.hits.hits[0]._source;
                 this.descriptor = {name: desc.DescriptorName.String.t, id: desc.DescriptorUI.t};

@@ -14,7 +14,7 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
     @Input() canEdit!: boolean;
     @Input() elt!: DataElement & {derivationOutputs: {ruleName: string, cde: DataElement}[]};
     @Output() eltChange = new EventEmitter();
-    @ViewChild('newScoreContent') newScoreContent!: TemplateRef<any>;
+    @ViewChild('newScoreContent', {static: false}) newScoreContent!: TemplateRef<any>;
     invalidCdeMessage = '';
     modalRef!: MatDialogRef<TemplateRef<any>>;
     newDerivationRule: DerivationRule = {

@@ -19,7 +19,7 @@ export class CreateBoardComponent {
             this.newBoard.type = module;
         }
     }
-    @ViewChild('createBoardModal') createBoardModal!: TemplateRef<any>;
+    @ViewChild('createBoardModal', {static: false}) createBoardModal!: TemplateRef<any>;
     _module!: ModuleItem;
     dialogRef!: MatDialogRef<TemplateRef<any>>;
     newBoard: any;

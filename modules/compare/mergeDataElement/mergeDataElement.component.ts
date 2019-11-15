@@ -13,7 +13,7 @@ export class MergeDataElementComponent {
     @Input() source!: DataElement;
     @Input() destination!: DataElement;
     @Output() doneMerge = new EventEmitter<{left: DataElement, right: DataElement}>();
-    @ViewChild('mergeDataElementContent') mergeDataElementContent!: TemplateRef<any>;
+    @ViewChild('mergeDataElementContent', {static: false}) mergeDataElementContent!: TemplateRef<any>;
     allow = true;
     dialogRef!: MatDialogRef<TemplateRef<any>>;
     mergeFields: MergeFieldsDe = {

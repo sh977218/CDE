@@ -13,7 +13,7 @@ import { MatDialog } from '@angular/material';
     ]
 })
 export class ServerStatusComponent {
-    @ViewChild('confirmReindex') confirmReindex!: TemplateRef<any>;
+    @ViewChild('confirmReindex', {static: false}) confirmReindex!: TemplateRef<any>;
     esIndices: any;
     indexToReindex!: number;
     isDone: boolean = false;

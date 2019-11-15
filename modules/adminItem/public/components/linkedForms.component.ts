@@ -14,7 +14,7 @@ import { SearchSettings } from 'shared/search/search.model';
 
 export class LinkedFormsComponent {
     @Input() elt!: DataElement;
-    @ViewChild('linkedFormsContent') linkedFormsContent!: TemplateRef<any>;
+    @ViewChild('linkedFormsContent', {static: false}) linkedFormsContent!: TemplateRef<any>;
     dialogRef!: MatDialogRef<TemplateRef<any>>;
     forms!: CdeForm[];
     formSummaryContentComponent = FormSummaryListContentComponent;
