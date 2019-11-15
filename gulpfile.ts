@@ -15,7 +15,6 @@ import { resolve } from 'path';
 import * as File from 'vinyl';
 import { ElasticIndex, indices } from 'server/system/elasticSearchInit';
 import { config } from 'server/system/parseConfig';
-import { esClient } from 'server/system/elastic';
 
 require('es6-promise').polyfill();
 
@@ -288,6 +287,14 @@ gulp.task('copyUsemin', ['usemin'], function usemin() {
 });
 
 gulp.task('es', function es() {
+    const esClient = new elasticsearch.Client({
+        nodes: config.elastic.hosts.map((s: string) => (
+            {
+                url: new URL(s),
+                ssl: {rejectUnauthorized: false}
+            }
+        ))
+    });
     return Promise.all(
         indices.map((index: ElasticIndex) => new Promise((resolve, reject) => {
             console.log('Deleting es index: ' + index.indexName);
