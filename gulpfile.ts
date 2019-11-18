@@ -293,9 +293,7 @@ gulp.task('es', function es() {
     return Promise.all(
         indices.map((index: ElasticIndex) => new Promise((resolve, reject) => {
             console.log('Deleting es index: ' + index.indexName);
-            esClient.indices.delete({index: index.indexName, timeout: '6s'}, (err?: StatusCodeError) => {
-                err && err.status !== 404 ? reject(err) : resolve();
-            });
+            esClient.indices.delete({index: index.indexName, timeout: '6s'});
         }))
     );
 });
