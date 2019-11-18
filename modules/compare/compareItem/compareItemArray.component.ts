@@ -58,6 +58,8 @@ class ComparedForm extends CdeForm {
 
 type FeCompare = { question: any, sectionId?: string } & FormElement & DiffOptionResult;
 
+const compareArrayOption: DiffOption[] = [];
+/*
 const compareArrayOption: DiffOption[] = [
     {
         label: 'Reference Documents',
@@ -220,6 +222,7 @@ const compareArrayOption: DiffOption[] = [
         diff: []
     }
 ];
+*/
 const cdeCompareArrayOption: DiffOption[] = [
     {
         label: 'Value List',
@@ -257,19 +260,19 @@ const cdeCompareArrayOption: DiffOption[] = [
         ],
         diff: []
     },
-    {
-        label: 'Concepts',
-        isEqual(a: Concept & DiffOptionResult, b: Concept & DiffOptionResult) {
-            return _isEqual(a, b);
-        },
-        property: 'concepts',
-        data: [
-            {label: 'Name', property: 'name'},
-            {label: 'Origin', property: 'origin'},
-            {label: 'Origin Id', property: 'originId'}
-        ],
-        diff: []
-    }
+    /* {
+         label: 'Concepts',
+         isEqual(a: Concept & DiffOptionResult, b: Concept & DiffOptionResult) {
+             return _isEqual(a, b);
+         },
+         property: 'concepts',
+         data: [
+             {label: 'Name', property: 'name'},
+             {label: 'Origin', property: 'origin'},
+             {label: 'Origin Id', property: 'originId'}
+         ],
+         diff: []
+     }*/
 ];
 const formCompareArrayOption: DiffOption[] = [
     {
@@ -527,13 +530,13 @@ function doCompareArrayImpl(newer: DiffOption[], older: DiffOption[], option: Di
         const rightArrayCopy: DiffOption[] = _slice(older, beginIndex);
         const rightIndex = _findIndex(rightArrayCopy, o => option.isEqual(o, l));
         if (rightIndex === -1) {
+            result.push({
+                match: false,
+                add: true,
+                data: l,
+                newer: l
+            });
             if (leftIndex === newer.length - 1) {
-                result.push({
-                    match: false,
-                    add: true,
-                    data: l,
-                    newer: l
-                });
                 rightArrayCopy.forEach((o: any) => {
                     result.push({
                         match: false,
@@ -541,13 +544,6 @@ function doCompareArrayImpl(newer: DiffOption[], older: DiffOption[], option: Di
                         data: o,
                         older: o
                     });
-                });
-            } else {
-                result.push({
-                    match: false,
-                    add: true,
-                    data: l,
-                    newer: l
                 });
             }
         } else { // found match in right array
