@@ -15,6 +15,12 @@ public class LogErrorsTest extends NlmCdeBaseTest {
         driver.get(baseUrl);
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Audit"));
+
+        // put tab within display
+        clickElement(By.cssSelector("mat-tab-header-pagination-chevron"));
+        clickElement(By.cssSelector("mat-tab-header-pagination-chevron"));
+        clickElement(By.cssSelector("mat-tab-header-pagination-chevron"));
+
         clickElement(By.xpath("//div[. = 'Server Errors']"));
 
         textPresent("ReferenceError: trigger is not defined");
