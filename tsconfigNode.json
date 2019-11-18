@@ -32,7 +32,6 @@
     "build",
     "deploy",
     "dist",
-    "ingester",
     "modules",
     "node_modules",
     "protractor",
