@@ -10,7 +10,7 @@ stream.on('data', (elt: DataElementDocument) => {
     stream.pause();
     esClient.search({
         index: config.elastic.index.name,
-        type: 'dataelement',
+        type: '_doc',
         body: {
             query: {
                 term: {
@@ -23,7 +23,7 @@ stream.on('data', (elt: DataElementDocument) => {
         if (i % 500 === 0) {
             console.log('Done: ' + i);
         }
-        if (resp.hits.hits.length !== 1) {
+        if (resp.body.hits.hits.length !== 1) {
             console.log('Not Found: ' + elt.tinyId);
         }
         stream.resume();

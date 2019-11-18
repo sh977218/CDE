@@ -1,4 +1,4 @@
-import * as elastic from 'elasticsearch';
+import * as elastic from '@elastic/elasticsearch';
 import { handleNotFound } from 'server/errorHandler/errorHandler';
 import { logError } from 'server/log/dbLogger';
 import { buildElasticSearchQuery, elasticsearch as elasticSearchShared } from 'server/system/elastic';
@@ -8,9 +8,11 @@ import { DataElementElastic } from 'shared/de/dataElement.model';
 import { CbError, ElasticQueryResponse, SearchResponseAggregationDe, User } from 'shared/models.model';
 import { SearchSettingsElastic } from 'shared/search/search.model';
 import { storeQuery } from 'server/log/storedQueryDb';
+import { response } from 'express';
+import { ApiResponse } from '@elastic/elasticsearch';
 
 export const esClient = new elastic.Client({
-    hosts: config.elastic.hosts
+    nodes: config.elastic.hosts
 });
 
 export function updateOrInsert(elt) {
@@ -36,14 +38,14 @@ export function updateOrInsert(elt) {
             delete doc._id;
             esClient.index({
                 index: config.elastic.index.name,
-                type: 'dataelement',
                 id: doc.tinyId,
+                type: '_doc',
                 body: doc
             }, done);
             suggestRiverFunction(elt, sugDoc => {
                 esClient.index({
                     index: config.elastic.cdeSuggestIndex.name,
-                    type: 'suggest',
+                    type: '_doc',
                     id: doc.tinyId,
                     body: sugDoc
                 }, done);
@@ -103,9 +105,8 @@ const mltConf = {
 export function morelike(id, callback) {
     const from = 0;
     const limit = 20;
-    esClient.search<DataElementElastic>({
+    esClient.search({
         index: config.elastic.index.name,
-        type: 'dataelement',
         body: {
             query: {
                 bool: {
@@ -141,14 +142,15 @@ export function morelike(id, callback) {
                 }
             }
         },
-    }, handleNotFound({}, response => {
+    }, handleNotFound<ApiResponse>({}, response => {
+            const body = response.body;
             const result: any = {
                 cdes: [],
-                pages: Math.ceil(response.hits.total / limit),
+                pages: Math.ceil(body.hits.total / limit),
                 page: Math.ceil(from / limit),
-                totalNumber: response.hits.total,
+                totalNumber: body.hits.total,
             };
-            response.hits.hits.forEach(hit => {
+            body.hits.hits.forEach(hit => {
                 const thisCde = hit._source;
                 if (thisCde.valueDomain && thisCde.valueDomain.datatype === 'Value List' && thisCde.valueDomain.permissibleValues
                     && thisCde.valueDomain.permissibleValues.length > 10) {
@@ -165,7 +167,6 @@ export function byTinyIdList(idList, size, cb) {
     idList = idList.filter(id => !!id);
     esClient.search({
         index: config.elastic.index.name,
-        type: 'dataelement',
         body: {
             query: {
                 ids: {
@@ -174,9 +175,9 @@ export function byTinyIdList(idList, size, cb) {
             },
             size,
         }
-    }, handleNotFound<ElasticQueryResponse>({}, response => {
+    }, handleNotFound<ApiResponse>({}, response => {
         // @TODO possible to move this sort to elastic search?
-        response.hits.hits.sort((a, b) => idList.indexOf(a._id) - idList.indexOf(b._id));
-        cb(null, response.hits.hits.map(h => h._source));
+        response.body.hits.hits.sort((a, b) => idList.indexOf(a._id) - idList.indexOf(b._id));
+        cb(null, response.body.hits.hits.map(h => h._source));
     }));
 }

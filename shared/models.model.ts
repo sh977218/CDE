@@ -445,6 +445,7 @@ export class Designation {
 
     constructor(designation = '') {
         this.designation = designation;
+        this.tags = [];
     }
 }
 
@@ -455,6 +456,7 @@ export class Definition {
 
     constructor(definition = '') {
         this.definition = definition;
+        this.tags = [];
     }
 }
 
