@@ -261,7 +261,7 @@ gulp.task('usemin', ['copyDist'], function useminTask() {
                     throw new Error('service worker creation failed');
                 }
                 gulp.src(BUILD_DIR + '/dist/app/sw.js') // does not preserve order
-                    .pipe(replace('"/app/cde.css"', '"' + useminOutputs[0] + '"'))ht
+                    .pipe(replace('"/app/cde.css"', '"' + useminOutputs[0] + '"'))
                     .pipe(replace('"/app/cde.js"', '"' + useminOutputs[1] + '"'))
                     .pipe(replace('cde-cache-', 'cde-cache-v'))
                     .pipe(gulp.dest(BUILD_DIR + '/dist/app/'));
