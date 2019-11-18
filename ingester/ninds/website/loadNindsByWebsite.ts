@@ -1,5 +1,4 @@
 import { eachLimit } from 'async';
-import { isEmpty } from 'lodash';
 import { NindsModel } from 'ingester/createMigrationConnection';
 import { createNindsCde } from 'ingester/ninds/website/cde/cde';
 import { createNindsForm } from 'ingester/ninds/website/form/form';
@@ -45,7 +44,8 @@ async function loadNindsCdes() {
 
 async function loadNindsForms() {
     const formIds = await NindsModel.distinct('formId', {'cdes.0': {$exists: true}});
-    await eachLimit(formIds, 200, async formId => {
+//    const formIds = ['F1872'];
+    await eachLimit(formIds, 1, async formId => {
         const nindsForms = await NindsModel.find({formId}).lean();
         const nindsForm = await createNindsForm(nindsForms);
         const cond = {
@@ -74,6 +74,7 @@ async function retireNindsCdes() {
                 if (retiredCdeCount % 100 === 0) {
                     console.log('retiredCdeCount: ' + retiredCdeCount);
                 }
+                console.log(`retire Cde: ${cdeObj.tinyId}`);
             }
         }
     });
@@ -87,7 +88,11 @@ async function retireNindsForms() {
         'classification.stewardOrg.name': 'NINDS',
         'registrationState.registrationStatus': {$ne: 'Retired'}
     }).cursor().eachAsync(async formToRetire => {
-        const formObj: any = await fixForm(formToRetire);
+        const form = await fixForm(formToRetire).catch((err: any) => {
+            console.log(`Not able to fix form when in retireNindsForms ${err}`);
+            process.exit(1);
+        });
+        const formObj = form.toObject();
         if (formObj.lastMigrationScript !== lastMigrationScript) {
             removeNindsClassification(formObj);
             if (formObj.classification.length < 1) {
@@ -97,6 +102,7 @@ async function retireNindsForms() {
                 if (retiredFormCount % 100 === 0) {
                     console.log('retiredFormCount: ' + retiredFormCount);
                 }
+                console.log(`retire Form: ${formObj.tinyId}`);
             }
         }
     });
@@ -104,7 +110,7 @@ async function retireNindsForms() {
 }
 
 async function run() {
-    await loadNindsCdes();
+//    await loadNindsCdes();
     await loadNindsForms();
     await retireNindsCdes();
     await retireNindsForms();

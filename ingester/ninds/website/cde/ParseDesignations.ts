@@ -1,4 +1,5 @@
 import { uniq, indexOf } from 'lodash';
+import { sortDesignations } from 'ingester/shared/utility';
 
 export function parseDesignations(nindsForms: any[]) {
     const cdeNameArray: any[] = [];
@@ -35,5 +36,5 @@ export function parseDesignations(nindsForms: any[]) {
             designations.push({designation: questionText, tags: ['Question Text']});
         }
     });
-    return designations;
+    return sortDesignations(designations);
 }

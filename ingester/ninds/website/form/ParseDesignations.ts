@@ -1,4 +1,5 @@
 import { uniq, trim } from 'lodash';
+import { sortDesignations } from 'ingester/shared/utility';
 
 export function parseDesignations(nindsForms: any[]) {
     const formNameArray: string[] = [];
@@ -21,5 +22,5 @@ export function parseDesignations(nindsForms: any[]) {
             tags: []
         });
     });
-    return designations;
+    return sortDesignations(designations);
 }

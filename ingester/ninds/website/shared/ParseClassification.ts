@@ -48,12 +48,12 @@ export function parseClassification(nindsForms: any[], item: any) {
             classifyItem(item, 'NINDS', classificationToAdd);
         }
 
-        if (!isEmpty(c.domain)) {
+        if (!isEmpty(c.domainName)) {
             diseaseToAdd.push('Domain');
             subDomainToAdd.push('Domain');
             diseaseToAdd.push(c.domainName);
             subDomainToAdd.push(c.domainName);
-            if (!isEmpty(c.subDomain)) {
+            if (!isEmpty(c.subDomainName)) {
                 diseaseToAdd.push(c.subDomainName);
                 domainToAdd.push(c.subDomainName);
                 subDomainToAdd.push(c.subDomainName);

@@ -1,8 +1,8 @@
 import { isEmpty } from 'lodash';
 import { dataElementModel } from 'server/cde/mongo-cde';
 import {
-    BATCHLOADER, compareElt, findOneCde, findOneForm, imported, lastMigrationScript, mergeElt, updateCde, updateForm,
-    updateRowArtifact
+    BATCHLOADER, compareElt, findOneCde, findOneForm, fixCde, fixForm, imported, lastMigrationScript, mergeElt,
+    updateCde, updateForm, updateRowArtifact
 } from 'ingester/shared/utility';
 import { formModel } from 'server/form/mongo-form';
 import { commentModel } from 'server/discuss/discussDb';
@@ -29,11 +29,13 @@ export async function loadNindsCde(nindsCde: any, cond: any, source: string) {
     let existingCde: any = findOneCde(existingCdes);
     if (!existingCde) {
         existingCde = await newCde.save().catch((err: any) => {
-            console.log(`Not able to save form when save new NINDS cde ${newCde.tinyId} ${err}`);
+            console.log(`Not able to save cde when save new NINDS cde ${newCde.tinyId} ${err}`);
             process.exit(1);
         });
         console.log(`created cde tinyId: ${existingCde.tinyId}`);
     } else {
+        // @TODO fix any issue on existing cde.
+        existingCde = await fixCde(existingCde);
         const diff = compareElt(newCde.toObject(), existingCde.toObject(), source);
         if (isEmpty(diff)) {
             existingCde.lastMigrationScript = lastMigrationScript;
@@ -73,6 +75,12 @@ export async function loadNindsForm(nindsForm: any, cond: any, source: string) {
         });
         console.log(`created form tinyId: ${existingForm.tinyId}`);
     } else {
+        // @TODO fix any issue on existing form.
+        existingForm = await fixForm(existingForm).catch((err: any) => {
+            console.log(`Not able to fix form when in loadNindsForm ${err}`);
+            process.exit(1);
+        });
+
         const diff = compareElt(newForm.toObject(), existingForm.toObject(), source);
         if (isEmpty(diff)) {
             existingForm.lastMigrationScript = lastMigrationScript;

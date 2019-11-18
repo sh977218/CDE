@@ -3,11 +3,13 @@ import * as DiffJson from 'diff-json';
 import * as moment from 'moment';
 import { find, noop, findIndex, isEmpty, isEqual, lastIndexOf, lowerCase, sortBy, uniq } from 'lodash';
 import * as mongo_cde from 'server/cde/mongo-cde';
-import { dataElementSourceModel } from 'server/cde/mongo-cde';
+import { dataElementModel, dataElementSourceModel } from 'server/cde/mongo-cde';
 import * as mongo_form from 'server/form/mongo-form';
 import { formSourceModel } from 'server/form/mongo-form';
 import { PhenxURL } from 'ingester/createMigrationConnection';
-import { CdeId, Classification, Definition, Designation, Property, ReferenceDocument } from 'shared/models.model';
+import {
+    CdeId, Classification, Definition, Designation, Instruction, Property, ReferenceDocument
+} from 'shared/models.model';
 import { FormElement } from 'shared/form/form.model';
 import { gfs } from 'server/system/mongo-data';
 import { Readable } from 'stream';
@@ -756,12 +758,16 @@ export function addAttachment(readable: Readable, attachment: any) {
 
 
 // Utility methods related to cde and form
-export function sortReferenceDocuments(referenceDocuments) {
+export function sortReferenceDocuments(referenceDocuments: any[]) {
     return sortBy(referenceDocuments, ['title', 'uri']);
 }
 
-export function sortProperties(properties) {
+export function sortProperties(properties: any[]) {
     return sortBy(properties, ['key']);
+}
+
+export function sortDesignations(designations: any[]) {
+    return sortBy(designations, ['designation']);
 }
 
 export function findOneCde(cdes: any[]) {
@@ -788,22 +794,67 @@ export function findOneForm(forms: any[]) {
     }
 }
 
-
-function fixSourcesUpdated(formObj) {
-    formObj.sources.forEach(s => {
+function fixSourcesUpdated(sources: any[]) {
+    sources.forEach(s => {
         if (isEmpty(s.updated)) {
             delete s.updated;
         }
     });
-    return formObj.sources;
+    return sources;
 }
 
-export async function fixForm(form: any) {
-    const formObj = form.toObject();
-    const sources = fixSourcesUpdated(formObj);
-    form.sources = sources;
-    const savedForm = await form.save();
-    return savedForm.toObject();
+export async function fixCde(cdeToFix: any) {
+    const cdeToFixObj = cdeToFix.toObject();
+    cdeToFix.designations = sortDesignations(cdeToFixObj.designations);
+    const savedCde = await cdeToFix.save().catch((err: any) => {
+        console.log(`Not able to save cde when fixCde ${cdeToFixObj.tinyId} ${err}`);
+        process.exit(1);
+    });
+    return savedCde;
+}
+
+function fixInstructions(fe: any) {
+    const instructions: any = {};
+    if (!isEmpty(fe.instructions)) {
+        if (!isEmpty(fe.instructions.value)) {
+            instructions.value = fe.instructions.value;
+        }
+        if (!isEmpty(fe.instructions.valueFormat)) {
+            instructions.valueFormat = fe.instructions.valueFormat;
+        }
+    }
+    if (!isEmpty(instructions)) {
+        fe.instructions = instructions;
+    } else {
+        delete fe.instructions;
+    }
+}
+
+async function fixFormElements(formObj: any) {
+    const formElements: FormElement[] = [];
+    for (const fe of formObj.formElements) {
+        const elementType = fe.elementType;
+        fixInstructions(fe);
+        if (elementType === 'question') {
+            fixInstructions(fe);
+            formElements.push(fe);
+        } else {
+            fe.formElements = await fixFormElements(fe);
+            formElements.push(fe);
+        }
+    }
+    return formElements;
+}
+
+export async function fixForm(formToFix: any) {
+    const formToFixObj = formToFix.toObject();
+    formToFix.sources = fixSourcesUpdated(formToFixObj.sources);
+    formToFix.designations = sortDesignations(formToFixObj.designations);
+    formToFix.formElements = fixFormElements(formToFixObj);
+    const savedForm = await formToFix.save().catch((err: any) => {
+        throw(new Error(`Not able to save form when fixForm ${formToFixObj.tinyId} ${err}`));
+    });
+    return savedForm;
 }
 
 export function retiredElt(elt: any) {
