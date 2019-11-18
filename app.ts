@@ -264,8 +264,6 @@ if (config.expressLogFile) {
 let connections = 0;
 setInterval(() => connections = 0, 60000);
 
-console.log('HELLO Peter !!!!!');
-
 app.use((req, res, next) => {
     const maxLogsPerMinute = config.maxLogsPerMinute || 1000;
     connections++;
