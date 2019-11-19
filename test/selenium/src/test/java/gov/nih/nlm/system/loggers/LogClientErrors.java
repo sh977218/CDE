@@ -24,12 +24,12 @@ public class LogClientErrors extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Audit"));
+        // put tab within display
+        clickElement(By.cssSelector(".mat-tab-header-pagination-chevron"));
+        clickElement(By.cssSelector(".mat-tab-header-pagination-chevron"));
+        clickElement(By.cssSelector(".mat-tab-header-pagination-chevron"));
         clickElement(By.xpath("//div[. = 'Client Errors']"));
 
-        // put tab within display
-        clickElement(By.cssSelector("mat-tab-header-pagination-chevron"));
-        clickElement(By.cssSelector("mat-tab-header-pagination-chevron"));
-        clickElement(By.cssSelector("mat-tab-header-pagination-chevron"));
 
         textPresent("An exception has been thrown");
 
