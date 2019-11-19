@@ -738,6 +738,9 @@ export function elasticsearch(type: ModuleItem, query: any, settings: any,
                 , maxScore: response.hits.max_score
                 , took: response.took
             };
+            if (result.totalNumber.value) {
+                result.totalNumber = result.totalNumber.value;
+            }
             result[type + 's'] = [];
             for (const hit of response.hits.hits) {
                 const thisCde = hit._source as DataElementElastic;
