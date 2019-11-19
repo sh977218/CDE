@@ -474,7 +474,7 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
                     function_score: {
                         script_score: {
                             script: "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) /" +
-                                " (doc['flatMeshTrees'].values.size() + 1)"
+                                " (doc['flatMeshTrees'].length + 1)"
                         }
                     }
                 }]
@@ -493,7 +493,7 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
                     function_score: {
                         script_score: {
                             script: "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) /" +
-                                " (doc['flatClassifications'].values.size() + 1)"
+                                " (doc['flatClassifications'].length + 1)"
                         }
                     }
                 }]
