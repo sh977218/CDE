@@ -288,19 +288,26 @@ gulp.task('copyUsemin', ['usemin'], function usemin() {
 
 gulp.task('es', function es() {
     const esClient = new elasticsearch.Client({
+<<<<<<< HEAD
         nodes: config.elastic.hosts.map((host: string) => ({
             url: new URL(host),
             ssl: {
                 rejectUnauthorized: false
             }
         }))
+=======
+        nodes: config.elastic.hosts.map((s: string) => (
+            {
+                url: new URL(s),
+                ssl: {rejectUnauthorized: false}
+            }
+        ))
+>>>>>>> df01745b84c1ed2966b193d41c8ced6d291afbab
     });
     return Promise.all(
         indices.map((index: ElasticIndex) => new Promise((resolve, reject) => {
             console.log('Deleting es index: ' + index.indexName);
-            esClient.indices.delete({index: index.indexName, timeout: '6s'}, (err?: StatusCodeError) => {
-                err && err.status !== 404 ? reject(err) : resolve();
-            });
+            esClient.indices.delete({index: index.indexName, timeout: '6s'}, resolve);
         }))
     );
 });

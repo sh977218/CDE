@@ -1,12 +1,16 @@
+import * as elastic from '@elastic/elasticsearch';
 import { handleNotFound } from 'server/errorHandler/errorHandler';
 import { logError } from 'server/log/dbLogger';
 import { buildElasticSearchQuery, elasticsearch as elasticSearchShared, esClient } from 'server/system/elastic';
 import { riverFunction, suggestRiverFunction } from 'server/system/elasticSearchInit';
 import { config } from 'server/system/parseConfig';
-import { CbError, SearchResponseAggregationDe, User } from 'shared/models.model';
+import { DataElementElastic } from 'shared/de/dataElement.model';
+import { CbError, ElasticQueryResponse, SearchResponseAggregationDe, User } from 'shared/models.model';
 import { SearchSettingsElastic } from 'shared/search/search.model';
 import { storeQuery } from 'server/log/storedQueryDb';
+import { response } from 'express';
 import { ApiResponse } from '@elastic/elasticsearch';
+
 
 export function updateOrInsert(elt) {
     riverFunction(elt.toObject(), doc => {
@@ -143,6 +147,10 @@ export function morelike(id, callback) {
                 page: Math.ceil(from / limit),
                 totalNumber: body.hits.total,
             };
+            // @TODO remove after full migration to ES7
+            if (result.totalNumber.value) {
+                result.totalNumber = result.totalNumber.value;
+            }
             body.hits.hits.forEach(hit => {
                 const thisCde = hit._source;
                 if (thisCde.valueDomain && thisCde.valueDomain.datatype === 'Value List' && thisCde.valueDomain.permissibleValues

@@ -48,12 +48,12 @@ interface DbStream {
 }
 
 export const esClient = new Client({
-    nodes: config.elastic.hosts.map((host: string) => ({
-        url: new URL(host),
-        ssl: {
-            rejectUnauthorized: false
+    nodes: config.elastic.hosts.map((s: string) => (
+        {
+            url: new URL(s),
+            ssl: {rejectUnauthorized: false}
         }
-    }))
+    ))
 });
 
 export function removeElasticFields(elt: DataElementElastic): DataElementElastic;
@@ -474,7 +474,7 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
                     function_score: {
                         script_score: {
                             script: "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) /" +
-                                " (doc['flatMeshTrees'].values.size() + 1)"
+                                " (doc['flatMeshTrees'].length + 1)"
                         }
                     }
                 }]
@@ -493,7 +493,7 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
                     function_score: {
                         script_score: {
                             script: "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) /" +
-                                " (doc['flatClassifications'].values.size() + 1)"
+                                " (doc['flatClassifications'].length + 1)"
                         }
                     }
                 }]
@@ -700,6 +700,7 @@ export function elasticsearch(type: ModuleItem, query: any, settings: any,
         return cb(new Error('Invalid query'));
     }
     search.body = query;
+    search.body.track_total_hits = true;
     esClient.search(search, (error, resp) => {
         if (error) {
             const response = resp as any as ElasticQueryError;
@@ -738,6 +739,10 @@ export function elasticsearch(type: ModuleItem, query: any, settings: any,
                 , maxScore: response.hits.max_score
                 , took: response.took
             };
+            // @TODO remove after full migration to ES7
+            if (result.totalNumber.value > -1) {
+                result.totalNumber = result.totalNumber.value;
+            }
             result[type + 's'] = [];
             for (const hit of response.hits.hits) {
                 const thisCde = hit._source as DataElementElastic;
