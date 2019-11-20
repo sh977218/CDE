@@ -25,9 +25,8 @@ public class LogClientErrors extends NlmCdeBaseTest {
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Audit"));
         // put tab within display
-        clickElement(By.cssSelector(".mat-tab-header-pagination-chevron"));
-        clickElement(By.cssSelector(".mat-tab-header-pagination-chevron"));
-        clickElement(By.cssSelector(".mat-tab-header-pagination-chevron"));
+        clickElement(By.cssSelector(".mat-tab-header-pagination-after"));
+        clickElement(By.cssSelector(".mat-tab-header-pagination-after"));
         clickElement(By.xpath("//div[. = 'Client Errors']"));
 
 

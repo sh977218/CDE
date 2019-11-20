@@ -147,6 +147,9 @@ export function morelike(id, callback) {
                 page: Math.ceil(from / limit),
                 totalNumber: body.hits.total,
             };
+            if (result.totalNumber.value) {
+                result.totalNumber = result.totalNumber.value;
+            }
             body.hits.hits.forEach(hit => {
                 const thisCde = hit._source;
                 if (thisCde.valueDomain && thisCde.valueDomain.datatype === 'Value List' && thisCde.valueDomain.permissibleValues
