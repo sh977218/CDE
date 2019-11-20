@@ -700,6 +700,7 @@ export function elasticsearch(type: ModuleItem, query: any, settings: any,
         return cb(new Error('Invalid query'));
     }
     search.body = query;
+    search.body.track_total_hits = true;
     esClient.search(search, (error, resp) => {
         if (error) {
             const response = resp as any as ElasticQueryError;
@@ -739,7 +740,7 @@ export function elasticsearch(type: ModuleItem, query: any, settings: any,
                 , took: response.took
             };
             // @TODO remove after full migration to ES7
-            if (result.totalNumber.value) {
+            if (result.totalNumber.value > -1) {
                 result.totalNumber = result.totalNumber.value;
             }
             result[type + 's'] = [];
