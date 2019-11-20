@@ -13,8 +13,8 @@ type CommentWithOrgName = Comment & {organizationName: string} & Dictionary<any>
     templateUrl: './comments.component.html'
 })
 export class CommentsComponent {
-    @ViewChild('commentTable', { read: MatSort, static: false}) commentSort!: MatSort;
-    @ViewChild('commentPage', {static: false}) commentPaginator!: MatPaginator;
+    @ViewChild('commentTable', { read: MatSort, static: true}) commentSort!: MatSort;
+    @ViewChild('commentPage', {static: true}) commentPaginator!: MatPaginator;
     commentColumns: string[] = ['created', 'text', 'type', 'user', 'organizationName'];
     commentTableData!: MatTableDataSource<CommentWithOrgName>;
     commentUrl!: string;

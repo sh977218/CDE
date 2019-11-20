@@ -14,7 +14,7 @@ export class OneListMgtComponent implements OnInit {
     @Input() allKeys!: string[];
     @Input() placeHolder: string = 'Property Keys';
     @Output() save: EventEmitter<any> = new EventEmitter();
-    @ViewChild('keyInput', {static: false}) keyInput!: ElementRef<HTMLInputElement>;
+    @ViewChild('keyInput', {static: true}) keyInput!: ElementRef<HTMLInputElement>;
     filteredKeys!: Observable<string[]>;
     keyControl = new FormControl();
 

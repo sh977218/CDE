@@ -145,10 +145,10 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     private _elt!: CdeForm;
     @Input() canEdit = false;
     @Output() eltChange = new EventEmitter<void>();
-    @ViewChild(TreeComponent, {static: false}) tree!: TreeComponent;
-    @ViewChild('formSearchTmpl', {static: false}) formSearchTmpl!: TemplateRef<any>;
-    @ViewChild('questionSearchTmpl', {static: false}) questionSearchTmpl!: TemplateRef<any>;
-    @ViewChild('descToolbox', {static: false}) descToolbox!: ElementRef;
+    @ViewChild(TreeComponent, {static: true}) tree!: TreeComponent;
+    @ViewChild('formSearchTmpl', {static: true}) formSearchTmpl!: TemplateRef<any>;
+    @ViewChild('questionSearchTmpl', {static: true}) questionSearchTmpl!: TemplateRef<any>;
+    @ViewChild('descToolbox', {static: true}) descToolbox!: ElementRef;
     addQuestionDialogRef?: MatDialogRef<any, any>;
     dragActive = false;
     formElementEditing: any = {};

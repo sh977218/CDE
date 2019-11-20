@@ -141,11 +141,11 @@ export const searchStyles = `
 
 export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     @Input() searchSettingsInput?: SearchSettings;
-    @ViewChild('orgDetailsModal', {static: false}) orgDetailsModal!: TemplateRef<any>;
-    @ViewChild('pinModal', {read: ViewContainerRef, static: false}) pinContainer!: ViewContainerRef;
-    @ViewChild('validRulesModal', {static: false}) validRulesModal!: TemplateRef<any>;
-    @ViewChild('autoCompleteInput', {read: MatAutocompleteTrigger, static: false}) autoCompleteInput!: MatAutocompleteTrigger;
-    @ViewChild(MatPaginator, {static: false}) paginator!: MatPaginator;
+    @ViewChild('orgDetailsModal', {static: true}) orgDetailsModal!: TemplateRef<any>;
+    @ViewChild('pinModal', {read: ViewContainerRef, static: true}) pinContainer!: ViewContainerRef;
+    @ViewChild('validRulesModal', {static: true}) validRulesModal!: TemplateRef<any>;
+    @ViewChild('autoCompleteInput', {read: MatAutocompleteTrigger, static: true}) autoCompleteInput!: MatAutocompleteTrigger;
+    @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
     add!: EventEmitter<any>;
     addMode?: string;
     aggregations?: ElasticQueryResponseAggregation;

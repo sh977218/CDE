@@ -16,7 +16,7 @@ export class RegistrationComponent implements OnInit {
     @Input() canEdit = false;
     @Input() elt!: Item;
     @Output() eltChange = new EventEmitter();
-    @ViewChild('regStatusEdit', {static: false}) regStatusEditModal!: TemplateRef<any>;
+    @ViewChild('regStatusEdit', {static: true}) regStatusEditModal!: TemplateRef<any>;
     helpMessage?: string;
     newState!: RegistrationState;
     validRegStatuses: string[] = ['Retired', 'Incomplete', 'Candidate'];

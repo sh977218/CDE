@@ -71,8 +71,8 @@ export class PermissibleValueComponent {
     }
     _elt!: DataElement;
     @Output() eltChange = new EventEmitter();
-    @ViewChild('newPermissibleValueContent', {static: false}) public newPermissibleValueContent!: TemplateRef<any>;
-    @ViewChild('importPermissibleValueContent', {static: false}) public importPermissibleValueContent!: TemplateRef<any>;
+    @ViewChild('newPermissibleValueContent', {static: true}) public newPermissibleValueContent!: TemplateRef<any>;
+    @ViewChild('importPermissibleValueContent', {static: true}) public importPermissibleValueContent!: TemplateRef<any>;
     readonly dataTypeArray = DATA_TYPE_ARRAY;
     containsKnownSystem = false;
     editMode = false;

@@ -25,12 +25,12 @@ const actionMapping: IActionMapping = {
     templateUrl: './orgClassificationManagement.component.html'
 })
 export class OrgClassificationManagementComponent implements OnInit {
-    @ViewChild('renameClassificationContent', {static: false}) renameClassificationContent!: TemplateRef<any>;
-    @ViewChild('deleteClassificationContent', {static: false}) deleteClassificationContent!: TemplateRef<any>;
-    @ViewChild('reclassifyComponent', {static: false}) reclassifyComponent!: ClassifyItemModalComponent;
-    @ViewChild('addChildClassificationContent', {static: false}) addChildClassificationContent!: TemplateRef<any>;
-    @ViewChild('mapClassificationMeshContent', {static: false}) mapClassificationMeshContent!: TemplateRef<any>;
-    @ViewChild(TreeComponent, {static: false}) private tree!: TreeComponent;
+    @ViewChild('renameClassificationContent', {static: true}) renameClassificationContent!: TemplateRef<any>;
+    @ViewChild('deleteClassificationContent', {static: true}) deleteClassificationContent!: TemplateRef<any>;
+    @ViewChild('reclassifyComponent', {static: true}) reclassifyComponent!: ClassifyItemModalComponent;
+    @ViewChild('addChildClassificationContent', {static: true}) addChildClassificationContent!: TemplateRef<any>;
+    @ViewChild('mapClassificationMeshContent', {static: true}) mapClassificationMeshContent!: TemplateRef<any>;
+    @ViewChild(TreeComponent, {static: true}) private tree!: TreeComponent;
     childClassificationNode?: TreeNode;
     descriptorID!: string;
     descriptorName!: string;

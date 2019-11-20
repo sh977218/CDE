@@ -25,7 +25,7 @@ export class PropertiesComponent implements OnInit {
     @Input() canEdit = false;
     @Input() elt!: DataElement;
     @Output() eltChange = new EventEmitter();
-    @ViewChild('newPropertyContent', {static: false}) newPropertyContent!: TemplateRef<any>;
+    @ViewChild('newPropertyContent', {static: true}) newPropertyContent!: TemplateRef<any>;
     newProperty: Property = new Property();
     onInitDone = false;
     orgPropertyKeys: string[] = [];

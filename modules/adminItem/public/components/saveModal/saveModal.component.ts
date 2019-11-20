@@ -22,7 +22,7 @@ export class SaveModalComponent {
     @Input() elt!: Item;
     @Output() save = new EventEmitter();
     @Output() eltChange = new EventEmitter();
-    @ViewChild('updateElementContent', {static: false}) updateElementContent!: TemplateRef<any>;
+    @ViewChild('updateElementContent', {static: true}) updateElementContent!: TemplateRef<any>;
     duplicatedVersion = false;
     protected newCdes: SaveModalQuestionCde[] = [];
     overrideVersion = false;

@@ -16,7 +16,7 @@ export class ReferenceDocumentComponent {
     @Input() canEdit = false;
     @Input() elt!: DataElement;
     @Output() eltChange = new EventEmitter();
-    @ViewChild('newReferenceDocumentContent', {static: false}) newReferenceDocumentContent!: TemplateRef<any>;
+    @ViewChild('newReferenceDocumentContent', {static: true}) newReferenceDocumentContent!: TemplateRef<any>;
     modalRef!: MatDialogRef<TemplateRef<any>>;
     newReferenceDocument: ReferenceDocument = new ReferenceDocument();
 

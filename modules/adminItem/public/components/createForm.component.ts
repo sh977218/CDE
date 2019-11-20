@@ -38,7 +38,7 @@ export class CreateFormComponent implements OnInit {
     @Input() elt!: CdeForm;
     @Output() done = new EventEmitter();
     @Output() eltChange = new EventEmitter();
-    @ViewChild('classifyItemComponent', {static: false}) classifyItemComponent!: ClassifyItemModalComponent;
+    @ViewChild('classifyItemComponent', {static: true}) classifyItemComponent!: ClassifyItemModalComponent;
     @ViewChildren(TreeComponent) classificationView!: QueryList<TreeComponent>;
     dialogRef!: MatDialogRef<TemplateRef<any>>;
 

@@ -17,7 +17,7 @@ import { Cb, ClassificationClassified } from 'shared/models.model';
 export class CdeClassificationComponent {
     @Input() elt!: DataElement;
     @Output() eltChange = new EventEmitter<DataElement>();
-    @ViewChild('classifyItemComponent', {static: false}) classifyItemComponent!: ClassifyItemModalComponent;
+    @ViewChild('classifyItemComponent', {static: true}) classifyItemComponent!: ClassifyItemModalComponent;
     classifyItemModalRef!: MatDialogRef<TemplateRef<any>>;
 
     constructor(

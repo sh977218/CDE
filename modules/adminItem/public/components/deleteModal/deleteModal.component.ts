@@ -7,7 +7,7 @@ import { MatDialog } from '@angular/material';
 })
 export class DeleteModalComponent {
     @Output() confirm = new EventEmitter();
-    @ViewChild('deleteElementContent', {static: false}) deleteElementContent!: TemplateRef<any>;
+    @ViewChild('deleteElementContent', {static: true}) deleteElementContent!: TemplateRef<any>;
 
     constructor(public dialog: MatDialog) {}
 

@@ -14,8 +14,8 @@ import { DataElement } from 'shared/de/dataElement.model';
 })
 export class MoreLikeThisComponent {
     @Input() elt!: DataElement;
-    @ViewChild('mltModal', {static: false}) mltModal!: TemplateRef<any>;
-    @ViewChild('mltPinModal', {static: false}) mltPinModal!: PinBoardModalComponent;
+    @ViewChild('mltModal', {static: true}) mltModal!: TemplateRef<any>;
+    @ViewChild('mltPinModal', {static: true}) mltPinModal!: PinBoardModalComponent;
     cdes!: DataElement[];
 
     constructor(

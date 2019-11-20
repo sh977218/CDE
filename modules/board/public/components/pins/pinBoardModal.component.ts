@@ -13,8 +13,8 @@ import { Board, Cb, Item, ModuleItem } from 'shared/models.model';
 })
 export class PinBoardModalComponent {
     @Input() module!: ModuleItem;
-    @ViewChild('pinModal', {static: false}) pinModal!: TemplateRef<any>;
-    @ViewChild('ifYouLoginModal', {static: false}) ifYouLoginModal!: TemplateRef<any>;
+    @ViewChild('pinModal', {static: true}) pinModal!: TemplateRef<any>;
+    @ViewChild('ifYouLoginModal', {static: true}) ifYouLoginModal!: TemplateRef<any>;
     dialogRef!: MatDialogRef<TemplateRef<any>>;
     private resolve!: Cb<Board>;
     private reject!: Cb<any>;

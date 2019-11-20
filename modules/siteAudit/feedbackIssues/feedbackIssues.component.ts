@@ -9,8 +9,8 @@ type FeedbackErrorRecord = any;
     templateUrl: './feedbackIssues.component.html'
 })
 export class FeedbackIssuesComponent {
-    @ViewChild('rawHtmlModal', {static: false}) rawHtmlModal!: TemplateRef<any>;
-    @ViewChild('screenshotModal', {static: false}) screenshotModal!: TemplateRef<any>;
+    @ViewChild('rawHtmlModal', {static: true}) rawHtmlModal!: TemplateRef<any>;
+    @ViewChild('screenshotModal', {static: true}) screenshotModal!: TemplateRef<any>;
     currentPage: number = 0;
     records: FeedbackErrorRecord[] = [];
     screenshot?: string;

@@ -17,8 +17,8 @@ import { DeletedNodeEvent } from 'adminItem/public/components/classification/cla
 export class FormClassificationComponent {
     @Input() elt!: CdeForm;
     @Output() eltChange = new EventEmitter<CdeForm>();
-    @ViewChild('classifyCdesComponent', {static: false}) public classifyCdesComponent!: ClassifyItemModalComponent;
-    @ViewChild('classifyItemComponent', {static: false}) public classifyItemComponent!: ClassifyItemModalComponent;
+    @ViewChild('classifyCdesComponent', {static: true}) public classifyCdesComponent!: ClassifyItemModalComponent;
+    @ViewChild('classifyItemComponent', {static: true}) public classifyItemComponent!: ClassifyItemModalComponent;
     classifyCdesModalRef!: MatDialogRef<TemplateRef<any>>;
     classifyItemModalRef!: MatDialogRef<TemplateRef<any>>;
     showProgressBar = false;

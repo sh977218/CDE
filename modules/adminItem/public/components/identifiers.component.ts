@@ -24,7 +24,7 @@ export class IdentifiersComponent {
     }
     @Input() canEdit = false;
     @Output() eltChange = new EventEmitter();
-    @ViewChild('newIdentifierContent', {static: false}) newIdentifierContent!: TemplateRef<any>;
+    @ViewChild('newIdentifierContent', {static: true}) newIdentifierContent!: TemplateRef<any>;
     _elt!: Item;
     dialogRef!: MatDialogRef<TemplateRef<any>>;
     idsLinks: string[] = [];

@@ -80,7 +80,7 @@ const URL_MAP: {[module: string]: string} = {
 })
 export class CompareSideBySideComponent {
     @Input() elements: Item[] = [];
-    @ViewChild('compareSideBySideContent', {static: false}) public compareSideBySideContent!: TemplateRef<any>;
+    @ViewChild('compareSideBySideContent', {static: true}) public compareSideBySideContent!: TemplateRef<any>;
     options: CompareOption[] = [];
     leftUrl?: string;
     rightUrl?: string;

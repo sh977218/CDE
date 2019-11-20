@@ -64,11 +64,11 @@ class LocatableError {
     templateUrl: 'formView.component.html',
 })
 export class FormViewComponent implements OnInit {
-    @ViewChild('commentAreaComponent', {static: false}) commentAreaComponent!: DiscussAreaComponent;
-    @ViewChild('copyFormContent', {static: false}) copyFormContent!: TemplateRef<any>;
-    @ViewChild('mltPinModalCde', {static: false}) mltPinModalCde!: PinBoardModalComponent;
-    @ViewChild('exportPublishModal', {static: false}) exportPublishModal!: TemplateRef<any>;
-    @ViewChild('saveModal', {static: false}) saveModal!: SaveModalComponent;
+    @ViewChild('commentAreaComponent', {static: true}) commentAreaComponent!: DiscussAreaComponent;
+    @ViewChild('copyFormContent', {static: true}) copyFormContent!: TemplateRef<any>;
+    @ViewChild('mltPinModalCde', {static: true}) mltPinModalCde!: PinBoardModalComponent;
+    @ViewChild('exportPublishModal', {static: true}) exportPublishModal!: TemplateRef<any>;
+    @ViewChild('saveModal', {static: true}) saveModal!: SaveModalComponent;
     commentMode?: boolean;
     currentTab = 'preview_tab';
     dialogRef!: MatDialogRef<any>;

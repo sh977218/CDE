@@ -19,7 +19,7 @@ interface Descriptor {
 })
 export class FormTermMappingComponent implements OnInit {
     @Input() elt: any;
-    @ViewChild('newTermMap', {static: false}) public newTermMap!: TemplateRef<any>;
+    @ViewChild('newTermMap', {static: true}) public newTermMap!: TemplateRef<any>;
     descriptor?: Descriptor;
     descToName: any = {};
     flatMeshSimpleTrees: any[] = [];

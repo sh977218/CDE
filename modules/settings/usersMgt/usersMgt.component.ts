@@ -12,7 +12,7 @@ import { MatDialog } from '@angular/material';
     templateUrl: './usersMgt.component.html'
 })
 export class UsersMgtComponent {
-    @ViewChild('newUserContent', {static: false}) newUserContent!: TemplateRef<any>;
+    @ViewChild('newUserContent', {static: true}) newUserContent!: TemplateRef<any>;
     foundUsers: any[] = [];
     newUsername = '';
     search: {username: User | string} = {username: ''};
