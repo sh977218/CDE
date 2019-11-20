@@ -738,6 +738,7 @@ export function elasticsearch(type: ModuleItem, query: any, settings: any,
                 , maxScore: response.hits.max_score
                 , took: response.took
             };
+            // @TODO remove after full migration to ES7
             if (result.totalNumber.value) {
                 result.totalNumber = result.totalNumber.value;
             }

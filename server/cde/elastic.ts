@@ -147,6 +147,7 @@ export function morelike(id, callback) {
                 page: Math.ceil(from / limit),
                 totalNumber: body.hits.total,
             };
+            // @TODO remove after full migration to ES7
             if (result.totalNumber.value) {
                 result.totalNumber = result.totalNumber.value;
             }
