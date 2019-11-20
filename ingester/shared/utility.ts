@@ -767,7 +767,11 @@ export function sortProperties(properties: any[]) {
 }
 
 export function sortDesignations(designations: any[]) {
-    return sortBy(designations, ['designation']);
+    const noTagDesignations = designations.filter(d => isEmpty(d.tags));
+    const tagDesignations = designations.filter(d => !isEmpty(d.tags));
+    const sortNoTagDesignations = sortBy(noTagDesignations, ['designation']);
+    const sortTagDesignations = sortBy(tagDesignations, ['designation']);
+    return sortNoTagDesignations.concat(sortTagDesignations);
 }
 
 export function findOneCde(cdes: any[]) {
@@ -830,7 +834,7 @@ function fixInstructions(fe: any) {
     }
 }
 
-async function fixFormElements(formObj: any) {
+function fixFormElements(formObj: any) {
     const formElements: FormElement[] = [];
     for (const fe of formObj.formElements) {
         const elementType = fe.elementType;
@@ -839,7 +843,7 @@ async function fixFormElements(formObj: any) {
             fixInstructions(fe);
             formElements.push(fe);
         } else {
-            fe.formElements = await fixFormElements(fe);
+            fe.formElements = fixFormElements(fe);
             formElements.push(fe);
         }
     }

@@ -49,7 +49,7 @@ export function parseIds(nindsForms: any[]) {
         ids.push({
             source: 'NINDS',
             id: v,
-            version: _versionNumArray[0]
+            version: parseFloat(_versionNumArray[0]).toString()
         });
     });
     _cadsrIdArray.forEach(v => {

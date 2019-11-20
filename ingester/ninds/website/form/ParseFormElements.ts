@@ -1,98 +1,158 @@
+import { readFile } from 'fs';
+import { isEmpty, uniqWith, unionWith, isEqual } from 'lodash';
+import { parseString } from 'xml2js';
 import { dataElementModel } from 'server/cde/mongo-cde';
-import { cloneDeep, isEmpty, unionWith, isEqual } from 'lodash';
 import { parseAnswers } from 'ingester/ninds/website/cde/ParseValueDomain';
 
-export async function parseFormElements(nindsForms: any[]) {
-    const formElements: any[] = [];
+const NINDS_XML_PATH = 'S:/MLB/CDE/NINDS/11-20-2019/Forms_Report_20190910.xml';
+let formCdeOrderMap = {};
 
-    const nindsQuestionList: any[] = [];
-    const nindsCdeIdList: any[] = [];
-    nindsForms.forEach(nindsForm => {
-        if (!isEmpty(nindsForm.cdes)) {
-            const questions: any[] = [];
-            nindsForm.cdes.forEach((cde: any) => {
-                const _cde = cloneDeep(cde);
-                delete _cde.Disease;
-                delete _cde.Domain;
-                delete _cde['Sub-Domain'];
-                delete _cde.SubDisease;
-                questions.push(_cde);
-            });
-            nindsQuestionList.push(questions);
-        }
-        if (!isEmpty(nindsForm.cdes)) {
-            nindsForm.cdes.forEach((nindsCde: any) => {
-                if (nindsCde['CDE ID']) {
-                    nindsCdeIdList.push(nindsCde['CDE ID']);
+async function getFormCdeOrder() {
+    return new Promise((resolve, reject) => {
+        if (!isEmpty(formCdeOrderMap)) {
+            resolve(formCdeOrderMap);
+        } else {
+            readFile(NINDS_XML_PATH, (fsErr, data) => {
+                if (fsErr) {
+                    reject(fsErr);
+                } else {
+                    parseString(data, (err, result) => {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            result.dataStructureExport.dataStructure =
+                                uniqWith(result.dataStructureExport.dataStructure, (a: any, b: any) => {
+                                    delete a.description;
+                                    delete b.description;
+                                    return isEqual(a, b);
+                                });
+                            formCdeOrderMap = result;
+                            resolve(formCdeOrderMap);
+                        }
+                    });
                 }
             });
         }
     });
+}
 
-    const _nindsQuestionList = unionWith(nindsQuestionList, isEqual);
+function removeExtraField(f: any) {
+    delete f._id;
+    delete f.url;
+    delete f.diseaseName;
+    delete f.subDiseaseName;
+    delete f.domainName;
+    delete f.subDomainName;
+    for (const c of f.cdes) {
+        delete c['Sub Domain Name'];
+        delete c['Domain Name'];
+        delete c.Population;
+        delete c.Classification;
+    }
+}
 
-    if (_nindsQuestionList.length === 0) {
+async function validateNindsForms(nindsForms: any[]) {
+    const temp: any = await getFormCdeOrder();
+    const dataStructures = temp.dataStructureExport.dataStructure.filter((ds: any) => {
+        return ds.title.indexOf(nindsForms[0].formName) !== -1;
+    });
+    const formCdeSortingArrays = dataStructures.filter((ds: any) => {
+        return ds.diseaseList.filter((dl: any) => {
+            return dl.disease.filter((d: any) => {
+                const i = d.name.indexOf(nindsForms[0].diseaseName);
+                return i !== -1;
+            }).length > 0;
+        }).length > 0;
+    });
+    if (formCdeSortingArrays.length !== 1) {
+        console.log(`form ${nindsForms[0].formName} ${nindsForms[0].formId} form cde order xml not found.`);
+        process.exit(1);
+    }
+    const formCdeSortingArray = formCdeSortingArrays[0];
+    const sortingArray = formCdeSortingArray.repeatableGroups[0].mapElements.map((o: any) => o.dataElement[0].name[0]);
+    nindsForms.forEach(f => f.cdes.sort((a: any, b: any) => {
+            return sortingArray.indexOf(a['Variable Name']) - sortingArray.indexOf(b['Variable Name']);
+        }
+    ));
+    const uniqNindsForms = unionWith(nindsForms, (f1, f2) => {
+        removeExtraField(f1);
+        removeExtraField(f2);
+        return isEqual(f1, f2);
+    });
+    if (uniqNindsForms.length !== 1) {
+        console.log(`form ${nindsForms[0].formId} has multiple different forms`);
+        process.exit(1);
+    }
+}
+
+export async function parseFormElements(nindsForms: any[]) {
+//    await validateNindsForms(nindsForms);
+
+    const nindsForm = nindsForms[0];
+    const formElements: any[] = [];
+
+    if (isEmpty(nindsForm.cdes)) {
+        return formElements;
+    } else {
+        formElements.push({
+            elementType: 'section',
+            instructions: {value: ''},
+            label: '',
+            formElements: []
+        });
+        for (const nindsCde of nindsForm.cdes) {
+            const cdeId = nindsCde['CDE ID'];
+            const existingCde: any = await dataElementModel.findOne({
+                archived: false,
+                'ids.id': cdeId,
+                'registrationState.registrationStatus': {$ne: 'Retired'}
+            });
+            if (!existingCde) {
+                console.log(cdeId + ' not exists.');
+                process.exit(1);
+            }
+            const question: any = {
+                cde: {
+                    tinyId: existingCde.tinyId,
+                    name: existingCde.designations[0].designation,
+                    designations: existingCde.designations,
+                    version: existingCde.version,
+                    ids: existingCde.ids
+                },
+                datatype: existingCde.valueDomain.datatype,
+                uom: existingCde.valueDomain.uom
+            };
+            if (question.datatype === 'Value List') {
+                question.answers = parseAnswers(nindsCde);
+                question.cde.permissibleValues = existingCde.valueDomain.permissibleValues;
+                question.multiselect = nindsCde.Instructions === 'Multiple Pre-Defined Values Selected';
+            } else if (question.datatype === 'Text') {
+                question.datatypeText = existingCde.valueDomain.datatypeText;
+            } else if (question.datatype === 'Number') {
+                question.datatypeNumber = existingCde.valueDomain.datatypeNumber;
+            } else if (question.datatype === 'Date') {
+                question.datatypeDate = {
+                    precision: 'Minute'
+                };
+            } else if (question.datatype === 'File') {
+                question.datatypeDate = existingCde.valueDomain.datatypeDate;
+            } else {
+                console.log('Unknown question.datatype: ' + question.datatype + ' cde id: ' + existingCde.ids[0].id);
+                process.exit(1);
+            }
+
+
+            const questionText = nindsCde['Additional Notes (Question Text)'];
+
+            const questionFe = {
+                elementType: 'question',
+                label: questionText === 'N/A' ? '' : questionText,
+                instructions: {value: nindsCde.Instructions},
+                question,
+                formElements: []
+            };
+            formElements[0].formElements.push(questionFe);
+        }
         return formElements;
     }
-
-    formElements.push({
-        elementType: 'section',
-        instructions: {value: ''},
-        label: '',
-        formElements: []
-    });
-    for (const nindsQuestion of _nindsQuestionList[0]) {
-        const cdeId = nindsQuestion['CDE ID'];
-        const existingCde: any = await dataElementModel.findOne({
-            archived: false,
-            'ids.id': cdeId,
-            'registrationState.registrationStatus': {$ne: 'Retired'}
-        });
-        if (!existingCde) {
-            console.log(cdeId + ' not exists.');
-            process.exit(1);
-        }
-        const question: any = {
-            cde: {
-                tinyId: existingCde.tinyId,
-                name: existingCde.designations[0].designation,
-                designations: existingCde.designations,
-                version: existingCde.version,
-                ids: existingCde.ids
-            },
-            datatype: existingCde.valueDomain.datatype,
-            uom: existingCde.valueDomain.uom
-        };
-        if (question.datatype === 'Value List') {
-            question.answers = parseAnswers(nindsQuestion);
-            question.cde.permissibleValues = existingCde.valueDomain.permissibleValues;
-            question.multiselect = nindsQuestion.Instructions === 'Multiple Pre-Defined Values Selected';
-        } else if (question.datatype === 'Text') {
-            question.datatypeText = existingCde.valueDomain.datatypeText;
-        } else if (question.datatype === 'Number') {
-            question.datatypeNumber = existingCde.valueDomain.datatypeNumber;
-        } else if (question.datatype === 'Date') {
-            question.datatypeDate = {
-                precision: 'Minute'
-            };
-        } else if (question.datatype === 'File') {
-            question.datatypeDate = existingCde.valueDomain.datatypeDate;
-        } else {
-            console.log('Unknown question.datatype: ' + question.datatype + ' cde id: ' + existingCde.ids[0].id);
-            process.exit(1);
-        }
-
-
-        const questionText = nindsQuestion['Additional Notes (Question Text)'];
-
-        const questionFe = {
-            elementType: 'question',
-            label: questionText === 'N/A' ? '' : questionText,
-            instructions: {value: nindsQuestion.Instructions},
-            question,
-            formElements: []
-        };
-        formElements[0].formElements.push(questionFe);
-    }
-    return formElements;
 }
