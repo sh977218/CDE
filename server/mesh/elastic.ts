@@ -74,7 +74,12 @@ function doSyncWithMesh(allMappings, callback: ErrorCallback = () => {}) {
 
     async function processScroll(newScrollId: string, s, response, cb) {
         const sName = s.index === config.elastic.index.name ? 'dataelement' : 'form';
-        meshSyncStatus[sName].total = response.hits.total;
+        // @TODO remove after ES7 upgrade
+        let total = response.hits.total;
+        if (total.value > -1) {
+            total = total.value;
+        }
+        meshSyncStatus[sName].total = total;
         if (response.hits.hits.length > 0) {
             const request: any = {body: []};
             response.hits.hits.forEach(hit => {
