@@ -288,12 +288,18 @@ gulp.task('copyUsemin', ['usemin'], function usemin() {
 
 gulp.task('es', function es() {
     const esClient = new elasticsearch.Client({
-        nodes: config.elastic.hosts
+        nodes: config.elastic.hosts.map((s: string) => (
+            {
+                url: new URL(s),
+                ssl: {rejectUnauthorized: false}
+            }
+        ))
     });
     return Promise.all(
         indices.map((index: ElasticIndex) => new Promise((resolve, reject) => {
             console.log('Deleting es index: ' + index.indexName);
             esClient.indices.delete({index: index.indexName, timeout: '6s'});
+            resolve();
         }))
     );
 });

@@ -16,7 +16,8 @@ import { config } from 'server/system/parseConfig';
 import { DataElementElastic } from 'shared/de/dataElement.model';
 import { CdeFormElastic } from 'shared/form/form.model';
 import {
-    Cb, Cb1, CbError, CbError1, ElasticQueryError, ElasticQueryResponse, ElasticQueryResponseAggregations, ItemElastic, ModuleItem,
+    Cb, Cb1, CbError, CbError1, ElasticQueryError, ElasticQueryResponse, ElasticQueryResponseAggregations, ItemElastic,
+    ModuleItem,
     SearchResponseAggregationDe, SearchResponseAggregationForm,
     SearchResponseAggregationItem,
     User
@@ -46,7 +47,12 @@ interface DbStream {
 }
 
 export const esClient = new Client({
-    nodes: config.elastic.hosts
+    nodes: config.elastic.hosts.map((s: string) => (
+        {
+            url: new URL(s),
+            ssl: {rejectUnauthorized: false}
+        }
+    ))
 });
 
 export function removeElasticFields(elt: DataElementElastic): DataElementElastic;
@@ -67,16 +73,6 @@ export function removeElasticFields(elt: ItemElastic): ItemElastic {
     delete elt.usedByOrgs;
     delete elt.registrationState.registrationStatusSortOrder;
     return elt;
-}
-
-export function nbOfCdes(cb: CbError<number>) {
-    esClient.count({index: config.elastic.index.name}, (err, result) => {
-        cb(err, result.count);
-    });
-}
-
-export function nbOfForms(cb: CbError<number>) {
-    esClient.count({index: config.elastic.formIndex.name}, (err, result) => cb(err, result.count));
 }
 
 const queryDe: DbQuery = {
@@ -157,7 +153,9 @@ export function reIndexStream(dbStream: DbStream, cb?: Cb) {
         };
 
         dbStream.query.dao.count(dbStream.query.condition, (err: Error | undefined, totalCount: number) => {
-            if (err) { consoleLog(`Error getting count: ${err}`, 'error'); }
+            if (err) {
+                consoleLog(`Error getting count: ${err}`, 'error');
+            }
             consoleLog('Total count for ' + dbStream.query.dao.name + ' is ' + totalCount);
             dbStream.indexes.forEach(index => {
                 index.totalCount = totalCount;
@@ -264,7 +262,8 @@ function createIndex(dbStream: DbStream, cb: Cb) {
     });
 }
 
-export function initEs(cb: Cb = () => {}) {
+export function initEs(cb: Cb = () => {
+}) {
     const dbStreams: DbStream[] = [];
     indices.forEach((index: ElasticIndex) => {
         const match = dbStreams.filter(s => s.query === daoMap[index.name])[0];
@@ -464,7 +463,7 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
                     function_score: {
                         script_score: {
                             script: "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) /" +
-                                " (doc['flatMeshTrees'].values.size() + 1)"
+                                " (doc['flatMeshTrees'].length + 1)"
                         }
                     }
                 }]
@@ -483,7 +482,7 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
                     function_score: {
                         script_score: {
                             script: "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) /" +
-                                " (doc['flatClassifications'].values.size() + 1)"
+                                " (doc['flatClassifications'].length + 1)"
                         }
                     }
                 }]
@@ -544,7 +543,7 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
                             field: 'classification.stewardOrg.name',
                             size: 500,
                             order: {
-                                _key: 'desc'
+                                _term: 'desc'
                             }
                         }
                     }
@@ -690,7 +689,8 @@ export function elasticsearch(type: ModuleItem, query: any, settings: any,
         return cb(new Error('Invalid query'));
     }
     search.body = query;
-    esClient.search(search, (error, resp: any) => {
+    search.body.track_total_hits = true;
+    esClient.search(search, (error: any, resp: any) => {
         if (error) {
             const response = resp as any as ElasticQueryError;
             if (response && response.status) {
@@ -707,7 +707,8 @@ export function elasticsearch(type: ModuleItem, query: any, settings: any,
                 let querystr = 'cannot stringify query';
                 try {
                     querystr = JSON.stringify(query);
-                } catch (e) {}
+                } catch (e) {
+                }
                 errorLogger.error('Error: ElasticSearch Error',
                     {
                         origin: 'system.elastic.elasticsearch',
@@ -727,6 +728,10 @@ export function elasticsearch(type: ModuleItem, query: any, settings: any,
                 , maxScore: response.hits.max_score
                 , took: response.took
             };
+            // @TODO remove after full migration to ES7
+            if (result.totalNumber.value > -1) {
+                result.totalNumber = result.totalNumber.value;
+            }
             result[type + 's'] = [];
             for (const hit of response.hits.hits) {
                 const thisCde = hit._source as DataElementElastic;
@@ -807,6 +812,7 @@ export function scrollExport(query: any, type: ModuleItem, cb: CbError<any>) {
     search.scroll = '1m';
     search.body = query;
 
+    // @ts-ignore
     esClient.search(search, cb);
 }
 
