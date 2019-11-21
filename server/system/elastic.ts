@@ -16,7 +16,8 @@ import { config } from 'server/system/parseConfig';
 import { DataElementElastic } from 'shared/de/dataElement.model';
 import { CdeFormElastic } from 'shared/form/form.model';
 import {
-    Cb, Cb1, CbError, CbError1, ElasticQueryError, ElasticQueryResponse, ElasticQueryResponseAggregations, ItemElastic, ModuleItem,
+    Cb, Cb1, CbError, CbError1, ElasticQueryError, ElasticQueryResponse, ElasticQueryResponseAggregations, ItemElastic,
+    ModuleItem,
     SearchResponseAggregationDe, SearchResponseAggregationForm,
     SearchResponseAggregationItem,
     User
@@ -47,7 +48,12 @@ interface DbStream {
 }
 
 export const esClient = new Client({
-    nodes: config.elastic.hosts
+    nodes: config.elastic.hosts.map((s: string) => (
+        {
+            url: new URL(s),
+            ssl: {rejectUnauthorized: false}
+        }
+    ))
 });
 
 export function removeElasticFields(elt: DataElementElastic): DataElementElastic;
@@ -158,7 +164,9 @@ export function reIndexStream(dbStream: DbStream, cb?: Cb) {
         };
 
         dbStream.query.dao.count(dbStream.query.condition, (err: Error | undefined, totalCount: number) => {
-            if (err) { consoleLog(`Error getting count: ${err}`, 'error'); }
+            if (err) {
+                consoleLog(`Error getting count: ${err}`, 'error');
+            }
             consoleLog('Total count for ' + dbStream.query.dao.name + ' is ' + totalCount);
             dbStream.indexes.forEach(index => {
                 index.totalCount = totalCount;
@@ -265,7 +273,8 @@ function createIndex(dbStream: DbStream, cb: Cb) {
     });
 }
 
-export function initEs(cb: Cb = () => {}) {
+export function initEs(cb: Cb = () => {
+}) {
     const dbStreams: DbStream[] = [];
     indices.forEach((index: ElasticIndex) => {
         const match = dbStreams.filter(s => s.query === daoMap[index.name])[0];
@@ -465,7 +474,7 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
                     function_score: {
                         script_score: {
                             script: "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) /" +
-                                " (doc['flatMeshTrees'].values.size() + 1)"
+                                " (doc['flatMeshTrees'].length + 1)"
                         }
                     }
                 }]
@@ -484,7 +493,7 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
                     function_score: {
                         script_score: {
                             script: "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) /" +
-                                " (doc['flatClassifications'].values.size() + 1)"
+                                " (doc['flatClassifications'].length + 1)"
                         }
                     }
                 }]
@@ -691,6 +700,7 @@ export function elasticsearch(type: ModuleItem, query: any, settings: any,
         return cb(new Error('Invalid query'));
     }
     search.body = query;
+    search.body.track_total_hits = true;
     esClient.search(search, (error, resp) => {
         if (error) {
             const response = resp as any as ElasticQueryError;
@@ -729,6 +739,10 @@ export function elasticsearch(type: ModuleItem, query: any, settings: any,
                 , maxScore: response.hits.max_score
                 , took: response.took
             };
+            // @TODO remove after full migration to ES7
+            if (result.totalNumber.value > -1) {
+                result.totalNumber = result.totalNumber.value;
+            }
             result[type + 's'] = [];
             for (const hit of response.hits.hits) {
                 const thisCde = hit._source as DataElementElastic;
