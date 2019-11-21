@@ -491,7 +491,6 @@ function doCompareArrayImpl(currentArray: any[], priorArray: any[], option: any)
         return equal;
     });
     option.result = inCurrentNotInPrior.concat(inPriorNotInCurrent).concat(inPriorInCurrent);
-    console.log('a');
 }
 
 function fixFormElement(f: FormElement) {

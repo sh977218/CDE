@@ -18,7 +18,8 @@
                 <div class="arrayObj arrayObjEdit" *ngIf="r.edit">
                     <div *ngFor="let d of option.data" class="{{d.label}}">
                         <strong>{{d.label}}:</strong>
-                        <pre lineDiff [left]="r.priorElt[d.property]" [right]="r.currentElt[d.property]"></pre>
+                        <pre lineDiff [left]="r.priorElt[d.property]?r.priorElt[d.property]:''"
+                             [right]="r.currentElt[d.property]?r.currentElt[d.property]:''"></pre>
                     </div>
                 </div>
             </div>
