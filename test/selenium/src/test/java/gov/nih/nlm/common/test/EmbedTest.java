@@ -70,7 +70,7 @@ public class EmbedTest extends NlmCdeBaseTest {
 
         scrollTo(2600);
         driver.switchTo().frame("previewFrame");
-        // https://bugs.chromium.org/p/chromedriver/issues/detail?id=2198
+        // https://bugs.chromium.org/p/chromedriver/issues/detail?id=2198is
         hangon(2);
         findElement(By.id("poweredByNihCde"));
         findElement(By.id("ftsearch-input")).sendKeys("Ethnicity");
@@ -105,6 +105,10 @@ public class EmbedTest extends NlmCdeBaseTest {
         textPresent("Demographics");
 
         driver.switchTo().defaultContent();
+
+        clickElement(By.id("saveEmbed"));
+        checkAlert("Saved.");
+
         goHome();
         goToEmbedding();
         clickElement(By.id("removeEmbed-0"));
@@ -118,7 +122,6 @@ public class EmbedTest extends NlmCdeBaseTest {
             findElement(By.id("confirmRemoveEmbed-0")).click();
         }
         textPresent("Removed");
-
     }
 
 }
