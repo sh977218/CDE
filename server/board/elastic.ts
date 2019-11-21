@@ -2,16 +2,13 @@ import * as ElasticSearch from '@elastic/elasticsearch';
 import { config } from 'server/system/parseConfig';
 import { createIndexJson as boardCreateIndexJson } from 'server/board/elasticSearchMapping';
 import { shortHash } from 'server/system/elasticSearchInit';
+import { esClient } from 'server/system/elastic';
 
 if (config.elastic.boardIndex.name === 'auto') {
     config.elastic.boardIndex.name = 'board_' + shortHash(boardCreateIndexJson);
 }
 
 const boardIndexName = config.elastic.boardIndex.name;
-
-const esClient = new ElasticSearch.Client({
-    nodes: config.elastic.hosts
-});
 
 export function boardRefresh() {
     return esClient.indices.refresh({index: config.elastic.boardIndex.name});
