@@ -51,11 +51,10 @@ import { startServer } from 'server/system/ioServer';
 import { errorLogger, expressLogger } from 'server/system/logging';
 import * as daoManager from 'server/system/moduleDaoManager';
 import { sessionStore } from 'server/system/mongo-data';
-import { banHackers, banIp, blockBannedIps } from 'server/system/trafficFilterSvc';
+import { banHackers, blockBannedIps } from 'server/system/trafficFilterSvc';
 import { module as userModule } from 'server/user/userRoutes';
 import { module as utsModule } from 'server/uts/utsRoutes';
 import { isOrgAuthority, isOrgCurator } from 'shared/system/authorizationShared';
-import { consoleLog } from 'server/log/dbLogger';
 
 const config = Config as any;
 const domain = Domain.create();

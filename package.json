@@ -58,7 +58,11 @@
       "**/server/board/*",
       "**/server/cde/*",
       "**/server/classification/*",
+<<<<<<< HEAD
       "**/server/embed/*",
+=======
+      "**/server/discuss/*",
+>>>>>>> ff8ec3165c45dcfa6372b05e5e0d2f63eff569af
       "**/server/form/*",
       "**/server/discuss/*",
       "**/server/log/*",
@@ -78,7 +82,7 @@
     ],
     "lines": "95",
     "branches": "81",
-    "functions": "95",
+    "functions": "97",
     "reporter": "html"
   },
   "dependencies": {
@@ -116,7 +120,6 @@
     "gridfs-stream": "^1.1.1",
     "helmet": "^3.12.0",
     "indexeddbshim": "^3.10.0",
-    "ingester": "file:./ingester",
     "istanbul-instrumenter-loader": "^3.0.1",
     "js2xmlparser": "1.0.0",
     "json2csv": "^4.3.2",
