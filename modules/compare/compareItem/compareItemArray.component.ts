@@ -465,21 +465,30 @@ function doCompareArray(newer: any, older: any, options: any[]) {
 function doCompareArrayImpl(currentArray: any[], priorArray: any[], option: any) {
     const inCurrentNotInPrior = _differenceWith(currentArray, priorArray, option.isEqual).map(o => {
         const temp: any = {};
-        temp.data = o;
+        temp.currentElt = o;
+        temp.priorElt = o;
         temp.add = true;
         return temp;
     });
     const inPriorNotInCurrent = _differenceWith(priorArray, currentArray, option.isEqual).map(o => {
         const temp: any = {};
-        temp.data = o;
+        temp.currentElt = o;
+        temp.priorElt = o;
         temp.remove = true;
         return temp;
     });
-    const inPriorInCurrent = _intersectionWith(priorArray, currentArray, option.isEqual).map(o => {
-        const temp: any = {};
-        temp.data = o;
-        temp.edit = !_isEmpty(o.diff);
-        return temp;
+    const inPriorInCurrent = [];
+    _intersectionWith(priorArray, currentArray, (a, b) => {
+        const equal = option.isEqual(a, b);
+        if (equal) {
+            const temp: any = {};
+            temp.currentElt = b;
+            temp.priorElt = a;
+            const diff = new Set().add(a.diff).add(b.diff);
+            temp.edit = !_isEmpty(diff);
+            inPriorInCurrent.push(temp);
+        }
+        return equal;
     });
     option.result = inCurrentNotInPrior.concat(inPriorNotInCurrent).concat(inPriorInCurrent);
     console.log('a');

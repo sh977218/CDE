@@ -5,30 +5,20 @@
             <div class="col-12" id="{{option.label}}_{{i}}">
                 <div class="arrayObj arrayObjAdd" *ngIf="r.add">
                     <div *ngFor="let d of option.data" class="{{d.label}}">
-                        <div *ngIf="r.data[d.property]">
-                            <strong>{{d.label}}:</strong>
-                            <a *ngIf="d.url" target="_blank" [href]=d.url+r.data[d.property]>
-                                {{r.data[d.property]}}</a>
-                            <span>{{r.data[d.property] | json}}</span>
-                        </div>
+                        <strong>{{d.label}}:</strong>
+                        <span>{{r.currentElt[d.property]}}</span>
                     </div>
                 </div>
                 <div class="arrayObj arrayObjRemove" *ngIf="r.remove">
                     <div *ngFor="let d of option.data" class="{{d.label}}">
-                        <div *ngIf="r.data[d.property]">
-                            <strong>{{d.label}}:</strong>
-                            <a *ngIf="d.url" target="_blank" [href]=d.url+r.data[d.property]>
-                                {{r.data[d.property]}}</a>
-                            <span>{{r.data[d.property] | json}}</span>
-                        </div>
+                        <strong>{{d.label}}:</strong>
+                        <span>{{r.priorElt[d.property]}}</span>
                     </div>
                 </div>
                 <div class="arrayObj arrayObjEdit" *ngIf="r.edit">
                     <div *ngFor="let d of option.data" class="{{d.label}}">
-                        <div *ngIf="r.data[d.property]">
-                            <strong>{{d.label}}:</strong>
-                            <pre lineDiff [left]="r.current[d.property]" [right]="r.prior.older"></pre>
-                        </div>
+                        <strong>{{d.label}}:</strong>
+                        <pre lineDiff [left]="r.priorElt[d.property]" [right]="r.currentElt[d.property]"></pre>
                     </div>
                 </div>
             </div>
