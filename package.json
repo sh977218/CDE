@@ -58,6 +58,7 @@
       "**/server/board/*",
       "**/server/cde/*",
       "**/server/classification/*",
+      "**/server/discuss/*",
       "**/server/form/*",
       "**/server/discuss/*",
       "**/server/log/*",
@@ -77,7 +78,7 @@
     ],
     "lines": "95",
     "branches": "81",
-    "functions": "95",
+    "functions": "97",
     "reporter": "html"
   },
   "dependencies": {
@@ -115,7 +116,6 @@
     "gridfs-stream": "^1.1.1",
     "helmet": "^3.12.0",
     "indexeddbshim": "^3.10.0",
-    "ingester": "file:./ingester",
     "istanbul-instrumenter-loader": "^3.0.1",
     "js2xmlparser": "1.0.0",
     "json2csv": "^4.3.2",
