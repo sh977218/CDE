@@ -5,10 +5,7 @@ import { riverFunction, suggestRiverFunction } from 'server/system/elasticSearch
 import { config } from 'server/system/parseConfig';
 import { CdeFormElastic } from 'shared/form/form.model';
 import { CbError } from 'shared/models.model';
-
-const esClient = new elastic.Client({
-    nodes: config.elastic.hosts
-});
+import { esClient } from 'server/system/elastic';
 
 export function updateOrInsert(elt) {
     riverFunction(elt.toObject(), doc => {

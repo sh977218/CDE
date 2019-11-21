@@ -10,15 +10,14 @@
       "ESNext",
       "DOM"
     ],
-    "module": "ES2015",
+    "module": "CommonJS",
     "moduleResolution": "Node",
-    "outDir": "./buildWebStorm",
-    "pretty": false,
+    "outDir": "./buildNode",
+    "pretty": true,
     "resolveJsonModule": true,
     "rootDir": ".",
-    "sourceMap": false,
-    "strict": true,
-    "target": "ES5",
+    "sourceMap": true,
+    "target": "ESNext",
     "typeRoots": [
       "node_modules/@types"
     ]
@@ -33,11 +32,10 @@
     "deploy",
     "dist",
     "ingester",
-    "modules/form/public/assets",
+    "modules",
     "node_modules",
     "protractor",
     "scripts",
-    "server",
     "test"
   ]
 }
