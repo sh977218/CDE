@@ -58,11 +58,8 @@
       "**/server/board/*",
       "**/server/cde/*",
       "**/server/classification/*",
-<<<<<<< HEAD
       "**/server/embed/*",
-=======
       "**/server/discuss/*",
->>>>>>> ff8ec3165c45dcfa6372b05e5e0d2f63eff569af
       "**/server/form/*",
       "**/server/discuss/*",
       "**/server/log/*",
