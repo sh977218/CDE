@@ -8,12 +8,12 @@ import {
 import { config } from 'server/system/parseConfig';
 import { isSearchEngine } from 'server/system/helper';
 import { byTinyIdVersion as formByTinyIdVersion, formModel } from 'server/form/mongo-form';
-import { respondHomeFull } from 'server/system/app';
 import { validateBody } from 'server/system/bodyValidator';
 import { completionSuggest, elasticSearchExport, removeElasticFields, scrollExport, scrollNext } from 'server/system/elastic';
 import { getEnvironmentHost } from 'shared/env';
 import { CbErr } from 'shared/models.model';
 import { stripBsonIdsElt } from 'shared/system/exportShared';
+import { respondHomeFull } from 'server/system/systemRouters';
 
 const _ = require('lodash');
 const dns = require('dns');

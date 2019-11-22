@@ -9,7 +9,6 @@ import * as mongoCde from 'server/cde/mongo-cde';
 import { validatePvs } from 'server/cde/utsValidate';
 import { handleError, handleNotFound } from 'server/errorHandler/errorHandler';
 import { status } from 'server/siteAdmin/status';
-import { respondHomeFull } from 'server/system/app';
 import {
     canCreateMiddleware, canEditByTinyIdMiddleware, canEditMiddleware,
     isOrgAuthorityMiddleware, isOrgCuratorMiddleware, nocacheMiddleware
@@ -18,6 +17,7 @@ import { buildElasticSearchQuery, completionSuggest, elasticSearchExport, remove
 import { isSearchEngine } from 'server/system/helper';
 import { config } from 'server/system/parseConfig';
 import { stripBsonIdsElt } from 'shared/system/exportShared';
+import { respondHomeFull } from 'server/system/systemRouters';
 
 const canEditMiddlewareDe = canEditMiddleware(mongoCde);
 const canEditByTinyIdMiddlewareDe = canEditByTinyIdMiddleware(mongoCde);

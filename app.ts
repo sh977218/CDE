@@ -35,13 +35,12 @@ import { init as formInit } from 'server/form/app';
 import * as mongo_form from 'server/form/mongo-form';
 import { module as meshModule } from 'server/mesh/meshRoutes';
 import { module as siteAdminModule } from 'server/siteAdmin/siteAdminRoutes';
-import { module as systemModule } from 'server/system/systemRouters';
+import { module as systemModule, respondHomeFull } from 'server/system/systemRouters';
 import { module as orgManagementModule } from 'server/orgManagement/orgManagementRoutes';
 import { module as notificationModule } from 'server/notification/notificationRouters';
 import { module as nativeRenderModule } from 'server/nativeRender/nativeRenderRouters';
 import { module as embedModule } from 'server/embed/embedRouters';
 import { module as fhirModule } from 'server/fhir/fhirRouters';
-import { init as systemInit, respondHomeFull } from 'server/system/app';
 import { init as authInit, ticketAuth } from 'server/user/authentication';
 import {
     canApproveAttachmentMiddleware, canApproveCommentMiddleware, checkOwnership, isDocumentationEditor,
@@ -323,7 +322,6 @@ try {
     app.use('/', embedModule());
     app.use('/', fhirModule());
     cdeInit(app, daoManager);
-    systemInit(app);
     formInit(app, daoManager);
     app.use('/server/board', boardModule());
     swaggerInit(app);
