@@ -407,6 +407,7 @@ export interface EmbedItem {
     nbOfQuestions?: boolean; // form only
     otherNames?: {
         label: string,
+        tags: string,
         contextName: string
     }[];
     pageSize: number;

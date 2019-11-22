@@ -106,8 +106,6 @@ public class EmbedTest extends NlmCdeBaseTest {
 
         driver.switchTo().defaultContent();
 
-        // enable save button
-        findElement(By.id("cde.registrationStatus.label")).sendKeys("1");
         clickElement(By.id("saveEmbed"));
         checkAlert("Saved.");
 
