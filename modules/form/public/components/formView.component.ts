@@ -68,7 +68,7 @@ export class FormViewComponent implements OnInit {
     @ViewChild('copyFormContent', {static: true}) copyFormContent!: TemplateRef<any>;
     @ViewChild('mltPinModalCde', {static: true}) mltPinModalCde!: PinBoardModalComponent;
     @ViewChild('exportPublishModal', {static: true}) exportPublishModal!: TemplateRef<any>;
-    @ViewChild('saveModal', {static: true}) saveModal!: SaveModalComponent;
+    @ViewChild('saveModal', {static: false}) saveModal!: SaveModalComponent;
     commentMode?: boolean;
     currentTab = 'preview_tab';
     dialogRef!: MatDialogRef<any>;
