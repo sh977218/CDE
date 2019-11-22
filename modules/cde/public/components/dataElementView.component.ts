@@ -40,7 +40,7 @@ import { SaveModalComponent } from 'adminItem/public/components/saveModal/saveMo
 export class DataElementViewComponent implements OnInit {
     @ViewChild('commentAreaComponent', {static: true}) commentAreaComponent!: DiscussAreaComponent;
     @ViewChild('copyDataElementContent', {static: true}) copyDataElementContent!: TemplateRef<any>;
-    @ViewChild('saveModal', {static: true}) saveModal!: SaveModalComponent;
+    @ViewChild('saveModal', {static: false}) saveModal!: SaveModalComponent;
     commentMode?: boolean;
     currentTab = 'general_tab';
     displayStatusWarning?: boolean;
