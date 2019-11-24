@@ -172,8 +172,10 @@ async function doDomainTable(disorder: any, domainElement: any, domainName: stri
             const formName = await tds[0].getText();
             const formIdElements = await tds[0].findElements(By.xpath('./a'));
             let formId = '';
+            let downloadLink = '';
             if (formIdElements.length === 1) {
                 formId = await formIdElements[0].getAttribute('title');
+                downloadLink = await formIdElements[0].getAttribute('href');
             } else {
                 console.log('No formId found.');
                 process.exit(1);
@@ -185,7 +187,8 @@ async function doDomainTable(disorder: any, domainElement: any, domainName: stri
                 domainName,
                 subDomainName,
                 formName,
-                formId
+                formId,
+                downloadLink
             };
             const existingNinds = await NindsModel.findOne(ninds);
             if (existingNinds) {
@@ -255,6 +258,7 @@ async function doDisorder(disorder: any) {
 }
 
 async function run() {
+    console.log(`Start loader at ${new Date()}`);
 //    for (const disorder of DISORDERS.slice(0, 1)) {
     for (const disorder of DISORDERS) {
         await doDisorder(disorder);
@@ -262,4 +266,9 @@ async function run() {
 }
 
 run().then(() => {
-}, error => console.log(error));
+    console.log(`Finished loader at ${new Date()}`);
+    process.exit(0);
+}, error => {
+    console.log(error);
+    process.exit(1);
+});

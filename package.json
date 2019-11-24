@@ -253,6 +253,7 @@
     "hard-source-webpack-plugin": "0.5.16",
     "html-loader": "0.5.1",
     "intl": "1.2.5",
+    "ingester": "file:./ingester",
     "js-toggle-switch": "0.1.0",
     "json-beautify": "1.0.1",
     "jszip": "3.1.3",

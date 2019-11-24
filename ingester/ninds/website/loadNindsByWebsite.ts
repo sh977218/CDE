@@ -69,13 +69,14 @@ async function retireNindsCdes() {
             removeNindsClassification(cdeObj);
             if (cdeObj.classification.length < 1) {
                 retiredElt(cdeObj);
-                await updateCde(cdeObj, BATCHLOADER);
                 retiredCdeCount++;
-                if (retiredCdeCount % 100 === 0) {
-                    console.log('retiredCdeCount: ' + retiredCdeCount);
-                }
                 console.log(`retire Cde: ${cdeObj.tinyId}`);
             }
+            await updateCde(cdeObj, BATCHLOADER);
+            if (retiredCdeCount % 100 === 0) {
+                console.log('retiredCdeCount: ' + retiredCdeCount);
+            }
+
         }
     });
     console.log('retiredCdeCount: ' + retiredCdeCount);
@@ -97,12 +98,12 @@ async function retireNindsForms() {
             removeNindsClassification(formObj);
             if (formObj.classification.length < 1) {
                 retiredElt(formObj);
-                await updateForm(formObj, BATCHLOADER);
                 retiredFormCount++;
-                if (retiredFormCount % 100 === 0) {
-                    console.log('retiredFormCount: ' + retiredFormCount);
-                }
                 console.log(`retire Form: ${formObj.tinyId}`);
+            }
+            await updateForm(formObj, BATCHLOADER);
+            if (retiredFormCount % 100 === 0) {
+                console.log('retiredFormCount: ' + retiredFormCount);
             }
         }
     });

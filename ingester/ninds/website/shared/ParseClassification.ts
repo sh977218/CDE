@@ -20,9 +20,18 @@ export function parseClassification(nindsForms: any[], item: any) {
         if (!isEmpty(nindsForm.subDomainName)) {
             temp.subDomainName = nindsForm.subDomainName;
         }
-        if (nindsForm.cdes && nindsForm.cdes.length && type === 'cde') {
-            temp.population = nindsForm.cdes[0].Population;
-            temp.classification = nindsForm.cdes[0].Classification;
+        if (!isEmpty(nindsForm.cdes)) {
+            const population = [];
+            const classification = [];
+            nindsForm.cdes.forEach(c => {
+                population.push(c.Population);
+                classification.push(c.Classification);
+            });
+            temp.population = uniq(population);
+            temp.classification = uniq(classification);
+        } else {
+            temp.population = [];
+            temp.classification = [];
         }
         classificationArray.push(temp);
     });
@@ -42,10 +51,12 @@ export function parseClassification(nindsForms: any[], item: any) {
             subDomainToAdd.push(c.subDiseaseName);
         }
 
-        if (!isEmpty(c.classification) && type === 'cde') {
-            classificationToAdd.push('Classification');
-            classificationToAdd.push(c.classification);
-            classifyItem(item, 'NINDS', classificationToAdd);
+        if (!isEmpty(c.classification)) {
+            c.classification.forEach(classification => {
+                classificationToAdd.push('Classification');
+                classificationToAdd.push(classification);
+                classifyItem(item, 'NINDS', classificationToAdd);
+            });
         }
 
         if (!isEmpty(c.domainName)) {
@@ -65,16 +76,19 @@ export function parseClassification(nindsForms: any[], item: any) {
         classifyItem(item, 'NINDS', subDomainToAdd);
 
 
-        if (!isEmpty(c.population) && type === 'cde') {
-            const populationArray = c.population.split(';');
-            populationArray.forEach((p: any) => {
-                if (p && p.trim()) {
-                    const populationToAdd = [];
-                    populationToAdd.push('Population');
-                    populationToAdd.push(p);
-                    classifyItem(item, 'NINDS', populationToAdd);
-                }
-            });
+        if (!isEmpty(c.population)) {
+            c.population.forEach(population => {
+                const populationArray = population.split(';');
+                populationArray.forEach((p: any) => {
+                    if (p && p.trim()) {
+                        const populationToAdd = [];
+                        populationToAdd.push('Population');
+                        populationToAdd.push(p);
+                        classifyItem(item, 'NINDS', populationToAdd);
+                    }
+                });
+            })
+
         }
 
         sortClassification(item);

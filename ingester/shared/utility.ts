@@ -185,6 +185,7 @@ export function updateForm(elt: any, user: any, options: any = {}) {
         const isPhenX = elt.ids.filter(id => id.source === 'PhenX').length > 0;
         const isQualified = elt.registrationState.registrationStatus === 'Qualified';
         const isArchived = elt.archived;
+
         if (isPhenX && isQualified && !isArchived) {
             options.skipFormElements = true;
         }
@@ -294,11 +295,12 @@ export function compareElt(newEltObj, existingEltObj, source) {
     const isPhenX = existingEltObj.ids.filter(id => id.source === 'PhenX').length > 0;
     const isQualified = existingEltObj.registrationState.registrationStatus === 'Qualified';
     const isArchived = existingEltObj.archived;
+    const updatedByBatchloader = existingEltObj.updatedBy.username === BATCHLOADER_USERNAME;
     const isForm = existingEltObj.elementType === 'form';
     const isCde = existingEltObj.elementType === 'cde';
 
     // PhenX Qualified form not need to compare formElements
-    if (isForm && isPhenX && isQualified && !isArchived) {
+    if (isForm && isPhenX && isQualified && !isArchived && updatedByBatchloader) {
         delete existingEltObj.formElements;
         delete newEltObj.formElements;
     }
@@ -507,6 +509,7 @@ export function mergeElt(existingEltObj: any, newEltObj: any, source: string) {
     const isQualified = existingEltObj.registrationState.registrationStatus === 'Qualified';
     const isArchived = existingEltObj.archived;
 
+    const updatedByBatchloader = existingEltObj.updatedBy.username === BATCHLOADER_USERNAME;
 
     existingEltObj.imported = imported;
     existingEltObj.changeNote = lastMigrationScript;
@@ -536,6 +539,7 @@ export function mergeElt(existingEltObj: any, newEltObj: any, source: string) {
         // EXCEPTIONS
         // Those 50 qualified phenx forms , loader skip form elements.
         if (isPhenX && !isArchived && isQualified) {
+        } else if (!updatedByBatchloader) {
         } else {
             existingEltObj.formElements = newEltObj.formElements;
         }
@@ -807,9 +811,22 @@ function fixSourcesUpdated(sources: any[]) {
     return sources;
 }
 
+function fixIdentifier(ids: any[]) {
+    ids.forEach(i => {
+        if (!isEmpty(i.version)) {
+            i.version = parseFloat(i.version).toString();
+        }
+        if (i.source === 'NINDS Variable Name') {
+            i.source = 'BRICS Variable Name';
+        }
+    });
+    return ids;
+}
+
 export async function fixCde(cdeToFix: any) {
     const cdeToFixObj = cdeToFix.toObject();
     cdeToFix.designations = sortDesignations(cdeToFixObj.designations);
+    cdeToFix.ids = fixIdentifier(cdeToFixObj.ids);
     const savedCde = await cdeToFix.save().catch((err: any) => {
         console.log(`Not able to save cde when fixCde ${cdeToFixObj.tinyId} ${err}`);
         process.exit(1);
@@ -855,6 +872,7 @@ export async function fixForm(formToFix: any) {
     formToFix.sources = fixSourcesUpdated(formToFixObj.sources);
     formToFix.designations = sortDesignations(formToFixObj.designations);
     formToFix.formElements = fixFormElements(formToFixObj);
+    formToFix.ids = fixIdentifier(formToFixObj.ids);
     const savedForm = await formToFix.save().catch((err: any) => {
         throw(new Error(`Not able to save form when fixForm ${formToFixObj.tinyId} ${err}`));
     });

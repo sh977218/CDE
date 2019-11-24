@@ -4,9 +4,9 @@ export function parseReferenceDocuments(nindsForms: any[]) {
     const referenceArray: string[] = [];
     nindsForms.forEach((nindsForm: any) => {
         nindsForm.cdes.forEach((nindsCde: any) => {
-            if (nindsCde.References) {
-                const r = nindsCde.References;
-                referenceArray.push(r);
+            const referDoc = nindsCde['Disease Specific Reference'];
+            if (!isEmpty(referDoc)) {
+                referenceArray.push(referDoc);
             }
         });
     });
