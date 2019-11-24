@@ -3,7 +3,7 @@ import * as DiffJson from 'diff-json';
 import * as moment from 'moment';
 import { find, noop, findIndex, isEmpty, isEqual, lastIndexOf, lowerCase, sortBy, uniq } from 'lodash';
 import * as mongo_cde from 'server/cde/mongo-cde';
-import { dataElementModel, dataElementSourceModel } from 'server/cde/mongo-cde';
+import { dataElementSourceModel } from 'server/cde/mongo-cde';
 import * as mongo_form from 'server/form/mongo-form';
 import { formSourceModel } from 'server/form/mongo-form';
 import { PhenxURL } from 'ingester/createMigrationConnection';
@@ -34,6 +34,15 @@ export const BATCHLOADER = {
     username: BATCHLOADER_USERNAME,
     roles: ['AttachmentReviewer']
 };
+
+export function updateByBatchloader(elt) {
+    const updatedBy = elt.updatedBy;
+    if (updatedBy && updatedBy.username !== BATCHLOADER_USERNAME) {
+        return false;
+    } else {
+        return true;
+    }
+}
 
 export const created = TODAY;
 export const imported = TODAY;
@@ -295,7 +304,7 @@ export function compareElt(newEltObj, existingEltObj, source) {
     const isPhenX = existingEltObj.ids.filter(id => id.source === 'PhenX').length > 0;
     const isQualified = existingEltObj.registrationState.registrationStatus === 'Qualified';
     const isArchived = existingEltObj.archived;
-    const updatedByBatchloader = existingEltObj.updatedBy.username === BATCHLOADER_USERNAME;
+    const updatedByBatchloader = updateByBatchloader(existingEltObj);
     const isForm = existingEltObj.elementType === 'form';
     const isCde = existingEltObj.elementType === 'cde';
 
@@ -509,8 +518,7 @@ export function mergeElt(existingEltObj: any, newEltObj: any, source: string) {
     const isQualified = existingEltObj.registrationState.registrationStatus === 'Qualified';
     const isArchived = existingEltObj.archived;
 
-    const updatedByBatchloader = existingEltObj.updatedBy.username === BATCHLOADER_USERNAME;
-
+    const updatedByBatchloader = updateByBatchloader(existingEltObj);
     existingEltObj.imported = imported;
     existingEltObj.changeNote = lastMigrationScript;
 

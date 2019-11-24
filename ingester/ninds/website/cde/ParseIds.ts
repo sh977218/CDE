@@ -60,7 +60,7 @@ export function parseIds(nindsForms: any[]) {
     });
     _variableNameArray.forEach(v => {
         ids.push({
-            source: 'NINDS Variable Name',
+            source: 'BRICS Variable Name',
             id: v
         });
     });

@@ -85,6 +85,7 @@ export async function loadNindsForm(nindsForm: any, cond: any, source: string) {
         if (isEmpty(diff)) {
             existingForm.lastMigrationScript = lastMigrationScript;
             existingForm.imported = imported;
+            doNindsClassification(existingForm, newForm.toObject());
             await existingForm.save().catch((err: any) => {
                 console.log(`Not able to save form when save existing NINDS form ${existingForm.tinyId} ${err}`);
                 process.exit(1);
@@ -92,6 +93,7 @@ export async function loadNindsForm(nindsForm: any, cond: any, source: string) {
             console.log(`same form tinyId: ${existingForm.tinyId}`);
         } else {
             const existingFormObj = existingForm.toObject();
+            doNindsClassification(existingFormObj, newForm.toObject());
             mergeElt(existingFormObj, newFormObj, source);
             await updateForm(existingFormObj, BATCHLOADER, {updateSource: true}).catch((err: any) => {
                 console.log(`Not able to update form when update existing NINDS form ${existingFormObj.tinyId} ${err}`);
