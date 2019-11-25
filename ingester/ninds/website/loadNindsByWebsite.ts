@@ -1,3 +1,4 @@
+import { remove, uniq } from 'lodash';
 import { eachLimit } from 'async';
 import { NindsModel } from 'ingester/createMigrationConnection';
 import { createNindsCde } from 'ingester/ninds/website/cde/cde';
@@ -42,17 +43,59 @@ async function loadNindsCdes() {
     });
 }
 
+const sameFormIdsMap = {};
+
+async function duplicateFormIds(formIds) {
+    const duplicateFormIds = [];
+    for (const formId of formIds) {
+        const cond = {
+            archived: false,
+            'ids.id': formId,
+            $where: 'this.ids.length > 1',
+            'registrationState.registrationStatus': {$ne: 'Retired'}
+        };
+        const forms = await formModel.find(cond);
+        if (forms.length === 0) {
+            // console.log(`form ${formId} has only 1 ninds id.`);
+        } else if (forms.length !== 1) {
+            // console.log(`Incorrect form length ${formId} found.`);
+            process.exit(1);
+        } else {
+            const formObj = forms[0].toObject();
+            const nindsIds = formObj.ids.filter(i => i.source === 'NINDS');
+            sameFormIdsMap[nindsIds[0].id] = [];
+            for (let i = 1; i < nindsIds.length; i++) {
+                const id = nindsIds[i];
+                sameFormIdsMap[nindsIds[0].id].push(id.id);
+                duplicateFormIds.push(id.id);
+            }
+        }
+    }
+    const _duplicateFormIds = uniq(duplicateFormIds);
+    remove(formIds, f => {
+        const index = _duplicateFormIds.indexOf(f);
+        if (index !== -1) {
+            return true;
+        } else {
+            return false;
+        }
+    });
+}
+
 async function loadNindsForms() {
     const formIds = await NindsModel.distinct('formId', {'cdes.0': {$exists: true}});
-//    const formIds = ['F2065'];
-    await eachLimit(formIds, 1, async formId => {
-        const nindsForms = await NindsModel.find({formId}).lean();
-        const nindsForm = await createNindsForm(nindsForms);
-        const cond = {
+    await duplicateFormIds(formIds);
+//    await eachLimit(formIds, 1, async formId => {
+    await eachLimit(['F0374'], 1, async formId => {
+        const cond: any = {
             archived: false,
             'ids.id': formId,
             'registrationState.registrationStatus': {$ne: 'Retired'}
         };
+        const nindsForms = await NindsModel.find({
+            formId: {$in: [formId].concat(sameFormIdsMap[formId])}
+        }).lean();
+        const nindsForm = await createNindsForm(nindsForms);
         await loadNindsForm(nindsForm, cond, 'NINDS');
     });
 }

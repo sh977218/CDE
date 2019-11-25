@@ -1,4 +1,5 @@
 import { uniq } from 'lodash';
+import { sortIdentifier } from 'ingester/shared/utility';
 
 export function parseIds(nindsForms: any[]) {
     const formIdArray: string[] = [];
@@ -8,10 +9,6 @@ export function parseIds(nindsForms: any[]) {
         }
     });
     const formId = uniq(formIdArray);
-    if (formId.length !== 1) {
-        console.log(nindsForms[0].formId + ' formId not good');
-        process.exit(1);
-    }
     const ids: any[] = [];
 
     formId.forEach(i => {
@@ -20,5 +17,5 @@ export function parseIds(nindsForms: any[]) {
             id: i
         });
     });
-    return ids;
+    return sortIdentifier(ids, 'NINDS');
 }

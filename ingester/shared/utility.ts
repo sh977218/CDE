@@ -72,6 +72,7 @@ export function wipeBeforeCompare(obj: any) {
     }
 
     delete obj.imported;
+    delete obj.stewardOrg;
     delete obj.created;
     delete obj.createdBy;
     delete obj.updated;
@@ -375,6 +376,7 @@ function mergeDesignations(existingObj, newObj) {
             }
         });
     }
+    existingObj.designations = sortDesignations(existingObj.designations);
 }
 
 function mergeDefinitions(existingObj, newObj) {
@@ -436,6 +438,8 @@ export function mergeReferenceDocuments(existingObj, newObj) {
         newReferenceDocuments.forEach(newReferenceDocument => {
             const i = findIndex(existingReferenceDocuments, o =>
                 isEqual(o.docType, newReferenceDocument.docType) &&
+                isEqual(o.title, newReferenceDocument.title) &&
+                isEqual(o.uri, newReferenceDocument.uri) &&
                 isEqual(o.languageCode, newReferenceDocument.languageCode) &&
                 isEqual(o.document, newReferenceDocument.document) &&
                 isEqual(o.source, newReferenceDocument.source));
@@ -448,7 +452,7 @@ export function mergeReferenceDocuments(existingObj, newObj) {
     }
 }
 
-export function mergeIds(existingObj, newObj) {
+export function mergeIds(existingObj, newObj, source: string) {
     const existingIds: CdeId[] = existingObj.ids;
     const newIds: CdeId[] = newObj.ids;
     newIds.forEach(newId => {
@@ -467,6 +471,7 @@ export function mergeIds(existingObj, newObj) {
             existingIds[i] = newId;
         }
     });
+    sortIdentifier(existingObj.ids, source);
 }
 
 export function mergeClassification(existingElt, newObj, classificationOrgName) {
@@ -525,7 +530,7 @@ export function mergeElt(existingEltObj: any, newEltObj: any, source: string) {
     mergeDesignations(existingEltObj, newEltObj);
     mergeDefinitions(existingEltObj, newEltObj);
 
-    mergeIds(existingEltObj, newEltObj);
+    mergeIds(existingEltObj, newEltObj, source);
     mergeProperties(existingEltObj, newEltObj);
     mergeReferenceDocuments(existingEltObj, newEltObj);
 
@@ -786,6 +791,15 @@ export function sortDesignations(designations: any[]) {
     return sortNoTagDesignations.concat(sortTagDesignations);
 }
 
+export function sortIdentifier(ids, source) {
+    const otherSourceIdentifiers = ids.filter(d => d.source !== source);
+    const sourceIdentifiers = ids.filter(d => d.source === source);
+    const sortOtherSourceIdentifiers = sortBy(otherSourceIdentifiers, ['id']);
+    const sortSourceIdentifiers = sortBy(sourceIdentifiers, ['id']);
+
+    return sortSourceIdentifiers.concat(sortOtherSourceIdentifiers);
+}
+
 export function findOneCde(cdes: any[]) {
     const cdesLength = cdes.length;
     if (cdesLength === 0) {
@@ -890,4 +904,8 @@ export async function fixForm(formToFix: any) {
 export function retiredElt(elt: any) {
     elt.registrationState.registrationStatus = 'Retired';
     elt.registrationState.administrativeNote = 'Not present in import at ' + imported;
+}
+
+export async function formRowArtifact(tinyId, sourceName) {
+    return formSourceModel.findOne({tinyId, source: sourceName});
 }

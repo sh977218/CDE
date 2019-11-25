@@ -239,16 +239,13 @@ async function doDisorder(disorder: any) {
     await driver.get(disorder.url);
     const subDiseases: any = disorder.subDiseases;
     if (subDiseases && subDiseases.length) {
-        if (disorder.disorderName === 'Sport Related Concussion') {
-            console.log('a');
-        }
         for (const subDisease of subDiseases) {
             await selectSubDisease(driver, subDisease.name);
             const existingContentElementsXpath = "//div[div[p[button[normalize-space(text())='Expand All']]]]/div[@class='view-content']";
             const start: any = new Date();
             await driver.wait(until.elementLocated(By.xpath(existingContentElementsXpath)), 60 * 1000);
             const end: any = new Date();
-            console.log(subDisease.name + ' Execution time: %ds', (end - start) / 1000);
+            console.log(' Execution time ' + subDisease.name + ' : %ds', (end - start) / 1000);
             await doDomains(driver, disorder, subDisease.name);
         }
     } else {

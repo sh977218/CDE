@@ -1,4 +1,5 @@
 import { uniq } from 'lodash';
+import { sortReferenceDocuments } from 'ingester/shared/utility';
 
 export function parseReferenceDocuments(nindsForms: any[]) {
     const downloadLinkArray: string[] = [];
@@ -12,9 +13,10 @@ export function parseReferenceDocuments(nindsForms: any[]) {
 
     downloadLink.forEach(d => {
         referenceDocuments.push({
+            title: d.trim(),
             uri: d.trim(),
             source: 'NINDS'
         });
     });
-    return referenceDocuments;
+    return sortReferenceDocuments(referenceDocuments);
 }
