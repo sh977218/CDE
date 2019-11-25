@@ -30,7 +30,7 @@ export class OrgClassificationManagementComponent implements OnInit {
     @ViewChild('reclassifyComponent', {static: true}) reclassifyComponent!: ClassifyItemModalComponent;
     @ViewChild('addChildClassificationContent', {static: true}) addChildClassificationContent!: TemplateRef<any>;
     @ViewChild('mapClassificationMeshContent', {static: true}) mapClassificationMeshContent!: TemplateRef<any>;
-    @ViewChild(TreeComponent, {static: true}) private tree!: TreeComponent;
+    @ViewChild(TreeComponent, {static: false}) private tree!: TreeComponent;
     childClassificationNode?: TreeNode;
     descriptorID!: string;
     descriptorName!: string;
