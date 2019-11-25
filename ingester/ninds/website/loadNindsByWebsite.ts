@@ -85,8 +85,8 @@ async function duplicateFormIds(formIds) {
 async function loadNindsForms() {
     const formIds = await NindsModel.distinct('formId', {'cdes.0': {$exists: true}});
     await duplicateFormIds(formIds);
-//    await eachLimit(formIds, 1, async formId => {
-    await eachLimit(['F0374'], 1, async formId => {
+    await eachLimit(formIds, 1, async formId => {
+//    await eachLimit(['F0374'], 1, async formId => {
         const cond: any = {
             archived: false,
             'ids.id': formId,
