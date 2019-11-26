@@ -90,7 +90,6 @@ export function wipeBeforeCompare(obj: any) {
     delete obj.lastMigrationScript;
     delete obj.registrationState;
     delete obj.comments;
-    delete obj.formElements;
 
     Object.keys(obj).forEach(key => {
         if (Array.isArray(obj[key]) && obj[key].length === 0) {
@@ -107,7 +106,7 @@ export function trimWhite(text: string) {
     }
 }
 
-export async function updateRowArtifact(existingElt, newElt, source, classificationOrgName) {
+export async function updateRawArtifact(existingElt, newElt, source, classificationOrgName) {
     delete newElt.tinyId;
     delete newElt._id;
     newElt.classification = existingElt.classification.filter(c => c.stewardOrg.name === classificationOrgName);
@@ -188,7 +187,7 @@ export function updateCde(elt: any, user: any, options = {}) {
     });
 }
 
-export function updateForm(elt: any, user: any, options: any = {}) {
+export async function updateForm(elt: any, user: any, options: any = {}) {
     elt.lastMigrationScript = lastMigrationScript;
     return new Promise((resolve, reject) => {
         /* Loader cannot change Qualified PhenX formElements.*/
@@ -305,12 +304,11 @@ export function compareElt(newEltObj, existingEltObj, source) {
     const isPhenX = existingEltObj.ids.filter(id => id.source === 'PhenX').length > 0;
     const isQualified = existingEltObj.registrationState.registrationStatus === 'Qualified';
     const isArchived = existingEltObj.archived;
-    const updatedByBatchloader = updateByBatchloader(existingEltObj);
     const isForm = existingEltObj.elementType === 'form';
     const isCde = existingEltObj.elementType === 'cde';
 
     // PhenX Qualified form not need to compare formElements
-    if (isForm && isPhenX && isQualified && !isArchived && updatedByBatchloader) {
+    if (isForm && isPhenX && isQualified && !isArchived) {
         delete existingEltObj.formElements;
         delete newEltObj.formElements;
     }
@@ -439,6 +437,7 @@ export function mergeReferenceDocuments(existingObj, newObj) {
             const i = findIndex(existingReferenceDocuments, o =>
                 isEqual(o.docType, newReferenceDocument.docType) &&
                 isEqual(o.title, newReferenceDocument.title) &&
+                isEqual(o.providerOrg, newReferenceDocument.providerOrg) &&
                 isEqual(o.uri, newReferenceDocument.uri) &&
                 isEqual(o.languageCode, newReferenceDocument.languageCode) &&
                 isEqual(o.document, newReferenceDocument.document) &&
@@ -523,7 +522,6 @@ export function mergeElt(existingEltObj: any, newEltObj: any, source: string) {
     const isQualified = existingEltObj.registrationState.registrationStatus === 'Qualified';
     const isArchived = existingEltObj.archived;
 
-    const updatedByBatchloader = updateByBatchloader(existingEltObj);
     existingEltObj.imported = imported;
     existingEltObj.changeNote = lastMigrationScript;
 
@@ -552,7 +550,6 @@ export function mergeElt(existingEltObj: any, newEltObj: any, source: string) {
         // EXCEPTIONS
         // Those 50 qualified phenx forms , loader skip form elements.
         if (isPhenX && !isArchived && isQualified) {
-        } else if (!updatedByBatchloader) {
         } else {
             existingEltObj.formElements = newEltObj.formElements;
         }
@@ -842,7 +839,7 @@ function fixIdentifier(ids: any[]) {
             i.source = 'BRICS Variable Name';
         }
     });
-    return ids;
+    return sortIdentifier(ids, 'NINDS');
 }
 
 export async function fixCde(cdeToFix: any) {
@@ -906,6 +903,6 @@ export function retiredElt(elt: any) {
     elt.registrationState.administrativeNote = 'Not present in import at ' + imported;
 }
 
-export async function formRowArtifact(tinyId, sourceName) {
+export async function formRawArtifact(tinyId, sourceName) {
     return formSourceModel.findOne({tinyId, source: sourceName});
 }

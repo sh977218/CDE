@@ -13,7 +13,6 @@ export function parseReferenceDocuments(nindsForms: any[]) {
 
     downloadLink.forEach(d => {
         referenceDocuments.push({
-            title: d.trim(),
             uri: d.trim(),
             source: 'NINDS'
         });

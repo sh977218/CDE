@@ -1,8 +1,9 @@
-import { isEmpty } from 'lodash';
+import { isEmpty, isEqual } from 'lodash';
 import { dataElementModel } from 'server/cde/mongo-cde';
 import {
-    BATCHLOADER, compareElt, findOneCde, findOneForm, fixCde, fixForm, imported, lastMigrationScript, mergeElt,
-    updateCde, updateForm, updateRowArtifact
+    BATCHLOADER, compareElt, findOneCde, findOneForm, fixCde, fixForm, formRawArtifact, imported, lastMigrationScript,
+    mergeElt,
+    updateCde, updateForm, updateRawArtifact
 } from 'ingester/shared/utility';
 import { formModel } from 'server/form/mongo-form';
 import { commentModel } from 'server/discuss/discussDb';
@@ -57,7 +58,7 @@ export async function loadNindsCde(nindsCde: any, cond: any, source: string) {
             console.log(`updated cde tinyId: ${existingCde.tinyId}`);
         }
     }
-    await updateRowArtifact(existingCde, newCdeObj, source, 'NINDS');
+    await updateRawArtifact(existingCde, newCdeObj, source, 'NINDS');
 
     const savedCde: any = await dataElementModel.findOne(cond);
     return savedCde;
@@ -93,9 +94,12 @@ export async function loadNindsForm(nindsForm: any, cond: any, source: string) {
             console.log(`same form tinyId: ${existingForm.tinyId}`);
         } else {
             const existingFormObj = existingForm.toObject();
+            // this line has to before mergeElt & others since following codes changes existingFormObj
+            const options = await updateFormOption(existingFormObj, source);
+
             doNindsClassification(existingFormObj, newForm.toObject());
             mergeElt(existingFormObj, newFormObj, source);
-            await updateForm(existingFormObj, BATCHLOADER, {updateSource: true}).catch((err: any) => {
+            await updateForm(existingFormObj, BATCHLOADER, options).catch((err: any) => {
                 console.log(`Not able to update form when update existing NINDS form ${existingFormObj.tinyId} ${err}`);
                 process.exit(1);
             });
@@ -105,8 +109,18 @@ export async function loadNindsForm(nindsForm: any, cond: any, source: string) {
             comment.element.eltId = existingForm.tinyId;
             await new commentModel(comment).save();
         }
-        await updateRowArtifact(existingForm, newFormObj, source, 'NINDS');
+        await updateRawArtifact(existingForm, newFormObj, source, 'NINDS');
     }
     const savedForm: any = await formModel.findOne(cond);
     return savedForm;
+}
+
+async function updateFormOption(existingFormObj, source) {
+    const options: any = {updateSource: true};
+    const currentRawArtifact = await formRawArtifact(existingFormObj.tinyId, source);
+    if (!isEqual(currentRawArtifact.formElements, existingFormObj.formElements)) {
+        options.skipFormElements = true;
+        console.log(`Skipping form element update for form ${existingFormObj.tinyId} `);
+    }
+    return options;
 }

@@ -1,6 +1,6 @@
 import { isEmpty } from 'lodash';
 import {
-    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeClassification, mergeElt, updateCde, updateRowArtifact
+    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeClassification, mergeElt, updateCde, updateRawArtifact
 } from 'ingester/shared/utility';
 import { dataElementModel } from 'server/cde/mongo-cde';
 import { commentModel } from 'server/discuss/discussDb';
@@ -70,7 +70,7 @@ function runOneOrg(orgName: string) {
                             }
                         }
 
-                        await updateRowArtifact(existingCde, newCdeObj, 'caDSR', 'NCI');
+                        await updateRawArtifact(existingCde, newCdeObj, 'caDSR', 'NCI');
                     }
                     resolve();
                 });

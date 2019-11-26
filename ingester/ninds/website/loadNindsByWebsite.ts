@@ -154,7 +154,7 @@ async function retireNindsForms() {
 }
 
 async function run() {
-    await loadNindsCdes();
+//    await loadNindsCdes();
     await loadNindsForms();
     await retireNindsCdes();
     await retireNindsForms();

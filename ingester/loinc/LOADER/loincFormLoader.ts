@@ -2,7 +2,7 @@ import { isEmpty } from 'lodash';
 import { formModel } from 'server/form/mongo-form';
 import { createLoincForm } from 'ingester/loinc/Form/form';
 import {
-    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeClassification, mergeElt, updateForm, updateRowArtifact
+    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeClassification, mergeElt, updateForm, updateRawArtifact
 } from 'ingester/shared/utility';
 import { LoincLogger } from 'ingester/log/LoincLogger';
 
@@ -32,7 +32,7 @@ export async function runOneForm(loinc, classificationOrgName = 'LOINC', classif
             LoincLogger.changedLoincForms.push(existingForm.tinyId);
         }
 
-        await updateRowArtifact(existingForm, newFormObj, 'LOINC', classificationOrgName);
+        await updateRawArtifact(existingForm, newFormObj, 'LOINC', classificationOrgName);
     }
     return existingForm;
 }

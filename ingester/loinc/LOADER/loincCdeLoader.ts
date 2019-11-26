@@ -2,7 +2,7 @@ import { isEmpty } from 'lodash';
 import { dataElementModel } from 'server/cde/mongo-cde';
 import { createLoincCde } from 'ingester/loinc/CDE/cde';
 import {
-    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeClassification, mergeElt, updateCde, updateRowArtifact
+    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeClassification, mergeElt, updateCde, updateRawArtifact
 } from 'ingester/shared/utility';
 import { LoincLogger } from 'ingester/log/LoincLogger';
 
@@ -48,7 +48,7 @@ export async function runOneCde(loinc, classificationOrgName, classificationArra
             LoincLogger.changedLoincCdes.push(existingCde.tinyId);
         }
     }
-    await updateRowArtifact(existingCde, newCdeObj, 'LOINC', classificationOrgName);
+    await updateRawArtifact(existingCde, newCdeObj, 'LOINC', classificationOrgName);
     const savedCde: any = await dataElementModel.findOne({archived: false, 'ids.id': loinc['LOINC Code']});
     return savedCde;
 }
