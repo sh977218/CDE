@@ -32,8 +32,9 @@
 
     <div class="boxed-div" *ngIf="selection">
         <form name="editEmbed" #newEmbedForm="ngForm">
-            <label class="mb-2">Org to embed: <strong>{{selection.org}}</strong></label>
-
+            <div>
+                <label class="mb-2">Org to embed: <strong>{{selection.org}}</strong></label>
+            </div>
             <label for="embedName">Name this embedded search:</label>
             <input class="form-control" [(ngModel)]="selection.name" name="n" id="embedName" required>
             <br>

@@ -34,6 +34,7 @@ const commonEmbedSchema = {
     ],
     otherNames: [{
         label: StringType,
+        tags: StringType,
         contextName: StringType
     }],
     classifications: [{
