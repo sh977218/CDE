@@ -190,15 +190,6 @@ export function updateCde(elt: any, user: any, options = {}) {
 export async function updateForm(elt: any, user: any, options: any = {}) {
     elt.lastMigrationScript = lastMigrationScript;
     return new Promise((resolve, reject) => {
-        /* Loader cannot change Qualified PhenX formElements.*/
-        const isPhenX = elt.ids.filter(id => id.source === 'PhenX').length > 0;
-        const isQualified = elt.registrationState.registrationStatus === 'Qualified';
-        const isArchived = elt.archived;
-
-        if (isPhenX && isQualified && !isArchived) {
-            options.skipFormElements = true;
-        }
-
         mongo_form.update(elt, user, options, (err, savedElt) => {
             if (err) {
                 reject(err);
@@ -904,5 +895,5 @@ export function retiredElt(elt: any) {
 }
 
 export async function formRawArtifact(tinyId, sourceName) {
-    return formSourceModel.findOne({tinyId, source: sourceName});
+    return formSourceModel.findOne({tinyId, source: sourceName}).lean();
 }

@@ -122,5 +122,15 @@ async function updateFormOption(existingFormObj, source) {
         options.skipFormElements = true;
         console.log(`Skipping form element update for form ${existingFormObj.tinyId} `);
     }
+
+    /* Loader cannot change Qualified PhenX formElements.*/
+    const isPhenX = existingFormObj.ids.filter(id => id.source === 'PhenX').length > 0;
+    const isQualified = existingFormObj.registrationState.registrationStatus === 'Qualified';
+    const isArchived = existingFormObj.archived;
+
+    if (isPhenX && isQualified && !isArchived) {
+        options.skipFormElements = true;
+    }
+
     return options;
 }

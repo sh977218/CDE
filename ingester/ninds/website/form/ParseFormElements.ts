@@ -108,7 +108,7 @@ export async function parseFormElements(nindsForms: any[]) {
                 'registrationState.registrationStatus': {$ne: 'Retired'}
             });
             if (!existingCde) {
-                console.log(cdeId + ' not exists.');
+                console.log(cdeId + ' cde not exist.');
                 process.exit(1);
             }
             const question: any = {

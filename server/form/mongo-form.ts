@@ -220,7 +220,7 @@ export function update(elt: CdeForm, user: User, options: any = {}, callback: Cb
             elt.attachments = form.attachments;
         }
 
-        // loader skip update formElements, i.e. Qualified PhenX forms
+        // loader skip update formElements, i.e. Qualified PhenX forms, PHQ-9
         if (options.skipFormElements) {
             elt.formElements = form.formElements;
         }
