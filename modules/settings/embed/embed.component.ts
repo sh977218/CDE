@@ -66,7 +66,7 @@ export class EmbedComponent implements OnInit {
         if (!this.selection.cde.otherNames) {
             this.selection.cde.otherNames = [];
         }
-        this.selection.cde.otherNames.push({contextName: '', label: ''});
+        this.selection.cde.otherNames.push({contextName: '', label: '', tags: ''});
     }
 
     addEmbed(org: string) {
