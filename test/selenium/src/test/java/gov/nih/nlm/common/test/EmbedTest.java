@@ -1,6 +1,7 @@
 package gov.nih.nlm.common.test;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
+import io.restassured.http.Cookie;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
@@ -8,6 +9,8 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.List;
+
+import static io.restassured.RestAssured.given;
 
 public class EmbedTest extends NlmCdeBaseTest {
 
@@ -70,7 +73,7 @@ public class EmbedTest extends NlmCdeBaseTest {
 
         scrollTo(2600);
         driver.switchTo().frame("previewFrame");
-        // https://bugs.chromium.org/p/chromedriver/issues/detail?id=2198
+        // https://bugs.chromium.org/p/chromedriver/issues/detail?id=2198is
         hangon(2);
         findElement(By.id("poweredByNihCde"));
         findElement(By.id("ftsearch-input")).sendKeys("Ethnicity");
@@ -105,6 +108,10 @@ public class EmbedTest extends NlmCdeBaseTest {
         textPresent("Demographics");
 
         driver.switchTo().defaultContent();
+
+        clickElement(By.id("saveEmbed"));
+        checkAlert("Saved.");
+
         goHome();
         goToEmbedding();
         clickElement(By.id("removeEmbed-0"));
@@ -118,6 +125,19 @@ public class EmbedTest extends NlmCdeBaseTest {
             findElement(By.id("confirmRemoveEmbed-0")).click();
         }
         textPresent("Removed");
+    }
+
+    @Test
+    public void embedAuthErrors() {
+        mustBeLoggedInAs(reguser_username, password);
+        Cookie myCookie = getCurrentCookie();
+
+        String wrongID = "5ddbeb268c5d2217b4282159";
+        given().cookie(myCookie).delete(baseUrl + "/server/embed/" + wrongID).then().statusCode(422);
+        given().cookie(myCookie).get(baseUrl + "/server/embed/" + wrongID).then().statusCode(404);
+
+        given().cookie(myCookie).delete(baseUrl + "/server/embed/5ddbeb268c5d2217b4282158").then().statusCode(403);
+
 
     }
 

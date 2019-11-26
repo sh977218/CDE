@@ -30,7 +30,7 @@ export function module() {
         const handlerOptions = {req, res, publicMessage: 'There was an error removing this embed.'};
         embeds.find({_id: req.params.id}, handleError(handlerOptions, embedsData => {
             if (!embedsData || embedsData.length !== 1) {
-                res.send('Expectation not met: one document.');
+                res.status(422).send('Expectation not met: one document.');
                 return;
             }
             if (!req.isAuthenticated() || !isOrgAdmin(req.user, embedsData[0].org)) {
@@ -44,7 +44,7 @@ export function module() {
     router.get('/server/embed/:id', (req, res) => {
         embeds.find({_id: req.params.id}, handleError({req, res}, embedsData => {
             if (!embedsData || embedsData.length !== 1) {
-                res.send('Expectation not met: one document.');
+                res.sendStatus(404);
                 return;
             }
             res.send(embedsData[0]);
