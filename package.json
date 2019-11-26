@@ -58,6 +58,7 @@
       "**/server/board/*",
       "**/server/cde/*",
       "**/server/classification/*",
+      "**/server/embed/*",
       "**/server/discuss/*",
       "**/server/form/*",
       "**/server/discuss/*",
