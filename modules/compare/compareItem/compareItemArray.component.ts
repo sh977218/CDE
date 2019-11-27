@@ -22,7 +22,7 @@ class ComparedForm extends CdeForm {
 const compareArrayOption: any[] = [
     {
         label: 'Reference Documents',
-        isEqual(a, b) {
+        isEqual(a: any, b: any) {
             if (!a.diff) {
                 a.diff = new Set<string>();
             }
@@ -69,7 +69,7 @@ const compareArrayOption: any[] = [
     },
     {
         label: 'Designation',
-        isEqual(a, b) {
+        isEqual(a: any, b: any) {
             if (!a.diff) {
                 a.diff = new Set<string>();
             }
@@ -95,7 +95,7 @@ const compareArrayOption: any[] = [
     },
     {
         label: 'Definition',
-        isEqual(a, b) {
+        isEqual(a: any, b: any) {
             if (!a.diff) {
                 a.diff = new Set<string>();
             }
@@ -128,7 +128,7 @@ const compareArrayOption: any[] = [
     },
     {
         label: 'Properties',
-        isEqual(a, b) {
+        isEqual(a: any, b: any) {
             if (!a.diff) {
                 a.diff = new Set<string>();
             }
@@ -154,7 +154,7 @@ const compareArrayOption: any[] = [
     },
     {
         label: 'Identifiers',
-        isEqual(a, b) {
+        isEqual(a: any, b: any) {
             if (!a.diff) {
                 a.diff = new Set<string>();
             }
@@ -220,7 +220,7 @@ const cdeCompareArrayOption: any[] = [
     },
     {
         label: 'Concepts',
-        isEqual(a, b) {
+        isEqual(a: any, b: any) {
             return _isEqual(a, b);
         },
         property: 'concepts',
@@ -275,7 +275,7 @@ const formCompareArrayOption: any[] = [
                 }
                 return result;
             }
-            if (a.elementType === 'form' && b.elementType === 'form') {
+            if ((a.elementType === 'form' && b.elementType === 'form') || (a.elementType === 'section' && b.elementType === 'section')) {
                 if (!a.diff) {
                     a.diff = new Set<string>();
                 }
@@ -283,36 +283,6 @@ const formCompareArrayOption: any[] = [
                     b.diff = new Set<string>();
                 }
                 const result = _isEqual(a.inForm.form.tinyId, b.inForm.form.tinyId);
-                if (result) {
-                    if (!_isEqual(a.instructions && a.instructions.value, b.instructions && b.instructions.value)) {
-                        a.diff.add('instructions.value');
-                        b.diff.add('instructions.value');
-                        a.display = true;
-                        b.display = true;
-                    }
-                    if (!_isEqual(a.repeat, b.repeat)) {
-                        a.diff.add('repeat');
-                        b.diff.add('repeat');
-                        a.display = true;
-                        b.display = true;
-                    }
-                    if (!_isEqual(a.skipLogic && a.skipLogic.condition, b.skipLogic && b.skipLogic.condition)) {
-                        a.diff.add('skipLogic.condition');
-                        b.diff.add('skipLogic.condition');
-                        a.display = true;
-                        b.display = true;
-                    }
-                }
-                return result;
-            }
-            if (a.elementType === 'section' && b.elementType === 'section') {
-                if (!a.diff) {
-                    a.diff = new Set<string>();
-                }
-                if (!b.diff) {
-                    b.diff = new Set<string>();
-                }
-                const result = _isEqual(a.sectionId, b.sectionId);
                 if (result) {
                     if (!_isEqual(a.instructions && a.instructions.value, b.instructions && b.instructions.value)) {
                         a.diff.add('instructions.value');
