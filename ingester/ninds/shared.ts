@@ -78,13 +78,12 @@ export async function loadNindsForm(nindsForm: any, cond: any, source: string) {
         });
         console.log(`created form tinyId: ${existingForm.tinyId}`);
     } else {
-/*
+
         // @TODO fix any issue on existing form.
         existingForm = await fixForm(existingForm).catch((err: any) => {
             console.log(`Not able to fix form when in loadNindsForm ${err}`);
             process.exit(1);
         });
-*/
 
         const diff = compareElt(newForm.toObject(), existingForm.toObject(), source);
         if (isEmpty(diff)) {

@@ -881,7 +881,7 @@ export async function fixForm(formToFix: any) {
     const formToFixObj = formToFix.toObject();
     formToFix.sources = fixSourcesUpdated(formToFixObj.sources);
     formToFix.designations = sortDesignations(formToFixObj.designations);
-    formToFix.formElements = fixFormElements(formToFixObj);
+//    formToFix.formElements = fixFormElements(formToFixObj);
     formToFix.ids = fixIdentifier(formToFixObj.ids);
     const savedForm = await formToFix.save().catch((err: any) => {
         throw(new Error(`Not able to save form when fixForm ${formToFixObj.tinyId} ${err}`));
