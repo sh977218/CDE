@@ -43,7 +43,7 @@ async function loadNindsCdes() {
     });
 }
 
-const sameFormIdsMap = {};
+const sameFormIdsMap: any = {};
 
 async function duplicateFormIds(formIds) {
     const duplicateFormIds = [];
@@ -154,7 +154,7 @@ async function retireNindsForms() {
 }
 
 async function run() {
-    await loadNindsCdes();
+//    await loadNindsCdes();
     await loadNindsForms();
     await retireNindsCdes();
     await retireNindsForms();

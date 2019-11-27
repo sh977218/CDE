@@ -7,6 +7,7 @@ import {
 } from 'ingester/shared/utility';
 import { formModel } from 'server/form/mongo-form';
 import { commentModel } from 'server/discuss/discussDb';
+import * as DiffJson from 'diff-json';
 
 export function doNindsClassification(existingCde: any, newCdeObj: any) {
     const nindsClassifications = existingCde.classification.filter((c: any) => c.stewardOrg.name === 'NINDS');
@@ -69,6 +70,7 @@ export async function loadNindsForm(nindsForm: any, cond: any, source: string) {
     const newFormObj = newForm.toObject();
     const existingForms: any[] = await formModel.find(cond);
     let existingForm: any = findOneForm(existingForms);
+    const copyExistingForm: any = findOneForm(existingForms);
     if (!existingForm) {
         existingForm = await newForm.save().catch((err: any) => {
             console.log(`Not able to save form when save new NINDS form ${newForm.tinyId} ${err}`);
@@ -76,11 +78,13 @@ export async function loadNindsForm(nindsForm: any, cond: any, source: string) {
         });
         console.log(`created form tinyId: ${existingForm.tinyId}`);
     } else {
+/*
         // @TODO fix any issue on existing form.
         existingForm = await fixForm(existingForm).catch((err: any) => {
             console.log(`Not able to fix form when in loadNindsForm ${err}`);
             process.exit(1);
         });
+*/
 
         const diff = compareElt(newForm.toObject(), existingForm.toObject(), source);
         if (isEmpty(diff)) {
@@ -95,7 +99,7 @@ export async function loadNindsForm(nindsForm: any, cond: any, source: string) {
         } else {
             const existingFormObj = existingForm.toObject();
             // this line has to before mergeElt & others since following codes changes existingFormObj
-            const options = await updateFormOption(existingFormObj, source);
+            const options = await updateFormOption(copyExistingForm.toObject(), source);
 
             doNindsClassification(existingFormObj, newForm.toObject());
             mergeElt(existingFormObj, newFormObj, source);
@@ -118,7 +122,9 @@ export async function loadNindsForm(nindsForm: any, cond: any, source: string) {
 async function updateFormOption(existingFormObj, source) {
     const options: any = {updateSource: true};
     const currentRawArtifact = await formRawArtifact(existingFormObj.tinyId, source);
-    if (!isEqual(currentRawArtifact.formElements, existingFormObj.formElements)) {
+//    if (!isEqual(currentRawArtifact.formElements, existingFormObj.formElements)) {
+    const diff = DiffJson.diff(currentRawArtifact.formElements, existingFormObj.formElements);
+    if (diff) {
         options.skipFormElements = true;
         console.log(`Skipping form element update for form ${existingFormObj.tinyId} `);
     }
