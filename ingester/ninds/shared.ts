@@ -70,7 +70,6 @@ export async function loadNindsForm(nindsForm: any, cond: any, source: string) {
     const newFormObj = newForm.toObject();
     const existingForms: any[] = await formModel.find(cond);
     let existingForm: any = findOneForm(existingForms);
-    const copyExistingForm: any = findOneForm(existingForms);
     if (!existingForm) {
         existingForm = await newForm.save().catch((err: any) => {
             console.log(`Not able to save form when save new NINDS form ${newForm.tinyId} ${err}`);
@@ -98,7 +97,7 @@ export async function loadNindsForm(nindsForm: any, cond: any, source: string) {
         } else {
             const existingFormObj = existingForm.toObject();
             // this line has to before mergeElt & others since following codes changes existingFormObj
-            const options = await updateFormOption(copyExistingForm.toObject(), source);
+            const options = await updateFormOption(existingFormObj, source);
 
             doNindsClassification(existingFormObj, newForm.toObject());
             mergeElt(existingFormObj, newFormObj, source);
