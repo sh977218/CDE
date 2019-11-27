@@ -1,4 +1,4 @@
-package gov.nih.nlm.cde.test;
+package gov.nih.nlm.cde.test.history;
 
 
 import gov.nih.nlm.system.NlmCdeBaseTest;

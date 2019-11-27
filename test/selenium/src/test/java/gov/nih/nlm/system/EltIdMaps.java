@@ -26,6 +26,7 @@ public class EltIdMaps {
         eltMap.put("Double Classif Cde", "QJgAXYdXO");
         eltMap.put("Draft Cde Test", "QyT6ElNKLl");
         eltMap.put("ExportLatest", "XkZpBf60z");
+        eltMap.put("Eyes affect productivity", "QkS8Q9kxm");
         eltMap.put("FAD Total score value", "fp_oYN6A_SJ");
         eltMap.put("Family Assessment Device (FAD) - Discuss problem indicator", "mrKyN_kpt86");
         eltMap.put("Feature Modified By java.lang.String", "GKrk4H_tWNZ");

@@ -1,19 +1,15 @@
 import { Component, Input, OnInit } from '@angular/core';
 import _cloneDeep from 'lodash/cloneDeep';
-import _findIndex from 'lodash/findIndex';
 import _forEach from 'lodash/forEach';
 import _differenceWith from 'lodash/differenceWith';
 import _intersectionWith from 'lodash/intersectionWith';
 import _get from 'lodash/get';
 import _isEmpty from 'lodash/isEmpty';
 import _isEqual from 'lodash/isEqual';
-import _slice from 'lodash/slice';
-import _uniq from 'lodash/uniq';
-import _uniqWith from 'lodash/uniqWith';
 import { Concept, Concepts, DataElement } from 'shared/de/dataElement.model';
-import { CdeForm, FormElement, FormOrElement, FormQuestion, SkipLogic } from 'shared/form/form.model';
+import { CdeForm, FormElement, FormOrElement, SkipLogic } from 'shared/form/form.model';
 import { isCdeForm, isDataElement } from 'shared/item';
-import { FormattedValue, PermissibleValue } from 'shared/models.model';
+import { FormattedValue } from 'shared/models.model';
 
 class ComparedDe extends DataElement {
     concepts?: Concept[];
@@ -23,12 +19,10 @@ class ComparedForm extends CdeForm {
     questions?: FormElement[];
 }
 
-const compareArrayOption: any[] = [];
-/*
-const compareArrayOption: DiffOption[] = [
+const compareArrayOption: any[] = [
     {
         label: 'Reference Documents',
-        isEqual(a: ReferenceDocument & DiffOptionResult, b: ReferenceDocument & DiffOptionResult) {
+        isEqual(a, b) {
             if (!a.diff) {
                 a.diff = new Set<string>();
             }
@@ -75,7 +69,7 @@ const compareArrayOption: DiffOption[] = [
     },
     {
         label: 'Designation',
-        isEqual(a: Designation & DiffOptionResult, b: Designation & DiffOptionResult) {
+        isEqual(a, b) {
             if (!a.diff) {
                 a.diff = new Set<string>();
             }
@@ -101,7 +95,7 @@ const compareArrayOption: DiffOption[] = [
     },
     {
         label: 'Definition',
-        isEqual(a: Definition & DiffOptionResult, b: Definition & DiffOptionResult) {
+        isEqual(a, b) {
             if (!a.diff) {
                 a.diff = new Set<string>();
             }
@@ -134,7 +128,7 @@ const compareArrayOption: DiffOption[] = [
     },
     {
         label: 'Properties',
-        isEqual(a: Property & DiffOptionResult, b: Property & DiffOptionResult) {
+        isEqual(a, b) {
             if (!a.diff) {
                 a.diff = new Set<string>();
             }
@@ -160,7 +154,7 @@ const compareArrayOption: DiffOption[] = [
     },
     {
         label: 'Identifiers',
-        isEqual(a: CdeId & DiffOptionResult, b: CdeId & DiffOptionResult) {
+        isEqual(a, b) {
             if (!a.diff) {
                 a.diff = new Set<string>();
             }
@@ -187,7 +181,7 @@ const compareArrayOption: DiffOption[] = [
         diff: []
     }
 ];
-*/
+
 const cdeCompareArrayOption: any[] = [
     {
         label: 'Value List',
@@ -224,19 +218,19 @@ const cdeCompareArrayOption: any[] = [
             {label: 'Code Description', property: 'valueMeaningDefinition'}
         ]
     },
-    /* {
-         label: 'Concepts',
-         isEqual(a: Concept & DiffOptionResult, b: Concept & DiffOptionResult) {
-             return _isEqual(a, b);
-         },
-         property: 'concepts',
-         data: [
-             {label: 'Name', property: 'name'},
-             {label: 'Origin', property: 'origin'},
-             {label: 'Origin Id', property: 'originId'}
-         ],
-         diff: []
-     }*/
+    {
+        label: 'Concepts',
+        isEqual(a, b) {
+            return _isEqual(a, b);
+        },
+        property: 'concepts',
+        data: [
+            {label: 'Name', property: 'name'},
+            {label: 'Origin', property: 'origin'},
+            {label: 'Origin Id', property: 'originId'}
+        ],
+        diff: []
+    }
 ];
 const formCompareArrayOption: any[] = [
     {
@@ -470,14 +464,14 @@ function doCompareArrayImpl(currentArray: any[], priorArray: any[], option: any)
         temp.add = true;
         return temp;
     });
-    const inPriorNotInCurrent = _differenceWith(priorArray, currentArray, option.isEqual).map(o => {
+    const inPriorNotInCurrent: any[] = _differenceWith(priorArray, currentArray, option.isEqual).map(o => {
         const temp: any = {};
         temp.currentElt = o;
         temp.priorElt = o;
         temp.remove = true;
         return temp;
     });
-    const inPriorInCurrent = [];
+    const inPriorInCurrent: any[] = [];
     _intersectionWith(priorArray, currentArray, (a, b) => {
         const equal = option.isEqual(a, b);
         if (equal) {
