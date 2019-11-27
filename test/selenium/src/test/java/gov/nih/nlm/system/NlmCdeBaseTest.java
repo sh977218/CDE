@@ -1063,6 +1063,10 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         textPresent(string, By.xpath(path));
     }
 
+    /*
+       @param leftIndex an index starts from 1
+       @param rightIndex an index starts from 1
+     */
     protected void selectHistoryAndCompare(Integer leftIndex, Integer rightIndex) {
         clickElement(By.xpath("//*[@id='historyTable']/tbody/tr[td][" + leftIndex + "]"));
         clickElement(By.xpath("//*[@id='historyTable']/tbody/tr[td][" + rightIndex + "]"));

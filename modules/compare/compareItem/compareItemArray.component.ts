@@ -237,6 +237,12 @@ const formCompareArrayOption: any[] = [
         label: 'Form Elements',
         isEqual(a: any, b: any) {
             if (a.elementType === 'question' && b.elementType === 'question') {
+                if (!a.diff) {
+                    a.diff = new Set<string>();
+                }
+                if (!b.diff) {
+                    b.diff = new Set<string>();
+                }
                 const result = _isEqual(a.question.cde.tinyId, b.question.cde.tinyId);
                 if (result) {
                     if (!_isEqual(a.label, b.label)) {
@@ -252,8 +258,8 @@ const formCompareArrayOption: any[] = [
                         b.display = true;
                     }
                     if (!_isEqual(a.question.unitsOfMeasure, b.question.unitsOfMeasure)) {
-                        a.diff.add('question.uom');
-                        b.diff.add('question.uom');
+                        a.diff.add('question.unitsOfMeasure');
+                        b.diff.add('question.unitsOfMeasure');
                         a.display = true;
                         b.display = true;
                     }
@@ -282,7 +288,11 @@ const formCompareArrayOption: any[] = [
                 if (!b.diff) {
                     b.diff = new Set<string>();
                 }
-                const result = _isEqual(a.inForm.form.tinyId, b.inForm.form.tinyId);
+
+                let result = _isEqual(a.sectionId, b.sectionId);
+                if (a.elementType === 'form' && b.elementType === 'form') {
+                    result = _isEqual(a.inForm.form.tinyId, b.inForm.form.tinyId);
+                }
                 if (result) {
                     if (!_isEqual(a.instructions && a.instructions.value, b.instructions && b.instructions.value)) {
                         a.diff.add('instructions.value');
@@ -365,6 +375,7 @@ export class CompareItemArrayComponent implements OnInit {
     @Input() newer!: ComparedDe | ComparedForm;
     @Input() filter!: { add: { select: any }, edited: { select: any }, remove: { select: any }, reorder: { select: any } };
     options: any[] = [];
+    _get = _get;
 
     ngOnInit(): void {
         if (isDataElement(this.newer) && isDataElement(this.older)) {
@@ -448,9 +459,21 @@ function doCompareArrayImpl(currentArray: any[], priorArray: any[], option: any)
             const temp: any = {};
             temp.currentElt = b;
             temp.priorElt = a;
-            const diff = new Set().add(a.diff).add(b.diff);
+            const diff = new Set();
+            Array.from(a.diff).concat(Array.from(b.diff)).forEach(d => {
+                if (!_isEmpty(d)) {
+                    diff.add(d);
+/*
+                    temp.priorElt[d] = _get(a, d);
+                    temp.currentElt[d] = _get(b, d);
+*/
+                }
+            });
+            temp.diff = Array.from(diff);
             temp.edit = !_isEmpty(diff);
-            inPriorInCurrent.push(temp);
+            if (temp.edit) {
+                inPriorInCurrent.push(temp);
+            }
         }
         return equal;
     });

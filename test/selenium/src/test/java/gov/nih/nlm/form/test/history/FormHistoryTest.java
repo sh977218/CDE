@@ -1,4 +1,4 @@
-package gov.nih.nlm.form.test;
+package gov.nih.nlm.form.test.history;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
