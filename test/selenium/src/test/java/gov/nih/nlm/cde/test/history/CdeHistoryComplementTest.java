@@ -57,16 +57,16 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
         addNewIdentifier("LOINC", "Identifier 1", "Version 1");
 
         clickElement(By.id("viewChangesBtn"));
-        textPresent("LOINC", By.xpath("//*[@id='Identifiers_1']//div[contains(@class,'arrayObjAdd')]"));
-        textPresent("Identifier 1", By.xpath("//*[@id='Identifiers_1']//div[contains(@class,'arrayObjAdd')]"));
-        textPresent("Version 1", By.xpath("//*[@id='Identifiers_1']//div[contains(@class,'arrayObjAdd')]"));
+        textPresent("LOINC", By.xpath("//*[@id='Identifiers_0']//div[contains(@class,'arrayObjAdd')]"));
+        textPresent("Identifier 1", By.xpath("//*[@id='Identifiers_0']//div[contains(@class,'arrayObjAdd')]"));
+        textPresent("Version 1", By.xpath("//*[@id='Identifiers_0']//div[contains(@class,'arrayObjAdd')]"));
         clickElement(By.id("closeHistoryCompareModal"));
 
         goToHistory();
         selectHistoryAndCompare(1, 2);
-        textPresent("LOINC", By.xpath("//*[@id='Identifiers_1']//div[contains(@class,'arrayObjAdd')]"));
-        textPresent("Identifier 1", By.xpath("//*[@id='Identifiers_1']//div[contains(@class,'arrayObjAdd')]"));
-        textPresent("Version 1", By.xpath("//*[@id='Identifiers_1']//div[contains(@class,'arrayObjAdd')]"));
+        textPresent("LOINC", By.xpath("//*[@id='Identifiers_0']//div[contains(@class,'arrayObjAdd')]"));
+        textPresent("Identifier 1", By.xpath("//*[@id='Identifiers_0']//div[contains(@class,'arrayObjAdd')]"));
+        textPresent("Version 1", By.xpath("//*[@id='Identifiers_0']//div[contains(@class,'arrayObjAdd')]"));
     }
 
 }
