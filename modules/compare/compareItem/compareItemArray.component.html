@@ -5,19 +5,19 @@
             <ng-container *ngFor="let r of option.result;let i = index">
                 <div class="col-12" id="{{option.label}}_{{i}}">
                     <div class="arrayObj arrayObjAdd" *ngIf="r.add">
-                        <div *ngFor="let d of option.data" class="{{d.label}}">
+                        <div *ngFor="let d of option.data" class="{{d.property}}">
                             <strong>{{d.label}}:</strong>
                             <span>{{r.currentElt[d.property]}}</span>
                         </div>
                     </div>
                     <div class="arrayObj arrayObjRemove" *ngIf="r.remove">
-                        <div *ngFor="let d of option.data" class="{{d.label}}">
+                        <div *ngFor="let d of option.data" class="{{d.property}}">
                             <strong>{{d.label}}:</strong>
                             <span>{{r.priorElt[d.property]}}</span>
                         </div>
                     </div>
                     <div class="arrayObj arrayObjEdit" *ngIf="r.edit">
-                        <div *ngFor="let d of option.data" class="{{d.label}}">
+                        <div *ngFor="let d of option.data" class="{{d.property}}">
                             <ng-container *ngIf="r.diff.indexOf(d.property) !== -1">
                                 <strong>{{d.label}}:</strong>
                                 <pre lineDiff [left]="_get(r.priorElt,d.property)"

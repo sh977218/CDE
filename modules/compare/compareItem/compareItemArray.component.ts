@@ -221,6 +221,12 @@ const cdeCompareArrayOption: any[] = [
     {
         label: 'Concepts',
         isEqual(a: any, b: any) {
+            if (!a.diff) {
+                a.diff = new Set<string>();
+            }
+            if (!b.diff) {
+                b.diff = new Set<string>();
+            }
             return _isEqual(a, b);
         },
         property: 'concepts',
@@ -463,10 +469,6 @@ function doCompareArrayImpl(currentArray: any[], priorArray: any[], option: any)
             Array.from(a.diff).concat(Array.from(b.diff)).forEach(d => {
                 if (!_isEmpty(d)) {
                     diff.add(d);
-/*
-                    temp.priorElt[d] = _get(a, d);
-                    temp.currentElt[d] = _get(b, d);
-*/
                 }
             });
             temp.diff = Array.from(diff);
