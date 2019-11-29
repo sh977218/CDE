@@ -122,7 +122,7 @@ async function updateFormOption(existingFormObj, source) {
     const currentRawArtifact = await formRawArtifact(existingFormObj.tinyId, source);
 //    if (!isEqual(currentRawArtifact.formElements, existingFormObj.formElements)) {
     const diff = DiffJson.diff(currentRawArtifact.formElements, existingFormObj.formElements);
-    if (diff) {
+    if (!isEmpty(diff)) {
         options.skipFormElements = true;
         console.log(`Skipping form element update for form ${existingFormObj.tinyId} `);
     }
