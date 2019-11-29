@@ -1228,6 +1228,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
             }
         }
     }
+
     protected void addNewConcept(String cName, String cId, String cType) {
         clickElement(By.id("openNewConceptModalBtn"));
         hangon(1);
@@ -1238,6 +1239,19 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
             clickElement(By.xpath("//mat-option[. = '" + cType + "']"));
         }
         clickElement(By.id("createNewConceptBtn"));
+        modalGone();
+    }
+
+    protected void addNewProperty(String key, String value, boolean isHtml) {
+        clickElement(By.id("openNewPropertyModalBtn"));
+        textPresent("Property keys are managed in Org Management > List Management");
+        new Select(findElement(By.id("newKey"))).selectByVisibleText(key);
+
+        findElement(By.xpath("//*[@id='newValue']//textarea")).sendKeys(value);
+        if (isHtml) clickElement(By.xpath("//*[@id='newValue']/button/span[contains(text(),'Rich Text')]"));
+        else clickElement(By.xpath("//*[@id='newValue']/button/span[contains(text(),'Plain Text')]"));
+        hangon(1);
+        clickElement(By.id("createNewPropertyBtn"));
         modalGone();
     }
 
