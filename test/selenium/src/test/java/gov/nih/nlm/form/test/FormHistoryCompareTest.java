@@ -16,9 +16,9 @@ public class FormHistoryCompareTest extends BaseFormTest {
         textPresent("List of previous versions");
         Assert.assertEquals(4, driver.findElements(By.xpath("//*[@id='historyTable']/tbody/tr[td]")).size());
         selectHistoryAndCompare(2, 3);
-        textPresent("Neoadjuvant Therapy", By.xpath("//*[@id='Form Elements_1']//div[contains(@class,'Skip Logic')]//ins"));
-        textPresent("Yes (specify type)", By.xpath("//*[@id='Form Elements_1']//div[contains(@class,'Skip Logic')]//ins"));
-        textPresent("=", By.xpath("//*[@id='Form Elements_1']//div[contains(@class,'Skip Logic')]//ins"));
+        textPresent("Neoadjuvant Therapy", By.xpath("//*[@id='Form Elements_1']//div[contains(@class,'arrayObjEdit')]//div[contains(@class,'skipLogic.condition')]"));
+        textPresent("Yes (specify type)", By.xpath("//*[@id='Form Elements_1']//div[contains(@class,'arrayObjEdit')]//div[contains(@class,'skipLogic.condition')]"));
+        textPresent("=", By.xpath("//*[@id='Form Elements_1']//div[contains(@class,'arrayObjEdit')]//div[contains(@class,'skipLogic.condition')]"));
         clickElement(By.id("closeHistoryCompareModal"));
     }
 }
