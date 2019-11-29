@@ -122,10 +122,11 @@ export async function parseFormElements(nindsForms: any[]) {
                 datatype: existingCde.valueDomain.datatype,
                 uom: existingCde.valueDomain.uom
             };
+
             if (question.datatype === 'Value List') {
                 question.answers = parseAnswers(nindsCde);
                 question.cde.permissibleValues = existingCde.valueDomain.permissibleValues;
-                question.multiselect = nindsCde.Instructions === 'Multiple Pre-Defined Values Selected';
+                question.multiselect = nindsCde['Input Restrictions'] === 'Multiple Pre-Defined Values Selected';
             } else if (question.datatype === 'Text') {
                 question.datatypeText = existingCde.valueDomain.datatypeText;
             } else if (question.datatype === 'Number') {
@@ -143,11 +144,12 @@ export async function parseFormElements(nindsForms: any[]) {
 
 
             const questionText = nindsCde['Additional Notes (Question Text)'];
+            const diseaseSpecificInstructions = nindsCde['Disease Specific Instructions'];
 
             const questionFe = {
                 elementType: 'question',
                 label: questionText === 'N/A' ? '' : questionText,
-                instructions: {value: nindsCde.Instructions},
+                instructions: {value: diseaseSpecificInstructions},
                 question,
                 formElements: []
             };
