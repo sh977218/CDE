@@ -189,7 +189,7 @@ gulp.task('buildDist', ['createDist'], function copyDist() {
 });
 
 gulp.task('copyDist', ['buildDist'], function copyDist() {
-    const mergeAll = [
+    return merge([
         gulp.src([appDir('./dist/app/**/*'), '!' + appDir('./dist/app/cde.css'), '!' + appDir('./dist/app/cde.js')])
             .pipe(gulp.dest(BUILD_DIR + '/dist/app')),
         gulp.src([appDir('./dist/embed/**/*'), '!' + appDir('./dist/embed/embed.css'), '!' + appDir('./dist/embed/embed.js')])
@@ -198,13 +198,10 @@ gulp.task('copyDist', ['buildDist'], function copyDist() {
             .pipe(gulp.dest(BUILD_DIR + '/dist/fhir')),
         gulp.src([appDir('./dist/native/**/*'), '!' + appDir('./dist/native/native.css'), '!' + appDir('./dist/native/native.js')])
             .pipe(gulp.dest(BUILD_DIR + '/dist/native')),
-        gulp.src(appDir('./modules/system/views/home-launch.ejs')).pipe(gulp.dest(BUILD_DIR + '/modules/system/views'))
-    ];
-
-    if (config.provider.faas === 'AWS') {
-        mergeAll.push(gulp.src(appDir('./serverless-aws-java/**/*')).pipe(gulp.dest(BUILD_DIR + '/serverless-aws-java')));
-    }
-    return merge();
+        gulp.src(appDir('./modules/system/views/home-launch.ejs')).pipe(gulp.dest(BUILD_DIR + '/modules/system/views')),
+        gulp.src(appDir('./dist/launch/*')).pipe(gulp.dest(BUILD_DIR + '/dist/launch')),
+        gulp.src(appDir('./serverless-aws-java/**/*')).pipe(gulp.dest(BUILD_DIR + '/serverless-aws-java'))
+    ]);
 });
 
 gulp.task('usemin', ['copyDist'], function useminTask() {
