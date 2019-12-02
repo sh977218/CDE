@@ -3,12 +3,9 @@ import { Injectable } from '@angular/core';
 import { ElasticService } from '_app/elastic.service';
 import { AlertService } from 'alert/alert.service';
 import { mergeArrayByProperty } from 'core/adminItem/classification';
-import { forkJoin } from 'rxjs/observable/forkJoin';
 import { DataElement } from 'shared/de/dataElement.model';
-import { CbErr, ElasticQueryResponseForm } from 'shared/models.model';
-import { SearchSettings } from 'shared/search/search.model';
+import { CbErr } from 'shared/models.model';
 import { transferClassifications } from 'shared/system/classificationShared';
-import { toPromise } from 'rxjs-compat/operator/toPromise';
 
 export interface MergeFieldsDe {
     attachments: boolean;

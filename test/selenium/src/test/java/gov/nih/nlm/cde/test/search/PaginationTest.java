@@ -10,9 +10,9 @@ public class PaginationTest extends NlmCdeBaseTest {
     public void basicPagination() {
         goToCdeSearch();
         clickElement(By.id("browseOrg-NINDS"));
-        textPresent("1 - 20 of 10000");
+        textPresent("1 – 20 of 10000");
         clickElement(By.cssSelector("button.mat-paginator-navigation-next"));
-        textPresent("21 - 40 of 10000");
+        textPresent("21 – 40 of 10000");
     }
 
     @Test

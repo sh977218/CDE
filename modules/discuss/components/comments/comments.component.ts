@@ -4,9 +4,9 @@ import { MatDialog } from '@angular/material';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
 import { IsAllowedService } from 'non-core/isAllowed.service';
-import { Subject } from 'rxjs/Subject';
-import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
-import { TimerObservable } from 'rxjs/observable/TimerObservable';
+import { Subject } from 'rxjs';
+import { empty } from 'rxjs';
+import { timer } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, take } from 'rxjs/operators';
 import { Comment, CommentReply } from 'shared/models.model';
 import * as io from 'socket.io-client';
@@ -108,7 +108,7 @@ export class CommentsComponent implements OnInit, OnDestroy {
                 if (c._id === data.commentId && this.userService.user && data.username !== this.userService.user.username) {
                     if (this.subscriptions[c._id]) { this.subscriptions[c._id].unsubscribe(); }
                     c.currentlyReplying = true;
-                    this.subscriptions[c._id] = TimerObservable.create(10000)
+                    this.subscriptions[c._id] = timer(10000)
                         .pipe(take(1)).subscribe(() => c.currentlyReplying = false);
                 }
             });
@@ -119,7 +119,7 @@ export class CommentsComponent implements OnInit, OnDestroy {
             distinctUntilChanged(),
             map(obj => {
                 this.socket.emit('currentReplying', this.eltId, obj._id);
-                return EmptyObservable.create<string[]>();
+                return empty();
             })
         ).subscribe();
 

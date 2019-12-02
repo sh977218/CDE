@@ -16,7 +16,7 @@ export class MergeFormComponent {
     @Input() left!: CompareForm;
     @Input() right!: CompareForm;
     @Output() doneMerging = new EventEmitter<{left: CompareForm, right: CompareForm}>();
-    @ViewChild('mergeFormContent') mergeFormContent!: TemplateRef<any>;
+    @ViewChild('mergeFormContent', {static: true}) mergeFormContent!: TemplateRef<any>;
     doneMerge = false;
     maxNumberQuestions: any;
     mergeFields: MergeFieldsForm = {

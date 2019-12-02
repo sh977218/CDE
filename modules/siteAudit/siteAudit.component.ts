@@ -11,8 +11,8 @@ import { isSiteAdmin } from 'shared/system/authorizationShared';
     templateUrl: './siteAudit.component.html'
 })
 export class SiteAuditComponent implements OnInit {
-    @ViewChild('serverErrorTab') serverErrorTab!: MatTab;
-    @ViewChild('clientErrorTab') clientErrorTab!: MatTab;
+    @ViewChild('serverErrorTab', {static: false}) serverErrorTab!: MatTab;
+    @ViewChild('clientErrorTab', {static: false}) clientErrorTab!: MatTab;
     isAdmin = false;
     selectedTab = new FormControl(0);
 

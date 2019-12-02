@@ -159,6 +159,7 @@ export class CdeFhirService {
             let resource: FhirDomainResource;
             switch (self.root.resourceType) {
                 case 'Observation':
+                    // @ts-ignore
                     const observationPromise = observationFromForm(self.crossReference, this.getDisplayFunc,
                         this.fhirData.context, this.fhirData.patient);
                     ResourceTreeUtil.setResource(self, null, observationPromise);
@@ -194,6 +195,7 @@ export class CdeFhirService {
                 } else if (ResourceTreeUtil.isAttribute(self)) {
                     switch (self.root.resourceType) {
                         case 'Observation':
+                            // @ts-ignore
                             const componentPromise = observationComponentFromForm(self.crossReference, this.getDisplayFunc);
                             ResourceTreeUtil.setResource(self, componentPromise);
                             setResourceAndUpdateParentResource(self, 'component', await componentPromise);
@@ -535,6 +537,7 @@ export class CdeFhirService {
     }
 
     save<T extends FhirDomainResource>(resource: T): Promise<T> {
+        // @ts-ignore
         return new Promise<T>(resolve => {
             if (isFhirObservation(resource)) { // has category
                 // fill in category from database config

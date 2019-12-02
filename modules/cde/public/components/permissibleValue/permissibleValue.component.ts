@@ -4,9 +4,8 @@ import { MatDialog, MatDialogRef } from '@angular/material';
 import { Dictionary } from 'async';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
-import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
 import { catchError, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
-import { Subject } from 'rxjs/Subject';
+import { empty, Subject } from 'rxjs';
 import { DataElement, DATA_TYPE_ARRAY, ValueDomainValueList, ValueDomain } from 'shared/de/dataElement.model';
 import { fixDataElement, fixDatatype } from 'shared/de/deValidator';
 import { PermissibleValue } from 'shared/models.model';
@@ -57,9 +56,9 @@ export class PermissibleValueComponent {
             distinctUntilChanged(),
             switchMap(term => term
                 ? this.http.get('/server/uts/searchUmls?searchTerm=' + term).pipe(
-                    catchError(() => EmptyObservable.create<string[]>())
+                    catchError(() => empty())
                 )
-                : EmptyObservable.create<string[]>()
+                : empty()
             )
         ).subscribe((res: any) => {
             if (res.result && res.result.results) {
@@ -72,8 +71,8 @@ export class PermissibleValueComponent {
     }
     _elt!: DataElement;
     @Output() eltChange = new EventEmitter();
-    @ViewChild('newPermissibleValueContent') public newPermissibleValueContent!: TemplateRef<any>;
-    @ViewChild('importPermissibleValueContent') public importPermissibleValueContent!: TemplateRef<any>;
+    @ViewChild('newPermissibleValueContent', {static: true}) public newPermissibleValueContent!: TemplateRef<any>;
+    @ViewChild('importPermissibleValueContent', {static: true}) public importPermissibleValueContent!: TemplateRef<any>;
     readonly dataTypeArray = DATA_TYPE_ARRAY;
     containsKnownSystem = false;
     editMode = false;

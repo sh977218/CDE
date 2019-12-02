@@ -10,7 +10,7 @@ type ClientErrorRecord = any;
     templateUrl: './clientErrors.component.html'
 })
 export class ClientErrorsComponent {
-    @ViewChild('errorDetailModal') errorDetailModal!: TemplateRef<any>;
+    @ViewChild('errorDetailModal', {static: true}) errorDetailModal!: TemplateRef<any>;
     currentPage: number = 0;
     records: ClientErrorRecord[] = [];
     filteredRecords: ClientErrorRecord[] = [];

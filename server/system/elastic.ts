@@ -24,7 +24,6 @@ import {
 } from 'shared/models.model';
 import { SearchSettingsElastic } from 'shared/search/search.model';
 import { orderedList } from 'shared/system/regStatusShared';
-import { arrayFill } from 'shared/system/util';
 import { myOrgs } from 'server/orgManagement/orgSvc';
 
 type ElasticCondition = any;
@@ -69,16 +68,6 @@ export function removeElasticFields(elt: ItemElastic): ItemElastic {
     return elt;
 }
 
-export function nbOfCdes(cb: CbError<number>) {
-    esClient.count({index: config.elastic.index.name}, (err, result) => {
-        cb(err, result.count);
-    });
-}
-
-export function nbOfForms(cb: CbError<number>) {
-    esClient.count({index: config.elastic.formIndex.name}, (err, result) => cb(err, result.count));
-}
-
 const queryDe: DbQuery = {
     condition: {archived: false},
     dao: mongo_cde as any
@@ -108,7 +97,7 @@ const DOC_MAX_SIZE = BUFFER_MAX_SIZE;
 export function reIndexStream(dbStream: DbStream, cb?: Cb) {
     createIndex(dbStream, () => {
         const riverFunctions = dbStream.indexes.map(index => index.filter || ((elt: ItemElastic, cb: Cb1<ItemElastic>) => cb(elt)));
-        const buffers: Buffer[] = arrayFill<Buffer>(dbStream.indexes.length, () => Buffer.alloc(BUFFER_MAX_SIZE));
+        const buffers = Array.apply(null, new Array(dbStream.indexes.length)).map(() => Buffer.alloc(BUFFER_MAX_SIZE));
         const bufferOffsets = new Array(dbStream.indexes.length).fill(0);
         const nextCommandBuffer = Buffer.alloc(DOC_MAX_SIZE);
         let nextCommandOffset = 0;
@@ -694,7 +683,7 @@ export function elasticsearch(type: ModuleItem, query: any, settings: any,
     }
     search.body = query;
     search.body.track_total_hits = true;
-    esClient.search(search, (error, resp) => {
+    esClient.search(search, (error: any, resp: any) => {
         if (error) {
             const response = resp as any as ElasticQueryError;
             if (response && response.status) {
@@ -816,6 +805,7 @@ export function scrollExport(query: any, type: ModuleItem, cb: CbError<any>) {
     search.scroll = '1m';
     search.body = query;
 
+    // @ts-ignore
     esClient.search(search, cb);
 }
 

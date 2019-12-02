@@ -15,7 +15,7 @@ import { Board } from 'shared/models.model';
 })
 export class LinkedBoardsComponent {
     @Input() elt: any;
-    @ViewChild('linkedBoardsContent') linkedBoardsContent!: TemplateRef<any>;
+    @ViewChild('linkedBoardsContent', {static: true}) linkedBoardsContent!: TemplateRef<any>;
     boards!: any[];
 
     constructor(private alert: AlertService,

@@ -174,13 +174,18 @@ gulp.task('copyNpmDeps', ['copyCode', 'npmRebuildNodeSass'], function copyNpmDep
 });
 
 gulp.task('buildDist', ['createDist'], function copyDist() {
-    return Promise.all([
+    const runAll = [
         run('npm run buildAppJs', runInAppOptions),
         run('npm run buildNativeJs', runInAppOptions),
         run('npm run buildEmbedJs', runInAppOptions),
-        run('npm run buildFhirJs', runInAppOptions),
-        run('npm run buildFnAwsJava', runInAppOptions)
-    ]);
+        run('npm run buildFhirJs', runInAppOptions)
+    ];
+
+    if (config.provider.faas === 'AWS') {
+        runAll.push(run('npm run buildFnAwsJava', runInAppOptions))
+    }
+
+    return Promise.all(runAll);
 });
 
 gulp.task('copyDist', ['buildDist'], function copyDist() {
@@ -291,7 +296,8 @@ gulp.task('es', function es() {
     return Promise.all(
         indices.map((index: ElasticIndex) => new Promise((resolve, reject) => {
             console.log('Deleting es index: ' + index.indexName);
-            esClient.indices.delete({index: index.indexName, timeout: '6s'}, resolve);
+            esClient.indices.delete({index: index.indexName, timeout: '6s'});
+            resolve();
         }))
     );
 });
