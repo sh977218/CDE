@@ -23,7 +23,8 @@ function removeNindsClassification(elt: any) {
 
 async function loadNindsCdes() {
     const cdeIds = await NindsModel.distinct('cdes.CDE ID');
-    await eachLimit(cdeIds, 500, async cdeId => {
+//    await eachLimit(cdeIds, 500, async cdeId => {
+    await eachLimit(cdeIds.slice(1, 500), 500, async cdeId => {
         const nindsForms = await NindsModel.find({'cdes.CDE ID': cdeId},
             {
                 _id: 0,
@@ -41,6 +42,7 @@ async function loadNindsCdes() {
         };
         await loadNindsCde(cde, cond, 'NINDS');
     });
+    console.log('Finished loadNindsCdes().');
 }
 
 const sameFormIdsMap: any = {};
@@ -92,12 +94,15 @@ async function loadNindsForms() {
             'ids.id': formId,
             'registrationState.registrationStatus': {$ne: 'Retired'}
         };
+        // @ts-ignore
+        const sameFormIds = sameFormIdsMap[formId];
         const nindsForms = await NindsModel.find({
-            formId: {$in: [formId].concat(sameFormIdsMap[formId])}
+            formId: {$in: [formId].concat(sameFormIds)}
         }).lean();
         const nindsForm = await createNindsForm(nindsForms);
         await loadNindsForm(nindsForm, cond, 'NINDS');
     });
+    console.log('Finished loadNindsForms().');
 }
 
 async function retireNindsCdes() {
@@ -123,6 +128,7 @@ async function retireNindsCdes() {
         }
     });
     console.log('retiredCdeCount: ' + retiredCdeCount);
+    console.log('Finished retireNindsCdes().');
 }
 
 async function retireNindsForms() {
@@ -151,17 +157,14 @@ async function retireNindsForms() {
         }
     });
     console.log('retiredFormCount: ' + retiredFormCount);
+    console.log('Finished retireNindsForms().');
 }
 
 async function run() {
-    await loadNindsCdes();
-    console.log('Finished loadNindsCdes().');
-    await loadNindsForms();
-    console.log('Finished loadNindsForms().');
-    await retireNindsCdes();
-    console.log('Finished retireNindsCdes().');
-    await retireNindsForms();
-    console.log('Finished retireNindsForms().');
+    const temp1 = await loadNindsCdes();
+    const temp2 = await loadNindsForms();
+    const temp3 = await retireNindsCdes();
+    const temp4 = await retireNindsForms();
 }
 
 run().then(
