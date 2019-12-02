@@ -75,8 +75,8 @@ export class DraftSliderComponent implements OnInit {
         }
     }
     @Output() isDraftChange = new EventEmitter<boolean>();
-    @ViewChild('sliderInput') draftSliderElem!: ElementRef;
-    @ViewChild('sliderParent') draftSliderParent!: ElementRef;
+    @ViewChild('sliderInput', {static: true}) draftSliderElem!: ElementRef;
+    @ViewChild('sliderParent', {static: true}) draftSliderParent!: ElementRef;
     draftToggle: any;
 
     ngOnInit() {

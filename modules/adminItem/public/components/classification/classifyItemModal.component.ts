@@ -24,7 +24,7 @@ const actionMapping: IActionMapping = {
 export class ClassifyItemModalComponent {
     @Input() modalTitle = 'Classify this CDE';
     @Output() classified = new EventEmitter<ClassificationClassified>();
-    @ViewChild('classifyItemContent') classifyItemContent!: TemplateRef<any>;
+    @ViewChild('classifyItemContent', {static: true}) classifyItemContent!: TemplateRef<any>;
     orgClassificationsTreeView: any;
     orgClassificationsRecentlyAddView?: ClassificationClassifier[];
     options = {

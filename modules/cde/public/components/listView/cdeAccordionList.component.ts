@@ -16,7 +16,7 @@ export class CdeAccordionListComponent {
     @Input() elts!: DataElement[];
     @Input() openInNewTab = false;
     @Output() add = new EventEmitter<DataElement>();
-    @ViewChild('pinModalCde')pinModalCde!: PinBoardModalComponent;
+    @ViewChild('pinModalCde', {static: true}) pinModalCde!: PinBoardModalComponent;
     module: ModuleItem = 'cde';
     pinModal: any;
     user!: User;
