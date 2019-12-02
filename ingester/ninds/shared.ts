@@ -124,12 +124,15 @@ async function updateFormOption(existingFormObj, source) {
     const diff = DiffJson.diff(currentRawArtifact.formElements, existingFormObj.formElements);
     if (!isEmpty(diff)) {
         options.skipFormElements = true;
+        let administrativeNote = 'skip updating Form Elements because raw artifact form elements is different from live form elements. ';
         const changeNoteIndex = existingFormObj.changeNote.indexOf('Merge from tinyId ');
         if (changeNoteIndex === 0) {
             options.skipFormElements = false;
+            administrativeNote = 'Not skip updating Form Elements because Merge from tinyId ';
         } else {
             console.log(`Skipping form element update for form ${existingFormObj.tinyId} `);
         }
+        existingFormObj.registrationState.administrativeNote = administrativeNote;
     }
 
     /* Loader cannot change Qualified PhenX formElements.*/
