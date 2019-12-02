@@ -124,10 +124,11 @@ async function updateFormOption(existingFormObj, source) {
     const diff = DiffJson.diff(currentRawArtifact.formElements, existingFormObj.formElements);
     if (!isEmpty(diff)) {
         options.skipFormElements = true;
-        console.log(`Skipping form element update for form ${existingFormObj.tinyId} `);
         const changeNoteIndex = existingFormObj.changeNote.indexOf('Merge from tinyId ');
         if (changeNoteIndex === 0) {
             options.skipFormElements = false;
+        } else {
+            console.log(`Skipping form element update for form ${existingFormObj.tinyId} `);
         }
     }
 
