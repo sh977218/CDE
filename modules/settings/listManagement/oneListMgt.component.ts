@@ -2,7 +2,7 @@ import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild }
 import { ENTER } from '@angular/cdk/keycodes';
 import { MatAutocompleteSelectedEvent, MatChipInputEvent } from '@angular/material';
 import { FormControl } from '@angular/forms';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 
 @Component({
@@ -14,7 +14,7 @@ export class OneListMgtComponent implements OnInit {
     @Input() allKeys!: string[];
     @Input() placeHolder: string = 'Property Keys';
     @Output() save: EventEmitter<any> = new EventEmitter();
-    @ViewChild('keyInput') keyInput!: ElementRef<HTMLInputElement>;
+    @ViewChild('keyInput', {static: true}) keyInput!: ElementRef<HTMLInputElement>;
     filteredKeys!: Observable<string[]>;
     keyControl = new FormControl();
 

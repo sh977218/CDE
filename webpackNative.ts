@@ -11,7 +11,7 @@ export default {
     output: {
         path: resolve(APP_DIR, 'dist/native'), // TODO: temporary until gulp stops packaging vendor.js, then use /dist
         publicPath: '/native/',
-        filename: '[name]-esm.js'
+        filename: '[name].js'
     },
     plugins: [
         new CleanWebpackPlugin(['dist/native'], {root: process.cwd()}),

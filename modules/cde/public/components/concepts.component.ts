@@ -21,7 +21,7 @@ export class ConceptsComponent {
     @Input() public elt: any;
     @Input() public canEdit = false;
     @Output() eltChange = new EventEmitter();
-    @ViewChild('newConceptContent') newConceptContent!: TemplateRef<any>;
+    @ViewChild('newConceptContent', {static: true}) newConceptContent!: TemplateRef<any>;
     conceptConfigurations: Config[] = [
         {
             type: 'dataElementConcept',

@@ -294,7 +294,7 @@ export class NotificationService {
                 if (task.tasks[0].type === 'comment' && task.unread) {
                     task.unread = false;
                     this.reloading = true;
-                    this.http.post<Task[]>('/server/user/tasks/' + (window as any).version + '/read',
+                    this.http.post<NotificationTask[]>('/server/user/tasks/' + (window as any).version + '/read',
                         {id: task.tasks[0].id, idType: task.tasks[0].idType})
                         .subscribe(this.funcUpdateTaskMessages, this.funcReloadFinished, this.funcReloadFinished);
                 }
@@ -307,7 +307,7 @@ export class NotificationService {
     reload() {
         if (!this.reloading) {
             this.reloading = true;
-            this.http.get<Task[]>('/server/user/tasks/' + (window as any).version)
+            this.http.get<NotificationTask[]>('/server/user/tasks/' + (window as any).version)
                 .subscribe(this.funcUpdateTaskMessages, this.funcReloadFinished, this.funcReloadFinished);
         }
     }
@@ -319,6 +319,7 @@ export class NotificationService {
     updateTaskMessages(serverTasks: NotificationTask[]) {
         this.tasks = NotificationService.sortTasks(
             this.groupTasks(
+                // @ts-ignore
                 serverTasks.reduce(this.funcMergeTaskMessages, [])
             )
         );

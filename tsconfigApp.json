@@ -6,6 +6,7 @@
     "baseUrl": "./modules",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "incremental": true,
     "lib": [
       "ESNext",
       "DOM"
