@@ -1,5 +1,4 @@
 import { remove, uniq } from 'lodash';
-import { eachLimit } from 'async';
 import { NindsModel } from 'ingester/createMigrationConnection';
 import { createNindsCde } from 'ingester/ninds/website/cde/cde';
 import { createNindsForm } from 'ingester/ninds/website/form/form';
@@ -23,8 +22,7 @@ function removeNindsClassification(elt: any) {
 
 async function loadNindsCdes() {
     const cdeIds = await NindsModel.distinct('cdes.CDE ID');
-//    await eachLimit(cdeIds, 500, async cdeId => {
-    await eachLimit(cdeIds.slice(1, 500), 500, async cdeId => {
+    for (const cdeId of cdeIds) {
         const nindsForms = await NindsModel.find({'cdes.CDE ID': cdeId},
             {
                 _id: 0,
@@ -41,7 +39,7 @@ async function loadNindsCdes() {
             'registrationState.registrationStatus': {$ne: 'Retired'}
         };
         await loadNindsCde(cde, cond, 'NINDS');
-    });
+    }
     console.log('Finished loadNindsCdes().');
 }
 
@@ -74,21 +72,13 @@ async function duplicateFormIds(formIds) {
         }
     }
     const _duplicateFormIds = uniq(duplicateFormIds);
-    remove(formIds, f => {
-        const index = _duplicateFormIds.indexOf(f);
-        if (index !== -1) {
-            return true;
-        } else {
-            return false;
-        }
-    });
+    remove(formIds, f => _duplicateFormIds.indexOf(f) !== -1);
 }
 
 async function loadNindsForms() {
     const formIds = await NindsModel.distinct('formId', {'cdes.0': {$exists: true}});
     await duplicateFormIds(formIds);
-    await eachLimit(formIds, 1, async formId => {
-//    await eachLimit(['F0347'], 1, async formId => {
+    for (const formId of formIds) {
         const cond: any = {
             archived: false,
             'ids.id': formId,
@@ -101,7 +91,7 @@ async function loadNindsForms() {
         }).lean();
         const nindsForm = await createNindsForm(nindsForms);
         await loadNindsForm(nindsForm, cond, 'NINDS');
-    });
+    }
     console.log('Finished loadNindsForms().');
 }
 
@@ -161,10 +151,10 @@ async function retireNindsForms() {
 }
 
 async function run() {
-    const temp1 = await loadNindsCdes();
-    const temp2 = await loadNindsForms();
-    const temp3 = await retireNindsCdes();
-    const temp4 = await retireNindsForms();
+    await loadNindsCdes();
+    await loadNindsForms();
+    await retireNindsCdes();
+    await retireNindsForms();
 }
 
 run().then(
