@@ -1,5 +1,5 @@
 import { exec, ExecOptions } from 'child_process';
-import { Client } from '@elastic/elasticsearch';
+import * as elasticsearch from '@elastic/elasticsearch';
 import { readFileSync } from 'fs';
 import * as gulp from 'gulp';
 import * as minifyCss from 'gulp-clean-css';
@@ -292,7 +292,14 @@ gulp.task('copyUsemin', ['usemin'], function usemin() {
 });
 
 gulp.task('es', function es() {
-    const esClient = new Client(config.elastic.options);
+    const esClient = new elasticsearch.Client({
+        nodes: config.elastic.hosts.map((s: string) => (
+            {
+                url: new URL(s),
+                ssl: {rejectUnauthorized: false}
+            }
+        ))
+    });
     return Promise.all(
         indices.map((index: ElasticIndex) => new Promise((resolve, reject) => {
             console.log('Deleting es index: ' + index.indexName);
