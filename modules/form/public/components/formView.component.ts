@@ -20,7 +20,7 @@ import _noop from 'lodash/noop';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
 import { ExportService } from 'non-core/export.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { assertUnreachable, Cb, Comment, Elt, PermissibleValue } from 'shared/models.model';
 import {
     DataElement, DatatypeContainerDate, DatatypeContainerNumber, DatatypeContainerText, DatatypeContainerTime,
@@ -64,11 +64,11 @@ class LocatableError {
     templateUrl: 'formView.component.html',
 })
 export class FormViewComponent implements OnInit {
-    @ViewChild('commentAreaComponent') commentAreaComponent!: DiscussAreaComponent;
-    @ViewChild('copyFormContent') copyFormContent!: TemplateRef<any>;
-    @ViewChild('mltPinModalCde') mltPinModalCde!: PinBoardModalComponent;
-    @ViewChild('exportPublishModal') exportPublishModal!: TemplateRef<any>;
-    @ViewChild('saveModal') saveModal!: SaveModalComponent;
+    @ViewChild('commentAreaComponent', {static: true}) commentAreaComponent!: DiscussAreaComponent;
+    @ViewChild('copyFormContent', {static: true}) copyFormContent!: TemplateRef<any>;
+    @ViewChild('mltPinModalCde', {static: true}) mltPinModalCde!: PinBoardModalComponent;
+    @ViewChild('exportPublishModal', {static: true}) exportPublishModal!: TemplateRef<any>;
+    @ViewChild('saveModal', {static: false}) saveModal!: SaveModalComponent;
     commentMode?: boolean;
     currentTab = 'preview_tab';
     dialogRef!: MatDialogRef<any>;
