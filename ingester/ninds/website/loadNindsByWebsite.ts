@@ -155,9 +155,13 @@ async function retireNindsForms() {
 
 async function run() {
     await loadNindsCdes();
+    console.log('Finished loadNindsCdes().');
     await loadNindsForms();
+    console.log('Finished loadNindsForms().');
     await retireNindsCdes();
+    console.log('Finished retireNindsCdes().');
     await retireNindsForms();
+    console.log('Finished retireNindsForms().');
 }
 
 run().then(
