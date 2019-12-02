@@ -317,7 +317,7 @@ try {
             next();
         }
     }));
-    app.use('/', systemModule());
+    app.use('/server/system', systemModule());
     app.use('/nativeRender', nativeRenderModule());
     app.use('/', embedModule());
     app.use('/', fhirModule());
