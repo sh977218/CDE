@@ -47,14 +47,7 @@ interface DbStream {
     indexes: ElasticIndex[];
 }
 
-export const esClient = new Client({
-    nodes: config.elastic.hosts.map((s: string) => (
-        {
-            url: new URL(s),
-            ssl: {rejectUnauthorized: false}
-        }
-    ))
-});
+const esClient = new Client(config.elastic.options);
 
 export function removeElasticFields(elt: DataElementElastic): DataElementElastic;
 export function removeElasticFields(elt: CdeFormElastic): CdeFormElastic;
