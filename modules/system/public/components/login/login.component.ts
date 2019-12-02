@@ -20,7 +20,7 @@ import { AlertService } from 'alert/alert.service';
             margin-bottom: 10px;
         }
 
-        .form-signin .btn  {
+        .form-signin .btn {
             margin: 15px 0 10px 0;
         }
 
@@ -58,29 +58,28 @@ export class LoginComponent {
     siteKey: string = (window as any).siteKey;
     username?: string;
 
-    constructor(
-        private http: HttpClient,
-        private alert: AlertService,
-        private loginSvc: LoginService,
-        private userService: UserService,
-        private router: Router
-    ) {
+    constructor(private http: HttpClient,
+                private alert: AlertService,
+                private loginSvc: LoginService,
+                private userService: UserService,
+                private router: Router) {
         this.getCsrf();
     }
 
     getCsrf() {
         delete this.csrf;
-        this.http.get<any>('/csrf').subscribe(response => {
+        this.http.get<any>('/server/system/csrf').subscribe(response => {
             this.csrf = response.csrf;
             this.showCaptcha = response.showCaptcha;
-        }, () => {});
+        }, () => {
+        });
     }
 
     login() {
         if (!this.csrf) {
             return;
         }
-        this.http.post('/login', {
+        this.http.post('/server/system/login', {
             username: this.username,
             password: this.password,
             _csrf: this.csrf,

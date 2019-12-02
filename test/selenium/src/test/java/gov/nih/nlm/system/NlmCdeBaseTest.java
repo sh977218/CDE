@@ -260,8 +260,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
 
     protected void mustBeLoggedInAs(String username, String password) {
         doLogin(username, password);
-
-//        goToCdeSearch();
     }
 
     protected void addIdSource(String source, String deLink, String formLink) {

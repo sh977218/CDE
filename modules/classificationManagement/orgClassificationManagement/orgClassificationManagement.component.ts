@@ -157,7 +157,7 @@ export class OrgClassificationManagementComponent implements OnInit {
 
     checkJob(type: string, cb: Cb) {
         const indexFn = setInterval(() => {
-            this.http.get<any>('/jobStatus/' + type).subscribe(
+            this.http.get<any>('/server/system/jobStatus/' + type).subscribe(
                 res => {
                     if (res.done === true) {
                         this.orgChanged(this.selectedOrg.name, () => {
