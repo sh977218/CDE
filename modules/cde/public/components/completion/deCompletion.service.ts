@@ -2,9 +2,9 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ElasticService } from '_app/elastic.service';
 import { AlertService } from 'alert/alert.service';
-import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
+import { empty } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 import { DataElement } from 'shared/de/dataElement.model';
 import { SearchSettings } from 'shared/search/search.model';
 
@@ -27,7 +27,7 @@ export class DeCompletionService {
                     settings.searchTerm = term;
                     return this.http.post<any[]>('/cdeCompletion/' + encodeURI(term), settings);
                 } else {
-                    return EmptyObservable.create<string[]>();
+                    return empty();
                 }
             })
         ).subscribe(res => {

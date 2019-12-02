@@ -11,7 +11,7 @@ export class CdeSortableComponent {
     @Input() left!: CompareForm;
     @Input() right!: CompareForm;
     @Input() mergeFields!: MergeFieldsForm;
-    @ViewChild('sortableComponent') sortableComponent!: SortableComponent;
+    @ViewChild('sortableComponent', {static: true}) sortableComponent!: SortableComponent;
 
     constructor(private mergeFormService: MergeFormService) {
     }

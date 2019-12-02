@@ -2,7 +2,7 @@ import { Component, Input, Output, ViewChild, EventEmitter, ElementRef } from '@
 import { FormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent, MatChipInputEvent, MatAutocomplete } from '@angular/material';
 import { startWith, distinctUntilChanged, debounceTime, map } from 'rxjs/operators';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 @Component({
     selector: 'cde-tag',
@@ -15,8 +15,8 @@ export class TagComponent {
     @Input() placeHolder: string = 'New tag...';
     @Input() allowFreeType: boolean = false;
     @Output() changed = new EventEmitter();
-    @ViewChild('tagAuto') matAutocomplete!: MatAutocomplete;
-    @ViewChild('tagInput') tagInput!: ElementRef;
+    @ViewChild('tagAuto', {static: true}) matAutocomplete!: MatAutocomplete;
+    @ViewChild('tagInput', {static: true}) tagInput!: ElementRef;
     tagCtrl = new FormControl();
     filteredTags: Observable<string[]>;
 

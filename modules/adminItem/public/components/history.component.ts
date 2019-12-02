@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Input } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { AlertService } from 'alert/alert.service';
 import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHistoryContent.component';
 import { DataElement } from 'shared/de/dataElement.model';

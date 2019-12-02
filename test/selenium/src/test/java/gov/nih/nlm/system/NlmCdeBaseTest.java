@@ -1064,8 +1064,8 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void selectHistoryAndCompare(Integer leftIndex, Integer rightIndex) {
-        clickElement(By.xpath("//*[@id='historyTable']/tbody/tr[td][" + leftIndex + "]"));
-        clickElement(By.xpath("//*[@id='historyTable']/tbody/tr[td][" + rightIndex + "]"));
+        clickElement(By.xpath("//*[@id='historyTable']/tr[td][" + leftIndex + "]"));
+        clickElement(By.xpath("//*[@id='historyTable']/tr[td][" + rightIndex + "]"));
         clickElement(By.id("historyCompareBtn"));
     }
 

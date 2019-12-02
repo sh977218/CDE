@@ -187,13 +187,18 @@ export class NativeRenderService {
 
             // answers
             if (f.question.answer === undefined && f.question.defaultAnswer) {
+                const defAns = f.question.defaultAnswer;
                 switch (f.question.datatype) {
                     case 'Geo Location':
-                        const inputs = f.question.defaultAnswer.split(',').map(value => parseFloat(value.trim()));
-                        f.question.answer = {latitude: inputs[0], longitude: inputs[1]};
+                        if (defAns) {
+                            const inputs = defAns.split(',').map(value => parseFloat(value.trim()));
+                            f.question.answer = {latitude: inputs[0], longitude: inputs[1]};
+                        }
                         break;
                     case 'Number':
-                        f.question.answer = parseFloat(f.question.defaultAnswer);
+                        if (defAns) {
+                            f.question.answer = parseFloat(defAns);
+                        }
                         break;
                     case 'Value List':
                         f.question.answer = f.question.multiselect ? [f.question.defaultAnswer] : f.question.defaultAnswer;
@@ -411,11 +416,11 @@ export class NativeRenderService {
         }
     }
 
-    static max(values: string[]) {
+    static max(values: any[]) {
         return values.length > 0 && values[0].indexOf('/') > -1 ? values[0] : Math.max.apply(null, values);
     }
 
-    static min(values: string[]) {
+    static min(values: any[]) {
         return values.length > 0 && values[0].indexOf('/') > -1 ? values[0] : Math.max.apply(null, values);
     }
 

@@ -12,7 +12,7 @@ import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea
 import _cloneDeep from 'lodash/cloneDeep';
 import _noop from 'lodash/noop';
 import { OrgHelperService } from 'non-core/orgHelper.service';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { Comment, Elt } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { checkPvUnicity, checkDefinitions } from 'shared/de/deValidator';
@@ -38,9 +38,9 @@ import { SaveModalComponent } from 'adminItem/public/components/saveModal/saveMo
     providers: []
 })
 export class DataElementViewComponent implements OnInit {
-    @ViewChild('commentAreaComponent') commentAreaComponent!: DiscussAreaComponent;
-    @ViewChild('copyDataElementContent') copyDataElementContent!: TemplateRef<any>;
-    @ViewChild('saveModal') saveModal!: SaveModalComponent;
+    @ViewChild('commentAreaComponent', {static: true}) commentAreaComponent!: DiscussAreaComponent;
+    @ViewChild('copyDataElementContent', {static: true}) copyDataElementContent!: TemplateRef<any>;
+    @ViewChild('saveModal', {static: false}) saveModal!: SaveModalComponent;
     commentMode?: boolean;
     currentTab = 'general_tab';
     displayStatusWarning?: boolean;
