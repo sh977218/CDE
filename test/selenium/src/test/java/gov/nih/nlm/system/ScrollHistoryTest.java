@@ -33,7 +33,10 @@ public class ScrollHistoryTest extends NlmCdeBaseTest {
         clickElement(By.id(elementId));
         findElement(By.className("mobileViewH1"));
 
-        searchEltAny("Test of Memory Malingering (TOMM) - Trial 1 question 10 score", "cde");
+        goToCdeSearch();
+        findElement(By.id("ftsearch-input")).clear();
+        findElement(By.id("ftsearch-input")).sendKeys("Test of Memory Malingering (TOMM) - Trial 1 question 10 score");
+        clickElement(By.id("search.submit"));
         textPresent("Test of Memory Malingering (TOMM) - Trial 1 question 10 score");
         scrollToViewById(elementId);
         hangon(1);
