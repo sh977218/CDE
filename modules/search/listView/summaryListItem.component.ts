@@ -31,7 +31,7 @@ export class SummaryListItemComponent implements AfterViewInit, OnChanges {
     @Input() eltIndex!: number;
     @Input() contentComponent: any;
     @Output() select = new EventEmitter<string>();
-    @ViewChild(SummaryPlaceholderDirective) cHost!: SummaryPlaceholderDirective;
+    @ViewChild(SummaryPlaceholderDirective, {static: true}) cHost!: SummaryPlaceholderDirective;
     componentRef!: ComponentRef<any>;
 
     constructor(private _componentFactoryResolver: ComponentFactoryResolver,
