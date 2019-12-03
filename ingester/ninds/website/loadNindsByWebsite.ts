@@ -101,7 +101,7 @@ async function retireNindsCdes() {
         archived: false,
         'classification.stewardOrg.name': 'NINDS',
         'registrationState.registrationStatus': {$ne: 'Retired'}
-    }).cursor().eachAsync(async cdeToRetire => {
+    }).cursor({batchSize: 10}).eachAsync(async cdeToRetire => {
         const cdeObj = cdeToRetire.toObject();
         if (cdeObj.lastMigrationScript !== lastMigrationScript) {
             removeNindsClassification(cdeObj);
@@ -127,7 +127,7 @@ async function retireNindsForms() {
         archived: false,
         'classification.stewardOrg.name': 'NINDS',
         'registrationState.registrationStatus': {$ne: 'Retired'}
-    }).cursor().eachAsync(async formToRetire => {
+    }).cursor({batchSize: 10}).eachAsync(async formToRetire => {
         const form = await fixForm(formToRetire).catch((err: any) => {
             console.log(`Not able to fix form when in retireNindsForms ${err}`);
             process.exit(1);
