@@ -4,7 +4,7 @@ import * as Config from 'config';
 import { createWriteStream } from 'fs';
 import * as md5 from 'md5-file';
 import { createReadStream } from 'streamifier';
-import { hasRole } from 'shared/system/authorizationShared';
+import { hasRole, isSiteAdmin } from 'shared/system/authorizationShared';
 import { handleError, handleNotFound } from 'server/errorHandler/errorHandler';
 import { attachmentApproved, attachmentRemove, createTask, fileUsed } from 'server/system/adminItemSvc';
 import { getDaoList } from 'server/system/moduleDaoManager';
@@ -88,7 +88,7 @@ export function addToItem(item: ItemDocument, file, user, comment, cb) {
     };
     if (file.scanned) {
         streamDescription.metadata.status = 'scanned';
-    } else if (user.roles && user.roles.filter((r) => r === 'AttachmentReviewer').length > 0) {
+    } else if (hasRole(user, 'AttachmentReviewer')) {
         streamDescription.metadata.status = 'approved';
     } else {
         streamDescription.metadata.status = 'uploaded';
