@@ -17,5 +17,11 @@ initEs(() => {
         syncLinkedFormsByTinyId('QJdxq1unyQl'),
         syncLinkedFormsByTinyId('mJR9Jd2JQx'),
         syncLinkedFormsByTinyId('Xyl_qyuhJ7e'),
-    ]).then(() => process.exit(0));
+    ]).then(() => {
+        console.log(`indexDb.ts finished successfully.`);
+        process.exit(0);
+    }, err => {
+        console.log(`indexDb.ts error ${err}`);
+        process.exit(1);
+    });
 });
