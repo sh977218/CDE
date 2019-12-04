@@ -1,8 +1,8 @@
+import * as ElasticSearch from '@elastic/elasticsearch';
 import { config } from 'server/system/parseConfig';
 import { createIndexJson as boardCreateIndexJson } from 'server/board/elasticSearchMapping';
 import { shortHash } from 'server/system/elasticSearchInit';
-import { Client } from '@elastic/elasticsearch';
-const esClient = new Client(config.elastic.options);
+import { esClient } from 'server/system/elastic';
 
 if (config.elastic.boardIndex.name === 'auto') {
     config.elastic.boardIndex.name = 'board_' + shortHash(boardCreateIndexJson);

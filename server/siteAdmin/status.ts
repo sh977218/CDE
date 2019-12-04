@@ -3,14 +3,12 @@ import { config } from 'server/system/parseConfig';
 import { dataElementModel } from 'server/cde/mongo-cde';
 import { triggerPushMsg } from 'server/notification/pushNotificationSvc';
 import { pushGetAdministratorRegistrations } from 'server/notification/notificationDb';
-import { Client } from '@elastic/elasticsearch';
 
 const mongoForm = require('server/form/mongo-form');
 const boardDb = require('server/board/boardDb');
+const elastic = require('server/system/elastic');
 const esInit = require('server/system/elasticSearchInit');
 const dbLogger = require('server/log/dbLogger');
-
-const esClient = new Client(config.elastic.options);
 
 export const statusReport: any = {
     elastic: {
@@ -32,7 +30,7 @@ export function status(req, res) {
 }
 
 export function checkElasticCount(count, index, type, cb) {
-    esClient.count({index}, (err, response) => {
+    elastic.esClient.count({index}, (err, response) => {
         if (err) {
             cb(false, 'Error retrieving index count: ' + err);
         } else {
@@ -46,7 +44,7 @@ export function checkElasticCount(count, index, type, cb) {
 }
 
 export function isElasticUp(cb) {
-    esClient.cat.health({h: 'st'}, (err, response) => {
+    elastic.esClient.cat.health({h: 'st'}, (err, response) => {
         if (err) {
             statusReport.elastic.up = 'No Response on Health Check: ' + err;
             cb(false);

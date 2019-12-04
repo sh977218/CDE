@@ -1,12 +1,11 @@
-import { Client } from '@elastic/elasticsearch';
+import * as elastic from '@elastic/elasticsearch';
 import { splitError } from 'server/errorHandler/errorHandler';
 import { logError } from 'server/log/dbLogger';
 import { riverFunction, suggestRiverFunction } from 'server/system/elasticSearchInit';
 import { config } from 'server/system/parseConfig';
 import { CdeFormElastic } from 'shared/form/form.model';
 import { CbError } from 'shared/models.model';
-
-const esClient = new Client(config.elastic.options);
+import { esClient } from 'server/system/elastic';
 
 export function updateOrInsert(elt) {
     riverFunction(elt.toObject(), doc => {

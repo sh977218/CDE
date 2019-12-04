@@ -46,7 +46,7 @@ interface DbStream {
     indexes: ElasticIndex[];
 }
 
-const esClient = new Client(config.elastic.options);
+export const esClient = new Client(config.elastic.options);
 
 export function removeElasticFields(elt: DataElementElastic): DataElementElastic;
 export function removeElasticFields(elt: CdeFormElastic): CdeFormElastic;

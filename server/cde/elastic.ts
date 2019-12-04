@@ -1,6 +1,7 @@
+import * as elastic from '@elastic/elasticsearch';
 import { handleNotFound } from 'server/errorHandler/errorHandler';
 import { logError } from 'server/log/dbLogger';
-import { buildElasticSearchQuery, elasticsearch as elasticSearchShared } from 'server/system/elastic';
+import { buildElasticSearchQuery, elasticsearch as elasticSearchShared, esClient } from 'server/system/elastic';
 import { riverFunction, suggestRiverFunction } from 'server/system/elasticSearchInit';
 import { config } from 'server/system/parseConfig';
 import { DataElementElastic } from 'shared/de/dataElement.model';
@@ -8,9 +9,8 @@ import { CbError, ElasticQueryResponse, SearchResponseAggregationDe, User } from
 import { SearchSettingsElastic } from 'shared/search/search.model';
 import { storeQuery } from 'server/log/storedQueryDb';
 import { response } from 'express';
-import { ApiResponse, Client } from '@elastic/elasticsearch';
+import { ApiResponse } from '@elastic/elasticsearch';
 
-const esClient = new Client(config.elastic.options);
 
 export function updateOrInsert(elt) {
     riverFunction(elt.toObject(), doc => {
