@@ -236,10 +236,11 @@ function createIndex(dbStream: DbStream, cb: Cb) {
                 }, err => {
                     if (err) {
                         respondError(err);
+                        doneOne(err);
                     } else {
                         consoleLog('index Created: ' + index.indexName);
+                        doneOne(undefined, true);
                     }
-                    doneOne(undefined, true);
                 });
             }
         });
