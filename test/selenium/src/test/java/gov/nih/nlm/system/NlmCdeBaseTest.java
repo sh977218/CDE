@@ -1061,6 +1061,10 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         textPresent(string, By.xpath(path));
     }
 
+    /*
+       @param leftIndex an index starts from 1
+       @param rightIndex an index starts from 1
+     */
     protected void selectHistoryAndCompare(Integer leftIndex, Integer rightIndex) {
         clickElement(By.xpath("//*[@id='historyTable']/tr[td][" + leftIndex + "]"));
         clickElement(By.xpath("//*[@id='historyTable']/tr[td][" + rightIndex + "]"));
@@ -1221,6 +1225,19 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
                 textPresent(tag);
             }
         }
+    }
+
+    protected void addNewConcept(String cName, String cId, String cType) {
+        clickElement(By.id("openNewConceptModalBtn"));
+        hangon(1);
+        findElement(By.id("name")).sendKeys(cName);
+        findElement(By.id("codeId")).sendKeys(cId);
+        if (cType != null) {
+            clickElement(By.id("conceptType"));
+            clickElement(By.xpath("//mat-option[. = '" + cType + "']"));
+        }
+        clickElement(By.id("createNewConceptBtn"));
+        modalGone();
     }
 
     protected void addNewProperty(String key, String value, boolean isHtml) {
