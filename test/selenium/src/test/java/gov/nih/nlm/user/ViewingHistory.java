@@ -21,6 +21,10 @@ public class ViewingHistory extends NlmCdeBaseTest {
         goToCdeByName("Specimen Block Received Count");
         goToCdeByName("Malignant Neoplasm Metastatic Involvement Anatomic");
 
+        goToFormByName("Answer Value Display Profile Test");
+        goToFormByName("Traumatic Brain Injury - Adverse Events");
+        goToFormByName("Patient Health Questionnaire 2 item (PHQ-2) [Reported]");
+
         goToViewHistory();
 
         textPresent("Specimen Inflammation Change Type");
@@ -35,5 +39,10 @@ public class ViewingHistory extends NlmCdeBaseTest {
         textPresent("Malignant Neoplasm Metastatic Involvement Anatomic");
 
         textNotPresent("Patient Eligibility Ind-2");
+
+        textPresent("Answer Value Display Profile Test");
+        textPresent("Traumatic Brain Injury - Adverse Events");
+        textPresent("Patient Health Questionnaire 2 item (PHQ-2) [Reported]");
+
     }
 }

@@ -17,12 +17,9 @@ class FormUI extends CdeForm {
     selector: 'cde-viewing-history',
     templateUrl: './viewingHistory.component.html'
 })
-export class ViewingHistoryComponent implements OnInit {
+export class ViewingHistoryComponent {
     cdes: DataElementUI[] = [];
     forms: FormUI[] = [];
-
-    ngOnInit() {
-    }
 
     constructor(private http: HttpClient,
                 private alert: AlertService) {

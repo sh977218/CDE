@@ -70,10 +70,7 @@ export class CompareItemComponent implements OnInit {
         }
     ];
 
-    constructor() {
-    }
-
-    ngOnInit(): void {
+     ngOnInit(): void {
         this.newer = _cloneDeep(this.newer);
         this.older = _cloneDeep(this.older);
         this.newerFlatClassifications = flattenClassification(sortClassification(this.newer)).join(',');
