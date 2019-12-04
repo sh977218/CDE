@@ -13,7 +13,7 @@ import { SearchModule } from 'search/search.module';
 
 import { AttachmentsComponent } from './components/attachments/attachments.component';
 import { DraftSliderComponent } from 'adminItem/public/components/draftSlider.component';
-import { HistoryComponent } from './components/history.component';
+import { HistoryComponent } from './components/history/history.component';
 import { ClassifyItemModalComponent } from './components/classification/classifyItemModal.component';
 import { IdentifiersComponent } from './components/identifiers.component';
 import { NamingComponent } from './components/naming/naming.component';
