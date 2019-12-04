@@ -27,4 +27,13 @@ export const config = Config as any;
     }
 });
 
+config.elastic.options = {
+    nodes: config.elastic.hosts.map((s: string) => (
+        {
+            url: new URL(s),
+            ssl: {rejectUnauthorized: false}
+        }
+    ))
+};
+
 config.database.log.cappedCollectionSizeMB = config.database.log.cappedCollectionSizeMB || 1024 * 1024 * 250;
