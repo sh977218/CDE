@@ -1,4 +1,3 @@
-
 (global as any).APP_DIR = __dirname;
 (global as any).appDir = function addDir(...args: string[]) {
     return path.resolve((global as any).APP_DIR, ...args);
@@ -164,7 +163,7 @@ app.use(function preventSessionCreation(req, res, next) {
         return req.originalUrl.substr(req.originalUrl.length - 4, 4) === '.gif';
     }
 
-    if ((req.cookies['connect.sid'] || req.originalUrl === '/login' || req.originalUrl === '/csrf') && !isFile(req)) {
+    if ((req.cookies['connect.sid'] || req.originalUrl === '/login' || req.originalUrl === '/server/system/csrf') && !isFile(req)) {
         session(expressSettings)(req, res, next);
     } else {
         next();
@@ -317,11 +316,11 @@ try {
             next();
         }
     }));
-    app.use('/server/system', systemModule());
     app.use('/nativeRender', nativeRenderModule());
     app.use('/', embedModule());
     app.use('/', fhirModule());
     cdeInit(app, daoManager);
+    app.use('/server/system', systemModule());
     formInit(app, daoManager);
     app.use('/server/board', boardModule());
     swaggerInit(app);
