@@ -23,7 +23,7 @@ export class HomeComponent implements OnInit {
     ngOnInit() {
         if (this.route.snapshot.queryParams.tour) {
             this.takeATour();
-            this.router.navigate(['/home']);
+            this.router.navigate(['/server/system/home']);
         } else if (this.route.snapshot.queryParams.notifications !== undefined) {
             this.router.navigate(['/home']);
         }
