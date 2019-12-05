@@ -19,7 +19,6 @@ export class NavigationComponent {
     @Output() goToLogin: EventEmitter<void> = new EventEmitter<void>();
     @Output() logout: EventEmitter<void> = new EventEmitter<void>();
     isOrgAuthority = isOrgAuthority;
-    isOrgAdmin = isOrgAdmin;
     isOrgCurator = isOrgCurator;
     isSiteAdmin = isSiteAdmin;
 
