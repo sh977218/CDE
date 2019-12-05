@@ -55,7 +55,7 @@ public class MiscTests extends NlmCdeBaseTest {
         String tgtUrl = "https://vsac.nlm.nih.gov:443/vsac/ws/Ticket";
 
         // Test to make sure user isn't logged in
-        String notLoggedInResponse = get(baseUrl + "/user/me").asString();
+        String notLoggedInResponse = get(baseUrl + "/server/system/user/me").asString();
         Assert.assertEquals(notLoggedInResponse, "");
 
         Header header = new Header("Content-Type", "application/x-www-form-urlencoded");
@@ -78,7 +78,7 @@ public class MiscTests extends NlmCdeBaseTest {
     @Test
     public void checkTicketInvalid() {
         // Test to make sure user isn't logged in
-        String response = get(baseUrl + "/user/me").asString();
+        String response = get(baseUrl + "/server/system/user/me").asString();
         Assert.assertEquals(response, "");
 
         // Provide fake invalid ticket and make sure user info is NOT retrieved
