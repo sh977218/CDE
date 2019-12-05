@@ -68,7 +68,7 @@ public class MiscTests extends NlmCdeBaseTest {
         String ticket = ticketResponse.asString();
         System.out.println("got ticket: " + ticket);
 
-        String actualResponse = given().queryParam("ticket", ticket).get(baseUrl + "/user/me").asString();
+        String actualResponse = given().queryParam("ticket", ticket).get(baseUrl + "/server/system/user/me").asString();
         Assert.assertTrue(actualResponse.contains("_id"), "actualResponse: " + actualResponse);
         Assert.assertTrue(actualResponse.contains(username), "actualResponse: " + actualResponse);
         Assert.assertFalse(actualResponse.contains(password), "actualResponse: " + actualResponse);
@@ -82,7 +82,7 @@ public class MiscTests extends NlmCdeBaseTest {
         Assert.assertEquals(response, "");
 
         // Provide fake invalid ticket and make sure user info is NOT retrieved
-        response = get(baseUrl + "/user/me?ticket=invalid").asString();
+        response = get(baseUrl + "/server/system/user/me?ticket=invalid").asString();
         Assert.assertEquals(response, "");
     }
 
