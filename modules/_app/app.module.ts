@@ -28,7 +28,7 @@ import { CommonAppModule } from '_commonApp/commonApp.module';
 import { AlertModule } from 'alert/alert.module';
 import { LocalStorageModule } from 'angular-2-local-storage';
 import { OrgHelperService } from 'non-core/orgHelper.service';
-import { FeedbackModule } from 'ng-feedback';
+import { FeedbackModule } from 'ng-feedback2';
 
 @NgModule({
     imports: [

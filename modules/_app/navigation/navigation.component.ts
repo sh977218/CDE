@@ -6,12 +6,13 @@ import { NotificationService } from '_app/notifications/notification.service';
 import { NotificationDrawerPaneComponent } from '_app/notifications/notificationDrawerPane.component';
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { UserService } from '_app/user.service';
-import { isOrgAuthority, isOrgAdmin, isOrgCurator, isSiteAdmin } from 'shared/system/authorizationShared';
+import { isOrgAuthority, isOrgCurator, isSiteAdmin } from 'shared/system/authorizationShared';
 import './navigation.scss';
 import '../../../node_modules/material-design-lite/material.css';
 import '../../../node_modules/material-design-lite/material.js';
 import { HttpClient } from '@angular/common/http';
 import { AlertService } from 'alert/alert.service';
+import { Feedback } from 'ng-feedback2/entity/feedback';
 
 @Component({
     selector: 'cde-navigation',
@@ -50,11 +51,13 @@ export class NavigationComponent {
     }
     toggleDrawer = () => (document.querySelector('.mdl-layout') as any).MaterialLayout.toggleDrawer();
 
-    onFeedback(event: any) {
-        event.userAgent = window.navigator.userAgent;
-        this.http.post('/server/log/feedback/report', {feedback: event}).subscribe(() =>
+    onFeedback(event: Feedback) {
+        this.http.post('/server/log/feedback/report', {feedback: {
+                description: event.description,
+                screenshot: event.screenshot,
+                userAgent: window.navigator.userAgent
+            }, }).subscribe(() =>
             this.alert.addAlert('success', 'Thank you for your feedback'));
     }
-
 
 }
