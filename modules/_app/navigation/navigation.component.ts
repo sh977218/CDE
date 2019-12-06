@@ -10,6 +10,8 @@ import { isOrgAuthority, isOrgAdmin, isOrgCurator, isSiteAdmin } from 'shared/sy
 import './navigation.scss';
 import '../../../node_modules/material-design-lite/material.css';
 import '../../../node_modules/material-design-lite/material.js';
+import { HttpClient } from '@angular/common/http';
+import { AlertService } from 'alert/alert.service';
 
 @Component({
     selector: 'cde-navigation',
@@ -26,6 +28,8 @@ export class NavigationComponent {
                 private componentFactoryResolver: ComponentFactoryResolver,
                 private injector: Injector,
                 private notificationService: NotificationService,
+                private http: HttpClient,
+                private alert: AlertService,
                 public userService: UserService,
                 public quickBoardService: QuickBoardListService,
                 public loginSvc: LoginService) {
@@ -45,5 +49,12 @@ export class NavigationComponent {
         }
     }
     toggleDrawer = () => (document.querySelector('.mdl-layout') as any).MaterialLayout.toggleDrawer();
+
+    onFeedback(event: any) {
+        event.userAgent = window.navigator.userAgent;
+        this.http.post('/server/log/feedback/report', {feedback: event}).subscribe(() =>
+            this.alert.addAlert('success', 'Thank you for your feedback'));
+    }
+
 
 }

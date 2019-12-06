@@ -1,4 +1,4 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { MatIconRegistry } from '@angular/material';
 import { DomSanitizer, Title } from '@angular/platform-browser';
@@ -7,14 +7,12 @@ import { NotificationService } from '_app/notifications/notification.service';
 import { BackForwardService } from '_app/backForward.service';
 import { PushNotificationSubscriptionService } from '_app/pushNotificationSubscriptionService';
 import { UserService } from '_app/user.service';
-import { AlertService } from 'modules/alert/alert.service';
 
 @Component({
     selector: 'nih-cde',
     template: `
         <cde-ie-banner></cde-ie-banner>
         <cde-navigation></cde-navigation>
-        <button feedback (send)="onFeedback($event)">Report a Problem</button>
     `
 })
 export class CdeAppComponent {
@@ -25,8 +23,6 @@ export class CdeAppComponent {
                 private router: Router,
                 private title: Title,
                 private userService: UserService,
-                private http: HttpClient,
-                private alert: AlertService,
                 iconReg: MatIconRegistry,
                 sanitizer: DomSanitizer) {
         this.userService.subscribe(() => {
@@ -91,11 +87,4 @@ export class CdeAppComponent {
             /* tslint:enable */
         ));
     }
-
-    onFeedback(event) {
-        event.userAgent = window.navigator.userAgent;
-        this.http.post('/server/log/feedback/report', {feedback: event}).subscribe(() =>
-            this.alert.addAlert('success', 'Thank you for your feedback'));
-    }
-
 }
