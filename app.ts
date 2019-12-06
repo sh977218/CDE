@@ -22,6 +22,7 @@ import * as winston from 'winston';
 import { Rotate } from 'winston-logrotate';
 import { init as swaggerInit } from './modules/swagger/index';
 import * as articleDb from 'server/article/articleDb';
+import { module as appModule } from 'server/system/appRouters';
 import { module as articleModule } from 'server/article/articleRoutes';
 import { module as attachmentModule } from 'server/attachment/attachmentRoutes';
 import { module as boardModule } from 'server/board/boardRoutes';
@@ -163,7 +164,7 @@ app.use(function preventSessionCreation(req, res, next) {
         return req.originalUrl.substr(req.originalUrl.length - 4, 4) === '.gif';
     }
 
-    if ((req.cookies['connect.sid'] || req.originalUrl === '/login' || req.originalUrl === '/server/system/csrf') && !isFile(req)) {
+    if ((req.cookies['connect.sid'] || req.originalUrl === '/login' || req.originalUrl === '/csrf') && !isFile(req)) {
         session(expressSettings)(req, res, next);
     } else {
         next();
@@ -284,6 +285,7 @@ express.response.render = function renderEjsUsingThis(view, module, msg) {
 } as any;
 
 try {
+    app.use('/', appModule());
     app.use('/server/attachment', [loggedInMiddleware], attachmentModule({
         attachmentApproval: [canApproveAttachmentMiddleware]
     }, [

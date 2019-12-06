@@ -68,7 +68,7 @@ export class LoginComponent {
 
     getCsrf() {
         delete this.csrf;
-        this.http.get<any>('/server/system/csrf').subscribe(response => {
+        this.http.get<any>('/csrf').subscribe(response => {
             this.csrf = response.csrf;
             this.showCaptcha = response.showCaptcha;
         }, () => {

@@ -229,7 +229,7 @@ export class PushNotificationSubscriptionService {
 
     static async updateExisting(userId?: string) {
         try {
-            const registration = await navigator.serviceWorker.register('/server/system/sw.js').catch();
+            const registration = await navigator.serviceWorker.register('/sw.js').catch();
             this.registrationResolve(registration);
             if (userId) {
                 this.subscriptionServerUpdate(userId).catch(_noop);
