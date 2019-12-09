@@ -13,7 +13,7 @@ import { completionSuggest, elasticSearchExport, removeElasticFields, scrollExpo
 import { getEnvironmentHost } from 'shared/env';
 import { CbErr } from 'shared/models.model';
 import { stripBsonIdsElt } from 'shared/system/exportShared';
-import { respondHomeFull } from 'server/system/systemRouters';
+import { respondHomeFull } from 'server/system/appRouters';
 
 const _ = require('lodash');
 const dns = require('dns');

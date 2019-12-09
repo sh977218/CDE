@@ -17,7 +17,7 @@ import { buildElasticSearchQuery, completionSuggest, elasticSearchExport, remove
 import { isSearchEngine } from 'server/system/helper';
 import { config } from 'server/system/parseConfig';
 import { stripBsonIdsElt } from 'shared/system/exportShared';
-import { respondHomeFull } from 'server/system/systemRouters';
+import { respondHomeFull } from 'server/system/appRouters';
 
 const canEditMiddlewareDe = canEditMiddleware(mongoCde);
 const canEditByTinyIdMiddlewareDe = canEditByTinyIdMiddleware(mongoCde);
