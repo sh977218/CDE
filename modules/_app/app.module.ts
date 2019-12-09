@@ -28,6 +28,7 @@ import { CommonAppModule } from '_commonApp/commonApp.module';
 import { AlertModule } from 'alert/alert.module';
 import { LocalStorageModule } from 'angular-2-local-storage';
 import { OrgHelperService } from 'non-core/orgHelper.service';
+import { FeedbackModule } from 'ng-feedback2';
 
 @NgModule({
     imports: [
@@ -48,7 +49,8 @@ import { OrgHelperService } from 'non-core/orgHelper.service';
         // internal
         CdeAppRoutingModule,
         CommonAppModule,
-        AlertModule
+        AlertModule,
+        FeedbackModule
     ],
     declarations: [
         CdeAppComponent,
@@ -75,8 +77,7 @@ import { OrgHelperService } from 'non-core/orgHelper.service';
         UserService,
         OrgHelperService
     ],
-    exports: [
-    ],
+    exports: [],
     bootstrap: [CdeAppComponent]
 })
 

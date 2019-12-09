@@ -81,7 +81,7 @@ export function module(roleConfig: {feedbackLog: RequestHandler, superLog: Reque
                 const msg = JSON.stringify({
                     title: 'New Feedback Message',
                     options: {
-                        body: req.body.feedback ? JSON.parse(req.body.feedback).note : '',
+                        body: req.body.feedback ? req.body.feedback.description : '',
                         icon: '/cde/public/assets/img/min/NIH-CDE-FHIR.png',
                         badge: '/cde/public/assets/img/min/nih-cde-logo-simple.png',
                         tag: 'cde-feedback',
