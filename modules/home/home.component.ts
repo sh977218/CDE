@@ -3,6 +3,7 @@ import { TourService } from 'home/tour.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import './home.scss';
+import './home.js';
 
 @Component({
     selector: 'cde-home',
