@@ -52,9 +52,6 @@
       "array-type": false,
       "arrow-parens": false,
       "component-class-suffix": true,
-      "deprecation": {
-        "severity": "warn"
-      },
       "directive-class-suffix": true,
       "import-blacklist": [
         true,
@@ -110,9 +107,6 @@
         "avoid-escape"
       ],
       "trailing-comma": false,
-      "use-input-property-decorator": true,
-      "use-output-property-decorator": true,
-      "use-host-property-decorator": true,
       "use-life-cycle-interface": true,
       "use-pipe-transform-interface": true,
       "variable-name": [

@@ -1,4 +1,3 @@
-import '../../node_modules/feedback/stable/2.0/html2canvas.js';
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { ElasticService } from '_app/elastic.service';

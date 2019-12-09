@@ -261,14 +261,13 @@ export function usageByDay(callback) {
 }
 
 export function saveFeedback(req, cb) {
-    const report = JSON.parse(req.body.feedback);
+    const report = req.body.feedback;
     const issue = new FeedbackModel({
         user: {username: req.user && req.user._doc ? req.user._doc.username : null}
-        , rawHtml: report.html
-        , reportedUrl: report.url
-        , userMessage: report.note
-        , screenshot: {content: report.img}
-        , browser: report.browser.userAgent
+        , reportedUrl: req.url
+        , userMessage: report.description
+        , screenshot: {content: report.screenshot}
+        , browser: report.userAgent
     });
     issue.save(cb);
 }
