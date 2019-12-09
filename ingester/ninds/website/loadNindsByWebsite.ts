@@ -24,6 +24,7 @@ function removeNindsClassification(elt: any) {
 function loadNindsCdes() {
     return new Promise(async (resolve, reject) => {
         const cdeIds = await NindsModel.distinct('cdes.CDE ID');
+//        const cdeIds = ['C00207'];
         eachLimit(cdeIds, 500, async cdeId => {
             const nindsForms = await NindsModel.find({'cdes.CDE ID': cdeId},
                 {

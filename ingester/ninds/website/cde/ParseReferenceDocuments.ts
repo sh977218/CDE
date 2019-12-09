@@ -6,10 +6,7 @@ export function parseReferenceDocuments(nindsForms: any[]) {
         nindsForm.cdes.forEach((nindsCde: any) => {
             const referDoc = nindsCde['Disease Specific Reference'];
             if (!isEmpty(referDoc)) {
-                referenceArray.push({
-                    formName: nindsForm.formName,
-                    referDoc
-                });
+                referenceArray.push(referDoc);
             }
         });
     });
@@ -17,12 +14,10 @@ export function parseReferenceDocuments(nindsForms: any[]) {
     const _referenceArray = uniq(referenceArray);
     const referenceDocuments: any[] = [];
     _referenceArray.forEach(ref => {
-        const r = ref.referDoc;
-        if (!isEmpty(r) && r !== 'No references available') {
+        if (!isEmpty(ref) && ref !== 'No references available') {
             const referenceDocument = {
                 source: 'NINDS',
-                title: ref.formName,
-                document: r
+                document: ref
             };
             referenceDocuments.push(referenceDocument);
         }
