@@ -110,6 +110,16 @@ export function module() {
 
     const failedIps: any[] = [];
 
+    router.get('/csrf', csrf(), nocacheMiddleware, (req, res) => {
+        const resp: any = {csrf: req.csrfToken()};
+        const realIp = getRealIp(req);
+        const failedIp = findFailedIp(realIp);
+        if ((failedIp && failedIp.nb > 2)) {
+            resp.showCaptcha = true;
+        }
+        res.send(resp);
+    });
+
     function findFailedIp(ip) {
         return failedIps.filter(f => f.ip === ip)[0];
     }

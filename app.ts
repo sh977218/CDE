@@ -22,7 +22,7 @@ import * as winston from 'winston';
 import { Rotate } from 'winston-logrotate';
 import { init as swaggerInit } from './modules/swagger/index';
 import * as articleDb from 'server/article/articleDb';
-import { module as appModule } from 'server/system/appRouters';
+import { module as appModule, respondHomeFull } from 'server/system/appRouters';
 import { module as articleModule } from 'server/article/articleRoutes';
 import { module as attachmentModule } from 'server/attachment/attachmentRoutes';
 import { module as boardModule } from 'server/board/boardRoutes';
@@ -35,7 +35,7 @@ import { init as formInit } from 'server/form/app';
 import * as mongo_form from 'server/form/mongo-form';
 import { module as meshModule } from 'server/mesh/meshRoutes';
 import { module as siteAdminModule } from 'server/siteAdmin/siteAdminRoutes';
-import { module as systemModule, respondHomeFull } from 'server/system/systemRouters';
+import { module as systemModule } from 'server/system/systemRouters';
 import { module as orgManagementModule } from 'server/orgManagement/orgManagementRoutes';
 import { module as notificationModule } from 'server/notification/notificationRouters';
 import { module as nativeRenderModule } from 'server/nativeRender/nativeRenderRouters';
@@ -154,17 +154,22 @@ app.use((req, res, next) => {
 
 
 app.use(function preventSessionCreation(req, res, next) {
-    function isFile(req) {
-        if (req.originalUrl.substr(req.originalUrl.length - 3, 3) === '.js') {
+    function isFile(originalUrl) {
+        if (originalUrl.substr(originalUrl.length - 3, 3) === '.js') {
             return true;
         }
-        if (req.originalUrl.substr(req.originalUrl.length - 4, 4) === '.css') {
+        if (originalUrl.substr(originalUrl.length - 4, 4) === '.css') {
             return true;
         }
-        return req.originalUrl.substr(req.originalUrl.length - 4, 4) === '.gif';
+        return originalUrl.substr(originalUrl.length - 4, 4) === '.gif';
     }
 
-    if ((req.cookies['connect.sid'] || req.originalUrl === '/login' || req.originalUrl === '/csrf') && !isFile(req)) {
+    const originalUrl = req.originalUrl;
+
+    if ((req.cookies['connect.sid'] ||
+        originalUrl === '/login' ||
+        originalUrl === '/server/system/csrf')
+        && !isFile(originalUrl)) {
         session(expressSettings)(req, res, next);
     } else {
         next();
