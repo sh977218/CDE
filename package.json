@@ -246,6 +246,7 @@
     "gulp-uglify": "3.0.2",
     "gulp-usemin": "0.3.30",
     "hard-source-webpack-plugin": "0.5.16",
+    "html2canvas": "^1.0.0-rc.5",
     "html-loader": "0.5.1",
     "intl": "1.2.5",
     "js-toggle-switch": "0.1.0",
