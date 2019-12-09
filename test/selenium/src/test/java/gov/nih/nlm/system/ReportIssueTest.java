@@ -10,15 +10,12 @@ public class ReportIssueTest extends NlmCdeBaseTest {
     @Test
     public void report() {
         goToCdeSearch();
-        clickElement(By.cssSelector(".feedback-btn"));
-        hangon(1);
-        findElement(By.id("feedback-note-tmp")).sendKeys("I don't like this website.");
-        clickElement(By.id("feedback-welcome-next"));
-        clickElement(By.id("feedback-highlighter-next"));
-        clickElement(By.id("feedback-submit"));
-        textPresent("issue was successfully submitted");
-        clickElement(By.cssSelector(".feedback-close-btn"));
-        hangon(1);
+        clickElement(By.id("helpLink"));
+        clickElement(By.id("reportAProblemLink"));
+        findElement(By.cssSelector("textarea.description")).sendKeys("I don't like this website.");
+        clickElement(By.cssSelector("button.submit-button"));
+
+        checkAlert("Thank you for your feedback");
 
         loginAs("theOrgauth", password);
         clickElement(By.id("username_link"));

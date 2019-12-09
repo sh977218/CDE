@@ -301,10 +301,12 @@ export class DataElementViewComponent implements OnInit {
         this.validationErrors.length = 0;
         const defError = checkDefinitions(this.elt);
         if (!defError.allValid) {
+            // @ts-ignore
             this.validationErrors.push({message: defError.message});
         }
         const pvErrors = checkPvUnicity(this.elt.valueDomain);
         if (!pvErrors.allValid) {
+            // @ts-ignore
             this.validationErrors.push({message: pvErrors.message});
         }
     }

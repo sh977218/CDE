@@ -6,10 +6,13 @@ import { NotificationService } from '_app/notifications/notification.service';
 import { NotificationDrawerPaneComponent } from '_app/notifications/notificationDrawerPane.component';
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { UserService } from '_app/user.service';
-import { isOrgAuthority, isOrgAdmin, isOrgCurator, isSiteAdmin } from 'shared/system/authorizationShared';
+import { isOrgAuthority, isOrgCurator, isSiteAdmin } from 'shared/system/authorizationShared';
 import './navigation.scss';
 import '../../../node_modules/material-design-lite/material.css';
 import '../../../node_modules/material-design-lite/material.js';
+import { HttpClient } from '@angular/common/http';
+import { AlertService } from 'alert/alert.service';
+import { Feedback } from 'ng-feedback2/entity/feedback';
 
 @Component({
     selector: 'cde-navigation',
@@ -19,7 +22,6 @@ export class NavigationComponent {
     @Output() goToLogin: EventEmitter<void> = new EventEmitter<void>();
     @Output() logout: EventEmitter<void> = new EventEmitter<void>();
     isOrgAuthority = isOrgAuthority;
-    isOrgAdmin = isOrgAdmin;
     isOrgCurator = isOrgCurator;
     isSiteAdmin = isSiteAdmin;
 
@@ -27,6 +29,8 @@ export class NavigationComponent {
                 private componentFactoryResolver: ComponentFactoryResolver,
                 private injector: Injector,
                 private notificationService: NotificationService,
+                private http: HttpClient,
+                private alert: AlertService,
                 public userService: UserService,
                 public quickBoardService: QuickBoardListService,
                 public loginSvc: LoginService) {
@@ -46,5 +50,14 @@ export class NavigationComponent {
         }
     }
     toggleDrawer = () => (document.querySelector('.mdl-layout') as any).MaterialLayout.toggleDrawer();
+
+    onFeedback(event: Feedback) {
+        this.http.post('/server/log/feedback/report', {feedback: {
+                description: event.description,
+                screenshot: event.screenshot,
+                userAgent: window.navigator.userAgent
+            }, }).subscribe(() =>
+            this.alert.addAlert('success', 'Thank you for your feedback'));
+    }
 
 }

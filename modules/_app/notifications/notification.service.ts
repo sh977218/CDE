@@ -253,6 +253,7 @@ export class NotificationService {
                     && task.tasks[0].idType === eltModule);
                 grouped.push(
                     this.createTask(
+                        // @ts-ignore
                         eltTasks.reduce<Task[]>((acc, t) => acc.concat(t.tasks), []),
                         groups[group] + ' comments'
                     )
