@@ -28,6 +28,7 @@ public class CdeSearchBreadCumbTest extends NlmCdeBaseTest {
         findElement(By.id("classif-NINDS"));
 
         findElement(By.id("ftsearch-input")).sendKeys("type");
+        hangon(2);
         clickElement(By.id("search.submit"));
         clickElement(By.id("classif-NINDS"));
         clickElement(By.partialLinkText("Domain"));

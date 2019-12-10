@@ -36,7 +36,7 @@
                 </div>
                 <div class="col-2">
                     <img *ngFor="let attachment of elt.attachments.filter(Elt.isDefault)"
-                         alt="Image attached to the elt" src="/data/{{attachment.fileid}}"
+                         alt="Image attached to the elt" src="/server/system/data/{{attachment.fileid}}"
                          class='cdeAttachmentThumbnail'/>
                 </div>
             </div>

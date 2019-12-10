@@ -9,14 +9,14 @@ export class DraftsService {
     }
 
     myDrafts() {
-        return this.http.get<Article>('/myDrafts');
+        return this.http.get<Article>('/server/system/myDrafts');
     }
 
     myOrgDrafts() {
-        return this.http.get<Article>('/orgDrafts');
+        return this.http.get<Article>('/server/system/orgDrafts');
     }
 
     allDrafts() {
-        return this.http.get<Article>('/allDrafts');
+        return this.http.get<Article>('/server/system/allDrafts');
     }
 }

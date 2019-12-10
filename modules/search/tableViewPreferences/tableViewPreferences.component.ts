@@ -15,7 +15,7 @@ export class TableViewPreferencesComponent {
     constructor(@Inject(MAT_DIALOG_DATA) data: {searchSettings: UserSearchSettings},
                 private alert: AlertService,
                 private http: HttpClient) {
-        this.http.get<Source[]>('/idSources').subscribe(idSources => this.identifierSources = idSources.map(x => x._id));
+        this.http.get<Source[]>('/server/system/idSources').subscribe(idSources => this.identifierSources = idSources.map(x => x._id));
         this.searchSettings = data.searchSettings;
     }
 
