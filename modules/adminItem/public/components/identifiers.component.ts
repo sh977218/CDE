@@ -58,7 +58,7 @@ export class IdentifiersComponent {
         if (this.idSourcesPromise) {
             return this.idSourcesPromise;
         } else {
-            return this.idSourcesPromise = this.http.get<Source[]>('/idSources').toPromise().catch(err => {
+            return this.idSourcesPromise = this.http.get<Source[]>('/server/system/idSources').toPromise().catch(err => {
                 this.alert.httpErrorMessageAlert(err);
                 return [];
             });

@@ -1,86 +1,39 @@
 import { series } from 'async';
 import { CronJob } from 'cron';
-import * as csrf from 'csurf';
-import { renderFile } from 'ejs';
-import { Express, Request, Response } from 'express';
-import { access, constants, createWriteStream, existsSync, mkdir, writeFileSync } from 'fs';
 import { authenticate } from 'passport';
-import { dataElementModel, draftsList as deDraftsList } from 'server/cde/mongo-cde';
+import * as csrf from 'csurf';
+import { promisify } from 'util';
+import { access, constants, createWriteStream, mkdir } from 'fs';
+import { Router } from 'express';
 import { handleError, respondError } from 'server/errorHandler/errorHandler';
-import { draftsList as formDraftsList, formModel } from 'server/form/mongo-form';
-import { consoleLog } from 'server/log/dbLogger';
-import { syncWithMesh } from 'server/mesh/elastic';
 import {
     isOrgAuthorityMiddleware, isOrgCuratorMiddleware, isSiteAdminMiddleware, loggedInMiddleware, nocacheMiddleware
 } from 'server/system/authorization';
-import { reIndex } from 'server/system/elastic';
-import { indices } from 'server/system/elasticSearchInit';
-import { disableRule, enableRule, getFile, jobStatus } from 'server/system/mongo-data';
-import { myOrgs, transferSteward } from 'server/orgManagement/orgSvc';
-import { config } from 'server/system/parseConfig';
-import { is } from 'useragent';
-import { promisify } from 'util';
-import { isSearchEngine } from './helper';
-import { version } from '../version';
+import { dataElementModel, draftsList as deDraftsList } from 'server/cde/mongo-cde';
+import { draftsList as formDraftsList, formModel } from 'server/form/mongo-form';
+import { myOrgs } from 'server/orgManagement/orgSvc';
+import { disableRule, enableRule } from 'server/system/systemSvc';
+import { banIp, getRealIp, getTrafficFilter } from 'server/system/trafficFilterSvc';
+import { getClassificationAuditLog } from 'server/system/classificationAuditSvc';
+import { orgByName } from 'server/orgManagement/orgDb';
 import {
     createIdSource, deleteIdSource, getAllIdSources, isSourceById, updateIdSource
 } from 'server/system/idSourceSvc';
-import { banIp, getRealIp, getTrafficFilter } from 'server/system/trafficFilterSvc';
+import { config } from 'server/system/parseConfig';
+import { version } from 'server/version';
+import { syncWithMesh } from 'server/mesh/elastic';
+import { consoleLog } from 'server/log/dbLogger';
+import { getFile, jobStatus } from 'server/system/mongo-data';
+import { indices } from 'server/system/elasticSearchInit';
+import { reIndex } from 'server/system/elastic';
 import { userById, usersByName } from 'server/user/userDb';
-import { getClassificationAuditLog } from 'server/system/classificationAuditSvc';
 
 require('express-async-errors');
 
-export let respondHomeFull: (req: Request, res: Response) => any;
+export function module() {
+    const router = Router();
 
-export function init(app: Express) {
-    let indexHtml = '';
-    renderFile('modules/system/views/index.ejs', {
-        config,
-        isLegacy: false,
-        version
-    }, (err, str) => {
-        indexHtml = str;
-        if (existsSync('modules/_app')) {
-            writeFileSync('modules/_app/index.html', indexHtml);
-        }
-    });
-
-
-    let indexLegacyHtml = '';
-    renderFile('modules/system/views/index.ejs', {config, isLegacy: true, version}, (err, str) => {
-        indexLegacyHtml = str;
-    });
-
-    let homeHtml = '';
-    renderFile('modules/system/views/home-launch.ejs', {config, version}, (err, str) => {
-        homeHtml = str;
-    });
-
-    /* for IE Opera Safari, emit polyfill.js */
-    function isModernBrowser(req) {
-        const ua = is(req.headers['user-agent']);
-        return ua.chrome || ua.firefox || (ua as any).edge;
-    }
-
-    respondHomeFull = function getIndexHtml(req, res) {
-        res.send(isModernBrowser(req) ? indexHtml : indexLegacyHtml);
-    };
-
-    app.get(['/', '/home'], (req, res) => {
-        if (isSearchEngine(req)) {
-            res.render('bot/home', 'system' as any);
-        } else if (req.user || req.query.tour || req.query.notifications !== undefined
-            || req.headers.referer && req.headers.referer.endsWith('/sw.js')) {
-            respondHomeFull(req, res);
-        } else {
-            res.send(homeHtml);
-        }
-    });
-
-    app.get('/tour', (req, res) => res.redirect('/home?tour=yes'));
-
-    app.get('/site-version', (req, res) => res.send(version));
+    router.get('/site-version', (req, res) => res.send(version));
 
     new CronJob('00 00 4 * * *', () => syncWithMesh(), null, true, 'America/New_York');
 
@@ -121,24 +74,11 @@ export function init(app: Express) {
             .catch((err: string) => consoleLog('Cron Sunday 4:07 AM did not complete due to error: ' + err));
     }, null, true, 'America/New_York', undefined, true);
 
-    app.get(['/help/:title', '/createForm', '/createCde', '/boardList',
-            '/board/:id', '/myBoards', '/cdeStatusReport', '/api', '/sdcview', '/404', '/whatsNew', '/contactUs',
-            '/quickBoard', '/searchPreferences', '/siteAudit', '/siteAccountManagement', '/orgAccountManagement',
-            '/classificationManagement', '/profile', '/login', '/orgAuthority', '/orgComments'],
-        respondHomeFull
-    );
-
-    app.get('/sw.js', (req, res) => {
-        res.sendFile((global as any).appDir('dist/app', 'sw.js'), undefined, err => {
-            if (err) {
-                res.sendStatus(404);
-            }
-        });
-    });
-
-    app.get('/jobStatus/:type', function (req, res) {
-        let jobType = req.params.type;
-        if (!jobType) return res.status(400).end();
+    router.get('/jobStatus/:type', (req, res) => {
+        const jobType = req.params.type;
+        if (!jobType) {
+            return res.status(400).end();
+        }
         jobStatus(jobType, (err, j) => {
             if (err) {
                 return res.status(409).send('Error - job status ' + jobType);
@@ -152,12 +92,12 @@ export function init(app: Express) {
 
     /* ---------- PUT NEW REST API above ---------- */
 
-    app.get('/indexCurrentNumDoc/:indexPosition', isSiteAdminMiddleware, (req, res) => {
+    router.get('/indexCurrentNumDoc/:indexPosition', isSiteAdminMiddleware, (req, res) => {
         const index = indices[req.params.indexPosition];
         return res.send({count: index.count, totalCount: index.totalCount});
     });
 
-    app.post('/reindex/:indexPosition', isSiteAdminMiddleware, (req, res) => {
+    router.post('/reindex/:indexPosition', isSiteAdminMiddleware, (req, res) => {
         const index = indices[req.params.indexPosition];
         reIndex(index, () => {
             setTimeout(() => {
@@ -168,14 +108,9 @@ export function init(app: Express) {
         return res.send();
     });
 
-
-    app.get('/supportedBrowsers', (req, res) => res.render('supportedBrowsers', 'system' as any));
-
-    app.get('/loginText', csrf(), (req, res) => res.render('loginText', 'system' as any, {csrftoken: req.csrfToken()} as any));
-
     const failedIps: any[] = [];
 
-    app.get('/csrf', csrf(), nocacheMiddleware, (req, res) => {
+    router.get('/csrf', csrf(), nocacheMiddleware, (req, res) => {
         const resp: any = {csrf: req.csrfToken()};
         const realIp = getRealIp(req);
         const failedIp = findFailedIp(realIp);
@@ -211,7 +146,7 @@ export function init(app: Express) {
 
     const validLoginBody = ['username', 'password', '_csrf', 'recaptcha'];
 
-    app.post('/login', [checkLoginReq, myCsrf], (req, res, next) => {
+    router.post('/login', [checkLoginReq, myCsrf], (req, res, next) => {
         const failedIp = findFailedIp(getRealIp(req));
         series([
                 function checkCaptcha(captchaDone) {
@@ -257,7 +192,7 @@ export function init(app: Express) {
             });
     });
 
-    app.post('/logout', (req, res) => {
+    router.post('/logout', (req, res) => {
         if (!req.session) {
             return res.status(403).end();
         }
@@ -268,7 +203,7 @@ export function init(app: Express) {
         });
     });
 
-    app.get('/user/:search', nocacheMiddleware, loggedInMiddleware, (req, res) => {
+    router.get('/user/:search', nocacheMiddleware, loggedInMiddleware, (req, res) => {
         if (!req.params.search) {
             return res.send({});
         } else if (req.params.search === 'me') {
@@ -278,7 +213,7 @@ export function init(app: Express) {
         }
     });
 
-    app.get('/data/:id', (req, res) => {
+    router.get('/data/:id', (req, res) => {
         let fileId = req.params.id;
         const i = fileId.indexOf('.');
         if (i > -1) {
@@ -287,29 +222,32 @@ export function init(app: Express) {
         getFile(req.user, fileId, res);
     });
 
-    app.post('/getClassificationAuditLog', isOrgAuthorityMiddleware, async (req, res) => {
+
+    router.post('/getClassificationAuditLog', isOrgAuthorityMiddleware, async (req, res) => {
         const records = await getClassificationAuditLog(req.body);
         res.send(records);
     });
 
-    app.post('/disableRule', isOrgAuthorityMiddleware, (req, res) => {
-        disableRule(req.body, handleError({req, res}, org => {
-            res.send(org);
-        }));
+    router.post('/disableRule', isOrgAuthorityMiddleware, async (req, res) => {
+        const org = await orgByName(req.body.orgName);
+        await disableRule(org, req.body.rule.id);
+        const savedOrg = await org.save();
+        res.send(savedOrg);
     });
 
-    app.post('/enableRule', isOrgAuthorityMiddleware, (req, res) => {
-        enableRule(req.body, handleError({req, res}, org => {
-            res.send(org);
-        }));
+    router.post('/enableRule', isOrgAuthorityMiddleware, async (req, res) => {
+        const org = await orgByName(req.body.orgName);
+        await enableRule(org, req.body.rule);
+        const savedOrg = await org.save();
+        res.send(savedOrg);
     });
 
-    app.get('/activeBans', isSiteAdminMiddleware, async (req, res) => {
+    router.get('/activeBans', isSiteAdminMiddleware, async (req, res) => {
         const list = await getTrafficFilter();
         res.send(list);
     });
 
-    app.post('/removeBan', isSiteAdminMiddleware, async (req, res) => {
+    router.post('/removeBan', isSiteAdminMiddleware, async (req, res) => {
         const elt = await getTrafficFilter();
         const foundIndex = elt.ipList.findIndex(r => r.ip === req.body.ip);
         if (foundIndex > -1) {
@@ -319,15 +257,16 @@ export function init(app: Express) {
         res.send();
     });
 
-    app.get('/allDrafts', isOrgAuthorityMiddleware, (req, res) => {
+    // drafts
+    router.get('/allDrafts', isOrgAuthorityMiddleware, (req, res) => {
         getDrafts(req, res, {});
     });
 
-    app.get('/orgDrafts', isOrgCuratorMiddleware, (req, res) => {
+    router.get('/orgDrafts', isOrgCuratorMiddleware, (req, res) => {
         getDrafts(req, res, {'stewardOrg.name': {$in: myOrgs(req.user)}});
     });
 
-    app.get('/myDrafts', isOrgCuratorMiddleware, (req, res) => {
+    router.get('/myDrafts', isOrgCuratorMiddleware, (req, res) => {
         getDrafts(req, res, {'updatedBy.username': req.user.username});
     });
 
@@ -337,17 +276,18 @@ export function init(app: Express) {
             .catch(err => respondError(err, {req, res}));
     }
 
-    app.get('/idSources', async (req, res) => {
+    // id sources
+    router.get('/idSources', async (req, res) => {
         const sources = await getAllIdSources();
         res.send(sources);
     });
 
-    app.get('/idSource/:id', async (req, res) => {
+    router.get('/idSource/:id', async (req, res) => {
         const source = await isSourceById(req.params.id);
         res.send(source);
     });
 
-    app.post('/idSource/:id', isSiteAdminMiddleware, async (req, res) => {
+    router.post('/idSource/:id', isSiteAdminMiddleware, async (req, res) => {
         const sourceId = req.params.id;
         const foundSource = await isSourceById(sourceId);
         if (foundSource) {
@@ -358,7 +298,7 @@ export function init(app: Express) {
         }
     });
 
-    app.put('/idSource/:id', isSiteAdminMiddleware, async (req, res) => {
+    router.put('/idSource/:id', isSiteAdminMiddleware, async (req, res) => {
         const sourceId = req.params.id;
         const foundSource = await isSourceById(sourceId);
         if (!foundSource) {
@@ -369,9 +309,9 @@ export function init(app: Express) {
         }
     });
 
-    app.delete('/idSource/:id', isSiteAdminMiddleware, async (req, res) => {
+    router.delete('/idSource/:id', isSiteAdminMiddleware, async (req, res) => {
         await deleteIdSource(req.params.id);
         res.send();
     });
+    return router;
 }
-

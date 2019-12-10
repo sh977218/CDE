@@ -28,7 +28,7 @@ const options = {
             target: 'http://localhost:8080/', pathRewrite: { '/app/': '/' }, secure: false
         },
         '/cde/public/*': {target: 'http://localhost:3001/', secure: false},
-        '/csrf': {target: 'http://localhost:3001/', secure: false},
+        '/server/system/csrf': {target: 'http://localhost:3001/', secure: false},
         '/form/public/*': {target: 'http://localhost:3001/', secure: false},
         '/server/*': {target: 'http://localhost:3001/', secure: false},
         '/swagger/public/*': {target: 'http://localhost:3001/', secure: false},
