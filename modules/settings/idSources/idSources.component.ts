@@ -19,14 +19,14 @@ export class IdSourcesComponent {
     sources!: Source[];
 
     constructor(private alert: AlertService, private http: HttpClient) {
-        this.http.get<Source[]>('/idSources')
+        this.http.get<Source[]>('/server/system/idSources')
             .subscribe(res => this.sources = res,
                 err => this.alert.httpErrorMessageAlert(err)
             );
     }
 
     add() {
-        this.http.post<Source>('/idSource/' + this.newId, {})
+        this.http.post<Source>('/server/system/idSource/' + this.newId, {})
             .subscribe(res => this.sources.push(res),
                 err => this.alert.httpErrorMessageAlert(err)
             );
@@ -34,14 +34,14 @@ export class IdSourcesComponent {
     }
 
     delete(source: Source, i: number) {
-        this.http.delete('/idSource/' + source._id)
+        this.http.delete('/server/system/idSource/' + source._id)
             .subscribe(() => this.sources.splice(i, 0),
                 err => this.alert.httpErrorMessageAlert(err)
             );
     }
 
     update(source: Source) {
-        this.http.put<Source>('/idSource/' + source._id, source)
+        this.http.put<Source>('/server/system/idSource/' + source._id, source)
             .subscribe(res => source = res,
                 err => this.alert.httpErrorMessageAlert(err)
             );

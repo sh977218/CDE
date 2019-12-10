@@ -51,7 +51,7 @@
                         </tr>
                     </table>
                     <img *ngFor="let attachment of elt.attachments.filter(Elt.isDefault)"
-                         alt="Image attached to the CDE" src="/data/{{attachment.fileid}}"
+                         alt="Image attached to the CDE" src="/server/system/data/{{attachment.fileid}}"
                          class='cdeAttachmentThumbnail'/>
                 </div>
                 <div class="col-md-4 col-sm-6 col-xs-12" *ngIf="elt.ids.length > 0">
