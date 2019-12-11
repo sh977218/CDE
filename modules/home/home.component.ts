@@ -44,24 +44,22 @@ export class HomeComponent implements OnInit {
     }
 
     showSlides(n: number) {
-        /*
-                let i;
-                const slides = document.getElementsByClassName('mySlides');
-                const dots = document.getElementsByClassName('dot');
-                if (n > slides.length) {
-                    this.slideIndex = 1;
-                }
-                if (n < 1) {
-                    this.slideIndex = slides.length;
-                }
-                for (i = 0; i < slides.length; i++) {
-                    slides[i].style.display = 'none';
-                }
-                for (i = 0; i < dots.length; i++) {
-                    dots[i].className = dots[i].className.replace(' active', '');
-                }
-                slides[this.slideIndex - 1].style.display = 'block';
-                dots[this.slideIndex - 1].className += ' active';
-        */
+        let i;
+        const slides: any = document.getElementsByClassName('mySlides');
+        const dots: any = document.getElementsByClassName('dot');
+        if (n > slides.length) {
+            this.slideIndex = 1;
+        }
+        if (n < 1) {
+            this.slideIndex = slides.length;
+        }
+        for (i = 0; i < slides.length; i++) {
+            slides[i].style.display = 'none';
+        }
+        for (i = 0; i < dots.length; i++) {
+            dots[i].className = dots[i].className.replace(' active', '');
+        }
+        slides[this.slideIndex - 1].style.display = 'block';
+        dots[this.slideIndex - 1].className += ' active';
     }
 }
