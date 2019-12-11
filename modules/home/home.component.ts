@@ -28,6 +28,7 @@ export class HomeComponent implements OnInit {
         } else if (this.route.snapshot.queryParams.notifications !== undefined) {
             this.router.navigate(['/home']);
         }
+        this.showSlides(this.slideIndex);
     }
 
     takeATour() {
@@ -59,7 +60,11 @@ export class HomeComponent implements OnInit {
         for (i = 0; i < dots.length; i++) {
             dots[i].className = dots[i].className.replace(' active', '');
         }
-        slides[this.slideIndex - 1].style.display = 'block';
-        dots[this.slideIndex - 1].className += ' active';
+        if (slides.length) {
+            slides[this.slideIndex - 1].style.display = 'block';
+        }
+        if (dots.length) {
+            dots[this.slideIndex - 1].className += ' active';
+        }
     }
 }
