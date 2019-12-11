@@ -130,6 +130,7 @@ async function updateFormOption(existingFormObj, source) {
         if (changeNoteIndex === 0) {
             options.skipFormElements = false;
             administrativeNote = 'Not skip updating Form Elements because Merge from tinyId ';
+            console.log(`Skipping merged form element update for form ${existingFormObj.tinyId} `);
         } else {
             console.log(`Skipping form element update for form ${existingFormObj.tinyId} `);
         }

@@ -3,9 +3,12 @@ import { eachLimit } from 'async';
 import { NindsModel } from 'ingester/createMigrationConnection';
 import { createNindsCde } from 'ingester/ninds/website/cde/cde';
 import { createNindsForm } from 'ingester/ninds/website/form/form';
-import { loadNindsCde, loadNindsForm } from 'ingester/ninds/shared';
+import { doNindsClassification, loadNindsCde, loadNindsForm } from 'ingester/ninds/shared';
 import { dataElementModel } from 'server/cde/mongo-cde';
-import { BATCHLOADER, fixForm, lastMigrationScript, retiredElt, updateCde, updateForm } from 'ingester/shared/utility';
+import {
+    BATCHLOADER, findOneCde, fixForm, imported, lastMigrationScript, retiredElt, updateCde, updateForm,
+    updateRawArtifact
+} from 'ingester/shared/utility';
 import { formModel } from 'server/form/mongo-form';
 
 function removeNindsClassification(elt: any) {
@@ -22,9 +25,11 @@ function removeNindsClassification(elt: any) {
 }
 
 function loadNindsCdes() {
+    const phq9CdeIds = ['C07430', 'C07431', 'C07432', 'C07433', 'C07435', 'C07436', 'C07437', 'C07438', 'C07439', 'C07440', 'C07441'];
+
     return new Promise(async (resolve, reject) => {
         const cdeIds = await NindsModel.distinct('cdes.CDE ID');
-//        const cdeIds = ['C00207'];
+//        const cdeIds = phq9CdeIds;
         eachLimit(cdeIds, 500, async cdeId => {
             const nindsForms = await NindsModel.find({'cdes.CDE ID': cdeId},
                 {
@@ -41,7 +46,22 @@ function loadNindsCdes() {
                 'ids.id': cdeId,
                 'registrationState.registrationStatus': {$ne: 'Retired'}
             };
-            await loadNindsCde(cde, cond, 'NINDS');
+            const isPhq9 = phq9CdeIds.indexOf(cdeId) !== -1;
+            if (isPhq9) {
+                const newCde = new dataElementModel(cde);
+                const newCdeObj = newCde.toObject();
+                const existingCdes: any[] = await dataElementModel.find(cond);
+                const existingCde: any = findOneCde(existingCdes);
+                const existingCdeObj = existingCde.toObject();
+                doNindsClassification(existingCdeObj, newCde.toObject());
+                existingCde.classification = existingCdeObj.classification;
+                existingCde.lastMigrationScript = lastMigrationScript;
+                existingCde.imported = imported;
+                await existingCde.save();
+                await updateRawArtifact(existingCde, newCdeObj, 'NINDS', 'NINDS');
+            } else {
+                await loadNindsCde(cde, cond, 'NINDS');
+            }
         }, err => {
             if (err) {
                 reject(err);
