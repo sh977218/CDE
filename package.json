@@ -139,7 +139,7 @@
     "shared": "file:./shared",
     "shortid": "^2.2.15",
     "socket.io": "^2.2.0",
-    "socket.io-adapter-mongo": "^2.0.3",
+    "socket.io-adapter-mongo": "^2.0.5",
     "streamifier": "0.1.1",
     "swagger-tools": "^0.10.4",
     "trim": "0.0.1",
