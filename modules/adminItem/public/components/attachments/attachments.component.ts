@@ -20,7 +20,7 @@ export class AttachmentsComponent {
     }
 
     copyUrl(attachment: Attachment) {
-        let url = (window as any).publicUrl + '/data/' + attachment.fileid;
+        let url = (window as any).publicUrl + '/server/system/data/' + attachment.fileid;
         if (attachment.filetype && attachment.filetype.indexOf('video') > -1) {
             url += '.mp4';
         }

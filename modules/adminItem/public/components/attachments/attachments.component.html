@@ -10,7 +10,7 @@
                 <dd class="col-9">
                     <div *ngIf="!attachment.pendingApproval || canReviewAttachment; else pendingApprovalTpl">
                         <a id="attachment_file_url_{{i}}" class="mr-1"
-                           href="/data/{{attachment.fileid}}"
+                           href="/server/system/data/{{attachment.fileid}}"
                            target="_blank">{{attachment.filename}}</a>
                         <button (click)="copyUrl(attachment)" mat-raised-button>
                             <mat-icon id="copyUrl_{{i}}">content_copy</mat-icon> Copy URL
