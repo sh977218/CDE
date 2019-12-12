@@ -15,64 +15,68 @@
                         </p>
                         <p>
                             Visit the
-                            <a class="homeDescriptionLink" href="http://cde.nih.gov" target="_blank"
-                               rel="noopener noreferrer">NIH
+                            <a class="homeDescriptionLink" href="http://cde.nih.gov" target="_blank" rel="noopener noreferrer">NIH
                                 CDE Resource Portal</a>
                             for contextual information about the repository.
                         </p>
                     </div>
                 </div>
                 <div class="col-lg-6 d-none d-sm-inline-block" *ngIf="displayCarousel">
-                    <div class="slideshow-container">
-                        <div class="mySlides fade">
-                            <div class="numbertext w-100">1 / 3</div>
-                            <img class="slideContent" src="slides/min/discuss.png" alt="Discuss">
-                            <div class="text">Caption Text</div>
-                        </div>
-
-                        <div class="mySlides fade">
-                            <div class="numbertext w-100">2 / 3</div>
-                            <img class="slideContent" src="slides/min/drafting.png" alt="Draft of a Form">
-                            <div class="text">Caption Two</div>
-                        </div>
-                        <div class="mySlides fade">
-                            <div class="numbertext">2 / 3</div>
-                            <img class="slideContent w-100" src="slides/min/compare.png" alt="More Like This">
-                            <div class="text">Caption Two</div>
-                        </div>
-                        <div class="mySlides fade">
-                            <div class="numbertext">2 / 3</div>
-                            <img class="slideContent w-100" src="slides/min/history.png" alt="History">
-                            <div class="text">Caption Two</div>
-                        </div>
-                        <div class="mySlides fade">
-                            <div class="numbertext">2 / 3</div>
-                            <img class="slideContent  w-100" src="slides/min/tobacco.png" alt="Finding and using forms">
-                            <div class="text">Caption Two</div>
-                        </div>
-
-                        <a class="prev" (click)="plusSlides(-1)">&#10094;</a>
-                        <a class="next" (click)="plusSlides(1)">&#10095;</a>
-
-                    </div>
-                    <br>
-
-                    <div style="text-align:center">
-                        <span class="dot" (click)="currentSlide(1)"></span>
-                        <span class="dot" (click)="currentSlide(2)"></span>
-                        <span class="dot" (click)="currentSlide(3)"></span>
-                    </div>
+                    <ngb-carousel style="margin: auto">
+                        <ng-template ngbSlide>
+                            <picture>
+                                <source srcset="slides/min/discuss.webp" type="image/webp">
+                                <img class="slideContent" src="slides/min/discuss.png" alt="Discuss">
+                            </picture>
+                            <div class="carousel-caption">
+                                <h3>Search, Discuss and Collaborate</h3>
+                            </div>
+                        </ng-template>
+                        <ng-template ngbSlide>
+                            <picture>
+                                <source srcset="slides/min/drafting.webp" type="image/webp">
+                                <img class="slideContent" src="slides/min/drafting.png" alt="Draft of a Form">
+                            </picture>
+                            <div class="carousel-caption">
+                                <h3>Create, Draft and Share</h3>
+                            </div>
+                        </ng-template>
+                        <ng-template ngbSlide>
+                            <picture>
+                                <source srcset="slides/min/compare.webp" type="image/webp">
+                                <img class="slideContent" src="slides/min/compare.png" alt="More Like This">
+                            </picture>
+                            <div class="carousel-caption">
+                                <h3>Compare and Harmonize</h3>
+                            </div>
+                        </ng-template>
+                        <ng-template ngbSlide>
+                            <picture>
+                                <source srcset="slides/min/history.webp" type="image/webp">
+                                <img class="slideContent" src="slides/min/history.png" alt="History">
+                            </picture>
+                            <div class="carousel-caption">
+                                <h3>Track Changes Across Versions</h3>
+                            </div>
+                        </ng-template>
+                        <ng-template ngbSlide>
+                            <picture>
+                                <source srcset="slides/min/tobacco.webp" type="image/webp">
+                                <img class="slideContent" src="slides/min/tobacco.png" alt="Screenshot of finding and using forms">
+                            </picture>
+                            <div class="carousel-caption">
+                                <h3>Export and Publish in Multiple Formats</h3>
+                            </div>
+                        </ng-template>
+                    </ngb-carousel>
                 </div>
                 <div class="col-lg-3 col-12 btn-group-vertical" id='searchDiv'>
                     <a routerLink="/cde/search" id="browseCdes" class="btn btn-outline-dark my-1">
-                        <mat-icon>search</mat-icon>
-                        Browse CDEs</a>
+                        <mat-icon>search</mat-icon> Browse CDEs</a>
                     <a routerLink="/form/search" id="browseForms" class="btn btn-outline-dark my-1">
-                        <mat-icon>search</mat-icon>
-                        Browse Forms</a>
+                        <mat-icon>search</mat-icon> Browse Forms</a>
                     <a (click)="takeATour()" id="takeATourBtn" class="btn btn-outline-dark my-1 hand-cursor">
-                        <mat-icon class="faa-wrench faa-slow animated">flag</mat-icon>
-                        Interactive Tour
+                        <mat-icon class="faa-wrench faa-slow animated">flag</mat-icon> Interactive Tour
                     </a>
                 </div>
 
