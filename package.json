@@ -249,7 +249,6 @@
     "gulp-usemin": "0.3.30",
     "hard-source-webpack-plugin": "0.5.16",
     "html-loader": "0.5.1",
-    "html2canvas": "^1.0.0-rc.5",
     "intl": "1.2.5",
     "ingester": "file:./ingester",
     "js-toggle-switch": "0.1.0",
