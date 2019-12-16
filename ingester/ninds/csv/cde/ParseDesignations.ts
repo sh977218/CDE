@@ -2,7 +2,7 @@ import { isEmpty, isEqual } from 'lodash';
 import { getCell } from 'ingester/ninds/csv/shared/utility';
 
 
-export function parseDesignations(row) {
+export function parseDesignations(row: any) {
     const designations = [];
     const title = getCell(row, 'Title');
     const preferredQuestionText = getCell(row, 'Preferred Question Text');

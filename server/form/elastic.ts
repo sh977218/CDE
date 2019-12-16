@@ -17,7 +17,7 @@ export function updateOrInsert(elt) {
                     logError({
                         message: 'Unable to Index document: ' + doc.tinyId,
                         origin: 'form.elastic.updateOrInsert',
-                        stack: err,
+                        stack: err.toString(),
                         details: ''
                     });
                 }
@@ -50,26 +50,26 @@ export function byTinyIdList(idList: string[], size: number, cb: CbError<CdeForm
     idList = idList.filter(id => !!id);
     // @ts-ignore
     esClient.search({
-        index: config.elastic.formIndex.name,
-        body: {
-            query: {
-                ids: {
-                    values: idList
-                }
-            },
-            size
-        }
-    },
+            index: config.elastic.formIndex.name,
+            body: {
+                query: {
+                    ids: {
+                        values: idList
+                    }
+                },
+                size
+            }
+        },
         // @ts-ignore
         splitError(cb, response => {
-        // @TODO possible to move this sort to elastic search?
-        if (!response) {
-            cb(undefined, []);
-            return;
-        }
-        // @ts-ignore
-        response.body.hits.hits.sort((a, b) => idList.indexOf(a._id) - idList.indexOf(b._id));
-        // @ts-ignore
-        cb(undefined, response.body.hits.hits.map(h => h._source));
-    }));
+            // @TODO possible to move this sort to elastic search?
+            if (!response) {
+                cb(undefined, []);
+                return;
+            }
+            // @ts-ignore
+            response.body.hits.hits.sort((a, b) => idList.indexOf(a._id) - idList.indexOf(b._id));
+            // @ts-ignore
+            cb(undefined, response.body.hits.hits.map(h => h._source));
+        }));
 }

@@ -5,7 +5,7 @@ import { dataElementModel } from 'server/cde/mongo-cde';
 import { createRedCde } from 'ingester/phenx/redCap/cde';
 import { convert } from 'ingester/phenx/redCap/RedCapCdeToQuestion';
 import {
-    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeClassification, mergeElt, updateCde, updateRowArtifact
+    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeClassification, mergeElt, updateCde, updateRawArtifact
 } from 'ingester/shared/utility';
 import { leadingZerosProtocolId } from 'ingester/phenx/Form/ParseAttachments';
 import { commentModel } from 'server/discuss/discussDb';
@@ -73,7 +73,7 @@ async function doOneRedCap(redCap, redCaps, protocol, newForm) {
             RedcapLogger.sameRedcapCdes.push(existingCde.tinyId);
         } else {
             const existingCdeObj = existingCde.toObject();
-            mergeElt(existingCdeObj, newCdeObj, 'PhenX', 'PhenX');
+            mergeElt(existingCdeObj, newCdeObj, 'PhenX');
             await updateCde(existingCdeObj, BATCHLOADER, {updateSource: true});
             RedcapLogger.changedRedcapCde++;
             RedcapLogger.changedRedcapCdes.push(existingCde.tinyId);
@@ -83,7 +83,7 @@ async function doOneRedCap(redCap, redCaps, protocol, newForm) {
         comment.element.eltId = existingCde.tinyId;
         await new commentModel(comment).save();
     }
-    await updateRowArtifact(existingCde, newCdeObj, 'PhenX', 'PhenX');
+    await updateRawArtifact(existingCde, newCdeObj, 'PhenX', 'PhenX');
     const savedCde: any = await dataElementModel.findOne({archived: false, 'ids.id': cdeId});
     return savedCde;
 }
