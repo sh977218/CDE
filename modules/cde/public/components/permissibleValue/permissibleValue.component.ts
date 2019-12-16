@@ -7,7 +7,7 @@ import { AlertService } from 'alert/alert.service';
 import { catchError, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { empty, Subject } from 'rxjs';
 import { DataElement, DATA_TYPE_ARRAY, ValueDomainValueList, ValueDomain } from 'shared/de/dataElement.model';
-import { fixDataElement, fixDatatype } from 'shared/de/deValidator';
+import { fixDataElement, fixDatatype } from 'shared/de/dataElement.model';
 import { PermissibleValue } from 'shared/models.model';
 import { SearchSettings } from 'shared/search/search.model';
 import xml2js from 'xml2js';
