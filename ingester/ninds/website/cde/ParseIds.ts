@@ -1,27 +1,31 @@
-const _ = require('lodash');
+import { uniq } from 'lodash';
 
-exports.parseIds = nindsForms => {
-    let cdeIdArray = [];
-    let versionNumArray = [];
-    let cadsrIdArray = [];
-    let variableNameArray = [];
+export function parseIds(nindsForms: any[]) {
+    const cdeIdArray: any[] = [];
+    const versionNumArray: any[] = [];
+    const cadsrIdArray: any[] = [];
+    const variableNameArray: any[] = [];
     nindsForms.forEach(nindsForm => {
-        nindsForm.cdes.forEach(nindsCde => {
-            if (nindsCde['CDE ID'])
+        nindsForm.cdes.forEach((nindsCde: any) => {
+            if (nindsCde['CDE ID']) {
                 cdeIdArray.push(nindsCde['CDE ID']);
-            if (nindsCde['Version #'])
-                versionNumArray.push(nindsCde['Version #']);
-            if (nindsCde['caDSR ID'])
+            }
+            if (nindsCde['Version Number']) {
+                versionNumArray.push(nindsCde['Version Number']);
+            }
+            if (nindsCde['caDSR ID']) {
                 cadsrIdArray.push(nindsCde['caDSR ID']);
-            if (nindsCde['Variable Name'])
+            }
+            if (nindsCde['Variable Name']) {
                 variableNameArray.push(nindsCde['Variable Name']);
-        })
+            }
+        });
     });
 
-    let _cdeIdArray = _.uniq(cdeIdArray);
-    let _versionNumArray = _.uniq(versionNumArray);
-    let _cadsrIdArray = _.uniq(cadsrIdArray);
-    let _variableNameArray = _.uniq(variableNameArray);
+    const _cdeIdArray = uniq(cdeIdArray);
+    const _versionNumArray = uniq(versionNumArray);
+    const _cadsrIdArray = uniq(cadsrIdArray);
+    const _variableNameArray = uniq(variableNameArray);
 
     if (_cdeIdArray.length !== 1) {
         console.log('_cdeIdArray not 1');
@@ -40,26 +44,26 @@ exports.parseIds = nindsForms => {
         process.exit(1);
     }
 
-    let ids = [];
+    const ids: any[] = [];
     _cdeIdArray.forEach(v => {
         ids.push({
             source: 'NINDS',
             id: v,
-            version: _versionNumArray[0]
-        })
+            version: parseFloat(_versionNumArray[0]).toString()
+        });
     });
     _cadsrIdArray.forEach(v => {
         ids.push({
             source: 'NINDS caDSR',
             id: v
-        })
+        });
     });
     _variableNameArray.forEach(v => {
         ids.push({
-            source: 'NINDS Variable Name',
+            source: 'BRICS Variable Name',
             id: v
-        })
+        });
     });
 
     return ids;
-};
+}

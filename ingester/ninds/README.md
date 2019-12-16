@@ -47,3 +47,15 @@ run this command in mongo shell multiple times until see `Updated 0 record(s) in
 `
 db.getCollection('ninds').update({'cdes.Description':'None;Mild;mild;Moderate;Moderate;Severe;Severe;'},{$set:{'cdes.$.Description':'None;Mild;mild+;Moderate;Moderate+;Severe;Severe+;'}},{multi:true});
 `
+
+
+# Why not load data from exports
+export files are under S:\MLB\CDE\NINDS\export\
+* Load CDE from DataElement.xlsx as the following problem:
+    * CDE ID is missing. 
+* Load Form from Forms.xml has the following information.
+    * Data Type is missing.
+    * Data Type property is missing, i.e. Min Value, Max Value, Size.
+    * Question Text is missing.
+    * Multiple Select (based on Input Restrictions) is missing, 
+    * Instructions is missing.

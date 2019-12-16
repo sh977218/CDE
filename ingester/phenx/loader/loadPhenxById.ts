@@ -3,7 +3,7 @@ import { createPhenxForm } from 'ingester/phenx/Form/form';
 import { formModel } from 'server/form/mongo-form';
 import { PhenxLogger } from 'ingester/log/PhenxLogger';
 import {
-    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeClassification, mergeElt, updateForm, updateRowArtifact
+    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeClassification, mergeElt, updateForm, updateRawArtifact
 } from 'ingester/shared/utility';
 import { commentModel } from 'server/discuss/discussDb';
 import { PROTOCOL } from 'ingester/createMigrationConnection';
@@ -34,7 +34,7 @@ export async function loadPhenxById(phenxId: string) {
             PhenxLogger.samePhenxForms.push(existingForm.tinyId);
         } else {
             const existingFormObj = existingForm.toObject();
-            mergeElt(existingFormObj, newFormObj, 'PhenX', 'PhenX');
+            mergeElt(existingFormObj, newFormObj, 'PhenX');
             await updateForm(existingFormObj, BATCHLOADER, {updateSource: true});
             PhenxLogger.changedPhenxForm++;
             PhenxLogger.changedPhenxForms.push(existingForm.tinyId);
@@ -46,7 +46,7 @@ export async function loadPhenxById(phenxId: string) {
             await new commentModel(comment).save();
         }
     }
-    await updateRowArtifact(existingForm, newFormObj, 'PhenX', 'PhenX');
+    await updateRawArtifact(existingForm, newFormObj, 'PhenX', 'PhenX');
     protocolCount++;
     console.log('protocolCount ' + protocolCount);
     console.log('Finished protocol: ' + protocolId);

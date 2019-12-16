@@ -26,7 +26,7 @@ export let LOINC_USERS_GUIDE = 'S:/MLB/CDE/LOINC/LOINCUsersGuide.pdf';
 // NINDS
 export const NindsModel = migrationConn.model('NINDS', new Schema({}, {
     strict: false,
-    collection: 'ninds',
+    collection: 'NINDS',
     usePushEach: true
 }));
 

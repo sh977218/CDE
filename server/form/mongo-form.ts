@@ -59,7 +59,7 @@ formSchema.pre('save', function preSaveUsesThisForSomeReason(next) {
         }
         next();
     }, (err: string) => {
-        next(new Error(`Form ${elt.tinyId} has error: ${err}`))
+        next(new Error(`Form ${elt.tinyId} has error: ${err.toString()}`));
     });
 });
 
@@ -220,7 +220,7 @@ export function update(elt: CdeForm, user: User, options: any = {}, callback: Cb
             elt.attachments = form.attachments;
         }
 
-        // loader skip update formElements, i.e. Qualified PhenX forms
+        // loader skip update formElements, i.e. Qualified PhenX forms, PHQ-9
         if (options.skipFormElements) {
             elt.formElements = form.formElements;
         }

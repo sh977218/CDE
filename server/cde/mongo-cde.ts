@@ -56,12 +56,12 @@ dataElementSchema.pre('save', function preSaveUseThisForSomeReason(next) {
 
         const valueDomain = elt.valueDomain;
         if (valueDomain.datatype === 'Value List' && isEmpty(valueDomain.permissibleValues)) {
-            next(new Error('Value List with empty permissible values.'));
+            next(new Error(`Cde ${elt.tinyId} Value List with empty permissible values.`));
         } else {
             next();
         }
     }, (err: string) => {
-        next(new Error(`Cde ${elt.tinyId} has error: ${err}`));
+        next(new Error(`Cde ${elt.tinyId} has error: ${err.toString()}`));
     });
 });
 

@@ -1,6 +1,6 @@
 import { isEmpty } from 'lodash';
 import {
-    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeClassification, mergeElt, updateCde, updateRowArtifact
+    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeClassification, mergeElt, updateCde, updateRawArtifact
 } from 'ingester/shared/utility';
 import { dataElementModel } from 'server/cde/mongo-cde';
 import { commentModel } from 'server/discuss/discussDb';
@@ -56,7 +56,7 @@ function runOneOrg(orgName: string) {
                                 sameCdes.push(existingCde.tinyId);
                             } else {
                                 const existingCdeObj = existingCde.toObject();
-                                mergeElt(existingCdeObj, newCdeObj, 'NCI', 'NCI');
+                                mergeElt(existingCdeObj, newCdeObj, 'NCI');
                                 await updateCde(existingCdeObj, BATCHLOADER, {updateSource: true});
                                 changedCde++;
                                 changedCdes.push(existingCde.tinyId);
@@ -70,7 +70,7 @@ function runOneOrg(orgName: string) {
                             }
                         }
 
-                        await updateRowArtifact(existingCde, newCdeObj, 'caDSR', 'NCI');
+                        await updateRawArtifact(existingCde, newCdeObj, 'caDSR', 'NCI');
                     }
                     resolve();
                 });

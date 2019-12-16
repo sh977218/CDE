@@ -7,7 +7,9 @@ import { dataElementSourceModel } from 'server/cde/mongo-cde';
 import * as mongo_form from 'server/form/mongo-form';
 import { formSourceModel } from 'server/form/mongo-form';
 import { PhenxURL } from 'ingester/createMigrationConnection';
-import { CdeId, Classification, Definition, Designation, Property, ReferenceDocument } from 'shared/models.model';
+import {
+    CdeId, Classification, Definition, Designation, Instruction, Property, ReferenceDocument
+} from 'shared/models.model';
 import { FormElement } from 'shared/form/form.model';
 import { gfs } from 'server/system/mongo-data';
 import { Readable } from 'stream';
@@ -20,17 +22,27 @@ export const sourceMap = {
     LOINC: ['LOINC'],
     PhenX: ['PhenX', 'PhenX Variable'],
     NINDS: ['NINDS', 'NINDS Variable Name', 'NINDS caDSR', 'NINDS Preclinical', 'BRICS Variable Name'],
+    // tslint:disable-next-line:max-line-length
     'NINDS Preclinical NEI': ['NINDS', 'NINDS Variable Name', 'NINDS caDSR', 'NINDS Preclinical', 'BRICS Variable Name', 'NINDS Preclinical NEI'],
     NCI: ['NCI', 'caDSR']
 };
 export const TODAY = new Date().toJSON();
-export const lastMigrationScript = `load Preclinical + NEI on ${moment().format('DD MMMM YYYY')}`;
+export const lastMigrationScript = `load NINDS on ${moment().format('DD MMMM YYYY')}`;
 
 export const BATCHLOADER_USERNAME = 'batchloader';
 export const BATCHLOADER = {
     username: BATCHLOADER_USERNAME,
     roles: ['AttachmentReviewer']
 };
+
+export function updateByBatchloader(elt) {
+    const updatedBy = elt.updatedBy;
+    if (updatedBy && updatedBy.username !== BATCHLOADER_USERNAME) {
+        return false;
+    } else {
+        return true;
+    }
+}
 
 export const created = TODAY;
 export const imported = TODAY;
@@ -60,6 +72,7 @@ export function wipeBeforeCompare(obj: any) {
     }
 
     delete obj.imported;
+    delete obj.stewardOrg;
     delete obj.created;
     delete obj.createdBy;
     delete obj.updated;
@@ -77,7 +90,6 @@ export function wipeBeforeCompare(obj: any) {
     delete obj.lastMigrationScript;
     delete obj.registrationState;
     delete obj.comments;
-    delete obj.formElements;
 
     Object.keys(obj).forEach(key => {
         if (Array.isArray(obj[key]) && obj[key].length === 0) {
@@ -94,7 +106,7 @@ export function trimWhite(text: string) {
     }
 }
 
-export async function updateRowArtifact(existingElt, newElt, source, classificationOrgName) {
+export async function updateRawArtifact(existingElt, newElt, source, classificationOrgName) {
     delete newElt.tinyId;
     delete newElt._id;
     newElt.classification = existingElt.classification.filter(c => c.stewardOrg.name === classificationOrgName);
@@ -163,9 +175,6 @@ export function mergeClassificationByOrg(existingObj, newObj, orgName: string = 
 }
 
 export function updateCde(elt: any, user: any, options = {}) {
-    if (elt.tinyId === '7kJpuiGs4') {
-        console.log('b');
-    }
     elt.lastMigrationScript = lastMigrationScript;
     return new Promise((resolve, reject) => {
         mongo_cde.update(elt, user, options, (err, savedElt) => {
@@ -178,17 +187,9 @@ export function updateCde(elt: any, user: any, options = {}) {
     });
 }
 
-export function updateForm(elt: any, user: any, options: any = {}) {
+export async function updateForm(elt: any, user: any, options: any = {}) {
     elt.lastMigrationScript = lastMigrationScript;
     return new Promise((resolve, reject) => {
-        /* Loader cannot change Qualified PhenX formElements.*/
-        const isPhenX = elt.ids.filter(id => id.source === 'PhenX').length > 0;
-        const isQualified = elt.registrationState.registrationStatus === 'Qualified';
-        const isArchived = elt.archived;
-        if (isPhenX && isQualified && !isArchived) {
-            options.skipFormElements = true;
-        }
-
         mongo_form.update(elt, user, options, (err, savedElt) => {
             if (err) {
                 reject(err);
@@ -327,26 +328,13 @@ export function compareElt(newEltObj, existingEltObj, source) {
             delete eltObj.dataSets;
             fixValueDomainOrQuestion(eltObj.valueDomain);
         }
-
         wipeBeforeCompare(eltObj);
 
+        // Classification changes don't trigger version changes.
+        delete eltObj.classification;
     });
 
-    // Within single load, don't version if only classification changed.
-    if (existingEltObj.lastMigrationScript === newEltObj.lastMigrationScript) {
-        delete existingEltObj.classification;
-        delete existingEltObj.newEltObj;
-    }
-    let result = DiffJson.diff(existingEltObj, newEltObj);
-    /*
-        if (existingEltObj.lastMigrationScript === newEltObj.lastMigrationScript) {
-            result = diffWithRecentUpdated(existingEltObj, newEltObj);
-        }
-        if (!isEmpty(result)) {
-            console.log('a');
-        }
-    */
-    return result;
+    return DiffJson.diff(existingEltObj, newEltObj);
 }
 
 // Merge two elements
@@ -377,6 +365,7 @@ function mergeDesignations(existingObj, newObj) {
             }
         });
     }
+    existingObj.designations = sortDesignations(existingObj.designations);
 }
 
 function mergeDefinitions(existingObj, newObj) {
@@ -438,6 +427,9 @@ export function mergeReferenceDocuments(existingObj, newObj) {
         newReferenceDocuments.forEach(newReferenceDocument => {
             const i = findIndex(existingReferenceDocuments, o =>
                 isEqual(o.docType, newReferenceDocument.docType) &&
+                isEqual(o.title, newReferenceDocument.title) &&
+                isEqual(o.providerOrg, newReferenceDocument.providerOrg) &&
+                isEqual(o.uri, newReferenceDocument.uri) &&
                 isEqual(o.languageCode, newReferenceDocument.languageCode) &&
                 isEqual(o.document, newReferenceDocument.document) &&
                 isEqual(o.source, newReferenceDocument.source));
@@ -450,7 +442,7 @@ export function mergeReferenceDocuments(existingObj, newObj) {
     }
 }
 
-export function mergeIds(existingObj, newObj) {
+export function mergeIds(existingObj, newObj, source: string) {
     const existingIds: CdeId[] = existingObj.ids;
     const newIds: CdeId[] = newObj.ids;
     newIds.forEach(newId => {
@@ -469,6 +461,7 @@ export function mergeIds(existingObj, newObj) {
             existingIds[i] = newId;
         }
     });
+    sortIdentifier(existingObj.ids, source);
 }
 
 export function mergeClassification(existingElt, newObj, classificationOrgName) {
@@ -482,7 +475,8 @@ export function mergeClassification(existingElt, newObj, classificationOrgName) 
     }
 }
 
-export function mergeSources(existingObj, newObj, sources) {
+export function mergeSources(existingObj, newObj, source) {
+    const sources = sourceMap[source];
     const existingSources = existingObj.sources;
     const newSources = newObj.sources;
     const otherSources = existingSources.filter(o => {
@@ -511,7 +505,7 @@ function increaseVersion(existingEltObj) {
     }
 }
 
-export function mergeElt(existingEltObj: any, newEltObj: any, source: string, classificationOrgName) {
+export function mergeElt(existingEltObj: any, newEltObj: any, source: string) {
     const isForm = existingEltObj.elementType === 'form';
     const isCde = existingEltObj.elementType === 'cde';
 
@@ -519,19 +513,17 @@ export function mergeElt(existingEltObj: any, newEltObj: any, source: string, cl
     const isQualified = existingEltObj.registrationState.registrationStatus === 'Qualified';
     const isArchived = existingEltObj.archived;
 
-    const sources = sourceMap[source];
-
     existingEltObj.imported = imported;
     existingEltObj.changeNote = lastMigrationScript;
 
     mergeDesignations(existingEltObj, newEltObj);
     mergeDefinitions(existingEltObj, newEltObj);
 
-    mergeIds(existingEltObj, newEltObj);
+    mergeIds(existingEltObj, newEltObj, source);
     mergeProperties(existingEltObj, newEltObj);
     mergeReferenceDocuments(existingEltObj, newEltObj);
 
-    mergeSources(existingEltObj, newEltObj, sources);
+    mergeSources(existingEltObj, newEltObj, source);
 
     existingEltObj.attachments = newEltObj.attachments;
     if (existingEltObj.lastMigrationScript !== lastMigrationScript) {
@@ -771,84 +763,137 @@ export function addAttachment(readable: Readable, attachment: any) {
 
 
 // Utility methods related to cde and form
-export function sortReferenceDocuments(referenceDocuments) {
+export function sortReferenceDocuments(referenceDocuments: any[]) {
     return sortBy(referenceDocuments, ['title', 'uri']);
 }
 
-export function sortProperties(properties) {
+export function sortProperties(properties: any[]) {
     return sortBy(properties, ['key']);
 }
 
-export function findOneCde(cdes) {
+export function sortDesignations(designations: any[]) {
+    const noTagDesignations = designations.filter(d => isEmpty(d.tags));
+    const tagDesignations = designations.filter(d => !isEmpty(d.tags));
+    const sortNoTagDesignations = sortBy(noTagDesignations, ['designation']);
+    const sortTagDesignations = sortBy(tagDesignations, ['designation']);
+    return sortNoTagDesignations.concat(sortTagDesignations);
+}
+
+export function sortIdentifier(ids, source) {
+    const otherSourceIdentifiers = ids.filter(d => d.source !== source);
+    const sourceIdentifiers = ids.filter(d => d.source === source);
+    const sortOtherSourceIdentifiers = sortBy(otherSourceIdentifiers, ['id']);
+    const sortSourceIdentifiers = sortBy(sourceIdentifiers, ['id']);
+
+    return sortSourceIdentifiers.concat(sortOtherSourceIdentifiers);
+}
+
+export function findOneCde(cdes: any[]) {
     const cdesLength = cdes.length;
     if (cdesLength === 0) {
         return null;
     } else if (cdesLength === 1) {
         return cdes[0];
     } else {
-        console.log(`Multiple cdes found. TinyIds:`);
-        cdes.forEach((e: any) => console.log(`${e.tinyId} ${e.registrationState.registrationStatus} `));
-        const preclinicalTbiCdes = cdes.filter(cde => {
-            const nindsPreclinicalIds = cde.ids.filter(id => id.source === 'NINDS Preclinical');
-            const preclinicalCdeId = nindsPreclinicalIds[0];
-            if (preclinicalCdeId) {
-                return true;
-            } else {
-                return false;
-            }
-        });
-        const nindsCdes = cdes.filter(cde => {
-            const nindsIds = cde.ids.filter(id => id.source === 'NINDS Variable Name');
-            const nindsId = nindsIds[0];
-            if (nindsId) {
-                return true;
-            } else {
-                return false;
-            }
-        });
-        const preclinicalTbiCde = preclinicalTbiCdes[0];
-        const nindsCde = nindsCdes[0];
-        if (preclinicalTbiCde) {
-            return preclinicalTbiCde;
-        } else if (nindsCde) {
-            return nindsCde;
-        } else {
-            return cdes[0];
-        }
+        console.log(`Multiple cdes found. TinyIds: ${cdes[0].tinyId}`);
+        process.exit(1);
     }
 }
 
-export function findOneForm(forms) {
+export function findOneForm(forms: any[]) {
     const formsLength = forms.length;
     if (formsLength === 0) {
         return null;
     } else if (formsLength === 1) {
         return forms[0];
     } else {
-        console.log(`Multiple forms found. TinyIds:`);
-        forms.forEach((e: any) => console.log(`${e.tinyId} ${e.registrationState.registrationStatus} `));
-        console.log(`Return Preclinical TBI classification`);
-        const preclinicalTbiForms = forms.filter(form => {
-            const classifications = form.classification.filter(c => c.stewardOrg.name === 'NINDS');
-            const nindsClassification = classifications[0];
-            if (nindsClassification) {
-                const preclinicalTbiClassifications = classifications[0].elements.filter(e => e.name === 'Preclinical TBI');
-                const preclinicalTbiClassification = preclinicalTbiClassifications[0];
-                if (preclinicalTbiClassification) {
-                    return true;
-                } else {
-                    return false;
-                }
-            } else {
-                return false;
-            }
-        });
-        const preclinicalTbiForm = preclinicalTbiForms[0];
-        if (preclinicalTbiForm) {
-            return preclinicalTbiForm;
-        } else {
-            console.log('No form found.');
-            process.exit(1);
+        console.log(`Multiple forms found. TinyIds: ${forms[0].tinyId}`);
+        process.exit(1);
+    }
+}
+
+function fixSourcesUpdated(sources: any[]) {
+    sources.forEach(s => {
+        if (isEmpty(s.updated)) {
+            delete s.updated;
+        }
+    });
+    return sources;
+}
+
+function fixIdentifier(ids: any[]) {
+    ids.forEach(i => {
+        if (!isEmpty(i.version)) {
+            i.version = parseFloat(i.version).toString();
+        }
+        if (i.source === 'NINDS Variable Name') {
+            i.source = 'BRICS Variable Name';
+        }
+    });
+    return sortIdentifier(ids, 'NINDS');
+}
+
+export async function fixCde(cdeToFix: any) {
+    const cdeToFixObj = cdeToFix.toObject();
+    cdeToFix.designations = sortDesignations(cdeToFixObj.designations);
+    cdeToFix.ids = fixIdentifier(cdeToFixObj.ids);
+    const savedCde = await cdeToFix.save().catch((err: any) => {
+        console.log(`Not able to save cde when fixCde ${cdeToFixObj.tinyId} ${err}`);
+        process.exit(1);
+    });
+    return savedCde;
+}
+
+function fixInstructions(fe: any) {
+    const instructions: any = {};
+    if (!isEmpty(fe.instructions)) {
+        if (!isEmpty(fe.instructions.value)) {
+            instructions.value = fe.instructions.value;
+        }
+        if (!isEmpty(fe.instructions.valueFormat)) {
+            instructions.valueFormat = fe.instructions.valueFormat;
         }
     }
+    if (!isEmpty(instructions)) {
+        fe.instructions = instructions;
+    } else {
+        delete fe.instructions;
+    }
+}
+
+function fixFormElements(formObj: any) {
+    const formElements: FormElement[] = [];
+    for (const fe of formObj.formElements) {
+        const elementType = fe.elementType;
+        fixInstructions(fe);
+        if (elementType === 'question') {
+            fixInstructions(fe);
+            formElements.push(fe);
+        } else {
+            fe.formElements = fixFormElements(fe);
+            formElements.push(fe);
+        }
+    }
+    return formElements;
+}
+
+export async function fixForm(formToFix: any) {
+    const formToFixObj = formToFix.toObject();
+    formToFix.sources = fixSourcesUpdated(formToFixObj.sources);
+    formToFix.designations = sortDesignations(formToFixObj.designations);
+//    formToFix.formElements = fixFormElements(formToFixObj);
+    formToFix.ids = fixIdentifier(formToFixObj.ids);
+    const savedForm = await formToFix.save().catch((err: any) => {
+        throw(new Error(`Not able to save form when fixForm ${formToFixObj.tinyId} ${err}`));
+    });
+    return savedForm;
+}
+
+export function retiredElt(elt: any) {
+    elt.registrationState.registrationStatus = 'Retired';
+    elt.registrationState.administrativeNote = 'Not present in import at ' + imported;
+}
+
+export async function formRawArtifact(tinyId, sourceName) {
+    return formSourceModel.findOne({tinyId, source: sourceName}).lean();
 }

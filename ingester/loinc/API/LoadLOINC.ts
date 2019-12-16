@@ -1,8 +1,9 @@
 const request = require('request');
-const async = require('async');
+import { forEachSeries } from 'async';
+
 exports.runArray = (loincArray, doneOne, doneAll) => {
     const results = [];
-    const options = {
+    const options: any = {
         method: 'GET',
         url: 'https://forms.loinc.org/panel/def',
         qs: {p_num: ''},
@@ -13,7 +14,7 @@ exports.runArray = (loincArray, doneOne, doneAll) => {
             cookie: '_ga=GA1.2.1485451098.1471630504; _gat=1'
         }
     };
-    async.forEachSeries(loincArray, (loinc, doneOneLoinc) => {
+    forEachSeries(loincArray, (loinc, doneOneLoinc) => {
         options.qs.p_num = loinc;
         request(options, (error, response, body) => {
             if (error) {
