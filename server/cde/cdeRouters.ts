@@ -1,4 +1,4 @@
-import { Express } from 'express';
+import { Router } from 'express';
 import { toInteger } from 'lodash';
 import {
     byId, byTinyId, byTinyIdAndVersion, byTinyIdList, create, draftDelete, draftForEditByTinyId, draftSave, hideProprietaryCodes,
@@ -22,36 +22,42 @@ import { respondHomeFull } from 'server/system/appRouters';
 const canEditMiddlewareDe = canEditMiddleware(mongoCde);
 const canEditByTinyIdMiddlewareDe = canEditByTinyIdMiddleware(mongoCde);
 
-export function init(app: Express, daoManager) {
+const daoManager = require('../system/moduleDaoManager');
+
+require('express-async-errors');
+
+export function module() {
+    const router = Router();
+
     daoManager.registerDao(mongoCde);
 
-    app.get('/de/:tinyId', nocacheMiddleware, byTinyId);
-    app.get('/de/:tinyId/latestVersion/', nocacheMiddleware, latestVersionByTinyId);
-    app.get('/de/:tinyId/version/:version?', nocacheMiddleware, byTinyIdAndVersion);
-    app.post('/de', canCreateMiddleware, create);
-    app.post('/dePublish', canEditMiddlewareDe, publishFromDraft);
-    app.post('/dePublishExternal', canEditMiddlewareDe, publishExternal);
+    router.get('/de/:tinyId', nocacheMiddleware, byTinyId);
+    router.get('/de/:tinyId/latestVersion/', nocacheMiddleware, latestVersionByTinyId);
+    router.get('/de/:tinyId/version/:version?', nocacheMiddleware, byTinyIdAndVersion);
+    router.post('/de', canCreateMiddleware, create);
+    router.post('/dePublish', canEditMiddlewareDe, publishFromDraft);
+    router.post('/dePublishExternal', canEditMiddlewareDe, publishExternal);
 
-    app.get('/deById/:id', nocacheMiddleware, byId);
-    app.get('/deById/:id/priorDataElements/', nocacheMiddleware, priorDataElements);
+    router.get('/deById/:id', nocacheMiddleware, byId);
+    router.get('/deById/:id/priorDataElements/', nocacheMiddleware, priorDataElements);
 
-    app.get('/deList/:tinyIdList?', nocacheMiddleware, byTinyIdList);
+    router.get('/deList/:tinyIdList?', nocacheMiddleware, byTinyIdList);
 
-    app.get('/originalSource/cde/:sourceName/:tinyId', originalSourceByTinyIdSourceName);
+    router.get('/originalSource/cde/:sourceName/:tinyId', originalSourceByTinyIdSourceName);
 
-    app.get('/draftDataElement/:tinyId', isOrgCuratorMiddleware, draftForEditByTinyId);
-    app.put('/draftDataElement/:tinyId', canEditMiddlewareDe, draftSave);
-    app.delete('/draftDataElement/:tinyId', canEditByTinyIdMiddlewareDe, draftDelete);
+    router.get('/draftDataElement/:tinyId', isOrgCuratorMiddleware, draftForEditByTinyId);
+    router.put('/draftDataElement/:tinyId', canEditMiddlewareDe, draftSave);
+    router.delete('/draftDataElement/:tinyId', canEditByTinyIdMiddlewareDe, draftDelete);
 
-    app.get('/viewingHistory/dataElement', nocacheMiddleware, viewHistory);
+    router.get('/viewingHistory/dataElement', nocacheMiddleware, viewHistory);
 
     /* ---------- PUT NEW REST API above ---------- */
 
-    app.post('/cdesByTinyIdList', (req, res) => {
+    router.post('/cdesByTinyIdList', (req, res) => {
         mongoCde.byTinyIdList(req.body, handleError({req, res}, cdes => res.send(cdes)));
     });
 
-    app.post('/elasticSearch/cde', (req, res) => {
+    router.post('/elasticSearch/cde', (req, res) => {
         elasticsearch(req.user, req.body, (err, result) => {
             if (err || !result) { return res.status(400).send('invalid query'); }
             hideProprietaryCodes(result.cdes, req.user);
@@ -59,28 +65,28 @@ export function init(app: Express, daoManager) {
         });
     });
 
-    app.get('/moreLikeCde/:tinyId', nocacheMiddleware, (req, res) => {
+    router.get('/moreLikeCde/:tinyId', nocacheMiddleware, (req, res) => {
         morelike(req.params.tinyId, result => {
             hideProprietaryCodes(result.cdes, req.user);
             res.send(result);
         });
     });
 
-    app.get('/cde/derivationOutputs/:inputCdeTinyId', (req, res) => {
+    router.get('/cde/derivationOutputs/:inputCdeTinyId', (req, res) => {
         mongoCde.derivationOutputs(req.params.inputCdeTinyId, handleError({req, res}, cdes => {
             res.send(cdes);
         }));
     });
 
-    app.get('/status/cde', status);
+    router.get('/status/cde', status);
 
-    app.post('/getCdeAuditLog', isOrgAuthorityMiddleware, (req, res) => {
+    router.post('/getCdeAuditLog', isOrgAuthorityMiddleware, (req, res) => {
         mongoCde.getAuditLog(req.body, (err, result) => {
             res.send(result);
         });
     });
 
-    app.post('/elasticSearchExport/cde', (req, res) => {
+    router.post('/elasticSearchExport/cde', (req, res) => {
         const query = buildElasticSearchQuery(req.user, req.body);
         const exporters = {
             json: {
@@ -114,7 +120,7 @@ export function init(app: Express, daoManager) {
         exporters.json.export(res);
     });
 
-    app.get('/cde/search', (req, res) => {
+    router.get('/cde/search', (req, res) => {
         const selectedOrg = req.query.selectedOrg;
         let pageString = req.query.page; // starting from 1
         if (!pageString) { pageString = '1'; }
@@ -149,7 +155,7 @@ export function init(app: Express, daoManager) {
         }
     });
 
-    app.get('/deView', (req, res) => {
+    router.get('/deView', (req, res) => {
         const {tinyId, version} = req.query;
         mongoCde.byTinyIdVersion(tinyId, version, handleError({req, res}, cde => {
             if (isSearchEngine(req)) {
@@ -161,7 +167,7 @@ export function init(app: Express, daoManager) {
     });
 
 
-    app.post('/cdeCompletion/:term', nocacheMiddleware, (req, res) => {
+    router.post('/cdeCompletion/:term', nocacheMiddleware, (req, res) => {
         const term = req.params.term;
         completionSuggest(term, req.user, req.body, config.elastic.cdeSuggestIndex.name, (err, resp) => {
             if (err || !resp) {
@@ -172,7 +178,7 @@ export function init(app: Express, daoManager) {
         });
     });
 
-    app.get('/api/cde/modifiedElements', (req, res) => {
+    router.get('/api/cde/modifiedElements', (req, res) => {
         const dstring = req.query.from;
 
         const r = /20[0-2][0-9]-[0-1][0-9]-[0-3][0-9]/;
@@ -191,12 +197,13 @@ export function init(app: Express, daoManager) {
 
     require('mongoose-schema-jsonschema')(require('mongoose'));
 
-    app.get('/schema/cde', (req, res) => res.send((mongoCde.dataElementModel as any).jsonSchema()));
+    router.get('/schema/cde', (req, res) => res.send((mongoCde.dataElementModel as any).jsonSchema()));
 
-    app.post('/umlsDe', (req, res) => {
+    router.post('/umlsDe', (req, res) => {
         validatePvs(req.body).then(
             () => res.send(),
             err => res.status(400).send(err)
         );
     });
+    return router;
 }
