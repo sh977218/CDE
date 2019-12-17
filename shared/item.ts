@@ -42,7 +42,7 @@ export const ITEM_MAP: {
     cde: {
         api: '/server/cde/de/',
         apiById: '/server/cde/deById/',
-        apiById_prior: '/server/cde/priorDataElements',
+        apiById_prior: '/priorDataElements',
         apiDraft: '/server/cde/draftDataElement/',
         apiDraftById: '/server/cde/draftDataElementById/',
         schema: '/server/cde/schema/cde',
