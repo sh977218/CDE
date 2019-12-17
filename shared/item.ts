@@ -40,14 +40,14 @@ export const ITEM_MAP: {
         }
     },
     cde: {
-        api: '/de/',
-        apiById: '/deById/',
-        apiById_prior: '/priorDataElements',
-        apiDraft: '/draftDataElement/',
-        apiDraftById: '/draftDataElementById/',
-        schema: '/schema/cde',
-        view: '/deView?tinyId=',
-        viewById: '/deView?cdeId=',
+        api: '/server/cde/de/',
+        apiById: '/server/cde/deById/',
+        apiById_prior: '/server/cde/priorDataElements',
+        apiDraft: '/server/cde/draftDataElement/',
+        apiDraftById: '/server/cde/draftDataElementById/',
+        schema: '/server/cde/schema/cde',
+        view: '/server/cde/deView?tinyId=',
+        viewById: '/server/cde/deView?cdeId=',
     },
     form: {
         api: '/form/',

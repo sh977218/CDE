@@ -52,7 +52,7 @@ export class ElasticService {
     generalSearchQuery(settings: SearchSettingsElastic, type: 'cde' | 'form',
                        cb: CbErr<SearchResponseAggregationDe, boolean> | CbErr<SearchResponseAggregationForm, boolean>): void {
         const search = (good: Cb1<SearchResponseAggregationItem, boolean>, bad: CbErr<SearchResponseAggregationItem, boolean>) => {
-            this.http.post<SearchResponseAggregationItem>('/elasticSearch/' + type, settings).subscribe(good, bad);
+            this.http.post<SearchResponseAggregationItem>('server/cde/elasticSearch/' + type, settings).subscribe(good, bad);
         };
 
         function success(response: SearchResponseAggregationItem, isRetry = false) {
