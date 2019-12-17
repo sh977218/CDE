@@ -37,7 +37,7 @@ import { hasRole, isSiteAdmin } from 'shared/system/authorizationShared';
 import { orderedList, statusList } from 'shared/system/regStatusShared';
 import { ownKeys } from 'shared/user';
 
-type NamedCounts = {name: string, count: number}[];
+type NamedCounts = { name: string, count: number }[];
 
 export const searchStyles = `
     #searchResultInfoBar {
@@ -144,7 +144,10 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     @ViewChild('orgDetailsModal', {static: true}) orgDetailsModal!: TemplateRef<any>;
     @ViewChild('pinModal', {read: ViewContainerRef, static: false}) pinContainer!: ViewContainerRef;
     @ViewChild('validRulesModal', {static: true}) validRulesModal!: TemplateRef<any>;
-    @ViewChild('autoCompleteInput', {read: MatAutocompleteTrigger, static: true}) autoCompleteInput!: MatAutocompleteTrigger;
+    @ViewChild('autoCompleteInput', {
+        read: MatAutocompleteTrigger,
+        static: true
+    }) autoCompleteInput!: MatAutocompleteTrigger;
     @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
     add!: EventEmitter<any>;
     addMode?: string;
@@ -182,7 +185,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     searchedTerm?: string;
     searchTermAutoComplete = new EventEmitter<string>();
     took?: number;
-    topics?: {[topic: string]: NamedCounts};
+    topics?: { [topic: string]: NamedCounts };
     topicsKeys: string[] = [];
     totalItems?: number;
     totalItemsLimited?: number;
@@ -208,7 +211,9 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         this.searchSettings.page = 1;
         this.routerSubscription = this.router.events.subscribe((e: Event) => {
             if (this.previousUrl && e instanceof NavigationStart) {
-                if (/^\/(cde|form)\/search/.exec(this.previousUrl)) { this.scrollHistorySave(); }
+                if (/^\/(cde|form)\/search/.exec(this.previousUrl)) {
+                    this.scrollHistorySave();
+                }
                 this.previousUrl = '';
             }
         });
@@ -216,8 +221,11 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
             .pipe(debounceTime(500))
             .subscribe(term => {
                 if (term && term.length >= 3) {
-                    this.http.post<ElasticQueryResponseHit<ItemElastic>[]>(
-                        '/' + this.module + 'Completion/' + encodeURIComponent(term),
+                    let url = '/' + this.module + 'Completion/';
+                    if (this.module === 'form') {
+                        url = '/server/form/' + this.module + 'Completion/';
+                    }
+                    this.http.post<ElasticQueryResponseHit<ItemElastic>[]>(url + encodeURIComponent(term),
                         this.elasticService.buildElasticQuerySettings(this.searchSettings)
                     )
                         .pipe(
@@ -243,7 +251,9 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     ngOnDestroy() {
-        if (this.routerSubscription) { this.routerSubscription.unsubscribe(); }
+        if (this.routerSubscription) {
+            this.routerSubscription.unsubscribe();
+        }
     }
 
     ngOnInit() {
@@ -267,7 +277,9 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     addDatatypeFilter(datatype: DataType) {
-        if (!this.searchSettings.datatypes) { this.searchSettings.datatypes = []; }
+        if (!this.searchSettings.datatypes) {
+            this.searchSettings.datatypes = [];
+        }
         const index = this.searchSettings.datatypes.indexOf(datatype);
         if (index > -1) {
             this.searchSettings.datatypes.splice(index, 1);
@@ -279,7 +291,9 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     addStatusFilter(status: CurationStatus) {
-        if (!this.searchSettings.regStatuses) { this.searchSettings.regStatuses = []; }
+        if (!this.searchSettings.regStatuses) {
+            this.searchSettings.regStatuses = [];
+        }
         const index = this.searchSettings.regStatuses.indexOf(status);
         if (index > -1) {
             this.searchSettings.regStatuses.splice(index, 1);
@@ -315,8 +329,12 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         }
         if (this.isSearched()) {
             this.doSearch();
-            if (!this.embedded) { SearchBaseComponent.focusClassification(); }
-        } else { this.reset(); }
+            if (!this.embedded) {
+                SearchBaseComponent.focusClassification();
+            }
+        } else {
+            this.reset();
+        }
     }
 
     browseOrg(orgName: string) {
@@ -325,14 +343,18 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         this.searchSettings.selectedOrg = orgName;
 
         this.doSearch();
-        if (!this.embedded) { scrollTo('top'); }
+        if (!this.embedded) {
+            scrollTo('top');
+        }
     }
 
     browseTopic(topic: string) {
         this.searchSettings.meshTree = topic;
 
         this.doSearch();
-        if (!this.embedded) { scrollTo('top'); }
+        if (!this.embedded) {
+            scrollTo('top');
+        }
     }
 
     clearSelectedClassifications() {
@@ -437,22 +459,30 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     generateSearchForTerm(pageNumber = 0): Params {
         // TODO: replace with router
         const searchTerms: Params = {};
-        if (this.searchSettings.q) { searchTerms.q = this.searchSettings.q; }
+        if (this.searchSettings.q) {
+            searchTerms.q = this.searchSettings.q;
+        }
         if (this.searchSettings.regStatuses && this.searchSettings.regStatuses.length > 0) {
             searchTerms.regStatuses = this.searchSettings.regStatuses.join(';');
         }
         if (this.searchSettings.datatypes && this.searchSettings.datatypes.length > 0) {
             searchTerms.datatypes = this.searchSettings.datatypes.join(';');
         }
-        if (this.searchSettings.selectedOrg) { searchTerms.selectedOrg = this.searchSettings.selectedOrg; }
+        if (this.searchSettings.selectedOrg) {
+            searchTerms.selectedOrg = this.searchSettings.selectedOrg;
+        }
         if (this.searchSettings.classification.length > 0) {
             searchTerms.classification = this.searchSettings.classification.join(';');
         }
-        if (this.searchSettings.selectedOrgAlt) { searchTerms.selectedOrgAlt = this.searchSettings.selectedOrgAlt; }
+        if (this.searchSettings.selectedOrgAlt) {
+            searchTerms.selectedOrgAlt = this.searchSettings.selectedOrgAlt;
+        }
         if (this.altClassificationFilterMode && this.searchSettings.classificationAlt.length > 0) {
             searchTerms.classificationAlt = this.searchSettings.classificationAlt.join(';');
         }
-        if (this.searchSettings.excludeAllOrgs) { searchTerms.excludeAllOrgs = true; }
+        if (this.searchSettings.excludeAllOrgs) {
+            searchTerms.excludeAllOrgs = true;
+        }
         if (this.searchSettings.excludeOrgs && this.searchSettings.excludeOrgs.length > 0) {
             searchTerms.excludeOrgs = this.searchSettings.excludeOrgs.join(';');
         }
@@ -461,7 +491,9 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         } else if (this.searchSettings.page && this.searchSettings.page > 1) {
             searchTerms.page = this.searchSettings.page;
         }
-        if (this.searchSettings.meshTree) { searchTerms.topic = this.searchSettings.meshTree; }
+        if (this.searchSettings.meshTree) {
+            searchTerms.topic = this.searchSettings.meshTree;
+        }
         return searchTerms;
     }
 
@@ -488,7 +520,9 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     getRegStatusHelp(name: string) {
         let result = '';
         statusList.forEach((s) => {
-            if (s.name === name) { result = s.help; }
+            if (s.name === name) {
+                result = s.help;
+            }
         });
         return result;
     }
@@ -597,7 +631,9 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                 ? this.searchSettings.selectedOrg
                 : this.validRulesOrgs[0];
             this.dialog.open(this.validRulesModal).afterClosed().subscribe((submitted: boolean) => {
-                if (!submitted) { return; }
+                if (!submitted) {
+                    return;
+                }
                 const searchSettings = {...this.searchSettings};
                 searchSettings.selectedOrg = this.validRulesOrg;
                 delete searchSettings.resultPerPage;
@@ -659,161 +695,181 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         this.lastQueryTimeStamp = timestamp;
         const lastQueryTimeStamp = this.lastQueryTimeStamp;
         this.searching = true;
-        if (this.searchSettingsInput) { Object.assign(this.searchSettings, this.searchSettingsInput); }
+        if (this.searchSettingsInput) {
+            Object.assign(this.searchSettings, this.searchSettingsInput);
+        }
         const settings = this.elasticService.buildElasticQuerySettings(this.searchSettings);
         this.elasticService.generalSearchQuery(settings, this.module,
             (err?: string, resultNonAgg?: any, corrected?: boolean) => {
-            const result: SearchResponseAggregationItem = resultNonAgg;
-            this.searchedTerm = this.searchSettings.q;
-            if (corrected && this.searchedTerm) {
-                this.searchedTerm = this.searchedTerm.replace(/[^\w\s]/gi, '');
-            }
-            if (err || !result || !result.aggregations) {
-                this.alert.addAlert('danger', 'There was a problem with your query');
-                this.elts = [];
-                this.searching = false;
-                return;
-            }
-            if (timestamp < lastQueryTimeStamp) {
-                this.searching = false;
-                return;
-            }
-            this.numPages = Math.ceil(result.totalNumber / this.searchSettings.resultPerPage);
-            this.took = result.took;
-            this.totalItems = result.totalNumber;
-            this.totalItemsLimited = this.totalItems <= 10000 ? this.totalItems : 10000;
+                const result: SearchResponseAggregationItem = resultNonAgg;
+                this.searchedTerm = this.searchSettings.q;
+                if (corrected && this.searchedTerm) {
+                    this.searchedTerm = this.searchedTerm.replace(/[^\w\s]/gi, '');
+                }
+                if (err || !result || !result.aggregations) {
+                    this.alert.addAlert('danger', 'There was a problem with your query');
+                    this.elts = [];
+                    this.searching = false;
+                    return;
+                }
+                if (timestamp < lastQueryTimeStamp) {
+                    this.searching = false;
+                    return;
+                }
+                this.numPages = Math.ceil(result.totalNumber / this.searchSettings.resultPerPage);
+                this.took = result.took;
+                this.totalItems = result.totalNumber;
+                this.totalItemsLimited = this.totalItems <= 10000 ? this.totalItems : 10000;
 
-            this.elts = this.module === 'form'
-                ? (result as SearchResponseAggregationForm).forms
-                : (result as SearchResponseAggregationDe).cdes;
-            const elts = this.elts;
+                this.elts = this.module === 'form'
+                    ? (result as SearchResponseAggregationForm).forms
+                    : (result as SearchResponseAggregationDe).cdes;
+                const elts = this.elts;
 
-            if (this.searchSettings.page === 1 && result.totalNumber > 0) {
-                let maxJump = 0;
-                let maxJumpIndex = 100;
-                this.elts.map((e, i) => {
-                    if (!elts[i + 1]) { return; }
-                    const jump = e.score - elts[i + 1].score;
-                    if (jump > maxJump) {
-                        maxJump = jump;
-                        maxJumpIndex = i + 1;
+                if (this.searchSettings.page === 1 && result.totalNumber > 0) {
+                    let maxJump = 0;
+                    let maxJumpIndex = 100;
+                    this.elts.map((e, i) => {
+                        if (!elts[i + 1]) {
+                            return;
+                        }
+                        const jump = e.score - elts[i + 1].score;
+                        if (jump > maxJump) {
+                            maxJump = jump;
+                            maxJumpIndex = i + 1;
+                        }
+                    });
+
+                    if (maxJump > (result.maxScore / 4)) {
+                        this.cutoffIndex = maxJumpIndex;
+                    } else {
+                        this.cutoffIndex = 100;
                     }
-                });
-
-                if (maxJump > (result.maxScore / 4)) {
-                    this.cutoffIndex = maxJumpIndex;
                 } else {
                     this.cutoffIndex = 100;
                 }
-            } else {
-                this.cutoffIndex = 100;
-            }
 
-            this.orgHelperService.then(() => {
-                elts.forEach(elt => {
-                    elt.usedBy = this.orgHelperService.getUsedBy(elt);
-                });
-            }, _noop);
+                this.orgHelperService.then(() => {
+                    elts.forEach(elt => {
+                        elt.usedBy = this.orgHelperService.getUsedBy(elt);
+                    });
+                }, _noop);
 
-            this.aggregations = result.aggregations;
+                this.aggregations = result.aggregations;
 
-            this.aggregationsFlatClassifications = this.aggregations.flatClassifications
-                ? this.aggregations.flatClassifications.flatClassifications.buckets.map(
-                    (c: ElasticQueryResponseAggregationBucket) => ({name: c.key.split(';').pop() || '', count: c.doc_count})
-                )
-                : [];
+                this.aggregationsFlatClassifications = this.aggregations.flatClassifications
+                    ? this.aggregations.flatClassifications.flatClassifications.buckets.map(
+                        (c: ElasticQueryResponseAggregationBucket) => ({
+                            name: c.key.split(';').pop() || '',
+                            count: c.doc_count
+                        })
+                    )
+                    : [];
 
-            if (this.aggregations.flatClassificationsAlt !== undefined) {
-                this.aggregationsFlatClassificationsAlt = this.aggregations.flatClassificationsAlt.flatClassificationsAlt.buckets.map(
-                    (c: ElasticQueryResponseAggregationBucket) => ({name: c.key.split(';').pop() || '', count: c.doc_count})
-                );
-            } else {
-                this.aggregationsFlatClassificationsAlt = [];
-                this.aggregationsExcludeClassification = [];
-            }
-
-            if (this.aggregations.meshTrees !== undefined) {
-                if (this.searchSettings.meshTree) {
-                    this.aggregationsTopics = this.aggregations.meshTrees.meshTrees.buckets.map(
-                        (c: ElasticQueryResponseAggregationBucket) => ({name: c.key.split(';').pop() || '', count: c.doc_count})
+                if (this.aggregations.flatClassificationsAlt !== undefined) {
+                    this.aggregationsFlatClassificationsAlt = this.aggregations.flatClassificationsAlt.flatClassificationsAlt.buckets.map(
+                        (c: ElasticQueryResponseAggregationBucket) => ({
+                            name: c.key.split(';').pop() || '',
+                            count: c.doc_count
+                        })
                     );
                 } else {
-                    this.aggregationsTopics = this.aggregations.meshTrees.meshTrees.buckets.map(
-                        (c: ElasticQueryResponseAggregationBucket) => ({name: c.key.split(';')[0], count: c.doc_count})
-                    );
+                    this.aggregationsFlatClassificationsAlt = [];
+                    this.aggregationsExcludeClassification = [];
                 }
-            } else {
-                this.aggregationsTopics = [];
-            }
 
-            const aggregations = this.aggregations;
-            const orgsCreatedPromise = new Promise(resolve => {
-                this.filterOutWorkingGroups(() => {
-                    this.orgHelperService.then(() => {
-                        this.orgHelperService.addLongNameToOrgs(aggregations.orgs.buckets);
-                    }, _noop);
-                    aggregations.orgs.buckets.sort(
-                        (a: ElasticQueryResponseAggregationBucket, b: ElasticQueryResponseAggregationBucket) => {
-                        const A = a.key.toLowerCase();
-                        const B = b.key.toLowerCase();
-                        if (B > A) { return -1; }
-                        if (A === B) { return 0; }
-                        return 1;
+                if (this.aggregations.meshTrees !== undefined) {
+                    if (this.searchSettings.meshTree) {
+                        this.aggregationsTopics = this.aggregations.meshTrees.meshTrees.buckets.map(
+                            (c: ElasticQueryResponseAggregationBucket) => ({
+                                name: c.key.split(';').pop() || '',
+                                count: c.doc_count
+                            })
+                        );
+                    } else {
+                        this.aggregationsTopics = this.aggregations.meshTrees.meshTrees.buckets.map(
+                            (c: ElasticQueryResponseAggregationBucket) => ({
+                                name: c.key.split(';')[0],
+                                count: c.doc_count
+                            })
+                        );
+                    }
+                } else {
+                    this.aggregationsTopics = [];
+                }
+
+                const aggregations = this.aggregations;
+                const orgsCreatedPromise = new Promise(resolve => {
+                    this.filterOutWorkingGroups(() => {
+                        this.orgHelperService.then(() => {
+                            this.orgHelperService.addLongNameToOrgs(aggregations.orgs.buckets);
+                        }, _noop);
+                        aggregations.orgs.buckets.sort(
+                            (a: ElasticQueryResponseAggregationBucket, b: ElasticQueryResponseAggregationBucket) => {
+                                const A = a.key.toLowerCase();
+                                const B = b.key.toLowerCase();
+                                if (B > A) {
+                                    return -1;
+                                }
+                                if (A === B) {
+                                    return 0;
+                                }
+                                return 1;
+                            });
+                        resolve();
                     });
-                    resolve();
-                });
-            });
-
-            this.aggregationsFlatClassifications.sort(SearchBaseComponent.compareObjName);
-            this.aggregationsFlatClassificationsAlt.sort(SearchBaseComponent.compareObjName);
-            this.aggregations.statuses.statuses.buckets.sort(
-                (a: ElasticQueryResponseAggregationBucket, b: ElasticQueryResponseAggregationBucket) =>
-                    SearchBaseComponent.getRegStatusIndex(a) - SearchBaseComponent.getRegStatusIndex(b));
-            this.aggregationsTopics.sort(SearchBaseComponent.compareObjName);
-
-            this.switchView(this.isSearched() ? 'results' : 'welcome');
-            if (this.view === 'welcome') {
-                this.orgs = [];
-                const orgs = this.orgs;
-
-                orgsCreatedPromise.then(() => {
-                    this.orgHelperService.then(orgsDetailedInfo => {
-                        aggregations.orgs.buckets.forEach((orgBucket: ElasticQueryResponseAggregationBucket) => {
-                            if (orgsDetailedInfo[orgBucket.key]) {
-                                orgs.push({
-                                    name: orgBucket.key,
-                                    longName: orgsDetailedInfo[orgBucket.key].longName,
-                                    count: orgBucket.doc_count,
-                                    uri: orgsDetailedInfo[orgBucket.key].uri,
-                                    extraInfo: orgsDetailedInfo[orgBucket.key].extraInfo,
-                                    htmlOverview: orgsDetailedInfo[orgBucket.key].htmlOverview
-                                });
-                            }
-                        });
-                        orgs.sort(SearchBaseComponent.compareObjName);
-                    }, _noop);
                 });
 
-                this.topics = {};
-                const topics = this.topics;
-                this.topicsKeys.length = 0;
-                this.aggregations.twoLevelMesh.twoLevelMesh.buckets.forEach((term: ElasticQueryResponseAggregationBucket) => {
-                    const spli: string[] = term.key.split(';');
-                    if (!topics[spli[0]]) {
-                        topics[spli[0]] = [];
+                this.aggregationsFlatClassifications.sort(SearchBaseComponent.compareObjName);
+                this.aggregationsFlatClassificationsAlt.sort(SearchBaseComponent.compareObjName);
+                this.aggregations.statuses.statuses.buckets.sort(
+                    (a: ElasticQueryResponseAggregationBucket, b: ElasticQueryResponseAggregationBucket) =>
+                        SearchBaseComponent.getRegStatusIndex(a) - SearchBaseComponent.getRegStatusIndex(b));
+                this.aggregationsTopics.sort(SearchBaseComponent.compareObjName);
+
+                this.switchView(this.isSearched() ? 'results' : 'welcome');
+                if (this.view === 'welcome') {
+                    this.orgs = [];
+                    const orgs = this.orgs;
+
+                    orgsCreatedPromise.then(() => {
+                        this.orgHelperService.then(orgsDetailedInfo => {
+                            aggregations.orgs.buckets.forEach((orgBucket: ElasticQueryResponseAggregationBucket) => {
+                                if (orgsDetailedInfo[orgBucket.key]) {
+                                    orgs.push({
+                                        name: orgBucket.key,
+                                        longName: orgsDetailedInfo[orgBucket.key].longName,
+                                        count: orgBucket.doc_count,
+                                        uri: orgsDetailedInfo[orgBucket.key].uri,
+                                        extraInfo: orgsDetailedInfo[orgBucket.key].extraInfo,
+                                        htmlOverview: orgsDetailedInfo[orgBucket.key].htmlOverview
+                                    });
+                                }
+                            });
+                            orgs.sort(SearchBaseComponent.compareObjName);
+                        }, _noop);
+                    });
+
+                    this.topics = {};
+                    const topics = this.topics;
+                    this.topicsKeys.length = 0;
+                    this.aggregations.twoLevelMesh.twoLevelMesh.buckets.forEach((term: ElasticQueryResponseAggregationBucket) => {
+                        const spli: string[] = term.key.split(';');
+                        if (!topics[spli[0]]) {
+                            topics[spli[0]] = [];
+                        }
+                        topics[spli[0]].push({name: spli[1], count: term.doc_count});
+                    });
+                    for (const prop in this.topics) {
+                        if (this.topics.hasOwnProperty(prop)) {
+                            this.topicsKeys.push(prop);
+                        }
                     }
-                    topics[spli[0]].push({name: spli[1], count: term.doc_count});
-                });
-                for (const prop in this.topics) {
-                    if (this.topics.hasOwnProperty(prop)) {
-                        this.topicsKeys.push(prop);
-                    }
+                    this.topicsKeys.sort();
                 }
-                this.topicsKeys.sort();
-            }
-            this.scrollHistoryLoad();
-            this.searching = false;
-        });
+                this.scrollHistoryLoad();
+                this.searching = false;
+            });
     }
 
     reset() {
@@ -825,18 +881,24 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     scrollHistoryLoad() {
         if (this.backForwardService.isBackForward || (this.router as any).navigationId === 1) {
             const previousSpot = window.sessionStorage['nlmcde.scroll.' + location.pathname + location.search];
-            if (previousSpot != null) { SearchBaseComponent.waitScroll(2, previousSpot); }
+            if (previousSpot != null) {
+                SearchBaseComponent.waitScroll(2, previousSpot);
+            }
         }
         this.previousUrl = location.pathname + location.search;
     }
 
     scrollHistorySave() {
-        if (!this.backForwardService.isBackForward) { window.sessionStorage['nlmcde.scroll.' + this.previousUrl] = window.scrollY; }
+        if (!this.backForwardService.isBackForward) {
+            window.sessionStorage['nlmcde.scroll.' + this.previousUrl] = window.scrollY;
+        }
     }
 
     selectElement(e: string) {
         let classifToSelect = this.getCurrentSelectedClassification();
-        if (!classifToSelect) { classifToSelect = []; }
+        if (!classifToSelect) {
+            classifToSelect = [];
+        }
         if (classifToSelect.length === 0) {
             classifToSelect.length = 0;
             classifToSelect.push(e);
@@ -850,7 +912,9 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         }
 
         this.doSearch();
-        if (!this.embedded) { SearchBaseComponent.focusClassification(); }
+        if (!this.embedded) {
+            SearchBaseComponent.focusClassification();
+        }
     }
 
     selectTopic(topic: string) {
@@ -864,23 +928,31 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         this.searchSettings.meshTree = toSelect.join(';');
 
         this.doSearch();
-        if (!this.embedded) { SearchBaseComponent.focusTopic(); }
+        if (!this.embedded) {
+            SearchBaseComponent.focusTopic();
+        }
     }
 
     setAltClassificationFilterMode() {
         this.altClassificationFilterMode = true;
         this.doSearch();
-        if (!this.embedded) { SearchBaseComponent.focusClassification(); }
+        if (!this.embedded) {
+            SearchBaseComponent.focusClassification();
+        }
     }
 
     setExcludeOrgFilterMode() {
         this.excludeOrgFilterMode = true;
         this.doSearch();
-        if (!this.embedded) { SearchBaseComponent.focusClassification(); }
+        if (!this.embedded) {
+            SearchBaseComponent.focusClassification();
+        }
     }
 
     switchView(view: 'welcome' | 'results') {
-        if (this.view === view || view !== 'welcome' && view !== 'results') { return; }
+        if (this.view === view || view !== 'welcome' && view !== 'results') {
+            return;
+        }
 
         this.view = view;
         if (this.view === 'results') {
@@ -911,14 +983,20 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         }
         if (this.searchSettings.meshTree) {
             let index = this.searchSettings.meshTree.indexOf(';');
-            if (index > -1) { index = this.searchSettings.meshTree.indexOf(';', index + 1); }
-            if (index > -1) { this.searchSettings.meshTree = this.searchSettings.meshTree.substr(0, index); }
+            if (index > -1) {
+                index = this.searchSettings.meshTree.indexOf(';', index + 1);
+            }
+            if (index > -1) {
+                this.searchSettings.meshTree = this.searchSettings.meshTree.substr(0, index);
+            }
         }
 
         this.doSearch();
         setTimeout(() => {
             // search results only?
-            if (this.autoCompleteInput) { this.autoCompleteInput.closePanel(); }
+            if (this.autoCompleteInput) {
+                this.autoCompleteInput.closePanel();
+            }
         }, 0);
     }
 
@@ -931,14 +1009,20 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         }
     }
 
-    static compareObjName(a: {name: string}, b: {name: string}): number {
+    static compareObjName(a: { name: string }, b: { name: string }): number {
         return SearchBaseComponent.compareString(a.name, b.name);
     }
 
     static compareString(a: string, b: string): number {
-        if (a > b) { return 1; }
-        if (a < b) { return -1; }
-        if (a === b) { return 0; }
+        if (a > b) {
+            return 1;
+        }
+        if (a < b) {
+            return -1;
+        }
+        if (a === b) {
+            return 0;
+        }
         return NaN;
     }
 
