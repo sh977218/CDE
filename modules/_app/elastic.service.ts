@@ -5,7 +5,13 @@ import { LocalStorageService } from 'angular-2-local-storage';
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm } from 'shared/form/form.model';
 import {
-    CbErr, Cb1, CurationStatus, ItemElastic, UserSearchSettings, SearchResponseAggregationItem, SearchResponseAggregationForm,
+    CbErr,
+    Cb1,
+    CurationStatus,
+    ItemElastic,
+    UserSearchSettings,
+    SearchResponseAggregationItem,
+    SearchResponseAggregationForm,
     SearchResponseAggregationDe
 } from 'shared/models.model';
 import { SearchSettings, SearchSettingsElastic } from 'shared/search/search.model';
@@ -52,7 +58,11 @@ export class ElasticService {
     generalSearchQuery(settings: SearchSettingsElastic, type: 'cde' | 'form',
                        cb: CbErr<SearchResponseAggregationDe, boolean> | CbErr<SearchResponseAggregationForm, boolean>): void {
         const search = (good: Cb1<SearchResponseAggregationItem, boolean>, bad: CbErr<SearchResponseAggregationItem, boolean>) => {
-            this.http.post<SearchResponseAggregationItem>('server/cde/elasticSearch/' + type, settings).subscribe(good, bad);
+            let url = 'server/cde/elasticSearch/' + type;
+            if (type === 'form') {
+                url = '/elasticSearch/' + type;
+            }
+            this.http.post<SearchResponseAggregationItem>(url, settings).subscribe(good, bad);
         };
 
         function success(response: SearchResponseAggregationItem, isRetry = false) {
@@ -69,7 +79,9 @@ export class ElasticService {
         }
 
         search(success, () => {
-            if (settings.searchTerm) { settings.searchTerm = settings.searchTerm.replace(/[^\w\s]/gi, ''); }
+            if (settings.searchTerm) {
+                settings.searchTerm = settings.searchTerm.replace(/[^\w\s]/gi, '');
+            }
             search(response => success(response, true), cb as CbErr<SearchResponseAggregationItem, boolean>);
         });
     }
@@ -94,18 +106,24 @@ export class ElasticService {
     getUserDefaultStatuses(): CurationStatus[] {
         let overThreshold = false;
         const result = orderedList.filter(status => {
-            if (overThreshold) { return false; }
+            if (overThreshold) {
+                return false;
+            }
             overThreshold = this.searchSettings.lowestRegistrationStatus === status;
             return true;
         });
-        if (this.searchSettings.includeRetired) { result.push('Retired'); }
+        if (this.searchSettings.includeRetired) {
+            result.push('Retired');
+        }
         return result;
     }
 
     loadSearchSettings() {
         if (!this.searchSettings) {
             this.searchSettings = this.localStorageService.get('SearchSettings');
-            if (!this.searchSettings) { this.searchSettings = ElasticService.getDefault(); }
+            if (!this.searchSettings) {
+                this.searchSettings = ElasticService.getDefault();
+            }
 
             this.userService.then(user => {
                 if (!user.searchSettings) {
@@ -184,7 +202,9 @@ export class ElasticService {
     }
 
     static highlightOne(field: string, cde: ItemElastic) {
-        if (!cde.highlight) { return; }
+        if (!cde.highlight) {
+            return;
+        }
         if (cde.highlight[field]) {
             if (field.indexOf('.') < 0) {
                 if (cde.highlight[field][0].replace(/<strong>/g, '').replace(/<\/strong>/g, '')
@@ -195,11 +215,15 @@ export class ElasticService {
                         cde[field] = cde[field].substr(0, 50) + ' [...] ' + cde.highlight[field][0];
                     }
                 }
-            } else { cde[field.replace(/\..+$/, '')][field.replace(/^.+\./, '')] = cde.highlight[field][0]; }
+            } else {
+                cde[field.replace(/\..+$/, '')][field.replace(/^.+\./, '')] = cde.highlight[field][0];
+            }
         } else {
             if (field.indexOf('.') < 0) {
                 cde[field] = cde[field].substr(0, 200);
-                if (cde[field].length > 199) { cde[field] += '...'; }
+                if (cde[field].length > 199) {
+                    cde[field] += '...';
+                }
             }
         }
     }
@@ -214,17 +238,37 @@ export class ElasticService {
             cde.highlight = {matchedBy: field};
             return;
         } else {
-            if (cde.highlight.primaryNameCopy || cde.highlight.primaryDefinitionCopy) { return; }
+            if (cde.highlight.primaryNameCopy || cde.highlight.primaryDefinitionCopy) {
+                return;
+            }
             const matched = Object.keys(cde.highlight)[0];
-            if (matched === 'definitions.definition') { field = 'Definition'; }
-            if (matched.indexOf('classification.') > -1) { field = 'Classification'; }
-            if (matched.indexOf('valueDomain.permissibleValues') > -1) { field = 'Permissible Values'; }
-            if (matched.indexOf('.concepts.') > -1) { field = 'Concepts'; }
-            if (matched.substr(0, 11) === 'valueDomain') { field = 'Permissible Values'; }
-            if (matched.substr(0, 15) === 'flatProperties') { field = 'Properties'; }
-            if (matched === 'designations.designation') { field = 'Other Names'; }
-            if (matched === 'stewardOrgCopy.name') { field = 'Steward'; }
-            if (matched === 'flatIds') { field = 'Identifiers'; }
+            if (matched === 'definitions.definition') {
+                field = 'Definition';
+            }
+            if (matched.indexOf('classification.') > -1) {
+                field = 'Classification';
+            }
+            if (matched.indexOf('valueDomain.permissibleValues') > -1) {
+                field = 'Permissible Values';
+            }
+            if (matched.indexOf('.concepts.') > -1) {
+                field = 'Concepts';
+            }
+            if (matched.substr(0, 11) === 'valueDomain') {
+                field = 'Permissible Values';
+            }
+            if (matched.substr(0, 15) === 'flatProperties') {
+                field = 'Properties';
+            }
+            if (matched === 'designations.designation') {
+                field = 'Other Names';
+            }
+            if (matched === 'stewardOrgCopy.name') {
+                field = 'Steward';
+            }
+            if (matched === 'flatIds') {
+                field = 'Identifiers';
+            }
             cde.highlight.matchedBy = field;
         }
     }
