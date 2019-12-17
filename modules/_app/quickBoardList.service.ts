@@ -64,7 +64,7 @@ export class QuickBoardListService {
         if (dataElementLocalStorage) {
             const l = dataElementLocalStorage.map(d => d.tinyId);
             if (!_isEmpty(l)) {
-                this.http.get<DataElement[]>('/deList/' + l)
+                this.http.get<DataElement[]>('/server/cde/deList/' + l)
                     .subscribe(res => {
                         if (res) {
                             this.dataElements = res as DataElementElastic[];
