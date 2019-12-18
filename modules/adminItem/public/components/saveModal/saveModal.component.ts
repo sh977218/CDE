@@ -9,10 +9,10 @@ import { Cb, Item } from 'shared/models.model';
 
 export type SaveModalQuestionCde = QuestionCde & {
     datatype: string,
-    designations: {invalid?: boolean, message?: string},
+    designations: { invalid?: boolean, message?: string },
     isCollapsed?: boolean
 };
-export type SaveModalFormQuestion = FormQuestion & {question: {cde: SaveModalQuestionCde}};
+export type SaveModalFormQuestion = FormQuestion & { question: { cde: SaveModalQuestionCde } };
 
 @Component({
     selector: 'cde-save-modal',
@@ -29,12 +29,19 @@ export class SaveModalComponent {
 
     constructor(private alert: AlertService,
                 public http: HttpClient,
-                public dialog: MatDialog) {}
+                public dialog: MatDialog) {
+    }
 
     newVersionVersionUnicity(newVersion?: string) {
-        if (!newVersion) { newVersion = this.elt.version; }
-        this.http.get('/' + (this.elt.elementType === 'cde' ? 'de' : this.elt.elementType) + '/' + this.elt.tinyId + '/latestVersion/',
-            {responseType: 'text'}).subscribe(
+        if (!newVersion) {
+            newVersion = this.elt.version;
+        }
+        let url = 'server/cde/de/' + this.elt.tinyId + '/latestVersion/';
+        if (this.elt.elementType === 'form') {
+            url = 'server/form/form/' + this.elt.tinyId + '/latestVersion/';
+
+        }
+        this.http.get(url, {responseType: 'text'}).subscribe(
             (res: string) => {
                 if (res && newVersion && _isEqual(res, newVersion)) {
                     this.duplicatedVersion = true;
@@ -63,8 +70,12 @@ export class SaveModalComponent {
                             fe.question.cde.designations.message = '';
                         }
                         this.newCdes.push(fe.question.cde);
-                        if (cb) { cb(); }
-                    } else if (cb) { cb(); }
+                        if (cb) {
+                            cb();
+                        }
+                    } else if (cb) {
+                        cb();
+                    }
                 }
             }, () => {
                 this.dialog.open(this.updateElementContent);
