@@ -46,8 +46,8 @@ export const ITEM_MAP: {
         apiDraft: '/server/cde/draftDataElement/',
         apiDraftById: '/server/cde/draftDataElementById/',
         schema: '/server/cde/schema/cde',
-        view: '/server/cde/deView?tinyId=',
-        viewById: '/server/cde/deView?cdeId=',
+        view: '/deView?tinyId=',
+        viewById: '/deView?cdeId=',
     },
     form: {
         api: 'server/form/form/',
@@ -56,8 +56,8 @@ export const ITEM_MAP: {
         apiDraft: 'server/form/draftForm/',
         apiDraftById: 'server/form/draftFormById/',
         schema: 'server/form/schema/form',
-        view: 'server/form/formView?tinyId=',
-        viewById: 'server/form/formView?formId=',
+        view: '/formView?tinyId=',
+        viewById: '/formView?formId=',
     }
 };
 

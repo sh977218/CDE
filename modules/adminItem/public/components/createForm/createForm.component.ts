@@ -79,10 +79,12 @@ export class CreateFormComponent implements OnInit {
     }
 
     createForm() {
-        this.http.post<CdeForm>('/form', this.elt)
+        this.http.post<CdeForm>('/server/form/form', this.elt)
             .subscribe(res => {
                     this.router.navigate(['/formView'], {queryParams: {tinyId: res.tinyId}});
-                    if (this.done) { this.done.emit(); }
+                    if (this.done) {
+                        this.done.emit();
+                    }
                 },
                 err => this.alert.httpErrorMessageAlert(err));
     }
@@ -107,9 +109,13 @@ export class CreateFormComponent implements OnInit {
 
     updateClassificationLocalStorage(item: ClassificationHistory) {
         let recentlyClassification = this.localStorageService.get('classificationHistory') as Array<any>;
-        if (!recentlyClassification) { recentlyClassification = []; }
+        if (!recentlyClassification) {
+            recentlyClassification = [];
+        }
         recentlyClassification = recentlyClassification.filter(o => {
-            if (o.cdeId) { o.eltId = o.cdeId; }
+            if (o.cdeId) {
+                o.eltId = o.cdeId;
+            }
             return _isEqual(o, item);
         });
         recentlyClassification.unshift(item);
