@@ -69,14 +69,14 @@ public class CdeEditTest extends NlmCdeBaseTest {
 
     @Test(dependsOnMethods = {"editCde"})
     public void modifiedSinceAPI() {
-        String response = get(baseUrl + "/api/cde/modifiedElements?from=2016-01-01").asString();
+        String response = get(baseUrl + "/server/cde/api/cde/modifiedElements?from=2016-01-01").asString();
         Assert.assertFalse(response.contains("Invalid"));
         Assert.assertTrue(response.contains("64YoxVrtASF"));
     }
 
     @Test
     public void modifiedSinceAPIWrongFormat() {
-        get(baseUrl + "/api/cde/modifiedElements?from=2016-25-01").then().statusCode(300);
+        get(baseUrl + "/server/cde/api/cde/modifiedElements?from=2016-25-01").then().statusCode(300);
     }
 
 

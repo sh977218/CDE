@@ -50,10 +50,10 @@
             <span mat-menu-item>
                 <a id='jsonExport' href="/deById/{{elt._id}}" target="_blank">
                     JSON File, NIH/CDE Schema</a>
-                <a href="/schema/cde" target="_blank">
+                <a href="/server/cde/schema/cde" target="_blank">
                     <mat-icon class="menuActionIcon">help_outline</mat-icon></a>
             </span>
-            <a id='xmlExport' href="/deById/{{elt._id}}?type=xml" target="_blank" mat-menu-item>
+            <a id='xmlExport' href="/server/cde/deById/{{elt._id}}?type=xml" target="_blank" mat-menu-item>
                 XML File, NIH/CDE Schema</a>
         </mat-menu>
         <button *ngIf="quickBoardService.canAddElement(elt)" id="addToQuickBoard" mat-raised-button

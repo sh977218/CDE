@@ -27,6 +27,7 @@ import { getFile, jobStatus } from 'server/system/mongo-data';
 import { indices } from 'server/system/elasticSearchInit';
 import { reIndex } from 'server/system/elastic';
 import { userById, usersByName } from 'server/user/userDb';
+import { status } from 'server/siteAdmin/status';
 
 require('express-async-errors');
 
@@ -34,6 +35,8 @@ export function module() {
     const router = Router();
 
     router.get('/site-version', (req, res) => res.send(version));
+
+    router.get('/status/cde', status);
 
     new CronJob('00 00 4 * * *', () => syncWithMesh(), null, true, 'America/New_York');
 
@@ -313,5 +316,6 @@ export function module() {
         await deleteIdSource(req.params.id);
         res.send();
     });
+
     return router;
 }

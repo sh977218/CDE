@@ -9,7 +9,7 @@ public class RetrieveCdes extends NlmCdeBaseTest {
 
     @Test
     public void emptyList() {
-        Assert.assertEquals(get(baseUrl + "/deList/xyz").asString(), "[]");
+        Assert.assertEquals(get(baseUrl + "/server/cde/deList/xyz").asString(), "[]");
     }
 
     @Test

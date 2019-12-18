@@ -37,7 +37,7 @@ export class DataElementLogComponent {
             this.currentPage = event.pageIndex;
         }
 
-        this.http.post<EltLog[]>('/getCdeAuditLog', {
+        this.http.post<EltLog[]>('/server/cde/getCdeAuditLog', {
             includeBatch: this.includeBatch,
             skip: this.currentPage * this.pageSize,
             limit: this.pageSize

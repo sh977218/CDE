@@ -78,8 +78,6 @@ export function module() {
         }));
     });
 
-    router.get('/status/cde', status);
-
     router.post('/getCdeAuditLog', isOrgAuthorityMiddleware, (req, res) => {
         mongoCde.getAuditLog(req.body, (err, result) => {
             res.send(result);
