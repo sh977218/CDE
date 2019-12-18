@@ -13,7 +13,7 @@ public class FormForEdit extends NlmCdeBaseTest {
 
     @Test
     public void forEditByTinyIdVersion() {
-        String resp = get(baseUrl + "/formForEdit/XJzVz1TZDe/version/v1.0 2014Jul2").asString();
+        String resp = get(baseUrl + "/server/form/formForEdit/XJzVz1TZDe/version/v1.0 2014Jul2").asString();
         Assert.assertTrue(resp.contains("NIDA Clinical"), "actually: " + resp);
     }
 
@@ -28,7 +28,7 @@ public class FormForEdit extends NlmCdeBaseTest {
 
     @Test
     public void originalSource() {
-        get(baseUrl + "/originalSource/form/sourceName/tinyId").then().statusCode(404);
+        get(baseUrl + "/server/form/originalSource/form/sourceName/tinyId").then().statusCode(404);
     }
 
 }

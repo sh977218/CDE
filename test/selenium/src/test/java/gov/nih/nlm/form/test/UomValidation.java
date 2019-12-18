@@ -72,24 +72,24 @@ public class UomValidation extends BaseFormTest {
 
     @Test
     public void ucumErrors() {
-        String resp = get(baseUrl + "/ucumSynonyms?uom=kgg").asString();
+        String resp = get(baseUrl + "/server/form/ucumSynonyms?uom=kgg").asString();
         Assert.assertEquals(resp, "[]");
 
-        resp = given().contentType(ContentType.JSON).body("{\"uoms\": [\"psi\"]}").post(baseUrl + "/ucumValidate").asString();
+        resp = given().contentType(ContentType.JSON).body("{\"uoms\": [\"psi\"]}").post(baseUrl + "/server/form/ucumValidate").asString();
         Assert.assertTrue(resp.contains("Unit is not found. Did you mean pound per square inch?"),
                 "actually: " + resp);
 
         resp = given().contentType(ContentType.JSON)
-                .body("{\"uoms\": [\"meters\"]}").post(baseUrl + "/ucumValidate").asString();
+                .body("{\"uoms\": [\"meters\"]}").post(baseUrl + "/server/form/ucumValidate").asString();
         Assert.assertTrue(resp.contains("Unit is not found. Did you mean m (meter)?"),
                 "actually: " + resp);
 
         resp = given().contentType(ContentType.JSON)
-                .body("{\"uoms\": [\"mets\"]}").post(baseUrl + "/ucumValidate").asString();
+                .body("{\"uoms\": [\"mets\"]}").post(baseUrl + "/server/form/ucumValidate").asString();
         Assert.assertTrue(resp.contains("mets is not a valid UCUM code.  No alternatives were found"),
                 "actually: " + resp);
 
-        resp = get(baseUrl + "/ucumConvert?value=0&to=0&from=0").asString();
+        resp = get(baseUrl + "/server/form/ucumConvert?value=0&to=0&from=0").asString();
         Assert.assertEquals(resp, "",
                 "actually: " + resp);
     }
