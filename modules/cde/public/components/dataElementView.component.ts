@@ -15,7 +15,7 @@ import { OrgHelperService } from 'non-core/orgHelper.service';
 import { Observable } from 'rxjs';
 import { Comment, Elt } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
-import { checkPvUnicity, checkDefinitions } from 'shared/de/deValidator';
+import { checkPvUnicity, checkDefinitions } from 'shared/de/dataElement.model';
 import { canEditCuratedItem, isOrgCurator, isOrgAuthority } from 'shared/system/authorizationShared';
 import { SaveModalComponent } from 'adminItem/public/components/saveModal/saveModal.component';
 
