@@ -25,7 +25,7 @@ export class UcumService {
         const match = this.uomUnitMap.get(uom);
         if (match) { return cb(match); }
 
-        this.http.get('/ucumSynonyms?uom=' + encodeURIComponent(uom)).subscribe(response => {
+        this.http.get('/server/form/ucumSynonyms?uom=' + encodeURIComponent(uom)).subscribe(response => {
             if (Array.isArray(response)) {
                 this.uomUnitMap.set(uom, response);
                 return cb(response);
@@ -36,7 +36,7 @@ export class UcumService {
 
     validateUcumUnits(unitsOfMeasure: CodeAndSystem[], cb: Cb1<string[], string[]>) {
         if (Array.isArray(unitsOfMeasure) && unitsOfMeasure.length) {
-            this.http.post<{ errors: string[], units: any[] }>('/ucumValidate',
+            this.http.post<{ errors: string[], units: any[] }>('/server/form/ucumValidate',
                 {uoms: unitsOfMeasure.map(u => u.code)})
                 .subscribe(response => cb(response.errors, response.units), () => cb([], []));
         } else {

@@ -77,7 +77,7 @@ export class QuickBoardListService {
         if (formLocalStorage) {
             const l = formLocalStorage.map(d => d.tinyId);
             if (!_isEmpty(l)) {
-                this.http.get<CdeFormElastic[]>('/formList/' + l)
+                this.http.get<CdeFormElastic[]>('/server/form/formList/' + l)
                     .subscribe(res => {
                         if (res) {
                             this.forms = res;

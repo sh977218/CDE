@@ -85,18 +85,18 @@ export class FormService {
     }
 
     static convertUnits(value: number, from: string, to: string): Promise<number> {
-        return fetch('/ucumConvert?value=' + value + '&from=' + from + '&to=' + to)
+        return fetch('/server/form/ucumConvert?value=' + value + '&from=' + from + '&to=' + to)
             .then(res => res.text())
             .then(value => parseFloat(value));
     }
 
     static fetchForm(tinyId: string, version?: string): Promise<CdeForm> {
-        return fetch('/form/' + tinyId + (version || version === '' ? '/version/' + version : ''))
+        return fetch('/server/form/form/' + tinyId + (version || version === '' ? '/version/' + version : ''))
             .then(res => res.json());
     }
 
     static fetchFormById(id: ObjectId): Promise<CdeForm> {
-        return fetch('/formById/' + id)
+        return fetch('/server/form/formById/' + id)
             .then(res => res.json());
     }
 }

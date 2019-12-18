@@ -27,7 +27,7 @@ export class ViewingHistoryComponent {
             response => this.cdes = Array.isArray(response) ? response : [],
             err => this.alert.httpErrorMessageAlert(err, 'Error, unable to retrieve data element view history.')
         );
-        this.http.get<FormUI[]>('/viewingHistory/form').subscribe(
+        this.http.get<FormUI[]>('/server/form/viewingHistory/form').subscribe(
             response => this.forms = Array.isArray(response) ? response : [],
             err => this.alert.httpErrorMessageAlert(err, 'Error, unable to retrieve form view history.')
         );

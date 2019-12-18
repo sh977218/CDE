@@ -88,7 +88,7 @@ export class ElasticService {
     }
 
     getExport(query: SearchSettingsElastic, type: 'cde' | 'form', cb: CbErr<ItemElastic[]>) {
-        this.http.post<ItemElastic[]>('/elasticSearchExport/' + type, query).subscribe(
+        this.http.post<ItemElastic[]>('/server/' + type + '/elasticSearchExport/' + type, query).subscribe(
             response => cb(undefined, response),
             (err: HttpErrorResponse) => {
                 if (err.status === 503) {

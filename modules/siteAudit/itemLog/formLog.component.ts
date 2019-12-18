@@ -37,7 +37,7 @@ export class FormLogComponent {
             this.currentPage = event.pageIndex;
         }
 
-        this.http.post<EltLog[]>('/getFormAuditLog', {
+        this.http.post<EltLog[]>('/server/form/getFormAuditLog', {
             includeBatch: this.includeBatch,
             skip: this.currentPage * this.pageSize,
             limit: this.pageSize
