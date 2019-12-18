@@ -19,7 +19,7 @@ import { pvGetLabel } from 'core/de/deShared';
 import { isScore, iterateFeSync } from 'shared/form/fe';
 import { CdeForm, FormElement, FormQuestion, Question, QuestionValueList, SkipLogic } from 'shared/form/form.model';
 import { CodeAndSystem, Designation, FormattedValue } from 'shared/models.model';
-import { fixDatatype } from 'shared/de/deValidator';
+import { fixDatatype } from 'shared/de/dataElement.model';
 
 const ignoreDatatypeArray = ['Dynamic Code List', 'Externally Defined'];
 const dataTypeArray = DATA_TYPE_ARRAY.filter(d => ignoreDatatypeArray.indexOf(d) === -1);
