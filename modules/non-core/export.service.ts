@@ -221,7 +221,7 @@ export class ExportService {
     async formCdeExport(form: CdeForm) {
         this.alertService.addAlert('', 'Fetching cdes. Please wait...');
         const tinyIdList = getFormQuestionsAsQuestionCde(form).map(f => f.tinyId);
-        const elts = await this.http.get<DataElement[]>('/deList/' + tinyIdList).toPromise().catch(_noop);
+        const elts = await this.http.get<DataElement[]>('/server/cde/deList/' + tinyIdList).toPromise().catch(_noop);
         let csv;
         if (elts) {
             csv = await this.resultToCsv(elts as DataElementElastic[]);

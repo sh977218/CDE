@@ -8,7 +8,7 @@ public class DoubleEltQB extends NlmCdeBaseTest {
 
     @Test
     public void doubleElementedQuickboard(){
-        mustBeLoggedInAs("ninds", password);
+        mustBeLoggedInAs(ninds_username, password);
         addFormToQuickBoard("King-Devick Concussion Screening Test (K-D Test)");
         addFormToQuickBoard("Hamilton Anxiety Rating Scale (HAM-A)");
         clickElement(By.id("boardsMenu"));
