@@ -221,10 +221,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
             .pipe(debounceTime(500))
             .subscribe(term => {
                 if (term && term.length >= 3) {
-                    let url = '/server/cde/' + this.module + 'Completion/';
-                    if (this.module === 'form') {
-                        url = '/' + this.module + 'Completion/';
-                    }
+                    const url = '/server/' + this.module + '/' + this.module + 'Completion/';
                     this.http.post<ElasticQueryResponseHit<ItemElastic>[]>(
                         url + encodeURIComponent(term),
                         this.elasticService.buildElasticQuerySettings(this.searchSettings)

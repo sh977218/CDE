@@ -30,11 +30,11 @@ import * as mongo_cde from 'server/cde/mongo-cde';
 import { module as classificationModule } from 'server/classification/classificationRoutes';
 import { module as discussModule } from 'server/discuss/discussRoutes';
 import { module as logModule } from 'server/log/logRoutes';
-import { init as formInit } from 'server/form/app';
 import * as mongo_form from 'server/form/mongo-form';
 import { module as meshModule } from 'server/mesh/meshRoutes';
 import { module as siteAdminModule } from 'server/siteAdmin/siteAdminRoutes';
 import { module as cdeModule } from 'server/cde/cdeRouters';
+import { module as formModule } from 'server/form/formRouters';
 import { module as systemModule } from 'server/system/systemRouters';
 import { module as orgManagementModule } from 'server/orgManagement/orgManagementRoutes';
 import { module as notificationModule } from 'server/notification/notificationRouters';
@@ -328,7 +328,7 @@ try {
     app.use('/', fhirModule());
     app.use('/server/cde', cdeModule());
     app.use('/server/system', systemModule());
-    formInit(app, daoManager);
+    app.use('/server/form', formModule());
     app.use('/server/board', boardModule());
     swaggerInit(app);
     app.use('/server/user', userModule({

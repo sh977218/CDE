@@ -50,14 +50,14 @@ export const ITEM_MAP: {
         viewById: '/server/cde/deView?cdeId=',
     },
     form: {
-        api: '/form/',
-        apiById: '/formById/',
-        apiById_prior: '/priorForms',
-        apiDraft: '/draftForm/',
-        apiDraftById: '/draftFormById/',
-        schema: '/schema/form',
-        view: '/formView?tinyId=',
-        viewById: '/formView?formId=',
+        api: 'server/form/form/',
+        apiById: 'server/form/formById/',
+        apiById_prior: 'server/form/priorForms',
+        apiDraft: 'server/form/draftForm/',
+        apiDraftById: 'server/form/draftFormById/',
+        schema: 'server/form/schema/form',
+        view: 'server/form/formView?tinyId=',
+        viewById: 'server/form/formView?formId=',
     }
 };
 

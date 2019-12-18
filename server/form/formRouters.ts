@@ -1,4 +1,7 @@
-import { Express, RequestHandler } from 'express';
+import { Router } from 'express';
+
+const daoManager = require('../system/moduleDaoManager');
+import { RequestHandler } from 'express';
 import { toInteger } from 'lodash';
 import { handleError, handleNotFound } from 'server/errorHandler/errorHandler';
 import {
@@ -16,8 +19,6 @@ import { stripBsonIdsElt } from 'shared/system/exportShared';
 import { respondHomeFull } from 'server/system/appRouters';
 
 const _ = require('lodash');
-const dns = require('dns');
-const os = require('os');
 const formSvc = require('./formsvc');
 const syncLinkedForms = require('./syncLinkedForms');
 const mongoForm = require('./mongo-form');
@@ -51,10 +52,13 @@ const allRequestsProcessing: RequestHandler = (req, res, next) => {
     next();
 };
 
-export function init(app: Express, daoManager) {
+require('express-async-errors');
+
+export function module() {
+    const router = Router();
     daoManager.registerDao(mongoForm);
 
-    app.get('/form/search', (req, res) => {
+    router.get('/form/search', (req, res) => {
         const selectedOrg = req.query.selectedOrg;
         let pageString = req.query.page; // starting from 1
         if (!pageString) { pageString = '1'; }
@@ -90,17 +94,17 @@ export function init(app: Express, daoManager) {
     });
 
 
-    app.get('/form/:tinyId', allowXOrigin, nocacheMiddleware, allRequestsProcessing, formSvc.byTinyId);
-    app.get('/form/:tinyId/latestVersion/', nocacheMiddleware, formSvc.latestVersionByTinyId);
-    app.get('/form/:tinyId/version/:version?', [allowXOrigin, nocacheMiddleware], formSvc.byTinyIdAndVersion);
-    app.post('/form', canCreateMiddleware, formSvc.create);
-    app.post('/formPublish', canEditMiddlewareForm, formSvc.publishFromDraft);
-    app.post('/formPublishExternal', canEditMiddlewareForm, formSvc.publishExternal);
+    router.get('/form/:tinyId', allowXOrigin, nocacheMiddleware, allRequestsProcessing, formSvc.byTinyId);
+    router.get('/form/:tinyId/latestVersion/', nocacheMiddleware, formSvc.latestVersionByTinyId);
+    router.get('/form/:tinyId/version/:version?', [allowXOrigin, nocacheMiddleware], formSvc.byTinyIdAndVersion);
+    router.post('/form', canCreateMiddleware, formSvc.create);
+    router.post('/formPublish', canEditMiddlewareForm, formSvc.publishFromDraft);
+    router.post('/formPublishExternal', canEditMiddlewareForm, formSvc.publishExternal);
 
-    app.get('/formById/:id', nocacheMiddleware, allRequestsProcessing, formSvc.byId);
-    app.get('/formById/:id/priorForms/', nocacheMiddleware, formSvc.priorForms);
+    router.get('/formById/:id', nocacheMiddleware, allRequestsProcessing, formSvc.byId);
+    router.get('/formById/:id/priorForms/', nocacheMiddleware, formSvc.priorForms);
 
-    app.get('/formForEdit/:tinyId', nocacheMiddleware,
+    router.get('/formForEdit/:tinyId', nocacheMiddleware,
         checkSchema({tinyId: {
                 in: ['params'],
                 isLength: {
@@ -111,7 +115,7 @@ export function init(app: Express, daoManager) {
             }}),
         validateBody, formSvc.forEditByTinyId);
 
-    app.get('/formForEdit/:tinyId/version/:version?', nocacheMiddleware,
+    router.get('/formForEdit/:tinyId/version/:version?', nocacheMiddleware,
         checkSchema({tinyId: {
                 in: ['params'],
                 isLength: {
@@ -123,7 +127,7 @@ export function init(app: Express, daoManager) {
         validateBody,
         formSvc.forEditByTinyIdAndVersion);
 
-    app.get('/formForEditById/:id', nocacheMiddleware,
+    router.get('/formForEditById/:id', nocacheMiddleware,
         checkSchema({id: {
                 in: ['params'],
                 isLength: {
@@ -136,18 +140,18 @@ export function init(app: Express, daoManager) {
         validateBody,
         formSvc.forEditById);
 
-    app.get('/formList/:tinyIdList?', nocacheMiddleware, formSvc.byTinyIdList);
-    app.get('/originalSource/form/:sourceName/:tinyId', formSvc.originalSourceByTinyIdSourceName);
+    router.get('/formList/:tinyIdList?', nocacheMiddleware, formSvc.byTinyIdList);
+    router.get('/originalSource/form/:sourceName/:tinyId', formSvc.originalSourceByTinyIdSourceName);
 
-    app.get('/draftForm/:tinyId', isOrgCuratorMiddleware, formSvc.draftForEditByTinyId);
-    app.put('/draftForm/:tinyId', canEditMiddlewareForm, formSvc.draftSave);
-    app.delete('/draftForm/:tinyId', canEditByTinyIdMiddlewareForm, formSvc.draftDelete);
+    router.get('/draftForm/:tinyId', isOrgCuratorMiddleware, formSvc.draftForEditByTinyId);
+    router.put('/draftForm/:tinyId', canEditMiddlewareForm, formSvc.draftSave);
+    router.delete('/draftForm/:tinyId', canEditByTinyIdMiddlewareForm, formSvc.draftDelete);
 
-    // app.get('/draftFormById/:id', formSvc.draftForEditById);
+    // router.get('/draftFormById/:id', formSvc.draftForEditById);
 
-    app.post('/form/publish/:id', loggedInMiddleware, formSvc.publishFormToHtml);
+    router.post('/form/publish/:id', loggedInMiddleware, formSvc.publishFormToHtml);
 
-    app.get('/viewingHistory/form', loggedInMiddleware, nocacheMiddleware, (req, res) => {
+    router.get('/viewingHistory/form', loggedInMiddleware, nocacheMiddleware, (req, res) => {
         const splicedArray = req.user.formViewHistory.splice(0, 10);
         const idList: string[] = [];
         for (const sa of splicedArray) {
@@ -160,7 +164,7 @@ export function init(app: Express, daoManager) {
 
     /* ---------- PUT NEW REST API above ---------- */
 
-    app.post('/elasticSearch/form', (req, res) => {
+    router.post('/elasticSearch/form', (req, res) => {
         const query = sharedElastic.buildElasticSearchQuery(req.user, req.body);
         if (query.size > 100) { return res.status(422).send('Too many results requested. (max 100)'); }
         if ((query.from + query.size) > 10000) { return res.status(422).send('Exceeded pagination limit (10,000)'); }
@@ -172,20 +176,20 @@ export function init(app: Express, daoManager) {
         }));
     });
 
-    app.post('/scrollExport/form', (req, res) => {
+    router.post('/scrollExport/form', (req, res) => {
         const query = sharedElastic.buildElasticSearchQuery(req.user, req.body);
         scrollExport(query, 'form', handleNotFound({res, statusCode: 400}, response => res.send(response.body)));
     });
 
-    app.get('/scrollExport/:scrollId', (req, res) => {
+    router.get('/scrollExport/:scrollId', (req, res) => {
         scrollNext(req.params.scrollId, handleNotFound({res, statusCode: 400}, response => res.send(response.body)));
     });
 
-    app.post('/getFormAuditLog', isOrgAuthorityMiddleware, (req, res) => {
+    router.post('/getFormAuditLog', isOrgAuthorityMiddleware, (req, res) => {
         mongoForm.getAuditLog(req.body, (err, result) => res.send(result));
     });
 
-    app.post('/elasticSearchExport/form', (req, res) => {
+    router.post('/elasticSearchExport/form', (req, res) => {
         const query = sharedElastic.buildElasticSearchQuery(req.user, req.body);
         const exporters = {
             json: {
@@ -212,7 +216,7 @@ export function init(app: Express, daoManager) {
     });
 
 
-    app.get('/formView', (req, res) => {
+    router.get('/formView', (req, res) => {
         const tinyId = req.query.tinyId;
         const version = req.query.version;
         formByTinyIdVersion(tinyId, version, handleError({req, res}, cde => {
@@ -224,7 +228,7 @@ export function init(app: Express, daoManager) {
         }));
     });
 
-    app.post('/formCompletion/:term', nocacheMiddleware, (req, res) => {
+    router.post('/formCompletion/:term', nocacheMiddleware, (req, res) => {
         const term = req.params.term;
         completionSuggest(term, req.user, req.body, config.elastic.formSuggestIndex.name, (err, resp) => {
             if (err || !resp) {
@@ -236,7 +240,7 @@ export function init(app: Express, daoManager) {
     });
 
     // This is for tests only
-    app.post('/sendMockFormData', (req, res) => {
+    router.post('/sendMockFormData', (req, res) => {
         const mapping = JSON.parse(req.body.mapping);
         if (req.body['0-0'] === '1' && req.body['0-1'] === '2'
             && req.body['0-2'] === 'Lab Name'
@@ -262,9 +266,9 @@ export function init(app: Express, daoManager) {
         }
     });
 
-    app.get('/schema/form', (req, res) => res.send((formModel as any).jsonSchema()));
+    router.get('/schema/form', (req, res) => res.send((formModel as any).jsonSchema()));
 
-    app.get('/ucumConvert', (req, res) => {
+    router.get('/ucumConvert', (req, res) => {
         const value = req.query.value === '0' ? 1e-20 : parseFloat(req.query.value); // 0 workaround
         const result = ucum.convertUnitTo(req.query.from, value, req.query.to);
         if (result.status === 'succeeded') {
@@ -306,7 +310,7 @@ export function init(app: Express, daoManager) {
         cb(error, uom);
     }
 
-    app.get('/ucumSynonyms', check('uom').isAlphanumeric(), validateBody, (req, res) => {
+    router.get('/ucumSynonyms', check('uom').isAlphanumeric(), validateBody, (req, res) => {
         const uom = req.query.uom;
 
         const resp = ucum.getSpecifiedUnit(uom, 'validate', 'false');
@@ -320,7 +324,7 @@ export function init(app: Express, daoManager) {
         res.send([name, ...synonyms]);
     });
 
-    app.get('/ucumNames', check('uom').isAlphanumeric(), validateBody, (req, res) => {
+    router.get('/ucumNames', check('uom').isAlphanumeric(), validateBody, (req, res) => {
         const uom = req.query.uom;
 
         const resp = ucum.getSpecifiedUnit(uom, 'validate', true);
@@ -335,7 +339,7 @@ export function init(app: Express, daoManager) {
         }
     });
 
-    app.post('/ucumValidate', check('uoms').isArray(), validateBody, (req, res) => {
+    router.post('/ucumValidate', check('uoms').isArray(), validateBody, (req, res) => {
         const errors: (string|undefined)[] = [];
         const units: (string|undefined)[] = [];
         req.body.uoms.forEach((uom, i) => {
@@ -356,14 +360,15 @@ export function init(app: Express, daoManager) {
         res.send({errors, units});
     });
 
-    app.post('/syncLinkedForms', isOrgAuthorityMiddleware, (req, res) => {
+    router.post('/syncLinkedForms', isOrgAuthorityMiddleware, (req, res) => {
         res.send();
         syncLinkedForms.syncLinkedForms();
     });
 
-    app.get('/syncLinkedForms', (req, res) => res.send(syncLinkedForms.syncLinkedFormsProgress));
+    router.get('/syncLinkedForms', (req, res) => res.send(syncLinkedForms.syncLinkedFormsProgress));
 
     /* tslint:disable */
     new CronJob('00 30 4 * * *', () => syncLinkedForms.syncLinkedForms(), null, true, 'America/New_York');
     /* tslint:enable */
+    return router;
 }
