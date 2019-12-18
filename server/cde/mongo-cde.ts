@@ -10,7 +10,7 @@ import { attachables, auditGetLog, auditModifications, formatElt, generateTinyId
 import { config } from 'server/system/parseConfig';
 import * as dataElementschema from 'shared/de/assets/dataElement.schema.json';
 import { DataElement as DataElementClient, DataElementElastic } from 'shared/de/dataElement.model';
-import { wipeDatatype } from 'shared/de/deValidator';
+import { wipeDatatype } from 'shared/de/dataElement.model';
 import { CbError, CbError1, EltLog, User } from 'shared/models.model';
 import { Dictionary } from 'async';
 
