@@ -6,7 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AlertService } from 'alert/alert.service';
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { UserService } from '_app/user.service';
-import { DataElementViewService } from 'cde/public/components/dataElementView.service';
+import { DataElementViewService } from 'cde/public/components/dataElementView/dataElementView.service';
 import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHistoryContent.component';
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
 import _cloneDeep from 'lodash/cloneDeep';

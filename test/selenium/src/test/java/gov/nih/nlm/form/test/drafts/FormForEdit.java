@@ -23,7 +23,7 @@ public class FormForEdit extends NlmCdeBaseTest {
         Cookie myCookie = getCurrentCookie();
         given().contentType(ContentType.JSON).cookie(myCookie)
                 .body("{\"tinyId\": \"QktaN3OFL1\", \"_id\": \"5d60123aba5e11ce43a7d457\"}")
-                .put(baseUrl + "/draftForm/my9q6NmEb").then().statusCode(400);
+                .put(baseUrl + "/server/form/draftForm/my9q6NmEb").then().statusCode(400);
     }
 
     @Test

@@ -20,7 +20,7 @@ public class StaticHtmlTest extends NlmCdeBaseTest {
     @Test
     @SelectUserAgent()
     public void staticCdeSearchHtml() {
-        driver.get(baseUrl + "/server/cde/cde/search");
+        driver.get(baseUrl + "/cde/search");
         textPresent("Global Rare Diseases Patient Registry Data Repository");
 
         driver.get(baseUrl + "/cde/search?selectedOrg=NICHD");
@@ -31,7 +31,7 @@ public class StaticHtmlTest extends NlmCdeBaseTest {
     @Test
     @SelectUserAgent()
     public void staticFormSearchHtml() {
-        driver.get(baseUrl + "/server/form/form/search");
+        driver.get(baseUrl + "/form/search");
         textPresent("Patient Reported Outcomes Measurement Information System");
 
         driver.get(baseUrl + "/form/search?selectedOrg=NIDA");
