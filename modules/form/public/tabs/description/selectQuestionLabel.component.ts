@@ -22,7 +22,7 @@ export class SelectQuestionLabelComponent {
         this.question = data.question.question;
         this.section = data.parent;
         if (this.question.cde.tinyId) {
-            let url = '/de/' + this.question.cde.tinyId;
+            let url = '/server/cde/de/' + this.question.cde.tinyId;
             if (this.question.cde.version) { url += '/version/' + this.question.cde.version; }
             this.http.get<QuestionCde>(url).subscribe(
                 res => this.cde = res,
