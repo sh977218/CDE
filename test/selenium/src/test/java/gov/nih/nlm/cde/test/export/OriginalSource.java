@@ -18,7 +18,7 @@ public class OriginalSource extends NlmCdeBaseTest {
 
         textNotPresent("Raw Artifact", By.id("sources_0"));
 
-        String response = get(baseUrl + "/originalSource/cde/NINDS/QkIo3YfIyX").asString();
+        String response = get(baseUrl + "/server/cde/originalSource/cde/NINDS/QkIo3YfIyX").asString();
         Assert.assertTrue(response.contains("Several days"));
 
     }

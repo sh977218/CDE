@@ -18,8 +18,8 @@ public class ExportPreviousVersion extends NlmCdeBaseTest {
         // Current version
         Assert.assertTrue(findElement(By.id("jsonExport")).getAttribute("href").endsWith("deById/585adda729f8ae801d0f045a"));
         Assert.assertTrue(findElement(By.id("xmlExport")).getAttribute("href").endsWith("deById/585adda729f8ae801d0f045a?type=xml"));
-        Assert.assertFalse(get(baseUrl + "/deById/585adda729f8ae801d0f045a").asString().contains("designation: \"This name will be removed\""));
-        Assert.assertFalse(get(baseUrl + "/deById/585adda729f8ae801d0f045a?type=xml").asString().contains("<designation>This name will be removed</designation>"));
+        Assert.assertFalse(get(baseUrl + "/server/cde/deById/585adda729f8ae801d0f045a").asString().contains("designation: \"This name will be removed\""));
+        Assert.assertFalse(get(baseUrl + "/server/cde/deById/585adda729f8ae801d0f045a?type=xml").asString().contains("<designation>This name will be removed</designation>"));
 
         clickElement(By.cssSelector(".cdk-overlay-container"));
 
@@ -32,8 +32,8 @@ public class ExportPreviousVersion extends NlmCdeBaseTest {
         // Previous version
         Assert.assertTrue(findElement(By.id("jsonExport")).getAttribute("href").endsWith("deById/585adda229f8ae801d0f0456"));
         Assert.assertTrue(findElement(By.id("xmlExport")).getAttribute("href").endsWith("deById/585adda229f8ae801d0f0456?type=xml"));
-        Assert.assertTrue(get(baseUrl + "/deById/585adda229f8ae801d0f0456").asString().contains("This name will be removed"));
-        Assert.assertTrue(get(baseUrl + "/deById/585adda229f8ae801d0f0456?type=xml").asString().contains("<designation>This name will be removed</designation>"));
+        Assert.assertTrue(get(baseUrl + "/server/cde/deById/585adda229f8ae801d0f0456").asString().contains("This name will be removed"));
+        Assert.assertTrue(get(baseUrl + "/server/cde/deById/585adda229f8ae801d0f0456?type=xml").asString().contains("<designation>This name will be removed</designation>"));
 
         switchTabAndClose(0);
     }
