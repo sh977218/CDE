@@ -324,7 +324,7 @@ export function module() {
         res.send([name, ...synonyms]);
     });
 
-    router.get('/server/form/ucumNames', check('uom').isAlphanumeric(), validateBody, (req, res) => {
+    router.get('/ucumNames', check('uom').isAlphanumeric(), validateBody, (req, res) => {
         const uom = req.query.uom;
 
         const resp = ucum.getSpecifiedUnit(uom, 'validate', true);

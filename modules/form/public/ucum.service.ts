@@ -18,7 +18,7 @@ export class UcumService {
     }
 
     searchUcum(term: string) {
-        return this.http.get<UcumSynonyms[]>('/ucumNames?uom=' + encodeURIComponent(term));
+        return this.http.get<UcumSynonyms[]>('/server/form/ucumNames?uom=' + encodeURIComponent(term));
     }
 
     getUnitNames(uom: string, cb: Cb<string[]>) {

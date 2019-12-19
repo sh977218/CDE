@@ -18,7 +18,7 @@ public class PublishForm extends BaseFormTest {
         goToFormByName(formName);
         clickElement(By.id("export"));
         clickElement(By.id("formPublishExport"));
-        findElement(By.name("publishedFormUrl")).sendKeys(baseUrl + "/sendMockFormData");
+        findElement(By.name("publishedFormUrl")).sendKeys(baseUrl + "/server/form/sendMockFormData");
         findElement(By.name("publishedFormName")).sendKeys(publishedFormName);
         clickElement(By.id("goExport"));
         checkAlert("Done. Go to your profile to see all your published forms");
