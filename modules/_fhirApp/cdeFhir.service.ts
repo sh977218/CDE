@@ -241,7 +241,7 @@ export class CdeFhirService {
             }
             this.fhirData.baseUrl = fhirApp.dataEndpointUrl;
             fhirApp.forms.forEach(f => {
-                this.http.get<CdeForm>('/form/' + f.tinyId).subscribe(form => {
+                this.http.get<CdeForm>('/server/form/form/' + f.tinyId).subscribe(form => {
                     CdeForm.validate(form);
                     const patientForm: PatientForm = {
                         tinyId: form.tinyId,
