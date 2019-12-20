@@ -7,7 +7,7 @@
     "buildApp": "npx ts-node -P tsconfigNode.json ./node_modules/webpack/bin/webpack.js --config ./webpackApp.prod.ts",
     "buildAppJs": "cross-env node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js --config ./buildNode/webpackApp.prod.js",
     "buildAppStats": "cross-env node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js --config ./modules/_app/webpackApp.prod.js --profile --json > compilation-stats.json",
-    "buildAppStatsNative": "cross-env node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js --config ./modules/_nativeRenderApp/webpackNative.prod.js --profile --json > compilation-stats-native.json",
+    "buildAppStatsNative": "cross-env node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js --config ./frontEnd/_nativeRenderApp/webpackNative.prod.js --profile --json > compilation-stats-native.json",
     "buildEmbed": "npx ts-node -P tsconfigNode.json ./node_modules/webpack/bin/webpack.js --config ./webpackEmbed.prod.ts",
     "buildEmbedJs": "cross-env node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js --config ./buildNode/webpackEmbed.prod.js",
     "buildFhir": "npx ts-node -P tsconfigNode.json ./node_modules/webpack/bin/webpack.js --config ./webpackFhir.prod.ts",

@@ -3,7 +3,7 @@ import { isArray, isUndefined } from 'util';
 import {
     ResourceTree, ResourceTreeAttribute, ResourceTreeIntermediate, ResourceTreeResource, ResourceTreeRoot,
     ResourceTreeUtil
-} from '_fhirApp/resourceTree';
+} from './resourceTree';
 import { isQuestion } from 'core/form/fe';
 import { getMapToFhirResource } from 'core/form/formAndFe';
 import { CdeForm, FhirProcedureMapping, FormElement } from 'shared/form/form.model';

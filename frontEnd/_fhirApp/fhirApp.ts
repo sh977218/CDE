@@ -4,6 +4,10 @@ import 'reflect-metadata';
 
 // path to node_modules required to override module/components/bootstrap
 import '../../node_modules/bootstrap/dist/css/bootstrap.css';
+import '../../node_modules/bootstrap/dist/js/bootstrap.js';
+require('expose-loader?bootstrap!bootstrap');
+
+import '../../node_modules/deeppurple-amber.css';
 
 import { enableProdMode } from '@angular/core';
 if (PRODUCTION) {
@@ -11,8 +15,8 @@ if (PRODUCTION) {
 }
 
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { NativeRenderAppModule } from '_nativeRenderApp/nativeRenderApp.module';
-platformBrowserDynamic().bootstrapModule(NativeRenderAppModule);
+import { FhirAppModule } from './fhirApp.module';
+platformBrowserDynamic().bootstrapModule(FhirAppModule);
 
 // must be after bootstrap to overload material styles
-import '../common.scss';
+import '../../modules/common.scss';

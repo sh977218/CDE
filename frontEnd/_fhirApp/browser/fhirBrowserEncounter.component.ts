@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 
-import { FhirSmartService } from '_fhirApp/fhirSmart.service';
+import { FhirSmartService } from '../fhirSmart.service';
 import { getDateString } from 'shared/mapping/fhir/fhirDatatypes';
 import { FhirEncounter } from 'shared/mapping/fhir/fhirResource.model';
 import { newEncounter } from 'shared/mapping/fhir/resource/fhirEncounter';

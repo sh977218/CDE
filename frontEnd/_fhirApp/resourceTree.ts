@@ -1,7 +1,7 @@
-import { resourceMap, supportedResourcesMaps } from '_fhirApp/resources';
+import { resourceMap, supportedResourcesMaps } from './resources';
 import { getFhirResourceMap, getMapToFhirResource } from 'core/form/formAndFe';
 import { assertUnreachable } from 'shared/models.model';
-import { CdeForm, FormElement, FormOrElement } from 'shared/form/form.model';
+import { FormOrElement } from 'shared/form/form.model';
 import { toRef } from 'shared/mapping/fhir/datatype/fhirReference';
 import { FhirDomainResource, supportedFhirResources } from 'shared/mapping/fhir/fhirResource.model';
 import { deepCopy } from 'shared/system/util';

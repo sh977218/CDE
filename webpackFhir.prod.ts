@@ -8,7 +8,7 @@ export default merge(baseConfig, fhirConfig, {
     plugins: [
         new AotPlugin.AngularCompilerPlugin({
             tsConfigPath: path.resolve(__dirname, './tsconfigFhir.json'),
-            entryModule: path.resolve(__dirname, './modules/_fhirApp/fhirApp.module') + '#FhirAppModule'
+            entryModule: path.resolve(__dirname, './frontEnd/_fhirApp/fhirApp.module') + '#FhirAppModule'
         }),
     ]
 });
