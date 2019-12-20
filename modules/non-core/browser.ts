@@ -37,16 +37,3 @@ export function textTruncate(limit: number, text: string) {
         ? text.substr(0, limit - 3) + '...'
         : text;
 }
-
-export function waitRendered(condition: CbRet<boolean>, cb: Cb, tries = 5) {
-    if (tries === 0) {
-        throw new Error('Timeout while waiting to render');
-    }
-    setTimeout(() => {
-        if (!condition()) {
-            waitRendered(condition, cb, tries - 1);
-            return;
-        }
-        cb();
-    }, 0);
-}

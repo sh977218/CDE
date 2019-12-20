@@ -25,7 +25,7 @@ import { Cb } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm, FormElement, FormInForm, FormOrElement, FormSection } from 'shared/form/form.model';
 import { addFormIds, iterateFeSync } from 'shared/form/fe';
-import { scrollTo, waitRendered } from 'non-core/browser';
+import { scrollTo } from 'non-core/browser';
 
 @Component({
     selector: 'cde-form-description',
@@ -279,10 +279,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
             question.edit = true;
             this.addFormElement(question);
             this.setCurrentEditing(this.formElementEditing.formElements, question, this.formElementEditing.index);
-            waitRendered(
-                () => !!document.getElementById('question_' + question.feId),
-                () => scrollTo('question_' + question.feId)
-            );
+            scrollTo('question_' + question.feId);
             this.isModalOpen = false;
         });
     }
