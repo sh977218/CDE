@@ -16,10 +16,10 @@ export function module() {
     const router = Router();
 
     let embedHtml = '';
-    renderFile('modules/_embedApp/embedApp.ejs', {isLegacy: false}, (err, str) => embedHtml = str);
+    renderFile('frontEnd/_embedApp/embedApp.ejs', {isLegacy: false}, (err, str) => embedHtml = str);
 
     let embedLegacyHtml = '';
-    renderFile('modules/_embedApp/embedApp.ejs', {isLegacy: true}, (err, str) => embedLegacyHtml = str);
+    renderFile('frontEnd/_embedApp/embedApp.ejs', {isLegacy: true}, (err, str) => embedLegacyHtml = str);
 
     router.post('/server/embed', isOrgAdminMiddleware, (req, res) => {
         const handlerOptions = {req, res, publicMessage: 'There was an error saving this embed.'};
