@@ -59,10 +59,10 @@ export class MergeCdeService {
     }
 
     getCdeByTinyId(tinyId: string) {
-        return this.http.get<DataElement>('/server/cde/de/' + tinyId);
+        return this.http.get<DataElement>('/server/de/' + tinyId);
     }
 
     putDeByTinyId(elt: DataElement) {
-        return this.http.post<DataElement>('/server/cde/dePublishExternal', elt);
+        return this.http.post<DataElement>('/server/de/publishExternal', elt);
     }
 }

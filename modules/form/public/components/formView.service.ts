@@ -39,9 +39,9 @@ export class FormViewService {
     fetchEltPublishedForEditing(queryParams: Params): Promise<CdeForm> {
         let url;
         if (queryParams.formId) {
-            url = '/server/form/formForEditById/' + queryParams.formId;
+            url = '/server/form/forEditById/' + queryParams.formId;
         } else {
-            url = '/server/form/formForEdit/' + queryParams.tinyId;
+            url = '/server/form/forEdit/' + queryParams.tinyId;
             if (queryParams.version) {
                 url = url + '/version/' + queryParams.version;
             }

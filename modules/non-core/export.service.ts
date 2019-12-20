@@ -53,7 +53,7 @@ export class ExportService {
                 }
             } else {
                 const lfSettings = this.elasticService.buildElasticQuerySettings(new SearchSettings());
-                let esResp = await this.http.post<ElasticQueryResponse>('/server/form/scrollExport/form', lfSettings).toPromise();
+                let esResp = await this.http.post<ElasticQueryResponse>('/server/form/scrollExport', lfSettings).toPromise();
                 let totalNbOfForms = 0;
                 let formCounter = 0;
                 const nonEmptyResults = result.filter(r => r !== undefined);

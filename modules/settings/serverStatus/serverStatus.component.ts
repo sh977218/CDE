@@ -87,9 +87,9 @@ export class ServerStatusComponent {
     }
 
     syncLinkedForms() {
-        this.http.post('/server/form/syncLinkedForms', {}).subscribe();
+        this.http.post('/server/syncLinkedForms', {}).subscribe();
         const indexFn = setInterval(() => {
-            this.http.get<any>('/server/form/syncLinkedForms').subscribe(res => {
+            this.http.get<any>('/server/syncLinkedForms').subscribe(res => {
                 this.linkedForms = res;
                 if (res.done === res.total) {
                     clearInterval(indexFn);

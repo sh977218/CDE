@@ -25,7 +25,7 @@ export class DeCompletionService {
                 if (term) {
                     settings.resultPerPage = 5;
                     settings.searchTerm = term;
-                    return this.http.post<any[]>('/server/cdeCompletion/' + encodeURI(term), settings);
+                    return this.http.post<any[]>('/server/de/completion/' + encodeURI(term), settings);
                 } else {
                     return empty();
                 }
@@ -33,7 +33,7 @@ export class DeCompletionService {
         ).subscribe(res => {
             const tinyIdList = res.map(r => r._id).slice(0, 5);
             if (tinyIdList && tinyIdList.length > 0) {
-                this.http.get<any[]>('/server/deList/' + tinyIdList).subscribe(result => {
+                this.http.get<any[]>('/server/de/list/' + tinyIdList).subscribe(result => {
                     this.suggestedCdes = result;
                 }, err => this.alert.httpErrorMessageAlert(err));
             } else { this.suggestedCdes = []; }

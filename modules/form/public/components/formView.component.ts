@@ -138,7 +138,7 @@ export class FormViewComponent implements OnInit {
             ids: newCde.ids,
             registrationState: {registrationStatus: 'Incomplete'}
         };
-        this.http.post<DataElement>('/de', dataElement)
+        this.http.post<DataElement>('/server/de', dataElement)
             .subscribe(res => {
                 if (res.tinyId) { newCde.tinyId = res.tinyId; }
                 if (res.version) { newCde.version = res.version; }
@@ -149,7 +149,7 @@ export class FormViewComponent implements OnInit {
     }
 
     exportPublishForm() {
-        this.http.post('/server/form/form/publish/' + this.elt._id, {
+        this.http.post('/server/form/publish/' + this.elt._id, {
             publishedFormName: this.formInput.publishedFormName,
             endpointUrl: this.formInput.endpointUrl
         }).subscribe(
@@ -309,7 +309,7 @@ export class FormViewComponent implements OnInit {
             this.unsaved = true;
             return this.draftSaving;
         }
-        return this.draftSaving = this.http.put<CdeForm>('/server/form/draftForm/' + this.elt.tinyId, this.elt)
+        return this.draftSaving = this.http.put<CdeForm>('/server/form/draft/' + this.elt.tinyId, this.elt)
             .toPromise().then(newElt => {
                 this.draftSaving = undefined;
                 this.elt.__v = newElt.__v;
@@ -348,7 +348,7 @@ export class FormViewComponent implements OnInit {
                 }, () => {
                     const publish = () => {
                         const publishData = {_id: this.elt._id, tinyId: this.elt.tinyId, __v: this.elt.__v};
-                        this.http.post('/server/form/formPublish', publishData).subscribe(res => {
+                        this.http.post('/server/form/publish', publishData).subscribe(res => {
                             if (res) {
                                 this.hasDrafts = false;
                                 this.loadElt(() => this.alert.addAlert('success', 'Form saved.'));

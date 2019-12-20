@@ -2,11 +2,14 @@ import { Response } from 'express';
 import * as js2xml from 'js2xmlparser';
 import { handleError, handleNotFound, respondError } from 'server/errorHandler/errorHandler';
 import {
-    byId as deById, byTinyId as deByTinyId, byTinyIdAndVersion as deByTinyIdAndVersion, byTinyIdList as deByTinyIdList, create as deCreate,
+    byId as deById, byTinyId as deByTinyId, byTinyIdAndVersion as deByTinyIdAndVersion, byTinyIdList as deByTinyIdList,
+    create as deCreate,
     DataElementDraft,
-    dataElementModel, draftById as deDraftById, draftByTinyId as deDraftByTinyId, draftDelete as deDraftDelete, draftSave as deDraftSave,
-    inCdeView, latestVersionByTinyId as deLatestVersionByTinyId, originalSourceByTinyIdSourceName as deOriginalSourceByTinyIdSourceName,
-    update
+    dataElementModel, draftById as deDraftById, draftByTinyId as deDraftByTinyId, draftDelete as deDraftDelete,
+    draftSave as deDraftSave,
+    inCdeView, latestVersionByTinyId as deLatestVersionByTinyId,
+    originalSourceByTinyIdSourceName as deOriginalSourceByTinyIdSourceName,
+    update, findModifiedElementsSince, derivationByInputs
 } from 'server/cde/mongo-cde';
 import { badWorkingGroupStatus, hideProprietaryIds } from 'server/system/adminItemSvc';
 import { RequestWithItem } from 'server/system/authorization';
@@ -16,6 +19,7 @@ import { canEditCuratedItem } from 'shared/system/authorizationShared';
 import { stripBsonIdsElt } from 'shared/system/exportShared';
 import { DataElement } from 'shared/de/dataElement.model';
 import { orgByName } from 'server/orgManagement/orgDb';
+import { moreLike } from 'server/cde/elastic';
 
 export function byId(req, res) {
     const id = req.params.id;
@@ -266,4 +270,35 @@ export function hideProprietaryCodes(cdes: DataElement | DataElement[], user?: U
     }
     cdes.forEach(cde => checkCde(cde));
     return cdes;
+}
+
+export function moreLikeThis(req, res) {
+    moreLike(req.params.tinyId, result => {
+        hideProprietaryCodes(result.cdes, req.user);
+        res.send(result);
+    });
+}
+
+export function modifiedElements(req, res) {
+    const dString = req.query.from;
+    const r = /20[0-2][0-9]-[0-1][0-9]-[0-3][0-9]/;
+
+    function badDate() {
+        res.status(300).send('Invalid date format, please provide as: /api/cde/modifiedElements?from=2015-12-24');
+    }
+
+    if (!r.test(dString)) {
+        return badDate();
+    }
+
+    const date = new Date(dString);
+    findModifiedElementsSince(date, (err, elts) => {
+        res.send(elts.map(e => ({tinyId: e._id})));
+    });
+}
+
+export function derivationOutputs(req, res) {
+    derivationByInputs(req.params.inputCdeTinyId, handleError({req, res}, cdes => {
+        res.send(cdes);
+    }));
 }

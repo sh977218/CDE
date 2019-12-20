@@ -25,7 +25,7 @@ import { Cb } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm, FormElement, FormInForm, FormOrElement, FormSection } from 'shared/form/form.model';
 import { addFormIds, iterateFeSync } from 'shared/form/fe';
-import { scrollTo } from 'non-core/browser';
+import { scrollTo, waitRendered } from 'non-core/browser';
 
 @Component({
     selector: 'cde-form-description',
@@ -257,7 +257,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     }
 
     addFormFromSearch(form: CdeForm, cb: Cb<FormInForm> = _noop) {
-        this.http.get<CdeForm>('/form/' + form.tinyId).subscribe(form => {
+        this.http.get<CdeForm>('/server/form/' + form.tinyId).subscribe(form => {
             const inForm = convertFormToSection(form);
             if (!inForm) { return; }
             this.addExpanded(inForm);
@@ -279,7 +279,10 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
             question.edit = true;
             this.addFormElement(question);
             this.setCurrentEditing(this.formElementEditing.formElements, question, this.formElementEditing.index);
-            scrollTo('question_' + question.feId);
+            waitRendered(
+                () => !!document.getElementById('question_' + question.feId),
+                () => scrollTo('question_' + question.feId)
+            );
             this.isModalOpen = false;
         });
     }

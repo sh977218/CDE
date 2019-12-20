@@ -36,10 +36,9 @@ export class SaveModalComponent {
         if (!newVersion) {
             newVersion = this.elt.version;
         }
-        let url = 'server/de/' + this.elt.tinyId + '/latestVersion/';
+        let url = '/server/de/' + this.elt.tinyId + '/latestVersion/';
         if (this.elt.elementType === 'form') {
-            url = 'server/form/' + this.elt.tinyId + '/latestVersion/';
-
+            url = '/server/form/' + this.elt.tinyId + '/latestVersion/';
         }
         this.http.get(url, {responseType: 'text'}).subscribe(
             (res: string) => {

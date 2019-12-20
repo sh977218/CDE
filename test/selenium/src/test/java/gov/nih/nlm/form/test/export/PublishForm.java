@@ -18,7 +18,7 @@ public class PublishForm extends BaseFormTest {
         goToFormByName(formName);
         clickElement(By.id("export"));
         clickElement(By.id("formPublishExport"));
-        findElement(By.name("publishedFormUrl")).sendKeys(baseUrl + "/server/form/sendMockFormData");
+        findElement(By.name("publishedFormUrl")).sendKeys(baseUrl + "/server/sendMockFormData");
         findElement(By.name("publishedFormName")).sendKeys(publishedFormName);
         clickElement(By.id("goExport"));
         checkAlert("Done. Go to your profile to see all your published forms");
@@ -42,7 +42,7 @@ public class PublishForm extends BaseFormTest {
     @Test
     public void publishWrongInput() {
         String resp = given().contentType(ContentType.JSON).body("{\"mapping\": \"{}\"}")
-                .post(baseUrl + "/server/form/sendMockFormData").asString();
+                .post(baseUrl + "/server/sendMockFormData").asString();
         Assert.assertTrue(resp.contains("Not the right input"));
     }
 }

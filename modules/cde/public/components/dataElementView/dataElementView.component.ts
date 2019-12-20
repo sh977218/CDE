@@ -237,7 +237,7 @@ export class DataElementViewComponent implements OnInit {
     }
 
     removeDraft() {
-        this.http.delete('/server/cde/draftDataElement/' + this.elt.tinyId, {responseType: 'text'}).subscribe(
+        this.http.delete('/server/de/draft/' + this.elt.tinyId, {responseType: 'text'}).subscribe(
             () => this.loadElt(() => this.hasDrafts = false),
             err => this.alert.httpErrorMessageAlert(err)
         );
@@ -282,7 +282,7 @@ export class DataElementViewComponent implements OnInit {
     saveDataElement() {
         const saveImpl = () => {
             const publishData = {_id: this.elt._id, tinyId: this.elt.tinyId, __v: this.elt.__v};
-            this.http.post('/server/cde/dePublish', publishData).subscribe(res => {
+            this.http.post('/server/de/publish', publishData).subscribe(res => {
                 if (res) {
                     this.hasDrafts = false;
                     this.loadElt(() => this.alert.addAlert('success', 'Data Element saved.'));

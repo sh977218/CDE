@@ -27,7 +27,7 @@ export class MoreLikeThisComponent {
     ) {}
 
     open() {
-        this.http.get<{cdes: DataElement[]}>('/server/cde/moreLikeCde/' + this.elt.tinyId).subscribe(response => {
+        this.http.get<{cdes: DataElement[]}>('/server/de/moreLike/' + this.elt.tinyId).subscribe(response => {
             this.cdes = response.cdes;
         }, () => this.alert.addAlert('error', 'Unable to retrieve MLT'));
         this.dialog.open(this.mltModal, {width: '1000px'});

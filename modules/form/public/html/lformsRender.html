@@ -34,7 +34,7 @@
     $(document).ready(function () {
         var converter = new LForms.LFormsConverter();
 
-        converter.convert("/server/form/form/" + $.urlParam('tinyId'),
+        converter.convert("/server/form/" + $.urlParam('tinyId'),
             function(lfData) {
                 window.myFormDefinition = lfData;
                 LForms.Util.addFormToPage('myFormDefinition', 'myFormContainer');

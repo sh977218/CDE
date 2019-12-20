@@ -27,13 +27,13 @@ public class CdeExportXmlTest extends NlmCdeBaseTest {
 
     @Test
     public void cdeAsXml() {
-        String response = get(baseUrl + "/server/cde/de/V2kBmnrd9MH?type=xml").asString();
+        String response = get(baseUrl + "/server/de/V2kBmnrd9MH?type=xml").asString();
         Assert.assertTrue(response.contains("<valueMeaningName>Very mild</valueMeaningName>"));
 
-        response = get(baseUrl + "/server/cde/de/my1gxMuW_hdl/version/1").asString();
+        response = get(baseUrl + "/server/de/my1gxMuW_hdl/version/1").asString();
         Assert.assertTrue(response.contains("Patient does not respond to external"));
 
-        response = get(baseUrl + "/server/cde/originalSource/cde/caDSR/m10MsOXkJg").asString();
+        response = get(baseUrl + "/server/cde/originalSource/caDSR/m10MsOXkJg").asString();
         Assert.assertTrue(response.contains("No caDSR source file found for m10MsOXkJg"));
 
     }

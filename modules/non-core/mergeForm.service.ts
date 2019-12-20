@@ -50,7 +50,7 @@ export class MergeFormService {
     }
 
     saveForm(form: CdeForm, cb: CbErr<CdeForm>) {
-        this.http.post<CdeForm>('/server/form/formPublishExternal', form).subscribe(
+        this.http.post<CdeForm>('/server/form/publishExternal', form).subscribe(
             data => {
                 cb(undefined, data);
             },

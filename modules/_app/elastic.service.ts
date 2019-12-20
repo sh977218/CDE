@@ -58,7 +58,10 @@ export class ElasticService {
     generalSearchQuery(settings: SearchSettingsElastic, type: 'cde' | 'form',
                        cb: CbErr<SearchResponseAggregationDe, boolean> | CbErr<SearchResponseAggregationForm, boolean>): void {
         const search = (good: Cb1<SearchResponseAggregationItem, boolean>, bad: CbErr<SearchResponseAggregationItem, boolean>) => {
-            const url = '/server/elasticSearch/' + type;
+            let url = '/server/de/search';
+            if (type === 'form') {
+                url = '/server/form/search';
+            }
             this.http.post<SearchResponseAggregationItem>(url, settings).subscribe(good, bad);
         };
 
@@ -94,7 +97,7 @@ export class ElasticService {
                 if (err.status === 503) {
                     cb('The server is busy processing similar request, please try again in a minute.');
                 } else {
-                    cb('An error occured. This issue has been reported.');
+                    cb('An error occurred. This issue has been reported.');
                 }
             }
         );
@@ -174,23 +177,6 @@ export class ElasticService {
             version: 20160329,
         };
     }
-
-    // static highlight(field1: string, field2: string, cde) {
-    //     if (cde.highlight[field1 + '.' + field2]) {
-    //         cde.highlight[field1 + '.' + field2].forEach(function (nameHighlight) {
-    //             let elements;
-    //             if (field1.indexOf('.') < 0) elements = cde[field1];
-    //             else elements = cde[field1.replace(/\..+$/, '')][field1.replace(/^.+\./, '')];
-    //             elements.forEach((nameCde, i: number) => {
-    //                 if (nameCde[field2] === nameHighlight.replace(/<[^>]+>/gm, '')) {
-    //                     nameCde[field2] = nameHighlight;
-    //                     if (field2 === 'designation' && i === 0) cde.highlight.primaryName = true;
-    //                 }
-    //             });
-    //
-    //         });
-    //     }
-    // }
 
     static highlightElt(cde: ItemElastic) {
         ElasticService.highlightOne('primaryNameCopy', cde);
