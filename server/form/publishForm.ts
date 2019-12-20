@@ -25,7 +25,7 @@ function storeHtmlInDb(req, res, form, fileStr) {
 }
 
 export function getFormForPublishing(form, req, res) {
-    renderFile('modules/_nativeRenderApp/nativeRenderApp.ejs', {isLegacy: true, version: 'version'}, (err, fileStr) => {
+    renderFile('frontEnd/_nativeRenderApp/nativeRenderApp.ejs', {isLegacy: true, version: 'version'}, (err, fileStr) => {
         const lines = fileStr.split('\n');
         let cssFileName;
         const headIndex = lines.findIndex(l => l.includes('</head>'));

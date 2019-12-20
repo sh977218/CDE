@@ -1,5 +1,5 @@
-import { FhirMapped, getMapPropertyFromId, supportedResourcesMaps } from '_fhirApp/resources';
-import { ResourceTreeResource } from '_fhirApp/resourceTree';
+import { FhirMapped, getMapPropertyFromId, supportedResourcesMaps } from './resources';
+import { ResourceTreeResource } from './resourceTree';
 import _isEqual from 'lodash/isEqual';
 import { assertThrow } from 'shared/models.model';
 import { questionMulti } from 'shared/form/fe';

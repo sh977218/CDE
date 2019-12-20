@@ -13,12 +13,12 @@ export function module() {
     const router = Router();
 
     let nativeRenderHtml = '';
-    renderFile('modules/_nativeRenderApp/nativeRenderApp.ejs', {isLegacy: false, version}, (err, str) => {
+    renderFile('frontEnd/_nativeRenderApp/nativeRenderApp.ejs', {isLegacy: false, version}, (err, str) => {
         nativeRenderHtml = str;
     });
 
     let nativeRenderLegacyHtml = '';
-    renderFile('modules/_nativeRenderApp/nativeRenderApp.ejs', {isLegacy: true, version}, (err, str) => {
+    renderFile('frontEnd/_nativeRenderApp/nativeRenderApp.ejs', {isLegacy: true, version}, (err, str) => {
         nativeRenderLegacyHtml = str;
     });
     router.get('/', (req, res) => {

@@ -1,7 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialog, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
-import { CdeFhirService, PatientForm } from '_fhirApp/cdeFhir.service';
+import { CdeFhirService, PatientForm } from './cdeFhir.service';
 import { getMapToFhirResource } from 'core/form/formAndFe';
 import { interruptEvent } from 'non-core/browser';
 import { CdeForm, DisplayProfile } from 'shared/form/form.model';

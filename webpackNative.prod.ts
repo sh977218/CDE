@@ -8,7 +8,7 @@ export default merge(baseConfig, nativeConfig, {
     plugins: [
         new AotPlugin.AngularCompilerPlugin({
             tsConfigPath: path.resolve(__dirname, './tsconfigNative.json'),
-            entryModule: path.resolve(__dirname, './modules/_nativeRenderApp/nativeRenderApp.module') + '#NativeRenderAppModule'
+            entryModule: path.resolve(__dirname, './frontEnd/_nativeRenderApp/nativeRenderApp.module') + '#NativeRenderAppModule'
         }),
     ]
 });

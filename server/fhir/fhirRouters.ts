@@ -16,10 +16,10 @@ export function module() {
     const router = Router();
 
     let fhirHtml = '';
-    renderFile('modules/_fhirApp/fhirApp.ejs', {isLegacy: false, version}, (err, str) => fhirHtml = str);
+    renderFile('frontEnd/_fhirApp/fhirApp.ejs', {isLegacy: false, version}, (err, str) => fhirHtml = str);
 
     let fhirLegacyHtml = '';
-    renderFile('modules/_fhirApp/fhirApp.ejs', {isLegacy: true, version}, (err, str) => fhirLegacyHtml = str);
+    renderFile('frontEnd/_fhirApp/fhirApp.ejs', {isLegacy: true, version}, (err, str) => fhirLegacyHtml = str);
 
     router.get('/server/fhirApps', (req, res) => fhirApps.find(res, {}, apps => res.send(apps)));
     router.get('/server/fhirApp/:id', (req, res) => fhirApps.get(res, req.params.id, app => res.send(app)));
@@ -29,7 +29,7 @@ export function module() {
     router.get('/fhir/form/:param', (req, res) => res.send(isModernBrowser(req) ? fhirHtml : fhirLegacyHtml));
 
     router.get('/fhir/launch/:param', (req, res) => {
-        res.sendFile(join(__dirname, '../../modules/_fhirApp', 'fhirAppLaunch.html'), undefined, err => {
+        res.sendFile(join(__dirname, '../../frontEnd/_fhirApp', 'fhirAppLaunch.html'), undefined, err => {
             if (err) {
                 res.sendStatus(404);
             }
