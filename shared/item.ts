@@ -40,7 +40,7 @@ export const ITEM_MAP: {
         }
     },
     cde: {
-        api: '/server/de/',
+        api: '/api/de/',
         apiById: '/server/de/byId/',
         apiById_prior: '/server/de/prior/',
         apiDraft: '/server/de/draft/',
@@ -50,7 +50,7 @@ export const ITEM_MAP: {
         viewById: '/deView?cdeId=',
     },
     form: {
-        api: '/server/form/',
+        api: '/api/form/',
         apiById: '/server/form/byId/',
         apiById_prior: '/server/form/prior/',
         apiDraft: '/server/form/draft/',
