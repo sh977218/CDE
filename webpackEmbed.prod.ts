@@ -8,7 +8,7 @@ export default merge(baseConfig, embedConfig, {
     plugins: [
         new AotPlugin.AngularCompilerPlugin({
             tsConfigPath: path.resolve(__dirname, './tsconfigEmbed.json'),
-            entryModule: path.resolve(__dirname, './modules/_embedApp/embedApp.module') + '#EmbedAppModule'
+            entryModule: path.resolve(__dirname, './frontEnd/_embedApp/embedApp.module') + '#EmbedAppModule'
         }),
     ],
 });
