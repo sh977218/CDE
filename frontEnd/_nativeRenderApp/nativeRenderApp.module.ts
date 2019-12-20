@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { NativeRenderAppComponent } from '_nativeRenderApp/nativeRenderApp.component';
+import { NativeRenderAppComponent } from './nativeRenderApp.component';
 import { NativeRenderModule } from 'nativeRender/nativeRender.module';
 
 @NgModule({

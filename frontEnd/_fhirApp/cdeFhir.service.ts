@@ -2,18 +2,18 @@ import { HttpClient } from '@angular/common/http';
 import { Component, Inject, Injectable } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material';
 import { ActivatedRouteSnapshot } from '@angular/router';
-import { FhirAppViewModes } from '_fhirApp/fhirApp.component';
-import { propertyToQuestion, questionToProperty, staticToProperty } from '_fhirApp/properties';
+import { FhirAppViewModes } from './fhirApp.component';
+import { propertyToQuestion, questionToProperty, staticToProperty } from './properties';
 import {
     contextTypesArray,
     ResourceTree, ResourceTreeAttribute, ResourceTreeIntermediate, ResourceTreeResource, ResourceTreeRoot,
     ResourceTreeUtil
-} from '_fhirApp/resourceTree';
+} from './resourceTree';
 import {
     addEmptyNode, addRootNode, compareCodingId, resourceMap, setResourceAndUpdateParentResource
-} from '_fhirApp/resources';
-import { FhirSmartService } from '_fhirApp/fhirSmart.service';
-import { valueSets } from '_fhirApp/valueSets';
+} from './resources';
+import { FhirSmartService } from './fhirSmart.service';
+import { valueSets } from './valueSets';
 import async_forEach from 'async/forEach';
 import async_memoize from 'async/memoize';
 import async_series from 'async/series';
