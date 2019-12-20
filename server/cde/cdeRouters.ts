@@ -31,33 +31,37 @@ export function module() {
 
     daoManager.registerDao(mongoCde);
 
-    router.get('/de/:tinyId', nocacheMiddleware, byTinyId);
-    router.get('/de/:tinyId/latestVersion/', nocacheMiddleware, latestVersionByTinyId);
-    router.get('/de/:tinyId/version/:version?', nocacheMiddleware, byTinyIdAndVersion);
-    router.post('/de', canCreateMiddleware, create);
-    router.post('/dePublish', canEditMiddlewareDe, publishFromDraft);
-    router.post('/dePublishExternal', canEditMiddlewareDe, publishExternal);
+    // Remove /de after June 1st 2020
+    router.get(['/api/de/:tinyId', '/de/:tinyId'], nocacheMiddleware, byTinyId);
+    router.get('/api/de/:tinyId/latestVersion/', nocacheMiddleware, latestVersionByTinyId);
 
-    router.get('/deById/:id', nocacheMiddleware, byId);
-    router.get('/deById/:id/priorDataElements/', nocacheMiddleware, priorDataElements);
+    // Remove /de after June 1st 2020
+    router.get(['/api/de/:tinyId/version/:version?', '/de/:tinyId/version/:version?'], nocacheMiddleware, byTinyIdAndVersion);
 
-    router.get('/deList/:tinyIdList?', nocacheMiddleware, byTinyIdList);
+    router.post('/server/de', canCreateMiddleware, create);
+    router.post('/server/de/publish', canEditMiddlewareDe, publishFromDraft);
+    router.post('/server/de/publishExternal', canEditMiddlewareDe, publishExternal);
 
-    router.get('/originalSource/cde/:sourceName/:tinyId', originalSourceByTinyIdSourceName);
+    router.get('/server/de/byId/:id', nocacheMiddleware, byId);
+    router.get('/server/de/priors/:id', nocacheMiddleware, priorDataElements);
 
-    router.get('/draftDataElement/:tinyId', isOrgCuratorMiddleware, draftForEditByTinyId);
-    router.put('/draftDataElement/:tinyId', canEditMiddlewareDe, draftSave);
-    router.delete('/draftDataElement/:tinyId', canEditByTinyIdMiddlewareDe, draftDelete);
+    router.get('/server/de/list/:tinyIdList?', nocacheMiddleware, byTinyIdList);
 
-    router.get('/viewingHistory/dataElement', nocacheMiddleware, viewHistory);
+    router.get('/server/de/originalSource/:sourceName/:tinyId', originalSourceByTinyIdSourceName);
+
+    router.get('/server/de/draft/:tinyId', isOrgCuratorMiddleware, draftForEditByTinyId);
+    router.put('/server/de/draft/:tinyId', canEditMiddlewareDe, draftSave);
+    router.delete('/server/de/draft/:tinyId', canEditByTinyIdMiddlewareDe, draftDelete);
+
+    router.get('/server/de/viewingHistory', nocacheMiddleware, viewHistory);
 
     /* ---------- PUT NEW REST API above ---------- */
 
-    router.post('/cdesByTinyIdList', (req, res) => {
+    router.post('/server/de/byTinyIdList', (req, res) => {
         mongoCde.byTinyIdList(req.body, handleError({req, res}, cdes => res.send(cdes)));
     });
 
-    router.post('/elasticSearch/cde', (req, res) => {
+    router.post('/server/de/search', (req, res) => {
         elasticsearch(req.user, req.body, (err, result) => {
             if (err || !result) { return res.status(400).send('invalid query'); }
             hideProprietaryCodes(result.cdes, req.user);
@@ -65,26 +69,26 @@ export function module() {
         });
     });
 
-    router.get('/moreLikeCde/:tinyId', nocacheMiddleware, (req, res) => {
+    router.get('/server/de/moreLike/:tinyId', nocacheMiddleware, (req, res) => {
         morelike(req.params.tinyId, result => {
             hideProprietaryCodes(result.cdes, req.user);
             res.send(result);
         });
     });
 
-    router.get('/cde/derivationOutputs/:inputCdeTinyId', (req, res) => {
+    router.get('/server/de/derivationOutputs/:inputCdeTinyId', (req, res) => {
         mongoCde.derivationOutputs(req.params.inputCdeTinyId, handleError({req, res}, cdes => {
             res.send(cdes);
         }));
     });
 
-    router.post('/getCdeAuditLog', isOrgAuthorityMiddleware, (req, res) => {
+    router.post('/server/de/getAuditLog', isOrgAuthorityMiddleware, (req, res) => {
         mongoCde.getAuditLog(req.body, (err, result) => {
             res.send(result);
         });
     });
 
-    router.post('/elasticSearchExport/cde', (req, res) => {
+    router.post('/server/de/searchExport', (req, res) => {
         const query = buildElasticSearchQuery(req.user, req.body);
         const exporters = {
             json: {
@@ -118,7 +122,7 @@ export function module() {
         exporters.json.export(res);
     });
 
-    router.get('/cde/search', (req, res) => {
+    router.get(['/cde/search', '/de/search'], (req, res) => {
         const selectedOrg = req.query.selectedOrg;
         let pageString = req.query.page; // starting from 1
         if (!pageString) { pageString = '1'; }
@@ -152,7 +156,6 @@ export function module() {
             respondHomeFull(req, res);
         }
     });
-
     router.get('/deView', (req, res) => {
         const {tinyId, version} = req.query;
         mongoCde.byTinyIdVersion(tinyId, version, handleError({req, res}, cde => {
@@ -164,8 +167,7 @@ export function module() {
         }));
     });
 
-
-    router.post('/cdeCompletion/:term', nocacheMiddleware, (req, res) => {
+    router.post('/server/de/completion/:term', nocacheMiddleware, (req, res) => {
         const term = req.params.term;
         completionSuggest(term, req.user, req.body, config.elastic.cdeSuggestIndex.name, (err, resp) => {
             if (err || !resp) {
@@ -176,7 +178,7 @@ export function module() {
         });
     });
 
-    router.get('/api/cde/modifiedElements', (req, res) => {
+    router.get('/api/de/modifiedElements', (req, res) => {
         const dstring = req.query.from;
 
         const r = /20[0-2][0-9]-[0-1][0-9]-[0-3][0-9]/;
@@ -195,9 +197,9 @@ export function module() {
 
     require('mongoose-schema-jsonschema')(require('mongoose'));
 
-    router.get('/schema/cde', (req, res) => res.send((mongoCde.dataElementModel as any).jsonSchema()));
+    router.get(['/schema/cde', '/de/schema'], (req, res) => res.send((mongoCde.dataElementModel as any).jsonSchema()));
 
-    router.post('/umlsDe', (req, res) => {
+    router.post('/server/de/umls', (req, res) => {
         validatePvs(req.body).then(
             () => res.send(),
             err => res.status(400).send(err)
