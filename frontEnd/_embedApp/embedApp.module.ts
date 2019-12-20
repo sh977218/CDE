@@ -9,9 +9,9 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ElasticService } from '_app/elastic.service';
 import { InactivityLoggedOutComponent, UserService } from '_app/user.service';
 import { CommonAppModule } from '_commonApp/commonApp.module';
-import { EmbedAppComponent } from '_embedApp/embedApp.component';
-import { EmbeddedCdeSearchResultComponent } from '_embedApp/searchResults/embeddedCdeSearchResult.component';
-import { EmbeddedFormSearchResultComponent } from '_embedApp/searchResults/embeddedFormSearchResult.component';
+import { EmbedAppComponent } from './embedApp.component';
+import { EmbeddedCdeSearchResultComponent } from './searchResults/embeddedCdeSearchResult.component';
+import { EmbeddedFormSearchResultComponent } from './searchResults/embeddedFormSearchResult.component';
 import { LocalStorageModule } from 'angular-2-local-storage';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 

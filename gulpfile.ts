@@ -167,7 +167,7 @@ gulp.task('copyCode', function copyCode() {
 gulp.task('copyNpmDeps', ['copyCode', 'npmRebuildNodeSass'], function copyNpmDeps(cb) {
     gulp.src(buildDir('./package.json'))
         .pipe(gulp.dest(BUILD_DIR))
-        .on('error', cb)
+        .on('/derror', cb)
         .on('end', () => {
             run('npm i --production', {cwd: BUILD_DIR}).then(cb, cb);
         });
@@ -208,7 +208,7 @@ gulp.task('usemin', ['copyDist'], function useminTask() {
     const streamArray: NodeJS.ReadWriteStream[] = [];
     [
         {folder: './modules/system/views/', filename: 'index.ejs'},
-        {folder: './modules/_embedApp/', filename: 'embedApp.ejs'},
+        {folder: './frontEnd/_embedApp/', filename: 'embedApp.ejs'},
         {folder: './modules/_fhirApp/', filename: 'fhirApp.ejs'},
         {folder: './modules/_nativeRenderApp/', filename: 'nativeRenderApp.ejs'},
     ].forEach(item => {
@@ -281,7 +281,7 @@ gulp.task('copyUsemin', ['usemin'], function usemin() {
     [
         {folder: './modules/system/views/bot/', filename: '*.ejs'},
         {folder: './modules/system/views/', filename: 'index.ejs'},
-        {folder: './modules/_embedApp/', filename: 'embedApp.ejs'},
+        {folder: './frontEnd/_embedApp/', filename: 'embedApp.ejs'},
         {folder: './modules/_nativeRenderApp/', filename: 'nativeRenderApp.ejs'},
         {folder: './modules/_fhirApp/', filename: 'fhirApp.ejs'}
     ].forEach(item => {
