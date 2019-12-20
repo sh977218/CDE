@@ -93,18 +93,19 @@ export function module() {
         }
     });
 
+    // Remove /form after July 1st 2020
+    router.get(['/api/form/:tinyId', '/form/:tinyId'], allowXOrigin, nocacheMiddleware, allRequestsProcessing, formSvc.byTinyId);
+    router.get(['/api/form/:tinyId/version/:version?', '/form/:tinyId/version/:version?'], [allowXOrigin, nocacheMiddleware], formSvc.byTinyIdAndVersion);
 
-    router.get('/form/:tinyId', allowXOrigin, nocacheMiddleware, allRequestsProcessing, formSvc.byTinyId);
-    router.get('/form/:tinyId/latestVersion/', nocacheMiddleware, formSvc.latestVersionByTinyId);
-    router.get('/form/:tinyId/version/:version?', [allowXOrigin, nocacheMiddleware], formSvc.byTinyIdAndVersion);
-    router.post('/form', canCreateMiddleware, formSvc.create);
-    router.post('/formPublish', canEditMiddlewareForm, formSvc.publishFromDraft);
-    router.post('/formPublishExternal', canEditMiddlewareForm, formSvc.publishExternal);
+    router.get('/api/form/:tinyId/latestVersion/', nocacheMiddleware, formSvc.latestVersionByTinyId);
+    router.post('/server/form', canCreateMiddleware, formSvc.create);
+    router.post('/server/form/publish', canEditMiddlewareForm, formSvc.publishFromDraft);
+    router.post('/server/form/publishExternal', canEditMiddlewareForm, formSvc.publishExternal);
 
-    router.get('/formById/:id', nocacheMiddleware, allRequestsProcessing, formSvc.byId);
-    router.get('/formById/:id/priorForms/', nocacheMiddleware, formSvc.priorForms);
+    router.get('/server/form/byId/:id', nocacheMiddleware, allRequestsProcessing, formSvc.byId);
+    router.get('/server/form/priors/:id/', nocacheMiddleware, formSvc.priorForms);
 
-    router.get('/formForEdit/:tinyId', nocacheMiddleware,
+    router.get('/server/form/forEdit/:tinyId', nocacheMiddleware,
         checkSchema({tinyId: {
                 in: ['params'],
                 isLength: {
@@ -115,7 +116,7 @@ export function module() {
             }}),
         validateBody, formSvc.forEditByTinyId);
 
-    router.get('/formForEdit/:tinyId/version/:version?', nocacheMiddleware,
+    router.get('/server/form/forEdit/:tinyId/version/:version?', nocacheMiddleware,
         checkSchema({tinyId: {
                 in: ['params'],
                 isLength: {
@@ -127,7 +128,7 @@ export function module() {
         validateBody,
         formSvc.forEditByTinyIdAndVersion);
 
-    router.get('/formForEditById/:id', nocacheMiddleware,
+    router.get('/server/form/forEditById/:id', nocacheMiddleware,
         checkSchema({id: {
                 in: ['params'],
                 isLength: {
@@ -140,18 +141,18 @@ export function module() {
         validateBody,
         formSvc.forEditById);
 
-    router.get('/formList/:tinyIdList?', nocacheMiddleware, formSvc.byTinyIdList);
-    router.get('/originalSource/form/:sourceName/:tinyId', formSvc.originalSourceByTinyIdSourceName);
+    router.get('/server/form/list/:tinyIdList?', nocacheMiddleware, formSvc.byTinyIdList);
+    router.get('/server/form/originalSource/:sourceName/:tinyId', formSvc.originalSourceByTinyIdSourceName);
 
-    router.get('/draftForm/:tinyId', isOrgCuratorMiddleware, formSvc.draftForEditByTinyId);
-    router.put('/draftForm/:tinyId', canEditMiddlewareForm, formSvc.draftSave);
-    router.delete('/draftForm/:tinyId', canEditByTinyIdMiddlewareForm, formSvc.draftDelete);
+    router.get('/server/form/draft/:tinyId', isOrgCuratorMiddleware, formSvc.draftForEditByTinyId);
+    router.put('/server/form/draft/:tinyId', canEditMiddlewareForm, formSvc.draftSave);
+    router.delete('/server/form/draft/:tinyId', canEditByTinyIdMiddlewareForm, formSvc.draftDelete);
 
     // router.get('/draftFormById/:id', formSvc.draftForEditById);
 
-    router.post('/form/publish/:id', loggedInMiddleware, formSvc.publishFormToHtml);
+    router.post('/server/form/publish/:id', loggedInMiddleware, formSvc.publishFormToHtml);
 
-    router.get('/viewingHistory/form', loggedInMiddleware, nocacheMiddleware, (req, res) => {
+    router.get('/server/form/viewingHistory', loggedInMiddleware, nocacheMiddleware, (req, res) => {
         const splicedArray = req.user.formViewHistory.splice(0, 10);
         const idList: string[] = [];
         for (const sa of splicedArray) {
@@ -164,7 +165,7 @@ export function module() {
 
     /* ---------- PUT NEW REST API above ---------- */
 
-    router.post('/elasticSearch/form', (req, res) => {
+    router.post('/server/form/search', (req, res) => {
         const query = sharedElastic.buildElasticSearchQuery(req.user, req.body);
         if (query.size > 100) { return res.status(422).send('Too many results requested. (max 100)'); }
         if ((query.from + query.size) > 10000) { return res.status(422).send('Exceeded pagination limit (10,000)'); }
@@ -176,20 +177,20 @@ export function module() {
         }));
     });
 
-    router.post('/scrollExport/form', (req, res) => {
+    router.post('/server/form/scrollExport', (req, res) => {
         const query = sharedElastic.buildElasticSearchQuery(req.user, req.body);
         scrollExport(query, 'form', handleNotFound({res, statusCode: 400}, response => res.send(response.body)));
     });
 
-    router.get('/scrollExport/:scrollId', (req, res) => {
+    router.get('/server/form/scrollExport/:scrollId', (req, res) => {
         scrollNext(req.params.scrollId, handleNotFound({res, statusCode: 400}, response => res.send(response.body)));
     });
 
-    router.post('/getFormAuditLog', isOrgAuthorityMiddleware, (req, res) => {
+    router.post('/server/form/getAuditLog', isOrgAuthorityMiddleware, (req, res) => {
         mongoForm.getAuditLog(req.body, (err, result) => res.send(result));
     });
 
-    router.post('/elasticSearchExport/form', (req, res) => {
+    router.post('/server/form/searchExport', (req, res) => {
         const query = sharedElastic.buildElasticSearchQuery(req.user, req.body);
         const exporters = {
             json: {
@@ -215,7 +216,6 @@ export function module() {
         exporters.json.export(res);
     });
 
-
     router.get('/formView', (req, res) => {
         const tinyId = req.query.tinyId;
         const version = req.query.version;
@@ -228,7 +228,7 @@ export function module() {
         }));
     });
 
-    router.post('/formCompletion/:term', nocacheMiddleware, (req, res) => {
+    router.post('/server/form/completion/:term', nocacheMiddleware, (req, res) => {
         const term = req.params.term;
         completionSuggest(term, req.user, req.body, config.elastic.formSuggestIndex.name, (err, resp) => {
             if (err || !resp) {
@@ -240,7 +240,7 @@ export function module() {
     });
 
     // This is for tests only
-    router.post('/sendMockFormData', (req, res) => {
+    router.post('/server/sendMockFormData', (req, res) => {
         const mapping = JSON.parse(req.body.mapping);
         if (req.body['0-0'] === '1' && req.body['0-1'] === '2'
             && req.body['0-2'] === 'Lab Name'
@@ -268,7 +268,7 @@ export function module() {
 
     router.get('/schema/form', (req, res) => res.send((formModel as any).jsonSchema()));
 
-    router.get('/ucumConvert', (req, res) => {
+    router.get('/server/ucumConvert', (req, res) => {
         const value = req.query.value === '0' ? 1e-20 : parseFloat(req.query.value); // 0 workaround
         const result = ucum.convertUnitTo(req.query.from, value, req.query.to);
         if (result.status === 'succeeded') {
@@ -310,7 +310,7 @@ export function module() {
         cb(error, uom);
     }
 
-    router.get('/ucumSynonyms', check('uom').isAlphanumeric(), validateBody, (req, res) => {
+    router.get('/server/ucumSynonyms', check('uom').isAlphanumeric(), validateBody, (req, res) => {
         const uom = req.query.uom;
 
         const resp = ucum.getSpecifiedUnit(uom, 'validate', 'false');
@@ -324,7 +324,7 @@ export function module() {
         res.send([name, ...synonyms]);
     });
 
-    router.get('/ucumNames', check('uom').isAlphanumeric(), validateBody, (req, res) => {
+    router.get('/server/ucumNames', check('uom').isAlphanumeric(), validateBody, (req, res) => {
         const uom = req.query.uom;
 
         const resp = ucum.getSpecifiedUnit(uom, 'validate', true);
@@ -339,7 +339,7 @@ export function module() {
         }
     });
 
-    router.post('/ucumValidate', check('uoms').isArray(), validateBody, (req, res) => {
+    router.post('/server/ucumValidate', check('uoms').isArray(), validateBody, (req, res) => {
         const errors: (string|undefined)[] = [];
         const units: (string|undefined)[] = [];
         req.body.uoms.forEach((uom, i) => {
@@ -360,12 +360,12 @@ export function module() {
         res.send({errors, units});
     });
 
-    router.post('/syncLinkedForms', isOrgAuthorityMiddleware, (req, res) => {
+    router.post('/server/syncLinkedForms', isOrgAuthorityMiddleware, (req, res) => {
         res.send();
         syncLinkedForms.syncLinkedForms();
     });
 
-    router.get('/syncLinkedForms', (req, res) => res.send(syncLinkedForms.syncLinkedFormsProgress));
+    router.get('/server/syncLinkedForms', (req, res) => res.send(syncLinkedForms.syncLinkedFormsProgress));
 
     /* tslint:disable */
     new CronJob('00 30 4 * * *', () => syncLinkedForms.syncLinkedForms(), null, true, 'America/New_York');
