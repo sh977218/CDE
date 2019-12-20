@@ -49,7 +49,6 @@ import {
 import { initEs } from 'server/system/elastic';
 import { startServer } from 'server/system/ioServer';
 import { errorLogger, expressLogger } from 'server/system/logging';
-import * as daoManager from 'server/system/moduleDaoManager';
 import { sessionStore } from 'server/system/mongo-data';
 import { banHackers, blockBannedIps } from 'server/system/trafficFilterSvc';
 import { module as userModule } from 'server/user/userRoutes';
@@ -326,9 +325,9 @@ try {
     app.use('/nativeRender', nativeRenderModule());
     app.use('/', embedModule());
     app.use('/', fhirModule());
-    app.use('/server/cde', cdeModule());
+    app.use('/', cdeModule());
     app.use('/server/system', systemModule());
-    app.use('/server/form', formModule());
+    app.use('/', formModule());
     app.use('/server/board', boardModule());
     swaggerInit(app);
     app.use('/server/user', userModule({

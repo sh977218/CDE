@@ -58,7 +58,7 @@ export class ElasticService {
     generalSearchQuery(settings: SearchSettingsElastic, type: 'cde' | 'form',
                        cb: CbErr<SearchResponseAggregationDe, boolean> | CbErr<SearchResponseAggregationForm, boolean>): void {
         const search = (good: Cb1<SearchResponseAggregationItem, boolean>, bad: CbErr<SearchResponseAggregationItem, boolean>) => {
-            const url = 'server/' + type + '/elasticSearch/' + type;
+            const url = '/server/elasticSearch/' + type;
             this.http.post<SearchResponseAggregationItem>(url, settings).subscribe(good, bad);
         };
 

@@ -79,7 +79,7 @@ export class CreateFormComponent implements OnInit {
     }
 
     createForm() {
-        this.http.post<CdeForm>('/server/form/form', this.elt)
+        this.http.post<CdeForm>('/server/form', this.elt)
             .subscribe(res => {
                     this.router.navigate(['/formView'], {queryParams: {tinyId: res.tinyId}});
                     if (this.done) {

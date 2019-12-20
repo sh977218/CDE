@@ -92,7 +92,7 @@ export class CreateDataElementComponent implements OnInit {
     }
 
     createDataElement() {
-        this.http.post<DataElement>('/server/cde/de', this.elt)
+        this.http.post<DataElement>('/server/de', this.elt)
             .subscribe(res => {
                 this.close.emit();
                 this.router.navigate(['/deView'], {queryParams: {tinyId: res.tinyId}});

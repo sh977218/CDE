@@ -9,7 +9,7 @@ import { Item } from 'shared/models.model';
 export class SourcesComponent {
     @Input() set elt(e: Item) {
         e.sources.forEach(async s => {
-            const url = `/server/${e.elementType}/originalSource/${e.elementType}/${s.sourceName}/${e.tinyId}`;
+            const url = `/server/originalSource/${e.elementType}/${s.sourceName}/${e.tinyId}`;
             let result = true;
             await this.http.head(url).toPromise().catch(() => result = false);
             this.sourceUrls[url] = result;
