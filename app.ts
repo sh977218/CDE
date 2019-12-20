@@ -217,15 +217,6 @@ if (config.s3) {
     app.use('/native', express.static((global as any).appDir('dist/native')));
 }
 
-['/embedded/public', '/_embedApp/public'].forEach(p => {
-    app.use(p, (req, res, next) => {
-            res.removeHeader('x-frame-options');
-            next();
-        },
-        express.static(path.join(__dirname, '/modules/_embedApp/public'))
-    );
-});
-
 app.use(flash());
 authInit(app);
 

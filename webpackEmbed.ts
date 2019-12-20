@@ -6,7 +6,7 @@ const APP_DIR = __dirname;
 
 export default {
     entry: {
-        embed: './modules/_embedApp/embeddedApp.ts'
+        embed: './frontEnd/_embedApp/embeddedApp.ts'
     },
     output: {
         path: resolve(APP_DIR, 'dist/embed'), // TODO: temporary until gulp stops packaging vendor.js, then use /dist

@@ -17,7 +17,7 @@ sed -i -e "s/'\.\/tsconfigEmbed\.json'/'\.\.\/tsconfigEmbed\.json'/g" buildNode/
 sed -i -e "s/'\.\/tsconfigFhir\.json'/'\.\.\/tsconfigFhir\.json'/g" buildNode/webpackFhir.prod.js
 sed -i -e "s/'\.\/tsconfigNative\.json'/'\.\.\/tsconfigNative\.json'/g" buildNode/webpackNative.prod.js
 sed -i -e "s/'\.\/modules\/_app\/app\.module'/'\.\.\/modules\/_app\/app\.module'/g" buildNode/webpackApp.prod.js
-sed -i -e "s/'\.\/modules\/_embedApp\/embedApp\.module'/'\.\.\/modules\/_embedApp\/embedApp\.module'/g" buildNode/webpackEmbed.prod.js
+sed -i -e "s/'\.\/frontEnd\/_embedApp\/embedApp\.module'/'\.\.\/frontEnd\/_embedApp\/embedApp\.module'/g" buildNode/webpackEmbed.prod.js
 sed -i -e "s/'\.\/modules\/_fhirApp\/fhirApp\.module'/'\.\.\/modules\/_fhirApp\/fhirApp\.module'/g" buildNode/webpackFhir.prod.js
 sed -i -e "s/'\.\/modules\/_nativeRenderApp\/nativeRenderApp\.module'/'\.\.\/modules\/_nativeRenderApp\/nativeRenderApp\.module'/g" buildNode/webpackNative.prod.js
 

@@ -35,7 +35,7 @@
     "dist",
     "gulpfile.ts",
     "ingester",
-    "modules/_embedApp",
+    "frontEnd/_embedApp",
     "modules/_fhirApp",
     "modules/_nativeRenderApp",
     "modules/form/public/assets",
