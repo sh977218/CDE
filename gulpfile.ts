@@ -97,8 +97,8 @@ gulp.task('createDist', ['copyThirdParty'], function createDist() {
 gulp.task('copyCode', function copyCode() {
     const streamArray: NodeJS.ReadWriteStream[] = [];
 
-    streamArray.push(gulp.src(appDir('./modules/_fhirApp/fhirAppLaunch.html'))
-        .pipe(gulp.dest(BUILD_DIR + '/modules/_fhirApp/')));
+    streamArray.push(gulp.src(appDir('./frontEnd/_fhirApp/fhirAppLaunch.html'))
+        .pipe(gulp.dest(BUILD_DIR + '/frontEnd/_fhirApp/')));
 
     ['cde', 'form', 'processManager', 'system', 'board'].forEach(module => {
         streamArray.push(gulp.src(appDir('./modules/' + module + '/**/*.png'))
@@ -209,8 +209,8 @@ gulp.task('usemin', ['copyDist'], function useminTask() {
     [
         {folder: './modules/system/views/', filename: 'index.ejs'},
         {folder: './frontEnd/_embedApp/', filename: 'embedApp.ejs'},
-        {folder: './modules/_fhirApp/', filename: 'fhirApp.ejs'},
-        {folder: './modules/_nativeRenderApp/', filename: 'nativeRenderApp.ejs'},
+        {folder: './frontEnd/_fhirApp/', filename: 'fhirApp.ejs'},
+        {folder: './frontEnd/_nativeRenderApp/', filename: 'nativeRenderApp.ejs'},
     ].forEach(item => {
         const useminOutputs: string[] = [];
 
@@ -282,8 +282,8 @@ gulp.task('copyUsemin', ['usemin'], function usemin() {
         {folder: './modules/system/views/bot/', filename: '*.ejs'},
         {folder: './modules/system/views/', filename: 'index.ejs'},
         {folder: './frontEnd/_embedApp/', filename: 'embedApp.ejs'},
-        {folder: './modules/_nativeRenderApp/', filename: 'nativeRenderApp.ejs'},
-        {folder: './modules/_fhirApp/', filename: 'fhirApp.ejs'}
+        {folder: './frontEnd/_nativeRenderApp/', filename: 'nativeRenderApp.ejs'},
+        {folder: './frontEnd/_fhirApp/', filename: 'fhirApp.ejs'}
     ].forEach(item => {
         streamArray.push(gulp.src(BUILD_DIR + '/dist/' + item.filename)
             .pipe(gulp.dest(BUILD_DIR + '/' + item.folder)));

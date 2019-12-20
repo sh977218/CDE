@@ -13,10 +13,10 @@ import {
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Routes } from '@angular/router';
-import { CdeFhirService, SelectOneDialogComponent } from '_fhirApp/cdeFhir.service';
-import { FhirAppComponent, FhirStandaloneComponent, ViewFhirEncounterDialogComponent } from '_fhirApp/fhirApp.component';
-import { FhirSmartService } from '_fhirApp/fhirSmart.service';
-import { FhirBrowserEncounterComponent } from '_fhirApp/browser/fhirBrowserEncounter.component';
+import { CdeFhirService, SelectOneDialogComponent } from './cdeFhir.service';
+import { FhirAppComponent, FhirStandaloneComponent, ViewFhirEncounterDialogComponent } from './fhirApp.component';
+import { FhirSmartService } from './fhirSmart.service';
+import { FhirBrowserEncounterComponent } from './browser/fhirBrowserEncounter.component';
 import { NativeRenderModule } from 'nativeRender/nativeRender.module';
 
 const appRoutes: Routes = [
