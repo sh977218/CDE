@@ -254,7 +254,7 @@ export class DataElementViewComponent implements OnInit {
             this.unsaved = true;
             return this.draftSaving;
         }
-        return this.draftSaving = this.http.put<DataElement>('/server/cde/draftDataElement/' + this.elt.tinyId, this.elt)
+        return this.draftSaving = this.http.put<DataElement>('/server/de/draft/' + this.elt.tinyId, this.elt)
             .toPromise().then(newElt => {
                 this.draftSaving = undefined;
                 this.elt.__v = newElt.__v;
