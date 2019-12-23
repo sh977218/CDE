@@ -33,7 +33,7 @@ import { module as logModule } from 'server/log/logRoutes';
 import * as mongo_form from 'server/form/mongo-form';
 import { module as meshModule } from 'server/mesh/meshRoutes';
 import { module as siteAdminModule } from 'server/siteAdmin/siteAdminRoutes';
-import { module as cdeModule } from 'server/cde/cdeRouters';
+import { module as deModule } from 'server/cde/deRouters';
 import { module as formModule } from 'server/form/formRouters';
 import { module as systemModule } from 'server/system/systemRouters';
 import { module as orgManagementModule } from 'server/orgManagement/orgManagementRoutes';
@@ -316,8 +316,8 @@ try {
     app.use('/nativeRender', nativeRenderModule());
     app.use('/', embedModule());
     app.use('/', fhirModule());
-    app.use('/', cdeModule());
     app.use('/server/system', systemModule());
+    app.use('/', deModule());
     app.use('/', formModule());
     app.use('/server/board', boardModule());
     swaggerInit(app);

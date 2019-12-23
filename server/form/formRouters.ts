@@ -62,7 +62,8 @@ export function module() {
 
     // Remove /form after July 1st 2020
     router.get(['/api/form/:tinyId', '/form/:tinyId'], allowXOrigin, nocacheMiddleware, allRequestsProcessing, formSvc.byTinyId);
-    router.get(['/api/form/:tinyId/version/:version?', '/form/:tinyId/version/:version?'], [allowXOrigin, nocacheMiddleware], formSvc.byTinyIdAndVersion);
+    router.get(['/api/form/:tinyId/version/:version?', '/form/:tinyId/version/:version?'],
+        [allowXOrigin, nocacheMiddleware], formSvc.byTinyIdAndVersion);
 
     router.get('/api/form/:tinyId/latestVersion/', nocacheMiddleware, formSvc.latestVersionByTinyId);
     router.post('/server/form', canCreateMiddleware, formSvc.create);

@@ -64,6 +64,13 @@ export function module() {
 
     router.get('/site-version', (req, res) => res.send(version));
 
+    router.get(['/help/:title', '/createForm', '/createCde', '/boardList',
+            '/board/:id', '/myBoards', '/cdeStatusReport', '/api', '/sdcview', '/404', '/whatsNew', '/contactUs',
+            '/quickBoard', '/searchPreferences', '/siteAudit', '/siteAccountManagement', '/orgAccountManagement',
+            '/classificationManagement', '/profile', '/login', '/orgAuthority', '/orgComments'],
+        respondHomeFull
+    );
+
     router.get('/sw.js', (req, res) => {
         res.sendFile((global as any).appDir('dist/app', 'sw.js'), undefined, err => {
             if (err) {
