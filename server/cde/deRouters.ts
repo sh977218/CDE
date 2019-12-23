@@ -36,6 +36,46 @@ export function module() {
     const router = Router();
     daoManager.registerDao(mongoCde);
 
+    // This end point needs to be defined before ''/de/:tinyId'
+    router.get(['/cde/search', '/de/search'], (req, res) => {
+        const selectedOrg = req.query.selectedOrg;
+        let pageString = req.query.page; // starting from 1
+        if (!pageString) {
+            pageString = '1';
+        }
+        if (isSearchEngine(req)) {
+            if (selectedOrg) {
+                const pageNum = toInteger(pageString);
+                const pageSize = 20;
+                const cond = {
+                    'classification.stewardOrg.name': selectedOrg,
+                    archived: false,
+                    'registrationState.registrationStatus': 'Qualified'
+                };
+                mongoCde.count(cond, handleNotFound<number>({req, res}, totalCount => {
+                    mongoCde.dataElementModel.find(cond, 'tinyId designations', {
+                        skip: pageSize * (pageNum - 1),
+                        limit: pageSize
+                    }, handleError({req, res}, cdes => {
+                        let totalPages = totalCount / pageSize;
+                        if (totalPages % 1 > 0) {
+                            totalPages = totalPages + 1;
+                        }
+                        res.render('bot/cdeSearchOrg', 'system' as any, {
+                            cdes,
+                            totalPages,
+                            selectedOrg
+                        } as any);
+                    }));
+                }));
+            } else {
+                res.render('bot/cdeSearch', 'system' as any);
+            }
+        } else {
+            respondHomeFull(req, res);
+        }
+    });
+
     // Remove /de after June 1st 2020
     router.get(['/api/de/:tinyId', '/de/:tinyId'], nocacheMiddleware, byTinyId);
     router.get(['/api/de/:tinyId/version/:version?', '/de/:tinyId/version/:version?'], nocacheMiddleware, byTinyIdAndVersion);
@@ -127,45 +167,6 @@ export function module() {
             resp.hits.hits.forEach(r => r._index = undefined);
             res.send(resp.hits.hits);
         });
-    });
-
-    router.get(['/cde/search', '/de/search'], (req, res) => {
-        const selectedOrg = req.query.selectedOrg;
-        let pageString = req.query.page; // starting from 1
-        if (!pageString) {
-            pageString = '1';
-        }
-        if (isSearchEngine(req)) {
-            if (selectedOrg) {
-                const pageNum = toInteger(pageString);
-                const pageSize = 20;
-                const cond = {
-                    'classification.stewardOrg.name': selectedOrg,
-                    archived: false,
-                    'registrationState.registrationStatus': 'Qualified'
-                };
-                mongoCde.count(cond, handleNotFound<number>({req, res}, totalCount => {
-                    mongoCde.dataElementModel.find(cond, 'tinyId designations', {
-                        skip: pageSize * (pageNum - 1),
-                        limit: pageSize
-                    }, handleError({req, res}, cdes => {
-                        let totalPages = totalCount / pageSize;
-                        if (totalPages % 1 > 0) {
-                            totalPages = totalPages + 1;
-                        }
-                        res.render('bot/cdeSearchOrg', 'system' as any, {
-                            cdes,
-                            totalPages,
-                            selectedOrg
-                        } as any);
-                    }));
-                }));
-            } else {
-                res.render('bot/cdeSearch', 'system' as any);
-            }
-        } else {
-            respondHomeFull(req, res);
-        }
     });
 
     require('mongoose-schema-jsonschema')(require('mongoose'));

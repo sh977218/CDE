@@ -59,6 +59,45 @@ require('express-async-errors');
 export function module() {
     const router = Router();
     daoManager.registerDao(mongoForm);
+    // This end point needs to be defined before '/form/:tinyId'
+    router.get('/form/search', (req, res) => {
+        const selectedOrg = req.query.selectedOrg;
+        let pageString = req.query.page; // starting from 1
+        if (!pageString) {
+            pageString = '1';
+        }
+        if (isSearchEngine(req)) {
+            if (selectedOrg) {
+                const pageNum = toInteger(pageString);
+                const pageSize = 20;
+                const cond = {
+                    'classification.stewardOrg.name': selectedOrg,
+                    archived: false,
+                    'registrationState.registrationStatus': 'Qualified'
+                };
+                formModel.countDocuments(cond, handleNotFound({req, res}, totalCount => {
+                    formModel.find(cond, 'tinyId designations', {
+                        skip: pageSize * (pageNum - 1),
+                        limit: pageSize
+                    }, handleError({req, res}, forms => {
+                        let totalPages = totalCount / pageSize;
+                        if (totalPages % 1 > 0) {
+                            totalPages = totalPages + 1;
+                        }
+                        res.render('bot/formSearchOrg', 'system' as any, {
+                            forms,
+                            totalPages,
+                            selectedOrg
+                        } as any);
+                    }));
+                }));
+            } else {
+                res.render('bot/formSearch', 'system' as any);
+            }
+        } else {
+            respondHomeFull(req, res);
+        }
+    });
 
     // Remove /form after July 1st 2020
     router.get(['/api/form/:tinyId', '/form/:tinyId'], allowXOrigin, nocacheMiddleware, allRequestsProcessing, formSvc.byTinyId);
@@ -118,44 +157,6 @@ export function module() {
         validateBody, formSvc.forEditById);
 
     router.post('/server/form/publish/:id', loggedInMiddleware, formSvc.publishFormToHtml);
-    router.get('/form/search', (req, res) => {
-        const selectedOrg = req.query.selectedOrg;
-        let pageString = req.query.page; // starting from 1
-        if (!pageString) {
-            pageString = '1';
-        }
-        if (isSearchEngine(req)) {
-            if (selectedOrg) {
-                const pageNum = toInteger(pageString);
-                const pageSize = 20;
-                const cond = {
-                    'classification.stewardOrg.name': selectedOrg,
-                    archived: false,
-                    'registrationState.registrationStatus': 'Qualified'
-                };
-                formModel.countDocuments(cond, handleNotFound({req, res}, totalCount => {
-                    formModel.find(cond, 'tinyId designations', {
-                        skip: pageSize * (pageNum - 1),
-                        limit: pageSize
-                    }, handleError({req, res}, forms => {
-                        let totalPages = totalCount / pageSize;
-                        if (totalPages % 1 > 0) {
-                            totalPages = totalPages + 1;
-                        }
-                        res.render('bot/formSearchOrg', 'system' as any, {
-                            forms,
-                            totalPages,
-                            selectedOrg
-                        } as any);
-                    }));
-                }));
-            } else {
-                res.render('bot/formSearch', 'system' as any);
-            }
-        } else {
-            respondHomeFull(req, res);
-        }
-    });
 
 
     /* ---------- PUT NEW REST API above ---------- */
