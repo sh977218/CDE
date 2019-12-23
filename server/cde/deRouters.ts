@@ -36,7 +36,7 @@ export function module() {
     const router = Router();
     daoManager.registerDao(mongoCde);
 
-    // This end point needs to be defined before ''/de/:tinyId'
+    // Those end points need to be defined before '/de/:tinyId'
     router.get(['/cde/search', '/de/search'], (req, res) => {
         const selectedOrg = req.query.selectedOrg;
         let pageString = req.query.page; // starting from 1
@@ -75,6 +75,8 @@ export function module() {
             respondHomeFull(req, res);
         }
     });
+    require('mongoose-schema-jsonschema')(require('mongoose'));
+    router.get(['/schema/cde', '/de/schema'], (req, res) => res.send((mongoCde.dataElementModel as any).jsonSchema()));
 
     // Remove /de after June 1st 2020
     router.get(['/api/de/:tinyId', '/de/:tinyId'], nocacheMiddleware, byTinyId);
@@ -169,8 +171,6 @@ export function module() {
         });
     });
 
-    require('mongoose-schema-jsonschema')(require('mongoose'));
-
     router.get('/deView', (req, res) => {
         const {tinyId, version} = req.query;
         mongoCde.byTinyIdVersion(tinyId, version, handleError({req, res}, cde => {
@@ -182,7 +182,6 @@ export function module() {
         }));
     });
 
-    router.get(['/schema/cde', '/de/schema'], (req, res) => res.send((mongoCde.dataElementModel as any).jsonSchema()));
 
     router.post('/server/de/umls', (req, res) => {
         validatePvs(req.body).then(

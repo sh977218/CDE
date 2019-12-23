@@ -59,7 +59,7 @@ require('express-async-errors');
 export function module() {
     const router = Router();
     daoManager.registerDao(mongoForm);
-    // This end point needs to be defined before '/form/:tinyId'
+    // Those end points need to be defined before '/form/:tinyId'
     router.get('/form/search', (req, res) => {
         const selectedOrg = req.query.selectedOrg;
         let pageString = req.query.page; // starting from 1
@@ -98,6 +98,7 @@ export function module() {
             respondHomeFull(req, res);
         }
     });
+    router.get(['/schema/form', '/form/schema'], (req, res) => res.send((formModel as any).jsonSchema()));
 
     // Remove /form after July 1st 2020
     router.get(['/api/form/:tinyId', '/form/:tinyId'], allowXOrigin, nocacheMiddleware, allRequestsProcessing, formSvc.byTinyId);
@@ -264,8 +265,6 @@ export function module() {
             }
         }));
     });
-
-    router.get(['/schema/form', '/form/schema'], (req, res) => res.send((formModel as any).jsonSchema()));
 
     router.get('/server/ucumConvert', (req, res) => {
         const value = req.query.value === '0' ? 1e-20 : parseFloat(req.query.value); // 0 workaround
