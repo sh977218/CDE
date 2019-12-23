@@ -221,9 +221,9 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
             .pipe(debounceTime(500))
             .subscribe(term => {
                 if (term && term.length >= 3) {
-                    let url = '/server/de/completion';
+                    let url = '/server/de/completion/';
                     if (this.module === 'form') {
-                        url = '/server/form/completion';
+                        url = '/server/form/completion/';
                     }
                     this.http.post<ElasticQueryResponseHit<ItemElastic>[]>(
                         url + encodeURIComponent(term),
