@@ -22,7 +22,7 @@ class HistoryForm extends CdeForm {
     user?: string;
 }
 
-type History = HistoryDe|HistoryForm;
+type History = HistoryDe | HistoryForm;
 
 function createHistory(elt: DataElement | CdeForm): History {
     return Object.create(elt);
@@ -34,9 +34,13 @@ function createHistory(elt: DataElement | CdeForm): History {
 })
 export class HistoryComponent {
     @Input() canEdit = false;
+
     @Input() set elt(elt: Item) {
         this._elt = elt;
-        const url = ITEM_MAP[this.elt.elementType].apiById + this.elt._id + ITEM_MAP[this.elt.elementType].apiById_prior;
+        let url = '/server/de/priors/' + this.elt._id;
+        if (this.elt.elementType === 'form') {
+            url = '/server/form/priors/' + this.elt._id;
+        }
         this.http.get<History[]>(url).subscribe(res => {
             this.priorElements = res;
             this.priorElements.forEach(pe => {
@@ -48,9 +52,11 @@ export class HistoryComponent {
             }
         }, err => this.alert.httpErrorMessageAlert(err, 'Error retrieving history:'));
     }
+
     get elt() {
         return this._elt;
     }
+
     private _elt!: Item;
     numberSelected = 0;
     priorElements!: History[];
@@ -70,7 +76,11 @@ export class HistoryComponent {
             this.numberSelected--;
         } else {
             priorElt.selected = !priorElt.selected;
-            if (priorElt.selected) { this.numberSelected++; } else { this.numberSelected--; }
+            if (priorElt.selected) {
+                this.numberSelected++;
+            } else {
+                this.numberSelected--;
+            }
         }
     }
 
