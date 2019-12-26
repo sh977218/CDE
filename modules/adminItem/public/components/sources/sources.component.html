@@ -2,11 +2,10 @@
     <legend>Source: {{eltSource.sourceName}}</legend>
     <dl class="row">
         <ng-container
-                *ngIf="sourceUrls['/server/'+elt.elementType+'/originalSource/'+eltSource.sourceName+'/'+elt.tinyId]">
+                *ngIf="sourceUrls[eltSource.sourceName]">
             <dt class="col-3 text-right" matTooltip="Original Data in NLM CDE format">Raw Artifact:</dt>
             <dd class="col-9">
-                <a [href]="'/server/'+elt.elementType+'originalSource/'+eltSource.sourceName+'/'+elt.tinyId"
-                   target="_blank">Raw Artifact</a>
+                <a [href]="sourceUrls[eltSource.sourceName]" target="_blank">Raw Artifact</a>
             </dd>
         </ng-container>
         <ng-container *ngIf="eltSource.sourceName">

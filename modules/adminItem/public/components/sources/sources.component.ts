@@ -8,14 +8,15 @@ import { Item } from 'shared/models.model';
 })
 export class SourcesComponent {
     @Input() set elt(e: Item) {
-        e.sources.forEach(async s => {
+        e.sources.forEach(s => {
             let url = `/server/de/originalSource/${s.sourceName}/${e.tinyId}`;
             if (e.elementType === 'form') {
                 url = `/server/form/originalSource/${s.sourceName}/${e.tinyId}`;
             }
-            let result = true;
-            await this.http.head(url).toPromise().catch(() => result = false);
-            this.sourceUrls[url] = result;
+            this.http.head(url).subscribe(
+                () => this.sourceUrls[s.sourceName] = url,
+                err => delete this.sourceUrls[s.sourceName]
+            );
         });
         this._elt = e;
     }
