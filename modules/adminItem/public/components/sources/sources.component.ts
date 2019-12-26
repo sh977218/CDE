@@ -7,8 +7,11 @@ import { Item } from 'shared/models.model';
     templateUrl: './sources.component.html'
 })
 export class SourcesComponent {
+
+    sourceUrls: any = {};
+
     @Input() set elt(e: Item) {
-        e.sources.forEach(s => {
+        e.sources.forEach((s: any) => {
             let url = `/server/de/originalSource/${s.sourceName}/${e.tinyId}`;
             if (e.elementType === 'form') {
                 url = `/server/form/originalSource/${s.sourceName}/${e.tinyId}`;
@@ -26,8 +29,6 @@ export class SourcesComponent {
     }
 
     private _elt!: Item;
-
-    sourceUrls: any = {};
 
     constructor(private http: HttpClient) {
     }
