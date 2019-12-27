@@ -91,7 +91,7 @@ export class FormService {
     }
 
     static fetchForm(tinyId: string, version?: string): Promise<CdeForm> {
-        return fetch('/server/form/' + tinyId + (version || version === '' ? '/version/' + version : ''))
+        return fetch('/api/form/' + tinyId + (version || version === '' ? '/version/' + version : ''))
             .then(res => res.json());
     }
 

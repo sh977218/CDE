@@ -257,7 +257,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     }
 
     addFormFromSearch(form: CdeForm, cb: Cb<FormInForm> = _noop) {
-        this.http.get<CdeForm>('/server/form/' + form.tinyId).subscribe(form => {
+        this.http.get<CdeForm>('/api/form/' + form.tinyId).subscribe(form => {
             const inForm = convertFormToSection(form);
             if (!inForm) { return; }
             this.addExpanded(inForm);
