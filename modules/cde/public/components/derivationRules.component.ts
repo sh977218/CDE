@@ -144,7 +144,7 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
         if (this.elt.derivationRules) {
             this.elt.derivationRules.forEach((dr: DerivationRule) => {
                 if (dr.inputs[0] !== null) {
-                    this.http.post<DataElement[]>('/cdesByTinyIdList', dr.inputs).subscribe(data => dr.fullCdes = data);
+                    this.http.post<DataElement[]>('/server/de/byTinyIdList/', dr.inputs).subscribe(data => dr.fullCdes = data);
                 }
             });
         }
