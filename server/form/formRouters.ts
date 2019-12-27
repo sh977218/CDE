@@ -260,13 +260,13 @@ export function module() {
     router.get('/formView', (req, res) => {
         const tinyId = req.query.tinyId;
         const version = req.query.version;
-        formByTinyIdVersion(tinyId, version, handleError({req, res}, cde => {
-            if (isSearchEngine(req)) {
-                res.render('bot/formView', 'system' as any, {elt: cde} as any);
-            } else {
-                respondHomeFull(req, res);
-            }
-        }));
+        if (isSearchEngine(req)) {
+            formByTinyIdVersion(tinyId, version, handleError({req, res}, cde => {
+                    res.render('bot/formView', 'system' as any, {elt: cde} as any);
+            }));
+        } else {
+            respondHomeFull(req, res);
+        }
     });
 
     router.get('/server/ucumConvert', (req, res) => {
@@ -279,6 +279,7 @@ export function module() {
             res.send('');
         }
     });
+
     router.get('/server/ucumSynonyms', check('uom').isAlphanumeric(), validateBody, (req, res) => {
         const uom = req.query.uom;
 
@@ -292,6 +293,7 @@ export function module() {
         const synonyms = unit.synonyms_.split('; ');
         res.send([name, ...synonyms]);
     });
+
     router.get('/server/ucumNames', check('uom').isAlphanumeric(), validateBody, (req, res) => {
         const uom = req.query.uom;
 

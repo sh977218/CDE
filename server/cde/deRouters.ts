@@ -173,13 +173,13 @@ export function module() {
 
     router.get('/deView', (req, res) => {
         const {tinyId, version} = req.query;
-        mongoCde.byTinyIdVersion(tinyId, version, handleError({req, res}, cde => {
-            if (isSearchEngine(req)) {
+        if (isSearchEngine(req)) {
+            mongoCde.byTinyIdVersion(tinyId, version, handleError({req, res}, cde => {
                 res.render('bot/deView', 'system' as any, {elt: cde} as any);
-            } else {
-                respondHomeFull(req, res);
-            }
-        }));
+            }));
+        } else {
+            respondHomeFull(req, res);
+        }
     });
 
 
