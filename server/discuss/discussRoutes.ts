@@ -210,7 +210,7 @@ export function module(roleConfig: {allComments: RequestHandler, manageComment: 
 
     router.get('/orgComments/:from/:size/:orgName?', loggedInMiddleware, (req: Request, res: Response) => {
         if (!req.params.orgName) {
-            req.params.orgName = myOrgs(req.user);
+            req.params.orgName = myOrgs(req.user)[0];
         }
         respondCommentOrgsByCriteria(req, res, {});
     });
