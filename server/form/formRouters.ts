@@ -19,9 +19,12 @@ import { getEnvironmentHost } from 'shared/env';
 import { CbErr } from 'shared/models.model';
 import { stripBsonIdsElt } from 'shared/system/exportShared';
 import { respondHomeFull } from 'server/system/appRouters';
-import { viewHistory } from 'server/form/formsvc';
+import {
+    viewHistory, byTinyId, byTinyIdAndVersion, latestVersionByTinyId, create, publishFromDraft, publishExternal, byId,
+    priorForms, byTinyIdList, originalSourceByTinyIdSourceName, draftForEditByTinyId, draftSave, draftDelete,
+    forEditById, publishFormToHtml, forEditByTinyId, forEditByTinyIdAndVersion
+} from 'server/form/formsvc';
 
-const formSvc = require('./formsvc');
 const syncLinkedForms = require('./syncLinkedForms');
 const mongoForm = require('./mongo-form');
 const sharedElastic = require('../system/elastic');
@@ -101,24 +104,24 @@ export function module() {
     router.get(['/schema/form', '/form/schema'], (req, res) => res.send((formModel as any).jsonSchema()));
 
     // Remove /form after July 1st 2020
-    router.get(['/api/form/:tinyId', '/form/:tinyId'], allowXOrigin, nocacheMiddleware, allRequestsProcessing, formSvc.byTinyId);
+    router.get(['/api/form/:tinyId', '/form/:tinyId'], allowXOrigin, nocacheMiddleware, allRequestsProcessing, byTinyId);
     router.get(['/api/form/:tinyId/version/:version?', '/form/:tinyId/version/:version?'],
-        [allowXOrigin, nocacheMiddleware], formSvc.byTinyIdAndVersion);
+        [allowXOrigin, nocacheMiddleware], byTinyIdAndVersion);
 
-    router.get('/api/form/:tinyId/latestVersion/', nocacheMiddleware, formSvc.latestVersionByTinyId);
-    router.post('/server/form', canCreateMiddleware, formSvc.create);
-    router.post('/server/form/publish', canEditMiddlewareForm, formSvc.publishFromDraft);
-    router.post('/server/form/publishExternal', canEditMiddlewareForm, formSvc.publishExternal);
+    router.get('/api/form/:tinyId/latestVersion/', nocacheMiddleware, latestVersionByTinyId);
+    router.post('/server/form', canCreateMiddleware, create);
+    router.post('/server/form/publish', canEditMiddlewareForm, publishFromDraft);
+    router.post('/server/form/publishExternal', canEditMiddlewareForm, publishExternal);
 
-    router.get('/server/form/byId/:id', nocacheMiddleware, allRequestsProcessing, formSvc.byId);
-    router.get('/server/form/priors/:id/', nocacheMiddleware, formSvc.priorForms);
+    router.get('/server/form/byId/:id', nocacheMiddleware, allRequestsProcessing, byId);
+    router.get('/server/form/priors/:id/', nocacheMiddleware, priorForms);
 
-    router.get('/server/form/list/:tinyIdList?', nocacheMiddleware, formSvc.byTinyIdList);
-    router.get('/server/form/originalSource/:sourceName/:tinyId', formSvc.originalSourceByTinyIdSourceName);
+    router.get('/server/form/list/:tinyIdList?', nocacheMiddleware, byTinyIdList);
+    router.get('/server/form/originalSource/:sourceName/:tinyId', originalSourceByTinyIdSourceName);
 
-    router.get('/server/form/draft/:tinyId', isOrgCuratorMiddleware, formSvc.draftForEditByTinyId);
-    router.put('/server/form/draft/:tinyId', canEditMiddlewareForm, formSvc.draftSave);
-    router.delete('/server/form/draft/:tinyId', canEditByTinyIdMiddlewareForm, formSvc.draftDelete);
+    router.get('/server/form/draft/:tinyId', isOrgCuratorMiddleware, draftForEditByTinyId);
+    router.put('/server/form/draft/:tinyId', canEditMiddlewareForm, draftSave);
+    router.delete('/server/form/draft/:tinyId', canEditByTinyIdMiddlewareForm, draftDelete);
 
     router.get('/server/form/viewingHistory', loggedInMiddleware, nocacheMiddleware, viewHistory);
 
@@ -132,7 +135,7 @@ export function module() {
                 }
             }
         }),
-        validateBody, formSvc.forEditByTinyId);
+        validateBody, forEditByTinyId);
     router.get('/server/form/forEdit/:tinyId/version/:version?', nocacheMiddleware, checkSchema({
             tinyId: {
                 in: ['params'],
@@ -143,7 +146,7 @@ export function module() {
                 }
             }
         }),
-        validateBody, formSvc.forEditByTinyIdAndVersion);
+        validateBody, forEditByTinyIdAndVersion);
     router.get('/server/form/forEditById/:id', nocacheMiddleware, checkSchema({
             id: {
                 in: ['params'],
@@ -155,9 +158,9 @@ export function module() {
                 }
             }
         }),
-        validateBody, formSvc.forEditById);
+        validateBody, forEditById);
 
-    router.post('/server/form/publish/:id', loggedInMiddleware, formSvc.publishFormToHtml);
+    router.post('/server/form/publish/:id', loggedInMiddleware, publishFormToHtml);
 
 
     /* ---------- PUT NEW REST API above ---------- */
