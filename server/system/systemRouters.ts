@@ -38,10 +38,10 @@ export function module() {
 
     router.get('/status/cde', status);
 
-    new CronJob('00 00 4 * * *', () => syncWithMesh(), null, true, 'America/New_York');
+    CronJob('00 00 4 * * *', () => syncWithMesh(), null, true, 'America/New_York');
 
     // every sunday at 4:07 AM
-    new CronJob('* 7 4 * * 6', () => {
+    CronJob('* 7 4 * * 6', () => {
         consoleLog('Creating sitemap');
         promisify(access)('dist/app', constants.R_OK)
             .catch(() => promisify(mkdir)('dist/app', {recursive: true} as any)) // Node 12
@@ -58,18 +58,23 @@ export function module() {
                     stream.on('end', cb);
                 }
 
-                return promisify(series)([
-                    cb => handleStream(
+                const p1 = new Promise(resolve => {
+                    handleStream(
                         dataElementModel.find(cond, 'tinyId').cursor(),
                         doc => config.publicUrl + '/deView?tinyId=' + doc.tinyId + '\n',
-                        cb
-                    ),
-                    cb => handleStream(
+                        resolve
+                    );
+                });
+
+                const p2 = new Promise(resolve => {
+                    handleStream(
                         formModel.find(cond, 'tinyId').cursor(),
                         doc => config.publicUrl + '/formView?tinyId=' + doc.tinyId + '\n',
-                        cb
-                    )
-                ]).then(() => {
+                        resolve
+                    );
+                });
+
+                Promise.all([p1, p2]).then(() => {
                     consoleLog('done with sitemap');
                     wstream.end();
                 });
