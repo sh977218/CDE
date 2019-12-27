@@ -71,7 +71,7 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
     findDerivationOutputs() {
         if (!this.elt.derivationOutputs) {
             this.elt.derivationOutputs = [];
-            this.http.get<DataElement[]>('/cde/derivationOutputs/' + this.elt.tinyId).subscribe(result => {
+            this.http.get<DataElement[]>('/server/de/derivationOutputs/' + this.elt.tinyId).subscribe(result => {
                 result.forEach(outputCde => {
                     outputCde.derivationRules.forEach(derRule => {
                         if (derRule.inputs.indexOf(this.elt.tinyId) > -1) {
