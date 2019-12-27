@@ -67,7 +67,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         switchTabAndClose(0);
     }
 
-    @Test(dependsOnMethods = {"editCde"})
+    @Test(dependsOnMethods = {"editCdeModifiedSince"})
     public void modifiedSinceAPI() {
         String response = get(baseUrl + "/api/de/modifiedElements?from=2016-01-01").asString();
         Assert.assertFalse(response.contains("Invalid"));
