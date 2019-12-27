@@ -295,7 +295,7 @@ export class FormViewComponent implements OnInit {
     }
 
     removeDraft() {
-        this.http.delete('/server/form/draftForm/' + this.elt.tinyId, {responseType: 'text'}).subscribe(
+        this.http.delete('/server/form/draft/' + this.elt.tinyId, {responseType: 'text'}).subscribe(
             () => this.loadElt(() => this.hasDrafts = false),
             err => this.alert.httpErrorMessageAlert(err));
     }

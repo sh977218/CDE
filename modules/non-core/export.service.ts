@@ -87,6 +87,7 @@ export class ExportService {
                 let keepScrolling = true;
                 while (keepScrolling) {
                     keepScrolling = intersectOnBatch(esResp);
+                    // tslint:disable-next-line:max-line-length
                     esResp = await this.http.get<ElasticQueryResponse>('/server/form/scrollExport/' + (esResp as any)._scroll_id).toPromise();
                 }
             }

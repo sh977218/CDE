@@ -55,7 +55,7 @@ function lookForPropertyInNestedObject(cde: any, rule: StatusValidationRules, ob
                 if (!pvs.length) {
                     return Promise.resolve('');
                 }
-                return fetch('/umlsDe', {
+                return fetch('/server/de/umls', {
                     method: 'post',
                     headers: {
                         'Content-type': 'application/json'
