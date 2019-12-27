@@ -10,7 +10,7 @@ import static io.restassured.RestAssured.get;
 public class CdeEditTest extends NlmCdeBaseTest {
 
     @Test
-    public void editCde() {
+    public void editCdeModifiedSince() {
         mustBeLoggedInAs(ctepCurator_username, password);
         String cdeName = "Mediastinal Lymph Node Physical Examination Specify";
         String cdeDesignationChange = "[designation change number 1]";

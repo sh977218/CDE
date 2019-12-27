@@ -76,7 +76,7 @@ export function module() {
         }
     });
     require('mongoose-schema-jsonschema')(require('mongoose'));
-    router.get(['/schema/cde', '/de/schema'], (req, res) => res.send((mongoCde.dataElementModel as any).jsonSchema()));
+    router.get(['/schema/cde', '/schema/de', '/de/schema'], (req, res) => res.send((mongoCde.dataElementModel as any).jsonSchema()));
 
     // Remove /de after June 1st 2020
     router.get(['/api/de/:tinyId', '/de/:tinyId'], nocacheMiddleware, byTinyId);

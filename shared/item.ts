@@ -45,7 +45,7 @@ export const ITEM_MAP: {
         apiById_prior: '/server/de/prior/',
         apiDraft: '/server/de/draft/',
         apiDraftById: '/server/de/draft/byId/',
-        schema: '/server/de/schema/',
+        schema: '/schema/de',
         view: '/deView?tinyId=',
         viewById: '/deView?cdeId=',
     },
@@ -55,7 +55,7 @@ export const ITEM_MAP: {
         apiById_prior: '/server/form/prior/',
         apiDraft: '/server/form/draft/',
         apiDraftById: '/server/form/draft/byId/',
-        schema: '/server/form/schema/',
+        schema: '/schema/form',
         view: '/formView?tinyId=',
         viewById: '/formView?formId=',
     }

@@ -6,8 +6,8 @@ import org.testng.annotations.Test;
 
 public class CdePVLoincTest extends NlmCdeBaseTest {
     static String[] urls = new String[]{
-            "/server/de/mkmhYJOnk7l",
-            "/server/de/mkmhYJOnk7l/version/",
+            "/api/de/mkmhYJOnk7l",
+            "/api/de/mkmhYJOnk7l/version/",
             "/server/de/byId/5b55fc19c805703830125b6a/",
             "/server/de/list/mkmhYJOnk7l"
     };

@@ -27,7 +27,7 @@ public class OdmExport extends BaseFormTest {
                     "missing: " + twoLines);
         }
 
-        response = get(baseUrl + "/api/form/byId/590cc0da5b9fd620f835b547?type=xml&subtype=odm").asString();
+        response = get(baseUrl + "/server/form/byId/590cc0da5b9fd620f835b547?type=xml&subtype=odm").asString();
         for (String expectedResult : expectedResults) {
             Assert.assertTrue(response.contains(expectedResult), "missing: " + expectedResult + "\n Actual: \n " + response);
         }
