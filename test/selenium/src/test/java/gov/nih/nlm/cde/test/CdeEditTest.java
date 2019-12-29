@@ -10,7 +10,7 @@ import static io.restassured.RestAssured.get;
 public class CdeEditTest extends NlmCdeBaseTest {
 
     @Test
-    public void editCdeModifiedSince() {
+    public void editCde() {
         mustBeLoggedInAs(ctepCurator_username, password);
         String cdeName = "Mediastinal Lymph Node Physical Examination Specify";
         String cdeDesignationChange = "[designation change number 1]";
@@ -67,7 +67,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         switchTabAndClose(0);
     }
 
-    @Test(dependsOnMethods = {"editCdeModifiedSince"})
+    @Test(dependsOnMethods = {"editCde"})
     public void modifiedSinceAPI() {
         String response = get(baseUrl + "/api/de/modifiedElements?from=2016-01-01").asString();
         Assert.assertFalse(response.contains("Invalid"));
