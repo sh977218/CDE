@@ -55,7 +55,7 @@ export class CdeClassificationComponent {
     }
 
     reloadElt(cb: Cb) {
-        this.http.get<DataElement>('de/' + this.elt.tinyId).subscribe(res => {
+        this.http.get<DataElement>('/api/de/' + this.elt.tinyId).subscribe(res => {
             this.elt = res;
             this.eltChange.emit(this.elt);
             if (cb) { cb(); }

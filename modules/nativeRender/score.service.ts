@@ -123,7 +123,7 @@ export class ScoreService {
     }
 
     static ucumConverter(value: number, from?: string, to?: string) {
-        return fetch('/ucumConvert?value=' + value + '&from=' + from + '&to=' + to)
+        return fetch('/server/ucumConvert?value=' + value + '&from=' + from + '&to=' + to)
             .then(res => res.json());
     }
 }

@@ -11,7 +11,7 @@ schemes:
 produces:
 - "application/json"
 paths:
-  /de/{tinyId}:
+  /api/de/{tinyId}:
     get:
       tags:
       - "CDE"
@@ -33,7 +33,7 @@ paths:
           schema:
             $ref: "#/definitions/Error"
       x-swagger-router-controller: "CDE"
-  /de/{tinyId}/version/{version}:
+  /api/de/{tinyId}/version/{version}:
     get:
       tags:
       - "CDE"
@@ -60,7 +60,7 @@ paths:
           schema:
             $ref: "#/definitions/Error"
       x-swagger-router-controller: "CDE"
-  /form/{tinyId}:
+  /api/form/{tinyId}:
     get:
       tags:
       - "Form"
@@ -82,7 +82,7 @@ paths:
           schema:
             $ref: "#/definitions/Error"
       x-swagger-router-controller: "CDE"
-  /form/{tinyId}/version/{version}:
+  /api/form/{tinyId}/version/{version}:
     get:
       tags:
       - "Form"

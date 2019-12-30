@@ -23,11 +23,11 @@ export class ViewingHistoryComponent {
 
     constructor(private http: HttpClient,
                 private alert: AlertService) {
-        this.http.get<DataElementUI[]>('/viewingHistory/dataElement').subscribe(
+        this.http.get<DataElementUI[]>('/server/de/viewingHistory').subscribe(
             response => this.cdes = Array.isArray(response) ? response : [],
             err => this.alert.httpErrorMessageAlert(err, 'Error, unable to retrieve data element view history.')
         );
-        this.http.get<FormUI[]>('/viewingHistory/form').subscribe(
+        this.http.get<FormUI[]>('/server/form/viewingHistory').subscribe(
             response => this.forms = Array.isArray(response) ? response : [],
             err => this.alert.httpErrorMessageAlert(err, 'Error, unable to retrieve form view history.')
         );

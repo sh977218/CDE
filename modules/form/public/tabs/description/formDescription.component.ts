@@ -23,7 +23,7 @@ import { copySectionAnimation } from 'form/public/tabs/description/copySectionAn
 import { FormService } from 'nativeRender/form.service';
 import { Cb } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
-import { CdeForm, FormElement, FormElementsContainer, FormInForm, FormOrElement, FormSection } from 'shared/form/form.model';
+import { CdeForm, FormElement, FormInForm, FormOrElement, FormSection } from 'shared/form/form.model';
 import { addFormIds, iterateFeSync } from 'shared/form/fe';
 import { scrollTo, waitRendered } from 'non-core/browser';
 
@@ -257,7 +257,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     }
 
     addFormFromSearch(form: CdeForm, cb: Cb<FormInForm> = _noop) {
-        this.http.get<CdeForm>('/form/' + form.tinyId).subscribe(form => {
+        this.http.get<CdeForm>('/api/form/' + form.tinyId).subscribe(form => {
             const inForm = convertFormToSection(form);
             if (!inForm) { return; }
             this.addExpanded(inForm);

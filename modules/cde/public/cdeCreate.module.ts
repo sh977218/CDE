@@ -5,7 +5,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
 import { CdeModule } from 'cde/public/cde.module';
-import { CreateDataElementComponent } from 'cde/public/components/createDataElement.component';
+import { CreateDataElementComponent } from 'cde/public/components/createDataElement/createDataElement.component';
 
 import { MatButtonModule, MatIconModule } from '@angular/material';
 import { LoggedInGuard } from '_app/routerGuard/loggedInGuard';

@@ -1,35 +1,13 @@
 import { is } from 'useragent';
-import { series } from 'async';
 import { renderFile } from 'ejs';
-import { CronJob } from 'cron';
-import { authenticate } from 'passport';
 import * as csrf from 'csurf';
-import { promisify } from 'util';
-import { access, constants, createWriteStream, existsSync, mkdir, writeFileSync } from 'fs';
+import { existsSync, writeFileSync } from 'fs';
 import { Request, Response, Router } from 'express';
-import { handleError, respondError } from 'server/errorHandler/errorHandler';
-import {
-    isOrgAuthorityMiddleware, isOrgCuratorMiddleware, isSiteAdminMiddleware, loggedInMiddleware, nocacheMiddleware
-} from 'server/system/authorization';
-import { dataElementModel, draftsList as deDraftsList } from 'server/cde/mongo-cde';
-import { draftsList as formDraftsList, formModel } from 'server/form/mongo-form';
-import { myOrgs } from 'server/orgManagement/orgSvc';
-import { disableRule, enableRule } from 'server/system/systemSvc';
-import { banIp, getRealIp, getTrafficFilter } from 'server/system/trafficFilterSvc';
-import { getClassificationAuditLog } from 'server/system/classificationAuditSvc';
-import { orgByName } from 'server/orgManagement/orgDb';
-import {
-    createIdSource, deleteIdSource, getAllIdSources, isSourceById, updateIdSource
-} from 'server/system/idSourceSvc';
+
 import { config } from 'server/system/parseConfig';
 import { version } from 'server/version';
 import { isSearchEngine } from 'server/system/helper';
-import { syncWithMesh } from 'server/mesh/elastic';
-import { consoleLog } from 'server/log/dbLogger';
-import { getFile, jobStatus } from 'server/system/mongo-data';
-import { indices } from 'server/system/elasticSearchInit';
-import { reIndex } from 'server/system/elastic';
-import { userById, usersByName } from 'server/user/userDb';
+
 
 require('express-async-errors');
 
@@ -85,13 +63,6 @@ export function module() {
     router.get('/tour', (req, res) => res.redirect('/home?tour=yes'));
 
     router.get('/site-version', (req, res) => res.send(version));
-
-    router.get(['/help/:title', '/createForm', '/createCde', '/boardList',
-            '/board/:id', '/myBoards', '/cdeStatusReport', '/api', '/sdcview', '/404', '/whatsNew', '/contactUs',
-            '/quickBoard', '/searchPreferences', '/siteAudit', '/siteAccountManagement', '/orgAccountManagement',
-            '/classificationManagement', '/profile', '/login', '/orgAuthority', '/orgComments'],
-        respondHomeFull
-    );
 
     router.get('/sw.js', (req, res) => {
         res.sendFile((global as any).appDir('dist/app', 'sw.js'), undefined, err => {
