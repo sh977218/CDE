@@ -6,8 +6,6 @@ import { IsAllowedService } from 'non-core/isAllowed.service';
 import { MergeFieldsForm, MergeFormService } from 'non-core/mergeForm.service';
 import { Cb } from 'shared/models.model';
 
-
-
 @Component({
     selector: 'cde-merge-form',
     templateUrl: './mergeForm.component.html'

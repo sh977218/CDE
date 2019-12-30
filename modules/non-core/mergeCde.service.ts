@@ -23,30 +23,51 @@ export interface MergeFieldsDe {
 
 @Injectable()
 export class MergeCdeService {
-    constructor(
-        private alert: AlertService,
-        private elasticService: ElasticService,
-        private http: HttpClient) {
+    constructor(private alert: AlertService,
+                private elasticService: ElasticService,
+                private http: HttpClient) {
     }
 
     async doMerge(tinyIdFrom: string,
                   tinyIdTo: string,
                   fields: MergeFieldsDe,
                   cb: CbErr<[DataElement, DataElement]>) {
-        if (tinyIdFrom === tinyIdTo) { return cb(); }
+        if (tinyIdFrom === tinyIdTo) {
+            return cb();
+        }
         const cdeFrom = await this.getCdeByTinyId(tinyIdFrom).toPromise();
         const cdeTo = await this.getCdeByTinyId(tinyIdTo).toPromise();
 
-        if (fields.designations) { mergeArrayByProperty(cdeFrom, cdeTo, 'designations'); }
-        if (fields.definitions) { mergeArrayByProperty(cdeFrom, cdeTo, 'definitions'); }
-        if (fields.referenceDocuments) { mergeArrayByProperty(cdeFrom, cdeTo, 'referenceDocuments'); }
-        if (fields.properties) { mergeArrayByProperty(cdeFrom, cdeTo, 'properties'); }
-        if (fields.ids) { mergeArrayByProperty(cdeFrom, cdeTo, 'ids'); }
-        if (fields.attachments) { mergeArrayByProperty(cdeFrom, cdeTo, 'attachments'); }
-        if (fields.dataSets) { mergeArrayByProperty(cdeFrom, cdeTo, 'dataSets'); }
-        if (fields.derivationRules) { mergeArrayByProperty(cdeFrom, cdeTo, 'derivationRules'); }
-        if (fields.sources) { mergeArrayByProperty(cdeFrom, cdeTo, 'sources'); }
-        if (fields.classifications) { transferClassifications(cdeFrom, cdeTo); }
+        if (fields.designations) {
+            mergeArrayByProperty(cdeFrom, cdeTo, 'designations');
+        }
+        if (fields.definitions) {
+            mergeArrayByProperty(cdeFrom, cdeTo, 'definitions');
+        }
+        if (fields.referenceDocuments) {
+            mergeArrayByProperty(cdeFrom, cdeTo, 'referenceDocuments');
+        }
+        if (fields.properties) {
+            mergeArrayByProperty(cdeFrom, cdeTo, 'properties');
+        }
+        if (fields.ids) {
+            mergeArrayByProperty(cdeFrom, cdeTo, 'ids');
+        }
+        if (fields.attachments) {
+            mergeArrayByProperty(cdeFrom, cdeTo, 'attachments');
+        }
+        if (fields.dataSets) {
+            mergeArrayByProperty(cdeFrom, cdeTo, 'dataSets');
+        }
+        if (fields.derivationRules) {
+            mergeArrayByProperty(cdeFrom, cdeTo, 'derivationRules');
+        }
+        if (fields.sources) {
+            mergeArrayByProperty(cdeFrom, cdeTo, 'sources');
+        }
+        if (fields.classifications) {
+            transferClassifications(cdeFrom, cdeTo);
+        }
         if (fields.retireCde) {
             cdeFrom.changeNote = 'Merged to tinyId ' + cdeTo.tinyId;
             cdeFrom.registrationState.registrationStatus = 'Retired';
