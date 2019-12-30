@@ -88,7 +88,7 @@ public class MiscTests extends NlmCdeBaseTest {
 
     @Test
     public void checkSchemas() {
-        Assert.assertTrue(get(baseUrl + "/schema/cde").asString().contains("{\"title\":\"DataElement\""));
+        Assert.assertTrue(get(baseUrl + "/de/schema").asString().contains("{\"title\":\"DataElement\""));
 
         Assert.assertTrue(get(baseUrl + "/schema/form").asString().contains("{\"title\":\"Form\""));
     }
@@ -102,7 +102,7 @@ public class MiscTests extends NlmCdeBaseTest {
 
     @Test
     public void siteStatus() {
-        String response = get(baseUrl + "/status/cde").asString();
+        String response = get(baseUrl + "/server/system/status/cde").asString();
         Assert.assertTrue(response.contains("ALL SERVICES UP"));
     }
 

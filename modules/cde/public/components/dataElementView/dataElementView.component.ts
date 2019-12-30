@@ -6,7 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AlertService } from 'alert/alert.service';
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { UserService } from '_app/user.service';
-import { DataElementViewService } from 'cde/public/components/dataElementView.service';
+import { DataElementViewService } from 'cde/public/components/dataElementView/dataElementView.service';
 import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHistoryContent.component';
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
 import _cloneDeep from 'lodash/cloneDeep';
@@ -237,7 +237,7 @@ export class DataElementViewComponent implements OnInit {
     }
 
     removeDraft() {
-        this.http.delete('/draftDataElement/' + this.elt.tinyId, {responseType: 'text'}).subscribe(
+        this.http.delete('/server/de/draft/' + this.elt.tinyId, {responseType: 'text'}).subscribe(
             () => this.loadElt(() => this.hasDrafts = false),
             err => this.alert.httpErrorMessageAlert(err)
         );
@@ -254,7 +254,7 @@ export class DataElementViewComponent implements OnInit {
             this.unsaved = true;
             return this.draftSaving;
         }
-        return this.draftSaving = this.http.put<DataElement>('/draftDataElement/' + this.elt.tinyId, this.elt)
+        return this.draftSaving = this.http.put<DataElement>('/server/de/draft/' + this.elt.tinyId, this.elt)
             .toPromise().then(newElt => {
                 this.draftSaving = undefined;
                 this.elt.__v = newElt.__v;
@@ -282,7 +282,7 @@ export class DataElementViewComponent implements OnInit {
     saveDataElement() {
         const saveImpl = () => {
             const publishData = {_id: this.elt._id, tinyId: this.elt.tinyId, __v: this.elt.__v};
-            this.http.post('/dePublish', publishData).subscribe(res => {
+            this.http.post('/server/de/publish', publishData).subscribe(res => {
                 if (res) {
                     this.hasDrafts = false;
                     this.loadElt(() => this.alert.addAlert('success', 'Data Element saved.'));

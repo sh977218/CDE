@@ -285,7 +285,7 @@ export function update(elt: DataElementDraft, user: User, options: any = {},
     });
 }
 
-export function derivationOutputs(inputTinyId: string, cb: CbError<DataElementDocument[]>) {
+export function derivationByInputs(inputTinyId: string, cb: CbError<DataElementDocument[]>) {
     dataElementModel.find({archived: false, 'derivationRules.inputs': inputTinyId}).exec(cb);
 }
 

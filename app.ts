@@ -26,15 +26,15 @@ import { module as appModule, respondHomeFull } from 'server/system/appRouters';
 import { module as articleModule } from 'server/article/articleRoutes';
 import { module as attachmentModule } from 'server/attachment/attachmentRoutes';
 import { module as boardModule } from 'server/board/boardRoutes';
-import { init as cdeInit } from 'server/cde/app';
 import * as mongo_cde from 'server/cde/mongo-cde';
 import { module as classificationModule } from 'server/classification/classificationRoutes';
 import { module as discussModule } from 'server/discuss/discussRoutes';
 import { module as logModule } from 'server/log/logRoutes';
-import { init as formInit } from 'server/form/app';
 import * as mongo_form from 'server/form/mongo-form';
 import { module as meshModule } from 'server/mesh/meshRoutes';
 import { module as siteAdminModule } from 'server/siteAdmin/siteAdminRoutes';
+import { module as deModule } from 'server/cde/deRouters';
+import { module as formModule } from 'server/form/formRouters';
 import { module as systemModule } from 'server/system/systemRouters';
 import { module as orgManagementModule } from 'server/orgManagement/orgManagementRoutes';
 import { module as notificationModule } from 'server/notification/notificationRouters';
@@ -49,7 +49,6 @@ import {
 import { initEs } from 'server/system/elastic';
 import { startServer } from 'server/system/ioServer';
 import { errorLogger, expressLogger } from 'server/system/logging';
-import * as daoManager from 'server/system/moduleDaoManager';
 import { sessionStore } from 'server/system/mongo-data';
 import { banHackers, blockBannedIps } from 'server/system/trafficFilterSvc';
 import { module as userModule } from 'server/user/userRoutes';
@@ -317,9 +316,9 @@ try {
     app.use('/nativeRender', nativeRenderModule());
     app.use('/', embedModule());
     app.use('/', fhirModule());
-    cdeInit(app, daoManager);
     app.use('/server/system', systemModule());
-    formInit(app, daoManager);
+    app.use('/', deModule());
+    app.use('/', formModule());
     app.use('/server/board', boardModule());
     swaggerInit(app);
     app.use('/server/user', userModule({

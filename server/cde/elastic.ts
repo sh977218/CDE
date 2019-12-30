@@ -99,7 +99,7 @@ const mltConf = {
     ]
 };
 
-export function morelike(id: string, callback) {
+export function moreLike(id: string, callback) {
     const from = 0;
     const limit = 20;
     esClient.search({
