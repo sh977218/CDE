@@ -78,6 +78,7 @@ export function module() {
     require('mongoose-schema-jsonschema')(require('mongoose'));
     router.get(['/schema/cde', '/schema/de', '/de/schema'], (req, res) => res.send((mongoCde.dataElementModel as any).jsonSchema()));
 
+    router.get('/api/de/modifiedElements', modifiedElements);
     // Remove /de after June 1st 2020
     router.get(['/api/de/:tinyId', '/de/:tinyId'], nocacheMiddleware, byTinyId);
     router.get(['/api/de/:tinyId/version/:version?', '/de/:tinyId/version/:version?'], nocacheMiddleware, byTinyIdAndVersion);
@@ -102,7 +103,6 @@ export function module() {
     router.post('/server/de/byTinyIdList', (req, res) => {
         mongoCde.byTinyIdList(req.body, handleError({req, res}, cdes => res.send(cdes)));
     });
-    router.get('/api/de/modifiedElements', modifiedElements);
     router.get('/server/de/derivationOutputs/:inputCdeTinyId', derivationOutputs);
 
     /* ---------- PUT NEW REST API above ---------- */

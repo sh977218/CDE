@@ -292,13 +292,10 @@ export function modifiedElements(req, res) {
     }
 
     const date = new Date(dString);
-    findModifiedElementsSince(date, (err, elts) => {
-        res.send(elts.map(e => ({tinyId: e._id})));
-    });
+    findModifiedElementsSince(date,
+        (err, elts) => res.send(elts.map(e => ({tinyId: e._id}))));
 }
 
 export function derivationOutputs(req, res) {
-    derivationByInputs(req.params.inputCdeTinyId, handleError({req, res}, cdes => {
-        res.send(cdes);
-    }));
+    derivationByInputs(req.params.inputCdeTinyId, handleError({req, res}, cdes => res.send(cdes)));
 }
