@@ -120,7 +120,7 @@ gulp.task('copyCode', function copyCode() {
     streamArray.push(gulp.src(appDir('./modules/processManager/pmApp.js'))
         .pipe(gulp.dest(BUILD_DIR + '/modules/processManager/')));
 
-    streamArray.push(gulp.src('./buildNode/modules/swagger/index.js')
+    streamArray.push(gulp.src('./modules/swagger/index.js')
         .pipe(gulp.dest(BUILD_DIR + '/modules/swagger/')));
     streamArray.push(gulp.src(appDir('./modules/swagger/api/swagger.yaml'))
         .pipe(gulp.dest(BUILD_DIR + '/modules/swagger/api/')));
