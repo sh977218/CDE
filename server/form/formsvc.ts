@@ -1,11 +1,14 @@
 import * as Ajv from 'ajv';
 import { Request, Response } from 'express';
-import { dataElementModel } from 'server/cde/mongo-cde';
+import { byTinyIdList as deByTinyIdList, dataElementModel } from 'server/cde/mongo-cde';
 import {
-    byId as formById, byTinyId as formByTinyId, byTinyIdList as formByTinyIdList, byTinyIdAndVersion as formByTinyIdAndVersion,
-    create as formCreate, draftById, draftByTinyId, draftDelete as formDraftDelete, draftSave as formDraftSave, formModel,
-    latestVersionByTinyId as formLatestVersionByTinyId, originalSourceByTinyIdSourceName as formOriginalSourceByTinyIdSourceName, update,
-    CdeFormDraft
+    byId as formById, byTinyId as formByTinyId, byTinyIdList as formByTinyIdList,
+    byTinyIdAndVersion as formByTinyIdAndVersion,
+    create as formCreate, draftById, draftByTinyId, draftDelete as formDraftDelete, draftSave as formDraftSave,
+    formModel,
+    latestVersionByTinyId as formLatestVersionByTinyId,
+    originalSourceByTinyIdSourceName as formOriginalSourceByTinyIdSourceName, update,
+    CdeFormDraft, byTinyIdListInOrder
 } from 'server/form/mongo-form';
 import { splitError, handleError, handleNotFound, respondError } from 'server/errorHandler/errorHandler';
 import { RequestWithItem } from 'server/system/authorization';
@@ -19,7 +22,6 @@ import { orgByName } from 'server/orgManagement/orgDb';
 
 const fs = require('fs');
 const path = require('path');
-const mongoCde = require('../cde/mongo-cde');
 const adminItemSvc = require('../system/adminItemSvc');
 const authorization = require('../system/authorization');
 const mongoData = require('../system/mongo-data');
@@ -205,7 +207,7 @@ export function draftForEditByTinyId(req, res) { // WORKAROUND: sends empty inst
     const handlerOptions = {req, res};
     const tinyId = req.params.tinyId;
     formByTinyId(tinyId, handleError({req, res}, elt => {
-        if (!canEditCuratedItem(req.user, elt) || ! elt) {
+        if (!canEditCuratedItem(req.user, elt) || !elt) {
             res.send();
             return;
         }
@@ -283,7 +285,9 @@ export function draftDelete(req, res) {
 
 export function byTinyIdList(req, res) {
     let tinyIdList = req.params.tinyIdList;
-    if (!tinyIdList) { return res.status(400).send(); }
+    if (!tinyIdList) {
+        return res.status(400).send();
+    }
     tinyIdList = tinyIdList.split(',');
     formByTinyIdList(tinyIdList, handleNotFound({req, res}, forms => {
         res.send(forms.map(mongoData.formatElt));
@@ -298,7 +302,9 @@ export function latestVersionByTinyId(req, res) {
 }
 
 export function publishFormToHtml(req, res) {
-    if (!req.params.id || req.params.id.length !== 24) { return res.status(400).send(); }
+    if (!req.params.id || req.params.id.length !== 24) {
+        return res.status(400).send();
+    }
     formById(req.params.id, handleNotFound({req, res}, form => {
         fetchWholeForm(form.toObject(), handleError({
             req, res, message: 'Fetch whole for publish'
@@ -311,7 +317,9 @@ export function publishFormToHtml(req, res) {
 export function create(req, res) {
     const elt = req.body;
     const user = req.user;
-    if (!elt.stewardOrg || !elt.stewardOrg.name) { return res.status(400).send(); }
+    if (!elt.stewardOrg || !elt.stewardOrg.name) {
+        return res.status(400).send();
+    }
     formCreate(elt, user, handleError({req, res}, dataElement => res.send(dataElement)));
 }
 
@@ -363,3 +371,15 @@ export function originalSourceByTinyIdSourceName(req, res) {
     }));
 }
 
+export function viewHistory(req, res) {
+    const splicedArray = req.user.formViewHistory.splice(0, 10);
+    const idList: string[] = [];
+    for (const sa of splicedArray) {
+        if (idList.indexOf(sa) === -1) {
+            idList.push(sa);
+        }
+    }
+    byTinyIdListInOrder(idList, (err, forms) => {
+        res.send(forms);
+    });
+}

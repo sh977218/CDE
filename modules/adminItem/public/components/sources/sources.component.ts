@@ -7,22 +7,30 @@ import { Item } from 'shared/models.model';
     templateUrl: './sources.component.html'
 })
 export class SourcesComponent {
-    @Input() set elt(e: Item) {
-        e.sources.forEach(async s => {
-            const url = `/originalSource/${e.elementType}/${s.sourceName}/${e.tinyId}`;
-            let result = true;
-            await this.http.head(url).toPromise().catch(() => result = false);
-            this.sourceUrls[url] = result;
-        });
-        this._elt = e;
-    }
-    get elt() {
-        return this._elt;
-    }
-    private _elt!: Item;
 
     sourceUrls: any = {};
 
-    constructor(private http: HttpClient) {}
+    @Input() set elt(e: Item) {
+        e.sources.forEach((s: any) => {
+            let url = `/server/de/originalSource/${s.sourceName}/${e.tinyId}`;
+            if (e.elementType === 'form') {
+                url = `/server/form/originalSource/${s.sourceName}/${e.tinyId}`;
+            }
+            this.http.head(url).subscribe(
+                () => this.sourceUrls[s.sourceName] = url,
+                err => delete this.sourceUrls[s.sourceName]
+            );
+        });
+        this._elt = e;
+    }
+
+    get elt() {
+        return this._elt;
+    }
+
+    private _elt!: Item;
+
+    constructor(private http: HttpClient) {
+    }
 
 }

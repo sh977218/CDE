@@ -44,8 +44,8 @@ interface Data {
 }
 
 const URL_MAP: {[module: string]: string} = {
-    cde: '/de/',
-    form: '/form/',
+    cde: '/api/de/',
+    form: '/api/form/',
 };
 
 @Component({

@@ -23,7 +23,7 @@ import { SourcesComponent } from './components/sources/sources.component';
 import { RegistrationComponent } from './components/registration/registration.component';
 import { LinkedFormsComponent } from './components/linkedForms.component';
 import { ClassificationViewComponent } from './components/classification/classificationView.component';
-import { CreateFormComponent } from 'adminItem/public/components/createForm.component';
+import { CreateFormComponent } from 'adminItem/public/components/createForm/createForm.component';
 import { SaveModalComponent } from './components/saveModal/saveModal.component';
 import { DeleteModalComponent } from 'adminItem/public/components/deleteModal/deleteModal.component';
 import { NewDesignationComponent } from 'adminItem/public/components/naming/designation/newDesignation.component';

@@ -92,7 +92,7 @@ export class CreateDataElementComponent implements OnInit {
     }
 
     createDataElement() {
-        this.http.post<DataElement>('/de', this.elt)
+        this.http.post<DataElement>('/server/de', this.elt)
             .subscribe(res => {
                 this.close.emit();
                 this.router.navigate(['/deView'], {queryParams: {tinyId: res.tinyId}});
@@ -105,9 +105,13 @@ export class CreateDataElementComponent implements OnInit {
 
     updateClassificationLocalStorage(item: ClassificationHistory) {
         let recentlyClassification = this.localStorageService.get('classificationHistory') as Array<any>;
-        if (!recentlyClassification) { recentlyClassification = []; }
+        if (!recentlyClassification) {
+            recentlyClassification = [];
+        }
         recentlyClassification = recentlyClassification.filter(o => {
-            if (o.cdeId) { o.eltId = o.cdeId; }
+            if (o.cdeId) {
+                o.eltId = o.cdeId;
+            }
             return _isEqual(o, item);
         });
         recentlyClassification.unshift(item);
@@ -116,11 +120,11 @@ export class CreateDataElementComponent implements OnInit {
 
     validationErrors(elt: DataElement): string {
         if (!elt.designations[0].designation) {
-            return  'Please enter a name for the new CDE';
+            return 'Please enter a name for the new CDE';
         } else if (!elt.definitions[0] || !elt.definitions[0].definition) {
-            return  'Please enter a definition for the new CDE';
+            return 'Please enter a definition for the new CDE';
         } else if (!elt.stewardOrg.name || elt.stewardOrg.name === 'Select One') {
-            return  'Please select a steward for the new CDE';
+            return 'Please select a steward for the new CDE';
         }
         if (elt.classification) {
             if (elt.classification.length) {
@@ -128,7 +132,7 @@ export class CreateDataElementComponent implements OnInit {
                     return 'Please select at least one classification owned by ' + elt.stewardOrg.name;
                 }
             } else {
-                return  'Please select at least one classification';
+                return 'Please select at least one classification';
             }
         }
         return '';

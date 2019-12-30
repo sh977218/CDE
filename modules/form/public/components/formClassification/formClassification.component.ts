@@ -112,7 +112,7 @@ export class FormClassificationComponent {
     }
 
     reloadElt(cb?: Cb) {
-        this.http.get<CdeForm>('form/' + this.elt.tinyId).subscribe(res => {
+        this.http.get<CdeForm>('/api/form/' + this.elt.tinyId).subscribe(res => {
             this.elt = res;
             this.eltChange.emit(this.elt);
             if (cb) { cb(); }

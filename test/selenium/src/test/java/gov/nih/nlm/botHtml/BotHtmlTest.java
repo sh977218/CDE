@@ -1,4 +1,4 @@
-package gov.nih.nlm.staticHtml;
+package gov.nih.nlm.botHtml;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import gov.nih.nlm.system.SelectUserAgent;
@@ -7,11 +7,11 @@ import org.testng.annotations.Test;
 
 import static io.restassured.RestAssured.get;
 
-public class StaticHtmlTest extends NlmCdeBaseTest {
+public class BotHtmlTest extends NlmCdeBaseTest {
 
     @Test
     @SelectUserAgent()
-    public void staticHomeHtml() {
+    public void botHomeHtml() {
         driver.get(baseUrl + "/home");
         textPresent("Browse CDEs");
         textPresent("Browse Forms");
@@ -19,7 +19,7 @@ public class StaticHtmlTest extends NlmCdeBaseTest {
 
     @Test
     @SelectUserAgent()
-    public void staticCdeSearchHtml() {
+    public void botCdeSearchHtml() {
         driver.get(baseUrl + "/cde/search");
         textPresent("Global Rare Diseases Patient Registry Data Repository");
 
@@ -30,7 +30,7 @@ public class StaticHtmlTest extends NlmCdeBaseTest {
 
     @Test
     @SelectUserAgent()
-    public void staticFormSearchHtml() {
+    public void botFormSearchHtml() {
         driver.get(baseUrl + "/form/search");
         textPresent("Patient Reported Outcomes Measurement Information System");
 
@@ -41,7 +41,7 @@ public class StaticHtmlTest extends NlmCdeBaseTest {
 
     @Test
     @SelectUserAgent()
-    public void staticDeViewHtml() {
+    public void botDeViewHtml() {
         driver.get(baseUrl + "/deView?tinyId=QJxhjQVkke");
         textPresent("Patient Health Questionnaire (PHQ-9) Last Two Weeks How Often Little Interest or Pleasure in Doing Things Score 4 Point Scale");
         textPresent("Value List");
@@ -52,7 +52,7 @@ public class StaticHtmlTest extends NlmCdeBaseTest {
 
     @Test
     @SelectUserAgent()
-    public void staticFormViewHtml() {
+    public void botFormViewHtml() {
         driver.get(baseUrl + "/formView?tinyId=mJsGoMU1m");
         textPresent("PHQ-9 quick depression assessment panel [Reported.PHQ]");
         textPresent("Description: Kroenke K, Spitzer RL, Williams JB.");
@@ -61,7 +61,7 @@ public class StaticHtmlTest extends NlmCdeBaseTest {
     }
 
     @Test
-    public void sitemap() {
+    public void siteMap() {
         Assert.assertTrue(get(baseUrl + "/app/sitemap.txt").asString().contains("/deView?tinyId=rkh4tQrOgTw"));
     }
 

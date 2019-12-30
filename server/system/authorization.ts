@@ -37,6 +37,7 @@ declare global {
     namespace Express {
         export interface Request {
             item: Item;
+            user?: any;
         }
     }
 }

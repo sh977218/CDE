@@ -58,29 +58,29 @@
         <mat-menu #exportMenu>
             <ng-container *ngIf="userService.loggedIn()">
                 <span mat-menu-item>
-                    <a id='nihJson' href="/formById/{{elt._id}}" target="_blank">
+                    <a id='nihJson' href="/server/form/byId/{{elt._id}}" target="_blank">
                         JSON File, NIH/CDE Schema</a>
                     <a href="/schema/form" target="_blank" title="Schema">
                         <mat-icon class="menuActionIcon">help_outline</mat-icon></a>
                 </span>
                 <span mat-menu-item>
-                    <a id='odmExport' href="/formById/{{elt._id}}?type=xml&subtype=odm" target="_blank">
+                    <a id='odmExport' href="/server/form/byId/{{elt._id}}?type=xml&subtype=odm" target="_blank">
                         XML File, CDISC / ODM</a>
                     <a href="https://www.cdisc.org/standards/transport/odm" target="_blank" title="Information" rel="noopener noreferrer">
                         <mat-icon class="menuActionIcon">help_outline</mat-icon></a>
                 </span>
                 <span mat-menu-item>
-                    <a id='sdcExport' href="/formById/{{elt._id}}?type=xml&subtype=sdc" target="_blank" rel="noopener noreferrer">
+                    <a id='sdcExport' href="/server/form/byId/{{elt._id}}?type=xml&subtype=sdc" target="_blank" rel="noopener noreferrer">
                         XML File, SDC Schema</a>
                     <a href="https://github.com/esacinc/sdc-schema-package" target="_blank" rel="noopener noreferrer" title="Information">
                         <mat-icon class="menuActionIcon">help_outline</mat-icon></a>
-                    <a href="/formById/{{elt._id}}?type=xml&subtype=sdc&validate=true" target="_blank" title="Validate">
+                    <a href="/server/form/byId/{{elt._id}}?type=xml&subtype=sdc&validate=true" target="_blank" title="Validate">
                         <mat-icon class="menuActionIcon" style="color: green">check</mat-icon></a>
                 </span>
                 <a *ngIf="!isIe()" id='sdcHtmlExport' mat-menu-item
-                   href="formById/{{elt._id}}?type=xml&subtype=sdc&renderer=defaultHtml"
+                   href="/server/form/byId/{{elt._id}}?type=xml&subtype=sdc&renderer=defaultHtml"
                    target="_blank">XML File, SDC Schema with XSL Transform</a>
-                <a id='nihXml' href="/formById/{{elt._id}}?type=xml" target="_blank" rel="noopener noreferrer" mat-menu-item>
+                <a id='nihXml' href="/server/form/byId/{{elt._id}}?type=xml" target="_blank" rel="noopener noreferrer" mat-menu-item>
                     XML File, NIH/CDE Schema</a>
                 <a id='formPublishExport' (click)="openExportPublishModal()" mat-menu-item
                    target="_blank" rel="noopener noreferrer">Published Form</a>
@@ -91,11 +91,11 @@
                 <span id='formCdesExport' (click)="exportService.formCdeExport(elt)"
                       mat-menu-item>CDE Dictionary (CSV)</span>
                 <span mat-menu-item>
-                    <a id="asQuestionnaire" href="/formById/{{elt._id}}?subtype=fhirQuestionnaire"
+                    <a id="asQuestionnaire" href="/server/form/byId/{{elt._id}}?subtype=fhirQuestionnaire"
                        target="_blank">FHIR Questionnaire</a>
                     <a href="https://www.hl7.org/fhir/questionnaire.html" target="_blank" rel="noopener noreferrer" title="Schema">
                         <mat-icon class="menuActionIcon">help_outline</mat-icon></a>
-                    <a href="/formById/{{elt._id}}?subtype=fhirQuestionnaire&validate" target="_blank" rel="noopener noreferrer"
+                    <a href="/server/form/byId/{{elt._id}}?subtype=fhirQuestionnaire&validate" target="_blank" rel="noopener noreferrer"
                        title="Validate">
                         <mat-icon class="menuActionIcon" style="color: green">check</mat-icon></a>
                 </span>

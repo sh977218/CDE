@@ -1,5 +1,8 @@
-import { Express, RequestHandler } from 'express';
-import { toInteger } from 'lodash';
+import { RequestHandler } from 'express';
+import { Router } from 'express';
+import { toInteger, round } from 'lodash';
+
+const daoManager = require('../system/moduleDaoManager');
 import { handleError, handleNotFound } from 'server/errorHandler/errorHandler';
 import {
     canCreateMiddleware, canEditByTinyIdMiddleware, canEditMiddleware,
@@ -9,21 +12,24 @@ import { config } from 'server/system/parseConfig';
 import { isSearchEngine } from 'server/system/helper';
 import { byTinyIdVersion as formByTinyIdVersion, formModel } from 'server/form/mongo-form';
 import { validateBody } from 'server/system/bodyValidator';
-import { completionSuggest, elasticSearchExport, removeElasticFields, scrollExport, scrollNext } from 'server/system/elastic';
+import {
+    completionSuggest, elasticSearchExport, removeElasticFields, scrollExport, scrollNext
+} from 'server/system/elastic';
 import { getEnvironmentHost } from 'shared/env';
 import { CbErr } from 'shared/models.model';
 import { stripBsonIdsElt } from 'shared/system/exportShared';
 import { respondHomeFull } from 'server/system/appRouters';
+import {
+    viewHistory, byTinyId, byTinyIdAndVersion, latestVersionByTinyId, create, publishFromDraft, publishExternal, byId,
+    priorForms, byTinyIdList, originalSourceByTinyIdSourceName, draftForEditByTinyId, draftSave, draftDelete,
+    forEditById, publishFormToHtml, forEditByTinyId, forEditByTinyIdAndVersion
+} from 'server/form/formsvc';
 
-const _ = require('lodash');
-const dns = require('dns');
-const os = require('os');
-const formSvc = require('./formsvc');
 const syncLinkedForms = require('./syncLinkedForms');
 const mongoForm = require('./mongo-form');
 const sharedElastic = require('../system/elastic');
 const CronJob = require('cron').CronJob;
-const { checkSchema, check } = require('express-validator');
+const {checkSchema, check} = require('express-validator');
 
 
 const canEditMiddlewareForm = canEditMiddleware(mongoForm);
@@ -51,13 +57,18 @@ const allRequestsProcessing: RequestHandler = (req, res, next) => {
     next();
 };
 
-export function init(app: Express, daoManager) {
-    daoManager.registerDao(mongoForm);
+require('express-async-errors');
 
-    app.get('/form/search', (req, res) => {
+export function module() {
+    const router = Router();
+    daoManager.registerDao(mongoForm);
+    // Those end points need to be defined before '/form/:tinyId'
+    router.get('/form/search', (req, res) => {
         const selectedOrg = req.query.selectedOrg;
         let pageString = req.query.page; // starting from 1
-        if (!pageString) { pageString = '1'; }
+        if (!pageString) {
+            pageString = '1';
+        }
         if (isSearchEngine(req)) {
             if (selectedOrg) {
                 const pageNum = toInteger(pageString);
@@ -73,7 +84,9 @@ export function init(app: Express, daoManager) {
                         limit: pageSize
                     }, handleError({req, res}, forms => {
                         let totalPages = totalCount / pageSize;
-                        if (totalPages % 1 > 0) { totalPages = totalPages + 1; }
+                        if (totalPages % 1 > 0) {
+                            totalPages = totalPages + 1;
+                        }
                         res.render('bot/formSearchOrg', 'system' as any, {
                             forms,
                             totalPages,
@@ -88,43 +101,54 @@ export function init(app: Express, daoManager) {
             respondHomeFull(req, res);
         }
     });
+    router.get(['/schema/form', '/form/schema'], (req, res) => res.send((formModel as any).jsonSchema()));
 
+    // Remove /form after July 1st 2020
+    router.get(['/api/form/:tinyId', '/form/:tinyId'], allowXOrigin, nocacheMiddleware, allRequestsProcessing, byTinyId);
+    router.get(['/api/form/:tinyId/version/:version?', '/form/:tinyId/version/:version?'],
+        [allowXOrigin, nocacheMiddleware], byTinyIdAndVersion);
 
-    app.get('/form/:tinyId', allowXOrigin, nocacheMiddleware, allRequestsProcessing, formSvc.byTinyId);
-    app.get('/form/:tinyId/latestVersion/', nocacheMiddleware, formSvc.latestVersionByTinyId);
-    app.get('/form/:tinyId/version/:version?', [allowXOrigin, nocacheMiddleware], formSvc.byTinyIdAndVersion);
-    app.post('/form', canCreateMiddleware, formSvc.create);
-    app.post('/formPublish', canEditMiddlewareForm, formSvc.publishFromDraft);
-    app.post('/formPublishExternal', canEditMiddlewareForm, formSvc.publishExternal);
+    router.get('/api/form/:tinyId/latestVersion/', nocacheMiddleware, latestVersionByTinyId);
+    router.post('/server/form', canCreateMiddleware, create);
+    router.post('/server/form/publish', canEditMiddlewareForm, publishFromDraft);
+    router.post('/server/form/publishExternal', canEditMiddlewareForm, publishExternal);
 
-    app.get('/formById/:id', nocacheMiddleware, allRequestsProcessing, formSvc.byId);
-    app.get('/formById/:id/priorForms/', nocacheMiddleware, formSvc.priorForms);
+    router.get('/server/form/byId/:id', nocacheMiddleware, allRequestsProcessing, byId);
+    router.get('/server/form/priors/:id/', nocacheMiddleware, priorForms);
 
-    app.get('/formForEdit/:tinyId', nocacheMiddleware,
-        checkSchema({tinyId: {
+    router.get('/server/form/list/:tinyIdList?', nocacheMiddleware, byTinyIdList);
+    router.get('/server/form/originalSource/:sourceName/:tinyId', originalSourceByTinyIdSourceName);
+
+    router.get('/server/form/draft/:tinyId', isOrgCuratorMiddleware, draftForEditByTinyId);
+    router.put('/server/form/draft/:tinyId', canEditMiddlewareForm, draftSave);
+    router.delete('/server/form/draft/:tinyId', canEditByTinyIdMiddlewareForm, draftDelete);
+
+    router.get('/server/form/viewingHistory', loggedInMiddleware, nocacheMiddleware, viewHistory);
+
+    router.get('/server/form/forEdit/:tinyId', nocacheMiddleware, checkSchema({
+            tinyId: {
                 in: ['params'],
                 isLength: {
                     options: {
                         min: 5
                     }
                 }
-            }}),
-        validateBody, formSvc.forEditByTinyId);
-
-    app.get('/formForEdit/:tinyId/version/:version?', nocacheMiddleware,
-        checkSchema({tinyId: {
+            }
+        }),
+        validateBody, forEditByTinyId);
+    router.get('/server/form/forEdit/:tinyId/version/:version?', nocacheMiddleware, checkSchema({
+            tinyId: {
                 in: ['params'],
                 isLength: {
                     options: {
                         min: 5
                     }
                 }
-            }}),
-        validateBody,
-        formSvc.forEditByTinyIdAndVersion);
-
-    app.get('/formForEditById/:id', nocacheMiddleware,
-        checkSchema({id: {
+            }
+        }),
+        validateBody, forEditByTinyIdAndVersion);
+    router.get('/server/form/forEditById/:id', nocacheMiddleware, checkSchema({
+            id: {
                 in: ['params'],
                 isLength: {
                     options: {
@@ -132,38 +156,23 @@ export function init(app: Express, daoManager) {
                         max: 24
                     }
                 }
-            }}),
-        validateBody,
-        formSvc.forEditById);
+            }
+        }),
+        validateBody, forEditById);
 
-    app.get('/formList/:tinyIdList?', nocacheMiddleware, formSvc.byTinyIdList);
-    app.get('/originalSource/form/:sourceName/:tinyId', formSvc.originalSourceByTinyIdSourceName);
+    router.post('/server/form/publish/:id', loggedInMiddleware, publishFormToHtml);
 
-    app.get('/draftForm/:tinyId', isOrgCuratorMiddleware, formSvc.draftForEditByTinyId);
-    app.put('/draftForm/:tinyId', canEditMiddlewareForm, formSvc.draftSave);
-    app.delete('/draftForm/:tinyId', canEditByTinyIdMiddlewareForm, formSvc.draftDelete);
-
-    // app.get('/draftFormById/:id', formSvc.draftForEditById);
-
-    app.post('/form/publish/:id', loggedInMiddleware, formSvc.publishFormToHtml);
-
-    app.get('/viewingHistory/form', loggedInMiddleware, nocacheMiddleware, (req, res) => {
-        const splicedArray = req.user.formViewHistory.splice(0, 10);
-        const idList: string[] = [];
-        for (const sa of splicedArray) {
-            if (idList.indexOf(sa) === -1) { idList.push(sa); }
-        }
-        mongoForm.byTinyIdListInOrder(idList, (err, forms) => {
-            res.send(forms);
-        });
-    });
 
     /* ---------- PUT NEW REST API above ---------- */
 
-    app.post('/elasticSearch/form', (req, res) => {
+    router.post('/server/form/search', (req, res) => {
         const query = sharedElastic.buildElasticSearchQuery(req.user, req.body);
-        if (query.size > 100) { return res.status(422).send('Too many results requested. (max 100)'); }
-        if ((query.from + query.size) > 10000) { return res.status(422).send('Exceeded pagination limit (10,000)'); }
+        if (query.size > 100) {
+            return res.status(422).send('Too many results requested. (max 100)');
+        }
+        if ((query.from + query.size) > 10000) {
+            return res.status(422).send('Exceeded pagination limit (10,000)');
+        }
         if (!req.body.fullRecord) {
             query._source = {excludes: ['flatProperties', 'properties', 'classification.elements', 'formElements']};
         }
@@ -171,21 +180,7 @@ export function init(app: Express, daoManager) {
             res.send(result);
         }));
     });
-
-    app.post('/scrollExport/form', (req, res) => {
-        const query = sharedElastic.buildElasticSearchQuery(req.user, req.body);
-        scrollExport(query, 'form', handleNotFound({res, statusCode: 400}, response => res.send(response.body)));
-    });
-
-    app.get('/scrollExport/:scrollId', (req, res) => {
-        scrollNext(req.params.scrollId, handleNotFound({res, statusCode: 400}, response => res.send(response.body)));
-    });
-
-    app.post('/getFormAuditLog', isOrgAuthorityMiddleware, (req, res) => {
-        mongoForm.getAuditLog(req.body, (err, result) => res.send(result));
-    });
-
-    app.post('/elasticSearchExport/form', (req, res) => {
+    router.post('/server/form/searchExport', (req, res) => {
         const query = sharedElastic.buildElasticSearchQuery(req.user, req.body);
         const exporters = {
             json: {
@@ -195,7 +190,9 @@ export function init(app: Express, daoManager) {
                     res.write('[');
                     elasticSearchExport('form', query, handleError({req, res}, (elt) => {
                         if (elt) {
-                            if (!firstElt) { res.write(','); }
+                            if (!firstElt) {
+                                res.write(',');
+                            }
                             elt = stripBsonIdsElt(elt);
                             elt = removeElasticFields(elt);
                             res.write(JSON.stringify(elt));
@@ -210,21 +207,19 @@ export function init(app: Express, daoManager) {
         };
         exporters.json.export(res);
     });
-
-
-    app.get('/formView', (req, res) => {
-        const tinyId = req.query.tinyId;
-        const version = req.query.version;
-        formByTinyIdVersion(tinyId, version, handleError({req, res}, cde => {
-            if (isSearchEngine(req)) {
-                res.render('bot/formView', 'system' as any, {elt: cde} as any);
-            } else {
-                respondHomeFull(req, res);
-            }
-        }));
+    router.post('/server/form/scrollExport', (req, res) => {
+        const query = sharedElastic.buildElasticSearchQuery(req.user, req.body);
+        scrollExport(query, 'form', handleNotFound({res, statusCode: 400}, response => res.send(response.body)));
+    });
+    router.get('/server/form/scrollExport/:scrollId', (req, res) => {
+        scrollNext(req.params.scrollId, handleNotFound({res, statusCode: 400}, response => res.send(response.body)));
     });
 
-    app.post('/formCompletion/:term', nocacheMiddleware, (req, res) => {
+    router.post('/server/form/getAuditLog', isOrgAuthorityMiddleware, (req, res) => {
+        mongoForm.getAuditLog(req.body, (err, result) => res.send(result));
+    });
+
+    router.post('/server/form/completion/:term', nocacheMiddleware, (req, res) => {
         const term = req.params.term;
         completionSuggest(term, req.user, req.body, config.elastic.formSuggestIndex.name, (err, resp) => {
             if (err || !resp) {
@@ -236,7 +231,7 @@ export function init(app: Express, daoManager) {
     });
 
     // This is for tests only
-    app.post('/sendMockFormData', (req, res) => {
+    router.post('/server/sendMockFormData', (req, res) => {
         const mapping = JSON.parse(req.body.mapping);
         if (req.body['0-0'] === '1' && req.body['0-1'] === '2'
             && req.body['0-2'] === 'Lab Name'
@@ -262,20 +257,58 @@ export function init(app: Express, daoManager) {
         }
     });
 
-    app.get('/schema/form', (req, res) => res.send((formModel as any).jsonSchema()));
+    router.get('/formView', (req, res) => {
+        const tinyId = req.query.tinyId;
+        const version = req.query.version;
+        if (isSearchEngine(req)) {
+            formByTinyIdVersion(tinyId, version, handleError({req, res}, cde => {
+                    res.render('bot/formView', 'system' as any, {elt: cde} as any);
+            }));
+        } else {
+            respondHomeFull(req, res);
+        }
+    });
 
-    app.get('/ucumConvert', (req, res) => {
+    router.get('/server/ucumConvert', (req, res) => {
         const value = req.query.value === '0' ? 1e-20 : parseFloat(req.query.value); // 0 workaround
         const result = ucum.convertUnitTo(req.query.from, value, req.query.to);
         if (result.status === 'succeeded') {
-            const ret = Math.abs(result.toVal) < 1 ? _.round(result.toVal, 10) : result.toVal; // 0 workaround
+            const ret = Math.abs(result.toVal) < 1 ? round(result.toVal, 10) : result.toVal; // 0 workaround
             res.send('' + ret);
         } else {
             res.send('');
         }
     });
 
-    // cb(error, uom)
+    router.get('/server/ucumSynonyms', check('uom').isAlphanumeric(), validateBody, (req, res) => {
+        const uom = req.query.uom;
+
+        const resp = ucum.getSpecifiedUnit(uom, 'validate', 'false');
+        if (!resp || !resp.unit) {
+            return res.send([]);
+        }
+
+        const unit = resp.unit;
+        const name = unit.name_;
+        const synonyms = unit.synonyms_.split('; ');
+        res.send([name, ...synonyms]);
+    });
+
+    router.get('/server/ucumNames', check('uom').isAlphanumeric(), validateBody, (req, res) => {
+        const uom = req.query.uom;
+
+        const resp = ucum.getSpecifiedUnit(uom, 'validate', true);
+        if (!resp || !resp.unit) {
+            return res.send([]);
+        } else {
+            res.send([{
+                name: resp.unit.name_,
+                synonyms: resp.unit.synonyms_.split('; '),
+                code: resp.unit.csCode_
+            }]);
+        }
+    });
+
     function validateUom(uom, cb: CbErr<string>) {
         let error;
         const validation = ucum.validateUnitString(uom, true);
@@ -306,38 +339,9 @@ export function init(app: Express, daoManager) {
         cb(error, uom);
     }
 
-    app.get('/ucumSynonyms', check('uom').isAlphanumeric(), validateBody, (req, res) => {
-        const uom = req.query.uom;
-
-        const resp = ucum.getSpecifiedUnit(uom, 'validate', 'false');
-        if (!resp || !resp.unit) {
-            return res.send([]);
-        }
-
-        const unit = resp.unit;
-        const name = unit.name_;
-        const synonyms = unit.synonyms_.split('; ');
-        res.send([name, ...synonyms]);
-    });
-
-    app.get('/ucumNames', check('uom').isAlphanumeric(), validateBody, (req, res) => {
-        const uom = req.query.uom;
-
-        const resp = ucum.getSpecifiedUnit(uom, 'validate', true);
-        if (!resp || !resp.unit) {
-            return res.send([]);
-        } else {
-            res.send([{
-                name: resp.unit.name_,
-                synonyms: resp.unit.synonyms_.split('; '),
-                code: resp.unit.csCode_
-            }]);
-        }
-    });
-
-    app.post('/ucumValidate', check('uoms').isArray(), validateBody, (req, res) => {
-        const errors: (string|undefined)[] = [];
-        const units: (string|undefined)[] = [];
+    router.post('/server/ucumValidate', check('uoms').isArray(), validateBody, (req, res) => {
+        const errors: (string | undefined)[] = [];
+        const units: (string | undefined)[] = [];
         req.body.uoms.forEach((uom, i) => {
             validateUom(uom, (error, u) => {
                 errors[i] = error;
@@ -356,14 +360,14 @@ export function init(app: Express, daoManager) {
         res.send({errors, units});
     });
 
-    app.post('/syncLinkedForms', isOrgAuthorityMiddleware, (req, res) => {
+    router.post('/server/syncLinkedForms', isOrgAuthorityMiddleware, (req, res) => {
         res.send();
         syncLinkedForms.syncLinkedForms();
     });
-
-    app.get('/syncLinkedForms', (req, res) => res.send(syncLinkedForms.syncLinkedFormsProgress));
+    router.get('/server/syncLinkedForms', (req, res) => res.send(syncLinkedForms.syncLinkedFormsProgress));
 
     /* tslint:disable */
     new CronJob('00 30 4 * * *', () => syncLinkedForms.syncLinkedForms(), null, true, 'America/New_York');
     /* tslint:enable */
+    return router;
 }
