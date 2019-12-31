@@ -46,9 +46,9 @@ export function blockBannedIps(req, res, next) {
 }
 
 export async function getTrafficFilter() {
-    const foundOne = await findAnyOne();
+    let foundOne = await findAnyOne();
     if (!foundOne) {
-        const newOne = await initTrafficFilter();
+        foundOne = await initTrafficFilter();
     }
     return foundOne;
 }
