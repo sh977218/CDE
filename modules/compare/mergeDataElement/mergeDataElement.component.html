@@ -1,12 +1,17 @@
 <button mat-raised-button id="openMergeDataElementModalBtn"
-        (click)="openMergeDataElementModal()"><mat-icon>content_copy</mat-icon>Merge Data Element</button>
+        (click)="openMergeDataElementModal()">
+    <mat-icon>content_copy</mat-icon>
+    Merge Data Element
+</button>
 
 <ng-template #mergeDataElementContent>
     <div mat-dialog-title>
         <div class="col-10 col-offset-1">
             <a target="_blank" href="/deView?tinyId={{source.tinyId}}">{{source.designations[0].designation}}</a>
             [{{ source.stewardOrg.name }}]
-            <br><mat-icon>arrown_downward</mat-icon><br>
+            <br>
+            <mat-icon>arrown_downward</mat-icon>
+            <br>
             <a target="_blank"
                href="/deView?tinyId={{destination.tinyId}}">{{destination.designations[0].designation}}</a>
             [{{ destination.stewardOrg.name }}]
@@ -23,70 +28,87 @@
             </button>
             <div class="row">
                 <div class="col-lg-offset-1 col-10">
-                    <input type="checkbox" id="mergeFieldClassifications"
-                           [(ngModel)]="mergeFields.classifications" (ngModelChange)="allowToMerge()">Classifications
+                    <mat-checkbox id="mergeFieldClassifications" [(ngModel)]="mergeFields.classifications"
+                                  (change)="allowToMerge()">
+                        Classifications
+                    </mat-checkbox>
                 </div>
             </div>
             <div class="row">
                 <div class="col-lg-offset-1 col-10">
-                    <input type="checkbox" id="mergeFieldIdentifiers" [(ngModel)]="mergeFields.ids"
-                           (ngModelChange)="allowToMerge()">Identifiers
+                    <mat-checkbox id="mergeFieldIdentifiers" [(ngModel)]="mergeFields.ids" (change)="allowToMerge()">
+                        Identifiers
+                    </mat-checkbox>
                 </div>
             </div>
             <div class="row">
                 <div class="col-lg-offset-1 col-10">
-                    <input type="checkbox" id="mergeFieldsDesignations" [(ngModel)]="mergeFields.designations"
-                           (ngModelChange)="allowToMerge()">Designations
+                    <mat-checkbox id="mergeFieldsDesignations" [(ngModel)]="mergeFields.designations"
+                                  (change)="allowToMerge()">
+                        Designations
+                    </mat-checkbox>
                 </div>
             </div>
             <div class="row">
                 <div class="col-lg-offset-1 col-10">
-                    <input type="checkbox" id="mergeFieldsDefinitions" [(ngModel)]="mergeFields.definitions"
-                           (ngModelChange)="allowToMerge()">Definitions
+                    <mat-checkbox id="mergeFieldsDefinitions" [(ngModel)]="mergeFields.definitions"
+                                  (change)="allowToMerge()">
+                        Definitions
+                    </mat-checkbox>
                 </div>
             </div>
             <div class="row">
                 <div class="col-lg-offset-1 col-10">
-                    <input type="checkbox" id="mergeFieldsProperties"
-                           [(ngModel)]="mergeFields.properties" (ngModelChange)="allowToMerge()">Properties
+                    <mat-checkbox id="mergeFieldsProperties" [(ngModel)]="mergeFields.properties"
+                                  (change)="allowToMerge()">
+                        Properties
+                    </mat-checkbox>
                 </div>
             </div>
             <div class="row">
                 <div class="col-lg-offset-1 col-10">
-                    <input type="checkbox" id="mergeFieldsAttachments"
-                           [(ngModel)]="mergeFields.attachments" (ngModelChange)="allowToMerge()">Attachments
+                    <mat-checkbox id="mergeFieldsAttachments" [(ngModel)]="mergeFields.attachments"
+                                  (change)="allowToMerge()">
+                        Attachments
+                    </mat-checkbox>
                 </div>
             </div>
             <div class="row">
                 <div class="col-lg-offset-1 col-10">
-                    <input type="checkbox" id="mergeFieldsSources" [(ngModel)]="mergeFields.sources"
-                           (ngModelChange)="allowToMerge()">Sources
+                    <mat-checkbox id="mergeFieldsSources" [(ngModel)]="mergeFields.sources" (change)="allowToMerge()">
+                        Sources
+                    </mat-checkbox>
                 </div>
             </div>
             <div class="row">
                 <div class="col-lg-offset-1 col-10">
-                    <input type="checkbox" id="mergeFieldsReferenceDocuments"
-                           [(ngModel)]="mergeFields.referenceDocuments" (ngModelChange)="allowToMerge()">Reference
-                    Document
+                    <mat-checkbox id="mergeFieldsReferenceDocuments" [(ngModel)]="mergeFields.referenceDocuments"
+                                  (change)="allowToMerge()">
+                        Reference Document
+                    </mat-checkbox>
                 </div>
             </div>
             <div class="row">
                 <div class="col-lg-offset-1 col-10">
-                    <input type="checkbox" id="mergeFieldsDataSets" [(ngModel)]="mergeFields.dataSets"
-                           (ngModelChange)="allowToMerge()">Data
-                    Sets
+                    <mat-checkbox id="mergeFieldsDataSets" [(ngModel)]="mergeFields.dataSets" (change)="allowToMerge()">
+                        Data Sets
+                    </mat-checkbox>
                 </div>
             </div>
             <div class="row">
                 <div class="col-lg-offset-1 col-10">
-                    <input type="checkbox" id="mergeFieldsDerivationRules"
-                           [(ngModel)]="mergeFields.derivationRules" (ngModelChange)="allowToMerge()">Derivation Rules
+                    <mat-checkbox id="mergeFieldsDerivationRules" [(ngModel)]="mergeFields.derivationRules"
+                                  (change)="allowToMerge()">
+                        Derivation Rules
+                    </mat-checkbox>
                 </div>
             </div>
             <div class="row">
                 <div class="col-lg-offset-1 col-10">
-                    <input type="checkbox" id="mergeFieldsRetireCde"
-                           [(ngModel)]="mergeFields.retireCde" (ngModelChange)="allowToMerge()">Retire Cde?
+                    <mat-checkbox id="mergeFieldsRetireCde" [(ngModel)]="mergeFields.retireCde"
+                                  (change)="allowToMerge()">
+                        Retire Cde?
+                    </mat-checkbox>
                 </div>
             </div>
         </div>
