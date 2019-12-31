@@ -2,10 +2,10 @@
    id="openMergeFormModalBtn" (click)="openMergeFormModal()">Merge Form</a>
 
 <ng-template #mergeFormContent>
-    <h4 mat-dialog-title>Merge <a target=_blank href="formView?tinyId={{left.tinyId}}">
-        {{left.designations[0].designation}}</a>
-        Into <a target=_blank href="formView?tinyId={{right.tinyId}}">
-            {{right.designations[0].designation}}</a>
+    <h4 mat-dialog-title>Merge <a target=_blank href="formView?tinyId={{source.tinyId}}">
+        {{source.designations[0].designation}}</a>
+        Into <a target=_blank href="formView?tinyId={{destination.tinyId}}">
+            {{destination.designations[0].designation}}</a>
     </h4>
     <div mat-dialog-content>
         <div class="row">
@@ -17,7 +17,7 @@
                             <button class="btn btn-outline-dark btn-xs" (click)="selectAllFormMergerFields();"
                                     [disabled]="!mergeFormService.error.ownTargetForm">All
                             </button>
-                            <button class="btn btn-outline-dark btn-xs" (click)="deselectAllFormMergerFields();"
+                            <button class="btn btn-outline-dark btn-xs" (click)="unselectAllFormMergerFields();"
                                     [disabled]="!mergeFormService.error.ownTargetForm">None
                             </button>
                         </div>
@@ -54,11 +54,14 @@
                     <div class="col-6 col-lg-12 col-xl-12" *ngIf="mergeFields.questions">
                         <h4>CDE fields:</h4>
                         <div>
-                            <button class="btn btn-outline-dark btn-xs" (click)="selectAllCdeMergerFields();">All</button>
-                            <button class="btn btn-outline-dark btn-xs" (click)="deselectAllCdeMergerFields();">None</button>
+                            <button class="btn btn-outline-dark btn-xs" (click)="selectAllCdeMergerFields();">All
+                            </button>
+                            <button class="btn btn-outline-dark btn-xs" (click)="unselectAllCdeMergerFields();">None
+                            </button>
                         </div>
                         <div>
-                            <label><input type="checkbox" [(ngModel)]="mergeFields.cde.designations"> Designation</label>
+                            <label><input type="checkbox" [(ngModel)]="mergeFields.cde.designations">
+                                Designation</label>
                         </div>
                         <div>
                             <label><input type="checkbox" [(ngModel)]="mergeFields.cde.definitions"> Definition</label>
@@ -99,10 +102,11 @@
                 <div class="row">
                     <ng-container *ngIf="mergeFields.questions">
                         <div class="col-6" id="dropArea">
-                            <cde-sortable [left]="left" [right]="right" [mergeFields]="mergeFields"></cde-sortable>
+                            <cde-sortable [left]="source" [right]="destination"
+                                          [mergeFields]="mergeFields"></cde-sortable>
                         </div>
                         <div class="col-6">
-                            <div *ngFor="let rightQuestion of right.questions; let i = index"
+                            <div *ngFor="let rightQuestion of destination.questions; let i = index"
                                  class="boxed-div overflowHidden" id="targetQuestion_{{i}}">
                                 <div class="col-3 Label noLeftRightPadding">CDE Name:</div>
                                 <div class="col-9 noLeftRightPadding mergeCdeName">
@@ -121,6 +125,8 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div mat-dialog-actions>
         <div *ngIf="mergeFormService.error.error" id="mergeFormErrorDiv" class="alert alert-danger">
             {{mergeFormService.error.error}}
         </div>
@@ -128,10 +134,11 @@
     <div mat-dialog-actions>
         <div *ngIf="showProgressBar" style="width:100%">
             <mat-progress-bar [value]="numMergedQuestions / maxNumberQuestions">
-=            </mat-progress-bar>
+                =
+            </mat-progress-bar>
         </div>
         <button mat-raised-button id="cancelMergeFormBtn" [mat-dialog-close] type="button">
-            {{doneMerge?'Close':'Cancel'}}
+            {{doneMerge ? 'Close' : 'Cancel'}}
         </button>
         <button *ngIf="!doneMerge && !mergeFormService.error.error" mat-raised-button color="primary" id="mergeFormBtn"
                 (click)="doMerge()">

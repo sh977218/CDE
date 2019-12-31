@@ -1,42 +1,29 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ElasticService } from '_app/elastic.service';
-import { AlertService } from 'alert/alert.service';
-import { mergeArrayByProperty } from 'core/adminItem/classification';
 import { DataElement } from 'shared/de/dataElement.model';
-import { CbErr } from 'shared/models.model';
+import { mergeArrayByProperty } from 'core/adminItem/classification';
 import { transferClassifications } from 'shared/system/classificationShared';
-
-export interface MergeFieldsDe {
-    attachments: boolean;
-    classifications: boolean;
-    dataSets: boolean;
-    definitions: boolean;
-    derivationRules: boolean;
-    designations: boolean;
-    ids: boolean;
-    properties: boolean;
-    referenceDocuments: boolean;
-    retireCde: boolean;
-    sources: boolean;
-}
+import { DeMergeFields } from './mergeDataElement/deMergeFields.model';
 
 @Injectable()
-export class MergeCdeService {
-    constructor(private alert: AlertService,
-                private elasticService: ElasticService,
-                private http: HttpClient) {
+export class MergeDeService {
+    constructor(private http: HttpClient) {
     }
 
     async doMerge(tinyIdFrom: string,
                   tinyIdTo: string,
-                  fields: MergeFieldsDe,
-                  cb: CbErr<[DataElement, DataElement]>) {
+                  fields: DeMergeFields) {
         if (tinyIdFrom === tinyIdTo) {
-            return cb();
+            throw new Error('You cannot merge same data elements.');
         }
         const cdeFrom = await this.getCdeByTinyId(tinyIdFrom).toPromise();
         const cdeTo = await this.getCdeByTinyId(tinyIdTo).toPromise();
+        if (cdeFrom.isDraft) {
+            throw new Error(`You cannot merge draft data element. ${cdeFrom.tinyId}`);
+        }
+        if (cdeTo.isDraft) {
+            throw new Error(`You cannot merge draft data element. ${cdeTo.tinyId}`);
+        }
 
         if (fields.designations) {
             mergeArrayByProperty(cdeFrom, cdeTo, 'designations');
@@ -75,8 +62,7 @@ export class MergeCdeService {
         cdeTo.changeNote = 'Merged from tinyId ' + cdeFrom.tinyId;
         const fromResult = await this.putDeByTinyId(cdeFrom).toPromise();
         const toResult = await this.putDeByTinyId(cdeTo).toPromise();
-
-        cb(undefined, [fromResult, toResult]);
+        return {left: fromResult, right: toResult};
     }
 
     getCdeByTinyId(tinyId: string) {

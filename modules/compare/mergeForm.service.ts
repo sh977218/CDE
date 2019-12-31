@@ -1,52 +1,22 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import async_forEachSeries from 'async/forEachSeries';
 import { CompareForm, CompareQuestion } from 'compare/compareSideBySide/compareSideBySide.component';
 import { mergeArrayByProperty } from 'core/adminItem/classification';
 import { IsAllowedService } from 'non-core/isAllowed.service';
-import { MergeCdeService } from 'non-core/mergeCde.service';
+import { MergeDeService } from 'compare/mergeDe.service';
 import { CdeForm } from 'shared/form/form.model';
-import { Cb, Cb2, CbErr } from 'shared/models.model';
+import { CbErr } from 'shared/models.model';
 import { transferClassifications } from 'shared/system/classificationShared';
+import { FormMergeFields } from './mergeForm/formMergeFields.model';
 
-export interface MergeFieldsForm {
-    designations: boolean;
-    definitions: boolean;
-    referenceDocuments: boolean;
-    properties: boolean;
-    ids: boolean;
-    classifications: boolean;
-    questions: boolean;
-    cde: MergeFieldsFormCde;
-}
-
-export interface MergeFieldsFormCde {
-    designations: boolean;
-    definitions: boolean;
-    referenceDocuments: boolean;
-    properties: boolean;
-    attachments: boolean;
-    dataSets: boolean;
-    derivationRules: boolean;
-    sources: boolean;
-    ids: boolean;
-    classifications: boolean;
-    retireCde: boolean;
-}
 
 @Injectable()
 export class MergeFormService {
-    error: any = {
-        error: '',
-        ownTargetForm: false,
-        ownSourceForm: false
-    };
+    error: any = {};
 
-    constructor(
-        private http: HttpClient,
-        public isAllowedModel: IsAllowedService,
-        private mergeCdeService: MergeCdeService,
-    ) {
+    constructor(private http: HttpClient,
+                public isAllowedModel: IsAllowedService,
+                private mergeDeService: MergeDeService) {
     }
 
     saveForm(form: CdeForm, cb: CbErr<CdeForm>) {
@@ -60,38 +30,24 @@ export class MergeFormService {
         );
     }
 
-    private mergeQuestions(questionsFrom: CompareQuestion[],
-                           questionsTo: CompareQuestion[],
-                           fields: MergeFieldsFormCde,
-                           doneOne: Cb2<number, Cb>,
-                           cb: CbErr) {
-        let index = 0;
-        async_forEachSeries(questionsFrom, (questionFrom: CompareQuestion, doneOneQuestion: Cb) => {
-            const questionTo = questionsTo[index];
-            if (!questionFrom.question.cde.tinyId || !questionTo.question.cde.tinyId) {
-                index++;
-                doneOne(index, doneOneQuestion);
+    private async mergeQuestions(questionsFrom: CompareQuestion[], questionsTo: CompareQuestion[], fields: FormMergeFields) {
+        for (const questionFrom of questionsFrom) {
+            const questionToFilter = questionsTo.filter(q => q.question.cde.tinyId === questionFrom.question.cde.tinyId);
+            if (questionToFilter.length !== 1) {
+                throw new Error(`${questionFrom.question.cde.tinyId} does not exist.`);
             } else {
+                const questionTo = questionToFilter[0];
                 const tinyIdFrom = questionFrom.question.cde.tinyId;
                 const tinyIdTo = questionTo.question.cde.tinyId;
-                this.mergeCdeService.doMerge(tinyIdFrom, tinyIdTo, fields, (err, result) => {
-                    if (err) {
-                        return cb(err);
-                    } else {
-                        index++;
-                        if (result && result[0].registrationState.registrationStatus === 'Retired') {
-                            questionFrom.isRetired = true;
-                        }
-                        doneOne(index, doneOneQuestion);
-                    }
-                });
+                await this.mergeDeService.doMerge(tinyIdFrom, tinyIdTo, fields.cde);
             }
-        }, cb);
+        }
+
     }
 
-    doMerge(mergeFrom: CompareForm, mergeTo: CompareForm, fields: MergeFieldsForm, doneOne: Cb2<number, Cb>, cb: CbErr) {
+    async doMerge(mergeFrom: CompareForm, mergeTo: CompareForm, fields: FormMergeFields) {
         if (mergeFrom.questions.length !== mergeTo.questions.length) {
-            cb('number of question on left is not same on right.');
+            throw new Error('number of question on left is not same on right.');
         } else {
             if (fields.designations) {
                 mergeArrayByProperty(mergeFrom, mergeTo, 'designations');
@@ -112,16 +68,16 @@ export class MergeFormService {
                 transferClassifications(mergeFrom, mergeTo);
             }
             if (fields.questions) {
-                this.mergeQuestions(mergeFrom.questions, mergeTo.questions, fields.cde, doneOne, cb);
+                await this.mergeQuestions(mergeFrom.questions, mergeTo.questions, fields);
             }
         }
     }
 
-    validateQuestions(left: CompareForm, right: CompareForm, selectedFields: MergeFieldsForm) {
+    validateQuestions(left: CompareForm, right: CompareForm, fields: FormMergeFields) {
         this.error.error = '';
         this.error.ownSourceForm = this.isAllowedModel.isAllowed(left);
         this.error.ownTargetForm = this.isAllowedModel.isAllowed(right);
-        if (selectedFields.questions && left.questions.length > right.questions.length) {
+        if (fields.questions && left.questions.length > right.questions.length) {
             this.error.error = 'Form merge from has too many questions';
             return this.error;
         }

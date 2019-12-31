@@ -3,6 +3,9 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule, MatDialogModule, MatIconModule, MatProgressBarModule } from '@angular/material';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { SortableModule } from 'ngx-bootstrap/sortable';
+import { DiffMatchPatchModule } from 'ng-diff-match-patch';
+
 import { CdeSortableComponent } from 'compare/cdeSortable/cdeSortable.component';
 import { CompareItemArrayComponent } from 'compare/compareItem/compareItemArray.component';
 import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHistoryContent.component';
@@ -10,10 +13,8 @@ import { CompareItemComponent } from 'compare/compareItem/compareItem.component'
 import { CompareSideBySideComponent } from 'compare/compareSideBySide/compareSideBySide.component';
 import { MergeDataElementComponent } from 'compare/mergeDataElement/mergeDataElement.component';
 import { MergeFormComponent } from 'compare/mergeForm/mergeForm.component';
-import { NonCoreModule } from 'non-core/noncore.module';
-import { SortableModule } from 'ngx-bootstrap/sortable';
-import { DiffMatchPatchModule } from 'ng-diff-match-patch';
-
+import { MergeDeService } from './mergeDe.service';
+import { MergeFormService } from './mergeForm.service';
 @NgModule({
     imports: [
         CommonModule,
@@ -25,8 +26,6 @@ import { DiffMatchPatchModule } from 'ng-diff-match-patch';
         MatDialogModule,
         MatIconModule,
         MatProgressBarModule,
-        // non-core
-        NonCoreModule
     ],
     declarations: [
         CdeSortableComponent,
@@ -42,7 +41,7 @@ import { DiffMatchPatchModule } from 'ng-diff-match-patch';
         CompareItemComponent,
         CompareHistoryContentComponent
     ],
-    providers: [],
+    providers: [MergeDeService, MergeFormService],
     exports: [
         CompareSideBySideComponent,
         CompareItemArrayComponent,
