@@ -377,7 +377,9 @@ app.use((err, req, res, next) => {
             params: req.params,
             body: req.body,
             ip: req.ip,
-            headers: {'user-agent': req.headers['user-agent']}
+            headers: {'user-agent': req.headers['user-agent']},
+            errorCode: err.code,
+            errorType: err.type
         }
     };
     errorLogger.error('error', 'Error: Express Default Error Handler', meta);
