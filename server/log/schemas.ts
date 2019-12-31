@@ -38,7 +38,9 @@ export const logErrorSchema = new Schema({ // server
         body: StringType,
         username: StringType,
         userAgent: StringType,
-        ip: StringType
+        ip: StringType,
+        errorCode: StringType,
+        errorType: StringType
     }
 }, {w: 0, capped: cappedSize} as any);
 

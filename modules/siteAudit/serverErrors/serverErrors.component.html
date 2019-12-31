@@ -5,6 +5,8 @@
         <th>Request</th>
         <th>Stack</th>
         <th>Details</th>
+        <th>Error Code</th>
+        <th>Error Type</th>
     </tr>
     </thead>
     <tbody>
@@ -18,6 +20,8 @@
             <div *ngIf="err.request?.body"><b>Body: </b>{{err.request.body | slice:0:500}}</div>
             <div *ngIf="err.request?.userAgent"><b>Browser:</b> {{err.request.userAgent}}</div>
             <div *ngIf="err.request?.ip"><b>IP:</b> {{err.request.ip}}</div>
+            <div *ngIf="err.request?.errorCode"><b>error Code:</b> {{err.request.errorCode}}</div>
+            <div *ngIf="err.request?.errorType"><b>error Type:</b> {{err.request.errorType}}</div>
         </td>
         <td class="error_cell">{{err.stack | slice:0:500 }}</td>
         <td class="error_cell">
