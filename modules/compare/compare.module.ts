@@ -1,7 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatButtonModule, MatDialogModule, MatIconModule, MatProgressBarModule, MatCheckboxModule } from '@angular/material';
+import {
+    MatButtonModule,
+    MatDialogModule,
+    MatIconModule,
+    MatProgressBarModule,
+    MatCheckboxModule,
+    MatTooltipModule
+} from '@angular/material';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { SortableModule } from 'ngx-bootstrap/sortable';
 import { DiffMatchPatchModule } from 'ng-diff-match-patch';
@@ -25,6 +32,7 @@ import { MergeFormService } from './mergeForm.service';
         DiffMatchPatchModule,
         MatButtonModule,
         MatCheckboxModule,
+        MatTooltipModule,
         MatDialogModule,
         MatIconModule,
         MatProgressBarModule,

@@ -8,7 +8,14 @@ import { FormMergeFields } from './formMergeFields.model';
 
 @Component({
     selector: 'cde-merge-form',
-    templateUrl: './mergeForm.component.html'
+    templateUrl: './mergeForm.component.html',
+    styles: [`
+        div.mergeCdeName {
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+    `]
 })
 export class MergeFormComponent {
     @Input() source!: CompareForm;

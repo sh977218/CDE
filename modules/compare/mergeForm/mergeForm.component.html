@@ -107,8 +107,10 @@
                         </div>
                         <div class="col-6">
                             <div *ngFor="let rightQuestion of destination.questions; let i = index"
-                                 class="boxed-div overflowHidden" id="targetQuestion_{{i}}">
-                                <div class="col-3 Label noLeftRightPadding">CDE Name:</div>
+                                 class="row boxed-div overflowHidden" id="targetQuestion_{{i}}">
+                                <div class="col-3 Label noLeftRightPadding"
+                                     matTooltip="{{rightQuestion.question.cde.name}}">CDE Name:
+                                </div>
                                 <div class="col-9 noLeftRightPadding mergeCdeName">
                                     <a *ngIf="rightQuestion.question.cde.name" target="_blank"
                                        href="/deView?tinyId={{rightQuestion.question.cde.tinyId}}">

@@ -5,14 +5,16 @@
 </bs-sortable>
 
 <button mat-raised-button id="addPlaceHolderToLeft" (click)="addItem()">
-    <mat-icon>add</mat-icon> Add Placeholder
+    <mat-icon>add</mat-icon>
+    Add Placeholder
 </button>
 
 <ng-template #questionTemplate let-item="item" let-index="index">
-    <div class="boxed-div overflowHidden" title="{{item.value.isRetired?'CDE is Retired':''}}"
+    <div class="row boxed-div overflowHidden" title="{{item.value.isRetired?'CDE is Retired':''}}"
          [ngClass]="{'bgGreen': item.value.info && item.value.info.match, 'bgRed': item.value.info && item.value.info.error}"
          id="leftQuestion_{{index}}">
-        <div class="col-3 Label noLeftRightPadding">CDE Name:
+        <mat-icon class="right" id="removeLeftQuestion_{{index}}" (click)="removeItem(index)">delete_outline</mat-icon>
+        <div class="col-3 Label noLeftRightPadding" matTooltip="{{item.value.question.cde.name}}">CDE Name:
             <div *ngIf="item.value.isRetired">Retired</div>
             <div *ngIf="item.value.info && item.value.info.error">{{item.value.info.error}}</div>
         </div>
@@ -20,10 +22,6 @@
             <a target="_blank" href="/deView?tinyId={{item.value.question.cde.tinyId}}">
                 {{item.value.question.cde.name}}
             </a>
-        </div>
-        <div class="col-1 noLeftRightPadding">
-            <mat-icon class="right" id="removeLeftQuestion_{{index}}"
-                  (click)="removeItem(index)">delete_outline</mat-icon>
         </div>
     </div>
 </ng-template>
