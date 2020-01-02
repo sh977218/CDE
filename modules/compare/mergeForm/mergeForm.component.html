@@ -142,7 +142,7 @@
         <button mat-raised-button id="cancelMergeFormBtn" [mat-dialog-close] type="button">
             {{doneMerge ? 'Close' : 'Cancel'}}
         </button>
-        <button *ngIf="!doneMerge && !mergeFormService.error.error" mat-raised-button color="primary" id="mergeFormBtn"
+        <button *ngIf="!finishMerge && !mergeFormService.error.error" mat-raised-button color="primary" id="mergeFormBtn"
                 (click)="doMerge()">
             Merge
         </button>

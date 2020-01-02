@@ -22,6 +22,7 @@ export class MergeFormComponent {
     @Input() destination!: CompareForm;
     @Output() doneMerge = new EventEmitter<{ left: CompareForm, right: CompareForm }>();
     @ViewChild('mergeFormContent', {static: true}) mergeFormContent!: TemplateRef<any>;
+    finishMerge = false;
     maxNumberQuestions: any;
     mergeFields: FormMergeFields = {
         designations: true,
@@ -99,6 +100,7 @@ export class MergeFormComponent {
         this.mergeFields.classifications = true;
         this.mergeFields.questions = true;
     }
+
     doMerge() {
         this.showProgressBar = true;
         this.maxNumberQuestions = this.destination.questions.length;
@@ -117,6 +119,7 @@ export class MergeFormComponent {
                             if (err) {
                                 this.alert.addAlert('danger', 'Can not save target form.');
                             } else {
+                                this.finishMerge = true;
                                 this.alert.addAlert('success', 'Form merged');
                                 setTimeout(() => {
                                     this.showProgressBar = false;
@@ -132,6 +135,7 @@ export class MergeFormComponent {
                     if (err) {
                         this.alert.addAlert('danger', 'Cannot save target form.');
                     } else {
+                        this.finishMerge = true;
                         this.alert.addAlert('success', 'Form merged');
                         setTimeout(() => {
                             this.showProgressBar = false;
