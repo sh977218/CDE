@@ -6,7 +6,14 @@ import { MergeFormService } from '../mergeForm.service';
 
 @Component({
     selector: 'cde-sortable',
-    templateUrl: './cdeSortable.component.html'
+    templateUrl: './cdeSortable.component.html',
+    styles: [`
+        div.mergeCdeName {
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+    `]
 })
 export class CdeSortableComponent {
     @Input() left!: CompareForm;
@@ -35,7 +42,9 @@ export class CdeSortableComponent {
     }
 
     removeItem(index: number) {
-        if (index === undefined) { index = -1; }
+        if (index === undefined) {
+            index = -1;
+        }
         this.left.questions.splice(index, 1);
         this.sortableComponent.writeValue(this.left.questions);
         this.mergeFormService.validateQuestions(this.left, this.right, this.mergeFields);
