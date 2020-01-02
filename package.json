@@ -296,7 +296,7 @@
     {
       "path": "./dist/app/cde.js",
       "compression": "none",
-      "maxSize": "1.89 MB"
+      "maxSize": "1.88 MB"
     },
     {
       "path": "./dist/app/cde.css",
