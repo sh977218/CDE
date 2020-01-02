@@ -31,16 +31,12 @@ export class MergeFormService {
     }
 
     private async mergeQuestions(questionsFrom: CompareQuestion[], questionsTo: CompareQuestion[], fields: FormMergeFields) {
-        for (const questionFrom of questionsFrom) {
-            const questionToFilter = questionsTo.filter(q => q.question.cde.tinyId === questionFrom.question.cde.tinyId);
-            if (questionToFilter.length !== 1) {
-                throw new Error(`${questionFrom.question.cde.tinyId} does not exist.`);
-            } else {
-                const questionTo = questionToFilter[0];
-                const tinyIdFrom = questionFrom.question.cde.tinyId;
-                const tinyIdTo = questionTo.question.cde.tinyId;
-                await this.mergeDeService.doMerge(tinyIdFrom, tinyIdTo, fields.cde);
-            }
+        for (let i = 0; i < questionsFrom.length; i++) {
+            const questionFrom = questionsFrom[i];
+            const questionTo = questionsTo[i];
+            const tinyIdFrom = questionFrom.question.cde.tinyId;
+            const tinyIdTo = questionTo.question.cde.tinyId;
+            await this.mergeDeService.doMerge(tinyIdFrom, tinyIdTo, fields.cde);
         }
 
     }
