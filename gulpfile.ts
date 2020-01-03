@@ -18,10 +18,6 @@ import { config } from 'server/system/parseConfig';
 
 require('es6-promise').polyfill();
 
-interface StatusCodeError extends Error {
-    status: number;
-}
-
 const APP_DIR = __dirname;
 const BUILD_DIR = appDir(config.node.buildDir);
 const runInAppOptions = {cwd: APP_DIR};
@@ -94,7 +90,13 @@ gulp.task('createDist', ['copyThirdParty'], function createDist() {
         .pipe(gulp.dest(appDir('./dist/common')));
 });
 
-gulp.task('copyCode', function copyCode() {
+
+gulp.task('buildNode', function buildNode() {
+    return run('npm run buildNode');
+});
+
+
+gulp.task('copyCode', ['buildNode'], function copyCode() {
     const streamArray: NodeJS.ReadWriteStream[] = [];
 
     streamArray.push(gulp.src(appDir('./frontEnd/_fhirApp/fhirAppLaunch.html'))
@@ -120,7 +122,7 @@ gulp.task('copyCode', function copyCode() {
     streamArray.push(gulp.src(appDir('./modules/processManager/pmApp.js'))
         .pipe(gulp.dest(BUILD_DIR + '/modules/processManager/')));
 
-    streamArray.push(gulp.src('./modules/swagger/index.js')
+    streamArray.push(gulp.src('./buildNode/modules/swagger/index.js')
         .pipe(gulp.dest(BUILD_DIR + '/modules/swagger/')));
     streamArray.push(gulp.src(appDir('./modules/swagger/api/swagger.yaml'))
         .pipe(gulp.dest(BUILD_DIR + '/modules/swagger/api/')));
@@ -151,14 +153,14 @@ gulp.task('copyCode', function copyCode() {
         .pipe(gulp.dest(BUILD_DIR + '/modules/form/public/assets/')));
 
     // from buildNode (required)
-    streamArray.push(gulp.src('./app.js*')
+    streamArray.push(gulp.src('./buildNode/app.js*')
         .pipe(replace('APP_DIR = __dirname + "/.."', 'APP_DIR = __dirname'))
         .pipe(gulp.dest(BUILD_DIR + '/')));
-    streamArray.push(gulp.src('./modules/**')
+    streamArray.push(gulp.src('./buildNode/modules/**')
         .pipe(gulp.dest(BUILD_DIR + '/modules/')));
-    streamArray.push(gulp.src('./server/**')
+    streamArray.push(gulp.src('./buildNode/server/**')
         .pipe(gulp.dest(BUILD_DIR + '/server/')));
-    streamArray.push(gulp.src('./shared/**')
+    streamArray.push(gulp.src('./buildNode/shared/**')
         .pipe(gulp.dest(BUILD_DIR + '/shared/')));
 
     return merge(streamArray);
@@ -167,7 +169,7 @@ gulp.task('copyCode', function copyCode() {
 gulp.task('copyNpmDeps', ['copyCode', 'npmRebuildNodeSass'], function copyNpmDeps(cb) {
     gulp.src(buildDir('./package.json'))
         .pipe(gulp.dest(BUILD_DIR))
-        .on('/derror', cb)
+        .on('error', cb)
         .on('end', () => {
             run('npm i --production', {cwd: BUILD_DIR}).then(cb, cb);
         });
@@ -182,7 +184,7 @@ gulp.task('buildDist', ['createDist'], function copyDist() {
     ];
 
     if (config.provider.faas === 'AWS') {
-        runAll.push(run('npm run buildFnAwsJava', runInAppOptions))
+        runAll.push(run('npm run buildFnAwsJava', runInAppOptions));
     }
 
     return Promise.all(runAll);
@@ -301,7 +303,7 @@ gulp.task('es', function es() {
         ))
     });
     return Promise.all(
-        indices.map((index: ElasticIndex) => new Promise((resolve, reject) => {
+        indices.map((index: ElasticIndex) => new Promise(resolve => {
             console.log('Deleting es index: ' + index.indexName);
             esClient.indices.delete({index: index.indexName, timeout: '6s'});
             resolve();
