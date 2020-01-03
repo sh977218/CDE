@@ -153,14 +153,14 @@ gulp.task('copyCode', ['buildNode'], function copyCode() {
         .pipe(gulp.dest(BUILD_DIR + '/modules/form/public/assets/')));
 
     // from buildNode (required)
-    streamArray.push(gulp.src('./app.js*')
+    streamArray.push(gulp.src('./buildNode/app.js*')
         .pipe(replace('APP_DIR = __dirname + "/.."', 'APP_DIR = __dirname'))
         .pipe(gulp.dest(BUILD_DIR + '/')));
-    streamArray.push(gulp.src('./modules/**')
+    streamArray.push(gulp.src('./buildNode/modules/**')
         .pipe(gulp.dest(BUILD_DIR + '/modules/')));
-    streamArray.push(gulp.src('./server/**')
+    streamArray.push(gulp.src('./buildNode/server/**')
         .pipe(gulp.dest(BUILD_DIR + '/server/')));
-    streamArray.push(gulp.src('./shared/**')
+    streamArray.push(gulp.src('./buildNode/shared/**')
         .pipe(gulp.dest(BUILD_DIR + '/shared/')));
 
     return merge(streamArray);
@@ -169,7 +169,7 @@ gulp.task('copyCode', ['buildNode'], function copyCode() {
 gulp.task('copyNpmDeps', ['copyCode', 'npmRebuildNodeSass'], function copyNpmDeps(cb) {
     gulp.src(buildDir('./package.json'))
         .pipe(gulp.dest(BUILD_DIR))
-        .on('/derror', cb)
+        .on('error', cb)
         .on('end', () => {
             run('npm i --production', {cwd: BUILD_DIR}).then(cb, cb);
         });
