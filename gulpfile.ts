@@ -18,10 +18,6 @@ import { config } from 'server/system/parseConfig';
 
 require('es6-promise').polyfill();
 
-interface StatusCodeError extends Error {
-    status: number;
-}
-
 const APP_DIR = __dirname;
 const BUILD_DIR = appDir(config.node.buildDir);
 const runInAppOptions = {cwd: APP_DIR};
@@ -94,7 +90,13 @@ gulp.task('createDist', ['copyThirdParty'], function createDist() {
         .pipe(gulp.dest(appDir('./dist/common')));
 });
 
-gulp.task('copyCode', function copyCode() {
+
+gulp.task('buildNode', function buildNode() {
+    return run('npm run buildNode');
+});
+
+
+gulp.task('copyCode', ['buildNode'], function copyCode() {
     const streamArray: NodeJS.ReadWriteStream[] = [];
 
     streamArray.push(gulp.src(appDir('./frontEnd/_fhirApp/fhirAppLaunch.html'))
@@ -182,7 +184,7 @@ gulp.task('buildDist', ['createDist'], function copyDist() {
     ];
 
     if (config.provider.faas === 'AWS') {
-        runAll.push(run('npm run buildFnAwsJava', runInAppOptions))
+        runAll.push(run('npm run buildFnAwsJava', runInAppOptions));
     }
 
     return Promise.all(runAll);
@@ -301,7 +303,7 @@ gulp.task('es', function es() {
         ))
     });
     return Promise.all(
-        indices.map((index: ElasticIndex) => new Promise((resolve, reject) => {
+        indices.map((index: ElasticIndex) => new Promise(resolve => {
             console.log('Deleting es index: ' + index.indexName);
             esClient.indices.delete({index: index.indexName, timeout: '6s'});
             resolve();
