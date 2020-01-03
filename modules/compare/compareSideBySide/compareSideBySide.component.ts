@@ -79,8 +79,8 @@ export class CompareSideBySideComponent {
     options: CompareOption[] = [];
     leftUrl?: string;
     rightUrl?: string;
-    left;
-    right;
+    left: any;
+    right: any;
     canMergeForm = false;
     canMergeDataElement = false;
 
@@ -176,7 +176,7 @@ export class CompareSideBySideComponent {
         return questions;
     }
 
-    getOptions(left, right) {
+    getOptions(left: any, right: any) {
         const commonOption: CompareOption[] = [
             {
                 displayAs: {

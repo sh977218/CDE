@@ -31,7 +31,7 @@ export class MergeFormService {
         );
     }
 
-    private async mergeQuestions(questionsFrom, questionsTo, fields: FormMergeFields) {
+    private async mergeQuestions(questionsFrom: any, questionsTo: any, fields: FormMergeFields) {
         this.numMergedQuestions = 0;
         this.maxNumberQuestions = questionsFrom.length;
         for (let i = 0; i < questionsFrom.length; i++) {
@@ -74,7 +74,7 @@ export class MergeFormService {
         }
     }
 
-    validateQuestions(left, right, fields: FormMergeFields) {
+    validateQuestions(left: any, right: any, fields: FormMergeFields) {
         this.error.error = '';
         this.error.ownSourceForm = this.isAllowedModel.isAllowed(left);
         this.error.ownTargetForm = this.isAllowedModel.isAllowed(right);
