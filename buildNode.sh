@@ -25,7 +25,7 @@ sed -i -e "s/'\.\/frontEnd\/_nativeRenderApp\/nativeRenderApp\.module'/'\.\.\/fr
 sed -i "s/version = 'x'/version='$(git rev-parse --short HEAD)'/" buildNode/server/version.js
 
 cp -R config buildNode
-sed -i -e 's/"buildDir": "\.\.\/build"/"buildDir": "\.\.\/\.\.\/build"/g' buildNode/config/default.json
+#sed -i -e 's/"buildDir": "\.\.\/build"/"buildDir": "\.\.\/\.\.\/build"/g' buildNode/config/default.json
 cp ingester/package.json buildNode/ingester
 cp server/package.json buildNode/server
 cp shared/package.json buildNode/shared
