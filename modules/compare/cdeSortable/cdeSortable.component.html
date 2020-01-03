@@ -14,11 +14,11 @@
          [ngClass]="{'bgGreen': item.value.info && item.value.info.match, 'bgRed': item.value.info && item.value.info.error}"
          id="leftQuestion_{{index}}">
         <mat-icon class="right" id="removeLeftQuestion_{{index}}" (click)="removeItem(index)">delete_outline</mat-icon>
-        <div class="col-3 Label noLeftRightPadding" matTooltip="{{item.value.question.cde.name}}">CDE Name:
-            <div *ngIf="item.value.isRetired">Retired</div>
+        <div class="col-3 Label no-left-right-padding no-left-right-margin" matTooltip="{{item.value.question.cde.name}}">CDE Name:
+            <div *ngIf="item.value.isRetired">(Retired)</div>
             <div *ngIf="item.value.info && item.value.info.error">{{item.value.info.error}}</div>
         </div>
-        <div class="col-8 noLeftRightPadding mergeCdeName">
+        <div class="col-8 no-left-right-padding no-left-right-margin mergeCdeName">
             <a target="_blank" href="/deView?tinyId={{item.value.question.cde.tinyId}}">
                 {{item.value.question.cde.name}}
             </a>

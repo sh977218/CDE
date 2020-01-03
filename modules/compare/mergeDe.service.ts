@@ -10,9 +10,7 @@ export class MergeDeService {
     constructor(private http: HttpClient) {
     }
 
-    async doMerge(tinyIdFrom: string,
-                  tinyIdTo: string,
-                  fields: DeMergeFields) {
+    async doMerge(tinyIdFrom: string, tinyIdTo: string, fields: DeMergeFields) {
         if (tinyIdFrom === tinyIdTo) {
             throw new Error('You cannot merge same data elements.');
         }

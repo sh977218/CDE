@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { CompareForm, CompareQuestion } from 'compare/compareSideBySide/compareSideBySide.component';
 import { mergeArrayByProperty } from 'core/adminItem/classification';
 import { IsAllowedService } from 'non-core/isAllowed.service';
 import { MergeDeService } from 'compare/mergeDe.service';
@@ -13,6 +12,8 @@ import { FormMergeFields } from './mergeForm/formMergeFields.model';
 @Injectable()
 export class MergeFormService {
     error: any = {};
+    maxNumberQuestions: number;
+    numMergedQuestions: number;
 
     constructor(private http: HttpClient,
                 public isAllowedModel: IsAllowedService,
@@ -30,18 +31,22 @@ export class MergeFormService {
         );
     }
 
-    private async mergeQuestions(questionsFrom: CompareQuestion[], questionsTo: CompareQuestion[], fields: FormMergeFields) {
+    private async mergeQuestions(questionsFrom, questionsTo, fields: FormMergeFields) {
+        this.numMergedQuestions = 0;
+        this.maxNumberQuestions = questionsFrom.length;
         for (let i = 0; i < questionsFrom.length; i++) {
             const questionFrom = questionsFrom[i];
             const questionTo = questionsTo[i];
             const tinyIdFrom = questionFrom.question.cde.tinyId;
             const tinyIdTo = questionTo.question.cde.tinyId;
             await this.mergeDeService.doMerge(tinyIdFrom, tinyIdTo, fields.cde);
+            questionFrom.isRetired = true;
+            this.numMergedQuestions++;
         }
 
     }
 
-    async doMerge(mergeFrom: CompareForm, mergeTo: CompareForm, fields: FormMergeFields) {
+    async doMerge(mergeFrom, mergeTo, fields: FormMergeFields) {
         if (mergeFrom.questions.length !== mergeTo.questions.length) {
             throw new Error('number of question on left is not same on right.');
         } else {
@@ -69,7 +74,7 @@ export class MergeFormService {
         }
     }
 
-    validateQuestions(left: CompareForm, right: CompareForm, fields: FormMergeFields) {
+    validateQuestions(left, right, fields: FormMergeFields) {
         this.error.error = '';
         this.error.ownSourceForm = this.isAllowedModel.isAllowed(left);
         this.error.ownTargetForm = this.isAllowedModel.isAllowed(right);

@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { AlertService } from 'alert/alert.service';
-import { CompareForm } from 'compare/compareSideBySide/compareSideBySide.component';
 import { IsAllowedService } from 'non-core/isAllowed.service';
 import { MergeFormService } from 'compare/mergeForm.service';
 import { FormMergeFields } from './formMergeFields.model';
@@ -10,20 +9,30 @@ import { FormMergeFields } from './formMergeFields.model';
     selector: 'cde-merge-form',
     templateUrl: './mergeForm.component.html',
     styles: [`
+        .no-left-right-padding {
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        .no-left-right-margin {
+            margin-left: 0;
+            margin-right: 0;
+        }
+
         div.mergeCdeName {
             text-overflow: ellipsis;
             white-space: nowrap;
             overflow: hidden;
+            height: 24px;
         }
     `]
 })
 export class MergeFormComponent {
-    @Input() source!: CompareForm;
-    @Input() destination!: CompareForm;
-    @Output() doneMerge = new EventEmitter<{ left: CompareForm, right: CompareForm }>();
+    @Input() source;
+    @Input() destination;
+    @Output() doneMerge = new EventEmitter<{ left, right }>();
     @ViewChild('mergeFormContent', {static: true}) mergeFormContent!: TemplateRef<any>;
     finishMerge = false;
-    maxNumberQuestions: any;
     mergeFields: FormMergeFields = {
         designations: true,
         definitions: true,
@@ -46,7 +55,7 @@ export class MergeFormComponent {
             retireCde: false
         }
     };
-    numMergedQuestions: any;
+
     showProgressBar = false;
 
     constructor(public dialog: MatDialog,
@@ -103,7 +112,6 @@ export class MergeFormComponent {
 
     doMerge() {
         this.showProgressBar = true;
-        this.maxNumberQuestions = this.destination.questions.length;
         this.mergeFormService.doMerge(this.source, this.destination, this.mergeFields).then(res => {
             if (this.mergeFormService.error.ownSourceForm) {
                 this.source.changeNote = 'Merge to tinyId ' + this.destination.tinyId;
