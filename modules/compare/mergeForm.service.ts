@@ -46,7 +46,7 @@ export class MergeFormService {
 
     }
 
-    async doMerge(mergeFrom, mergeTo, fields: FormMergeFields) {
+    async doMerge(mergeFrom: any, mergeTo: any, fields: FormMergeFields) {
         if (mergeFrom.questions.length !== mergeTo.questions.length) {
             throw new Error('number of question on left is not same on right.');
         } else {
@@ -82,11 +82,11 @@ export class MergeFormService {
             this.error.error = 'Form merge from has too many questions';
             return this.error;
         }
-        left.questions.forEach((leftQuestion, i) => {
+        left.questions.forEach((leftQuestion: any, i: number) => {
             const leftTinyId = leftQuestion.question.cde.tinyId;
             leftQuestion.info = {};
             const info = leftQuestion.info;
-            right.questions.filter((rightQuestion, j) => {
+            right.questions.filter((rightQuestion: any, j: number) => {
                 const rightTinyId = rightQuestion.question.cde.tinyId;
                 if (leftTinyId === rightTinyId && i !== j) {
                     info.error = 'Not align';
