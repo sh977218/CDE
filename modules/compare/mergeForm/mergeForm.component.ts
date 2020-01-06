@@ -28,9 +28,9 @@ import { FormMergeFields } from './formMergeFields.model';
     `]
 })
 export class MergeFormComponent {
-    @Input() source;
-    @Input() destination;
-    @Output() doneMerge = new EventEmitter<{ left, right }>();
+    @Input() source!: any;
+    @Input() destination!: any;
+    @Output() doneMerge = new EventEmitter<{ left: any, right: any }>();
     @ViewChild('mergeFormContent', {static: true}) mergeFormContent!: TemplateRef<any>;
     finishMerge = false;
     mergeFields: FormMergeFields = {

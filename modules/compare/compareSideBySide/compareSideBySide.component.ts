@@ -91,7 +91,7 @@ export class CompareSideBySideComponent {
                 public quickBoardService: QuickBoardListService) {
     }
 
-    doneMerge(event: { left, right }) {
+    doneMerge(event: { left: any, right: any }) {
         this.left = event.left;
         this.right = event.right;
         this.doCompare(this.left, this.right, () => {
@@ -108,8 +108,8 @@ export class CompareSideBySideComponent {
             if (results[1].elementType === 'form') {
                 results[1].questions = this.flatFormQuestions(results[1]);
             }
-            this.left = results[0];
-            this.right = results[1];
+            this.left = results[0] as any;
+            this.right = results[1] as any;
             this.getOptions(this.left, this.right);
             this.options.forEach(option => {
                 let l = _get(this.left, option.displayAs.property);

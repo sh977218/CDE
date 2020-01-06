@@ -26,8 +26,8 @@ import { MergeFormService } from '../mergeForm.service';
     `]
 })
 export class CdeSortableComponent {
-    @Input() left;
-    @Input() right;
+    @Input() left!: any;
+    @Input() right!: any;
     @Input() mergeFields!: FormMergeFields;
     @ViewChild('sortableComponent', {static: true}) sortableComponent!: SortableComponent;
 
