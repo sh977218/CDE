@@ -57,6 +57,11 @@ export const sourceSchema = new Schema({
     }
 }, {_id: false});
 
+export const sourcesNewSchema = new Schema({
+    type: Map,
+    of: [sourceSchema]
+}, {_id: false});
+
 export const statusValidationRuleSchema = new Schema({
     field: StringType,
     id: Number,

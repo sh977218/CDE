@@ -3,7 +3,7 @@ import { addStringtype } from '../system/mongoose-stringtype';
 import {
     attachmentSchema, classificationSchema, codeAndSystemSchema, definitionSchema, derivationRuleSchema,
     designationSchema, eltLogSchema, idSchema, permissibleValueSchema, propertySchema, referenceDocumentSchema,
-    registrationStateSchema, sourceSchema
+    registrationStateSchema, sourcesNewSchema, sourceSchema
 } from 'server/system/schemas';
 import { FormElement } from 'shared/form/form.model';
 import { Classification } from 'shared/models.model';
@@ -160,6 +160,10 @@ export const formJson = {
     source: {type: StringType, description: 'This field is replaced with sources'},
     sources: {
         type: [sourceSchema],
+        description: 'Name of system from which Form was imported or obtained from',
+    },
+    sourcesNew: {
+        type: sourcesNewSchema,
         description: 'Name of system from which Form was imported or obtained from',
     },
     origin: {type: StringType, description: 'Name of system where Form is derived'},

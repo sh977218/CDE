@@ -5,14 +5,14 @@ import {
     datatypeExternallyDefinedSchema,
     datatypeNumberSchema, datatypeTextSchema, datatypeTimeSchema, datatypeValueListSchema, definitionSchema,
     derivationRuleSchema, designationSchema, eltLogSchema, idSchema, permissibleValueSchema, propertySchema,
-    referenceDocumentSchema, registrationStateSchema, sourceSchema
+    referenceDocumentSchema, registrationStateSchema, sourcesNewSchema, sourceSchema
 } from '../system/schemas';
 
 addStringtype(mongoose);
 const Schema = mongoose.Schema;
 const StringType = (Schema.Types as any).StringType;
 
-let conceptSchema = new Schema({
+const conceptSchema = new Schema({
     name: StringType,
     origin: {type: StringType, description: 'Source of concept'},
     originId: {type: StringType, description: 'Identifier of concept from source'},
@@ -33,6 +33,10 @@ export const deJson = {
     source: {type: StringType, description: 'This field is replaced with sources'},
     sources: {
         type: [sourceSchema],
+        description: 'Name of system from which CDE was imported or obtained from',
+    },
+    sourcesNew: {
+        type: sourcesNewSchema,
         description: 'Name of system from which CDE was imported or obtained from',
     },
     origin: {type: StringType, description: 'Name of system where CDE is derived'},
@@ -129,7 +133,7 @@ export const dataElementSchema = new Schema(deJson, {
     collection: 'dataelements',
     usePushEach: true,
     toJSON: {
-        transform: function (doc, ret) {
+        transform(doc, ret) {
             ret._links = {
                 describedBy: {
                     href: '/meta/schemas/example'
@@ -140,7 +144,7 @@ export const dataElementSchema = new Schema(deJson, {
 });
 dataElementSchema.index({tinyId: 1, archived: 1}, {
     unique: true,
-    name: "liveTinyId",
+    name: 'liveTinyId',
     partialFilterExpression: {archived: false}
 });
 /*
@@ -149,10 +153,10 @@ dataElementSchema.path("valueDomain").validate(v => {
     return true;
 }, "Code is required for CodeList Datatype");
 */
-dataElementSchema.path("classification").validate(v => {
+dataElementSchema.path('classification').validate(v => {
     return !v.map(value => value.stewardOrg.name)
         .some((value, index, array) => array.indexOf(value) !== array.lastIndexOf(value));
-}, "Duplicate Steward Classification");
+}, 'Duplicate Steward Classification');
 
 export const draftSchema = new Schema(deJson, {
     collection: 'dataelementdrafts',
