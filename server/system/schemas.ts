@@ -59,7 +59,7 @@ export const sourceSchema = new Schema({
 
 export const sourcesNewSchema = new Schema({
     type: Map,
-    of: [sourceSchema]
+    of: [{sourceName: StringType, updated: Date}]
 }, {_id: false});
 
 export const statusValidationRuleSchema = new Schema({

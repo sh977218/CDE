@@ -36,8 +36,10 @@ export const deJson = {
         description: 'Name of system from which CDE was imported or obtained from',
     },
     sourcesNew: {
-        type: sourcesNewSchema,
+        type: Map,
+        of: String,
         description: 'Name of system from which CDE was imported or obtained from',
+        default: []
     },
     origin: {type: StringType, description: 'Name of system where CDE is derived'},
     stewardOrg: {
