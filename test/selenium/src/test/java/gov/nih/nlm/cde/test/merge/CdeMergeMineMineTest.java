@@ -12,7 +12,7 @@ public class CdeMergeMineMineTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ctepCurator_username, password);
         addToCompare(cdeName1, cdeName2);
         clickElement(By.id("openMergeDataElementModalBtn"));
-        clickElement(By.id("checkAllMergeFieldsBtn"));
+        clickElement(By.id("selectAllMergeFieldsBtn"));
         clickElement(By.id("doMergeBtn"));
         textPresent("Retired", By.xpath("//*[@id='Status']//*[contains(@class,'noLeftPadding')]"));
 

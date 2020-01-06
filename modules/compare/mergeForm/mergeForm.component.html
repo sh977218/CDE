@@ -2,10 +2,10 @@
    id="openMergeFormModalBtn" (click)="openMergeFormModal()">Merge Form</a>
 
 <ng-template #mergeFormContent>
-    <h4 mat-dialog-title>Merge <a target=_blank href="formView?tinyId={{left.tinyId}}">
-        {{left.designations[0].designation}}</a>
-        Into <a target=_blank href="formView?tinyId={{right.tinyId}}">
-            {{right.designations[0].designation}}</a>
+    <h4 mat-dialog-title>Merge <a target=_blank href="formView?tinyId={{source.tinyId}}">
+        {{source.designations[0].designation}}</a>
+        Into <a target=_blank href="formView?tinyId={{destination.tinyId}}">
+            {{destination.designations[0].designation}}</a>
     </h4>
     <div mat-dialog-content>
         <div class="row">
@@ -17,95 +17,146 @@
                             <button class="btn btn-outline-dark btn-xs" (click)="selectAllFormMergerFields();"
                                     [disabled]="!mergeFormService.error.ownTargetForm">All
                             </button>
-                            <button class="btn btn-outline-dark btn-xs" (click)="deselectAllFormMergerFields();"
+                            <button class="btn btn-outline-dark btn-xs" (click)="unselectAllFormMergerFields();"
                                     [disabled]="!mergeFormService.error.ownTargetForm">None
                             </button>
                         </div>
                         <div>
-                            <label><input type="checkbox" [(ngModel)]="mergeFields.designations"
-                                          [disabled]="!mergeFormService.error.ownTargetForm"> Designation</label>
+                            <mat-checkbox [(ngModel)]="mergeFields.designations"
+                                          [disabled]="!mergeFormService.error.ownTargetForm">
+                                Designation
+                            </mat-checkbox>
                         </div>
                         <div>
-                            <label><input type="checkbox" [(ngModel)]="mergeFields.definitions"
-                                          [disabled]="!mergeFormService.error.ownTargetForm"> Definition</label>
+                            <mat-checkbox [(ngModel)]="mergeFields.definitions"
+                                          [disabled]="!mergeFormService.error.ownTargetForm">
+                                Definition
+                            </mat-checkbox>
                         </div>
                         <div>
-                            <label><input type="checkbox" [(ngModel)]="mergeFields.referenceDocuments"
-                                          [disabled]="!mergeFormService.error.ownTargetForm">Ref Documents</label>
+                            <mat-checkbox [(ngModel)]="mergeFields.referenceDocuments"
+                                          [disabled]="!mergeFormService.error.ownTargetForm">
+                                Ref Documents
+                            </mat-checkbox>
                         </div>
                         <div>
-                            <label><input type="checkbox" [(ngModel)]="mergeFields.properties"
-                                          [disabled]="!mergeFormService.error.ownTargetForm">Properties</label>
+                            <mat-checkbox [(ngModel)]="mergeFields.properties"
+                                          [disabled]="!mergeFormService.error.ownTargetForm">
+                                Properties
+                            </mat-checkbox>
                         </div>
                         <div>
-                            <label> <input type="checkbox" [(ngModel)]="mergeFields.ids"
-                                           [disabled]="!mergeFormService.error.ownTargetForm"> IDs</label>
+                            <mat-checkbox [(ngModel)]="mergeFields.ids"
+                                          [disabled]="!mergeFormService.error.ownTargetForm">
+                                IDs
+                            </mat-checkbox>
                         </div>
                         <div>
-                            <label> <input type="checkbox" [(ngModel)]="mergeFields.classifications"
-                                           [disabled]="!mergeFormService.error.ownTargetForm"> Classifications</label>
+                            <mat-checkbox [(ngModel)]="mergeFields.classifications"
+                                          [disabled]="!mergeFormService.error.ownTargetForm">
+                                Classifications
+                            </mat-checkbox>
                         </div>
                         <div>
-                            <label> <input type="checkbox" [(ngModel)]="mergeFields.questions"
-                                           [disabled]="!mergeFormService.error.ownTargetForm"> Questions</label>
+                            <mat-checkbox [(ngModel)]="mergeFields.questions"
+                                          [disabled]="!mergeFormService.error.ownTargetForm">
+                                Questions
+                            </mat-checkbox>
                         </div>
                     </div>
                     <div class="smallSpace left"></div>
                     <div class="col-6 col-lg-12 col-xl-12" *ngIf="mergeFields.questions">
                         <h4>CDE fields:</h4>
                         <div>
-                            <button class="btn btn-outline-dark btn-xs" (click)="selectAllCdeMergerFields();">All</button>
-                            <button class="btn btn-outline-dark btn-xs" (click)="deselectAllCdeMergerFields();">None</button>
+                            <button class="btn btn-outline-dark btn-xs" (click)="selectAllCdeMergerFields();">All
+                            </button>
+                            <button class="btn btn-outline-dark btn-xs" (click)="unselectAllCdeMergerFields();">None
+                            </button>
                         </div>
                         <div>
-                            <label><input type="checkbox" [(ngModel)]="mergeFields.cde.designations"> Designation</label>
+                            <mat-checkbox [(ngModel)]="mergeFields.cde.designations"
+                                          [disabled]="!mergeFormService.error.ownTargetForm">
+                                Designation
+                            </mat-checkbox>
                         </div>
                         <div>
-                            <label><input type="checkbox" [(ngModel)]="mergeFields.cde.definitions"> Definition</label>
+                            <mat-checkbox [(ngModel)]="mergeFields.cde.definitions"
+                                          [disabled]="!mergeFormService.error.ownTargetForm">
+                                Definition
+                            </mat-checkbox>
                         </div>
                         <div>
-                            <label><input type="checkbox" [(ngModel)]="mergeFields.cde.referenceDocuments">Ref Documents</label>
+                            <mat-checkbox [(ngModel)]="mergeFields.cde.referenceDocuments"
+                                          [disabled]="!mergeFormService.error.ownTargetForm">
+                                Ref Documents
+                            </mat-checkbox>
                         </div>
                         <div>
-                            <label><input type="checkbox" [(ngModel)]="mergeFields.cde.properties">Properties</label>
+                            <mat-checkbox [(ngModel)]="mergeFields.cde.properties"
+                                          [disabled]="!mergeFormService.error.ownTargetForm">
+                                Properties
+                            </mat-checkbox>
                         </div>
                         <div>
-                            <label><input type="checkbox" [(ngModel)]="mergeFields.cde.ids"> IDs</label>
+                            <mat-checkbox [(ngModel)]="mergeFields.cde.ids"
+                                          [disabled]="!mergeFormService.error.ownTargetForm">
+                                IDs
+                            </mat-checkbox>
                         </div>
                         <div>
-                            <label><input type="checkbox" [(ngModel)]="mergeFields.cde.attachments">Attachment</label>
+                            <mat-checkbox [(ngModel)]="mergeFields.cde.attachments"
+                                          [disabled]="!mergeFormService.error.ownTargetForm">
+                                Attachment
+                            </mat-checkbox>
                         </div>
                         <div>
-                            <label><input type="checkbox" [(ngModel)]="mergeFields.cde.dataSets">Data Set</label>
+                            <mat-checkbox [(ngModel)]="mergeFields.cde.dataSets"
+                                          [disabled]="!mergeFormService.error.ownTargetForm">
+                                Data Set
+                            </mat-checkbox>
                         </div>
                         <div>
-                            <label><input type="checkbox" [(ngModel)]="mergeFields.cde.derivationRules">Derivation Rules</label>
+                            <mat-checkbox [(ngModel)]="mergeFields.cde.derivationRules"
+                                          [disabled]="!mergeFormService.error.ownTargetForm">
+                                Derivation Rules
+                            </mat-checkbox>
                         </div>
                         <div>
-                            <label><input type="checkbox" [(ngModel)]="mergeFields.cde.sources">Sources</label>
+                            <mat-checkbox [(ngModel)]="mergeFields.cde.sources"
+                                          [disabled]="!mergeFormService.error.ownTargetForm">
+                                Sources
+                            </mat-checkbox>
                         </div>
                         <div>
-                            <label><input type="checkbox" [(ngModel)]="mergeFields.cde.classifications">Classifications</label>
+                            <mat-checkbox [(ngModel)]="mergeFields.cde.classifications"
+                                          [disabled]="!mergeFormService.error.ownTargetForm">
+                                Classifications
+                            </mat-checkbox>
                         </div>
                         <div class="smallSpace left"></div>
                         <div>
-                            <label>Retire CDE?<input type="checkbox" [(ngModel)]="mergeFields.cde.retireCde"
-                                                     id="retireCde"></label>
+                            <mat-checkbox [(ngModel)]="mergeFields.cde.retireCde" id="retireCde"
+                                          [disabled]="!mergeFormService.error.ownTargetForm">
+                                Retire CDE?
+                            </mat-checkbox>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-lg-10 col-xl-10 noLeftRightPadding">
+            <div class="col-12 col-lg-10 col-xl-10 no-left-right-padding no-left-right-margin">
                 <div class="row">
                     <ng-container *ngIf="mergeFields.questions">
-                        <div class="col-6" id="dropArea">
-                            <cde-sortable [left]="left" [right]="right" [mergeFields]="mergeFields"></cde-sortable>
+                        <div class="col-6 no-left-right-padding no-left-right-margin" id="dropArea">
+                            <cde-sortable [left]="source" [right]="destination"
+                                          [mergeFields]="mergeFields"></cde-sortable>
                         </div>
-                        <div class="col-6">
-                            <div *ngFor="let rightQuestion of right.questions; let i = index"
-                                 class="boxed-div overflowHidden" id="targetQuestion_{{i}}">
-                                <div class="col-3 Label noLeftRightPadding">CDE Name:</div>
-                                <div class="col-9 noLeftRightPadding mergeCdeName">
+                        <div class="col-6 no-left-right-padding no-left-right-margin">
+                            <div *ngFor="let rightQuestion of destination.questions; let i = index"
+                                 class="row boxed-div overflowHidden" id="targetQuestion_{{i}}">
+                                <div class="col-3 Label no-left-right-padding no-left-right-margin"
+                                     matTooltip="{{rightQuestion.question.cde.name}}">CDE Name:
+                                </div>
+                                <div class="col-9 no-left-right-padding no-left-right-margin mergeCdeName">
                                     <a *ngIf="rightQuestion.question.cde.name" target="_blank"
                                        href="/deView?tinyId={{rightQuestion.question.cde.tinyId}}">
                                         {{rightQuestion.question.cde.name}}
@@ -121,19 +172,23 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div mat-dialog-actions>
         <div *ngIf="mergeFormService.error.error" id="mergeFormErrorDiv" class="alert alert-danger">
             {{mergeFormService.error.error}}
         </div>
     </div>
     <div mat-dialog-actions>
-        <div *ngIf="showProgressBar" style="width:100%">
-            <mat-progress-bar [value]="numMergedQuestions / maxNumberQuestions">
-=            </mat-progress-bar>
+        <div *ngIf="showProgressBar" class="w-100">
+            <mat-progress-bar
+                    [value]="(mergeFormService.numMergedQuestions / mergeFormService.maxNumberQuestions) * 100">
+            </mat-progress-bar>
         </div>
         <button mat-raised-button id="cancelMergeFormBtn" [mat-dialog-close] type="button">
-            {{doneMerge?'Close':'Cancel'}}
+            {{doneMerge ? 'Close' : 'Cancel'}}
         </button>
-        <button *ngIf="!doneMerge && !mergeFormService.error.error" mat-raised-button color="primary" id="mergeFormBtn"
+        <button *ngIf="!finishMerge && !mergeFormService.error.error" mat-raised-button color="primary"
+                id="mergeFormBtn"
                 (click)="doMerge()">
             Merge
         </button>

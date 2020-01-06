@@ -16,6 +16,7 @@
     "rootDir": ".",
     "sourceMap": false,
     "strict": true,
+    "strictPropertyInitialization": false,
     "target": "ES5",
     "typeRoots": [
       "node_modules/@types"
