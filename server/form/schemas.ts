@@ -162,12 +162,12 @@ export const formJson = {
         type: [sourceSchema],
         description: 'Name of system from which Form was imported or obtained from',
     },
-/*
     sourcesNew: {
-        type: sourcesNewSchema,
+        type: Map,
+        of: [sourceSchema],
         description: 'Name of system from which Form was imported or obtained from',
+        default: []
     },
-*/
     origin: {type: StringType, description: 'Name of system where Form is derived'},
     stewardOrg: {
         name: {

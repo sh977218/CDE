@@ -37,7 +37,7 @@ export const deJson = {
     },
     sourcesNew: {
         type: Map,
-        of: String,
+        of: [sourceSchema],
         description: 'Name of system from which CDE was imported or obtained from',
         default: []
     },
