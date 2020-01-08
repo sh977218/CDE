@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
-import { LocalStorageService } from 'angular-2-local-storage/dist';
+import { LocalStorageService } from 'angular-2-local-storage';
 import { TreeNode } from 'angular-tree-component/dist/models/tree-node.model';
 import { IActionMapping } from 'angular-tree-component/dist/models/tree-options.model';
 import _noop from 'lodash/noop';
