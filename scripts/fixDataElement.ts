@@ -1,5 +1,5 @@
 import { dataElementModel } from 'server/cde/mongo-cde';
-import { fixCdeError } from './utility';
+import { isEmpty } from 'lodash';
 
 process.on('unhandledRejection', (error) => {
     console.log(error);
@@ -7,37 +7,23 @@ process.on('unhandledRejection', (error) => {
 
 function run() {
     let cdeCount = 0;
-    const cond = {};
+    const cond = {lastMigrationScript: {$ne: 'addSourcesNew'}, 'sources.0': {$exists: true}};
     const cursor = dataElementModel.find(cond).cursor();
     cursor.eachAsync(async (cde: any) => {
-
-        /* @TODO Remove this code after run against test data.
-           This fix is to fix form XkSTmyBSYg has xug6J6R8fkf that is version '3',
-           but in Data Element xug6J6R8fkf has version thirdVersion
-        */
-        if (cde.tinyId === 'xug6J6R8fkf') {
-            cde.version = '3';
-        }
-
-        /* @TODO Remove this code after run against test data.
-           This fix is to fix form 71P6HVrUM has question 71P6HVrUM that has id 59052-1, but it's missing in data element.
-           for sdc export test.
-        */
-        if (cde.tinyId === '71P6HVrUM') {
-            cde.ids = [{
-                id: '59052-1',
-                source: 'LOINC',
-                version: '2.1213'
-            }];
-        }
-
-        cde.lastMigrationScript = 'fixDataElement';
-        fixCdeError(cde);
-        await cde.save().catch(error => {
-            throw new Error(`await cde.save() Error on ${cde.tinyId} ${error}`);
+        cde.lastMigrationScript = 'addSourcesNew';
+        const sourcesNew = {};
+        const cdeObj = cde.toObject();
+        cdeObj.sources.forEach(s => {
+            sourcesNew[s.sourceName] = [s];
         });
-        cdeCount++;
-        console.log(`cdeCount: ${cdeCount}`);
+        cde.sourcesNew = sourcesNew;
+        if (!isEmpty(cdeObj.sources)) {
+            await cde.save().catch(error => {
+                throw new Error(`await cde.save() Error on ${cde.tinyId} ${error}`);
+            });
+            cdeCount++;
+            console.log(`cdeCount: ${cdeCount}`);
+        }
     }).then(() => {
         console.log('finished.');
         process.exit(0);

@@ -48,7 +48,7 @@ export const sourceSchema = new Schema({
     updated: {type: Date, description: 'Date updated in source'},
     registrationStatus: {
         type: StringType,
-        description: 'Relative standing of official record status in steward\'s workflow'
+        description: "Relative standing of official record status in steward's workflow"
     },
     datatype: {type: StringType, description: 'May contain the source datatype'},
     copyright: {
