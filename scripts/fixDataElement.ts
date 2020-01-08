@@ -18,7 +18,7 @@ function run() {
         });
         cde.sourcesNew = sourcesNew;
         await cde.save().catch(error => {
-            console.log(`await cde.save() Error on ${cde.tinyId} ${error}`);
+            console.log(`await cde.save() Error on tinyId: ${cde.tinyId} id: ${cde._id} ${error}`);
         });
         cdeCount++;
         console.log(`cdeCount: ${cdeCount}`);
