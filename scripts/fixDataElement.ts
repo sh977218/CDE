@@ -17,13 +17,11 @@ function run() {
             sourcesNew[s.sourceName] = [s];
         });
         cde.sourcesNew = sourcesNew;
-        if (!isEmpty(cdeObj.sources)) {
-            await cde.save().catch(error => {
-                throw new Error(`await cde.save() Error on ${cde.tinyId} ${error}`);
-            });
-            cdeCount++;
-            console.log(`cdeCount: ${cdeCount}`);
-        }
+        await cde.save().catch(error => {
+            console.log(`await cde.save() Error on ${cde.tinyId} ${error}`);
+        });
+        cdeCount++;
+        console.log(`cdeCount: ${cdeCount}`);
     }).then(() => {
         console.log('finished.');
         process.exit(0);
