@@ -35,7 +35,7 @@ import { FeedbackModule } from 'ng-feedback2';
         BrowserAnimationsModule,
         BrowserModule,
         HttpClientModule,
-        LocalStorageModule.withConfig({
+        LocalStorageModule.forRoot({
             prefix: 'nlmcde',
             storageType: 'localStorage'
         }),
