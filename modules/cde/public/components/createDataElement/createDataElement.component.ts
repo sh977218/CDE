@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { UserService } from '_app/user.service';
 import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
 import { AlertService } from 'alert/alert.service';
-import { LocalStorageService } from 'angular-2-local-storage/dist';
+import { LocalStorageService } from 'angular-2-local-storage';
 import { DeCompletionService } from 'cde/public/components/completion/deCompletion.service';
 import { classifyItem } from 'core/adminItem/classification';
 import _cloneDeep from 'lodash/cloneDeep';

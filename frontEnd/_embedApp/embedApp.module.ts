@@ -31,7 +31,7 @@ import { OrgHelperService } from 'non-core/orgHelper.service';
         BrowserAnimationsModule,
         BrowserModule,
         CommonModule,
-        LocalStorageModule.withConfig({
+        LocalStorageModule.forRoot({
             prefix: 'nlmcde',
             storageType: 'localStorage'
         }),
