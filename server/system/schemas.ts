@@ -48,13 +48,18 @@ export const sourceSchema = new Schema({
     updated: {type: Date, description: 'Date updated in source'},
     registrationStatus: {
         type: StringType,
-        description: 'Relative standing of official record status in steward\'s workflow'
+        description: "Relative standing of official record status in steward's workflow"
     },
     datatype: {type: StringType, description: 'May contain the source datatype'},
     copyright: {
         value: {type: StringType, description: 'Content of a copyright statement or terms of use'},
         valueFormat: {type: StringType, description: 'If "html", interpret as HTML'},
     }
+}, {_id: false});
+
+export const sourcesNewSchema = new Schema({
+    type: Map,
+    of: [sourceSchema]
 }, {_id: false});
 
 export const statusValidationRuleSchema = new Schema({
