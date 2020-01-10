@@ -316,7 +316,7 @@
     {
       "path": "./dist/fhir/fhir.js",
       "compression": "none",
-      "maxSize": "1.65 MB"
+      "maxSize": "1.67 MB"
     },
     {
       "path": "./dist/fhir/fhir.css",
