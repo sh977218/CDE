@@ -2,8 +2,8 @@ import { CbErr, CbErrorObj } from 'shared/models.model';
 import {
     FormElement, FormElementsContainer, FormInForm, FormQuestion, FormSection, Question, QuestionValueList,
 } from 'shared/form/form.model';
-import * as async_forEachOf from 'async/forEachOf';
-import * as async_forEachSeries from 'async/forEachSeries';
+import async_forEachOf from 'async/forEachOf';
+import async_forEachSeries from 'async/forEachSeries';
 
 // async callbacks
 type IterateOptions = any;
