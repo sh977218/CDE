@@ -2,7 +2,7 @@ import { CdeForm, FormElement, FormElementsContainer, FormQuestion, FormSection 
 import _isEqual from 'lodash/isEqual';
 import _uniqWith from 'lodash/uniqWith';
 import { saveAs } from 'file-saver';
-import * as JSZip from 'jszip';
+import JSZip from 'jszip';
 import { Parser } from 'json2csv';
 import { Dictionary } from 'async';
 

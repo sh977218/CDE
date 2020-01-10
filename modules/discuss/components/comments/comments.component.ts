@@ -9,7 +9,7 @@ import { empty } from 'rxjs';
 import { timer } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, take } from 'rxjs/operators';
 import { Comment, CommentReply } from 'shared/models.model';
-import * as io from 'socket.io-client';
+import io from 'socket.io-client';
 
 interface ReplyDraft {
      text?: string;
@@ -88,6 +88,7 @@ export class CommentsComponent implements OnInit, OnDestroy {
 
     comments: Array<any> = [];
     newReply: CommentReply = new CommentReply();
+    // @ts-ignore
     socket = io((window as any).publicUrl + '/comment');
     subscriptions: any = {};
     private emitCurrentReplying = new Subject<{ _id: string, comment: ReplyDraft }>();

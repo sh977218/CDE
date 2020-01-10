@@ -2,8 +2,7 @@ import { CbErr, CbErrorObj } from 'shared/models.model';
 import {
     FormElement, FormElementsContainer, FormInForm, FormQuestion, FormSection, Question, QuestionValueList,
 } from 'shared/form/form.model';
-import * as async_forEachOf from 'async/forEachOf';
-import * as async_forEachSeries from 'async/forEachSeries';
+import * as async from 'async';
 
 // async callbacks
 type IterateOptions = any;
@@ -103,7 +102,8 @@ export function iterateFes<E = Error>(fes: FormElement[], formCb: informCb<E> = 
     if (!Array.isArray(fes)) {
         return callback();
     }
-    async_forEachOf(fes, (fe: FormElement, i: number, cb: CbErrorObj<E>) => {
+    // @ts-ignore
+    async.forEachOf(fes, (fe: FormElement, i: number, cb: CbErrorObj<E>) => {
         switch (fe.elementType) {
             case 'form':
                 formCb(fe, (err, options = undefined) => {
@@ -209,7 +209,8 @@ export function iterateFormElements(fe: any = {}, option: any = {}, cb?: any): v
         return;
     }
     if (option.async) {
-        async_forEachSeries(fe.formElements, (fe: FormElement, doneOneFe: CbErr) => {
+        // @ts-ignore
+        async.forEachSeries(fe.formElements, (fe: FormElement, doneOneFe: CbErr) => {
             if (fe.elementType === 'section') {
                 if (option.sectionCb) {
                     option.sectionCb(fe, doneOneFe);
