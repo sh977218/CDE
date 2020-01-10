@@ -227,9 +227,9 @@ export class PermissibleValueComponent {
                     } else {
                         const vsacJson = data['ns0:RetrieveValueSetResponse'];
                         if (vsacJson) {
-                            vsac.name = vsacJson['ns0:ValueSet'][0].$.displayName;
-                            vsac.version = vsacJson['ns0:ValueSet'][0].$.version;
-                            for (const vsacConcept of vsacJson['ns0:ValueSet'][0]['ns0:ConceptList'][0]['ns0:Concept']) {
+                            vsac.name = vsacJson['ns0:ValueSet'].$.displayName;
+                            vsac.version = vsacJson['ns0:ValueSet'].$.version;
+                            for (const vsacConcept of vsacJson['ns0:ValueSet']['ns0:ConceptList']['ns0:Concept']) {
                                 const vsac = vsacConcept.$;
                                 this.vsacValueSet.push(vsac);
                             }
