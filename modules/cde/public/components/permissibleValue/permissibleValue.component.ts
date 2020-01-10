@@ -10,7 +10,7 @@ import { DataElement, DATA_TYPE_ARRAY, ValueDomainValueList, ValueDomain } from 
 import { fixDataElement, fixDatatype } from 'shared/de/dataElement.model';
 import { PermissibleValue } from 'shared/models.model';
 import { SearchSettings } from 'shared/search/search.model';
-import xml2js from 'xml2js';
+import { NgxXmlToJsonService } from 'ngx-xml-to-json';
 
 interface Source {
     source: string;
@@ -102,7 +102,8 @@ export class PermissibleValueComponent {
     constructor(public http: HttpClient,
                 private dialog: MatDialog,
                 public userService: UserService,
-                private alert: AlertService) {
+                private alert: AlertService,
+                private ngxXmlToJsonService: NgxXmlToJsonService) {
     }
 
     addAllVsac() {
@@ -219,27 +220,23 @@ export class PermissibleValueComponent {
             const vsac = this.elt.dataElementConcept.conceptualDomain.vsac;
             this.http.get('/server/uts/vsacBridge/' + vsac.id, {responseType: 'text'}).subscribe(
                 res => {
-                    xml2js.parseString(res, (err, data) => {
-                        if (err) {
-                            this.alert.addAlert('danger', 'Error parsing xml to json.');
-                            console.log('Received from VSAC: ');
-                            console.log(res);
-                        } else if (!data) {
-                            this.alert.addAlert('danger', 'Error: No data retrieved from VSAC for ' + vsac.id);
-                        } else {
-                            const vsacJson = data['ns0:RetrieveValueSetResponse'];
-                            if (vsacJson) {
-                                vsac.name = vsacJson['ns0:ValueSet'][0].$.displayName;
-                                vsac.version = vsacJson['ns0:ValueSet'][0].$.version;
-                                for (const vsacConcept of vsacJson['ns0:ValueSet'][0]['ns0:ConceptList'][0]['ns0:Concept']) {
-                                    const vsac = vsacConcept.$;
-                                    this.vsacValueSet.push(vsac);
-                                }
-                                this.validateVsacWithPv();
-                                this.validatePvWithVsac();
+                    const data = this.ngxXmlToJsonService.xmlToJson(res,
+                        {textKey: 'text', attrKey: '$', cdataKey: 'cdata'});
+                    if (!data) {
+                        this.alert.addAlert('danger', 'Error: No data retrieved from VSAC for ' + vsac.id);
+                    } else {
+                        const vsacJson = data['ns0:RetrieveValueSetResponse'];
+                        if (vsacJson) {
+                            vsac.name = vsacJson['ns0:ValueSet'][0].$.displayName;
+                            vsac.version = vsacJson['ns0:ValueSet'][0].$.version;
+                            for (const vsacConcept of vsacJson['ns0:ValueSet'][0]['ns0:ConceptList'][0]['ns0:Concept']) {
+                                const vsac = vsacConcept.$;
+                                this.vsacValueSet.push(vsac);
                             }
+                            this.validateVsacWithPv();
+                            this.validatePvWithVsac();
                         }
-                    });
+                    }
                 }, error => {
                     this.alert.addAlert('danger', 'Error querying VSAC' + error);
                 });
