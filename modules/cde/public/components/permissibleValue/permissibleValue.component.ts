@@ -226,6 +226,7 @@ export class PermissibleValueComponent {
                         const parser = new DOMParser();
                         const xml = parser.parseFromString(res, 'text/xml');
                         const data = this.ngxXml2jsonService.xmlToJson(xml);
+                        // @ts-ignore
                         const vsacJson = data['ns0:RetrieveValueSetResponse'];
                         if (vsacJson) {
                             vsac.name = vsacJson['ns0:ValueSet']['@attributes'].displayName;
