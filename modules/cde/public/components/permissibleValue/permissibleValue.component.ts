@@ -10,7 +10,7 @@ import { DataElement, DATA_TYPE_ARRAY, ValueDomainValueList, ValueDomain } from 
 import { fixDataElement, fixDatatype } from 'shared/de/dataElement.model';
 import { PermissibleValue } from 'shared/models.model';
 import { SearchSettings } from 'shared/search/search.model';
-import { NgxXmlToJsonService } from 'ngx-xml-to-json';
+import { NgxXml2jsonService  } from 'ngx-xml2json';
 
 interface Source {
     source: string;
@@ -103,7 +103,7 @@ export class PermissibleValueComponent {
                 private dialog: MatDialog,
                 public userService: UserService,
                 private alert: AlertService,
-                private ngxXmlToJsonService: NgxXmlToJsonService) {
+                private ngxXml2jsonService: NgxXml2jsonService) {
     }
 
     addAllVsac() {
@@ -220,17 +220,18 @@ export class PermissibleValueComponent {
             const vsac = this.elt.dataElementConcept.conceptualDomain.vsac;
             this.http.get('/server/uts/vsacBridge/' + vsac.id, {responseType: 'text'}).subscribe(
                 res => {
-                    const data = this.ngxXmlToJsonService.xmlToJson(res,
-                        {textKey: 'text', attrKey: '$', cdataKey: 'cdata'});
-                    if (!data) {
+                    if (!res) {
                         this.alert.addAlert('danger', 'Error: No data retrieved from VSAC for ' + vsac.id);
                     } else {
+                        const parser = new DOMParser();
+                        const xml = parser.parseFromString(res, 'text/xml');
+                        const data = this.ngxXml2jsonService.xmlToJson(xml);
                         const vsacJson = data['ns0:RetrieveValueSetResponse'];
                         if (vsacJson) {
-                            vsac.name = vsacJson['ns0:ValueSet'].$.displayName;
-                            vsac.version = vsacJson['ns0:ValueSet'].$.version;
+                            vsac.name = vsacJson['ns0:ValueSet']['@attributes'].displayName;
+                            vsac.version = vsacJson['ns0:ValueSet']['@attributes'].version;
                             for (const vsacConcept of vsacJson['ns0:ValueSet']['ns0:ConceptList']['ns0:Concept']) {
-                                const vsac = vsacConcept.$;
+                                const vsac = vsacConcept['@attributes'];
                                 this.vsacValueSet.push(vsac);
                             }
                             this.validateVsacWithPv();
