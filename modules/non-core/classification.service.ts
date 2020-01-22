@@ -5,8 +5,8 @@ import { AlertService } from 'alert/alert.service';
 import { LocalStorageService } from 'angular-2-local-storage';
 import _isEqual from 'lodash/isEqual';
 import _uniqWith from 'lodash/uniqWith';
-import { SearchSettingsElastic } from 'search/search.model';
-import { Cb1, CbErr, CbErrObj, ClassificationHistory, Item, ItemClassification } from 'shared/models.model';
+import { Cb1, CbErr, CbErrorObj, ClassificationHistory, Item, ItemClassification } from 'shared/models.model';
+import { SearchSettingsElastic } from 'shared/search/search.model';
 
 @Injectable()
 export class ClassificationService {
@@ -37,7 +37,7 @@ export class ClassificationService {
     }
 
     classifyItem(elt: Item, org: string | undefined, classifArray: string[] | undefined, endPoint: string,
-                 cb: CbErrObj<HttpErrorResponse>) {
+                 cb: CbErrorObj<HttpErrorResponse>) {
         const postBody: ItemClassification = {
             categories: classifArray,
             eltId: elt._id,
@@ -62,6 +62,7 @@ export class ClassificationService {
     removeOrgClassification(deleteClassification: ClassificationHistory, next: Cb1<string>) {
         const settings = new SearchSettingsElastic(this.esService.getUserDefaultStatuses(), 10000);
         this.http.post('/server/classification/deleteOrgClassification/', {
+            orgName: deleteClassification.orgName,
             deleteClassification,
             settings,
         }, {responseType: 'text'}).subscribe(
@@ -75,7 +76,8 @@ export class ClassificationService {
         this.http.post('/server/classification/reclassifyOrgClassification/', {
             settings,
             oldClassification,
-            newClassification
+            newClassification,
+            orgName: newClassification.orgName
         }, {responseType: 'text'}).subscribe(
             next,
             () => this.alert.addAlert('danger', 'Unexpected error reclassifying')
@@ -86,6 +88,7 @@ export class ClassificationService {
         const settings = new SearchSettingsElastic(this.esService.getUserDefaultStatuses(), 10000);
         this.http.post('/server/classification/renameOrgClassification', {
             settings,
+            orgName: newClassification.orgName,
             newClassification
         }, {responseType: 'text'}).subscribe(
             next,
@@ -95,7 +98,8 @@ export class ClassificationService {
 
     addChildClassification(newClassification: ClassificationHistory, next: Cb1<string>) {
         this.http.put('/server/classification/addOrgClassification/', {
-            newClassification
+            newClassification,
+            orgName: newClassification.orgName
         }, {responseType: 'text'}).subscribe(
             next,
             (err: HttpErrorResponse) => {

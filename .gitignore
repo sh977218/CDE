@@ -13,7 +13,7 @@ dump/
 migration/
 nbproject
 node_modules
-modules/_embedApp/public/
+modules/_app/index.html
 modules/cde/public/assets/fonts/
 modules/cde/public/assets/img/robot.png
 modules/system/views/version.html
@@ -23,17 +23,6 @@ temp/
 ssl/
 
 ## Ingest
-ingesters/.nb-gradle/private/
-ingesters/build/
-ingester/debug.log
-ingester/ninds/ingesters/.gradle/
-ingester/ninds/ingesters/1.17.5_0.crx
-ingester/ninds/ingesters/build/
-ingester/ninds/ingesters/gradle/
-ingester/ninds/ingesters/src/main/resources/
-ingester/ninds/ingesters/src/test/
-ingester/ninds/target/
-ingester/src/
 
 ## Local Files
 my-*
@@ -99,3 +88,6 @@ Icon?
 ehthumbs.db
 Thumbs.db
 *~
+
+phenxLocal.txt
+phenxQA.txt

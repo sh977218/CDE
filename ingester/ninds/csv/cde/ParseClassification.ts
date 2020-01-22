@@ -1,0 +1,98 @@
+import { filter, replace, isEmpty, capitalize, forEach } from 'lodash';
+import { classifyItem } from 'server/classification/orgClassificationSvc';
+
+const DEFAULT_CLASSIFICATION = ['Preclinical + NEI'];
+
+function classifyPopulation(cde: any, row: any) {
+    const allKeys: string[] = Object.keys(row);
+    const populationKeys = filter(allKeys, k => k.indexOf('population.') !== -1);
+    forEach(populationKeys, k => {
+        const population = row[k];
+        if (!isEmpty(population)) {
+            const classificationArray = DEFAULT_CLASSIFICATION.concat(['Population', population]);
+            classifyItem(cde, 'NINDS', classificationArray);
+        }
+    });
+}
+
+function classifyDomain(cde: any, row: any) {
+    const allKeys: string[] = Object.keys(row);
+    const domainKeys = filter(allKeys, k => k.indexOf('domain.') !== -1);
+    forEach(domainKeys, k => {
+        const domainSubDomainString = row[k];
+        const disease = replace(k, 'domain.', '');
+        if (!isEmpty(domainSubDomainString) && !isEmpty(disease)) {
+            const domainSubDomainArray = domainSubDomainString.split('.');
+            const domain = domainSubDomainArray[0];
+            const subDomain = domainSubDomainArray[1];
+
+            const isTbiSubDisease = TBI_SUB_DISEASES.indexOf(disease) !== -1;
+            let classificationDiseaseArray = DEFAULT_CLASSIFICATION.concat(['Disease', capitalize(disease)]);
+            if (isTbiSubDisease) {
+                // tslint:disable-next-line:max-line-length
+                classificationDiseaseArray = DEFAULT_CLASSIFICATION.concat(['Disease', 'Traumatic brain injury', capitalize(disease)]);
+            }
+
+            // ['Disease','TBI','Domain','Assessments and Examinations','Autonomic']
+            // ['Domain','Assessments and Examinations','Autonomic']
+            const classificationDomainArray = DEFAULT_CLASSIFICATION.concat([]);
+            if (!isEmpty(domain)) {
+                classificationDiseaseArray.push('Domain');
+                classificationDiseaseArray.push(domain);
+                classificationDomainArray.push('Domain');
+                classificationDomainArray.push(domain);
+            }
+            if (!isEmpty(subDomain[1])) {
+                classificationDiseaseArray.push(subDomain);
+                classificationDomainArray.push(subDomain);
+            }
+            classifyItem(cde, 'NINDS', classificationDiseaseArray);
+            classifyItem(cde, 'NINDS', classificationDomainArray);
+        }
+    });
+}
+
+const TBI_SUB_DISEASES = [
+    'acute hospitalized',
+    'concussion/mild tbi',
+    'epidemiology',
+    'moderate/severe tbi: rehabilitation',
+];
+
+function classifyClassification(cde: any, row: any) {
+    const allKeys: string[] = Object.keys(row);
+    const diseaseKeys = filter(allKeys, k => k.indexOf('classification.') !== -1);
+    forEach(diseaseKeys, k => {
+        const classification = row[k];
+        const disease = replace(k, 'classification.', '');
+        if (!isEmpty(classification) && !isEmpty(disease)) {
+            const isTbiSubDisease = TBI_SUB_DISEASES.indexOf(disease) !== -1;
+            let classificationArray = DEFAULT_CLASSIFICATION.concat(['Disease', capitalize(disease), 'Classification', classification]);
+            if (isTbiSubDisease) {
+                // tslint:disable-next-line:max-line-length
+                classificationArray = DEFAULT_CLASSIFICATION.concat(['Disease', 'Traumatic brain injury', capitalize(disease), 'Classification', classification]);
+            }
+            classifyItem(cde, 'NINDS', classificationArray);
+        }
+    });
+}
+
+function classifyTaxonomy(cde: any, row: any) {
+    const allKeys: string[] = Object.keys(row);
+    const taxonomyKeys = filter(allKeys, k => k.indexOf('taxonomy') !== -1);
+    forEach(taxonomyKeys, k => {
+        const taxonomy = row[k];
+        const taxonomyReplace = taxonomy.replace(';', ',').trim();
+        if (!isEmpty(taxonomyReplace)) {
+            const classificationArray = DEFAULT_CLASSIFICATION.concat(['Taxonomy', taxonomyReplace]);
+            classifyItem(cde, 'NINDS', classificationArray);
+        }
+    });
+}
+
+export function parseClassification(cde: any, row: any) {
+    classifyPopulation(cde, row);
+    classifyDomain(cde, row);
+    classifyClassification(cde, row);
+    classifyTaxonomy(cde, row);
+}

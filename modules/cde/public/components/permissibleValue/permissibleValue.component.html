@@ -38,13 +38,13 @@
                 <dt class="col-3 text-right">Minimum Value:</dt>
                 <dd class="col-9">
                     <cde-inline-edit id="datatypeNumberMin" [(model)]="elt.valueDomain.datatypeNumber.minValue"
-                                     [inputType]="'Number'" (modelChange)="eltChange.emit();"
+                                     inputType="number" (modelChange)="eltChange.emit();"
                                      [isAllowed]="canEdit"></cde-inline-edit>
                 </dd>
                 <dt class="col-3 text-right">Maximum Value:</dt>
                 <dd class="col-9">
                     <cde-inline-edit id="datatypeNumberMax" [(model)]="elt.valueDomain.datatypeNumber.maxValue"
-                                     [inputType]="'Number'" (modelChange)="eltChange.emit();"
+                                     inputType="number" (modelChange)="eltChange.emit();"
                                      [isAllowed]="canEdit"></cde-inline-edit>
                 </dd>
                 <dt class="col-3 text-right">Precision:</dt>
@@ -57,13 +57,13 @@
                 <dt class="col-3 text-right">Minimum Length:</dt>
                 <dd class="col-9">
                     <cde-inline-edit id="datatypeTextMin" [(model)]="elt.valueDomain.datatypeText.minLength"
-                                     [inputType]="'Number'" (modelChange)="eltChange.emit();"
+                                     inputType="number" (modelChange)="eltChange.emit();"
                                      [isAllowed]="canEdit"></cde-inline-edit>
                 </dd>
                 <dt class="col-3 text-right">Maximum Length:</dt>
                 <dd class="col-9">
                     <cde-inline-edit id="datatypeTextMax" [(model)]="elt.valueDomain.datatypeText.maxLength"
-                                     [inputType]="'Number'" (modelChange)="eltChange.emit();"
+                                     inputType="number" (modelChange)="eltChange.emit();"
                                      [isAllowed]="canEdit"></cde-inline-edit>
                 </dd>
                 <dt class="col-3 text-right">Regular Expression:</dt>
@@ -93,12 +93,12 @@
                     <mat-form-field class="w-50">
                         <mat-label>Select system name</mat-label>
                         <mat-select matNativeControl [(ngModel)]="elt.valueDomain.datatypeDynamicCodeList.system"
-                                    (selectionChange)="eltChange.emit()" [disabled]="!canEdit" required>
+                                    (selectionChange)="eltChange.emit()" [disabled]="!canEdit" id="dynamicListSystem" required>
                             <mat-option value="VSAC">VSAC</mat-option>
                         </mat-select>
                     </mat-form-field>
                     <mat-form-field class="w-50">
-                        <input matInput [(ngModel)]="elt.valueDomain.datatypeDynamicCodeList.code"
+                        <input matInput [(ngModel)]="elt.valueDomain.datatypeDynamicCodeList.code" id="dynamicListCode"
                                (ngModelChange)="eltChange.emit()" [disabled]="!canEdit" placeholder="VSAC OID">
                     </mat-form-field>
                 </dd>
@@ -222,7 +222,7 @@
         </div>
 
         <h4>VSAC Value Set</h4>
-        <a href="https://vsac.nlm.nih.gov" target="_blank">Lookup Value Sets here.</a>
+        <a href="https://vsac.nlm.nih.gov" target="_blank" rel="noopener noreferrer">Lookup Value Sets here.</a>
         <div *ngIf="vsacMappingExists()">
             <dl class="dl-horizontal">
                 <dt>Value Set Name:</dt>

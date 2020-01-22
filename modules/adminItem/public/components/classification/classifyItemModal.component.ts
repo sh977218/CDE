@@ -1,18 +1,19 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, Input, ViewChild, Output, EventEmitter, TemplateRef } from '@angular/core';
-import { LocalStorageService } from 'angular-2-local-storage/dist';
+import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
+import { LocalStorageService } from 'angular-2-local-storage';
 import { TreeNode } from 'angular-tree-component/dist/models/tree-node.model';
 import { IActionMapping } from 'angular-tree-component/dist/models/tree-options.model';
 import _noop from 'lodash/noop';
 
 import { UserService } from '_app/user.service';
 import { ClassificationService } from 'non-core/classification.service';
-import { ClassificationClassified, ClassificationClassifier, ClassificationHistory } from 'shared/models.model';
-import { MatDialog, MatTabChangeEvent } from '@angular/material';
+import { ClassificationClassified, ClassificationClassifier } from 'shared/models.model';
+import { MatDialog } from '@angular/material';
 
 const actionMapping: IActionMapping = {
     mouse: {
-        click: () => {}
+        click: () => {
+        }
     }
 };
 
@@ -23,7 +24,7 @@ const actionMapping: IActionMapping = {
 export class ClassifyItemModalComponent {
     @Input() modalTitle = 'Classify this CDE';
     @Output() classified = new EventEmitter<ClassificationClassified>();
-    @ViewChild('classifyItemContent') classifyItemContent!: TemplateRef<any>;
+    @ViewChild('classifyItemContent', {static: true}) classifyItemContent!: TemplateRef<any>;
     orgClassificationsTreeView: any;
     orgClassificationsRecentlyAddView?: ClassificationClassifier[];
     options = {
@@ -77,16 +78,16 @@ export class ClassifyItemModalComponent {
 
     onChangeOrg(value: string) {
         if (value) {
-            const url = '/org/' + encodeURIComponent(value);
-            //noinspection TypeScriptValidateTypes
-            this.http.get(url).subscribe(
-                res => {
+            this.http.get('/server/orgManagement/org/' + encodeURIComponent(value)).subscribe(
+                org => {
                     this.selectedOrg = value;
-                    this.orgClassificationsTreeView = res;
+                    this.orgClassificationsTreeView = org;
                 }, () => {
                     this.orgClassificationsTreeView = {};
                 });
-        } else { this.orgClassificationsTreeView = []; }
+        } else {
+            this.orgClassificationsTreeView = [];
+        }
     }
 
     openModal() {
@@ -97,7 +98,9 @@ export class ClassifyItemModalComponent {
             this.onChangeOrg(this.selectedOrg);
         } else {
             this.userService.then(() => {
-                if (this.userService.userOrgs.length === 1) { this.onChangeOrg(this.userService.userOrgs[0]); }
+                if (this.userService.userOrgs.length === 1) {
+                    this.onChangeOrg(this.userService.userOrgs[0]);
+                }
             }, _noop);
         }
         return this.dialog.open(this.classifyItemContent, {width: '800px'});

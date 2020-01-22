@@ -7,15 +7,16 @@ export function assertThrow(): void {
 }
 
 export function assertTrue(x: boolean): void {
-    if (!PRODUCTION) {
+    if (!process.env.PRODUCTION) {
         if (!x) {
             throw new Error('Assertion Failed.');
         }
     }
 }
 
-export function assertUnreachable(x: void): never {
-    throw new Error('Unreachable');
+export function assertUnreachable(x: void) {
+    console.error('Unreachable ' + JSON.stringify(x));
+    // handleError(new Error('Unreachable ' + JSON.stringify(x)));
 }
 
 export class Attachment {
@@ -44,10 +45,16 @@ export type Cb2<T = void, U = void, V = void> = (t: T, u: U, v?: V) => void;
 export type Cb3<T = void, U = void, V = void> = (t: T, u: U, v: V) => void;
 export type CbErr<T = void, U = void, V = void> = (error?: string, t?: T, u?: U, v?: V) => void;
 export type CbErr1<T = void, U = void, V = void> = (error: string | undefined, t: T, u?: U, v?: V) => void;
+export type CbErr2<T = void, U = void, V = void> = (error: string | undefined, t: T, u: U, v?: V) => void;
+export type CbErr3<T = void, U = void, V = void> = (error: string | undefined, t: T, u: U, v: V) => void;
 export type CbError<T = void, U = void, V = void> = (error?: Error, t?: T, u?: U, v?: V) => void;
 export type CbError1<T = void, U = void, V = void> = (error: Error | undefined, t: T, u?: U, v?: V) => void;
-export type CbErrObj<E = string, T = void, U = void, V = void> = (error?: E, t?: T, u?: U, v?: V) => void;
-export type CbErrObj1<E = string, T = void, U = void, V = void> = (error: E | undefined, t: T, u?: U, v?: V) => void;
+export type CbError2<T = void, U = void, V = void> = (error: Error | undefined, t: T, u: U, v?: V) => void;
+export type CbError3<T = void, U = void, V = void> = (error: Error | undefined, t: T, u: U, v: V) => void;
+export type CbErrorObj<E = string, T = void, U = void, V = void> = (error?: E, t?: T, u?: U, v?: V) => void;
+export type CbErrorObj1<E = string, T = void, U = void, V = void> = (error: E | undefined, t: T, u?: U, v?: V) => void;
+export type CbErrorObj2<E = string, T = void, U = void, V = void> = (error: E | undefined, t: T, u: U, v?: V) => void;
+export type CbErrorObj3<E = string, T = void, U = void, V = void> = (error: E | undefined, t: T, u: U, v: V) => void;
 export type CbRet<R = void, T = void, U = void, V = void> = (t?: T, u?: U, v?: V) => R;
 export type CbRet1<R = void, T = void, U = void, V = void> = (t: T, u?: U, v?: V) => R;
 export type CbRet2<R = void, T = void, U = void, V = void> = (t: T, u: U, v?: V) => R;
@@ -92,6 +99,7 @@ export class ClassificationElement {
     elements: ClassificationElement[] = [];
     name!: string;
 }
+
 export class ClassificationHistory {
     categories?: string[];
     cdeId?: string;
@@ -123,7 +131,7 @@ export class CodeAndSystem {
 
 export class CommentReply {
     _id!: ObjectId;
-    created?: Date;
+    created: Date = new Date();
     pendingApproval?: boolean;
     status: string = 'active';
     text?: string;
@@ -138,7 +146,7 @@ export class Comment extends CommentReply {
         eltType: ModuleAll,
     } = {eltId: '', eltType: 'cde'};
     linkedTab?: string;
-    replies?: CommentReply[];
+    replies: CommentReply[] = [];
 }
 
 export type CurationStatus =
@@ -179,24 +187,40 @@ export interface ElasticQueryParams {
     regStatuses: CurationStatus[];
 }
 
-export interface ElasticQueryResponse {
-    _shards?: any;
-    error?: any;
+export type ElasticQueryError = {
+    status: 406,
+    error: string,
+} | {
+    status: 400,
+    error: {
+        type: 'parsing_exception' | 'search_phase_execution_exception', reason: string, line?: number, col?: number,
+        root_cause: { type: 'parsing_exception' | 'search_phase_execution_exception', reason: string, line?: number, col?: number }[]
+    }
+} | {
+    status: 500,
+    error: { type: 'json_parse_exception', reason: string, root_cause: { type: 'json_parse_exception', reason: string }[] }
+};
+
+export interface ElasticQueryResponse<T = void> {
+    _shards: {
+        failed: number,
+        successful: number,
+        total: number,
+    };
     hits: {
+        hits: ElasticQueryResponseHit<T>[],
         max_score: number,
-        hits: ElasticQueryResponseHit[],
         total: number
     };
-    maxScore: number; // Elastic highest score on query
-    status: number;
+    status?: undefined;
     took: number; // Elastic time to process query in milliseconds
-    timed_out?: boolean;
-    totalNumber: number; // Elastic number of results
+    timed_out: boolean;
 }
-export type ElasticQueryResponseDe = ElasticQueryResponse & {
+
+export type ElasticQueryResponseDe = ElasticQueryResponse<DataElementElastic> & {
     cdes: DataElementElastic[];
 };
-export type ElasticQueryResponseForm = ElasticQueryResponse & {
+export type ElasticQueryResponseForm = ElasticQueryResponse<CdeFormElastic> & {
     forms: CdeFormElastic[];
 };
 export type ElasticQueryResponseItem = ElasticQueryResponseDe | ElasticQueryResponseForm;
@@ -204,10 +228,20 @@ export type ElasticQueryResponseItem = ElasticQueryResponseDe | ElasticQueryResp
 interface ElasticQueryResponseAggregationsPart {
     aggregations: ElasticQueryResponseAggregation & { [key: string]: ElasticQueryResponseAggregation }; // Elastic aggregated grouping
 }
-export type ElasticQueryResponseAggregations = ElasticQueryResponse & ElasticQueryResponseAggregationsPart;
+
+export type ElasticQueryResponseAggregations<T> = ElasticQueryResponse<T> & ElasticQueryResponseAggregationsPart;
 export type ElasticQueryResponseAggregationsDe = ElasticQueryResponseDe & ElasticQueryResponseAggregationsPart;
 export type ElasticQueryResponseAggregationsForm = ElasticQueryResponseForm & ElasticQueryResponseAggregationsPart;
-export type ElasticQueryResponseAggregationsItem = ElasticQueryResponseAggregationsDe | ElasticQueryResponseAggregationsForm;
+export type ElasticQueryResponseAggregationsItem =
+    ElasticQueryResponseAggregationsDe
+    | ElasticQueryResponseAggregationsForm;
+export type SearchResponseAggregationDe =
+    ElasticQueryResponseAggregationsDe
+    & { maxScore: number, took: number, totalNumber: number };
+export type SearchResponseAggregationForm =
+    ElasticQueryResponseAggregationsForm
+    & { maxScore: number, took: number, totalNumber: number };
+export type SearchResponseAggregationItem = SearchResponseAggregationDe | SearchResponseAggregationForm;
 
 export interface ElasticQueryResponseAggregation {
     [key: string]: { // 1 or 2 levels of keys...
@@ -222,11 +256,11 @@ export interface ElasticQueryResponseAggregationBucket {
     doc_count: number;
 }
 
-export interface ElasticQueryResponseHit {
+export interface ElasticQueryResponseHit<T> {
     _id: string;
     _index?: string;
     _score: number;
-    _source?: any;
+    _source: T;
     _type?: string;
     highlight?: any;
 }
@@ -242,13 +276,13 @@ export abstract class Elt {
     checked?: boolean; // volatile, used by quickboard
     classification?: Classification[]; // mutable
     comments: Comment[] = []; // mutable
-    created?: Date;
+    created: Date | string | number = new Date();
     createdBy?: UserRefSecondary;
     definitions: Definition[] = [];
     designations: Designation[] = [];
     history: ObjectId[] = [];
     ids: CdeId[] = [];
-    imported?: Date;
+    imported?: Date | string | number;
     isDefault?: boolean; // client only
     isDraft?: boolean; // optional, draft only
     lastMigrationScript?: string;
@@ -373,6 +407,7 @@ export interface EmbedItem {
     nbOfQuestions?: boolean; // form only
     otherNames?: {
         label: string,
+        tags: string,
         contextName: string
     }[];
     pageSize: number;
@@ -411,6 +446,7 @@ export class Designation {
 
     constructor(designation = '') {
         this.designation = designation;
+        this.tags = [];
     }
 }
 
@@ -421,6 +457,7 @@ export class Definition {
 
     constructor(definition = '') {
         this.definition = definition;
+        this.tags = [];
     }
 }
 
@@ -443,18 +480,35 @@ export interface Drafts {
 
 interface BoardPart {
     _id: ObjectId;
+    createdDate: Date;
+    description: string;
     elementType: 'board';
     id: string; // generated by mongoose toObject() ???
     name: string;
-    owner: {username: string};
-    pins: {}[];
+    owner: UserRefSecondary;
+    pins: BoardPin[];
+    shareStatus: 'Private' | 'Public';
+    tags: string[];
     type: ModuleItem;
-    users: User[];
+    updatedDate: Date;
+    users: BoardUser[];
+}
+
+export interface BoardPin {
+    pinnedDate: Date;
+    tinyId: string;
+    type: ModuleItem;
+}
+
+export interface BoardUser {
+    lastViewed?: Date;
+    role?: 'viewer';
+    username: string;
 }
 
 export type Board = BoardDe | BoardForm;
-export type BoardDe = BoardPart & {elts: DataElement[]};
-export type BoardForm = BoardPart & {elts: CdeForm[]};
+export type BoardDe = BoardPart & { elts: DataElement[] };
+export type BoardForm = BoardPart & { elts: CdeForm[] };
 
 export interface IdVersion {
     id: string;
@@ -480,7 +534,6 @@ export interface MeshClassification {
     flatTrees?: string[];
 }
 
-export type MongooseType<T> = T & {markModified: (path: string) => void};
 export type NotificationSettingsMediaType = 'drawer' | 'push';
 export type NotificationSettingsMedia = {
     [key in NotificationSettingsMediaType]: boolean | undefined;
@@ -491,6 +544,7 @@ export type NotificationSettings = {
 };
 
 export class Organization {
+    _id?: string;
     cdeStatusValidationRules?: StatusValidationRules[];
     classifications?: ClassificationElement[];
     count?: number; // calculated, from elastic
@@ -672,6 +726,7 @@ export interface User {
     tasks?: Task[];
     tester?: boolean;
     username: string;
+    password: string;
     viewHistory?: string[];
 }
 
@@ -681,7 +736,7 @@ export interface UserRef {
 }
 
 export interface UserRefSecondary {
-    userId?: ObjectId;
+    userId: ObjectId;
     username: string;
 }
 

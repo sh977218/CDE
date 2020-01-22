@@ -1,8 +1,8 @@
-import { Form } from 'server/form/mongo-form';
+import { formModel } from 'server/form/mongo-form';
 
 (function () {
     let formCount = 0;
-    Form.find({
+    formModel.find({
         archived: false,
         'ids.source': 'PhenX'
     }).cursor().eachAsync(async (form: any) => {

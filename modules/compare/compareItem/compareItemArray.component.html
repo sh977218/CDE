@@ -1,65 +1,32 @@
-<ng-container *ngFor="let property of compareArrayOption;">
-    <div *ngIf="!property.match || property.display" id="{{property.label}}">
-        <strong>{{property.label}}:</strong>
-        <div *ngFor="let r of property.result;let i = index">
-            <div class="col-12" *ngIf="!r.match || r.display" id="{{property.label}}_{{i}}">
-                <div class="col-12 arrayObj arrayObjReorder" *ngIf="r.reorder && filter.reorder.select">
-                    <div *ngFor="let d of property.data" class="{{d.label}}">
-                        <ng-container *ngIf="r.diff">
+<ng-container *ngFor="let option of options;">
+    <ng-container *ngIf="option.result.length">
+        <div class="row" id="{{option.label}}">
+            <strong>{{option.label}}:</strong>
+            <ng-container *ngFor="let r of option.result;let i = index">
+                <div class="col-12" id="{{option.label}}_{{i}}">
+                    <div class="arrayObj arrayObjAdd" *ngIf="r.add">
+                        <div *ngFor="let d of option.data" class="{{d.property}}">
+                            <strong>{{d.label}}:</strong>
+                            <span>{{r.currentElt[d.property]}}</span>
+                        </div>
+                    </div>
+                    <div class="arrayObj arrayObjRemove" *ngIf="r.remove">
+                        <div *ngFor="let d of option.data" class="{{d.property}}">
+                            <strong>{{d.label}}:</strong>
+                            <span>{{r.priorElt[d.property]}}</span>
+                        </div>
+                    </div>
+                    <div class="arrayObj arrayObjEdit" *ngIf="r.edit">
+                        <div *ngFor="let d of option.data" class="{{d.property}}">
                             <ng-container *ngIf="r.diff.indexOf(d.property) !== -1">
                                 <strong>{{d.label}}:</strong>
-                                <pre *ngIf="r.newer" semanticDiff [left]="r.newer[d.property] | json"
-                                     [right]="r.older[d.property] | json"></pre>
+                                <pre lineDiff [left]="_get(r.priorElt,d.property)"
+                                     [right]="_get(r.currentElt,d.property)"></pre>
                             </ng-container>
-                            <ng-container *ngIf="r.diff.indexOf(d.property) === -1">
-                                <ng-container *ngIf="r.data[d.property]">
-                                    <strong>{{d.label}}:</strong>
-                                    <span>{{r.data[d.property] | json}}</span>
-                                </ng-container>
-                            </ng-container>
-                        </ng-container>
+                        </div>
                     </div>
                 </div>
-                <ng-container *ngIf="!r.reorder">
-                    <div class="col-12 arrayObj arrayObjAdd" *ngIf="r.add && filter.add.select">
-                        <div *ngFor="let d of property.data" class="{{d.label}}">
-                            <div *ngIf="r.data[d.property]">
-                                <strong>{{d.label}}:</strong>
-                                <a *ngIf="d.url" target="_blank" [href]=d.url+r.data[d.property]>
-                                    {{r.data[d.property]}}</a>
-                                <span *ngIf="!d.url">{{r.data[d.property] | json}}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 arrayObj arrayObjRemove" *ngIf="r.remove && filter.remove.select">
-                        <div *ngFor="let d of property.data" class="{{d.label}}">
-                            <div *ngIf="r.data[d.property]">
-                                <strong>{{d.label}}:</strong>
-                                <a *ngIf="d.url" target="_blank" [href]=d.url+r.data[d.property]>
-                                    {{r.data[d.property]}}</a>
-                                <span *ngIf="!d.url">{{r.data[d.property] | json}}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 arrayObj arrayObjEdit" *ngIf="r.edited && filter.edited.select">
-                        <div *ngFor="let d of property.data" class="{{d.label}}">
-                            <ng-container *ngIf="r.diff.indexOf(d.property) !== -1">
-                                <strong>{{d.label}}:</strong>
-                                <pre semanticDiff [left]="r.newer[d.property] | json"
-                                     [right]="r.older[d.property] | json"></pre>
-                            </ng-container>
-                            <ng-container *ngIf="r.diff.indexOf(d.property) === -1">
-                                <ng-container *ngIf="r.older[d.property]">
-                                    <strong>{{d.label}}:</strong>
-                                    <a *ngIf="d.url" target="_blank" [href]=d.url+r.older[d.property]>
-                                        {{r.older[d.property]}}</a>
-                                    <span *ngIf="!d.url">{{r.older[d.property] | json}}</span>
-                                </ng-container>
-                            </ng-container>
-                        </div>
-                    </div>
-                </ng-container>
-            </div>
+            </ng-container>
         </div>
-    </div>
+    </ng-container>
 </ng-container>

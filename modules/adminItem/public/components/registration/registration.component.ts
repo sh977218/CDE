@@ -16,7 +16,7 @@ export class RegistrationComponent implements OnInit {
     @Input() canEdit = false;
     @Input() elt!: Item;
     @Output() eltChange = new EventEmitter();
-    @ViewChild('regStatusEdit') regStatusEditModal!: TemplateRef<any>;
+    @ViewChild('regStatusEdit', {static: true}) regStatusEditModal!: TemplateRef<any>;
     helpMessage?: string;
     newState!: RegistrationState;
     validRegStatuses: string[] = ['Retired', 'Incomplete', 'Candidate'];
@@ -43,7 +43,7 @@ export class RegistrationComponent implements OnInit {
             if (this.elt.classification && this.elt.classification.some(cl => cl.stewardOrg.name !== 'TEST')) {
                 this.validRegStatuses.push('Candidate');
 
-                this.http.get<any>('/org/' + encodeURIComponent(this.elt.stewardOrg.name || '')).subscribe(res => {
+                this.http.get<any>('/server/orgManagement/org/' + encodeURIComponent(this.elt.stewardOrg.name || '')).subscribe(res => {
                     this.userService.catch(_noop).then(user => {
                         if (!res.workingGroupOf || res.workingGroupOf.length < 1) {
                             this.validRegStatuses = this.validRegStatuses.concat(['Recorded', 'Qualified']);

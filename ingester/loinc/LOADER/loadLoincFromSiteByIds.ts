@@ -1,20 +1,21 @@
-import { MigrationLoincModel } from 'ingester/createMigrationConnection';
-import { runOneLoinc } from 'ingester/loinc/Website/loincLoader';
+import { LoincModel } from 'ingester/createMigrationConnection';
+import { loadLoincById } from 'ingester/loinc/website/newSite/loincLoader';
 
-const loincId = '62400-7';
+const loincId = '56091-2';
 
 async function run() {
-    await MigrationLoincModel.remove({loincId: '62399-1'}).catch(e => {
-        throw "Error MigrationLoincModel.remove(:" + e;
+    await LoincModel.remove({'LOINC Code': loincId});
+    console.log('Removed Migration LOINC collection');
+    console.log(`Starting fetching LOINC ${loincId}`);
+    const loinc = await loadLoincById(loincId);
+    console.log(`Finished fetching LOINC ${loincId}`);
+    await new LoincModel(loinc).save().catch(e => {
+        throw new Error('new LoincModel(loinc).save() Error: ' + e);
     });
-    console.info('Migration loinc collection removed.');
-    let loinc = await runOneLoinc(loincId).catch(e => {
-        throw "Error await loincLoader.runOneLoinc(loincId):" + e;
-    });
-    new MigrationLoincModel(loinc).save().catch(e => {
-        throw "Error new MigrationLoincModel(loinc).save():" + e;
-    });
+    console.log(`Finished saving LOINC ${loincId}`);
 }
 
-run().then(() => {
-}, err => console.log(err));
+run().then(() => process.exit(0), err => {
+    console.log(err);
+    process.exit(1);
+});

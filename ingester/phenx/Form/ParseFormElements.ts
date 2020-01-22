@@ -1,23 +1,42 @@
-import {find} from 'lodash';
-import {existsSync} from 'fs';
+import { find, isEmpty } from 'lodash';
+import { parseFormElements as parseRedcapFormElements } from 'ingester/phenx/redCap/ParseRedCap';
+import { parseFormElements as parseLoincFormElements } from 'ingester/loinc/Form/ParseFormElements';
 
-const ParseRedCap = require('./redCap/ParseRedCap');
-
-const ParseLOINC = require('../../loinc/Form/ParseFormElements');
-const orgMapping = require('../../loinc/Mapping/ORG_INFO_MAP').map;
-
-const zipFolder = 's:/MLB/CDE/phenx/original-phenxtoolkit.rti.org/toolkit_content/redcap_zip/';
-
-export async function parseFormElements (protocol, attachments, newForm) {
-    let loinc = find(protocol.Standards, standard => standard.Source === 'LOINC');
-    if (loinc) {
-        let formElements = await ParseLOINC.parseFormElements(loinc, orgMapping['PhenX']);
+export async function parseFormElements(protocol, attachments, newForm, isExistingFormQualified) {
+    let formElements: any[] = [];
+    if (isExistingFormQualified) {
         newForm.formElements = formElements;
     } else {
-        let protocolId = protocol.protocolId;
-        let zipFile = zipFolder + 'PX' + protocolId + '.zip';
-        if (existsSync(zipFile)) {
-            await ParseRedCap.parseFormElements(protocol, attachments, newForm);
+        const loincStandard = find(protocol.standards, standard => standard.Source === 'LOINC');
+        if (isEmpty(loincStandard)) {
+            await parseRedcapFormElements(protocol, attachments, newForm);
+        } else {
+            const loinc = loincStandard.loinc;
+            if (isEmpty(loinc['Panel Hierarchy'])) {
+                console.log(`Protocol ${protocol.protocolID} has LOINC ${loinc['LOINC Code']} Panel Hierarchy is missing.`);
+            } else {
+                formElements = await parseLoincFormElements(loinc, 'PhenX', [protocol.domainCollection]);
+            }
+            newForm.formElements = formElements;
         }
     }
-};
+
+    if (protocol.specificInstructions && protocol.specificInstructions.trim() !== 'None') {
+        const instructionFormElement = {
+            elementType: 'section',
+            instructions: {
+                value: protocol.specificInstructions,
+                valueFormat: 'html'
+            },
+            formElements: []
+        };
+        if (isEmpty(newForm.formElements)) {
+            newForm.formElements.unshift(instructionFormElement);
+        } else {
+            newForm.formElements[0].instructions = {
+                value: protocol.specificInstructions,
+                valueFormat: 'html'
+            };
+        }
+    }
+}

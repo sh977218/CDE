@@ -31,7 +31,7 @@ import { UserService } from '_app/user.service';
     `]
 })
 export class SettingsComponent {
-    @ViewChild('drawer') drawer!: MatSidenav;
+    @ViewChild('drawer', {static: true}) drawer!: MatSidenav;
     isMobile: boolean = (window.screen.width <= 575);
     opened: boolean = true;
 

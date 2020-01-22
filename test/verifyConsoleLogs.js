@@ -62,18 +62,29 @@ let expectedContent = {
         'Failed to load resource: the server responded with a status of',
         'Board Not Found'
     ],
-    report: 'cde/search 0:0 Uncaught SyntaxError: Unexpected token <',
+    report: "cde/search 0:0 Uncaught SyntaxError: Unexpected token '<'",
     resourcesPage: 'Content Security Policy',
-    searchPageSize: 'the server responded with a status of 400 (Bad Request)',
+    searchPageSize: '*',
     tooManyBoards: [
         'board - Failed to load resource: the server responded with a status of 403 (Forbidden)',
         'You have too many boards!'
     ],
+    "uomValidation": "*",
     validRulesPvUmls: 'Failed to load resource: the server responded with a status of 400 (Bad Request)',
-    wrongLogin: 'login - Failed to load resource: the server responded with a status of 403'
+    wrongLogin: 'login - Failed to load resource: the server responded with a status of 403',
+    increaseLockoutLogin: 'login - Failed to load resource: the server responded with a status of 403',
+    lockoutLogin: 'login - Failed to load resource: the server responded with a status of 403'
 };
 
-let ignoreErrors = ['Slow network is detected', 'Report Only', 'reportOnly', 'Failed to decode downloaded font', 'WebSocket is already in CLOSING or CLOSED state'];
+let ignoreErrors = [
+    ':3001/originalSource/',
+    'listbox select is deprecated and will be removed in M79',
+    'reportOnly',
+    'Report Only',
+    'Failed to decode downloaded font',
+    'Slow network is detected',
+    'WebSocket is already in CLOSING or CLOSED state'
+];
 
 fs.readdir(logFolder, (err, files) => {
     if (err || !files) {

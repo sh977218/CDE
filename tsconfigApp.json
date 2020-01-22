@@ -6,6 +6,7 @@
     "baseUrl": "./modules",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "incremental": true,
     "lib": [
       "ESNext",
       "DOM"
@@ -16,6 +17,7 @@
     "rootDir": ".",
     "sourceMap": true,
     "strict": true,
+    "strictPropertyInitialization": false,
     "target": "ES5",
     "typeRoots": [
       "node_modules/@types"
@@ -34,9 +36,9 @@
     "dist",
     "gulpfile.ts",
     "ingester",
-    "modules/_embedApp",
-    "modules/_fhirApp",
-    "modules/_nativeRenderApp",
+    "frontEnd/_embedApp",
+    "frontEnd/_nativeRenderApp",
+    "frontEnd/_fhirApp",
     "modules/form/public/assets",
     "node_modules",
     "protractor",

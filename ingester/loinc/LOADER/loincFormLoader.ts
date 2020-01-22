@@ -1,30 +1,38 @@
 import { isEmpty } from 'lodash';
-import { Form } from 'server/form/mongo-form';
-import { compareForm, createForm, mergeForm } from '../Form/form';
-import { BATCHLOADER, updatedByLoader, updateForm } from 'ingester/shared/utility';
+import { formModel } from 'server/form/mongo-form';
+import { createLoincForm } from 'ingester/loinc/Form/form';
+import {
+    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeClassification, mergeElt, updateForm, updateRawArtifact
+} from 'ingester/shared/utility';
+import { LoincLogger } from 'ingester/log/LoincLogger';
 
-export async function runOneForm(loinc, orgInfo) {
-    let formCond = {
-        archived: false,
-        "registrationState.registrationStatus": {$not: /Retired/},
-        'ids.id': loinc.loincId
-    };
-    let existingForm = await Form.findOne(formCond);
-    let newFormObj = await createForm(loinc, orgInfo);
-    let newForm = new Form(newFormObj);
+export async function runOneForm(loinc, classificationOrgName = 'LOINC', classificationArray = []) {
+    const loincForm = await createLoincForm(loinc, classificationOrgName, classificationArray);
+    const newForm = new formModel(loincForm);
+    const newFormObj = newForm.toObject();
+    let existingForm = await formModel.findOne({archived: false, 'ids.id': loinc['LOINC Code']});
     if (!existingForm) {
         existingForm = await newForm.save();
-    } else if (updatedByLoader(existingForm)) {
+        LoincLogger.createdLoincForm++;
+        LoincLogger.createdLoincForms.push(existingForm.tinyId + `[${loinc['LOINC Code']}]`);
     } else {
-        existingForm.imported = new Date().toJSON();
-        existingForm.markModified('imported');
-        let diff = compareForm(newForm, existingForm);
+        const diff = compareElt(newForm.toObject(), existingForm.toObject(), 'LOINC');
+        mergeClassification(existingForm, newForm.toObject(), classificationOrgName);
         if (isEmpty(diff)) {
+            existingForm.lastMigrationScript = lastMigrationScript;
+            existingForm.imported = imported;
             await existingForm.save();
+            LoincLogger.sameLoincForm++;
+            LoincLogger.sameLoincForms.push(existingForm.tinyId);
         } else {
-            await mergeForm(newForm, existingForm);
-            await updateForm(existingForm, BATCHLOADER);
+            const existingFormObj = existingForm.toObject();
+            mergeElt(existingFormObj, newFormObj, 'LOINC');
+            await updateForm(existingFormObj, BATCHLOADER, {updateSource: true});
+            LoincLogger.changedLoincForm++;
+            LoincLogger.changedLoincForms.push(existingForm.tinyId);
         }
+
+        await updateRawArtifact(existingForm, newFormObj, 'LOINC', classificationOrgName);
     }
     return existingForm;
 }

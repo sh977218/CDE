@@ -14,7 +14,7 @@
                                             (doneMerge)="doneMerge($event)"></cde-merge-data-element>
                 </ng-container>
                 <ng-container *ngIf="canMergeForm">
-                    <cde-merge-form [left]="left" [right]="right"
+                    <cde-merge-form [source]="left" [destination]="right"
                                     (doneMerge)="doneMerge($event)"></cde-merge-form>
                 </ng-container>
             </div>
@@ -26,7 +26,7 @@
                                             (doneMerge)="doneMerge($event)"></cde-merge-data-element>
                 </ng-container>
                 <ng-container *ngIf="canMergeForm">
-                    <cde-merge-form [left]="right" [right]="left"
+                    <cde-merge-form [source]="right" [destination]="left"
                                     (doneMerge)="doneMerge($event)"></cde-merge-form>
                 </ng-container>
             </div>

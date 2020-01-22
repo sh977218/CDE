@@ -9,7 +9,7 @@ import { ClassifyItemModalComponent } from 'adminItem/public/components/classifi
 import { AlertService } from 'alert/alert.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { saveAs } from 'file-saver';
-import { Board, ClassificationClassified, Comment, ItemElastic, ListTypes, User } from 'shared/models.model';
+import { Board, BoardUser, ClassificationClassified, Comment, ItemElastic, ListTypes, User } from 'shared/models.model';
 import { convertToCsv, getCdeCsvHeader, projectItemForExport } from 'core/system/export';
 
 export interface BoardQuery {
@@ -22,8 +22,8 @@ export interface BoardQuery {
     templateUrl: './boardView.component.html',
 })
 export class BoardViewComponent implements OnInit {
-    @ViewChild('classifyCdesModal') classifyCdesModal!: ClassifyItemModalComponent;
-    @ViewChild('shareBoardModal') shareBoardModal!: TemplateRef<any>;
+    @ViewChild('classifyCdesModal', {static: true}) classifyCdesModal!: ClassifyItemModalComponent;
+    @ViewChild('shareBoardModal', {static: true}) shareBoardModal!: TemplateRef<any>;
     allRoles = [{
         label: 'can view',
         name: 'viewer',
@@ -39,11 +39,11 @@ export class BoardViewComponent implements OnInit {
     hasComments: boolean = false;
     listViews?: ListTypes;
     modalTitle!: string;
-    newUser: any = {username: '', role: 'viewer'};
+    newUser: BoardUser = {username: '', role: 'viewer'};
     shareDialogRef!: MatDialogRef<TemplateRef<any>>;
     totalItems!: number;
     url!: string;
-    users: User[] = [];
+    users: BoardUser[] = [];
 
     constructor(private alert: AlertService,
                 private dialog: MatDialog,
@@ -67,10 +67,8 @@ export class BoardViewComponent implements OnInit {
         this.http.post(this.board.type === 'form' ? '/server/classification/classifyFormBoard' : '/server/classification/classifyCdeBoard',
             {
                 boardId: this.boardId,
-                newClassification: {
-                    categories: event.classificationArray,
-                    orgName: event.selectedOrg
-                }
+                categories: event.classificationArray,
+                orgName: event.selectedOrg
             }
         ).subscribe(() => {
             clearInterval(_timeout);

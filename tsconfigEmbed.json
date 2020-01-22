@@ -16,6 +16,7 @@
     "rootDir": ".",
     "sourceMap": false,
     "strict": true,
+    "strictPropertyInitialization": false,
     "target": "ES5",
     "typeRoots": [
       "node_modules/@types"
@@ -34,9 +35,9 @@
     "dist",
     "gulpfile.ts",
     "ingester",
+    "frontEnd/_nativeRenderApp",
+    "frontEnd/_fhirApp",
     "modules/_app",
-    "modules/_fhirApp",
-    "modules/_nativeRenderApp",
     "modules/adminItem",
     "modules/board",
     "modules/cde",

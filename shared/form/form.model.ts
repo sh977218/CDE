@@ -108,6 +108,9 @@ export class CdeForm extends Elt implements FormElementsContainer {
                         if (!Array.isArray(q.question.cde.permissibleValues)) {
                             q.question.cde.permissibleValues = [];
                         }
+                        if (!displayAsValueListList.includes(q.question.displayAs)) {
+                            q.question.displayAs = 'radio/checkbox/select';
+                        }
                         break;
                     case 'Date':
                         if (!q.question.datatypeDate) {
@@ -131,7 +134,7 @@ export class CdeForm extends Elt implements FormElementsContainer {
                     case 'Time':
                         break;
                     default:
-                        throw assertUnreachable(q.question);
+                        (q.question as any).datatype = 'Text';
                 }
             }
         );
@@ -222,9 +225,8 @@ export class FhirObservationInfo {
     timestamp?: Date;
 }
 
-export interface FormElementsContainer {
-    // expanded?: boolean; // calculated, formDescription view model
-    formElements: FormElement[];
+export interface FormElementsContainer<T = FormElement> {
+    formElements: T[];
 }
 
 export type FormElementsFollowContainer = FormElementsContainer & {
@@ -242,7 +244,8 @@ class FormElementEdit implements FormElementsContainer {
     updatedSkipLogic?: boolean; // calculated, formDescription view model
 }
 
-class FormElementPart extends FormElementEdit implements FormElementsContainer {
+export class FormElementPart extends FormElementEdit implements FormElementsContainer {
+    // TODO: private after mixins for nativeSectionMatrix is resolved
     _id?: ObjectId; // TODO: remove
     feId?: string; // calculated, nativeRender and formView view model
     instructions?: Instruction;
@@ -284,7 +287,7 @@ export type FormInFormFollow = FormInForm & FormElementsFollowContainer;
 
 export class FormQuestion extends FormElementPart {
     readonly elementType: 'question' = 'question';
-    incompleteRule?: boolean;
+    incompleteRule?: boolean; // volatile, form description
     question: Question = question() as Question;
 
     constructor() {
@@ -363,8 +366,7 @@ interface QuestionPart {
     defaultAnswer?: string; // all datatypes, defaulted by areDerivationRulesSatisfied
     editable?: boolean;
     invisible?: boolean;
-    isScore?: boolean;
-    scoreFormula?: string;
+    scoreFormula?: string; // volatile, form description
     scoreError?: string;
     partOf?: string; // volatile, display '(part of ...)' in Form Description
     required?: boolean;
@@ -388,8 +390,12 @@ export type QuestionTime = DatatypeContainerTime & QuestionPart;
 export type QuestionValueList = DatatypeContainerValueList & QuestionPart & {
     answers: PermissibleValue[]; // mutable
     cde: QuestionCdeValueList;
+    displayAs: displayAsValueList;
     multiselect?: boolean;
 };
+
+export type displayAsValueList = 'radio/checkbox/select' | 'likert scale';
+export const displayAsValueListList = ['radio/checkbox/select', 'likert scale'];
 
 export function question(): Partial<Question> {
     return {

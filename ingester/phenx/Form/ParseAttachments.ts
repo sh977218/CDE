@@ -1,55 +1,49 @@
-const fs = require('fs');
-const md5File = require('md5-file');
+import { createReadStream, existsSync, readdirSync, statSync } from 'fs';
+import * as md5File from 'md5-file';
+import { gfs } from 'server/system/mongo-data';
+import { BATCHLOADER } from 'ingester/shared/utility';
+import { redCapZipFolder } from 'ingester/createMigrationConnection';
 
-const mongo_data = require('../../../server/system/mongo-data');
-const gfs = mongo_data.gfs;
-
-const batchloader = require('../../shared/updatedByLoader').batchloader;
-
-const toolkit_content = 's:/MLB/CDE/phenx/original-phenxtoolkit.rti.org/toolkit_content';
-const pdfFolder = toolkit_content + '/PDF/';
-const zipFolder = toolkit_content + '/redcap_zip/';
-
-const addAttachment = (fileName, filePath, fileType) => {
+function addAttachment(fileName, filePath, fileType) {
     return new Promise(async (resolve, reject) => {
-        let fileSize = fs.statSync(filePath).size;
-        let attachment = {
+        const fileSize = statSync(filePath).size;
+        const attachment = {
             fileid: null,
             filename: fileName,
             filetype: fileType,
             uploadDate: Date.now(),
             comment: [],
-            scanned: 'scanned',
+            scanned: true,
             filesize: fileSize,
-            uploadedBy: batchloader
+            uploadedBy: BATCHLOADER
         };
 
         md5File(filePath, async (err, md5) => {
             if (err) {
                 console.log('MD5 failed. ' + err);
-                process.exit(1);
+                reject(err);
             }
-            gfs.findOne({md5: md5}, (err, existingFile) => {
-                if (err) {
+            gfs.findOne({md5}, (error, existingFile) => {
+                if (error) {
                     console.log('Error gsf find ' + err);
-                    process.exit(1);
+                    reject(error);
                 }
                 if (!existingFile) {
-                    let streamDescription = {
+                    const streamDescription = {
                         filename: fileName,
                         mode: 'w',
                         content_type: fileType,
-                        scanned: 'scanned',
+                        scanned: true,
                         metadata: {
                             status: 'approved'
                         }
                     };
-                    let writestream = gfs.createWriteStream(streamDescription);
-                    writestream.on('close', function (newFile) {
+                    const writestream = gfs.createWriteStream(streamDescription);
+                    writestream.on('close', newFile => {
                         attachment.fileid = newFile._id;
                         resolve(attachment);
                     });
-                    let attachmentStream = fs.createReadStream(filePath);
+                    const attachmentStream = createReadStream(filePath);
                     attachmentStream.pipe(writestream);
                 } else {
                     attachment.fileid = existingFile._id;
@@ -58,58 +52,52 @@ const addAttachment = (fileName, filePath, fileType) => {
             });
         });
 
-    })
-};
+    });
+}
 
-const doPdf = async (pdfFileName, pdfFilePath) => {
-    return await addAttachment(pdfFileName, pdfFilePath, 'pdf');
-};
+async function doImg(imgFolder) {
+    const attachments: any[] = [];
 
-const doImg = async imgFolder => {
-    let attachments = [];
-
-    let imgSubFolders = fs.readdirSync(imgFolder);
-    for (let imgSubFolder of imgSubFolders) {
-        let imgSubFolderExist = fs.existsSync(imgFolder + '/' + imgSubFolder);
+    const imgSubFolders = readdirSync(imgFolder);
+    for (const imgSubFolder of imgSubFolders) {
+        const imgSubFolderExist = existsSync(imgFolder + '/' + imgSubFolder);
         if (imgSubFolderExist) {
-            let imgFiles = fs.readdirSync(imgFolder);
-            for (let imgFile of imgFiles) {
+            const imgFiles = readdirSync(imgFolder);
+            for (const imgFile of imgFiles) {
                 let fileType = 'jpg';
                 let imgFilePath = imgFolder + '/' + imgSubFolder + '/' + imgFile + '.' + fileType;
-                let imgFileExist = fs.existsSync(imgFilePath);
+                let imgFileExist = existsSync(imgFilePath);
                 if (!imgFileExist) {
                     fileType = 'png';
                     imgFilePath = imgFolder + '/' + imgSubFolder + '/' + imgFile + '.' + fileType;
-                    imgFileExist = fs.existsSync(imgFilePath);
+                    imgFileExist = existsSync(imgFilePath);
                 }
                 if (imgFileExist) {
-                    let attachment = await addAttachment(imgFile, imgFilePath, fileType);
-                    if (attachment) attachments.push(attachment);
+                    const attachment = await addAttachment(imgFile, imgFilePath, fileType);
+                    if (attachment) {
+                        attachments.push(attachment);
+                    }
                 }
             }
         }
     }
     return attachments;
-};
+}
 
-export async function parseAttachments (protocol) {
-    let attachments = [];
-    let protocolId = protocol.protocolId;
+export function leadingZerosProtocolId(protocolId) {
+    const leadingZeroes = '00000000';
+    const veryLongProtocolId = leadingZeroes + protocolId;
+    return veryLongProtocolId.substr(veryLongProtocolId.length - 6, veryLongProtocolId.length);
+}
 
-    let pdfFileName = 'PX' + protocolId + '.pdf';
-    let pdfFilePath = pdfFolder + pdfFileName;
-    let pdfFileExist = fs.existsSync(pdfFilePath);
-    if (pdfFileExist) {
-        let pdfAttachment = await doPdf(pdfFileName, pdfFilePath);
-        if (pdfAttachment)
-            attachments.push(pdfAttachment);
-    }
-
-    let imgFolderPath = zipFolder + 'PX' + protocolId + '/attachments';
-    let imgFolderExist = fs.existsSync(imgFolderPath);
+export async function parseAttachments(protocol) {
+    const leadingZeroProtocolId = leadingZerosProtocolId(protocol.protocolID);
+    let attachments: any[] = [];
+    const imgFolderPath = redCapZipFolder + 'PX' + leadingZeroProtocolId + '/attachments';
+    const imgFolderExist = existsSync(imgFolderPath);
     if (imgFolderExist) {
-        let zipAttachments = await doImg(imgFolderPath);
+        const zipAttachments = await doImg(imgFolderPath);
         attachments = attachments.concat(zipAttachments);
     }
     return attachments;
-};
+}

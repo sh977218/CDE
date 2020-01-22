@@ -17,7 +17,7 @@ import { Cb, ClassificationClassified } from 'shared/models.model';
 export class CdeClassificationComponent {
     @Input() elt!: DataElement;
     @Output() eltChange = new EventEmitter<DataElement>();
-    @ViewChild('classifyItemComponent') classifyItemComponent!: ClassifyItemModalComponent;
+    @ViewChild('classifyItemComponent', {static: true}) classifyItemComponent!: ClassifyItemModalComponent;
     classifyItemModalRef!: MatDialogRef<TemplateRef<any>>;
 
     constructor(
@@ -55,7 +55,7 @@ export class CdeClassificationComponent {
     }
 
     reloadElt(cb: Cb) {
-        this.http.get<DataElement>('de/' + this.elt.tinyId).subscribe(res => {
+        this.http.get<DataElement>('/api/de/' + this.elt.tinyId).subscribe(res => {
             this.elt = res;
             this.eltChange.emit(this.elt);
             if (cb) { cb(); }

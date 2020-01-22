@@ -2,15 +2,18 @@
     <span *ngIf="!editMode">
         <mat-icon *ngIf="isAllowed" title="Edit" (click)="edit()">edit</mat-icon>
         <span *ngIf="!linkSource">
-            <span *ngIf="value">{{value}}</span>
-            <span *ngIf="!value">N/A</span>
+            <span *ngIf="isNotNA(value); else NAvalue">{{value}}</span>
+            <ng-template #NAvalue><span>N/A</span></ng-template>
         </span>
-        <a *ngIf="linkSource" href="{{linkSource}}" target="_blank">{{value}}</a>
+        <a *ngIf="linkSource" href="{{linkSource}}" target="_blank" rel="noopener noreferrer">{{value}}</a>
     </span>
     <form *ngIf="editMode" #inlineForm="ngForm">
         <ng-container *ngIf="INPUT_TYPE_ARRAY.indexOf(inputType.toLowerCase()) > -1">
             <input class="form-control" name="inlineInput" [type]="inputType.toLowerCase()" autocomplete="off"
                    [(ngModel)]="value" [email]="value && inputType.toLowerCase() === 'email' || null"/>
+        </ng-container>
+        <ng-container *ngIf="inputType.toLowerCase() === 'date'">
+            <input class="form-control" name="inlineInput" type="date" autocomplete="off" [(ngModel)]="value"/>
         </ng-container>
         <ng-container *ngIf="inputType.toLowerCase() === 'number'">
             <input class="form-control" name="inlineInput" type="number" autocomplete="off" [(ngModel)]="value"/>

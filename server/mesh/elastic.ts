@@ -1,30 +1,26 @@
+import { each, ErrorCallback } from 'async';
+import { Client } from '@elastic/elasticsearch';
 import * as _ from 'lodash';
-import { config } from '../system/parseConfig';
-import { Cb } from 'shared/models.model';
+import { consoleLog } from 'server/log/dbLogger';
+import { findAll } from 'server/mesh/meshDb';
+import { errorLogger } from 'server/system/logging';
+import { config } from 'server/system/parseConfig';
+import { Cb, CbError } from 'shared/models.model';
+import { esClient } from 'server/system/elastic';
 
-const ElasticSearch = require('elasticsearch');
-const meshDb = require('./meshDb');
-const logging = require('../system/logging');
-const dbLogger = require('../log/dbLogger');
-const async = require('async');
-
-let esClient = new ElasticSearch.Client({
-    hosts: config.elastic.hosts
-});
-
-let searchTemplate = {
+const searchTemplate = {
     cde: {
         index: config.elastic.index.name,
-        type: "dataelement"
+        type: '_doc',
     },
     form: {
         index: config.elastic.formIndex.name,
-        type: "form"
+        type: '_doc',
     }
 };
 
-export function syncWithMesh(cb?: Cb) {
-    meshDb.findAll((err, allMappings) => doSyncWithMesh(allMappings, cb));
+export function syncWithMesh(cb?: ErrorCallback) {
+    findAll((err, allMappings) => doSyncWithMesh(allMappings, cb));
 }
 
 let lock = false;
@@ -34,57 +30,65 @@ export let meshSyncStatus: any = {
     form: {done: 0}
 };
 
-function doSyncWithMesh(allMappings, callback: Cb = () => {}) {
+function doSyncWithMesh(allMappings, callback: ErrorCallback = () => {}) {
     meshSyncStatus = {
         dataelement: {done: 0},
         form: {done: 0}
     };
 
-    let classifToTrees = {};
+    const classifToTrees = {};
     allMappings.forEach(mapping => {
         // from a;b;c to a a;b a;b;c
         classifToTrees[mapping.flatClassification] = [];
         mapping.flatTrees.forEach(treeNode => {
             classifToTrees[mapping.flatClassification].push(treeNode);
-            while (treeNode.indexOf(";") > -1) {
-                treeNode = treeNode.substr(0, treeNode.lastIndexOf(";"));
+            while (treeNode.indexOf(';') > -1) {
+                treeNode = treeNode.substr(0, treeNode.lastIndexOf(';'));
                 classifToTrees[mapping.flatClassification].push(treeNode);
             }
         });
     });
 
-    let classifToSimpleTrees = {};
+    const classifToSimpleTrees = {};
     allMappings.forEach(m => classifToSimpleTrees[m.flatClassification] = m.flatTrees);
 
-    let searches: any = [_.cloneDeep(searchTemplate.cde), _.cloneDeep(searchTemplate.form)];
-    searches.forEach(search => {
+    const searches: any = [_.cloneDeep(searchTemplate.cde), _.cloneDeep(searchTemplate.form)];
+    searches.forEach((search: any) => {
         search.scroll = '2m';
         search.body = {};
     });
 
-    let scrollThrough = function (scrollId, s, cb) {
-        esClient.scroll({scrollId: scrollId, scroll: '1m'}, (err, response) => {
+    function scrollThrough(scrollId, s, cb) {
+        // @ts-ignore
+        esClient.scroll({scrollId, scroll: '1m'}, (err, response) => {
             if (err) {
                 lock = false;
-                logging.errorLogger.error("Error: Elastic Search Scroll Access Error",
-                    {origin: "system.elastic.syncWithMesh", stack: err.stack});
+                errorLogger.error('Error: Elastic Search Scroll Access Error',
+                    {origin: 'system.elastic.syncWithMesh', stack: err.stack});
                 cb(err);
             } else {
-                let newScrollId = response._scroll_id;
-                processScroll(newScrollId, s, response, cb);
+                processScroll(response.body._scroll_id, s, response.body, cb);
             }
         });
-    };
+    }
 
-    function processScroll(newScrollId, s, response, cb) {
-        meshSyncStatus[s.type].total = response.hits.total;
+    async function processScroll(newScrollId: string, s, response, cb) {
+        const sName = s.index === config.elastic.index.name ? 'dataelement' : 'form';
+        // @TODO remove after ES7 upgrade
+        let total = response.hits.total;
+        if (total.value > -1) {
+            total = total.value;
+        }
+        meshSyncStatus[sName].total = total;
         if (response.hits.hits.length > 0) {
-            let request = {body: []};
+            const request: any = {body: []};
             response.hits.hits.forEach(hit => {
-                let thisElt = hit._source;
-                let trees = new Set();
-                let simpleTrees = new Set();
-                if (!thisElt.flatClassifications) thisElt.flatClassifications = [];
+                const thisElt = hit._source;
+                const trees = new Set();
+                const simpleTrees = new Set();
+                if (!thisElt.flatClassifications) {
+                    thisElt.flatClassifications = [];
+                }
                 thisElt.flatClassifications.forEach(fc => {
                     if (classifToTrees[fc]) {
                         classifToTrees[fc].forEach(node => trees.add(node));
@@ -97,8 +101,8 @@ function doSyncWithMesh(allMappings, callback: Cb = () => {}) {
                     request.body.push({
                         update: {
                             _index: s.index,
-                            _type: s.type,
-                            _id: thisElt.tinyId
+                            _id: thisElt.tinyId,
+                            _type: '_doc'
                         }
                     });
                     request.body.push({
@@ -108,37 +112,28 @@ function doSyncWithMesh(allMappings, callback: Cb = () => {}) {
                         }
                     });
                 }
-                meshSyncStatus[s.type].done++;
+                meshSyncStatus[sName].done++;
             });
             if (request.body.length > 0) {
                 esClient.bulk(request, err => {
-                    if (err) dbLogger.consoleLog("ERR: " + err, 'error');
+                    if (err) {
+                        consoleLog('ERR: ' + err, 'error');
+                    }
                     scrollThrough(newScrollId, s, cb);
                 });
-            }
-            else {
+            } else {
                 scrollThrough(newScrollId, s, cb);
             }
         } else {
-            dbLogger.consoleLog("done syncing " + s.index + " with MeSH");
-            cb();
+            consoleLog('done syncing ' + s.index + ' with MeSH');
+            if (cb) {
+                cb();
+            }
         }
     }
 
-    async.each(searches, (search, oneCb) => {
-        esClient.search(search, (err, response) => {
-            if (err) {
-                lock = false;
-                logging.errorLogger.error("Error: Elastic Search Scroll Query Error",
-                    {
-                        origin: "system.elastic.syncWithMesh",
-                        stack: new Error().stack,
-                        details: ""
-                    });
-                oneCb(err);
-            } else {
-                processScroll(response._scroll_id, search, response, oneCb);
-            }
-        });
+    each(searches, async search  => {
+        const response = await esClient.search(search);
+        await new Promise(resolve => processScroll(response.body._scroll_id, search, response.body, resolve));
     }, callback);
 }

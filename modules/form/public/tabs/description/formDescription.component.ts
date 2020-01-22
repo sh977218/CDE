@@ -23,7 +23,7 @@ import { copySectionAnimation } from 'form/public/tabs/description/copySectionAn
 import { FormService } from 'nativeRender/form.service';
 import { Cb } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
-import { CdeForm, FormElement, FormElementsContainer, FormInForm, FormOrElement, FormSection } from 'shared/form/form.model';
+import { CdeForm, FormElement, FormInForm, FormOrElement, FormSection } from 'shared/form/form.model';
 import { addFormIds, iterateFeSync } from 'shared/form/fe';
 import { scrollTo, waitRendered } from 'non-core/browser';
 
@@ -145,10 +145,10 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     private _elt!: CdeForm;
     @Input() canEdit = false;
     @Output() eltChange = new EventEmitter<void>();
-    @ViewChild(TreeComponent) tree!: TreeComponent;
-    @ViewChild('formSearchTmpl') formSearchTmpl!: TemplateRef<any>;
-    @ViewChild('questionSearchTmpl') questionSearchTmpl!: TemplateRef<any>;
-    @ViewChild('descToolbox') descToolbox!: ElementRef;
+    @ViewChild(TreeComponent, {static: false}) tree!: TreeComponent;
+    @ViewChild('formSearchTmpl', {static: true}) formSearchTmpl!: TemplateRef<any>;
+    @ViewChild('questionSearchTmpl', {static: true}) questionSearchTmpl!: TemplateRef<any>;
+    @ViewChild('descToolbox', {static: true}) descToolbox!: ElementRef;
     addQuestionDialogRef?: MatDialogRef<any, any>;
     dragActive = false;
     formElementEditing: any = {};
@@ -197,6 +197,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
                         TREE_ACTIONS.MOVE_NODE(tree, node, $event, {from, to});
                         addFormIds(this.elt);
                         this.updateTree();
+                        this.dragActive = false;
                         // this.onEltChange.emit(); treeEvent will handle
                     }
                 }
@@ -256,7 +257,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     }
 
     addFormFromSearch(form: CdeForm, cb: Cb<FormInForm> = _noop) {
-        this.http.get<CdeForm>('/form/' + form.tinyId).subscribe(form => {
+        this.http.get<CdeForm>('/api/form/' + form.tinyId).subscribe(form => {
             const inForm = convertFormToSection(form);
             if (!inForm) { return; }
             this.addExpanded(inForm);

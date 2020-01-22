@@ -13,9 +13,7 @@ export class ClassificationAuditLogComponent {
     currentPage: number = 0;
     records: ClassificationAuditLogRecord[] = [];
 
-    constructor(
-        private http: HttpClient
-    ) {
+    constructor(private http: HttpClient) {
         this.gotoPage();
     }
 
@@ -23,7 +21,7 @@ export class ClassificationAuditLogComponent {
         if (event) {
             this.currentPage = event.pageIndex;
         }
-        this.http.post<ClassificationAuditLogRecord[]>('/getClassificationAuditLog', {
+        this.http.post<ClassificationAuditLogRecord[]>('/server/system/getClassificationAuditLog', {
             skip: this.currentPage * 50,
             limit: 50
         }).subscribe(response => {

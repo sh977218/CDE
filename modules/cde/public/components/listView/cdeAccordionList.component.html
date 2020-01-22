@@ -5,7 +5,7 @@
                 <mat-icon>add</mat-icon> Add
             </button>
             <span class="hand-cursor" (click)="elt.isCollapsed = !elt.isCollapsed"> {{elt.designations[0]?.designation}}</span>
-            <a href="deView?tinyId={{elt.tinyId}}" target="_blank" id="acc_link_{{i}}">
+            <a href="/deView?tinyId={{elt.tinyId}}" target="_blank" id="acc_link_{{i}}">
                 <mat-icon class="iconColor">visibility</mat-icon>
             </a>
             <cde-pin-board [elt]="elt" [eltIndex]="index" [module]="'cde'"></cde-pin-board>
@@ -51,7 +51,7 @@
                         </tr>
                     </table>
                     <img *ngFor="let attachment of elt.attachments.filter(Elt.isDefault)"
-                         alt="Image attached to the CDE" src="/data/{{attachment.fileid}}"
+                         alt="Image attached to the CDE" src="/server/system/data/{{attachment.fileid}}"
                          class='cdeAttachmentThumbnail'/>
                 </div>
                 <div class="col-md-4 col-sm-6 col-xs-12" *ngIf="elt.ids.length > 0">

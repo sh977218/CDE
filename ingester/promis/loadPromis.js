@@ -1,6 +1,9 @@
 // 4) Loads PROMIS to DB
 // node ingester/promis/loadPromis.js ../promis 2014-01
 
+import { BATCHLOADER } from 'ingester/shared/utility';
+import { addCategory } from 'shared/system/classificationShared';
+
 var promisDir = process.argv[2];
 
 var fs = require('fs'),
@@ -9,17 +12,15 @@ var fs = require('fs'),
     mongo_form = require('../../server/form/mongo-form'),
     config = require('config'),
     mongo_data_system = require('../../server/system/mongo-data'),
-    async = require ('async'),
+    async = require('async'),
     loinc = JSON.parse(fs.readFileSync(promisDir + '/loinc.json')),
     loadLoincPv = require('./loadLoincPVs'),
     formClassifMap = JSON.parse(fs.readFileSync(promisDir + '/formMap.json')),
     updateShare = require('../updateShare')
-    ;
-import { addCategory } from 'shared/system/classificationShared';
+;
 
 var lostForms = [];
 
-var user = {username: 'batchloader'};
 
 var orgName = "PROMIS / Neuro-QOL";
 var sourceName = "Assessment Center";
@@ -30,15 +31,15 @@ if (!promisDir) {
     process.exit(1);
 }
 
-var twoDaysAgo = Date.now() -2*24*3600*1000;
+var twoDaysAgo = Date.now() - 2 * 24 * 3600 * 1000;
 
 var ignoreTerms = ["Neuro-QoL", "Banco", "Capacidad", "Comportamiento", "Ansiedad",
     "Depresión", "Intensidad", "Agotamiento", "Alteraciones", "Sentimentios", "Satisfacción",
     "Bank", "sociales", "Enojo", "emocional", "extremidades", "sueño", "Estigma", "positivos",
     "Función", "Pool"];
 
-var doFile = function(file, cb) {
-    fs.readFile(promisDir + "/forms" + date + "/" + file, function(err, formData) {
+var doFile = function (file, cb) {
+    fs.readFile(promisDir + "/forms" + date + "/" + file, function (err, formData) {
         if (err) console.log("err in file: " + file + "\n" + err);
         var form = JSON.parse(formData);
         var ignoreThis = false;
@@ -50,7 +51,7 @@ var doFile = function(file, cb) {
         if (ignoreThis) {
             return cb();
         }
-        async.eachSeries(form.content.Items, function(item, oneDone) {
+        async.eachSeries(form.content.Items, function (item, oneDone) {
             var cde = {
                 stewardOrg: {name: orgName},
                 source: sourceName,
@@ -62,7 +63,7 @@ var doFile = function(file, cb) {
                 classification: [{stewardOrg: {name: orgName}, elements: []}],
                 registrationState: {registrationStatus: "Qualified"}
             };
-            item.Elements.forEach(function(element) {
+            item.Elements.forEach(function (element) {
                 if (!element.Map) {
                     cde.naming[0].designation = cde.naming[0].designation + " " + element.Description;
                     cde.naming[0].designation = cde.naming[0].designation.trim();
@@ -71,8 +72,11 @@ var doFile = function(file, cb) {
                         cde.valueDomain.datatype = 'Value List';
                         cde.valueDomain.permissibleValues = [];
                     }
-                    element.Map.forEach(function(map) {
-                        cde.valueDomain.permissibleValues.push({permissibleValue: map.Value, valueMeaningName: map.Description});                         
+                    element.Map.forEach(function (map) {
+                        cde.valueDomain.permissibleValues.push({
+                            permissibleValue: map.Value,
+                            valueMeaningName: map.Description
+                        });
                     });
                 }
             });
@@ -83,16 +87,16 @@ var doFile = function(file, cb) {
                 });
             }
             var found = false;
-            loinc.forEach(function(l){
-                var processString = function(str){
-                    return str.toLowerCase().replace(/[^A-z]/g,"");
+            loinc.forEach(function (l) {
+                var processString = function (str) {
+                    return str.toLowerCase().replace(/[^A-z]/g, "");
                 };
                 var loincName = processString(l.name);
                 var loincName2 = processString(l.name2);
                 var cdeName = processString(cde.naming[0].designation);
                 if (loincName === cdeName || loincName2 === cdeName || cde.ids[0].id === l.sourceId) {
                     if (found) console.log("ID found twice: " + cdeName);
-                    cde.ids.push({source:"LOINC", id: l.loincCode, version: "2.58"});
+                    cde.ids.push({source: "LOINC", id: l.loincCode, version: "2.58"});
                     found = true;
                 }
             });
@@ -116,7 +120,7 @@ var doFile = function(file, cb) {
                     process.exit(1);
                 }
                 if (duplicate) {
-                    var classif = duplicate.classification.find(e=>e.stewardOrg.name === orgName);
+                    var classif = duplicate.classification.find(e => e.stewardOrg.name === orgName);
                     if (duplicate.updated > twoDaysAgo) {
                         updateShare.removeClassificationTree(duplicate, orgName);
                         //classifyEltNoDuplicate(form, duplicate, true);
@@ -133,7 +137,7 @@ var doFile = function(file, cb) {
                     duplicate.ids = cde.ids;
                     duplicate.naming = cde.naming;
                     duplicate.valueDomain = cde.valueDomain;
-                    mongo_cde.update(duplicate, user, oneDone);
+                    mongo_cde.update(duplicate, BATCHLOADER, oneDone);
                 } else {
                     if (formClassifMap[form.name]) {
                         addCategory(cde.classification[0], [c1].concat(formClassifMap[form.name]).concat(form.name));
@@ -147,10 +151,10 @@ var doFile = function(file, cb) {
             });
         }, cb);
     });
- };
+};
 
-var loadForm = function(file, cb) {
-    fs.readFile(promisDir + "/forms" + date + "/" + file, function(err, formData) {
+var loadForm = function (file, cb) {
+    fs.readFile(promisDir + "/forms" + date + "/" + file, function (err, formData) {
         if (err) console.log("err " + err);
         var pForm = JSON.parse(formData);
 
@@ -191,23 +195,23 @@ var loadForm = function(file, cb) {
             addCategory(form.classification[0], (formClassifMap[pForm.name]).concat(pForm.name));
         } else if (pForm.name.indexOf("PROMIS") > -1) {
             form.classification[0].elements.push(
-                    {
-                        name: "PROMIS Instruments",
-                        elements: [{
-                            name: l2
-                            , elements: []
-                        }]
-                    }
+                {
+                    name: "PROMIS Instruments",
+                    elements: [{
+                        name: l2
+                        , elements: []
+                    }]
+                }
             );
         } else {
             form.classification[0].elements.push(
-                    {
-                        name: "Neuro-QOL Measures",
-                        elements: [{
-                            name: l2
-                            , elements: []
-                        }]
-                    }
+                {
+                    name: "Neuro-QOL Measures",
+                    elements: [{
+                        name: l2
+                        , elements: []
+                    }]
+                }
             );
         }
         var currentSection = {
@@ -313,9 +317,9 @@ var loadForm = function(file, cb) {
 
 var fakeTree = {};
 
-console.log("reading directory:" + promisDir + "/forms"+date);
+console.log("reading directory:" + promisDir + "/forms" + date);
 
-fs.readdir(promisDir + "/forms"+date, function(err, files) {
+fs.readdir(promisDir + "/forms" + date, function (err, files) {
     if (err) {
         console.log("Cant read form dir." + err);
         process.exit(1);

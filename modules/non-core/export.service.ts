@@ -5,18 +5,18 @@ import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
 import { getFormQuestionsAsQuestionCde } from 'core/form/fe';
 import { getFormOdm } from 'core/form/form';
+import { convertToCsv, getCdeCsvHeader, projectItemForExport } from 'core/system/export';
+import { RedcapExport } from 'form/public/redcapExport';
 import { saveAs } from 'file-saver';
-import * as JSZip from 'jszip';
-import * as JXON from 'jxon';
+import JSZip from 'jszip';
+import JXON from 'jxon';
 import _intersectionWith from 'lodash/intersectionWith';
 import _noop from 'lodash/noop';
 import { processRules, RegistrationValidatorService, RuleStatus } from 'non-core/registrationValidator.service';
-import { SearchSettings } from 'search/search.model';
 import { DataElement, DataElementElastic } from 'shared/de/dataElement.model';
 import { CdeForm, CdeFormElastic } from 'shared/form/form.model';
 import { Cb1, CurationStatus, ElasticQueryResponse, ElasticQueryResponseForm, Item, ItemElastic } from 'shared/models.model';
-import { convertToCsv, getCdeCsvHeader, projectItemForExport } from 'core/system/export';
-import { RedcapExport } from 'form/public/redcapExport';
+import { SearchSettings } from 'shared/search/search.model';
 
 export interface ExportRecord {
     tinyId: string;
@@ -53,7 +53,7 @@ export class ExportService {
                 }
             } else {
                 const lfSettings = this.elasticService.buildElasticQuerySettings(new SearchSettings());
-                let esResp = await this.http.post<ElasticQueryResponse>('/scrollExport/form', lfSettings).toPromise();
+                let esResp = await this.http.post<ElasticQueryResponse>('/server/form/scrollExport', lfSettings).toPromise();
                 let totalNbOfForms = 0;
                 let formCounter = 0;
                 const nonEmptyResults = result.filter(r => r !== undefined);
@@ -87,7 +87,8 @@ export class ExportService {
                 let keepScrolling = true;
                 while (keepScrolling) {
                     keepScrolling = intersectOnBatch(esResp);
-                    esResp = await this.http.get<ElasticQueryResponse>('/scrollExport/' + (esResp as any)._scroll_id).toPromise();
+                    // tslint:disable-next-line:max-line-length
+                    esResp = await this.http.get<ElasticQueryResponse>('/server/form/scrollExport/' + (esResp as any)._scroll_id).toPromise();
                 }
             }
         }
@@ -221,7 +222,7 @@ export class ExportService {
     async formCdeExport(form: CdeForm) {
         this.alertService.addAlert('', 'Fetching cdes. Please wait...');
         const tinyIdList = getFormQuestionsAsQuestionCde(form).map(f => f.tinyId);
-        const elts = await this.http.get<DataElement[]>('/deList/' + tinyIdList).toPromise().catch(_noop);
+        const elts = await this.http.get<DataElement[]>('/server/de/list/' + tinyIdList).toPromise().catch(_noop);
         let csv;
         if (elts) {
             csv = await this.resultToCsv(elts as DataElementElastic[]);

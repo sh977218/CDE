@@ -5,7 +5,7 @@ import org.testng.annotations.Test;
 public class NlmPromotesToStd extends CdeRegStatusTest {
 
     @Test
-    public void nlmPromotesToStandard() {
+    public void nlmPromotesToStandardCde() {
         nlmPromotesToStandard("Axillary Surgery Dissection Date");
     }
 }

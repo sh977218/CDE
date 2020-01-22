@@ -1,11 +1,14 @@
-import * as ElasticSearch from 'elasticsearch';
-import { config } from '../system/parseConfig';
+import * as ElasticSearch from '@elastic/elasticsearch';
+import { config } from 'server/system/parseConfig';
+import { createIndexJson as boardCreateIndexJson } from 'server/board/elasticSearchMapping';
+import { shortHash } from 'server/system/elasticSearchInit';
+import { esClient } from 'server/system/elastic';
+
+if (config.elastic.boardIndex.name === 'auto') {
+    config.elastic.boardIndex.name = 'board_' + shortHash(boardCreateIndexJson);
+}
 
 const boardIndexName = config.elastic.boardIndex.name;
-
-const esClient = new ElasticSearch.Client({
-    hosts: config.elastic.hosts
-});
 
 export function boardRefresh() {
     return esClient.indices.refresh({index: config.elastic.boardIndex.name});
@@ -14,8 +17,8 @@ export function boardRefresh() {
 export function updateOrInsertBoardById(id, board, callback) {
     esClient.index({
         index: config.elastic.boardIndex.name,
-        type: 'board',
-        id: id,
+        type: '_doc',
+        id,
         body: board
     }, callback);
 }
@@ -23,13 +26,12 @@ export function updateOrInsertBoardById(id, board, callback) {
 export function deleteBoardById(id, callback) {
     esClient.delete({
         index: config.elastic.boardIndex.name,
-        type: 'board',
-        id: id
+        id,
     }, callback);
 }
 
 export function boardSearch(filter) {
-    let query: any = {
+    const query: any = {
         size: 100,
         query: {bool: {must: [{match: {shareStatus: 'Public'}}]}},
         aggs: {
@@ -53,13 +55,12 @@ export function boardSearch(filter) {
     });
     return esClient.search({
         index: boardIndexName,
-        type: 'board',
         body: query
     });
 }
 
 export function myBoards(user, filter) {
-    let query: any = {
+    const query: any = {
         size: 100,
         query: {
             bool: {must: [{term: {'owner.username': {value: user.username.toLowerCase()}}}]},
@@ -71,12 +72,12 @@ export function myBoards(user, filter) {
         },
         sort: []
     };
-    let sort = {};
+    const sort: any = {};
     if (filter.sortBy) {
         sort[filter.sortBy] = {};
         sort[filter.sortBy].order = filter.sortDirection;
     } else {
-        sort['updatedDate'] = {order: 'asc'};
+        sort.updatedDate = {order: 'asc'};
         query.sort.push(sort);
     }
     query.sort.push(sort);
@@ -104,7 +105,6 @@ export function myBoards(user, filter) {
     }
     return esClient.search({
         index: boardIndexName,
-        type: 'board',
         body: query
     });
 }

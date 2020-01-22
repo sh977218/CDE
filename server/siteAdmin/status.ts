@@ -1,14 +1,14 @@
 import * as async from 'async';
-import { config } from '../system/parseConfig';
+import { config } from 'server/system/parseConfig';
+import { dataElementModel } from 'server/cde/mongo-cde';
+import { triggerPushMsg } from 'server/notification/pushNotificationSvc';
+import { pushGetAdministratorRegistrations } from 'server/notification/notificationDb';
 
-const mongo_cde = require('../cde/mongo-cde');
-const mongo_form = require('../form/mongo-form');
-const boardDb = require('../board/boardDb');
-const mongo_data = require('../system/mongo-data');
-const elastic = require('../system/elastic');
-const esInit = require('../system/elasticSearchInit');
-const pushNotification = require('../system/pushNotification');
-const dbLogger = require('../log/dbLogger');
+const mongoForm = require('server/form/mongo-form');
+const boardDb = require('server/board/boardDb');
+const elastic = require('server/system/elastic');
+const esInit = require('server/system/elasticSearchInit');
+const dbLogger = require('server/log/dbLogger');
 
 export const statusReport: any = {
     elastic: {
@@ -30,7 +30,7 @@ export function status(req, res) {
 }
 
 export function checkElasticCount(count, index, type, cb) {
-    elastic.esClient.count({index: index, type: type}, (err, response) => {
+    elastic.esClient.count({index}, (err, response) => {
         if (err) {
             cb(false, 'Error retrieving index count: ' + err);
         } else {
@@ -49,15 +49,15 @@ export function isElasticUp(cb) {
             statusReport.elastic.up = 'No Response on Health Check: ' + err;
             cb(false);
         } else {
-            if (response.indexOf('red') === 0) {
+            if (response.body.indexOf('red') === 0) {
                 statusReport.elastic.up = false;
                 statusReport.elastic.message = 'Cluster status is Red.';
                 cb();
-            } else if (response.indexOf('yellow') === 0) {
+            } else if (response.body.indexOf('yellow') === 0) {
                 statusReport.elastic.up = true;
                 statusReport.elastic.message = 'Cluster status is Yellow.';
                 cb();
-            } else if (response.indexOf('green') === 0) {
+            } else if (response.body.indexOf('green') === 0) {
                 statusReport.elastic.up = true;
                 delete statusReport.elastic.message;
                 cb(true);
@@ -73,43 +73,43 @@ export function isElasticUp(cb) {
 export function getStatus(getStatusDone) {
     isElasticUp(() => {
         if (statusReport.elastic.up) {
-            let tempIndices = [];
-            let condition = {archived: false};
+            const tempIndices: any[] = [];
+            const condition = {archived: false};
             async.series([
                 done => {
-                    mongo_cde.count(condition, (err, deCount) => {
+                    dataElementModel.countDocuments(condition, (err, deCount) => {
                         esInit.indices[0].totalCount = deCount;
                         checkElasticCount(deCount, config.elastic.index.name, 'dataelement', (up, message) => {
                             tempIndices.push({
                                 name: config.elastic.index.name,
-                                up: up,
-                                message: message
+                                up,
+                                message
                             });
                             done();
                         });
                     });
                 },
                 done => {
-                    mongo_form.count(condition, (err, formCount) => {
+                    mongoForm.count(condition, (err, formCount) => {
                         esInit.indices[1].totalCount = formCount;
                         checkElasticCount(formCount, config.elastic.formIndex.name, 'form', (up, message) => {
                             tempIndices.push({
                                 name: config.elastic.formIndex.name,
-                                up: up,
-                                message: message
+                                up,
+                                message
                             });
                             done();
                         });
                     });
                 },
                 done => {
-                    boardDb.count({}, function (err, boardCount) {
+                    boardDb.count({}, (err, boardCount) => {
                         esInit.indices[2].totalCount = boardCount;
                         checkElasticCount(boardCount, config.elastic.boardIndex.name, 'board', (up, message) => {
                             tempIndices.push({
                                 name: config.elastic.boardIndex.name,
-                                up: up,
-                                message: message
+                                up,
+                                message
                             });
                             done();
                         });
@@ -128,7 +128,7 @@ let notificationTimeout;
 
 setInterval(() => {
     getStatus(() => {
-        let newReport = JSON.stringify(statusReport);
+        const newReport = JSON.stringify(statusReport);
 
         if (!!lastReport && newReport !== lastReport) {
             // different report
@@ -137,7 +137,7 @@ setInterval(() => {
                 notificationTimeout = setTimeout(() => {
                     // send notification now
                     lastReport = newReport;
-                    let msg = JSON.stringify({
+                    const msg = JSON.stringify({
                         title: 'Elastic Search Index Issue',
                         options: {
                             body: 'Status reports not normal',
@@ -153,8 +153,8 @@ setInterval(() => {
                             ]
                         }
                     });
-                    mongo_data.pushGetAdministratorRegistrations(registrations => {
-                        registrations.forEach(r => pushNotification.triggerPushMsg(r, msg));
+                    pushGetAdministratorRegistrations(registrations => {
+                        registrations.forEach(r => triggerPushMsg(r, msg));
                     });
 
                     dbLogger.logError({

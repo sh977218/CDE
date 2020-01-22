@@ -64,9 +64,6 @@ export class FormService {
 
         function convertPv(question: QuestionValueList, pvs: PermissibleValue[]) {
             pvs.forEach(pv => {
-                if (!pv.valueMeaningName || pv.valueMeaningName.trim().length === 0) {
-                    pv.valueMeaningName = pv.permissibleValue;
-                }
                 question.answers.push(Object.assign({formElements: []}, pv));
                 question.cde.permissibleValues.push(pv);
             });
@@ -88,18 +85,18 @@ export class FormService {
     }
 
     static convertUnits(value: number, from: string, to: string): Promise<number> {
-        return fetch('/ucumConvert?value=' + value + '&from=' + from + '&to=' + to)
+        return fetch('/server/ucumConvert?value=' + value + '&from=' + from + '&to=' + to)
             .then(res => res.text())
             .then(value => parseFloat(value));
     }
 
     static fetchForm(tinyId: string, version?: string): Promise<CdeForm> {
-        return fetch('/form/' + tinyId + (version || version === '' ? '/version/' + version : ''))
+        return fetch('/api/form/' + tinyId + (version || version === '' ? '/version/' + version : ''))
             .then(res => res.json());
     }
 
     static fetchFormById(id: ObjectId): Promise<CdeForm> {
-        return fetch('/formById/' + id)
+        return fetch('/server/form/byId/' + id)
             .then(res => res.json());
     }
 }

@@ -14,7 +14,7 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
     @Input() canEdit!: boolean;
     @Input() elt!: DataElement & {derivationOutputs: {ruleName: string, cde: DataElement}[]};
     @Output() eltChange = new EventEmitter();
-    @ViewChild('newScoreContent') newScoreContent!: TemplateRef<any>;
+    @ViewChild('newScoreContent', {static: true}) newScoreContent!: TemplateRef<any>;
     invalidCdeMessage = '';
     modalRef!: MatDialogRef<TemplateRef<any>>;
     newDerivationRule: DerivationRule = {
@@ -71,7 +71,7 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
     findDerivationOutputs() {
         if (!this.elt.derivationOutputs) {
             this.elt.derivationOutputs = [];
-            this.http.get<DataElement[]>('/cde/derivationOutputs/' + this.elt.tinyId).subscribe(result => {
+            this.http.get<DataElement[]>('/server/de/derivationOutputs/' + this.elt.tinyId).subscribe(result => {
                 result.forEach(outputCde => {
                     outputCde.derivationRules.forEach(derRule => {
                         if (derRule.inputs.indexOf(this.elt.tinyId) > -1) {
@@ -144,7 +144,7 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
         if (this.elt.derivationRules) {
             this.elt.derivationRules.forEach((dr: DerivationRule) => {
                 if (dr.inputs[0] !== null) {
-                    this.http.post<DataElement[]>('/cdesByTinyIdList', dr.inputs).subscribe(data => dr.fullCdes = data);
+                    this.http.post<DataElement[]>('/server/de/byTinyIdList/', dr.inputs).subscribe(data => dr.fullCdes = data);
                 }
             });
         }

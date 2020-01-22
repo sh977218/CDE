@@ -1,11 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { ElasticService } from '_app/elastic.service';
-import { SearchSettings } from 'search/search.model';
 import { CdeTableViewPreferencesComponent } from 'search/tableViewPreferences/cdeTableViewPreferencesComponent';
 import { FormTableViewPreferencesComponent } from 'search/tableViewPreferences/formTableViewPreferencesComponent';
-import { CdeId, Designation, ElasticQueryResponseForm, Item, ItemElastic, ModuleItem, UserSearchSettings } from 'shared/models.model';
 import { DataElementElastic, DataType } from 'shared/de/dataElement.model';
+import { CdeId, Designation, ElasticQueryResponseForm, Item, ItemElastic, ModuleItem, UserSearchSettings } from 'shared/models.model';
+import { SearchSettings } from 'shared/search/search.model';
 
 // interface Row {
 //     css: string;
@@ -193,7 +193,7 @@ export class TableListComponent implements OnInit {
                 } else {
                     row.push({
                         css: 'ids',
-                        values: TableListComponent.truncatedList(e.ids, e => e)
+                        values: TableListComponent.truncatedList<CdeId, CdeId>(e.ids, e => e)
                     });
                 }
             }
@@ -312,7 +312,7 @@ export class TableListComponent implements OnInit {
                 } else {
                     row.push({
                         css: 'ids',
-                        values: TableListComponent.truncatedList(e.ids, e => e)
+                        values: TableListComponent.truncatedList<CdeId, CdeId>(e.ids, e => e)
                     });
                 }
             }
@@ -363,7 +363,7 @@ export class TableListComponent implements OnInit {
     static readonly maxLines = 5;
     static readonly lineLength = 62;
 
-    static lineClip(line: string): string {
+    static lineClip(line: string|any): string|any {
         return line.length > this.lineLength
             ? line.substr(0, this.lineLength - 4) + ' ...'
             : line;

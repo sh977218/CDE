@@ -18,7 +18,7 @@ import { capString } from 'shared/system/util';
  *      or formToQuestionnaire(form, options, config from parseCofig)
  */
 export function formToQuestionnaire(form: CdeForm, options: any, config: any): FhirQuestionnaire {
-    const date = form.updated || form.created;
+    const date = new Date(form.updated || form.created);
     const Q: FhirQuestionnaire = {
         code: undefined, // form.mapTo.fhir && form.fhir && form.fhir.code ? form.fhir.code : undefined,
         // TODO: to be implemented by form tagging

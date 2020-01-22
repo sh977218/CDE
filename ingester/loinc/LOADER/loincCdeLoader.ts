@@ -1,47 +1,54 @@
 import { isEmpty } from 'lodash';
-import { DataElement, DataElementSource } from 'server/cde/mongo-cde';
-import { createCde,compareCde,mergeCde } from '../CDE/cde';
-import { BATCHLOADER, updateCde, updatedByLoader } from 'ingester/shared/utility';
+import { dataElementModel } from 'server/cde/mongo-cde';
+import { createLoincCde } from 'ingester/loinc/CDE/cde';
+import {
+    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeClassification, mergeElt, updateCde, updateRawArtifact
+} from 'ingester/shared/utility';
+import { LoincLogger } from 'ingester/log/LoincLogger';
 
-export async function runOneCde(loinc, orgInfo) {
-    let loincId = loinc.loincId;
-    let cdeCond = {
-        archived: false,
-        "registrationState.registrationStatus": {$ne: "Retired"},
-        'ids.id': loincId
-    };
-    let newCdeObj = await createCde(loinc, orgInfo).catch(e => {
-        throw 'Error CreateCDE.createCde: ' + e;
-    });
-    let existingCde = await DataElement.findOne(cdeCond).catch(e => {
-        throw "Error DataElement.findOne: " + e;
-    });
-
+export async function runOneCde(loinc, classificationOrgName, classificationArray = []) {
+    if (!classificationOrgName) {
+        console.log('loincCdeLoader.ts classificationOrgName is empty.');
+        process.exit(1);
+    }
+    const loincCde = await createLoincCde(loinc, classificationOrgName, classificationArray);
+    const newCde = new dataElementModel(loincCde);
+    const newCdeObj = newCde.toObject();
+    let existingCde: any = await dataElementModel.findOne({archived: false, 'ids.id': loinc['LOINC Code']});
     if (!existingCde) {
-        existingCde = await new DataElement(newCdeObj).save().catch(e => {
-            throw 'Error new DataElement: ' + e;
+        existingCde = await newCde.save().catch(err => {
+            console.log(`LOINC existingCde = await newCde.save() error: ${JSON.stringify(err)}`);
+            process.exit(1);
         });
-    } else if (updatedByLoader(existingCde)) {
+        LoincLogger.createdLoincCde++;
+        LoincLogger.createdLoincCdes.push(existingCde.tinyId + `[${loinc['LOINC Code']}]`);
     } else {
-        existingCde.imported = new Date().toJSON();
-        existingCde.markModified('imported');
-        let diff = compareCde(newCdeObj, existingCde);
+        const diff = compareElt(newCde.toObject(), existingCde.toObject(), 'LOINC');
+        mergeClassification(existingCde, newCde.toObject(), classificationOrgName);
         if (isEmpty(diff)) {
-            await existingCde.save().catch(e => {
-                throw 'Error existingCde.save: ' + e;
+            existingCde.lastMigrationScript = lastMigrationScript;
+            existingCde.imported = imported;
+            await existingCde.save().catch(err => {
+                console.log(existingCde);
+                console.log('LOINC await existingCde.save() error: ' + err);
+                process.exit(1);
             });
+            LoincLogger.sameLoincCde++;
+            LoincLogger.sameLoincCdes.push(existingCde.tinyId);
         } else {
-            await mergeCde(newCdeObj, existingCde);
-            await updateCde(existingCde, BATCHLOADER).catch(e => {
-                throw 'Error mongo_cde.updatePromise: ' + e;
+            const existingCdeObj = existingCde.toObject();
+            mergeElt(existingCdeObj, newCdeObj, 'LOINC');
+            await updateCde(existingCdeObj, BATCHLOADER, {updateSource: true}).catch(err => {
+                console.log(newCdeObj);
+                console.log(existingCdeObj);
+                console.log(`LOINC await updateCde(existingCdeObj error: ${JSON.stringify(err)}`);
+                process.exit(1);
             });
+            LoincLogger.changedLoincCde++;
+            LoincLogger.changedLoincCdes.push(existingCde.tinyId);
         }
     }
-    delete newCdeObj.tinyId;
-    let updateResult = await DataElementSource.updateOne({tinyId: existingCde.tinyId}, newCdeObj, {upsert: true}).catch(e => {
-        throw'Error await DataElementSource.updateOne({tinyId: existingCde.tinyId}: ' + e;
-    });
-    console.log(updateResult.nModified + ' cde source modified: ');
-
-    return existingCde;
+    await updateRawArtifact(existingCde, newCdeObj, 'LOINC', classificationOrgName);
+    const savedCde: any = await dataElementModel.findOne({archived: false, 'ids.id': loinc['LOINC Code']});
+    return savedCde;
 }

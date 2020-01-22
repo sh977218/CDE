@@ -14,8 +14,8 @@ import { DataElement } from 'shared/de/dataElement.model';
 })
 export class MoreLikeThisComponent {
     @Input() elt!: DataElement;
-    @ViewChild('mltModal') mltModal!: TemplateRef<any>;
-    @ViewChild('mltPinModal') mltPinModal!: PinBoardModalComponent;
+    @ViewChild('mltModal', {static: true}) mltModal!: TemplateRef<any>;
+    @ViewChild('mltPinModal', {static: true}) mltPinModal!: PinBoardModalComponent;
     cdes!: DataElement[];
 
     constructor(
@@ -27,7 +27,7 @@ export class MoreLikeThisComponent {
     ) {}
 
     open() {
-        this.http.get<{cdes: DataElement[]}>('/moreLikeCde/' + this.elt.tinyId).subscribe(response => {
+        this.http.get<{cdes: DataElement[]}>('/server/de/moreLike/' + this.elt.tinyId).subscribe(response => {
             this.cdes = response.cdes;
         }, () => this.alert.addAlert('error', 'Unable to retrieve MLT'));
         this.dialog.open(this.mltModal, {width: '1000px'});

@@ -1,6 +1,6 @@
 <section style="background-color: #eee; padding: 10px; padding-bottom: 40px">
     <div style="padding: 2rem 1rem; margin-bottom: 0;">
-        <div class=" mt-0 mt-sm-5">
+        <div class="mt-0 mt-sm-5">
             <div class="row align-items-center">
                 <div class="col-lg-3 col-12 ">
                     <img class="img-fluid" src="/cde/public/assets/img/min/NIH-CDE.png"
@@ -15,71 +15,37 @@
                         </p>
                         <p>
                             Visit the
-                            <a class="homeDescriptionLink" href="http://cde.nih.gov" target="_blank" rel="noopener">NIH
+                            <a class="homeDescriptionLink" href="http://cde.nih.gov" target="_blank"
+                               rel="noopener noreferrer">NIH
                                 CDE Resource Portal</a>
                             for contextual information about the repository.
                         </p>
                     </div>
                 </div>
                 <div class="col-lg-6 d-none d-sm-inline-block" *ngIf="displayCarousel">
-                    <ngb-carousel style="margin: auto">
-                        <ng-template ngbSlide>
-                            <picture>
-                                <source srcset="slides/min/discuss.webp" type="image/webp">
-                                <img class="slideContent" src="slides/min/discuss.png" alt="Discuss">
-                            </picture>
-                            <div class="carousel-caption">
-                                <h3>Search, Discuss and Collaborate</h3>
+                    <ngb-carousel *ngIf="images">
+                        <ng-template ngbSlide *ngFor="let image of images">
+                            <div class="picsum-img-wrapper">
+                                <img [src]="image.src" [alt]="image.alt">
                             </div>
-                        </ng-template>
-                        <ng-template ngbSlide>
-                            <picture>
-                                <source srcset="slides/min/drafting.webp" type="image/webp">
-                                <img class="slideContent" src="slides/min/drafting.png" alt="Draft of a Form">
-                            </picture>
                             <div class="carousel-caption">
-                                <h3>Create, Draft and Share</h3>
-                            </div>
-                        </ng-template>
-                        <ng-template ngbSlide>
-                            <picture>
-                                <source srcset="slides/min/compare.webp" type="image/webp">
-                                <img class="slideContent" src="slides/min/compare.png" alt="More Like This">
-                            </picture>
-                            <div class="carousel-caption">
-                                <h3>Compare and Harmonize</h3>
-                            </div>
-                        </ng-template>
-                        <ng-template ngbSlide>
-                            <picture>
-                                <source srcset="slides/min/history.webp" type="image/webp">
-                                <img class="slideContent" src="slides/min/history.png" alt="History">
-                            </picture>
-                            <div class="carousel-caption">
-                                <h3>Track Changes Across Versions</h3>
-                            </div>
-                        </ng-template>
-                        <ng-template ngbSlide>
-                            <picture>
-                                <source srcset="slides/min/tobacco.webp" type="image/webp">
-                                <img class="slideContent" src="slides/min/tobacco.png" alt="Screenshot of finding and using forms">
-                            </picture>
-                            <div class="carousel-caption">
-                                <h3>Export and Publish in Multiple Formats</h3>
+                                <h3>{{image.h3}}</h3>
                             </div>
                         </ng-template>
                     </ngb-carousel>
                 </div>
                 <div class="col-lg-3 col-12 btn-group-vertical" id='searchDiv'>
                     <a routerLink="/cde/search" id="browseCdes" class="btn btn-outline-dark my-1">
-                        <mat-icon>search</mat-icon> Browse CDEs</a>
+                        <mat-icon>search</mat-icon>
+                        Browse CDEs</a>
                     <a routerLink="/form/search" id="browseForms" class="btn btn-outline-dark my-1">
-                        <mat-icon>search</mat-icon> Browse Forms</a>
+                        <mat-icon>search</mat-icon>
+                        Browse Forms</a>
                     <a (click)="takeATour()" id="takeATourBtn" class="btn btn-outline-dark my-1 hand-cursor">
-                        <mat-icon class="faa-wrench faa-slow animated">flag</mat-icon> Interactive Tour
+                        <mat-icon class="faa-wrench faa-slow animated">flag</mat-icon>
+                        Interactive Tour
                     </a>
                 </div>
-
             </div>
         </div>
     </div>

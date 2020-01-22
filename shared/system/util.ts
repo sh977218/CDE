@@ -1,9 +1,5 @@
 import { CbRet, CbRet1 } from 'shared/models.model';
 
-export function arrayFill<T>(size: number, fillFn: CbRet<T>) {
-    return Array.apply(null, new Array(size)).map(fillFn);
-}
-
 export function capCase(str: string): string {
     return str.split(' ').map(capString).join(' ');
 }
@@ -13,7 +9,7 @@ export function capString(str: string): string {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-export function decamelize(str: string, sep: string = ' '): string {
+export function decamelize(str: string = '', sep: string = ' '): string {
     const outFormat = '$1' + sep + '$2';
     return str
         .replace(/([a-z\d])([A-Z])/g, outFormat)

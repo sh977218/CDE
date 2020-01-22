@@ -1,11 +1,15 @@
 package gov.nih.nlm.form.test;
 
+import io.restassured.http.ContentType;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import static io.restassured.RestAssured.get;
+import static io.restassured.RestAssured.given;
 
 public class UomValidation extends BaseFormTest {
 
@@ -64,6 +68,30 @@ public class UomValidation extends BaseFormTest {
         hangon(1);
         String scrollLocation = (((JavascriptExecutor) driver).executeScript("return window.pageYOffset", "")).toString();
         Assert.assertTrue(Double.valueOf(scrollLocation).intValue() > 100);
+    }
+
+    @Test
+    public void ucumErrors() {
+        String resp = get(baseUrl + "/server/ucumSynonyms?uom=kgg").asString();
+        Assert.assertEquals(resp, "[]");
+
+        resp = given().contentType(ContentType.JSON).body("{\"uoms\": [\"psi\"]}").post(baseUrl + "/server/ucumValidate").asString();
+        Assert.assertTrue(resp.contains("Unit is not found. Did you mean pound per square inch?"),
+                "actually: " + resp);
+
+        resp = given().contentType(ContentType.JSON)
+                .body("{\"uoms\": [\"meters\"]}").post(baseUrl + "/server/ucumValidate").asString();
+        Assert.assertTrue(resp.contains("Unit is not found. Did you mean m (meter)?"),
+                "actually: " + resp);
+
+        resp = given().contentType(ContentType.JSON)
+                .body("{\"uoms\": [\"mets\"]}").post(baseUrl + "/server/ucumValidate").asString();
+        Assert.assertTrue(resp.contains("mets is not a valid UCUM code.  No alternatives were found"),
+                "actually: " + resp);
+
+        resp = get(baseUrl + "/server/ucumConvert?value=0&to=0&from=0").asString();
+        Assert.assertEquals(resp, "",
+                "actually: " + resp);
     }
 
 }

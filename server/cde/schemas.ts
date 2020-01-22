@@ -1,17 +1,18 @@
 import * as mongoose from 'mongoose';
 import { addStringtype } from '../system/mongoose-stringtype';
 import {
-    attachmentSchema, classificationSchema, dataSetSchema, datatypeDateSchema, datatypeExternallyDefinedSchema,
+    attachmentSchema, classificationSchema, dataSetSchema, datatypeDateSchema, datatypeDynamicListSchema,
+    datatypeExternallyDefinedSchema,
     datatypeNumberSchema, datatypeTextSchema, datatypeTimeSchema, datatypeValueListSchema, definitionSchema,
     derivationRuleSchema, designationSchema, eltLogSchema, idSchema, permissibleValueSchema, propertySchema,
-    referenceDocumentSchema, registrationStateSchema, sourceSchema
+    referenceDocumentSchema, registrationStateSchema, sourcesNewSchema, sourceSchema
 } from '../system/schemas';
 
 addStringtype(mongoose);
 const Schema = mongoose.Schema;
 const StringType = (Schema.Types as any).StringType;
 
-let conceptSchema = new Schema({
+const conceptSchema = new Schema({
     name: StringType,
     origin: {type: StringType, description: 'Source of concept'},
     originId: {type: StringType, description: 'Identifier of concept from source'},
@@ -27,11 +28,18 @@ export const deJson = {
     definitions: {
         type: [definitionSchema],
         description: 'Description of the CDE',
+        default: []
     },
     source: {type: StringType, description: 'This field is replaced with sources'},
     sources: {
         type: [sourceSchema],
         description: 'Name of system from which CDE was imported or obtained from',
+    },
+    sourcesNew: {
+        type: Map,
+        of: [sourceSchema],
+        description: 'Name of system from which CDE was imported or obtained from',
+        default: []
     },
     origin: {type: StringType, description: 'Name of system where CDE is derived'},
     stewardOrg: {
@@ -71,7 +79,10 @@ export const deJson = {
         type: [idSchema],
         description: 'Identifier used to establish or indicate what CDE is within a specific context',
     },
-    attachments: [attachmentSchema],
+    attachments: {
+        type: [attachmentSchema],
+        default: []
+    },
     history: [Schema.Types.ObjectId],
     archived: {
         type: Boolean,
@@ -105,7 +116,7 @@ export const deJson = {
         datatypeDate: datatypeDateSchema,
         datatypeTime: datatypeTimeSchema,
         datatypeValueList: datatypeValueListSchema,
-        datatypeDynamicCodeList: datatypeValueListSchema,
+        datatypeDynamicCodeList: datatypeDynamicListSchema,
         datatypeExternallyDefined: datatypeExternallyDefinedSchema,
         permissibleValues: {
             type: [permissibleValueSchema], // required to make optional
@@ -124,7 +135,7 @@ export const dataElementSchema = new Schema(deJson, {
     collection: 'dataelements',
     usePushEach: true,
     toJSON: {
-        transform: function (doc, ret) {
+        transform(doc, ret) {
             ret._links = {
                 describedBy: {
                     href: '/meta/schemas/example'
@@ -135,7 +146,7 @@ export const dataElementSchema = new Schema(deJson, {
 });
 dataElementSchema.index({tinyId: 1, archived: 1}, {
     unique: true,
-    name: "liveTinyId",
+    name: 'liveTinyId',
     partialFilterExpression: {archived: false}
 });
 /*
@@ -144,10 +155,10 @@ dataElementSchema.path("valueDomain").validate(v => {
     return true;
 }, "Code is required for CodeList Datatype");
 */
-dataElementSchema.path("classification").validate(v => {
+dataElementSchema.path('classification').validate(v => {
     return !v.map(value => value.stewardOrg.name)
         .some((value, index, array) => array.indexOf(value) !== array.lastIndexOf(value));
-}, "Duplicate Steward Classification");
+}, 'Duplicate Steward Classification');
 
 export const draftSchema = new Schema(deJson, {
     collection: 'dataelementdrafts',

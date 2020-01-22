@@ -63,7 +63,7 @@ export class NotificationService {
     tasks: NotificationTask[] = [];
 
     authorizeToComment(username: string) {
-        this.http.post('/addCommentAuthor', {username}).subscribe(() => {
+        this.http.post('/server/user/addCommentAuthor', {username}).subscribe(() => {
             this.alert.addAlert('success', 'Role added.');
         }, err => this.alert.httpErrorMessageAlert(err));
     }
@@ -253,6 +253,7 @@ export class NotificationService {
                     && task.tasks[0].idType === eltModule);
                 grouped.push(
                     this.createTask(
+                        // @ts-ignore
                         eltTasks.reduce<Task[]>((acc, t) => acc.concat(t.tasks), []),
                         groups[group] + ' comments'
                     )
@@ -294,7 +295,7 @@ export class NotificationService {
                 if (task.tasks[0].type === 'comment' && task.unread) {
                     task.unread = false;
                     this.reloading = true;
-                    this.http.post<Task[]>('/server/user/tasks/' + (window as any).version + '/read',
+                    this.http.post<NotificationTask[]>('/server/user/tasks/' + (window as any).version + '/read',
                         {id: task.tasks[0].id, idType: task.tasks[0].idType})
                         .subscribe(this.funcUpdateTaskMessages, this.funcReloadFinished, this.funcReloadFinished);
                 }
@@ -307,7 +308,7 @@ export class NotificationService {
     reload() {
         if (!this.reloading) {
             this.reloading = true;
-            this.http.get<Task[]>('/server/user/tasks/' + (window as any).version)
+            this.http.get<NotificationTask[]>('/server/user/tasks/' + (window as any).version)
                 .subscribe(this.funcUpdateTaskMessages, this.funcReloadFinished, this.funcReloadFinished);
         }
     }
@@ -319,6 +320,7 @@ export class NotificationService {
     updateTaskMessages(serverTasks: NotificationTask[]) {
         this.tasks = NotificationService.sortTasks(
             this.groupTasks(
+                // @ts-ignore
                 serverTasks.reduce(this.funcMergeTaskMessages, [])
             )
         );

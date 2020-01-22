@@ -1,3 +1,5 @@
+import { BATCHLOADER } from 'ingester/shared/utility';
+
 const fs = require('fs');
 const parse = require('csv-parse/lib/sync');
 let mongo_data = require('../../server/system/mongo-data');
@@ -28,7 +30,7 @@ let cdeSaved = 0;
 let formSaved = 0;
 let cdeUpdated = 0;
 
-const updateCde = async function(row, classification = "Core") {
+const updateCde = async function (row, classification = "Core") {
     let existingCde = await mongo_cde.byTinyId(row.NLM_ID);
 
     let foundClassif = existingCde.classification.find(c => c.stewardOrg === 'NICHD');
@@ -56,11 +58,11 @@ const updateCde = async function(row, classification = "Core") {
     }
 
     cdeUpdated++;
-    await mongo_cde.updatePromise(existingCde, {username: "batchloader"});
+    await updateCde(existingCde, BATCHLOADER);
     return existingCde;
 };
 
-const createCde = function(row, classification = "Core") {
+const createCde = function (row, classification = "Core") {
     let cde = {
         tinyId: mongo_data.generateTinyId(),
         stewardOrg: {name: 'NICHD'},
@@ -102,11 +104,11 @@ const createCde = function(row, classification = "Core") {
 
     cdeSaved++;
     return new Promise(resolve => {
-        mongo_cde.create(cde, {username: 'batchloader'}, (err, newElt) => resolve(newElt));
+        mongo_cde.create(cde, BATCHLOADER, (err, newElt) => resolve(newElt));
     });
 };
 
-async function loadCdes (done) {
+async function loadCdes(done) {
     for (let row of allRows) {
 
         let cde = row.NLM_ID ? await updateCde(row) : await createCde(row);
@@ -161,7 +163,7 @@ async function loadCdes (done) {
 
 loadCdes(async () => {
     for (let formName of Object.keys(forms)) {
-        await new Promise(resolve => mongo_form.create(forms[formName], {username: "batchloader"}, resolve));
+        await new Promise(resolve => mongo_form.create(forms[formName], BATCHLOADER, resolve));
         formSaved++;
     }
 

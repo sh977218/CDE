@@ -1,57 +1,81 @@
+import { RequestHandler, Router } from 'express';
 import * as Parser from 'rss-parser';
 import { byKey, update } from 'server/article/articleDb';
-import { handleError } from 'server/errorHandler/errorHandler';
+import { Article } from 'shared/article/article.model';
 
 const parser = new Parser();
+require('express-async-errors');
 
-export function module(roleConfig) {
-    const router = require('express').Router();
+export function module(roleConfig: { update: RequestHandler[] }) {
+    const router = Router();
 
-    ['whatsNew', "contactUs", "resources"].forEach(a => {
-        router.get('/' + a, (req, res) => {
-            byKey(a, handleError({res: res, origin: "GET /article/" + a},
-                article => res.send(article)));
+    ['whatsNew', 'contactUs', 'resources', 'videos', 'guides'].forEach(a => {
+        router.get('/' + a, async (req, res) => {
+            const article = await byKey(a);
+            res.send(article);
         });
     });
 
-    router.post('/:key', roleConfig.update, (req, res) => {
-        if (req.body.key !== req.params.key) return res.status(400).send();
-        update(req.body, handleError({res: res, origin: "POST /article/:key"}, () => {
-            byKey(req.params.key, (err, art) => res.send(art))
-        }));
+    router.post('/:key', ...roleConfig.update, async (req, res) => {
+        if (req.body.key !== req.params.key) {
+            return res.status(400).send();
+        }
+        await update(req.body);
 
-
+        const article = await byKey(req.params.key);
+        res.send(article);
     });
 
-    let rssFeeds = [];
+    const rssFeeds: string[] = [];
 
-    async function replaceRssToken(article) {
-        let rssRegex = /&lt;rss-feed&gt;.+&lt;\/rss-feed&gt;/gm;
-        let rssMatches = article.body.match(rssRegex);
+    async function replaceRssToken(article: Article) {
+        const rssRegex = /&lt;rss-feed&gt;.+&lt;\/rss-feed&gt;/gm;
+        const rssMatches = article.body.match(rssRegex);
         if (rssFeeds.length) {
             article.rssFeeds = rssFeeds;
         } else {
             article.rssFeeds = [];
         }
 
-        for (let i = 0; i < rssMatches.length; i++) {
-            let match = rssMatches[i];
-            let url = match.replace('&lt;rss-feed&gt;', '').replace('&lt;/rss-feed&gt;', '').trim();
+        if (rssMatches) {
+            for (let i = 0; i < rssMatches.length; i++) {
+                const match = rssMatches[i];
+                const url = match.replace('&lt;rss-feed&gt;', '').replace('&lt;/rss-feed&gt;', '').trim();
 
-            let feed = await parser.parseURL(url);
-            article.rssFeeds.push(feed);
-            rssFeeds.push(feed);
-            article.body = article.body.replace(match, '<div id="rssContent_' + i + '"></div>');
+                const feed: any = await parser.parseURL(url);
+                article.rssFeeds.push(feed);
+                rssFeeds.push(feed);
+                article.body = article.body.replace(match, '<div id="rssContent_' + i + '"></div>');
+            }
         }
     }
 
-    router.get('/resourcesAndFeed', (req, res) => {
-        byKey('resources', handleError({res: res, origin: "GET /article/resourcesAndFeed"},
-            async article => {
-                article = article.toObject();
-                await replaceRssToken(article).catch(handleError({req, res}));
-                res.send(article);
-            }));
+    router.get('/resourcesAndFeed', async (req, res) => {
+        const articleDocument = await byKey('resources');
+        const article = articleDocument.toObject();
+        await replaceRssToken(article);
+        res.send(article);
+    });
+
+    async function replaceVideoToken(article: Article) {
+        const tokenRegex = /&lt;cde-youtube-video&gt;.+&lt;\/cde-youtube-video&gt;/gm;
+        const tokenMatches = article.body.match(tokenRegex);
+        if (tokenMatches) {
+            for (const match of tokenMatches) {
+                const videoId = match.replace('&lt;cde-youtube-video&gt;', '').replace('&lt;/cde-youtube-video&gt;', '').trim();
+                const url = `https://www.youtube.com/embed/${videoId}?ref=0`;
+                // tslint:disable-next-line:max-line-length
+                const iframe = `<iframe width="560" height="315" src="${url}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+                article.body = article.body.replace(match, iframe);
+            }
+        }
+    }
+
+    router.get('/videosAndIframe', async (req, res) => {
+        const articleDocument = await byKey('videos');
+        const article = articleDocument.toObject();
+        await replaceVideoToken(article);
+        res.send(article);
     });
 
     return router;

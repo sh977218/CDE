@@ -118,7 +118,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         }
         try {
             driver = new RemoteWebDriver(_hubUrl, caps);
-        } catch (SessionNotCreatedException e) {
+        } catch (Exception e) {
             hangon(10);
             driver = new RemoteWebDriver(_hubUrl, caps);
         }
@@ -176,9 +176,21 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     @AfterMethod
-    public void generateGif(Method m) {
+    public void tearDown(Method m) {
         String methodName = m.getName();
         System.out.println("TEST Complete: " + className + "." + methodName);
+
+        // coverage
+        String data = (String) (((JavascriptExecutor) driver).executeScript("return JSON.stringify(window.__coverage__);"));
+        if (data != null) {
+            try {
+                FileUtils.writeStringToFile(new File("build/.nyc_output/" + methodName + ".json"), data, "UTF-8");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        // generage gif
         if (m.getAnnotation(RecordVideo.class) != null) {
             try {
                 File inputScreenshots = new File("build/tmp/screenshots/" + className + "/" + methodName + "/");
@@ -248,8 +260,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
 
     protected void mustBeLoggedInAs(String username, String password) {
         doLogin(username, password);
-
-//        goToCdeSearch();
     }
 
     protected void addIdSource(String source, String deLink, String formLink) {
@@ -311,6 +321,20 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         clickElement(By.id("user_settings"));
     }
 
+    protected void goToHelp() {
+        clickElement(By.id("helpLink"));
+    }
+
+    protected void goToContactUs() {
+        goToHelp();
+        clickElement(By.id("contactUsLink"));
+    }
+
+    protected void goToVideos() {
+        goToHelp();
+        clickElement(By.id("videosLink"));
+    }
+
     protected void goToStewardTransfer() {
         goToSettings();
         clickElement(By.id("stewardTransfer"));
@@ -345,6 +369,11 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     protected void goToResources() {
         goToSettings();
         clickElement(By.id("resources"));
+    }
+
+    protected void goToAPI() {
+        goToSettings();
+        clickElement(By.id("apiLink"));
     }
 
     protected void goToCurators() {
@@ -496,7 +525,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         clickElement(By.id("attachments_tab"));
     }
 
-    protected void goToDisplayProfiles(){
+    protected void goToDisplayProfiles() {
         clickElement(By.id("displayProfiles_tab"));
     }
 
@@ -875,7 +904,19 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         checkAlert("Added to QuickBoard!");
     }
 
+    public void goToQuickBoard() {
+        clickElement(By.id("boardsMenu"));
+        clickElement(By.id("menu_qb_link"));
+    }
+
     public void goToQuickBoardByModule(String module) {
+        goToQuickBoardByModule(module, false);
+    }
+
+    public void goToQuickBoardByModule(String module, Boolean menuOpened) {
+        if (!menuOpened) {
+            clickElement(By.id("boardsMenu"));
+        }
         clickElement(By.id("menu_qb_link"));
         if (module.equals("cde")) {
             clickElement(By.xpath("//div[contains(., 'CDE QuickBoard') and contains(@class, 'mat-tab-label-content')]"));
@@ -888,20 +929,24 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void emptyQuickBoardByModule(String module) {
+        clickElement(By.id("boardsMenu"));
         if (findElement(By.id("menu_qb_link")).getText().contains("(0)")) return;
-        goToQuickBoardByModule(module);
+        goToQuickBoardByModule(module, true);
         clickElement(By.id("qb_" + module + "_empty"));
         textPresent(("cde".equals(module) ? "CDE" : "Form") + " QuickBoard (0)");
-        clickElement(By.id("menu_qb_link"));
+        goToQuickBoard();
         hangon(1);
     }
 
     protected void addToCompare(String cdeName1, String cdeName2) {
-        textPresent("QUICK BOARD (0)");
+        clickElement(By.id("boardsMenu"));
+        textPresent("Quick Board (0)");
         addCdeToQuickBoard(cdeName1);
-        textPresent("QUICK BOARD (1)");
+        clickElement(By.id("boardsMenu"));
+        textPresent("Quick Board (1)");
         addCdeToQuickBoard(cdeName2);
-        clickElement(By.linkText("QUICK BOARD (2)"));
+        clickElement(By.id("boardsMenu"));
+        clickElement(By.linkText("Quick Board (2)"));
         clickElement(By.xpath("//div[contains(., 'CDE QuickBoard') and contains(@class, 'mat-tab-label-content')]"));
         textPresent(cdeName1);
         textPresent(cdeName2);
@@ -1008,9 +1053,21 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         Assert.assertEquals(0, driver.findElements(By.xpath("//*[@id='" + String.join(",", categories) + "']")).size());
     }
 
+    protected void inlineEdit(String path, String string) {
+        clickElement(By.xpath(path + "//mat-icon[normalize-space() = 'edit']"));
+        findElement(By.xpath(path + "//input")).clear();
+        findElement(By.xpath(path + "//input")).sendKeys(string);
+        clickElement(By.xpath(path + "//button[contains(text(),'Confirm')]"));
+        textPresent(string, By.xpath(path));
+    }
+
+    /*
+       @param leftIndex an index starts from 1
+       @param rightIndex an index starts from 1
+     */
     protected void selectHistoryAndCompare(Integer leftIndex, Integer rightIndex) {
-        clickElement(By.xpath("//*[@id='historyTable']/tbody/tr[td][" + leftIndex + "]"));
-        clickElement(By.xpath("//*[@id='historyTable']/tbody/tr[td][" + rightIndex + "]"));
+        clickElement(By.xpath("//*[@id='historyTable']/tr[td][" + leftIndex + "]"));
+        clickElement(By.xpath("//*[@id='historyTable']/tr[td][" + rightIndex + "]"));
         clickElement(By.id("historyCompareBtn"));
     }
 
@@ -1140,7 +1197,11 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
             }
         }
         clickElement(By.id("createNewDesignationBtn"));
-        hangon(1);
+        if (tags != null) {
+            for (String tag : tags) {
+                textPresent(tag);
+            }
+        }
     }
 
     protected void addNewDefinition(String definition, boolean isHtml, String[] tags) {
@@ -1159,6 +1220,24 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
             }
         }
         clickElement(By.id("createNewDefinitionBtn"));
+        if (tags != null) {
+            for (String tag : tags) {
+                textPresent(tag);
+            }
+        }
+    }
+
+    protected void addNewConcept(String cName, String cId, String cType) {
+        clickElement(By.id("openNewConceptModalBtn"));
+        hangon(1);
+        findElement(By.id("name")).sendKeys(cName);
+        findElement(By.id("codeId")).sendKeys(cId);
+        if (cType != null) {
+            clickElement(By.id("conceptType"));
+            clickElement(By.xpath("//mat-option[. = '" + cType + "']"));
+        }
+        clickElement(By.id("createNewConceptBtn"));
+        modalGone();
     }
 
     protected void addNewProperty(String key, String value, boolean isHtml) {
@@ -1588,8 +1667,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
 
     protected void swaggerApi(String api, String text, String tinyId, String version) {
         goHome();
-        clickElement(By.id("helpLink"));
-        clickElement(By.id("apiDocumentationLink"));
+        clickElement(By.id("apiLink"));
         hangon(1);
         driver.switchTo().frame(findElement(By.cssSelector("iframe")));
         textPresent("CDE API");
@@ -1711,7 +1789,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
             if (order > 6) order = REG_STATUS_SORT_MAP.get(status);
             int currentOrder = REG_STATUS_SORT_MAP.get(status);
             if (currentOrder < order)
-                org.junit.Assert.fail("Registration status order incorrect. Current:" + currentOrder + " Previous: " + order);
+                Assert.fail("Registration status order incorrect. Current:" + currentOrder + " Previous: " + order);
         }
     }
 

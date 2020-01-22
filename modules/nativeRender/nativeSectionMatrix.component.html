@@ -8,7 +8,7 @@
     <tbody>
     <ng-container *ngFor="let q of formElement.formElements">
         <tr *ngIf="!q.question.invisible || q.question.invisible && nrs.profile.displayInvisible">
-            <td>
+            <td [attr.rowspan]="q.question.required && !NRS.answeredValueList(q.question) ? 2 : 1">
                 <label [ngClass]="{'native-question-label-number': !numSubQuestions && nrs.profile.displayNumbering}"
                        class="native-question-label">{{q.label}}</label>
             </td>
@@ -17,6 +17,12 @@
                        [ngModel]="q.question.answer" (click)="nrs.radioButtonSelect(q, $event.target.value)"
                        [value]="qa.permissibleValue" [attr.value]="qa.permissibleValue">
                 <span class="native-value" *ngIf="nrs.profile.displayValues">{{NRS.getPvDisplayValue(qa)}}</span>
+            </td>
+        </tr>
+        <tr *ngIf="q.question.required" style="display: table-row;border-top: hidden;"
+            [hidden]="NRS.answeredValueList(q.question)">
+            <td [attr.colspan]="q.question.answers.length" style="padding: 0;">
+                <code>Please fill out this field.</code>
             </td>
         </tr>
     </ng-container>

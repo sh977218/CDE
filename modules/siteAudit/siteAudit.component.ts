@@ -11,8 +11,8 @@ import { isSiteAdmin } from 'shared/system/authorizationShared';
     templateUrl: './siteAudit.component.html'
 })
 export class SiteAuditComponent implements OnInit {
-    @ViewChild('serverErrorTab') serverErrorTab!: MatTab;
-    @ViewChild('clientErrorTab') clientErrorTab!: MatTab;
+    @ViewChild('serverErrorTab', {static: false}) serverErrorTab!: MatTab;
+    @ViewChild('clientErrorTab', {static: false}) clientErrorTab!: MatTab;
     isAdmin = false;
     selectedTab = new FormControl(0);
 
@@ -23,15 +23,17 @@ export class SiteAuditComponent implements OnInit {
 
     ngOnInit() {
         setTimeout(() => {
-            if (this.route.snapshot.queryParams.tab) {
-                const tab = this.route.snapshot.queryParams.tab;
-                if (tab === 'serverErrors') {
-                    this.selectedTab.setValue(this.serverErrorTab.position);
+            try {
+                if (this.route.snapshot.queryParams.tab) {
+                    const tab = this.route.snapshot.queryParams.tab;
+                    if (tab === 'serverErrors') {
+                        this.selectedTab.setValue(this.serverErrorTab.position);
+                    }
+                    if (tab === 'clientErrors') {
+                        this.selectedTab.setValue(this.clientErrorTab.position);
+                    }
                 }
-                if (tab === 'clientErrors') {
-                    this.selectedTab.setValue(this.clientErrorTab.position);
-                }
-            }
+            } catch (e) {}
         }, 0);
     }
 }

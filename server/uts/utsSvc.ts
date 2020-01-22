@@ -1,21 +1,29 @@
+import { Dictionary } from 'async';
 import * as Config from 'config';
 import { stringify } from 'querystring';
-import { promisify } from 'util';
+import { CookieJar, CoreOptions, Response, UriOptions, cookie, get, jar, post } from 'request';
 import { respondError } from 'server/errorHandler/errorHandler';
 import { consoleLog } from 'server/log/dbLogger';
-
-const request = require('request').defaults({jar: true});
+import { promisify } from 'util';
 
 export const config = Config as any;
 
-const ttys = {
+const ttys: Dictionary<string> = {
     LNC: 'LA',
     NCI: 'PT',
     SNOMEDCT_US: 'PT',
 };
 
-function handleReject(message) {
-    return error => {
+function utsFake200Handler(response: Response) {
+    if (verifyUMLS200(response)) {
+        return response.body;
+    } else {
+        handleReject('get revision ERROR');
+    }
+}
+
+function handleReject(message: string) {
+    return (error: Error) => {
         _TGT = undefined;
         consoleLog(message + error);
         throw error;
@@ -23,19 +31,20 @@ function handleReject(message) {
 }
 
 setInterval(async () => {
+    _TGT = undefined;
     await getTGT().catch(() => _TGT = undefined);
     getVsacCookies().catch(handleReject('get vsac cookies ERROR'));
 }, 60 * 60 * 6 * 1000);
 
-let _TGT: Promise<string> | undefined = undefined; // TGT string is tgtUrl + '/' + TGTCode
+let _TGT: Promise<string> | undefined; // TGT string is tgtUrl + '/' + TGTCode
 
-export let _vsacCookies: Promise<any[]> | undefined = undefined;
+export let _vsacCookies: Promise<string[]> | undefined;
 
 function getTGT() {
     if (_TGT) {
         return _TGT;
     }
-    return _TGT = promisify(request.post)({
+    return _TGT = promisify<UriOptions & CoreOptions, Response>(post)({
         uri: config.vsac.tgtUrl,
         method: 'POST',
         qs: {
@@ -48,15 +57,20 @@ function getTGT() {
     })
         .then(
             response => response.body,
+            // response => response.body,
             handleReject('get TGT ERROR')
         );
 }
 
-function getVsacCookies() {
+function verifyUMLS200(response: Response) {
+    return !!response.body && response.body.indexOf('<html>') === -1;
+}
+
+function getVsacCookies(): Promise<string[]> {
     if (_vsacCookies) {
         return _vsacCookies;
     }
-    return _vsacCookies = promisify(request.post)({
+    return _vsacCookies = promisify<UriOptions & CoreOptions, Response>(post)({
         uri: 'https://vsac.nlm.nih.gov/vsac/login',
         body: stringify({
             username: config.vsac.username,
@@ -67,14 +81,14 @@ function getVsacCookies() {
         }
     })
         .then(
-            response => response.headers['set-cookie'],
+            response => response.headers['set-cookie'] || [],
             handleReject('get vsac cookies ERROR')
         );
 }
 
-function getTicket() {
+function getTicket(): Promise<string> {
     return getTGT()
-        .then(tgt => promisify(request.post)({
+        .then((tgt: string) => promisify<UriOptions & CoreOptions, Response>(post)({
             uri: config.vsac.tgtUrl + '/' + tgt,
             qs: {
                 service: config.uts.service
@@ -83,41 +97,45 @@ function getTicket() {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
         }))
-        .then(
-            response => response.body,
-            handleReject('get ticket ERROR')
-        );
+        .then(utsFake200Handler, handleReject('get ticket ERROR'));
 }
 
-function getRevision(oid, j) {
-    return promisify(request.get)({
+function getRevision(oid: string, j: CookieJar): Promise<string> {
+    return promisify<UriOptions & CoreOptions, Response>(get)({
         uri: `https://vsac.nlm.nih.gov/vsac/pc/vs/valueset/${oid}/detail?label=Latest`,
         jar: j,
         method: 'GET'
     })
         .then(
-            response => JSON.parse(response.body).revision,
+            (response: Response) => JSON.parse(response.body).revision,
             handleReject('get revision ERROR')
         );
 
 }
 
-export function searchValueSet(oid, term = '', page = '1') {
-    let uri = 'https://vsac.nlm.nih.gov/vsac/pc/code/codes';
+export function searchValueSet(oid: string, term = '', page = '1') {
+    const uri = 'https://vsac.nlm.nih.gov/vsac/pc/code/codes';
     return getVsacCookies()
         .then(vsacCookies => {
-            const j = request.jar();
-            vsacCookies.forEach(cookie => j.setCookie(request.cookie(cookie), uri));
+            const j = jar();
+            vsacCookies.forEach(cookieString => {
+                const c = cookie(cookieString);
+                if (c) {
+                    j.setCookie(c, uri);
+                }
+            });
             return j;
         })
         .then(j => {
             return getRevision(oid, j)
-                .then(revision => promisify(request.post)({
+                .then(revision => promisify<UriOptions & CoreOptions, Response>(post)({
                     uri,
                     jar: j,
                     body: (term
+                            /* tslint:disable */
                             ? '{"_search":true,"rows":"120","page":"$page","sortName":"code","sortOrder":"asc","oid":"$oid","revision":"$revision","expRevision":null,"label":"Latest","effDate":null,"filters":"{\\"groupOp\\":\\"AND\\",\\"rules\\":[{\\"field\\":\\"displayname\\",\\"op\\":\\"cn\\",\\"data\\":\\"$term\\"}]}","filterFields":{"groupOp":"AND","rules":[{"field":"displayname","op":"cn","data":"$term"}]}}: '
                             : '{"_search":false,"rows":"120","page":"$page","sortName":"code","sortOrder":"asc","oid":"$oid","revision":"$revision","expRevision":null,"label":"Latest","effDate":null,"filters":"{\\"groupOp\\":\\"AND\\",\\"rules\\":[]}","filterFields":{"groupOp":"AND","rules":[]}}:'
+                            /* tslint:enable */
                     )
                         .replace('$oid', oid)
                         .replace('$page', page)
@@ -127,16 +145,13 @@ export function searchValueSet(oid, term = '', page = '1') {
                         'Content-Type': 'application/x-www-form-urlencoded'
                     }
                 }))
-                .then(
-                    response => response.body,
-                    handleReject('get revision ERROR')
-                );
+                .then(utsFake200Handler, handleReject('get revision ERROR'));
         });
 }
 
-export function getValueSet(oid) {
+export function getValueSet(oid: string) {
     return getTicket()
-        .then(ticket => promisify(request.get)({
+        .then(ticket => promisify<UriOptions & CoreOptions, Response>(get)({
             uri: 'https://vsac.nlm.nih.gov/vsac/svs/RetrieveValueSet',
             qs: {
                 id: oid,
@@ -146,69 +161,53 @@ export function getValueSet(oid) {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
         }))
-        .then(
-            response => response.body,
-            handleReject('get vsac set ERROR')
-        );
+        .then(utsFake200Handler, handleReject('get vsac set ERROR'));
 }
 
-export function searchUmls(term) {
+export function searchUmls(term: string) {
     return getTicket()
-        .then(ticket => promisify(request.get)({
+        .then(ticket => promisify<UriOptions & CoreOptions, Response>(get)({
             strictSSL: false,
             uri: `${config.umls.wsHost}/rest/search/current?ticket=${ticket}&string=${term}`
         }))
-        .then(
-            response => response.body,
-            handleReject('get umls ERROR')
-        )
+        .then(utsFake200Handler, handleReject('get umls ERROR'));
 }
 
-export function getSourcePT(cui, src) {
+export function getSourcePT(cui: string, src: string) {
     return getTicket()
-        .then(ticket => promisify(request.get)({
+        .then(ticket => promisify<UriOptions & CoreOptions, Response>(get)({
             uri: `${config.umls.wsHost}/rest/content/current/CUI/${cui}/atoms?sabs=${src}&ttys=${ttys[src]}&ticket=${ticket}`,
             strictSSL: false
         }))
-        .then(
-            response => response.body,
-            handleReject('get src PT from umls ERROR')
-        );
+        .then(utsFake200Handler, handleReject('get src PT from umls ERROR'));
 }
 
-export function getAtomsFromUMLS(cui, source) {
+export function getAtomsFromUMLS(cui: string, source: string) {
     return getTicket()
-        .then(ticket => promisify(request.get)({
+        .then(ticket => promisify<UriOptions & CoreOptions, Response>(get)({
             strictSSL: false,
             uri: `${config.umls.wsHost}/rest/content/current/CUI/${cui}/atoms?sabs=${source}&pageSize=500&ticket=${ticket}`
         }))
-        .then(
-            response => response.body,
-            handleReject('get atoms from umls ERROR')
-        );
+        .then(utsFake200Handler, handleReject('get atoms from umls ERROR'));
 }
 
-export function umlsCuiFromSrc(id, src) {
+export function umlsCuiFromSrc(id: string, src: string) {
     return getTicket()
-        .then(ticket => promisify(request.get)({
+        .then(ticket => promisify<UriOptions & CoreOptions, Response>(get)({
             strictSSL: false,
             uri: `${config.umls.wsHost}/rest/search/current?string=${id}&searchType=exact&inputType=sourceUi&sabs=${src}`
                 + `&includeObsolete=true&includeSuppressible=true&ticket=${ticket}`
         }))
-        .then(
-            response => response.body,
-            handleReject('get cui from src ERROR')
-        );
+        .then(utsFake200Handler, handleReject('get cui from src ERROR'));
 }
 
-export function searchBySystemAndCode(system, code) {
+export function searchBySystemAndCode(system: string, code: string) {
     return getTicket()
-        .then(ticket => promisify(request.get)({
+        .then(ticket => promisify<UriOptions & CoreOptions, Response>(get)({
             strictSSL: false,
             uri: config.umls.wsHost + '/rest/content/current/source/' + system + '/' + code + '/atoms?ticket=' + ticket,
         }))
-        .then(response => response.body,
-            err => {
+        .then(utsFake200Handler, (err: Error) => {
                 _TGT = undefined;
                 respondError(err, {details: 'get umls ERROR'});
                 throw err;
@@ -217,18 +216,18 @@ export function searchBySystemAndCode(system, code) {
 }
 
 export const CDE_SYSTEM_TO_UMLS_SYSTEM_MAP = {
-    'LOINC': 'LNC',
+    LOINC: 'LNC',
     'NCI Thesaurus': 'NCI',
     'SNOMEDCT US': 'SNOMEDCT_US',
-    'UMLS': 'UMLS',
+    UMLS: 'UMLS',
     'AHRQ Common Formats': '',
-    'CDCREC': '',
+    CDCREC: '',
     'HL7 Administrative Gender': '',
     'HL7 NullFlavor': '',
-    'ICD9CM': '',
-    'ICD10CM': '',
-    'OBI': '',
-    'SNOMED': '',
+    ICD9CM: '',
+    ICD10CM: '',
+    OBI: '',
+    SNOMED: '',
     'SNOMED CT': '',
-    'SNOMEDCT': '',
+    SNOMEDCT: '',
 };

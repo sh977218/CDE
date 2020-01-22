@@ -24,11 +24,12 @@ public class LogClientErrors extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Audit"));
-
-        clickElement(By.cssSelector(".mat-tab-header-pagination-after"));
+        // put tab within display
         clickElement(By.cssSelector(".mat-tab-header-pagination-after"));
         clickElement(By.cssSelector(".mat-tab-header-pagination-after"));
         clickElement(By.xpath("//div[. = 'Client Errors']"));
+
+
         textPresent("An exception has been thrown");
 
         textNotPresent("IE 11");
@@ -39,7 +40,7 @@ public class LogClientErrors extends NlmCdeBaseTest {
     }
 
     @Test
-    public void goToClientErrorsTab() {
+    public void goToClientErrorsTabClient() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         driver.get(baseUrl + "/siteAudit?tab=clientErrors");
         textPresent("Agent");

@@ -1,19 +1,21 @@
+import { each } from 'async';
+import { noop } from 'lodash';
+import { Document, Model } from 'mongoose';
+import { byEltId as discussByEltId } from 'server/discuss/discussDb';
+import { handleError, handleNotFound } from 'server/errorHandler/errorHandler';
+import { typeToCriteria } from 'server/notification/notificationSvc';
+import {
+    pushRegistrationSubscribersByType, pushRegistrationSubscribersByUsers, triggerPushMsg
+} from 'server/notification/pushNotificationSvc';
+import { ObjectId } from 'server/system/mongo-data';
+import { exists } from 'server/system/mongooseHelper';
+import { find as userFind, updateUser } from 'server/user/userDb';
 import { uriView } from 'shared/item';
+import { Attachment, CbError, Item } from 'shared/models.model';
 import { capString } from 'shared/system/util';
 import { usersToNotify } from 'shared/user';
-import { handleError } from '../errorHandler/errorHandler';
-import { CbError } from 'shared/models.model';
 
-const async = require('async');
-const _ = require('lodash');
-const discussDb = require('../discuss/discussDb');
-const notificationSvc = require('../notification/notificationSvc');
-const userDb = require('../user/userDb');
-const mongo_data = require('./mongo-data');
-const mongooseHelper = require('./mongooseHelper');
-const pushNotification = require('./pushNotification');
-
-export function attachmentApproved(collection, id, cb) {
+export function attachmentApproved(collection: Model<Item & Document>, id: string, cb: CbError<Attachment>) {
     collection.updateMany(
         {'attachments.fileid': id},
         {
@@ -30,12 +32,14 @@ export function attachmentRemove(collection, id, cb) {
 }
 
 const allowedRegStatuses = ['Retired', 'Incomplete', 'Candidate'];
+
 export function badWorkingGroupStatus(elt, org) {
-    return org && org.workingGroupOf && org.workingGroupOf.length > 0 && allowedRegStatuses.indexOf(elt.registrationState.registrationStatus) === -1;
+    return org && org.workingGroupOf && org.workingGroupOf.length > 0
+        && allowedRegStatuses.indexOf(elt.registrationState.registrationStatus) === -1;
 }
 
 export function fileUsed(collection, id, cb: CbError<boolean>) {
-    mongooseHelper.exists(collection, {'attachments.fileid': id}, cb);
+    exists(collection, {'attachments.fileid': id}, cb);
 }
 
 export function createTask(user, role, type, eltModule, eltTinyId, item) {
@@ -76,34 +80,18 @@ export function createTask(user, role, type, eltModule, eltTinyId, item) {
         });
     }
     const pushTaskMsg = JSON.stringify(pushTask);
-    mongo_data.pushRegistrationSubscribersByType(type + role, handleError({}, registrations => {
-        registrations.forEach(r => pushNotification.triggerPushMsg(r, pushTaskMsg));
-    }));
+    pushRegistrationSubscribersByType(type + role, handleError({}, registrations => {
+        registrations.forEach(r => triggerPushMsg(r, pushTaskMsg));
+    }), undefined);
 }
 
-export function bulkAction(ids, action, cb) {
-    let eltsTotal = ids.length;
-    let eltsProcessed = 0;
-    async.each(ids, function (id, doneOne) {
-            action(id, function () {
-                eltsProcessed++;
-                doneOne(null, eltsProcessed);
-            });
-        },
-        function () {
-            if (eltsTotal === eltsProcessed) cb(null);
-            else cb('Task not performed completely!');
-        }
-    );
-}
-
-export function hideProprietaryIds(elt) {
+export function hideProprietaryIds(elt: Item) {
     if (elt && elt.ids) {
-        let blackList = [
+        const blackList = [
             'LOINC'
         ];
         elt.ids.forEach(id => {
-            if (blackList.indexOf(id.source) > -1) {
+            if (blackList.indexOf(id.source || '') > -1) {
                 id.id = 'Login to see value.';
                 id.source = '(' + id.source + ')';
             }
@@ -111,20 +99,20 @@ export function hideProprietaryIds(elt) {
     }
 }
 
-export function notifyForComment(handlerOptions, commentOrReply, eltModule, eltTinyId, eltStewardOrg, users = [], cb = _.noop) {
-    discussDb.byEltId(eltTinyId, handleError(handlerOptions, comments => {
-        let userList = Array.from(new Set(comments
-            .reduce((acc, c) => acc.concat(c.user._id, c.replies.map(r => r.user._id)), users)
+export function notifyForComment(handlerOptions, commentOrReply, eltModule, eltTinyId, eltStewardOrg: string, users = [], cb = noop) {
+    discussByEltId(eltTinyId, handleNotFound(handlerOptions, comments => {
+        const userList: ObjectId[] = Array.from(new Set(comments
+            .reduce<ObjectId[]>((acc, c) => acc.concat(c.user.userId, c.replies.map(r => r.user.userId as unknown as ObjectId)), users)
             .filter(u => !!u && !u.equals(commentOrReply.user._id))
         ));
-        userDb.find(notificationSvc.typeToCriteria('comment', {
+        userFind(typeToCriteria('comment', {
             users: userList,
             org: eltStewardOrg
-        }), handleError(handlerOptions, users => {
+        }), handleNotFound(handlerOptions, users => {
             users = users.filter(u => !u.equals(commentOrReply.user._id));
 
             // drawer
-            let userCommentNotification = {
+            const userCommentNotification = {
                 date: new Date(),
                 eltModule,
                 eltTinyId,
@@ -140,11 +128,11 @@ export function notifyForComment(handlerOptions, commentOrReply, eltModule, eltT
                 if (user.commentNotifications.length > 100) {
                     user.commentNotifications.length = 100;
                 }
-                userDb.updateUser(user, {commentNotifications: user.commentNotifications}, _.noop);
+                updateUser(user, {commentNotifications: user.commentNotifications}, noop);
             });
 
             // push
-            let pushTaskMsg = JSON.stringify({
+            const pushTaskMsg = JSON.stringify({
                 title: commentOrReply.user.username + ' commented on ' + capString(eltModule) + ' ' + eltTinyId,
                 options: {
                     body: commentOrReply.text,
@@ -166,8 +154,8 @@ export function notifyForComment(handlerOptions, commentOrReply, eltModule, eltT
                     ]
                 }
             });
-            mongo_data.pushRegistrationSubscribersByUsers(usersToNotify('comment', 'push', users), handleError(handlerOptions, registrations => {
-                registrations.forEach(r => pushNotification.triggerPushMsg(r, pushTaskMsg));
+            pushRegistrationSubscribersByUsers(usersToNotify('comment', 'push', users), handleError(handlerOptions, registrations => {
+                registrations.forEach(r => triggerPushMsg(r, pushTaskMsg));
                 cb();
             }));
         }));

@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 public class LogErrorsTest extends NlmCdeBaseTest {
 
     @Test
-    public void logErrors() {
+    public void logErrorsTest () {
         mustBeLoggedInAs(nlm_username, nlm_password);
         driver.get(baseUrl + "/server/log/triggerServerErrorExpress");
         textPresent("received");
@@ -16,22 +16,22 @@ public class LogErrorsTest extends NlmCdeBaseTest {
         clickElement(By.id("username_link"));
         clickElement(By.linkText("Audit"));
 
+        // put tab within display
         clickElement(By.cssSelector(".mat-tab-header-pagination-after"));
         clickElement(By.cssSelector(".mat-tab-header-pagination-after"));
+
         clickElement(By.xpath("//div[. = 'Server Errors']"));
 
         textPresent("ReferenceError: trigger is not defined");
         textPresent("/triggerServerErrorExpress");
     }
 
-
     @Test
-    public void goToClientErrorsTab() {
+    public void goToClientErrorsTabServer() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         driver.get(baseUrl + "/siteAudit?tab=serverErrors");
         textPresent("Request");
         textPresent("Stack");
     }
-
 
 }

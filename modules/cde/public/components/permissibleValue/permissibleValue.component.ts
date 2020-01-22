@@ -4,14 +4,13 @@ import { MatDialog, MatDialogRef } from '@angular/material';
 import { Dictionary } from 'async';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
-import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
 import { catchError, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
-import { Subject } from 'rxjs/Subject';
+import { empty, Subject } from 'rxjs';
 import { DataElement, DATA_TYPE_ARRAY, ValueDomainValueList, ValueDomain } from 'shared/de/dataElement.model';
-import { fixDataElement, fixDatatype } from 'shared/de/deValidator';
+import { fixDataElement, fixDatatype } from 'shared/de/dataElement.model';
 import { PermissibleValue } from 'shared/models.model';
-import { SearchSettings } from 'search/search.model';
-import xml2js from 'xml2js';
+import { SearchSettings } from 'shared/search/search.model';
+import { NgxXml2jsonService  } from 'ngx-xml2json';
 
 interface Source {
     source: string;
@@ -57,9 +56,9 @@ export class PermissibleValueComponent {
             distinctUntilChanged(),
             switchMap(term => term
                 ? this.http.get('/server/uts/searchUmls?searchTerm=' + term).pipe(
-                    catchError(() => EmptyObservable.create<string[]>())
+                    catchError(() => empty())
                 )
-                : EmptyObservable.create<string[]>()
+                : empty()
             )
         ).subscribe((res: any) => {
             if (res.result && res.result.results) {
@@ -72,8 +71,8 @@ export class PermissibleValueComponent {
     }
     _elt!: DataElement;
     @Output() eltChange = new EventEmitter();
-    @ViewChild('newPermissibleValueContent') public newPermissibleValueContent!: TemplateRef<any>;
-    @ViewChild('importPermissibleValueContent') public importPermissibleValueContent!: TemplateRef<any>;
+    @ViewChild('newPermissibleValueContent', {static: true}) public newPermissibleValueContent!: TemplateRef<any>;
+    @ViewChild('importPermissibleValueContent', {static: true}) public importPermissibleValueContent!: TemplateRef<any>;
     readonly dataTypeArray = DATA_TYPE_ARRAY;
     containsKnownSystem = false;
     editMode = false;
@@ -103,7 +102,8 @@ export class PermissibleValueComponent {
     constructor(public http: HttpClient,
                 private dialog: MatDialog,
                 public userService: UserService,
-                private alert: AlertService) {
+                private alert: AlertService,
+                private ngxXml2jsonService: NgxXml2jsonService) {
     }
 
     addAllVsac() {
@@ -220,27 +220,25 @@ export class PermissibleValueComponent {
             const vsac = this.elt.dataElementConcept.conceptualDomain.vsac;
             this.http.get('/server/uts/vsacBridge/' + vsac.id, {responseType: 'text'}).subscribe(
                 res => {
-                    xml2js.parseString(res, (err, data) => {
-                        if (err) {
-                            this.alert.addAlert('danger', 'Error parsing xml to json.');
-                            console.log('Received from VSAC: ');
-                            console.log(res);
-                        } else if (!data) {
-                            this.alert.addAlert('danger', 'Error: No data retrieved from VSAC for ' + vsac.id);
-                        } else {
-                            const vsacJson = data['ns0:RetrieveValueSetResponse'];
-                            if (vsacJson) {
-                                vsac.name = vsacJson['ns0:ValueSet'][0].$.displayName;
-                                vsac.version = vsacJson['ns0:ValueSet'][0].$.version;
-                                for (const vsacConcept of vsacJson['ns0:ValueSet'][0]['ns0:ConceptList'][0]['ns0:Concept']) {
-                                    const vsac = vsacConcept.$;
-                                    this.vsacValueSet.push(vsac);
-                                }
-                                this.validateVsacWithPv();
-                                this.validatePvWithVsac();
+                    if (!res) {
+                        this.alert.addAlert('danger', 'Error: No data retrieved from VSAC for ' + vsac.id);
+                    } else {
+                        const parser = new DOMParser();
+                        const xml = parser.parseFromString(res, 'text/xml');
+                        const data = this.ngxXml2jsonService.xmlToJson(xml);
+                        // @ts-ignore
+                        const vsacJson = data['ns0:RetrieveValueSetResponse'];
+                        if (vsacJson) {
+                            vsac.name = vsacJson['ns0:ValueSet']['@attributes'].displayName;
+                            vsac.version = vsacJson['ns0:ValueSet']['@attributes'].version;
+                            for (const vsacConcept of vsacJson['ns0:ValueSet']['ns0:ConceptList']['ns0:Concept']) {
+                                const vsac = vsacConcept['@attributes'];
+                                this.vsacValueSet.push(vsac);
                             }
+                            this.validateVsacWithPv();
+                            this.validatePvWithVsac();
                         }
-                    });
+                    }
                 }, error => {
                     this.alert.addAlert('danger', 'Error querying VSAC' + error);
                 });

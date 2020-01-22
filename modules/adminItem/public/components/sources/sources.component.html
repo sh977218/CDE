@@ -1,10 +1,11 @@
 <fieldset *ngFor="let eltSource of elt.sources; let $index = index" class="cdeFieldset" id="sources_{{$index}}">
     <legend>Source: {{eltSource.sourceName}}</legend>
     <dl class="row">
-        <ng-container *ngIf="allowSources.indexOf(eltSource.sourceName) > -1">
+        <ng-container
+                *ngIf="sourceUrls[eltSource.sourceName]">
             <dt class="col-3 text-right" matTooltip="Original Data in NLM CDE format">Raw Artifact:</dt>
             <dd class="col-9">
-                <a [href]="'/originalSource/'+elt.elementType+'/'+eltSource.sourceName+'/'+elt.tinyId" target="_blank">Raw Artifact</a>
+                <a [href]="sourceUrls[eltSource.sourceName]" target="_blank">Raw Artifact</a>
             </dd>
         </ng-container>
         <ng-container *ngIf="eltSource.sourceName">

@@ -1,79 +1,87 @@
-import { handleError } from '../errorHandler/errorHandler';
+import { Dictionary } from 'async';
+import { Router } from 'express';
+import { RequestHandler } from 'express';
+import { handleError, handleNotFound } from 'server/errorHandler/errorHandler';
+import {
+    appLogs, getClientErrors, getFeedbackIssues, getServerErrors, httpLogs, logClientError, saveFeedback, usageByDay
+} from 'server/log/dbLogger';
+import { pushGetAdministratorRegistrations } from 'server/notification/notificationDb';
+import { triggerPushMsg } from 'server/notification/pushNotificationSvc';
+import { is, parse } from 'useragent';
 
-const userAgent = require('useragent');
-const dbLogger = require('./dbLogger');
-const mongo_data = require('../system/mongo-data');
-const pushNotification = require('../system/pushNotification');
-
-export function module(roleConfig) {
-    const router = require('express').Router();
+export function module(roleConfig: {feedbackLog: RequestHandler, superLog: RequestHandler}) {
+    const router = Router();
 
     router.post('/httpLogs', roleConfig.superLog, (req, res) => {
-        dbLogger.httpLogs(req.body, handleError({req, res}, result => res.send(result)));
+        httpLogs(req.body, handleError({req, res}, result => res.send(result)));
     });
 
     router.post('/appLogs', roleConfig.superLog, (req, res) => {
-        dbLogger.appLogs(req.body, handleError({req, res}, result => res.send(result)));
+        appLogs(req.body, handleError({req, res}, result => res.send(result)));
     });
 
     router.get('/dailyUsageReportLogs', roleConfig.superLog, (req, res) => {
-        dbLogger.usageByDay(handleError({req, res}, result => res.send(result)));
+        usageByDay(handleError({req, res}, result => res.send(result)));
     });
 
     router.post('/serverErrors', roleConfig.superLog, (req, res) => {
-        dbLogger.getServerErrors(req.body, handleError({req, res}, result => res.send(result)));
+        getServerErrors(req.body, handleError({req, res}, result => {
+            res.send(result);
+        }));
     });
 
     router.post('/clientErrors', roleConfig.superLog, (req, res) => {
-        dbLogger.getClientErrors(req.body, handleError({req, res}, result => {
+        getClientErrors(req.body, handleNotFound({req, res}, result => {
             res.send(result.map(r => {
-                let l = r.toObject();
-                l.agent = userAgent.parse(r.userAgent).toAgent();
-                l.ua = userAgent.is(r.userAgent);
+                const l: any = r.toObject();
+                l.agent = parse(r.userAgent).toAgent();
+                l.ua = is(r.userAgent);
                 return l;
             }));
         }));
     });
 
     router.post('/feedbackIssues', roleConfig.feedbackLog, (req, res) => {
-        dbLogger.getFeedbackIssues(req.body, handleError({req, res}, result => res.send(result)));
+        getFeedbackIssues(req.body, handleError({req, res}, result => res.send(result)));
     });
 
     router.post('/clientExceptionLogs', (req, res) => {
-        dbLogger.logClientError(req, handleError({req, res}, result => res.send(result)));
+        logClientError(req, handleError({req, res}, result => res.send(result)));
     });
 
     router.get('/triggerServerErrorExpress', roleConfig.superLog, (req, res) => {
-        res.send("received");
+        res.send('received');
         // @ts-ignore
         trigger.error(); // jshint ignore:line
     });
 
-    const feedbackIpTrack = {};
-    let canSubmitFeedback = function (ip) {
+    const feedbackIpTrack: Dictionary<number> = {};
+    function canSubmitFeedback(ip: string) {
         if (!feedbackIpTrack[ip]) {
             feedbackIpTrack[ip] = Date.now();
             return true;
         } else {
-            let v = feedbackIpTrack[ip];
+            const v = feedbackIpTrack[ip];
             // wipe old date
             Object.keys(feedbackIpTrack).forEach(k => {
                 if ((Date.now() - feedbackIpTrack[k]) > (1000 * 60)) {
-                    feedbackIpTrack[k] = undefined;
+                    feedbackIpTrack[k] = NaN;
                 }
             });
             return (Date.now() - v) > (1000 * 60);
         }
-    };
+    }
 
     router.post('/feedback/report', (req, res) => {
-        if (!canSubmitFeedback(req.ip)) return res.status(509).send();
+        if (!canSubmitFeedback(req.ip)) {
+            return res.status(509).send();
+        }
         if (req.body.feedback) {
-            dbLogger.saveFeedback(req, () => {
-                let msg = JSON.stringify({
+            saveFeedback(req, () => {
+                const msg = JSON.stringify({
                     title: 'New Feedback Message',
                     options: {
-                        body: req.body.feedback ? JSON.parse(req.body.feedback).note : '',
+                        body: req.body.feedback ? req.body.feedback.description : '',
                         icon: '/cde/public/assets/img/min/NIH-CDE-FHIR.png',
                         badge: '/cde/public/assets/img/min/nih-cde-logo-simple.png',
                         tag: 'cde-feedback',
@@ -91,12 +99,14 @@ export function module(roleConfig) {
                         ]
                     }
                 });
-                mongo_data.pushGetAdministratorRegistrations(registrations => {
-                    registrations.forEach(r => pushNotification.triggerPushMsg(r, msg));
+                pushGetAdministratorRegistrations(registrations => {
+                    registrations.forEach(r => triggerPushMsg(r, msg));
                 });
                 res.send({});
             });
-        } else res.status(400).send();
+        } else {
+            res.status(400).send();
+        }
     });
 
     return router;

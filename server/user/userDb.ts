@@ -1,22 +1,42 @@
 import * as mongoose from 'mongoose';
-import { config } from '../system/parseConfig';
-import { addStringtype } from '../system/mongoose-stringtype';
-import { hasRole, rolesEnum } from 'shared/system/authorizationShared';
-import { CbError } from 'shared/models.model';
+import {Document, Model} from 'mongoose';
+import {establishConnection} from 'server/system/connections';
+import {addStringtype} from 'server/system/mongoose-stringtype';
+import {config} from 'server/system/parseConfig';
+import {hasRole, rolesEnum} from 'shared/system/authorizationShared';
+import {CbError, CbError1, ModuleAll, User} from 'shared/models.model';
 
 addStringtype(mongoose);
 const Schema = mongoose.Schema;
 const StringType = (Schema.Types as any).StringType;
 
-const connHelper = require('../system/connections');
-const conn = connHelper.establishConnection(config.database.appData);
+const conn = establishConnection(config.database.appData);
 
-let notificationTypesSchema = new Schema({
+export interface UserFull extends User {
+    commentNotifications: {
+        date: Date | number,
+        eltModule: ModuleAll;
+        eltTinyId: string;
+        read: boolean;
+        text: string;
+        username: string;
+    }[];
+    lastLogin: Date | number;
+    lockCounter: number;
+    knownIPs: string[];
+    notificationDate: {
+        serverLogDate: Date | number,
+        clientLogDate: Date | number
+    };
+    password: string;
+}
+
+const notificationTypesSchema = new Schema({
     drawer: Boolean,
     push: Boolean,
 }, {_id: false});
 
-let CommentNotificationSchema = new Schema({
+const commentNotificationSchema = new Schema({
     date: Date,
     eltModule: {type: StringType, enum: ['board', 'cde', 'form']},
     eltTinyId: StringType,
@@ -25,14 +45,14 @@ let CommentNotificationSchema = new Schema({
     username: StringType,
 }, {_id: false});
 
-let publishedFormSchema = new Schema({
+const publishedFormSchema = new Schema({
     name: StringType,
     id: Schema.Types.ObjectId
 }, {_id: false});
 
-let userSchema = new Schema({
+const userSchema = new Schema({
     username: {type: StringType, lowercase: true, trim: true, unique: true},
-    commentNotifications: [CommentNotificationSchema],
+    commentNotifications: [commentNotificationSchema],
     email: StringType,
     password: StringType,
     lastLogin: Date,
@@ -56,7 +76,7 @@ let userSchema = new Schema({
     roles: [{type: StringType, enum: rolesEnum}],
     searchSettings: {
         version: Number,
-        defaultSearchView: {type: StringType, enum: ["accordion", "table", "summary"]},
+        defaultSearchView: {type: StringType, enum: ['accordion', 'table', 'summary']},
         lowestRegistrationStatus: StringType,
         tableViewFields: {
             name: {type: Boolean, default: true},
@@ -89,24 +109,49 @@ export const userRefSchema = {
     _id: Schema.Types.ObjectId,
     username: {type: StringType, index: true}
 };
-
-export const User = conn.model('User', userSchema);
+export type UserDocument = Document & UserFull;
+export const userModel: Model<UserDocument> = conn.model('User', userSchema);
 
 const userProject = {password: 0};
 
-export function byId(id, callback) {
-    User.findById(id, userProject).exec(callback);
+export function addUser(user: Partial<User>, callback: CbError<UserDocument>) {
+    user.username = user.username.toLowerCase();
+    new userModel(user).save(callback);
 }
 
-export function find(crit, cb) {
-    User.find(crit, cb);
+export function updateUserIps(userId: string, ips: string[], callback: CbError<UserDocument>) {
+    userModel.findByIdAndUpdate(userId, {
+        lockCounter: 0,
+        lastLogin: Date.now(),
+        knownIPs: ips
+    }, {new: true}, callback);
+}
+
+export function userByName(name: string, callback?: CbError<UserDocument>) {
+    return userModel.findOne({username: new RegExp('^' + name + '$', 'i')}, callback);
+}
+
+export function userById(id: string, callback: CbError<UserDocument>) {
+    userModel.findById(id, userProject, callback);
+}
+
+export function byId(id: string, callback?: CbError<UserDocument>) {
+    return userModel.findById(id, userProject).exec(callback);
+}
+
+export function find(crit: any, cb: CbError1<UserDocument[]>) {
+    userModel.find(crit, cb);
 }
 
 // cb(err, {nMatched, nUpserted, nModified})
-export function updateUser(user, fields, callback: CbError<number, number, number>) {
-    let update: any = {};
-    if (fields.commentNotifications) update.commentNotifications = fields.commentNotifications;
-    if (fields.email) update.email = fields.email;
+export async function updateUser(user: User, fields: any, callback?: CbError<number, number, number>) {
+    const update: any = {};
+    if (fields.commentNotifications) {
+        update.commentNotifications = fields.commentNotifications;
+    }
+    if (fields.email) {
+        update.email = fields.email;
+    }
     if (fields.notificationSettings) {
         if (fields.notificationSettings.approvalAttachment && !hasRole(user, 'AttachmentReviewer')) {
             delete fields.notificationSettings.approvalAttachment;
@@ -120,36 +165,53 @@ export function updateUser(user, fields, callback: CbError<number, number, numbe
             update.notificationSettings = fields.notificationSettings;
         }
     }
-    if (fields.searchSettings) update.searchSettings = fields.searchSettings;
-    if (fields.publishedForms) update.publishedForms = fields.publishedForms;
-    User.updateOne({_id: user._id}, {$set: update}, callback);
+    if (fields.searchSettings) {
+        update.searchSettings = fields.searchSettings;
+    }
+    if (fields.publishedForms) {
+        update.publishedForms = fields.publishedForms;
+    }
+    return userModel.updateOne({_id: user._id}, {$set: update}).exec(callback);
 }
 
-export function usersByUsername(username, callback) {
-    User.find({username: new RegExp(username, 'i')}, userProject, callback);
+export function usersByName(name: string, callback: CbError<UserDocument[]>) {
+    userModel.find({username: new RegExp('^' + name + '$', 'i')}, userProject, callback);
 }
 
-export function userByUsername(username, callback) {
-    User.findOne({username: new RegExp(username, 'i')}, userProject, callback);
+export function usersByUsername(username: string) {
+    return userModel.find({username: new RegExp(username, 'i')}, userProject);
 }
 
-export function byUsername(username, callback) {
-    return User.findOne({username: username}, userProject).exec(callback);
+export function userByUsername(username: string, callback: CbError<UserDocument>) {
+    userModel.findOne({username: new RegExp(username, 'i')}, userProject, callback);
 }
 
-export function save(user, callback) {
-    return new User(user).save(callback);
+export function byUsername(username: string, callback?: CbError<UserDocument>) {
+    return userModel.findOne({username}, userProject).exec(callback as any);
+}
+
+export function save(user: Partial<UserFull>, callback?: CbError<UserDocument>) {
+    return new userModel(user).save(callback);
 }
 
 // Site Admin
-export function usernamesByIp(ip, callback) {
-    User.find({knownIPs: {$in: [ip]}}, {username: 1}, callback);
+export function usernamesByIp(ip: string, callback: CbError<UserDocument[]>) {
+    userModel.find({knownIPs: {$in: [ip]}}, {username: 1}, callback);
 }
 
-export function siteAdmins(callback) {
-    User.find({siteAdmin: true}, 'username email', callback);
+export function siteAdmins(callback: CbError<UserDocument[]>) {
+    userModel.find({siteAdmin: true}, 'username email', callback);
 }
 
-export function orgAuthorities(callback) {
-    User.find({roles: 'OrgAuthority'}, 'username', callback);
+export function orgAuthorities(callback: CbError<UserDocument[]>) {
+    userModel.find({roles: 'OrgAuthority'}, 'username', callback);
+}
+
+// Org
+export function orgAdmins() {
+    return userModel.find({orgAdmin: {$not: {$size: 0}}}).sort({username: 1});
+}
+
+export function orgCurators(orgs: string[], callback: CbError<UserDocument[]>) {
+    userModel.find().where('orgCurator').in(orgs).exec(callback);
 }

@@ -15,6 +15,6 @@ public class CdeGoToLastPageTest extends NlmCdeBaseTest {
         findElement(By.xpath("//*[@id='goToPage']//input")).clear();
         hangon(1);
         findElement(By.xpath("//*[@id='goToPage']//input")).sendKeys("2");
-        textPresent("21 - " + result + " of " + result);
+        textPresent("21 – " + result + " of " + result);
     }
 }

@@ -7,7 +7,7 @@ const APP_DIR = __dirname;
 
 export default {
     entry: {
-        fhir: './modules/_fhirApp/fhirApp.ts'
+        fhir: './frontEnd/_fhirApp/fhirApp.ts'
     },
     output: {
         path: resolve(APP_DIR, 'dist/fhir'), // TODO: temporary until gulp stops packaging vendor.js, then use /dist

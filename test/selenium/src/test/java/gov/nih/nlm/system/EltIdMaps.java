@@ -26,6 +26,7 @@ public class EltIdMaps {
         eltMap.put("Double Classif Cde", "QJgAXYdXO");
         eltMap.put("Draft Cde Test", "QyT6ElNKLl");
         eltMap.put("ExportLatest", "XkZpBf60z");
+        eltMap.put("Eyes affect productivity", "QkS8Q9kxm");
         eltMap.put("FAD Total score value", "fp_oYN6A_SJ");
         eltMap.put("Family Assessment Device (FAD) - Discuss problem indicator", "mrKyN_kpt86");
         eltMap.put("Feature Modified By java.lang.String", "GKrk4H_tWNZ");
@@ -83,6 +84,7 @@ public class EltIdMaps {
         eltMap.put("Specimen Array", "vdw_hgaMyxc");
         eltMap.put("Sensory system abnormality stocking glove present text", "gPY57SQ7_ZF");
         eltMap.put("Spectroscopy geometry location not applicable indicator", "soCkdnmqN8H");
+        eltMap.put("Spectroscopy water suppression method oth", "jW49aA1hw80");
         eltMap.put("Surgical Procedure Hand Laparoscopic Port Anatomic Site", "ymKeneM5_DB");
         eltMap.put("Target Lesion Sum Short Longest Dimension Measurement", "_6G_NPfQK0G");
         eltMap.put("Tissue Donor Genetic Testing Other Disease or Disorder Specify", "nsMXB5NdFBA");
@@ -98,11 +100,13 @@ public class EltIdMaps {
         eltMap.put("Vision (aura) typical symptom type", "rRqc8KG1RNO");
 
         // Forms
+        eltMap.put("AED Resistance Log", "7yxcZJrrte");
+        eltMap.put("ALS Depression Inventory (ADI-12)", "QJW5Z1BrYl");
         eltMap.put("Activities of Daily Living and Gait", "QyVcb1Srtg");
         eltMap.put("Adverse Event Tracking Log ", "m1_5_1HBYl");
-        eltMap.put("AED Resistance Log", "7yxcZJrrte");
         eltMap.put("Acute Admission/Discharge", "XkS5WJHrtg");
-        eltMap.put("ALS Depression Inventory (ADI-12)", "QJW5Z1BrYl");
+        eltMap.put("Alcohol - Age of First Use Protocol", "Qkn8qzT3og");
+        eltMap.put("Answer List Test", "XyWvhfX4W");
         eltMap.put("Antithrombotics and Risk Factor Controlling Medications", "XJfnZyHrYg");
         eltMap.put("Behavioral History", "mJCZyrSte");
         eltMap.put("Body Mass Index", "XyZ43DXGU");
@@ -118,6 +122,7 @@ public class EltIdMaps {
         eltMap.put("Empty Logic", "7kAx6i5af");
         eltMap.put("Empty Section Form", "Q1CSvNQhW");
         eltMap.put("Frontal Behavioral Inventory (FBI)", "XJbbmJSrFe");
+        eltMap.put("Frontal Systems Behavioral Scale (FrSBe)", "71Qb7kBrKx");
         eltMap.put("Functional Imaging", "my7XySBtg");
         eltMap.put("Form Cde Update Test", "X1ghWjntf");
         eltMap.put("Form Delete Test", "QyT6ElOKLl");
@@ -126,12 +131,12 @@ public class EltIdMaps {
         eltMap.put("Form History Compare Test", "XJQfsXNjz");
         eltMap.put("formAddCdeTest", "7kkK62xR4");
         eltMap.put("formAddSuggestedCdeTest", "7kkY62xR4");
-        eltMap.put("Answer List Test", "XyWvhfX4W");
         eltMap.put("Form Table Test", "713d9u1vX");
         eltMap.put("Geo Location Test", "QkdP0NeH8");
         eltMap.put("History Data Source and Reliability", "Q1rvXyHBFx");
         eltMap.put("Imaging OCT Analysis - Spectralis Report Analysis", "XJrcQ1HSFx");
         eltMap.put("Loinc Widget Test Form", "Q1ncc4Rg_");
+        eltMap.put("Magnetic Resonance Spectroscopy (MRS)", "mkfzVkSBtl");
         eltMap.put("McGill Quality of Life Questionnaire (MQOL)", "Xk44kSSYe");
 
 
@@ -174,6 +179,7 @@ public class EltIdMaps {
         eltMap.put("Remove SkipLogic Form", "X1s87bif7");
         eltMap.put("Reorder reference document form", "7yxjmyAQP");
         eltMap.put("Reorder definition form", "myYlSJAQD");
+        eltMap.put("Required and Default Test", "QyBYny_lu");
         eltMap.put("Section in Section Form", "Q11QuVmN_");
         eltMap.put("Section Inside Section Form", "71AKDVQhW");
         eltMap.put("Section Test Form", "XJFylVmN_");

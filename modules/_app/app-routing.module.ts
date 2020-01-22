@@ -39,8 +39,10 @@ const appRoutes: Routes = [
     {path: 'quickBoard', loadChildren: 'quickBoard/quickBoard.module#QuickBoardModule', data: {title: 'Quick Board'}},
     {path: 'resources', loadChildren: 'system/public/resources.module#ResourcesModule', data: {title: 'Resources'}},
     {path: 'settings', loadChildren: 'settings/settings.module#SettingsModule', canLoad: [LoggedInGuard], data: {title: 'Settings'}},
-    {path: 'whatsNew', loadChildren: 'system/public/whatsNew.module#WhatsNewModule', data: {title: `What's New`}},
+    {path: 'whatsNew', loadChildren: 'system/public/article.module#ArticleModule', data: {title: `What's New`, article: 'whatsNew'}},
+    {path: 'guides', loadChildren: 'system/public/article.module#ArticleModule', data: {title: 'Guides', article: 'guides'}},
     {path: 'contactUs', loadChildren: 'system/public/contactUs.module#ContactUsModule', data: {title: 'Contact Us'}},
+    {path: 'videos', loadChildren: 'system/public/videos.module#VideosModule', data: {title: 'Videos'}},
     {
         path: 'searchPreferences',
         loadChildren: 'system/public/searchPreferences.module#SearchPreferencesModule',
@@ -70,7 +72,7 @@ const appRoutes: Routes = [
         OrgAdminGuard,
         OrgAuthorityGuard,
         OrgCuratorGuard,
-        SiteAdminGuard,
+        SiteAdminGuard
     ],
     exports: [RouterModule]
 })

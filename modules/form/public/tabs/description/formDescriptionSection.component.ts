@@ -36,10 +36,10 @@ export class FormDescriptionSectionComponent implements OnInit {
     @Input() index!: number;
     @Input() node!: TreeNode;
     @Output() eltChange: EventEmitter<void> = new EventEmitter<void>();
-    @ViewChild('formDescriptionSectionTmpl') formDescriptionSectionTmpl!: TemplateRef<any>;
-    @ViewChild('formDescriptionFormTmpl') formDescriptionFormTmpl!: TemplateRef<any>;
-    @ViewChild('slInput') slInput!: ElementRef;
-    @ViewChild('updateFormVersionTmpl') updateFormVersionTmpl!: TemplateRef<any>;
+    @ViewChild('formDescriptionSectionTmpl', {static: true}) formDescriptionSectionTmpl!: TemplateRef<any>;
+    @ViewChild('formDescriptionFormTmpl', {static: true}) formDescriptionFormTmpl!: TemplateRef<any>;
+    @ViewChild('slInput', {static: true}) slInput!: ElementRef;
+    @ViewChild('updateFormVersionTmpl', {static: true}) updateFormVersionTmpl!: TemplateRef<any>;
     isSubForm = false;
     formSection?: FormInForm;
     parent!: FormElement;
@@ -151,7 +151,7 @@ export class FormDescriptionSectionComponent implements OnInit {
         modal.bLabel = !_isEqual(newForm.designations, oldForm.designations);
 
         this.updateFormVersion =  modal;
-        this.dialog.open(this.updateFormVersionTmpl, {width: '1000px'}).afterClosed().subscribe(res => {
+        this.dialog.open<boolean>(this.updateFormVersionTmpl, {width: '1000px'}).afterClosed().subscribe(res => {
             if (res) {
                 currentSection.inForm = newSection.inForm;
                 currentSection.formElements = newSection.formElements;

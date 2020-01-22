@@ -6,7 +6,7 @@ addStringtype(mongoose);
 const Schema = mongoose.Schema;
 const StringType = (Schema.Types as any).StringType;
 
-const csEltSchema = new Schema({
+export const csEltSchema = new Schema({
     elements: [],
     name: {type: StringType, index: true}
 }, {_id: false});
@@ -48,7 +48,7 @@ export const sourceSchema = new Schema({
     updated: {type: Date, description: 'Date updated in source'},
     registrationStatus: {
         type: StringType,
-        description: 'Relative standing of official record status in steward\'s workflow'
+        description: "Relative standing of official record status in steward's workflow"
     },
     datatype: {type: StringType, description: 'May contain the source datatype'},
     copyright: {
@@ -57,97 +57,10 @@ export const sourceSchema = new Schema({
     }
 }, {_id: false});
 
-const commonEmbedSchema = {
-    nameLabel: StringType,
-    pageSize: Number,
-    primaryDefinition: {
-        show: {type: Boolean, default: false},
-        label: StringType,
-        style: StringType
-    },
-    registrationStatus: {
-        show: {type: Boolean, default: false},
-        label: StringType
-    },
-    lowestRegistrationStatus: {type: StringType, enum: orderedList},
-    properties: [
-        {
-            label: StringType,
-            key: StringType,
-            limit: Number
-        }
-    ],
-    otherNames: [{
-        label: StringType,
-        contextName: StringType
-    }],
-    classifications: [{
-        label: StringType,
-        startsWith: StringType,
-        exclude: StringType,
-        selectedOnly: Boolean
-    }],
-    ids: [
-        {
-            idLabel: StringType,
-            source: StringType,
-            version: Boolean,
-            versionLabel: StringType
-        }
-    ]
-};
-
-const embedJson = {
-    org: StringType,
-    name: StringType,
-    height: Number,
-    width: Number,
-    cde: {
-        ...commonEmbedSchema,
-        linkedForms: {
-            show: {type: Boolean, default: false},
-            label: StringType
-        },
-        permissibleValues: Boolean,
-    },
-    form: {
-        ...commonEmbedSchema,
-        cdes: {type: Boolean, default: false},
-        nbOfQuestions: {type: Boolean, default: false},
-        sdcLink: {type: Boolean, default: false}
-    }
-};
-
-export const embedSchema = new Schema(embedJson);
-
-export const fhirAppSchema = new Schema({
-    clientId: String,
-    dataEndpointUrl: String,
-    forms: [
-        {tinyId: String}
-    ],
-    mapping: [{
-        cdeSystem: StringType,
-        cdeCode: StringType,
-        fhirSystem: StringType,
-        fhirCode: StringType,
-    }],
-}, {collection: 'fhirapps'});
-
-export const fhirObservationInformationSchema = new Schema({
-    _id: String,
-    categories: [{
-        type: String,
-        enum: ['social-history', 'vital-signs', 'imaging', 'laboratory', 'procedure', 'survey', 'exam', 'therapy']
-    }],
-}, {collection: 'fhirObservationInfo'});
-
-export const idSourceSchema = new Schema({
-    _id: String,
-    linkTemplateDe: {type: StringType, default: ''},
-    linkTemplateForm: {type: StringType, default: ''},
-    version: StringType,
-}, {collection: 'idSource'});
+export const sourcesNewSchema = new Schema({
+    type: Map,
+    of: [sourceSchema]
+}, {_id: false});
 
 export const statusValidationRuleSchema = new Schema({
     field: StringType,
@@ -163,52 +76,6 @@ export const statusValidationRuleSchema = new Schema({
     },
     occurence: {type: StringType, enum: ['exactlyOne', 'atLeastOne', 'all']},
 });
-
-export const orgJson = {
-    name: StringType,
-    longName: StringType,
-    mailAddress: StringType,
-    emailAddress: StringType,
-    phoneNumber: StringType,
-    uri: StringType,
-    classifications: [csEltSchema],
-    workingGroupOf: StringType,
-    propertyKeys: {
-        type: Array,
-        default: []
-    },
-    nameContexts: {
-        type: Array,
-        default: []
-    },
-    nameTags: {
-        type: Array,
-        default: []
-    },
-    extraInfo: StringType,
-    cdeStatusValidationRules: [statusValidationRuleSchema],
-    htmlOverview: StringType
-};
-
-export const orgSchema = new Schema(orgJson, {collection: 'orgs', usePushEach: true});
-
-export const pushRegistration = new Schema({
-    features: [StringType],
-    loggedIn: Boolean,
-    subscription: {
-        endpoint: StringType,
-        expirationTime: StringType,
-        keys: {
-            auth: StringType,
-            p256dh: StringType
-        }
-    },
-    userId: StringType,
-    vapidKeys: {
-        privateKey: StringType,
-        publicKey: StringType
-    }
-}, {collection: 'pushRegistration'});
 
 export const designationSchema = new Schema({
     designation: StringType,
@@ -378,18 +245,6 @@ export const classificationAudit = new Schema({
     path: [StringType]
 }, {collection: 'classificationAudit'});
 
-export const trafficFilterSchema = new Schema({
-    ipList: [
-        {
-            ip: String,
-            date: {type: Date, default: Date.now()},
-            reason: String,
-            strikes: {type: Number, default: 1}
-        }
-    ]
-}, {usePushEach: true});
-
-
 export const datatypeTextSchema = new Schema({
     minLength: {type: Number, description: 'To indicate limits on length'},
     maxLength: {type: Number, description: 'To indicate limits on length'},
@@ -397,27 +252,34 @@ export const datatypeTextSchema = new Schema({
     rule: {type: StringType, description: 'Any rule may go here'},
     showAsTextArea: {type: Boolean, description: 'Multi-line'},
 }, {_id: false});
+
 export const datatypeNumberSchema = new Schema({
     minValue: Number,
     maxValue: Number,
     precision: Number,
 }, {_id: false});
+
 export const datatypeDateSchema = new Schema({
     precision: {
         type: StringType,
         enum: ['Year', 'Month', 'Day', 'Hour', 'Minute', 'Second']
     }
 }, {_id: false});
+
 export const datatypeTimeSchema = new Schema({
     format: StringType,
 }, {_id: false});
-export const datatypeDynamicCodeListSchema = new Schema({
-    system: StringType,
-    code: StringType
-}, {_id: false});
+
 export const datatypeValueListSchema = new Schema({
     datatype: {type: StringType, description: 'Value list format'}
 }, {_id: false});
+
+export const datatypeDynamicListSchema = new Schema({
+    system: {type: StringType, description: 'Code System'},
+    code: {type: StringType, description: 'Code'},
+}, {_id: false});
+
+
 export const datatypeExternallyDefinedSchema = new Schema({
     link: {type: StringType, description: 'A link to an external source. Typically a URL'},
     description: StringType,

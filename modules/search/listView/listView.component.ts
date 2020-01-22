@@ -30,7 +30,7 @@ export class ListViewComponent implements OnChanges, OnInit {
     @Input() totalItems = 0;
     @Output() add = new EventEmitter<Item>();
     @Output() listViewChange = new EventEmitter<string>();
-    @ViewChild('viewContainer', {read: ViewContainerRef}) viewContainer!: ViewContainerRef;
+    @ViewChild('viewContainer', {read: ViewContainerRef, static: true}) viewContainer!: ViewContainerRef;
     private _listView?: ListTypes;
     viewsMap!: Map<string, any>;
     viewComponentRef: any;

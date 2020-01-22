@@ -1,9 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { IActionMapping, TreeComponent, TreeNode } from 'angular-tree-component';
-import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
 import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
-import { Subject } from 'rxjs/Subject';
+import { empty, Subject } from 'rxjs';
 import { AlertService } from 'alert/alert.service';
 import { UserService } from '_app/user.service';
 import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
@@ -26,12 +25,12 @@ const actionMapping: IActionMapping = {
     templateUrl: './orgClassificationManagement.component.html'
 })
 export class OrgClassificationManagementComponent implements OnInit {
-    @ViewChild('renameClassificationContent') renameClassificationContent!: TemplateRef<any>;
-    @ViewChild('deleteClassificationContent') deleteClassificationContent!: TemplateRef<any>;
-    @ViewChild('reclassifyComponent') reclassifyComponent!: ClassifyItemModalComponent;
-    @ViewChild('addChildClassificationContent') addChildClassificationContent!: TemplateRef<any>;
-    @ViewChild('mapClassificationMeshContent') mapClassificationMeshContent!: TemplateRef<any>;
-    @ViewChild(TreeComponent) private tree!: TreeComponent;
+    @ViewChild('renameClassificationContent', {static: true}) renameClassificationContent!: TemplateRef<any>;
+    @ViewChild('deleteClassificationContent', {static: true}) deleteClassificationContent!: TemplateRef<any>;
+    @ViewChild('reclassifyComponent', {static: true}) reclassifyComponent!: ClassifyItemModalComponent;
+    @ViewChild('addChildClassificationContent', {static: true}) addChildClassificationContent!: TemplateRef<any>;
+    @ViewChild('mapClassificationMeshContent', {static: true}) mapClassificationMeshContent!: TemplateRef<any>;
+    @ViewChild(TreeComponent, {static: false}) private tree!: TreeComponent;
     childClassificationNode?: TreeNode;
     descriptorID!: string;
     descriptorName!: string;
@@ -92,9 +91,9 @@ export class OrgClassificationManagementComponent implements OnInit {
             }),
             switchMap(term => {
                 const url = (window as any).meshUrl + '/api/search/record?searchInField=termDescriptor&searchType=exactMatch&q=' + term;
-                return term ? this.http.get<ElasticQueryResponse>(url) : EmptyObservable.create<ElasticQueryResponse>();
+                return term ? this.http.get<ElasticQueryResponse<any>>(url) : empty();
             })
-        ).subscribe(res => {
+        ).subscribe((res: any) => {
             if (res && res.hits && res.hits.hits && res.hits.hits.length === 1) {
                 const desc = res.hits.hits[0]._source;
                 this.descriptorName = desc.DescriptorName.String.t;
@@ -158,7 +157,7 @@ export class OrgClassificationManagementComponent implements OnInit {
 
     checkJob(type: string, cb: Cb) {
         const indexFn = setInterval(() => {
-            this.http.get<any>('/jobStatus/' + type).subscribe(
+            this.http.get<any>('/server/system/jobStatus/' + type).subscribe(
                 res => {
                     if (res.done === true) {
                         this.orgChanged(this.selectedOrg.name, () => {
@@ -179,8 +178,7 @@ export class OrgClassificationManagementComponent implements OnInit {
 
     orgChanged(value: string, cb?: Cb) {
         if (value) {
-            const url = '/org/' + encodeURIComponent(value);
-            this.http.get<Organization>(url).subscribe(
+            this.http.get<Organization>('/server/orgManagement/org/' + encodeURIComponent(value)).subscribe(
                 org => {
                     if (org) {
                         this.selectedOrg = org;

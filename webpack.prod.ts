@@ -1,15 +1,15 @@
-import { DefinePlugin } from 'webpack';
+import { DefinePlugin, LoaderOptionsPlugin } from 'webpack';
 import * as merge from 'webpack-merge';
 import baseConfig from './webpack.config';
 
-export default merge(baseConfig, {
+const webpackConfigProd = merge(baseConfig, {
     mode: 'production',
     module: {
         rules: [
             {
                 test: /(?:\.ngfactory\.js|\.ngstyle\.js|\.ts)$/,
                 use: ['@ngtools/webpack']
-            },
+            }
         ]
     },
     plugins: [
@@ -18,3 +18,21 @@ export default merge(baseConfig, {
         }),
     ],
 });
+
+if (process.env.COVERAGE && webpackConfigProd.module) {
+    webpackConfigProd.module.rules.push({
+        test: /(?:\.ngfactory\.js|\.ngstyle\.js|\.ts)$/,
+        enforce: 'post',
+        exclude: /node_modules|\.spec\.js$/,
+        use: [
+            {
+                loader: 'istanbul-instrumenter-loader',
+                query: {
+                    esModules: true
+                },
+            }
+        ],
+    });
+}
+
+export default webpackConfigProd;

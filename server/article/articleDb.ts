@@ -1,30 +1,38 @@
-import { Schema } from 'mongoose';
+import { Document, Model, Schema } from 'mongoose';
 import { establishConnection } from 'server/system/connections';
-import { attachables } from '../system/mongo-data';
-import { config } from '../system/parseConfig';
-import { attachmentSchema } from '../system/schemas';
+import { attachables } from 'server/system/mongo-data';
+import { config } from 'server/system/parseConfig';
+import { attachmentSchema } from 'server/system/schemas';
+import { Article } from 'shared/article/article.model';
+import { CbError } from 'shared/models.model';
 
-let conn = establishConnection(config.database.appData);
-let Article = conn.model('article', new Schema({
+const conn = establishConnection(config.database.appData);
+const articleSchema = new Schema({
     key: {type: String, index: true},
     body: String,
     created: {type: Date, default: new Date()},
     updated: {type: Date, default: new Date()},
     attachments: [attachmentSchema]
-}, {usePushEach: true}));
+}, {usePushEach: true});
+export type ArticleDocument = Document & Article;
+const articleModel: Model<ArticleDocument> = conn.model('article', articleSchema);
 
-attachables.push(Article);
+attachables.push(articleModel);
 
 export const type = 'articles';
 
-export function byId(id, cb) {
-    Article.findOne({_id: id}, cb);
+export function byId(id: string, cb: CbError<ArticleDocument>) {
+    articleModel.findOne({_id: id}, cb);
 }
 
-export function byKey(key, cb) {
-    Article.findOne({key: key}, cb);
+export async function byKey(key: string) {
+    return articleModel.findOne({key});
 }
 
-export function update(art, cb) {
-    Article.findOneAndUpdate({key: art.key}, {$set: {body: art.body, updated: Date.now()}}, {upsert: true}, cb);
+export async function update(art: Article) {
+    return articleModel.findOneAndUpdate(
+        {key: art.key},
+        {$set: {body: art.body, updated: Date.now()}},
+        {upsert: true, new: true}
+    );
 }

@@ -22,8 +22,9 @@ public class MergeFormAndRetireCde extends NlmCdeBaseTest {
         clickElement(By.id("mergeFormBtn"));
         closeAlert();
 
-        textNotPresent("Retired", By.id("leftQuestion_0"));
-        textNotPresent("Retired", By.id("leftQuestion_1"));
+        // we retire all CDEs even if they are used on a form.
+        textPresent("Retired", By.id("leftQuestion_0"));
+        textPresent("Retired", By.id("leftQuestion_1"));
         textPresent("Retired", By.id("leftQuestion_2"));
         textPresent("Retired", By.id("leftQuestion_3"));
         textPresent("Retired", By.id("leftQuestion_4"));

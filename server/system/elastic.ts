@@ -1,27 +1,30 @@
 import { eachOf, filter, forEach } from 'async';
-import { Client, SearchResponse } from 'elasticsearch';
-import { Document } from 'mongoose';
-import { handleError, respondError } from '../errorHandler/errorHandler';
-import { config } from '../system/parseConfig';
-import { DataElementElastic } from 'shared/de/dataElement.model';
-import { Cb, Cb1, CbErr, CbError, CbError1, ElasticQueryResponseAggregations, ItemElastic, ModuleItem, User } from 'shared/models.model';
-import { ElasticIndex } from '../system/elasticSearchInit';
+import { Client } from '@elastic/elasticsearch';
+import { noop } from 'lodash';
 import { Cursor } from 'mongodb';
-import { SearchSettingsElastic } from 'search/search.model';
+import { Document } from 'mongoose';
+import { post } from 'request';
+import * as boardDb from 'server/board/boardDb';
+import * as mongo_cde from 'server/cde/mongo-cde';
+import { respondError } from 'server/errorHandler/errorHandler';
+import * as mongo_form from 'server/form/mongo-form';
+import { consoleLog, logError } from 'server/log/dbLogger';
+import { ElasticIndex, indices } from 'server/system/elasticSearchInit';
+import { errorLogger } from 'server/system/logging';
+import { noDbLogger } from 'server/system/noDbLogger';
+import { config } from 'server/system/parseConfig';
+import { DataElementElastic } from 'shared/de/dataElement.model';
+import { CdeFormElastic } from 'shared/form/form.model';
+import {
+    Cb, Cb1, CbError, CbError1, ElasticQueryError, ElasticQueryResponse, ElasticQueryResponseAggregations, ItemElastic,
+    ModuleItem,
+    SearchResponseAggregationDe, SearchResponseAggregationForm,
+    SearchResponseAggregationItem,
+    User
+} from 'shared/models.model';
+import { SearchSettingsElastic } from 'shared/search/search.model';
 import { orderedList } from 'shared/system/regStatusShared';
-import { arrayFill } from 'shared/system/util';
-import { myOrgs } from 'server/system/usersrvc';
-
-const _ = require('lodash');
-const request = require('request');
-const logging = require('./logging');
-const usersvc = require('./usersrvc');
-const esInit = require('./elasticSearchInit');
-const dbLogger = require('../log/dbLogger');
-const mongo_cde = require('../cde/mongo-cde');
-const mongo_form = require('../form/mongo-form');
-const boardDb = require('../board/boardDb');
-const noDbLogger = require('./noDbLogger');
+import { myOrgs } from 'server/orgManagement/orgSvc';
 
 type ElasticCondition = any;
 type MongoCondition = any;
@@ -43,11 +46,11 @@ interface DbStream {
     indexes: ElasticIndex[];
 }
 
-export const esClient = new Client({
-    hosts: config.elastic.hosts
-});
+export const esClient = new Client(config.elastic.options);
 
-export function removeElasticFields(elt: ItemElastic) {
+export function removeElasticFields(elt: DataElementElastic): DataElementElastic;
+export function removeElasticFields(elt: CdeFormElastic): CdeFormElastic;
+export function removeElasticFields(elt: ItemElastic): ItemElastic {
     delete elt.classificationBoost;
     delete elt.flatClassifications;
     delete elt.primaryNameCopy;
@@ -65,30 +68,20 @@ export function removeElasticFields(elt: ItemElastic) {
     return elt;
 }
 
-export function nbOfCdes(cb: CbError<number>) {
-    esClient.count({index: config.elastic.index.name}, (err, result) => {
-        cb(err, result.count);
-    });
-}
-
-export function nbOfForms(cb: CbError<number>) {
-    esClient.count({index: config.elastic.formIndex.name}, (err, result) => cb(err, result.count));
-}
-
-const queryDe = {
+const queryDe: DbQuery = {
     condition: {archived: false},
-    dao: mongo_cde
+    dao: mongo_cde as any
 };
-const queryForm = {
+const queryForm: DbQuery = {
     condition: {archived: false},
-    dao: mongo_form
+    dao: mongo_form as any
 };
 export const daoMap: { [key: string]: DbQuery } = {
     cde: queryDe,
     form: queryForm,
     board: {
         condition: {},
-        dao: boardDb
+        dao: boardDb as any
     },
     cdeSuggest: queryDe,
     formSuggest: queryForm
@@ -104,7 +97,7 @@ const DOC_MAX_SIZE = BUFFER_MAX_SIZE;
 export function reIndexStream(dbStream: DbStream, cb?: Cb) {
     createIndex(dbStream, () => {
         const riverFunctions = dbStream.indexes.map(index => index.filter || ((elt: ItemElastic, cb: Cb1<ItemElastic>) => cb(elt)));
-        const buffers: Buffer[] = arrayFill<Buffer>(dbStream.indexes.length, () => Buffer.alloc(BUFFER_MAX_SIZE));
+        const buffers = Array.apply(null, new Array(dbStream.indexes.length)).map(() => Buffer.alloc(BUFFER_MAX_SIZE));
         const bufferOffsets = new Array(dbStream.indexes.length).fill(0);
         const nextCommandBuffer = Buffer.alloc(DOC_MAX_SIZE);
         let nextCommandOffset = 0;
@@ -115,31 +108,35 @@ export function reIndexStream(dbStream: DbStream, cb?: Cb) {
             index.count = 0;
         });
 
-        const inject = (i: number, cb = _.noop) => {
+        const inject = (i: number, cb = noop) => {
             (function bulkIndex(req, cb, retries = 1) {
-                request.post(config.elastic.hosts + '/_bulk', {
+                post(config.elastic.hosts + '/_bulk', {
                     headers: {'Content-Type': 'application/x-ndjson'},
                     agentOptions: {
                         rejectUnauthorized: false
                     },
                     body: req
-                }, (err: Error | undefined) => {
-                    if (err) {
+                }, (err: Error | undefined, response) => {
+                    if (err || response.body.errors) {
                         if (retries) {
                             setTimeout(() => {
                                 bulkIndex(req, cb, --retries);
                             }, 2000);
                         } else {
-                            dbLogger.logError({
+                            let bodyErr;
+                            if (response && response.body && response.body.err) {
+                                bodyErr = response.body.err;
+                            }
+                            logError({
                                 message: 'Unable to Index in bulk',
                                 origin: 'system.elastic.inject',
                                 stack: err,
-                                details: ''
+                                details: bodyErr
                             });
                             cb();
                         }
                     } else {
-                        dbLogger.consoleLog('ingested: ' + dbStream.indexes[i].count);
+                        consoleLog('ingested: ' + dbStream.indexes[i].count);
                         cb();
                     }
                 });
@@ -149,19 +146,21 @@ export function reIndexStream(dbStream: DbStream, cb?: Cb) {
         };
 
         dbStream.query.dao.count(dbStream.query.condition, (err: Error | undefined, totalCount: number) => {
-            if (err) dbLogger.consoleLog('Error getting count: ' + err, 'error');
-            dbLogger.consoleLog('Total count for ' + dbStream.query.dao.name + ' is ' + totalCount);
+            if (err) {
+                consoleLog(`Error getting count: ${err}`, 'error');
+            }
+            consoleLog('Total count for ' + dbStream.query.dao.name + ' is ' + totalCount);
             dbStream.indexes.forEach(index => {
                 index.totalCount = totalCount;
             });
         });
-        let cursor = dbStream.query.dao.getStream(dbStream.query.condition);
+        const cursor = dbStream.query.dao.getStream(dbStream.query.condition);
 
         (function processOneDocument(cursor) {
             cursor.next((err: Error | undefined, doc) => {
                 if (err) {
                     // err
-                    dbLogger.consoleLog('Error getting cursor: ' + err);
+                    consoleLog('Error getting cursor: ' + err);
                     return;
                 }
                 if (!doc) {
@@ -170,8 +169,8 @@ export function reIndexStream(dbStream: DbStream, cb?: Cb) {
                         inject(i as number, () => {
                             const info = 'done ingesting ' + index.name + ' in : '
                                 + (new Date().getTime() - startTime) / 1000 + ' secs. count: ' + index.count;
-                            noDbLogger.noDbLogger.info(info);
-                            dbLogger.consoleLog(info);
+                            noDbLogger.info(info);
+                            consoleLog(info);
                             doneOne();
                         });
                     }, () => {
@@ -184,7 +183,7 @@ export function reIndexStream(dbStream: DbStream, cb?: Cb) {
                 // data
                 const docObj = doc.toObject();
                 dbStream.indexes.forEach((index, i) => {
-                    riverFunctions[i](docObj, (doc: ItemElastic) => {
+                    riverFunctions[i](docObj, (doc?: ItemElastic) => {
                         if (!doc) {
                             return;
                         }
@@ -197,7 +196,7 @@ export function reIndexStream(dbStream: DbStream, cb?: Cb) {
                         nextCommand({
                             index: {
                                 _index: index.indexName,
-                                _type: indexTypes[i],
+                                _type: '_doc',
                                 _id: doc.tinyId || doc._id
                             }
                         });
@@ -207,7 +206,7 @@ export function reIndexStream(dbStream: DbStream, cb?: Cb) {
                             inject(i);
                         }
                         bufferOffsets[i] += nextCommandBuffer.copy(buffers[i], bufferOffsets[i], 0, nextCommandOffset);
-                        index.count!++;
+                        index.count++;
                     });
                 });
                 setTimeout(() => {
@@ -220,26 +219,28 @@ export function reIndexStream(dbStream: DbStream, cb?: Cb) {
 
 function createIndex(dbStream: DbStream, cb: Cb) {
     filter(dbStream.indexes, (index: ElasticIndex, doneOne) => {
-        esClient.indices.exists({index: index.indexName}, (err, indiceExists) => {
+        esClient.indices.exists({index: index.indexName}, (err, response) => {
             if (err) {
                 return doneOne(err);
             }
-            if (indiceExists) {
-                dbLogger.consoleLog('index already exists: ' + index.indexName);
+            if (response.body) {
+                consoleLog('index already exists: ' + index.indexName);
                 doneOne(undefined, false);
             } else {
-                dbLogger.consoleLog('creating index: ' + index.indexName);
+                consoleLog('creating index: ' + index.indexName);
                 esClient.indices.create({
                     index: index.indexName,
+                    include_type_name: false,
                     timeout: '10s',
                     body: index.indexJson
                 }, err => {
                     if (err) {
                         respondError(err);
+                        doneOne(err);
                     } else {
-                        dbLogger.consoleLog('index Created: ' + index.indexName);
+                        consoleLog('index Created: ' + index.indexName);
+                        doneOne(undefined, true);
                     }
-                    doneOne(undefined, true);
                 });
             }
         });
@@ -258,7 +259,7 @@ function createIndex(dbStream: DbStream, cb: Cb) {
 export function initEs(cb: Cb = () => {
 }) {
     const dbStreams: DbStream[] = [];
-    esInit.indices.forEach((index: ElasticIndex) => {
+    indices.forEach((index: ElasticIndex) => {
         const match = dbStreams.filter(s => s.query === daoMap[index.name])[0];
         if (match) {
             match.indexes.push(index);
@@ -272,7 +273,7 @@ export function initEs(cb: Cb = () => {
 }
 
 export function completionSuggest(term: ElasticCondition, user: User, settings: SearchSettingsElastic,
-                                  indexName: string, cb: Cb<SearchResponse<ItemElastic>>) {
+                                  indexName: string, cb: CbError<ElasticQueryResponse<ItemElastic>>) {
     const suggestQuery = {
         query: {
             match: {
@@ -290,14 +291,14 @@ export function completionSuggest(term: ElasticCondition, user: User, settings: 
         }
     };
 
-    esClient.search<ItemElastic>({
+    esClient.search({
         index: indexName,
         body: suggestQuery
     }, (error, response) => {
         if (error) {
             cb(error);
         } else {
-            cb(response);
+            cb(undefined, response.body);
         }
     });
 }
@@ -310,7 +311,7 @@ export function regStatusFilter(user: User, settings: SearchSettingsElastic) {
             regStatus => ({term: {'registrationState.registrationStatus': regStatus}})
         );
     } else {
-        let filterRegStatusTerms: ElasticCondition = settings.visibleStatuses!.map(
+        let filterRegStatusTerms: ElasticCondition = (settings.visibleStatuses || []).map(
             regStatus => ({term: {'registrationState.registrationStatus': regStatus}})
         );
         // Filter by Steward
@@ -383,7 +384,7 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
                                                 query: settings.searchTerm
                                             }
                                         } : undefined,
-                                        script_score: {script: script}
+                                        script_score: {script}
                                     }
                                 }
                             ]
@@ -411,7 +412,7 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
         });
 
         // Boost rank if we find exact string match, or if terms are in a less than 4 terms apart.
-        if (settings.searchTerm!.indexOf('"') < 0) {
+        if ((settings.searchTerm || '').indexOf('"') < 0) {
             queryStuff.query.bool.must[0].dis_max.queries[1].function_score.boost = '2';
             queryStuff.query.bool.must[0].dis_max.queries.push({
                 function_score: {
@@ -455,7 +456,8 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
                 queries: [{
                     function_score: {
                         script_score: {
-                            script: "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) / (doc['flatMeshTrees'].values.size() + 1)"
+                            script: "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) /" +
+                                " (doc['flatMeshTrees'].length + 1)"
                         }
                     }
                 }]
@@ -464,7 +466,7 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
         queryStuff.query.bool.must.push({term: {flatMeshTrees: settings.meshTree}});
     }
 
-    let flatSelection = settings.selectedElements ? settings.selectedElements.join(';') : '';
+    const flatSelection = settings.selectedElements ? settings.selectedElements.join(';') : '';
     if (settings.selectedOrg && flatSelection !== '') {
         sort = false;
         // boost for those elts classified fewer times
@@ -473,7 +475,8 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
                 queries: [{
                     function_score: {
                         script_score: {
-                            script: "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) / (doc['flatClassifications'].values.size() + 1)"
+                            script: "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) /" +
+                                " (doc['flatClassifications'].length + 1)"
                         }
                     }
                 }]
@@ -482,7 +485,7 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
         queryStuff.query.bool.must.push({term: {flatClassifications: settings.selectedOrg + ';' + flatSelection}});
     }
 
-    let flatSelectionAlt = settings.selectedElementsAlt ? settings.selectedElementsAlt.join(';') : '';
+    const flatSelectionAlt = settings.selectedElementsAlt ? settings.selectedElementsAlt.join(';') : '';
     if (settings.selectedOrgAlt && flatSelectionAlt !== '') {
         queryStuff.query.bool.must.push({term: {flatClassifications: settings.selectedOrgAlt + ';' + flatSelectionAlt}});
     }
@@ -492,12 +495,12 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
     }
 
     // show statuses that either you selected, or it's your org and it's not retired.
-    let regStatusAggFilter: ElasticCondition = {
+    const regStatusAggFilter: ElasticCondition = {
         bool: {
             filter: [
                 {
                     bool: {
-                        should: settings.visibleStatuses!.concat(settings.selectedStatuses).map(regStatus => {
+                        should: settings.visibleStatuses.concat(settings.selectedStatuses).map(regStatus => {
                             return {term: {'registrationState.registrationStatus': regStatus}};
                         })
                     }
@@ -505,13 +508,13 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
             ]
         }
     };
-    if (usersvc.myOrgs(user).length > 0) {
-        usersvc.myOrgs(user).map((org: string) => {
+    if (myOrgs(user).length > 0) {
+        myOrgs(user).map((org: string) => {
             regStatusAggFilter.bool.filter[0].bool.should.push({term: {'stewardOrg.name': org}});
         });
     }
 
-    if (settings.visibleStatuses!.indexOf('Retired') === -1 && settings.selectedStatuses.indexOf('Retired') === -1) {
+    if (settings.visibleStatuses.indexOf('Retired') === -1 && settings.selectedStatuses.indexOf('Retired') === -1) {
         regStatusAggFilter.bool.filter.push({bool: {must_not: {term: {'registrationState.registrationStatus': 'Retired'}}}});
     }
 
@@ -552,8 +555,8 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
             }
         };
 
-        let flattenClassificationAggregations = function (variableName: string, orgVariableName: string, selectionString: string) {
-            let flatClassifications: ElasticCondition = {
+        const flattenClassificationAggregations = (variableName: string, orgVariableName: string, selectionString: string) => {
+            const flatClassifications: ElasticCondition = {
                 terms: {
                     size: 500,
                     field: 'flatClassifications'
@@ -615,7 +618,7 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
         delete queryStuff.query.bool.must;
     }
 
-    queryStuff.from = (settings.page! - 1) * settings.resultPerPage!;
+    queryStuff.from = ((settings.page || 0) - 1) * settings.resultPerPage;
     if (!queryStuff.from || queryStuff.from < 0) {
         queryStuff.from = 0;
     }
@@ -664,50 +667,54 @@ export function isSearch(settings: SearchSettingsElastic) {
 const searchTemplate: { [key: string]: any } = {
     cde: {
         index: config.elastic.index.name,
-        type: 'dataelement'
     },
     form: {
         index: config.elastic.formIndex.name,
-        type: 'form'
     }
 };
 
-export function elasticsearch(type: ModuleItem, query: any, settings: any, cb: CbErr<any>) {
+export function elasticsearch(type: 'cde', query: any, settings: any, cb: CbError<SearchResponseAggregationDe>): void;
+export function elasticsearch(type: 'form', query: any, settings: any, cb: CbError<SearchResponseAggregationForm>): void;
+export function elasticsearch(type: ModuleItem, query: any, settings: any,
+                              callback: CbError<SearchResponseAggregationDe> | CbError<SearchResponseAggregationForm>): void {
+    const cb = callback as CbError<SearchResponseAggregationItem>;
     const search = searchTemplate[type];
     if (!search) {
-        return cb('Invalid query');
+        return cb(new Error('Invalid query'));
     }
     search.body = query;
-    esClient.search(search, (error, resp) => {
-        const response = resp as ElasticQueryResponseAggregations;
+    search.body.track_total_hits = true;
+    esClient.search(search, (error: any, resp: any) => {
         if (error) {
-            if (response && response.status === 400) {
-                if (response.error!.type !== 'search_phase_execution_exception') {
-                    logging.errorLogger.error('Error: ElasticSearch Error',
+            const response = resp as any as ElasticQueryError;
+            if (response && response.status) {
+                if (response.status === 400 && response.error.type !== 'search_phase_execution_exception') {
+                    errorLogger.error('Error: ElasticSearch Error',
                         {
                             origin: 'system.elastic.elasticsearch',
                             stack: error.stack,
                             details: JSON.stringify(query)
                         });
                 }
-                cb('Invalid Query');
+                cb(new Error('Invalid Query'));
             } else {
                 let querystr = 'cannot stringify query';
                 try {
                     querystr = JSON.stringify(query);
                 } catch (e) {
                 }
-                logging.errorLogger.error('Error: ElasticSearch Error',
+                errorLogger.error('Error: ElasticSearch Error',
                     {
                         origin: 'system.elastic.elasticsearch',
                         stack: error.stack,
                         details: 'query ' + querystr
                     });
-                cb('Server Error');
+                cb(new Error('Server Error'));
             }
         } else {
+            const response = resp.body as ElasticQueryResponseAggregations<ItemElastic>;
             if (response.hits.total === 0 && config.name.indexOf('Prod') === -1) {
-                dbLogger.consoleLog('No response. QUERY: ' + JSON.stringify(query), 'debug');
+                consoleLog('No response. QUERY: ' + JSON.stringify(query), 'debug');
             }
 
             const result: any = {
@@ -715,9 +722,13 @@ export function elasticsearch(type: ModuleItem, query: any, settings: any, cb: C
                 , maxScore: response.hits.max_score
                 , took: response.took
             };
+            // @TODO remove after full migration to ES7
+            if (result.totalNumber.value > -1) {
+                result.totalNumber = result.totalNumber.value;
+            }
             result[type + 's'] = [];
             for (const hit of response.hits.hits) {
-                const thisCde: DataElementElastic = hit._source;
+                const thisCde = hit._source as DataElementElastic;
                 thisCde.score = hit._score;
                 if (thisCde.valueDomain && thisCde.valueDomain.datatype === 'Value List' && thisCde.valueDomain.permissibleValues
                     && thisCde.valueDomain.permissibleValues.length > 10) {
@@ -736,8 +747,14 @@ export function elasticsearch(type: ModuleItem, query: any, settings: any, cb: C
 
 let lock = false;
 
-export function elasticSearchExport(dataCb: CbErr<ItemElastic>, query: any, type: ModuleItem) {
-    if (lock) return dataCb('Servers busy');
+export function elasticSearchExport(type: 'cde', query: any, dataCb: CbError<DataElementElastic>): void;
+export function elasticSearchExport(type: 'form', query: any, dataCb: CbError<CdeFormElastic>): void;
+export async function elasticSearchExport(type: ModuleItem, query: any,
+                                          dataCb: CbError<DataElementElastic> | CbError<CdeFormElastic>) {
+    const streamCb = dataCb as CbError<ItemElastic>;
+    if (lock) {
+        return streamCb(new Error('Servers busy'));
+    }
 
     lock = true;
 
@@ -748,51 +765,40 @@ export function elasticSearchExport(dataCb: CbErr<ItemElastic>, query: any, type
     search.scroll = '1m';
     search.body = query;
 
-    function scrollThrough(response: SearchResponse<ItemElastic>) {
-        esClient.scroll<ItemElastic>({scrollId: response._scroll_id!, scroll: '1m'}, (err, response) => {
+    function scrollThrough(response: any) {
+        // @ts-ignore
+        esClient.scroll({scrollId: response._scroll_id, scroll: '1m'}, (err, response) => {
             if (err) {
                 lock = false;
-                logging.errorLogger.error('Error: Elastic Search Scroll Access Error',
+                errorLogger.error('Error: Elastic Search Scroll Access Error',
                     {
                         origin: 'system.elastic.elasticsearch',
                         stack: new Error().stack
                     });
-                dataCb('ES Error');
+                streamCb(new Error('ES Error'));
             } else {
-                processScroll(response);
+                processScroll(response.body);
             }
         });
     }
 
-    function processScroll(response: SearchResponse<ItemElastic>) {
+    function processScroll(response: any) {
         if (response.hits.hits.length === 0) {
             lock = false;
-            dataCb();
+            streamCb();
         } else {
             for (const hit of response.hits.hits) {
-                dataCb(undefined, hit._source);
+                streamCb(undefined, hit._source);
             }
             scrollThrough(response);
         }
     }
 
-    esClient.search<ItemElastic>(search, (err, response) => {
-        if (err) {
-            lock = false;
-            logging.errorLogger.error('Error: Elastic Search Scroll Query Error',
-                {
-                    origin: 'system.elastic.elasticsearch',
-                    stack: new Error().stack,
-                    details: query
-                });
-            dataCb('ES Error');
-        } else {
-            processScroll(response);
-        }
-    });
+    const response = await esClient.search(search);
+    processScroll(response.body);
 }
 
-export function scrollExport(query: any, type: ModuleItem, cb: CbError<SearchResponse<ItemElastic>>) {
+export function scrollExport(query: any, type: ModuleItem, cb: CbError<any>) {
     query.size = 100;
     delete query.aggregations;
 
@@ -800,10 +806,12 @@ export function scrollExport(query: any, type: ModuleItem, cb: CbError<SearchRes
     search.scroll = '1m';
     search.body = query;
 
+    // @ts-ignore
     esClient.search(search, cb);
 }
 
-export function scrollNext(scrollId: string, cb: CbError<SearchResponse<ItemElastic>>) {
+export function scrollNext(scrollId: string, cb: CbError<any>) {
+    // @ts-ignore
     esClient.scroll({scrollId, scroll: '1m'}, cb);
 }
 
@@ -847,7 +855,8 @@ export const queryNewest = {
     sort: {
         _script: {
             type: 'number',
-            script: "doc['updated'].value > 0 ? doc['updated'].value : (doc['created'].value > 0 ? doc['created'].value : doc['imported'].value)",
+            script: "doc['updated'].value > 0 ? doc['updated'].value : (doc['created'].value > 0 ? doc['created'].value" +
+                " : doc['imported'].value)",
             order: 'desc'
         }
     }

@@ -4,9 +4,9 @@ import { readFileSync } from 'fs';
 export const config = Config as any;
 
 ['log', 'appData', 'migration'].forEach(databaseName => {
-    let database = config.database[databaseName];
+    const database = config.database[databaseName];
     if (database) {
-        let uriOptions = [];
+        const uriOptions = [];
         if (database.options.replicaSet) {
             uriOptions.push('replicaSet=' + database.options.replicaSet);
         }
@@ -19,10 +19,21 @@ export const config = Config as any;
                 database.options.sslCert = readFileSync(database.sslCertPath);
             }
         }
-        database.uri = "mongodb://" + database.username + ":" + database.password + "@"
-            + config.database.servers.map((srv: any) => srv.host + ":" + srv.port).join(",") + "/" + database.db;
-        if (uriOptions.length) database.uri += '?' + uriOptions.join('&');
+        database.uri = 'mongodb://' + database.username + ':' + database.password + '@'
+            + config.database.servers.map((srv: any) => srv.host + ':' + srv.port).join(',') + '/' + database.db;
+        if (uriOptions.length) {
+            database.uri += '?' + uriOptions.join('&');
+        }
     }
 });
+
+config.elastic.options = {
+    nodes: config.elastic.hosts.map((s: string) => (
+        {
+            url: new URL(s),
+            ssl: {rejectUnauthorized: false}
+        }
+    ))
+};
 
 config.database.log.cappedCollectionSizeMB = config.database.log.cappedCollectionSizeMB || 1024 * 1024 * 250;

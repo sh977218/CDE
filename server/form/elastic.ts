@@ -1,30 +1,27 @@
-import * as _ from 'lodash';
-import { config } from '../system/parseConfig';
+import * as elastic from '@elastic/elasticsearch';
+import { splitError } from 'server/errorHandler/errorHandler';
+import { logError } from 'server/log/dbLogger';
+import { riverFunction, suggestRiverFunction } from 'server/system/elasticSearchInit';
+import { config } from 'server/system/parseConfig';
+import { CdeFormElastic } from 'shared/form/form.model';
+import { CbError } from 'shared/models.model';
+import { esClient } from 'server/system/elastic';
 
-const dbLogger = require('../log/dbLogger');
-const elasticsearch = require('elasticsearch');
-const esInit = require('../system/elasticSearchInit');
-
-let esClient = new elasticsearch.Client({
-    hosts: config.elastic.hosts
-});
-
-export function updateOrInsert(elt, cb = _.noop) {
-    esInit.riverFunction(elt.toObject(), doc => {
+export function updateOrInsert(elt) {
+    riverFunction(elt.toObject(), doc => {
         if (doc) {
             let doneCount = 0;
             let doneError;
             const done = err => {
                 if (err) {
-                    dbLogger.logError({
+                    logError({
                         message: 'Unable to Index document: ' + doc.tinyId,
                         origin: 'form.elastic.updateOrInsert',
-                        stack: err,
-                        details: ""
+                        stack: err.toString(),
+                        details: ''
                     });
                 }
                 if (doneCount >= 1) {
-                    cb(err || doneError);
                     return;
                 }
                 doneCount++;
@@ -33,51 +30,46 @@ export function updateOrInsert(elt, cb = _.noop) {
             delete doc._id;
             esClient.index({
                 index: config.elastic.formIndex.name,
-                type: 'form',
+                type: '_doc',
                 id: doc.tinyId,
                 body: doc
             }, done);
-            esInit.suggestRiverFunction(elt, sugDoc => {
+            suggestRiverFunction(elt, sugDoc => {
                 esClient.index({
                     index: config.elastic.formSuggestIndex.name,
-                    type: 'suggest',
+                    type: '_doc',
                     id: doc.tinyId,
                     body: sugDoc
                 }, done);
             });
-        } else {
-            cb();
         }
     });
 }
 
-export function byTinyIdList(idList, size, cb) {
+export function byTinyIdList(idList: string[], size: number, cb: CbError<CdeFormElastic[]>) {
     idList = idList.filter(id => !!id);
+    // @ts-ignore
     esClient.search({
-        index: config.elastic.formIndex.name,
-        type: 'form',
-        body: {
-            query: {
-                ids: {
-                    values: idList
-                }
-            },
-            size: size
-        }
-    }, (error, response) => {
-        if (error) {
-            dbLogger.errorLogger.error('Error Form.byTinyIdList', {
-                origin: 'form.elastic.byTinyIdList',
-                stack: new Error().stack,
-                details: 'Error ' + error + 'response' + JSON.stringify(response)
-            });
-            cb(error);
-        } else {
+            index: config.elastic.formIndex.name,
+            body: {
+                query: {
+                    ids: {
+                        values: idList
+                    }
+                },
+                size
+            }
+        },
+        // @ts-ignore
+        splitError(cb, response => {
             // @TODO possible to move this sort to elastic search?
-            response.hits.hits.sort((a, b) => {
-                return idList.indexOf(a._id) - idList.indexOf(b._id);
-            });
-            cb(null, response.hits.hits.map(h => h._source));
-        }
-    });
+            if (!response) {
+                cb(undefined, []);
+                return;
+            }
+            // @ts-ignore
+            response.body.hits.hits.sort((a, b) => idList.indexOf(a._id) - idList.indexOf(b._id));
+            // @ts-ignore
+            cb(undefined, response.body.hits.hits.map(h => h._source));
+        }));
 }

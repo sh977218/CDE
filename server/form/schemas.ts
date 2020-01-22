@@ -3,7 +3,7 @@ import { addStringtype } from '../system/mongoose-stringtype';
 import {
     attachmentSchema, classificationSchema, codeAndSystemSchema, definitionSchema, derivationRuleSchema,
     designationSchema, eltLogSchema, idSchema, permissibleValueSchema, propertySchema, referenceDocumentSchema,
-    registrationStateSchema, sourceSchema
+    registrationStateSchema, sourcesNewSchema, sourceSchema
 } from 'server/system/schemas';
 import { FormElement } from 'shared/form/form.model';
 import { Classification } from 'shared/models.model';
@@ -96,6 +96,10 @@ const questionSchema = new Schema({
         system: StringType,
         code: StringType
     },
+    displayAs: {
+        type: StringType,
+        enum: ['radio/checkbox/select', 'likert scale']
+    },
     unitsOfMeasure: [codeAndSystemSchema],
     required: {type: Boolean, default: false},
     invisible: {type: Boolean, default: false},
@@ -151,11 +155,18 @@ export const formJson = {
     definitions: {
         type: [definitionSchema],
         description: 'Description of the Form',
+        default: []
     },
     source: {type: StringType, description: 'This field is replaced with sources'},
     sources: {
         type: [sourceSchema],
         description: 'Name of system from which Form was imported or obtained from',
+    },
+    sourcesNew: {
+        type: Map,
+        of: [sourceSchema],
+        description: 'Name of system from which Form was imported or obtained from',
+        default: []
     },
     origin: {type: StringType, description: 'Name of system where Form is derived'},
     stewardOrg: {
@@ -196,7 +207,10 @@ export const formJson = {
         type: [idSchema],
         description: 'Identifier used to establish or indicate what Form is within a specific context',
     },
-    attachments: [attachmentSchema],
+    attachments: {
+        type: [attachmentSchema],
+        default: []
+    },
     history: [Schema.Types.ObjectId],
     archived: {
         type: Boolean,

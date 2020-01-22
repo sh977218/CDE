@@ -38,7 +38,9 @@ export const logErrorSchema = new Schema({ // server
         body: StringType,
         username: StringType,
         userAgent: StringType,
-        ip: StringType
+        ip: StringType,
+        errorCode: StringType,
+        errorType: StringType
     }
 }, {w: 0, capped: cappedSize} as any);
 
@@ -53,20 +55,6 @@ export const clientErrorSchema = new Schema({
     username: StringType,
     ip: StringType
 }, {w: 0, capped: cappedSize} as any);
-
-export const storedQuerySchema = new Schema({
-    searchTerm: {type: StringType, lowercase: true, trim: true},
-    date: {type: Date, default: Date.now},
-    searchToken: StringType,
-    username: StringType,
-    remoteAddr: StringType,
-    isSiteAdmin: Boolean,
-    regStatuses: [StringType],
-    selectedOrg1: StringType,
-    selectedOrg2: StringType,
-    selectedElements1: [StringType],
-    selectedElements2: [StringType]
-}, {w: 0} as any);
 
 export const feedbackIssueSchema = new Schema({
     date: {type: Date, default: Date.now, index: true},

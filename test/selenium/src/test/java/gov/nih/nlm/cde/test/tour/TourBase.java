@@ -13,7 +13,6 @@ public class TourBase extends NlmCdeBaseTest {
             "Click here to start browsing CDEs",
             "Or here to browse forms",
             "Boards allow registered users to group CDEs or Forms. Boards can be private or public. Boards are persistent and will not disappear unless you remove them.",
-            "The quick board is a volatile board that can be used for temporarily storing CDEs and forms. You can also use the quick board to compare CDEs and Forms.",
             "You can find more help about the site here, or information on our APIs. The tour will now take you to the CDE search page.",
             "CDEs or Forms can be browsed by Classifications. Classifications are ways for content owners to organize their CDEs.",
             "Or by topic. Topics are MeSH terms.",

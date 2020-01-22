@@ -13,7 +13,7 @@ import { MatDialog } from '@angular/material';
     ]
 })
 export class ServerStatusComponent {
-    @ViewChild('confirmReindex') confirmReindex!: TemplateRef<any>;
+    @ViewChild('confirmReindex', {static: true}) confirmReindex!: TemplateRef<any>;
     esIndices: any;
     indexToReindex!: number;
     isDone: boolean = false;
@@ -87,9 +87,9 @@ export class ServerStatusComponent {
     }
 
     syncLinkedForms() {
-        this.http.post('/syncLinkedForms', {}).subscribe();
+        this.http.post('/server/syncLinkedForms', {}).subscribe();
         const indexFn = setInterval(() => {
-            this.http.get<any>('/syncLinkedForms').subscribe(res => {
+            this.http.get<any>('/server/syncLinkedForms').subscribe(res => {
                 this.linkedForms = res;
                 if (res.done === res.total) {
                     clearInterval(indexFn);

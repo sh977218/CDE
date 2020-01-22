@@ -20,7 +20,7 @@ import _noop from 'lodash/noop';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
 import { ExportService } from 'non-core/export.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { assertUnreachable, Cb, Comment, Elt, PermissibleValue } from 'shared/models.model';
 import {
     DataElement, DatatypeContainerDate, DatatypeContainerNumber, DatatypeContainerText, DatatypeContainerTime,
@@ -64,11 +64,11 @@ class LocatableError {
     templateUrl: 'formView.component.html',
 })
 export class FormViewComponent implements OnInit {
-    @ViewChild('commentAreaComponent') commentAreaComponent!: DiscussAreaComponent;
-    @ViewChild('copyFormContent') copyFormContent!: TemplateRef<any>;
-    @ViewChild('mltPinModalCde') mltPinModalCde!: PinBoardModalComponent;
-    @ViewChild('exportPublishModal') exportPublishModal!: TemplateRef<any>;
-    @ViewChild('saveModal') saveModal!: SaveModalComponent;
+    @ViewChild('commentAreaComponent', {static: true}) commentAreaComponent!: DiscussAreaComponent;
+    @ViewChild('copyFormContent', {static: true}) copyFormContent!: TemplateRef<any>;
+    @ViewChild('mltPinModalCde', {static: true}) mltPinModalCde!: PinBoardModalComponent;
+    @ViewChild('exportPublishModal', {static: true}) exportPublishModal!: TemplateRef<any>;
+    @ViewChild('saveModal', {static: false}) saveModal!: SaveModalComponent;
     commentMode?: boolean;
     currentTab = 'preview_tab';
     dialogRef!: MatDialogRef<any>;
@@ -138,7 +138,7 @@ export class FormViewComponent implements OnInit {
             ids: newCde.ids,
             registrationState: {registrationStatus: 'Incomplete'}
         };
-        this.http.post<DataElement>('/de', dataElement)
+        this.http.post<DataElement>('/server/de', dataElement)
             .subscribe(res => {
                 if (res.tinyId) { newCde.tinyId = res.tinyId; }
                 if (res.version) { newCde.version = res.version; }
@@ -149,7 +149,7 @@ export class FormViewComponent implements OnInit {
     }
 
     exportPublishForm() {
-        this.http.post('/form/publish/' + this.elt._id, {
+        this.http.post('/server/form/publish/' + this.elt._id, {
             publishedFormName: this.formInput.publishedFormName,
             endpointUrl: this.formInput.endpointUrl
         }).subscribe(
@@ -295,7 +295,7 @@ export class FormViewComponent implements OnInit {
     }
 
     removeDraft() {
-        this.http.delete('/draftForm/' + this.elt.tinyId, {responseType: 'text'}).subscribe(
+        this.http.delete('/server/form/draft/' + this.elt.tinyId, {responseType: 'text'}).subscribe(
             () => this.loadElt(() => this.hasDrafts = false),
             err => this.alert.httpErrorMessageAlert(err));
     }
@@ -309,7 +309,7 @@ export class FormViewComponent implements OnInit {
             this.unsaved = true;
             return this.draftSaving;
         }
-        return this.draftSaving = this.http.put<CdeForm>('/draftForm/' + this.elt.tinyId, this.elt)
+        return this.draftSaving = this.http.put<CdeForm>('/server/form/draft/' + this.elt.tinyId, this.elt)
             .toPromise().then(newElt => {
                 this.draftSaving = undefined;
                 this.elt.__v = newElt.__v;
@@ -348,7 +348,7 @@ export class FormViewComponent implements OnInit {
                 }, () => {
                     const publish = () => {
                         const publishData = {_id: this.elt._id, tinyId: this.elt.tinyId, __v: this.elt.__v};
-                        this.http.post('/formPublish', publishData).subscribe(res => {
+                        this.http.post('/server/form/publish', publishData).subscribe(res => {
                             if (res) {
                                 this.hasDrafts = false;
                                 this.loadElt(() => this.alert.addAlert('success', 'Form saved.'));

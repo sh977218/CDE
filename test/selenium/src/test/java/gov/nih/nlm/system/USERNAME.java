@@ -4,6 +4,17 @@ public interface USERNAME {
     String nlm_username = "nlm";
     String nlm_password = "nlm";
 
+    String bad_username = "bad-username";
+    String bad_password = "bad-username";
+
+    String lockout_username = "cdelockcounter300";
+    String lockout_increase_username = "cdelockcounter1";
+    String Umls_not_in_db_username = "cdeci1";
+    String Umls_not_in_db_password = "Aa!!!000";
+
+    String empty_roles_username  ="emptyRolesUser";
+    String empty_avatar_username  ="emptyAvatarUser";
+
     String cabigAdmin_username = "cabigAdmin";
     String promis_username = "promis";
     String ctepCurator_username = "ctepCurator";

@@ -24,7 +24,7 @@
             <dd id="source_{{i}}" class="col-9">{{id.source}}</dd>
             <dt class="col-3 text-right">Id:</dt>
             <dd id="id_{{i}}" class="col-9">
-                <a *ngIf="idsLinks[i]; else noLink" [href]="idsLinks[i]" target="_blank">{{id.id}}</a>
+                <a *ngIf="idsLinks[i]; else noLink" [href]="idsLinks[i]" target="_blank" rel="noopener noreferrer">{{id.id}}</a>
                 <ng-template #noLink>{{id.id}}</ng-template>
             </dd>
             <dt class="col-3 text-right">Version:</dt>

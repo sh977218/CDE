@@ -8,6 +8,7 @@ import _noop from 'lodash/noop';
 import _toString from 'lodash/toString';
 import { FormService } from 'nativeRender/form.service';
 import { DataElement, DataType } from 'shared/de/dataElement.model';
+import { isScore } from 'shared/form/fe';
 import { FormElement, FormQuestion, QuestionValueList } from 'shared/form/form.model';
 
 @Component({
@@ -26,7 +27,8 @@ export class FormDescriptionQuestionComponent implements OnInit {
     @Input() index!: number;
     @Input() node!: TreeNode;
     @Output() stageElt: EventEmitter<void> = new EventEmitter<void>();
-    @ViewChild('updateCdeVersionTmpl') updateCdeVersionTmpl!: TemplateRef<any>;
+    @ViewChild('updateCdeVersionTmpl', {static: true}) updateCdeVersionTmpl!: TemplateRef<any>;
+    isScore = isScore;
     isSubForm = false;
     parent!: FormElement;
     question!: FormQuestion;
@@ -97,6 +99,7 @@ export class FormDescriptionQuestionComponent implements OnInit {
         newQuestion.question.editable = currentQuestion.question.editable;
         newQuestion.question.invisible = currentQuestion.question.invisible;
         if (currentQuestion.question.datatype === 'Value List') {
+            (newQuestion.question as QuestionValueList).displayAs = currentQuestion.question.displayAs;
             (newQuestion.question as QuestionValueList).multiselect = currentQuestion.question.multiselect;
         }
         newQuestion.question.required = currentQuestion.question.required;
@@ -157,7 +160,7 @@ export class FormDescriptionQuestionComponent implements OnInit {
         }
 
         this.updateCdeVersion = modal;
-        this.dialog.open(this.updateCdeVersionTmpl, {width: '1000px'}).afterClosed().subscribe(res => {
+        this.dialog.open<boolean>(this.updateCdeVersionTmpl, {width: '1000px'}).afterClosed().subscribe(res => {
             if (res) {
                 currentQuestion.question = newQuestion.question;
                 currentQuestion.label = newQuestion.label;

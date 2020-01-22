@@ -1,5 +1,5 @@
 import { ValueDomain, ValueDomainValueList } from 'shared/de/dataElement.model';
-import { questionQuestionMulti } from 'shared/form/fe';
+import { isScore, questionQuestionMulti } from 'shared/form/fe';
 import { Question, QuestionValueList } from 'shared/form/form.model';
 import { codeSystemOut } from 'shared/mapping/fhir';
 import { FhirCoding, FhirQuantity, FhirValue } from 'shared/mapping/fhir/fhir.model';
@@ -27,7 +27,7 @@ export function isItemTypeToContainer(container: Question | ValueDomain, type: s
     }
     switch (type) {
         case 'display':
-            return !!(container as Question).isScore;
+            return isScore(container as Question);
         case 'choice':
             return container.datatype === 'Value List';
         case 'date':

@@ -10,8 +10,8 @@ import { updateTag } from 'shared/system/util';
     templateUrl: './statusValidationRules.component.html'
 })
 export class StatusValidationRulesComponent implements OnInit {
-    @ViewChild('removeRuleModal') removeRuleModal!: TemplateRef<any>;
-    @ViewChild('addNewRuleModal') addNewRuleModal!: TemplateRef<any>;
+    @ViewChild('removeRuleModal', {static: true}) removeRuleModal!: TemplateRef<any>;
+    @ViewChild('addNewRuleModal', {static: true}) addNewRuleModal!: TemplateRef<any>;
     dialogRef!: MatDialogRef<TemplateRef<any>>;
     fields: string[] = [
         'ids.source',
@@ -55,11 +55,10 @@ export class StatusValidationRulesComponent implements OnInit {
     userOrgs: StatusValidationRulesByOrg = {};
     userOrgsArray: string[] = [];
 
-    constructor(
-        private http: HttpClient,
-        public dialog: MatDialog,
-        private orgHelperService: OrgHelperService,
-    ) {}
+    constructor(private http: HttpClient,
+                public dialog: MatDialog,
+                private orgHelperService: OrgHelperService) {
+    }
 
     ngOnInit() {
         this.orgHelperService.then(orgsDetailedInfo => {
@@ -73,13 +72,13 @@ export class StatusValidationRulesComponent implements OnInit {
 
     disableRule(orgName: string, rule: StatusValidationRules) {
         // @TODO does not refresh page
-       this.dialog.open(this.removeRuleModal).afterClosed().subscribe(res => {
-           if (res) {
-               this.http.post<Organization>('/disableRule', {orgName, rule}).subscribe(response => {
-                   this.userOrgs[orgName] = response.cdeStatusValidationRules || [];
-               });
-           }
-       }, _noop);
+        this.dialog.open(this.removeRuleModal).afterClosed().subscribe(res => {
+            if (res) {
+                this.http.post<Organization>('/server/system/disableRule', {orgName, rule}).subscribe(response => {
+                    this.userOrgs[orgName] = response.cdeStatusValidationRules || [];
+                });
+            }
+        }, _noop);
     }
 
     saveRule() {
@@ -87,12 +86,13 @@ export class StatusValidationRulesComponent implements OnInit {
             this.newRule.rule.customValidations = updateTag(this.newRule.rule.customValidations,
                 this.newRuleCustomValidationPvUmls, 'permissibleValuesUMLS');
         }
-        this.http.post<Organization>('/enableRule', {
+        this.http.post<Organization>('/server/system/enableRule', {
             orgName: this.newRuleOrg,
             rule: this.newRule
         }).subscribe(org => {
             this.userOrgs[this.newRuleOrg] = org.cdeStatusValidationRules || [];
-        }, () => {});
+        }, () => {
+        });
         this.dialogRef.close();
     }
 

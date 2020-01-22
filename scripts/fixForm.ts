@@ -1,4 +1,4 @@
-import { Form } from 'server/form/mongo-form';
+import { formModel } from 'server/form/mongo-form';
 import { fixFormError } from './utility';
 
 process.on('unhandledRejection', error => {
@@ -6,13 +6,9 @@ process.on('unhandledRejection', error => {
 });
 
 function run() {
-    let formCount: number = 0;
-    const cond = {
-        archived: false,
-        'registrationState.registrationStatus': {$not: /Retired/},
-    };
-    const cursor = Form.find(cond).cursor();
-
+    let formCount = 0;
+    const cond = {};
+    const cursor = formModel.find(cond).cursor();
     cursor.eachAsync(async (form: any) => {
         form.lastMigrationScript = 'fixForm';
         await fixFormError(form);

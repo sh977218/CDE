@@ -4,8 +4,7 @@ import {
 import { HttpClient } from '@angular/common/http';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
-import { Article } from 'core/article/article.model';
-import { hasRole } from 'shared/system/authorizationShared';
+import { Article } from 'shared/article/article.model';
 import { ResourcesRssComponent } from 'system/public/components/resources/resourcesRss.component';
 import { ActivatedRoute } from '@angular/router';
 
@@ -15,7 +14,6 @@ import { ActivatedRoute } from '@angular/router';
     entryComponents: [ResourcesRssComponent]
 })
 export class ResourcesComponent implements OnDestroy {
-    canEdit: boolean;
     containers: HtmlContainer[] = [];
     resource: Article;
 
@@ -26,13 +24,13 @@ export class ResourcesComponent implements OnDestroy {
                 private http: HttpClient,
                 private injector: Injector,
                 public userService: UserService) {
-        this.canEdit = hasRole(this.userService.user, 'DocumentationEditor');
         this.resource = this.route.snapshot.data.resource;
         this.renderMe();
     }
 
     renderMe() {
         const waitUntilBodyHtml = setInterval(() => {
+            clearInterval(waitUntilBodyHtml);
             if (this.resource.rssFeeds) {
                 for (let i = 0; i < this.resource.rssFeeds.length; i++) {
                     const rssFeed = this.resource.rssFeeds[i];
@@ -45,7 +43,6 @@ export class ResourcesComponent implements OnDestroy {
                     this.addComponentToRow(ResourcesRssComponent, myRow, rssFeed);
                 }
             }
-            clearInterval(waitUntilBodyHtml);
         }, 0);
     }
 
