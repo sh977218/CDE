@@ -1,5 +1,5 @@
 import { dataElementModel } from 'server/cde/mongo-cde';
-import { fixCdeError } from './utility';
+import { fixCdeError } from 'ingester/shared/de';
 
 process.on('unhandledRejection', (error) => {
     console.log(error);
@@ -7,14 +7,13 @@ process.on('unhandledRejection', (error) => {
 
 function run() {
     let cdeCount = 0;
-    const cond = {lastMigrationScript: {$ne: 'addSourcesNew'}, 'sources.0': {$exists: true}};
+    const cond = {lastMigrationScript: {$ne: 'mongoose validation'}};
     const cursor = dataElementModel.find(cond).cursor();
     cursor.eachAsync(async (cde: any) => {
-        cde.lastMigrationScript = 'addSourcesNew';
-        const cdeObj = cde.toObject();
         await fixCdeError(cde);
+        cde.lastMigrationScript = 'mongoose validation';
         await cde.save().catch(error => {
-            console.log(`await cde.save() Error on tinyId: ${cde.tinyId} id: ${cde._id} ${error}`);
+            console.log(`await cde.save() Error ${error}`);
         });
         cdeCount++;
         console.log(`cdeCount: ${cdeCount}`);

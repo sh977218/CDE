@@ -1,5 +1,5 @@
 import { formModel } from 'server/form/mongo-form';
-import { fixFormError } from './utility';
+import { fixFormError } from 'ingester/shared/form';
 
 process.on('unhandledRejection', error => {
     console.log(error);
@@ -7,13 +7,13 @@ process.on('unhandledRejection', error => {
 
 function run() {
     let formCount = 0;
-    const cond = {};
+    const cond = {lastMigrationScript: {$ne: 'mongoose validation'}};
     const cursor = formModel.find(cond).cursor();
     cursor.eachAsync(async (form: any) => {
-        form.lastMigrationScript = 'fixForm';
+        form.lastMigrationScript = 'mongoose validation';
         await fixFormError(form);
         await form.save().catch(error => {
-            throw new Error(`await form.save() Error on ${form.tinyId} ${error}`);
+            console.log(`await form.save() Error ${error}`);
         });
         formCount++;
         console.log(`formCount: ${formCount}`);
