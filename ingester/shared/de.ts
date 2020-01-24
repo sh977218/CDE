@@ -2,69 +2,76 @@ import { isEmpty } from 'lodash';
 import {
     fixClassification, fixCreated, fixCreatedBy, fixEmptyDesignation, fixSources,
 } from 'ingester/shared/utility';
+import { idSchema } from 'server/system/schemas';
 
 export function fixValueDomain(cdeObj) {
-    if (!cdeObj.valueDomain.permissibleValues) {
-        cdeObj.valueDomain.permissibleValues = [];
+    const valueDomain: any = {
+        datatype: 'Text',
+        ids: [],
+        identifiers: [],
+        permissibleValues: []
+    };
+    if (!isEmpty(cdeObj.valueDomain.datatype)) {
+        valueDomain.datatype = cdeObj.valueDomain.datatype;
     }
-    if (!cdeObj.valueDomain.datatype) {
-        cdeObj.valueDomain.datatype = 'Text';
+    if (!isEmpty(cdeObj.valueDomain.name)) {
+        valueDomain.name = cdeObj.valueDomain.name;
     }
-    const datatype = cdeObj.valueDomain.datatype;
-    const myProps = [
-        'datatypeText',
-        'datatypeNumber',
-        'datatypeDate',
-        'datatypeTime',
-        'datatypeExternallyDefined',
-        'datatypeValueList',
-        'datatypeDynamicCodeList'
-    ];
-    let checkType = datatype.replace(/\s+/g, ' ');
-    checkType = `datatype${checkType}`;
-
+    if (!isEmpty(cdeObj.valueDomain.identifiers)) {
+        valueDomain.identifiers = cdeObj.valueDomain.identifiers;
+    }
+    if (!isEmpty(cdeObj.valueDomain.ids)) {
+        valueDomain.ids = cdeObj.valueDomain.ids;
+    }
+    if (!isEmpty(cdeObj.valueDomain.definition)) {
+        valueDomain.definition = cdeObj.valueDomain.definition;
+    }
+    if (!isEmpty(cdeObj.valueDomain.uom)) {
+        valueDomain.uom = cdeObj.valueDomain.uom;
+    }
+    if (!isEmpty(cdeObj.valueDomain.uom)) {
+        valueDomain.vsacOid = cdeObj.valueDomain.vsacOid;
+    }
+    const datatype = valueDomain.datatype;
     if (datatype === 'Value List') {
-        if (isEmpty(cdeObj.valueDomain.permissibleValues)) {
-            cdeObj.valueDomain.permissibleValues = [{permissibleValue: '5'}];
+        valueDomain.permissibleValues = fixPermissibleValue(cdeObj.valueDomain.permissibleValues);
+        if (isEmpty(valueDomain.permissibleValues)) {
+            valueDomain.datatype = 'Text';
         }
-        cdeObj.valueDomain.permissibleValues = fixEmptyPermissibleValue(cdeObj.valueDomain.permissibleValues);
     } else {
-        cdeObj.valueDomain.permissibleValues = [];
         if (datatype === 'Text') {
             if (!isEmpty(cdeObj.valueDomain.datatypeText)) {
-                cdeObj.valueDomain.datatypeText = fixDatatypeText(cdeObj.valueDomain.datatypeText);
+                valueDomain.datatypeText = fixDatatypeText(cdeObj.valueDomain.datatypeText);
             }
         }
         if (datatype === 'Number') {
             if (!isEmpty(cdeObj.valueDomain.datatypeNumber)) {
-                cdeObj.valueDomain.datatypeNumber = fixDatatypeNumber(cdeObj.valueDomain.datatypeNumber);
+                valueDomain.datatypeNumber = fixDatatypeNumber(cdeObj.valueDomain.datatypeNumber);
+            }
+        }
+        if (datatype === 'Date') {
+            if (!isEmpty(cdeObj.valueDomain.datatypeDate)) {
+                valueDomain.datatypeDate = fixDatatypeDate(cdeObj.valueDomain.datatypeDate);
+            }
+        }
+        if (datatype === 'Time') {
+            if (!isEmpty(cdeObj.valueDomain.datatypeTime)) {
+                valueDomain.datatypeTime = fixDatatypeTime(cdeObj.valueDomain.datatypeTime);
+            }
+        }
+        if (datatype === 'Dynamic List') {
+            if (!isEmpty(cdeObj.valueDomain.datatypeDynamicList)) {
+                valueDomain.datatypeDynamicList = fixDatatypeDynamicList(cdeObj.valueDomain.datatypeDynamicList);
+            }
+        }
+        if (datatype === 'Externally Defined') {
+            if (!isEmpty(cdeObj.valueDomain.datatypeExternallyDefined)) {
+                valueDomain.datatypeExternallyDefined = fixDatatypeExternallyDefined(cdeObj.valueDomain.datatypeExternallyDefined);
             }
         }
     }
-    myProps.filter(e => e !== checkType).forEach(p => {
-        delete cdeObj.valueDomain[p];
-    });
-    if (!cdeObj.valueDomain[checkType]) {
-        cdeObj.valueDomain[checkType] = {};
-    }
 
-    return cdeObj.valueDomain;
-}
-
-export function fixDatatypeNumber(datatypeNumber) {
-    const minValueString = datatypeNumber.minValue;
-
-    const minValue = parseInt(minValueString, 10);
-    const maxValueString = datatypeNumber.maxValue;
-    const maxValue = parseInt(maxValueString, 10);
-    const result: any = {};
-    if (!isNaN(minValue)) {
-        result.minValue = minValue;
-    }
-    if (!isNaN(maxValue)) {
-        result.maxValue = maxValue;
-    }
-    return result;
+    return cdeObj.valueDomain = valueDomain;
 }
 
 export function fixDatatypeText(datatypeText) {
@@ -83,7 +90,60 @@ export function fixDatatypeText(datatypeText) {
     return result;
 }
 
-export function fixEmptyPermissibleValue(permissibleValues) {
+export function fixDatatypeNumber(datatypeNumber) {
+    const minValueString = datatypeNumber.minValue;
+
+    const minValue = parseInt(minValueString, 10);
+    const maxValueString = datatypeNumber.maxValue;
+    const maxValue = parseInt(maxValueString, 10);
+    const result: any = {};
+    if (!isNaN(minValue)) {
+        result.minValue = minValue;
+    }
+    if (!isNaN(maxValue)) {
+        result.maxValue = maxValue;
+    }
+    return result;
+}
+
+export function fixDatatypeDate(datatypeDate) {
+    return {
+        precision: datatypeDate.precision
+    };
+}
+
+export function fixDatatypeTime(datatypeTime) {
+    return {
+        format: datatypeTime.format
+    };
+}
+
+export function fixDatatypeDynamicList(datatypeDynamicList) {
+    const result: any = {};
+    if (!isEmpty(datatypeDynamicList.system)) {
+        result.system = datatypeDynamicList.system;
+    }
+    if (!isEmpty(datatypeDynamicList.code)) {
+        result.code = datatypeDynamicList.code;
+    }
+    return result;
+}
+
+export function fixDatatypeExternallyDefined(datatypeExternallyDefined) {
+    const result: any = {};
+    if (!isEmpty(datatypeExternallyDefined.link)) {
+        result.link = datatypeExternallyDefined.link;
+    }
+    if (!isEmpty(datatypeExternallyDefined.description)) {
+        result.description = datatypeExternallyDefined.description;
+    }
+    if (!isEmpty(datatypeExternallyDefined.descriptionFormat)) {
+        result.descriptionFormat = datatypeExternallyDefined.descriptionFormat;
+    }
+    return result;
+}
+
+export function fixPermissibleValue(permissibleValues) {
     const result = [];
     permissibleValues.forEach(pv => {
         if (!pv.permissibleValue) {
@@ -113,7 +173,7 @@ export function fixDerivationRules(cdeObj) {
     return derivationRules;
 }
 
-export function fixCdeError(cde) {
+export function fixDeError(cde) {
     const cdeObj = cde.toObject();
 
     if (!cde.createdBy) {

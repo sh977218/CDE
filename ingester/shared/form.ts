@@ -3,6 +3,10 @@ import { dataElementModel } from 'server/cde/mongo-cde';
 import {
     fixClassification, fixEmptyDefinition, fixEmptyDesignation, fixProperties, fixSources
 } from 'ingester/shared/utility';
+import {
+    fixDatatypeDate, fixDatatypeDynamicList, fixDatatypeExternallyDefined, fixDatatypeNumber, fixDatatypeText,
+    fixDatatypeTime, fixPermissibleValue
+} from 'ingester/shared/de';
 
 
 async function fixFormElements(formObj) {
@@ -11,6 +15,7 @@ async function fixFormElements(formObj) {
         fixInstructions(fe);
         const elementType = fe.elementType;
         if (elementType === 'question') {
+            fixQuestionDatatype(fe);
             await fixQuestion(fe);
             formElements.push(fe);
         } else {
@@ -39,38 +44,64 @@ function fixInstructions(fe: any) {
     }
 }
 
-const nameTinyIdMap = {
-    'Generalized Anxiety Disorder (GAD-7) - feeling nervous scale': 'm1ufksx5W',
-    'Generalized Anxiety Disorder (GAD-7) - not stop worry scale': 'myeOG1jx9Z',
-    'Patient Health Questionnaire (PHQ) - Feeling failure score': 'QkIo3YfIyX',
-    'Rey Auditory Verbal Learning Test (RAVLT) - Correct recall trial total count': 'Q1G8Pkix9Z',
-    'Rey Auditory Verbal Learning Test (RAVLT) - Correct recall trial A1-5 total count': 'Qy78PJoe9W',
-    'Rey Auditory Verbal Learning Test (RAVLT) - Trial number': 'QkV8wJjec_',
-    'Rey Auditory Verbal Learning Test (RAVLT) - Word list type': 'XyH8wyil5W',
-    'Rey Auditory Verbal Learning Test (RAVLT) - Word list A type': 'myU8v1ie9Z',
-    'Rey Auditory Verbal Learning Test (RAVLT) - Word list B type': 'Qyv8wkjg9_',
-    'Rey Auditory Verbal Learning Test (RAVLT) - Word correct recall indicator': 'XkuIDJiecZ',
-    'Vascular partial pressure carbon dioxide transcutaneous increase greater than 15 mmHg indicator': '7JjMwDJie9W',
-    'Pittsburgh Sleep Quality Index (PSQI) - Cannot breathe comfortably past month scale': 'Q1yWiFJil9Z',
-    'Imaging tissue integrity normal appearing white matter measurement indicator': 'Q1czVhJsg5Z',
-    'Imaging tissue integrity other regional measurements indicator': 'JwbH7OtcWAF',
-    'Optical coherence tomography (OCT) time-domain performed indicator': 'Qk2fuh1sgc_',
-    'Imaging follow-up scan indicator': 'mkxZ3hkigcZ'
+function fixQuestionDatatype(fe: any) {
+    const question: any = {
+        multiselect: fe.question.multiselect,
+        editable: fe.question.editable,
+        required: fe.question.required,
+        unitsOfMeasure: fe.question.unitsOfMeasure,
+        cde: fe.question.cde,
+        answers: [],
+        datatype: fe.question.datatype
+    };
+    const datatype = fe.question.datatype;
+    if (datatype === 'Value List') {
+        if (!isEmpty(fe.question.answers)) {
+            question.answers = fixPermissibleValue(fe.question.answers);
+        }
+        if (!isEmpty(fe.question.cde.permissibleValues)) {
+            question.cde.permissibleValues = fixPermissibleValue(fe.question.cde.permissibleValues);
+        }
 
-
-};
+    } else {
+        if (datatype === 'Text') {
+            if (!isEmpty(fe.question.datatypeText)) {
+                question.datatypeText = fixDatatypeText(fe.question.datatypeText);
+            }
+        }
+        if (datatype === 'Number') {
+            if (!isEmpty(fe.question.datatypeNumber)) {
+                question.datatypeNumber = fixDatatypeNumber(fe.question.datatypeNumber);
+            }
+        }
+        if (datatype === 'Date') {
+            if (!isEmpty(fe.question.datatypeDate)) {
+                question.datatypeDate = fixDatatypeDate(fe.question.datatypeDate);
+            }
+        }
+        if (datatype === 'Time') {
+            if (!isEmpty(fe.question.datatypeTime)) {
+                question.datatypeTime = fixDatatypeTime(fe.question.datatypeTime);
+            }
+        }
+        if (datatype === 'Dynamic List') {
+            if (!isEmpty(fe.question.datatypeDynamicList)) {
+                question.datatypeDynamicList = fixDatatypeDynamicList(fe.question.datatypeDynamicList);
+            }
+        }
+        if (datatype === 'Externally Defined') {
+            if (!isEmpty(fe.question.datatypeExternallyDefined)) {
+                question.datatypeExternallyDefined = fixDatatypeExternallyDefined(fe.question.datatypeExternallyDefined);
+            }
+        }
+    }
+    fe.question = question;
+}
 
 async function fixQuestion(fe: any) {
     if (fe.question.cde.tinyId === undefined) {
-        const foundCdes = await dataElementModel.find({
-            'designations.designation': fe.question.cde.name,
-            ids: {$elemMatch: fe.question.cde.ids[0]}
-        });
-        if (foundCdes.length === 0) {
-            console.log('a');
-        } else {
-            fe.question.cde.tinyId = foundCdes[0].tinyId;
-        }
+        fe.question.cde.tinyId = 'missingTinyId';
+        fe.question.cde.ids = fe.question.cde.ids.filter(i => !isEmpty(i.source));
     }
     if (fe.question.cde.tinyId.indexOf('-') !== -1) {
         fe.question.cde.tinyId = fe.question.cde.tinyId.replace(/-/ig, '_');
@@ -83,6 +114,7 @@ async function fixSectionInform(sectionInformFe, formObj) {
         fixInstructions(fe);
         const elementType = fe.elementType;
         if (elementType === 'question') {
+            fixQuestionDatatype(fe);
             await fixQuestion(fe);
             formElements.push(fe);
         } else {

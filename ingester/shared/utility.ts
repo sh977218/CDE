@@ -889,6 +889,7 @@ export function fixSources(obj) {
 export function fixEmptyDesignation(cdeObj) {
     return cdeObj.designations.filter(d => d.designation);
 }
+
 export function fixEmptyDefinition(cdeObj) {
     return cdeObj.definitions.filter(d => d.definition);
 }
@@ -898,10 +899,8 @@ export function fixClassification(eltObj) {
         if (c.stewardOrg.name.toLowerCase() === 'eyegene') {
             c.stewardOrg.name = 'eyeGENE';
         }
-        if (isEmpty(c.elements)) {
-            c.elements = [{name: 'demo', elements: []}];
-        }
     });
+    eltObj.classification = eltObj.classification.filter(c => !isEmpty(c.elements));
     return uniqBy(eltObj.classification, 'stewardOrg.name');
 }
 
