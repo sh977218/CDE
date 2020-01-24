@@ -34,27 +34,4 @@ function run() {
     });
 }
 
-/*
-function run() {
-    const cond = {_id: {$in: idsToFix.map(i => mongoose.Types.ObjectId(i))}};
-    const cursor = formModel.find(cond).cursor();
-    cursor.eachAsync(async (form: any) => {
-        const formObj = form.toObject();
-        const formId = formObj._id.toString();
-        if (idsToFix.indexOf(formId) !== -1) {
-            form.lastMigrationScript = 'mongoose validation';
-            await fixFormError(form);
-            await form.save().catch(error => {
-                console.log(`await form.save() Error ${error}`);
-            });
-        }
-    }).then(() => {
-        process.exit(0);
-    }, e => {
-        console.log(e);
-        process.exit(1);
-    });
-}
-*/
-
 run();
