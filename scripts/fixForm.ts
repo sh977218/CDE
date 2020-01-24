@@ -13,10 +13,10 @@ function run() {
         form.lastMigrationScript = 'mongoose validation';
         await fixFormError(form);
         await form.save().catch(error => {
-            console.log(`await form.save() Error ${error}`);
+            console.log(`await form.save() Error ${form._id.toString()} ${error}`);
         });
         formCount++;
-        console.log(`formCount: ${formCount}`);
+//        console.log(`formCount: ${formCount}`);
     }).then(() => {
         console.log('finished.');
         process.exit(0);

@@ -16,7 +16,7 @@ function run() {
             console.log(`await cde.save() Error ${error}`);
         });
         cdeCount++;
-        console.log(`cdeCount: ${cdeCount}`);
+//        console.log(`cdeCount: ${cdeCount}`);
     }).then(() => {
         console.log('finished.');
         process.exit(0);
