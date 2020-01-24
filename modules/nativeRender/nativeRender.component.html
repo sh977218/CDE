@@ -20,6 +20,6 @@
 </form>
 
 <small *ngIf="nrs.vm?.isCopyrighted && (!nrs.profile || nrs.profile.displayCopyright)"
-       id="copyrightStatement">{{nrs.vm.copyright.text}}</small>
+       id="copyrightStatement">{{nrs.vm.copyright?.text}}</small>
 
 <div *ngFor="let error of nrs.getErrors()"><code>{{error}}</code></div>
