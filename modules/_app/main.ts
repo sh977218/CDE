@@ -10,6 +10,8 @@ require('expose-loader?bootstrap!bootstrap');
 // import '../../node_modules/material-design-icons/iconfont/material-icons.css';
 import '../../node_modules/deeppurple-amber.css';
 
+import '../../node_modules/hammerjs/hammer.min';
+
 import { enableProdMode } from '@angular/core';
 if (PRODUCTION) {
     enableProdMode();
