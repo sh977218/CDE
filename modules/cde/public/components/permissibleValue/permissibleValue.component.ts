@@ -268,7 +268,7 @@ export class PermissibleValueComponent {
                 } else if (src === 'UMLS') {
                     this.http.get<any>(`/server/uts/umlsCuiFromSrc/${code}/${source}`)
                         .subscribe(res => {
-                            if (res.result.results.length > 0) {
+                            if (res && res.result.results.length > 0) {
                                 res.result.results.forEach((r: any) => {
                                         this.SOURCES[src].codes[code] = {code: r.ui, meaning: r.name};
                                 });
