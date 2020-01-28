@@ -147,6 +147,7 @@ async function doOnePage(ninds: any, driver: any) {
 
 async function doCdes(ninds: any, url: string) {
     const driver = await new Builder().forBrowser('chrome').build();
+    await driver.manage().window().maximize();
     await driver.get(url);
     ninds.cdes = [];
     await doOnePage(ninds, driver);
@@ -238,6 +239,7 @@ async function doDomains(driver: any, disorder: any, subDiseaseName: string = ''
 async function doDisorder(disorder: any) {
     console.log(`Fetch disorder: ${disorder.disorderName}`);
     const driver = await new Builder().forBrowser('chrome').build();
+    await driver.manage().window().maximize();
     await driver.get(disorder.url);
     const subDiseases: any = disorder.subDiseases;
     if (subDiseases && subDiseases.length) {
