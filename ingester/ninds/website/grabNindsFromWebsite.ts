@@ -7,7 +7,7 @@ const URL_PREFIX = 'https://www.commondataelements.ninds.nih.gov/';
 
 // tslint:disable-next-line:max-line-length
 // document count xpath: //div[div[p[button[normalize-space(text())='Expand All']]]]/div[@class='view-content']/div[@class='view-grouping']/div[@class='view-grouping-content']/div/table/tbody/tr
-const DISORDERS: any = [
+const DISORDERS: any = [/*
     {
         disorderName: 'General (For all diseases)',
         url: URL_PREFIX + 'General%20%28For%20all%20diseases%29',
@@ -74,33 +74,33 @@ const DISORDERS: any = [
     }, {
         disorderName: 'Unruptured Cerebral Aneurysms and Subarachnoid Hemorrhage',
         url: URL_PREFIX + 'Unruptured%20Cerebral%20Aneurysms%20and%20Subarachnoid%20Hemorrhage',
+    },*/ {
+    disorderName: 'Traumatic Brain Injury',
+    url: URL_PREFIX + 'Traumatic%20Brain%20Injury',
+    subDiseases: [{
+        name: 'Acute Hospitalized',
     }, {
-        disorderName: 'Traumatic Brain Injury',
-        url: URL_PREFIX + 'Traumatic%20Brain%20Injury',
-        subDiseases: [{
-            name: 'Acute Hospitalized',
-        }, {
-            name: 'Comprehensive',
-        }, {
-            name: 'Concussion/Mild TBI',
-        }, {
-            name: 'Epidemiology',
-        }, {
-            name: 'Moderate/Severe TBI: Rehabilitation',
-        }]
+        name: 'Comprehensive',
     }, {
-        disorderName: 'Sport Related Concussion',
-        url: URL_PREFIX + 'Sport%20Related%20Concussion',
-        subDiseases: [{
-            name: 'Acute',
-        }, {
-            name: 'Comprehensive',
-        }, {
-            name: 'Persistent/Chronic',
-        }, {
-            name: 'Subacute',
-        }]
-    }
+        name: 'Concussion/Mild TBI',
+    }, {
+        name: 'Epidemiology',
+    }, {
+        name: 'Moderate/Severe TBI: Rehabilitation',
+    }]
+}, {
+    disorderName: 'Sport Related Concussion',
+    url: URL_PREFIX + 'Sport%20Related%20Concussion',
+    subDiseases: [{
+        name: 'Acute',
+    }, {
+        name: 'Comprehensive',
+    }, {
+        name: 'Persistent/Chronic',
+    }, {
+        name: 'Subacute',
+    }]
+}
 ];
 
 async function doCdesTable(cdeTableElement: any) {
@@ -225,7 +225,9 @@ async function doDomains(driver: any, disorder: any, subDiseaseName: string = ''
     await driver.findElement(By.xpath("//button[normalize-space(text())='Expand All']")).click();
     // tslint:disable-next-line:max-line-length
     const domainDivXpath = "//div[div[p[button[normalize-space(text())='Collapse All']]]]/div[@class='view-content']/div[@class='view-grouping']";
-    await driver.wait(until.elementLocated(By.xpath(domainDivXpath)), 30 * 1000);
+//    await driver.wait(until.elementLocated(By.xpath(domainDivXpath)), 30 * 1000);
+    await driver.sleep(20000);
+
     const domainElements = await driver.findElements(By.xpath(domainDivXpath));
     for (const domainElement of domainElements) {
         const domainName = await doDomainName(domainElement);
