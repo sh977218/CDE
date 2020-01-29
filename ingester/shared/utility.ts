@@ -1,7 +1,7 @@
 import { Builder, By } from 'selenium-webdriver';
 import * as DiffJson from 'diff-json';
 import * as moment from 'moment';
-import { find, noop, findIndex, isEmpty, isEqual, lastIndexOf, lowerCase, sortBy, uniq } from 'lodash';
+import { find, noop, findIndex, isEmpty, isEqual, lastIndexOf, lowerCase, sortBy, uniq, uniqBy } from 'lodash';
 import * as mongo_cde from 'server/cde/mongo-cde';
 import { dataElementSourceModel } from 'server/cde/mongo-cde';
 import * as mongo_form from 'server/form/mongo-form';
@@ -812,7 +812,7 @@ export function findOneForm(forms: any[]) {
     }
 }
 
-function fixSourcesUpdated(sources: any[]) {
+export function fixSourcesUpdated(sources: any[]) {
     sources.forEach(s => {
         if (isEmpty(s.updated)) {
             delete s.updated;
@@ -821,7 +821,7 @@ function fixSourcesUpdated(sources: any[]) {
     return sources;
 }
 
-function fixIdentifier(ids: any[]) {
+export function fixIdentifier(ids: any[]) {
     ids.forEach(i => {
         if (!isEmpty(i.version)) {
             i.version = parseFloat(i.version).toString();
@@ -844,50 +844,6 @@ export async function fixCde(cdeToFix: any) {
     return savedCde;
 }
 
-function fixInstructions(fe: any) {
-    const instructions: any = {};
-    if (!isEmpty(fe.instructions)) {
-        if (!isEmpty(fe.instructions.value)) {
-            instructions.value = fe.instructions.value;
-        }
-        if (!isEmpty(fe.instructions.valueFormat)) {
-            instructions.valueFormat = fe.instructions.valueFormat;
-        }
-    }
-    if (!isEmpty(instructions)) {
-        fe.instructions = instructions;
-    } else {
-        delete fe.instructions;
-    }
-}
-
-function fixFormElements(formObj: any) {
-    const formElements: FormElement[] = [];
-    for (const fe of formObj.formElements) {
-        const elementType = fe.elementType;
-        fixInstructions(fe);
-        if (elementType === 'question') {
-            fixInstructions(fe);
-            formElements.push(fe);
-        } else {
-            fe.formElements = fixFormElements(fe);
-            formElements.push(fe);
-        }
-    }
-    return formElements;
-}
-
-export async function fixForm(formToFix: any) {
-    const formToFixObj = formToFix.toObject();
-    formToFix.sources = fixSourcesUpdated(formToFixObj.sources);
-    formToFix.designations = sortDesignations(formToFixObj.designations);
-//    formToFix.formElements = fixFormElements(formToFixObj);
-    formToFix.ids = fixIdentifier(formToFixObj.ids);
-    const savedForm = await formToFix.save().catch((err: any) => {
-        throw(new Error(`Not able to save form when fixForm ${formToFixObj.tinyId} ${err}`));
-    });
-    return savedForm;
-}
 
 export function retiredElt(elt: any) {
     elt.registrationState.registrationStatus = 'Retired';
@@ -897,3 +853,54 @@ export function retiredElt(elt: any) {
 export async function formRawArtifact(tinyId, sourceName) {
     return formSourceModel.findOne({tinyId, source: sourceName}).lean();
 }
+
+
+export function fixProperties(formObj) {
+    return formObj.properties.filter(p => !isEmpty(p.value));
+}
+
+export function fixCreated(cde) {
+    const defaultDate = new Date();
+    defaultDate.setFullYear(1969, 1, 1);
+    cde.created = defaultDate;
+}
+
+export function fixCreatedBy(cde) {
+    cde.createdBy = {
+        username: 'nobody'
+    };
+}
+
+export function fixSources(obj) {
+    obj.sources.forEach(s => {
+        if (!s.updated) {
+            delete s.updated;
+        }
+        if (!s.sourceName) {
+            if (obj.stewardOrg.name === 'LOINC' && s.registrationStatus === 'Active') {
+                s.sourceName = 'LOINC';
+            }
+        }
+    });
+    return obj.sources.filter(s => !isEmpty(s));
+}
+
+
+export function fixEmptyDesignation(cdeObj) {
+    return cdeObj.designations.filter(d => d.designation);
+}
+
+export function fixEmptyDefinition(cdeObj) {
+    return cdeObj.definitions.filter(d => d.definition);
+}
+
+export function fixClassification(eltObj) {
+    eltObj.classification.forEach((c: any) => {
+        if (c.stewardOrg.name.toLowerCase() === 'eyegene') {
+            c.stewardOrg.name = 'eyeGENE';
+        }
+    });
+    eltObj.classification = eltObj.classification.filter(c => !isEmpty(c.elements));
+    return uniqBy(eltObj.classification, 'stewardOrg.name');
+}
+

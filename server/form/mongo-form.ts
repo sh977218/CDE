@@ -58,8 +58,10 @@ formSchema.pre('save', function preSaveUsesThisForSomeReason(next) {
             });
         }
         next();
-    }, (err: string) => {
-        next(new Error(`Form ${elt.tinyId} has error: ${err.toString()}`));
+    }, (err: any) => {
+        err.tinyId = elt.tinyId;
+        err.eltId = elt._id.toString();
+        next(err);
     });
 });
 
@@ -104,7 +106,10 @@ export function byTinyIdList(tinyIdList: string[], cb: CbError<CdeFormElastic[]>
         });
 }
 
-export const byTinyId = (tinyId: string, cb?: CbError<CdeFormDocument>) => formModel.findOne({tinyId, archived: false}).exec(cb);
+export const byTinyId = (tinyId: string, cb?: CbError<CdeFormDocument>) => formModel.findOne({
+    tinyId,
+    archived: false
+}).exec(cb);
 
 export function byTinyIdVersion(tinyId: string, version: string | undefined, cb: CbError<CdeFormDocument>) {
     if (version) {
