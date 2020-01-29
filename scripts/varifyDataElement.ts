@@ -1,4 +1,4 @@
-import { dataElementModel } from 'server/cde/mongo-cde';
+import { dataElementSourceModel } from 'server/cde/mongo-cde';
 
 process.on('unhandledRejection', (error) => {
     console.log(error);
@@ -7,10 +7,11 @@ process.on('unhandledRejection', (error) => {
 function run() {
     let cdeCount = 0;
     const cond = {};
-    const cursor = dataElementModel.find(cond).cursor();
-    cursor.eachAsync(async (cde: any) => {
-        await cde.save().catch(error => {
-            console.log(`await cde.save() Error ${error}`);
+    const cursor = dataElementSourceModel.find(cond).cursor();
+    cursor.eachAsync(async (de: any) => {
+        const deObj = de.toObject();
+        await de.save().catch(error => {
+            console.log(deObj._id);
         });
         cdeCount++;
     }).then(() => {

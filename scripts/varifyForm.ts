@@ -1,4 +1,4 @@
-import { formModel } from 'server/form/mongo-form';
+import { formSourceModel } from 'server/form/mongo-form';
 
 process.on('unhandledRejection', error => {
     console.log(error);
@@ -6,11 +6,13 @@ process.on('unhandledRejection', error => {
 
 function run() {
     let formCount = 0;
-    const cond = {lastMigrationScript: {$ne: 'mongoose validation verify'}};
-    const cursor = formModel.find(cond).cursor();
+    const cond = {};
+    const cursor = formSourceModel.find(cond).cursor();
     cursor.eachAsync(async (form: any) => {
+        const formObj = form.toObject();
+        form.designations.push({designation: '', tags: []});
         await form.save().catch(error => {
-            console.log(`await form.save() Error ${form._id.toString()} ${error}`);
+            console.log(formObj._id);
         });
         formCount++;
     }).then(() => {
