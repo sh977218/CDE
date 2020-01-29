@@ -1,7 +1,7 @@
-import { isEmpty, isEqual } from 'lodash';
+import { isEmpty } from 'lodash';
 import { dataElementModel } from 'server/cde/mongo-cde';
 import {
-    BATCHLOADER, compareElt, findOneCde, findOneForm, fixCde, fixForm, formRawArtifact, imported, lastMigrationScript,
+    BATCHLOADER, compareElt, findOneCde, findOneForm, formRawArtifact, imported, lastMigrationScript,
     mergeElt,
     updateCde, updateForm, updateRawArtifact
 } from 'ingester/shared/utility';
@@ -36,8 +36,6 @@ export async function loadNindsCde(nindsCde: any, cond: any, source: string) {
         });
         console.log(`created cde tinyId: ${existingCde.tinyId}`);
     } else {
-        // @TODO fix any issue on existing cde.
-        existingCde = await fixCde(existingCde);
         const diff = compareElt(newCde.toObject(), existingCde.toObject(), source);
         if (isEmpty(diff)) {
             existingCde.lastMigrationScript = lastMigrationScript;
@@ -77,13 +75,6 @@ export async function loadNindsForm(nindsForm: any, cond: any, source: string) {
         });
         console.log(`created form tinyId: ${existingForm.tinyId}`);
     } else {
-
-        // @TODO fix any issue on existing form.
-        existingForm = await fixForm(existingForm).catch((err: any) => {
-            console.log(`Not able to fix form when in loadNindsForm ${err}`);
-            process.exit(1);
-        });
-
         const diff = compareElt(newForm.toObject(), existingForm.toObject(), source);
         if (isEmpty(diff)) {
             existingForm.lastMigrationScript = lastMigrationScript;
@@ -120,7 +111,6 @@ export async function loadNindsForm(nindsForm: any, cond: any, source: string) {
 async function updateFormOption(existingFormObj, source) {
     const options: any = {updateSource: true};
     const currentRawArtifact = await formRawArtifact(existingFormObj.tinyId, source);
-//    if (!isEqual(currentRawArtifact.formElements, existingFormObj.formElements)) {
     const diff = DiffJson.diff(currentRawArtifact.formElements, existingFormObj.formElements);
     if (!isEmpty(diff)) {
         options.skipFormElements = true;
