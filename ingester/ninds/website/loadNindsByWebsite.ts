@@ -6,7 +6,7 @@ import { createNindsForm } from 'ingester/ninds/website/form/form';
 import { doNindsClassification, loadNindsCde, loadNindsForm } from 'ingester/ninds/shared';
 import { dataElementModel } from 'server/cde/mongo-cde';
 import {
-    BATCHLOADER, findOneCde, fixForm, imported, lastMigrationScript, retiredElt, updateCde, updateForm,
+    BATCHLOADER, findOneCde, imported, lastMigrationScript, retiredElt, updateCde, updateForm,
     updateRawArtifact
 } from 'ingester/shared/utility';
 import { formModel } from 'server/form/mongo-form';
@@ -173,11 +173,7 @@ function retireNindsForms() {
             'classification.stewardOrg.name': 'NINDS',
             'registrationState.registrationStatus': {$ne: 'Retired'}
         }).cursor({batchSize: 10}).eachAsync(async formToRetire => {
-            const form = await fixForm(formToRetire).catch((err: any) => {
-                console.log(`Not able to fix form when in retireNindsForms ${err}`);
-                process.exit(1);
-            });
-            const formObj = form.toObject();
+            const formObj = formToRetire.toObject();
             if (formObj.lastMigrationScript !== lastMigrationScript) {
                 removeNindsClassification(formObj);
                 if (formObj.classification.length < 1) {

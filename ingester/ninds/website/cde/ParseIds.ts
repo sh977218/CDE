@@ -29,18 +29,22 @@ export function parseIds(nindsForms: any[]) {
 
     if (_cdeIdArray.length !== 1) {
         console.log('_cdeIdArray not 1');
+        console.log('_cdeIdArray: ' + _cdeIdArray);
         process.exit(1);
     }
     if (_versionNumArray.length !== 1) {
         console.log('_versionNumArray not 1');
+        console.log('_cdeIdArray: ' + _cdeIdArray);
         process.exit(1);
     }
     if (_cadsrIdArray.length > 1) {
         console.log('_cadsrIdArray greater than 1');
+        console.log('_cdeIdArray: ' + _cdeIdArray);
         process.exit(1);
     }
     if (_variableNameArray.length !== 1) {
         console.log('_variableNameArray not 1');
+        console.log('_cdeIdArray: ' + _cdeIdArray);
         process.exit(1);
     }
 
