@@ -61,6 +61,8 @@ dataElementSchema.pre('save', function preSaveUseThisForSomeReason(next) {
             next();
         }
     }, (err: any) => {
+        err.tinyId = elt.tinyId;
+        err.eltId = elt._id.toString();
         next(err);
     });
 });
