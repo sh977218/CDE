@@ -227,7 +227,7 @@ async function doDomains(driver: any, disorder: any, subDiseaseName: string = ''
     // tslint:disable-next-line:max-line-length
     const domainDivXpath = "//div[div[p[button[normalize-space(text())='Collapse All']]]]/div[@class='view-content']/div[@class='view-grouping']";
 //    await driver.wait(until.elementLocated(By.xpath(domainDivXpath)), 30 * 1000);
-    await driver.sleep(30000);
+    await driver.sleep(60000);
 
     const domainElements = await driver.findElements(By.xpath(domainDivXpath));
     for (const domainElement of domainElements) {
@@ -245,9 +245,8 @@ async function doDisorder(disorder: any) {
     if (subDiseases && subDiseases.length) {
         for (const subDisease of subDiseases) {
             await selectSubDisease(driver, subDisease.name);
-            const existingContentElementsXpath = "//div[div[p[button[normalize-space(text())='Expand All']]]]/div[@class='view-content']";
             const start: any = new Date();
-            await driver.wait(until.elementLocated(By.xpath(existingContentElementsXpath)), 60 * 1000);
+            await driver.sleep(60000);
             const end: any = new Date();
             console.log(' Execution time ' + subDisease.name + ' : %ds', (end - start) / 1000);
             await doDomains(driver, disorder, subDisease.name);

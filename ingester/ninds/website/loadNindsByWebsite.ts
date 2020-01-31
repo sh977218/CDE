@@ -6,7 +6,7 @@ import { createNindsForm } from 'ingester/ninds/website/form/form';
 import { doNindsClassification, loadNindsCde, loadNindsForm } from 'ingester/ninds/shared';
 import { dataElementModel } from 'server/cde/mongo-cde';
 import {
-    BATCHLOADER, findOneCde, imported, lastMigrationScript, retiredElt, updateCde, updateForm,
+    BATCHLOADER, findOneCde, findOneForm, imported, lastMigrationScript, retiredElt, updateCde, updateForm,
     updateRawArtifact
 } from 'ingester/shared/utility';
 import { formModel } from 'server/form/mongo-form';
@@ -24,12 +24,16 @@ function removeNindsClassification(elt: any) {
     elt.classification = otherClassification;
 }
 
+
+function isPhq9(nindsForms) {
+    const phq9FormIds = ['F2032', 'F0374'];
+    return nindsForms.filter(nindsForm => phq9FormIds.indexOf(nindsForm.formId) !== -1).length > 0;
+}
+
 function loadNindsCdes() {
-    const phq9CdeIds = ['C07430', 'C07431', 'C07432', 'C07433', 'C07435', 'C07436', 'C07437', 'C07438', 'C07439', 'C07440', 'C07441'];
 
     return new Promise(async (resolve, reject) => {
         const cdeIds = await NindsModel.distinct('cdes.CDE ID');
-//        const cdeIds = phq9CdeIds;
         eachLimit(cdeIds, 500, async cdeId => {
             const nindsForms = await NindsModel.find({'cdes.CDE ID': cdeId},
                 {
@@ -38,29 +42,29 @@ function loadNindsCdes() {
                     subDiseaseName: 1,
                     domainName: 1,
                     subDomainName: 1,
+                    formId: 1,
                     cdes: {$elemMatch: {'CDE ID': cdeId}}
                 }).lean();
-            const cde = await createNindsCde(nindsForms);
+            const de = await createNindsCde(nindsForms);
             const cond = {
                 archived: false,
                 'ids.id': cdeId,
                 'registrationState.registrationStatus': {$ne: 'Retired'}
             };
-            const isPhq9 = phq9CdeIds.indexOf(cdeId) !== -1;
-            if (isPhq9) {
-                const newCde = new dataElementModel(cde);
-                const newCdeObj = newCde.toObject();
+            if (isPhq9(nindsForms)) {
+                const newDe = new dataElementModel(de);
+                const newCdeObj = newDe.toObject();
                 const existingCdes: any[] = await dataElementModel.find(cond);
                 const existingCde: any = findOneCde(existingCdes);
                 const existingCdeObj = existingCde.toObject();
-                doNindsClassification(existingCdeObj, newCde.toObject());
+                doNindsClassification(existingCdeObj, newDe.toObject());
                 existingCde.classification = existingCdeObj.classification;
                 existingCde.lastMigrationScript = lastMigrationScript;
                 existingCde.imported = imported;
                 await existingCde.save();
                 await updateRawArtifact(existingCde, newCdeObj, 'NINDS', 'NINDS');
             } else {
-                await loadNindsCde(cde, cond, 'NINDS');
+                await loadNindsCde(de, cond, 'NINDS');
             }
         }, err => {
             if (err) {
@@ -120,8 +124,22 @@ function loadNindsForms() {
             const nindsForms = await NindsModel.find({
                 formId: {$in: [formId].concat(sameFormIds)}
             }).lean();
-            const nindsForm = await createNindsForm(nindsForms);
-            await loadNindsForm(nindsForm, cond, 'NINDS');
+            const form = await createNindsForm(nindsForms);
+            if (isPhq9(nindsForms)) {
+                const newForm = new formModel(form);
+                const newFormObj = newForm.toObject();
+                const existingForms: any[] = await formModel.find(cond);
+                const existingForm: any = findOneForm(existingForms);
+                const existingFormObj = existingForm.toObject();
+                doNindsClassification(existingFormObj, newForm.toObject());
+                existingForm.classification = existingFormObj.classification;
+                existingForm.lastMigrationScript = lastMigrationScript;
+                existingForm.imported = imported;
+                await existingForm.save();
+                await updateRawArtifact(existingForm, newFormObj, 'NINDS', 'NINDS');
+            } else {
+                await loadNindsForm(form, cond, 'NINDS');
+            }
         }, err => {
             if (err) {
                 reject(err);
