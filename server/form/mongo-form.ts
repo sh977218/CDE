@@ -41,7 +41,7 @@ try {
     process.exit(1);
 }
 
-formSchema.pre('save', function preSaveUsesThisForSomeReason(next) {
+function preSaveUsesThisForSomeReason(next) {
     const elt = this as CdeFormDocument;
 
     if (elt.archived) {
@@ -63,7 +63,11 @@ formSchema.pre('save', function preSaveUsesThisForSomeReason(next) {
         err.eltId = elt._id.toString();
         next(err);
     });
-});
+}
+
+formSchema.pre('save', preSaveUsesThisForSomeReason);
+formSourceSchema.pre('save', preSaveUsesThisForSomeReason);
+draftSchema.pre('save', preSaveUsesThisForSomeReason);
 
 const conn = establishConnection(config.database.appData);
 export const formModel: Model<CdeFormDocument> = conn.model('Form', formSchema);
