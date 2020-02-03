@@ -859,14 +859,14 @@ export function fixProperties(formObj) {
     return formObj.properties.filter(p => !isEmpty(p.value));
 }
 
-export function fixCreated(cde) {
+export function fixCreated(elt) {
     const defaultDate = new Date();
     defaultDate.setFullYear(1969, 1, 1);
-    cde.created = defaultDate;
+    elt.created = defaultDate;
 }
 
-export function fixCreatedBy(cde) {
-    cde.createdBy = {
+export function fixCreatedBy(elt) {
+    elt.createdBy = {
         username: 'nobody'
     };
 }
