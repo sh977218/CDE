@@ -1,4 +1,4 @@
-import { BATCHLOADER, created, imported } from 'ingester/shared/utility';
+import { BATCHLOADER, created, imported, lastMigrationScript } from 'ingester/shared/utility';
 import { parseDesignations } from 'ingester/ninds/website/cde/ParseDesignations';
 import { parseDefinitions } from 'ingester/ninds/website/cde/ParseDefinitions';
 import { parseIds } from 'ingester/ninds/website/cde/ParseIds';
@@ -34,7 +34,8 @@ export function createNindsCde(nindsForms: any[]) {
         referenceDocuments,
         valueDomain,
         classification: [],
-        registrationState: {registrationStatus: 'Qualified'}
+        registrationState: {registrationStatus: 'Qualified'},
+        lastMigrationScript
     };
 
     parseClassification(nindsForms, cde);

@@ -11,7 +11,7 @@ import {
 } from 'ingester/shared/utility';
 import { formModel } from 'server/form/mongo-form';
 
-function removeNindsClassification(elt: any) {
+function removeNindsNonePreclinicalClassification(elt: any) {
     const nindsClassifications = elt.classification.filter((c: any) => c.stewardOrg.name === 'NINDS');
     const preclinicalElements = nindsClassifications[0].elements.filter((e: any) => e.name === 'Preclinical TBI');
     let otherClassification = elt.classification.filter((c: any) => c.stewardOrg.name !== 'NINDS');
@@ -31,7 +31,6 @@ function isPhq9(nindsForms) {
 }
 
 function loadNindsCdes() {
-
     return new Promise(async (resolve, reject) => {
         const cdeIds = await NindsModel.distinct('cdes.CDE ID');
         eachLimit(cdeIds, 500, async cdeId => {
@@ -157,21 +156,19 @@ function retireNindsCdes() {
         dataElementModel.find({
             archived: false,
             'classification.stewardOrg.name': 'NINDS',
-            'registrationState.registrationStatus': {$ne: 'Retired'}
+            'registrationState.registrationStatus': {$ne: 'Retired'},
+            lastMigrationScript: {$ne: lastMigrationScript}
         }).cursor({batchSize: 10}).eachAsync(async cdeToRetire => {
             const cdeObj = cdeToRetire.toObject();
-            if (cdeObj.lastMigrationScript !== lastMigrationScript) {
-                removeNindsClassification(cdeObj);
-                if (cdeObj.classification.length < 1) {
-                    retiredElt(cdeObj);
-                    retiredCdeCount++;
-                    console.log(`retire Cde: ${cdeObj.tinyId}`);
-                }
-                await updateCde(cdeObj, BATCHLOADER);
-                if (retiredCdeCount % 100 === 0) {
-                    console.log('retiredCdeCount: ' + retiredCdeCount);
-                }
-
+            removeNindsNonePreclinicalClassification(cdeObj);
+            if (cdeObj.classification.length < 1) {
+                retiredElt(cdeObj);
+                retiredCdeCount++;
+                console.log(`retire Cde: ${cdeObj.tinyId}`);
+            }
+            await updateCde(cdeObj, BATCHLOADER);
+            if (retiredCdeCount % 100 === 0) {
+                console.log('retiredCdeCount: ' + retiredCdeCount);
             }
         }).then(() => {
             console.log('retiredCdeCount: ' + retiredCdeCount);
@@ -189,20 +186,19 @@ function retireNindsForms() {
         formModel.find({
             archived: false,
             'classification.stewardOrg.name': 'NINDS',
-            'registrationState.registrationStatus': {$ne: 'Retired'}
+            'registrationState.registrationStatus': {$ne: 'Retired'},
+            lastMigrationScript: {$ne: lastMigrationScript}
         }).cursor({batchSize: 10}).eachAsync(async formToRetire => {
             const formObj = formToRetire.toObject();
-            if (formObj.lastMigrationScript !== lastMigrationScript) {
-                removeNindsClassification(formObj);
-                if (formObj.classification.length < 1) {
-                    retiredElt(formObj);
-                    retiredFormCount++;
-                    console.log(`retire Form: ${formObj.tinyId}`);
-                }
-                await updateForm(formObj, BATCHLOADER);
-                if (retiredFormCount % 100 === 0) {
-                    console.log('retiredFormCount: ' + retiredFormCount);
-                }
+            removeNindsNonePreclinicalClassification(formObj);
+            if (formObj.classification.length < 1) {
+                retiredElt(formObj);
+                retiredFormCount++;
+                console.log(`retire Form: ${formObj.tinyId}`);
+            }
+            await updateForm(formObj, BATCHLOADER);
+            if (retiredFormCount % 100 === 0) {
+                console.log('retiredFormCount: ' + retiredFormCount);
             }
         }).then(() => {
             console.log('retiredFormCount: ' + retiredFormCount);
@@ -217,8 +213,10 @@ function retireNindsForms() {
 async function run() {
     await loadNindsCdes();
     await loadNindsForms();
+
     await retireNindsCdes();
     await retireNindsForms();
+
 }
 
 run().then(
