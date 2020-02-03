@@ -1,7 +1,7 @@
 import { isEmpty } from 'lodash';
 import { dataElementModel } from 'server/cde/mongo-cde';
 import {
-    fixClassification, fixEmptyDefinition, fixEmptyDesignation, fixProperties, fixSources
+    fixClassification, fixCreated, fixCreatedBy, fixEmptyDefinition, fixEmptyDesignation, fixProperties, fixSources
 } from 'ingester/shared/utility';
 import {
     fixDatatypeDate, fixDatatypeDynamicList, fixDatatypeExternallyDefined, fixDatatypeNumber, fixDatatypeText,
@@ -127,7 +127,12 @@ async function fixSectionInform(sectionInformFe, formObj) {
 
 export async function fixFormError(form) {
     const formObj = form.toObject();
-
+    if (isEmpty(formObj.createdBy)) {
+        fixCreatedBy(form);
+    }
+    if (isEmpty(formObj.created)) {
+        fixCreated(form);
+    }
     form.designations = fixEmptyDesignation(formObj);
     form.definitions = fixEmptyDefinition(formObj);
     form.sources = fixSources(formObj);

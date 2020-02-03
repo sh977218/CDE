@@ -176,10 +176,10 @@ export function fixDerivationRules(cdeObj) {
 export function fixDeError(cde) {
     const cdeObj = cde.toObject();
 
-    if (!cde.createdBy) {
+    if (isEmpty(cdeObj.createdBy)) {
         fixCreatedBy(cde);
     }
-    if (!cde.created) {
+    if (isEmpty(cdeObj.created)) {
         fixCreated(cde);
     }
     cde.valueDomain = fixValueDomain(cdeObj);
