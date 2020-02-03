@@ -214,8 +214,10 @@ async function run() {
     await loadNindsCdes();
     await loadNindsForms();
 
+/*
     await retireNindsCdes();
     await retireNindsForms();
+*/
 
 }
 
