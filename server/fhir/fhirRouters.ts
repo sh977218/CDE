@@ -28,14 +28,6 @@ export function module() {
 
     router.get('/fhir/form/:param', (req, res) => res.send(isModernBrowser(req) ? fhirHtml : fhirLegacyHtml));
 
-    router.get('/fhir/launch/:param', (req, res) => {
-        res.sendFile(join(__dirname, '../../frontEnd/_fhirApp', 'fhirAppLaunch.html'), undefined, err => {
-            if (err) {
-                res.sendStatus(404);
-            }
-        });
-    });
-
     router.get('/server/fhir/fhirObservationInfo', (req, res) => {
         fhirObservationInfo.get(res, req.query.id, info => res.send(info));
     });
