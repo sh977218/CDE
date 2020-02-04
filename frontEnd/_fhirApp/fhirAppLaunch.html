@@ -15,6 +15,7 @@
     <script src="/fhir/fhir-client.min.js"></script>
 
     <script>
+        console.log("FHIR app launch");
         var appId = document.location.pathname.substr(document.location.pathname.lastIndexOf('/') + 1);
         fetch('./fhirApp/' + appId, {
             method: 'get',
@@ -24,6 +25,7 @@
         }).then(function (response) {
             return response.json();
         }).then(function (response) {
+            console.log("Hello!!");
             FHIR.oauth2.authorize({
                 client_id: response.clientId,
                 redirect_uri: '../form/' + appId,
