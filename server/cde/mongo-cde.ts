@@ -38,7 +38,7 @@ try {
     process.exit(1);
 }
 
-dataElementSchema.pre('save', function preSaveUseThisForSomeReason(next) {
+function preSaveUseThisForSomeReason(next) {
     const elt = this as DataElementDocument;
 
     if (elt.archived) {
@@ -65,7 +65,11 @@ dataElementSchema.pre('save', function preSaveUseThisForSomeReason(next) {
         err.eltId = elt._id.toString();
         next(err);
     });
-});
+}
+
+dataElementSchema.pre('save', preSaveUseThisForSomeReason);
+dataElementSourceSchema.pre('save', preSaveUseThisForSomeReason);
+draftSchema.pre('save', preSaveUseThisForSomeReason);
 
 const conn = establishConnection(config.database.appData);
 const cdeAuditModel: Model<EltLogDocument> = conn.model('CdeAudit', auditSchema);
