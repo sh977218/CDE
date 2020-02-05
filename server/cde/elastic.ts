@@ -1,16 +1,12 @@
-import * as elastic from '@elastic/elasticsearch';
 import { handleNotFound } from 'server/errorHandler/errorHandler';
 import { logError } from 'server/log/dbLogger';
 import { buildElasticSearchQuery, elasticsearch as elasticSearchShared, esClient } from 'server/system/elastic';
 import { riverFunction, suggestRiverFunction } from 'server/system/elasticSearchInit';
 import { config } from 'server/system/parseConfig';
-import { DataElementElastic } from 'shared/de/dataElement.model';
-import { CbError, ElasticQueryResponse, SearchResponseAggregationDe, User } from 'shared/models.model';
+import { CbError, SearchResponseAggregationDe, User } from 'shared/models.model';
 import { SearchSettingsElastic } from 'shared/search/search.model';
 import { storeQuery } from 'server/log/storedQueryDb';
-import { response } from 'express';
 import { ApiResponse } from '@elastic/elasticsearch';
-
 
 export function updateOrInsert(elt) {
     riverFunction(elt.toObject(), doc => {
@@ -20,7 +16,7 @@ export function updateOrInsert(elt) {
             const done = err => {
                 if (err) {
                     logError({
-                        message: 'Unable to Index document: ' + doc.tinyId,
+                        message: 'Unable to Index document: ' + doc.elementType + ' ' + doc.tinyId,
                         origin: 'cde.elastic.updateOrInsert',
                         stack: err,
                         details: '',
@@ -103,43 +99,43 @@ export function moreLike(id: string, callback) {
     const from = 0;
     const limit = 20;
     esClient.search({
-        index: config.elastic.index.name,
-        body: {
-            query: {
-                bool: {
-                    must: {
-                        more_like_this: {
-                            fields: mltConf.mlt_fields,
-                            like: [
-                                {
-                                    _id: id
-                                }
-                            ],
-                            min_term_freq: 1,
-                            min_doc_freq: 1,
-                            min_word_length: 2
-                        }
-                    },
-                    filter: {
-                        bool: {
-                            must_not: [
-                                {
-                                    term: {
-                                        'registrationState.registrationStatus': 'Retired'
+            index: config.elastic.index.name,
+            body: {
+                query: {
+                    bool: {
+                        must: {
+                            more_like_this: {
+                                fields: mltConf.mlt_fields,
+                                like: [
+                                    {
+                                        _id: id
                                     }
-                                },
-                                {
-                                    term: {
-                                        isFork: 'true'
+                                ],
+                                min_term_freq: 1,
+                                min_doc_freq: 1,
+                                min_word_length: 2
+                            }
+                        },
+                        filter: {
+                            bool: {
+                                must_not: [
+                                    {
+                                        term: {
+                                            'registrationState.registrationStatus': 'Retired'
+                                        }
+                                    },
+                                    {
+                                        term: {
+                                            isFork: 'true'
+                                        }
                                     }
-                                }
-                            ]
+                                ]
+                            }
                         }
                     }
                 }
-            }
-        },
-    }, handleNotFound<ApiResponse>({}, response => {
+            },
+        }, handleNotFound<ApiResponse>({}, response => {
             const body = response.body;
             const result: any = {
                 cdes: [],

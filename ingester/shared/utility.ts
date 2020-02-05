@@ -8,7 +8,7 @@ import * as mongo_form from 'server/form/mongo-form';
 import { formSourceModel } from 'server/form/mongo-form';
 import { PhenxURL } from 'ingester/createMigrationConnection';
 import {
-    CdeId, Classification, Definition, Designation, Instruction, Property, ReferenceDocument
+    CdeId, Classification, Definition, Designation, Property, ReferenceDocument
 } from 'shared/models.model';
 import { FormElement } from 'shared/form/form.model';
 import { gfs } from 'server/system/mongo-data';
@@ -26,7 +26,7 @@ export const sourceMap = {
     'NINDS Preclinical NEI': ['NINDS', 'NINDS Variable Name', 'NINDS caDSR', 'NINDS Preclinical', 'BRICS Variable Name', 'NINDS Preclinical NEI'],
     NCI: ['NCI', 'caDSR']
 };
-export const TODAY = new Date().toJSON();
+export const TODAY = new Date('2020-2-6').toJSON();
 export const lastMigrationScript = `load NINDS on ${moment().format('DD MMMM YYYY')}`;
 
 export const BATCHLOADER_USERNAME = 'batchloader';
@@ -34,15 +34,6 @@ export const BATCHLOADER = {
     username: BATCHLOADER_USERNAME,
     roles: ['AttachmentReviewer']
 };
-
-export function updateByBatchloader(elt) {
-    const updatedBy = elt.updatedBy;
-    if (updatedBy && updatedBy.username !== BATCHLOADER_USERNAME) {
-        return false;
-    } else {
-        return true;
-    }
-}
 
 export const created = TODAY;
 export const imported = TODAY;

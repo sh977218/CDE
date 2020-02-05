@@ -75,32 +75,32 @@ const DISORDERS: any = [
         disorderName: 'Unruptured Cerebral Aneurysms and Subarachnoid Hemorrhage',
         url: URL_PREFIX + 'Unruptured%20Cerebral%20Aneurysms%20and%20Subarachnoid%20Hemorrhage',
     }, {
-    disorderName: 'Traumatic Brain Injury',
-    url: URL_PREFIX + 'Traumatic%20Brain%20Injury',
-    subDiseases: [{
-        name: 'Acute Hospitalized',
+        disorderName: 'Traumatic Brain Injury',
+        url: URL_PREFIX + 'Traumatic%20Brain%20Injury',
+        subDiseases: [{
+            name: 'Acute Hospitalized',
+        }, {
+            name: 'Comprehensive',
+        }, {
+            name: 'Concussion/Mild TBI',
+        }, {
+            name: 'Epidemiology',
+        }, {
+            name: 'Moderate/Severe TBI: Rehabilitation',
+        }]
     }, {
-        name: 'Comprehensive',
-    }, {
-        name: 'Concussion/Mild TBI',
-    }, {
-        name: 'Epidemiology',
-    }, {
-        name: 'Moderate/Severe TBI: Rehabilitation',
-    }]
-}, {
-    disorderName: 'Sport Related Concussion',
-    url: URL_PREFIX + 'Sport%20Related%20Concussion',
-    subDiseases: [{
-        name: 'Acute',
-    }, {
-        name: 'Comprehensive',
-    }, {
-        name: 'Persistent/Chronic',
-    }, {
-        name: 'Subacute',
-    }]
-}
+        disorderName: 'Sport Related Concussion',
+        url: URL_PREFIX + 'Sport%20Related%20Concussion',
+        subDiseases: [{
+            name: 'Acute',
+        }, {
+            name: 'Comprehensive',
+        }, {
+            name: 'Persistent/Chronic',
+        }, {
+            name: 'Subacute',
+        }]
+    }
 ];
 
 async function doCdesTable(cdeTableElement: any) {
