@@ -41,7 +41,8 @@ export async function createNindsForm(nindsForms: any[]) {
         properties,
         formElements,
         comments: [],
-        lastMigrationScript
+        lastMigrationScript,
+        changeNote: lastMigrationScript
     };
 
     parseClassification(nindsForms, newForm);

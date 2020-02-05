@@ -35,7 +35,8 @@ export function createNindsCde(nindsForms: any[]) {
         valueDomain,
         classification: [],
         registrationState: {registrationStatus: 'Qualified'},
-        lastMigrationScript
+        lastMigrationScript,
+        changeNote: lastMigrationScript
     };
 
     parseClassification(nindsForms, cde);

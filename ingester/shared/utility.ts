@@ -188,7 +188,6 @@ export function updateCde(elt: any, user: any, options = {}) {
 }
 
 export async function updateForm(elt: any, user: any, options: any = {}) {
-    elt.lastMigrationScript = lastMigrationScript;
     return new Promise((resolve, reject) => {
         mongo_form.update(elt, user, options, (err, savedElt) => {
             if (err) {
@@ -514,6 +513,7 @@ export function mergeElt(existingEltObj: any, newEltObj: any, source: string) {
     const isArchived = existingEltObj.archived;
 
     existingEltObj.imported = imported;
+    existingEltObj.lastMigrationScript = lastMigrationScript;
     existingEltObj.changeNote = lastMigrationScript;
 
     mergeDesignations(existingEltObj, newEltObj);
