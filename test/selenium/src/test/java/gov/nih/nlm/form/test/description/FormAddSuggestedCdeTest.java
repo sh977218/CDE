@@ -8,7 +8,7 @@ public class FormAddSuggestedCdeTest extends QuestionTest {
     @Test
     public void formAddSuggestedCde() {
         String form = "formAddSuggestedCdeTest";
-        String cdeName1 = "brocco";
+        String cdeName1 = "pronounce smile";
         String cdeName2 = "Adverse event track num";
         String cdeName3 = "Gastrointestinal therapy feed schedule start";
         String cdeName4 = "Diary day headache indic";
