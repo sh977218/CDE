@@ -699,7 +699,26 @@ definitions:
       valueFormat:
         type: "string"
         example: "html"
-  Naming:
+  Designations:
+    type: "array"
+    items:
+      type: "object"
+      properties:
+        designation:
+          type: "string"
+          example: "Title Name"
+        source:
+          type: "string"
+          example: "NINDS"
+        tags:
+          type: "array"
+          items:
+            type: "object"
+            properties:
+              tag:
+                type: "string"
+                example: "Health"
+  Definitions:
     type: "array"
     items:
       type: "object"
@@ -710,12 +729,6 @@ definitions:
         definitionFormat:
           type: "string"
           example: "html"
-        designation:
-          type: "string"
-          example: "Title Name"
-        languageCode:
-          type: "string"
-          example: "EN-US"
         source:
           type: "string"
           example: "NINDS"
