@@ -17,7 +17,7 @@ public class FormAddSuggestedCdeTest extends QuestionTest {
         goToFormDescription();
 
         addCdeByNameBeforeId(cdeName1, "question_0-0", true);
-        textPresent("AmNART", By.xpath("//*[@id='question_0-0']//*[contains(@class,'questionLabel')]"));
+        textPresent("smile", By.xpath("//*[@id='question_0-0']//*[contains(@class,'questionLabel')]"));
 
         addCdeByNameBeforeId(cdeName2, "question_0-1", true);
         textPresent("AE Tracking Number", By.xpath("//*[@id='question_0-2']//*[contains(@class,'questionLabel')]"));
