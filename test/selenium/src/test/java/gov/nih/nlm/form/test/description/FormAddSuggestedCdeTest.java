@@ -8,7 +8,7 @@ public class FormAddSuggestedCdeTest extends QuestionTest {
     @Test
     public void formAddSuggestedCde() {
         String form = "formAddSuggestedCdeTest";
-        String cdeName1 = "brocco";
+        String cdeName1 = "pronounce smile";
         String cdeName2 = "Adverse event track num";
         String cdeName3 = "Gastrointestinal therapy feed schedule start";
         String cdeName4 = "Diary day headache indic";
@@ -17,7 +17,7 @@ public class FormAddSuggestedCdeTest extends QuestionTest {
         goToFormDescription();
 
         addCdeByNameBeforeId(cdeName1, "question_0-0", true);
-        textPresent("Broccoli (1/2 cup)", By.xpath("//*[@id='question_0-0']//*[contains(@class,'questionLabel')]"));
+        textPresent("AmNART", By.xpath("//*[@id='question_0-0']//*[contains(@class,'questionLabel')]"));
 
         addCdeByNameBeforeId(cdeName2, "question_0-1", true);
         textPresent("AE Tracking Number", By.xpath("//*[@id='question_0-2']//*[contains(@class,'questionLabel')]"));
