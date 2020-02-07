@@ -50,15 +50,16 @@ export function writableCollection<T>(model: Model<Document & T>,
             return;
         }
         const query: any = {_id: data._id, [versionKey]: data[versionKey]};
-        model.findOne(query, handleError<any>(handlerOptions, oldInfo => {
+        model.findOne(query, handleError<any>(handlerOptions, async oldInfo => {
             if (!oldInfo) {
                 res.status(409).send('Edited by someone else. Please refresh and redo.');
                 return;
             }
             data[versionKey]++;
             oldInfo._doc = data;
-            new model(data).save();
-            (model as any).save(query, oldInfo, {new: true}, handleError(handlerOptions, doc => {
+            // new model(data).save();
+            delete oldInfo._id;
+            (model as any).update(query, oldInfo, {new: true}, handleError(handlerOptions, doc => {
                 if (!doc) {
                     res.status(409).send('Edited by someone else. Please refresh and redo.');
                     return;
@@ -79,8 +80,12 @@ export function writableCollection<T>(model: Model<Document & T>,
         },
         post,
         put,
-        save: (res, data, cb) => {
-            if (data._id) put(res, data, cb); else post(res, data, cb);
+        save: async (res, data, cb) => {
+            if (data._id) {
+                put(res, data, cb);
+            } else {
+                post(res, data, cb);
+            }
         }
     };
 }
