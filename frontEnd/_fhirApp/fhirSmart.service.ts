@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import 'fhirclient';
+import FHIR from 'fhirclient';
 
 import { asRefString } from 'shared/mapping/fhir/datatype/fhirReference';
 import {
@@ -14,31 +14,25 @@ export class FhirSmartService {
     baseUrl?: string;
     context?: FhirEncounter|FhirEpisodeOfCare;
     patient?: FhirPatient;
-    smart: any;
+    client: any;
 
     init() {
-        (window as any).FHIR.oauth2.ready((smart: any) => {
-            this.smart = smart;
-            this.smart.patient.read().then((patient: FhirPatient) => this.patient = patient);
+        FHIR.oauth2.ready((client: any) => {
+            this.client = client;
+            this.client.request(`Patient/${client.patient.id}`).then((patient: FhirPatient) => this.patient = patient);
         });
     }
 
     save<T>(resource: FhirDomainResource): Promise<T> {
         if (resource.id) {
             // TODO: refresh before copy from server and compare again to prevent save with conflict
-            return Promise.resolve(this.smart.patient.api.update({
-                data: JSON.stringify(resource),
-                id: resource.id,
-                type: resource.resourceType
-            })).then(response => response.data, () => {
+            return Promise.resolve(this.client.update(resource)).then(response => response, err => {
+                console.log(err);
                 return Promise.reject(resource.resourceType + ' ' + resource.id + ' not saved.');
             });
         } else {
-            return Promise.resolve(this.smart.patient.api.create({
-                baseUrl: this.baseUrl,
-                data: JSON.stringify(resource),
-                type: resource.resourceType
-            })).then(response => response.data, () => {
+            return Promise.resolve(this.client.create(resource)).then(response => response, err => {
+                console.log(err);
                 return Promise.reject(resource.resourceType + ' not created.');
             });
         }
@@ -56,10 +50,13 @@ export class FhirSmartService {
     }
 
     searchAll<T>(resourceType: string, query: any): Promise<T[]> {
-        return Promise.resolve(this.smart.api.search({type: resourceType, query})).then(r => {
-            if (r && r.data) {
-                if (r.data.total > 0 && r.data.entry && Array.isArray(r.data.entry)) {
-                    return r.data.entry.map((e: any) => e.resource);
+        const thisQuery = new URLSearchParams();
+        thisQuery.set('code', query.code);
+        thisQuery.set('patient', query.patient);
+        return Promise.resolve(this.client.request(`${resourceType}?${thisQuery}`)).then(r => {
+            if (r) {
+                if (r.total > 0 && r.entry && Array.isArray(r.entry)) {
+                    return r.entry.map((e: any) => e.resource);
                 } else {
                     return [];
                 }
@@ -70,9 +67,9 @@ export class FhirSmartService {
     }
 
     static authorize(clientId: string, config: string) {
-        (window as any).FHIR.oauth2.authorize({
+        FHIR.oauth2.authorize({
             client_id: clientId,
-            redirect_uri: '/' + config,
+            redirect_uri: '/fhir/form/' + config,
             scope: SCOPE,
         } as any);
     }

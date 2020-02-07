@@ -54,10 +54,6 @@ function isFhirObservation(resource: FhirDomainResource): resource is FhirObserv
     return resource.resourceType === 'Observation';
 }
 
-function isFhirProcedure(resource: FhirDomainResource): resource is FhirProcedure {
-    return resource.resourceType === 'Procedure';
-}
-
 function applyCodeMapping(fhirApp: FhirApp, ids: (CdeId|PermissibleValue)[], systemProp: string, codeProp: string): void {
     function highestPriority(ids: (CdeId|PermissibleValue)[], index: number) {
         if (index > 0) {
