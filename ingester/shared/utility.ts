@@ -54,13 +54,7 @@ export function wipeBeforeCompare(obj: any) {
     delete obj.noRenderAllowed;
     delete obj.isCopyrighted;
     delete obj.version;
-
-    if (obj.valueDomain) {
-        delete obj.valueDomain.datatypeValueList;
-        if (!obj.valueDomain.uom) {
-            delete obj.valueDomain.uom;
-        }
-    }
+    delete obj.dataSets;
 
     delete obj.imported;
     delete obj.stewardOrg;
@@ -313,10 +307,6 @@ export function compareElt(newEltObj, existingEltObj, source) {
 
         if (isForm) {
             eltObj.cdeTinyIds = getChildren(eltObj.formElements);
-        }
-        if (isCde) {
-            delete eltObj.dataSets;
-            fixValueDomainOrQuestion(eltObj.valueDomain);
         }
         wipeBeforeCompare(eltObj);
 

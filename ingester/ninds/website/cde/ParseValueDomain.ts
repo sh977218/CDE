@@ -145,7 +145,6 @@ export function parseValueDomain(nindsForms: any[]) {
                 console.log('Unknown dataType found:' + datatype);
                 process.exit(1);
             }
-            valueDomain.datatypeValueList = {datatype};
             if (datatype === 'Value List') {
                 if (_permissibleValuesArray.length === 0) {
                     console.log('_permissibleValuesArray is not 1');
@@ -153,11 +152,6 @@ export function parseValueDomain(nindsForms: any[]) {
                 }
             }
             valueDomain.permissibleValues = _permissibleValuesArray;
-
-            // @todo some ninds cdes have empty permissible values with Single Pre-Defined Value Selected,
-            if (isEmpty(_permissibleValuesArray)) {
-                valueDomain.datatype = 'Text';
-            }
         } else {
             console.log(' unknown inputRestrictions found:' + inputRestrictions);
             process.exit(1);
