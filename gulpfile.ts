@@ -98,10 +98,7 @@ gulp.task('buildNode', function buildNode() {
 
 gulp.task('copyCode', ['buildNode'], function copyCode() {
     const streamArray: NodeJS.ReadWriteStream[] = [];
-
-    streamArray.push(gulp.src(appDir('./frontEnd/_fhirApp/fhirAppLaunch.html'))
-        .pipe(gulp.dest(BUILD_DIR + '/frontEnd/_fhirApp/')));
-
+    
     ['cde', 'form', 'processManager', 'system', 'board'].forEach(module => {
         streamArray.push(gulp.src(appDir('./modules/' + module + '/**/*.png'))
             .pipe(gulp.dest(BUILD_DIR + '/modules/' + module + '/')));
