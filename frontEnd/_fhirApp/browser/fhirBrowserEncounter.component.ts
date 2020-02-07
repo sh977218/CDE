@@ -24,16 +24,12 @@ export class FhirBrowserEncounterComponent {
     constructor(private fhirData: FhirSmartService) {}
 
     add() {
-        this.fhirData.smart.patient.api.create({
-            baseUrl: this.fhirData.baseUrl,
-            type: 'Encounter',
-            data: JSON.stringify(newEncounter(
+        this.fhirData.client.create(newEncounter(
                 this.newEncounterDate + ':00-00:00',
                 'Patient/' + this.fhirData.patient.id,
                 this.fhirData.patient.managingOrganization
                     ? asRefString(this.fhirData.patient.managingOrganization) : undefined
-            ))
-        }).then((response: any) => {
+        )).then((response: any) => {
             const encounter: FhirEncounter = response.data;
             this.reset();
         });

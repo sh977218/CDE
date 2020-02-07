@@ -20,7 +20,7 @@ export default {
             APPLICATION_NAME: '"CDE FHIR Embed"',
         }),
         new CopyWebpackPlugin([
-            {from: 'node_modules/fhirclient/fhir-client.min.js'},
+            {from: 'node_modules/fhirclient/build/fhir-client.js'},
         ]),
     ]
 };
