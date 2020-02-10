@@ -140,18 +140,10 @@ export function parseValueDomain(nindsForms: any[]) {
             }
         } else if (['Single Pre-Defined Value Selected', 'Multiple Pre-Defined Values Selected'].indexOf(inputRestrictions) > -1) {
             valueDomain.datatype = 'Value List';
-            const datatype = DATA_TYPE_MAP[_dataTypeTypeArray[0]];
-            if (!datatype) {
-                console.log('Unknown dataType found:' + datatype);
-                process.exit(1);
-            }
-            if (datatype === 'Value List') {
-                if (_permissibleValuesArray.length === 0) {
-                    console.log('_permissibleValuesArray is not 1');
-                    process.exit(1);
-                }
-            }
             valueDomain.permissibleValues = _permissibleValuesArray;
+            if (_permissibleValuesArray.length === 0) {
+                valueDomain.datatype = 'Text';
+            }
         } else {
             console.log(' unknown inputRestrictions found:' + inputRestrictions);
             process.exit(1);
