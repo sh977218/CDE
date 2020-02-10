@@ -111,7 +111,8 @@ async function duplicateFormIds(formIds) {
 
 function loadNindsForms() {
     return new Promise(async (resolve, reject) => {
-        const formIds = await NindsModel.distinct('formId');
+        const formIds = await NindsModel.distinct('formId', {'cdes.0': {$exists: true}});
+//        const formIds = await NindsModel.distinct('formId');
 //        const formIds = ['F0807', 'F1006'];
         formIds.sort();
         await duplicateFormIds(formIds);
