@@ -83,7 +83,7 @@ export function parseValueDomain(nindsForms: any[]) {
     });
 
     const valueDomain: any = {
-        uom: '',
+        datatype: 'Text',
         permissibleValues: []
     };
 
@@ -143,6 +143,11 @@ export function parseValueDomain(nindsForms: any[]) {
             valueDomain.permissibleValues = _permissibleValuesArray;
             if (_permissibleValuesArray.length === 0) {
                 valueDomain.datatype = 'Text';
+            } else {
+                const isNotNum = isNaN(_permissibleValuesArray[0].permissibleValue);
+                valueDomain.datatypeValueList = {
+                    datatype: isNotNum ? 'Text' : 'Number'
+                };
             }
         } else {
             console.log(' unknown inputRestrictions found:' + inputRestrictions);

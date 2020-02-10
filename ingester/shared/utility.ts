@@ -63,6 +63,7 @@ export function wipeBeforeCompare(obj: any) {
     delete obj.updated;
     delete obj.updatedBy;
     delete obj.sources;
+    delete obj.sourcesNew;
 
     delete obj.naming;
     delete obj.displayProfiles;
