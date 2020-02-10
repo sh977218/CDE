@@ -1,10 +1,47 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, ViewEncapsulation } from '@angular/core';
 import { TourService } from 'home/tour.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
     selector: 'cde-home',
-    templateUrl: 'home.component.html'
+    templateUrl: 'home.component.html',
+    encapsulation: ViewEncapsulation.None,
+    styles: [`
+        .slideContent {
+            display: block;
+            margin: auto;
+            height: 500px;
+        }
+
+        .carousel-caption {
+            background-color: rgba(255, 255, 255, .8);
+            color: #000;
+            text-shadow: none;
+        }
+
+        .carousel-caption h3 {
+            font-weight: 900;
+        }
+
+        .carousel-control-next, .carousel-control-prev {
+            display: none;
+            /*background-color: #eee;*/
+            /*width: 10%;*/
+        }
+
+        .carousel-indicators > li {
+            height: 10px;
+        }
+
+        .carousel-indicators li {
+            background-color: #fff;
+            border: 1px solid #0275d8;
+        }
+
+        .carousel-indicators li.active {
+            background-color: #0275d8;
+        }
+    `]
 })
 export class HomeComponent implements OnInit {
     displayCarousel = (window.screen.width > 575);
