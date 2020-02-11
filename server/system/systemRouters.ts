@@ -38,10 +38,10 @@ export function module() {
 
     router.get('/status/cde', status);
 
-    CronJob('00 00 4 * * *', () => syncWithMesh(), null, true, 'America/New_York');
+    new CronJob('00 00 4 * * *', () => syncWithMesh(), null, true, 'America/New_York').start();
 
     // every sunday at 4:07 AM
-    CronJob('* 7 4 * * 6', () => {
+    new CronJob('* 7 4 * * 6', () => {
         consoleLog('Creating sitemap');
         promisify(access)('dist/app', constants.R_OK)
             .catch(() => promisify(mkdir)('dist/app', {recursive: true} as any)) // Node 12
@@ -80,7 +80,7 @@ export function module() {
                 });
             })
             .catch((err: string) => consoleLog('Cron Sunday 4:07 AM did not complete due to error: ' + err));
-    }, null, true, 'America/New_York', undefined, true);
+    }, null, true, 'America/New_York', undefined, true).start();
 
     router.get('/jobStatus/:type', (req, res) => {
         const jobType = req.params.type;
