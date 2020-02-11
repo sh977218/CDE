@@ -116,57 +116,51 @@ definitions:
       _id:
         type: "string"
         example: "57112ebf3245ae3033584c5a"
+      tinyId:
+        type: "string"
+        example: "QF7dUNkbNEv"
+      version:
+        type: "string"
+        example: "1.0"
+      elementType:
+        type: "string"
+        example: "cde"
       archived:
         type: "boolean"
-      attachments:
-        $ref: "#/definitions/Attachments"
-      classification:
-        type: "array"
-        items:
-          $ref: "#/definitions/Classification"
-      comments:
-        $ref: "#/definitions/Comments"
+      views:
+        type: "integer"
+        format: "int32"
+      sources:
+        $ref: "#/definitions/Source"
+      origin:
+        type: "string"
+        example: "NCISTD: NCI CRF Harmonization and Standards Initiative"
+      imported:
+        type: "string"
+        format: "date-time"
       created:
         type: "string"
         format: "date-time"
       createdBy:
         $ref: "#/definitions/UserRef"
-      dataSets:
-        $ref: "#/definitions/DataSets"
-      derivationRules:
-        type: "array"
-        items:
-          type: "object"
-          properties:
-            formula:
-              type: "string"
-              example: "sumAll"
-            inputs:
-              type: "array"
-              items:
-                type: "string"
-                example: "5h29ApPjjzE"
-            name:
-              type: "string"
-              example: "ALSSS Score"
-            outputs:
-              type: "array"
-              items:
-                type: "string"
-                example: "10"
-            ruleType:
-              type: "string"
-              example: "score"
-      elementType:
-        type: "string"
-        example: "cde"
-      history:
-        $ref: "#/definitions/History"
-      ids:
-        $ref: "#/definitions/Ids"
-      imported:
+      updated:
         type: "string"
         format: "date-time"
+      updatedBy:
+        $ref: "#/definitions/UserRef"
+      stewardOrg:
+        type: "object"
+        properties:
+          name:
+            type: "string"
+            example: "NINDS"
+      usedByOrgs:
+        type: "array"
+        items:
+          type: "string"
+          example: "CTEP"
+      registrationState:
+        $ref: "#/definitions/RegistrationState"
       lastMigrationScript:
         type: "string"
         example: "load NINDS on January 15 2020"
@@ -174,36 +168,6 @@ definitions:
         $ref: "#/definitions/Designations"
       definitions:
         $ref: "#/definitions/Definitions"
-      origin:
-        type: "string"
-        example: "NCISTD: NCI CRF Harmonization and Standards Initiative"
-      properties:
-        $ref: "#/definitions/Properties"
-      referenceDocuments:
-        $ref: "#/definitions/ReferenceDocuments"
-      registrationState:
-        $ref: "#/definitions/RegistrationState"
-      sources:
-        $ref: "#/definitions/Source"
-      stewardOrg:
-        type: "object"
-        properties:
-          name:
-            type: "string"
-            example: "NINDS"
-      tinyId:
-        type: "string"
-        example: "QF7dUNkbNEv"
-      updated:
-        type: "string"
-        format: "date-time"
-      updatedBy:
-        $ref: "#/definitions/UserRef"
-      usedByOrgs:
-        type: "array"
-        items:
-          type: "string"
-          example: "CTEP"
       valueDomain:
         type: "object"
         properties:
@@ -297,29 +261,65 @@ definitions:
           vsacOid:
             type: "string"
             example: "1401340134"
-      version:
-        type: "string"
-        example: "1.0"
-      views:
-        type: "integer"
-        format: "int32"
+      classification:
+        type: "array"
+        items:
+          $ref: "#/definitions/Classification"
+      referenceDocuments:
+        $ref: "#/definitions/ReferenceDocuments"
+      properties:
+        $ref: "#/definitions/Properties"
+      ids:
+        $ref: "#/definitions/Ids"
+      attachments:
+        $ref: "#/definitions/Attachments"
+      comments:
+        $ref: "#/definitions/Comments"
+      dataSets:
+        $ref: "#/definitions/DataSets"
+      history:
+        $ref: "#/definitions/History"
+      derivationRules:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            formula:
+              type: "string"
+              example: "sumAll"
+            inputs:
+              type: "array"
+              items:
+                type: "string"
+                example: "5h29ApPjjzE"
+            name:
+              type: "string"
+              example: "ALSSS Score"
+            outputs:
+              type: "array"
+              items:
+                type: "string"
+                example: "10"
+            ruleType:
+              type: "string"
+              example: "score"
   Form:
     type: "object"
     properties:
       _id:
         type: "string"
         example: "57112ebf3245ae3033584c5a"
+      tinyId:
+        type: "string"
+        example: "QF7dUNkbNEv"
+      version:
+        type: "string"
+        example: "1.0"
       archived:
         type: "boolean"
-      attachments:
-        $ref: "#/definitions/Attachments"
       changeNote:
         type: "string"
         example: "load NCI on January 15 2020"
-      classification:
-        type: "array"
-        items:
-          $ref: "#/definitions/Classification"
       comments:
         $ref: "#/definitions/Comments"
       copyright:
@@ -336,37 +336,37 @@ definitions:
         format: "date-time"
       createdBy:
         $ref: "#/definitions/UserRef"
-      displayProfiles:
-        type: "array"
-        items:
-          type: "object"
-          properties:
-            displayInstructions:
-              type: "boolean"
-            displayInvisible:
-              type: "boolean"
-            displayNumbering:
-              type: "boolean"
-            displayType:
-              type: "string"
-              example: "Follow-up"
-            displayValues:
-              type: "boolean"
-            name:
-              type: "string"
-              example: "print"
-            numberOfColumns:
-              type: "integer"
-              format: "int32"
-              example: "5"
-            repeatFormat:
-              type: "string"
-              example: "#."
-            sectionsAsMatrix:
-              type: "boolean"
       elementType:
         type: "string"
         example: "form"
+      imported:
+        type: "string"
+        format: "date-time"
+      isCopyrighted:
+        type: "boolean"
+      lastMigrationScript:
+        type: "string"
+        example: "load NINDS on January 15 2020"
+      noRenderAllowed:
+        type: "boolean"
+      origin:
+        type: "string"
+        example: "NCISTD: NCI CRF Harmonization and Standards Initiative"
+      registrationState:
+        $ref: "#/definitions/RegistrationState"
+      sources:
+        $ref: "#/definitions/Source"
+      stewardOrg:
+        type: "object"
+        properties:
+          name:
+            type: "string"
+            example: "NINDS"
+      updated:
+        type: "string"
+        format: "date-time"
+      updatedBy:
+        $ref: "#/definitions/UserRef"
       formElements:
         type: "array"
         items:
@@ -500,48 +500,52 @@ definitions:
                 condition:
                   type: "string"
                   example: '"Starting Date" < 1/1/2015'
-      history:
-        $ref: "#/definitions/History"
-      ids:
-        $ref: "#/definitions/Ids"
-      imported:
-        type: "string"
-        format: "date-time"
-      isCopyrighted:
-        type: "boolean"
-      lastMigrationScript:
-        type: "string"
-        example: "load NINDS on January 15 2020"
-      noRenderAllowed:
-        type: "boolean"
-      origin:
-        type: "string"
-        example: "NCISTD: NCI CRF Harmonization and Standards Initiative"
-      properties:
-        $ref: "#/definitions/Properties"
+      designations:
+        $ref: "#/definitions/Designations"
+      definitions:
+        $ref: "#/definitions/Definitions"
+      classification:
+        type: "array"
+        items:
+          $ref: "#/definitions/Classification"
       referenceDocuments:
         $ref: "#/definitions/ReferenceDocuments"
-      registrationState:
-        $ref: "#/definitions/RegistrationState"
-      sources:
-        $ref: "#/definitions/Source"
-      stewardOrg:
-        type: "object"
-        properties:
-          name:
-            type: "string"
-            example: "NINDS"
-      tinyId:
-        type: "string"
-        example: "QF7dUNkbNEv"
-      updated:
-        type: "string"
-        format: "date-time"
-      updatedBy:
-        $ref: "#/definitions/UserRef"
-      version:
-        type: "string"
-        example: "1.0"
+      displayProfiles:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            displayInstructions:
+              type: "boolean"
+            displayInvisible:
+              type: "boolean"
+            displayNumbering:
+              type: "boolean"
+            displayType:
+              type: "string"
+              example: "Follow-up"
+            displayValues:
+              type: "boolean"
+            name:
+              type: "string"
+              example: "print"
+            numberOfColumns:
+              type: "integer"
+              format: "int32"
+              example: "5"
+            repeatFormat:
+              type: "string"
+              example: "#."
+            sectionsAsMatrix:
+              type: "boolean"
+      properties:
+        $ref: "#/definitions/Properties"
+      ids:
+        $ref: "#/definitions/Ids"
+      attachments:
+        $ref: "#/definitions/Attachments"
+      history:
+        $ref: "#/definitions/History"
   Attachments:
     type: "array"
     items:
@@ -699,10 +703,47 @@ definitions:
       valueFormat:
         type: "string"
         example: "html"
-  designations:
-    $ref: "#/definitions/Designations"
-  definitions:
-    $ref: "#/definitions/Definitions"
+  Designations:
+    type: "array"
+    items:
+      type: "object"
+      properties:
+        designation:
+          type: "string"
+          example: "Title Name"
+        source:
+          type: "string"
+          example: "NINDS"
+        tags:
+          type: "array"
+          items:
+            type: "object"
+            properties:
+              tag:
+                type: "string"
+                example: "Health"
+  Definitions:
+    type: "array"
+    items:
+      type: "object"
+      properties:
+        definition:
+          type: "string"
+          example: "This is a description of purpose"
+        definitionFormat:
+          type: "string"
+          example: "html"
+        source:
+          type: "string"
+          example: "NINDS"
+        tags:
+          type: "array"
+          items:
+            type: "object"
+            properties:
+              tag:
+                type: "string"
+                example: "Health"
   PermissibleValues:
     type: "array"
     items:
