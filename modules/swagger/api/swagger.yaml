@@ -169,9 +169,11 @@ definitions:
         format: "date-time"
       lastMigrationScript:
         type: "string"
-        example: "mergeNamingWithTags"
-      naming:
-        $ref: "#/definitions/Naming"
+        example: "load NINDS on January 15 2020"
+      designations:
+        $ref: "#/definitions/Designations"
+      definitions:
+        $ref: "#/definitions/Definitions"
       origin:
         type: "string"
         example: "NCISTD: NCI CRF Harmonization and Standards Initiative"
@@ -313,7 +315,7 @@ definitions:
         $ref: "#/definitions/Attachments"
       changeNote:
         type: "string"
-        example: "updated naming"
+        example: "load NCI on January 15 2020"
       classification:
         type: "array"
         items:
@@ -509,9 +511,7 @@ definitions:
         type: "boolean"
       lastMigrationScript:
         type: "string"
-        example: "mergeNamingWithTags"
-      naming:
-        $ref: "#/definitions/Naming"
+        example: "load NINDS on January 15 2020"
       noRenderAllowed:
         type: "boolean"
       origin:
