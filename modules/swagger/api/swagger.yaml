@@ -699,47 +699,10 @@ definitions:
       valueFormat:
         type: "string"
         example: "html"
-  Designations:
-    type: "array"
-    items:
-      type: "object"
-      properties:
-        designation:
-          type: "string"
-          example: "Title Name"
-        source:
-          type: "string"
-          example: "NINDS"
-        tags:
-          type: "array"
-          items:
-            type: "object"
-            properties:
-              tag:
-                type: "string"
-                example: "Health"
-  Definitions:
-    type: "array"
-    items:
-      type: "object"
-      properties:
-        definition:
-          type: "string"
-          example: "This is a description of purpose"
-        definitionFormat:
-          type: "string"
-          example: "html"
-        source:
-          type: "string"
-          example: "NINDS"
-        tags:
-          type: "array"
-          items:
-            type: "object"
-            properties:
-              tag:
-                type: "string"
-                example: "Health"
+  designations:
+    $ref: "#/definitions/Designations"
+  definitions:
+    $ref: "#/definitions/Definitions"
   PermissibleValues:
     type: "array"
     items:
