@@ -26,7 +26,7 @@ export const sourceMap = {
     'NINDS Preclinical NEI': ['NINDS', 'NINDS Variable Name', 'NINDS caDSR', 'NINDS Preclinical', 'BRICS Variable Name', 'NINDS Preclinical NEI'],
     NCI: ['NCI', 'caDSR']
 };
-export const TODAY = new Date('2020-2-6').toJSON();
+export const TODAY = new Date().toJSON();
 export const lastMigrationScript = `load NINDS on ${moment().format('DD MMMM YYYY')}`;
 
 export const BATCHLOADER_USERNAME = 'batchloader';
@@ -55,6 +55,8 @@ export function wipeBeforeCompare(obj: any) {
     delete obj.isCopyrighted;
     delete obj.version;
     delete obj.dataSets;
+    delete obj.lastMigrationScript;
+    delete obj.registrationState;
 
     delete obj.imported;
     delete obj.stewardOrg;
@@ -72,10 +74,24 @@ export function wipeBeforeCompare(obj: any) {
     delete obj.attachments;
     delete obj.mappingSpecifications;
     delete obj.derivationRules;
-
-    delete obj.lastMigrationScript;
-    delete obj.registrationState;
     delete obj.comments;
+
+    if (obj.valueDomain) {
+        if (isEmpty(obj.valueDomain.uom)) {
+            delete obj.valueDomain.uom;
+        }
+        if (isEmpty(obj.valueDomain.datatypeText)) {
+            delete obj.valueDomain.datatypeText;
+        }
+        if (isEmpty(obj.valueDomain.datatypeNumber)) {
+            delete obj.valueDomain.datatypeNumber;
+        }
+        if (isEmpty(obj.valueDomain.datatypeDate)) {
+            delete obj.valueDomain.datatypeDate;
+        }
+        delete obj.valueDomain.datatypeTime;
+        delete obj.valueDomain.datatypeValueList;
+    }
 
     Object.keys(obj).forEach(key => {
         if (Array.isArray(obj[key]) && obj[key].length === 0) {
@@ -281,7 +297,6 @@ export function compareElt(newEltObj, existingEltObj, source) {
     const isQualified = existingEltObj.registrationState.registrationStatus === 'Qualified';
     const isArchived = existingEltObj.archived;
     const isForm = existingEltObj.elementType === 'form';
-    const isCde = existingEltObj.elementType === 'cde';
 
     // PhenX Qualified form not need to compare formElements
     if (isForm && isPhenX && isQualified && !isArchived) {
@@ -424,13 +439,13 @@ export function mergeReferenceDocuments(existingObj, newObj) {
 }
 
 export function mergeIds(existingObj, newObj, source: string) {
+    const NINDS_SOURCES = ['NINDS Preclinical', 'BRICS Variable Name', 'NINDS Variable Name', 'NINDS caDSR', 'NINDS CDISC'];
+
     const existingIds: CdeId[] = existingObj.ids;
     const newIds: CdeId[] = newObj.ids;
     newIds.forEach(newId => {
         const i = findIndex(existingIds, o => {
-            if (o.source === 'NINDS Preclinical' && newId.source === 'BRICS Variable Name') {
-                return true;
-            } else if (o.source === 'NINDS Variable Name' && newId.source === 'BRICS Variable Name') {
+            if (NINDS_SOURCES.indexOf(o.source) !== -1 && NINDS_SOURCES.indexOf(newId.source) !== -1) {
                 return true;
             } else {
                 return isEqual(o.source, newId.source) && isEqual(o.id, newId.id);
