@@ -190,6 +190,7 @@ export function updateCde(elt: any, user: any, options = {}) {
 }
 
 export async function updateForm(elt: any, user: any, options: any = {}) {
+    elt.lastMigrationScript = lastMigrationScript;
     return new Promise((resolve, reject) => {
         mongo_form.update(elt, user, options, (err, savedElt) => {
             if (err) {

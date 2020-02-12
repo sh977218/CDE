@@ -109,7 +109,6 @@ export async function loadNindsForm(nindsForm: any, cond: any, source: string) {
 }
 
 async function updateFormOption(existingFormObj, source) {
-    existingFormObj.lastMigrationScript = lastMigrationScript;
     const options: any = {updateSource: true};
     const currentRawArtifact = await formRawArtifact(existingFormObj.tinyId, source);
     const diff = DiffJson.diff(currentRawArtifact.formElements, existingFormObj.formElements);

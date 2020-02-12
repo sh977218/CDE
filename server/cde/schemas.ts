@@ -108,7 +108,7 @@ export const deJson = {
         identifiers: [idSchema],
         ids: [idSchema],
         definition: StringType,
-        uom: {type: StringType, description: 'Unit of Measure', default: ''},
+        uom: {type: StringType, description: 'Unit of Measure'},
         vsacOid: StringType,
         datatype: {type: StringType, description: 'Expected type of data'},
         datatypeText: datatypeTextSchema,

@@ -1,4 +1,4 @@
-import { BATCHLOADER, created, imported, lastMigrationScript } from 'ingester/shared/utility';
+import { BATCHLOADER, created, imported } from 'ingester/shared/utility';
 import { generateTinyId } from 'server/system/mongo-data';
 import { parseDefinitions } from 'ingester/ninds/website/form/ParseDefinitions';
 import { parseDesignations } from 'ingester/ninds/website/form/ParseDesignations';
@@ -40,9 +40,7 @@ export async function createNindsForm(nindsForms: any[]) {
         classification: [],
         properties,
         formElements,
-        comments: [],
-        lastMigrationScript,
-        changeNote: lastMigrationScript
+        comments: []
     };
 
     parseClassification(nindsForms, newForm);
