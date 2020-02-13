@@ -33,6 +33,7 @@ function isPhq9(nindsForms) {
 function loadNindsCdes() {
     return new Promise(async (resolve, reject) => {
         const cdeIds = await NindsModel.distinct('cdes.CDE ID');
+//        const cdeIds = await NindsModel.distinct('cdes.CDE ID', {formId: 'F0004'});
 //        const cdeIds = ['C00708'];
         eachLimit(cdeIds, 500, async cdeId => {
             const nindsForms = await NindsModel.find({'cdes.CDE ID': cdeId},
@@ -113,7 +114,7 @@ function loadNindsForms() {
     return new Promise(async (resolve, reject) => {
         const formIds = await NindsModel.distinct('formId', {'cdes.0': {$exists: true}});
 //        const formIds = await NindsModel.distinct('formId');
-//        const formIds = ['F0807', 'F1006'];
+//        const formIds = ['F0004'];
         formIds.sort();
         await duplicateFormIds(formIds);
 //        eachLimit(formIds.filter(formId => ['F0807', 'F1006'].indexOf(formId) !== -1), 1, async formId => {
@@ -218,10 +219,12 @@ function retireNindsForms() {
 async function run() {
 
     await loadNindsCdes();
+
     await loadNindsForms();
 
     await retireNindsCdes();
     await retireNindsForms();
+
 }
 
 run().then(
