@@ -15,7 +15,7 @@ public class LaunchFhirApp extends NlmCdeBaseTest {
 
         driver.get(appUrl);
 
-        findElement(By.cssSelector("input[name='email']")).sendKeys("giyucado@web2mailco.com");
+        findElement(By.cssSelector("input[name='username']")).sendKeys("giyucado@web2mailco.com");
         findElement(By.cssSelector("input[name='password']")).sendKeys("koko123!");
         clickElement(By.xpath("//button/div/div/span[. = 'LogIn']"));
         textPresent("My Sandboxes");
