@@ -369,19 +369,19 @@ export const shortHash = (content: any) => {
 };
 
 if (config.elastic.index.name === 'auto') {
-    config.elastic.index.name = 'cde_v4_' + shortHash(createIndexJson);
+    config.elastic.index.name = 'cde_v5_' + shortHash(createIndexJson);
 }
 if (config.elastic.formIndex.name === 'auto') {
-    config.elastic.formIndex.name = 'form_v4_' + shortHash(createFormIndexJson);
+    config.elastic.formIndex.name = 'form_v5_' + shortHash(createFormIndexJson);
 }
 if (config.elastic.boardIndex.name === 'auto') {
     config.elastic.boardIndex.name = 'board_' + shortHash(boardCreateIndexJson);
 }
 if (config.elastic.cdeSuggestIndex.name === 'auto') {
-    config.elastic.cdeSuggestIndex.name = 'cdesuggest_v4_' + shortHash(createSuggestIndexJson);
+    config.elastic.cdeSuggestIndex.name = 'cdesuggest_v5_' + shortHash(createSuggestIndexJson);
 }
 if (config.elastic.formSuggestIndex.name === 'auto') {
-    config.elastic.formSuggestIndex.name = 'formsuggest_v4_' + shortHash(createSuggestIndexJson);
+    config.elastic.formSuggestIndex.name = 'formsuggest_v5_' + shortHash(createSuggestIndexJson);
 }
 
 export interface ElasticIndex {
