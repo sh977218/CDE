@@ -9,9 +9,10 @@ public class LaunchFhirApp extends NlmCdeBaseTest {
 
     @Test
     public void launchFhirApp() {
-        String appUrl = baseUrl.contains("dev-2")?"https://sandbox.hspconsortium.org/CDECI4/apps"
-                :"https://sandbox.hspconsortium.org/CDECI3/apps";
+        String key = baseUrl.contains("dev-2")?"CDECI4":"CDECI3";
 
+        String appUrl = "https://sandbox.logicahealth.org/" + key + "/apps";
+                :"https://sandbox.logicahealth.org/CDECI3/apps";
 
         driver.get(appUrl);
 
