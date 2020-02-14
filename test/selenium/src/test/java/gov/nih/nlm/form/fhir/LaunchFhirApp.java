@@ -23,7 +23,8 @@ public class LaunchFhirApp extends NlmCdeBaseTest {
 
         hangon(5);
 
-        driver.get(appUrl);
+        clickElement(By.xpath("//span[. = " + key + "]"));
+
         Actions action = new Actions(driver);
         action.moveToElement(findElement(By.cssSelector("div[title='CDE Forms']"))).build().perform();
 
