@@ -11,18 +11,28 @@ public class DateDatatypeTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
         goToPermissibleValues();
-        clickElement(By.id("datatypeDatePrecision"));
 
+        clickElement(By.id("datatypeDatePrecision"));
         selectMatSelectDropdownByText("Year");
         textPresent("Year");
+
+        clickElement(By.id("datatypeDatePrecision"));
         selectMatSelectDropdownByText("Month");
         textPresent("Month");
+
+        clickElement(By.id("datatypeDatePrecision"));
         selectMatSelectDropdownByText("Day");
         textPresent("Day");
+
+        clickElement(By.id("datatypeDatePrecision"));
         selectMatSelectDropdownByText("Hour");
         textPresent("Hour");
+
+        clickElement(By.id("datatypeDatePrecision"));
         selectMatSelectDropdownByText("Minute");
         textPresent("Minute");
+
+        clickElement(By.id("datatypeDatePrecision"));
         selectMatSelectDropdownByText("Second");
         textPresent("Second");
     }
