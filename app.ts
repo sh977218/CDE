@@ -50,7 +50,7 @@ import { initEs } from 'server/system/elastic';
 import { startServer } from 'server/system/ioServer';
 import { errorLogger, expressLogger } from 'server/system/logging';
 import { sessionStore } from 'server/system/mongo-data';
-import { banHackers, blockBannedIps } from 'server/system/trafficFilterSvc';
+import { banHackers, blockBannedIps, banIp, bannedIps } from 'server/system/trafficFilterSvc';
 import { module as userModule } from 'server/user/userRoutes';
 import { module as utsModule } from 'server/uts/utsRoutes';
 import { isOrgAuthority, isOrgCurator } from 'shared/system/authorizationShared';
@@ -354,6 +354,13 @@ app.use((req, res, next) => {
 app.use((err, req, res, next) => {
     if (err.code === 'EBADCSRFTOKEN') {
         return res.status(401).send('CSRF Error');
+    }
+
+    if (err.type === 'entity.parse.failed') {
+        const ip = getRealIp(req);
+        banIp(ip, req.originalUrl);
+        bannedIps.push(ip);
+        return res.status(403).send('Not authorized');
     }
 
     // to test => restassured with simple post
