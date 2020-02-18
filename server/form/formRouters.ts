@@ -367,7 +367,7 @@ export function module() {
     router.get('/server/syncLinkedForms', (req, res) => res.send(syncLinkedForms.syncLinkedFormsProgress));
 
     /* tslint:disable */
-    new CronJob('00 30 4 * * *', () => syncLinkedForms.syncLinkedForms(), null, true, 'America/New_York');
+    new CronJob('00 30 4 * * *', () => syncLinkedForms.syncLinkedForms(), null, true, 'America/New_York').start();
     /* tslint:enable */
     return router;
 }
