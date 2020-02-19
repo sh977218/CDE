@@ -46,6 +46,16 @@
     "/admin/",
     "/cgi-bin"
   ],
+  "banContains": [
+    "../",
+    "nslookup",
+    "<script>",
+    "netsparker",
+    ".axd",
+    "pg_sleep",
+    "char(",
+    "/windows"
+  ],
   "vsac": {
     "tgtUrl": "https://vsac.nlm.nih.gov:443/vsac/ws/Ticket",
     "host": "vsac.nlm.nih.gov",
