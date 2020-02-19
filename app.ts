@@ -58,7 +58,6 @@ import { isOrgAuthority, isOrgCurator } from 'shared/system/authorizationShared'
 const config = Config as any;
 const domain = Domain.create();
 
-
 initEs();
 
 console.log('Node ' + process.versions.node);
@@ -109,6 +108,9 @@ app.set('trust proxy', true);
 
 app.use(favicon((global as any).appDir('./modules/cde/public/assets/img/favicon.ico'))); // TODO: MOVE TO SYSTEM
 
+app.use(blockBannedIps);
+app.use(banHackers);
+
 app.use(bodyParser.urlencoded({extended: false, limit: '5mb'}));
 app.use(bodyParser.json({limit: '16mb'}));
 app.use(methodOverride());
@@ -131,8 +133,6 @@ const getRealIp = (req) => {
     }
 };
 
-app.use(blockBannedIps);
-app.use(banHackers);
 
 // check https
 app.use((req, res, next) => {

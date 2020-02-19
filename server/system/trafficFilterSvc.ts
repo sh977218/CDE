@@ -4,6 +4,7 @@ import { config } from 'server/system/parseConfig';
 export let bannedIps: string[] = [];
 const banEndsWith: string[] = config.banEndsWith || [];
 const banStartsWith: string[] = config.banStartsWith || [];
+const banContains: string[] = config.banContains || [];
 
 const releaseHackersFrequency = 5 * 60 * 1000;
 const keepHackerForDuration = 1000 * 60 * 60 * 24;
@@ -18,22 +19,39 @@ setInterval(async () => {
 }, 30 * 1000);
 
 
+function addBan(req) {
+    const ip = getRealIp(req);
+    banIp(ip, req.originalUrl);
+    bannedIps.push(ip);
+}
+
 export function banHackers(req, res, next) {
+    let banHim = false;
     banEndsWith.forEach(ban => {
         if (req.originalUrl.slice(-(ban.length)) === ban) {
-            const ip = getRealIp(req);
-            banIp(ip, req.originalUrl);
-            bannedIps.push(ip);
+            addBan(req);
+            banHim = true;
         }
     });
     banStartsWith.forEach(ban => {
         if (req.originalUrl.substr(0, ban.length) === ban) {
-            const ip = getRealIp(req);
-            banIp(ip, req.originalUrl);
-            bannedIps.push(ip);
+            addBan(req);
+            banHim = true;
         }
     });
-    next();
+
+    banContains.forEach(ban => {
+       if (req.originalUrl.toLowerCase().indexOf(ban) > -1) {
+           addBan(req);
+           banHim = true;
+       }
+    });
+
+    if (banHim) {
+        res.status(403).send();
+    } else {
+        next();
+    }
 }
 
 export function blockBannedIps(req, res, next) {
