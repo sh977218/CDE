@@ -33,6 +33,21 @@
             <ng-container *ngSwitchCase="'Value List'">
             </ng-container>
             <ng-container *ngSwitchCase="'Date'">
+                <dt class="col-3 text-right">Precision:</dt>
+                <dd class="col-9">
+                    <mat-form-field class="w-50">
+                        <mat-select matNativeControl [(ngModel)]="elt.valueDomain.datatypeDate.precision"
+                                    (selectionChange)="eltChange.emit()" [disabled]="!canEdit"
+                                    id="datatypeDatePrecision" required placeholder="Select Precision">
+                            <mat-option value="Year">Year</mat-option>
+                            <mat-option value="Month">Month</mat-option>
+                            <mat-option value="Day">Day</mat-option>
+                            <mat-option value="Hour">Hour</mat-option>
+                            <mat-option value="Minute">Minute</mat-option>
+                            <mat-option value="Second">Second</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </dd>
             </ng-container>
             <ng-container *ngSwitchCase="'Number'">
                 <dt class="col-3 text-right">Minimum Value:</dt>
@@ -93,7 +108,8 @@
                     <mat-form-field class="w-50">
                         <mat-label>Select system name</mat-label>
                         <mat-select matNativeControl [(ngModel)]="elt.valueDomain.datatypeDynamicCodeList.system"
-                                    (selectionChange)="eltChange.emit()" [disabled]="!canEdit" id="dynamicListSystem" required>
+                                    (selectionChange)="eltChange.emit()" [disabled]="!canEdit" id="dynamicListSystem"
+                                    required>
                             <mat-option value="VSAC">VSAC</mat-option>
                         </mat-select>
                     </mat-form-field>
