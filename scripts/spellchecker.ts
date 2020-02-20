@@ -56,7 +56,7 @@ async function run() {
         cdeCount--;
 
         for (const designation of cde.designations) {
-            const terms = designation.designation.replace(/([ '":.,;()\-?/\[\]]+)/g, '§sep§').split('§sep§');
+            const terms = designation.designation.replace(/([ '|="!…:_.,;()–\-?/\[\]]+)/g, '§sep§').split('§sep§');
             for (let term of terms) {
                 if (term.toUpperCase() !== term) {
                     term = term.trim().toLowerCase();
