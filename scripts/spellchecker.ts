@@ -44,9 +44,9 @@ async function markAsError(term, cde, location) {
 }
 
 async function iterateOverValue(value, type, cde) {
-    const terms = value[type].replace(/([ *'|—="!…:_.,;()–\-?/\[\]]+)/g, '§sep§').split('§sep§');
+    const terms = value[type].replace(/([ *'|—="!…:_.,;(){}–\-?/\[\]]+)/g, '§sep§').split('§sep§');
     for (let term of terms) {
-        if (term.toUpperCase() !== term) {
+        if (!/\d/.test(term) && term.toUpperCase() !== term) {
             term = term.trim().toLowerCase();
             if (whitelist.indexOf(term) === -1) {
                 const misspelled = !dictionary.spellCheck(term);
