@@ -8,7 +8,7 @@ import * as mongo_form from 'server/form/mongo-form';
 import { formSourceModel } from 'server/form/mongo-form';
 import { PhenxURL } from 'ingester/createMigrationConnection';
 import {
-    CdeId, Classification, Definition, Designation, Instruction, Property, ReferenceDocument
+    CdeId, Classification, Definition, Designation, Property, ReferenceDocument
 } from 'shared/models.model';
 import { FormElement } from 'shared/form/form.model';
 import { gfs } from 'server/system/mongo-data';
@@ -35,15 +35,6 @@ export const BATCHLOADER = {
     roles: ['AttachmentReviewer']
 };
 
-export function updateByBatchloader(elt) {
-    const updatedBy = elt.updatedBy;
-    if (updatedBy && updatedBy.username !== BATCHLOADER_USERNAME) {
-        return false;
-    } else {
-        return true;
-    }
-}
-
 export const created = TODAY;
 export const imported = TODAY;
 export const version = '1.0';
@@ -63,13 +54,9 @@ export function wipeBeforeCompare(obj: any) {
     delete obj.noRenderAllowed;
     delete obj.isCopyrighted;
     delete obj.version;
-
-    if (obj.valueDomain) {
-        delete obj.valueDomain.datatypeValueList;
-        if (!obj.valueDomain.uom) {
-            delete obj.valueDomain.uom;
-        }
-    }
+    delete obj.dataSets;
+    delete obj.lastMigrationScript;
+    delete obj.registrationState;
 
     delete obj.imported;
     delete obj.stewardOrg;
@@ -78,6 +65,7 @@ export function wipeBeforeCompare(obj: any) {
     delete obj.updated;
     delete obj.updatedBy;
     delete obj.sources;
+    delete obj.sourcesNew;
 
     delete obj.naming;
     delete obj.displayProfiles;
@@ -86,10 +74,24 @@ export function wipeBeforeCompare(obj: any) {
     delete obj.attachments;
     delete obj.mappingSpecifications;
     delete obj.derivationRules;
-
-    delete obj.lastMigrationScript;
-    delete obj.registrationState;
     delete obj.comments;
+
+    if (obj.valueDomain) {
+        if (isEmpty(obj.valueDomain.uom)) {
+            delete obj.valueDomain.uom;
+        }
+        if (isEmpty(obj.valueDomain.datatypeText)) {
+            delete obj.valueDomain.datatypeText;
+        }
+        if (isEmpty(obj.valueDomain.datatypeNumber)) {
+            delete obj.valueDomain.datatypeNumber;
+        }
+        if (isEmpty(obj.valueDomain.datatypeDate)) {
+            delete obj.valueDomain.datatypeDate;
+        }
+        delete obj.valueDomain.datatypeTime;
+        delete obj.valueDomain.datatypeValueList;
+    }
 
     Object.keys(obj).forEach(key => {
         if (Array.isArray(obj[key]) && obj[key].length === 0) {
@@ -296,7 +298,6 @@ export function compareElt(newEltObj, existingEltObj, source) {
     const isQualified = existingEltObj.registrationState.registrationStatus === 'Qualified';
     const isArchived = existingEltObj.archived;
     const isForm = existingEltObj.elementType === 'form';
-    const isCde = existingEltObj.elementType === 'cde';
 
     // PhenX Qualified form not need to compare formElements
     if (isForm && isPhenX && isQualified && !isArchived) {
@@ -323,10 +324,6 @@ export function compareElt(newEltObj, existingEltObj, source) {
 
         if (isForm) {
             eltObj.cdeTinyIds = getChildren(eltObj.formElements);
-        }
-        if (isCde) {
-            delete eltObj.dataSets;
-            fixValueDomainOrQuestion(eltObj.valueDomain);
         }
         wipeBeforeCompare(eltObj);
 
@@ -443,13 +440,13 @@ export function mergeReferenceDocuments(existingObj, newObj) {
 }
 
 export function mergeIds(existingObj, newObj, source: string) {
+    const NINDS_SOURCES = ['NINDS Preclinical', 'BRICS Variable Name', 'NINDS Variable Name', 'NINDS caDSR', 'NINDS CDISC'];
+
     const existingIds: CdeId[] = existingObj.ids;
     const newIds: CdeId[] = newObj.ids;
     newIds.forEach(newId => {
         const i = findIndex(existingIds, o => {
-            if (o.source === 'NINDS Preclinical' && newId.source === 'BRICS Variable Name') {
-                return true;
-            } else if (o.source === 'NINDS Variable Name' && newId.source === 'BRICS Variable Name') {
+            if (NINDS_SOURCES.indexOf(o.source) !== -1 && NINDS_SOURCES.indexOf(newId.source) !== -1) {
                 return true;
             } else {
                 return isEqual(o.source, newId.source) && isEqual(o.id, newId.id);
@@ -514,6 +511,7 @@ export function mergeElt(existingEltObj: any, newEltObj: any, source: string) {
     const isArchived = existingEltObj.archived;
 
     existingEltObj.imported = imported;
+    existingEltObj.lastMigrationScript = lastMigrationScript;
     existingEltObj.changeNote = lastMigrationScript;
 
     mergeDesignations(existingEltObj, newEltObj);

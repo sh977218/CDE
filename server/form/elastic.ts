@@ -1,4 +1,3 @@
-import * as elastic from '@elastic/elasticsearch';
 import { splitError } from 'server/errorHandler/errorHandler';
 import { logError } from 'server/log/dbLogger';
 import { riverFunction, suggestRiverFunction } from 'server/system/elasticSearchInit';
@@ -15,7 +14,7 @@ export function updateOrInsert(elt) {
             const done = err => {
                 if (err) {
                     logError({
-                        message: 'Unable to Index document: ' + doc.tinyId,
+                        message: 'Unable to Index document: ' + doc.elementType + ' ' + doc.tinyId,
                         origin: 'form.elastic.updateOrInsert',
                         stack: err.toString(),
                         details: ''
