@@ -24,21 +24,51 @@ const blacklistFile = './scripts/spellcheck.blacklist';
 let whitelist = [];
 let blacklist = [];
 async function addToList(term) {
-    if (whitelist.indexOf(term === -1)) {
+    if (whitelist.indexOf(term) === -1) {
         whitelist.push(term);
+        whitelist.filter((item, index) => whitelist.indexOf(item) === index);
         await fs.writeFileSync(whitelistFile, whitelist, 'utf8');
     }
 }
 
 const errors = [];
-async function markAsError(term, tinyId) {
-    errors.push({tinyId, term});
-    await fs.writeFileSync('./scripts/spellcheck.output', JSON.stringify(errors), 'utf8');
-    if (blacklist.indexOf(term === -1)) {
+async function markAsError(term, cde, location) {
+    errors.push({ids: cde.ids, term, location});
+    await fs.writeFileSync('./scripts/spellcheck.json', JSON.stringify(errors), 'utf8');
+    if (blacklist.indexOf(term) === -1) {
         blacklist.push(term);
+        blacklist.filter((item, index) => whitelist.indexOf(item) === index);
         await fs.writeFileSync(blacklistFile, blacklist, 'utf8');
     }
 
+}
+
+async function iterateOverValue(value, type, cde) {
+    const terms = value[type].replace(/([ *'|—="!…:_.,;()–\-?/\[\]]+)/g, '§sep§').split('§sep§');
+    for (let term of terms) {
+        if (term.toUpperCase() !== term) {
+            term = term.trim().toLowerCase();
+            if (whitelist.indexOf(term) === -1) {
+                const misspelled = !dictionary.spellCheck(term);
+                if (misspelled) {
+                    console.log(`\n${terms.join(' ')}\n`);
+                    console.log(`${term} in tinyId: ${cde.tinyId}\n`);
+                    let ok = false;
+                    if (blacklist.indexOf(term) !== -1) {
+                    } else {
+                        ok = await yesno({
+                            question: 'Add to whitelist?'
+                        });
+                    }
+                    if (ok) {
+                        await addToList(term);
+                    } else {
+                        await markAsError(term, cde, 'name');
+                    }
+                }
+            }
+        }
+    }
 }
 
 async function run() {
@@ -56,30 +86,11 @@ async function run() {
         cdeCount--;
 
         for (const designation of cde.designations) {
-            const terms = designation.designation.replace(/([ '|—="!…:_.,;()–\-?/\[\]]+)/g, '§sep§').split('§sep§');
-            for (let term of terms) {
-                if (term.toUpperCase() !== term) {
-                    term = term.trim().toLowerCase();
-                    if (whitelist.indexOf(term) === -1) {
-                        const misspelled = !dictionary.spellCheck(term);
-                        if (misspelled) {
-                            console.log(`${term} in tinyId: ${cde.tinyId}`);
-                            let ok = false;
-                            if (blacklist.indexOf(term) !== -1) {
-                            } else {
-                                ok = await yesno({
-                                    question: 'Add to whitelist?'
-                                });
-                            }
-                            if (ok) {
-                                await addToList(term);
-                            } else {
-                                await markAsError(term, cde.tinyId);
-                            }
-                        }
-                    }
-                }
-            }
+            await iterateOverValue(designation, 'designation', cde);
+        }
+
+        for (const definition of cde.definitions) {
+            await iterateOverValue(definition, 'definition', cde);
         }
 
         console.log(`cde sources TODO: ${cdeCount}`);
