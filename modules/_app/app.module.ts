@@ -27,7 +27,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { FeedbackModule } from 'ngx-feedback2';
+import { FeedbackModule } from 'ng-feedback2';
 
 @NgModule({
     imports: [
