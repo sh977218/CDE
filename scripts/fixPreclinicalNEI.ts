@@ -7,11 +7,19 @@ process.on('unhandledRejection', (error) => {
 });
 
 async function doOneCollection(model) {
-    const cond = {};
+    const cond = {
+        $or: [
+            {source: 'NINDS Preclinical NEI'},
+            {'sources.sourceName': 'NINDS Preclinical NEI'}
+        ]
+    };
     const cursor = model.find(cond).cursor();
     let count = 0;
     return cursor.eachAsync(async model => {
         const modelObj = model.toObject();
+        if (modelObj.source === 'NINDS Preclinical NEI') {
+            model.source = 'NINDS Preclinical TBI';
+        }
         model.sources = fixSources(modelObj);
         await model.save().catch(error => {
             console.log(`await model.save() Error ${error}`);
