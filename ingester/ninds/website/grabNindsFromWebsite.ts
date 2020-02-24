@@ -147,6 +147,7 @@ async function doOnePage(ninds: any, driver: any) {
 
 async function doCdes(ninds: any, url: string) {
     const driver = await new Builder().forBrowser('chrome').build();
+    await driver.manage().window().maximize();
     await driver.get(url);
     ninds.cdes = [];
     await doOnePage(ninds, driver);
@@ -225,7 +226,9 @@ async function doDomains(driver: any, disorder: any, subDiseaseName: string = ''
     await driver.findElement(By.xpath("//button[normalize-space(text())='Expand All']")).click();
     // tslint:disable-next-line:max-line-length
     const domainDivXpath = "//div[div[p[button[normalize-space(text())='Collapse All']]]]/div[@class='view-content']/div[@class='view-grouping']";
-    await driver.wait(until.elementLocated(By.xpath(domainDivXpath)), 30 * 1000);
+//    await driver.wait(until.elementLocated(By.xpath(domainDivXpath)), 30 * 1000);
+    await driver.sleep(60000);
+
     const domainElements = await driver.findElements(By.xpath(domainDivXpath));
     for (const domainElement of domainElements) {
         const domainName = await doDomainName(domainElement);
@@ -236,14 +239,14 @@ async function doDomains(driver: any, disorder: any, subDiseaseName: string = ''
 async function doDisorder(disorder: any) {
     console.log(`Fetch disorder: ${disorder.disorderName}`);
     const driver = await new Builder().forBrowser('chrome').build();
+    await driver.manage().window().maximize();
     await driver.get(disorder.url);
     const subDiseases: any = disorder.subDiseases;
     if (subDiseases && subDiseases.length) {
         for (const subDisease of subDiseases) {
             await selectSubDisease(driver, subDisease.name);
-            const existingContentElementsXpath = "//div[div[p[button[normalize-space(text())='Expand All']]]]/div[@class='view-content']";
             const start: any = new Date();
-            await driver.wait(until.elementLocated(By.xpath(existingContentElementsXpath)), 60 * 1000);
+            await driver.sleep(60000);
             const end: any = new Date();
             console.log(' Execution time ' + subDisease.name + ' : %ds', (end - start) / 1000);
             await doDomains(driver, disorder, subDisease.name);

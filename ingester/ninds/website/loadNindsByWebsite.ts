@@ -6,12 +6,12 @@ import { createNindsForm } from 'ingester/ninds/website/form/form';
 import { doNindsClassification, loadNindsCde, loadNindsForm } from 'ingester/ninds/shared';
 import { dataElementModel } from 'server/cde/mongo-cde';
 import {
-    BATCHLOADER, findOneCde, fixForm, imported, lastMigrationScript, retiredElt, updateCde, updateForm,
+    BATCHLOADER, findOneCde, findOneForm, imported, lastMigrationScript, retiredElt, updateCde, updateForm,
     updateRawArtifact
 } from 'ingester/shared/utility';
 import { formModel } from 'server/form/mongo-form';
 
-function removeNindsClassification(elt: any) {
+function removeNindsNonePreclinicalClassification(elt: any) {
     const nindsClassifications = elt.classification.filter((c: any) => c.stewardOrg.name === 'NINDS');
     const preclinicalElements = nindsClassifications[0].elements.filter((e: any) => e.name === 'Preclinical TBI');
     let otherClassification = elt.classification.filter((c: any) => c.stewardOrg.name !== 'NINDS');
@@ -24,12 +24,17 @@ function removeNindsClassification(elt: any) {
     elt.classification = otherClassification;
 }
 
-function loadNindsCdes() {
-    const phq9CdeIds = ['C07430', 'C07431', 'C07432', 'C07433', 'C07435', 'C07436', 'C07437', 'C07438', 'C07439', 'C07440', 'C07441'];
 
+function isPhq9(nindsForms) {
+    const phq9FormIds = ['F2032', 'F0374'];
+    return nindsForms.filter(nindsForm => phq9FormIds.indexOf(nindsForm.formId) !== -1).length > 0;
+}
+
+function loadNindsCdes() {
     return new Promise(async (resolve, reject) => {
         const cdeIds = await NindsModel.distinct('cdes.CDE ID');
-//        const cdeIds = phq9CdeIds;
+//        const cdeIds = await NindsModel.distinct('cdes.CDE ID', {formId: 'F0004'});
+//        const cdeIds = ['C00708'];
         eachLimit(cdeIds, 500, async cdeId => {
             const nindsForms = await NindsModel.find({'cdes.CDE ID': cdeId},
                 {
@@ -38,29 +43,29 @@ function loadNindsCdes() {
                     subDiseaseName: 1,
                     domainName: 1,
                     subDomainName: 1,
+                    formId: 1,
                     cdes: {$elemMatch: {'CDE ID': cdeId}}
                 }).lean();
-            const cde = await createNindsCde(nindsForms);
+            const de = await createNindsCde(nindsForms);
             const cond = {
                 archived: false,
                 'ids.id': cdeId,
                 'registrationState.registrationStatus': {$ne: 'Retired'}
             };
-            const isPhq9 = phq9CdeIds.indexOf(cdeId) !== -1;
-            if (isPhq9) {
-                const newCde = new dataElementModel(cde);
-                const newCdeObj = newCde.toObject();
+            if (isPhq9(nindsForms)) {
+                const newDe = new dataElementModel(de);
+                const newCdeObj = newDe.toObject();
                 const existingCdes: any[] = await dataElementModel.find(cond);
                 const existingCde: any = findOneCde(existingCdes);
                 const existingCdeObj = existingCde.toObject();
-                doNindsClassification(existingCdeObj, newCde.toObject());
+                doNindsClassification(existingCdeObj, newDe.toObject());
                 existingCde.classification = existingCdeObj.classification;
                 existingCde.lastMigrationScript = lastMigrationScript;
                 existingCde.imported = imported;
                 await existingCde.save();
                 await updateRawArtifact(existingCde, newCdeObj, 'NINDS', 'NINDS');
             } else {
-                await loadNindsCde(cde, cond, 'NINDS');
+                await loadNindsCde(de, cond, 'NINDS');
             }
         }, err => {
             if (err) {
@@ -108,7 +113,11 @@ async function duplicateFormIds(formIds) {
 function loadNindsForms() {
     return new Promise(async (resolve, reject) => {
         const formIds = await NindsModel.distinct('formId', {'cdes.0': {$exists: true}});
+//        const formIds = await NindsModel.distinct('formId');
+//        const formIds = ['F0004'];
+        formIds.sort();
         await duplicateFormIds(formIds);
+//        eachLimit(formIds.filter(formId => ['F0807', 'F1006'].indexOf(formId) !== -1), 1, async formId => {
         eachLimit(formIds, 1, async formId => {
             const cond: any = {
                 archived: false,
@@ -120,8 +129,22 @@ function loadNindsForms() {
             const nindsForms = await NindsModel.find({
                 formId: {$in: [formId].concat(sameFormIds)}
             }).lean();
-            const nindsForm = await createNindsForm(nindsForms);
-            await loadNindsForm(nindsForm, cond, 'NINDS');
+            const form = await createNindsForm(nindsForms);
+            if (isPhq9(nindsForms)) {
+                const newForm = new formModel(form);
+                const newFormObj = newForm.toObject();
+                const existingForms: any[] = await formModel.find(cond);
+                const existingForm: any = findOneForm(existingForms);
+                const existingFormObj = existingForm.toObject();
+                doNindsClassification(existingFormObj, newForm.toObject());
+                existingForm.classification = existingFormObj.classification;
+                existingForm.lastMigrationScript = lastMigrationScript;
+                existingForm.imported = imported;
+                await existingForm.save();
+                await updateRawArtifact(existingForm, newFormObj, 'NINDS', 'NINDS');
+            } else {
+                await loadNindsForm(form, cond, 'NINDS');
+            }
         }, err => {
             if (err) {
                 reject(err);
@@ -139,21 +162,19 @@ function retireNindsCdes() {
         dataElementModel.find({
             archived: false,
             'classification.stewardOrg.name': 'NINDS',
-            'registrationState.registrationStatus': {$ne: 'Retired'}
+            'registrationState.registrationStatus': {$ne: 'Retired'},
+            lastMigrationScript: {$ne: lastMigrationScript}
         }).cursor({batchSize: 10}).eachAsync(async cdeToRetire => {
             const cdeObj = cdeToRetire.toObject();
-            if (cdeObj.lastMigrationScript !== lastMigrationScript) {
-                removeNindsClassification(cdeObj);
-                if (cdeObj.classification.length < 1) {
-                    retiredElt(cdeObj);
-                    retiredCdeCount++;
-                    console.log(`retire Cde: ${cdeObj.tinyId}`);
-                }
+            removeNindsNonePreclinicalClassification(cdeObj);
+            if (cdeObj.classification.length < 1) {
+                retiredElt(cdeObj);
+                retiredCdeCount++;
+                console.log(`retire Cde: ${cdeObj.tinyId}`);
                 await updateCde(cdeObj, BATCHLOADER);
-                if (retiredCdeCount % 100 === 0) {
-                    console.log('retiredCdeCount: ' + retiredCdeCount);
-                }
-
+            }
+            if (retiredCdeCount % 100 === 0) {
+                console.log('retiredCdeCount: ' + retiredCdeCount);
             }
         }).then(() => {
             console.log('retiredCdeCount: ' + retiredCdeCount);
@@ -171,24 +192,19 @@ function retireNindsForms() {
         formModel.find({
             archived: false,
             'classification.stewardOrg.name': 'NINDS',
-            'registrationState.registrationStatus': {$ne: 'Retired'}
+            'registrationState.registrationStatus': {$ne: 'Retired'},
+            lastMigrationScript: {$ne: lastMigrationScript}
         }).cursor({batchSize: 10}).eachAsync(async formToRetire => {
-            const form = await fixForm(formToRetire).catch((err: any) => {
-                console.log(`Not able to fix form when in retireNindsForms ${err}`);
-                process.exit(1);
-            });
-            const formObj = form.toObject();
-            if (formObj.lastMigrationScript !== lastMigrationScript) {
-                removeNindsClassification(formObj);
-                if (formObj.classification.length < 1) {
-                    retiredElt(formObj);
-                    retiredFormCount++;
-                    console.log(`retire Form: ${formObj.tinyId}`);
-                }
+            const formObj = formToRetire.toObject();
+            removeNindsNonePreclinicalClassification(formObj);
+            if (formObj.classification.length < 1) {
+                retiredElt(formObj);
+                retiredFormCount++;
+                console.log(`retire Form: ${formObj.tinyId}`);
                 await updateForm(formObj, BATCHLOADER);
-                if (retiredFormCount % 100 === 0) {
-                    console.log('retiredFormCount: ' + retiredFormCount);
-                }
+            }
+            if (retiredFormCount % 100 === 0) {
+                console.log('retiredFormCount: ' + retiredFormCount);
             }
         }).then(() => {
             console.log('retiredFormCount: ' + retiredFormCount);
@@ -201,10 +217,14 @@ function retireNindsForms() {
 }
 
 async function run() {
+
     await loadNindsCdes();
+
     await loadNindsForms();
+
     await retireNindsCdes();
     await retireNindsForms();
+
 }
 
 run().then(

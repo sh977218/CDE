@@ -16,38 +16,9 @@ The data is grabbed from this link: https://www.commondataelements.ninds.nih.gov
 * Copy 'Domain' under 'Disease'.
 
 ## Fixes
-https://www.commondataelements.ninds.nih.gov/ReportViewer.aspx?/nindscdereports/rptAllCDE&rs:Command=Render&rc:Parameters=false&CDEName=&DiseaseName=Neuromuscular%20Diseases&SubDiseaseName=Neuromuscular%20Diseases%20(NMD)&DomainName=+&SubDomainName=Imaging%20Diagnostics&Classification=+&IsCopyright=&Population=+&CdeId=+&keyword=&CrfId=F1053&CrfName=Diffusion%20Tensor%20Imaging%20(DTI)
-https://www.commondataelements.ninds.nih.gov/ReportViewer.aspx?/nindscdereports/rptAllCDE&rs:Command=Render&rc:Parameters=false&CDEName=&DiseaseName=&SubDiseaseName=&DomainName=+&SubDomainName=Imaging%20Diagnostics&Classification=+&IsCopyright=&Population=+&CdeId=+&keyword=&CrfId=F1053&CrfName=Diffusion%20Tensor%20Imaging%20(DTI)
-have different question list, C02495, C10567 and C02496 are in different order in those two form.
-This is only one of the example.
-
-CDE C21408, C21409, C21410, C21411, C21412, C21413, and so on have
-Description: Minor;Minor;Moderate;Moderate;Severe;Severe;Not experiencing this symptom;
-Permissible Value: 1;2;3;4;5;6;0;
-change Description to Minor;Minor+;Moderate;Moderate+;Severe;Severe+;Not experiencing this symptom;
-run this command in mongo shell multiple times until see `Updated 0 record(s) in XXms`
-`
-db.getCollection('ninds').update({'cdes.Description':'Minor;Minor;Moderate;Moderate;Severe;Severe;Not experiencing this symptom;'},{$set:{'cdes.$.Description':'Minor;Minor+;Moderate;Moderate+;Severe;Severe+;Not experiencing this symptom;'}},{multi:true});
-`
-
-CDE C07070 has
-Description: No intervention;No intervention;No intervention;No intervention;Receive brief intervention;Receive brief intervention;Receive brief intervention;Receive brief intervention;Receive brief intervention;Receive brief intervention;Receive brief intervention;Receive brief intervention;Receive brief intervention;Receive brief intervention;Receive brief intervention;Receive brief intervention;Receive brief intervention;Receive brief intervention;Receive brief intervention;Receive brief intervention;Receive brief intervention;Receive brief intervention;Receive brief intervention;Receive brief intervention;Receive brief intervention;Receive brief intervention;Receive brief intervention;More intensive treatment;More intensive treatment;More intensive treatment;More intensive treatment;More intensive treatment;
-Permissible Value: 0;1;2;3;4;5;6;7;8;9;10;11;12;13;14;15;16;17;18;19;20;21;22;23;24;25;26;27;28;29;30;31;
-change Description to No intervention;No intervention+;No intervention++;No intervention+++;Receive brief intervention;Receive brief intervention+;Receive brief intervention++;Receive brief intervention+++;Receive brief intervention++++;Receive brief intervention+++++;Receive brief intervention++++++;Receive brief intervention+++++++;Receive brief intervention++++++++;Receive brief intervention+++++++++;Receive brief intervention++++++++++;Receive brief intervention+++++++++++;Receive brief intervention++++++++++++;Receive brief intervention+++++++++++++;Receive brief intervention++++++++++++++;Receive brief intervention+++++++++++++++;Receive brief intervention++++++++++++++++;Receive brief intervention+++++++++++++++++;Receive brief intervention++++++++++++++++++;Receive brief intervention+++++++++++++++++++;Receive brief intervention++++++++++++++++++++;Receive brief intervention+++++++++++++++++++++;Receive brief intervention++++++++++++++++++++++;More intensive treatment;More intensive treatment+;More intensive treatment++;More intensive treatment+++;More intensive treatment++++;
-run this command in mongo shell multiple times until see `Updated 0 record(s) in XXms`
-`
-db.getCollection('ninds').update({'cdes.Description':'No intervention;No intervention;No intervention;No intervention;Receive brief intervention;Receive brief intervention;Receive brief intervention;Receive brief intervention;Receive brief intervention;Receive brief intervention;Receive brief intervention;Receive brief intervention;Receive brief intervention;Receive brief intervention;Receive brief intervention;Receive brief intervention;Receive brief intervention;Receive brief intervention;Receive brief intervention;Receive brief intervention;Receive brief intervention;Receive brief intervention;Receive brief intervention;Receive brief intervention;Receive brief intervention;Receive brief intervention;Receive brief intervention;More intensive treatment;More intensive treatment;More intensive treatment;More intensive treatment;More intensive treatment;'},{$set:{'cdes.$.Description':'No intervention;No intervention+;No intervention++;No intervention+++;Receive brief intervention;Receive brief intervention+;Receive brief intervention++;Receive brief intervention+++;Receive brief intervention++++;Receive brief intervention+++++;Receive brief intervention++++++;Receive brief intervention+++++++;Receive brief intervention++++++++;Receive brief intervention+++++++++;Receive brief intervention++++++++++;Receive brief intervention+++++++++++;Receive brief intervention++++++++++++;Receive brief intervention+++++++++++++;Receive brief intervention++++++++++++++;Receive brief intervention+++++++++++++++;Receive brief intervention++++++++++++++++;Receive brief intervention+++++++++++++++++;Receive brief intervention++++++++++++++++++;Receive brief intervention+++++++++++++++++++;Receive brief intervention++++++++++++++++++++;Receive brief intervention+++++++++++++++++++++;Receive brief intervention++++++++++++++++++++++;More intensive treatment;More intensive treatment+;More intensive treatment++;More intensive treatment+++;More intensive treatment++++;'}},{multi:true});
-`
-
-CDE C52453 has
-Description: None;Mild;mild;Moderate;Moderate;Severe;Severe;
-Permissible Value: 0;1;2;3;4;5;6;
-change Description to None;Mild;mild+;Moderate;Moderate+;Severe;Severe+;
-run this command in mongo shell multiple times until see `Updated 0 record(s) in XXms`
-`
-db.getCollection('ninds').update({'cdes.Description':'None;Mild;mild;Moderate;Moderate;Severe;Severe;'},{$set:{'cdes.$.Description':'None;Mild;mild+;Moderate;Moderate+;Severe;Severe+;'}},{multi:true});
-`
-
+* F0807 and F1006 is merged on CDE production, but F0807 on NINDS is empty.
+https://www.commondataelements.ninds.nih.gov/Parkinson%27s%20Disease
+run`db.getCollection('NINDS').find({formId:{$in:['F0807', 'F1006']}})` and copy cdes from F1006 to F0807
 
 # Why not load data from exports
 export files are under S:\MLB\CDE\NINDS\export\

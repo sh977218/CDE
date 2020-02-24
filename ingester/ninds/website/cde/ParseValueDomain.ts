@@ -83,7 +83,7 @@ export function parseValueDomain(nindsForms: any[]) {
     });
 
     const valueDomain: any = {
-        uom: '',
+        datatype: 'Text',
         permissibleValues: []
     };
 
@@ -99,70 +99,65 @@ export function parseValueDomain(nindsForms: any[]) {
         console.log('_dataTypeTypeArray not 1');
         process.exit(1);
     }
-    _measurementTypeArray.forEach(m => {
-        if (m) {
-            valueDomain.uom = m;
-        }
-    });
-    _inputRestrictionsTypeArray.forEach(inputRestrictions => {
-        if (inputRestrictions === 'Free-Form Entry') {
-            const datatype = DATA_TYPE_MAP[_dataTypeTypeArray[0]];
-            valueDomain.datatype = datatype;
-            if (!datatype) {
-                console.log(' unknown dataType found:' + datatype);
-                process.exit(1);
-            }
-            if (datatype === 'Text') {
-                if (_sizeArray.length > 1) {
-                    console.log('_sizeArray greater 1');
-                    process.exit(1);
-                }
-                if (_sizeArray.length > 0) {
-                    valueDomain.datatypeText = {maxLength: Number(_sizeArray[0])};
-                }
-            }
-            if (valueDomain.datatype === 'Number') {
-                if (_minValueArray.length > 1) {
-                    console.log('_minValueArray greater 1');
-                    process.exit(1);
-                }
-                if (_maxValueArray.length > 1) {
-                    console.log('_maxValueArray greater 1');
-                    process.exit(1);
-                }
-                valueDomain.datatypeNumber = {};
-                if (_minValueArray.length > 0) {
-                    valueDomain.datatypeNumber.minValue = Number(_minValueArray[0]);
-                }
-                if (_maxValueArray.length > 0) {
-                    valueDomain.datatypeNumber.maxValue = Number(_maxValueArray[0]);
-                }
-            }
-        } else if (['Single Pre-Defined Value Selected', 'Multiple Pre-Defined Values Selected'].indexOf(inputRestrictions) > -1) {
-            valueDomain.datatype = 'Value List';
-            const datatype = DATA_TYPE_MAP[_dataTypeTypeArray[0]];
-            if (!datatype) {
-                console.log('Unknown dataType found:' + datatype);
-                process.exit(1);
-            }
-            valueDomain.datatypeValueList = {datatype};
-            if (datatype === 'Value List') {
-                if (_permissibleValuesArray.length === 0) {
-                    console.log('_permissibleValuesArray is not 1');
-                    process.exit(1);
-                }
-            }
-            valueDomain.permissibleValues = _permissibleValuesArray;
 
-            // @todo some ninds cdes have empty permissible values with Single Pre-Defined Value Selected,
-            if (isEmpty(_permissibleValuesArray)) {
-                valueDomain.datatype = 'Text';
-            }
-        } else {
-            console.log(' unknown inputRestrictions found:' + inputRestrictions);
+
+    if (_sizeArray.length > 1) {
+        console.log('_sizeArray greater 1');
+        process.exit(1);
+    }
+    if (_minValueArray.length > 1) {
+        console.log('_minValueArray greater 1');
+        process.exit(1);
+    }
+    if (_maxValueArray.length > 1) {
+        console.log('_maxValueArray greater 1');
+        process.exit(1);
+    }
+
+    if (_measurementTypeArray.length > 0) {
+        valueDomain.uom = _measurementTypeArray[0];
+    }
+
+    const inputRestrictions = _inputRestrictionsTypeArray[0];
+
+    if (inputRestrictions === 'Free-Form Entry') {
+        const datatype = DATA_TYPE_MAP[_dataTypeTypeArray[0]];
+        valueDomain.datatype = datatype;
+        if (!datatype) {
+            console.log(' unknown dataType found:' + datatype);
             process.exit(1);
         }
-    });
+        if (datatype === 'Text') {
+            const datatypeText: any = {};
+            if (_sizeArray.length > 0) {
+                datatypeText.maxLength = Number(_sizeArray[0]);
+            }
+            if (!isEmpty(datatypeText)) {
+                valueDomain.datatypeText = datatypeText;
+            }
+        }
+        if (valueDomain.datatype === 'Number') {
+            const datatypeNumber: any = {};
+            if (_minValueArray.length > 0) {
+                datatypeNumber.minValue = Number(_minValueArray[0]);
+            }
+            if (_maxValueArray.length > 0) {
+                datatypeNumber.maxValue = Number(_maxValueArray[0]);
+            }
+            if (!isEmpty(datatypeNumber)) {
+                valueDomain.datatypeNumber = datatypeNumber;
+            }
+        }
+    } else if (['Single Pre-Defined Value Selected', 'Multiple Pre-Defined Values Selected'].indexOf(inputRestrictions) > -1) {
+        valueDomain.datatype = 'Value List';
+        valueDomain.permissibleValues = _permissibleValuesArray;
+        if (_permissibleValuesArray.length === 0) {
+            valueDomain.datatype = 'Text';
+        }
+    } else {
+        console.log('Unknown inputRestrictions found:' + inputRestrictions);
+        process.exit(1);
+    }
 
     return valueDomain;
 }
