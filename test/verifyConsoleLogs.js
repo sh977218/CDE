@@ -77,7 +77,7 @@ let expectedContent = {
 };
 
 let ignoreErrors = [
-    ':3001/originalSource/',
+    ':3001/server/de/originalSource/',
     'listbox select is deprecated and will be removed in M79',
     'reportOnly',
     'Report Only',

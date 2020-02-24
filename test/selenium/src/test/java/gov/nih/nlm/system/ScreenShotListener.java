@@ -75,7 +75,7 @@ public class ScreenShotListener extends TestListenerAdapter {
             sb.append("URL when failed: " + driver.getCurrentUrl() + "\n");
         }
         for (LogEntry entry : logEntries) {
-            if (!entry.getMessage().contains(":3001/originalSource")) {
+            if (!entry.getMessage().contains(":3001/server/de/originalSource")) {
                 sb.append(new Date(entry.getTimestamp()));
                 sb.append(" ");
                 sb.append(entry.getLevel());
