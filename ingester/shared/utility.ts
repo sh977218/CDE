@@ -871,13 +871,8 @@ export function fixCreatedBy(elt) {
 
 export function fixSources(obj) {
     obj.sources.forEach(s => {
-        if (!s.updated) {
-            delete s.updated;
-        }
-        if (!s.sourceName) {
-            if (obj.stewardOrg.name === 'LOINC' && s.registrationStatus === 'Active') {
-                s.sourceName = 'LOINC';
-            }
+        if (s.sourceName === 'NINDS Preclinical NEI') {
+            s.sourceName = 'NINDS Preclinical TBI';
         }
     });
     return obj.sources.filter(s => !isEmpty(s));
