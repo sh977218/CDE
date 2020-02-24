@@ -11,7 +11,7 @@
             </dd>
         </ng-container>
         <dt class="col-3 text-right">Used by:</dt>
-        <dd class="col-9" id="dd_usedBy">{{elt.usedBy}}</dd>
+        <dd class="col-9" id="dd_usedBy">{{elt.usedBy.join(', ')}}</dd>
         <dt class="col-3 text-right">Copyrighted:</dt>
         <dd class="col-9">
             <input type="checkbox" [(ngModel)]="elt.isCopyrighted" [disabled]="!canEdit"
