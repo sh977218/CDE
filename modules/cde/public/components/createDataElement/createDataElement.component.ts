@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
-import { MatDialogRef } from '@angular/material';
+import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
+
 import { Router } from '@angular/router';
 import { UserService } from '_app/user.service';
 import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
@@ -15,6 +15,7 @@ import { ClassificationClassified, ClassificationHistory, Definition, Designatio
 import { DataElement } from 'shared/de/dataElement.model';
 import { findSteward, removeCategory } from 'shared/system/classificationShared';
 import { DeletedNodeEvent } from 'adminItem/public/components/classification/classificationView.component';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
     selector: 'cde-create-data-element',

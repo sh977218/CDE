@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { MatDialog, MatDialogRef, PageEvent } from '@angular/material';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { ElasticService } from '_app/elastic.service';
@@ -11,6 +10,8 @@ import { OrgHelperService } from 'non-core/orgHelper.service';
 import { saveAs } from 'file-saver';
 import { Board, BoardUser, ClassificationClassified, Comment, ItemElastic, ListTypes, User } from 'shared/models.model';
 import { convertToCsv, getCdeCsvHeader, projectItemForExport } from 'core/system/export';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { PageEvent } from '@angular/material/paginator';
 
 export interface BoardQuery {
     board: Board;

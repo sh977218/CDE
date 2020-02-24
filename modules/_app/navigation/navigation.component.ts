@@ -12,7 +12,7 @@ import '../../../node_modules/material-design-lite/material.css';
 import '../../../node_modules/material-design-lite/material.js';
 import { HttpClient } from '@angular/common/http';
 import { AlertService } from 'alert/alert.service';
-import { Feedback } from 'ng-feedback2/entity/feedback';
+import { Feedback } from 'ngx-feedback2/entity/feedback';
 
 @Component({
     selector: 'cde-navigation',

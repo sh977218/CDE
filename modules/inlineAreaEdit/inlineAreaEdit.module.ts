@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { CKEditorModule } from 'ng2-ckeditor';
 
 import { InlineAreaEditComponent } from 'inlineAreaEdit/inlineAreaEdit.component';
-import { MatIconModule } from '@angular/material';
+import { MatIconModule } from '@angular/material/icon';
 import { TextTruncateModule } from 'textTruncate/textTruncate.module';
 
 @NgModule({

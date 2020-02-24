@@ -1,5 +1,5 @@
 import { Component, Output, EventEmitter, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { PermissibleValue } from 'shared/models.model';
 
 @Component({

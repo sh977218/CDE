@@ -5,8 +5,8 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { BoardModule } from 'board/public/board.module';
 import { MyBoardsComponent } from 'board/public/components/myBoards/myBoards.component';
+import { MatIconModule } from '@angular/material/icon';
 
-import { MatIconModule, MatProgressSpinnerModule } from '@angular/material';
 
 const boardRoutes: Routes = [
     {path: '', component: MyBoardsComponent},

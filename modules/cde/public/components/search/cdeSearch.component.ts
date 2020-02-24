@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, ComponentFactoryResolver, EventEmitter, Input, Output } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BackForwardService } from '_app/backForward.service';
 import { ElasticService } from '_app/elastic.service';

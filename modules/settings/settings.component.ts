@@ -1,7 +1,7 @@
 import { Component, HostListener, ViewChild } from '@angular/core';
-import { MatSidenav } from '@angular/material';
 import { Router } from '@angular/router';
 import { UserService } from '_app/user.service';
+import { MatSidenav } from '@angular/material/sidenav';
 
 @Component({
     templateUrl: './settings.component.html',

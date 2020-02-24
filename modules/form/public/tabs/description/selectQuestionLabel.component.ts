@@ -1,6 +1,6 @@
 import { Component, Inject, EventEmitter, Output } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { MAT_DIALOG_DATA } from '@angular/material';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { AlertService } from 'alert/alert.service';
 import { FormQuestion, FormSection, Question, QuestionCde } from 'shared/form/form.model';
 import { Designation } from 'shared/models.model';

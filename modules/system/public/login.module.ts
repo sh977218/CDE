@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material';
 import { RouterModule, Routes } from '@angular/router';
 import { RecaptchaModule } from 'ng-recaptcha';
 import { LoginComponent } from 'system/public/components/login/login.component';
+import { MatButtonModule } from '@angular/material/button';
 
 const appRoutes: Routes = [
     {path: '', component: LoginComponent},
