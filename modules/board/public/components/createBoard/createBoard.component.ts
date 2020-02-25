@@ -1,6 +1,6 @@
 import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
 import { MyBoardsService } from 'board/public/myBoards.service';

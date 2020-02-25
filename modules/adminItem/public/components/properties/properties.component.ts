@@ -1,5 +1,5 @@
 import { Component, Input, ViewChild, OnInit, Output, EventEmitter, TemplateRef } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { AlertService } from 'alert/alert.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import _noop from 'lodash/noop';

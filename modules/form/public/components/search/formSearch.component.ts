@@ -11,7 +11,7 @@ import { ExportService } from 'non-core/export.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { SearchBaseComponent, searchStyles } from 'search/searchBase.component';
 import { CdeForm } from 'shared/form/form.model';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
     selector: 'cde-form-search',

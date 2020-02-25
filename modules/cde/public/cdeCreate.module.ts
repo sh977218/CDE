@@ -7,8 +7,9 @@ import { AdminItemModule } from 'adminItem/public/adminItem.module';
 import { CdeModule } from 'cde/public/cde.module';
 import { CreateDataElementComponent } from 'cde/public/components/createDataElement/createDataElement.component';
 
-import { MatButtonModule, MatIconModule } from '@angular/material';
 import { LoggedInGuard } from '_app/routerGuard/loggedInGuard';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 const appRoutes: Routes = [
     {path: '', component: CreateDataElementComponent, canLoad: [LoggedInGuard]},

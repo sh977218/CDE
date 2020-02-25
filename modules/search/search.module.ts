@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatButtonModule, MatIconModule, MatMenuModule, MatTabsModule } from '@angular/material';
 import { RouterModule } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AccordionListHeadingComponent } from 'search/listView/accordionListHeading.component';
@@ -12,6 +11,10 @@ import { SummaryHeadingComponent } from 'search/listView/summaryHeading.componen
 import { SummaryListComponent } from 'search/listView/summaryList.component';
 import { SummaryListItemComponent, SummaryPlaceholderDirective } from 'search/listView/summaryListItem.component';
 import { TableListComponent } from 'search/listView/tableList.component';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatTabsModule } from '@angular/material/tabs';
 
 @NgModule({
     imports: [

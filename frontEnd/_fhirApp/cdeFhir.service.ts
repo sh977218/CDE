@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Inject, Injectable } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialog } from '@angular/material';
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { FhirAppViewModes } from './fhirApp.component';
 import { propertyToQuestion, questionToProperty, staticToProperty } from './properties';
@@ -49,6 +48,7 @@ import { containerToItemType, valueToTypedValue } from 'shared/mapping/fhir/to/d
 import { formToQuestionnaire } from 'shared/mapping/fhir/to/toQuestionnaire';
 import { deepCopy, reduceOptionalArray } from 'shared/system/util';
 import { isArray } from 'util';
+import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 
 function isFhirObservation(resource: FhirDomainResource): resource is FhirObservation {
     return resource.resourceType === 'Observation';

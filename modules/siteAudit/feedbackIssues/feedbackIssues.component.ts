@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, TemplateRef, ViewChild } from '@angular/core';
-import { MatDialog, PageEvent } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { PageEvent } from '@angular/material/paginator';
 
 type FeedbackErrorRecord = any;
 

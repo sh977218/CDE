@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { AlertService } from 'alert/alert.service';
-import { PageEvent } from '@angular/material';
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
     selector: 'cde-server-errors',

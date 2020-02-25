@@ -1,5 +1,4 @@
 import { Component, Inject } from '@angular/core';
-import { MatDialog, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
 import { CdeFhirService, PatientForm } from './cdeFhir.service';
 import { getMapToFhirResource } from 'core/form/formAndFe';
@@ -9,6 +8,7 @@ import { FhirEncounter, FhirObservation } from 'shared/mapping/fhir/fhirResource
 import { codingArrayPreview, getDateString, valuePreview } from 'shared/mapping/fhir/fhirDatatypes';
 import { getText, getTextFromArray } from 'shared/mapping/fhir/datatype/fhirCodeableConcept';
 import { getPatientName } from 'shared/mapping/fhir/resource/fhirPatient';
+import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 
 function getObservationViewCode(observation: FhirObservation): string {
     return observation.code ? codingArrayPreview(observation.code.coding) : '';
@@ -88,7 +88,6 @@ export class FhirAppComponent {
 
     constructor(public cdeFhir: CdeFhirService,
                 public dialog: MatDialog,
-                public snackBar: MatSnackBar,
                 private route: ActivatedRoute) {
         this.selectedProfileName = this.route.snapshot.queryParams.selectedProfile;
         cdeFhir.init(this.route.snapshot, this.cleanupPatient.bind(this), err => this.errorMessage = err);
