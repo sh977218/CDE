@@ -6,7 +6,7 @@ import { AlertService } from 'alert/alert.service';
 import { UserService } from '_app/user.service';
 import { Comment, CurationStatus, Item, RegistrationState } from 'shared/models.model';
 import { statusList } from 'shared/system/regStatusShared';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
     selector: 'cde-registration',

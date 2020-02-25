@@ -1,13 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import {
-    MatButtonModule,
-    MatDialogModule,
-    MatIconModule, MatInputModule,
-    MatMenuModule,
-    MatProgressSpinnerModule, MatSelectModule, MatTooltipModule
-} from '@angular/material';
 import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
@@ -34,6 +27,14 @@ import { InlineAreaEditModule } from 'inlineAreaEdit/inlineAreaEdit.module';
 import { FormSearchModule } from 'form/public/formSearch.module';
 import { NonCoreModule } from 'non-core/noncore.module';
 import { SortableArrayModule } from 'sortableArray/sortableArray.module';
+import { MatButtonModule } from '@angular/material/button';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatSelectModule } from '@angular/material/select';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatInputModule } from '@angular/material/input';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 const appRoutes: Routes = [
     {path: '', component: DataElementViewComponent},

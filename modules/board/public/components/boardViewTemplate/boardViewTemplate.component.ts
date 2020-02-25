@@ -1,6 +1,7 @@
 import { Component, OnInit, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
-import { MatButtonToggleChange, MatDialog, MatDialogRef } from '@angular/material';
 import { Board } from 'shared/models.model';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatButtonToggleChange } from '@angular/material/button-toggle';
 
 @Component({
     selector: 'cde-board-view-template',

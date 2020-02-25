@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AlertService } from 'alert/alert.service';
 import { FormService } from 'nativeRender/form.service';
 import { CdeForm, FormSection } from 'shared/form/form.model';

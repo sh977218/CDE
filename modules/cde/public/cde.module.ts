@@ -15,8 +15,9 @@ import { CdeGeneralDetailsComponent } from 'cde/public/components/summary/cdeGen
 import { ValueDomainSummaryComponent } from 'cde/public/components/summary/valueDomainSummary.component';
 import { DiscussModule } from 'discuss/discuss.module';
 import { SearchModule } from 'search/search.module';
-
-import { MatButtonModule, MatDialogModule, MatIconModule } from '@angular/material';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
     imports: [

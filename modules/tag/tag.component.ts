@@ -1,8 +1,9 @@
 import { Component, Input, Output, ViewChild, EventEmitter, ElementRef } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { MatAutocompleteSelectedEvent, MatChipInputEvent, MatAutocomplete } from '@angular/material';
 import { startWith, distinctUntilChanged, debounceTime, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { MatAutocomplete, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatChipInputEvent } from '@angular/material/chips';
 
 @Component({
     selector: 'cde-tag',

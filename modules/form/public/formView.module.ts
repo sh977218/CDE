@@ -2,11 +2,6 @@ import { CommonModule } from '@angular/common';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
-import {
-    MatButtonModule, MatCardModule, MatCheckboxModule, MatChipsModule, MatDialogModule,
-    MatExpansionModule, MatGridListModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule,
-    MatSliderModule, MatTabsModule, MatTooltipModule, MatAutocompleteModule
-} from '@angular/material';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { TreeModule } from 'angular-tree-component';
 import 'angular-tree-component/dist/angular-tree-component.css';
@@ -44,6 +39,21 @@ import { SortableArrayModule } from 'sortableArray/sortableArray.module';
 import { DeleteWithConfirmModule } from 'deleteWithConfirm/deleteWithConfirm.module';
 import { TagModule } from 'tag/tag.module';
 import { SkipLogicModule } from 'skipLogic/skipLogic.module';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatSelectModule } from '@angular/material/select';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatSliderModule } from '@angular/material/slider';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatCardModule } from '@angular/material/card';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatButtonModule } from '@angular/material/button';
 
 const appRoutes: Routes = [
     {path: '', component: FormViewComponent},

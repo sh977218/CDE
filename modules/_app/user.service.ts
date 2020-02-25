@@ -1,6 +1,5 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, Injectable } from '@angular/core';
-import { MatDialog } from '@angular/material';
 import { PushNotificationSubscriptionService } from '_app/pushNotificationSubscriptionService';
 import _noop from 'lodash/noop';
 import { Subscription } from 'rxjs';
@@ -8,6 +7,7 @@ import { uriView } from 'shared/item';
 import { Cb, CbErr, CbErrorObj, Comment, User } from 'shared/models.model';
 import { hasRole, isOrgCurator, isOrgAdmin, isOrgAuthority } from 'shared/system/authorizationShared';
 import { newNotificationSettings, newNotificationSettingsMediaDrawer } from 'shared/user';
+import { MatDialog } from '@angular/material/dialog';
 
 @Injectable()
 export class UserService {

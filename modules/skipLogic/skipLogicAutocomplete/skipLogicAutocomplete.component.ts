@@ -1,8 +1,8 @@
 import { Component, Inject, ChangeDetectorRef } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef, MatDialog } from '@angular/material';
 import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { SkipLogicComponent } from 'skipLogic/skipLogic.component';
 import { FormElement, FormQuestion } from 'shared/form/form.model';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 export class Token {
     answer: string = '';

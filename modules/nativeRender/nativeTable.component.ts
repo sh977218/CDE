@@ -276,6 +276,7 @@ export class NativeTableComponent {
                     const question = f.question;
                     this.tableForm.rows.forEach((r, i) => {
                         const location = i + questionName;
+                        // @ts-ignore
                         this.nrs.elt.formInput[location] = question.answers[0].permissibleValue;
                     });
                 }
@@ -299,6 +300,7 @@ export class NativeTableComponent {
                             answer = f.question.defaultAnswer;
                             break;
                         default:
+                            // @ts-ignore
                             throw assertUnreachable(f.question);
                     }
                     this.tableForm.rows.forEach((r, i) => {

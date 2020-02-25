@@ -1,7 +1,8 @@
 import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material';
+
 import { Router } from '@angular/router';
 import { assertUnreachable } from 'shared/models.model';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 type ConceptTypes = 'dataElementConcept' | 'objectClass' | 'property';
 

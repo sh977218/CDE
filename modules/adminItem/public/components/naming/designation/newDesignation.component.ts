@@ -1,7 +1,7 @@
 import { Component, Inject, Input } from '@angular/core';
 
 import { Designation } from 'shared/models.model';
-import { MAT_DIALOG_DATA } from '@angular/material';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
     selector: 'cde-designation',
