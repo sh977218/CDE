@@ -12,8 +12,10 @@ import { QuickBoardComponent } from 'quickBoard/quickBoard.component';
 import { SearchModule } from 'search/search.module';
 
 import { FormSearchModule } from 'form/public/formSearch.module';
-import { MatButtonModule, MatIconModule, MatTabsModule } from '@angular/material';
 import { BoardModule } from 'board/public/board.module';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTabsModule } from '@angular/material/tabs';
 
 const qbRoutes: Routes = [
     {path: '', component: QuickBoardComponent},

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { PageEvent } from '@angular/material';
+import { PageEvent } from '@angular/material/paginator';
 import _noop from 'lodash/noop';
 
 type ClassificationAuditLogRecord = any;

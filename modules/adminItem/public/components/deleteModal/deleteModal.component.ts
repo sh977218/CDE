@@ -1,5 +1,5 @@
 import { Component, Output, ViewChild, EventEmitter, TemplateRef } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
     selector: 'cde-delete-modal',

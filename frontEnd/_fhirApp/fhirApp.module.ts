@@ -2,14 +2,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import {
-    MatButtonModule,
-    MatDialogModule,
-    MatIconModule,
-    MatInputModule,
-    MatProgressSpinnerModule, MatSelectModule,
-    MatSnackBarModule,
-} from '@angular/material';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Routes } from '@angular/router';
@@ -18,6 +10,13 @@ import { FhirAppComponent, FhirStandaloneComponent, ViewFhirEncounterDialogCompo
 import { FhirSmartService } from './fhirSmart.service';
 import { FhirBrowserEncounterComponent } from './browser/fhirBrowserEncounter.component';
 import { NativeRenderModule } from 'nativeRender/nativeRender.module';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 const appRoutes: Routes = [
     {path: 'form/:config', component: FhirAppComponent},

@@ -1,6 +1,6 @@
 import { EventEmitter, Output, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { MAT_DIALOG_DATA } from '@angular/material';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ElasticService } from '_app/elastic.service';
 import { AlertService } from 'alert/alert.service';
 import { Source, UserSearchSettings } from 'shared/models.model';

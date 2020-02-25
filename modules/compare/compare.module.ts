@@ -1,14 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import {
-    MatButtonModule,
-    MatDialogModule,
-    MatIconModule,
-    MatProgressBarModule,
-    MatCheckboxModule,
-    MatTooltipModule
-} from '@angular/material';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { SortableModule } from 'ngx-bootstrap/sortable';
 import { DiffMatchPatchModule } from 'ng-diff-match-patch';
@@ -22,6 +14,12 @@ import { MergeDataElementComponent } from 'compare/mergeDataElement/mergeDataEle
 import { MergeFormComponent } from 'compare/mergeForm/mergeForm.component';
 import { MergeDeService } from './mergeDe.service';
 import { MergeFormService } from './mergeForm.service';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
     imports: [

@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, TemplateRef, ViewChild } from '@angular/core';
-import { MatDialog, PageEvent } from '@angular/material';
 import { AlertService } from 'alert/alert.service';
+import { PageEvent } from '@angular/material/paginator';
+import { MatDialog } from '@angular/material/dialog';
 
 type ClientErrorRecord = any;
 

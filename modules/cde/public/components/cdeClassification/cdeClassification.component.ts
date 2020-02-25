@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
-import { MatDialogRef } from '@angular/material';
+import { MatDialogRef } from '@angular/material/dialog';
 import { UserService } from '_app/user.service';
 import { DeletedNodeEvent } from 'adminItem/public/components/classification/classificationView.component';
 import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';

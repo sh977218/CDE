@@ -6,8 +6,9 @@ import { RouterModule, Routes } from '@angular/router';
 import { BoardModule } from 'board/public/board.module';
 import { PublicBoardsComponent } from 'board/public/components/publicBoards/publicBoards.component';
 
-import { MatIconModule, MatInputModule } from '@angular/material';
 import { NonCoreModule } from 'non-core/noncore.module';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 
 const boardRoutes: Routes = [
     {path: '', component: PublicBoardsComponent},

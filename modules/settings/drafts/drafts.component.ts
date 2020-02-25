@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { MatTableDataSource } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
 import { Drafts } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm } from 'shared/form/form.model';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
     templateUrl: './drafts.component.html'

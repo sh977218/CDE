@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Injectable } from '@angular/core';
-import { MatDialog } from '@angular/material';
-import { Params, Router, UrlSegment } from '@angular/router';
+import { Params, Router } from '@angular/router';
 import { ApprovalService } from '_app/notifications/approval.service';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
@@ -9,6 +8,7 @@ import _noop from 'lodash/noop';
 import { assertUnreachable, Cb, Task, TASK_STATE_UNREAD } from 'shared/models.model';
 import { partition } from 'shared/system/util';
 import { Dictionary } from 'async';
+import { MatDialog } from '@angular/material/dialog';
 
 const TYPES = ['error', 'approve', 'vote', 'message', 'comment']; // in sort order
 
