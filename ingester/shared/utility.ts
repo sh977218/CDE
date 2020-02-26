@@ -23,7 +23,7 @@ export const sourceMap = {
     PhenX: ['PhenX', 'PhenX Variable'],
     NINDS: ['NINDS', 'NINDS Variable Name', 'NINDS caDSR', 'NINDS Preclinical', 'BRICS Variable Name'],
     // tslint:disable-next-line:max-line-length
-    'NINDS Preclinical NEI': ['NINDS', 'NINDS Variable Name', 'NINDS caDSR', 'NINDS Preclinical', 'BRICS Variable Name', 'NINDS Preclinical NEI'],
+    'NINDS Preclinical TBI': ['NINDS', 'NINDS Variable Name', 'NINDS caDSR', 'NINDS Preclinical', 'BRICS Variable Name', 'NINDS Preclinical TBI'],
     NCI: ['NCI', 'caDSR']
 };
 export const TODAY = new Date().toJSON();
@@ -871,13 +871,8 @@ export function fixCreatedBy(elt) {
 
 export function fixSources(obj) {
     obj.sources.forEach(s => {
-        if (!s.updated) {
-            delete s.updated;
-        }
-        if (!s.sourceName) {
-            if (obj.stewardOrg.name === 'LOINC' && s.registrationStatus === 'Active') {
-                s.sourceName = 'LOINC';
-            }
+        if (s.sourceName === 'NINDS Preclinical NEI') {
+            s.sourceName = 'NINDS Preclinical TBI';
         }
     });
     return obj.sources.filter(s => !isEmpty(s));

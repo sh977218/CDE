@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Inject, Output } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import './fhirMapping.scss';
 import { FhirProcedureMapping, FormQuestion } from 'shared/form/form.model';
 

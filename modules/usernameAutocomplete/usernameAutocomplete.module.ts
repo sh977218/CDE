@@ -3,8 +3,9 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 import { NonCoreModule } from 'non-core/noncore.module';
-import { MatInputModule, MatAutocompleteModule } from '@angular/material';
 import { UsernameAutocompleteComponent } from 'usernameAutocomplete/usernameAutocomplete.component';
+import { MatInputModule } from '@angular/material/input';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 @NgModule({
     imports: [

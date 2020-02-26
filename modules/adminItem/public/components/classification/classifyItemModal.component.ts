@@ -8,7 +8,7 @@ import _noop from 'lodash/noop';
 import { UserService } from '_app/user.service';
 import { ClassificationService } from 'non-core/classification.service';
 import { ClassificationClassified, ClassificationClassifier } from 'shared/models.model';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 
 const actionMapping: IActionMapping = {
     mouse: {

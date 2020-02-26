@@ -5,7 +5,7 @@ import { AlertService } from 'alert/alert.service';
 import { UserService } from '_app/user.service';
 import { User } from 'shared/models.model';
 import { rolesEnum } from 'shared/system/authorizationShared';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
     selector: 'cde-users-mgt',

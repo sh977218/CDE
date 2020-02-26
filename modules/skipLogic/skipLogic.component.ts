@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { FormElement, SkipLogic } from 'shared/form/form.model';
 import { getQuestionsPrior } from 'shared/form/skipLogic';
 import { SkipLogicAutocompleteComponent, Token } from 'skipLogic/skipLogicAutocomplete/skipLogicAutocomplete.component';

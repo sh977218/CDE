@@ -10,8 +10,6 @@ import {
     ViewChild,
     ViewContainerRef
 } from '@angular/core';
-import { MatAutocompleteTrigger, MatDialog, MatPaginator, PageEvent } from '@angular/material';
-import { MatAutocompleteSelectedEvent } from '@angular/material/typings/esm5/autocomplete';
 import { ActivatedRoute, Event, NavigationStart, Params, Router } from '@angular/router';
 import { BackForwardService } from '_app/backForward.service';
 import { ElasticService } from '_app/elastic.service';
@@ -36,6 +34,9 @@ import { SearchSettings } from 'shared/search/search.model';
 import { hasRole, isSiteAdmin } from 'shared/system/authorizationShared';
 import { orderedList, statusList } from 'shared/system/regStatusShared';
 import { ownKeys } from 'shared/user';
+import { MatDialog } from '@angular/material/dialog';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 
 type NamedCounts = { name: string, count: number }[];
 
@@ -231,7 +232,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                     )
                         .pipe(
                             map(hits => {
-                                const final = new Set();
+                                const final = new Set<string>();
                                 this.lastTypeahead = {};
                                 hits.forEach(e => {
                                     this.lastTypeahead[e._source.nameSuggest] = e._id;

@@ -1,20 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import {
-    MatButtonModule,
-    MatInputModule,
-    MatMenuModule,
-    MatPaginatorModule,
-    MatCheckboxModule,
-    MatDialogModule,
-    MatGridListModule,
-    MatIconModule,
-    MatListModule,
-    MatAutocompleteModule,
-    MatSelectModule,
-    MatTabsModule, MatChipsModule, MatTooltipModule,
-} from '@angular/material';
 import { RouterModule } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BoardModule } from 'board/public/board.module';
@@ -27,6 +13,20 @@ import { CdeSearchComponent } from 'cde/public/components/search/cdeSearch.compo
 import { SearchModule } from 'search/search.module';
 import { CdeTableViewPreferencesComponent } from 'search/tableViewPreferences/cdeTableViewPreferencesComponent';
 import { TagModule } from 'tag/tag.module';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSelectModule } from '@angular/material/select';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
     imports: [

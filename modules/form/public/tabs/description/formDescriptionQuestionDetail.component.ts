@@ -2,7 +2,6 @@ import { ENTER } from '@angular/cdk/keycodes';
 import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { MatChipInputEvent, MatDialog, MatSelectChange } from '@angular/material';
 import { AlertService } from 'alert/alert.service';
 import { TreeNode } from 'angular-tree-component';
 import { repeatFe, repeatFeLabel, repeatFeQuestion } from 'core/form/fe';
@@ -20,6 +19,9 @@ import { isScore, iterateFeSync } from 'shared/form/fe';
 import { CdeForm, FormElement, FormQuestion, Question, QuestionValueList, SkipLogic } from 'shared/form/form.model';
 import { CodeAndSystem, Designation, FormattedValue } from 'shared/models.model';
 import { fixDatatype } from 'shared/de/dataElement.model';
+import { MatDialog } from '@angular/material/dialog';
+import { MatChipInputEvent } from '@angular/material/chips';
+import { MatSelectChange } from '@angular/material/select';
 
 const ignoreDatatypeArray = ['Dynamic Code List', 'Externally Defined'];
 const dataTypeArray = DATA_TYPE_ARRAY.filter(d => ignoreDatatypeArray.indexOf(d) === -1);

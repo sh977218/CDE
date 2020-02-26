@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
-import { MatSnackBarModule } from '@angular/material';
 import { AlertService } from 'alert/alert.service';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 @NgModule({
     imports: [
