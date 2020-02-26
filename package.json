@@ -153,7 +153,7 @@
     "web-push": "^3.4.0",
     "winston": "0.9.0",
     "winston-logrotate": "1.0.1",
-    "xml2js": "^0.4.19",
+    "xml2js": "^0.4.23",
     "xmlbuilder": "^10.1.1",
     "xsd-schema-validator": "0.6.0"
   },
@@ -207,6 +207,7 @@
     "@types/web-push": "^3.3.0",
     "@types/webpack-merge": "^4.1.5",
     "@types/winston": "^2.4.4",
+    "@types/xml2js": "^0.4.5",
     "angular-2-local-storage": "^3.0.2",
     "angular-router-loader": "0.6.0",
     "angular-tree-component": "^8.0.2",
@@ -312,7 +313,7 @@
     {
       "path": "./dist/embed/embed.js",
       "compression": "none",
-      "maxSize": "1.23 MB"
+      "maxSize": "1.27 MB"
     },
     {
       "path": "./dist/embed/embed.css",
@@ -332,7 +333,7 @@
     {
       "path": "./dist/native/native.js",
       "compression": "none",
-      "maxSize": "684 kB"
+      "maxSize": "691 kB"
     },
     {
       "path": "./dist/native/native.css",

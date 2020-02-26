@@ -39,7 +39,7 @@ import { MatIconModule } from '@angular/material/icon';
         }),
         FormsModule,
         HttpClientModule,
-        NgbModule.forRoot(),
+        NgbModule,
         CommonAppModule,
         MatButtonModule,
         MatDialogModule,
