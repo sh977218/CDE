@@ -132,7 +132,6 @@
     "passport": "0.4.0",
     "passport-local": "1.0.0",
     "passport.socketio": "3.7.0",
-    "prompts": "^2.3.1",
     "request": "^2.88.0",
     "rss-parser": "^3.5.3",
     "serve-favicon": "^2.5.0",
