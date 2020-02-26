@@ -32,7 +32,7 @@
         <dt class="col-3 text-right">Origin:</dt>
         <dd class="col-9">
             <cde-inline-edit id="origin" [(model)]="elt.origin" [isAllowed]="canEdit"
-                             (modelChange)="eltChange.emit();">
+                             (modelChange)="eltChange.emit();">addNew
             </cde-inline-edit>
         </dd>
         <ng-container *ngIf="elt.views">
