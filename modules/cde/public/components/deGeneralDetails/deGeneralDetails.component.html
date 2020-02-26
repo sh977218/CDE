@@ -23,7 +23,7 @@
         <dt class="col-3 text-right">Used By:</dt>
         <dd id="dd_usedBy" class="col-9">
             <div *ngIf="elt.classification?.length > 0">
-                <span *ngFor="let ub of elt.usedBy">{{ub}} </span>
+                <span>{{elt.usedBy?.join(', ')}}</span>
             </div>
             <div *ngIf="!(elt.classification.length > 0)">
                 <span>None</span>
