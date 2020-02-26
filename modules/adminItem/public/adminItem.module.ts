@@ -28,7 +28,6 @@ import { SaveModalComponent } from './components/saveModal/saveModal.component';
 import { DeleteModalComponent } from 'adminItem/public/components/deleteModal/deleteModal.component';
 import { NewDesignationComponent } from 'adminItem/public/components/naming/designation/newDesignation.component';
 import { NewDefinitionComponent } from 'adminItem/public/components/naming/definition/newDefinition.component';
-import { MatButtonModule, MatDialogModule, MatIconModule, MatTabsModule } from '@angular/material';
 
 import { NonCoreModule } from 'non-core/noncore.module';
 import { InlineAreaEditModule } from 'inlineAreaEdit/inlineAreaEdit.module';
@@ -37,6 +36,10 @@ import { SortableArrayModule } from 'sortableArray/sortableArray.module';
 import { InlineSelectEditModule } from 'inlineSelectEdit/inlineSelectEdit.module';
 import { DeleteWithConfirmModule } from 'deleteWithConfirm/deleteWithConfirm.module';
 import { TagModule } from 'tag/tag.module';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTabsModule } from '@angular/material/tabs';
 
 @NgModule({
     imports: [

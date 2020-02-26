@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import _noop from 'lodash/noop';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { Organization, StatusValidationRules, StatusValidationRulesByOrg } from 'shared/models.model';

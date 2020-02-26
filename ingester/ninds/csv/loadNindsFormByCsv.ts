@@ -9,7 +9,7 @@ export async function loadFormByCsv(csvFileName: string, rows: any[]) {
         archived: false,
         'designations.designation': formName
     };
-    await loadNindsForm(nindsForm, cond, 'NINDS Preclinical NEI');
+    await loadNindsForm(nindsForm, cond, 'NINDS Preclinical TBI');
 }
 
 

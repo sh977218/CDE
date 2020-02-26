@@ -1,13 +1,5 @@
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import {
-    MatBadgeModule,
-    MatButtonModule, MatChipsModule,
-    MatDialogModule,
-    MatIconModule,
-    MatMenuModule,
-    MatSnackBarModule
-} from '@angular/material';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BackForwardService } from '_app/backForward.service';
@@ -28,6 +20,13 @@ import { CommonAppModule } from '_commonApp/commonApp.module';
 import { AlertModule } from 'alert/alert.module';
 import { LocalStorageModule } from 'angular-2-local-storage';
 import { OrgHelperService } from 'non-core/orgHelper.service';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatButtonModule } from '@angular/material/button';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { FeedbackModule } from 'ng-feedback2';
 
 @NgModule({

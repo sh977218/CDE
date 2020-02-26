@@ -11,7 +11,7 @@ import {
     TemplateRef,
     ViewChild
 } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { TREE_ACTIONS, TreeComponent, TreeModel, TreeNode } from 'angular-tree-component';
 import { LocalStorageService } from 'angular-2-local-storage';
 import { Hotkey, HotkeysService } from 'angular2-hotkeys';

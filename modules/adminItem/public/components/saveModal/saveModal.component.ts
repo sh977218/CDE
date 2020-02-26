@@ -3,7 +3,7 @@ import { Component, Input, Output, ViewChild, EventEmitter, TemplateRef } from '
 import { AlertService } from 'alert/alert.service';
 import _isEqual from 'lodash/isEqual';
 import { iterateFormElements } from 'shared/form/fe';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { FormQuestion, QuestionCde } from 'shared/form/form.model';
 import { Cb, Item } from 'shared/models.model';
 

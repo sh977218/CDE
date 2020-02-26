@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '
 
 import { DataElement } from 'shared/de/dataElement.model';
 import { ReferenceDocument } from 'shared/models.model';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
     selector: 'cde-reference-document',
