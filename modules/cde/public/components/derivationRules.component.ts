@@ -4,7 +4,7 @@ import { Component, DoCheck, Input, ViewChild, OnChanges, Output, EventEmitter, 
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { DerivationRule } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
     selector: 'cde-derivation-rules',

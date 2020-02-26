@@ -1,14 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import {
-    MatButtonModule,
-    MatCheckboxModule,
-    MatExpansionModule,
-    MatIconModule,
-    MatPaginatorModule,
-    MatTabsModule
-} from '@angular/material';
 import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CompareModule } from 'compare/compare.module';
@@ -25,6 +17,12 @@ import { FormLogComponent } from 'siteAudit/itemLog/formLog.component';
 import { LogAuditComponent } from 'siteAudit/logAudit/logAudit.component';
 import { ServerErrorsComponent } from 'siteAudit/serverErrors/serverErrors.component';
 import { SiteAuditComponent } from 'siteAudit/siteAudit.component';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatIconModule } from '@angular/material/icon';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatButtonModule } from '@angular/material/button';
 
 const appRoutes: Routes = [
     {path: '', component: SiteAuditComponent},

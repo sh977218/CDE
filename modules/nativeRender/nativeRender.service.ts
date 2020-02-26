@@ -338,6 +338,9 @@ export class NativeRenderService {
                     }
 
                     if (parentQ.question.datatype === 'Value List') {
+                        if (!parentQ.question.answers) {
+                            parentQ.question.answers = [];
+                        }
                         if (match[3] === '') { // not answered, own line "is none"
                             parentQ.question.answers.push({
                                 permissibleValue: NativeRenderService.createRelativeText([match[3]], match[2], true),

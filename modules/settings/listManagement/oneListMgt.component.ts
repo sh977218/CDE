@@ -1,9 +1,10 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { ENTER } from '@angular/cdk/keycodes';
-import { MatAutocompleteSelectedEvent, MatChipInputEvent } from '@angular/material';
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatChipInputEvent } from '@angular/material/chips';
 
 @Component({
     selector: 'cde-one-list-management',

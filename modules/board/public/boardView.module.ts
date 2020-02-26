@@ -3,7 +3,6 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { MatButtonModule, MatDialogModule, MatIconModule, MatPaginatorModule } from '@angular/material';
 
 import { AdminItemModule } from 'adminItem/public/adminItem.module';
 import { BoardModule } from 'board/public/board.module';
@@ -13,6 +12,10 @@ import { DiscussModule } from 'discuss/discuss.module';
 import { FormSearchModule } from 'form/public/formSearch.module';
 import { NativeRenderModule } from 'nativeRender/nativeRender.module';
 import { SearchModule } from 'search/search.module';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 
 const boardRoutes: Routes = [

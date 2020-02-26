@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { PageEvent } from '@angular/material';
+
 import { ignoredDiff, makeHumanReadable } from 'siteAudit/itemLog/cdeDiffPopulate.service';
 import { EltLog } from 'shared/models.model';
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
     selector: 'cde-de-log',

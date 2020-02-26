@@ -3,7 +3,7 @@ import {
     Component, ElementRef, EventEmitter, Host, Input, OnInit, Output, TemplateRef,
     ViewChild
 } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { TreeNode } from 'angular-tree-component';
 import { LocalStorageService } from 'angular-2-local-storage';
 import { AlertService } from 'alert/alert.service';

@@ -1,11 +1,11 @@
 import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material';
 import { ElasticService } from '_app/elastic.service';
 import { FormSummaryListContentComponent } from 'form/public/components/listView/formSummaryListContent.component';
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm } from 'shared/form/form.model';
 import { ElasticQueryResponseForm } from 'shared/models.model';
 import { SearchSettings } from 'shared/search/search.model';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
     selector: 'cde-linked-forms',

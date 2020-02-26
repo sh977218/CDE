@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { MatTabChangeEvent } from '@angular/material';
 import { AlertService } from 'alert/alert.service';
 import { LocalStorageService } from 'angular-2-local-storage';
 import _find from 'lodash/find';
@@ -11,6 +10,7 @@ import { CdeFormElastic } from 'shared/form/form.model';
 import { iterateFesSync } from 'shared/form/fe';
 import { Item, ItemElastic } from 'shared/models.model';
 import { isCdeForm, isDataElement } from 'shared/item';
+import { MatTabChangeEvent } from '@angular/material/tabs';
 
 @Injectable()
 export class QuickBoardListService {

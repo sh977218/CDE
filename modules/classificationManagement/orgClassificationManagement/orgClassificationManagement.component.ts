@@ -9,7 +9,8 @@ import { ClassifyItemModalComponent } from 'adminItem/public/components/classifi
 import { ClassificationService } from 'non-core/classification.service';
 import { Cb, ClassificationClassified, ElasticQueryResponse, Organization } from 'shared/models.model';
 import { isOrgAdmin } from 'shared/system/authorizationShared';
-import { MatDialog, MatDialogRef, MatSelectChange } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatSelectChange } from '@angular/material/select';
 
 const actionMapping: IActionMapping = {
     mouse: {

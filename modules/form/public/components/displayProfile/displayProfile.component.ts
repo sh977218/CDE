@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { getMapToFhirResource } from 'core/form/formAndFe';
 import { findQuestionByTinyId, getFormQuestions } from 'core/form/fe';
 import { UcumService } from 'form/public/ucum.service';
@@ -294,7 +294,6 @@ function getSampleElt(): CdeForm {
                                         derivationRules: [],
                                         designations: [],
                                         ids: [],
-                                        naming: [],
                                         permissibleValues: [
                                             {
                                                 permissibleValue: '5',
@@ -364,7 +363,6 @@ function getSampleElt(): CdeForm {
                                         derivationRules: [],
                                         designations: [],
                                         ids: [],
-                                        naming: [],
                                         permissibleValues: [
                                             {
                                                 permissibleValue: '5',
@@ -465,7 +463,6 @@ function getSampleElt(): CdeForm {
                                 derivationRules: [],
                                 designations: [],
                                 ids: [],
-                                naming: [],
                                 permissibleValues: [
                                     {
                                         permissibleValue: 'Never attended/Kindergarten only',
@@ -540,7 +537,6 @@ function getSampleElt(): CdeForm {
                                 definitions: [],
                                 derivationRules: [],
                                 designations: [],
-                                naming: [],
                                 tinyId: '',
                             }
                         },

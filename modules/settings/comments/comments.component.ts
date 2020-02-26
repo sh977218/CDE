@@ -1,11 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, ViewChild } from '@angular/core';
-import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import { ActivatedRoute, Data } from '@angular/router';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
 import { Comment } from 'shared/models.model';
 import { Dictionary } from 'async';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
 
 type CommentWithOrgName = Comment & {organizationName: string} & Dictionary<any>;
 
