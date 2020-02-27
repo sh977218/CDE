@@ -239,21 +239,17 @@ export class PermissibleValueComponent {
                     if (!res) {
                         this.alert.addAlert('danger', 'Error: No data retrieved from VSAC for ' + vsac.id);
                     } else {
-                        const parser = new DOMParser();
-                        const xml = parser.parseFromString(res, 'text/xml');
-                        parseString(xml, (err, data) => {
+                        parseString(res, {ignoreAttrs: false, mergeAttrs: true}, (err, data) => {
                             if (err) {
                                 this.alert.addAlert('danger', 'Error on VSAC Bridge');
                             } else {
                                 // @ts-ignore
                                 const vsacJson = data['ns0:RetrieveValueSetResponse'];
                                 if (vsacJson) {
-                                    vsac.name = vsacJson['ns0:ValueSet']['@attributes'].displayName;
-                                    vsac.version = vsacJson['ns0:ValueSet']['@attributes'].version;
-                                    for (const vsacConcept of vsacJson['ns0:ValueSet']['ns0:ConceptList']['ns0:Concept']) {
-                                        const vsac = vsacConcept['@attributes'];
-                                        this.vsacValueSet.push(vsac);
-                                    }
+                                    const ns0ValueSet = vsacJson['ns0:ValueSet'][0];
+                                    vsac.name = ns0ValueSet.displayName;
+                                    vsac.version = ns0ValueSet.version;
+                                    this.vsacValueSet = ns0ValueSet['ns0:ConceptList'][0]['ns0:Concept'];
                                     this.validateVsacWithPv();
                                     this.validatePvWithVsac();
                                 }
