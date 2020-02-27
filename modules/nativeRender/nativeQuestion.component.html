@@ -155,7 +155,8 @@
                         <div [hidden]="!inputDate.validationMessage"><code>{{inputDate.validationMessage}}</code></div>
                     </ng-container>
                     <ng-container *ngSwitchCase="'Dynamic Code List'">
-                        <input list="dynamicCodeListDropDown" id="dynamicCodeListInput"
+                        <input list="dynamicCodeListDropDown"
+                               [id]="formElement.feId+'_dynamicCodeListDropDown'"
                                [formControl]='vsacControl' class="form-control">
                         <datalist id="dynamicCodeListDropDown" class="w-100 dynamicCodeListDropDown">
                             <option *ngFor="let vsacCode of vsacCodes"

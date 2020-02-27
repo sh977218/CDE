@@ -28,6 +28,7 @@ let expectedContent = {
     ],
     embedNinds: '*',
     emptyAnswers: 'the server responded with a status of 500',
+    formHistoryCompareTest: "text.substring",
     formDraftConcurrentWrite: [
         'Failed to load resource: the server responded with a status of 409 (Conflict)',
         'Edited by someone else. Please refresh and redo.'
@@ -50,6 +51,7 @@ let expectedContent = {
         'docs/swagger-ui-bundle.js 51:49866 "Could not find component"',
         'Unable to get the Swagger UI URL from the server'
     ],
+    importVsacValues: "with a status of 500",
     increaseLockoutLogin: 'login - Failed to load resource: the server responded with a status of 403',
     launchFhirApp: '*',
     lockoutLogin: 'login - Failed to load resource: the server responded with a status of 403',
@@ -71,7 +73,7 @@ let expectedContent = {
         'board - Failed to load resource: the server responded with a status of 403 (Forbidden)',
         'You have too many boards!'
     ],
-    "uomValidation": "*",
+    uomValidation: "*",
     validRulesPvUmls: 'Failed to load resource: the server responded with a status of 400 (Bad Request)',
     wrongLogin: 'login - Failed to load resource: the server responded with a status of 403',
     youtubeVideo: 'SameSite'
