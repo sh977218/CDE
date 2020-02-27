@@ -1,7 +1,7 @@
 import { dataElementModel } from 'server/cde/mongo-cde';
 const spellChecker = require('simple-spellchecker');
 const yesno = require('yesno');
-const fs = require('fs');
+import { readFileSync, writeFileSync } from 'fs';
 
 const steward = process.argv.slice(2)[0];
 if (!steward) {
@@ -27,18 +27,18 @@ async function addToList(term) {
     if (whitelist.indexOf(term) === -1) {
         whitelist.push(term);
         whitelist.filter((item, index) => whitelist.indexOf(item) === index);
-        await fs.writeFileSync(whitelistFile, whitelist, 'utf8');
+        await writeFileSync(whitelistFile, whitelist, 'utf8');
     }
 }
 
 const errors = [];
 async function markAsError(term, cde, location) {
     errors.push({ids: cde.ids, term, location});
-    await fs.writeFileSync('./scripts/spellcheck.json', JSON.stringify(errors), 'utf8');
+    await writeFileSync('./scripts/spellcheck.json', JSON.stringify(errors), 'utf8');
     if (blacklist.indexOf(term) === -1) {
         blacklist.push(term);
         blacklist.filter((item, index) => whitelist.indexOf(item) === index);
-        await fs.writeFileSync(blacklistFile, blacklist, 'utf8');
+        await writeFileSync(blacklistFile, blacklist, 'utf8');
     }
 
 }
@@ -73,8 +73,8 @@ async function iterateOverValue(value, type, cde) {
 
 async function run() {
     try {
-        whitelist = await fs.readFileSync(whitelistFile, 'utf8').split(',');
-        blacklist = await fs.readFileSync(blacklistFile, 'utf8').split(',');
+        whitelist = await readFileSync(whitelistFile, 'utf8').split(',');
+        blacklist = await readFileSync(blacklistFile, 'utf8').split(',');
     } catch (e) {}
     const cond = {'stewardOrg.name': steward,
         'registrationState.registrationStatus': {$ne: 'Retired'},
