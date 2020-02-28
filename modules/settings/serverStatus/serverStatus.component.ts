@@ -30,9 +30,9 @@ export class ServerStatusComponent {
     }
 
     okReIndex() {
-        this.http.post('/reindex/' + this.indexToReindex, {}).subscribe(() => this.isDone = true);
+        this.http.post('/server/system/reindex/' + this.indexToReindex, {}).subscribe(() => this.isDone = true);
         const indexFn = setInterval(() => {
-            this.http.get<any>('indexCurrentNumDoc/' + this.indexToReindex).subscribe(response => {
+            this.http.get<any>('/server/system/indexCurrentNumDoc/' + this.indexToReindex).subscribe(response => {
                 this.esIndices[this.indexToReindex].count = response.count;
                 this.esIndices[this.indexToReindex].totalCount = response.totalCount;
                 if (this.esIndices[this.indexToReindex].count >= this.esIndices[this.indexToReindex].totalCount && this.isDone) {
