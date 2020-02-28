@@ -249,7 +249,10 @@ export class PermissibleValueComponent {
                                     const ns0ValueSet = vsacJson['ns0:ValueSet'][0];
                                     vsac.name = ns0ValueSet.displayName;
                                     vsac.version = ns0ValueSet.version;
-                                    this.vsacValueSet = ns0ValueSet['ns0:ConceptList'][0]['ns0:Concept'];
+                                    const vsacConcepts = ns0ValueSet['ns0:ConceptList'][0]['ns0:Concept'];
+                                    for (const vsacConcept of vsacConcepts) {
+                                        this.vsacValueSet.push(vsacConcept);
+                                    }
                                     this.validateVsacWithPv();
                                     this.validatePvWithVsac();
                                 }
