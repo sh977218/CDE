@@ -320,7 +320,7 @@
     {
       "path": "./dist/embed/embed.css",
       "compression": "none",
-      "maxSize": "260 kB"
+      "maxSize": "262 kB"
     },
     {
       "path": "./dist/fhir/fhir.js",
@@ -330,7 +330,7 @@
     {
       "path": "./dist/fhir/fhir.css",
       "compression": "none",
-      "maxSize": "260 kB"
+      "maxSize": "262 kB"
     },
     {
       "path": "./dist/native/native.js",
@@ -340,7 +340,7 @@
     {
       "path": "./dist/native/native.css",
       "compression": "none",
-      "maxSize": "198 kB"
+      "maxSize": "200 kB"
     },
     {
       "path": "./modules/system/views/home-launch.ejs",
