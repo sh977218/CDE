@@ -21,7 +21,7 @@ const tasks = [
 ];
 
 export async function loadLoincPartById(partId) {
-    const partDescription: any = {partId};
+    let partDescription: any = {partId};
     const driver = await new Builder().forBrowser('chrome').build();
     let pageError = false;
     await driver.get(`https://loinc.org/${partId}/`).catch(e => {
@@ -32,12 +32,13 @@ export async function loadLoincPartById(partId) {
     const pageNotFoundElements = await driver.findElements(By.xpath("//*[text() = 'Page Not Found']"))
 
     if (pageError || pageNotFoundElements.length) {
-        return {};
-    }
-    for (const task of tasks) {
-        const sectionName = task.sectionName;
-        const elements = await driver.findElements(By.xpath(task.xpath));
-        partDescription[sectionName] = await task.function(elements[0]);
+        partDescription = {};
+    } else {
+        for (const task of tasks) {
+            const sectionName = task.sectionName;
+            const elements = await driver.findElements(By.xpath(task.xpath));
+            partDescription[sectionName] = await task.function(elements[0]);
+        }
     }
     await driver.close();
     return partDescription;
