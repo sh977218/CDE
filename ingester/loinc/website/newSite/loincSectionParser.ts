@@ -160,10 +160,22 @@ async function parsePWithValidation(htmlElement) {
     }
 }
 
+async function parseAnswerList(htmlElement) {
+    const dlElements = await htmlElement.findElements(By.xpath('./dl'));
+    if (dlElements.length === 1) {
+        const result = await selectionWithDl(htmlElement);
+        return result;
+    } else {
+        const result = await parseTableWithValidation(htmlElement);
+        return result;
+    }
+}
+
 async function parseTableWithValidation(htmlElement) {
     const sectionName = await getSelectionName(htmlElement);
     const tableElements = await htmlElement.findElements(By.xpath('./table'));
     if (tableElements.length !== 1) {
+        console.log(`parseTableWithValidation error. tableElements.length: ${tableElements.length}`);
         console.log(`${sectionName} has wrong table`);
         process.exit(1);
     } else {
@@ -191,6 +203,7 @@ async function parsePanelHierarchy(htmlElement) {
     const sectionName = await getSelectionName(htmlElement);
     const tableElements = await htmlElement.findElements(By.xpath('./table'));
     if (tableElements.length !== 1) {
+        console.log(`parsePanelHierarchy error. tableElements.length: ${tableElements.length}`);
         console.log(`${sectionName} has wrong table`);
         process.exit(1);
     } else {
@@ -368,17 +381,17 @@ export const tasks = [
     },
     {
         sectionName: 'Normative Answer List',
-        function: parseTableWithValidation,
+        function: parseAnswerList,
         xpath: "//section[./h2[normalize-space(text()) ='Normative Answer List']]"
     },
     {
         sectionName: 'Preferred Answer List',
-        function: parseTableWithValidation,
+        function: parseAnswerList,
         xpath: "//section[./h2[normalize-space(text()) ='Preferred Answer List']]"
     },
     {
         sectionName: 'Example Answer List',
-        function: parseTableWithValidation,
+        function: parseAnswerList,
         xpath: "//section[./h2[normalize-space(text()) ='Example Answer List']]"
     },
     {
