@@ -251,7 +251,14 @@ export class PermissibleValueComponent {
                                     vsac.version = ns0ValueSet.version;
                                     const vsacConcepts = ns0ValueSet['ns0:ConceptList'][0]['ns0:Concept'];
                                     for (const vsacConcept of vsacConcepts) {
-                                        this.vsacValueSet.push(vsacConcept);
+                                        const v: any = {
+                                            code: vsacConcept.code[0],
+                                            codeSystem: vsacConcept.codeSystem[0],
+                                            codeSystemName: vsacConcept.codeSystemName[0],
+                                            codeSystemVersion: vsacConcept.codeSystemVersion[0],
+                                            displayName: vsacConcept.displayName[0],
+                                        };
+                                        this.vsacValueSet.push(v);
                                     }
                                     this.validateVsacWithPv();
                                     this.validatePvWithVsac();
@@ -410,7 +417,10 @@ export class PermissibleValueComponent {
     }
 
     validateVsacWithPv() {
-        this.vsacValueSet.forEach(vsItem => vsItem.isValid = this.isVsInPv(vsItem));
+        this.vsacValueSet.forEach(vsItem => {
+            const temp = this.isVsInPv(vsItem);
+            vsItem.isValid = temp;
+        });
     }
 
     vsacMappingExists() {
