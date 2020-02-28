@@ -25,7 +25,7 @@ config.bundlesize.forEach(b => {
         ratio = 1048576;
     }
     const maxSize = parseFloat(b.maxSize) * ratio;
-    const minSize = maxSize * 0.99;
+    const minSize = maxSize * 0.9;
     if (actualSize > maxSize) {
         errors.push('Error: ' + b.path + ' too big. actualSize: ' + actualSize + ' > maxSize: ' + maxSize);
     }
