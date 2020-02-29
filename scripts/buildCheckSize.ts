@@ -7,6 +7,8 @@ if (!Array.isArray(config.bundlesize)) {
     process.exit(0);
 }
 
+const errors = [];
+
 config.bundlesize.forEach(b => {
     if (b.compression !== 'none') {
         console.error('Error: ' + b.path + ' needs "compression: none"');
@@ -16,18 +18,26 @@ config.bundlesize.forEach(b => {
     const isKb = b.maxSize.indexOf('kB') > -1;
     const isMb = b.maxSize.indexOf('MB') > -1;
     let ratio = 1;
-    if (isKb) { ratio = 1024; }
-    if (isMb) { ratio = 1048576; }
+    if (isKb) {
+        ratio = 1024;
+    }
+    if (isMb) {
+        ratio = 1048576;
+    }
     const maxSize = parseFloat(b.maxSize) * ratio;
-    const minSize = maxSize * 0.99;
+    const minSize = maxSize * 0.9;
     if (actualSize > maxSize) {
-        console.error('Error: ' + b.path + ' too big. actualSize: ' + actualSize + ' > maxSize: ' + maxSize);
-        process.exit(1);
+        errors.push('Error: ' + b.path + ' too big. actualSize: ' + actualSize + ' > maxSize: ' + maxSize);
     }
     if (actualSize < minSize) {
-        console.error('Error: ' + b.path + ' too small. actualSize: ' + actualSize + ' < minSize: ' + minSize);
-        process.exit(1);
+        errors.push('Error: ' + b.path + ' too small. actualSize: ' + actualSize + ' < minSize: ' + minSize);
     }
 });
-console.log('Build Check Size PASSED');
-process.exit(0);
+if (errors.length) {
+    console.log('Build Check Size FAILED.');
+    console.error(errors);
+    process.exit(1);
+} else {
+    console.log('Build Check Size PASSED.');
+    process.exit(0);
+}

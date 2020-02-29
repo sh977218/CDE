@@ -8,7 +8,7 @@ import org.testng.annotations.Test;
 public class ImportVsacValuesTest extends NlmCdeBaseTest {
 
     @Test
-    public void importVsacValues() {
+    public void importPermissibleValuesFromVsacValues() {
         mustBeLoggedInAs(ctepCurator_username, password);
         goToCdeByName("Patient Race Category");
         goToPermissibleValues();

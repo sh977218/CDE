@@ -98,7 +98,6 @@ gulp.task('buildNode', function buildNode() {
 
 gulp.task('copyCode', ['buildNode'], function copyCode() {
     const streamArray: NodeJS.ReadWriteStream[] = [];
-    
     ['cde', 'form', 'processManager', 'system', 'board'].forEach(module => {
         streamArray.push(gulp.src(appDir('./modules/' + module + '/**/*.png'))
             .pipe(gulp.dest(BUILD_DIR + '/modules/' + module + '/')));
