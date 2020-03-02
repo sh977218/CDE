@@ -64,7 +64,7 @@ export class QuickBoardListService {
             .getItem('quickBoard')
             .subscribe((dataElementLocalStorage: any) => {
                 if (dataElementLocalStorage) {
-                    const l = dataElementLocalStorage.map(d => d.tinyId);
+                    const l = dataElementLocalStorage.map((d: any) => d.tinyId);
                     if (!_isEmpty(l)) {
                         this.http.get<DataElement[]>('/server/de/list/' + l)
                             .subscribe(res => {
@@ -81,7 +81,7 @@ export class QuickBoardListService {
             .getItem('formQuickBoard')
             .subscribe((formLocalStorage: any) => {
                 if (formLocalStorage) {
-                    const l = formLocalStorage.map(d => d.tinyId);
+                    const l = formLocalStorage.map((d: any) => d.tinyId);
                     if (!_isEmpty(l)) {
                         this.http.get<CdeFormElastic[]>('/server/form/list/' + l)
                             .subscribe(res => {
@@ -102,7 +102,7 @@ export class QuickBoardListService {
 
         this.localStorageService
             .getItem('defaultQuickBoard')
-            .subscribe((module: string) => this.module = module);
+            .subscribe((module: any) => this.module = module);
     }
 
     removeElement(elt: ItemElastic) {

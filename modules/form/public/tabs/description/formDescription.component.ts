@@ -188,7 +188,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
                         } else if (from.ref === 'pasteSection') {
                             this.localStorageService
                                 .getItem('sectionCopied')
-                                .subscribe((copiedSection: FormSection) => {
+                                .subscribe((copiedSection: any) => {
                                     this.formElementEditing.formElement = copiedSection;
                                     this.addFormElement(copiedSection);
                                 });
@@ -302,7 +302,15 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     }
 
     hasCopiedSection() {
-        return !_isEmpty(this.localStorageService.get('sectionCopied'));
+        let sectionCopied = false;
+        this.localStorageService
+            .getItem('sectionCopied')
+            .subscribe(res => {
+                if (res) {
+                    sectionCopied = true;
+                }
+            });
+        return sectionCopied;
     }
 
     initNewDataElement(): DataElement {

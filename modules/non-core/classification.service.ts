@@ -25,7 +25,7 @@ export class ClassificationService {
         });
         this.localStorageService
             .getItem('classificationHistory')
-            .subscribe((recentlyClassification: any[]) => {
+            .subscribe((recentlyClassification: any) => {
                 if (!recentlyClassification) {
                     recentlyClassification = [];
                 }
@@ -33,7 +33,7 @@ export class ClassificationService {
                     categories: i,
                     orgName: item.orgName
                 }));
-                recentlyClassification = _uniqWith(recentlyClassification, (a, b) =>
+                recentlyClassification = _uniqWith(recentlyClassification, (a: any, b: any) =>
                     _isEqual(a.categories, b.categories) && _isEqual(a.orgName, b.orgName));
                 this.localStorageService
                     .setItem('classificationHistory', recentlyClassification)

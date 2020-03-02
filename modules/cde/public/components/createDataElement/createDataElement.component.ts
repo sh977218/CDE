@@ -42,6 +42,7 @@ export class CreateDataElementComponent implements OnInit {
                 private router: Router,
                 public userService: UserService) {
     }
+
     ngOnInit() {
         if (!this.elt) {
             this.elt = new DataElement();
@@ -110,7 +111,7 @@ export class CreateDataElementComponent implements OnInit {
                 if (!recentlyClassification) {
                     recentlyClassification = [];
                 }
-                recentlyClassification = recentlyClassification.filter(o => {
+                recentlyClassification = recentlyClassification.filter((o: any) => {
                     if (o.cdeId) {
                         o.eltId = o.cdeId;
                     }

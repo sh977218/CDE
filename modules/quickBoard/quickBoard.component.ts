@@ -14,7 +14,7 @@ export class QuickBoardComponent {
                 public quickBoardService: QuickBoardListService) {
         this.localStorageService
             .getItem('defaultQuickBoard')
-            .subscribe((defaultQb: string) => {
+            .subscribe((defaultQb: any) => {
                 if (defaultQb === 'form') {
                     this.defaultQuickBoard = 'formQuickBoard';
                 }

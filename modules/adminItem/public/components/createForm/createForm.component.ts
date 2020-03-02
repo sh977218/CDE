@@ -108,18 +108,24 @@ export class CreateFormComponent implements OnInit {
     }
 
     updateClassificationLocalStorage(item: ClassificationHistory) {
-        let recentlyClassification = this.localStorageService.get('classificationHistory') as Array<any>;
-        if (!recentlyClassification) {
-            recentlyClassification = [];
-        }
-        recentlyClassification = recentlyClassification.filter(o => {
-            if (o.cdeId) {
-                o.eltId = o.cdeId;
-            }
-            return _isEqual(o, item);
-        });
-        recentlyClassification.unshift(item);
-        this.localStorageService.set('classificationHistory', recentlyClassification);
+        this.localStorageService
+            .getItem('classificationHistory')
+            .subscribe((recentlyClassification: any) => {
+                if (!recentlyClassification) {
+                    recentlyClassification = [];
+                }
+                recentlyClassification = recentlyClassification.filter((o: any) => {
+                    if (o.cdeId) {
+                        o.eltId = o.cdeId;
+                    }
+                    return _isEqual(o, item);
+                });
+                recentlyClassification.unshift(item);
+                this.localStorageService
+                    .setItem('classificationHistory', recentlyClassification)
+                    .subscribe();
+            });
+
     }
 
     validationErrors(elt: CdeForm): string {

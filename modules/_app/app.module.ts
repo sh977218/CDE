@@ -18,7 +18,6 @@ import { TruncateLongNamePipe } from '_app/truncateLongName.pipe';
 import { InactivityLoggedOutComponent, UserService } from '_app/user.service';
 import { CommonAppModule } from '_commonApp/commonApp.module';
 import { AlertModule } from 'alert/alert.module';
-import { LocalStorageModule } from 'angular-2-local-storage';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
@@ -28,16 +27,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { FeedbackModule } from 'ng-feedback2';
+import { LocalStorage } from '@ngx-pwa/local-storage';
 
 @NgModule({
     imports: [
         BrowserAnimationsModule,
         BrowserModule,
         HttpClientModule,
-        LocalStorageModule.forRoot({
-            prefix: 'nlmcde',
-            storageType: 'localStorage'
-        }),
         MatBadgeModule,
         MatButtonModule,
         MatChipsModule,
@@ -67,6 +63,7 @@ import { FeedbackModule } from 'ng-feedback2';
         NotificationDrawerPaneComponent
     ],
     providers: [
+        LocalStorage,
         ApprovalService,
         BackForwardService,
         ElasticService,
