@@ -69,7 +69,6 @@ function preSaveUseThisForSomeReason(next) {
 
 dataElementSchema.pre('save', preSaveUseThisForSomeReason);
 dataElementSourceSchema.pre('save', preSaveUseThisForSomeReason);
-draftSchema.pre('save', preSaveUseThisForSomeReason);
 
 const conn = establishConnection(config.database.appData);
 const cdeAuditModel: Model<EltLogDocument> = conn.model('CdeAudit', auditSchema);

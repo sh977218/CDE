@@ -10,7 +10,7 @@ import { DataElement, DATA_TYPE_ARRAY, ValueDomainValueList, ValueDomain } from 
 import { fixDataElement, fixDatatype } from 'shared/de/dataElement.model';
 import { PermissibleValue } from 'shared/models.model';
 import { SearchSettings } from 'shared/search/search.model';
-import { NgxXml2jsonService  } from 'ngx-xml2json';
+import { parseString } from 'xml2js';
 
 interface Source {
     source: string;
@@ -39,10 +39,13 @@ interface VsacValue {
 })
 export class PermissibleValueComponent {
     @Input() canEdit!: boolean;
+
     @Input() set elt(v: DataElement) {
         this._elt = v;
         fixDataElement(this.elt);
-        if (this.userService.loggedIn()) { this.loadValueSet(); }
+        if (this.userService.loggedIn()) {
+            this.loadValueSet();
+        }
         this.initSrcOptions();
         if (!this.elt.dataElementConcept) {
             this.elt.dataElementConcept = {};
@@ -63,12 +66,16 @@ export class PermissibleValueComponent {
         ).subscribe((res: any) => {
             if (res.result && res.result.results) {
                 this.umlsTerms = res.result.results;
-            } else { this.umlsTerms = []; }
+            } else {
+                this.umlsTerms = [];
+            }
         });
     }
+
     get elt(): DataElement {
         return this._elt;
     }
+
     _elt!: DataElement;
     @Output() eltChange = new EventEmitter();
     @ViewChild('newPermissibleValueContent', {static: true}) public newPermissibleValueContent!: TemplateRef<any>;
@@ -102,8 +109,7 @@ export class PermissibleValueComponent {
     constructor(public http: HttpClient,
                 private dialog: MatDialog,
                 public userService: UserService,
-                private alert: AlertService,
-                private ngxXml2jsonService: NgxXml2jsonService) {
+                private alert: AlertService) {
     }
 
     addAllVsac() {
@@ -140,7 +146,9 @@ export class PermissibleValueComponent {
             });
         }
         this.runManualValidation();
-        if (emit) { this.eltChange.emit(); }
+        if (emit) {
+            this.eltChange.emit();
+        }
     }
 
     checkVsacId() {
@@ -163,7 +171,9 @@ export class PermissibleValueComponent {
                             if (!source.codes[code]) {
                                 source.codes[code] = {code: '', meaning: 'Retrieving...'};
                             }
-                        } else { this.alert.addAlert('danger', 'Unknown source in pv code ' + code); }
+                        } else {
+                            this.alert.addAlert('danger', 'Unknown source in pv code ' + code);
+                        }
                     });
                 }
             });
@@ -208,9 +218,15 @@ export class PermissibleValueComponent {
                     this.initSrcOptions();
                     this.eltChange.emit();
                     this.modalRef.close();
-                } else { this.alert.addAlert('danger', 'No PV found in this element.'); }
-            } else { this.alert.addAlert('danger', 'Only Value Lists can be imported.'); }
-        } else { this.alert.addAlert('danger', 'No Datatype found.'); }
+                } else {
+                    this.alert.addAlert('danger', 'No PV found in this element.');
+                }
+            } else {
+                this.alert.addAlert('danger', 'Only Value Lists can be imported.');
+            }
+        } else {
+            this.alert.addAlert('danger', 'No Datatype found.');
+        }
     }
 
     loadValueSet() {
@@ -223,21 +239,34 @@ export class PermissibleValueComponent {
                     if (!res) {
                         this.alert.addAlert('danger', 'Error: No data retrieved from VSAC for ' + vsac.id);
                     } else {
-                        const parser = new DOMParser();
-                        const xml = parser.parseFromString(res, 'text/xml');
-                        const data = this.ngxXml2jsonService.xmlToJson(xml);
-                        // @ts-ignore
-                        const vsacJson = data['ns0:RetrieveValueSetResponse'];
-                        if (vsacJson) {
-                            vsac.name = vsacJson['ns0:ValueSet']['@attributes'].displayName;
-                            vsac.version = vsacJson['ns0:ValueSet']['@attributes'].version;
-                            for (const vsacConcept of vsacJson['ns0:ValueSet']['ns0:ConceptList']['ns0:Concept']) {
-                                const vsac = vsacConcept['@attributes'];
-                                this.vsacValueSet.push(vsac);
+                        parseString(res, {ignoreAttrs: false, mergeAttrs: true}, (err, data) => {
+                            if (err) {
+                                this.alert.addAlert('danger', 'Error on VSAC Bridge');
+                            } else {
+                                // @ts-ignore
+                                const vsacJson = data['ns0:RetrieveValueSetResponse'];
+                                if (vsacJson) {
+                                    const ns0ValueSet = vsacJson['ns0:ValueSet'][0];
+                                    vsac.name = ns0ValueSet.displayName;
+                                    vsac.version = ns0ValueSet.version;
+                                    const vsacConcepts = ns0ValueSet['ns0:ConceptList'][0]['ns0:Concept'];
+                                    for (const vsacConcept of vsacConcepts) {
+                                        const v: any = {
+                                            code: vsacConcept.code[0],
+                                            codeSystem: vsacConcept.codeSystem[0],
+                                            codeSystemName: vsacConcept.codeSystemName[0],
+                                            codeSystemVersion: vsacConcept.codeSystemVersion[0],
+                                            displayName: vsacConcept.displayName[0],
+                                        };
+                                        this.vsacValueSet.push(v);
+                                    }
+                                    this.validateVsacWithPv();
+                                    this.validatePvWithVsac();
+                                }
                             }
-                            this.validateVsacWithPv();
-                            this.validatePvWithVsac();
-                        }
+
+                        });
+
                     }
                 }, error => {
                     this.alert.addAlert('danger', 'Error querying VSAC' + error);
@@ -270,7 +299,7 @@ export class PermissibleValueComponent {
                         .subscribe(res => {
                             if (res && res.result.results.length > 0) {
                                 res.result.results.forEach((r: any) => {
-                                        this.SOURCES[src].codes[code] = {code: r.ui, meaning: r.name};
+                                    this.SOURCES[src].codes[code] = {code: r.ui, meaning: r.name};
                                 });
                             } else {
                                 this.SOURCES[src].codes[code] = {code: 'N/A', meaning: 'N/A'};
@@ -282,13 +311,17 @@ export class PermissibleValueComponent {
                         .subscribe(
                             res => {
                                 let l = [];
-                                if (res && res.result) { l = res.result.filter((r: any) => r.termType === this.SOURCES[src].termType); }
+                                if (res && res.result) {
+                                    l = res.result.filter((r: any) => r.termType === this.SOURCES[src].termType);
+                                }
                                 if (l[0]) {
                                     this.SOURCES[src].codes[code] = {
                                         code: l[0].ui,
                                         meaning: l[0].name
                                     };
-                                } else { this.SOURCES[src].codes[code] = {code: 'N/A', meaning: 'N/A'}; }
+                                } else {
+                                    this.SOURCES[src].codes[code] = {code: 'N/A', meaning: 'N/A'};
+                                }
                             }, () => this.alert.addAlert('danger', 'Error query UMLS.'));
                 } else {
                     const umlsResult = await this.http.get<any>(`/server/uts/umlsCuiFromSrc/${code}/${source}`).toPromise();
@@ -377,12 +410,17 @@ export class PermissibleValueComponent {
 
     validatePvWithVsac() {
         const pvs: PermissibleValue[] = (this.elt.valueDomain as ValueDomainValueList).permissibleValues;
-        if (!pvs) { return; }
+        if (!pvs) {
+            return;
+        }
         pvs.forEach(pv => pv.isValid = this.isPvInVSet(pv));
     }
 
     validateVsacWithPv() {
-        this.vsacValueSet.forEach(vsItem => vsItem.isValid = this.isVsInPv(vsItem));
+        this.vsacValueSet.forEach(vsItem => {
+            const temp = this.isVsInPv(vsItem);
+            vsItem.isValid = temp;
+        });
     }
 
     vsacMappingExists() {
