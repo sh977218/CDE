@@ -5,7 +5,7 @@ import {
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { TreeNode } from 'angular-tree-component';
-import { LocalStorageService } from 'angular-2-local-storage';
+import { LocalStorage } from '@ngx-pwa/local-storage';
 import { AlertService } from 'alert/alert.service';
 import { repeatFe, repeatFeLabel, repeatFeNumber, repeatFeQuestion } from 'core/form/fe';
 import { convertFormToSection } from 'core/form/form';
@@ -57,7 +57,7 @@ export class FormDescriptionSectionComponent implements OnInit {
     constructor(private alert: AlertService,
                 @Host() public formDescriptionComponent: FormDescriptionComponent,
                 private http: HttpClient,
-                private localStorageService: LocalStorageService,
+                private localStorageService: LocalStorage,
                 public dialog: MatDialog) {
     }
 
@@ -69,13 +69,21 @@ export class FormDescriptionSectionComponent implements OnInit {
         this.section.repeatOption = repeatFe(this.section);
         this.section.repeatNumber = repeatFeNumber(this.section);
         this.section.repeatQuestion = repeatFeQuestion(this.section);
-        if (!this.section.instructions) { this.section.instructions = new FormattedValue(); }
-        if (!this.section.skipLogic) { this.section.skipLogic = new SkipLogic(); }
+        if (!this.section.instructions) {
+            this.section.instructions = new FormattedValue();
+        }
+        if (!this.section.skipLogic) {
+            this.section.skipLogic = new SkipLogic();
+        }
 
         if (this.node.data.elementType === 'form') {
-            if (FormDescriptionComponent.isSubForm(this.node.parent)) { this.isSubForm = FormDescriptionComponent.isSubForm(this.node); }
+            if (FormDescriptionComponent.isSubForm(this.node.parent)) {
+                this.isSubForm = FormDescriptionComponent.isSubForm(this.node);
+            }
         } else {
-            if (FormDescriptionComponent.isSubForm(this.node)) { this.isSubForm = FormDescriptionComponent.isSubForm(this.node); }
+            if (FormDescriptionComponent.isSubForm(this.node)) {
+                this.isSubForm = FormDescriptionComponent.isSubForm(this.node);
+            }
         }
 
         this.checkRepeatOptions();
@@ -94,7 +102,9 @@ export class FormDescriptionSectionComponent implements OnInit {
     }
 
     copySection(section: FormSectionOrForm) {
-        this.localStorageService.set('sectionCopied', section);
+        this.localStorageService
+            .setItem('sectionCopied', section)
+            .subscribe();
         section.isCopied = 'copied';
         this.elt.isCopied = 'copied';
         setTimeout(() => {
@@ -150,7 +160,7 @@ export class FormDescriptionSectionComponent implements OnInit {
         modal.bForm = true;
         modal.bLabel = !_isEqual(newForm.designations, oldForm.designations);
 
-        this.updateFormVersion =  modal;
+        this.updateFormVersion = modal;
         this.dialog.open<boolean>(this.updateFormVersionTmpl, {width: '1000px'}).afterClosed().subscribe(res => {
             if (res) {
                 currentSection.inForm = newSection.inForm;
@@ -176,7 +186,9 @@ export class FormDescriptionSectionComponent implements OnInit {
             section.repeat = '="' + section.repeatQuestion + '"';
         } else if (section.repeatOption === 'N') {
             section.repeat = (section.repeatNumber && section.repeatNumber > 1 ? section.repeatNumber.toString() : undefined);
-            if (parseInt(section.repeat || '', 10) > 0) { this.eltChange.emit(); }
+            if (parseInt(section.repeat || '', 10) > 0) {
+                this.eltChange.emit();
+            }
         } else {
             section.repeat = undefined;
         }

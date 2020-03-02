@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { UserService } from '_app/user.service';
-import { LocalStorageService } from 'angular-2-local-storage';
+import { LocalStorage } from '@ngx-pwa/local-storage';
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm } from 'shared/form/form.model';
 import {
@@ -23,9 +23,15 @@ export class ElasticService {
     searchToken = 'id' + Math.random().toString(16).slice(2);
 
     constructor(public http: HttpClient,
-                private localStorageService: LocalStorageService,
+                private localStorageService: LocalStorage,
                 private userService: UserService) {
-        this.loadSearchSettings();
+        this.localStorageService
+            .getItem('SearchSettings')
+            .subscribe((searchSettings: any) => {
+                this.searchSettings = searchSettings;
+                this.loadSearchSettings();
+            });
+
     }
 
     buildElasticQuerySettings(queryParams: SearchSettings): SearchSettingsElastic {
@@ -124,7 +130,6 @@ export class ElasticService {
 
     loadSearchSettings() {
         if (!this.searchSettings) {
-            this.searchSettings = this.localStorageService.get('SearchSettings');
             if (!this.searchSettings) {
                 this.searchSettings = ElasticService.getDefault();
             }
@@ -149,7 +154,9 @@ export class ElasticService {
         this.searchSettings = settings;
         const savedSettings = JSON.parse(JSON.stringify(this.searchSettings));
         delete savedSettings.includeRetired;
-        this.localStorageService.set('SearchSettings', savedSettings);
+        this.localStorageService
+            .setItem('SearchSettings', savedSettings)
+            .subscribe();
         if (this.userService.user) {
             this.http.post('/server/user/', {searchSettings: savedSettings}).subscribe();
         }

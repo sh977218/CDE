@@ -14,7 +14,7 @@ import { Router } from '@angular/router';
 import { UserService } from '_app/user.service';
 import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
 import { AlertService } from 'alert/alert.service';
-import { LocalStorageService } from 'angular-2-local-storage';
+import { LocalStorage } from '@ngx-pwa/local-storage';
 import { TreeComponent } from 'angular-tree-component';
 import { classifyItem } from 'core/adminItem/classification';
 import _isEqual from 'lodash/isEqual';
@@ -54,7 +54,7 @@ export class CreateFormComponent implements OnInit {
     constructor(private alert: AlertService,
                 private http: HttpClient,
                 public isAllowedModel: IsAllowedService,
-                private localStorageService: LocalStorageService,
+                private localStorageService: LocalStorage,
                 private location: Location,
                 private router: Router, public userService: UserService) {
     }

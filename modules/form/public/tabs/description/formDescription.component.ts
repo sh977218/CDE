@@ -13,7 +13,7 @@ import {
 } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { TREE_ACTIONS, TreeComponent, TreeModel, TreeNode } from 'angular-tree-component';
-import { LocalStorageService } from 'angular-2-local-storage';
+import { LocalStorage } from '@ngx-pwa/local-storage';
 import { Hotkey, HotkeysService } from 'angular2-hotkeys';
 import { convertFormToSection } from 'core/form/form';
 import _isEmpty from 'lodash/isEmpty';
@@ -139,9 +139,11 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         this.addExpanded(form);
         addFormIds(form);
     }
+
     get elt() {
         return this._elt;
     }
+
     private _elt!: CdeForm;
     @Input() canEdit = false;
     @Output() eltChange = new EventEmitter<void>();
@@ -184,9 +186,12 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
                         } else if (from.ref === 'form') {
                             this.openFormSearch();
                         } else if (from.ref === 'pasteSection') {
-                            const copiedSection: FormSection = this.localStorageService.get('sectionCopied');
-                            this.formElementEditing.formElement = copiedSection;
-                            this.addFormElement(copiedSection);
+                            this.localStorageService
+                                .getItem('sectionCopied')
+                                .subscribe((copiedSection: FormSection) => {
+                                    this.formElementEditing.formElement = copiedSection;
+                                    this.addFormElement(copiedSection);
+                                });
                         } else {
                             TREE_ACTIONS.MOVE_NODE(tree, node, $event, {from, to});
                             addFormIds(this.elt);
@@ -213,7 +218,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         public deCompletionService: DeCompletionService,
         private _hotkeysService: HotkeysService,
         private http: HttpClient,
-        private localStorageService: LocalStorageService,
+        private localStorageService: LocalStorage,
         public matDialog: MatDialog,
     ) {
     }
@@ -259,7 +264,9 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     addFormFromSearch(form: CdeForm, cb: Cb<FormInForm> = _noop) {
         this.http.get<CdeForm>('/api/form/' + form.tinyId).subscribe(form => {
             const inForm = convertFormToSection(form);
-            if (!inForm) { return; }
+            if (!inForm) {
+                return;
+            }
             this.addExpanded(inForm);
             this.formElementEditing.formElement = inForm;
             this.addFormElement(inForm);

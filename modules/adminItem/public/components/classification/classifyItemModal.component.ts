@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
-import { LocalStorageService } from 'angular-2-local-storage';
+import { LocalStorage } from '@ngx-pwa/local-storage';
 import { TreeNode } from 'angular-tree-component/dist/models/tree-node.model';
 import { IActionMapping } from 'angular-tree-component/dist/models/tree-options.model';
 import _noop from 'lodash/noop';
@@ -39,7 +39,7 @@ export class ClassifyItemModalComponent {
 
     constructor(private classificationSvc: ClassificationService,
                 private http: HttpClient,
-                private localStorageService: LocalStorageService,
+                private localStorageService: LocalStorage,
                 public dialog: MatDialog,
                 public userService: UserService) {
     }
@@ -93,16 +93,20 @@ export class ClassifyItemModalComponent {
     openModal() {
         this.orgClassificationsTreeView = null;
         this.orgClassificationsRecentlyAddView = undefined;
-        this.orgClassificationsRecentlyAddView = this.localStorageService.get('classificationHistory');
-        if (this.selectedOrg) {
-            this.onChangeOrg(this.selectedOrg);
-        } else {
-            this.userService.then(() => {
-                if (this.userService.userOrgs.length === 1) {
-                    this.onChangeOrg(this.userService.userOrgs[0]);
+        this.orgClassificationsRecentlyAddView = undefined;
+        this.localStorageService
+            .getItem('classificationHistory')
+            .subscribe(() => {
+                if (this.selectedOrg) {
+                    this.onChangeOrg(this.selectedOrg);
+                } else {
+                    this.userService.then(() => {
+                        if (this.userService.userOrgs.length === 1) {
+                            this.onChangeOrg(this.userService.userOrgs[0]);
+                        }
+                    }, _noop);
                 }
-            }, _noop);
-        }
+            });
         return this.dialog.open(this.classifyItemContent, {width: '800px'});
     }
 }
