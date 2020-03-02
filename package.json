@@ -268,7 +268,7 @@
     "ng-feedback2": "^2.0.0",
     "ng-recaptcha": "^5.0.0",
     "ng2-ckeditor": "^1.2.6",
-    "ngx-bootstrap": "^3.1.2",
+    "ngx-bootstrap": "^5.5.0",
     "node-sass": "^4.13.1",
     "nodemon": "^1.18.11",
     "optimize-js-plugin": "0.0.4",
