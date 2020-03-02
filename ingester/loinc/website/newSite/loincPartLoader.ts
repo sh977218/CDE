@@ -42,4 +42,5 @@ export async function loadLoincPartById(partId) {
     }
     await driver.close();
     return partDescription;
+
 }

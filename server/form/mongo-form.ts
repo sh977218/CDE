@@ -67,7 +67,6 @@ function preSaveUsesThisForSomeReason(next) {
 
 formSchema.pre('save', preSaveUsesThisForSomeReason);
 formSourceSchema.pre('save', preSaveUsesThisForSomeReason);
-draftSchema.pre('save', preSaveUsesThisForSomeReason);
 
 const conn = establishConnection(config.database.appData);
 export const formModel: Model<CdeFormDocument> = conn.model('Form', formSchema);
