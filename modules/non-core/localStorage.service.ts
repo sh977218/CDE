@@ -14,12 +14,7 @@ export class LocalStorageService {
         if (!value) {
             return '';
         } else {
-            const type = typeof value;
-            if (type === 'object') {
-                return JSON.parse(value);
-            } else {
-                return value;
-            }
+            return JSON.parse(value);
         }
     }
 }
