@@ -187,7 +187,8 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
                         } else if (from.ref === 'form') {
                             this.openFormSearch();
                         } else if (from.ref === 'pasteSection') {
-                            const copiedSection = this.localStorageService.getItem('sectionCopied');
+                            const copiedSection: FormSection = this.localStorageService.getItem('sectionCopied');
+                            this.formElementEditing.formElement = copiedSection;
                             this.addFormElement(copiedSection);
                         } else {
                             TREE_ACTIONS.MOVE_NODE(tree, node, $event, {from, to});

@@ -106,21 +106,18 @@ export class CreateDataElementComponent implements OnInit {
     }
 
     updateClassificationLocalStorage(item: ClassificationHistory) {
-        this.localStorageService
-            .getItem('classificationHistory')
-            .subscribe((recentlyClassification: any) => {
-                if (!recentlyClassification) {
-                    recentlyClassification = [];
-                }
-                recentlyClassification = recentlyClassification.filter((o: any) => {
-                    if (o.cdeId) {
-                        o.eltId = o.cdeId;
-                    }
-                    return _isEqual(o, item);
-                });
-                recentlyClassification.unshift(item);
-                this.localStorageService.setItem('classificationHistory', recentlyClassification);
-            });
+        let recentlyClassification = this.localStorageService.getItem('classificationHistory');
+        if (!recentlyClassification) {
+            recentlyClassification = [];
+        }
+        recentlyClassification = recentlyClassification.filter((o: any) => {
+            if (o.cdeId) {
+                o.eltId = o.cdeId;
+            }
+            return _isEqual(o, item);
+        });
+        recentlyClassification.unshift(item);
+        this.localStorageService.setItem('classificationHistory', recentlyClassification);
     }
 
     validationErrors(elt: DataElement): string {
