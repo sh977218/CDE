@@ -11,11 +11,11 @@ import { CommonAppModule } from '_commonApp/commonApp.module';
 import { EmbedAppComponent } from './embedApp.component';
 import { EmbeddedCdeSearchResultComponent } from './searchResults/embeddedCdeSearchResult.component';
 import { EmbeddedFormSearchResultComponent } from './searchResults/embeddedFormSearchResult.component';
-import { LocalStorageModule } from 'angular-2-local-storage';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { LocalStorage } from '@ngx-pwa/local-storage';
 
 @NgModule({
     declarations: [
@@ -28,15 +28,12 @@ import { MatIconModule } from '@angular/material/icon';
         ElasticService,
         OrgHelperService,
         UserService,
+        LocalStorage
     ],
     imports: [
         BrowserAnimationsModule,
         BrowserModule,
         CommonModule,
-        LocalStorageModule.forRoot({
-            prefix: 'nlmcde',
-            storageType: 'localStorage'
-        }),
         FormsModule,
         HttpClientModule,
         NgbModule,
