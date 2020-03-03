@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { UserService } from '_app/user.service';
-import { LocalStorage } from '@ngx-pwa/local-storage';
+
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm } from 'shared/form/form.model';
 import {
@@ -16,6 +16,7 @@ import {
 } from 'shared/models.model';
 import { SearchSettings, SearchSettingsElastic } from 'shared/search/search.model';
 import { orderedList } from 'shared/system/regStatusShared';
+import { LocalStorageService } from '../non-core/localStorage.service';
 
 @Injectable()
 export class ElasticService {
@@ -23,7 +24,7 @@ export class ElasticService {
     searchToken = 'id' + Math.random().toString(16).slice(2);
 
     constructor(public http: HttpClient,
-                private localStorageService: LocalStorage,
+                private localStorageService: LocalStorageService,
                 private userService: UserService) {
         this.loadSearchSettings();
     }
@@ -124,28 +125,24 @@ export class ElasticService {
 
     loadSearchSettings() {
         if (!this.searchSettings) {
-            this.localStorageService
-                .getItem('SearchSettings')
-                .subscribe((searchSettings: any) => {
-                    this.searchSettings = searchSettings;
-                    if (!this.searchSettings) {
-                        this.searchSettings = ElasticService.getDefault();
-                    }
+            this.searchSettings = this.localStorageService.getItem('SearchSettings');
+            if (!this.searchSettings) {
+                this.searchSettings = ElasticService.getDefault();
+            }
 
-                    this.userService.then(user => {
-                        if (!user.searchSettings) {
-                            user.searchSettings = ElasticService.getDefault();
-                        }
-                        this.searchSettings = user.searchSettings;
-                        if (this.searchSettings.version !== ElasticService.getDefault().version) {
-                            this.searchSettings = ElasticService.getDefault();
-                        }
-                    }, () => {
-                        if (this.searchSettings.version !== ElasticService.getDefault().version) {
-                            this.searchSettings = ElasticService.getDefault();
-                        }
-                    });
-                });
+            this.userService.then(user => {
+                if (!user.searchSettings) {
+                    user.searchSettings = ElasticService.getDefault();
+                }
+                this.searchSettings = user.searchSettings;
+                if (this.searchSettings.version !== ElasticService.getDefault().version) {
+                    this.searchSettings = ElasticService.getDefault();
+                }
+            }, () => {
+                if (this.searchSettings.version !== ElasticService.getDefault().version) {
+                    this.searchSettings = ElasticService.getDefault();
+                }
+            });
         }
     }
 
@@ -153,9 +150,7 @@ export class ElasticService {
         this.searchSettings = settings;
         const savedSettings = JSON.parse(JSON.stringify(this.searchSettings));
         delete savedSettings.includeRetired;
-        this.localStorageService
-            .setItem('SearchSettings', savedSettings)
-            .subscribe();
+        this.localStorageService.setItem('SearchSettings', savedSettings);
         if (this.userService.user) {
             this.http.post('/server/user/', {searchSettings: savedSettings}).subscribe();
         }

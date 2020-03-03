@@ -5,7 +5,7 @@ import {
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { TreeNode } from 'angular-tree-component';
-import { LocalStorage } from '@ngx-pwa/local-storage';
+
 import { AlertService } from 'alert/alert.service';
 import { repeatFe, repeatFeLabel, repeatFeNumber, repeatFeQuestion } from 'core/form/fe';
 import { convertFormToSection } from 'core/form/form';
@@ -18,6 +18,7 @@ import { FormattedValue } from 'shared/models.model';
 import { getLabel } from 'shared/form/fe';
 import { CdeForm, FormElement, FormInForm, FormSectionOrForm, SkipLogic } from 'shared/form/form.model';
 import { getQuestionsPrior } from 'shared/form/skipLogic';
+import { LocalStorageService } from '../../../../non-core/localStorage.service';
 
 @Component({
     selector: 'cde-form-description-section',
@@ -57,7 +58,7 @@ export class FormDescriptionSectionComponent implements OnInit {
     constructor(private alert: AlertService,
                 @Host() public formDescriptionComponent: FormDescriptionComponent,
                 private http: HttpClient,
-                private localStorageService: LocalStorage,
+                private localStorageService: LocalStorageService,
                 public dialog: MatDialog) {
     }
 
@@ -102,9 +103,7 @@ export class FormDescriptionSectionComponent implements OnInit {
     }
 
     copySection(section: FormSectionOrForm) {
-        this.localStorageService
-            .setItem('sectionCopied', section)
-            .subscribe();
+        this.localStorageService.setItem('sectionCopied', section);
         section.isCopied = 'copied';
         this.elt.isCopied = 'copied';
         setTimeout(() => {

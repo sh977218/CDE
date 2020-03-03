@@ -15,7 +15,8 @@ import { OrgHelperService } from 'non-core/orgHelper.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { LocalStorage } from '@ngx-pwa/local-storage';
+import { LocalStorageService } from '../../modules/non-core/localStorage.service';
+
 
 @NgModule({
     declarations: [
@@ -28,7 +29,7 @@ import { LocalStorage } from '@ngx-pwa/local-storage';
         ElasticService,
         OrgHelperService,
         UserService,
-        LocalStorage
+        LocalStorageService
     ],
     imports: [
         BrowserAnimationsModule,

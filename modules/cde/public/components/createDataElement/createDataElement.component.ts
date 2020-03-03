@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { UserService } from '_app/user.service';
 import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
 import { AlertService } from 'alert/alert.service';
-import { LocalStorage } from '@ngx-pwa/local-storage';
+
 import { DeCompletionService } from 'cde/public/components/completion/deCompletion.service';
 import { classifyItem } from 'core/adminItem/classification';
 import _cloneDeep from 'lodash/cloneDeep';
@@ -16,6 +16,7 @@ import { DataElement } from 'shared/de/dataElement.model';
 import { findSteward, removeCategory } from 'shared/system/classificationShared';
 import { DeletedNodeEvent } from 'adminItem/public/components/classification/classificationView.component';
 import { MatDialogRef } from '@angular/material/dialog';
+import { LocalStorageService } from '../../../../non-core/localStorage.service';
 
 @Component({
     selector: 'cde-create-data-element',
@@ -38,7 +39,7 @@ export class CreateDataElementComponent implements OnInit {
                 public deCompletionService: DeCompletionService,
                 public isAllowedModel: IsAllowedService,
                 private http: HttpClient,
-                private localStorageService: LocalStorage,
+                private localStorageService: LocalStorageService,
                 private router: Router,
                 public userService: UserService) {
     }
@@ -118,9 +119,7 @@ export class CreateDataElementComponent implements OnInit {
                     return _isEqual(o, item);
                 });
                 recentlyClassification.unshift(item);
-                this.localStorageService
-                    .setItem('classificationHistory', recentlyClassification)
-                    .subscribe();
+                this.localStorageService.setItem('classificationHistory', recentlyClassification);
             });
     }
 

@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AlertService } from 'alert/alert.service';
-import { LocalStorage } from '@ngx-pwa/local-storage';
+
 import _find from 'lodash/find';
 import _isEmpty from 'lodash/isEmpty';
 import _remove from 'lodash/remove';
@@ -11,6 +11,7 @@ import { iterateFesSync } from 'shared/form/fe';
 import { Item, ItemElastic } from 'shared/models.model';
 import { isCdeForm, isDataElement } from 'shared/item';
 import { MatTabChangeEvent } from '@angular/material/tabs';
+import { LocalStorageService } from '../non-core/localStorage.service';
 
 @Injectable()
 export class QuickBoardListService {
@@ -23,7 +24,7 @@ export class QuickBoardListService {
 
     constructor(private alert: AlertService,
                 private http: HttpClient,
-                private localStorageService: LocalStorage) {
+                private localStorageService: LocalStorageService) {
         this.loadElements();
     }
 
@@ -60,49 +61,41 @@ export class QuickBoardListService {
     }
 
     loadElements(): void {
-        this.localStorageService
-            .getItem('quickBoard')
-            .subscribe((dataElementLocalStorage: any) => {
-                if (dataElementLocalStorage) {
-                    const l = dataElementLocalStorage.map((d: any) => d.tinyId);
-                    if (!_isEmpty(l)) {
-                        this.http.get<DataElement[]>('/server/de/list/' + l)
-                            .subscribe(res => {
-                                if (res) {
-                                    this.dataElements = res as DataElementElastic[];
-                                    this.numberDataElements = this.dataElements.length;
-                                }
-                            }, err => this.alert.httpErrorMessageAlert(err));
-                    }
-                }
-            });
+        const dataElementLocalStorage = this.localStorageService.getItem('quickBoard');
+        if (dataElementLocalStorage) {
+            const l = dataElementLocalStorage.map((d: any) => d.tinyId);
+            if (!_isEmpty(l)) {
+                this.http.get<DataElement[]>('/server/de/list/' + l)
+                    .subscribe(res => {
+                        if (res) {
+                            this.dataElements = res as DataElementElastic[];
+                            this.numberDataElements = this.dataElements.length;
+                        }
+                    }, err => this.alert.httpErrorMessageAlert(err));
+            }
+        }
 
-        this.localStorageService
-            .getItem('formQuickBoard')
-            .subscribe((formLocalStorage: any) => {
-                if (formLocalStorage) {
-                    const l = formLocalStorage.map((d: any) => d.tinyId);
-                    if (!_isEmpty(l)) {
-                        this.http.get<CdeFormElastic[]>('/server/form/list/' + l)
-                            .subscribe(res => {
-                                if (res) {
-                                    this.forms = res;
-                                    this.forms.forEach(f => {
-                                        let numQuestions = 0;
-                                        iterateFesSync(f.formElements, undefined, undefined, () => numQuestions = numQuestions + 1);
-                                        f.numQuestions = numQuestions;
-                                        f.score = NaN;
-                                    });
-                                    this.numberForms = this.forms.length;
-                                }
-                            }, err => this.alert.httpErrorMessageAlert(err));
-                    }
-                }
-            });
+        const formLocalStorage = this.localStorageService.getItem('formQuickBoard');
+        if (formLocalStorage) {
+            const l = formLocalStorage.map((d: any) => d.tinyId);
+            if (!_isEmpty(l)) {
+                this.http.get<CdeFormElastic[]>('/server/form/list/' + l)
+                    .subscribe(res => {
+                        if (res) {
+                            this.forms = res;
+                            this.forms.forEach(f => {
+                                let numQuestions = 0;
+                                iterateFesSync(f.formElements, undefined, undefined, () => numQuestions = numQuestions + 1);
+                                f.numQuestions = numQuestions;
+                                f.score = NaN;
+                            });
+                            this.numberForms = this.forms.length;
+                        }
+                    }, err => this.alert.httpErrorMessageAlert(err));
+            }
+        }
 
-        this.localStorageService
-            .getItem('defaultQuickBoard')
-            .subscribe((module: any) => this.module = module);
+        this.module = this.localStorageService.getItem('defaultQuickBoard');
     }
 
     removeElement(elt: ItemElastic) {
@@ -119,19 +112,13 @@ export class QuickBoardListService {
     }
 
     saveDataElementQuickBoard() {
-        this.localStorageService
-            .setItem('quickBoard', this.dataElements)
-            .subscribe(() => {
-                this.numberDataElements = this.dataElements.length;
-            });
+        this.localStorageService.setItem('quickBoard', this.dataElements);
+        this.numberDataElements = this.dataElements.length;
     }
 
     saveFormQuickBoard() {
-        this.localStorageService
-            .setItem('formQuickBoard', this.forms)
-            .subscribe(() => {
-                this.numberForms = this.forms.length;
-            });
+        this.localStorageService.setItem('formQuickBoard', this.forms);
+        this.numberForms = this.forms.length;
     }
 
     setDefaultQuickBoard(event: MatTabChangeEvent) {
@@ -141,8 +128,6 @@ export class QuickBoardListService {
         if (event.tab.textLabel.startsWith('CDE')) {
             this.module = 'cde';
         }
-        this.localStorageService
-            .setItem('defaultQuickBoard', this.module)
-            .subscribe();
+        this.localStorageService.setItem('defaultQuickBoard', this.module);
     }
 }

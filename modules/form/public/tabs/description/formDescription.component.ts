@@ -13,7 +13,7 @@ import {
 } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { TREE_ACTIONS, TreeComponent, TreeModel, TreeNode } from 'angular-tree-component';
-import { LocalStorage } from '@ngx-pwa/local-storage';
+
 import { Hotkey, HotkeysService } from 'angular2-hotkeys';
 import { convertFormToSection } from 'core/form/form';
 import _isEmpty from 'lodash/isEmpty';
@@ -26,6 +26,7 @@ import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm, FormElement, FormInForm, FormOrElement, FormSection } from 'shared/form/form.model';
 import { addFormIds, iterateFeSync } from 'shared/form/fe';
 import { scrollTo, waitRendered } from 'non-core/browser';
+import { LocalStorageService } from '../../../../non-core/localStorage.service';
 
 @Component({
     selector: 'cde-form-description',
@@ -186,12 +187,8 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
                         } else if (from.ref === 'form') {
                             this.openFormSearch();
                         } else if (from.ref === 'pasteSection') {
-                            this.localStorageService
-                                .getItem('sectionCopied')
-                                .subscribe((copiedSection: any) => {
-                                    this.formElementEditing.formElement = copiedSection;
-                                    this.addFormElement(copiedSection);
-                                });
+                            const copiedSection = this.localStorageService.getItem('sectionCopied');
+                            this.addFormElement(copiedSection);
                         } else {
                             TREE_ACTIONS.MOVE_NODE(tree, node, $event, {from, to});
                             addFormIds(this.elt);
@@ -218,7 +215,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         public deCompletionService: DeCompletionService,
         private _hotkeysService: HotkeysService,
         private http: HttpClient,
-        private localStorageService: LocalStorage,
+        private localStorageService: LocalStorageService,
         public matDialog: MatDialog,
     ) {
     }
@@ -302,15 +299,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     }
 
     hasCopiedSection() {
-        let sectionCopied = false;
-        this.localStorageService
-            .getItem('sectionCopied')
-            .subscribe(res => {
-                if (res) {
-                    sectionCopied = true;
-                }
-            });
-        return sectionCopied;
+        return this.localStorageService.getItem('sectionCopied');
     }
 
     initNewDataElement(): DataElement {
