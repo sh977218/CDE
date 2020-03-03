@@ -3,10 +3,8 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class LocalStorageService {
     setItem(key: any, value: any) {
-        if (typeof value === 'object') {
-            value = JSON.stringify(value);
-        }
-        localStorage.setItem(key, value);
+        const valueStringify = JSON.stringify(value);
+        localStorage.setItem(key, valueStringify);
     }
 
     getItem(key: any) {
@@ -14,7 +12,11 @@ export class LocalStorageService {
         if (!value) {
             return '';
         } else {
-            return JSON.parse(value);
+            try {
+                return JSON.parse(value);
+            } catch (e) {
+                return value;
+            }
         }
     }
 }
