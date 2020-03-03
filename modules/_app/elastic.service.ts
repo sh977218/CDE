@@ -25,13 +25,7 @@ export class ElasticService {
     constructor(public http: HttpClient,
                 private localStorageService: LocalStorage,
                 private userService: UserService) {
-        this.localStorageService
-            .getItem('SearchSettings')
-            .subscribe((searchSettings: any) => {
-                this.searchSettings = searchSettings;
-                this.loadSearchSettings();
-            });
-
+        this.loadSearchSettings();
     }
 
     buildElasticQuerySettings(queryParams: SearchSettings): SearchSettingsElastic {
@@ -130,23 +124,28 @@ export class ElasticService {
 
     loadSearchSettings() {
         if (!this.searchSettings) {
-            if (!this.searchSettings) {
-                this.searchSettings = ElasticService.getDefault();
-            }
+            this.localStorageService
+                .getItem('SearchSettings')
+                .subscribe((searchSettings: any) => {
+                    this.searchSettings = searchSettings;
+                    if (!this.searchSettings) {
+                        this.searchSettings = ElasticService.getDefault();
+                    }
 
-            this.userService.then(user => {
-                if (!user.searchSettings) {
-                    user.searchSettings = ElasticService.getDefault();
-                }
-                this.searchSettings = user.searchSettings;
-                if (this.searchSettings.version !== ElasticService.getDefault().version) {
-                    this.searchSettings = ElasticService.getDefault();
-                }
-            }, () => {
-                if (this.searchSettings.version !== ElasticService.getDefault().version) {
-                    this.searchSettings = ElasticService.getDefault();
-                }
-            });
+                    this.userService.then(user => {
+                        if (!user.searchSettings) {
+                            user.searchSettings = ElasticService.getDefault();
+                        }
+                        this.searchSettings = user.searchSettings;
+                        if (this.searchSettings.version !== ElasticService.getDefault().version) {
+                            this.searchSettings = ElasticService.getDefault();
+                        }
+                    }, () => {
+                        if (this.searchSettings.version !== ElasticService.getDefault().version) {
+                            this.searchSettings = ElasticService.getDefault();
+                        }
+                    });
+                });
         }
     }
 
