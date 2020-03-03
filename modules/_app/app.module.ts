@@ -27,7 +27,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { FeedbackModule } from 'ng-feedback2';
-import { LocalStorageService } from '../non-core/localStorage.service';
+import { LocalStorageService } from 'non-core/localStorage.service';
 
 
 @NgModule({

@@ -304,7 +304,7 @@
     {
       "path": "./dist/app/cde.js",
       "compression": "none",
-      "maxSize": "1.88 MB"
+      "maxSize": "1.85 MB"
     },
     {
       "path": "./dist/app/cde.css",
@@ -314,7 +314,7 @@
     {
       "path": "./dist/embed/embed.js",
       "compression": "none",
-      "maxSize": "1.3 MB"
+      "maxSize": "1.27 MB"
     },
     {
       "path": "./dist/embed/embed.css",

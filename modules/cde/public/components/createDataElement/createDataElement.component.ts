@@ -16,7 +16,7 @@ import { DataElement } from 'shared/de/dataElement.model';
 import { findSteward, removeCategory } from 'shared/system/classificationShared';
 import { DeletedNodeEvent } from 'adminItem/public/components/classification/classificationView.component';
 import { MatDialogRef } from '@angular/material/dialog';
-import { LocalStorageService } from '../../../../non-core/localStorage.service';
+import { LocalStorageService } from 'non-core/localStorage.service';
 
 @Component({
     selector: 'cde-create-data-element',

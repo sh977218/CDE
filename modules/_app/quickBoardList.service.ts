@@ -11,7 +11,7 @@ import { iterateFesSync } from 'shared/form/fe';
 import { Item, ItemElastic } from 'shared/models.model';
 import { isCdeForm, isDataElement } from 'shared/item';
 import { MatTabChangeEvent } from '@angular/material/tabs';
-import { LocalStorageService } from '../non-core/localStorage.service';
+import { LocalStorageService } from 'non-core/localStorage.service';
 
 @Injectable()
 export class QuickBoardListService {

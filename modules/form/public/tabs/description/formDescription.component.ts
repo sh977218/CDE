@@ -26,7 +26,7 @@ import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm, FormElement, FormInForm, FormOrElement, FormSection } from 'shared/form/form.model';
 import { addFormIds, iterateFeSync } from 'shared/form/fe';
 import { scrollTo, waitRendered } from 'non-core/browser';
-import { LocalStorageService } from '../../../../non-core/localStorage.service';
+import { LocalStorageService } from 'non-core/localStorage.service';
 
 @Component({
     selector: 'cde-form-description',

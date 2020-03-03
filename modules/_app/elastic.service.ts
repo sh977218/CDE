@@ -16,7 +16,7 @@ import {
 } from 'shared/models.model';
 import { SearchSettings, SearchSettingsElastic } from 'shared/search/search.model';
 import { orderedList } from 'shared/system/regStatusShared';
-import { LocalStorageService } from '../non-core/localStorage.service';
+import { LocalStorageService } from 'non-core/localStorage.service';
 
 @Injectable()
 export class ElasticService {

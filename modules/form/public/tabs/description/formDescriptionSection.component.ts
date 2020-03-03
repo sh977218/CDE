@@ -18,7 +18,7 @@ import { FormattedValue } from 'shared/models.model';
 import { getLabel } from 'shared/form/fe';
 import { CdeForm, FormElement, FormInForm, FormSectionOrForm, SkipLogic } from 'shared/form/form.model';
 import { getQuestionsPrior } from 'shared/form/skipLogic';
-import { LocalStorageService } from '../../../../non-core/localStorage.service';
+import { LocalStorageService } from 'non-core/localStorage.service';
 
 @Component({
     selector: 'cde-form-description-section',

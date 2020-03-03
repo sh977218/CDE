@@ -9,7 +9,7 @@ import { UserService } from '_app/user.service';
 import { ClassificationService } from 'non-core/classification.service';
 import { ClassificationClassified, ClassificationClassifier } from 'shared/models.model';
 import { MatDialog } from '@angular/material/dialog';
-import { LocalStorageService } from '../../../../non-core/localStorage.service';
+import { LocalStorageService } from 'non-core/localStorage.service';
 
 const actionMapping: IActionMapping = {
     mouse: {

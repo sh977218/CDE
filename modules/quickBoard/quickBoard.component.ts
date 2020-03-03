@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { QuickBoardListService } from '_app/quickBoardList.service';
 
 import { MatTabChangeEvent } from '@angular/material/tabs';
-import { LocalStorageService } from '../non-core/localStorage.service';
+import { LocalStorageService } from 'non-core/localStorage.service';
 
 @Component({
     selector: 'cde-quick-board',
