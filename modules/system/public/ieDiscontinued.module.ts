@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
-import { RecaptchaModule } from 'ng-recaptcha';
 import { IeDiscontinuedComponent } from 'system/public/components/ieDiscontinued.component';
 
 const appRoutes: Routes = [
@@ -13,7 +12,6 @@ const appRoutes: Routes = [
     imports: [
         CommonModule,
         FormsModule,
-        RecaptchaModule.forRoot(),
         RouterModule.forChild(appRoutes),
         // non-core
 
