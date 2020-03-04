@@ -11,9 +11,9 @@ function arrayStringToTableWithThreePerRow(array) {
 }
 
 function arrayObjectToTableWithThreePerRow(array) {
-    const theadHtml = `<tr>${Object.keys(array[0]).map(th => `<th>${th}</th>`).join('')}</tr>`;
+    const theadHtml = `<thead><tr>${Object.keys(array[0]).map(th => `<th>${th}</th>`).join('')}</tr></thead>`;
     const chunkedArray = chunkArray(array, 3);
-    const tbodyHtml = chunkedArray.map(tr => {
+    const tbodyHtml = '<tbody>' + chunkedArray.map(tr => {
         const tdHtml = tr.map(td => {
             let temp = '';
             for (const k in td) {
@@ -24,19 +24,19 @@ function arrayObjectToTableWithThreePerRow(array) {
             return temp;
         }).join('');
         return `<tr>${tdHtml}</tr>`;
-    }).join('');
+    }).join('') + '</tbody>';
     return `<table class="table table-striped">${theadHtml}${tbodyHtml}</table>`;
 }
 
 function objectToTable(obj) {
-    const theadHtml = `<tr>${Object.keys(obj).map(th => `<th>${th}</th>`).join('')}</tr>`;
-    let tbodyHtml = '<tr>';
+    const theadHtml = `<thead><tr>${Object.keys(obj).map(th => `<th>${th}</th>`).join('')}</tr></thead>`;
+    let tbodyHtml = '<tbody><tr>';
     for (const key in obj) {
         if (obj.hasOwnProperty(key)) {
             tbodyHtml += `<td>${obj[key]}</td>`;
         }
     }
-    tbodyHtml += '</tr>';
+    tbodyHtml += '</tr></tbody>';
     return `<table class="table table-striped">${theadHtml}${tbodyHtml}</table>`;
 }
 

@@ -1,3 +1,5 @@
+import { NINDS_PRECLINICAL_NEI_FILE_PATH } from 'ingester/shared/utility';
+
 const fs = require('fs');
 const util = require('util');
 const _ = require('lodash');
@@ -71,7 +73,7 @@ function mapMappings(rows) {
 }
 
 function loadDomains(folder) {
-    let allFiles = fs.readdirSync(folder);
+    let allFiles = fs.readdirSync(folder, 'utf8');
     let domainsFile;
     for (let file of allFiles) {
         if (file.indexOf('domains.csv') > -1)
@@ -86,7 +88,7 @@ function loadDomains(folder) {
 }
 
 function loadVariables(folder) {
-    let allFiles = fs.readdirSync(folder);
+    let allFiles = fs.readdirSync(folder, 'utf8');
     let variablesFile;
     for (let file of allFiles) {
         if (file.indexOf('variables.csv') > -1)
@@ -101,7 +103,7 @@ function loadVariables(folder) {
 }
 
 function loadMappings(folder) {
-    let allFiles = fs.readdirSync(folder);
+    let allFiles = fs.readdirSync(folder, 'utf8');
     let mappingsFile;
     for (let file of allFiles) {
         if (file.indexOf('mappings.csv') > -1)

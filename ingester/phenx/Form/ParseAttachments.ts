@@ -1,7 +1,7 @@
 import { createReadStream, existsSync, readdirSync, statSync } from 'fs';
 import * as md5File from 'md5-file';
 import { gfs } from 'server/system/mongo-data';
-import { BATCHLOADER } from 'ingester/shared/utility';
+import { BATCHLOADER, NINDS_PRECLINICAL_NEI_FILE_PATH } from 'ingester/shared/utility';
 import { redCapZipFolder } from 'ingester/createMigrationConnection';
 
 function addAttachment(fileName, filePath, fileType) {
@@ -58,11 +58,11 @@ function addAttachment(fileName, filePath, fileType) {
 async function doImg(imgFolder) {
     const attachments: any[] = [];
 
-    const imgSubFolders = readdirSync(imgFolder);
+    const imgSubFolders = readdirSync(imgFolder, 'utf8');
     for (const imgSubFolder of imgSubFolders) {
         const imgSubFolderExist = existsSync(imgFolder + '/' + imgSubFolder);
         if (imgSubFolderExist) {
-            const imgFiles = readdirSync(imgFolder);
+            const imgFiles = readdirSync(imgFolder, 'utf8');
             for (const imgFile of imgFiles) {
                 let fileType = 'jpg';
                 let imgFilePath = imgFolder + '/' + imgSubFolder + '/' + imgFile + '.' + fileType;
