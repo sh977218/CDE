@@ -24,20 +24,18 @@ function doInstrument(instrumentFilePath): Promise<(string | Buffer)[]> {
         };
         createReadStream(instrumentFilePath)
             .pipe(iconv.decodeStream('win1251'))
-            .pipe(iconv.encodeStream('ucs2'));
-        /*
-                    .pipe(csv(options))
-                    .on('data', data => {
-                        if (!isEmpty(data)) {
-                            results.push(data);
-                        }
-                    })
-                    .on('err', err => {
-                        reject(err);
-                    })
-                    .on('end', () => {
-                        resolve(results);
-                    });*/
+            .pipe(csv(options))
+            .on('data', data => {
+                if (!isEmpty(data)) {
+                    results.push(data);
+                }
+            })
+            .on('err', err => {
+                reject(err);
+            })
+            .on('end', () => {
+                resolve(results);
+            });
     });
 }
 
