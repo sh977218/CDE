@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AlertService } from 'alert/alert.service';
-import { LocalStorageService } from 'angular-2-local-storage';
+
 import _find from 'lodash/find';
 import _isEmpty from 'lodash/isEmpty';
 import _remove from 'lodash/remove';
@@ -11,6 +11,7 @@ import { iterateFesSync } from 'shared/form/fe';
 import { Item, ItemElastic } from 'shared/models.model';
 import { isCdeForm, isDataElement } from 'shared/item';
 import { MatTabChangeEvent } from '@angular/material/tabs';
+import { LocalStorageService } from 'non-core/localStorage.service';
 
 @Injectable()
 export class QuickBoardListService {
@@ -60,9 +61,9 @@ export class QuickBoardListService {
     }
 
     loadElements(): void {
-        const dataElementLocalStorage = this.localStorageService.get('quickBoard') as Array<any>;
+        const dataElementLocalStorage = this.localStorageService.getItem('quickBoard');
         if (dataElementLocalStorage) {
-            const l = dataElementLocalStorage.map(d => d.tinyId);
+            const l = dataElementLocalStorage.map((d: any) => d.tinyId);
             if (!_isEmpty(l)) {
                 this.http.get<DataElement[]>('/server/de/list/' + l)
                     .subscribe(res => {
@@ -73,9 +74,10 @@ export class QuickBoardListService {
                     }, err => this.alert.httpErrorMessageAlert(err));
             }
         }
-        const formLocalStorage = this.localStorageService.get('formQuickBoard') as Array<any>;
+
+        const formLocalStorage = this.localStorageService.getItem('formQuickBoard');
         if (formLocalStorage) {
-            const l = formLocalStorage.map(d => d.tinyId);
+            const l = formLocalStorage.map((d: any) => d.tinyId);
             if (!_isEmpty(l)) {
                 this.http.get<CdeFormElastic[]>('/server/form/list/' + l)
                     .subscribe(res => {
@@ -92,7 +94,8 @@ export class QuickBoardListService {
                     }, err => this.alert.httpErrorMessageAlert(err));
             }
         }
-        this.module = this.localStorageService.get('defaultQuickBoard') as string;
+
+        this.module = this.localStorageService.getItem('defaultQuickBoard');
     }
 
     removeElement(elt: ItemElastic) {
@@ -109,18 +112,22 @@ export class QuickBoardListService {
     }
 
     saveDataElementQuickBoard() {
-        this.localStorageService.set('quickBoard', this.dataElements);
+        this.localStorageService.setItem('quickBoard', this.dataElements);
         this.numberDataElements = this.dataElements.length;
     }
 
     saveFormQuickBoard() {
-        this.localStorageService.set('formQuickBoard', this.forms);
+        this.localStorageService.setItem('formQuickBoard', this.forms);
         this.numberForms = this.forms.length;
     }
 
     setDefaultQuickBoard(event: MatTabChangeEvent) {
-        if (event.tab.textLabel.startsWith('Form')) { this.module = 'form'; }
-        if (event.tab.textLabel.startsWith('CDE')) { this.module = 'cde'; }
-        this.localStorageService.set('defaultQuickBoard', this.module);
+        if (event.tab.textLabel.startsWith('Form')) {
+            this.module = 'form';
+        }
+        if (event.tab.textLabel.startsWith('CDE')) {
+            this.module = 'cde';
+        }
+        this.localStorageService.setItem('defaultQuickBoard', this.module);
     }
 }

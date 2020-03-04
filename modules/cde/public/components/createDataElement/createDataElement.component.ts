@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { UserService } from '_app/user.service';
 import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
 import { AlertService } from 'alert/alert.service';
-import { LocalStorageService } from 'angular-2-local-storage';
+
 import { DeCompletionService } from 'cde/public/components/completion/deCompletion.service';
 import { classifyItem } from 'core/adminItem/classification';
 import _cloneDeep from 'lodash/cloneDeep';
@@ -16,6 +16,7 @@ import { DataElement } from 'shared/de/dataElement.model';
 import { findSteward, removeCategory } from 'shared/system/classificationShared';
 import { DeletedNodeEvent } from 'adminItem/public/components/classification/classificationView.component';
 import { MatDialogRef } from '@angular/material/dialog';
+import { LocalStorageService } from 'non-core/localStorage.service';
 
 @Component({
     selector: 'cde-create-data-element',
@@ -34,15 +35,6 @@ export class CreateDataElementComponent implements OnInit {
     @ViewChild('classifyItemComponent', {static: true}) classifyItemComponent!: ClassifyItemModalComponent;
     dialogRef!: MatDialogRef<TemplateRef<any>>;
 
-    ngOnInit() {
-        if (!this.elt) {
-            this.elt = new DataElement();
-            this.elt.classification = [];
-            this.elt.designations.push(new Designation());
-            this.elt.definitions.push(new Definition());
-        }
-    }
-
     constructor(private alert: AlertService,
                 public deCompletionService: DeCompletionService,
                 public isAllowedModel: IsAllowedService,
@@ -50,6 +42,15 @@ export class CreateDataElementComponent implements OnInit {
                 private localStorageService: LocalStorageService,
                 private router: Router,
                 public userService: UserService) {
+    }
+
+    ngOnInit() {
+        if (!this.elt) {
+            this.elt = new DataElement();
+            this.elt.classification = [];
+            this.elt.designations.push(new Designation());
+            this.elt.definitions.push(new Definition());
+        }
     }
 
     afterClassified(event: ClassificationClassified) {
@@ -97,7 +98,7 @@ export class CreateDataElementComponent implements OnInit {
             .subscribe(res => {
                 this.close.emit();
                 this.router.navigate(['/deView'], {queryParams: {tinyId: res.tinyId}});
-            }, err => this.alert.addAlert('danger', 'Unexpected error creating CDE'));
+            }, () => this.alert.addAlert('danger', 'Unexpected error creating CDE'));
     }
 
     openClassifyItemModal() {
@@ -105,18 +106,18 @@ export class CreateDataElementComponent implements OnInit {
     }
 
     updateClassificationLocalStorage(item: ClassificationHistory) {
-        let recentlyClassification = this.localStorageService.get('classificationHistory') as Array<any>;
+        let recentlyClassification = this.localStorageService.getItem('classificationHistory');
         if (!recentlyClassification) {
             recentlyClassification = [];
         }
-        recentlyClassification = recentlyClassification.filter(o => {
+        recentlyClassification = recentlyClassification.filter((o: any) => {
             if (o.cdeId) {
                 o.eltId = o.cdeId;
             }
             return _isEqual(o, item);
         });
         recentlyClassification.unshift(item);
-        this.localStorageService.set('classificationHistory', recentlyClassification);
+        this.localStorageService.setItem('classificationHistory', recentlyClassification);
     }
 
     validationErrors(elt: DataElement): string {
