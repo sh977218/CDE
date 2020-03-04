@@ -2,20 +2,19 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ElasticService } from '_app/elastic.service';
 import { AlertService } from 'alert/alert.service';
-import { LocalStorageService } from 'angular-2-local-storage';
+
 import _isEqual from 'lodash/isEqual';
 import _uniqWith from 'lodash/uniqWith';
 import { Cb1, CbErr, CbErrorObj, ClassificationHistory, Item, ItemClassification } from 'shared/models.model';
 import { SearchSettingsElastic } from 'shared/search/search.model';
+import { LocalStorageService } from './localStorage.service';
 
 @Injectable()
 export class ClassificationService {
-    constructor(
-        private alert: AlertService,
-        public esService: ElasticService,
-        public http: HttpClient,
-        private localStorageService: LocalStorageService,
-    ) {
+    constructor(private alert: AlertService,
+                public esService: ElasticService,
+                public http: HttpClient,
+                private localStorageService: LocalStorageService) {
     }
 
     updateClassificationLocalStorage(item: ClassificationHistory) {
@@ -25,15 +24,18 @@ export class ClassificationService {
             allPossibleCategories.push(accumulateCategories.concat(i));
             accumulateCategories.push(i);
         });
-        let recentlyClassification = this.localStorageService.get('classificationHistory') as Array<any>;
-        if (!recentlyClassification) { recentlyClassification = []; }
+        let recentlyClassification = this.localStorageService.getItem('classificationHistory');
+        if (!recentlyClassification) {
+            recentlyClassification = [];
+        }
         allPossibleCategories.forEach(i => recentlyClassification.unshift({
             categories: i,
             orgName: item.orgName
         }));
-        recentlyClassification = _uniqWith(recentlyClassification, (a, b) =>
+        recentlyClassification = _uniqWith(recentlyClassification, (a: any, b: any) =>
             _isEqual(a.categories, b.categories) && _isEqual(a.orgName, b.orgName));
-        this.localStorageService.set('classificationHistory', recentlyClassification);
+        this.localStorageService.setItem('classificationHistory', recentlyClassification);
+
     }
 
     classifyItem(elt: Item, org: string | undefined, classifArray: string[] | undefined, endPoint: string,

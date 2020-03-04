@@ -13,7 +13,7 @@ import {
 } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { TREE_ACTIONS, TreeComponent, TreeModel, TreeNode } from 'angular-tree-component';
-import { LocalStorageService } from 'angular-2-local-storage';
+
 import { Hotkey, HotkeysService } from 'angular2-hotkeys';
 import { convertFormToSection } from 'core/form/form';
 import _isEmpty from 'lodash/isEmpty';
@@ -26,6 +26,7 @@ import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm, FormElement, FormInForm, FormOrElement, FormSection } from 'shared/form/form.model';
 import { addFormIds, iterateFeSync } from 'shared/form/fe';
 import { scrollTo, waitRendered } from 'non-core/browser';
+import { LocalStorageService } from 'non-core/localStorage.service';
 
 @Component({
     selector: 'cde-form-description',
@@ -139,9 +140,11 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         this.addExpanded(form);
         addFormIds(form);
     }
+
     get elt() {
         return this._elt;
     }
+
     private _elt!: CdeForm;
     @Input() canEdit = false;
     @Output() eltChange = new EventEmitter<void>();
@@ -184,7 +187,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
                         } else if (from.ref === 'form') {
                             this.openFormSearch();
                         } else if (from.ref === 'pasteSection') {
-                            const copiedSection: FormSection = this.localStorageService.get('sectionCopied');
+                            const copiedSection: FormSection = this.localStorageService.getItem('sectionCopied');
                             this.formElementEditing.formElement = copiedSection;
                             this.addFormElement(copiedSection);
                         } else {
@@ -259,7 +262,9 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     addFormFromSearch(form: CdeForm, cb: Cb<FormInForm> = _noop) {
         this.http.get<CdeForm>('/api/form/' + form.tinyId).subscribe(form => {
             const inForm = convertFormToSection(form);
-            if (!inForm) { return; }
+            if (!inForm) {
+                return;
+            }
             this.addExpanded(inForm);
             this.formElementEditing.formElement = inForm;
             this.addFormElement(inForm);
@@ -295,7 +300,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     }
 
     hasCopiedSection() {
-        return !_isEmpty(this.localStorageService.get('sectionCopied'));
+        return this.localStorageService.getItem('sectionCopied');
     }
 
     initNewDataElement(): DataElement {

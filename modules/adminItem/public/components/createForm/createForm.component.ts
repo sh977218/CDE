@@ -1,20 +1,13 @@
 import { Location } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import {
-    Component,
-    Input,
-    Output,
-    OnInit,
-    ViewChild,
-    QueryList,
-    ViewChildren,
-    EventEmitter, TemplateRef
+    Component, Input, Output, OnInit, ViewChild, QueryList, ViewChildren, EventEmitter, TemplateRef
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserService } from '_app/user.service';
 import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
 import { AlertService } from 'alert/alert.service';
-import { LocalStorageService } from 'angular-2-local-storage';
+
 import { TreeComponent } from 'angular-tree-component';
 import { classifyItem } from 'core/adminItem/classification';
 import _isEqual from 'lodash/isEqual';
@@ -24,6 +17,7 @@ import { CdeForm } from 'shared/form/form.model';
 import { findSteward, removeCategory } from 'shared/system/classificationShared';
 import { DeletedNodeEvent } from 'adminItem/public/components/classification/classificationView.component';
 import { MatDialogRef } from '@angular/material/dialog';
+import { LocalStorageService } from 'non-core/localStorage.service';
 
 @Component({
     selector: 'cde-create-form',
@@ -108,18 +102,18 @@ export class CreateFormComponent implements OnInit {
     }
 
     updateClassificationLocalStorage(item: ClassificationHistory) {
-        let recentlyClassification = this.localStorageService.get('classificationHistory') as Array<any>;
+        let recentlyClassification = this.localStorageService.getItem('classificationHistory');
         if (!recentlyClassification) {
             recentlyClassification = [];
         }
-        recentlyClassification = recentlyClassification.filter(o => {
+        recentlyClassification = recentlyClassification.filter((o: any) => {
             if (o.cdeId) {
                 o.eltId = o.cdeId;
             }
             return _isEqual(o, item);
         });
         recentlyClassification.unshift(item);
-        this.localStorageService.set('classificationHistory', recentlyClassification);
+        this.localStorageService.setItem('classificationHistory', recentlyClassification);
     }
 
     validationErrors(elt: CdeForm): string {

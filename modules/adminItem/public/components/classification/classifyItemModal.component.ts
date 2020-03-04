@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
-import { LocalStorageService } from 'angular-2-local-storage';
+
 import { TreeNode } from 'angular-tree-component/dist/models/tree-node.model';
 import { IActionMapping } from 'angular-tree-component/dist/models/tree-options.model';
 import _noop from 'lodash/noop';
@@ -9,6 +9,7 @@ import { UserService } from '_app/user.service';
 import { ClassificationService } from 'non-core/classification.service';
 import { ClassificationClassified, ClassificationClassifier } from 'shared/models.model';
 import { MatDialog } from '@angular/material/dialog';
+import { LocalStorageService } from 'non-core/localStorage.service';
 
 const actionMapping: IActionMapping = {
     mouse: {
@@ -39,8 +40,8 @@ export class ClassifyItemModalComponent {
 
     constructor(private classificationSvc: ClassificationService,
                 private http: HttpClient,
-                private localStorageService: LocalStorageService,
                 public dialog: MatDialog,
+                private localStorageService: LocalStorageService,
                 public userService: UserService) {
     }
 
@@ -93,7 +94,7 @@ export class ClassifyItemModalComponent {
     openModal() {
         this.orgClassificationsTreeView = null;
         this.orgClassificationsRecentlyAddView = undefined;
-        this.orgClassificationsRecentlyAddView = this.localStorageService.get('classificationHistory');
+        this.orgClassificationsRecentlyAddView = this.localStorageService.getItem('classificationHistory');
         if (this.selectedOrg) {
             this.onChangeOrg(this.selectedOrg);
         } else {
