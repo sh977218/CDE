@@ -264,6 +264,7 @@
     "merge-stream": "2.0.0",
     "mini-css-extract-plugin": "^0.4.1",
     "ngx-text-diff": "^0.5.4",
+    "diff-match-patch": "^1.0.4",
     "ng-feedback2": "^2.0.0",
     "ng-recaptcha": "^5.0.0",
     "ng2-ckeditor": "^1.2.6",
