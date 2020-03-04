@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CompareModule } from 'compare/compare.module';
-import { DiffMatchPatchModule } from 'ng-diff-match-patch';
+import { NgxTextDiffModule } from 'ngx-text-diff';
 import { CamelCaseToHumanPipe } from 'non-core/camelCaseToHuman.pipe';
 import { ActiveBansComponent } from 'siteAudit/activeBans/activeBans.component';
 import { AppLogComponent } from 'siteAudit/appLogs/appLog.component';
@@ -31,7 +31,7 @@ const appRoutes: Routes = [
 @NgModule({
     imports: [
         CommonModule,
-        DiffMatchPatchModule,
+        NgxTextDiffModule,
         FormsModule,
         NgbModule,
         RouterModule.forChild(appRoutes),

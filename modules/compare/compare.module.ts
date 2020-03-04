@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { SortableModule } from 'ngx-bootstrap/sortable';
-import { DiffMatchPatchModule } from 'ng-diff-match-patch';
+import { NgxTextDiffModule } from 'ngx-text-diff';
 
 import { CdeSortableComponent } from 'compare/cdeSortable/cdeSortable.component';
 import { CompareItemArrayComponent } from 'compare/compareItem/compareItemArray.component';
@@ -27,7 +27,7 @@ import { MatButtonModule } from '@angular/material/button';
         FormsModule,
         NgbModule,
         SortableModule.forRoot(),
-        DiffMatchPatchModule,
+        NgxTextDiffModule,
         MatButtonModule,
         MatCheckboxModule,
         MatTooltipModule,

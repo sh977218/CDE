@@ -42,8 +42,9 @@
                 <tr *ngIf="!ignoredDiff(d)">
                     <td>{{d.fieldName}}</td>
                     <td>{{d.modificationType}}</td>
-                    <td><pre lineDiff style="margin-bottom: 0; white-space: initial"
-                             [left]="d.previousValue || ''" [right]="d.newValue || ''"></pre>
+                    <td>
+                        <td-ngx-text-diff [left]="d.previousValue || ''" [right]="d.newValue || ''"
+                                          [format]="'LineByLine'"></td-ngx-text-diff>
                     </td>
                 </tr>
             </ng-container>
