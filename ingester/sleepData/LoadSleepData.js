@@ -5,7 +5,7 @@ const LoadSleepDataByFolder = require('./LoadSleepDataByFolder');
 
 const PATH = 'S:/MLB/CDE/SleepData/';
 
-let FOLDERS = fs.readdirSync(PATH, 'utf8');
+let FOLDERS = fs.readdirSync(PATH);
 
 async function doIt() {
     let totalCount = 0;

@@ -58,11 +58,11 @@ function addAttachment(fileName, filePath, fileType) {
 async function doImg(imgFolder) {
     const attachments: any[] = [];
 
-    const imgSubFolders = readdirSync(imgFolder, 'utf8');
+    const imgSubFolders = readdirSync(imgFolder);
     for (const imgSubFolder of imgSubFolders) {
         const imgSubFolderExist = existsSync(imgFolder + '/' + imgSubFolder);
         if (imgSubFolderExist) {
-            const imgFiles = readdirSync(imgFolder, 'utf8');
+            const imgFiles = readdirSync(imgFolder);
             for (const imgFile of imgFiles) {
                 let fileType = 'jpg';
                 let imgFilePath = imgFolder + '/' + imgSubFolder + '/' + imgFile + '.' + fileType;

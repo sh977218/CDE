@@ -11,10 +11,11 @@ import { leadingZerosProtocolId } from 'ingester/phenx/Form/ParseAttachments';
 import { commentModel } from 'server/discuss/discussDb';
 import { redCapZipFolder } from 'ingester/createMigrationConnection';
 import { RedcapLogger } from 'ingester/log/RedcapLogger';
+const iconv = require('iconv-lite');
 
-function doInstrument(instrumentFilePath): Promise<(string|Buffer)[]> {
+function doInstrument(instrumentFilePath): Promise<(string | Buffer)[]> {
     return new Promise((resolve, reject) => {
-        const results: (string|Buffer)[] = [];
+        const results: (string | Buffer)[] = [];
         const options = {
             trim: true,
             skip_empty_lines: true,
@@ -22,18 +23,21 @@ function doInstrument(instrumentFilePath): Promise<(string|Buffer)[]> {
             relax_column_count: true
         };
         createReadStream(instrumentFilePath)
-            .pipe(csv(options))
-            .on('data', data => {
-                if (!isEmpty(data)) {
-                    results.push(data);
-                }
-            })
-            .on('err', err => {
-                reject(err);
-            })
-            .on('end', () => {
-                resolve(results);
-            });
+            .pipe(iconv.decodeStream('win1251'))
+            .pipe(iconv.encodeStream('ucs2'));
+        /*
+                    .pipe(csv(options))
+                    .on('data', data => {
+                        if (!isEmpty(data)) {
+                            results.push(data);
+                        }
+                    })
+                    .on('err', err => {
+                        reject(err);
+                    })
+                    .on('end', () => {
+                        resolve(results);
+                    });*/
     });
 }
 

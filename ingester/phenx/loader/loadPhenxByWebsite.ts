@@ -113,10 +113,9 @@ function retirePhenxForms() {
 }
 
 async function run() {
-//    const cond = {protocolID: {$in: ['11101']}};
-    const cond = {};
+    const cond = {protocolID: {$in: ['560201']}};
+//    const cond = {};
     const phenxIds = await PROTOCOL.find(cond, {protocolID: 1}).lean();
-//    const slicedPhenxIds = phenxIds.slice(0, 10);
     const slicedPhenxIds = phenxIds;
     for (const phenxId of slicedPhenxIds) {
         await loadPhenxById(phenxId.protocolID);

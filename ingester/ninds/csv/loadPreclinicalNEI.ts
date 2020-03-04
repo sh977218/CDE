@@ -11,7 +11,7 @@ import { loadNindsCde } from 'ingester/ninds/shared';
 import { parseOneCsv } from 'ingester/ninds/csv/shared/utility';
 
 async function loadNindsCdes() {
-    const csvFiles = readdirSync(NINDS_PRECLINICAL_NEI_FILE_PATH, 'utf8');
+    const csvFiles = readdirSync(NINDS_PRECLINICAL_NEI_FILE_PATH);
     const csvFileNames: string[] = sortBy(csvFiles);
     let cdeRows: any[] = [];
     for (const csvFileName of csvFileNames) {
@@ -37,7 +37,7 @@ async function loadNindsCdes() {
 }
 
 async function loadNindsForms() {
-    const csvFiles = readdirSync(NINDS_PRECLINICAL_NEI_FILE_PATH, 'utf8');
+    const csvFiles = readdirSync(NINDS_PRECLINICAL_NEI_FILE_PATH);
     const csvFileNames: string[] = sortBy(csvFiles);
     for (const csvFileName of csvFileNames) {
         const rows = await parseOneCsv(csvFileName);

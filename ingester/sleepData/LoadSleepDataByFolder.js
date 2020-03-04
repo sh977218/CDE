@@ -73,7 +73,7 @@ function mapMappings(rows) {
 }
 
 function loadDomains(folder) {
-    let allFiles = fs.readdirSync(folder, 'utf8');
+    let allFiles = fs.readdirSync(folder);
     let domainsFile;
     for (let file of allFiles) {
         if (file.indexOf('domains.csv') > -1)
@@ -88,7 +88,7 @@ function loadDomains(folder) {
 }
 
 function loadVariables(folder) {
-    let allFiles = fs.readdirSync(folder, 'utf8');
+    let allFiles = fs.readdirSync(folder);
     let variablesFile;
     for (let file of allFiles) {
         if (file.indexOf('variables.csv') > -1)
@@ -103,7 +103,7 @@ function loadVariables(folder) {
 }
 
 function loadMappings(folder) {
-    let allFiles = fs.readdirSync(folder, 'utf8');
+    let allFiles = fs.readdirSync(folder);
     let mappingsFile;
     for (let file of allFiles) {
         if (file.indexOf('mappings.csv') > -1)
