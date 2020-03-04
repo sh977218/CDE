@@ -53,7 +53,6 @@ import { AlertService } from 'alert/alert.service';
 export class LoginComponent {
     csrf?: string;
     password?: string;
-    recaptcha?: string;
     showCaptcha?: boolean;
     siteKey: string = (window as any).siteKey;
     username?: string;
@@ -83,7 +82,6 @@ export class LoginComponent {
             username: this.username,
             password: this.password,
             _csrf: this.csrf,
-            recaptcha: this.recaptcha
         }, {responseType: 'text'}).subscribe(res => {
             this.userService.reload();
             if (res === 'OK') {
@@ -114,7 +112,4 @@ export class LoginComponent {
         delete this.csrf;
     }
 
-    resolved(e: any) {
-        this.recaptcha = e;
-    }
 }
