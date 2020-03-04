@@ -1,14 +1,17 @@
 import { Injectable } from '@angular/core';
 
+const PREFIX = 'nlmcde.';
+
 @Injectable()
 export class LocalStorageService {
     setItem(key: any, value: any) {
-        const valueStringify = JSON.stringify(value);
-        localStorage.setItem(key, valueStringify);
+        const valueStringify = typeof  value === 'object' ?
+            JSON.stringify(value) : value;
+        localStorage.setItem(PREFIX +  key, valueStringify);
     }
 
     getItem(key: any) {
-        const value = localStorage.getItem(key);
+        const value = localStorage.getItem(PREFIX + key);
         if (!value) {
             return '';
         } else {
