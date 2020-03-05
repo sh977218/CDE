@@ -43,13 +43,13 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
         modalGone();
 
         clickElement(By.id("viewChangesBtn"));
-        textPresent(newStatus, By.xpath("//*[@id='Status']//ins"));
-        textPresent(oldStatus, By.xpath("//*[@id='Status']//del"));
+        textPresent(newStatus, By.xpath("//*[@id='Status']//td-ngx-text-diff"));
+        textPresent(oldStatus, By.xpath("//*[@id='Status']//td-ngx-text-diff"));
         clickElement(By.id("closeHistoryCompareModal"));
         goToHistory();
         selectHistoryAndCompare(1, 2);
-        textPresent(newStatus, By.xpath("//*[@id='Status']//ins"));
-        textPresent(oldStatus, By.xpath("//*[@id='Status']//del"));
+        textPresent(newStatus, By.xpath("//*[@id='Status']//td-ngx-text-diff"));
+        textPresent(oldStatus, By.xpath("//*[@id='Status']//td-ngx-text-diff"));
         clickElement(By.id("closeHistoryCompareModal"));
 
         goToCdeByName(cdeName);
