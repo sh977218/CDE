@@ -1,9 +1,9 @@
 <ng-container *ngFor="let property of compareObjectProperties">
     <div *ngIf="!property.match" id="{{property.label}}">
         <strong>{{property.label}}:</strong>
-        <div *ngFor="let p of property.data">
+        <div *ngFor="let p of property.data" id="{{p.label}}" >
             <strong>{{p.label}}:</strong>
-            <td-ngx-text-diff [showToolbar]='false'  [showBtnToolbar]='false' id="{{p.label}}" [left]="p.newer" [right]="p.older"></td-ngx-text-diff>
+            <td-ngx-text-diff [showToolbar]='false'  [showBtnToolbar]='false' [left]="p.newer" [right]="p.older"></td-ngx-text-diff>
         </div>
         <div *ngIf="!property.data">
             <td-ngx-text-diff [showToolbar]='false'  [showBtnToolbar]='false' [left]="property.newer" [right]="property.older"></td-ngx-text-diff>
