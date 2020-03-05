@@ -28,7 +28,7 @@ let expectedContent = {
     ],
     embedNinds: '*',
     emptyAnswers: 'the server responded with a status of 500',
-    formHistoryCompareTest: "text.substring",
+    formHistoryCompareTest: "*",
     formDraftConcurrentWrite: [
         'Failed to load resource: the server responded with a status of 409 (Conflict)',
         'Edited by someone else. Please refresh and redo.'
