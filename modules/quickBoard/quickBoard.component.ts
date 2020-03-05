@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { ExportService } from 'non-core/export.service';
 import { QuickBoardListService } from '_app/quickBoardList.service';
-import { LocalStorageService } from 'angular-2-local-storage';
+
 import { MatTabChangeEvent } from '@angular/material/tabs';
+import { LocalStorageService } from 'non-core/localStorage.service';
 
 @Component({
     selector: 'cde-quick-board',
@@ -12,9 +12,8 @@ export class QuickBoardComponent {
     defaultQuickBoard = 'dataElementQuickBoard';
 
     constructor(private localStorageService: LocalStorageService,
-                public exportService: ExportService,
                 public quickBoardService: QuickBoardListService) {
-        const defaultQb = this.localStorageService.get('defaultQuickBoard') as string;
+        const defaultQb = this.localStorageService.getItem('defaultQuickBoard');
         if (defaultQb === 'form') {
             this.defaultQuickBoard = 'formQuickBoard';
         }
@@ -22,8 +21,12 @@ export class QuickBoardComponent {
     }
 
     tabChange(event: MatTabChangeEvent) {
-        if (event.tab.textLabel.startsWith('Form')) { this.defaultQuickBoard = 'formQuickBoard'; }
-        if (event.tab.textLabel.startsWith('CDE')) { this.defaultQuickBoard = 'dataElementQuickBoard'; }
+        if (event.tab.textLabel.startsWith('Form')) {
+            this.defaultQuickBoard = 'formQuickBoard';
+        }
+        if (event.tab.textLabel.startsWith('CDE')) {
+            this.defaultQuickBoard = 'dataElementQuickBoard';
+        }
 
         this.quickBoardService.setDefaultQuickBoard(event);
     }

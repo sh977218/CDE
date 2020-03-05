@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { UserService } from '_app/user.service';
-import { LocalStorageService } from 'angular-2-local-storage';
+
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm } from 'shared/form/form.model';
 import {
@@ -16,6 +16,7 @@ import {
 } from 'shared/models.model';
 import { SearchSettings, SearchSettingsElastic } from 'shared/search/search.model';
 import { orderedList } from 'shared/system/regStatusShared';
+import { LocalStorageService } from 'non-core/localStorage.service';
 
 @Injectable()
 export class ElasticService {
@@ -124,7 +125,7 @@ export class ElasticService {
 
     loadSearchSettings() {
         if (!this.searchSettings) {
-            this.searchSettings = this.localStorageService.get('SearchSettings');
+            this.searchSettings = this.localStorageService.getItem('SearchSettings');
             if (!this.searchSettings) {
                 this.searchSettings = ElasticService.getDefault();
             }
@@ -149,7 +150,7 @@ export class ElasticService {
         this.searchSettings = settings;
         const savedSettings = JSON.parse(JSON.stringify(this.searchSettings));
         delete savedSettings.includeRetired;
-        this.localStorageService.set('SearchSettings', savedSettings);
+        this.localStorageService.setItem('SearchSettings', savedSettings);
         if (this.userService.user) {
             this.http.post('/server/user/', {searchSettings: savedSettings}).subscribe();
         }
