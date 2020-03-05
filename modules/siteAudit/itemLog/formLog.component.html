@@ -43,7 +43,7 @@
                     <td>{{d.fieldName}}</td>
                     <td>{{d.modificationType}}</td>
                     <td>
-                        <td-ngx-text-diff [left]="d.previousValue || ''" [right]="d.newValue || ''"
+                        <td-ngx-text-diff [showToolbar]='false'  [showBtnToolbar]='false' [left]="d.previousValue || ''" [right]="d.newValue || ''"
                                           [format]="'LineByLine'"></td-ngx-text-diff>
                     </td>
                 </tr>

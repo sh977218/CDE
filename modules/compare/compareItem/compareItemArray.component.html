@@ -20,7 +20,7 @@
                         <div *ngFor="let d of option.data" class="{{d.property}}">
                             <ng-container *ngIf="r.diff.indexOf(d.property) !== -1">
                                 <strong>{{d.label}}:</strong>
-                                <td-ngx-text-diff [left]="_get(r.priorElt,d.property)"
+                                <td-ngx-text-diff [showToolbar]='false'  [showBtnToolbar]='false' [left]="_get(r.priorElt,d.property)"
                                                   [right]="_get(r.currentElt,d.property)"
                                                   [format]="'LineByLine'"></td-ngx-text-diff>
                             </ng-container>

@@ -3,17 +3,17 @@
         <strong>{{property.label}}:</strong>
         <div *ngFor="let p of property.data">
             <strong>{{p.label}}:</strong>
-            <td-ngx-text-diff id="{{p.label}}" [left]="p.newer" [right]="p.older"></td-ngx-text-diff>
+            <td-ngx-text-diff [showToolbar]='false'  [showBtnToolbar]='false' id="{{p.label}}" [left]="p.newer" [right]="p.older"></td-ngx-text-diff>
         </div>
         <div *ngIf="!property.data">
-            <td-ngx-text-diff [left]="property.newer" [right]="property.older"></td-ngx-text-diff>
+            <td-ngx-text-diff [showToolbar]='false'  [showBtnToolbar]='false' [left]="property.newer" [right]="property.older"></td-ngx-text-diff>
         </div>
     </div>
 </ng-container>
 <div *ngIf="newerFlatClassifications !== olderFlatClassifications" id="Classification">
     <strong>Classification:</strong>
     <div>
-        <td-ngx-text-diff [left]="olderFlatClassifications" [right]="newerFlatClassifications"
+        <td-ngx-text-diff [showToolbar]='false'  [showBtnToolbar]='false' [left]="olderFlatClassifications" [right]="newerFlatClassifications"
                           [format]="'LineByLine'"></td-ngx-text-diff>
     </div>
 </div>
