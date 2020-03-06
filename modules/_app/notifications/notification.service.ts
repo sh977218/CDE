@@ -318,13 +318,15 @@ export class NotificationService {
     }
 
     updateTaskMessages(serverTasks: NotificationTask[]) {
-        this.tasks = NotificationService.sortTasks(
-            this.groupTasks(
-                // @ts-ignore
-                serverTasks.reduce(this.funcMergeTaskMessages, [])
-            )
-        );
-        this.hasCriticalError = this.tasks.filter(t => t.tasks[0].idType === 'versionUpdate').length > 0;
+        if (serverTasks && serverTasks.reduce) {
+            this.tasks = NotificationService.sortTasks(
+                this.groupTasks(
+                    // @ts-ignore
+                    serverTasks.reduce(this.funcMergeTaskMessages, [])
+                )
+            );
+            this.hasCriticalError = this.tasks.filter(t => t.tasks[0].idType === 'versionUpdate').length > 0;
+        }
     }
 
     static sortTasks(tasks: NotificationTask[]): NotificationTask[] {
