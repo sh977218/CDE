@@ -4,7 +4,7 @@ const fs = require('fs');
 let expectedContent = {
     addSiteAdmin: ['status of 422', 'status of 404'],
     assignVsacId: 'the server responded with a status of 404',
-    badQuery: 'elasticSearch/cde - Failed to load resource: the server responded with a status of 400 (Bad Request)',
+    badQuery: 'de/search - Failed to load resource: the server responded with a status of 400 (Bad Request)',
     boardFiveUnapprovedMessagesPerUserReply: 'the server responded with a status of 403 (Forbidden)',
     boardPublisher: [
         'the server responded with a status of 403 (Forbidden)',
@@ -28,6 +28,7 @@ let expectedContent = {
     ],
     embedNinds: '*',
     emptyAnswers: 'the server responded with a status of 500',
+    formHistoryCompareTest: "*",
     formDraftConcurrentWrite: [
         'Failed to load resource: the server responded with a status of 409 (Conflict)',
         'Edited by someone else. Please refresh and redo.'
@@ -50,7 +51,10 @@ let expectedContent = {
         'docs/swagger-ui-bundle.js 51:49866 "Could not find component"',
         'Unable to get the Swagger UI URL from the server'
     ],
+    importVsacValues: "with a status of 500",
+    increaseLockoutLogin: 'login - Failed to load resource: the server responded with a status of 403',
     launchFhirApp: '*',
+    lockoutLogin: 'login - Failed to load resource: the server responded with a status of 403',
     logClientErrors: '*',
     meshTopics: 'classificationmanagement - Form submission canceled because the form is not connected',
     noDoublePin: [
@@ -62,22 +66,22 @@ let expectedContent = {
         'Failed to load resource: the server responded with a status of',
         'Board Not Found'
     ],
-    report: "cde/search 0:0 Uncaught SyntaxError: Unexpected token '<'",
+    report: "*",
     resourcesPage: 'Content Security Policy',
     searchPageSize: '*',
     tooManyBoards: [
         'board - Failed to load resource: the server responded with a status of 403 (Forbidden)',
         'You have too many boards!'
     ],
-    "uomValidation": "*",
+    uomValidation: "*",
     validRulesPvUmls: 'Failed to load resource: the server responded with a status of 400 (Bad Request)',
     wrongLogin: 'login - Failed to load resource: the server responded with a status of 403',
-    increaseLockoutLogin: 'login - Failed to load resource: the server responded with a status of 403',
-    lockoutLogin: 'login - Failed to load resource: the server responded with a status of 403'
+    youtubeVideo: 'SameSite'
 };
 
 let ignoreErrors = [
-    ':3001/originalSource/',
+    ':3001/server/de/originalSource/',
+    ':3001/server/form/originalSource/',
     'listbox select is deprecated and will be removed in M79',
     'reportOnly',
     'Report Only',

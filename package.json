@@ -265,7 +265,6 @@
     "mini-css-extract-plugin": "^0.4.1",
     "ng-diff-match-patch": "2.0.6",
     "ng-feedback2": "^2.0.0",
-    "ng-recaptcha": "^5.0.0",
     "ng2-ckeditor": "^1.2.6",
     "ngx-bootstrap": "^5.5.0",
     "node-sass": "^4.13.1",
