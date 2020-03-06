@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CompareModule } from 'compare/compare.module';
-import { NgxTextDiffModule } from 'ngx-text-diff';
+import { NgxTextDiffModule } from 'cde-text-diff';
 import { CamelCaseToHumanPipe } from 'non-core/camelCaseToHuman.pipe';
 import { ActiveBansComponent } from 'siteAudit/activeBans/activeBans.component';
 import { AppLogComponent } from 'siteAudit/appLogs/appLog.component';

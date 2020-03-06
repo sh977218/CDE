@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { SortableModule } from 'ngx-bootstrap/sortable';
-import { NgxTextDiffModule } from 'ngx-text-diff';
+import { NgxTextDiffModule } from 'cde-text-diff';
 
 import { CdeSortableComponent } from 'compare/cdeSortable/cdeSortable.component';
 import { CompareItemArrayComponent } from 'compare/compareItem/compareItemArray.component';
