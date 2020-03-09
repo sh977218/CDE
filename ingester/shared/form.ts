@@ -8,25 +8,6 @@ import {
     fixDatatypeTime, fixPermissibleValue
 } from 'ingester/shared/de';
 
-
-async function fixFormElements(formObj) {
-    const formElements = [];
-    for (const fe of formObj.formElements) {
-        fixInstructions(fe);
-        const elementType = fe.elementType;
-        if (elementType === 'question') {
-            fixQuestionDatatype(fe);
-            await fixQuestion(fe);
-            formElements.push(fe);
-        } else {
-            fe.formElements = await fixSectionInform(fe, formObj);
-            formElements.push(fe);
-        }
-    }
-    return formElements;
-}
-
-
 function fixInstructions(fe: any) {
     const instructions: any = {};
     if (!isEmpty(fe.instructions)) {
@@ -106,39 +87,5 @@ async function fixQuestion(fe: any) {
     if (fe.question.cde.tinyId.indexOf('-') !== -1) {
         fe.question.cde.tinyId = fe.question.cde.tinyId.replace(/-/ig, '_');
     }
-}
-
-async function fixSectionInform(sectionInformFe, formObj) {
-    const formElements = [];
-    for (const fe of sectionInformFe.formElements) {
-        fixInstructions(fe);
-        const elementType = fe.elementType;
-        if (elementType === 'question') {
-            fixQuestionDatatype(fe);
-            await fixQuestion(fe);
-            formElements.push(fe);
-        } else {
-            fe.formElements = await fixSectionInform(fe, formObj);
-            formElements.push(fe);
-        }
-    }
-    return formElements;
-}
-
-export async function fixFormError(form) {
-    const formObj = form.toObject();
-    if (isEmpty(formObj.createdBy)) {
-        fixCreatedBy(form);
-    }
-    if (isEmpty(formObj.created)) {
-        fixCreated(form);
-    }
-    form.designations = fixEmptyDesignation(formObj);
-    form.definitions = fixEmptyDefinition(formObj);
-    form.sources = fixSources(formObj);
-    form.properties = fixProperties(formObj);
-    form.classification = fixClassification(formObj);
-
-    form.formElements = await fixFormElements(formObj);
 }
 
