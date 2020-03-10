@@ -6,9 +6,8 @@ import { dataElementModel } from 'server/cde/mongo-cde';
 import { findOneCde, imported, lastMigrationScript } from '../../shared/utility';
 import { sickleCellDataElementsXlsx } from 'ingester/createMigrationConnection';
 
-import { classifyItem } from 'server/classification/orgClassificationSvc';
 import { createNhlbiCde } from 'ingester/ninds/csv/cde/cde';
-import { formatRows } from 'ingester/ninds/csv/shared/utility';
+import { formatRows, getCell } from 'ingester/ninds/csv/shared/utility';
 import { parseNhlbiClassification } from 'ingester/ninds/csv/cde/ParseClassification';
 
 function classifyNhlbi(elt, row) {
@@ -18,9 +17,10 @@ function classifyNhlbi(elt, row) {
 }
 
 async function doOneNhlbiCde(row) {
+    const id = getCell(row, 'External ID.NINDS');
     const cond = {
         archived: false,
-        'ids.id': row['External ID.NINDS'],
+        'ids.id': id,
         'registrationState.registrationStatus': {$ne: 'Retired'}
     };
     const existingCdes: any[] = await dataElementModel.find(cond);
@@ -31,20 +31,18 @@ async function doOneNhlbiCde(row) {
         existingCde.imported = imported;
         await existingCde.save();
     } else {
-        const nhlbiCde = createNhlbiCde(row);
-        console.log('b');
+        const nhlbiCde = await createNhlbiCde(row);
+        await new dataElementModel(nhlbiCde).save();
     }
-    console.log('b');
 }
 
 async function run() {
     const workbook = XLSX.readFile(sickleCellDataElementsXlsx);
     const rows = XLSX.utils.sheet_to_json(workbook.Sheets.Sheet1);
-    formatRows('sickleCellDataElementsXlsx', rows);
-    for (const row of rows) {
+    const formattedRows = formatRows('sickleCellDataElementsXlsx', rows);
+    for (const row of formattedRows) {
         await doOneNhlbiCde(row);
     }
-    console.log('a');
 }
 
 run().then(() => {

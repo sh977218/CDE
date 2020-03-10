@@ -30,7 +30,11 @@ export function formatRows(csvFileName: string, rows: any[]) {
             }
         }
 
-        const variableName = getCell(formattedRow, 'variable name');
+        let variableName = getCell(formattedRow, 'variable name');
+        const name = getCell(formattedRow, 'name');
+        if (name) {
+            variableName = name;
+        }
         const title = getCell(formattedRow, 'title');
         if (isEmpty(variableName)) {
             console.log(`${csvFileName} has empty variablename. row: ${i}`);

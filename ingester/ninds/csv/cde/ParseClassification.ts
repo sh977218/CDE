@@ -1,5 +1,6 @@
 import { filter, replace, isEmpty, capitalize, forEach } from 'lodash';
 import { classifyItem } from 'server/classification/orgClassificationSvc';
+import { getCell } from '../shared/utility';
 
 const DEFAULT_CLASSIFICATION = ['Preclinical + NEI'];
 
@@ -98,20 +99,20 @@ export function parseClassification(cde: any, row: any) {
 }
 
 export function parseNhlbiClassification(eltObj: any, row: any) {
-    const populations = row.Population;
+    const populations = getCell(row, 'Population');
     populations.split(';').forEach(population => {
         if (!isEmpty(population)) {
             classifyItem(eltObj, 'NHLBI', ['Population', population]);
         }
     });
-    const domains = row['Domain.Sickle Cell'];
+    const domains = getCell(row, 'Domain.Sickle Cell');
     domains.split(';').forEach(domain => {
         if (!isEmpty(domain)) {
             const domainSubDomain = domain.split('.').filter(d => !isEmpty(d));
             classifyItem(eltObj, 'NHLBI', ['Sickle Cell', 'Domain'].concat(domainSubDomain));
         }
     });
-    const classifications = row['Classification.Sickle Cell'];
+    const classifications = getCell(row, 'Classification.Sickle Cell');
     classifications.split(';').forEach(classification => {
         if (!isEmpty(classification)) {
             classifyItem(eltObj, 'NHLBI', ['Sickle Cell', 'Classification', classification]);

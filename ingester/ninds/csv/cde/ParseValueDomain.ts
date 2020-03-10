@@ -184,11 +184,11 @@ export function parseNhlbiValueDomain(row: any) {
         }
     } else {
         const datatypeString = getCell(row, 'Data Type');
-        const datatype = DATA_TYPE_MAP[datatypeString];
+        let datatype = DATA_TYPE_MAP[datatypeString];
 
         if (isEmpty(datatype)) {
             console.log(`${datatypeString} is not in data type map.`);
-            process.exit(1);
+            datatype = 'Text';
         }
 
         if (datatype === 'Text') {
