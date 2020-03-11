@@ -1,18 +1,17 @@
+import { isEmpty, trim } from 'lodash';
+
 const XLSX = require('xlsx');
 
 import { dataElementModel } from 'server/cde/mongo-cde';
-import { findOneCde, imported, lastMigrationScript } from 'ingester/shared/utility';
+import { findOneCde, findOneForm, imported, lastMigrationScript } from 'ingester/shared/utility';
 import { sickleCellDataElementsXlsx, sickleCellFormMappingXlsx } from 'ingester/createMigrationConnection';
 
 import { createNhlbiCde } from 'ingester/ninds/csv/cde/cde';
 import { formatRows, getCell } from 'ingester/ninds/csv/shared/utility';
-import { parseNhlbiClassification } from 'ingester/ninds/csv/cde/ParseClassification';
-
-function classifyNhlbi(elt, row) {
-    const eltObj = elt.toObject();
-    parseNhlbiClassification(eltObj, row);
-    elt.classification = eltObj.classification;
-}
+import { parseNhlbiClassification as parseNhlbiCdeClassification } from 'ingester/ninds/csv/cde/ParseClassification';
+import { parseNhlbiClassification as parseNhlbiFormClassification } from 'ingester/ninds/csv/form/ParseClassification';
+import { formModel } from 'server/form/mongo-form';
+import { createNhlbiForm } from 'ingester/ninds/csv/form/form';
 
 async function doOneNhlbiCde(row, formMap) {
     const id = getCell(row, 'External ID.NINDS');
@@ -24,7 +23,10 @@ async function doOneNhlbiCde(row, formMap) {
     const existingCdes: any[] = await dataElementModel.find(cond);
     const existingCde: any = findOneCde(existingCdes);
     if (existingCde) {
-        classifyNhlbi(existingCde, row);
+        const existingCdeObj = existingCde.toObject();
+        parseNhlbiCdeClassification(existingCdeObj, row);
+        existingCde.classification = existingCdeObj.classification;
+
         existingCde.lastMigrationScript = lastMigrationScript;
         existingCde.imported = imported;
         await existingCde.save();
@@ -43,22 +45,48 @@ async function runDataElement(formMap) {
     }
 }
 
-async function runForm() {
-    const workbook = XLSX.readFile(sickleCellFormMappingXlsx);
-    const rows = XLSX.utils.sheet_to_json(workbook.Sheets.Sheet1);
-    const formattedRows = formatRows('sickleCellDataElementsXlsx', rows);
-    for (const row of formattedRows) {
+async function runOneNhlbiForm(row, nhlbiCdes) {
+    const nlmId = trim(row['NLM ID']);
+    if (!isEmpty(nlmId) && nlmId !== '—') {
+        const cond = {
+            archived: false,
+            tinyId: nlmId,
+            'registrationState.registrationStatus': {$ne: 'Retired'}
+        };
+        const existingForms: any[] = await formModel.find(cond);
+        const existingForm: any = findOneForm(existingForms);
+        if (existingForm) {
+            const existingFormObj = existingForm.toObject();
+            parseNhlbiFormClassification(existingFormObj);
+            existingForm.classification = existingFormObj.classification;
+            await existingForm.save();
+        } else {
+            console.log(`${nlmId} nlmId not found.`);
+            process.exit(1);
+        }
+    } else {
+        const nhlbiForm = await createNhlbiForm(row, nhlbiCdes);
+        await new formModel(nhlbiForm).save();
     }
 }
 
-const formMap = new Set();
+async function runForm(formMap) {
+    const workbook = XLSX.readFile(sickleCellFormMappingXlsx);
+    const phenxCrfs = XLSX.utils.sheet_to_json(workbook.Sheets['PhenX CRFs']);
+    const nonPhenxCrfs = XLSX.utils.sheet_to_json(workbook.Sheets['Non-PhenX CRFs']);
+    const formattedRows = phenxCrfs.concat(nonPhenxCrfs);
+    for (const row of formattedRows) {
+        const formId = row.CrfId;
+        await runOneNhlbiForm(row, formMap[formId]);
+    }
+}
+
+const formMap = {};
 
 async function run() {
     await runDataElement(formMap);
-    console.log(formMap);
+    await runForm(formMap);
     console.log('a');
-//    await runForm();
-
 }
 
 run().then(() => {

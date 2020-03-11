@@ -15,3 +15,8 @@ export async function parseReferenceDocuments(rows: any[]) {
     }
     return sortReferenceDocuments(referenceDocuments);
 }
+
+export async function parseNhlbiReferenceDocuments() {
+    const referenceDocuments = [];
+    return referenceDocuments;
+}

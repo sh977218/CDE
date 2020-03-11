@@ -118,5 +118,4 @@ export function parseNhlbiClassification(eltObj: any, row: any) {
             classifyItem(eltObj, 'NHLBI', ['Sickle Cell', 'Classification', classification]);
         }
     });
-
 }

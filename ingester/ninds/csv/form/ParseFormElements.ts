@@ -92,3 +92,57 @@ export async function parseFormElements(form: any, rows: any[]): Promise<any[]> 
     formElements.push(newSection);
     return formElements;
 }
+
+export async function parseNhlbiFormElements(form: any, rows: any[]) {
+    const formElements: any[] = [];
+    let newSection: any = {
+        label: '',
+        elementType: 'section',
+        formElements: []
+    };
+
+    let prevCategoryGroup = '';
+    for (const row of rows) {
+        const name = getCell(row, 'Name');
+        const cde: any = await dataElementModel.findOne({archived: false, 'ids.id': name});
+        if (!cde) {
+            console.log(`${name} not found.`);
+            process.exit(1);
+        }
+        const formElement = convertCsvRowToFormElement(row, cde);
+        let categoryGroup = getCell(row, 'Category/Group');
+        if (isEmpty(categoryGroup)) {
+            console.log(`empty category`);
+            categoryGroup = 'Unnamed category';
+            const title = getCell(row, 'Title');
+            const emptyCategoryComment = {
+                text: `${title} has empty category.`,
+                user: BATCHLOADER,
+                created: new Date(),
+                pendingApproval: false,
+                linkedTab: 'description',
+                status: 'active',
+                replies: [],
+                element: {
+                    eltType: 'form',
+                }
+            };
+            form.comments.push(emptyCategoryComment);
+        }
+        if (isEqual(prevCategoryGroup, categoryGroup)) {
+            newSection.label = categoryGroup;
+            newSection.formElements.push(formElement);
+        } else {
+            formElements.push(newSection);
+            newSection = {
+                label: '',
+                elementType: 'section',
+                formElements: [formElement]
+            };
+        }
+        prevCategoryGroup = categoryGroup;
+    }
+    formElements.push(newSection);
+    return formElements;
+}
+
