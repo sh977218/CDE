@@ -29,14 +29,34 @@ export function parseDesignations(row: any) {
     return designations;
 }
 
-function parsePreferredQuestionText(pqt) {
-    return uniq(pqt.split('-----').map(t => trim(t.split(':')[1])));
+function parseFormId(str) {
+    const regExp = /\(([^)]+)\)/;
+    const matches = regExp.exec(str);
+    return matches[1];
 }
 
-export function parseNhlbiDesignations(row: any) {
+
+function parsePreferredQuestionText(pqt, nindsId, formMap) {
+    return uniq(pqt.split('-----').map(t => {
+        const tArray = t.split(':');
+        const formInfo = trim(tArray[0]);
+        const formId = parseFormId(formInfo);
+        if (!formMap[formId]) {
+            formMap[formId] = [nindsId];
+        } else {
+            (formMap[formId]).push(nindsId);
+            formMap[formId] = uniq(formMap[formId]);
+        }
+        const preferredQuestionText = trim(tArray[1]);
+        return preferredQuestionText;
+    }));
+}
+
+export function parseNhlbiDesignations(row: any, formMap) {
     const title = getCell(row, 'Title');
     const preferredQuestionTextString = getCell(row, 'Suggested Question Text');
-    const preferredQuestionTexts = parsePreferredQuestionText(preferredQuestionTextString);
+    const externalNindsId = getCell(row, 'External ID.NINDS');
+    const preferredQuestionTexts = parsePreferredQuestionText(preferredQuestionTextString, externalNindsId, formMap);
 
     const designations = uniq(preferredQuestionTexts.concat(title)).map(t => {
         if (isEqual(title, t)) {

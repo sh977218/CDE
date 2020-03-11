@@ -50,8 +50,8 @@ export async function createNindsCde(row: any) {
 }
 
 
-export async function createNhlbiCde(row: any) {
-    const designations = parseNhlbiDesignations(row);
+export async function createNhlbiCde(row: any, formMap) {
+    const designations = parseNhlbiDesignations(row, formMap);
     const definitions = parseNhlbiDefinitions(row);
     const sources = parseNhlbiSources();
 
