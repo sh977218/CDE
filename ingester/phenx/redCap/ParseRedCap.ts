@@ -44,7 +44,7 @@ function doDescriptive(sectionFes, redCapCde, attachments) {
     const fieldLabel = redCapCde['Field Label'];
     const foundAttachment = find(attachments, a => a.filename === variableFieldName);
     if (foundAttachment) {
-        const img = `<img src="/data/${foundAttachment.fileid}" alt="${foundAttachment.filename}"/>`;
+        const img = `<img src="/server/system/data/${foundAttachment.fileid}" alt="${foundAttachment.filename}"/>`;
         const figcaption = `<figcaption>${fieldLabel}</figcaption>`;
         sectionFes.instructions.value += `\n<figure>${figcaption}${img}</figure>`;
     } else {
