@@ -29,7 +29,7 @@ export function parseDesignations(row: any) {
     return designations;
 }
 
-function parseFormId(str) {
+export function parseFormId(str) {
     const regExp = /\(([^)]+)\)/;
     const matches = regExp.exec(str);
     return matches[1];

@@ -1,7 +1,8 @@
-import { isEmpty, isEqual } from 'lodash';
+import { isEmpty, isEqual, trim, uniq, uniqBy } from 'lodash';
 import { dataElementModel } from 'server/cde/mongo-cde';
 import { BATCHLOADER } from 'ingester/shared/utility';
 import { getCell } from 'ingester/ninds/csv/shared/utility';
+import { parseFormId } from '../cde/ParseDesignations';
 
 function convertCsvRowToFormElement(row: any, cde: any) {
     const label = getCell(row, 'Preferred Question Text');
@@ -22,12 +23,20 @@ function convertCsvRowToFormElement(row: any, cde: any) {
             derivationRules: cde.derivationRules
         },
         datatype: cde.valueDomain.datatype,
-        datatypeNumber: cde.valueDomain.datatypeNumber,
-        datatypeText: cde.valueDomain.datatypeText,
-        datatypeDate: cde.valueDomain.datatypeDate,
         unitsOfMeasure,
         answers: cde.valueDomain.permissibleValues
     };
+
+    if (cde.valueDomain.datatype === 'Text' && !isEmpty(cde.valueDomain.datatypeText)) {
+        question.datatypeText = cde.valueDomain.datatypeText;
+    }
+    if (cde.valueDomain.datatype === 'Number' && !isEmpty(cde.valueDomain.datatypeNumber)) {
+        question.datatypeNumber = cde.valueDomain.datatypeNumber;
+    }
+    if (cde.valueDomain.datatype === 'Date' && !isEmpty(cde.valueDomain.datatypeDate)) {
+        question.datatypeDate = cde.valueDomain.datatypeDate;
+    }
+
     if (cde.version) {
         question.cde.version = cde.version;
     }
@@ -93,54 +102,87 @@ export async function parseFormElements(form: any, rows: any[]): Promise<any[]> 
     return formElements;
 }
 
-export async function parseNhlbiFormElements(form: any, rows: any[]) {
+function parseQuestionLabel(row, formId) {
+    const pqt = getCell(row, 'Suggested Question Text');
+    const questionLabels = uniq(pqt.split('-----').map(t => {
+        const tArray = t.split(':');
+        const formInfo = trim(tArray[0]);
+        const formId = parseFormId(formInfo);
+        const preferredQuestionText = trim(tArray[1]);
+        return {
+            questionText: preferredQuestionText,
+            formId
+        };
+    }));
+    return questionLabels.filter(q => q.formId === formId);
+}
+
+function convertNhlbiCsvRowToFormElement(row, cde, formId) {
+    const labels = parseQuestionLabel(row, formId);
+    const label = labels[0].questionText;
+    const instructions = getCell(row, 'Guidelines/Instructions');
+    const inputRestriction = getCell(row, 'Input Restriction');
+    const multiselect = inputRestriction.indexOf('Multiple Pre-Defined Values Selected') !== -1;
+    const title = getCell(row, 'Title');
+    const unitsOfMeasure = [];
+    if (cde.valueDomain.uom) {
+        unitsOfMeasure.push({code: cde.valueDomain.uom});
+    }
+    const question: any = {
+        cde: {
+            tinyId: cde.tinyId,
+            name: title,
+            permissibleValues: cde.valueDomain.permissibleValues,
+            ids: cde.ids,
+            derivationRules: cde.derivationRules
+        },
+        datatype: cde.valueDomain.datatype,
+        unitsOfMeasure,
+        answers: cde.valueDomain.permissibleValues
+    };
+
+    if (cde.valueDomain.datatype === 'Text' && !isEmpty(cde.valueDomain.datatypeText)) {
+        question.datatypeText = cde.valueDomain.datatypeText;
+    }
+    if (cde.valueDomain.datatype === 'Number' && !isEmpty(cde.valueDomain.datatypeNumber)) {
+        question.datatypeNumber = cde.valueDomain.datatypeNumber;
+    }
+    if (cde.valueDomain.datatype === 'Date' && !isEmpty(cde.valueDomain.datatypeDate)) {
+        question.datatypeDate = cde.valueDomain.datatypeDate;
+    }
+
+    if (cde.version) {
+        question.cde.version = cde.version;
+    }
+    return {
+        elementType: 'question',
+        label,
+        instructions: {value: instructions},
+        multiselect,
+        question
+    };
+}
+
+export async function parseNhlbiFormElements(form, rows, formId) {
     const formElements: any[] = [];
-    let newSection: any = {
+    const newSection: any = {
         label: '',
         elementType: 'section',
         formElements: []
     };
-
-    let prevCategoryGroup = '';
     for (const row of rows) {
         const name = getCell(row, 'Name');
-        const cde: any = await dataElementModel.findOne({archived: false, 'ids.id': name});
+        const cde: any = await dataElementModel.findOne({
+            archived: false,
+            'ids.id': name,
+            'registrationState.registrationStatus': {$ne: 'Retired'}
+        });
         if (!cde) {
             console.log(`${name} not found.`);
             process.exit(1);
         }
-        const formElement = convertCsvRowToFormElement(row, cde);
-        let categoryGroup = getCell(row, 'Category/Group');
-        if (isEmpty(categoryGroup)) {
-            console.log(`empty category`);
-            categoryGroup = 'Unnamed category';
-            const title = getCell(row, 'Title');
-            const emptyCategoryComment = {
-                text: `${title} has empty category.`,
-                user: BATCHLOADER,
-                created: new Date(),
-                pendingApproval: false,
-                linkedTab: 'description',
-                status: 'active',
-                replies: [],
-                element: {
-                    eltType: 'form',
-                }
-            };
-            form.comments.push(emptyCategoryComment);
-        }
-        if (isEqual(prevCategoryGroup, categoryGroup)) {
-            newSection.label = categoryGroup;
-            newSection.formElements.push(formElement);
-        } else {
-            formElements.push(newSection);
-            newSection = {
-                label: '',
-                elementType: 'section',
-                formElements: [formElement]
-            };
-        }
-        prevCategoryGroup = categoryGroup;
+        const formElement = convertNhlbiCsvRowToFormElement(row, cde, formId);
+        newSection.formElements.push(formElement);
     }
     formElements.push(newSection);
     return formElements;

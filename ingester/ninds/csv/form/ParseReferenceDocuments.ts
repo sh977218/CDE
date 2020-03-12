@@ -1,4 +1,4 @@
-import { findIndex } from 'lodash';
+import { findIndex, isEmpty } from 'lodash';
 import { parseReferenceDocuments as parseCdeReferenceDocuments } from 'ingester/ninds/csv/cde/ParseReferenceDocuments';
 import { sortReferenceDocuments } from 'ingester/shared/utility';
 
@@ -16,7 +16,10 @@ export async function parseReferenceDocuments(rows: any[]) {
     return sortReferenceDocuments(referenceDocuments);
 }
 
-export async function parseNhlbiReferenceDocuments() {
+export async function parseNhlbiReferenceDocuments(row) {
     const referenceDocuments = [];
+    if (!isEmpty(row.ExternalUrl)) {
+        referenceDocuments.push({url: row.ExternalUrl});
+    }
     return referenceDocuments;
 }
