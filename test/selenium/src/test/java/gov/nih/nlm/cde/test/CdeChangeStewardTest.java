@@ -26,7 +26,7 @@ public class CdeChangeStewardTest extends NlmCdeBaseTest {
 
         goToHistory();
         selectHistoryAndCompare(1, 2);
-        textPresent(newStewardOrgName, By.xpath("//*[@id='Steward Org']//ins"));
-        textPresent(oldStewardOrgName, By.xpath("//*[@id='Steward Org']//del"));
+        textPresent(newStewardOrgName, By.xpath("//*[@id='Steward Org']//td-ngx-text-diff"));
+        textPresent(oldStewardOrgName, By.xpath("//*[@id='Steward Org']//td-ngx-text-diff"));
     }
 }

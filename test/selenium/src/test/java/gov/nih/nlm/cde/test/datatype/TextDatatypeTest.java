@@ -33,10 +33,10 @@ public class TextDatatypeTest extends NlmCdeBaseTest {
 
         goToHistory();
         selectHistoryAndCompare(1, 2);
-        textPresent("789", By.xpath("//*[@id='Data Type Text Minimal Length']//ins"));
-        textPresent("987", By.xpath("//*[@id='Data Type Text Maximal Length']//ins"));
-        textPresent("Text", By.xpath("//*[@id='Data Type']//ins"));
-        textPresent("Value List", By.xpath("//*[@id='Data Type']//del"));
+        textPresent("789", By.xpath("//*[@id='Data Type Text Minimal Length']//td-ngx-text-diff"));
+        textPresent("987", By.xpath("//*[@id='Data Type Text Maximal Length']//td-ngx-text-diff"));
+        textPresent("Text", By.xpath("//*[@id='Data Type']//td-ngx-text-diff"));
+        textPresent("Value List", By.xpath("//*[@id='Data Type']//td-ngx-text-diff"));
         clickElement(By.id("closeHistoryCompareModal"));
 
         goToPermissibleValues();
@@ -61,12 +61,12 @@ public class TextDatatypeTest extends NlmCdeBaseTest {
 
         goToHistory();
         selectHistoryAndCompare(1, 2);
-        textPresent("123", By.xpath("//*[@id='Data Type Text Minimal Length']//ins"));
-        textPresent("789", By.xpath("//*[@id='Data Type Text Minimal Length']//del"));
-        textPresent("321", By.xpath("//*[@id='Data Type Text Maximal Length']//ins"));
-        textPresent("987", By.xpath("//*[@id='Data Type Text Maximal Length']//del"));
-        textPresent("newRegex", By.xpath("//*[@id='Data Type Text Regex']//ins"));
-        textPresent("newRule", By.xpath("//*[@id='Data Type Text Rule']//ins"));
+        textPresent("123", By.xpath("//*[@id='Data Type Text Minimal Length']//td-ngx-text-diff"));
+        textPresent("789", By.xpath("//*[@id='Data Type Text Minimal Length']//td-ngx-text-diff"));
+        textPresent("321", By.xpath("//*[@id='Data Type Text Maximal Length']//td-ngx-text-diff"));
+        textPresent("987", By.xpath("//*[@id='Data Type Text Maximal Length']//td-ngx-text-diff"));
+        textPresent("newRegex", By.xpath("//*[@id='Data Type Text Regex']//td-ngx-text-diff"));
+        textPresent("newRule", By.xpath("//*[@id='Data Type Text Rule']//td-ngx-text-diff"));
 
     }
 }
