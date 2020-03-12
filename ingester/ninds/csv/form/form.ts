@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash';
 import { generateTinyId } from 'server/system/mongo-data';
 import { BATCHLOADER, created, imported } from 'ingester/shared/utility';
 import { parseDesignations, parseNhlbiDesignations } from 'ingester/ninds/csv/form/ParseDesignations';
@@ -84,9 +85,11 @@ export async function createNhlbiForm(row, nhlbiCdes) {
         classification: [],
         comments: []
     };
-    nhlbiForm.formElements = await parseNhlbiFormElements(nhlbiForm, nhlbiCdes, row.CrfId);
-    for (const nhlbiCde of nhlbiCdes) {
-        parseNhlbiCdeClassification(nhlbiForm, nhlbiCde);
+    if (!isEmpty(nhlbiCdes)) {
+        nhlbiForm.formElements = await parseNhlbiFormElements(nhlbiForm, nhlbiCdes, row.CrfId);
+        for (const nhlbiCde of nhlbiCdes) {
+            parseNhlbiCdeClassification(nhlbiForm, nhlbiCde);
+        }
     }
 
     return nhlbiForm;

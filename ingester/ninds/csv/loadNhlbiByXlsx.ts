@@ -1,18 +1,21 @@
 import { isEmpty, trim } from 'lodash';
+
 const XLSX = require('xlsx');
 
 import { dataElementModel } from 'server/cde/mongo-cde';
+import { formModel } from 'server/form/mongo-form';
+import { formatRows, getCell } from 'ingester/ninds/csv/shared/utility';
+import { createNhlbiCde } from 'ingester/ninds/csv/cde/cde';
+import { createNhlbiForm } from 'ingester/ninds/csv/form/form';
 import { findOneCde, findOneForm, imported, lastMigrationScript } from 'ingester/shared/utility';
 import { sickleCellDataElementsXlsx, sickleCellFormMappingXlsx } from 'ingester/createMigrationConnection';
-
-import { createNhlbiCde } from 'ingester/ninds/csv/cde/cde';
-import { formatRows, getCell } from 'ingester/ninds/csv/shared/utility';
 import { parseNhlbiClassification as parseNhlbiCdeClassification } from 'ingester/ninds/csv/cde/ParseClassification';
 import { parseNhlbiClassification as parseNhlbiFormClassification } from 'ingester/ninds/csv/form/ParseClassification';
-import { formModel } from 'server/form/mongo-form';
-import { createNhlbiForm } from 'ingester/ninds/csv/form/form';
 
-// import { formMap } from './nhlbiFormMap';
+let existingDeCount = 0;
+let newDeCount = 0;
+let existingFormCount = 0;
+let newFormCount = 0;
 
 async function doOneNhlbiCde(row, formMap) {
     const id = getCell(row, 'External ID.NINDS');
@@ -31,9 +34,13 @@ async function doOneNhlbiCde(row, formMap) {
         existingCde.lastMigrationScript = lastMigrationScript;
         existingCde.imported = imported;
         await existingCde.save();
+        existingDeCount++;
+        console.log(`existingDeCount: ${existingDeCount}`);
     } else {
         const nhlbiCde = await createNhlbiCde(row, formMap);
         await new dataElementModel(nhlbiCde).save();
+        newDeCount++;
+        console.log(`newDeCount: ${newDeCount}`);
     }
 }
 
@@ -61,6 +68,8 @@ async function runOneNhlbiForm(row, nhlbiCdes) {
             parseNhlbiFormClassification(existingFormObj);
             existingForm.classification = existingFormObj.classification;
             await existingForm.save();
+            existingFormCount++;
+            console.log(`existingFormCount: ${existingFormCount}`);
         } else {
             console.log(`${nlmId} nlmId not found.`);
             process.exit(1);
@@ -68,6 +77,8 @@ async function runOneNhlbiForm(row, nhlbiCdes) {
     } else {
         const nhlbiForm = await createNhlbiForm(row, nhlbiCdes);
         await new formModel(nhlbiForm).save();
+        newFormCount++;
+        console.log(`newFormCount: ${newFormCount}`);
     }
 }
 
@@ -86,8 +97,9 @@ const formMap = {};
 
 async function run() {
     await runDataElement(formMap);
+    console.log('Finished data elements.');
     await runForm(formMap);
-    console.log('a');
+    console.log('Finished forms.');
 }
 
 run().then(() => {
