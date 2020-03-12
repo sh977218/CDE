@@ -12,14 +12,7 @@ export function module() {
     router.get('/searchValueSet/:vsacId', [nocacheMiddleware], async (req, res) => {
         const vsacId = req.params.vsacId;
         const {term, page} = req.query;
-        const xmlResp = await searchValueSet(vsacId, term, page);
-        parseString(xmlResp, {ignoreAttrs: false, mergeAttrs: true}, (err, jsonResp) => {
-            if (err) {
-                res.status(400).send('Invalid XML from VSAC');
-            } else {
-                res.send(jsonResp);
-            }
-        });
+        res.send(await searchValueSet(vsacId, term, page));
     });
 
     router.get('/vsacBridge/:vsacId', [nocacheMiddleware], async (req, res) => {
