@@ -167,10 +167,8 @@ export function getValueSet(oid: string) {
 export function searchUmls(term: string) {
     return getTicket()
         .then(ticket => promisify<UriOptions & CoreOptions, Response>(get)({
-            strictSSL: false,
             uri: `${config.umls.wsHost}/rest/search/current?ticket=${ticket}&string=${term}`
-        }))
-        .then(utsFake200Handler, handleReject('get umls ERROR'));
+        })).then(utsFake200Handler, handleReject('get umls ERROR'));
 }
 
 export function getSourcePT(cui: string, src: string) {
