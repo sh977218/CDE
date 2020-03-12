@@ -26,10 +26,10 @@ public class NumberDatatypeTest extends NlmCdeBaseTest {
 
         goToHistory();
         selectHistoryAndCompare(1, 2);
-        textPresent("123", By.xpath("//*[@id='Data Type Number Minimal Value']//ins"));
-        textPresent("456", By.xpath("//*[@id='Data Type Number Maximal Value']//ins"));
-        textPresent("Number", By.xpath("//*[@id='Data Type']//ins"));
-        textPresent("Text", By.xpath("//*[@id='Data Type']//del"));
+        textPresent("123", By.xpath("//*[@id='Data Type Number Minimal Value']//td-ngx-text-diff"));
+        textPresent("456", By.xpath("//*[@id='Data Type Number Maximal Value']//td-ngx-text-diff"));
+        textPresent("Number", By.xpath("//*[@id='Data Type']//td-ngx-text-diff"));
+        textPresent("Text", By.xpath("//*[@id='Data Type']//td-ngx-text-diff"));
         clickElement(By.id("closeHistoryCompareModal"));
 
         goToPermissibleValues();
@@ -46,10 +46,10 @@ public class NumberDatatypeTest extends NlmCdeBaseTest {
         goToCdeByName(cdeName);
         goToHistory();
         selectHistoryAndCompare(1, 2);
-        textPresent("789", By.xpath("//*[@id='Data Type Number Minimal Value']//ins"));
-        textPresent("987", By.xpath("//*[@id='Data Type Number Maximal Value']//ins"));
-        textPresent("123", By.xpath("//*[@id='Data Type Number Minimal Value']//del"));
-        textPresent("456", By.xpath("//*[@id='Data Type Number Maximal Value']//del"));
+        textPresent("789", By.xpath("//*[@id='Data Type Number Minimal Value']//td-ngx-text-diff"));
+        textPresent("987", By.xpath("//*[@id='Data Type Number Maximal Value']//td-ngx-text-diff"));
+        textPresent("123", By.xpath("//*[@id='Data Type Number Minimal Value']//td-ngx-text-diff"));
+        textPresent("456", By.xpath("//*[@id='Data Type Number Maximal Value']//td-ngx-text-diff"));
     }
 
 }
