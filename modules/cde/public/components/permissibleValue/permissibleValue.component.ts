@@ -260,7 +260,11 @@ export class PermissibleValueComponent {
                         }
                     }
                 }, error => {
-                    this.alert.addAlert('danger', 'Error querying VSAC' + error);
+                    if (error.status === 404) {
+                        this.alert.addAlert('danger', 'Error: No data retrieved from VSAC for ' + vsac.id);
+                    } else {
+                        this.alert.addAlert('danger', 'Error querying VSAC');
+                    }
                 });
         }
     }

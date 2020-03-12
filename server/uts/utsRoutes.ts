@@ -25,6 +25,9 @@ export function module() {
     router.get('/vsacBridge/:vsacId', [nocacheMiddleware], async (req, res) => {
         const vsacId = req.params.vsacId;
         const xmlResp = await getValueSet(vsacId);
+        if (!xmlResp) {
+            return res.status(404).send();
+        }
         parseString(xmlResp, {ignoreAttrs: false, mergeAttrs: true}, (err, jsonResp) => {
             if (err) {
                 res.status(400).send('Invalid XML from VSAC');
