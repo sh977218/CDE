@@ -233,7 +233,7 @@ export class PermissibleValueComponent {
         if (this.elt.dataElementConcept && this.elt.dataElementConcept.conceptualDomain && this.elt.dataElementConcept.conceptualDomain.vsac
             && this.elt.dataElementConcept.conceptualDomain.vsac.id) {
             const vsac = this.elt.dataElementConcept.conceptualDomain.vsac;
-            this.http.get('/server/uts/vsacBridge/' + vsac.id, {responseType: 'text'}).subscribe(
+            this.http.get('/server/uts/vsacBridge/' + vsac.id).subscribe(
                 res => {
                     if (!res) {
                         this.alert.addAlert('danger', 'Error: No data retrieved from VSAC for ' + vsac.id);
