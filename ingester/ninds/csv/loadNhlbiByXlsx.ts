@@ -73,6 +73,7 @@ async function runOneNhlbiForm(row, nhlbiCdes) {
             if (!isEmpty(phenxProtocolId) && !isEmpty(crfId)) {
                 existingFormObj.ids.push({source: 'NINDS', id: trim(crfId)});
                 existingForm.ids = existingFormObj.ids;
+                console.log(`Map PhenX ${phenxProtocolId} to NINDS ${crfId}`);
             }
 
             await existingForm.save();
