@@ -67,6 +67,14 @@ async function runOneNhlbiForm(row, nhlbiCdes) {
             const existingFormObj = existingForm.toObject();
             parseNhlbiFormClassification(existingFormObj);
             existingForm.classification = existingFormObj.classification;
+
+            const phenxProtocolId = row['PhenX Protocol'];
+            const crfId = row.CrfId;
+            if (!isEmpty(phenxProtocolId) && !isEmpty(crfId)) {
+                existingFormObj.ids.push({source: 'NINDS', id: trim(crfId)});
+                existingForm.ids = existingFormObj.ids;
+            }
+
             await existingForm.save();
             existingFormCount++;
             console.log(`existingFormCount: ${existingFormCount}`);

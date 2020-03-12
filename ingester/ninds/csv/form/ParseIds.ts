@@ -12,7 +12,7 @@ export function parseNhlbiIds(row) {
     }
     const crfId = row.CrfId;
     if (!isEmpty(crfId)) {
-        ids.push({source: 'NINDS ID', id: trim(crfId)});
+        ids.push({source: 'NINDS', id: trim(crfId)});
     }
     return ids;
 }
