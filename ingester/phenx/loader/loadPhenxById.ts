@@ -20,9 +20,13 @@ export async function loadPhenxById(phenxId: string) {
     const newForm = new formModel(phenxForm);
     const newFormObj = newForm.toObject();
     if (!existingForm) {
-        existingForm = await newForm.save();
-        PhenxLogger.createdPhenxForm++;
-        PhenxLogger.createdPhenxForms.push(existingForm.tinyId + `[${protocolId}]`);
+        const emptyCsvCommentText = 'PhenX Batch loader was not able to find instrument.csv';
+        const emptyCsvComments = phenxForm.comments.filter(c => c.text.indexOf(emptyCsvCommentText) > -1);
+        if (!isEmpty(emptyCsvComments)) {
+            existingForm = await newForm.save();
+            PhenxLogger.createdPhenxForm++;
+            PhenxLogger.createdPhenxForms.push(existingForm.tinyId + `[${protocolId}]`);
+        }
     } else {
         const diff = compareElt(newForm.toObject(), existingForm.toObject(), 'PhenX');
         mergeClassification(existingForm, newForm.toObject(), 'PhenX');
