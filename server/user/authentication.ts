@@ -52,7 +52,7 @@ export function ticketValidate(tkt, cb) {
             return cb(error);
         } else {
             // Parse xml result from ticket validation
-            parser.parseString(body, function (err, jsonResult) {
+            parser.parseString(body, (err, jsonResult) => {
                 if (err) {
                     return cb('ticketValidate: ' + err);
                 } else if (jsonResult['cas:serviceResponse'] &&
