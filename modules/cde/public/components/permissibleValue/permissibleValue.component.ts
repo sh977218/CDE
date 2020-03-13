@@ -10,7 +10,6 @@ import { DataElement, DATA_TYPE_ARRAY, ValueDomainValueList, ValueDomain } from 
 import { fixDataElement, fixDatatype } from 'shared/de/dataElement.model';
 import { PermissibleValue } from 'shared/models.model';
 import { SearchSettings } from 'shared/search/search.model';
-import { parseString } from 'xml2js';
 
 interface Source {
     source: string;
@@ -234,42 +233,38 @@ export class PermissibleValueComponent {
         if (this.elt.dataElementConcept && this.elt.dataElementConcept.conceptualDomain && this.elt.dataElementConcept.conceptualDomain.vsac
             && this.elt.dataElementConcept.conceptualDomain.vsac.id) {
             const vsac = this.elt.dataElementConcept.conceptualDomain.vsac;
-            this.http.get('/server/uts/vsacBridge/' + vsac.id, {responseType: 'text'}).subscribe(
+            this.http.get('/server/uts/vsacBridge/' + vsac.id).subscribe(
                 res => {
                     if (!res) {
                         this.alert.addAlert('danger', 'Error: No data retrieved from VSAC for ' + vsac.id);
                     } else {
-                        parseString(res, {ignoreAttrs: false, mergeAttrs: true}, (err, data) => {
-                            if (err) {
-                                this.alert.addAlert('danger', 'Error on VSAC Bridge');
-                            } else {
-                                // @ts-ignore
-                                const vsacJson = data['ns0:RetrieveValueSetResponse'];
-                                if (vsacJson) {
-                                    const ns0ValueSet = vsacJson['ns0:ValueSet'][0];
-                                    vsac.name = ns0ValueSet.displayName;
-                                    vsac.version = ns0ValueSet.version;
-                                    const vsacConcepts = ns0ValueSet['ns0:ConceptList'][0]['ns0:Concept'];
-                                    for (const vsacConcept of vsacConcepts) {
-                                        const v: any = {
-                                            code: vsacConcept.code[0],
-                                            codeSystem: vsacConcept.codeSystem[0],
-                                            codeSystemName: vsacConcept.codeSystemName[0],
-                                            codeSystemVersion: vsacConcept.codeSystemVersion[0],
-                                            displayName: vsacConcept.displayName[0],
-                                        };
-                                        this.vsacValueSet.push(v);
-                                    }
-                                    this.validateVsacWithPv();
-                                    this.validatePvWithVsac();
-                                }
+                        // @ts-ignore
+                        const vsacJson = res['ns0:RetrieveValueSetResponse'];
+                        if (vsacJson) {
+                            const ns0ValueSet = vsacJson['ns0:ValueSet'][0];
+                            vsac.name = ns0ValueSet.displayName;
+                            vsac.version = ns0ValueSet.version;
+                            const vsacConcepts = ns0ValueSet['ns0:ConceptList'][0]['ns0:Concept'];
+                            for (const vsacConcept of vsacConcepts) {
+                                const v: any = {
+                                    code: vsacConcept.code[0],
+                                    codeSystem: vsacConcept.codeSystem[0],
+                                    codeSystemName: vsacConcept.codeSystemName[0],
+                                    codeSystemVersion: vsacConcept.codeSystemVersion[0],
+                                    displayName: vsacConcept.displayName[0],
+                                };
+                                this.vsacValueSet.push(v);
                             }
-
-                        });
-
+                            this.validateVsacWithPv();
+                            this.validatePvWithVsac();
+                        }
                     }
                 }, error => {
-                    this.alert.addAlert('danger', 'Error querying VSAC' + error);
+                    if (error.status === 404) {
+                        this.alert.addAlert('danger', 'Error: No data retrieved from VSAC for ' + vsac.id);
+                    } else {
+                        this.alert.addAlert('danger', 'Error querying VSAC');
+                    }
                 });
         }
     }

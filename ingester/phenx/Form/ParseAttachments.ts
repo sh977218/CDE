@@ -1,7 +1,7 @@
 import { createReadStream, existsSync, readdirSync, statSync } from 'fs';
 import * as md5File from 'md5-file';
 import { gfs } from 'server/system/mongo-data';
-import { BATCHLOADER } from 'ingester/shared/utility';
+import { BATCHLOADER, NINDS_PRECLINICAL_NEI_FILE_PATH } from 'ingester/shared/utility';
 import { redCapZipFolder } from 'ingester/createMigrationConnection';
 
 function addAttachment(fileName, filePath, fileType) {

@@ -4,6 +4,7 @@ import { config } from 'server/system/parseConfig';
 import {
     getAtomsFromUMLS, getSourcePT, getValueSet, searchUmls, searchValueSet, umlsCuiFromSrc
 } from 'server/uts/utsSvc';
+import { parseString } from 'xml2js';
 
 export function module() {
     const router = Router();
@@ -16,7 +17,17 @@ export function module() {
 
     router.get('/vsacBridge/:vsacId', [nocacheMiddleware], async (req, res) => {
         const vsacId = req.params.vsacId;
-        res.send(await getValueSet(vsacId));
+        const xmlResp = await getValueSet(vsacId);
+        if (!xmlResp) {
+            return res.status(404).send();
+        }
+        parseString(xmlResp, {ignoreAttrs: false, mergeAttrs: true}, (err, jsonResp) => {
+            if (err) {
+                res.status(400).send('Invalid XML from VSAC');
+            } else {
+                res.send(jsonResp);
+            }
+        });
     });
 
     router.get('/searchUmls', [loggedInMiddleware], async (req, res) => {
