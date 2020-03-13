@@ -24,7 +24,6 @@ function removeNindsNonePreclinicalClassification(elt: any) {
     elt.classification = otherClassification;
 }
 
-
 function isPhq9(nindsForms) {
     const phq9FormIds = ['F2032', 'F0374'];
     return nindsForms.filter(nindsForm => phq9FormIds.indexOf(nindsForm.formId) !== -1).length > 0;
@@ -159,60 +158,68 @@ function loadNindsForms() {
 function retireNindsCdes() {
     return new Promise(async (resolve, reject) => {
         let retiredCdeCount = 0;
-        dataElementModel.find({
+        const condition = {
             archived: false,
             'classification.stewardOrg.name': 'NINDS',
             'registrationState.registrationStatus': {$ne: 'Retired'},
             lastMigrationScript: {$ne: lastMigrationScript}
-        }).cursor({batchSize: 10}).eachAsync(async cdeToRetire => {
-            const cdeObj = cdeToRetire.toObject();
-            removeNindsNonePreclinicalClassification(cdeObj);
-            if (cdeObj.classification.length < 1) {
-                retiredElt(cdeObj);
-                retiredCdeCount++;
-                console.log(`retire Cde: ${cdeObj.tinyId}`);
-                await updateCde(cdeObj, BATCHLOADER);
-            }
-            if (retiredCdeCount % 100 === 0) {
+        };
+        dataElementModel.find(condition)
+            .cursor({batchSize: 10})
+            .eachAsync(async cdeToRetire => {
+                const cdeObj = cdeToRetire.toObject();
+                removeNindsNonePreclinicalClassification(cdeObj);
+                if (cdeObj.classification.length < 1) {
+                    retiredElt(cdeObj);
+                    retiredCdeCount++;
+                    console.log(`retire Cde: ${cdeObj.tinyId}`);
+                    await updateCde(cdeObj, BATCHLOADER);
+                }
+                if (retiredCdeCount % 100 === 0) {
+                    console.log('retiredCdeCount: ' + retiredCdeCount);
+                }
+            })
+            .then(() => {
                 console.log('retiredCdeCount: ' + retiredCdeCount);
-            }
-        }).then(() => {
-            console.log('retiredCdeCount: ' + retiredCdeCount);
-            console.log('Finished retireNindsCdes().');
-            resolve();
-        }, err => {
-            reject(err);
-        });
+                console.log('Finished retireNindsCdes().');
+                resolve();
+            }, err => {
+                reject(err);
+            });
     });
 }
 
 function retireNindsForms() {
     return new Promise(async (resolve, reject) => {
         let retiredFormCount = 0;
-        formModel.find({
+        const condition = {
             archived: false,
             'classification.stewardOrg.name': 'NINDS',
             'registrationState.registrationStatus': {$ne: 'Retired'},
             lastMigrationScript: {$ne: lastMigrationScript}
-        }).cursor({batchSize: 10}).eachAsync(async formToRetire => {
-            const formObj = formToRetire.toObject();
-            removeNindsNonePreclinicalClassification(formObj);
-            if (formObj.classification.length < 1) {
-                retiredElt(formObj);
-                retiredFormCount++;
-                console.log(`retire Form: ${formObj.tinyId}`);
-                await updateForm(formObj, BATCHLOADER);
-            }
-            if (retiredFormCount % 100 === 0) {
+        };
+        formModel.find(condition)
+            .cursor({batchSize: 10})
+            .eachAsync(async formToRetire => {
+                const formObj = formToRetire.toObject();
+                removeNindsNonePreclinicalClassification(formObj);
+                if (formObj.classification.length < 1) {
+                    retiredElt(formObj);
+                    retiredFormCount++;
+                    console.log(`retire Form: ${formObj.tinyId}`);
+                    await updateForm(formObj, BATCHLOADER);
+                }
+                if (retiredFormCount % 100 === 0) {
+                    console.log('retiredFormCount: ' + retiredFormCount);
+                }
+            })
+            .then(() => {
                 console.log('retiredFormCount: ' + retiredFormCount);
-            }
-        }).then(() => {
-            console.log('retiredFormCount: ' + retiredFormCount);
-            console.log('Finished retireNindsForms().');
-            resolve();
-        }, err => {
-            reject(err);
-        });
+                console.log('Finished retireNindsForms().');
+                resolve();
+            }, err => {
+                reject(err);
+            });
     });
 }
 

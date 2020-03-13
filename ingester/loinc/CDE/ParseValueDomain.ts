@@ -8,6 +8,16 @@ export function parseValueDomain(loinc) {
         permissibleValues: []
     };
     const loincAnswerList = loinc['Normative Answer List'] || loinc['Example Answer List'] || loinc['Preferred Answer List'] || [];
+    if (!Array.isArray(loincAnswerList)) {
+        if (!isEmpty(loincAnswerList) && loincAnswerList['Externally Defined'] === 'Yes') {
+            valueDomain.datatype = 'Externally Defined';
+            valueDomain.datatypeExternallyDefined = {
+                link: loincAnswerList['Link to External List']
+            };
+            return valueDomain;
+        }
+    }
+
     const loincAnswerListFilterEmpty = loincAnswerList.filter(l => {
         if (!isEmpty(l.Code) || !isEmpty(l.Answer) || !isEmpty(l['Answer ID'])) {
             return true;

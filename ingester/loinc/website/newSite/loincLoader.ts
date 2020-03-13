@@ -31,6 +31,6 @@ export async function loadLoincById(loincId) {
     }
 
 
-    driver.close();
+    await driver.close();
     return loinc;
 }

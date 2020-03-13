@@ -104,7 +104,7 @@
     "cron": "^1.5.0",
     "cross-env": "3.1.4",
     "csurf": "^1.10.0",
-    "csv": "^4.0.0",
+    "csv": "^5.3.2",
     "deep-copy": "^1.4.2",
     "deep-diff": "^1.0.2",
     "diff-json": "^2.0.0",
@@ -221,7 +221,7 @@
     "cache-loader": "^2.0.1",
     "capitalize": "^2.0.0",
     "cheerio": "^1.0.0-rc.3",
-    "chromedriver": "^78.0.1",
+    "chromedriver": "^80.0.1",
     "classlist.js": "1.1.20150312",
     "clean-webpack-plugin": "^0.1.19",
     "codelyzer": "^5.2.0",
@@ -299,7 +299,8 @@
     "webpack-merge": "^4.2.2",
     "whatwg-fetch": "^3.0.0",
     "xlsx": "^0.15.1",
-    "zone.js": "~0.9.1"
+    "zone.js": "~0.9.1",
+    "iconv-lite": "^0.5.1"
   },
   "bundlesize": [
     {

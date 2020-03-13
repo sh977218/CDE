@@ -11,10 +11,11 @@ import { leadingZerosProtocolId } from 'ingester/phenx/Form/ParseAttachments';
 import { commentModel } from 'server/discuss/discussDb';
 import { redCapZipFolder } from 'ingester/createMigrationConnection';
 import { RedcapLogger } from 'ingester/log/RedcapLogger';
+const iconv = require('iconv-lite');
 
-function doInstrument(instrumentFilePath): Promise<(string|Buffer)[]> {
+function doInstrument(instrumentFilePath): Promise<(string | Buffer)[]> {
     return new Promise((resolve, reject) => {
-        const results: (string|Buffer)[] = [];
+        const results: (string | Buffer)[] = [];
         const options = {
             trim: true,
             skip_empty_lines: true,
@@ -22,6 +23,7 @@ function doInstrument(instrumentFilePath): Promise<(string|Buffer)[]> {
             relax_column_count: true
         };
         createReadStream(instrumentFilePath)
+            .pipe(iconv.decodeStream('win1251'))
             .pipe(csv(options))
             .on('data', data => {
                 if (!isEmpty(data)) {
@@ -42,7 +44,7 @@ function doDescriptive(sectionFes, redCapCde, attachments) {
     const fieldLabel = redCapCde['Field Label'];
     const foundAttachment = find(attachments, a => a.filename === variableFieldName);
     if (foundAttachment) {
-        const img = `<img src="/data/${foundAttachment.fileid}" alt="${foundAttachment.filename}"/>`;
+        const img = `<img src="/server/system/data/${foundAttachment.fileid}" alt="${foundAttachment.filename}"/>`;
         const figcaption = `<figcaption>${fieldLabel}</figcaption>`;
         sectionFes.instructions.value += `\n<figure>${figcaption}${img}</figure>`;
     } else {
