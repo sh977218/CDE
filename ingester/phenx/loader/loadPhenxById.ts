@@ -53,9 +53,7 @@ export async function loadPhenxById(phenxId: string) {
             await new commentModel(comment).save();
         }
     }
-    if (!hasEmptyCsvComments) {
-        await updateRawArtifact(existingForm, newFormObj, 'PhenX', 'PhenX');
-    }
+    await updateRawArtifact(existingForm, newFormObj, 'PhenX', 'PhenX');
     protocolCount++;
     console.log('protocolCount ' + protocolCount);
     console.log('Finished protocol: ' + protocolId);
