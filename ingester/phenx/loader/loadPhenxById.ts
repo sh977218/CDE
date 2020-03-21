@@ -17,12 +17,15 @@ export async function loadPhenxById(phenxId: string) {
     let existingForm: any = await formModel.findOne({archived: false, 'ids.id': protocolId});
     const isExistingFormQualified = existingForm && existingForm.registrationState.registrationStatus === 'Qualified';
     const phenxForm: any = await createPhenxForm(protocol, isExistingFormQualified);
+
+    const emptyCsvCommentText = 'PhenX Batch loader was not able to find instrument.csv';
+    const emptyCsvComments = phenxForm.comments.filter(c => c.text.indexOf(emptyCsvCommentText) > -1);
+    const hasEmptyCsvComments = emptyCsvComments.length > 0;
+
     const newForm = new formModel(phenxForm);
     const newFormObj = newForm.toObject();
     if (!existingForm) {
-        const emptyCsvCommentText = 'PhenX Batch loader was not able to find instrument.csv';
-        const emptyCsvComments = phenxForm.comments.filter(c => c.text.indexOf(emptyCsvCommentText) > -1);
-        if (!isEmpty(emptyCsvComments)) {
+        if (!hasEmptyCsvComments) {
             existingForm = await newForm.save();
             PhenxLogger.createdPhenxForm++;
             PhenxLogger.createdPhenxForms.push(existingForm.tinyId + `[${protocolId}]`);
@@ -50,7 +53,9 @@ export async function loadPhenxById(phenxId: string) {
             await new commentModel(comment).save();
         }
     }
-    await updateRawArtifact(existingForm, newFormObj, 'PhenX', 'PhenX');
+    if (!hasEmptyCsvComments) {
+        await updateRawArtifact(existingForm, newFormObj, 'PhenX', 'PhenX');
+    }
     protocolCount++;
     console.log('protocolCount ' + protocolCount);
     console.log('Finished protocol: ' + protocolId);
