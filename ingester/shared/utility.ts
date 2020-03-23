@@ -109,6 +109,9 @@ export function trimWhite(text: string) {
 }
 
 export async function updateRawArtifact(existingElt, newElt, source, classificationOrgName) {
+    if (!existingElt || !newElt) {
+        return;
+    }
     delete newElt.tinyId;
     delete newElt._id;
     newElt.classification = existingElt.classification.filter(c => c.stewardOrg.name === classificationOrgName);

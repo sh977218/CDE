@@ -113,7 +113,7 @@ function retirePhenxForms() {
 }
 
 async function run() {
-//    const cond = {protocolID: {$in: ['560201']}};
+//    const cond = {protocolID: {$in: ['300101']}};
     const cond = {};
     const phenxIds = await PROTOCOL.find(cond, {protocolID: 1}).lean();
     for (const phenxId of phenxIds) {
