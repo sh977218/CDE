@@ -120,7 +120,7 @@ function parseQuestionLabel(row, formId) {
 function convertNhlbiCsvRowToFormElement(row, cde, formId) {
     const labels = parseQuestionLabel(row, formId);
     const label = labels[0].questionText;
-    const instructions = getCell(row, 'Guidelines/Instructions');
+    const instructions = getCell(row, 'Guidelines/Instructions').replace(/sickle cell:/ig, '');
     const inputRestriction = getCell(row, 'Input Restriction');
     const multiselect = inputRestriction.indexOf('Multiple Pre-Defined Values Selected') !== -1;
     const title = getCell(row, 'Title');
