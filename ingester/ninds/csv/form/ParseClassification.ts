@@ -11,7 +11,7 @@ export function parseNhlbiClassification(existingFormObj) {
     otherClassifications.push({
         stewardOrg: {name: 'NHLBI'},
         elements: [{
-            name: 'SCKLCELL',
+            name: 'Sickle Cell',
             elements: []
         }]
     });

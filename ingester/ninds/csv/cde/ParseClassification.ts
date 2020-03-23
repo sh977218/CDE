@@ -102,7 +102,7 @@ export function parseNhlbiClassification(eltObj: any, row: any) {
     const populations = getCell(row, 'Population');
     populations.split(';').forEach(population => {
         if (!isEmpty(population)) {
-            classifyItem(eltObj, 'NHLBI', ['Population', population]);
+            classifyItem(eltObj, 'NHLBI', ['Sickle Cell', 'Population', population]);
         }
     });
     const domains = getCell(row, 'Domain.Sickle Cell');
