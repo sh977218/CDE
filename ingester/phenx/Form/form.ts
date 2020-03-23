@@ -13,19 +13,19 @@ import * as AdmZip from 'adm-zip';
 import { redCapZipFolder } from 'ingester/createMigrationConnection';
 import { parseClassification } from 'ingester/phenx/Shared/ParseClassification';
 
-function extractRedCapZip(protocolId) {
+async function extractRedCapZip(protocolId) {
     const leadingZeroProtocolId = leadingZerosProtocolId(protocolId);
     const zipFile = redCapZipFolder + 'PX' + leadingZeroProtocolId + '.zip';
     if (existsSync(zipFile)) {
         const zip = new AdmZip(zipFile);
-        zip.extractAllTo(redCapZipFolder + 'PX' + leadingZeroProtocolId, true);
+        await zip.extractAllTo(redCapZipFolder + 'PX' + leadingZeroProtocolId, true);
     } else {
         console.log('RedCap zip not found. ' + protocolId);
     }
 }
 
 export async function createPhenxForm(protocol, isExistingFormQualified) {
-    extractRedCapZip(protocol.protocolID);
+    await extractRedCapZip(protocol.protocolID);
     const designations = parseDesignations(protocol);
     const definitions = parseDefinitions(protocol);
     const sources = parseSources(protocol);
