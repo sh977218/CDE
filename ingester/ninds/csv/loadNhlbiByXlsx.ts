@@ -7,38 +7,57 @@ import { formModel } from 'server/form/mongo-form';
 import { formatRows, getCell } from 'ingester/ninds/csv/shared/utility';
 import { createNhlbiCde } from 'ingester/ninds/csv/cde/cde';
 import { createNhlbiForm } from 'ingester/ninds/csv/form/form';
-import { findOneCde, findOneForm, imported, lastMigrationScript } from 'ingester/shared/utility';
+import { createCde, createForm, findOneCde, findOneForm, imported, lastMigrationScript } from 'ingester/shared/utility';
 import { sickleCellDataElementsXlsx, sickleCellFormMappingXlsx } from 'ingester/createMigrationConnection';
 import { parseNhlbiClassification as parseNhlbiCdeClassification } from 'ingester/ninds/csv/cde/ParseClassification';
 import { parseNhlbiClassification as parseNhlbiFormClassification } from 'ingester/ninds/csv/form/ParseClassification';
+import { parseNhlbiDesignations } from 'ingester/ninds/csv/cde/ParseDesignations';
 
 let existingDeCount = 0;
 let newDeCount = 0;
 let existingFormCount = 0;
 let newFormCount = 0;
 
+function assignNhlbiId(existingCde, row) {
+    let nindsIdExist = false;
+    const nindsId = getCell(row, 'External ID.NINDS');
+    existingCde.ids.forEach(i => {
+        if (i.id === nindsId) {
+            nindsIdExist = true;
+        }
+    });
+    if (!nindsIdExist) {
+        existingCde.ids.push({source: 'NHLBI', id: nindsId});
+    }
+}
+
 async function doOneNhlbiCde(row, formMap) {
-    const id = getCell(row, 'External ID.NINDS');
+    const variableName = getCell(row, 'Name');
     const cond = {
         archived: false,
-        'ids.id': id,
+        'ids.id': variableName,
         'registrationState.registrationStatus': {$ne: 'Retired'}
     };
     const existingCdes: any[] = await dataElementModel.find(cond);
     const existingCde: any = findOneCde(existingCdes);
     if (existingCde) {
+        // store form question info into formMap
+        parseNhlbiDesignations(row, formMap);
         const existingCdeObj = existingCde.toObject();
         parseNhlbiCdeClassification(existingCdeObj, row);
         existingCde.classification = existingCdeObj.classification;
 
         existingCde.lastMigrationScript = lastMigrationScript;
         existingCde.imported = imported;
+
+        // NHLBI NINDS ID might not correct NINDS ID, we put NHLBI id if it's different.
+        assignNhlbiId(existingCde, row);
         await existingCde.save();
         existingDeCount++;
         console.log(`existingDeCount: ${existingDeCount}`);
     } else {
         const nhlbiCde = await createNhlbiCde(row, formMap);
-        await new dataElementModel(nhlbiCde).save();
+        await createCde(nhlbiCde);
         newDeCount++;
         console.log(`newDeCount: ${newDeCount}`);
     }
@@ -48,6 +67,8 @@ async function runDataElement(formMap) {
     const workbook = XLSX.readFile(sickleCellDataElementsXlsx);
     const rows = XLSX.utils.sheet_to_json(workbook.Sheets.Sheet1);
     const formattedRows = formatRows('sickleCellDataElementsXlsx', rows);
+// tslint:disable-next-line:max-line-length
+//    const formattedRows = formatRows('sickleCellDataElementsXlsx', rows).filter(f => f['suggested question text'].indexOf('F2812') !== -1);
     for (const row of formattedRows) {
         await doOneNhlbiCde(row, formMap);
     }
@@ -55,7 +76,7 @@ async function runDataElement(formMap) {
 
 async function runOneNhlbiForm(row, nhlbiCdes) {
     const nlmId = trim(row['NLM ID']);
-    if (!isEmpty(nlmId) && nlmId !== '—') {
+    if (!isEmpty(nlmId) && nlmId[0] !== '—') {
         const cond = {
             archived: false,
             tinyId: nlmId,
@@ -85,7 +106,7 @@ async function runOneNhlbiForm(row, nhlbiCdes) {
         }
     } else {
         const nhlbiForm = await createNhlbiForm(row, nhlbiCdes);
-        await new formModel(nhlbiForm).save();
+        await createForm(nhlbiForm);
         newFormCount++;
         console.log(`newFormCount: ${newFormCount}`);
     }
@@ -96,6 +117,7 @@ async function runForm(formMap) {
     const phenxCrfs = XLSX.utils.sheet_to_json(workbook.Sheets['PhenX CRFs']);
     const nonPhenxCrfs = XLSX.utils.sheet_to_json(workbook.Sheets['Non-PhenX CRFs']);
     const formattedRows = phenxCrfs.concat(nonPhenxCrfs);
+//    const formattedRows = phenxCrfs.concat(nonPhenxCrfs).filter(f => f.CrfId === 'F2812');
     for (const row of formattedRows) {
         const formId = row.CrfId;
         await runOneNhlbiForm(row, formMap[formId]);

@@ -13,6 +13,8 @@ import {
 import { FormElement } from 'shared/form/form.model';
 import { gfs } from 'server/system/mongo-data';
 import { Readable } from 'stream';
+import { dataElementModel } from 'server/cde/mongo-cde';
+import { formModel } from 'server/form/mongo-form';
 
 require('chromedriver');
 
@@ -179,6 +181,19 @@ export function mergeClassificationByOrg(existingObj, newObj, orgName: string = 
         });
 }
 
+export async function createCde(cde: any) {
+    if (cde.classification.length === 0) {
+        cde.classification.push({
+            stewardOrg: {name: 'TEXT'},
+            elements: [{
+                name: 'non-classified',
+                elements: []
+            }]
+        });
+    }
+    await new dataElementModel(cde).save();
+}
+
 export function updateCde(elt: any, user: any, options = {}) {
     elt.lastMigrationScript = lastMigrationScript;
     return new Promise((resolve, reject) => {
@@ -192,6 +207,18 @@ export function updateCde(elt: any, user: any, options = {}) {
     });
 }
 
+export async function createForm(form: any) {
+    if (form.classification.length === 0) {
+        form.classification.push({
+            stewardOrg: {name: 'TEXT'},
+            elements: [{
+                name: 'non-classified',
+                elements: []
+            }]
+        });
+    }
+    await new formModel(form).save();
+}
 export async function updateForm(elt: any, user: any, options: any = {}) {
     elt.lastMigrationScript = lastMigrationScript;
     return new Promise((resolve, reject) => {

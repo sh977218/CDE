@@ -62,7 +62,7 @@ export async function parseFormElements(form: any, rows: any[]): Promise<any[]> 
         const variableName = getCell(row, 'Variable Name');
         const cde: any = await dataElementModel.findOne({archived: false, 'ids.id': variableName});
         if (!cde) {
-            console.log(`${variableName} not found.`);
+            console.log(`${variableName} variable not found.`);
             process.exit(1);
         }
         const formElement = convertCsvRowToFormElement(row, cde);
@@ -178,11 +178,13 @@ export async function parseNhlbiFormElements(form, rows, formId) {
             'registrationState.registrationStatus': {$ne: 'Retired'}
         });
         if (!cde) {
-            console.log(`${name} not found.`);
+            const formIds = form.ids.filter(i => i.source === 'NINDS');
+            console.log(`formId: ${formIds[0].id} question length: ${rows.length} ${getCell(row, 'External ID.NINDS')} ${name} NHLBI variable not found.`);
             process.exit(1);
+        } else {
+            const formElement = convertNhlbiCsvRowToFormElement(row, cde, formId);
+            newSection.formElements.push(formElement);
         }
-        const formElement = convertNhlbiCsvRowToFormElement(row, cde, formId);
-        newSection.formElements.push(formElement);
     }
     formElements.push(newSection);
     return formElements;
