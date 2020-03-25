@@ -120,7 +120,17 @@ function parseQuestionLabel(row, formId) {
 function convertNhlbiCsvRowToFormElement(row, cde, formId) {
     const labels = parseQuestionLabel(row, formId);
     const label = labels[0].questionText;
-    const instructions = getCell(row, 'Guidelines/Instructions').replace(/sickle cell:/ig, '');
+    const instructionsArray = getCell(row, 'Guidelines/Instructions')
+        .replace(/SCKLCELL:/ig, '')
+        .split('-----')
+        .map(s => trim(s));
+    const uniqInstructionsArray = uniq(instructionsArray);
+    let instructions = '';
+    if (uniqInstructionsArray.length === 1) {
+        instructions = uniqInstructionsArray[0];
+    } else {
+        instructions = uniqInstructionsArray.join(' ----- ');
+    }
     const inputRestriction = getCell(row, 'Input Restriction');
     const multiselect = inputRestriction.indexOf('Multiple Pre-Defined Values Selected') !== -1;
     const title = getCell(row, 'Title');
