@@ -7,7 +7,6 @@ process.on('unhandledRejection', (error) => {
 
 async function doOneCollection(model) {
     const cond = {
-        tinyId: 'mkugwsfp3ie',
         archived: false
     };
     const cursor = model.find(cond).cursor();
