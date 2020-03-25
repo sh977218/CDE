@@ -1,64 +1,9 @@
 const CSV = require('csv');
 import { readFileSync } from 'fs';
-import { isEmpty, trim, replace, forEach, words, capitalize, join, isEqual, filter } from 'lodash';
-import { loopFormElements, mergeClassificationByOrg, NINDS_PRECLINICAL_NEI_FILE_PATH } from 'ingester/shared/utility';
-
-const STOP_WORDS = ['the', 'of', 'a'];
-
-function capitalizeWord(str: string) {
-    return STOP_WORDS.indexOf(str) === -1 ? capitalize(str) : str;
-}
-
-function notEmptyWord(str: string) {
-    return !isEmpty(str);
-}
-
-function capitalizeBySpace(str: string) {
-    const wordsSpitSpace = words(str, /[^\s]+/g);
-    const wordsSpitSpaceCapitalize = wordsSpitSpace.filter(notEmptyWord).map(capitalizeWord);
-    const joinKeySpace = join(wordsSpitSpaceCapitalize, ' ');
-    return trim(joinKeySpace);
-}
-
-function capitalizeByDot(str: string) {
-    const wordsSpitSpace = words(str, /[^.]+/g);
-    const wordsSpitSpaceCapitalize = wordsSpitSpace.filter(notEmptyWord).map(capitalizeWord);
-    const joinKeySpace = join(wordsSpitSpaceCapitalize, '.');
-    return trim(joinKeySpace);
-}
-
-function capitalizeBySlash(str: string) {
-    const wordsSpitSpace = words(str, /[^/]+/g);
-    const wordsSpitSpaceCapitalize = wordsSpitSpace.filter(notEmptyWord).map(capitalizeWord);
-    const joinKeySpace = join(wordsSpitSpaceCapitalize, '/');
-    return trim(joinKeySpace);
-}
-
-function capitalizeByLeftParentheses(str: string) {
-    const wordsSpitSpace = words(str, /[^(]+/g);
-    const wordsSpitSpaceCapitalize = wordsSpitSpace.filter(notEmptyWord).map(capitalizeWord);
-    const joinKeySpace = join(wordsSpitSpaceCapitalize, '(');
-    return trim(joinKeySpace);
-}
-
-function capitalizeByRightParentheses(str: string) {
-    const wordsSpitSpace = words(str, /[^)]+/g);
-    const wordsSpitSpaceCapitalize = wordsSpitSpace.filter(notEmptyWord).map(capitalizeWord);
-    const joinKeySpace = join(wordsSpitSpaceCapitalize, ')');
-    return trim(joinKeySpace);
-}
+import { isEmpty, trim, replace, words, join, isEqual, filter } from 'lodash';
+import { NINDS_PRECLINICAL_NEI_FILE_PATH } from 'ingester/shared/utility';
 
 function formatKey(key: string) {
-    // reconstruct the key
-    /*
-        const dotFormat = capitalizeByDot(key);
-        const slashFormat = capitalizeBySlash(dotFormat);
-        const leftParenthesesFormat = capitalizeByLeftParentheses(slashFormat);
-        const rightParenthesesFormat = capitalizeByRightParentheses(leftParenthesesFormat);
-        const spaceFormat = capitalizeBySpace(rightParenthesesFormat);
-        const spaceFormat = capitalizeBySpace(key);
-        return trim(spaceFormat);
-    */
     return trim(key.toLowerCase());
 }
 
@@ -85,7 +30,11 @@ export function formatRows(csvFileName: string, rows: any[]) {
             }
         }
 
-        const variableName = getCell(formattedRow, 'variable name');
+        let variableName = getCell(formattedRow, 'variable name');
+        const name = getCell(formattedRow, 'name');
+        if (name) {
+            variableName = name;
+        }
         const title = getCell(formattedRow, 'title');
         if (isEmpty(variableName)) {
             console.log(`${csvFileName} has empty variablename. row: ${i}`);
@@ -98,55 +47,6 @@ export function formatRows(csvFileName: string, rows: any[]) {
         formattedRows.push(formattedRow);
     });
     return formattedRows;
-}
-
-export function fixReferenceDocuments(existingElt: any) {
-    const eltToFix = existingElt.toObject();
-    forEach(eltToFix.referenceDocuments, refDoc => {
-        refDoc.languageCode = 'en-us';
-        refDoc.docType = 'text';
-    });
-    existingElt.referenceDocuments = eltToFix.referenceDocuments;
-}
-
-export function fixDefinitions(existingElt: any) {
-    const eltToFix = existingElt.toObject();
-    forEach(eltToFix.definitions, d => {
-        d.definition = trim(d.definition);
-        d.tags = d.tags.filter((t: string) => !isEqual(t, 'Preferred Question Text'));
-    });
-    existingElt.definitions = eltToFix.definitions;
-}
-
-function fixInstructions(fe: any) {
-    if (fe.instructions) {
-        const trimValueFormat = trim(fe.instructions.valueFormat);
-        const instructions: any = {
-            value: fe.instructions
-        };
-        if (trimValueFormat) {
-            instructions.valueFormat = trimValueFormat;
-            fe.instructions = instructions;
-        }
-    } else {
-        delete fe.instructions;
-    }
-}
-
-export function fixFormElements(existingForm: any) {
-    const formToFix: any = existingForm.toObject();
-    loopFormElements(formToFix.formElements, {
-        onQuestion: (fe: any) => {
-            fixInstructions(fe);
-        },
-        onSection: (fe: any) => {
-            fixInstructions(fe);
-        },
-        onForm: (fe: any) => {
-            fixInstructions(fe);
-        },
-    });
-    existingForm.formElements = formToFix.formElements;
 }
 
 export function convertFileNameToFormName(csvFileName: string) {

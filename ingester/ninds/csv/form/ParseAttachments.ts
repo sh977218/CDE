@@ -16,3 +16,8 @@ export async function parseAttachments(formName: string, csvFileName: string) {
     attachments.push(attachment);
     return attachments;
 }
+
+export async function parseNhlbiAttachments() {
+    const attachments = [];
+    return attachments;
+}

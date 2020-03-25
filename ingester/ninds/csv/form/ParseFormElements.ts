@@ -1,7 +1,8 @@
-import { isEmpty, isEqual } from 'lodash';
+import { isEmpty, isEqual, trim, uniq, uniqBy } from 'lodash';
 import { dataElementModel } from 'server/cde/mongo-cde';
 import { BATCHLOADER } from 'ingester/shared/utility';
 import { getCell } from 'ingester/ninds/csv/shared/utility';
+import { parseFormId } from '../cde/ParseDesignations';
 
 function convertCsvRowToFormElement(row: any, cde: any) {
     const label = getCell(row, 'Preferred Question Text');
@@ -22,12 +23,20 @@ function convertCsvRowToFormElement(row: any, cde: any) {
             derivationRules: cde.derivationRules
         },
         datatype: cde.valueDomain.datatype,
-        datatypeNumber: cde.valueDomain.datatypeNumber,
-        datatypeText: cde.valueDomain.datatypeText,
-        datatypeDate: cde.valueDomain.datatypeDate,
         unitsOfMeasure,
         answers: cde.valueDomain.permissibleValues
     };
+
+    if (cde.valueDomain.datatype === 'Text' && !isEmpty(cde.valueDomain.datatypeText)) {
+        question.datatypeText = cde.valueDomain.datatypeText;
+    }
+    if (cde.valueDomain.datatype === 'Number' && !isEmpty(cde.valueDomain.datatypeNumber)) {
+        question.datatypeNumber = cde.valueDomain.datatypeNumber;
+    }
+    if (cde.valueDomain.datatype === 'Date' && !isEmpty(cde.valueDomain.datatypeDate)) {
+        question.datatypeDate = cde.valueDomain.datatypeDate;
+    }
+
     if (cde.version) {
         question.cde.version = cde.version;
     }
@@ -53,7 +62,7 @@ export async function parseFormElements(form: any, rows: any[]): Promise<any[]> 
         const variableName = getCell(row, 'Variable Name');
         const cde: any = await dataElementModel.findOne({archived: false, 'ids.id': variableName});
         if (!cde) {
-            console.log(`${variableName} not found.`);
+            console.log(`${variableName} variable not found.`);
             process.exit(1);
         }
         const formElement = convertCsvRowToFormElement(row, cde);
@@ -92,3 +101,102 @@ export async function parseFormElements(form: any, rows: any[]): Promise<any[]> 
     formElements.push(newSection);
     return formElements;
 }
+
+function parseQuestionLabel(row, formId) {
+    const pqt = getCell(row, 'Suggested Question Text');
+    const questionLabels = uniq(pqt.split('-----').map(t => {
+        const tArray = t.split(':');
+        const formInfo = trim(tArray[0]);
+        const formId = parseFormId(formInfo);
+        const preferredQuestionText = trim(tArray[1]);
+        return {
+            questionText: preferredQuestionText,
+            formId
+        };
+    }));
+    return questionLabels.filter(q => q.formId === formId);
+}
+
+function convertNhlbiCsvRowToFormElement(row, cde, formId) {
+    const labels = parseQuestionLabel(row, formId);
+    const label = labels[0].questionText;
+    const instructionsArray = getCell(row, 'Guidelines/Instructions')
+        .replace(/SCKLCELL:/ig, '')
+        .split('-----')
+        .map(s => trim(s));
+    const uniqInstructionsArray = uniq(instructionsArray);
+    let instructions = '';
+    if (uniqInstructionsArray.length === 1) {
+        instructions = uniqInstructionsArray[0];
+    } else {
+        instructions = uniqInstructionsArray.join(' ----- ');
+    }
+    const inputRestriction = getCell(row, 'Input Restriction');
+    const multiselect = inputRestriction.indexOf('Multiple Pre-Defined Values Selected') !== -1;
+    const title = getCell(row, 'Title');
+    const unitsOfMeasure = [];
+    if (cde.valueDomain.uom) {
+        unitsOfMeasure.push({code: cde.valueDomain.uom});
+    }
+    const question: any = {
+        cde: {
+            tinyId: cde.tinyId,
+            name: title,
+            permissibleValues: cde.valueDomain.permissibleValues,
+            ids: cde.ids,
+            derivationRules: cde.derivationRules
+        },
+        datatype: cde.valueDomain.datatype,
+        unitsOfMeasure,
+        answers: cde.valueDomain.permissibleValues
+    };
+
+    if (cde.valueDomain.datatype === 'Text' && !isEmpty(cde.valueDomain.datatypeText)) {
+        question.datatypeText = cde.valueDomain.datatypeText;
+    }
+    if (cde.valueDomain.datatype === 'Number' && !isEmpty(cde.valueDomain.datatypeNumber)) {
+        question.datatypeNumber = cde.valueDomain.datatypeNumber;
+    }
+    if (cde.valueDomain.datatype === 'Date' && !isEmpty(cde.valueDomain.datatypeDate)) {
+        question.datatypeDate = cde.valueDomain.datatypeDate;
+    }
+
+    if (cde.version) {
+        question.cde.version = cde.version;
+    }
+    return {
+        elementType: 'question',
+        label,
+        instructions: {value: instructions},
+        multiselect,
+        question
+    };
+}
+
+export async function parseNhlbiFormElements(form, rows, formId) {
+    const formElements: any[] = [];
+    const newSection: any = {
+        label: '',
+        elementType: 'section',
+        formElements: []
+    };
+    for (const row of rows) {
+        const name = getCell(row, 'Name');
+        const cde: any = await dataElementModel.findOne({
+            archived: false,
+            'ids.id': name,
+            'registrationState.registrationStatus': {$ne: 'Retired'}
+        });
+        if (!cde) {
+            const formIds = form.ids.filter(i => i.source === 'NINDS');
+            console.log(`formId: ${formIds[0].id} question length: ${rows.length} ${getCell(row, 'External ID.NINDS')} ${name} NHLBI variable not found.`);
+            process.exit(1);
+        } else {
+            const formElement = convertNhlbiCsvRowToFormElement(row, cde, formId);
+            newSection.formElements.push(formElement);
+        }
+    }
+    formElements.push(newSection);
+    return formElements;
+}
+
