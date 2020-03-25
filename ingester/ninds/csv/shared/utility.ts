@@ -133,22 +133,6 @@ function fixInstructions(fe: any) {
     }
 }
 
-export function fixFormElements(existingForm: any) {
-    const formToFix: any = existingForm.toObject();
-    loopFormElements(formToFix.formElements, {
-        onQuestion: (fe: any) => {
-            fixInstructions(fe);
-        },
-        onSection: (fe: any) => {
-            fixInstructions(fe);
-        },
-        onForm: (fe: any) => {
-            fixInstructions(fe);
-        },
-    });
-    existingForm.formElements = formToFix.formElements;
-}
-
 export function convertFileNameToFormName(csvFileName: string) {
     const replaceCsvFileName = replace(csvFileName, '.csv', '');
     const wordsCsvFileName = words(replaceCsvFileName);

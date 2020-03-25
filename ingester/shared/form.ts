@@ -9,14 +9,12 @@ import {
 } from 'ingester/shared/de';
 
 
-async function fixFormElements(formObj) {
+export async function fixFormElements(formObj) {
     const formElements = [];
     for (const fe of formObj.formElements) {
         fixInstructions(fe);
         const elementType = fe.elementType;
         if (elementType === 'question') {
-            fixQuestionDatatype(fe);
-            await fixQuestion(fe);
             formElements.push(fe);
         } else {
             fe.formElements = await fixSectionInform(fe, formObj);
@@ -31,7 +29,7 @@ function fixInstructions(fe: any) {
     const instructions: any = {};
     if (!isEmpty(fe.instructions)) {
         if (!isEmpty(fe.instructions.value)) {
-            instructions.value = fe.instructions.value;
+            instructions.value = fe.instructions.value.replace(/src="\/data\//ig, 'src="/server/system/data/');
         }
         if (!isEmpty(fe.instructions.valueFormat)) {
             instructions.valueFormat = fe.instructions.valueFormat;
@@ -114,8 +112,6 @@ async function fixSectionInform(sectionInformFe, formObj) {
         fixInstructions(fe);
         const elementType = fe.elementType;
         if (elementType === 'question') {
-            fixQuestionDatatype(fe);
-            await fixQuestion(fe);
             formElements.push(fe);
         } else {
             fe.formElements = await fixSectionInform(fe, formObj);
