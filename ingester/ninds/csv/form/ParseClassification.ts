@@ -5,3 +5,15 @@ export function parseClassification(form, rows) {
         parseCdeClassification(form, row);
     }
 }
+
+export function parseNhlbiClassification(existingFormObj) {
+    const otherClassifications = existingFormObj.classification.filter(c => c.stewardOrg.name !== 'NHLBI');
+    otherClassifications.push({
+        stewardOrg: {name: 'NHLBI'},
+        elements: [{
+            name: 'Sickle Cell',
+            elements: []
+        }]
+    });
+    existingFormObj.classification = otherClassifications;
+}
