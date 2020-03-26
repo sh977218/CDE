@@ -1,6 +1,5 @@
-import { dataElementModel, dataElementSourceModel } from 'server/cde/mongo-cde';
 import { formModel, formSourceModel } from 'server/form/mongo-form';
-import { fixSources } from 'ingester/shared/utility';
+import { fixFormElements } from 'ingester/shared/form';
 
 process.on('unhandledRejection', (error) => {
     console.log(error);
@@ -8,19 +7,13 @@ process.on('unhandledRejection', (error) => {
 
 async function doOneCollection(model) {
     const cond = {
-        $or: [
-            {source: 'NINDS Preclinical NEI'},
-            {'sources.sourceName': 'NINDS Preclinical NEI'}
-        ]
+        archived: false
     };
     const cursor = model.find(cond).cursor();
     let count = 0;
     return cursor.eachAsync(async model => {
         const modelObj = model.toObject();
-        if (modelObj.source === 'NINDS Preclinical NEI') {
-            model.source = 'NINDS Preclinical TBI';
-        }
-        model.sources = fixSources(modelObj);
+        model.formElements = await fixFormElements(modelObj);
         await model.save().catch(error => {
             console.log(`await model.save() Error ${error}`);
         });
@@ -30,7 +23,7 @@ async function doOneCollection(model) {
 }
 
 function run() {
-    const tasks = [dataElementModel, dataElementSourceModel, formModel, formSourceModel]
+    const tasks = [formModel, formSourceModel]
         .map(model => doOneCollection(model));
     Promise.all(tasks).then(() => {
         console.log('done');

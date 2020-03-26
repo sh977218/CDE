@@ -72,6 +72,11 @@ export function module() {
         });
     });
 
+    router.get('/data/:id', (req, res) => {
+        const fileId = req.params.id;
+        res.redirect('/server/system/data/' + fileId);
+    });
+
     router.get('/supportedBrowsers', (req, res) => res.render('supportedBrowsers', 'system' as any));
 
     router.get('/loginText', csrf(), (req, res) => res.render('loginText', 'system' as any, {csrftoken: req.csrfToken()} as any));

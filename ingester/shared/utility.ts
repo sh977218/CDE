@@ -155,7 +155,6 @@ function mergeElements(existingElements, newElements) {
     });
 }
 
-
 export function mergeClassificationByOrg(existingObj, newObj, orgName: string = '') {
     const newClassification = newObj.classification;
     const existingClassification = existingObj.classification;
@@ -578,7 +577,6 @@ export function mergeElt(existingEltObj: any, newEltObj: any, source: string) {
     } else {
         existingEltObj.registrationState.registrationStatus = newEltObj.registrationState.registrationStatus;
     }
-
 }
 
 // Fix data type
@@ -732,7 +730,6 @@ export function fixValueDomainOrQuestion(valueDomainOrQuestion) {
     }
 }
 
-
 export function sortProp(elt) {
     return sortBy(elt.properties, 'key');
 }
@@ -742,20 +739,6 @@ export function sortRefDoc(elt) {
         r.languageCode = 'en-us';
     });
     return sortBy(elt.referenceDocuments, ['docType', 'languageCode', 'document']);
-}
-
-export function fixFormCopyright(form) {
-    if (form.copyright) {
-        if (form.copyright.text) {
-            form.copyright.text = form.copyright.text;
-        }
-        if (form.copyright.authority) {
-            form.copyright.authority = form.copyright.authority;
-        }
-    }
-    if (isEmpty(form.copyright)) {
-        delete form.copyright;
-    }
 }
 
 export function addAttachment(readable: Readable, attachment: any) {
@@ -788,7 +771,6 @@ export function addAttachment(readable: Readable, attachment: any) {
         });
     });
 }
-
 
 // Utility methods related to cde and form
 export function sortReferenceDocuments(referenceDocuments: any[]) {
@@ -839,39 +821,6 @@ export function findOneForm(forms: any[]) {
         process.exit(1);
     }
 }
-
-export function fixSourcesUpdated(sources: any[]) {
-    sources.forEach(s => {
-        if (isEmpty(s.updated)) {
-            delete s.updated;
-        }
-    });
-    return sources;
-}
-
-export function fixIdentifier(ids: any[]) {
-    ids.forEach(i => {
-        if (!isEmpty(i.version)) {
-            i.version = parseFloat(i.version).toString();
-        }
-        if (i.source === 'NINDS Variable Name') {
-            i.source = 'BRICS Variable Name';
-        }
-    });
-    return sortIdentifier(ids, 'NINDS');
-}
-
-export async function fixCde(cdeToFix: any) {
-    const cdeToFixObj = cdeToFix.toObject();
-    cdeToFix.designations = sortDesignations(cdeToFixObj.designations);
-    cdeToFix.ids = fixIdentifier(cdeToFixObj.ids);
-    const savedCde = await cdeToFix.save().catch((err: any) => {
-        console.log(`Not able to save cde when fixCde ${cdeToFixObj.tinyId} ${err}`);
-        process.exit(1);
-    });
-    return savedCde;
-}
-
 
 export function retiredElt(elt: any) {
     elt.registrationState.registrationStatus = 'Retired';
