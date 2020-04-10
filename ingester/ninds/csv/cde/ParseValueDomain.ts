@@ -205,8 +205,10 @@ export function parseNhlbiValueDomain(row: any) {
     };
 
     const inputRestrictionString = getCell(row, 'Input Restrictions').toLowerCase();
+    const datatypeString = getCell(row, 'Data Type');
 
-    const valueListInputRestriction = ['Single Pre-Defined Value Selected', 'Multiple Pre-Defined Values Selected'];
+    const valueListInputRestriction = ['Single Pre-Defined Value Selected', 'Multiple Pre-Defined Values Selected']
+        .map(i => i.toLowerCase());
     if (valueListInputRestriction.indexOf(inputRestrictionString) !== -1) {
         valueDomain.datatype = 'Value List';
         const permissibleValueString = getCell(row, 'Permissible Values');
@@ -222,13 +224,14 @@ export function parseNhlbiValueDomain(row: any) {
                 valueDomain.permissibleValues.push(permissibleValue);
             });
         } else {
-            console.log('bad pvs');
-            process.exit(1);
+            const variableName = getCell(row, 'Name');
+            console.log(`bad pvs: name '${variableName}' inputRestriction '${inputRestrictionString}'  datatype: '${datatypeString}' permissibleValue '${permissibleValueString}' permissibleValueDescriptions '${permissibleValueOutputCodes}' `);
+            // @TODO remove, this is temp fix.
+            valueDomain.datatype = 'Text';
+//            process.exit(1);
         }
     } else {
-        const datatypeString = getCell(row, 'Data Type');
         let datatype = DATA_TYPE_MAP[datatypeString];
-
         if (isEmpty(datatype)) {
             console.log(`${datatypeString} is not in data type map.`);
             datatype = 'Text';
