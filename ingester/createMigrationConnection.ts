@@ -38,8 +38,9 @@ export const PROTOCOL = migrationConn.model('PROTOCOL', new Schema({}, {
 }));
 export const PhenxURL = 'https://www.phenxtoolkit.org/protocols';
 export let redCapZipFolder = 's:/MLB/CDE/PhenX/www.phenxtoolkit.org/toolkit_content/redcap_zip/';
-export let sickleCellDataElementsXlsx = 'C:/Users/huangs8/Downloads/SickleCellDataElements_20200305.xlsx';
-export let sickleCellFormMappingXlsx = 'C:/Users/huangs8/Downloads/SickleCell_NLM_FormMapping.xlsx';
+
+export let sickleCellDataElementsXlsx = 'S:/MLB/CDE/NHLBI/DataElements.xlsx';
+export let sickleCellFormMappingXlsx = 'S:/MLB/CDE/NHLBI/SickleCell_NLM_FormMapping.xlsx';
 
 if (hostname() === 'Peter-PC') {
     redCapZipFolder = 'e:/www.phenxtoolkit.org/toolkit_content/redcap_zip/';

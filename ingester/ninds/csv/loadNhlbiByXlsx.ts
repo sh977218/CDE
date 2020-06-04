@@ -40,6 +40,7 @@ async function doOneNhlbiCde(row, formMap) {
     };
     const existingCdes: any[] = await dataElementModel.find(cond);
     const existingCde: any = findOneCde(existingCdes);
+    const nhlbiCde = await createNhlbiCde(row, formMap);
     if (existingCde) {
         // store form question info into formMap
         parseNhlbiDesignations(row, formMap);
@@ -50,13 +51,17 @@ async function doOneNhlbiCde(row, formMap) {
         existingCde.lastMigrationScript = lastMigrationScript;
         existingCde.imported = imported;
 
+        if (existingCde.valueDomain.datatype !== nhlbiCde.valueDomain.datatype) {
+            const variableName = getCell(row, 'Name');
+            console.log('Error: Data type mismatch. ' + variableName);
+        }
+
         // NHLBI NINDS ID might not correct NINDS ID, we put NHLBI id if it's different.
         assignNhlbiId(existingCde, row);
         await existingCde.save();
         existingDeCount++;
         console.log(`existingDeCount: ${existingDeCount}`);
     } else {
-        const nhlbiCde = await createNhlbiCde(row, formMap);
         await createCde(nhlbiCde);
         newDeCount++;
         console.log(`newDeCount: ${newDeCount}`);
