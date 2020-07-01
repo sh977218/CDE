@@ -42,6 +42,8 @@ export let redCapZipFolder = 's:/MLB/CDE/PhenX/www.phenxtoolkit.org/toolkit_cont
 export let sickleCellDataElementsXlsx = 'S:/MLB/CDE/NHLBI/DataElements.xlsx';
 export let sickleCellFormMappingXlsx = 'S:/MLB/CDE/NHLBI/SickleCell_NLM_FormMapping.xlsx';
 
+export let krabbeDataElementsXlsx = 'S:/MLB/CDE/NICHD/KrabbeWWR_CDEs.xlsx';
+
 if (hostname() === 'Peter-PC') {
     redCapZipFolder = 'e:/www.phenxtoolkit.org/toolkit_content/redcap_zip/';
     sickleCellDataElementsXlsx = 'C:/Users/Peter/Downloads/SickleCellDataElements_20200305.xlsx';
