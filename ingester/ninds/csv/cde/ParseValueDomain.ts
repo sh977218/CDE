@@ -103,15 +103,20 @@ const UOM_MAP: any = {
 
 const DATA_TYPE_MAP: any = {
     Alphanumeric: 'Text',
-    'Date or Date & Time': 'Date',
-    'Numeric Values': 'Number',
+    alphanumeric: 'Text',
+    Time: 'Text',
+    time: 'Text',
+    GUID: 'Text',
+    gUID: 'Text',
     Numeric: 'Number',
+    numeric: 'Number',
+    'Numeric Values': 'Number',
     'numeric Values': 'Number',
     'Numeric values': 'Number',
-    Time: 'Text',
-    alphanumeric: 'Text',
-    GUID: 'Text',
-    File: 'File'
+    File: 'File',
+    file: 'File',
+    'Date or Date & Time': 'Date',
+    'date or date & time': 'Date'
 };
 
 export function parseValueDomain(row: any) {
@@ -167,8 +172,7 @@ export function parseValueDomain(row: any) {
             if (!isEmpty(datatypeText)) {
                 valueDomain.datatypeText = datatypeText;
             }
-        }
-        if (datatype === 'Number') {
+        } else if (datatype === 'Number') {
             valueDomain.datatype = 'Number';
             const datatypeNumber: QuestionTypeNumber = {};
             const minimumValue = getCell(row, 'Minimum Value');
@@ -184,30 +188,59 @@ export function parseValueDomain(row: any) {
             if (!isEmpty(datatypeNumber)) {
                 valueDomain.datatypeNumber = datatypeNumber;
             }
+        } else if (datatype === 'Date') {
+            valueDomain.datatype = 'Date';
+        } else {
+            console.log('Unknown data type: ');
+            process.exit(1);
         }
     }
 
     return valueDomain;
 }
 
+function parseDatatypeFromRow(row) {
+    const variableName = getCell(row, 'Name');
+    const inputRestrictionString = getCell(row, 'Input Restrictions').toLowerCase();
+    const datatypeString = getCell(row, 'Data Type');
+    const preDefinedValueSelected = ['Single Pre-Defined Value Selected', 'Multiple Pre-Defined Values Selected']
+        .map(i => i.toLowerCase());
+    const freeFormEntry = 'Free-Form Entry'.toLowerCase();
+    if (preDefinedValueSelected.indexOf(inputRestrictionString) !== -1) {
+        return 'Value List';
+    } else if (inputRestrictionString === freeFormEntry) {
+        const datatype = DATA_TYPE_MAP[datatypeString];
+        if (isEmpty(datatype)) {
+            console.log(`Error: ${datatypeString} is not in data type map.`);
+            process.exit(1);
+        } else {
+            return datatype;
+        }
+    } else {
+        console.log(`Error: Unknown input restriction: '${variableName}' inputRestriction '${inputRestrictionString}'  datatype: '${datatypeString}'`);
+        process.exit(1);
+    }
+}
+
 export function parseNhlbiValueDomain(row: any) {
+    const variableName = getCell(row, 'Name');
     const unitOfMeasure = getCell(row, 'Measurement Type');
     const uom = UOM_MAP[unitOfMeasure];
     if (uom === undefined) {
         console.log(`${unitOfMeasure} is not in the uom map. NhlbiValueDomain`);
-        /*
-                process.exit(1);
-        */
+        process.exit(1);
     }
     const valueDomain: any = {
+        datatype: 'Text',
         uom,
         permissibleValues: []
     };
 
     const inputRestrictionString = getCell(row, 'Input Restrictions').toLowerCase();
+    const datatypeString = getCell(row, 'Data Type');
 
-    const valueListInputRestriction = ['Single Pre-Defined Value Selected', 'Multiple Pre-Defined Values Selected'];
-    if (valueListInputRestriction.indexOf(inputRestrictionString) !== -1) {
+    const datatype = parseDatatypeFromRow(row);
+    if (datatype === 'Value List') {
         valueDomain.datatype = 'Value List';
         const permissibleValueString = getCell(row, 'Permissible Values');
         const permissibleValueOutputCodes = getCell(row, 'Permissible Value Descriptions');
@@ -222,48 +255,43 @@ export function parseNhlbiValueDomain(row: any) {
                 valueDomain.permissibleValues.push(permissibleValue);
             });
         } else {
-            console.log('bad pvs');
-            process.exit(1);
-        }
-    } else {
-        const datatypeString = getCell(row, 'Data Type');
-        let datatype = DATA_TYPE_MAP[datatypeString];
-
-        if (isEmpty(datatype)) {
-            console.log(`${datatypeString} is not in data type map.`);
-            datatype = 'Text';
-        }
-
-        if (datatype === 'Text') {
+            console.log(`Error: bad pvs: name '${variableName}' inputRestriction '${inputRestrictionString}'  datatype: '${datatypeString}' permissibleValue '${permissibleValueString}' permissibleValueDescriptions '${permissibleValueOutputCodes}' `);
+            // @TODO remove, this is temp fix.
             valueDomain.datatype = 'Text';
-            const datatypeText: QuestionTypeText = {};
-            const maximumCharacterQuantity = getCell(row, 'Maximum Character Quantity');
-            const maximumCharacterQuantityNumber = Number(maximumCharacterQuantity);
-            if (!isNaN(maximumCharacterQuantityNumber)) {
-                datatypeText.maxLength = maximumCharacterQuantityNumber;
-            }
-            if (!isEmpty(datatypeText)) {
-                valueDomain.datatypeText = datatypeText;
-            }
+//            process.exit(1);
         }
-        if (datatype === 'Number') {
-            valueDomain.datatype = 'Number';
-            const datatypeNumber: QuestionTypeNumber = {};
-            const minimumValue = getCell(row, 'Minimum Value');
-            const minimumValueNumber = Number(minimumValue);
-            if (!isNaN(minimumValueNumber)) {
-                datatypeNumber.minValue = minimumValueNumber;
-            }
-            const maximumValue = getCell(row, 'Maximum Value');
-            const maximumValueNumber = Number(maximumValue);
-            if (!isNaN(maximumValueNumber)) {
-                datatypeNumber.maxValue = maximumValueNumber;
-            }
-            if (!isEmpty(datatypeNumber)) {
-                valueDomain.datatypeNumber = datatypeNumber;
-            }
+    } else if (datatype === 'Text') {
+        valueDomain.datatype = 'Text';
+        const datatypeText: QuestionTypeText = {};
+        const maximumCharacterQuantity = getCell(row, 'Maximum Character Quantity');
+        const maximumCharacterQuantityNumber = Number(maximumCharacterQuantity);
+        if (!isNaN(maximumCharacterQuantityNumber)) {
+            datatypeText.maxLength = maximumCharacterQuantityNumber;
         }
+        if (!isEmpty(datatypeText)) {
+            valueDomain.datatypeText = datatypeText;
+        }
+    } else if (datatype === 'Number') {
+        valueDomain.datatype = 'Number';
+        const datatypeNumber: QuestionTypeNumber = {};
+        const minimumValue = getCell(row, 'Minimum Value');
+        const minimumValueNumber = Number(minimumValue);
+        if (!isNaN(minimumValueNumber)) {
+            datatypeNumber.minValue = minimumValueNumber;
+        }
+        const maximumValue = getCell(row, 'Maximum Value');
+        const maximumValueNumber = Number(maximumValue);
+        if (!isNaN(maximumValueNumber)) {
+            datatypeNumber.maxValue = maximumValueNumber;
+        }
+        if (!isEmpty(datatypeNumber)) {
+            valueDomain.datatypeNumber = datatypeNumber;
+        }
+    } else if (datatype === 'Date') {
+        valueDomain.datatype = 'Date';
+    } else {
+        console.log(`Error: Unknown data type: name '${variableName}' inputRestriction '${inputRestrictionString}'  datatype: '${datatypeString}'`);
+        process.exit(1);
     }
-
     return valueDomain;
 }
