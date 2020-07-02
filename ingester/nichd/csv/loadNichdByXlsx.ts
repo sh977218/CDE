@@ -7,7 +7,9 @@ import { formModel } from 'server/form/mongo-form';
 import { formatRows, getCell } from 'ingester/ninds/csv/shared/utility';
 import { createNhlbiCde } from 'ingester/ninds/csv/cde/cde';
 import { createNhlbiForm } from 'ingester/ninds/csv/form/form';
-import { createCde, createForm, findOneCde, findOneForm, imported, lastMigrationScript } from 'ingester/shared/utility';
+import {
+    createCde, createForm, findOneCde, findOneForm, imported, lastMigrationScript, mergeElt
+} from 'ingester/shared/utility';
 import {
     krabbeDataElementsXlsx, sickleCellDataElementsXlsx, sickleCellFormMappingXlsx
 } from 'ingester/createMigrationConnection';
@@ -35,47 +37,22 @@ function assignNhlbiId(existingCde, row) {
 }
 
 export async function runOneNichdDataElement(nichdRow) {
-
-    const nlmId = nichdRow.shortID;
-    let existingCde = null;
-    if (nlmId) {
+    const nlmId = trim(nichdRow.shortID);
+    const newCdeObj = createNichdCde(nichdRow);
+    const newCde = new dataElementModel(newCdeObj);
+    if (isEmpty(nlmId)) {
+        await newCde.save();
+    } else {
         const cond = {
             archived: false,
             tinyId: nlmId,
             'registrationState.registrationStatus': {$ne: 'Retired'}
         };
-        existingCde = dataElementModel.find(cond);
-    } else {
-        const nichdCdeObj = createNichdCde(nichdRow);
-        const nichdCde = new dataElementModel(nichdCdeObj);
-        existingCde = await nichdCde.save();
-    }
-    /*
-    if (existingCde) {
-        // store form question info into formMap
-        parseNhlbiDesignations(row, formMap);
-        const existingCdeObj = existingCde.toObject();
-        parseNhlbiCdeClassification(existingCdeObj, row);
-        existingCde.classification = existingCdeObj.classification;
-
-        existingCde.lastMigrationScript = lastMigrationScript;
-        existingCde.imported = imported;
-
-        if (existingCde.valueDomain.datatype !== nhlbiCde.valueDomain.datatype) {
-            const variableName = getCell(row, 'Name');
-            console.log('Error: Data type mismatch. ' + variableName);
-        }
-
-        // NHLBI NINDS ID might not correct NINDS ID, we put NHLBI id if it's different.
-        assignNhlbiId(existingCde, row);
+        const existingCdes: any[] = await dataElementModel.find(cond);
+        const existingCde: any = findOneCde(existingCdes);
+        mergeElt(existingCde, newCde, 'NICHD');
         await existingCde.save();
-        existingDeCount++;
-        console.log(`existingDeCount: ${existingDeCount}`);
-    } else {
-        await createCde(nhlbiCde);
-        newDeCount++;
-        console.log(`newDeCount: ${newDeCount}`);
-    }*/
+    }
 }
 
 
