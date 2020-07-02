@@ -7,8 +7,10 @@ import { parseNichdIds } from 'ingester/nichd/csv/cde/ParseIds';
 import { parseNichdValueDomain } from 'ingester/nichd/csv/cde/ParseValueDomain';
 import { parseNichdReferenceDocuments } from 'ingester/nichd/csv/cde/ParseReferenceDocuments';
 import { parseNichdProperties } from 'ingester/nichd/csv/cde/ParseProperties';
+import { parseNichdClassification } from 'ingester/nichd/csv/cde/ParseClassification';
 
 export function createNichdCde(nichdRow) {
+    const nlmId = nichdRow.shortID;
     const designations = parseNichdDesignations(nichdRow);
     const definitions = parseNichdDefinitions();
     const sources = parseNichdSources();
@@ -17,8 +19,9 @@ export function createNichdCde(nichdRow) {
     const valueDomain = parseNichdValueDomain(nichdRow);
     const referenceDocuments = parseNichdReferenceDocuments();
     const properties = parseNichdProperties();
+    const classification = parseNichdClassification();
     const nichdCde: any = {
-        tinyId: generateTinyId(),
+        tinyId: nlmId ? nlmId : generateTinyId(),
         stewardOrg: {
             name: 'NICHD'
         },
@@ -36,15 +39,7 @@ export function createNichdCde(nichdRow) {
         attachments: [],
         properties,
         ids,
-        classification: [{
-            stewardOrg: {
-                name: 'NICHD',
-                elements: [{
-                    name: 'NBSTRN Krabbe Disease',
-                    elements: []
-                }]
-            }
-        }]
+        classification
     };
 
     return nichdCde;

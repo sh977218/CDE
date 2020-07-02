@@ -9,5 +9,6 @@ export const map = {
     checkbox: 'Value List',
     file: 'File',
     notes: 'Text',
-    '': ''
+    dropdown: 'Value List',
+    '': 'Text'
 };

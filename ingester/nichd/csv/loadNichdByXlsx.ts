@@ -8,7 +8,8 @@ import { formatRows, getCell } from 'ingester/ninds/csv/shared/utility';
 import { createNhlbiCde } from 'ingester/ninds/csv/cde/cde';
 import { createNhlbiForm } from 'ingester/ninds/csv/form/form';
 import {
-    createCde, createForm, findOneCde, findOneForm, imported, lastMigrationScript, mergeElt
+    BATCHLOADER,
+    createCde, createForm, findOneCde, findOneForm, imported, lastMigrationScript, mergeElt, updateCde
 } from 'ingester/shared/utility';
 import {
     krabbeDataElementsXlsx, sickleCellDataElementsXlsx, sickleCellFormMappingXlsx
@@ -37,11 +38,14 @@ function assignNhlbiId(existingCde, row) {
 }
 
 export async function runOneNichdDataElement(nichdRow) {
-    const nlmId = trim(nichdRow.shortID);
+    const nlmId = nichdRow.shortID;
     const newCdeObj = createNichdCde(nichdRow);
     const newCde = new dataElementModel(newCdeObj);
     if (isEmpty(nlmId)) {
-        await newCde.save();
+        await newCde.save().catch((err: any) => {
+            console.log(`Not able to save cde when save new NICHD cde ${newCde.tinyId} ${err}`);
+            process.exit(1);
+        });
     } else {
         const cond = {
             archived: false,
@@ -51,7 +55,7 @@ export async function runOneNichdDataElement(nichdRow) {
         const existingCdes: any[] = await dataElementModel.find(cond);
         const existingCde: any = findOneCde(existingCdes);
         mergeElt(existingCde, newCde, 'NICHD');
-        await existingCde.save();
+        await updateCde(existingCde, BATCHLOADER);
     }
 }
 
@@ -68,6 +72,7 @@ async function run() {
     const nichdForms = groupBy(nichdRows, 'Project');
     for (const nichdFormName in nichdForms) {
         if (nichdForms.hasOwnProperty(nichdFormName)) {
+//            const nichdRows = nichdForms[nichdFormName].filter(n => n['Field Type'] !== 'text');
             const nichdRows = nichdForms[nichdFormName];
             await runOneNichdForm(nichdFormName, nichdRows);
         }

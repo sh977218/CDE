@@ -1,34 +1,51 @@
-import { isEmpty } from 'lodash';
+import { isEmpty, trim } from 'lodash';
 import { map as RED_CAP_DATA_TYPE_MAP } from './REDCAP_DATATYPE_MAP';
 
 export function parseValueDomain(row) {
-    let valueDomain: any = {};
+    const valueDomain: any = {
+        datatype: 'Text',
+        uom: '',
+        permissibleValues: []
+    };
 
-    let fieldNote = row['Field Note'].trim();
-    let uomIndex = fieldNote.indexOf('| |');
-    if (uomIndex !== -1) valueDomain.uom = fieldNote.substr(0, uomIndex).trim();
+    const fieldNote = trim(row['Field Note']);
+    if (fieldNote) {
+        const uomIndex = fieldNote.indexOf('| |');
+        if (uomIndex !== -1) {
+            valueDomain.uom = fieldNote.substr(0, uomIndex).trim();
+        }
+    }
 
-    let fieldType = row['Field Type'].trim();
-    let validationType = row['Text Validation Type OR Show Slider Number'];
-    let choicesCalculationsORSliderLabels = row['Choices, Calculations, OR Slider Labels'];
-    if (validationType) validationType = validationType.trim();
-    let datatype = RED_CAP_DATA_TYPE_MAP[fieldType];
-    valueDomain.datatype = datatype;
-    if (datatype === 'Date') {
+    const fieldType = trim(row['Field Type']);
+    const validationType = trim(row['Text Validation Type OR Show Slider Number']);
+    const choicesCalculationsORSliderLabels = row['Choices, Calculations, OR Slider Labels'];
+    const datatype = RED_CAP_DATA_TYPE_MAP[fieldType];
+    if (datatype) {
+        valueDomain.datatype = datatype;
+    } else {
+        console.log('Unknown datatype: ' + fieldType);
+        process.exit(1);
+    }
+
+    if (datatype === 'Text') {
+        if (validationType === 'number') {
+            valueDomain.datatype = 'Number';
+        }
+    } else if (datatype === 'Date') {
         valueDomain.datatypeDate = {
             format: validationType.replace('date_', '')
-        }
+        };
     } else if (datatype === 'Number') {
         valueDomain.datatypeNUmber = {
             precision: validationType === 'integer' ? 2 : 0
         };
-        let textValidationMin = row['Text Validation Min'].trim();
-        let textValidationMax = row['Text Validation Max'].trim();
+        const textValidationMin = row['Text Validation Min'].trim();
+        const textValidationMax = row['Text Validation Max'].trim();
         if (textValidationMin.length > 0) {
-            valueDomain.datatypeNUmber.minValue = parseInt(textValidationMin);
+            valueDomain.datatypeNUmber.minValue = parseInt(textValidationMin, 10);
         }
         if (textValidationMax.length > 0) {
-            valueDomain.datatypeNUmber.maxValue = parseInt(textValidationMax);
+            valueDomain.datatypeNUmber.maxValue = parseInt(textValidationMax, 10);
         }
     } else if (datatype === 'Value List') {
         if (fieldType === 'yesno') {
@@ -41,17 +58,17 @@ export function parseValueDomain(row) {
             }];
         } else {
             if (!isEmpty(choicesCalculationsORSliderLabels)) {
-                let permissibleValues = [];
-                let pvArray = choicesCalculationsORSliderLabels.split('|');
+                const permissibleValues = [];
+                const pvArray = choicesCalculationsORSliderLabels.split('|');
                 pvArray.forEach(pvText => {
                     if (pvText) {
-                        let commaIndex = pvText.indexOf(',');
-                        let permissibleValue = pvText.substr(0, commaIndex);
-                        let valueMeaningName = pvText.substr(commaIndex + 1, pvText.length - 1);
+                        const commaIndex = pvText.indexOf(',');
+                        const permissibleValue = pvText.substr(0, commaIndex);
+                        const valueMeaningName = pvText.substr(commaIndex + 1, pvText.length - 1);
                         permissibleValues.push({
                             permissibleValue: permissibleValue.trim(),
                             valueMeaningName: valueMeaningName.trim()
-                        })
+                        });
                     }
                 });
                 valueDomain.permissibleValues = permissibleValues;
@@ -59,14 +76,10 @@ export function parseValueDomain(row) {
                 valueDomain.datatype = 'Text';
             }
         }
-    } else if (datatype === 'Text') {
-        if (validationType.trim() === 'number') {
-            valueDomain.datatype = 'Number';
-        }
-
     } else if (datatype === 'File') {
+        valueDomain.datatype = 'File';
     } else {
-        throw 'Unknown datatype: ' + fieldType;
+        throw new Error('Unknown datatype: ' + fieldType);
     }
     return valueDomain;
 }

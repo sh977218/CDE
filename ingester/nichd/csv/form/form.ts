@@ -1,12 +1,15 @@
 import { generateTinyId } from 'server/system/mongo-data';
 import { BATCHLOADER, created, imported } from 'ingester/shared/utility';
 import { parseFormElements } from 'ingester/nichd/csv/form/ParseFormElements';
+import { parseNichdClassification } from 'ingester/nichd/csv/cde/ParseClassification';
 
 export async function createNichdForm(nichdFormName, nichdRows) {
     const designations = [{
         designation: nichdFormName,
         tags: []
     }];
+    const classification = parseNichdClassification();
+
     const nichdForm: any = {
         tinyId: generateTinyId(),
         stewardOrg: {
@@ -26,15 +29,7 @@ export async function createNichdForm(nichdFormName, nichdRows) {
         properties: [],
         ids: [],
         attachments: [],
-        classification: [{
-            stewardOrg: {
-                name: 'NICHD',
-                elements: [{
-                    name: 'NBSTRN Krabbe Disease',
-                    elements: []
-                }]
-            }
-        }],
+        classification,
         comments: []
     };
 
