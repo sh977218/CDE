@@ -32,7 +32,6 @@ async function parseNichdSection(nichdSectionName, nichdRows) {
         const questionFormElement = cdeToQuestion(existingCde);
         sectionFormElement.formElements.push(questionFormElement);
     }
-
     return sectionFormElement;
 }
 

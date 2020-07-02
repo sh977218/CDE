@@ -8,8 +8,9 @@ import { formatRows, getCell } from 'ingester/ninds/csv/shared/utility';
 import { createNhlbiCde } from 'ingester/ninds/csv/cde/cde';
 import { createNhlbiForm } from 'ingester/ninds/csv/form/form';
 import {
-    BATCHLOADER,
-    createCde, createForm, findOneCde, findOneForm, imported, lastMigrationScript, mergeElt, updateCde
+    BATCHLOADER, compareElt,
+    createCde, createForm, findOneCde, findOneForm, imported, lastMigrationScript, mergeClassification, mergeElt,
+    updateCde
 } from 'ingester/shared/utility';
 import {
     krabbeDataElementsXlsx, sickleCellDataElementsXlsx, sickleCellFormMappingXlsx
@@ -54,7 +55,10 @@ export async function runOneNichdDataElement(nichdRow) {
         };
         const existingCdes: any[] = await dataElementModel.find(cond);
         const existingCde: any = findOneCde(existingCdes);
+        const diff = compareElt(newCde.toObject(), existingCde.toObject(), 'NCI');
+
         mergeElt(existingCde, newCde, 'NICHD');
+        mergeClassification(existingCde, newCde, 'NICHD');
         await updateCde(existingCde, BATCHLOADER);
     }
 }

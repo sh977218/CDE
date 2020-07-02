@@ -26,7 +26,8 @@ export const sourceMap = {
     NINDS: ['NINDS', 'NINDS Variable Name', 'NINDS caDSR', 'NINDS Preclinical', 'BRICS Variable Name'],
     // tslint:disable-next-line:max-line-length
     'NINDS Preclinical TBI': ['NINDS', 'NINDS Variable Name', 'NINDS caDSR', 'NINDS Preclinical', 'BRICS Variable Name', 'NINDS Preclinical TBI'],
-    NCI: ['NCI', 'caDSR']
+    NCI: ['NCI', 'caDSR'],
+    NICHD: ['NICHD']
 };
 export const TODAY = new Date().toJSON();
 export const lastMigrationScript = `load NICHD on ${moment().format('DD MMMM YYYY')}`;
@@ -218,6 +219,7 @@ export async function createForm(form: any) {
     }
     await new formModel(form).save();
 }
+
 export async function updateForm(elt: any, user: any, options: any = {}) {
     elt.lastMigrationScript = lastMigrationScript;
     return new Promise((resolve, reject) => {
