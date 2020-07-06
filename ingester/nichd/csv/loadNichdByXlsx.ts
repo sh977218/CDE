@@ -1,52 +1,31 @@
 import { isEmpty, trim, groupBy } from 'lodash';
-
 const XLSX = require('xlsx');
 
 import { dataElementModel } from 'server/cde/mongo-cde';
 import { formModel } from 'server/form/mongo-form';
-import { formatRows, getCell } from 'ingester/ninds/csv/shared/utility';
-import { createNhlbiCde } from 'ingester/ninds/csv/cde/cde';
-import { createNhlbiForm } from 'ingester/ninds/csv/form/form';
 import {
-    BATCHLOADER, compareElt,
-    createCde, createForm, findOneCde, findOneForm, imported, lastMigrationScript, mergeClassification, mergeElt,
-    updateCde
+    BATCHLOADER, compareElt, findOneCde, mergeClassification, mergeElt, updateCde, updateRawArtifact
 } from 'ingester/shared/utility';
-import {
-    krabbeDataElementsXlsx, sickleCellDataElementsXlsx, sickleCellFormMappingXlsx
-} from 'ingester/createMigrationConnection';
-import { parseNhlbiClassification as parseNhlbiCdeClassification } from 'ingester/ninds/csv/cde/ParseClassification';
-import { parseNhlbiDesignations } from 'ingester/ninds/csv/cde/ParseDesignations';
+import { krabbeDataElementsXlsx } from 'ingester/createMigrationConnection';
 import { createNichdForm } from 'ingester/nichd/csv/form/form';
 import { createNichdCde } from 'ingester/nichd/csv/cde/cde';
 
-let existingDeCount = 0;
+let updatedDeCount = 0;
 let newDeCount = 0;
-let existingFormCount = 0;
-let newFormCount = 0;
-
-function assignNhlbiId(existingCde, row) {
-    let nindsIdExist = false;
-    const nindsId = getCell(row, 'External ID.NINDS');
-    existingCde.ids.forEach(i => {
-        if (i.id === nindsId) {
-            nindsIdExist = true;
-        }
-    });
-    if (!nindsIdExist) {
-        existingCde.ids.push({source: 'NHLBI', id: nindsId});
-    }
-}
+let sameDeCount = 0;
 
 export async function runOneNichdDataElement(nichdRow) {
-    const nlmId = nichdRow.shortID;
+    const nlmId = trim(nichdRow.shortID);
     const newCdeObj = createNichdCde(nichdRow);
     const newCde = new dataElementModel(newCdeObj);
-    if (isEmpty(nlmId)) {
-        await newCde.save().catch((err: any) => {
-            console.log(`Not able to save cde when save new NICHD cde ${newCde.tinyId} ${err}`);
+    if (isEmpty(nlmId) || nlmId === '?') {
+        const newCdeSaved: any = await newCde.save().catch((err: any) => {
+            console.log(`Not able to save new NICHD cde ${newCde.tinyId} ${err}`);
             process.exit(1);
         });
+        newDeCount++;
+        console.log(`newDeCount: ${newDeCount} newDe ${newCdeSaved.tinyId}`);
+        return newCdeSaved;
     } else {
         const cond = {
             archived: false,
@@ -55,11 +34,28 @@ export async function runOneNichdDataElement(nichdRow) {
         };
         const existingCdes: any[] = await dataElementModel.find(cond);
         const existingCde: any = findOneCde(existingCdes);
-        const diff = compareElt(newCde.toObject(), existingCde.toObject(), 'NCI');
-
-        mergeElt(existingCde, newCde, 'NICHD');
-        mergeClassification(existingCde, newCde, 'NICHD');
-        await updateCde(existingCde, BATCHLOADER);
+        const diff = compareElt(newCde.toObject(), existingCde.toObject(), 'NICHD');
+        if (isEmpty(diff)) {
+            mergeClassification(existingCde, newCde, 'NICHD');
+            const sameCdeSaved = await existingCde.save().catch((err: any) => {
+                console.log(`Not able to save existing NICHD cde ${existingCde.tinyId} ${err}`);
+                process.exit(1);
+            });
+            sameDeCount++;
+            console.log(`sameDeCount: ${sameDeCount} sameDe ${sameCdeSaved.tinyId}`);
+            return sameCdeSaved;
+        } else {
+            const existingCdeObj = existingCde.toObject();
+            mergeElt(existingCdeObj, newCde, 'NICHD');
+            mergeClassification(existingCdeObj, newCde, 'NICHD');
+            const updatedCdeSaved: any = await updateCde(existingCdeObj, BATCHLOADER).catch((err: any) => {
+                console.log(`Not able to update existing NICHD cde ${existingCde.tinyId} ${err}`);
+                process.exit(1);
+            });
+            updatedDeCount++;
+            console.log(`updatedDeCount: ${updatedDeCount} updateCdeSaved ${updatedCdeSaved.tinyId}`);
+            return updatedCdeSaved;
+        }
     }
 }
 
@@ -76,7 +72,6 @@ async function run() {
     const nichdForms = groupBy(nichdRows, 'Project');
     for (const nichdFormName in nichdForms) {
         if (nichdForms.hasOwnProperty(nichdFormName)) {
-//            const nichdRows = nichdForms[nichdFormName].filter(n => n['Field Type'] !== 'text');
             const nichdRows = nichdForms[nichdFormName];
             await runOneNichdForm(nichdFormName, nichdRows);
         }

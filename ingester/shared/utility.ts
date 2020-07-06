@@ -493,7 +493,10 @@ export function mergeIds(existingObj, newObj, source: string) {
 }
 
 export function mergeClassification(existingElt, newObj, classificationOrgName) {
-    const existingObj = existingElt.toObject();
+    let existingObj = existingElt;
+    if (existingElt.toObject) {
+        existingObj = existingElt.toObject();
+    }
     if (existingElt.lastMigrationScript === lastMigrationScript) {
         mergeClassificationByOrg(existingObj, newObj, classificationOrgName);
         existingElt.classification = existingObj.classification;
