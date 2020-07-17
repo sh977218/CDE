@@ -50,6 +50,7 @@ function node(file: string, options?: ExecOptions): Promise<void> {
 }
 
 gulp.task('npm', function npm() {
+    console.log('node version is *********');
     run('node --version', runInAppOptions);
     run('npm -v', runInAppOptions);
     run('npm cache verify', runInAppOptions);
