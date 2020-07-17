@@ -233,13 +233,12 @@ export class PermissibleValueComponent {
         if (this.elt.dataElementConcept && this.elt.dataElementConcept.conceptualDomain && this.elt.dataElementConcept.conceptualDomain.vsac
             && this.elt.dataElementConcept.conceptualDomain.vsac.id) {
             const vsac = this.elt.dataElementConcept.conceptualDomain.vsac;
-            this.http.get('/server/uts/vsacBridge/' + vsac.id).subscribe(
+            this.http.get<any>('/server/uts/vsacBridge/' + vsac.id).subscribe(
                 res => {
                     if (!res) {
                         this.alert.addAlert('danger', 'Error: No data retrieved from VSAC for ' + vsac.id);
                     } else {
-                        // @ts-ignore
-                        const vsacJson = res['ns0:RetrieveValueSetResponse'];
+                        const vsacJson: any = res['ns0:RetrieveValueSetResponse'];
                         if (vsacJson) {
                             const ns0ValueSet = vsacJson['ns0:ValueSet'][0];
                             vsac.name = ns0ValueSet.displayName;

@@ -1,5 +1,5 @@
-import { DefinePlugin, LoaderOptionsPlugin } from 'webpack';
-import * as merge from 'webpack-merge';
+import { DefinePlugin } from 'webpack';
+import { merge } from 'webpack-merge';
 import baseConfig from './webpack.config';
 
 const webpackConfigProd = merge(baseConfig, {

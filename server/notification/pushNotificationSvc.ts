@@ -1,11 +1,12 @@
-import { RequestHandler } from 'express';
+import { Request, Response } from 'express';
 import { find, noop, union } from 'lodash';
+import { ObjectId } from 'server';
 import { handleError } from 'server/errorHandler/errorHandler';
 import {
     pushById, pushByIds, pushByIdsCount, pushByPublicKey, pushClearDb, pushCreate, pushDelete, pushEndpointUpdate, pushesByEndpoint,
     pushRegistrationFindActive
 } from 'server/notification/notificationDb';
-import { ObjectId, objectId, PushRegistrationDocument } from 'server/system/mongo-data';
+import { objectId, PushRegistrationDocument } from 'server/system/mongo-data';
 import { config } from 'server/system/parseConfig';
 import { logError } from 'server/log/dbLogger';
 import { criteriaSet, NotificationType, typeToCriteria, typeToNotificationSetting } from 'server/notification/notificationSvc';
@@ -35,7 +36,7 @@ export function checkDatabase(callback = noop) {
     }));
 }
 
-export const create: RequestHandler = (req, res) => {
+export function create(req: Request, res: Response) {
     if (!req.user || !req.user._id) {
         return res.status(400).send('Required parameters missing.');
     }
@@ -75,15 +76,15 @@ export const create: RequestHandler = (req, res) => {
             }));
         }
     }));
-};
+}
 
-export function createUnsubscribed(req, res) {
+export function createUnsubscribed(req: Request, res: Response) {
     pushCreate({vapidKeys: generateVAPIDKeys()}, handleError({req, res}, push => {
         res.send({applicationServerKey: push.vapidKeys.publicKey, subscribed: false});
     }));
 }
 
-export function remove(req, res) {
+export function remove(req: Request, res: Response) {
     if (!req.body.endpoint || !req.user || !req.user._id) {
         return res.status(400).send('Required parameters missing.');
     }
@@ -91,7 +92,7 @@ export function remove(req, res) {
         handleError({req, res, publicMessage: 'could not remove'}, data => res.send(data)));
 }
 
-export function subscribe(req, res) {
+export function subscribe(req: Request, res: Response) {
     if (!req.body.applicationServerKey || !req.user || !req.user._id) {
         return res.status(400).send('Required parameters missing.');
     }
@@ -115,7 +116,7 @@ export function subscribe(req, res) {
     }));
 }
 
-export function triggerPushMsg(push, dataToSend) {
+export function triggerPushMsg(push: PushRegistrationDocument, dataToSend: string) {
     if (!push.subscription) {
         return;
     }
@@ -143,7 +144,7 @@ export function triggerPushMsg(push, dataToSend) {
         });
 }
 
-export function updateStatus(req, res) {
+export function updateStatus(req: Request, res: Response) {
     if (!req.body.endpoint) {
         return res.status(400).send('Error: no subscription');
     }

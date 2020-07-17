@@ -3,7 +3,7 @@ import { config } from 'server/system/parseConfig';
 import { addStringtype } from 'server/system/mongoose-stringtype';
 import { handleError } from 'server/errorHandler/errorHandler';
 import { siteAdmins } from 'server/user/userDb';
-import { Cb1, CbError, CbError1 } from 'shared/models.model';
+import { Cb, CbError } from 'shared/models.model';
 import { PushRegistration, PushRegistrationDocument } from 'server/system/mongo-data';
 import { Model } from 'mongoose';
 
@@ -59,7 +59,7 @@ export function pushClearDb(callback: CbError) {
     pushRegistrationModel.remove({}, callback);
 }
 
-export function pushCreate(push: Partial<PushRegistration>, callback: CbError1<PushRegistrationDocument>) {
+export function pushCreate(push: Partial<PushRegistration>, callback: CbError<PushRegistrationDocument>) {
     new pushRegistrationModel(push).save(callback);
 }
 
@@ -76,7 +76,7 @@ export function pushEndpointUpdate(endpoint: string, commandObj: any, callback: 
     pushRegistrationModel.updateMany({'subscription.endpoint': endpoint}, commandObj, callback);
 }
 
-export function pushGetAdministratorRegistrations(callback: Cb1<PushRegistrationDocument[]>) {
+export function pushGetAdministratorRegistrations(callback: Cb<PushRegistrationDocument[]>) {
     siteAdmins(handleError({}, users => {
         if (!users) {
             return callback([]);
@@ -88,7 +88,7 @@ export function pushGetAdministratorRegistrations(callback: Cb1<PushRegistration
     }));
 }
 
-export function pushRegistrationFindActive(criteria: any, cb: CbError1<PushRegistrationDocument[]>) {
+export function pushRegistrationFindActive(criteria: any, cb: CbError<PushRegistrationDocument[]>) {
     criteria.loggedIn = true;
     pushRegistrationModel.find(criteria, cb);
 }

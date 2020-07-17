@@ -1,7 +1,7 @@
 import { Response } from 'express';
 import { handleError, respondError } from 'server/errorHandler/errorHandler';
 import { Document, Model } from 'mongoose';
-import { Cb } from 'shared/models.model';
+import { Cb, CbError } from 'shared/models.model';
 
 // sample: postCheckFn for custom unique id
 // (data, cb) => {
@@ -14,8 +14,11 @@ import { Cb } from 'shared/models.model';
 //     });
 // }
 
-export function writableCollection<T>(model: Model<Document & T>,
-                                      postCheckFn = (data, cb) => cb(undefined, true), versionKey = '__v') {
+export function writableCollection<T extends {_id: string, __v: number}>(
+    model: Model<Document & T>,
+    postCheckFn = (data: T, cb: CbError<boolean>) => cb(undefined, true),
+    versionKey: '__v' = '__v'
+) {
     function post(res: Response, data: T, cb: Cb<Document & T>) {
         const handlerOptions = {res};
         if (!postCheckFn) {
@@ -34,10 +37,10 @@ export function writableCollection<T>(model: Model<Document & T>,
             new model(data).save(handleError(handlerOptions, cb));
         });
     }
-    function put(res, data, cb) {
+    function put(res: Response, data: T, cb: Cb<Document & T>) {
         const handlerOptions = {res};
         if (typeof data[versionKey] !== 'number') {
-            model.findOne({_id: data._id}, handleError<any>(handlerOptions, exists => {
+            model.findOne({_id: data._id}, handleError(handlerOptions, exists => {
                 if (exists && typeof exists[versionKey] === 'undefined') { // WORKAROUND until data updated to mongo 4 __v
                     exists = undefined;
                 }
@@ -50,16 +53,16 @@ export function writableCollection<T>(model: Model<Document & T>,
             return;
         }
         const query: any = {_id: data._id, [versionKey]: data[versionKey]};
-        model.findOne(query, handleError<any>(handlerOptions, async oldInfo => {
+        model.findOne(query, handleError(handlerOptions, async oldInfo => {
             if (!oldInfo) {
                 res.status(409).send('Edited by someone else. Please refresh and redo.');
                 return;
             }
             data[versionKey]++;
-            oldInfo._doc = data;
+            (oldInfo as any)._doc = data;
             // new model(data).save();
             delete oldInfo._id;
-            (model as any).update(query, oldInfo, {new: true}, handleError(handlerOptions, doc => {
+            model.update(query, oldInfo, {new: true}, handleError(handlerOptions, doc => {
                 if (!doc) {
                     res.status(409).send('Edited by someone else. Please refresh and redo.');
                     return;
@@ -69,18 +72,18 @@ export function writableCollection<T>(model: Model<Document & T>,
         }));
     }
     return {
-        delete: (res, id, cb) => {
+        delete: (res: Response, id: string, cb: Cb<{deletedCount: number}>) => {
             model.remove({_id: id}, handleError({res}, cb));
         },
-        find: (res, crit, cb) => {
+        find: (res: Response, crit: any, cb: Cb<(Document & T)[]>) => {
             model.find(crit, handleError({res}, cb));
         },
-        get: (res, id, cb) => {
+        get: (res: Response, id: string, cb: Cb<Document & T | null>) => {
             model.findOne({_id: id}, handleError({res}, cb));
         },
         post,
         put,
-        save: async (res, data, cb) => {
+        save: async (res: Response, data: T, cb: Cb<Document & T>) => {
             if (data._id) {
                 put(res, data, cb);
             } else {

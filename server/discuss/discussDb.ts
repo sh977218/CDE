@@ -1,14 +1,13 @@
 import * as mongoose from 'mongoose';
-import { Document } from 'mongoose';
+import { Document, Schema } from 'mongoose';
+import { ObjectId } from 'server';
 import { establishConnection } from 'server/system/connections';
-import { ObjectId } from 'server/system/mongo-data';
 import { addStringtype } from 'server/system/mongoose-stringtype';
 import { config } from 'server/system/parseConfig';
 import { userRefSchema } from 'server/user/userDb';
-import { CbError, Comment as CommentClient } from 'shared/models.model';
+import { CbError, Comment as CommentClient, CommentReply as CommentReplyClient } from 'shared/models.model';
 
 addStringtype(mongoose);
-const Schema = mongoose.Schema;
 const StringType = (Schema.Types as any).StringType;
 const conn = establishConnection(config.database.appData);
 
@@ -29,7 +28,8 @@ export const commentSchema = new Schema(Object.assign({
     replies: [replySchema],
 }, replySchema), {usePushEach: true});
 
-export type Comment = CommentClient & {organizationName: string, user: {userId: ObjectId}};
+export type CommentReply = CommentReplyClient & {organizationName: string, user: {_id: ObjectId, userId: ObjectId}};
+export type Comment = CommentClient & {organizationName: string, replies: CommentReply[], user: {_id: ObjectId, userId: ObjectId}};
 export type CommentDocument = Document & Comment;
 export const commentModel: mongoose.Model<CommentDocument> = conn.model('Comment', commentSchema);
 

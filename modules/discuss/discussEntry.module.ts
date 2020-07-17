@@ -16,7 +16,6 @@ const appRoutes: Routes = [
         DiscussModule,
     ],
     declarations: [],
-    entryComponents: [],
     exports: [],
     schemas: []
 })

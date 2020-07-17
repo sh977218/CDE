@@ -1,4 +1,4 @@
-<div *ngIf="elt" id="descriptionDiv" class="row">
+<div *ngIf="elt" class="row">
     <div class="col-12">
         <div class="descriptionToolbox" *ngIf="canEdit" #descToolbox>
             <span style="color: white; font-weight: 700;margin-right: 5px">Add</span>
@@ -24,7 +24,7 @@
             <span role="button" *ngIf="hasCopiedSection()" id="pasteSection"
                   class="btn btn-light formDescriptionTool"
                   (dragstart)="dragActive = true" (dragend)="dragActive = false"
-                  [treeDrag]="{ref: 'pasteSection'}" [treeDragEnabled]="true" style="width: 68px;">
+                  [treeDrag]="{ref: 'pasteSection'}" [treeDragEnabled]="true" style="width: 68px">
                 <mat-icon class="toolbar-icon" [ngClass]="{'pasteSectionWrench':elt.isCopied}">content_copy</mat-icon>
                 <span class="toolCopySection"></span>
             </span>
@@ -50,9 +50,9 @@
             <tree-root #tree [ngClass]="{'drag-active': dragActive}" [nodes]="eltIter.formElements"
                        [options]="treeOptions" style="min-height: 400px" (event)="treeEvents($event)">
                 <ng-template #treeNodeFullTemplate let-node let-index="index" let-templates="templates">
-                    <div class="tree-node tree-node-level-{{ node.level }}"
-                         [id]="node.data.elementType + '_' + node.data.feId"
+                    <div [id]="node.data.elementType + '_' + node.data.feId"
                          [class]="node.getClass()"
+                         [class.tree-node]="true"
                          [class.tree-node-expanded]="node.isExpanded && node.hasChildren"
                          [class.tree-node-collapsed]="node.isCollapsed && node.hasChildren"
                          [class.tree-node-leaf]="node.isLeaf"

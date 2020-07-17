@@ -11,6 +11,7 @@ let expectedContent = {
         'You don\'t have permission to make boards public!'
     ],
     cdeAddClassification: 'addCdeClassification/ - Failed to load resource: the server responded with a status of 409 (Conflict)',
+    cdeChangeDefinitionFormat: '*', // ckeditor
     cdeLiveCommentTest: '*',
     cdeTinyIdSwaggerApi: [
         'docs/swagger-ui-bundle.js 51:49866 "Could not find component"',
@@ -20,7 +21,10 @@ let expectedContent = {
         'docs/swagger-ui-bundle.js 51:49866 "Could not find component"',
         'Unable to get the Swagger UI URL from the server'
     ],
+    cdeTruncatePlainPropertiesTest: '*', // ckeditor
+    cdeTruncateRichPropertiesTest: '*', // ckeditor
     checkDuplicatesClassification: 'the server responded with a status of 409',
+    contactUs: '*', // ckeditor
     createUser: 'with a status of 409',
     dupStewardValidation: [
         "Error publishing DataElement validation failed",
@@ -51,6 +55,7 @@ let expectedContent = {
         'docs/swagger-ui-bundle.js 51:49866 "Could not find component"',
         'Unable to get the Swagger UI URL from the server'
     ],
+    formTruncateRichPropertiesTest: '*', // ckeditor
     importVsacValues: "with a status of 500",
     increaseLockoutLogin: 'login - Failed to load resource: the server responded with a status of 403',
     launchFhirApp: '*',
@@ -67,7 +72,7 @@ let expectedContent = {
         'Board Not Found'
     ],
     report: "*",
-    resourcesPage: 'Content Security Policy',
+    resourcesPage: '*', // 'Content Security Policy', ckeditor
     searchPageSize: '*',
     tooManyBoards: [
         'board - Failed to load resource: the server responded with a status of 403 (Forbidden)',
@@ -75,8 +80,9 @@ let expectedContent = {
     ],
     uomValidation: "*",
     validRulesPvUmls: 'Failed to load resource: the server responded with a status of 400 (Bad Request)',
+    whatsNew: '*', // ckeditor
     wrongLogin: 'login - Failed to load resource: the server responded with a status of 403',
-    youtubeVideo: 'SameSite'
+    youtubeVideo: '*' // 'SameSite', ckeditor
 };
 
 let ignoreErrors = [

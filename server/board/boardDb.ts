@@ -1,18 +1,17 @@
 import * as mongoose from 'mongoose';
-import { Document, Model } from 'mongoose';
+import { Document, Model, Schema } from 'mongoose';
+import { ObjectId } from 'server';
 import { deleteBoardById, updateOrInsertBoardById } from 'server/board/elastic';
 import { handleError } from 'server/errorHandler/errorHandler';
 import { establishConnection } from 'server/system/connections';
-import { ObjectId, objectId } from 'server/system/mongo-data';
+import { objectId } from 'server/system/mongo-data';
 import { addStringtype } from 'server/system/mongoose-stringtype';
 import { config } from 'server/system/parseConfig';
-import { Board as BoardClient, CbError } from 'shared/models.model';
+import { Board, CbError } from 'shared/models.model';
 
 addStringtype(mongoose);
-const Schema = mongoose.Schema;
 const StringType = (Schema.Types as any).StringType;
 
-export type Board = BoardClient & {_id: ObjectId, owner: {userId: ObjectId}};
 export type BoardDocument = Document & Board;
 
 const conn = establishConnection(config.database.appData);
@@ -92,7 +91,7 @@ export function nbBoardsByUserId(userId: string) {
     return pinningBoardModel.countDocuments({'owner.userId': userId});
 }
 
-export function byId(boardId: string, callback?: CbError<BoardDocument>): Promise<BoardDocument | null> {
+export function byId(boardId: ObjectId, callback?: CbError<BoardDocument>): Promise<BoardDocument | null> {
     return pinningBoardModel.findById(boardId).exec(callback as any);
 }
 

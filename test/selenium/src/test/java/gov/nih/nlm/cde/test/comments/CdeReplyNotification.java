@@ -24,17 +24,18 @@ public class CdeReplyNotification extends NlmCdeBaseTest {
     @Test
     public void updateNotificationView() {
         mustBeLoggedInAs(reguser_username, password);
+        String query = "//*[contains(@class,'notificationDrawerContent')]//div[contains(@class,'taskItem') and contains(.,'commented')]";
 
         findElement(By.cssSelector("span.mat-badge-active"));
         clickElement(By.cssSelector("cde-notifications"));
-        WebElement taskItem = findElement(By.cssSelector(".notificationDrawerContent div.taskItem"));
+        WebElement taskItem = findElement(By.xpath(query));
         Assert.assertEquals(taskItem.getCssValue("background-color"), "rgba(209, 236, 241, 1)");
 
         clickElement(By.cssSelector(".notificationDrawerContent div.taskItem mat-icon"));
         textPresent("Cigarette Average Daily Pack Use Count");
 
         clickElement(By.cssSelector("cde-notifications"));
-        taskItem = findElement(By.cssSelector(".notificationDrawerContent div.taskItem"));
+        taskItem = findElement(By.xpath(query));
         Assert.assertEquals(taskItem.getCssValue("background-color"), "rgba(255, 255, 255, 1)");
     }
 

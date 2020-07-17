@@ -11,8 +11,7 @@ import {
     PermissibleValue,
 } from 'shared/models.model';
 import {
-    DataType,
-    DatatypeContainer, DatatypeContainerDate, DatatypeContainerDynamicList, DatatypeContainerExternal,
+    DatatypeContainerDate, DatatypeContainerDynamicList, DatatypeContainerExternal,
     DatatypeContainerFile, DatatypeContainerGeo, DatatypeContainerNumber, DatatypeContainerText, DatatypeContainerTime,
     DatatypeContainerValueList,
     QuestionTypeDate,

@@ -1,22 +1,19 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
-
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserService } from '_app/user.service';
-import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
+import { DeletedNodeEvent } from 'adminItem/public/components/classification/classificationView.component';
+import { ClassifyItemComponent } from 'adminItem/public/components/classification/classifyItem.component';
 import { AlertService } from 'alert/alert.service';
-
 import { DeCompletionService } from 'cde/public/components/completion/deCompletion.service';
 import { classifyItem } from 'core/adminItem/classification';
 import _cloneDeep from 'lodash/cloneDeep';
 import _isEqual from 'lodash/isEqual';
 import { IsAllowedService } from 'non-core/isAllowed.service';
-import { ClassificationClassified, ClassificationHistory, Definition, Designation } from 'shared/models.model';
-import { DataElement } from 'shared/de/dataElement.model';
-import { findSteward, removeCategory } from 'shared/system/classificationShared';
-import { DeletedNodeEvent } from 'adminItem/public/components/classification/classificationView.component';
-import { MatDialogRef } from '@angular/material/dialog';
 import { LocalStorageService } from 'non-core/localStorage.service';
+import { DataElement } from 'shared/de/dataElement.model';
+import { ClassificationClassified, ClassificationHistory, Definition, Designation } from 'shared/models.model';
+import { findSteward, removeCategory } from 'shared/system/classificationShared';
 
 @Component({
     selector: 'cde-create-data-element',
@@ -32,8 +29,7 @@ export class CreateDataElementComponent implements OnInit {
     @Input() elt!: DataElement;
     @Output() close = new EventEmitter<void>();
     @Output() dismiss = new EventEmitter<void>();
-    @ViewChild('classifyItemComponent', {static: true}) classifyItemComponent!: ClassifyItemModalComponent;
-    dialogRef!: MatDialogRef<TemplateRef<any>>;
+    @ViewChild('classifyItemComponent', {static: true}) classifyItemComponent!: ClassifyItemComponent;
 
     constructor(private alert: AlertService,
                 public deCompletionService: DeCompletionService,
@@ -60,7 +56,6 @@ export class CreateDataElementComponent implements OnInit {
             eltId: this.elt._id,
             orgName: event.selectedOrg
         });
-        this.dialogRef.close();
     }
 
     cancelCreateDataElement() {
@@ -102,7 +97,7 @@ export class CreateDataElementComponent implements OnInit {
     }
 
     openClassifyItemModal() {
-        this.dialogRef = this.classifyItemComponent.openModal();
+        this.classifyItemComponent.openModal();
     }
 
     updateClassificationLocalStorage(item: ClassificationHistory) {

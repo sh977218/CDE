@@ -4,8 +4,7 @@ import {
     ViewChild
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { TreeNode } from 'angular-tree-component';
-
+import { TreeNode } from '@circlon/angular-tree-component';
 import { AlertService } from 'alert/alert.service';
 import { repeatFe, repeatFeLabel, repeatFeNumber, repeatFeQuestion } from 'core/form/fe';
 import { convertFormToSection } from 'core/form/form';
@@ -14,11 +13,11 @@ import _isEqual from 'lodash/isEqual';
 import _noop from 'lodash/noop';
 import { FormService } from 'nativeRender/form.service';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
+import { LocalStorageService } from 'non-core/localStorage.service';
 import { FormattedValue } from 'shared/models.model';
 import { getLabel } from 'shared/form/fe';
 import { CdeForm, FormElement, FormInForm, FormSectionOrForm, SkipLogic } from 'shared/form/form.model';
 import { getQuestionsPrior } from 'shared/form/skipLogic';
-import { LocalStorageService } from 'non-core/localStorage.service';
 
 @Component({
     selector: 'cde-form-description-section',

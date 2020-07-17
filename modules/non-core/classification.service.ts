@@ -2,12 +2,13 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ElasticService } from '_app/elastic.service';
 import { AlertService } from 'alert/alert.service';
-
 import _isEqual from 'lodash/isEqual';
 import _uniqWith from 'lodash/uniqWith';
-import { Cb1, CbErr, CbErrorObj, ClassificationHistory, Item, ItemClassification } from 'shared/models.model';
+import { LocalStorageService } from 'non-core/localStorage.service';
+import {
+    Cb1, CbErr, CbErrorObj, Item, ItemClassification, ItemClassificationElt, ItemClassificationNew
+} from 'shared/models.model';
 import { SearchSettingsElastic } from 'shared/search/search.model';
-import { LocalStorageService } from './localStorage.service';
 
 @Injectable()
 export class ClassificationService {
@@ -17,7 +18,7 @@ export class ClassificationService {
                 private localStorageService: LocalStorageService) {
     }
 
-    updateClassificationLocalStorage(item: ClassificationHistory) {
+    updateClassificationLocalStorage(item: ItemClassification) {
         const allPossibleCategories: string[][] = [];
         const accumulateCategories: string[] = [];
         (item.categories || []).forEach((i: string) => {
@@ -38,9 +39,9 @@ export class ClassificationService {
 
     }
 
-    classifyItem(elt: Item, org: string | undefined, classifArray: string[] | undefined, endPoint: string,
+    classifyItem(elt: Item, org: string, classifArray: string[], endPoint: string,
                  cb: CbErrorObj<HttpErrorResponse>) {
-        const postBody: ItemClassification = {
+        const postBody: ItemClassificationElt = {
             categories: classifArray,
             eltId: elt._id,
             orgName: org
@@ -61,7 +62,7 @@ export class ClassificationService {
         this.http.post(endPoint, deleteBody).subscribe(() => cb(), cb);
     }
 
-    removeOrgClassification(deleteClassification: ClassificationHistory, next: Cb1<string>) {
+    removeOrgClassification(deleteClassification: ItemClassification, next: Cb1<string>) {
         const settings = new SearchSettingsElastic(this.esService.getUserDefaultStatuses(), 10000);
         this.http.post('/server/classification/deleteOrgClassification/', {
             orgName: deleteClassification.orgName,
@@ -73,7 +74,7 @@ export class ClassificationService {
         );
     }
 
-    reclassifyOrgClassification(oldClassification: ClassificationHistory, newClassification: ClassificationHistory, next: Cb1<string>) {
+    reclassifyOrgClassification(oldClassification: ItemClassification, newClassification: ItemClassification, next: Cb1<string>) {
         const settings = new SearchSettingsElastic(this.esService.getUserDefaultStatuses(), 10000);
         this.http.post('/server/classification/reclassifyOrgClassification/', {
             settings,
@@ -86,7 +87,7 @@ export class ClassificationService {
         );
     }
 
-    renameOrgClassification(newClassification: ClassificationHistory, next: Cb1<string>) {
+    renameOrgClassification(newClassification: ItemClassificationNew, next: Cb1<string>) {
         const settings = new SearchSettingsElastic(this.esService.getUserDefaultStatuses(), 10000);
         this.http.post('/server/classification/renameOrgClassification', {
             settings,
@@ -98,7 +99,7 @@ export class ClassificationService {
         );
     }
 
-    addChildClassification(newClassification: ClassificationHistory, next: Cb1<string>) {
+    addChildClassification(newClassification: ItemClassification, next: Cb1<string>) {
         this.http.put('/server/classification/addOrgClassification/', {
             newClassification,
             orgName: newClassification.orgName

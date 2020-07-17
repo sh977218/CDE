@@ -1,5 +1,5 @@
-import { ObjectId } from 'server/system/mongo-data';
 import { Dictionary } from 'async';
+import { ObjectId } from 'server';
 
 export type NotificationType = 'approvalAttachmentReviewer' | 'approvalCommentReviewer' | 'comment';
 
@@ -43,7 +43,7 @@ export function typeToNotificationSetting(type: NotificationType): string {
     } as Dictionary<string>)[type] || 'noMatch';
 }
 
-export function criteriaSet(criteria, set) {
+export function criteriaSet(criteria: any, set: string) {
     criteria[set] = true;
     return criteria;
 }

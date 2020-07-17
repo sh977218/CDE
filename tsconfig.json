@@ -10,13 +10,14 @@
       "ESNext",
       "DOM"
     ],
-    "module": "CommonJS",
+    "module": "ESNext",
     "moduleResolution": "Node",
     "outDir": "./buildNode",
     "pretty": true,
     "resolveJsonModule": true,
     "rootDir": ".",
     "sourceMap": true,
+    "strict": true,
     "target": "ESNext",
     "typeRoots": [
       "node_modules/@types"

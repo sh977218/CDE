@@ -1,6 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatTabsModule } from '@angular/material/tabs';
 import { RouterModule } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AccordionListHeadingComponent } from 'search/listView/accordionListHeading.component';
@@ -11,10 +15,6 @@ import { SummaryHeadingComponent } from 'search/listView/summaryHeading.componen
 import { SummaryListComponent } from 'search/listView/summaryList.component';
 import { SummaryListItemComponent, SummaryPlaceholderDirective } from 'search/listView/summaryListItem.component';
 import { TableListComponent } from 'search/listView/tableList.component';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatTabsModule } from '@angular/material/tabs';
 
 @NgModule({
     imports: [
@@ -40,12 +40,6 @@ import { MatTabsModule } from '@angular/material/tabs';
         SummaryPlaceholderDirective,
         TableListComponent
     ],
-    entryComponents: [
-        ListViewComponent,
-        ListViewControlsComponent,
-        SummaryListComponent,
-        TableListComponent
-    ],
     exports: [
         AccordionListHeadingComponent,
         ListViewComponent,
@@ -53,7 +47,10 @@ import { MatTabsModule } from '@angular/material/tabs';
         SearchExportButtonComponent,
         SummaryHeadingComponent,
         SummaryListComponent,
-        TableListComponent,
+        TableListComponent
+    ],
+    entryComponents: [
+        SummaryListComponent,
     ],
     providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]

@@ -30,7 +30,6 @@ const boardRoutes: Routes = [
     declarations: [
         PublicBoardsComponent,
     ],
-    entryComponents: [],
     providers: [],
     exports: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]

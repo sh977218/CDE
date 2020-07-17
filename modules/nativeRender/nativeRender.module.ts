@@ -25,9 +25,6 @@ import { ScoreService } from 'nativeRender/score.service';
         NativeSectionMatrixComponent,
         NativeTableComponent,
     ],
-    entryComponents: [
-        NativeRenderComponent,
-    ],
     exports: [
         NativeRenderComponent,
     ],

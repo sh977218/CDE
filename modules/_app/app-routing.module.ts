@@ -10,47 +10,85 @@ import { OrgCuratorGuard } from '_app/routerGuard/orgCuratorGuard';
 import { SiteAdminGuard } from '_app/routerGuard/siteAdminGuard';
 
 const appRoutes: Routes = [
-    {path: 'api', loadChildren: 'system/public/documentApi.module#DocumentApiModule', data: {title: 'API Documentation'}},
-    {path: 'boardList', loadChildren: 'board/public/boardList.module#BoardListModule', data: {title: 'Public Boards'}},
-    {path: 'board/:boardId', loadChildren: 'board/public/boardView.module#BoardViewModule', data: {title: 'Board View'}},
-    {path: 'home', loadChildren: 'home/home.module#HomeModule'},
-    {path: 'cde/search', loadChildren: 'cde/public/cdeSearchEntry.module#CdeSearchEntryModule', data: {title: 'Data Element Search'}},
+    {path: 'api', loadChildren: () => import('system/public/documentApi.module').then(m => m.DocumentApiModule), data: {title: 'API Documentation', preload: false}},
+    {path: 'boardList', loadChildren: () => import('board/public/boardList.module').then(m => m.BoardListModule), data: {title: 'Public Boards', preload: false}},
+    {path: 'board/:boardId', loadChildren: () => import('board/public/boardView.module').then(m => m.BoardViewModule), data: {title: 'Board View', preload: false}},
+    {path: 'home', loadChildren: () => import('home/home.module').then(m => m.HomeModule), data: {preload: false}},
+    {path: 'cde/search', loadChildren: () => import('cde/public/cdeSearchEntry.module').then(m => m.CdeSearchEntryModule), data: {title: 'Data Element Search', preload: false}},
     {
-        path: 'cdeStatusReport', loadChildren: 'cde/public/cdeStatusReport.module#CdeStatusReportModule',
-        data: {title: 'Data Element Status Report'}
-        },
+        path: 'cdeStatusReport', loadChildren: () => import('cde/public/cdeStatusReport.module').then(m => m.CdeStatusReportModule),
+        data: {title: 'Data Element Status Report', preload: false}
+    },
     {path: 'cde', redirectTo: '/cde/search', pathMatch: 'full'},
     {
         path: 'classificationManagement',
-        loadChildren: 'classificationManagement/classificationManagement.module#ClassificationManagementModule',
+        loadChildren: () => import('classificationManagement/classificationManagement.module').then(m => m.ClassificationManagementModule),
         canLoad: [OrgCuratorGuard],
-        data: {title: 'Manage Classification'},
+        data: {title: 'Manage Classification', preload: false},
     },
-    {path: 'createCde', loadChildren: 'cde/public/cdeCreate.module#CdeCreateModule', data: {title: 'Create Data Element'}},
-    {path: 'createForm', loadChildren: 'form/public/formCreate.module#FormCreateModule', data: {title: 'Create Form'}},
-    {path: 'deView', loadChildren: 'cde/public/cdeView.module#CdeViewModule', data: {title: 'Data Element View'}},
-    {path: 'form/search', loadChildren: 'form/public/formSearchEntry.module#FormSearchEntryModule', data: {title: 'Form Search'}},
-    {path: 'formView', loadChildren: 'form/public/formView.module#FormViewModule', data: {title: 'Form View'}},
+    {path: 'createCde', loadChildren: () => import('cde/public/cdeCreate.module').then(m => m.CdeCreateModule), data: {title: 'Create Data Element', preload: false}},
+    {path: 'createForm', loadChildren: () => import('form/public/formCreate.module').then(m => m.FormCreateModule), data: {title: 'Create Form', preload: false}},
+    {
+        path: 'deView',
+        loadChildren: () => import('cde/public/cdeView.module').then(m => m.CdeViewModule),
+        data: {title: 'Data Element View', preload: false},
+    },
+    {path: 'form/search', loadChildren: () => import('form/public/formSearchEntry.module').then(m => m.FormSearchEntryModule), data: {title: 'Form Search', preload: false}},
+    {
+        path: 'formView',
+        loadChildren: () => import('form/public/formView.module').then(m => m.FormViewModule),
+        data: {title: 'Form View', preload: false},
+    },
     {path: 'form', redirectTo: '/form/search', pathMatch: 'full'},
-    {path: 'login', loadChildren: 'system/public/login.module#LoginModule', canLoad: [IEGuard], data: {title: 'Login'}},
-    {path: 'ieDiscontinued', loadChildren: 'system/public/ieDiscontinued.module#IeDiscontinuedModule', data: {title: 'Upgrade Browser'}},
-    {path: 'myBoards', loadChildren: 'board/public/myBoards.module#MyBoardsModule', data: {title: 'My Boards'}},
-    {path: 'offline', component: OfflineComponent, data: {title: 'Offline'}},
-    {path: 'quickBoard', loadChildren: 'quickBoard/quickBoard.module#QuickBoardModule', data: {title: 'Quick Board'}},
-    {path: 'resources', loadChildren: 'system/public/resources.module#ResourcesModule', data: {title: 'Resources'}},
-    {path: 'settings', loadChildren: 'settings/settings.module#SettingsModule', canLoad: [LoggedInGuard], data: {title: 'Settings'}},
-    {path: 'whatsNew', loadChildren: 'system/public/article.module#ArticleModule', data: {title: `What's New`, article: 'whatsNew'}},
-    {path: 'guides', loadChildren: 'system/public/article.module#ArticleModule', data: {title: 'Guides', article: 'guides'}},
-    {path: 'contactUs', loadChildren: 'system/public/contactUs.module#ContactUsModule', data: {title: 'Contact Us'}},
-    {path: 'videos', loadChildren: 'system/public/videos.module#VideosModule', data: {title: 'Videos'}},
+    {path: 'login', loadChildren: () => import('system/public/login.module').then(m => m.LoginModule), canLoad: [IEGuard], data: {title: 'Login', preload: false}},
+    {
+        path: 'ieDiscontinued',
+        loadChildren: () => import('system/public/ieDiscontinued.module').then(m => m.IeDiscontinuedModule),
+        data: {title: 'Upgrade Browser', preload: false},
+    },
+    {
+        path: 'myBoards',
+        loadChildren: () => import('board/public/myBoards.module').then(m => m.MyBoardsModule),
+        data: {title: 'My Boards', preload: false},
+    },
+    {path: 'offline', component: OfflineComponent, data: {title: 'Offline', preload: false}},
+    {path: 'quickBoard', loadChildren: () => import('quickBoard/quickBoard.module').then(m => m.QuickBoardModule), data: {title: 'Quick Board', preload: false}},
+    {
+        path: 'resources',
+        loadChildren: () => import('system/public/resources.module').then(m => m.ResourcesModule),
+        data: {title: 'Resources', preload: false},
+    },
+    {
+        path: 'settings',
+        loadChildren: () => import('settings/settings.module').then(m => m.SettingsModule),
+        canLoad: [LoggedInGuard],
+        data: {title: 'Settings', preload: false},
+    },
+    {
+        path: 'whatsNew',
+        loadChildren: () => import('system/public/article.module').then(m => m.ArticleModule),
+        data: {title: `What's New`, article: 'whatsNew', preload: false},
+    },
+    {path: 'guides', loadChildren: () => import('system/public/article.module').then(m => m.ArticleModule), data: {title: 'Guides', article: 'guides', preload: false}},
+    {path: 'contactUs', loadChildren: () => import('system/public/contactUs.module').then(m => m.ContactUsModule), data: {title: 'Contact Us', preload: false}},
+    {
+        path: 'videos',
+        loadChildren: () => import('system/public/videos.module').then(m => m.VideosModule),
+        data: {title: 'Videos', preload: false}
+    },
     {
         path: 'searchPreferences',
-        loadChildren: 'system/public/searchPreferences.module#SearchPreferencesModule',
-        data: {title: 'Search Preferences'},
+        loadChildren: () => import('system/public/searchPreferences.module').then(m => m.SearchPreferencesModule),
+        data: {title: 'Search Preferences', preload: false},
     },
-    {path: 'siteAudit', loadChildren: 'siteAudit/siteAudit.module#SiteAuditModule', canLoad: [OrgAuthorityGuard], data: {title: 'Audit'}},
+    {
+        path: 'siteAudit',
+        loadChildren: () => import('siteAudit/siteAudit.module').then(m => m.SiteAuditModule),
+        canLoad: [OrgAuthorityGuard],
+        data: {title: 'Audit', preload: false},
+    },
     {path: '', redirectTo: '/home', pathMatch: 'full'},
-    {path: '**', component: PageNotFoundComponent, data: {title: 'Page Not Found'}}
+    {path: '**', component: PageNotFoundComponent, data: {title: 'Page Not Found', preload: false}}
 ];
 
 @NgModule({
@@ -58,7 +96,7 @@ const appRoutes: Routes = [
         RouterModule.forRoot(
             appRoutes,
             {
-                // enableTracing: true, // TODO: dev only
+                enableTracing: false, // TODO: dev only
             }
         ),
     ],
@@ -74,7 +112,9 @@ const appRoutes: Routes = [
         OrgCuratorGuard,
         SiteAdminGuard
     ],
-    exports: [RouterModule]
+    exports: [
+        RouterModule
+    ]
 })
 export class CdeAppRoutingModule {
 }

@@ -7,7 +7,7 @@ import { AlertService } from 'alert/alert.service';
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { UserService } from '_app/user.service';
 import { SaveModalComponent, SaveModalFormQuestion } from 'adminItem/public/components/saveModal/saveModal.component';
-import async_forEach from 'async/forEach';
+import * as async_forEach from 'async/forEach';
 import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
 import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHistoryContent.component';
 import { areDerivationRulesSatisfied, repeatFeQuestion, repeatFe } from 'core/form/fe';
@@ -33,8 +33,8 @@ import { isIe, scrollTo } from 'non-core/browser';
 import { getQuestionPriorByLabel } from 'shared/form/skipLogic';
 import { Dictionary } from 'async';
 
-type NewDataElement = DataElement & DatatypeContainerDate & DatatypeContainerNumber & DatatypeContainerText & DatatypeContainerTime
-    & DatatypeContainerValueList & {permissibleValues: PermissibleValue[]};
+type NewDataElement = DataElement & (DatatypeContainerDate | DatatypeContainerNumber | DatatypeContainerText | DatatypeContainerTime
+    | DatatypeContainerValueList) & {permissibleValues: PermissibleValue[]};
 
 class LocatableError {
     id?: string;
@@ -68,7 +68,7 @@ export class FormViewComponent implements OnInit {
     @ViewChild('copyFormContent', {static: true}) copyFormContent!: TemplateRef<any>;
     @ViewChild('mltPinModalCde', {static: true}) mltPinModalCde!: PinBoardModalComponent;
     @ViewChild('exportPublishModal', {static: true}) exportPublishModal!: TemplateRef<any>;
-    @ViewChild('saveModal', {static: false}) saveModal!: SaveModalComponent;
+    @ViewChild('saveModal') saveModal!: SaveModalComponent;
     commentMode?: boolean;
     currentTab = 'preview_tab';
     dialogRef!: MatDialogRef<any>;
@@ -128,10 +128,10 @@ export class FormViewComponent implements OnInit {
                 datatype: newCde.datatype,
                 identifiers: newCde.ids,
                 ids: newCde.ids,
-                datatypeText: newCde.datatypeText,
-                datatypeNumber: newCde.datatypeNumber,
-                datatypeDate: newCde.datatypeDate,
-                datatypeTime: newCde.datatypeTime,
+                datatypeText: (newCde as DatatypeContainerText).datatypeText,
+                datatypeNumber: (newCde as DatatypeContainerNumber).datatypeNumber,
+                datatypeDate: (newCde as DatatypeContainerDate).datatypeDate,
+                datatypeTime: (newCde as DatatypeContainerTime).datatypeTime,
                 permissibleValues: newCde.permissibleValues
             },
             classification: this.elt.classification,

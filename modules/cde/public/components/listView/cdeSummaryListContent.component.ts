@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-
 import { SummaryComponent } from 'search/listView/summaryListItem.component';
-import { Attachment } from 'shared/models.model';
+import { isDefault } from 'shared/models.model';
 import { DataElementElastic } from 'shared/de/dataElement.model';
 
 @Component({
@@ -18,7 +17,7 @@ export class CdeSummaryListContentComponent implements SummaryComponent {
     @Input() eltIndex!: number;
     @Output() select = new EventEmitter<string>();
 
-    defaultAttachmentsFilter = Attachment.isDefault;
+    defaultAttachmentsFilter = isDefault;
     module = 'cde';
 
     getStewards(): string[] {

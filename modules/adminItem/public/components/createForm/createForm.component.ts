@@ -1,22 +1,18 @@
 import { Location } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import {
-    Component, Input, Output, OnInit, ViewChild, QueryList, ViewChildren, EventEmitter, TemplateRef
-} from '@angular/core';
+import { Component, Input, Output, OnInit, ViewChild, QueryList, ViewChildren, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
+import { TreeComponent } from '@circlon/angular-tree-component';
 import { UserService } from '_app/user.service';
-import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
+import { DeletedNodeEvent } from 'adminItem/public/components/classification/classificationView.component';
+import { ClassifyItemComponent } from 'adminItem/public/components/classification/classifyItem.component';
 import { AlertService } from 'alert/alert.service';
-
-import { TreeComponent } from 'angular-tree-component';
 import { classifyItem } from 'core/adminItem/classification';
 import _isEqual from 'lodash/isEqual';
 import { IsAllowedService } from 'non-core/isAllowed.service';
 import { ClassificationClassified, ClassificationHistory, Definition, Designation } from 'shared/models.model';
 import { CdeForm } from 'shared/form/form.model';
 import { findSteward, removeCategory } from 'shared/system/classificationShared';
-import { DeletedNodeEvent } from 'adminItem/public/components/classification/classificationView.component';
-import { MatDialogRef } from '@angular/material/dialog';
 import { LocalStorageService } from 'non-core/localStorage.service';
 
 @Component({
@@ -32,9 +28,8 @@ export class CreateFormComponent implements OnInit {
     @Input() elt!: CdeForm;
     @Output() done = new EventEmitter();
     @Output() eltChange = new EventEmitter();
-    @ViewChild('classifyItemComponent', {static: true}) classifyItemComponent!: ClassifyItemModalComponent;
+    @ViewChild('classifyItemComponent', {static: true}) classifyItemComponent!: ClassifyItemComponent;
     @ViewChildren(TreeComponent) classificationView!: QueryList<TreeComponent>;
-    dialogRef!: MatDialogRef<TemplateRef<any>>;
 
     ngOnInit() {
         if (!this.elt) {
@@ -61,7 +56,6 @@ export class CreateFormComponent implements OnInit {
         };
         classifyItem(this.elt, event.selectedOrg, event.classificationArray);
         this.updateClassificationLocalStorage(postBody);
-        this.dialogRef.close();
     }
 
     cancelCreateForm() {
@@ -98,7 +92,7 @@ export class CreateFormComponent implements OnInit {
     }
 
     openClassifyItemModal() {
-        this.dialogRef = this.classifyItemComponent.openModal();
+        this.classifyItemComponent.openModal();
     }
 
     updateClassificationLocalStorage(item: ClassificationHistory) {

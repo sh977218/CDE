@@ -20,8 +20,6 @@ const appRoutes: Routes = [
     ],
     declarations: [
     ],
-    entryComponents: [
-    ],
     exports: [
     ],
     providers: [

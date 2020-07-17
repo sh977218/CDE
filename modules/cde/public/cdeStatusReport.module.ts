@@ -22,7 +22,6 @@ const appRoutes: Routes = [
         MatIconModule,
     ],
     declarations: [CdeStatusReportComponent],
-    entryComponents: [],
     exports: [],
     providers: [],
     schemas: []

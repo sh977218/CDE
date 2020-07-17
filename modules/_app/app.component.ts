@@ -1,5 +1,5 @@
-import { HttpErrorResponse } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Component, forwardRef, Inject } from '@angular/core';
 import { DomSanitizer, Title } from '@angular/platform-browser';
 import { ActivatedRoute, Data, NavigationEnd, Router } from '@angular/router';
 import { NotificationService } from '_app/notifications/notification.service';
@@ -16,15 +16,16 @@ import { MatIconRegistry } from '@angular/material/icon';
     `
 })
 export class CdeAppComponent {
-
-    constructor(backForwardService: BackForwardService,
-                private notificationService: NotificationService,
-                protected route: ActivatedRoute,
-                private router: Router,
-                private title: Title,
-                private userService: UserService,
-                iconReg: MatIconRegistry,
-                sanitizer: DomSanitizer) {
+    constructor(
+        @Inject(forwardRef(() => ActivatedRoute)) protected route: ActivatedRoute,
+        @Inject(forwardRef(() => BackForwardService)) backForwardService: BackForwardService,
+        @Inject(forwardRef(() => DomSanitizer)) sanitizer: DomSanitizer,
+        @Inject(forwardRef(() => MatIconRegistry)) iconReg: MatIconRegistry,
+        @Inject(forwardRef(() => NotificationService)) private notificationService: NotificationService,
+        @Inject(forwardRef(() => Router)) private router: Router,
+        @Inject(forwardRef(() => Title)) private title: Title,
+        @Inject(forwardRef(() => UserService)) private userService: UserService,
+    ) {
         this.userService.subscribe(() => {
             this.userService.catch((err?: HttpErrorResponse) => {
                 if (err && err.status === 0 && err.statusText === 'Unknown Error') {
@@ -45,7 +46,9 @@ export class CdeAppComponent {
         this.router.events.subscribe(event => {
             if (event instanceof NavigationEnd) {
                 let r = this.route;
-                while (r.firstChild) { r = r.firstChild; }
+                while (r.firstChild) {
+                    r = r.firstChild;
+                }
                 if (r.outlet === 'primary') {
                     r.data.subscribe((data: Data) =>
                         this.title.setTitle(data.title || 'NIH Common Data Elements (CDE) Repository'));

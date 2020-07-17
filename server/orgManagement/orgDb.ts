@@ -1,12 +1,13 @@
+import { Response } from 'express';
 import * as mongoose from 'mongoose';
-import { Document, Model } from 'mongoose';
+import { Document, Model, Schema } from 'mongoose';
 import { config } from 'server/system/parseConfig';
 import { addStringtype } from 'server/system/mongoose-stringtype';
 import { csEltSchema, statusValidationRuleSchema } from 'server/system/schemas';
-import { Organization } from 'shared/models.model';
+import { CbError } from 'shared/models.model';
+import { Organization } from 'shared/system/organization';
 
 addStringtype(mongoose);
-const Schema = mongoose.Schema;
 const StringType = (Schema.Types as any).StringType;
 
 const connHelper = require('../system/connections');
@@ -60,8 +61,8 @@ export async function managedOrgs() {
     return organizationModel.find({}).sort({name: 1});
 }
 
-export async function orgByName(orgName: string, callback?) {
-    return organizationModel.findOne({name: orgName}).exec(callback);
+export async function orgByName(orgName: string, callback?: CbError<OrganizationDocument>) {
+    return organizationModel.findOne({name: orgName}, callback);
 }
 
 export function listOrgsDetailedInfo() {
@@ -72,7 +73,7 @@ export async function addOrgByName(newOrg: Organization) {
     return new organizationModel(newOrg).save();
 }
 
-export function updateOrg(org: Organization, res) {
+export function updateOrg(org: Organization, res: Response) {
     const id = org._id;
     delete org._id;
     organizationModel.findOneAndUpdate({_id: id}, org, {new: true}, (err, found) => {

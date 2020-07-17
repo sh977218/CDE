@@ -7,13 +7,13 @@ import { Item, ModuleAll, User } from 'shared/models.model';
 const config = Config as any;
 
 export function module(roleConfig: {attachmentApproval: RequestHandler[]},
-                       modules: {module: ModuleAll | 'article', db: any, crudPermission: (elt: Item, user?: User) => void}[]) {
+                       modules: {module: ModuleAll | 'article', db: any, crudPermission: (elt: Item, user?: User) => boolean}[]) {
     const router = Router();
 
     modules.forEach(m => {
 
-        router.post(`/${m.module}/add`, multer(config.multer), (req, res) => {
-            add(req, res, m.db, m.crudPermission);
+        router.post(`/${m.module}/add`, multer(config.multer) as any, (req, res) => {
+            add(req as any, res, m.db, m.crudPermission);
         });
 
         router.post(`/${m.module}/remove`, (req, res) => {

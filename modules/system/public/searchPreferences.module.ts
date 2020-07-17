@@ -22,7 +22,6 @@ const appRoutes: Routes = [
     declarations: [
         SearchPreferencesComponent,
     ],
-    entryComponents: [],
     exports: [],
     providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]

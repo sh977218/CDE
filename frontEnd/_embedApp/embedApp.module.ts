@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import '@angular/localize/init';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -16,7 +17,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { LocalStorageService } from 'non-core/localStorage.service';
-
 
 @NgModule({
     declarations: [
@@ -42,9 +42,6 @@ import { LocalStorageService } from 'non-core/localStorage.service';
         MatButtonModule,
         MatDialogModule,
         MatIconModule
-    ],
-    entryComponents: [
-        InactivityLoggedOutComponent
     ],
     exports: [],
     bootstrap: [EmbedAppComponent]

@@ -3,7 +3,7 @@ import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import _noop from 'lodash/noop';
 import { OrgHelperService } from 'non-core/orgHelper.service';
-import { Organization, StatusValidationRules, StatusValidationRulesByOrg } from 'shared/models.model';
+import { Organization, StatusValidationRules, StatusValidationRulesByOrg } from 'shared/system/organization';
 import { updateTag } from 'shared/system/util';
 
 @Component({
@@ -64,7 +64,7 @@ export class StatusValidationRulesComponent implements OnInit {
         this.orgHelperService.then(orgsDetailedInfo => {
             this.orgNames = Object.keys(orgsDetailedInfo);
             Object.keys(orgsDetailedInfo).forEach(orgName => {
-                this.userOrgs[orgName] = orgsDetailedInfo[orgName].cdeStatusValidationRules || [];
+                this.userOrgs[orgName] = orgsDetailedInfo[orgName].cdeStatusValidationRules;
             });
             this.userOrgsArray = Object.keys(this.userOrgs).sort();
         }, _noop);
@@ -75,7 +75,7 @@ export class StatusValidationRulesComponent implements OnInit {
         this.dialog.open(this.removeRuleModal).afterClosed().subscribe(res => {
             if (res) {
                 this.http.post<Organization>('/server/system/disableRule', {orgName, rule}).subscribe(response => {
-                    this.userOrgs[orgName] = response.cdeStatusValidationRules || [];
+                    this.userOrgs[orgName] = response.cdeStatusValidationRules;
                 });
             }
         }, _noop);
@@ -90,7 +90,7 @@ export class StatusValidationRulesComponent implements OnInit {
             orgName: this.newRuleOrg,
             rule: this.newRule
         }).subscribe(org => {
-            this.userOrgs[this.newRuleOrg] = org.cdeStatusValidationRules || [];
+            this.userOrgs[this.newRuleOrg] = org.cdeStatusValidationRules;
         }, () => {
         });
         this.dialogRef.close();

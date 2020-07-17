@@ -1,4 +1,4 @@
-import * as merge from 'webpack-merge';
+import { merge } from 'webpack-merge';
 import baseConfig from './webpack.dev';
 import embedConfig from './webpackEmbed';
 

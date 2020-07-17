@@ -4,7 +4,7 @@ import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { ElasticService } from '_app/elastic.service';
 import { UserService } from '_app/user.service';
-import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
+import { ClassifyItemComponent } from 'adminItem/public/components/classification/classifyItem.component';
 import { AlertService } from 'alert/alert.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { saveAs } from 'file-saver';
@@ -23,7 +23,7 @@ export interface BoardQuery {
     templateUrl: './boardView.component.html',
 })
 export class BoardViewComponent implements OnInit {
-    @ViewChild('classifyCdesModal', {static: true}) classifyCdesModal!: ClassifyItemModalComponent;
+    @ViewChild('classifyCdesModal', {static: true}) classifyCdesModal!: ClassifyItemComponent;
     @ViewChild('shareBoardModal', {static: true}) shareBoardModal!: TemplateRef<any>;
     allRoles = [{
         label: 'can view',
@@ -32,7 +32,6 @@ export class BoardViewComponent implements OnInit {
     }];
     board!: Board;
     boardId!: string;
-    classifyCdesRefModal!: MatDialogRef<TemplateRef<any>>;
     commentMode: boolean = false;
     currentPage: number = 0;
     elts: any[] = [];
@@ -78,7 +77,6 @@ export class BoardViewComponent implements OnInit {
             this.alert.addAlert('danger', 'Unexpected error. Not Elements were classified! You may try again.');
             clearInterval(_timeout);
         });
-        this.classifyCdesRefModal.close();
     }
 
     addUser(newUser: User) {
@@ -91,7 +89,7 @@ export class BoardViewComponent implements OnInit {
     }
 
     classifyEltBoard() {
-        this.classifyCdesRefModal = this.classifyCdesModal.openModal();
+        this.classifyCdesModal.openModal();
     }
 
     deleteUser(index: number) {

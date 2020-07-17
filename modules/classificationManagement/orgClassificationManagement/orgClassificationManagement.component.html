@@ -117,9 +117,9 @@
     </div>
 </ng-template>
 
-<cde-classify-item-modal #reclassifyComponent [modalTitle]="selectedClassificationArray"
+<cde-classify-item #reclassifyComponent [modalTitle]="selectedClassificationArray"
                          (classified)="reclassify($event)">
-</cde-classify-item-modal>
+</cde-classify-item>
 
 <ng-template #addChildClassificationContent>
     <h4 mat-dialog-title> Add Child Classification</h4>

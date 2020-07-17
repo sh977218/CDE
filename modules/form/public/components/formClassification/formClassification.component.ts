@@ -1,14 +1,13 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { UserService } from '_app/user.service';
-import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
+import { DeletedNodeEvent } from 'adminItem/public/components/classification/classificationView.component';
+import { ClassifyItemComponent } from 'adminItem/public/components/classification/classifyItem.component';
 import { AlertService } from 'alert/alert.service';
 import { ClassificationService } from 'non-core/classification.service';
 import { IsAllowedService } from 'non-core/isAllowed.service';
 import { CdeForm, FormElement } from 'shared/form/form.model';
 import { Cb, ClassificationClassified, IdVersion, ItemClassification } from 'shared/models.model';
-import { DeletedNodeEvent } from 'adminItem/public/components/classification/classificationView.component';
 
 @Component({
     selector: 'cde-form-classification',
@@ -17,10 +16,8 @@ import { DeletedNodeEvent } from 'adminItem/public/components/classification/cla
 export class FormClassificationComponent {
     @Input() elt!: CdeForm;
     @Output() eltChange = new EventEmitter<CdeForm>();
-    @ViewChild('classifyCdesComponent', {static: true}) public classifyCdesComponent!: ClassifyItemModalComponent;
-    @ViewChild('classifyItemComponent', {static: true}) public classifyItemComponent!: ClassifyItemModalComponent;
-    classifyCdesModalRef!: MatDialogRef<TemplateRef<any>>;
-    classifyItemModalRef!: MatDialogRef<TemplateRef<any>>;
+    @ViewChild('classifyCdesComponent', {static: true}) public classifyCdesComponent!: ClassifyItemComponent;
+    @ViewChild('classifyItemComponent', {static: true}) public classifyItemComponent!: ClassifyItemComponent;
     showProgressBar = false;
 
     constructor(private alert: AlertService,
@@ -44,7 +41,6 @@ export class FormClassificationComponent {
         this.http.post('/server/classification/bulk/tinyId', postBody, {responseType: 'text'})
             .subscribe(res => {
                 if (res === 'Done') {
-                    this.classifyCdesModalRef.close('success');
                     this.alert.addAlert('success', 'All CDEs Classified.');
                 } else if (res === 'Processing') {
                     const fn = setInterval(() => {
@@ -58,7 +54,6 @@ export class FormClassificationComponent {
                                             .subscribe(() => {
                                                 //noinspection TypeScriptUnresolvedFunction
                                                 clearInterval(fn);
-                                                this.classifyCdesModalRef.close('success');
                                                 this.alert.addAlert('success', 'All CDEs Classified.');
                                             }, () => {
                                                 this.alert.addAlert('danger', 'Unexpected error classifying');
@@ -67,7 +62,6 @@ export class FormClassificationComponent {
                                 },
                                 () => {
                                     this.alert.addAlert('danger', 'Unexpected error classifying');
-                                    this.classifyCdesModalRef.close('error');
                                 });
                     }, 5000);
                 }
@@ -79,7 +73,6 @@ export class FormClassificationComponent {
     classifyItem(event: ClassificationClassified) {
         this.classificationSvc.classifyItem(this.elt, event.selectedOrg, event.classificationArray,
             '/server/classification/addFormClassification/', err => {
-                this.classifyItemModalRef.close();
                 if (err) {
                     this.alert.addAlert('danger', 'Unexpected error classifying');
                 } else {
@@ -104,11 +97,11 @@ export class FormClassificationComponent {
     }
 
     openClassifyItemModal() {
-        this.classifyItemModalRef = this.classifyItemComponent.openModal();
+        this.classifyItemComponent.openModal();
     }
 
     openClassifyCdesModal() {
-        this.classifyCdesModalRef = this.classifyCdesComponent.openModal();
+        this.classifyCdesComponent.openModal();
     }
 
     reloadElt(cb?: Cb) {

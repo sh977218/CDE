@@ -10,7 +10,7 @@
       "ESNext",
       "DOM"
     ],
-    "module": "ES2015",
+    "module": "ESNext",
     "moduleResolution": "Node",
     "pretty": false,
     "rootDir": ".",

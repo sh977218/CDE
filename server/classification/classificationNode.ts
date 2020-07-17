@@ -1,12 +1,13 @@
-import { Classification, Elt, Item } from 'shared/models.model';
-
-const boardDb = require('server/board/boardDb');
-import { actions, addCategory, findSteward, modifyCategory, removeCategory } from 'shared/system/classificationShared';
 import { each } from 'async';
-import { addToClassifAudit } from 'server/system/classificationAuditSvc';
+import { Request } from 'express';
+import { byId } from 'server/board/boardDb';
 import { orgByName } from 'server/orgManagement/orgDb';
+import { addToClassifAudit } from 'server/system/classificationAuditSvc';
+import { ItemDocument } from 'server/system/mongo-data';
+import { CbErr, CbError, Classification, Item, ItemClassification, ItemClassificationElt } from 'shared/models.model';
+import { actions, addCategory, findSteward, removeCategory } from 'shared/system/classificationShared';
 
-const saveEltClassif = (err, elt, cb) => {
+const saveEltClassif = (err: string | undefined, elt: ItemDocument, cb: CbErr<ItemDocument>) => {
     if (err) {
         if (cb) { cb(err); }
         return;
@@ -14,7 +15,7 @@ const saveEltClassif = (err, elt, cb) => {
     trimClassif(elt);
     elt.updated = new Date();
     elt.markModified('classification');
-    elt.save(cb);
+    (elt as any).save(cb);
 };
 
 const trimClassif = (elt: Item) => {
@@ -25,19 +26,20 @@ const trimClassif = (elt: Item) => {
     });
 };
 
-export async function eltClassification(body, dao, cb) {
-    let elt: Item;
-    if (body.cdeId && dao.byId) {
-        elt = await dao.byId(body.cdeId);
-    } else if (body.tinyId) {
-        if (body.version) {
-            elt = await dao.byTinyIdAndVersion(body.tinyId, body.version);
-        } else {
-            elt = await dao.eltByTinyId(body.tinyId);
-        }
-    }
+export async function eltClassification(body: ItemClassification, dao: any, cb: CbErr<ItemDocument>) {
+    const elt: ItemDocument = await (
+        body.cdeId && dao.byId
+            ? dao.byId(body.cdeId)
+            : body.tinyId
+            ? body.version
+                ? dao.byTinyIdAndVersion(body.tinyId, body.version)
+                : dao.eltByTinyId(body.tinyId)
+            : undefined
+    );
 
-    if (!elt) { return cb('can not elt'); }
+    if (!elt) {
+        return cb('can not elt');
+    }
     let steward = findSteward(elt, body.orgName);
     if (!steward) {
         const stewardOrg = await orgByName(body.orgName);
@@ -62,7 +64,7 @@ export async function eltClassification(body, dao, cb) {
     saveEltClassif(err, elt, cb);
 }
 
-export async function addClassification(body, dao, cb) {
+export async function addClassification(body: ItemClassificationElt, dao: any, cb: CbError<string>) {
     const elt = await dao.byId(body.eltId);
     let steward = findSteward(elt, body.orgName);
     if (!steward) {
@@ -80,7 +82,7 @@ export async function addClassification(body, dao, cb) {
     elt.save(cb);
 }
 
-export async function removeClassification(body, dao, cb) {
+export async function removeClassification(body: ItemClassificationElt, dao: any, cb: CbError) {
     const elt = await dao.byId(body.eltId);
     const steward = findSteward(elt, body.orgName);
     const err = removeCategory(steward.object, body.categories);
@@ -89,12 +91,16 @@ export async function removeClassification(body, dao, cb) {
     elt.save(cb);
 }
 
-export async function classifyEltsInBoard(req, dao, cb) {
+export async function classifyEltsInBoard(req: Request, dao: any, cb: CbErr) {
     const boardId = req.body.boardId;
     const newClassification = req.body;
-    const  board = await boardDb.byId(boardId);
+    const board = await byId(boardId);
     const tinyIds = board.pins.map(p => p.tinyId);
-    dao.byTinyIdList(tinyIds, (err, elts: Item[]) => {
+    dao.byTinyIdList(tinyIds, (err?: Error, elts?: Item[]) => {
+        if (err || !elts) {
+            cb('elts not retrieved');
+            return;
+        }
         const ids = elts.map(e => e._id);
         const eltsTotal = ids.length;
         let eltsProcessed = 0;
@@ -108,14 +114,7 @@ export async function classifyEltsInBoard(req, dao, cb) {
                     eltsProcessed++;
                     doneOne(null);
                 });
-            },
-            () => {
-                if (eltsTotal === eltsProcessed) {
-                    cb(null);
-                } else {
-                    cb('Task not performed completely!');
-                }
-            }
+            }, () => cb(eltsTotal === eltsProcessed ? undefined : 'Task not performed completely!')
         );
         addToClassifAudit({
             date: new Date(),

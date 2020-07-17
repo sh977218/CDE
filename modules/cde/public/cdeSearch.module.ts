@@ -64,15 +64,12 @@ import { MatTooltipModule } from '@angular/material/tooltip';
         CdeTableViewPreferencesComponent,
         QuickBoardCdeSummaryListContentComponent,
     ],
+    exports: [
+        CdeSearchComponent,
+    ],
     entryComponents: [
         BoardCdeSummaryListComponent,
         BoardCdeSummaryListContentComponent,
-        CdeSummaryListContentComponent,
-        CdeTableViewPreferencesComponent,
-        QuickBoardCdeSummaryListContentComponent,
-    ],
-    exports: [
-        CdeSearchComponent,
     ],
     providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]

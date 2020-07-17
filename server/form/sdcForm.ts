@@ -2,8 +2,10 @@ import { consoleLog, logError } from 'server/log/dbLogger';
 import { config } from 'server/system/parseConfig';
 import { create as builderCreate } from 'xmlbuilder';
 import { sdcExport } from './aws';
+import { Dictionary } from 'async';
+import { FormSection } from 'shared/form/form.model';
 
-function addQuestion(parent, question) {
+function addQuestion(parent: any, question: any) {
     const newQuestion: any = {
         '@ID': question.question.cde.tinyId || 'N/A'
     };
@@ -15,7 +17,7 @@ function addQuestion(parent, question) {
     }
     const questionEle = parent.ele({Question: newQuestion});
     if (question.question.cde.ids.length > 0) {
-        question.question.cde.ids.forEach(id => {
+        question.question.cde.ids.forEach((id: any) => {
             const codedValueEle = questionEle.ele({
                 CodedValue: {
                     Code: {'@val': id.id},
@@ -25,7 +27,7 @@ function addQuestion(parent, question) {
                 }
             });
             if (id.version) {
-                codedValueEle.children.filter(c => c.name === 'CodeSystem')[0].ele({Version: {'@val': id.version}});
+                codedValueEle.children.filter((c: any) => c.name === 'CodeSystem')[0].ele({Version: {'@val': id.version}});
             }
         });
     }
@@ -36,7 +38,7 @@ function addQuestion(parent, question) {
         if (question.question.multiselect) { newListField.att('maxSelections', '0'); }
 
         if (question.question.answers) {
-            question.question.answers.forEach(answer => {
+            question.question.answers.forEach((answer: any) => {
                 const title = answer.valueMeaningName ? answer.valueMeaningName : answer.permissibleValue;
                 const q: any = {
                     '@ID': 'NA_' + Math.random(),
@@ -63,30 +65,30 @@ function addQuestion(parent, question) {
     questionsInSection[question.label] = questionEle;
 }
 
-function doQuestion(parent, question) {
+function doQuestion(parent: any, question: any) {
 
     let embed = false;
     try {
         if (question.skipLogic && question.skipLogic.condition.length > 0) {
             if (question.skipLogic.condition.match('".+" = ".+"')) {
-                const terms = question.skipLogic.condition.match(/"[^"]+"/g).map(t => t.substr(1, t.length - 2));
+                const terms = question.skipLogic.condition.match(/"[^"]+"/g).map((t: string) => t.substr(1, t.length - 2));
                 if (terms.length === 2) {
                     const qToAddTo = questionsInSection[terms[0]];
                     // below is xmlBuilder ele. This seems to be the way to find child inside element
-                    qToAddTo.children.filter(c => c.name === 'ListField')[0]
-                        .children.filter(c => c.name === 'List')[0]
-                        .children.filter(c => c.name === 'ListItem').forEach(li => {
+                    qToAddTo.children.filter((c: any) => c.name === 'ListField')[0]
+                        .children.filter((c: any) => c.name === 'List')[0]
+                        .children.filter((c: any) => c.name === 'ListItem').forEach((li: any) => {
                         if (li.attributes.title && li.attributes.title.value === terms[1]) {
                             embed = true;
                             if (question.question.datatype === 'Value List') {
-                                let liChildItems = li.children.filter(c => c.name === 'ChildItems')[0];
+                                let liChildItems = li.children.filter((c: any) => c.name === 'ChildItems')[0];
                                 if (!liChildItems) { liChildItems = li.ele({ChildItems: {}}); }
                                 addQuestion(liChildItems, question);
                             } else {
                                 if (!question.label) {
                                     li.ele({ListItemResponseField: {Response: {string: ''}}});
                                 } else {
-                                    let liChildItems2 = li.children.filter(c => c.name === 'ChildItems')[0];
+                                    let liChildItems2 = li.children.filter((c: any) => c.name === 'ChildItems')[0];
                                     if (!liChildItems2) { liChildItems2 = li.ele({ChildItems: {}}); }
                                     addQuestion(liChildItems2, question);
                                 }
@@ -102,9 +104,9 @@ function doQuestion(parent, question) {
     if (!embed) { addQuestion(parent, question); }
 }
 
-const questionsInSection = {};
+const questionsInSection: Dictionary<any> = {};
 
-const doSection = (parent, section) => {
+const doSection = (parent: any, section: FormSection) => {
     const newSection = {
         '@ID': 'NA_' + Math.random(),
         '@title': section.label ? section.label : ''
@@ -116,15 +118,15 @@ const doSection = (parent, section) => {
             if (formElement.elementType === 'question') {
                 doQuestion(childItems, formElement);
             } else if (formElement.elementType === 'section' || formElement.elementType === 'form') {
-                doSection(childItems, formElement);
-                 }
+                doSection(childItems, formElement as any);
+            }
         });
     }
 };
 
-let idToName = {};
+let idToName: Dictionary<any> = {};
 
-export function formToSDC({form, renderer, validate}, cb) {
+export function formToSDC({form, renderer, validate}, cb: any) {
     const formDesign = builderCreate({
         FormDesign: {
             '@xmlns': 'urn:ihe:qrph:sdc:2016',
@@ -149,7 +151,7 @@ export function formToSDC({form, renderer, validate}, cb) {
 
     const childItems = body.ele({ChildItems: {}});
 
-    form.formElements.forEach(formElement => {
+    form.formElements.forEach((formElement: any) => {
         if (formElement.elementType === 'section' || formElement.elementType === 'form') {
             doSection(childItems, formElement);
         } else {
@@ -175,7 +177,7 @@ export function formToSDC({form, renderer, validate}, cb) {
             case 'ON_PREM':
                 // workaround until local lambda
                 const validator = require('xsd-schema-validator');
-                validator.validateXML(xmlStr, './modules/form/public/assets/sdc/SDCFormDesign.xsd', err => {
+                validator.validateXML(xmlStr, './modules/form/public/assets/sdc/SDCFormDesign.xsd', (err: any) => {
                     if (err) {
                         logError({
                             message: 'SDC Schema validation error: ',

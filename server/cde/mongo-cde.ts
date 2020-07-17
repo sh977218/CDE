@@ -1,6 +1,9 @@
 import * as Ajv from 'ajv';
+import { Dictionary } from 'async';
+import { NextFunction } from 'express';
 import { isEmpty } from 'lodash';
 import { Document, Model, QueryCursor } from 'mongoose';
+import * as elasticCde from 'server/cde/elastic';
 import { updateOrInsert } from 'server/cde/elastic';
 import { auditSchema, dataElementSchema, dataElementSourceSchema, draftSchema } from 'server/cde/schemas';
 import { splitError } from 'server/errorHandler/errorHandler';
@@ -8,15 +11,14 @@ import { establishConnection } from 'server/system/connections';
 import { errorLogger } from 'server/system/logging';
 import { attachables, auditGetLog, auditModifications, formatElt, generateTinyId } from 'server/system/mongo-data';
 import { config } from 'server/system/parseConfig';
-import * as dataElementschema from 'shared/de/assets/dataElement.schema.json';
+import * as dataElementSchemaJson from 'shared/de/assets/dataElement.schema.json';
 import { DataElement as DataElementClient, DataElementElastic } from 'shared/de/dataElement.model';
 import { wipeDatatype } from 'shared/de/dataElement.model';
-import { CbError, CbError1, EltLog, User } from 'shared/models.model';
-import { Dictionary } from 'async';
+import { CbError, EltLog, User } from 'shared/models.model';
 
 export const type = 'cde';
 export const name = 'CDEs';
-export const elastic = require('../../server/cde/elastic');
+export const elastic = elasticCde;
 
 export type DataElement = DataElementClient;
 export type DataElementDocument = Document & DataElement;
@@ -30,7 +32,7 @@ const ajvElt = new Ajv({allErrors: true});
 ajvElt.addSchema(require('../../shared/de/assets/adminItem.schema'));
 export let validateSchema: any;
 try {
-    const schema = dataElementschema;
+    const schema = dataElementSchemaJson;
     (schema as any).$async = true;
     validateSchema = validateSchema = ajvElt.compile(schema);
 } catch (err) {
@@ -38,8 +40,8 @@ try {
     process.exit(1);
 }
 
-function preSaveUseThisForSomeReason(next) {
-    const elt = this as DataElementDocument;
+function preSaveUseThisForSomeReason(this: DataElementDocument, next: NextFunction) {
+    const elt = this;
 
     if (elt.archived) {
         return next();
@@ -98,8 +100,8 @@ export function byExisting(elt: DataElement, cb: CbError<DataElementDocument>) {
 
 export const byId = (id: string, cb: CbError<DataElementDocument>) => dataElementModel.findOne({_id: id}).exec(cb);
 
-export const byTinyId =
-    (tinyId: string, cb?: CbError<DataElementDocument>) => dataElementModel.findOne({tinyId, archived: false}).exec(cb);
+export const byTinyId = (tinyId: string, cb?: CbError<DataElementDocument | null>) =>
+    dataElementModel.findOne({tinyId, archived: false}).exec(cb);
 
 export function latestVersionByTinyId(tinyId: string, cb: CbError<string>) {
     dataElementModel.findOne({tinyId, archived: false}, (err, dataElement) => {
@@ -143,7 +145,7 @@ export function draftSave(elt: DataElement, user: User, cb: CbError<DataElementD
             return;
         }
         if (doc.__v !== elt.__v) {
-            return cb();
+            return cb(null);
         }
         const version = elt.__v;
         elt.__v++;
@@ -181,7 +183,7 @@ export function count(condition: any, callback: CbError<number>) {
     return dataElementModel.countDocuments(condition, callback);
 }
 
-export function byTinyIdVersion(tinyId: string, version: string | undefined, cb: CbError<DataElementDocument>) {
+export function byTinyIdVersion(tinyId: string, version: string | undefined, cb: CbError<DataElementDocument | null>) {
     if (version) {
         byTinyIdAndVersion(tinyId, version, cb);
     } else {
@@ -220,7 +222,7 @@ export function inCdeView(cde: DataElement) {
     }
 }
 
-export function create(elt: DataElement, user: User, callback: CbError1<DataElementDocument>) {
+export function create(elt: DataElement, user: User, callback: CbError<DataElementDocument>) {
     wipeDatatype(elt);
     elt.created = Date.now();
     elt.createdBy = {

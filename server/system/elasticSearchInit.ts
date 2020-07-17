@@ -1,7 +1,7 @@
 import * as Config from 'config';
 import { createHash } from 'crypto';
 import { createIndexJson as boardCreateIndexJson } from 'server/board/elasticSearchMapping';
-import { Cb, Cb1, CbError, ClassificationElement, ItemElastic } from 'shared/models.model';
+import { Cb, CbError, ClassificationElement, ItemElastic } from 'shared/models.model';
 import { FormElement, FormQuestion } from 'shared/form/form.model';
 
 const config = Config as any;

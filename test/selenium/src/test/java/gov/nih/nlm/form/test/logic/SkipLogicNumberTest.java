@@ -2,6 +2,7 @@ package gov.nih.nlm.form.test.logic;
 
 import gov.nih.nlm.form.test.BaseFormTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.testng.annotations.Test;
 
 public class SkipLogicNumberTest extends BaseFormTest {
@@ -27,6 +28,7 @@ public class SkipLogicNumberTest extends BaseFormTest {
         goToPreview();
         togglePrintableLogic();
         findElement(By.xpath("//*[@id='Greatest Dimension_0-0_box']")).clear();
+        findElement(By.xpath("//*[@id='Greatest Dimension_0-0_box']")).sendKeys(Keys.BACK_SPACE);
         textPresent(cdeName);
         findElement(By.xpath("//*[@id='Greatest Dimension_0-0_box']")).sendKeys("2");
         textPresent(cdeName);
@@ -53,7 +55,7 @@ public class SkipLogicNumberTest extends BaseFormTest {
 
         goToPreview();
         togglePrintableLogic();
-        findElement(By.xpath("//*[@id='Additional Dimension_0-1_box']")).clear();
+        findElement(By.xpath("//*[@id='Additional Dimension_0-1_box']")).sendKeys(Keys.BACK_SPACE);
         textPresent(cdeName);
         findElement(By.xpath("//*[@id='Additional Dimension_0-1_box']")).sendKeys("4");
         textNotPresent(cdeName);

@@ -7,7 +7,6 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
         MatSnackBarModule
     ],
     declarations: [],
-    entryComponents: [],
     providers: [
         AlertService
     ],

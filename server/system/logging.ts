@@ -1,31 +1,35 @@
+import { Request } from 'express';
+import { config } from 'server/system/parseConfig';
+import { CbError } from 'shared/models.model';
 import { transports, Logger, Transport } from 'winston';
-import { config } from '../system/parseConfig';
 
 const util = require('util');
 const dbLogger = require('../log/dbLogger');
 const noDbLogger = require('./noDbLogger');
 
-export const MongoLogger = transports.MongoLogger = function (options) {
+export const mongoLogger = (transports as any).MongoLogger = function(options: any) {
     this.name = 'mongoLogger';
     this.json = true;
     this.level = options.level || 'info';
 };
 
-export const MongoErrorLogger = transports.MongoErrorLogger = function (options) {
+export const mongoErrorLogger = (transports as any).MongoErrorLogger = function(options: any) {
     this.name = 'mongoErrorLogger';
     this.json = true;
     this.level = options.level || 'error';
 };
 
-util.inherits(MongoLogger, Transport);
-util.inherits(MongoErrorLogger, Transport);
+util.inherits(mongoLogger, Transport);
+util.inherits(mongoErrorLogger, Transport);
 
-MongoLogger.prototype.log = function (level, msg, meta, callback) {
+mongoLogger.prototype.log = (level: string, msg: string, meta: any, callback: CbError<boolean>) => {
     try {
-        let logEvent = JSON.parse(msg);
+        const logEvent = JSON.parse(msg);
         logEvent.level = level;
-        dbLogger.log(logEvent, function (err) {
-            if (err) noDbLogger.noDbLogger.error('Cannot log to DB (1): ' + err);
+        dbLogger.log(logEvent, (err?: Error) => {
+            if (err) {
+                noDbLogger.noDbLogger.error('Cannot log to DB (1): ' + err);
+            }
             callback(null, true);
         });
     } catch (e) {
@@ -33,9 +37,11 @@ MongoLogger.prototype.log = function (level, msg, meta, callback) {
     }
 };
 
-MongoErrorLogger.prototype.log = function (level, msg, meta) {
-    if (!meta) meta = {};
-    function processDetails(details) {
+mongoErrorLogger.prototype.log = (level: string, msg: string, meta: any) => {
+    if (!meta) {
+        meta = {};
+    }
+    function processDetails(details: any) {
         if (!details) {
             return 'No details provided.';
         }
@@ -46,7 +52,7 @@ MongoErrorLogger.prototype.log = function (level, msg, meta) {
             return 'No details provided.';
         }
         Object.keys(details).map(name => {
-            let value = details[name];
+            const value = details[name];
             if (typeof value === 'string') {
                 return name + '=' + value;
             }
@@ -64,23 +70,27 @@ MongoErrorLogger.prototype.log = function (level, msg, meta) {
         });
     }
     try {
-        let message: any = {
+        const message: any = {
             message: msg,
             origin: meta.origin,
             stack: meta.stack || new Error().stack,
             details: processDetails(meta.details),
         };
-        if (meta.request) message.request = generateErrorLogRequest(meta.request);
-        dbLogger.logError(message, err => {
-            if (err) noDbLogger.noDbLogger.error('Cannot log to DB (3): ' + msg);
+        if (meta.request) {
+            message.request = generateErrorLogRequest(meta.request);
+        }
+        dbLogger.logError(message, (err?: Error) => {
+            if (err) {
+                noDbLogger.noDbLogger.error('Cannot log to DB (3): ' + msg);
+            }
         });
     } catch (e) {
         noDbLogger.noDbLogger.error('Cannot log to DB (4): ' + e);
     }
 };
 
-let expressLoggerCnf = {
-  transports: [ new transports.MongoLogger({
+const expressLoggerCnf = {
+  transports: [ new mongoLogger({
       json: true
   })]
 };
@@ -88,7 +98,7 @@ let expressLoggerCnf = {
 
 const expressErrorLoggerCnf = {
   transports: [
-    new transports.MongoErrorLogger({
+    new mongoErrorLogger({
         json: true
     })
   ]
@@ -96,7 +106,7 @@ const expressErrorLoggerCnf = {
 
 
 if (config.expressToStdout) {
-    let consoleLogCnf = {
+    const consoleLogCnf = {
         level: 'verbose',
         colorize: true,
         timestamp: true
@@ -108,20 +118,25 @@ if (config.expressToStdout) {
 export const expressLogger = new (Logger)(expressLoggerCnf);
 export const errorLogger = new (Logger)(expressErrorLoggerCnf);
 
-export function generateErrorLogRequest(req) {
-    let url, method, body, username;
+export function generateErrorLogRequest(req: Request) {
+    let body;
+    let method;
+    let url;
+    let username;
     try {
         url = req.url;
         method = req.method;
         body = JSON.stringify(req.body);
-        if (req.user) username = req.user.username;
+        if (req.user) {
+            username = req.user.username;
+        }
     } catch (e) {}
     return {
-        url: url
-        , method: method
-        , body: body
-        , username: username
-        , userAgent: req.headers['user-agent']
-        , ip: req.ip
+        url,
+        method,
+        body,
+        username,
+        userAgent: req.headers['user-agent'],
+        ip: req.ip
     };
 }

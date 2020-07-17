@@ -6,12 +6,11 @@
     "baseUrl": "./modules",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "incremental": true,
     "lib": [
       "ESNext",
       "DOM"
     ],
-    "module": "ES2015",
+    "module": "ESNext",
     "moduleResolution": "Node",
     "pretty": false,
     "rootDir": ".",

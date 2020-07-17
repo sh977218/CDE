@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { umlsPvFilter } from 'shared/de/umls';
-import {
-    CurationStatus, Item, StatusValidationRules, StatusValidationRulesByOrg, StatusValidationRulesByOrgReg
-} from 'shared/models.model';
+import { CurationStatus, Item } from 'shared/models.model';
+import { StatusValidationRules, StatusValidationRulesByOrg, StatusValidationRulesByOrgReg } from 'shared/system/organization';
 
 @Injectable()
 export class RegistrationValidatorService {

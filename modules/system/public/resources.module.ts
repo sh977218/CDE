@@ -28,7 +28,6 @@ const appRoutes: Routes = [
         ResourcesComponent,
         ResourcesRssComponent
     ],
-    entryComponents: [ResourcesRssComponent],
     exports: [],
     providers: [ResourceResolve],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]

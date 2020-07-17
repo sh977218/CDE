@@ -1,8 +1,9 @@
+import * as forEachOf from 'async/forEachOf';
+import * as forEachSeries from 'async/forEachSeries';
 import { CbErr, CbErrorObj } from 'shared/models.model';
 import {
     FormElement, FormElementsContainer, FormInForm, FormQuestion, FormSection, Question, QuestionValueList,
 } from 'shared/form/form.model';
-import * as async from 'async';
 
 // async callbacks
 type IterateOptions = any;
@@ -102,8 +103,7 @@ export function iterateFes<E = Error>(fes: FormElement[], formCb: informCb<E> = 
     if (!Array.isArray(fes)) {
         return callback();
     }
-    // @ts-ignore
-    async.forEachOf(fes, (fe: FormElement, i: number, cb: CbErrorObj<E>) => {
+    forEachOf(fes, (fe: FormElement, i: number, cb: CbErrorObj<E>) => {
         switch (fe.elementType) {
             case 'form':
                 formCb(fe, (err, options = undefined) => {
@@ -209,8 +209,7 @@ export function iterateFormElements(fe: any = {}, option: any = {}, cb?: any): v
         return;
     }
     if (option.async) {
-        // @ts-ignore
-        async.forEachSeries(fe.formElements, (fe: FormElement, doneOneFe: CbErr) => {
+        forEachSeries(fe.formElements, (fe: FormElement, doneOneFe: CbErr) => {
             if (fe.elementType === 'section') {
                 if (option.sectionCb) {
                     option.sectionCb(fe, doneOneFe);

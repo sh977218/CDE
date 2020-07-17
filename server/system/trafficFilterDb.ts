@@ -1,12 +1,13 @@
 import * as mongoose from 'mongoose';
-import { config } from '../system/parseConfig';
-import { addStringtype } from '../system/mongoose-stringtype';
+import { Document, Model, Schema } from 'mongoose';
+import { config } from 'server/system/parseConfig';
+import { addStringtype } from 'server/system/mongoose-stringtype';
+import { establishConnection } from 'server/system/connections';
+import { TrafficFilter } from 'shared/system/trafficFilter';
 
 addStringtype(mongoose);
-const Schema = mongoose.Schema;
 
-const connHelper = require('../system/connections');
-const conn = connHelper.establishConnection(config.database.appData);
+const conn = establishConnection(config.database.appData);
 export const trafficFilterSchema = new Schema({
     ipList: [
         {
@@ -18,7 +19,7 @@ export const trafficFilterSchema = new Schema({
     ]
 }, {usePushEach: true});
 
-const trafficFilterModel = conn.model('trafficFilter', trafficFilterSchema);
+const trafficFilterModel: Model<Document & TrafficFilter> = conn.model('trafficFilter', trafficFilterSchema);
 
 export async function initTrafficFilter() {
     trafficFilterModel.remove({});

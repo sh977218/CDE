@@ -5,7 +5,6 @@
 import * as bodyParser from 'body-parser';
 import * as compress from 'compression';
 import * as Config from 'config';
-import * as flash from 'connect-flash';
 import * as cookieParser from 'cookie-parser';
 import * as Domain from 'domain';
 import * as express from 'express';
@@ -54,6 +53,8 @@ import { banHackers, blockBannedIps, banIp, bannedIps } from 'server/system/traf
 import { module as userModule } from 'server/user/userRoutes';
 import { module as utsModule } from 'server/uts/utsRoutes';
 import { isOrgAuthority, isOrgCurator } from 'shared/system/authorizationShared';
+
+const flash = require('connect-flash');
 
 const config = Config as any;
 const domain = Domain.create();

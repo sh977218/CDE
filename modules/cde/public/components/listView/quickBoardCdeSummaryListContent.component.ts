@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { QuickBoardListService } from '_app/quickBoardList.service';
-import { Attachment } from 'shared/models.model';
+import { isDefault } from 'shared/models.model';
 import { DataElementElastic } from 'shared/de/dataElement.model';
 
 @Component({
@@ -14,7 +14,7 @@ export class QuickBoardCdeSummaryListContentComponent {
     constructor(private quickBoardService: QuickBoardListService) {
     }
 
-    defaultAttachmentsFilter = Attachment.isDefault;
+    defaultAttachmentsFilter = isDefault;
 
     removeElt(event: Event) {
         event.stopPropagation();

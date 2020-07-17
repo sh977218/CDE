@@ -1,10 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatButtonModule } from '@angular/material/button';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { SortableModule } from 'ngx-bootstrap/sortable';
-import { NgxTextDiffModule } from 'cde-text-diff';
-
+import { NgxTextDiffModule } from 'ngx-text-diff';
 import { CdeSortableComponent } from 'compare/cdeSortable/cdeSortable.component';
 import { CompareItemArrayComponent } from 'compare/compareItem/compareItemArray.component';
 import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHistoryContent.component';
@@ -12,14 +16,9 @@ import { CompareItemComponent } from 'compare/compareItem/compareItem.component'
 import { CompareSideBySideComponent } from 'compare/compareSideBySide/compareSideBySide.component';
 import { MergeDataElementComponent } from 'compare/mergeDataElement/mergeDataElement.component';
 import { MergeFormComponent } from 'compare/mergeForm/mergeForm.component';
-import { MergeDeService } from './mergeDe.service';
-import { MergeFormService } from './mergeForm.service';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatButtonModule } from '@angular/material/button';
+import { MergeDeService } from 'compare/mergeDe.service';
+import { MergeFormService } from 'compare/mergeForm.service';
+import { SortableModule } from 'ngx-bootstrap/sortable';
 
 @NgModule({
     imports: [
@@ -27,13 +26,13 @@ import { MatButtonModule } from '@angular/material/button';
         FormsModule,
         NgbModule,
         SortableModule.forRoot(),
-        NgxTextDiffModule,
         MatButtonModule,
         MatCheckboxModule,
         MatTooltipModule,
         MatDialogModule,
         MatIconModule,
         MatProgressBarModule,
+        NgxTextDiffModule,
     ],
     declarations: [
         CdeSortableComponent,
@@ -44,11 +43,6 @@ import { MatButtonModule } from '@angular/material/button';
         MergeDataElementComponent,
         MergeFormComponent,
     ],
-    entryComponents: [
-        CompareItemArrayComponent,
-        CompareItemComponent,
-        CompareHistoryContentComponent
-    ],
     providers: [MergeDeService, MergeFormService],
     exports: [
         CompareSideBySideComponent,
@@ -58,6 +52,5 @@ import { MatButtonModule } from '@angular/material/button';
     ],
     schemas: []
 })
-
 export class CompareModule {
 }

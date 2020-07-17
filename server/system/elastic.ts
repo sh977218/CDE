@@ -130,7 +130,7 @@ export function reIndexStream(dbStream: DbStream, cb?: Cb) {
                             logError({
                                 message: 'Unable to Index in bulk',
                                 origin: 'system.elastic.inject',
-                                stack: err,
+                                stack: err && err.stack,
                                 details: bodyErr
                             });
                             cb();
@@ -766,8 +766,7 @@ export async function elasticSearchExport(type: ModuleItem, query: any,
     search.body = query;
 
     function scrollThrough(response: any) {
-        // @ts-ignore
-        esClient.scroll({scrollId: response._scroll_id, scroll: '1m'}, (err, response) => {
+        esClient.scroll({scrollId: response._scroll_id, scroll: '1m'} as any, (err: Error | null, response: any) => {
             if (err) {
                 lock = false;
                 errorLogger.error('Error: Elastic Search Scroll Access Error',
@@ -785,7 +784,7 @@ export async function elasticSearchExport(type: ModuleItem, query: any,
     function processScroll(response: any) {
         if (response.hits.hits.length === 0) {
             lock = false;
-            streamCb();
+            streamCb(null);
         } else {
             for (const hit of response.hits.hits) {
                 streamCb(undefined, hit._source);
@@ -806,13 +805,11 @@ export function scrollExport(query: any, type: ModuleItem, cb: CbError<any>) {
     search.scroll = '1m';
     search.body = query;
 
-    // @ts-ignore
     esClient.search(search, cb);
 }
 
 export function scrollNext(scrollId: string, cb: CbError<any>) {
-    // @ts-ignore
-    esClient.scroll({scrollId, scroll: '1m'}, cb);
+    esClient.scroll({scrollId, scroll: '1m'} as any, cb);
 }
 
 export const queryMostViewed = {

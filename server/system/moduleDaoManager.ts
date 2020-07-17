@@ -1,11 +1,8 @@
 import { Dictionary } from 'async';
-import * as boardDb from 'server/board/boardDb';
-import * as mongoDe from 'server/cde/mongo-cde';
-import * as mongoForm from 'server/form/mongo-form';
 import { ModuleAll } from 'shared/models.model';
 
-// @ts-ignore
-export type DAOs = mongoDe | mongoForm | boardDb;
+// export type DAOs = mongoDe | mongoForm | boardDb; TODO: export DAOs as objects instead of relying on the CommonJS exports object
+export type DAOs = any;
 
 const daoList: DAOs[] = [];
 const allDaos: Dictionary<DAOs> = {};

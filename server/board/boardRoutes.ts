@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { intersection, isEmpty, uniqBy } from 'lodash';
 import * as boardDb from 'server/board/boardDb';
-import { Board, byId, byIdAndOwner, nbBoardsByUserId, newBoard, publicBoardsByPinTinyId } from 'server/board/boardDb';
+import { byId, byIdAndOwner, nbBoardsByUserId, newBoard, publicBoardsByPinTinyId } from 'server/board/boardDb';
 import { handleError, handleNotFound } from 'server/errorHandler/errorHandler';
 import { config } from 'server/system/parseConfig';
 import {
@@ -11,7 +11,7 @@ import { validateBody } from 'server/system/bodyValidator';
 import { hideProprietaryCodes } from 'server/cde/cdesvc';
 import { buildElasticSearchQuery, elasticsearch } from 'server/system/elastic';
 import { ItemDocument } from 'server/system/mongo-data';
-import { BoardPin, ItemElastic, ModuleAll } from 'shared/models.model';
+import { Board, BoardPin, ItemElastic, ModuleAll } from 'shared/models.model';
 import { stripBsonIds } from 'shared/system/exportShared';
 import { DataElement } from 'shared/de/dataElement.model';
 

@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { TourService } from 'home/tour.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TourService } from 'home/tour.service';
 
 @Component({
     selector: 'cde-home',
@@ -16,8 +16,7 @@ import { ActivatedRoute, Router } from '@angular/router';
     `]
 })
 export class HomeComponent implements OnInit {
-
-    cdeSearchTerm: string;
+    cdeSearchTerm!: string;
     searchForm = false;
 
     constructor(private route: ActivatedRoute,

@@ -18,7 +18,6 @@ const appRoutes: Routes = [
     declarations: [
         VideosComponent
     ],
-    entryComponents: [],
     exports: [],
     providers: [VideosResolve],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]

@@ -16,8 +16,8 @@ export class TagComponent {
     @Input() placeHolder: string = 'New tag...';
     @Input() allowFreeType: boolean = false;
     @Output() changed = new EventEmitter();
-    @ViewChild('tagAuto', {static: false}) matAutocomplete!: MatAutocomplete;
-    @ViewChild('tagInput', {static: false}) tagInput!: ElementRef;
+    @ViewChild('tagAuto') matAutocomplete!: MatAutocomplete;
+    @ViewChild('tagInput') tagInput!: ElementRef;
     tagCtrl = new FormControl();
     filteredTags: Observable<string[]>;
 

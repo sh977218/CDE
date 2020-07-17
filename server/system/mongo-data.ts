@@ -1,32 +1,83 @@
 import { forEach } from 'async';
+import * as connectMongo from 'connect-mongo';
+import { Response } from 'express';
+import * as session from 'express-session';
+import * as Grid from 'gridfs-stream';
 import { escape, findIndex } from 'lodash';
 import * as mongo from 'mongodb';
+import { connect, MongoClient } from 'mongodb';
 import { Document, Model, Types } from 'mongoose';
 import { diff } from 'server/cde/cdediff';
+import { ObjectId } from 'server';
 import { DataElementDocument } from 'server/cde/mongo-cde';
 import { handleError } from 'server/errorHandler/errorHandler';
 import { CdeFormDocument } from 'server/form/mongo-form';
 import { establishConnection } from 'server/system/connections';
 import { errorLogger } from 'server/system/logging';
-import { getDao, getDaoList } from 'server/system/moduleDaoManager';
+import { getDao } from 'server/system/moduleDaoManager';
 import { noDbLogger } from 'server/system/noDbLogger';
 import { config } from 'server/system/parseConfig';
-import { classificationAudit, jobQueue, message, statusValidationRuleSchema } from 'server/system/schemas';
-import { userByName, UserFull, userModel } from 'server/user/userDb';
+import { jobQueue, message, statusValidationRuleSchema } from 'server/system/schemas';
+import { userModel } from 'server/user/userDb';
 import { DataElement, DataElementElastic } from 'shared/de/dataElement.model';
-import * as eltShared from 'shared/elt';
 import { CdeForm, CdeFormElastic } from 'shared/form/form.model';
-import { Cb1, CbError, Item, ItemElastic, ModuleAll, Organization, StatusValidationRules } from 'shared/models.model';
+import { Cb, Cb1, CbError, EltLog, Item, ItemElastic, ModuleAll, User } from 'shared/models.model';
 import { hasRole } from 'shared/system/authorizationShared';
 import { generate as shortIdGenerate } from 'shortid';
-import { orgByName } from 'server/orgManagement/orgDb';
+import { Readable } from 'stream';
 
-type AuditLog = any;
+interface JobStatus {
+    _id: ObjectId;
+}
 
 export type ItemDocument = DataElementDocument | CdeFormDocument;
-export type Message = any;
+export interface Message {
+    _id: ObjectId;
+    author: {
+        authorType: 'user';
+        name: string;
+    }
+    date: Date;
+    recipient: {
+        recipientType: 'role' | 'user';
+        name: string;
+    }
+    states: {
+        _id?: ObjectId;
+        action: 'Filed';
+        comment: string;
+        date: Date;
+    }[]
+    type: 'CommentApproval' | 'CommentReply';
+    typeBoardApproval?: {
+        element: {
+            elementType: any;
+        }
+    }
+    typeCommentApproval?: {
+        comment: {
+            commentId: ObjectId;
+            text: string;
+        }
+        element: {
+            eltId: ObjectId;
+            eltType: ModuleAll;
+            name: string;
+        }
+    }
+    typeCommentReply?: {
+        comment: {
+            commentId: ObjectId;
+            text: string;
+        }
+        element: {
+            eltId: ObjectId;
+            eltType: ModuleAll;
+            name: string;
+        }
+    }
+}
 export type MessageDocument = Document & Message;
-export type ObjectId = Types.ObjectId;
 export const objectId = Types.ObjectId;
 
 export interface PushRegistration {
@@ -42,50 +93,47 @@ export interface PushRegistration {
         }
     };
     userId: string;
-    vapidKeys?: {
+    vapidKeys: {
         privateKey: string,
         publicKey: string
     };
 }
 
 export type PushRegistrationDocument = Document & PushRegistration;
-
-const session = require('express-session');
-const Grid = require('gridfs-stream');
-const MongoStore = require('connect-mongo')(session); // TODO: update to new version when available for mongodb 3 used by mongoose
+const mongoStore = connectMongo(session);
 
 const conn = establishConnection(config.database.appData);
 
-export const JobQueue = conn.model('JobQueue', jobQueue);
+export const jobQueueModel: Model<Document & JobStatus> = conn.model('JobQueue', jobQueue);
 export const messageModel: Model<MessageDocument> = conn.model('Message', message);
 const validationRuleModel = conn.model('ValidationRule', statusValidationRuleSchema);
 
-export let gfs;
-mongo.connect(config.database.appData.uri, (err, client) => {
+export let gfs: Grid.Grid;
+connect(config.database.appData.uri, (err?: Error, client?: MongoClient) => {
     if (err) {
         noDbLogger.info('Error connection open to legacy mongodb: ' + err);
     } else {
         gfs = Grid(client, mongo);
     }
 });
-export const sessionStore = new MongoStore({
+export const sessionStore = new mongoStore({
     mongooseConnection: conn,
     touchAfter: 60
 });
 
-export function jobStatus(type, callback) {
-    JobQueue.findOne({type}, callback);
+export function jobStatus(type: string, callback: CbError<Document & JobStatus>) {
+    jobQueueModel.findOne({type}, callback);
 }
 
-export function updateJobStatus(type, status, callback?) {
-    return JobQueue.updateOne({type}, {status}, {upsert: true}).exec(callback);
+export function updateJobStatus(type: string, status: string, callback?: CbError): Promise<void> {
+    return jobQueueModel.updateOne({type}, {status}, {upsert: true}).exec(callback);
 }
 
-export function removeJobStatus(type, callback) {
-    JobQueue.remove({type}, callback);
+export function removeJobStatus(type: string, callback: CbError) {
+    jobQueueModel.remove({type}, callback);
 }
 
-export function addCdeToViewHistory(elt, user) {
+export function addCdeToViewHistory(elt: Item, user: User) {
     if (!elt || !user) {
         return;
     }
@@ -107,7 +155,7 @@ export function addCdeToViewHistory(elt, user) {
     });
 }
 
-export function addFormToViewHistory(elt, user) {
+export function addFormToViewHistory(elt: Item, user: User) {
     if (!elt || !user) {
         return;
     }
@@ -130,46 +178,57 @@ export function addFormToViewHistory(elt, user) {
 }
 
 // WARNING: destroys oldItem and newItem by calling cdediff
-export const auditModifications = auditDb => (user, oldItem, newItem) => {
-    const message: any = {
-        adminItem: {
-            _id: newItem._id,
-            name: newItem.designations[0].designation,
-            tinyId: newItem.tinyId,
-            version: newItem.version,
-        },
-        date: new Date(),
-        user: {
-            username: user.username,
-        },
-    };
-
-    if (oldItem) {
-        message.previousItem = {
-            _id: oldItem._id,
-            name: oldItem.designations[0].designation,
-            tinyId: oldItem.tinyId,
-            version: oldItem.version,
+export function auditModifications<T extends Document>(auditDb: Model<T>) {
+    return (user: User, oldItem: Item | null, newItem: Item) => {
+        const message: EltLog = {
+            adminItem: {
+                _id: newItem._id,
+                name: newItem.designations[0].designation,
+                tinyId: newItem.tinyId,
+                version: newItem.version,
+            },
+            date: new Date(),
+            user: {
+                username: user.username,
+            },
         };
-        message.diff = diff(newItem, oldItem);
-    }
 
-    auditDb(message).save(handleError());
-};
+        if (oldItem) {
+            message.previousItem = {
+                _id: oldItem._id,
+                name: oldItem.designations[0].designation,
+                tinyId: oldItem.tinyId,
+                version: oldItem.version,
+            };
+            message.diff = diff(newItem, oldItem) as any;
+        }
 
-// cb(err, logs)
-export const auditGetLog = auditDb => (params, callback) => {
+        new auditDb(message).save(handleError());
+    };
+}
+
+export interface SearchParams {
+    includeBatch: boolean;
+    limit: number;
+    skip: number;
+}
+
+export const auditGetLog = (auditDb: Model<any>) => (params: SearchParams, cb: CbError<EltLog[]>) => {
     auditDb.find(params.includeBatch ? undefined : {'user.username': {$ne: 'batchloader'}})
         .sort('-date')
         .skip(params.skip)
         .limit(params.limit)
-        .exec(callback);
+        .exec(cb);
 };
+
+function isDocument<T>(data: T | T & Document): data is T & Document {
+    return !!(data as T & Document).toObject;
+}
 
 export function formatElt(doc: DataElement | DataElementDocument): DataElementElastic;
 export function formatElt(doc: CdeForm | CdeFormDocument): CdeFormElastic;
 export function formatElt(doc: Item | ItemDocument): ItemElastic {
-    const elt: ItemElastic = (doc as ItemDocument).toObject ? (doc as ItemDocument).toObject() : doc;
+    const elt: ItemElastic = isDocument(doc) ? (doc as ItemDocument).toObject() : doc;
     elt.stewardOrgCopy = elt.stewardOrg;
     elt.primaryNameCopy = escape(elt.designations[0].designation);
     elt.primaryDefinitionCopy = '';
@@ -196,8 +255,8 @@ export function userTotalSpace(name: string, callback: Cb1<number>) {
                 },
                 {$sort: {totalSize: -1}}
             ],
-            (err, res) => {
-                if (res.length > 0) {
+            (err?: Error, res?: {_id: {uname: string}, totalSize: number}[]) => {
+                if (res && res.length > 0) {
                     totalSpace += res[0].totalSize;
                 }
                 doneOne();
@@ -205,8 +264,15 @@ export function userTotalSpace(name: string, callback: Cb1<number>) {
     }, () => callback(totalSpace));
 }
 
-export function addFile(file, cb, streamDescription: any = null) {
-    gfs.findOne({md5: file.md5}, (err, f) => {
+export interface FileCreateInfo {
+    stream: Readable;
+    filename?: string;
+    md5?: string;
+    type?: string;
+}
+
+export function addFile(file: FileCreateInfo, cb: CbError<File & Document, boolean>, streamDescription: any = null) {
+    gfs.findOne({md5: file.md5} as any, (err, f) => {
         if (f) {
             return cb(err, f, false);
         }
@@ -224,11 +290,11 @@ export function addFile(file, cb, streamDescription: any = null) {
     });
 }
 
-export function deleteFileById(id: string, callback: CbError) {
+export function deleteFileById(id: string, callback: Cb<Error>) {
     gfs.remove({_id: id}, callback);
 }
 
-export function getFile(user, id, res) {
+export function getFile(user: User, id: string, res: Response) {
     gfs.exist({_id: id}, (err, found) => {
         if (err || !found) {
             res.status(404).send('File not found.');
@@ -253,15 +319,15 @@ export function getFile(user, id, res) {
     });
 }
 
-export function getAllUsernames(callback) {
-    userModel.find({}, {username: true, _id: false}, callback);
-}
+// export function getAllUsernames(cb: CbError<{username: string}[]>) {
+//     userModel.find({}, {username: true, _id: false}, cb);
+// }
 
 export function generateTinyId() {
     return shortIdGenerate().replace(/-/g, '_');
 }
 
-export function createMessage(msg: Message, cb?: CbError<MessageDocument>) {
+export function createMessage(msg: Omit<Message, '_id'>, cb?: CbError<MessageDocument>) {
     msg.states = [{
         action: 'Filed',
         date: new Date(),
@@ -270,7 +336,7 @@ export function createMessage(msg: Message, cb?: CbError<MessageDocument>) {
     new messageModel(msg).save(cb);
 }
 
-export function fetchItem(module: ModuleAll, tinyId: string, cb: CbError<ItemDocument>) {
+export function fetchItem<T extends Document>(module: ModuleAll, tinyId: string, cb: CbError<T>) {
     const db = getDao(module);
     if (!db) {
         cb(new Error('Module has no database.'));
@@ -279,29 +345,10 @@ export function fetchItem(module: ModuleAll, tinyId: string, cb: CbError<ItemDoc
     (db.byTinyId || db.byId)(tinyId, cb);
 }
 
-export function getAllRules(cb: CbError<StatusValidationRules>) {
-    validationRuleModel.find().exec(cb);
-}
+// export function getAllRules(cb: CbError<StatusValidationRules>) {
+//     validationRuleModel.find().exec(cb);
+// }
 
-export function disableRule(params, cb) {
-    orgByName(params.orgName, (err, org) => {
-        org.cdeStatusValidationRules.forEach((rule, i) => {
-            if (rule.id === params.rule.id) {
-                org.cdeStatusValidationRules.splice(i, 1);
-            }
-        });
-        org.save(cb);
-    });
-}
-
-export function enableRule(params, cb) {
-    orgByName(params.orgName, (err, org) => {
-        delete params.rule._id;
-        org.cdeStatusValidationRules.push(params.rule);
-        org.save(cb);
-    });
-}
-
-export function sortArrayByArray(unSortArray, targetArray) {
+export function sortArrayByArray(unSortArray: Item[], targetArray: ObjectId[]) {
     unSortArray.sort((a, b) => findIndex(targetArray, a._id) - findIndex(targetArray, b._id));
 }

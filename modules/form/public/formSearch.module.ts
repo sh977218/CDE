@@ -60,16 +60,11 @@ import { MatButtonModule } from '@angular/material/button';
         FormTableViewPreferencesComponent,
         QuickBoardFormSummaryListContentComponent,
     ],
-    entryComponents: [
-        BoardFormSummaryListComponent,
-        BoardFormSummaryListContentComponent,
-        FormAccordionListComponent,
-        FormSummaryListContentComponent,
-        FormTableViewPreferencesComponent,
-        QuickBoardFormSummaryListContentComponent,
-    ],
     exports: [
         FormSearchComponent,
+    ],
+    entryComponents: [
+        FormSummaryListContentComponent,
     ],
     providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]

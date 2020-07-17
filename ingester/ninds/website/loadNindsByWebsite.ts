@@ -123,8 +123,7 @@ function loadNindsForms() {
                 'ids.id': formId,
                 'registrationState.registrationStatus': {$ne: 'Retired'}
             };
-            // @ts-ignore
-            const sameFormIds = sameFormIdsMap[formId];
+            const sameFormIds: any = sameFormIdsMap[formId];
             const nindsForms = await NindsModel.find({
                 formId: {$in: [formId].concat(sameFormIds)}
             }).lean();

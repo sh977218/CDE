@@ -11,7 +11,6 @@ import { ActivatedRoute } from '@angular/router';
 @Component({
     selector: 'cde-resources',
     templateUrl: './resources.component.html',
-    entryComponents: [ResourcesRssComponent]
 })
 export class ResourcesComponent implements OnDestroy {
     containers: HtmlContainer[] = [];

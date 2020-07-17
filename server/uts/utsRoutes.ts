@@ -9,13 +9,13 @@ import { parseString } from 'xml2js';
 export function module() {
     const router = Router();
 
-    router.get('/searchValueSet/:vsacId', [nocacheMiddleware], async (req, res) => {
+    router.get('/searchValueSet/:vsacId', nocacheMiddleware, async (req, res) => {
         const vsacId = req.params.vsacId;
         const {term, page} = req.query;
         res.send(await searchValueSet(vsacId, term, page));
     });
 
-    router.get('/vsacBridge/:vsacId', [nocacheMiddleware], async (req, res) => {
+    router.get('/vsacBridge/:vsacId', nocacheMiddleware, async (req, res) => {
         const vsacId = req.params.vsacId;
         const xmlResp = await getValueSet(vsacId);
         if (!xmlResp) {
@@ -30,7 +30,7 @@ export function module() {
         });
     });
 
-    router.get('/searchUmls', [loggedInMiddleware], async (req, res) => {
+    router.get('/searchUmls', loggedInMiddleware, async (req, res) => {
         res.send(await searchUmls(req.query.searchTerm));
     });
 

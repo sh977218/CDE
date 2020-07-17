@@ -1,7 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-
-import './nativeRender.scss';
+import 'nativeRender/nativeRender.global.scss'
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
 import { CdeForm, DisplayProfile, DisplayType } from 'shared/form/form.model';
 

@@ -25,9 +25,7 @@ public class CreateFormBoard extends BoardTest {
 
         clickElement(By.id("board.classifyAllForms"));
         new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText("TEST");
-        textPresent("Classify Board");
-        clickElement(By.xpath("//*[@id='Classify Board-classifyBtn']"));
-        checkAlert("All Elements classified.");
+        classifySubmit(new String[]{"Classify Board"}, "All Elements classified.");
         clickElement(By.id("list_gridView"));
         textPresent("Steward");
         textPresent("Registration Status");

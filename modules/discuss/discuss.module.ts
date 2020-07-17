@@ -26,11 +26,6 @@ import { MatButtonModule } from '@angular/material/button';
         CommentsComponent,
         LatestCommentsComponent,
     ],
-    entryComponents: [
-        DiscussAreaComponent,
-        CommentsComponent,
-        LatestCommentsComponent,
-    ],
     exports: [
         DiscussAreaComponent,
         LatestCommentsComponent,

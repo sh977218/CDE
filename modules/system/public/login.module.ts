@@ -24,8 +24,6 @@ const appRoutes: Routes = [
         LoginComponent,
         FederatedLoginComponent,
     ],
-    entryComponents: [
-    ],
     exports: [
     ],
     providers: [

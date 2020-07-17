@@ -1,3 +1,4 @@
+import { Request, RequestHandler } from 'express';
 import { findAnyOne, initTrafficFilter } from 'server/system/trafficFilterDb';
 import { config } from 'server/system/parseConfig';
 
@@ -19,13 +20,13 @@ setInterval(async () => {
 }, 30 * 1000);
 
 
-function addBan(req) {
+function addBan(req: Request) {
     const ip = getRealIp(req);
     banIp(ip, req.originalUrl);
     bannedIps.push(ip);
 }
 
-export function banHackers(req, res, next) {
+export const banHackers: RequestHandler = (req, res, next) => {
     let banHim = false;
     banEndsWith.forEach(ban => {
         if (req.originalUrl.slice(-(ban.length)) === ban) {
@@ -52,16 +53,16 @@ export function banHackers(req, res, next) {
     } else {
         next();
     }
-}
+};
 
-export function blockBannedIps(req, res, next) {
+export const blockBannedIps: RequestHandler = (req, res, next) => {
     if (bannedIps.indexOf(getRealIp(req)) !== -1) {
         res.status(403).send('Access is temporarily disabled. If you think you received this response in error, please contact' +
             ' support. Otherwise, please try again in an hour.');
     } else {
         next();
     }
-}
+};
 
 export async function getTrafficFilter() {
     let foundOne = await findAnyOne();
@@ -71,9 +72,9 @@ export async function getTrafficFilter() {
     return foundOne;
 }
 
-export function getRealIp(request) {
-    if (request._remoteAddress) {
-        return request._remoteAddress;
+export function getRealIp(request: Request) {
+    if ((request as any)._remoteAddress) {
+        return (request as any)._remoteAddress;
     }
     if (request.ip) {
         return request.ip;
@@ -83,6 +84,9 @@ export function getRealIp(request) {
 export async function banIp(ip: string, reason: string) {
     const foundOne = await findAnyOne();
 
+    if (!foundOne) {
+        return;
+    }
     const foundIndex = foundOne.ipList.findIndex(r => r.ip === ip);
     if (foundIndex !== -1) {
         foundOne.ipList[foundIndex].strikes++;
@@ -90,8 +94,10 @@ export async function banIp(ip: string, reason: string) {
         foundOne.ipList[foundIndex].date = Date.now();
     } else {
         foundOne.ipList.push({
+            date: Date.now(),
             ip,
-            reason
+            reason,
+            strikes: 1,
         });
     }
 
