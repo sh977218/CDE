@@ -152,14 +152,7 @@ export function searchValueSet(oid: string, term = '', page = '1') {
 export function getValueSet(oid: string) {
     return getTicket()
         .then(ticket => promisify<UriOptions & CoreOptions, Response>(get)({
-            uri: 'https://vsac.nlm.nih.gov/vsac/svs/RetrieveValueSet',
-            qs: {
-                id: oid,
-                ticket
-            },
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            }
+            uri: `https://vsac.nlm.nih.gov/vsac/svs/RetrieveValueSet?id=${oid}&ticket=${ticket}`,
         }))
         .then(utsFake200Handler, handleReject('get vsac set ERROR'));
 }
