@@ -18,6 +18,8 @@ let updatedDeCount = 0;
 let newDeCount = 0;
 let sameDeCount = 0;
 
+let newFormCount = 0;
+
 export async function runOneNichdDataElement(nichdRow, source) {
     const nlmId = trim(nichdRow.shortID);
     const newCdeObj = createNichdCde(nichdRow, source);
@@ -77,7 +79,9 @@ export async function runOneNichdDataElement(nichdRow, source) {
 
 async function runOneNichdForm(nichdFormName, nichdRows, source) {
     const nichdFormObj = await createNichdForm(nichdFormName, nichdRows, source);
-    await new formModel(nichdFormObj).save();
+    const nichdForm = await new formModel(nichdFormObj).save();
+    newFormCount++;
+    console.log(`newFormCount: ${newFormCount} newForm ${nichdForm.tinyId}`);
     await new formSourceModel(nichdFormObj).save();
 }
 
