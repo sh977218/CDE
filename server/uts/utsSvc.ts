@@ -72,18 +72,21 @@ function getVsacCookies(): Promise<string[]> {
     }
     return _vsacCookies = promisify<UriOptions & CoreOptions, Response>(post)({
         uri: 'https://vsac.nlm.nih.gov/vsac/login',
-        body: stringify({
-            username: config.vsac.username,
-            password: config.vsac.password
-        }),
+        // body: stringify({
+        //     username: config.vsac.username,
+        //     password: config.vsac.password
+        // }),
+        body: `username=${config.vsac.username}&password=${config.vsac.password}`,
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
+            'Content-Type': 'application/json'
+            // 'Content-Type': 'application/x-www-form-urlencoded'
         }
-    })
-        .then(
-            response => response.headers['set-cookie'] || [],
-            handleReject('get vsac cookies ERROR')
-        );
+    }).then(
+        response => {
+            return response.headers['set-cookie'] || [];
+        },
+        handleReject('get vsac cookies ERROR')
+    );
 }
 
 function getTicket(): Promise<string> {
@@ -105,11 +108,12 @@ function getRevision(oid: string, j: CookieJar): Promise<string> {
         uri: `https://vsac.nlm.nih.gov/vsac/pc/vs/valueset/${oid}/detail?label=Latest`,
         jar: j,
         method: 'GET'
-    })
-        .then(
-            (response: Response) => JSON.parse(response.body).revision,
-            handleReject('get revision ERROR')
-        );
+    }).then(
+        (response: Response) => {
+            return JSON.parse(response.body).revision;
+        },
+        handleReject('get revision ERROR')
+    );
 
 }
 
@@ -152,14 +156,7 @@ export function searchValueSet(oid: string, term = '', page = '1') {
 export function getValueSet(oid: string) {
     return getTicket()
         .then(ticket => promisify<UriOptions & CoreOptions, Response>(get)({
-            uri: 'https://vsac.nlm.nih.gov/vsac/svs/RetrieveValueSet',
-            qs: {
-                id: oid,
-                ticket
-            },
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            }
+            uri: `https://vsac.nlm.nih.gov/vsac/svs/RetrieveValueSet?id=${oid}&ticket=${ticket}`,
         }))
         .then(utsFake200Handler, handleReject('get vsac set ERROR'));
 }
