@@ -1,5 +1,5 @@
 import { generateTinyId } from 'server/system/mongo-data';
-import { BATCHLOADER, created, imported } from 'ingester/shared/utility';
+import { BATCHLOADER, created, imported, lastMigrationScript } from 'ingester/shared/utility';
 import { parseNichdDesignations } from 'ingester/nichd/csv/cde/ParseDesignations';
 import { parseNichdDefinitions } from 'ingester/nichd/csv/cde/ParseDefinitions';
 import { parseNichdSources } from 'ingester/nichd/csv/cde/ParseSources';
@@ -9,11 +9,11 @@ import { parseNichdReferenceDocuments } from 'ingester/nichd/csv/cde/ParseRefere
 import { parseNichdProperties } from 'ingester/nichd/csv/cde/ParseProperties';
 import { parseNichdClassification } from 'ingester/nichd/csv/cde/ParseClassification';
 
-export function createNichdCde(nichdRow) {
+export function createNichdCde(nichdRow, source) {
     const nlmId = nichdRow.shortID;
     const designations = parseNichdDesignations(nichdRow);
     const definitions = parseNichdDefinitions();
-    const sources = parseNichdSources();
+    const sources = parseNichdSources(source);
 
     const ids = parseNichdIds(nichdRow);
     const valueDomain = parseNichdValueDomain(nichdRow);
@@ -29,9 +29,12 @@ export function createNichdCde(nichdRow) {
             registrationStatus: 'Qualified'
         },
         createdBy: BATCHLOADER,
+        lastMigrationScript,
+        changeNote: lastMigrationScript,
         created,
         imported,
         sources,
+        source: 'NICHD NBSTRN Krabbe Disease',
         designations,
         definitions,
         valueDomain,

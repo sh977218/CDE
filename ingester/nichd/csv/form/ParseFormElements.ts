@@ -2,18 +2,18 @@ import { groupBy, trim, words } from 'lodash';
 import { runOneNichdDataElement } from 'ingester/nichd/csv/loadNichdByXlsx';
 import { map as REDCAP_MULTISELECT_MAP } from 'ingester/phenx/redCap/REDCAP_MULTISELECT_MAP';
 
-export async function parseFormElements(nichdForm, nichdRows) {
+export async function parseFormElements(nichdForm, nichdRows, source) {
     const nichdSections = groupBy(nichdRows, 'Form Name');
     for (const nichdSectionName in nichdSections) {
         if (nichdSections.hasOwnProperty(nichdSectionName)) {
             const nichdSectionRows = nichdSections[nichdSectionName];
-            const formSelection = await parseNichdSection(nichdSectionName, nichdSectionRows);
+            const formSelection = await parseNichdSection(nichdSectionName, nichdSectionRows, source);
             nichdForm.formElements.push(formSelection);
         }
     }
 }
 
-async function parseNichdSection(nichdSectionName, nichdRows) {
+async function parseNichdSection(nichdSectionName, nichdRows, source) {
     const sectionFormElement = {
         elementType: 'section',
         instructions: {value: ''},
@@ -21,7 +21,7 @@ async function parseNichdSection(nichdSectionName, nichdRows) {
         formElements: []
     };
     for (const nichdRow of nichdRows) {
-        const existingCde = await runOneNichdDataElement(nichdRow);
+        const existingCde = await runOneNichdDataElement(nichdRow, source);
         const questionFormElement = cdeToQuestion(existingCde, nichdRow);
         sectionFormElement.formElements.push(questionFormElement);
     }

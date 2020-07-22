@@ -376,7 +376,7 @@ function isOneClassificationSameSource(existingEltObj, newEltObj) {
     return classificationEqual && sourcesEqual;
 }
 
-function mergeDesignations(existingObj, newObj) {
+export function mergeDesignations(existingObj, newObj) {
     const replaceDesignations = isOneClassificationSameSource(existingObj, newObj);
     if (replaceDesignations) {
         existingObj.designations = newObj.designations;
@@ -496,6 +496,9 @@ export function mergeClassification(existingElt, newObj, classificationOrgName) 
     let existingObj = existingElt;
     if (existingElt.toObject) {
         existingObj = existingElt.toObject();
+    }
+    if (newObj.toObject) {
+        newObj = newObj.toObject();
     }
     if (existingElt.lastMigrationScript === lastMigrationScript) {
         mergeClassificationByOrg(existingObj, newObj, classificationOrgName);
@@ -806,7 +809,8 @@ export function sortIdentifier(ids, source) {
 export function findOneCde(cdes: any[]) {
     const cdesLength = cdes.length;
     if (cdesLength === 0) {
-        return null;
+        console.log(`no cde found. TinyIds: ${cdes[0].tinyId}`);
+        process.exit(1);
     } else if (cdesLength === 1) {
         return cdes[0];
     } else {
