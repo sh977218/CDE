@@ -77,8 +77,8 @@ export async function runOneNichdDataElement(nichdRow, source) {
 
 async function runOneNichdForm(nichdFormName, nichdRows, source) {
     const nichdFormObj = await createNichdForm(nichdFormName, nichdRows, source);
-    const nichdForm = new formModel(nichdFormObj);
-    await new formSourceModel(nichdForm).save();
+    await new formModel(nichdFormObj).save();
+    await new formSourceModel(nichdFormObj).save();
 }
 
 async function run() {
