@@ -102,20 +102,19 @@ export function authBeforeVsac(req, username, password, done) {
     process.nextTick(() => {
         // are we doing federated?
         if (req.body.federated === true) {
-            console.log(req.body.ticket);
-            request.get(`https://uts-ws-qa.nlm.nih.gov/rest/content/angular/profile/serviceValidate?service=${config.publicUrl}/login/federated&ticket=${req.body.ticket}`, (error, response, body) => {
-                try {
-                    body = JSON.parse(body);
-                } catch (e) {
-                    done('Unknown error');
-                }
-                console.log(body);
-                username = body.utsUser.username;
-                if (username) {
-                    findAddUserLocally({username, ip: req.ip}, user => done(null, user));
-                } else {
-                    done('No UMLS User');
-                }
+            request.get(`${config.uts.federatedServiceValidate}?service=${config.publicUrl}/login/federated&ticket=${req.body.ticket}`,
+                (error, response, body) => {
+                    try {
+                        body = JSON.parse(body);
+                    } catch (e) {
+                        done('Unknown error');
+                    }
+                    username = body.utsUser.username;
+                    if (username) {
+                        findAddUserLocally({username, ip: req.ip}, user => done(null, user));
+                    } else {
+                        done('No UMLS User');
+                    }
             });
         } else {
             // Find the user by username in local datastore first and perform authentication.

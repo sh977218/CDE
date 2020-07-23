@@ -133,6 +133,9 @@ export function module() {
     }
 
     function myCsrf(req, res, next) {
+        if (req.body.federated) {
+            return next();
+        }
         if (!req.body._csrf) {
             return res.status(401).send();
         }
@@ -140,6 +143,9 @@ export function module() {
     }
 
     async function checkLoginReq(req, res, next) {
+        if (req.body.federated) {
+            return next();
+        }
         const realIp = getRealIp(req);
         if (Object.keys(req.body).filter(k => validLoginBody.indexOf(k) === -1).length) {
             await banIp(realIp, 'Invalid Login body');
@@ -154,11 +160,7 @@ export function module() {
 
     const validLoginBody = ['username', 'password', '_csrf', 'recaptcha'];
 
-    // router.post('/federated/login', (req, res) => {
-    //
-    // });
-
-    router.post('/login', [], (req, res, next) => {
+    router.post('/login', [checkLoginReq, myCsrf], (req, res, next) => {
         const failedIp = findFailedIp(getRealIp(req));
         series([
                 function checkCaptcha(captchaDone) {
