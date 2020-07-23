@@ -154,13 +154,6 @@ export function authBeforeVsac(req, username, password, done) {
 
 passport.use(new localStrategy({passReqToCallback: true}, authBeforeVsac));
 
-// passport.use('cit-federated', new customStrategy(
-//     async (req, callback) => {
-//         // Do your custom user finding logic here, or set to false based on req object
-//         // callback(null, user);
-//     }
-// ));)
-
 export function findAddUserLocally(profile, cb) {
     userByName(profile.username, (err, user) => {
         if (err) {
