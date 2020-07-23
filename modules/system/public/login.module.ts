@@ -4,9 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from 'system/public/components/login/login.component';
 import { MatButtonModule } from '@angular/material/button';
+import { FederatedLoginComponent } from 'system/public/components/federatedLogin/federatedLogin.component';
 
 const appRoutes: Routes = [
     {path: '', component: LoginComponent},
+    {path: 'federated', component: FederatedLoginComponent}
 ];
 
 @NgModule({
@@ -20,6 +22,7 @@ const appRoutes: Routes = [
     ],
     declarations: [
         LoginComponent,
+        FederatedLoginComponent,
     ],
     entryComponents: [
     ],

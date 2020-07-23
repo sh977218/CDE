@@ -56,6 +56,7 @@ export class LoginComponent {
     showCaptcha?: boolean;
     siteKey: string = (window as any).siteKey;
     username?: string;
+    federatedUrl = `https://loginqa.nlm.nih.gov/uts/login?service=${(window as any).publicUrl}/login/federated`;
 
     constructor(private http: HttpClient,
                 private alert: AlertService,

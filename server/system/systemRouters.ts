@@ -154,7 +154,11 @@ export function module() {
 
     const validLoginBody = ['username', 'password', '_csrf', 'recaptcha'];
 
-    router.post('/login', [checkLoginReq, myCsrf], (req, res, next) => {
+    // router.post('/federated/login', (req, res) => {
+    //
+    // });
+
+    router.post('/login', [], (req, res, next) => {
         const failedIp = findFailedIp(getRealIp(req));
         series([
                 function checkCaptcha(captchaDone) {
