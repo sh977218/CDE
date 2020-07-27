@@ -4,6 +4,7 @@ import { errorLogger } from 'server/system/logging';
 import { config } from 'server/system/parseConfig';
 import { User } from 'shared/models.model';
 import { addUser, updateUserIps, userById, userByName } from 'server/user/userDb';
+import { consoleLog } from 'server/log/dbLogger';
 
 const xml2js = require('xml2js');
 const request = require('request');
@@ -58,7 +59,7 @@ export function ticketValidate(tkt, cb) {
                 } else if (jsonResult['cas:serviceResponse'] &&
                     jsonResult['cas:serviceResponse']['cas:authenticationFailure']) {
                     // This statement gets the error message
-                    return cb(jsonResult['cas:serviceResponse']['cas:authenticationFailure'][0]['$']['code']);
+                    return cb(jsonResult['cas:serviceResponse']['cas:authenticationFailure'][0].$.code);
                 } else if (jsonResult['cas:serviceResponse']['cas:authenticationSuccess'] &&
                     jsonResult['cas:serviceResponse']['cas:authenticationSuccess']) {
                     // Returns the username
@@ -106,10 +107,12 @@ export function authBeforeVsac(req, username, password, done) {
                 (error, response, body) => {
                     try {
                         body = JSON.parse(body);
+                        username = body.utsUser.username;
                     } catch (e) {
+                        consoleLog(e);
+                        consoleLog(body);
                         done('Unknown error');
                     }
-                    username = body.utsUser.username;
                     if (username) {
                         findAddUserLocally({username, ip: req.ip}, user => done(null, user));
                     } else {
