@@ -109,6 +109,7 @@ export function authBeforeVsac(req, username, password, done) {
                         body = JSON.parse(body);
                         username = body.utsUser.username;
                     } catch (e) {
+                        consoleLog(`${config.uts.federatedServiceValidate}?service=${config.publicUrl}/login/federated&ticket=${req.body.ticket}`);
                         consoleLog(e);
                         consoleLog(body);
                         done('Unknown error');
