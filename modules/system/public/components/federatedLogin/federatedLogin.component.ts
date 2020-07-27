@@ -10,7 +10,7 @@ import { AlertService } from 'alert/alert.service';
 })
 export class FederatedLoginComponent {
 
-    loading: boolean;
+    showError: boolean;
 
     constructor(private route: ActivatedRoute,
                 private http: HttpClient,
@@ -29,10 +29,10 @@ export class FederatedLoginComponent {
                 {
                     ticket,
                     username: 'x', password: 'x',
-                    federated: true}, {responseType: 'text'}).toPromise();
+                    federated: true}, {responseType: 'text'}).toPromise().catch(e => {});
 
-            this.userService.reload();
             if (loginRes === 'OK') {
+                this.userService.reload();
                 if (this.loginSvc.getPreviousRoute()) {
                     this.router.navigate(
                         [this.loginSvc.getPreviousRoute().url],
@@ -42,7 +42,7 @@ export class FederatedLoginComponent {
                     this.router.navigate(['/home']);
                 }
             } else {
-                this.alert.addAlert('danger', loginRes);
+                this.showError = true;
             }
         });
     }
