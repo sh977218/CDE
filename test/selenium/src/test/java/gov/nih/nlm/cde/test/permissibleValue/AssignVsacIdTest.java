@@ -31,7 +31,7 @@ public class AssignVsacIdTest extends NlmCdeBaseTest {
         textPresent("2186-5");
         newCdeVersion("Adding vsac Id");
 
-        textPresent("20180618");
+        textPresent("Latest");
         textPresent("2135-2");
         textPresent("CDCREC");
         WebElement tbody = driver.findElement(By.id("vsacTableBody"));

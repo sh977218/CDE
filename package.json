@@ -78,9 +78,9 @@
       "**/server/notification/notificationDb*",
       "**/server/notification/pushNotificationSvc*"
     ],
-    "lines": "95",
-    "branches": "81",
-    "functions": "97",
+    "lines": "94",
+    "branches": "80",
+    "functions": "95",
     "reporter": "html"
   },
   "dependencies": {
