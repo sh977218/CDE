@@ -87,7 +87,8 @@ let ignoreErrors = [
     'Report Only',
     'Failed to decode downloaded font',
     'Slow network is detected',
-    'WebSocket is already in CLOSING or CLOSED state'
+    'WebSocket is already in CLOSING or CLOSED state',
+    'petstore.swagger.io'
 ];
 
 fs.readdir(logFolder, (err, files) => {
