@@ -8,6 +8,10 @@
   "pmRunOnStartup": [],
   "viewsIncrementThreshold": 1,
   "autoSyncMesh": true,
+  "uts": {
+    "federatedServiceValidate": "https://uts-ws-qa.nlm.nih.gov/rest/content/angular/profile/serviceValidate",
+    "federatedLogin": "https://loginqa.nlm.nih.gov/uts/login"
+  },
   "elastic": {
     "index": {
       "name": "cdetest"

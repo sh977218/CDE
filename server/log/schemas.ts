@@ -9,7 +9,7 @@ const StringType = (Schema.Types as any).StringType;
 const cappedSize = config.database.log.cappedCollectionSizeMB;
 
 export const consoleLogSchema = new Schema({ // everything server except express
-    date: {type: Date, index: true, default: Date.now()},
+    date: {type: Date, index: true, default: Date.now},
     message: StringType,
     level: {type: StringType, enum: ['debug', 'info', 'warning', 'error'], default: 'info'},
 }, {w: 0, capped: cappedSize} as any);
