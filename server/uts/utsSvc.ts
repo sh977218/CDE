@@ -1,7 +1,6 @@
 import { Dictionary } from 'async';
 import * as Config from 'config';
-import { stringify } from 'querystring';
-import { CookieJar, CoreOptions, Response, UriOptions, cookie, get, jar, post } from 'request';
+import { cookie, CookieJar, CoreOptions, get, jar, post, Response, UriOptions } from 'request';
 import { respondError } from 'server/errorHandler/errorHandler';
 import { consoleLog } from 'server/log/dbLogger';
 import { promisify } from 'util';
@@ -45,21 +44,23 @@ function getTGT() {
         return _TGT;
     }
     return _TGT = promisify<UriOptions & CoreOptions, Response>(post)({
-        uri: config.vsac.tgtUrl,
+        uri: config.uts.tgtUrl,
         method: 'POST',
         qs: {
-            username: config.vsac.username,
-            password: config.vsac.password
+            apikey: config.uts.apikey
         },
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
         }
-    })
-        .then(
-            response => response.body,
-            // response => response.body,
-            handleReject('get TGT ERROR')
-        );
+    }).then(
+        response => {
+            const tgtHtml = response.body;
+            const re = RegExp(/api-key\/(TGT.*)" method.*/g);
+            const tgtUrlMatches = re.exec(tgtHtml);
+            return tgtUrlMatches[1];
+        },
+        handleReject('get TGT ERROR')
+    );
 }
 
 function verifyUMLS200(response: Response) {
@@ -82,17 +83,15 @@ function getVsacCookies(): Promise<string[]> {
             // 'Content-Type': 'application/x-www-form-urlencoded'
         }
     }).then(
-        response => {
-            return response.headers['set-cookie'] || [];
-        },
+        response => response.headers['set-cookie'] || [],
         handleReject('get vsac cookies ERROR')
     );
 }
 
 function getTicket(): Promise<string> {
     return getTGT()
-        .then((tgt: string) => promisify<UriOptions & CoreOptions, Response>(post)({
-            uri: config.vsac.tgtUrl + '/' + tgt,
+        .then(tgt => promisify<UriOptions & CoreOptions, Response>(post)({
+            uri: config.uts.tgtUrl + '/' + tgt,
             qs: {
                 service: config.uts.service
             },
