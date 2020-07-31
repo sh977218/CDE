@@ -299,7 +299,7 @@
     "webpack-dev-server": "^3.9.0",
     "webpack-merge": "^4.2.2",
     "whatwg-fetch": "^3.0.0",
-    "xlsx": "^0.15.1",
+    "xlsx": "^0.16.5",
     "zone.js": "~0.9.1",
     "iconv-lite": "^0.5.1"
   },

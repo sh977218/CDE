@@ -3,8 +3,12 @@ import { dataElementModel } from 'server/cde/mongo-cde';
 import { BATCHLOADER } from 'ingester/shared/utility';
 import { getCell } from 'ingester/ninds/csv/shared/utility';
 import { parseFormId } from '../cde/ParseDesignations';
+import { runOneNinrDataElement } from 'ingester/ninr/csv/loadNinrByCsv';
 
 function convertCsvRowToFormElement(row: any, cde: any) {
+    if (cde.toObject) {
+        cde = cde.toObject();
+    }
     const label = getCell(row, 'Preferred Question Text');
     const value = getCell(row, 'Guidelines/Instructions');
     const inputRestriction = getCell(row, 'Input Restriction');
@@ -49,7 +53,7 @@ function convertCsvRowToFormElement(row: any, cde: any) {
     };
 }
 
-export async function parseFormElements(form: any, rows: any[]): Promise<any[]> {
+export async function parseFormElements(form: any, rows: any[]) {
     const formElements: any[] = [];
     let newSection: any = {
         label: '',
@@ -59,12 +63,7 @@ export async function parseFormElements(form: any, rows: any[]): Promise<any[]> 
 
     let prevCategoryGroup = '';
     for (const row of rows) {
-        const variableName = getCell(row, 'Variable Name');
-        const cde: any = await dataElementModel.findOne({archived: false, 'ids.id': variableName});
-        if (!cde) {
-            console.log(`${variableName} variable not found.`);
-            process.exit(1);
-        }
+        const cde: any = await runOneNinrDataElement(row, 'NINR');
         const formElement = convertCsvRowToFormElement(row, cde);
         let categoryGroup = getCell(row, 'Category/Group');
         if (isEmpty(categoryGroup)) {
@@ -99,7 +98,7 @@ export async function parseFormElements(form: any, rows: any[]): Promise<any[]> 
         prevCategoryGroup = categoryGroup;
     }
     formElements.push(newSection);
-    return formElements;
+    form.formElements = formElements;
 }
 
 function parseQuestionLabel(row, formId) {
