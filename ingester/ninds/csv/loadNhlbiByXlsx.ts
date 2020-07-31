@@ -72,8 +72,6 @@ async function runDataElement(formMap) {
     const workbook = XLSX.readFile(sickleCellDataElementsXlsx);
     const rows = XLSX.utils.sheet_to_json(workbook.Sheets.Sheet1);
     const formattedRows = formatRows('sickleCellDataElementsXlsx', rows);
-// tslint:disable-next-line:max-line-length
-//    const formattedRows = formatRows('sickleCellDataElementsXlsx', rows).filter(f => f['suggested question text'].indexOf('F2812') !== -1);
     for (const row of formattedRows) {
         await doOneNhlbiCde(row, formMap);
     }
@@ -122,7 +120,6 @@ async function runForm(formMap) {
     const phenxCrfs = XLSX.utils.sheet_to_json(workbook.Sheets['PhenX CRFs']);
     const nonPhenxCrfs = XLSX.utils.sheet_to_json(workbook.Sheets['Non-PhenX CRFs']);
     const formattedRows = phenxCrfs.concat(nonPhenxCrfs);
-//    const formattedRows = phenxCrfs.concat(nonPhenxCrfs).filter(f => f.CrfId === 'F2812');
     for (const row of formattedRows) {
         const formId = row.CrfId;
         await runOneNhlbiForm(row, formMap[formId]);

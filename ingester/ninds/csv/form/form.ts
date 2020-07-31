@@ -1,6 +1,6 @@
 import { isEmpty } from 'lodash';
 import { generateTinyId } from 'server/system/mongo-data';
-import { BATCHLOADER, created, imported } from 'ingester/shared/utility';
+import { BATCHLOADER, created, imported, NINDS_PRECLINICAL_NEI_FILE_PATH } from 'ingester/shared/utility';
 import { parseDesignations, parseNhlbiDesignations } from 'ingester/ninds/csv/form/ParseDesignations';
 import { parseDefinitions } from 'ingester/ninds/csv/form/ParseDefinitions';
 import { parseNhlbiSources, parseSources } from 'ingester/ninds/csv/shared/ParseSources';
@@ -20,7 +20,8 @@ export async function createNindsForm(formName: string, csvFileName: string, row
     const referenceDocuments = await parseReferenceDocuments(rows);
     const properties = parseProperties();
     const ids = parseIds();
-    const attachments = await parseAttachments(formName, csvFileName);
+    const csvPath = `${NINDS_PRECLINICAL_NEI_FILE_PATH}/${csvFileName}`;
+    const attachments = await parseAttachments(formName, csvPath);
     const nindsForm: any = {
         tinyId: generateTinyId(),
         stewardOrg: {
@@ -43,10 +44,10 @@ export async function createNindsForm(formName: string, csvFileName: string, row
         classification: [],
         comments: []
     };
-    nindsForm.formElements = await parseFormElements(nindsForm, rows);
-    parseClassification(nindsForm, rows);
-
     const DEFAULT_CLASSIFICATION = ['Preclinical + NEI'];
+    parseClassification(nindsForm, rows, DEFAULT_CLASSIFICATION);
+    await parseFormElements(nindsForm, rows);
+
     if (nindsForm.classification.length === 0) {
         classifyItem(nindsForm, 'NINDS', DEFAULT_CLASSIFICATION.concat(['Not Classified']));
     }

@@ -27,10 +27,11 @@ export const sourceMap = {
     // tslint:disable-next-line:max-line-length
     'NINDS Preclinical TBI': ['NINDS', 'NINDS Variable Name', 'NINDS caDSR', 'NINDS Preclinical', 'BRICS Variable Name', 'NINDS Preclinical TBI'],
     NCI: ['NCI', 'caDSR'],
-    NICHD: ['NICHD']
+    NICHD: ['NICHD'],
+    NINR: ['NINDS', 'NINDS Variable Name', 'NINDS caDSR', 'NINDS Preclinical', 'BRICS Variable Name', 'NINDS Preclinical TBI'],
 };
 export const TODAY = new Date().toJSON();
-export const lastMigrationScript = `load NICHD on ${moment().format('DD MMMM YYYY')}`;
+export const lastMigrationScript = `load NINR on ${moment().format('DD MMMM YYYY')}`;
 
 export const BATCHLOADER_USERNAME = 'batchloader';
 export const BATCHLOADER = {
@@ -130,7 +131,7 @@ export async function updateRawArtifact(existingElt, newElt, source, classificat
     printUpdateResult(updateResult, existingElt);
 }
 
-function printUpdateResult(updateResult: any, elt: any) {
+export function printUpdateResult(updateResult: any, elt: any) {
     if (updateResult.nModified) {
         console.log(`${updateResult.nModified} ${elt.elementType} Raw Artifact modified: ${elt.tinyId}`);
     }
@@ -141,8 +142,8 @@ function printUpdateResult(updateResult: any, elt: any) {
 
 export function replaceClassificationByOrg(existingObj, newObj, orgName: string) {
     const otherClassifications = existingObj.classification.filter(c => c.stewardOrg.name !== orgName);
-    newObj.classification.push(...otherClassifications);
-    return newObj.classification;
+    const currentClassification = newObj.classification.filter(c => c.stewardOrg.name === orgName);
+    return currentClassification.concat(otherClassifications);
 }
 
 function mergeElements(existingElements, newElements) {
@@ -168,9 +169,8 @@ export function mergeClassificationByOrg(existingObj, newObj, orgName: string = 
             }
         })
         .forEach(c => {
-            const foundClassification: Classification | undefined = find(existingClassification, o => {
-                return o.stewardOrg.name === c.stewardOrg.name;
-            });
+            const foundClassification: Classification | undefined = find(existingClassification,
+                o => o.stewardOrg.name === c.stewardOrg.name);
             if (!foundClassification) {
                 existingObj.classification.unshift(c);
             } else {
@@ -336,7 +336,6 @@ export function compareElt(newEltObj, existingEltObj, source) {
         delete newEltObj.formElements;
     }
 
-
     [existingEltObj, newEltObj].forEach(eltObj => {
         eltObj.designations = sortBy(eltObj.designations, ['designation']);
         eltObj.definitions = sortBy(eltObj.definitions, ['definition']);
@@ -396,7 +395,7 @@ export function mergeDesignations(existingObj, newObj) {
     existingObj.designations = sortDesignations(existingObj.designations);
 }
 
-function mergeDefinitions(existingObj, newObj) {
+export function mergeDefinitions(existingObj, newObj) {
     const replaceDefinitions = isOneClassificationSameSource(existingObj, newObj);
     if (replaceDefinitions) {
         existingObj.definitions = newObj.definitions;
@@ -493,18 +492,14 @@ export function mergeIds(existingObj, newObj, source: string) {
 }
 
 export function mergeClassification(existingElt, newObj, classificationOrgName) {
-    let existingObj = existingElt;
-    if (existingElt.toObject) {
-        existingObj = existingElt.toObject();
-    }
     if (newObj.toObject) {
         newObj = newObj.toObject();
     }
     if (existingElt.lastMigrationScript === lastMigrationScript) {
-        mergeClassificationByOrg(existingObj, newObj, classificationOrgName);
-        existingElt.classification = existingObj.classification;
+        mergeClassificationByOrg(existingElt, newObj, classificationOrgName);
+        existingElt.classification = existingElt.classification;
     } else {
-        const resultClassification = replaceClassificationByOrg(existingObj, newObj, classificationOrgName);
+        const resultClassification = replaceClassificationByOrg(existingElt, newObj, classificationOrgName);
         existingElt.classification = resultClassification;
     }
 }
@@ -558,7 +553,7 @@ export function mergeElt(existingEltObj: any, newEltObj: any, source: string) {
     mergeProperties(existingEltObj, newEltObj);
     mergeReferenceDocuments(existingEltObj, newEltObj);
 
-    mergeSources(existingEltObj, newEltObj, source);
+//    mergeSources(existingEltObj, newEltObj, source);
 
     existingEltObj.attachments = newEltObj.attachments;
     if (existingEltObj.lastMigrationScript !== lastMigrationScript) {
@@ -806,15 +801,14 @@ export function sortIdentifier(ids, source) {
     return sortSourceIdentifiers.concat(sortOtherSourceIdentifiers);
 }
 
-export function findOneCde(cdes: any[]) {
+export function findOneCde(cdes: any[], variableName) {
     const cdesLength = cdes.length;
     if (cdesLength === 0) {
-        console.log(`no cde found. TinyIds: ${cdes[0].tinyId}`);
-        process.exit(1);
+        return null;
     } else if (cdesLength === 1) {
         return cdes[0];
     } else {
-        console.log(`Multiple cdes found. TinyIds: ${cdes[0].tinyId}`);
+        console.log(`Multiple cdes found. variableName: ${variableName}`);
         process.exit(1);
     }
 }
@@ -885,3 +879,8 @@ export function fixClassification(eltObj) {
     return uniqBy(eltObj.classification, 'stewardOrg.name');
 }
 
+export function sleep(ms) {
+    return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+    });
+}
