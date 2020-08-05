@@ -1,5 +1,5 @@
 import { isEmpty, trim } from 'lodash';
-import { map as RED_CAP_DATA_TYPE_MAP } from './REDCAP_DATATYPE_MAP';
+import { map as RED_CAP_DATA_TYPE_MAP, validationTypeMap as VALIDATION_TYPE_MAP } from './REDCAP_DATATYPE_MAP';
 
 export function parseValueDomain(row) {
     const valueDomain: any = {
@@ -18,7 +18,7 @@ export function parseValueDomain(row) {
 
     const fieldType = trim(row['Field Type']);
     const validationType = trim(row['Text Validation Type OR Show Slider Number']);
-    const choicesCalculationsORSliderLabels = row['Choices, Calculations, OR Slider Labels'];
+    const choicesCalculationsORSliderLabels = trim(row['Choices, Calculations, OR Slider Labels']);
     const datatype = RED_CAP_DATA_TYPE_MAP[fieldType];
     if (datatype) {
         valueDomain.datatype = datatype;
@@ -28,8 +28,9 @@ export function parseValueDomain(row) {
     }
 
     if (datatype === 'Text') {
-        if (validationType === 'number') {
-            valueDomain.datatype = 'Number';
+        const _datatype = VALIDATION_TYPE_MAP[validationType];
+        if (!isEmpty(_datatype)) {
+            valueDomain.datatype = _datatype;
         }
     } else if (datatype === 'Date') {
         valueDomain.datatypeDate = {
@@ -81,5 +82,6 @@ export function parseValueDomain(row) {
     } else {
         throw new Error('Unknown datatype: ' + fieldType);
     }
+
     return valueDomain;
 }

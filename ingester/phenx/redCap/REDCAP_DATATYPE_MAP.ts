@@ -12,3 +12,9 @@ export const map = {
     dropdown: 'Value List',
     '': 'Text'
 };
+
+export const validationTypeMap = {
+    number: 'Number',
+    integer: 'Number',
+    date_mdy: 'Date',
+};
