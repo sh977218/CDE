@@ -52,11 +52,8 @@ export function module() {
     router.get(['/', '/home'], (req, res) => {
         if (isSearchEngine(req)) {
             res.render('bot/home', 'system' as any);
-        } else if (req.user || req.query.tour || req.query.notifications !== undefined
-            || req.headers.referer && req.headers.referer.endsWith('/sw.js')) {
-            respondHomeFull(req, res);
         } else {
-            res.send(homeHtml);
+            respondHomeFull(req, res);
         }
     });
 
