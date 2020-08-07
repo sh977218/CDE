@@ -18,7 +18,7 @@
                                         <span>Forms</span>
                                     </button>
                                 </mat-menu>
-                                <input matInput name="q" id="ftsearch-input" placeholder="Search  {{searchForm?'Forms':'CDEs'}}"
+                                <input matInput name="q" id="ftsearch-input" placeholder="Search {{searchForm?'Forms':'CDEs'}}"
                                        maxlength="500" [(ngModel)]="cdeSearchTerm">
                                 <mat-icon matSuffix (click)="search()" id="search.submit">search</mat-icon>
                             </mat-form-field>
