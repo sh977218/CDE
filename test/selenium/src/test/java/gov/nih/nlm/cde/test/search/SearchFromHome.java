@@ -22,9 +22,9 @@ public class SearchFromHome extends NlmCdeBaseTest {
         clickElement(By.xpath("//mat-icon[. = 'keyboard_arrow_down']"));
         clickElement(By.xpath("//button/span[. = 'Forms']"));
         findElement(By.xpath("//input[@placeholder='Search Forms']"));
-        findElement(By.id("ftsearch-input")).sendKeys("Height Measurement");
+        findElement(By.id("ftsearch-input")).sendKeys("Blood Pressure");
         clickElement(By.id("search.submit"));
-        textPresent("Height Measurement Feet");
+        textPresent("Vital Signs");
     }
 
 }

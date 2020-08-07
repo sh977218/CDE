@@ -830,7 +830,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     protected void goHome() {
         driver.get(baseUrl);
         textPresent("has been designed to provide access", By.id("introduction"));
-        findElement(By.cssSelector(".carousel-indicators"));
     }
 
     protected void goToCdeSearch() {
