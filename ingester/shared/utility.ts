@@ -26,10 +26,11 @@ export const sourceMap = {
     NINDS: ['NINDS', 'NINDS Variable Name', 'NINDS caDSR', 'NINDS Preclinical', 'BRICS Variable Name'],
     // tslint:disable-next-line:max-line-length
     'NINDS Preclinical TBI': ['NINDS', 'NINDS Variable Name', 'NINDS caDSR', 'NINDS Preclinical', 'BRICS Variable Name', 'NINDS Preclinical TBI'],
-    NCI: ['NCI', 'caDSR']
+    NCI: ['NCI', 'caDSR'],
+    NICHD: ['NICHD']
 };
 export const TODAY = new Date().toJSON();
-export const lastMigrationScript = `load NHLBI on ${moment().format('DD MMMM YYYY')}`;
+export const lastMigrationScript = `load NICHD on ${moment().format('DD MMMM YYYY')}`;
 
 export const BATCHLOADER_USERNAME = 'batchloader';
 export const BATCHLOADER = {
@@ -218,6 +219,7 @@ export async function createForm(form: any) {
     }
     await new formModel(form).save();
 }
+
 export async function updateForm(elt: any, user: any, options: any = {}) {
     elt.lastMigrationScript = lastMigrationScript;
     return new Promise((resolve, reject) => {
@@ -374,7 +376,7 @@ function isOneClassificationSameSource(existingEltObj, newEltObj) {
     return classificationEqual && sourcesEqual;
 }
 
-function mergeDesignations(existingObj, newObj) {
+export function mergeDesignations(existingObj, newObj) {
     const replaceDesignations = isOneClassificationSameSource(existingObj, newObj);
     if (replaceDesignations) {
         existingObj.designations = newObj.designations;
@@ -491,7 +493,13 @@ export function mergeIds(existingObj, newObj, source: string) {
 }
 
 export function mergeClassification(existingElt, newObj, classificationOrgName) {
-    const existingObj = existingElt.toObject();
+    let existingObj = existingElt;
+    if (existingElt.toObject) {
+        existingObj = existingElt.toObject();
+    }
+    if (newObj.toObject) {
+        newObj = newObj.toObject();
+    }
     if (existingElt.lastMigrationScript === lastMigrationScript) {
         mergeClassificationByOrg(existingObj, newObj, classificationOrgName);
         existingElt.classification = existingObj.classification;
@@ -801,7 +809,8 @@ export function sortIdentifier(ids, source) {
 export function findOneCde(cdes: any[]) {
     const cdesLength = cdes.length;
     if (cdesLength === 0) {
-        return null;
+        console.log(`no cde found. TinyIds: ${cdes[0].tinyId}`);
+        process.exit(1);
     } else if (cdesLength === 1) {
         return cdes[0];
     } else {
