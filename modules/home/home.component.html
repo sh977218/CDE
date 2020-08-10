@@ -2,49 +2,48 @@
     <div style="padding: 2rem 1rem; margin-bottom: 0;">
         <div class="mt-0 mt-sm-5">
             <div class="row align-items-center">
-                <div class="col-lg-3 col-12 ">
-                    <img class="img-fluid" src="/cde/public/assets/img/min/NIH-CDE.png"
+                <div class="col-12 text-center">
+                    <img class="img-center-responsive" src="/cde/public/assets/img/min/NIH-CDE.png"
                          alt="NIH Common Data Elements (CDE) logo" style="margin-bottom: 20px"/>
-                    <div id="introduction">
-                        <p>The NIH Common Data Elements (CDE) Repository has been designed to provide access to
-                            structured
-                            human and machine-readable definitions of data elements that have been recommended or
-                            required by
-                            NIH Institutes and Centers and other organizations for use in research and for other
-                            purposes.
-                        </p>
-                        <p>
-                            Visit the
-                            <a class="homeDescriptionLink" href="https://www.nlm.nih.gov/cde/index.html" target="_blank"
-                               rel="noopener noreferrer">NIH
-                                CDE Resource Portal</a>
-                            for contextual information about the repository.
-                        </p>
-                    </div>
                 </div>
-                <div class="col-lg-6 d-none d-sm-inline-block" *ngIf="displayCarousel">
-                    <ngb-carousel *ngIf="images">
-                        <ng-template ngbSlide *ngFor="let image of images">
-                            <div class="picsum-img-wrapper">
-                                <img [src]="image.src" [alt]="image.alt">
-                            </div>
-                            <div class="carousel-caption">
-                                <h3>{{image.h3}}</h3>
-                            </div>
-                        </ng-template>
-                    </ngb-carousel>
+                    <div class="col-md-10 mx-auto">
+                        <form #quickSearchForm="ngForm" id="quickSearchForm" novalidate style="max-width: 1000px">
+                            <mat-form-field style="width: 100%; font-size: 25px">
+                                <mat-icon [matMenuTriggerFor]="menu" matPrefix style="height: 32px">keyboard_arrow_down</mat-icon>
+                                <mat-menu #menu="matMenu">
+                                    <button mat-menu-item (click)="searchForm = false">
+                                        <span>CDEs</span>
+                                    </button>
+                                    <button mat-menu-item (click)="searchForm = true">
+                                        <span>Forms</span>
+                                    </button>
+                                </mat-menu>
+                                <input matInput name="q" id="ftsearch-input" placeholder="Search {{searchForm?'Forms':'CDEs'}}"
+                                       maxlength="500" [(ngModel)]="cdeSearchTerm">
+                                <mat-icon matSuffix (click)="search()" id="search.submit">search</mat-icon>
+                            </mat-form-field>
+                            <button style="display: none" type="submit" (click)="search()"></button>
+                            <p [hidden]="quickSearchForm.form.valid || quickSearchForm.form.pristine"
+                               class="error-block">
+                                <span>Query terms must be 500 characters or less.</span>
+                            </p>
+                        </form>
                 </div>
-                <div class="col-lg-3 col-12 btn-group-vertical" id='searchDiv'>
-                    <a routerLink="/cde/search" id="browseCdes" class="btn btn-outline-dark my-1">
-                        <mat-icon>search</mat-icon>
-                        Browse CDEs</a>
-                    <a routerLink="/form/search" id="browseForms" class="btn btn-outline-dark my-1">
-                        <mat-icon>search</mat-icon>
-                        Browse Forms</a>
-                    <a (click)="takeATour()" id="takeATourBtn" class="btn btn-outline-dark my-1 hand-cursor">
-                        <mat-icon class="faa-wrench faa-slow animated">flag</mat-icon>
-                        Interactive Tour
-                    </a>
+                <div id="introduction" class="offset-lg-2 col-lg-8 offset-xl-3 col-xl-6 col-sm-12">
+                    <p>The NIH Common Data Elements (CDE) Repository has been designed to provide access to
+                        structured
+                        human and machine-readable definitions of data elements that have been recommended or
+                        required by
+                        NIH Institutes and Centers and other organizations for use in research and for other
+                        purposes.
+                    </p>
+                    <p>
+                        Visit the
+                        <a class="homeDescriptionLink" href="https://www.nlm.nih.gov/cde/index.html" target="_blank"
+                           rel="noopener noreferrer">NIH
+                            CDE Resource Portal</a>
+                        for contextual information about the repository.
+                    </p>
                 </div>
             </div>
         </div>
