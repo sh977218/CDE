@@ -298,7 +298,6 @@ export function completionSuggest(term: ElasticCondition, user: User, settings: 
         if (error) {
             cb(error);
         } else {
-            // @ts-ignore
             cb(undefined, response.body);
         }
     });
