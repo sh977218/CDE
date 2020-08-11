@@ -127,7 +127,7 @@ export const searchStyles = `
         background-color: #70777d;
     }
     .remove-filter {
-        font-size: 12px; height: 12px; width: 12px;
+        font-size: 12px;
     }
     .filter-cb {
         font-size: 14px;
@@ -137,8 +137,15 @@ export const searchStyles = `
     }
     .classification-filter {
         height: 17px;
-        width: 17px;
+        width: 15px;
         font-size: 15px;
+    }
+    .a-link {
+        color: #0056b3;
+        font-size: small;
+    }
+    .a-link:hover {
+        text-decoration: underline;
     }
 `;
 

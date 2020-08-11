@@ -1739,13 +1739,13 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         textPresent(origin, By.id("origin"));
     }
 
-    protected void checkSearchResultInfo(String term, String classif, String classifAlt, String topic, String status, String datetype) {
+    protected void checkSearchResultInfo(String term, String classif, String classifAlt, String topic, String status, String datatype) {
         if (term != null) textPresent(term, By.id("term_crumb"));
-        if (classif != null) textPresent(classif, By.id("classif_filter"));
+        if (classif != null) textPresent(classif, By.id("classif_crumb"));
         if (classifAlt != null) textPresent(classifAlt, By.id("classifAlt_filter"));
         if (topic != null) textPresent(topic, By.id("topic_crumb"));
         if (status != null) textPresent(status, By.id("status_crumb"));
-        if (datetype != null) textPresent(datetype, By.id("datatype_crumb"));
+        if (datatype != null) textPresent(datatype, By.id("datatype_crumb"));
     }
 
     protected void deleteDraft() {

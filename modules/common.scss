@@ -222,11 +222,14 @@ a:not([href]):not([tabindex]).fake-link:hover {
 
 /* BEGIN Font Awesome */
 .dark-icon {
+  background-color: transparent;
+  border: 1px solid;
   color: black;
-}
 
-.dark-icon:hover {
-  color: white;
+  &:hover {
+    background-color: black;
+    color: white;
+  }
 }
 
 .iconColor {

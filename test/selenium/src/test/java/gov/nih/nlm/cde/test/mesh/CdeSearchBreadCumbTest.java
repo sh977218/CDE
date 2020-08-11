@@ -43,13 +43,13 @@ public class CdeSearchBreadCumbTest extends NlmCdeBaseTest {
 
         checkSearchResultInfo("type", "NINDS > Domain", "NINDS > Disease", "Health Care > Environment and Public Health > Pub...", "Qualified", "Value List");
 
-        clickElement(By.id("removeDatatypes"));
-        clickElement(By.id("removeStatuses"));
-        clickElement(By.id("removeTopics"));
-        clickElement(By.id("removeClassifications"));
+        clickElement(By.id("datatype_crumb"));
+        clickElement(By.id("status_crumb"));
+        clickElement(By.id("topic_crumb"));
+        clickElement(By.id("classif_crumb"));
         hangon(1);
-        clickElement(By.id("removeClassifications"));
-        clickElement(By.id("removeTerm"));
+        clickElement(By.id("classif_crumb"));
+        clickElement(By.id("term_crumb"));
 
         textPresent("Browse by Classification");
     }

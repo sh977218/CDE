@@ -18,7 +18,7 @@ public class FacetSearch3 extends NlmCdeBaseTest {
         textPresent("blah blah blah");
         clickElement(By.id("menu_cdes_link"));
         clickElement(By.id("browseOrg-NINDS"));
-        textPresent("All Terms");
+        textPresent("results for");
     }
 
     @Test

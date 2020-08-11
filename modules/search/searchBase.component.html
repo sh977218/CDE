@@ -164,69 +164,58 @@
     <!-- BREADCRUMBS -->
     <div *ngIf="elts && aggregations" class="mx-1 my-3" id="searchResultInfoBar">
         <strong id="searchResultNum">{{totalItems}}</strong> results for
-        <span id="term_crumb">
-            <span *ngIf="!searchedTerm" class="badge badge-secondary mx-1">All Terms</span>
-            <span *ngIf="searchedTerm" class="badge badge-success mx-1">{{searchedTerm}}
-                <mat-icon id="removeTerm" class="remove-filter hand-cursor dark-icon pl-1"
-                          aria-label="Remove this search term filter" matTooltip="Remove this search term filter"
-                          matTooltipClass="cdeTooltip" matTooltipPosition="right"
-                          (click)="searchSettings.q = ''; doSearch()">cancel</mat-icon>
-            </span>
+        <span *ngIf="searchedTerm" id="term_crumb" class="badge badge-light remove-filter hand-cursor dark-icon mx-1"
+              aria-label="Remove this search term filter" matTooltip="Remove this search term filter"
+              matTooltipClass="cdeTooltip" matTooltipPosition="right"
+              (click)="searchSettings.q = ''; doSearch()">
+            {{searchedTerm}}
         </span>
-        <span id="classif_filter">
-            <span *ngIf="!hasSelectedClassifications()" class="badge badge-secondary mx-1">
-                All Classifications</span>
-            <span *ngIf="hasSelectedClassifications()" class="badge badge-success mx-1">{{getSelectedClassifications()}}
-                <mat-icon id="removeClassifications" class="remove-filter hand-cursor dark-icon pl-1"
-                          aria-label="Remove this classification filter" matTooltip="Remove this classification filter"
-                          matTooltipClass="cdeTooltip" matTooltipPosition="right"
-                          (click)="clearSelectedClassifications()">cancel</mat-icon>
-            </span>
+        <span *ngIf="hasSelectedClassifications()" id="classif_crumb" class="badge badge-light remove-filter hand-cursor dark-icon mx-1"
+              aria-label="Remove this classification filter" matTooltip="Remove this classification filter"
+              matTooltipClass="cdeTooltip" matTooltipPosition="right"
+              (click)="clearSelectedClassifications()">
+            {{getSelectedClassifications()}}
         </span>
-        <span *ngIf="altClassificationFilterMode" id="classifAlt_filter">and
-            <span class="badge badge-success">{{getSelectedClassificationsAlt()}}
-                <mat-icon id="removeAltClassificationFilterMode" class="remove-filter hand-cursor dark-icon pl-1"
-                          (click)="clearSelectedClassificationsAlt()"
-                          aria-label="Remove this classification filter" matTooltip="Remove this classification filter"
-                          matTooltipClass="cdeTooltip" matTooltipPosition="right">cancel</mat-icon>
+        <ng-container *ngIf="altClassificationFilterMode">
+            and
+            <span id="classifAlt_filter" class="badge badge-light remove-filter hand-cursor dark-icon pl-1"
+                  aria-label="Remove this classification filter" matTooltip="Remove this classification filter"
+                  matTooltipClass="cdeTooltip" matTooltipPosition="right"
+                  (click)="clearSelectedClassificationsAlt()">
+                {{getSelectedClassificationsAlt()}}
             </span>
-        </span>
-        <span *ngIf="excludeOrgFilterMode" id="classifExclude_filter">not
-            <span class="badge badge-success">{{getExcludedOrgs()}}
-                <mat-icon id="removeExcludeOrgFilterMode" class="remove-filter hand-cursor dark-icon pl-1"
-                          (click)="clearExcludeOrgs()"
-                          aria-label="Remove this classification filter" matTooltip="Remove this classification filter"
-                          matTooltipClass="cdeTooltip" matTooltipPosition="right">cancel</mat-icon>
+        </ng-container>
+        <ng-container *ngIf="excludeOrgFilterMode">
+            not
+            <span class="badge badge-light remove-filter hand-cursor dark-icon pl-1"
+                  aria-label="Remove this classification filter" matTooltip="Remove this classification filter"
+                  matTooltipClass="cdeTooltip" matTooltipPosition="right"
+                  (click)="clearExcludeOrgs()">
+                {{getExcludedOrgs()}}
             </span>
+        </ng-container>
+        <span *ngIf="hasSelectedTopics()" id="topic_crumb" class="badge badge-light remove-filter hand-cursor dark-icon mx-1"
+              aria-label="Remove this topics filter" matTooltip="Remove this topics filter"
+              matTooltipClass="cdeTooltip" matTooltipPosition="right"
+              (click)="clearSelectedTopics()">
+            {{getSelectedTopics()}}
         </span>
-        <span id="topic_crumb">
-            <span *ngIf="!hasSelectedTopics()" class="badge badge-secondary mx-1">All Topics</span>
-            <span *ngIf="hasSelectedTopics()" class="badge badge-success mx-1">{{getSelectedTopics()}}
-                <mat-icon id="removeTopics" class="remove-filter hand-cursor dark-icon pl-1"
-                          aria-label="Remove this topics filter" matTooltip="Remove this topics filter"
-                          matTooltipClass="cdeTooltip" matTooltipPosition="right"
-                          (click)="clearSelectedTopics()">cancel</mat-icon>
-            </span>
+        <span *ngIf="hasSelectedStatuses()" id="status_crumb" class="badge badge-light remove-filter hand-cursor dark-icon mx-1"
+              aria-label="Remove this registration statuses filter"
+              matTooltip="Remove this registration statuses filter"
+              matTooltipClass="cdeTooltip" matTooltipPosition="right"
+              (click)="clearSelectedStatuses()">
+            {{getSelectedStatuses()}}
         </span>
-        <span id="status_crumb">
-            <span *ngIf="!hasSelectedStatuses()" class="badge badge-secondary mx-1">All Statuses</span>
-            <span *ngIf="hasSelectedStatuses()" class="badge badge-success mx-1">{{getSelectedStatuses()}}
-                <mat-icon id="removeStatuses" class="remove-filter hand-cursor dark-icon pl-1"
-                          aria-label="Remove this registration statuses filter"
-                          matTooltip="Remove this registration statuses filter"
-                          matTooltipClass="cdeTooltip" matTooltipPosition="right"
-                          (click)="clearSelectedStatuses()">cancel</mat-icon>
-            </span>
+        <span *ngIf="module === 'cde' && hasSelectedDatatypes()" id="datatype_crumb"
+              class="badge badge-light remove-filter hand-cursor dark-icon mx-1"
+              aria-label="Remove this datatype filter"
+              matTooltip="Remove this datatype filter"
+              matTooltipClass="cdeTooltip" matTooltipPosition="right"
+              (click)="clearSelectedDatatypes()">
+            {{getSelectedDatatypes()}}
         </span>
-        <span *ngIf="module === 'cde'" id="datatype_crumb">
-            <span *ngIf="!hasSelectedDatatypes()" class="badge badge-secondary mx-1">All Datatypes</span>
-            <span *ngIf="hasSelectedDatatypes()" class="badge badge-success mx-1">{{getSelectedDatatypes()}}
-                <mat-icon id="removeDatatypes" class="remove-filter hand-cursor dark-icon pl-1"
-                          aria-label="Remove this datatype filter" matTooltip="Remove this datatype filter"
-                          matTooltipClass="cdeTooltip" matTooltipPosition="right"
-                          (click)="clearSelectedDatatypes()">cancel</mat-icon>
-            </span>
-        </span>
+        <a (click)="reset()" class="a-link hand-cursor">Clear All</a>
         <small> ({{took / 1000}} secs)</small>
     </div>
     <div *ngIf="elts && aggregations" class="container-fluid ml-0">

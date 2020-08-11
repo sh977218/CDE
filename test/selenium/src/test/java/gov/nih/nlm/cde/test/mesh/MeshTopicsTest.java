@@ -65,7 +65,7 @@ public class MeshTopicsTest extends NlmCdeBaseTest {
         hangon(1);
         clickElement(By.id("topic-National Institutes of Health (U.S.)"));
         textPresent("National Institute of Neurological Disorders and Stroke");
-        checkSearchResultInfo("All Terms", "All Classifications", null, "Health Care > Health Care Economics and Organizat...", "All Statuses", null);
+        checkSearchResultInfo(null, null, null, "Health Care > Health Care Economics and Organizat...", null, null);
         clickElement(By.id("menu_forms_link"));
         clickElement(By.xpath("//div[. = 'Browse by Topic']"));
         clickElement(By.xpath("//span[contains(normalize-space(text()),'Health Care Economics and Organizations')]"));

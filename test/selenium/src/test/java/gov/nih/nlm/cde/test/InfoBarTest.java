@@ -2,6 +2,7 @@ package gov.nih.nlm.cde.test;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class InfoBarTest extends NlmCdeBaseTest {
@@ -10,7 +11,7 @@ public class InfoBarTest extends NlmCdeBaseTest {
     public void infoBarStatus() {
         setLowStatusesVisible();
         clickElement(By.id("browseOrg-caBIG"));
-        textPresent("All Statuses", By.id("status_crumb"));
+        Assert.assertEquals(driver.findElements(By.id("status_crumb")).size(), 0);
         clickElement(By.id("regstatus-Standard"));
         hangon(1);
         clickElement(By.id("regstatus-Qualified"));
