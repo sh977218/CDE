@@ -1,10 +1,18 @@
 const CSV = require('csv');
 import { readFileSync } from 'fs';
 import { isEmpty, trim, replace, words, join, isEqual, filter } from 'lodash';
-import { NINDS_PRECLINICAL_NEI_FILE_PATH } from 'ingester/shared/utility';
+
+const NINDS_CSV_HEADER_MAP = {
+    'Category/Group': 'Group Name'
+};
 
 function formatKey(key: string) {
-    return trim(key.toLowerCase());
+    const mappedKey = NINDS_CSV_HEADER_MAP[key];
+    if (!mappedKey) {
+        return trim(key.toLowerCase());
+    } else {
+        return trim(mappedKey.toLowerCase());
+    }
 }
 
 export function getCell(row: any, header: string) {
@@ -62,9 +70,8 @@ export function convertFileNameToFormName(csvFileName: string) {
     return trim(joinCsvFileName);
 }
 
-export function parseOneCsv(csvFileName: string): Promise<any> {
+export function parseOneCsv(csvPath: string, csvFileName: string): Promise<any> {
     return new Promise(resolve => {
-        const csvPath = `${NINDS_PRECLINICAL_NEI_FILE_PATH}/${csvFileName}`;
         const cond = {
             columns: true,
             rtrim: true,

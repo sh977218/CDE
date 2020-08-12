@@ -10,12 +10,13 @@ import { loadFormByCsv } from 'ingester/ninds/csv/loadNindsFormByCsv';
 import { loadNindsCde } from 'ingester/ninds/shared';
 import { parseOneCsv } from 'ingester/ninds/csv/shared/utility';
 
-async function loadNindsCdes() {
-    const csvFiles = readdirSync(NINDS_PRECLINICAL_NEI_FILE_PATH);
+async function loadNindsCdes(folder) {
+    const csvFiles = readdirSync(folder);
     const csvFileNames: string[] = sortBy(csvFiles);
     let cdeRows: any[] = [];
     for (const csvFileName of csvFileNames) {
-        const csvResult = await parseOneCsv(csvFileName);
+        const csvPath = `${NINDS_PRECLINICAL_NEI_FILE_PATH}/${csvFileName}`;
+        const csvResult = await parseOneCsv(csvPath, csvFileName);
         cdeRows = cdeRows.concat(csvResult.rows);
     }
     const result = groupBy(cdeRows, 'variable name');
@@ -36,11 +37,12 @@ async function loadNindsCdes() {
     }
 }
 
-async function loadNindsForms() {
-    const csvFiles = readdirSync(NINDS_PRECLINICAL_NEI_FILE_PATH);
+async function loadNindsForms(folder) {
+    const csvFiles = readdirSync(folder);
     const csvFileNames: string[] = sortBy(csvFiles);
     for (const csvFileName of csvFileNames) {
-        const rows = await parseOneCsv(csvFileName);
+        const csvPath = `${NINDS_PRECLINICAL_NEI_FILE_PATH}/${csvFileName}`;
+        const rows = await parseOneCsv(csvPath, csvFileName);
         console.log(`Starting csvFileName: ${csvFileName}.`);
         await loadFormByCsv(csvFileName, rows);
         console.log(`Finished csvFileName: ${csvFileName}`);
@@ -75,8 +77,8 @@ async function retireTbiForms() {
 
 
 async function run() {
-    await loadNindsCdes();
-    await loadNindsForms();
+    await loadNindsCdes(NINDS_PRECLINICAL_NEI_FILE_PATH);
+    await loadNindsForms(NINDS_PRECLINICAL_NEI_FILE_PATH);
     await retireTbiCdes();
     await retireTbiForms();
 }

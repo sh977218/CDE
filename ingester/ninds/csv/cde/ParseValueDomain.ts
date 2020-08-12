@@ -134,7 +134,7 @@ export function parseValueDomain(row: any) {
     const inputRestrictionString = getCell(row, 'Input Restriction').toLowerCase();
 
     const valueListInputRestriction = ['single pre-defined value selected', 'multiple pre-defined values selected'];
-    if (valueListInputRestriction.indexOf(inputRestrictionString) !== -1) {
+    if (valueListInputRestriction.includes(inputRestrictionString)) {
         valueDomain.datatype = 'Value List';
         const permissibleValueString = getCell(row, 'Permissible Values');
         const permissibleValueOutputCodes = getCell(row, 'Permissible Value Output Codes');
