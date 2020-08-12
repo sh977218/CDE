@@ -6,7 +6,7 @@ import { NgbCarouselModule } from '@ng-bootstrap/ng-bootstrap';
 import { HomeComponent } from 'home/home.component';
 import { HomeRoutingModule } from 'home/home-routing.module';
 import { NativeRenderModule } from 'nativeRender/nativeRender.module';
-import { MatAutocompleteModule, MatFormFieldModule, MatInputModule, MatMenuModule } from '@angular/material';
+import { MatAutocompleteModule, MatButtonModule, MatFormFieldModule, MatInputModule, MatMenuModule } from '@angular/material';
 
 @NgModule({
     imports: [
@@ -21,6 +21,7 @@ import { MatAutocompleteModule, MatFormFieldModule, MatInputModule, MatMenuModul
         MatInputModule,
         MatFormFieldModule,
         MatMenuModule,
+        MatButtonModule,
     ],
     declarations: [
         HomeComponent
