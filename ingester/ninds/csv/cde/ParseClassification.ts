@@ -2,21 +2,19 @@ import { filter, replace, isEmpty, capitalize, forEach } from 'lodash';
 import { classifyItem } from 'server/classification/orgClassificationSvc';
 import { getCell } from '../shared/utility';
 
-const DEFAULT_CLASSIFICATION = ['Preclinical + NEI'];
-
-function classifyPopulation(cde: any, row: any) {
+function classifyPopulation(cde: any, row: any, defaultClassification) {
     const allKeys: string[] = Object.keys(row);
     const populationKeys = filter(allKeys, k => k.indexOf('population.') !== -1);
     forEach(populationKeys, k => {
         const population = row[k];
         if (!isEmpty(population)) {
-            const classificationArray = DEFAULT_CLASSIFICATION.concat(['Population', population]);
+            const classificationArray = defaultClassification.concat(['Population', population]);
             classifyItem(cde, 'NINDS', classificationArray);
         }
     });
 }
 
-function classifyDomain(cde: any, row: any) {
+function classifyDomain(cde: any, row: any, defaultClassification) {
     const allKeys: string[] = Object.keys(row);
     const domainKeys = filter(allKeys, k => k.indexOf('domain.') !== -1);
     forEach(domainKeys, k => {
@@ -28,15 +26,15 @@ function classifyDomain(cde: any, row: any) {
             const subDomain = domainSubDomainArray[1];
 
             const isTbiSubDisease = TBI_SUB_DISEASES.indexOf(disease) !== -1;
-            let classificationDiseaseArray = DEFAULT_CLASSIFICATION.concat(['Disease', capitalize(disease)]);
+            let classificationDiseaseArray = defaultClassification.concat(['Disease', capitalize(disease)]);
             if (isTbiSubDisease) {
                 // tslint:disable-next-line:max-line-length
-                classificationDiseaseArray = DEFAULT_CLASSIFICATION.concat(['Disease', 'Traumatic brain injury', capitalize(disease)]);
+                classificationDiseaseArray = defaultClassification.concat(['Disease', 'Traumatic brain injury', capitalize(disease)]);
             }
 
             // ['Disease','TBI','Domain','Assessments and Examinations','Autonomic']
             // ['Domain','Assessments and Examinations','Autonomic']
-            const classificationDomainArray = DEFAULT_CLASSIFICATION.concat([]);
+            const classificationDomainArray = defaultClassification.concat([]);
             if (!isEmpty(domain)) {
                 classificationDiseaseArray.push('Domain');
                 classificationDiseaseArray.push(domain);
@@ -60,7 +58,7 @@ const TBI_SUB_DISEASES = [
     'moderate/severe tbi: rehabilitation',
 ];
 
-function classifyClassification(cde: any, row: any) {
+function classifyClassification(cde: any, row: any, defaultClassification) {
     const allKeys: string[] = Object.keys(row);
     const diseaseKeys = filter(allKeys, k => k.indexOf('classification.') !== -1);
     forEach(diseaseKeys, k => {
@@ -68,34 +66,34 @@ function classifyClassification(cde: any, row: any) {
         const disease = replace(k, 'classification.', '');
         if (!isEmpty(classification) && !isEmpty(disease)) {
             const isTbiSubDisease = TBI_SUB_DISEASES.indexOf(disease) !== -1;
-            let classificationArray = DEFAULT_CLASSIFICATION.concat(['Disease', capitalize(disease), 'Classification', classification]);
+            let classificationArray = defaultClassification.concat(['Disease', capitalize(disease), 'Classification', classification]);
             if (isTbiSubDisease) {
                 // tslint:disable-next-line:max-line-length
-                classificationArray = DEFAULT_CLASSIFICATION.concat(['Disease', 'Traumatic brain injury', capitalize(disease), 'Classification', classification]);
+                classificationArray = defaultClassification.concat(['Disease', 'Traumatic brain injury', capitalize(disease), 'Classification', classification]);
             }
             classifyItem(cde, 'NINDS', classificationArray);
         }
     });
 }
 
-function classifyTaxonomy(cde: any, row: any) {
+function classifyTaxonomy(cde: any, row: any, defaultClassification) {
     const allKeys: string[] = Object.keys(row);
     const taxonomyKeys = filter(allKeys, k => k.indexOf('taxonomy') !== -1);
     forEach(taxonomyKeys, k => {
         const taxonomy = row[k];
         const taxonomyReplace = taxonomy.replace(';', ',').trim();
         if (!isEmpty(taxonomyReplace)) {
-            const classificationArray = DEFAULT_CLASSIFICATION.concat(['Taxonomy', taxonomyReplace]);
+            const classificationArray = defaultClassification.concat(['Taxonomy', taxonomyReplace]);
             classifyItem(cde, 'NINDS', classificationArray);
         }
     });
 }
 
-export function parseClassification(cde: any, row: any) {
-    classifyPopulation(cde, row);
-    classifyDomain(cde, row);
-    classifyClassification(cde, row);
-    classifyTaxonomy(cde, row);
+export function parseClassification(cde: any, row: any, defaultClassification = []) {
+    classifyPopulation(cde, row, defaultClassification);
+    classifyDomain(cde, row, defaultClassification);
+    classifyClassification(cde, row, defaultClassification);
+    classifyTaxonomy(cde, row, defaultClassification);
 }
 
 export function parseNhlbiClassification(eltObj: any, row: any) {
