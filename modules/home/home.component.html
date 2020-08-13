@@ -7,9 +7,8 @@
                          alt="NIH Common Data Elements (CDE) logo" style="margin-bottom: 20px"/>
                 </div>
                     <div class="col-md-10 mx-auto">
-                        <form #quickSearchForm="ngForm" id="quickSearchForm" novalidate style="max-width: 1000px">
+                        <form #quickSearchForm="ngForm" id="quickSearchForm" novalidate style="max-width: 1000px" class="mx-auto">
                             <mat-form-field style="width: 100%; font-size: 25px">
-                                <mat-icon [matMenuTriggerFor]="menu" matPrefix style="height: 32px">keyboard_arrow_down</mat-icon>
                                 <mat-menu #menu="matMenu">
                                     <button mat-menu-item (click)="searchForm = false">
                                         <span>CDEs</span>
@@ -20,7 +19,10 @@
                                 </mat-menu>
                                 <input matInput name="q" id="ftsearch-input" placeholder="Search {{searchForm?'Forms':'CDEs'}}"
                                        maxlength="500" [(ngModel)]="cdeSearchTerm">
-                                <mat-icon matSuffix (click)="search()" id="search.submit">search</mat-icon>
+                                <mat-icon [matMenuTriggerFor]="menu" matSuffix style="height: 32px">keyboard_arrow_down</mat-icon>
+                                <button mat-raised-button matSuffix color="basic">
+                                    <mat-icon (click)="search()" id="search.submit">search</mat-icon> Search
+                                </button>
                             </mat-form-field>
                             <button style="display: none" type="submit" (click)="search()"></button>
                             <p [hidden]="quickSearchForm.form.valid || quickSearchForm.form.pristine"
