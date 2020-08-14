@@ -6,7 +6,7 @@ import { CdeForm } from 'shared/form/form.model';
 import { supportedFhirResources, supportedFhirResourcesArray } from 'shared/mapping/fhir/fhirResource.model';
 
 @Component({
-    selector: 'cde-form-general-details',
+    selector: 'cde-form-general-details[elt]',
     templateUrl: './formGeneralDetails.component.html'
 })
 export class FormGeneralDetailsComponent {

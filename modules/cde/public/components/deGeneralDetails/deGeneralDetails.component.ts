@@ -2,14 +2,15 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { UserService } from '_app/user.service';
 import _noop from 'lodash/noop';
 import { OrgHelperService } from 'non-core/orgHelper.service';
+import { DataElement } from 'shared/de/dataElement.model';
 
 @Component({
-    selector: 'cde-de-general-details',
+    selector: 'cde-de-general-details[elt]',
     templateUrl: './deGeneralDetails.component.html'
 })
 export class DeGeneralDetailsComponent {
     @Input() canEdit: boolean = false;
-    @Input() elt: any;
+    @Input() elt!: DataElement;
     @Output() eltChange = new EventEmitter();
     userOrgs: string[] = [];
 
