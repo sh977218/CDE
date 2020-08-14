@@ -55,9 +55,6 @@ import { MatInputModule } from '@angular/material/input';
         PinQuickboardComponent,
         UnpinBoardComponent,
     ],
-    entryComponents: [
-        PinBoardModalComponent,
-    ],
     providers: [
         MyBoardsService,
     ],
@@ -71,6 +68,9 @@ import { MatInputModule } from '@angular/material/input';
         PinBoardModalComponent,
         PinQuickboardComponent,
         UnpinBoardComponent,
+    ],
+    entryComponents: [
+        PinBoardModalComponent,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { Subscription } from 'rxjs';
+import { AuditLog, AuditLogResponse } from 'shared/system/audit';
 
 @Component({
     selector: 'cde-log-audit',
@@ -58,14 +59,14 @@ export class LogAuditComponent {
 
         this.currentQuery.unsubscribe();
 
-        this.currentQuery = this.http.post<any>('/server/log/httpLogs', {
+        this.currentQuery = this.http.post<AuditLogResponse>('/server/log/httpLogs', {
             currentPage: this.currentPage,
             ipAddress: this.ipAddress,
             totalItems: this.totalItems,
             fromDate: this.fromDate,
             toDate: this.toDate,
             sort: this.sortingBy
-        }).subscribe(res => {
+        } as AuditLog).subscribe(res => {
             if (res.totalItems) {
                 this.totalItems = res.totalItems;
             }

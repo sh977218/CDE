@@ -1,13 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { AlertService } from 'alert/alert.service';
-import { Board, ElasticQueryResponseAggregations } from 'shared/models.model';
-import { BoardFilter } from 'board/public/myBoards.service';
 import { Dictionary } from 'async';
-
+import { BoardFilter } from 'board/public/myBoards.service';
+import { Board, ElasticQueryResponseAggregations } from 'shared/models.model';
 
 @Component({
-    selector: 'cde-my-boards',
     templateUrl: './publicBoards.component.html'
 })
 export class PublicBoardsComponent implements OnInit {

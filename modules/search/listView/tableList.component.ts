@@ -28,6 +28,9 @@ type Row = {
     datatype: DataType;
     values: string[];
 } | {
+    css: 'linkedForms',
+    values: {tinyId: string, name: string}[]
+} | {
     css: string,
     value?: string
 };
@@ -49,9 +52,9 @@ export class TableListComponent implements OnInit {
         return this._elts;
     }
     @Input() module!: ModuleItem;
-    private _elts!: any[];
+    private _elts!: ItemElastic[];
     headings!: string[];
-    rows!: any[];
+    rows!: Row[][];
     searchSettings: UserSearchSettings;
 
     constructor(public dialog: MatDialog,

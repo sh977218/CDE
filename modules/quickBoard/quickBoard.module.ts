@@ -44,7 +44,6 @@ const qbRoutes: Routes = [
         FormQuickBoardComponent,
         QuickBoardComponent,
     ],
-    entryComponents: [QuickBoardComponent],
     exports: [],
     providers: [],
 })

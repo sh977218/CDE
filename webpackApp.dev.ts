@@ -1,6 +1,6 @@
 import { createHash } from 'crypto';
 import * as ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
-import * as merge from 'webpack-merge';
+import { merge } from 'webpack-merge';
 import baseConfig from './webpack.dev';
 import appConfig from './webpackApp';
 
@@ -20,9 +20,11 @@ export default merge(baseConfig, appConfig, {
             {
                 test: /(?:\.ngfactory\.js|\.ngstyle\.js|\.ts)$/,
                 use: [
-                    {loader: 'cache-loader', options: {cacheKey}},
+                    // {loader: 'cache-loader', options: {cacheKey}},
                     {loader: 'ts-loader', options: {configFile: '../../tsconfigApp.json', transpileOnly: true}},
+                    // {loader: 'awesome-typescript-loader', options: {configFileName: 'tsconfigApp.json', transpileOnly: true}},
                     'angular-router-loader',
+                    // 'ng-router-loader'
                     'angular2-template-loader'
                 ]
             },

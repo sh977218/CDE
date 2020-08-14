@@ -51,6 +51,7 @@ export function module(roleConfig: {feedbackLog: RequestHandler, superLog: Reque
 
     router.get('/triggerServerErrorExpress', roleConfig.superLog, (req, res) => {
         res.send('received');
+        // Run-time exception on purpose
         // @ts-ignore
         trigger.error(); // jshint ignore:line
     });
@@ -100,7 +101,9 @@ export function module(roleConfig: {feedbackLog: RequestHandler, superLog: Reque
                     }
                 });
                 pushGetAdministratorRegistrations(registrations => {
-                    registrations.forEach(r => triggerPushMsg(r, msg));
+                    if (registrations) {
+                        registrations.forEach(r => triggerPushMsg(r, msg));
+                    }
                 });
                 res.send({});
             });

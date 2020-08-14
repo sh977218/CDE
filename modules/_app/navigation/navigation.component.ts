@@ -1,18 +1,17 @@
+import { HttpClient } from '@angular/common/http';
 import {
-    ApplicationRef, Component, ComponentFactoryResolver, EmbeddedViewRef, EventEmitter, Injector, Output
+    ApplicationRef,
+    Component, ComponentFactoryResolver, EmbeddedViewRef, EventEmitter, forwardRef, Inject, Injector, Output
 } from '@angular/core';
 import { LoginService } from '_app/login.service';
+import '_app/navigation/navigation.global.scss';
 import { NotificationService } from '_app/notifications/notification.service';
 import { NotificationDrawerPaneComponent } from '_app/notifications/notificationDrawerPane.component';
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { UserService } from '_app/user.service';
-import { isOrgAuthority, isOrgCurator, isSiteAdmin } from 'shared/system/authorizationShared';
-import './navigation.scss';
-import '../../../node_modules/material-design-lite/material.css';
-import '../../../node_modules/material-design-lite/material.js';
-import { HttpClient } from '@angular/common/http';
 import { AlertService } from 'alert/alert.service';
-import { Feedback } from 'ng-feedback2/entity/feedback';
+import { Feedback } from 'ngx-feedback2/entity/feedback';
+import { isOrgAuthority, isOrgCurator, isSiteAdmin } from 'shared/system/authorizationShared';
 
 @Component({
     selector: 'cde-navigation',
@@ -25,15 +24,17 @@ export class NavigationComponent {
     isOrgCurator = isOrgCurator;
     isSiteAdmin = isSiteAdmin;
 
-    constructor(private appRef: ApplicationRef,
-                private componentFactoryResolver: ComponentFactoryResolver,
-                private injector: Injector,
-                private notificationService: NotificationService,
-                private http: HttpClient,
-                private alert: AlertService,
-                public userService: UserService,
-                public quickBoardService: QuickBoardListService,
-                public loginSvc: LoginService) {
+    constructor(
+        @Inject(forwardRef(() => AlertService)) private alert: AlertService,
+        @Inject(forwardRef(() => ApplicationRef)) private appRef: ApplicationRef,
+        @Inject(forwardRef(() => ComponentFactoryResolver)) private componentFactoryResolver: ComponentFactoryResolver,
+        @Inject(forwardRef(() => Injector)) private injector: Injector,
+        @Inject(forwardRef(() => HttpClient)) private http: HttpClient,
+        @Inject(forwardRef(() => LoginService)) public loginSvc: LoginService,
+        @Inject(forwardRef(() => NotificationService)) private notificationService: NotificationService,
+        @Inject(forwardRef(() => QuickBoardListService)) public quickBoardService: QuickBoardListService,
+        @Inject(forwardRef(() => UserService)) public userService: UserService,
+    ) {
         // create drawer
         const componentRef = this.componentFactoryResolver
             .resolveComponentFactory(NotificationDrawerPaneComponent)
@@ -49,15 +50,17 @@ export class NavigationComponent {
             this.notificationService.drawerClose();
         }
     }
+
     toggleDrawer = () => (document.querySelector('.mdl-layout') as any).MaterialLayout.toggleDrawer();
 
     onFeedback(event: Feedback) {
-        this.http.post('/server/log/feedback/report', {feedback: {
+        this.http.post('/server/log/feedback/report', {
+            feedback: {
                 description: event.description,
                 screenshot: event.screenshot,
                 userAgent: window.navigator.userAgent
-            }, }).subscribe(() =>
+            },
+        }).subscribe(() =>
             this.alert.addAlert('success', 'Thank you for your feedback'));
     }
-
 }

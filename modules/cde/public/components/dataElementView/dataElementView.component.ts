@@ -40,7 +40,7 @@ import { SaveModalComponent } from 'adminItem/public/components/saveModal/saveMo
 export class DataElementViewComponent implements OnInit {
     @ViewChild('commentAreaComponent', {static: true}) commentAreaComponent!: DiscussAreaComponent;
     @ViewChild('copyDataElementContent', {static: true}) copyDataElementContent!: TemplateRef<any>;
-    @ViewChild('saveModal', {static: false}) saveModal!: SaveModalComponent;
+    @ViewChild('saveModal') saveModal!: SaveModalComponent;
     commentMode?: boolean;
     currentTab = 'general_tab';
     displayStatusWarning?: boolean;
@@ -300,13 +300,11 @@ export class DataElementViewComponent implements OnInit {
     validate() {
         this.validationErrors.length = 0;
         const defError = checkDefinitions(this.elt);
-        if (!defError.allValid) {
-            // @ts-ignore
+        if (defError.allValid !== true) {
             this.validationErrors.push({message: defError.message});
         }
         const pvErrors = checkPvUnicity(this.elt.valueDomain);
-        if (!pvErrors.allValid) {
-            // @ts-ignore
+        if (pvErrors.allValid !== true) {
             this.validationErrors.push({message: pvErrors.message});
         }
     }

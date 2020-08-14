@@ -1,12 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
 import { NgbCarouselModule } from '@ng-bootstrap/ng-bootstrap';
 import { HomeComponent } from 'home/home.component';
 import { HomeRoutingModule } from 'home/home-routing.module';
 import { NativeRenderModule } from 'nativeRender/nativeRender.module';
-import { MatAutocompleteModule, MatButtonModule, MatFormFieldModule, MatInputModule, MatMenuModule } from '@angular/material';
 
 @NgModule({
     imports: [
@@ -25,8 +28,6 @@ import { MatAutocompleteModule, MatButtonModule, MatFormFieldModule, MatInputMod
     ],
     declarations: [
         HomeComponent
-    ],
-    entryComponents: [
     ],
     providers: [
     ],

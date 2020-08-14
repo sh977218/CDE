@@ -10,10 +10,10 @@ public class CdeFullDetailIE extends NlmCdeBaseTest {
 
     private CdeSearchTest cdeSearchTest = new CdeSearchTest();
 
-    @Test
-    @SelectBrowser()
-    public void cdeSearchTestIE() {
-        cdeSearchTest.fullDetail();
-    }
+//    @Test
+//    @SelectBrowser()
+//    public void cdeSearchTestIE() {
+//        cdeSearchTest.fullDetail();
+//    }
 
 }

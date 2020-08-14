@@ -1,5 +1,6 @@
-import { Injectable } from '@angular/core';
+import { forwardRef, Inject, Injectable } from '@angular/core';
 import {
+    ActivatedRoute,
     ActivatedRouteSnapshot,
     CanActivate,
     CanActivateChild,
@@ -13,7 +14,10 @@ import { UserService } from '_app/user.service';
 
 @Injectable()
 export class LoggedInGuard implements CanActivate, CanActivateChild, CanLoad {
-    constructor(private userService: UserService, private router: Router) {}
+    constructor(
+        @Inject(forwardRef(() => Router)) private router: Router,
+        @Inject(forwardRef(() => UserService)) private userService: UserService,
+    ) {}
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
         return this.checkLogin();

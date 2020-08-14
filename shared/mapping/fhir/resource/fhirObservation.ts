@@ -8,7 +8,7 @@ import {
 } from 'shared/mapping/fhir/fhirResource.model';
 import { FhirCodeableConcept } from 'shared/mapping/fhir/fhir.model';
 
-type GetDisplay = (system?: string, code?: string) => Promise<string>;
+type GetDisplay = (system?: string, code?: string) => Promise<string | void>;
 
 /* Limitations:
  *  * only transfer the first LOINC code to FHIR, no other codes
@@ -42,7 +42,7 @@ export function observationComponentFromForm(fe: FormElement, getDisplay: GetDis
         throw new Error('cannot be here without ids');
     }
     return getDisplay(id.source, id.id).then(display => {
-        const code = newCodeableConcept([newCoding(id.source, id.id, id.version, display)]);
+        const code = newCodeableConcept([newCoding(id.source, id.id, id.version, display || '')]);
         if (!observationComponent) {
             observationComponent = newObservationComponent(code);
         } else {

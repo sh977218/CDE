@@ -46,11 +46,6 @@ const appRoutes: Routes = [
         SelectOneDialogComponent,
         ViewFhirEncounterDialogComponent,
     ],
-    entryComponents: [
-        FhirAppComponent,
-        SelectOneDialogComponent,
-        ViewFhirEncounterDialogComponent,
-    ],
     providers: [
         CdeFhirService,
         FhirSmartService,

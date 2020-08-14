@@ -1,33 +1,36 @@
+import { map } from 'async';
 import { Request, RequestHandler, Response, Router } from 'express';
-import { byEltId, byId, byReplyId, CommentDocument, save } from 'server/discuss/discussDb';
+import { ObjectId } from 'server';
+import { BoardDocument } from 'server/board/boardDb';
+import {
+    byEltId, byId, byReplyId, CommentDocument, CommentReply, numberUnapprovedMessageByUsername, orgCommentsByCriteria, save
+} from 'server/discuss/discussDb';
 import { handleNotFound, handleError } from 'server/errorHandler/errorHandler';
-import { createMessage, fetchItem, ItemDocument, Message } from 'server/system/mongo-data';
-import { Cb } from 'shared/models.model';
-import { canComment, canRemoveComment } from 'shared/system/authorizationShared';
 import { myOrgs } from 'server/orgManagement/orgSvc';
-
-const async = require('async');
-const authorization = require('../system/authorization');
-const loggedInMiddleware = authorization.loggedInMiddleware;
-const discussDb = require('./discussDb');
-const daoManager = require('../system/moduleDaoManager');
-const ioServer = require('../system/ioServer');
-const userDb = require('../user/userDb');
-const adminItemService = require('../system/adminItemSvc');
+import { createTask, notifyForComment } from 'server/system/adminItemSvc';
+import { loggedInMiddleware } from 'server/system/authorization';
+import { ioServer } from 'server/system/ioServer';
+import { getDao } from 'server/system/moduleDaoManager';
+import { createMessage, fetchItem, ItemDocument, Message } from 'server/system/mongo-data';
+import { byUsername } from 'server/user/userDb';
+import { Board, BoardUser, Cb, User } from 'shared/models.model';
+import { canComment, canRemoveComment } from 'shared/system/authorizationShared';
 
 require('express-async-errors');
 
-function getEltUsers(elt, cb: Cb<string[]>) {
-    const userIds = [];
-    if (elt.owner && elt.owner.userId) {
-        userIds.push(elt.owner.userId);
+function getEltUsers(board: Board, cb: Cb<ObjectId[]>) {
+    const userIds: ObjectId[] = [];
+    if (board.owner && board.owner.userId) {
+        userIds.push(board.owner.userId);
     }
-    if (Array.isArray(elt.users)) {
-        async.map(
-            elt.users.filter(u => !!u.username),
-            (u, doneOne) => userDb.byUsername(u.username, doneOne),
+    if (Array.isArray(board.users)) {
+        map<BoardUser, User>(
+            board.users.filter(u => !!u.username),
+            (u, doneOne) => byUsername(u.username, doneOne),
             (err, users) => {
-                users.forEach(user => user && user._id && userIds.push(user._id));
+                if (users) {
+                    users.forEach(user => user && user._id && userIds.push(user._id));
+                }
                 cb(userIds);
             }
         );
@@ -60,11 +63,11 @@ export function module(roleConfig: {allComments: RequestHandler, manageComment: 
         const comment = req.body;
         const eltModule = comment.element && comment.element.eltType;
         const eltTinyId = comment.element && comment.element.eltId;
-        const numberUnapprovedMessages = await discussDb.numberUnapprovedMessageByUsername(req.user.username);
+        const numberUnapprovedMessages = await numberUnapprovedMessageByUsername(req.user.username);
         if (numberUnapprovedMessages >= 5) {
             return res.status(403).send('You have too many unapproved messages.');
         }
-        fetchItem(eltModule, eltTinyId, handleNotFound(handlerOptions, elt => {
+        fetchItem<ItemDocument>(eltModule, eltTinyId, handleNotFound(handlerOptions, elt => {
             comment.user = req.user;
             comment.created = new Date().toJSON();
             if (!canComment(req.user)) {
@@ -73,12 +76,12 @@ export function module(roleConfig: {allComments: RequestHandler, manageComment: 
             save(comment, handleNotFound(handlerOptions, savedComment => {
                 ioServerCommentUpdated(req.user.username, eltTinyId);
                 if (savedComment.pendingApproval) {
-                    adminItemService.createTask(req.user, 'CommentReviewer', 'approval', eltModule,
+                    createTask(req.user, 'CommentReviewer', 'approval', eltModule,
                         eltTinyId, 'comment');
                 } else {
-                    getEltUsers(elt, userIds => {
-                        adminItemService.notifyForComment({}, savedComment, eltModule, eltTinyId,
-                            elt.stewardOrg && elt.stewardOrg.name, userIds);
+                    getEltUsers(elt as any, userIds => {
+                        notifyForComment({}, savedComment, eltModule, eltTinyId,
+                            elt.stewardOrg && elt.stewardOrg.name, userIds as any);
                     });
                 }
                 res.send({});
@@ -88,7 +91,7 @@ export function module(roleConfig: {allComments: RequestHandler, manageComment: 
 
     router.post('/replyComment', loggedInMiddleware, async (req, res) => {
         const handlerOptions = {req, res};
-        const numberUnapprovedMessages = await discussDb.numberUnapprovedMessageByUsername(req.user.username);
+        const numberUnapprovedMessages = await numberUnapprovedMessageByUsername(req.user.username);
         if (numberUnapprovedMessages >= 5) {
             return res.status(403).send('You have too many unapproved messages.');
         }
@@ -111,19 +114,20 @@ export function module(roleConfig: {allComments: RequestHandler, manageComment: 
             save(comment, handleNotFound(handlerOptions, savedComment => {
                 ioServerCommentUpdated(req.user.username, comment.element.eltId);
                 if (reply.pendingApproval) {
-                    adminItemService.createTask(req.user, 'CommentReviewer', 'approval', eltModule,
+                    createTask(req.user, 'CommentReviewer', 'approval', eltModule,
                         eltTinyId, 'comment');
                 } else {
-                    fetchItem(eltModule, eltTinyId, handleNotFound({}, elt => {
-                        getEltUsers(elt, userIds => {
-                            adminItemService.notifyForComment({}, savedComment.replies.filter(r =>
-                                +new Date(r.created) === +new Date(reply.created))[0], eltModule, eltTinyId,
-                                elt.stewardOrg && elt.stewardOrg.name, userIds);
+                    fetchItem<ItemDocument | BoardDocument>(eltModule, eltTinyId, handleNotFound({}, elt => {
+                        getEltUsers(elt as BoardDocument, userIds => {
+                            notifyForComment({},
+                                savedComment.replies.filter(r => +new Date(r.created) === +new Date(reply.created))[0] as CommentReply,
+                                eltModule, eltTinyId,
+                                (elt as ItemDocument).stewardOrg && (elt as ItemDocument).stewardOrg.name, userIds as any[]);
                         });
                     }));
                 }
                 if (req.user.username !== savedComment.user.username) {
-                    const message: Message = {
+                    const message: Omit<Message, '_id'> = {
                         author: {authorType: 'user', name: req.user.username},
                         date: new Date(),
                         recipient: {recipientType: 'user', name: savedComment.user.username},
@@ -152,7 +156,7 @@ export function module(roleConfig: {allComments: RequestHandler, manageComment: 
     router.post('/deleteComment', loggedInMiddleware, (req, res) => {
         const commentId = req.body.commentId;
         byId(commentId, handleNotFound({req, res}, comment => {
-            const dao = daoManager.getDao(comment.element.eltType);
+            const dao = getDao(comment.element.eltType);
             const idRetrievalFunc = dao.byTinyId ? dao.byTinyId : dao.byId;
             const eltId = comment.element.eltId;
             idRetrievalFunc(eltId, handleNotFound<ItemDocument>({req, res}, element => {
@@ -170,14 +174,14 @@ export function module(roleConfig: {allComments: RequestHandler, manageComment: 
     router.post('/deleteReply', loggedInMiddleware, (req, res) => {
         const replyId = req.body.replyId;
         byReplyId(replyId, handleNotFound({req, res}, comment => {
-            const dao = daoManager.getDao(comment.element.eltType);
+            const dao = getDao(comment.element.eltType);
             const idRetrievalFunc = dao.byTinyId ? dao.byTinyId : dao.byId;
             const eltId = comment.element.eltId;
             idRetrievalFunc(eltId, handleNotFound<ItemDocument>({req, res}, element => {
                 if (!canRemoveComment(req.user, comment, element)) {
                     return res.status(403).send('You can only remove ' + element.elementType + 's you own.');
                 }
-                comment.replies = comment.replies.filter(r => r._id.toString() !== replyId);
+                comment.replies = comment.replies.filter(r => r._id.toString() !== replyId) as CommentReply[];
                 comment.save(handleError<CommentDocument>({req, res}, () => {
                     ioServerCommentUpdated(req.user.username, comment.element.eltId);
                     res.send({});
@@ -191,7 +195,7 @@ export function module(roleConfig: {allComments: RequestHandler, manageComment: 
         const from = parseInt(req.params.from, 10);
         const size = parseInt(req.params.size, 10);
         const orgName: string | string[] = req.params.orgName;
-        discussDb.orgCommentsByCriteria(
+        orgCommentsByCriteria(
             criteria,
             orgName ? (Array.isArray(orgName) ? orgName : [orgName]) : undefined,
             from,
@@ -232,7 +236,7 @@ export function module(roleConfig: {allComments: RequestHandler, manageComment: 
     router.post('/declineComment', roleConfig.manageComment, (req, res) => {
         if (req.body.replyId) {
             byReplyId(req.body.replyId, handleNotFound({req, res}, comment => {
-                comment.replies = comment.replies.filter(r => r._id.toString() !== req.body.replyId);
+                comment.replies = comment.replies.filter(r => r._id.toString() !== req.body.replyId) as CommentReply[];
                 comment.save(handleError<CommentDocument>({req, res}, () => res.send('Declined')));
             }));
         } else {
@@ -244,25 +248,25 @@ export function module(roleConfig: {allComments: RequestHandler, manageComment: 
     });
 
     router.post('/resolveComment', loggedInMiddleware, (req, res) => {
-        discussDb.byId(req.body.commentId, handleNotFound({req, res}, comment => {
+        byId(req.body.commentId, handleNotFound<CommentDocument>({req, res}, comment => {
             replyTo(req, res, comment, 'resolved');
         }));
     });
 
     router.post('/reopenComment', loggedInMiddleware, (req, res) => {
-        discussDb.byId(req.body.commentId, handleNotFound({req, res}, comment => {
+        byId(req.body.commentId, handleNotFound<CommentDocument>({req, res}, comment => {
             replyTo(req, res, comment, 'active');
         }));
     });
 
     router.post('/resolveReply', loggedInMiddleware, (req, res) => {
-        discussDb.byReplyId(req.body.replyId, handleNotFound({req, res}, comment => {
+        byReplyId(req.body.replyId, handleNotFound<CommentDocument>({req, res}, comment => {
             replyTo(req, res, comment, undefined, 'resolved');
         }));
     });
 
     router.post('/reopenReply', loggedInMiddleware, (req, res) => {
-        discussDb.byReplyId(req.body.replyId, handleNotFound({req, res}, comment => {
+        byReplyId(req.body.replyId, handleNotFound<CommentDocument>({req, res}, comment => {
             replyTo(req, res, comment, undefined, 'active');
         }));
     });
@@ -270,9 +274,10 @@ export function module(roleConfig: {allComments: RequestHandler, manageComment: 
     return router;
 }
 
-const ioServerCommentUpdated = (username, roomId) => ioServer.ioServer.of('/comment').to(roomId).emit('commentUpdated', {username});
+const ioServerCommentUpdated = (username: string, roomId: string) =>
+    ioServer.of('/comment').to(roomId).emit('commentUpdated', {username});
 
-function replyTo(req, res, comment, status, repliesStatus?: string, send = {}) {
+function replyTo(req: Request, res: Response, comment: CommentDocument, status?: string, repliesStatus?: string, send = {}) {
     if (status) {
         comment.status = status;
     }

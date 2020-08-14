@@ -35,6 +35,7 @@ public interface USERNAME {
     String unpinUser = "unpinuser";
     String classificationMgtUser_username = "classMgtUser";
     String transferStewardUser_username = "transferStewardUser";
+    String anonymousCommentUser1_username = "CommentUser1";
     String anonymousCommentUser2_username = "CommentUser2";
     String anonymousCommentUser_password = "pass";
     String commentEditor_username = "commentEditor";

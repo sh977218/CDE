@@ -1,20 +1,10 @@
 # NLM CDE
 ## Install
 ### Prerequisites
-* Java -1.8
-* Node.js - 4.5
-* Gradle *
-* Mongodb - 2.6.7
-* ElasticSearch 2.3
-
-## Configure **elascticsearch.yml** 
-In order to run this application, you need to edit the Elasticsearch.yml.  This can be found in the config folder of elasticsearch.
-
-Add the following lines to the end of the .yml file:
-* script.engine.groovy.inline.update: on
-* script.inline: on
-* script.indexed: on
-* script.engine.groovy.inline.aggs: on
+* Mongodb - 4.2
+* ElasticSearch 7.1 (tested with 7.8)
+* Node.js - 12
+* Gradle 5.3
 
 ## Create & Configure Application Environment
 Next, navigate to your CDE directory, and run:

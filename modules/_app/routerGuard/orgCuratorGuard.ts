@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { forwardRef, Inject, Injectable } from '@angular/core';
 import {
     ActivatedRouteSnapshot,
     CanActivate,
@@ -14,7 +14,10 @@ import { isOrgCurator } from 'shared/system/authorizationShared';
 
 @Injectable()
 export class OrgCuratorGuard implements CanActivate, CanActivateChild, CanLoad {
-    constructor(private userService: UserService, private router: Router) {}
+    constructor(
+        @Inject(forwardRef(() => Router)) private router: Router,
+        @Inject(forwardRef(() => UserService)) private userService: UserService,
+    ) {}
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
         return this.checkLogin();

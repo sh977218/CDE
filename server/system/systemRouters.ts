@@ -1,5 +1,6 @@
 import { series } from 'async';
 import { CronJob } from 'cron';
+import { Request, RequestHandler, Response } from 'express';
 import { authenticate } from 'passport';
 import * as csrf from 'csurf';
 import { promisify } from 'util';
@@ -58,23 +59,16 @@ export function module() {
                     stream.on('end', cb);
                 }
 
-                const p1 = new Promise(resolve => {
-                    handleStream(
+                Promise.all([
+                    promisify(handleStream)(
                         dataElementModel.find(cond, 'tinyId').cursor(),
-                        doc => config.publicUrl + '/deView?tinyId=' + doc.tinyId + '\n',
-                        resolve
-                    );
-                });
-
-                const p2 = new Promise(resolve => {
-                    handleStream(
+                        doc => config.publicUrl + '/deView?tinyId=' + doc.tinyId + '\n'
+                    ),
+                    promisify(handleStream)(
                         formModel.find(cond, 'tinyId').cursor(),
-                        doc => config.publicUrl + '/formView?tinyId=' + doc.tinyId + '\n',
-                        resolve
-                    );
-                });
-
-                Promise.all([p1, p2]).then(() => {
+                        doc => config.publicUrl + '/formView?tinyId=' + doc.tinyId + '\n'
+                    )
+                ]).then(() => {
                     consoleLog('done with sitemap');
                     wstream.end();
                 });
@@ -128,11 +122,11 @@ export function module() {
         res.send(resp);
     });
 
-    function findFailedIp(ip) {
+    function findFailedIp(ip: string) {
         return failedIps.filter(f => f.ip === ip)[0];
     }
 
-    function myCsrf(req, res, next) {
+    const myCsrf: RequestHandler = function myCsrf(req, res, next) {
         if (req.body.federated) {
             return next();
         }
@@ -142,7 +136,7 @@ export function module() {
         csrf()(req, res, next);
     }
 
-    async function checkLoginReq(req, res, next) {
+    const checkLoginReq: RequestHandler = async function checkLoginReq(req, res, next) {
         if (req.body.federated) {
             return next();
         }
@@ -160,7 +154,7 @@ export function module() {
 
     const validLoginBody = ['username', 'password', '_csrf', 'recaptcha'];
 
-    router.post('/login', [checkLoginReq, myCsrf], (req, res, next) => {
+    router.post('/login', checkLoginReq, myCsrf, (req, res, next) => {
         const failedIp = findFailedIp(getRealIp(req));
         series([
                 function checkCaptcha(captchaDone) {
@@ -284,7 +278,7 @@ export function module() {
         getDrafts(req, res, {'updatedBy.username': req.user.username});
     });
 
-    function getDrafts(req, res, criteria) {
+    function getDrafts(req: Request, res: Response, criteria) {
         Promise.all([deDraftsList(criteria), formDraftsList(criteria)])
             .then(results => res.send({draftCdes: results[0], draftForms: results[1]}))
             .catch(err => respondError(err, {req, res}));

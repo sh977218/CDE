@@ -15,7 +15,6 @@ const appRoutes: Routes = [
     declarations: [
         ContactUsComponent
     ],
-    entryComponents: [],
     exports: [],
     providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]

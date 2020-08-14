@@ -81,12 +81,12 @@ export function module(roleConfig) {
 }
 
 function flatTreesFromMeshDescriptorArray(descArr: string[], cb: Cb<string[]>) {
-    const allTrees = new Set();
+    const allTrees = new Set<string>();
     async.each(descArr, (desc, oneDescDone) => {
         request(config.mesh.baseUrl + '/api/record/ui/' + desc, {json: true}, (err, response, oneDescBody) => {
             async.each(oneDescBody.TreeNumberList.TreeNumber, (treeNumber, tnDone) => {
                 request(config.mesh.baseUrl + '/api/tree/parents/' + treeNumber.t, {json: true}, (err, response, oneTreeBody) => {
-                    let flatTree = meshTopTreeMap[treeNumber.t.substr(0, 1)];
+                    let flatTree: string = meshTopTreeMap[treeNumber.t.substr(0, 1)];
                     if (oneTreeBody && oneTreeBody.length > 0) {
                         flatTree = flatTree + ';' + oneTreeBody.map((a) => {
                             return a.RecordName;

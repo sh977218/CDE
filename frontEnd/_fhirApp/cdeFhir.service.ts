@@ -13,10 +13,10 @@ import {
 } from './resources';
 import { FhirSmartService } from './fhirSmart.service';
 import { valueSets } from './valueSets';
-import async_forEach from 'async/forEach';
-import async_memoize from 'async/memoize';
-import async_series from 'async/series';
-import async_some from 'async/some';
+import * as async_forEach from 'async/forEach';
+import * as async_memoize from 'async/memoize';
+import * as async_series from 'async/series';
+import * as async_some from 'async/some';
 import { questionAnswered, findQuestionByTinyId, isQuestion } from 'core/form/fe';
 import { questionToFhirValue, storeTypedValue } from 'core/mapping/fhir/to/datatypeToItemType';
 import { getIds, getTinyId, getVersion } from 'core/form/formAndFe';
@@ -155,7 +155,6 @@ export class CdeFhirService {
             let resource: FhirDomainResource;
             switch (self.root.resourceType) {
                 case 'Observation':
-                    // @ts-ignore
                     const observationPromise = observationFromForm(self.crossReference, this.getDisplayFunc,
                         this.fhirData.context, this.fhirData.patient);
                     ResourceTreeUtil.setResource(self, null, observationPromise);
@@ -191,7 +190,6 @@ export class CdeFhirService {
                 } else if (ResourceTreeUtil.isAttribute(self)) {
                     switch (self.root.resourceType) {
                         case 'Observation':
-                            // @ts-ignore
                             const componentPromise = observationComponentFromForm(self.crossReference, this.getDisplayFunc);
                             ResourceTreeUtil.setResource(self, componentPromise);
                             setResourceAndUpdateParentResource(self, 'component', await componentPromise);
@@ -533,7 +531,6 @@ export class CdeFhirService {
     }
 
     save<T extends FhirDomainResource>(resource: T): Promise<T> {
-        // @ts-ignore
         return new Promise<T>(resolve => {
             if (isFhirObservation(resource)) { // has category
                 // fill in category from database config
@@ -582,7 +579,7 @@ export class CdeFhirService {
             } else {
                 resolve(resource);
             }
-        }).then(this.fhirData.save.bind(this.fhirData));
+        }).then(resource => this.fhirData.save(resource));
     }
 
     // cb(err)

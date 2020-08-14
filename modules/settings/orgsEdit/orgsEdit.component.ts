@@ -3,7 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { AlertService } from 'alert/alert.service';
 import _noop from 'lodash/noop';
 import { OrgHelperService } from 'non-core/orgHelper.service';
-import { Cb, Organization } from 'shared/models.model';
+import { Cb } from 'shared/models.model';
+import { Organization } from 'shared/system/organization';
 import { stringCompare } from 'shared/system/util';
 
 @Component({

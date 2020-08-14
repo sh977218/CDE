@@ -142,8 +142,8 @@ export class NativeRenderService {
         if (profile) {
             this.profile = profile;
         }
-        if (!this.profile || this.elt && this.elt.displayProfiles && this.elt.displayProfiles.length > 0 &&
-            this.elt.displayProfiles.indexOf(this.profile) === -1) {
+        if (this.elt && this.elt.displayProfiles && this.elt.displayProfiles.length > 0
+            && (!this.profile || this.elt.displayProfiles.indexOf(this.profile) === -1)) {
             this.profile = this.elt.displayProfiles[0];
         }
         if (!this.profile) {

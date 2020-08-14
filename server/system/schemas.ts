@@ -229,7 +229,8 @@ export const dataSetSchema = new Schema({
 }, {_id: false});
 
 export const classificationAudit = new Schema({
-    date: {type: Date, default: Date.now, index: true}, user: {
+    date: {type: Date, default: Date.now, index: true},
+    user: {
         username: StringType
     },
     elements: [{

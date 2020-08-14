@@ -69,12 +69,12 @@ public class QuestionTest extends BaseFormTest {
 
     public void editCdeDataTypeById(String questionId, String dataType) {
         openQuestionEdit(questionId);
-        clickElement(By.xpath("//*[@id='" + questionId + "']//div[@class='card-body']//*[contains(@class,'newCdeDataType')]//mat-select"));
+        clickElement(By.xpath("//*[@id='" + questionId + "']//div[contains(@class,'card-body')]//*[contains(@class,'newCdeDataType')]//mat-select"));
         selectMatSelectDropdownByText(dataType);
     }
 
     public void openQuestionEdit(String questionId) {
-        boolean isQuestionOpen = driver.findElements(By.xpath("//*[@id='" + questionId + "']//div[@class='card-body']//*[contains(@class,'changeQuestionLabelIcon')]")).size() > 0;
+        boolean isQuestionOpen = driver.findElements(By.xpath("//*[@id='" + questionId + "']//div[contains(@class,'card-body')]//*[contains(@class,'changeQuestionLabelIcon')]")).size() > 0;
         if (!isQuestionOpen) startEditQuestionById(questionId);
     }
 

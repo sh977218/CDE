@@ -18,15 +18,14 @@ public class NavigateThroughClassificationTreeTest extends NlmCdeBaseTest {
         textPresent("Domain", By.cssSelector(".mat-dialog-content"));
         textPresent("Population", By.cssSelector(".mat-dialog-content"));
         textNotPresent("Amyotrophic Lateral Sclerosis", By.cssSelector(".mat-dialog-content"));
-        clickElement(By.id("Disease-expander"));
+        classifyToggle(new String[]{"Disease"});
         textPresent("Amyotrophic Lateral Sclerosis", By.cssSelector(".mat-dialog-content"));
         textPresent("Domain", By.cssSelector(".mat-dialog-content"));
         textPresent("Population", By.cssSelector(".mat-dialog-content"));
-        clickElement(By.id("Disease-expander"));
+        classifyToggle(new String[]{"Disease"});
         textNotPresent("Amyotrophic Lateral Sclerosis", By.cssSelector(".mat-dialog-content"));
-        clickElement(By.id("cancelNewClassifyItemBtn"));
+        clickElement(By.xpath("//button[contains(.,'Close')]"));
         modalGone();
     }
-
 
 }

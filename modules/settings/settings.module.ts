@@ -334,7 +334,6 @@ const appRoutes: Routes = [
         UsersMgtComponent,
         ViewingHistoryComponent
     ],
-    entryComponents: [ArticleHelpDialogComponent, ResourcesHelpDialogComponent],
     exports: [],
     providers: [
         DraftsService,

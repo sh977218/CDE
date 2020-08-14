@@ -1,7 +1,6 @@
 import { find, slice, sortBy, uniqWith } from 'lodash';
-import {
-    Cb, Cb1, Classification, ClassificationElement, Item, ObjectId, Organization
-} from 'shared/models.model';
+import { Cb1, Classification, ClassificationElement, Item, ObjectId } from 'shared/models.model';
+import { Organization } from 'shared/system/organization';
 
 export const actions: {
     create: string,

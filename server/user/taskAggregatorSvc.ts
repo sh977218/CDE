@@ -1,16 +1,17 @@
-import { getClientErrorsNumber, getServerErrorsNumber } from 'server/log/dbLogger';
-import { hasRole, isSiteAdmin } from 'shared/system/authorizationShared';
 import { unapproved as attachmentUnapproved } from 'server/attachment/attachmentSvc';
 import { unapproved as discussUnapproved } from 'server/discuss/discussDb';
+import { getClientErrorsNumber, getServerErrorsNumber } from 'server/log/dbLogger';
 import { ItemDocument } from 'server/system/mongo-data';
+import { CommentNotification, UserDocument } from 'server/user/userDb';
+import { version } from 'server/version';
+import { hasRole, isSiteAdmin } from 'shared/system/authorizationShared';
 import { getModule } from 'shared/elt';
 import { uriView } from 'shared/item';
 import { Comment, CommentReply, ModuleAll, Task } from 'shared/models.model';
 import { capString } from 'shared/system/util';
 import { promisify } from 'util';
-import { version } from 'server/version';
 
-function createTaskFromCommentNotification(c: any) {
+function createTaskFromCommentNotification(c: CommentNotification): Task {
     return {
         date: c.date,
         id: c.eltTinyId,
@@ -39,8 +40,8 @@ function pending(comment: Comment) {
     return pending;
 }
 
-export async function taskAggregator(user, clientVersion) {
-    const tasks = user ? user.commentNotifications.map(createTaskFromCommentNotification) : [];
+export async function taskAggregator(user: UserDocument, clientVersion: string): Promise<Task[]> {
+    const tasks: Task[] = user ? user.commentNotifications.map(createTaskFromCommentNotification) : [];
 
     let clientErrorPromise;
     let serverErrorPromise;
@@ -51,9 +52,11 @@ export async function taskAggregator(user, clientVersion) {
         clientErrorPromise = getClientErrorsNumber(user).then(clientErrorCount => {
             if (clientErrorCount > 0) {
                 tasks.push({
-                    id: clientErrorCount,
+                    date: new Date(),
+                    id: clientErrorCount + '',
                     idType: 'clientError',
                     name: clientErrorCount + ' New Client Errors',
+                    properties: [],
                     source: 'calculated',
                     type: 'message',
                     url: '/siteAudit?tab=clientErrors',
@@ -63,9 +66,11 @@ export async function taskAggregator(user, clientVersion) {
         serverErrorPromise = getServerErrorsNumber(user).then(serverErrorCount => {
             if (serverErrorCount > 0) {
                 tasks.push({
-                    id: serverErrorCount,
+                    date: new Date(),
+                    id: serverErrorCount + '',
                     idType: 'serverError',
                     name: serverErrorCount + ' New Server Errors',
+                    properties: [],
                     source: 'calculated',
                     type: 'message',
                     url: '/siteAudit?tab=serverErrors',
@@ -76,9 +81,11 @@ export async function taskAggregator(user, clientVersion) {
 
     if (clientVersion && version !== clientVersion) {
         tasks.push({
+            date: new Date(),
             id: version,
             idType: 'versionUpdate',
             name: 'Website Updated',
+            properties: [],
             source: 'calculated',
             text: 'A new version of this site is available. To enjoy the new features, please close all CDE tabs then load again.',
             type: 'error',
@@ -87,7 +94,7 @@ export async function taskAggregator(user, clientVersion) {
 
     // TODO: implement org boundaries
     if (hasRole(user, 'AttachmentReviewer')) { // required, req.user.notificationSettings.approvalAttachment.drawer not used
-        unapprovedAttachmentsPromise = (promisify(attachmentUnapproved)() as any).then((attachmentElts: ItemDocument[]) => {
+        unapprovedAttachmentsPromise = (promisify(attachmentUnapproved)() as Promise<any>).then((attachmentElts: ItemDocument[]) => {
             if (Array.isArray(attachmentElts)) {
                 attachmentElts.forEach(elt => {
                     const eltModule = getModule(elt);

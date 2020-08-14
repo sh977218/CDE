@@ -1,4 +1,7 @@
-import { Board, Comment, Elt, Item, User } from 'shared/models.model';
+import { Board, Comment, Item, User } from 'shared/models.model';
+
+export type UserRoles = 'DocumentationEditor' | 'BoardPublisher' | 'CommentAuthor' |
+    'CommentReviewer' | 'AttachmentReviewer' | 'OrgAuthority';
 
 export const rolesEnum: string[] = ['DocumentationEditor', 'BoardPublisher', 'CommentAuthor',
     'CommentReviewer', 'AttachmentReviewer', 'OrgAuthority'];
@@ -45,7 +48,7 @@ export function hasRole(user?: User, role?: string): boolean {
     if (user.roles && user.roles.indexOf(role) > -1) {
         return true;
     }
-    return user.orgCurator.length > 0 && role === 'BoardPublisher';
+    return user.orgCurator && user.orgCurator.length > 0 && role === 'BoardPublisher' || false; // TODO: logic is suspect, delete or extract
 }
 
 export function isOrgCurator(user?: User, org?: string): boolean {
@@ -66,7 +69,7 @@ export function isOrgAdmin(user?: User, org?: string): boolean {
     if (isOrgAuthority(user)) {
         return true;
     }
-    return user.orgAdmin && (org ? user.orgAdmin.indexOf(org) > -1 : user.orgAdmin.length > 0);
+    return user.orgAdmin && (org ? user.orgAdmin.indexOf(org) > -1 : user.orgAdmin.length > 0) || false;
 }
 
 export function isSiteAdmin(user?: User): boolean {

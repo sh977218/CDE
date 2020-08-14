@@ -6,8 +6,7 @@ export async function getClassificationAuditLog(params) {
     const sort = '-date';
     const skip = params.skip;
     const limit = params.limit;
-    const records = await classificationAuditPagination({sort, skip, limit});
-    return records;
+    return await classificationAuditPagination({sort, skip, limit});
 }
 export function addToClassifAudit(msg) {
     const persistClassifRecord = (err, elt) => {

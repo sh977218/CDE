@@ -1,4 +1,3 @@
-import './metadata-item.scss';
 import { Component } from '@angular/core';
 import { NativeQuestionComponent } from 'nativeRender/nativeQuestion.component';
 import { textTruncate } from 'non-core/browser';
@@ -11,6 +10,7 @@ type AccessGUDIDDevice = any;
 @Component({
     selector: 'cde-native-metadata',
     templateUrl: './nativeMetadata.component.html',
+    styleUrls: ['./metadata-item.style.scss'],
 })
 export class NativeMetadataComponent {
     componentClass = NativeMetadataComponent;

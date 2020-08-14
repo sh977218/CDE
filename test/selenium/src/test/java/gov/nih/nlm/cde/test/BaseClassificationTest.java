@@ -18,19 +18,11 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
 
     private void addClassificationMethodDo(String[] categories) {
         new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(categories[0]);
-        textPresent(categories[1]);
-        String classifyBtnId = "";
-        for (int i = 1; i < categories.length - 1; i++) {
-            clickElement(By.xpath("//*[@id='" + categories[i] + "-expander']//span"));
-            classifyBtnId = classifyBtnId + categories[i] + ",";
+        String[] cats = Arrays.copyOfRange(categories, 1, categories.length);
+        for (int i = 0; i < cats.length - 1; i++) {
+            classifyToggle(Arrays.copyOfRange(cats, 0, i + 1));
         }
-        classifyBtnId = classifyBtnId + categories[categories.length - 1];
-        clickElement(By.xpath("//*[@id='" + classifyBtnId + "-classifyBtn']"));
-        try {
-            closeAlert();
-        } catch (Exception ignored) {
-        }
-        Assert.assertTrue(findElement(By.xpath("//*[@id='" + classifyBtnId + "']")).getText().equals(categories[categories.length - 1]));
+        classifySubmit(cats, null);
     }
 
     protected void fillOutBasicCreateFields(String name, String definition, String org, String classification, String subClassification) {

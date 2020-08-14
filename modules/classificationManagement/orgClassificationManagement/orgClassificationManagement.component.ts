@@ -1,16 +1,17 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { IActionMapping, TreeComponent, TreeNode } from 'angular-tree-component';
-import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
-import { empty, Subject } from 'rxjs';
-import { AlertService } from 'alert/alert.service';
-import { UserService } from '_app/user.service';
-import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
-import { ClassificationService } from 'non-core/classification.service';
-import { Cb, ClassificationClassified, ElasticQueryResponse, Organization } from 'shared/models.model';
-import { isOrgAdmin } from 'shared/system/authorizationShared';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSelectChange } from '@angular/material/select';
+import { IActionMapping, TreeComponent, TreeNode } from '@circlon/angular-tree-component';
+import { AlertService } from 'alert/alert.service';
+import { UserService } from '_app/user.service';
+import { ClassifyItemComponent } from 'adminItem/public/components/classification/classifyItem.component';
+import { ClassificationService } from 'non-core/classification.service';
+import { empty, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
+import { Cb, ClassificationClassified, ElasticQueryResponse, ItemClassificationNew } from 'shared/models.model';
+import { isOrgAdmin } from 'shared/system/authorizationShared';
+import { Organization } from 'shared/system/organization';
 
 const actionMapping: IActionMapping = {
     mouse: {
@@ -23,15 +24,16 @@ const actionMapping: IActionMapping = {
 
 @Component({
     selector: 'cde-org-classification-management',
-    templateUrl: './orgClassificationManagement.component.html'
+    templateUrl: './orgClassificationManagement.component.html',
+    styleUrls: ['./orgClassificationManagement.component.scss'],
 })
 export class OrgClassificationManagementComponent implements OnInit {
     @ViewChild('renameClassificationContent', {static: true}) renameClassificationContent!: TemplateRef<any>;
     @ViewChild('deleteClassificationContent', {static: true}) deleteClassificationContent!: TemplateRef<any>;
-    @ViewChild('reclassifyComponent', {static: true}) reclassifyComponent!: ClassifyItemModalComponent;
+    @ViewChild('reclassifyComponent', {static: true}) reclassifyComponent!: ClassifyItemComponent;
     @ViewChild('addChildClassificationContent', {static: true}) addChildClassificationContent!: TemplateRef<any>;
     @ViewChild('mapClassificationMeshContent', {static: true}) mapClassificationMeshContent!: TemplateRef<any>;
-    @ViewChild(TreeComponent, {static: false}) private tree!: TreeComponent;
+    @ViewChild(TreeComponent) private tree!: TreeComponent;
     childClassificationNode?: TreeNode;
     descriptorID!: string;
     descriptorName!: string;
@@ -43,7 +45,7 @@ export class OrgClassificationManagementComponent implements OnInit {
     };
     meshSearchTerm = '';
     newClassificationName!: string;
-    oldReclassificationArray?: string[];
+    oldReclassificationArray!: string[];
     onInitDone = false;
     options = {
         idField: 'name',
@@ -281,7 +283,7 @@ export class OrgClassificationManagementComponent implements OnInit {
 
     openReclassificationModal(node: TreeNode) {
         this.selectedClassificationArray = '';
-        const classificationArray = [node.data.name];
+        const classificationArray: string[] = [node.data.name];
         let _treeNode = node;
         while (_treeNode.parent) {
             _treeNode = _treeNode.parent;
@@ -299,7 +301,7 @@ export class OrgClassificationManagementComponent implements OnInit {
         this.selectedClassificationArray = 'Classify CDEs in Bulk   <p>Classify all CDEs classified by <strong> ' +
             this.selectedClassificationArray + ' </strong> with new classification(s).</p>';
         this.oldReclassificationArray = classificationArray;
-        this.reclassifyComponent.openModal();
+        this.reclassifyComponent.openModal(this.selectedClassificationArray);
     }
 
     openRenameClassificationModal(node: TreeNode) {
@@ -312,7 +314,7 @@ export class OrgClassificationManagementComponent implements OnInit {
 
     reclassify(event: ClassificationClassified) {
         const oldClassification = {
-            orgName: this.selectedOrg ? this.selectedOrg.name : undefined,
+            orgName: this.selectedOrg.name,
             categories: this.oldReclassificationArray
         };
         const newClassification = {
@@ -342,10 +344,10 @@ export class OrgClassificationManagementComponent implements OnInit {
                 classificationArray.unshift(_treeNode.data.name);
             }
         }
-        const newClassification = {
+        const newClassification: ItemClassificationNew = {
             orgName: this.selectedOrg.name,
             categories: classificationArray,
-            newName: this.newClassificationName
+            newName: this.newClassificationName,
         };
         this.classificationSvc.renameOrgClassification(newClassification, (message: string) => this.alert.addAlert('info', message));
         this.checkJob('renameClassification', () => {

@@ -46,7 +46,6 @@ const boardRoutes: Routes = [
     declarations: [
         BoardViewComponent,
     ],
-    entryComponents: [],
     providers: [],
     exports: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]

@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { BoardListService } from 'board/public/components/listView/boardList.service';
 import { SummaryComponent } from 'search/listView/summaryListItem.component';
 import { CdeFormElastic } from 'shared/form/form.model';
-import { Attachment } from 'shared/models.model';
+import { isDefault } from 'shared/models.model';
 
 @Component({
     selector: 'cde-board-form-summary-list-content',
@@ -13,7 +13,7 @@ export class BoardFormSummaryListContentComponent implements SummaryComponent {
     @Input() eltIndex!: number;
     @Output() select = new EventEmitter<string>();
 
-    defaultAttachmentsFilter = Attachment.isDefault;
+    defaultAttachmentsFilter = isDefault;
     module = 'form';
 
     constructor(public boardListService: BoardListService) {}

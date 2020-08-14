@@ -29,7 +29,6 @@ const appRoutes: Routes = [
         MatIconModule
     ],
     declarations: [],
-    entryComponents: [],
     exports: [],
     providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]

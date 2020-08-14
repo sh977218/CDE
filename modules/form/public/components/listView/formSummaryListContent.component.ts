@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-
 import { SummaryComponent } from 'search/listView/summaryListItem.component';
-import { Attachment } from 'shared/models.model';
+import { isDefault } from 'shared/models.model';
 import { CdeFormElastic } from 'shared/form/form.model';
 
 
@@ -14,7 +13,7 @@ export class FormSummaryListContentComponent implements SummaryComponent {
     @Input() eltIndex!: number;
     @Output() select = new EventEmitter<string>();
 
-    defaultAttachmentsFilter = Attachment.isDefault;
+    defaultAttachmentsFilter = isDefault;
     module = 'form';
 
     constructor() {}

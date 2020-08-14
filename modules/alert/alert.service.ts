@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { forwardRef, Inject, Injectable } from '@angular/core';
 import { httpErrorMessage } from 'non-core/angularHelper';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
@@ -24,7 +24,9 @@ export class Alert {
 export class AlertService {
     alertTime: number;
 
-    constructor(private snackBar: MatSnackBar) {
+    constructor(
+        @Inject(forwardRef(() => MatSnackBar)) private snackBar: MatSnackBar,
+    ) {
         this.alertTime = (window as any).userAlertTime;
         if (this.alertTime === 1) { this.alertTime = 90000; }
     }

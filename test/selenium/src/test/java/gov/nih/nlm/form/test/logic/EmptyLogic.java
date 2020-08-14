@@ -29,11 +29,11 @@ public class EmptyLogic extends BaseFormTest {
         textNotPresent("Pulmonary function test not done reason");
 
         // Numbers
-        findElement(By.xpath("//div[@id='Head injury prior number_0-4']//input")).clear();
+        findElement(By.xpath("//div[@id='Head injury prior number_0-4']//input")).sendKeys(Keys.BACK_SPACE);
         textPresent("Pulmonary function test not done other text");
         findElement(By.xpath("//div[@id='Head injury prior number_0-4']//input")).sendKeys("0");
         textNotPresent("Pulmonary function test not done other text");
-        findElement(By.xpath("//div[@id='Head injury prior number_0-4']//input")).clear();
+        findElement(By.xpath("//div[@id='Head injury prior number_0-4']//input")).sendKeys(Keys.BACK_SPACE);
         textPresent("Pulmonary function test not done other text");
 
         // Text

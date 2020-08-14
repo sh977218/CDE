@@ -5,6 +5,7 @@ import { config } from 'server/system/parseConfig';
 import { CdeFormElastic } from 'shared/form/form.model';
 import { CbError } from 'shared/models.model';
 import { esClient } from 'server/system/elastic';
+import { ApiResponse } from '@elastic/elasticsearch/lib/Transport';
 
 export function updateOrInsert(elt) {
     riverFunction(elt.toObject(), doc => {
@@ -47,8 +48,8 @@ export function updateOrInsert(elt) {
 
 export function byTinyIdList(idList: string[], size: number, cb: CbError<CdeFormElastic[]>) {
     idList = idList.filter(id => !!id);
-    // @ts-ignore
-    esClient.search({
+    esClient.search(
+        {
             index: config.elastic.formIndex.name,
             body: {
                 query: {
@@ -59,16 +60,14 @@ export function byTinyIdList(idList: string[], size: number, cb: CbError<CdeForm
                 size
             }
         },
-        // @ts-ignore
-        splitError(cb, response => {
-            // @TODO possible to move this sort to elastic search?
+        splitError<ApiResponse<CdeFormElastic>>(err => cb(err), response => {
+            // TODO: possible to move this sort to elastic search?
             if (!response) {
                 cb(undefined, []);
                 return;
             }
-            // @ts-ignore
             response.body.hits.hits.sort((a, b) => idList.indexOf(a._id) - idList.indexOf(b._id));
-            // @ts-ignore
             cb(undefined, response.body.hits.hits.map(h => h._source));
-        }));
+        })
+    );
 }

@@ -1,10 +1,10 @@
 import * as mongoose from 'mongoose';
-import {Document, Model} from 'mongoose';
-import {establishConnection} from 'server/system/connections';
-import {addStringtype} from 'server/system/mongoose-stringtype';
-import {config} from 'server/system/parseConfig';
-import {hasRole, rolesEnum} from 'shared/system/authorizationShared';
-import {CbError, CbError1, ModuleAll, User} from 'shared/models.model';
+import { Document, Model, Query } from 'mongoose';
+import { establishConnection } from 'server/system/connections';
+import { addStringtype } from 'server/system/mongoose-stringtype';
+import { config } from 'server/system/parseConfig';
+import { hasRole, rolesEnum } from 'shared/system/authorizationShared';
+import { CbError, ModuleAll, User } from 'shared/models.model';
 
 addStringtype(mongoose);
 const Schema = mongoose.Schema;
@@ -12,15 +12,17 @@ const StringType = (Schema.Types as any).StringType;
 
 const conn = establishConnection(config.database.appData);
 
+export interface CommentNotification {
+    date: Date;
+    eltModule: ModuleAll;
+    eltTinyId: string;
+    read: boolean;
+    text?: string;
+    username: string;
+}
+
 export interface UserFull extends User {
-    commentNotifications: {
-        date: Date | number,
-        eltModule: ModuleAll;
-        eltTinyId: string;
-        read: boolean;
-        text: string;
-        username: string;
-    }[];
+    commentNotifications: CommentNotification[];
     lastLogin: Date | number;
     lockCounter: number;
     knownIPs: string[];
@@ -114,12 +116,12 @@ export const userModel: Model<UserDocument> = conn.model('User', userSchema);
 
 const userProject = {password: 0};
 
-export function addUser(user: Partial<User>, callback: CbError<UserDocument>) {
+export function addUser(user: Omit<User, '_id'>, callback: CbError<UserDocument>) {
     user.username = user.username.toLowerCase();
     new userModel(user).save(callback);
 }
 
-export function updateUserIps(userId: string, ips: string[], callback: CbError<UserDocument>) {
+export function updateUserIps(userId: string, ips: string[], callback: CbError<UserDocument | null>) {
     userModel.findByIdAndUpdate(userId, {
         lockCounter: 0,
         lastLogin: Date.now(),
@@ -127,7 +129,7 @@ export function updateUserIps(userId: string, ips: string[], callback: CbError<U
     }, {new: true}, callback);
 }
 
-export function userByName(name: string, callback?: CbError<UserDocument>) {
+export function userByName(name: string, callback?: CbError<UserDocument>): Query<UserDocument | null> {
     return userModel.findOne({username: new RegExp('^' + name + '$', 'i')}, callback);
 }
 
@@ -135,11 +137,11 @@ export function userById(id: string, callback: CbError<UserDocument>) {
     userModel.findById(id, userProject, callback);
 }
 
-export function byId(id: string, callback?: CbError<UserDocument>) {
-    return userModel.findById(id, userProject).exec(callback);
+export function byId(id: string, callback?: CbError<UserDocument | null>) {
+    return userModel.findById(id, userProject, callback);
 }
 
-export function find(crit: any, cb: CbError1<UserDocument[]>) {
+export function find(crit: any, cb: CbError<UserDocument[]>) {
     userModel.find(crit, cb);
 }
 

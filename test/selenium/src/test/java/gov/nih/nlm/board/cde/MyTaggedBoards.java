@@ -13,6 +13,7 @@ public class MyTaggedBoards extends BoardTest {
         textPresent("Leukemia Board");
         textPresent("Epilepsy Board");
 
+        clickElement(By.xpath("//label[contains(.,'cde')]"));
         clickElement(By.id("tag-Disease"));
         textNotPresent("X-Ray Board");
         textPresent("Leukemia Board");

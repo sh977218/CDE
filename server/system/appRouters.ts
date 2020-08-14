@@ -1,13 +1,11 @@
 import { is } from 'useragent';
 import { renderFile } from 'ejs';
 import * as csrf from 'csurf';
-import { existsSync, writeFileSync } from 'fs';
 import { Request, Response, Router } from 'express';
-
+import { existsSync, writeFileSync } from 'fs';
+import { isSearchEngine } from 'server/system/helper';
 import { config } from 'server/system/parseConfig';
 import { version } from 'server/version';
-import { isSearchEngine } from 'server/system/helper';
-
 
 require('express-async-errors');
 
@@ -40,7 +38,7 @@ export function module() {
     });
 
     /* for IE Opera Safari, emit polyfill.js */
-    function isModernBrowser(req) {
+    function isModernBrowser(req: Request) {
         const ua = is(req.headers['user-agent']);
         return ua.chrome || ua.firefox || (ua as any).edge;
     }

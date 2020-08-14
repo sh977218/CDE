@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { forwardRef, Inject, Injectable } from '@angular/core';
 import {
     ActivatedRouteSnapshot,
     CanActivate,
@@ -8,30 +8,28 @@ import {
     Router,
     RouterStateSnapshot,
 } from '@angular/router';
-import { UserService } from '_app/user.service';
 
 @Injectable()
 export class IEGuard implements CanActivate, CanActivateChild, CanLoad {
-    constructor(private userService: UserService,
-                private router: Router) {}
+    constructor(
+        @Inject(forwardRef(() => Router))private router: Router,
+    ) {}
 
-    canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+    canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
         return this.checkIE();
     }
 
-    canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+    canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
         return this.canActivate(route, state);
     }
 
-    canLoad(route: Route): boolean {
+    canLoad(route: Route) {
         return this.checkIE();
     }
 
-    checkIE(): boolean {
-        const isIe = false || !!(document as any).documentMode;
-        if (isIe) {
-            this.router.navigate(['/ieDiscontinued']);
-            return false;
-        } else { return true; }
+    checkIE() {
+        return !!(document as any).documentMode
+            ? this.router.createUrlTree(['/ieDiscontinued'])
+            : true;
     }
 }

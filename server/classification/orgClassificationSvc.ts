@@ -1,23 +1,21 @@
+import { eachLimit, parallel } from 'async';
 import { find } from 'lodash';
 import { byTinyId as deByTinyId, dataElementModel } from 'server/cde/mongo-cde';
 import { handleError } from 'server/errorHandler/errorHandler';
 import { byTinyId as formByTinyId, formModel } from 'server/form/mongo-form';
+import { OrganizationDocument, orgByName } from 'server/orgManagement/orgDb';
+import { addToClassifAudit } from 'server/system/classificationAuditSvc';
 import { buildElasticSearchQuery, elasticsearch } from 'server/system/elastic';
 import { ItemDocument, removeJobStatus, updateJobStatus } from 'server/system/mongo-data';
-import { Classification } from 'shared/models.model';
+import { CbError, Classification, ItemClassification, ItemClassificationNew, User } from 'shared/models.model';
+import { SearchSettingsElastic } from 'shared/search/search.model';
 import {
     addCategoriesToOrg, addCategoriesToTree, arrangeClassification, deleteCategory, findLeaf, mergeOrgClassifications,
     OrgClassification, renameCategory,
 } from 'shared/system/classificationShared';
-import { orgByName } from 'server/orgManagement/orgDb';
-import { addToClassifAudit } from 'server/system/classificationAuditSvc';
-
-const async = require('async');
 
 export function classifyItem(item: ItemDocument, orgName: string, categories: string[]): void {
-    if (!item.classification) {
-        item.classification = [];
-    }
+    item.classification = defaultArray(item.classification);
     let classification = find(item.classification, (o: Classification) => o.stewardOrg && o.stewardOrg.name === orgName);
     if (!classification) {
         classification = {
@@ -33,13 +31,17 @@ export function classifyItem(item: ItemDocument, orgName: string, categories: st
     }
 }
 
-export async function deleteOrgClassification(user, deleteClassification, settings, callback) {
-    if (!(deleteClassification.categories instanceof Array)) {
-        deleteClassification.categories = [deleteClassification.categories];
-    }
+export async function deleteOrgClassification(user: User, deleteClassification: ItemClassification, settings: SearchSettingsElastic,
+                                              callback: CbError) {
+    deleteClassification.categories = defaultArray(deleteClassification.categories);
     await updateJobStatus('deleteClassification', 'Running');
 
     const stewardOrg = await orgByName(deleteClassification.orgName);
+    /* istanbul ignore if */
+    if (!stewardOrg) {
+        callback(new Error('not an organization: ' + deleteClassification.orgName));
+        return;
+    }
     const fakeTree = {elements: stewardOrg.classifications, stewardOrg: {name: ''}};
     deleteCategory(fakeTree, deleteClassification.categories);
     stewardOrg.markModified('classifications');
@@ -48,12 +50,17 @@ export async function deleteOrgClassification(user, deleteClassification, settin
     settings.selectedOrg = deleteClassification.orgName;
     settings.selectedElements = deleteClassification.categories;
     const query = buildElasticSearchQuery(user, settings);
-    async.parallel([
+    parallel([
         done => elasticsearch('cde', query, settings, handleError({}, result => {
             if (result && result.cdes && result.cdes.length > 0) {
                 const tinyIds = result.cdes.map(c => c.tinyId);
-                async.eachLimit(tinyIds, 100, async (tinyId, doneOne) => {
+                eachLimit(tinyIds, 100, async (tinyId, doneOne) => {
                     const de = await deByTinyId(tinyId);
+                    /* istanbul ignore if */
+                    if (!de) {
+                        callback(new Error('not a de: ' + tinyId));
+                        return;
+                    }
                     unclassifyElt(de, deleteClassification.orgName, deleteClassification.categories);
                     de.save(doneOne);
                 }, () => {
@@ -73,8 +80,13 @@ export async function deleteOrgClassification(user, deleteClassification, settin
         done => elasticsearch('form', query, settings, handleError({}, result => {
             if (result && result.forms && result.forms.length > 0) {
                 const tinyIds = result.forms.map(c => c.tinyId);
-                async.eachLimit(tinyIds, 100, async (tinyId, doneOne) => {
+                eachLimit(tinyIds, 100, async (tinyId, doneOne) => {
                     const form = await formByTinyId(tinyId);
+                    /* istanbul ignore if */
+                    if (!form) {
+                        callback(new Error('not a form: ' + tinyId));
+                        return;
+                    }
                     unclassifyElt(form, deleteClassification.orgName, deleteClassification.categories);
                     form.save(doneOne);
                 }, () => {
@@ -96,12 +108,16 @@ export async function deleteOrgClassification(user, deleteClassification, settin
     }));
 }
 
-export async function renameOrgClassification(user, newClassification, settings, callback) {
-    if (!(newClassification.categories instanceof Array)) {
-        newClassification.categories = [newClassification.categories];
-    }
+export async function renameOrgClassification(user: User, newClassification: ItemClassificationNew, settings: SearchSettingsElastic,
+                                              callback: CbError) {
+    newClassification.categories = defaultArray(newClassification.categories);
     updateJobStatus('renameClassification', 'Running');
     const stewardOrg = await orgByName(newClassification.orgName);
+    /* istanbul ignore if */
+    if (!stewardOrg) {
+        callback(new Error('not an organization: ' + newClassification.orgName));
+        return;
+    }
     const fakeTree = {elements: stewardOrg.classifications, stewardOrg: {name: ''}};
     renameCategory(fakeTree, newClassification.categories, newClassification.newName);
     stewardOrg.markModified('classifications');
@@ -109,12 +125,18 @@ export async function renameOrgClassification(user, newClassification, settings,
     settings.selectedOrg = newClassification.orgName;
     settings.selectedElements = newClassification.categories;
     const query = buildElasticSearchQuery(user, settings);
-    async.parallel([
+    parallel([
         done => elasticsearch('cde', query, settings, handleError({}, result => {
+            /* istanbul ignore else */
             if (result && result.cdes && result.cdes.length > 0) {
                 const tinyIds = result.cdes.map(c => c.tinyId);
-                async.eachLimit(tinyIds, 100, async (tinyId, doneOne) => {
+                eachLimit(tinyIds, 100, async (tinyId, doneOne) => {
                     const de = await deByTinyId(tinyId);
+                    /* istanbul ignore if */
+                    if (!de) {
+                        callback(new Error('not a de: ' + tinyId));
+                        return;
+                    }
                     renameClassifyElt(de, newClassification.orgName,
                         newClassification.categories, newClassification.newName);
                     de.save(doneOne);
@@ -134,10 +156,16 @@ export async function renameOrgClassification(user, newClassification, settings,
             }
         })),
         done => elasticsearch('form', query, settings, handleError({}, result => {
+            /* istanbul ignore else */
             if (result && result.forms && result.forms.length > 0) {
                 const tinyIds = result.forms.map(c => c.tinyId);
-                async.eachLimit(tinyIds, 100, async (tinyId, doneOne) => {
+                eachLimit(tinyIds, 100, async (tinyId, doneOne) => {
                     const form = await formByTinyId(tinyId);
+                    /* istanbul ignore if */
+                    if (!form) {
+                        callback(new Error('not a form: ' + tinyId));
+                        return;
+                    }
                     renameClassifyElt(form, newClassification.orgName,
                         newClassification.categories, newClassification.newName);
                     form.save(doneOne);
@@ -159,37 +187,48 @@ export async function renameOrgClassification(user, newClassification, settings,
     ], handleError({}, () => removeJobStatus('renameClassification', callback)));
 }
 
-export async function addOrgClassification(newClassification, callback) {
-    if (!(newClassification.categories instanceof Array)) {
-        newClassification.categories = [newClassification.categories];
-    }
+export async function addOrgClassification(newClassification: ItemClassification, callback: CbError<OrganizationDocument>) {
+    newClassification.categories = defaultArray(newClassification.categories);
     const stewardOrg = await orgByName(newClassification.orgName);
+    /* istanbul ignore if */
+    if (!stewardOrg) {
+        callback(new Error('not an organization: ' + newClassification.orgName));
+        return;
+    }
     addCategoriesToOrg(stewardOrg, newClassification.categories);
     stewardOrg.markModified('classifications');
     stewardOrg.save(callback);
 }
 
-export async function reclassifyOrgClassification(user, oldClassification, newClassification, settings, callback) {
-    if (!(oldClassification.categories instanceof Array)) {
-        oldClassification.categories = [oldClassification.categories];
-    }
-    if (!(newClassification.categories instanceof Array)) {
-        newClassification.categories = [newClassification.categories];
-    }
+export async function reclassifyOrgClassification(user: User, oldClassification: ItemClassification,
+                                                  newClassification: ItemClassification, settings: SearchSettingsElastic,
+                                                  callback: CbError) {
+    oldClassification.categories = defaultArray(oldClassification.categories);
+    newClassification.categories = defaultArray(newClassification.categories);
     await updateJobStatus('reclassifyClassification', 'Running');
-    const stewardOrg: any = await orgByName(newClassification.orgName);
-    addCategoriesToTree(stewardOrg, newClassification.categories);
+    const stewardOrg = await orgByName(newClassification.orgName);
+    /* istanbul ignore if */
+    if (!stewardOrg) {
+        callback(new Error('not an organization: ' + newClassification.orgName));
+        return;
+    }
+    addCategoriesToOrg(stewardOrg, newClassification.categories);
     stewardOrg.markModified('classifications');
     await stewardOrg.save();
     settings.selectedOrg = oldClassification.orgName;
     settings.selectedElements = oldClassification.categories;
     const query = buildElasticSearchQuery(user, settings);
-    async.parallel([
+    parallel([
         done => elasticsearch('cde', query, settings, handleError({}, result => {
             if (result && result.cdes && result.cdes.length > 0) {
                 const tinyIds = result.cdes.map(c => c.tinyId);
-                async.eachLimit(tinyIds, 100, async (tinyId, doneOne) => {
+                eachLimit(tinyIds, 100, async (tinyId, doneOne) => {
                     const de = await deByTinyId(tinyId);
+                    /* istanbul ignore if */
+                    if (!de) {
+                        callback(new Error('not a de: ' + tinyId));
+                        return;
+                    }
                     classifyItem(de, newClassification.orgName, newClassification.categories);
                     de.save(doneOne);
                 }, () => {
@@ -209,8 +248,13 @@ export async function reclassifyOrgClassification(user, oldClassification, newCl
         done => elasticsearch('form', query, settings, handleError({}, result => {
             if (result && result.forms && result.forms.length > 0) {
                 const tinyIds = result.forms.map(c => c.tinyId);
-                async.eachLimit(tinyIds, 100, async (tinyId, doneOne) => {
+                eachLimit(tinyIds, 100, async (tinyId, doneOne) => {
                     const form = await formByTinyId(tinyId);
+                    /* istanbul ignore if */
+                    if (!form) {
+                        callback(new Error('not a form: ' + tinyId));
+                        return;
+                    }
                     classifyItem(form, newClassification.orgName, newClassification.categories);
                     form.save(doneOne);
                 }, () => {
@@ -231,9 +275,7 @@ export async function reclassifyOrgClassification(user, oldClassification, newCl
 }
 
 export function renameClassifyElt(item: ItemDocument, orgName: string, categories: string[], newName: string): void {
-    if (!item.classification) {
-        item.classification = [];
-    }
+    item.classification = defaultArray(item.classification);
     const classification = find(item.classification, (o: Classification) => o.stewardOrg && o.stewardOrg.name === orgName);
     if (classification) {
         const leaf = findLeaf(classification, categories);
@@ -256,7 +298,7 @@ export function unclassifyElt(item: ItemDocument, orgName: string, categories: s
     }
 }
 
-export async function updateOrgClassification(orgName): Promise<any[]> {
+export async function updateOrgClassification(orgName: string): Promise<any[]> {
     const aggregate = [
         {$match: {archived: false, 'classification.stewardOrg.name': orgName}},
         {$unwind: '$classification'},
@@ -266,4 +308,8 @@ export async function updateOrgClassification(orgName): Promise<any[]> {
     const cdeClassifications: OrgClassification[] = await dataElementModel.aggregate(aggregate);
     const formClassifications: OrgClassification[] = await formModel.aggregate(aggregate);
     return mergeOrgClassifications(cdeClassifications, formClassifications);
+}
+
+function defaultArray<T>(arr?: T[]): T[] {
+    return arr || [];
 }

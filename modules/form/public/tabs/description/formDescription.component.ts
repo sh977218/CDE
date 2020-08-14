@@ -1,19 +1,17 @@
+import './formDescription.global.scss';
 import { HttpClient } from '@angular/common/http';
 import {
+    AfterViewInit,
     Component,
-    ElementRef,
-    EventEmitter,
+    ElementRef, EventEmitter,
     HostListener,
     Input,
-    Output,
-    OnInit,
-    AfterViewInit,
+    OnInit, Output,
     TemplateRef,
     ViewChild
 } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { TREE_ACTIONS, TreeComponent, TreeModel, TreeNode } from 'angular-tree-component';
-
+import { TREE_ACTIONS, TreeComponent, TreeModel, TreeNode } from '@circlon/angular-tree-component';
 import { Hotkey, HotkeysService } from 'angular2-hotkeys';
 import { convertFormToSection } from 'core/form/form';
 import _isEmpty from 'lodash/isEmpty';
@@ -21,119 +19,20 @@ import _noop from 'lodash/noop';
 import { DeCompletionService } from 'cde/public/components/completion/deCompletion.service';
 import { copySectionAnimation } from 'form/public/tabs/description/copySectionAnimation';
 import { FormService } from 'nativeRender/form.service';
+import { scrollTo, waitRendered } from 'non-core/browser';
+import { LocalStorageService } from 'non-core/localStorage.service';
 import { Cb } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm, FormElement, FormInForm, FormOrElement, FormSection } from 'shared/form/form.model';
 import { addFormIds, iterateFeSync } from 'shared/form/fe';
-import { scrollTo, waitRendered } from 'non-core/browser';
-import { LocalStorageService } from 'non-core/localStorage.service';
 
 @Component({
     selector: 'cde-form-description',
-    templateUrl: 'formDescription.component.html',
+    templateUrl: './formDescription.component.html',
     animations: [copySectionAnimation],
     providers: [DeCompletionService],
-    styles: [`
-        :host ::ng-deep .hover-bg {
-            background-color: lightblue;
-            border: 1px;
-            border-radius: 10px;
-        }
-        :host ::ng-deep .badge {
-            font-size: 100%;
-        }
-        :host ::ng-deep .panel {
-            margin-bottom: 1px;
-        }
-        :host ::ng-deep .tree-children {
-            padding-left: 0;
-        }
-        :host ::ng-deep .dragActive {
-            background-color: lightblue;
-        }
-        :host ::ng-deep .panel-badge-btn {
-            color: white;
-            background-color: #333;
-        }
-        :host ::ng-deep .badge.formViewSummaryLabel {
-            display: inline-flex;
-            margin-left: 4px;
-            margin-top: 2px;
-            white-space: normal;
-        }
-        :host ::ng-deep .node-content-wrapper:hover {
-            background: transparent;
-            box-shadow: inset 0 0 0;
-        }
-        :host ::ng-deep .is-dragging-over-disabled {
-            border: 1px dashed;
-            border-radius: 4px;
-            background: lightpink !important;
-        }
-        :host ::ng-deep .is-dragging-over {
-            border: 1px dashed;
-            border-radius: 4px;
-            background-color: lightgreen !important;
-        }
-        :host ::ng-deep .node-drop-slot {
-            height: 20px;
-            margin-bottom: 10px;
-        }
-        :host ::ng-deep .drag-active .node-drop-slot:not(.is-dragging-over) {
-            background-color: lightblue;
-        }
-        .panel-body-form,
-        .panel-body-form ::ng-deep .card-body {
-            background-color: rgba(0, 0, 0, 0.03);
-        }
-        .descriptionToolbox {
-            color: #9d9d9d;
-            background-color: #343a40;
-            position: fixed;
-            padding: 5px 5px 5px 20px;
-            top: ${NAVIGATION_HEIGHT}px;
-            border-bottom-left-radius: 50px;
-            right: 0;
-            -webkit-box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-            -moz-box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-            background-clip: padding-box;
-            z-index: 9;
-        }
-        .descriptionToolbox .btn.formDescriptionTool {
-            margin-left: 4px;
-            padding: 0;
-            touch-action: auto;
-            cursor: move;
-        }
-        .descriptionToolbox .btn.formDescriptionTool:hover {
-            background-color: #ddffee;
-        }
-        .descriptionToolbox .btn.formDescriptionTool:hover span:before {
-            content: ' Drag';
-            font-weight: 900;
-            line-height: initial;
-        }
-        .toolSection:before {
-            content: ' Section';
-        }
-        .toolQuestion:before {
-            content: ' Question';
-        }
-        .toolForm:before {
-            content: ' Form';
-        }
-        .toolCopySection:before {
-            content: ' Paste';
-        }
-        .toolbar-icon {
-            font-size: 20px;
-            height: 20px;
-            width: 20px;
-        }
-    `]
+    styleUrls: ['./formDescription.component.scss'],
 })
-
 export class FormDescriptionComponent implements OnInit, AfterViewInit {
     @Input() set elt(form: CdeForm) {
         this._elt = form;
@@ -148,10 +47,10 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     private _elt!: CdeForm;
     @Input() canEdit = false;
     @Output() eltChange = new EventEmitter<void>();
-    @ViewChild(TreeComponent, {static: false}) tree!: TreeComponent;
+    @ViewChild(TreeComponent) tree!: TreeComponent;
     @ViewChild('formSearchTmpl', {static: true}) formSearchTmpl!: TemplateRef<any>;
     @ViewChild('questionSearchTmpl', {static: true}) questionSearchTmpl!: TemplateRef<any>;
-    @ViewChild('descToolbox', {static: true}) descToolbox!: ElementRef;
+    @ViewChild('descToolbox') descToolbox!: ElementRef;
     addQuestionDialogRef?: MatDialogRef<any, any>;
     dragActive = false;
     formElementEditing: any = {};
@@ -222,7 +121,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     }
 
     @HostListener('window:scroll', ['$event']) scrollEvent() {
-        this.doIt();
+        this.scrollToolbar();
     }
 
     ngOnInit(): void {
@@ -239,7 +138,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     }
 
     ngAfterViewInit(): void {
-        this.doIt();
+        this.scrollToolbar();
     }
 
     addExpanded(fe: FormOrElement) {
@@ -292,13 +191,6 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         });
     }
 
-    doIt() {
-        if (this && this.descToolbox && this.descToolbox.nativeElement) {
-            this.descToolbox.nativeElement.style.top = (window.pageYOffset > NAVIGATION_HEIGHT ? 0
-                : (NAVIGATION_HEIGHT - window.pageYOffset)) + 'px';
-        }
-    }
-
     hasCopiedSection() {
         return this.localStorageService.getItem('sectionCopied');
     }
@@ -338,6 +230,13 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         this.addQuestionFromSearch(newCde);
         if (this.addQuestionDialogRef) {
             this.addQuestionDialogRef.close();
+        }
+    }
+
+    scrollToolbar() {
+        if (this?.descToolbox?.nativeElement) {
+            this.descToolbox.nativeElement.style.top = (window.pageYOffset > NAVIGATION_HEIGHT ? 0
+                : (NAVIGATION_HEIGHT - window.pageYOffset)) + 'px';
         }
     }
 

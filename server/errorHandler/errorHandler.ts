@@ -4,7 +4,7 @@ import { CastError } from 'mongoose';
 import { logError } from 'server/log/dbLogger';
 import { noDbLogger } from 'server/system/noDbLogger';
 import { AuthenticatedRequest } from 'server/user/authentication';
-import { Cb, Cb1, CbError, CbErrorObj, CbErrorObj1 } from 'shared/models.model';
+import { Cb, Cb1, CbError, CbErrorObj } from 'shared/models.model';
 
 type HandledError = CastError | Error;
 type AllErrors = HandledError | null | undefined;
@@ -18,18 +18,26 @@ export interface HandlerOptions {
     statusCode?: number;
 }
 
-export function handleConsoleError<T = undefined, U = undefined, V = undefined>(options?: HandlerOptions,
-                                                                                cb: Cb<T, U, V> = noop): CbErrorObj<AllErrors, T, U, V> {
-    return function errorHandler(err: AllErrors | undefined,
-                                 arg1: T | undefined = undefined,
-                                 arg2: U | undefined = undefined,
-                                 arg3: V | undefined = undefined) {
+export function handleConsoleError<T = void, U = void, V = void>(options?: HandlerOptions,
+                                                                 cb: Cb<T, U, V> = noop): CbErrorObj<AllErrors, T, U, V> {
+    return (err: AllErrors | undefined, arg1?: T, arg2?: U, arg3?: V) => {
         if (err) {
             noDbLogger.info('ERROR: ' + err);
         }
         cb(arg1, arg2, arg3);
     };
 }
+
+export function handleErr<T, U = void, V = void>(options?: HandlerOptions, cb: Cb<T, U, V> = noop): CbErrorObj<string, T, U, V> {
+    return function errorHandler(err: string | undefined, arg1?: T, arg2?: U, arg3?: V) {
+        if (err) {
+            respondError(new Error(err), options);
+            return;
+        }
+        cb(arg1, arg2, arg3);
+    };
+}
+
 
 export function handleError<T, U = void, V = void>(options?: HandlerOptions, cb: Cb<T, U, V> = noop): CbErrorObj<AllErrors, T, U, V> {
     return function errorHandler(err: AllErrors | undefined, arg1?: T, arg2?: U, arg3?: V) {
@@ -42,8 +50,8 @@ export function handleError<T, U = void, V = void>(options?: HandlerOptions, cb:
 }
 
 export function handleNotFound<T, U = void, V = void>(options?: HandlerOptions,
-                                                      cb: Cb1<T & {}, U, V> = noop): CbErrorObj1<AllErrors, T, U, V> {
-    return function errorHandler(err: AllErrors, arg1: T, arg2?: U, arg3?: V) {
+                                                      cb: Cb1<T, U, V> = noop): CbErrorObj<AllErrors, T, U, V> {
+    return function errorHandler(err: AllErrors, arg1?: T, arg2?: U, arg3?: V) {
         if (err) {
             respondError(err, options);
             return;
@@ -79,7 +87,7 @@ export function respondError(err: HandledError, options?: HandlerOptions) {
     const log: any = {
         message: options.message || err.message || err,
         stack: err.stack || new Error().stack,
-        details: options.details
+        details: options.details,
     };
     if (options.req) {
         log.request = {
@@ -87,20 +95,16 @@ export function respondError(err: HandledError, options?: HandlerOptions) {
             params: JSON.stringify(options.req.params),
             body: JSON.stringify(options.req.body),
             username: (options.req as AuthenticatedRequest).username,
-            ip: options.req.ip
+            ip: options.req.ip,
         };
     }
     logError(log);
 }
 
-export function splitError<T = undefined, U = undefined, V = undefined>(errCb: CbError<any, any, any>,
-                                                                        cb: Cb<T, U, V> = noop): CbErrorObj<AllErrors, T, U, V> {
-    return function errorHandler(err: AllErrors | undefined,
-                                 arg1: T | undefined = undefined,
-                                 arg2: U | undefined = undefined,
-                                 arg3: V | undefined = undefined) {
+export function splitError<T = void, U = void, V = void>(errCb: CbError<T, U, V>, cb: Cb<T, U, V> = noop): CbErrorObj<AllErrors, T, U, V> {
+    return function errorHandler(err: AllErrors | undefined, arg1?: T, arg2?: U, arg3?: V) {
         if (err) {
-            errCb(err);
+            errCb(err, arg1, arg2, arg3);
             return;
         }
         cb(arg1, arg2, arg3);

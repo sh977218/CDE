@@ -4,7 +4,7 @@ import {
     canApproveCommentMiddleware, isOrgAuthorityMiddleware, loggedInMiddleware, nocacheMiddleware
 } from 'server/system/authorization';
 import {
-    byId as userById, byUsername, save as userSave, updateUser, userByName, UserFull, usersByUsername
+    byId as userById, byUsername, save as userSave, updateUser, userByName, UserDocument, UserFull, usersByUsername
 } from 'server/user/userDb';
 import { version } from 'server/version';
 import { uniq } from 'lodash';
@@ -43,8 +43,7 @@ export function module(roleConfig: { manage: RequestHandler, search: RequestHand
 
     if (!config.proxy) {
         router.post('/site-version', (req, res) => {
-            // @ts-ignore
-            version = version + '.';
+            (version as any) = version + '.';
             res.send();
         });
     }
@@ -57,17 +56,19 @@ export function module(roleConfig: { manage: RequestHandler, search: RequestHand
     router.post('/tasks/:clientVersion/read', loggedInMiddleware, async (req, res) => {
         // assume all comments for an elt have been read
         let updated = false;
-        req.user.commentNotifications
+        (req.user as UserFull).commentNotifications
             .filter(t => t.eltTinyId === req.body.id && t.eltModule === req.body.idType)
             .forEach(t => updated = t.read = true);
         if (!updated) {
-            const tasks = await taskAggregator(req.user, req.params.clientVersion);
-            res.send(tasks);
+            res.send(await taskAggregator(req.user, req.params.clientVersion));
         } else {
             await updateUser(req.user, {commentNotifications: req.user.commentNotifications});
             const user = await userById(req.user._id);
-            const tasks = taskAggregator(user, req.params.clientVersion);
-            res.send(tasks);
+            if (!user) {
+                res.status(500).send();
+                return;
+            }
+            res.send(await taskAggregator(user, req.params.clientVersion));
         }
     });
 
@@ -87,21 +88,34 @@ export function module(roleConfig: { manage: RequestHandler, search: RequestHand
         }
     });
 
-
     router.post('/updateUserRoles', isOrgAuthorityMiddleware, async (req, res) => {
         const foundUser = await userByName(req.body.username);
+        if (!foundUser) {
+            res.status(400).send();
+            return;
+        }
         foundUser.roles = req.body.roles;
         await foundUser.save();
         res.send();
     });
+
     router.post('/updateUserAvatar', isOrgAuthorityMiddleware, async (req, res) => {
         const foundUser = await userByName(req.body.username);
+        if (!foundUser) {
+            res.status(400).send();
+            return;
+        }
         foundUser.avatarUrl = req.body.avatarUrl;
         await foundUser.save();
         res.send();
     });
+
     router.post('/addCommentAuthor', canApproveCommentMiddleware, async (req, res) => {
         const foundUser = await userByName(req.body.username);
+        if (!foundUser) {
+            res.status(400).send();
+            return;
+        }
         foundUser.roles.push('CommentAuthor');
         uniq(foundUser.roles);
         await foundUser.save();

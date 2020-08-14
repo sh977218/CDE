@@ -7,7 +7,6 @@ import { MyBoardsService } from 'board/public/myBoards.service';
 import { Board } from 'shared/models.model';
 
 @Component({
-    selector: 'cde-my-boards',
     templateUrl: './myBoards.component.html'
 })
 export class MyBoardsComponent {

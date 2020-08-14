@@ -1,9 +1,8 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
 import { UserService } from '_app/user.service';
 import { DeletedNodeEvent } from 'adminItem/public/components/classification/classificationView.component';
-import { ClassifyItemModalComponent } from 'adminItem/public/components/classification/classifyItemModal.component';
+import { ClassifyItemComponent } from 'adminItem/public/components/classification/classifyItem.component';
 import { AlertService } from 'alert/alert.service';
 import { ClassificationService } from 'non-core/classification.service';
 import { IsAllowedService } from 'non-core/isAllowed.service';
@@ -17,8 +16,7 @@ import { Cb, ClassificationClassified } from 'shared/models.model';
 export class CdeClassificationComponent {
     @Input() elt!: DataElement;
     @Output() eltChange = new EventEmitter<DataElement>();
-    @ViewChild('classifyItemComponent', {static: true}) classifyItemComponent!: ClassifyItemModalComponent;
-    classifyItemModalRef!: MatDialogRef<TemplateRef<any>>;
+    @ViewChild('classifyItemComponent', {static: true}) classifyItemComponent!: ClassifyItemComponent;
 
     constructor(
         private alert: AlertService,
@@ -36,7 +34,6 @@ export class CdeClassificationComponent {
             event.classificationArray,
             '/server/classification/addCdeClassification/',
             (err?: HttpErrorResponse) => {
-                this.classifyItemModalRef.close();
                 if (err) {
                     if (err.status === 409) {
                         this.alert.addAlert('danger', 'Classification Already Exists');
@@ -51,7 +48,7 @@ export class CdeClassificationComponent {
     }
 
     openClassifyItemModal() {
-        this.classifyItemModalRef = this.classifyItemComponent.openModal();
+        this.classifyItemComponent.openModal();
     }
 
     reloadElt(cb: Cb) {

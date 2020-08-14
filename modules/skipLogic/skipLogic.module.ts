@@ -29,10 +29,6 @@ import { MatButtonModule } from '@angular/material/button';
         SkipLogicAutocompleteComponent,
         SkipLogicComponent
     ],
-    entryComponents: [
-        SkipLogicAutocompleteComponent,
-        SkipLogicComponent
-    ],
     exports: [SkipLogicComponent],
     providers: [SkipLogicValidateService],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]

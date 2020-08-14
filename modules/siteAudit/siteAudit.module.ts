@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CompareModule } from 'compare/compare.module';
-import { NgxTextDiffModule } from 'cde-text-diff';
+import { NgxTextDiffModule } from 'ngx-text-diff';
 import { CamelCaseToHumanPipe } from 'non-core/camelCaseToHuman.pipe';
 import { ActiveBansComponent } from 'siteAudit/activeBans/activeBans.component';
 import { AppLogComponent } from 'siteAudit/appLogs/appLog.component';
@@ -31,7 +31,6 @@ const appRoutes: Routes = [
 @NgModule({
     imports: [
         CommonModule,
-        NgxTextDiffModule,
         FormsModule,
         NgbModule,
         RouterModule.forChild(appRoutes),
@@ -41,6 +40,7 @@ const appRoutes: Routes = [
         MatIconModule,
         MatPaginatorModule,
         MatTabsModule,
+        NgxTextDiffModule,
         // non-core
         // internal
         CompareModule
@@ -59,8 +59,9 @@ const appRoutes: Routes = [
         ServerErrorsComponent,
         SiteAuditComponent,
     ],
-    entryComponents: [],
-    exports: [],
+    exports: [
+        RouterModule
+    ],
     providers: [
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]

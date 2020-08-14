@@ -1,13 +1,13 @@
 import { Request, RequestHandler, Response, NextFunction } from 'express';
-import { Board } from 'server/board/boardDb';
 import { handleNotFound } from 'server/errorHandler/errorHandler';
 import {
     canComment, canEditCuratedItem, hasRole, isOrgAdmin, isOrgAuthority, isOrgCurator, isSiteAdmin
 } from 'shared/system/authorizationShared';
-import { Item, User } from 'shared/models.model';
+import { Board, Item, User } from 'shared/models.model';
 
 // --------------------------------------------------
 // Middleware
+// --------------------------------------------------
 
 export function nocacheMiddleware(req: Request, res: Response, next: NextFunction) {
     if (req && req.headers['user-agent']) {
@@ -42,7 +42,7 @@ declare global {
     }
 }
 
-export const canEditMiddleware = db => (req: RequestWithItem, res: Response, next: NextFunction) => {
+export const canEditMiddleware = (db: any) => (req: RequestWithItem, res: Response, next: NextFunction) => {
     loggedInMiddleware(req, res, () => {
         db.byExisting(req.body, handleNotFound({req, res}, (item: Item) => {
             if (!canEditCuratedItem(req.user, item)) {
@@ -56,7 +56,7 @@ export const canEditMiddleware = db => (req: RequestWithItem, res: Response, nex
     });
 };
 
-export const canEditByTinyIdMiddleware = db => (req: RequestWithItem, res: Response, next: NextFunction) => {
+export const canEditByTinyIdMiddleware = (db: any) => (req: RequestWithItem, res: Response, next: NextFunction) => {
     if (!req.params.tinyId) {
         res.status(400).send();
         return;

@@ -1,5 +1,5 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { forwardRef, Inject, Injectable } from '@angular/core';
 import { UserService } from '_app/user.service';
 
 import { DataElement } from 'shared/de/dataElement.model';
@@ -23,9 +23,11 @@ export class ElasticService {
     searchSettings!: UserSearchSettings;
     searchToken = 'id' + Math.random().toString(16).slice(2);
 
-    constructor(public http: HttpClient,
-                private localStorageService: LocalStorageService,
-                private userService: UserService) {
+    constructor(
+        @Inject(forwardRef(() => HttpClient)) public http: HttpClient,
+        @Inject(forwardRef(() => LocalStorageService)) private localStorageService: LocalStorageService,
+        @Inject(forwardRef(() => UserService)) private userService: UserService,
+    ) {
         this.loadSearchSettings();
     }
 

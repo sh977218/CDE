@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { forwardRef, Inject, Injectable } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertService } from 'alert/alert.service';
 import { UserService } from '_app/user.service';
@@ -10,11 +10,11 @@ export class LoginService {
     lastRoute: any;
 
     constructor(
-        private http: HttpClient,
-        private route: ActivatedRoute,
-        private router: Router,
-        private userService: UserService,
-        private alert: AlertService
+        @Inject(forwardRef(() => ActivatedRoute)) private route: ActivatedRoute,
+        @Inject(forwardRef(() => AlertService)) private alert: AlertService,
+        @Inject(forwardRef(() => HttpClient)) private http: HttpClient,
+        @Inject(forwardRef(() => Router)) private router: Router,
+        @Inject(forwardRef(() => UserService)) private userService: UserService,
     ) {}
 
     getPreviousRoute() {

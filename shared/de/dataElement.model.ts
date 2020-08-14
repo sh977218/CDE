@@ -240,7 +240,7 @@ export function valueDomain(): Partial<ValueDomain> {
 }
 
 type ErrorMessage = {
-    allValid: true
+    allValid: true;
 } | {
     allValid: false;
     message: string;

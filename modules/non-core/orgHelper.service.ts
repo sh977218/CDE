@@ -1,10 +1,11 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { forwardRef, Inject, Injectable } from '@angular/core';
 import _noop from 'lodash/noop';
-
 import { UserService } from '_app/user.service';
-import { CbErr, Elt, Organization, StatusValidationRules } from 'shared/models.model';
+import { CbErr, Elt } from 'shared/models.model';
 import { isOrgCurator } from 'shared/system/authorizationShared';
+import { Organization, StatusValidationRules } from 'shared/system/organization';
+import { validateOrganization } from 'shared/system/organizationShared';
 
 interface OrgDetailedInfo {
     [org: string]: Organization;
@@ -16,8 +17,8 @@ export class OrgHelperService {
     private promise!: Promise<OrgDetailedInfo>;
 
     constructor(
-        private http: HttpClient,
-        private userService: UserService, // only used for synchronous showWorkingGroup
+        @Inject(forwardRef(() => HttpClient)) private http: HttpClient,
+        @Inject(forwardRef(() => UserService)) private userService: UserService, // only used for synchronous showWorkingGroup
     ) {
         this.reload();
     }
@@ -55,7 +56,7 @@ export class OrgHelperService {
     }
 
     getStatusValidationRules(orgName: string): StatusValidationRules[] {
-        return this.orgsDetailedInfo[orgName] ? this.orgsDetailedInfo[orgName].cdeStatusValidationRules || [] : [];
+        return this.orgsDetailedInfo[orgName] ? this.orgsDetailedInfo[orgName].cdeStatusValidationRules : [];
     }
 
     getUsedBy(elt: Elt) {
@@ -72,7 +73,7 @@ export class OrgHelperService {
                 this.orgsDetailedInfo = {};
                 response.forEach(org => {
                     if (org) {
-                        Organization.validate(org);
+                        validateOrganization(org);
                         this.orgsDetailedInfo[org.name] = org;
                     }
                 });

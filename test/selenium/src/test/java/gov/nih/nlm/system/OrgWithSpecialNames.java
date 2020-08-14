@@ -17,9 +17,7 @@ public class OrgWithSpecialNames extends NlmCdeBaseTest {
         clickElement(By.id("openClassificationModalBtn"));
         textPresent("By recently added");
         new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText("org / or Org");
-        textPresent("Sub / Classification");
-        clickElement(By.xpath("//button[@id='Sub / Classification-classifyBtn']"));
-        textPresent("Classification added");
+        classifySubmit(new String[]{"Sub / Classification"}, "Classification added");
     }
 
 }

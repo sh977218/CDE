@@ -85,7 +85,6 @@ export class NativeQuestionComponent implements OnInit {
     ngOnInit() {
         if (this.formElement.question.datatype === 'Dynamic Code List') {
             const q = this.formElement.question;
-            // @ts-ignore
             this.loadVsacCode((q.datatypeDynamicCodeList.code || ''), '');
             this.vsacControl.valueChanges
                 .pipe(
@@ -93,7 +92,6 @@ export class NativeQuestionComponent implements OnInit {
                     distinctUntilChanged()
                 )
                 .subscribe(value => {
-                    // @ts-ignore
                     this.loadVsacCode((q.datatypeDynamicCodeList.code || ''), value);
                 });
         }

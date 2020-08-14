@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, Injectable } from '@angular/core';
-import { Params, Router } from '@angular/router';
+import { Component, forwardRef, Inject, Injectable } from '@angular/core';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { ApprovalService } from '_app/notifications/approval.service';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
@@ -43,13 +43,14 @@ function tasksEqualAndState(l: Task, r: Task): {state?: number} | undefined {
 
 @Injectable()
 export class NotificationService {
-
-    constructor(private alert: AlertService,
-                private approvalService: ApprovalService,
-                private http: HttpClient,
-                private dialog: MatDialog,
-                private router: Router,
-                private userService: UserService) {
+    constructor(
+        @Inject(forwardRef(() => AlertService)) private alert: AlertService,
+        @Inject(forwardRef(() => ApprovalService)) private approvalService: ApprovalService,
+        @Inject(forwardRef(() => HttpClient)) private http: HttpClient,
+        @Inject(forwardRef(() => MatDialog)) private dialog: MatDialog,
+        @Inject(forwardRef(() => Router)) private router: Router,
+        @Inject(forwardRef(() => UserService)) private userService: UserService,
+    ) {
         this.userService.subscribe(this.funcReload);
     }
     drawerMouseOver = false;
@@ -72,7 +73,7 @@ export class NotificationService {
         this.tasks.length = 0;
     }
 
-    createTask(tasks: Task[], name?: string) {
+    createTask(tasks: Task[], name?: string): NotificationTask {
         const abstain = _noop;
         let approve = _noop;
         let reject = _noop;
@@ -246,14 +247,13 @@ export class NotificationService {
             });
         for (const group in groups) {
             if (groups.hasOwnProperty(group) && groups[group] > 1) {
-                let eltTasks;
+                let eltTasks: NotificationTask[];
                 const [eltModule, eltTinyId] = group.split(' - ');
                 [eltTasks, grouped] = partition(grouped, task => task.tasks[0].id === eltTinyId
                     && task.tasks[0].source === 'user' && task.tasks[0].type === 'comment'
                     && task.tasks[0].idType === eltModule);
                 grouped.push(
                     this.createTask(
-                        // @ts-ignore
                         eltTasks.reduce<Task[]>((acc, t) => acc.concat(t.tasks), []),
                         groups[group] + ' comments'
                     )
@@ -295,7 +295,7 @@ export class NotificationService {
                 if (task.tasks[0].type === 'comment' && task.unread) {
                     task.unread = false;
                     this.reloading = true;
-                    this.http.post<NotificationTask[]>('/server/user/tasks/' + (window as any).version + '/read',
+                    this.http.post<Task[]>('/server/user/tasks/' + (window as any).version + '/read',
                         {id: task.tasks[0].id, idType: task.tasks[0].idType})
                         .subscribe(this.funcUpdateTaskMessages, this.funcReloadFinished, this.funcReloadFinished);
                 }
@@ -308,7 +308,7 @@ export class NotificationService {
     reload() {
         if (!this.reloading) {
             this.reloading = true;
-            this.http.get<NotificationTask[]>('/server/user/tasks/' + (window as any).version)
+            this.http.get<Task[]>('/server/user/tasks/' + (window as any).version)
                 .subscribe(this.funcUpdateTaskMessages, this.funcReloadFinished, this.funcReloadFinished);
         }
     }
@@ -317,11 +317,10 @@ export class NotificationService {
         this.reloading = false;
     }
 
-    updateTaskMessages(serverTasks: NotificationTask[]) {
-        if (serverTasks && serverTasks.reduce) {
+    updateTaskMessages(serverTasks?: Task[]) {
+        if (Array.isArray(serverTasks)) {
             this.tasks = NotificationService.sortTasks(
                 this.groupTasks(
-                    // @ts-ignore
                     serverTasks.reduce(this.funcMergeTaskMessages, [])
                 )
             );
@@ -348,8 +347,8 @@ export class NotificationService {
             Do you want to proceed?
         </div>
         <div mat-dialog-actions>
-            <button mat-raised-button color="accent" mat-dialog-close>No</button>
-            <button id="authorizeUserOK" mat-raised-button mat-dialog-close="Authorize">Yes</button>
+            <button mat-raised-button mat-dialog-close>No</button>
+            <button mat-raised-button color="accent" mat-dialog-close="Authorize">Yes</button>
         </div>
     `,
 })

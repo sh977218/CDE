@@ -1,4 +1,4 @@
-import * as async from 'async';
+import { series } from 'async';
 import { config } from 'server/system/parseConfig';
 import { dataElementModel } from 'server/cde/mongo-cde';
 import { triggerPushMsg } from 'server/notification/pushNotificationSvc';
@@ -75,7 +75,7 @@ export function getStatus(getStatusDone) {
         if (statusReport.elastic.up) {
             const tempIndices: any[] = [];
             const condition = {archived: false};
-            async.series([
+            series([
                 done => {
                     dataElementModel.countDocuments(condition, (err, deCount) => {
                         esInit.indices[0].totalCount = deCount;

@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import {
+    Component,
     ComponentFactoryResolver, ComponentRef,
     EventEmitter,
     HostListener,
@@ -10,6 +11,9 @@ import {
     ViewChild,
     ViewContainerRef
 } from '@angular/core';
+import { MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/material/autocomplete';
+import { MatDialog } from '@angular/material/dialog';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute, Event, NavigationStart, Params, Router } from '@angular/router';
 import { BackForwardService } from '_app/backForward.service';
 import { ElasticService } from '_app/elastic.service';
@@ -28,15 +32,13 @@ import { uriViewBase } from 'shared/item';
 import {
     CbErr, CurationStatus, ElasticQueryResponseAggregation, ElasticQueryResponseAggregationBucket,
     ElasticQueryResponseHit, ItemElastic, ModuleItem,
-    Organization, SearchResponseAggregationDe, SearchResponseAggregationForm, SearchResponseAggregationItem,
+    SearchResponseAggregationDe, SearchResponseAggregationForm, SearchResponseAggregationItem,
 } from 'shared/models.model';
 import { SearchSettings } from 'shared/search/search.model';
 import { hasRole, isSiteAdmin } from 'shared/system/authorizationShared';
+import { Organization } from 'shared/system/organization';
 import { orderedList, statusList } from 'shared/system/regStatusShared';
 import { ownKeys } from 'shared/user';
-import { MatDialog } from '@angular/material/dialog';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
-import { MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 
 type NamedCounts = { name: string, count: number }[];
 
@@ -140,6 +142,9 @@ export const searchStyles = `
     }
 `;
 
+@Component({
+    template: ''
+})
 export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     @Input() searchSettingsInput?: SearchSettings;
     @ViewChild('orgDetailsModal', {static: true}) orgDetailsModal!: TemplateRef<any>;
@@ -839,12 +844,14 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                             aggregations.orgs.buckets.forEach((orgBucket: ElasticQueryResponseAggregationBucket) => {
                                 if (orgsDetailedInfo[orgBucket.key]) {
                                     orgs.push({
+                                        classifications: [],
                                         name: orgBucket.key,
                                         longName: orgsDetailedInfo[orgBucket.key].longName,
                                         count: orgBucket.doc_count,
                                         uri: orgsDetailedInfo[orgBucket.key].uri,
                                         extraInfo: orgsDetailedInfo[orgBucket.key].extraInfo,
-                                        htmlOverview: orgsDetailedInfo[orgBucket.key].htmlOverview
+                                        htmlOverview: orgsDetailedInfo[orgBucket.key].htmlOverview,
+                                        cdeStatusValidationRules: []
                                     });
                                 }
                             });

@@ -13,8 +13,6 @@ const appRoutes: Routes = [
     declarations: [
         SwaggerComponent,
     ],
-    entryComponents: [
-    ],
     exports: [
     ],
     providers: [

@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { forwardRef, Inject, Injectable } from '@angular/core';
 import { NotificationTask } from '_app/notifications/notification.service';
 import { AlertService } from 'alert/alert.service';
 import { Cb } from 'shared/models.model';
@@ -11,8 +11,10 @@ export class ApprovalService {
     funcCommentApprove = this.commentApprove.bind(this);
     funcCommentDecline = this.commentDecline.bind(this);
 
-    constructor(private alert: AlertService,
-                private http: HttpClient) {
+    constructor(
+        @Inject(forwardRef(() => AlertService)) private alert: AlertService,
+        @Inject(forwardRef(() => HttpClient)) private http: HttpClient,
+    ) {
     }
 
     attachmentApprove(t: NotificationTask, cb: Cb) {

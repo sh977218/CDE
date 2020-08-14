@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, forwardRef, Inject } from '@angular/core';
 import { NotificationService } from '_app/notifications/notification.service';
 import { interruptEvent } from 'non-core/browser';
 
@@ -9,5 +9,7 @@ import { interruptEvent } from 'non-core/browser';
 export class NotificationDrawerComponent {
     interruptEvent = interruptEvent;
 
-    constructor(public notificationService: NotificationService) {}
+    constructor(
+        @Inject(forwardRef(() => NotificationService)) public notificationService: NotificationService,
+    ) {}
 }

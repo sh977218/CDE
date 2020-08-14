@@ -11,8 +11,8 @@ import { MatTab } from '@angular/material/tabs';
     templateUrl: './siteAudit.component.html'
 })
 export class SiteAuditComponent implements OnInit {
-    @ViewChild('serverErrorTab', {static: false}) serverErrorTab!: MatTab;
-    @ViewChild('clientErrorTab', {static: false}) clientErrorTab!: MatTab;
+    @ViewChild('serverErrorTab') serverErrorTab!: MatTab;
+    @ViewChild('clientErrorTab') clientErrorTab!: MatTab;
     isAdmin = false;
     selectedTab = new FormControl(0);
 

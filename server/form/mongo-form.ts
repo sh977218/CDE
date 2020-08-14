@@ -4,6 +4,7 @@ import { Document, Model } from 'mongoose';
 import { resolve } from 'path';
 import { EltLogDocument } from 'server/cde/mongo-cde';
 import { splitError } from 'server/errorHandler/errorHandler';
+import * as elasticForm from 'server/form/elastic';
 import { updateOrInsert } from 'server/form/elastic';
 import { auditSchema, draftSchema, formSchema, formSourceSchema } from 'server/form/schemas';
 import { establishConnection } from 'server/system/connections';
@@ -12,10 +13,11 @@ import { attachables, auditGetLog, auditModifications, formatElt, generateTinyId
 import { config } from 'server/system/parseConfig';
 import { CdeForm, CdeFormElastic } from 'shared/form/form.model';
 import { CbError, CbError1, User } from 'shared/models.model';
+import { NextFunction } from 'express-serve-static-core';
 
 export const type = 'form';
 export const name = 'forms';
-export const elastic = require('../../server/form/elastic');
+export const elastic = elasticForm;
 
 export type CdeFormDocument = Document & CdeForm;
 export type CdeFormDraft = CdeForm;
@@ -41,8 +43,8 @@ try {
     process.exit(1);
 }
 
-function preSaveUsesThisForSomeReason(next) {
-    const elt = this as CdeFormDocument;
+function preSaveUsesThisForSomeReason(this: CdeFormDocument, next: NextFunction) {
+    const elt = this;
 
     if (elt.archived) {
         return next();
@@ -109,12 +111,12 @@ export function byTinyIdList(tinyIdList: string[], cb: CbError<CdeFormElastic[]>
         });
 }
 
-export const byTinyId = (tinyId: string, cb?: CbError<CdeFormDocument>) => formModel.findOne({
+export const byTinyId = (tinyId: string, cb?: CbError<CdeFormDocument | null>) => formModel.findOne({
     tinyId,
     archived: false
 }).exec(cb);
 
-export function byTinyIdVersion(tinyId: string, version: string | undefined, cb: CbError<CdeFormDocument>) {
+export function byTinyIdVersion(tinyId: string, version: string | undefined, cb: CbError<CdeFormDocument | null>) {
     if (version) {
         byTinyIdAndVersion(tinyId, version, cb);
     } else {
@@ -157,7 +159,7 @@ export function draftSave(elt: CdeForm, user: User, cb: CbError<CdeFormDocument>
             return;
         }
         if (doc.__v !== elt.__v) {
-            cb();
+            cb(null);
             return;
         }
         const version = elt.__v;

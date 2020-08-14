@@ -59,8 +59,7 @@ function doSyncWithMesh(allMappings, callback: ErrorCallback = () => {}) {
     });
 
     function scrollThrough(scrollId, s, cb) {
-        // @ts-ignore
-        esClient.scroll({scrollId, scroll: '1m'}, (err, response) => {
+        esClient.scroll({scrollId, scroll: '1m'} as any, (err, response) => {
             if (err) {
                 lock = false;
                 errorLogger.error('Error: Elastic Search Scroll Access Error',

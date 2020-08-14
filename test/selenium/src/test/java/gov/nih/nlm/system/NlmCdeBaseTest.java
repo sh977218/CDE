@@ -5,11 +5,12 @@ import io.restassured.http.Cookie;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeOptions;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
@@ -78,9 +79,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         MutableCapabilities caps;
         System.out.println("Starting " + b.trim());
         if ("firefox".equals(b)) {
-            DesiredCapabilities firefoxOptions = DesiredCapabilities.firefox();
-            firefoxOptions.setBrowserName(b);
-            caps = firefoxOptions;
+            caps = new FirefoxOptions();
         } else if ("chrome".equals(b)) {
             ChromeOptions chromeOptions = new ChromeOptions();
             if (u != null) chromeOptions.addArguments("--user-agent=googleBot");
@@ -94,13 +93,9 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
 
             caps = chromeOptions;
         } else if ("ie".equals(b)) {
-            DesiredCapabilities ieOptions = DesiredCapabilities.internetExplorer();
-            ieOptions.setBrowserName(b);
-            caps = ieOptions;
+            caps = new EdgeOptions();
         } else {
-            DesiredCapabilities otherOptions = DesiredCapabilities.chrome();
-            otherOptions.setBrowserName(b);
-            caps = otherOptions;
+            caps = new ChromeOptions();
         }
 
         LoggingPreferences loggingPreferences = new LoggingPreferences();
@@ -263,21 +258,21 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void addIdSource(String source, String deLink, String formLink) {
-        findElement(By.xpath("//input[@placeholder = 'New Id:']")).sendKeys(source);
+        findElement(By.xpath("//input[@data-placeholder = 'New Id:']")).sendKeys(source);
         clickElement(By.xpath("//button[contains(., 'Add')]"));
-        findElement(By.xpath("//tr[td[contains(., '" + source + "')]]//input[contains(@placeholder, 'Data Element Link')]")).sendKeys(deLink);
-        clickElement(By.xpath("//tr[td[contains(., '" + source + "')]]//input[contains(@placeholder, 'Form Link')]")); // save
+        findElement(By.xpath("//tr[td[contains(., '" + source + "')]]//input[contains(@data-placeholder, 'Data Element Link')]")).sendKeys(deLink);
+        clickElement(By.xpath("//tr[td[contains(., '" + source + "')]]//input[contains(@data-placeholder, 'Form Link')]")); // save
         hangon(2); // wait for save refresh
-        findElement(By.xpath("//tr[td[contains(., '" + source + "')]]//input[contains(@placeholder, 'Form Link')]")).sendKeys(formLink);
-        clickElement(By.xpath("//tr[td[contains(., '" + source + "')]]//input[contains(@placeholder, 'Version')]")); // save
+        findElement(By.xpath("//tr[td[contains(., '" + source + "')]]//input[contains(@data-placeholder, 'Form Link')]")).sendKeys(formLink);
+        clickElement(By.xpath("//tr[td[contains(., '" + source + "')]]//input[contains(@data-placeholder, 'Version')]")); // save
         hangon(2); // wait for save refresh
         textPresent(source);
         Assert.assertEquals(
-                findElement(By.xpath("//tr[td[contains(., '" + source + "')]]//input[contains(@placeholder, 'Data Element Link')]")).getAttribute("value"),
+                findElement(By.xpath("//tr[td[contains(., '" + source + "')]]//input[contains(@data-placeholder, 'Data Element Link')]")).getAttribute("value"),
                 deLink
         );
         Assert.assertEquals(
-                findElement(By.xpath("//tr[td[contains(., '" + source + "')]]//input[contains(@placeholder, 'Form Link')]")).getAttribute("value"),
+                findElement(By.xpath("//tr[td[contains(., '" + source + "')]]//input[contains(@data-placeholder, 'Form Link')]")).getAttribute("value"),
                 formLink
         );
     }
@@ -1329,11 +1324,10 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     protected void gotoMyBoards() {
         clickElement(By.id("boardsMenu"));
         textPresent("My Boards");
-        clickElement(By.id("myBoardsLink"));
+        clickElement(By.xpath("//a[text()='My Boards']"));
         textPresent("Add Board");
-        hangon(2);
+        hangon(2); // wait for setTimeout
     }
-
 
     /**
      * This method is used to remove identifier for cde and form.
@@ -1421,7 +1415,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         for (int i = 0; i < classificationArray.length; i++)
             recentlyClassificationString = recentlyClassificationString + " / " + classificationArray[i];
         textPresent(recentlyClassificationString, By.id("recentlyClassification_0"));
-        clickElement(By.id("cancelNewClassifyItemBtn"));
+        clickElement(By.xpath("//button[contains(.,'Close')]"));
     }
 
     protected void addClassificationByTree(String org, String[] classificationArray) {
@@ -1433,22 +1427,32 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
 
     }
 
+    protected void classifyToggle(String[] names) {
+        String xmlStr = "";
+        for (int i = 0; i < names.length; i++)
+            xmlStr += "//tree-node[contains(.,'" + names[i] + "')]";
+        clickElement(By.xpath(xmlStr + "//*[contains(@class,'toggle-children-wrapper')]"));
+    }
+
+    protected void classifySubmit(String[] classificationArray, String alertText) {
+        String xmlStr = "";
+        for (int i = 0; i < classificationArray.length; i++)
+            xmlStr += "//tree-node[contains(.,'" + classificationArray[i] + "')]";
+        clickElement(By.xpath(xmlStr + "//button[contains(.,'Classify')]"));
+        if (alertText != null) {
+            checkAlert(alertText);
+        }
+    }
+
     protected void addClassificationByTree(String org, String[] classificationArray, String alertText) {
         clickElement(By.id("openClassificationModalBtn"));
         textPresent("By recently added");
 
         new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(org);
-        textPresent(classificationArray[0]);
-        String expanderStr = "";
         for (int i = 0; i < classificationArray.length - 1; i++) {
-            expanderStr = expanderStr + classificationArray[i];
-            clickElement(By.xpath("//*[@id='" + expanderStr + "-expander']"));
-            expanderStr += ",";
+            classifyToggle(Arrays.copyOfRange(classificationArray, 0, i + 1));
         }
-        clickElement(By.xpath("//*[@id='" + expanderStr + classificationArray[classificationArray.length - 1] + "-classifyBtn']"));
-        if (alertText != null) {
-            checkAlert(alertText);
-        }
+        classifySubmit(classificationArray, alertText);
         for (int i = 1; i < classificationArray.length; i++)
             textPresent(classificationArray[i], By.xpath("//*[@id='classificationOrg-" + org + "']"));
     }
@@ -1458,17 +1462,10 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         textPresent("By recently added");
 
         new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(org);
-        textPresent(classificationArray[0]);
-        String expanderStr = "";
         for (int i = 0; i < classificationArray.length - 1; i++) {
-            expanderStr = expanderStr + classificationArray[i];
-            clickElement(By.xpath("//*[@id='" + expanderStr + "-expander']"));
-            expanderStr += ",";
+            classifyToggle(Arrays.copyOfRange(classificationArray, 0, i + 1));
         }
-        clickElement(By.xpath("//*[@id='" + expanderStr + classificationArray[classificationArray.length - 1] + "-classifyBtn']"));
-        if (alertText != null) {
-            checkAlert(alertText);
-        }
+        classifySubmit(classificationArray, alertText);
     }
 
     protected void addExistingClassification(String org, String[] classificationArray) {
@@ -1476,15 +1473,10 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         textPresent("By recently added");
 
         new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(org);
-        textPresent(classificationArray[0]);
-        String expanderStr = "";
         for (int i = 0; i < classificationArray.length - 1; i++) {
-            expanderStr = expanderStr + classificationArray[i];
-            clickElement(By.xpath("//*[@id='" + expanderStr + "-expander']"));
-            expanderStr += ",";
+            classifyToggle(Arrays.copyOfRange(classificationArray, 0, i + 1));
         }
-        clickElement(By.xpath("//*[@id='" + expanderStr + classificationArray[classificationArray.length - 1] + "-classifyBtn']"));
-        checkAlert("Classification Already Exists");
+        classifySubmit(classificationArray, "Classification Already Exists");
     }
 
 
@@ -1831,6 +1823,17 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         if (message.length() >= 60) message = message.substring(0, 59).trim();
         clickElement(By.xpath("//*[contains(@class,'taskItem') and contains(.,'" + message
                 + "')]//button[contains(@class,'mat-primary')]"));
+        textPresent("Approved");
+    }
+
+    protected void authorizeComment(String adminUsername, String adminPassword, String username, String message) {
+        mustBeLoggedInAs(adminUsername, adminPassword);
+        findElement(By.cssSelector("[data-id = 'notifications'] .mat-badge-content"));
+        clickElement(By.cssSelector("[data-id = 'notifications']"));
+        if (message.length() >= 60) message = message.substring(0, 59).trim();
+        clickElement(By.xpath("//*[contains(@class,'taskItem') and contains(.,'" + message
+                + "')]//button[contains(.,'Authorize')]"));
+        clickElement(By.xpath("//button[contains(.,'Yes')]"));
         textPresent("Approved");
     }
 

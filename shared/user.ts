@@ -19,7 +19,7 @@ export function ownKeys(obj?: any): string[] {
     return obj ? Object.keys(obj).filter(k => obj.hasOwnProperty(k)) : [];
 }
 
-export function usersToNotify(type: NotificationSettingsType, medium: NotificationSettingsMediaType, users: User[]): User[] {
+export function usersToNotify<T extends User>(type: NotificationSettingsType, medium: NotificationSettingsMediaType, users: T[]): T[] {
     return users.filter(u => {
         const media = u.notificationSettings && u.notificationSettings[type];
         return media && media[medium]

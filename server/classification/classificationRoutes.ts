@@ -1,18 +1,19 @@
-import { Router } from 'express';
-import { forEachSeries } from 'async';
-import { handleError } from 'server/errorHandler/errorHandler';
-import { Cb } from 'shared/models.model';
-import { updateOrgClassification } from 'server/classification/orgClassificationSvc';
+import { Dictionary, forEachSeries } from 'async';
+import { RequestHandler, Router } from 'express';
+const { check } = require('express-validator');
+import { handleErr, handleError } from 'server/errorHandler/errorHandler';
+import * as mongoCde from 'server/cde/mongo-cde';
+import {
+    addOrgClassification,
+    deleteOrgClassification, reclassifyOrgClassification, renameOrgClassification, updateOrgClassification
+} from 'server/classification/orgClassificationSvc';
+import { addClassification, classifyEltsInBoard, eltClassification, removeClassification } from 'server/classification/classificationNode';
+import * as mongoForm from 'server/form/mongo-form';
 import { validateBody } from 'server/system/bodyValidator';
 import { orgByName } from 'server/orgManagement/orgDb';
 import { jobStatus } from 'server/system/mongo-data';
 import { addToClassifAudit } from 'server/system/classificationAuditSvc';
-
-const mongoCde = require('server/cde/mongo-cde');
-const mongoForm = require('server/form/mongo-form');
-const classificationNode = require('./classificationNode');
-const orgClassificationSvc = require('./orgClassificationSvc');
-const { check } = require('express-validator');
+import { Cb, ClassificationClassifier, User } from 'shared/models.model';
 
 require('express-async-errors');
 
@@ -23,11 +24,11 @@ const isValidBody = [
     validateBody
 ];
 
-export function module(roleConfig) {
+export function module(roleConfig: {allowClassify: RequestHandler}) {
     const router = Router();
 
     router.post('/addCdeClassification/', roleConfig.allowClassify, ...isValidBody, (req, res) => {
-        classificationNode.addClassification(req.body, mongoCde, handleError({req, res}, result => {
+        addClassification(req.body, mongoCde, handleError({req, res}, result => {
             if (result === 'Classification Already Exists') { return res.status(409).send(result); }
             res.send(result);
             addToClassifAudit({
@@ -46,7 +47,7 @@ export function module(roleConfig) {
     });
 
     router.post('/removeCdeClassification/', roleConfig.allowClassify, ...isValidBody, (req, res) => {
-        classificationNode.removeClassification(req.body, mongoCde, handleError({req, res}, elt => {
+        removeClassification(req.body, mongoCde, handleError({req, res}, elt => {
             res.send(elt);
             addToClassifAudit({
                 date: new Date(),
@@ -63,8 +64,11 @@ export function module(roleConfig) {
     });
 
     router.post('/addFormClassification/', roleConfig.allowClassify, ...isValidBody, (req, res) => {
-        classificationNode.addClassification(req.body, mongoForm, handleError({req, res}, result => {
-            if (result === 'Classification Already Exists') { return res.status(409).send(result); } else { res.send(result); }
+        addClassification(req.body, mongoForm, handleError({req, res}, result => {
+            /* istanbul ignore if */
+            if (result === 'Classification Already Exists') {
+                return res.status(409).send(result); } else { res.send(result);
+            }
             addToClassifAudit({
                 date: new Date(), user: {
                     username: req.user.username
@@ -76,7 +80,7 @@ export function module(roleConfig) {
     });
 
     router.post('/removeFormClassification/', roleConfig.allowClassify, ...isValidBody, (req, res) => {
-        classificationNode.removeClassification(req.body, mongoForm, handleError({req, res}, elt => {
+        removeClassification(req.body, mongoForm, handleError({req, res}, elt => {
             res.send(elt);
             addToClassifAudit({
                 date: new Date(), user: {
@@ -89,11 +93,11 @@ export function module(roleConfig) {
     });
 
     router.post('/classifyCdeBoard', roleConfig.allowClassify, (req, res) => {
-        classificationNode.classifyEltsInBoard(req, mongoCde, handleError({req, res}, () => res.send('')));
+        classifyEltsInBoard(req, mongoCde, handleErr({req, res}, () => res.send('')));
     });
 
     router.post('/classifyFormBoard', roleConfig.allowClassify, (req, res) => {
-        classificationNode.classifyEltsInBoard(req, mongoForm, handleError({req, res}, () => res.send('')));
+        classifyEltsInBoard(req, mongoForm, handleErr({req, res}, () => res.send('')));
     });
 
     // @TODO: classification to own file
@@ -101,10 +105,16 @@ export function module(roleConfig) {
     router.post('/deleteOrgClassification/', roleConfig.allowClassify, (req, res) => {
         const deleteClassification = req.body.deleteClassification;
         const settings = req.body.settings;
-        if (!deleteClassification || !settings) { return res.status(400).send(); }
+        /* istanbul ignore if */
+        if (!deleteClassification || !settings) {
+            return res.status(400).send();
+        }
         jobStatus('deleteClassification', handleError({req, res}, j => {
-            if (j) { return res.status(409).send('Error - delete classification is in processing, try again later.'); }
-            orgClassificationSvc.deleteOrgClassification(req.user, deleteClassification, settings,
+            /* istanbul ignore if */
+            if (j) {
+                return res.status(409).send('Error - delete classification is in processing, try again later.');
+            }
+            deleteOrgClassification(req.user, deleteClassification, settings,
                 handleError({req, res}, () => {}));
             res.status(202).send('Deleting in progress.');
         }));
@@ -121,9 +131,11 @@ export function module(roleConfig) {
             const newClassification = req.body.newClassification;
             const settings = req.body.settings;
             jobStatus('renameClassification', handleError({req, res}, j => {
-                if (j) { return res.status(409).send('Error - rename classification is in processing, try again later.'); }
-                orgClassificationSvc.renameOrgClassification(req.user, newClassification, settings,
-                    handleError({req, res}, () => {}));
+                /* istanbul ignore if */
+                if (j) {
+                    return res.status(409).send('Error - rename classification is in processing, try again later.');
+                }
+                renameOrgClassification(req.user, newClassification, settings, handleError({req, res}, () => {}));
                 res.status(202).send('Renaming in progress.');
             }));
     });
@@ -135,8 +147,11 @@ export function module(roleConfig) {
         (req, res) => {
             const newClassification = req.body.newClassification;
             jobStatus('addClassification', handleError({req, res}, j => {
-                if (j) { return res.status(409).send('Error - delete classification is in processing, try again later.'); }
-                orgClassificationSvc.addOrgClassification(newClassification, handleError({req, res},
+                /* istanbul ignore if */
+                if (j) {
+                    return res.status(409).send('Error - delete classification is in processing, try again later.');
+                }
+                addOrgClassification(newClassification, handleError({req, res},
                     () => res.send('Classification added.')));
             }));
     });
@@ -152,42 +167,50 @@ export function module(roleConfig) {
             const newClassification = req.body.newClassification;
             const settings = req.body.settings;
             jobStatus('reclassifyClassification', handleError({req, res}, j => {
-                    if (j) { return res.status(409).send('Error - reclassify classification is in processing, try again later.'); }
-                    orgClassificationSvc.reclassifyOrgClassification(req.user, oldClassification, newClassification, settings,
-                        handleError({req, res}, () => {
-                        }));
-                    res.status(202).send('Reclassifying in progress.');
-                })
-            );
+                /* istanbul ignore if */
+                if (j) {
+                    return res.status(409).send('Error - reclassify classification is in processing, try again later.');
+                }
+                reclassifyOrgClassification(req.user, oldClassification, newClassification, settings,
+                    handleError({req, res}, () => {
+                    }));
+                res.status(202).send('Reclassifying in progress.');
+            }));
     });
 
     // update org classification
     router.post('/updateOrgClassification', roleConfig.allowClassify, async (req, res) => {
         const orgName = req.body.orgName;
         const organization = await orgByName(orgName);
+        /* istanbul ignore if */
+        if (!organization) {
+            res.status(404).send();
+            return;
+        }
         organization.classifications = await updateOrgClassification(orgName);
         await organization.save();
         res.send(organization);
     });
 
 
-    const bulkClassifyCdesStatus = {};
+    const bulkClassifyCdesStatus: Dictionary<{numberProcessed: number, numberTotal: number}> = {};
 
-    function bulkClassifyCdes(user, eltId, elements, body, cb?: Cb<Error>) {
+    function bulkClassifyCdes(user: User, eltId: string, elements: {id: string, version: number}[],
+                              body: ClassificationClassifier, cb?: Cb<Error | null>) {
         if (!bulkClassifyCdesStatus[user.username + eltId]) {
             bulkClassifyCdesStatus[user.username + eltId] = {
                 numberProcessed: 0,
                 numberTotal: elements.length
             };
         }
-        forEachSeries(elements, function(element: any, doneOneElement) {
+        forEachSeries(elements, (element, doneOneElement) => {
             const classifReq = {
                 orgName: body.orgName,
                 categories: body.categories,
                 tinyId: element.id,
                 version: element.version
             };
-            classificationNode.eltClassification(classifReq, mongoCde, () => {
+            eltClassification(classifReq, mongoCde, () => {
                 bulkClassifyCdesStatus[user.username + eltId].numberProcessed++;
                 doneOneElement();
             });
@@ -196,7 +219,7 @@ export function module(roleConfig) {
         });
     }
 
-    function resetBulkClassifyCdesStatus(statusObjId) {
+    function resetBulkClassifyCdesStatus(statusObjId: string) {
         delete bulkClassifyCdesStatus[statusObjId];
     }
 

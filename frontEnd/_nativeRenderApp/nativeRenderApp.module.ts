@@ -14,9 +14,6 @@ import { NativeRenderModule } from 'nativeRender/nativeRender.module';
     declarations: [
         NativeRenderAppComponent,
     ],
-    entryComponents: [
-        NativeRenderAppComponent,
-    ],
     exports: [],
     providers: [],
     bootstrap: [NativeRenderAppComponent]

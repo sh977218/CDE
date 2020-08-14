@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Host, Input, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { TreeNode } from 'angular-tree-component';
+import { TreeNode } from '@circlon/angular-tree-component';
 import { DataElementService } from 'cde/public/dataElement.service';
 import { FormDescriptionComponent } from 'form/public/tabs/description/formDescription.component';
 import _isEqual from 'lodash/isEqual';

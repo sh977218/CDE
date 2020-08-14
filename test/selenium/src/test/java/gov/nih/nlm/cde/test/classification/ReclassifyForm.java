@@ -22,8 +22,7 @@ public class ReclassifyForm extends NlmCdeBaseTest {
         clickElement(By.xpath("//button/mat-icon[normalize-space() = 'transform']"));
         textPresent("Classify CDEs in Bulk");
         new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText("org / or Org");
-        clickElement(By.id(newClassification + "-classifyBtn"));
-        clickElement(By.id("cancelNewClassifyItemBtn"));
+        classifySubmit(new String[]{newClassification}, "");
 
         goToFormByName(formName);
         goToClassification();

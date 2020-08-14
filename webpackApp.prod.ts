@@ -1,14 +1,14 @@
-import * as AotPlugin from '@ngtools/webpack';
-import * as path from 'path';
-import * as merge from 'webpack-merge';
+import { AngularCompilerPlugin } from '@ngtools/webpack';
+import { resolve } from 'path';
+import { merge } from 'webpack-merge';
 import baseConfig from './webpack.prod';
 import appConfig from './webpackApp';
 
 export default merge(baseConfig, appConfig, {
     plugins: [
-        new AotPlugin.AngularCompilerPlugin({
-            tsConfigPath: path.resolve(__dirname, './tsconfigApp.json'),
-            entryModule: path.resolve(__dirname, './modules/_app/app.module') + '#CdeAppModule',
+        new AngularCompilerPlugin({
+            tsConfigPath: resolve(__dirname, './tsconfigApp.json'),
+            entryModule: resolve(__dirname, './modules/_app/app.module') + '#CdeAppModule',
             sourceMap: !!process.env.COVERAGE
         }),
     ],

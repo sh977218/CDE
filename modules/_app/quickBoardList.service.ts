@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { forwardRef, Inject, Injectable } from '@angular/core';
 import { AlertService } from 'alert/alert.service';
 
 import _find from 'lodash/find';
@@ -12,6 +12,7 @@ import { Item, ItemElastic } from 'shared/models.model';
 import { isCdeForm, isDataElement } from 'shared/item';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { LocalStorageService } from 'non-core/localStorage.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Injectable()
 export class QuickBoardListService {
@@ -20,11 +21,12 @@ export class QuickBoardListService {
     module = 'cde';
     numberDataElements = 0;
     numberForms = 0;
-    quickBoard: any;
 
-    constructor(private alert: AlertService,
-                private http: HttpClient,
-                private localStorageService: LocalStorageService) {
+    constructor(
+        @Inject(forwardRef(() => AlertService)) private alert: AlertService,
+        @Inject(forwardRef(() => HttpClient)) private http: HttpClient,
+        @Inject(forwardRef(() => LocalStorageService)) private localStorageService: LocalStorageService,
+    ) {
         this.loadElements();
     }
 

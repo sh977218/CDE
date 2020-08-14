@@ -52,7 +52,7 @@ export class InlineAreaEditComponent implements OnInit, AfterViewInit {
     ngAfterViewInit() {
         const s = document.createElement('script');
         s.type = 'text/javascript';
-        s.src = 'https://cdn.ckeditor.com/4.7.0/standard-all/ckeditor.js';
+        s.src = 'https://cdn.ckeditor.com/4.14.1/standard-all/ckeditor.js';
         this.elementRef.nativeElement.appendChild(s);
     }
 

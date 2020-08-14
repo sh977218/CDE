@@ -1,59 +1,57 @@
-import * as express from 'express';
-import { Express } from 'express';
+import { Express, Request, RequestHandler } from 'express';
+import { deserializeUser, initialize as passportInitialize, serializeUser, session as passportSession, use as passportUse} from 'passport';
+import { get, post } from 'request';
+import { consoleLog } from 'server/log/dbLogger';
 import { errorLogger } from 'server/system/logging';
 import { config } from 'server/system/parseConfig';
-import { User } from 'shared/models.model';
-import { addUser, updateUserIps, userById, userByName } from 'server/user/userDb';
-import { consoleLog } from 'server/log/dbLogger';
+import { Cb, CbErr, CbError, User } from 'shared/models.model';
+import { addUser, updateUserIps, userById, userByName, UserDocument } from 'server/user/userDb';
+import { Parser } from 'xml2js';
 
-const xml2js = require('xml2js');
-const request = require('request');
-const passport = require('passport');
 const localStrategy = require('passport-local').Strategy;
 
 export type AuthenticatedRequest = {
     user: User,
     username: string,
-} & express.Request;
-
+} & Request;
 
 const ticketValidationOptions = {
-    host: config.uts.ticketValidation.host
-    , hostname: config.uts.ticketValidation.host
-    , port: config.uts.ticketValidation.port
-    , path: config.uts.ticketValidation.path
-    , method: 'GET'
-    , agent: false
-    , requestCert: true
-    , rejectUnauthorized: false
+    host: config.uts.ticketValidation.host,
+    hostname: config.uts.ticketValidation.host,
+    port: config.uts.ticketValidation.port,
+    path: config.uts.ticketValidation.path,
+    method: 'GET',
+    agent: false,
+    requestCert: true,
+    rejectUnauthorized: false,
 };
 
-const parser = new xml2js.Parser();
+const parser = new Parser();
 
-passport.serializeUser((user, done) => {
+serializeUser((user: User, done) => {
     done(null, user._id);
 });
 
-passport.deserializeUser(userById);
+deserializeUser(userById);
 
 export function init(app: Express) {
-    app.use(passport.initialize());
-    app.use(passport.session());
+    app.use(passportInitialize());
+    app.use(passportSession());
 }
 
-export function ticketValidate(tkt, cb) {
+export function ticketValidate(tkt: string, cb: CbErr<string>) {
     const host = 'https://' + ticketValidationOptions.host;
     const port = ':' + ticketValidationOptions.port;
     const path = config.uts.ticketValidation.path;
     const param = '?service=' + config.uts.service + '&ticket=' + tkt;
     const uri = host + port + path + param;
-    request.get(uri, (error, response, body) => {
+    get(uri, (error, response, body) => {
         if (error) {
             errorLogger.error('getTgt: ERROR with request: ' + error, {stack: new Error().stack});
             return cb(error);
         } else {
             // Parse xml result from ticket validation
-            parser.parseString(body, (err, jsonResult) => {
+            parser.parseString(body, (err?: Error, jsonResult?: any) => {
                 if (err) {
                     return cb('ticketValidate: ' + err);
                 } else if (jsonResult['cas:serviceResponse'] &&
@@ -63,7 +61,7 @@ export function ticketValidate(tkt, cb) {
                 } else if (jsonResult['cas:serviceResponse']['cas:authenticationSuccess'] &&
                     jsonResult['cas:serviceResponse']['cas:authenticationSuccess']) {
                     // Returns the username
-                    return cb(null, jsonResult['cas:serviceResponse']['cas:authenticationSuccess'][0]['cas:user'][0]);
+                    return cb(undefined, jsonResult['cas:serviceResponse']['cas:authenticationSuccess'][0]['cas:user'][0]);
                 }
 
                 return cb('ticketValidate: invalid XML response!');
@@ -72,7 +70,7 @@ export function ticketValidate(tkt, cb) {
     });
 }
 
-export function updateUserAfterLogin(user, ip, cb) {
+export function updateUserAfterLogin(user: UserDocument, ip: string, cb: CbError<UserDocument | null>) {
     if (user.knownIPs.length > 100) {
         user.knownIPs.pop();
     }
@@ -83,14 +81,14 @@ export function updateUserAfterLogin(user, ip, cb) {
     updateUserIps(user._id, user.knownIPs, cb);
 }
 
-export function umlsAuth(user, password, cb) {
-    request.post(
+export function umlsAuth(username: string, password: string, cb: Cb<any>) {
+    post(
         config.umls.wsHost + '/restful/isValidUMLSUser',
         {
             form: {
-                licenseCode: config.umls.licenseCode
-                , user
-                , password
+                licenseCode: config.umls.licenseCode,
+                user: username,
+                password,
             }
         }, (error, response, body) => {
             cb(!error && response.statusCode === 200 ? body : undefined);
@@ -98,26 +96,25 @@ export function umlsAuth(user, password, cb) {
     );
 }
 
-export function authBeforeVsac(req, username, password, done) {
+export function authBeforeVsac(req: Request, username: string, password: string, done: CbError<UserDocument | null, {message: string}>) {
     // Allows other items on the event queue to complete before execution, excluding IO related events.
     process.nextTick(() => {
         // are we doing federated?
         if (req.body.federated === true) {
-            request.get(`${config.uts.federatedServiceValidate}?service=${config.publicUrl}/login/federated&ticket=${req.body.ticket}`,
+            get(`${config.uts.federatedServiceValidate}?service=${config.publicUrl}/login/federated&ticket=${req.body.ticket}`,
                 (error, response, body) => {
                     try {
                         body = JSON.parse(body);
                         username = body.utsUser.username;
                     } catch (e) {
                         consoleLog(`${config.uts.federatedServiceValidate}?service=${config.publicUrl}/login/federated&ticket=${req.body.ticket}`);
-                        consoleLog(e);
-                        consoleLog(body);
-                        done('Unknown error');
+                        consoleLog(e, body);
+                        done(new Error('Unknown error'));
                     }
                     if (username) {
-                        findAddUserLocally({username, ip: req.ip}, user => done(null, user));
+                        findAddUserLocally({username, ip: req.ip}, (err, user) => done(err, user));
                     } else {
-                        done('No UMLS User');
+                        done(new Error('No UMLS User'));
                     }
             });
         } else {
@@ -129,26 +126,26 @@ export function authBeforeVsac(req, username, password, done) {
                 if (err || !user || (user && user.password === 'umls')) {
                     umlsAuth(username, password, result => {
                         if (result === undefined) {
-                            return done(null, false, {message: 'UMLS UTS login server is not available.'});
+                            return done(null, null, {message: 'UMLS UTS login server is not available.'});
                         } else if (result.indexOf('true') > 0) {
-                            findAddUserLocally({username, ip: req.ip}, user => done(null, user));
+                            findAddUserLocally({username, ip: req.ip}, (err, user) => done(err, user));
                         } else {
-                            return done(null, false, {message: 'Incorrect username or password'});
+                            return done(null, null, {message: 'Incorrect username or password'});
                         }
                     });
                 } else { // If user was found in local datastore and password != 'umls'
                     if (user.lockCounter === 300) {
-                        return done(null, false, {message: 'User is locked out'});
+                        return done(null, null, {message: 'User is locked out'});
                     } else if (user.password !== password) {
                         // Initialize the lockCounter if it hasn't been
                         (user.lockCounter >= 0 ? user.lockCounter += 1 : user.lockCounter = 1);
 
                         return user.save(() => {
-                            return done(null, false, {message: 'Incorrect username or password'});
+                            return done(null, null, {message: 'Incorrect username or password'});
                         });
                     } else {
                         // Update user info in datastore
-                        return updateUserAfterLogin(user, req.ip, done);
+                        return updateUserAfterLogin(user, req.ip, (err, user) => done(err, user));
                     }
                 }
             });
@@ -156,44 +153,61 @@ export function authBeforeVsac(req, username, password, done) {
     });
 }
 
-passport.use(new localStrategy({passReqToCallback: true}, authBeforeVsac));
+passportUse(new localStrategy({passReqToCallback: true}, authBeforeVsac));
 
-export function findAddUserLocally(profile, cb) {
+export interface UserAddProfile {
+    username: string;
+    ip: string;
+    accessToken?: string;
+    refreshToken?: string;
+}
+
+export function findAddUserLocally(profile: UserAddProfile, cb: CbError<UserDocument | null>) {
     userByName(profile.username, (err, user) => {
         if (err) {
             cb(err);
-        } else if (!user) { // User has been authenticated but user is not in local db, so register him.
+            return;
+        }
+        if (!user) { // User has been authenticated but user is not in local db, so register him.
             addUser(
                 {
                     username: profile.username,
                     password: 'umls',
                     quota: 1024 * 1024 * 1024,
                     accessToken: profile.accessToken,
-                    refreshToken: profile.refreshToken
-                }, (err, user) => {
-                    updateUserAfterLogin(user, profile.ip, (err, newUser) => cb(newUser));
-                });
+                    refreshToken: profile.refreshToken,
+                    orgAdmin: [],
+                    orgCurator: [],
+                },
+                (err, user) => {
+                    if (err || !user) {
+                        cb(new Error('save not successful'));
+                        return;
+                    }
+                    updateUserAfterLogin(user, profile.ip, (err, newUser) => cb(null, newUser));
+                }
+            );
         } else {
-            updateUserAfterLogin(user, profile.ip, (err, newUser) => cb(newUser));
+            updateUserAfterLogin(user, profile.ip, (err, newUser) => cb(null, newUser));
         }
     });
 }
 
-export function ticketAuth(req, res, next) {
+export const ticketAuth: RequestHandler = (req, res, next) => {
     if (!req.query.ticket || req.query.ticket.length <= 0) {
         next();
-    } else {
-        ticketValidate(req.query.ticket, (err, username) => {
-            if (err) {
-                next();
-            } else {
-                findAddUserLocally({username, ip: req.ip}, user => {
-                    if (user) {
-                        req.user = user;
-                    }
-                    next();
-                });
-            }
-        });
+        return;
     }
-}
+    ticketValidate(req.query.ticket, (err, username) => {
+        if (err || !username) {
+            next(); // drop error
+            return;
+        }
+        findAddUserLocally({username, ip: req.ip}, (err, user) => {
+            if (user) {
+                req.user = user;
+            }
+            next(err);
+        });
+    });
+};

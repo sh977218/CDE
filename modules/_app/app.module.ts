@@ -1,10 +1,18 @@
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
+import '@angular/localize/init';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatButtonModule } from '@angular/material/button';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { BackForwardService } from '_app/backForward.service';
-import { CdeAppRoutingModule } from '_app/app-routing.module';
 import { CdeAppComponent } from '_app/app.component';
+import { CdeAppRoutingModule } from '_app/app-routing.module';
+import { BackForwardService } from '_app/backForward.service';
 import { ElasticService } from '_app/elastic.service';
 import { IEBannerComponent } from '_app/ieBanner/ieBanner.component';
 import { LoginService } from '_app/login.service';
@@ -18,22 +26,15 @@ import { TruncateLongNamePipe } from '_app/truncateLongName.pipe';
 import { InactivityLoggedOutComponent, UserService } from '_app/user.service';
 import { CommonAppModule } from '_commonApp/commonApp.module';
 import { AlertModule } from 'alert/alert.module';
-import { OrgHelperService } from 'non-core/orgHelper.service';
-import { MatBadgeModule } from '@angular/material/badge';
-import { MatButtonModule } from '@angular/material/button';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { FeedbackModule } from 'ng-feedback2';
+import { FeedbackModule } from 'ngx-feedback2';
 import { LocalStorageService } from 'non-core/localStorage.service';
-
+import { OrgHelperService } from 'non-core/orgHelper.service';
 
 @NgModule({
     imports: [
         BrowserAnimationsModule,
         BrowserModule,
+        FeedbackModule,
         HttpClientModule,
         MatBadgeModule,
         MatButtonModule,
@@ -45,8 +46,7 @@ import { LocalStorageService } from 'non-core/localStorage.service';
         // internal
         CdeAppRoutingModule,
         CommonAppModule,
-        AlertModule,
-        FeedbackModule
+        AlertModule
     ],
     declarations: [
         CdeAppComponent,
@@ -57,11 +57,6 @@ import { LocalStorageService } from 'non-core/localStorage.service';
         NotificationDrawerComponent,
         NotificationDrawerPaneComponent,
         TruncateLongNamePipe
-    ],
-    entryComponents: [
-        CommentAuthorizeUserComponent,
-        InactivityLoggedOutComponent,
-        NotificationDrawerPaneComponent
     ],
     providers: [
         LocalStorageService,
@@ -75,6 +70,7 @@ import { LocalStorageService } from 'non-core/localStorage.service';
         OrgHelperService
     ],
     exports: [],
+    entryComponents: [NotificationDrawerPaneComponent],
     bootstrap: [CdeAppComponent]
 })
 
