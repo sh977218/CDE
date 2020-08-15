@@ -21,7 +21,7 @@ public class QuestionLayoutTest extends QuestionTest {
         textPresent("Browse by Classification");
         scrollToViewById("browseOrg-caCORE");
         clickElement(By.id("browseOrg-caCORE"));
-        textPresent("9 results for All Terms");
+        textPresent("9 results for");
         clickElement(By.id("showHideFilters"));
         textPresent("Show Filters");
         clickElement(By.id("showHideFilters"));
@@ -33,7 +33,7 @@ public class QuestionLayoutTest extends QuestionTest {
         textPresent("Value List (1)");
 
         clickElement(By.id("datatype-Date"));
-        textPresent("2 results for All Terms");
+        textPresent("2 results for");
         textNotPresent("Reference Editor java.lang.String");
         textNotPresent("Mage-OM (");
         textPresent("Date (2)");

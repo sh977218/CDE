@@ -76,7 +76,7 @@ const searchResultSteps: Array<any> = [
     },
     {
         title: 'Remove Filters',
-        element: '#removeClassifications',
+        element: '#classif_crumb',
         content: 'Click here to remove a filter'
     },
     {

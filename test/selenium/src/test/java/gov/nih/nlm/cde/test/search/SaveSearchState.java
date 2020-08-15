@@ -11,7 +11,7 @@ public class SaveSearchState extends NlmCdeBaseTest {
         setLowStatusesVisible();
         goToCdeSearch();
         clickElement(By.id("browseOrg-CTEP"));
-        textPresent("results for All Terms");
+        textPresent("results for");
         int numRes = getNumberOfResults();
         clickElement(By.id("classif-CATEGORY"));
         textNotPresent(numRes + " results for");
@@ -20,18 +20,18 @@ public class SaveSearchState extends NlmCdeBaseTest {
         textNotPresent(numRes + " results for");
         clickElement(By.id("regstatus-Qualified"));
         scrollToTop();
-        checkSearchResultInfo("All Terms", "CTEP > CATEGORY", null, "All Topics", "Standard, Qualified", null);
+        checkSearchResultInfo(null, "CTEP > CATEGORY", null, null, "Standard, Qualified", null);
         assertSearchFilterSelected("regstatus-Qualified", true);
         clickElement(By.id("regstatus-Qualified"));
         scrollToTop();
-        checkSearchResultInfo("All Terms", "CTEP > CATEGORY", null, "All Topics", "Standard", null);
+        checkSearchResultInfo(null, "CTEP > CATEGORY", null, null, "Standard", null);
         findElement(By.name("q")).sendKeys("name");
         clickElement(By.id("search.submit"));
-        checkSearchResultInfo("name", "CTEP > CATEGORY", null, "All Topics", "Standard", null);
+        checkSearchResultInfo("name", "CTEP > CATEGORY", null, null, "Standard", null);
         clickElement(By.linkText("FORMS"));
         hangon(1);
         textNotPresent("CATEGORY");
         driver.navigate().back();
-        checkSearchResultInfo("name", "CTEP > CATEGORY", null, "All Topics", "Standard", null);
+        checkSearchResultInfo("name", "CTEP > CATEGORY", null, null, "Standard", null);
     }
 }

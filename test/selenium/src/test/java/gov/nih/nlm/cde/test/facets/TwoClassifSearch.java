@@ -15,7 +15,8 @@ public class TwoClassifSearch extends BoardTest {
         textPresent("NINDS > Disease > Neuromuscular Disease");
 
         clickElement(By.id("altClassificationFilterModeToggle"));
-        textPresent("and", By.id("classifAlt_filter"));
+        textPresent("and", By.id("searchResultInfoBar"));
+        textPresent("(Select Orgs)", By.id("classifAlt_filter"));
         hangon(1);
         clickElement(By.id("classif-NINDS"));
         clickElement(By.id("classif-Domain"));
@@ -35,14 +36,14 @@ public class TwoClassifSearch extends BoardTest {
         driver.navigate().back();
         textPresent("NINDS > Domain > Assessments and Examinations > Imaging Diagnostics", By.id("classifAlt_filter"));
 
-        clickElement(By.id("removeAltClassificationFilterMode"));
+        clickElement(By.id("classifAlt_filter"));
         textNotPresent("NINDS > Domain > Assessments and Examinations > Imaging Diagnostics", By.id("classifAlt_filter"));
         textPresent("Classification (100");
 
         clickElement(By.id("menu_cdes_link"));
         findElement(By.id("browseOrg-caCORE"));
         clickElement(By.id("browseOrg-NINDS"));
-        checkSearchResultInfo("All Terms", "NINDS", null, "All Topics", "All Statuses", null);
+        checkSearchResultInfo(null, "NINDS", null, null, null, null);
     }
 
 }

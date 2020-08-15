@@ -47,7 +47,7 @@ public class ClassificationFilter extends NlmCdeBaseTest {
         linkList = driver.findElements(By.cssSelector("div.singleSearchResult"));
         Assert.assertEquals(linkList.size(), 2);
 
-        clickElement(By.id("removeClassifications"));
+        clickElement(By.id("classif_crumb"));
         textPresent("NINDS (");
         Assert.assertTrue(getNumberOfResults() > 90);
     }
