@@ -53,7 +53,7 @@
         </ng-container>
         <ng-container *ngIf="elt.created">
             <dt class="col-3 text-right">Created:</dt>
-            <dd class="col-9">{{elt.created | date: 'MM/dd/yyyy @ h:mma'}}</dd>
+            <dd class="col-9">{{elt.created.startsWith('1969') ? '&nbsp;' : elt.created | date: 'MM/dd/yyyy @ h:mma'}}</dd>
         </ng-container>
         <ng-container *ngIf="elt.createdBy">
             <dt class="col-3 text-right">Created By:</dt>

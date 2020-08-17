@@ -161,68 +161,10 @@
             </mat-menu>
         </div>
     </nav>
-    <!-- BREADCRUMBS -->
-    <div *ngIf="elts && aggregations" class="mx-1 my-3" id="searchResultInfoBar">
-        <strong id="searchResultNum">{{totalItems}}</strong> results for
-        <span *ngIf="searchedTerm" id="term_crumb" class="badge badge-light remove-filter hand-cursor dark-icon mx-1"
-              aria-label="Remove this search term filter" matTooltip="Remove this search term filter"
-              matTooltipClass="cdeTooltip" matTooltipPosition="right"
-              (click)="searchSettings.q = ''; doSearch()">
-            {{searchedTerm}}
-        </span>
-        <span *ngIf="hasSelectedClassifications()" id="classif_crumb" class="badge badge-light remove-filter hand-cursor dark-icon mx-1"
-              aria-label="Remove this classification filter" matTooltip="Remove this classification filter"
-              matTooltipClass="cdeTooltip" matTooltipPosition="right"
-              (click)="clearSelectedClassifications()">
-            {{getSelectedClassifications()}}
-        </span>
-        <ng-container *ngIf="altClassificationFilterMode">
-            and
-            <span id="classifAlt_filter" class="badge badge-light remove-filter hand-cursor dark-icon pl-1"
-                  aria-label="Remove this classification filter" matTooltip="Remove this classification filter"
-                  matTooltipClass="cdeTooltip" matTooltipPosition="right"
-                  (click)="clearSelectedClassificationsAlt()">
-                {{getSelectedClassificationsAlt()}}
-            </span>
-        </ng-container>
-        <ng-container *ngIf="excludeOrgFilterMode">
-            not
-            <span class="badge badge-light remove-filter hand-cursor dark-icon pl-1"
-                  aria-label="Remove this classification filter" matTooltip="Remove this classification filter"
-                  matTooltipClass="cdeTooltip" matTooltipPosition="right"
-                  (click)="clearExcludeOrgs()">
-                {{getExcludedOrgs()}}
-            </span>
-        </ng-container>
-        <span *ngIf="hasSelectedTopics()" id="topic_crumb" class="badge badge-light remove-filter hand-cursor dark-icon mx-1"
-              aria-label="Remove this topics filter" matTooltip="Remove this topics filter"
-              matTooltipClass="cdeTooltip" matTooltipPosition="right"
-              (click)="clearSelectedTopics()">
-            {{getSelectedTopics()}}
-        </span>
-        <span *ngIf="hasSelectedStatuses()" id="status_crumb" class="badge badge-light remove-filter hand-cursor dark-icon mx-1"
-              aria-label="Remove this registration statuses filter"
-              matTooltip="Remove this registration statuses filter"
-              matTooltipClass="cdeTooltip" matTooltipPosition="right"
-              (click)="clearSelectedStatuses()">
-            {{getSelectedStatuses()}}
-        </span>
-        <span *ngIf="module === 'cde' && hasSelectedDatatypes()" id="datatype_crumb"
-              class="badge badge-light remove-filter hand-cursor dark-icon mx-1"
-              aria-label="Remove this datatype filter"
-              matTooltip="Remove this datatype filter"
-              matTooltipClass="cdeTooltip" matTooltipPosition="right"
-              (click)="clearSelectedDatatypes()">
-            {{getSelectedDatatypes()}}
-        </span>
-        <a (click)="reset()" class="a-link hand-cursor">Clear All</a>
-        <small> ({{took / 1000}} secs)</small>
-    </div>
     <div *ngIf="elts && aggregations" class="container-fluid ml-0">
         <div class="row">
-            <!--FILTERS-->
             <div *ngIf="filterMode" [ngClass]="filterMode?'col-12 col-sm-2':'col-12'" class="px-1">
-                <p class="text-muted">Filter by:</p>
+                <!--FILTERS-->
                 <!-- CLASSIFICATION AGGREGATIONS -->
                 <div *ngIf="aggregations.orgs.buckets" id="classificationListHolder" class="my-3">
                     <div>
@@ -359,30 +301,88 @@
                     </ng-container>
                 </div>
             </div>
-            <!-- SEARCH RESULTS -->
-            <div id="resultList" class="px-1"
-                 [ngClass]="filterMode?'col-12 col-sm-10':'col-12'" [style.display]="searching ? 'none' : 'block'">
-                <div id="resultListTour"></div>
-                <span [hidden]="elts.length >= 0" class="h1 pl130">
-                    <mat-icon class="spin">auto_renew</mat-icon>Searching...</span>
-                <span [hidden]="elts.length !== 0" class="h4"><mat-icon>sentiment_very_dissatisfied</mat-icon>
-                    No results were found. Try other criterias or selecting more statuses</span>
-                <cde-list-view [elts]="elts" [embedded]="embedded" [module]="module" [(listView)]="resultsView"
-                               (add)="add.emit($event)"></cde-list-view>
-
-                <div>
-                    <div class="float-right">
-                        <mat-form-field class="float-left " style="width:20%;" id="goToPage">
-                            <input matInput placeholder="Go to page:" type="number" min="1"
-                                   [max]="numPages" [ngModel]="searchSettings.page"
-                                   (ngModelChange)="pageChange({pageIndex: $event-1})">
-                        </mat-form-field>
-                        <mat-paginator class="float-left" (page)="pageChange($event)" [length]="totalItemsLimited"
-                                       [pageIndex]="searchSettings.page - 1"
-                                       [pageSize]="searchSettings.resultPerPage" [hidePageSize]="true"
-                                       style="font-size: 1.4em">
-                        </mat-paginator>
-                        <a [hidden]="true" href="{{fakeNextPageLink()}}" rel="next">Next Page</a>
+            <div class="px-1" [ngClass]="filterMode?'col-12 col-sm-10':'col-12'" [style.display]="searching ? 'none' : 'block'">
+                <!-- BREADCRUMBS -->
+                <div *ngIf="elts && aggregations" class="mx-1 my-3" id="searchResultInfoBar">
+                    <strong id="searchResultNum">{{totalItems}}</strong> results for
+                    <span *ngIf="searchedTerm" id="term_crumb" class="badge badge-light remove-filter hand-cursor dark-icon mx-1"
+                          aria-label="Remove this search term filter" matTooltip="Remove this search term filter"
+                          matTooltipClass="cdeTooltip" matTooltipPosition="right"
+                          (click)="searchSettings.q = ''; doSearch()">
+                        {{searchedTerm}}
+                    </span>
+                    <span *ngIf="hasSelectedClassifications()" id="classif_crumb"
+                          class="badge badge-light remove-filter hand-cursor dark-icon mx-1"
+                          aria-label="Remove this classification filter" matTooltip="Remove this classification filter"
+                          matTooltipClass="cdeTooltip" matTooltipPosition="right"
+                          (click)="clearSelectedClassifications()">
+                        {{getSelectedClassifications()}}
+                    </span>
+                    <ng-container *ngIf="altClassificationFilterMode">
+                        and
+                        <span id="classifAlt_filter" class="badge badge-light remove-filter hand-cursor dark-icon pl-1"
+                              aria-label="Remove this classification filter" matTooltip="Remove this classification filter"
+                              matTooltipClass="cdeTooltip" matTooltipPosition="right"
+                              (click)="clearSelectedClassificationsAlt()">
+                            {{getSelectedClassificationsAlt()}}
+                        </span>
+                    </ng-container>
+                    <ng-container *ngIf="excludeOrgFilterMode">
+                        not
+                        <span class="badge badge-light remove-filter hand-cursor dark-icon pl-1"
+                              aria-label="Remove this classification filter" matTooltip="Remove this classification filter"
+                              matTooltipClass="cdeTooltip" matTooltipPosition="right"
+                              (click)="clearExcludeOrgs()">
+                            {{getExcludedOrgs()}}
+                        </span>
+                    </ng-container>
+                    <span *ngIf="hasSelectedTopics()" id="topic_crumb" class="badge badge-light remove-filter hand-cursor dark-icon mx-1"
+                          aria-label="Remove this topics filter" matTooltip="Remove this topics filter"
+                          matTooltipClass="cdeTooltip" matTooltipPosition="right"
+                          (click)="clearSelectedTopics()">
+                        {{getSelectedTopics()}}
+                    </span>
+                    <span *ngIf="hasSelectedStatuses()" id="status_crumb" class="badge badge-light remove-filter hand-cursor dark-icon mx-1"
+                          aria-label="Remove this registration statuses filter"
+                          matTooltip="Remove this registration statuses filter"
+                          matTooltipClass="cdeTooltip" matTooltipPosition="right"
+                          (click)="clearSelectedStatuses()">
+                        {{getSelectedStatuses()}}
+                    </span>
+                    <span *ngIf="module === 'cde' && hasSelectedDatatypes()" id="datatype_crumb"
+                          class="badge badge-light remove-filter hand-cursor dark-icon mx-1"
+                          aria-label="Remove this datatype filter"
+                          matTooltip="Remove this datatype filter"
+                          matTooltipClass="cdeTooltip" matTooltipPosition="right"
+                          (click)="clearSelectedDatatypes()">
+                        {{getSelectedDatatypes()}}
+                    </span>
+                    <a (click)="reset()" class="a-link hand-cursor">Clear All</a>
+                    <small> ({{took / 1000}} secs)</small>
+                </div>
+                <!-- SEARCH RESULTS -->
+                <div id="resultList">
+                    <div id="resultListTour"></div>
+                    <span [hidden]="elts.length >= 0" class="h1 pl130">
+                        <mat-icon class="spin">auto_renew</mat-icon>Searching...</span>
+                    <span [hidden]="elts.length !== 0" class="h4"><mat-icon>sentiment_very_dissatisfied</mat-icon>
+                        No results were found. Try other criterias or selecting more statuses</span>
+                    <cde-list-view [elts]="elts" [embedded]="embedded" [module]="module" [(listView)]="resultsView"
+                                   (add)="add.emit($event)"></cde-list-view>
+                    <div>
+                        <div class="float-right">
+                            <mat-form-field class="float-left " style="width:20%;" id="goToPage">
+                                <input matInput placeholder="Go to page:" type="number" min="1"
+                                       [max]="numPages" [ngModel]="searchSettings.page"
+                                       (ngModelChange)="pageChange({pageIndex: $event-1})">
+                            </mat-form-field>
+                            <mat-paginator class="float-left" (page)="pageChange($event)" [length]="totalItemsLimited"
+                                           [pageIndex]="searchSettings.page - 1"
+                                           [pageSize]="searchSettings.resultPerPage" [hidePageSize]="true"
+                                           style="font-size: 1.4em">
+                            </mat-paginator>
+                            <a [hidden]="true" href="{{fakeNextPageLink()}}" rel="next">Next Page</a>
+                        </div>
                     </div>
                 </div>
             </div>

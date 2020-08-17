@@ -11,5 +11,6 @@ public class CdeDefaultedDataTest extends NlmCdeBaseTest {
         textPresent("Height or length alternative measurement");
         findElement(By.xpath("//dt[contains(.,'Created By:')]/following-sibling::dd[1][contains(.,'NIH CDE Repository Team')]"));
         findElement(By.xpath("//dt[contains(.,'Updated By:')]/following-sibling::dd[1][contains(.,'NIH CDE Repository Team')]"));
+        assertNoElt(By.xpath("//dt[contains(.,'Created:')]/following-sibling::dd[1][contains(.,'1969')]"));
     }
 }
