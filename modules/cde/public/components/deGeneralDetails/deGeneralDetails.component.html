@@ -8,8 +8,8 @@
             <cde-inline-select-edit
                     [value]="elt.stewardOrg.name" [selectOptions]="userOrgs" (save)="changeStewardOrg($event);"
                     [isAllowed]="canEdit"
-                    [attr.aria-label]="orgHelperService.createOrgDetailedInfoHtml(elt.stewardOrg.name)"
-                    [matTooltip]="orgHelperService.createOrgDetailedInfoHtml(elt.stewardOrg.name)"
+                    [attr.aria-label]="orgHelperService.createOrgDetailedInfoHtml(elt.stewardOrg.name || '')"
+                    [matTooltip]="orgHelperService.createOrgDetailedInfoHtml(elt.stewardOrg.name || '')"
                     matTooltipClass="cdeTooltipMultiline" matTooltipPosition="below">
             </cde-inline-select-edit>
         </dd>
@@ -22,12 +22,7 @@
         </ng-container>
         <dt class="col-3 text-right">Used By:</dt>
         <dd id="dd_usedBy" class="col-9">
-            <div *ngIf="elt.classification?.length > 0">
-                <span>{{elt.usedBy?.join(', ')}}</span>
-            </div>
-            <div *ngIf="!(elt.classification.length > 0)">
-                <span>None</span>
-            </div>
+            <span>{{elt.classification?.length > 0 ? elt.usedBy?.join(', ') : 'None'}}</span>
         </dd>
         <dt class="col-3 text-right">Origin:</dt>
         <dd class="col-9">
@@ -49,7 +44,7 @@
         </ng-container>
         <ng-container *ngIf="elt.createdBy">
             <dt class="col-3 text-right">Created By:</dt>
-            <dd id="createdBy" class="col-9">{{elt.createdBy.username}}</dd>
+            <dd id="createdBy" class="col-9">{{elt.createdBy.username === 'nobody' ? 'NIH CDE Repository Team' : elt.createdBy.username}}</dd>
         </ng-container>
         <ng-container *ngIf="elt.updated">
             <dt class="col-3 text-right">Updated:</dt>
@@ -57,7 +52,7 @@
         </ng-container>
         <ng-container *ngIf="elt.updatedBy">
             <dt class="col-3 text-right">Updated By:</dt>
-            <dd id="updatedBy" class="col-9">{{elt.updatedBy.username}}</dd>
+            <dd id="updatedBy" class="col-9">{{elt.updatedBy.username === 'batchloader' ? 'NIH CDE Repository Team' : elt.updatedBy.username}}</dd>
         </ng-container>
 
     </dl>
