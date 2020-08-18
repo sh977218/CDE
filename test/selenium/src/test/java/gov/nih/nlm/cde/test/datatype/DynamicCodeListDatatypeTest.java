@@ -2,7 +2,7 @@ package gov.nih.nlm.cde.test.datatype;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
-import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -19,6 +19,7 @@ public class DynamicCodeListDatatypeTest extends NlmCdeBaseTest {
         clickElement(By.id("dynamicListSystem"));
         selectMatSelectDropdownByText("VSAC");
         findElement(By.id("dynamicListCode")).sendKeys("some OID");
+        wait.until(ExpectedConditions.attributeToBe(By.id("dynamicListCode"), "value", "some OID"));
 
         goToCdeByName(cdeName);
         goToPermissibleValues();
@@ -27,5 +28,4 @@ public class DynamicCodeListDatatypeTest extends NlmCdeBaseTest {
         goToHistory();
         selectHistoryAndCompare(1, 2);
     }
-
 }
