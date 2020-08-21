@@ -4,10 +4,9 @@ import { CastError } from 'mongoose';
 import { logError } from 'server/log/dbLogger';
 import { noDbLogger } from 'server/system/noDbLogger';
 import { AuthenticatedRequest } from 'server/user/authentication';
-import { Cb, Cb1, CbError, CbErrorObj } from 'shared/models.model';
+import { Cb, Cb1, CbError1, CbErrorObj, CbErrorObj1 } from 'shared/models.model';
 
 type HandledError = CastError | Error;
-type AllErrors = HandledError | null | undefined;
 
 export interface HandlerOptions {
     details?: string; // private accurate message additional
@@ -18,40 +17,58 @@ export interface HandlerOptions {
     statusCode?: number;
 }
 
-export function handleConsoleError<T = void, U = void, V = void>(options?: HandlerOptions,
-                                                                 cb: Cb<T, U, V> = noop): CbErrorObj<AllErrors, T, U, V> {
-    return (err: AllErrors | undefined, arg1?: T, arg2?: U, arg3?: V) => {
+export function handleConsoleError<T>(options?: HandlerOptions, cb: Cb1<T> = noop): CbErrorObj1<HandledError | null, T> {
+    return (err: HandledError | null, arg1: T) => {
         if (err) {
             noDbLogger.info('ERROR: ' + err);
         }
-        cb(arg1, arg2, arg3);
+        cb(arg1);
     };
 }
 
-export function handleErr<T, U = void, V = void>(options?: HandlerOptions, cb: Cb<T, U, V> = noop): CbErrorObj<string, T, U, V> {
-    return function errorHandler(err: string | undefined, arg1?: T, arg2?: U, arg3?: V) {
+export function handleErr<T>(options?: HandlerOptions, cb: Cb1<T> = noop): CbErrorObj1<string, T> {
+    return function errorHandler(err: string | undefined, arg1: T) {
         if (err) {
             respondError(new Error(err), options);
             return;
         }
-        cb(arg1, arg2, arg3);
+        cb(arg1);
     };
 }
 
+export function handleErrVoid(options?: HandlerOptions, cb: Cb = noop): CbErrorObj {
+    return function errorHandler(err: string | undefined) {
+        if (err) {
+            respondError(new Error(err), options);
+            return;
+        }
+        cb();
+    };
+}
 
-export function handleError<T, U = void, V = void>(options?: HandlerOptions, cb: Cb<T, U, V> = noop): CbErrorObj<AllErrors, T, U, V> {
-    return function errorHandler(err: AllErrors | undefined, arg1?: T, arg2?: U, arg3?: V) {
+export function handleError<T>(options?: HandlerOptions, cb: Cb1<T> = noop): CbErrorObj1<HandledError | null, T> {
+    return function errorHandler(err: HandledError | null, arg1: T) {
         if (err) {
             respondError(err, options);
             return;
         }
-        cb(arg1, arg2, arg3);
+        cb(arg1);
     };
 }
 
-export function handleNotFound<T, U = void, V = void>(options?: HandlerOptions,
-                                                      cb: Cb1<T, U, V> = noop): CbErrorObj<AllErrors, T, U, V> {
-    return function errorHandler(err: AllErrors, arg1?: T, arg2?: U, arg3?: V) {
+export function handleErrorVoid(options?: HandlerOptions, cb: Cb = noop): CbErrorObj<HandledError | null> {
+    return function errorHandler(err: HandledError | null) {
+        if (err) {
+            respondError(err, options);
+            return;
+        }
+        cb();
+    };
+}
+
+export function handleNotFound<T>(options?: HandlerOptions,
+                                  cb: Cb1<NonNullable<Exclude<T, void>>> = noop): CbErrorObj1<HandledError | null, T> {
+    return function errorHandler(err: HandledError | null, arg1: T) {
         if (err) {
             respondError(err, options);
             return;
@@ -62,7 +79,7 @@ export function handleNotFound<T, U = void, V = void>(options?: HandlerOptions,
             }
             return;
         }
-        cb(arg1, arg2, arg3);
+        cb(arg1 as NonNullable<Exclude<T, void>>);
     };
 }
 
@@ -101,12 +118,12 @@ export function respondError(err: HandledError, options?: HandlerOptions) {
     logError(log);
 }
 
-export function splitError<T = void, U = void, V = void>(errCb: CbError<T, U, V>, cb: Cb<T, U, V> = noop): CbErrorObj<AllErrors, T, U, V> {
-    return function errorHandler(err: AllErrors | undefined, arg1?: T, arg2?: U, arg3?: V) {
+export function splitError<T = void, U = void, V = void>(errCb: CbError1<T>, cb: Cb1<T> = noop): CbErrorObj1<HandledError | null, T> {
+    return function errorHandler(err: HandledError | null, arg1: T) {
         if (err) {
-            errCb(err, arg1, arg2, arg3);
+            errCb(err, arg1);
             return;
         }
-        cb(arg1, arg2, arg3);
+        cb(arg1);
     };
 }

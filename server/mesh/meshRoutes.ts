@@ -1,15 +1,13 @@
-import { Router } from 'express';
+import { Dictionary, each } from 'async';
+import { RequestHandler, Router } from 'express';
+import { get } from 'request';
 import { handleError, handleNotFound } from 'server/errorHandler/errorHandler';
-import { byEltId, byFlatClassification, byId, MeshClassificationDocument } from 'server/mesh/meshDb';
+import { meshSyncStatus, syncWithMesh } from 'server/mesh/elastic';
+import { byEltId, byFlatClassification, byId, findAll, MeshClassificationDocument, newMesh } from 'server/mesh/meshDb';
 import { config } from 'server/system/parseConfig';
-import { Cb } from 'shared/models.model';
+import { Cb1 } from 'shared/models.model';
 
-const async = require('async');
-const request = require('request');
-const elastic = require('./elastic');
-const meshDb = require('./meshDb');
-
-const meshTopTreeMap = {
+const meshTopTreeMap: Dictionary<string> = {
     A: 'Anatomy',
     B: 'Organisms',
     C: 'Diseases',
@@ -28,7 +26,7 @@ const meshTopTreeMap = {
     Z: 'Geographicals'
 };
 
-export function module(roleConfig) {
+export function module(roleConfig: {allowSyncMesh: RequestHandler}) {
     const router = Router();
 
     router.get('/eltId/:eltId', (req, res) => {
@@ -50,13 +48,13 @@ export function module(roleConfig) {
         } else {
             flatTreesFromMeshDescriptorArray(req.body.meshDescriptors, (trees) => {
                 req.body.flatTrees = trees;
-                meshDb.newMesh(req.body, handleError({req, res}, o => res.send(o)));
+                newMesh(req.body, handleError({req, res}, o => res.send(o)));
             });
         }
     });
 
     router.get('/meshClassifications', (req, res) => {
-        meshDb.findAll(handleError({req, res}, mm => res.send(mm)));
+        findAll(handleError({req, res}, mm => res.send(mm)));
     });
 
     router.get('/meshClassification', (req, res) => {
@@ -68,27 +66,27 @@ export function module(roleConfig) {
 
 
     router.post('/syncWithMesh', roleConfig.allowSyncMesh, (req, res) => {
-        elastic.syncWithMesh();
+        syncWithMesh();
         res.send();
     });
 
     router.get('/syncWithMesh', (req, res) => {
-        res.send(elastic.meshSyncStatus);
+        res.send(meshSyncStatus);
     });
 
     return router;
 
 }
 
-function flatTreesFromMeshDescriptorArray(descArr: string[], cb: Cb<string[]>) {
+function flatTreesFromMeshDescriptorArray(descArr: string[], cb: Cb1<string[]>) {
     const allTrees = new Set<string>();
-    async.each(descArr, (desc, oneDescDone) => {
-        request(config.mesh.baseUrl + '/api/record/ui/' + desc, {json: true}, (err, response, oneDescBody) => {
-            async.each(oneDescBody.TreeNumberList.TreeNumber, (treeNumber, tnDone) => {
-                request(config.mesh.baseUrl + '/api/tree/parents/' + treeNumber.t, {json: true}, (err, response, oneTreeBody) => {
+    each(descArr, (desc, oneDescDone) => {
+        get(config.mesh.baseUrl + '/api/record/ui/' + desc, {json: true}, (err, response, oneDescBody) => {
+            each(oneDescBody.TreeNumberList.TreeNumber, (treeNumber: any, tnDone) => {
+                get(config.mesh.baseUrl + '/api/tree/parents/' + treeNumber.t, {json: true}, (err, response, oneTreeBody) => {
                     let flatTree: string = meshTopTreeMap[treeNumber.t.substr(0, 1)];
                     if (oneTreeBody && oneTreeBody.length > 0) {
-                        flatTree = flatTree + ';' + oneTreeBody.map((a) => {
+                        flatTree = flatTree + ';' + oneTreeBody.map((a: any) => {
                             return a.RecordName;
                         }).join(';');
                     }

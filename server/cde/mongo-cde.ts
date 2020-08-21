@@ -14,7 +14,7 @@ import { config } from 'server/system/parseConfig';
 import * as dataElementSchemaJson from 'shared/de/assets/dataElement.schema.json';
 import { DataElement as DataElementClient, DataElementElastic } from 'shared/de/dataElement.model';
 import { wipeDatatype } from 'shared/de/dataElement.model';
-import { CbError, EltLog, User } from 'shared/models.model';
+import { CbError, CbError1, EltLog, User } from 'shared/models.model';
 
 export const type = 'cde';
 export const name = 'CDEs';
@@ -94,22 +94,22 @@ function updateUser(elt: DataElement, user: User) {
     };
 }
 
-export function byExisting(elt: DataElement, cb: CbError<DataElementDocument>) {
+export function byExisting(elt: DataElement, cb: CbError1<DataElementDocument>) {
     dataElementModel.findOne({_id: elt._id, tinyId: elt.tinyId}, cb);
 }
 
-export const byId = (id: string, cb: CbError<DataElementDocument>) => dataElementModel.findOne({_id: id}).exec(cb);
+export const byId = (id: string, cb: CbError1<DataElementDocument | null>) => dataElementModel.findOne({_id: id}).exec(cb);
 
-export const byTinyId = (tinyId: string, cb?: CbError<DataElementDocument | null>) =>
-    dataElementModel.findOne({tinyId, archived: false}).exec(cb);
+export const byTinyId = (tinyId: string, cb?: CbError1<DataElementDocument | null>) =>
+    dataElementModel.findOne({tinyId, archived: false}, cb);
 
-export function latestVersionByTinyId(tinyId: string, cb: CbError<string>) {
+export function latestVersionByTinyId(tinyId: string, cb: CbError1<string | undefined>) {
     dataElementModel.findOne({tinyId, archived: false}, (err, dataElement) => {
         cb(err, dataElement ? dataElement.version : undefined);
     });
 }
 
-export function byTinyIdList(tinyIdList: string[], cb: CbError<DataElementElastic[]>): void {
+export function byTinyIdList(tinyIdList: string[], cb: CbError1<DataElementElastic[] | void>): void {
     dataElementModel.find({archived: false}).where('tinyId')
         .in(tinyIdList)
         .slice('valueDomain.permissibleValues', 10)
@@ -122,7 +122,7 @@ export function byTinyIdList(tinyIdList: string[], cb: CbError<DataElementElasti
         });
 }
 
-export function draftByTinyId(tinyId: string, cb: CbError<DataElementDraftDocument>) {
+export function draftByTinyId(tinyId: string, cb: CbError1<DataElementDraftDocument>) {
     const cond = {
         archived: false,
         tinyId,
@@ -130,18 +130,18 @@ export function draftByTinyId(tinyId: string, cb: CbError<DataElementDraftDocume
     dataElementDraftModel.findOne(cond, cb);
 }
 
-export function draftById(id: string, cb: CbError<DataElementDraftDocument>) {
+export function draftById(id: string, cb: CbError1<DataElementDraftDocument>) {
     const cond = {
         _id: id,
     };
     dataElementDraftModel.findOne(cond, cb);
 }
 
-export function draftSave(elt: DataElement, user: User, cb: CbError<DataElementDocument>): void {
+export function draftSave(elt: DataElement, user: User, cb: CbError1<DataElementDocument | void>): void {
     updateUser(elt, user);
     dataElementDraftModel.findById(elt._id, splitError(cb, doc => {
         if (!doc) {
-            new dataElementDraftModel(elt).save(cb);
+            new dataElementDraftModel(elt).save(cb as (err?: Error, a?: DataElementDocument) => void);
             return;
         }
         if (doc.__v !== elt.__v) {
@@ -154,13 +154,13 @@ export function draftSave(elt: DataElement, user: User, cb: CbError<DataElementD
     }));
 }
 
-export function draftDelete(tinyId: string, cb: CbError<DataElementDraftDocument>) {
+export function draftDelete(tinyId: string, cb: CbError) {
     dataElementDraftModel.remove({tinyId}, cb);
 }
 
 export function draftsList(criteria: any): Promise<DataElementDraftDocument[]>;
-export function draftsList(criteria: any, cb: CbError<DataElementDraftDocument>): void;
-export function draftsList(criteria: any, cb?: CbError<DataElementDraftDocument>): void | Promise<DataElementDraftDocument[]> {
+export function draftsList(criteria: any, cb: CbError1<DataElementDraftDocument>): void;
+export function draftsList(criteria: any, cb?: CbError1<DataElementDraftDocument>): void | Promise<DataElementDraftDocument[]> {
     return dataElementDraftModel
         .find(criteria, {
             'designations.designation': 1,
@@ -179,11 +179,11 @@ export function getStream(condition: any): QueryCursor<DataElementDocument> {
     return dataElementModel.find(condition).sort({_id: -1}).cursor();
 }
 
-export function count(condition: any, callback: CbError<number>) {
-    return dataElementModel.countDocuments(condition, callback);
+export function count(condition: any, callback: CbError1<number>) {
+    return dataElementModel.countDocuments(condition, callback as (err?: Error, a?: number) => void);
 }
 
-export function byTinyIdVersion(tinyId: string, version: string | undefined, cb: CbError<DataElementDocument | null>) {
+export function byTinyIdVersion(tinyId: string, version: string | undefined, cb: CbError1<DataElementDocument | null>) {
     if (version) {
         byTinyIdAndVersion(tinyId, version, cb);
     } else {
@@ -191,7 +191,7 @@ export function byTinyIdVersion(tinyId: string, version: string | undefined, cb:
     }
 }
 
-export function byTinyIdAndVersion(tinyId: string, version: string | undefined, callback: CbError<DataElementDocument>) {
+export function byTinyIdAndVersion(tinyId: string, version: string | undefined, callback: CbError1<DataElementDocument>) {
     const _query: any = {tinyId};
     if (version) {
         _query.version = version;
@@ -201,7 +201,7 @@ export function byTinyIdAndVersion(tinyId: string, version: string | undefined, 
     return dataElementModel.findOne(_query).sort({updated: -1}).limit(1).exec(callback);
 }
 
-export function eltByTinyId(tinyId: string, callback: CbError<DataElementDocument>) {
+export function eltByTinyId(tinyId: string, callback: CbError1<DataElementDocument>) {
     dataElementModel.findOne({
         archived: false,
         tinyId,
@@ -222,7 +222,7 @@ export function inCdeView(cde: DataElement) {
     }
 }
 
-export function create(elt: DataElement, user: User, callback: CbError<DataElementDocument>) {
+export function create(elt: DataElement, user: User, callback: CbError1<DataElementDocument>) {
     wipeDatatype(elt);
     elt.created = Date.now();
     elt.createdBy = {
@@ -240,7 +240,7 @@ export function create(elt: DataElement, user: User, callback: CbError<DataEleme
 }
 
 export function update(elt: DataElementDraft, user: User, options: any = {},
-                       callback: CbError<DataElement>): void {
+                       callback: CbError1<DataElement | void>): void {
     dataElementModel.findById(elt._id, (err, dataElement) => {
         if (err || !dataElement) {
             return callback(new Error('Document Not Found'));
@@ -284,7 +284,7 @@ export function update(elt: DataElementDraft, user: User, options: any = {},
                     dataElementModel.findOneAndUpdate({_id: dataElement._id}, {$set: {archived: false}},
                         () => callback(err));
                 } else {
-                    callback(undefined, savedElt);
+                    callback(null, savedElt);
                     auditModificationsDe(user, dataElement, savedElt);
                 }
             });
@@ -292,11 +292,11 @@ export function update(elt: DataElementDraft, user: User, options: any = {},
     });
 }
 
-export function derivationByInputs(inputTinyId: string, cb: CbError<DataElementDocument[]>) {
+export function derivationByInputs(inputTinyId: string, cb: CbError1<DataElementDocument[]>) {
     dataElementModel.find({archived: false, 'derivationRules.inputs': inputTinyId}).exec(cb);
 }
 
-export function findModifiedElementsSince(date: Date | string | number, cb: CbError<DataElementDocument[]>) {
+export function findModifiedElementsSince(date: Date | string | number, cb: CbError1<DataElementDocument[]>) {
     dataElementModel.aggregate([
         {
             $match: {
@@ -307,10 +307,10 @@ export function findModifiedElementsSince(date: Date | string | number, cb: CbEr
         {$limit: 2000},
         {$sort: {updated: -1}},
         {$group: {_id: '$tinyId'}},
-    ]).exec(cb);
+    ], cb);
 
 }
 
-export function originalSourceByTinyIdSourceName(tinyId: string, sourceName: string, cb: CbError<DataElementDocument>) {
+export function originalSourceByTinyIdSourceName(tinyId: string, sourceName: string, cb: CbError1<DataElementDocument>) {
     dataElementSourceModel.findOne({tinyId, source: sourceName}, cb);
 }

@@ -5,7 +5,7 @@ import { establishConnection } from 'server/system/connections';
 import { addStringtype } from 'server/system/mongoose-stringtype';
 import { config } from 'server/system/parseConfig';
 import { userRefSchema } from 'server/user/userDb';
-import { CbError, Comment as CommentClient, CommentReply as CommentReplyClient } from 'shared/models.model';
+import { CbError1, Comment as CommentClient, CommentReply as CommentReplyClient } from 'shared/models.model';
 
 addStringtype(mongoose);
 const StringType = (Schema.Types as any).StringType;
@@ -33,15 +33,15 @@ export type Comment = CommentClient & {organizationName: string, replies: Commen
 export type CommentDocument = Document & Comment;
 export const commentModel: mongoose.Model<CommentDocument> = conn.model('Comment', commentSchema);
 
-export function byId(id: string, cb: CbError<CommentDocument>) {
+export function byId(id: string, cb: CbError1<CommentDocument>) {
     commentModel.findById(id, cb);
 }
 
-export function byReplyId(id: string, cb: CbError<CommentDocument>) {
+export function byReplyId(id: string, cb: CbError1<CommentDocument>) {
     commentModel.findOne({'replies._id': id}, cb);
 }
 
-export function byEltId(id: string, cb: CbError<CommentDocument[]>) {
+export function byEltId(id: string, cb: CbError1<CommentDocument[]>) {
     const aggregate = [
         {$match: {'element.eltId': id}},
         {
@@ -61,7 +61,7 @@ export function byEltId(id: string, cb: CbError<CommentDocument[]>) {
     commentModel.aggregate(aggregate, cb);
 }
 
-export function save(comment: Comment, cb: CbError<CommentDocument>) {
+export function save(comment: Comment, cb: CbError1<CommentDocument>) {
     new commentModel(comment).save(cb);
 }
 
@@ -70,7 +70,7 @@ export function save(comment: Comment, cb: CbError<CommentDocument>) {
 // }
 
 export function orgCommentsByCriteria(criteria: any, myOrgs: string[] | undefined, from: number, size: number,
-                                      cb: CbError<CommentDocument[]>) {
+                                      cb: CbError1<CommentDocument[]>) {
     let aggs: any[] = [
         {$match: criteria},
         {

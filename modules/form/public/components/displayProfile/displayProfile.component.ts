@@ -6,13 +6,13 @@ import { UcumService } from 'form/public/ucum.service';
 import { FhirProcedureMappingComponent } from 'form/public/components/fhir/fhirProcedureMapping.component';
 import { CdeForm, DisplayProfile } from 'shared/form/form.model';
 import { iterateFeSync } from 'shared/form/fe';
-import { CodeAndSystem } from 'shared/models.model';
+import { CodeAndSystem, DateType } from 'shared/models.model';
 import { deepCopy } from 'shared/system/util';
 import { interruptEvent } from 'non-core/browser';
 
 interface DisplayProfileVM {
     aliases: {
-        date?: Date,
+        date?: DateType,
         edit: boolean,
     };
     profile: DisplayProfile;
@@ -57,7 +57,7 @@ export class DisplayProfileComponent {
     getMapToFhirResource = getMapToFhirResource;
     interruptEvent = interruptEvent;
     uoms: {u: CodeAndSystem, a: string[]}[] = [];
-    uomsDate?: Date;
+    uomsDate?: DateType;
     uomsPromise!: Promise<void>;
 
     constructor(public dialog: MatDialog,

@@ -1,24 +1,25 @@
+import { DataElementDocument } from 'server/cde/mongo-cde';
 import { handleNotFound } from 'server/errorHandler/errorHandler';
 import { logError } from 'server/log/dbLogger';
+import { storeQuery } from 'server/log/storedQueryDb';
 import { buildElasticSearchQuery, elasticsearch as elasticSearchShared, esClient } from 'server/system/elastic';
 import { riverFunction, suggestRiverFunction } from 'server/system/elasticSearchInit';
 import { config } from 'server/system/parseConfig';
-import { CbError, SearchResponseAggregationDe, User } from 'shared/models.model';
+import { DataElementElastic } from 'shared/de/dataElement.model';
+import { Cb1, CbError1, ElasticQueryResponse, SearchResponseAggregationDe, User } from 'shared/models.model';
 import { SearchSettingsElastic } from 'shared/search/search.model';
-import { storeQuery } from 'server/log/storedQueryDb';
-import { ApiResponse } from '@elastic/elasticsearch';
 
-export function updateOrInsert(elt) {
+export function updateOrInsert(elt: DataElementDocument) {
     riverFunction(elt.toObject(), doc => {
         if (doc) {
             let doneCount = 0;
             let doneError;
-            const done = err => {
+            const done = (err: Error | null) => {
                 if (err) {
                     logError({
                         message: 'Unable to Index document: ' + doc.elementType + ' ' + doc.tinyId,
                         origin: 'cde.elastic.updateOrInsert',
-                        stack: err,
+                        stack: err.message + ' ' + err.stack,
                         details: '',
                     });
                 }
@@ -47,7 +48,7 @@ export function updateOrInsert(elt) {
     });
 }
 
-export function elasticsearch(user: User, settings: SearchSettingsElastic, cb: CbError<SearchResponseAggregationDe>) {
+export function elasticsearch(user: User, settings: SearchSettingsElastic, cb: CbError1<SearchResponseAggregationDe | void>) {
     const query = buildElasticSearchQuery(user, settings);
     if (query.size > 100) {
         return cb(new Error('size exceeded'));
@@ -95,7 +96,14 @@ const mltConf = {
     ]
 };
 
-export function moreLike(id: string, callback) {
+interface MoreLike {
+    cdes: DataElementElastic[];
+    page: number;
+    pages: number;
+    totalNumber: number;
+}
+
+export function moreLike(id: string, callback: Cb1<MoreLike>) {
     const from = 0;
     const limit = 20;
     esClient.search({
@@ -135,17 +143,17 @@ export function moreLike(id: string, callback) {
                     }
                 }
             },
-        }, handleNotFound<ApiResponse>({}, response => {
+        }, handleNotFound<{body: ElasticQueryResponse<DataElementElastic>}>({}, response => {
             const body = response.body;
-            const result: any = {
+            const result: MoreLike = {
                 cdes: [],
                 pages: Math.ceil(body.hits.total / limit),
                 page: Math.ceil(from / limit),
                 totalNumber: body.hits.total,
             };
             // @TODO remove after full migration to ES7
-            if (result.totalNumber.value) {
-                result.totalNumber = result.totalNumber.value;
+            if ((result.totalNumber as any).value) {
+                result.totalNumber = (result.totalNumber as any).value;
             }
             body.hits.hits.forEach(hit => {
                 const thisCde = hit._source;
@@ -160,7 +168,7 @@ export function moreLike(id: string, callback) {
     );
 }
 
-export function byTinyIdList(idList, size, cb) {
+export function byTinyIdList(idList: string[], size: number, cb: CbError1<DataElementElastic[]>) {
     idList = idList.filter(id => !!id);
     esClient.search({
         index: config.elastic.index.name,
@@ -172,7 +180,7 @@ export function byTinyIdList(idList, size, cb) {
             },
             size,
         }
-    }, handleNotFound<ApiResponse>({}, response => {
+    }, handleNotFound<{body: ElasticQueryResponse<DataElementElastic>}>({}, response => {
         // @TODO possible to move this sort to elastic search?
         response.body.hits.hits.sort((a, b) => idList.indexOf(a._id) - idList.indexOf(b._id));
         cb(null, response.body.hits.hits.map(h => h._source));

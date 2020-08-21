@@ -4,7 +4,7 @@ import { attachables } from 'server/system/mongo-data';
 import { config } from 'server/system/parseConfig';
 import { attachmentSchema } from 'server/system/schemas';
 import { Article } from 'shared/article/article.model';
-import { CbError } from 'shared/models.model';
+import { CbError1 } from 'shared/models.model';
 
 const conn = establishConnection(config.database.appData);
 const articleSchema = new Schema({
@@ -21,7 +21,7 @@ attachables.push(articleModel);
 
 export const type = 'articles';
 
-export function byId(id: string, cb: CbError<ArticleDocument>) {
+export function byId(id: string, cb: CbError1<ArticleDocument>) {
     articleModel.findOne({_id: id}, cb);
 }
 

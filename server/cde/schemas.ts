@@ -1,12 +1,13 @@
 import * as mongoose from 'mongoose';
-import { addStringtype } from '../system/mongoose-stringtype';
+import { addStringtype } from 'server/system/mongoose-stringtype';
 import {
     attachmentSchema, classificationSchema, dataSetSchema, datatypeDateSchema, datatypeDynamicListSchema,
     datatypeExternallyDefinedSchema,
     datatypeNumberSchema, datatypeTextSchema, datatypeTimeSchema, datatypeValueListSchema, definitionSchema,
     derivationRuleSchema, designationSchema, eltLogSchema, idSchema, permissibleValueSchema, propertySchema,
     referenceDocumentSchema, registrationStateSchema, sourcesNewSchema, sourceSchema
-} from '../system/schemas';
+} from 'server/system/schemas';
+import { Classification } from 'shared/models.model';
 
 addStringtype(mongoose);
 const Schema = mongoose.Schema;
@@ -53,11 +54,11 @@ export const deJson = {
     imported: {type: Date, description: 'Date last imported from source'},
     createdBy: {
         userId: Schema.Types.ObjectId,
-        username: StringType
+        username: StringType,
     },
     updatedBy: {
         userId: Schema.Types.ObjectId,
-        username: StringType
+        username: StringType,
     },
     version: StringType,
     changeNote: {type: StringType, description: 'Description of last modification'},
@@ -142,7 +143,7 @@ export const dataElementSchema = new Schema(deJson, {
                 }
             };
         }
-    }
+    },
 });
 dataElementSchema.index({tinyId: 1, archived: 1}, {
     unique: true,
@@ -155,7 +156,7 @@ dataElementSchema.path("valueDomain").validate(v => {
     return true;
 }, "Code is required for CodeList Datatype");
 */
-dataElementSchema.path('classification').validate(v => {
+dataElementSchema.path('classification').validate((v: Classification[]) => {
     return !v.map(value => value.stewardOrg.name)
         .some((value, index, array) => array.indexOf(value) !== array.lastIndexOf(value));
 }, 'Duplicate Steward Classification');
@@ -174,7 +175,7 @@ draftSchema.virtual('isDraft').get(() => true);
 
 export const dataElementSourceSchema = new Schema(deJson, {
     collection: 'dataelementsources',
-    usePushEach: true
+    usePushEach: true,
 });
 dataElementSourceSchema.index({tinyId: 1, source: 1}, {unique: true});
 

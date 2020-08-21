@@ -4,7 +4,7 @@ import { mergeArrayByProperty } from 'core/adminItem/classification';
 import { IsAllowedService } from 'non-core/isAllowed.service';
 import { MergeDeService } from 'compare/mergeDe.service';
 import { CdeForm } from 'shared/form/form.model';
-import { CbErr } from 'shared/models.model';
+import { CbErr1 } from 'shared/models.model';
 import { transferClassifications } from 'shared/system/classificationShared';
 import { FormMergeFields } from './mergeForm/formMergeFields.model';
 
@@ -12,15 +12,15 @@ import { FormMergeFields } from './mergeForm/formMergeFields.model';
 @Injectable()
 export class MergeFormService {
     error: any = {};
-    maxNumberQuestions: number;
-    numMergedQuestions: number;
+    maxNumberQuestions!: number;
+    numMergedQuestions!: number;
 
     constructor(private http: HttpClient,
                 public isAllowedModel: IsAllowedService,
                 private mergeDeService: MergeDeService) {
     }
 
-    saveForm(form: CdeForm, cb: CbErr<CdeForm>) {
+    saveForm(form: CdeForm, cb: CbErr1<CdeForm | void>) {
         this.http.post<CdeForm>('/server/form/publishExternal', form).subscribe(
             data => {
                 cb(undefined, data);

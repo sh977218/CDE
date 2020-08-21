@@ -16,7 +16,7 @@ import { config } from 'server/system/parseConfig';
 import { DataElementElastic } from 'shared/de/dataElement.model';
 import { CdeFormElastic } from 'shared/form/form.model';
 import {
-    Cb, Cb1, CbError, CbError1, ElasticQueryError, ElasticQueryResponse, ElasticQueryResponseAggregations, ItemElastic,
+    Cb, Cb1, CbError, CbError1, ElasticQueryError, ElasticQueryResponse, ElasticQueryResponseAggregations, Item, ItemElastic,
     ModuleItem,
     SearchResponseAggregationDe, SearchResponseAggregationForm,
     SearchResponseAggregationItem,
@@ -145,7 +145,7 @@ export function reIndexStream(dbStream: DbStream, cb?: Cb) {
             bufferOffsets[i] = 0;
         };
 
-        dbStream.query.dao.count(dbStream.query.condition, (err: Error | undefined, totalCount: number) => {
+        dbStream.query.dao.count(dbStream.query.condition, (err: Error | null, totalCount: number) => {
             if (err) {
                 consoleLog(`Error getting count: ${err}`, 'error');
             }
@@ -183,7 +183,7 @@ export function reIndexStream(dbStream: DbStream, cb?: Cb) {
                 // data
                 const docObj = doc.toObject();
                 dbStream.indexes.forEach((index, i) => {
-                    riverFunctions[i](docObj, (doc?: ItemElastic) => {
+                    riverFunctions[i](docObj, (doc: Item | void) => {
                         if (!doc) {
                             return;
                         }
@@ -273,7 +273,7 @@ export function initEs(cb: Cb = () => {
 }
 
 export function completionSuggest(term: ElasticCondition, user: User, settings: SearchSettingsElastic,
-                                  indexName: string, cb: CbError<ElasticQueryResponse<ItemElastic>>) {
+                                  indexName: string, cb: CbError1<ElasticQueryResponse<ItemElastic> | void>) {
     const suggestQuery = {
         query: {
             match: {
@@ -298,7 +298,7 @@ export function completionSuggest(term: ElasticCondition, user: User, settings: 
         if (error) {
             cb(error);
         } else {
-            cb(undefined, response.body);
+            cb(null, response.body);
         }
     });
 }
@@ -673,11 +673,11 @@ const searchTemplate: { [key: string]: any } = {
     }
 };
 
-export function elasticsearch(type: 'cde', query: any, settings: any, cb: CbError<SearchResponseAggregationDe>): void;
-export function elasticsearch(type: 'form', query: any, settings: any, cb: CbError<SearchResponseAggregationForm>): void;
+export function elasticsearch(type: 'cde', query: any, settings: any, cb: CbError1<SearchResponseAggregationDe>): void;
+export function elasticsearch(type: 'form', query: any, settings: any, cb: CbError1<SearchResponseAggregationForm>): void;
 export function elasticsearch(type: ModuleItem, query: any, settings: any,
-                              callback: CbError<SearchResponseAggregationDe> | CbError<SearchResponseAggregationForm>): void {
-    const cb = callback as CbError<SearchResponseAggregationItem>;
+                              callback: CbError1<SearchResponseAggregationDe> | CbError1<SearchResponseAggregationForm>): void {
+    const cb = callback as CbError1<SearchResponseAggregationItem | void>;
     const search = searchTemplate[type];
     if (!search) {
         return cb(new Error('Invalid query'));
@@ -740,18 +740,18 @@ export function elasticsearch(type: ModuleItem, query: any, settings: any,
                 result[type + 's'].push(thisCde);
             }
             result.aggregations = response.aggregations;
-            cb(undefined, result);
+            cb(null, result);
         }
     });
 }
 
 let lock = false;
 
-export function elasticSearchExport(type: 'cde', query: any, dataCb: CbError<DataElementElastic>): void;
-export function elasticSearchExport(type: 'form', query: any, dataCb: CbError<CdeFormElastic>): void;
+export function elasticSearchExport(type: 'cde', query: any, dataCb: CbError1<DataElementElastic | void>): void;
+export function elasticSearchExport(type: 'form', query: any, dataCb: CbError1<CdeFormElastic | void>): void;
 export async function elasticSearchExport(type: ModuleItem, query: any,
-                                          dataCb: CbError<DataElementElastic> | CbError<CdeFormElastic>) {
-    const streamCb = dataCb as CbError<ItemElastic>;
+                                          dataCb: CbError1<DataElementElastic | void> | CbError1<CdeFormElastic | void>) {
+    const streamCb = dataCb as CbError1<ItemElastic | void>;
     if (lock) {
         return streamCb(new Error('Servers busy'));
     }
@@ -787,7 +787,7 @@ export async function elasticSearchExport(type: ModuleItem, query: any,
             streamCb(null);
         } else {
             for (const hit of response.hits.hits) {
-                streamCb(undefined, hit._source);
+                streamCb(null, hit._source);
             }
             scrollThrough(response);
         }
@@ -797,7 +797,7 @@ export async function elasticSearchExport(type: ModuleItem, query: any,
     processScroll(response.body);
 }
 
-export function scrollExport(query: any, type: ModuleItem, cb: CbError<any>) {
+export function scrollExport(query: any, type: ModuleItem, cb: CbError1<any>) {
     query.size = 100;
     delete query.aggregations;
 
@@ -808,7 +808,7 @@ export function scrollExport(query: any, type: ModuleItem, cb: CbError<any>) {
     esClient.search(search, cb);
 }
 
-export function scrollNext(scrollId: string, cb: CbError<any>) {
+export function scrollNext(scrollId: string, cb: CbError1<any>) {
     esClient.scroll({scrollId, scroll: '1m'} as any, cb);
 }
 

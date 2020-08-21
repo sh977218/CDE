@@ -21,7 +21,7 @@ import { jobQueue, message, statusValidationRuleSchema } from 'server/system/sch
 import { userModel } from 'server/user/userDb';
 import { DataElement, DataElementElastic } from 'shared/de/dataElement.model';
 import { CdeForm, CdeFormElastic } from 'shared/form/form.model';
-import { Cb, Cb1, CbError, EltLog, Item, ItemElastic, ModuleAll, User } from 'shared/models.model';
+import { Cb1, CbError, CbError1, CbError2, EltLog, Item, ItemElastic, ModuleAll, User } from 'shared/models.model';
 import { hasRole } from 'shared/system/authorizationShared';
 import { generate as shortIdGenerate } from 'shortid';
 import { Readable } from 'stream';
@@ -121,7 +121,7 @@ export const sessionStore = new mongoStore({
     touchAfter: 60
 });
 
-export function jobStatus(type: string, callback: CbError<Document & JobStatus>) {
+export function jobStatus(type: string, callback: CbError1<Document & JobStatus>) {
     jobQueueModel.findOne({type}, callback);
 }
 
@@ -213,7 +213,7 @@ export interface SearchParams {
     skip: number;
 }
 
-export const auditGetLog = (auditDb: Model<any>) => (params: SearchParams, cb: CbError<EltLog[]>) => {
+export const auditGetLog = (auditDb: Model<any>) => (params: SearchParams, cb: CbError1<EltLog[]>) => {
     auditDb.find(params.includeBatch ? undefined : {'user.username': {$ne: 'batchloader'}})
         .sort('-date')
         .skip(params.skip)
@@ -271,7 +271,7 @@ export interface FileCreateInfo {
     type?: string;
 }
 
-export function addFile(file: FileCreateInfo, cb: CbError<File & Document, boolean>, streamDescription: any = null) {
+export function addFile(file: FileCreateInfo, cb: CbError2<File & Document, boolean>, streamDescription: any = null) {
     gfs.findOne({md5: file.md5} as any, (err, f) => {
         if (f) {
             return cb(err, f, false);
@@ -290,7 +290,7 @@ export function addFile(file: FileCreateInfo, cb: CbError<File & Document, boole
     });
 }
 
-export function deleteFileById(id: string, callback: Cb<Error>) {
+export function deleteFileById(id: string, callback: CbError) {
     gfs.remove({_id: id}, callback);
 }
 
@@ -327,7 +327,7 @@ export function generateTinyId() {
     return shortIdGenerate().replace(/-/g, '_');
 }
 
-export function createMessage(msg: Omit<Message, '_id'>, cb?: CbError<MessageDocument>) {
+export function createMessage(msg: Omit<Message, '_id'>, cb?: CbError1<MessageDocument>) {
     msg.states = [{
         action: 'Filed',
         date: new Date(),
@@ -336,7 +336,7 @@ export function createMessage(msg: Omit<Message, '_id'>, cb?: CbError<MessageDoc
     new messageModel(msg).save(cb);
 }
 
-export function fetchItem<T extends Document>(module: ModuleAll, tinyId: string, cb: CbError<T>) {
+export function fetchItem<T extends Document>(module: ModuleAll, tinyId: string, cb: CbError1<T | void>) {
     const db = getDao(module);
     if (!db) {
         cb(new Error('Module has no database.'));

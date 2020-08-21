@@ -46,7 +46,7 @@ export function module(roleConfig: {feedbackLog: RequestHandler, superLog: Reque
     });
 
     router.post('/clientExceptionLogs', (req, res) => {
-        logClientError(req, handleError({req, res}, result => res.send(result)));
+        logClientError(req, () => res.send());
     });
 
     router.get('/triggerServerErrorExpress', roleConfig.superLog, (req, res) => {

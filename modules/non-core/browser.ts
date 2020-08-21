@@ -1,8 +1,8 @@
-import { Cb, CbErr, CbRet } from 'shared/models.model';
+import { Cb, CbErr1, CbRet } from 'shared/models.model';
 
-export function callbackify<T>(asyncFn: Promise<T>): (a: CbErr<T>) => void {
+export function callbackify<T>(asyncFn: Promise<T>): (a: CbErr1<T>) => void {
     return (cb) => {
-        asyncFn.then(value => cb(undefined, value), cb);
+        asyncFn.then(value => cb(undefined, value) as any, cb as any);
     };
 }
 

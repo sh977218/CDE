@@ -30,6 +30,7 @@ import { Subscription } from 'rxjs';
 import { DataType } from 'shared/de/dataElement.model';
 import { uriViewBase } from 'shared/item';
 import {
+    Cb1,
     CbErr, CurationStatus, ElasticQueryResponseAggregation, ElasticQueryResponseAggregationBucket,
     ElasticQueryResponseHit, ItemElastic, ModuleItem,
     SearchResponseAggregationDe, SearchResponseAggregationForm, SearchResponseAggregationItem,
@@ -65,6 +66,7 @@ export const searchStyles = `
     .treeItemIcon {
         font-size: 14px;
         height: 14px;
+        line-height: 15px;
         width: 5px;
     }
     .treeItemText {
@@ -132,6 +134,7 @@ export const searchStyles = `
     .filter-cb {
         font-size: 14px;
         height: 14px;
+        line-height: 12px;
         width: 14px;
         vertical-align: middle;
     }
@@ -456,7 +459,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         return paramsToQueryString(this.generateSearchForTerm(p));
     }
 
-    private filterOutWorkingGroups(cb: CbErr) {
+    private filterOutWorkingGroups(cb: Cb1<string | void>) {
         this.userService.catch(_noop).then(user => {
             this.orgHelperService.then(() => {
                 if (this.aggregations) {

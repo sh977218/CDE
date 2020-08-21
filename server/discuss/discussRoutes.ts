@@ -13,12 +13,12 @@ import { ioServer } from 'server/system/ioServer';
 import { getDao } from 'server/system/moduleDaoManager';
 import { createMessage, fetchItem, ItemDocument, Message } from 'server/system/mongo-data';
 import { byUsername } from 'server/user/userDb';
-import { Board, BoardUser, Cb, User } from 'shared/models.model';
+import { Board, BoardUser, Cb, Cb1, User } from 'shared/models.model';
 import { canComment, canRemoveComment } from 'shared/system/authorizationShared';
 
 require('express-async-errors');
 
-function getEltUsers(board: Board, cb: Cb<ObjectId[]>) {
+function getEltUsers(board: Board, cb: Cb1<ObjectId[] | void>) {
     const userIds: ObjectId[] = [];
     if (board.owner && board.owner.userId) {
         userIds.push(board.owner.userId);

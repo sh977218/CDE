@@ -180,11 +180,11 @@ export const formJson = {
     imported: {type: Date, description: 'Date last imported from source'},
     createdBy: {
         userId: Schema.Types.ObjectId,
-        username: StringType
+        username: StringType,
     },
     updatedBy: {
         userId: Schema.Types.ObjectId,
-        username: StringType
+        username: StringType,
     },
     version: StringType,
     changeNote: {type: StringType, description: 'Description of last modification'},
@@ -231,7 +231,7 @@ export const formJson = {
 };
 export const formSchema = new Schema(formJson, {
     collection: 'forms',
-    usePushEach: true
+    usePushEach: true,
 });
 formSchema.path('classification').validate((v: Classification[]) => {
     return !v.map(value => value.stewardOrg.name)

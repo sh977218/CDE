@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { findQuestionByTinyId, getFormScoreQuestions } from 'core/form/fe';
 import { isScore } from 'shared/form/fe';
 import { CdeForm, FormQuestion } from 'shared/form/form.model';
-import { CbErr } from 'shared/models.model';
+import { CbErr1 } from 'shared/models.model';
 
 interface ErrorOrScore {
     error?: string;
@@ -40,7 +40,7 @@ export class ScoreService {
         }
     }
 
-    static calculateScore(question: FormQuestion, elt: CdeForm, cb: CbErr<number>) {
+    static calculateScore(question: FormQuestion, elt: CdeForm, cb: CbErr1<number | void>) {
         if (!isScore(question.question)) {
             return;
         }
@@ -95,7 +95,7 @@ export class ScoreService {
     }
 
     static scoreSet(question: FormQuestion, elt: CdeForm) {
-        ScoreService.calculateScore(question, elt, (err?: string, sum?: number) => {
+        ScoreService.calculateScore(question, elt, (err: string | undefined, sum: number | void) => {
             if (err) {
                 question.question.scoreError = err;
             } else {

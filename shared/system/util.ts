@@ -1,4 +1,4 @@
-import { CbRet, CbRet1 } from 'shared/models.model';
+import { CbRet, CbRet1, CbRet3 } from 'shared/models.model';
 
 export function capCase(str: string): string {
     return str.split(' ').map(capString).join(' ');
@@ -21,7 +21,7 @@ export function deepCopy<T>(obj: T): T {
     return JSON.parse(JSON.stringify(obj));
 }
 
-export function partition<T>(arr: T[], condition: CbRet1<boolean, T, number, T[]>): [T[], T[]] {
+export function partition<T>(arr: T[], condition: CbRet3<boolean, T, number, T[]>): [T[], T[]] {
     return arr.reduce((result: [T[], T[]], e: T, i: number, arr: T[]) => {
         condition(e, i, arr)
             ? result[0].push(e)
@@ -31,7 +31,7 @@ export function partition<T>(arr: T[], condition: CbRet1<boolean, T, number, T[]
     }, [[], []]);
 }
 
-export function promiseArrayMapSeries<T, U>(array: T[], iterCb: CbRet<Promise<U>, T, number, T[]>): Promise<U[]> {
+export function promiseArrayMapSeries<T, U>(array: T[], iterCb: CbRet3<Promise<U>, T, number, T[]>): Promise<U[]> {
     return array.reduce(
         (ready, code, i, array) => ready.then(
             results => iterCb(code, i, array).then(result => [...results, result])

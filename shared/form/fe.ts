@@ -67,7 +67,7 @@ export function isScore(question: Question): boolean {
 //     cbContinue skip: noopSkipIterCb()
 // callback(error)
 export function iterateFe<E = Error>(fe: FormElementsContainer, formCb: informCb<E> | undefined, sectionCb: sectionCb<E> | undefined,
-                                     questionCb: quesCb<E> | undefined, callback: CbErrorObj<E>, options?: IterateOptions): void {
+                                     questionCb: quesCb<E> | undefined, callback: CbErrorObj<E | void>, options?: IterateOptions): void {
     if (fe) {
         iterateFes(fe.formElements, formCb, sectionCb, questionCb, callback, options);
     } else {
@@ -98,12 +98,12 @@ export function iterateFeSyncOptions(fe: FormElementsContainer, formCb?: informO
 //     cbContinue skip: noopSkipIterCb()
 // callback(error)
 export function iterateFes<E = Error>(fes: FormElement[], formCb: informCb<E> = noopIterCb, sectionCb: sectionCb<E> = noopIterCb,
-                                      questionCb: quesCb<E> = noopIterCb, callback: CbErrorObj<E> = () => {},
+                                      questionCb: quesCb<E> = noopIterCb, callback: CbErrorObj<E | void> = () => {},
                                       options?: IterateOptions): void {
     if (!Array.isArray(fes)) {
         return callback();
     }
-    forEachOf(fes, (fe: FormElement, i: number, cb: CbErrorObj<E>) => {
+    forEachOf(fes, (fe: FormElement, i: number, cb: CbErrorObj<E | void>) => {
         switch (fe.elementType) {
             case 'form':
                 formCb(fe, (err, options = undefined) => {
@@ -209,7 +209,7 @@ export function iterateFormElements(fe: any = {}, option: any = {}, cb?: any): v
         return;
     }
     if (option.async) {
-        forEachSeries(fe.formElements, (fe: FormElement, doneOneFe: CbErr) => {
+        forEachSeries(fe.formElements, (fe: FormElement, doneOneFe: CbErrorObj<string | void>) => {
             if (fe.elementType === 'section') {
                 if (option.sectionCb) {
                     option.sectionCb(fe, doneOneFe);

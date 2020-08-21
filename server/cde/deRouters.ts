@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Response, Router } from 'express';
 import { toInteger } from 'lodash';
 import {
     byId, byTinyId, byTinyIdAndVersion, byTinyIdList, create, derivationOutputs, draftDelete, draftForEditByTinyId,
@@ -120,7 +120,7 @@ export function module() {
         const query = buildElasticSearchQuery(req.user, req.body);
         const exporters = {
             json: {
-                export(res) {
+                export(res: Response) {
                     let firstElt = true;
                     let typeSent = false;
                     elasticSearchExport('cde', query, (err, elt) => {

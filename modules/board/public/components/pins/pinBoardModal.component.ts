@@ -4,7 +4,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
 import { MyBoardsService } from 'board/public/myBoards.service';
-import { Board, Cb, Item, ModuleItem } from 'shared/models.model';
+import { Board, Cb1, ModuleItem } from 'shared/models.model';
 
 
 @Component({
@@ -16,8 +16,8 @@ export class PinBoardModalComponent {
     @ViewChild('pinModal', {static: true}) pinModal!: TemplateRef<any>;
     @ViewChild('ifYouLoginModal', {static: true}) ifYouLoginModal!: TemplateRef<any>;
     dialogRef!: MatDialogRef<TemplateRef<any>>;
-    private resolve!: Cb<Board>;
-    private reject!: Cb<any>;
+    private resolve!: Cb1<Board>;
+    private reject!: Cb1<any>;
 
     constructor(private alert: AlertService,
                 private http: HttpClient,
@@ -54,7 +54,7 @@ export class PinBoardModalComponent {
                 this.dialogRef = this.dialog.open(this.pinModal, {width: '800px'});
             } else {
                 this.dialog.open(this.ifYouLoginModal);
-                this.reject();
+                this.reject('');
             }
         });
     }

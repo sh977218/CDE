@@ -25,7 +25,8 @@ import _intersectionWith from 'lodash/intersectionWith';
 import _noop from 'lodash/noop';
 import _uniq from 'lodash/uniq';
 import {
-    assertThrow, assertTrue, assertUnreachable, Cb, CbErr, CbRet, CbRet1, CdeId, PermissibleValue
+    assertThrow, assertTrue, assertUnreachable, Cb, Cb1, CbErr, CbErr1, CbError1, CbErrorObj1, CbRet, CbRet1, CbRet2, CdeId,
+    PermissibleValue
 } from 'shared/models.model';
 import { CdeForm, FhirApp, FormQuestion } from 'shared/form/form.model';
 import { iterateFe, iterateFeSync, questionMulti } from 'shared/form/fe';
@@ -95,7 +96,7 @@ function isSupportedResourceRelationship(self: ResourceTreeResource, parent?: Re
     }
 }
 
-function resourceCodeableConceptMatch(resources: FhirDomainResource[], transform: CbRet<FhirCodeableConcept[], any>, ids: CdeId[]) {
+function resourceCodeableConceptMatch(resources: FhirDomainResource[], transform: CbRet2<FhirCodeableConcept[], any>, ids: CdeId[]) {
     let found: FhirDomainResource | undefined;
     resources.some(r => {
         if (codeableConceptMatch(transform(r), ids)) {
@@ -124,18 +125,20 @@ export interface PatientForm {
 export class CdeFhirService {
     cleanupPatient!: Cb;
     getDisplayFunc = this.getDisplay.bind(this);
-    lookupObservationCategories: (code: string, cb: CbErr<string[]>) => void = async_memoize((code: string, done: CbErr<string>) => {
-        this.http.get<{categories: 'social-history'|'vital-signs'|'imaging'|'laboratory'|'procedure'|'survey'|'exam'|'therapy'}>(
-            '/fhirObservationInfo?id=' + code).subscribe(r => {
-            done(undefined, r ? r.categories : undefined);
-        }, done);
-    });
-    lookupLoincName: (code: string, cb: CbErr) => void = async_memoize((code: string, done: CbErr<string[]>) => {
+    lookupObservationCategories: (code: string, cb: CbErr1<string[]>) => void = async_memoize(
+        (code: string, done: CbErr1<string | undefined>) => {
+            this.http.get<{ categories: 'social-history' | 'vital-signs' | 'imaging' | 'laboratory' | 'procedure' | 'survey' | 'exam' | 'therapy' }>(
+                '/fhirObservationInfo?id=' + code).subscribe(r => {
+                done(undefined, r ? r.categories : undefined);
+            }, done as any);
+        }
+    );
+    lookupLoincName: (code: string, cb: CbErr1<any>) => void = async_memoize((code: string, done: CbErrorObj1<string[] | void>) => {
         this.http.get('/server/uts/umlsCuiFromSrc/' + code + '/LNC').subscribe((r: any) => {
             if (r && r.result && r.result.results.length) {
                 done(undefined, r.result.results[0].name.split(':')[0]);
             }
-        }, done);
+        }, done as any);
     });
     patientForms: PatientForm[] = [];
     renderedPatientForm!: PatientForm;
@@ -217,7 +220,7 @@ export class CdeFhirService {
         }
     }
 
-    getObservationCategory(system: string, code: string, cb: Cb<string[]>) {
+    getObservationCategory(system: string, code: string, cb: Cb1<string[] | void>) {
         this.lookupObservationCategories(system + ' : ' + code, (err, categories) => cb(err ? undefined : categories));
     }
 
@@ -263,7 +266,7 @@ export class CdeFhirService {
                                 'codeSystemName', 'permissibleValue');
                         }
                     );
-                    cb();
+                    cb(undefined);
                 }, cb);
             });
         }, cb);
@@ -393,19 +396,19 @@ export class CdeFhirService {
                     }
                     async_some(
                         codes,
-                        (id: CdeId, done: CbErr<boolean>) => {
+                        (id: CdeId, done: CbErr1<boolean>) => {
                             return this.fhirData.search<FhirObservation | FhirQuestionnaireResponse>(self.resourceType,
                                 {code: (id.source ? codeSystemOut(id.source) + '|' : '') + id.id})
                                 .then(r => r.length > 0 ? this.selectOne('edit', r, 'Last Edit',
                                     (r: any) => r.meta && new Date(r.meta.lastUpdated) || '') : r[0])
-                                .then(r => {
+                                .then((r: any) => {
                                     if (r) {
                                         resource = r;
                                         done(undefined, true);
                                     } else {
                                         done(undefined, false);
                                     }
-                                }, done);
+                                }, done as any);
                         },
                         (err: string) => {
                             if (err) {
@@ -542,7 +545,7 @@ export class CdeFhirService {
                         : a,
                     []);
                 let categories: string[] = [];
-                async_forEach(codes, (code: string, doneOne: CbErr) => {
+                async_forEach(codes, (code: string, doneOne: Cb) => {
                     this.getObservationCategory('LOINC', code, cats => {
                         if (isArray(cats)) {
                             categories = categories.concat(cats);
@@ -583,16 +586,16 @@ export class CdeFhirService {
     }
 
     // cb(err)
-    saveTree(node: ResourceTreeRoot | ResourceTree, cb: CbErr<any>) {
+    saveTree(node: ResourceTreeRoot | ResourceTree, cb: CbErr1<any>) {
         async_series([
-            (done: CbErr) => {
+            (done: Cb1<string | void>) => {
                 if (ResourceTreeUtil.isNotRoot(node) && ResourceTreeUtil.isResource(node)) {
                     this.saveTreeNode(node, done);
                 } else {
                     done();
                 }
             },
-            (done: CbErr) => {
+            (done: Cb1<string | void>) => {
                 if (ResourceTreeUtil.isRoot(node) || !ResourceTreeUtil.isAttribute(node)) {
                     async_forEach(node.children, this.saveTree.bind(this), done);
                 } else {
@@ -603,7 +606,7 @@ export class CdeFhirService {
     }
 
     // cb(err, resource)
-    saveTreeNode(node: ResourceTreeResource, cb: CbErr<any>) {
+    saveTreeNode(node: ResourceTreeResource, cb: CbErr1<any>) {
         if (node.resource && (node.resourceRemote === null || node.resourceRemote
             && diff.diff(node.resourceRemote, node.resource))) {
             if (node.resourceRemote && !node.resource.id) {
@@ -635,10 +638,10 @@ export class CdeFhirService {
                 this.save(node.resource).then(resource => {
                     ResourceTreeUtil.setResource(node, resource);
                     cb(undefined, resource);
-                }, cb);
-            }, cb);
+                }, cb as any);
+            }, cb as any);
         } else {
-            cb();
+            cb(undefined, undefined);
         }
     }
 
@@ -675,7 +678,7 @@ export class CdeFhirService {
             });
     }
 
-    submit(cb: CbErr) {
+    submit(cb: Cb1<string | void>) {
         this.write(this.renderedResourceTree).then(() => {
             this.saveTree(this.renderedResourceTree, (err?: string) => {
                 if (err) {
@@ -911,7 +914,7 @@ export class CdeFhirService {
 })
 export class SelectOneDialogComponent {
     columnNames: string[] = [];
-    columnGetters: CbRet<any, any>[] = [];
+    columnGetters: CbRet1<any, any>[] = [];
     constructor(@Inject(MAT_DIALOG_DATA) public data: {resources: FhirDomainResource[], type: FhirAppViewModes, columns: any}) {
         const size = Math.floor(data.columns.length / 2);
         for (let i = 0; i < size; i++) {

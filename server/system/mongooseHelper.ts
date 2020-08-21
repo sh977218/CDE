@@ -1,7 +1,8 @@
-import { CbError } from 'shared/models.model';
+import { Document, Model } from 'mongoose';
+import { CbError1 } from 'shared/models.model';
 
-export function exists(ModelOrQuery, condition, cb: CbError<boolean>) {
-    ModelOrQuery.find(condition, {_id : 1}).limit(1).exec((err, results) => {
+export function exists<T extends Document>(modelOrQuery: Model<T>, condition: any, cb: CbError1<boolean>) {
+    modelOrQuery.find(condition, {_id: 1}).limit(1).exec((err: any, results: any) => {
         cb(err, !!(results && results.length));
     });
 }

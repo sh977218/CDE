@@ -4,7 +4,7 @@ import { establishConnection } from 'server/system/connections';
 import { addStringtype } from 'server/system/mongoose-stringtype';
 import { config } from 'server/system/parseConfig';
 import { hasRole, rolesEnum } from 'shared/system/authorizationShared';
-import { CbError, ModuleAll, User } from 'shared/models.model';
+import { CbError, CbError1, ModuleAll, User } from 'shared/models.model';
 
 addStringtype(mongoose);
 const Schema = mongoose.Schema;
@@ -116,12 +116,12 @@ export const userModel: Model<UserDocument> = conn.model('User', userSchema);
 
 const userProject = {password: 0};
 
-export function addUser(user: Omit<User, '_id'>, callback: CbError<UserDocument>) {
+export function addUser(user: Omit<User, '_id'>, callback: CbError1<UserDocument>) {
     user.username = user.username.toLowerCase();
     new userModel(user).save(callback);
 }
 
-export function updateUserIps(userId: string, ips: string[], callback: CbError<UserDocument | null>) {
+export function updateUserIps(userId: string, ips: string[], callback: CbError1<UserDocument | null>) {
     userModel.findByIdAndUpdate(userId, {
         lockCounter: 0,
         lastLogin: Date.now(),
@@ -129,24 +129,24 @@ export function updateUserIps(userId: string, ips: string[], callback: CbError<U
     }, {new: true}, callback);
 }
 
-export function userByName(name: string, callback?: CbError<UserDocument>): Query<UserDocument | null> {
+export function userByName(name: string, callback?: CbError1<UserDocument>): Query<UserDocument | null> {
     return userModel.findOne({username: new RegExp('^' + name + '$', 'i')}, callback);
 }
 
-export function userById(id: string, callback: CbError<UserDocument>) {
+export function userById(id: string, callback: CbError1<UserDocument>) {
     userModel.findById(id, userProject, callback);
 }
 
-export function byId(id: string, callback?: CbError<UserDocument | null>) {
+export function byId(id: string, callback?: CbError1<UserDocument | null>) {
     return userModel.findById(id, userProject, callback);
 }
 
-export function find(crit: any, cb: CbError<UserDocument[]>) {
+export function find(crit: any, cb: CbError1<UserDocument[]>) {
     userModel.find(crit, cb);
 }
 
 // cb(err, {nMatched, nUpserted, nModified})
-export async function updateUser(user: User, fields: any, callback?: CbError<number, number, number>) {
+export async function updateUser(user: User, fields: any, callback?: CbError) {
     const update: any = {};
     if (fields.commentNotifications) {
         update.commentNotifications = fields.commentNotifications;
@@ -176,7 +176,7 @@ export async function updateUser(user: User, fields: any, callback?: CbError<num
     return userModel.updateOne({_id: user._id}, {$set: update}).exec(callback);
 }
 
-export function usersByName(name: string, callback: CbError<UserDocument[]>) {
+export function usersByName(name: string, callback: CbError1<UserDocument[]>) {
     userModel.find({username: new RegExp('^' + name + '$', 'i')}, userProject, callback);
 }
 
@@ -184,28 +184,28 @@ export function usersByUsername(username: string) {
     return userModel.find({username: new RegExp(username, 'i')}, userProject);
 }
 
-export function userByUsername(username: string, callback: CbError<UserDocument>) {
+export function userByUsername(username: string, callback: CbError1<UserDocument>) {
     userModel.findOne({username: new RegExp(username, 'i')}, userProject, callback);
 }
 
-export function byUsername(username: string, callback?: CbError<UserDocument>) {
+export function byUsername(username: string, callback?: CbError1<UserDocument>) {
     return userModel.findOne({username}, userProject).exec(callback as any);
 }
 
-export function save(user: Partial<UserFull>, callback?: CbError<UserDocument>) {
+export function save(user: Partial<UserFull>, callback?: CbError1<UserDocument>) {
     return new userModel(user).save(callback);
 }
 
 // Site Admin
-export function usernamesByIp(ip: string, callback: CbError<UserDocument[]>) {
+export function usernamesByIp(ip: string, callback: CbError1<UserDocument[]>) {
     userModel.find({knownIPs: {$in: [ip]}}, {username: 1}, callback);
 }
 
-export function siteAdmins(callback: CbError<UserDocument[]>) {
+export function siteAdmins(callback: CbError1<UserDocument[]>) {
     userModel.find({siteAdmin: true}, 'username email', callback);
 }
 
-export function orgAuthorities(callback: CbError<UserDocument[]>) {
+export function orgAuthorities(callback: CbError1<UserDocument[]>) {
     userModel.find({roles: 'OrgAuthority'}, 'username', callback);
 }
 
@@ -214,6 +214,6 @@ export function orgAdmins() {
     return userModel.find({orgAdmin: {$not: {$size: 0}}}).sort({username: 1});
 }
 
-export function orgCurators(orgs: string[], callback: CbError<UserDocument[]>) {
+export function orgCurators(orgs: string[], callback: CbError1<UserDocument[]>) {
     userModel.find().where('orgCurator').in(orgs).exec(callback);
 }

@@ -8,12 +8,12 @@ import { isQuestion } from 'core/form/fe';
 import { getMapToFhirResource } from 'core/form/formAndFe';
 import { CdeForm, FhirProcedureMapping, FormElement } from 'shared/form/form.model';
 import { isCdeFormNotFe } from 'shared/item';
-import { assertThrow, assertUnreachable, CbErr, CdeId } from 'shared/models.model';
+import { assertThrow, assertUnreachable, CbErr1, CdeId } from 'shared/models.model';
 import { codeSystemOut } from 'shared/mapping/fhir';
 import { FhirCoding } from 'shared/mapping/fhir/fhir.model';
 import { supportedFhirResources } from 'shared/mapping/fhir/fhirResource.model';
 
-export function addEmptyNode(fe: FormElement | CdeForm, cb: CbErr<ResourceTreeRoot|ResourceTree>,
+export function addEmptyNode(fe: FormElement | CdeForm, cb: CbErr1<ResourceTreeRoot|ResourceTree|undefined>,
                              parent: ResourceTreeRoot|ResourceTreeResource|ResourceTreeIntermediate
 ): ResourceTreeRoot | ResourceTree | undefined {
     let self: ResourceTreeRoot | ResourceTree | undefined;
