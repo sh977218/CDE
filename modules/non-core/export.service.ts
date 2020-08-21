@@ -12,6 +12,7 @@ import JSZip from 'jszip';
 import JXON from 'jxon';
 import _intersectionWith from 'lodash/intersectionWith';
 import _noop from 'lodash/noop';
+import { FormService } from 'nativeRender/form.service';
 import { processRules, RegistrationValidatorService, RuleStatus } from 'non-core/registrationValidator.service';
 import { DataElement, DataElementElastic } from 'shared/de/dataElement.model';
 import { CdeForm, CdeFormElastic } from 'shared/form/form.model';
@@ -97,6 +98,31 @@ export class ExportService {
             getCdeCsvHeader(settings.tableViewFields)
         );
     }
+
+    exportDe = (elt: DataElement, queryString: string, type: 'json' | 'xml') => {
+        fetch('/server/de/byId/' + elt._id + queryString)
+            .then(res => res.text())
+            .then(data => {
+                const blob = new Blob([data], {type: 'application/' + type});
+                saveAs(blob, elt.tinyId + '.' + type);
+                this.alertService.addAlert('', 'Export downloaded.');
+            })
+            .catch(err => {
+                this.alertService.addAlert('', 'Export failed with err: ' + err)
+            });
+    };
+
+    exportForm = (elt: CdeForm, queryString: string, type: 'json' | 'xml') => {
+        FormService.fetchFormStringById(elt._id, queryString)
+            .then(data => {
+                const blob = new Blob([data], {type: 'application/' + type});
+                saveAs(blob, elt.tinyId + '.' + type);
+                this.alertService.addAlert('', 'Export downloaded.');
+            })
+            .catch(err => {
+                this.alertService.addAlert('', 'Export failed with err: ' + err)
+            });
+    };
 
     exportSearchResults(type: 'cvs'|'json'|'validationRules'|'xml', module: 'cde'|'form', exportSettings: ExportRecordSettings,
                         cb?: Cb1<ExportRecord[] | undefined>) {
@@ -240,6 +266,4 @@ export class ExportService {
         RedcapExport.getZipRedCap(form);
         this.alertService.addAlert('', 'Export downloaded.');
     }
-
-
 }

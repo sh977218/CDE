@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ElasticService } from '_app/elastic.service';
 import { AlertService } from 'alert/alert.service';
+import { LocalStorageService } from 'non-core/localStorage.service';
 import { UserSearchSettings } from 'shared/models.model';
 
 @Component({
@@ -9,11 +10,16 @@ import { UserSearchSettings } from 'shared/models.model';
     templateUrl: 'searchPreferences.component.html'
 })
 export class SearchPreferencesComponent implements OnInit {
+    exportToTab: string = '';
     searchSettings: UserSearchSettings;
 
-    constructor(private alert: AlertService,
-                public esService: ElasticService,
-                private route: ActivatedRoute) {
+    constructor(
+        private route: ActivatedRoute,
+        private alert: AlertService,
+        public esService: ElasticService,
+        private localStorageService: LocalStorageService
+    ) {
+        this.exportToTab = localStorageService.getItem('exportToTab');
         this.searchSettings = this.esService.searchSettings;
     }
 
@@ -30,11 +36,13 @@ export class SearchPreferencesComponent implements OnInit {
 
     loadDefault() {
         Object.assign(this.searchSettings, ElasticService.getDefault());
+        this.exportToTab = '';
         this.alert.addAlert('info', 'Default settings loaded. Press Save to persist them.');
     }
 
     saveSettings() {
         this.esService.saveConfiguration(this.searchSettings);
+        this.localStorageService.setItem('exportToTab', this.exportToTab);
         this.alert.addAlert('success', 'Settings saved!');
         window.history.back();
     }

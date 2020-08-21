@@ -17,13 +17,9 @@ public class FormCdeWithLinkedFormsExportShort extends NlmCdeBaseTest {
     @Test
     public void formCdeWithLinkedFormsExportShort() {
         mustBeLoggedInAs("formLinkedForms", password);
-
         goToFormByName("Surgical and Procedural Interventions");
-
         clickElement(By.id("export"));
-        textPresent("CDE Dictionary (CSV)");
-        clickElement(By.id("formCdesExport"));
-
+        clickElement(By.xpath("//*[@mat-menu-item][contains(.,'CDE Dictionary (CSV)')]"));
         checkAlert("Export downloaded.");
 
         String[] expected = {

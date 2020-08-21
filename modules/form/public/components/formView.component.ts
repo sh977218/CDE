@@ -17,7 +17,10 @@ import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service'
 import { UcumService } from 'form/public/ucum.service';
 import _cloneDeep from 'lodash/cloneDeep';
 import _noop from 'lodash/noop';
+import { FormService } from 'nativeRender/form.service';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
+import { isIe, scrollTo } from 'non-core/browser';
+import { LocalStorageService } from 'non-core/localStorage.service';
 import { ExportService } from 'non-core/export.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { Observable } from 'rxjs';
@@ -29,7 +32,6 @@ import {
 import { CdeForm, FormElement, FormElementsContainer, FormInForm, QuestionCde } from 'shared/form/form.model';
 import { addFormIds, getLabel, iterateFe, iterateFes, iterateFeSync, noopSkipIterCb } from 'shared/form/fe';
 import { canEditCuratedItem, isOrgCurator } from 'shared/system/authorizationShared';
-import { isIe, scrollTo } from 'non-core/browser';
 import { getQuestionPriorByLabel } from 'shared/form/skipLogic';
 import { Dictionary } from 'async';
 
@@ -48,20 +50,10 @@ class LocatableError {
 
 @Component({
     selector: 'cde-form-view',
-    styles: [`
-        @media (max-width: 767px) {
-            .mobileViewH1 {
-                font-size: 20px;
-            }
-        }
-        .menuActionIcon {
-            margin: 0 0 0 8px;
-        }
-        .menuActionIcon:hover {
-            font-weight: bold;
-        }
-    `],
     templateUrl: 'formView.component.html',
+    styleUrls: [
+        '../../../cde/public/components/dataElementView/view.style.scss'
+    ],
 })
 export class FormViewComponent implements OnInit {
     @ViewChild('commentAreaComponent', {static: true}) commentAreaComponent!: DiscussAreaComponent;
@@ -75,6 +67,7 @@ export class FormViewComponent implements OnInit {
     draftSaving?: Promise<CdeForm>;
     elt!: CdeForm;
     eltCopy?: CdeForm;
+    exportToTab: boolean = false;
     formInput!: Dictionary<string>;
     hasComments = false;
     hasDrafts = false;
@@ -103,6 +96,7 @@ export class FormViewComponent implements OnInit {
                 public exportService: ExportService,
                 private formViewService: FormViewService,
                 private http: HttpClient,
+                private localStorageService: LocalStorageService,
                 private orgHelperService: OrgHelperService,
                 public quickBoardService: QuickBoardListService,
                 private ref: ChangeDetectorRef,
@@ -111,7 +105,9 @@ export class FormViewComponent implements OnInit {
                 private title: Title,
                 private ucumService: UcumService,
                 public userService: UserService
-    ) {}
+    ) {
+        this.exportToTab = !!localStorageService.getItem('exportToTab');
+    }
 
     canEdit() {
         return canEditCuratedItem(this.userService.user, this.elt);

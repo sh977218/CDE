@@ -42,15 +42,33 @@
         <span>By default, I want to see results as </span>
         <div class="radio indent">
             <label>
-                <input type="radio" [(ngModel)]="searchSettings.defaultSearchView" id="defaultView-summary"
-                       value="summary">
-                <mat-icon>view_list</mat-icon> Summary
+                <input type="radio" [(ngModel)]="searchSettings.defaultSearchView" value="summary">
+                <mat-icon>view_list</mat-icon>
+                Summary
             </label>
         </div>
         <div class="radio indent">
             <label>
-                <input type="radio" [(ngModel)]="searchSettings.defaultSearchView" id="defaultView-table" value="table">
-                <mat-icon>table_chart</mat-icon> Table
+                <input type="radio" [(ngModel)]="searchSettings.defaultSearchView" value="table">
+                <mat-icon>table_chart</mat-icon>
+                Table
+            </label>
+        </div>
+    </div>
+    <div class="form-group">
+        <span>When possible, I want to download data as: </span>
+        <div class="radio indent">
+            <label>
+                <input type="radio" [(ngModel)]="exportToTab" value="">
+                <mat-icon>attachment</mat-icon>
+                File (default)
+            </label>
+        </div>
+        <div class="radio indent">
+            <label>
+                <input type="radio" [(ngModel)]="exportToTab" value="tab">
+                <mat-icon>tab</mat-icon>
+                New Tab
             </label>
         </div>
     </div>

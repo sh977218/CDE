@@ -1110,6 +1110,18 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         setVisibleStatus("minStatus-Incomplete");
     }
 
+    protected void downloadAsFile() {
+        clickElement(By.id("searchSettings"));
+        clickElement(By.xpath("//label[contains(.,'File')]"));
+        clickElement(By.id("saveSettings"));
+    }
+
+    protected void downloadAsTab() {
+        clickElement(By.id("searchSettings"));
+        clickElement(By.xpath("//label[contains(.,'New Tab')]"));
+        clickElement(By.id("saveSettings"));
+    }
+
     protected void includeRetiredSetting() {
         clickElement(By.id("searchSettings"));
         clickElement(By.id("includeRetired"));

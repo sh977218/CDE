@@ -1,0 +1,13 @@
+@media (max-width: 767px) {
+  .mobileViewH1 {
+    font-size: 20px;
+  }
+}
+.menuActionIcon {
+  line-height: 20px;
+  margin: 0 0 0 2px;
+
+  &:hover {
+    font-weight: bold;
+  }
+}
