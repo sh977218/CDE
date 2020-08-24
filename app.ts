@@ -8,6 +8,7 @@ import * as Config from 'config';
 import * as cookieParser from 'cookie-parser';
 import * as Domain from 'domain';
 import * as express from 'express';
+import { ErrorRequestHandler, Request, RequestHandler, Response } from 'express';
 import * as session from 'express-session';
 import * as httpProxy from 'express-http-proxy';
 import * as helmet from 'helmet';
@@ -52,6 +53,7 @@ import { sessionStore } from 'server/system/mongo-data';
 import { banHackers, blockBannedIps, banIp, bannedIps } from 'server/system/trafficFilterSvc';
 import { module as userModule } from 'server/user/userRoutes';
 import { module as utsModule } from 'server/uts/utsRoutes';
+import { ModuleAll } from 'shared/models.model';
 import { isOrgAuthority, isOrgCurator } from 'shared/system/authorizationShared';
 
 const flash = require('connect-flash');
@@ -125,13 +127,23 @@ const expressSettings = {
     cookie: {httpOnly: true, secure: config.proxy, maxAge: config.inactivityTimeout}
 };
 
-const getRealIp = (req) => {
+declare global {
+    namespace Express {
+        interface Request {
+            _remoteAddress: string; // morgan bug
+            // files: any; // attachementSvc impl differs from multer
+        }
+    }
+}
+
+const getRealIp = (req: Request): string => {
     if (req._remoteAddress) {
         return req._remoteAddress;
     }
     if (req.ip) {
         return req.ip;
     }
+    return '';
 };
 
 
@@ -154,7 +166,7 @@ app.use((req, res, next) => {
 
 
 app.use(function preventSessionCreation(req, res, next) {
-    function isFile(originalUrl) {
+    function isFile(originalUrl: string) {
         if (originalUrl.substr(originalUrl.length - 3, 3) === '.js') {
             return true;
         }
@@ -230,17 +242,17 @@ const logFormat = {
     responseTime: ':response-time'
 };
 
-morganLogger.token('real-remote-addr', (req) => {
+morganLogger.token('real-remote-addr', (req: Request) => {
     return getRealIp(req);
 });
 
-const winstonStream = {
-    write: (message) => {
-        expressLogger.info(message);
+const expressLogger1 = morganLogger(JSON.stringify(logFormat), {
+    stream: {
+        write: (message: string) => {
+            expressLogger.info(message);
+        }
     }
-};
-
-const expressLogger1 = morganLogger(JSON.stringify(logFormat), {stream: winstonStream});
+});
 
 if (config.expressLogFile) {
     const logger = new (winston.Logger)({
@@ -248,13 +260,14 @@ if (config.expressLogFile) {
             file: config.expressLogFile
         })]
     });
-    const fileStream = {
-        write: (message) => {
-            logger.info(message);
-        }
-    };
     app.use(morganLogger(':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length]' +
-        ' ":referrer" ":user-agent" ":response-time ms"', {stream: fileStream}));
+        ' ":referrer" ":user-agent" ":response-time ms"', {
+        stream: {
+            write: (message) => {
+                logger.info(message);
+            }
+        }
+    }));
 }
 
 let connections = 0;
@@ -273,7 +286,7 @@ app.use((req, res, next) => {
 app.set('views', path.join(__dirname, './modules'));
 
 const originalRender = express.response.render;
-express.response.render = function renderEjsUsingThis(view, module, msg) {
+express.response.render = function renderEjsUsingThis(this: any, view: string, module: ModuleAll, msg: string) {
     if (!module) {
         module = 'cde';
     }
@@ -307,12 +320,12 @@ try {
         }
     }));
     app.use('/server/mesh', meshModule({
-        allowSyncMesh: (req, res, next) => {
+        allowSyncMesh: ((req, res, next) => {
             if (!config.autoSyncMesh && !isOrgAuthority(req.user)) {
                 return res.status(401).send();
             }
             next();
-        }
+        }) as RequestHandler
     }));
     app.use('/nativeRender', nativeRenderModule());
     app.use('/', embedModule());
@@ -352,7 +365,7 @@ app.use((req, res, next) => {
 });
 
 
-app.use((err, req, res, next) => {
+app.use(((err, req, res, next) => {
     if (err.code === 'EBADCSRFTOKEN') {
         return res.status(401).send('CSRF Error');
     }
@@ -392,7 +405,7 @@ app.use((err, req, res, next) => {
     };
     errorLogger.error('error', 'Error: Express Default Error Handler', meta);
     res.status(500).send('Something broke!');
-});
+}) as ErrorRequestHandler);
 
 domain.run(() => {
     const server = http.createServer(app);

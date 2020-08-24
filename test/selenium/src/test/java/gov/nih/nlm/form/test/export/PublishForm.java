@@ -17,7 +17,7 @@ public class PublishForm extends BaseFormTest {
         mustBeLoggedInAs(reguser_username, password);
         goToFormByName(formName);
         clickElement(By.id("export"));
-        clickElement(By.id("formPublishExport"));
+        clickElement(By.xpath("//*[@mat-menu-item][contains(.,'Published Form')]"));
         findElement(By.name("publishedFormUrl")).sendKeys(baseUrl + "/server/sendMockFormData");
         findElement(By.name("publishedFormName")).sendKeys(publishedFormName);
         clickElement(By.id("goExport"));

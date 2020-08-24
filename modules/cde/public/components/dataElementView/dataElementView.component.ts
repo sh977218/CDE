@@ -6,36 +6,27 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AlertService } from 'alert/alert.service';
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { UserService } from '_app/user.service';
+import { SaveModalComponent } from 'adminItem/public/components/saveModal/saveModal.component';
 import { DataElementViewService } from 'cde/public/components/dataElementView/dataElementView.service';
 import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHistoryContent.component';
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
 import _cloneDeep from 'lodash/cloneDeep';
 import _noop from 'lodash/noop';
+import { ExportService } from 'non-core/export.service';
+import { LocalStorageService } from 'non-core/localStorage.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { Observable } from 'rxjs';
 import { Comment, Elt } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { checkPvUnicity, checkDefinitions } from 'shared/de/dataElement.model';
 import { canEditCuratedItem, isOrgCurator, isOrgAuthority } from 'shared/system/authorizationShared';
-import { SaveModalComponent } from 'adminItem/public/components/saveModal/saveModal.component';
 
 @Component({
     selector: 'cde-data-element-view',
     templateUrl: 'dataElementView.component.html',
-    styles: [`
-        @media (max-width: 767px) {
-            .mobileViewH1 {
-                font-size: 20px;
-            }
-        }
-        .menuActionIcon {
-            margin: 0 0 0 8px;
-        }
-        .menuActionIcon:hover {
-            font-weight: bold;
-        }
-    `],
-    providers: []
+    styleUrls: [
+        './view.style.scss'
+    ],
 })
 export class DataElementViewComponent implements OnInit {
     @ViewChild('commentAreaComponent', {static: true}) commentAreaComponent!: DiscussAreaComponent;
@@ -47,6 +38,7 @@ export class DataElementViewComponent implements OnInit {
     draftSaving?: Promise<DataElement>;
     elt!: DataElement;
     eltCopy?: DataElement;
+    exportToTab: boolean = false;
     hasComments = false;
     hasDrafts = false;
     highlightedTabs: string[] = [];
@@ -68,17 +60,22 @@ export class DataElementViewComponent implements OnInit {
         }, _noop);
     }
 
-    constructor(private alert: AlertService,
-                private deViewService: DataElementViewService,
-                private dialog: MatDialog,
-                private http: HttpClient,
-                private orgHelperService: OrgHelperService,
-                public quickBoardService: QuickBoardListService,
-                private ref: ChangeDetectorRef,
-                private route: ActivatedRoute,
-                private router: Router,
-                private title: Title,
-                public userService: UserService) {
+    constructor(
+        private route: ActivatedRoute,
+        private alert: AlertService,
+        private ref: ChangeDetectorRef,
+        private deViewService: DataElementViewService,
+        public exportService: ExportService,
+        private http: HttpClient,
+        private localStorageService: LocalStorageService,
+        private dialog: MatDialog,
+        private orgHelperService: OrgHelperService,
+        public quickBoardService: QuickBoardListService,
+        private router: Router,
+        private title: Title,
+        public userService: UserService
+    ) {
+        this.exportToTab = !!localStorageService.getItem('exportToTab');
     }
 
     canEdit() {

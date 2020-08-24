@@ -14,9 +14,10 @@ public class FormXMLExportTest extends NlmCdeBaseTest {
         String form = "Parenchymal Imaging";
         mustBeLoggedInAs(reguser_username, password);
         goToFormByName(form);
+        downloadAsTab();
         hangon(1);
         clickElement(By.id("export"));
-        String url = findElement(By.id("nihXml")).getAttribute("href");
+        String url = findElement(By.xpath("//a[@mat-menu-item][contains(.,'XML File, NIH/CDE Schema')]")).getAttribute("href");
         String response = get(url).asString().replaceAll("\\s+", "");
 
         String shouldContain = ("<designations>\n" +

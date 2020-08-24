@@ -7,9 +7,9 @@ if (!Array.isArray(config.bundlesize)) {
     process.exit(0);
 }
 
-const errors = [];
+const errors: string[] = [];
 
-config.bundlesize.forEach(b => {
+config.bundlesize.forEach((b: {compression: string, maxSize: string, path: string}) => {
     if (b.compression !== 'none') {
         console.error('Error: ' + b.path + ' needs "compression: none"');
         process.exit(1);

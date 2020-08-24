@@ -99,4 +99,9 @@ export class FormService {
         return fetch('/server/form/byId/' + id)
             .then(res => res.json());
     }
+
+    static fetchFormStringById(id: ObjectId, queryString: string = ''): Promise<string> {
+        return fetch('/server/form/byId/' + id + queryString)
+            .then(res => res.text());
+    }
 }

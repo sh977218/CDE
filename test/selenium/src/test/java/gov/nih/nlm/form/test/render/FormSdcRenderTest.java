@@ -13,7 +13,7 @@ public class FormSdcRenderTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(testAdmin_username, password);
         goToFormByName(formName);
         clickElement(By.id("export"));
-        clickElement(By.id("sdcHtmlExport"));
+        clickElement(By.xpath("//*[@mat-menu-item][contains(.,'XML File, SDC Schema with XSL Transform')]"));
         switchTab(1);
         textPresent("PROMIS SF v1.0 - Phys. Function 10a");
         textPresent("Are you able to get on and off the toilet?");

@@ -90,6 +90,11 @@ nih-cde:empty + .loading {
 
 
 /* BEGIN Material overrides */
+mat-icon.mat-icon,
+mat-icon.material-icons {
+  line-height: 22px;
+}
+
 .mdl-layout__header { /* fix navbar height so form description toolbar can float consistently */
   min-height: 56px;
 }
@@ -163,12 +168,20 @@ a:not([href]):not([tabindex]).fake-link {
   color: #337ab7;
   text-decoration: none;
   cursor: pointer;
+
+  &:hover {
+    color: #23527c;
+    text-decoration: underline;
+  }
 }
 
-.fake-link:hover,
-a:not([href]):not([tabindex]).fake-link:hover {
-  color: #23527c;
-  text-decoration: underline;
+a.no-link {
+  color: inherit;
+
+  &:hover {
+    color: inherit;
+    text-decoration: inherit;
+  }
 }
 
 @media (min-width: 575px) {

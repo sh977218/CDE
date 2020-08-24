@@ -12,15 +12,16 @@ public class CdeExportXmlTest extends NlmCdeBaseTest {
     public void cdeExportXml() {
         String cdeName = "Patient Gender Code";
         goToCdeByName(cdeName);
+        downloadAsTab();
         findElement(By.id("export")).click();
-        String url = findElement(By.id("xmlExport")).getAttribute("href");
+        String url = findElement(By.xpath("//a[@mat-menu-item][contains(.,'XML File, NIH/CDE Schema')]")).getAttribute("href");
         String response = get(url).asString();
         Assert.assertTrue(response.contains("<designation>Patient Gender Code</designation>"));
         Assert.assertTrue(response.contains("<definition>" +
                 "the coded CDUS values for classification of the sex or gender role of the patient/participant.(CDUS Exchange)" +
                 "</definition>"));
         Assert.assertTrue(response.contains("<tinyId>bzGjaFPtQCs</tinyId>"));
-        findElement(By.id("xmlExport")).click();
+        findElement(By.xpath("//*[@mat-menu-item][contains(.,'XML File, NIH/CDE Schema')]")).click();
         switchTab(1);
         switchTabAndClose(0);
     }
