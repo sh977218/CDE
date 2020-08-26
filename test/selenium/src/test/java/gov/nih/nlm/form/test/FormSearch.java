@@ -27,8 +27,10 @@ public class FormSearch extends BaseFormTest {
     public void noPinAllNoExport() {
         // this test will be removed when the features are implemented.
         goToFormSearch();
+        checkBreadCrumb(new String[]{"Home", "Forms"});
         clickElement(By.id("browseOrg-NINDS"));
         Assert.assertTrue(getNumberOfResults() > 600);
+        checkBreadCrumb(new String[]{"Home", "Forms", "Search [NINDS]"});
         textNotPresent("Pin All");
     }
 

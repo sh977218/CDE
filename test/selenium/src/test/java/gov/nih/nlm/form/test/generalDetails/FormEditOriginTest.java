@@ -10,6 +10,7 @@ public class FormEditOriginTest extends NlmCdeBaseTest {
         String origin = "new origin";
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName(formName);
+        checkBreadCrumb(new String[]{"Home", "Forms", "View [Q1eNEJrHtx]"});
         goToGeneralDetail();
         textNotPresent(origin);
         editOrigin(origin, false);

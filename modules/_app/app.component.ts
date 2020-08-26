@@ -1,12 +1,12 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, forwardRef, Inject } from '@angular/core';
+import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer, Title } from '@angular/platform-browser';
 import { ActivatedRoute, Data, NavigationEnd, Router } from '@angular/router';
-import { NotificationService } from '_app/notifications/notification.service';
 import { BackForwardService } from '_app/backForward.service';
+import { NotificationService } from '_app/notifications/notification.service';
 import { PushNotificationSubscriptionService } from '_app/pushNotificationSubscriptionService';
 import { UserService } from '_app/user.service';
-import { MatIconRegistry } from '@angular/material/icon';
 
 @Component({
     selector: 'nih-cde',
