@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { find, noop, union } from 'lodash';
 import { ObjectId } from 'server';
-import { handleError } from 'server/errorHandler/errorHandler';
+import { handleError, handleErrorVoid } from 'server/errorHandler/errorHandler';
 import {
     pushById, pushByIds, pushByIdsCount, pushByPublicKey, pushClearDb, pushCreate, pushDelete, pushEndpointUpdate, pushesByEndpoint,
     pushRegistrationFindActive
@@ -29,7 +29,7 @@ export function checkDatabase(callback = noop) {
             return;
         }
         if (push.userId !== config.publicUrl) {
-            pushClearDb(handleError({publicMessage: 'could not remove'}, createDbTag));
+            pushClearDb(handleErrorVoid({publicMessage: 'could not remove'}, createDbTag));
             return;
         }
         callback();
@@ -89,7 +89,7 @@ export function remove(req: Request, res: Response) {
         return res.status(400).send('Required parameters missing.');
     }
     pushDelete(req.body.endpoint, req.user._id,
-        handleError({req, res, publicMessage: 'could not remove'}, data => res.send(data)));
+        handleErrorVoid({req, res, publicMessage: 'could not remove'}, () => res.send()));
 }
 
 export function subscribe(req: Request, res: Response) {
@@ -164,13 +164,13 @@ export function updateStatus(req: Request, res: Response) {
         }));
     } else {
         // stop
-        pushEndpointUpdate(req.body.endpoint, {$set: {loggedIn: false}}, handleError({req, res}, () => {
+        pushEndpointUpdate(req.body.endpoint, {$set: {loggedIn: false}}, handleErrorVoid({req, res}, () => {
             res.send({status: false, exist: true});
         }));
     }
 }
 
-export function pushRegistrationSubscribersByType(type: NotificationType, cb: CbError<PushRegistrationDocument[]>,
+export function pushRegistrationSubscribersByType(type: NotificationType, cb: CbError1<PushRegistrationDocument[] | void>,
                                                   data?: {org?: string, users: ObjectId[]}) {
     userFind(
         criteriaSet(

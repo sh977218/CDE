@@ -21,7 +21,7 @@ import { copySectionAnimation } from 'form/public/tabs/description/copySectionAn
 import { FormService } from 'nativeRender/form.service';
 import { scrollTo, waitRendered } from 'non-core/browser';
 import { LocalStorageService } from 'non-core/localStorage.service';
-import { Cb } from 'shared/models.model';
+import { Cb1 } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm, FormElement, FormInForm, FormOrElement, FormSection } from 'shared/form/form.model';
 import { addFormIds, iterateFeSync } from 'shared/form/fe';
@@ -158,7 +158,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         // this.onEltChange.emit(); treeEvent will handle
     }
 
-    addFormFromSearch(form: CdeForm, cb: Cb<FormInForm> = _noop) {
+    addFormFromSearch(form: CdeForm, cb: Cb1<FormInForm> = _noop) {
         this.http.get<CdeForm>('/api/form/' + form.tinyId).subscribe(form => {
             const inForm = convertFormToSection(form);
             if (!inForm) {

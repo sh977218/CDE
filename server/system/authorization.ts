@@ -35,7 +35,7 @@ export type RequestWithItem = Request;
 // tslint:disable-next-line no-namespace (Node not-quite appropriate cache on some middleware)
 declare global {
     namespace Express {
-        export interface Request {
+        interface Request {
             item: Item;
             user?: any;
         }

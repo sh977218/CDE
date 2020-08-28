@@ -4,7 +4,7 @@ import { Document, Model, Schema } from 'mongoose';
 import { config } from 'server/system/parseConfig';
 import { addStringtype } from 'server/system/mongoose-stringtype';
 import { csEltSchema, statusValidationRuleSchema } from 'server/system/schemas';
-import { CbError } from 'shared/models.model';
+import { CbError, CbError1 } from 'shared/models.model';
 import { Organization } from 'shared/system/organization';
 
 addStringtype(mongoose);
@@ -61,7 +61,7 @@ export async function managedOrgs() {
     return organizationModel.find({}).sort({name: 1});
 }
 
-export async function orgByName(orgName: string, callback?: CbError<OrganizationDocument>) {
+export async function orgByName(orgName: string, callback?: CbError1<OrganizationDocument | null>) {
     return organizationModel.findOne({name: orgName}, callback);
 }
 

@@ -1,7 +1,7 @@
 import { Dictionary, forEachSeries } from 'async';
 import { RequestHandler, Router } from 'express';
 const { check } = require('express-validator');
-import { handleErr, handleError } from 'server/errorHandler/errorHandler';
+import { handleErr, handleError, handleErrorVoid, handleErrVoid } from 'server/errorHandler/errorHandler';
 import * as mongoCde from 'server/cde/mongo-cde';
 import {
     addOrgClassification,
@@ -13,7 +13,7 @@ import { validateBody } from 'server/system/bodyValidator';
 import { orgByName } from 'server/orgManagement/orgDb';
 import { jobStatus } from 'server/system/mongo-data';
 import { addToClassifAudit } from 'server/system/classificationAuditSvc';
-import { Cb, ClassificationClassifier, User } from 'shared/models.model';
+import { Cb, Cb1, ClassificationClassifier, User } from 'shared/models.model';
 
 require('express-async-errors');
 
@@ -93,11 +93,11 @@ export function module(roleConfig: {allowClassify: RequestHandler}) {
     });
 
     router.post('/classifyCdeBoard', roleConfig.allowClassify, (req, res) => {
-        classifyEltsInBoard(req, mongoCde, handleErr({req, res}, () => res.send('')));
+        classifyEltsInBoard(req, mongoCde, handleErrVoid({req, res}, () => res.send('')));
     });
 
     router.post('/classifyFormBoard', roleConfig.allowClassify, (req, res) => {
-        classifyEltsInBoard(req, mongoForm, handleErr({req, res}, () => res.send('')));
+        classifyEltsInBoard(req, mongoForm, handleErrVoid({req, res}, () => res.send('')));
     });
 
     // @TODO: classification to own file
@@ -115,7 +115,7 @@ export function module(roleConfig: {allowClassify: RequestHandler}) {
                 return res.status(409).send('Error - delete classification is in processing, try again later.');
             }
             deleteOrgClassification(req.user, deleteClassification, settings,
-                handleError({req, res}, () => {}));
+                handleErrorVoid({req, res}, () => {}));
             res.status(202).send('Deleting in progress.');
         }));
     });
@@ -135,7 +135,7 @@ export function module(roleConfig: {allowClassify: RequestHandler}) {
                 if (j) {
                     return res.status(409).send('Error - rename classification is in processing, try again later.');
                 }
-                renameOrgClassification(req.user, newClassification, settings, handleError({req, res}, () => {}));
+                renameOrgClassification(req.user, newClassification, settings, handleErrorVoid({req, res}, () => {}));
                 res.status(202).send('Renaming in progress.');
             }));
     });
@@ -172,7 +172,7 @@ export function module(roleConfig: {allowClassify: RequestHandler}) {
                     return res.status(409).send('Error - reclassify classification is in processing, try again later.');
                 }
                 reclassifyOrgClassification(req.user, oldClassification, newClassification, settings,
-                    handleError({req, res}, () => {
+                    handleErrorVoid({req, res}, () => {
                     }));
                 res.status(202).send('Reclassifying in progress.');
             }));
@@ -196,7 +196,7 @@ export function module(roleConfig: {allowClassify: RequestHandler}) {
     const bulkClassifyCdesStatus: Dictionary<{numberProcessed: number, numberTotal: number}> = {};
 
     function bulkClassifyCdes(user: User, eltId: string, elements: {id: string, version: number}[],
-                              body: ClassificationClassifier, cb?: Cb<Error | null>) {
+                              body: ClassificationClassifier, cb?: Cb1<Error | null>) {
         if (!bulkClassifyCdesStatus[user.username + eltId]) {
             bulkClassifyCdesStatus[user.username + eltId] = {
                 numberProcessed: 0,
@@ -214,8 +214,8 @@ export function module(roleConfig: {allowClassify: RequestHandler}) {
                 bulkClassifyCdesStatus[user.username + eltId].numberProcessed++;
                 doneOneElement();
             });
-        }, function doneAllElement(errs) {
-            if (cb) { cb(errs); }
+        }, (errs) => {
+            if (cb) { cb(errs === undefined ? null : errs); }
         });
     }
 
@@ -231,8 +231,9 @@ export function module(roleConfig: {allowClassify: RequestHandler}) {
         (req, res) => {
         const elements = req.body.elements;
         if (elements.length <= 50) {
-            bulkClassifyCdes(req.user, req.body.eltId, elements, req.body, handleError({req, res}, () =>
-                res.send('Done')));
+            bulkClassifyCdes(req.user, req.body.eltId, elements, req.body, handleErrorVoid({req, res}, () =>
+                res.send('Done')
+            ));
         } else {
             res.status(202).send('Processing');
             bulkClassifyCdes(req.user, req.body.eltId, elements, req.body);

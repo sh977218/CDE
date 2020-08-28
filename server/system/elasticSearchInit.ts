@@ -1,8 +1,8 @@
 import * as Config from 'config';
 import { createHash } from 'crypto';
 import { createIndexJson as boardCreateIndexJson } from 'server/board/elasticSearchMapping';
-import { Cb, CbError, ClassificationElement, ItemElastic } from 'shared/models.model';
-import { FormElement, FormQuestion } from 'shared/form/form.model';
+import { Cb, Cb1, CbError, CbError1, ClassificationElement, Item, ItemElastic } from 'shared/models.model';
+import { CdeForm, FormElement, FormQuestion } from 'shared/form/form.model';
 
 const config = Config as any;
 
@@ -27,7 +27,8 @@ export const createSuggestIndexJson = {
                 }
             }
         }
-    }, settings: {
+    },
+    settings: {
         index: {
             number_of_replicas: config.elastic.number_of_replicas,
             analysis: {
@@ -243,7 +244,7 @@ export const createFormIndexJson = {
 };
 
 
-export function suggestRiverFunction(_elt: ItemElastic, cb: Cb<any>) {
+export function suggestRiverFunction(_elt: Item, cb: Cb1<Item>) {
     const toIndex: any = {nameSuggest: _elt.designations[0].designation};
     toIndex.registrationState = _elt.registrationState;
     toIndex.stewardOrg = _elt.stewardOrg;
@@ -254,15 +255,15 @@ export function suggestRiverFunction(_elt: ItemElastic, cb: Cb<any>) {
 }
 
 
-export function riverFunction(_elt: ItemElastic, cb: Cb<ItemElastic>) {
+export function riverFunction(_elt: Item, cb: Cb1<Item | void>) {
     if (_elt.archived) {
         return cb();
     }
 
     const formSvc = require('../form/formsvc');
 
-    const getElt = _elt.formElements ? formSvc.fetchWholeForm : (e: ItemElastic, cb: CbError<ItemElastic>) => {
-        cb(undefined, e);
+    const getElt = (_elt as CdeForm).formElements ? formSvc.fetchWholeForm : (item: Item, cb: CbError1<Item>) => {
+        cb(null, item);
     };
 
     getElt(_elt, (err: Error | undefined, elt: ItemElastic) => {
@@ -387,7 +388,7 @@ if (config.elastic.formSuggestIndex.name === 'auto') {
 export interface ElasticIndex {
     count: number;
     totalCount?: number; // populated after query
-    filter?: (elt: ItemElastic, cb: Cb<ItemElastic>) => void;
+    filter?: (elt: Item, cb: Cb1<Item | void>) => void;
     indexJson: any;
     indexName: string;
     name: string;

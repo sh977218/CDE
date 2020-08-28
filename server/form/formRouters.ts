@@ -1,36 +1,33 @@
-import { RequestHandler } from 'express';
-import { Router } from 'express';
+import { RequestHandler, Response, Router } from 'express';
 import { toInteger, round } from 'lodash';
-
-const daoManager = require('../system/moduleDaoManager');
 import { handleError, handleNotFound } from 'server/errorHandler/errorHandler';
-import {
-    canCreateMiddleware, canEditByTinyIdMiddleware, canEditMiddleware,
-    isOrgAuthorityMiddleware, isOrgCuratorMiddleware, loggedInMiddleware, nocacheMiddleware
-} from 'server/system/authorization';
-import { config } from 'server/system/parseConfig';
-import { isSearchEngine } from 'server/system/helper';
-import { byTinyIdVersion as formByTinyIdVersion, formModel } from 'server/form/mongo-form';
-import { validateBody } from 'server/system/bodyValidator';
-import {
-    completionSuggest, elasticSearchExport, removeElasticFields, scrollExport, scrollNext
-} from 'server/system/elastic';
-import { getEnvironmentHost } from 'shared/env';
-import { CbErr } from 'shared/models.model';
-import { stripBsonIdsElt } from 'shared/system/exportShared';
-import { respondHomeFull } from 'server/system/appRouters';
 import {
     viewHistory, byTinyId, byTinyIdAndVersion, latestVersionByTinyId, create, publishFromDraft, publishExternal, byId,
     priorForms, byTinyIdList, originalSourceByTinyIdSourceName, draftForEditByTinyId, draftSave, draftDelete,
     forEditById, publishFormToHtml, forEditByTinyId, forEditByTinyIdAndVersion
 } from 'server/form/formsvc';
+import * as mongoForm from 'server/form/mongo-form';
+import { byTinyIdVersion as formByTinyIdVersion, formModel, getAuditLog } from 'server/form/mongo-form';
+import { validateBody } from 'server/system/bodyValidator';
+import {
+    buildElasticSearchQuery,
+    completionSuggest, elasticsearch, elasticSearchExport, removeElasticFields, scrollExport, scrollNext
+} from 'server/system/elastic';
+import { respondHomeFull } from 'server/system/appRouters';
+import {
+    canCreateMiddleware, canEditByTinyIdMiddleware, canEditMiddleware,
+    isOrgAuthorityMiddleware, isOrgCuratorMiddleware, loggedInMiddleware, nocacheMiddleware
+} from 'server/system/authorization';
+import { isSearchEngine } from 'server/system/helper';
+import { registerDao } from 'server/system/moduleDaoManager';
+import { config } from 'server/system/parseConfig';
+import { getEnvironmentHost } from 'shared/env';
+import { CbErr1 } from 'shared/models.model';
+import { stripBsonIdsElt } from 'shared/system/exportShared';
+import { syncLinkedForms, syncLinkedFormsProgress } from 'server/form/syncLinkedForms';
 
-const syncLinkedForms = require('./syncLinkedForms');
-const mongoForm = require('./mongo-form');
-const sharedElastic = require('../system/elastic');
 const CronJob = require('cron').CronJob;
 const {checkSchema, check} = require('express-validator');
-
 
 const canEditMiddlewareForm = canEditMiddleware(mongoForm);
 const canEditByTinyIdMiddlewareForm = canEditByTinyIdMiddleware(mongoForm);
@@ -50,7 +47,7 @@ const allowXOrigin: RequestHandler = (req, res, next) => {
 
 const allRequestsProcessing: RequestHandler = (req, res, next) => {
     // update green/blue env GLOBAL
-    const env = getEnvironmentHost(config, req.headers.host);
+    const env = getEnvironmentHost(config, req.headers.host || '');
     if (env) {
         (global as any).CURRENT_SERVER_ENV = env;
     }
@@ -61,7 +58,7 @@ require('express-async-errors');
 
 export function module() {
     const router = Router();
-    daoManager.registerDao(mongoForm);
+    registerDao(mongoForm);
     // Those end points need to be defined before '/form/:tinyId'
     router.get('/form/search', (req, res) => {
         const selectedOrg = req.query.selectedOrg;
@@ -166,7 +163,7 @@ export function module() {
     /* ---------- PUT NEW REST API above ---------- */
 
     router.post('/server/form/search', (req, res) => {
-        const query = sharedElastic.buildElasticSearchQuery(req.user, req.body);
+        const query = buildElasticSearchQuery(req.user, req.body);
         if (query.size > 100) {
             return res.status(422).send('Too many results requested. (max 100)');
         }
@@ -176,15 +173,15 @@ export function module() {
         if (!req.body.fullRecord) {
             query._source = {excludes: ['flatProperties', 'properties', 'classification.elements', 'formElements']};
         }
-        sharedElastic.elasticsearch('form', query, req.body, handleNotFound({res, statusCode: 422}, result => {
+        elasticsearch('form', query, req.body, handleNotFound({res, statusCode: 422}, result => {
             res.send(result);
         }));
     });
     router.post('/server/form/searchExport', (req, res) => {
-        const query = sharedElastic.buildElasticSearchQuery(req.user, req.body);
+        const query = buildElasticSearchQuery(req.user, req.body);
         const exporters = {
             json: {
-                export(res) {
+                export(res: Response) {
                     let firstElt = true;
                     res.type('application/json');
                     res.write('[');
@@ -208,7 +205,7 @@ export function module() {
         exporters.json.export(res);
     });
     router.post('/server/form/scrollExport', (req, res) => {
-        const query = sharedElastic.buildElasticSearchQuery(req.user, req.body);
+        const query = buildElasticSearchQuery(req.user, req.body);
         scrollExport(query, 'form', handleNotFound({res, statusCode: 400}, response => res.send(response.body)));
     });
     router.get('/server/form/scrollExport/:scrollId', (req, res) => {
@@ -216,7 +213,7 @@ export function module() {
     });
 
     router.post('/server/form/getAuditLog', isOrgAuthorityMiddleware, (req, res) => {
-        mongoForm.getAuditLog(req.body, (err, result) => res.send(result));
+        getAuditLog(req.body, (err, result) => res.send(result));
     });
 
     router.post('/server/form/completion/:term', nocacheMiddleware, (req, res) => {
@@ -309,7 +306,7 @@ export function module() {
         }
     });
 
-    function validateUom(uom, cb: CbErr<string>) {
+    function validateUom(uom: string, cb: CbErr1<string>) {
         let error;
         const validation = ucum.validateUnitString(uom, true);
         if (validation.status === 'valid') {
@@ -325,7 +322,7 @@ export function module() {
             const suggestions: string[] = [];
             const synonyms = ucum.checkSynonyms(uom);
             if (synonyms.status === 'succeeded' && synonyms.units.length) {
-                synonyms.units.forEach(u => u.name === uom ? suggestions.push(u.code) : null);
+                synonyms.units.forEach((u: {code: string, name: string}) => u.name === uom ? suggestions.push(u.code) : null);
                 if (suggestions.length) {
                     return cb(undefined, suggestions[0]);
                 }
@@ -342,7 +339,7 @@ export function module() {
     router.post('/server/ucumValidate', check('uoms').isArray(), validateBody, (req, res) => {
         const errors: (string | undefined)[] = [];
         const units: (string | undefined)[] = [];
-        req.body.uoms.forEach((uom, i) => {
+        req.body.uoms.forEach((uom: string, i: number) => {
             validateUom(uom, (error, u) => {
                 errors[i] = error;
                 units[i] = u;
@@ -362,12 +359,12 @@ export function module() {
 
     router.post('/server/syncLinkedForms', isOrgAuthorityMiddleware, (req, res) => {
         res.send();
-        syncLinkedForms.syncLinkedForms();
+        syncLinkedForms();
     });
-    router.get('/server/syncLinkedForms', (req, res) => res.send(syncLinkedForms.syncLinkedFormsProgress));
+    router.get('/server/syncLinkedForms', (req, res) => res.send(syncLinkedFormsProgress));
 
     /* tslint:disable */
-    new CronJob('00 30 4 * * *', () => syncLinkedForms.syncLinkedForms(), null, true, 'America/New_York').start();
+    new CronJob('00 30 4 * * *', () => syncLinkedForms(), null, true, 'America/New_York').start();
     /* tslint:enable */
     return router;
 }

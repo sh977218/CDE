@@ -6,6 +6,7 @@ import _isEqual from 'lodash/isEqual';
 import _uniqWith from 'lodash/uniqWith';
 import { LocalStorageService } from 'non-core/localStorage.service';
 import {
+    Cb,
     Cb1, CbErr, CbErrorObj, Item, ItemClassification, ItemClassificationElt, ItemClassificationNew
 } from 'shared/models.model';
 import { SearchSettingsElastic } from 'shared/search/search.model';
@@ -40,7 +41,7 @@ export class ClassificationService {
     }
 
     classifyItem(elt: Item, org: string, classifArray: string[], endPoint: string,
-                 cb: CbErrorObj<HttpErrorResponse>) {
+                 cb: CbErrorObj<HttpErrorResponse | void>) {
         const postBody: ItemClassificationElt = {
             categories: classifArray,
             eltId: elt._id,
@@ -53,7 +54,7 @@ export class ClassificationService {
             }, cb);
     }
 
-    removeClassification(elt: Item, org: string, classifArray: string[], endPoint: string, cb: CbErr) {
+    removeClassification(elt: Item, org: string, classifArray: string[], endPoint: string, cb: Cb1<string | void>) {
         const deleteBody: ItemClassification = {
             categories: classifArray,
             eltId: elt._id,

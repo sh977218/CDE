@@ -10,7 +10,7 @@ import { establishConnection } from 'server/system/connections';
 import { noDbLogger } from 'server/system/noDbLogger';
 import { config } from 'server/system/parseConfig';
 import { UserFull } from 'server/user/userDb';
-import { Cb, CbError } from 'shared/models.model';
+import { Cb, Cb1, CbError, CbError1 } from 'shared/models.model';
 import { AuditLog, AuditLogResponse, LogMessage } from 'shared/system/audit';
 
 export interface ClientError {
@@ -159,7 +159,7 @@ export function logError(message: ErrorMessage, callback?: Cb) { // all server e
     }));
 }
 
-export function logClientError(req: Request, callback: Cb<any>) {
+export function logClientError(req: Request, done: Cb) {
     const getRealIp = (req: any) => req._remoteAddress;
     const exc = req.body;
     exc.userAgent = req.headers['user-agent'];
@@ -194,11 +194,11 @@ export function logClientError(req: Request, callback: Cb<any>) {
             });
         }
 
-        callback();
+        done();
     }));
 }
 
-export function httpLogs(body: AuditLog, callback: CbError<AuditLogResponse>) {
+export function httpLogs(body: AuditLog, callback: CbError1<AuditLogResponse>) {
     let sort = {date: 'desc'};
     if (body.sort) {
         sort = body.sort;
@@ -232,7 +232,7 @@ export function httpLogs(body: AuditLog, callback: CbError<AuditLogResponse>) {
 }
 
 export function appLogs(body: {currentPage: string, fromDate: number, toDate: number},
-                        callback: CbError<{logs: (Document & ConsoleLog)[], totalItems: number}>) {
+                        callback: CbError1<{logs: (Document & ConsoleLog)[], totalItems: number}>) {
     let currentPage = 0;
     if (body.currentPage) {
         currentPage = parseInt(body.currentPage, 10);
@@ -256,7 +256,7 @@ export function appLogs(body: {currentPage: string, fromDate: number, toDate: nu
     });
 }
 
-export function getClientErrors(params: { limit: number, skip: number }, callback: CbError<ClientErrorDocument[]>) {
+export function getClientErrors(params: { limit: number, skip: number }, callback: CbError1<ClientErrorDocument[]>) {
     clientErrorModel.find().sort('-date').skip(params.skip).limit(params.limit).exec(callback);
 }
 
@@ -269,7 +269,7 @@ export function getClientErrorsNumber(user: UserFull): Promise<number> {
 }
 
 export function getServerErrors(params: { limit: number, skip: number, excludeOrigin: string[]},
-                                callback: CbError<(Document & ErrorMessage)[]>) {
+                                callback: CbError1<(Document & ErrorMessage)[]>) {
     if (!params.limit) {
         params.limit = 20;
     }
@@ -296,7 +296,7 @@ export function getServerErrorsNumber(user: UserFull): Promise<number> {
     ).exec();
 }
 
-export function getFeedbackIssues(params: { skip: number, limit: number }, callback: CbError<any[]>) {
+export function getFeedbackIssues(params: { skip: number, limit: number }, callback: CbError1<any[]>) {
     feedbackModel
         .find()
         .sort('-date')
@@ -311,7 +311,7 @@ interface LogAggregate {
     latest: number;
 }
 
-export function usageByDay(callback: CbError<LogAggregate>) {
+export function usageByDay(callback: CbError1<LogAggregate>) {
     const d = new Date();
     d.setDate(d.getDate() - 3);
     //noinspection JSDuplicatedDeclaration
@@ -329,7 +329,7 @@ export function usageByDay(callback: CbError<LogAggregate>) {
         }], callback);
 }
 
-export function saveFeedback(req: Request, cb: CbError<Document & FeedbackMessage>) {
+export function saveFeedback(req: Request, cb: CbError1<Document & FeedbackMessage>) {
     const report = req.body.feedback;
     const issue = new feedbackModel({
         user: {username: req.user && req.user._doc ? req.user._doc.username : null}

@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import _noop from 'lodash/noop';
 import { Question } from 'shared/form/form.model';
-import { Cb, Cb1, CodeAndSystem } from 'shared/models.model';
+import { Cb1, Cb2, CodeAndSystem } from 'shared/models.model';
 
 export interface UcumSynonyms {
     code: string;
@@ -21,7 +21,7 @@ export class UcumService {
         return this.http.get<UcumSynonyms[]>('/server/ucumNames?uom=' + encodeURIComponent(term));
     }
 
-    getUnitNames(uom: string, cb: Cb<string[]>) {
+    getUnitNames(uom: string, cb: Cb1<string[]>) {
         const match = this.uomUnitMap.get(uom);
         if (match) { return cb(match); }
 
@@ -34,7 +34,7 @@ export class UcumService {
         });
     }
 
-    validateUcumUnits(unitsOfMeasure: CodeAndSystem[], cb: Cb1<string[], string[]>) {
+    validateUcumUnits(unitsOfMeasure: CodeAndSystem[], cb: Cb2<string[], string[]>) {
         if (Array.isArray(unitsOfMeasure) && unitsOfMeasure.length) {
             this.http.post<{ errors: string[], units: any[] }>('/server/ucumValidate',
                 {uoms: unitsOfMeasure.map(u => u.code)})

@@ -12,7 +12,7 @@ import {
     UserSearchSettings,
     SearchResponseAggregationItem,
     SearchResponseAggregationForm,
-    SearchResponseAggregationDe
+    SearchResponseAggregationDe, CbErr2, Cb2, CbErr1
 } from 'shared/models.model';
 import { SearchSettings, SearchSettingsElastic } from 'shared/search/search.model';
 import { orderedList } from 'shared/system/regStatusShared';
@@ -53,22 +53,23 @@ export class ElasticService {
     }
 
     generalSearchQuery(settings: SearchSettingsElastic, type: 'cde',
-                       cb: CbErr<SearchResponseAggregationDe, boolean>): void;
+                       cb: CbErr2<SearchResponseAggregationDe, boolean>): void;
     generalSearchQuery(settings: SearchSettingsElastic, type: 'form',
-                       cb: CbErr<SearchResponseAggregationForm, boolean>): void;
+                       cb: CbErr2<SearchResponseAggregationForm, boolean>): void;
     generalSearchQuery(settings: SearchSettingsElastic, type: 'cde' | 'form',
-                       cb: CbErr<SearchResponseAggregationDe, boolean> | CbErr<SearchResponseAggregationForm, boolean>): void;
+                       cb: CbErr2<SearchResponseAggregationDe, boolean> | CbErr2<SearchResponseAggregationForm, boolean>): void;
     generalSearchQuery(settings: SearchSettingsElastic, type: 'cde' | 'form',
-                       cb: CbErr<SearchResponseAggregationDe, boolean> | CbErr<SearchResponseAggregationForm, boolean>): void {
-        const search = (good: Cb1<SearchResponseAggregationItem, boolean>, bad: CbErr<SearchResponseAggregationItem, boolean>) => {
+                       cb: CbErr2<SearchResponseAggregationDe, boolean> | CbErr2<SearchResponseAggregationForm, boolean>): void {
+        const search = (good: Cb2<SearchResponseAggregationItem, boolean | void>,
+                        bad: CbErr2<SearchResponseAggregationItem, boolean | void>) => {
             let url = '/server/de/search';
             if (type === 'form') {
                 url = '/server/form/search';
             }
-            this.http.post<SearchResponseAggregationItem>(url, settings).subscribe(good, bad);
+            this.http.post<SearchResponseAggregationItem>(url, settings).subscribe(good as any, bad as any);
         };
 
-        function success(response: SearchResponseAggregationItem, isRetry = false) {
+        const success: Cb2<SearchResponseAggregationItem, boolean | void> = (response: SearchResponseAggregationItem, isRetry = false) => {
             if (type === 'cde') {
                 const responseDe = response as SearchResponseAggregationDe;
                 ElasticService.highlightResults(responseDe.cdes);
@@ -78,14 +79,14 @@ export class ElasticService {
                 ElasticService.highlightResults(responseForm.forms);
                 responseForm.forms.forEach(CdeForm.validate);
             }
-            (cb as CbErr<SearchResponseAggregationItem, boolean>)(undefined, response, isRetry);
+            (cb as CbErr2<SearchResponseAggregationItem, boolean | void>)(undefined, response, isRetry);
         }
 
         search(success, () => {
             if (settings.searchTerm) {
                 settings.searchTerm = settings.searchTerm.replace(/[^\w\s]/gi, '');
             }
-            search(response => success(response, true), cb as CbErr<SearchResponseAggregationItem, boolean>);
+            search(response => success(response, true), cb as CbErr2<SearchResponseAggregationItem, boolean | void>);
         });
     }
 
@@ -93,7 +94,7 @@ export class ElasticService {
         return this.searchSettings.defaultSearchView;
     }
 
-    getExport(query: SearchSettingsElastic, type: 'cde' | 'form', cb: CbErr<ItemElastic[]>) {
+    getExport(query: SearchSettingsElastic, type: 'cde' | 'form', cb: CbErr1<ItemElastic[] | void>) {
         let url = '/server/de/searchExport/';
         if (type === 'form') {
             url = '/server/form/searchExport/';

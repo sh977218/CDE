@@ -4,7 +4,7 @@ import { get, post } from 'request';
 import { consoleLog } from 'server/log/dbLogger';
 import { errorLogger } from 'server/system/logging';
 import { config } from 'server/system/parseConfig';
-import { Cb, CbErr, CbError, User } from 'shared/models.model';
+import { Cb, Cb1, CbErr, CbErr1, CbError, CbError1, CbError2, User } from 'shared/models.model';
 import { addUser, updateUserIps, userById, userByName, UserDocument } from 'server/user/userDb';
 import { Parser } from 'xml2js';
 
@@ -39,7 +39,7 @@ export function init(app: Express) {
     app.use(passportSession());
 }
 
-export function ticketValidate(tkt: string, cb: CbErr<string>) {
+export function ticketValidate(tkt: string, cb: CbErr1<string | void>) {
     const host = 'https://' + ticketValidationOptions.host;
     const port = ':' + ticketValidationOptions.port;
     const path = config.uts.ticketValidation.path;
@@ -70,7 +70,7 @@ export function ticketValidate(tkt: string, cb: CbErr<string>) {
     });
 }
 
-export function updateUserAfterLogin(user: UserDocument, ip: string, cb: CbError<UserDocument | null>) {
+export function updateUserAfterLogin(user: UserDocument, ip: string, cb: CbError1<UserDocument | null>) {
     if (user.knownIPs.length > 100) {
         user.knownIPs.pop();
     }
@@ -81,7 +81,7 @@ export function updateUserAfterLogin(user: UserDocument, ip: string, cb: CbError
     updateUserIps(user._id, user.knownIPs, cb);
 }
 
-export function umlsAuth(username: string, password: string, cb: Cb<any>) {
+export function umlsAuth(username: string, password: string, cb: Cb1<any>) {
     post(
         config.umls.wsHost + '/restful/isValidUMLSUser',
         {
@@ -96,7 +96,8 @@ export function umlsAuth(username: string, password: string, cb: Cb<any>) {
     );
 }
 
-export function authBeforeVsac(req: Request, username: string, password: string, done: CbError<UserDocument | null, {message: string}>) {
+export function authBeforeVsac(req: Request, username: string, password: string,
+                               done: CbError2<UserDocument | null | void, {message: string} | void>) {
     // Allows other items on the event queue to complete before execution, excluding IO related events.
     process.nextTick(() => {
         // are we doing federated?
@@ -162,7 +163,7 @@ export interface UserAddProfile {
     refreshToken?: string;
 }
 
-export function findAddUserLocally(profile: UserAddProfile, cb: CbError<UserDocument | null>) {
+export function findAddUserLocally(profile: UserAddProfile, cb: CbError1<UserDocument | null | void>) {
     userByName(profile.username, (err, user) => {
         if (err) {
             cb(err);

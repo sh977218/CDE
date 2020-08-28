@@ -1,9 +1,8 @@
-import { Document } from 'mongoose';
 import { CdeForm } from 'shared/form/form.model';
 const JXON = require('jxon');
 const _ = require('lodash');
 import { flattenFormElement } from 'shared/form/fe';
-import { CbError } from 'shared/models.model';
+import { CbError1 } from 'shared/models.model';
 
 let localCo: any;
 
@@ -47,7 +46,7 @@ const ODM_DATATYPE_MAP: any = {
     'java.lang.Byte': 'integer'
 }
 
-export function getFormOdm(form: Document & CdeForm, cb: CbError<string>) {
+export function getFormOdm(form: CdeForm, cb: CbError1<string>) {
     const odmJsonForm: any = {
         $CreationDateTime: new Date().toISOString(),
         $FileOID: form.tinyId,
@@ -185,5 +184,5 @@ export function getFormOdm(form: Document & CdeForm, cb: CbError<string>) {
     sections.forEach(s => odmJsonForm.Study.MetaDataVersion.ItemGroupDef.push(s));
     questions.forEach(q => odmJsonForm.Study.MetaDataVersion.ItemDef.push(q));
     codeLists.forEach(cl => odmJsonForm.Study.MetaDataVersion.CodeList.push(cl));
-    cb(undefined, JXON.jsToString({element: odmJsonForm}));
+    cb(null, JXON.jsToString({element: odmJsonForm}));
 }

@@ -1,6 +1,6 @@
 import { Request } from 'express';
 import { config } from 'server/system/parseConfig';
-import { CbError } from 'shared/models.model';
+import { CbError, CbError1 } from 'shared/models.model';
 import { transports, Logger, Transport } from 'winston';
 
 const util = require('util');
@@ -22,7 +22,7 @@ export const mongoErrorLogger = (transports as any).MongoErrorLogger = function(
 util.inherits(mongoLogger, Transport);
 util.inherits(mongoErrorLogger, Transport);
 
-mongoLogger.prototype.log = (level: string, msg: string, meta: any, callback: CbError<boolean>) => {
+mongoLogger.prototype.log = (level: string, msg: string, meta: any, callback: CbError1<boolean>) => {
     try {
         const logEvent = JSON.parse(msg);
         logEvent.level = level;

@@ -2,6 +2,7 @@ package gov.nih.nlm.form.test.textArea;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -24,7 +25,9 @@ public class TextAreaInput extends NlmCdeBaseTest {
 
         String q11 = "#question_0-1-1";
         clickElement(By.cssSelector(q11 + " span[title='Noncompliant Reason Text']"));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[contains(@class,'pull-right')][contains(.,'Saved')]")));
         clickElement(By.cssSelector(q11 + textAreaInput));
+        findElement(By.xpath("//div[contains(@class,'pull-right')][contains(.,'Saved')]"));
         Assert.assertEquals(driver.findElements(By.cssSelector(q11 + textAreaInput + ":checked")).size(), 1);
         clickElement(By.cssSelector(q11 + " span[title='Noncompliant Reason Text']"));
 

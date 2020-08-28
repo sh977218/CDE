@@ -5,7 +5,7 @@ import { callbackify } from 'non-core/browser';
 import { FormService } from 'nativeRender/form.service';
 import { ScoreService } from 'nativeRender/score.service';
 import { SkipLogicService } from 'nativeRender/skipLogic.service';
-import { assertUnreachable, Cb1, CbErr, CdeId, CodeAndSystem } from 'shared/models.model';
+import { assertUnreachable, Cb1, CbErr, CbErr1, CdeId, CodeAndSystem } from 'shared/models.model';
 import { pvGetDisplayValue, pvGetLabel } from 'core/de/deShared';
 import {
     CdeForm, CdeFormFollow, CdeFormInputArray, DisplayProfile, DisplayType, FormElement, FormElementFollow,
@@ -290,7 +290,7 @@ export class NativeRenderService {
         return answer && (!multiselect || answer.length !== 0);
     }
 
-    static convertUnits(value: number, fromUnit: CodeAndSystem, toUnit: CodeAndSystem, cb: CbErr<number>) {
+    static convertUnits(value: number, fromUnit: CodeAndSystem, toUnit: CodeAndSystem, cb: CbErr1<number>) {
         if (fromUnit.system === 'UCUM' && toUnit.system === 'UCUM') {
             callbackify(
                 FormService.convertUnits(value, encodeURIComponent(fromUnit.code), encodeURIComponent(toUnit.code))

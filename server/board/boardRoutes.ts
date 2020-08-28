@@ -1,32 +1,27 @@
-import { Router } from 'express';
+import { Request, Response, Router } from 'express';
 import { intersection, isEmpty, uniqBy } from 'lodash';
 import * as boardDb from 'server/board/boardDb';
 import { byId, byIdAndOwner, nbBoardsByUserId, newBoard, publicBoardsByPinTinyId } from 'server/board/boardDb';
-import { handleError, handleNotFound } from 'server/errorHandler/errorHandler';
-import { config } from 'server/system/parseConfig';
-import {
-    checkBoardViewerShip, loggedInMiddleware, nocacheMiddleware, unauthorizedPublishing
-} from 'server/system/authorization';
-import { validateBody } from 'server/system/bodyValidator';
+import { boardRefresh, boardSearch, myBoards } from 'server/board/elastic';
 import { hideProprietaryCodes } from 'server/cde/cdesvc';
+import { handleError, handleNotFound } from 'server/errorHandler/errorHandler';
+import { checkBoardViewerShip, loggedInMiddleware, nocacheMiddleware, unauthorizedPublishing } from 'server/system/authorization';
+import { validateBody } from 'server/system/bodyValidator';
 import { buildElasticSearchQuery, elasticsearch } from 'server/system/elastic';
+import { getDao, registerDao } from 'server/system/moduleDaoManager';
 import { ItemDocument } from 'server/system/mongo-data';
+import { config } from 'server/system/parseConfig';
 import { Board, BoardPin, ItemElastic, ModuleAll } from 'shared/models.model';
-import { stripBsonIds } from 'shared/system/exportShared';
 import { DataElement } from 'shared/de/dataElement.model';
-
-const {check} = require('express-validator');
+import { stripBsonIds } from 'shared/system/exportShared';
 
 const js2xml = require('js2xmlparser');
-
-const daoManager = require('../system/moduleDaoManager');
-const elastic = require('./elastic');
-
+const {check} = require('express-validator');
 require('express-async-errors');
 
 export function module() {
     const router = Router();
-    daoManager.registerDao(boardDb);
+    registerDao(boardDb);
 
     router.get('/byPinTinyId/:tinyId', nocacheMiddleware, async (req, res) => {
         const boards = await publicBoardsByPinTinyId(req.params.tinyId);
@@ -60,7 +55,7 @@ export function module() {
         if (!isEmpty(intersectionCdes)) {
             return res.status(409).send('Already added');
         }
-        daoManager.getDao(type).byTinyIdList(tinyIdList, handleNotFound<ItemDocument[]>({req, res}, elts => {
+        getDao(type).byTinyIdList(tinyIdList, handleNotFound<ItemDocument[]>({req, res}, elts => {
             const newPins: any[] = elts.map(e => ({
                 pinnedDate: new Date(),
                 type,
@@ -72,39 +67,27 @@ export function module() {
         }));
     });
 
-    router.post('/pinMoveUp', loggedInMiddleware, async (req, res) => {
+    const pinMoveByIncrement = (inc: number) => async (req: Request, res: Response) => {
         const {boardId, tinyId} = req.body;
         const board = await byIdAndOwner(boardId, req.user._id);
         if (!board) {
-            return res.status(404).send();
+            res.status(404).send();
+            return;
         }
         const match = board.get('pins').find((p: BoardPin) => p.tinyId === tinyId);
         const index = match ? match.__index : -1;
-        if (index !== -1) {
-            board.pins.splice(index - 1, 0, board.pins.splice(index, 1)[0]);
-            await (board.save as any)();
-            res.send();
-        } else {
+        if (index === -1) {
             res.status(422).send();
+            return;
         }
-    });
+        board.pins.splice(index + inc, 0, board.pins.splice(index, 1)[0]);
+        await (board.save as any)();
+        res.send();
+    };
 
-    router.post('/pinMoveDown', loggedInMiddleware, async (req, res) => {
-        const {boardId, tinyId} = req.body;
-        const board = await byIdAndOwner(boardId, req.user._id);
-        if (!board) {
-            return res.status(404).send();
-        }
-        const match = board.get('pins').find((p: BoardPin) => p.tinyId === tinyId);
-        const index = match ? match.__index : -1;
-        if (index !== -1) {
-            board.pins.splice(index + 1, 0, board.pins.splice(index, 1)[0]);
-            await (board.save as any)();
-            res.send();
-        } else {
-            res.status(422).send();
-        }
-    });
+    router.post('/pinMoveUp', loggedInMiddleware, pinMoveByIncrement(-1));
+
+    router.post('/pinMoveDown', loggedInMiddleware, pinMoveByIncrement(1));
 
     router.post('/pinMoveTop', async (req, res) => {
         const {boardId, tinyId} = req.body;
@@ -130,7 +113,7 @@ export function module() {
             return res.status(404).send();
         }
         await (board as any).remove();
-        await elastic.boardRefresh();
+        await boardRefresh();
         res.send('Board Removed.');
     });
 
@@ -139,7 +122,7 @@ export function module() {
         check('selectedTags').isArray(),
         validateBody,
         async (req, res) => {
-            const result = await elastic.boardSearch(req.body);
+            const result = await boardSearch(req.body);
             res.send(result.body);
         }
     );
@@ -166,7 +149,7 @@ export function module() {
         const totalItems = boardObj.pins.length;
         const tinyIdList = boardObj.pins.splice(start, size).map(p => p.tinyId);
         boardObj.pins = [];
-        daoManager.getDao(boardObj.type).elastic.byTinyIdList(tinyIdList, size, handleNotFound({
+        getDao(boardObj.type).elastic.byTinyIdList(tinyIdList, size, handleNotFound({
             req,
             res
         }, (elts: ItemElastic[]) => {
@@ -189,8 +172,7 @@ export function module() {
     router.post('/', loggedInMiddleware, async (req, res) => {
         const boardQuota = config.boardQuota || 50;
         const board: Board = req.body;
-        const b = board._id ? byId(board._id) : undefined;
-        const boardDocument = await b;
+        const boardDocument = board._id ? await byId(board._id) : undefined;
         if (!board._id || !boardDocument) {
             board.createdDate = new Date();
             board.owner = {
@@ -206,7 +188,7 @@ export function module() {
                 res.status(403).send('You have too many boards!');
             } else {
                 await newBoard(board);
-                await elastic.boardRefresh();
+                await boardRefresh();
                 res.send();
             }
         } else {
@@ -219,7 +201,7 @@ export function module() {
                 return res.status(403).send("You don't have permission to make boards public!");
             }
             await (boardDocument.save as any)();
-            await elastic.boardRefresh();
+            await boardRefresh();
             res.send(boardDocument);
         }
     });
@@ -237,7 +219,7 @@ export function module() {
 
     router.post('/myBoards', nocacheMiddleware, loggedInMiddleware,
         check('sortDirection').isIn(['', 'desc', 'asc']), validateBody, async (req, res) => {
-            const result = await elastic.myBoards(req.user, req.body);
+            const result = await myBoards(req.user, req.body);
             res.send(result.body);
         });
 

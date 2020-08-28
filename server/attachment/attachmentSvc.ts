@@ -1,4 +1,4 @@
-import { each, map } from 'async';
+import { each, ErrorCallback, map } from 'async';
 import { createScanner } from 'clamav.js';
 import * as Config from 'config';
 import { Request, Response } from 'express';
@@ -6,12 +6,12 @@ import { createWriteStream } from 'fs';
 import * as md5 from 'md5-file';
 import { createReadStream } from 'streamifier';
 import { hasRole } from 'shared/system/authorizationShared';
-import { handleError, handleNotFound } from 'server/errorHandler/errorHandler';
+import { handleError, handleErrorVoid, handleNotFound } from 'server/errorHandler/errorHandler';
 import { attachmentApproved, attachmentRemove, createTask, fileUsed } from 'server/system/adminItemSvc';
 import { getDaoList } from 'server/system/moduleDaoManager';
 import { addFile, deleteFileById, ItemDocument, userTotalSpace } from 'server/system/mongo-data';
 import { alterAttachmentStatus } from 'server/attachment/attachmentDb';
-import { Attachment, Cb, CbError, CbError1, Item, User } from 'shared/models.model';
+import { Attachment, Cb, Cb1, Cb3, CbError, CbError1, Item, User } from 'shared/models.model';
 
 const config = Config as any;
 
@@ -58,7 +58,8 @@ export function add(req: Request & {files: {uploadedFiles: any}}, res: Response,
     });
 }
 
-function linkAttachmentToAdminItem(item: ItemDocument, attachment: Attachment, isFileCreated: boolean, cb: Cb<Attachment, boolean, Error>) {
+function linkAttachmentToAdminItem(item: ItemDocument, attachment: Attachment, isFileCreated: boolean,
+                                   cb: Cb3<Attachment, boolean, Error>) {
     item.attachments.push(attachment);
     item.markModified('attachments');
     (item as any).save((err: Error) => {
@@ -66,7 +67,7 @@ function linkAttachmentToAdminItem(item: ItemDocument, attachment: Attachment, i
     });
 }
 
-export function addToItem(item: ItemDocument, file: any, user: User, comment: string, cb: Cb<Attachment, boolean, Error>) {
+export function addToItem(item: ItemDocument, file: any, user: User, comment: string, cb: Cb3<Attachment, boolean, Error>) {
     const attachment: Attachment = {
         comment,
         fileid: undefined,
@@ -104,21 +105,21 @@ export function addToItem(item: ItemDocument, file: any, user: User, comment: st
 }
 
 export function approvalApprove(req: Request, res: Response) {
-    alterAttachmentStatus(req.params.id, 'approved', handleError({req, res}, () => {
-        const asyncAttachmentApproved = (dao: any, done: CbError<Attachment>) => attachmentApproved(dao.dao, req.params.id, done);
-        each(getDaoList(), asyncAttachmentApproved, handleError({req, res}, () => {
+    alterAttachmentStatus(req.params.id, 'approved', handleErrorVoid({req, res}, () => {
+        const asyncAttachmentApproved = (dao: any, done: CbError1<Attachment>) => attachmentApproved(dao.dao, req.params.id, done);
+        each(getDaoList(), asyncAttachmentApproved, handleErrorVoid({req, res}, () => {
             res.send('Attachment approved.');
-        }));
+        }) as ErrorCallback);
     }));
 }
 
 export function approvalDecline(req: Request, res: Response) {
     const asyncAttachmentRemove = (dao: any, done: CbError) => attachmentRemove(dao.dao, req.params.id, done);
-    each(getDaoList(), asyncAttachmentRemove, handleError({req, res}, () => {
-        deleteFileById(req.params.id, handleError({req, res}, () => {
+    each(getDaoList(), asyncAttachmentRemove, handleErrorVoid({req, res}, () => {
+        deleteFileById(req.params.id, handleErrorVoid({req, res}, () => {
             res.send('Attachment declined');
         }));
-    }));
+    }) as ErrorCallback);
 }
 
 export function remove(req: Request, res: Response, db: any, crudPermission: (item: ItemDocument, user: User) => boolean) {
@@ -135,15 +136,15 @@ export function remove(req: Request, res: Response, db: any, crudPermission: (it
     }));
 }
 
-export function removeUnusedAttachment(id: string, cb: Cb<Error>) {
+export function removeUnusedAttachment(id: string, cb: Cb1<Error | null>) {
     map(
         getDaoList(),
         (dao: any, done) => fileUsed(dao.dao, id, done),
-        (err, results) => results && results.indexOf(true) === -1 ? deleteFileById(id, cb) : cb()
+        (err, results) => results && results.indexOf(true) === -1 ? deleteFileById(id, cb) : cb(null)
     );
 }
 
-export function scanFile(stream: any, res: Response, cb: Cb<boolean>) {
+export function scanFile(stream: any, res: Response, cb: Cb1<boolean>) {
     createScanner(config.antivirus.port, config.antivirus.ip).scan(stream, (err: any, object: any, malicious: boolean) => {
         if (err) { return cb(false); }
         if (malicious) { return res.status(431).send('The file probably contains a virus.'); }
@@ -167,11 +168,11 @@ export function setDefault(req: Request, res: Response, db: any, crudPermission:
 export function unapproved(cb: CbError1<ItemDocument[]>) {
     map<any, ItemDocument[]>(
         getDaoList(),
-        (dao: any, done: CbError<ItemDocument[]>) => dao.type !== 'board'
+        (dao: any, done: CbError1<ItemDocument[]>) => dao.type !== 'board'
             ? dao.dao.find({'attachments.pendingApproval': true}, done)
-            : done(undefined, []),
+            : done(null, []),
         (err, results) => cb(
-            err === null ? undefined : err,
+            err === undefined ? null : err,
             results ? ([] as (ItemDocument)[]).concat.apply([], results as any) : []
         )
     );

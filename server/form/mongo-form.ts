@@ -92,13 +92,13 @@ function updateUser(elt: CdeForm, user: User) {
     };
 }
 
-export function byExisting(elt: CdeForm, cb: CbError<CdeFormDocument>) {
+export function byExisting(elt: CdeForm, cb: CbError1<CdeFormDocument>) {
     formModel.findOne({_id: elt._id, tinyId: elt.tinyId}, cb);
 }
 
-export const byId = (id: string, cb: CbError<CdeFormDocument>) => formModel.findById(id).exec(cb);
+export const byId = (id: string, cb: CbError1<CdeFormDocument>) => formModel.findById(id).exec(cb);
 
-export function byTinyIdList(tinyIdList: string[], cb: CbError<CdeFormElastic[]>): void {
+export function byTinyIdList(tinyIdList: string[], cb: CbError1<CdeFormElastic[] | void>): void {
     formModel.find({archived: false}).where('tinyId')
         .in(tinyIdList)
         .slice('valueDomain.permissibleValues', 10)
@@ -111,12 +111,12 @@ export function byTinyIdList(tinyIdList: string[], cb: CbError<CdeFormElastic[]>
         });
 }
 
-export const byTinyId = (tinyId: string, cb?: CbError<CdeFormDocument | null>) => formModel.findOne({
+export const byTinyId = (tinyId: string, cb?: CbError1<CdeFormDocument | null>) => formModel.findOne({
     tinyId,
     archived: false
 }).exec(cb);
 
-export function byTinyIdVersion(tinyId: string, version: string | undefined, cb: CbError<CdeFormDocument | null>) {
+export function byTinyIdVersion(tinyId: string, version: string | undefined, cb: CbError1<CdeFormDocument | null>) {
     if (version) {
         byTinyIdAndVersion(tinyId, version, cb);
     } else {
@@ -124,7 +124,7 @@ export function byTinyIdVersion(tinyId: string, version: string | undefined, cb:
     }
 }
 
-export function byTinyIdAndVersion(tinyId: string, version: string | undefined, callback: CbError<CdeFormDocument>) {
+export function byTinyIdAndVersion(tinyId: string, version: string | undefined, callback: CbError1<CdeFormDocument>) {
     const query: any = {tinyId};
     if (version) {
         query.version = version;
@@ -134,7 +134,7 @@ export function byTinyIdAndVersion(tinyId: string, version: string | undefined, 
     return formModel.findOne(query).sort({updated: -1}).limit(1).exec(callback);
 }
 
-export function draftByTinyId(tinyId: string, cb: CbError<CdeFormDraftDocument>) {
+export function draftByTinyId(tinyId: string, cb: CbError1<CdeFormDraftDocument>) {
     const cond = {
         tinyId,
         archived: false,
@@ -143,7 +143,7 @@ export function draftByTinyId(tinyId: string, cb: CbError<CdeFormDraftDocument>)
     formDraftModel.findOne(cond, cb);
 }
 
-export function draftById(id: string, cb: CbError<CdeFormDocument>) {
+export function draftById(id: string, cb: CbError1<CdeFormDocument>) {
     const cond = {
         _id: id,
         elementType: 'form'
@@ -151,7 +151,7 @@ export function draftById(id: string, cb: CbError<CdeFormDocument>) {
     formDraftModel.findOne(cond, cb);
 }
 
-export function draftSave(elt: CdeForm, user: User, cb: CbError<CdeFormDocument>) {
+export function draftSave(elt: CdeForm, user: User, cb: CbError1<CdeFormDocument | void>) {
     updateUser(elt, user);
     formDraftModel.findById(elt._id, splitError(cb, doc => {
         if (!doc) {
@@ -174,8 +174,8 @@ export function draftDelete(tinyId: string, cb: CbError) {
 }
 
 export function draftsList(criteria: any): Promise<CdeFormDraftDocument[]>;
-export function draftsList(criteria: any, cb: CbError<CdeFormDraftDocument[]>): void;
-export function draftsList(criteria: any, cb?: CbError<CdeFormDraftDocument[]>): void | Promise<CdeFormDraftDocument[]> {
+export function draftsList(criteria: any, cb: CbError1<CdeFormDraftDocument[]>): void;
+export function draftsList(criteria: any, cb?: CbError1<CdeFormDraftDocument[]>): void | Promise<CdeFormDraftDocument[]> {
     return formDraftModel
         .find(criteria, {
             'designations.designation': 1,
@@ -188,7 +188,7 @@ export function draftsList(criteria: any, cb?: CbError<CdeFormDraftDocument[]>):
         .exec(cb);
 }
 
-export function latestVersionByTinyId(tinyId: string, cb: CbError<string | undefined>) {
+export function latestVersionByTinyId(tinyId: string, cb: CbError1<string | undefined>) {
     formModel.findOne({tinyId, archived: false}, (err, form) => {
         cb(err, form ? form.version : undefined);
     });
@@ -200,11 +200,11 @@ export function getStream(condition: any) {
     return formModel.find(condition).sort({_id: -1}).cursor();
 }
 
-export function count(condition: any, callback: CbError<number>) {
+export function count(condition: any, callback: CbError1<number>) {
     return formModel.countDocuments(condition, callback);
 }
 
-export function update(elt: CdeForm, user: User, options: any = {}, callback: CbError<CdeForm> = () => {
+export function update(elt: CdeForm, user: User, options: any = {}, callback: CbError1<CdeForm | void> = () => {
 }) {
     formModel.findById(elt._id, (err, form) => {
         if (err || !form) {
@@ -251,7 +251,7 @@ export function update(elt: CdeForm, user: User, options: any = {}, callback: Cb
                 if (err) {
                     formModel.findOneAndUpdate({_id: form._id}, {$set: {archived: false}}, () => callback(err));
                 } else {
-                    callback(undefined, savedElt);
+                    callback(null, savedElt);
                     auditModificationsForm(user, form, savedElt);
                 }
             });
@@ -275,7 +275,7 @@ export function create(elt: CdeForm, user: User, callback: CbError1<CdeFormDocum
     });
 }
 
-export function byTinyIdListInOrder(idList: string[], callback: CbError<(CdeFormElastic | undefined)[]>) {
+export function byTinyIdListInOrder(idList: string[], callback: CbError1<(CdeFormElastic | undefined)[] | void>) {
     byTinyIdList(idList, (err, forms) => {
         if (err || !forms) {
             return callback(err || new Error('forms not found'));
@@ -291,6 +291,6 @@ export function byTinyIdListInOrder(idList: string[], callback: CbError<(CdeForm
     });
 }
 
-export function originalSourceByTinyIdSourceName(tinyId: string, sourceName: string, cb: CbError<CdeFormDocument>) {
+export function originalSourceByTinyIdSourceName(tinyId: string, sourceName: string, cb: CbError1<CdeFormDocument>) {
     formSourceModel.findOne({tinyId, source: sourceName}, cb);
 }

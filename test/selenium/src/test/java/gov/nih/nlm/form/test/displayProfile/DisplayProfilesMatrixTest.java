@@ -1,7 +1,7 @@
 package gov.nih.nlm.form.test.displayProfile;
 
 import gov.nih.nlm.form.test.BaseFormTest;
-import org.junit.Assert;
+import org.testng.Assert;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 

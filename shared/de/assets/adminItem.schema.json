@@ -350,11 +350,10 @@
       },
       "required": [
         "classification",
+        "createdBy",
         "designations",
         "registrationState",
-        "stewardOrg",
-        "created",
-        "createdBy"
+        "stewardOrg"
       ]
     },
     "classificationElement": {
@@ -398,9 +397,7 @@
           "type": "string",
           "format": "date"
         },
-        {
-          "type": "object"
-        }
+        {}
       ]
     },
     "datatypeContainer": {

@@ -10,13 +10,13 @@ import {
 import { exists } from 'server/system/mongooseHelper';
 import { find as userFind, updateUser } from 'server/user/userDb';
 import { uriView } from 'shared/item';
-import { Attachment, CbError, Item, ModuleAll, User } from 'shared/models.model';
+import { Attachment, CbError, CbError1, Item, ModuleAll, User } from 'shared/models.model';
 import { UserRoles } from 'shared/system/authorizationShared';
 import { Organization } from 'shared/system/organization';
 import { usersToNotify } from 'shared/user';
 import { capString } from 'shared/system/util';
 
-export function attachmentApproved(collection: Model<Item & Document>, id: string, cb: CbError<Attachment>) {
+export function attachmentApproved(collection: Model<Item & Document>, id: string, cb: CbError1<Attachment>) {
     collection.updateMany(
         {'attachments.fileid': id},
         {
@@ -39,7 +39,7 @@ export function badWorkingGroupStatus(elt: Item, org: Organization) {
         && allowedRegStatuses.indexOf(elt.registrationState.registrationStatus) === -1;
 }
 
-export function fileUsed(collection: Model<any>, id: string, cb: CbError<boolean>) {
+export function fileUsed(collection: Model<any>, id: string, cb: CbError1<boolean>) {
     exists(collection, {'attachments.fileid': id}, cb);
 }
 

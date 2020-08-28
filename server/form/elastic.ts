@@ -1,18 +1,19 @@
+import { ApiResponse } from '@elastic/elasticsearch/lib/Transport';
 import { splitError } from 'server/errorHandler/errorHandler';
+import { CdeFormDocument } from 'server/form/mongo-form';
 import { logError } from 'server/log/dbLogger';
+import { esClient } from 'server/system/elastic';
 import { riverFunction, suggestRiverFunction } from 'server/system/elasticSearchInit';
 import { config } from 'server/system/parseConfig';
 import { CdeFormElastic } from 'shared/form/form.model';
-import { CbError } from 'shared/models.model';
-import { esClient } from 'server/system/elastic';
-import { ApiResponse } from '@elastic/elasticsearch/lib/Transport';
+import { CbError, CbError1, ElasticQueryResponse } from 'shared/models.model';
 
-export function updateOrInsert(elt) {
+export function updateOrInsert(elt: CdeFormDocument) {
     riverFunction(elt.toObject(), doc => {
         if (doc) {
             let doneCount = 0;
             let doneError;
-            const done = err => {
+            const done = (err: Error | null) => {
                 if (err) {
                     logError({
                         message: 'Unable to Index document: ' + doc.elementType + ' ' + doc.tinyId,
@@ -46,7 +47,7 @@ export function updateOrInsert(elt) {
     });
 }
 
-export function byTinyIdList(idList: string[], size: number, cb: CbError<CdeFormElastic[]>) {
+export function byTinyIdList(idList: string[], size: number, cb: CbError1<CdeFormElastic[] | void>) {
     idList = idList.filter(id => !!id);
     esClient.search(
         {
@@ -60,14 +61,14 @@ export function byTinyIdList(idList: string[], size: number, cb: CbError<CdeForm
                 size
             }
         },
-        splitError<ApiResponse<CdeFormElastic>>(err => cb(err), response => {
+        splitError<{body: ElasticQueryResponse<CdeFormElastic>}>(err => cb(err), response => {
             // TODO: possible to move this sort to elastic search?
             if (!response) {
-                cb(undefined, []);
+                cb(null, []);
                 return;
             }
             response.body.hits.hits.sort((a, b) => idList.indexOf(a._id) - idList.indexOf(b._id));
-            cb(undefined, response.body.hits.hits.map(h => h._source));
+            cb(null, response.body.hits.hits.map(h => h._source));
         })
     );
 }

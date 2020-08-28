@@ -33,7 +33,7 @@ export class CdeClassificationComponent {
             event.selectedOrg,
             event.classificationArray,
             '/server/classification/addCdeClassification/',
-            (err?: HttpErrorResponse) => {
+            (err: HttpErrorResponse | void) => {
                 if (err) {
                     if (err.status === 409) {
                         this.alert.addAlert('danger', 'Classification Already Exists');

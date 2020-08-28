@@ -44,7 +44,7 @@
         </div>
     </div>
     <h1 class="mobileViewH1 my-4">
-        <cde-draft-slider [(isDraft)]="elt.isDraft" (isDraftChange)="$event?loadElt():loadPublished()"
+        <cde-draft-slider [(isDraft)]="elt.isDraft" (isDraftChange)="$event?loadElt():loadPublished()" style="vertical-align: text-bottom"
                           [hidden]="!hasDraftsAndLoggedIn()">
         </cde-draft-slider>
         {{elt?.designations[0]?.designation}}

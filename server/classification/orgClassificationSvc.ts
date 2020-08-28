@@ -7,7 +7,7 @@ import { OrganizationDocument, orgByName } from 'server/orgManagement/orgDb';
 import { addToClassifAudit } from 'server/system/classificationAuditSvc';
 import { buildElasticSearchQuery, elasticsearch } from 'server/system/elastic';
 import { ItemDocument, removeJobStatus, updateJobStatus } from 'server/system/mongo-data';
-import { CbError, Classification, ItemClassification, ItemClassificationNew, User } from 'shared/models.model';
+import { CbError, CbError1, Classification, ItemClassification, ItemClassificationNew, User } from 'shared/models.model';
 import { SearchSettingsElastic } from 'shared/search/search.model';
 import {
     addCategoriesToOrg, addCategoriesToTree, arrangeClassification, deleteCategory, findLeaf, mergeOrgClassifications,
@@ -187,7 +187,7 @@ export async function renameOrgClassification(user: User, newClassification: Ite
     ], handleError({}, () => removeJobStatus('renameClassification', callback)));
 }
 
-export async function addOrgClassification(newClassification: ItemClassification, callback: CbError<OrganizationDocument>) {
+export async function addOrgClassification(newClassification: ItemClassification, callback: CbError1<OrganizationDocument | void>) {
     newClassification.categories = defaultArray(newClassification.categories);
     const stewardOrg = await orgByName(newClassification.orgName);
     /* istanbul ignore if */

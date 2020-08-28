@@ -40,25 +40,25 @@ export function isDefault(attachment: Attachment) {
     return attachment.isDefault === true;
 }
 
-export type Cb<T = void, U = void, V = void> = (t?: T, u?: U, v?: V) => void;
-export type Cb1<T = void, U = void, V = void> = (t: T, u?: U, v?: V) => void;
-export type Cb2<T = void, U = void, V = void> = (t: T, u: U, v?: V) => void;
+export type Cb = () => void;
+export type Cb1<T = void> = (t: T) => void;
+export type Cb2<T = void, U = void> = (t: T, u: U) => void;
 export type Cb3<T = void, U = void, V = void> = (t: T, u: U, v: V) => void;
-export type CbErr<T = void, U = void, V = void> = (error?: string, t?: T, u?: U, v?: V) => void;
-export type CbErr1<T = void, U = void, V = void> = (error: string | undefined, t: T, u?: U, v?: V) => void;
-export type CbErr2<T = void, U = void, V = void> = (error: string | undefined, t: T, u: U, v?: V) => void;
+export type CbErr = (error: string | undefined) => void;
+export type CbErr1<T = void> = (error: string | undefined, t: T) => void;
+export type CbErr2<T = void, U = void> = (error: string | undefined, t: T, u: U) => void;
 export type CbErr3<T = void, U = void, V = void> = (error: string | undefined, t: T, u: U, v: V) => void;
-export type CbError<T = void, U = void, V = void> = (error: Error | null | undefined, t?: T, u?: U, v?: V) => void;
-export type CbError1<T = void, U = void, V = void> = (error: Error | undefined, t: T, u?: U, v?: V) => void;
-export type CbError2<T = void, U = void, V = void> = (error: Error | undefined, t: T, u: U, v?: V) => void;
-export type CbError3<T = void, U = void, V = void> = (error: Error | undefined, t: T, u: U, v: V) => void;
-export type CbErrorObj<E = string, T = void, U = void, V = void> = (error?: E, t?: T, u?: U, v?: V) => void;
-export type CbErrorObj1<E = string, T = void, U = void, V = void> = (error: E | undefined, t: T, u?: U, v?: V) => void;
-export type CbErrorObj2<E = string, T = void, U = void, V = void> = (error: E | undefined, t: T, u: U, v?: V) => void;
-export type CbErrorObj3<E = string, T = void, U = void, V = void> = (error: E | undefined, t: T, u: U, v: V) => void;
-export type CbRet<R = void, T = void, U = void, V = void> = (t?: T, u?: U, v?: V) => R;
-export type CbRet1<R = void, T = void, U = void, V = void> = (t: T, u?: U, v?: V) => R;
-export type CbRet2<R = void, T = void, U = void, V = void> = (t: T, u: U, v?: V) => R;
+export type CbError = (error: Error | null) => void;
+export type CbError1<T = void> = (error: Error | null, t: T) => void;
+export type CbError2<T = void, U = void> = (error: Error | null, t: T, u: U) => void;
+export type CbError3<T = void, U = void, V = void> = (error: Error | null, t: T, u: U, v: V) => void;
+export type CbErrorObj<E = string | undefined> = (error: E) => void;
+export type CbErrorObj1<E = string | undefined, T = void> = (error: E, t: T) => void;
+export type CbErrorObj2<E = string | undefined, T = void, U = void> = (error: E, t: T, u: U) => void;
+export type CbErrorObj3<E = string | undefined, T = void, U = void, V = void> = (error: E, t: T, u: U, v: V) => void;
+export type CbRet<R = void> = () => R;
+export type CbRet1<R = void, T = void> = (t: T) => R;
+export type CbRet2<R = void, T = void, U = void> = (t: T, u: U) => R;
 export type CbRet3<R = void, T = void, U = void, V = void> = (t: T, u: U, v: V) => R;
 
 export class CdeId {
@@ -175,6 +175,8 @@ export class DataSource {
     updated?: Date;
 }
 
+export type DateType = Date | string | number; // number on server, string transport, Date on load from db or on create in client
+
 export interface DiscussionComments {
     currentCommentsPage: number;
     latestComments: Comment[];
@@ -279,7 +281,7 @@ export abstract class Elt {
     checked?: boolean; // volatile, used by quickboard
     classification: Classification[] = []; // mutable
     comments: Comment[] = []; // mutable
-    created: Date | string | number = new Date();
+    created?: DateType = new Date();
     createdBy?: UserRefSecondary;
     definitions: Definition[] = [];
     designations: Designation[] = [];
@@ -299,7 +301,7 @@ export abstract class Elt {
     source?: string; // obsolete
     sources: DataSource[] = [];
     tinyId!: string; // server generated
-    updated?: Date;
+    updated?: DateType;
     updatedBy?: UserRefSecondary;
     usedBy?: string[]; // volatile, Classification stewardOrg names
     version?: string; // ??? elastic(version) or mongo(__v)
