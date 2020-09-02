@@ -306,7 +306,8 @@
             <div class="px-1" [ngClass]="filterMode?'col-12 col-sm-10':'col-12'" [style.display]="searching ? 'none' : 'block'">
                 <!-- BREADCRUMBS -->
                 <div *ngIf="elts && aggregations" class="mx-1 my-3" id="searchResultInfoBar">
-                    <strong id="searchResultNum">{{totalItems}}</strong> results for
+                    <strong id="searchResultNum">{{totalItems}}</strong>
+                    <ng-container> results for</ng-container>
                     <span *ngIf="searchedTerm" id="term_crumb" class="badge badge-light remove-filter hand-cursor dark-icon mx-1"
                           aria-label="Remove this search term filter" matTooltip="Remove this search term filter"
                           matTooltipClass="cdeTooltip" matTooltipPosition="right"
@@ -321,8 +322,8 @@
                         {{getSelectedClassifications()}}
                     </span>
                     <ng-container *ngIf="altClassificationFilterMode">
-                        and
-                        <span id="classifAlt_filter" class="badge badge-light remove-filter hand-cursor dark-icon pl-1"
+                        <ng-container>and</ng-container>
+                        <span id="classifAlt_filter" class="badge badge-light remove-filter hand-cursor dark-icon mx-1"
                               aria-label="Remove this classification filter" matTooltip="Remove this classification filter"
                               matTooltipClass="cdeTooltip" matTooltipPosition="right"
                               (click)="clearSelectedClassificationsAlt()">
@@ -330,8 +331,8 @@
                         </span>
                     </ng-container>
                     <ng-container *ngIf="excludeOrgFilterMode">
-                        not
-                        <span class="badge badge-light remove-filter hand-cursor dark-icon pl-1"
+                        <ng-container>not</ng-container>
+                        <span class="badge badge-light remove-filter hand-cursor dark-icon mx-1"
                               aria-label="Remove this classification filter" matTooltip="Remove this classification filter"
                               matTooltipClass="cdeTooltip" matTooltipPosition="right"
                               (click)="clearExcludeOrgs()">
