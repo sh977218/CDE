@@ -19,7 +19,7 @@ public class SearchLinkedForms extends NlmCdeBaseTest {
                 findElement(By.id("ftsearch-input")).clear();
                 findElement(By.id("ftsearch-input")).sendKeys("linkedForms.Retired:>0");
                 clickElement(By.id("search.submit"));
-                textPresent("7 results for");
+                textPresent("7 data element results for");
                 i = -1;
             } catch (Exception e) {
                 i++;
@@ -29,24 +29,24 @@ public class SearchLinkedForms extends NlmCdeBaseTest {
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("linkedForms.Qualified:>1");
         clickElement(By.id("search.submit"));
-        textPresent("7 results for");
+        textPresent("7 data element results for");
 
         hangon(1);
 
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("linkedForms.Qualified:>2");
         clickElement(By.id("search.submit"));
-        textPresent("0 results for");
+        textPresent("0 data element results for");
 
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("linkedForms.Standard:>0");
         clickElement(By.id("search.submit"));
-        textPresent("0 results for");
+        textPresent("0 data element results for");
 
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("linkedForms.Standard:0");
         clickElement(By.id("search.submit"));
-        textPresent("7 results for");
+        textPresent("7 data element results for");
     }
 
 }

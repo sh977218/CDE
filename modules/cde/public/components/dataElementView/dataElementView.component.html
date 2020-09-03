@@ -38,6 +38,7 @@
     <h1 class="mobileViewH1 my-4">
         <cde-draft-slider [(isDraft)]="elt.isDraft" (isDraftChange)="$event?loadElt():loadPublished()" style="vertical-align: text-bottom"
                           [hidden]="!hasDrafts"></cde-draft-slider>
+        <span style="text-transform: capitalize; font-width: 700;">Data Element:</span>
         {{elt?.designations[0].designation}}
     </h1>
     <div class="pull-left">

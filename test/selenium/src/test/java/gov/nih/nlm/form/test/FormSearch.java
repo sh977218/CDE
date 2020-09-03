@@ -18,7 +18,7 @@ public class FormSearch extends BaseFormTest {
         textPresent(formName);
         clickElement(By.id("seeAllLinkedFormsButton"));
         switchTab(1);
-        textPresent("1 results for qz_W3XYk7jF");
+        textPresent("1 form results for qz_W3XYk7jF");
         textPresent(formName);
         switchTabAndClose(0);
     }

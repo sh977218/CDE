@@ -8,10 +8,10 @@ public class NoCreatedAtEpoch extends NlmCdeBaseTest {
     @Test
     public void noCreatedAtEpoch() {
         search("cde", "created:<1971");
-        findElement(By.xpath("//*[@id='searchResultInfoBar'][contains(.,'0 results for')]/span[@id='term_crumb'][contains(.,'created:<1971')]"));
+        findElement(By.xpath("//*[@id='searchResultInfoBar'][contains(.,'0 data element results for')]/span[@id='term_crumb'][contains(.,'created:<1971')]"));
 
         search("form", "created:<1971");
-        findElement(By.xpath("//*[@id='searchResultInfoBar'][contains(.,'4 results for')]/span[@id='term_crumb'][contains(.,'created:<1971')]"));
+        findElement(By.xpath("//*[@id='searchResultInfoBar'][contains(.,'4 form results for')]/span[@id='term_crumb'][contains(.,'created:<1971')]"));
     }
 
     public void search(String type, String searchString) {

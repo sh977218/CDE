@@ -11,7 +11,7 @@ public class FormDateRangeSearch extends NlmCdeBaseTest {
         goToFormSearch();
         findElement(By.id("ftsearch-input")).sendKeys("created:<2015-01-01 AND created:>1980-01-01");
         clickElement(By.id("search.submit"));
-        textPresent("1 results");
+        textPresent("1 form results for");
 
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("created:<1960-01-01");
@@ -26,7 +26,7 @@ public class FormDateRangeSearch extends NlmCdeBaseTest {
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("updated:<2016-01-01");
         clickElement(By.id("search.submit"));
-        textPresent("4 results");
+        textPresent("4 form results for");
 
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("imported:<2015-01-01");
@@ -36,7 +36,7 @@ public class FormDateRangeSearch extends NlmCdeBaseTest {
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("imported:<2016-01-01");
         clickElement(By.id("search.submit"));
-        textPresent("2 results");
+        textPresent("2 form results for");
     }
 
 }
