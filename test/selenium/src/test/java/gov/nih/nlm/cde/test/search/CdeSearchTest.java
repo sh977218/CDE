@@ -9,7 +9,6 @@ public class CdeSearchTest extends NlmCdeBaseTest {
 
     public void fullDetail() {
         goToCdeByName("Genotype Therapy Basis Mutation");
-        checkBreadCrumb(new String[]{"Home", "CDEs", "View [PwdyV7rn1Pp]"});
         textPresent("Genotype Therapy Basis Mutation Analysis Indicator");
         textPresent("Text descriptor to indicate whether genotype directed therapy was based on mutation testing");
         textPresent("Qualified");
@@ -51,11 +50,9 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     public void searchBySteward() {
         goToCdeSearch();
         findElement(By.name("q")).sendKeys("steward:CIP");
-        checkBreadCrumb(new String[]{"Home", "CDEs"});
         clickElement(By.id("search.submit"));
         textPresent("1 results for");
         textPresent("Smoking Status");
-        checkBreadCrumb(new String[]{"Home", "CDEs", "Search [\"steward:CIP\"]"});
     }
 
     @Test

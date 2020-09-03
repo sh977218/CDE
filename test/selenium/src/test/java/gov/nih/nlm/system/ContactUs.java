@@ -10,7 +10,6 @@ public class ContactUs extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToArticles();
 
-        checkBreadCrumb(new String[]{"Home", "Settings", "Articles"});
         clickElement(By.cssSelector("mat-select"));
         selectMatSelectDropdownByText("contactUs");
 
@@ -34,7 +33,6 @@ public class ContactUs extends NlmCdeBaseTest {
         logout();
         goToContactUs();
         textPresent("Sample bullet");
-        checkBreadCrumb(new String[]{"Home", "Help", "Contact Us"});
     }
 
 }

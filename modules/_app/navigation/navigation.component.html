@@ -134,14 +134,7 @@
     </div>
 
     <div class="android-content mdl-layout__content">
-        <ol class="breadcrumb">
-            <li *ngFor="let breadcrumb of breadcrumbs$ | async"
-                class="breadcrumb-item">
-                <a [routerLink]="breadCrumbToLink(breadcrumb)" [queryParams]="breadcrumb.queryParams">
-                    {{ breadcrumb.label }}
-                </a>
-            </li>
-        </ol>
+
         <router-outlet></router-outlet>
 
     </div>
