@@ -1,3 +1,3 @@
-import { Types } from 'mongoose';
+import { ObjectId as ObjectIdBson } from 'bson';
 
-export type ObjectId = Types.ObjectId;
+export type ObjectId = ObjectIdBson;

@@ -1,6 +1,5 @@
 import * as mongoose from 'mongoose';
 import { Document, Model, Schema } from 'mongoose';
-import { ObjectId } from 'server';
 import { deleteBoardById, updateOrInsertBoardById } from 'server/board/elastic';
 import { handleError } from 'server/errorHandler/errorHandler';
 import { establishConnection } from 'server/system/connections';
@@ -91,7 +90,7 @@ export function nbBoardsByUserId(userId: string) {
     return pinningBoardModel.countDocuments({'owner.userId': userId});
 }
 
-export function byId(boardId: ObjectId, callback?: CbError1<BoardDocument>): Promise<BoardDocument | null> {
+export function byId(boardId: string, callback?: CbError1<BoardDocument>): Promise<BoardDocument | null> {
     return pinningBoardModel.findById(boardId).exec(callback as any);
 }
 

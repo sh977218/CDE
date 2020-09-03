@@ -34,6 +34,7 @@ public class BaseAttachmentTest extends NlmCdeBaseTest {
         clickElement(By.cssSelector("[data-id = 'notifications']"));
         clickElement(By.xpath("//div[contains(@class, 'taskItem')][*//div[contains(text(),'" + fileName
                 + "')]]//button[*[contains(text(),'Approve')]]"));
+        checkAlert("Attachment approved");
     }
 
     protected void declineAttachment(String fileName) {

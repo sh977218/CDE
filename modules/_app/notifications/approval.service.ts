@@ -39,12 +39,14 @@ export class ApprovalService {
         });
     }
 
-    commentApprove(t: NotificationTask, cb: Cb) {
+    commentApprove(t: NotificationTask, cb: Cb, skipAlert?: boolean) {
         this.http.post('/server/discuss/approveComment',
             t.tasks[0].idType === 'commentReply' ? {replyId: t.tasks[0].id} : {commentId: t.tasks[0].id},
             {responseType: 'text'}
         ).subscribe(response => {
-            this.alert.addAlert('success', response);
+            if (!skipAlert) {
+                this.alert.addAlert('success', response);
+            }
             cb();
         }, err => {
             this.alert.httpErrorMessageAlert(err);

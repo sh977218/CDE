@@ -4,6 +4,7 @@ import * as Config from 'config';
 import { Request, Response } from 'express';
 import { createWriteStream } from 'fs';
 import * as md5 from 'md5-file';
+import { ObjectId } from 'bson';
 import { createReadStream } from 'streamifier';
 import { hasRole } from 'shared/system/authorizationShared';
 import { handleError, handleErrorVoid, handleNotFound } from 'server/errorHandler/errorHandler';
@@ -11,7 +12,7 @@ import { attachmentApproved, attachmentRemove, createTask, fileUsed } from 'serv
 import { getDaoList } from 'server/system/moduleDaoManager';
 import { addFile, deleteFileById, ItemDocument, userTotalSpace } from 'server/system/mongo-data';
 import { alterAttachmentStatus } from 'server/attachment/attachmentDb';
-import { Attachment, Cb, Cb1, Cb3, CbError, CbError1, Item, User } from 'shared/models.model';
+import { Attachment, Cb1, Cb3, CbError, CbError1, Item, User } from 'shared/models.model';
 
 const config = Config as any;
 
@@ -105,7 +106,7 @@ export function addToItem(item: ItemDocument, file: any, user: User, comment: st
 }
 
 export function approvalApprove(req: Request, res: Response) {
-    alterAttachmentStatus(req.params.id, 'approved', handleErrorVoid({req, res}, () => {
+    alterAttachmentStatus(new ObjectId(req.params.id), 'approved', handleErrorVoid({req, res}, () => {
         const asyncAttachmentApproved = (dao: any, done: CbError1<Attachment>) => attachmentApproved(dao.dao, req.params.id, done);
         each(getDaoList(), asyncAttachmentApproved, handleErrorVoid({req, res}, () => {
             res.send('Attachment approved.');

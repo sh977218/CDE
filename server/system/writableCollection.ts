@@ -1,7 +1,8 @@
 import { Response } from 'express';
 import { handleError, respondError } from 'server/errorHandler/errorHandler';
-import { Document, Model } from 'mongoose';
-import { Cb, Cb1, CbError1 } from 'shared/models.model';
+import { Document, Model, Types, Schema } from 'mongoose';
+import { Cb1, CbError1 } from 'shared/models.model';
+const ObjectId = Schema.Types.ObjectId;
 
 // sample: postCheckFn for custom unique id
 // (data, cb) => {
@@ -40,7 +41,7 @@ export function writableCollection<T extends {_id: string, __v: number}>(
     function put(res: Response, data: T, cb: Cb1<Document & T>) {
         const handlerOptions = {res};
         if (typeof data[versionKey] !== 'number') {
-            model.findOne({_id: data._id}, handleError(handlerOptions, exists => {
+            model.findOne({_id: data._id} as any, handleError(handlerOptions, exists => {
                 if (exists && typeof exists[versionKey] === 'undefined') { // WORKAROUND until data updated to mongo 4 __v
                     exists = null;
                 }
@@ -62,7 +63,7 @@ export function writableCollection<T extends {_id: string, __v: number}>(
             (oldInfo as any)._doc = data;
             // new model(data).save();
             delete oldInfo._id;
-            model.update(query, oldInfo, {new: true}, handleError(handlerOptions, doc => {
+            model.update(query, oldInfo as any, {new: true}, handleError(handlerOptions, doc => {
                 if (!doc) {
                     res.status(409).send('Edited by someone else. Please refresh and redo.');
                     return;
@@ -73,13 +74,13 @@ export function writableCollection<T extends {_id: string, __v: number}>(
     }
     return {
         delete: (res: Response, id: string, cb: Cb1<{deletedCount: number}>) => {
-            model.remove({_id: id}, handleError({res}, cb) as any);
+            model.remove({_id: id} as any, handleError({res}, cb) as any);
         },
         find: (res: Response, crit: any, cb: Cb1<(Document & T)[]>) => {
             model.find(crit, handleError({res}, cb));
         },
         get: (res: Response, id: string, cb: Cb1<Document & T | null>) => {
-            model.findOne({_id: id}, handleError({res}, cb));
+            model.findOne({_id: id} as any, handleError({res}, cb));
         },
         post,
         put,

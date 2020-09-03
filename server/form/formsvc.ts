@@ -286,11 +286,10 @@ export function draftDelete(req: Request, res?: Response) {
 }
 
 export function byTinyIdList(req: Request, res: Response) {
-    let tinyIdList = req.params.tinyIdList;
-    if (!tinyIdList) {
+    if (!req.params.tinyIdList) {
         return res.status(400).send();
     }
-    tinyIdList = tinyIdList.split(',');
+    const tinyIdList = req.params.tinyIdList.split(',');
     formByTinyIdList(tinyIdList, handleNotFound({req, res}, forms => {
         res.send(forms.map(formatElt));
     }));

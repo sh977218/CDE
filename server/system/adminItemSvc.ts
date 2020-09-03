@@ -10,7 +10,7 @@ import {
 import { exists } from 'server/system/mongooseHelper';
 import { find as userFind, updateUser } from 'server/user/userDb';
 import { uriView } from 'shared/item';
-import { Attachment, CbError, CbError1, Item, ModuleAll, User } from 'shared/models.model';
+import { Attachment, CbError, CbError1, Elt, Item, ModuleAll, User } from 'shared/models.model';
 import { UserRoles } from 'shared/system/authorizationShared';
 import { Organization } from 'shared/system/organization';
 import { usersToNotify } from 'shared/user';
@@ -28,7 +28,7 @@ export function attachmentApproved(collection: Model<Item & Document>, id: strin
     );
 }
 
-export function attachmentRemove(collection: Model<any>, id: string, cb: CbError) {
+export function attachmentRemove(collection: Model<Elt & Document>, id: string, cb: CbError) {
     collection.updateMany({'attachments.fileid': id}, {$pull: {attachments: {fileid: id}}}, cb);
 }
 

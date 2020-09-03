@@ -1,15 +1,16 @@
 import * as mongoose from 'mongoose';
-import { establishConnection } from '../system/connections';
-import { addStringtype } from '../system/mongoose-stringtype';
-import { config } from '../system/parseConfig';
+import { Schema } from 'mongoose';
+import { ObjectId } from 'server';
+import { establishConnection } from 'server/system/connections';
+import { addStringtype } from 'server/system/mongoose-stringtype';
+import { config } from 'server/system/parseConfig';
 import { CbError } from 'shared/models.model';
 
 addStringtype(mongoose);
-const Schema = mongoose.Schema;
-const StringType = (Schema.Types as any).StringType;
+const StringType = (mongoose.Schema.Types as any).StringType;
 const conn = establishConnection(config.database.appData);
 
-export const fs_files = new Schema({
+export const fsFilesSchema = new Schema({
     _id: Schema.Types.ObjectId,
     filename: StringType,
     contentType: StringType,
@@ -22,8 +23,8 @@ export const fs_files = new Schema({
     },
     md5: StringType
 }, {collection: 'fs.files'});
-export const Fs_files = conn.model('fs_files', fs_files);
+export const fsFilesModel = conn.model('fs_files', fsFilesSchema);
 
-export function alterAttachmentStatus(id: mongoose.Schema.Types.ObjectId, status: string, callback: CbError) {
-    Fs_files.updateOne({_id: id}, {$set: {'metadata.status': status}}, callback);
+export function alterAttachmentStatus(id: ObjectId, status: string, callback: CbError) {
+    fsFilesModel.updateOne({_id: id}, {$set: {'metadata.status': status}}, callback);
 }
