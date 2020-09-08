@@ -1969,15 +1969,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         clickElement(By.xpath("//*[contains(@id,'mat-autocomplete-')]//mat-option[contains(.,'" + username.toLowerCase() + "')]"));
     }
 
-    protected void checkBreadCrumb(String[] crumbs) {
-        Integer index = 1;
-        for (String crumb : crumbs) {
-            findElement(By.xpath("//ol/li[" + index + "][contains(@class,'breadcrumb-item')]//a[contains(.,'" + crumb + "')]"));
-            index++;
-        }
-        assertNoElt(By.xpath("//ol/li[" + index + "]"));
-    }
-
     protected void createBoardFromQuickBoard(String boardName, String boardDescription) {
         clickElement(By.id("addBoard"));
         if (boardName != null) {
