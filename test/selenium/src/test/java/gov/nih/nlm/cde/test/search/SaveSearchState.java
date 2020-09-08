@@ -14,10 +14,10 @@ public class SaveSearchState extends NlmCdeBaseTest {
         textPresent("results for");
         int numRes = getNumberOfResults();
         clickElement(By.id("classif-CATEGORY"));
-        textNotPresent(numRes + " results for");
+        textNotPresent(numRes + " data element results for");
         numRes = getNumberOfResults();
         clickElement(By.id("regstatus-Standard"));
-        textNotPresent(numRes + " results for");
+        textNotPresent(numRes + " data element results for");
         clickElement(By.id("regstatus-Qualified"));
         scrollToTop();
         checkSearchResultInfo(null, "CTEP > CATEGORY", null, null, "Standard, Qualified", null);

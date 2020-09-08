@@ -607,13 +607,13 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         hangon(0.5);
         clickElement(By.id("search.submit"));
         try {
-            textPresent("1 results for");
+            textPresent("1 " + ("cde".equals(type) ? "data element" : "form") + " results for");
         } catch (Exception e) {
             System.out.println("Failing to find, trying again: " + name);
             findElement(By.id("ftsearch-input")).clear();
             findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
             clickElement(By.id("search.submit"));
-            textPresent("1 results for");
+            textPresent("1 " + ("cde".equals(type) ? "data element" : "form") + " results for");
         }
 
         // counteract save summary/table view
@@ -637,7 +637,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
         clickElement(By.xpath("//mat-icon[normalize-space() = 'search']"));
-        textPresent("1 results for");
+        textPresent("1 form results for");
         textPresent(name, By.id("searchResult_0"));
     }
 

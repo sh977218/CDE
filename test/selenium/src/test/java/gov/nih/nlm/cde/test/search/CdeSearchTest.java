@@ -51,7 +51,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         goToCdeSearch();
         findElement(By.name("q")).sendKeys("steward:CIP");
         clickElement(By.id("search.submit"));
-        textPresent("1 results for");
+        textPresent("1 data element results for");
         textPresent("Smoking Status");
     }
 

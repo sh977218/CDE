@@ -16,7 +16,7 @@ public class EnglishAnalyzer extends NlmCdeBaseTest {
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("of");
         findElement(By.id("search.submit")).click();
-        textPresent("0 results for of");
+        textPresent("0 data element results for of");
     }
 
 }

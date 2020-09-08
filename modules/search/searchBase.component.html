@@ -10,7 +10,7 @@
             <div class="col-12 col-md-10 mx-auto">
                 <form #quickSearchForm="ngForm" id="quickSearchForm" novalidate style="max-width: 1000px">
                     <mat-form-field style="width: 100%; font-size: 25px">
-                        <input matInput name="q" id="ftsearch-input" placeholder="Search"
+                        <input matInput name="q" id="ftsearch-input" [placeholder]="'Search ' + (module === 'cde' ? 'Data Elements' : 'Forms')"
                                maxlength="500" [matAutocomplete]="auto"
                                [(ngModel)]="searchSettings.q" (ngModelChange)="searchTermAutoComplete.emit($event)">
                         <mat-icon matSuffix (click)="termSearch(true)" id="search.submit">search</mat-icon>
@@ -306,7 +306,8 @@
             <div class="px-1" [ngClass]="filterMode?'col-12 col-sm-10':'col-12'" [style.display]="searching ? 'none' : 'block'">
                 <!-- BREADCRUMBS -->
                 <div *ngIf="elts && aggregations" class="mx-1 my-3" id="searchResultInfoBar">
-                    <strong id="searchResultNum">{{totalItems}}</strong> results for
+                    <strong id="searchResultNum">{{totalItems}}</strong>
+                    <ng-container> {{module === 'cde' ? 'data element' : 'form'}} results for</ng-container>
                     <span *ngIf="searchedTerm" id="term_crumb" class="badge badge-light remove-filter hand-cursor dark-icon mx-1"
                           aria-label="Remove this search term filter" matTooltip="Remove this search term filter"
                           matTooltipClass="cdeTooltip" matTooltipPosition="right"

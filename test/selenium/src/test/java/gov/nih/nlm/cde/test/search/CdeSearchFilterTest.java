@@ -12,7 +12,7 @@ public class CdeSearchFilterTest extends NlmCdeBaseTest {
         goToCdeSearch();
 
         clickElement(By.id("search_by_classification_ACRIN"));
-        textPresent("4 results for");
+        textPresent("4 data element results for");
         textPresent("Under Review (2)");
         textPresent("Candidate (3)");
         textPresent("Incomplete (1)");
@@ -20,7 +20,7 @@ public class CdeSearchFilterTest extends NlmCdeBaseTest {
         textPresent("Number (1)");
 
         clickElement(By.xpath("//*[@id='regstatus-Candidate']/*[@class='treeItemText']"));
-        textPresent("3 results for");
+        textPresent("3 data element results for");
         textPresent("Under Review (1)");
         textPresent("Candidate (3)");
         textPresent("Incomplete (1)");
@@ -28,7 +28,7 @@ public class CdeSearchFilterTest extends NlmCdeBaseTest {
         textPresent("Number (1)");
 
         clickElement(By.xpath("//*[@id='datatype-Value List']/*[@class='treeItemText']"));
-        textPresent("2 results for");
+        textPresent("2 data element results for");
         textPresent("Candidate (3)");
         textPresent("Incomplete (1)");
         textPresent("Value List (2)");

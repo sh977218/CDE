@@ -40,7 +40,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         clickElement(By.id("classif-Classification"));
         int numRes = getNumberOfResults();
         clickElement(By.id("classif-Basic"));
-        textNotPresent(numRes + " results for");
+        textNotPresent(numRes + "data element results for");
         numRes = getNumberOfResults();
         Assert.assertTrue(numRes > 248);
         Assert.assertTrue(numRes < 254);
@@ -116,7 +116,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
 
         clickElement(By.id("classif-DISEASE"));
 
-        textPresent(numOfDiseaseElts + " results for");
+        textPresent(numOfDiseaseElts + " data element results for");
 
         int expectedNumberOfPages = (int) Math.ceil((double) numOfDiseaseElts / 20);
         for (int i = 1; i < expectedNumberOfPages; i++) {

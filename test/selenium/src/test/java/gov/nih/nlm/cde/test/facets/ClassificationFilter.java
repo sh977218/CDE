@@ -19,7 +19,7 @@ public class ClassificationFilter extends NlmCdeBaseTest {
         clickElement(By.id("classif-caBIG"));
         textPresent("Generic Image");
 
-        textPresent("9 results for");
+        textPresent("9 data element results for");
         List<WebElement> linkList = driver.findElements(By.cssSelector("div.singleSearchResult"));
         Assert.assertEquals(linkList.size(), 9);
 
@@ -29,21 +29,21 @@ public class ClassificationFilter extends NlmCdeBaseTest {
         clickElement(By.xpath("//*[@id='classif-Generic Image']"));
         textPresent("genericimage (2)");
         clickElement(By.id("classif-gov.nih.nci.ivi.genericimage"));
-        textPresent("2 results for");
+        textPresent("2 data element results for");
 
         linkList = driver.findElements(By.cssSelector("div.singleSearchResult"));
         Assert.assertEquals(linkList.size(), 2);
 
         // Now test unclicking everything
         clickElement(By.id("classif-caBIG"));
-        textPresent("9 results for");
+        textPresent("9 data element results for");
         linkList = driver.findElements(By.cssSelector("div.singleSearchResult"));
         Assert.assertEquals(linkList.size(), 9);
 
         textPresent("Generic Image (2)");
         clickElement(By.id("classif-Generic Image"));
 
-        textPresent("2 results for");
+        textPresent("2 data element results for");
         linkList = driver.findElements(By.cssSelector("div.singleSearchResult"));
         Assert.assertEquals(linkList.size(), 2);
 

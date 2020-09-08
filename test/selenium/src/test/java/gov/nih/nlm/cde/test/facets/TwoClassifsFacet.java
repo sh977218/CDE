@@ -15,7 +15,7 @@ public class TwoClassifsFacet extends NlmCdeBaseTest {
         textPresent("NHLBI (");
         clickElement(By.id("classif-CIP"));
         textNotPresent("Person Birth Date");
-        textPresent("1 results for");
+        textPresent("1 data element results for");
     }
 
 }

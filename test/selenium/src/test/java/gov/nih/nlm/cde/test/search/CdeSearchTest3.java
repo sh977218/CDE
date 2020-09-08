@@ -26,7 +26,7 @@ public class CdeSearchTest3 extends NlmCdeBaseTest {
         textPresent("caBIG (1)");
 
         textPresent("Biomarker Gene");
-        textPresent("1 results for");
+        textPresent("1 data element results for");
         linkList = driver.findElements(By.cssSelector("div.singleSearchResult"));
         Assert.assertEquals(linkList.size(), 1);
     }
