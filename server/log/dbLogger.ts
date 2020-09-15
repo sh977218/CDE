@@ -291,7 +291,7 @@ export function getServerErrors(params: { limit: number, skip: number, excludeOr
 export function getServerErrorsNumber(user: UserFull): Promise<number> {
     return logErrorModel.countDocuments(
         user.notificationDate.serverLogDate
-            ? {date: {$gt: user.notificationDate.serverLogDate}}
+            ? {date: {$gt: user.notificationDate.serverLogDate}} as any
             : {}
     ).exec();
 }

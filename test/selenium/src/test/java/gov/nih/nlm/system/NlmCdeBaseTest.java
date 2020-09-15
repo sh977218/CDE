@@ -1846,7 +1846,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         clickElement(By.xpath("//*[contains(@class,'taskItem') and contains(.,'" + message
                 + "')]//button[contains(.,'Authorize')]"));
         clickElement(By.xpath("//button[contains(.,'Yes')]"));
-        textPresent("Approved");
+        textPresent("Role added");
     }
 
     protected void declineComment(String adminUsername, String adminPassword, String username, String message) {

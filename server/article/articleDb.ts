@@ -32,7 +32,7 @@ export async function byKey(key: string) {
 export async function update(art: Article) {
     return articleModel.findOneAndUpdate(
         {key: art.key},
-        {$set: {body: art.body, updated: Date.now()}},
+        {$set: {body: art.body, updated: new Date()}},
         {upsert: true, new: true}
     );
 }

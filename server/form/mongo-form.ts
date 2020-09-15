@@ -1,4 +1,5 @@
 import * as Ajv from 'ajv';
+import { NextFunction } from 'express';
 import { readdirSync, readFileSync } from 'fs';
 import { Document, Model } from 'mongoose';
 import { resolve } from 'path';
@@ -13,7 +14,6 @@ import { attachables, auditGetLog, auditModifications, formatElt, generateTinyId
 import { config } from 'server/system/parseConfig';
 import { CdeForm, CdeFormElastic } from 'shared/form/form.model';
 import { CbError, CbError1, User } from 'shared/models.model';
-import { NextFunction } from 'express-serve-static-core';
 
 export const type = 'form';
 export const name = 'forms';
@@ -135,7 +135,7 @@ export function byTinyIdAndVersion(tinyId: string, version: string | undefined, 
 }
 
 export function draftByTinyId(tinyId: string, cb: CbError1<CdeFormDraftDocument>) {
-    const cond = {
+    const cond: Partial<CdeForm> = {
         tinyId,
         archived: false,
         elementType: 'form'
@@ -144,7 +144,7 @@ export function draftByTinyId(tinyId: string, cb: CbError1<CdeFormDraftDocument>
 }
 
 export function draftById(id: string, cb: CbError1<CdeFormDocument>) {
-    const cond = {
+    const cond: Partial<CdeForm> = {
         _id: id,
         elementType: 'form'
     };

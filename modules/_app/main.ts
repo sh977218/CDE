@@ -2,7 +2,7 @@ import { enableProdMode } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { CdeAppModule } from './app.module';
 
-import 'zone.js/dist/zone.min.js';
+import 'zone.js/fesm2015/zone.min.js';
 import 'reflect-metadata/Reflect';
 import 'hammerjs/hammer.min.js';
 import 'bootstrap/dist/js/bootstrap.js'; // TODO: .min.js has an error when the first click to open dropdowns does not work

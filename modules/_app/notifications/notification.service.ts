@@ -116,7 +116,7 @@ export class NotificationService {
                                     this.dialog.open(CommentAuthorizeUserComponent).afterClosed().subscribe(result => {
                                         if (result === 'Authorize') {
                                             this.authorizeToComment(username);
-                                            this.approvalService.commentApprove(task, this.funcReload);
+                                            this.approvalService.commentApprove(task, this.funcReload, true);
                                         }
                                     });
                                 }
