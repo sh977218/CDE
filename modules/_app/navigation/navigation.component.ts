@@ -24,6 +24,8 @@ export class NavigationComponent {
     isOrgCurator = isOrgCurator;
     isSiteAdmin = isSiteAdmin;
 
+    feedbackDescription = `Describe your issue here. Please include a way to contact you, it will help us troubleshoot the issue. `;
+
     constructor(
         @Inject(forwardRef(() => AlertService)) private alert: AlertService,
         @Inject(forwardRef(() => ApplicationRef)) private appRef: ApplicationRef,
@@ -43,6 +45,10 @@ export class NavigationComponent {
         const domElem = (componentRef.hostView as EmbeddedViewRef<any>)
             .rootNodes[0] as HTMLElement;
         document.body.appendChild(domElem);
+    }
+
+    quickBoardMetaInfo() {
+        return `Quick Board (${this.quickBoardService.numberDataElements + this.quickBoardService.numberForms})`;
     }
 
     checkNotificationDrawer() {

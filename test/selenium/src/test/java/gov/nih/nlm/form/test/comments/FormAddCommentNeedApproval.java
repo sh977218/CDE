@@ -11,6 +11,7 @@ public class FormAddCommentNeedApproval extends NlmCdeBaseTest {
         String commentText = "A Very Innocent Comment.";
         mustBeLoggedInAs(anonymousCommentUser2_username, password);
         goToFormByName(formName);
+        goToDiscussArea();
         addCommentNeedApproval(commentText);
     }
 }

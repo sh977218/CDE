@@ -1,41 +1,38 @@
-<div id="identifiersDiv">
-    <h4>Identifiers</h4>
+<h4 class="section-header">Identifiers</h4>
+<dl class="row">
+    <dt class="col-2 text-right">Source:</dt>
+    <dd class="col-10">NLM</dd>
+    <meta itemprop="codingSystem" content="NIH CDE Repository"/>
+    <dt class="col-2 text-right">Id:</dt>
+    <dd id="dd_id_nlm" class="col-10" itemprop="codeValue">{{elt.tinyId}}</dd>
+    <dt class="col-2 text-right">Version:</dt>
+    <dd id="dd_version_nlm" class="col-10">{{elt.version}}</dd>
+</dl>
+<ng-container *ngFor="let id of elt.ids; let i = index">
     <dl class="row">
-        <dt class="col-3 text-right">Source:</dt>
-        <dd class="col-9">NLM</dd>
-        <meta itemprop="codingSystem" content="NIH CDE Repository"/>
-        <dt class="col-3 text-right">Id:</dt>
-        <dd id="dd_id_nlm" class="col-9" itemprop="codeValue">{{elt.tinyId}}</dd>
-        <dt class="col-3 text-right">Version:</dt>
-        <dd id="dd_version_nlm" class="col-9">{{elt.version}}</dd>
+        <dt class="col-2 text-right">
+            <ng-container *ngIf="id.edit">Confirm Delete
+                <mat-icon (click)="removeIdentifierByIndex(i)" id="confirmRemoveIdentifier-{{i}}">check</mat-icon>
+                <mat-icon (click)="id.edit = false" id="cancelRemoveIdentifier-{{i}}">cancel</mat-icon>
+            </ng-container>
+            <mat-icon *ngIf="canEdit && !id.edit" id="removeIdentifier-{{i}}"
+                      (click)="id.edit = true">delete</mat-icon>
+            Source:
+        </dt>
+        <dd id="source_{{i}}" class="col-10">{{id.source}}</dd>
+        <dt class="col-2 text-right">Id:</dt>
+        <dd id="id_{{i}}" class="col-10">
+            <a *ngIf="idsLinks[i]; else noLink" [href]="idsLinks[i]" target="_blank" rel="noopener noreferrer">{{id.id}}</a>
+            <ng-template #noLink>{{id.id}}</ng-template>
+        </dd>
+        <dt class="col-2 text-right">Version:</dt>
+        <dd id="version_{{i}}" class="col-10">{{id.version}}</dd>
     </dl>
     <hr>
-    <ng-container *ngFor="let id of elt.ids; let i = index">
-        <dl class="row">
-            <dt class="col-3 text-right">
-                <ng-container *ngIf="id.edit">Confirm Delete
-                    <mat-icon (click)="removeIdentifierByIndex(i)" id="confirmRemoveIdentifier-{{i}}">check</mat-icon>
-                    <mat-icon (click)="id.edit = false" id="cancelRemoveIdentifier-{{i}}">cancel</mat-icon>
-                </ng-container>
-                <mat-icon *ngIf="canEdit && !id.edit" id="removeIdentifier-{{i}}"
-                      (click)="id.edit = true">delete</mat-icon>
-                Source:
-            </dt>
-            <dd id="source_{{i}}" class="col-9">{{id.source}}</dd>
-            <dt class="col-3 text-right">Id:</dt>
-            <dd id="id_{{i}}" class="col-9">
-                <a *ngIf="idsLinks[i]; else noLink" [href]="idsLinks[i]" target="_blank" rel="noopener noreferrer">{{id.id}}</a>
-                <ng-template #noLink>{{id.id}}</ng-template>
-            </dd>
-            <dt class="col-3 text-right">Version:</dt>
-            <dd id="version_{{i}}" class="col-9">{{id.version}}</dd>
-        </dl>
-        <hr>
-    </ng-container>
-    <button *ngIf="canEdit" id="openNewIdentifierModalBtn" class="m-3" mat-raised-button (click)="openNewIdentifierModal()">
-        <mat-icon>add</mat-icon> Add Identifier
-    </button>
-</div>
+</ng-container>
+<button *ngIf="canEdit" id="openNewIdentifierModalBtn" class="m-3" mat-raised-button (click)="openNewIdentifierModal()">
+    <mat-icon>add</mat-icon> Add Identifier
+</button>
 
 <ng-template #newIdentifierContent>
     <h4 mat-dialog-title>Add Identifier</h4>

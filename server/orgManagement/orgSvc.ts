@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { orgAdmins as userOrgAdmins, orgCurators as userOrgCurators, userById, userByName } from 'server/user/userDb';
 import { addOrgByName, managedOrgs, orgByName } from 'server/orgManagement/orgDb';
 import { handleNotFound, handleError } from 'server/errorHandler/errorHandler';
-import { hasRole, isOrgAdmin } from 'shared/system/authorizationShared';
+import { addRole, hasRole, isOrgAdmin } from 'shared/system/authorizationShared';
 import { dataElementModel } from 'server/cde/mongo-cde';
 import { formModel } from 'server/form/mongo-form';
 import { User } from 'shared/models.model';
@@ -64,19 +64,10 @@ export async function orgAdmins() {
 
 export function addOrgAdmin(req: Request, res: Response) {
     userByName(req.body.username, handleNotFound({req, res}, user => {
-        let changed = false;
         if (user.orgAdmin.indexOf(req.body.org) === -1) {
             user.orgAdmin.push(req.body.org);
-            changed = true;
         }
-        if (!hasRole(user, 'CommentReviewer')) {
-            if (!user.roles) {
-                user.roles = [];
-            }
-            user.roles.push('CommentReviewer');
-            changed = true;
-        }
-
+        addRole(user, 'CommentReviewer');
         user.save(handleError({req, res}, () => {
             res.send();
         }));
@@ -94,18 +85,10 @@ export function removeOrgAdmin(req: Request, res: Response) {
 
 export function addOrgCurator(req: Request, res: Response) {
     userByName(req.body.username, handleNotFound({req, res}, user => {
-        let changed = false;
         if (user.orgCurator.indexOf(req.body.org) === -1) {
             user.orgCurator.push(req.body.org);
-            changed = true;
         }
-        if (!hasRole(user, 'CommentReviewer')) {
-            if (!user.roles) {
-                user.roles = [];
-            }
-            user.roles.push('CommentReviewer');
-            changed = true;
-        }
+        addRole(user, 'CommentReviewer');
         user.save(handleError({req, res}, () => {
             res.send();
         }));

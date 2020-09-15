@@ -10,6 +10,7 @@ public class BoardAddComment extends NlmCdeBaseTest {
         String commentText = "This comment is about Num Of Questions Board";
         mustBeLoggedInAs(test_username, password);
         goToBoard(boardName);
+        goToDiscussArea();
         addComment(commentText);
     }
 }

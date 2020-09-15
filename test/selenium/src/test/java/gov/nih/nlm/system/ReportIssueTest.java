@@ -19,7 +19,7 @@ public class ReportIssueTest extends NlmCdeBaseTest {
 
         loginAs("theOrgauth", password);
         clickElement(By.id("username_link"));
-        clickElement(By.linkText("Audit"));
+        clickElement(By.id("user_audit"));
         clickElement(By.xpath("//div[. = 'Reported Issues']"));
         textPresent("I don't like this website.");
     }

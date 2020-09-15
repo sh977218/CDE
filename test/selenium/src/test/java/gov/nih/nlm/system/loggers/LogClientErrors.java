@@ -23,7 +23,7 @@ public class LogClientErrors extends NlmCdeBaseTest {
 //        logout();
 //        mustBeLoggedInAs(nlm_username, nlm_password);
 //        clickElement(By.id("username_link"));
-//        clickElement(By.linkText("Audit"));
+//        clickElement(By.id("user_audit"));
 //        // put tab within display
 //        clickElement(By.cssSelector(".mat-tab-header-pagination-after"));
 //        clickElement(By.cssSelector(".mat-tab-header-pagination-after"));

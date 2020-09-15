@@ -185,7 +185,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
             }
         }
 
-        // generage gif
+        // generate gif
         if (m.getAnnotation(RecordVideo.class) != null) {
             try {
                 File inputScreenshots = new File("build/tmp/screenshots/" + className + "/" + methodName + "/");
@@ -234,19 +234,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         ((JavascriptExecutor) driver).executeScript(clearStorage, "");
         if (driver.getWindowHandles().size() > 1)
             System.out.println("There are " + driver.getWindowHandles().size() + " windows before test");
-    }
-
-    private boolean isUsernameMatch(String username) {
-        WebElement usernameLink = findElement(By.id("username_link"));
-        String usernameLinkText = usernameLink.getText();
-        String usernameStr = username;
-        if (usernameLinkText.length() > 17) {
-            usernameLinkText = usernameLinkText.substring(0, 17) + "...";
-        }
-        if (usernameStr.length() > 17) {
-            usernameStr = username.substring(0, 17) + "...";
-        }
-        return usernameLinkText.equals(usernameStr);
     }
 
     protected void doLogin(String username, String password) {
@@ -306,7 +293,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     protected void gotoClassificationMgt() {
         clickElement(By.id("username_link"));
         hangon(.5);
-        clickElement(By.linkText("Classifications"));
+        clickElement(By.id("user_classifications"));
         textPresent("Classifications");
     }
 
@@ -481,11 +468,11 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void goToGeneralDetail() {
-        clickElement(By.id("general_tab"));
+        clickElement(By.id("general_details_tab"));
     }
 
     protected void goToPermissibleValues() {
-        clickElement(By.id("pvs_tab"));
+        clickElement(By.id("permissible_values_tab"));
     }
 
     protected void goToFormDescription() {
@@ -505,7 +492,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void goToReferenceDocuments() {
-        clickElement(By.id("referenceDocuments_tab"));
+        clickElement(By.id("reference_documents_tab"));
     }
 
     protected void goToProperties() {
@@ -513,7 +500,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void goToIdentifiers() {
-        clickElement(By.id("ids_tab"));
+        clickElement(By.id("identifiers_tab"));
     }
 
     protected void goToAttachments() {
@@ -533,10 +520,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void goToDiscussArea() {
-        boolean isDiscussAreaOpen = driver.findElements(By.xpath("//cde-discuss-area")).size() > 0;
-        if (!isDiscussAreaOpen) {
-            clickElement(By.id("discussBtn"));
-        }
+        clickElement(By.id("discussBtn"));
         findElement(By.xpath("//cde-discuss-area"));
         Assert.assertEquals(driver.findElements(By.xpath("//cde-discuss-area")).size(), 1);
     }
@@ -545,7 +529,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         String tinyId = EltIdMaps.eltMap.get(name);
         if (tinyId != null) {
             driver.get(baseUrl + "/" + ("cde".equals(type) ? "deView" : "formView") + "/?tinyId=" + tinyId);
-            findElement(By.id("general_tab"));
+            findElement(By.id("general_details_tab"));
             textPresent(name);
         } else {
             try {
@@ -633,7 +617,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
 
     protected void openFormInList(String name) {
         goToFormSearch();
-        clickElement(By.linkText("FORMS"));
+        clickElement(By.id("menu_forms_link"));
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
         clickElement(By.xpath("//mat-icon[normalize-space() = 'search']"));
@@ -770,9 +754,14 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         findElement(By.id("changeNote")).sendKeys(changeNote);
         findElement(By.name("newVersion")).sendKeys(".1");
         textNotPresent("has already been used");
+        hangon(5);
         clickElement(By.id("confirmSaveBtn"));
     }
 
+    /**
+     *
+     * @param i second(s) to wait
+     */
     public void hangon(double i) {
         try {
             Thread.sleep((long) (i * 1000));
@@ -940,7 +929,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         textPresent("Quick Board (1)");
         addCdeToQuickBoard(cdeName2);
         clickElement(By.id("boardsMenu"));
-        clickElement(By.linkText("Quick Board (2)"));
+        clickElement(By.id("menu_qb_link"));
         clickElement(By.xpath("//div[contains(., 'CDE QuickBoard') and contains(@class, 'mat-tab-label-content')]"));
         textPresent(cdeName1);
         textPresent(cdeName2);
@@ -1068,7 +1057,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     private void openAudit(String type, String name) {
         mustBeLoggedInAs(nlm_username, nlm_password);
         clickElement(By.id("username_link"));
-        clickElement(By.linkText("Audit"));
+        clickElement(By.id("user_audit"));
         clickElement(By.xpath("//div[. = '" + type + " Audit Log']"));
         for (Integer i = 0; i < 10; i++) {
             hangon(1);
@@ -1335,10 +1324,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
 
     protected void gotoMyBoards() {
         clickElement(By.id("boardsMenu"));
-        textPresent("My Boards");
-        clickElement(By.xpath("//a[text()='My Boards']"));
-        textPresent("Add Board");
-        hangon(2); // wait for setTimeout
+        clickElement(By.id("myBoardsLink"));
     }
 
     /**
@@ -1797,7 +1783,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void addComment(String message) {
-        goToDiscussArea();
         findElement(By.id("newCommentTextArea")).sendKeys(message);
         hangon(2);
         clickElement(By.id("commentBtn"));
@@ -1805,14 +1790,12 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void replyComment(int index, String message) {
-        goToDiscussArea();
         findElement(By.id("newReplyTextArea_" + index)).sendKeys(message);
         clickElement(By.id("replyBtn_" + index));
         isCommentOrReplyExists(message, true);
     }
 
     protected void addCommentNeedApproval(String message) {
-        goToDiscussArea();
         findElement(By.name("newCommentTextArea")).sendKeys(message);
         hangon(2);
         clickElement(By.id("commentBtn"));
@@ -1821,7 +1804,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void replyCommentNeedApproval(int index, String message) {
-        goToDiscussArea();
         findElement(By.id("newReplyTextArea_" + index)).sendKeys(message);
         clickElement(By.id("replyBtn_" + index));
         textNotPresent(message);
@@ -1944,7 +1926,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void isCommentOrReplyExists(String commentText, boolean exist) {
-        goToDiscussArea();
         if (exist) textPresent(commentText, By.xpath("//cde-comments"));
         else textNotPresent(commentText, By.xpath("//cde-comments"));
     }

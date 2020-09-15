@@ -33,6 +33,11 @@ import { InlineAreaEditModule } from 'inlineAreaEdit/inlineAreaEdit.module';
 import { FormSearchModule } from 'form/public/formSearch.module';
 import { NonCoreModule } from 'non-core/noncore.module';
 import { SortableArrayModule } from 'sortableArray/sortableArray.module';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatListModule } from '@angular/material/list';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { ScrollingModule } from '@angular/cdk/scrolling';
+import { WINDOW_PROVIDERS } from 'window.service';
 
 const appRoutes: Routes = [
     {path: '', component: DataElementViewComponent},
@@ -51,6 +56,7 @@ const appRoutes: Routes = [
         MatProgressSpinnerModule,
         MatTooltipModule,
         NgbModule,
+        ScrollingModule,
         RouterModule.forChild(appRoutes),
         // non-core
         NonCoreModule,
@@ -66,6 +72,9 @@ const appRoutes: Routes = [
         CompareModule,
         DiscussModule,
         FormSearchModule,
+        MatSidenavModule,
+        MatListModule,
+        MatToolbarModule,
     ],
     declarations: [
         CdeClassificationComponent,
@@ -82,6 +91,7 @@ const appRoutes: Routes = [
     ],
     providers: [
         DataElementViewService,
+        WINDOW_PROVIDERS
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

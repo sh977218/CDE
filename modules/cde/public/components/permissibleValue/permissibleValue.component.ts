@@ -34,7 +34,14 @@ interface VsacValue {
 
 @Component({
     selector: 'cde-permissible-value',
-    templateUrl: 'permissibleValue.component.html'
+    templateUrl: 'permissibleValue.component.html',
+    styles: [`
+        #pvTable {
+            overflow: auto;
+            width: 100%;
+            max-height: 500px;
+        }
+    `]
 })
 export class PermissibleValueComponent {
     @Input() canEdit!: boolean;
@@ -105,10 +112,23 @@ export class PermissibleValueComponent {
         'SNOMEDCT US': {source: 'SNOMEDCT_US', termType: 'PT', codes: {}, selected: false, disabled: true}
     };
 
+    oid$: Subject<string> = new Subject<string>();
+
     constructor(public http: HttpClient,
                 private dialog: MatDialog,
                 public userService: UserService,
                 private alert: AlertService) {
+        this.oid$.pipe(
+            debounceTime(1000),
+            distinctUntilChanged(),
+        )
+            .subscribe(() => {
+                this.eltChange.emit();
+            });
+    }
+
+    onOidChanged(event: string) {
+        this.oid$.next(event);
     }
 
     addAllVsac() {

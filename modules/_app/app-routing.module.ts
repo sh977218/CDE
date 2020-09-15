@@ -96,6 +96,8 @@ const appRoutes: Routes = [
         RouterModule.forRoot(
             appRoutes,
             {
+                scrollPositionRestoration: 'enabled',
+                anchorScrolling: 'enabled',
                 enableTracing: false, // TODO: dev only
             }
         ),

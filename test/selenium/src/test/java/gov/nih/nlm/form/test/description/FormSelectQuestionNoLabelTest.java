@@ -6,7 +6,7 @@ import org.testng.annotations.Test;
 
 public class FormSelectQuestionNoLabelTest extends NlmCdeBaseTest {
     @Test
-    public void formEditSection() {
+    public void formEditSectionNoLabel() {
         String formName = "Imaging OCT Analysis -Cirrus Macular Thickness";
         mustBeLoggedInAs(pinAllBoardUser_username, password);
         goToFormByName(formName);

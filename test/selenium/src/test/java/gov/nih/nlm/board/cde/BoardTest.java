@@ -31,7 +31,7 @@ public class BoardTest extends NlmCdeBaseTest {
 
     protected void gotoPublicBoards() {
         clickElement(By.id("boardsMenu"));
-        clickElement(By.linkText("Public Boards"));
+        clickElement(By.id("publicBoardsLink"));
     }
 
     public void createBoard(String name, String description, String type) {

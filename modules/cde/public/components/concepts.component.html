@@ -1,37 +1,39 @@
-<div id="conceptsDiv">
-    <h4>Concepts</h4>
-        <div *ngFor="let config of conceptConfigurations; ">
-            <div *ngIf="elt[config.type].concepts.length > 0">
-                <h5 [innerHTML]="config.details.display"></h5>
-                <table class="table table-bordered table-condensed table-striped">
-                    <tr>
-                        <th>Code Name</th>
-                        <th>Code System</th>
-                        <th>Code ID</th>
-                        <th id="conceptActions" *ngIf="canEdit"></th>
-                    </tr>
-                    <tr *ngFor="let concept of elt[config.type].concepts; let $index = index" itemscope
-                        itemtype="http://schema.org/MedicalCode">
-                        <td><span (click)="relatedCdes(concept.name, config)" id="concept_cde_name_{{$index}}"
-                                  itemprop="name" class="fake-link">{{concept.name}}</span>
-                        </td>
-                        <td itemprop="codeSystem">{{concept.origin}}</td>
-                        <td itemprop="codeValue">{{concept.originId}}</td>
-                        <td headers="actions" *ngIf="canEdit">
-                            <mat-icon id="remove{{config.type}}-{{$index}}"
-                                  (click)="removeConcept(config.type, $index)" title="Remove">delete_outline</mat-icon>
-                            <cde-sortable-array [theArray]="elt[config.type].concepts" [index]="$index"
-                                                (cb)="eltChange.emit()"></cde-sortable-array>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-        <hr/>
-        <button mat-raised-button *ngIf="canEdit" id="openNewConceptModalBtn" (click)="openNewConceptModal()">
-            <mat-icon>add</mat-icon> Add Concept
-        </button>
+<h4 class="section-header">Concepts</h4>
+<div *ngIf="elt.dataElementConcept.concepts.concat(elt.objectClass.concepts, elt.property.concepts).length === 0">
+    There are no concepts.
 </div>
+<div *ngFor="let config of conceptConfigurations; ">
+    <div *ngIf="elt[config.type].concepts.length > 0">
+        <div [innerHTML]="config.details.display"></div>
+        <table class="table table-striped">
+            <tr>
+                <th>Code Name</th>
+                <th>Code System</th>
+                <th>Code ID</th>
+                <th id="conceptActions" *ngIf="canEdit"></th>
+            </tr>
+            <tr *ngFor="let concept of elt[config.type].concepts; let $index = index" itemscope
+                itemtype="http://schema.org/MedicalCode">
+                <td><span (click)="relatedCdes(concept.name, config)" id="concept_cde_name_{{$index}}"
+                          itemprop="name" class="fake-link">{{concept.name}}</span>
+                </td>
+                <td itemprop="codeSystem">{{concept.origin}}</td>
+                <td itemprop="codeValue">{{concept.originId}}</td>
+                <td headers="actions" *ngIf="canEdit">
+                    <mat-icon id="remove{{config.type}}-{{$index}}"
+                              (click)="removeConcept(config.type, $index)" title="Remove">delete_outline
+                    </mat-icon>
+                    <cde-sortable-array [theArray]="elt[config.type].concepts" [index]="$index"
+                                        (cb)="eltChange.emit()"></cde-sortable-array>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<button mat-raised-button *ngIf="canEdit" id="openNewConceptModalBtn" class="m-3" (click)="openNewConceptModal()">
+    <mat-icon>add</mat-icon>
+    Add Concept
+</button>
 
 <ng-template #newConceptContent>
     <h4 mat-dialog-title>Add Concept</h4>
@@ -50,7 +52,8 @@
                        [(ngModel)]="newConcept.origin" required/>
             </mat-form-field>
             <mat-form-field style="width: 100%">
-                <mat-select placeholder="Concept Type" name="conceptType" [(ngModel)]="newConcept.type" id="conceptType" required>
+                <mat-select placeholder="Concept Type" name="conceptType" [(ngModel)]="newConcept.type" id="conceptType"
+                            required>
                     <mat-option value="dec">Data Element</mat-option>
                     <mat-option value="oc">Class</mat-option>
                     <mat-option value="prop">Property</mat-option>

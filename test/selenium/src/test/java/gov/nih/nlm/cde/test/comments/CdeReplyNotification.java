@@ -14,6 +14,7 @@ public class CdeReplyNotification extends NlmCdeBaseTest {
         String replyText = "This reply will trigger notification.";
         mustBeLoggedInAs(reguser_username, password);
         goToCdeByName(cdeName);
+        goToDiscussArea();
         replyCommentNeedApproval(0, replyText);
 
         logout();

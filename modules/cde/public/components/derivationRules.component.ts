@@ -12,7 +12,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 })
 export class DerivationRulesComponent implements DoCheck, OnChanges {
     @Input() canEdit!: boolean;
-    @Input() elt!: DataElement & {derivationOutputs: {ruleName: string, cde: DataElement}[]};
+    @Input() elt!: DataElement & { derivationOutputs: { ruleName: string, cde: DataElement }[] };
     @Output() eltChange = new EventEmitter();
     @ViewChild('newScoreContent', {static: true}) newScoreContent!: TemplateRef<any>;
     invalidCdeMessage = '';
@@ -29,7 +29,8 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
         private http: HttpClient,
         public dialog: MatDialog,
         public quickBoardService: QuickBoardListService,
-    ) {}
+    ) {
+    }
 
     ngDoCheck() {
         if (this.elt._id !== this.previousCdeId) {
@@ -47,12 +48,15 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
     }
 
     addNewScore() {
-        if (!this.elt.derivationRules) { this.elt.derivationRules = []; }
+        if (!this.elt.derivationRules) {
+            this.elt.derivationRules = [];
+        }
         this.quickBoardService.dataElements.forEach((qbElt: any) => {
             this.newDerivationRule.inputs.push(qbElt.tinyId);
         });
         this.elt.derivationRules.push(this.newDerivationRule);
         this.updateRules();
+        this.someCdesInvalid();
         this.modalRef.close();
         this.eltChange.emit();
     }
@@ -84,7 +88,9 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
     }
 
     getViewCdes(dr: DerivationRule) {
-        if (!dr.fullCdes) { return []; }
+        if (!dr.fullCdes) {
+            return [];
+        }
         return dr.fullCdes.filter((item, index) => index < 8);
     }
 
@@ -93,8 +99,9 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
             name: '',
             ruleType: 'score',
             formula: 'sumAll',
-            inputs: []
+            inputs: this.quickBoardService.dataElements.map((qbElt: any) => qbElt.tinyId)
         };
+        this.someCdesInvalid();
         this.modalRef = this.dialog.open(this.newScoreContent, {width: '800px'});
         this.modalRef.afterClosed().subscribe(() => {
             this.newDerivationRule = {
@@ -124,7 +131,9 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
             }
         });
         this.quickBoardService.dataElements.forEach((qbElt: any) => {
-            if (qbElt.valueDomain.datatype === 'Number') { return; }
+            if (qbElt.valueDomain.datatype === 'Number') {
+                return;
+            }
             if (qbElt.valueDomain.datatype === 'Value List') {
                 qbElt.valueDomain.permissibleValues.forEach((pv: any) => {
                     if (isNaN(pv.permissibleValue)) {

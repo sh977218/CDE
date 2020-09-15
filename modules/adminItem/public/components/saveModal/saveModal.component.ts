@@ -6,6 +6,8 @@ import { iterateFormElements } from 'shared/form/fe';
 import { MatDialog } from '@angular/material/dialog';
 import { FormQuestion, QuestionCde } from 'shared/form/form.model';
 import { Cb, Item } from 'shared/models.model';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 export type SaveModalQuestionCde = QuestionCde & {
     datatype: string,
@@ -27,9 +29,34 @@ export class SaveModalComponent {
     protected newCdes: SaveModalQuestionCde[] = [];
     overrideVersion = false;
 
+    versionNumber$: Subject<string> = new Subject<string>();
+    onChangeNote$: Subject<string> = new Subject<string>();
+
     constructor(private alert: AlertService,
                 public http: HttpClient,
                 public dialog: MatDialog) {
+        this.versionNumber$.pipe(
+            debounceTime(1000),
+            distinctUntilChanged(),
+        )
+            .subscribe(versionNumber => {
+                this.newVersionVersionUnicity(versionNumber);
+            });
+        this.onChangeNote$.pipe(
+            debounceTime(1000),
+            distinctUntilChanged(),
+        )
+            .subscribe(() => {
+                this.eltChange.emit();
+            });
+    }
+
+    onChangeNoteChanged(event: string) {
+        this.onChangeNote$.next(event);
+    }
+
+    onVersionNumberChanged(event: string) {
+        this.versionNumber$.next(event);
     }
 
     newVersionVersionUnicity(newVersion?: string) {
@@ -48,6 +75,7 @@ export class SaveModalComponent {
                     this.duplicatedVersion = false;
                     this.overrideVersion = false;
                 }
+                this.eltChange.emit()
             },
             (err: any) => this.alert.httpErrorMessageAlert(err)
         );

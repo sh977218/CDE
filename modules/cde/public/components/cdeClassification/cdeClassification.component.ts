@@ -11,7 +11,14 @@ import { Cb, ClassificationClassified } from 'shared/models.model';
 
 @Component({
     selector: 'cde-cde-classification',
-    templateUrl: './cdeClassification.component.html'
+    templateUrl: './cdeClassification.component.html',
+    styles: [`
+        #classificationBody {
+            overflow: auto;
+            width: 100%;
+            max-height: 500px;
+        }
+    `]
 })
 export class CdeClassificationComponent {
     @Input() elt!: DataElement;
@@ -55,10 +62,16 @@ export class CdeClassificationComponent {
         this.http.get<DataElement>('/api/de/' + this.elt.tinyId).subscribe(res => {
             this.elt = res;
             this.eltChange.emit(this.elt);
-            if (cb) { cb(); }
+            if (cb) {
+                cb();
+            }
         }, err => {
-            if (err) { this.alert.addAlert('danger', 'Error retrieving. ' + err); }
-            if (cb) { cb(); }
+            if (err) {
+                this.alert.addAlert('danger', 'Error retrieving. ' + err);
+            }
+            if (cb) {
+                cb();
+            }
         });
     }
 

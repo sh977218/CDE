@@ -14,7 +14,7 @@ public class LogErrorsTest extends NlmCdeBaseTest {
 
         driver.get(baseUrl);
         clickElement(By.id("username_link"));
-        clickElement(By.linkText("Audit"));
+        clickElement(By.id("user_audit"));
 
         // put tab within display
         clickElement(By.cssSelector(".mat-tab-header-pagination-after"));

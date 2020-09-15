@@ -1,4 +1,5 @@
 import { Board, Comment, Item, User } from 'shared/models.model';
+import { uniq } from 'lodash';
 
 export type UserRoles = 'DocumentationEditor' | 'BoardPublisher' | 'CommentAuthor' |
     'CommentReviewer' | 'AttachmentReviewer' | 'OrgAuthority';
@@ -36,6 +37,15 @@ export function canRemoveComment(user?: User, comment?: Comment, element?: Board
         || element && (element as Board).owner && (element as Board).owner.username === user.username
         || element && (element as Item).stewardOrg && isOrgAdmin(user, (element as Item).stewardOrg.name)
         || isSiteAdmin(user);
+}
+
+export function addRole(user: User, role: string) {
+    if (!hasRole(user, role)) {
+        if (!user.roles) {
+            user.roles = [];
+        }
+        user.roles.push(role);
+    }
 }
 
 export function hasRole(user?: User, role?: string): boolean {

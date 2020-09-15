@@ -50,9 +50,6 @@ export function updateOrInsert(elt: DataElementDocument) {
 
 export function elasticsearch(user: User, settings: SearchSettingsElastic, cb: CbError1<SearchResponseAggregationDe | void>) {
     const query = buildElasticSearchQuery(user, settings);
-    if (query.size > 100) {
-        return cb(new Error('size exceeded'));
-    }
     if ((query.from + query.size) > 10000) {
         return cb(new Error('page size exceeded'));
     }

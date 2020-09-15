@@ -5,7 +5,7 @@ import org.testng.annotations.Test;
 
 public class CdeCurrentComment extends NlmCdeBaseTest {
 
-    @Test()
+//    @Test()
     public void cdeCurrentCommentTest() {
         String cdeName = "Hospital Confidential Institution Referred From Facility Number Code";
         goToCdeByName(cdeName);

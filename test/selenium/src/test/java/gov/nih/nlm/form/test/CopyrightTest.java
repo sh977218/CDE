@@ -27,8 +27,8 @@ public class CopyrightTest extends BaseFormTest {
         findElement(By.cssSelector("#formCopyrightAuthority input")).sendKeys(authority);
         clickElement(By.xpath("//*[@id='formCopyrightAuthority']//mat-icon[normalize-space() = 'check']"));
         newFormVersion();
-
         logout();
+        
         goToFormByName(formName);
         findElement(By.xpath("//small[@id='copyrightStatement' and contains(., '" + statement + "')]"));
         goToGeneralDetail();

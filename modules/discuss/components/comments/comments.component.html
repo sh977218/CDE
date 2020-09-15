@@ -1,9 +1,5 @@
 <div *ngFor="let comment of comments; let i = index" class="mb-5" style="width: 260px">
-    <div class="commentDiv" id="commentDiv_{{i}}" [ngClass]="{currentComment:comment.currentComment}">
-        <div *ngIf="comment.currentComment">
-            <div class="outer-arrow"></div>
-            <div class="inner-arrow"></div>
-        </div>
+    <div class="commentDiv" id="commentDiv_{{i}}">
         <div class="comment border">
             <div class="commentHeader p-2">
                 <ng-container *ngIf="!comment.avatarUrl">

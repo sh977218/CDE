@@ -8,7 +8,15 @@ import { MatDialog } from '@angular/material/dialog';
 
 @Component({
     selector: 'cde-naming',
-    templateUrl: './naming.component.html'
+    templateUrl: './naming.component.html',
+    styles: [`
+        .namingDiv {
+            overflow: hidden;
+            overflow-y: auto;
+            width: 100%;
+            max-height: 400px;
+        }
+    `]
 })
 export class NamingComponent implements OnInit {
     @Input() elt: any;
@@ -23,7 +31,7 @@ export class NamingComponent implements OnInit {
     ngOnInit() {
         const stewardOrgName = this.elt.stewardOrg.name;
         this.orgHelperService.then(orgsDetailedInfo => {
-            this.allTags = orgsDetailedInfo[stewardOrgName].nameTags || [];
+            this.allTags = orgsDetailedInfo[stewardOrgName]?.nameTags || [];
         }, _noop);
     }
 

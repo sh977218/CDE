@@ -1,36 +1,39 @@
-<div id="referenceDocumentsDiv">
-    <h4>Reference Documents</h4>
-    <div *ngIf="elt.referenceDocuments.length === 0">There are no ReferenceDocuments.</div>
-    <ng-container *ngFor="let rd of elt.referenceDocuments;let i = index">
-        <dl class="row">
-            <dt class="col-3 text-right">
-                <ng-container *ngIf="canEdit && rd.edit">Confirm Delete
-                    <mat-icon (click)="removeReferenceDocumentByIndex(i)" id="confirmRemoveReferenceDocument-{{i}}">check</mat-icon>
-                    <mat-icon (click)="rd.edit = false" id="cancelRemoveReferenceDocument-{{i}}">cancel</mat-icon>
-                </ng-container>
-                <mat-icon (click)="rd.edit = true" *ngIf="canEdit && !rd.edit" id="removeReferenceDocument-{{i}}">delete</mat-icon>
-                <cde-sortable-array [theArray]="elt.referenceDocuments" [index]="i" (cb)="eltChange.emit()"></cde-sortable-array>
-                ID:
-            </dt>
-            <dd id="id_{{i}}" class="col-9">{{rd.referenceDocumentId}}</dd>
-            <dt class="col-3 text-right">Title:</dt>
-            <dd id="title_{{i}}" class="col-9">{{rd.title}}</dd>
-            <dt class="col-3 text-right">URI:</dt>
-            <dd id="uri_{{i}}" class="col-9"><a href="{{rd.uri}}" target="_blank" rel="noopener noreferrer">{{rd.uri}}</a></dd>
-            <dt class="col-3 text-right">Provider Org:</dt>
-            <dd id="providerOrg_{{i}}" class="col-9">{{rd.providerOrg}}</dd>
-            <dt class="col-3 text-right">Language Code:</dt>
-            <dd id="languageCode_{{i}}" class="col-9">{{rd.languageCode}}</dd>
-            <dt class="col-3 text-right">Document:</dt>
-            <dd id="document_{{i}}" class="col-9">{{rd.document}}</dd>
-        </dl>
-        <hr>
-    </ng-container>
-    <button *ngIf="canEdit" id="openNewReferenceDocumentModalBtn" mat-raised-button
-            (click)="openNewReferenceDocumentModal();">
-        <mat-icon>add</mat-icon> Add Reference Document
-    </button>
-</div>
+<h4 class="section-header">Reference Documents</h4>
+<div *ngIf="elt.referenceDocuments.length === 0">There are no Reference Documents.</div>
+<ng-container *ngFor="let rd of elt.referenceDocuments;let i = index">
+    <dl class="row">
+        <dt class="col-2 text-right">
+            <ng-container *ngIf="canEdit && rd.edit">Confirm Delete
+                <mat-icon (click)="removeReferenceDocumentByIndex(i)" id="confirmRemoveReferenceDocument-{{i}}">check
+                </mat-icon>
+                <mat-icon (click)="rd.edit = false" id="cancelRemoveReferenceDocument-{{i}}">cancel</mat-icon>
+            </ng-container>
+            <mat-icon (click)="rd.edit = true" *ngIf="canEdit && !rd.edit" id="removeReferenceDocument-{{i}}">delete
+            </mat-icon>
+            <cde-sortable-array [theArray]="elt.referenceDocuments" [index]="i"
+                                (cb)="eltChange.emit()"></cde-sortable-array>
+            ID:
+        </dt>
+        <dd id="id_{{i}}" class="col-9">{{rd.referenceDocumentId}}</dd>
+        <dt class="col-2 text-right">Title:</dt>
+        <dd id="title_{{i}}" class="col-9">{{rd.title}}</dd>
+        <dt class="col-2 text-right">URI:</dt>
+        <dd id="uri_{{i}}" class="col-9"><a href="{{rd.uri}}" target="_blank" rel="noopener noreferrer">{{rd.uri}}</a>
+        </dd>
+        <dt class="col-2 text-right">Provider Org:</dt>
+        <dd id="providerOrg_{{i}}" class="col-9">{{rd.providerOrg}}</dd>
+        <dt class="col-2 text-right">Language Code:</dt>
+        <dd id="languageCode_{{i}}" class="col-9">{{rd.languageCode}}</dd>
+        <dt class="col-2 text-right">Document:</dt>
+        <dd id="document_{{i}}" class="col-9">{{rd.document}}</dd>
+    </dl>
+    <hr>
+</ng-container>
+<button *ngIf="canEdit" id="openNewReferenceDocumentModalBtn" class="m-3" mat-raised-button
+        (click)="openNewReferenceDocumentModal();">
+    <mat-icon>add</mat-icon>
+    Add Reference Document
+</button>
 
 <ng-template #newReferenceDocumentContent>
     <h4 mat-dialog-title>Add ReferenceDocument</h4>

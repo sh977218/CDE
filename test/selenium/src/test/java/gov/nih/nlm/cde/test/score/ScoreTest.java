@@ -22,9 +22,10 @@ public class ScoreTest extends NlmCdeBaseTest {
 
     @Test
     public void cannotAddSelfToRule() {
+        String cdeName = "Common Toxicity Criteria Adverse Event Diaphoresis Grade";
         mustBeLoggedInAs(nlm_username, nlm_password);
         emptyQuickBoardByModule("cde");
-        goToCdeByName("Common Toxicity Criteria Adverse Event Diaphoresis Grade");
+        goToCdeByName(cdeName);
         clickElement(By.id("addToQuickBoard"));
 
         goToScoreDerivations();

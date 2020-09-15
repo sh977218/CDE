@@ -164,9 +164,6 @@ export function module() {
 
     router.post('/server/form/search', (req, res) => {
         const query = buildElasticSearchQuery(req.user, req.body);
-        if (query.size > 100) {
-            return res.status(422).send('Too many results requested. (max 100)');
-        }
         if ((query.from + query.size) > 10000) {
             return res.status(422).send('Exceeded pagination limit (10,000)');
         }

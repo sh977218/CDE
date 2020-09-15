@@ -16,6 +16,7 @@ public class FormApproveComment extends NlmCdeBaseTest {
 
         mustBeLoggedInAs(anonymousCommentUser2_username, anonymousCommentUser_password);
         goToFormByName(formName);
+        goToDiscussArea();
         isCommentOrReplyExists(commentText, true);
     }
 

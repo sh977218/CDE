@@ -16,6 +16,7 @@ public class CdeUnresolvedComment extends NlmCdeBaseTest {
         textNotPresent("There are unresolved comments");
         clickElement(By.id("cancelRegStatus"));
 
+        goToDiscussArea();
         addComment("Simple comment");
 
         clickElement(By.id("editStatus"));
