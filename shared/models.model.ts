@@ -22,7 +22,7 @@ export function assertUnreachable(x: void) {
 
 export interface Attachment {
     comment?: string;
-    fileid?: string;
+    fileid: string;
     filename?: string;
     filesize?: number;
     filetype?: string;
@@ -550,10 +550,10 @@ export type ItemElastic = DataElementElastic | CdeFormElastic;
 export type ListTypes = 'accordion' | 'table' | 'summary';
 
 export interface MeshClassification {
-    flatClassification?: string;
+    flatClassification: string;
     eltId?: string;
     meshDescriptors: string[];
-    flatTrees?: string[];
+    flatTrees: string[];
 }
 
 export type NotificationSettingsMediaType = 'drawer' | 'push';

@@ -65,18 +65,6 @@ export function getFormQuestionsAsQuestionCde(form: FormElementsContainer): Ques
     return getFormQuestions(form).map(q => q.question.cde);
 }
 
-export function isInForm(fe: FormElement): fe is FormInForm {
-    return fe && fe.elementType === 'form';
-}
-
-export function isQuestion(fe: FormElement): fe is FormQuestion {
-    return fe && fe.elementType === 'question';
-}
-
-export function isSection(fe: FormElement): fe is FormSection {
-    return fe && fe.elementType === 'section';
-}
-
 export function questionAnswered(q: FormQuestion): boolean {
     return typeof(q.question.answer) !== 'undefined'
         && !(Array.isArray(q.question.answer) && q.question.answer.length === 0);

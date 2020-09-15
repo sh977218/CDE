@@ -124,7 +124,9 @@ export function removeOrgCurator(req: Request, res: Response) {
 export async function addNewOrg(newOrg: Organization) {
     if (newOrg.workingGroupOf) {
         const parentOrg = await orgByName(newOrg.workingGroupOf);
-        newOrg.classifications = parentOrg.classifications;
+        if (parentOrg) {
+            newOrg.classifications = parentOrg.classifications;
+        }
     }
     return addOrgByName(newOrg);
 }

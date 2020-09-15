@@ -1,11 +1,9 @@
 import { each, ErrorCallback, map } from 'async';
-import { createScanner } from 'clamav.js';
 import * as Config from 'config';
 import { Request, Response } from 'express';
 import { createWriteStream } from 'fs';
 import * as md5 from 'md5-file';
 import { ObjectId } from 'bson';
-import { createReadStream } from 'streamifier';
 import { hasRole } from 'shared/system/authorizationShared';
 import { handleError, handleErrorVoid, handleNotFound } from 'server/errorHandler/errorHandler';
 import { attachmentApproved, attachmentRemove, createTask, fileUsed } from 'server/system/adminItemSvc';
@@ -14,6 +12,8 @@ import { addFile, deleteFileById, ItemDocument, userTotalSpace } from 'server/sy
 import { alterAttachmentStatus } from 'server/attachment/attachmentDb';
 import { Attachment, Cb1, Cb3, CbError, CbError1, Item, User } from 'shared/models.model';
 
+const createScanner = require('clamav.js').createScanner;
+const createReadStream = require('streamifier').createReadStream;
 const config = Config as any;
 
 export function add(req: Request & {files: {uploadedFiles: any}}, res: Response, db: any,
@@ -71,7 +71,7 @@ function linkAttachmentToAdminItem(item: ItemDocument, attachment: Attachment, i
 export function addToItem(item: ItemDocument, file: any, user: User, comment: string, cb: Cb3<Attachment, boolean, Error>) {
     const attachment: Attachment = {
         comment,
-        fileid: undefined,
+        fileid: '',
         filename: file.originalname,
         filesize: file.size,
         filetype: file.mimetype,

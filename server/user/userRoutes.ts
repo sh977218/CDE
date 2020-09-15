@@ -116,6 +116,9 @@ export function module(roleConfig: { manage: RequestHandler, search: RequestHand
             res.status(400).send();
             return;
         }
+        if (!foundUser.roles) {
+            foundUser.roles = [];
+        }
         foundUser.roles.push('CommentAuthor');
         uniq(foundUser.roles);
         await foundUser.save();

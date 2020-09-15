@@ -1,7 +1,7 @@
 import * as mongoose from 'mongoose';
 import { Document, Model, Schema } from 'mongoose';
 import { deleteBoardById, updateOrInsertBoardById } from 'server/board/elastic';
-import { handleError } from 'server/errorHandler/errorHandler';
+import { handleErrorVoid } from 'server/errorHandler/errorHandler';
 import { establishConnection } from 'server/system/connections';
 import { objectId } from 'server/system/mongo-data';
 import { addStringtype } from 'server/system/mongoose-stringtype';
@@ -56,14 +56,14 @@ pinningBoardSchema.pre('save', function(next) {
     const id = this._id.toString();
     const board = this.toObject();
     delete board._id;
-    updateOrInsertBoardById(id, board, handleError({
+    updateOrInsertBoardById(id, board, handleErrorVoid({
         publicMessage: 'Unable to index board: ' + id
     }, () => next()));
 });
 
 pinningBoardSchema.pre('remove', function(next) {
     const id = this._id.toString();
-    deleteBoardById(id, handleError({
+    deleteBoardById(id, handleErrorVoid({
         publicMessage: 'Unable to remove board: ' + id,
     }, () => next()));
 });

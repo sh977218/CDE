@@ -6,7 +6,7 @@ export const config = Config as any;
 ['log', 'appData', 'migration'].forEach(databaseName => {
     const database = config.database[databaseName];
     if (database) {
-        const uriOptions = [];
+        const uriOptions: string[] = [];
         if (database.options.replicaSet) {
             uriOptions.push('replicaSet=' + database.options.replicaSet);
         }

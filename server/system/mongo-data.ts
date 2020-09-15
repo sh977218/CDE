@@ -179,7 +179,7 @@ export function addFormToViewHistory(elt: Item, user: User) {
 
 // WARNING: destroys oldItem and newItem by calling cdediff
 export function auditModifications<T extends Document>(auditDb: Model<T>) {
-    return (user: User, oldItem: Item | null, newItem: Item) => {
+    return (user: User, oldItem: ItemDocument | null, newItem: ItemDocument) => {
         const message: EltLog = {
             adminItem: {
                 _id: newItem._id,
@@ -214,7 +214,7 @@ export interface SearchParams {
 }
 
 export const auditGetLog = (auditDb: Model<any>) => (params: SearchParams, cb: CbError1<EltLog[]>) => {
-    auditDb.find(params.includeBatch ? undefined : {'user.username': {$ne: 'batchloader'}})
+    auditDb.find(params.includeBatch ? {} : {'user.username': {$ne: 'batchloader'}})
         .sort('-date')
         .skip(params.skip)
         .limit(params.limit)

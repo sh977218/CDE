@@ -1,3 +1,4 @@
+import { CronJob } from 'cron';
 import { RequestHandler, Response, Router } from 'express';
 import { toInteger, round } from 'lodash';
 import { handleError, handleNotFound } from 'server/errorHandler/errorHandler';
@@ -26,7 +27,6 @@ import { CbErr1 } from 'shared/models.model';
 import { stripBsonIdsElt } from 'shared/system/exportShared';
 import { syncLinkedForms, syncLinkedFormsProgress } from 'server/form/syncLinkedForms';
 
-const CronJob = require('cron').CronJob;
 const {checkSchema, check} = require('express-validator');
 
 const canEditMiddlewareForm = canEditMiddleware(mongoForm);

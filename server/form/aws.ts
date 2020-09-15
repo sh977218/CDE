@@ -1,9 +1,11 @@
 import { config } from 'server/system/parseConfig';
 import { logError } from 'server/log/dbLogger';
+import { CdeForm } from 'shared/form/form.model';
+import { CbError1 } from 'shared/models.model';
 
 const AWS = require('aws-sdk');
 
-export function sdcExport(xmlStr, form, cb) {
+export function sdcExport(xmlStr: string, form: CdeForm, cb: CbError1<string>) {
     if (!(global as any).CURRENT_SERVER_ENV) {
         throw new Error('ENV not ready');
     }
@@ -15,11 +17,11 @@ export function sdcExport(xmlStr, form, cb) {
         FunctionName: config.cloudFunction.formSdcValidate.name + '-' + (global as any).CURRENT_SERVER_ENV,
         Payload: JSON.stringify(jsonPayload)
     };
-    const validateCb = (err, data) => {
+    const validateCb = (err: Error | null, data: any) => {
         if (err || !data) {
             logError({
                 message: 'SDC Schema validation AWS error: ',
-                stack: err,
+                stack: err ? err.stack : undefined,
                 details: 'formID: ' + form._id
             });
             cb(err, '<!-- Validation Error: general error -->' + xmlStr);

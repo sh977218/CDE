@@ -1,9 +1,15 @@
+import { Dictionary } from 'async';
+import { sdcExport } from 'server/form/aws';
 import { consoleLog, logError } from 'server/log/dbLogger';
 import { config } from 'server/system/parseConfig';
+import { isInForm, isSection } from 'shared/form/fe';
+import { CdeForm, FormElement, FormInForm, FormSection } from 'shared/form/form.model';
+import { CbError1 } from 'shared/models.model';
 import { create as builderCreate } from 'xmlbuilder';
-import { sdcExport } from './aws';
-import { Dictionary } from 'async';
-import { FormSection } from 'shared/form/form.model';
+
+interface SdcChild {
+    name: string;
+}
 
 function addQuestion(parent: any, question: any) {
     const newQuestion: any = {
@@ -71,24 +77,24 @@ function doQuestion(parent: any, question: any) {
     try {
         if (question.skipLogic && question.skipLogic.condition.length > 0) {
             if (question.skipLogic.condition.match('".+" = ".+"')) {
-                const terms = question.skipLogic.condition.match(/"[^"]+"/g).map((t: string) => t.substr(1, t.length - 2));
+                const terms: string[] = question.skipLogic.condition.match(/"[^"]+"/g).map((t: string) => t.substr(1, t.length - 2));
                 if (terms.length === 2) {
                     const qToAddTo = questionsInSection[terms[0]];
                     // below is xmlBuilder ele. This seems to be the way to find child inside element
-                    qToAddTo.children.filter((c: any) => c.name === 'ListField')[0]
-                        .children.filter((c: any) => c.name === 'List')[0]
-                        .children.filter((c: any) => c.name === 'ListItem').forEach((li: any) => {
+                    qToAddTo.children.filter((c: SdcChild) => c.name === 'ListField')[0]
+                        .children.filter((c: SdcChild) => c.name === 'List')[0]
+                        .children.filter((c: SdcChild) => c.name === 'ListItem').forEach((li: any) => {
                         if (li.attributes.title && li.attributes.title.value === terms[1]) {
                             embed = true;
                             if (question.question.datatype === 'Value List') {
-                                let liChildItems = li.children.filter((c: any) => c.name === 'ChildItems')[0];
+                                let liChildItems = li.children.filter((c: SdcChild) => c.name === 'ChildItems')[0];
                                 if (!liChildItems) { liChildItems = li.ele({ChildItems: {}}); }
                                 addQuestion(liChildItems, question);
                             } else {
                                 if (!question.label) {
                                     li.ele({ListItemResponseField: {Response: {string: ''}}});
                                 } else {
-                                    let liChildItems2 = li.children.filter((c: any) => c.name === 'ChildItems')[0];
+                                    let liChildItems2 = li.children.filter((c: SdcChild) => c.name === 'ChildItems')[0];
                                     if (!liChildItems2) { liChildItems2 = li.ele({ChildItems: {}}); }
                                     addQuestion(liChildItems2, question);
                                 }
@@ -106,7 +112,7 @@ function doQuestion(parent: any, question: any) {
 
 const questionsInSection: Dictionary<any> = {};
 
-const doSection = (parent: any, section: FormSection) => {
+const doSection = (parent: any, section: FormInForm | FormSection) => {
     const newSection = {
         '@ID': 'NA_' + Math.random(),
         '@title': section.label ? section.label : ''
@@ -118,7 +124,7 @@ const doSection = (parent: any, section: FormSection) => {
             if (formElement.elementType === 'question') {
                 doQuestion(childItems, formElement);
             } else if (formElement.elementType === 'section' || formElement.elementType === 'form') {
-                doSection(childItems, formElement as any);
+                doSection(childItems, formElement);
             }
         });
     }
@@ -126,7 +132,7 @@ const doSection = (parent: any, section: FormSection) => {
 
 let idToName: Dictionary<any> = {};
 
-export function formToSDC({form, renderer, validate}, cb: any) {
+export function formToSDC({form, renderer, validate}: {form: CdeForm, renderer?: 'defaultHtml', validate?: string}, cb: CbError1<string>) {
     const formDesign = builderCreate({
         FormDesign: {
             '@xmlns': 'urn:ihe:qrph:sdc:2016',
@@ -147,12 +153,12 @@ export function formToSDC({form, renderer, validate}, cb: any) {
         }
     });
 
-    let noSupport: any = false;
+    let noSupport: 'true' | false = false;
 
     const childItems = body.ele({ChildItems: {}});
 
-    form.formElements.forEach((formElement: any) => {
-        if (formElement.elementType === 'section' || formElement.elementType === 'form') {
+    form.formElements.forEach((formElement: FormElement) => {
+        if (isSection(formElement) || isInForm(formElement)) {
             doSection(childItems, formElement);
         } else {
             noSupport = 'true';
@@ -162,7 +168,7 @@ export function formToSDC({form, renderer, validate}, cb: any) {
     idToName = {};
 
     let xmlStr = formDesign.end({pretty: false});
-    if (noSupport) { return cb(undefined, '<error>SDC Export does not support questions outside of sections.</error>'); }
+    if (noSupport) { return cb(null, '<error>SDC Export does not support questions outside of sections.</error>'); }
 
     if (renderer === 'defaultHtml') {
         xmlStr = "<?xml-stylesheet type='text/xsl' href='/form/public/assets/sdc/sdctemplate.xslt'?> \n" + xmlStr;
@@ -177,11 +183,11 @@ export function formToSDC({form, renderer, validate}, cb: any) {
             case 'ON_PREM':
                 // workaround until local lambda
                 const validator = require('xsd-schema-validator');
-                validator.validateXML(xmlStr, './modules/form/public/assets/sdc/SDCFormDesign.xsd', (err: any) => {
+                validator.validateXML(xmlStr, './modules/form/public/assets/sdc/SDCFormDesign.xsd', (err: Error | null) => {
                     if (err) {
                         logError({
                             message: 'SDC Schema validation error: ',
-                            stack: err,
+                            stack: err ? err.stack : undefined,
                             details: 'formID: ' + form._id
                         });
                         xmlStr = '<!-- Validation Error: ' + err + ' -->' + xmlStr;

@@ -1,15 +1,17 @@
+import { readFileSync, writeFileSync } from 'fs';
 import { dataElementModel } from 'server/cde/mongo-cde';
+import { DataElement } from 'shared/de/dataElement.model';
+import { CdeId } from 'shared/models.model';
 const spellChecker = require('simple-spellchecker');
 const yesno = require('yesno');
-import { readFileSync, writeFileSync } from 'fs';
 
 const steward = process.argv.slice(2)[0];
 if (!steward) {
     console.error('Missing steward');
     process.exit(1);
 }
-let dictionary;
-spellChecker.getDictionary('en-US', (err, dic) => {
+let dictionary: any;
+spellChecker.getDictionary('en-US', (err: any, dic: any) => {
     if (!err) {
         dictionary = dic;
     }
@@ -21,9 +23,9 @@ process.on('unhandledRejection', (error) => {
 
 const whitelistFile = './scripts/spellcheck.whitelist';
 const blacklistFile = './scripts/spellcheck.blacklist';
-let whitelist = [];
-let blacklist = [];
-async function addToList(term) {
+let whitelist: string[] = [];
+let blacklist: string[] = [];
+async function addToList(term: string) {
     if (whitelist.indexOf(term) === -1) {
         whitelist.push(term);
         whitelist.filter((item, index) => whitelist.indexOf(item) === index);
@@ -31,8 +33,8 @@ async function addToList(term) {
     }
 }
 
-const errors = [];
-async function markAsError(term, cde, location) {
+const errors: {ids: CdeId[], term: string, location: string}[] = [];
+async function markAsError(term: string, cde: DataElement, location: string) {
     errors.push({ids: cde.ids, term, location});
     await writeFileSync('./scripts/spellcheck.json', JSON.stringify(errors), 'utf8');
     if (blacklist.indexOf(term) === -1) {
@@ -43,7 +45,7 @@ async function markAsError(term, cde, location) {
 
 }
 
-async function iterateOverValue(value, type, cde) {
+async function iterateOverValue(value: any, type: string, cde: DataElement) {
     const terms = value[type].replace(/([ *'|—="!…:_.,;(){}–\-?/\[\]]+)/g, '§sep§').split('§sep§');
     for (let term of terms) {
         if (!/\d/.test(term) && term.toUpperCase() !== term) {
