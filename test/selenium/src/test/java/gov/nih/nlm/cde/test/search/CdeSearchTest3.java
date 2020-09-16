@@ -17,7 +17,7 @@ public class CdeSearchTest3 extends NlmCdeBaseTest {
         findElement(By.id("search.submit")).click();
         textPresent("Biomarker Gene");
         List<WebElement> linkList = driver.findElements(By.cssSelector("div.singleSearchResult"));
-        Assert.assertTrue(linkList.size() > 10);
+        Assert.assertEquals(linkList.size(), 2);
 
         findElement(By.name("q")).clear();
         findElement(By.name("q")).sendKeys("\"Biomarker Gene\"");
