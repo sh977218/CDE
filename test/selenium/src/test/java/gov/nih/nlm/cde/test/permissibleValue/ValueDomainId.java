@@ -13,7 +13,7 @@ public class ValueDomainId extends NlmCdeBaseTest {
         mustBeLoggedInAs(testAdmin_username, password);
         String cdeName = "Gender Self-Identified";
         goToCdeByName(cdeName);
-        findElement(By.id("pvs_tab")).click();
+        goToPermissibleValues();
         textPresent("LOINC: LL3322-6, version: 2.52");
         textPresent("UMLS: C0563024, version: 2016_03_01");
     }

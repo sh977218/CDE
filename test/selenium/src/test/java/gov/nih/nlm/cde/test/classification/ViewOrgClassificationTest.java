@@ -9,7 +9,7 @@ public class ViewOrgClassificationTest extends NlmCdeBaseTest {
     public void viewOrgClassifications() {
         mustBeLoggedInAs(classificationMgtUser_username, password);
         clickElement(By.id("username_link"));
-        clickElement(By.linkText("Classifications"));
+        clickElement(By.id("user_classifications"));
         clickElement(By.cssSelector("mat-select"));
         selectMatSelectDropdownByText("PS&CC");
         textPresent("edu.fccc.brcf.domain");

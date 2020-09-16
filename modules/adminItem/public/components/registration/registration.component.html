@@ -7,36 +7,36 @@
     </legend>
     <dl class="row">
         <ng-container *ngIf="elt.registrationState.effectiveDate">
-            <dt class="col-3 text-right">Effective Date:</dt>
-            <dd id="effectiveDate" class="col-9">
+            <dt class="col-2 text-right">Effective Date:</dt>
+            <dd id="effectiveDate" class="col-10">
                 {{elt.registrationState.effectiveDate | date:'MM/dd/yyyy':'z'}}
             </dd>
         </ng-container>
         <ng-container *ngIf="elt.registrationState.untilDate">
-            <dt class="col-3 text-right">Until Date:</dt>
-            <dd id="untilDate" class="col-9">
+            <dt class="col-2 text-right">Until Date:</dt>
+            <dd id="untilDate" class="col-10">
                 {{elt.registrationState.untilDate | date:'MM/dd/yyyy':'z'}}
             </dd>
         </ng-container>
         <ng-container *ngIf="elt.registrationState.administrativeNote">
-            <dt class="col-3 text-right">Administrative Note:</dt>
-            <dd id="administrativeNote" class="col-9">
+            <dt class="col-2 text-right">Administrative Note:</dt>
+            <dd id="administrativeNote" class="col-10">
                 {{elt.registrationState.administrativeNote}}
             </dd>
         </ng-container>
         <ng-container *ngIf="elt.registrationState.unresolvedIssue">
-            <dt class="col-3 text-right">Unresolved Issue:</dt>
-            <dd id="unresolvedIssue" class="col-9">{{elt.registrationState.unresolvedIssue}}</dd>
+            <dt class="col-2 text-right">Unresolved Issue:</dt>
+            <dd id="unresolvedIssue" class="col-10">{{elt.registrationState.unresolvedIssue}}</dd>
         </ng-container>
         <ng-container *ngIf="elt.registrationState.registrationStatus">
-            <dt class="col-3 text-right">Registration Status:</dt>
-            <dd id="registrationStatus" class="col-9">
+            <dt class="col-2 text-right">Registration Status:</dt>
+            <dd id="registrationStatus" class="col-10">
                 {{elt.registrationState.registrationStatus}}
             </dd>
         </ng-container>
         <ng-container *ngIf="elt.registrationState.administrativeStatus">
-            <dt class="col-3 text-right">Administrative Status:</dt>
-            <dd id="administrativeStatus" class="col-9">{{elt.registrationState.administrativeStatus}}</dd>
+            <dt class="col-2 text-right">Administrative Status:</dt>
+            <dd id="administrativeStatus" class="col-10">{{elt.registrationState.administrativeStatus}}</dd>
         </ng-container>
     </dl>
 </fieldset>

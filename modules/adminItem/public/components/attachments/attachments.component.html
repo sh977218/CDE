@@ -1,64 +1,65 @@
-<div id="attachmentsDiv">
-    <h4 *ngIf="elt.isDraft">
-        Attachments are not available in Drafts. Click the Draft slider above to view the current Published version.
-    </h4>
-    <ng-container *ngIf="!elt.isDraft">
-        <h4>Attachments</h4>
-        <ng-container *ngFor="let attachment of elt.attachments; let i = index">
-            <dl id="attachment_{{i}}" class="row">
-                <dt class="col-3 text-right">Filename:</dt>
-                <dd class="col-9">
-                    <div *ngIf="!attachment.pendingApproval || canReviewAttachment; else pendingApprovalTpl">
-                        <a id="attachment_file_url_{{i}}" class="mr-1"
-                           href="/server/system/data/{{attachment.fileid}}"
-                           target="_blank">{{attachment.filename}}</a>
-                        <button (click)="copyUrl(attachment)" mat-raised-button>
-                            <mat-icon id="copyUrl_{{i}}">content_copy</mat-icon> Copy URL
-                        </button>
-                    </div>
-                    <ng-template #pendingApprovalTpl>{{attachment.filename}} - This attachment cannot be
-                        downloaded because it is pending approval.
-                    </ng-template>
-                </dd>
-                <ng-container *ngIf="!attachment.pendingApproval">
-                    <dt class="col-3 text-right">Default Image:</dt>
-                    <dd id="dd_id_nlm" class="col-9">
-                        <div *ngIf="attachment.filesize > 512*1024">
-                            Attachments smaller than 500k can be marked as default
-                        </div>
-                        <div *ngIf="attachment.filesize <= 512*1024">
-                            <label id="defaultCbLabel">
-                                <input type="checkbox" id="defaultCb" [(ngModel)]="attachment.isDefault"
-                                       (change)="setDefault.emit(i)" [disabled]="!canEdit"/>
-                                Should this image be displayed in search results?</label>
-                        </div>
-                    </dd>
-                </ng-container>
-                <ng-container *ngIf="canEdit">
-                    <dt class="col-3 text-right">Actions:</dt>
-                    <dd id="dd_version_nlm" class="col-9">
-                        <cde-delete-with-confirm (deleted)="removeAttachment.emit(i)"></cde-delete-with-confirm>
-                    </dd>
-                </ng-container>
-                <dt class="col-3 text-right">Size:</dt>
-                <dd class="col-9">
-                    <div *ngIf="attachment.filesize > 1024*1024">{{attachment.filesize / 1024 / 1024 | number:'1.0-1'}}
-                        MB
-                    </div>
-                    <div *ngIf="attachment.filesize <= 1024*1024">{{attachment.filesize / 1024 | number:'1.0-1'}} kB
-                    </div>
-                </dd>
-                <dt class="col-3 text-right">Uploaded date:</dt>
-                <dd class="col-9">{{attachment.uploadDate | date: 'MM/dd/yyyy @ h:mma'}}</dd>
-                <dt class="col-3 text-right">Uploaded by:</dt>
-                <dd class="col-9">{{attachment.uploadedBy.username}}</dd>
-            </dl>
-            <hr>
-        </ng-container>
-        <div *ngIf="canEdit" class="row" id="attachment_">
-            <label for="fileToUpload"><button mat-raised-button (click)="openFileDialog()">
-                <mat-icon>cloud_upload</mat-icon> Upload more files</button></label>
-            <input id="fileToUpload" style="display: none" type="file" (change)="upload.emit($event)">
-        </div>
-    </ng-container>
+<h4 class="section-header">Attachments</h4>
+<h4 *ngIf="elt.isDraft">
+    Attachments are not available in Drafts. Click the Draft slider above to view the current Published version.
+</h4>
+<div *ngIf="elt.attachments.length === 0">
+    There are no attachments.
 </div>
+<ng-container *ngIf="!elt.isDraft">
+    <ng-container *ngFor="let attachment of elt.attachments; let i = index">
+        <dl id="attachment_{{i}}" class="row">
+            <dt class="col-3 text-right">Filename:</dt>
+            <dd class="col-9">
+                <div *ngIf="!attachment.pendingApproval || canReviewAttachment; else pendingApprovalTpl">
+                    <a id="attachment_file_url_{{i}}" class="mr-1"
+                       href="/server/system/data/{{attachment.fileid}}"
+                       target="_blank">{{attachment.filename}}</a>
+                    <button (click)="copyUrl(attachment)" mat-raised-button>
+                        <mat-icon id="copyUrl_{{i}}">content_copy</mat-icon> Copy URL
+                    </button>
+                </div>
+                <ng-template #pendingApprovalTpl>{{attachment.filename}} - This attachment cannot be
+                    downloaded because it is pending approval.
+                </ng-template>
+            </dd>
+            <ng-container *ngIf="!attachment.pendingApproval">
+                <dt class="col-3 text-right">Default Image:</dt>
+                <dd id="dd_id_nlm" class="col-9">
+                    <div *ngIf="attachment.filesize > 512*1024">
+                        Attachments smaller than 500k can be marked as default
+                    </div>
+                    <div *ngIf="attachment.filesize <= 512*1024">
+                        <label id="defaultCbLabel">
+                            <input type="checkbox" id="defaultCb" [(ngModel)]="attachment.isDefault"
+                                   (change)="setDefault.emit(i)" [disabled]="!canEdit"/>
+                            Should this image be displayed in search results?</label>
+                    </div>
+                </dd>
+            </ng-container>
+            <ng-container *ngIf="canEdit">
+                <dt class="col-3 text-right">Actions:</dt>
+                <dd id="dd_version_nlm" class="col-9">
+                    <cde-delete-with-confirm (deleted)="removeAttachment.emit(i)"></cde-delete-with-confirm>
+                </dd>
+            </ng-container>
+            <dt class="col-3 text-right">Size:</dt>
+            <dd class="col-9">
+                <div *ngIf="attachment.filesize > 1024*1024">{{attachment.filesize / 1024 / 1024 | number:'1.0-1'}}
+                    MB
+                </div>
+                <div *ngIf="attachment.filesize <= 1024*1024">{{attachment.filesize / 1024 | number:'1.0-1'}} kB
+                </div>
+            </dd>
+            <dt class="col-3 text-right">Uploaded date:</dt>
+            <dd class="col-9">{{attachment.uploadDate | date: 'MM/dd/yyyy @ h:mma'}}</dd>
+            <dt class="col-3 text-right">Uploaded by:</dt>
+            <dd class="col-9">{{attachment.uploadedBy?.username}}</dd>
+        </dl>
+        <hr>
+    </ng-container>
+    <div *ngIf="canEdit" class="row" id="attachment_">
+        <label for="fileToUpload"><button mat-raised-button (click)="openFileDialog()">
+            <mat-icon>cloud_upload</mat-icon> Upload more files</button></label>
+        <input id="fileToUpload" style="display: none" type="file" (change)="upload.emit($event)">
+    </div>
+</ng-container>

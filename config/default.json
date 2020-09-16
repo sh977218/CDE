@@ -191,5 +191,6 @@
   "captchaCode": "Override actual here.",
   "siteKey": "6LdAmh4TAAAAABf_PCxKsd4ikR-S5pSSa25PGqUV",
   "useCaptcha": true,
-  "sessionKey": "Kfji76R"
+  "sessionKey": "Kfji76R",
+  "showCovidBanner": true
 }

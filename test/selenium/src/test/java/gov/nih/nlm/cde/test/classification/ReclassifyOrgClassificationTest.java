@@ -30,7 +30,7 @@ public class ReclassifyOrgClassificationTest extends NlmCdeBaseTest {
         textPresent(oldClassification);
 
         clickElement(By.id("username_link"));
-        clickElement(By.linkText("Audit"));
+        clickElement(By.id("user_audit"));
         clickElement(By.xpath("//div[. = 'Classification Audit Log']"));
         textPresent("Gastrointestinal therapy water flush status");
         textPresent("org / or Org > NewClassification");

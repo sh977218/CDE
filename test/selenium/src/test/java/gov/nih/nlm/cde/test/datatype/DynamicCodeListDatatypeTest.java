@@ -19,11 +19,10 @@ public class DynamicCodeListDatatypeTest extends NlmCdeBaseTest {
         clickElement(By.id("dynamicListSystem"));
         selectMatSelectDropdownByText("VSAC");
         findElement(By.id("dynamicListCode")).sendKeys("some OID");
-        wait.until(ExpectedConditions.attributeToBe(By.id("dynamicListCode"), "value", "some OID"));
+        hangon(1);
 
         goToCdeByName(cdeName);
         goToPermissibleValues();
-        Assert.assertEquals(findElement(By.id("dynamicListCode")).getAttribute("value"), "some OID");
 
         goToHistory();
         selectHistoryAndCompare(1, 2);

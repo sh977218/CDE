@@ -227,7 +227,7 @@
                                (click)="currentTab ='preview_tab'">Preview
                                 <mat-icon *ngIf="tabsCommented.indexOf('preview_tab') > -1"
                                    class="pull-right" aria-hidden="true">forum</mat-icon></a>
-                            <a id="general_tab" class="list-group-item"
+                            <a id="general_details_tab" class="list-group-item"
                                [ngClass]="{'active':currentTab ==='general_tab'}"
                                (click)="currentTab ='general_tab'">General Detail
                                 <mat-icon *ngIf="tabsCommented.indexOf('general_tab') > -1"
@@ -247,7 +247,7 @@
                                (click)="currentTab = 'classification_tab'">Classification
                                 <mat-icon *ngIf="tabsCommented.indexOf('classification_tab') > -1"
                                    class="pull-right" aria-hidden="true">forum</mat-icon></a>
-                            <a id="referenceDocuments_tab" class="list-group-item"
+                            <a id="reference_documents_tab" class="list-group-item"
                                [ngClass]="{'active':currentTab ==='referenceDocuments_tab'}"
                                (click)="currentTab = 'referenceDocuments_tab'">Reference Documents
                                 <mat-icon *ngIf="tabsCommented.indexOf('referenceDocuments_tab') > -1"
@@ -262,7 +262,7 @@
                                (click)="currentTab = 'properties_tab'">Properties
                                 <mat-icon *ngIf="tabsCommented.indexOf('properties_tab') > -1"
                                    class="pull-right" aria-hidden="true">forum</mat-icon></a>
-                            <a id="ids_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='ids_tab'}"
+                            <a id="identifiers_tab" class="list-group-item" [ngClass]="{'active':currentTab ==='ids_tab'}"
                                (click)="currentTab = 'ids_tab'">Identifiers
                                 <mat-icon *ngIf="tabsCommented.indexOf('ids_tab') > -1"
                                    class="pull-right" aria-hidden="true">forum</mat-icon></a>

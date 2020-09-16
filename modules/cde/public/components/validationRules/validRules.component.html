@@ -1,16 +1,15 @@
 <div id="validRulesDiv">
-    <h4 id="regStatusValidationRules">Validation Rules</h4>
-
+    <h6 id="regStatusValidationRules">Validation Rules</h6>
     <ng-container *ngIf="hasRules(); else noRules">
         The <b>Registration Status</b> of this CDE is <b>{{elt.registrationState.registrationStatus}}</b>.<br>
         This CDE is used by the following <b>Stewards</b>: {{elt.usedBy?.join(', ')}}<br>
         In order to promote this CDE to a different registration status, it must obey the following validation rules:
         <div *ngFor="let regStatusName of keys(results)" [hidden]="!showStatus(cdeStatusRules[regStatusName])"
              class="pb-2">
-            <h3>Validation Rules for {{regStatusName}} Status</h3>
+            <h6>Validation Rules for {{regStatusName}} Status</h6>
             <div *ngFor="let orgName of keys(results[regStatusName])">
-                <h5>Steward <b>{{orgName}}</b> requires the following conditions to be met, in order to promote this
-                    CDE to <b>{{regStatusName}}</b> status:</h5>
+                <span>Steward {{orgName}} requires the following conditions to be met, in order to promote this
+                    CDE to {{regStatusName}} status:</span>
                 <div *ngFor="let result of results[regStatusName][orgName]; let i=index"
                      id="rule_{{regStatusName}}_{{i}}">
                     {{result.name}}
@@ -22,7 +21,8 @@
                             <mat-icon class="text-success">check</mat-icon>
                         </ng-container>
                         <ng-container *ngSwitchDefault>
-                            <mat-icon class="text-danger">cancel</mat-icon> {{ result.result }}
+                            <mat-icon class="text-danger">cancel</mat-icon>
+                            {{ result.result }}
                         </ng-container>
                     </ng-container>
                 </div>

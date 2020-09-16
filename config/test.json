@@ -42,6 +42,7 @@
         "port": 27017
       }
     ]
-  }
+  },
+  "showCovidBanner": false
 }
 

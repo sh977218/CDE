@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 
 public class BoardCurrentComment extends NlmCdeBaseTest {
 
-    @Test()
+//    @Test()
     public void boardCurrentCommentTest() {
         String boardName = "Public Smoking Board";
         goToBoard(boardName);

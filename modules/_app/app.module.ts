@@ -29,6 +29,11 @@ import { AlertModule } from 'alert/alert.module';
 import { FeedbackModule } from 'ngx-feedback2';
 import { LocalStorageService } from 'non-core/localStorage.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
+import { ScrollingModule } from '@angular/cdk/scrolling';
+import { FooterComponent } from '_app/footer/footer.component';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatListModule } from '@angular/material/list';
 
 @NgModule({
     imports: [
@@ -43,10 +48,14 @@ import { OrgHelperService } from 'non-core/orgHelper.service';
         MatIconModule,
         MatMenuModule,
         MatSnackBarModule,
+        ScrollingModule,
         // internal
         CdeAppRoutingModule,
         CommonAppModule,
-        AlertModule
+        AlertModule,
+        MatToolbarModule,
+        MatSidenavModule,
+        MatListModule
     ],
     declarations: [
         CdeAppComponent,
@@ -54,6 +63,7 @@ import { OrgHelperService } from 'non-core/orgHelper.service';
         IEBannerComponent,
         InactivityLoggedOutComponent,
         NavigationComponent,
+        FooterComponent,
         NotificationDrawerComponent,
         NotificationDrawerPaneComponent,
         TruncateLongNamePipe

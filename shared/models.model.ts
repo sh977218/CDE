@@ -148,7 +148,7 @@ export class Comment extends CommentSingle {
         eltId: ObjectId,
         eltType: ModuleAll,
     } = {eltId: '', eltType: 'cde'};
-    linkedTab?: string;
+    linkedTab: string = '';
     replies: CommentReply[] = [];
 }
 

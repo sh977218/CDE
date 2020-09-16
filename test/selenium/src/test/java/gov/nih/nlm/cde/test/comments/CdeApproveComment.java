@@ -14,6 +14,7 @@ public class CdeApproveComment extends NlmCdeBaseTest {
 
         mustBeLoggedInAs(anonymousCommentUser2_username, anonymousCommentUser_password);
         goToCdeByName(cdeName);
+        goToDiscussArea();
         isCommentOrReplyExists(commentText, true);
     }
 }

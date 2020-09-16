@@ -12,6 +12,7 @@ public class ReviewerCanComment extends NlmCdeBaseTest {
         String commentText = "Comment made by reviewer";
         mustBeLoggedInAs(commentEditor_username, password);
         goToCdeByName(cdeName);
+        goToDiscussArea();
         addComment(commentText);
         logout();
         goToCdeByName(cdeName);

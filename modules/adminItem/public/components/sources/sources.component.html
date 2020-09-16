@@ -3,38 +3,38 @@
     <dl class="row">
         <ng-container
                 *ngIf="sourceUrls[eltSource.sourceName]">
-            <dt class="col-3 text-right" matTooltip="Original Data in NLM CDE format">Raw Artifact:</dt>
-            <dd class="col-9">
+            <dt class="col-2 text-right" matTooltip="Original Data in NLM CDE format">Raw Artifact:</dt>
+            <dd class="col-10">
                 <a [href]="sourceUrls[eltSource.sourceName]" target="_blank">Raw Artifact</a>
             </dd>
         </ng-container>
         <ng-container *ngIf="eltSource.sourceName">
-            <dt class="col-3 text-right">Name:</dt>
-            <dd class="col-9">{{eltSource.sourceName}}</dd>
+            <dt class="col-2 text-right">Name:</dt>
+            <dd class="col-10">{{eltSource.sourceName}}</dd>
         </ng-container>
         <ng-container *ngIf="eltSource.imported">
-            <dt class="col-3 text-right">Imported:</dt>
-            <dd class="col-9">{{eltSource.imported | date: 'MM/dd/yyyy @ h:mma'}}</dd>
+            <dt class="col-2 text-right">Imported:</dt>
+            <dd class="col-10">{{eltSource.imported | date: 'MM/dd/yyyy @ h:mma'}}</dd>
         </ng-container>
         <ng-container *ngIf="eltSource.created">
-            <dt class="col-3 text-right">Created:</dt>
-            <dd class="col-9">{{eltSource.created | date: 'MM/dd/yyyy @ h:mma'}}</dd>
+            <dt class="col-2 text-right">Created:</dt>
+            <dd class="col-10">{{eltSource.created | date: 'MM/dd/yyyy @ h:mma'}}</dd>
         </ng-container>
         <ng-container *ngIf="eltSource.updated">
-            <dt class="col-3 text-right">Updated:</dt>
-            <dd class="col-9">{{eltSource.updated | date: 'MM/dd/yyyy @ h:mma'}}</dd>
+            <dt class="col-2 text-right">Updated:</dt>
+            <dd class="col-10">{{eltSource.updated | date: 'MM/dd/yyyy @ h:mma'}}</dd>
         </ng-container>
         <ng-container *ngIf="eltSource.registrationStatus">
-            <dt class="col-3 text-right">Registration Status:</dt>
-            <dd class="col-9">{{eltSource.registrationStatus}}</dd>
+            <dt class="col-2 text-right">Registration Status:</dt>
+            <dd class="col-10">{{eltSource.registrationStatus}}</dd>
         </ng-container>
         <ng-container *ngIf="eltSource.datatype">
-            <dt class="col-3 text-right">Datatype:</dt>
-            <dd class="col-9">{{eltSource.datatype}}</dd>
+            <dt class="col-2 text-right">Datatype:</dt>
+            <dd class="col-10">{{eltSource.datatype}}</dd>
         </ng-container>
         <ng-container *ngIf="eltSource.copyright">
-            <dt class="col-3 text-right">Copyright:</dt>
-            <dd class="col-9">
+            <dt class="col-2 text-right">Copyright:</dt>
+            <dd class="col-10">
                 <div *ngIf="eltSource.copyright.valueFormat === 'html'" [innerHtml]="eltSource.copyright.value"></div>
                 <div *ngIf="!(eltSource.copyright.valueFormat === 'html')">{{eltSource.copyright.value}}</div>
             </dd>

@@ -9,6 +9,7 @@
   background-color: $navBackgroundColor;
   white-space: pre-line;
 }
+
 /* END Theme */
 
 
@@ -197,6 +198,7 @@ a.no-link {
 .modal {
   overflow-y: scroll !important;
 }
+
 /* END Bootstrap overrides */
 
 
@@ -573,3 +575,36 @@ input.ng-invalid:not([matInput]) {
 }
 
 /* END NavigationDrawer */
+
+
+.section-header {
+  background-color: #e0e0e0 !important;
+  border-radius: 10px;
+  padding-left: 10px;
+  background-image: linear-gradient(to right, #cac8c8, white);
+}
+
+.comment-div {
+  padding-left: 10px;
+  box-shadow: inset 10px 0 5px -2px #888;
+  background-color: #f5f5f5;
+}
+
+.bg-active {
+  background: rgba(2, 191, 231, .1) !important;
+  color: #1976d2 !important;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.mw-20 {
+  max-width: 20%;
+}
+
+.mh-500 > div > div {
+  max-height: 1000px;
+  overflow: hidden;
+  overflow-y: auto;
+}

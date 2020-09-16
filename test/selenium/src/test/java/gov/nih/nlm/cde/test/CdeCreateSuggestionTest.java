@@ -9,7 +9,7 @@ public class CdeCreateSuggestionTest extends BaseClassificationTest {
     public void cdeCreateSuggestion() {
         mustBeLoggedInAs(ctepCurator_username, password);
         clickElement(By.id("createEltLink"));
-        clickElement(By.linkText("CDE"));
+        clickElement(By.id("createCDELink"));
         // wait for page to load
         textPresent("Please enter a name for the new CDE");
         textNotPresent("Possible Matches");

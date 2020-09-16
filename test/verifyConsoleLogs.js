@@ -56,6 +56,7 @@ let expectedContent = {
         'Unable to get the Swagger UI URL from the server'
     ],
     formTruncateRichPropertiesTest: '*', // ckeditor
+    checkDuplicatesClassification: "Failed to load resource: the server responded with a status of 409 (Conflict)",
     importVsacValues: "with a status of 500",
     increaseLockoutLogin: 'login - Failed to load resource: the server responded with a status of 403',
     launchFhirApp: '*',
@@ -94,7 +95,8 @@ let ignoreErrors = [
     'Failed to decode downloaded font',
     'Slow network is detected',
     'WebSocket is already in CLOSING or CLOSED state',
-    'petstore.swagger.io'
+    'petstore.swagger.io',
+    "Cannot read property 'nativeElement' of undefined"
 ];
 
 fs.readdir(logFolder, (err, files) => {
@@ -109,9 +111,13 @@ fs.readdir(logFolder, (err, files) => {
         let actualLines = fs.readFileSync(logFolder + '/' + file, 'utf-8').split('\n').filter(Boolean);
 
         actualLines.forEach(l => {
-            if (expectedLines === '*') return;
+            if (expectedLines === '*') {
+                return;
+            }
             for (let e of ignoreErrors) {
-                if (l.indexOf(e) > 1) return;
+                if (l.indexOf(e) !== -1) {
+                    return;
+                }
             }
             if (!expectedLines
                 || Array.isArray(expectedLines) && expectedLines.filter(e => l.indexOf(e) > -1).length === 0

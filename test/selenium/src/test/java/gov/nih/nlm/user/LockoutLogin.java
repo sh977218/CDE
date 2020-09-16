@@ -9,7 +9,7 @@ public class LockoutLogin extends NlmCdeBaseTest {
     @Test
     public void lockoutLogin() {
         goToCdeSearch();
-        clickElement(By.linkText("LOGIN"));
+        clickElement(By.id("login_link"));
         findElement(By.id("uname")).sendKeys(lockout_username);
         findElement(By.id("passwd")).sendKeys(password);
         clickElement(By.id("login_button"));

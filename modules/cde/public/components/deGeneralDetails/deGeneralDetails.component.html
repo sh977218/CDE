@@ -1,58 +1,59 @@
-<div>
-    <h4>General Details</h4>
-    <dl class="row">
-        <dt class="col-3 text-right">Name:</dt>
-        <dd id="dd_general_name" itemprop="name" class="col-9">{{elt.designations[0].designation}}</dd>
-        <dt class="col-3 text-right">Steward:</dt>
-        <dd id="dd_general_steward" class="col-9">
-            <cde-inline-select-edit
-                    [value]="elt.stewardOrg.name" [selectOptions]="userOrgs" (save)="changeStewardOrg($event);"
-                    [isAllowed]="canEdit"
-                    [attr.aria-label]="orgHelperService.createOrgDetailedInfoHtml(elt.stewardOrg.name || '')"
-                    [matTooltip]="orgHelperService.createOrgDetailedInfoHtml(elt.stewardOrg.name || '')"
-                    matTooltipClass="cdeTooltipMultiline" matTooltipPosition="below">
-            </cde-inline-select-edit>
+<h4 class="section-header">General Details</h4>
+<dl class="row">
+    <dt class="col-2 text-right">Name:</dt>
+    <dd id="dd_general_name" itemprop="name" class="col-10">{{elt.designations[0].designation}}</dd>
+    <dt class="col-2 text-right">Steward:</dt>
+    <dd id="dd_general_steward" class="col-10">
+        <cde-inline-select-edit
+                [value]="elt.stewardOrg.name" [selectOptions]="userOrgs" (save)="changeStewardOrg($event);"
+                [isAllowed]="canEdit"
+                [attr.aria-label]="orgHelperService.createOrgDetailedInfoHtml(elt.stewardOrg.name || '')"
+                [matTooltip]="orgHelperService.createOrgDetailedInfoHtml(elt.stewardOrg.name || '')"
+                matTooltipClass="cdeTooltipMultiline" matTooltipPosition="below">
+        </cde-inline-select-edit>
+    </dd>
+    <ng-container *ngIf="elt.definitions[0]">
+        <dt class="col-2 text-right">Definition:</dt>
+        <dd id="dd_def" itemprop="description" class="col-10">
+            <span *ngIf="elt.definitions[0].definitionFormat !== 'html'">{{elt.definitions[0].definition}}</span>
+            <span *ngIf="elt.definitions[0].definitionFormat === 'html'"
+                  [innerHtml]="elt.definitions[0].definition"></span>
         </dd>
-        <ng-container *ngIf="elt.definitions[0]">
-            <dt class="col-3 text-right">Definition:</dt>
-            <dd id="dd_def" itemprop="description" class="col-9">
-                <span *ngIf="elt.definitions[0].definitionFormat !== 'html'">{{elt.definitions[0].definition}}</span>
-                <span *ngIf="elt.definitions[0].definitionFormat === 'html'" [innerHtml]="elt.definitions[0].definition"></span>
-            </dd>
-        </ng-container>
-        <dt class="col-3 text-right">Used By:</dt>
-        <dd id="dd_usedBy" class="col-9">
-            <span>{{elt.classification?.length > 0 ? elt.usedBy?.join(', ') : 'None'}}</span>
-        </dd>
-        <dt class="col-3 text-right">Origin:</dt>
-        <dd class="col-9">
-            <cde-inline-edit id="origin" [(model)]="elt.origin" [isAllowed]="canEdit"
-                             (modelChange)="eltChange.emit();">addNew
-            </cde-inline-edit>
-        </dd>
-        <ng-container *ngIf="elt.views">
-            <dt class="col-3 text-right">Views:</dt>
-            <dd id="views" class="col-9">{{elt.views}}</dd>
-        </ng-container>
-        <ng-container *ngIf="elt.imported">
-            <dt class="col-3 text-right">Last import:</dt>
-            <dd class="col-9">{{elt.imported | date: 'MM/dd/yyyy @ h:mma'}}</dd>
-        </ng-container>
-        <ng-container *ngIf="elt.created">
-            <dt class="col-3 text-right">Created:</dt>
-            <dd class="col-9">{{elt.created | date: 'MM/dd/yyyy @ h:mma'}}</dd>
-        </ng-container>
-        <ng-container *ngIf="elt.createdBy">
-            <dt class="col-3 text-right">Created By:</dt>
-            <dd id="createdBy" class="col-9">{{elt.createdBy.username}}</dd>
-        </ng-container>
-        <ng-container *ngIf="elt.updated">
-            <dt class="col-3 text-right">Updated:</dt>
-            <dd id="updated" class="col-9">{{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}</dd>
-        </ng-container>
-        <ng-container *ngIf="elt.updatedBy">
-            <dt class="col-3 text-right">Updated By:</dt>
-            <dd id="updatedBy" class="col-9">{{elt.updatedBy.username}}</dd>
-        </ng-container>
-    </dl>
-</div>
+    </ng-container>
+    <dt class="col-2 text-right">Used By:</dt>
+    <dd id="dd_usedBy" class="col-10">
+        <span>{{elt.classification?.length > 0 ? elt.usedBy?.join(', ') : 'None'}}</span>
+    </dd>
+    <dt class="col-2 text-right">Origin:</dt>
+    <dd class="col-10">
+        <cde-inline-edit id="origin" [(model)]="elt.origin" [isAllowed]="canEdit"
+                         (modelChange)="eltChange.emit();">addNew
+        </cde-inline-edit>
+    </dd>
+    <ng-container *ngIf="elt.views">
+        <dt class="col-2 text-right">Views:</dt>
+        <dd id="views" class="col-10">{{elt.views}}</dd>
+    </ng-container>
+    <ng-container *ngIf="elt.imported">
+        <dt class="col-2 text-right">Last import:</dt>
+        <dd class="col-10">{{elt.imported | date: 'MM/dd/yyyy @ h:mma'}}</dd>
+    </ng-container>
+    <ng-container *ngIf="elt.created">
+        <dt class="col-2 text-right">Created:</dt>
+        <dd class="col-10">{{elt.created | date: 'MM/dd/yyyy @ h:mma'}}</dd>
+    </ng-container>
+    <ng-container *ngIf="elt.createdBy">
+        <dt class="col-2 text-right">Created By:</dt>
+        <dd id="createdBy"
+            class="col-10">{{elt.createdBy.username}}</dd>
+    </ng-container>
+    <ng-container *ngIf="elt.updated">
+        <dt class="col-2 text-right">Updated:</dt>
+        <dd id="updated" class="col-10">{{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}</dd>
+    </ng-container>
+    <ng-container *ngIf="elt.updatedBy">
+        <dt class="col-2 text-right">Updated By:</dt>
+        <dd id="updatedBy"
+            class="col-10">{{elt.updatedBy.username}}</dd>
+    </ng-container>
+</dl>

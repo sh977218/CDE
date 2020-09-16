@@ -1,141 +1,79 @@
-<ng-template #loginMenuTpl let-prefix="prefix">
-    <ng-template #loginLink>
-        <a (click)="loginSvc.goToLogin()" id="{{prefix}}login_link" routerLink="/login"
-           class="mdl-navigation__link mdl-typography--text-uppercase">Login</a>
-    </ng-template>
-    <ng-container *ngIf="userService.user; else loginLink">
-        <a id="{{prefix}}username_link" class="mdl-navigation__link mdl-typography--text-uppercase"
-           [matMenuTriggerFor]="loginMenu">{{userService.user.username | cdeTruncateLongName}}&nbsp;▼</a>
-        <mat-menu #loginMenu="matMenu">
-            <a routerLink="/settings/profile" id="user_settings" mat-menu-item>Settings</a>
-            <a routerLink="/classificationManagement" id="user_classifications" mat-menu-item
-               *ngIf="isOrgCurator(userService.user)">Classifications</a>
-            <a routerLink="/siteAudit" id="user_audit" mat-menu-item
-               *ngIf="isOrgAuthority(userService.user)">Audit</a>
-            <a (click)="loginSvc.logout()" target="_self" id="user_logout" mat-menu-item>Log Out</a>
+<mat-toolbar>
+    <mat-toolbar-row>
+        <a mat-button routerLink="/" id="homeLink">
+            <img src="/cde/public/assets/img/min/nih-cde-logo-simple.png" alt="NLM Logo">
+        </a>
+        <!--
+        enable for mobile view later
+                <button mat-icon-button (click)="sidenav.toggle()">
+                    <mat-icon>menu</mat-icon>
+                </button>
+        -->
+        <span class="spacer"></span>
+        <button mat-button id="menu_cdes_link" routerLink="/cde/search">CDES</button>
+        <button mat-button id="menu_forms_link" routerLink="/form/search">FORMS</button>
+        <button mat-button id="createEltLink" *ngIf="isOrgCurator(userService.user)" [matMenuTriggerFor]="createMenu">
+            CREATE ▼
+        </button>
+        <mat-menu #createMenu="matMenu">
+            <button mat-menu-item id="createCDELink" routerLink="/createCde">CDE</button>
+            <button mat-menu-item id="createFormLink" routerLink="/createForm">Form</button>
         </mat-menu>
-    </ng-container>
-</ng-template>
-
-<ng-template #boardTpl let-prefix="prefix">
-    <ng-container>
-        <a id="{{prefix}}boardsMenu" class="mdl-navigation__link mdl-typography--text-uppercase"
-           [matMenuTriggerFor]="boardMenu">Boards&nbsp;▼</a>
+        <button mat-button [matMenuTriggerFor]="boardMenu" id="boardsMenu">BOARDS ▼</button>
         <mat-menu #boardMenu="matMenu">
-            <a id="{{prefix}}menu_qb_link" routerLink="/quickBoard" mat-menu-item
-               [textContent]="'Quick&nbsp;Board&nbsp;(' + (quickBoardService.numberDataElements + quickBoardService.numberForms) + ')'"></a>
-            <a routerLink="/boardList" mat-menu-item>Public Boards</a>
-            <a *ngIf="userService.user" id="{{prefix}}myBoardsLink" routerLink="/myBoards" mat-menu-item>My Boards</a>
+            <button mat-menu-item id="menu_qb_link" routerLink="/quickBoard">{{quickBoardMetaInfo()}}</button>
+            <button mat-menu-item id="publicBoardsLink" routerLink="/boardList">Public Boards</button>
+            <button mat-menu-item *ngIf="userService.user" id="myBoardsLink" routerLink="/myBoards">My Boards</button>
         </mat-menu>
-    </ng-container>
-</ng-template>
-
-<ng-template #createTpl let-prefix="prefix">
-    <a id="{{prefix}}createEltLink" class="mdl-navigation__link mdl-typography--text-uppercase"
-       *ngIf="isOrgCurator(userService.user)"
-       [matMenuTriggerFor]="createMenu">Create&nbsp;▼</a>
-    <mat-menu #createMenu="matMenu">
-        <a id="createCDELink" routerLink="/createCde" mat-menu-item>CDE</a>
-        <a id="createFormLink" routerLink="/createForm" mat-menu-item>Form</a>
-    </mat-menu>
-</ng-template>
-
-
-<ng-template #helpTpl let-prefix="prefix">
-    <a id="{{prefix}}helpLink" class="mdl-navigation__link mdl-typography--text-uppercase"
-       [matMenuTriggerFor]="helpMenu">Help&nbsp;▼</a>
-    <mat-menu #helpMenu="matMenu">
-        <a id="videosLink" routerLink="/videos"
-           mat-menu-item class="mdl-navigation__link mdl-typography--text-uppercase">Video Tutorials</a>
-        <a id="guidesLink" routerLink="/guides"
-           mat-menu-item class="mdl-navigation__link mdl-typography--text-uppercase">Guides</a>
-        <a id="whatsNewLink" routerLink="/whatsNew"
-           mat-menu-item class="mdl-navigation__link mdl-typography--text-uppercase">New Features</a>
-        <a id="takeATourLink" routerLink="/home" [queryParams]="{tour: 'yes'}"
-           mat-menu-item class="mdl-navigation__link mdl-typography--text-uppercase">Take a Tour</a>
-        <a id="resourcesLink" routerLink="/resources"
-           mat-menu-item class="mdl-navigation__link mdl-typography--text-uppercase">Resources</a>
-        <a id="contactUsLink" routerLink="/contactUs"
-           mat-menu-item class="mdl-navigation__link mdl-typography--text-uppercase">Contact Us</a>
-        <button id="reportAProblemLink" feedback (send)="onFeedback($event)"
-            placeholder="Describe your issue here. Please include a way to contact you, it will help us troubleshoot the issue. "
-           mat-menu-item class="mdl-navigation__link mdl-typography--text-uppercase">Report a Problem</button>
-    </mat-menu>
-</ng-template>
-
-<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header" (click)="checkNotificationDrawer()">
-    <div class="android-header mdl-layout__header mdl-layout__header--waterfall">
-        <div class="mdl-layout__header-row">
-
-            <span class="android-title mdl-layout-title">
-                <a routerLink="/" id="homeLink">
-                    <img class="logo-image" src="/cde/public/assets/img/min/nih-cde-logo-simple.png" alt="NLM Logo">
-                </a>
-            </span>
-
-            <!-- Add spacer, to align navigation to the right in desktop -->
-            <div class="android-header-spacer mdl-layout-spacer"></div>
-
-            <!-- Navigation -->
-            <div class="android-navigation-container">
-                <nav class="android-navigation mdl-navigation">
-                    <a id="menu_cdes_link" class="mdl-navigation__link mdl-typography--text-uppercase"
-                       routerLink="/cde/search">CDEs</a>
-
-                    <a id="menu_forms_link" class="mdl-navigation__link mdl-typography--text-uppercase"
-                       routerLink="/form/search">Forms</a>
-
-                    <ng-container [ngTemplateOutlet]="boardTpl" [ngTemplateOutletContext]="{prefix: ''}"></ng-container>
-
-                    <ng-container [ngTemplateOutlet]="createTpl" [ngTemplateOutletContext]="{prefix: ''}"></ng-container>
-
-                    <a id="apiLink" routerLink="/api"
-                       class="mdl-navigation__link mdl-typography--text-uppercase">API&nbsp;</a>
-
-                    <ng-container [ngTemplateOutlet]="helpTpl" [ngTemplateOutletContext]="{prefix: ''}"></ng-container>
-
-                    <ng-container [ngTemplateOutlet]="loginMenuTpl" [ngTemplateOutletContext]="{prefix: ''}"></ng-container>
-                    <cde-notifications></cde-notifications>
-
-                    <a routerLink="/searchPreferences"
-                       id="searchSettings" class="mdl-navigation__link mdl-typography--text-uppercase">
-                        <i class="material-icons">settings</i>
-                    </a>
-
-                </nav>
-            </div>
-            <span class="android-mobile-title mdl-layout-title">
-                <img class="logo-image" src="/cde/public/assets/img/min/nih-cde-logo-simple.png" alt="NLM Logo">
-            </span>
-        </div>
-    </div>
-
-    <div class="android-drawer mdl-layout__drawer">
-        <span class="mdl-layout-title">
-          <img class="logo-image" src="/cde/public/assets/img/min/nih-cde-logo-simple.png" alt="NLM Logo">
-        </span>
-        <nav class="mdl-navigation">
-            <a class="mdl-navigation__link" routerLink="/cde/search" (click)="toggleDrawer()">CDEs</a>
-            <a class="mdl-navigation__link" routerLink="/form/search" (click)="toggleDrawer()">Forms</a>
-            <div class="android-drawer-separator"></div>
-            <ng-container [ngTemplateOutlet]="boardTpl" [ngTemplateOutletContext]="{prefix: 'drawer_'}"></ng-container>
-            <div class="android-drawer-separator"></div>
-            <ng-container [ngTemplateOutlet]="createTpl" [ngTemplateOutletContext]="{prefix: 'drawer_'}"></ng-container>
-            <div *ngIf="userService.user" class="android-drawer-separator"></div>
-            <a id="drawer_resourcesLink" routerLink="/resources" class="mdl-navigation__link mdl-typography--text-uppercase">Resources&nbsp;</a>
-            <!--<a class="mdl-navigation__link" routerLink="/api" (click)="toggleDrawer()">API</a>-->
-            <div class="android-drawer-separator"></div>
-            <ng-container [ngTemplateOutlet]="helpTpl" [ngTemplateOutletContext]="{prefix: 'drawer_'}"></ng-container>
-            <div class="android-drawer-separator"></div>
-            <ng-container [ngTemplateOutlet]="loginMenuTpl" [ngTemplateOutletContext]="{prefix: 'drawer_'}"></ng-container>
-            <cde-notifications></cde-notifications>
-            <!--no search preferences-->
-        </nav>
-    </div>
-
-    <div class="android-content mdl-layout__content">
-
+        <button mat-button id="apiLink" routerLink="/api">API</button>
+        <button mat-button id="helpLink" [matMenuTriggerFor]="helpMenu">HELP ▼</button>
+        <mat-menu #helpMenu="matMenu">
+            <button mat-menu-item id="videosLink" routerLink="/videos">VIDEO TUTORIALS</button>
+            <button mat-menu-item id="guidesLink" routerLink="/guides">GUIDES</button>
+            <button mat-menu-item id="whatsNewLink" routerLink="/whatsNew">NEW FEATURES</button>
+            <button mat-menu-item id="takeATourLink" routerLink="/home" [queryParams]="{tour: 'yes'}">TAKE A TOUR
+            </button>
+            <button mat-menu-item id="resourcesLink" routerLink="/resources">RESOURCES</button>
+            <button mat-menu-item id="contactUsLink" routerLink="/contactUs">CONTACT US</button>
+            <button mat-menu-item id="reportAProblemLink" feedback (send)="onFeedback($event)"
+                    [placeholder]="feedbackDescription">
+                REPORT A PROBLEM
+            </button>
+        </mat-menu>
+        <button mat-button *ngIf="!userService.user" (click)="loginSvc.goToLogin()" id="login_link" routerLink="/login">
+            LOGIN
+        </button>
+        <button mat-button *ngIf="userService.user" id="username_link"
+                [matMenuTriggerFor]="loginMenu">{{userService.user.username | uppercase | cdeTruncateLongName}} ▼
+        </button>
+        <mat-menu #loginMenu="matMenu">
+            <button mat-menu-item routerLink="/settings/profile" id="user_settings">Settings</button>
+            <button mat-menu-item routerLink="/classificationManagement" id="user_classifications"
+                    *ngIf="isOrgCurator(userService.user)">Classifications
+            </button>
+            <button mat-menu-item routerLink="/siteAudit" id="user_audit"
+                    *ngIf="isOrgAuthority(userService.user)">Audit
+            </button>
+            <button mat-menu-item (click)="loginSvc.logout()" target="_self" id="user_logout">Log Out
+            </button>
+        </mat-menu>
+        <cde-notifications></cde-notifications>
+        <button mat-icon-button routerLink="/searchPreferences" id="searchSettings">
+            <mat-icon>settings</mat-icon>
+        </button>
+    </mat-toolbar-row>
+</mat-toolbar>
+<mat-sidenav-container>
+    <!--
+    enable for mobile view later
+        <mat-sidenav #sidenav [mode]="'side'">
+            <mat-nav-list>
+                <a mat-list-item>CDE</a>
+                <a mat-list-item>Form</a>
+            </mat-nav-list>
+        </mat-sidenav>
+    -->
+    <mat-sidenav-content class="pb-3">
         <router-outlet></router-outlet>
-
-    </div>
-</div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

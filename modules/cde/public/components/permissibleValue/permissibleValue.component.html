@@ -1,304 +1,302 @@
-<div id="permissibleValueDiv">
-    <h4>Values Allowed</h4>
-    <dl class="row">
-        <dt class="col-3 text-right">Value Type:</dt>
-        <dd id="datatypeSelect" class="col-9">
-            <mat-form-field class="w-100">
-                <mat-select [(value)]="elt.valueDomain.datatype" [disabled]="!canEdit"
-                            (selectionChange)="onDataTypeChange();" placeholder="Select data type">
-                    <mat-option *ngFor="let dataType of dataTypeArray" [value]="dataType">{{dataType}}</mat-option>
-                </mat-select>
-            </mat-form-field>
+<h4 class="section-header">Permissible Values</h4>
+<dl class="row">
+    <dt class="col-2 text-right">Value Type:</dt>
+    <dd id="datatypeSelect" class="col-10">
+        <mat-form-field class="w-100">
+            <mat-select [(value)]="elt.valueDomain.datatype" [disabled]="!canEdit"
+                        (selectionChange)="onDataTypeChange();" placeholder="Select data type">
+                <mat-option *ngFor="let dataType of dataTypeArray" [value]="dataType">{{dataType}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </dd>
+    <ng-container *ngIf="elt.valueDomain.definition">
+        <dt class="col-2 text-right">Instructions:</dt>
+        <dd id="instructions" class="col-10">
+            {{elt.valueDomain.definition}}
         </dd>
-        <ng-container *ngIf="elt.valueDomain.definition">
-            <dt class="col-3 text-right">Instructions:</dt>
-            <dd id="instructions" class="col-9">
-                {{elt.valueDomain.definition}}
+    </ng-container>
+    <dt class="col-2 text-right">Unit of Measure:</dt>
+    <dd class="col-10">
+        <cde-inline-edit id="uom" [(model)]="elt.valueDomain.uom" (modelChange)="eltChange.emit();"
+                         [isAllowed]="canEdit"></cde-inline-edit>
+    </dd>
+    <ng-container *ngIf="elt.valueDomain.ids?.length > 0">
+        <dt class="col-2 text-right">Ids:</dt>
+        <dd id="identifiers" class="col-10">
+            <div *ngFor="let id of elt.valueDomain.ids">
+                {{id.source}}: {{id.id}}<span *ngIf="id.version">, version: </span>{{id.version}}
+            </div>
+        </dd>
+    </ng-container>
+    <ng-container [ngSwitch]="elt.valueDomain.datatype">
+        <ng-container *ngSwitchCase="'Value List'">
+        </ng-container>
+        <ng-container *ngSwitchCase="'Date'">
+            <dt class="col-2 text-right">Precision:</dt>
+            <dd class="col-10">
+                <mat-form-field class="w-50">
+                    <mat-select matNativeControl [(ngModel)]="elt.valueDomain.datatypeDate.precision"
+                                (selectionChange)="eltChange.emit()" [disabled]="!canEdit"
+                                id="datatypeDatePrecision" required placeholder="Select Precision">
+                        <mat-option value="Year">Year</mat-option>
+                        <mat-option value="Month">Month</mat-option>
+                        <mat-option value="Day">Day</mat-option>
+                        <mat-option value="Hour">Hour</mat-option>
+                        <mat-option value="Minute">Minute</mat-option>
+                        <mat-option value="Second">Second</mat-option>
+                    </mat-select>
+                </mat-form-field>
             </dd>
         </ng-container>
-        <dt class="col-3 text-right">Unit of Measure:</dt>
-        <dd class="col-9">
-            <cde-inline-edit id="uom" [(model)]="elt.valueDomain.uom" (modelChange)="eltChange.emit();"
-                             [isAllowed]="canEdit"></cde-inline-edit>
-        </dd>
-        <ng-container *ngIf="elt.valueDomain.ids?.length > 0">
-            <dt class="col-3 text-right">Ids:</dt>
-            <dd id="identifiers" class="col-9">
-                <div *ngFor="let id of elt.valueDomain.ids">
-                    {{id.source}}: {{id.id}}<span *ngIf="id.version">, version: </span>{{id.version}}
-                </div>
+        <ng-container *ngSwitchCase="'Number'">
+            <dt class="col-2 text-right">Minimum Value:</dt>
+            <dd class="col-10">
+                <cde-inline-edit id="datatypeNumberMin" [(model)]="elt.valueDomain.datatypeNumber.minValue"
+                                 inputType="number" (modelChange)="eltChange.emit();"
+                                 [isAllowed]="canEdit"></cde-inline-edit>
+            </dd>
+            <dt class="col-2 text-right">Maximum Value:</dt>
+            <dd class="col-10">
+                <cde-inline-edit id="datatypeNumberMax" [(model)]="elt.valueDomain.datatypeNumber.maxValue"
+                                 inputType="number" (modelChange)="eltChange.emit();"
+                                 [isAllowed]="canEdit"></cde-inline-edit>
+            </dd>
+            <dt class="col-2 text-right">Precision:</dt>
+            <dd class="col-10">
+                <cde-inline-edit id="datatypeNumberPrecision" [(model)]="elt.valueDomain.datatypeNumber.precision"
+                                 (modelChange)="eltChange.emit();" [isAllowed]="canEdit"></cde-inline-edit>
             </dd>
         </ng-container>
-        <ng-container [ngSwitch]="elt.valueDomain.datatype">
-            <ng-container *ngSwitchCase="'Value List'">
-            </ng-container>
-            <ng-container *ngSwitchCase="'Date'">
-                <dt class="col-3 text-right">Precision:</dt>
-                <dd class="col-9">
-                    <mat-form-field class="w-50">
-                        <mat-select matNativeControl [(ngModel)]="elt.valueDomain.datatypeDate.precision"
-                                    (selectionChange)="eltChange.emit()" [disabled]="!canEdit"
-                                    id="datatypeDatePrecision" required placeholder="Select Precision">
-                            <mat-option value="Year">Year</mat-option>
-                            <mat-option value="Month">Month</mat-option>
-                            <mat-option value="Day">Day</mat-option>
-                            <mat-option value="Hour">Hour</mat-option>
-                            <mat-option value="Minute">Minute</mat-option>
-                            <mat-option value="Second">Second</mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </dd>
-            </ng-container>
-            <ng-container *ngSwitchCase="'Number'">
-                <dt class="col-3 text-right">Minimum Value:</dt>
-                <dd class="col-9">
-                    <cde-inline-edit id="datatypeNumberMin" [(model)]="elt.valueDomain.datatypeNumber.minValue"
-                                     inputType="number" (modelChange)="eltChange.emit();"
-                                     [isAllowed]="canEdit"></cde-inline-edit>
-                </dd>
-                <dt class="col-3 text-right">Maximum Value:</dt>
-                <dd class="col-9">
-                    <cde-inline-edit id="datatypeNumberMax" [(model)]="elt.valueDomain.datatypeNumber.maxValue"
-                                     inputType="number" (modelChange)="eltChange.emit();"
-                                     [isAllowed]="canEdit"></cde-inline-edit>
-                </dd>
-                <dt class="col-3 text-right">Precision:</dt>
-                <dd class="col-9">
-                    <cde-inline-edit id="datatypeNumberPrecision" [(model)]="elt.valueDomain.datatypeNumber.precision"
-                                     (modelChange)="eltChange.emit();" [isAllowed]="canEdit"></cde-inline-edit>
-                </dd>
-            </ng-container>
-            <ng-container *ngSwitchCase="'Text'">
-                <dt class="col-3 text-right">Minimum Length:</dt>
-                <dd class="col-9">
-                    <cde-inline-edit id="datatypeTextMin" [(model)]="elt.valueDomain.datatypeText.minLength"
-                                     inputType="number" (modelChange)="eltChange.emit();"
-                                     [isAllowed]="canEdit"></cde-inline-edit>
-                </dd>
-                <dt class="col-3 text-right">Maximum Length:</dt>
-                <dd class="col-9">
-                    <cde-inline-edit id="datatypeTextMax" [(model)]="elt.valueDomain.datatypeText.maxLength"
-                                     inputType="number" (modelChange)="eltChange.emit();"
-                                     [isAllowed]="canEdit"></cde-inline-edit>
-                </dd>
-                <dt class="col-3 text-right">Regular Expression:</dt>
-                <dd class="col-9">
-                    <cde-inline-edit id="datatypeTextRegex" [(model)]="elt.valueDomain.datatypeText.regex"
-                                     (modelChange)="eltChange.emit();" [isAllowed]="canEdit"></cde-inline-edit>
-                </dd>
-                <dt class="col-3 text-right">Free Text Rule:</dt>
-                <dd class="col-9">
-                    <cde-inline-edit id="datatypeTextRule" [(model)]="elt.valueDomain.datatypeText.rule"
-                                     (modelChange)="eltChange.emit();" [isAllowed]="canEdit"></cde-inline-edit>
-                </dd>
-            </ng-container>
-            <ng-container *ngSwitchCase="'File'">
-                <dt class="col-3 text-right">File:</dt>
-                <dd class="col-9"></dd>
-            </ng-container>
-            <ng-container *ngSwitchCase="'Geo Location'">
-                <dt class="col-3 text-right">Location:</dt>
-                <dd class="col-9"></dd>
-            </ng-container>
-            <ng-container *ngSwitchCase="'Time'">
-            </ng-container>
-            <ng-container *ngSwitchCase="'Dynamic Code List'">
-                <dt class="col-3 text-right">System:</dt>
-                <dd class="col-9">
-                    <mat-form-field class="w-50">
-                        <mat-label>Select system name</mat-label>
-                        <mat-select matNativeControl [(ngModel)]="elt.valueDomain.datatypeDynamicCodeList.system"
-                                    (selectionChange)="eltChange.emit()" [disabled]="!canEdit" id="dynamicListSystem"
-                                    required>
-                            <mat-option value="VSAC">VSAC</mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                    <mat-form-field class="w-50">
-                        <input matInput [(ngModel)]="elt.valueDomain.datatypeDynamicCodeList.code" id="dynamicListCode"
-                               (ngModelChange)="eltChange.emit()" [disabled]="!canEdit" placeholder="VSAC OID">
-                    </mat-form-field>
-                </dd>
-            </ng-container>
-            <ng-container *ngSwitchCase="'Externally Defined'">
-                <dt class="col-3 text-right">Link:</dt>
-                <dd class="col-9">
-                    <cde-inline-edit id="datatypeExternallyDefinedLink"
-                                     [(model)]="elt.valueDomain.datatypeExternallyDefined.link"
-                                     (modelChange)="eltChange.emit();" [isAllowed]="canEdit"></cde-inline-edit>
-                </dd>
-                <dt class="col-3 text-right">Description:</dt>
-                <dd class="col-9">
-                    <cde-inline-area-edit [(model)]="elt.valueDomain.datatypeExternallyDefined.description"
-                                          [isAllowed]="canEdit"
-                                          [(defFormat)]="elt.valueDomain.datatypeExternallyDefined.descriptionFormat">
-                    </cde-inline-area-edit>
-                </dd>
-            </ng-container>
-            <ng-container *ngSwitchDefault>
-                <div style="font-size: large; color: red">Unknown Type. Will be treated as text.</div>
-            </ng-container>
+        <ng-container *ngSwitchCase="'Text'">
+            <dt class="col-2 text-right">Minimum Length:</dt>
+            <dd class="col-10">
+                <cde-inline-edit id="datatypeTextMin" [(model)]="elt.valueDomain.datatypeText.minLength"
+                                 inputType="number" (modelChange)="eltChange.emit();"
+                                 [isAllowed]="canEdit"></cde-inline-edit>
+            </dd>
+            <dt class="col-2 text-right">Maximum Length:</dt>
+            <dd class="col-10">
+                <cde-inline-edit id="datatypeTextMax" [(model)]="elt.valueDomain.datatypeText.maxLength"
+                                 inputType="number" (modelChange)="eltChange.emit();"
+                                 [isAllowed]="canEdit"></cde-inline-edit>
+            </dd>
+            <dt class="col-2 text-right">Regular Expression:</dt>
+            <dd class="col-10">
+                <cde-inline-edit id="datatypeTextRegex" [(model)]="elt.valueDomain.datatypeText.regex"
+                                 (modelChange)="eltChange.emit();" [isAllowed]="canEdit"></cde-inline-edit>
+            </dd>
+            <dt class="col-2 text-right">Free Text Rule:</dt>
+            <dd class="col-10">
+                <cde-inline-edit id="datatypeTextRule" [(model)]="elt.valueDomain.datatypeText.rule"
+                                 (modelChange)="eltChange.emit();" [isAllowed]="canEdit"></cde-inline-edit>
+            </dd>
         </ng-container>
-    </dl>
-    <ng-container *ngIf="elt.valueDomain.datatype === 'Value List'">
-        <h4>Permissible Value</h4>
-        <div *ngIf="containsKnownSystem">The list below includes codes with synonyms, you can also view them as:<br>
-            <span *ngFor="let source of keys(SOURCES)" style="margin-left: 50px">
+        <ng-container *ngSwitchCase="'File'">
+            <dt class="col-2 text-right">File:</dt>
+            <dd class="col-10"></dd>
+        </ng-container>
+        <ng-container *ngSwitchCase="'Geo Location'">
+            <dt class="col-2 text-right">Location:</dt>
+            <dd class="col-10"></dd>
+        </ng-container>
+        <ng-container *ngSwitchCase="'Time'">
+        </ng-container>
+        <ng-container *ngSwitchCase="'Dynamic Code List'">
+            <dt class="col-2 text-right">System:</dt>
+            <dd class="col-10">
+                <mat-form-field class="w-50">
+                    <mat-label>Select system name</mat-label>
+                    <mat-select matNativeControl [(ngModel)]="elt.valueDomain.datatypeDynamicCodeList.system"
+                                (selectionChange)="eltChange.emit()" [disabled]="!canEdit" id="dynamicListSystem"
+                                required>
+                        <mat-option value="VSAC">VSAC</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field class="w-50">
+                    <input matInput [(ngModel)]="elt.valueDomain.datatypeDynamicCodeList.code" id="dynamicListCode"
+                           (ngModelChange)="onOidChanged($event);" [disabled]="!canEdit" placeholder="VSAC OID">
+                </mat-form-field>
+            </dd>
+        </ng-container>
+        <ng-container *ngSwitchCase="'Externally Defined'">
+            <dt class="col-2 text-right">Link:</dt>
+            <dd class="col-10">
+                <cde-inline-edit id="datatypeExternallyDefinedLink"
+                                 [(model)]="elt.valueDomain.datatypeExternallyDefined.link"
+                                 (modelChange)="eltChange.emit();" [isAllowed]="canEdit"></cde-inline-edit>
+            </dd>
+            <dt class="col-2 text-right">Description:</dt>
+            <dd class="col-10">
+                <cde-inline-area-edit [(model)]="elt.valueDomain.datatypeExternallyDefined.description"
+                                      [isAllowed]="canEdit"
+                                      [(defFormat)]="elt.valueDomain.datatypeExternallyDefined.descriptionFormat">
+                </cde-inline-area-edit>
+            </dd>
+        </ng-container>
+        <ng-container *ngSwitchDefault>
+            <div style="font-size: large; color: red">Unknown Type. Will be treated as text.</div>
+        </ng-container>
+    </ng-container>
+</dl>
+<ng-container *ngIf="elt.valueDomain.datatype === 'Value List'">
+    <h5>Permissible Value</h5>
+    <div *ngIf="containsKnownSystem">The list below includes codes with synonyms, you can also view them as:<br>
+        <span *ngFor="let source of keys(SOURCES)" style="margin-left: 50px">
                 <input id="display{{SOURCES[source].source}}Codes" title="{{source}}" type="checkbox"
                        [(ngModel)]="SOURCES[source].selected"
                        [disabled]="SOURCES[source].disabled && !userService.loggedIn()"
                        (ngModelChange)="lookupAsSource(source)">{{source}} Codes
                 <span *ngIf="!userService.loggedIn() && SOURCES[source].disabled"> (Login to enable)</span>
         </span>
-        </div>
-        <ng-container *ngIf="!(elt.valueDomain.permissibleValues.length > 0)">
-            <h4>No Permissible Values</h4>
-        </ng-container>
-        <ng-container *ngIf="elt.valueDomain.permissibleValues.length > 0">
-            <table class="table table-bordered table-condensed table-striped table-responsive">
-                <tr>
-                    <th>Value</th>
-                    <th>Code Name</th>
-                    <th>Code</th>
-                    <th>Code System</th>
-                    <th *ngIf="SOURCES['UMLS'].selected" colspan="2">UMLS</th>
-                    <th *ngIf="SOURCES['NCI Thesaurus'].selected" colspan="2">NCI Thesaurus</th>
-                    <th *ngIf="SOURCES['LOINC'].selected" colspan="2">LOINC</th>
-                    <th *ngIf="SOURCES['SNOMEDCT US'].selected" colspan="2">SNOMEDCT US</th>
-                    <th>Code Description</th>
-                    <th>Actions</th>
-                </tr>
-                <tr *ngFor="let pv of elt.valueDomain.permissibleValues; let i=index" id="pv_{{i}}">
-                    <td id="pvValue_{{i}}">
-                        <cde-inline-edit [(model)]="pv.permissibleValue" [isAllowed]="canEdit"
-                                         (modelChange)="eltChange.emit();"></cde-inline-edit>
-                    </td>
-                    <td id="pvMeaningName_{{i}}">
-                        <cde-inline-edit [(model)]="pv.valueMeaningName" [isAllowed]="canEdit"
-                                         (modelChange)="eltChange.emit();"></cde-inline-edit>
-                    <td id="pvMeaningCode_{{i}}">{{pv.valueMeaningCode}}</td>
-                    <td id="pvCodeSystem_{{i}}">{{pv.codeSystemName}}</td>
-                    <td *ngIf="SOURCES['UMLS'].selected" id="codeAsUMLS_{{i}}">
-                        {{SOURCES['UMLS'].codes[pv.valueMeaningCode]?.code}}
-                    </td>
-                    <td *ngIf="SOURCES['UMLS'].selected" id="nameAsUMLS_{{i}}">
-                        {{SOURCES['UMLS'].codes[pv.valueMeaningCode]?.meaning}}
-                    </td>
-                    <td *ngIf="SOURCES['NCI Thesaurus'].selected" id="codeAsNCI_{{i}}">
-                        {{SOURCES['NCI Thesaurus'].codes[pv.valueMeaningCode]?.code}}
-                    </td>
-                    <td *ngIf="SOURCES['NCI Thesaurus'].selected" id="nameAsNCI_{{i}}">
-                        {{SOURCES['NCI Thesaurus'].codes[pv.valueMeaningCode]?.meaning}}
-                    </td>
-                    <td *ngIf="SOURCES['LOINC'].selected" id="codeAsLNC_{{i}}">
-                        {{SOURCES['LOINC'].codes[pv.valueMeaningCode]?.code}}
-                    </td>
-                    <td *ngIf="SOURCES['LOINC'].selected" id="nameAsLNC_{{i}}">
-                        {{SOURCES['LOINC'].codes[pv.valueMeaningCode]?.meaning}}
-                    </td>
-                    <td *ngIf="SOURCES['SNOMEDCT US'].selected" id="codeAsSCT_{{i}}">
-                        {{SOURCES['SNOMEDCT US'].codes[pv.valueMeaningCode]?.code}}
-                    </td>
-                    <td *ngIf="SOURCES['SNOMEDCT US'].selected" id="nameAsSCT_{{i}}">
-                        {{SOURCES['SNOMEDCT US'].codes[pv.valueMeaningCode]?.meaning}}
-                    </td>
-                    <td id="pvMeaningDefinition_{{i}}">
-                        <cde-inline-edit [(model)]="pv.valueMeaningDefinition"
-                                         [isAllowed]="canEdit"
-                                         (modelChange)="eltChange.emit();"></cde-inline-edit>
-                    </td>
-                    <td id="pvAction_{{i}}">
-                        <ng-container *ngIf="pv.notValid">
-                            <mat-icon id="pv-{{i}}-notValid">warning</mat-icon>
-                        </ng-container>
-                        <ng-container *ngIf="canEdit">
-                            <mat-icon id="pvRemove_{{i}}" (click)="removePv(i)">delete_outline</mat-icon>
-                            <cde-sortable-array [theArray]="elt.valueDomain.permissibleValues" [index]="i"
-                                                (cb)="eltChange.emit()"></cde-sortable-array>
-                        </ng-container>
-                    </td>
-                </tr>
-            </table>
-        </ng-container>
-        <div>
-            <ng-container *ngIf="canEdit">
-                <button mat-raised-button id="openAddPermissibleValueModelBtn" (click)="openNewPermissibleValueModal()">
-                    <mat-icon>add</mat-icon>
-                    Add Permissible Value
-                </button>
-                <button mat-raised-button id="removeAllPermissibleValueBtn" (click)="removeAllPermissibleValues()">
-                    <mat-icon>delete_outline</mat-icon>
-                    Remove All Values
-                </button>
-                <button mat-raised-button id="openImportPVModalBtn"
-                        title="Import All Values" (click)="openImportPermissibleValueModal()">
-                    <mat-icon>play_for_work</mat-icon>
-                    Import PVs From CDE
-                </button>
-            </ng-container>
-        </div>
-
-        <h4>VSAC Value Set</h4>
-        <a href="https://vsac.nlm.nih.gov" target="_blank" rel="noopener noreferrer">Lookup Value Sets here.</a>
-        <div *ngIf="vsacMappingExists()">
-            <dl class="dl-horizontal">
-                <dt>Value Set Name:</dt>
-                <dd>{{elt.dataElementConcept.conceptualDomain.vsac?.name}}</dd>
-                <dt>Value Set ID:</dt>
-                <dd>{{elt.dataElementConcept.conceptualDomain.vsac?.id}}</dd>
-                <dt>Value Set Version:</dt>
-                <dd>{{elt.dataElementConcept.conceptualDomain.vsac?.version}}</dd>
-            </dl>
-        </div>
-
-        <div *ngIf="!vsacMappingExists()">No Value Set specified.</div>
-        <div *ngIf="userService.loggedIn()">
-            <div *ngIf="!editMode">
-                <button *ngIf="canEdit" mat-raised-button id="updateOIDBtn" (click)="editMode=true">Update O.I.D
-                </button>
-                <button *ngIf="canEdit && vsacMappingExists()" mat-raised-button
-                        id="removeVSButton" (click)="removeVSMapping()">Remove Mapping
-                </button>
-            </div>
-            <div *ngIf="editMode">
-                <mat-form-field>
-                    <input name="vsacId" [(ngModel)]="elt.dataElementConcept.conceptualDomain.vsac.id" matInput
-                           placeholder="VSAC O.I.D"/>
-                    <mat-icon matSuffix id="vsacIdCheck" (click)="checkVsacId()">check</mat-icon>
-                    <mat-icon matSuffix (click)="editMode = false">cancel</mat-icon>
-                </mat-form-field>
-            </div>
-        </div>
-        <hr/>
-
-        <table *ngIf="vsacValueSet.length > 0" id="vsacTableBody" class="table-bordered table-condensed table-striped">
+    </div>
+    <ng-container *ngIf="!(elt.valueDomain.permissibleValues.length > 0)">
+        <h4>No Permissible Values</h4>
+    </ng-container>
+    <ng-container *ngIf="elt.valueDomain.permissibleValues.length > 0">
+        <table id="pvTable" class="table table-bordered table-condensed table-striped table-responsive">
             <tr>
+                <th>Value</th>
                 <th>Code Name</th>
                 <th>Code</th>
                 <th>Code System</th>
-                <th id="validation">Match</th>
-                <th *ngIf="canEdit">Actions</th>
+                <th *ngIf="SOURCES['UMLS'].selected" colspan="2">UMLS</th>
+                <th *ngIf="SOURCES['NCI Thesaurus'].selected" colspan="2">NCI Thesaurus</th>
+                <th *ngIf="SOURCES['LOINC'].selected" colspan="2">LOINC</th>
+                <th *ngIf="SOURCES['SNOMEDCT US'].selected" colspan="2">SNOMEDCT US</th>
+                <th>Code Description</th>
+                <th>Actions</th>
             </tr>
-            <tr *ngFor="let con of vsacValueSet; let i = index;">
-                <td>{{con.displayName}}</td>
-                <td>{{con.code}}</td>
-                <td>{{con.codeSystemName}}</td>
-                <td>
-                    <mat-icon *ngIf="con.isValid" class="text-success" id="vset-{{i}}-valid">check</mat-icon>
-                    <mat-icon *ngIf="!con.isValid" class="text-warning" id="vset-{{i}}-warning">warning</mat-icon>
+            <tr *ngFor="let pv of elt.valueDomain.permissibleValues; let i=index" id="pv_{{i}}">
+                <td id="pvValue_{{i}}">
+                    <cde-inline-edit [(model)]="pv.permissibleValue" [isAllowed]="canEdit"
+                                     (modelChange)="eltChange.emit();"></cde-inline-edit>
                 </td>
-                <td>
-                    <mat-icon *ngIf="!isVsInPv(con)" id="addVsacValue_{{i}}" (click)="addVsacValue(con)">add</mat-icon>
+                <td id="pvMeaningName_{{i}}">
+                    <cde-inline-edit [(model)]="pv.valueMeaningName" [isAllowed]="canEdit"
+                                     (modelChange)="eltChange.emit();"></cde-inline-edit>
+                <td id="pvMeaningCode_{{i}}">{{pv.valueMeaningCode}}</td>
+                <td id="pvCodeSystem_{{i}}">{{pv.codeSystemName}}</td>
+                <td *ngIf="SOURCES['UMLS'].selected" id="codeAsUMLS_{{i}}">
+                    {{SOURCES['UMLS'].codes[pv.valueMeaningCode]?.code}}
+                </td>
+                <td *ngIf="SOURCES['UMLS'].selected" id="nameAsUMLS_{{i}}">
+                    {{SOURCES['UMLS'].codes[pv.valueMeaningCode]?.meaning}}
+                </td>
+                <td *ngIf="SOURCES['NCI Thesaurus'].selected" id="codeAsNCI_{{i}}">
+                    {{SOURCES['NCI Thesaurus'].codes[pv.valueMeaningCode]?.code}}
+                </td>
+                <td *ngIf="SOURCES['NCI Thesaurus'].selected" id="nameAsNCI_{{i}}">
+                    {{SOURCES['NCI Thesaurus'].codes[pv.valueMeaningCode]?.meaning}}
+                </td>
+                <td *ngIf="SOURCES['LOINC'].selected" id="codeAsLNC_{{i}}">
+                    {{SOURCES['LOINC'].codes[pv.valueMeaningCode]?.code}}
+                </td>
+                <td *ngIf="SOURCES['LOINC'].selected" id="nameAsLNC_{{i}}">
+                    {{SOURCES['LOINC'].codes[pv.valueMeaningCode]?.meaning}}
+                </td>
+                <td *ngIf="SOURCES['SNOMEDCT US'].selected" id="codeAsSCT_{{i}}">
+                    {{SOURCES['SNOMEDCT US'].codes[pv.valueMeaningCode]?.code}}
+                </td>
+                <td *ngIf="SOURCES['SNOMEDCT US'].selected" id="nameAsSCT_{{i}}">
+                    {{SOURCES['SNOMEDCT US'].codes[pv.valueMeaningCode]?.meaning}}
+                </td>
+                <td id="pvMeaningDefinition_{{i}}">
+                    <cde-inline-edit [(model)]="pv.valueMeaningDefinition"
+                                     [isAllowed]="canEdit"
+                                     (modelChange)="eltChange.emit();"></cde-inline-edit>
+                </td>
+                <td id="pvAction_{{i}}">
+                    <ng-container *ngIf="pv.notValid">
+                        <mat-icon id="pv-{{i}}-notValid">warning</mat-icon>
+                    </ng-container>
+                    <ng-container *ngIf="canEdit">
+                        <mat-icon id="pvRemove_{{i}}" (click)="removePv(i)">delete_outline</mat-icon>
+                        <cde-sortable-array [theArray]="elt.valueDomain.permissibleValues" [index]="i"
+                                            (cb)="eltChange.emit()"></cde-sortable-array>
+                    </ng-container>
                 </td>
             </tr>
         </table>
-        <div *ngIf="vsacMappingExists() && !userService.loggedIn()">Please log in to see VSAC mapping.</div>
-        <button mat-raised-button *ngIf="vsacMappingExists() && canEdit && !allVsacMatch()" class="mt20"
-                (click)="addAllVsac()">
-            <mat-icon id="addAllVsac">add</mat-icon>
-            Import Missing Values
-        </button>
     </ng-container>
-</div>
+    <div>
+        <ng-container *ngIf="canEdit">
+            <button mat-raised-button id="openAddPermissibleValueModelBtn" (click)="openNewPermissibleValueModal()">
+                <mat-icon>add</mat-icon>
+                Add Permissible Value
+            </button>
+            <button mat-raised-button id="removeAllPermissibleValueBtn" (click)="removeAllPermissibleValues()">
+                <mat-icon>delete_outline</mat-icon>
+                Remove All Values
+            </button>
+            <button mat-raised-button id="openImportPVModalBtn"
+                    title="Import All Values" (click)="openImportPermissibleValueModal()">
+                <mat-icon>play_for_work</mat-icon>
+                Import PVs From CDE
+            </button>
+        </ng-container>
+    </div>
+
+    <h4>VSAC Value Set</h4>
+    <a href="https://vsac.nlm.nih.gov" target="_blank" rel="noopener noreferrer">Lookup Value Sets here.</a>
+    <div *ngIf="vsacMappingExists()">
+        <dl class="dl-horizontal">
+            <dt>Value Set Name:</dt>
+            <dd>{{elt.dataElementConcept.conceptualDomain.vsac?.name}}</dd>
+            <dt>Value Set ID:</dt>
+            <dd>{{elt.dataElementConcept.conceptualDomain.vsac?.id}}</dd>
+            <dt>Value Set Version:</dt>
+            <dd>{{elt.dataElementConcept.conceptualDomain.vsac?.version}}</dd>
+        </dl>
+    </div>
+
+    <div *ngIf="!vsacMappingExists()">No Value Set specified.</div>
+    <div *ngIf="userService.loggedIn()">
+        <div *ngIf="!editMode">
+            <button *ngIf="canEdit" mat-raised-button id="updateOIDBtn" (click)="editMode=true">Update O.I.D
+            </button>
+            <button *ngIf="canEdit && vsacMappingExists()" mat-raised-button
+                    id="removeVSButton" (click)="removeVSMapping()">Remove Mapping
+            </button>
+        </div>
+        <div *ngIf="editMode">
+            <mat-form-field>
+                <input name="vsacId" [(ngModel)]="elt.dataElementConcept.conceptualDomain.vsac.id" matInput
+                       placeholder="VSAC O.I.D"/>
+                <mat-icon matSuffix id="vsacIdCheck" (click)="checkVsacId()">check</mat-icon>
+                <mat-icon matSuffix (click)="editMode = false">cancel</mat-icon>
+            </mat-form-field>
+        </div>
+    </div>
+    <hr/>
+
+    <table *ngIf="vsacValueSet.length > 0" id="vsacTableBody" class="table-bordered table-condensed table-striped">
+        <tr>
+            <th>Code Name</th>
+            <th>Code</th>
+            <th>Code System</th>
+            <th id="validation">Match</th>
+            <th *ngIf="canEdit">Actions</th>
+        </tr>
+        <tr *ngFor="let con of vsacValueSet; let i = index;">
+            <td>{{con.displayName}}</td>
+            <td>{{con.code}}</td>
+            <td>{{con.codeSystemName}}</td>
+            <td>
+                <mat-icon *ngIf="con.isValid" class="text-success" id="vset-{{i}}-valid">check</mat-icon>
+                <mat-icon *ngIf="!con.isValid" class="text-warning" id="vset-{{i}}-warning">warning</mat-icon>
+            </td>
+            <td>
+                <mat-icon *ngIf="!isVsInPv(con)" id="addVsacValue_{{i}}" (click)="addVsacValue(con)">add</mat-icon>
+            </td>
+        </tr>
+    </table>
+    <div *ngIf="vsacMappingExists() && !userService.loggedIn()">Please log in to see VSAC mapping.</div>
+    <button mat-raised-button *ngIf="vsacMappingExists() && canEdit && !allVsacMatch()" class="mt20"
+            (click)="addAllVsac()">
+        <mat-icon id="addAllVsac">add</mat-icon>
+        Import Missing Values
+    </button>
+</ng-container>
 
 <ng-template #newPermissibleValueContent>
     <h4 mat-dialog-title>Add A New Permissible Value</h4>

@@ -28,11 +28,6 @@ type CommentWithShowReplies = Comment & {
     selector: 'cde-comments',
     templateUrl: './comments.component.html',
     styles: [`
-        .currentComment {
-            position: relative;
-            left: -50px;
-        }
-
         .outer-arrow {
             border-top: none;
             border-bottom: 24px solid transparent;

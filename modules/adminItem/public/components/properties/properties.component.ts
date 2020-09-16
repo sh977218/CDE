@@ -40,7 +40,7 @@ export class PropertiesComponent implements OnInit {
     ngOnInit() {
         this.orgHelperService.then(orgsDetailedInfo => {
             if (this.elt.stewardOrg.name) {
-                this.orgPropertyKeys = orgsDetailedInfo[this.elt.stewardOrg.name].propertyKeys || [];
+                this.orgPropertyKeys = orgsDetailedInfo[this.elt.stewardOrg.name]?.propertyKeys || [];
             }
             this.onInitDone = true;
         }, _noop);

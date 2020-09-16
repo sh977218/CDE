@@ -16,7 +16,8 @@ import { config } from 'server/system/parseConfig';
 import { DataElementElastic } from 'shared/de/dataElement.model';
 import { CdeFormElastic } from 'shared/form/form.model';
 import {
-    Cb, Cb1, CbError, CbError1, ElasticQueryError, ElasticQueryResponse, ElasticQueryResponseAggregations, Item, ItemElastic,
+    Cb, Cb1, CbError, CbError1, ElasticQueryError, ElasticQueryResponse, ElasticQueryResponseAggregations, Item,
+    ItemElastic,
     ModuleItem,
     SearchResponseAggregationDe, SearchResponseAggregationForm,
     SearchResponseAggregationItem,
@@ -393,7 +394,7 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
                 ]
             }
         },
-        size: settings.resultPerPage ? settings.resultPerPage : 20
+        size: settings.resultPerPage ? (settings.resultPerPage > 100 ? 100 : settings.resultPerPage) : 20
     };
 
     if (hasSearchTerm) {

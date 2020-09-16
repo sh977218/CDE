@@ -12,9 +12,6 @@ public class FormSearchInputs extends NlmCdeBaseTest {
     @Test
     public void formSearchInputs() {
         String formSearchUrl = baseUrl + "/server/form/search";
-        given().contentType(ContentType.JSON)
-                .body("{\"resultPerPage\": 200, \"selectedStatuses\": [], \"visibleStatuses\": []}")
-                .post(formSearchUrl).then().statusCode(422);
 
         given().contentType(ContentType.JSON)
                 .body("{\"page\": 600, \"resultPerPage\": 20, \"selectedStatuses\": [], \"visibleStatuses\": []}")

@@ -10,6 +10,7 @@ import { NgbCarouselModule } from '@ng-bootstrap/ng-bootstrap';
 import { HomeComponent } from 'home/home.component';
 import { HomeRoutingModule } from 'home/home-routing.module';
 import { NativeRenderModule } from 'nativeRender/nativeRender.module';
+import { BannerComponent } from '_app/banner/banner.component';
 
 @NgModule({
     imports: [
@@ -27,7 +28,8 @@ import { NativeRenderModule } from 'nativeRender/nativeRender.module';
         MatButtonModule,
     ],
     declarations: [
-        HomeComponent
+        HomeComponent,
+        BannerComponent
     ],
     providers: [
     ],

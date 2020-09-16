@@ -1,19 +1,18 @@
-<div id="classificationDiv">
-    <h4 *ngIf="elt.isDraft">
-        Classification is not available in Drafts. Click the Draft slider above to view the current Published version.
-    </h4>
-    <ng-container *ngIf="!elt.isDraft">
-        <h4> Classification</h4>
-        <button *ngIf="isAllowedModel.isOrgCurator()" mat-raised-button id="openClassificationModalBtn"
-                (click)="openClassifyItemModal()">
-            <mat-icon>folder_open</mat-icon> Classify this CDE
-        </button>
-        <div id="classificationBody">
-            <cde-classification-view [elt]="elt" (confirmDelete)="removeClassif($event);"></cde-classification-view>
-        </div>
-    </ng-container>
-</div>
-<cde-classify-item #classifyItemComponent [modalTitle]="'Classify this CDE'"
-                         (classified)="classifyItem($event)">
-</cde-classify-item>
+<h4 class="section-header"> Classification</h4>
+<h4 *ngIf="elt.isDraft">
+    Classification is not available in Drafts. Click the Draft slider above to view the current Published version.
+</h4>
+<ng-container *ngIf="!elt.isDraft">
+    <button *ngIf="isAllowedModel.isOrgCurator()" mat-raised-button id="openClassificationModalBtn"
+            (click)="openClassifyItemModal()">
+        <mat-icon>folder_open</mat-icon>
+        Classify this CDE
+    </button>
+    <div id="classificationBody">
+        <cde-classification-view [elt]="elt" (confirmDelete)="removeClassif($event);"></cde-classification-view>
+    </div>
+</ng-container>
 
+<cde-classify-item #classifyItemComponent [modalTitle]="'Classify this CDE'"
+                   (classified)="classifyItem($event)">
+</cde-classify-item>
