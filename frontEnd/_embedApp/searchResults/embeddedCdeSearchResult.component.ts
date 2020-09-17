@@ -15,9 +15,10 @@ export class EmbeddedCdeSearchResultComponent {
 
     clLimit = 3;
 
-    concatenatePVs(elt: DataElementElastic) {
-        return elt.valueDomain.datatype === 'Value List' && elt.valueDomain.permissibleValues
-            .map(a => a.permissibleValue).join(',');
+    concatenatePVs(elt: DataElementElastic): string {
+        return elt.valueDomain.datatype === 'Value List'
+            ? elt.valueDomain.permissibleValues.map(a => a.permissibleValue).join(',')
+            : '';
     }
 
     raiseLfLimit() {

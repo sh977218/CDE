@@ -1,11 +1,34 @@
-.mat-toolbar {
-  background: #343a40;
-  color: white;
-}
-
 .logo-font {
   font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
   line-height: 1;
   color: #767777;
   font-weight: 500;
+}
+
+.mat-drawer-container {
+  background-color: white;
+}
+
+.mat-toolbar {
+  background: #343a40;
+  color: white;
+}
+
+.navbar-nav > li > a {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+/**** Large layout ****/
+@media (min-width: 901px) {
+  .largeLayout {
+    display: block;
+  }
+}
+
+/**** Mobile layout ****/
+@media (max-width: 900px) {
+  .largeLayout {
+    display: none;
+  }
 }

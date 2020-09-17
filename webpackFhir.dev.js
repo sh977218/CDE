@@ -1,8 +1,8 @@
-import { merge } from 'webpack-merge';
-import baseConfig from './webpack.dev';
-import fhirConfig from './webpackFhir';
+const {merge} = require('webpack-merge');
+const baseConfig = require('./webpack.dev');
+const fhirConfig = require('./webpackFhir');
 
-export default merge(baseConfig, fhirConfig, {
+module.exports = merge(baseConfig, fhirConfig, {
     module: {
         rules: [
             {

@@ -173,10 +173,10 @@ gulp.task('copyNpmDeps', ['copyCode', 'npmRebuildNodeSass'], function copyNpmDep
 
 gulp.task('buildDist', ['createDist'], function copyDist() {
     const runAll = [
-        run('npm run buildAppJs', runInAppOptions),
-        run('npm run buildNativeJs', runInAppOptions),
-        run('npm run buildEmbedJs', runInAppOptions),
-        run('npm run buildFhirJs', runInAppOptions)
+        run('npm run buildApp', runInAppOptions),
+        run('npm run buildNative', runInAppOptions),
+        run('npm run buildEmbed', runInAppOptions),
+        run('npm run buildFhir', runInAppOptions)
     ];
 
     if (config.provider.faas === 'AWS') {

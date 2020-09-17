@@ -1,10 +1,10 @@
-import { AngularCompilerPlugin } from '@ngtools/webpack';
-import { resolve } from 'path';
-import { merge } from 'webpack-merge';
-import baseConfig from './webpack.prod';
-import appConfig from './webpackApp';
+const {AngularCompilerPlugin} = require('@ngtools/webpack');
+const {resolve} = require('path');
+const {merge} = require('webpack-merge');
+const baseConfig = require('./webpack.prod');
+const appConfig = require('./webpackApp');
 
-export default merge(baseConfig, appConfig, {
+module.exports = merge(baseConfig, appConfig, {
     plugins: [
         new AngularCompilerPlugin({
             tsConfigPath: resolve(__dirname, './tsconfigApp.json'),
@@ -13,4 +13,4 @@ export default merge(baseConfig, appConfig, {
         }),
     ],
     devtool: process.env.COVERAGE ? '#source-map' : undefined,
-} as any);
+});

@@ -437,7 +437,8 @@ export class DataElementViewComponent implements OnInit, AfterViewInit {
                 this.activeSection = 'classification-div';
             } else if (this.conceptsOffsetTop && scrollTop >= this.conceptsOffsetTop && scrollTop < this.referenceDocumentsOffsetTop) {
                 this.activeSection = 'concepts-div';
-            } else if (this.referenceDocumentsOffsetTop && scrollTop >= this.referenceDocumentsOffsetTop && scrollTop < this.propertiesOffsetTop) {
+            } else if (this.referenceDocumentsOffsetTop && scrollTop >= this.referenceDocumentsOffsetTop
+                && scrollTop < this.propertiesOffsetTop) {
                 this.activeSection = 'reference-documents-div';
             } else if (this.propertiesOffsetTop && scrollTop >= this.propertiesOffsetTop && scrollTop < this.identifiersOffsetTop) {
                 this.activeSection = 'properties-div';

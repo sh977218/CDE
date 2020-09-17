@@ -19,6 +19,7 @@ public class RemoveVsacIdTest extends NlmCdeBaseTest {
         clickElement(By.id("vsacIdCheck"));
         textPresent("2135-2");
         textPresent("2186-5");
+        hangon(.5);
         newCdeVersion();
 
         goToCdeByName(cdeName);

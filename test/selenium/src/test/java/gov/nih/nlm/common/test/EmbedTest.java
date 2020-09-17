@@ -5,6 +5,7 @@ import io.restassured.http.Cookie;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -76,7 +77,8 @@ public class EmbedTest extends NlmCdeBaseTest {
         // https://bugs.chromium.org/p/chromedriver/issues/detail?id=2198is
         hangon(2);
         findElement(By.id("poweredByNihCde"));
-        findElement(By.id("ftsearch-input")).sendKeys("Ethnicity");
+        findElement(By.id("ftsearch-input")).sendKeys("+USA +Ethnicity +category");
+        wait.until(ExpectedConditions.textToBePresentInElementValue(By.id("ftsearch-input"), "+USA +Ethnicity +category"));
         findElement(By.id("search.submit")).click();
 
         textPresent("Ethnicity USA category");

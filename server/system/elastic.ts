@@ -292,7 +292,7 @@ export function completionSuggest(term: ElasticCondition, user: User, settings: 
         }
     };
 
-    esClient.search<ElasticQueryResponse<ItemElastic>>({
+    esClient.search({
         index: indexName,
         body: suggestQuery
     }, (error, response) => {
