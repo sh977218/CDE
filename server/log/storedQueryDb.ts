@@ -1,14 +1,32 @@
 import * as mongoose from 'mongoose';
-import { addStringtype } from '../system/mongoose-stringtype';
-import { config } from '../system/parseConfig';
-import { handleError } from 'server/errorHandler/errorHandler';
-import { CbError } from 'shared/models.model';
+import { Document } from 'mongoose';
+import { handleErrorVoid } from 'server/errorHandler/errorHandler';
+import { establishConnection } from 'server/system/connections';
+import { addStringtype } from 'server/system/mongoose-stringtype';
+import { config } from 'server/system/parseConfig';
+import { DataType } from 'shared/de/dataElement.model';
+import { CbError, CbError1 } from 'shared/models.model';
+import { SearchSettingsElastic } from 'shared/search/search.model';
 
 addStringtype(mongoose);
 const Schema = mongoose.Schema;
 const StringType = (Schema.Types as any).StringType;
-const connHelper = require('../system/connections');
-const conn = connHelper.establishConnection(config.database.log);
+const conn = establishConnection(config.database.log);
+
+export interface StoredQuery {
+    searchTerm?: string;
+    date: Date;
+    datatypes: DataType[];
+    searchToken?: string;
+    username?: string;
+    remoteAddr?: string;
+    isSiteAdmin?: boolean;
+    regStatuses: string[];
+    selectedOrg1?: string;
+    selectedOrg2?: string;
+    selectedElements1: string[];
+    selectedElements2: string[];
+}
 
 export const storedQuerySchema = new Schema({
     searchTerm: {type: StringType, lowercase: true, trim: true},
@@ -26,21 +44,21 @@ export const storedQuerySchema = new Schema({
 
 const storedQueryModel = conn.model('StoredQuery', storedQuerySchema);
 
-function saveStoredQuery(storedQuery, callback) {
+function saveStoredQuery(storedQuery: StoredQuery, callback?: CbError) {
     new storedQueryModel(storedQuery).save(callback);
 }
 
-function findWithSearchToken(searchToken, callback) {
+function findWithSearchToken(searchToken: string | undefined, callback?: CbError1<StoredQuery & Document>) {
     storedQueryModel.findOne({date: {$gt: new Date().getTime() - 30000}, searchToken}, callback);
 }
 
-function updateWithSearchToken(searchToken, storedQuery, callback) {
+function updateWithSearchToken(searchToken: string | undefined, storedQuery: StoredQuery, callback?: CbError) {
     storedQueryModel.findOneAndUpdate({date: {$gt: new Date().getTime() - 30000}, searchToken},
         storedQuery, callback);
 }
 
-export function storeQuery(settings, callback?: CbError) {
-    const storedQuery: any = {
+export function storeQuery(settings: SearchSettingsElastic, callback?: CbError) {
+    const storedQuery: StoredQuery = {
         datatypes: settings.selectedDatatypes,
         date: new Date(),
         regStatuses: settings.selectedStatuses,
@@ -62,7 +80,7 @@ export function storeQuery(settings, callback?: CbError) {
         findWithSearchToken(storedQuery.searchToken, (err, theOne) => {
             if (theOne) {
                 updateWithSearchToken(storedQuery.searchToken, storedQuery,
-                    handleError({}, () => {
+                    handleErrorVoid({}, () => {
                     }));
             } else {
                 saveStoredQuery(storedQuery, callback);

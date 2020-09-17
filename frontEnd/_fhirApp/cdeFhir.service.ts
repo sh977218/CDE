@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Inject, Injectable } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { FhirAppViewModes } from './fhirApp.component';
 import { propertyToQuestion, questionToProperty, staticToProperty } from './properties';
@@ -17,7 +18,7 @@ import * as async_forEach from 'async/forEach';
 import * as async_memoize from 'async/memoize';
 import * as async_series from 'async/series';
 import * as async_some from 'async/some';
-import { questionAnswered, findQuestionByTinyId, isQuestion } from 'core/form/fe';
+import { questionAnswered, findQuestionByTinyId } from 'core/form/fe';
 import { questionToFhirValue, storeTypedValue } from 'core/mapping/fhir/to/datatypeToItemType';
 import { getIds, getTinyId, getVersion } from 'core/form/formAndFe';
 import diff from 'deep-diff';
@@ -25,11 +26,11 @@ import _intersectionWith from 'lodash/intersectionWith';
 import _noop from 'lodash/noop';
 import _uniq from 'lodash/uniq';
 import {
-    assertThrow, assertTrue, assertUnreachable, Cb, Cb1, CbErr, CbErr1, CbError1, CbErrorObj1, CbRet, CbRet1, CbRet2, CdeId,
+    assertThrow, assertTrue, assertUnreachable, Cb, Cb1, CbErr, CbErr1, CbErrorObj1, CbRet1, CbRet2, CdeId,
     PermissibleValue
 } from 'shared/models.model';
 import { CdeForm, FhirApp, FormQuestion } from 'shared/form/form.model';
-import { iterateFe, iterateFeSync, questionMulti } from 'shared/form/fe';
+import { isQuestion, iterateFe, iterateFeSync, questionMulti } from 'shared/form/fe';
 import { codeSystemOut } from 'shared/mapping/fhir';
 import { FhirCodeableConcept, FhirValue } from 'shared/mapping/fhir/fhir.model';
 import {
@@ -49,7 +50,6 @@ import { containerToItemType, valueToTypedValue } from 'shared/mapping/fhir/to/d
 import { formToQuestionnaire } from 'shared/mapping/fhir/to/toQuestionnaire';
 import { deepCopy, reduceOptionalArray } from 'shared/system/util';
 import { isArray } from 'util';
-import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 
 function isFhirObservation(resource: FhirDomainResource): resource is FhirObservation {
     return resource.resourceType === 'Observation';

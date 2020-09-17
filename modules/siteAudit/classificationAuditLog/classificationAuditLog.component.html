@@ -22,20 +22,19 @@
             </dt>
             <dd class="col-sm-9">
                 <div *ngIf="edit.elements.length>1">{{edit.elements.length}} elements:</div>
-                <div *ngFor="let e of edit.elements">
+                <div *ngFor="let e of edit.elements; index as i">
                     <div *ngIf="e.eltType === 'cde'">
                         <a *ngIf="e._id" target="_blank" href="/deView?cdeId={{e._id}}">{{e.name || "Element " +
-                            ($index + 1)}}</a>
-                        <a *ngIf="e.tinyId" target="_blank" href="/deView?tinyId={{e.tinyId}}">{{e.name || "Element
-                            " + ($index + 1)}}</a>
+                            (i + 1)}}</a>
+                        <a *ngIf="e.tinyId" target="_blank" href="/deView?tinyId={{e.tinyId}}">{{e.name || "Element " + (i + 1)}}</a>
                     </div>
                     <div *ngIf="e.eltType === 'form'">
                         <a *ngIf="e._id" target="_blank" href="/formView?formId={{e._id}}">{{e.name || "Element " +
-                            ($index + 1)}}</a>
+                            (i + 1)}}</a>
                         <a *ngIf="e.tinyId" target="_blank" href="/formView?tinyId={{e.tinyId}}">{{e.name ||
-                            "Element " + ($index + 1)}}</a>
+                            "Element " + (i + 1)}}</a>
                     </div>
-                    <div *ngIf="$index < edit.elements.length-1">,</div>
+                    <div *ngIf="i < edit.elements.length-1">,</div>
                 </div>
             </dd>
             <ng-container *ngIf="edit.elements.length === 1">

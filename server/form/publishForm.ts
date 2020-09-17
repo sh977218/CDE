@@ -1,21 +1,22 @@
 import { renderFile } from 'ejs';
-import { handleError } from 'server/errorHandler/errorHandler';
+import { Request, Response } from 'express';
 import { readFileSync } from 'fs';
-const fs = require('fs');
-const Readable = require('stream').Readable;
-const md5File = require('md5-file');
-const md5 = require('md5');
-const mongoData = require('../system/mongo-data');
-const dbLogger = require('../log/dbLogger');
+import { handleError } from 'server/errorHandler/errorHandler';
+import { addFile } from 'server/system/mongo-data';
+import { CdeForm } from 'shared/form/form.model';
+import { Readable } from 'stream';
 
-function storeHtmlInDb(req, res, form, fileStr) {
+const md5 = require('md5');
+const md5File = require('md5-file');
+
+function storeHtmlInDb(req: Request, res: Response, form: CdeForm, fileStr: string) {
     const readable = new Readable();
     readable.push(fileStr);
     readable.push(null);
     const f = {
         filename: 'published-' + form.tinyId, type: 'text/html', stream: readable, md5: md5(fileStr)
     };
-    mongoData.addFile(f, (err, newFile) => {
+    addFile(f, (err, newFile) => {
         const user = req.user;
         user.publishedForms.push({
             name: req.body.publishedFormName, id: newFile._id
@@ -24,7 +25,7 @@ function storeHtmlInDb(req, res, form, fileStr) {
     });
 }
 
-export function getFormForPublishing(form, req, res) {
+export function getFormForPublishing(form: CdeForm, req: Request, res: Response) {
     renderFile('frontEnd/_nativeRenderApp/nativeRenderApp.ejs', {isLegacy: true, version: 'version'}, (err, fileStr) => {
         const lines = fileStr.split('\n');
         let cssFileName;

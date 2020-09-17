@@ -6,11 +6,12 @@ import * as csrf from 'csurf';
 import { promisify } from 'util';
 import { access, constants, createWriteStream, mkdir } from 'fs';
 import { Router } from 'express';
+import { QueryCursor } from 'mongoose';
 import { handleError, respondError } from 'server/errorHandler/errorHandler';
 import {
     isOrgAuthorityMiddleware, isOrgCuratorMiddleware, isSiteAdminMiddleware, loggedInMiddleware, nocacheMiddleware
 } from 'server/system/authorization';
-import { dataElementModel, draftsList as deDraftsList } from 'server/cde/mongo-cde';
+import { DataElementDocument, dataElementModel, draftsList as deDraftsList } from 'server/cde/mongo-cde';
 import { draftsList as formDraftsList, formModel } from 'server/form/mongo-form';
 import { myOrgs } from 'server/orgManagement/orgSvc';
 import { disableRule, enableRule } from 'server/system/systemSvc';
@@ -24,11 +25,12 @@ import { config } from 'server/system/parseConfig';
 import { version } from 'server/version';
 import { syncWithMesh } from 'server/mesh/elastic';
 import { consoleLog } from 'server/log/dbLogger';
-import { getFile, jobStatus } from 'server/system/mongo-data';
+import { getFile, ItemDocument, jobStatus } from 'server/system/mongo-data';
 import { indices } from 'server/system/elasticSearchInit';
 import { reIndex } from 'server/system/elastic';
 import { userById, usersByName } from 'server/user/userDb';
 import { status } from 'server/siteAdmin/status';
+import { CbError } from 'shared/models.model';
 
 require('express-async-errors');
 
@@ -53,7 +55,7 @@ export function module() {
                     'registrationState.registrationStatus': 'Qualified'
                 };
 
-                function handleStream(stream, formatter, cb) {
+                function handleStream(stream: QueryCursor<ItemDocument>, formatter: (doc: ItemDocument) => string, cb: CbError) {
                     stream.on('data', doc => wstream.write(formatter(doc)));
                     stream.on('err', cb);
                     stream.on('end', cb);
@@ -95,12 +97,12 @@ export function module() {
     /* ---------- PUT NEW REST API above ---------- */
 
     router.get('/indexCurrentNumDoc/:indexPosition', isSiteAdminMiddleware, (req, res) => {
-        const index = indices[req.params.indexPosition];
+        const index = indices[+req.params.indexPosition];
         return res.send({count: index.count, totalCount: index.totalCount});
     });
 
     router.post('/reindex/:indexPosition', isSiteAdminMiddleware, (req, res) => {
-        const index = indices[req.params.indexPosition];
+        const index = indices[+req.params.indexPosition];
         reIndex(index, () => {
             setTimeout(() => {
                 index.count = 0;
@@ -172,7 +174,7 @@ export function module() {
                     return res.status(412).send(err);
                 }
                 // Regenerate is used so appscan won't complain
-                req.session.regenerate(() => {
+                (req.session as any).regenerate(() => {
                     authenticate('local', (err, user, info) => {
                         if (err) {
                             respondError(err);
@@ -192,7 +194,7 @@ export function module() {
                                 respondError(err);
                                 return res.status(403).send();
                             }
-                            req.session.passport = {user: req.user._id};
+                            (req.session as any).passport = {user: req.user._id};
                             return res.send('OK');
                         });
                     })(req, res, next);
@@ -238,6 +240,11 @@ export function module() {
 
     router.post('/disableRule', isOrgAuthorityMiddleware, async (req, res) => {
         const org = await orgByName(req.body.orgName);
+        /* istanbul ignore if */
+        if (!org) {
+            res.status(404).send();
+            return;
+        }
         await disableRule(org, req.body.rule.id);
         const savedOrg = await org.save();
         res.send(savedOrg);
@@ -245,6 +252,11 @@ export function module() {
 
     router.post('/enableRule', isOrgAuthorityMiddleware, async (req, res) => {
         const org = await orgByName(req.body.orgName);
+        /* istanbul ignore if */
+        if (!org) {
+            res.status(404).send();
+            return;
+        }
         await enableRule(org, req.body.rule);
         const savedOrg = await org.save();
         res.send(savedOrg);
@@ -278,7 +290,7 @@ export function module() {
         getDrafts(req, res, {'updatedBy.username': req.user.username});
     });
 
-    function getDrafts(req: Request, res: Response, criteria) {
+    function getDrafts(req: Request, res: Response, criteria: any) {
         Promise.all([deDraftsList(criteria), formDraftsList(criteria)])
             .then(results => res.send({draftCdes: results[0], draftForms: results[1]}))
             .catch(err => respondError(err, {req, res}));

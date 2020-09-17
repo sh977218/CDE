@@ -13,11 +13,12 @@
     ],
     "module": "CommonJS",
     "moduleResolution": "Node",
+    "noImplicitAny": false,
     "outDir": "./buildNode",
     "pretty": false,
     "rootDir": ".",
     "sourceMap": true,
-    "suppressImplicitAnyIndexErrors": true,
+    "strict": true,
     "target": "ESNext",
     "typeRoots": [
       "node_modules/@types"

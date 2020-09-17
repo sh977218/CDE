@@ -1,6 +1,6 @@
 import * as forEachOf from 'async/forEachOf';
 import * as forEachSeries from 'async/forEachSeries';
-import { CbErr, CbErrorObj } from 'shared/models.model';
+import { CbErrorObj } from 'shared/models.model';
 import {
     FormElement, FormElementsContainer, FormInForm, FormQuestion, FormSection, Question, QuestionValueList,
 } from 'shared/form/form.model';
@@ -58,8 +58,20 @@ export function getLabel(fe: FormElement): string {
     return fe.question && fe.question.cde && fe.question.cde.name || '';
 }
 
+export function isInForm(fe: FormElement): fe is FormInForm {
+    return fe && fe.elementType === 'form';
+}
+
+export function isQuestion(fe: FormElement): fe is FormQuestion {
+    return fe && fe.elementType === 'question';
+}
+
 export function isScore(question: Question): boolean {
     return question.cde.derivationRules && question.cde.derivationRules.length > 0;
+}
+
+export function isSection(fe: FormElement): fe is FormSection {
+    return fe && fe.elementType === 'section';
 }
 
 // implemented options: return, skip

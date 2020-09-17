@@ -4,7 +4,7 @@ import { get, post } from 'request';
 import { consoleLog } from 'server/log/dbLogger';
 import { errorLogger } from 'server/system/logging';
 import { config } from 'server/system/parseConfig';
-import { Cb, Cb1, CbErr, CbErr1, CbError, CbError1, CbError2, User } from 'shared/models.model';
+import { Cb1, CbErr1, CbError1, CbError2, User } from 'shared/models.model';
 import { addUser, updateUserIps, userById, userByName, UserDocument } from 'server/user/userDb';
 import { Parser } from 'xml2js';
 
@@ -46,27 +46,30 @@ export function ticketValidate(tkt: string, cb: CbErr1<string | void>) {
     const param = '?service=' + config.uts.service + '&ticket=' + tkt;
     const uri = host + port + path + param;
     get(uri, (error, response, body) => {
+        /* istanbul ignore if */
         if (error) {
             errorLogger.error('getTgt: ERROR with request: ' + error, {stack: new Error().stack});
             return cb(error);
-        } else {
-            // Parse xml result from ticket validation
-            parser.parseString(body, (err?: Error, jsonResult?: any) => {
-                if (err) {
-                    return cb('ticketValidate: ' + err);
-                } else if (jsonResult['cas:serviceResponse'] &&
-                    jsonResult['cas:serviceResponse']['cas:authenticationFailure']) {
-                    // This statement gets the error message
-                    return cb(jsonResult['cas:serviceResponse']['cas:authenticationFailure'][0].$.code);
-                } else if (jsonResult['cas:serviceResponse']['cas:authenticationSuccess'] &&
-                    jsonResult['cas:serviceResponse']['cas:authenticationSuccess']) {
-                    // Returns the username
-                    return cb(undefined, jsonResult['cas:serviceResponse']['cas:authenticationSuccess'][0]['cas:user'][0]);
-                }
-
-                return cb('ticketValidate: invalid XML response!');
-            });
         }
+        // Parse xml result from ticket validation
+        parser.parseString(body, (err?: Error, jsonResult?: any) => {
+            /* istanbul ignore if */
+            if (err) {
+                return cb('ticketValidate: ' + err);
+            }
+            if (jsonResult['cas:serviceResponse'] &&
+                jsonResult['cas:serviceResponse']['cas:authenticationFailure']) {
+                // This statement gets the error message
+                return cb(jsonResult['cas:serviceResponse']['cas:authenticationFailure'][0].$.code);
+            }
+            if (jsonResult['cas:serviceResponse']['cas:authenticationSuccess'] &&
+                jsonResult['cas:serviceResponse']['cas:authenticationSuccess']) {
+                // Returns the username
+                return cb(undefined, jsonResult['cas:serviceResponse']['cas:authenticationSuccess'][0]['cas:user'][0]);
+            }
+
+            return cb('ticketValidate: invalid XML response!');
+        });
     });
 }
 
@@ -165,6 +168,7 @@ export interface UserAddProfile {
 
 export function findAddUserLocally(profile: UserAddProfile, cb: CbError1<UserDocument | null | void>) {
     userByName(profile.username, (err, user) => {
+        /* istanbul ignore if */
         if (err) {
             cb(err);
             return;
@@ -181,6 +185,7 @@ export function findAddUserLocally(profile: UserAddProfile, cb: CbError1<UserDoc
                     orgCurator: [],
                 },
                 (err, user) => {
+                    /* istanbul ignore if */
                     if (err || !user) {
                         cb(new Error('save not successful'));
                         return;

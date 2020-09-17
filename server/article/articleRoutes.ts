@@ -52,6 +52,11 @@ export function module(roleConfig: { update: RequestHandler[] }) {
 
     router.get('/resourcesAndFeed', async (req, res) => {
         const articleDocument = await byKey('resources');
+        /* istanbul ignore if */
+        if (!articleDocument) {
+            res.status(404).send();
+            return;
+        }
         const article = articleDocument.toObject();
         await replaceRssToken(article);
         res.send(article);
@@ -73,6 +78,11 @@ export function module(roleConfig: { update: RequestHandler[] }) {
 
     router.get('/videosAndIframe', async (req, res) => {
         const articleDocument = await byKey('videos');
+        /* istanbul ignore if */
+        if (!articleDocument) {
+            res.status(404).send();
+            return;
+        }
         const article = articleDocument.toObject();
         await replaceVideoToken(article);
         res.send(article);

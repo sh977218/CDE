@@ -57,7 +57,7 @@ function getTGT() {
             const tgtHtml = response.body;
             const re = RegExp(/api-key\/(TGT.*)" method.*/g);
             const tgtUrlMatches = re.exec(tgtHtml);
-            return tgtUrlMatches[1];
+            return tgtUrlMatches ? tgtUrlMatches[1] : '';
         },
         handleReject('get TGT ERROR')
     );
@@ -209,7 +209,7 @@ export function searchBySystemAndCode(system: string, code: string) {
         );
 }
 
-export const CDE_SYSTEM_TO_UMLS_SYSTEM_MAP = {
+export const CDE_SYSTEM_TO_UMLS_SYSTEM_MAP: Dictionary<string> = {
     LOINC: 'LNC',
     'NCI Thesaurus': 'NCI',
     'SNOMEDCT US': 'SNOMEDCT_US',

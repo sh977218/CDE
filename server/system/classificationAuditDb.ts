@@ -1,14 +1,17 @@
 import * as mongoose from 'mongoose';
-import { config } from '../system/parseConfig';
-import { addStringtype } from '../system/mongoose-stringtype';
+import { Document, Model } from 'mongoose';
+import { establishConnection } from 'server/system/connections';
+import { addStringtype } from 'server/system/mongoose-stringtype';
+import { config } from 'server/system/parseConfig';
+import { ClassificationAudit } from 'shared/audit/classificationAudit';
+import { Cb } from 'shared/models.model';
 import { orderedList } from 'shared/system/regStatusShared';
 
 addStringtype(mongoose);
 const Schema = mongoose.Schema;
 const StringType = (Schema.Types as any).StringType;
 
-const connHelper = require('../system/connections');
-const conn = connHelper.establishConnection(config.database.appData);
+const conn = establishConnection(config.database.appData);
 
 export const classificationAuditSchema = new Schema({
     date: {type: Date, default: Date.now, index: true}, user: {
@@ -27,13 +30,13 @@ export const classificationAuditSchema = new Schema({
     path: [StringType]
 }, {collection: 'classificationAudit'});
 
-const classificationAuditModel = conn.model('classificationAudit', classificationAuditSchema);
+const classificationAuditModel: Model<Document & ClassificationAudit> = conn.model('classificationAudit', classificationAuditSchema);
 
-export function saveClassificationAudit(msg, callback?) {
+export function saveClassificationAudit(msg: ClassificationAudit, callback?: Cb) {
     new classificationAuditModel(msg).save(callback);
 }
 
-export function classificationAuditPagination({skip, limit, sort}) {
+export function classificationAuditPagination({skip, limit, sort}: { limit: number, skip: number, sort?: string }) {
     return classificationAuditModel
         .find({}, {elements: {$slice: 10}})
         .sort(sort)

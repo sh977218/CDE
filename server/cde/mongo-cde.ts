@@ -114,6 +114,7 @@ export function byTinyIdList(tinyIdList: string[], cb: CbError1<DataElementElast
         .in(tinyIdList)
         .slice('valueDomain.permissibleValues', 10)
         .exec((err, docs) => {
+            /* istanbul ignore if */
             if (err) {
                 return cb(err);
             }
@@ -144,6 +145,7 @@ export function draftSave(elt: DataElement, user: User, cb: CbError1<DataElement
             new dataElementDraftModel(elt).save(cb as (err?: Error, a?: DataElementDocument) => void);
             return;
         }
+        /* istanbul ignore if */
         if (doc.__v !== elt.__v) {
             return cb(null);
         }
@@ -179,7 +181,7 @@ export function getStream(condition: any): QueryCursor<DataElementDocument> {
     return dataElementModel.find(condition).sort({_id: -1}).cursor();
 }
 
-export function count(condition: any, callback: CbError1<number>) {
+export function count(condition: any, callback?: CbError1<number>) {
     return dataElementModel.countDocuments(condition, callback as (err?: Error, a?: number) => void);
 }
 

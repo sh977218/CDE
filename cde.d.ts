@@ -12,6 +12,7 @@ declare module 'async/memoize';
 declare module 'async/series';
 declare module 'async/some';
 declare module 'bootstrap-tour/build/js/bootstrap-tour-standalone.min.js';
+declare module 'file-list-plugin';
 declare module 'gulp-clean-css';
 declare module 'gulp-data';
 declare module 'gulp-git';

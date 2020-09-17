@@ -1,6 +1,5 @@
 import { FhirApps, FhirObservationInfo } from 'server/fhir/fhirDb';
-
-const writableCollection = require('server/system/writableCollection').writableCollection;
+import { writableCollection } from 'server/system/writableCollection';
 
 export const fhirApps = writableCollection(FhirApps);
 

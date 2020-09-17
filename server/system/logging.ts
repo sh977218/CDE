@@ -90,20 +90,22 @@ mongoErrorLogger.prototype.log = (level: string, msg: string, meta: any) => {
 };
 
 const expressLoggerCnf = {
-  transports: [ new mongoLogger({
-      json: true
-  })]
+    transports: [
+        // @ts-ignore
+        new mongoLogger({
+            json: true
+        })
+    ]
 };
-
 
 const expressErrorLoggerCnf = {
-  transports: [
-    new mongoErrorLogger({
-        json: true
-    })
-  ]
+    transports: [
+        // @ts-ignore
+        new mongoErrorLogger({
+            json: true
+        })
+    ]
 };
-
 
 if (config.expressToStdout) {
     const consoleLogCnf = {

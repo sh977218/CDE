@@ -133,7 +133,7 @@ export function userByName(name: string, callback?: CbError1<UserDocument>): Que
     return userModel.findOne({username: new RegExp('^' + name + '$', 'i')}, callback);
 }
 
-export function userById(id: string, callback: CbError1<UserDocument>) {
+export function userById(id: string, callback: CbError1<UserDocument | null>) {
     userModel.findById(id, userProject, callback);
 }
 
@@ -184,7 +184,7 @@ export function usersByUsername(username: string) {
     return userModel.find({username: new RegExp(username, 'i')}, userProject);
 }
 
-export function userByUsername(username: string, callback: CbError1<UserDocument>) {
+export function userByUsername(username: string, callback: CbError1<UserDocument | null>) {
     userModel.findOne({username: new RegExp(username, 'i')}, userProject, callback);
 }
 

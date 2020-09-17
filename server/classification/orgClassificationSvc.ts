@@ -1,7 +1,7 @@
 import { eachLimit, parallel } from 'async';
 import { find } from 'lodash';
 import { byTinyId as deByTinyId, dataElementModel } from 'server/cde/mongo-cde';
-import { handleError } from 'server/errorHandler/errorHandler';
+import { handleError, handleErrorVoid, respondError } from 'server/errorHandler/errorHandler';
 import { byTinyId as formByTinyId, formModel } from 'server/form/mongo-form';
 import { OrganizationDocument, orgByName } from 'server/orgManagement/orgDb';
 import { addToClassifAudit } from 'server/system/classificationAuditSvc';
@@ -103,9 +103,13 @@ export async function deleteOrgClassification(user: User, deleteClassification: 
                 done();
             }
         }))
-    ], handleError({}, () => {
+    ], (err?: Error | null) => {
+        if (err) {
+            respondError(err);
+            return;
+        }
         removeJobStatus('deleteClassification', callback);
-    }));
+    });
 }
 
 export async function renameOrgClassification(user: User, newClassification: ItemClassificationNew, settings: SearchSettingsElastic,
@@ -184,7 +188,13 @@ export async function renameOrgClassification(user: User, newClassification: Ite
                 done();
             }
         }))
-    ], handleError({}, () => removeJobStatus('renameClassification', callback)));
+    ], (err?: Error | null) => {
+        if (err) {
+            respondError(err);
+            return;
+        }
+        removeJobStatus('renameClassification', callback);
+    });
 }
 
 export async function addOrgClassification(newClassification: ItemClassification, callback: CbError1<OrganizationDocument | void>) {
@@ -271,7 +281,13 @@ export async function reclassifyOrgClassification(user: User, oldClassification:
                 done();
             }
         }))
-    ], handleError({}, () => removeJobStatus('reclassifyClassification', callback)));
+    ], (err?: Error | null) => {
+        if (err) {
+            respondError(err);
+            return;
+        }
+        removeJobStatus('reclassifyClassification', callback)
+    });
 }
 
 export function renameClassifyElt(item: ItemDocument, orgName: string, categories: string[], newName: string): void {

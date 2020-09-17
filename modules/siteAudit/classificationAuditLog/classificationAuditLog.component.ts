@@ -2,8 +2,7 @@ import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { PageEvent } from '@angular/material/paginator';
 import _noop from 'lodash/noop';
-
-type ClassificationAuditLogRecord = any;
+import { ClassificationAudit } from 'shared/audit/classificationAudit';
 
 @Component({
     selector: 'cde-classification-audit-log',
@@ -11,7 +10,7 @@ type ClassificationAuditLogRecord = any;
 })
 export class ClassificationAuditLogComponent {
     currentPage: number = 0;
-    records: ClassificationAuditLogRecord[] = [];
+    records: ClassificationAudit[] = [];
 
     constructor(private http: HttpClient) {
         this.gotoPage();
@@ -21,7 +20,7 @@ export class ClassificationAuditLogComponent {
         if (event) {
             this.currentPage = event.pageIndex;
         }
-        this.http.post<ClassificationAuditLogRecord[]>('/server/system/getClassificationAuditLog', {
+        this.http.post<ClassificationAudit[]>('/server/system/getClassificationAuditLog', {
             skip: this.currentPage * 50,
             limit: 50
         }).subscribe(response => {
