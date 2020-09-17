@@ -382,6 +382,7 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
                                         query: hasSearchTerm ? {
                                             query_string: {
                                                 analyze_wildcard: true,
+                                                default_operator: 'AND',
                                                 query: settings.searchTerm
                                             }
                                         } : undefined,
@@ -405,6 +406,7 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
                     query_string: {
                         fields: ['primaryNameCopy^5', 'primaryDefinitionCopy^2'],
                         analyze_wildcard: true,
+                        default_operator: 'AND',
                         query: settings.searchTerm
                     }
                 },
@@ -422,6 +424,7 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
                         query_string: {
                             fields: ['primaryNameCopy^5', 'primaryDefinitionCopy^2'],
                             analyze_wildcard: true,
+                            default_operator: 'AND',
                             query: '"' + settings.searchTerm + '"~4'
                         }
                     },

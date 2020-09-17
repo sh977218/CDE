@@ -35,9 +35,9 @@ public class ScrollHistoryTest extends NlmCdeBaseTest {
 
         goToCdeSearch();
         findElement(By.id("ftsearch-input")).clear();
-        findElement(By.id("ftsearch-input")).sendKeys("Test of Memory Malingering (TOMM) - Trial 1 question 10 score");
+        findElement(By.id("ftsearch-input")).sendKeys("Test of Memory Malingering (TOMM) - Trial");
         clickElement(By.id("search.submit"));
-        textPresent("Test of Memory Malingering (TOMM) - Trial 1 question 10 score");
+        textPresent("Test of Memory Malingering (TOMM) - Trial");
         scrollToViewById(elementId);
         hangon(1);
         int painOffset = getCurrentYOffset();
