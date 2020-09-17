@@ -22,11 +22,12 @@ export function module() {
             return res.status(404).send();
         }
         parseString(xmlResp, {ignoreAttrs: false, mergeAttrs: true}, (err, jsonResp) => {
+            /* istanbul ignore if */
             if (err) {
                 res.status(400).send('Invalid XML from VSAC');
-            } else {
-                res.send(jsonResp);
+                return;
             }
+            res.send(jsonResp);
         });
     });
 

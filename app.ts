@@ -12,14 +12,12 @@ import { ErrorRequestHandler, Request, RequestHandler, Response } from 'express'
 import * as session from 'express-session';
 import * as httpProxy from 'express-http-proxy';
 import * as helmet from 'helmet';
-import * as hsts from 'hsts';
 import * as http from 'http';
 import * as methodOverride from 'method-override';
 import * as morganLogger from 'morgan';
 import * as path from 'path';
 import * as favicon from 'serve-favicon';
 import * as winston from 'winston';
-import { Rotate } from 'winston-logrotate';
 import { init as swaggerInit } from './modules/swagger/index';
 import * as articleDb from 'server/article/articleDb';
 import { module as appModule, respondHomeFull } from 'server/system/appRouters';
@@ -57,6 +55,8 @@ import { ModuleAll } from 'shared/models.model';
 import { isOrgAuthority, isOrgCurator } from 'shared/system/authorizationShared';
 
 const flash = require('connect-flash');
+const hsts = require('hsts');
+const Rotate = require('winston-logrotate').Rotate;
 
 const config = Config as any;
 const domain = Domain.create();
@@ -290,7 +290,7 @@ express.response.render = function renderEjsUsingThis(this: any, view: string, m
     if (!module) {
         module = 'cde';
     }
-    originalRender.call(this, path.join(__dirname, '/modules/' + module + '/views/' + view), msg);
+    originalRender.call(this, path.join(__dirname, '/modules/' + module + '/views/' + view), msg as any);
 } as any;
 
 try {

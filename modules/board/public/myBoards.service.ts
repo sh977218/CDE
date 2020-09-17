@@ -5,6 +5,8 @@ import { ElasticQueryResponseAggregationBucket, ElasticQueryResponseAggregations
 import { Dictionary } from 'async';
 
 export interface BoardFilter {
+    search?: string;
+    sortDirection?: string;
     selectedTags: string[];
     selectedTypes: string[];
     selectedShareStatus: string[];

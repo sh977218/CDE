@@ -15,11 +15,20 @@ const ObjectId = Schema.Types.ObjectId;
 //     });
 // }
 
+export interface WritableCollection<T> {
+    delete: (res: Response, id: string, cb: Cb1<{deletedCount: number}>) => void,
+    find: (res: Response, crit: any, cb: Cb1<(Document & T)[]>) => void,
+    get: (res: Response, id: string, cb: Cb1<(Document & T) | null>) => void,
+    post: (res: Response, data: T, cb: Cb1<Document & T>) => void,
+    put: (res: Response, data: T, cb: Cb1<Document & T>) => void,
+    save: (res: Response, data: T, cb: Cb1<Document & T>) => Promise<void>
+}
+
 export function writableCollection<T extends {_id: string, __v: number}>(
     model: Model<Document & T>,
     postCheckFn = (data: T, cb: CbError1<boolean>) => cb(null, true),
     versionKey: '__v' = '__v'
-) {
+): WritableCollection<T> {
     function post(res: Response, data: T, cb: Cb1<Document & T>) {
         const handlerOptions = {res};
         if (!postCheckFn) {

@@ -1,11 +1,14 @@
 import { config } from 'server/system/parseConfig';
-const elastic = require('server/system/elastic');
-const mongoCde = require('server/cde/mongo-cde');
+import { esClient } from 'server/system/elastic';
+import { byTinyId, count, getStream } from 'server/cde/mongo-cde';
+import { DataElement } from 'shared/de/dataElement.model';
+import { CdeFormElastic } from 'shared/form/form.model';
+import { ElasticQueryResponse } from 'shared/models.model';
 
 export let syncLinkedFormsProgress: any = {done: 0, total: 0};
 
-async function extractedSyncLinkedForms(cde) {
-    const esResult = await elastic.esClient.search({
+async function extractedSyncLinkedForms(cde: DataElement) {
+    const esResult: {body: ElasticQueryResponse<CdeFormElastic>} = await esClient.search({
         index: config.elastic.formIndex.name,
         q: cde.tinyId,
         size: 200
@@ -38,7 +41,7 @@ async function extractedSyncLinkedForms(cde) {
     linkedForms.Incomplete += linkedForms.Candidate;
     linkedForms.Retired += linkedForms.Incomplete;
 
-    elastic.esClient.update({
+    esClient.update({
         index: config.elastic.index.name,
         type: '_doc',
         id: cde.tinyId,
@@ -48,10 +51,14 @@ async function extractedSyncLinkedForms(cde) {
     return new Promise(resolve => resolve());
 }
 
-export function syncLinkedFormsByTinyId(tinyId) {
+export function syncLinkedFormsByTinyId(tinyId: string) {
     return new Promise(resolve => {
-        mongoCde.byTinyId(tinyId, (err, cde) => {
-            extractedSyncLinkedForms(cde).then(resolve);
+        byTinyId(tinyId, (err, cde) => {
+            if (cde) {
+                extractedSyncLinkedForms(cde).then(resolve);
+            } else {
+                resolve();
+            }
         });
     });
 }
@@ -59,8 +66,8 @@ export function syncLinkedFormsByTinyId(tinyId) {
 export async function syncLinkedForms() {
     const t0 = Date.now();
     syncLinkedFormsProgress = {done: 0, total: 0};
-    const cdeCursor = mongoCde.getStream({archived: false});
-    syncLinkedFormsProgress.total = await mongoCde.count({archived: false});
+    const cdeCursor = getStream({archived: false});
+    syncLinkedFormsProgress.total = await count({archived: false});
     for (let cde = await cdeCursor.next(); cde != null; cde = await cdeCursor.next()) {
         await extractedSyncLinkedForms(cde);
     }

@@ -1,16 +1,23 @@
 import { series } from 'async';
-import { config } from 'server/system/parseConfig';
+import { Request, Response } from 'express';
+import { count as boardCount } from 'server/board/boardDb';
 import { dataElementModel } from 'server/cde/mongo-cde';
+import { count } from 'server/form/mongo-form';
+import { logError } from 'server/log/dbLogger';
 import { triggerPushMsg } from 'server/notification/pushNotificationSvc';
 import { pushGetAdministratorRegistrations } from 'server/notification/notificationDb';
+import { esClient } from 'server/system/elastic';
+import { indices } from 'server/system/elasticSearchInit';
+import { config } from 'server/system/parseConfig';
+import { Cb, Cb1, ElasticQueryResponse, ItemElastic } from 'shared/models.model';
 
-const mongoForm = require('server/form/mongo-form');
-const boardDb = require('server/board/boardDb');
-const elastic = require('server/system/elastic');
-const esInit = require('server/system/elasticSearchInit');
-const dbLogger = require('server/log/dbLogger');
+interface IndexStatus {
+    name: string;
+    up: boolean | string;
+    message?: string;
+}
 
-export const statusReport: any = {
+export const statusReport: {elastic: {up: boolean | string, indices: IndexStatus[], message?: string}} = {
     elastic: {
         up: false,
         indices: []
@@ -21,7 +28,7 @@ export function everythingOk() {
     return statusReport.elastic.up;
 }
 
-export function status(req, res) {
+export function status(req: Request, res: Response) {
     if (everythingOk()) {
         res.send('ALL SERVICES UP\n' + JSON.stringify(statusReport));
     } else {
@@ -29,13 +36,13 @@ export function status(req, res) {
     }
 }
 
-export function checkElasticCount(count, index, type, cb) {
-    elastic.esClient.count({index}, (err, response) => {
+export function checkElasticCount(count: number, index: string, type: string, cb: (status: boolean, errMsg?: string) => void) {
+    esClient.count({index}, (err, response: {body: ElasticQueryResponse<ItemElastic>}) => {
         if (err) {
             cb(false, 'Error retrieving index count: ' + err);
         } else {
-            if (!(response.count >= count - 5 && response.count <= count + 5)) {
-                cb(false, 'Count mismatch because db count = ' + count + ' and esCount = ' + response.count);
+            if (!((response as any).count >= count - 5 && (response as any).count <= count + 5)) {
+                cb(false, 'Count mismatch because db count = ' + count + ' and esCount = ' + (response as any).count);
             } else {
                 cb(true);
             }
@@ -43,8 +50,8 @@ export function checkElasticCount(count, index, type, cb) {
     });
 }
 
-export function isElasticUp(cb) {
-    elastic.esClient.cat.health({h: 'st'}, (err, response) => {
+export function isElasticUp(cb: Cb1<boolean | void>) {
+    esClient.cat.health({h: 'st'}, (err, response) => {
         if (err) {
             statusReport.elastic.up = 'No Response on Health Check: ' + err;
             cb(false);
@@ -70,15 +77,15 @@ export function isElasticUp(cb) {
     });
 }
 
-export function getStatus(getStatusDone) {
+export function getStatus(getStatusDone: Cb) {
     isElasticUp(() => {
         if (statusReport.elastic.up) {
-            const tempIndices: any[] = [];
+            const tempIndices: IndexStatus[] = [];
             const condition = {archived: false};
             series([
                 done => {
                     dataElementModel.countDocuments(condition, (err, deCount) => {
-                        esInit.indices[0].totalCount = deCount;
+                        indices[0].totalCount = deCount;
                         checkElasticCount(deCount, config.elastic.index.name, 'dataelement', (up, message) => {
                             tempIndices.push({
                                 name: config.elastic.index.name,
@@ -90,8 +97,8 @@ export function getStatus(getStatusDone) {
                     });
                 },
                 done => {
-                    mongoForm.count(condition, (err, formCount) => {
-                        esInit.indices[1].totalCount = formCount;
+                    count(condition, (err, formCount) => {
+                        indices[1].totalCount = formCount;
                         checkElasticCount(formCount, config.elastic.formIndex.name, 'form', (up, message) => {
                             tempIndices.push({
                                 name: config.elastic.formIndex.name,
@@ -103,8 +110,8 @@ export function getStatus(getStatusDone) {
                     });
                 },
                 done => {
-                    boardDb.count({}, (err, boardCount) => {
-                        esInit.indices[2].totalCount = boardCount;
+                    boardCount({}, (err, boardCount) => {
+                        indices[2].totalCount = boardCount;
                         checkElasticCount(boardCount, config.elastic.boardIndex.name, 'board', (up, message) => {
                             tempIndices.push({
                                 name: config.elastic.boardIndex.name,
@@ -123,8 +130,8 @@ export function getStatus(getStatusDone) {
     });
 }
 
-let lastReport;
-let notificationTimeout;
+let lastReport: string;
+let notificationTimeout: any;
 
 setInterval(() => {
     getStatus(() => {
@@ -157,7 +164,7 @@ setInterval(() => {
                         registrations.forEach(r => triggerPushMsg(r, msg));
                     });
 
-                    dbLogger.logError({
+                    logError({
                         message: 'Elastic Search Status',
                         details: newReport
                     });

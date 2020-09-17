@@ -1,4 +1,3 @@
-import { ApiResponse } from '@elastic/elasticsearch/lib/Transport';
 import { splitError } from 'server/errorHandler/errorHandler';
 import { CdeFormDocument } from 'server/form/mongo-form';
 import { logError } from 'server/log/dbLogger';
@@ -6,7 +5,7 @@ import { esClient } from 'server/system/elastic';
 import { riverFunction, suggestRiverFunction } from 'server/system/elasticSearchInit';
 import { config } from 'server/system/parseConfig';
 import { CdeFormElastic } from 'shared/form/form.model';
-import { CbError, CbError1, ElasticQueryResponse } from 'shared/models.model';
+import { CbError1, ElasticQueryResponse } from 'shared/models.model';
 
 export function updateOrInsert(elt: CdeFormDocument) {
     riverFunction(elt.toObject(), doc => {
@@ -14,6 +13,7 @@ export function updateOrInsert(elt: CdeFormDocument) {
             let doneCount = 0;
             let doneError;
             const done = (err: Error | null) => {
+                /* istanbul ignore if */
                 if (err) {
                     logError({
                         message: 'Unable to Index document: ' + doc.elementType + ' ' + doc.tinyId,

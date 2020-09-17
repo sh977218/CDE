@@ -1,8 +1,8 @@
 import { ErrorHandler, Injectable } from '@angular/core';
-import { NativeRenderService } from 'nativeRender/nativeRender.service';
-import { isQuestion } from 'core/form/fe';
-import { FormElement, FormElementsContainer } from 'shared/form/form.model';
 import { evaluateSkipLogic } from 'core/form/skipLogic';
+import { NativeRenderService } from 'nativeRender/nativeRender.service';
+import { isQuestion } from 'shared/form/fe';
+import { FormElement, FormElementsContainer } from 'shared/form/form.model';
 
 @Injectable()
 export class SkipLogicService {

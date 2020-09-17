@@ -2,7 +2,7 @@ import * as Ajv from 'ajv';
 import { Request, Response } from 'express';
 import { readdirSync, readFileSync } from 'fs';
 import { resolve } from 'path';
-import { byTinyIdList as deByTinyIdList, dataElementModel } from 'server/cde/mongo-cde';
+import { dataElementModel } from 'server/cde/mongo-cde';
 import {
     byId as formById, byTinyId as formByTinyId, byTinyIdList as formByTinyIdList,
     byTinyIdAndVersion as formByTinyIdAndVersion,
@@ -50,6 +50,7 @@ export function fetchWholeForm(form: CdeForm, callback: CbError1<CdeForm>) {
                 return;
             }
             formByTinyIdAndVersion(f.inForm.form.tinyId, f.inForm.form.version, (err, result) => {
+                /* istanbul ignore if */
                 if (err || !result) {
                     cb(err || new Error('not found'));
                     return;
@@ -69,6 +70,7 @@ export function fetchWholeForm(form: CdeForm, callback: CbError1<CdeForm>) {
 // outdated is not necessary for endpoints by version
 function fetchWholeFormOutdated(form: CdeForm, callback: CbError1<CdeForm>) {
     fetchWholeForm(form, splitError(callback, wholeForm => {
+        /* istanbul ignore if */
         if (!wholeForm) {
             callback(null, wholeForm);
             return;
@@ -214,6 +216,7 @@ export function draftForEditByTinyId(req: Request, res: Response) { // WORKAROUN
                 if (!draft) {
                     return res.send();
                 }
+                /* istanbul ignore if */
                 if (elt._id.toString() !== draft._id.toString()) {
                     draftDelete(req);
                     return respondError(new Error('Concurrency Error: Draft of prior elt should not exist'));
@@ -242,6 +245,7 @@ export function forEditByTinyId(req: Request, res: Response) {
     const handlerOptions = {req, res};
     const tinyId = req.params.tinyId;
     formByTinyId(tinyId, handleNotFound(handlerOptions, form => {
+        /* istanbul ignore if */
         if (!form) {
             res.status(404).send();
             return;
@@ -286,6 +290,7 @@ export function draftDelete(req: Request, res?: Response) {
 }
 
 export function byTinyIdList(req: Request, res: Response) {
+    /* istanbul ignore if */
     if (!req.params.tinyIdList) {
         return res.status(400).send();
     }
@@ -303,6 +308,7 @@ export function latestVersionByTinyId(req: Request, res: Response) {
 }
 
 export function publishFormToHtml(req: Request, res: Response) {
+    /* istanbul ignore if */
     if (!req.params.id || req.params.id.length !== 24) {
         return res.status(400).send();
     }
@@ -318,6 +324,7 @@ export function publishFormToHtml(req: Request, res: Response) {
 export function create(req: Request, res: Response) {
     const elt = req.body;
     const user = req.user;
+    /* istanbul ignore if */
     if (!elt.stewardOrg || !elt.stewardOrg.name) {
         return res.status(400).send();
     }
@@ -326,6 +333,7 @@ export function create(req: Request, res: Response) {
 
 function publish(req: RequestWithItem, res: Response, draft: CdeFormDraft, options = {}) {
     const handlerOptions = {req, res};
+    /* istanbul ignore if */
     if (!draft) {
         return res.status(400).send();
     }
@@ -345,6 +353,7 @@ function publish(req: RequestWithItem, res: Response, draft: CdeFormDraft, optio
 
 export function publishFromDraft(req: RequestWithItem, res: Response) {
     draftById(req.body._id, handleNotFound({req, res}, draft => {
+        /* istanbul ignore if */
         if (draft.__v !== req.body.__v) {
             return res.status(400).send('Cannot publish this old version. Reload and redo.');
         }
@@ -357,6 +366,7 @@ export function publishFromDraft(req: RequestWithItem, res: Response) {
 
 export function publishExternal(req: RequestWithItem, res: Response) {
     draftById(req.body._id, handleError({req, res}, draft => {
+        /* istanbul ignore if */
         if (draft) {
             return res.status(400).send('Publishing would override an existing draft. Address the draft first.');
         }

@@ -23,7 +23,7 @@ export class FormTermMappingComponent implements OnInit {
     descriptor?: Descriptor;
     descToName: any = {};
     flatMeshSimpleTrees: any[] = [];
-    mapping: MeshClassification = {meshDescriptors: []};
+    mapping: MeshClassification = {flatClassification: '', meshDescriptors: [], flatTrees: []};
     meshTerm?: string;
     private searchTerms = new Subject<string>();
 

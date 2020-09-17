@@ -2,7 +2,7 @@ import * as mongoose from 'mongoose';
 import { Document } from 'mongoose';
 import { addStringtype } from 'server/system/mongoose-stringtype';
 import { config } from 'server/system/parseConfig';
-import { Cb, CbError, CbError1, MeshClassification } from 'shared/models.model';
+import { CbError1, MeshClassification } from 'shared/models.model';
 
 addStringtype(mongoose);
 const Schema = mongoose.Schema;

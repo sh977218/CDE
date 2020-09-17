@@ -15,26 +15,26 @@ export function validatePv(pv: PermissibleValue): Promise<void> {
     if (!umlsPvFilter(pv)) {
         return Promise.resolve();
     }
-    const system = CDE_SYSTEM_TO_UMLS_SYSTEM_MAP[pv.codeSystemName];
+    const system = pv.codeSystemName && CDE_SYSTEM_TO_UMLS_SYSTEM_MAP[pv.codeSystemName];
     if (!system) {
         return Promise.resolve();
     }
     return promiseArrayMapSeries(
-        pv.valueMeaningCode.split(/[,:]/),
+        pv.valueMeaningCode ? pv.valueMeaningCode.split(/[,:]/) : [],
         code => searchBySystemAndCode(system, code).then(
             dataRes => {
                 if (!dataRes) {
-                    throw 'connection error';
+                    return Promise.reject('connection error');
                 }
                 if (dataRes.startsWith('<html')) {
-                    throw 'does not exist ' + code;
+                    return Promise.reject('does not exist ' + code);
                 }
-                return JSON.parse(dataRes).result.map(r => r.name);
+                return JSON.parse(dataRes).result.map((r: any) => r.name);
             }
         )
     ).then(
         results => {
-            function match(results, name) {
+            function match(results: string[][], name: string): boolean {
                 if (results.length === 0) {
                     return false;
                 }
@@ -51,11 +51,11 @@ export function validatePv(pv: PermissibleValue): Promise<void> {
             }
 
             if (!pv.valueMeaningName || !match(results, pv.valueMeaningName.toLowerCase())) {
-                throw pv.codeSystemName + '/' + pv.valueMeaningCode + ': Name does not match: ' + pv.valueMeaningName;
+                return Promise.reject(pv.codeSystemName + '/' + pv.valueMeaningCode + ': Name does not match: ' + pv.valueMeaningName);
             }
         },
         err => {
-            throw pv.codeSystemName + '/' + pv.valueMeaningCode + ': ' + err;
+            return Promise.reject(pv.codeSystemName + '/' + pv.valueMeaningCode + ': ' + err);
         }
     );
 }

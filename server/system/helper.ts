@@ -1,4 +1,5 @@
-import { config } from '../system/parseConfig';
+import { Request } from 'express';
+import { config } from 'server/system/parseConfig';
 
 export const GLOBALS = {
     logdir : config.logdir || __dirname,
@@ -6,7 +7,7 @@ export const GLOBALS = {
 };
 
 /* for search engine and javascript disabled */
-export function isSearchEngine(req) {
+export function isSearchEngine(req: Request) {
     const userAgent = req.headers['user-agent'];
     return userAgent && userAgent.match(/bot|crawler|spider|crawling/gi);
 }

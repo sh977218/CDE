@@ -1,12 +1,16 @@
-import { each, ErrorCallback } from 'async';
-import { Client } from '@elastic/elasticsearch';
+import { Dictionary, each, ErrorCallback } from 'async';
 import * as _ from 'lodash';
 import { consoleLog } from 'server/log/dbLogger';
-import { findAll } from 'server/mesh/meshDb';
+import { findAll, MeshClassificationDocument } from 'server/mesh/meshDb';
 import { errorLogger } from 'server/system/logging';
 import { config } from 'server/system/parseConfig';
-import { Cb, CbError } from 'shared/models.model';
 import { esClient } from 'server/system/elastic';
+import { CbError, ElasticQueryResponse, ItemElastic } from 'shared/models.model';
+
+interface IndexType {
+    index: string;
+    type: string;
+}
 
 const searchTemplate = {
     cde: {
@@ -30,13 +34,13 @@ export let meshSyncStatus: any = {
     form: {done: 0}
 };
 
-function doSyncWithMesh(allMappings, callback: ErrorCallback = () => {}) {
+function doSyncWithMesh(allMappings: MeshClassificationDocument[], callback: ErrorCallback = () => {}) {
     meshSyncStatus = {
         dataelement: {done: 0},
         form: {done: 0}
     };
 
-    const classifToTrees = {};
+    const classifToTrees: Dictionary<string[]> = {};
     allMappings.forEach(mapping => {
         // from a;b;c to a a;b a;b;c
         classifToTrees[mapping.flatClassification] = [];
@@ -49,42 +53,42 @@ function doSyncWithMesh(allMappings, callback: ErrorCallback = () => {}) {
         });
     });
 
-    const classifToSimpleTrees = {};
+    const classifToSimpleTrees: Dictionary<string[]> = {};
     allMappings.forEach(m => classifToSimpleTrees[m.flatClassification] = m.flatTrees);
 
-    const searches: any = [_.cloneDeep(searchTemplate.cde), _.cloneDeep(searchTemplate.form)];
+    const searches: IndexType[] = [_.cloneDeep(searchTemplate.cde), _.cloneDeep(searchTemplate.form)];
     searches.forEach((search: any) => {
         search.scroll = '2m';
         search.body = {};
     });
 
-    function scrollThrough(scrollId, s, cb) {
-        esClient.scroll({scrollId, scroll: '1m'} as any, (err, response) => {
+    function scrollThrough(scrollId: string, s: IndexType, cb: CbError) {
+        esClient.scroll({scrollId, scroll: '1m'} as any, (err: Error | null, response: {body: ElasticQueryResponse<ItemElastic>}) => {
             if (err) {
                 lock = false;
                 errorLogger.error('Error: Elastic Search Scroll Access Error',
                     {origin: 'system.elastic.syncWithMesh', stack: err.stack});
                 cb(err);
             } else {
-                processScroll(response.body._scroll_id, s, response.body, cb);
+                processScroll((response.body as any)._scroll_id, s, response.body, cb);
             }
         });
     }
 
-    async function processScroll(newScrollId: string, s, response, cb) {
+    async function processScroll(newScrollId: string, s: IndexType, response: ElasticQueryResponse<ItemElastic>, cb: CbError) {
         const sName = s.index === config.elastic.index.name ? 'dataelement' : 'form';
         // @TODO remove after ES7 upgrade
         let total = response.hits.total;
-        if (total.value > -1) {
-            total = total.value;
+        if ((total as any).value > -1) {
+            total = (total as any).value;
         }
         meshSyncStatus[sName].total = total;
         if (response.hits.hits.length > 0) {
             const request: any = {body: []};
             response.hits.hits.forEach(hit => {
                 const thisElt = hit._source;
-                const trees = new Set();
-                const simpleTrees = new Set();
+                const trees: Set<string> = new Set();
+                const simpleTrees: Set<string> = new Set();
                 if (!thisElt.flatClassifications) {
                     thisElt.flatClassifications = [];
                 }
@@ -114,7 +118,7 @@ function doSyncWithMesh(allMappings, callback: ErrorCallback = () => {}) {
                 meshSyncStatus[sName].done++;
             });
             if (request.body.length > 0) {
-                esClient.bulk(request, err => {
+                esClient.bulk(request, (err: Error) => {
                     if (err) {
                         consoleLog('ERR: ' + err, 'error');
                     }
@@ -126,13 +130,14 @@ function doSyncWithMesh(allMappings, callback: ErrorCallback = () => {}) {
         } else {
             consoleLog('done syncing ' + s.index + ' with MeSH');
             if (cb) {
-                cb();
+                cb(null);
             }
         }
     }
 
     each(searches, async search  => {
         const response = await esClient.search(search);
-        await new Promise(resolve => processScroll(response.body._scroll_id, search, response.body, resolve));
+        await new Promise(resolve => processScroll(response.body._scroll_id, search,
+            response.body as ElasticQueryResponse<ItemElastic>, resolve));
     }, callback);
 }
