@@ -4,7 +4,7 @@
 </h4>
 <ng-container *ngIf="!elt.isDraft">
     <button *ngIf="isAllowedModel.isOrgCurator()" mat-raised-button id="openClassificationModalBtn"
-            (click)="openClassifyItemModal()">
+            (click)="openClassifyItemModal()" color="primary">
         <mat-icon>folder_open</mat-icon>
         Classify this CDE
     </button>

@@ -128,19 +128,19 @@
                 <mat-icon>delete_outline</mat-icon>
                 Reset
             </button>
-            <button id="pinAll" (click)="openPinModal()" class="mx-1" mat-raised-button
+            <button id="pinAll" (click)="openPinModal()" class="mx-1" mat-raised-button color="primary"
                     [hidden]="totalItems <= 0 || module === 'form'" *ngIf="!embedded">
                 <mat-icon svgIcon="thumb_tack"></mat-icon>
                 Pin All
             </button>
-            <button (click)="hideShowFilter()" class="mx-1" id="showHideFilters" mat-raised-button>
+            <button (click)="hideShowFilter()" class="mx-1" id="showHideFilters" mat-raised-button color="primary">
                 <mat-icon>filter_list</mat-icon>
                 <ng-container *ngIf="!filterMode"> Show Filters</ng-container>
                 <ng-container *ngIf="filterMode"> Hide Filters</ng-container>
             </button>
             <cde-list-view-controls [(listView)]="resultsView" *ngIf="!embedded"></cde-list-view-controls>
 
-            <button mat-raised-button [matMenuTriggerFor]="exportMenu" *ngIf="!embedded"
+            <button mat-raised-button [matMenuTriggerFor]="exportMenu" *ngIf="!embedded" color="primary"
                     id="export" class="ml-1">
                 <mat-icon>play_for_work</mat-icon>
                 Export

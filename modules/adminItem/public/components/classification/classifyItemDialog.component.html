@@ -12,7 +12,7 @@
                 <tree-root #tree [nodes]="orgClassificationsTreeView.classifications" [options]="options">
                     <ng-template #treeNodeTemplate let-node="node" let-index="index">
                         <span class="mr-1">{{ node.data.name }}</span>
-                        <button mat-raised-button (click)="classifyItemByTree(node, selectedOrg)">
+                        <button mat-raised-button (click)="classifyItemByTree(node, selectedOrg)" color="primary">
                             <mat-icon>add</mat-icon>
                             Classify
                         </button>
@@ -40,7 +40,7 @@
                 <div class="breadcrumb" id="recentlyClassification_{{i}}">
                     {{orgClassificationRecentlyAddView.orgName}} /
                     {{orgClassificationRecentlyAddView.categories.join(" / ")}}
-                    <button mat-raised-button style="margin-left: 10px;"
+                    <button mat-raised-button style="margin-left: 10px" color="primary"
                             (click)="classifyItemByRecentlyAdd(orgClassificationRecentlyAddView)">
                         <mat-icon>add</mat-icon>
                         Classify

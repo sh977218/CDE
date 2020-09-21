@@ -51,7 +51,8 @@
         {{elt?.designations[0]?.designation}}
     </h1>
     <div class="pull-left mb-1">
-        <button mat-raised-button id="export" title="Export" #exportMenuTrigger="matMenuTrigger" [matMenuTriggerFor]="exportMenu">
+        <button mat-raised-button id="export" title="Export" #exportMenuTrigger="matMenuTrigger"
+                color="primary" [matMenuTriggerFor]="exportMenu">
             <mat-icon>play_for_work</mat-icon>
             <span class="d-none d-md-inline ml-1"> Export </span>
             <mat-icon>arrow_drop_down</mat-icon>
@@ -165,25 +166,26 @@
                 Please login to export forms.
             </a>
         </mat-menu>
-        <button *ngIf="quickBoardService.canAddElement(elt)" id="addToQuickBoard"
+        <button *ngIf="quickBoardService.canAddElement(elt)" id="addToQuickBoard" color="primary"
                 mat-raised-button (click)="quickBoardService.addToQuickBoard(elt)">
             <mat-icon>add</mat-icon>
             <span class="d-none d-md-inline ml-1">Add to Quick Board</span>
         </button>
-        <button id="addToBoard" mat-raised-button (click)="mltPinModal.pinMultiple([elt], mltPinModal.open())">
+        <button id="addToBoard" mat-raised-button color="primary"
+                (click)="mltPinModal.pinMultiple([elt], mltPinModal.open())">
             <mat-icon svgIcon="thumb_tack"></mat-icon><span class="d-none d-md-inline-block">Add to Board</span>
         </button>
-        <button *ngIf="userService.loggedIn()" mat-raised-button
+        <button *ngIf="userService.loggedIn()" mat-raised-button color="primary"
                 id="pinAllCdes" (click)="pinAllCdesIntoBoard()">
             <mat-icon>add_shopping_cart</mat-icon>
             <span class="d-none d-md-inline ml-1">Pin CDEs</span>
         </button>
-        <button *ngIf="isOrgCurator(userService.user)" id="copyFormBtn" mat-raised-button
+        <button *ngIf="isOrgCurator(userService.user)" id="copyFormBtn" mat-raised-button color="primary"
                 (click)="openCopyElementModal()">
             <mat-icon>content_copy</mat-icon>
             <span class="d-none d-md-inline ml-1">Copy</span>
         </button>
-        <button id="discussBtn" mat-raised-button (click)="commentMode = !commentMode">
+        <button id="discussBtn" mat-raised-button (click)="commentMode = !commentMode" color="primary">
             <mat-icon [ngClass]="{'faa-wrench faa-slow animated': hasComments && !commentMode}">comment
             </mat-icon>
             <span class="d-none d-md-inline ml-1">Discuss</span>

@@ -220,15 +220,17 @@
     </ng-container>
     <div>
         <ng-container *ngIf="canEdit">
-            <button mat-raised-button id="openAddPermissibleValueModelBtn" (click)="openNewPermissibleValueModal()">
+            <button mat-raised-button id="openAddPermissibleValueModelBtn"
+                    color="primary" (click)="openNewPermissibleValueModal()">
                 <mat-icon>add</mat-icon>
                 Add Permissible Value
             </button>
-            <button mat-raised-button id="removeAllPermissibleValueBtn" (click)="removeAllPermissibleValues()">
+            <button mat-raised-button id="removeAllPermissibleValueBtn"
+                    color="primary" (click)="removeAllPermissibleValues()">
                 <mat-icon>delete_outline</mat-icon>
                 Remove All Values
             </button>
-            <button mat-raised-button id="openImportPVModalBtn"
+            <button mat-raised-button id="openImportPVModalBtn" color="primary"
                     title="Import All Values" (click)="openImportPermissibleValueModal()">
                 <mat-icon>play_for_work</mat-icon>
                 Import PVs From CDE
@@ -252,7 +254,8 @@
     <div *ngIf="!vsacMappingExists()">No Value Set specified.</div>
     <div *ngIf="userService.loggedIn()">
         <div *ngIf="!editMode">
-            <button *ngIf="canEdit" mat-raised-button id="updateOIDBtn" (click)="editMode=true">Update O.I.D
+            <button *ngIf="canEdit" mat-raised-button id="updateOIDBtn"
+                    color="primary" (click)="editMode=true">Update O.I.D
             </button>
             <button *ngIf="canEdit && vsacMappingExists()" mat-raised-button
                     id="removeVSButton" (click)="removeVSMapping()">Remove Mapping

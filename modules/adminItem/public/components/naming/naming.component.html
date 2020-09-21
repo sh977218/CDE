@@ -25,7 +25,7 @@
     <hr>
 </div>
 <button *ngIf="canEdit" id="openNewDesignationModalBtn" class="m-3" (click)="openNewDesignationModal()"
-        mat-raised-button>
+        mat-raised-button color="primary">
     <mat-icon>add</mat-icon>
     Add Name
 </button>
@@ -55,7 +55,8 @@
     </dl>
     <hr>
 </div>
-<button *ngIf="canEdit" id="openNewDefinitionModalBtn" class="m-3" mat-raised-button (click)="openNewDefinitionModal()">
+<button *ngIf="canEdit" id="openNewDefinitionModalBtn" class="m-3" mat-raised-button
+        color="primary" (click)="openNewDefinitionModal()">
     <mat-icon>add</mat-icon>
     Add Definition
 </button>

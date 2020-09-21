@@ -3,7 +3,7 @@
     <input id="showVersionedHistory" type="checkbox" [(ngModel)]="showVersioned">
     <label for="showVersionedHistory">Only show versioned revisions.</label>
     <button *ngIf="numberSelected===2" id="historyCompareBtn" mat-raised-button
-            (click)="openHistoryCompareModal()">
+            (click)="openHistoryCompareModal()" color="primary">
         <mat-icon>compare_arrows</mat-icon> Compare
     </button>
 </div>

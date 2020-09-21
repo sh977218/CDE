@@ -14,7 +14,7 @@
                     <a id="attachment_file_url_{{i}}" class="mr-1"
                        href="/server/system/data/{{attachment.fileid}}"
                        target="_blank">{{attachment.filename}}</a>
-                    <button (click)="copyUrl(attachment)" mat-raised-button>
+                    <button (click)="copyUrl(attachment)" mat-raised-button color="primary">
                         <mat-icon id="copyUrl_{{i}}">content_copy</mat-icon> Copy URL
                     </button>
                 </div>
@@ -58,7 +58,7 @@
         <hr>
     </ng-container>
     <div *ngIf="canEdit" class="row" id="attachment_">
-        <label for="fileToUpload"><button mat-raised-button (click)="openFileDialog()">
+        <label for="fileToUpload"><button color="primary" mat-raised-button (click)="openFileDialog()">
             <mat-icon>cloud_upload</mat-icon> Upload more files</button></label>
         <input id="fileToUpload" style="display: none" type="file" (change)="upload.emit($event)">
     </div>
