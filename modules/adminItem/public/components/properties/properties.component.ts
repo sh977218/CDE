@@ -9,17 +9,6 @@ import { Property } from 'shared/models.model';
 @Component({
     selector: 'cde-properties',
     templateUrl: './properties.component.html',
-    styles: [`
-        :host ::ng-deep #propertiesDiv table{
-            width: 100%;
-            max-width: 100%;
-            margin-bottom: 1rem;
-            background-color: transparent;
-        }
-        :host ::ng-deep #propertiesDiv table tbody tr:nth-of-type(odd){
-            background-color: rgba(0, 0, 0, 0.05);
-        }
-        `]
 })
 export class PropertiesComponent implements OnInit {
     @Input() canEdit = false;

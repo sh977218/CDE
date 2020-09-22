@@ -2,10 +2,13 @@
     <div *ngIf="!editMode" class="wordwrap">
         <mat-icon title="Edit" role="link" *ngIf="isAllowed" (click)="edit()">edit</mat-icon>
         <span *ngIf="localFormat !== 'html'">
-            <cde-text-truncate [text]="value" [threshold]="500"></cde-text-truncate>
+            <cde-text-truncate [text]="value" [threshold]="500" [enableTextTruncate]="enableTextTruncate">
+            </cde-text-truncate>
         </span>
         <span *ngIf="localFormat === 'html'">
-            <cde-text-truncate [threshold]="500" [text]="value" [textType]="'html'"></cde-text-truncate>
+            <cde-text-truncate [text]="value" [threshold]="500" [enableTextTruncate]="enableTextTruncate"
+                               [textType]="'html'">
+            </cde-text-truncate>
         </span>
     </div>
     <div *ngIf="editMode">
@@ -18,10 +21,16 @@
 
 
         <ckeditor *ngIf="localFormat === 'html'" [config]="{extraPlugins: 'divarea'}"
-                [(ngModel)]="value">
+                  [(ngModel)]="value">
         </ckeditor>
 
-        <button (click)="confirmSave()"><mat-icon>check</mat-icon>Confirm</button>
-        <button (click)="discard()"><mat-icon>cancel</mat-icon>Cancel</button>
+        <button (click)="confirmSave()">
+            <mat-icon>check</mat-icon>
+            Confirm
+        </button>
+        <button (click)="discard()">
+            <mat-icon>cancel</mat-icon>
+            Cancel
+        </button>
     </div>
 </div>

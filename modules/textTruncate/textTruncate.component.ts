@@ -20,6 +20,7 @@ import { Component, Input } from '@angular/core';
 export class TextTruncateComponent {
     @Input() text!: string;
     @Input() textType: string = 'plainText';
+    @Input() enableTextTruncate = true;
     @Input() threshold: number = 500;
     @Input() customMoreLabel!: string;
     @Input() customLessLabel!: string;
