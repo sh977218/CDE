@@ -118,7 +118,7 @@ function doSyncWithMesh(allMappings: MeshClassificationDocument[], callback: Err
                 meshSyncStatus[sName].done++;
             });
             if (request.body.length > 0) {
-                esClient.bulk(request, (err: Error) => {
+                esClient.bulk(request, (err: Error | null) => {
                     if (err) {
                         consoleLog('ERR: ' + err, 'error');
                     }

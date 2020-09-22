@@ -1,6 +1,6 @@
-import { DefinePlugin } from 'webpack';
-import { merge } from 'webpack-merge';
-import baseConfig from './webpack.config';
+const {DefinePlugin} = require('webpack');
+const {merge} = require('webpack-merge');
+const baseConfig = require('./webpack.config');
 
 const webpackConfigProd = merge(baseConfig, {
     mode: 'production',
@@ -35,4 +35,4 @@ if (process.env.COVERAGE && webpackConfigProd.module) {
     });
 }
 
-export default webpackConfigProd;
+module.exports = webpackConfigProd;

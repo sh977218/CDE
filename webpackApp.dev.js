@@ -1,20 +1,20 @@
-import { createHash } from 'crypto';
-import * as ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
-import { merge } from 'webpack-merge';
-import baseConfig from './webpack.dev';
-import appConfig from './webpackApp';
+const {createHash} = require('crypto');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+const {merge} = require('webpack-merge');
+const baseConfig = require('./webpack.dev');
+const appConfig = require('./webpackApp');
 
-function digest(str: string): string {
+function digest(str) {
     return createHash('md5')
         .update(str)
         .digest('hex');
 }
 
-function cacheKey(options: never, request: string) {
+function cacheKey(options, request) {
     return `build:cache:${digest(request)}`;
 }
 
-export default merge(baseConfig, appConfig, {
+module.exports = merge(baseConfig, appConfig, {
     module: {
         rules: [
             {
@@ -41,4 +41,4 @@ export default merge(baseConfig, appConfig, {
             warningsFilter: /export .* was not found in/
         }
     }
-} as any);
+});

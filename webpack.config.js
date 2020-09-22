@@ -1,11 +1,10 @@
-import * as Config from 'config';
-import { ContextReplacementPlugin, DefinePlugin, ProvidePlugin } from 'webpack';
-import * as MiniCssExtractPlugin from 'mini-css-extract-plugin';
+const config = require('config');
+const {ContextReplacementPlugin, DefinePlugin, ProvidePlugin} = require('webpack');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
-const config = Config as any;
 const APP_DIR = __dirname;
 
-const w: any = {
+module.exports = {
     context: APP_DIR,
     module: {
         rules: [
@@ -42,10 +41,14 @@ const w: any = {
                 ]
             },
             {test: /\.global\.scss$/, exclude: [/node_modules/, /common.scss$/], use: ['style-loader', 'css-loader', 'sass-loader']},
-            {test: /\.(style|component)\.scss$/, exclude: [/node_modules/, /common.scss$/], use: ['to-string-loader', 'css-loader', 'sass-loader']},
+            {
+                test: /\.(style|component)\.scss$/,
+                exclude: [/node_modules/, /common.scss$/],
+                use: ['to-string-loader', 'css-loader', 'sass-loader']
+            },
             {test: /\.html$/, use: [{loader: 'html-loader', options: {attrs: ['img:src', 'source:srcset'], minimize: false}}]},
             {test: /\.(eot|png|svg|ttf|webp|woff|woff2)$/, use: [{loader: 'url-loader', options: {limit: '8192'}}]},
-            {test: /[\/\\]@angular[\/\\].+\.js$/, parser: { system: true }}
+            {test: /[\/\\]@angular[\/\\].+\.js$/, parser: {system: true}}
         ]
     },
     plugins: [
@@ -63,7 +66,7 @@ const w: any = {
             NAVIGATION_HEIGHT: 56,
         }),
     ],
-    performance: { hints: false },
+    performance: {hints: false},
     resolve: {
         unsafeCache: false,
         extensions: ['.ts', '.tsx', '.js', '.json', '.html', '.css'],
@@ -73,5 +76,3 @@ const w: any = {
         angular: true
     }
 };
-
-export default w;
