@@ -1,12 +1,12 @@
-import * as CleanWebpackPlugin from 'clean-webpack-plugin';
-import * as CopyWebpackPlugin from 'copy-webpack-plugin';
-import { createHash } from 'crypto';
-import * as FileListPlugin from 'file-list-plugin';
-import { readFileSync } from 'fs';
-import { keys } from 'lodash';
-import { resolve } from 'path';
-import { DefinePlugin } from 'webpack';
-import { htmlServedUri } from 'shared/serverConstants';
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const {createHash} = require('crypto');
+const FileListPlugin = require('file-list-plugin');
+const {readFileSync} = require('fs');
+const {keys} = require('lodash');
+const {resolve} = require('path');
+const {DefinePlugin} = require('webpack');
+const {htmlServedUri} = require('./shared/serverConstants');
 
 const APP_DIR = __dirname;
 
@@ -19,7 +19,7 @@ const assets = [
     '/cde/public/assets/img/min/NLM-logo.png',
 ];
 
-export default {
+module.exports = {
     entry: {
         cde: './modules/_app/main.ts'
     },
@@ -33,7 +33,7 @@ export default {
         new CleanWebpackPlugin(['dist/app'], {root: process.cwd()}),
         new CopyWebpackPlugin([
             {from: 'modules/_app/assets/'},
-            {from: 'node_modules/material-design-lite/material.min.js', transform: (content: Buffer) => content.toString()
+            {from: 'node_modules/material-design-lite/material.min.js', transform: (content/*Buffer*/) => content.toString()
                     .replace('//# sourceMappingURL=material.min.js.map', '')},
             {from: 'node_modules/material-design-lite/material.min.css'}
         ]),
@@ -42,10 +42,10 @@ export default {
         }),
         new FileListPlugin({
             fileName: 'sw.js',
-            itemsFromCompilation: function defaultItemsFromCompilation(compilation: any) {
+            itemsFromCompilation: function defaultItemsFromCompilation(compilation) {
                 return keys(compilation.assets);
             },
-            format: function defaultFormat(listItems: string[]) {
+            format: function defaultFormat(listItems /*string[]*/) {
                 let sw = readFileSync('modules/_app/sw.template.js', {encoding: 'utf8'});
                 const filesInsert = listItems.map(e => '/app/' + e).concat(assets).map(e => '"' + e + '"').join(',');
                 const version = createHash('md5').update(filesInsert).digest('hex').substr(0, 4);

@@ -1,10 +1,10 @@
-import * as CleanWebpackPlugin from 'clean-webpack-plugin';
-import { resolve } from 'path';
-import { DefinePlugin } from 'webpack';
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+const {resolve} = require('path');
+const {DefinePlugin} = require('webpack');
 
 const APP_DIR = __dirname;
 
-export default {
+module.exports = {
     entry: {
         native: './frontEnd/_nativeRenderApp/nativeRenderApp.ts'
     },

@@ -22,16 +22,14 @@ public class VersionNumberValidator extends NlmCdeBaseTest {
         textNotPresent(validationError);
         findElement(By.id("newVersion")).sendKeys("/23");
         textPresent(validationError);
-        findElement(By.id("newVersion")).sendKeys(Keys.BACK_SPACE);
-        findElement(By.id("newVersion")).sendKeys(Keys.BACK_SPACE);
-        findElement(By.id("newVersion")).sendKeys(Keys.BACK_SPACE);
-        findElement(By.id("newVersion")).sendKeys(Keys.BACK_SPACE);
+        findElement(By.id("newVersion")).sendKeys(Keys.BACK_SPACE, Keys.BACK_SPACE, Keys.BACK_SPACE, Keys.BACK_SPACE);
         textNotPresent(validationError);
+        hangon(1);
         findElement(By.id("newVersion")).sendKeys("123#abc");
+        wait.until(ExpectedConditions.textToBePresentInElementValue(By.id("newVersion"), "123#abc"));
         textPresent(validationError);
         clickElement(By.id("cancelSaveBtn"));
         modalGone();
     }
-
 
 }

@@ -1,11 +1,11 @@
-import * as CleanWebpackPlugin from 'clean-webpack-plugin';
-import * as CopyWebpackPlugin from 'copy-webpack-plugin';
-import { resolve } from 'path';
-import { DefinePlugin } from 'webpack';
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const {resolve} = require('path');
+const {DefinePlugin} = require('webpack');
 
 const APP_DIR = __dirname;
 
-export default {
+module.exports = {
     entry: {
         fhir: './frontEnd/_fhirApp/fhirApp.ts'
     },
