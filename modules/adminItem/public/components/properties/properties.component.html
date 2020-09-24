@@ -1,32 +1,35 @@
 <h4 class="section-header">Properties</h4>
-<div *ngIf="elt.properties.length === 0">There are no properties.</div>
-<ng-container *ngFor="let prop of elt.properties;let i = index">
-    <dl class="row">
-        <dt class="col-2 text-right">
-            <ng-container *ngIf="canEdit && prop.edit">Confirm Delete
-                <mat-icon (click)="removePropertyByIndex(i)" id="confirmRemoveProperty-{{i}}">check</mat-icon>
-                <mat-icon (click)="prop.edit = false" id="cancelRemoveProperty-{{i}}">cancel</mat-icon>
-            </ng-container>
-            <mat-icon (click)="prop.edit = true" *ngIf="canEdit && !prop.edit"
-                      id="removeProperty-{{i}}">delete</mat-icon>
-            <cde-sortable-array [theArray]="elt.properties" [index]="i" *ngIf="canEdit"
-                                (cb)="eltChange.emit()"></cde-sortable-array>
-            Key:
-        </dt>
-        <dd id="key_{{i}}" class="col-10">{{prop.key}}</dd>
-        <dt class="col-2 text-right">Value:</dt>
-        <dd id="value_{{i}}" class="col-10">
-            <cde-inline-area-edit [(model)]="prop.value" (modelChange)="eltChange.emit()"
-                                  [(defFormat)]="prop.valueFormat"
-                                  [isAllowed]="canEdit"></cde-inline-area-edit>
-        </dd>
-    </dl>
-    <hr>
-</ng-container>
-<button *ngIf="canEdit && onInitDone" id="openNewPropertyModalBtn"
-        color="primary" mat-raised-button (click)="openNewPropertyModal()">
-    <mat-icon>add</mat-icon> Add Property
-</button>
+
+<div class="section-content">
+    <div *ngIf="elt.properties.length === 0">There are no properties.</div>
+    <ng-container *ngFor="let prop of elt.properties;let i = index">
+        <dl class="row">
+            <dt class="col-2 text-right">
+                <ng-container *ngIf="canEdit && prop.edit">Confirm Delete
+                    <mat-icon (click)="removePropertyByIndex(i)" id="confirmRemoveProperty-{{i}}">check</mat-icon>
+                    <mat-icon (click)="prop.edit = false" id="cancelRemoveProperty-{{i}}">cancel</mat-icon>
+                </ng-container>
+                <mat-icon (click)="prop.edit = true" *ngIf="canEdit && !prop.edit"
+                          id="removeProperty-{{i}}">delete</mat-icon>
+                <cde-sortable-array [theArray]="elt.properties" [index]="i" *ngIf="canEdit"
+                                    (cb)="eltChange.emit()"></cde-sortable-array>
+                Key:
+            </dt>
+            <dd id="key_{{i}}" class="col-10">{{prop.key}}</dd>
+            <dt class="col-2 text-right">Value:</dt>
+            <dd id="value_{{i}}" class="col-10">
+                <cde-inline-area-edit [(model)]="prop.value" (modelChange)="eltChange.emit()"
+                                      [(defFormat)]="prop.valueFormat" [enableTextTruncate]="false"
+                                      [isAllowed]="canEdit"></cde-inline-area-edit>
+            </dd>
+        </dl>
+        <hr>
+    </ng-container>
+    <button *ngIf="canEdit && onInitDone" id="openNewPropertyModalBtn" mat-raised-button
+            color="primary" (click)="openNewPropertyModal()">
+        <mat-icon>add</mat-icon> Add Property
+    </button>
+</div>
 
 <ng-template #newPropertyContent>
     <h4 mat-dialog-title>Add Property</h4>

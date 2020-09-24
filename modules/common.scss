@@ -584,6 +584,12 @@ input.ng-invalid:not([matInput]) {
   background-image: linear-gradient(to right, #cac8c8, white);
 }
 
+.section-content {
+  overflow: auto;
+  width: 100%;
+  max-height: 500px;
+}
+
 .comment-div {
   padding-left: 10px;
   box-shadow: inset 10px 0 5px -2px #888;
