@@ -1,4 +1,5 @@
 <h4 class="section-header">Properties</h4>
+
 <div class="section-content">
     <div *ngIf="elt.properties.length === 0">There are no properties.</div>
     <ng-container *ngFor="let prop of elt.properties;let i = index">
@@ -24,7 +25,8 @@
         </dl>
         <hr>
     </ng-container>
-    <button *ngIf="canEdit && onInitDone" id="openNewPropertyModalBtn" mat-raised-button (click)="openNewPropertyModal()">
+    <button *ngIf="canEdit && onInitDone" id="openNewPropertyModalBtn" mat-raised-button
+            color="primary" (click)="openNewPropertyModal()">
         <mat-icon>add</mat-icon> Add Property
     </button>
 </div>

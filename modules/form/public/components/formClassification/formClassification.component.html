@@ -5,11 +5,11 @@
     <ng-container *ngIf="!elt.isDraft">
         <h4> Classification</h4>
         <button *ngIf="isAllowedModel.isOrgCurator()" mat-raised-button id="openClassificationModalBtn"
-                (click)="openClassifyItemModal()">
+                (click)="openClassifyItemModal()" color="primary">
             <mat-icon>folder_open</mat-icon> Classify this Form
         </button>
         <button *ngIf="isAllowedModel.isOrgCurator() && elt.formElements.length > 0"
-                mat-raised-button id="openClassifyCdesModalBtn"
+                mat-raised-button id="openClassifyCdesModalBtn" color="primary"
                 (click)="openClassifyCdesModal()">
             <mat-icon>folder_open</mat-icon> Classify CDEs
         </button>

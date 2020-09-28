@@ -20,7 +20,7 @@
                         <input matInput name="q" id="ftsearch-input" placeholder="Search {{searchForm?'Forms':'CDEs'}}"
                                maxlength="500" [(ngModel)]="cdeSearchTerm">
                         <mat-icon [matMenuTriggerFor]="menu" matSuffix style="height: 32px">keyboard_arrow_down</mat-icon>
-                        <button mat-raised-button matSuffix color="basic" (click)="search()">
+                        <button mat-raised-button matSuffix color="primary" (click)="search()">
                             <mat-icon id="search.submit">search</mat-icon> Search
                         </button>
                     </mat-form-field>

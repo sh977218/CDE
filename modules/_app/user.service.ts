@@ -142,7 +142,7 @@ export class UserService {
             <p>Your session was automatically timed out. </p>
         </div>
         <div mat-dialog-actions>
-            <button mat-raised-button [mat-dialog-close]="" class="float-right">OK</button>
+            <button mat-raised-button [mat-dialog-close]="" class="float-right" color="primary">OK</button>
         </div>
     `,
 })

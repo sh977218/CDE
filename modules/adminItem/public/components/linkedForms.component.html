@@ -1,4 +1,4 @@
-<button mat-raised-button id="openLinkedFormsModalBtn" (click)="openLinkedFormsModal()">Linked Forms</button>
+<button mat-raised-button id="openLinkedFormsModalBtn" (click)="openLinkedFormsModal()" color="primary">Linked Forms</button>
 
 <ng-template #linkedFormsContent>
     <h4 mat-dialog-title>Linked Forms</h4>
@@ -7,7 +7,7 @@
             <p>{{getFormText()}}</p>
 
             <button mat-raised-button *ngIf="forms && forms.length > 0" id="seeAllLinkedFormsButton"
-                (click)="viewLinkedForms()">
+                (click)="viewLinkedForms()" color="primary">
                 <mat-icon>visibility</mat-icon> See all linked forms</button>
 
             <div *ngIf="forms && forms.length > 0">

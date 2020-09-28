@@ -1,5 +1,6 @@
-<button mat-raised-button [matMenuTriggerFor]="exportMenu" id="export">
-    <mat-icon>play_for_work</mat-icon> Export Search <mat-icon>arrow_drop_down</mat-icon></button>
+<button mat-raised-button [matMenuTriggerFor]="exportMenu" id="export" color="primary">
+    <mat-icon>play_for_work</mat-icon> Export Search <mat-icon>arrow_drop_down</mat-icon>
+</button>
 
 <mat-menu #exportMenu>
     <button *ngFor="let option of exportOptions" mat-menu-item (click)="exportType.emit(option.id)"
