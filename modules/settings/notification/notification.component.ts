@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
-import _noop from 'lodash/noop';
+import * as _noop from 'lodash/noop';
 import { PushNotificationSubscriptionService } from '_app/pushNotificationSubscriptionService';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';

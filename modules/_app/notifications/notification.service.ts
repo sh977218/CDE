@@ -4,7 +4,7 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { ApprovalService } from '_app/notifications/approval.service';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
-import _noop from 'lodash/noop';
+import * as _noop from 'lodash/noop';
 import { assertUnreachable, Cb, Task, TASK_STATE_UNREAD } from 'shared/models.model';
 import { partition } from 'shared/system/util';
 import { Dictionary } from 'async';

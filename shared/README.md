@@ -4,7 +4,7 @@
 * async
    * use `async/*`
 * lodash
-   * use `lodash/*`
+   * use `lodash/*` (must be in cde.d.ts until the types are fixed)
 * node
 * rxjs
    * use pipe() with `rxjs/operators`

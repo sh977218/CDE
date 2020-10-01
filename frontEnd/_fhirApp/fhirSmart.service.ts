@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import FHIR from 'fhirclient';
+import * as FHIR from 'fhirclient';
 
 import { asRefString } from 'shared/mapping/fhir/datatype/fhirReference';
 import {

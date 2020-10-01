@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import _cloneDeep from 'lodash/cloneDeep';
+import * as _cloneDeep from 'lodash/cloneDeep';
 import { assertUnreachable } from 'shared/models.model';
 
 type inputTypes = 'date' | 'email' | 'number' | 'select' | 'text' | 'textArea';

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import _noop from 'lodash/noop';
+import * as _noop from 'lodash/noop';
 import { Question } from 'shared/form/form.model';
 import { Cb1, Cb2, CodeAndSystem } from 'shared/models.model';
 

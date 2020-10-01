@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { UserService } from '_app/user.service';
-import _noop from 'lodash/noop';
+import * as _noop from 'lodash/noop';
 import { isSiteAdmin } from 'shared/system/authorizationShared';
 import { MatTab } from '@angular/material/tabs';
 

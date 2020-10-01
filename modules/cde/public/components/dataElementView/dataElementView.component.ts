@@ -13,8 +13,8 @@ import { SaveModalComponent } from 'adminItem/saveModal/saveModal.component';
 import { DataElementViewService } from 'cde/public/components/dataElementView/dataElementView.service';
 import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHistoryContent.component';
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
-import _cloneDeep from 'lodash/cloneDeep';
-import _noop from 'lodash/noop';
+import * as _cloneDeep from 'lodash/cloneDeep';
+import * as _noop from 'lodash/noop';
 import { ExportService } from 'non-core/export.service';
 import { LocalStorageService } from 'non-core/localStorage.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
@@ -231,28 +231,28 @@ export class DataElementViewComponent implements OnInit, AfterViewInit {
     }
 
     openCopyElementModal() {
-        this.eltCopy = _cloneDeep(this.elt);
-        this.eltCopy.classification = this.elt.classification
+        const eltCopy = this.eltCopy = _cloneDeep(this.elt);
+        eltCopy.classification = this.elt.classification
             && this.elt.classification.filter(c => this.userService.userOrgs.indexOf(c.stewardOrg.name) !== -1);
-        this.eltCopy.registrationState.administrativeNote = 'Copy of: ' + this.elt.tinyId;
-        delete this.eltCopy.tinyId;
-        delete this.eltCopy._id;
-        delete this.eltCopy.origin;
-        delete this.eltCopy.created;
-        delete this.eltCopy.updated;
-        delete this.eltCopy.imported;
-        delete this.eltCopy.updatedBy;
-        delete this.eltCopy.createdBy;
-        delete this.eltCopy.version;
-        delete this.eltCopy.history;
-        delete this.eltCopy.changeNote;
-        delete this.eltCopy.comments;
-        delete this.eltCopy.forkOf;
-        delete this.eltCopy.views;
-        this.eltCopy.ids = [];
-        this.eltCopy.sources = [];
-        this.eltCopy.designations[0].designation = 'Copy of: ' + this.eltCopy.designations[0].designation;
-        this.eltCopy.registrationState = {
+        eltCopy.registrationState.administrativeNote = 'Copy of: ' + this.elt.tinyId;
+        delete eltCopy.tinyId;
+        delete eltCopy._id;
+        delete eltCopy.origin;
+        delete eltCopy.created;
+        delete eltCopy.updated;
+        delete eltCopy.imported;
+        delete eltCopy.updatedBy;
+        delete eltCopy.createdBy;
+        delete eltCopy.version;
+        delete eltCopy.history;
+        delete eltCopy.changeNote;
+        delete eltCopy.comments;
+        delete eltCopy.forkOf;
+        delete eltCopy.views;
+        eltCopy.ids = [];
+        eltCopy.sources = [];
+        eltCopy.designations[0].designation = 'Copy of: ' + eltCopy.designations[0].designation;
+        eltCopy.registrationState = {
             registrationStatus: 'Incomplete',
             administrativeNote: 'Copy of: ' + this.elt.tinyId
         };

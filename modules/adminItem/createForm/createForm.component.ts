@@ -8,7 +8,7 @@ import { DeletedNodeEvent } from 'adminItem/classification/classificationView.co
 import { ClassifyItemComponent } from 'adminItem/classification/classifyItem.component';
 import { AlertService } from 'alert/alert.service';
 import { classifyItem } from 'core/adminItem/classification';
-import _isEqual from 'lodash/isEqual';
+import * as _isEqual from 'lodash/isEqual';
 import { IsAllowedService } from 'non-core/isAllowed.service';
 import { ClassificationClassified, ClassificationHistory, Definition, Designation } from 'shared/models.model';
 import { CdeForm } from 'shared/form/form.model';

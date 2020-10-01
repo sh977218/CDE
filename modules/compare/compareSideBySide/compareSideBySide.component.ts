@@ -4,13 +4,13 @@ import { MatDialog } from '@angular/material/dialog';
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { AlertService } from 'alert/alert.service';
 import { IsAllowedService } from 'non-core/isAllowed.service';
-import _cloneDeep from 'lodash/cloneDeep';
-import _differenceWith from 'lodash/differenceWith';
-import _get from 'lodash/get';
-import _intersectionWith from 'lodash/intersectionWith';
-import _isArray from 'lodash/isArray';
-import _isEmpty from 'lodash/isEmpty';
-import _isEqual from 'lodash/isEqual';
+import * as _cloneDeep from 'lodash/cloneDeep';
+import * as _differenceWith from 'lodash/differenceWith';
+import * as _get from 'lodash/get';
+import * as _intersectionWith from 'lodash/intersectionWith';
+import * as _isArray from 'lodash/isArray';
+import * as _isEmpty from 'lodash/isEmpty';
+import * as _isEqual from 'lodash/isEqual';
 import { forkJoin } from 'rxjs';
 import { Cb, Item } from 'shared/models.model';
 import { FormElement, FormElementsContainer, FormQuestion } from 'shared/form/form.model';
@@ -132,7 +132,7 @@ export class CompareSideBySideComponent {
                 if (!_isArray(r)) {
                     r = [r];
                 }
-                _intersectionWith(l, r, (a, b) => {
+                _intersectionWith(l, r, (a: any, b: any) => {
                     const fullMatchFnMatchDiff = option.fullMatchFn(a, b);
                     if (fullMatchFnMatchDiff) {
                         option.displayAs.display = true;
@@ -141,7 +141,7 @@ export class CompareSideBySideComponent {
                     }
                     return false;
                 });
-                _intersectionWith(l, r, (a, b) => {
+                _intersectionWith(l, r, (a: any, b: any) => {
                     const partialMatchDiff = option.partialMatchFn(a, b);
                     if (partialMatchDiff.length > 0) {
                         option.displayAs.display = true;

@@ -1,12 +1,12 @@
+import { HttpClient } from '@angular/common/http';
 import {
     ApplicationRef, Component, ComponentFactoryResolver, ComponentRef, EmbeddedViewRef, Injector, OnDestroy, Type
 } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { ActivatedRoute } from '@angular/router';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
 import { Article } from 'shared/article/article.model';
 import { ResourcesRssComponent } from 'system/public/components/resources/resourcesRss.component';
-import { ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'cde-resources',

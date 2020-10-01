@@ -1,18 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import { forwardRef, Inject, Injectable } from '@angular/core';
+import { MatTabChangeEvent } from '@angular/material/tabs';
 import { AlertService } from 'alert/alert.service';
-
-import _find from 'lodash/find';
-import _isEmpty from 'lodash/isEmpty';
-import _remove from 'lodash/remove';
+import * as _find from 'lodash/find';
+import * as _isEmpty from 'lodash/isEmpty';
+import * as _remove from 'lodash/remove';
+import { LocalStorageService } from 'non-core/localStorage.service';
 import { DataElement, DataElementElastic } from 'shared/de/dataElement.model';
 import { CdeFormElastic } from 'shared/form/form.model';
 import { iterateFesSync } from 'shared/form/fe';
-import { Item, ItemElastic } from 'shared/models.model';
 import { isCdeForm, isDataElement } from 'shared/item';
-import { MatTabChangeEvent } from '@angular/material/tabs';
-import { LocalStorageService } from 'non-core/localStorage.service';
-import { ActivatedRoute } from '@angular/router';
+import { Item, ItemElastic } from 'shared/models.model';
 
 @Injectable()
 export class QuickBoardListService {
@@ -102,12 +100,12 @@ export class QuickBoardListService {
 
     removeElement(elt: ItemElastic) {
         if (isDataElement(elt)) {
-            _remove(this.dataElements, e => e.tinyId === elt.tinyId);
+            _remove(this.dataElements, (e: DataElementElastic) => e.tinyId === elt.tinyId);
             this.saveDataElementQuickBoard();
             this.alert.addAlert('success', 'Removed from QuickBoard!');
         }
         if (isCdeForm(elt)) {
-            _remove(this.forms, e => e.tinyId === elt.tinyId);
+            _remove(this.forms, (e: CdeFormElastic) => e.tinyId === elt.tinyId);
             this.saveFormQuickBoard();
             this.alert.addAlert('success', 'Removed from QuickBoard!');
         }

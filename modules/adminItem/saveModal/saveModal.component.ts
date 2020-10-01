@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Input, Output, ViewChild, EventEmitter, TemplateRef } from '@angular/core';
 import { AlertService } from 'alert/alert.service';
-import _isEqual from 'lodash/isEqual';
+import * as _isEqual from 'lodash/isEqual';
 import { iterateFormElements } from 'shared/form/fe';
 import { MatDialog } from '@angular/material/dialog';
 import { FormQuestion, QuestionCde } from 'shared/form/form.model';

@@ -1,11 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
-import _cloneDeep from 'lodash/cloneDeep';
-import _forEach from 'lodash/forEach';
-import _differenceWith from 'lodash/differenceWith';
-import _intersectionWith from 'lodash/intersectionWith';
-import _get from 'lodash/get';
-import _isEmpty from 'lodash/isEmpty';
-import _isEqual from 'lodash/isEqual';
+import * as _cloneDeep from 'lodash/cloneDeep';
+import * as _forEach from 'lodash/forEach';
+import * as _differenceWith from 'lodash/differenceWith';
+import * as _intersectionWith from 'lodash/intersectionWith';
+import * as _get from 'lodash/get';
+import * as _isEmpty from 'lodash/isEmpty';
+import * as _isEqual from 'lodash/isEqual';
 import { Concept, Concepts, DataElement } from 'shared/de/dataElement.model';
 import { CdeForm, FormElement, FormOrElement, SkipLogic } from 'shared/form/form.model';
 import { isCdeForm, isDataElement } from 'shared/item';
@@ -422,7 +422,7 @@ export class CompareItemArrayComponent implements OnInit {
 }
 
 function doCompareArray(newer: any, older: any, options: any[]) {
-    _forEach(options, option => {
+    _forEach(options, (option: any) => {
         if (!newer && !older) {
             option.match = true;
             option.display = false;
@@ -444,14 +444,14 @@ function doCompareArray(newer: any, older: any, options: any[]) {
 }
 
 function doCompareArrayImpl(currentArray: any[], priorArray: any[], option: any) {
-    const inCurrentNotInPrior = _differenceWith(currentArray, priorArray, option.isEqual).map(o => {
+    const inCurrentNotInPrior = _differenceWith(currentArray, priorArray, option.isEqual).map((o: any) => {
         const temp: any = {};
         temp.currentElt = o;
         temp.priorElt = o;
         temp.add = true;
         return temp;
     });
-    const inPriorNotInCurrent: any[] = _differenceWith(priorArray, currentArray, option.isEqual).map(o => {
+    const inPriorNotInCurrent: any[] = _differenceWith(priorArray, currentArray, option.isEqual).map((o: any) => {
         const temp: any = {};
         temp.currentElt = o;
         temp.priorElt = o;
@@ -459,7 +459,7 @@ function doCompareArrayImpl(currentArray: any[], priorArray: any[], option: any)
         return temp;
     });
     const inPriorInCurrent: any[] = [];
-    _intersectionWith(priorArray, currentArray, (a, b) => {
+    _intersectionWith(priorArray, currentArray, (a: any, b: any) => {
         const equal = option.isEqual(a, b);
         if (equal) {
             const temp: any = {};
@@ -494,7 +494,7 @@ function fixFormElement(f: FormElement) {
 function flatFormQuestions(fe: FormOrElement, questions: (FormElement & { sectionId?: string })[]) {
     let index = 0;
     if (fe.formElements !== undefined) {
-        _forEach(fe.formElements, e => {
+        _forEach(fe.formElements, (e: FormElement) => {
             if (e.elementType && e.elementType === 'question') {
                 const questionCopy = _cloneDeep(e);
                 fixFormElement(questionCopy);

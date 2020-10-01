@@ -4,12 +4,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
 import { IsAllowedService } from 'non-core/isAllowed.service';
-import { Subject } from 'rxjs';
-import { empty } from 'rxjs';
-import { timer } from 'rxjs';
+import { empty, Subject, timer } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, take } from 'rxjs/operators';
 import { Comment, CommentReply } from 'shared/models.model';
-import io from 'socket.io-client';
+import * as io from 'socket.io-client';
 
 interface ReplyDraft {
      text?: string;

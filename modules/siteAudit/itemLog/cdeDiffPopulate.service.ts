@@ -5,7 +5,7 @@
 //   <td class="newValue">{{d.newValue}}</td>
 //   <td class="previousValue">{{d.previousValue}}</td>
 // </tr>
-import _isEmpty from 'lodash/isEmpty';
+import * as _isEmpty from 'lodash/isEmpty';
 import { capCase, decamelize } from 'shared/system/util';
 import { EltLogDiff, EltLogDiffAmend } from 'shared/models.model';
 

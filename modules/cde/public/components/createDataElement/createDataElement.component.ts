@@ -7,8 +7,8 @@ import { ClassifyItemComponent } from 'adminItem/classification/classifyItem.com
 import { AlertService } from 'alert/alert.service';
 import { DeCompletionService } from 'cde/public/components/completion/deCompletion.service';
 import { classifyItem } from 'core/adminItem/classification';
-import _cloneDeep from 'lodash/cloneDeep';
-import _isEqual from 'lodash/isEqual';
+import * as _cloneDeep from 'lodash/cloneDeep';
+import * as _isEqual from 'lodash/isEqual';
 import { IsAllowedService } from 'non-core/isAllowed.service';
 import { LocalStorageService } from 'non-core/localStorage.service';
 import { DataElement } from 'shared/de/dataElement.model';

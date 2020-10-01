@@ -1,6 +1,6 @@
 import { FhirMapped, getMapPropertyFromId, supportedResourcesMaps } from './resources';
 import { ResourceTreeResource } from './resourceTree';
-import _isEqual from 'lodash/isEqual';
+import * as _isEqual from 'lodash/isEqual';
 import { assertThrow } from 'shared/models.model';
 import { questionMulti } from 'shared/form/fe';
 import { FormQuestion } from 'shared/form/form.model';

@@ -1,5 +1,6 @@
+import * as _intersection from 'lodash/intersection';
+import * as _union from 'lodash/union';
 import { Board, Comment, Item, User } from 'shared/models.model';
-import { uniq } from 'lodash';
 
 export type UserRoles = 'DocumentationEditor' | 'BoardPublisher' | 'CommentAuthor' |
     'CommentReviewer' | 'AttachmentReviewer' | 'OrgAuthority';
@@ -39,12 +40,15 @@ export function canRemoveComment(user?: User, comment?: Comment, element?: Board
         || isSiteAdmin(user);
 }
 
-export function addRole(user: User, role: string) {
+export function addRole(user: User, role: UserRoles) {
     if (!hasRole(user, role)) {
-        if (!user.roles) {
-            user.roles = [];
-        }
-        user.roles.push(role);
+        user.roles = _intersection(
+            _union(
+                Array.isArray(user.roles) ? user.roles : [],
+                [role]
+            ),
+            rolesEnum
+        );
     }
 }
 
