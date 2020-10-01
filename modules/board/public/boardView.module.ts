@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
-import { AdminItemModule } from 'adminItem/public/adminItem.module';
+import { AdminItemModule } from 'adminItem/adminItem.module';
 import { BoardModule } from 'board/public/board.module';
 import { BoardViewComponent } from 'board/public/components/boardView/boardView.component';
 import { CdeSearchModule } from 'cde/public/cdeSearch.module';

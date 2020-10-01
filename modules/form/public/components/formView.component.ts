@@ -6,7 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AlertService } from 'alert/alert.service';
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { UserService } from '_app/user.service';
-import { SaveModalComponent, SaveModalFormQuestion } from 'adminItem/public/components/saveModal/saveModal.component';
+import { SaveModalComponent, SaveModalFormQuestion } from 'adminItem/saveModal/saveModal.component';
 import * as async_forEach from 'async/forEach';
 import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
 import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHistoryContent.component';

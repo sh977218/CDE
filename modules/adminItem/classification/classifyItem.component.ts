@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ClassifyItemDialogComponent } from 'adminItem/public/components/classification/classifyItemDialog.component';
+import { ClassifyItemDialogComponent } from 'adminItem/classification/classifyItemDialog.component';
 import { ClassificationClassified } from 'shared/models.model';
 
 export interface ClassifyItemDialogData {

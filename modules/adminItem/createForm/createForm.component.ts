@@ -4,8 +4,8 @@ import { Component, Input, Output, OnInit, ViewChild, QueryList, ViewChildren, E
 import { Router } from '@angular/router';
 import { TreeComponent } from '@circlon/angular-tree-component';
 import { UserService } from '_app/user.service';
-import { DeletedNodeEvent } from 'adminItem/public/components/classification/classificationView.component';
-import { ClassifyItemComponent } from 'adminItem/public/components/classification/classifyItem.component';
+import { DeletedNodeEvent } from 'adminItem/classification/classificationView.component';
+import { ClassifyItemComponent } from 'adminItem/classification/classifyItem.component';
 import { AlertService } from 'alert/alert.service';
 import { classifyItem } from 'core/adminItem/classification';
 import _isEqual from 'lodash/isEqual';

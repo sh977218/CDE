@@ -9,7 +9,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AlertService } from 'alert/alert.service';
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { UserService } from '_app/user.service';
-import { SaveModalComponent } from 'adminItem/public/components/saveModal/saveModal.component';
+import { SaveModalComponent } from 'adminItem/saveModal/saveModal.component';
 import { DataElementViewService } from 'cde/public/components/dataElementView/dataElementView.service';
 import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHistoryContent.component';
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';

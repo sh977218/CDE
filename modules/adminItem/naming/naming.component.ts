@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 
-import { NewDesignationComponent } from 'adminItem/public/components/naming/designation/newDesignation.component';
-import { NewDefinitionComponent } from 'adminItem/public/components/naming/definition/newDefinition.component';
+import { NewDesignationComponent } from 'adminItem/naming/designation/newDesignation.component';
+import { NewDefinitionComponent } from 'adminItem/naming/definition/newDefinition.component';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import _noop from 'lodash/noop';
 import { MatDialog } from '@angular/material/dialog';

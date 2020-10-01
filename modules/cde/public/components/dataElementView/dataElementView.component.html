@@ -3,7 +3,7 @@
 </div>
 <div class="container-fluid" itemscope="http://schema.org/MedicalCode">
     <mat-sidenav-container>
-        <mat-sidenav mode="side" opened fixedInViewport="true" fixedTopGap="64" fixedBottomGap="134">
+        <mat-sidenav #navDrawer mode="side" opened fixedInViewport="true" fixedTopGap="64" fixedBottomGap="134">
             <mat-list id="side-nav" role="list" class="border-1">
                 <a mat-list-item role="listitem" *ngFor="let sideNavItem of sideNavItems" class="hand-cursor"
                    [class.bg-active]="activeSection === sideNavItem.fragment" [id]="sideNavItem.id"
@@ -66,6 +66,10 @@
                 <div id="eltMenu">
                     <mat-toolbar class="bg-white">
                         <mat-toolbar-row>
+                            <button mat-raised-button id="toggleSidenavBtn" color="primary"
+                                    (click)="navDrawer.toggle();">
+                                <mat-icon>menu</mat-icon>
+                            </button>
                             <button mat-raised-button id="export" class="mr-1" #exportMenuTrigger="matMenuTrigger"
                                     [matMenuTriggerFor]="exportMenu" color="primary">
                                 <mat-icon>play_for_work</mat-icon>
@@ -101,7 +105,8 @@
                                     </a>
                                 </ng-template>
                             </mat-menu>
-                            <button *ngIf="quickBoardService.canAddElement(elt)" id="addToQuickBoard" mat-raised-button color="primary"
+                            <button *ngIf="quickBoardService.canAddElement(elt)" id="addToQuickBoard" mat-raised-button
+                                    color="primary"
                                     title="Add to Compare List" (click)="quickBoardService.addToQuickBoard(elt)">
                                 <mat-icon>add</mat-icon>
                                 <span class="d-none d-md-inline-block"> Add to Quick Board</span>

@@ -5,7 +5,7 @@ import { MatSelectChange } from '@angular/material/select';
 import { IActionMapping, TreeComponent, TreeNode } from '@circlon/angular-tree-component';
 import { AlertService } from 'alert/alert.service';
 import { UserService } from '_app/user.service';
-import { ClassifyItemComponent } from 'adminItem/public/components/classification/classifyItem.component';
+import { ClassifyItemComponent } from 'adminItem/classification/classifyItem.component';
 import { ClassificationService } from 'non-core/classification.service';
 import { empty, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';

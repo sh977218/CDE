@@ -1,5 +1,9 @@
 <h4 class="section-header">Reference Documents</h4>
-<div *ngIf="elt.referenceDocuments.length === 0">There are no Reference Documents.</div>
+<div *ngIf="elt.referenceDocuments.length === 0" class="row ">
+    <div class="offset-1">
+        There are no Reference Documents.
+    </div>
+</div>
 <ng-container *ngFor="let rd of elt.referenceDocuments;let i = index">
     <dl class="row">
         <dt class="col-2 text-right">
@@ -14,18 +18,18 @@
                                 (cb)="eltChange.emit()"></cde-sortable-array>
             ID:
         </dt>
-        <dd id="id_{{i}}" class="col-9">{{rd.referenceDocumentId}}</dd>
+        <dd id="id_{{i}}" class="col-10">{{rd.referenceDocumentId}}</dd>
         <dt class="col-2 text-right">Title:</dt>
-        <dd id="title_{{i}}" class="col-9">{{rd.title}}</dd>
+        <dd id="title_{{i}}" class="col-10">{{rd.title}}</dd>
         <dt class="col-2 text-right">URI:</dt>
-        <dd id="uri_{{i}}" class="col-9"><a href="{{rd.uri}}" target="_blank" rel="noopener noreferrer">{{rd.uri}}</a>
+        <dd id="uri_{{i}}" class="col-10"><a href="{{rd.uri}}" target="_blank" rel="noopener noreferrer">{{rd.uri}}</a>
         </dd>
         <dt class="col-2 text-right">Provider Org:</dt>
-        <dd id="providerOrg_{{i}}" class="col-9">{{rd.providerOrg}}</dd>
+        <dd id="providerOrg_{{i}}" class="col-10">{{rd.providerOrg}}</dd>
         <dt class="col-2 text-right">Language Code:</dt>
-        <dd id="languageCode_{{i}}" class="col-9">{{rd.languageCode}}</dd>
+        <dd id="languageCode_{{i}}" class="col-10">{{rd.languageCode}}</dd>
         <dt class="col-2 text-right">Document:</dt>
-        <dd id="document_{{i}}" class="col-9">{{rd.document}}</dd>
+        <dd id="document_{{i}}" class="col-10">{{rd.document}}</dd>
     </dl>
     <hr>
 </ng-container>
