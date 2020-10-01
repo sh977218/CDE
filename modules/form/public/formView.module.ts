@@ -19,7 +19,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { TreeModule } from '@circlon/angular-tree-component';
-import { AdminItemModule } from 'adminItem/public/adminItem.module';
+import { AdminItemModule } from 'adminItem/adminItem.module';
 import { HotkeyModule } from 'angular2-hotkeys';
 import { BoardModule } from 'board/public/board.module';
 import { CdeModule } from 'cde/public/cde.module';

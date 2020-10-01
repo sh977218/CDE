@@ -1,23 +1,28 @@
 <h4 class="section-header">Properties</h4>
 
 <div class="section-content">
-    <div *ngIf="elt.properties.length === 0">There are no properties.</div>
+    <div *ngIf="elt.properties.length === 0" class="row">
+        <div class="offset-1">
+            There are no properties.
+        </div>
+    </div>
     <ng-container *ngFor="let prop of elt.properties;let i = index">
         <dl class="row">
-            <dt class="col-2 text-right">
+            <dt class="col-lg-2 col-md-6 col-sm-12 text-right">
                 <ng-container *ngIf="canEdit && prop.edit">Confirm Delete
                     <mat-icon (click)="removePropertyByIndex(i)" id="confirmRemoveProperty-{{i}}">check</mat-icon>
                     <mat-icon (click)="prop.edit = false" id="cancelRemoveProperty-{{i}}">cancel</mat-icon>
                 </ng-container>
                 <mat-icon (click)="prop.edit = true" *ngIf="canEdit && !prop.edit"
-                          id="removeProperty-{{i}}">delete</mat-icon>
+                          id="removeProperty-{{i}}">delete
+                </mat-icon>
                 <cde-sortable-array [theArray]="elt.properties" [index]="i" *ngIf="canEdit"
                                     (cb)="eltChange.emit()"></cde-sortable-array>
                 Key:
             </dt>
-            <dd id="key_{{i}}" class="col-10">{{prop.key}}</dd>
-            <dt class="col-2 text-right">Value:</dt>
-            <dd id="value_{{i}}" class="col-10">
+            <dd id="key_{{i}}" class="col-lg-10 col-md-6 col-sm-12">{{prop.key}}</dd>
+            <dt class="col-lg-2 col-md-6 col-sm-12 text-right">Value:</dt>
+            <dd id="value_{{i}}" class="col-lg-10 col-md-6 col-sm-12">
                 <cde-inline-area-edit [(model)]="prop.value" (modelChange)="eltChange.emit()"
                                       [(defFormat)]="prop.valueFormat" [enableTextTruncate]="false"
                                       [isAllowed]="canEdit"></cde-inline-area-edit>
@@ -27,7 +32,8 @@
     </ng-container>
     <button *ngIf="canEdit && onInitDone" id="openNewPropertyModalBtn" mat-raised-button
             color="primary" (click)="openNewPropertyModal()">
-        <mat-icon>add</mat-icon> Add Property
+        <mat-icon>add</mat-icon>
+        Add Property
     </button>
 </div>
 
@@ -45,7 +51,8 @@
                 <label for="newValue">Value</label>
                 <div id="newValue">
                     <button mat-raised-button (click)="newProperty.valueFormat = ''" type="button">Plain Text</button>
-                    <button mat-raised-button (click)="newProperty.valueFormat = 'html'" type="button">Rich Text</button>
+                    <button mat-raised-button (click)="newProperty.valueFormat = 'html'" type="button">Rich Text
+                    </button>
                     <textarea name="definition" *ngIf="newProperty.valueFormat !== 'html'"
                               [(ngModel)]="newProperty.value" class="form-control" Placeholder="Property Value"
                               required></textarea>
@@ -60,9 +67,11 @@
             </div>
         </div>
         <div mat-dialog-actions>
-            <button [mat-dialog-close] color="accent" id="cancelNewPropertyBtn" mat-raised-button type="button">Cancel</button>
+            <button [mat-dialog-close] color="accent" id="cancelNewPropertyBtn" mat-raised-button type="button">Cancel
+            </button>
             <button [disabled]="!newPropertyForm.form.valid" id="createNewPropertyBtn" mat-raised-button color="primary"
-                    type="submit" [mat-dialog-close]="true">Save</button>
+                    type="submit" [mat-dialog-close]="true">Save
+            </button>
         </div>
     </form>
 </ng-template>

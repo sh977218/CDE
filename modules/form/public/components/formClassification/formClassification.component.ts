@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { UserService } from '_app/user.service';
-import { DeletedNodeEvent } from 'adminItem/public/components/classification/classificationView.component';
-import { ClassifyItemComponent } from 'adminItem/public/components/classification/classifyItem.component';
+import { DeletedNodeEvent } from 'adminItem/classification/classificationView.component';
+import { ClassifyItemComponent } from 'adminItem/classification/classifyItem.component';
 import { AlertService } from 'alert/alert.service';
 import { ClassificationService } from 'non-core/classification.service';
 import { IsAllowedService } from 'non-core/isAllowed.service';

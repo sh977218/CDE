@@ -3,7 +3,7 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 
-import { AdminItemModule } from 'adminItem/public/adminItem.module';
+import { AdminItemModule } from 'adminItem/adminItem.module';
 import { CdeModule } from 'cde/public/cde.module';
 import { CreateDataElementComponent } from 'cde/public/components/createDataElement/createDataElement.component';
 

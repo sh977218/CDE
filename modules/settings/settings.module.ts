@@ -6,7 +6,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { LoggedInGuard } from '_app/routerGuard/loggedInGuard';
 import { OrgAuthorityGuard } from '_app/routerGuard/orgAuthorityGuard';
 import { SiteAdminGuard } from '_app/routerGuard/siteAdminGuard';
-import { AdminItemModule } from 'adminItem/public/adminItem.module';
+import { AdminItemModule } from 'adminItem/adminItem.module';
 import { BoardModule } from 'board/public/board.module';
 import { CdeSearchModule } from 'cde/public/cdeSearch.module';
 import { FormSearchModule } from 'form/public/formSearch.module';

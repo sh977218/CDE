@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
-import { AdminItemModule } from 'adminItem/public/adminItem.module';
+import { AdminItemModule } from 'adminItem/adminItem.module';
 import { BoardViewTemplateComponent } from 'board/public/components/boardViewTemplate/boardViewTemplate.component';
 import { CreateBoardComponent } from './components/createBoard/createBoard.component';
 import { CreateFormFromBoardComponent } from 'board/public/components/createFormFromBoard.component';

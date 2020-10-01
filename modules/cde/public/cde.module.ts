@@ -6,7 +6,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { RouterModule } from '@angular/router';
-import { AdminItemModule } from 'adminItem/public/adminItem.module';
+import { AdminItemModule } from 'adminItem/adminItem.module';
 import { BoardModule } from 'board/public/board.module';
 import { DeCompletionComponent } from 'cde/public/components/completion/deCompletion.component';
 import { CreateDataElementComponent } from 'cde/public/components/createDataElement/createDataElement.component';

@@ -4,7 +4,7 @@ import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { ElasticService } from '_app/elastic.service';
 import { UserService } from '_app/user.service';
-import { ClassifyItemComponent } from 'adminItem/public/components/classification/classifyItem.component';
+import { ClassifyItemComponent } from 'adminItem/classification/classifyItem.component';
 import { AlertService } from 'alert/alert.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { saveAs } from 'file-saver';

@@ -2,14 +2,16 @@
 <h4 *ngIf="elt.isDraft">
     Attachments are not available in Drafts. Click the Draft slider above to view the current Published version.
 </h4>
-<div *ngIf="elt.attachments.length === 0">
-    There are no attachments.
+<div *ngIf="elt.attachments.length === 0" class="row">
+    <div class="offset-1">
+        There are no attachments.
+    </div>
 </div>
 <ng-container *ngIf="!elt.isDraft">
     <ng-container *ngFor="let attachment of elt.attachments; let i = index">
         <dl id="attachment_{{i}}" class="row">
-            <dt class="col-3 text-right">Filename:</dt>
-            <dd class="col-9">
+            <dt class="col-2 text-right">Filename:</dt>
+            <dd class="col-10">
                 <div *ngIf="!attachment.pendingApproval || canReviewAttachment; else pendingApprovalTpl">
                     <a id="attachment_file_url_{{i}}" class="mr-1"
                        href="/server/system/data/{{attachment.fileid}}"
@@ -23,8 +25,8 @@
                 </ng-template>
             </dd>
             <ng-container *ngIf="!attachment.pendingApproval">
-                <dt class="col-3 text-right">Default Image:</dt>
-                <dd id="dd_id_nlm" class="col-9">
+                <dt class="col-2 text-right">Default Image:</dt>
+                <dd id="dd_id_nlm" class="col-10">
                     <div *ngIf="attachment.filesize > 512*1024">
                         Attachments smaller than 500k can be marked as default
                     </div>
@@ -37,23 +39,23 @@
                 </dd>
             </ng-container>
             <ng-container *ngIf="canEdit">
-                <dt class="col-3 text-right">Actions:</dt>
-                <dd id="dd_version_nlm" class="col-9">
+                <dt class="col-2 text-right">Actions:</dt>
+                <dd id="dd_version_nlm" class="col-10">
                     <cde-delete-with-confirm (deleted)="removeAttachment.emit(i)"></cde-delete-with-confirm>
                 </dd>
             </ng-container>
-            <dt class="col-3 text-right">Size:</dt>
-            <dd class="col-9">
+            <dt class="col-2 text-right">Size:</dt>
+            <dd class="col-10">
                 <div *ngIf="attachment.filesize > 1024*1024">{{attachment.filesize / 1024 / 1024 | number:'1.0-1'}}
                     MB
                 </div>
                 <div *ngIf="attachment.filesize <= 1024*1024">{{attachment.filesize / 1024 | number:'1.0-1'}} kB
                 </div>
             </dd>
-            <dt class="col-3 text-right">Uploaded date:</dt>
-            <dd class="col-9">{{attachment.uploadDate | date: 'MM/dd/yyyy @ h:mma'}}</dd>
-            <dt class="col-3 text-right">Uploaded by:</dt>
-            <dd class="col-9">{{attachment.uploadedBy?.username}}</dd>
+            <dt class="col-2 text-right">Uploaded date:</dt>
+            <dd class="col-10">{{attachment.uploadDate | date: 'MM/dd/yyyy @ h:mma'}}</dd>
+            <dt class="col-2 text-right">Uploaded by:</dt>
+            <dd class="col-10">{{attachment.uploadedBy?.username}}</dd>
         </dl>
         <hr>
     </ng-container>
