@@ -8,7 +8,7 @@ import { TreeNode } from '@circlon/angular-tree-component';
 import { AlertService } from 'alert/alert.service';
 import { repeatFe, repeatFeLabel, repeatFeNumber, repeatFeQuestion } from 'core/form/fe';
 import { convertFormToSection } from 'core/form/form';
-import { FormDescriptionComponent } from 'form/public/tabs/description/formDescription.component';
+import { FormDescriptionComponent } from 'form/public/components/formDescription/formDescription.component';
 import _isEqual from 'lodash/isEqual';
 import _noop from 'lodash/noop';
 import { FormService } from 'nativeRender/form.service';
