@@ -12,8 +12,8 @@ import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service'
 import { UcumService, UcumSynonyms } from 'form/public/ucum.service';
 import { QuestionAnswerEditContentComponent } from 'form/public/tabs/description/questionAnswerEditContent.component';
 import { SelectQuestionLabelComponent } from 'form/public/tabs/description/selectQuestionLabel.component';
-import _clone from 'lodash/clone';
-import _noop from 'lodash/noop';
+import * as _clone from 'lodash/clone';
+import * as _noop from 'lodash/noop';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { switchMap, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { DATA_TYPE_ARRAY } from 'shared/de/dataElement.model';

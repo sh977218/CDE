@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { UserService } from '_app/user.service';
-import _noop from 'lodash/noop';
+import * as _noop from 'lodash/noop';
 import { ExportRecord, ExportService } from 'non-core/export.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 

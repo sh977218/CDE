@@ -1,4 +1,7 @@
-import { find, slice, sortBy, uniqWith } from 'lodash';
+import * as _find from 'lodash/find';
+import * as _slice from 'lodash/slice';
+import * as _sortBy from 'lodash/sortBy';
+import * as _uniqWith from 'lodash/uniqWith';
 import { Cb1, Classification, ClassificationElement, Item, ObjectId } from 'shared/models.model';
 import { Organization } from 'shared/system/organization';
 
@@ -13,7 +16,7 @@ export const actions: {
 };
 
 function findClassifOrCreate(elements: ClassificationElement[], category: string): ClassificationElement {
-    let found = find(elements, (element: ClassificationElement) => element.name === category);
+    let found = _find(elements, (element: ClassificationElement) => element.name === category);
     if (!found) {
         found = {name: category, elements: []};
         elements.push(found);
@@ -25,7 +28,7 @@ export function addCategoriesToOrg(org: Organization, categories: string[]): voi
     if (!org.classifications) {
         org.classifications = [];
     }
-    addCategoriesToTree(findClassifOrCreate(org.classifications, categories[0]), slice(categories, 1));
+    addCategoriesToTree(findClassifOrCreate(org.classifications, categories[0]), _slice(categories, 1));
 }
 
 export function addCategoriesToTree(tree: Classification | ClassificationElement, categories: string[]): void {
@@ -52,7 +55,7 @@ export function findLeaf(classification: Classification, categories: string[]): 
     let leaf: Classification | ClassificationElement | undefined = classification;
     let parent: Classification | ClassificationElement | undefined = classification;
     categories.forEach((category, i) => {
-        const found = find(leaf && leaf.elements || [], (element: ClassificationElement) => element.name === category);
+        const found = _find(leaf && leaf.elements || [], (element: ClassificationElement) => element.name === category);
         if (i === categories.length - 2) {
             parent = found;
         }
@@ -224,7 +227,7 @@ export interface OrgClassification {
 }
 
 function mergeElements(e1: Element[] = [], e2: Element[] = []): Element [] {
-    return sortBy(uniqWith(e1.concat(e2), (arrVal: Element, othVal: Element) => {
+    return _sortBy(_uniqWith(e1.concat(e2), (arrVal: Element, othVal: Element) => {
         if (arrVal.name === othVal.name) {
             othVal.elements = mergeElements(arrVal.elements, othVal.elements);
             return true;
@@ -235,7 +238,7 @@ function mergeElements(e1: Element[] = [], e2: Element[] = []): Element [] {
 }
 
 export function mergeOrgClassifications(c1: OrgClassification[], c2: OrgClassification[]): Element[] {
-    return sortBy(uniqWith(c1.concat(c2), (arrVal: OrgClassification, othVal: OrgClassification) => {
+    return _sortBy(_uniqWith(c1.concat(c2), (arrVal: OrgClassification, othVal: OrgClassification) => {
         if (arrVal._id === othVal._id) {
             othVal.elements = mergeElements(arrVal.elements, othVal.elements);
             return true;

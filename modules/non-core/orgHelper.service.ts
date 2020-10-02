@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { forwardRef, Inject, Injectable } from '@angular/core';
-import _noop from 'lodash/noop';
+import * as _noop from 'lodash/noop';
 import { UserService } from '_app/user.service';
 import { CbErr, Elt } from 'shared/models.model';
 import { isOrgCurator } from 'shared/system/authorizationShared';

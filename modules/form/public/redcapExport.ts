@@ -1,10 +1,11 @@
-import { CdeForm, FormElement, FormElementsContainer, FormQuestion, FormSection } from 'shared/form/form.model';
-import _isEqual from 'lodash/isEqual';
-import _uniqWith from 'lodash/uniqWith';
-import { saveAs } from 'file-saver';
-import JSZip from 'jszip';
-import { Parser } from 'json2csv';
 import { Dictionary } from 'async';
+import { saveAs } from 'file-saver';
+import { Parser } from 'json2csv';
+import * as JSZip from 'jszip';
+import * as _isEqual from 'lodash/isEqual';
+import * as _uniqWith from 'lodash/uniqWith';
+import { CdeForm, FormElement, FormElementsContainer, FormQuestion, FormSection } from 'shared/form/form.model';
+import { isQuestion } from 'shared/form/fe';
 
 const json2csvParser = new Parser({
     fields: [
@@ -138,7 +139,10 @@ export class RedcapExport {
             const sectionHeader = formElement.label ? formElement.label : '';
             const fieldLabel = formElement.instructions ? formElement.instructions.value : '';
             if (sectionsAsMatrix) {
-                const temp = _uniqWith(formElement.formElements, (a: any, b) => _isEqual(a.question.answers, b.question.answers));
+                const temp = _uniqWith(formElement.formElements, (a: FormElement, b: FormElement) => _isEqual(
+                    isQuestion(a) && a.question.datatype === 'Value List' && a.question.answers,
+                    isQuestion(b) && b.question.datatype === 'Value List' && b.question.answers
+                ));
                 if (temp.length > 1) { sectionsAsMatrix = false; }
             }
             let _sectionSkipLogic = '';

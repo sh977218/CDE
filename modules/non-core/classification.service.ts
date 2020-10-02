@@ -2,8 +2,8 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ElasticService } from '_app/elastic.service';
 import { AlertService } from 'alert/alert.service';
-import _isEqual from 'lodash/isEqual';
-import _uniqWith from 'lodash/uniqWith';
+import * as _isEqual from 'lodash/isEqual';
+import * as _uniqWith from 'lodash/uniqWith';
 import { LocalStorageService } from 'non-core/localStorage.service';
 import {
     Cb,

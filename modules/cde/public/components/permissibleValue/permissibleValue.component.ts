@@ -1,11 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { Dictionary } from 'async';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
-import { catchError, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { Dictionary } from 'async';
 import { empty, Subject } from 'rxjs';
+import { catchError, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { DataElement, DATA_TYPE_ARRAY, ValueDomainValueList, ValueDomain } from 'shared/de/dataElement.model';
 import { fixDataElement, fixDatatype } from 'shared/de/dataElement.model';
 import { PermissibleValue } from 'shared/models.model';

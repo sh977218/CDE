@@ -1,7 +1,7 @@
 import { Component, ViewChild, Input, Output, EventEmitter, TemplateRef } from '@angular/core';
 import { UserService } from '_app/user.service';
 import { TreeNode, IActionMapping } from '@circlon/angular-tree-component';
-import _noop from 'lodash/noop';
+import * as _noop from 'lodash/noop';
 import { IsAllowedService } from 'non-core/isAllowed.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { isSiteAdmin } from 'shared/system/authorizationShared';

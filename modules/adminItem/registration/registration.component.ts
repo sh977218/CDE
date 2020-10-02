@@ -1,12 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Input, Output, ViewChild, OnInit, TemplateRef } from '@angular/core';
-import _noop from 'lodash/noop';
-
-import { AlertService } from 'alert/alert.service';
+import { MatDialog } from '@angular/material/dialog';
 import { UserService } from '_app/user.service';
+import { AlertService } from 'alert/alert.service';
+import * as _noop from 'lodash/noop';
 import { Comment, CurationStatus, Item, RegistrationState } from 'shared/models.model';
 import { statusList } from 'shared/system/regStatusShared';
-import { MatDialog } from '@angular/material/dialog';
 
 @Component({
     selector: 'cde-registration',

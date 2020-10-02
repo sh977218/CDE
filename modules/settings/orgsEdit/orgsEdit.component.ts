@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { AlertService } from 'alert/alert.service';
-import _noop from 'lodash/noop';
+import * as _noop from 'lodash/noop';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { Cb } from 'shared/models.model';
 import { Organization } from 'shared/system/organization';

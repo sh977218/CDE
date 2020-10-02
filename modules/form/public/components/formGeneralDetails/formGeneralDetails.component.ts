@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { UserService } from '_app/user.service';
-import _noop from 'lodash/noop';
+import * as _noop from 'lodash/noop';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { CdeForm } from 'shared/form/form.model';
 import { supportedFhirResources, supportedFhirResourcesArray } from 'shared/mapping/fhir/fhirResource.model';

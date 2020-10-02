@@ -1,4 +1,4 @@
-import _noop from 'lodash/noop';
+import * as _noop from 'lodash/noop';
 
 export class PushNotificationSubscriptionService {
     static get lastEndpoint() {

@@ -21,10 +21,10 @@ import * as async_some from 'async/some';
 import { questionAnswered, findQuestionByTinyId } from 'core/form/fe';
 import { questionToFhirValue, storeTypedValue } from 'core/mapping/fhir/to/datatypeToItemType';
 import { getIds, getTinyId, getVersion } from 'core/form/formAndFe';
-import diff from 'deep-diff';
-import _intersectionWith from 'lodash/intersectionWith';
-import _noop from 'lodash/noop';
-import _uniq from 'lodash/uniq';
+import * as diff from 'deep-diff';
+import * as _intersectionWith from 'lodash/intersectionWith';
+import * as _noop from 'lodash/noop';
+import * as _uniq from 'lodash/uniq';
 import {
     assertThrow, assertTrue, assertUnreachable, Cb, Cb1, CbErr, CbErr1, CbErrorObj1, CbRet1, CbRet2, CdeId,
     PermissibleValue
@@ -568,7 +568,7 @@ export class CdeFhirService {
                         []);
                     const match = valueSets.get(s);
                     const names = match && match.codes;
-                    _uniq(categories).forEach(c => {
+                    _uniq(categories).forEach((c: string) => {
                         if (existingCodes.indexOf(c) === -1) {
                             if (!categoryAble.category) {
                                 categoryAble.category = [];

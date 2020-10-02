@@ -1,10 +1,9 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
-
+import { MatDialog } from '@angular/material/dialog';
 import { NewDesignationComponent } from 'adminItem/naming/designation/newDesignation.component';
 import { NewDefinitionComponent } from 'adminItem/naming/definition/newDefinition.component';
+import * as _noop from 'lodash/noop';
 import { OrgHelperService } from 'non-core/orgHelper.service';
-import _noop from 'lodash/noop';
-import { MatDialog } from '@angular/material/dialog';
 
 @Component({
     selector: 'cde-naming',

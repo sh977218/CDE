@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import _noop from 'lodash/noop';
+import * as _noop from 'lodash/noop';
 import { ElasticQueryResponseAggregationBucket, ElasticQueryResponseAggregations, ItemElastic, ModuleItem } from 'shared/models.model';
 import { Dictionary } from 'async';
 
