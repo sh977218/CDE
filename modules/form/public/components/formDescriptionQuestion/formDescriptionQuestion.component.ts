@@ -2,7 +2,7 @@ import { Component, EventEmitter, Host, Input, OnInit, Output, TemplateRef, View
 import { MatDialog } from '@angular/material/dialog';
 import { TreeNode } from '@circlon/angular-tree-component';
 import { DataElementService } from 'cde/public/dataElement.service';
-import { FormDescriptionComponent } from 'form/public/tabs/description/formDescription.component';
+import { FormDescriptionComponent } from 'form/public/components/formDescription/formDescription.component';
 import * as _isEqual from 'lodash/isEqual';
 import * as _noop from 'lodash/noop';
 import * as _toString from 'lodash/toString';

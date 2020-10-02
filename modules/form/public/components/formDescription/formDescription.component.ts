@@ -17,7 +17,7 @@ import { convertFormToSection } from 'core/form/form';
 import * as _isEmpty from 'lodash/isEmpty';
 import * as _noop from 'lodash/noop';
 import { DeCompletionService } from 'cde/public/components/completion/deCompletion.service';
-import { copySectionAnimation } from 'form/public/tabs/description/copySectionAnimation';
+import { copySectionAnimation } from './copySectionAnimation';
 import { FormService } from 'nativeRender/form.service';
 import { scrollTo, waitRendered } from 'non-core/browser';
 import { LocalStorageService } from 'non-core/localStorage.service';
