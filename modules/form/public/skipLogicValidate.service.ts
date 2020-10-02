@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { tokenSanitizer } from 'core/form/skipLogic';
-import _trim from 'lodash/trim';
+import * as _trim from 'lodash/trim';
 import { FormElement, FormElementsContainer, FormSectionOrForm, SkipLogic } from 'shared/form/form.model';
 import { getLabel, getQuestionPriorByLabel, getQuestionsPrior, tokenSplitter } from 'shared/form/skipLogic';
 

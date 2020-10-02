@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { PageEvent } from '@angular/material/paginator';
-import _noop from 'lodash/noop';
+import * as _noop from 'lodash/noop';
 import { ClassificationAudit } from 'shared/audit/classificationAudit';
 
 @Component({

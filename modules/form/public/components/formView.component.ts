@@ -7,6 +7,7 @@ import { AlertService } from 'alert/alert.service';
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { UserService } from '_app/user.service';
 import { SaveModalComponent, SaveModalFormQuestion } from 'adminItem/saveModal/saveModal.component';
+import { Dictionary } from 'async';
 import * as async_forEach from 'async/forEach';
 import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
 import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHistoryContent.component';
@@ -15,9 +16,8 @@ import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea
 import { FormViewService } from 'form/public/components/formView.service';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
 import { UcumService } from 'form/public/ucum.service';
-import _cloneDeep from 'lodash/cloneDeep';
-import _noop from 'lodash/noop';
-import { FormService } from 'nativeRender/form.service';
+import * as _cloneDeep from 'lodash/cloneDeep';
+import * as _noop from 'lodash/noop';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
 import { isIe, scrollTo } from 'non-core/browser';
 import { LocalStorageService } from 'non-core/localStorage.service';
@@ -33,7 +33,6 @@ import { CdeForm, FormElement, FormElementsContainer, FormInForm, QuestionCde } 
 import { addFormIds, getLabel, iterateFe, iterateFes, iterateFeSync, noopSkipIterCb } from 'shared/form/fe';
 import { canEditCuratedItem, isOrgCurator } from 'shared/system/authorizationShared';
 import { getQuestionPriorByLabel } from 'shared/form/skipLogic';
-import { Dictionary } from 'async';
 
 type NewDataElement = DataElement & (DatatypeContainerDate | DatatypeContainerNumber | DatatypeContainerText | DatatypeContainerTime
     | DatatypeContainerValueList) & {permissibleValues: PermissibleValue[]};
@@ -223,26 +222,26 @@ export class FormViewComponent implements OnInit {
     }
 
     openCopyElementModal() {
-        this.eltCopy = _cloneDeep(this.elt);
-        this.eltCopy.classification = this.elt.classification
+        const eltCopy = this.eltCopy = _cloneDeep(this.elt);
+        eltCopy.classification = this.elt.classification
             && this.elt.classification.filter(c => this.userService.userOrgs.indexOf(c.stewardOrg.name) !== -1);
-        this.eltCopy.registrationState.administrativeNote = 'Copy of: ' + this.elt.tinyId;
-        delete this.eltCopy.tinyId;
-        delete this.eltCopy._id;
-        delete this.eltCopy.origin;
-        delete this.eltCopy.created;
-        delete this.eltCopy.updated;
-        delete this.eltCopy.imported;
-        delete this.eltCopy.updatedBy;
-        delete this.eltCopy.createdBy;
-        delete this.eltCopy.version;
-        delete this.eltCopy.history;
-        delete this.eltCopy.changeNote;
-        delete this.eltCopy.comments;
-        this.eltCopy.ids = [];
-        this.eltCopy.sources = [];
-        this.eltCopy.designations[0].designation = 'Copy of: ' + this.eltCopy.designations[0].designation;
-        this.eltCopy.registrationState = {
+        eltCopy.registrationState.administrativeNote = 'Copy of: ' + this.elt.tinyId;
+        delete eltCopy.tinyId;
+        delete eltCopy._id;
+        delete eltCopy.origin;
+        delete eltCopy.created;
+        delete eltCopy.updated;
+        delete eltCopy.imported;
+        delete eltCopy.updatedBy;
+        delete eltCopy.createdBy;
+        delete eltCopy.version;
+        delete eltCopy.history;
+        delete eltCopy.changeNote;
+        delete eltCopy.comments;
+        eltCopy.ids = [];
+        eltCopy.sources = [];
+        eltCopy.designations[0].designation = 'Copy of: ' + eltCopy.designations[0].designation;
+        eltCopy.registrationState = {
             administrativeNote: 'Copy of: ' + this.elt.tinyId,
             registrationStatus: 'Incomplete',
         };

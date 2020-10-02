@@ -8,10 +8,10 @@ import { getFormOdm } from 'core/form/form';
 import { convertToCsv, getCdeCsvHeader, projectItemForExport } from 'core/system/export';
 import { RedcapExport } from 'form/public/redcapExport';
 import { saveAs } from 'file-saver';
-import JSZip from 'jszip';
+import * as JSZip from 'jszip';
 import JXON from 'jxon';
-import _intersectionWith from 'lodash/intersectionWith';
-import _noop from 'lodash/noop';
+import * as _intersectionWith from 'lodash/intersectionWith';
+import * as _noop from 'lodash/noop';
 import { FormService } from 'nativeRender/form.service';
 import { processRules, RegistrationValidatorService, RuleStatus } from 'non-core/registrationValidator.service';
 import { DataElement, DataElementElastic } from 'shared/de/dataElement.model';
@@ -65,7 +65,7 @@ export class ExportService {
                             formCounter++;
                             const esForm = hit._source;
                             const formCdes = getFormQuestionsAsQuestionCde(esForm);
-                            const interArr = _intersectionWith(
+                            const interArr: ItemElastic[] = _intersectionWith(
                                 nonEmptyResults,
                                 formCdes,
                                 (a: any, b: any) => a.tinyId === b.tinyId);

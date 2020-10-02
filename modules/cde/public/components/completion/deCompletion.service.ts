@@ -2,9 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ElasticService } from '_app/elastic.service';
 import { AlertService } from 'alert/alert.service';
-import { empty } from 'rxjs';
+import { empty, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
-import { Subject } from 'rxjs';
 import { DataElement } from 'shared/de/dataElement.model';
 import { SearchSettings } from 'shared/search/search.model';
 

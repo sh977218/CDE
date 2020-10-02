@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { orgAdmins as userOrgAdmins, orgCurators as userOrgCurators, userById, userByName } from 'server/user/userDb';
 import { addOrgByName, managedOrgs, orgByName } from 'server/orgManagement/orgDb';
 import { handleNotFound, handleError } from 'server/errorHandler/errorHandler';
-import { addRole, hasRole, isOrgAdmin } from 'shared/system/authorizationShared';
+import { addRole, isOrgAdmin } from 'shared/system/authorizationShared';
 import { dataElementModel } from 'server/cde/mongo-cde';
 import { formModel } from 'server/form/mongo-form';
 import { User } from 'shared/models.model';

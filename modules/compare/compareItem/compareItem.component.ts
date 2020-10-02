@@ -1,9 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { flattenClassification } from 'core/adminItem/classification';
-import _cloneDeep from 'lodash/cloneDeep';
-import _forEach from 'lodash/forEach';
-import _get from 'lodash/get';
-import _isEqual from 'lodash/isEqual';
+import * as _cloneDeep from 'lodash/cloneDeep';
+import * as _forEach from 'lodash/forEach';
+import * as _get from 'lodash/get';
+import * as _isEqual from 'lodash/isEqual';
 import { sortClassification } from 'shared/system/classificationShared';
 import { Item } from 'shared/models.model';
 
@@ -80,7 +80,7 @@ export class CompareItemComponent implements OnInit {
 }
 
 function doCompareObject(newer: any, older: any, option: any) {
-    _forEach(option, property => {
+    _forEach(option, (property: any) => {
         if (!newer && !older) {
             property.match = true;
             property.newer = '';

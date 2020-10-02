@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
-import _noop from 'lodash/noop';
+import * as _noop from 'lodash/noop';
 import { Embed, EmbedItem } from 'shared/models.model';
 
 function addEmbedItem(): EmbedItem {

@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { UserService } from '_app/user.service';
-import _noop from 'lodash/noop';
+import * as _noop from 'lodash/noop';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { DataElement } from 'shared/de/dataElement.model';
 

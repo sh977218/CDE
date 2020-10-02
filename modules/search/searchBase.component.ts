@@ -24,14 +24,14 @@ import { paramsToQueryString, trackByKey, trackByName } from 'non-core/angularHe
 import { scrollTo } from 'non-core/browser';
 import { ExportService } from 'non-core/export.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
-import _noop from 'lodash/noop';
-import { debounceTime, map } from 'rxjs/operators';
+import * as _noop from 'lodash/noop';
 import { Subscription } from 'rxjs';
+import { debounceTime, map } from 'rxjs/operators';
 import { DataType } from 'shared/de/dataElement.model';
 import { uriViewBase } from 'shared/item';
 import {
     Cb1,
-    CbErr, CurationStatus, ElasticQueryResponseAggregation, ElasticQueryResponseAggregationBucket,
+    CurationStatus, ElasticQueryResponseAggregation, ElasticQueryResponseAggregationBucket,
     ElasticQueryResponseHit, ItemElastic, ModuleItem,
     SearchResponseAggregationDe, SearchResponseAggregationForm, SearchResponseAggregationItem,
 } from 'shared/models.model';
