@@ -106,7 +106,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <mat-form-field style="width: 90%; padding-left: 30px; margin-bottom: -20px">
+            <mat-form-field style="width: 87%; padding-left: .25rem; margin-bottom: -20px">
                 <input matInput name="q" id="ftsearch-input" placeholder="Search"
                        #autoCompleteInput maxlength="500" [matAutocomplete]="auto"
                        [(ngModel)]="searchSettings.q" (ngModelChange)="searchTermAutoComplete.emit($event)">
@@ -119,10 +119,9 @@
                     {{ option }}
                 </mat-option>
             </mat-autocomplete>
-
         </form>
-        <div class="ml-auto collapse navbar-collapse" style="width:auto;"
-             id="searchBarContent" role="group" aria-label="Basic example">
+        <div id="searchBarContent" class="ml-auto collapse navbar-collapse mt-2 mt-lg-0" style="width:auto"
+             role="group" aria-label="Basic example">
             <button mat-raised-button *ngIf="embedded" id="resetSearch" class="mr-1" name="resetSearch"
                     type="button" (click)="reset()">
                 <mat-icon>delete_outline</mat-icon>

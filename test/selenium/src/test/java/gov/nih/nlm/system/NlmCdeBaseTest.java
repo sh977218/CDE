@@ -1812,8 +1812,8 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
 
     protected void approveComment(String adminUsername, String adminPassword, String username, String message) {
         mustBeLoggedInAs(adminUsername, adminPassword);
-        findElement(By.cssSelector("[data-id = 'notifications'] .mat-badge-content"));
-        clickElement(By.cssSelector("[data-id = 'notifications']"));
+        findElement(By.cssSelector("#notificationLink .mat-badge-content"));
+        clickElement(By.id("notificationLink"));
         if (message.length() >= 60) message = message.substring(0, 59).trim();
         clickElement(By.xpath("//*[contains(@class,'taskItem') and contains(.,'" + message
                 + "')]//button[contains(@class,'mat-primary')]"));
@@ -1822,18 +1822,17 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
 
     protected void authorizeComment(String adminUsername, String adminPassword, String username, String message) {
         mustBeLoggedInAs(adminUsername, adminPassword);
-        findElement(By.cssSelector("[data-id = 'notifications'] .mat-badge-content"));
-        clickElement(By.cssSelector("[data-id = 'notifications']"));
+        findElement(By.cssSelector("#notificationLink .mat-badge-content"));
+        clickElement(By.id("notificationLink"));
         if (message.length() >= 60) message = message.substring(0, 59).trim();
-        clickElement(By.xpath("//*[contains(@class,'taskItem') and contains(.,'" + message
-                + "')]//button[contains(.,'Authorize')]"));
+        clickElement(By.xpath("//*[contains(@class,'taskItem') and contains(.,'" + message + "')]//button[contains(.,'Authorize')]"));
         clickElement(By.xpath("//button[contains(.,'Yes')]"));
         textPresent("Role added");
     }
 
     protected void declineComment(String adminUsername, String adminPassword, String username, String message) {
         mustBeLoggedInAs(adminUsername, adminPassword);
-        clickElement(By.cssSelector("[data-id = 'notifications']"));
+        clickElement(By.id("notificationLink"));
         if (message.length() >= 60) message = message.substring(0, 59).trim();
         clickElement(By.xpath("//*[contains(@class,'taskItem') and contains(.,'" + message
                 + "')]//button[contains(@class,'mat-warn')]"));

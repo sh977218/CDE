@@ -44,6 +44,9 @@ import { ownKeys } from 'shared/user';
 type NamedCounts = { name: string, count: number }[];
 
 export const searchStyles = `
+    #searchDiv ::ng-deep .mat-form-field-infix {
+        border: 0;
+    }
     #searchResultInfoBar {
         font-size: 16.5px;
         vertical-align: middle;

@@ -3,76 +3,114 @@
         <a mat-button routerLink="/" id="homeLink">
             <img src="/cde/public/assets/img/min/nih-cde-logo-simple.png" alt="NLM Logo">
         </a>
-        <!--
-        enable for mobile view later
-                <button mat-icon-button (click)="sidenav.toggle()">
-                    <mat-icon>menu</mat-icon>
-                </button>
-        -->
         <span class="spacer"></span>
-        <button mat-button id="menu_cdes_link" routerLink="/cde/search">CDES</button>
-        <button mat-button id="menu_forms_link" routerLink="/form/search">FORMS</button>
-        <button mat-button id="createEltLink" *ngIf="isOrgCurator(userService.user)" [matMenuTriggerFor]="createMenu">
-            CREATE ▼
+        <button mat-icon-button class="d-md-none" aria-label="Menu" (click)="sidenav.toggle()">
+            <mat-icon>menu</mat-icon>
         </button>
-        <mat-menu #createMenu="matMenu">
-            <button mat-menu-item id="createCDELink" routerLink="/createCde">CDE</button>
-            <button mat-menu-item id="createFormLink" routerLink="/createForm">Form</button>
-        </mat-menu>
-        <button mat-button [matMenuTriggerFor]="boardMenu" id="boardsMenu">BOARDS ▼</button>
-        <mat-menu #boardMenu="matMenu">
-            <button mat-menu-item id="menu_qb_link" routerLink="/quickBoard">{{quickBoardMetaInfo()}}</button>
-            <button mat-menu-item id="publicBoardsLink" routerLink="/boardList">Public Boards</button>
-            <button mat-menu-item *ngIf="userService.user" id="myBoardsLink" routerLink="/myBoards">My Boards</button>
-        </mat-menu>
-        <button mat-button id="apiLink" routerLink="/api">API</button>
-        <button mat-button id="helpLink" [matMenuTriggerFor]="helpMenu">HELP ▼</button>
-        <mat-menu #helpMenu="matMenu">
-            <button mat-menu-item id="videosLink" routerLink="/videos">VIDEO TUTORIALS</button>
-            <button mat-menu-item id="guidesLink" routerLink="/guides">GUIDES</button>
-            <button mat-menu-item id="whatsNewLink" routerLink="/whatsNew">NEW FEATURES</button>
-            <button mat-menu-item id="takeATourLink" routerLink="/home" [queryParams]="{tour: 'yes'}">TAKE A TOUR
+        <div class="d-none d-md-block">
+            <button mat-button id="menu_cdes_link" routerLink="/cde/search">CDES</button>
+            <button mat-button id="menu_forms_link" routerLink="/form/search">FORMS</button>
+            <button mat-button id="createEltLink" *ngIf="isOrgCurator(userService.user)" [matMenuTriggerFor]="createMenu">
+                CREATE ▼
             </button>
-            <button mat-menu-item id="resourcesLink" routerLink="/resources">RESOURCES</button>
-            <button mat-menu-item id="contactUsLink" routerLink="/contactUs">CONTACT US</button>
-            <button mat-menu-item id="reportAProblemLink" feedback (send)="onFeedback($event)"
-                    [placeholder]="feedbackDescription">
-                REPORT A PROBLEM
+            <mat-menu #createMenu="matMenu">
+                <button mat-menu-item id="createCDELink" routerLink="/createCde">CDE</button>
+                <button mat-menu-item id="createFormLink" routerLink="/createForm">Form</button>
+            </mat-menu>
+            <button mat-button [matMenuTriggerFor]="boardMenu" id="boardsMenu">BOARDS ▼</button>
+            <mat-menu #boardMenu="matMenu">
+                <button mat-menu-item id="menu_qb_link" routerLink="/quickBoard">{{quickBoardMetaInfo()}}</button>
+                <button mat-menu-item id="publicBoardsLink" routerLink="/boardList">Public Boards</button>
+                <button mat-menu-item *ngIf="userService.user" id="myBoardsLink" routerLink="/myBoards">My Boards</button>
+            </mat-menu>
+            <button mat-button id="apiLink" routerLink="/api">API</button>
+            <button mat-button id="helpLink" [matMenuTriggerFor]="helpMenu">HELP ▼</button>
+            <mat-menu #helpMenu="matMenu">
+                <button mat-menu-item id="videosLink" routerLink="/videos">VIDEO TUTORIALS</button>
+                <button mat-menu-item id="guidesLink" routerLink="/guides">GUIDES</button>
+                <button mat-menu-item id="whatsNewLink" routerLink="/whatsNew">NEW FEATURES</button>
+                <button mat-menu-item id="takeATourLink" routerLink="/home" [queryParams]="{tour: 'yes'}">TAKE A TOUR
+                </button>
+                <button mat-menu-item id="resourcesLink" routerLink="/resources">RESOURCES</button>
+                <button mat-menu-item id="contactUsLink" routerLink="/contactUs">CONTACT US</button>
+                <button mat-menu-item id="reportAProblemLink" feedback (send)="onFeedback($event)"
+                        [placeholder]="feedbackDescription">
+                    REPORT A PROBLEM
+                </button>
+            </mat-menu>
+            <button mat-button *ngIf="!userService.user" (click)="loginSvc.goToLogin()" id="login_link" routerLink="/login">
+                LOGIN
             </button>
-        </mat-menu>
-        <button mat-button *ngIf="!userService.user" (click)="loginSvc.goToLogin()" id="login_link" routerLink="/login">
-            LOGIN
-        </button>
-        <button mat-button *ngIf="userService.user" id="username_link"
-                [matMenuTriggerFor]="loginMenu">{{userService.user.username | uppercase | cdeTruncateLongName}} ▼
-        </button>
-        <mat-menu #loginMenu="matMenu">
-            <button mat-menu-item routerLink="/settings/profile" id="user_settings">Settings</button>
-            <button mat-menu-item routerLink="/classificationManagement" id="user_classifications"
-                    *ngIf="isOrgCurator(userService.user)">Classifications
+            <button mat-button *ngIf="userService.user" id="username_link"
+                    [matMenuTriggerFor]="loginMenu">{{userService.user.username | uppercase | cdeTruncateLongName}} ▼
             </button>
-            <button mat-menu-item routerLink="/siteAudit" id="user_audit"
-                    *ngIf="isOrgAuthority(userService.user)">Audit
+            <mat-menu #loginMenu="matMenu">
+                <button mat-menu-item routerLink="/settings/profile" id="user_settings">Settings</button>
+                <button mat-menu-item routerLink="/classificationManagement" id="user_classifications"
+                        *ngIf="isOrgCurator(userService.user)">Classifications
+                </button>
+                <button mat-menu-item routerLink="/siteAudit" id="user_audit"
+                        *ngIf="isOrgAuthority(userService.user)">Audit
+                </button>
+                <button mat-menu-item (click)="loginSvc.logout()" target="_self" id="user_logout">Log Out
+                </button>
+            </mat-menu>
+            <button mat-icon-button id="notificationLink" (click)="notificationService.drawerToggle(); interruptEvent($event)">
+                <mat-icon [matBadge]="notificationService.getBadge()" matBadgeColor="warn" matBadgeSize="small"
+                          [matBadgeHidden]="!notificationService.getBadge()"
+                          style="margin-right: 0">{{notificationService.getIcon()}}</mat-icon>
             </button>
-            <button mat-menu-item (click)="loginSvc.logout()" target="_self" id="user_logout">Log Out
+            <button mat-icon-button routerLink="/searchPreferences" id="searchSettings">
+                <mat-icon>settings</mat-icon>
             </button>
-        </mat-menu>
-        <cde-notifications></cde-notifications>
-        <button mat-icon-button routerLink="/searchPreferences" id="searchSettings">
-            <mat-icon>settings</mat-icon>
-        </button>
+        </div>
     </mat-toolbar-row>
 </mat-toolbar>
 <mat-sidenav-container>
-    <!--
-    enable for mobile view later
-        <mat-sidenav #sidenav [mode]="'side'">
-            <mat-nav-list>
-                <a mat-list-item>CDE</a>
-                <a mat-list-item>Form</a>
-            </mat-nav-list>
-        </mat-sidenav>
-    -->
+    <mat-sidenav #sidenav mode="over" position="end">
+        <mat-nav-list>
+            <a mat-list-item routerLink="/cde/search">CDES</a>
+            <a mat-list-item routerLink="/form/search">FORMS</a>
+            <a mat-list-item *ngIf="isOrgCurator(userService.user)" [matMenuTriggerFor]="createMenu">CREATE ▼</a>
+            <mat-menu #createMenu="matMenu">
+                <a mat-menu-item routerLink="/createCde">CDE</a>
+                <a mat-menu-item routerLink="/createForm">Form</a>
+            </mat-menu>
+            <a mat-list-item [matMenuTriggerFor]="boardMenu">BOARDS ▼</a>
+            <mat-menu #boardMenu="matMenu">
+                <a mat-list-item routerLink="/quickBoard">{{quickBoardMetaInfo()}}</a>
+                <a mat-list-item routerLink="/boardList">Public Boards</a>
+                <a mat-list-item *ngIf="userService.user" routerLink="/myBoards">My Boards</a>
+            </mat-menu>
+            <a mat-list-item routerLink="/api">API</a>
+            <a mat-list-item [matMenuTriggerFor]="helpMenu">HELP ▼</a>
+            <mat-menu #helpMenu="matMenu">
+                <a mat-menu-item routerLink="/videos">VIDEO TUTORIALS</a>
+                <a mat-menu-item routerLink="/guides">GUIDES</a>
+                <a mat-menu-item routerLink="/whatsNew">NEW FEATURES</a>
+                <a mat-menu-item routerLink="/home" [queryParams]="{tour: 'yes'}">TAKE A TOUR</a>
+                <a mat-menu-item routerLink="/resources">RESOURCES</a>
+                <a mat-menu-item routerLink="/contactUs">CONTACT US</a>
+                <a mat-menu-item feedback (send)="onFeedback($event)" [placeholder]="feedbackDescription">REPORT A PROBLEM</a>
+            </mat-menu>
+            <a mat-list-item *ngIf="!userService.user" (click)="loginSvc.goToLogin()" routerLink="/login">LOGIN</a>
+            <a mat-list-item *ngIf="userService.user" [matMenuTriggerFor]="loginMenu">
+                {{userService.user.username | uppercase | cdeTruncateLongName}} ▼
+            </a>
+            <mat-menu #loginMenu="matMenu">
+                <a mat-menu-item routerLink="/settings/profile">Settings</a>
+                <a mat-menu-item routerLink="/classificationManagement" *ngIf="isOrgCurator(userService.user)">Classifications</a>
+                <a mat-menu-item routerLink="/siteAudit" *ngIf="isOrgAuthority(userService.user)">Audit</a>
+                <a mat-menu-item (click)="loginSvc.logout()" target="_self">Log Out</a>
+            </mat-menu>
+            <a mat-list-item (click)="notificationService.drawerToggle(); interruptEvent($event)">
+                <mat-icon [matBadge]="notificationService.getBadge()" matBadgeColor="warn" matBadgeSize="small"
+                          [matBadgeHidden]="!notificationService.getBadge()"
+                          style="margin-right: 0">{{notificationService.getIcon()}}</mat-icon>
+            </a>
+            <a mat-list-item routerLink="/searchPreferences"><mat-icon>settings</mat-icon></a>
+        </mat-nav-list>
+    </mat-sidenav>
     <mat-sidenav-content class="pb-3">
         <router-outlet></router-outlet>
     </mat-sidenav-content>

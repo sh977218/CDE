@@ -28,14 +28,14 @@ public class CdeReplyNotification extends NlmCdeBaseTest {
         String query = "//*[contains(@class,'notificationDrawerContent')]//div[contains(@class,'taskItem') and contains(.,'commented')]";
 
         findElement(By.cssSelector("span.mat-badge-active"));
-        clickElement(By.cssSelector("cde-notifications"));
+        clickElement(By.id("notificationLink"));
         WebElement taskItem = findElement(By.xpath(query));
         Assert.assertEquals(taskItem.getCssValue("background-color"), "rgba(209, 236, 241, 1)");
 
         clickElement(By.cssSelector(".notificationDrawerContent div.taskItem mat-icon"));
         textPresent("Cigarette Average Daily Pack Use Count");
 
-        clickElement(By.cssSelector("cde-notifications"));
+        clickElement(By.id("notificationLink"));
         taskItem = findElement(By.xpath(query));
         Assert.assertEquals(taskItem.getCssValue("background-color"), "rgba(255, 255, 255, 1)");
     }

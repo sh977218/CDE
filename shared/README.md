@@ -1,4 +1,9 @@
 # Shared Between Server(Node) and Clients(Angular)
+## Library Requirements
+* rxjs
+   * import from 'rxjs' directly
+   * use pipe() with `rxjs/operators`
+
 ## Not Allowed Libraries
 * angular
 * async
@@ -6,8 +11,6 @@
 * lodash
    * use `lodash/*` (must be in cde.d.ts until the types are fixed)
 * node
-* rxjs
-   * use pipe() with `rxjs/operators`
 * webpack
 
 ## Other

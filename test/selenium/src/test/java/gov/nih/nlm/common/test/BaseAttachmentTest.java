@@ -31,7 +31,7 @@ public class BaseAttachmentTest extends NlmCdeBaseTest {
 
     protected void reviewAttachment(String fileName) {
         mustBeLoggedInAs(attachmentReviewer_username, password);
-        clickElement(By.cssSelector("[data-id = 'notifications']"));
+        clickElement(By.id("notificationLink"));
         clickElement(By.xpath("//div[contains(@class, 'taskItem')][*//div[contains(text(),'" + fileName
                 + "')]]//button[*[contains(text(),'Approve')]]"));
         checkAlert("Attachment approved");
@@ -39,7 +39,7 @@ public class BaseAttachmentTest extends NlmCdeBaseTest {
 
     protected void declineAttachment(String fileName) {
         mustBeLoggedInAs(attachmentReviewer_username, password);
-        clickElement(By.cssSelector("[data-id = 'notifications']"));
+        clickElement(By.id("notificationLink"));
         clickElement(By.xpath("//div[contains(@class, 'taskItem')][*//div[contains(text(),'" + fileName
                 + "')]]//button[*[contains(text(),'Reject')]]"));
     }
