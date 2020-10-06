@@ -1026,8 +1026,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
 
     protected void deleteOrgClassification(String orgName, String[] categories) {
         String classification = categories[categories.length - 1];
-        clickElement(By.cssSelector("mat-select"));
-        selectMatSelectDropdownByText(orgName);
+        nonNativeSelect("", "Start by choosing your Organization", orgName);
         clickMoreVertIcon(categories);
         clickElement(By.xpath("//button/mat-icon[normalize-space() = 'delete_outline']"));
         findElement(By.id("removeClassificationUserTyped")).sendKeys(classification);
@@ -1141,7 +1140,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
             String tagsInputXpath = "//*[@id='designationTags_" + index + "']//input";
             for (String tag : tags) {
                 clickElement(By.xpath(tagsInputXpath));
-                selectMatSelectDropdownByText(tag);
+                selectMatDropdownByText(tag);
                 textPresent(tag);
             }
         }
@@ -1187,7 +1186,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
             String tagsInputXpath = "//*[@id='newDesignationTags']//input";
             for (String tag : tags) {
                 clickElement(By.xpath(tagsInputXpath));
-                selectMatSelectDropdownByText(tag);
+                selectMatDropdownByText(tag);
                 textPresent(tag);
             }
         }
@@ -1210,7 +1209,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
             String tagsInputXpath = "//*[@id='newDefinitionTags']//input";
             for (String tag : tags) {
                 clickElement(By.xpath(tagsInputXpath));
-                selectMatSelectDropdownByText(tag);
+                selectMatDropdownByText(tag);
                 textPresent(tag);
             }
         }
@@ -1288,8 +1287,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
 
     protected void changeDatatype(String newDatatype) {
         if (PREDEFINED_DATATYPE.contains(newDatatype)) {
-            clickElement(By.xpath("//*[@id='datatypeSelect']//mat-select"));
-            selectMatSelectDropdownByText(newDatatype);
+            nonNativeSelect("//*[@id='datatypeSelect']", "Select data type", newDatatype);
         } else {
             System.out.println("Invalidate data type: " + newDatatype);
         }
@@ -1495,44 +1493,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'sectionLabel')]"));
     }
 
-    /**
-     * This method is used to edit section in form description for form.
-     *
-     * @param sectionId             Section Id.
-     * @param newSectionName        New section name.
-     * @param newSectionInstruction New section instruction.
-     * @param isInstructionHtml     Is instruction html?
-     * @param newSectionCardinality New section cardinality
-     */
-    protected void editSection(String sectionId, String newSectionName, String newSectionInstruction, boolean isInstructionHtml, String newSectionCardinalityType, String newSectionCardinality) {
-        startEditSectionById(sectionId);
-        clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_label')]//mat-icon[normalize-space() = 'edit']"));
-        findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_label')]//input")).clear();
-        findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_label')]//input")).sendKeys(newSectionName);
-        clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_label')]//button[contains(text(),'Confirm')]"));
-        textNotPresent("Confirm");
-        textPresent(newSectionName, By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_label')]"));
-
-        clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_instruction')]//mat-icon[normalize-space() = 'edit']"));
-        textPresent("Plain Text");
-        textPresent("Rich Text");
-        textPresent("Confirm");
-        findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_instruction')]//textarea")).clear();
-        findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_instruction')]//textarea")).sendKeys(newSectionInstruction);
-        if (isInstructionHtml)
-            clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_instruction')]//button[text()='Rich Text']"));
-        clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_instruction')]//button[contains(text(),'Confirm')]"));
-        textNotPresent("Confirm");
-        textPresent(newSectionInstruction, By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_instruction')]//div/span"));
-
-        new Select(findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/select"))).selectByVisibleText(newSectionCardinalityType);
-        findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/input")).sendKeys(newSectionCardinality);
-        saveEditSectionById("section_0");
-        if (newSectionCardinality.equals("1"))
-            textNotPresent("Repeats", By.xpath("//*[@id='" + sectionId + "']"));
-        else textNotPresent("Repeats " + newSectionCardinality + " times", By.xpath("//*[@id='" + sectionId + "']"));
-    }
-
     protected String getSideBySideXpath(String side, String section, String type, int index) {
         if (side.equalsIgnoreCase("left")) side = "Left";
         if (side.equalsIgnoreCase("right")) side = "Right";
@@ -1570,8 +1530,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void createOrgClassification(String org, String[] categories) {
-        clickElement(By.cssSelector("mat-select"));
-        selectMatSelectDropdownByText(org);
+        nonNativeSelect("", "Start by choosing your Organization", org);
         // create root classification if it doesn't exist
         List<WebElement> rootClassifications = driver.findElements(By.xpath("//*[@id='" + categories[0] + "']"));
         if (rootClassifications.size() == 0) {
@@ -1751,15 +1710,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         textPresent("Delete Draft?");
         clickElement(By.id("confirmDeleteBtn"));
         textNotPresent("Delete Draft?");
-    }
-
-    protected void matSelectByText(By bySelect, String text) {
-        clickElement(bySelect);
-        selectMatSelectDropdownByText(text);
-    }
-
-    protected void selectMatSelectDropdownByText(String text) {
-        clickElement(By.xpath("//mat-option/span[normalize-space() = '" + text + "']"));
     }
 
     protected void openTableViewPreferenceModal() {
@@ -1971,5 +1921,19 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         Cookie myCookie = new Cookie.Builder("connect.sid", connectSid).build();
         return myCookie;
 
+    }
+
+    protected void nonNativeSelect(String xpathParent, String selectLabel, String optionText) {
+        String xpathSelect = xpathParent + (selectLabel.length() > 0
+                ? "//mat-select[following-sibling::*[contains(@class,'mat-form-field-label-wrapper')]/label[contains(.,'" + selectLabel + "')]]"
+                : "//mat-select[following-sibling::*[contains(@class,'mat-form-field-label-wrapper')][not(label)]]"
+        );
+        clickElement(By.xpath(xpathSelect));
+        selectMatDropdownByText(optionText);
+        findElement(By.xpath(xpathSelect + "//*[contains(@class,'mat-select-value')][contains(.,'" + optionText + "')]"));
+    }
+
+    protected void selectMatDropdownByText(String text) {
+        clickElement(By.xpath("//mat-option[normalize-space() = '" + text + "']"));
     }
 }

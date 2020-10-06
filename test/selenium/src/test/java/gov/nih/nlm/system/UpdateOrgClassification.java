@@ -8,8 +8,7 @@ public class UpdateOrgClassification extends NlmCdeBaseTest {
     public void updateOrgClassificationTest() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         gotoClassificationMgt();
-        clickElement(By.id("orgToManage"));
-        selectMatSelectDropdownByText("TEST");
+        nonNativeSelect("", "Start by choosing your Organization", "TEST");
         textPresent("Denise Sentinel CSI");
         textNotPresent("AIRR demo");
         clickElement(By.id("updateOrgBtn"));

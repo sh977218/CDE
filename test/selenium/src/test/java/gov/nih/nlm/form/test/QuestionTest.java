@@ -69,8 +69,7 @@ public class QuestionTest extends BaseFormTest {
 
     public void editCdeDataTypeById(String questionId, String dataType) {
         openQuestionEdit(questionId);
-        clickElement(By.xpath("//*[@id='" + questionId + "']//div[contains(@class,'card-body')]//*[contains(@class,'newCdeDataType')]//mat-select"));
-        selectMatSelectDropdownByText(dataType);
+        nonNativeSelect("//*[@id='" + questionId + "']//div[contains(@class,'card-body')]", "CDE Data Type", dataType);
     }
 
     public void openQuestionEdit(String questionId) {

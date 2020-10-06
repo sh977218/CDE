@@ -3,8 +3,8 @@
     <dt class="col-2 text-right">Value Type:</dt>
     <dd id="datatypeSelect" class="col-10">
         <mat-form-field class="w-100">
-            <mat-select [(value)]="elt.valueDomain.datatype" [disabled]="!canEdit"
-                        (selectionChange)="onDataTypeChange();" placeholder="Select data type">
+            <mat-select [(value)]="elt.valueDomain.datatype" (selectionChange)="onDataTypeChange()"
+                        [disabled]="!canEdit" placeholder="Select data type">
                 <mat-option *ngFor="let dataType of dataTypeArray" [value]="dataType">{{dataType}}</mat-option>
             </mat-select>
         </mat-form-field>
@@ -35,9 +35,8 @@
             <dt class="col-2 text-right">Precision:</dt>
             <dd class="col-10">
                 <mat-form-field class="w-50">
-                    <mat-select matNativeControl [(ngModel)]="elt.valueDomain.datatypeDate.precision"
-                                (selectionChange)="eltChange.emit()" [disabled]="!canEdit"
-                                id="datatypeDatePrecision" required placeholder="Select Precision">
+                    <mat-select [(ngModel)]="elt.valueDomain.datatypeDate.precision" (selectionChange)="eltChange.emit()"
+                                [disabled]="!canEdit" required placeholder="Select Precision">
                         <mat-option value="Year">Year</mat-option>
                         <mat-option value="Month">Month</mat-option>
                         <mat-option value="Day">Day</mat-option>
@@ -106,9 +105,8 @@
             <dd class="col-10">
                 <mat-form-field class="w-50">
                     <mat-label>Select system name</mat-label>
-                    <mat-select matNativeControl [(ngModel)]="elt.valueDomain.datatypeDynamicCodeList.system"
-                                (selectionChange)="eltChange.emit()" [disabled]="!canEdit" id="dynamicListSystem"
-                                required>
+                    <mat-select [(ngModel)]="elt.valueDomain.datatypeDynamicCodeList.system" (selectionChange)="eltChange.emit()"
+                                [disabled]="!canEdit" required>
                         <mat-option value="VSAC">VSAC</mat-option>
                     </mat-select>
                 </mat-form-field>

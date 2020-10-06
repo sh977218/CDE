@@ -12,6 +12,6 @@ public class UpdateUserRoles extends NlmCdeBaseTest {
         searchUsername(empty_roles_username);
         clickElement(By.id("searchUsersSubmit"));
         clickElement(By.id("user_roles_0"));
-        selectMatSelectDropdownByText("AttachmentReviewer");
+        selectMatDropdownByText("AttachmentReviewer");
     }
 }

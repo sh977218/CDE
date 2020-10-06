@@ -79,6 +79,43 @@ public class BaseFormTest extends NlmCdeBaseTest {
         return "label[contains(.,'" + value + "')]";
     }
 
+    /**
+     * This method is used to edit section in form description for form.
+     *
+     * @param sectionId             Section Id.
+     * @param newSectionName        New section name.
+     * @param newSectionInstruction New section instruction.
+     * @param isInstructionHtml     Is instruction html?
+     * @param newSectionCardinality New section cardinality
+     */
+    protected void editSection(String sectionId, String newSectionName, String newSectionInstruction, boolean isInstructionHtml, String newSectionCardinality) {
+        startEditSectionById(sectionId);
+        clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_label')]//mat-icon[normalize-space() = 'edit']"));
+        findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_label')]//input")).clear();
+        findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_label')]//input")).sendKeys(newSectionName);
+        clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_label')]//button[contains(text(),'Confirm')]"));
+        textNotPresent("Confirm");
+        textPresent(newSectionName, By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_label')]"));
+
+        clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_instruction')]//mat-icon[normalize-space() = 'edit']"));
+        textPresent("Plain Text");
+        textPresent("Rich Text");
+        textPresent("Confirm");
+        findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_instruction')]//textarea")).clear();
+        findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_instruction')]//textarea")).sendKeys(newSectionInstruction);
+        if (isInstructionHtml)
+            clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_instruction')]//button[text()='Rich Text']"));
+        clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_instruction')]//button[contains(text(),'Confirm')]"));
+        textNotPresent("Confirm");
+        textPresent(newSectionInstruction, By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_instruction')]//div/span"));
+
+        setRepeat(sectionId, newSectionCardinality);
+        saveEditSectionById("section_0");
+        if (newSectionCardinality.equals("1"))
+            textNotPresent("Repeats", By.xpath("//*[@id='" + sectionId + "']"));
+        else textNotPresent("Repeats " + newSectionCardinality + " times", By.xpath("//*[@id='" + sectionId + "']"));
+    }
+
     private void editSectionTitle(String sectionId, String title) {
         clickElement(By.xpath("//div[@id='" + sectionId + "']//*[contains(@class,'section_label')]//mat-icon[normalize-space() = 'edit']"));
         String sectionInput = "//div[@id='" + sectionId + "']//*[contains(@class,'section_label')]//input";
@@ -104,14 +141,14 @@ public class BaseFormTest extends NlmCdeBaseTest {
     }
 
     protected void setRepeat(String sectionId, String repeat) {
-        if (repeat == null || repeat == "") {
-            new Select(findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/select"))).selectByVisibleText("");
+        if (repeat == null || "".equals(repeat)) {
+            nonNativeSelect("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]", "", "");
         } else if (repeat.charAt(0) == 'F') {
-            new Select(findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/select"))).selectByVisibleText("Over first question");
+            nonNativeSelect("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]", "", "Over first question");
         } else if (repeat.charAt(0) == '=') {
-            new Select(findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/select"))).selectByVisibleText("Over answer of specified question");
+            nonNativeSelect("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]", "", "Over answer of specified question");
         } else {
-            new Select(findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/select"))).selectByVisibleText("Set Number of Times");
+            nonNativeSelect("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]", "", "Set Number of Times");
             findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/input")).sendKeys(repeat);
         }
     }

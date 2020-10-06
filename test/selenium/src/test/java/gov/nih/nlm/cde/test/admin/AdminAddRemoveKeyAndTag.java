@@ -86,7 +86,7 @@ public class AdminAddRemoveKeyAndTag extends NlmCdeBaseTest {
         clickElement(By.id("openNewDesignationModalBtn"));
         textPresent("Tags are managed in Org Management > List Management");
         clickElement(By.xpath("//*[@id='newDesignationTags']//input"));
-        selectMatSelectDropdownByText("canYouSeeThis");
+        selectMatDropdownByText("canYouSeeThis");
         clickElement(By.id("cancelNewDesignationBtn"));
 
         goToTagsManagement();

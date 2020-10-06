@@ -15,8 +15,7 @@ public class AddOrgWithWorkingGroupTest extends BaseClassificationTest {
         String subClassification = "Phase II Lung Cancer";
         mustBeLoggedInAs(ctepCurator_username, password);
         gotoClassificationMgt();
-        clickElement(By.cssSelector("mat-select"));
-        selectMatSelectDropdownByText(orgWG);
+        nonNativeSelect("", "Start by choosing your Organization", orgWG);
 
         createOrgClassification(orgWG, new String[]{classification, subClassification});
         modalGone();

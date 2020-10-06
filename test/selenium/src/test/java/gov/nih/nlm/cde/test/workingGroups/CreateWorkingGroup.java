@@ -22,8 +22,7 @@ public class CreateWorkingGroup extends NlmCdeBaseTest {
         checkAlert("Saved");
 
         gotoClassificationMgt();
-        clickElement(By.cssSelector("mat-select"));
-        selectMatSelectDropdownByText(orgWG);
+        nonNativeSelect("", "Start by choosing your Organization", orgWG);
 
         // Verify that Acrin Tree was duplicated
         findElement(By.linkText("Imaging Modality"));

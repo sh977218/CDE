@@ -99,14 +99,14 @@
 
 <ng-template #searchResults>
     <nav *ngIf="elts && aggregations" class="navbar navbar-expand-lg navbar-light bg-light px-1" id="searchDiv">
-        <form class="input-group">
+        <form class="input-group" style="display: flex">
             <button class="navbar-toggler navbar-toggler" type="button" data-toggle="collapse"
                     data-target="#searchBarContent" aria-controls="searchBarContent" aria-expanded="false"
                     aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <mat-form-field style="width: 87%; padding-left: .25rem; margin-bottom: -20px">
+            <mat-form-field style="flex-grow: 1; margin-bottom: -20px; margin-top: 5px; padding-left: .25rem">
                 <input matInput name="q" id="ftsearch-input" placeholder="Search"
                        #autoCompleteInput maxlength="500" [matAutocomplete]="auto"
                        [(ngModel)]="searchSettings.q" (ngModelChange)="searchTermAutoComplete.emit($event)">
@@ -120,32 +120,31 @@
                 </mat-option>
             </mat-autocomplete>
         </form>
-        <div id="searchBarContent" class="ml-auto collapse navbar-collapse mt-2 mt-lg-0" style="width:auto"
-             role="group" aria-label="Basic example">
-            <button mat-raised-button *ngIf="embedded" id="resetSearch" class="mr-1" name="resetSearch"
-                    type="button" (click)="reset()">
-                <mat-icon>delete_outline</mat-icon>
-                Reset
-            </button>
-            <button id="pinAll" (click)="openPinModal()" class="mx-1" mat-raised-button color="primary"
-                    [hidden]="totalItems <= 0 || module === 'form'" *ngIf="!embedded">
-                <mat-icon svgIcon="thumb_tack"></mat-icon>
-                Pin All
-            </button>
-            <button (click)="hideShowFilter()" class="mx-1" id="showHideFilters" mat-raised-button color="primary">
+        <div id="searchBarContent" class="ml-auto collapse navbar-collapse" role="group" aria-label="Basic example">
+            <button mat-raised-button id="showHideFilters" class="ml-0 ml-lg-1 mt-1 mt-lg-0" color="primary" (click)="hideShowFilter()">
                 <mat-icon>filter_list</mat-icon>
                 <ng-container *ngIf="!filterMode"> Show Filters</ng-container>
                 <ng-container *ngIf="filterMode"> Hide Filters</ng-container>
             </button>
             <cde-list-view-controls [(listView)]="resultsView" *ngIf="!embedded"></cde-list-view-controls>
-
+            <button mat-raised-button *ngIf="embedded; else notEmbedButtons" id="resetSearch" class="mt-1 mt-lg-0"
+                    name="resetSearch" type="button" (click)="reset()">
+                <mat-icon>delete_outline</mat-icon>
+                Reset
+            </button>
+            <ng-template #notEmbedButtons>
+                <button mat-raised-button id="pinAll" class="mt-1 mt-lg-0" color="primary"
+                        [hidden]="totalItems <= 0 || module === 'form'"  (click)="openPinModal()">
+                    <mat-icon svgIcon="thumb_tack"></mat-icon>
+                    Pin All
+                </button>
+            </ng-template>
             <button mat-raised-button [matMenuTriggerFor]="exportMenu" *ngIf="!embedded" color="primary"
-                    id="export" class="ml-1">
+                    id="export" class="mr-0 mt-1 mt-lg-0">
                 <mat-icon>play_for_work</mat-icon>
                 Export
                 <mat-icon>arrow_drop_down</mat-icon>
             </button>
-
             <mat-menu #exportMenu>
                 <ng-container *ngIf="userService.user || module === 'cde'; else exportFormNotAuthorized">
                     <a *ngFor="let key of ownKeys(exporters)" id="{{exporters[key].id}}" mat-menu-item

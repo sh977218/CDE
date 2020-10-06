@@ -13,8 +13,8 @@ public class QuestionDefaultValue extends NlmCdeBaseTest {
         goToFormByName(formName);
         goToFormDescription();
         startEditQuestionById("question_0-0");
-        clickElement(By.xpath("//*[@id='question_0-0']//dt[contains(.,'Default Answer')]/following-sibling::dd[1]//mat-select"));
-        selectMatSelectDropdownByText("Brother");
+        nonNativeSelect("//*[@id='question_0-0']//dt[contains(.,'Default Answer')]/following-sibling::dd[1]",
+                "Select Default Answer", "Brother");
         saveEditQuestionById("question_0-0");
 
         startEditQuestionById("question_0-1");

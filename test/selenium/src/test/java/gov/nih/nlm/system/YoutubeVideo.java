@@ -13,8 +13,7 @@ public class YoutubeVideo extends NlmCdeBaseTest {
         textNotPresent("404");
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToArticles();
-        clickElement(By.cssSelector("mat-select"));
-        selectMatSelectDropdownByText("videos");
+        nonNativeSelect("", "Article Key", "videos");
         clickElement(By.xpath("//mat-icon[normalize-space() = 'edit']"));
         hangon(2);
         clickElement(By.xpath("//button[. = 'Plain Text']"));
