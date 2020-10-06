@@ -13,8 +13,7 @@ public class NewSiteVersion extends NlmCdeBaseTest {
         mustBeLoggedInAs(test_username, password);
         goToSearch("cde");
         goHome();
-        ExpectedConditions.not(ExpectedConditions.visibilityOfElementLocated
-                (By.cssSelector("[data-id = 'notifications']")));
+        ExpectedConditions.not(ExpectedConditions.visibilityOfElementLocated(By.id("notificationLink")));
 
         given().body("{}").post(baseUrl + "/server/user/site-version");
 
@@ -22,7 +21,7 @@ public class NewSiteVersion extends NlmCdeBaseTest {
 
         findElement(By.cssSelector("span.mat-badge-active"));
 
-        clickElement(By.cssSelector("[data-id = 'notifications']"));
+        clickElement(By.id("notificationLink"));
         textPresent("A new version of this site is available");
     }
 

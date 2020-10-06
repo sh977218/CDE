@@ -225,8 +225,8 @@ export class NotificationService {
         }
     }
 
-    getBadge(): number {
-        return this.tasks.filter(task => task.unread).length;
+    getBadge(): string {
+        return this.tasks.filter(task => task.unread).length + '';
     }
 
     getIcon(): string {

@@ -11,15 +11,18 @@ import { QuickBoardListService } from '_app/quickBoardList.service';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
 import { Feedback } from 'ngx-feedback2/entity/feedback';
+import { interruptEvent } from 'non-core/browser';
 import { isOrgAuthority, isOrgCurator, isSiteAdmin } from 'shared/system/authorizationShared';
 
 @Component({
     selector: 'cde-navigation',
     templateUrl: './navigation.component.html',
+    styleUrls: ['./navigation.component.scss'],
 })
 export class NavigationComponent {
     @Output() goToLogin: EventEmitter<void> = new EventEmitter<void>();
     @Output() logout: EventEmitter<void> = new EventEmitter<void>();
+    interruptEvent = interruptEvent;
     isOrgAuthority = isOrgAuthority;
     isOrgCurator = isOrgCurator;
     isSiteAdmin = isSiteAdmin;
@@ -33,7 +36,7 @@ export class NavigationComponent {
         @Inject(forwardRef(() => Injector)) private injector: Injector,
         @Inject(forwardRef(() => HttpClient)) private http: HttpClient,
         @Inject(forwardRef(() => LoginService)) public loginSvc: LoginService,
-        @Inject(forwardRef(() => NotificationService)) private notificationService: NotificationService,
+        @Inject(forwardRef(() => NotificationService)) public notificationService: NotificationService,
         @Inject(forwardRef(() => QuickBoardListService)) public quickBoardService: QuickBoardListService,
         @Inject(forwardRef(() => UserService)) public userService: UserService,
     ) {
