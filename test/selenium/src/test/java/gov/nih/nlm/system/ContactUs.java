@@ -10,8 +10,7 @@ public class ContactUs extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToArticles();
 
-        clickElement(By.cssSelector("mat-select"));
-        selectMatSelectDropdownByText("contactUs");
+        nonNativeSelect("", "Article Key", "contactUs");
 
         clickElement(By.xpath("//mat-icon[normalize-space() = 'edit']"));
         hangon(2);

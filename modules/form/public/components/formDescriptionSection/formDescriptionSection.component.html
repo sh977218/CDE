@@ -80,10 +80,11 @@
                         [isAllowed]="canEditSection()" (modelChange)="eltChange.emit()"></cde-inline-area-edit>
             </div>
             <div class="font-weight-bold section_cardinality">Repeats:
-                <select class="form-control" title="Repeats" [(ngModel)]="section.repeatOption"
-                        (change)="repeatChange(section)">
-                    <option *ngFor="let item of repeatOptions" [value]="item.value">{{item.label}}</option>
-                </select>
+                <mat-form-field>
+                    <mat-select [(ngModel)]="section.repeatOption" (ngModelChange)="repeatChange(section)">
+                        <mat-option *ngFor="let item of repeatOptions" [value]="item.value">{{item.label}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
             </div>
             <div *ngIf="section.repeatOption === 'N'"
                  class="font-weight-bold section_cardinality">Repeat Maximum Times:
@@ -94,12 +95,10 @@
             <div *ngIf="section.repeatOption === '='"
                  class="font-weight-bold section_cardinality">Repeat by Answer of Question:
                 <mat-form-field>
-                    <select matNativeControl required
-                            title="Repeats by Answer of Question" placeholder="Question Label"
-                            [(ngModel)]="section.repeatQuestion"
-                            (change)="repeatChange(section)">
-                        <option *ngFor="let option of repeatQuestions" [value]="option">{{option}}</option>
-                    </select>
+                    <mat-select required placeholder="Question Label"
+                                [(ngModel)]="section.repeatQuestion" (ngModelChange)="repeatChange(section)">
+                        <mat-option *ngFor="let option of repeatQuestions" [value]="option">{{option}}</mat-option>
+                    </mat-select>
                 </mat-form-field>
             </div>
             <div class="font-weight-bold skipLogicEditTextarea">Show if:
@@ -150,10 +149,11 @@
                 </cde-inline-area-edit>
             </div>
             <div class="font-weight-bold section_cardinality">Repeats:
-                <select class="form-control" title="Repeats" [(ngModel)]="section.repeatOption"
-                        (change)="repeatChange(section)">
-                    <option *ngFor="let item of repeatOptions" [value]="item.value">{{item.label}}</option>
-                </select>
+                <mat-form-field>
+                    <mat-select [(ngModel)]="section.repeatOption" (ngModelChange)="repeatChange(section)">
+                        <mat-option *ngFor="let item of repeatOptions" [value]="item.value">{{item.label}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
             </div>
             <div *ngIf="section.repeatOption === 'N'"
                  class="font-weight-bold section_cardinality">Repeat Maximum Times:
@@ -164,12 +164,10 @@
             <div *ngIf="section.repeatOption === '='"
                  class="font-weight-bold section_cardinality">Repeat by Answer of Question:
                 <mat-form-field>
-                    <select matNativeControl required
-                            title="Repeats by Answer of Question" placeholder="Question Label"
-                            [(ngModel)]="section.repeatQuestion"
-                            (change)="repeatChange(section)">
-                        <option *ngFor="let option of repeatQuestions" [value]="option">{{option}}</option>
-                    </select>
+                    <mat-select required placeholder="Question Label"
+                                [(ngModel)]="section.repeatQuestion" (ngModelChange)="repeatChange(section)">
+                        <mat-option *ngFor="let option of repeatQuestions" [value]="option">{{option}}</mat-option>
+                    </mat-select>
                 </mat-form-field>
             </div>
             <div class="font-weight-bold">Show if:

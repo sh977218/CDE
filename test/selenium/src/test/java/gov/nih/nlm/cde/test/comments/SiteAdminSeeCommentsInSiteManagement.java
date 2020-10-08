@@ -14,10 +14,10 @@ public class SiteAdminSeeCommentsInSiteManagement extends NlmCdeBaseTest {
         goToAllComments();
         textPresent(nindsComment);
         textPresent(caBIGComment);
-        matSelectByText(By.id("organizationFilter"), "NINDS");
+        nonNativeSelect("", "Filter by Organization", "NINDS");
         textPresent(nindsComment);
         textNotPresent(caBIGComment);
-        matSelectByText(By.id("organizationFilter"), "caBIG");
+        nonNativeSelect("", "Filter by Organization", "caBIG");
         textNotPresent(nindsComment);
         textPresent(caBIGComment);
     }

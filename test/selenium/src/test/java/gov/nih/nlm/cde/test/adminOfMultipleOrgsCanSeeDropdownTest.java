@@ -9,8 +9,7 @@ public class adminOfMultipleOrgsCanSeeDropdownTest extends BaseClassificationTes
     public void adminOfMultipleOrgsCanSeeDropdown() {
         mustBeLoggedInAs(classificationMgtUser_username, password);
         gotoClassificationMgt();
-        clickElement(By.cssSelector("mat-select"));
-        selectMatSelectDropdownByText("caBIG");
+        nonNativeSelect("","Start by choosing your Organization", "caBIG");
         textPresent("caNanoLab");
         clickElement(By.xpath("(//mat-icon[normalize-space() = 'more_vert'])[1]"));
         clickElement(By.xpath("//mat-icon[normalize-space() = 'transform']"));

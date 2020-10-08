@@ -14,8 +14,7 @@ public class MeshTopicsTest extends NlmCdeBaseTest {
 
         // add NINDS Mesh term
         mustBeLoggedInAs(ninds_username, password);
-        clickElement(By.id("username_link"));
-        clickElement(By.id("user_classifications"));
+        gotoClassificationMgt();
         clickMoreVertIcon(categories);
         clickElement(By.xpath("//button/mat-icon[normalize-space() = 'link']"));
         findElement(By.id("mapClassificationMeshInput")).sendKeys("NINDS");

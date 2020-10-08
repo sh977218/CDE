@@ -73,7 +73,7 @@ public class CdeSearchExportTest extends NlmCdeBaseTest {
         clickElement(By.id("source"));
         clickElement(By.id("updated"));
         clickElement(By.xpath("//*[@id='identifiers']//input"));
-        selectMatSelectDropdownByText("NINDS Variable Name");
+        selectMatDropdownByText("NINDS Variable Name");
         closeTableViewPreferenceModal();
 
         try {

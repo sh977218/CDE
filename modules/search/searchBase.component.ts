@@ -181,7 +181,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     cutoffIndex?: number;
     elts?: ItemElastic[];
     embedded = false; // is in another page, for example form description
-    exporters: { [format: string]: { id: string, display: string } } = {
+    exporters: { [format in 'csv'|'json'|'odm'|'validationRules'|'xml']?: { id: string, display: string } } = {
         json: {id: 'jsonExport', display: 'JSON Export'},
         xml: {id: 'xmlExport', display: 'XML Export'}
     };

@@ -10,8 +10,7 @@ public class WhatsNew extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToArticles();
 
-        clickElement(By.cssSelector("mat-select"));
-        selectMatSelectDropdownByText("whatsNew");
+        nonNativeSelect("", "Article Key", "whatsNew");
 
         clickElement(By.xpath("//mat-icon[normalize-space() = 'edit']"));
         hangon(5);

@@ -14,8 +14,7 @@ public class ReclassifyOrgClassificationTest extends NlmCdeBaseTest {
         String cdeName = "Gastrointestinal therapy water flush status";
         mustBeLoggedInAs(nlm_username, nlm_password);
         gotoClassificationMgt();
-        clickElement(By.cssSelector("mat-select"));
-        selectMatSelectDropdownByText("org / or Org");
+        nonNativeSelect("", "Start by choosing your Organization", "org / or Org");
 
         String[] categories = new String[]{"OldClassification"};
         clickMoreVertIcon(categories);

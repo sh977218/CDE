@@ -3,9 +3,8 @@
     <div>
         <mat-form-field class="w-50">
             <mat-label>Filter by Organization</mat-label>
-            <mat-select id="organizationFilter" [(ngModel)]="selectedOrganization"
-                        (ngModelChange)="filterByOrganization();">
-                <mat-option [value]="'all organizations'">All Organizations</mat-option>
+            <mat-select [(ngModel)]="selectedOrganization" (ngModelChange)="filterByOrganization();">
+                <mat-option value="all organizations">All Organizations</mat-option>
                 <mat-option *ngFor="let organization of organizations" [value]="organization">
                     {{organization}}
                 </mat-option>

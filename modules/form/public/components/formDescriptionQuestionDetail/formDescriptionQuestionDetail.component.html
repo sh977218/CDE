@@ -243,7 +243,7 @@
         <dd class="col-10 defaultAnswer">
             <ng-container *ngIf="question.question.datatype === 'Value List'">
                 <mat-form-field class="w-100">
-                    <mat-select [(value)]="question.question.defaultAnswer" [placeholder]="'Select Default Answer'"
+                    <mat-select [(value)]="question.question.defaultAnswer" placeholder="Select Default Answer"
                                 (selectionChange)="eltChange.emit()">
                         <mat-option value=""></mat-option>
                         <mat-option *ngFor="let pv of  question.question.answers"
@@ -301,7 +301,7 @@
                            (matChipInputTokenEnd)="addCdeId($event)">
                 </mat-chip-list>
             </mat-form-field>
-            <mat-form-field class="w-50 newCdeDataType">
+            <mat-form-field class="w-50">
                 <mat-select placeholder="CDE Data Type" [ngModel]="question.question.datatype"
                             (selectionChange)="onDatatypeChange(question.question, $event)">
                     <mat-option *ngFor="let dataType of dataTypeArray" [value]="dataType">{{dataType}}</mat-option>

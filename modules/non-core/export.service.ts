@@ -124,7 +124,7 @@ export class ExportService {
             });
     };
 
-    exportSearchResults(type: 'cvs'|'json'|'validationRules'|'xml', module: 'cde'|'form', exportSettings: ExportRecordSettings,
+    exportSearchResults(type: 'csv'|'json'|'odm'|'validationRules'|'xml', module: 'cde'|'form', exportSettings: ExportRecordSettings,
                         cb?: Cb1<ExportRecord[] | undefined>) {
         if (!this.userService.loggedIn() && (module === 'form' || module === 'cde' && type === 'validationRules')) {
             return this.alertService.addAlert('danger', 'Please login to access this feature');

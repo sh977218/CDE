@@ -31,10 +31,11 @@ export function getQuestionsPrior(parent: FormElementsContainer, fe: FormElement
     }
 
     // breadth-first search with "path" traversal top-down
-    const queue = [range(topFe.formElements.length).map(i => ({parent: topFe, index: i}))];
-    let path: any[] = [];
+    type PriorElement = {parent: FormElementsContainer<FormElement>, index: number};
+    const queue: PriorElement[][] = [range(topFe.formElements.length).map(i => ({parent: topFe, index: i}))];
+    let path: PriorElement[] = [];
     while (queue.length) {
-        const input: any = queue.shift();
+        const input: PriorElement[] = queue.shift() || [];
         const self = input[input.length - 1].parent.formElements[input[input.length - 1].index];
         const index = self.formElements.indexOf(parent as FormElement);
         if (index > -1) {
@@ -45,7 +46,7 @@ export function getQuestionsPrior(parent: FormElementsContainer, fe: FormElement
         self.formElements.forEach((f: FormElement, i: number) => queue.push(input.concat({parent: self, index: i})));
     }
     path.push({parent, index});
-    return path.reduce((acc, p) => acc.concat(questions(p.parent, p.index)), []);
+    return path.reduce<FormQuestion[]>((acc, p) => acc.concat(questions(p.parent, p.index)), []);
 }
 
 export function getQuestionPriorByLabel(parent: FormElementsContainer, fe: FormElement, label: string,
