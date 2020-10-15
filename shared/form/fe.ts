@@ -270,8 +270,8 @@ export function iterateFormElements(fe: any = {}, option: any = {}, cb?: any): v
     }
 }
 
-export function questionMulti(q: FormQuestion): boolean {
-    return q.question.datatype === 'Value List' && questionQuestionMulti(q.question);
+export function questionMulti(q: Question): boolean {
+    return q.datatype === 'Value List' && questionQuestionMulti(q);
 }
 
 export function questionQuestionMulti(question: QuestionValueList): boolean {

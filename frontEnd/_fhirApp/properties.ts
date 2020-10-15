@@ -74,7 +74,7 @@ export function propertyToQuestion(q: FormQuestion, parent: ResourceTreeResource
             }
     }
     // for mismatch array to single-select, only take first
-    q.question.answer = questionMulti(q) ? value : value[0];
+    q.question.answer = questionMulti(q.question) ? value : value[0];
     return true;
 }
 
@@ -85,7 +85,7 @@ export function questionToProperty(q: FormQuestion, parent: ResourceTreeResource
     if (!resource || !propertyMap) {
         return false;
     }
-    let value = questionMulti(q) ? q.question.answer : [q.question.answer];
+    let value = questionMulti(q.question) ? q.question.answer : [q.question.answer];
     if (!value.length && propertyMap.default) {
         value = [propertyMap.default];
     }
@@ -130,7 +130,7 @@ export function questionToProperty(q: FormQuestion, parent: ResourceTreeResource
             }
             const answer: any = value.map((a: string) => typedValueToProperty(propertyMap, a));
             if (propertyMap.max === -1 || propertyMap.max > 1) {
-                if (questionMulti(q)) {
+                if (questionMulti(q.question)) {
                     // replace
                     resource[name] = answer.length ? answer : undefined;
                 } else {

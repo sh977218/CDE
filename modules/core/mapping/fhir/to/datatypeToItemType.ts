@@ -10,12 +10,12 @@ export function questionToFhirValue(q: FormQuestion, fhirObj: FhirValue, fhirMul
                                     hasCodeableConcept: boolean = false): void {
     const qType = containerToItemType(q.question);
     if (fhirMulti) {
-        const answer = questionMulti(q) ? q.question.answer : [q.question.answer];
+        const answer = questionMulti(q.question) ? q.question.answer : [q.question.answer];
         storeTypedValue(
             answer.map((a: string) => valueToTypedValue(q.question, qType, a, undefined, q.question.answerUom, hasCodeableConcept)),
             fhirObj, qType, prefix, hasCodeableConcept);
     } else {
-        const answer = questionMulti(q) ? q.question.answer[0] : q.question.answer;
+        const answer = questionMulti(q.question) ? q.question.answer[0] : q.question.answer;
         storeTypedValue(
             valueToTypedValue(q.question, qType, answer, undefined, q.question.answerUom, hasCodeableConcept),
             fhirObj, qType, prefix, hasCodeableConcept);

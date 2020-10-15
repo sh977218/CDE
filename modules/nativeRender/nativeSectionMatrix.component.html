@@ -12,11 +12,33 @@
                 <label [ngClass]="{'native-question-label-number': !numSubQuestions && nrs.profile.displayNumbering}"
                        class="native-question-label">{{q.label}}</label>
             </td>
-            <td *ngFor="let qa of q.question.answers">
-                <input type="radio" [title]="qa.permissibleValue" [name]="q.feId" [attr.name]="q.feId"
-                       [ngModel]="q.question.answer" (click)="nrs.radioButtonSelect(q, $event.target.value)"
-                       [value]="qa.permissibleValue" [attr.value]="qa.permissibleValue">
-                <span class="native-value" *ngIf="nrs.profile.displayValues">{{NRS.getPvDisplayValue(qa)}}</span>
+            <td *ngFor="let pv of q.question.answers">
+                <label>
+                    <ng-container *ngIf="!questionMulti(q.question); else checkMulti">
+                        <input type="radio" class="form-check-input" style="margin-top: .2rem"
+                               [style.margin-left]="nrs.profile.displayValues ? '-1.25rem' : '0'"
+                               [name]="q.feId"
+                               [attr.name]="q.feId"
+                               [ngModel]="q.question.answer"
+                               (click)="nrs.radioButtonSelect(q, $event.target.value)"
+                               [value]="pv.permissibleValue" [attr.value]="pv.permissibleValue"
+                               [required]="q.question.required"
+                               [disabled]="!q.question.editable"/>
+                    </ng-container>
+                    <ng-template #checkMulti>
+                        <input type="checkbox" class="form-check-input" style="margin-top: .2rem"
+                               [style.margin-left]="nrs.profile.displayValues ? '-1.25rem' : '0'"
+                               [name]="q.feId"
+                               [attr.name]="q.feId"
+                               [checked]="nrs.checkboxIsChecked(q.question, pv.permissibleValue)"
+                               (change)="nrs.checkboxOnChange($event.target.checked, q.question, pv.permissibleValue, q)"
+                               [value]="pv.permissibleValue"
+                               [attr.value]="pv.permissibleValue"
+                               [required]="q.question.required"
+                               [disabled]="!q.question.editable"/>
+                    </ng-template>
+                    <span class="native-value">{{nrs.profile.displayValues ? NRS.getPvDisplayValue(pv) : '&nbsp;'}}</span>
+                </label>
             </td>
         </tr>
         <tr *ngIf="q.question.required" style="display: table-row;border-top: hidden;"

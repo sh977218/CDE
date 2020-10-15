@@ -742,7 +742,7 @@ export class CdeFhirService {
             case 'QuestionnaireResponse':
                 if (self.resource) {
                     self.resource.answer = [];
-                    const answer = questionMulti(q) ? q.question.answer : [q.question.answer];
+                    const answer = questionMulti(q.question) ? q.question.answer : [q.question.answer];
                     const qType = containerToItemType(q.question);
                     const fhirValue = {};
                     storeTypedValue(
@@ -845,9 +845,9 @@ export class CdeFhirService {
                             const question = deepCopy(q.question);
                             const answer = self.resource.answer.map((a: FhirValue) => {
                                 typedValueToValue(question, valuedElementToItemType(a), a);
-                                return questionMulti(q) ? question.answer[0] : question.answer;
+                                return questionMulti(q.question) ? question.answer[0] : question.answer;
                             });
-                            q.question.answer = questionMulti(q) ? answer : answer[0];
+                            q.question.answer = questionMulti(q.question) ? answer : answer[0];
                         }
                     }
                 }
