@@ -19,7 +19,7 @@ public class DisplayProfilesMatrixTest extends BaseFormTest {
         saveFormEdit();
 
         goToDisplayProfiles();
-        DisplayProfile matrixDisplayProfile = new DisplayProfile(0, "Matrix Display Profile", "Dynamic", 5, 0, true, false, false, false, false, false);
+        DisplayProfile matrixDisplayProfile = new DisplayProfile(0, "Matrix Display Profile", "Digital (Dynamic style)", 5, 0, true, false, false, false, false, false);
         createDisplayProfile(matrixDisplayProfile);
         int number = findElements(By.xpath("//cde-native-section-matrix//table//input[@type='radio']")).size();
         Assert.assertTrue(number > 0);
@@ -32,7 +32,7 @@ public class DisplayProfilesMatrixTest extends BaseFormTest {
 
         goToDisplayProfiles();
         deleteDisplayProfile(0);
-        DisplayProfile noMatrixDisplayProfile = new DisplayProfile(0, "No Matrix Display Profile", "Dynamic", 4, 0, false, false, false, false, false, false);
+        DisplayProfile noMatrixDisplayProfile = new DisplayProfile(0, "No Matrix Display Profile", "Digital (Dynamic style)", 4, 0, false, false, false, false, false, false);
         createDisplayProfile(noMatrixDisplayProfile);
         number = driver.findElements(By.xpath("//cde-native-section-matrix//table//input[@type='radio']")).size()
                 + driver.findElements(By.xpath("//cde-native-section-matrix//table//input[@type='checkbox']")).size();

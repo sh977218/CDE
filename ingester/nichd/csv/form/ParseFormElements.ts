@@ -48,7 +48,6 @@ function cdeToQuestion(cde, nichdRow) {
         question: {
             cde: {
                 tinyId: cde.tinyId,
-                designations: cde.designations,
                 derivationRules: cde.derivationRules,
                 name: fieldLabel.length === 0 ? words(variableName.replace(/_/g, ' ')) : fieldLabel,
                 ids: cde.ids ? cde.ids : [],

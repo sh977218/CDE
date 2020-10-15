@@ -12,7 +12,7 @@ import * as JSZip from 'jszip';
 import JXON from 'jxon';
 import * as _intersectionWith from 'lodash/intersectionWith';
 import * as _noop from 'lodash/noop';
-import { FormService } from 'nativeRender/form.service';
+import { fetchFormStringById } from 'nativeRender/form.service';
 import { processRules, RegistrationValidatorService, RuleStatus } from 'non-core/registrationValidator.service';
 import { DataElement, DataElementElastic } from 'shared/de/dataElement.model';
 import { CdeForm, CdeFormElastic } from 'shared/form/form.model';
@@ -113,7 +113,7 @@ export class ExportService {
     };
 
     exportForm = (elt: CdeForm, queryString: string, type: 'json' | 'xml') => {
-        FormService.fetchFormStringById(elt._id, queryString)
+        fetchFormStringById(elt._id, queryString)
             .then(data => {
                 const blob = new Blob([data], {type: 'application/' + type});
                 saveAs(blob, elt.tinyId + '.' + type);

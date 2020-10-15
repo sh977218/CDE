@@ -22,8 +22,7 @@
                         </cde-inline-edit>
                     </div>
                     <mat-form-field>
-                        <mat-select id="displayType_{{index}}" class="form-control" [disabled]="!canEdit"
-                                    placeholder="Default View"
+                        <mat-select class="form-control" [disabled]="!canEdit" placeholder="Default View"
                                     [(value)]="dPVM.profile.displayType" (valueChange)="setDisplayType(dPVM)">
                             <mat-option value="Follow-up">Print (Follow-up style)</mat-option>
                             <mat-option value="Dynamic">Digital (Dynamic style)</mat-option>

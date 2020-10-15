@@ -266,30 +266,30 @@
         </ng-container>
     </dl>
 
-    <mat-card *ngIf="!question.question.cde.tinyId">
+    <mat-card *ngIf="!question.question.cde.tinyId && question.question.cde.newCde">
         <mat-card-header>
             <mat-card-title>Create New CDE</mat-card-title>
         </mat-card-header>
         <mat-card-content>
             <mat-form-field class="w-50 newCdeDesignations">
                 <mat-chip-list #designationChipList>
-                    <mat-chip *ngFor="let designation of question.question.cde.designations; index as i"
+                    <mat-chip *ngFor="let designation of question.question.cde.newCde.designations; index as i"
                               [selectable]="true"
-                              [removable]="question.question.cde.designations.length > 1"
-                              (removed)="removeCdeDesignation(i)">
+                              [removable]="question.question.cde.newCde.designations.length > 1"
+                              (removed)="removeCdeDesignation(question.question.cde.newCde.designations, i)">
                         {{designation.designation}}
-                        <mat-icon matChipRemove *ngIf="question.question.cde.designations.length > 1">cancel</mat-icon>
+                        <mat-icon matChipRemove *ngIf="question.question.cde.newCde.designations.length > 1">cancel</mat-icon>
                     </mat-chip>
                     <input placeholder="New Name..."
                            [matChipInputFor]="designationChipList"
                            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                            [matChipInputAddOnBlur]="addOnBlur"
-                           (matChipInputTokenEnd)="addCdeDesignation($event)">
+                           (matChipInputTokenEnd)="addCdeDesignation(question.question.cde.newCde.designations, $event)">
                 </mat-chip-list>
             </mat-form-field>
             <mat-form-field class="w-50 newCdeIdentifiers">
                 <mat-chip-list #idChipList>
-                    <mat-chip *ngFor="let id of question.question.cde.ids;let i =index;"
+                    <mat-chip *ngFor="let id of question.question.cde.ids; index as i"
                               [selectable]="true" [removable]="true" (removed)="removeCdeId(i)">
                         <span class="green mr-1">{{id.source}}</span> <span class="blue ml-1">{{id.id}}</span>
                         <mat-icon matChipRemove class="removeIdentifier">cancel</mat-icon>
@@ -309,7 +309,7 @@
             </mat-form-field>
             <mat-form-field class="w-50 newCdePvs" *ngIf="question.question.datatype==='Value List'">
                 <mat-chip-list #pvChipList>
-                    <mat-chip *ngFor="let pv of question.question.cde.permissibleValues;let i =index;"
+                    <mat-chip *ngFor="let pv of question.question.cde.permissibleValues; index as i;"
                               [selectable]="true" [removable]="true" (removed)="removeCdePv(i)">
                         {{pv.permissibleValue}}
                         <mat-icon matChipRemove>cancel</mat-icon>

@@ -2,14 +2,13 @@ import { Injectable } from '@angular/core';
 import { repeatFe } from 'core/form/fe';
 import { getShowIfQ } from 'core/form/skipLogic';
 import { callbackify } from 'non-core/browser';
-import { FormService } from 'nativeRender/form.service';
+import { convertUnits } from 'nativeRender/form.service';
 import { ScoreService } from 'nativeRender/score.service';
 import { SkipLogicService } from 'nativeRender/skipLogic.service';
 import { assertUnreachable, Cb1, CbErr1, CdeId, CodeAndSystem } from 'shared/models.model';
 import { pvGetDisplayValue, pvGetLabel } from 'core/de/deShared';
 import {
-    CdeForm, CdeFormFollow, CdeFormInputArray, DisplayProfile, DisplayType, FormElement, FormElementFollow,
-    FormElementsFollowContainer,
+    CdeForm, CdeFormFollow, CdeFormInputArray, DisplayProfile, DisplayType, FormElement, FormElementFollow, FormElementsContainer,
     FormOrElement,
     FormQuestion, FormQuestionFollow, FormSection,
     FormSectionOrForm,
@@ -293,7 +292,7 @@ export class NativeRenderService {
     static convertUnits(value: number, fromUnit: CodeAndSystem, toUnit: CodeAndSystem, cb: CbErr1<number>) {
         if (fromUnit.system === 'UCUM' && toUnit.system === 'UCUM') {
             callbackify(
-                FormService.convertUnits(value, encodeURIComponent(fromUnit.code), encodeURIComponent(toUnit.code))
+                convertUnits(value, encodeURIComponent(fromUnit.code), encodeURIComponent(toUnit.code))
             )(cb);
         } else {
             cb(undefined, value); // no conversion for other systems
@@ -321,7 +320,7 @@ export class NativeRenderService {
         }
     }
 
-    static transformFormToInline(form: FormElementsFollowContainer): boolean {
+    static transformFormToInline(form: FormElementsContainer<FormElementFollow>): boolean {
         const followEligibleQuestions: FormElement[] = [];
         let transformed = false;
         let feSize = Array.isArray(form.formElements) ? form.formElements.length : 0;

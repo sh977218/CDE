@@ -23,7 +23,7 @@ import { supportedFhirResources } from 'shared/mapping/fhir/fhirResource.model';
 
 export type QuestionValue = any;
 
-export class CdeForm extends Elt implements FormElementsContainer {
+export class CdeForm<T extends FormElement = FormElement> extends Elt implements FormElementsContainer {
     copyright?: { // mutable
         authority?: string,
         text?: string,
@@ -31,7 +31,7 @@ export class CdeForm extends Elt implements FormElementsContainer {
     displayProfiles: DisplayProfile[] = []; // mutable
     elementType: 'form' = 'form';
     expanded?: boolean; // calculated, formDescription view model
-    formElements: FormElement[] = []; // mutable
+    formElements: T[] = []; // mutable
     isCopied?: 'copied' | 'clear'; // volatile, form description
     isCopyrighted?: boolean;
     mapTo?: ExternalMappings; // calculated, used by: FHIR
@@ -140,7 +140,8 @@ export class CdeForm extends Elt implements FormElementsContainer {
     }
 }
 
-export type CdeFormFollow = CdeForm & FormElementsFollowContainer;
+export type CdeFormDraft = CdeForm<FormElementDraft>;
+export type CdeFormFollow = CdeForm<FormElementFollow>;
 
 export type CdeFormInputArray = CdeForm & {
     formInput: {[key: string]: QuestionValue}; // volatile, nativeRender and export
@@ -224,18 +225,14 @@ export class FhirObservationInfo {
     timestamp?: Date;
 }
 
-export interface FormElementsContainer<T = FormElement> {
+export interface FormElementsContainer<T extends FormElement = FormElement> {
     formElements: T[];
 }
 
-export type FormElementsFollowContainer = FormElementsContainer & {
-    formElements: FormElementFollow[];
-};
-
-class FormElementEdit implements FormElementsContainer {
+class FormElementEdit<T extends FormElement> implements FormElementsContainer<T> {
     edit?: boolean; // calculated, formDescription view model
     expanded?: boolean; // calculated, formDescription view model
-    formElements: FormElement[] = [];
+    formElements: T[] = [];
     hover?: boolean; // calculated, formDescription view model
     repeatNumber?: number; // calculated, formDescription view model
     repeatOption?: string; // calculated, formDescription view model
@@ -243,7 +240,7 @@ class FormElementEdit implements FormElementsContainer {
     updatedSkipLogic?: boolean; // calculated, formDescription view model
 }
 
-export class FormElementPart extends FormElementEdit implements FormElementsContainer {
+export class FormElementPart<T extends FormElement> extends FormElementEdit<T> implements FormElementsContainer {
     // TODO: private after mixins for nativeSectionMatrix is resolved
     _id?: ObjectId; // TODO: remove
     feId?: string; // calculated, nativeRender and formView view model
@@ -255,12 +252,12 @@ export class FormElementPart extends FormElementEdit implements FormElementsCont
     skipLogic?: SkipLogic = new SkipLogic();
 }
 
-class FormSectionOrFormPart extends FormElementPart {
+class FormSectionOrFormPart<T extends FormElement> extends FormElementPart<T> {
     forbidMatrix?: boolean; // Calculated, used for Follow View Model
     isCopied?: 'copied' | 'clear'; // volatile, form description
 }
 
-export class FormSection extends FormSectionOrFormPart {
+export class FormSection<T extends FormElement = FormElement> extends FormSectionOrFormPart<T> {
     readonly elementType: 'section' = 'section';
     section = new Section();
 
@@ -270,9 +267,7 @@ export class FormSection extends FormSectionOrFormPart {
     }
 }
 
-export type FormSectionFollow = FormSection & FormElementsFollowContainer;
-
-export class FormInForm extends FormSectionOrFormPart {
+export class FormInForm<T extends FormElement = FormElement> extends FormSectionOrFormPart<T> {
     readonly elementType: 'form' = 'form';
     inForm = new InForm();
 
@@ -282,9 +277,7 @@ export class FormInForm extends FormSectionOrFormPart {
     }
 }
 
-export type FormInFormFollow = FormInForm & FormElementsFollowContainer;
-
-export class FormQuestion extends FormElementPart {
+export class FormQuestion<T extends FormElement = FormElement> extends FormElementPart<T> {
     readonly elementType: 'question' = 'question';
     incompleteRule?: boolean; // volatile, form description
     question: Question = question() as Question;
@@ -312,13 +305,26 @@ export class FormQuestion extends FormElementPart {
     };
 }
 
-export type FormQuestionFollow = FormQuestion & FormElementsFollowContainer & {
+export type FormQuestionDraft = FormQuestion<FormElementDraft> & {
+    question: {
+        cde: {
+            newCde?: {
+                definitions: Definition[],
+                designations: Designation[],
+            }
+        }
+    }
+};
+
+export type FormQuestionFollow = FormQuestion<FormElementFollow> & {
     question: QuestionFollow;
 };
 export type FormSectionOrForm = FormInForm | FormSection;
-export type FormSectionOrFormFollow = FormInFormFollow | FormSectionFollow;
+export type FormSectionOrFormFollow = FormInForm<FormElementFollow> | FormSection<FormElementFollow>;
 export type FormElement = FormInForm | FormSection | FormQuestion;
-export type FormElementFollow = FormInFormFollow | FormSectionFollow | FormQuestionFollow;
+export type FormElementGeneric<T extends FormElement> = FormInForm<T> | FormSection<T> | FormQuestion<T>;
+export type FormElementDraft = FormInForm<FormElementDraft> | FormSection<FormElementDraft> | FormQuestionDraft;
+export type FormElementFollow = FormInForm<FormElementFollow> | FormSection<FormElementFollow> | FormQuestionFollow;
 export type FormOrElement = CdeForm | FormElement;
 export type FormOrElementFollow = CdeFormFollow | FormElementFollow;
 
@@ -407,10 +413,8 @@ export function question(): Partial<Question> {
     };
 }
 
-export class QuestionCde extends EltRefCaching { // copied from original data element, not configurable
-    definitions: Definition[] = [];
-    derivationRules: DerivationRule[] = [];
-    designations: Designation[] = [];
+export class QuestionCde extends EltRefCaching {
+    derivationRules: DerivationRule[] = []; // copied from original data element
 }
 
 export type QuestionCdeValueList = QuestionCde & {

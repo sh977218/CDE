@@ -3,7 +3,7 @@ import { addStringtype } from '../system/mongoose-stringtype';
 import {
     attachmentSchema, classificationSchema, codeAndSystemSchema, definitionSchema, derivationRuleSchema,
     designationSchema, eltLogSchema, idSchema, permissibleValueSchema, propertySchema, referenceDocumentSchema,
-    registrationStateSchema, sourcesNewSchema, sourceSchema
+    registrationStateSchema, sourceSchema
 } from 'server/system/schemas';
 import { FormElement } from 'shared/form/form.model';
 import { Classification } from 'shared/models.model';
@@ -67,15 +67,20 @@ const questionSchema = new Schema({
     cde: {
         tinyId: StringType,
         name: StringType,
-        designations: [designationSchema],
-        definitions: [definitionSchema],
         version: StringType,
         permissibleValues: {
             type: [permissibleValueSchema], // required to make optional
             default: [],
         },
         ids: [idSchema],
-        derivationRules: [derivationRuleSchema]
+        derivationRules: [derivationRuleSchema],
+        newCde: {
+            type: {
+                definitions: [definitionSchema],
+                designations: [designationSchema],
+            },
+            default: undefined
+        },
     },
     datatype: StringType,
     datatypeNumber: datatypeNumberSchema,

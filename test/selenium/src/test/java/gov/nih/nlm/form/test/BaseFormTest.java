@@ -203,23 +203,19 @@ public class BaseFormTest extends NlmCdeBaseTest {
     }
 
     protected void createDisplayProfile(DisplayProfile displayProfile) {
-        int index = displayProfile.displayProfileIndex;
-        String name = displayProfile.displayProfileName;
-        boolean matrix = displayProfile.displayAsMatrix;
-        boolean displayValues = displayProfile.displayAnswerValue;
-        boolean instructions = displayProfile.displayInstruction;
-
-        boolean numbering = displayProfile.displayQuestionNumber;
-        String displayType = displayProfile.displayProfileType;
-        int numberOfColumns = displayProfile.numberOfColumn;
-        boolean displayInvisible = displayProfile.displayInvisible;
-        int answerDropdownLimit = displayProfile.answerDropdownLimit;
-        boolean displayMetadataDevice = displayProfile.displayMetadataDevice;
-
-        createDisplayProfile(index, name, matrix, displayValues, instructions,
-                numbering, displayType, numberOfColumns, displayInvisible, answerDropdownLimit,
-                displayMetadataDevice);
-
+        createDisplayProfile(
+                displayProfile.displayProfileIndex,
+                displayProfile.displayProfileName,
+                displayProfile.displayAsMatrix,
+                displayProfile.displayAnswerValue,
+                displayProfile.displayInstruction,
+                displayProfile.displayQuestionNumber,
+                displayProfile.displayProfileType,
+                displayProfile.numberOfColumn,
+                displayProfile.displayInvisible,
+                displayProfile.answerDropdownLimit,
+                displayProfile.displayMetadataDevice
+        );
     }
 
     protected void createDisplayProfile(int index, String name, boolean matrix, boolean displayValues, boolean instructions,
@@ -245,15 +241,13 @@ public class BaseFormTest extends NlmCdeBaseTest {
         if (!numbering) clickElement(By.id("displayNumbering_" + index));
         if (displayMetadataDevice) clickElement(By.id("displayMetadataDevice_" + index));
 
-        clickElement(By.id("displayType_" + index));
-        clickElement(By.xpath("//mat-option[contains(.,'" + displayType + "')]"));
+        nonNativeSelect("//mat-expansion-panel[@id='profile_" + index + "']", "Default View", displayType);
 
-        WebElement nbColSlider = findElement(By.cssSelector("#profile_" + index + " mat-slider[max='6']"));
-        nbColSlider.click();
+        clickElement(By.cssSelector("#profile_" + index + " mat-slider[max='6']"));
         int currentNbOfCols = Integer.valueOf(findElement(By.cssSelector("#profile_" + index + " #nbOfColumnsValue")).getText());
         for (int i = 0; i < Math.abs(numberOfColumns - currentNbOfCols); i++) {
             Keys key = (numberOfColumns - currentNbOfCols) > 0 ? Keys.RIGHT : Keys.LEFT;
-            nbColSlider.sendKeys(key);
+            findElement(By.cssSelector("#profile_" + index + " mat-slider[max='6']")).sendKeys(key);
         }
         textPresent("Number of Columns: " + String.valueOf(numberOfColumns), By.id("profile_" + index));
 

@@ -2,26 +2,26 @@ import './formDescription.global.scss';
 import { HttpClient } from '@angular/common/http';
 import { AfterViewInit, Component, ElementRef, HostListener, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { TREE_ACTIONS, TreeComponent, TreeModel, TreeNode } from '@circlon/angular-tree-component';
-import { Hotkey, HotkeysService } from 'angular2-hotkeys';
-import { convertFormToSection } from 'core/form/form';
-import * as _isEmpty from 'lodash/isEmpty';
-import * as _noop from 'lodash/noop';
-import { DeCompletionService } from 'cde/public/components/completion/deCompletion.service';
-import { copySectionAnimation } from './copySectionAnimation';
-import { FormService } from 'nativeRender/form.service';
-import { scrollTo, waitRendered } from 'non-core/browser';
-import { LocalStorageService } from 'non-core/localStorage.service';
-import { Cb1 } from 'shared/models.model';
-import { DataElement } from 'shared/de/dataElement.model';
-import { CdeForm, FormElement, FormInForm, FormOrElement, FormSection } from 'shared/form/form.model';
-import { addFormIds, iterateFeSync } from 'shared/form/fe';
 import { ActivatedRoute, Router } from '@angular/router';
-import { canEditCuratedItem } from 'shared/system/authorizationShared';
+import { TREE_ACTIONS, TreeComponent, TreeModel, TreeNode } from '@circlon/angular-tree-component';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
+import { Hotkey, HotkeysService } from 'angular2-hotkeys';
 import { areDerivationRulesSatisfied } from 'core/form/fe';
+import { convertFormToSection } from 'core/form/form';
+import { DeCompletionService } from 'cde/public/components/completion/deCompletion.service';
+import { copySectionAnimation } from 'form/public/components/formDescription/copySectionAnimation';
 import { LocatableError } from 'form/public/components/formView.component';
+import * as _isEmpty from 'lodash/isEmpty';
+import * as _noop from 'lodash/noop';
+import { convertCdeToQuestion } from 'nativeRender/form.service';
+import { scrollTo, waitRendered } from 'non-core/browser';
+import { LocalStorageService } from 'non-core/localStorage.service';
+import { DataElement } from 'shared/de/dataElement.model';
+import { addFormIds, iterateFeSync } from 'shared/form/fe';
+import { CdeForm, FormElement, FormInForm, FormOrElement, FormSection } from 'shared/form/form.model';
+import { Cb1 } from 'shared/models.model';
+import { canEditCuratedItem } from 'shared/system/authorizationShared';
 
 @Component({
     selector: 'cde-form-description',
@@ -186,7 +186,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
     }
 
     addQuestionFromSearch(de: DataElement) {
-        FormService.convertCdeToQuestion(de, question => {
+        convertCdeToQuestion(de, question => {
             if (!question) {
                 return;
             }

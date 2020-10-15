@@ -14,7 +14,7 @@ public class DisplayProfilesMultipleSelectTest extends BaseFormTest {
         goToFormByName(formName);
         goToDisplayProfiles();
 
-        DisplayProfile multipleSelectDisplayProfile = new DisplayProfile(0, "Multiple Select Display Profile", "Dynamic", 6, 3, false, false, false, false, false, false);
+        DisplayProfile multipleSelectDisplayProfile = new DisplayProfile(0, "Multiple Select Display Profile", "Digital (Dynamic style)", 6, 3, false, false, false, false, false, false);
         createDisplayProfile(multipleSelectDisplayProfile);
 
         /*@TODO
@@ -32,7 +32,7 @@ public class DisplayProfilesMultipleSelectTest extends BaseFormTest {
         Assert.assertTrue(number_select_in_display_profile > 0);
 
         deleteDisplayProfile(0);
-        DisplayProfile noMultipleSelectDisplayProfile = new DisplayProfile(0, "No Multiple Select Display Profile", "Dynamic", 6, 15, false, false, false, false, false, false);
+        DisplayProfile noMultipleSelectDisplayProfile = new DisplayProfile(0, "No Multiple Select Display Profile", "Digital (Dynamic style)", 6, 15, false, false, false, false, false, false);
         createDisplayProfile(noMultipleSelectDisplayProfile);
 
         /*@TODO

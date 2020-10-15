@@ -115,7 +115,6 @@ export async function parseFormElements(nindsForms: any[]) {
                 cde: {
                     tinyId: existingCde.tinyId,
                     name: existingCde.designations[0].designation,
-                    designations: existingCde.designations,
                     version: existingCde.version,
                     ids: existingCde.ids
                 },

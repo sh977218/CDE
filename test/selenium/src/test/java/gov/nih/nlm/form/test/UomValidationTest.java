@@ -46,8 +46,8 @@ public class UomValidationTest extends BaseFormTest {
                 "0.03175"));
 
         clickElement(By.id("displayProfiles_tab"));
-        createDisplayProfile(0, "Uom", true, true, true, true, "Follow-up", 1, false, 0);
-        createDisplayProfile(1, "No Uom", true, true, true, true, "Follow-up", 1, false, 0);
+        createDisplayProfile(0, "Uom", true, true, true, true, "Print (Follow-up style)", 1, false, 0);
+        createDisplayProfile(1, "No Uom", true, true, true, true, "Print (Follow-up style)", 1, false, 0);
         clickElement(By.xpath("//*[@id='profile_0']//button[contains(.,'Edit')]"));
         new Select(findElement(By.xpath("//*[@id='profile_0']//*[@id='alias-UCUM-inch']/select"))).selectByVisibleText("international inch");
 

@@ -6,7 +6,7 @@ import { FormDescriptionComponent } from 'form/public/components/formDescription
 import * as _isEqual from 'lodash/isEqual';
 import * as _noop from 'lodash/noop';
 import * as _toString from 'lodash/toString';
-import { FormService } from 'nativeRender/form.service';
+import { convertCdeToQuestion } from 'nativeRender/form.service';
 import { DataElement, DataType } from 'shared/de/dataElement.model';
 import { isScore } from 'shared/form/fe';
 import { FormElement, FormQuestion, QuestionValueList } from 'shared/form/form.model';
@@ -85,7 +85,7 @@ export class FormDescriptionQuestionComponent implements OnInit {
         DataElementService.fetchDe(question.question.cde.tinyId).then(newCde => {
             const oldVersion = question.question.cde.version ? question.question.cde.version : '';
             DataElementService.fetchDe(question.question.cde.tinyId, oldVersion).then(oldCde => {
-                FormService.convertCdeToQuestion(newCde, newQuestion => {
+                convertCdeToQuestion(newCde, newQuestion => {
                     if (newQuestion) {
                         this.openUpdateCdeVersionMerge(newQuestion, question, newCde, oldCde);
                     }

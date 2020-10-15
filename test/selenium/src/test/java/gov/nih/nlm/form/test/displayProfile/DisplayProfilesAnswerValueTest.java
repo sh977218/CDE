@@ -24,8 +24,19 @@ public class DisplayProfilesAnswerValueTest extends BaseFormTest {
         saveFormEdit();
         goToDisplayProfiles();
 
-        DisplayProfile answerValueDisplayProfile = new DisplayProfile(0, "Answer Value Display Profile", "Dynamic", 5, 0, false, true, false, false, false, false);
-        createDisplayProfile(answerValueDisplayProfile);
+        createDisplayProfile(new DisplayProfile(
+                0,
+                "Answer Value Display Profile",
+                "Digital (Dynamic style)",
+                5,
+                0,
+                false,
+                true,
+                false,
+                false,
+                false,
+                false
+        ));
 
         List<WebElement> tdsInDisplayProfile = findElements(By.xpath("//*[@id='profile_0']//*[contains(@class,'displayProfilePreview')]//*[contains(@class,'form-check-label')]"));
         checkAnswerValue(tdsInDisplayProfile, true);
@@ -38,7 +49,7 @@ public class DisplayProfilesAnswerValueTest extends BaseFormTest {
         goToDisplayProfiles();
         deleteDisplayProfile(0);
 
-        DisplayProfile noAnswerValueDisplayProfile = new DisplayProfile(0, "No Answer Value Display Profile", "Dynamic", 5, 0, false, false, false, false, false, false);
+        DisplayProfile noAnswerValueDisplayProfile = new DisplayProfile(0, "No Answer Value Display Profile", "Digital (Dynamic style)", 5, 0, false, false, false, false, false, false);
         createDisplayProfile(noAnswerValueDisplayProfile);
 
         // use driver.findElements to check answer value elements are not visible on page.

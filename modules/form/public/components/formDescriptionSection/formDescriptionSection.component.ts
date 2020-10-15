@@ -11,7 +11,7 @@ import { convertFormToSection } from 'core/form/form';
 import { FormDescriptionComponent } from 'form/public/components/formDescription/formDescription.component';
 import * as _isEqual from 'lodash/isEqual';
 import * as _noop from 'lodash/noop';
-import { FormService } from 'nativeRender/form.service';
+import { fetchForm } from 'nativeRender/form.service';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
 import { LocalStorageService } from 'non-core/localStorage.service';
 import { FormattedValue } from 'shared/models.model';
@@ -135,9 +135,9 @@ export class FormDescriptionSectionComponent implements OnInit {
     }
 
     openUpdateFormVersion(formSection: FormInForm) {
-        FormService.fetchForm(formSection.inForm.form.tinyId).then(newForm => {
+        fetchForm(formSection.inForm.form.tinyId).then(newForm => {
             const oldVersion = formSection.inForm.form.version ? formSection.inForm.form.version : '';
-            FormService.fetchForm(formSection.inForm.form.tinyId, oldVersion).then(oldForm => {
+            fetchForm(formSection.inForm.form.tinyId, oldVersion).then(oldForm => {
                 this.openUpdateFormVersionMerge(convertFormToSection(newForm), formSection, newForm, oldForm);
             });
         });

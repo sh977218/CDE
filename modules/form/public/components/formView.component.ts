@@ -6,7 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AlertService } from 'alert/alert.service';
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { UserService } from '_app/user.service';
-import { SaveModalComponent, SaveModalFormQuestion } from 'adminItem/saveModal/saveModal.component';
+import { SaveModalComponent } from 'adminItem/saveModal/saveModal.component';
 import { Dictionary } from 'async';
 import * as async_forEach from 'async/forEach';
 import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
@@ -24,21 +24,16 @@ import { LocalStorageService } from 'non-core/localStorage.service';
 import { ExportService } from 'non-core/export.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { Observable } from 'rxjs';
-import { assertUnreachable, Cb, Comment, Elt, PermissibleValue } from 'shared/models.model';
+import { assertUnreachable, Cb, Comment, Elt } from 'shared/models.model';
 import {
-    DataElement, DatatypeContainerDate, DatatypeContainerNumber, DatatypeContainerText, DatatypeContainerTime,
-    DatatypeContainerValueList
+    DataElement, DatatypeContainerDate, DatatypeContainerNumber, DatatypeContainerText, DatatypeContainerTime
 } from 'shared/de/dataElement.model';
-import { CdeForm, FormElement, FormElementsContainer, FormInForm, QuestionCde } from 'shared/form/form.model';
+import {
+    CdeForm, CdeFormDraft, FormElement, FormElementsContainer, FormInForm, FormQuestionDraft, QuestionCde, QuestionCdeValueList
+} from 'shared/form/form.model';
 import { addFormIds, getLabel, iterateFe, iterateFes, iterateFeSync, noopSkipIterCb } from 'shared/form/fe';
 import { canEditCuratedItem, isOrgCurator } from 'shared/system/authorizationShared';
 import { getQuestionPriorByLabel } from 'shared/form/skipLogic';
-
-type NewDataElement =
-    DataElement
-    & (DatatypeContainerDate | DatatypeContainerNumber | DatatypeContainerText | DatatypeContainerTime
-    | DatatypeContainerValueList)
-    & { permissibleValues: PermissibleValue[] };
 
 export class LocatableError {
     id?: string;
@@ -67,7 +62,7 @@ export class FormViewComponent implements OnInit {
     currentTab = 'preview_tab';
     dialogRef!: MatDialogRef<any>;
     draftSaving?: Promise<CdeForm>;
-    elt!: CdeForm;
+    elt!: CdeFormDraft;
     eltCopy?: CdeForm;
     exportToTab: boolean = false;
     formInput!: Dictionary<string>;
@@ -115,34 +110,38 @@ export class FormViewComponent implements OnInit {
         return canEditCuratedItem(this.userService.user, this.elt);
     }
 
-    createDataElement(newCde: NewDataElement, cb: Cb) {
+    createDataElement(q: FormQuestionDraft, cb: Cb) {
+        if (!q.question.cde.newCde) {
+            return;
+        }
         const dataElement = {
-            designations: newCde.designations,
-            definitions: newCde.definitions,
+            designations: q.question.cde.newCde.designations,
+            definitions: q.question.cde.newCde.definitions,
             stewardOrg: {
                 name: this.elt.stewardOrg.name
             },
             valueDomain: {
-                datatype: newCde.datatype,
-                identifiers: newCde.ids,
-                ids: newCde.ids,
-                datatypeText: (newCde as DatatypeContainerText).datatypeText,
-                datatypeNumber: (newCde as DatatypeContainerNumber).datatypeNumber,
-                datatypeDate: (newCde as DatatypeContainerDate).datatypeDate,
-                datatypeTime: (newCde as DatatypeContainerTime).datatypeTime,
-                permissibleValues: newCde.permissibleValues
+                datatype: q.question.datatype,
+                identifiers: q.question.cde.ids,
+                ids: q.question.cde.ids,
+                datatypeText: (q.question as DatatypeContainerText).datatypeText,
+                datatypeNumber: (q.question as DatatypeContainerNumber).datatypeNumber,
+                datatypeDate: (q.question as DatatypeContainerDate).datatypeDate,
+                datatypeTime: (q.question as DatatypeContainerTime).datatypeTime,
+                permissibleValues: (q.question.cde as QuestionCdeValueList).permissibleValues
             },
             classification: this.elt.classification,
-            ids: newCde.ids,
+            ids: q.question.cde.ids,
             registrationState: {registrationStatus: 'Incomplete'}
         };
         this.http.post<DataElement>('/server/de', dataElement)
             .subscribe(res => {
                 if (res.tinyId) {
-                    newCde.tinyId = res.tinyId;
+                    q.question.cde.tinyId = res.tinyId;
+                    delete q.question.cde.newCde;
                 }
                 if (res.version) {
-                    newCde.version = res.version;
+                    q.question.cde.version = res.version;
                 }
                 cb();
             }, err => {
@@ -344,16 +343,15 @@ export class FormViewComponent implements OnInit {
 
     saveForm() {
         const saveFormImpl = () => {
-            const newCdes: QuestionCde[] = [];
+            const newCdeQuestions: FormQuestionDraft[] = [];
             iterateFes(this.elt.formElements, undefined, undefined, (fe, cb) => {
-                (fe as SaveModalFormQuestion).question.cde.datatype = fe.question.datatype;
-                if (!fe.question.cde.tinyId) {
-                    newCdes.push(fe.question.cde);
+                if (!fe.question.cde.tinyId && (fe as FormQuestionDraft).question.cde.newCde) {
+                    newCdeQuestions.push(fe as FormQuestionDraft);
                 }
                 cb();
             }, () => {
-                async_forEach(newCdes, (newCde: NewDataElement, doneOneCde: Cb) => {
-                    this.createDataElement(newCde, doneOneCde);
+                async_forEach(newCdeQuestions, (q: FormQuestionDraft, doneOneCde: Cb) => {
+                    this.createDataElement(q, doneOneCde);
                 }, () => {
                     const publish = () => {
                         const publishData = {_id: this.elt._id, tinyId: this.elt.tinyId, __v: this.elt.__v};
@@ -364,7 +362,7 @@ export class FormViewComponent implements OnInit {
                             }
                         }, err => this.alert.httpErrorMessageAlert(err, 'Error publishing'));
                     };
-                    if (newCdes.length) {
+                    if (newCdeQuestions.length) {
                         this.saveDraft().then(() => {
                             publish();
                         }, err => this.alert.httpErrorMessageAlert(err, 'Error saving form'));

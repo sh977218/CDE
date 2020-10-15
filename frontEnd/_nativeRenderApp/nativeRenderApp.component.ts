@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormService } from 'nativeRender/form.service';
+import { fetchForm } from 'nativeRender/form.service';
 import { CdeForm, DisplayProfile } from 'shared/form/form.model';
 import { CbErr1 } from 'shared/models.model';
 
@@ -55,7 +55,7 @@ export class NativeRenderAppComponent {
     submitForm: boolean;
 
     getForm(tinyId: string, cb: CbErr1<CdeForm | undefined>) {
-        FormService.fetchForm(tinyId).then(elt => {
+        fetchForm(tinyId).then(elt => {
             cb(undefined, elt);
         }, err => cb(err.statusText, undefined));
     }

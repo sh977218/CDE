@@ -2,27 +2,28 @@
     <form #updateElementForm="ngForm">
         <h4 mat-dialog-title>Save</h4>
         <div mat-dialog-content>
-            <div *ngIf="newCdes.length > 0" class="form-group">
+            <div *ngIf="newQuestions.length > 0" class="form-group">
                 <div class="text-truncate m-2">
                     <span class="font-weight-bold">There are new CDEs</span>
                 </div>
-                <div *ngFor="let newCde of newCdes" class="card">
+                <div *ngFor="let newQuestion of newQuestions" class="card">
                     <div class="card-header">
-                        <div class="float-left" (click)="newCde.isCollapsed = !newCde.isCollapsed"
-                             [ngClass]="{'text-danger':newCde.designations.length === 0}">
-                            <span *ngIf="newCde.designations.length > 0" class="hand-cursor">
-                                {{newCde.designations[0].designation}}
-                            </span>
-                            <span *ngIf="newCde.designations.length === 0">
-                            designations is empty;
+                        <div class="float-left" (click)="newQuestion.isCollapsed = !newQuestion.isCollapsed"
+                             [ngClass]="{'text-danger':newQuestion.cde.newCde.designations.length === 0}">
+                            <span class="hand-cursor">
+                                {{
+                                newQuestion.cde.newCde.designations.length
+                                    ? newQuestion.cde.newCde.designations[0].designation
+                                    : 'Designation is Required but Missing'
+                                }}
                             </span>
                         </div>
                     </div>
-                    <div class="card-body" [ngbCollapse]="!newCde.isCollapsed">
+                    <div class="card-body" [ngbCollapse]="!newQuestion.isCollapsed">
                         <dl class="row">
                             <dt class="col-2 text-right">Designations:</dt>
                             <dd class="col-10">
-                                <dl *ngFor="let cdeDesignation of newCde.designations" class="row">
+                                <dl *ngFor="let cdeDesignation of newQuestion.cde.newCde.designations" class="row">
                                     <dt class="col-3 text-right">Designation:</dt>
                                     <dd class="col-9">{{cdeDesignation.designation}}</dd>
                                     <dt class="col-3 text-right">Tags:</dt>
@@ -34,7 +35,7 @@
                             </dd>
                             <dt class="col-2 text-right">Definitions:</dt>
                             <dd class="col-10">
-                                <dl *ngFor="let cdeDefinition of newCde.definitions" class="row">
+                                <dl *ngFor="let cdeDefinition of newQuestion.cde.newCde.definitions" class="row">
                                     <dt class="col-3 text-right">Definition:</dt>
                                     <dd class="col-9">{{cdeDefinition.definition}}</dd>
                                     <dt class="col-3 text-right">Tags:</dt>
@@ -45,10 +46,10 @@
                                 </dl>
                             </dd>
                             <dt class="col-2 text-right">Data Type:</dt>
-                            <dd class="col-10">{{newCde.datatype}}</dd>
+                            <dd class="col-10">{{newQuestion.datatype}}</dd>
                             <dt class="col-2 text-right">Identifiers:</dt>
                             <dd class="col-10">
-                                <dl *ngFor="let cdeId of newCde.ids" class="row">
+                                <dl *ngFor="let cdeId of newQuestion.cde.ids" class="row">
                                     <dt class="col-3 text-right">Source:</dt>
                                     <dd class="col-9">{{cdeId.source}}</dd>
                                     <dt class="col-3 text-right">Id:</dt>
