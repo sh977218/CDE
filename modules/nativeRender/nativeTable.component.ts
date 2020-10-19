@@ -265,7 +265,7 @@ export class NativeTableComponent {
                 });
 
                 // pre-populate question values
-                if (f.question.datatype === 'Value List' && questionMulti(f)) {
+                if (f.question.datatype === 'Value List' && questionMulti(f.question)) {
                     this.tableForm.rows.forEach((r, i) => {
                         const location = i + questionName;
                         this.nrs.elt.formInput[location] = [];
@@ -303,7 +303,7 @@ export class NativeTableComponent {
                     }
                     this.tableForm.rows.forEach((r, i) => {
                         const location = i + questionName;
-                        if (f.question.datatype === 'Value List' && questionMulti(f)) {
+                        if (f.question.datatype === 'Value List' && questionMulti(f.question)) {
                             this.nrs.elt.formInput[location].push(answer);
                         } else {
                             this.nrs.elt.formInput[location] = answer;
@@ -385,7 +385,7 @@ export class NativeTableComponent {
     static getQuestionType(fe: FormQuestion) {
         switch (fe.question.datatype) {
             case 'Value List':
-                return questionMulti(fe) ? 'mlist' : 'list';
+                return questionMulti(fe.question) ? 'mlist' : 'list';
             case 'Date':
                 return 'date';
             case 'Geo Location':
