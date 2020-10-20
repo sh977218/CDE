@@ -5,6 +5,7 @@ import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
 public class FormAddSuggestedCdeTest extends QuestionTest {
+
     @Test
     public void formAddSuggestedCde() {
         String form = "formAddSuggestedCdeTest";
@@ -18,14 +19,17 @@ public class FormAddSuggestedCdeTest extends QuestionTest {
 
         addCdeByNameBeforeId(cdeName1, "question_0-0", true);
         textPresent("smile", By.xpath("//*[@id='question_0-0']//*[contains(@class,'questionLabel')]"));
+        closeAlert();
 
         addCdeByNameBeforeId(cdeName2, "question_0-1", true);
         textPresent("AE Tracking Number", By.xpath("//*[@id='question_0-2']//*[contains(@class,'questionLabel')]"));
         textPresent("Number", By.xpath("//*[@id='question_0-2']//*[contains(@class,'questionDataType')]"));
+        closeAlert();
 
         addCdeByNameBeforeId(cdeName3, "question_0-2", true);
         textPresent("Start of Feeding Schedule", By.xpath("//*[@id='question_0-3']//*[contains(@class,'questionLabel')]"));
         textPresent("(Date)", By.xpath("//*[@id='question_0-3']//*[contains(@class,'questionDataType')]"));
+        closeAlert();
 
         addCdeByNameBeforeId(cdeName4, "question_0-3", true);
         textPresent("Headache", By.xpath("//*[@id='question_0-4']//*[contains(@class,'questionLabel')]"));

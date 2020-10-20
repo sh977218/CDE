@@ -33,6 +33,7 @@ import { FooterComponent } from '_app/footer/footer.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
+import { FormResolve } from 'form/public/components/formDescription/form.resolve';
 
 @NgModule({
     imports: [
@@ -67,6 +68,7 @@ import { MatListModule } from '@angular/material/list';
         TruncateLongNamePipe
     ],
     providers: [
+        FormResolve,
         LocalStorageService,
         ApprovalService,
         BackForwardService,

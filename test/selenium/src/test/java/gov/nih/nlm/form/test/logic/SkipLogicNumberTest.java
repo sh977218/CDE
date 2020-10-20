@@ -24,7 +24,7 @@ public class SkipLogicNumberTest extends BaseFormTest {
         startEditQuestionById(questionId);
         deleteSkipLogicById(questionId);
         saveEditQuestionById(questionId);
-
+        saveFormEdit();
         goToPreview();
         togglePrintableLogic();
         findElement(By.xpath("//*[@id='Greatest Dimension_0-0_box']")).clear();
@@ -52,7 +52,7 @@ public class SkipLogicNumberTest extends BaseFormTest {
         startEditQuestionById(questionId);
         addSkipLogicById(questionId, "Additional Dimension", "<", "3", "number");
         saveEditQuestionById(questionId);
-
+        saveFormEdit();
         goToPreview();
         togglePrintableLogic();
         findElement(By.xpath("//*[@id='Additional Dimension_0-1_box']")).sendKeys(Keys.BACK_SPACE);

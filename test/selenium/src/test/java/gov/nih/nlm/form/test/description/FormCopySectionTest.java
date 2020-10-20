@@ -2,7 +2,6 @@ package gov.nih.nlm.form.test.description;
 
 import gov.nih.nlm.form.test.BaseFormTest;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.testng.annotations.Test;
@@ -20,10 +19,10 @@ public class FormCopySectionTest extends BaseFormTest {
         switchTabAndClose(1);
         goToFormByName(form2);
         goToFormDescription();
-        WebElement sourceElt = findElement(By.id("pasteSection"));
-        WebElement targetElt = findElement(By.xpath("//tree-viewport/div/div/tree-node-drop-slot/*[@class='node-drop-slot']"));
-        (new Actions(driver)).moveToElement(targetElt).perform();
-        dragAndDrop(sourceElt, targetElt);
+        By sourceBy = By.id("pasteSection");
+        By targetBy = By.xpath("//tree-viewport/div/div/tree-node-drop-slot/*[@class='node-drop-slot']");
+        dragAndDrop(sourceBy, targetBy);
+        saveFormEdit();
         newFormVersion();
         goToFormByName(form2);
         textPresent("Inside section form: PROMIS SF v1.0 - Phys. Function 10a");

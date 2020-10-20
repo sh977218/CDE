@@ -11,8 +11,7 @@ import org.testng.annotations.Test;
 import static io.restassured.RestAssured.get;
 import static io.restassured.RestAssured.given;
 
-public class UomValidation extends BaseFormTest {
-
+public class UomValidationTest extends BaseFormTest {
     @Test
     public void uomValidation() {
         mustBeLoggedInAs(nlm_username, nlm_password);
@@ -35,8 +34,7 @@ public class UomValidation extends BaseFormTest {
         findElement(By.xpath("//*[@id='question_0-3']//*[contains(@class,'questionUom')]//*[normalize-space()='UCUM/ kg']"));
         findElement(By.xpath("//*[@id='question_0-3']//*[contains(@class,'questionUom')]//*[normalize-space()='Kilo']"));
 
-        goToPreview();
-        hangon(1);
+        saveFormEdit();
         findElement(By.xpath("//input[@id='If Yes, what are the number of CAG repeats on the larger allele_0-3_box']")).clear();
         findElement(By.xpath("//input[@id='If Yes, what are the number of CAG repeats on the larger allele_0-3_box']")).sendKeys("1.25");
         clickElement(By.xpath("//div[@id='If Yes, what are the number of CAG repeats on the larger allele_0-3']//input[@name='0-3_uom_0']"));

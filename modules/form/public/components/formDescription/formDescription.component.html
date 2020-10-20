@@ -1,112 +1,145 @@
-<div *ngIf="elt" class="row">
-    <div class="col-12">
-        <div class="descriptionToolbox" *ngIf="canEdit" #descToolbox>
-            <span style="color: white; font-weight: 700;margin-right: 5px">Add</span>
-            <span role="button" id="addSectionTop" class="btn btn-light formDescriptionTool"
-                  (dragstart)="dragActive = true" (dragend)="dragActive = false"
-                  [treeDrag]="{ref:'section'}" [treeDragEnabled]="true"
-                  style="width: 74px;">
-                <mat-icon class="toolbar-icon">assignment</mat-icon><span class="toolSection"></span>
-            </span>
-            <span *ngIf="elt.formElements.length > 0" role="button" id="startAddingQuestions"
-                  class="btn btn-light formDescriptionTool"
-                  (dragstart)="dragActive = true" (dragend)="dragActive = false"
-                  [treeDrag]="{ref: 'question'}" [treeDragEnabled]="true"
-                  style="width: 87px;">
-                <mat-icon class="toolbar-icon">contact_support</mat-icon><span class="toolQuestion"></span>
-            </span>
-            <span role="button" id="startAddingForms" class="btn btn-light formDescriptionTool"
-                  (dragstart)="dragActive = true" (dragend)="dragActive = false"
-                  [treeDrag]="{ref: 'form'}" [treeDragEnabled]="true"
-                  style="width: 68px;">
-                <mat-icon class="toolbar-icon">description</mat-icon><span class="toolForm"></span>
-            </span>
-            <span role="button" *ngIf="hasCopiedSection()" id="pasteSection"
-                  class="btn btn-light formDescriptionTool"
-                  (dragstart)="dragActive = true" (dragend)="dragActive = false"
-                  [treeDrag]="{ref: 'pasteSection'}" [treeDragEnabled]="true" style="width: 68px">
-                <mat-icon class="toolbar-icon" [ngClass]="{'pasteSectionWrench':elt.isCopied}">content_copy</mat-icon>
-                <span class="toolCopySection"></span>
-            </span>
-        </div>
-        <div *ngIf="elt.formElements.length === 0">
+<div class="container">
+    <div *ngIf="missingCdes.length > 0" class="alert alert-warning mt20" role="alert">
+        <mat-icon>warning</mat-icon>
+        The following CDEs are part of a score but are missing from this form:
+        <ul class="list-inline">
+            <li *ngFor="let missCde of missingCdes;let i = index;">
+                <a href="/deView?tinyId={{missCde}}" target="_blank">CDE {{i + 1}},id: {{missCde}}</a>
+                <span *ngIf="i < missingCdes.length">,</span></li>
+        </ul>
+    </div>
+    <div *ngIf="validationErrors.length > 0" class="alert alert-warning mt20" role="alert">
+        <mat-icon>warning</mat-icon>
+        The following errors need to be corrected in order to Publish:
+        <ul class="list-inline">
+            <li *ngFor="let error of validationErrors">
+                <ng-container *ngIf="!error.id">{{error.message}}</ng-container>
+                <a class="fake-link" *ngIf="error.id" (click)="scrollToDescriptionId(error.id)">{{error.message}}</a>
+            </li>
+        </ul>
+    </div>
+    <h3>{{elt.designations[0].designation}}</h3>
+    <button role="button" mat-raised-button color="primary" [routerLink]="'/formView'"
+            id="editFormCloseBtn" class="text-white" [queryParams]="{tinyId:elt.tinyId}">
+        <mat-icon>arrow_back</mat-icon>
+        <span> Back to Preview</span>
+    </button>
+    <div class="row">
+        <div class="col-12">
+            <div class="descriptionToolbox" *ngIf="canEdit()" #descToolbox>
+                <button role="button" id="addSectionTop" class="btn btn-light formDescriptionTool"
+                        (dragstart)="dragActive = true" (dragend)="dragActive = false"
+                        [treeDrag]="{ref:'section'}" [treeDragEnabled]="true"
+                        style="width: 74px;">
+                    <mat-icon class="toolbar-icon">assignment</mat-icon>
+                    <span class="toolSection"></span>
+                </button>
+                <button *ngIf="elt.formElements.length > 0" role="button" id="startAddingQuestions"
+                        class="btn btn-light formDescriptionTool"
+                        (dragstart)="dragActive = true" (dragend)="dragActive = false"
+                        [treeDrag]="{ref: 'question'}" [treeDragEnabled]="true"
+                        style="width: 87px;">
+                    <mat-icon class="toolbar-icon">contact_support</mat-icon>
+                    <span class="toolQuestion"></span>
+                </button>
+                <button role="button" id="startAddingForms" class="btn btn-light formDescriptionTool"
+                        (dragstart)="dragActive = true" (dragend)="dragActive = false"
+                        [treeDrag]="{ref: 'form'}" [treeDragEnabled]="true"
+                        style="width: 68px;">
+                    <mat-icon class="toolbar-icon">description</mat-icon>
+                    <span class="toolForm"></span>
+                </button>
+                <button role="button" *ngIf="hasCopiedSection()" id="pasteSection"
+                        class="btn btn-light formDescriptionTool"
+                        (dragstart)="dragActive = true" (dragend)="dragActive = false"
+                        [treeDrag]="{ref: 'pasteSection'}" [treeDragEnabled]="true" style="width: 68px">
+                    <mat-icon class="toolbar-icon" [ngClass]="{'pasteSectionWrench':elt.isCopied}">content_copy
+                    </mat-icon>
+                    <span class="toolCopySection"></span>
+                </button>
+            </div>
+            <div *ngIf="elt.formElements.length === 0">
             <span *ngIf="elt.noRenderAllowed">
                 <mat-icon>warning</mat-icon>
                 Rendering is disabled for this form.
             </span>
-            <h2 *ngIf="!elt.noRenderAllowed" style="margin: auto; max-width: 600px">
-                <ng-container *ngIf="canEdit">
-                    <mat-icon>help_outline</mat-icon>
-                    To begin building your form, find the Section button in the upper right corner
-                    of your screen and drag it below .
-                </ng-container>
-                <ng-container *ngIf="!canEdit">
-                    This form has no content.
-                </ng-container>
-            </h2>
-        </div>
+                <h2 *ngIf="!elt.noRenderAllowed" style="margin: auto; max-width: 600px">
+                    <ng-container *ngIf="canEdit()">
+                        <mat-icon>help_outline</mat-icon>
+                        To begin building your form, find the Section button in the upper right corner
+                        of your screen and drag it below .
+                    </ng-container>
+                    <ng-container *ngIf="!canEdit()">
+                        This form has no content.
+                    </ng-container>
+                </h2>
+            </div>
 
-        <ng-container *ngFor="let eltIter of [elt]">
-            <tree-root #tree [ngClass]="{'drag-active': dragActive}" [nodes]="eltIter.formElements"
-                       [options]="treeOptions" style="min-height: 400px" (event)="treeEvents($event)">
-                <ng-template #treeNodeFullTemplate let-node let-index="index" let-templates="templates">
-                    <div [id]="node.data.elementType + '_' + node.data.feId"
-                         [class]="node.getClass()"
-                         [class.tree-node]="true"
-                         [class.tree-node-expanded]="node.isExpanded && node.hasChildren"
-                         [class.tree-node-collapsed]="node.isCollapsed && node.hasChildren"
-                         [class.tree-node-leaf]="node.isLeaf"
-                         [class.tree-node-active]="node.isActive"
-                         [class.tree-node-focused]="node.isFocused">
-                        <tree-node-drop-slot *ngIf="index === 0" [dropIndex]="node.index"
-                                             [node]="node.parent"></tree-node-drop-slot>
-                        <div class="card" [@copySection]="node.data.isCopied">
-                            <div class="card-header">
-                                <div class="node-wrapper" [style.padding-left]="node.getNodePadding()">
-                                    <div class="node-content-wrapper w-100" [ngClass]="{'dragActive':dragActive}"
-                                         (click)="node.mouseAction('click', $event)"
-                                         (dblclick)="node.mouseAction('dblClick', $event)"
-                                         (contextmenu)="node.mouseAction('contextMenu', $event)"
-                                         (treeDrop)="node.onDrop($event)"
-                                         [treeAllowDrop]="node.allowDrop">
-                                        <cde-form-description-section
-                                                *ngIf="node.data.elementType === 'section' || node.data.elementType === 'form'"
-                                                [elt]="elt" [canEdit]="canEdit" [node]="node" [index]="index"
-                                                (eltChange)="eltChange.emit()"></cde-form-description-section>
-                                        <cde-form-description-question
-                                                *ngIf="node.data.elementType === 'question'"
-                                                [canEdit]="canEdit" [node]="node" [index]="index"
-                                                (stageElt)="eltChange.emit()"></cde-form-description-question>
+            <ng-container *ngFor="let eltIter of [elt]">
+                <tree-root #tree [ngClass]="{'drag-active': dragActive}" [nodes]="eltIter.formElements"
+                           [options]="treeOptions" style="min-height: 400px" (event)="treeEvents($event)">
+                    <ng-template #treeNodeFullTemplate let-node let-index="index" let-templates="templates">
+                        <div [id]="node.data.elementType + '_' + node.data.feId"
+                             [class]="node.getClass()"
+                             [class.tree-node]="true"
+                             [class.tree-node-expanded]="node.isExpanded && node.hasChildren"
+                             [class.tree-node-collapsed]="node.isCollapsed && node.hasChildren"
+                             [class.tree-node-leaf]="node.isLeaf"
+                             [class.tree-node-active]="node.isActive"
+                             [class.tree-node-focused]="node.isFocused">
+                            <tree-node-drop-slot *ngIf="index === 0" [dropIndex]="node.index"
+                                                 [node]="node.parent"></tree-node-drop-slot>
+                            <div class="card" [@copySection]="node.data.isCopied">
+                                <div class="card-header">
+                                    <div class="node-wrapper" [style.padding-left]="node.getNodePadding()">
+                                        <div class="node-content-wrapper w-100" [ngClass]="{'dragActive':dragActive}"
+                                             (click)="node.mouseAction('click', $event)"
+                                             (dblclick)="node.mouseAction('dblClick', $event)"
+                                             (contextmenu)="node.mouseAction('contextMenu', $event)"
+                                             (treeDrop)="node.onDrop($event)"
+                                             [treeAllowDrop]="node.allowDrop">
+                                            <cde-form-description-section
+                                                    *ngIf="node.data.elementType === 'section' || node.data.elementType === 'form'"
+                                                    [elt]="elt" [canEdit]="canEdit()" [node]="node" [index]="index"
+                                                    (eltChange)="saveEdit();"></cde-form-description-section>
+                                            <cde-form-description-question
+                                                    *ngIf="node.data.elementType === 'question'"
+                                                    [canEdit]="canEdit()" [node]="node" [index]="index"
+                                                    (stageElt)="saveEdit();"></cde-form-description-question>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="card-body" [ngClass]="{'panel-body-form': node.data.elementType === 'form'}">
-                                <div *ngIf="node.data.elementType === 'form' && !node.data.expanded"
-                                     (click)="node.data.expanded = true; node.expand()"
-                                     class="btn btn-outline-dark expand-form">
-                                    <mat-icon>keyboard_arrow_right</mat-icon> Expand
+                                <div class="card-body"
+                                     [ngClass]="{'panel-body-form': node.data.elementType === 'form'}">
+                                    <div *ngIf="node.data.elementType === 'form' && !node.data.expanded"
+                                         (click)="node.data.expanded = true; node.expand()"
+                                         class="btn btn-outline-dark expand-form">
+                                        <mat-icon>keyboard_arrow_right</mat-icon>
+                                        Expand
+                                    </div>
+                                    <div *ngIf="node.data.elementType === 'form' && node.data.expanded"
+                                         (click)="node.data.expanded = false; node.collapse()"
+                                         class="btn btn-outline-dark expand-form">
+                                        <mat-icon>keyboard_arrow_down</mat-icon>
+                                        Collapse
+                                    </div>
+                                    <cde-form-description-question-detail *ngIf="node.data.elementType === 'question'"
+                                                                          [elt]="elt" [node]="node"
+                                                                          [canEdit]="canEdit()"
+                                                                          (eltChange)="saveEdit();">
+                                    </cde-form-description-question-detail>
+                                    <tree-node-children [node]="node" [templates]="templates"></tree-node-children>
                                 </div>
-                                <div *ngIf="node.data.elementType === 'form' && node.data.expanded"
-                                     (click)="node.data.expanded = false; node.collapse()"
-                                     class="btn btn-outline-dark expand-form">
-                                    <mat-icon>keyboard_arrow_down</mat-icon> Collapse
-                                </div>
-                                <cde-form-description-question-detail *ngIf="node.data.elementType === 'question'"
-                                                                      [elt]="elt" [node]="node"
-                                                                      [canEdit]="canEdit"
-                                                                      (eltChange)="eltChange.emit();">
-                                </cde-form-description-question-detail>
-                                <tree-node-children [node]="node" [templates]="templates"></tree-node-children>
                             </div>
+                            <tree-node-drop-slot [dropIndex]="node.index + 1"
+                                                 [node]="node.parent"></tree-node-drop-slot>
                         </div>
-                        <tree-node-drop-slot [dropIndex]="node.index + 1" [node]="node.parent"></tree-node-drop-slot>
-                    </div>
-                </ng-template>
-            </tree-root>
-        </ng-container>
+                    </ng-template>
+                </tree-root>
+            </ng-container>
+        </div>
     </div>
 </div>
-
 <ng-template #formSearchTmpl>
     <div mat-dialog-title>
         <h3>Search Forms</h3>
@@ -161,3 +194,13 @@
     </ng-container>
 </ng-template>
 
+
+<ng-template #confirmCancelTmpl>
+    <div mat-dialog-title>
+        <h4>You have unsaved changes.</h4>
+    </div>
+    <div mat-dialog-actions align="end">
+        <button mat-raised-button color="accent" [mat-dialog-close]="true">Save</button>
+        <button mat-raised-button color="accent" [mat-dialog-close]="false">Cancel</button>
+    </div>
+</ng-template>

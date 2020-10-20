@@ -1,4 +1,4 @@
-package gov.nih.nlm.form.test.datatype;
+package gov.nih.nlm.form.test.datatypeTest;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
@@ -8,6 +8,7 @@ public class DateTypes extends NlmCdeBaseTest {
 
     @Test
     public void dateTypes() {
+        mustBeLoggedInAs(nlm_username,nlm_password);
         goToFormByName("DateTypeTest");
         findElement(By.xpath("//div[@id='Person Birth Date_0-0']//input[@type='Number']"));
         findElement(By.xpath("//div[@id='Person Birth Date_0-1']//input[@type='month']"));

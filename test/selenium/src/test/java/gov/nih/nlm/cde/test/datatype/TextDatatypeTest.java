@@ -12,6 +12,7 @@ public class TextDatatypeTest extends NlmCdeBaseTest {
     @Test
     public void textDatatype() {
         String cdeName = "Alcohol Smoking and Substance Use Involvement Screening Test (ASSIST) - Cocaine use frequency";
+        String cdeId = "593eff071acca22de85b0b29";
         String datatype = "Text";
 
         mustBeLoggedInAs(ninds_username, password);
@@ -19,17 +20,12 @@ public class TextDatatypeTest extends NlmCdeBaseTest {
         goToPermissibleValues();
         changeDatatype(datatype);
 
-        clickElement(By.xpath("//*[@id='datatypeTextMin']//mat-icon[normalize-space() = 'edit']"));
-        findElement(By.xpath("//*[@id='datatypeTextMin']//input")).sendKeys("789");
-        clickElement(By.xpath("//*[@id='datatypeTextMin']//button/mat-icon[normalize-space() = 'check']"));
-
-        clickElement(By.xpath("//*[@id='datatypeTextMax']//mat-icon[normalize-space() = 'edit']"));
-        findElement(By.xpath("//*[@id='datatypeTextMax']//input")).sendKeys("987");
-        clickElement(By.xpath("//*[@id='datatypeTextMax']//button/mat-icon[normalize-space() = 'check']"));
+        changeDataTypeTextMinLength("789");
+        changeDataTypeTextMaxLength("987");
         newCdeVersion();
 
         // check update cde has fixed datatype;
-        Assert.assertFalse(get(baseUrl + "/deById/593eff071acca22de85b0b29").asString().contains("valueMeaningName"));
+        Assert.assertFalse(get(baseUrl + "/deById/" + cdeId).asString().contains("valueMeaningName"));
 
         goToHistory();
         selectHistoryAndCompare(1, 2);
@@ -40,21 +36,10 @@ public class TextDatatypeTest extends NlmCdeBaseTest {
         clickElement(By.id("closeHistoryCompareModal"));
 
         goToPermissibleValues();
-        clickElement(By.xpath("//*[@id='datatypeTextRegex']//mat-icon[normalize-space() = 'edit']"));
-        findElement(By.xpath("//*[@id='datatypeTextRegex']//input")).sendKeys("newRegex");
-        clickElement(By.xpath("//*[@id='datatypeTextRegex']//button/mat-icon[normalize-space() = 'check']"));
-
-        clickElement(By.xpath("//*[@id='datatypeTextRule']//mat-icon[normalize-space() = 'edit']"));
-        findElement(By.xpath("//*[@id='datatypeTextRule']//input")).sendKeys("newRule");
-        clickElement(By.xpath("//*[@id='datatypeTextRule']//button/mat-icon[normalize-space() = 'check']"));
-
-        clickElement(By.xpath("//*[@id='datatypeTextMin']//mat-icon[normalize-space() = 'edit']"));
-        findElement(By.xpath("//*[@id='datatypeTextMin']//input")).sendKeys("123");
-        clickElement(By.xpath("//*[@id='datatypeTextMin']//button/mat-icon[normalize-space() = 'check']"));
-
-        clickElement(By.xpath("//*[@id='datatypeTextMax']//mat-icon[normalize-space() = 'edit']"));
-        findElement(By.xpath("//*[@id='datatypeTextMax']//input")).sendKeys("321");
-        clickElement(By.xpath("//*[@id='datatypeTextMax']//button/mat-icon[normalize-space() = 'check']"));
+        changeDataTypeTextRegex("newRegex");
+        changeDataTypeTextRule("newRule");
+        changeDataTypeTextMinLength("123");
+        changeDataTypeTextMaxLength("321");
         newCdeVersion();
 
         goToCdeByName(cdeName);

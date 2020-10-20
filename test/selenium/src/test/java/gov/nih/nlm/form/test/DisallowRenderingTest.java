@@ -11,23 +11,19 @@ public class DisallowRenderingTest extends NlmCdeBaseTest {
         String formName = "Short Form 36-Item Health Survey (SF-36)";
         goToFormByName(formName);
         textNotPresent("In general, would you say");
-        goToFormDescription();
-        textPresent("Rendering is disabled for this form");
+        textPresent("Rendering has been disabled for this form");
 
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName(formName);
         goToFormDescription();
         textPresent("In general, would you say");
+        saveFormEdit();
         goToGeneralDetail();
         clickElement(By.id("disallowRendering"));
-        // TODO - remove after "reload and redo" bug is resolved
-        hangon(1);
         newFormVersion();
 
         logout();
         goToFormByName(formName);
-        textPresent("In general, would you say");
-        goToFormDescription();
         textPresent("In general, would you say");
     }
 

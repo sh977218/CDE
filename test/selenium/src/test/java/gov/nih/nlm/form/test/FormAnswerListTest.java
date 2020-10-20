@@ -8,11 +8,10 @@ import org.testng.annotations.Test;
 
 import java.util.List;
 
-public class FormReorderAnswerListTest extends NlmCdeBaseTest {
-
+public class FormAnswerListTest extends NlmCdeBaseTest {
 
     @Test
-    public void reorderFormAnswerList() {
+    public void reorderAnswerList() {
         String formName = "Answer List Test";
 
         mustBeLoggedInAs(testAdmin_username, password);
@@ -38,6 +37,7 @@ public class FormReorderAnswerListTest extends NlmCdeBaseTest {
         Assert.assertTrue(listAfterReorder.get(1).getText().contains("Female Gender"));
         Assert.assertTrue(listAfterReorder.get(2).getText().contains("Unknown"));
         saveEditQuestionById("question_0-0");
+        saveFormEdit();
         newFormVersion();
     }
 
@@ -63,6 +63,7 @@ public class FormReorderAnswerListTest extends NlmCdeBaseTest {
         Assert.assertEquals(listAfterDelete.size(), 6);
         Assert.assertTrue(listBeforeDelete.get(1).getText().contains("Asian"));
         saveEditQuestionById("question_0-1");
+        saveFormEdit();
         newFormVersion();
     }
 

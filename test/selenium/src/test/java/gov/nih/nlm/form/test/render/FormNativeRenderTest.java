@@ -1,7 +1,6 @@
 package gov.nih.nlm.form.test.render;
 
 import gov.nih.nlm.form.test.BaseFormTest;
-import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
@@ -49,7 +48,7 @@ public class FormNativeRenderTest extends BaseFormTest {
         goToFormDescription();
         startEditQuestionById("question_4-0");
         clickElement(By.xpath("//*[@id='question_4-0']//input[@title='Required']")); // make required
-        hangon(2);
+        saveFormEdit();
         goToPreview();
         WebElement label = findElement(By.xpath("//*[@id='Cytosine adenine guanine repeat expansion result_4-0']//"
                 + byValueListValueXPath("Not known")));

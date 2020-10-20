@@ -1,15 +1,6 @@
 import './formDescription.global.scss';
 import { HttpClient } from '@angular/common/http';
-import {
-    AfterViewInit,
-    Component,
-    ElementRef, EventEmitter,
-    HostListener,
-    Input,
-    OnInit, Output,
-    TemplateRef,
-    ViewChild
-} from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { TREE_ACTIONS, TreeComponent, TreeModel, TreeNode } from '@circlon/angular-tree-component';
 import { Hotkey, HotkeysService } from 'angular2-hotkeys';
@@ -25,6 +16,12 @@ import { Cb1 } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm, FormElement, FormInForm, FormOrElement, FormSection } from 'shared/form/form.model';
 import { addFormIds, iterateFeSync } from 'shared/form/fe';
+import { ActivatedRoute, Router } from '@angular/router';
+import { canEditCuratedItem } from 'shared/system/authorizationShared';
+import { UserService } from '_app/user.service';
+import { AlertService } from 'alert/alert.service';
+import { areDerivationRulesSatisfied } from 'core/form/fe';
+import { LocatableError } from 'form/public/components/formView.component';
 
 @Component({
     selector: 'cde-form-description',
@@ -34,22 +31,11 @@ import { addFormIds, iterateFeSync } from 'shared/form/fe';
     styleUrls: ['./formDescription.component.scss'],
 })
 export class FormDescriptionComponent implements OnInit, AfterViewInit {
-    @Input() set elt(form: CdeForm) {
-        this._elt = form;
-        this.addExpanded(form);
-        addFormIds(form);
-    }
-
-    get elt() {
-        return this._elt;
-    }
-
-    private _elt!: CdeForm;
-    @Input() canEdit = false;
-    @Output() eltChange = new EventEmitter<void>();
+    elt: any;
     @ViewChild(TreeComponent) tree!: TreeComponent;
     @ViewChild('formSearchTmpl', {static: true}) formSearchTmpl!: TemplateRef<any>;
     @ViewChild('questionSearchTmpl', {static: true}) questionSearchTmpl!: TemplateRef<any>;
+    @ViewChild('confirmCancelTmpl', {static: true}) confirmCancelTmpl!: TemplateRef<any>;
     @ViewChild('descToolbox') descToolbox!: ElementRef;
     addQuestionDialogRef?: MatDialogRef<any, any>;
     dragActive = false;
@@ -110,14 +96,25 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         isExpandedField: 'expanded'
     };
     updateDataCredit = 0;
+    missingCdes: string[] = [];
+    validationErrors: LocatableError[] = [];
 
     constructor(
+        private router: Router,
+        private route: ActivatedRoute,
         public deCompletionService: DeCompletionService,
         private _hotkeysService: HotkeysService,
         private http: HttpClient,
         private localStorageService: LocalStorageService,
+        public userService: UserService,
+        private alert: AlertService,
         public matDialog: MatDialog,
     ) {
+        this.elt = this.route.snapshot.data.form;
+        this.addExpanded(this.elt);
+        addFormIds(this.elt);
+        this.missingCdes = areDerivationRulesSatisfied(this.elt);
+        CdeForm.validate(this.elt);
     }
 
     @HostListener('window:scroll', ['$event']) scrollEvent() {
@@ -135,6 +132,21 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
                 return false;
             })
         ]);
+
+        const fragment = this.route.snapshot.fragment;
+        if (fragment) {
+            this.scrollToDescriptionId(fragment);
+        }
+
+    }
+
+
+    scrollToDescriptionId(id: string) {
+        setTimeout(scrollTo, 0, id);
+    }
+
+    canEdit() {
+        return canEditCuratedItem(this.userService.user, this.elt);
     }
 
     ngAfterViewInit(): void {
@@ -263,7 +275,7 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
 
     treeEvents(event: any) {
         if (event && event.eventName === 'updateData' && this.updateDataCredit === 0) {
-            this.eltChange.emit();
+            this.saveEdit();
         }
         if (event && event.eventName === 'moveNode') {
             this.updateDataCredit++;
@@ -277,6 +289,19 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         this.tree.treeModel.expandAll();
     }
 
+    saveEdit() {
+        this.http.put('/server/form/draft/' + this.elt.tinyId, this.elt)
+            .subscribe((elt: any) => {
+                this.missingCdes = areDerivationRulesSatisfied(this.elt);
+                CdeForm.validate(this.elt);
+                this.alert.addAlert('success', 'Saved');
+                this.elt.__v = elt.__v;
+            }, error => {
+                this.alert.httpErrorMessageAlert(error);
+                this.alert.addAlert('danger', 'Cannot save this old version. Reload and redo.')
+            });
+    }
+
     static isSubForm(node: TreeNode): boolean {
         let n = node;
         while (n && n.data && n.data.elementType !== 'form' && n.parent) {
@@ -284,4 +309,5 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         }
         return n && n.data && n.data.elementType === 'form';
     }
+
 }

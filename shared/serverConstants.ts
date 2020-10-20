@@ -14,6 +14,7 @@ export const htmlServedUri: string[] = [
     '/createForm',
     '/deView',
     '/form/search',
+    '/formEdit',
     '/formView',
     '/help/:title',
     '/home',

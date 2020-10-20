@@ -179,14 +179,10 @@ export class FormDescriptionSectionComponent implements OnInit {
     repeatChange(section: FormSectionOrForm) {
         if (section.repeatOption === 'F') {
             section.repeat = 'First Question';
-            this.eltChange.emit();
         } else if (section.repeatOption === '=') {
             section.repeat = '="' + section.repeatQuestion + '"';
         } else if (section.repeatOption === 'N') {
             section.repeat = (section.repeatNumber && section.repeatNumber > 1 ? section.repeatNumber.toString() : undefined);
-            if (parseInt(section.repeat || '', 10) > 0) {
-                this.eltChange.emit();
-            }
         } else {
             section.repeat = undefined;
         }

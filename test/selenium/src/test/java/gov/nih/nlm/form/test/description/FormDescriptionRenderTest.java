@@ -7,7 +7,8 @@ import org.testng.annotations.Test;
 public class FormDescriptionRenderTest extends NlmCdeBaseTest {
 
     @Test
-    public void formDescription() {
+    public void formDescriptionRender() {
+        mustBeLoggedInAs(nlm_username,nlm_password);
         String formName = "Loinc Widget Test Form";
         goToFormByName(formName);
         goToFormDescription();

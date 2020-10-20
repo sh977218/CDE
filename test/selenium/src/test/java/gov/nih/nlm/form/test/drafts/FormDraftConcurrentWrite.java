@@ -28,7 +28,7 @@ public class FormDraftConcurrentWrite extends BaseFormTest {
         textNotPresent(change1);
         textPresent(change2);
         refresh();
-        goToFormDescription();
+        saveFormEdit();
         textPresent(change1);
         textNotPresent(change2);
     }

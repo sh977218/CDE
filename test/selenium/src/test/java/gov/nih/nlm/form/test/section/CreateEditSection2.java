@@ -15,6 +15,7 @@ public class CreateEditSection2 extends BaseFormTest {
         goToFormDescription();
 
         addSectionBottom("Section 2", "2");
+        saveFormEdit();
         newFormVersion();
 
         goToFormByName(formName);

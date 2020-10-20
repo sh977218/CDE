@@ -28,6 +28,11 @@
                 <mat-icon *ngIf="!overridePrintable">check_box_outline_blank</mat-icon>
             </span>
         </mat-menu>
+        <button id="openFormEditBtn" mat-raised-button *ngIf="canEdit" [routerLink]="'/formEdit'"
+                [queryParams]="{tinyId: elt.tinyId}">
+            <mat-icon>edit</mat-icon>
+            Edit
+        </button>
     </div>
     <div *ngIf="elt.displayProfiles?.length > 0" class="d-inline-block">
         <button id="select_display_profile" mat-raised-button [matMenuTriggerFor]="dpMenu">

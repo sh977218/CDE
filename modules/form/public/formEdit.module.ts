@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -19,38 +19,31 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { TreeModule } from '@circlon/angular-tree-component';
-import { AdminItemModule } from 'adminItem/adminItem.module';
 import { HotkeyModule } from 'angular2-hotkeys';
-import { BoardModule } from 'board/public/board.module';
 import { CdeModule } from 'cde/public/cde.module';
 import { CdeSearchModule } from 'cde/public/cdeSearch.module';
 import { CompareModule } from 'compare/compare.module';
-import { DeleteWithConfirmModule } from 'deleteWithConfirm/deleteWithConfirm.module';
-import { DiscussModule } from 'discuss/discuss.module';
-import { ArrayListPipe } from 'form/public/arrayList.pipe';
-import { FormViewComponent } from 'form/public/components/formView.component';
-import { FormViewService } from 'form/public/components/formView.service';
 import { FormSearchModule } from 'form/public/formSearch.module';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
 import { UcumService } from 'form/public/ucum.service';
-import { DisplayProfileComponent } from 'form/public/components/displayProfile/displayProfile.component';
-import { FhirProcedureMappingComponent } from 'form/public/components/fhir/fhirProcedureMapping.component';
-import { FormClassificationComponent } from 'form/public/components/formClassification/formClassification.component';
-import { FormGeneralDetailsComponent } from 'form/public/components/formGeneralDetails/formGeneralDetails.component';
-import { FormTermMappingComponent } from 'form/public/components/formTermMapping/formTermMapping.component';
-import { NativeRenderFullComponent } from 'form/public/components/nativeRenderFull/nativeRenderFull.component';
+import { NonCoreModule } from 'non-core/noncore.module';
+import { SkipLogicModule } from 'skipLogic/skipLogic.module';
+import { FormDescriptionQuestionDetailComponent } from 'form/public/components/formDescriptionQuestionDetail/formDescriptionQuestionDetail.component';
+import { FormDescriptionSectionComponent } from 'form/public/components/formDescriptionSection/formDescriptionSection.component';
+import { QuestionAnswerEditContentComponent } from 'form/public/components/questionAnswerEditContent/questionAnswerEditContent.component';
+import { SelectQuestionLabelComponent } from 'form/public/components/selectQuestionLabel/selectQuestionLabel.component';
+import { FormDescriptionQuestionComponent } from 'form/public/components/formDescriptionQuestion/formDescriptionQuestion.component';
+import { FormDescriptionComponent } from 'form/public/components/formDescription/formDescription.component';
+import { CdkTreeModule } from '@angular/cdk/tree';
+import { MatBadgeModule } from '@angular/material/badge';
 import { InlineEditModule } from 'inlineEdit/inlineEdit.module';
 import { InlineAreaEditModule } from 'inlineAreaEdit/inlineAreaEdit.module';
-import { InlineSelectEditModule } from 'inlineSelectEdit/inlineSelectEdit.module';
-import { NativeRenderModule } from 'nativeRender/nativeRender.module';
-import { NonCoreModule } from 'non-core/noncore.module';
-import { SortableArrayModule } from 'sortableArray/sortableArray.module';
-import { SkipLogicModule } from 'skipLogic/skipLogic.module';
 import { TagModule } from 'tag/tag.module';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { DeleteWithConfirmModule } from 'deleteWithConfirm/deleteWithConfirm.module';
+import { SortableArrayModule } from 'sortableArray/sortableArray.module';
 
 const appRoutes: Routes = [
-    {path: '', component: FormViewComponent},
+    {path: '', component: FormDescriptionComponent},
 ];
 
 @NgModule({
@@ -81,41 +74,34 @@ const appRoutes: Routes = [
         NonCoreModule,
 
         // internal
-        TagModule,
-        AdminItemModule,
-        DeleteWithConfirmModule,
-        InlineAreaEditModule,
-        InlineEditModule,
-        InlineSelectEditModule,
-        SortableArrayModule,
-        BoardModule,
         CdeModule,
         CdeSearchModule,
         CompareModule,
-        DiscussModule,
         FormSearchModule,
-        NativeRenderModule,
         SkipLogicModule,
-        MatProgressSpinnerModule,
+        CdkTreeModule,
+        MatBadgeModule,
+        InlineEditModule,
+        InlineAreaEditModule,
+        TagModule,
+        DeleteWithConfirmModule,
+        SortableArrayModule,
     ],
     declarations: [
-        ArrayListPipe,
-        DisplayProfileComponent,
-        FormViewComponent,
-        FormClassificationComponent,
-        FormGeneralDetailsComponent,
-        FormTermMappingComponent,
-        FhirProcedureMappingComponent,
-        NativeRenderFullComponent,
+        FormDescriptionComponent,
+        FormDescriptionQuestionComponent,
+        FormDescriptionQuestionDetailComponent,
+        FormDescriptionSectionComponent,
+        QuestionAnswerEditContentComponent,
+        SelectQuestionLabelComponent
     ],
     exports: [],
     providers: [
-        FormViewService,
         SkipLogicValidateService,
         UcumService
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 
-export class FormViewModule {
+export class FormEditModule {
 }

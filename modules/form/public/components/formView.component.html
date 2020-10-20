@@ -23,15 +23,6 @@
         <div *ngIf="elt.outdated" class="alert alert-info mt20" role="alert">
             <mat-icon>warning</mat-icon><strong>Note: </strong>Some referenced items in this form have newer versions.
         </div>
-        <div *ngIf="missingCdes.length > 0" class="alert alert-warning mt20" role="alert">
-            <mat-icon>warning</mat-icon>
-            The following CDEs are part of a score but are missing from this form:
-            <ul class="list-inline">
-                <li *ngFor="let missCde of missingCdes;let i = index;">
-                    <a href="/deView?tinyId={{missCde}}" target="_blank">CDE {{i+1}},id: {{missCde}}</a>
-                    <span *ngIf="i < missingCdes.length">,</span></li>
-            </ul>
-        </div>
         <div *ngIf="validationErrors.length > 0" class="alert alert-warning mt20" role="alert">
             <mat-icon>warning</mat-icon>
             The following errors need to be corrected in order to Publish:
@@ -234,11 +225,6 @@
                                (click)="currentTab ='general_tab'">General Detail
                                 <mat-icon *ngIf="tabsCommented.indexOf('general_tab') > -1"
                                    class="pull-right" aria-hidden="true">forum</mat-icon></a>
-                            <a id="description_tab" class="list-group-item"
-                               [ngClass]="{'active':currentTab ==='description_tab'}"
-                               (click)="currentTab ='description_tab'">Form Description
-                                <mat-icon *ngIf="tabsCommented.indexOf('description_tab') > -1"
-                                   class="pull-right" aria-hidden="true">forum</mat-icon></a>
                             <a id="naming_tab" class="list-group-item"
                                [ngClass]="{'active':currentTab ==='naming_tab'}"
                                (click)="currentTab ='naming_tab'">Naming
@@ -283,7 +269,7 @@
                 </div>
                 <div id="middleView" class="col-xl-10 col-md-9 col-12">
                     <ng-container *ngIf="currentTab === 'preview_tab'">
-                        <cde-native-render-full [elt]="elt"></cde-native-render-full>
+                        <cde-native-render-full [elt]="elt" [canEdit]="canEdit()"></cde-native-render-full>
                     </ng-container>
                     <ng-container *ngIf="currentTab === 'general_tab'">
                         <cde-form-general-details [elt]="elt" [canEdit]="canEdit()" (eltChange)="saveDraftVoid()">
@@ -294,10 +280,6 @@
                         <cde-linked-boards [elt]="elt"></cde-linked-boards>
                         <cde-linked-forms [elt]="elt"></cde-linked-forms>
                         <cde-form-term-mapping [elt]="elt"></cde-form-term-mapping>
-                    </ng-container>
-                    <ng-container *ngIf="currentTab=== 'description_tab'">
-                        <cde-form-description [elt]="elt" [canEdit]="canEdit()"
-                                              (eltChange)="saveDraftVoid()"></cde-form-description>
                     </ng-container>
                     <ng-container *ngIf="currentTab=== 'naming_tab'">
                         <cde-naming [elt]="elt" [canEdit]="canEdit()" (eltChange)="saveDraftVoid()"></cde-naming>

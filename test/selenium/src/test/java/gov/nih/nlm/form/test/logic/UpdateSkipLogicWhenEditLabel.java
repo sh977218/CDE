@@ -28,7 +28,7 @@ public class UpdateSkipLogicWhenEditLabel extends BaseFormTest {
         String cssClass = findElement(By.xpath("//*[@id='question_0-4']//mat-icon[contains(@class,'updatedSkipLogicIcon')]")).getAttribute("class");
         Assert.assertEquals(cssClass.contains("fa-spin"), true);
         saveEditQuestionById("question_0-0");
-
+        saveFormEdit();
         newFormVersion();
         goToFormByName(formName);
         togglePrintableLogic();

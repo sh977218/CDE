@@ -4,7 +4,7 @@ import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
-public class QuestionDefaultValue extends NlmCdeBaseTest {
+public class QuestionDefaultValueTest extends NlmCdeBaseTest {
 
     @Test
     public void questionDefaultValue() {
@@ -22,6 +22,7 @@ public class QuestionDefaultValue extends NlmCdeBaseTest {
         findElement(By.xpath("//*[@id='question_0-1']//*[contains(@class,'defaultAnswer')]//input")).sendKeys("A default answer!");
         clickElement(By.xpath("//*[@id='question_0-1']//*[contains(@class,'defaultAnswer')]//button[contains(text(),'Confirm')]"));
         saveEditQuestionById("question_0-1");
+        saveFormEdit();
         newFormVersion();
 
         goToFormByName(formName);

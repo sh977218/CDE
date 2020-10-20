@@ -153,7 +153,7 @@
             <dd class="col-10">{{question.question.datatypeDynamicCodeList.code}}</dd>
         </ng-container>
         <ng-container
-                *ngIf="question.question.datatype === 'Number' || (question.question.datatype === 'Text' && !question.question.datatypeText.showAsTextArea)">
+                *ngIf="question.question.datatype === 'Number' || (question.question.datatype === 'Text' && !question.question.datatypeText?.showAsTextArea)">
             <dt class="col-2">Units of Measure:</dt>
             <dd class="col-10 questionUom">
                 <div class="border rounded p-1">

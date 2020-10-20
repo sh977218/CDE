@@ -24,7 +24,7 @@ public class SkipLogicDateTest extends BaseFormTest {
         startEditQuestionById(questionId);
         deleteSkipLogicById(questionId);
         saveEditQuestionById(questionId);
-
+        saveFormEdit();
         goToPreview();
         togglePrintableLogic();
         findElement(By.xpath("//*[@id='Person Birth Date_0-0_box']")).clear();
@@ -51,7 +51,7 @@ public class SkipLogicDateTest extends BaseFormTest {
         addSkipLogicById(questionId, "Axillary Surgery Dissection Date", "<", "02/05/2019", "date");
         saveEditQuestionById(questionId);
         textPresent("Show if: \"Axillary Surgery Dissection Date\" < \"2019-02-05\"");
-
+        saveFormEdit();
         goToPreview();
         togglePrintableLogic();
         findElement(By.xpath("//*[@id='Axillary Surgery Dissection Date_0-1_box']")).sendKeys(Keys.BACK_SPACE);

@@ -22,6 +22,7 @@ public class FormAddFormInsideFormTest extends QuestionTest {
         findElement(By.xpath("//*[@id='form_0-0']//*[@class='section_label']//input")).clear();
         findElement(By.xpath("//*[@id='form_0-0']//*[@class='section_label']//input")).sendKeys(newFormLabel);
         clickElement(By.xpath("//*[@id='form_0-0']//*[@class='section_label']//button[contains(text(),'Confirm')]"));
+        saveFormEdit();
         newFormVersion();
 
         goToFormByName(formName);

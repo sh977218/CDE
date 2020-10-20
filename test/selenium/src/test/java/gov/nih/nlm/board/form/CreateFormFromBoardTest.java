@@ -23,7 +23,6 @@ public class CreateFormFromBoardTest extends NlmCdeBaseTest {
         goToGeneralDetail();
         textPresent("Incomplete");
         textNotPresent("have newer version");
-        textPresent("Form Description");
     }
 
 }
