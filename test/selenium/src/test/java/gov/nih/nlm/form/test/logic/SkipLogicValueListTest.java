@@ -23,7 +23,7 @@ public class SkipLogicValueListTest extends BaseFormTest {
         startEditQuestionById(questionId);
         deleteSkipLogicById(questionId);
         saveEditQuestionById(questionId);
-
+        saveFormEdit();
         goToPreview();
         togglePrintableLogic();
         clickElement(By.xpath("(//*[@id='Distance from Closest Margin_0-0']//input[@type='radio'])[1]"));
@@ -35,7 +35,6 @@ public class SkipLogicValueListTest extends BaseFormTest {
 
     @Test
     public void addSkipLogicValueListTest() {
-        String questionId = "question_0-3";
         String cdeName = "Noncompliant Reason Text";
 
         mustBeLoggedInAs(nlm_username, nlm_password);
@@ -47,15 +46,16 @@ public class SkipLogicValueListTest extends BaseFormTest {
         textPresent(cdeName);
 
         goToFormDescription();
+        String questionId = "question_0-3";
         startEditQuestionById(questionId);
         addSkipLogicById(questionId, "Adrenal Gland Received", "=", "Fresh", "value list");
         saveEditQuestionById(questionId);
-
+        saveFormEdit();
         goToPreview();
         togglePrintableLogic();
         clickElement(By.xpath("(//*[@id='Adrenal Gland Received_0-1']//input[@type='radio'])[1]"));
-        textNotPresent(cdeName);
-        clickElement(By.xpath("(//*[@id='Adrenal Gland Received_0-1']//input[@type='radio'])[1]"));
         textPresent(cdeName);
+        clickElement(By.xpath("(//*[@id='Adrenal Gland Received_0-1']//input[@type='radio'])[2]"));
+        textNotPresent(cdeName);
     }
 }

@@ -16,6 +16,7 @@ public class DisplayProfilesMatrixTest extends BaseFormTest {
         goToFormDescription();
         startEditQuestionById("question_0-1");
         clickElement(By.xpath("//div[@id='question_0-1']//*[contains(@class,'multipleSelection')]/input"));
+        saveFormEdit();
 
         goToDisplayProfiles();
         DisplayProfile matrixDisplayProfile = new DisplayProfile(0, "Matrix Display Profile", "Dynamic", 5, 0, true, false, false, false, false, false);

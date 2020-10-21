@@ -19,7 +19,7 @@ import { UcumService } from 'form/public/ucum.service';
 import * as _cloneDeep from 'lodash/cloneDeep';
 import * as _noop from 'lodash/noop';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
-import { isIe, scrollTo } from 'non-core/browser';
+import { isIe } from 'non-core/browser';
 import { LocalStorageService } from 'non-core/localStorage.service';
 import { ExportService } from 'non-core/export.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
@@ -34,10 +34,13 @@ import { addFormIds, getLabel, iterateFe, iterateFes, iterateFeSync, noopSkipIte
 import { canEditCuratedItem, isOrgCurator } from 'shared/system/authorizationShared';
 import { getQuestionPriorByLabel } from 'shared/form/skipLogic';
 
-type NewDataElement = DataElement & (DatatypeContainerDate | DatatypeContainerNumber | DatatypeContainerText | DatatypeContainerTime
-    | DatatypeContainerValueList) & {permissibleValues: PermissibleValue[]};
+type NewDataElement =
+    DataElement
+    & (DatatypeContainerDate | DatatypeContainerNumber | DatatypeContainerText | DatatypeContainerTime
+    | DatatypeContainerValueList)
+    & { permissibleValues: PermissibleValue[] };
 
-class LocatableError {
+export class LocatableError {
     id?: string;
     message: string;
 
@@ -73,10 +76,10 @@ export class FormViewComponent implements OnInit {
     highlightedTabs: string[] = [];
     isIe = isIe;
     isOrgCurator = isOrgCurator;
-    missingCdes: string[] = [];
     savingText = '';
     tabsCommented: string[] = [];
     unsaved = false;
+    missingCdes: string[] = [];
     validationErrors: LocatableError[] = [];
 
     ngOnInit() {
@@ -135,8 +138,12 @@ export class FormViewComponent implements OnInit {
         };
         this.http.post<DataElement>('/server/de', dataElement)
             .subscribe(res => {
-                if (res.tinyId) { newCde.tinyId = res.tinyId; }
-                if (res.version) { newCde.version = res.version; }
+                if (res.tinyId) {
+                    newCde.tinyId = res.tinyId;
+                }
+                if (res.version) {
+                    newCde.version = res.version;
+                }
                 cb();
             }, err => {
                 this.alert.httpErrorMessageAlert(err);
@@ -177,13 +184,15 @@ export class FormViewComponent implements OnInit {
 
     eltLoaded(elt: CdeForm, cb = _noop) {
         if (elt) {
-            if (elt.isDraft) { this.hasDrafts = true; }
+            if (elt.isDraft) {
+                this.hasDrafts = true;
+            }
             CdeForm.validate(elt);
+            this.missingCdes = areDerivationRulesSatisfied(this.elt);
+            addFormIds(this.elt);
             this.elt = elt;
             this.title.setTitle('Form: ' + Elt.getLabel(this.elt));
             this.loadComments(this.elt);
-            this.missingCdes = areDerivationRulesSatisfied(this.elt);
-            addFormIds(this.elt);
             this.validate();
             cb();
         }
@@ -255,6 +264,7 @@ export class FormViewComponent implements OnInit {
 
     pinAllCdesIntoBoard() {
         const cdes: QuestionCde[] = [];
+
         function doFormElement(formElt: FormElement) {
             if (formElt.elementType === 'question') {
                 cdes.push(formElt.question.cde);
@@ -264,6 +274,7 @@ export class FormViewComponent implements OnInit {
                 }
             }
         }
+
         this.elt.formElements.forEach(doFormElement);
         this.mltPinModalCde.pinMultiple(cdes, this.mltPinModalCde.open());
     }
@@ -296,7 +307,9 @@ export class FormViewComponent implements OnInit {
     }
 
     saveDraft(): Promise<any> {
-        if (!this.elt.isDraft) { this.elt.changeNote = ''; }
+        if (!this.elt.isDraft) {
+            this.elt.changeNote = '';
+        }
         this.elt.isDraft = true;
         this.hasDrafts = true;
         this.savingText = 'Saving ...';
@@ -308,7 +321,6 @@ export class FormViewComponent implements OnInit {
             .toPromise().then(newElt => {
                 this.draftSaving = undefined;
                 this.elt.__v = newElt.__v;
-                this.missingCdes = areDerivationRulesSatisfied(this.elt);
                 this.validate();
                 if (this.unsaved) {
                     this.unsaved = false;
@@ -335,7 +347,9 @@ export class FormViewComponent implements OnInit {
             const newCdes: QuestionCde[] = [];
             iterateFes(this.elt.formElements, undefined, undefined, (fe, cb) => {
                 (fe as SaveModalFormQuestion).question.cde.datatype = fe.question.datatype;
-                if (!fe.question.cde.tinyId) { newCdes.push(fe.question.cde); }
+                if (!fe.question.cde.tinyId) {
+                    newCdes.push(fe.question.cde);
+                }
                 cb();
             }, () => {
                 async_forEach(newCdes, (newCde: NewDataElement, doneOneCde: Cb) => {
@@ -370,7 +384,7 @@ export class FormViewComponent implements OnInit {
 
     scrollToDescriptionId(id: string) {
         this.currentTab = 'description_tab';
-        setTimeout(scrollTo, 0, id);
+        this.router.navigate(['/formEdit'], {queryParams: {tinyId: this.elt.tinyId}, fragment: id});
     }
 
     setDefault(index: number) {

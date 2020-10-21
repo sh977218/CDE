@@ -17,17 +17,20 @@ public class FormDragQuestionDropTest extends QuestionTest {
         String cdeName = "Frontal Systems Behavior Scale (FrSBE) - Disinhibition subscale T score";
         addQuestionToSection(cdeName, 0);
         textPresent("Disinhibition subscale T score", By.id("question_0-0"));
+        closeAlert();
 
-        WebElement sourceElt = findElement(By.xpath("//*[@id='section_2']//mat-icon[normalize-space() = 'drag_handle']"));
-        WebElement targetElt = findElement(By.xpath("//*[@id='section_1']//*[contains(@class,'node-content-wrapper')]"));
-        (new Actions(driver)).moveToElement(targetElt).perform(); // scroll into view
-        dragAndDrop(sourceElt, targetElt);
+        textPresent("N/A", By.id("section_3"));
+        By sourceBy = By.xpath("//*[@id='section_2']//mat-icon[normalize-space() = 'drag_handle']");
+        By targetBy = By.xpath("//*[@id='section_1']//*[contains(@class,'node-content-wrapper')]");
+        dragAndDrop(sourceBy, targetBy);
 
         textPresent("N/A", By.id("section_2"));
 
         addQuestionToSection("Smoking History Ind", 1);
         addQuestionToSectionByAutoComplete("Patient Ethnic Group Cat", 1);
         textPresent("Patient Ethnic Group Category");
+        closeAlert();
+        saveFormEdit();
         newFormVersion();
 
         goToFormByName(formName);

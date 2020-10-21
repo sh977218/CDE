@@ -44,7 +44,7 @@ public class FormAddCdeTest extends QuestionTest {
         addCdePvById("question_0-3", "2");
         addCdePvById("question_0-3", "3");
         deleteCdePvById("question_0-3", "3");
-        hangon(2);
+        saveFormEdit();
         newFormVersion();
         checkNewCde1();
         checkNewCde2();

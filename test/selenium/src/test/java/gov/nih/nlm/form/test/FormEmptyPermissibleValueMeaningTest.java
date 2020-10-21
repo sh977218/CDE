@@ -17,6 +17,7 @@ public class FormEmptyPermissibleValueMeaningTest extends QuestionTest {
         goToFormByName(formName);
         goToFormDescription();
         addQuestionToSection(cdeName, 0);
+        saveFormEdit();
         newFormVersion();
 
         goToFormByName(formName);

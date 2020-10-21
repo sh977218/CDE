@@ -10,12 +10,10 @@ public class DragHandleVisibility extends BaseFormTest {
     public void dragHandleVisibility() {
         String formName = "Deployment Risk and Resiliency Inventory, Version 2 (Combat)";
         goToFormByName(formName);
-        goToFormDescription();
-        assertNoElt(By.cssSelector("div.formSectionArea i.question-move-handle"));
-        assertNoElt(By.cssSelector("i.section-move-handle"));
+        formEditNotAvailable();
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName(formName);
-        clickElement(By.linkText("Form Description"));
+        goToFormDescription();
         Assert.assertTrue(findElement(By.xpath("//*[@id='section_0']//div[contains(@class,'sectionTitle')]//mat-icon[normalize-space() = 'drag_handle']")).isDisplayed());
         Assert.assertTrue(findElement(By.xpath("//*[@id = 'question_0-0']//mat-icon[normalize-space() = 'drag_handle']")).isDisplayed());
     }

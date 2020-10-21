@@ -16,23 +16,22 @@ public class TextAreaInput extends NlmCdeBaseTest {
 
         goToFormDescription();
         String textAreaInput = " input[title='Show as Text Area']";
-
         String q0 = "#question_0-0";
         clickElement(By.cssSelector(q0 + " span[title='Patient Name']"));
         clickElement(By.cssSelector(q0 + textAreaInput));
         Assert.assertEquals(driver.findElements(By.cssSelector(q0 + textAreaInput + ":checked")).size(), 1);
         clickElement(By.cssSelector(q0 + " span[title='Patient Name']"));
 
+
         String q11 = "#question_0-1-1";
         clickElement(By.cssSelector(q11 + " span[title='Noncompliant Reason Text']"));
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[contains(@class,'pull-right')][contains(.,'Saved')]")));
+        closeAlert();
         clickElement(By.cssSelector(q11 + textAreaInput));
-        findElement(By.xpath("//div[contains(@class,'pull-right')][contains(.,'Saved')]"));
+        closeAlert();
         Assert.assertEquals(driver.findElements(By.cssSelector(q11 + textAreaInput + ":checked")).size(), 1);
         clickElement(By.cssSelector(q11 + " span[title='Noncompliant Reason Text']"));
 
-        hangon(1);
-        goToFormByName("TextAreaForm");
+        saveFormEdit();
         Assert.assertEquals(driver.findElements(By.cssSelector("textarea")).size(), 5);
     }
 

@@ -15,9 +15,12 @@
   z-index: 9;
 }
 
-.descriptionToolbox .btn.formDescriptionTool {
+.descriptionToolbox .btn {
   margin-left: 4px;
   padding: 0;
+}
+
+.descriptionToolbox .btn.formDescriptionTool {
   touch-action: auto;
   cursor: move;
 }

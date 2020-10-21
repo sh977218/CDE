@@ -50,11 +50,10 @@ public class BaseFormTest extends NlmCdeBaseTest {
                 searchString = "//tree-viewport/div/div/tree-node-collection/div/tree-node/div/tree-node-drop-slot/*[@class='node-drop-slot']";
 
             try {
-                WebElement sourceElt = findElement(By.xpath("//*[@id='addSectionTop']"));
-                WebElement targetElt = findElement(By.xpath("(" + searchString + ")[" + (sectionNumber + 1) + "]"));
 
-                (new Actions(driver)).moveToElement(targetElt).perform(); // scroll into view
-                dragAndDrop(sourceElt, targetElt);
+                By sourceBy = By.xpath("//*[@id='addSectionTop']");
+                By targetBy =By.xpath("(" + searchString + ")[" + (sectionNumber + 1) + "]");
+                dragAndDrop(sourceBy, targetBy);
                 textPresent("N/A", By.id(sectionId));
                 i = 10;
             } catch (TimeoutException e) {
@@ -162,7 +161,10 @@ public class BaseFormTest extends NlmCdeBaseTest {
         clickElement(By.xpath("//*[@id='profile_" + index + "']//mat-panel-title"));
     }
 
-    protected void dragAndDrop(WebElement source, WebElement target) {
+    protected void dragAndDrop(By sourceBy, By targetBy) {
+        WebElement source = findElement(sourceBy);
+        WebElement target = findElement(targetBy);
+        scrollToView(targetBy);
         String basePath = new File("").getAbsolutePath();
 
         // drag and drop selenium is buggy, try 5 times.
@@ -310,6 +312,11 @@ public class BaseFormTest extends NlmCdeBaseTest {
                 Assert.assertEquals(nextText, "");
             }
         }
+    }
+
+    protected void formEditNotAvailable() {
+        goToPreview();
+        textNotPresent("Edit", By.id("formRenderMenuDiv"));
     }
 
 }

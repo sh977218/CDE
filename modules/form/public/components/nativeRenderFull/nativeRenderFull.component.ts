@@ -48,6 +48,7 @@ import { CdeForm, DisplayProfile } from 'shared/form/form.model';
 })
 export class NativeRenderFullComponent implements OnInit {
     @Input() elt!: CdeForm;
+    @Input() canEdit = false;
     profile?: DisplayProfile;
     selectedProfileName?: string;
     selectedProfileNameDecode?: string;

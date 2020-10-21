@@ -2,7 +2,6 @@ package gov.nih.nlm.form.test.naming;
 
 import gov.nih.nlm.form.test.BaseFormTest;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -17,6 +16,7 @@ public class FormEditTest extends BaseFormTest {
         Assert.assertEquals(driver.getTitle(), "Form: " + formName);
         String newQuestionInstruction = "New Question Instruction";
         editQuestion(newQuestionInstruction);
+        saveFormEdit();
         newFormVersion();
         goHome();
 

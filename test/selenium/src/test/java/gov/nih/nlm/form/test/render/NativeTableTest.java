@@ -35,8 +35,7 @@ public class NativeTableTest extends BaseFormTest {
 
         startEditQuestionById("question_0-1-0");
         clickElement(By.xpath("//div[@id='question_0-1-0']//*[contains(@class,'multipleSelection')]/input"));
-
-        goToPreview();
+        saveFormEdit();
         findElement(By.xpath("//div[contains(@class,'native-table-cell')]/label[text()='Mother']"));
         findElement(By.xpath("//div[contains(@class,'native-table-cell')]//input[@type='checkbox']"));
 
@@ -62,7 +61,7 @@ public class NativeTableTest extends BaseFormTest {
         saveEditSectionById("form_0-2");
         textPresent("Repeats: over Question Answer \"Family history relative age at onset value\"", By.cssSelector("#form_0-2 > .card > .card-header"));
 
-        goToPreview();
+        saveFormEdit();
         findElement(By.cssSelector("input[name='0-1-2']")).sendKeys("2" + Keys.ENTER);
         Assert.assertEquals(driver.findElements(By.cssSelector("tr td:first-child")).size(), 2);
         textPresent("2.");

@@ -30,20 +30,21 @@ public class QuestionTest extends BaseFormTest {
     }
 
     private void addCde(String cdeName, String dropXpath, boolean isSuggested) {
-        WebElement sourceElt = findElement(By.xpath("//*[@id='startAddingQuestions']"));
-        WebElement targetElt = findElement(By.xpath(dropXpath));
-        (new Actions(driver)).moveToElement(targetElt).perform(); // scroll into view
-        dragAndDrop(sourceElt, targetElt);
+        By sourceBy = By.xpath("//*[@id='startAddingQuestions']");
+        By targetBy = By.xpath(dropXpath);
+        dragAndDrop(sourceBy, targetBy);
 
-        if (driver.findElements(By.id("addNewCdeBtn")).size() > 0) clickElement(By.id("addNewCdeBtn"));
-        textPresent("Create Data Element");
-
-        hangon(1);
-
+        if (driver.findElements(By.id("addNewCdeBtn")).size() > 0) {
+            clickElement(By.id("addNewCdeBtn"));
+        }
         // test autofocus in create mode
+        hangon(1);
         new Actions(driver).sendKeys(cdeName).build().perform();
-        if (!isSuggested) clickElement(By.id("createNewDataElement"));
-        else clickElement(By.xpath("(//*[@id='accordionList']//div[@class='card-header']//button)[1]"));
+        if (!isSuggested) {
+            clickElement(By.id("createNewDataElement"));
+        } else {
+            clickElement(By.xpath("(//*[@id='accordionList']//div[@class='card-header']//button)[1]"));
+        }
     }
 
     public void addCdeDesignationById(String questionId, String newDesignation) {
@@ -105,11 +106,9 @@ public class QuestionTest extends BaseFormTest {
         // drag and drop selenium is buggy, try 5 times.
         for (int i = 0; i < 5; i++) {
             try {
-                WebElement sourceElt = findElement(By.xpath("//*[@id='startAddingQuestions']"));
-                WebElement targetElt = findElement(By.xpath("//*[@id='section_" + sectionNumber + "']//*[contains(@class,'node-content-wrapper')]"));
-                (new Actions(driver)).moveToElement(targetElt).perform(); // scroll into view
-                scrollDownBy(50);
-                dragAndDrop(sourceElt, targetElt);
+                By sourceBy = By.xpath("//*[@id='startAddingQuestions']");
+                By targetBy = By.xpath("//*[@id='section_" + sectionNumber + "']//*[contains(@class,'node-content-wrapper')]");
+                dragAndDrop(sourceBy, targetBy);
                 textPresent("Search Data Elements");
                 i = 10;
             } catch (TimeoutException e) {
@@ -137,10 +136,9 @@ public class QuestionTest extends BaseFormTest {
         // drag and drop selenium is buggy, try 5 times.
         for (int i = 0; i < 5; i++) {
             try {
-                WebElement sourceElt = findElement(By.xpath("//*[@id='startAddingForms']"));
-                WebElement targetElt = findElement(By.xpath("//*[@id='section_" + sectionNumber + "']//*[contains(@class,'node-content-wrapper')]"));
-                (new Actions(driver)).moveToElement(targetElt).perform(); // scroll into view
-                dragAndDrop(sourceElt, targetElt);
+                By sourceBy = By.xpath("//*[@id='startAddingForms']");
+                By targetBy = By.xpath("//*[@id='section_" + sectionNumber + "']//*[contains(@class,'node-content-wrapper')]");
+                dragAndDrop(sourceBy, targetBy);
                 textPresent("Search Forms");
                 i = 10;
             } catch (TimeoutException e) {

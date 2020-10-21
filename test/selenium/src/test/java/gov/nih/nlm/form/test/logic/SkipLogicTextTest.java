@@ -18,12 +18,11 @@ public class SkipLogicTextTest extends BaseFormTest {
         textNotPresent(cdeName);
         findElement(By.xpath("//*[@id='Other, specify_0-0_box']")).sendKeys("abcde");
         textPresent(cdeName);
-
         goToFormDescription();
         startEditQuestionById(questionId);
         deleteSkipLogicById(questionId);
         saveEditQuestionById(questionId);
-
+        saveFormEdit();
         goToPreview();
         togglePrintableLogic();
         findElement(By.xpath("//*[@id='Other, specify_0-0_box']")).clear();
@@ -50,7 +49,7 @@ public class SkipLogicTextTest extends BaseFormTest {
         startEditQuestionById(questionId);
         addSkipLogicById(questionId, "AIS grade", "=", "show question 4", "text");
         saveEditQuestionById(questionId);
-
+        saveFormEdit();
         goToPreview();
         togglePrintableLogic();
         findElement(By.xpath("//*[@id='AIS grade_0-1_box']")).clear();

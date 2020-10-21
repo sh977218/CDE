@@ -4,7 +4,7 @@ import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
-public class FormFormUpdateTest extends NlmCdeBaseTest {
+public class UpdateInFormTest extends NlmCdeBaseTest {
 
     @Test
     public void updateInForm() {
@@ -29,6 +29,7 @@ public class FormFormUpdateTest extends NlmCdeBaseTest {
         textPresent("was", By.id("mdd_section_title"));
         textPresent("was", By.id("mdd_d_form"));
         clickElement(By.id("okSelect"));
+        saveFormEdit();
         newFormVersion();
 
         goToFormByName(formName);

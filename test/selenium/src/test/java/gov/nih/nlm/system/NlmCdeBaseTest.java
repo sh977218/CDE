@@ -464,6 +464,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void goToPreview() {
+        driver.navigate().to(driver.getCurrentUrl());
         clickElement(By.id("preview_tab"));
     }
 
@@ -476,7 +477,11 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void goToFormDescription() {
-        clickElement(By.id("description_tab"));
+        clickElement(By.id("openFormEditBtn"));
+    }
+
+    protected void saveFormEdit() {
+        clickElement(By.id("editFormCloseBtn"));
     }
 
     protected void goToNaming() {
@@ -759,7 +764,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     /**
-     *
      * @param i second(s) to wait
      */
     public void hangon(double i) {
@@ -1935,5 +1939,33 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
 
     protected void selectMatDropdownByText(String text) {
         clickElement(By.xpath("//mat-option[normalize-space() = '" + text + "']"));
+    }
+
+    protected void changeDataTypeTextRule(String rule) {
+        clickElement(By.xpath("//*[@id='datatypeTextRule']//mat-icon[normalize-space() = 'edit']"));
+        findElement(By.xpath("//*[@id='datatypeTextRule']//input")).clear();
+        findElement(By.xpath("//*[@id='datatypeTextRule']//input")).sendKeys(rule);
+        clickElement(By.xpath("//*[@id='datatypeTextRule']//button/mat-icon[normalize-space() = 'check']"));
+    }
+
+    protected void changeDataTypeTextRegex(String regex) {
+        clickElement(By.xpath("//*[@id='datatypeTextRegex']//mat-icon[normalize-space() = 'edit']"));
+        findElement(By.xpath("//*[@id='datatypeTextRegex']//input")).clear();
+        findElement(By.xpath("//*[@id='datatypeTextRegex']//input")).sendKeys(regex);
+        clickElement(By.xpath("//*[@id='datatypeTextRegex']//button/mat-icon[normalize-space() = 'check']"));
+    }
+
+    protected void changeDataTypeTextMaxLength(String maxLength) {
+        clickElement(By.xpath("//*[@id='datatypeTextMax']//mat-icon[normalize-space() = 'edit']"));
+        findElement(By.xpath("//*[@id='datatypeTextMax']//input")).clear();
+        findElement(By.xpath("//*[@id='datatypeTextMax']//input")).sendKeys(maxLength);
+        clickElement(By.xpath("//*[@id='datatypeTextMax']//button/mat-icon[normalize-space() = 'check']"));
+    }
+
+    protected void changeDataTypeTextMinLength(String minLength) {
+        clickElement(By.xpath("//*[@id='datatypeTextMin']//mat-icon[normalize-space() = 'edit']"));
+        findElement(By.xpath("//*[@id='datatypeTextMin']//input")).clear();
+        findElement(By.xpath("//*[@id='datatypeTextMin']//input")).sendKeys(minLength);
+        clickElement(By.xpath("//*[@id='datatypeTextMin']//button/mat-icon[normalize-space() = 'check']"));
     }
 }

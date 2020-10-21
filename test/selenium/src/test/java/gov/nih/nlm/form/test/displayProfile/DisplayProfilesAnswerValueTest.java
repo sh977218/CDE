@@ -10,7 +10,7 @@ import java.util.List;
 public class DisplayProfilesAnswerValueTest extends BaseFormTest {
 
     @Test
-    public void answerValueDisplayProfile() {
+    public void displayProfileAnswerValue() {
         String formName = "Answer Value Display Profile Test";
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName(formName);
@@ -21,7 +21,7 @@ public class DisplayProfilesAnswerValueTest extends BaseFormTest {
         textPresent("Likert Scale");
         saveEditQuestionById("question_0-0");
         textPresent("Likert Scale");
-
+        saveFormEdit();
         goToDisplayProfiles();
 
         DisplayProfile answerValueDisplayProfile = new DisplayProfile(0, "Answer Value Display Profile", "Dynamic", 5, 0, false, true, false, false, false, false);
