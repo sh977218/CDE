@@ -16,19 +16,19 @@ const createScanner = require('clamav.js').createScanner;
 const createReadStream = require('streamifier').createReadStream;
 const config = Config as any;
 
-export function add(req: Request & {files: {uploadedFiles: any}}, res: Response, db: any,
+export function add(req: Request & {files: any}, res: Response, db: any,
                     crudPermission: (item: Item, user: User) => boolean) {
-    if (!req.files.uploadedFiles) {
+    if (!req.files) {
         res.status(400).send('No files to attach.');
         return;
     }
 
-    const fileBuffer = req.files.uploadedFiles.buffer;
+    const fileBuffer = req.files[0].buffer;
     const stream = createReadStream(fileBuffer);
     const streamFS = createReadStream(fileBuffer);
     const streamFS1 = createReadStream(fileBuffer);
     scanFile(stream, res, scanned => {
-        req.files.uploadedFiles.scanned = scanned;
+        req.files.scanned = scanned;
         db.byId(req.body.id, handleNotFound({req, res}, (elt: ItemDocument) => {
             const ownership = crudPermission(elt, req.user);
             if (!ownership) { return res.status(401).send('You do not own this element'); }
@@ -36,14 +36,14 @@ export function add(req: Request & {files: {uploadedFiles: any}}, res: Response,
                 if (totalSpace > req.user.quota) {
                     return res.send({message: 'You have exceeded your quota'});
                 }
-                const file = req.files.uploadedFiles;
+                const file = req.files[0];
                 file.stream = streamFS1;
 
                 // store it to FS here
-                const writeStream = createWriteStream(file.path);
+                const writeStream = createWriteStream(file.originalname);
                 streamFS.pipe(writeStream);
                 writeStream.on('finish', () => {
-                    md5(file.path, (err, hash) => {
+                    md5(file.originalname, (err, hash) => {
                         file.md5 = hash;
                         addToItem(elt, file, req.user, 'some comment', (attachment?: Attachment, requiresApproval?: boolean) => {
                             if (requiresApproval) {
