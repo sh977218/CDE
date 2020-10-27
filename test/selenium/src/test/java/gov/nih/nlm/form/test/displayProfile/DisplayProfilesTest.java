@@ -14,7 +14,7 @@ public class DisplayProfilesTest extends BaseFormTest {
         goToFormByName(formName);
         clickElement(By.id("displayProfiles_tab"));
 
-        createDisplayProfile(0, "No Matrix No Values Wider", false, false, false, false, "Follow-up", 5, false, 0);
+        createDisplayProfile(0, "No Matrix No Values Wider", false, false, false, false, "Print (Follow-up style)", 5, false, 0);
         scrollToTop();
 
         scrollToViewById("profile_0");

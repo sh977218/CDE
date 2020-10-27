@@ -29,7 +29,7 @@ public class CDEDateRangeSearch extends NlmCdeBaseTest {
         findElement(By.id("ftsearch-input")).sendKeys("updated:<2015-09-22");
         clickElement(By.id("search.submit"));
         textPresent("updated:<2015-09-22", By.id("searchResultInfoBar"));
-        Assert.assertTrue(getNumberOfResults() > 9800);
+        Assert.assertTrue(getNumberOfResults() > 9790);
 
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("imported:<2014-12-10");

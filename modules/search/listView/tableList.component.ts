@@ -396,8 +396,8 @@ export class TableListComponent implements OnInit {
         });
     }
 
-    static getOtherNames(cde: Item): Designation[] {
-        return cde.designations.filter((n, i) => {
+    static getOtherNames(item: Item): Designation[] {
+        return item.designations.filter((n, i) => {
             if (!n.tags) { n.tags = []; }
             return i > 0 && n.tags.filter(t => t.indexOf('Question Text') > -1).length === 0;
         });

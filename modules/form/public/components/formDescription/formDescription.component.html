@@ -150,7 +150,9 @@
         </cde-form-search>
     </div>
     <div mat-dialog-actions align="end">
-        <button mat-raised-button color="accent" [mat-dialog-close] id="cancelSelectF">Close</button>
+        <button mat-raised-button color="accent" [mat-dialog-close] id="cancelSelectF">
+            Close
+        </button>
     </div>
 </ng-template>
 
@@ -167,16 +169,19 @@
             </cde-cde-search>
         </div>
         <div mat-dialog-actions align="end">
-            <button mat-raised-button color="accent" [mat-dialog-close] id="cancelSelectQ">Close</button>
+            <button mat-raised-button color="accent" [mat-dialog-close] id="cancelSelectQ">
+                Close
+            </button>
         </div>
     </ng-container>
     <ng-container *ngIf="questionModelMode === 'add'">
         <div mat-dialog-title>
-            <h1>Create Data Element</h1>
+            <h4>Create Data Element</h4>
+            <button mat-raised-button (click)="questionModelMode = 'search'" tabindex="-1">
+                Search Data Elements
+            </button>
         </div>
-        <form #newDataElementForm="ngForm" (ngSubmit)="createNewDataElement(undefined);">
-            <!-- tabindex -1 to prevent mat dialog autofocus -->
-            <button mat-raised-button (click)="questionModelMode = 'search'" tabindex="-1">Search Data Elements</button>
+        <form #newDataElementForm="ngForm" (ngSubmit)="createNewDataElement()">
             <div mat-dialog-content>
                 <label for="newDEName"></label>
                 <input [(ngModel)]="newDataElement.designations[0].designation" class="form-control" id="newDEName"
@@ -186,8 +191,8 @@
                 <cde-de-completion (add)="createNewDataElement($event)"></cde-de-completion>
             </div>
             <div mat-dialog-actions align="end">
-                <button mat-raised-button color="accent" type="submit" [disabled]="!newDataElementForm.valid"
-                        id="createNewDataElement">Create
+                <button mat-raised-button color="accent" type="submit" [disabled]="!newDataElementForm.valid" id="createNewDataElement">
+                    Create
                 </button>
             </div>
         </form>

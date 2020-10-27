@@ -4,17 +4,17 @@ import { AlertService } from 'alert/alert.service';
 import * as _isEqual from 'lodash/isEqual';
 import { iterateFormElements } from 'shared/form/fe';
 import { MatDialog } from '@angular/material/dialog';
-import { FormQuestion, QuestionCde } from 'shared/form/form.model';
+import { FormQuestionDraft, Question } from 'shared/form/form.model';
 import { Cb, Item } from 'shared/models.model';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
-export type SaveModalQuestionCde = QuestionCde & {
-    datatype: string,
-    designations: { invalid?: boolean, message?: string },
-    isCollapsed?: boolean
-};
-export type SaveModalFormQuestion = FormQuestion & { question: { cde: SaveModalQuestionCde } };
+type NewQuestion = FormQuestionDraft['question'] & {
+    isCollapsed?: boolean;
+    cde: {
+        newCde: FormQuestionDraft['question']['cde']['newCde'];
+    };
+}
 
 @Component({
     selector: 'cde-save-modal',
@@ -26,7 +26,7 @@ export class SaveModalComponent {
     @Output() eltChange = new EventEmitter();
     @ViewChild('updateElementContent', {static: true}) updateElementContent!: TemplateRef<any>;
     duplicatedVersion = false;
-    protected newCdes: SaveModalQuestionCde[] = [];
+    newQuestions: NewQuestion[] = [];
     overrideVersion = false;
 
     versionNumber$: Subject<string> = new Subject<string>();
@@ -82,21 +82,14 @@ export class SaveModalComponent {
     }
 
     openSaveModal() {
-        this.newCdes = [];
+        this.newQuestions = [];
         this.newVersionVersionUnicity();
         if (this.elt.elementType === 'form' && this.elt.isDraft) {
             iterateFormElements(this.elt, {
                 async: true,
-                questionCb: (fe: SaveModalFormQuestion, cb?: Cb) => {
-                    if (!fe.question.cde.tinyId) {
-                        if (fe.question.cde.designations.length === 0) {
-                            fe.question.cde.designations.invalid = true;
-                            fe.question.cde.designations.message = 'no designation.';
-                        } else {
-                            fe.question.cde.designations.invalid = false;
-                            fe.question.cde.designations.message = '';
-                        }
-                        this.newCdes.push(fe.question.cde);
+                questionCb: (fe: FormQuestionDraft, cb?: Cb) => {
+                    if (fe.question.cde.newCde) {
+                        this.newQuestions.push(fe.question as NewQuestion);
                         if (cb) {
                             cb();
                         }

@@ -23,7 +23,7 @@ let expectedContent = {
     ],
     cdeTruncatePlainPropertiesTest: '*', // ckeditor
     cdeTruncateRichPropertiesTest: '*', // ckeditor
-    checkDuplicatesClassification: 'the server responded with a status of 409',
+    checkDuplicatesClassification: 'Failed to load resource: the server responded with a status of 409 (Conflict)',
     contactUs: '*', // ckeditor
     createUser: 'with a status of 409',
     dupStewardValidation: [
@@ -32,7 +32,8 @@ let expectedContent = {
     ],
     embedNinds: '*',
     emptyAnswers: 'the server responded with a status of 500',
-    formHistoryCompareTest: "*",
+    formAddCde: '*',
+    formHistoryCompareTest: '*',
     formDraftConcurrentWrite: [
         'Failed to load resource: the server responded with a status of 409 (Conflict)',
         'Edited by someone else. Please refresh and redo.'
@@ -56,7 +57,6 @@ let expectedContent = {
         'Unable to get the Swagger UI URL from the server'
     ],
     formTruncateRichPropertiesTest: '*', // ckeditor
-    checkDuplicatesClassification: "Failed to load resource: the server responded with a status of 409 (Conflict)",
     importVsacValues: "with a status of 500",
     increaseLockoutLogin: 'login - Failed to load resource: the server responded with a status of 403',
     launchFhirApp: '*',

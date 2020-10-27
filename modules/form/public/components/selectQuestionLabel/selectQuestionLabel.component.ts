@@ -1,37 +1,52 @@
-import { Component, Inject, EventEmitter, Output } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AlertService } from 'alert/alert.service';
-import { FormQuestion, FormSection, Question, QuestionCde } from 'shared/form/form.model';
+import { FormQuestion, FormSection, Question } from 'shared/form/form.model';
+import { DataElement } from 'shared/de/dataElement.model';
 import { Designation } from 'shared/models.model';
+
+export interface SelectQuestionLabelData {
+    question: FormQuestion;
+    parent: FormSection;
+}
+
+export type SelectQuestionLabelOutput = Designation | null | undefined;
 
 @Component({
     selector: 'cde-select-question-label',
     templateUrl: 'selectQuestionLabel.component.html'
 })
 export class SelectQuestionLabelComponent {
-    @Output() closed = new EventEmitter<void>();
-    @Output() selected = new EventEmitter<Designation>();
-    cde = new QuestionCde();
+    cde?: DataElement;
     question: Question;
     section: FormSection;
 
     constructor(private http: HttpClient,
                 private alert: AlertService,
-                @Inject(MAT_DIALOG_DATA) data: {question: FormQuestion, parent: FormSection}) {
+                public dialogRef: MatDialogRef<SelectQuestionLabelComponent, SelectQuestionLabelOutput>,
+                @Inject(MAT_DIALOG_DATA) data: SelectQuestionLabelData) {
         this.question = data.question.question;
         this.section = data.parent;
-        if (this.question.cde.tinyId) {
-            let url = '/api/de/' + this.question.cde.tinyId;
-            if (this.question.cde.version) { url += '/version/' + this.question.cde.version; }
-            this.http.get<QuestionCde>(url).subscribe(
-                res => this.cde = res,
-                () => {
-                    this.alert.addAlert('danger', 'Error load CDE.');
-                    this.closed.emit();
-                });
-        } else {
-            this.cde = this.question.cde;
+        if (!this.question.cde.tinyId) {
+            this.alert.addAlert('danger', 'This question does not have a tinyId.');
+            this.dialogRef.close();
+            return;
         }
+        let url = '/api/de/' + this.question.cde.tinyId;
+        if (this.question.cde.version) {
+            url += '/version/' + this.question.cde.version;
+        }
+        this.http.get<DataElement>(url).subscribe(
+            res => this.cde = res,
+            () => {
+                this.alert.addAlert('danger', 'Error loading CDE.');
+                this.dialogRef.close();
+            }
+        );
+    }
+
+    onNoClick(): void {
+        this.dialogRef.close();
     }
 }

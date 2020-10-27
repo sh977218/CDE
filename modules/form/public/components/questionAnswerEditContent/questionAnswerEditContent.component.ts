@@ -1,6 +1,12 @@
 import { Component, Output, EventEmitter, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { PermissibleValue } from 'shared/models.model';
+
+export interface QuestionAnswerEditContentData {
+    answers: PermissibleValue[];
+}
+
+export type QuestionAnswerEditContentOutput = PermissibleValue[] | 'clear' | undefined;
 
 @Component({
     selector: 'cde-question-answer-edit',
@@ -8,11 +14,16 @@ import { PermissibleValue } from 'shared/models.model';
     providers: []
 })
 export class QuestionAnswerEditContentComponent {
-    @Output() cleared: EventEmitter<void> = new EventEmitter<void>();
-    @Output() saved: EventEmitter<void> = new EventEmitter<void>();
-    answers: PermissibleValue;
+    answers: PermissibleValue[];
 
-    constructor(@Inject(MAT_DIALOG_DATA) public data: any) {
+    constructor(
+        public dialogRef: MatDialogRef<QuestionAnswerEditContentComponent, QuestionAnswerEditContentOutput>,
+        @Inject(MAT_DIALOG_DATA) public data: QuestionAnswerEditContentData
+    ) {
         this.answers = data.answers;
+    }
+
+    onNoClick(): void {
+        this.dialogRef.close();
     }
 }

@@ -10,8 +10,12 @@ import { TreeNode } from '@circlon/angular-tree-component';
 import { repeatFe, repeatFeLabel, repeatFeQuestion } from 'core/form/fe';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
 import { UcumService, UcumSynonyms } from 'form/public/ucum.service';
-import { QuestionAnswerEditContentComponent } from 'form/public/components/questionAnswerEditContent/questionAnswerEditContent.component';
-import { SelectQuestionLabelComponent } from 'form/public/components/selectQuestionLabel/selectQuestionLabel.component';
+import {
+    QuestionAnswerEditContentComponent, QuestionAnswerEditContentData, QuestionAnswerEditContentOutput
+} from 'form/public/components/questionAnswerEditContent/questionAnswerEditContent.component';
+import {
+    SelectQuestionLabelComponent, SelectQuestionLabelData, SelectQuestionLabelOutput
+} from 'form/public/components/selectQuestionLabel/selectQuestionLabel.component';
 import * as _clone from 'lodash/clone';
 import * as _noop from 'lodash/noop';
 import { OrgHelperService } from 'non-core/orgHelper.service';
@@ -19,7 +23,9 @@ import { switchMap, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { DATA_TYPE_ARRAY } from 'shared/de/dataElement.model';
 import { pvGetLabel } from 'core/de/deShared';
 import { isScore, iterateFeSync } from 'shared/form/fe';
-import { CdeForm, FormElement, FormQuestion, Question, QuestionValueList, SkipLogic } from 'shared/form/form.model';
+import {
+    CdeForm, FormElement, FormQuestion, FormQuestionDraft, FormSection, Question, QuestionValueList, SkipLogic
+} from 'shared/form/form.model';
 import { CodeAndSystem, Designation, FormattedValue } from 'shared/models.model';
 import { fixDatatype } from 'shared/de/dataElement.model';
 
@@ -60,7 +66,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     newUom = '';
     newUomSystem = 'UCUM';
     parent!: FormElement;
-    question!: FormQuestion;
+    question!: FormQuestionDraft;
     questionAnswers: string[] = [];
     pvGetLabel = pvGetLabel;
     repeatFeLabel = repeatFeLabel;
@@ -115,8 +121,14 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
 
     openEditAnswerModal() {
         const question: QuestionValueList = this.question.question as QuestionValueList;
-        this.dialog.open(QuestionAnswerEditContentComponent, {data: {answers: question.answers}})
-            .afterClosed().subscribe(response => {
+        this.dialog.open<QuestionAnswerEditContentComponent, QuestionAnswerEditContentData, QuestionAnswerEditContentOutput>(
+            QuestionAnswerEditContentComponent,
+            {
+                data: {
+                    answers: question.answers
+                }
+            }
+        ).afterClosed().subscribe(response => {
             if (response === 'clear') {
                 question.answers = [];
                 this.questionAnswers = [];
@@ -129,15 +141,14 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         });
     }
 
-    openNameSelect(question: FormQuestion, parent: FormElement) {
-        const dialogRef = this.dialog.open(SelectQuestionLabelComponent, {
+    openNameSelect(question: FormQuestion, parent: FormSection) {
+        this.dialog.open<SelectQuestionLabelComponent, SelectQuestionLabelData, SelectQuestionLabelOutput>(SelectQuestionLabelComponent, {
             width: '800px',
             data: {
                 question,
-                parent
+                parent,
             }
-        });
-        dialogRef.componentInstance.selected.subscribe((designation: Designation) => {
+        }).afterClosed().subscribe((designation) => {
             if (designation && designation.designation) {
                 SkipLogicValidateService.checkAndUpdateLabel(parent, question.label || '', designation.designation);
                 FormDescriptionQuestionDetailComponent.updateRepeatQuestions(this.elt, question.label || '', designation.designation);
@@ -145,10 +156,8 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
             } else {
                 question.label = '';
             }
-            dialogRef.close();
             this.eltChange.emit();
         });
-        dialogRef.componentInstance.closed.subscribe(() => dialogRef.close());
     }
 
     addCdeId(event: MatChipInputEvent): void {
@@ -176,12 +185,12 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         this.eltChange.emit();
     }
 
-    addCdeDesignation(event: MatChipInputEvent): void {
+    addCdeDesignation(designations: Designation[], event: MatChipInputEvent): void {
         const input = event.input;
         const value = event.value;
 
         if ((value || '').trim()) {
-            this.question.question.cde.designations.push({
+            designations.push({
                 designation: value.trim()
             });
         }
@@ -191,8 +200,8 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         this.eltChange.emit();
     }
 
-    removeCdeDesignation(i: number) {
-        this.question.question.cde.designations.splice(i, 1);
+    removeCdeDesignation(designations: Designation[], i: number) {
+        designations.splice(i, 1);
         this.eltChange.emit();
     }
 

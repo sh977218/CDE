@@ -290,9 +290,7 @@ function getSampleElt(): CdeForm {
                                     uomsAlias: [],
                                     uomsValid: [],
                                     cde: {
-                                        definitions: [],
                                         derivationRules: [],
-                                        designations: [],
                                         ids: [],
                                         permissibleValues: [
                                             {
@@ -359,9 +357,7 @@ function getSampleElt(): CdeForm {
                                     uomsAlias: [],
                                     uomsValid: [],
                                     cde: {
-                                        definitions: [],
                                         derivationRules: [],
-                                        designations: [],
                                         ids: [],
                                         permissibleValues: [
                                             {
@@ -459,9 +455,7 @@ function getSampleElt(): CdeForm {
                             uomsAlias: [],
                             uomsValid: [],
                             cde: {
-                                definitions: [],
                                 derivationRules: [],
-                                designations: [],
                                 ids: [],
                                 permissibleValues: [
                                     {
@@ -534,9 +528,7 @@ function getSampleElt(): CdeForm {
                             uomsValid: [],
                             cde: {
                                 ids: [],
-                                definitions: [],
                                 derivationRules: [],
-                                designations: [],
                                 tinyId: '',
                             }
                         },

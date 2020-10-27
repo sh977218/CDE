@@ -14,7 +14,7 @@ public class DisplayProfilesMetadataDeviceTest extends BaseFormTest {
         goToFormByName(formName);
         goToDisplayProfiles();
 
-        DisplayProfile metadataDeviceDisplayProfile = new DisplayProfile(0, "Metadata Device Display Profile", "Dynamic", 5, 0, false, false, false, false, false, true);
+        DisplayProfile metadataDeviceDisplayProfile = new DisplayProfile(0, "Metadata Device Display Profile", "Digital (Dynamic style)", 5, 0, false, false, false, false, false, true);
         createDisplayProfile(metadataDeviceDisplayProfile);
 
         int number_add_icon_in_display_profile = findElements(By.xpath("//cde-native-section//i")).size();
@@ -27,7 +27,7 @@ public class DisplayProfilesMetadataDeviceTest extends BaseFormTest {
         goToDisplayProfiles();
         deleteDisplayProfile(0);
 
-        DisplayProfile noMetadataDeviceDisplayProfile = new DisplayProfile(0, "Metadata Device Display Profile", "Dynamic", 5, 0, false, false, false, false, false, false);
+        DisplayProfile noMetadataDeviceDisplayProfile = new DisplayProfile(0, "Metadata Device Display Profile", "Digital (Dynamic style)", 5, 0, false, false, false, false, false, false);
         createDisplayProfile(noMetadataDeviceDisplayProfile);
 
         // use driver.findElements to check meta data device elements are not in html.
