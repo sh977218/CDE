@@ -49,6 +49,6 @@ task buildZipExportZip(type: Zip) {
 build.dependsOn buildSdcValidateZip
 build.dependsOn buildZipExportZip
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '3.5'
+wrapper {
+    gradleVersion = '5.4'
 }

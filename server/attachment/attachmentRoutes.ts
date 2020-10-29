@@ -12,7 +12,7 @@ export function module(roleConfig: {attachmentApproval: RequestHandler[]},
 
     modules.forEach(m => {
 
-        router.post(`/${m.module}/add`, multer(config.multer) as any, (req, res) => {
+        router.post(`/${m.module}/add`, multer(config.multer).any(), (req, res) => {
             add(req as any, res, m.db, m.crudPermission);
         });
 

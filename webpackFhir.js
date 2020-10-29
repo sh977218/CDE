@@ -19,8 +19,10 @@ module.exports = {
         new DefinePlugin({
             APPLICATION_NAME: '"CDE FHIR Embed"',
         }),
-        new CopyWebpackPlugin([
-            {from: 'node_modules/fhirclient/build/fhir-client.js'},
-        ]),
+        new CopyWebpackPlugin({
+            patterns: [
+                {from: 'node_modules/fhirclient/build/fhir-client.js'},
+            ]
+        }),
     ]
 };

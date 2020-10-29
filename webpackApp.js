@@ -31,12 +31,14 @@ module.exports = {
     },
     plugins: [
         new CleanWebpackPlugin(['dist/app'], {root: process.cwd()}),
-        new CopyWebpackPlugin([
-            {from: 'modules/_app/assets/'},
-            {from: 'node_modules/material-design-lite/material.min.js', transform: (content/*Buffer*/) => content.toString()
-                    .replace('//# sourceMappingURL=material.min.js.map', '')},
-            {from: 'node_modules/material-design-lite/material.min.css'}
-        ]),
+        new CopyWebpackPlugin({
+            patterns: [
+                {from: 'modules/_app/assets/'},
+                {from: 'node_modules/material-design-lite/material.min.js', transform: (content/*Buffer*/) => content.toString()
+                        .replace('//# sourceMappingURL=material.min.js.map', '')},
+                {from: 'node_modules/material-design-lite/material.min.css'}
+            ]
+        }),
         new DefinePlugin({
             APPLICATION_NAME: '"CDE Repository"',
         }),
