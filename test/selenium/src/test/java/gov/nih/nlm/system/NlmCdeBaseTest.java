@@ -598,9 +598,9 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         try {
             textPresent("1 " + ("cde".equals(type) ? "data element" : "form") + " results for");
         } catch (Exception e) {
-            System.out.println("Failing to find, trying again: " + name);
+            System.out.println("Failing to find, trying tinyId: " + name);
             findElement(By.id("ftsearch-input")).clear();
-            findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
+            findElement(By.id("ftsearch-input")).sendKeys("\"" + EltIdMaps.eltMap.get(name) + "\"");
             clickElement(By.id("search.submit"));
             textPresent("1 " + ("cde".equals(type) ? "data element" : "form") + " results for");
         }
@@ -925,7 +925,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         hangon(1);
     }
 
-    protected void addToCompare(String cdeName1, String cdeName2) {
+    protected void addCdeToCompare(String cdeName1, String cdeName2) {
         clickElement(By.id("boardsMenu"));
         textPresent("Quick Board (0)");
         addCdeToQuickBoard(cdeName1);
@@ -940,6 +940,41 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         clickElement(By.id("qb_elt_compare_0"));
         clickElement(By.id("qb_elt_compare_1"));
         clickElement(By.id("qb_compare"));
+    }
+
+    protected void addFormToCompare(String formName1, String formName2) {
+        clickElement(By.id("boardsMenu"));
+        textPresent("Quick Board (0)");
+        addFormToQuickBoard(formName1);
+        clickElement(By.id("boardsMenu"));
+        textPresent("Quick Board (1)");
+        addFormToQuickBoard(formName2);
+        clickElement(By.id("boardsMenu"));
+        clickElement(By.id("menu_qb_link"));
+        clickElement(By.xpath("//div[contains(., 'Form QuickBoard') and contains(@class, 'mat-tab-label-content')]"));
+        textPresent(formName1);
+        textPresent(formName2);
+        clickElement(By.id("qb_elt_compare_0"));
+        clickElement(By.id("qb_elt_compare_1"));
+        clickElement(By.id("qb_compare"));
+    }
+
+    protected void mergeCdeBySide(String side) {
+        if (side.equalsIgnoreCase("left")) {
+            clickElement(By.xpath("//*[contains(@class,'leftObj')]//*[@id='openMergeDataElementModalBtn']"));
+        }
+        if (side.equalsIgnoreCase("right")) {
+            clickElement(By.xpath("//*[contains(@class,'rightObj')]//*[@id='openMergeDataElementModalBtn']"));
+        }
+    }
+
+    protected void mergeFormBySide(String side) {
+        if (side.equalsIgnoreCase("left")) {
+            clickElement(By.xpath("//*[contains(@class,'leftObj')]//*[@id='openMergeFormModalBtn']"));
+        }
+        if (side.equalsIgnoreCase("right")) {
+            clickElement(By.xpath("//*[contains(@class,'rightObj')]//*[@id='openMergeFormModalBtn']"));
+        }
     }
 
     protected void refresh() {

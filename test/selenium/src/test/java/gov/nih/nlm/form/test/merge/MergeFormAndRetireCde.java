@@ -8,15 +8,11 @@ public class MergeFormAndRetireCde extends NlmCdeBaseTest {
 
     @Test
     public void mergeFormAndRetireCde() {
-        String form1 = "PHQ-9 quick depression assessment panel [Reported.PHQ]";
-        String form2 = "Patient Health Questionnaire - 9 (PHQ-9) Depression Scale";
+        String formName1 = "PHQ-9 quick depression assessment panel [Reported.PHQ]";
+        String formName2 = "Patient Health Questionnaire - 9 (PHQ-9) Depression Scale";
         mustBeLoggedInAs(nlm_username, nlm_password);
-        addFormToQuickBoardByTinyId(form1);
-        addFormToQuickBoardByTinyId(form2);
-        goToQuickBoardByModule("form");
-        clickElement(By.id("qb_compare"));
-
-        clickElement(By.xpath("//*[contains(@class,'leftObj')]//*[@id='openMergeFormModalBtn']"));
+        addFormToCompare(formName1, formName2);
+        mergeFormBySide("left");
         clickElement(By.id("retireCde"));
         scrollToViewById("mergeFormBtn");
         clickElement(By.id("mergeFormBtn"));
@@ -35,15 +31,15 @@ public class MergeFormAndRetireCde extends NlmCdeBaseTest {
         textPresent("Retired", By.id("leftQuestion_9"));
         textPresent("Retired", By.id("leftQuestion_10"));
 
-        goToFormByName(form1);
+        goToFormByName(formName1);
         textPresent("Warning: this form is retired.");
 
         goToCdeByName("Trouble falling or staying asleep, or sleeping too much in last 2 weeks [Reported.PHQ]");
         textPresent("Warning: this data element is retired.");
 
-        goToFormByName(form2);
+        goToFormByName(formName2);
         goToNaming();
-        textPresent(form1);
+        textPresent(formName1);
         goToReferenceDocuments();
         textPresent("Description: Kroenke K, Spitzer RL, Williams JB. The PHQ-9: validity of a brief depression severity measure. J Gen Intern Med. 2001 Sep;16(9):606-13.");
         goToProperties();

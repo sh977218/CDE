@@ -10,15 +10,15 @@ public class CdeMergeMineMineTest extends NlmCdeBaseTest {
         String cdeName1 = "Common Toxicity Criteria Adverse Event Colitis Grade";
         String cdeName2 = "Common Toxicity Criteria Adverse Event Hypophosphatemia Grade";
         mustBeLoggedInAs(ctepCurator_username, password);
-        addToCompare(cdeName1, cdeName2);
-        clickElement(By.id("openMergeDataElementModalBtn"));
+        addCdeToCompare(cdeName1, cdeName2);
+        mergeCdeBySide("right");
         clickElement(By.id("selectAllMergeFieldsBtn"));
         clickElement(By.id("doMergeBtn"));
         textPresent("Retired", By.xpath("//*[@id='Status']//*[contains(@class,'noLeftPadding')]"));
 
         goToCdeByName(cdeName2);
         goToNaming();
-        textPresent("Common Toxicity Criteria Adverse Event Colitis Grade");
+        textPresent(cdeName1);
         textPresent("CTC Adverse Event Colitis Gra");
         textPresent("Colitis Grade");
         goToIdentifiers();

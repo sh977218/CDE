@@ -9,7 +9,7 @@ public class CdeMergeMineTheirTest extends NlmCdeBaseTest {
         String cdeName1 = "Smoking Cessation Other Method Specify Text";
         String cdeName2 = "Smoking History Ind";
         mustBeLoggedInAs(cabigAdmin_username, password);
-        addToCompare(cdeName1, cdeName2);
+        addCdeToCompare(cdeName1, cdeName2);
         textNotPresent("Merge Data Element");
     }
 }

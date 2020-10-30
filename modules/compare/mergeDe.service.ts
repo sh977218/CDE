@@ -1,7 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { DataElement } from 'shared/de/dataElement.model';
-import { mergeArrayByProperty } from 'core/adminItem/classification';
+import {
+    mergeArrayByAttachments, mergeArrayByDataSets, mergeArrayByDefinitions, mergeArrayByDerivationRules, mergeArrayByDesignations,
+    mergeArrayByIds, mergeArrayByProperties, mergeArrayByReferenceDocuments, mergeArrayBySources
+} from 'core/adminItem/classification';
 import { transferClassifications } from 'shared/system/classificationShared';
 import { DeMergeFields } from './mergeDataElement/deMergeFields.model';
 
@@ -24,31 +27,31 @@ export class MergeDeService {
         }
 
         if (fields.designations) {
-            mergeArrayByProperty(cdeFrom, cdeTo, 'designations');
+            mergeArrayByDesignations(cdeFrom, cdeTo);
         }
         if (fields.definitions) {
-            mergeArrayByProperty(cdeFrom, cdeTo, 'definitions');
+            mergeArrayByDefinitions(cdeFrom, cdeTo);
         }
         if (fields.referenceDocuments) {
-            mergeArrayByProperty(cdeFrom, cdeTo, 'referenceDocuments');
+            mergeArrayByReferenceDocuments(cdeFrom, cdeTo);
         }
         if (fields.properties) {
-            mergeArrayByProperty(cdeFrom, cdeTo, 'properties');
+            mergeArrayByProperties(cdeFrom, cdeTo);
         }
         if (fields.ids) {
-            mergeArrayByProperty(cdeFrom, cdeTo, 'ids');
+            mergeArrayByIds(cdeFrom, cdeTo);
         }
         if (fields.attachments) {
-            mergeArrayByProperty(cdeFrom, cdeTo, 'attachments');
+            mergeArrayByAttachments(cdeFrom, cdeTo);
         }
         if (fields.dataSets) {
-            mergeArrayByProperty(cdeFrom, cdeTo, 'dataSets');
+            mergeArrayByDataSets(cdeFrom, cdeTo);
         }
         if (fields.derivationRules) {
-            mergeArrayByProperty(cdeFrom, cdeTo, 'derivationRules');
+            mergeArrayByDerivationRules(cdeFrom, cdeTo);
         }
         if (fields.sources) {
-            mergeArrayByProperty(cdeFrom, cdeTo, 'sources');
+            mergeArrayBySources(cdeFrom, cdeTo);
         }
         if (fields.classifications) {
             transferClassifications(cdeFrom, cdeTo);

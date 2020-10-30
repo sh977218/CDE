@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { mergeArrayByProperty } from 'core/adminItem/classification';
+import {
+    mergeArrayByDefinitions, mergeArrayByDesignations, mergeArrayByIds, mergeArrayByProperties, mergeArrayByReferenceDocuments
+} from 'core/adminItem/classification';
 import { IsAllowedService } from 'non-core/isAllowed.service';
 import { MergeDeService } from 'compare/mergeDe.service';
 import { CdeForm } from 'shared/form/form.model';
@@ -51,19 +53,19 @@ export class MergeFormService {
             throw new Error('number of question on left is not same on right.');
         } else {
             if (fields.designations) {
-                mergeArrayByProperty(mergeFrom, mergeTo, 'designations');
+                mergeArrayByDesignations(mergeFrom, mergeTo);
             }
             if (fields.definitions) {
-                mergeArrayByProperty(mergeFrom, mergeTo, 'definitions');
+                mergeArrayByDefinitions(mergeFrom, mergeTo);
             }
             if (fields.referenceDocuments) {
-                mergeArrayByProperty(mergeFrom, mergeTo, 'referenceDocuments');
+                mergeArrayByReferenceDocuments(mergeFrom, mergeTo);
             }
             if (fields.properties) {
-                mergeArrayByProperty(mergeFrom, mergeTo, 'properties');
+                mergeArrayByProperties(mergeFrom, mergeTo);
             }
             if (fields.ids) {
-                mergeArrayByProperty(mergeFrom, mergeTo, 'ids');
+                mergeArrayByIds(mergeFrom, mergeTo);
             }
             if (fields.classifications) {
                 transferClassifications(mergeFrom, mergeTo);
