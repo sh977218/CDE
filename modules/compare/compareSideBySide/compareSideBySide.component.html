@@ -10,7 +10,7 @@
                 <a id="sourceElement" target="_blank" [href]=leftUrl>
                     <button mat-raised-button><mat-icon>visibility</mat-icon> View Full Detail</button></a>
                 <ng-container *ngIf="canMergeDataElement">
-                    <cde-merge-data-element [source]="left" [destination]="right"
+                    <cde-merge-data-element [source]="right" [destination]="left"
                                             (doneMerge)="doneMerge($event)"></cde-merge-data-element>
                 </ng-container>
                 <ng-container *ngIf="canMergeForm">

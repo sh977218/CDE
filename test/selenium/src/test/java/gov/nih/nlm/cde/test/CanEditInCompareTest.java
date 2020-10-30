@@ -9,7 +9,7 @@ public class CanEditInCompareTest extends NlmCdeBaseTest {
     @Test
     public void cantEditInCompare() {
         mustBeLoggedInAs(ctepCurator_username, password);
-        addToCompare("Person Birth Date", "Patient Ethnic Group Category");
+        addCdeToCompare("Person Birth Date", "Patient Ethnic Group Category");
         shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("editStatus")));
         shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("openNewDesignationModalBtn")));
         shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//mat-dialog-container//mat-icon[contains(., 'delete')]")));

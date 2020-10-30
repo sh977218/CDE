@@ -1,7 +1,7 @@
 <button mat-raised-button id="openMergeDataElementModalBtn"
         (click)="openMergeDataElementModal()">
     <mat-icon>content_copy</mat-icon>
-    Merge Data Element
+    Merge Into This Data Element
 </button>
 
 <ng-template #mergeDataElementContent>
@@ -10,7 +10,7 @@
             <a target="_blank" href="/deView?tinyId={{source.tinyId}}">{{source.designations[0].designation}}</a>
             [{{ source.stewardOrg.name }}]
             <br>
-            <mat-icon>arrown_downward</mat-icon>
+            <mat-icon>arrow_downward</mat-icon>
             <br>
             <a target="_blank"
                href="/deView?tinyId={{destination.tinyId}}">{{destination.designations[0].designation}}</a>
