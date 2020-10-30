@@ -1,4 +1,5 @@
 import { CbRet, CbRet1, CbRet3 } from 'shared/models.model';
+import { isEqual, union } from 'lodash';
 
 export function capCase(str: string): string {
     return str.split(' ').map(capString).join(' ');
@@ -80,4 +81,65 @@ export function updateTag<T>(array: T[] | undefined, status: boolean, tag: T): T
         }
     }
     return array;
+}
+
+export function designationComparator(a: any, b: any) {
+    if (isEqual(a.designation, b.designation)) {
+        b.tags = union(a.tags, b.tags);
+        return true;
+    } else {
+        return false;
+    }
+}
+
+export function definitionComparator(a: any, b: any) {
+    if (isEqual(a.definition, b.definition)) {
+        b.tags = union(a.tags, b.tags);
+        return true;
+    } else {
+        return false;
+    }
+}
+
+export function referenceDocumentComparator(a: any, b: any) {
+    return isEqual(a.document, b.document)
+        && isEqual(a.title, b.title)
+        && isEqual(a.uri, b.uri)
+        && isEqual(a.providerOrg, b.providerOrg)
+        && isEqual(a.docType, b.docType);
+}
+
+export function propertyComparator(a: any, b: any) {
+    return isEqual(a.key, b.key)
+        && isEqual(a.value, b.value)
+        && isEqual(a.source, b.source);
+}
+
+export function idComparator(a: any, b: any) {
+    return isEqual(a.id, b.id)
+        && isEqual(a.source, b.source);
+}
+
+export function attachmentComparator(a: any, b: any) {
+    return isEqual(a.fileid, b.fileid)
+        && isEqual(a.source, b.source);
+}
+
+export function dataSetComparator(a: any, b: any) {
+    return isEqual(a.id, b.id)
+        && isEqual(a.notes, b.notes)
+        && isEqual(a.source, b.source)
+        && isEqual(a.studyUri, b.studyUri);
+}
+
+export function derivationRuleComparator(a: any, b: any) {
+    return isEqual(a.ruleType, b.ruleType)
+        && isEqual(a.formula, b.formula)
+        && isEqual(a.name, b.name)
+        && isEqual(a.inputs, b.inputs)
+        && isEqual(a.outputs, b.outputs);
+}
+
+export function sourceComparator(a: any, b: any) {
+    return isEqual(a.sourceName, b.sourceName);
 }

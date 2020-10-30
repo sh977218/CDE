@@ -31,6 +31,7 @@ interface JobStatus {
 }
 
 export type ItemDocument = DataElementDocument | CdeFormDocument;
+
 export interface Message {
     _id: ObjectId;
     author: {
@@ -77,6 +78,7 @@ export interface Message {
         }
     }
 }
+
 export type MessageDocument = Document & Message;
 export const objectId = Types.ObjectId;
 
@@ -255,7 +257,7 @@ export function userTotalSpace(name: string, callback: Cb1<number>) {
                 },
                 {$sort: {totalSize: -1}}
             ],
-            (err?: Error, res?: {_id: {uname: string}, totalSize: number}[]) => {
+            (err?: Error, res?: { _id: { uname: string }, totalSize: number }[]) => {
                 if (res && res.length > 0) {
                     totalSpace += res[0].totalSize;
                 }
@@ -271,7 +273,7 @@ export interface FileCreateInfo {
     type?: string;
 }
 
-export function addFile(file: FileCreateInfo, cb: CbError2<File & Document, boolean>, streamDescription: any = null) {
+export function addFile(file: FileCreateInfo, streamDescription: any = null, cb: CbError2<File & Document, boolean>) {
     gfs.findOne({md5: file.md5} as any, (err, f) => {
         if (f) {
             return cb(err, f, false);
