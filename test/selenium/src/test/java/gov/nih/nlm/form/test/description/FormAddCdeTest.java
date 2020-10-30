@@ -57,65 +57,65 @@ public class FormAddCdeTest extends QuestionTest {
         String cdeName1 = "newCde1";
         goToCdeByName(cdeName1);
         goToPermissibleValues();
-        textPresent("Text", By.id("datatypeSelect"));
+        textPresent("Text", By.cssSelector("[itemprop='datatype']"));
         goToNaming();
-        textPresent(cdeName1, By.id("designation_0"));
-        textPresent("Question Text", By.id("designationTags_0"));
+        textPresent(cdeName1, By.cssSelector("[itemprop='designation_0']"));
+        textPresent("Question Text", By.cssSelector("[itemprop='designationTags_0']"));
     }
 
     private void checkNewCde2() {
         String cdeName2 = "newCde2";
         goToCdeByName(cdeName2);
         goToPermissibleValues();
-        textPresent("Date", By.id("datatypeSelect"));
+        textPresent("Date", By.cssSelector("[itemprop='datatype']"));
         goToNaming();
-        textPresent(cdeName2, By.id("designation_0"));
-        textPresent("Question Text", By.id("designationTags_0"));
+        textPresent(cdeName2, By.cssSelector("[itemprop='designation_0']"));
+        textPresent("Question Text", By.cssSelector("[itemprop='designationTags_0']"));
 
-        textPresent("newCde2 second name", By.id("designation_1"));
+        textPresent("newCde2 second name", By.cssSelector("[itemprop='designation_1']"));
 
         goToIdentifiers();
-        textPresent("newCde2Source", By.id("source_0"));
-        textPresent("newCde2Id", By.id("id_0"));
+        textPresent("newCde2Source", By.cssSelector("[itemprop='source_0']"));
+        textPresent("newCde2Id", By.cssSelector("[itemprop='id_0']"));
     }
 
     private void checkNewCde3() {
         String cdeName3 = "newCde3";
         goToCdeByName(cdeName3);
         goToPermissibleValues();
-        textPresent("Number", By.id("datatypeSelect"));
+        textPresent("Number", By.cssSelector("[itemprop='datatype']"));
         goToNaming();
-        textPresent(cdeName3, By.id("designation_0"));
-        textPresent("Question Text", By.id("designationTags_0"));
-        textPresent("newCde3 second name", By.id("designation_1"));
+        textPresent(cdeName3, By.cssSelector("[itemprop='designation_0']"));
+        textPresent("Question Text", By.cssSelector("[itemprop='designationTags_0']"));
+        textPresent("newCde3 second name", By.cssSelector("[itemprop='designation_1']"));
         textNotPresent("newCde3 third name");
 
         goToIdentifiers();
-        textPresent("newCde3Source", By.id("source_0"));
-        textPresent("newCde3Id", By.id("id_0"));
+        textPresent("newCde3Source", By.cssSelector("[itemprop='source_0']"));
+        textPresent("newCde3Id", By.cssSelector("[itemprop='id_0']"));
     }
 
     private void checkNewCde4() {
         String cdeName4 = "newCde4";
         goToCdeByName(cdeName4);
         goToPermissibleValues();
-        textPresent("Value List", By.id("datatypeSelect"));
+        textPresent("Value List", By.cssSelector("[itemprop='datatype']"));
         textPresent("1", By.id("pvValue_0"));
 
         goToNaming();
-        textPresent(cdeName4, By.id("designation_0"));
-        textPresent("Question Text", By.id("designationTags_0"));
+        textPresent(cdeName4, By.cssSelector("[itemprop='designation_0']"));
+        textPresent("Question Text", By.cssSelector("[itemprop='designationTags_0']"));
     }
 
     private void checkNewCde5() {
         String cdeName5 = "newCde5";
         goToCdeByName(cdeName5);
         goToPermissibleValues();
-        textPresent("Text", By.id("datatypeSelect"));
+        textPresent("Text", By.cssSelector("[itemprop='datatype']"));
 
         goToNaming();
-        textPresent(cdeName5, By.id("designation_0"));
-        textPresent("Question Text", By.id("designationTags_0"));
+        textPresent(cdeName5, By.cssSelector("[itemprop='designation_0']"));
+        textPresent("Question Text", By.cssSelector("[itemprop='designationTags_0']"));
     }
 
     private void addCdesByNames(String[] cdeNames) {

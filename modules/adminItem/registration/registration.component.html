@@ -5,38 +5,30 @@
             <mat-icon>edit</mat-icon> Edit
         </button>
     </legend>
-    <dl class="row">
+    <dl class="cde-property">
         <ng-container *ngIf="elt.registrationState.effectiveDate">
-            <dt class="col-2 text-right">Effective Date:</dt>
-            <dd id="effectiveDate" class="col-10">
-                {{elt.registrationState.effectiveDate | date:'MM/dd/yyyy':'z'}}
-            </dd>
+            <dt>Effective Date:</dt>
+            <dd>{{elt.registrationState.effectiveDate | date:'MM/dd/yyyy':'z'}}</dd>
         </ng-container>
         <ng-container *ngIf="elt.registrationState.untilDate">
-            <dt class="col-2 text-right">Until Date:</dt>
-            <dd id="untilDate" class="col-10">
-                {{elt.registrationState.untilDate | date:'MM/dd/yyyy':'z'}}
-            </dd>
+            <dt>Until Date:</dt>
+            <dd>{{elt.registrationState.untilDate | date:'MM/dd/yyyy':'z'}}</dd>
         </ng-container>
         <ng-container *ngIf="elt.registrationState.administrativeNote">
-            <dt class="col-2 text-right">Administrative Note:</dt>
-            <dd id="administrativeNote" class="col-10">
-                {{elt.registrationState.administrativeNote}}
-            </dd>
+            <dt>Administrative Note:</dt>
+            <dd>{{elt.registrationState.administrativeNote}}</dd>
         </ng-container>
         <ng-container *ngIf="elt.registrationState.unresolvedIssue">
-            <dt class="col-2 text-right">Unresolved Issue:</dt>
-            <dd id="unresolvedIssue" class="col-10">{{elt.registrationState.unresolvedIssue}}</dd>
+            <dt>Unresolved Issue:</dt>
+            <dd>{{elt.registrationState.unresolvedIssue}}</dd>
         </ng-container>
         <ng-container *ngIf="elt.registrationState.registrationStatus">
-            <dt class="col-2 text-right">Registration Status:</dt>
-            <dd id="registrationStatus" class="col-10">
-                {{elt.registrationState.registrationStatus}}
-            </dd>
+            <dt>Registration Status:</dt>
+            <dd itemprop="registrationStatus">{{elt.registrationState.registrationStatus}}</dd>
         </ng-container>
         <ng-container *ngIf="elt.registrationState.administrativeStatus">
-            <dt class="col-2 text-right">Administrative Status:</dt>
-            <dd id="administrativeStatus" class="col-10">{{elt.registrationState.administrativeStatus}}</dd>
+            <dt>Administrative Status:</dt>
+            <dd>{{elt.registrationState.administrativeStatus}}</dd>
         </ng-container>
     </dl>
 </fieldset>
@@ -47,47 +39,36 @@
         <div mat-dialog-content>
             <div class="modal-body" id="regStatusModalBody">
                 <div class="alert-warning">{{helpMessage}}</div>
-                <div class="form-group">
-                    <label for="newRegistrationStatus">Registration Status</label>
-                    <select id="newRegistrationStatus" class="form-control"
-                            [(ngModel)]="newState.registrationStatus"
-                            name="newRegistrationStatus" (ngModelChange)="setHelpMessage($event)">
+                <label class="form-group d-block">
+                    Registration Status
+                    <select class="form-control" name="newRegistrationStatus"
+                            [(ngModel)]="newState.registrationStatus" (ngModelChange)="setHelpMessage($event)">
                         <option *ngFor="let s of validRegStatuses" value="{{s}}">{{s}}</option>
                     </select>
-                </div>
-
-                <div id="effectiveDateDiv">
-                    <label for="effectiveDate">Effective Date</label>
-                    <input class="form-control" name="newEffectiveDate" id="newEffectiveDate"
-                           [(ngModel)]="newState.effectiveDate" type="date">
-                </div>
-                <div id="untilDateDiv">
-                    <label for="untilDate">Until Date</label>
-                    <input class="form-control" name="newUntilDate" id="newUntilDate"
-                           [(ngModel)]="newState.untilDate" type="date">
-                </div>
-                <div class="form-group">
-                    <label for="administrativeStatus">Administrative Status</label>
-                    <input id="newAdministrativeStatus" class="form-control" type="text"
-                           name="newAdministrativeStatus"
-                           [(ngModel)]="newState.administrativeStatus"
-                           placeholder="Optional Administrative Status"/>
-                </div>
-
-                <div class="form-group">
-                    <label for="administrativeNote">Administrative Note</label>
-                    <textarea id="newAdministrativeNote" class="form-control" name="newAdministrativeNote"
-                              [(ngModel)]="newState.administrativeNote"
-                              placeholder="Optional Administrative Note"></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="unresolvedIssue">Unresolved Issue</label>
-                    <textarea id="newUnresolvedIssue" class="form-control" name="newUnresolvedIssue"
-                              [(ngModel)]="newState.unresolvedIssue"
-                              placeholder="Optional Unresolved Issue Note"></textarea>
-                </div>
-
+                </label>
+                <label class="form-group d-block">
+                    Effective Date
+                    <input type="date" class="form-control" name="newEffectiveDate" [(ngModel)]="newState.effectiveDate">
+                </label>
+                <label class="form-group d-block">
+                    Until Date
+                    <input type="date" class="form-control" name="newUntilDate" [(ngModel)]="newState.untilDate">
+                </label>
+                <label class="form-group d-block">
+                    Administrative Status
+                    <input type="text" class="form-control" name="newAdministrativeStatus" placeholder="Optional Administrative Status"
+                           [(ngModel)]="newState.administrativeStatus"/>
+                </label>
+                <label class="form-group d-block">
+                    Administrative Note
+                    <textarea class="form-control" name="newAdministrativeNote" placeholder="Optional Administrative Note"
+                              [(ngModel)]="newState.administrativeNote"></textarea>
+                </label>
+                <label class="form-group d-block">
+                    Unresolved Issue
+                    <textarea class="form-control" name="newUnresolvedIssue" placeholder="Optional Unresolved Issue Note"
+                              [(ngModel)]="newState.unresolvedIssue"></textarea>
+                </label>
             </div>
             <div mat-dialog-actions>
                 <button [mat-dialog-close] id="cancelRegStatus" type="button" mat-raised-button color="accent">Cancel</button>

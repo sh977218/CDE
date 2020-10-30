@@ -20,7 +20,7 @@ public class CdeStandardStatusTest extends NlmCdeBaseTest {
         // Can't edit Value Type or add / remove pv
         goToPermissibleValues();
 
-        checkElementDoesNotExistByLocator(By.xpath("//*[@id='datatypeSelect']//input[not(@disabled)]"));
+        checkElementDoesNotExistByLocator(By.xpath("//*[@itemprop='datatype']//input[not(@disabled)]"));
 
         Assert.assertTrue(findElements(By.xpath("//td[contains(@id, 'pvAction') and not(*)]")).size() > 0);
 
@@ -31,8 +31,8 @@ public class CdeStandardStatusTest extends NlmCdeBaseTest {
 
         // Can't edit naming
         goToNaming();
-        findElement(By.xpath("//*[@id='designation_0' and not(//mat-icon[contains(., 'edit')])]"));
-        findElement(By.xpath("//*[@id='definition_0' and not(//mat-icon[contains(., 'edit')])]"));
+        findElement(By.xpath("//*[@itemprop='designation_0' and not(//mat-icon[contains(., 'edit')])]"));
+        findElement(By.xpath("//*[@itemprop='definition_0' and not(//mat-icon[contains(., 'edit')])]"));
         checkElementDoesNotExistByLocator(By.xpath("//*[@id='tags_0']//input"));
 
         // Can edit classifications

@@ -22,11 +22,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         editDefinitionByIndex(0, cdeDefinitionChange, false);
 
         goToPermissibleValues();
-        clickElement(By.xpath("//*[@id = 'uom']//mat-icon[normalize-space() = 'edit']"));
-        findElement(By.xpath("//*[@id = 'uom']//input")).sendKeys("myUom");
-        clickElement(By.xpath("//*[@id = 'uom']//button/mat-icon[normalize-space() = 'check']"));
-        textPresent("myUom", By.id("uom"));
-
+        propertyEditText("uom", "myUom");
         newCdeVersion("Change note for change number 1");
 
         goToCdeByName(cdeName);
@@ -37,7 +33,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         textPresent("myUom");
 
         goToIdentifiers();
-        Assert.assertEquals("1.1", findElement(By.id("dd_version_nlm")).getText());
+        Assert.assertEquals("1.1", findElement(By.cssSelector("[itemprop='version']")).getText());
 
         // Test history
         goToHistory();

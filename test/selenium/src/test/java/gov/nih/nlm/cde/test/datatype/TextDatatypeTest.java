@@ -19,9 +19,8 @@ public class TextDatatypeTest extends NlmCdeBaseTest {
         goToCdeByName(cdeName);
         goToPermissibleValues();
         changeDatatype(datatype);
-
-        changeDataTypeTextMinLength("789");
-        changeDataTypeTextMaxLength("987");
+        propertyEditText("datatypeTextMin", "789");
+        propertyEditText("datatypeTextMax", "987");
         newCdeVersion();
 
         // check update cde has fixed datatype;
@@ -36,10 +35,10 @@ public class TextDatatypeTest extends NlmCdeBaseTest {
         clickElement(By.id("closeHistoryCompareModal"));
 
         goToPermissibleValues();
-        changeDataTypeTextRegex("newRegex");
-        changeDataTypeTextRule("newRule");
-        changeDataTypeTextMinLength("123");
-        changeDataTypeTextMaxLength("321");
+        propertyEditText("datatypeTextRegex", "newRegex");
+        propertyEditText("datatypeTextRule", "newRule");
+        propertyEditText("datatypeTextMin", "123");
+        propertyEditText("datatypeTextMax", "321");
         newCdeVersion();
 
         goToCdeByName(cdeName);

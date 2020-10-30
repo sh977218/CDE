@@ -30,7 +30,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
 
         goToIdentifiers();
         textPresent("3157849");
-        Assert.assertEquals("1", findElement(By.id("dd_version_nlm")).getText());
+        Assert.assertEquals("1", findElement(By.cssSelector("[itemprop='version']")).getText());
     }
 
     @Test
@@ -43,7 +43,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     public void vdInstruction() {
         goToCdeByName("Participant Identifier Source");
         goToPermissibleValues();
-        textPresent("One of \"GUID\" or \"Source Registry Specific Identifier\"", By.id("instructions"));
+        textPresent("One of \"GUID\" or \"Source Registry Specific Identifier\"", By.cssSelector("[itemprop='instructions']"));
     }
 
     @Test

@@ -2,20 +2,23 @@
     <h6>Derivation Rules</h6>
     <div *ngIf="elt.derivationRules.length === 0">There are no Derivation rules.</div>
     <ng-container *ngFor="let derRule of elt.derivationRules; let i = index">
-        <dl class="row">
-            <dt class="col-2 text-right">
+        <dl class="cde-property">
+            <dt>
                 <mat-icon *ngIf="canEdit" class="fake-link" id="removeDerivationRule-{{i}}"
                           (click)="removeDerivationRule(i)">delete_outline
                 </mat-icon>
                 Name:
             </dt>
-            <dd id="dd_derRule_name_{{i}}" class="col-9">{{derRule.name}}</dd>
-            <dt class="col-2 text-right">Rule Type:</dt>
-            <dd id="dd_derRule_type_{{i}}" class="col-9">{{derRule.ruleType}}</dd>
-            <dt class="col-2 text-right">Formula:</dt>
-            <dd id="dd_derRule_formula_{{i}}" class="col-9">{{derRule.formula}}</dd>
-            <dt class="col-2 text-right">Input CDEs:</dt>
-            <dd id="dd_derRule_input_{{i}}" class="col-9">
+            <dd itemprop="name_{{i}}">{{derRule.name}}</dd>
+
+            <dt>Rule Type:</dt>
+            <dd itemprop="type_{{i}}">{{derRule.ruleType}}</dd>
+
+            <dt>Formula:</dt>
+            <dd itemprop="formula_{{i}}">{{derRule.formula}}</dd>
+
+            <dt>Input CDEs:</dt>
+            <dd itemprop="input_{{i}}">
                 <div *ngFor="let input of getViewCdes(derRule)">
                     <a routerLink="/deView"
                        [queryParams]="{tinyId: input.tinyId}">
@@ -29,8 +32,7 @@
         <hr>
     </ng-container>
 
-    <button *ngIf="canAddScore()" mat-raised-button id="addNewScore" class="m-3"
-            color="primary" (click)="openNewScoreModal()">
+    <button *ngIf="canAddScore()" mat-raised-button color="primary" class="m-3" (click)="openNewScoreModal()">
         <mat-icon>add</mat-icon>
         Add Score
     </button>
@@ -51,43 +53,44 @@
             </tr>
         </table>
     </div>
-    <ng-template #newScoreContent id="newScoreModal">
+    <ng-template #newScoreContent>
         <h4 mat-dialog-title>Add Score</h4>
         <form #newScoreForm="ngForm" (ngSubmit)="addNewScore()">
             <div mat-dialog-content>
                 <div class="form-group">All Data Elements in your quickboard will be added to the score.</div>
-                <div class="form-group">
-                    <label for="newDerivationRule.name">Name: </label>
-                    <input class="form-control" id="newDerivationRule.name" name="scoreName"
+                <label class="form-group d-block">
+                    <strong>Name:</strong>
+                    <input class="form-control" name="scoreName"
                            [(ngModel)]="newDerivationRule.name" Placeholder="Score Name" required/>
-                </div>
-                <div class="form-group">
-                    <label for="newDerivationRule.inputs">Inputs: </label>
-                    <div id="newDerivationRule.inputs">
-                        <span *ngIf="!invalidCdeMessage.length">All {{quickBoardService.numberDataElements}} CDEs in your quickboard.</span>
-                        <span *ngIf="invalidCdeMessage.length" class="text-danger">{{invalidCdeMessage}}</span>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="newDerivationRule.ruleType">Rule Type: </label>
-                    <span id="newDerivationRule.ruleType">Score</span>
-                </div>
-                <div class="form-group">
-                    <label for="newDerivationRule.formula">Formula: </label>
-                    <select class="form-control" id="newDerivationRule.formula" name="formula"
-                            [(ngModel)]="newDerivationRule.formula">
+                </label>
+                <label class="form-group d-block">
+                    <strong>Inputs:</strong>
+                    <span *ngIf="!invalidCdeMessage.length; else invalidInputs" class="d-block">
+                        All {{quickBoardService.numberDataElements}} CDEs in your quickboard.
+                    </span>
+                    <ng-template #invalidInputs>
+                        <span class="d-block text-danger">{{invalidCdeMessage}}</span>
+                    </ng-template>
+                </label>
+                <label class="form-group d-block">
+                    <strong>Rule Type:</strong>
+                    <span class="d-block">Score</span>
+                </label>
+                <label class="form-group d-block">
+                    <strong>Formula:</strong>
+                    <select class="form-control" name="formula" [(ngModel)]="newDerivationRule.formula">
                         <option value="sumAll">Sum of All</option>
                         <option value="mean">Mean (Average)</option>
                         <option value="bmi">Body Mass Index in KG/M^2</option>
                     </select>
-                </div>
+                </label>
             </div>
             <div mat-dialog-actions>
-                <button mat-raised-button color="warn" [mat-dialog-close] type="button" id="cancelNewScoreBtn">
+                <button mat-raised-button color="warn" [mat-dialog-close] type="button">
                     Cancel
                 </button>
-                <button type="submit" mat-raised-button color="primary"
-                        [disabled]="invalidCdeMessage.length || !newScoreForm.form.valid" id="createDerivationRule">Save
+                <button type="submit" mat-raised-button color="primary" [disabled]="!!invalidCdeMessage.length || !newScoreForm.form.valid">
+                    Save
                 </button>
             </div>
         </form>

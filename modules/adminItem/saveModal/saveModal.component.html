@@ -20,9 +20,9 @@
                         </div>
                     </div>
                     <div class="card-body" [ngbCollapse]="!newQuestion.isCollapsed">
-                        <dl class="row">
-                            <dt class="col-2 text-right">Designations:</dt>
-                            <dd class="col-10">
+                        <dl class="cde-property">
+                            <dt>Designations:</dt>
+                            <dd>
                                 <dl *ngFor="let cdeDesignation of newQuestion.cde.newCde.designations" class="row">
                                     <dt class="col-3 text-right">Designation:</dt>
                                     <dd class="col-9">{{cdeDesignation.designation}}</dd>
@@ -33,8 +33,9 @@
                                     </dd>
                                 </dl>
                             </dd>
-                            <dt class="col-2 text-right">Definitions:</dt>
-                            <dd class="col-10">
+
+                            <dt>Definitions:</dt>
+                            <dd>
                                 <dl *ngFor="let cdeDefinition of newQuestion.cde.newCde.definitions" class="row">
                                     <dt class="col-3 text-right">Definition:</dt>
                                     <dd class="col-9">{{cdeDefinition.definition}}</dd>
@@ -45,10 +46,12 @@
                                     </dd>
                                 </dl>
                             </dd>
-                            <dt class="col-2 text-right">Data Type:</dt>
-                            <dd class="col-10">{{newQuestion.datatype}}</dd>
-                            <dt class="col-2 text-right">Identifiers:</dt>
-                            <dd class="col-10">
+
+                            <dt>Data Type:</dt>
+                            <dd>{{newQuestion.datatype}}</dd>
+
+                            <dt>Identifiers:</dt>
+                            <dd>
                                 <dl *ngFor="let cdeId of newQuestion.cde.ids" class="row">
                                     <dt class="col-3 text-right">Source:</dt>
                                     <dd class="col-9">{{cdeId.source}}</dd>

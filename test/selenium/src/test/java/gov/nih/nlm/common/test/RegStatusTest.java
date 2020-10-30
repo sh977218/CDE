@@ -12,7 +12,7 @@ public abstract class RegStatusTest extends CommonTest {
         goToGeneralDetail();
         textPresent("Qualified");
         clickElement(By.id("editStatus"));
-        new Select(driver.findElement(By.id("newRegistrationStatus"))).selectByVisibleText("Retired");
+        new Select(driver.findElement(By.name("newRegistrationStatus"))).selectByVisibleText("Retired");
         textPresent("Retired elements are not returned in searches");
         clickElement(By.id("saveRegStatus"));
         version();
@@ -30,7 +30,7 @@ public abstract class RegStatusTest extends CommonTest {
         goToGeneralDetail();
         textPresent("Qualified");
         clickElement(By.id("editStatus"));
-        new Select(driver.findElement(By.id("newRegistrationStatus"))).selectByVisibleText("Standard");
+        new Select(driver.findElement(By.name("newRegistrationStatus"))).selectByVisibleText("Standard");
         textPresent("Standard elements cannot be edited by their stewards");
         clickElement(By.id("saveRegStatus"));
         closeAlert();

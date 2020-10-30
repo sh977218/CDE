@@ -5,8 +5,8 @@
     </div>
 </div>
 <ng-container *ngFor="let rd of elt.referenceDocuments;let i = index">
-    <dl class="row">
-        <dt class="col-2 text-right">
+    <dl class="cde-property">
+        <dt>
             <ng-container *ngIf="canEdit && rd.edit">Confirm Delete
                 <mat-icon (click)="removeReferenceDocumentByIndex(i)" id="confirmRemoveReferenceDocument-{{i}}">check
                 </mat-icon>
@@ -18,18 +18,22 @@
                                 (cb)="eltChange.emit()"></cde-sortable-array>
             ID:
         </dt>
-        <dd id="id_{{i}}" class="col-10">{{rd.referenceDocumentId}}</dd>
-        <dt class="col-2 text-right">Title:</dt>
-        <dd id="title_{{i}}" class="col-10">{{rd.title}}</dd>
-        <dt class="col-2 text-right">URI:</dt>
-        <dd id="uri_{{i}}" class="col-10"><a href="{{rd.uri}}" target="_blank" rel="noopener noreferrer">{{rd.uri}}</a>
-        </dd>
-        <dt class="col-2 text-right">Provider Org:</dt>
-        <dd id="providerOrg_{{i}}" class="col-10">{{rd.providerOrg}}</dd>
-        <dt class="col-2 text-right">Language Code:</dt>
-        <dd id="languageCode_{{i}}" class="col-10">{{rd.languageCode}}</dd>
-        <dt class="col-2 text-right">Document:</dt>
-        <dd id="document_{{i}}" class="col-10">{{rd.document}}</dd>
+        <dd attr.itemprop="id_{{i}}">{{rd.referenceDocumentId}}</dd>
+
+        <dt>Title:</dt>
+        <dd attr.itemprop="title_{{i}}">{{rd.title}}</dd>
+
+        <dt>URI:</dt>
+        <dd attr.itemprop="uri_{{i}}"><a href="{{rd.uri}}" target="_blank" rel="noopener noreferrer">{{rd.uri}}</a></dd>
+
+        <dt>Provider Org:</dt>
+        <dd attr.itemprop="providerOrg_{{i}}">{{rd.providerOrg}}</dd>
+
+        <dt>Language Code:</dt>
+        <dd attr.itemprop="languageCode_{{i}}">{{rd.languageCode}}</dd>
+
+        <dt>Document:</dt>
+        <dd attr.itemprop="document_{{i}}">{{rd.document}}</dd>
     </dl>
     <hr>
 </ng-container>

@@ -4,18 +4,21 @@
         There are no identifiers.
     </div>
 </div>
-<dl class="row">
-    <dt class="col-2 text-right">Source:</dt>
-    <dd class="col-10">NLM</dd>
+<dl class="cde-property">
+    <dt>Source:</dt>
+    <dd>NLM</dd>
+
     <meta itemprop="codingSystem" content="NIH CDE Repository"/>
-    <dt class="col-2 text-right">Id:</dt>
-    <dd id="dd_id_nlm" class="col-10" itemprop="codeValue">{{elt.tinyId}}</dd>
-    <dt class="col-2 text-right">Version:</dt>
-    <dd id="dd_version_nlm" class="col-10">{{elt.version}}</dd>
+
+    <dt>Id:</dt>
+    <dd itemprop="codeValue">{{elt.tinyId}}</dd>
+
+    <dt>Version:</dt>
+    <dd itemprop="version">{{elt.version}}</dd>
 </dl>
 <ng-container *ngFor="let id of elt.ids; let i = index">
-    <dl class="row">
-        <dt class="col-2 text-right">
+    <dl class="cde-property">
+        <dt>
             <ng-container *ngIf="id.edit">Confirm Delete
                 <mat-icon (click)="removeIdentifierByIndex(i)" id="confirmRemoveIdentifier-{{i}}">check</mat-icon>
                 <mat-icon (click)="id.edit = false" id="cancelRemoveIdentifier-{{i}}">cancel</mat-icon>
@@ -24,14 +27,16 @@
                       (click)="id.edit = true">delete</mat-icon>
             Source:
         </dt>
-        <dd id="source_{{i}}" class="col-10">{{id.source}}</dd>
-        <dt class="col-2 text-right">Id:</dt>
-        <dd id="id_{{i}}" class="col-10">
+        <dd attr.itemprop="source_{{i}}">{{id.source}}</dd>
+
+        <dt>Id:</dt>
+        <dd attr.itemprop="id_{{i}}">
             <a *ngIf="idsLinks[i]; else noLink" [href]="idsLinks[i]" target="_blank" rel="noopener noreferrer">{{id.id}}</a>
             <ng-template #noLink>{{id.id}}</ng-template>
         </dd>
-        <dt class="col-2 text-right">Version:</dt>
-        <dd id="version_{{i}}" class="col-10">{{id.version}}</dd>
+
+        <dt>Version:</dt>
+        <dd attr.itemprop="version_{{i}}">{{id.version}}</dd>
     </dl>
     <hr>
 </ng-container>

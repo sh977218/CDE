@@ -7,13 +7,18 @@ import { User } from 'shared/models.model';
 import { rolesEnum } from 'shared/system/authorizationShared';
 import { MatDialog } from '@angular/material/dialog';
 
+type FullUser = User & {
+    lastLogin: string;
+    knownIPs: string;
+};
+
 @Component({
     selector: 'cde-users-mgt',
     templateUrl: './usersMgt.component.html'
 })
 export class UsersMgtComponent {
     @ViewChild('newUserContent', {static: true}) newUserContent!: TemplateRef<any>;
-    foundUsers: any[] = [];
+    foundUsers: FullUser[] = [];
     newUsername = '';
     search: {username: User | string} = {username: ''};
     rolesEnum = rolesEnum;
@@ -36,7 +41,7 @@ export class UsersMgtComponent {
     }
 
     searchUsers() {
-        this.http.get<User[]>('/server/user/searchUsers/'
+        this.http.get<FullUser[]>('/server/user/searchUsers/'
             + (typeof(this.search.username) === 'object' && this.search.username.username || this.search.username)
         ).subscribe(users => this.foundUsers = users);
     }

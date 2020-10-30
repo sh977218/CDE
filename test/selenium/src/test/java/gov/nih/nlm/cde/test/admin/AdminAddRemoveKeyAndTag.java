@@ -83,7 +83,7 @@ public class AdminAddRemoveKeyAndTag extends NlmCdeBaseTest {
 
         goToCdeByName(cdeName);
         goToNaming();
-        clickElement(By.id("openNewDesignationModalBtn"));
+        clickElement(By.xpath("//button[contains(.,'Add Name')]"));
         textPresent("Tags are managed in Org Management > List Management");
         clickElement(By.xpath("//*[@id='newDesignationTags']//input"));
         selectMatDropdownByText("canYouSeeThis");
@@ -96,7 +96,7 @@ public class AdminAddRemoveKeyAndTag extends NlmCdeBaseTest {
 
         goToCdeByName("Distance from Closest Margin Value");
         goToNaming();
-        clickElement(By.id("openNewDesignationModalBtn"));
+        clickElement(By.xpath("//button[contains(.,'Add Name')]"));
         clickElement(By.xpath("//*[@id='newDesignationTags']//input"));
         textNotPresent("canYouSeeThis");
     }

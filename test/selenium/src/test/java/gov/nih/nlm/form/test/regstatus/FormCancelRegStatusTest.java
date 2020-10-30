@@ -14,12 +14,12 @@ public class FormCancelRegStatusTest extends NlmCdeBaseTest {
         goToGeneralDetail();
         textPresent("Qualified");
         clickElement(By.id("editStatus"));
-        new Select(driver.findElement(By.id("newRegistrationStatus"))).selectByVisibleText("Recorded");
+        new Select(driver.findElement(By.name("newRegistrationStatus"))).selectByVisibleText("Recorded");
         clickElement(By.id("cancelRegStatus"));
         modalGone();
         goToFormByName(formName);
         goToGeneralDetail();
-        textPresent("Qualified", By.id("registrationStatus"));
+        textPresent("Qualified", By.cssSelector("[itemprop='registrationStatus']"));
     }
 
 }
