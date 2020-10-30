@@ -17,5 +17,5 @@ export function parseIds(nindsForms: any[]) {
             id: i
         });
     });
-    return sortIdentifier(ids, 'NINDS');
+    return sortIds(ids, 'NINDS');
 }

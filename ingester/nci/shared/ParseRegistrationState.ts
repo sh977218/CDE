@@ -1,4 +1,4 @@
-export function parseRegistrationState(nciXmlCde, orgInfo) {
+export function parseRegistrationState(nciXmlCde: any, orgInfo: any) {
     const registrationState = {
         registrationStatus: 'Qualified',
         administrativeStatus: nciXmlCde.WORKFLOWSTATUS[0]
