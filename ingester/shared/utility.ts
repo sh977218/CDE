@@ -10,7 +10,7 @@ import { PhenxURL } from 'ingester/createMigrationConnection';
 import {
     CdeId, Classification, Definition, Designation, Property, ReferenceDocument
 } from 'shared/models.model';
-import { FormElement } from 'shared/form/form.model';
+import { CdeForm, FormElement } from 'shared/form/form.model';
 import { gfs } from 'server/system/mongo-data';
 import { Readable } from 'stream';
 import { dataElementModel } from 'server/cde/mongo-cde';
@@ -20,7 +20,7 @@ require('chromedriver');
 
 export const NINDS_PRECLINICAL_NEI_FILE_PATH = 'S:/MLB/CDE/NINDS/Preclinical + NEI/10-7-2019/';
 
-export const sourceMap = {
+export const sourceMap: any = {
     LOINC: ['LOINC'],
     PhenX: ['PhenX', 'PhenX Variable'],
     NINDS: ['NINDS', 'NINDS Variable Name', 'NINDS caDSR', 'NINDS Preclinical', 'BRICS Variable Name'],
@@ -112,7 +112,7 @@ export function trimWhite(text: string) {
     }
 }
 
-export async function updateRawArtifact(existingElt, newElt, source, classificationOrgName) {
+export async function updateRawArtifact(existingElt: CdeForm, newElt: CdeForm, source: string, classificationOrgName: string) {
     if (!existingElt || !newElt) {
         return;
     }
@@ -140,7 +140,7 @@ export function printUpdateResult(updateResult: any, elt: any) {
     }
 }
 
-export function replaceClassificationByOrg(existingObj, newObj, orgName: string) {
+export function replaceClassificationByOrg(existingObj: CdeForm, newObj: CdeForm, orgName: string) {
     const otherClassifications = existingObj.classification.filter(c => c.stewardOrg.name !== orgName);
     const currentClassification = newObj.classification.filter(c => c.stewardOrg.name === orgName);
     return currentClassification.concat(otherClassifications);
@@ -157,7 +157,7 @@ function mergeElements(existingElements, newElements) {
     });
 }
 
-export function mergeClassificationByOrg(existingObj, newObj, orgName: string = '') {
+export function mergeClassificationByOrg(existingObj: CdeForm, newObj: CdeForm, orgName: string = '') {
     const newClassification = newObj.classification;
     const existingClassification = existingObj.classification;
     newClassification
@@ -319,7 +319,7 @@ export function loopFormElements(formElements: FormElement[], options: any = {
 }
 
 // Compare two elements
-export function compareElt(newEltObj, existingEltObj, source) {
+export function compareElt(newEltObj: CdeForm, existingEltObj: CdeForm, source: string) {
     if (newEltObj.elementType !== existingEltObj.elementType) {
         console.log(`Two element type different. newEltObj: ${newEltObj.tinyId} existingEltObj: ${existingEltObj.tinyId} `);
         process.exit(1);
@@ -375,7 +375,7 @@ function isOneClassificationSameSource(existingEltObj, newEltObj) {
     return classificationEqual && sourcesEqual;
 }
 
-export function mergeDesignations(existingObj, newObj) {
+export function mergeDesignations(existingObj: CdeForm, newObj: CdeForm) {
     const replaceDesignations = isOneClassificationSameSource(existingObj, newObj);
     if (replaceDesignations) {
         existingObj.designations = newObj.designations;
@@ -395,7 +395,7 @@ export function mergeDesignations(existingObj, newObj) {
     existingObj.designations = sortDesignations(existingObj.designations);
 }
 
-export function mergeDefinitions(existingObj, newObj) {
+export function mergeDefinitions(existingObj: CdeForm, newObj: CdeForm) {
     const replaceDefinitions = isOneClassificationSameSource(existingObj, newObj);
     if (replaceDefinitions) {
         existingObj.definitions = newObj.definitions;
@@ -415,7 +415,7 @@ export function mergeDefinitions(existingObj, newObj) {
     }
 }
 
-export function mergeProperties(existingObj, newObj) {
+export function mergeProperties(existingObj: CdeForm, newObj: CdeForm) {
     const replaceProperties = isOneClassificationSameSource(existingObj, newObj);
     if (replaceProperties) {
         existingObj.properties = newObj.properties;
@@ -443,7 +443,7 @@ export function mergeProperties(existingObj, newObj) {
     }
 }
 
-export function mergeReferenceDocuments(existingObj, newObj) {
+export function mergeReferenceDocuments(existingObj: CdeForm, newObj: CdeForm) {
     const replaceReferenceDocuments = isOneClassificationSameSource(existingObj, newObj);
     if (replaceReferenceDocuments) {
         existingObj.referenceDocuments = newObj.referenceDocuments;
@@ -469,7 +469,7 @@ export function mergeReferenceDocuments(existingObj, newObj) {
     }
 }
 
-export function mergeIds(existingObj, newObj, source: string) {
+export function mergeIds(existingObj: CdeForm, newObj: CdeForm, source: string) {
     const NINDS_SOURCES = ['NINDS Preclinical', 'BRICS Variable Name', 'NINDS Variable Name', 'NINDS caDSR', 'NINDS CDISC'];
 
     const existingIds: CdeId[] = existingObj.ids;
@@ -488,10 +488,10 @@ export function mergeIds(existingObj, newObj, source: string) {
             existingIds[i] = newId;
         }
     });
-    sortIdentifier(existingObj.ids, source);
+    sortIds(existingObj.ids, source);
 }
 
-export function mergeClassification(existingElt, newObj, classificationOrgName) {
+export function mergeClassification(existingElt: CdeForm, newObj: any, classificationOrgName: string) {
     if (newObj.toObject) {
         newObj = newObj.toObject();
     }
@@ -504,7 +504,7 @@ export function mergeClassification(existingElt, newObj, classificationOrgName) 
     }
 }
 
-export function mergeSources(existingObj, newObj, source) {
+export function mergeSources(existingObj: CdeForm, newObj: CdeForm, source: string) {
     const sources = sourceMap[source];
     const existingSources = existingObj.sources;
     const newSources = newObj.sources;
@@ -515,7 +515,7 @@ export function mergeSources(existingObj, newObj, source) {
     existingObj.sources = newSources.concat(otherSources);
 }
 
-function increaseVersion(existingEltObj) {
+function increaseVersion(existingEltObj: CdeForm) {
     const version = existingEltObj.version;
     if (version) {
         let majorVersion = version;
@@ -733,11 +733,11 @@ export function fixValueDomainOrQuestion(valueDomainOrQuestion) {
     }
 }
 
-export function sortProp(elt) {
+export function sortProp(elt: CdeForm) {
     return sortBy(elt.properties, 'key');
 }
 
-export function sortRefDoc(elt) {
+export function sortRefDoc(elt: CdeForm) {
     elt.referenceDocuments.forEach(r => {
         r.languageCode = 'en-us';
     });
@@ -757,7 +757,7 @@ export function addAttachment(readable: Readable, attachment: any) {
                 status: 'approved'
             }
         };
-        gfs.findOne({md5: file.md5}, (err: any, existingFile: any) => {
+        gfs.findOne({md5: file.md5} as any, (err: any, existingFile: any) => {
             if (err) {
                 reject(err);
             } else if (existingFile) {
@@ -792,7 +792,7 @@ export function sortDesignations(designations: any[]) {
     return sortNoTagDesignations.concat(sortTagDesignations);
 }
 
-export function sortIdentifier(ids, source) {
+export function sortIds(ids: any, source: string) {
     const otherSourceIdentifiers = ids.filter(d => d.source !== source);
     const sourceIdentifiers = ids.filter(d => d.source === source);
     const sortOtherSourceIdentifiers = sortBy(otherSourceIdentifiers, ['id']);
@@ -801,7 +801,7 @@ export function sortIdentifier(ids, source) {
     return sortSourceIdentifiers.concat(sortOtherSourceIdentifiers);
 }
 
-export function findOneCde(cdes: any[], variableName) {
+export function findOneCde(cdes: any[], variableName: string) {
     const cdesLength = cdes.length;
     if (cdesLength === 0) {
         return null;
@@ -830,28 +830,28 @@ export function retiredElt(elt: any) {
     elt.registrationState.administrativeNote = 'Not present in import at ' + imported;
 }
 
-export async function formRawArtifact(tinyId, sourceName) {
+export async function formRawArtifact(tinyId: string, sourceName: string) {
     return formSourceModel.findOne({tinyId, source: sourceName}).lean();
 }
 
 
-export function fixProperties(formObj) {
+export function fixProperties(formObj: CdeForm) {
     return formObj.properties.filter(p => !isEmpty(p.value));
 }
 
-export function fixCreated(elt) {
+export function fixCreated(elt: CdeForm) {
     const defaultDate = new Date();
     defaultDate.setFullYear(1969, 1, 1);
     elt.created = defaultDate;
 }
 
-export function fixCreatedBy(elt) {
+export function fixCreatedBy(elt: CdeForm) {
     elt.createdBy = {
         username: 'nobody'
     };
 }
 
-export function fixSources(obj) {
+export function fixSources(obj: CdeForm) {
     obj.sources.forEach(s => {
         if (s.sourceName === 'NINDS Preclinical NEI') {
             s.sourceName = 'NINDS Preclinical TBI';
@@ -861,15 +861,15 @@ export function fixSources(obj) {
 }
 
 
-export function fixEmptyDesignation(cdeObj) {
+export function fixEmptyDesignation(cdeObj: CdeForm) {
     return cdeObj.designations.filter(d => d.designation);
 }
 
-export function fixEmptyDefinition(cdeObj) {
+export function fixEmptyDefinition(cdeObj: CdeForm) {
     return cdeObj.definitions.filter(d => d.definition);
 }
 
-export function fixClassification(eltObj) {
+export function fixClassification(eltObj: CdeForm) {
     eltObj.classification.forEach((c: any) => {
         if (c.stewardOrg.name.toLowerCase() === 'eyegene') {
             c.stewardOrg.name = 'eyeGENE';
@@ -879,7 +879,7 @@ export function fixClassification(eltObj) {
     return uniqBy(eltObj.classification, 'stewardOrg.name');
 }
 
-export function sleep(ms) {
+export function sleep(ms: number) {
     return new Promise((resolve) => {
         setTimeout(resolve, ms);
     });

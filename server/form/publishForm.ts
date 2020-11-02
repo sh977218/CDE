@@ -16,7 +16,7 @@ function storeHtmlInDb(req: Request, res: Response, form: CdeForm, fileStr: stri
     const f = {
         filename: 'published-' + form.tinyId, type: 'text/html', stream: readable, md5: md5(fileStr)
     };
-    addFile(f, (err, newFile) => {
+    addFile(f, null, (err, newFile) => {
         const user = req.user;
         user.publishedForms.push({
             name: req.body.publishedFormName, id: newFile._id
@@ -26,7 +26,10 @@ function storeHtmlInDb(req: Request, res: Response, form: CdeForm, fileStr: stri
 }
 
 export function getFormForPublishing(form: CdeForm, req: Request, res: Response) {
-    renderFile('frontEnd/_nativeRenderApp/nativeRenderApp.ejs', {isLegacy: true, version: 'version'}, (err, fileStr) => {
+    renderFile('frontEnd/_nativeRenderApp/nativeRenderApp.ejs', {
+        isLegacy: true,
+        version: 'version'
+    }, (err, fileStr) => {
         const lines = fileStr.split('\n');
         let cssFileName;
         const headIndex = lines.findIndex(l => l.includes('</head>'));

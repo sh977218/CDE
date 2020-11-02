@@ -16,7 +16,7 @@ import { parseClassification } from 'ingester/nci/Shared/ParseClassification';
 import { generateTinyId } from 'server/system/mongo-data';
 import { parseStewardOrg } from 'ingester/nci/Shared/ParseStewardOrg';
 
-export async function createNciCde(nciXmlCde, orgInfo) {
+export async function createNciCde(nciXmlCde: any, orgInfo: any) {
     const designations = parseDesignations(nciXmlCde);
     const definitions = parseDefinitions(nciXmlCde);
     const registrationState = parseRegistrationState(nciXmlCde, orgInfo);

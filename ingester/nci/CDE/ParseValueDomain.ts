@@ -2,7 +2,7 @@ import { isEmpty } from 'lodash';
 import { QuestionTypeNumber, QuestionTypeText } from 'shared/de/dataElement.model';
 import { PermissibleValue } from 'shared/models.model';
 
-const datatypeMapping = {
+const datatypeMapping: any = {
     CHARACTER: 'Text',
     character: 'Text',
     'java.lang.String': 'Text',
@@ -34,14 +34,14 @@ const datatypeMapping = {
     datetime: 'Date'
 };
 
-export function parseValueDomain(nciXmlCde) {
+export function parseValueDomain(nciXmlCde: any) {
     const valueDomain: any = {
         datatype: 'Text',
         permissibleValues: []
     };
     const nciDataTypeString = nciXmlCde.VALUEDOMAIN[0].Datatype[0];
     const nciDataType = nciDataTypeString.trim().toLowerCase();
-    let datatype = datatypeMapping[nciDataType];
+    const datatype = datatypeMapping[nciDataType];
     if (!datatype) {
         console.log('No Mapping in ParseValueDomain ' + nciDataType);
         process.exit(1);
@@ -51,7 +51,7 @@ export function parseValueDomain(nciXmlCde) {
         valueDomain.datatypeValueList = {datatype};
         valueDomain.datatype = 'Value List';
         if (nciXmlCde.VALUEDOMAIN[0].PermissibleValues[0].PermissibleValues_ITEM) {
-            nciXmlCde.VALUEDOMAIN[0].PermissibleValues[0].PermissibleValues_ITEM.forEach(pv => {
+            nciXmlCde.VALUEDOMAIN[0].PermissibleValues[0].PermissibleValues_ITEM.forEach((pv: any) => {
                 const newPv: PermissibleValue = {
                     permissibleValue: pv.VALIDVALUE[0],
                     valueMeaningName: pv.VALUEMEANING[0],
@@ -59,13 +59,11 @@ export function parseValueDomain(nciXmlCde) {
                     codeSystemName: pv.MEANINGCONCEPTORIGIN[0].split(',')[0]
                 };
                 if (!pv.MEANINGCONCEPTS[0].attribute) {
-                    const valueMeaningCodeString = pv.MEANINGCONCEPTS[0].replace(/,/g, ':');
-                    newPv.valueMeaningCode = valueMeaningCodeString;
-
+                    newPv.valueMeaningCode = pv.MEANINGCONCEPTS[0].replace(/,/g, ':');
                 }
                 valueDomain.permissibleValues.push(newPv);
             });
-            valueDomain.permissibleValues.sort((a, b) => a.permissibleValue - b.permissibleValue
+            valueDomain.permissibleValues.sort((a: any, b: any) => a.permissibleValue - b.permissibleValue
             );
         }
     } else {

@@ -37,16 +37,25 @@ export const PROTOCOL = migrationConn.model('PROTOCOL', new Schema({}, {
     usePushEach: true
 }));
 export const PhenxURL = 'https://www.phenxtoolkit.org/protocols';
-export let redCapZipFolder = 'S:/MLB/CDE/PhenX/www.phenxtoolkit.org/toolkit_content/redcap_zip/';
+let redCapZipFolder = 'S:/MLB/CDE/PhenX/www.phenxtoolkit.org/toolkit_content/redcap_zip/';
 
-export let sickleCellDataElementsXlsx = 'S:/MLB/CDE/NHLBI/DataElements.xlsx';
-export let sickleCellFormMappingXlsx = 'S:/MLB/CDE/NHLBI/SickleCell_NLM_FormMapping.xlsx';
+let sickleCellDataElementsXlsx = 'S:/MLB/CDE/NHLBI/DataElements.xlsx';
+let sickleCellFormMappingXlsx = 'S:/MLB/CDE/NHLBI/SickleCell_NLM_FormMapping.xlsx';
 
-export let krabbeDataElementsXlsx = 'S:/MLB/CDE/NICHD/KrabbeWWR_CDEs.xlsx';
-export let SocialDeterminantsOfHealthCsv = 'S:/MLB/CDE/NINR/SocialDeterminantsOfHealth_06152020.csv';
+let krabbeDataElementsXlsx = 'S:/MLB/CDE/NICHD/KrabbeWWR_CDEs.xlsx';
+let SocialDeterminantsOfHealthCsv = 'S:/MLB/CDE/NINR/SocialDeterminantsOfHealth_06152020.csv';
 
 if (hostname() === 'Peter-PC') {
     redCapZipFolder = 'e:/www.phenxtoolkit.org/toolkit_content/redcap_zip/';
     sickleCellDataElementsXlsx = 'C:/Users/Peter/Downloads/SickleCellDataElements_20200305.xlsx';
     sickleCellFormMappingXlsx = 'C:/Users/Peter/Downloads/SickleCell_NLM_FormMapping.xlsx';
+    SocialDeterminantsOfHealthCsv = 'C:/Users/Peter/Downloads/SocialDeterminantsOfHealth_06152020.csv';
 }
+
+export {
+    redCapZipFolder,
+    sickleCellDataElementsXlsx,
+    sickleCellFormMappingXlsx,
+    krabbeDataElementsXlsx,
+    SocialDeterminantsOfHealthCsv
+};

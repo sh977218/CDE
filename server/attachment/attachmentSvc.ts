@@ -16,7 +16,7 @@ const createScanner = require('clamav.js').createScanner;
 const createReadStream = require('streamifier').createReadStream;
 const config = Config as any;
 
-export function add(req: Request & {files: any}, res: Response, db: any,
+export function add(req: Request & { files: any }, res: Response, db: any,
                     crudPermission: (item: Item, user: User) => boolean) {
     if (!req.files) {
         res.status(400).send('No files to attach.');
@@ -31,7 +31,9 @@ export function add(req: Request & {files: any}, res: Response, db: any,
         req.files.scanned = scanned;
         db.byId(req.body.id, handleNotFound({req, res}, (elt: ItemDocument) => {
             const ownership = crudPermission(elt, req.user);
-            if (!ownership) { return res.status(401).send('You do not own this element'); }
+            if (!ownership) {
+                return res.status(401).send('You do not own this element');
+            }
             userTotalSpace(req.user.username, totalSpace => {
                 if (totalSpace > req.user.quota) {
                     return res.send({message: 'You have exceeded your quota'});
@@ -87,11 +89,11 @@ export function addToItem(item: ItemDocument, file: any, user: User, comment: st
         mode: 'w',
         content_type: attachment.filetype,
         metadata: {
-            status: file.scanned ? 'scanned' : (hasRole(user, 'AttachmentReviewer') ?  'approved' : 'uploaded')
+            status: file.scanned ? 'scanned' : (hasRole(user, 'AttachmentReviewer') ? 'approved' : 'uploaded')
         }
     };
 
-    addFile(file, (err, newFile, isNew) => {
+    addFile(file, streamDescription, (err, newFile, isNew) => {
         if (isNew) {
             if (!hasRole(user, 'AttachmentReviewer')) {
                 attachment.pendingApproval = true;
@@ -102,7 +104,7 @@ export function addToItem(item: ItemDocument, file: any, user: User, comment: st
             attachment.fileid = newFile._id;
             linkAttachmentToAdminItem(item, attachment, !!isNew, cb);
         }
-    }, streamDescription);
+    });
 }
 
 export function approvalApprove(req: Request, res: Response) {
@@ -126,7 +128,9 @@ export function approvalDecline(req: Request, res: Response) {
 export function remove(req: Request, res: Response, db: any, crudPermission: (item: ItemDocument, user: User) => boolean) {
     db.byId(req.body.id, handleNotFound({req, res}, (elt: ItemDocument) => {
         const ownership = crudPermission(elt, req.user);
-        if (!ownership) { return res.status(401).send('You do not own this element'); }
+        if (!ownership) {
+            return res.status(401).send('You do not own this element');
+        }
         const fileId = elt.attachments[req.body.index].fileid;
         elt.attachments.splice(req.body.index, 1);
         (elt.save as any)(handleError({req, res}, () => {
@@ -147,8 +151,12 @@ export function removeUnusedAttachment(id: string, cb: Cb1<Error | null>) {
 
 export function scanFile(stream: any, res: Response, cb: Cb1<boolean>) {
     createScanner(config.antivirus.port, config.antivirus.ip).scan(stream, (err: any, object: any, malicious: boolean) => {
-        if (err) { return cb(false); }
-        if (malicious) { return res.status(431).send('The file probably contains a virus.'); }
+        if (err) {
+            return cb(false);
+        }
+        if (malicious) {
+            return res.status(431).send('The file probably contains a virus.');
+        }
         cb(true);
     });
 }
@@ -156,7 +164,9 @@ export function scanFile(stream: any, res: Response, cb: Cb1<boolean>) {
 export function setDefault(req: Request, res: Response, db: any, crudPermission: (item: Item, user: User) => boolean) {
     db.byId(req.body.id, handleNotFound({req, res}, (elt: ItemDocument) => {
         const ownership = crudPermission(elt, req.user);
-        if (!ownership) { return res.status(401).send('You do not own this element'); }
+        if (!ownership) {
+            return res.status(401).send('You do not own this element');
+        }
         const state = req.body.state;
         for (const attachment of elt.attachments) {
             attachment.isDefault = false;

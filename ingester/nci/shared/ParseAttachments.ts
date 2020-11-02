@@ -39,7 +39,7 @@ export function parseAttachments(nciXmlCde) {
                 status: 'approved'
             }
         };
-        addFile(file, (err, newFile) => {
+        addFile(file, streamDescription, (err, newFile) => {
             if (err) {
                 reject(err);
             } else {
@@ -47,6 +47,6 @@ export function parseAttachments(nciXmlCde) {
                 attachments.push(attachment);
                 resolve(attachments);
             }
-        }, streamDescription);
+        });
     });
 }
