@@ -9,9 +9,9 @@
 </div>
 <ng-container *ngIf="!elt.isDraft">
     <ng-container *ngFor="let attachment of elt.attachments; let i = index">
-        <dl id="attachment_{{i}}" class="row">
-            <dt class="col-2 text-right">Filename:</dt>
-            <dd class="col-10">
+        <dl id="attachment_{{i}}" class="cde-property">
+            <dt>Filename:</dt>
+            <dd>
                 <div *ngIf="!attachment.pendingApproval || canReviewAttachment; else pendingApprovalTpl">
                     <a id="attachment_file_url_{{i}}" class="mr-1"
                        href="/server/system/data/{{attachment.fileid}}"
@@ -25,37 +25,41 @@
                 </ng-template>
             </dd>
             <ng-container *ngIf="!attachment.pendingApproval">
-                <dt class="col-2 text-right">Default Image:</dt>
-                <dd id="dd_id_nlm" class="col-10">
-                    <div *ngIf="attachment.filesize > 512*1024">
-                        Attachments smaller than 500k can be marked as default
-                    </div>
-                    <div *ngIf="attachment.filesize <= 512*1024">
+                <dt>Default Image:</dt>
+                <dd>
+                    <ng-container *ngIf="attachment.filesize <= 512*1024; else defaultLimit">
                         <label id="defaultCbLabel">
-                            <input type="checkbox" id="defaultCb" [(ngModel)]="attachment.isDefault"
+                            <input type="checkbox" [(ngModel)]="attachment.isDefault"
                                    (change)="setDefault.emit(i)" [disabled]="!canEdit"/>
                             Should this image be displayed in search results?</label>
-                    </div>
+                    </ng-container>
+                    <ng-template #defaultLimit>
+                        Attachments smaller than 500k can be marked as default
+                    </ng-template>
                 </dd>
             </ng-container>
             <ng-container *ngIf="canEdit">
-                <dt class="col-2 text-right">Actions:</dt>
-                <dd id="dd_version_nlm" class="col-10">
+                <dt>Actions:</dt>
+                <dd>
                     <cde-delete-with-confirm (deleted)="removeAttachment.emit(i)"></cde-delete-with-confirm>
                 </dd>
             </ng-container>
-            <dt class="col-2 text-right">Size:</dt>
-            <dd class="col-10">
-                <div *ngIf="attachment.filesize > 1024*1024">{{attachment.filesize / 1024 / 1024 | number:'1.0-1'}}
-                    MB
-                </div>
-                <div *ngIf="attachment.filesize <= 1024*1024">{{attachment.filesize / 1024 | number:'1.0-1'}} kB
-                </div>
+
+            <dt>Size:</dt>
+            <dd>
+                <ng-container *ngIf="attachment.filesize <= 1024*1024; else filesizeMB">
+                    {{attachment.filesize / 1024 | number:'1.0-1'}} kB
+                </ng-container>
+                <ng-template #filesizeMB>
+                    {{attachment.filesize / 1024 / 1024 | number:'1.0-1'}} MB
+                </ng-template>
             </dd>
-            <dt class="col-2 text-right">Uploaded date:</dt>
-            <dd class="col-10">{{attachment.uploadDate | date: 'MM/dd/yyyy @ h:mma'}}</dd>
-            <dt class="col-2 text-right">Uploaded by:</dt>
-            <dd class="col-10">{{attachment.uploadedBy?.username}}</dd>
+
+            <dt>Uploaded date:</dt>
+            <dd>{{attachment.uploadDate | date: 'MM/dd/yyyy @ h:mma'}}</dd>
+
+            <dt>Uploaded by:</dt>
+            <dd>{{attachment.uploadedBy?.username}}</dd>
         </dl>
         <hr>
     </ng-container>

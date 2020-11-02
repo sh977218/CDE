@@ -1164,9 +1164,9 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void editDesignationByIndex(int index, String newDesignation, String[] tags) {
-        String designationEditIconXpath = "//*[@id='designation_" + index + "']//mat-icon[normalize-space() = 'edit']";
-        String designationInputXpath = "//*[@id='designation_" + index + "']//input";
-        String designationConfirmBtnXpath = "//*[@id='designation_" + index + "']//mat-icon[normalize-space() = 'check']";
+        String designationEditIconXpath = "//*[@itemprop='designation_" + index + "']//mat-icon[normalize-space() = 'edit']";
+        String designationInputXpath = "//*[@itemprop='designation_" + index + "']//input";
+        String designationConfirmBtnXpath = "//*[@itemprop='designation_" + index + "']//mat-icon[normalize-space() = 'check']";
         if (newDesignation != null) {
             clickElement(By.xpath(designationEditIconXpath));
             hangon(1);
@@ -1176,7 +1176,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
             textNotPresent("Confirm");
         }
         if (tags != null) {
-            String tagsInputXpath = "//*[@id='designationTags_" + index + "']//input";
+            String tagsInputXpath = "//*[@itemprop='designationTags_" + index + "']//input";
             for (String tag : tags) {
                 clickElement(By.xpath(tagsInputXpath));
                 selectMatDropdownByText(tag);
@@ -1186,10 +1186,10 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void editDefinitionByIndex(int index, String newDefinition, boolean html) {
-        String definitionEditIconXpath = "//*[@id='definition_" + index + "']//mat-icon[normalize-space() = 'edit']";
-        String richTextBtnXpath = "//*[@id='definition_" + index + "']//button[. = 'Rich Text']";
-        String definitionTextareaXpath = "//*[@id='definition_" + index + "']//textarea";
-        String definitionConfirmBtnXpath = "//*[@id='definition_" + index + "']//mat-icon[normalize-space() = 'check']";
+        String definitionEditIconXpath = "//*[@itemprop='definition_" + index + "']//mat-icon[normalize-space() = 'edit']";
+        String richTextBtnXpath = "//*[@itemprop='definition_" + index + "']//button[. = 'Rich Text']";
+        String definitionTextareaXpath = "//*[@itemprop='definition_" + index + "']//textarea";
+        String definitionConfirmBtnXpath = "//*[@itemprop='definition_" + index + "']//mat-icon[normalize-space() = 'check']";
         clickElement(By.xpath(definitionEditIconXpath));
         if (html) {
             clickElement(By.xpath(richTextBtnXpath));
@@ -1218,7 +1218,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
 
 
     protected void addNewDesignation(String designation, String[] tags) {
-        clickElement(By.id("openNewDesignationModalBtn"));
+        clickElement(By.xpath("//button[contains(.,'Add Name')]"));
         textPresent("Tags are managed in Org Management > List Management");
         findElement(By.name("newDesignation")).sendKeys(designation);
         if (tags != null) {
@@ -1238,7 +1238,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void addNewDefinition(String definition, boolean isHtml, String[] tags) {
-        clickElement(By.id("openNewDefinitionModalBtn"));
+        clickElement(By.xpath("//button[contains(.,'Add Definition')]"));
         hangon(1);
         textPresent("Tags are managed in Org Management > List Management");
         findElement(By.xpath("//*[@id='newDefinition']//textarea")).sendKeys(definition);
@@ -1326,7 +1326,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
 
     protected void changeDatatype(String newDatatype) {
         if (PREDEFINED_DATATYPE.contains(newDatatype)) {
-            nonNativeSelect("//*[@id='datatypeSelect']", "Select data type", newDatatype);
+            nonNativeSelect("//*[@itemprop='datatype']", "Select data type", newDatatype);
         } else {
             System.out.println("Invalidate data type: " + newDatatype);
         }
@@ -1432,13 +1432,13 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         if (status.equals("Retired"))
             textPresent("Retired elements are not returned in searches");
         if (effectiveDate != null && effectiveDate.length() > 0)
-            findElement(By.id("newEffectiveDate")).sendKeys(effectiveDate);
+            findElement(By.name("newEffectiveDate")).sendKeys(effectiveDate);
         if (untilDate != null && untilDate.length() > 0)
-            findElement(By.id("newUntilDate")).sendKeys(untilDate);
+            findElement(By.name("newUntilDate")).sendKeys(untilDate);
         if (administrativeNote != null && administrativeNote.length() > 0)
-            findElement(By.id("newAdministrativeNote")).sendKeys(administrativeNote);
+            findElement(By.name("newAdministrativeNote")).sendKeys(administrativeNote);
         if (unresolvedIssue != null && unresolvedIssue.length() > 0)
-            findElement(By.id("newUnresolvedIssue")).sendKeys(unresolvedIssue);
+            findElement(By.name("newUnresolvedIssue")).sendKeys(unresolvedIssue);
         clickElement(By.id("saveRegStatus"));
     }
 
@@ -1597,16 +1597,16 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void editStewardOrgAndCancel(String newStewardOrg) {
-        clickElement(By.xpath("//*[@id='dd_general_steward']//mat-icon"));
-        new Select(findElement(By.xpath("//*[@id='dd_general_steward']//select"))).selectByVisibleText(newStewardOrg);
-        clickElement(By.xpath("//*[@id='dd_general_steward']//button[contains(text(),'Discard')]"));
+        clickElement(By.xpath("//*[@itemprop='steward']//mat-icon"));
+        new Select(findElement(By.xpath("//*[@itemprop='steward']//select"))).selectByVisibleText(newStewardOrg);
+        clickElement(By.xpath("//*[@itemprop='steward']//button[contains(text(),'Discard')]"));
         textNotPresent(newStewardOrg);
     }
 
     protected void editStewardOrgAndSave(String newStewardOrg) {
-        clickElement(By.xpath("//*[@id='dd_general_steward']//mat-icon"));
-        new Select(findElement(By.xpath("//*[@id='dd_general_steward']//select"))).selectByVisibleText(newStewardOrg);
-        clickElement(By.xpath("//*[@id='dd_general_steward']//button[contains(text(),'Confirm')]"));
+        clickElement(By.xpath("//*[@itemprop='steward']//mat-icon"));
+        new Select(findElement(By.xpath("//*[@itemprop='steward']//select"))).selectByVisibleText(newStewardOrg);
+        clickElement(By.xpath("//*[@itemprop='steward']//button[contains(text(),'Confirm')]"));
         textPresent(newStewardOrg);
     }
 
@@ -1972,35 +1972,15 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         findElement(By.xpath(xpathSelect + "//*[contains(@class,'mat-select-value')][contains(.,'" + optionText + "')]"));
     }
 
+    protected void propertyEditText(String property, String text) {
+        clickElement(By.xpath("//*[@itemprop='" + property + "']//mat-icon[normalize-space() = 'edit']"));
+        findElement(By.xpath("//*[@itemprop='" + property + "']//input")).clear();
+        findElement(By.xpath("//*[@itemprop='" + property + "']//input")).sendKeys(text);
+        clickElement(By.xpath("//*[@itemprop='" + property + "']//button/mat-icon[normalize-space() = 'check']"));
+        textPresent(text, By.xpath("//*[@itemprop='" + property + "']"));
+    }
+
     protected void selectMatDropdownByText(String text) {
         clickElement(By.xpath("//mat-option[normalize-space() = '" + text + "']"));
-    }
-
-    protected void changeDataTypeTextRule(String rule) {
-        clickElement(By.xpath("//*[@id='datatypeTextRule']//mat-icon[normalize-space() = 'edit']"));
-        findElement(By.xpath("//*[@id='datatypeTextRule']//input")).clear();
-        findElement(By.xpath("//*[@id='datatypeTextRule']//input")).sendKeys(rule);
-        clickElement(By.xpath("//*[@id='datatypeTextRule']//button/mat-icon[normalize-space() = 'check']"));
-    }
-
-    protected void changeDataTypeTextRegex(String regex) {
-        clickElement(By.xpath("//*[@id='datatypeTextRegex']//mat-icon[normalize-space() = 'edit']"));
-        findElement(By.xpath("//*[@id='datatypeTextRegex']//input")).clear();
-        findElement(By.xpath("//*[@id='datatypeTextRegex']//input")).sendKeys(regex);
-        clickElement(By.xpath("//*[@id='datatypeTextRegex']//button/mat-icon[normalize-space() = 'check']"));
-    }
-
-    protected void changeDataTypeTextMaxLength(String maxLength) {
-        clickElement(By.xpath("//*[@id='datatypeTextMax']//mat-icon[normalize-space() = 'edit']"));
-        findElement(By.xpath("//*[@id='datatypeTextMax']//input")).clear();
-        findElement(By.xpath("//*[@id='datatypeTextMax']//input")).sendKeys(maxLength);
-        clickElement(By.xpath("//*[@id='datatypeTextMax']//button/mat-icon[normalize-space() = 'check']"));
-    }
-
-    protected void changeDataTypeTextMinLength(String minLength) {
-        clickElement(By.xpath("//*[@id='datatypeTextMin']//mat-icon[normalize-space() = 'edit']"));
-        findElement(By.xpath("//*[@id='datatypeTextMin']//input")).clear();
-        findElement(By.xpath("//*[@id='datatypeTextMin']//input")).sendKeys(minLength);
-        clickElement(By.xpath("//*[@id='datatypeTextMin']//button/mat-icon[normalize-space() = 'check']"));
     }
 }

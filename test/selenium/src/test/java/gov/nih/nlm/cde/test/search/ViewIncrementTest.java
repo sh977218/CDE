@@ -15,7 +15,7 @@ public class ViewIncrementTest extends NlmCdeBaseTest {
             goToCdeByName(cdeName);
             textPresent("Someone who gives blood");
         }
-        int nbOfViews = Integer.valueOf(findElement(By.id("views")).getText());
+        int nbOfViews = Integer.valueOf(findElement(By.cssSelector("[itemprop='views']")).getText());
         textPresent("Views");
         Assert.assertEquals(nbOfViews, 9);
     }

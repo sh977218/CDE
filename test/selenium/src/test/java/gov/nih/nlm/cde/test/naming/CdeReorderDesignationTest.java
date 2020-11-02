@@ -16,11 +16,11 @@ public class CdeReorderDesignationTest extends NlmCdeBaseTest {
         goToNaming();
 
         clickElement(By.id("moveDown-0"));
-        textPresent("Reorder designations cde", By.id("designation_1"));
+        textPresent("Reorder designations cde", By.cssSelector("[itemprop='designation_1']"));
         clickElement(By.id("moveUp-2"));
-        textPresent("Another designation.", By.id("designation_1"));
+        textPresent("Another designation.",By.cssSelector("[itemprop='designation_1']"));
         clickElement(By.id("moveTop-2"));
-        textPresent("Reorder designations cde", By.id("designation_0"));
+        textPresent("Reorder designations cde", By.cssSelector("[itemprop='designation_0']"));
     }
 
 }

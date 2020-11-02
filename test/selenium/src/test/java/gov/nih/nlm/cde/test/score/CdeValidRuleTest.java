@@ -16,10 +16,10 @@ public class CdeValidRuleTest extends NlmCdeBaseTest {
         goToCdeByName("DRS Total Score");
 
         goToScoreDerivations();
-        clickElement(By.id("addNewScore"));
+        clickElement(By.xpath("//button[contains(.,'Add Score')]"));
         textPresent("All 2 CDEs in your quickboard.");
-        findElement(By.id("newDerivationRule.name")).sendKeys("DRS Score");
-        clickElement(By.id("createDerivationRule"));
+        findElement(By.cssSelector("input[name='scoreName']")).sendKeys("DRS Score");
+        clickElement(By.xpath("//button[contains(.,'Save')]"));
         textPresent("Disability Rating Scale (DRS) - Grooming disability scale");
         textPresent("Disability Rating Scale (DRS) - Function level scale");
         newCdeVersion();

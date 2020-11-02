@@ -22,7 +22,7 @@ public class CdeChangeStewardTest extends NlmCdeBaseTest {
 
         editStewardOrgAndSave(newStewardOrgName);
         newCdeVersion();
-        Assert.assertEquals(newStewardOrgName, findElement(By.cssSelector("#dd_general_steward span")).getText());
+        Assert.assertEquals(newStewardOrgName, findElement(By.cssSelector("[itemprop='steward'] span")).getText());
 
         goToHistory();
         selectHistoryAndCompare(1, 2);

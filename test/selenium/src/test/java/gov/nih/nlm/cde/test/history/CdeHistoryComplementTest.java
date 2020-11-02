@@ -37,7 +37,7 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
 
         goToCdeByName(cdeName);
         clickElement(By.xpath("//*[@id='editStatus']"));
-        new Select(findElement(By.xpath("//label[text()='Registration Status']/following-sibling::select"))).selectByVisibleText(newStatus);
+        new Select(findElement(By.xpath("//label[contains(.,'Registration Status')]/select"))).selectByVisibleText(newStatus);
         clickElement(By.id("saveRegStatus"));
         closeAlert();
         modalGone();

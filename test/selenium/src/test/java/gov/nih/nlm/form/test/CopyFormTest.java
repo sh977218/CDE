@@ -22,8 +22,8 @@ public class CopyFormTest extends BaseClassificationTest {
         textPresent("Create a copy");
         textPresent("Disease/Injury Related Events");
         clickElement(By.id("submit"));
-        textPresent("Incomplete", By.id("registrationStatus"));
-        textPresent("Copy of: Type, Place, Cause and Mechanism of Injury", By.id("dd_general_name"));
+        textPresent("Incomplete", By.cssSelector("[itemprop='registrationStatus']"));
+        textPresent("Copy of: Type, Place, Cause and Mechanism of Injury", By.cssSelector("[itemprop='name']"));
         textNotPresent("LOINC");
         textNotPresent("CHAR");
 

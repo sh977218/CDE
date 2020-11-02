@@ -14,10 +14,10 @@ public class FormDefinitionReorder extends NlmCdeBaseTest {
         goToNaming();
         textPresent("Definition:");
         clickElement(By.id("moveDown-0"));
-        textPresent("This form is created for testing reorder definitions", By.id("definition_1"));
+        textPresent("This form is created for testing reorder definitions", By.cssSelector("[itemprop='definition_1']"));
         clickElement(By.id("moveUp-2"));
-        textPresent("Another definition.", By.id("definition_1"));
+        textPresent("Another definition.", By.cssSelector("[itemprop='definition_1']"));
         clickElement(By.id("moveTop-2"));
-        textPresent("This form is created for testing reorder definitions", By.id("definition_0"));
+        textPresent("This form is created for testing reorder definitions", By.cssSelector("[itemprop='definition_0']"));
     }
 }

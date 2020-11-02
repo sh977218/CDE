@@ -14,14 +14,8 @@ public class NumberDatatypeTest extends NlmCdeBaseTest {
         goToCdeByName(cdeName);
         goToPermissibleValues();
         changeDatatype(datatype);
-
-        clickElement(By.xpath("//*[@id='datatypeNumberMin']//mat-icon[normalize-space() = 'edit']"));
-        findElement(By.xpath("//*[@id='datatypeNumberMin']//input")).sendKeys("123");
-        clickElement(By.xpath("//*[@id='datatypeNumberMin']//button/mat-icon[normalize-space() = 'check']"));
-
-        clickElement(By.xpath("//*[@id='datatypeNumberMax']//mat-icon[normalize-space() = 'edit']"));
-        findElement(By.xpath("//*[@id='datatypeNumberMax']//input")).sendKeys("456");
-        clickElement(By.xpath("//*[@id='datatypeNumberMax']//button/mat-icon[normalize-space() = 'check']"));
+        propertyEditText("datatypeNumberMin", "123");
+        propertyEditText("datatypeNumberMax", "456");
         newCdeVersion();
 
         goToHistory();
@@ -33,14 +27,8 @@ public class NumberDatatypeTest extends NlmCdeBaseTest {
         clickElement(By.id("closeHistoryCompareModal"));
 
         goToPermissibleValues();
-        clickElement(By.xpath("//*[@id='datatypeNumberMin']//mat-icon[normalize-space() = 'edit']"));
-        findElement(By.xpath("//*[@id='datatypeNumberMin']//input")).sendKeys("789");
-        clickElement(By.xpath("//*[@id='datatypeNumberMin']//button/mat-icon[normalize-space() = 'check']"));
-
-        clickElement(By.xpath("//*[@id='datatypeNumberMax']//mat-icon[normalize-space() = 'edit']"));
-        findElement(By.xpath("//*[@id='datatypeNumberMax']//input")).sendKeys("987");
-        clickElement(By.xpath("//*[@id='datatypeNumberMax']//button/mat-icon[normalize-space() = 'check']"));
-
+        propertyEditText("datatypeNumberMin", "789");
+        propertyEditText("datatypeNumberMax", "987");
         newCdeVersion();
 
         goToCdeByName(cdeName);

@@ -18,12 +18,12 @@
                 <div class="col-6">
                     <h4>General Details</h4>
                     <dl class="row">
-                        <dt class="col-3 text-right">Name:</dt>
-                        <dd id="dd_general_name" class="col-9" [innerHtml]="elt.designations[0].designation"></dd>
+                        <dt class="col-3 text-right" itemprop="name">Name:</dt>
+                        <dd  class="col-9" [innerHtml]="elt.designations[0].designation"></dd>
                         <dt class="col-3 text-right">Steward:</dt>
                         <dd class="col-9" [innerHtml]="elt.stewardOrg.name"></dd>
                         <dt class="col-3 text-right">Definition:</dt>
-                        <dd id="dd_def" class="col-9" [innerHtml]="elt.definitions[0]?.definition || 'N/A'"></dd>
+                        <dd class="col-9" [innerHtml]="elt.definitions[0]?.definition || 'N/A'"></dd>
                         <ng-container *ngIf="elt.classification.length > 0">
                             <dt class="col-3 text-right">Used By:</dt>
                             <dd id="usedBy_{{eltIndex}}" class="col-9">

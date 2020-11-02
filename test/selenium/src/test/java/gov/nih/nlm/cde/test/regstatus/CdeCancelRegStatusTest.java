@@ -17,6 +17,6 @@ public class CdeCancelRegStatusTest extends NlmCdeBaseTest {
         clickElement(By.id("cancelRegStatus"));
         modalGone();
         goToCdeByName(cdeName);
-        textPresent("Qualified", By.id("registrationStatus"));
+        textPresent("Qualified", By.cssSelector("[itemprop='registrationStatus']"));
     }
 }

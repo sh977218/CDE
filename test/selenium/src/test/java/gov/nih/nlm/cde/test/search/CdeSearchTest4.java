@@ -21,7 +21,7 @@ public class CdeSearchTest4 extends NlmCdeBaseTest {
 
         clickElement(By.id("linkToElt_0"));
         textPresent("Source: caDSR");
-        usedBy = findElement(By.id("dd_usedBy")).getText();
+        usedBy = findElement(By.cssSelector("[itemprop='usedBy']")).getText();
         Assert.assertTrue(usedBy.contains("NIDCR, "));
         Assert.assertTrue(usedBy.contains("PS&CC"));
         Assert.assertTrue(usedBy.contains("caBIG"));

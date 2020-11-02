@@ -21,7 +21,7 @@ public class RemoveStatusStatusFilter extends CdeRegStatusTest {
         textPresent(viewing);
 
         clickElement(By.id("editStatus"));
-        new Select(driver.findElement(By.id("newRegistrationStatus"))).selectByVisibleText("Preferred Standard");
+        new Select(driver.findElement(By.name("newRegistrationStatus"))).selectByVisibleText("Preferred Standard");
         clickElement(By.id("saveRegStatus"));
         newCdeVersion();
         waitForESUpdate();
@@ -43,7 +43,7 @@ public class RemoveStatusStatusFilter extends CdeRegStatusTest {
         textPresent(viewing);
 
         clickElement(By.id("editStatus"));
-        new Select(driver.findElement(By.id("newRegistrationStatus"))).selectByVisibleText("Standard");
+        new Select(driver.findElement(By.name("newRegistrationStatus"))).selectByVisibleText("Standard");
         clickElement(By.id("saveRegStatus"));
         newCdeVersion();
         waitForESUpdate();
