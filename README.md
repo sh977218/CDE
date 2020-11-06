@@ -175,3 +175,11 @@ Run in Bamboo and override variable "browser" with value "coverage"
    * ```npm run buildNative```
 1. Angular build with development and watch
    * ```npm run devNative```
+
+
+If your IDE encounter errors like
+
+`'bash' is not recognized as an internal or external command,
+ operable program or batch file.
+ `
+Run ```npm config set script-shell "/c//tools//git//bin//bash.exe"```

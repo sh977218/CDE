@@ -216,7 +216,7 @@ export interface SearchParams {
 }
 
 export const auditGetLog = (auditDb: Model<any>) => (params: SearchParams, cb: CbError1<EltLog[]>) => {
-    auditDb.find(params.includeBatch ? {} : {'user.username': {$ne: 'batchloader'}})
+    auditDb.find(params.includeBatch ? {} : {'user.username': {$ne: 'NIH CDE Repository Team'}})
         .sort('-date')
         .skip(params.skip)
         .limit(params.limit)

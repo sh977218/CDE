@@ -1,9 +1,9 @@
-import { isEmpty, isEqual, trim, uniq, uniqBy } from 'lodash';
+import { isEmpty, isEqual, trim, uniq } from 'lodash';
 import { dataElementModel } from 'server/cde/mongo-cde';
 import { BATCHLOADER } from 'ingester/shared/utility';
 import { getCell } from 'ingester/ninds/csv/shared/utility';
 import { parseFormId } from '../cde/ParseDesignations';
-import { runOneNinrDataElement } from 'ingester/ninr/csv/loadNinrByCsv';
+import { runOneNinrDataElement } from 'ingester/ninr/csv/cde/cde';
 
 function convertCsvRowToFormElement(row: any, cde: any) {
     if (cde.toObject) {
@@ -63,7 +63,7 @@ export async function parseFormElements(form: any, rows: any[]) {
 
     let prevCategoryGroup = '';
     for (const row of rows) {
-        const cde: any = await runOneNinrDataElement(row, 'NINR');
+        const cde: any = await runOneNinrDataElement(row);
         const formElement = convertCsvRowToFormElement(row, cde);
         let categoryGroup = getCell(row, 'Category/Group');
         if (isEmpty(categoryGroup)) {

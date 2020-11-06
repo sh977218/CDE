@@ -5,6 +5,7 @@ import {
     BATCHLOADER, imported, lastMigrationScript, mergeClassificationByOrg, updateCde, updateForm
 } from 'ingester/shared/utility';
 import { loadPhenxById } from 'ingester/phenx/loader/loadPhenxById';
+import { Classification } from 'shared/models.model';
 
 function retirePhenxCdes() {
     return new Promise((resolve, reject) => {
@@ -60,7 +61,7 @@ function retirePhenxCdes() {
                     if (phenxForms.length === 0) {
                         cdeToRetire.classification = cdeObj.classification.filter(c => c.stewardOrg.name !== 'PhenX');
                     } else {
-                        const fakeElt = {classification: []};
+                        const fakeElt: {classification: Classification[]} = {classification: []};
                         phenxForms.forEach(phenxForm => {
                             mergeClassificationByOrg(fakeElt, phenxForm, 'PhenX');
                         });

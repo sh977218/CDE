@@ -1,13 +1,16 @@
-import { addAttachment, BATCHLOADER, NINDS_PRECLINICAL_NEI_FILE_PATH, TODAY } from 'ingester/shared/utility';
+import { addAttachment, BATCHLOADER, TODAY } from 'ingester/shared/utility';
 import { createReadStream } from 'fs';
+import { basename, extname } from 'path';
 
-export async function parseAttachments(formName: string, csvPath: string) {
+export async function parseAttachments(formName: string, filePath: string) {
     const attachments = [];
-    const readable = createReadStream(csvPath);
+    const filetype = extname(filePath);
+    const filename = basename(filePath);
+    const readable = createReadStream(filePath);
     const attachment = {
-        comment: 'Original CSV File',
-        filename: formName + '.csv',
-        filetype: 'text/csv',
+        comment: 'Original Source File',
+        filename,
+        filetype,
         uploadedBy: BATCHLOADER,
         uploadDate: TODAY
     };

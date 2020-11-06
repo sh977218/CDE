@@ -2,12 +2,13 @@ import { BATCHLOADER, TODAY } from 'ingester/shared/utility';
 import { Readable } from 'stream';
 import { cloneDeep } from 'lodash';
 import { addFile } from 'server/system/mongo-data';
+import { Attachment } from 'shared/models.model';
 
 const xml2js = require('xml2js');
 const builder = new xml2js.Builder();
 
-export function parseAttachments(nciXmlCde) {
-    const attachments = [];
+export function parseAttachments(nciXmlCde: any) {
+    const attachments: Attachment[] = [];
     const nciXml = cloneDeep(nciXmlCde);
     return new Promise((resolve, reject) => {
         const readable = new Readable();
@@ -22,14 +23,14 @@ export function parseAttachments(nciXmlCde) {
         const file = {
             stream: readable
         };
-        const attachment = {
+        const attachment: Attachment = {
             comment: 'Original XML File',
-            fileid: null,
+            fileid: '',
             filename: nciId + 'v' + nciVersion + '.xml',
             filesize: origXml.length,
             filetype: 'application/xml',
             uploadedBy: BATCHLOADER,
-            uploadDate: TODAY
+            uploadDate: +TODAY
         };
         const streamDescription = {
             filename: attachment.filename,
