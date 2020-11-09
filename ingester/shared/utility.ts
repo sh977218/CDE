@@ -1,20 +1,19 @@
 import { Builder, By } from 'selenium-webdriver';
 import * as DiffJson from 'diff-json';
 import * as moment from 'moment';
-import { find, noop, findIndex, isEmpty, isEqual, lastIndexOf, lowerCase, sortBy, uniq, uniqBy } from 'lodash';
-import * as mongo_cde from 'server/cde/mongo-cde';
-import { dataElementSourceModel } from 'server/cde/mongo-cde';
-import * as mongo_form from 'server/form/mongo-form';
-import { formSourceModel } from 'server/form/mongo-form';
-import { PhenxURL } from 'ingester/createMigrationConnection';
 import {
-    CdeId, Classification, Definition, Designation, Property, ReferenceDocument
-} from 'shared/models.model';
+    find, findIndex, includes, isEmpty, isEqual, lastIndexOf, lowerCase, noop, sortBy, trim, uniq, uniqBy, uniqWith
+} from 'lodash';
+import * as mongo_cde from 'server/cde/mongo-cde';
+import { dataElementModel, dataElementSourceModel } from 'server/cde/mongo-cde';
+import * as mongo_form from 'server/form/mongo-form';
+import { formModel, formSourceModel } from 'server/form/mongo-form';
+import { PhenxURL } from 'ingester/createMigrationConnection';
+import { CdeId, Classification, Definition, Designation, Item, Property, ReferenceDocument } from 'shared/models.model';
 import { CdeForm, FormElement } from 'shared/form/form.model';
-import { gfs } from 'server/system/mongo-data';
+import { addFile, FileCreateInfo } from 'server/system/mongo-data';
 import { Readable } from 'stream';
-import { dataElementModel } from 'server/cde/mongo-cde';
-import { formModel } from 'server/form/mongo-form';
+import { idComparator, referenceDocumentComparator } from 'shared/system/util';
 
 require('chromedriver');
 
@@ -33,7 +32,7 @@ export const sourceMap: any = {
 export const TODAY = new Date().toJSON();
 export const lastMigrationScript = `load NINR on ${moment().format('DD MMMM YYYY')}`;
 
-export const BATCHLOADER_USERNAME = 'batchloader';
+export const BATCHLOADER_USERNAME = 'NIH CDE Repository Team';
 export const BATCHLOADER = {
     username: BATCHLOADER_USERNAME,
     roles: ['AttachmentReviewer']
@@ -42,6 +41,8 @@ export const BATCHLOADER = {
 export const created = TODAY;
 export const imported = TODAY;
 export const version = '1.0';
+
+export const NINR_SOCIAL_DETERMINANTS_OF_HEALTH = 'NINR Social Determinants of Health';
 
 export function sanitizeText(s: string) {
     return s.replace(/:/g, '').replace(/\./g, '').trim();
@@ -112,7 +113,7 @@ export function trimWhite(text: string) {
     }
 }
 
-export async function updateRawArtifact(existingElt: CdeForm, newElt: CdeForm, source: string, classificationOrgName: string) {
+export async function updateRawArtifact(existingElt: Item, newElt: CdeForm, source: string, classificationOrgName: string) {
     if (!existingElt || !newElt) {
         return;
     }
@@ -157,7 +158,7 @@ function mergeElements(existingElements, newElements) {
     });
 }
 
-export function mergeClassificationByOrg(existingObj: CdeForm, newObj: CdeForm, orgName: string = '') {
+export function mergeClassificationByOrg(existingObj: { classification: Classification[] }, newObj: CdeForm, orgName: string = '') {
     const newClassification = newObj.classification;
     const existingClassification = existingObj.classification;
     newClassification
@@ -194,19 +195,6 @@ export async function createCde(cde: any) {
     await new dataElementModel(cde).save();
 }
 
-export function updateCde(elt: any, user: any, options = {}) {
-    elt.lastMigrationScript = lastMigrationScript;
-    return new Promise((resolve, reject) => {
-        mongo_cde.update(elt, user, options, (err, savedElt) => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(savedElt);
-            }
-        });
-    });
-}
-
 export async function createForm(form: any) {
     if (form.classification.length === 0) {
         form.classification.push({
@@ -220,7 +208,22 @@ export async function createForm(form: any) {
     await new formModel(form).save();
 }
 
+export function updateCde(elt: any, user: any, options = {}) {
+    fixElt(elt);
+    elt.lastMigrationScript = lastMigrationScript;
+    return new Promise((resolve, reject) => {
+        mongo_cde.update(elt, user, options, (err, savedElt) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(savedElt);
+            }
+        });
+    });
+}
+
 export async function updateForm(elt: any, user: any, options: any = {}) {
+    fixElt(elt);
     elt.lastMigrationScript = lastMigrationScript;
     return new Promise((resolve, reject) => {
         mongo_form.update(elt, user, options, (err, savedElt) => {
@@ -336,7 +339,7 @@ export function compareElt(newEltObj: CdeForm, existingEltObj: CdeForm, source: 
         delete newEltObj.formElements;
     }
 
-    [existingEltObj, newEltObj].forEach(eltObj => {
+    [existingEltObj, newEltObj].forEach((eltObj: any) => {
         eltObj.designations = sortBy(eltObj.designations, ['designation']);
         eltObj.definitions = sortBy(eltObj.definitions, ['definition']);
 
@@ -365,7 +368,7 @@ export function compareElt(newEltObj: CdeForm, existingEltObj: CdeForm, source: 
 }
 
 // Merge two elements
-function isOneClassificationSameSource(existingEltObj, newEltObj) {
+function isOneClassificationSameSource(existingEltObj: CdeForm, newEltObj: CdeForm) {
     const existingObjClassificationSize = existingEltObj.classification.length;
     const newEltObjClassificationSize = newEltObj.classification.length;
     const existingObjSources = existingEltObj.sources.length;
@@ -491,7 +494,7 @@ export function mergeIds(existingObj: CdeForm, newObj: CdeForm, source: string) 
     sortIds(existingObj.ids, source);
 }
 
-export function mergeClassification(existingElt: CdeForm, newObj: any, classificationOrgName: string) {
+export function mergeClassification(existingElt: any, newObj: any, classificationOrgName: string) {
     if (newObj.toObject) {
         newObj = newObj.toObject();
     }
@@ -746,7 +749,7 @@ export function sortRefDoc(elt: CdeForm) {
 
 export function addAttachment(readable: Readable, attachment: any) {
     return new Promise((resolve, reject) => {
-        const file: any = {
+        const file: FileCreateInfo = {
             stream: readable
         };
         const streamDescription = {
@@ -757,19 +760,12 @@ export function addAttachment(readable: Readable, attachment: any) {
                 status: 'approved'
             }
         };
-        gfs.findOne({md5: file.md5} as any, (err: any, existingFile: any) => {
+        addFile(file, streamDescription, (err, newFile) => {
             if (err) {
                 reject(err);
-            } else if (existingFile) {
-                attachment.fileid = existingFile._id;
-                resolve();
             } else {
-                file.stream.pipe(gfs.createWriteStream(streamDescription)
-                    .on('close', (newFile: any) => {
-                        attachment.fileid = newFile._id;
-                        resolve();
-                    })
-                    .on('error', reject));
+                attachment.fileid = newFile._id;
+                resolve();
             }
         });
     });
@@ -801,7 +797,7 @@ export function sortIds(ids: any, source: string) {
     return sortSourceIdentifiers.concat(sortOtherSourceIdentifiers);
 }
 
-export function findOneCde(cdes: any[], variableName: string) {
+export function findOneCde(cdes: any[], variableName = '') {
     const cdesLength = cdes.length;
     if (cdesLength === 0) {
         return null;
@@ -847,7 +843,8 @@ export function fixCreated(elt: CdeForm) {
 
 export function fixCreatedBy(elt: CdeForm) {
     elt.createdBy = {
-        username: 'nobody'
+        username: BATCHLOADER_USERNAME,
+        userId: ''
     };
 }
 
@@ -883,4 +880,33 @@ export function sleep(ms: number) {
     return new Promise((resolve) => {
         setTimeout(resolve, ms);
     });
+}
+
+export const EXCLUDE_REF_DOC = [
+    'No references available',
+    'Please fill out',
+    'SCKLCELL:'
+];
+
+function fixReferenceDocuments(elt: any) {
+    elt.referenceDocuments = elt.referenceDocuments.filter((rd: ReferenceDocument) => {
+        const document = trim(rd.document);
+        const title = trim(rd.title);
+
+        const excludeReferenceDocument = includes(EXCLUDE_REF_DOC, document);
+        const emptyTitleDocument = isEmpty(document) && isEmpty(title);
+        return !excludeReferenceDocument && !emptyTitleDocument;
+    });
+    elt.referenceDocuments = uniqWith(elt.referenceDocuments, referenceDocumentComparator);
+    elt.referenceDocuments = sortReferenceDocuments(elt.referenceDocuments);
+}
+
+function fixIds(elt: any) {
+    elt.ids = uniqWith(elt.ids, idComparator);
+    elt.ids = sortIds(elt.ids, idComparator);
+}
+
+function fixElt(elt: CdeForm) {
+    fixReferenceDocuments(elt);
+    fixIds(elt);
 }

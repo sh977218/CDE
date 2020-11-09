@@ -1,7 +1,7 @@
 import { isEmpty, isEqual, trim, uniqWith } from 'lodash';
 import { get } from 'request';
 import * as cheerio from 'cheerio';
-import { sortReferenceDocuments } from 'ingester/shared/utility';
+import { EXCLUDE_REF_DOC, sortReferenceDocuments } from 'ingester/shared/utility';
 import { getCell } from 'ingester/ninds/csv/shared/utility';
 
 const PUBMED_REF_DOC_CACHE: any = {};
@@ -49,53 +49,59 @@ function fetchPubmedRef(pmId: string) {
 }
 
 function getReferenceDocuments(referencesString: string = ''): Promise<any[]> {
-    return new Promise(async resolve => {
+    return new Promise(async (resolve, reject) => {
         const duplicatedRefDocs: any = [];
-        const regex = /\s*(PMID|PUBMED|pubmed\/)(:|,|\s)*(\s*\d*[.,\s]*)*/ig;
-        const pmIdArray = referencesString.match(regex);
-        if (pmIdArray) {
-            for (const pmIdString of pmIdArray) {
-                const pmIds = pmIdString
-                    .replace(/PMID:/ig, '')
-                    .replace(/\./ig, '')
-                    .replace(/pubmed\//ig, '')
-                    .replace(/PMID/ig, '')
-                    .replace(/PUBMED:/ig, '')
-                    .trim().split(',').filter(p => !isEmpty(p));
-                for (const pmId of pmIds) {
-                    const refDoc: any = await fetchPubmedRef(pmId).catch(err => {
-                        console.log(`fetchPubmedRef Error: + ${err}`);
-                        process.exit(1);
-                    });
-                    if (!isEmpty(refDoc)) {
-                        duplicatedRefDocs.push(refDoc);
-                    } else {
-                        duplicatedRefDocs.push({
-                            docType: 'text',
-                            languageCode: 'en-us',
-                            document: trim(referencesString)
-                        });
+        /*
+        ]        const regex = /\s*(PMID|PUBMED|GENERAL|HEADACHE|NMD|SMA|TBI\/)(:|,|\s)*(\s*\d*[.,\s]*)*!/ig;
+                const pmIdArray = referencesString.match(regex);
+                if (pmIdArray) {
+                    for (const pmIdString of pmIdArray) {
+                        const pmIds = pmIdString
+                            .replace(/PMID:/ig, '')
+                            .replace(/\./ig, '')
+                            .replace(/pubmed\//ig, '')
+                            .replace(/PMID/ig, '')
+                            .replace(/PUBMED:/ig, '')
+                            .trim()
+                            .split(',').filter(p => !isEmpty(p));
+                        for (const pmId of pmIds) {
+                            const refDoc: any = await fetchPubmedRef(pmId).catch(err => {
+                                console.log(`fetchPubmedRef Error: + ${err}`);
+                                process.exit(1);
+                            });
+                            if (!isEmpty(refDoc)) {
+                                duplicatedRefDocs.push(refDoc);
+                            } else {
+                                duplicatedRefDocs.push({
+                                    docType: 'text',
+                                    languageCode: 'en-us',
+                                    document: trim(referencesString)
+                                });
+                            }
+                        }
                     }
+                } else {
+                    duplicatedRefDocs.push({
+                        docType: 'text',
+                        languageCode: 'en-us',
+                        document: trim(referencesString)
+                    });
                 }
-            }
-        } else {
+        */
+        referencesString.split(/-{3,}/ig).forEach(r => {
             duplicatedRefDocs.push({
                 docType: 'text',
                 languageCode: 'en-us',
-                document: trim(referencesString)
+                document: trim(r)
             });
-        }
+        })
         resolve(sortReferenceDocuments(duplicatedRefDocs));
     });
 }
 
 export async function parseReferenceDocuments(row: any) {
-    const EXCLUDE_REF_DOC = [
-        'No references available',
-        'Please fill out'
-    ];
-    let referencesString = getCell(row, 'References');
-    EXCLUDE_REF_DOC.forEach(excludeRefDoc => referencesString = referencesString.replace(excludeRefDoc, '').trim());
+    const referencesString = getCell(row, 'References');
     const duplicatedRefDocs = await getReferenceDocuments(referencesString);
-    return uniqWith(duplicatedRefDocs, isEqual);
+    return uniqWith(duplicatedRefDocs, isEqual)
+        .filter(rd => isEmpty(rd.document) || !EXCLUDE_REF_DOC.includes(rd.document));
 }

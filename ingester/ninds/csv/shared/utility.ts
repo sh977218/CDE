@@ -1,9 +1,10 @@
 const CSV = require('csv');
 import { readFileSync } from 'fs';
-import { isEmpty, trim, replace, words, join, isEqual, filter } from 'lodash';
+import { filter, isEmpty, isEqual, join, replace, trim, words } from 'lodash';
 
 const NINDS_CSV_HEADER_MAP = {
-    'Category/Group': 'Group Name'
+    'Category/Group': 'Group Name',
+    GroupName: 'Group Name'
 };
 
 function formatKey(key: string) {

@@ -138,13 +138,15 @@ export function parseValueDomain(row: any) {
         valueDomain.datatype = 'Value List';
         const permissibleValueString = getCell(row, 'Permissible Values');
         const permissibleValueOutputCodes = getCell(row, 'Permissible Value Output Codes');
+        const permissibleValueDescriptions = getCell(row, 'Permissible Value Descriptions');
         if (permissibleValueString) {
-            const permissibleValueArray = permissibleValueString.split(';').filter(t => t);
-            const pvCodes = permissibleValueOutputCodes.split(';').filter(t => t);
-            permissibleValueArray.forEach((pv: any, i) => {
+            const pvArray = permissibleValueString.split(';').filter(t => t);
+            const pvCodeArray = permissibleValueOutputCodes.split(';').filter(t => t);
+            const pvDescriptionArray = permissibleValueDescriptions.split(';').filter(t => t);
+            pvArray.forEach((pv: any, i) => {
                 const permissibleValue: any = {
-                    permissibleValue: pvCodes[i] ? pvCodes[i] : pv,
-                    valueMeaningName: pv
+                    permissibleValue: pvCodeArray[i] ? pvCodeArray[i] : pv,
+                    valueMeaningName: pvDescriptionArray[i] ? pvDescriptionArray[i] : ''
                 };
                 valueDomain.permissibleValues.push(permissibleValue);
             });

@@ -18,7 +18,7 @@ let newFormCount = 0;
 
 export async function runOneNinrDataElement(ninrCsvRow, source) {
     const variableName = getCell(ninrCsvRow, 'variable name');
-    const newCdeObj = await createNinrCde(ninrCsvRow, source);
+    const newCdeObj = await createNinrCde(ninrCsvRow);
 
     const newCde = new dataElementModel(newCdeObj);
     const cond = {
@@ -63,7 +63,7 @@ export async function runOneNinrDataElement(ninrCsvRow, source) {
 
 
 async function runOneNinrForm(ninrFormName, ninrRows, source) {
-    const ninrFormObj = await createNinrForm(ninrFormName, ninrRows, source);
+    const ninrFormObj = await createNinrForm(ninrFormName, ninrRows, source, '');
     const ninrForm = await new formModel(ninrFormObj).save();
     newFormCount++;
     console.log(`newFormCount: ${newFormCount} newForm ${ninrForm.tinyId}`);

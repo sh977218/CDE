@@ -1,5 +1,5 @@
 import { uniq } from 'lodash';
-import { sortIdentifier } from 'ingester/shared/utility';
+import { sortIds } from 'ingester/shared/utility';
 
 export function parseIds(nindsForms: any[]) {
     const formIdArray: string[] = [];

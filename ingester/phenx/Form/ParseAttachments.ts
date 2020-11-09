@@ -1,59 +1,6 @@
-import { createReadStream, existsSync, readdirSync, statSync } from 'fs';
-import * as md5File from 'md5-file';
-import { gfs } from 'server/system/mongo-data';
-import { BATCHLOADER, NINDS_PRECLINICAL_NEI_FILE_PATH } from 'ingester/shared/utility';
+import { createReadStream, existsSync, readdirSync } from 'fs';
+import { addAttachment, BATCHLOADER, TODAY } from 'ingester/shared/utility';
 import { redCapZipFolder } from 'ingester/createMigrationConnection';
-
-function addAttachment(fileName, filePath, fileType) {
-    return new Promise(async (resolve, reject) => {
-        const fileSize = statSync(filePath).size;
-        const attachment = {
-            fileid: null,
-            filename: fileName,
-            filetype: fileType,
-            uploadDate: Date.now(),
-            comment: [],
-            scanned: true,
-            filesize: fileSize,
-            uploadedBy: BATCHLOADER
-        };
-
-        md5File(filePath, async (err, md5) => {
-            if (err) {
-                console.log('MD5 failed. ' + err);
-                reject(err);
-            }
-            gfs.findOne({md5}, (error, existingFile) => {
-                if (error) {
-                    console.log('Error gsf find ' + err);
-                    reject(error);
-                }
-                if (!existingFile) {
-                    const streamDescription = {
-                        filename: fileName,
-                        mode: 'w',
-                        content_type: fileType,
-                        scanned: true,
-                        metadata: {
-                            status: 'approved'
-                        }
-                    };
-                    const writestream = gfs.createWriteStream(streamDescription);
-                    writestream.on('close', newFile => {
-                        attachment.fileid = newFile._id;
-                        resolve(attachment);
-                    });
-                    const attachmentStream = createReadStream(filePath);
-                    attachmentStream.pipe(writestream);
-                } else {
-                    attachment.fileid = existingFile._id;
-                    resolve(attachment);
-                }
-            });
-        });
-
-    });
-}
 
 async function doImg(imgFolder) {
     const attachments: any[] = [];
@@ -73,7 +20,15 @@ async function doImg(imgFolder) {
                     imgFileExist = existsSync(imgFilePath);
                 }
                 if (imgFileExist) {
-                    const attachment = await addAttachment(imgFile, imgFilePath, fileType);
+                    const attachment = {
+                        comment: 'Original Source File',
+                        filename: imgFile,
+                        filetype: fileType,
+                        uploadedBy: BATCHLOADER,
+                        uploadDate: TODAY
+                    };
+                    const readable = createReadStream(imgFilePath);
+                    await addAttachment(readable, attachment);
                     if (attachment) {
                         attachments.push(attachment);
                     }

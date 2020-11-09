@@ -16,7 +16,7 @@ export async function parseReferenceDocuments(rows: any[]) {
     return sortReferenceDocuments(referenceDocuments);
 }
 
-export async function parseNhlbiReferenceDocuments(row) {
+export async function parseNhlbiReferenceDocuments(row: any) {
     const referenceDocuments = [];
     if (!isEmpty(row.ExternalUrl)) {
         referenceDocuments.push({url: row.ExternalUrl});
