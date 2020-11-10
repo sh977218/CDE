@@ -40,6 +40,7 @@ import { SearchModule } from 'search/search.module';
         ValueDomainSummaryComponent,
     ],
     exports: [
+        CdeAccordionListComponent,
         CdeGeneralDetailsComponent,
         CreateDataElementComponent,
         DeCompletionComponent,

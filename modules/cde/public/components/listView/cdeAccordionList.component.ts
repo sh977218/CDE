@@ -7,7 +7,8 @@ import { DataElement } from 'shared/de/dataElement.model';
 import { Elt, ModuleItem, User } from 'shared/models.model';
 
 @Component({
-    templateUrl: './cdeAccordionList.component.html'
+    templateUrl: './cdeAccordionList.component.html',
+    selector:'cde-according-list'
 })
 export class CdeAccordionListComponent {
     @Input() addMode: string = '';
