@@ -13,7 +13,6 @@ import { MatIconRegistry } from '@angular/material/icon';
     template: `
         <cde-ie-banner></cde-ie-banner>
         <cde-navigation></cde-navigation>
-        <cde-footer></cde-footer>
     `
 })
 export class CdeAppComponent {

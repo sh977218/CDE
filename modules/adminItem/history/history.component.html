@@ -1,8 +1,8 @@
-<h4 class="section-header">History</h4>
+<h2 class="section-header">History</h2>
 
 <div class="section-content">
     <div style="line-height:40px;">
-        <input id="showVersionedHistory" type="checkbox" [(ngModel)]="showVersioned">
+        <input id="showVersionedHistory" type="checkbox" style="margin-right: 2px" [(ngModel)]="showVersioned">
         <label for="showVersionedHistory">Only show versioned revisions.</label>
         <button *ngIf="numberSelected===2" id="historyCompareBtn" mat-raised-button
                 color="primary" (click)="openHistoryCompareModal()">

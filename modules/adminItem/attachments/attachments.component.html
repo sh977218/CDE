@@ -1,13 +1,11 @@
-<h4 class="section-header">Attachments</h4>
-<h4 *ngIf="elt.isDraft">
+<h2 class="section-header">Attachments</h2>
+<div *ngIf="elt.isDraft" class="my-4" style="font-size: 20px; line-height: 1">
     Attachments are not available in Drafts. Click the Draft slider above to view the current Published version.
-</h4>
-<div *ngIf="elt.attachments.length === 0" class="row">
-    <div class="offset-1">
-        There are no attachments.
-    </div>
 </div>
 <ng-container *ngIf="!elt.isDraft">
+    <div *ngIf="elt.attachments.length === 0" class="my-2">
+        There are no attachments.
+    </div>
     <ng-container *ngFor="let attachment of elt.attachments; let i = index">
         <dl id="attachment_{{i}}" class="cde-property">
             <dt>Filename:</dt>

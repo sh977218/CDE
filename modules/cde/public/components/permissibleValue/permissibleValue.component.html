@@ -1,4 +1,4 @@
-<h4 class="section-header">Permissible Values</h4>
+<h2 class="section-header">Permissible Values</h2>
 <dl class="cde-property">
     <dt>Value Type:</dt>
     <dd itemprop="datatype">
@@ -149,8 +149,8 @@
 <ng-container *ngIf="elt.valueDomain.datatype === 'Value List'">
     <h5>Permissible Value</h5>
     <div *ngIf="containsKnownSystem">The list below includes codes with synonyms, you can also view them as:<br>
-        <span *ngFor="let source of keys(SOURCES)" style="margin-left: 50px">
-                <input id="display{{SOURCES[source].source}}Codes" title="{{source}}" type="checkbox"
+        <span *ngFor="let source of keys(SOURCES)" style="display: inline-block; margin-left: 50px">
+                <input id="display{{SOURCES[source].source}}Codes" title="{{source}}" type="checkbox" style="margin-right: 2px"
                        [(ngModel)]="SOURCES[source].selected"
                        [disabled]="SOURCES[source].disabled && !userService.loggedIn()"
                        (ngModelChange)="lookupAsSource(source)">{{source}} Codes
@@ -278,7 +278,6 @@
             </mat-form-field>
         </div>
     </div>
-    <hr/>
 
     <table *ngIf="vsacValueSet.length > 0" id="vsacTableBody" class="table-bordered table-condensed table-striped">
         <tr>

@@ -1,9 +1,6 @@
-<h4 class="section-header">Concepts</h4>
-<div *ngIf="elt.dataElementConcept.concepts.concat(elt.objectClass.concepts, elt.property.concepts).length === 0"
-     class="row">
-    <div class="offset-1">
-        There are no concepts.
-    </div>
+<h2 class="section-header">Concepts</h2>
+<div *ngIf="elt.dataElementConcept.concepts.concat(elt.objectClass.concepts, elt.property.concepts).length === 0" class="my-2">
+    There are no concepts.
 </div>
 <div *ngFor="let config of conceptConfigurations; ">
     <div *ngIf="elt[config.type].concepts.length > 0">
@@ -33,7 +30,7 @@
         </table>
     </div>
 </div>
-<button mat-raised-button *ngIf="canEdit" id="openNewConceptModalBtn" class="m-3"
+<button mat-raised-button *ngIf="canEdit" id="openNewConceptModalBtn"
         color="primary" (click)="openNewConceptModal()">
     <mat-icon>add</mat-icon>
     Add Concept

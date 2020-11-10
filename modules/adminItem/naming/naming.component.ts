@@ -8,14 +8,6 @@ import { OrgHelperService } from 'non-core/orgHelper.service';
 @Component({
     selector: 'cde-naming',
     templateUrl: './naming.component.html',
-    styles: [`
-        .namingDiv {
-            overflow: hidden;
-            overflow-y: auto;
-            width: 100%;
-            max-height: 400px;
-        }
-    `]
 })
 export class NamingComponent implements OnInit {
     @Input() elt: any;
