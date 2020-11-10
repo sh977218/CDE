@@ -48,6 +48,7 @@ import { SortableArrayModule } from 'sortableArray/sortableArray.module';
 import { SkipLogicModule } from 'skipLogic/skipLogic.module';
 import { TagModule } from 'tag/tag.module';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { QuestionAccordionListComponent } from 'cde/public/components/listView/questionAccordingList/questionAccordingList.component';
 
 const appRoutes: Routes = [
     {path: '', component: FormViewComponent},
@@ -107,6 +108,7 @@ const appRoutes: Routes = [
         FormTermMappingComponent,
         FhirProcedureMappingComponent,
         NativeRenderFullComponent,
+        QuestionAccordionListComponent,
     ],
     exports: [],
     providers: [

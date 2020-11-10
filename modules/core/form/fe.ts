@@ -1,11 +1,17 @@
 import { isScore, iterateFeSync, iterateFeSyncOptions, noopSkipSync } from 'shared/form/fe';
-import {
-    FormElement, FormElementsContainer, FormInForm, FormQuestion, FormSection, Question, QuestionCde
-} from 'shared/form/form.model';
+import { FormElement, FormElementsContainer, FormQuestion, Question, QuestionCde } from 'shared/form/form.model';
+
+export function formQuestions(elt: FormElementsContainer): any[] {
+    const formElements: any[] = [];
+    iterateFeSync(elt, undefined, undefined, fe => {
+        formElements.push(fe);
+    });
+    return formElements;
+}
 
 export function areDerivationRulesSatisfied(elt: FormElementsContainer): string[] {
     const missingCdeTinyIds: string[] = [];
-    const allCdes: {[tinyId: string]: Question} = {};
+    const allCdes: { [tinyId: string]: Question } = {};
     const allQuestions: FormQuestion[] = [];
     iterateFeSync(elt, undefined, undefined, q => {
         allCdes[q.question.cde.tinyId] = q.question;
@@ -66,14 +72,20 @@ export function getFormQuestionsAsQuestionCde(form: FormElementsContainer): Ques
 }
 
 export function questionAnswered(q: FormQuestion): boolean {
-    return typeof(q.question.answer) !== 'undefined'
+    return typeof (q.question.answer) !== 'undefined'
         && !(Array.isArray(q.question.answer) && q.question.answer.length === 0);
 }
 
 export function repeatFe(fe: FormElement): '' | '=' | 'F' | 'N' {
-    if (!fe.repeat) { return ''; }
-    if (fe.repeat[0] === 'F') { return 'F'; }
-    if (fe.repeat.startsWith('="') && fe.repeat.length >= 3 && fe.repeat.endsWith('"')) { return '='; }
+    if (!fe.repeat) {
+        return '';
+    }
+    if (fe.repeat[0] === 'F') {
+        return 'F';
+    }
+    if (fe.repeat.startsWith('="') && fe.repeat.length >= 3 && fe.repeat.endsWith('"')) {
+        return '=';
+    }
     return 'N';
 }
 

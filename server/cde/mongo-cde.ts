@@ -122,7 +122,6 @@ export function byTinyIdList(tinyIdList: string[], cb: CbError1<DataElementElast
             cb(err, tinyIdList.map(t => cdes.filter(cde => cde.tinyId === t)[0]).filter(cde => !!cde));
         });
 }
-
 export function draftByTinyId(tinyId: string, cb: CbError1<DataElementDraftDocument>) {
     const cond = {
         archived: false,

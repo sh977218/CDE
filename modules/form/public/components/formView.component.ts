@@ -11,7 +11,7 @@ import { Dictionary } from 'async';
 import * as async_forEach from 'async/forEach';
 import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
 import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHistoryContent.component';
-import { areDerivationRulesSatisfied, repeatFeQuestion, repeatFe } from 'core/form/fe';
+import { areDerivationRulesSatisfied, formQuestions, repeatFe, repeatFeQuestion } from 'core/form/fe';
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
 import { FormViewService } from 'form/public/components/formView.service';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
@@ -55,6 +55,7 @@ export class LocatableError {
 export class FormViewComponent implements OnInit {
     @ViewChild('commentAreaComponent', {static: true}) commentAreaComponent!: DiscussAreaComponent;
     @ViewChild('copyFormContent', {static: true}) copyFormContent!: TemplateRef<any>;
+    @ViewChild('formCdesContent', {static: true}) formCdesContent!: TemplateRef<any>;
     @ViewChild('mltPinModalCde', {static: true}) mltPinModalCde!: PinBoardModalComponent;
     @ViewChild('exportPublishModal', {static: true}) exportPublishModal!: TemplateRef<any>;
     @ViewChild('saveModal') saveModal!: SaveModalComponent;
@@ -64,6 +65,7 @@ export class FormViewComponent implements OnInit {
     draftSaving?: Promise<CdeForm>;
     elt!: CdeFormDraft;
     eltCopy?: CdeForm;
+    questions: any[] = [];
     exportToTab: boolean = false;
     formInput!: Dictionary<string>;
     hasComments = false;
@@ -254,6 +256,11 @@ export class FormViewComponent implements OnInit {
             registrationStatus: 'Incomplete',
         };
         this.dialogRef = this.dialog.open(this.copyFormContent, {width: '1200px'});
+    }
+
+    openFormCdesModal() {
+        this.questions = formQuestions(this.elt);
+        this.dialogRef = this.dialog.open(this.formCdesContent, {width: '800px'});
     }
 
     openExportPublishModal() {
