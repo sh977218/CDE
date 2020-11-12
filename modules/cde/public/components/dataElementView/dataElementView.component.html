@@ -1,155 +1,147 @@
 <div *ngIf="!elt">
     <mat-spinner style="margin: 0 auto"></mat-spinner>
 </div>
-<div class="container-fluid" itemscope="http://schema.org/MedicalCode">
-    <mat-sidenav-container>
-        <mat-sidenav #navDrawer mode="side" opened fixedInViewport="true" fixedTopGap="64" fixedBottomGap="134">
-            <mat-list id="side-nav" role="list" class="border-1">
-                <a mat-list-item role="listitem" *ngFor="let sideNavItem of sideNavItems" class="hand-cursor"
-                   [class.bg-active]="activeSection === sideNavItem.fragment" [id]="sideNavItem.id"
-                   (click)="gotoSection(sideNavItem.fragment);">
-                    {{sideNavItem.label}}
-                    <span class="spacer"></span>
-                    <mat-icon *ngIf="sideNavItem.hasComment">forum</mat-icon>
-                </a>
-            </mat-list>
-        </mat-sidenav>
-        <mat-sidenav #commentDrawer mode="side" position="end" class="mw-20">
-            <div class="comment-div" *ngIf="elt">
-                <cde-discuss-area [currentTab]="currentTab" [elt]="elt"
-                                  (highlightedTabsChange)="loadHighlightedTabs($event)"
-                                  [eltName]="elt.designations[0].designation"></cde-discuss-area>
-            </div>
-        </mat-sidenav>
-        <mat-sidenav-content>
-            <div id="content-view-div" class="px-2" *ngIf="elt">
-                <div id="warning">
-                    <div *ngIf="elt.archived" class="alert alert-warning" role="alert">
-                        <mat-icon>warning</mat-icon>
-                        <strong>Warning:</strong> this data element is archived. You can
-                        <a routerLink="/deView" [queryParams]="{tinyId: elt.tinyId}">view the current version here</a>.
-                    </div>
-                    <div *ngIf="elt.registrationState.registrationStatus==='Retired'" class="alert alert-warning"
-                         role="alert">
-                        <mat-icon>warning</mat-icon>
-                        <strong>Warning:</strong> this data element is retired.
-                        <a *ngIf="elt.registrationState.replacedBy" routerLink="/deView"
-                           [queryParams]="{tinyId: elt.registrationState.replacedBy.tinyId}">Replacement</a>
-                    </div>
-                    <div *ngIf="elt.registrationState.administrativeStatus==='Retire Candidate'"
-                         class="alert alert-warning"
-                         role="alert">
-                        <mat-icon>warning</mat-icon>
-                        <strong>Warning:</strong> this data element is about to be retired.
-                        <a *ngIf="elt.registrationState.replacedBy" routerLink="/deView"
-                           [queryParams]="{tinyId: elt.registrationState.replacedBy.tinyId}">Possible Replacement</a>
-                    </div>
-                    <div *ngIf="displayStatusWarning" class="alert alert-info" role="alert">
-                        <mat-icon>warning</mat-icon>
-                        <strong>Note:</strong> You may not edit this CDE because it is standard.
-                    </div>
-                    <div *ngIf="validationErrors.length > 0" class="alert alert-warning" role="alert">
-                        <mat-icon>warning</mat-icon>
-                        The following errors need to be corrected in order to Publish:
-                        <ul class="list-inline">
-                            <li *ngFor="let error of validationErrors">{{error.message}}</li>
-                        </ul>
-                    </div>
+<button *ngIf="!navDrawer.opened" class="slide-pane-button" (click)="navDrawer.open()"></button>
+
+<mat-sidenav-container>
+    <mat-sidenav #navDrawer [mode]="isMobile ? 'over' : 'side'" [opened]="!isMobile"
+                 fixedInViewport="true" [fixedTopGap]="isMobile ? 0 : 64" [fixedBottomGap]="isMobile ? 0 : 134">
+        <mat-list id="side-nav" role="list" class="border-1">
+            <a mat-list-item role="listitem" *ngFor="let sideNavItem of sideNavItems" class="hand-cursor"
+               [class.bg-active]="activeSection === sideNavItem.fragment" [id]="sideNavItem.id"
+               (click)="gotoSection(sideNavItem.fragment); isMobile && navDrawer.close()">
+                {{sideNavItem.label}}
+                <span class="spacer"></span>
+                <mat-icon *ngIf="sideNavItem.hasComment">forum</mat-icon>
+            </a>
+        </mat-list>
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <mat-sidenav-container [hasBackdrop]="false">
+            <mat-sidenav #commentDrawer mode="side" position="end" class="mw-20">
+                <div *ngIf="elt">
+                    <cde-discuss-area [currentTab]="currentTab" [elt]="elt"
+                                      (highlightedTabsChange)="loadHighlightedTabs($event)"
+                                      [eltName]="elt.designations[0].designation"></cde-discuss-area>
                 </div>
-                <div id="eltName">
-                    <h3 class="mobileViewH1 my-4">
+            </mat-sidenav>
+            <mat-sidenav-content>
+                <main *ngIf="elt" class="container-fluid" itemscope="http://schema.org/MedicalCode">
+                    <header>
+                        <div *ngIf="elt.archived" class="alert alert-warning" role="alert">
+                            <mat-icon>warning</mat-icon>
+                            <strong>Warning:</strong> this data element is archived. You can
+                            <a routerLink="/deView" [queryParams]="{tinyId: elt.tinyId}">view the current version here</a>.
+                        </div>
+                        <div *ngIf="elt.registrationState.registrationStatus==='Retired'" class="alert alert-warning" role="alert">
+                            <mat-icon>warning</mat-icon>
+                            <strong>Warning:</strong> this data element is retired.
+                            <a *ngIf="elt.registrationState.replacedBy" routerLink="/deView"
+                               [queryParams]="{tinyId: elt.registrationState.replacedBy.tinyId}">Replacement</a>
+                        </div>
+                        <div *ngIf="elt.registrationState.administrativeStatus==='Retire Candidate'"
+                             class="alert alert-warning"
+                             role="alert">
+                            <mat-icon>warning</mat-icon>
+                            <strong>Warning:</strong> this data element is about to be retired.
+                            <a *ngIf="elt.registrationState.replacedBy" routerLink="/deView"
+                               [queryParams]="{tinyId: elt.registrationState.replacedBy.tinyId}">Possible Replacement</a>
+                        </div>
+                        <div *ngIf="displayStatusWarning" class="alert alert-info" role="alert">
+                            <mat-icon>warning</mat-icon>
+                            <strong>Note:</strong> You may not edit this CDE because it is standard.
+                        </div>
+                        <div *ngIf="validationErrors.length > 0" class="alert alert-warning" role="alert">
+                            <mat-icon>warning</mat-icon>
+                            The following errors need to be corrected in order to Publish:
+                            <ul class="list-inline">
+                                <li *ngFor="let error of validationErrors">{{error.message}}</li>
+                            </ul>
+                        </div>
+                    </header>
+                    <h1>
                         <cde-draft-slider [(isDraft)]="elt.isDraft" (isDraftChange)="$event?loadElt():loadPublished()"
                                           [hidden]="!hasDrafts"></cde-draft-slider>
                         {{elt?.designations[0]?.designation}}
-                    </h3>
-                </div>
-                <div id="eltMenu">
-                    <mat-toolbar class="bg-white">
-                        <mat-toolbar-row>
-                            <button mat-raised-button id="toggleSidenavBtn" color="primary"
-                                    (click)="navDrawer.toggle();">
-                                <mat-icon>menu</mat-icon>
-                            </button>
-                            <button mat-raised-button id="export" class="mr-1" #exportMenuTrigger="matMenuTrigger"
-                                    [matMenuTriggerFor]="exportMenu" color="primary">
-                                <mat-icon>play_for_work</mat-icon>
-                                <span class="d-none d-md-inline-block"> Export </span>
-                                <mat-icon>arrow_drop_down</mat-icon>
-                            </button>
-                            <mat-menu #exportMenu>
-                                <a mat-menu-item *ngIf="exportToTab; else exportFileJson" class="no-link"
-                                   href="/server/de/byId/{{elt._id}}" target="_blank" rel="noopener noreferrer">
+                    </h1>
+                    <nav>
+                        <button mat-raised-button id="export" #exportMenuTrigger="matMenuTrigger" title="Export"
+                                [matMenuTriggerFor]="exportMenu" color="primary">
+                            <mat-icon>play_for_work</mat-icon>
+                            <span class="d-none d-md-inline-block"> Export </span>
+                            <mat-icon>arrow_drop_down</mat-icon>
+                        </button>
+                        <mat-menu #exportMenu>
+                            <a mat-menu-item *ngIf="exportToTab; else exportFileJson" class="no-link"
+                               href="/server/de/byId/{{elt._id}}" target="_blank" rel="noopener noreferrer">
+                                JSON File, NIH/CDE Schema
+                                <ng-container *ngTemplateOutlet="exportJsonActions"></ng-container>
+                            </a>
+                            <ng-template #exportFileJson>
+                                <a mat-menu-item (click)="exportService.exportDe(elt, '', 'json')">
                                     JSON File, NIH/CDE Schema
                                     <ng-container *ngTemplateOutlet="exportJsonActions"></ng-container>
                                 </a>
-                                <ng-template #exportFileJson>
-                                    <a mat-menu-item (click)="exportService.exportDe(elt, '', 'json')">
-                                        JSON File, NIH/CDE Schema
-                                        <ng-container *ngTemplateOutlet="exportJsonActions"></ng-container>
-                                    </a>
-                                </ng-template>
-                                <ng-template #exportJsonActions>
-                                    <a href="/schema/de" target="_blank" rel="noopener noreferrer"
-                                       title="Schema" (click)="$event.stopPropagation(); exportMenuTrigger.closeMenu()">
-                                        <mat-icon class="menuActionIcon">help_outline</mat-icon>
-                                    </a>
-                                </ng-template>
-                                <a mat-menu-item *ngIf="exportToTab; else exportFileXml" class="no-link"
-                                   href="/server/de/byId/{{elt._id}}?type=xml" target="_blank"
-                                   rel="noopener noreferrer">
+                            </ng-template>
+                            <ng-template #exportJsonActions>
+                                <a href="/schema/de" target="_blank" rel="noopener noreferrer"
+                                   title="Schema" (click)="$event.stopPropagation(); exportMenuTrigger.closeMenu()">
+                                    <mat-icon class="menuActionIcon">help_outline</mat-icon>
+                                </a>
+                            </ng-template>
+                            <a mat-menu-item *ngIf="exportToTab; else exportFileXml" class="no-link"
+                               href="/server/de/byId/{{elt._id}}?type=xml" target="_blank"
+                               rel="noopener noreferrer">
+                                XML File, NIH/CDE Schema
+                            </a>
+                            <ng-template #exportFileXml>
+                                <a mat-menu-item (click)="exportService.exportDe(elt, '?type=xml', 'xml')">
                                     XML File, NIH/CDE Schema
                                 </a>
-                                <ng-template #exportFileXml>
-                                    <a mat-menu-item (click)="exportService.exportDe(elt, '?type=xml', 'xml')">
-                                        XML File, NIH/CDE Schema
-                                    </a>
-                                </ng-template>
-                            </mat-menu>
-                            <button *ngIf="quickBoardService.canAddElement(elt)" id="addToQuickBoard" mat-raised-button
-                                    color="primary"
-                                    title="Add to Compare List" (click)="quickBoardService.addToQuickBoard(elt)">
-                                <mat-icon>add</mat-icon>
-                                <span class="d-none d-md-inline-block"> Add to Quick Board</span>
+                            </ng-template>
+                        </mat-menu>
+                        <button *ngIf="quickBoardService.canAddElement(elt)" id="addToQuickBoard" mat-raised-button
+                                color="primary"
+                                title="Add to Compare List" (click)="quickBoardService.addToQuickBoard(elt)">
+                            <mat-icon>add</mat-icon>
+                            <span class="d-none d-md-inline-block"> Add to Quick Board</span>
+                        </button>
+                        <button id="addToBoard" mat-raised-button color="primary" title="Add to Board"
+                                (click)="mltPinModal.pinMultiple([elt], mltPinModal.open())">
+                            <mat-icon svgIcon="thumb_tack"></mat-icon>
+                            <span class="d-none d-md-inline-block">Add to Board</span>
+                        </button>
+                        <button *ngIf="isOrgCurator(userService.user)" id="copyCdeBtn" mat-raised-button
+                                title="Copy CDE" (click)="openCopyElementModal()" color="primary">
+                            <mat-icon>content_copy</mat-icon>
+                            <span class="d-none d-md-inline-block"> Copy</span>
+                        </button>
+                        <button id="discussBtn" title="Discuss CDE" mat-raised-button color="primary"
+                                (click)="commentDrawer.toggle()">
+                            <mat-icon [ngClass]="{'faa-wrench faa-slow animated': comments.length && !commentMode}">
+                                comment
+                            </mat-icon>
+                            <span class="d-none d-md-inline-block ml-1"> Discuss</span>
+                        </button>
+                        <ng-container *ngIf="elt.isDraft">
+                            <button mat-raised-button color="warn" id="deleteDraftBtn" title="Delete Draft"
+                                    (click)="deleteModal.openDeleteModal()">
+                                <mat-icon>delete</mat-icon>
+                                <span class="d-none d-md-inline-block"> Delete Draft </span>
                             </button>
-                            <button id="addToBoard" mat-raised-button color="primary"
-                                    (click)="mltPinModal.pinMultiple([elt], mltPinModal.open())">
-                                <mat-icon svgIcon="thumb_tack"></mat-icon>
-                                <span class="d-none d-md-inline-block">Add to Board</span>
+                            <button id="openSave" mat-raised-button color="accent" title="Publish" (click)="publish()" style="margin: 0">
+                                <mat-icon>publish</mat-icon>
+                                <span class="d-none d-md-inline-block"> Publish</span>
                             </button>
-                            <button *ngIf="isOrgCurator(userService.user)" id="copyCdeBtn" mat-raised-button
-                                    title="Copy CDE" (click)="openCopyElementModal()" color="primary">
-                                <mat-icon>content_copy</mat-icon>
-                                <span class="d-none d-md-inline-block"> Copy</span>
-                                <span class="d-none d-md-inline-block"> Copy</span>
-                            </button>
-                            <button id="discussBtn" title="Discuss CDE" mat-raised-button color="primary"
-                                    (click)="commentDrawer.toggle();">
-                                <mat-icon [ngClass]="{'faa-wrench faa-slow animated': comments.length && !commentMode}">
-                                    comment
-                                </mat-icon>
-                                <span class="d-none d-md-inline-block ml-1"> Discuss</span>
-                            </button>
-                            <span class="spacer"></span>
-                            <ng-container *ngIf="elt.isDraft">
-                                <div>{{savingText}}</div>
-                                <button mat-raised-button color="warn" id="deleteDraftBtn"
-                                        (click)="deleteModal.openDeleteModal()">
-                                    <mat-icon>delete</mat-icon>
-                                    <span class="d-none d-sm-inline-block"> Delete Draft </span>
-                                </button>
-                                <button id="openSave" mat-raised-button color="primary" (click)="publish()">
-                                    <mat-icon>publish</mat-icon>
-                                    <span class="d-none d-sm-inline-block"> Publish</span>
-                                </button>
-                                <span id="viewChangesBtn" class="fake-link hand-cursor"
-                                      (click)="viewChanges();">Changed </span>
+                            {{savingText}}
+                            <div style="float: right">
+                                    <span id="viewChangesBtn" class="fake-link hand-cursor"
+                                          (click)="viewChanges();">Changed </span>
                                 by {{elt.updatedBy?.username}} on {{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}
-                            </ng-container>
-                        </mat-toolbar-row>
-                    </mat-toolbar>
-                </div>
-                <div class="row mh-500">
-                    <div class="col-12">
+                            </div>
+                        </ng-container>
+                    </nav>
+                    <article>
                         <div #generalDetails id="general-details-div">
                             <cde-de-general-details [elt]="elt" [canEdit]="canEdit()"
                                                     (eltChange)="saveDraftVoid()"></cde-de-general-details>
@@ -202,21 +194,18 @@
                             <cde-history [elt]="elt" [canEdit]="canEdit()"></cde-history>
                         </div>
                         <div #rules id="rules-div" class="mb-5 pb-5">
-                            <h4 class="section-header">Rules</h4>
-                            <div class="mx-4 mb-5">
-                                <cde-derivation-rules [canEdit]="canEdit()" [elt]="elt" (eltChange)="saveDraftVoid()">
-                                </cde-derivation-rules>
-                                <cde-valid-rules [elt]="elt"></cde-valid-rules>
-                            </div>
+                            <h2 class="section-header">Rules</h2>
+                            <cde-derivation-rules [canEdit]="canEdit()" [elt]="elt" (eltChange)="saveDraftVoid()"></cde-derivation-rules>
+                            <cde-valid-rules [elt]="elt"></cde-valid-rules>
                         </div>
-                    </div>
-                </div>
-                <cde-save-modal #saveModal [elt]="elt" (eltChange)="saveDraftVoid()" (save)="saveDataElement()"></cde-save-modal>
-                <cde-delete-modal #deleteModal (confirm)="removeDraft()"></cde-delete-modal>
-            </div>
-        </mat-sidenav-content>
-    </mat-sidenav-container>
-</div>
+                    </article>
+                    <cde-save-modal #saveModal [elt]="elt" (eltChange)="saveDraftVoid()" (save)="saveDataElement()"></cde-save-modal>
+                    <cde-delete-modal #deleteModal (confirm)="removeDraft()"></cde-delete-modal>
+                </main>
+            </mat-sidenav-content>
+        </mat-sidenav-container>
+    </mat-sidenav-content>
+</mat-sidenav-container>
 
 <ng-template #copyDataElementContent>
     <h4 mat-dialog-title>Create a copy</h4>

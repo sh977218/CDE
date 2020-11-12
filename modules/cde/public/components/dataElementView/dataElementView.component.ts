@@ -40,7 +40,6 @@ const TAB_COMMENT_MAP: any = {
     rules: 'rules_tab'
 }
 
-
 @Component({
     selector: 'cde-data-element-view',
     templateUrl: 'dataElementView.component.html',
@@ -64,7 +63,6 @@ export class DataElementViewComponent implements OnInit, AfterViewInit {
     @ViewChild('history', {static: false}) history!: ElementRef;
     @ViewChild('rules', {static: false}) rules!: ElementRef;
     @ViewChild(MatSidenavContainer, {static: false}) matSidenavContainer!: MatSidenavContainer;
-
     commentMode?: boolean;
     currentTab = 'general_tab';
     displayStatusWarning?: boolean;
@@ -74,6 +72,7 @@ export class DataElementViewComponent implements OnInit, AfterViewInit {
     exportToTab: boolean = false;
     hasDrafts = false;
     highlightedTabs: string[] = [];
+    isMobile = false;
     isOrgCurator = isOrgCurator;
     modalRef?: MatDialogRef<TemplateRef<any>>;
     comments: Comment[] = [];
@@ -149,6 +148,7 @@ export class DataElementViewComponent implements OnInit, AfterViewInit {
                 private ngZone: NgZone,
                 @Inject(WINDOW) private window: Window) {
         this.exportToTab = !!localStorageService.getItem('exportToTab');
+        this.onResize();
     }
 
     canEdit() {
@@ -220,6 +220,11 @@ export class DataElementViewComponent implements OnInit, AfterViewInit {
 
     loadPublished(cb = _noop) {
         this.eltLoad(this.deViewService.fetchPublished(this.route.snapshot.queryParams), cb);
+    }
+
+    @HostListener('window:resize', [])
+    onResize() {
+        this.isMobile = window.innerWidth < 735;
     }
 
     publish() {

@@ -23,7 +23,7 @@ public class ScrollHistoryTest extends NlmCdeBaseTest {
         hangon(1);
         int appleOffset = getCurrentYOffset();
         clickElement(By.id(elementId));
-        findElement(By.className("mobileViewH1"));
+        findElement(By.tagName("h1"));
 
         searchEltAny("patient", "form");
         textPresent("Patient Health Questionnaire");
@@ -31,7 +31,7 @@ public class ScrollHistoryTest extends NlmCdeBaseTest {
         hangon(1);
         int patientOffset = getCurrentYOffset();
         clickElement(By.id(elementId));
-        findElement(By.className("mobileViewH1"));
+        findElement(By.tagName("h1"));
 
         goToCdeSearch();
         findElement(By.id("ftsearch-input")).clear();

@@ -66,42 +66,42 @@
         </div>
     </mat-toolbar-row>
 </mat-toolbar>
-<mat-sidenav-container>
+<mat-sidenav-container style="flex-grow: 1">
     <mat-sidenav #sidenav mode="over" position="end">
         <mat-nav-list>
             <a mat-list-item routerLink="/cde/search" (click)="sidenav.close()">CDES</a>
             <a mat-list-item routerLink="/form/search" (click)="sidenav.close()">FORMS</a>
-            <a mat-list-item *ngIf="isOrgCurator(userService.user)" [matMenuTriggerFor]="createMenu">CREATE ▼</a>
-            <mat-menu #createMenu="matMenu">
-                <a mat-menu-item routerLink="/createCde" (click)="sidenav.close()">CDE</a>
-                <a mat-menu-item routerLink="/createForm" (click)="sidenav.close()">Form</a>
+            <a mat-list-item *ngIf="isOrgCurator(userService.user)" [matMenuTriggerFor]="mobileCreateMenu">CREATE ▼</a>
+            <mat-menu #mobileCreateMenu="matMenu">
+                <button mat-menu-item routerLink="/createCde" (click)="sidenav.close()">CDE</button>
+                <button mat-menu-item routerLink="/createForm" (click)="sidenav.close()">Form</button>
             </mat-menu>
-            <a mat-list-item [matMenuTriggerFor]="boardMenu">BOARDS ▼</a>
-            <mat-menu #boardMenu="matMenu">
-                <a mat-list-item routerLink="/quickBoard" (click)="sidenav.close()">{{quickBoardMetaInfo()}}</a>
-                <a mat-list-item routerLink="/boardList" (click)="sidenav.close()">Public Boards</a>
-                <a mat-list-item *ngIf="userService.user" routerLink="/myBoards" (click)="sidenav.close()">My Boards</a>
+            <a mat-list-item [matMenuTriggerFor]="mobileBoardMenu">BOARDS ▼</a>
+            <mat-menu #mobileBoardMenu="matMenu">
+                <button mat-menu-item routerLink="/quickBoard" (click)="sidenav.close()">{{quickBoardMetaInfo()}}</button>
+                <button mat-menu-item routerLink="/boardList" (click)="sidenav.close()">Public Boards</button>
+                <button mat-menu-item *ngIf="userService.user" routerLink="/myBoards" (click)="sidenav.close()">My Boards</button>
             </mat-menu>
             <a mat-list-item routerLink="/api" (click)="sidenav.close()">API</a>
-            <a mat-list-item [matMenuTriggerFor]="helpMenu">HELP ▼</a>
-            <mat-menu #helpMenu="matMenu">
-                <a mat-menu-item routerLink="/videos" (click)="sidenav.close()">VIDEO TUTORIALS</a>
-                <a mat-menu-item routerLink="/guides" (click)="sidenav.close()">GUIDES</a>
-                <a mat-menu-item routerLink="/whatsNew" (click)="sidenav.close()">NEW FEATURES</a>
-                <a mat-menu-item routerLink="/home" [queryParams]="{tour: 'yes'}" (click)="sidenav.close()">TAKE A TOUR</a>
-                <a mat-menu-item routerLink="/resources" (click)="sidenav.close()">RESOURCES</a>
-                <a mat-menu-item routerLink="/contactUs" (click)="sidenav.close()">CONTACT US</a>
-                <a mat-menu-item feedback (send)="onFeedback($event)" [placeholder]="feedbackDescription" (click)="sidenav.close()">REPORT A PROBLEM</a>
+            <a mat-list-item [matMenuTriggerFor]="mobileHelpMenu">HELP ▼</a>
+            <mat-menu #mobileHelpMenu="matMenu">
+                <button mat-menu-item routerLink="/videos" (click)="sidenav.close()">VIDEO TUTORIALS</button>
+                <button mat-menu-item routerLink="/guides" (click)="sidenav.close()">GUIDES</button>
+                <button mat-menu-item routerLink="/whatsNew" (click)="sidenav.close()">NEW FEATURES</button>
+                <button mat-menu-item routerLink="/home" [queryParams]="{tour: 'yes'}" (click)="sidenav.close()">TAKE A TOUR</button>
+                <button mat-menu-item routerLink="/resources" (click)="sidenav.close()">RESOURCES</button>
+                <button mat-menu-item routerLink="/contactUs" (click)="sidenav.close()">CONTACT US</button>
+                <button mat-menu-item feedback (send)="onFeedback($event)" [placeholder]="feedbackDescription" (click)="sidenav.close()">REPORT A PROBLEM</button>
             </mat-menu>
             <a mat-list-item *ngIf="!userService.user" (click)="loginSvc.goToLogin(); sidenav.close()" routerLink="/login">LOGIN</a>
-            <a mat-list-item *ngIf="userService.user" [matMenuTriggerFor]="loginMenu">
+            <a mat-list-item *ngIf="userService.user" [matMenuTriggerFor]="mobileLoginMenu">
                 {{userService.user.username | uppercase | cdeTruncateLongName}} ▼
             </a>
-            <mat-menu #loginMenu="matMenu">
-                <a mat-menu-item routerLink="/settings/profile" (click)="sidenav.close()">Settings</a>
-                <a mat-menu-item *ngIf="isOrgCurator(userService.user)" routerLink="/classificationManagement" (click)="sidenav.close()">Classifications</a>
-                <a mat-menu-item *ngIf="isOrgAuthority(userService.user)" routerLink="/siteAudit" (click)="sidenav.close()">Audit</a>
-                <a mat-menu-item (click)="loginSvc.logout(); sidenav.close()" target="_self">Log Out</a>
+            <mat-menu #mobileLoginMenu="matMenu">
+                <button mat-menu-item routerLink="/settings/profile" (click)="sidenav.close()">Settings</button>
+                <button mat-menu-item *ngIf="isOrgCurator(userService.user)" routerLink="/classificationManagement" (click)="sidenav.close()">Classifications</button>
+                <button mat-menu-item *ngIf="isOrgAuthority(userService.user)" routerLink="/siteAudit" (click)="sidenav.close()">Audit</button>
+                <button mat-menu-item (click)="loginSvc.logout(); sidenav.close()" target="_self">Log Out</button>
             </mat-menu>
             <a mat-list-item (click)="notificationService.drawerToggle(); interruptEvent($event)">
                 <mat-icon [matBadge]="notificationService.getBadge()" matBadgeColor="warn" matBadgeSize="small"
@@ -113,5 +113,6 @@
     </mat-sidenav>
     <mat-sidenav-content class="pb-3">
         <router-outlet></router-outlet>
+        <cde-footer></cde-footer>
     </mat-sidenav-content>
 </mat-sidenav-container>

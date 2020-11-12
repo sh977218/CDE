@@ -1,8 +1,6 @@
-<h4 class="section-header">Identifiers</h4>
-<div *ngIf="elt.ids.length === 0" class="row">
-    <div class="offset-1">
-        There are no identifiers.
-    </div>
+<h2 class="section-header">Identifiers</h2>
+<div *ngIf="elt.ids.length === 0" class="my-2">
+    There are no identifiers.
 </div>
 <dl class="cde-property">
     <dt>Source:</dt>
@@ -38,9 +36,8 @@
         <dt>Version:</dt>
         <dd attr.itemprop="version_{{i}}">{{id.version}}</dd>
     </dl>
-    <hr>
 </ng-container>
-<button *ngIf="canEdit" id="openNewIdentifierModalBtn" class="m-3" mat-raised-button (click)="openNewIdentifierModal()" color="primary">
+<button *ngIf="canEdit" id="openNewIdentifierModalBtn" mat-raised-button (click)="openNewIdentifierModal()" color="primary">
     <mat-icon>add</mat-icon> Add Identifier
 </button>
 

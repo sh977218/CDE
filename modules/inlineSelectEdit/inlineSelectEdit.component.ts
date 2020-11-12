@@ -25,7 +25,7 @@ import * as _cloneDeep from 'lodash/cloneDeep';
             font-size: 16px;
             height: 16px;
             width: 16px;
-            vertical-align: middle;
+            vertical-align: top;
         }
     `]
 })

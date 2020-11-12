@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import {
     ApplicationRef,
-    Component, ComponentFactoryResolver, EmbeddedViewRef, EventEmitter, forwardRef, Inject, Injector, Output
+    Component, ComponentFactoryResolver, EmbeddedViewRef, EventEmitter, forwardRef, Inject, Injector, Output, ViewChild
 } from '@angular/core';
 import { LoginService } from '_app/login.service';
 import '_app/navigation/navigation.global.scss';

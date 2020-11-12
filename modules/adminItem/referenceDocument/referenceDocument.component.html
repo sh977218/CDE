@@ -1,8 +1,6 @@
-<h4 class="section-header">Reference Documents</h4>
-<div *ngIf="elt.referenceDocuments.length === 0" class="row ">
-    <div class="offset-1">
-        There are no Reference Documents.
-    </div>
+<h2 class="section-header">Reference Documents</h2>
+<div *ngIf="elt.referenceDocuments.length === 0" class="my-2">
+    There are no Reference Documents.
 </div>
 <ng-container *ngFor="let rd of elt.referenceDocuments;let i = index">
     <dl class="cde-property">
@@ -37,7 +35,7 @@
     </dl>
     <hr>
 </ng-container>
-<button *ngIf="canEdit" id="openNewReferenceDocumentModalBtn" class="m-3" mat-raised-button
+<button *ngIf="canEdit" id="openNewReferenceDocumentModalBtn" mat-raised-button
         (click)="openNewReferenceDocumentModal()" color="primary">
     <mat-icon>add</mat-icon>
     Add Reference Document

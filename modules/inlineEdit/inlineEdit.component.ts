@@ -28,7 +28,7 @@ type inputTypes = 'date' | 'email' | 'number' | 'select' | 'text' | 'textArea';
             font-size: 16px;
             height: 16px;
             width: 16px;
-            vertical-align: middle;
+            vertical-align: top;
         }
     `]
 })

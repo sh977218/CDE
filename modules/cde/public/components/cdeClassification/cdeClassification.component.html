@@ -1,7 +1,7 @@
-<h4 class="section-header"> Classification</h4>
-<h4 *ngIf="elt.isDraft">
+<h2 class="section-header"> Classification</h2>
+<div *ngIf="elt.isDraft" class="my-4" style="font-size: 20px; line-height: 1">
     Classification is not available in Drafts. Click the Draft slider above to view the current Published version.
-</h4>
+</div>
 <ng-container *ngIf="!elt.isDraft">
     <button *ngIf="isAllowedModel.isOrgCurator()" mat-raised-button id="openClassificationModalBtn"
             (click)="openClassifyItemModal()" color="primary">

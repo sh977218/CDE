@@ -91,6 +91,10 @@ nih-cde:empty + .loading {
 
 
 /* BEGIN Material overrides */
+h2, h3 {
+  margin-bottom: 12px;
+}
+
 mat-icon.mat-icon,
 mat-icon.material-icons {
   line-height: 22px;
@@ -103,7 +107,6 @@ mat-icon.material-icons {
 .mdl-layout__header-row, .mdl-layout__header-row .mdl-navigation { /* fix navbar height so form description toolbar can float consistently */
   height: 56px;
 }
-
 /* END Material overrides */
 
 
@@ -141,6 +144,7 @@ div.mat-tab-body-content {
 
 /* BEGIN ? */
 button {
+  margin-bottom: 0.2rem !important;
   margin-right: 0.2rem !important;
 }
 
@@ -639,10 +643,4 @@ dl.cde-property { // xs
 
 .mw-20 {
   max-width: 20%;
-}
-
-.mh-500 > div > div {
-  max-height: 1000px;
-  overflow: hidden;
-  overflow-y: auto;
 }
