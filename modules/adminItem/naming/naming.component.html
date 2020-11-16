@@ -1,5 +1,5 @@
-<h2 class="section-header">Naming</h2>
-<div *ngIf="elt.designations.length === 0" class="my-2">
+<h2>Naming</h2>
+<div *ngIf="elt.designations.length === 0">
     There are no designations.
 </div>
 <dl class="cde-property" *ngFor="let designation of elt.designations;let i = index">
@@ -28,7 +28,7 @@
 </button>
 
 <h3>Definitions</h3>
-<div *ngIf="elt.definitions.length === 0" class="my-2">
+<div *ngIf="elt.definitions.length === 0">
     There are no definitions.
 </div>
 <dl class="cde-property" *ngFor="let definition of elt.definitions;let i = index">

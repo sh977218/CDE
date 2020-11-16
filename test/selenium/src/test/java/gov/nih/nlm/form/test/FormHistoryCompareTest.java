@@ -12,7 +12,7 @@ public class FormHistoryCompareTest extends BaseFormTest {
         mustBeLoggedInAs(testAdmin_username, password);
         goToFormByName(formName);
 
-        goToHistory();
+        goToHistoryForm();
         textPresent("List of previous versions");
         Assert.assertEquals(4, driver.findElements(By.xpath("//*[@id='historyTable']//tr[td]")).size());
         selectHistoryAndCompare(2, 3);

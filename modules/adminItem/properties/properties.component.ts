@@ -12,7 +12,7 @@ import { Property } from 'shared/models.model';
 })
 export class PropertiesComponent implements OnInit {
     @Input() canEdit = false;
-    @Input() elt!: DataElement;
+    @Input() elt!: DataElement & {properties: {edit?: boolean}[]};
     @Output() eltChange = new EventEmitter();
     @ViewChild('newPropertyContent', {static: true}) newPropertyContent!: TemplateRef<any>;
     newProperty: Property = new Property();

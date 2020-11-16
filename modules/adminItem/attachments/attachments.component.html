@@ -1,9 +1,9 @@
-<h2 class="section-header">Attachments</h2>
+<h2>Attachments</h2>
 <div *ngIf="elt.isDraft" class="my-4" style="font-size: 20px; line-height: 1">
     Attachments are not available in Drafts. Click the Draft slider above to view the current Published version.
 </div>
 <ng-container *ngIf="!elt.isDraft">
-    <div *ngIf="elt.attachments.length === 0" class="my-2">
+    <div *ngIf="elt.attachments.length === 0">
         There are no attachments.
     </div>
     <ng-container *ngFor="let attachment of elt.attachments; let i = index">
@@ -61,7 +61,7 @@
         </dl>
         <hr>
     </ng-container>
-    <div *ngIf="canEdit" class="row" id="attachment_">
+    <div *ngIf="canEdit">
         <label for="fileToUpload"><button color="primary" mat-raised-button (click)="openFileDialog()">
             <mat-icon>cloud_upload</mat-icon> Upload more files</button></label>
         <input id="fileToUpload" style="display: none" type="file" (change)="upload.emit($event)">

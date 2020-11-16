@@ -1,4 +1,4 @@
-<mat-toolbar>
+<mat-toolbar class="noPrint" style="z-index: 10">
     <mat-toolbar-row>
         <a mat-button routerLink="/" id="homeLink">
             <img src="/cde/public/assets/img/min/nih-cde-logo-simple.png" alt="NLM Logo">
@@ -45,19 +45,14 @@
                     [matMenuTriggerFor]="loginMenu">{{userService.user.username | uppercase | cdeTruncateLongName}} ▼
             </button>
             <mat-menu #loginMenu="matMenu">
-                <button mat-menu-item routerLink="/settings/profile" id="user_settings">Settings</button>
-                <button mat-menu-item routerLink="/classificationManagement" id="user_classifications"
-                        *ngIf="isOrgCurator(userService.user)">Classifications
-                </button>
-                <button mat-menu-item routerLink="/siteAudit" id="user_audit"
-                        *ngIf="isOrgAuthority(userService.user)">Audit
-                </button>
-                <button mat-menu-item (click)="loginSvc.logout()" target="_self" id="user_logout">Log Out
-                </button>
+                <button mat-menu-item routerLink="/settings/profile">Settings</button>
+                <button mat-menu-item *ngIf="isOrgCurator(userService.user)" routerLink="/classificationManagement">Classifications</button>
+                <button mat-menu-item *ngIf="isOrgAuthority(userService.user)" routerLink="/siteAudit" id="user_audit">Audit</button>
+                <button mat-menu-item (click)="loginSvc.logout()">Log Out</button>
             </mat-menu>
             <button mat-icon-button id="notificationLink" (click)="notificationService.drawerToggle(); interruptEvent($event)">
                 <mat-icon [matBadge]="notificationService.getBadge()" matBadgeColor="warn" matBadgeSize="small"
-                          [matBadgeHidden]="!notificationService.getBadge()"
+                          [matBadgeHidden]="notificationService.getBadge() === '0'"
                           style="margin-right: 0">{{notificationService.getIcon()}}</mat-icon>
             </button>
             <button mat-icon-button routerLink="/searchPreferences" id="searchSettings">
@@ -66,7 +61,7 @@
         </div>
     </mat-toolbar-row>
 </mat-toolbar>
-<mat-sidenav-container style="flex-grow: 1">
+<mat-sidenav-container style="display: flex; flex-direction: column; flex-grow: 1">
     <mat-sidenav #sidenav mode="over" position="end">
         <mat-nav-list>
             <a mat-list-item routerLink="/cde/search" (click)="sidenav.close()">CDES</a>
@@ -111,7 +106,7 @@
             <a mat-list-item routerLink="/searchPreferences"><mat-icon>settings</mat-icon></a>
         </mat-nav-list>
     </mat-sidenav>
-    <mat-sidenav-content class="pb-3">
+    <mat-sidenav-content style="display: flex; flex-direction: column; flex-grow: 1">
         <router-outlet></router-outlet>
         <cde-footer></cde-footer>
     </mat-sidenav-content>

@@ -11,8 +11,8 @@
               (ngSubmit)="postNewComment();">
             <textarea [(ngModel)]="newComment.text" class="form-control" id="newCommentTextArea"
                       name="newCommentTextArea" rows="3" placeholder="Join the discussion..." required></textarea>
-            <button mat-raised-button id="commentBtn" name="commentBtn" type="submit"
-                    [disabled]="!newCommentForm.form.valid">Post New Comment
+            <button mat-raised-button id="commentBtn" name="commentBtn" type="submit" style="margin-right: 0 !important; width: 100%"
+                    [disabled]="!newCommentForm.form.valid">Comment
             </button>
         </form>
     </div>

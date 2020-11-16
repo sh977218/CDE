@@ -1,5 +1,5 @@
-<div id="derivationRulesDiv">
-    <h6>Derivation Rules</h6>
+<div>
+    <h3>Derivation Rules</h3>
     <div *ngIf="elt.derivationRules.length === 0">There are no Derivation rules.</div>
     <ng-container *ngFor="let derRule of elt.derivationRules; let i = index">
         <dl class="cde-property">
@@ -9,16 +9,16 @@
                 </mat-icon>
                 Name:
             </dt>
-            <dd itemprop="name_{{i}}">{{derRule.name}}</dd>
+            <dd attr.itemprop="name_{{i}}">{{derRule.name}}</dd>
 
             <dt>Rule Type:</dt>
-            <dd itemprop="type_{{i}}">{{derRule.ruleType}}</dd>
+            <dd attr.itemprop="type_{{i}}">{{derRule.ruleType}}</dd>
 
             <dt>Formula:</dt>
-            <dd itemprop="formula_{{i}}">{{derRule.formula}}</dd>
+            <dd attr.itemprop="formula_{{i}}">{{derRule.formula}}</dd>
 
             <dt>Input CDEs:</dt>
-            <dd itemprop="input_{{i}}">
+            <dd attr.itemprop="input_{{i}}">
                 <div *ngFor="let input of getViewCdes(derRule)">
                     <a routerLink="/deView"
                        [queryParams]="{tinyId: input.tinyId}">
@@ -36,13 +36,16 @@
         <mat-icon>add</mat-icon>
         Add Score
     </button>
-    <div *ngIf="elt.derivationOutputs?.length > 0">
-        <h5>This Data Element is used to derive to the following Data Elements:</h5>
+    <div *ngIf="elt.derivationOutputs?.length > 0" class="my-3">
+        This Data Element is used to derive to the following Data Elements:
         <table class="table table-striped">
+            <thead>
             <tr>
                 <th>Rule Name</th>
                 <th>CDE Name</th>
             </tr>
+            </thead>
+            <tbody>
             <tr *ngFor="let derOut of elt.derivationOutputs">
                 <td>{{derOut.ruleName}}</td>
                 <td>
@@ -51,6 +54,7 @@
                     </a>
                 </td>
             </tr>
+            </tbody>
         </table>
     </div>
     <ng-template #newScoreContent>

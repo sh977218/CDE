@@ -229,7 +229,7 @@ public class BaseFormTest extends NlmCdeBaseTest {
                                         boolean numbering, String displayType, int numberOfColumns, boolean displayInvisible,
                                         int answerDropdownLimit, boolean displayMetadataDevice) {
         textPresent("Add Profile");
-        clickElement(By.id("addDisplayProfile"));
+        clickElement(By.xpath("//button[contains(.,'Add Profile')]"));
         clickElement(By.cssSelector("#profile_" + index + " mat-panel-title h3"));
         clickElement(By.xpath("//*[@id='profileNameEdit_" + index + "']//mat-icon[normalize-space() = 'edit']"));
         findElement(By.xpath("//*[@id='profileNameEdit_" + index + "']//input[@type='text']")).clear();
@@ -257,8 +257,8 @@ public class BaseFormTest extends NlmCdeBaseTest {
             findElement(By.id("displayAnswerDropdownLimit_" + index)).clear();
             findElement(By.id("displayAnswerDropdownLimit_" + index)).sendKeys(String.valueOf(answerDropdownLimit));
         }
-        clickElement(By.xpath("//*[@id='profile_" + index + "']//h4[text()='View Specific Settings']"));
 
+        clickElement(By.xpath("//*[@id='profile_" + index + "']//h4[text()='View Specific Settings']")); // un-focus
     }
 
     protected void deleteDisplayProfile(int index) {

@@ -10,7 +10,7 @@ public class FormTermMappingNotLoggedIn extends NlmCdeBaseTest {
     @Test
     public void checkNotLoggedIn() {
         goToFormByName("Socioeconomic Status");
-        goToGeneralDetail();
+        goToGeneralDetailForm();
         textPresent("D003710 - Demography");
         textPresent("D000328 - Adult");
         Assert.assertEquals(driver.findElements(By.id("addTermMap")).size(), 0);

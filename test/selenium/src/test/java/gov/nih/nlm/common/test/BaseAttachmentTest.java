@@ -13,6 +13,13 @@ public class BaseAttachmentTest extends NlmCdeBaseTest {
         textNotPresent(name);
     }
 
+    protected void removeAttachmentForm(String name) {
+        goToAttachmentsForm();
+        deleteWithConfirm("//*[contains(@id, 'attachment_')][//a[.='" + name + "']]");
+        checkAlert("Attachment Removed.");
+        textNotPresent(name);
+    }
+
     protected void addAttachment(String name) {
         textPresent("Upload more files");
         ((JavascriptExecutor) driver).executeScript("document.getElementById('fileToUpload').style.display = 'block';");
@@ -46,6 +53,13 @@ public class BaseAttachmentTest extends NlmCdeBaseTest {
 
     public void setAttachmentDefault() {
         goToAttachments();
+        textPresent("Upload more files");
+        clickElement(By.id("defaultCbLabel"));
+        checkAlert("Saved");
+    }
+
+    public void setAttachmentDefaultForm() {
+        goToAttachmentsForm();
         textPresent("Upload more files");
         clickElement(By.id("defaultCbLabel"));
         checkAlert("Saved");

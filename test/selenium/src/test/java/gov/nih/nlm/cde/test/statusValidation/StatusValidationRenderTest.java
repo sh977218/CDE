@@ -10,7 +10,7 @@ public class StatusValidationRenderTest extends BaseClassificationTest {
         mustBeLoggedInAs(testAdmin_username, password);
         goToCdeByName("Reg Status Lift");
 
-        clickElement(By.id("rules_tab"));
+        clickElement(By.xpath("//li//a[text()='Rules']"));
         findElement(By.xpath("//div[@id='rule_Candidate_0']/mat-icon[normalize-space() = 'check']"));
 
         findElement(By.xpath("//div[@id='rule_Recorded_0']/mat-icon[normalize-space() = 'cancel']"));

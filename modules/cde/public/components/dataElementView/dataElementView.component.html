@@ -1,24 +1,27 @@
 <div *ngIf="!elt">
     <mat-spinner style="margin: 0 auto"></mat-spinner>
 </div>
-<button *ngIf="!navDrawer.opened" class="slide-pane-button" (click)="navDrawer.open()"></button>
+
+<button mat-mini-fab style="position: fixed; right: 5px; top: 5px; z-index: 2" (click)="gotoTop()">
+    <mat-icon>keyboard_arrow_up</mat-icon>
+</button>
+<button *ngIf="!navDrawer.opened" class="noPrint slide-pane-button-right" (click)="navDrawer.open()"></button>
 
 <mat-sidenav-container>
-    <mat-sidenav #navDrawer [mode]="isMobile ? 'over' : 'side'" [opened]="!isMobile"
-                 fixedInViewport="true" [fixedTopGap]="isMobile ? 0 : 64" [fixedBottomGap]="isMobile ? 0 : 134">
-        <mat-list id="side-nav" role="list" class="border-1">
-            <a mat-list-item role="listitem" *ngFor="let sideNavItem of sideNavItems" class="hand-cursor"
-               [class.bg-active]="activeSection === sideNavItem.fragment" [id]="sideNavItem.id"
-               (click)="gotoSection(sideNavItem.fragment); isMobile && navDrawer.close()">
-                {{sideNavItem.label}}
-                <span class="spacer"></span>
-                <mat-icon *ngIf="sideNavItem.hasComment">forum</mat-icon>
-            </a>
-        </mat-list>
+    <mat-sidenav #navDrawer class="noPrint" position="end" style="border: 0"
+                 [mode]="isMobile ? 'over' : 'side'" [opened]="!isMobile" [disableClose]="!isMobile"
+                 fixedInViewport="true" [fixedTopGap]="isMobile ? 0 : 64" [fixedBottomGap]="isMobile ? 0 : 71">
+        <div *ngIf="isMobile; else aioToc" (click)="navDrawer.close()">
+            <aio-toc></aio-toc>
+        </div>
+        <ng-template #aioToc>
+            <aio-toc></aio-toc>
+        </ng-template>
+        <div style="min-width: 155px"></div>
     </mat-sidenav>
     <mat-sidenav-content>
         <mat-sidenav-container [hasBackdrop]="false">
-            <mat-sidenav #commentDrawer mode="side" position="end" class="mw-20">
+            <mat-sidenav #commentDrawer mode="side" position="end" style="max-width: 25%">
                 <div *ngIf="elt">
                     <cde-discuss-area [currentTab]="currentTab" [elt]="elt"
                                       (highlightedTabsChange)="loadHighlightedTabs($event)"
@@ -59,12 +62,12 @@
                             </ul>
                         </div>
                     </header>
-                    <h1>
-                        <cde-draft-slider [(isDraft)]="elt.isDraft" (isDraftChange)="$event?loadElt():loadPublished()"
+                    <div class="h1Like">
+                        <cde-draft-slider class="mr-2" [(isDraft)]="elt.isDraft" (isDraftChange)="$event?loadElt():loadPublished()"
                                           [hidden]="!hasDrafts"></cde-draft-slider>
-                        {{elt?.designations[0]?.designation}}
-                    </h1>
-                    <nav>
+                        <h1 class="d-inline">{{elt?.designations[0]?.designation}}</h1>
+                    </div>
+                    <nav class="noPrint">
                         <button mat-raised-button id="export" #exportMenuTrigger="matMenuTrigger" title="Export"
                                 [matMenuTriggerFor]="exportMenu" color="primary">
                             <mat-icon>play_for_work</mat-icon>
@@ -142,7 +145,7 @@
                         </ng-container>
                     </nav>
                     <article>
-                        <div #generalDetails id="general-details-div">
+                        <div>
                             <cde-de-general-details [elt]="elt" [canEdit]="canEdit()"
                                                     (eltChange)="saveDraftVoid()"></cde-de-general-details>
                             <cde-admin-item-sources [elt]="elt"></cde-admin-item-sources>
@@ -155,46 +158,46 @@
                                 <cde-datasets [elt]="elt"></cde-datasets>
                             </div>
                         </div>
-                        <div #permissibleValue id="permissible-values-div">
+                        <div>
                             <cde-permissible-value [elt]="elt" [canEdit]="canEdit()"
                                                    (eltChange)="saveDraftVoid()"></cde-permissible-value>
                         </div>
-                        <div #naming id="naming-div">
+                        <div>
                             <cde-naming [elt]="elt" [canEdit]="canEdit()"
                                         (eltChange)="saveDraftVoid()"></cde-naming>
                         </div>
-                        <div #classification id="classification-div">
+                        <div>
                             <cde-cde-classification [elt]="elt"
                                                     (eltChange)="eltLoaded($event)"></cde-cde-classification>
                         </div>
-                        <div #concepts id="concepts-div">
+                        <div>
                             <cde-concepts [elt]="elt" [canEdit]="canEdit()"
                                           (eltChange)="saveDraftVoid()"></cde-concepts>
                         </div>
-                        <div #referenceDocuments id="reference-documents-div">
+                        <div>
                             <cde-reference-document [elt]="elt" [canEdit]="canEdit()"
                                                     (eltChange)="saveDraftVoid()"></cde-reference-document>
                         </div>
-                        <div #properties id="properties-div">
+                        <div>
                             <cde-properties [elt]="elt" [canEdit]="canEdit()" (eltChange)="saveDraftVoid()">
                             </cde-properties>
                         </div>
-                        <div #identifiers id="identifiers-div">
+                        <div>
                             <cde-identifiers #identifiers [elt]="elt" [canEdit]="canEdit()"
                                              (eltChange)="saveDraftVoid()">
                             </cde-identifiers>
                         </div>
-                        <div #attachments id="attachments-div">
+                        <div>
                             <cde-attachments [elt]="elt" [canEdit]="canEdit()"
                                              (removeAttachment)="removeAttachment($event);"
                                              (setDefault)="setDefault($event)"
                                              (upload)="upload($event);"></cde-attachments>
                         </div>
-                        <div #history id="history-div">
+                        <div>
                             <cde-history [elt]="elt" [canEdit]="canEdit()"></cde-history>
                         </div>
-                        <div #rules id="rules-div" class="mb-5 pb-5">
-                            <h2 class="section-header">Rules</h2>
+                        <div class="mb-3">
+                            <h2>Rules</h2>
                             <cde-derivation-rules [canEdit]="canEdit()" [elt]="elt" (eltChange)="saveDraftVoid()"></cde-derivation-rules>
                             <cde-valid-rules [elt]="elt"></cde-valid-rules>
                         </div>

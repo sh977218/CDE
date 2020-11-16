@@ -14,7 +14,7 @@ public class CdeRemoveIdentifierTest extends NlmCdeBaseTest {
 
         goToCdeByName(cdeName);
         goToIdentifiers();
-        textNotPresent("caDSR", By.id("identifiers-div"));
-        textNotPresent("2682865", By.id("identifiers-div"));
+        textNotPresent("caDSR", By.tagName("cde-identifiers"));
+        textNotPresent("2682865", By.tagName("cde-identifiers"));
     }
 }

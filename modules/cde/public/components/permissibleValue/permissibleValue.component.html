@@ -1,4 +1,4 @@
-<h2 class="section-header">Permissible Values</h2>
+<h2>Permissible Values</h2>
 <dl class="cde-property">
     <dt>Value Type:</dt>
     <dd itemprop="datatype">
@@ -147,7 +147,7 @@
     </ng-container>
 </dl>
 <ng-container *ngIf="elt.valueDomain.datatype === 'Value List'">
-    <h5>Permissible Value</h5>
+    <h3>Permissible Value</h3>
     <div *ngIf="containsKnownSystem">The list below includes codes with synonyms, you can also view them as:<br>
         <span *ngFor="let source of keys(SOURCES)" style="display: inline-block; margin-left: 50px">
                 <input id="display{{SOURCES[source].source}}Codes" title="{{source}}" type="checkbox" style="margin-right: 2px"
@@ -157,10 +157,10 @@
                 <span *ngIf="!userService.loggedIn() && SOURCES[source].disabled"> (Login to enable)</span>
         </span>
     </div>
-    <ng-container *ngIf="!(elt.valueDomain.permissibleValues.length > 0)">
-        <h4>No Permissible Values</h4>
-    </ng-container>
-    <ng-container *ngIf="elt.valueDomain.permissibleValues.length > 0">
+    <ng-template #noPvs>
+        <p>No Permissible Values</p>
+    </ng-template>
+    <ng-container *ngIf="elt.valueDomain.permissibleValues.length > 0; else noPvs">
         <table id="pvTable" class="table table-bordered table-condensed table-striped table-responsive">
             <tr>
                 <th>Value</th>
@@ -246,7 +246,7 @@
         </ng-container>
     </div>
 
-    <h4>VSAC Value Set</h4>
+    <h3>VSAC Value Set</h3>
     <a href="https://vsac.nlm.nih.gov" target="_blank" rel="noopener noreferrer">Lookup Value Sets here.</a>
     <div *ngIf="vsacMappingExists()">
         <dl class="dl-horizontal">
@@ -309,7 +309,7 @@
 </ng-container>
 
 <ng-template #newPermissibleValueContent>
-    <h4 mat-dialog-title>Add A New Permissible Value</h4>
+    <h1 mat-dialog-title>Add A New Permissible Value</h1>
     <form #newPermissibleValueForm="ngForm" (ngSubmit)="addNewPermissibleValue()">
         <div mat-dialog-content>
             <div class="form-group">
@@ -341,7 +341,7 @@
                        name="codeSystemInput" Placeholder="Code System" required/>
             </div>
             <div *ngIf="umlsTerms.length > 0">
-                <h4>Choices from UMLS: </h4>
+                <h2>Choices from UMLS: </h2>
                 <div *ngFor="let term of umlsTerms; let i = index;">
                     <a *ngIf="i<10" (click)="selectFromUmls(term)">{{term.ui}} : {{term.name}}</a>
                 </div>
@@ -357,7 +357,7 @@
 </ng-template>
 
 <ng-template #importPermissibleValueContent>
-    <h4 mat-dialog-title>Import Permissible Values from CDE</h4>
+    <h1 mat-dialog-title>Import Permissible Values from CDE</h1>
     <div mat-dialog-content>
         <cde-cde-search addMode="true" [embedded]="true" (add)="importPv($event);"
                         [searchSettingsInput]="searchSettings">

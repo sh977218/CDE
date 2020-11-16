@@ -293,14 +293,14 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     protected void gotoClassificationMgt() {
         clickElement(By.id("username_link"));
         hangon(.5);
-        clickElement(By.id("user_classifications"));
+        clickElement(By.xpath("//button[normalize-space(text())='Classifications']"));
         textPresent("Classifications");
     }
 
     protected void goToSettings() {
         clickElement(By.id("username_link"));
         textPresent("Settings");
-        clickElement(By.id("user_settings"));
+        clickElement(By.xpath("//button[normalize-space(text())='Settings']"));
     }
 
     protected void goToHelp() {
@@ -469,11 +469,15 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void goToGeneralDetail() {
+        clickElement(By.xpath("//li//a[text()='General Details']"));
+    }
+
+    protected void goToGeneralDetailForm() {
         clickElement(By.id("general_details_tab"));
     }
 
     protected void goToPermissibleValues() {
-        clickElement(By.id("permissible_values_tab"));
+        clickElement(By.xpath("//li//a[text()='Permissible Values']"));
     }
 
     protected void goToFormDescription() {
@@ -485,30 +489,58 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void goToNaming() {
-        clickElement(By.id("naming_tab"));
+        clickElement(By.xpath("//li//a[text()='Naming']"));
     }
 
     protected void goToClassification() {
-        clickElement(By.id("classification_tab"));
+        clickElement(By.xpath("//li//a[text()='Classification']"));
     }
 
     protected void goToConcepts() {
-        clickElement(By.id("concepts_tab"));
+        clickElement(By.xpath("//li//a[text()='Concepts']"));
     }
 
     protected void goToReferenceDocuments() {
-        clickElement(By.id("reference_documents_tab"));
+        clickElement(By.xpath("//li//a[text()='Reference Documents']"));
     }
 
     protected void goToProperties() {
-        clickElement(By.id("properties_tab"));
+        clickElement(By.xpath("//li//a[text()='Properties']"));
     }
 
     protected void goToIdentifiers() {
-        clickElement(By.id("identifiers_tab"));
+        clickElement(By.xpath("//li//a[text()='Identifiers']"));
     }
 
     protected void goToAttachments() {
+        clickElement(By.xpath("//li//a[text()='Attachments']"));
+    }
+
+    protected void goToNamingForm() {
+        clickElement(By.id("naming_tab"));
+    }
+
+    protected void goToClassificationForm() {
+        clickElement(By.id("classification_tab"));
+    }
+
+    protected void goToConceptsForm() {
+        clickElement(By.id("concepts_tab"));
+    }
+
+    protected void goToReferenceDocumentsForm() {
+        clickElement(By.id("reference_documents_tab"));
+    }
+
+    protected void goToPropertiesForm() {
+        clickElement(By.id("properties_tab"));
+    }
+
+    protected void goToIdentifiersForm() {
+        clickElement(By.id("identifiers_tab"));
+    }
+
+    protected void goToAttachmentsForm() {
         clickElement(By.id("attachments_tab"));
     }
 
@@ -517,11 +549,15 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void goToHistory() {
+        clickElement(By.xpath("//li//a[text()='History']"));
+    }
+
+    protected void goToHistoryForm() {
         clickElement(By.id("history_tab"));
     }
 
     protected void goToScoreDerivations() {
-        clickElement(By.id("rules_tab"));
+        clickElement(By.xpath("//li//a[text()='Rules']"));
     }
 
     protected void goToDiscussArea() {
@@ -534,7 +570,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         String tinyId = EltIdMaps.eltMap.get(name);
         if (tinyId != null) {
             driver.get(baseUrl + "/" + ("cde".equals(type) ? "deView" : "formView") + "/?tinyId=" + tinyId);
-            findElement(By.id("general_details_tab"));
+            findElement(By.id("discussBtn"));
             textPresent(name);
         } else {
             try {
@@ -840,7 +876,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
 
     protected void logout() {
         clickElement(By.id("username_link"));
-        clickElement(By.id("user_logout"));
+        clickElement(By.xpath("//button[normalize-space(text())='Log Out']"));
         findElement(By.id("login_link"));
         textPresent("Please Log In");
     }
@@ -1201,10 +1237,10 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void editPropertyValueByIndex(int index, String newValue, boolean html) {
-        String valueEditIconXpath = "//*[@id='value_" + index + "']//mat-icon[normalize-space() = 'edit']";
-        String richTextBtnXpath = "//*[@id='value_" + index + "']//button[. = 'Rich Text']";
-        String valueTextareaXpath = "//*[@id='value_" + index + "']//textarea";
-        String valueConfirmBtnXpath = "//*[@id='value_" + index + "']//mat-icon[normalize-space() = 'check']";
+        String valueEditIconXpath = "//*[@itemprop='value_" + index + "']//mat-icon[normalize-space() = 'edit']";
+        String richTextBtnXpath = "//*[@itemprop='value_" + index + "']//button[. = 'Rich Text']";
+        String valueTextareaXpath = "//*[@itemprop='value_" + index + "']//textarea";
+        String valueConfirmBtnXpath = "//*[@itemprop='value_" + index + "']//mat-icon[normalize-space() = 'check']";
         clickElement(By.xpath(valueEditIconXpath));
         if (html) {
             clickElement(By.xpath(richTextBtnXpath));
@@ -1869,9 +1905,11 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void isReplyStrike(String message, boolean result) {
-        String replyClass = findElement(By.xpath("//div[@class='replyBody' and normalize-space()='" + message + "']/span")).getAttribute("class");
-        boolean containStrike = replyClass.contains("strike");
-        Assert.assertEquals(containStrike, result);
+        findElement(By.xpath("//div[contains(@class, 'replyBody') and normalize-space()='" + message + "']" + (
+                result
+                        ? "/span[contains(@class,'strike')]"
+                        : "/span[not(contains(@class,'strike'))]"
+        )));
     }
 
     protected void reopenReply(String message) {
@@ -1905,7 +1943,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
 
     private String getCommentIconXpath(String message, String messageType, String iconType) {
         String titleCase = COMMENT_Title_Case_MAP.get(messageType);
-        return "//div[normalize-space()='" + message + "']/preceding-sibling::div[contains(@class,'" + messageType + "Header')]/div[contains(@class,'manage" + titleCase + "Div')]//*[contains(@id,'" + iconType + titleCase + "_')]";
+        return "//div[normalize-space()='" + message + "']/preceding-sibling::div[contains(@class,'" + messageType + "Header')]//*[contains(@id,'" + iconType + titleCase + "_')]";
     }
 
     protected void checkCurrentCommentByIndex(int index, boolean isCurrent) {

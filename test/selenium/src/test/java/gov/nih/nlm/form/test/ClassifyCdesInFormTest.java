@@ -14,7 +14,7 @@ public class ClassifyCdesInFormTest extends NlmCdeBaseTest {
         mustBeLoggedInAs("ctepOnlyCurator", password);
 
         goToFormByName(formName);
-        goToClassification();
+        goToClassificationForm();
         _addClassificationByTree("CTEP", new String[]{"ABTC", "ABTC 0904"});
 
         // Verify

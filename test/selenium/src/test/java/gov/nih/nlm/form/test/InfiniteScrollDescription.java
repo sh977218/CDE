@@ -10,7 +10,7 @@ public class InfiniteScrollDescription extends NlmCdeBaseTest {
     public void infiniteScrollDescription() {
         mustBeLoggedInAs("ninds", password);
         goToFormByName("Food Frequency Questionnaire (FFQ)");
-        goToGeneralDetail();
+        goToGeneralDetailForm();
         textPresent("The Food Frequency Questionnaire (FFQ) consists of a list of foods with little descriptive detail, and the respondent answers questions about the frequency of each food on the list.");
         goToPreview();
         goToFormDescription();

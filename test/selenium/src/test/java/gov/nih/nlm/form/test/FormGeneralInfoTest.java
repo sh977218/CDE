@@ -7,7 +7,7 @@ public class FormGeneralInfoTest extends BaseFormTest {
     @Test
     public void formGeneralInformationTest() {
         goToFormByName("Section Inside Section Form");
-        goToGeneralDetail();
+        goToGeneralDetailForm();
         textPresent("Created:");
         textPresent("05/09/2016 @ 5:21PM");
         textPresent("Updated:");

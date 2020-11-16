@@ -153,94 +153,76 @@ const cdeSteps: Array<any> = [
             ' highest. Only qualified and above are retrieved in search results by default. When elements are first created, they get an' +
             ' incomplete status.',
         placement: 'top',
-        onNext: (tour: TourStep) => new Promise((resolve: Cb) => TourService.clickAndGoNext(tour, '#pvs_tab',
-            'permissibleValueDiv', resolve))
     },
     {
         title: 'Permissible Values',
-        element: '#pvs_tab',
+        element: '#permissible-values',
         content: 'This tab will tell us if a CDE is based on a number, text, value list or other datatype.',
         placement: 'bottom',
-        onNext: (tour: TourStep) => new Promise((resolve: Cb) => TourService.clickAndGoNext(tour, '#naming_tab', 'namingDiv', resolve))
     },
     {
         title: 'Names',
-        element: '#naming_tab',
+        element: '#naming',
         content: 'Any CDE may have multiple names. Names help identify the CDE and are also used as question labels on forms. A name' +
             ' can have one or more tags to describe the context of this name.',
         placement: 'bottom',
-        onNext: (tour: TourStep) => new Promise((resolve: Cb) => TourService.clickAndGoNext(tour, '#classification_tab',
-            'classificationDiv', resolve))
     },
     {
         title: 'Classifications',
-        element: '#classification_tab',
+        element: '#classification',
         content: 'Classifications describe the way in which an organization may use a CDE or Form. A CDE can have hundreds of' +
             ' classification. Classifications are defined by steward. A steward may decide to reuse a CDE by adding his own' +
             ' classification to it.',
         placement: 'bottom',
-        onNext: (tour: TourStep) => new Promise((resolve: Cb) => TourService.clickAndGoNext(tour, '#concepts_tab', 'conceptsDiv', resolve))
     },
     {
         title: 'Concepts',
-        element: '#concepts_tab',
+        element: '#concepts',
         content: 'CDEs are sometimes described by one or more concepts. These concepts can come from any terminology, for example LOINC.',
         placement: 'bottom',
-        onNext: (tour: TourStep) => new Promise((resolve: Cb) => TourService.clickAndGoNext(tour, '#referenceDocuments_tab',
-            'referenceDocumentsDiv', resolve))
     },
     {
         title: 'Reference Document',
-        element: '#referenceDocuments_tab',
+        element: '#reference-documents',
         content: 'This section contains reference documents for the CDE.',
         placement: 'bottom',
-        onNext: (tour: TourStep) => new Promise((resolve: Cb) => TourService.clickAndGoNext(tour, '#properties_tab',
-            'propertiesDiv', resolve))
     },
     {
         title: 'Properties',
-        element: '#properties_tab',
+        element: '#properties',
         content: 'This sections show attributes of the CDE that are not common across CDEs. Steward may choose to store properties that' +
             ' are required for their process.',
         placement: 'bottom',
-        onNext: (tour: TourStep) => new Promise((resolve: Cb) => TourService.clickAndGoNext(tour, '#ids_tab', 'identifiersDiv', resolve))
-
     },
     {
         title: 'Identifiers',
-        element: '#ids_tab',
+        element: '#identifiers',
         content: 'CDEs and Forms can be identified using multiple identification sources. When a group uses a CDE by a particular unique' +
             ' (scoped) identifier, it may be stored here.',
         placement: 'bottom',
-        onNext: (tour: TourStep) => new Promise((resolve: Cb) => TourService.clickAndGoNext(tour, '#attachments_tab',
-            'attachmentsDiv', resolve))
     },
     {
         title: 'Attachments',
-        element: '#attachments_tab',
+        element: '#attachments',
         content: 'If a file is attached to a CDE, it can be viewed or downloaded here.',
         placement: 'bottom',
-        onNext: (tour: TourStep) => new Promise((resolve: Cb) => TourService.clickAndGoNext(tour, '#history_tab', 'historyDiv', resolve))
     },
     {
         title: 'History',
-        element: '#history_tab',
+        element: '#history',
         content: 'This section shows all prior states of the CDE. Each version can be view as it was at a given date. In addition,' +
             ' differences between versions can be highlighted to easily identify changes over time.',
         placement: 'top',
-        onNext: (tour: TourStep) => new Promise((resolve: Cb) => TourService.clickAndGoNext(tour, '#rules_tab',
-            'derivationRulesDiv', resolve))
-
     },
     {
         title: 'Derivation Rules',
-        element: '#rules_tab',
+        element: '#derivation-rules',
         content: 'Derivation Rules are used to connect CDEs together, for example, in the form of a score.',
         placement: 'bottom',
     },
     {
         title: 'Validation Rules',
-        element: '#rules_tab',
+        element: '#validation-rules',
         content: 'Validation Rules are used to validate CDE. ',
         placement: 'bottom'
     },

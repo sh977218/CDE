@@ -1,5 +1,5 @@
-<h2 class="section-header">Concepts</h2>
-<div *ngIf="elt.dataElementConcept.concepts.concat(elt.objectClass.concepts, elt.property.concepts).length === 0" class="my-2">
+<h2>Concepts</h2>
+<div *ngIf="elt.dataElementConcept.concepts.concat(elt.objectClass.concepts, elt.property.concepts).length === 0">
     There are no concepts.
 </div>
 <div *ngFor="let config of conceptConfigurations; ">

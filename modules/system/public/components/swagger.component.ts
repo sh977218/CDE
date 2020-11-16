@@ -3,6 +3,7 @@ import { AfterViewInit, Component } from '@angular/core';
 @Component({
     selector: 'cde-swagger',
     templateUrl: './swagger.component.html',
+    styleUrls: ['./swagger.component.scss'],
 })
 export class SwaggerComponent implements AfterViewInit {
     constructor() {

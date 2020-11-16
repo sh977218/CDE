@@ -38,16 +38,16 @@ public class MergeFormAndRetireCde extends NlmCdeBaseTest {
         textPresent("Warning: this data element is retired.");
 
         goToFormByName(formName2);
-        goToNaming();
+        goToNamingForm();
         textPresent(formName1);
-        goToReferenceDocuments();
+        goToReferenceDocumentsForm();
         textPresent("Description: Kroenke K, Spitzer RL, Williams JB. The PHQ-9: validity of a brief depression severity measure. J Gen Intern Med. 2001 Sep;16(9):606-13.");
-        goToProperties();
+        goToPropertiesForm();
         textPresent("CopyrightStarted");
-        goToIdentifiers();
+        goToIdentifiersForm();
         textPresent("44249-1");
         textPresent("F0374");
-        goToHistory();
+        goToHistoryForm();
         textPresent("Merge from tinyId mJsGoMU1m");
     }
 }
