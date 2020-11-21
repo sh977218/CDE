@@ -19,12 +19,12 @@ public class FormRegStatusTest extends RegStatusTest {
 
     @Test
     public void retire() {
-        retire("Form Retire Test", ctepCurator_username);
+        retireForm("Form Retire Test", ctepCurator_username);
     }
 
     @Test
     public void nlmPromotesToStandardForm() {
-        nlmPromotesToStandard("Form Standard Test");
+        nlmPromotesToStandardForm("Form Standard Test");
     }
 
     public void version() {

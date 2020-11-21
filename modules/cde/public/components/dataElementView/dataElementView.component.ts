@@ -1,8 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import {
-    AfterViewInit, ChangeDetectorRef, Component, ElementRef, HostListener, Inject, NgZone, OnInit, TemplateRef,
-    ViewChild
-} from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, Inject, NgZone, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -10,6 +7,8 @@ import { AlertService } from 'alert/alert.service';
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { UserService } from '_app/user.service';
 import { SaveModalComponent } from 'adminItem/saveModal/saveModal.component';
+import { ScrollService } from 'angular-aio-toc/scroll.service';
+import { TocService } from 'angular-aio-toc/toc.service';
 import { DataElementViewService } from 'cde/public/components/dataElementView/dataElementView.service';
 import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHistoryContent.component';
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
@@ -23,46 +22,32 @@ import { Comment, Elt } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { checkPvUnicity, checkDefinitions } from 'shared/de/dataElement.model';
 import { canEditCuratedItem, isOrgCurator, isOrgAuthority } from 'shared/system/authorizationShared';
-import { MatSidenavContainer } from '@angular/material/sidenav';
 import { WINDOW } from 'window.service';
 
 const TAB_COMMENT_MAP: any = {
-    general: 'general_details_tab',
-    pv: 'permissible_values_tab',
-    naming: 'naming_tab',
-    classification: 'classification_tab',
-    concepts: 'concepts_tab',
-    reference_documents: 'reference_documents_tab',
-    properties: 'properties_tab',
-    identifiers: 'identifiers_tab',
-    attachments: 'attachments_tab',
-    history: 'history_tab',
-    rules: 'rules_tab'
+    general: 'general-details',
+    pv: 'permissible-values',
+    naming: 'naming',
+    classification: 'classification',
+    concepts: 'concepts',
+    reference_documents: 'reference-documents',
+    properties: 'properties',
+    identifiers: 'identifiers',
+    attachments: 'attachments',
+    history: 'history',
+    rules: 'rules',
 }
 
 @Component({
     selector: 'cde-data-element-view',
     templateUrl: 'dataElementView.component.html',
     styleUrls: ['./view.style.scss'],
-    providers: []
+    providers: [TocService]
 })
-export class DataElementViewComponent implements OnInit, AfterViewInit {
+export class DataElementViewComponent implements OnInit {
     @ViewChild('commentAreaComponent', {static: true}) commentAreaComponent!: DiscussAreaComponent;
     @ViewChild('copyDataElementContent', {static: true}) copyDataElementContent!: TemplateRef<any>;
     @ViewChild('saveModal') saveModal!: SaveModalComponent;
-
-    @ViewChild('generalDetails', {static: false}) generalDetails!: ElementRef;
-    @ViewChild('permissibleValue', {static: false}) permissibleValue!: ElementRef;
-    @ViewChild('naming', {static: false}) naming!: ElementRef;
-    @ViewChild('classification', {static: false}) classification!: ElementRef;
-    @ViewChild('concepts', {static: false}) concepts!: ElementRef;
-    @ViewChild('referenceDocuments', {static: false}) referenceDocuments!: ElementRef;
-    @ViewChild('properties', {static: false}) properties!: ElementRef;
-    @ViewChild('identifiers', {static: false}) identifiers!: ElementRef;
-    @ViewChild('attachments', {static: false}) attachments!: ElementRef;
-    @ViewChild('history', {static: false}) history!: ElementRef;
-    @ViewChild('rules', {static: false}) rules!: ElementRef;
-    @ViewChild(MatSidenavContainer, {static: false}) matSidenavContainer!: MatSidenavContainer;
     commentMode?: boolean;
     currentTab = 'general_tab';
     displayStatusWarning?: boolean;
@@ -80,30 +65,29 @@ export class DataElementViewComponent implements OnInit, AfterViewInit {
     unsaved = false;
     validationErrors: { message: string }[] = [];
 
-    sideNavItems = [
-        {id: 'general_details_tab', label: 'General Details', fragment: 'general-details-div', hasComment: false},
-        {
-            id: 'permissible_values_tab',
-            label: 'Permissible Values',
-            fragment: 'permissible-values-div',
-            hasComment: false
-        },
-        {id: 'naming_tab', label: 'Naming', fragment: 'naming-div', hasComment: false},
-        {id: 'classification_tab', label: 'Classification', fragment: 'classification-div', hasComment: false},
-        {id: 'concepts_tab', label: 'Concepts', fragment: 'concepts-div', hasComment: false},
-        {
-            id: 'reference_documents_tab',
-            label: 'Reference Documents',
-            fragment: 'reference-documents-div',
-            hasComment: false
-        },
-        {id: 'properties_tab', label: 'Properties', fragment: 'properties-div', hasComment: false},
-        {id: 'identifiers_tab', label: 'Identifiers', fragment: 'identifiers-div', hasComment: false},
-        {id: 'attachments_tab', label: 'Attachments', fragment: 'attachments-div', hasComment: false},
-        {id: 'history_tab', label: 'History', fragment: 'history-div', hasComment: false},
-        {id: 'rules_tab', label: 'Rules', fragment: 'rules-div', hasComment: false},
-    ];
-    activeSection = '';
+    // sideNavItems = [
+    //     {id: 'general_details_tab', label: 'General Details', fragment: 'general-details-div', hasComment: false},
+    //     {
+    //         id: 'permissible_values_tab',
+    //         label: 'Permissible Values',
+    //         fragment: 'permissible-values-div',
+    //         hasComment: false
+    //     },
+    //     {id: 'naming_tab', label: 'Naming', fragment: 'naming-div', hasComment: false},
+    //     {id: 'classification_tab', label: 'Classification', fragment: 'classification-div', hasComment: false},
+    //     {id: 'concepts_tab', label: 'Concepts', fragment: 'concepts-div', hasComment: false},
+    //     {
+    //         id: 'reference_documents_tab',
+    //         label: 'Reference Documents',
+    //         fragment: 'reference-documents-div',
+    //         hasComment: false
+    //     },
+    //     {id: 'properties_tab', label: 'Properties', fragment: 'properties-div', hasComment: false},
+    //     {id: 'identifiers_tab', label: 'Identifiers', fragment: 'identifiers-div', hasComment: false},
+    //     {id: 'attachments_tab', label: 'Attachments', fragment: 'attachments-div', hasComment: false},
+    //     {id: 'history_tab', label: 'History', fragment: 'history-div', hasComment: false},
+    //     {id: 'rules_tab', label: 'Rules', fragment: 'rules-div', hasComment: false},
+    // ];
 
     // avoid highlight nav bar by scroll when user click nav bar link
     navigateByClick = false;
@@ -143,12 +127,21 @@ export class DataElementViewComponent implements OnInit, AfterViewInit {
                 private orgHelperService: OrgHelperService,
                 public quickBoardService: QuickBoardListService,
                 private router: Router,
+                private scrollService: ScrollService,
                 private title: Title,
+                private tocService: TocService,
                 public userService: UserService,
                 private ngZone: NgZone,
                 @Inject(WINDOW) private window: Window) {
         this.exportToTab = !!localStorageService.getItem('exportToTab');
         this.onResize();
+        this.route.fragment.subscribe(() => {
+            if (this.elt) {
+                setTimeout(() => {
+                    this.title.setTitle('Data Element: ' + Elt.getLabel(this.elt));
+                }, 0);
+            }
+        });
     }
 
     canEdit() {
@@ -180,7 +173,11 @@ export class DataElementViewComponent implements OnInit, AfterViewInit {
             this.elt = elt;
             this.title.setTitle('Data Element: ' + Elt.getLabel(this.elt));
             this.validate();
-            this.loadComments(this.elt);
+            this.loadComments(this.elt, () => {
+                setTimeout(() => {
+                    this.viewReady();
+                }, 0);
+            });
             if (this.userService.user) {
                 checkPvUnicity(this.elt.valueDomain);
             }
@@ -196,16 +193,21 @@ export class DataElementViewComponent implements OnInit, AfterViewInit {
         }
     }
 
+    gotoTop() {
+        window.scrollTo(0, 0);
+        this.router.navigate([], {queryParams: this.route.snapshot.queryParams, replaceUrl: true})
+    }
+
     loadComments(de: DataElement, cb = _noop) {
         this.http.get<Comment[]>('/server/discuss/comments/eltId/' + de.tinyId)
             .subscribe(res => {
                 this.comments = res;
-                this.sideNavItems.forEach(sideNavItem => {
-                    sideNavItem.hasComment = this.comments.filter(c => {
-                        const linkedTab = TAB_COMMENT_MAP[c.linkedTab];
-                        return sideNavItem.id === linkedTab;
-                    }).length > 0;
-                });
+                // this.sideNavItems.forEach(sideNavItem => {
+                //     sideNavItem.hasComment = this.comments.filter(c => {
+                //         const linkedTab = TAB_COMMENT_MAP[c.linkedTab];
+                //         return sideNavItem.id === linkedTab;
+                //     }).length > 0;
+                // });
                 cb();
             }, err => this.alert.httpErrorMessageAlert(err, 'Error loading comments.'));
     }
@@ -399,86 +401,13 @@ export class DataElementViewComponent implements OnInit, AfterViewInit {
         }, err => this.alert.httpErrorMessageAlert(err, 'Error loading view changes.'));
     }
 
-    gotoSection(sectionId: string) {
-        this.navigateByClick = true;
-        if (sectionId === 'general-details-div') {
-            this.generalDetails.nativeElement.scrollIntoView();
-        } else if (sectionId === 'permissible-values-div') {
-            this.permissibleValue.nativeElement.scrollIntoView();
-        } else if (sectionId === 'naming-div') {
-            this.naming.nativeElement.scrollIntoView();
-        } else if (sectionId === 'classification-div') {
-            this.classification.nativeElement.scrollIntoView();
-        } else if (sectionId === 'concepts-div') {
-            this.concepts.nativeElement.scrollIntoView();
-        } else if (sectionId === 'reference-documents-div') {
-            this.referenceDocuments.nativeElement.scrollIntoView();
-        } else if (sectionId === 'properties-div') {
-            this.properties.nativeElement.scrollIntoView();
-        } else if (sectionId === 'identifiers-div') {
-            this.identifiers.nativeElement.scrollIntoView();
-        } else if (sectionId === 'attachments-div') {
-            this.attachments.nativeElement.scrollIntoView();
-        } else if (sectionId === 'history-div') {
-            this.history.nativeElement.scrollIntoView();
-        } else if (sectionId === 'rules-div') {
-            this.rules.nativeElement.scrollIntoView();
+    viewReady(): void {
+        let path = this.router.url;
+        const loc = path.indexOf('#');
+        if (loc !== -1) {
+            path = path.substr(0, loc);
         }
-        this.activeSection = sectionId;
-    }
-
-
-    @HostListener('window:scroll', [])
-    onWindowScroll() {
-        if (this.elt && !this.navigateByClick) {
-            const scrollTop = this.window.pageYOffset || 0;
-            if (scrollTop >= this.generalDetailsOffsetTop && scrollTop < this.permissibleValueOffsetTop) {
-                this.activeSection = 'general-details-div';
-            } else if (this.permissibleValueOffsetTop && scrollTop >= this.permissibleValueOffsetTop && scrollTop < this.namingOffsetTop) {
-                this.activeSection = 'permissible-values-div';
-            } else if (this.namingOffsetTop && scrollTop >= this.namingOffsetTop && scrollTop < this.classificationOffsetTop) {
-                this.activeSection = 'naming-div';
-            } else if (this.classificationOffsetTop && scrollTop >= this.classificationOffsetTop && scrollTop < this.conceptsOffsetTop) {
-                this.activeSection = 'classification-div';
-            } else if (this.conceptsOffsetTop && scrollTop >= this.conceptsOffsetTop && scrollTop < this.referenceDocumentsOffsetTop) {
-                this.activeSection = 'concepts-div';
-            } else if (this.referenceDocumentsOffsetTop && scrollTop >= this.referenceDocumentsOffsetTop
-                && scrollTop < this.propertiesOffsetTop) {
-                this.activeSection = 'reference-documents-div';
-            } else if (this.propertiesOffsetTop && scrollTop >= this.propertiesOffsetTop && scrollTop < this.identifiersOffsetTop) {
-                this.activeSection = 'properties-div';
-            } else if (this.identifiersOffsetTop && scrollTop >= this.identifiersOffsetTop && scrollTop < this.attachmentsOffsetTop) {
-                this.activeSection = 'identifiers-div';
-            } else if (this.attachmentsOffsetTop && scrollTop >= this.attachmentsOffsetTop && scrollTop < this.historyOffsetTop) {
-                this.activeSection = 'attachments-div';
-            } else if (this.historyOffsetTop && scrollTop >= this.historyOffsetTop && scrollTop < this.rulesOffsetTop) {
-                this.activeSection = 'history-div';
-            } else if (this.rulesOffsetTop && scrollTop > this.rulesOffsetTop) {
-                this.activeSection = 'rules-div'
-            }
-
-            if (this.activeSection !== this.previousActiveSection) {
-                this.previousActiveSection = this.activeSection;
-                this.ngZone.run(() => {
-                })
-            }
-        }
-        this.navigateByClick = false;
-    }
-
-    ngAfterViewInit(): void {
-        setTimeout(() => {
-            this.generalDetailsOffsetTop = this.generalDetails.nativeElement.offsetTop;
-            this.permissibleValueOffsetTop = this.permissibleValue.nativeElement.offsetTop;
-            this.namingOffsetTop = this.naming.nativeElement.offsetTop;
-            this.classificationOffsetTop = this.classification.nativeElement.offsetTop;
-            this.conceptsOffsetTop = this.concepts.nativeElement.offsetTop;
-            this.referenceDocumentsOffsetTop = this.referenceDocuments.nativeElement.offsetTop;
-            this.propertiesOffsetTop = this.properties.nativeElement.offsetTop;
-            this.identifiersOffsetTop = this.identifiers.nativeElement.offsetTop;
-            this.attachmentsOffsetTop = this.attachments.nativeElement.offsetTop;
-            this.historyOffsetTop = this.history.nativeElement.offsetTop;
-            this.rulesOffsetTop = this.rules.nativeElement.offsetTop;
-        }, 2000);
+        this.tocService.genToc(document.getElementsByTagName('main')[0], path);
+        this.scrollService.scrollAfterRender(0);
     }
 }

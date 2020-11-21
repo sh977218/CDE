@@ -11,7 +11,7 @@ public class FormDefinitionReorder extends NlmCdeBaseTest {
         String formName = "Reorder definition form";
         mustBeLoggedInAs(testAdmin_username, password);
         goToFormByName(formName);
-        goToNaming();
+        goToNamingForm();
         textPresent("Definition:");
         clickElement(By.id("moveDown-0"));
         textPresent("This form is created for testing reorder definitions", By.cssSelector("[itemprop='definition_1']"));

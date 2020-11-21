@@ -1,12 +1,11 @@
-<h2 class="section-header">Properties</h2>
-
-<div class="section-content">
-    <div *ngIf="elt.properties.length === 0" class="my-2">
+<h2>Properties</h2>
+<div>
+    <div *ngIf="elt.properties.length === 0">
         There are no properties.
     </div>
-    <ng-container *ngFor="let prop of elt.properties;let i = index">
-        <dl class="row">
-            <dt class="col-lg-2 col-md-6 col-sm-12 text-right">
+    <ng-container *ngFor="let prop of elt.properties; index as i">
+        <dl class="cde-property-lg">
+            <dt>
                 <ng-container *ngIf="canEdit && prop.edit">Confirm Delete
                     <mat-icon (click)="removePropertyByIndex(i)" id="confirmRemoveProperty-{{i}}">check</mat-icon>
                     <mat-icon (click)="prop.edit = false" id="cancelRemoveProperty-{{i}}">cancel</mat-icon>
@@ -18,9 +17,9 @@
                                     (cb)="eltChange.emit()"></cde-sortable-array>
                 Key:
             </dt>
-            <dd id="key_{{i}}" class="col-lg-10 col-md-6 col-sm-12">{{prop.key}}</dd>
-            <dt class="col-lg-2 col-md-6 col-sm-12 text-right">Value:</dt>
-            <dd id="value_{{i}}" class="col-lg-10 col-md-6 col-sm-12">
+            <dd attr.itemprop="key_{{i}}">{{prop.key}}</dd>
+            <dt>Value:</dt>
+            <dd attr.itemprop="value_{{i}}">
                 <cde-inline-area-edit [(model)]="prop.value" (modelChange)="eltChange.emit()"
                                       [(defFormat)]="prop.valueFormat" [enableTextTruncate]="false"
                                       [isAllowed]="canEdit"></cde-inline-area-edit>
@@ -36,7 +35,7 @@
 </div>
 
 <ng-template #newPropertyContent>
-    <h4 mat-dialog-title>Add Property</h4>
+    <h1 mat-dialog-title>Add Property</h1>
     <form role="form" #newPropertyForm="ngForm">
         <div mat-dialog-content>
             <div class="form-group">

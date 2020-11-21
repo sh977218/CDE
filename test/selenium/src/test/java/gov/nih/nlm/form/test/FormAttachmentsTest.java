@@ -13,13 +13,13 @@ public class FormAttachmentsTest extends BaseAttachmentTest {
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName(formName);
 
-        goToAttachments();
+        goToAttachmentsForm();
         textNotPresent("Upload more files");
 
         logout();
         mustBeLoggedInAs(ctep_fileCurator_username, password);
         goToFormByName(formName);
-        goToAttachments();
+        goToAttachmentsForm();
 
         addAttachment("melanoma.jpg");
 
@@ -31,7 +31,7 @@ public class FormAttachmentsTest extends BaseAttachmentTest {
         mustBeLoggedInAs(ctep_fileCurator_username, password);
         goToFormByName(formName);
 
-        setAttachmentDefault();
+        setAttachmentDefaultForm();
         logout();
 
         hangon(5);
@@ -44,7 +44,7 @@ public class FormAttachmentsTest extends BaseAttachmentTest {
         mustBeLoggedInAs(ctep_fileCurator_username, password);
         goToFormByName(formName);
 
-        removeAttachment("melanoma.jpg");
+        removeAttachmentForm("melanoma.jpg");
     }
 
 }

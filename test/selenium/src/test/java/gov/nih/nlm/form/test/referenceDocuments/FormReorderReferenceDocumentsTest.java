@@ -12,7 +12,7 @@ public class FormReorderReferenceDocumentsTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(testAdmin_username, password);
         goToFormByName(formName);
 
-        goToReferenceDocuments();
+        goToReferenceDocumentsForm();
         clickElement(By.id("moveDown-0"));
         textPresent("rd1", By.cssSelector("[itemprop='id_1']"));
         clickElement(By.id("moveDown-1"));

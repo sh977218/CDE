@@ -10,7 +10,7 @@ public class FormAddMeshTermMappingTest extends NlmCdeBaseTest {
     public void formAddMeshTermMapping() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName("Written Verbal Fluency Test");
-        goToGeneralDetail();
+        goToGeneralDetailForm();
         clickElement(By.id("addTermMap"));
         findElement(By.id("mesh.search")).sendKeys("fingers");
         textPresent("D005385 -- Fingers");

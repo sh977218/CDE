@@ -1,5 +1,5 @@
 <div id="validRulesDiv">
-    <h6 id="regStatusValidationRules">Validation Rules</h6>
+    <h3>Validation Rules</h3>
     <ng-container *ngIf="hasRules(); else noRules">
         The <b>Registration Status</b> of this CDE is <b>{{elt.registrationState.registrationStatus}}</b>.<br>
         This CDE is used by the following <b>Stewards</b>: {{elt.usedBy?.join(', ')}}<br>

@@ -10,7 +10,7 @@ public class DeleteFormDraftTest extends NlmCdeBaseTest {
         String formName = "Form Delete Test";
         mustBeLoggedInAs(ctepCurator_username, password);
         goToFormByName(formName);
-        goToNaming();
+        goToNamingForm();
         addNewDesignation("draft designation", new String[]{"Health"});
         addNewDefinition("draft definition", false, new String[]{"Health"});
         textPresent("Draft");

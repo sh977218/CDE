@@ -10,7 +10,7 @@ public class FormDupStewardValidation extends NlmCdeBaseTest {
     public void formDupStewardValidation() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName("Double Classif Form");
-        goToNaming();
+        goToNamingForm();
         clickElement(By.cssSelector(".mat-chip-remove"));
         clickElement(By.id("openSave"));
         clickElement(By.id("confirmSaveBtn"));

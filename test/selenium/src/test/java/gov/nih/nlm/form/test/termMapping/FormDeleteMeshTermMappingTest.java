@@ -10,7 +10,7 @@ public class FormDeleteMeshTermMappingTest extends NlmCdeBaseTest {
     public void formDeleteMeshTermMapping() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName("Socioeconomic Status");
-        goToGeneralDetail();
+        goToGeneralDetailForm();
         textPresent("D003710 - Demography");
         textPresent("D000328 - Adult");
         textPresent("D011795 - Surveys and Questionnaires");

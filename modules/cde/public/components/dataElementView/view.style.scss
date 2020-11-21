@@ -1,8 +1,22 @@
-h1 {
+h1, .h1Like {
   font-size: 34px;
   font-weight: 400;
   line-height: 40px;
-  margin: 1rem 0;
+  margin: 1rem 0 .25rem;
+}
+
+:host ::ng-deep h2 {
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 33px;
+  margin: 1rem 0 .25rem;
+}
+
+:host ::ng-deep h3 {
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 26px;
+  margin: 1rem 0 .25rem;
 }
 
 nav > button {
@@ -16,8 +30,8 @@ nav > button {
   }
 }
 
-#side-nav > a {
-  height: 35px;
+mat-sidenav {
+  border: 0;
 }
 
 mat-sidenav-content {
@@ -51,4 +65,42 @@ mat-sidenav-content {
     top: $slide-pane-icon-size;
     width: 0;
   }
+}
+
+.slide-pane-button-right {
+  $slide-pane-icon-size: 5px;
+
+  box-sizing: border-box;
+  background: #fff;
+  border: 1px solid #326295;
+  border-right: 0;
+  cursor: pointer;
+  height: 4 * $slide-pane-icon-size + 2px;
+  right: 0;
+  padding: 0;
+  position: fixed;
+  top: 50%;
+  width: 3 * $slide-pane-icon-size + 1px;
+  z-index: 10;
+
+  &:after {
+    border: $slide-pane-icon-size solid transparent;
+    border-right-color: #326295;
+    content: "";
+    display: block;
+    height: 0;
+    position: absolute;
+    top: $slide-pane-icon-size;
+    width: 0;
+  }
+}
+
+.toc-container {
+  width: 18%;
+  position: fixed;
+  top: 76px;
+  right: 0;
+  bottom: 12px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }

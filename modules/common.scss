@@ -611,20 +611,46 @@ dl.cde-property { // xs
     }
   }
 }
+
+dl.cde-property-lg {
+  // boostrap row
+  display: flex;
+  flex-wrap: wrap;
+  margin-right: -15px;
+  margin-left: -15px;
+
+  dt {
+    flex: 0 0 100%;
+    max-width: 100%;
+    padding-left: 15px;
+    position: relative;
+    text-align: left;
+    width: 100%;
+  }
+  dd {
+    flex: 0 0 100%;
+    max-width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    position: relative;
+    width: 100%;
+  }
+}
+
+@media (min-width: 1050px) { // custom
+  dl.cde-property-lg {
+    dt {
+      flex: 0 0 16.666667%;
+      max-width: 16.666667%;
+      text-align: right;
+    }
+    dd {
+      flex: 0 0 83.333333%;
+      max-width: 83.333333%;
+    }
+  }
+}
 /* END Property List */
-
-.section-header {
-  background-color: #e0e0e0 !important;
-  border-radius: 10px;
-  padding-left: 10px;
-  background-image: linear-gradient(to right, #cac8c8, white);
-}
-
-.section-content {
-  overflow: auto;
-  width: 100%;
-  max-height: 500px;
-}
 
 .comment-div {
   padding-left: 10px;
@@ -636,6 +662,15 @@ dl.cde-property { // xs
   background: rgba(2, 191, 231, .1) !important;
   color: #1976d2 !important;
 }
+
+.iconButton {
+  cursor: pointer;
+
+  &:hover {
+    color: $linkColor;
+  }
+}
+
 
 .spacer {
   flex: 1 1 auto;

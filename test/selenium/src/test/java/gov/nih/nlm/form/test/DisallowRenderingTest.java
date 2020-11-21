@@ -18,7 +18,7 @@ public class DisallowRenderingTest extends NlmCdeBaseTest {
         goToFormDescription();
         textPresent("In general, would you say");
         saveFormEdit();
-        goToGeneralDetail();
+        goToGeneralDetailForm();
         clickElement(By.id("disallowRendering"));
         newFormVersion();
 
