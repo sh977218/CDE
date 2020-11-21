@@ -16,7 +16,7 @@ public class WrongLogin extends NlmCdeBaseTest {
         checkAlert("Failed to log");
         driver.get(baseUrl + "/settings/profile");
         findElement(By.id("login_link"));
-        textPresent("Please Log In");
+        textPresent("This warning banner provides privacy and security notices consistent");
 
         mustBeLoggedInAs(ctepCurator_username, password);
     }

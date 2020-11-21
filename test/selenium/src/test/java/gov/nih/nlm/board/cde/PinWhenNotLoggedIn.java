@@ -14,7 +14,7 @@ public class PinWhenNotLoggedIn extends NlmCdeBaseTest {
         clickElement(By.id("pinAll"));
         textPresent("Create Boards and attach CDEs to them");
         clickElement(By.id("signUpLink"));
-        textPresent("Log in with your UMLS");
+        textPresent("This warning banner provides privacy and security notices consistent");
         driver.navigate().back();
 
         clickElement(By.id("pinToBoard_0"));

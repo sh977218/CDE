@@ -873,7 +873,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         clickElement(By.id("username_link"));
         clickElement(By.xpath("//button[normalize-space(text())='Log Out']"));
         findElement(By.id("login_link"));
-        textPresent("Please Log In");
+        textPresent("This warning banner provides privacy and security notices consistent");
     }
 
     protected void loginAs(String username, String password) {

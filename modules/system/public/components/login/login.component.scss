@@ -1,0 +1,52 @@
+$loginWidth: 300px;
+$loginPadding: 7px;
+
+.form-signin {
+  margin-top: 1em;
+
+  button {
+    width: $loginWidth;
+  }
+
+  .checkbox {
+    margin-bottom: 10px;
+  }
+
+  .form-control {
+    position: relative;
+    height: auto;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 10px;
+    font-size: 16px;
+
+    &:focus {
+      z-index: 2;
+    }
+  }
+
+  .form-group {
+    max-width: $loginWidth + 2 * $loginPadding;
+    margin: 0 auto;
+    padding: $loginPadding;
+  }
+
+  .form-signin-heading {
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 1;
+    margin-bottom: 10px;
+  }
+
+  input[type="text"] {
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+
+  input[type="password"] {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+}

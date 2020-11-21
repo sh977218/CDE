@@ -16,7 +16,7 @@ public class LockoutLogin extends NlmCdeBaseTest {
         checkAlert("Failed to log in. User is locked out");
         driver.get(baseUrl + "/settings/profile");
         findElement(By.id("login_link"));
-        textPresent("Please Log In");
+        textPresent("This warning banner provides privacy and security notices consistent");
 
         mustBeLoggedInAs(ctepCurator_username, password);
     }
