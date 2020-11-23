@@ -516,7 +516,7 @@ input.ng-invalid:not([matInput]) {
 /* BEGIN cdeFieldset */
 .cdeFieldset {
   overflow: hidden;
-  border-radius: 5px;
+  //border-radius: 5px; // TODO: 2020November temporary Chrome (v87.0.4280.66) dark grey rectangles workaround, remove in a few versions
   border: 1px solid rgba(0, 0, 0, 0.16);
   margin: 10px 0 10px 0;
   padding: 0 10px;
