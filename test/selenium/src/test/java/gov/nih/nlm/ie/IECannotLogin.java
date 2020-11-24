@@ -11,7 +11,7 @@ public class IECannotLogin extends NlmCdeBaseTest {
 //    @Test
 //    public void ieCannotLogin() {
 //        goHome();
-//        clickElement(By.id("login_link"));
+//        openLogin();
 //        textPresent("Internet Explorer is no longer supported to");
 //
 //        textPresent("Please note that the NIH CDE Repository no longer supports Internet Explorer");

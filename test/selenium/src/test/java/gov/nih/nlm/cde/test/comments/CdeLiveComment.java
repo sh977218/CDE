@@ -9,7 +9,8 @@ public class CdeLiveComment extends NlmCdeBaseTest {
     @Test
     public void cdeLiveCommentTest() {
         goHome();
-        clickElement(By.linkText("NIH CDE Resource Portal"));
+        openLogin();
+        clickElement(By.linkText("Sign up now"));
         switchTab(0);
 
         mustBeLoggedInAs(nindsCurator_username, password);
