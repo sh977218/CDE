@@ -363,11 +363,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         clickElement(By.id("curators"));
     }
 
-    protected void goToEmbedding() {
-        goToSettings();
-        clickElement(By.id("embedding"));
-    }
-
     protected void goToSiteAdmins() {
         goToSettings();
         clickElement(By.id("siteAdmins"));

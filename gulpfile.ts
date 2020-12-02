@@ -175,7 +175,6 @@ gulp.task('buildDist', ['createDist'], function copyDist() {
     const runAll = [
         run('npm run buildApp', runInAppOptions),
         run('npm run buildNative', runInAppOptions),
-        run('npm run buildEmbed', runInAppOptions),
         run('npm run buildFhir', runInAppOptions)
     ];
 
@@ -206,7 +205,6 @@ gulp.task('usemin', ['copyDist'], function useminTask() {
     const streamArray: NodeJS.ReadWriteStream[] = [];
     [
         {folder: './modules/system/views/', filename: 'index.ejs'},
-        {folder: './frontEnd/_embedApp/', filename: 'embedApp.ejs'},
         {folder: './frontEnd/_fhirApp/', filename: 'fhirApp.ejs'},
         {folder: './frontEnd/_nativeRenderApp/', filename: 'nativeRenderApp.ejs'},
     ].forEach(item => {
@@ -279,7 +277,6 @@ gulp.task('copyUsemin', ['usemin'], function usemin() {
     [
         {folder: './modules/system/views/bot/', filename: '*.ejs'},
         {folder: './modules/system/views/', filename: 'index.ejs'},
-        {folder: './frontEnd/_embedApp/', filename: 'embedApp.ejs'},
         {folder: './frontEnd/_nativeRenderApp/', filename: 'nativeRenderApp.ejs'},
         {folder: './frontEnd/_fhirApp/', filename: 'fhirApp.ejs'}
     ].forEach(item => {
