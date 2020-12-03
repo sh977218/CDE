@@ -23,7 +23,6 @@ import { MyOrgDraftsResolve } from 'settings/drafts/myOrgDrafts.resolve';
 import { MyDraftsResolve } from 'settings/drafts/myDrafts.resolve';
 import { DraftsService } from 'settings/drafts/drafts.service';
 import { EditSiteAdminsComponent } from 'settings/editSiteAdmins/editSiteAdmins.component';
-import { EmbedComponent } from 'settings/embed/embed.component';
 import { FhirAppsComponent } from 'settings/fhirApps/fhirApps.component';
 import { IdSourcesComponent } from 'settings/idSources/idSources.component';
 import { OneListMgtComponent } from 'settings/listManagement/oneListMgt.component';
@@ -157,13 +156,6 @@ const appRoutes: Routes = [
                 canLoad: [OrgAuthorityGuard],
                 data: {title: 'My Organizations\' Comments', commentsUrl: '/server/discuss/orgComments/'}
             },
-            {
-                path: 'embedding',
-                component: EmbedComponent,
-                canLoad: [OrgAuthorityGuard],
-                data: {title: 'Embedding'}
-            },
-
             {
                 path: 'statusValidationRules',
                 component: StatusValidationRulesComponent,
@@ -313,7 +305,6 @@ const appRoutes: Routes = [
         CommentsComponent,
         DraftsComponent,
         EditSiteAdminsComponent,
-        EmbedComponent,
         FhirAppsComponent,
         IdSourcesComponent,
         MyPublishedFormsComponent,
