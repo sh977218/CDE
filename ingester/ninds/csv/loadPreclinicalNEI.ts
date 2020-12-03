@@ -1,8 +1,6 @@
 import { readdirSync } from 'fs';
-import { sortBy, groupBy } from 'lodash';
-import {
-    BATCHLOADER, imported, mergeElt, NINDS_PRECLINICAL_NEI_FILE_PATH, updateCde, updateForm,
-} from 'ingester/shared/utility';
+import { groupBy, sortBy } from 'lodash';
+import { BATCHLOADER, imported, mergeElt, NINDS_PRECLINICAL_NEI_FILE_PATH, updateCde, updateForm, } from 'ingester/shared/utility';
 import { createNindsCde } from 'ingester/ninds/csv/cde/cde';
 import { dataElementModel } from 'server/cde/mongo-cde';
 import { formModel } from 'server/form/mongo-form';
@@ -10,7 +8,7 @@ import { loadFormByCsv } from 'ingester/ninds/csv/loadNindsFormByCsv';
 import { loadNindsCde } from 'ingester/ninds/shared';
 import { parseOneCsv } from 'ingester/ninds/csv/shared/utility';
 
-async function loadNindsCdes(folder) {
+async function loadNindsCdes(folder: string) {
     const csvFiles = readdirSync(folder);
     const csvFileNames: string[] = sortBy(csvFiles);
     let cdeRows: any[] = [];
@@ -20,9 +18,9 @@ async function loadNindsCdes(folder) {
         cdeRows = cdeRows.concat(csvResult.rows);
     }
     const result = groupBy(cdeRows, 'variable name');
-    for (const variablename in result) {
-        if (result.hasOwnProperty(variablename)) {
-            const rows = result[variablename];
+    for (const variableName in result) {
+        if (result.hasOwnProperty(variableName)) {
+            const rows = result[variableName];
             const cde = await createNindsCde(rows[0]);
             for (const row of rows) {
                 const newCde = await createNindsCde(row);
@@ -30,14 +28,17 @@ async function loadNindsCdes(folder) {
             }
             const cond = {
                 archived: false,
-                'ids.id': variablename
+                $elemMatch: {
+                    source: 'BRICS Variable Name',
+                    id: variableName
+                }
             };
             await loadNindsCde(cde, cond, 'NINDS Preclinical TBI');
         }
     }
 }
 
-async function loadNindsForms(folder) {
+async function loadNindsForms(folder: string) {
     const csvFiles = readdirSync(folder);
     const csvFileNames: string[] = sortBy(csvFiles);
     for (const csvFileName of csvFileNames) {

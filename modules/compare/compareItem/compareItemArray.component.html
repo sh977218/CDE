@@ -16,11 +16,13 @@
                             <span>{{r.priorElt[d.property]}}</span>
                         </div>
                     </div>
-                    <div class="arrayObj arrayObjEdit" *ngIf="r.edit">
+                    <div class="arrayObj arrayObjEdit" *ngIf="r.edit && !_isEmpty(r.diff)">
+                        {{r.diff}}
                         <div *ngFor="let d of option.data" class="{{d.property}}">
                             <ng-container *ngIf="r.diff.indexOf(d.property) !== -1">
                                 <strong>{{d.label}}:</strong>
-                                <td-ngx-text-diff [showToolbar]='false'  [showBtnToolbar]='false' [left]="_get(r.priorElt,d.property)"
+                                <td-ngx-text-diff [showToolbar]='false' [showBtnToolbar]='false'
+                                                  [left]="_get(r.priorElt,d.property)"
                                                   [right]="_get(r.currentElt,d.property)"
                                                   [format]="'LineByLine'"></td-ngx-text-diff>
                             </ng-container>

@@ -10,7 +10,7 @@ async function run() {
     const workbook = XLSX.readFile(SocialDeterminantsOfHealthXlsx, {raw: true});
     const ninrCsvRows = XLSX.utils.sheet_to_json(workbook.Sheets.New_SDH);
     const formattedNinrCsvRows = formatRows('SocialDeterminantsOfHealth_06152020', ninrCsvRows);
-    const formName = 'Social Determinants of Health';
+    const formName = 'BRICS Social Determinants of Health';
     await runOneNinrForm(formName, formattedNinrCsvRows, SocialDeterminantsOfHealthXlsx);
     console.log('Wait 20 seconds for elastic search to catch up......');
     await sleep(20000);
