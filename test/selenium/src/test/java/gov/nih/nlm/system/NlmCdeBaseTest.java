@@ -869,11 +869,19 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         textPresent("Cancer Therapy Evaluation Program");
     }
 
-    protected void logout() {
-        clickElement(By.id("username_link"));
-        clickElement(By.xpath("//button[normalize-space(text())='Log Out']"));
+    protected void isLoggedOut() {
         findElement(By.id("login_link"));
-        textPresent("Please Log In");
+    }
+
+    protected void isLogin() {
+        textPresent("This warning banner provides privacy and security notices consistent");
+    }
+
+    protected void login(String username, String password) {
+        openLogin();
+        findElement(By.id("uname")).sendKeys(username);
+        findElement(By.id("passwd")).sendKeys(password);
+        clickElement(By.id("login_button"));
     }
 
     protected void loginAs(String username, String password) {
@@ -888,6 +896,18 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         clickElement(By.id("login_button"));
 
         textPresent(usernameStr.toUpperCase(), By.id("username_link"));
+    }
+
+    protected void logout() {
+        clickElement(By.id("username_link"));
+        clickElement(By.xpath("//button[normalize-space(text())='Log Out']"));
+        isLoggedOut();
+        isLogin();
+    }
+
+    protected void openLogin() {
+        clickElement(By.id("login_link"));
+        isLogin();
     }
 
     private boolean isWindows() {

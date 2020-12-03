@@ -1,9 +1,25 @@
 <div class="container">
     <form class="form-signin" #loginForm="ngForm" autocomplete="false">
-        <h2 class="form-signin-heading">Please Log In</h2>
-        <p>Note: Log in with your UMLS account. Don't have a UMLS account? <a
-                href="https://uts.nlm.nih.gov//license.html" target="_blank" rel="noopener noreferrer">
-            <span class="vsloginLink">Request One Now</span></a></p>
+        <div class="form-signin-heading">
+            Our sign in process is changing.
+        </div>
+        <p>
+            The NIH CDE Repository uses UMLS Terminology Services (UTS) accounts for authentication.
+            UTS accounts are migrating to a service that will allow you to sign in using Google, Microsoft, Facebook, or another identity provider of your choice.
+            <strong>NIH staff should choose the “NIH Employees” option.</strong>
+        </p>
+        <p>
+            If you have already migrated your UTS account to the new service, <a [href]="federatedUrl">sign in now</a>.
+        </p>
+        <p>
+            If you have not migrated your UTS account, you need to do that in the coming weeks.
+            <a href="https://uts.nlm.nih.gov/uts/login" target="_blank" rel="noopener noreferrer">Migrate your account now</a>,
+            or sign in below with your UTS account.
+        </p>
+        <p>
+            Don’t have a UTS account?
+            <a href="https://uts.nlm.nih.gov/uts/signup-login" target="_blank" rel="noopener noreferrer">Sign up now</a>.
+        </p>
         <div class="form-group">
             <label id="l1" class="sr-only" for="uname">Username</label>
             <input id="uname" class="form-control" title="username" placeholder="Username" [(ngModel)]="username"
@@ -13,14 +29,21 @@
                    placeholder="Password" autocomplete="false" [(ngModel)]="password" required/>
             <input type="hidden" name="_csrf" [(ngModel)]="csrf">
         </div>
-        <button [disabled]="!loginForm.valid || !csrf" mat-raised-button color="link" (click)="login()"
-                id="login_button" style="width: 300px">Log In</button>
-        <p>Forgot your <a href="https://uts.nlm.nih.gov/license.html#emailUsername" class="vsloginLink"
-                          target="_blank" rel="noopener noreferrer">
-            <span>username</span></a> or <a href="https://uts.nlm.nih.gov/license.html#emailTemporaryPassword"
-                                            target="_blank" rel="noopener noreferrer">
-            <span class="vsloginLink">password</span></a>?</p>
-<!--        <p>Have you migrated your UTS account to be federated? If so, you can log in <a [href]="federatedUrl">here</a></p>-->
+        <div class="form-group">
+            <button [disabled]="!loginForm.valid || !csrf" mat-raised-button color="link" (click)="login()" id="login_button">
+                Log In
+            </button>
+            <p>
+                Forgot your
+                <a href="https://uts.nlm.nih.gov/uts/forgot/username" class="vsloginLink" target="_blank" rel="noopener noreferrer">
+                    <span>username</span>
+                </a>
+                or
+                <a href="https://uts.nlm.nih.gov/uts/forgot/password" target="_blank" rel="noopener noreferrer">
+                    <span class="vsloginLink">password</span>
+                </a>?
+            </p>
+        </div>
     </form>
     <p>
         <small>This warning banner provides privacy and security notices consistent with applicable federal laws,

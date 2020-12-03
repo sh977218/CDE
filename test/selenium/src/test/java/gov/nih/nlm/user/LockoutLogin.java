@@ -9,14 +9,11 @@ public class LockoutLogin extends NlmCdeBaseTest {
     @Test
     public void lockoutLogin() {
         goToCdeSearch();
-        clickElement(By.id("login_link"));
-        findElement(By.id("uname")).sendKeys(lockout_username);
-        findElement(By.id("passwd")).sendKeys(password);
-        clickElement(By.id("login_button"));
+        login(lockout_username, password);
         checkAlert("Failed to log in. User is locked out");
         driver.get(baseUrl + "/settings/profile");
-        findElement(By.id("login_link"));
-        textPresent("Please Log In");
+        isLoggedOut();
+        isLogin();
 
         mustBeLoggedInAs(ctepCurator_username, password);
     }

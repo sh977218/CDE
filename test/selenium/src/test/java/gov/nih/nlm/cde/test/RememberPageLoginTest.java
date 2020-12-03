@@ -10,10 +10,7 @@ public class RememberPageLoginTest extends NlmCdeBaseTest {
     public void rememberLoginPage() {
         goToCdeByName("Intracranial procedure type other text");
         textPresent("Specify in text for the intracranial procedure type if it is not listed above");
-        clickElement(By.id("login_link"));
-        findElement(By.id("uname")).sendKeys(ninds_username);
-        findElement(By.id("passwd")).sendKeys(password);
-        clickElement(By.id("login_button"));
+        login(ninds_username, password);
         textPresent("Specify in text for the intracranial procedure type if it is not listed above");
     }
 
