@@ -656,7 +656,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                 }
                 const searchSettings = {...this.searchSettings};
                 searchSettings.selectedOrg = this.validRulesOrg;
-                delete searchSettings.resultPerPage;
                 this.router.navigate(['/cdeStatusReport'], {
                     queryParams: {
                         searchSettings: JSON.stringify(searchSettings),

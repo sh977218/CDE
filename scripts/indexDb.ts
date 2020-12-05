@@ -10,7 +10,7 @@ initEs(() => {
     console.log('Done indexing collections');
     console.log('Syncing with Mesh');
     Promise.all([
-        new Promise((resolve: Cb, reject: CbError) => {
+        new Promise<void>((resolve: Cb, reject: CbError) => {
             syncWithMesh((err) => err ? reject(err) : resolve());
         }),
         syncLinkedFormsByTinyId('myg51_nyXg'),

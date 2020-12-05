@@ -5,15 +5,15 @@ import { Item } from 'shared/models.model';
 
 export function diff(newElt: ItemDocument, oldElt: ItemDocument) {
     function deIdentifyItem(elt: Item) {
+        elt.__v = 0;
         delete elt._id;
+        elt.archived = false;
+        delete elt.changeNote;
+        elt.comments = [];
+        elt.history = [];
         delete elt.updated;
         delete elt.updatedBy;
-        delete elt.archived;
-        delete elt.history;
-        delete elt.changeNote;
-        delete elt.__v;
         delete (elt as DataElement).views;
-        delete elt.comments;
         return elt;
     }
     return deepDiff(deIdentifyItem(oldElt.toObject()), deIdentifyItem(newElt.toObject()));

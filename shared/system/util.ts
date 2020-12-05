@@ -41,10 +41,10 @@ export function promiseArrayMapSeries<T, U>(array: T[], iterCb: CbRet3<Promise<U
     );
 }
 
-export function promiseDelay<T>(duration: number): () => Promise<T> {
-    return (...args: any[]) => new Promise<T>((resolve, reject) => {
+export function promiseDelay<T>(duration: number): (arg: T) => Promise<T> {
+    return (arg: T) => new Promise<T>((resolve, reject) => {
         setTimeout(() => {
-            resolve(...args);
+            resolve(arg);
         }, duration);
     });
 }

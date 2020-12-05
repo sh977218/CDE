@@ -11,7 +11,7 @@ export class SearchSettings {
     page?: number = 1;
     q?: string = '';
     regStatuses: CurationStatus[] = [];
-    resultPerPage = 20;
+    resultPerPage: number = 20;
     searchTerm?: string;
     selectedOrg?: string = '';
     selectedOrgAlt?: string;

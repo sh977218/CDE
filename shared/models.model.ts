@@ -82,7 +82,7 @@ export class Classification {
     elements: ClassificationElement[] = [];
     stewardOrg: {
         name: string
-    } = {name};
+    } = {name: ''};
     workingGroup?: boolean;
 }
 

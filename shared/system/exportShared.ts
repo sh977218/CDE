@@ -19,7 +19,7 @@ export function stripBsonIds<T>(t: T): T {
 export function stripBsonIdsElt<T extends Elt>(elt: T): T {
     delete elt._id;
     delete elt.updated;
-    delete elt.history;
+    elt.history = [];
     if (elt.updatedBy) {
         delete elt.updatedBy.userId;
     }

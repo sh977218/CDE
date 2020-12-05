@@ -388,7 +388,7 @@ export class CdeFhirService {
     readResourceByCode(self: ResourceTreeResource): Promise<ResourceTree|undefined> {
         switch (self.resourceType) {
             case 'Observation':
-                return new Promise<ResourceTree>((resolve, reject) => {
+                return new Promise<ResourceTree|undefined>((resolve, reject) => {
                     let resource: FhirObservation|FhirQuestionnaireResponse;
                     let codes = getIds(self.crossReference).filter(id => id.source === 'LOINC');
                     if (codes.length === 0) {
