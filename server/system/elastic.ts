@@ -51,10 +51,10 @@ export const esClient = new Client(config.elastic.options);
 
 export function removeElasticFields(elt: DataElementElastic): DataElementElastic;
 export function removeElasticFields(elt: CdeFormElastic): CdeFormElastic;
-export function removeElasticFields(elt: ItemElastic): ItemElastic {
+export function removeElasticFields(elt: ItemElastic): Item {
     delete elt.classificationBoost;
     delete elt.flatClassifications;
-    delete elt.primaryNameCopy;
+    delete (elt as any).primaryNameCopy;
     delete elt.stewardOrgCopy;
     delete elt.flatProperties;
     if (elt.valueDomain) {

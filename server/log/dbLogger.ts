@@ -89,11 +89,11 @@ interface MorganLogMessage {
     httpStatus: string;
     date: number;
     referrer: string;
-    responseTime: number;
+    responseTime?: number;
 }
 
 export function log(message: MorganLogMessage, callback?: CbError) { // express only, all others dbLogger.consoleLog(message);
-    if (isNaN(message.responseTime)) {
+    if (Number.isNaN(message.responseTime)) {
         delete message.responseTime;
     }
 

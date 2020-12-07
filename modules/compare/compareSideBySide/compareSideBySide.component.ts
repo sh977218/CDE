@@ -165,7 +165,7 @@ export class CompareSideBySideComponent {
         if (fe.formElements) {
             fe.formElements.forEach((e: FormElement) => {
                 if (e.elementType && e.elementType === 'question') {
-                    delete e.formElements;
+                    e.formElements = [];
                     delete e._id;
                     questions.push(_cloneDeep(e));
                 } else {

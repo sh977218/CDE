@@ -184,9 +184,9 @@ export function staticToProperty(self: ResourceTreeResource) {
     self.map.questionProperties.forEach((propertyMap, i) => {
         if (ids[i] === 'static') {
             const value = propertyMap.mapFieldValue && map.mapping[propertyMap.mapFieldValue];
+            const name = propertyMap.property;
             if (value) {
                 const answer = typedValueToProperty(propertyMap, value, map.mapping[propertyMap.mapFieldValue + 'System']);
-                const name = propertyMap.property;
                 if (propertyMap.max === -1 || propertyMap.max > 1) {
                     resource[name] = answer ? [answer] : undefined;
                 } else {

@@ -296,7 +296,7 @@ gulp.task('es', function es() {
         ))
     });
     return Promise.all(
-        indices.map((index: ElasticIndex) => new Promise((resolve, reject) => {
+        indices.map((index: ElasticIndex) => new Promise<void>((resolve, reject) => {
             console.log('Deleting es index: ' + index.indexName);
             esClient.indices.delete({index: index.indexName, timeout: '6s'}, (err: any | null) => {
                 err && err.meta && err.meta.statusCode === 404 ? resolve() : reject(err);
@@ -336,7 +336,7 @@ gulp.task('buildHome', function buildHome() {
 });
 
 gulp.task('checkDbConnection', function checkDbConnection() {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
         const isRequireDbConnection = !!require.cache[require.resolve('./server/system/connections')];
         if (isRequireDbConnection) {
             reject('DB connection cannot be included in gulp.');

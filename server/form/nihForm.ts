@@ -4,7 +4,7 @@ import { CbError1 } from 'shared/models.model';
 
 export function getFormNih(form: CdeForm, cb: CbError1<string>) {
     delete form._id;
-    delete form.history;
+    form.history = [];
     form.formElements.forEach(s => {
         s.formElements.forEach(q => {
             delete q._id;

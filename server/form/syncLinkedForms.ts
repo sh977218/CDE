@@ -48,10 +48,10 @@ async function extractedSyncLinkedForms(cde: DataElement) {
         body: {doc: {linkedForms}}
     }).catch(err => console.log(err));
     syncLinkedFormsProgress.done++;
-    return new Promise(resolve => resolve());
+    return Promise.resolve();
 }
 
-export function syncLinkedFormsByTinyId(tinyId: string) {
+export function syncLinkedFormsByTinyId(tinyId: string): Promise<void> {
     return new Promise(resolve => {
         byTinyId(tinyId, (err, cde) => {
             if (cde) {

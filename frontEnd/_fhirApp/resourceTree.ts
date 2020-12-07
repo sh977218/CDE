@@ -141,7 +141,7 @@ export class ResourceTreeUtil {
                     }
                     break;
                 default:
-                    throw assertUnreachable(node.resourceType);
+                    throw assertUnreachable(node);
             }
         }
     }
