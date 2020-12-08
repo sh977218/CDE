@@ -67,12 +67,12 @@ public class MiscTests extends NlmCdeBaseTest {
         Response ticketResponse = RestAssured.given().formParam("service", "http://umlsks.nlm.nih.gov").header(header).request().post(ticketUrl);
         String ticket = ticketResponse.asString();
         System.out.println("got ticket: " + ticket);
+        Assert.assertTrue(ticket.length() > 0, "Ticket not received");
 
         String actualResponse = given().queryParam("ticket", ticket).get(baseUrl + "/server/system/user/me").asString();
         Assert.assertTrue(actualResponse.contains("_id"), "actualResponse: " + actualResponse);
         Assert.assertTrue(actualResponse.contains(username), "actualResponse: " + actualResponse);
         Assert.assertFalse(actualResponse.contains(password), "actualResponse: " + actualResponse);
-
     }
 
     @Test
