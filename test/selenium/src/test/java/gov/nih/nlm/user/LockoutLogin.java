@@ -13,7 +13,7 @@ public class LockoutLogin extends NlmCdeBaseTest {
         checkAlert("Failed to log in. User is locked out");
         driver.get(baseUrl + "/settings/profile");
         isLoggedOut();
-        isLogin();
+        isLoginPage();
 
         mustBeLoggedInAs(ctepCurator_username, password);
     }

@@ -18,7 +18,7 @@ public class IncreaseLockoutLogin extends NlmCdeBaseTest {
         checkAlert("Failed to log in. Incorrect username or password");
         driver.get(baseUrl + "/settings/profile");
         isLoggedOut();
-        isLogin();
+        isLoginPage();
 
         mustBeLoggedInAs(ctepCurator_username, password);
     }

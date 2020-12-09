@@ -873,8 +873,8 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         findElement(By.id("login_link"));
     }
 
-    protected void isLogin() {
-        textPresent("This warning banner provides privacy and security notices consistent");
+    protected void isLoginPage() {
+        textPresent("UMLS Terminology Services (UTS) accounts for authentication");
     }
 
     protected void login(String username, String password) {
@@ -902,12 +902,12 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         clickElement(By.id("username_link"));
         clickElement(By.xpath("//button[normalize-space(text())='Log Out']"));
         isLoggedOut();
-        isLogin();
+        isLoginPage();
     }
 
     protected void openLogin() {
         clickElement(By.id("login_link"));
-        isLogin();
+        isLoginPage();
     }
 
     private boolean isWindows() {

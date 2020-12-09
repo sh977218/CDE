@@ -25,6 +25,10 @@ export class LoginComponent {
         this.getCsrf();
     }
 
+    testWorkaround() {
+        return ['localhost', 'local-cde-dev-1.nlm.nih.gov', 'local-cde-dev-2.nlm.nih.gov'].includes(window.location.hostname);
+    }
+
     getCsrf() {
         delete this.csrf;
         this.http.get<any>('/server/system/csrf').subscribe(response => {

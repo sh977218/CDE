@@ -12,15 +12,14 @@
             If you have already migrated your UTS account to the new service, <a [href]="federatedUrl">sign in now</a>.
         </p>
         <p>
-            If you have not migrated your UTS account, you need to do that in the coming weeks.
-            <a href="https://uts.nlm.nih.gov/uts/login" target="_blank" rel="noopener noreferrer">Migrate your account now</a>,
-            or sign in below with your UTS account.
+            If you have not migrated your UTS account,
+            <a href="https://uts.nlm.nih.gov/uts/login" target="_blank" rel="noopener noreferrer">migrate your account now</a>.
         </p>
         <p>
             Don’t have a UTS account?
             <a href="https://uts.nlm.nih.gov/uts/signup-login" target="_blank" rel="noopener noreferrer">Sign up now</a>.
         </p>
-        <div class="form-group">
+        <div *ngIf="testWorkaround()" class="form-group">
             <label id="l1" class="sr-only" for="uname">Username</label>
             <input id="uname" class="form-control" title="username" placeholder="Username" [(ngModel)]="username"
                    autofocus="" required name="username" autocomplete="false">
@@ -29,7 +28,7 @@
                    placeholder="Password" autocomplete="false" [(ngModel)]="password" required/>
             <input type="hidden" name="_csrf" [(ngModel)]="csrf">
         </div>
-        <div class="form-group">
+        <div *ngIf="testWorkaround()" class="form-group">
             <button [disabled]="!loginForm.valid || !csrf" mat-raised-button color="link" (click)="login()" id="login_button">
                 Log In
             </button>
@@ -45,19 +44,4 @@
             </p>
         </div>
     </form>
-    <p>
-        <small>This warning banner provides privacy and security notices consistent with applicable federal laws,
-            directives, and other federal guidance for accessing this Government system, which includes all
-            devices/storage
-            media attached to this system. This system is provided for Government-authorized use only.
-            Unauthorized or improper use of this system is prohibited and may result in disciplinary action and/or civil
-            and criminal penalties. At any time, and for any lawful Government purpose, the government may monitor,
-            record,
-            and audit your system usage and/or intercept, search and seize any communication or data transiting or
-            stored
-            on this system. Therefore, you have no reasonable expectation of privacy. Any communication or data
-            transiting
-            or stored on this system may be disclosed or used for any lawful Government purpose.
-        </small>
-    </p>
 </div>
