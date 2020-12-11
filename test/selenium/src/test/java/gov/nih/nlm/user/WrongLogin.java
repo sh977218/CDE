@@ -13,7 +13,7 @@ public class WrongLogin extends NlmCdeBaseTest {
         checkAlert("Failed to log");
         driver.get(baseUrl + "/settings/profile");
         isLoggedOut();
-        isLogin();
+        isLoginPage();
 
         mustBeLoggedInAs(ctepCurator_username, password);
     }
