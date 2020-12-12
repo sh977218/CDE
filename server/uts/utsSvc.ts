@@ -43,6 +43,9 @@ function getTGT() {
     if (_TGT) {
         return _TGT;
     }
+    if (!config.uts.apikey) {
+        return Promise.reject('apikey is missing, will need that to log in');
+    }
     return _TGT = promisify<UriOptions & CoreOptions, Response>(post)({
         uri: config.uts.tgtUrl,
         method: 'POST',

@@ -17,7 +17,7 @@ public class ReportIssueTest extends NlmCdeBaseTest {
 
         checkAlert("Thank you for your feedback");
 
-        loginAs("theOrgauth", password);
+        loginAs("theOrgAuth", password);
         clickElement(By.id("username_link"));
         clickElement(By.id("user_audit"));
         clickElement(By.xpath("//div[. = 'Reported Issues']"));

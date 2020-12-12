@@ -72,13 +72,8 @@ export async function getTrafficFilter() {
     return foundOne;
 }
 
-export function getRealIp(request: Request) {
-    if ((request as any)._remoteAddress) {
-        return (request as any)._remoteAddress;
-    }
-    if (request.ip) {
-        return request.ip;
-    }
+export function getRealIp(request: Request): string {
+    return request._remoteAddress || request.ip;
 }
 
 export async function banIp(ip: string, reason: string) {

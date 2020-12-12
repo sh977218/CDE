@@ -102,7 +102,7 @@ export function respondError(err: HandledError, options?: HandlerOptions) {
     }
 
     const log: any = {
-        message: options.message || err.message || err,
+        message: options.message || err.message || (err as any),
         stack: err.stack || new Error().stack,
         details: options.details,
     };

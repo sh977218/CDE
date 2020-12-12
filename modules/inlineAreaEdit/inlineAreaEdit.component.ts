@@ -82,7 +82,7 @@ export class InlineAreaEditComponent implements OnInit, AfterViewInit {
     }
 
     static isInvalidHtml(html: string) {
-        const allowUrls = [(window as any).publicUrl, (window as any).urlProd];
+        const allowUrls = [window.publicUrl, window.urlProd];
         const srcs = html.match(/src\s*=\s*["'](.+?)["']/ig);
         if (srcs) {
             for (const src of srcs) {

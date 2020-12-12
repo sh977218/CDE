@@ -33,6 +33,7 @@
     "build",
     "deploy",
     "dist",
+    "frontEnd",
     "ingester",
     "modules",
     "node_modules",

@@ -66,8 +66,8 @@
   "uts": {
     "service": "http://umlsks.nlm.nih.gov",
     "tgtUrl": "https://utslogin.nlm.nih.gov/cas/v1/api-key",
-    "federatedServiceValidate": "https://uts-ws.nlm.nih.gov/rest/serviceValidate",
     "federatedLogin": "https://uts.nlm.nih.gov/uts/login",
+    "federatedServiceValidate": "https://uts-ws.nlm.nih.gov/rest/serviceValidate",
     "ticketValidation": "https://utslogin.nlm.nih.gov:443/cas/serviceValidate"
   },
   "logdir": "",

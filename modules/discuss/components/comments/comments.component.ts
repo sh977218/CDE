@@ -81,7 +81,7 @@ export class CommentsComponent implements OnInit, OnDestroy {
 
     comments: Array<any> = [];
     newReply: CommentReply = new CommentReply();
-    socket = io((window as any).publicUrl + '/comment');
+    socket = io(window.publicUrl + '/comment');
     subscriptions: any = {};
     private emitCurrentReplying = new Subject<{ _id: string, comment: ReplyDraft }>();
 

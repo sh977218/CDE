@@ -33,6 +33,7 @@
     "build",
     "deploy",
     "dist",
+    "frontEnd",
     "modules",
     "node_modules",
     "protractor",

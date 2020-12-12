@@ -843,22 +843,26 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
 
     protected void login(String username, String password) {
         openLogin();
-        findElement(By.id("uname")).sendKeys(username);
-        findElement(By.id("passwd")).sendKeys(password);
-        clickElement(By.id("login_button"));
+        clickElement(By.linkText("sign in now"));
+        int sourceTabIndex = switchTabToLast();
+        textPresent("Username:");
+        findElement(By.name("username")).sendKeys(username);
+        findElement(By.name("password")).sendKeys(password);
+        clickElement(By.cssSelector("input[type='submit']"));
+        switchTab(sourceTabIndex);
     }
 
     protected void loginAs(String username, String password) {
         driver.get(baseUrl + "/login");
-        String usernameStr = username;
-        if (username.length() > 17) {
-            usernameStr = usernameStr.substring(0, 17) + "...";
-        }
+        clickElement(By.linkText("sign in now"));
+        int sourceTabIndex = switchTabToLast();
+        textPresent("Username:");
+        findElement(By.name("username")).sendKeys(username);
+        findElement(By.name("password")).sendKeys(password);
+        clickElement(By.cssSelector("input[type='submit']"));
+        switchTab(sourceTabIndex);
 
-        findElement(By.id("uname")).sendKeys(username);
-        findElement(By.id("passwd")).sendKeys(password);
-        clickElement(By.id("login_button"));
-
+        String usernameStr = username.length() > 17 ? username.substring(0, 17) + "..." : username;
         textPresent(usernameStr.toUpperCase(), By.id("username_link"));
     }
 
@@ -1055,6 +1059,14 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         hangon(1);
         List<String> tabs = new ArrayList(driver.getWindowHandles());
         driver.switchTo().window(tabs.get(i));
+    }
+
+    protected int switchTabToLast() {
+        hangon(1);
+        String currentTab = driver.getWindowHandle();
+        List<String> tabs = new ArrayList(driver.getWindowHandles());
+        driver.switchTo().window(tabs.get(tabs.size() - 1));
+        return tabs.indexOf(currentTab);
     }
 
     protected void fillInput(String type, String value) {

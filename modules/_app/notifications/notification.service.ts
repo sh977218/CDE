@@ -1,14 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, forwardRef, Inject, Injectable } from '@angular/core';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { Params, Router } from '@angular/router';
 import { ApprovalService } from '_app/notifications/approval.service';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
+import { Dictionary } from 'async';
 import * as _noop from 'lodash/noop';
 import { assertUnreachable, Cb, Task, TASK_STATE_UNREAD } from 'shared/models.model';
 import { partition } from 'shared/system/util';
-import { Dictionary } from 'async';
-import { MatDialog } from '@angular/material/dialog';
 
 const TYPES = ['error', 'approve', 'vote', 'message', 'comment']; // in sort order
 
@@ -295,7 +295,7 @@ export class NotificationService {
                 if (task.tasks[0].type === 'comment' && task.unread) {
                     task.unread = false;
                     this.reloading = true;
-                    this.http.post<Task[]>('/server/user/tasks/' + (window as any).version + '/read',
+                    this.http.post<Task[]>('/server/user/tasks/' + window.version + '/read',
                         {id: task.tasks[0].id, idType: task.tasks[0].idType})
                         .subscribe(this.funcUpdateTaskMessages, this.funcReloadFinished, this.funcReloadFinished);
                 }
@@ -308,7 +308,7 @@ export class NotificationService {
     reload() {
         if (!this.reloading) {
             this.reloading = true;
-            this.http.get<Task[]>('/server/user/tasks/' + (window as any).version)
+            this.http.get<Task[]>('/server/user/tasks/' + window.version)
                 .subscribe(this.funcUpdateTaskMessages, this.funcReloadFinished, this.funcReloadFinished);
         }
     }

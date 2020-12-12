@@ -163,30 +163,7 @@ app.use((req, res, next) => {
     }
 });
 
-
-app.use(function preventSessionCreation(req, res, next) {
-    function isFile(originalUrl: string) {
-        if (originalUrl.substr(originalUrl.length - 3, 3) === '.js') {
-            return true;
-        }
-        if (originalUrl.substr(originalUrl.length - 4, 4) === '.css') {
-            return true;
-        }
-        return originalUrl.substr(originalUrl.length - 4, 4) === '.gif';
-    }
-
-    const originalUrl = req.originalUrl;
-
-    if ((req.cookies['connect.sid'] ||
-        originalUrl === '/login' ||
-        originalUrl === '/server/system/csrf')
-        && !isFile(originalUrl)) {
-        session(expressSettings)(req, res, next);
-    } else {
-        next();
-    }
-
-});
+app.use(session(expressSettings));
 
 app.use('/cde/public', express.static((global as any).appDir('modules/cde/public')));
 app.use('/system/public', express.static((global as any).appDir('modules/system/public')));

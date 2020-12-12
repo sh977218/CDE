@@ -29,8 +29,7 @@ export class BannerComponent implements AfterViewInit {
 
     ngAfterViewInit(): void {
 /*
-        const showCovidBanner = (window as any).showCovidBanner;
-        if (showCovidBanner) {
+        if (window.showCovidBanner) {
             this.openCovidBannerDialog();
         }
 */
