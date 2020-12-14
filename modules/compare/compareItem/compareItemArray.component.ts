@@ -288,10 +288,10 @@ const formCompareArrayOption: any[] = [
                 return result;
             }
             if ((a.elementType === 'form' && b.elementType === 'form') || (a.elementType === 'section' && b.elementType === 'section')) {
-                if (!a.diff) {
+                if (_isEmpty(a.diff)) {
                     a.diff = new Set<string>();
                 }
-                if (!b.diff) {
+                if (_isEmpty(b.diff)) {
                     b.diff = new Set<string>();
                 }
 
@@ -300,7 +300,8 @@ const formCompareArrayOption: any[] = [
                     result = _isEqual(a.inForm.form.tinyId, b.inForm.form.tinyId);
                 }
                 if (result) {
-                    if (!_isEqual(a.instructions && a.instructions.value, b.instructions && b.instructions.value)) {
+                    if (!_isEqual(a.instructions && a.instructions.value ? a.instructions.value : '',
+                        b.instructions && b.instructions.value ? b.instructions.value : '')) {
                         a.diff.add('instructions.value');
                         b.diff.add('instructions.value');
                         a.display = true;
@@ -382,6 +383,7 @@ export class CompareItemArrayComponent implements OnInit {
     @Input() filter!: { add: { select: any }, edited: { select: any }, remove: { select: any }, reorder: { select: any } };
     options: any[] = [];
     _get = _get;
+    _isEmpty = _isEmpty;
 
     ngOnInit(): void {
         if (isDataElement(this.newer) && isDataElement(this.older)) {

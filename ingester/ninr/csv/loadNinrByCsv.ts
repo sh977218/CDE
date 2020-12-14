@@ -16,7 +16,7 @@ let sameDeCount = 0;
 
 let newFormCount = 0;
 
-export async function runOneNinrDataElement(ninrCsvRow, source) {
+export async function runOneNinrDataElement(ninrCsvRow: any, source: string) {
     const variableName = getCell(ninrCsvRow, 'variable name');
     const newCdeObj = await createNinrCde(ninrCsvRow);
 
@@ -33,7 +33,7 @@ export async function runOneNinrDataElement(ninrCsvRow, source) {
     };
 
     const existingCdes = await dataElementModel.find(cond);
-    const existingCde = findOneCde(existingCdes, variableName);
+    const existingCde = findOneCde(existingCdes);
     if (!existingCde) {
         const newCdeSaved = await newCde.save().catch((err: any) => {
             console.log(`Not able to save new NINR cde ${newCde.tinyId} ${err}`);

@@ -4,7 +4,7 @@ export function parseIds() {
     return [];
 }
 
-export function parseNhlbiIds(row) {
+export function parseNhlbiIds(row: any) {
     const ids = [];
     const phenxProtocolId = row['PhenX Protocol'];
     if (!isEmpty(phenxProtocolId)) {

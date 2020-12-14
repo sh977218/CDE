@@ -1,7 +1,4 @@
 import { isEmpty, trim } from 'lodash';
-
-const XLSX = require('xlsx');
-
 import { dataElementModel } from 'server/cde/mongo-cde';
 import { formModel } from 'server/form/mongo-form';
 import { formatRows, getCell } from 'ingester/ninds/csv/shared/utility';
@@ -12,13 +9,16 @@ import { sickleCellDataElementsXlsx, sickleCellFormMappingXlsx } from 'ingester/
 import { parseNhlbiClassification as parseNhlbiCdeClassification } from 'ingester/ninds/csv/cde/ParseClassification';
 import { parseNhlbiClassification as parseNhlbiFormClassification } from 'ingester/ninds/csv/form/ParseClassification';
 import { parseNhlbiDesignations } from 'ingester/ninds/csv/cde/ParseDesignations';
+import { CdeForm } from 'shared/form/form.model';
+
+const XLSX = require('xlsx');
 
 let existingDeCount = 0;
 let newDeCount = 0;
 let existingFormCount = 0;
 let newFormCount = 0;
 
-function assignNhlbiId(existingCde, row) {
+function assignNhlbiId(existingCde: CdeForm, row: any) {
     let nindsIdExist = false;
     const nindsId = getCell(row, 'External ID.NINDS');
     existingCde.ids.forEach(i => {
@@ -31,7 +31,7 @@ function assignNhlbiId(existingCde, row) {
     }
 }
 
-async function doOneNhlbiCde(row, formMap) {
+async function doOneNhlbiCde(row: any, formMap: any) {
     const variableName = getCell(row, 'Name');
     const cond = {
         archived: false,
@@ -68,7 +68,7 @@ async function doOneNhlbiCde(row, formMap) {
     }
 }
 
-async function runDataElement(formMap) {
+async function runDataElement(formMap: any) {
     const workbook = XLSX.readFile(sickleCellDataElementsXlsx);
     const rows = XLSX.utils.sheet_to_json(workbook.Sheets.Sheet1);
     const formattedRows = formatRows('sickleCellDataElementsXlsx', rows);
@@ -77,7 +77,7 @@ async function runDataElement(formMap) {
     }
 }
 
-async function runOneNhlbiForm(row, nhlbiCdes) {
+async function runOneNhlbiForm(row: any, nhlbiCdes: any[]) {
     const nlmId = trim(row['NLM ID']);
     if (!isEmpty(nlmId) && nlmId[0] !== '—') {
         const cond = {
@@ -115,7 +115,7 @@ async function runOneNhlbiForm(row, nhlbiCdes) {
     }
 }
 
-async function runForm(formMap) {
+async function runForm(formMap: any) {
     const workbook = XLSX.readFile(sickleCellFormMappingXlsx);
     const phenxCrfs = XLSX.utils.sheet_to_json(workbook.Sheets['PhenX CRFs']);
     const nonPhenxCrfs = XLSX.utils.sheet_to_json(workbook.Sheets['Non-PhenX CRFs']);
