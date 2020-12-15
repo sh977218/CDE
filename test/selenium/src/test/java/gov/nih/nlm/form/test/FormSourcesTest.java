@@ -8,7 +8,7 @@ public class FormSourcesTest extends BaseFormTest {
     public void formSourceTest() {
         String formName = "Traumatic Brain Injury - Adverse Events";
         goToFormByName(formName);
-        goToGeneralDetailForm();
+        goToGeneralDetail();
         textPresent("Name:");
         textPresent("caBIG");
         textPresent("Created:");

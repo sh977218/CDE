@@ -45,9 +45,9 @@ public class UomValidationTest extends BaseFormTest {
                 "value",
                 "0.03175"));
 
-        clickElement(By.id("displayProfiles_tab"));
+        goToDisplayProfiles();
         createDisplayProfile(0, "Uom", true, true, true, true, "Print (Follow-up style)", 1, false, 0);
-        checkAlert("Saved");
+        closeAlert();
         createDisplayProfile(1, "No Uom", true, true, true, true, "Print (Follow-up style)", 1, false, 0);
         clickElement(By.xpath("//*[@id='profile_0']//button[contains(.,'Edit')]"));
         new Select(findElement(By.xpath("//*[@id='profile_0']//*[@id='alias-UCUM-inch']/select"))).selectByVisibleText("international inch");
@@ -55,7 +55,7 @@ public class UomValidationTest extends BaseFormTest {
         goToPreview();
         textPresent("international inch");
         selectDisplayProfileByName("No Uom");
-        textNotPresent("international inch");
+        textNotPresent("international inch", By.id("preview-div"));
 
         textPresent("The following errors need to be corrected in order to Publish");
         textPresent("Unit of Measure error on question \"If Yes, what are the number of CAG repeats on the larger allele\".");
@@ -64,7 +64,7 @@ public class UomValidationTest extends BaseFormTest {
         checkAlert("Please fix all errors before publishing");
         textPresent("errors need to be corrected");
         clickElement(By.partialLinkText("If Yes, what are the number of CAG repeats on the larger allele"));
-        hangon(1);
+        hangon(5);
         String scrollLocation = (((JavascriptExecutor) driver).executeScript("return window.pageYOffset", "")).toString();
         Assert.assertTrue(Double.valueOf(scrollLocation).intValue() > 100);
     }

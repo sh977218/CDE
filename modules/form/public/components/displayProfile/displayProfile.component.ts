@@ -21,20 +21,13 @@ interface DisplayProfileVM {
 
 @Component({
     selector: 'cde-display-profile',
-    styles: [`
-        .hoverEdit:hover {
-            background-color: lightgreen;
-        }
-        .mat-form-field,
-        .mat-slider,
-        :host ::ng-deep .mat-checkbox-layout {
-            width: 100%;
-        }
-        :host ::ng-deep .mat-checkbox-inner-container {
-            margin-left: inherit;
-        }
-    `],
     templateUrl: './displayProfile.component.html',
+    styles: [`
+        .example-section {
+            display: flex;
+            flex-direction: column;
+        }
+    `]
 })
 export class DisplayProfileComponent {
     @Input() set elt(e: CdeForm) {
@@ -42,16 +35,18 @@ export class DisplayProfileComponent {
         this.dPVMs.length = 0;
         this.elt.displayProfiles.forEach(profile => this.dPVMs.push(DisplayProfileComponent.dPVMNew(profile)));
     }
+
     get elt() {
         return this._elt;
     }
+
     @Input() public canEdit = false;
     @Output() eltChange = new EventEmitter();
     private _elt!: CdeForm;
     dPVMs: DisplayProfileVM[] = [];
     getMapToFhirResource = getMapToFhirResource;
     interruptEvent = interruptEvent;
-    uoms: {u: CodeAndSystem, a: string[]}[] = [];
+    uoms: { u: CodeAndSystem, a: string[] }[] = [];
     uomsDate?: DateType;
     uomsPromise!: Promise<void>;
 
@@ -87,7 +82,9 @@ export class DisplayProfileComponent {
                             if (names) {
                                 this.saveAliases(this.uoms, u, names);
                             }
-                            if (--resourceCount === 0) { resolve(); }
+                            if (--resourceCount === 0) {
+                                resolve();
+                            }
                         });
                     });
                 }
@@ -138,10 +135,14 @@ export class DisplayProfileComponent {
     }
 
     profileUomsEditCreate(dPVM: DisplayProfileVM) {
-        if (!dPVM) { return; }
+        if (!dPVM) {
+            return;
+        }
 
         this.getUoms().then(() => {
-            if (dPVM.aliases && dPVM.aliases.date === this.uomsDate) { return; }
+            if (dPVM.aliases && dPVM.aliases.date === this.uomsDate) {
+                return;
+            }
 
             for (const u of dPVM.profile.unitsOfMeasureAlias) {
                 const found = this.uoms.filter(a => CodeAndSystem.compare(a.u, u.unitOfMeasure));
@@ -162,7 +163,9 @@ export class DisplayProfileComponent {
 
     saveAliases(aliases: any[], v: CodeAndSystem, a: string[]) {
         const match = a.indexOf(v.code);
-        if (match > -1) { a.splice(match, 1); }
+        if (match > -1) {
+            a.splice(match, 1);
+        }
         a.unshift(v.code);
 
         const existing = aliases.filter(u => CodeAndSystem.compare(u.u, v));
@@ -190,9 +193,13 @@ export class DisplayProfileComponent {
     }
 
     uomAliasEdit(dPVM: DisplayProfileVM) {
-        if (!this.canEdit) { return; }
+        if (!this.canEdit) {
+            return;
+        }
         dPVM.aliases.edit = !dPVM.aliases.edit;
-        if (dPVM.aliases.edit) { this.profileUomsEditCreate(dPVM); }
+        if (dPVM.aliases.edit) {
+            this.profileUomsEditCreate(dPVM);
+        }
     }
 
     static dPVMNew(profile: DisplayProfile): DisplayProfileVM {

@@ -1,6 +1,6 @@
-<mat-icon id="moveUp-{{eltIndex}}" (click)="moveUp(elt.tinyId)"
+<mat-icon class="moveUp-{{eltIndex}}" (click)="moveUp(elt.tinyId)"
       *ngIf="currentPage * 20 + eltIndex !== 0" title="Up">arrow_upward</mat-icon>
-<mat-icon id="moveDown-{{eltIndex}}" (click)="moveDown(elt.tinyId)"
+<mat-icon class="moveDown-{{eltIndex}}" (click)="moveDown(elt.tinyId)"
       *ngIf="currentPage * 20 + eltIndex < totalItems - 1" title="Down">arrow_downward</mat-icon>
-<mat-icon id="moveTop-{{eltIndex}}" (click)="moveTop(elt.tinyId)"
+<mat-icon class="moveTop-{{eltIndex}}" (click)="moveTop(elt.tinyId)"
       *ngIf="currentPage * 20 + eltIndex !== 0" title="Move to top">vertical_align_top</mat-icon>

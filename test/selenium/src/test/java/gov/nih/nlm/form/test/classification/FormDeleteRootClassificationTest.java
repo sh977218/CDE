@@ -11,17 +11,17 @@ public class FormDeleteRootClassificationTest extends NlmCdeBaseTest {
         String formName = "PROMIS SF v2.0 - Companionship 6a";
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName(formName);
-        goToGeneralDetailForm();
+        goToGeneralDetail();
         textNotPresent("Updated:", By.id("generalDiv"));
 
-        goToClassificationForm();
+        goToClassification();
         textPresent("PROMIS / Neuro-QOL");
         clickElement(By.xpath("//*[@id='PROMIS Instruments-unclassifyBtn']"));
         clickElement(By.id("confirmDeleteClassificationBtn"));
         closeAlert();
-        textNotPresent("PROMIS / Neuro-QOL");
+        textNotPresent("PROMIS / Neuro-QOL", By.id("preview-div"));
 
-        goToGeneralDetailForm();
-        textNotPresent("Updated:", By.id("generalDiv"));
+        goToGeneralDetail();
+        textNotPresent("Updated:", By.id("general-details-div"));
     }
 }

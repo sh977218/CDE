@@ -5,16 +5,16 @@ import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class FormEditTest extends BaseFormTest {
+public class FormEditSectionAndQuestionsTest extends BaseFormTest {
 
     @Test
-    public void editSectionAndQuestions() {
+    public void formEditSectionAndQuestions() {
         String formName = "Form Edit Section And Question Test";
+        String newQuestionInstruction = "New Question Instruction";
         mustBeLoggedInAs(testAdmin_username, password);
         goToFormByName(formName);
         goToFormDescription();
         Assert.assertEquals(driver.getTitle(), "Form: " + formName);
-        String newQuestionInstruction = "New Question Instruction";
         editQuestion(newQuestionInstruction);
         saveFormEdit();
         newFormVersion();

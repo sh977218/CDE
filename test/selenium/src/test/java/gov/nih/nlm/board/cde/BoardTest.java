@@ -22,6 +22,7 @@ public class BoardTest extends NlmCdeBaseTest {
     }
 
     public void gotoMyBoards() {
+        goHome();
         clickElement(By.id("boardsMenu"));
         textPresent("My Boards");
         clickElement(By.id("myBoardsLink"));

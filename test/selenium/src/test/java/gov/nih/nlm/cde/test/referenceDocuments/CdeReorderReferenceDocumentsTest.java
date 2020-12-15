@@ -12,11 +12,11 @@ public class CdeReorderReferenceDocumentsTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName(cdeName);
         goToReferenceDocuments();
-        clickElement(By.id("moveDown-0"));
+        reorderBySection("reference-documents", "down", 0);
         textPresent("rd1", By.cssSelector("[itemprop='id_1']"));
-        clickElement(By.id("moveDown-1"));
+        reorderBySection("reference-documents", "down", 1);
         textPresent("rd3", By.cssSelector("[itemprop='id_1']"));
-        clickElement(By.id("moveTop-2"));
+        reorderBySection("reference-documents", "top", 2);
         textPresent("rd1", By.cssSelector("[itemprop='id_0']"));
     }
 }

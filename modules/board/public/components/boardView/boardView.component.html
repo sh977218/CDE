@@ -54,7 +54,7 @@
             </div>
         </div>
 
-        <div [ngClass]="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}">
+        <div [ngClass]="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}" id="border-cdes-div">
             <div *ngIf="elts.length === 0">The board is empty.</div>
             <cde-list-view [board]="board" [currentPage]="currentPage" location="board" [elts]="elts"
                            [(listView)]="listViews" [module]="board.type" [totalItems]="totalItems"

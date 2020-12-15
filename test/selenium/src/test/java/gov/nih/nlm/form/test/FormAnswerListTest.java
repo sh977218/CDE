@@ -28,7 +28,7 @@ public class FormAnswerListTest extends NlmCdeBaseTest {
 
         // edit answer list
         clickElement(By.xpath("//*[@id='question_0-0']//*[contains(@class,'answerListLabel')]//mat-icon"));
-        clickElement(By.id("moveUp-1"));
+        reorderBySection("edit-answer","up",1);
         clickElement(By.id("saveEditAnswerBtn"));
         hangon(1);
 

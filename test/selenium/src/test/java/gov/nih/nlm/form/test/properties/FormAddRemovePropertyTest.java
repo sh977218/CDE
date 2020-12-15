@@ -18,7 +18,7 @@ public class FormAddRemovePropertyTest extends NlmCdeBaseTest {
 
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName(formName);
-        goToPropertiesForm();
+        goToProperties();
 
         addNewProperty(key0, value0, false);
         addNewProperty(key1, value1, false);
@@ -29,7 +29,7 @@ public class FormAddRemovePropertyTest extends NlmCdeBaseTest {
 
         goToFormByName(formName);
 
-        goToPropertiesForm();
+        goToProperties();
         textPresent(key0);
         textPresent(value0);
         textNotPresent(key1);

@@ -9,14 +9,14 @@ public class FormChangeRegistrationStatusTest extends NlmCdeBaseTest {
         String formName = "Form Status Test";
         mustBeLoggedInAs(ctepCurator_username, password);
         goToFormByName(formName);
-        goToGeneralDetailForm();
+        goToGeneralDetail();
         textPresent("Qualified");
         editRegistrationStatus("Recorded", "09/15/2013", "10/31/2014", "Admin Note 1", "Unresolved Issue 1");
         newFormVersion();
         setLowStatusesVisible();
 
         goToFormByName(formName);
-        goToGeneralDetailForm();
+        goToGeneralDetail();
         textPresent("Recorded");
         textPresent("09/15/2013");
         textPresent("10/31/2014");

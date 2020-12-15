@@ -14,7 +14,7 @@ public class BaseAttachmentTest extends NlmCdeBaseTest {
     }
 
     protected void removeAttachmentForm(String name) {
-        goToAttachmentsForm();
+        goToAttachments();
         deleteWithConfirm("//*[contains(@id, 'attachment_')][//a[.='" + name + "']]");
         checkAlert("Attachment Removed.");
         textNotPresent(name);
@@ -59,7 +59,7 @@ public class BaseAttachmentTest extends NlmCdeBaseTest {
     }
 
     public void setAttachmentDefaultForm() {
-        goToAttachmentsForm();
+        goToAttachments();
         textPresent("Upload more files");
         clickElement(By.id("defaultCbLabel"));
         checkAlert("Saved");

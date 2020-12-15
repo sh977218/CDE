@@ -49,6 +49,12 @@ import { SkipLogicModule } from 'skipLogic/skipLogic.module';
 import { TagModule } from 'tag/tag.module';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { QuestionAccordionListComponent } from 'cde/public/components/listView/questionAccordingList/questionAccordingList.component';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatListModule } from '@angular/material/list';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { WINDOW_PROVIDERS } from 'window.service';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { TocModule } from 'angular-aio-toc/toc.module';
 
 const appRoutes: Routes = [
     {path: '', component: FormViewComponent},
@@ -98,6 +104,11 @@ const appRoutes: Routes = [
         NativeRenderModule,
         SkipLogicModule,
         MatProgressSpinnerModule,
+        MatSidenavModule,
+        MatListModule,
+        MatToolbarModule,
+        TooltipModule,
+        TocModule,
     ],
     declarations: [
         ArrayListPipe,
@@ -113,6 +124,7 @@ const appRoutes: Routes = [
     exports: [],
     providers: [
         FormViewService,
+        WINDOW_PROVIDERS,
         SkipLogicValidateService,
         UcumService
     ],

@@ -11,14 +11,14 @@ public class FormCancelRegStatusTest extends NlmCdeBaseTest {
         String formName = "AED Resistance Log";
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName(formName);
-        goToGeneralDetailForm();
+        goToGeneralDetail();
         textPresent("Qualified");
         clickElement(By.id("editStatus"));
         new Select(driver.findElement(By.name("newRegistrationStatus"))).selectByVisibleText("Recorded");
         clickElement(By.id("cancelRegStatus"));
         modalGone();
         goToFormByName(formName);
-        goToGeneralDetailForm();
+        goToGeneralDetail();
         textPresent("Qualified", By.cssSelector("[itemprop='registrationStatus']"));
     }
 

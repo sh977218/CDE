@@ -12,7 +12,7 @@ public class FormNoPropertyKeyTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName(formName);
 
-        goToPropertiesForm();
+        goToProperties();
         clickElement(By.id("openNewPropertyModalBtn"));
         textPresent("No valid property keys present, have an Org Admin go to Org Management > List Management to add one");
     }

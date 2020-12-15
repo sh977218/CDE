@@ -13,13 +13,13 @@ public class FormAttachmentsTest extends BaseAttachmentTest {
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName(formName);
 
-        goToAttachmentsForm();
+        goToAttachments();
         textNotPresent("Upload more files");
 
         logout();
         mustBeLoggedInAs(ctep_fileCurator_username, password);
         goToFormByName(formName);
-        goToAttachmentsForm();
+        goToAttachments();
 
         addAttachment("melanoma.jpg");
 

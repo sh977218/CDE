@@ -1,58 +1,64 @@
 <h2>Naming</h2>
-<div *ngIf="elt.designations.length === 0">
-    There are no designations.
+<div id="designations-div">
+    <div *ngIf="elt.designations.length === 0">
+        There are no designations.
+    </div>
+    <dl class="cde-property" *ngFor="let designation of elt.designations;let i = index">
+        <dt>
+            <mat-icon (click)="removeDesignationByIndex(i)"
+                      *ngIf="canEdit && !designation.edit && elt.designations.length > 1"
+                      id="removeDesignation-{{i}}">delete
+            </mat-icon>
+            <cde-sortable-array *ngIf="canEdit" [theArray]="elt.designations" [index]="i"
+                                (cb)="eltChange.emit()"></cde-sortable-array>
+            Name:
+        </dt>
+        <dd attr.itemprop="designation_{{i}}">
+            <cde-inline-edit [(model)]="designation.designation" (modelChange)="eltChange.emit()"
+                             [isAllowed]="canEdit"></cde-inline-edit>
+        </dd>
+
+        <dt>Tags:</dt>
+        <dd attr.itemprop="designationTags_{{i}}">
+            <cde-tag [tags]="designation.tags" [allTags]="allTags"
+                     [canEdit]="canEdit" (changed)="eltChange.emit();"></cde-tag>
+        </dd>
+    </dl>
+
+    <button *ngIf="canEdit" mat-raised-button color="primary" (click)="openNewDesignationModal()">
+        <mat-icon>add</mat-icon>
+        Add Name
+    </button>
 </div>
-<dl class="cde-property" *ngFor="let designation of elt.designations;let i = index">
-    <dt>
-        <mat-icon (click)="removeDesignationByIndex(i)"
-                  *ngIf="canEdit && !designation.edit && elt.designations.length > 1"
-                  id="removeDesignation-{{i}}">delete
-        </mat-icon>
-        <cde-sortable-array *ngIf="canEdit" [theArray]="elt.designations" [index]="i" (cb)="eltChange.emit()"></cde-sortable-array>
-        Name:
-    </dt>
-    <dd attr.itemprop="designation_{{i}}">
-        <cde-inline-edit [(model)]="designation.designation" (modelChange)="eltChange.emit()" [isAllowed]="canEdit"></cde-inline-edit>
-    </dd>
 
-    <dt>Tags:</dt>
-    <dd attr.itemprop="designationTags_{{i}}">
-        <cde-tag [tags]="designation.tags" [allTags]="allTags"
-                 [canEdit]="canEdit" (changed)="eltChange.emit();"></cde-tag>
-    </dd>
-</dl>
+<div id="definitions-div">
+    <h3>Definitions</h3>
+    <div *ngIf="elt.definitions.length === 0">
+        There are no definitions.
+    </div>
+    <dl class="cde-property" *ngFor="let definition of elt.definitions;let i = index">
+        <dt>
+            <mat-icon (click)="removeDefinitionByIndex(i)" *ngIf="canEdit && !definition.edit"
+                      id="removeDefinition-{{i}}">delete
+            </mat-icon>
+            <cde-sortable-array [theArray]="elt.definitions" [index]="i" *ngIf="canEdit"
+                                (cb)="eltChange.emit()"></cde-sortable-array>
+            Definition:
+        </dt>
+        <dd attr.itemprop="definition_{{i}}">
+            <cde-inline-area-edit [(model)]="definition.definition" (modelChange)="eltChange.emit();"
+                                  [(defFormat)]="definition.definitionFormat"
+                                  [isAllowed]="canEdit"></cde-inline-area-edit>
+        </dd>
 
-<button *ngIf="canEdit" mat-raised-button color="primary" (click)="openNewDesignationModal()">
-    <mat-icon>add</mat-icon>
-    Add Name
-</button>
-
-<h3>Definitions</h3>
-<div *ngIf="elt.definitions.length === 0">
-    There are no definitions.
+        <dt>Tags:</dt>
+        <dd attr.itemprop="definitionTags_{{i}}">
+            <cde-tag [tags]="definition.tags" [allTags]="allTags"
+                     [canEdit]="canEdit" (changed)="eltChange.emit();"></cde-tag>
+        </dd>
+    </dl>
+    <button *ngIf="canEdit" mat-raised-button color="primary" (click)="openNewDefinitionModal()">
+        <mat-icon>add</mat-icon>
+        Add Definition
+    </button>
 </div>
-<dl class="cde-property" *ngFor="let definition of elt.definitions;let i = index">
-    <dt>
-        <mat-icon (click)="removeDefinitionByIndex(i)" *ngIf="canEdit && !definition.edit"
-                  id="removeDefinition-{{i}}">delete
-        </mat-icon>
-        <cde-sortable-array [theArray]="elt.definitions" [index]="i" *ngIf="canEdit"
-                            (cb)="eltChange.emit()"></cde-sortable-array>
-        Definition:
-    </dt>
-    <dd attr.itemprop="definition_{{i}}">
-        <cde-inline-area-edit [(model)]="definition.definition" (modelChange)="eltChange.emit();"
-                              [(defFormat)]="definition.definitionFormat"
-                              [isAllowed]="canEdit"></cde-inline-area-edit>
-    </dd>
-
-    <dt>Tags:</dt>
-    <dd attr.itemprop="definitionTags_{{i}}">
-        <cde-tag [tags]="definition.tags" [allTags]="allTags"
-                 [canEdit]="canEdit" (changed)="eltChange.emit();"></cde-tag>
-    </dd>
-</dl>
-<button *ngIf="canEdit" mat-raised-button color="primary" (click)="openNewDefinitionModal()">
-    <mat-icon>add</mat-icon>
-    Add Definition
-</button>

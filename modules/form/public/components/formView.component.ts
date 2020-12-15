@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -29,11 +29,14 @@ import {
     DataElement, DatatypeContainerDate, DatatypeContainerNumber, DatatypeContainerText, DatatypeContainerTime
 } from 'shared/de/dataElement.model';
 import {
-    CdeForm, CdeFormDraft, FormElement, FormElementsContainer, FormInForm, FormQuestionDraft, QuestionCde, QuestionCdeValueList
+    CdeForm, CdeFormDraft, FormElement, FormElementsContainer, FormInForm, FormQuestionDraft, QuestionCde,
+    QuestionCdeValueList
 } from 'shared/form/form.model';
 import { addFormIds, getLabel, iterateFe, iterateFes, iterateFeSync, noopSkipIterCb } from 'shared/form/fe';
 import { canEditCuratedItem, isOrgCurator } from 'shared/system/authorizationShared';
 import { getQuestionPriorByLabel } from 'shared/form/skipLogic';
+import { TocService } from 'angular-aio-toc/toc.service';
+import { ScrollService } from 'angular-aio-toc/scroll.service';
 
 export class LocatableError {
     id?: string;
@@ -51,8 +54,9 @@ export class LocatableError {
     styleUrls: [
         '../../../cde/public/components/dataElementView/view.style.scss'
     ],
+    providers: [TocService]
 })
-export class FormViewComponent implements OnInit {
+export class FormViewComponent implements OnInit, OnDestroy {
     @ViewChild('commentAreaComponent', {static: true}) commentAreaComponent!: DiscussAreaComponent;
     @ViewChild('copyFormContent', {static: true}) copyFormContent!: TemplateRef<any>;
     @ViewChild('formCdesContent', {static: true}) formCdesContent!: TemplateRef<any>;
@@ -78,17 +82,7 @@ export class FormViewComponent implements OnInit {
     unsaved = false;
     missingCdes: string[] = [];
     validationErrors: LocatableError[] = [];
-
-    ngOnInit() {
-        this.route.queryParams.subscribe(() => {
-            this.hasDrafts = false;
-            this.loadElt(() => {
-                this.orgHelperService.then(() => {
-                    this.elt.usedBy = this.orgHelperService.getUsedBy(this.elt);
-                }).catch(_noop);
-            });
-        });
-    }
+    isMobile = false;
 
     constructor(private alert: AlertService,
                 private dialog: MatDialog,
@@ -101,11 +95,29 @@ export class FormViewComponent implements OnInit {
                 private ref: ChangeDetectorRef,
                 private route: ActivatedRoute,
                 private router: Router,
+                private scrollService: ScrollService,
                 private title: Title,
+                private tocService: TocService,
                 private ucumService: UcumService,
                 public userService: UserService
     ) {
         this.exportToTab = !!localStorageService.getItem('exportToTab');
+        this.onResize();
+    }
+
+    ngOnInit() {
+        this.route.queryParams.subscribe(() => {
+            this.hasDrafts = false;
+            this.loadElt(() => {
+                this.orgHelperService.then(() => {
+                    this.elt.usedBy = this.orgHelperService.getUsedBy(this.elt);
+                }).catch(_noop);
+            });
+        });
+    }
+
+    ngOnDestroy() {
+        this.tocService.reset();
     }
 
     canEdit() {
@@ -193,7 +205,11 @@ export class FormViewComponent implements OnInit {
             addFormIds(this.elt);
             this.elt = elt;
             this.title.setTitle('Form: ' + Elt.getLabel(this.elt));
-            this.loadComments(this.elt);
+            this.loadComments(this.elt, () => {
+                setTimeout(() => {
+                    this.viewReady();
+                }, 0);
+            });
             this.validate();
             cb();
         }
@@ -217,6 +233,11 @@ export class FormViewComponent implements OnInit {
 
     loadPublished(cb = _noop) {
         this.eltLoad(this.formViewService.fetchPublished(this.route.snapshot.queryParams), cb);
+    }
+
+    @HostListener('window:resize', [])
+    onResize() {
+        this.isMobile = window.innerWidth < 735;
     }
 
     hasDraftsAndLoggedIn() {
@@ -541,4 +562,21 @@ export class FormViewComponent implements OnInit {
                 {width: '800px', data: {newer: draft, older: published}});
         }, err => this.alert.httpErrorMessageAlert(err, 'Error loading view changes.'));
     }
+
+    gotoTop() {
+        window.scrollTo(0, 0);
+        this.router.navigate([], {queryParams: this.route.snapshot.queryParams, replaceUrl: true})
+    }
+
+
+    viewReady(): void {
+        let path = this.router.url;
+        const loc = path.indexOf('#');
+        if (loc !== -1) {
+            path = path.substr(0, loc);
+        }
+        this.tocService.genToc(document.getElementsByTagName('main')[0], path);
+        this.scrollService.scrollAfterRender(0);
+    }
+
 }

@@ -20,7 +20,7 @@ public class CreateFormFromBoardTest extends NlmCdeBaseTest {
         clickElement(By.id("submit"));
         textPresent("cdeCompare1");
         textPresent("cdeCompare2");
-        goToGeneralDetailForm();
+        goToGeneralDetail();
         textPresent("Incomplete");
         textNotPresent("have newer version");
     }

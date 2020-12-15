@@ -13,11 +13,11 @@ public class ReorderConceptTest extends NlmCdeBaseTest {
         goToCdeByName(cdeName);
         goToConcepts();
 
-        clickElement(By.id("moveDown-0"));
+        reorderBySection("concepts","down",0);
         Assert.assertTrue(findElement(By.id("concept_cde_name_1")).getText().contains("cb1"));
-        clickElement(By.id("moveUp-2"));
+        reorderBySection("concepts","up",2);
         Assert.assertTrue(findElement(By.id("concept_cde_name_1")).getText().contains("cn3"));
-        clickElement(By.id("moveTop-2"));
+        reorderBySection("concepts","top",2);
         Assert.assertTrue(findElement(By.id("concept_cde_name_0")).getText().contains("cb1"));
     }
 }

@@ -1,3 +1,4 @@
+<h2>Preview</h2>
 <div class="noGridPadLarge">
     <div class="dropdown d-inline-block">
         <button id="selectRenderButton" mat-raised-button #exportMenuTrigger="matMenuTrigger"
@@ -49,11 +50,11 @@
     <div *ngIf="elt.noRenderAllowed"
          class="text-center mt20">Rendering has been disabled for this form.
     </div>
-    <h2 *ngIf="!elt.noRenderAllowed && !(elt.formElements.length > 0)"
+    <p *ngIf="!elt.noRenderAllowed && !(elt.formElements.length > 0)"
          id="warningNoCde" style="max-width: 600px; margin: auto">
         This form is empty. Form Editors can add content to this form by navigating
         to "Form Description" on the left side of the screen.
-    </h2>
+    </p>
     <div *ngIf="!elt.noRenderAllowed && elt.formElements.length > 0" class="bot-left">
         <div style="max-width: 1000px; margin: 10px 15px;">
             <cde-native-render [elt]="elt" [profile]="profile" [showTitle]="false"

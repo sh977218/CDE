@@ -12,11 +12,12 @@ public class ReorderPermissibleValueTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(testAdmin_username, password);
         goToCdeByName(cdeName);
         goToPermissibleValues();
-        clickElement(By.id("moveDown-0"));
+
+        reorderBySection("permissible-value", "down", 0);
         textPresent("pv1", By.id("pvValue_1"));
-        clickElement(By.id("moveUp-2"));
+        reorderBySection("permissible-value", "up", 2);
         textPresent("pv3", By.id("pvValue_1"));
-        clickElement(By.id("moveTop-1"));
+        reorderBySection("permissible-value", "top", 1);
         textPresent("pv3", By.id("pvValue_0"));
     }
 }

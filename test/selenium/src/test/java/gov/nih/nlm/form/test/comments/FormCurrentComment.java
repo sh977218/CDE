@@ -13,7 +13,7 @@ public class FormCurrentComment extends NlmCdeBaseTest {
         goToFormByName(formName);
         goToDiscussArea();
         checkCurrentCommentByIndex(0, false);
-        goToNamingForm();
+        goToNaming();
         checkCurrentCommentByIndex(0, true);
     }
 }

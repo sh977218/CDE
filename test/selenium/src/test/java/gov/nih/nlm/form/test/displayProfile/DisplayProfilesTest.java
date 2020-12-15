@@ -12,7 +12,7 @@ public class DisplayProfilesTest extends BaseFormTest {
         String formName = "Neuro-QOL Ped Bank v2.0 - Cognitive Function";
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName(formName);
-        clickElement(By.id("displayProfiles_tab"));
+        goToDisplayProfiles();
 
         createDisplayProfile(0, "No Matrix No Values Wider", false, false, false, false, "Print (Follow-up style)", 5, false, 0);
         scrollToTop();

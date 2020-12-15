@@ -19,7 +19,7 @@ public class FormAddRemoveIdentifierTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ctepCurator_username, password);
 
         goToFormByName(formName);
-        goToIdentifiersForm();
+        goToIdentifiers();
 
         addNewIdentifier("PhenX", "MyId1", "MyVersion1");
         addNewIdentifier("caDSR", "MyId2");
@@ -31,7 +31,7 @@ public class FormAddRemoveIdentifierTest extends NlmCdeBaseTest {
 
         goToFormByName(formName);
 
-        goToIdentifiersForm();
+        goToIdentifiers();
         textPresent("MyId1");
         textPresent("PhenX");
         textPresent("MyVersion1");

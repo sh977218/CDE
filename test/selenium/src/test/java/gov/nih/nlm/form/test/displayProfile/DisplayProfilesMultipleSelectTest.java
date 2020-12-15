@@ -8,7 +8,7 @@ import org.testng.annotations.Test;
 public class DisplayProfilesMultipleSelectTest extends BaseFormTest {
 
     @Test
-    public void multipleSelectDisplayProfiles() {
+    public void displayProfilesMultipleSelect() {
         String formName = "Multiple Select Display Profile Test";
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName(formName);
@@ -27,7 +27,6 @@ public class DisplayProfilesMultipleSelectTest extends BaseFormTest {
         Assert.assertTrue(number_select_in_preview > 0);
 
         goToDisplayProfiles();
-        toggleDisplayProfile(0);
         int number_select_in_display_profile = findElements(By.xpath("//cde-native-section//select")).size();
         Assert.assertTrue(number_select_in_display_profile > 0);
 
@@ -45,7 +44,6 @@ public class DisplayProfilesMultipleSelectTest extends BaseFormTest {
         Assert.assertTrue(number_select_in_preview == 0);
 
         goToDisplayProfiles();
-        toggleDisplayProfile(0);
         number_select_in_display_profile = driver.findElements(By.xpath("//cde-native-section//select")).size();
         Assert.assertTrue(number_select_in_display_profile == 0);
 

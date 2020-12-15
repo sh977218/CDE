@@ -52,7 +52,7 @@ public class BaseFormTest extends NlmCdeBaseTest {
             try {
 
                 By sourceBy = By.xpath("//*[@id='addSectionTop']");
-                By targetBy =By.xpath("(" + searchString + ")[" + (sectionNumber + 1) + "]");
+                By targetBy = By.xpath("(" + searchString + ")[" + (sectionNumber + 1) + "]");
                 dragAndDrop(sourceBy, targetBy);
                 textPresent("N/A", By.id(sectionId));
                 i = 10;
@@ -157,10 +157,6 @@ public class BaseFormTest extends NlmCdeBaseTest {
         clickElement(By.id("printableLogicCb"));
     }
 
-    public void toggleDisplayProfile(int index) {
-        clickElement(By.xpath("//*[@id='profile_" + index + "']//mat-panel-title"));
-    }
-
     protected void dragAndDrop(By sourceBy, By targetBy) {
         WebElement source = findElement(sourceBy);
         WebElement target = findElement(targetBy);
@@ -230,18 +226,32 @@ public class BaseFormTest extends NlmCdeBaseTest {
                                         int answerDropdownLimit, boolean displayMetadataDevice) {
         textPresent("Add Profile");
         clickElement(By.xpath("//button[contains(.,'Add Profile')]"));
-        clickElement(By.cssSelector("#profile_" + index + " mat-panel-title h3"));
         clickElement(By.xpath("//*[@id='profileNameEdit_" + index + "']//mat-icon[normalize-space() = 'edit']"));
         findElement(By.xpath("//*[@id='profileNameEdit_" + index + "']//input[@type='text']")).clear();
         findElement(By.xpath("//*[@id='profileNameEdit_" + index + "']//input[@type='text']")).sendKeys(name);
         clickElement(By.xpath("//*[@id='profileNameEdit_" + index + "']//button/mat-icon[normalize-space() = 'check']"));
-        if (!matrix) clickElement(By.id("displayAsMatrix_" + index));
-        if (displayValues) clickElement(By.id("displayValues_" + index));
-        if (!instructions) clickElement(By.id("displayInstructions_" + index));
-        if (!numbering) clickElement(By.id("displayNumbering_" + index));
-        if (displayMetadataDevice) clickElement(By.id("displayMetadataDevice_" + index));
+        if (!matrix) {
+            clickElement(By.xpath("//*[@id='displayAsMatrix_" + index + "']//label"));
+            Assert.assertEquals(driver.findElement(By.xpath("//*[@id='displayAsMatrix_" + index + "']//input")).getAttribute("aria-checked"), "false");
+        }
+        if (displayValues) {
+            clickElement(By.xpath("//*[@id='displayValues_" + index + "']//label"));
+            Assert.assertEquals(driver.findElement(By.xpath("//*[@id='displayValues_" + index + "']//input")).getAttribute("aria-checked"), "true");
+        }
+        if (!instructions) {
+            clickElement(By.xpath("//*[@id='displayInstructions_" + index + "']//label"));
+            Assert.assertEquals(driver.findElement(By.xpath("//*[@id='displayInstructions_" + index + "']//input")).getAttribute("aria-checked"), "false");
+        }
+        if (!numbering) {
+            clickElement(By.xpath("//*[@id='displayNumbering_" + index + "']//label"));
+            Assert.assertEquals(driver.findElement(By.xpath("//*[@id='displayNumbering_" + index + "']//input")).getAttribute("aria-checked"), "false");
+        }
+        if (displayMetadataDevice) {
+            clickElement(By.xpath("//*[@id='displayMetadataDevice_" + index + "']//label"));
+            Assert.assertEquals(driver.findElement(By.xpath("//*[@id='displayMetadataDevice_" + index + "']//input")).getAttribute("aria-checked"), "true");
+        }
 
-        nonNativeSelect("//mat-expansion-panel[@id='profile_" + index + "']", "Default View", displayType);
+        nonNativeSelect("//*[@id='profile_" + index + "']", "Default View", displayType);
 
         clickElement(By.cssSelector("#profile_" + index + " mat-slider[max='6']"));
         int currentNbOfCols = Integer.valueOf(findElement(By.cssSelector("#profile_" + index + " #nbOfColumnsValue")).getText());
@@ -249,16 +259,19 @@ public class BaseFormTest extends NlmCdeBaseTest {
             Keys key = (numberOfColumns - currentNbOfCols) > 0 ? Keys.RIGHT : Keys.LEFT;
             findElement(By.cssSelector("#profile_" + index + " mat-slider[max='6']")).sendKeys(key);
         }
-        textPresent("Number of Columns: " + String.valueOf(numberOfColumns), By.id("profile_" + index));
+        textPresent("Number of Columns: " + numberOfColumns, By.id("profile_" + index));
 
-        if (displayInvisible) clickElement(By.id("displayInvisible_" + index));
+        if (displayInvisible) {
+            clickElement(By.xpath("//*[@id='displayInvisible_" + index + "']//label"));
+            Assert.assertEquals(driver.findElement(By.xpath("//*[@id='displayInvisible_" + index + "']//input")).getAttribute("aria-checked"), "true");
+        }
 
         if (answerDropdownLimit > 0) {
             findElement(By.id("displayAnswerDropdownLimit_" + index)).clear();
             findElement(By.id("displayAnswerDropdownLimit_" + index)).sendKeys(String.valueOf(answerDropdownLimit));
         }
 
-        clickElement(By.xpath("//*[@id='profile_" + index + "']//h4[text()='View Specific Settings']")); // un-focus
+        clickElement(By.xpath("//*[@id='profile_" + index + "']//*[text()='View Specific Settings']")); // un-focus
     }
 
     protected void deleteDisplayProfile(int index) {

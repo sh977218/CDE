@@ -28,7 +28,7 @@ public abstract class RegStatusTest extends CommonTest {
     public void retireForm(String eltName, String user) {
         mustBeLoggedInAs(user, password);
         goToEltByName(eltName);
-        goToGeneralDetailForm();
+        goToGeneralDetail();
         textPresent("Qualified");
         clickElement(By.id("editStatus"));
         new Select(driver.findElement(By.name("newRegistrationStatus"))).selectByVisibleText("Retired");
@@ -61,7 +61,7 @@ public abstract class RegStatusTest extends CommonTest {
     public void nlmPromotesToStandardForm(String eltName) {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToEltByName(eltName);
-        goToGeneralDetailForm();
+        goToGeneralDetail();
         textPresent("Qualified");
         clickElement(By.id("editStatus"));
         new Select(driver.findElement(By.name("newRegistrationStatus"))).selectByVisibleText("Standard");
@@ -69,7 +69,7 @@ public abstract class RegStatusTest extends CommonTest {
         clickElement(By.id("saveRegStatus"));
         closeAlert();
         goToEltByName(eltName);
-        goToGeneralDetailForm();
+        goToGeneralDetail();
         textPresent("Standard");
     }
 
