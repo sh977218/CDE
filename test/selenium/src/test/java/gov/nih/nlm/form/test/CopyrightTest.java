@@ -13,7 +13,7 @@ public class CopyrightTest extends BaseFormTest {
         String authority = "Patent for truth";
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName(formName);
-        goToGeneralDetailForm();
+        goToGeneralDetail();
         textNotPresent("Statement");
         textNotPresent("Authority");
         Assert.assertEquals(driver.findElements(By.id("copyrightStatement")).size(), 0);
@@ -31,7 +31,7 @@ public class CopyrightTest extends BaseFormTest {
         
         goToFormByName(formName);
         findElement(By.xpath("//small[@id='copyrightStatement' and contains(., '" + statement + "')]"));
-        goToGeneralDetailForm();
+        goToGeneralDetail();
         textPresent("Statement");
         textPresent("Authority");
         textPresent(statement);

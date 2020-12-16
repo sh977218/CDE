@@ -12,7 +12,7 @@ public class LogoutCannotEditFormNamingTest extends NlmCdeBaseTest {
     public void logoutCannotEditNaming() {
         String formName = "Study Drug Compliance";
         goToFormByName(formName);
-        goToNamingForm();
+        goToNaming();
         for (WebElement elt : driver.findElements(By.xpath("//mat-icon[normalize-space() = 'delete_outline']"))) {
             Assert.assertFalse(elt.isDisplayed());
         }

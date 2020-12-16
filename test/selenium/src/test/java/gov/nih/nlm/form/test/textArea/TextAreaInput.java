@@ -12,7 +12,7 @@ public class TextAreaInput extends NlmCdeBaseTest {
     public void textAreaInput() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName("TextAreaForm");
-        Assert.assertEquals(driver.findElements(By.cssSelector("textarea")).size(), 0);
+        Assert.assertEquals(driver.findElements(By.xpath("//*[@id='preview-div']//textarea")).size(), 0);
 
         goToFormDescription();
         String textAreaInput = " input[title='Show as Text Area']";
@@ -32,7 +32,7 @@ public class TextAreaInput extends NlmCdeBaseTest {
         clickElement(By.cssSelector(q11 + " span[title='Noncompliant Reason Text']"));
 
         saveFormEdit();
-        Assert.assertEquals(driver.findElements(By.cssSelector("textarea")).size(), 5);
+        Assert.assertEquals(driver.findElements(By.xpath("//*[@id='preview-div']//textarea")).size(), 5);
     }
 
 }

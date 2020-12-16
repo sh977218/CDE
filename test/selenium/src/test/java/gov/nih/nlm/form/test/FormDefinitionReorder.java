@@ -11,13 +11,13 @@ public class FormDefinitionReorder extends NlmCdeBaseTest {
         String formName = "Reorder definition form";
         mustBeLoggedInAs(testAdmin_username, password);
         goToFormByName(formName);
-        goToNamingForm();
+        goToNaming();
         textPresent("Definition:");
-        clickElement(By.id("moveDown-0"));
+        reorderBySection("definitions", "down", 0);
         textPresent("This form is created for testing reorder definitions", By.cssSelector("[itemprop='definition_1']"));
-        clickElement(By.id("moveUp-2"));
+        reorderBySection("definitions", "up", 2);
         textPresent("Another definition.", By.cssSelector("[itemprop='definition_1']"));
-        clickElement(By.id("moveTop-2"));
+        reorderBySection("definitions", "Top", 2);
         textPresent("This form is created for testing reorder definitions", By.cssSelector("[itemprop='definition_0']"));
     }
 }

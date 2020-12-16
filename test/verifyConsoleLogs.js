@@ -90,6 +90,8 @@ let ignoreErrors = [
     ':3001/server/de/originalSource/',
     ':3001/server/form/originalSource/',
     'listbox select is deprecated and will be removed in M79',
+    'does not conform to the required format',
+    'elements with non-unique id',
     'reportOnly',
     'Report Only',
     'Failed to decode downloaded font',

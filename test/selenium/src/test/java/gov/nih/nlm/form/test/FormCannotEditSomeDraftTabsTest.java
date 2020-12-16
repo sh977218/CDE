@@ -11,9 +11,9 @@ public class FormCannotEditSomeDraftTabsTest extends NlmCdeBaseTest {
         String formName = "Draft Form Test";
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName(formName);
-        goToClassificationForm();
+        goToClassification();
         textPresent("Classification is not available in Drafts.");
-        goToAttachmentsForm();
+        goToAttachments();
         textPresent("Attachments are not available in Drafts.");
         clickElement(By.id("discussBtn"));
         textPresent("Discussion is not available in Drafts.");

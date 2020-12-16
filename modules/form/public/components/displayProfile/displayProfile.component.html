@@ -1,110 +1,131 @@
-<div id="displayProfileDiv" class="mat-body-1">
-    <h2>Display Profiles</h2>
-    <mat-expansion-panel *ngFor="let dPVM of dPVMs; index as index" id="profile_{{index}}">
-        <mat-expansion-panel-header>
-            <mat-panel-title>
-                <h3 style="line-height: initial; width: 100%">
-                    {{dPVM.profile.name}}
-                    <span class="pull-right" *ngIf="canEdit">
-                        <cde-delete-with-confirm (click)="interruptEvent($event)" (deleted)="removeDisplayProfile(index)">
-                        </cde-delete-with-confirm>
-                    </span>
-                </h3>
-            </mat-panel-title>
-        </mat-expansion-panel-header>
+<h2>Display Profiles</h2>
+<mat-card *ngFor="let dPVM of dPVMs; index as index" id="profile_{{index}}">
+    <mat-card-header>
+        <mat-card-title>
+            <h3 class="d-inline">{{dPVM.profile.name}}</h3>
+            <cde-delete-with-confirm class="d-inline" (click)="interruptEvent($event)"
+                                     (deleted)="removeDisplayProfile(index)">
+            </cde-delete-with-confirm>
+        </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
         <div class="row">
             <div class="col-lg-5 col-sm-12">
                 <mat-card>
-                    <div>
-                        Name:
-                        <cde-inline-edit id="profileNameEdit_{{index}}" [(model)]="dPVM.profile.name"
-                                         [isAllowed]="canEdit" (modelChange)="eltChange.emit();">
-                        </cde-inline-edit>
-                    </div>
-                    <mat-form-field>
-                        <mat-select class="form-control" [disabled]="!canEdit" placeholder="Default View"
-                                    [(value)]="dPVM.profile.displayType" (valueChange)="setDisplayType(dPVM)">
-                            <mat-option value="Follow-up">Print (Follow-up style)</mat-option>
-                            <mat-option value="Dynamic">Digital (Dynamic style)</mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                    <mat-checkbox id="displayAsMatrix_{{index}}" [disabled]="!canEdit"
-                                  [(ngModel)]="dPVM.profile.sectionsAsMatrix"
-                                  (change)="eltChange.emit()">Sections as matrices</mat-checkbox>
-                    <mat-checkbox id="displayValues_{{index}}" [disabled]="!canEdit"
-                                  [(ngModel)]="dPVM.profile.displayValues"
-                                  (change)="eltChange.emit()">Display answer values</mat-checkbox>
-                    <mat-checkbox id="displayInstructions_{{index}}" [disabled]="!canEdit"
-                                  [(ngModel)]="dPVM.profile.displayInstructions"
-                                  (change)="eltChange.emit()">Display Instructions</mat-checkbox>
-                    <mat-checkbox id="displayCopyright_{{index}}" [disabled]="!canEdit"
-                                  [(ngModel)]="dPVM.profile.displayCopyright"
-                                  (change)="eltChange.emit()">Display Copyright</mat-checkbox>
-                    <mat-checkbox id="displayNumbering_{{index}}" [disabled]="!canEdit"
-                                  [(ngModel)]="dPVM.profile.displayNumbering"
-                                  (change)="eltChange.emit()">Display Question Numbers</mat-checkbox>
-                    <mat-checkbox id="displayInvisible_{{index}}" [disabled]="!canEdit"
-                                  [(ngModel)]="dPVM.profile.displayInvisible"
-                                  (change)="eltChange.emit()">Display Invisible Questions</mat-checkbox>
-                    Number of Columns: <span id="nbOfColumnsValue">{{dPVM.profile.numberOfColumns}}</span>
-                    <mat-slider min="1" max="6" step="1" thumbLabel="true" tickInterval="1"
-                                [ngModel]="dPVM.profile.numberOfColumns"
-                                (ngModelChange)="onChange(dPVM.profile,$event)" [disabled]="!canEdit"></mat-slider>
-                    <mat-form-field>
-                        <input matInput id="displayRepeatFormat_{{index}}" class="form-control" [disabled]="!canEdit"
-                               placeholder="Repeat Format String"
-                               [(ngModel)]="dPVM.profile.repeatFormat" (change)="eltChange.emit()">
-                        <mat-hint>(Use # in place of number. Ex: "#." for "1.")</mat-hint>
-                    </mat-form-field>
-                    <mat-checkbox id="displayMetadataDevice_{{index}}" [disabled]="!canEdit"
-                                  [(ngModel)]="dPVM.profile.metadata.device"
-                                  (change)="eltChange.emit()">Display Metadata Device</mat-checkbox>
+                    <mat-card-header>
+                        <mat-card-title>
+                            <cde-inline-edit id="profileNameEdit_{{index}}" [(model)]="dPVM.profile.name"
+                                             [isAllowed]="canEdit" (modelChange)="eltChange.emit();">
+                            </cde-inline-edit>
+                        </mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content>
+                        <section class="example-section">
+                            <mat-form-field>
+                                <mat-select class="form-control" [disabled]="!canEdit" placeholder="Default View"
+                                            [(value)]="dPVM.profile.displayType" (valueChange)="setDisplayType(dPVM)">
+                                    <mat-option value="Follow-up">Print (Follow-up style)</mat-option>
+                                    <mat-option value="Dynamic">Digital (Dynamic style)</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <mat-checkbox id="displayAsMatrix_{{index}}" [disabled]="!canEdit"
+                                          [(ngModel)]="dPVM.profile.sectionsAsMatrix"
+                                          (change)="eltChange.emit()">Sections as matrices
+                            </mat-checkbox>
+                            <mat-checkbox id="displayValues_{{index}}" [disabled]="!canEdit"
+                                          [(ngModel)]="dPVM.profile.displayValues"
+                                          (change)="eltChange.emit()">Display answer values
+                            </mat-checkbox>
+                            <mat-checkbox id="displayInstructions_{{index}}" [disabled]="!canEdit"
+                                          [(ngModel)]="dPVM.profile.displayInstructions"
+                                          (change)="eltChange.emit()">Display Instructions
+                            </mat-checkbox>
+                            <mat-checkbox id="displayCopyright_{{index}}" [disabled]="!canEdit"
+                                          [(ngModel)]="dPVM.profile.displayCopyright"
+                                          (change)="eltChange.emit()">Display Copyright
+                            </mat-checkbox>
+                            <mat-checkbox id="displayNumbering_{{index}}" [disabled]="!canEdit"
+                                          [(ngModel)]="dPVM.profile.displayNumbering"
+                                          (change)="eltChange.emit()">Display Question Numbers
+                            </mat-checkbox>
+                            <mat-checkbox id="displayInvisible_{{index}}" [disabled]="!canEdit"
+                                          [(ngModel)]="dPVM.profile.displayInvisible"
+                                          (change)="eltChange.emit()">Display Invisible Questions
+                            </mat-checkbox>
+                            <div>
+                                Number of Columns: <span id="nbOfColumnsValue">{{dPVM.profile.numberOfColumns}}</span>
+                            </div>
+                            <mat-slider min="1" max="6" step="1" thumbLabel="true" tickInterval="1"
+                                        [ngModel]="dPVM.profile.numberOfColumns"
+                                        (ngModelChange)="onChange(dPVM.profile,$event)"
+                                        [disabled]="!canEdit"></mat-slider>
+                            <mat-form-field>
+                                <input matInput id="displayRepeatFormat_{{index}}" class="form-control"
+                                       [disabled]="!canEdit"
+                                       placeholder="Repeat Format String"
+                                       [(ngModel)]="dPVM.profile.repeatFormat" (change)="eltChange.emit()">
+                                <mat-hint>(Use # in place of number. Ex: "#." for "1.")</mat-hint>
+                            </mat-form-field>
+                            <mat-checkbox id="displayMetadataDevice_{{index}}" [disabled]="!canEdit"
+                                          [(ngModel)]="dPVM.profile.metadata.device"
+                                          (change)="eltChange.emit()">Display Metadata Device
+                            </mat-checkbox>
+                        </section>
+                    </mat-card-content>
                 </mat-card>
                 <mat-card *ngIf="getMapToFhirResource(elt) === 'Procedure'">
-                    <h4>Procedure Mapping</h4>
-                    <mat-card-content>
+                    <mat-card-header>Procedure Mapping</mat-card-header>
+                    <mat-card-actions>
                         <button mat-raised-button (click)="openProcedureMapping(dPVM)">Procedure Mapping</button>
-                    </mat-card-content>
+                    </mat-card-actions>
                 </mat-card>
             </div>
             <div class="col-lg-7 col-sm-12 displayProfilePreview">
-                <h4>Preview</h4>
                 <mat-card class="displayProfileRenderDiv" style="padding: .1rem 1rem 0 1rem">
+                    <mat-card-header>
+                        <mat-card-title>
+                            Preview
+                        </mat-card-title>
+                    </mat-card-header>
                     <mat-card-content>
                         <cde-native-render [elt]="dPVM.sample" [profile]="dPVM.profile"
                                            [nativeRenderType]="dPVM.profile.displayType"></cde-native-render>
                     </mat-card-content>
                 </mat-card>
-
-                <h4>
+                <div>
                     Unit of Measure Aliases
-                    <button mat-raised-button (click)="uomAliasEdit(dPVM)">
+                    <button mat-raised-button (click)="uomAliasEdit(dPVM)" *ngIf="canEdit">
                         <ng-container *ngIf="dPVM.aliases.edit; else uomEdit">
-                            Okay <mat-icon>done</mat-icon>
+                            Okay
+                            <mat-icon>done</mat-icon>
                         </ng-container>
                         <ng-template #uomEdit>
-                            Edit <mat-icon>edit</mat-icon>
+                            Edit
+                            <mat-icon>edit</mat-icon>
                         </ng-template>
                     </button>
-                </h4>
-                <mat-card style="padding: .1rem 1rem 0 1rem">
+                </div>
+                <mat-card>
                     <mat-card-content>
                         <div class="row">
                             <ng-template #displayAliases>
                                 <ng-container *ngFor="let u of dPVM.profile.unitsOfMeasureAlias">
                                     <span class="col-12 col-sm-6 col-lg-12 col-xl-6 mb-1">
                                         <ng-container *ngIf="u.unitOfMeasure.system">
-                                            {{u.unitOfMeasure.system}}/</ng-container>{{u.unitOfMeasure.code}}: {{u.alias}}
+                                            {{u.unitOfMeasure.system}}/</ng-container>
+                                        {{u.unitOfMeasure.code}}: {{u.alias}}
                                     </span>
                                 </ng-container>
                                 <div *ngIf="!dPVM.profile.unitsOfMeasureAlias.length" class="w-100 text-center">
-                                    No Aliases are Defined.</div>
+                                    No Aliases are Defined.
+                                </div>
                             </ng-template>
                             <ng-container *ngIf="dPVM.aliases.edit; else displayAliases">
                                 <ng-container *ngFor="let u of uoms">
                                     <span class="col-sm-6 col-lg-12 col-xl-6 mb-1"
-                                         id="alias-{{u.u.system}}-{{u.u.code}}">
-                                        <ng-container *ngIf="u.u.system">{{u.u.system}}/</ng-container>{{u.u.code}}:
+                                          id="alias-{{u.u.system}}-{{u.u.code}}">
+                                        <ng-container *ngIf="u.u.system">{{u.u.system}}/</ng-container>
+                                        {{u.u.code}}:
                                         <select class="form-control" [disabled]="!canEdit"
                                                 [ngModel]="profileAliasGet(dPVM, u.u)"
                                                 (ngModelChange)="profileAliasSet(dPVM, u.u, $event)">
@@ -113,14 +134,17 @@
                                     </span>
                                 </ng-container>
                                 <div *ngIf="!uoms.length" class="w-100 text-center">
-                                    This form contains no units of measure.</div>
+                                    This form contains no units of measure.
+                                </div>
                             </ng-container>
                         </div>
                     </mat-card-content>
                 </mat-card>
 
-                <h4>View Specific Settings</h4>
-                <mat-card style="padding: .1rem 1rem 0 1rem">
+                <mat-card>
+                    <mat-card-header>
+                        <mat-card-title>View Specific Settings</mat-card-title>
+                    </mat-card-header>
                     <mat-card-content>
                         <mat-tab-group class="demo-tab-group">
                             <mat-tab label="Digital View">
@@ -140,9 +164,10 @@
                 </mat-card>
             </div>
         </div>
-    </mat-expansion-panel>
-    <button *ngIf="canEdit" mat-raised-button class="mt-2" (click)="addProfile()" color="primary">
-        <mat-icon style="font-weight: 900">add</mat-icon>
-        Add Profile
-    </button>
-</div>
+    </mat-card-content>
+</mat-card>
+<button *ngIf="canEdit" mat-raised-button class="mt-2" (click)="addProfile()" color="primary">
+    <mat-icon style="font-weight: 900">add</mat-icon>
+    Add Profile
+</button>
+

@@ -63,7 +63,7 @@ public class NativeTableTest extends BaseFormTest {
 
         saveFormEdit();
         findElement(By.cssSelector("input[name='0-1-2']")).sendKeys("2" + Keys.ENTER);
-        Assert.assertEquals(driver.findElements(By.cssSelector("tr td:first-child")).size(), 2);
+        Assert.assertEquals(driver.findElements(By.cssSelector("#preview-div tr td:first-child")).size(), 2);
         textPresent("2.");
         textNotPresent("3.");
         textPresent("Education level");

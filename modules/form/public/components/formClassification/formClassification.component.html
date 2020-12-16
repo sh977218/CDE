@@ -1,23 +1,22 @@
-<div id="classificationDiv">
-    <h4 *ngIf="elt.isDraft">
-        Classification is not available in Drafts. Click the Draft slider above to view the current Published version.
-    </h4>
-    <ng-container *ngIf="!elt.isDraft">
-        <h4> Classification</h4>
-        <button *ngIf="isAllowedModel.isOrgCurator()" mat-raised-button id="openClassificationModalBtn"
-                (click)="openClassifyItemModal()" color="primary">
-            <mat-icon>folder_open</mat-icon> Classify this Form
-        </button>
-        <button *ngIf="isAllowedModel.isOrgCurator() && elt.formElements.length > 0"
-                mat-raised-button id="openClassifyCdesModalBtn" color="primary"
-                (click)="openClassifyCdesModal()">
-            <mat-icon>folder_open</mat-icon> Classify CDEs
-        </button>
-        <div id="classificationBody">
-            <cde-classification-view [elt]="elt" (confirmDelete)="removeClassif($event);"></cde-classification-view>
-        </div>
-    </ng-container>
-</div>
+<h2 class="section-header"> Classification</h2>
+<h4 *ngIf="elt.isDraft">
+    Classification is not available in Drafts. Click the Draft slider above to view the current Published version.
+</h4>
+<ng-container *ngIf="!elt.isDraft">
+    <button *ngIf="isAllowedModel.isOrgCurator()" mat-raised-button id="openClassificationModalBtn"
+            (click)="openClassifyItemModal()" color="primary">
+        <mat-icon>folder_open</mat-icon> Classify this Form
+    </button>
+    <button *ngIf="isAllowedModel.isOrgCurator() && elt.formElements.length > 0"
+            mat-raised-button id="openClassifyCdesModalBtn" color="primary"
+            (click)="openClassifyCdesModal()">
+        <mat-icon>folder_open</mat-icon> Classify CDEs
+    </button>
+    <div id="classificationBody">
+        <cde-classification-view [elt]="elt" (confirmDelete)="removeClassif($event);"></cde-classification-view>
+    </div>
+</ng-container>
+
 <cde-classify-item #classifyItemComponent [modalTitle]="'Classify this Form'"
                          (classified)="classifyItem($event)"></cde-classify-item>
 <cde-classify-item #classifyCdesComponent [modalTitle]="'Classify all CDEs in this Form'"

@@ -12,7 +12,7 @@ public class MeanValue extends NlmCdeBaseTest {
         String formName = "Mean Value Test";
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName(formName);
-        clickElement(By.id("preview_tab"));
+        goToPreview();
         findElement(By.name("0-0")).sendKeys("8");
         findElement(By.name("0-1")).sendKeys("11");
         findElement(By.name("0-1")).sendKeys(Keys.TAB);

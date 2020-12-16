@@ -16,7 +16,7 @@ public class CheckOnlyShowingDefaultAttachmentForm extends BaseAttachmentTest {
         String formName = "Pre-Hospital/Emergency Medical Service (EMS) Course";
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName(formName);
-        goToAttachmentsForm();
+        goToAttachments();
 
         addAttachment("defaultAttachmentForForm.jpg");
         try {
@@ -24,7 +24,7 @@ public class CheckOnlyShowingDefaultAttachmentForm extends BaseAttachmentTest {
         } catch (TimeoutException e) {
             // redo because sometimes mock does not work
             goToFormByName(formName);
-            goToAttachmentsForm();
+            goToAttachments();
 
             addAttachment("defaultAttachmentForForm.jpg");
             textPresent("This attachment cannot be downloaded because it is pending approval.");
@@ -38,7 +38,7 @@ public class CheckOnlyShowingDefaultAttachmentForm extends BaseAttachmentTest {
         goToFormByName(formName);
         setAttachmentDefaultForm();
         goToFormByName(formName);
-        goToAttachmentsForm();
+        goToAttachments();
 
         addAttachment("nonDefault.jpg");
         openFormInList(formName);

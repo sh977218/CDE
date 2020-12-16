@@ -24,7 +24,7 @@ public class ReclassifyForm extends NlmCdeBaseTest {
         classifySubmit(new String[]{newClassification}, "");
 
         goToFormByName(formName);
-        goToClassificationForm();
+        goToClassification();
         textPresent(newClassification);
         textPresent(oldClassification);
     }

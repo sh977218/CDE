@@ -12,12 +12,12 @@ public class FormReorderReferenceDocumentsTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(testAdmin_username, password);
         goToFormByName(formName);
 
-        goToReferenceDocumentsForm();
-        clickElement(By.id("moveDown-0"));
+        goToReferenceDocuments();
+        reorderBySection("reference-documents", "down", 0);
         textPresent("rd1", By.cssSelector("[itemprop='id_1']"));
-        clickElement(By.id("moveDown-1"));
+        reorderBySection("reference-documents", "down", 1);
         textPresent("rd3", By.cssSelector("[itemprop='id_1']"));
-        clickElement(By.id("moveTop-2"));
+        reorderBySection("reference-documents", "top", 2);
         textPresent("rd1", By.cssSelector("[itemprop='id_0']"));
     }
 }

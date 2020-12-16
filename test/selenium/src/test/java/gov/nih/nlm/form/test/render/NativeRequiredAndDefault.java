@@ -14,7 +14,7 @@ public class NativeRequiredAndDefault extends BaseFormTest {
         checkDefault();
 
         clickElement(By.cssSelector(".toggle-switch"));
-        textPresent("Published", By.tagName("h1"));
+        textPresent("Published", By.tagName("cde-draft-slider"));
         checkRequired();
 
         clickElement(By.id("selectRenderButton"));
@@ -24,7 +24,7 @@ public class NativeRequiredAndDefault extends BaseFormTest {
         switchTabAndClose(0);
 
         clickElement(By.cssSelector(".toggle-switch"));
-        textPresent("DRAFT", By.tagName("h1"));
+        textPresent("DRAFT", By.tagName("cde-draft-slider"));
         newFormVersion();
         checkDefault();
 

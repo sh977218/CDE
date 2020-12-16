@@ -13,7 +13,7 @@ public class FormLinkedFormsTest extends BaseFormTest {
         clickElement(By.id("boardsMenu"));
         textPresent("Quick Board (0)");
         findElement(By.cssSelector("#menu_qb_link")).sendKeys(Keys.ESCAPE);
-        goToGeneralDetailForm();
+        goToGeneralDetail();
         clickElement(By.id("openLinkedFormsModalBtn"));
         textPresent("There is 1 form that uses this form");
         textPresent("Form In Form Num Questions", By.id("linkedFormsAccordionList"));

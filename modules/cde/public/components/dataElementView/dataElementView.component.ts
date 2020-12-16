@@ -65,46 +65,6 @@ export class DataElementViewComponent implements OnInit {
     unsaved = false;
     validationErrors: { message: string }[] = [];
 
-    // sideNavItems = [
-    //     {id: 'general_details_tab', label: 'General Details', fragment: 'general-details-div', hasComment: false},
-    //     {
-    //         id: 'permissible_values_tab',
-    //         label: 'Permissible Values',
-    //         fragment: 'permissible-values-div',
-    //         hasComment: false
-    //     },
-    //     {id: 'naming_tab', label: 'Naming', fragment: 'naming-div', hasComment: false},
-    //     {id: 'classification_tab', label: 'Classification', fragment: 'classification-div', hasComment: false},
-    //     {id: 'concepts_tab', label: 'Concepts', fragment: 'concepts-div', hasComment: false},
-    //     {
-    //         id: 'reference_documents_tab',
-    //         label: 'Reference Documents',
-    //         fragment: 'reference-documents-div',
-    //         hasComment: false
-    //     },
-    //     {id: 'properties_tab', label: 'Properties', fragment: 'properties-div', hasComment: false},
-    //     {id: 'identifiers_tab', label: 'Identifiers', fragment: 'identifiers-div', hasComment: false},
-    //     {id: 'attachments_tab', label: 'Attachments', fragment: 'attachments-div', hasComment: false},
-    //     {id: 'history_tab', label: 'History', fragment: 'history-div', hasComment: false},
-    //     {id: 'rules_tab', label: 'Rules', fragment: 'rules-div', hasComment: false},
-    // ];
-
-    // avoid highlight nav bar by scroll when user click nav bar link
-    navigateByClick = false;
-
-    previousActiveSection = '';
-    generalDetailsOffsetTop = 0;
-    permissibleValueOffsetTop = 0;
-    namingOffsetTop = 0;
-    classificationOffsetTop = 0;
-    conceptsOffsetTop = 0;
-    referenceDocumentsOffsetTop = 0;
-    propertiesOffsetTop = 0;
-    identifiersOffsetTop = 0;
-    attachmentsOffsetTop = 0;
-    historyOffsetTop = 0;
-    rulesOffsetTop = 0;
-
     ngOnInit() {
         this.orgHelperService.then(() => {
             this.route.queryParams.subscribe(() => {
@@ -202,12 +162,6 @@ export class DataElementViewComponent implements OnInit {
         this.http.get<Comment[]>('/server/discuss/comments/eltId/' + de.tinyId)
             .subscribe(res => {
                 this.comments = res;
-                // this.sideNavItems.forEach(sideNavItem => {
-                //     sideNavItem.hasComment = this.comments.filter(c => {
-                //         const linkedTab = TAB_COMMENT_MAP[c.linkedTab];
-                //         return sideNavItem.id === linkedTab;
-                //     }).length > 0;
-                // });
                 cb();
             }, err => this.alert.httpErrorMessageAlert(err, 'Error loading comments.'));
     }

@@ -460,15 +460,11 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
 
     protected void goToPreview() {
         driver.navigate().to(driver.getCurrentUrl());
-        clickElement(By.id("preview_tab"));
+        clickElement(By.xpath("//li//a[text()='Preview']"));
     }
 
     protected void goToGeneralDetail() {
         clickElement(By.xpath("//li//a[text()='General Details']"));
-    }
-
-    protected void goToGeneralDetailForm() {
-        clickElement(By.id("general_details_tab"));
     }
 
     protected void goToPermissibleValues() {
@@ -511,44 +507,12 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         clickElement(By.xpath("//li//a[text()='Attachments']"));
     }
 
-    protected void goToNamingForm() {
-        clickElement(By.id("naming_tab"));
-    }
-
-    protected void goToClassificationForm() {
-        clickElement(By.id("classification_tab"));
-    }
-
-    protected void goToConceptsForm() {
-        clickElement(By.id("concepts_tab"));
-    }
-
-    protected void goToReferenceDocumentsForm() {
-        clickElement(By.id("reference_documents_tab"));
-    }
-
-    protected void goToPropertiesForm() {
-        clickElement(By.id("properties_tab"));
-    }
-
-    protected void goToIdentifiersForm() {
-        clickElement(By.id("identifiers_tab"));
-    }
-
-    protected void goToAttachmentsForm() {
-        clickElement(By.id("attachments_tab"));
-    }
-
     protected void goToDisplayProfiles() {
-        clickElement(By.id("displayProfiles_tab"));
+        clickElement(By.xpath("//li//a[text()='Display Profiles']"));
     }
 
     protected void goToHistory() {
         clickElement(By.xpath("//li//a[text()='History']"));
-    }
-
-    protected void goToHistoryForm() {
-        clickElement(By.id("history_tab"));
     }
 
     protected void goToScoreDerivations() {
@@ -2035,5 +1999,11 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
 
     protected void selectMatDropdownByText(String text) {
         clickElement(By.xpath("//mat-option[normalize-space() = '" + text + "']"));
+    }
+
+    protected void reorderBySection(String section, String direction, int index) {
+        String capDirection = direction.substring(0, 1).toUpperCase() + direction.substring(1);
+        String xpath = "//*[@id='" + section + "-div']//*[contains(@class,'move" + capDirection + "-" + index + "')]";
+        clickElement(By.xpath(xpath));
     }
 }

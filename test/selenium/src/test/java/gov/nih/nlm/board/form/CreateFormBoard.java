@@ -32,17 +32,17 @@ public class CreateFormBoard extends BoardTest {
 
         goToFormByName(formName1);
 
-        goToClassificationForm();
+        goToClassification();
         textPresent("Classify Board");
 
         goToFormByName(formName2);
 
-        goToClassificationForm();
+        goToClassification();
         textPresent("Classify Board");
 
         goToFormByName(formName3);
 
-        goToClassificationForm();
+        goToClassification();
         textPresent("Classify Board");
 
         goToBoard(boardName);

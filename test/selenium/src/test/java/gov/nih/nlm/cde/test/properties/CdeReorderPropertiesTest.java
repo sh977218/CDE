@@ -11,11 +11,11 @@ public class CdeReorderPropertiesTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(testAdmin_username, password);
         goToCdeByName(cdeName);
         goToProperties();
-        clickElement(By.id("moveDown-0"));
+        reorderBySection("properties", "down", 0);
         textPresent("pk1", By.cssSelector("[itemprop='key_1']"));
-        clickElement(By.id("moveUp-2"));
+        reorderBySection("properties", "up", 2);
         textPresent("pk3", By.cssSelector("[itemprop='key_1']"));
-        clickElement(By.id("moveTop-2"));
+        reorderBySection("properties", "top", 2);
         textPresent("pk1", By.cssSelector("[itemprop='key_0']"));
     }
 

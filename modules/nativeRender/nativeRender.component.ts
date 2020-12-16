@@ -3,10 +3,11 @@ import { DomSanitizer } from '@angular/platform-browser';
 import 'nativeRender/nativeRender.global.scss'
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
 import { CdeForm, DisplayProfile, DisplayType } from 'shared/form/form.model';
+import { ScoreService } from 'nativeRender/score.service';
 
 @Component({
     selector: 'cde-native-render',
-    providers: [NativeRenderService],
+    providers: [NativeRenderService, ScoreService],
     templateUrl: './nativeRender.component.html',
 })
 export class NativeRenderComponent {

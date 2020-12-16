@@ -22,7 +22,7 @@ public class FindRetiredById extends NlmCdeBaseTest {
         String formName = "PTSD Checklist - Civilian (PCL-C)";
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName(formName);
-        goToGeneralDetailForm();
+        goToGeneralDetail();
         editRegistrationStatus("Retired", null, null, null, null);
         newFormVersion();
         checkAlert("Form saved.");

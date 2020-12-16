@@ -6,15 +6,15 @@ import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class RenderDisplayProfile extends BaseFormTest {
+public class RenderDisplayProfileTest extends BaseFormTest {
 
     @Test
-    public void renderDisplayProfiles() {
+    public void renderDisplayProfile() {
         String formName = "PROMIS SF v1.1 - Anger 5a";
 
         goToFormByName(formName);
-        // look for add device butto
-        Assert.assertEquals(driver.findElements(By.cssSelector("i.iconButton")).size(), 0);
+        // look for add device button
+        Assert.assertEquals(driver.findElements(By.cssSelector("#preview-div i.iconButton")).size(), 0);
         textPresent("In the past 7 days");
         textPresent("I felt annoyed");
         textPresent("1", By.xpath("//*[@id='formRenderSection_In the past 7 days']//table/tbody/tr[1]/td[2]"));
@@ -23,7 +23,7 @@ public class RenderDisplayProfile extends BaseFormTest {
         Assert.assertEquals(driver.findElements(By.xpath("//div[@id='formRenderSection_In the past 7 days']//table//input[@type='radio']")).size(), 15);
         Assert.assertEquals(driver.findElements(By.xpath("//div[@id='formRenderSection_In the past 7 days']//table//input[@type='checkbox']")).size(), 5);
         assertNoElt(By.xpath("//select[@ng-model='question.question.answer']"));
-        textNotPresent("I was grouchy");
+        textNotPresent("I was grouchy", By.id("preview-div"));
 
         selectDisplayProfileByName("Matrix No Values");
         hangon(1);
@@ -31,7 +31,7 @@ public class RenderDisplayProfile extends BaseFormTest {
         Assert.assertEquals(driver.findElements(By.xpath("//div[@id='formRenderSection_In the past 7 days']//table//input[@type='checkbox']")).size(), 5);
         assertNoElt(By.xpath("//select[@ng-model='question.question.answer']"));
         textNotPresent("1", By.xpath("//table"));
-        textPresent("I was grouchy");
+        textPresent("I was grouchy", By.id("preview-div"));
 
         selectDisplayProfileByName("No Matrix No Values");
         hangon(1);
@@ -40,15 +40,15 @@ public class RenderDisplayProfile extends BaseFormTest {
         Assert.assertTrue(findElement(By.xpath("//div[@id='I was irritated more than people knew_0-0']//" + byValueListValueXPath("Never"))).getLocation().y + 8 <
                 findElement(By.xpath("//div[@id='I was irritated more than people knew_0-0']//" + byValueListValueXPath("Rarely"))).getLocation().y
         );
-        clickElement(By.cssSelector("i.iconButton"));
+        clickElement(By.cssSelector("#preview-div i.iconButton"));
         clickElement(By.xpath("//a[text()='Add Device by UDI']"));
         findElement(By.xpath("//input[@id='deviceSearchInput']")).clear();
         findElement(By.xpath("//input[@id='deviceSearchInput']")).sendKeys("=/08717648200274=,000025=A99971312345600=>014032=}013032&,1000000000000XYZ123");
         clickElement(By.cssSelector("section.metadata-item button"));
-        textPresent("Device DI:");
-        textPresent("08717648200274");
-        textPresent("ICCBBA");
-        textPresent("XIENCE ALPINE");
+        textPresent("Device DI:", By.id("preview-div"));
+        textPresent("08717648200274", By.id("preview-div"));
+        textPresent("ICCBBA", By.id("preview-div"));
+        textPresent("XIENCE ALPINE", By.id("preview-div"));
 
         selectDisplayProfileByName("No Matrix No Values Wider");
 
