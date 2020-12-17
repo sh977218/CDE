@@ -15,17 +15,6 @@ export type AuthenticatedRequest = {
     username: string,
 } & Request;
 
-const ticketValidationOptions = {
-    host: config.uts.ticketValidation.host,
-    hostname: config.uts.ticketValidation.host,
-    port: config.uts.ticketValidation.port,
-    path: config.uts.ticketValidation.path,
-    method: 'GET',
-    agent: false,
-    requestCert: true,
-    rejectUnauthorized: false,
-};
-
 const parser = new Parser();
 
 serializeUser((user: User, done) => {
@@ -40,12 +29,7 @@ export function init(app: Express) {
 }
 
 export function ticketValidate(tkt: string, cb: CbErr1<string | void>) {
-    const host = 'https://' + ticketValidationOptions.host;
-    const port = ':' + ticketValidationOptions.port;
-    const path = config.uts.ticketValidation.path;
-    const param = '?service=' + config.uts.service + '&ticket=' + tkt;
-    const uri = host + port + path + param;
-    get(uri, (error, response, body) => {
+    get(config.uts.ticketValidation + '?service=' + config.uts.service + '&ticket=' + tkt, (error, response, body) => {
         /* istanbul ignore if */
         if (error) {
             errorLogger.error('getTgt: ERROR with request: ' + error, {stack: new Error().stack});

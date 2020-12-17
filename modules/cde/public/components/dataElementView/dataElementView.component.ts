@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { ChangeDetectorRef, Component, HostListener, Inject, NgZone, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, Inject, NgZone, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -44,7 +44,7 @@ const TAB_COMMENT_MAP: any = {
     styleUrls: ['./view.style.scss'],
     providers: [TocService]
 })
-export class DataElementViewComponent implements OnInit {
+export class DataElementViewComponent implements OnDestroy, OnInit {
     @ViewChild('commentAreaComponent', {static: true}) commentAreaComponent!: DiscussAreaComponent;
     @ViewChild('copyDataElementContent', {static: true}) copyDataElementContent!: TemplateRef<any>;
     @ViewChild('saveModal') saveModal!: SaveModalComponent;
@@ -64,6 +64,10 @@ export class DataElementViewComponent implements OnInit {
     savingText = '';
     unsaved = false;
     validationErrors: { message: string }[] = [];
+
+    ngOnDestroy() {
+        this.tocService.reset();
+    }
 
     ngOnInit() {
         this.orgHelperService.then(() => {
