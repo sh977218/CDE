@@ -46,8 +46,8 @@
     }
   },
   "uts": {
-    "federatedLogin": "http://localhost:3002",
-    "federatedServiceValidate": "http://localhost:3002/serviceValidate"
+    "federatedLogin": "http://localhost:3001/testLogin",
+    "federatedServiceValidate": "http://localhost:3001/testLogin/serviceValidate"
   }
 }
 
