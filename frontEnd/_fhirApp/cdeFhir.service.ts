@@ -135,7 +135,7 @@ export class CdeFhirService {
     );
     lookupLoincName: (code: string, cb: CbErr1<any>) => void = async_memoize((code: string, done: CbErrorObj1<string[] | void>) => {
         this.http.get('/server/uts/umlsCuiFromSrc/' + code + '/LNC').subscribe((r: any) => {
-            if (r && r.result && r.result.results.length) {
+            if (r?.result?.results?.length) {
                 done(undefined, r.result.results[0].name.split(':')[0]);
             }
         }, done as any);

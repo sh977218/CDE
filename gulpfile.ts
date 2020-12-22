@@ -135,6 +135,7 @@ gulp.task('copyCode', ['buildNode'], function copyCode() {
     streamArray.push(gulp.src(appDir('./package.json'))
         .pipe(replace('"startJs": "node ./buildNode/app.js",', '"startJs": "node app.js",'))
         .pipe(replace(' && npx ngcc', ''))
+        .pipe(replace('"testServer": "node ./test/testLoginServer.js",', ''))
         .pipe(gulp.dest(BUILD_DIR + '/')));
 
     streamArray.push(gulp.src(appDir('./deploy/*'))
