@@ -11,7 +11,6 @@ import { MatIconRegistry } from '@angular/material/icon';
 @Component({
     selector: 'nih-cde',
     template: `
-        <cde-ie-banner></cde-ie-banner>
         <cde-navigation></cde-navigation>
     `
 })

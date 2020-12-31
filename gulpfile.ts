@@ -83,11 +83,11 @@ gulp.task('copyThirdParty', ['npmRebuildNodeSass'], function copyThirdParty() {
 });
 
 gulp.task('createDist', ['copyThirdParty'], function createDist() {
-    const sass = require('gulp-sass');
-    sass.compiler = require('node-sass'); // delay using node-sass until npmRebuildNodeSass is done
-    return gulp.src(appDir('./modules/common.scss'))
-        .pipe(sass().on('error', sass.logError))
-        .pipe(gulp.dest(appDir('./dist/common')));
+    // const sass = require('gulp-sass');
+    // sass.compiler = require('node-sass'); // delay using node-sass until npmRebuildNodeSass is done
+    // return gulp.src(appDir('./modules/common.scss'))
+    //     .pipe(sass().on('error', sass.logError))
+    //     .pipe(gulp.dest(appDir('./dist/common')));
 });
 
 
@@ -134,6 +134,7 @@ gulp.task('copyCode', ['buildNode'], function copyCode() {
 
     streamArray.push(gulp.src(appDir('./package.json'))
         .pipe(replace('"startJs": "node ./buildNode/app.js",', '"startJs": "node app.js",'))
+        .pipe(replace(' && npx ngcc', ''))
         .pipe(gulp.dest(BUILD_DIR + '/')));
 
     streamArray.push(gulp.src(appDir('./deploy/*'))
