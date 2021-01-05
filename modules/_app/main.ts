@@ -9,10 +9,8 @@ import 'bootstrap/dist/js/bootstrap.js'; // TODO: .min.js has an error when the 
 import 'material-design-lite/material.js';
 
 import '../../node_modules/bootstrap/dist/css/bootstrap.min.css';
-import '../../node_modules/material-design-lite/dist/material.deep_purple-amber.min.css';
-// import '../../node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css'; // TODO: wait for @ files omitted bug to be resolved
+// TODO: wait for @ files omitted bug to be resolved
 // import '../../node_modules/@circlon/angular-tree-component/css/angular-tree-component.css';
-import '../../node_modules/deeppurple-amber.css';
 import '../../node_modules/angular-tree-component.css';
 import '../common.scss'; // last, must be after bootstrap to overload
 

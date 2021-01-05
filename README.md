@@ -100,6 +100,20 @@ $/cde/> npm i
       1. Quick Board number appears.
 1. To update the production build, run `npm run gulp`.
 
+## Theming
+### Colors
+Update theme.scss
+For custom angular colors extract the colors in common.scss by variable to theme.s
+### Image Minification
+Procedure Lost...
+Trial Procedure
+* SVG
+   * Use as-is.
+* PNG
+   * Run  __/modules/cde/public/assets/img__ through https://tinypng.com/ and place in __/modules/cde/public/assets/img/min__.
+* JPEG/WEBP
+   * Unknown but currently not used.
+
 ## Run Node from the cde project directory
 ```sh
 $> node app

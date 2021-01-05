@@ -1,14 +1,168 @@
+@import '../../theme';
+
 :host {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
 }
 
-button:hover {
-  background-color: dimgrey;
+//button.mat-button-base:hover {
+//  background-color: dimgrey;
+//}
+
+mat-toolbar {
+  z-index: $navZIndex;
+
+  button.mat-button-base {
+    margin: 0 !important;
+  }
+
+  svg {
+    path {
+      fill: $navColor;
+    }
+  }
 }
 
 .d-md-block button {
   min-width: 40px;
   margin: 0 !important;
+}
+
+
+.mat-toolbar-multiple-rows {
+  min-height: 40px;
+}
+
+.cde-nav-major.mat-toolbar-row {
+  background-color: $navBackgroundColor;
+  color: $navColor;
+  height: 40px;
+
+  a {
+    color: $navColor;
+
+    svg {
+      height: 40px;
+      width: 32px;
+    }
+
+    &:hover {
+      background-color: unquote($navColor + '10');
+    }
+  }
+
+  button {
+    border-bottom: $navBackgroundColor 4px solid;
+    border-radius: unset;
+    line-height: 40px;
+    height: 40px;
+
+    //&.mat-button,
+    //&.mat-icon-button {
+    //  line-height: 38px;
+    //}
+
+    &:hover {
+      background-color: unquote($navColor + '10');
+      border-bottom: $navColor 4px solid;
+    }
+  }
+
+  .mobile-icon {
+    display: block;
+    background-image: radial-gradient(circle, $navColor 76%, transparent 79%);
+    width: 50px;
+    left: -10px;
+    position: relative;
+
+    a {
+      display: block;
+      height: 40px;
+      width: 50px;
+      padding-left: 9px;
+
+      &:hover {
+        background-color: unquote($navSecondColor + '10');
+      }
+    }
+  }
+}
+
+.cde-nav-minor.mat-toolbar-row {
+  background-color: $navSecondBackgroundColor;
+  color: $navSecondColor;
+  height: 40px;
+
+  a {
+    svg {
+      height: 40px;
+      width: 32px;
+    }
+
+    &:hover {
+      background-color: unquote($navSecondColor + '10');
+    }
+  }
+
+  button {
+    border-bottom: $navSecondBackgroundColor 4px solid;
+    border-radius: unset;
+    line-height: 36px;
+    height: 39px;
+    padding-top: 3px;
+
+    &:hover {
+      background-color: unquote($navSecondColor + '10');
+      border-bottom: $navSecondColor 4px solid;
+    }
+  }
+}
+
+footer {
+  a, p {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.2rem;
+    margin: 0;
+  }
+
+  .cde-nav-minor.mat-toolbar-row {
+    border-bottom: none;
+    border-top: $navSecondColor 1px solid;
+    height: 68px;
+  }
+
+  ul.social_media {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-left: 0;
+    list-style: none;
+
+    li {
+      padding-top: 0.3rem;
+      display: inline-block;
+
+      &:not(:last-child) {
+        margin-right: 0.3rem;
+      }
+    }
+  }
+}
+
+.grid-container {
+  display: grid;
+  grid-auto-columns: 1fr;
+  grid-gap: 25px;
+  margin: auto;
+
+  .grid-item {
+    grid-row: 1;
+  }
+}
+
+router-outlet ::ng-deep + *:not(nav) {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
 }

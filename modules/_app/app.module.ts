@@ -13,8 +13,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CdeAppComponent } from '_app/app.component';
 import { CdeAppRoutingModule } from '_app/app-routing.module';
 import { BackForwardService } from '_app/backForward.service';
+import { IEBannerComponent } from '_app/banner/ieBanner.component';
+import { UswdsBannerComponent } from '_app/banner/uswdsBanner.component';
 import { ElasticService } from '_app/elastic.service';
-import { IEBannerComponent } from '_app/ieBanner/ieBanner.component';
 import { LoginService } from '_app/login.service';
 import { NavigationComponent } from '_app/navigation/navigation.component';
 import { ApprovalService } from '_app/notifications/approval.service';
@@ -29,7 +30,6 @@ import { FeedbackModule } from 'ngx-feedback2';
 import { LocalStorageService } from 'non-core/localStorage.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { ScrollingModule } from '@angular/cdk/scrolling';
-import { FooterComponent } from '_app/footer/footer.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
@@ -63,9 +63,9 @@ import { FormResolve } from 'form/public/components/formDescription/form.resolve
         IEBannerComponent,
         InactivityLoggedOutComponent,
         NavigationComponent,
-        FooterComponent,
         NotificationDrawerPaneComponent,
-        TruncateLongNamePipe
+        TruncateLongNamePipe,
+        UswdsBannerComponent,
     ],
     providers: [
         FormResolve,
