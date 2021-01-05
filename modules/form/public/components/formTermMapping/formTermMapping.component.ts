@@ -39,7 +39,7 @@ export class FormTermMappingComponent implements OnInit {
             debounceTime(300),
             distinctUntilChanged(),
             switchMap(term => term
-                ? this.http.get<ElasticQueryResponse<any>>((window as any).meshUrl
+                ? this.http.get<ElasticQueryResponse<any>>(window.meshUrl
                     + '/api/search/record?searchInField=termDescriptor&searchType=exactMatch&q=' + term)
                 : empty()
             )
@@ -91,7 +91,7 @@ export class FormTermMappingComponent implements OnInit {
                 });
             }
             this.mapping.meshDescriptors.forEach(desc => {
-                this.http.get<any>((window as any).meshUrl + '/api/record/ui/' + desc).subscribe(res => {
+                this.http.get<any>(window.meshUrl + '/api/record/ui/' + desc).subscribe(res => {
                     this.descToName[desc] = res.DescriptorName.String.t;
                 });
             });

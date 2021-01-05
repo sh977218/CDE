@@ -64,6 +64,7 @@ export function module(roleConfig: { manage: RequestHandler, search: RequestHand
         } else {
             await updateUser(req.user, {commentNotifications: req.user.commentNotifications});
             const user = await userById(req.user._id);
+            /* istanbul ignore if */
             if (!user) {
                 res.status(500).send();
                 return;
@@ -90,6 +91,7 @@ export function module(roleConfig: { manage: RequestHandler, search: RequestHand
 
     router.post('/updateUserRoles', isOrgAuthorityMiddleware, async (req, res) => {
         const foundUser = await userByName(req.body.username);
+        /* istanbul ignore if */
         if (!foundUser) {
             res.status(400).send();
             return;
@@ -101,6 +103,7 @@ export function module(roleConfig: { manage: RequestHandler, search: RequestHand
 
     router.post('/updateUserAvatar', isOrgAuthorityMiddleware, async (req, res) => {
         const foundUser = await userByName(req.body.username);
+        /* istanbul ignore if */
         if (!foundUser) {
             res.status(400).send();
             return;
@@ -112,10 +115,12 @@ export function module(roleConfig: { manage: RequestHandler, search: RequestHand
 
     router.post('/addCommentAuthor', canApproveCommentMiddleware, async (req, res) => {
         const foundUser = await userByName(req.body.username);
+        /* istanbul ignore if */
         if (!foundUser) {
             res.status(400).send();
             return;
         }
+        /* istanbul ignore if */
         if (!foundUser.roles) {
             foundUser.roles = [];
         }

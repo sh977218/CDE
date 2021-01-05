@@ -47,7 +47,7 @@ export function module() {
     new CronJob('* 7 4 * * 6', () => {
         consoleLog('Creating sitemap');
         promisify(access)('dist/app', constants.R_OK)
-            .catch(() => promisify(mkdir)('dist/app', {recursive: true} as any)) // Node 12
+            .catch(() => promisify(mkdir)('dist/app', {recursive: true})) // Node 12
             .then(() => {
                 const wstream = createWriteStream('./dist/app/sitemap.txt');
                 const cond = {
@@ -112,10 +112,10 @@ export function module() {
         return res.send();
     });
 
-    const failedIps: any[] = [];
+    const failedIps: {ip: string, nb: number}[] = [];
 
     router.get('/csrf', csrf(), nocacheMiddleware, (req, res) => {
-        const resp: any = {csrf: req.csrfToken()};
+        const resp: {csrf: string, showCaptcha?: boolean} = {csrf: req.csrfToken()};
         const realIp = getRealIp(req);
         const failedIp = findFailedIp(realIp);
         if ((failedIp && failedIp.nb > 2)) {
@@ -138,68 +138,66 @@ export function module() {
         csrf()(req, res, next);
     }
 
-    const checkLoginReq: RequestHandler = async function checkLoginReq(req, res, next) {
-        if (req.body.federated) {
-            return next();
-        }
-        const realIp = getRealIp(req);
-        if (Object.keys(req.body).filter(k => validLoginBody.indexOf(k) === -1).length) {
-            await banIp(realIp, 'Invalid Login body');
-            return res.status(401).send();
-        }
-        if (Object.keys(req.query).length) {
-            await banIp(realIp, 'Passing params to /login');
-            return res.status(401).send();
-        }
-        return next();
-    }
+    // const checkLoginReq: RequestHandler = async function checkLoginReq(req, res, next) {
+    //     if (req.body.federated) {
+    //         return next();
+    //     }
+    //     const realIp = getRealIp(req);
+    //     if (Object.keys(req.body).filter(k => validLoginBody.indexOf(k) === -1).length) {
+    //         await banIp(realIp, 'Invalid Login body');
+    //         return res.status(401).send();
+    //     }
+    //     if (Object.keys(req.query).length) {
+    //         await banIp(realIp, 'Passing params to /login');
+    //         return res.status(401).send();
+    //     }
+    //     return next();
+    // }
 
     const validLoginBody = ['username', 'password', '_csrf', 'recaptcha'];
 
-    router.post('/login', checkLoginReq, myCsrf, (req, res, next) => {
+    router.post('/login', /*checkLoginReq,*/ myCsrf, (req, res, next) => {
         const failedIp = findFailedIp(getRealIp(req));
-        series([
-                function checkCaptcha(captchaDone) {
-                    if (failedIp && failedIp.nb > 2) {
-                        captchaDone();
-                    } else {
-                        captchaDone();
-                    }
-                }],
-            function allDone(err) {
-                if (failedIp) {
-                    failedIp.nb = 0;
-                }
+        if (failedIp && failedIp.nb > 2) {
+            return res.status(412).send('Failed too many times');
+        }
+        if (failedIp) {
+            failedIp.nb = 0;
+        }
+        // Regenerate is used so appscan won't complain
+        if (req.session) {
+            req.session.regenerate(passportAuthenticate);
+        } else {
+            passportAuthenticate();
+        }
+
+        function passportAuthenticate() {
+            authenticate('local', (err, user, info) => {
                 if (err) {
-                    return res.status(412).send(err);
+                    respondError(err);
+                    return res.status(403).send();
                 }
-                // Regenerate is used so appscan won't complain
-                (req.session as any).regenerate(() => {
-                    authenticate('local', (err, user, info) => {
-                        if (err) {
-                            respondError(err);
-                            return res.status(403).send();
-                        }
-                        if (!user) {
-                            if (failedIp && config.useCaptcha) {
-                                failedIp.nb++;
-                            } else {
-                                failedIps.unshift({ip: getRealIp(req), nb: 1});
-                                failedIps.length = 50;
-                            }
-                            return res.status(403).send(info);
-                        }
-                        req.logIn(user, err => {
-                            if (err) {
-                                respondError(err);
-                                return res.status(403).send();
-                            }
-                            (req.session as any).passport = {user: req.user._id};
-                            return res.send('OK');
-                        });
-                    })(req, res, next);
+                if (!user) {
+                    if (failedIp && config.useCaptcha) {
+                        failedIp.nb++;
+                    } else {
+                        failedIps.unshift({ip: getRealIp(req), nb: 1});
+                        failedIps.length = 50;
+                    }
+                    return res.status(403).send(info);
+                }
+                req.logIn(user, err => {
+                    if (err) {
+                        respondError(err);
+                        return res.status(403).send();
+                    }
+                    if (req.session) {
+                        req.session.passport = {user: req.user._id};
+                    }
+                    return res.send('OK');
                 });
-            });
+            })(req, res, next);
+        }
     });
 
     router.post('/logout', (req, res) => {

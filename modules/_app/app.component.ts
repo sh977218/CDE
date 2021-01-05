@@ -33,11 +33,11 @@ export class CdeAppComponent {
             });
         });
 
-        if (!!(window as any).ga && !!(window as any).ga.getAll) {
+        if (window.ga && window.ga.getAll) {
             this.router.events.subscribe(event => {
                 if (event instanceof NavigationEnd) {
-                    (window as any).ga.getAll().forEach((tracker: Map<string, any>) =>
-                        (window as any).gtag('config', tracker.get('trackingId'), {page_path: event.urlAfterRedirects})
+                    window.ga.getAll().forEach((tracker: Map<string, any>) =>
+                        window.gtag('config', tracker.get('trackingId'), {page_path: event.urlAfterRedirects})
                     );
                 }
             });

@@ -25,6 +25,7 @@ import { module as articleModule } from 'server/article/articleRoutes';
 import { module as attachmentModule } from 'server/attachment/attachmentRoutes';
 import { module as boardModule } from 'server/board/boardRoutes';
 import * as mongo_cde from 'server/cde/mongo-cde';
+import { module as testLoginModule } from 'server/workarountTestLoginServer';
 import { module as classificationModule } from 'server/classification/classificationRoutes';
 import { module as discussModule } from 'server/discuss/discussRoutes';
 import { module as logModule } from 'server/log/logRoutes';
@@ -163,30 +164,7 @@ app.use((req, res, next) => {
     }
 });
 
-
-app.use(function preventSessionCreation(req, res, next) {
-    function isFile(originalUrl: string) {
-        if (originalUrl.substr(originalUrl.length - 3, 3) === '.js') {
-            return true;
-        }
-        if (originalUrl.substr(originalUrl.length - 4, 4) === '.css') {
-            return true;
-        }
-        return originalUrl.substr(originalUrl.length - 4, 4) === '.gif';
-    }
-
-    const originalUrl = req.originalUrl;
-
-    if ((req.cookies['connect.sid'] ||
-        originalUrl === '/login' ||
-        originalUrl === '/server/system/csrf')
-        && !isFile(originalUrl)) {
-        session(expressSettings)(req, res, next);
-    } else {
-        next();
-    }
-
-});
+app.use(session(expressSettings));
 
 app.use('/cde/public', express.static((global as any).appDir('modules/cde/public')));
 app.use('/system/public', express.static((global as any).appDir('modules/system/public')));
@@ -293,6 +271,12 @@ express.response.render = function renderEjsUsingThis(this: any, view: string, m
 } as any;
 
 try {
+    if (['dev-test', 'test'].includes(process.env.NODE_ENV || '') && config.test && config.test.testLoginServer.port) {
+        app.use('/testLogin', testLoginModule());
+        console.log('TEST Login Routes started.');
+    } else {
+        console.error('Test Login Routes not started. Check test configuration.');
+    }
     app.use('/', appModule());
     app.use('/server/attachment', [loggedInMiddleware], attachmentModule({
         attachmentApproval: [canApproveAttachmentMiddleware]

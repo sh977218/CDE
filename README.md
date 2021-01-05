@@ -6,12 +6,19 @@
 * Node.js - 12
 * Gradle 5.3
 
-## Create & Configure Application Environment
-Next, navigate to your CDE directory, and run:
+### Create & Configure Application Environment
+Add to ~/.bashrc:
 ```sh
-$/cde/> export NODE_ENV=test
+export PATH=<Node>:<JDK bin>:<MongoDB bin>:<Gradle bin>:<Maven bin>:$PATH
+export JAVA_HOME=<JDK>
+export GRADLE_HOME=<Gradle>
+
+# CDE Common Data Elements
+cd /c/cde
+export NODE_CONFIG='{"vsac": {"username": "<UMLS username>", "password": "<UMLS password>"}, "uts": {"apikey": "<UMLS apikey>"}}'
+export NODE_ENV=test
 ```
-This will establish your config environment
+The NODE_CONFIG credentials are used for UMLS and VSAC ticket service validation and TGT used in the application whether the user is signed in or not. (Federated service validation is used for user sign in.)
 
 ### Configure Elastic Search
 **MongoDB** must run in **Replicate mode**. 
@@ -55,11 +62,14 @@ db.createUser({ user: "miguser", pwd: "password", roles: [ { role: "readWrite", 
 ```
 
 ## Restart mongo server with auth on.
+```sh
+$> mongod --auth
+```
 
 ## Preparing to run
 Before running the app, run:
 ```sh 
-$/cde/>  npm install -a
+$/cde/> npm i
 ```
 This will install all the various packages needed for the app to function. 
 
@@ -70,15 +80,9 @@ $/cde/> sh restore-test-instance.sh
  ```
 This will populate the mongo database with a test dataset. From there, the app (once it starts running) will ingest the data in the mongo database
 
-Next, you need to set up the various front end files used in the project. 
-
+Next, you need to set up the various front end files used in the project:
 ```sh
 $/cde/> npm run gulp
-```
-
-If you get an error message here, complaining that you don’t have gulp, run 
-```sh
-$/cde/> npm i
 ```
 
 ## Compile Static Homepage
@@ -116,7 +120,12 @@ Trial Procedure
 
 ## Run Node from the cde project directory
 ```sh
-$> node app
+$/cde/> npm start
+```
+
+For the __test__ environment, in a separate window, run:
+```shell
+$/cde/> npm run testServer
 ```
 
 # Test

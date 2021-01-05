@@ -696,7 +696,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                 boardId: selectedBoard._id,
                 itemType: this.module
             };
-            data.query.resultPerPage = (window as any).maxPin;
+            data.query.resultPerPage = window.maxPin;
             this.http.post('/server/board/pinEntireSearchToBoard', data, {responseType: 'text'}).subscribe(() => {
                 this.alert.addAlert('success', 'All elements pinned.');
                 this.http.post('/server/board/myBoards', filter).subscribe();

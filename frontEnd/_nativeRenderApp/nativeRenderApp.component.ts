@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Params } from '@angular/router';
 import { fetchForm } from 'nativeRender/form.service';
 import { CdeForm, DisplayProfile } from 'shared/form/form.model';
 import { CbErr1 } from 'shared/models.model';
@@ -32,11 +33,11 @@ import { CbErr1 } from 'shared/models.model';
 export class NativeRenderAppComponent {
 
     constructor() {
-        const args: any = NativeRenderAppComponent.searchParamsGet();
+        const args = NativeRenderAppComponent.searchParamsGet();
         this.selectedProfileName = args.selectedProfile;
         this.submitForm = args.submit !== undefined;
-        if ((window as any).formElt) {
-            const elt = JSON.parse(JSON.stringify((window as any).formElt));
+        if (window.formElt) {
+            const elt = JSON.parse(JSON.stringify(window.formElt));
             this.loadForm(undefined, elt);
         } else {
             if (args.tinyId) {
@@ -71,8 +72,8 @@ export class NativeRenderAppComponent {
             : this.elt.displayProfiles[0];
     }
 
-    static searchParamsGet(): string[] {
-        const params: any = {};
+    static searchParamsGet(): Params {
+        const params: Params = {};
         if (location.search) {
             location.search.substr(1).split('&').forEach(e => {
                 const p = e.split('=');

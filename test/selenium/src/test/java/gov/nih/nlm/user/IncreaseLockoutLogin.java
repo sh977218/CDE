@@ -9,13 +9,17 @@ public class IncreaseLockoutLogin extends NlmCdeBaseTest {
     @Test
     public void increaseLockoutLogin() {
         goToCdeSearch();
+
         openLogin();
-        findElement(By.id("uname")).sendKeys(lockout_increase_username);
-        findElement(By.id("passwd")).sendKeys(password + "111");
-        clickElement(By.id("login_button"));
-        clickElement(By.id("login_button"));
-        clickElement(By.id("login_button"));
-        checkAlert("Failed to log in. Incorrect username or password");
+        clickElement(By.linkText("sign in now"));
+        int sourceTabIndex = switchTabToLast();
+        textPresent("Username:");
+        findElement(By.name("username")).sendKeys(lockout_increase_username);
+        findElement(By.name("password")).sendKeys(password + "111");
+        clickElement(By.cssSelector("input[type='submit']"));
+        textPresent("Login Failed");
+        switchTab(sourceTabIndex);
+
         driver.get(baseUrl + "/settings/profile");
         isLoggedOut();
         isLoginPage();

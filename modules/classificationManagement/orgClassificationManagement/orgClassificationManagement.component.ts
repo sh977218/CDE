@@ -93,7 +93,7 @@ export class OrgClassificationManagementComponent implements OnInit {
                 this.descriptorID = '';
             }),
             switchMap(term => {
-                const url = (window as any).meshUrl + '/api/search/record?searchInField=termDescriptor&searchType=exactMatch&q=' + term;
+                const url = window.meshUrl + '/api/search/record?searchInField=termDescriptor&searchType=exactMatch&q=' + term;
                 return term ? this.http.get<ElasticQueryResponse<any>>(url) : empty();
             })
         ).subscribe((res: any) => {

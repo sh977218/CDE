@@ -1,47 +1,23 @@
 <div class="container">
-    <form class="form-signin" #loginForm="ngForm" autocomplete="false">
-        <div class="form-signin-heading">
-            Our sign in process is changing.
-        </div>
-        <p>
-            The NIH CDE Repository uses UMLS Terminology Services (UTS) accounts for authentication.
-            UTS accounts are migrating to a service that will allow you to sign in using Google, Microsoft, Facebook, or another identity provider of your choice.
-            <strong>NIH staff should choose the “NIH Employees” option.</strong>
-        </p>
-        <p>
-            If you have already migrated your UTS account to the new service, <a [href]="federatedUrl">sign in now</a>.
-        </p>
-        <p>
-            If you have not migrated your UTS account,
-            <a href="https://uts.nlm.nih.gov/uts/login" target="_blank" rel="noopener noreferrer">migrate your account now</a>.
-        </p>
-        <p>
-            Don’t have a UTS account?
-            <a href="https://uts.nlm.nih.gov/uts/signup-login" target="_blank" rel="noopener noreferrer">Sign up now</a>.
-        </p>
-        <div *ngIf="testWorkaround()" class="form-group">
-            <label id="l1" class="sr-only" for="uname">Username</label>
-            <input id="uname" class="form-control" title="username" placeholder="Username" [(ngModel)]="username"
-                   autofocus="" required name="username" autocomplete="false">
-            <label id="l2" class="sr-only" for="passwd">Password</label>
-            <input id="passwd" type="password" name="password" class="form-control" title="password"
-                   placeholder="Password" autocomplete="false" [(ngModel)]="password" required/>
-            <input type="hidden" name="_csrf" [(ngModel)]="csrf">
-        </div>
-        <div *ngIf="testWorkaround()" class="form-group">
-            <button [disabled]="!loginForm.valid || !csrf" mat-raised-button color="link" (click)="login()" id="login_button">
-                Log In
-            </button>
-            <p>
-                Forgot your
-                <a href="https://uts.nlm.nih.gov/uts/forgot/username" class="vsloginLink" target="_blank" rel="noopener noreferrer">
-                    <span>username</span>
-                </a>
-                or
-                <a href="https://uts.nlm.nih.gov/uts/forgot/password" target="_blank" rel="noopener noreferrer">
-                    <span class="vsloginLink">password</span>
-                </a>?
-            </p>
-        </div>
-    </form>
+    <div class="form-signin-heading">
+        Our sign in process is changing.
+    </div>
+    <p>
+        The NIH CDE Repository uses UMLS Terminology Services (UTS) accounts for authentication.
+        UTS accounts are migrating to a service that will allow you to sign in using Google, Microsoft, Facebook, or another identity
+        provider of your choice.
+        <strong>NIH staff should choose the “NIH Employees” option.</strong>
+    </p>
+    <p>
+        If you have already migrated your UTS account to the new service,
+        <a class="fake-link" style="font-weight: 900" (click)="loginService.openLogin()">sign in now</a>.
+    </p>
+    <p>
+        If you have not migrated your UTS account,
+        <a href="https://uts.nlm.nih.gov/uts/login" target="_blank" rel="noopener noreferrer">migrate your account now</a>.
+    </p>
+    <p>
+        Don’t have a UTS account?
+        <a href="https://uts.nlm.nih.gov/uts/signup-login" target="_blank" rel="noopener noreferrer">Sign up now</a>.
+    </p>
 </div>

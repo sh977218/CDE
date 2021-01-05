@@ -45,13 +45,13 @@ interface FeedbackMessage {
     browser: string;
 }
 
-interface ErrorLog {
+export interface ErrorLog {
     message: string;
     date: Date;
-    details: string;
+    details?: string;
     origin: string;
     stack: string;
-    request: {
+    request?: {
         url: string;
         method: string;
         params: string;

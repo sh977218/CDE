@@ -36,7 +36,7 @@ export class NativeRenderComponent {
     constructor(private sanitizer: DomSanitizer,
                 public nrs: NativeRenderService) {
         this.formUrl = window.location.href;
-        this.endpointUrl = (window as any).endpointUrl;
+        this.endpointUrl = window.endpointUrl;
     }
 
     getEndpointUrl() {

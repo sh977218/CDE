@@ -1,14 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from 'system/public/components/login/login.component';
-import { MatButtonModule } from '@angular/material/button';
-import { FederatedLoginComponent } from 'system/public/components/federatedLogin/federatedLogin.component';
 
 const appRoutes: Routes = [
-    {path: '', component: LoginComponent},
-    {path: 'federated', component: FederatedLoginComponent}
+    {
+        path: '',
+        component: LoginComponent,
+    }
 ];
 
 @NgModule({
@@ -22,7 +23,6 @@ const appRoutes: Routes = [
     ],
     declarations: [
         LoginComponent,
-        FederatedLoginComponent,
     ],
     exports: [
     ],

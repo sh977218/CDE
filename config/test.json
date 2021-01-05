@@ -39,6 +39,15 @@
       }
     ]
   },
-  "showCovidBanner": false
+  "showCovidBanner": false,
+  "test": {
+    "testLoginServer": {
+      "port": 3002
+    }
+  },
+  "uts": {
+    "federatedLogin": "http://localhost:3001/testLogin",
+    "federatedServiceValidate": "http://localhost:3001/testLogin/serviceValidate"
+  }
 }
 
